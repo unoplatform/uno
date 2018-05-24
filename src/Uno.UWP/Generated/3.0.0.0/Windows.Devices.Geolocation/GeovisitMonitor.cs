@@ -1,0 +1,69 @@
+#pragma warning disable 108 // new keyword hiding
+#pragma warning disable 114 // new keyword hiding
+namespace Windows.Devices.Geolocation
+{
+	#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+	[global::Uno.NotImplemented]
+	#endif
+	public  partial class GeovisitMonitor 
+	{
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		[global::Uno.NotImplemented]
+		public  global::Windows.Devices.Geolocation.VisitMonitoringScope MonitoringScope
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member VisitMonitoringScope GeovisitMonitor.MonitoringScope is not implemented in Uno.");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		[global::Uno.NotImplemented]
+		public GeovisitMonitor() 
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Geolocation.GeovisitMonitor", "GeovisitMonitor.GeovisitMonitor()");
+		}
+		#endif
+		// Forced skipping of method Windows.Devices.Geolocation.GeovisitMonitor.GeovisitMonitor()
+		// Forced skipping of method Windows.Devices.Geolocation.GeovisitMonitor.MonitoringScope.get
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		[global::Uno.NotImplemented]
+		public  void Start( global::Windows.Devices.Geolocation.VisitMonitoringScope value)
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Geolocation.GeovisitMonitor", "void GeovisitMonitor.Start(VisitMonitoringScope value)");
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		[global::Uno.NotImplemented]
+		public  void Stop()
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Geolocation.GeovisitMonitor", "void GeovisitMonitor.Stop()");
+		}
+		#endif
+		// Forced skipping of method Windows.Devices.Geolocation.GeovisitMonitor.VisitStateChanged.add
+		// Forced skipping of method Windows.Devices.Geolocation.GeovisitMonitor.VisitStateChanged.remove
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		[global::Uno.NotImplemented]
+		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Geolocation.Geovisit> GetLastReportAsync()
+		{
+			throw new global::System.NotImplementedException("The member IAsyncOperation<Geovisit> GeovisitMonitor.GetLastReportAsync() is not implemented in Uno.");
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		[global::Uno.NotImplemented]
+		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Devices.Geolocation.GeovisitMonitor, global::Windows.Devices.Geolocation.GeovisitStateChangedEventArgs> VisitStateChanged
+		{
+			[global::Uno.NotImplemented]
+			add
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Geolocation.GeovisitMonitor", "event TypedEventHandler<GeovisitMonitor, GeovisitStateChangedEventArgs> GeovisitMonitor.VisitStateChanged");
+			}
+			[global::Uno.NotImplemented]
+			remove
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Geolocation.GeovisitMonitor", "event TypedEventHandler<GeovisitMonitor, GeovisitStateChangedEventArgs> GeovisitMonitor.VisitStateChanged");
+			}
+		}
+		#endif
+	}
+}

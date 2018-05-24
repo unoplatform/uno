@@ -1,0 +1,59 @@
+﻿using System;
+using System.Drawing;
+using Uno.Disposables;
+using System.Runtime.CompilerServices;
+using Windows.UI.Xaml.Data;
+using Uno.UI.DataBinding;
+using Windows.UI.Xaml;
+
+#if XAMARIN_IOS_UNIFIED
+using Foundation;
+using UIKit;
+#elif XAMARIN_IOS
+using MonoTouch.Foundation;
+using MonoTouch.UIKit;
+#endif
+
+namespace Uno.UI.Views.Controls
+{
+	public partial class BindableUIAlertView : UIAlertView, DependencyObject
+	{
+		public BindableUIAlertView (string title, string message, UIAlertViewDelegate del, string cancelButtonTitle, params string[] otherButtons)
+#pragma warning disable CS0618 // Type or member is obsolete
+			: base (title, message, del, cancelButtonTitle, otherButtons)
+#pragma warning restore CS0618 // Type or member is obsolete
+		{
+			InitializeBinder();
+		}
+
+		public BindableUIAlertView (NSCoder coder) 
+			: base (coder)
+		{
+			InitializeBinder();
+		}
+
+		public BindableUIAlertView (RectangleF frame) 
+			: base (frame)
+		{
+			InitializeBinder();
+		}
+
+		public BindableUIAlertView (IntPtr handle) 
+			: base (handle)
+		{
+			InitializeBinder();
+		}
+
+		public BindableUIAlertView (NSObjectFlag t) 
+			: base (t)
+		{
+			InitializeBinder();
+		}
+
+		public BindableUIAlertView ()
+		{
+			InitializeBinder();
+		}
+	}
+}
+

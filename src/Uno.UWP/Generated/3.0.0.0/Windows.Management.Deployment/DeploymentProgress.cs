@@ -1,0 +1,18 @@
+#pragma warning disable 108 // new keyword hiding
+#pragma warning disable 114 // new keyword hiding
+namespace Windows.Management.Deployment
+{
+	#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+	[global::Uno.NotImplemented]
+	#endif
+	public  partial struct DeploymentProgress 
+	{
+		// Forced skipping of method Windows.Management.Deployment.DeploymentProgress.DeploymentProgress()
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		public  global::Windows.Management.Deployment.DeploymentProgressState state;
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		public  uint percentage;
+		#endif
+	}
+}

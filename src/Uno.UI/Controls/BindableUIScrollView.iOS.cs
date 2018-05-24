@@ -1,0 +1,51 @@
+﻿using System;
+using System.Drawing;
+using Uno.Disposables;
+using System.Runtime.CompilerServices;
+using Windows.UI.Xaml.Data;
+using Uno.UI.DataBinding;
+using Windows.UI.Xaml;
+
+#if XAMARIN_IOS_UNIFIED
+using Foundation;
+using UIKit;
+#elif XAMARIN_IOS
+using MonoTouch.Foundation;
+using MonoTouch.UIKit;
+#endif
+
+namespace Uno.UI.Views.Controls
+{
+	public partial class BindableUIScrollView : UIScrollView, DependencyObject
+	{
+		public BindableUIScrollView (IntPtr handle)
+			: base (handle)
+		{
+			InitializeBinder();
+		}
+
+		public BindableUIScrollView (NSCoder coder)
+			: base (coder)
+		{
+			InitializeBinder();
+		}
+
+		public BindableUIScrollView (NSObjectFlag t)
+			: base (t)
+		{
+			InitializeBinder();
+		}
+
+		public BindableUIScrollView (RectangleF frame)
+			: base (frame)
+		{
+			InitializeBinder();
+		}
+
+		public BindableUIScrollView ()
+		{
+			InitializeBinder();
+		}
+	}
+}
+

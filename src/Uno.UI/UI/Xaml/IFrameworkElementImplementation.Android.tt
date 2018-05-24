@@ -1,0 +1,958 @@
+﻿<#@ assembly name="System.Core" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Text" #>
+<#@ import namespace="System.Collections.Generic" #>
+
+#pragma warning disable 108
+
+using System;
+using Windows.Foundation;
+using Uno.Disposables;
+using System.Runtime.CompilerServices;
+using Uno.Extensions;
+using Uno.UI.DataBinding;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Data;
+using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml.Media.Animation;
+using Android.Views;
+using Uno.UI.Extensions;
+using global::Windows.UI.Xaml.Input;
+using Point = Windows.Foundation.Point;
+using Uno.UI;
+using Uno.Diagnostics.Eventing;
+
+<# 
+	foreach(var mixin in _mixins) { 
+#>
+
+namespace <#= mixin.NamespaceName #>
+{
+    public partial class <#= mixin.ClassName #> : IFrameworkElement
+	{
+		private readonly static IEventProvider _trace = Tracing.Get(FrameworkElement.TraceProvider.Id);
+
+#if <#= mixin.HasAttachedToWindow #>
+		partial void OnAttachedToWindowPartial()
+		{
+			((IDependencyObjectStoreProvider)this).Store.Parent = base.Parent;
+			OnLoading();
+			OnLoaded();
+		}
+
+		partial void OnDetachedFromWindowPartial()
+		{
+			OnUnloaded();
+			
+			if(base.Parent == null)
+            {
+                ((IDependencyObjectStoreProvider)this).Store.Parent = null;
+            }
+		}
+#endif
+
+#if <#= mixin.OverridesAttachedToWindow #>
+		protected override void OnNativeLoaded()
+		{
+			((IDependencyObjectStoreProvider)this).Store.Parent = base.Parent;
+			OnLoading();
+			OnLoaded();
+
+			base.OnNativeLoaded();
+		}
+
+		protected override void OnNativeUnloaded()
+		{
+			OnUnloaded();
+
+			base.OnNativeUnloaded();
+		}
+			
+		/// <summary>
+		/// Notifies that this view has been removed from its parent. This method is only 
+		/// called when the parent is an UnoViewGroup.
+		/// </summary>
+		protected override void OnRemovedFromParent()
+            {
+			base.OnRemovedFromParent();
+
+                ((IDependencyObjectStoreProvider)this).Store.Parent = null;
+            }
+		
+#endif
+
+		public event DependencyPropertyChangedEventHandler IsEnabledChanged;
+
+        public event TypedEventHandler<DependencyObject, object> Loading;
+
+		public event RoutedEventHandler Loaded;
+
+		public event RoutedEventHandler Unloaded;
+
+		public event EventHandler<object> LayoutUpdated;
+
+		public event SizeChangedEventHandler SizeChanged;
+
+		public IFrameworkElement FindName(string name)
+		{
+			var viewGroup = ((object)this) as ViewGroup;
+
+			if (viewGroup != null)
+			{
+				return IFrameworkElementHelper.FindName(this, viewGroup.GetChildren(), name);				
+			}
+			else
+			{
+				return null;
+			}
+		}
+		
+		partial void AdjustArrangePartial(ref Size size);
+
+        Size IFrameworkElement.AdjustArrange(Size size)		
+		{
+			AdjustArrangePartial(ref size);
+
+			return size;
+		}
+
+		public double ActualWidth
+		{
+			get { return _actualSize.Width; }
+		}
+
+		public double ActualHeight
+		{
+			get { return _actualSize.Height; }
+		}
+
+#if !<#= mixin.IsFrameworkElement #>
+		/// <summary>
+		/// Gets the parent of this FrameworkElement in the object tree.
+		/// </summary>
+		public new DependencyObject Parent => ((IDependencyObjectStoreProvider)this).Store.Parent as DependencyObject;
+
+		// This is also defined in UIElement for actual UIElement hierarchy
+		internal bool IsRenderingSuspended { get; set; }
+#endif
+
+		internal void SuspendRendering()
+		{
+			if(!IsRenderingSuspended)
+			{
+				IsRenderingSuspended = true;
+
+				Alpha = 0;
+				SuspendBindings();
+			}
+		}
+
+		internal void ResumeRendering()
+		{
+			if(IsRenderingSuspended)
+			{
+				IsRenderingSuspended = false;
+				
+				Alpha = (float)Opacity;
+				ResumeBindings();
+			}
+		}
+
+		/// <summary>
+		/// An optional render phase, see x:Bind.
+		/// </summary>
+		public int? RenderPhase { get; set; }
+
+		public void ApplyBindingPhase(int phase)
+		{
+			void ApplyChildren()
+			{
+				if(this is Uno.UI.Controls.IShadowChildrenProvider provider)
+				{
+					foreach (var child in provider.ChildrenShadow)
+					{
+						(child as IFrameworkElement)?.ApplyBindingPhase(phase);
+					}
+				}
+			}
+
+			if (RenderPhase.HasValue)
+			{
+				if (RenderPhase <= phase)
+				{
+					ApplyChildren();
+					ResumeRendering();
+				}
+				else
+				{
+					SuspendRendering();
+				}
+			}
+			else
+			{
+				ApplyChildren();
+			}
+		}
+
+		#region Background Dependency Property
+
+		public new Brush Background
+		{
+			get { return (Brush)this.GetValue(BackgroundProperty); }
+			set { this.SetValue(BackgroundProperty, value); }
+		}
+
+		public static readonly DependencyProperty BackgroundProperty =
+			DependencyProperty.Register(
+				"Background", 
+				typeof(Brush),
+				typeof(<#= mixin.ClassName #>), 
+				new FrameworkPropertyMetadata(
+					defaultValue: null,
+					options: FrameworkPropertyMetadataOptions.ValueInheritsDataContext,
+					propertyChangedCallback: (s, e) => ((<#= mixin.ClassName #>)s).OnBackgroundChanged(e)
+				)
+			);
+
+		SerialDisposable _brushChanged = new SerialDisposable();
+
+		protected virtual void OnBackgroundChanged(DependencyPropertyChangedEventArgs e)
+		{
+			_brushChanged.Disposable = Brush.AssignAndObserveBrush(e.NewValue as Brush, SetBackgroundColor);
+		}
+		#endregion
+
+#if !<#= mixin.IsFrameworkElement #>
+		#region Opacity Dependency Property
+        public double Opacity
+        {
+            get { return (double)this.GetValue(OpacityProperty); }
+            set { this.SetValue(OpacityProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for Opacity.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty OpacityProperty =
+            DependencyProperty.Register("Opacity", typeof(double), typeof(<#= mixin.ClassName #>), new PropertyMetadata(1.0, (s, a) => ((<#= mixin.ClassName #>)s).OnOpacityChanged()));
+
+        private void OnOpacityChanged()
+        {
+			Alpha = IsRenderingSuspended ? 0 : (float)Opacity;
+        }
+		#endregion
+
+		#region Style DependencyProperty
+
+		public Style Style
+		{
+			get { return (Style)GetValue(StyleProperty); }
+			set { SetValue(StyleProperty, value); }
+		}
+
+		public static readonly DependencyProperty StyleProperty =
+			DependencyProperty.Register(
+				"Style", 
+				typeof(Style),
+				typeof(<#= mixin.ClassName #>),
+				new PropertyMetadata(
+					null,
+					(s, e) => ((<#= mixin.ClassName #>)s)?.OnStyleChanged((Style)e.OldValue, (Style)e.NewValue)
+				)
+			);
+
+		protected virtual void OnStyleChanged(Style oldValue, Style newValue)
+		{
+			newValue?.ApplyTo(this);
+		}
+
+		#endregion
+#endif
+	
+		#region IsEnabled Dependency Property
+		public virtual bool IsEnabled
+		{
+			get { return (bool)GetValue(IsEnabledProperty); }
+			set { SetValue(IsEnabledProperty, value); }
+		}
+
+		// Using a DependencyProperty as the backing store for IsEnabled.  This enables animation, styling, binding, etc...
+		public static readonly DependencyProperty IsEnabledProperty =
+			DependencyProperty.Register(
+			"IsEnabled",
+			typeof(bool),
+			typeof(<#= mixin.ClassName #>), 
+			new PropertyMetadata(
+				true, 
+				propertyChangedCallback: (s, e) => {
+					((<#= mixin.ClassName #>)s).OnIsEnabledChanged((bool)e.OldValue, (bool)e.NewValue);
+					((<#= mixin.ClassName #>)s).IsEnabledChanged?.Invoke(s, e);
+				}
+			)
+		);
+
+		protected virtual void OnIsEnabledChanged(bool oldValue, bool newValue)
+		{
+#if <#= mixin.IsUnoViewGroup #>
+			base.SetNativeIsEnabled(newValue);
+#endif
+			Enabled = newValue;
+
+#if <#= mixin.IsFocusable #>
+			Focusable = newValue;
+			FocusableInTouchMode = newValue;
+#endif
+
+			OnIsEnabledChangedCore();
+			
+		}
+
+		#endregion
+
+#if !<#= mixin.IsFrameworkElement #>
+		#region IsHitTestVisible Dependency Property
+
+		public bool IsHitTestVisible
+		{
+			get { return (bool)this.GetValue(IsHitTestVisibleProperty); }
+			set { this.SetValue(IsHitTestVisibleProperty, value); }
+		}
+
+		public static readonly DependencyProperty IsHitTestVisibleProperty =
+			DependencyProperty.Register(
+				"IsHitTestVisible",
+				typeof(bool),
+				typeof(<#= mixin.ClassName #>),
+				new PropertyMetadata(
+					true,
+					(s, e) => (s as <#= mixin.ClassName #>).OnIsHitTestVisibleChanged((bool)e.OldValue, (bool)e.NewValue)
+				)
+			);
+
+#if <#= mixin.IsUnoViewGroup #>
+
+#else
+		protected virtual void OnIsHitTestVisibleChanged(bool oldValue, bool newValue)
+		{
+
+		}
+
+		public override bool DispatchTouchEvent(MotionEvent e)
+		{
+			if (IsHitTestVisible && IsEnabled && HitCheck())
+			{
+				return base.DispatchTouchEvent(e);
+			}
+
+			return false;
+		}
+
+		protected virtual bool HitCheck()
+		{
+			var hitCheck = true;
+			HitCheckOverridePartial(ref hitCheck);
+
+			return hitCheck;
+		}
+#endif
+
+		partial void HitCheckOverridePartial(ref bool hitCheck);
+
+		#endregion
+#endif
+
+#region KeyPress
+		private KeyEventHandler _keyUpHandlers;
+		private KeyEventHandler _keyDownHandlers;
+
+		private bool HasKeyEventRegistrations => _keyUpHandlers != null || _keyDownHandlers != null;
+
+		private SerialDisposable _nativeKeyPressRegistration = new SerialDisposable();
+
+		protected void OnKeyPress(object sender, KeyEventArgs e)
+        {
+            e.Handled = false;
+            if (e.Event == null)
+            {
+                return;
+            }
+
+            var keyRoutedEventArgs = new KeyRoutedEventArgs()
+            {
+                Key = e.Event.KeyCode.ToVirtualKey()
+            };
+
+            if (e.Event.Action == KeyEventActions.Up)
+            {
+				_keyUpHandlers?.Invoke(this, keyRoutedEventArgs);
+            }
+            else if (e.Event.Action == KeyEventActions.Down)
+            {
+				_keyDownHandlers?.Invoke(this, keyRoutedEventArgs);
+            }
+
+            e.Handled = keyRoutedEventArgs.Handled;
+        }
+
+		/// <summary>
+        /// Lazily creates an event registration to the native KeyPress event, so that
+		/// the cost of observing a key is only paid when there is a registation to
+		/// either KeyUp or KeyDown events.
+        /// </summary>
+		private void TryCreateKeyRegistration()
+		{
+			if(
+				HasKeyEventRegistrations
+				&& _nativeKeyPressRegistration.Disposable == null
+			)
+			{
+				_nativeKeyPressRegistration.Disposable = 
+					Disposable.Create(() => KeyPress -= OnKeyPress);
+
+				KeyPress += OnKeyPress;
+			}
+		}
+
+		private void TryRemoveKeyRegistration(bool forceRemove)
+		{
+			if(forceRemove || !HasKeyEventRegistrations)
+			{
+				_nativeKeyPressRegistration.Disposable = null;
+			}
+		}
+
+		/// <summary>
+        /// An event raised when a keyboard key has gone up.
+        /// </summary>
+        public event KeyEventHandler KeyUp 
+		{
+			add 
+			{ 
+				_keyUpHandlers += value;
+				TryCreateKeyRegistration();
+			}
+			remove 
+			{
+				_keyUpHandlers -= value;
+				TryRemoveKeyRegistration(forceRemove: false);
+			} 
+		}
+
+		/// <summary>
+        /// An event raised when a keyboard key has gone down.
+        /// </summary>
+        public event KeyEventHandler KeyDown 
+		{
+			add 
+			{ 
+				_keyDownHandlers += value; 
+				TryCreateKeyRegistration(); 
+			} 
+			remove 
+			{ 
+				_keyDownHandlers -= value; 
+				TryRemoveKeyRegistration(forceRemove: false);
+			} 
+		}
+
+#endregion
+
+#if !<#= mixin.IsFrameworkElement #>
+		#region Visibility Dependency Property
+
+		public static readonly DependencyProperty VisibilityProperty =
+			DependencyProperty.Register(
+				"Visibility",
+				typeof(Visibility), 
+				typeof(<#= mixin.ClassName #>),
+				new PropertyMetadata(
+					Visibility.Visible,
+					(s, e) => (s as <#= mixin.ClassName #>).OnVisibilityChanged((Visibility)e.OldValue, (Visibility)e.NewValue)
+				)
+			);
+
+		protected virtual void OnVisibilityChanged(Visibility oldValue, Visibility newValue)
+		{
+			var newNativeVisibility = newValue == Visibility.Visible ? Android.Views.ViewStates.Visible : Android.Views.ViewStates.Gone;
+
+			var bindableView = ((object)this) as Uno.UI.Controls.BindableView;
+
+			if (bindableView != null)
+			{
+				// This cast is different for performance reasons. See the 
+				// UnoViewGroup java class for more details.
+				bindableView.Visibility = newNativeVisibility;
+				bindableView.RequestLayout();
+			}
+			else
+			{
+				((View)this).Visibility = newNativeVisibility;
+				((View)this).RequestLayout();
+			}
+
+			OnVisibilityChangedPartial(oldValue, newValue);
+
+		}
+
+		partial void OnVisibilityChangedPartial(Visibility oldValue, Visibility newValue);
+
+		public new Visibility Visibility
+		{
+			get { return (Visibility)this.GetValue(VisibilityProperty); }
+			set { this.SetValue(VisibilityProperty, value); }
+		}
+
+		#endregion
+#endif
+
+		#region Name Dependency Property
+
+		public static readonly DependencyProperty NameProperty =
+			DependencyProperty.Register(
+				"Name",
+				typeof(string),
+				typeof(<#= mixin.ClassName #>),
+				new PropertyMetadata("")
+		);
+
+		public virtual string Name
+		{
+			get { return (string)this.GetValue(NameProperty); }
+			set { this.SetValue(NameProperty, value); }
+		}
+		#endregion
+
+		#region Margin Dependency Property
+
+		public static readonly DependencyProperty MarginProperty =
+			DependencyProperty.Register(
+				"Margin",
+				typeof(Thickness),
+				typeof(<#= mixin.ClassName #>),
+				new PropertyMetadata(Thickness.Empty, OnGenericPropertyUpdated)
+		);
+
+		public virtual Thickness Margin
+		{
+			get { return (Thickness)this.GetValue(MarginProperty); }
+			set { this.SetValue(MarginProperty, value); }
+		}
+		#endregion
+
+		#region HorizontalAlignment Dependency Property
+
+		public static readonly DependencyProperty HorizontalAlignmentProperty =
+			DependencyProperty.Register(
+				"HorizontalAlignment",
+				typeof(HorizontalAlignment),
+				typeof(<#= mixin.ClassName #>),
+				new PropertyMetadata(HorizontalAlignment.Stretch, OnGenericPropertyUpdated)
+			);
+
+		public HorizontalAlignment HorizontalAlignment
+		{
+			get { return (HorizontalAlignment)this.GetValue(HorizontalAlignmentProperty); }
+			set { this.SetValue(HorizontalAlignmentProperty, value); }
+		}
+		#endregion
+
+		#region HorizontalAlignment Dependency Property
+
+		public static readonly DependencyProperty VerticalAlignmentProperty =
+			DependencyProperty.Register(
+				"VerticalAlignment",
+				typeof(VerticalAlignment),
+				typeof(<#= mixin.ClassName #>),
+				new PropertyMetadata(VerticalAlignment.Stretch, OnGenericPropertyUpdated)
+			);
+
+		public VerticalAlignment VerticalAlignment
+		{
+			get { return (VerticalAlignment)this.GetValue(VerticalAlignmentProperty); }
+			set { this.SetValue(VerticalAlignmentProperty, value); }
+		}
+		#endregion
+
+		#region Width Dependency Property
+
+		public static readonly DependencyProperty WidthProperty =
+			DependencyProperty.Register(
+				"Width",
+				typeof(double),
+				typeof(<#= mixin.ClassName #>),
+				new FrameworkPropertyMetadata(
+					defaultValue: double.NaN,
+					propertyChangedCallback: OnGenericPropertyUpdated, 
+					options: FrameworkPropertyMetadataOptions.AutoConvert
+				)
+			);
+
+		public <#= mixin.HasNewWidthHeight #> double Width
+		{
+			get { return (double)this.GetValue(WidthProperty); }
+			set { this.SetValue(WidthProperty, value); }
+		}
+		#endregion
+
+		#region Height Dependency Property
+
+		public static readonly DependencyProperty HeightProperty =
+			DependencyProperty.Register(
+				"Height",
+				typeof(double),
+				typeof(<#= mixin.ClassName #>),
+				new FrameworkPropertyMetadata(
+					defaultValue: double.NaN,
+					propertyChangedCallback: OnGenericPropertyUpdated, 
+					options: FrameworkPropertyMetadataOptions.AutoConvert
+				)
+			);
+
+		public <#= mixin.HasNewWidthHeight #> double Height
+		{
+			get { return (double)this.GetValue(HeightProperty); }
+			set { this.SetValue(HeightProperty, value); }
+		}
+		#endregion
+
+		#region MinWidth Dependency Property
+
+		public static readonly DependencyProperty MinWidthProperty =
+			DependencyProperty.Register(
+				"MinWidth",
+				typeof(double),
+				typeof(<#= mixin.ClassName #>),
+				new FrameworkPropertyMetadata(
+					defaultValue: 0.0,
+					propertyChangedCallback: OnGenericPropertyUpdated, 
+					options: FrameworkPropertyMetadataOptions.AutoConvert
+				)
+			);
+
+		public <#= mixin.HasNewMinWidthHeight #> double MinWidth
+		{
+			get { return (double)this.GetValue(MinWidthProperty); }
+			set { this.SetValue(MinWidthProperty, value); }
+		}
+		#endregion
+
+		#region MinHeight Dependency Property
+
+		public static readonly DependencyProperty MinHeightProperty =
+			DependencyProperty.Register(
+				"MinHeight",
+				typeof(double),
+				typeof(<#= mixin.ClassName #>),
+				new FrameworkPropertyMetadata(
+					defaultValue: 0.0,
+					propertyChangedCallback: OnGenericPropertyUpdated, 
+					options: FrameworkPropertyMetadataOptions.AutoConvert
+				)
+			);
+
+		public <#= mixin.HasNewMinWidthHeight #> double MinHeight
+		{
+			get { return (double)this.GetValue(MinHeightProperty); }
+			set { this.SetValue(MinHeightProperty, value); }
+		}
+		#endregion
+
+		#region MaxWidth Dependency Property
+
+		public static readonly DependencyProperty MaxWidthProperty =
+			DependencyProperty.Register(
+				"MaxWidth",
+				typeof(double),
+				typeof(<#= mixin.ClassName #>),
+				new FrameworkPropertyMetadata(
+					defaultValue: double.PositiveInfinity,
+					propertyChangedCallback: OnGenericPropertyUpdated, 
+					options: FrameworkPropertyMetadataOptions.AutoConvert
+				)
+			);
+
+		public <#= mixin.HasNewMaxWidthHeight #> double MaxWidth
+		{
+			get { return (double)this.GetValue(MaxWidthProperty); }
+			set { this.SetValue(MaxWidthProperty, value); }
+		}
+		#endregion
+
+		#region MaxHeight Dependency Property
+
+		public static readonly DependencyProperty MaxHeightProperty =
+			DependencyProperty.Register(
+				"MaxHeight",
+				typeof(double),
+				typeof(<#= mixin.ClassName #>),
+				new FrameworkPropertyMetadata(
+					defaultValue: double.PositiveInfinity,
+					propertyChangedCallback: OnGenericPropertyUpdated, 
+					options: FrameworkPropertyMetadataOptions.AutoConvert
+				)
+			);
+
+		public <#= mixin.HasNewMaxWidthHeight #> double MaxHeight
+		{
+			get { return (double)this.GetValue(MaxHeightProperty); }
+			set { this.SetValue(MaxHeightProperty, value); }
+		}
+		#endregion
+		
+		#region Transitions Dependency Property
+		
+        public TransitionCollection Transitions
+        {
+            get { return (TransitionCollection)this.GetValue(TransitionsProperty); }
+            set { this.SetValue(TransitionsProperty, value); }
+        }
+
+        public static readonly DependencyProperty TransitionsProperty =
+            DependencyProperty.Register("Transitions", typeof(TransitionCollection), typeof(<#= mixin.ClassName #>), new PropertyMetadata(null, OnTransitionsChanged));
+			
+	    private static void OnTransitionsChanged(object dependencyObject, DependencyPropertyChangedEventArgs args)
+		{
+            var frameworkElement = dependencyObject as IFrameworkElement;
+
+			if (frameworkElement != null)
+			{
+				var oldValue = (TransitionCollection)args.OldValue;
+
+				if (oldValue != null)				
+				{
+				    foreach (var item in oldValue)
+					{
+						item.DetachFromElement(frameworkElement);
+					}					
+				}
+
+				var newValue = (TransitionCollection)args.NewValue;
+
+				if (newValue != null)				
+				{
+				    foreach (var item in newValue)
+					{
+						item.AttachToElement(frameworkElement);
+					}					
+				}
+			}
+		}
+		#endregion
+
+		#region Tag Dependency Property
+
+		public new object Tag
+		{
+			get { return this.GetValue(TagProperty); }
+			set { this.SetValue(TagProperty, value); }
+		}
+
+		public static readonly DependencyProperty TagProperty =
+			DependencyProperty.Register("Tag", typeof(object), typeof(<#= mixin.ClassName #>), new PropertyMetadata(null, (s, e) => (s as <#= mixin.ClassName #>).OnTagChanged(e)));
+
+		private void OnTagChanged(DependencyPropertyChangedEventArgs e)
+		{
+		}
+
+		#endregion
+
+#if !<#= mixin.IsFrameworkElement #>
+		#region RenderTransform Dependency Property
+       
+		/// <summary>
+        /// This is a Transformation for a UIElement.  It binds the Render Transform to the View
+        /// </summary>
+        public Transform RenderTransform
+        {
+            get { return (Transform)this.GetValue(RenderTransformProperty); }
+            set { this.SetValue(RenderTransformProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for RenderTransform.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty RenderTransformProperty =
+            DependencyProperty.Register("RenderTransform", typeof(Transform), typeof(<#= mixin.ClassName #>), new PropertyMetadata(null, OnRenderTransformChanged));
+
+  
+    	private static void OnRenderTransformChanged(object dependencyObject, DependencyPropertyChangedEventArgs args)
+		{
+			var newValue = args.NewValue as Transform;
+			var oldValue = args.OldValue as Transform;
+			if (newValue != null)
+			{
+				var view = ((<#= mixin.ClassName #>)dependencyObject);
+				
+                newValue.View = view;
+				newValue.Origin = view.RenderTransformOrigin;
+			}        
+			if (oldValue != null)
+			{
+                oldValue.View =null;
+			}         
+		}
+
+		#endregion
+
+		#region RenderTransformOrigin Dependency Property
+       
+		/// <summary>
+        /// This is a Transformation for a UIElement.  It binds the Render Transform to the View
+        /// </summary>
+        public Point RenderTransformOrigin
+        {
+            get { return (Point)this.GetValue(RenderTransformOriginProperty); }
+            set { this.SetValue(RenderTransformOriginProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for RenderTransformOrigin.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty RenderTransformOriginProperty =
+            DependencyProperty.Register("RenderTransformOrigin", typeof(Point), typeof(<#= mixin.ClassName #>), new PropertyMetadata(default(Point), OnRenderTransformOriginChanged));
+
+  
+    	private static void OnRenderTransformOriginChanged(object dependencyObject, DependencyPropertyChangedEventArgs args)
+		{
+			var view = ((<#= mixin.ClassName #>)dependencyObject);
+			if(view.RenderTransform != null)
+			{
+				view.RenderTransform.Origin = (Point)args.NewValue;
+			}
+		}
+
+		#endregion
+#endif
+		
+		/// <summary>
+        /// Determines if the view is currently loaded (attached to the a window)
+        /// </summary>
+		protected bool IsLoaded { get; private set;}
+
+		internal virtual void OnLoading()
+		{
+			OnLoadingPartial();
+			Loading?.Invoke(this, null);
+			ApplyCompiledBindings();
+		}
+		
+		partial void OnLoadingPartial();
+
+		protected virtual void OnLoaded()
+		{
+			IsLoaded = true;
+
+			OnLoadedPartial();
+
+			Loaded?.Invoke(this, RoutedEventArgs.Empty);
+
+			TryCreateKeyRegistration();
+		}
+
+		partial void OnLoadedPartial();
+
+		protected virtual void OnUnloaded()
+		{
+			IsLoaded = false;
+
+			OnUnloadedPartial();
+
+			Unloaded?.Invoke(this, RoutedEventArgs.Empty);
+
+			TryRemoveKeyRegistration(forceRemove: true);
+		}
+
+		partial void OnUnloadedPartial();
+
+		protected virtual void OnLayoutUpdated()
+		{
+			if (LayoutUpdated != null)
+			{
+				LayoutUpdated(this, RoutedEventArgs.Empty);
+			}
+		}
+
+		private static void OnGenericPropertyUpdated(object dependencyObject, DependencyPropertyChangedEventArgs args)
+		{
+			OnGenericPropertyUpdatedPartial(dependencyObject, args);
+			((View)dependencyObject).InvalidateMeasure();
+		}
+
+		static partial void OnGenericPropertyUpdatedPartial(object dependencyObject, DependencyPropertyChangedEventArgs args);
+		
+		protected virtual void OnIsEnabledChangedCore()
+		{
+			
+		}
+
+#if <#= mixin.OverridesOnLayout #>
+		private Size _actualSize;
+		protected override void OnLayout(bool changed, int left, int top, int right, int bottom)
+	    {
+			var newSize = new Size(right - left, bottom - top).PhysicalToLogicalPixels();
+			var previousSize = _actualSize;
+
+			base.OnLayout(changed, left, top, right, bottom);
+			OnLayoutPartial(changed, left, top, right, bottom);
+
+			_actualSize = newSize;
+
+			if (newSize != previousSize)
+			{
+				SizeChanged?.Invoke(this, new SizeChangedEventArgs(previousSize, newSize));
+				RenderTransform?.OnViewSizeChanged(previousSize, newSize);
+			}
+	    }
+
+		partial void OnLayoutPartial(bool changed, int left, int top, int right, int bottom);
+#endif
+
+		public Uri BaseUri => new Uri("ms-appx:///");
+	}
+}
+<#
+ } 
+#>
+
+<#+
+    public void AddClass(
+		string namespaceName, 
+		string className, 
+		bool hasNewWidthHeight = false, 
+		bool hasNewMinWidthHeight = false,
+		bool hasNewMaxWidthHeight = false,
+		bool hasAttachedToWindow = true,
+		bool overridesAttachedToWindow = false,
+		bool isFocusable = false,
+		bool overridesOnLayout = true
+	)
+	{
+        _mixins.Add(
+			new MixinParams { 
+				NamespaceName = namespaceName, 
+				ClassName = className,
+				HasNewWidthHeight = hasNewWidthHeight ? "new" : "",
+				HasNewMinWidthHeight = hasNewMinWidthHeight ? "new" : "",
+				HasNewMaxWidthHeight = hasNewMaxWidthHeight ? "new" : "",
+				HasAttachedToWindow = hasAttachedToWindow ? "true" : "false",
+				OverridesAttachedToWindow = overridesAttachedToWindow ? "true" : "false",
+				IsFocusable = isFocusable ? "true" : "false",
+				IsUnoViewGroup = className == "FrameworkElement" ? "true" : "false",
+				OverridesOnLayout = overridesOnLayout ? "true" : "false",
+				IsFrameworkElement = className == "FrameworkElement" ? "true" : "false",
+			}
+		);
+    }
+
+	private class MixinParams
+	{
+		public string NamespaceName;
+		public string ClassName;
+		public string HasNewWidthHeight;
+		public string HasNewMinWidthHeight;
+		public string HasNewMaxWidthHeight;
+		public string HasAttachedToWindow;
+		public string OverridesAttachedToWindow;
+		public string IsFocusable;
+		public string IsUnoViewGroup;
+		public string OverridesOnLayout;
+		public string IsFrameworkElement;
+	}
+
+	private List<MixinParams> _mixins = new List<MixinParams>();
+#>
+

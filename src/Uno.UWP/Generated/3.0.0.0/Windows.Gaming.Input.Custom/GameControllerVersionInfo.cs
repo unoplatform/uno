@@ -1,0 +1,24 @@
+#pragma warning disable 108 // new keyword hiding
+#pragma warning disable 114 // new keyword hiding
+namespace Windows.Gaming.Input.Custom
+{
+	#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+	[global::Uno.NotImplemented]
+	#endif
+	public  partial struct GameControllerVersionInfo 
+	{
+		// Forced skipping of method Windows.Gaming.Input.Custom.GameControllerVersionInfo.GameControllerVersionInfo()
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		public  ushort Major;
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		public  ushort Minor;
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		public  ushort Build;
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		public  ushort Revision;
+		#endif
+	}
+}

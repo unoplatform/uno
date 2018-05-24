@@ -1,0 +1,41 @@
+#pragma warning disable 108 // new keyword hiding
+#pragma warning disable 114 // new keyword hiding
+namespace Windows.Graphics.Imaging
+{
+	#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+	[global::Uno.NotImplemented]
+	#endif
+	public  partial class BitmapBuffer : global::Windows.Foundation.IMemoryBuffer,global::System.IDisposable
+	{
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		[global::Uno.NotImplemented]
+		public  int GetPlaneCount()
+		{
+			throw new global::System.NotImplementedException("The member int BitmapBuffer.GetPlaneCount() is not implemented in Uno.");
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		[global::Uno.NotImplemented]
+		public  global::Windows.Graphics.Imaging.BitmapPlaneDescription GetPlaneDescription( int index)
+		{
+			throw new global::System.NotImplementedException("The member BitmapPlaneDescription BitmapBuffer.GetPlaneDescription(int index) is not implemented in Uno.");
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		[global::Uno.NotImplemented]
+		public  global::Windows.Foundation.IMemoryBufferReference CreateReference()
+		{
+			throw new global::System.NotImplementedException("The member IMemoryBufferReference BitmapBuffer.CreateReference() is not implemented in Uno.");
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		[global::Uno.NotImplemented]
+		public  void Dispose()
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Imaging.BitmapBuffer", "void BitmapBuffer.Dispose()");
+		}
+		#endif
+		// Processing: Windows.Foundation.IMemoryBuffer
+		// Processing: System.IDisposable
+	}
+}

@@ -1,0 +1,32 @@
+#pragma warning disable 108 // new keyword hiding
+#pragma warning disable 114 // new keyword hiding
+namespace Windows.ApplicationModel.Activation
+{
+	#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+	[global::Uno.NotImplemented]
+	#endif
+	public  partial interface IAppointmentsProviderShowAppointmentDetailsActivatedEventArgs : global::Windows.ApplicationModel.Activation.IAppointmentsProviderActivatedEventArgs,global::Windows.ApplicationModel.Activation.IActivatedEventArgs
+	{
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		global::System.DateTimeOffset? InstanceStartDate
+		{
+			get;
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		string LocalId
+		{
+			get;
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		string RoamingId
+		{
+			get;
+		}
+		#endif
+		// Forced skipping of method Windows.ApplicationModel.Activation.IAppointmentsProviderShowAppointmentDetailsActivatedEventArgs.InstanceStartDate.get
+		// Forced skipping of method Windows.ApplicationModel.Activation.IAppointmentsProviderShowAppointmentDetailsActivatedEventArgs.LocalId.get
+		// Forced skipping of method Windows.ApplicationModel.Activation.IAppointmentsProviderShowAppointmentDetailsActivatedEventArgs.RoamingId.get
+	}
+}

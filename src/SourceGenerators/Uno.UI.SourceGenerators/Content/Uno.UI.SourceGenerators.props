@@ -1,0 +1,177 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+	<!-- Legacy tasks to allow for smoother upgrade from Uno.UI.Tasks -->
+	<Target Name="XamlGeneration" />
+	<Target Name="BindableMetadataGenerator" />
+
+	<PropertyGroup>
+		<UnoUIGeneratorsBinPath Condition="'$(UnoUIGeneratorsBinPath)'==''">$(MSBuildThisFileDirectory)..\tools</UnoUIGeneratorsBinPath>
+
+		<XamarinProjectType Condition="'$(ProjectTypeGuids)'=='{FEACFBD2-3405-455C-9665-78FE426C6842};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}' or '$(TargetFrameworkIdentifier)'=='Xamarin.iOS'">ios</XamarinProjectType>
+		<XamarinProjectType Condition="'$(ProjectTypeGuids)'=='{EFBA0AD7-5A72-4C68-AF49-83D382785DCF};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}' or '$(TargetFrameworkIdentifier)'=='MonoAndroid'">android</XamarinProjectType>
+		<XamarinProjectType Condition="'$(TargetFramework)'=='netstandard2.0'">wasm</XamarinProjectType>
+	</PropertyGroup>
+
+	<ItemGroup>
+
+		<SourceGenerator Include="$(UnoUIGeneratorsBinPath)\Uno.UI.SourceGenerators.dll" />
+
+		<ExcludeXamlNamespaces Include="win"/>
+		<!-- iOS -->
+		<ExcludeXamlNamespaces Condition="'$(XamarinProjectType)'=='ios'" Include="android" />
+		<ExcludeXamlNamespaces Condition="'$(XamarinProjectType)'=='ios'" Include="not_ios" />
+		<!-- Android -->
+		<ExcludeXamlNamespaces Condition="'$(XamarinProjectType)'=='android'" Include="ios" />
+		<ExcludeXamlNamespaces Condition="'$(XamarinProjectType)'=='android'" Include="not_android" />
+
+		<!-- 
+			Those namespaces are to be *included* from the code generation,
+			regardless of their presence in the Ignorable section of a Xaml file.
+			-->
+		<IncludeXamlNamespaces Include="xamarin" />
+		<IncludeXamlNamespaces Include="not_win" />
+		<IncludeXamlNamespaces Include="legacy" />
+		<!-- iOS -->
+		<IncludeXamlNamespaces Condition="'$(XamarinProjectType)'=='ios'" Include="ios" />
+		<IncludeXamlNamespaces Condition="'$(XamarinProjectType)'=='ios'" Include="not_android" />
+		<IncludeXamlNamespaces Condition="'$(XamarinProjectType)'=='ios'" Include="not_wasm" />
+		<!-- Android -->
+		<IncludeXamlNamespaces Condition="'$(XamarinProjectType)'=='android'" Include="android" />
+		<IncludeXamlNamespaces Condition="'$(XamarinProjectType)'=='android'" Include="not_ios" />
+		<IncludeXamlNamespaces Condition="'$(XamarinProjectType)'=='android'" Include="not_wasm" />
+		<!-- WASM -->
+		<IncludeXamlNamespaces Condition="'$(XamarinProjectType)'=='wasm'" Include="wasm" />
+		<IncludeXamlNamespaces Condition="'$(XamarinProjectType)'=='wasm'" Include="not_ios" />
+		<IncludeXamlNamespaces Condition="'$(XamarinProjectType)'=='wasm'" Include="not_android" />
+
+		<!--
+				A list of analyzer suppressions to include in every generated class.
+				This is required for roslyn analyzers that do not support the GeneratedCodeAttribute.
+			-->
+		<XamlGeneratorAnalyzerSuppressions Include="nventive.Usage|NV0056" />
+		<XamlGeneratorAnalyzerSuppressions Include="nventive.Usage|NV0058" />
+		<XamlGeneratorAnalyzerSuppressions Include="nventive.Usage|NV1003" />
+		<XamlGeneratorAnalyzerSuppressions Include="nventive.Usage|NV0085" />
+		<XamlGeneratorAnalyzerSuppressions Include="nventive.Usage|NV2001" />
+		<XamlGeneratorAnalyzerSuppressions Include="nventive.Usage|NV2003" />
+		<XamlGeneratorAnalyzerSuppressions Include="nventive.Usage|NV2004" />
+		<XamlGeneratorAnalyzerSuppressions Include="nventive.Usage|NV2005" />
+	</ItemGroup>
+
+	<PropertyGroup>
+		<OutputSourceComments Condition="'$(OutputSourceComments)'=='' And '$(Configuration)'=='Debug'">True</OutputSourceComments>
+		<OutputSourceComments Condition="'$(OutputSourceComments)'==''">False</OutputSourceComments>
+	</PropertyGroup>
+
+	<!--Default UI automation member mappings-->
+	<ItemGroup Condition="@(CustomUiAutomationMemberMapping)==''">
+		<CustomUiAutomationMemberMapping Include="nVentive.Umbrella.Views.Controls.AsyncValuePresenter">
+			<Mappings>
+				DataSource
+			</Mappings>
+		</CustomUiAutomationMemberMapping>
+		<CustomUiAutomationMemberMapping Include="Windows.UI.Xaml.Controls.IItemsControl">
+			<Mappings>
+				ItemsSource
+			</Mappings>
+		</CustomUiAutomationMemberMapping>
+		<CustomUiAutomationMemberMapping Include="Uno.UI.Controls.BindableListView">
+			<Mappings>
+				ItemsSource
+			</Mappings>
+		</CustomUiAutomationMemberMapping>
+		<CustomUiAutomationMemberMapping Include="Uno.UI.Controls.BindableGridView">
+			<Mappings>
+				ItemsSource
+			</Mappings>
+		</CustomUiAutomationMemberMapping>
+		<CustomUiAutomationMemberMapping Include="Windows.UI.Xaml.Controls.ItemsControl">
+			<Mappings>
+				ItemsSource
+			</Mappings>
+		</CustomUiAutomationMemberMapping>
+		<CustomUiAutomationMemberMapping Include="Windows.UI.Xaml.Controls.PasswordBox">
+			<Mappings>
+				Password
+			</Mappings>
+		</CustomUiAutomationMemberMapping>
+		<CustomUiAutomationMemberMapping Include="Windows.UI.Xaml.Controls.TextBox">
+			<Mappings>
+				Text
+				Uno.UI.Behaviors.TextBoxBehavior.Text
+				nVentive.Umbrella.Views.Behaviors.TextBoxBehavior.Text
+				nVentive.Umbrella.Views.Behaviors.PasswordBoxBehavior.Text
+			</Mappings>
+		</CustomUiAutomationMemberMapping>
+		<CustomUiAutomationMemberMapping Include="Windows.UI.Xaml.Controls.Button">
+			<Mappings>
+				Command
+			</Mappings>
+		</CustomUiAutomationMemberMapping>
+		<CustomUiAutomationMemberMapping Include="Windows.UI.Xaml.Controls.ToggleButton">
+			<Mappings>
+				IsChecked
+			</Mappings>
+		</CustomUiAutomationMemberMapping>
+		<CustomUiAutomationMemberMapping Include="Windows.UI.Xaml.Controls.HyperlinkButton">
+			<Mappings>
+				Command
+			</Mappings>
+		</CustomUiAutomationMemberMapping>
+		<CustomUiAutomationMemberMapping Include="Windows.UI.Xaml.Controls.TextBlock">
+			<Mappings>
+				Text
+			</Mappings>
+		</CustomUiAutomationMemberMapping>
+		<CustomUiAutomationMemberMapping Include="Windows.UI.Xaml.Controls.Image">
+			<Mappings>
+				Source
+			</Mappings>
+		</CustomUiAutomationMemberMapping>
+		<CustomUiAutomationMemberMapping Include="Windows.UI.Xaml.Controls.DatePicker">
+			<Mappings>
+				Date
+			</Mappings>
+		</CustomUiAutomationMemberMapping>
+		<CustomUiAutomationMemberMapping Include="Windows.UI.Xaml.Controls.ComboBox">
+			<Mappings>
+				ItemsSource
+			</Mappings>
+		</CustomUiAutomationMemberMapping>
+	</ItemGroup>
+
+	<!-- ListView -->
+	<ItemGroup Condition="$(DefineConstants.Contains('LEGACY_LISTVIEW'))">
+		<!-- All -->
+		<LegacyTypes Include="Uno.UI.Controls.Legacy.GridView" />
+		<LegacyTypes Include="Uno.UI.Controls.Legacy.ListView" />
+		<!-- iOS -->
+		<LegacyTypes Condition="'$(XamarinProjectType)'=='ios'" Include="Uno.UI.Controls.Legacy.GridViewSource" />
+		<LegacyTypes Condition="'$(XamarinProjectType)'=='ios'" Include="Uno.UI.Controls.Legacy.GridViewWrapGridLayout" />
+		<LegacyTypes Condition="'$(XamarinProjectType)'=='ios'" Include="Uno.UI.Controls.Legacy.ListViewBase" />
+		<LegacyTypes Condition="'$(XamarinProjectType)'=='ios'" Include="Uno.UI.Controls.Legacy.ListViewBaseLayout" />
+		<LegacyTypes Condition="'$(XamarinProjectType)'=='ios'" Include="Uno.UI.Controls.Legacy.ListViewBaseLayoutTemplate" />
+		<LegacyTypes Condition="'$(XamarinProjectType)'=='ios'" Include="Uno.UI.Controls.Legacy.ListViewBaseSource" />
+		<LegacyTypes Condition="'$(XamarinProjectType)'=='ios'" Include="Uno.UI.Controls.Legacy.ListViewLayout" />
+		<LegacyTypes Condition="'$(XamarinProjectType)'=='ios'" Include="Uno.UI.Controls.Legacy.ListViewSource" />
+		<!-- Android -->
+		<LegacyTypes Condition="'$(XamarinProjectType)'=='android'" Include="Uno.UI.Controls.Legacy.HorizontalGridView" />
+		<LegacyTypes Condition="'$(XamarinProjectType)'=='android'" Include="Uno.UI.Controls.Legacy.HorizontalListView" />
+		<!-- Umbrella -->
+		<LegacyTypes Include="nVentive.Umbrella.Views.Behaviors.Legacy.ActiveListViewBaseBehavior" />
+		<LegacyTypes Include="nVentive.Umbrella.Views.Behaviors.Legacy.GroupedCollectionBehavior" />
+		<LegacyTypes Include="nVentive.Umbrella.Views.Behaviors.Legacy.ListViewBringIntoViewSelectedItemBehavior" />
+	</ItemGroup>
+
+	<Target Name="_IncludeXamlFiles" BeforeTargets="_UnoSourceGenerator">
+		<!-- 
+		This group is created as part of a target to ensure the 
+		capture of target-defined Pages 
+		-->
+		<ItemGroup>
+			<SourceGeneratorInput Include="@(Page);@(ApplicationDefinition)" />
+		</ItemGroup>
+	</Target>
+
+</Project>

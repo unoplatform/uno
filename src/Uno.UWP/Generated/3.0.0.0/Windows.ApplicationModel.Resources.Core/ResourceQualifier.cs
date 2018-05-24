@@ -1,0 +1,66 @@
+#pragma warning disable 108 // new keyword hiding
+#pragma warning disable 114 // new keyword hiding
+namespace Windows.ApplicationModel.Resources.Core
+{
+	#if false || false || false || false
+	[global::Uno.NotImplemented]
+	#endif
+	public  partial class ResourceQualifier 
+	{
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		[global::Uno.NotImplemented]
+		public  bool IsDefault
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member bool ResourceQualifier.IsDefault is not implemented in Uno.");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		[global::Uno.NotImplemented]
+		public  bool IsMatch
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member bool ResourceQualifier.IsMatch is not implemented in Uno.");
+			}
+		}
+		#endif
+		#if false || false || false || false
+		[global::Uno.NotImplemented]
+		public  string QualifierName
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member string ResourceQualifier.QualifierName is not implemented in Uno.");
+			}
+		}
+		#endif
+		#if false || false || false || false
+		[global::Uno.NotImplemented]
+		public  string QualifierValue
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member string ResourceQualifier.QualifierValue is not implemented in Uno.");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		[global::Uno.NotImplemented]
+		public  double Score
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member double ResourceQualifier.Score is not implemented in Uno.");
+			}
+		}
+		#endif
+		// Forced skipping of method Windows.ApplicationModel.Resources.Core.ResourceQualifier.QualifierName.get
+		// Forced skipping of method Windows.ApplicationModel.Resources.Core.ResourceQualifier.QualifierValue.get
+		// Forced skipping of method Windows.ApplicationModel.Resources.Core.ResourceQualifier.IsDefault.get
+		// Forced skipping of method Windows.ApplicationModel.Resources.Core.ResourceQualifier.IsMatch.get
+		// Forced skipping of method Windows.ApplicationModel.Resources.Core.ResourceQualifier.Score.get
+	}
+}

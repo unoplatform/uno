@@ -1,0 +1,87 @@
+﻿<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="15.0">
+	<PropertyGroup>
+		<TargetFrameworks>MonoAndroid80;xamarinios10</TargetFrameworks>
+		<TargetFrameworksCI>MonoAndroid71;MonoAndroid80;xamarinios10</TargetFrameworksCI>
+	</PropertyGroup>
+
+	<PropertyGroup>
+		<Product>$(AssemblyName) ($(TargetFramework))</Product>
+		<DefaultLanguage>en-US</DefaultLanguage>
+		
+		<AndroidUseIntermediateDesignerFile>True</AndroidUseIntermediateDesignerFile>
+		<AndroidResgenFile>obj\$(TargetFramework)\Resources\Resource.Designer.cs</AndroidResgenFile>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Uno.SourceGenerationTasks">
+			<Version>1.22.0-dev.32</Version>
+			<ExcludeAssets>Runtime</ExcludeAssets>
+		</PackageReference>
+		<PackageReference Include="Uno.Core.Build">
+			<Version>1.22.0-dev.23</Version>
+		</PackageReference>
+	</ItemGroup>
+
+	<Import Project="$(MSBuildSDKExtrasTargets)" Condition="Exists('$(MSBuildSDKExtrasTargets)')" />
+
+	<ItemGroup Condition=" '$(TargetFramework)' == 'MonoAndroid71'">
+		<PackageReference Include="Xamarin.Android.Support.v4">
+			<Version>25.3.1</Version>
+		</PackageReference>
+		<PackageReference Include="Xamarin.Android.Support.v7.AppCompat">
+			<Version>25.3.1</Version>
+		</PackageReference>
+		<PackageReference Include="Xamarin.Android.Support.v7.RecyclerView">
+			<Version>25.3.1</Version>
+		</PackageReference>
+		<PackageReference Include="Nito.Collections.Deque">
+			<Version>1.0.0</Version>
+		</PackageReference>
+	</ItemGroup>
+	
+	<ItemGroup Condition=" '$(TargetFramework)' == 'MonoAndroid80'">
+		<PackageReference Include="Xamarin.Android.Support.v4">
+			<Version>26.1.0.1</Version>
+		</PackageReference>
+		<PackageReference Include="Xamarin.Android.Support.v7.AppCompat">
+			<Version>26.1.0.1</Version>
+		</PackageReference>
+		<PackageReference Include="Xamarin.Android.Support.v7.RecyclerView">
+			<Version>26.1.0.1</Version>
+		</PackageReference>
+		<PackageReference Include="Nito.Collections.Deque">
+			<Version>1.0.0</Version>
+		</PackageReference>
+	</ItemGroup>
+
+	<ItemGroup>
+		<Page Include="**\*.xaml" Exclude="bin\**\*.xaml;obj\**\*.xaml" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="MSBuild.Sdk.Extras" Version="1.5.4" PrivateAssets="All" />
+		<PackageReference Include="xamarin.build.download" Version="0.4.9" />
+	</ItemGroup>
+
+	<PropertyGroup>
+		<UnoUIGeneratorsBinPath>..\Uno.UI.SourceGenerators\bin\$(Configuration)</UnoUIGeneratorsBinPath>
+	</PropertyGroup>
+	
+	<ItemGroup Condition="'$(TargetFrameworkIdentifier)'=='MonoAndroid' or '$(TargetFrameworkIdentifier)'=='Xamarin.iOS'">
+		<ProjectReference Include="..\..\Uno.UI.BindingHelper.Android\Uno.UI.BindingHelper.Android.csproj" />
+		<ProjectReference Include="..\..\Uno.UI\Uno.UI.csproj" />
+		<ProjectReference Include="..\..\Uno.UWP\Uno.csproj" />
+		<ProjectReference Include="..\..\Uno.Foundation\Uno.Foundation.csproj" />
+	</ItemGroup>
+
+		
+	<ItemGroup>
+		<ProjectReference Include="..\..\Uno.UI.Toolkit\Uno.UI.Toolkit.csproj" />
+		<ProjectReference Include="..\XamlGenerationTests.Core\XamlGenerationTests.Core.csproj" />
+	</ItemGroup>
+	
+	<Import Project="..\Uno.UI.SourceGenerators\Content\Uno.UI.SourceGenerators.props" Condition="'$(TargetFrameworkIdentifier)'=='MonoAndroid' or '$(TargetFrameworkIdentifier)'=='Xamarin.iOS'" />
+
+	<Import Project="..\..\Common.targets" />
+
+</Project>

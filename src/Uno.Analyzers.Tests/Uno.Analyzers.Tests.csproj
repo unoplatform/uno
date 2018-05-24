@@ -1,0 +1,49 @@
+﻿<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="15.0">
+	<PropertyGroup>
+		<TargetFramework>net46</TargetFramework>
+		<IsPackable>false</IsPackable>
+		<NoWarn>1998</NoWarn>
+		<OutputPath>..\Build\Tests\bin\$(Configuration)_$(Platform)\</OutputPath>
+	</PropertyGroup>
+	
+	<ItemGroup>
+		<PackageReference Include="MSTest.TestAdapter">
+			<Version>1.1.18</Version>
+		</PackageReference>
+		<PackageReference Include="MSTest.TestFramework">
+			<Version>1.1.18</Version>
+		</PackageReference>
+		<PackageReference Include="Microsoft.CodeAnalysis">
+			<Version>1.2.0.0</Version>
+		</PackageReference>
+		<PackageReference Include="Microsoft.CodeAnalysis.Common">
+			<Version>1.2.0.0</Version>
+		</PackageReference>
+		<PackageReference Include="Microsoft.CodeAnalysis.CSharp">
+			<Version>1.2.0.0</Version>
+		</PackageReference>
+		<PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces">
+			<Version>1.2.0.0</Version>
+		</PackageReference>
+		<PackageReference Include="Microsoft.CodeAnalysis.Workspaces.Common">
+			<Version>1.2.0.0</Version>
+		</PackageReference>
+		<PackageReference Include="RoslynTester">
+			<Version>1.6.3</Version>
+		</PackageReference>
+	</ItemGroup>
+	
+	<ItemGroup>
+		<ProjectReference Include="..\Uno.Analyzers\Uno.Analyzers.csproj">
+			<Project>{1b204959-7a49-4283-a601-8713ea3a04a4}</Project>
+			<Name>Uno.Analyzers</Name>
+		</ProjectReference>
+	</ItemGroup>
+	
+	<ItemGroup>
+	  <Service Include="{82a7f48d-3b50-4b1e-b82e-3ada8210c358}" />
+	</ItemGroup>
+	
+	<Import Project="..\Common.targets" />
+
+</Project>

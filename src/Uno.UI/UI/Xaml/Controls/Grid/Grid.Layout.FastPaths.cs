@@ -1,0 +1,308 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Collections.ObjectModel;
+using Uno.UI;
+using Windows.Foundation;
+
+#if XAMARIN_ANDROID
+using View = Android.Views.View;
+using ViewGroup = Android.Views.ViewGroup;
+using Font = Android.Graphics.Typeface;
+using Android.Graphics;
+#elif XAMARIN_IOS_UNIFIED
+using UIKit;
+using View = UIKit.UIView;
+using ViewGroup = UIKit.UIView;
+using Color = UIKit.UIColor;
+using Font = UIKit.UIFont;
+#elif XAMARIN_IOS
+using View = MonoTouch.UIKit.UIView;
+using ViewGroup = MonoTouch.UIKit.UIView;
+using Color = MonoTouch.UIKit.UIColor;
+using Font = MonoTouch.UIKit.UIFont;
+#else
+using View = Windows.UI.Xaml.UIElement;
+#endif
+
+namespace Windows.UI.Xaml.Controls
+{
+	partial class Grid
+	{
+		/// <summary>
+		/// This method measures the a grid using known patterns (fast paths).
+		/// For example, a 1x1 Grid can be measure as a SuperpositionPanel. 
+		/// </summary>
+		/// <param name="size">The measured size if a fast path was used, [0,0] otherwise</param>
+		/// <returns>True if a fast path was used, false otherwise</returns>
+		private bool TryMeasureUsingFastPath(Size availableSize, List<Column> columns, List<Column> definedColumns, List<Row> rows, List<Row> definedRows, out Size size)
+		{
+			var columnCount = columns.Count;
+			var rowCount = rows.Count;
+			if (columnCount == 1 && rowCount == 1)
+			{
+				// 1x1
+				size = MeasureSuperpositionPanel(availableSize, columns[0], rows[0]);
+				return true;
+			}
+			else if (rowCount == 1)
+			{
+				// Nx1
+				size = MeasureHorizontalGrid(availableSize, columns, definedColumns, rows[0]);
+				return true;
+			}
+			else if (columnCount == 1)
+			{
+				// 1xN
+				size = MeasureVerticalGrid(availableSize, columns[0], rows, definedRows);
+				return true;
+			}
+
+			size = default(Size);
+			return false;
+		}
+
+		/// <summary>
+		/// Measure the grid knowing it has only one column (1xN grid)
+		/// </summary>
+		private Size MeasureVerticalGrid(Size availableSize, Column column, List<Row> rows, List<Row> definedRows)
+		{
+			var size = default(Size);
+			if (column.Width.IsPixelSize)
+			{
+				var pixelWidth = column.Width.PixelSize.Value;
+				availableSize.Width = pixelWidth;
+				size.Width = pixelWidth;
+			}
+
+			var positions = GetPositions();
+			var measureChild = GetDirectMeasureChild();
+
+			// One simulated column
+			var columns = new List<DoubleRange>(1) { new DoubleRange(availableSize.Width) };
+
+			double maxMeasuredWidth;
+			var measuredRows = CalculateRows(availableSize, positions, measureChild, columns, rows, definedRows, true, out maxMeasuredWidth);
+
+			size = new Size(
+				Math.Max(size.Width, maxMeasuredWidth),
+				measuredRows.Sum(r => r.MinValue)
+			);
+
+			size = new Size(
+				Math.Min(availableSize.Width, size.Width),
+				Math.Min(availableSize.Height, size.Height)
+			);
+			return size;
+		}
+
+		/// <summary>
+		/// Measure the grid knowing it has only one row (Nx1 grid)
+		/// </summary>
+		private Size MeasureHorizontalGrid(Size availableSize, List<Column> columns, List<Column> definedColumns, Row row)
+		{
+			var size = default(Size);
+			if (row.Height.IsPixelSize)
+			{
+				var pixelHeight = row.Height.PixelSize.Value;
+				availableSize.Height = pixelHeight;
+				size.Height = pixelHeight;
+			}
+			var positions = GetPositions();
+			var measureChild = GetDirectMeasureChild();
+
+			double maxHeightMeasured;
+			var measuredColumns = CalculateColumns(availableSize, positions, measureChild, columns, definedColumns, true, out maxHeightMeasured);
+
+			size = new Size(
+				measuredColumns.Sum(r => r.MinValue),
+				Math.Max(size.Height, maxHeightMeasured)
+			);
+
+			size = new Size(
+				Math.Min(availableSize.Width, size.Width),
+				Math.Min(availableSize.Height, size.Height)
+			);
+			return size;
+		}
+
+		/// <summary>
+		/// Measure the grid as if it was a SuperpositionPanel (1x1 grid)
+		/// </summary>
+		private Size MeasureSuperpositionPanel(Size availableSize, Column column, Row row)
+		{
+			var size = default(Size);
+			if (column.Width.IsPixelSize)
+			{
+				var pixelWidth = column.Width.PixelSize.Value;
+				availableSize.Width = pixelWidth;
+				size.Width = pixelWidth;
+			}
+			if (row.Height.IsPixelSize)
+			{
+				var pixelHeight = row.Height.PixelSize.Value;
+				availableSize.Height = pixelHeight;
+				size.Height = pixelHeight;
+			}
+
+			foreach (var child in Children)
+			{
+				var childSize = MeasureElement(child, availableSize);
+				size = new Size(
+					Math.Max(childSize.Width, size.Width),
+					Math.Max(childSize.Height, size.Height)
+				);
+			}
+			size = new Size(
+				Math.Min(availableSize.Width, size.Width),
+				Math.Min(availableSize.Height, size.Height)
+			);
+			return size;
+		}
+
+		private bool TryArrangeUsingFastPath(Size finalSize, List<Column> columns, List<Column> definedColumns, List<Row> rows, List<Row> definedRows, List<ViewPosition> positions)
+		{
+			var columnCount = columns.Count;
+			var rowCount = rows.Count;
+			if (columnCount == 1 && rowCount == 1)
+			{
+				// 1x1
+				ArrangeSuperpositionPanel(finalSize, columns[0], rows[0]);
+				return true;
+			}
+			else if (rowCount == 1)
+			{
+				// Nx1
+				ArrangeHorizontalGrid(finalSize, columns, definedColumns, rows[0], positions);
+				return true;
+			}
+			else if (columnCount == 1)
+			{
+				// 1xN
+				ArrangeVerticalGrid(finalSize, columns[0], rows, definedRows, positions);
+				return true;
+			}
+
+            return false;
+		}
+
+		/// <summary>
+		/// Arranges the children knowing the grid is 1xN
+		/// </summary>
+		private void ArrangeVerticalGrid(Size finalSize, Column column, List<Row> rows, List<Row> definedRows, List<ViewPosition> positions)
+		{
+			if (column.Width.IsPixelSize)
+			{
+				finalSize.Width = column.Width.PixelSize.Value;
+			}
+
+			var measureChild = GetDirectMeasureChild();
+
+			// One simulated column
+			var columns = new List<DoubleRange>(1) { new DoubleRange(finalSize.Width) };
+
+			double maxWidthMeasured;
+			var calculatedRows = CalculateRows(finalSize, positions, measureChild, columns, rows, definedRows, false, out maxWidthMeasured);
+
+			List<DoubleRange> calculatedColumns;
+			if (column.Width.IsAuto)
+			{
+				calculatedColumns = new List<DoubleRange>(1) { new DoubleRange(maxWidthMeasured) };
+			}
+			else
+			{
+				calculatedColumns = new List<DoubleRange>(1) { new DoubleRange(finalSize.Width) };
+			}
+
+			LayoutChildren(calculatedColumns, calculatedRows, positions);
+		}
+
+		/// <summary>
+		/// Arranges the children knowing the grid is Nx1
+		/// </summary>
+		private void ArrangeHorizontalGrid(Size finalSize, List<Column> columns, List<Column> definedColumns, Row row, List<ViewPosition> positions)
+		{
+			if (row.Height.IsPixelSize)
+			{
+				finalSize.Height = row.Height.PixelSize.Value;
+			}
+
+			var measureChild = GetDirectMeasureChild();
+
+			double maxHeightMeasured;
+			var calculatedColumns = CalculateColumns(finalSize, positions, measureChild, columns, definedColumns, false, out maxHeightMeasured);
+
+			List<DoubleRange> calculatedRows;
+			if (row.Height.IsAuto)
+			{
+				calculatedRows = new List<DoubleRange>(1) { new DoubleRange(maxHeightMeasured) };
+			}
+			else
+			{
+				calculatedRows = new List<DoubleRange>(1) { new DoubleRange(finalSize.Height) };
+			}
+
+			LayoutChildren(calculatedColumns, calculatedRows, positions);
+        }
+
+		/// <summary>
+		/// Arranges the children knowing the grid is 1x1
+		/// </summary>
+		private void ArrangeSuperpositionPanel(Size finalSize, Column column, Row row)
+		{
+			if (column.Width.IsPixelSize)
+			{
+				finalSize.Width = column.Width.PixelSize.Value;
+			}
+			if (row.Height.IsPixelSize)
+			{
+				finalSize.Height = row.Height.PixelSize.Value;
+			}
+
+			var isMeasureRequired = column.Width.IsAuto || row.Height.IsAuto;
+			if (isMeasureRequired)
+			{
+				finalSize = MeasureChildren(finalSize, column.Width.IsAuto, row.Height.IsAuto);
+            }
+
+			var offset = GetChildrenOffset();
+			foreach (var child in Children)
+			{
+				var childFrame = new Foundation.Rect(
+					offset.X, 
+					offset.Y, 
+					finalSize.Width, 
+					finalSize.Height
+				);
+				ArrangeElement(child, childFrame);
+            }
+		}
+
+		private Size MeasureChildren(Size availableSize, bool isAutoWidth, bool isAutoHeight)
+		{
+			var minSize = default(Size);
+			foreach (var child in Children)
+			{
+				var childSize = MeasureElement(child, availableSize);
+				if (isAutoWidth)
+				{
+					minSize.Width = Math.Max(minSize.Width, childSize.Width);
+				}
+				if (isAutoHeight)
+				{
+					minSize.Height = Math.Max(minSize.Height, childSize.Height);
+				}
+			}
+			if (!isAutoWidth)
+			{
+				minSize.Width = availableSize.Width;
+			}
+			if (!isAutoHeight)
+			{
+				minSize.Height = availableSize.Height;
+			}
+			return minSize;
+		}
+	}
+}

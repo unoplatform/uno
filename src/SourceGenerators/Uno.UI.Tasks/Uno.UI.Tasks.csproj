@@ -1,0 +1,109 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <OutputPath Condition="'$(OutputPath)' == ''">bin\$(Platform)\$(Configuration)</OutputPath>
+    <ProjectGuid>{946D318B-305A-4264-81A4-31698DCC22F7}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Uno.UI.Tasks</RootNamespace>
+    <AssemblyName>Uno.UI.Tasks</AssemblyName>
+    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <SccProjectName>SAK</SccProjectName>
+    <SccLocalPath>SAK</SccLocalPath>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccProvider>SAK</SccProvider>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Windows" />
+    <Reference Include="System.Xaml" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+    <Reference Include="Microsoft.Build" />
+    <Reference Include="Microsoft.Build.Framework" />
+    <Reference Include="Microsoft.Build.Tasks.v4.0" />
+    <Reference Include="Microsoft.Build.Utilities.v4.0" />
+    <Reference Include="WindowsBase" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Uno.Core">
+      <Version>1.22.0-dev.23</Version>
+    </PackageReference>
+    <PackageReference Include="Uno.SourceGenerationTasks">
+      <Version>1.22.0-dev.32</Version>
+    </PackageReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\..\Uno.UWP\ApplicationModel\Resources\Core\AndroidResourceConverter.cs">
+      <Link>Resources\AndroidResourceConverter.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Uno.UWP\ApplicationModel\Resources\Core\iOSResourceConverter.cs">
+      <Link>Resources\iOSResourceConverter.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Uno.UWP\ApplicationModel\Resources\Core\ResourceCandidate.cs">
+      <Link>Resources\ResourceCandidate.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Uno.UWP\ApplicationModel\Resources\Core\ResourceQualifier.cs">
+      <Link>Resources\ResourceQualifier.cs</Link>
+    </Compile>
+    <Compile Include="Assets\RetargetAssets.cs" />
+    <Compile Include="Helpers\AnalyzerSuppressions.cs" />
+    <Compile Include="Helpers\PathHelper.cs" />
+    <Compile Include="Helpers\TaskLogger.cs" />
+    <Compile Include="Helpers\TaskLoggerProvider.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ResourcesGenerator\AndroidResourcesWriter.cs" />
+    <Compile Include="ResourcesGenerator\iOSResourcesWriter.cs" />
+    <Compile Include="ResourcesGenerator\ResourcesGenerationTask.cs" />
+    <Compile Include="ResourcesGenerator\WindowsResourcesReader.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
+    <None Include="Content\Uno.UI.Tasks.targets">
+      <SubType>Designer</SubType>
+    </None>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>rem copy /Y "$(TargetDir)\*.*" "C:\s\git\HealthClinic.biz\packages\uno.ui.tasks.2.8.8826\build"
+rem copy /Y "$(TargetDir)\*.*" "C:\s\Uno.UI\Src\packages\Uno.UI.Tasks.2.8.8555-uno\build"
+rem copy /Y "$(TargetDir)\*.*" "C:\s\temp\Universal Windows app samples\XAML user and custom controls sample\C#\packages\Uno.UI.Tasks.2.8.8123-uno\build"
+</PostBuildEvent>
+  </PropertyGroup>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+  <Import Project="..\..\Common.targets" />
+</Project>

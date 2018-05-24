@@ -1,0 +1,110 @@
+#pragma warning disable 108 // new keyword hiding
+#pragma warning disable 114 // new keyword hiding
+namespace Windows.ApplicationModel.DataTransfer
+{
+	#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+	[global::Uno.NotImplemented]
+	#endif
+	public  partial class StandardDataFormats 
+	{
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		[global::Uno.NotImplemented]
+		public static string Bitmap
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member string StandardDataFormats.Bitmap is not implemented in Uno.");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		[global::Uno.NotImplemented]
+		public static string Html
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member string StandardDataFormats.Html is not implemented in Uno.");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		[global::Uno.NotImplemented]
+		public static string Rtf
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member string StandardDataFormats.Rtf is not implemented in Uno.");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		[global::Uno.NotImplemented]
+		public static string StorageItems
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member string StandardDataFormats.StorageItems is not implemented in Uno.");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		[global::Uno.NotImplemented]
+		public static string Text
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member string StandardDataFormats.Text is not implemented in Uno.");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		[global::Uno.NotImplemented]
+		public static string Uri
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member string StandardDataFormats.Uri is not implemented in Uno.");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		[global::Uno.NotImplemented]
+		public static string ApplicationLink
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member string StandardDataFormats.ApplicationLink is not implemented in Uno.");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		[global::Uno.NotImplemented]
+		public static string WebLink
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member string StandardDataFormats.WebLink is not implemented in Uno.");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		[global::Uno.NotImplemented]
+		public static string UserActivityJsonArray
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member string StandardDataFormats.UserActivityJsonArray is not implemented in Uno.");
+			}
+		}
+		#endif
+		// Forced skipping of method Windows.ApplicationModel.DataTransfer.StandardDataFormats.UserActivityJsonArray.get
+		// Forced skipping of method Windows.ApplicationModel.DataTransfer.StandardDataFormats.WebLink.get
+		// Forced skipping of method Windows.ApplicationModel.DataTransfer.StandardDataFormats.ApplicationLink.get
+		// Forced skipping of method Windows.ApplicationModel.DataTransfer.StandardDataFormats.Text.get
+		// Forced skipping of method Windows.ApplicationModel.DataTransfer.StandardDataFormats.Uri.get
+		// Forced skipping of method Windows.ApplicationModel.DataTransfer.StandardDataFormats.Html.get
+		// Forced skipping of method Windows.ApplicationModel.DataTransfer.StandardDataFormats.Rtf.get
+		// Forced skipping of method Windows.ApplicationModel.DataTransfer.StandardDataFormats.Bitmap.get
+		// Forced skipping of method Windows.ApplicationModel.DataTransfer.StandardDataFormats.StorageItems.get
+	}
+}

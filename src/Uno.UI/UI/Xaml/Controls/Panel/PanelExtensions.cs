@@ -1,0 +1,28 @@
+﻿#if XAMARIN
+using System;
+using System.Collections.Generic;
+using System.Text;
+using Windows.UI.Xaml.Media;
+
+#if XAMARIN_IOS_UNIFIED
+using GenericColor = UIKit.UIColor;
+#elif XAMARIN_IOS
+using GenericColor = MonoTouch.UIKit.UIColor;
+#elif XAMARIN_ANDROID
+using GenericColor = Android.Graphics.Color;
+#else
+using GenericColor = System.Drawing.Color;
+#endif
+
+namespace Windows.UI.Xaml.Controls
+{
+    public static class PanelExtensions
+    {
+		public static FrameworkElement Background(this FrameworkElement panel, GenericColor color)
+		{
+			panel.Background = new SolidColorBrush(color);
+			return panel;
+		}
+    }
+}
+#endif

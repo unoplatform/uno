@@ -1,0 +1,38 @@
+﻿using Windows.Foundation;
+using System;
+using System.Collections.Generic;
+using System.Text;
+using Uno;
+
+namespace Windows.UI.Xaml.Input
+{
+	public sealed partial class PointerRoutedEventArgs : RoutedEventArgs
+	{
+		private Point _point;
+
+		internal PointerRoutedEventArgs()
+		{
+			InitializePartial();
+		}
+
+		internal PointerRoutedEventArgs(Point point) : this()
+		{
+			_point = point;
+		}
+
+		public Point GetCurrentPoint() => _point;
+
+		[NotImplemented]
+		public Point[] GetIntermediatePoints()
+		{
+			throw new NotImplementedException();
+		}
+
+		public bool Handled { get; set; }
+
+		public VirtualKeyModifiers KeyModifiers { get; internal set; }
+		public Pointer Pointer { get; internal set; }
+
+		partial void InitializePartial();
+	}
+}

@@ -1,0 +1,71 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using Uno.Extensions;
+using Uno.UI.DataBinding;
+using Windows.UI.Xaml.Media;
+#if XAMARIN_IOS
+using CoreGraphics;
+using UIKit;
+using View = UIKit.UIView;
+#elif XAMARIN_ANDROID
+using View = Android.Views.View;
+#elif NET46 || NETSTANDARD2_0
+using View = Windows.UI.Xaml.FrameworkElement;
+#endif
+
+namespace Windows.UI.Xaml.Controls
+{
+	public partial class PopupBase : FrameworkElement, IPopup
+	{
+		private IDisposable _openPopupRegistration;
+
+        public event EventHandler<object> Closed;
+        public event EventHandler<object> Opened;
+
+		public PopupBase()
+		{
+
+		}
+
+		partial void OnIsOpenChangedPartial(bool oldIsOpen, bool newIsOpen)
+		{
+			if (newIsOpen)
+			{
+				_openPopupRegistration = VisualTreeHelper.RegisterOpenPopup(this);
+				Opened?.Invoke(this, newIsOpen);
+			}
+			else
+			{
+				_openPopupRegistration?.Dispose();
+				Closed?.Invoke(this, newIsOpen);
+			}
+		}
+
+		partial void OnChildChangedPartial(View oldChild, View newChild)
+        {
+			if (oldChild is IDependencyObjectStoreProvider provider)
+			{
+				provider.Store.ClearValue(provider.Store.DataContextProperty, DependencyPropertyValuePrecedences.Local);
+			}
+
+			UpdateDataContext();
+		}
+
+		internal protected override void OnDataContextChanged(DependencyPropertyChangedEventArgs e)
+		{
+			base.OnDataContextChanged(e);
+
+			UpdateDataContext();
+		}
+
+		private void UpdateDataContext()
+		{
+			if (Child is IDependencyObjectStoreProvider provider)
+			{
+				provider.Store.SetValue(provider.Store.DataContextProperty, this.DataContext, DependencyPropertyValuePrecedences.Local);
+			}
+		}
+	}
+}

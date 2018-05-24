@@ -1,0 +1,36 @@
+#pragma warning disable 108 // new keyword hiding
+#pragma warning disable 114 // new keyword hiding
+namespace Windows.System
+{
+	#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+	[global::Uno.NotImplemented]
+	#endif
+	public  partial class UserDeviceAssociation 
+	{
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		[global::Uno.NotImplemented]
+		public static global::Windows.System.User FindUserFromDeviceId( string deviceId)
+		{
+			throw new global::System.NotImplementedException("The member User UserDeviceAssociation.FindUserFromDeviceId(string deviceId) is not implemented in Uno.");
+		}
+		#endif
+		// Forced skipping of method Windows.System.UserDeviceAssociation.UserDeviceAssociationChanged.add
+		// Forced skipping of method Windows.System.UserDeviceAssociation.UserDeviceAssociationChanged.remove
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		[global::Uno.NotImplemented]
+		public static event global::System.EventHandler<global::Windows.System.UserDeviceAssociationChangedEventArgs> UserDeviceAssociationChanged
+		{
+			[global::Uno.NotImplemented]
+			add
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.UserDeviceAssociation", "event EventHandler<UserDeviceAssociationChangedEventArgs> UserDeviceAssociation.UserDeviceAssociationChanged");
+			}
+			[global::Uno.NotImplemented]
+			remove
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.UserDeviceAssociation", "event EventHandler<UserDeviceAssociationChangedEventArgs> UserDeviceAssociation.UserDeviceAssociationChanged");
+			}
+		}
+		#endif
+	}
+}

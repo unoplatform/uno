@@ -1,0 +1,34 @@
+<Project ToolsVersion="15.0">
+	
+	<Import Project="$(SolutionDir)\crosstargeting_override.props" Condition="exists('$(SolutionDir)\crosstargeting_override.props')" />
+
+	<Import Project="$(MSBuildSDKExtrasTargets)" Condition="Exists('$(MSBuildSDKExtrasTargets)')" />
+	
+	<PropertyGroup>	
+		<NoWarn>$(NoWarn);1998</NoWarn>
+		<DebugType>full</DebugType>
+		<DebugSymbols>True</DebugSymbols>
+		<RepositoryUrl>$(BUILD_REPOSITORY_URI)</RepositoryUrl>
+		<Copyright>nventive</Copyright>
+		<Author>nventive</Author>
+		<AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+		<GenerateBindingRedirectsOutputType>true</GenerateBindingRedirectsOutputType>
+		
+		<!-- Version management is now done through NuGet, this avoids issues related version mismatch -->
+		<Version>255.255.255.255</Version>
+		
+		<Product>$(AssemblyName) ($(TargetFramework))</Product>
+		<DefaultLanguage>en-US</DefaultLanguage>
+	</PropertyGroup>
+
+	<PropertyGroup>
+		<!-- 
+		This works around the fact that AndroidResgenFile is 
+		automatically included as compiled file, even if AndroidUseIntermediateDesignerFile
+		is set to true.
+		-->
+		<AndroidUseIntermediateDesignerFile>True</AndroidUseIntermediateDesignerFile>
+		<AndroidResgenFile>obj\$(TargetFramework)\Resources\Resource.Designer.cs</AndroidResgenFile>
+	</PropertyGroup>
+		
+</Project>

@@ -1,0 +1,33 @@
+﻿<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="15.0">
+  <PropertyGroup>
+	<TargetFrameworks>net46;xamarinios10;MonoAndroid80;netstandard2.0</TargetFrameworks>
+	<TargetFrameworksCI>net46;MonoAndroid71;MonoAndroid80;xamarinios10;netstandard2.0</TargetFrameworksCI>
+	<DisableBuildTargetFramework>true</DisableBuildTargetFramework>
+
+	<AndroidUseIntermediateDesignerFile>True</AndroidUseIntermediateDesignerFile>
+	<AndroidResgenFile>obj\$(TargetFramework)\Resources\Resource.Designer.cs</AndroidResgenFile>
+  </PropertyGroup>
+
+  <PropertyGroup>
+	<DefineConstants>$(DefineConstants);NET_4_0;NET_4_5;NET_4_6;MONO;WIN_PLATFORM;MULTIPLEX_OS</DefineConstants>
+	<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+	<DebugType>full</DebugType>
+	<DebugSymbols>true</DebugSymbols>
+  </PropertyGroup>
+
+  <ItemGroup>
+	<Compile Remove="Test\**\*.cs" />
+	<None Remove="Test\**\*.*" />
+  </ItemGroup>
+
+  <ItemGroup>
+	<PackageReference Include="MSBuild.Sdk.Extras" Version="1.5.4" PrivateAssets="All" />
+  </ItemGroup>
+
+  <Import Project="$(MSBuildSDKExtrasTargets)" Condition="Exists('$(MSBuildSDKExtrasTargets)')" />
+
+  <ItemGroup Condition="'$(TargetFramework)'=='net46'">
+	<Reference Remove="System.Xaml" />
+  </ItemGroup>
+
+</Project>

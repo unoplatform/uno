@@ -1,0 +1,72 @@
+using System;
+using System.Collections.Generic;
+using System.Collections.Immutable;
+using Uno.Disposables;
+using System.Runtime.InteropServices;
+using Uno.Extensions;
+using Windows.Foundation;
+using Windows.Foundation.Metadata;
+using Windows.UI.Core;
+
+namespace Windows.UI.Xaml
+{
+	public sealed partial class Window
+	{
+		private List<WeakEventHelper.GenericEventHandler> _sizeChangedHandlers = new List<WeakEventHelper.GenericEventHandler>();
+
+#pragma warning disable 67
+		public event WindowActivatedEventHandler Activated;
+		public event WindowClosedEventHandler Closed;
+		public event WindowSizeChangedEventHandler SizeChanged;
+		public event WindowVisibilityChangedEventHandler VisibilityChanged;
+
+		public UIElement Content
+		{
+			get { return InternalGetContent(); }
+			set { InternalSetContent(value); }
+		}
+
+		public Rect Bounds { get; private set; }
+
+		public CoreWindow CoreWindow { get; private set; }
+
+		public CoreDispatcher Dispatcher { get; private set; }
+
+		public bool Visible { get; private set; }
+
+		public static Window Current => InternalGetCurrentWindow();
+
+		public void Activate()
+		{
+			InternalActivate();
+			Activated?.Invoke(this, new WindowActivatedEventArgs(CoreWindowActivationState.CodeActivated));
+		}
+
+		public void Close() { }
+
+		public void SetTitleBar(UIElement value) { }
+
+		/// <summary>
+		/// Provides a memory-friendly registration to the <see cref="SizeChanged" /> event.
+		/// </summary>
+		/// <returns>A disposable instance that will cancel the registration.</returns>
+		internal IDisposable RegisterSizeChangedEvent(WindowSizeChangedEventHandler handler)
+		{
+			return WeakEventHelper.RegisterEvent(
+				_sizeChangedHandlers,
+				handler,
+				(h, s, e) => (h as WindowSizeChangedEventHandler)?.Invoke(s, (WindowSizeChangedEventArgs)e)
+			);
+		}
+
+		private void RaiseSizeChanged(WindowSizeChangedEventArgs windowSizeChangedEventArgs)
+		{
+			SizeChanged?.Invoke(this, windowSizeChangedEventArgs);
+
+			foreach (var action in _sizeChangedHandlers)
+			{
+				action(this, windowSizeChangedEventArgs);
+			}
+		}
+	}
+}

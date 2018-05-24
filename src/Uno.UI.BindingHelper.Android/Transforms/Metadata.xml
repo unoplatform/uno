@@ -1,0 +1,25 @@
+<metadata>
+	<!--
+	This sample removes the class: android.support.v4.content.AsyncTaskLoader.LoadTask:
+	<remove-node path="/api/package[@name='android.support.v4.content']/class[@name='AsyncTaskLoader.LoadTask']" />
+	
+	This sample removes the method: android.support.v4.content.CursorLoader.loadInBackground:
+	<remove-node path="/api/package[@name='android.support.v4.content']/class[@name='CursorLoader']/method[@name='loadInBackground']" />
+	-->
+	<attr path="/api/package[@name='Uno.UI']" name="managedName">Uno.UI</attr>
+
+	<attr path="/api/package[@name='Uno.UI']/class[@name='UnoViewGroup']/method[@name='onLocalViewAdded']/parameter[@name='p0']" name="name">view</attr>
+	<attr path="/api/package[@name='Uno.UI']/class[@name='UnoViewGroup']/method[@name='onLocalViewAdded']/parameter[@name='p1']" name="name">index</attr>
+	
+	<attr path="/api/package[@name='Uno.UI']/class[@name='UnoViewGroup']/method[@name='onLocalViewRemoved']/parameter[@name='p0']" name="name">view</attr>
+
+	<remove-node path="/api/package[@name='Uno.UI']/class[@name='UnoViewGroup']/method[@name='getGestureDetector' and count(parameter)=0]" />
+	<remove-node path="/api/package[@name='Uno.UI']/class[@name='UnoViewGroup']/method[@name='setGestureDetector' and count(parameter)=1 and parameter[1][@type='Uno.UI.UnoGestureDetector']]" />
+
+	<attr path="/api/package[@name='Uno.UI']/class[@name='UnoViewGroup']/method[@name='getText']" name="propertyName">UIAutomationText</attr>
+	<attr path="/api/package[@name='Uno.UI']/class[@name='UnoViewGroup']/method[@name='getText']" name="visibility">protected</attr>
+	
+	<attr path="/api/package[@name='Uno.UI']/class[@name='UnoViewGroup']/method[@name='getIsPointerCaptured' and count(parameter)=0]" name="visibility">protected</attr>
+	<attr path="/api/package[@name='Uno.UI']/class[@name='UnoViewGroup']/method[@name='setIsPointerCaptured' and count(parameter)=1 and parameter[1][@type='boolean']]" name="visibility">protected</attr>
+
+</metadata>

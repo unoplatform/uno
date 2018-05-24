@@ -1,0 +1,69 @@
+﻿<UserControl
+    x:Class="XamlGenerationTests.Shared.TypeResolutionTests"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:XamlGenerationTests.Shared.Controls"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:u="using:XamlGenerationTests.Shared.Controls"
+ 	xmlns:ios="http://uno.ui/ios"
+    xmlns:win="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:android="http://uno.ui/android"
+	xmlns:xamarin="http://uno.ui/xamarin"
+	xmlns:test="http://uno.ui/test"
+	xmlns:toolkit="using:Uno.UI.Toolkit"
+    mc:Ignorable="d xamarin android test ios"
+    d:DesignHeight="300"
+    d:DesignWidth="400">
+
+	<Grid>
+						
+		<!-- Framework control with xamarin prefixed property -->
+		<Border xamarin:Background="Red" />
+				
+        <u:ControlWithContent />
+		
+		<!-- Local control with custom property -->
+		<local:Settings MyCustomProperty2="42" />
+		
+		<!-- Local control with custom property -->
+		<!-- This is not working.-->
+		<!-- <local:Settings MyCustomProperty="42" /> -->
+		
+		<!-- Local control with framework property -->
+		<local:Settings Background="Red" />
+		
+		<!-- Local control with xamarin prefixed property -->
+		<!-- This one one used to fail (see #12612) -->
+		<local:Settings xamarin:Background="Blue" />
+		
+		<!-- Local control with android prefixed property -->
+		<!-- This one should write yellow only in Android -->
+		<local:Settings android:Background="Yellow" />
+		
+		<!-- Local control with ios prefixed property -->
+		<!-- This one should write lime only in ios -->
+		<local:Settings ios:Background="Lime" />
+		
+		<!-- Local control with ignorable not ios/android/xamarin prefixed property -->
+		<!-- This one should write no property = Cyan -->
+		<local:Settings test:Background="Cyan" />
+
+		<!-- UWP control with xamarin prefixed property -->
+		<!-- This one should write Green in ios and android -->
+		<Grid xamarin:Background="Green" />
+
+		<!-- UWP Control with external project property -->
+		<Border toolkit:UIElementExtensions.Elevation="5" />
+		
+		<!-- Control with external project property -->
+		<u:ControlWithContent toolkit:UIElementExtensions.Elevation="10" />
+		
+		<!-- Control with phase -->
+		<xamarin:Border x:Phase="3" Background="{x:Bind}" />
+
+		<!-- Control with phase -->
+		<Border xamarin:Phase="1" />
+	</Grid>
+</UserControl>
+   

@@ -1,0 +1,90 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Collections.Specialized;
+using System.Text;
+using Windows.Foundation.Collections;
+
+namespace Uno.Extensions
+{
+	public static class NotifyCollectionChangedEventArgsExtensions
+	{
+		public static IVectorChangedEventArgs ToVectorChangedEventArgs(this NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
+		{
+			var change = notifyCollectionChangedEventArgs.Action.ToCollectionChange();
+
+			int index;
+			switch (notifyCollectionChangedEventArgs.Action)
+			{
+				case NotifyCollectionChangedAction.Add:
+				case NotifyCollectionChangedAction.Replace:
+					index = notifyCollectionChangedEventArgs.NewStartingIndex;
+					break;
+				case NotifyCollectionChangedAction.Remove:
+					index = notifyCollectionChangedEventArgs.OldStartingIndex;
+					break;
+				case NotifyCollectionChangedAction.Reset:
+					index = -1;
+					break;
+				default:
+					throw new ArgumentOutOfRangeException();
+			}
+
+			return new VectorChangedEventArgs(change, (uint)index);
+		}
+
+		public static CollectionChange ToCollectionChange(this NotifyCollectionChangedAction action)
+		{
+			switch (action)
+			{
+				case NotifyCollectionChangedAction.Add:
+					return CollectionChange.ItemInserted;
+				case NotifyCollectionChangedAction.Move:
+					throw new NotSupportedException($"IObservableVector doesn't support the Move operation.");
+				case NotifyCollectionChangedAction.Remove:
+					return CollectionChange.ItemRemoved;
+				case NotifyCollectionChangedAction.Replace:
+					return CollectionChange.ItemChanged;
+				case NotifyCollectionChangedAction.Reset:
+					return CollectionChange.Reset;
+			}
+
+			throw new ArgumentOutOfRangeException();
+		}
+
+		public static NotifyCollectionChangedEventArgs ToNotifyCollectionChangedEventArgs(this IVectorChangedEventArgs vectorChangedEventArgs)
+		{
+			var action = vectorChangedEventArgs.CollectionChange.ToNotifyCollectionChangedAction();
+
+			// Note: we don't populate NewItems/OldItems, but Uno only checks their lengths
+			switch (action)
+			{
+				case NotifyCollectionChangedAction.Add:
+				case NotifyCollectionChangedAction.Remove:
+					return new NotifyCollectionChangedEventArgs(action, changedItem: null, index: (int)vectorChangedEventArgs.Index);
+				case NotifyCollectionChangedAction.Replace:
+					return new NotifyCollectionChangedEventArgs(action, newItem: null, oldItem: null, index: (int)vectorChangedEventArgs.Index);
+				case NotifyCollectionChangedAction.Reset:
+					return new NotifyCollectionChangedEventArgs(action);
+			}
+
+			throw new ArgumentOutOfRangeException();
+		}
+
+		public static NotifyCollectionChangedAction ToNotifyCollectionChangedAction(this CollectionChange change)
+		{
+			switch (change)
+			{
+				case CollectionChange.ItemChanged:
+					return NotifyCollectionChangedAction.Replace;
+				case CollectionChange.ItemInserted:
+					return NotifyCollectionChangedAction.Add;
+				case CollectionChange.ItemRemoved:
+					return NotifyCollectionChangedAction.Remove;
+				case CollectionChange.Reset:
+					return NotifyCollectionChangedAction.Reset;
+			}
+
+			throw new ArgumentOutOfRangeException();
+		}
+	}
+}

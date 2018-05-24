@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+	<Import Project="$(MSBuildExtensionsPath)\PreEmptive\Dotfuscator\4\PreEmptive.Dotfuscator.Targets" Condition="Exists('$(MSBuildExtensionsPath)\PreEmptive\Dotfuscator\4\PreEmptive.Dotfuscator.Targets')"/>
+
+	<PropertyGroup>
+		<AppVersion>$(GITVERSION_FullSemVer)</AppVersion>
+	
+		<NuGetBin>.\nuget\NuGet.exe</NuGetBin>
+		<OutputDir>$(BUILD_ARTIFACTSTAGINGDIRECTORY)</OutputDir>
+		<Configuration>$(CombinedConfiguration.Split('|')[0])</Configuration>
+		<Platform>$(CombinedConfiguration.Split('|')[1])</Platform>
+		<AppEnvironment Condition="'$(CombinedConfiguration)' != '' and $(CombinedConfiguration.Split('|').Length) > 2">$(CombinedConfiguration.Split('|')[2])</AppEnvironment>
+
+		<UpdateAssemblyInfo>false</UpdateAssemblyInfo>
+	</PropertyGroup>
+
+  <Import Project=".\obj\Uno.UI.Build.csproj.nuget.g.props"/>
+  <Import Project=".\obj\Uno.UI.Build.csproj.nuget.g.targets"/>
+
+  <Target Name="Build" DependsOnTargets="GetVersion;UpdateFileVersions">
+		<Message Text="Buidling for $(Configuration) and $(Platform) BuildReason:$(BUILD_REASON) Version:$(GitVersion_FullSemVer) Obfuscation:$(RunObfuscation)" />
+
+		<!-- 
+    Use NuGet 4.3.0 or later for the restore 
+    CI_Build environment is required for the restore to pickup the TargetFrameworksCI property in projects.
+    -->
+		<Exec Command="set NUGET_RESTORE_MSBUILD_ARGS=/p:CI_Build=true &amp; nuget\nuget.exe restore ..\src\Uno.UI.sln" Condition="'$(AppEnvironment)'=='' " />
+
+		<CallTarget Targets="BuildCI" Condition="'$(Configuration)'=='Release'" />
+    
+		<CallTarget Targets="BuildNuGetPackage" Condition="'$(Configuration)'=='Release'" />
+		<CallTarget Targets="PublishVisx" Condition="'$(Configuration)'=='Release'" />
+		<CallTarget Targets="GenerateAPIDiff" Condition="'$(Configuration)'=='Release'" />
+		<CallTarget Targets="GenerateDoc" Condition="'$(Configuration)'=='Release'" />
+	</Target>
+	<Target Name="UpdateFileVersions">
+		
+		<XmlUpdate
+			XmlFileName="..\src\SolutionTemplate\UnoSolutionTemplate.VISX\source.extension.vsixmanifest"
+			XPath="/x:PackageManifest/x:Metadata/x:Identity/@Version"
+			Value="$(GITVERSION_MajorMinorPatch)"
+			Namespace="http://schemas.microsoft.com/developer/vsx-schema/2011"
+			Prefix="x"/>
+
+	</Target>
+
+	
+	<Target Name="BuildCI">
+
+		<MSBuild Properties="Configuration=Release;VisualStudioVersion=15.0;CopyDSYM=False;InformationalVersion=$(GITVERSION_InformationalVersion);CI_Build=true;_IsCIBuild=true"
+						 Projects="..\src\Uno.UI.sln"
+             Targets="Build"
+						 RebaseOutputs="false"
+						 BuildInParallel="true" />
+
+	</Target>
+
+	<Target Name="GenerateDoc">
+		<Exec Command="$(NuGetPackageRoot)\docfx.console\2.36.0\tools\docfx.exe ..\doc\docfx.json -o $(OutputDir)\doc" />
+	</Target>
+
+	<Target Name="GenerateAPIDiff">
+		<PropertyGroup>
+			<WindowsDefinition>C:\Program Files (x86)\Windows Kits\10\References\Windows.Foundation.UniversalApiContract\2.0.0.0\Windows.Foundation.UniversalApiContract.winmd</WindowsDefinition>
+			<iOS_UnoUIDefinition>..\src\Uno.UI\bin\release\xamarinios10\Uno.UI.dll</iOS_UnoUIDefinition>
+			<Android_UnoUIDefinition>..\src\Uno.UI\bin\release\Monoandroid80\Uno.UI.dll</Android_UnoUIDefinition>
+			<Wasm_UnoUIDefinition>..\src\Uno.UI\bin\release\netstandard2.0\Uno.UI.dll</Wasm_UnoUIDefinition>
+		</PropertyGroup>
+
+		<Exec Command="..\src\Uno.UI.AssemblyComparer\Bin\Release\Uno.UI.AssemblyComparer.exe &quot;$(iOS_UnoUIDefinition)&quot; &quot;$(WindowsDefinition)&quot; &quot;output.txt&quot;" />
+		<Exec Command="copy .\output.txt &quot;$(OutputDir)\iOS_API_Diff.txt&quot;" />
+
+		<Exec Command="..\src\Uno.UI.AssemblyComparer\Bin\Release\Uno.UI.AssemblyComparer.exe &quot;$(Android_UnoUIDefinition)&quot; &quot;$(WindowsDefinition)&quot; &quot;output.txt&quot;" />
+		<Exec Command="copy .\output.txt &quot;$(OutputDir)\Android_API_Diff.txt&quot;" />
+
+		<Exec Command="..\src\Uno.UI.AssemblyComparer\Bin\Release\Uno.UI.AssemblyComparer.exe &quot;$(Wasm_UnoUIDefinition)&quot; &quot;$(WindowsDefinition)&quot; &quot;output.txt&quot;" />
+		<Exec Command="copy .\output.txt &quot;$(OutputDir)\Wasm_API_Diff.txt&quot;" />
+	</Target>
+	
+	<Target Name="PublishVisx">
+		<Copy SourceFiles="..\src\SolutionTemplate\UnoSolutionTemplate.VISX\bin\Release\UnoSolutionTemplate.vsix"
+					DestinationFolder="$(OutputDir)" />
+	</Target>
+
+	<Target Name="BuildNuGetPackage" DependsOnTargets="_FillMsBuildVersion">
+
+		<PropertyGroup>
+			<NugetNamespace>http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd</NugetNamespace>
+
+			<!-- Package version labels depends on the VS version (15.2 is adev, 15.4 is dev) -->
+			<NuGetPackageVersion Condition="'$(MicrosoftBuildVersion)' &gt;= '15.4'">$(GITVERSION_FullSemVer)</NuGetPackageVersion>
+			<NuGetPackageVersion Condition="'$(MicrosoftBuildVersion)' &lt; '15.4'">$(GITVERSION_FullSemVer.Replace('dev', 'adev'))</NuGetPackageVersion>
+			<NuGetPackageVersion Condition="'$(MicrosoftBuildVersion)' &lt; '15.4' and !$(GITVERSION_FullSemVer.Contains('-'))">$(GITVERSION_FullSemVer)-stable152</NuGetPackageVersion>
+		</PropertyGroup>
+
+		<Message Condition="'$(PublishNuget)'!=''" Text="NuGet package publishing is ENABLED (Target: $(NuGetRepositoryPath))" />
+		<Message Condition="'$(PublishNuget)'==''" Text="NuGet package publishing is DISABLED (Target: $(NuGetRepositoryPath))" />
+
+		<XmlUpdate
+			XmlFileName=".\Uno.UI.nuspec"
+			XPath="/x:package/x:metadata/x:version"
+			Value="$(NuGetPackageVersion)"
+			Namespace="$(NugetNamespace)"
+			Prefix="x"/>
+
+		<XmlUpdate
+			XmlFileName=".\Uno.UI.nuspec"
+			XPath="/x:package/x:metadata/x:dependencies/x:dependency/@version"
+			Value="$(NuGetPackageVersion)"
+			Namespace="$(NugetNamespace)"
+			Prefix="x"/>
+
+		<!-- Create the packages -->
+    <Exec Command="$(NuGetBin) pack Uno.UI.nuspec -Verbosity Detailed" />
+	</Target>
+
+	<Import Project="GetMsBuildVersion.targets" />
+
+</Project>

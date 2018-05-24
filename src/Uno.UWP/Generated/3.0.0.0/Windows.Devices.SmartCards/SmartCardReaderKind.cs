@@ -1,0 +1,31 @@
+#pragma warning disable 108 // new keyword hiding
+#pragma warning disable 114 // new keyword hiding
+namespace Windows.Devices.SmartCards
+{
+	#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+	#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+	[global::Uno.NotImplemented]
+	#endif
+	public   enum SmartCardReaderKind 
+	{
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		Any,
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		Generic,
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		Tpm,
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		Nfc,
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		Uicc,
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		EmbeddedSE,
+		#endif
+	}
+	#endif
+}

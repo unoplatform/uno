@@ -1,0 +1,30 @@
+<VSTemplate Version="3.0.0" Type="ProjectGroup" xmlns="http://schemas.microsoft.com/developer/vstemplate/2005">
+	<TemplateData>
+		<Name>Uno App Solution</Name>
+		<Description>Uno App Cross Platform XAML Solution</Description>
+		<ProjectType>CSharp</ProjectType>
+		<ProjectSubType />
+		<SortOrder>1000</SortOrder>
+		<CreateNewFolder>true</CreateNewFolder>
+		<DefaultName>App</DefaultName>
+		<ProvideDefaultName>true</ProvideDefaultName>
+		<LocationField>Enabled</LocationField>
+		<EnableLocationBrowseButton>true</EnableLocationBrowseButton>
+		<CreateInPlace>true</CreateInPlace>
+		<Icon>__TemplateIcon.png</Icon>
+		<PreviewImage>__PreviewImage.png</PreviewImage>
+	</TemplateData>
+	<TemplateContent>
+		<ProjectCollection>
+			<ProjectTemplateLink ProjectName="$projectname$.Shared" CopyParameters="true">UnoQuickStart.Shared\Shared.vstemplate</ProjectTemplateLink>
+			<ProjectTemplateLink ProjectName="$projectname$.Droid" CopyParameters="true">UnoQuickStart.Droid\Android.vstemplate</ProjectTemplateLink>
+			<ProjectTemplateLink ProjectName="$projectname$.iOS" CopyParameters="true">UnoQuickStart.iOS\iOS.vstemplate</ProjectTemplateLink>
+			<ProjectTemplateLink ProjectName="$projectname$.UWP" CopyParameters="true">UnoQuickStart.UWP\UWP.vstemplate</ProjectTemplateLink>
+			<ProjectTemplateLink ProjectName="$projectname$.Wasm" CopyParameters="true">UnoQuickStart.Wasm\Wasm.vstemplate</ProjectTemplateLink>
+		</ProjectCollection>
+	</TemplateContent>
+	<WizardExtension>
+		<Assembly>UnoSolutionTemplate.Wizard, Version=1.0.0.0, Culture=neutral, PublicKeyToken=edd9d20ca5dec34b</Assembly>
+		<FullClassName>UnoSolutionTemplate.Wizard.UnoSolutionWizard</FullClassName>
+	</WizardExtension>
+</VSTemplate>

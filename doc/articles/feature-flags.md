@@ -1,0 +1,17 @@
+# Configuring Uno's behavior globally
+
+To be able to provide the highest backward compatibility possible, Uno provides a set of compatibility flags that can be set early in an app's startup to control its behavior.
+
+# Legacy Clipping
+Historically, Uno has been relying on the default platform's behavior for clipping, which is quite different from UWP compositing behavior.
+
+By default, this mode is enabled for the time being, as it is quite disrupting.
+
+Use `Uno.UI.FeatureConfiguration.UIElement.UseLegacyClipping` to control this mode.
+Aditionally, `Uno.UI.FeatureConfiguration.UIElement.ShowClippingBounds` can be used to show the clipping boudaries to determine if the behavior of the clipping is appropriate.
+
+# UWP Styles default
+
+By default, Uno favors the default UWP XAML styles over the native styles for Button, Slider, ComboBox, etc...
+
+This can be changed using `Uno.UI.FeatureConfiguration.UIElement.UseUWPDefaultStyles`.

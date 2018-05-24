@@ -1,0 +1,33 @@
+<VSTemplate Version="3.0.0" xmlns="http://schemas.microsoft.com/developer/vstemplate/2005" Type="Project">
+  <TemplateData>
+    <Name>UnoQuickStart.Wasm</Name>
+    <Description>
+    </Description>
+    <ProjectType>CSharp</ProjectType>
+    <ProjectSubType>
+    </ProjectSubType>
+    <SortOrder>1000</SortOrder>
+    <CreateNewFolder>true</CreateNewFolder>
+    <DefaultName>UnoQuickStart.Wasm</DefaultName>
+    <ProvideDefaultName>true</ProvideDefaultName>
+    <LocationField>Enabled</LocationField>
+    <EnableLocationBrowseButton>true</EnableLocationBrowseButton>
+    <Icon>__TemplateIcon.png</Icon>
+    <PreviewImage>__PreviewImage.png</PreviewImage>
+  </TemplateData>
+  <TemplateContent>
+    <Project TargetFileName="$ext_safeprojectname$.Wasm.csproj" File="UnoQuickStart.Wasm.csproj" ReplaceParameters="true">
+      <ProjectItem ReplaceParameters="true" TargetFileName="Program.cs">Program.cs</ProjectItem>
+      <ProjectItem>LinkerConfig.xml</ProjectItem>
+      <Folder Name="Fonts" TargetFolderName="Fonts">
+				<ProjectItem ReplaceParameters="true" TargetFileName="winjs-symbols.woff2">winjs-symbols.woff2</ProjectItem>
+			</Folder>
+			<Folder Name="WasmCSS" TargetFolderName="WasmCSS">
+				<ProjectItem ReplaceParameters="true" TargetFileName="Fonts.css">Fonts.css</ProjectItem>
+			</Folder>
+			<Folder Name="WasmScripts" TargetFolderName="WasmScripts">
+				<ProjectItem ReplaceParameters="true" TargetFileName="AppManifest.js">AppManifest.js</ProjectItem>
+			</Folder>
+		</Project>
+  </TemplateContent>
+</VSTemplate>

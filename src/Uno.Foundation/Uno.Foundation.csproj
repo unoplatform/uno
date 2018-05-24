@@ -1,0 +1,33 @@
+﻿<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="15.0">
+  <PropertyGroup>
+    <TargetFrameworks>MonoAndroid80;xamarinios10;net46;netstandard2.0</TargetFrameworks>
+		<TargetFrameworksCI>MonoAndroid71;MonoAndroid80;xamarinios10;net46;netstandard2.0</TargetFrameworksCI>
+	</PropertyGroup>
+
+	<PropertyGroup>
+		<AssemblyName>Uno.Foundation</AssemblyName>
+    <RootNamespace>Windows.Foundation</RootNamespace>
+		<NoWarn>$(NoWarn);NU1701</NoWarn>
+		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="MSBuild.Sdk.Extras" Version="1.5.4" PrivateAssets="All" />
+    <PackageReference Include="Uno.SourceGenerationTasks">
+      <Version>1.22.0-dev.32</Version>
+      <ExcludeAssets>Runtime</ExcludeAssets>
+    </PackageReference>
+    <PackageReference Include="Uno.Core">
+      <Version>1.22.0-dev.23</Version>
+      <ExcludeAssets>Runtime</ExcludeAssets>
+    </PackageReference>
+	</ItemGroup>
+	
+	<ItemGroup Condition="'$(TargetFrameworkIdentifier)'=='.NETStandard'">
+		<PackageReference Include="System.Runtime.InteropServices.WindowsRuntime" Version="4.3.0" />
+	</ItemGroup>
+	
+	<Import Project="$(MSBuildSDKExtrasTargets)" Condition="Exists('$(MSBuildSDKExtrasTargets)')" />
+	<Import Project="..\Uno.CrossTargetting.props" />
+
+</Project>

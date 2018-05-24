@@ -1,0 +1,22 @@
+#pragma warning disable 108 // new keyword hiding
+#pragma warning disable 114 // new keyword hiding
+namespace Windows.UI.Input.Spatial
+{
+	#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+	[global::Uno.NotImplemented]
+	#endif
+	public  partial class SpatialInteraction 
+	{
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		[global::Uno.NotImplemented]
+		public  global::Windows.UI.Input.Spatial.SpatialInteractionSourceState SourceState
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member SpatialInteractionSourceState SpatialInteraction.SourceState is not implemented in Uno.");
+			}
+		}
+		#endif
+		// Forced skipping of method Windows.UI.Input.Spatial.SpatialInteraction.SourceState.get
+	}
+}

@@ -1,0 +1,278 @@
+﻿using Uno.Diagnostics.Eventing;
+using Uno.Extensions;
+using System;
+using System.Collections.Generic;
+using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
+using Windows.Foundation;
+using Uno.Logging;
+
+namespace Windows.UI.Core
+{
+	public delegate void DispatchedHandler();
+	public delegate void CancellableDispatchedHandler(CancellationToken ct);
+	public delegate void IdleDispatchedHandler(IdleDispatchedHandlerArgs e);
+
+	/// <summary>
+	/// Defines a priority-based UI Thread scheduler.
+	/// </summary>
+	/// <remarks>
+	/// This implementation is based on the fact that the native queue will 
+	/// only contain one instance of the callback for the current core dispatcher.
+	/// 
+	/// This gives the native events, such as touch, the priority over managed-side queued
+	/// events, and will allow a properly prioritized processing of idle events.
+	/// </remarks>
+	public sealed partial class CoreDispatcher
+	{
+		private readonly static IEventProvider _trace = Tracing.Get(TraceProvider.Id);
+
+		public static class TraceProvider
+		{
+			public readonly static Guid Id = Guid.Parse("{EA0762E9-8208-4501-B4A5-CC7ECF7BE85E}");
+
+			public const int CoreDispatcher_Schedule = 1;
+			public const int CoreDispatcher_InvokeStart = 2;
+			public const int CoreDispatcher_InvokeStop = 3;
+			public const int CoreDispatcher_Exception = 4;
+			public const int CoreDispatcher_Cancelled = 5;
+		}
+
+		/// <summary>
+		/// Defines a set of queues based on the number of priorities defined in <see cref="CoreDispatcherPriority"/>.
+		/// </summary>
+		private Queue<UIAsyncOperation>[] _queues = new Queue<UIAsyncOperation>[] {
+			new Queue<UIAsyncOperation>(),
+			new Queue<UIAsyncOperation>(),
+			new Queue<UIAsyncOperation>(),
+			new Queue<UIAsyncOperation>(),
+		};
+
+		[ThreadStatic]
+		private static bool? _hasThreadAccess;
+
+		/// <summary>
+		/// Enforce access on the UI thread.
+		/// </summary>
+		internal static void CheckThreadAccess()
+		{
+			if (!Main.HasThreadAccess)
+			{
+				throw new InvalidOperationException("The application called an interface that was marshalled for a different thread.");
+			}
+		}
+
+		private int _globalCount;
+		private readonly IdleDispatchedHandlerArgs _idleDispatchedHandlerArgs;
+		private object _gate = new object();
+
+		public CoreDispatcher()
+		{
+			_idleDispatchedHandlerArgs = new IdleDispatchedHandlerArgs(() => IsQueueIdle);
+
+			Initialize();
+		}
+
+
+		/// <summary>
+		/// Determines if the current thread has access to this CoreDispatcher.
+		/// </summary>
+		public bool HasThreadAccess
+		{
+			get
+			{
+				if (!_hasThreadAccess.HasValue)
+				{
+					_hasThreadAccess = GetHasThreadAccess();
+				}
+
+				return _hasThreadAccess.Value;
+			}
+		}
+
+		/// <summary>
+		/// Determines if there are no elements in queues other than the idle one.
+		/// </summary>
+		private bool IsQueueIdle => GetQueue(CoreDispatcherPriority.Low).Count +
+				GetQueue(CoreDispatcherPriority.Normal).Count +
+				GetQueue(CoreDispatcherPriority.High).Count == 0;
+		
+		partial void Initialize();
+
+		/// <summary>
+		/// Schedules the provided handler on the dispatcher.
+		/// </summary>
+		/// <param name="priority">The execution priority for the handler</param>
+		/// <param name="handler">The handler to execute</param>
+		/// <returns>An async operation for the scheduled handler.</returns>
+		public UIAsyncOperation RunAsync(CoreDispatcherPriority priority, DispatchedHandler handler)
+		{
+			return EnqueueOperation(priority, handler);
+		}
+
+		/// <summary>
+		/// Schedules the provided handler on the dispatcher.
+		/// </summary>
+		/// <param name="priority">The execution priority for the handler</param>
+		/// <param name="handler">The handler to execute</param>
+		/// <returns>An async operation for the scheduled handler.</returns>
+		public UIAsyncOperation RunAsync(CoreDispatcherPriority priority, CancellableDispatchedHandler handler)
+		{
+			UIAsyncOperation operation = null;
+
+			DispatchedHandler nonCancellableHandler = () => handler(operation.Token);
+
+			return operation = EnqueueOperation(priority, nonCancellableHandler);
+		}
+
+		/// <summary>
+		/// Schedules the provided handler using the idle priority
+		/// </summary>
+		/// <param name="handler">The handler to execute</param>
+		/// <returns>An async operation for the scheduled handler.</returns>
+		public UIAsyncOperation RunIdleAsync(IdleDispatchedHandler handler)
+		{
+			return EnqueueOperation(
+				CoreDispatcherPriority.Idle, () =>
+				handler(_idleDispatchedHandlerArgs)
+			);
+		}
+
+		private UIAsyncOperation EnqueueOperation(CoreDispatcherPriority priority, DispatchedHandler handler)
+		{
+			EventActivity scheduleActivity = null;
+			if (_trace.IsEnabled)
+			{
+				scheduleActivity = _trace.WriteEventActivity(
+					TraceProvider.CoreDispatcher_Schedule,
+					EventOpcode.Send, 
+					new[] {
+						((int)priority).ToString(),
+						handler.Method.DeclaringType.FullName + "." + handler.Method.DeclaringType.Name
+					}
+				);
+			}
+
+			var operation = new UIAsyncOperation(handler, scheduleActivity);
+
+			if (priority < CoreDispatcherPriority.Idle || priority > CoreDispatcherPriority.High)
+			{
+				throw new ArgumentException($"The priority {priority} is not supported");
+			}
+
+			var queue = GetQueue(priority);
+
+			bool shouldEnqueue;
+
+			lock (_gate)
+			{
+				queue.Enqueue(operation);
+				shouldEnqueue = IncrementGlobalCount() == 1;
+			}
+
+			if (shouldEnqueue)
+			{
+				EnqueueNative();
+			}
+
+			return operation;
+		}
+
+		private Queue<UIAsyncOperation> GetQueue(CoreDispatcherPriority priority)
+		{
+			return _queues[(int)priority + 2];
+		}
+
+		/// <summary>
+		/// Enqueues a operation on the native UI Thread.
+		/// </summary>
+		partial void EnqueueNative();
+
+		private int IncrementGlobalCount()
+		{
+			return Interlocked.Increment(ref _globalCount);
+		}
+
+		private int DecrementGlobalCount()
+		{
+			return Interlocked.Decrement(ref _globalCount);
+		}
+
+		private void DispatchItems()
+		{
+			UIAsyncOperation operation = null;
+			CoreDispatcherPriority operationPriority = CoreDispatcherPriority.Normal;
+
+			for (int i = 3; i >= 0; i--)
+			{
+				var queue = _queues[i];
+
+				lock (_gate)
+				{
+					if (queue.Count > 0)
+					{
+						operation = queue.Dequeue();
+						operationPriority = (CoreDispatcherPriority)(i - 2);
+
+						if (DecrementGlobalCount() > 0)
+						{
+							EnqueueNative();
+                        }
+						break;
+					}
+				}
+			}
+
+			if (operation != null)
+			{
+				if (!operation.IsCancelled)
+				{
+					IDisposable runActivity = null;
+
+					try
+					{
+						if (_trace.IsEnabled)
+						{
+							runActivity = _trace.WriteEventActivity(
+								TraceProvider.CoreDispatcher_InvokeStart, 
+								TraceProvider.CoreDispatcher_InvokeStop, 
+								relatedActivity: operation.ScheduleEventActivity,
+								payload: new[] { ((int)operationPriority).ToString(), operation.GetDiagnosticsName() }
+							);
+						}
+
+						using (runActivity)
+						{
+                            using (CoreDispatcherSynchronizationContext.Apply(this, operationPriority))
+                            {
+                                operation.Action();
+                                operation.Complete();
+                            }
+						}
+					}
+                    catch (Exception ex)
+					{
+						if (_trace.IsEnabled)
+						{
+							_trace.WriteEvent(TraceProvider.CoreDispatcher_Exception, EventOpcode.Send, new[] { ex.GetType().ToString(), operation.GetDiagnosticsName() });
+						}
+						operation.SetError(ex);
+						this.Log().Error("Dispatcher unhandled exception", ex);
+					}
+				}
+				else
+				{
+					if (_trace.IsEnabled)
+					{
+						_trace.WriteEvent(TraceProvider.CoreDispatcher_Cancelled, EventOpcode.Send, new[] { operation.GetDiagnosticsName() });
+					}
+				}
+			}
+			else
+			{
+				throw new InvalidOperationException("Dispatch queue is empty");
+			}
+		}
+	}
+}

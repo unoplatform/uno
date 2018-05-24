@@ -1,0 +1,25 @@
+#pragma warning disable 108 // new keyword hiding
+#pragma warning disable 114 // new keyword hiding
+namespace Windows.UI.Xaml.Navigation
+{
+	#if false || false || false || false
+	#if false || false || false || false
+	[global::Uno.NotImplemented]
+	#endif
+	public   enum NavigationMode 
+	{
+		#if false || false || false || false
+		New,
+		#endif
+		#if false || false || false || false
+		Back,
+		#endif
+		#if false || false || false || false
+		Forward,
+		#endif
+		#if false || false || false || false
+		Refresh,
+		#endif
+	}
+	#endif
+}

@@ -1,0 +1,174 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <MinimumVisualStudioVersion>15.0</MinimumVisualStudioVersion>
+    <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <OldToolsVersion>14.0</OldToolsVersion>
+    <UpgradeBackupLocation>
+    </UpgradeBackupLocation>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <PublishUrl>publish\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
+  </PropertyGroup>
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectTypeGuids>{82b43b9b-a64c-4715-b499-d71e9ca2bd60};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <ProjectGuid>{5C7C339E-B73C-4FDA-87AF-E8003C0FF2AB}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>UnoSolutionTemplate</RootNamespace>
+    <AssemblyName>UnoSolutionTemplate</AssemblyName>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <GeneratePkgDefFile>false</GeneratePkgDefFile>
+    <IncludeAssemblyInVSIXContainer>false</IncludeAssemblyInVSIXContainer>
+    <IncludeDebugSymbolsInVSIXContainer>false</IncludeDebugSymbolsInVSIXContainer>
+    <IncludeDebugSymbolsInLocalVSIXDeployment>false</IncludeDebugSymbolsInLocalVSIXDeployment>
+    <CreateVsixContainer>false</CreateVsixContainer>
+    <DeployExtension>false</DeployExtension>
+    <DeployVSTemplates>false</DeployVSTemplates>
+    <CopyVsixManifestToOutput>false</CopyVsixManifestToOutput>
+    <CopyBuildOutputToOutputDirectory>false</CopyBuildOutputToOutputDirectory>
+    <CopyOutputSymbolsToOutputDirectory>false</CopyOutputSymbolsToOutputDirectory>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Microsoft.VisualStudio.CoreUtility">
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <None Include="UnoQuickStart.Shared\Strings\en\Resources.resw">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="UnoQuickStart.Wasm\Program.cs" />
+    <None Include="UnoQuickStart.Wasm\Fonts\winjs-symbols.woff2" />
+    <None Include="UnoQuickStart.Droid\MainActivity.cs" />
+    <None Include="UnoQuickStart.Droid\Properties\AssemblyInfo.cs" />
+    <None Include="UnoQuickStart.Droid\Resources\Resource.Designer.cs" />
+    <None Include="UnoQuickStart.Droid\Main.cs" />
+    <None Include="UnoQuickStart.iOS\Main.cs" />
+    <None Include="UnoQuickStart.iOS\Properties\AssemblyInfo.cs" />
+    <None Include="UnoQuickStart.Shared\App.xaml.cs" />
+    <None Include="UnoQuickStart.Shared\MainPage.xaml.cs" />
+    <None Include="UnoQuickStart.UWP\Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <VSTemplate Include="UnoApp.vstemplate">
+      <SubType>Designer</SubType>
+    </VSTemplate>
+    <None Include="UnoQuickStart.Droid\Android.vstemplate" />
+    <None Include="UnoQuickStart.Droid\Assets\AboutAssets.txt" />
+    <None Include="UnoQuickStart.Droid\Resources\AboutResources.txt" />
+    <None Include="UnoQuickStart.Droid\Resources\drawable\Icon.png" />
+    <None Include="UnoQuickStart.iOS\Entitlements.plist" />
+    <None Include="UnoQuickStart.iOS\Info.plist">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="UnoQuickStart.iOS\iOS.vstemplate" />
+    <None Include="UnoQuickStart.iOS\Resources\Default-568h%402x.png" />
+    <None Include="UnoQuickStart.iOS\UnoQuickStart.iOS.csproj" />
+    <None Include="UnoQuickStart.Shared\Shared.vstemplate" />
+    <None Include="UnoQuickStart.Shared\Assets\LockScreenLogo.scale-200.png" />
+    <None Include="UnoQuickStart.Shared\Assets\SplashScreen.scale-200.png" />
+    <None Include="UnoQuickStart.Shared\Assets\Square150x150Logo.scale-200.png" />
+    <None Include="UnoQuickStart.Shared\Assets\Square44x44Logo.scale-200.png" />
+    <None Include="UnoQuickStart.Shared\Assets\Square44x44Logo.targetsize-24_altform-unplated.png" />
+    <None Include="UnoQuickStart.Shared\Assets\StoreLogo.png" />
+    <None Include="UnoQuickStart.Shared\Assets\Wide310x150Logo.scale-200.png" />
+    <None Include="UnoQuickStart.UWP\Properties\Default.rd.xml" />
+    <None Include="UnoQuickStart.UWP\UnoQuickStart.Uwp.csproj" />
+    <None Include="UnoQuickStart.UWP\Uwp.vstemplate">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="UnoQuickStart.Droid\Resources\values\Styles.xml" />
+    <None Include="UnoQuickStart.Droid\Resources\values\Strings.xml" />
+    <None Include="UnoQuickStart.Droid\Properties\AndroidManifest.xml" />
+    <None Include="UnoQuickStart.Droid\UnoQuickStart.Droid.csproj">
+      <SubType>Designer</SubType>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="UnoQuickStart.iOS\Resources\LaunchScreen.xib" />
+    <None Include="UnoQuickStart.Shared\UnoQuickStart.Shared.projitems" />
+    <None Include="UnoQuickStart.Shared\UnoQuickStart.Shared.shproj" />
+    <None Include="UnoQuickStart.UWP\Package.appxmanifest" />
+    <None Include="UnoQuickStart.UWP\UnoQuickStart.Uwp_TemporaryKey.pfx" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="UnoQuickStart.Shared\App.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="UnoQuickStart.Shared\MainPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include=".NETFramework,Version=v4.5.2">
+      <Visible>False</Visible>
+      <ProductName>Microsoft .NET Framework 4.5.2 %28x86 and x64%29</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="UnoQuickStart.Wasm\LinkerConfig.xml" />
+    <Content Include="UnoQuickStart.Wasm\WasmCSS\Fonts.css" />
+    <Content Include="UnoQuickStart.Wasm\WasmScripts\AppManifest.js" />
+    <None Include="UnoQuickStart.Wasm\Wasm.vstemplate" />
+    <Content Include="UnoQuickStart.Wasm\UnoQuickStart.Wasm.csproj" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(VSToolsPath)\VSSDK\Microsoft.VsSDK.targets" Condition="'$(VSToolsPath)' != ''" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+  <Import Project="..\..\Common.targets" />
+</Project>

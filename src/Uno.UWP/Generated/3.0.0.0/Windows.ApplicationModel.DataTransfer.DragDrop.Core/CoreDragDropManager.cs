@@ -1,0 +1,52 @@
+#pragma warning disable 108 // new keyword hiding
+#pragma warning disable 114 // new keyword hiding
+namespace Windows.ApplicationModel.DataTransfer.DragDrop.Core
+{
+	#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+	[global::Uno.NotImplemented]
+	#endif
+	public  partial class CoreDragDropManager 
+	{
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		[global::Uno.NotImplemented]
+		public  bool AreConcurrentOperationsEnabled
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member bool CoreDragDropManager.AreConcurrentOperationsEnabled is not implemented in Uno.");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.DataTransfer.DragDrop.Core.CoreDragDropManager", "bool CoreDragDropManager.AreConcurrentOperationsEnabled");
+			}
+		}
+		#endif
+		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DragDrop.Core.CoreDragDropManager.TargetRequested.add
+		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DragDrop.Core.CoreDragDropManager.TargetRequested.remove
+		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DragDrop.Core.CoreDragDropManager.AreConcurrentOperationsEnabled.get
+		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DragDrop.Core.CoreDragDropManager.AreConcurrentOperationsEnabled.set
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		[global::Uno.NotImplemented]
+		public static global::Windows.ApplicationModel.DataTransfer.DragDrop.Core.CoreDragDropManager GetForCurrentView()
+		{
+			throw new global::System.NotImplementedException("The member CoreDragDropManager CoreDragDropManager.GetForCurrentView() is not implemented in Uno.");
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		[global::Uno.NotImplemented]
+		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.ApplicationModel.DataTransfer.DragDrop.Core.CoreDragDropManager, global::Windows.ApplicationModel.DataTransfer.DragDrop.Core.CoreDropOperationTargetRequestedEventArgs> TargetRequested
+		{
+			[global::Uno.NotImplemented]
+			add
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.DataTransfer.DragDrop.Core.CoreDragDropManager", "event TypedEventHandler<CoreDragDropManager, CoreDropOperationTargetRequestedEventArgs> CoreDragDropManager.TargetRequested");
+			}
+			[global::Uno.NotImplemented]
+			remove
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.DataTransfer.DragDrop.Core.CoreDragDropManager", "event TypedEventHandler<CoreDragDropManager, CoreDropOperationTargetRequestedEventArgs> CoreDragDropManager.TargetRequested");
+			}
+		}
+		#endif
+	}
+}

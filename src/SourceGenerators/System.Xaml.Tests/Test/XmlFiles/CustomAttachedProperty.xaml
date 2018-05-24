@@ -1,0 +1,9 @@
+<UserControl
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:utk="using:Uno.UI.Toolkit">
+
+	<Grid utk:MyAttachedProperty.IsEnabled="True">
+	</Grid>
+	
+</UserControl>

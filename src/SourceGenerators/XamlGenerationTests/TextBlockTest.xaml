@@ -1,0 +1,38 @@
+﻿<UserControl
+    x:Class="XamlGenerationTests.Shared.TextBoxTest"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:XamlGenerationTests.Shared"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    d:DesignHeight="300"
+    d:DesignWidth="400">
+
+    <StackPanel>
+        <StackPanel.Resources>
+            <local:ObjectConverter TrueValue="&#x0a;" x:Key="nullableToBool"  />
+        </StackPanel.Resources>
+        
+        <TextBlock>Stuff on line1&#x0a;&#009;Stuff on line 2</TextBlock> 
+        <TextBlock>Line 1&#13;&#10;&#13;&#10;Line 2</TextBlock> 
+		
+		<TextBlock Text="this is some text." />
+		
+		<TextBlock>
+			This is some content text on multiple
+			lines in the xaml.
+		</TextBlock>
+		<TextBlock>
+			This is some content text on multiple\r\n
+			lines with escaped crlf.
+		</TextBlock>
+		<TextBlock>
+			This is some content text <Run Text="{Binding}" />
+			with inline runs.
+		</TextBlock>
+		<TextBlock>
+			<Run Text="This text should be"/> <Run Text="spaced properly" />
+		</TextBlock>
+    </StackPanel>
+</UserControl>

@@ -1,0 +1,19 @@
+#pragma warning disable 108 // new keyword hiding
+#pragma warning disable 114 // new keyword hiding
+namespace Windows.UI.WebUI
+{
+	#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+	[global::Uno.NotImplemented]
+	#endif
+	public  partial class SuspendingDeferral : global::Windows.ApplicationModel.ISuspendingDeferral
+	{
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		[global::Uno.NotImplemented]
+		public  void Complete()
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.WebUI.SuspendingDeferral", "void SuspendingDeferral.Complete()");
+		}
+		#endif
+		// Processing: Windows.ApplicationModel.ISuspendingDeferral
+	}
+}

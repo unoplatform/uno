@@ -1,0 +1,354 @@
+﻿<#@ assembly name="System.Core" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Text" #>
+<#@ import namespace="System.Collections.Generic" #>
+
+using System;
+using System.Collections.Generic;
+using Uno.Disposables;
+using System.Runtime.CompilerServices;
+using Uno.Extensions;
+using Uno.UI.DataBinding;
+using Uno.Logging;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Data;
+using Windows.UI.Xaml.Input;
+using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml.Media.Animation;
+
+#if __ANDROID__
+using Android.Views;
+#elif __IOS__
+using UIKit;
+#endif
+
+<# 
+	foreach(var mixin in _mixins) { 
+#>
+
+namespace <#= mixin.NamespaceName #>
+{
+    public partial class <#= mixin.ClassName #>
+	{
+#if <#= mixin.HasCommonStates #>
+		private static readonly string __normalState = "Normal";
+		private static readonly string __disabledState = "Disabled";
+
+#if <#= mixin.HasCommonPressedState #>
+		private static readonly string __pressedState = "Pressed";
+#endif
+
+#if <#= mixin.HasCommonFocusedState #>
+		private static readonly string __focusedState = "Focused";
+#endif
+
+#if <#= mixin.HasCommonCheckedState #>
+		private static readonly string __checkedState = "Checked";
+#endif
+#endif
+
+#if <#= mixin.HasCheckedStates #> || <#= mixin.HasCombinedCheckedState #>
+		private static readonly string __checkedState = "Checked";
+		private static readonly string __uncheckedState = "Unchecked";
+#endif
+
+        /// <summary>
+        /// This method must be called from the constructor in the non-generated part of the class in order to register visual state changes.
+        /// </summary>
+		private void InitializeVisualStates()
+		{
+			this.Loaded += On<#= mixin.ClassName #>Loaded;
+			this.Unloaded += On<#= mixin.ClassName #>Unloaded;
+
+#if <#= mixin.HasCommonStates #>
+			UpdateCommonStates(false);
+
+#if __IOS__ && <#= mixin.HasCommonPressedState #>
+			RegisterLoadActions(
+				() => RegisterEvents(),
+				() => _eventSubscriptions.Disposable = null
+            );
+#endif
+
+#endif
+
+#if <#= mixin.HasCheckedStates #>
+			UpdateCheckedStates(false);
+#endif
+		}
+
+		private void On<#= mixin.ClassName #>Loaded(object sender, RoutedEventArgs e)
+		{
+#if <#= mixin.HasCommonStates #>
+			this.IsEnabledChanged += On<#= mixin.ClassName #>IsEnabledChanged;
+
+#if <#= mixin.HasCommonFocusedState #>
+			this.FocusChange += On<#= mixin.ClassName #>FocusChange;
+#endif
+
+#if <#= mixin.HasCommonCheckedState #> || <#= mixin.HasCombinedCheckedState #>
+			RegisterToCheckedStateChanges();
+#endif
+			UpdateCommonStates(false);
+#endif
+
+#if <#= mixin.HasCheckedStates #>
+			RegisterToCheckedStateChanges();
+			UpdateCheckedStates(false);
+#endif
+		}
+
+		private void On<#= mixin.ClassName #>Unloaded(object sender, RoutedEventArgs e)
+		{
+#if <#= mixin.HasCommonStates #>
+			this.IsEnabledChanged -= On<#= mixin.ClassName #>IsEnabledChanged;
+
+#if <#= mixin.HasCommonFocusedState #>
+			this.FocusChange -= On<#= mixin.ClassName #>FocusChange;
+#endif
+#endif
+		}
+
+#if <#= mixin.HasCommonStates #>
+		private void On<#= mixin.ClassName #>IsEnabledChanged(object sender, EventArgs e)
+		{
+			this.UpdateCommonStates(true);
+		}
+
+#if <#= mixin.HasCommonPressedState #>
+		protected override void OnPointerCanceled(PointerRoutedEventArgs args)
+		{
+			base.OnPointerCanceled(args);
+			
+			this.UpdateCommonStates(true);
+		}
+
+		protected override void OnPointerExited(PointerRoutedEventArgs args)
+		{
+			base.OnPointerExited(args);
+			
+			this.UpdateCommonStates(true);
+		}
+
+		protected override void OnPointerEntered(PointerRoutedEventArgs args)
+		{
+			base.OnPointerEntered(args);
+			
+			this.UpdateCommonStates(true);
+		}
+
+		protected override void OnPointerPressed(PointerRoutedEventArgs args)
+		{
+			base.OnPointerPressed(args);
+
+			this.UpdateCommonStates(true);
+		}
+
+		protected override void OnPointerReleased(PointerRoutedEventArgs args)
+		{
+			base.OnPointerReleased(args);
+			
+			this.UpdateCommonStates(true);
+		}
+
+#if __IOS__
+		protected override void OnApplyTemplate()
+		{
+			base.OnApplyTemplate();
+			RegisterEvents();
+		}
+				
+		private UIControl ContentTemplateRootControl
+		{
+			get
+			{
+				return TemplatedRoot as UIControl 
+					?? TemplatedRoot
+						?.FindFirstChild<ContentPresenter>()
+						?.ContentTemplateRoot as UIControl;
+
+			}
+		}
+
+
+		private readonly SerialDisposable _eventSubscriptions = new SerialDisposable();
+
+		private void RegisterEvents()
+		{
+			_eventSubscriptions.Disposable = null;
+
+			if (Window == null)
+			{
+				// Will be invoked again when this control will be attached loaded.
+				return;
+			}
+
+			var uiControl = ContentTemplateRootControl;
+
+			if (uiControl != null)
+			{
+				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+				{
+					this.Log().Debug("ControlTemplateRoot is a UIControl, hooking on to Pressed");
+				}
+
+				EventHandler pressHandler = (e, s) =>
+				{
+					if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+					{
+						this.Log().Debug("Pressed");
+					}
+
+					UpdateCommonStates(true);
+				};
+
+				uiControl.AllTouchEvents += pressHandler;
+				_eventSubscriptions.Disposable = Disposable.Create(() => uiControl.AllTouchEvents -= pressHandler);
+			}
+		}
+#endif
+
+#endif
+
+#if <#= mixin.HasCommonFocusedState #>
+		private void On<#= mixin.ClassName #>FocusChange(object sender, FocusChangeEventArgs e)
+		{
+			this.UpdateCommonStates(true);
+		}
+#endif
+
+		private void UpdateCommonStates(bool useTransitions)
+		{
+			var combinedState = GetCombinedStatePrefix() + GetCombinedStateSuffix();
+            if (combinedState.IsNullOrEmpty()) {
+                combinedState = __normalState;
+            }
+			VisualStateManager.GoToState(this, combinedState, useTransitions);
+		}
+#endif
+
+        private string GetCombinedStatePrefix() {
+#if <#= mixin.HasCommonCheckedState #>
+            return (this.IsChecked != null && this.IsChecked.Value) ?
+                __checkedState :
+                "";
+#elif <#= mixin.HasCombinedCheckedState #>
+            return (this.IsChecked != null && this.IsChecked.Value) ?
+                __checkedState :
+                __uncheckedState;
+#else
+                return "";
+#endif
+        }
+
+        private string GetCombinedStateSuffix() {
+			var targetState = __normalState;
+			if (!this.IsEnabled)
+			{
+				targetState = __disabledState;
+			}
+#if <#= mixin.HasCommonPressedState #>
+			else if (IsPointerPressed && IsPointerOver)
+			{
+				targetState = __pressedState;
+			}
+#endif
+#if <#= mixin.HasCommonFocusedState #>
+			else if (this.IsFocused)
+			{
+				targetState = __focusedState;
+			}
+#endif
+
+#if !<#= mixin.HasCombinedCheckedState #>
+            if (targetState == __normalState) {
+                return "";
+            }
+#endif
+            return targetState;
+        }
+
+#if <#= mixin.HasCommonCheckedState #> || <#= mixin.HasCombinedCheckedState #>
+		private IDisposable _isCheckedChanged = null;
+
+		private void RegisterToCheckedStateChanges()
+		{
+			if (_isCheckedChanged == null)
+			{
+				_isCheckedChanged = this.RegisterDisposablePropertyChangedCallback(
+					<#= mixin.ClassName #>.IsCheckedProperty,
+					(s, a) => UpdateCommonStates(true)
+				);
+			}
+		}
+#endif
+
+#if <#= mixin.HasCheckedStates #>
+		private IDisposable _isCheckedChanged = null;
+
+		private void RegisterToCheckedStateChanges()
+		{
+			if (_isCheckedChanged == null)
+			{
+				_isCheckedChanged = this.RegisterDisposablePropertyChangedCallback(
+					<#= mixin.ClassName #>.IsCheckedProperty,
+					(s, a) => UpdateCheckedStates(true)
+				);
+			}
+		}
+
+		private void UpdateCheckedStates(bool useTransitions)
+		{
+			VisualStateManager.GoToState(this, (this.IsChecked != null && this.IsChecked.Value) ? __checkedState : __uncheckedState, useTransitions);
+		}
+#endif
+	}
+}
+<#
+ } 
+#>
+
+<#+
+    public void AddClass(
+		string namespaceName, 
+		string className, 
+		bool hasCommonStates = false,
+		bool hasCommonPressedState = false,
+		bool hasCommonFocusedState = false,
+		bool hasCommonCheckedState = false,
+		bool hasCombinedCheckedState = false,
+		bool hasCheckedStates = false
+	)
+	{
+        _mixins.Add(
+			new MixinParams { 
+				NamespaceName = namespaceName, 
+				ClassName = className,
+				HasCommonStates = hasCommonStates ? "true" : "false",
+				HasCommonPressedState = hasCommonPressedState ? "true" : "false",
+				HasCommonFocusedState = hasCommonFocusedState ? "true" : "false",
+				HasCommonCheckedState = hasCommonCheckedState ? "true" : "false",
+				HasCombinedCheckedState = hasCombinedCheckedState ? "true" : "false",
+				HasCheckedStates = hasCheckedStates ? "true" : "false"
+			}
+		);
+    }
+
+	private class MixinParams
+	{
+		public string NamespaceName;
+		public string ClassName;
+        //The class has the 'CommonStates' visual group
+		public string HasCommonStates;
+		public string HasCommonPressedState;
+		public string HasCommonFocusedState;
+        //The control has checked states included within the 'CommonStates' visual group
+		public string HasCommonCheckedState;
+        //The control has checked states included within the 'CombinedStates' visual group, with a naming convention to explicitly specify the default (eg 'UncheckedNormal' instead of 'Normal').
+        public string HasCombinedCheckedState;
+        //The control has a 'CheckStates' visual group
+		public string HasCheckedStates;
+	}
+
+	private List<MixinParams> _mixins = new List<MixinParams>();
+#>

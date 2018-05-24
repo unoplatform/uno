@@ -1,0 +1,125 @@
+﻿<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="15.0">
+	<PropertyGroup>
+		<TargetFrameworks>MonoAndroid71;MonoAndroid80;net46;xamarinios10;netstandard2.0</TargetFrameworks>
+		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+		<NoWarn>1701;1702;1705;109</NoWarn>
+
+		<AndroidUseIntermediateDesignerFile>True</AndroidUseIntermediateDesignerFile>
+		<AndroidResgenFile>obj\$(TargetFramework)\Resources\Resource.Designer.cs</AndroidResgenFile>
+	</PropertyGroup>
+	
+	<ItemGroup>
+		<PackageReference Include="MSBuild.Sdk.Extras" Version="1.5.4" PrivateAssets="All" />
+		<PackageReference Include="Xamarin.Build.Download" Version="0.4.9" />
+	</ItemGroup>
+	<ItemGroup Condition=" '$(TargetFramework)' == 'MonoAndroid60' or '$(TargetFramework)' == 'MonoAndroid70'">
+		<PackageReference Include="Xamarin.Android.Support.v4">
+			<Version>23.4.0.1</Version>
+		</PackageReference>
+		<PackageReference Include="Xamarin.Android.Support.v7.RecyclerView">
+			<Version>23.4.0.1</Version>
+		</PackageReference>
+	</ItemGroup>
+
+	<ItemGroup Condition=" '$(TargetFramework)' == 'MonoAndroid71'">
+		<PackageReference Include="Xamarin.Android.Support.v4">
+			<Version>25.3.1</Version>
+		</PackageReference>
+		<PackageReference Include="Xamarin.Android.Support.v7.RecyclerView">
+			<Version>25.3.1</Version>
+		</PackageReference>
+	</ItemGroup>
+
+	<ItemGroup Condition=" '$(TargetFramework)' == 'MonoAndroid80'">
+		<PackageReference Include="Xamarin.Android.Support.v4">
+			<Version>26.1.0.1</Version>
+		</PackageReference>
+		<PackageReference Include="Xamarin.Android.Support.v7.RecyclerView">
+			<Version>26.1.0.1</Version>
+		</PackageReference>
+	</ItemGroup>
+
+	<ItemGroup>
+		<_JavaFile Include="Uno\**\*.java" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<TransformFile Include="Transforms\Metadata.xml">
+			<SubType>Designer</SubType>
+		</TransformFile>
+		<TransformFile Include="Transforms\EnumFields.xml" />
+		<TransformFile Include="Transforms\EnumMethods.xml" />
+	</ItemGroup>
+	
+	<Import Project="$(MSBuildSDKExtrasTargets)" Condition="Exists('$(MSBuildSDKExtrasTargets)')" />
+	<Import Project="..\Uno.CrossTargetting.props" />
+
+	<Target Name="_CompileUnoJavaCreateOutputs">
+		<!-- 
+		Create the EmbeddedJar itemgroup here so the Xamarin tooling picks it up, 
+		but in the obj folder so we dont have rebuild and git ignore issues.
+		-->
+		<ItemGroup>
+			<EmbeddedJar Include="$(IntermediateOutputPath)\unojars\uno.ui-$(TargetFramework).jar" />
+		</ItemGroup>
+	</Target>
+
+	<Target Name="_CleanJavaGenerated" BeforeTargets="Clean">
+		<Message Text="Removing java generated" />
+		<ItemGroup>
+			<_JavaFilesToDelete Include="$(IntermediateOutputPath)\unojars\**\*.jar" />
+			<_JavaFilesToDelete Include="$(IntermediateOutputPath)\unoclasses\**\*.class" />
+		</ItemGroup>
+		<Delete Files="@(_JavaFilesToDelete)" />
+	</Target>
+
+	<Target Name="_CompileUnoJava" Condition="'$(DesignTimeBuild)' != 'true'" BeforeTargets="ExportJarToXml;GenerateBindings;_GetLibraryImports;ExportJarToXml" Inputs="@(_JavaFile)" Outputs="@(EmbeddedJar)" DependsOnTargets="_CompileUnoJavaCreateOutputs;@(XamarinBuildRestoreResources);_FillMsBuildVersion">
+	
+		<ItemGroup>
+			<_AndroidJar Include="%ProgramFiles(x86)%\Reference Assemblies\Microsoft\Framework\MonoAndroid\$(TargetFrameworkVersion)\mono.android.jar" />
+			<_AndroidJar Include="%localappdata%\Xamarin\Xamarin.Android.Support.v4\23.4.0.0\embedded\classes.jar" Condition="'$(TargetFrameworkVersion)'=='v6.0' or '$(TargetFrameworkVersion)'=='v7.0'" />
+			<_AndroidJar Include="%localappdata%\Xamarin\Xamarin.Android.Support.v7.RecyclerView\23.4.0.0\embedded\classes.jar" Condition="'$(TargetFrameworkVersion)'=='v6.0' or '$(TargetFrameworkVersion)'=='v7.0'" />	
+			<_AndroidJar Include="$(IntermediateOutputPath)\__library_projects__\Xamarin.Android.Support.Annotations\library_project_imports\support-annotations.jar" />
+			<_AndroidJar Include="$(IntermediateOutputPath)\__library_projects__\**\classes.jar" />
+			<_AndroidJar Include="$(IntermediateOutputPath)\lp\**\classes.jar" />
+		</ItemGroup>
+		<PropertyGroup>
+			<_JavaVersion>1.8</_JavaVersion>
+
+			<_JavaVersion Condition="'$(MicrosoftBuildVersion)' &lt; '15.4'">1.7</_JavaVersion>
+
+			<_CompileCommand>"$(_JavaSdkDirectory)bin\javac.exe" -g -source $(_javaVersion) -d .\$(IntermediateOutputPath)\unoclasses -target $(_javaVersion) -J-Dfile.encoding=UTF8 -classpath "@(_AndroidJar)" -bootclasspath "$(_AndroidSdkDirectory)platforms\android-$(_AndroidApiLevel)\android.jar" -encoding UTF-8 .\Uno\UI\*.java</_CompileCommand>
+		</PropertyGroup>
+		
+		<Error Message="The Android SDK for API level $(_AndroidApiLevel) is not installed. Install it through the Android SDK manager." Condition="!Exists('$(_AndroidSdkDirectory)platforms\android-$(_AndroidApiLevel)\android.jar')" />
+		
+		<Message Text="Compiling java ($(_CurrentSupportV4) for $(TargetFramework)): $(_CompileCommand)" Importance="high" />
+
+		<MakeDir Directories="$(IntermediateOutputPath)\unoclasses" />
+		<Exec Command="$(_CompileCommand)" />
+		
+		<MakeDir Directories="$(IntermediateOutputPath)\unojars" />
+		<Exec Command="&quot;$(_JavaSdkDirectory)bin\jar.exe&quot; cvf @(EmbeddedJar) -C $(IntermediateOutputPath)unoclasses ." />
+	
+	</Target>
+
+	<Target Name="_WorkaroundRegisterMdbFilesWithFileWrites" BeforeTargets="IncrementalClean">
+		<CreateItem Include="$(OutDir)*.mdb;$(MonoAndroidIntermediateAssemblyDir)*.mdb">
+			<Output TaskParameter="Include" ItemName="_FilesToRegister" />
+		</CreateItem>
+		<CreateItem Include="$([System.IO.Path]::GetFullPath('%(_FilesToRegister.Identity)'))" Condition="Exists('%(_FilesToRegister.Identity)')">
+			<Output TaskParameter="Include" ItemName="_CleanCurrentFileWrites" />
+		</CreateItem>
+	</Target>
+
+	<PropertyGroup Condition="'$(TargetFrameworkIdentifier)' == 'MonoAndroid' ">
+		<LanguageTargets>$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.Bindings.targets</LanguageTargets>
+	</PropertyGroup>
+
+	<!-- This is to be removed when VS15.3 will be released. This is caused by conditional ProjectReference from Uno.UI -->
+	<ItemGroup Condition="'$(TargetFrameworkIdentifier)' != 'MonoAndroid'">
+		<Compile Remove="**\*.cs" />
+	</ItemGroup>
+	<Target Name="GetBuiltProjectOutputRecursive" Condition=" '$(TargetFrameworkIdentifier)' != 'MonoAndroid' " />
+
+</Project>

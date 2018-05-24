@@ -1,0 +1,143 @@
+<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="15.0">
+	<PropertyGroup>
+		<TargetFrameworks>MonoAndroid80;uap10.0;xamarinios10;netstandard2.0</TargetFrameworks>
+		<TargetFrameworksCI>MonoAndroid71;MonoAndroid80;uap10.0;xamarinios10;netstandard2.0</TargetFrameworksCI>
+	</PropertyGroup>
+
+	<PropertyGroup>
+		<AssemblyName>Uno.UI.Toolkit</AssemblyName>
+		<RootNamespace>Uno.UI.Toolkit</RootNamespace>
+		<Product>$(AssemblyName) ($(TargetFramework))</Product>
+		<DefaultLanguage>en-US</DefaultLanguage>
+	</PropertyGroup>
+
+	<Import Project="$(MSBuildSDKExtrasTargets)" Condition="Exists('$(MSBuildSDKExtrasTargets)')" />
+	<Import Project="..\Uno.CrossTargetting.props" />
+
+  <ItemGroup>
+    <PackageReference Include="Uno.SourceGenerationTasks">
+      <Version>1.22.0-dev.32</Version>
+    </PackageReference>
+    <PackageReference Include="Uno.Core">
+      <Version>1.22.0-dev.23</Version>
+    </PackageReference>
+		<PackageReference Include="Uno.Core.Build">
+			<Version>1.22.0-dev.23</Version>
+		</PackageReference>
+	</ItemGroup>
+	
+  <ItemGroup Condition=" '$(TargetFrameworkIdentifier)' == 'MonoAndroid' or  '$(TargetFrameworkIdentifier)' == 'Xamarin.iOS' ">
+		<Reference Include="System.Numerics" />
+		<Reference Include="System.Numerics.Vectors" />
+	</ItemGroup>
+
+	<ItemGroup Condition=" '$(TargetFrameworkIdentifier)' == 'MonoAndroid' or  '$(TargetFrameworkIdentifier)' == 'Xamarin.iOS' ">
+		<Reference Include="System.Numerics" />
+		<Reference Include="System.Numerics.Vectors" />
+	</ItemGroup>
+
+	<ItemGroup Condition=" '$(TargetFramework)' == 'MonoAndroid60' or '$(TargetFramework)' == 'MonoAndroid70'">
+		<PackageReference Include="Xamarin.Android.Support.v4">
+			<Version>23.4.0.1</Version>
+			<PrivateAssets>none</PrivateAssets>
+		</PackageReference>
+		<PackageReference Include="Xamarin.Android.Support.v7.AppCompat">
+			<Version>23.4.0.1</Version>
+			<PrivateAssets>none</PrivateAssets>
+		</PackageReference>
+		<PackageReference Include="Xamarin.Android.Support.v7.RecyclerView">
+			<Version>23.4.0.1</Version>
+			<PrivateAssets>none</PrivateAssets>
+		</PackageReference>
+		<PackageReference Include="Nito.Collections.Deque">
+			<Version>1.0.0</Version>
+		</PackageReference>
+	</ItemGroup>
+
+	<ItemGroup Condition=" '$(TargetFramework)' == 'MonoAndroid71'">
+		<PackageReference Include="Xamarin.Android.Support.v4">
+			<Version>25.3.1</Version>
+			<PrivateAssets>none</PrivateAssets>
+		</PackageReference>
+		<PackageReference Include="Xamarin.Android.Support.v7.AppCompat">
+			<Version>25.3.1</Version>
+			<PrivateAssets>none</PrivateAssets>
+		</PackageReference>
+		<PackageReference Include="Xamarin.Android.Support.v7.RecyclerView">
+			<Version>25.3.1</Version>
+			<PrivateAssets>none</PrivateAssets>
+		</PackageReference>
+		<PackageReference Include="Nito.Collections.Deque">
+			<Version>1.0.0</Version>
+		</PackageReference>
+	</ItemGroup>
+
+	<ItemGroup Condition=" '$(TargetFramework)' == 'MonoAndroid80'">
+		<PackageReference Include="Xamarin.Android.Support.v4">
+			<Version>26.1.0.1</Version>
+			<PrivateAssets>none</PrivateAssets>
+		</PackageReference>
+		<PackageReference Include="Xamarin.Android.Support.v7.AppCompat">
+			<Version>26.1.0.1</Version>
+			<PrivateAssets>none</PrivateAssets>
+		</PackageReference>
+		<PackageReference Include="Xamarin.Android.Support.v7.RecyclerView">
+			<Version>26.1.0.1</Version>
+			<PrivateAssets>none</PrivateAssets>
+		</PackageReference>
+		<PackageReference Include="Nito.Collections.Deque">
+			<Version>1.0.0</Version>
+		</PackageReference>
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="xamarin.build.download" Version="0.4.9" />
+	</ItemGroup>
+
+	<ItemGroup Condition="'$(TargetFrameworkIdentifier)'=='MonoAndroid' or '$(TargetFrameworkIdentifier)'=='Xamarin.iOS' or '$(TargetFrameworkIdentifier)'=='.NETStandard'">
+		<ProjectReference Include="..\Uno.UI\Uno.UI.csproj">
+			<Name>Uno.UI</Name>
+		</ProjectReference>
+		<ProjectReference Include="..\Uno.UWP\Uno.csproj">
+			<Name>Uno</Name>
+		</ProjectReference>
+		<ProjectReference Include="..\Uno.Foundation\Uno.Foundation.csproj">
+			<Name>Uno.Foundation</Name>
+		</ProjectReference>
+	</ItemGroup>
+
+	<ItemGroup Condition="'$(TargetFrameworkIdentifier)'=='MonoAndroid'">
+		<ProjectReference Include="..\Uno.UI.BindingHelper.Android\Uno.UI.BindingHelper.Android.csproj">
+			<Project>{58332380-4302-4259-8f36-af572c53827f}</Project>
+			<Name>Uno.UI.BindingHelper.Android</Name>
+		</ProjectReference>
+	</ItemGroup>
+
+	<!-- Override existing target, this project cannot be published -->
+	<Target Name="Publish" />
+
+	<PropertyGroup>
+		<UnoUIGeneratorsBinPath>..\SourceGenerators\Uno.UI.SourceGenerators\bin\$(Configuration)</UnoUIGeneratorsBinPath>
+	</PropertyGroup>
+
+	<Import Project="..\SourceGenerators\Uno.UI.SourceGenerators\Content\Uno.UI.SourceGenerators.props" Condition="'$(TargetFrameworkIdentifier)'=='MonoAndroid' or '$(TargetFrameworkIdentifier)'=='Xamarin.iOS'" />
+
+	<Import Project="..\Common.targets" />
+	
+	<Target Name="_UnoToolkitOverrideNuget" AfterTargets="AfterBuild" DependsOnTargets="BuiltProjectOutputGroup" Condition="'$(UnoNugetOverrideVersion)'!=''">
+
+		<PropertyGroup>
+			<_OverrideTargetFramework>$(TargetFramework)</_OverrideTargetFramework>
+			<_TargetNugetFolder>$(USERPROFILE)\.nuget\packages\Uno.UI\$(UnoNugetOverrideVersion)\lib\$(_OverrideTargetFramework)</_TargetNugetFolder>
+		</PropertyGroup>
+		<ItemGroup>
+			<_OutputFiles Include="$(TargetDir)*.*" />
+		</ItemGroup>
+		<MakeDir Directories="$(_TargetNugetFolder)" />
+
+		<Message Importance="high" Text="OVERRIDING NUGET PACKAGE CACHE: $(_TargetNugetFolder)" />
+
+		<Copy SourceFiles="@(_OutputFiles)" DestinationFiles="@(_OutputFiles->'$(_TargetNugetFolder)\%(RecursiveDir)%(Filename)%(Extension)')" />
+		<Copy SourceFiles="@(_OutputFilesPDB)" DestinationFiles="@(_OutputFilesPDB->'$(_TargetNugetFolder)\%(RecursiveDir)%(Filename).pdb')" />
+	</Target>
+</Project>

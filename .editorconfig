@@ -1,0 +1,19 @@
+root = true
+
+[*]
+end_of_line = crlf
+tab_width = 4
+trim_trailing_whitespace = true
+insert_final_newline = true
+
+[*.xml]
+indent_style = tab
+
+[*.xaml]
+indent_style = tab
+
+[*.cs]
+indent_style = tab
+
+[*.json]
+indent_style = tab

@@ -1,0 +1,94 @@
+#pragma warning disable 108 // new keyword hiding
+#pragma warning disable 114 // new keyword hiding
+namespace Windows.UI.Xaml.Media
+{
+	#if false || false || false || false
+	[global::Uno.NotImplemented]
+	#endif
+	public  partial class TimelineMarker : global::Windows.UI.Xaml.DependencyObject
+	{
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		[global::Uno.NotImplemented]
+		public  string Type
+		{
+			get
+			{
+				return (string)this.GetValue(TypeProperty);
+			}
+			set
+			{
+				this.SetValue(TypeProperty, value);
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		[global::Uno.NotImplemented]
+		public  global::System.TimeSpan Time
+		{
+			get
+			{
+				return (global::System.TimeSpan)this.GetValue(TimeProperty);
+			}
+			set
+			{
+				this.SetValue(TimeProperty, value);
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		[global::Uno.NotImplemented]
+		public  string Text
+		{
+			get
+			{
+				return (string)this.GetValue(TextProperty);
+			}
+			set
+			{
+				this.SetValue(TextProperty, value);
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		[global::Uno.NotImplemented]
+		public static global::Windows.UI.Xaml.DependencyProperty TextProperty { get; } = 
+		Windows.UI.Xaml.DependencyProperty.Register(
+			"Text", typeof(string), 
+			typeof(global::Windows.UI.Xaml.Media.TimelineMarker), 
+			new FrameworkPropertyMetadata(default(string)));
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		[global::Uno.NotImplemented]
+		public static global::Windows.UI.Xaml.DependencyProperty TimeProperty { get; } = 
+		Windows.UI.Xaml.DependencyProperty.Register(
+			"Time", typeof(global::System.TimeSpan), 
+			typeof(global::Windows.UI.Xaml.Media.TimelineMarker), 
+			new FrameworkPropertyMetadata(default(global::System.TimeSpan)));
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		[global::Uno.NotImplemented]
+		public static global::Windows.UI.Xaml.DependencyProperty TypeProperty { get; } = 
+		Windows.UI.Xaml.DependencyProperty.Register(
+			"Type", typeof(string), 
+			typeof(global::Windows.UI.Xaml.Media.TimelineMarker), 
+			new FrameworkPropertyMetadata(default(string)));
+		#endif
+		#if false || false || false || false
+		[global::Uno.NotImplemented]
+		public TimelineMarker() : base()
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Media.TimelineMarker", "TimelineMarker.TimelineMarker()");
+		}
+		#endif
+		// Forced skipping of method Windows.UI.Xaml.Media.TimelineMarker.TimelineMarker()
+		// Forced skipping of method Windows.UI.Xaml.Media.TimelineMarker.Time.get
+		// Forced skipping of method Windows.UI.Xaml.Media.TimelineMarker.Time.set
+		// Forced skipping of method Windows.UI.Xaml.Media.TimelineMarker.Type.get
+		// Forced skipping of method Windows.UI.Xaml.Media.TimelineMarker.Type.set
+		// Forced skipping of method Windows.UI.Xaml.Media.TimelineMarker.Text.get
+		// Forced skipping of method Windows.UI.Xaml.Media.TimelineMarker.Text.set
+		// Forced skipping of method Windows.UI.Xaml.Media.TimelineMarker.TimeProperty.get
+		// Forced skipping of method Windows.UI.Xaml.Media.TimelineMarker.TypeProperty.get
+		// Forced skipping of method Windows.UI.Xaml.Media.TimelineMarker.TextProperty.get
+	}
+}
