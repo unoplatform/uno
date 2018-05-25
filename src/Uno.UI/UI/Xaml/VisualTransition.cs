@@ -37,7 +37,7 @@ namespace Windows.UI.Xaml
 				typeof(VisualTransition),
 				new FrameworkPropertyMetadata(
 					defaultValue: null,
-					options: FrameworkPropertyMetadataOptions.ValueInheritsDataContext
+					options: FrameworkPropertyMetadataOptions.LogicalChild
 				)
 			);
 

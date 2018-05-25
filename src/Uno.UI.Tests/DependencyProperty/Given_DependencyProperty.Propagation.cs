@@ -20,6 +20,7 @@ using Windows.UI.Xaml;
 using Uno.UI.Converters;
 using Microsoft.Extensions.Logging;
 using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Media.Animation;
 
 namespace Uno.UI.Tests.BinderTests.Propagation
 {
@@ -449,6 +450,35 @@ namespace Uno.UI.Tests.BinderTests.Propagation
 			SUT.DataContext = 42;
 
 			Assert.IsNull(template.DataContext);
+		}
+
+		[TestMethod]
+		public void When_ControlTemplate_And_Animation()
+		{
+			var SUT = new ContentControl() { Tag = 42 };
+			DoubleAnimation anim = null;
+
+			var template = new ControlTemplate(() => {
+				var g = new Grid();
+
+				var vg = new VisualStateGroup();
+				var t1 = new VisualTransition();
+				var sb = new Storyboard();
+				anim = new DoubleAnimation();
+				anim.SetBinding(DoubleAnimation.ToProperty, new Binding() { Path = "Tag", RelativeSource = RelativeSource.TemplatedParent });
+				sb.Children.Add(anim);
+				t1.Storyboard = sb;
+				vg.Transitions.Add(t1);
+
+				VisualStateManager.SetVisualStateGroups(g, new List<VisualStateGroup> { vg });
+
+				return g;
+			});
+
+			SUT.Template = template;
+			SUT.ApplyTemplate();
+
+			Assert.IsNotNull(anim);
 		}
 	}
 

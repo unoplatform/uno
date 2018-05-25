@@ -214,10 +214,10 @@ namespace Windows.UI.Xaml.Media.Animation
 			if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
 			{
 				this.Log().DebugFormat(
-					"Setting [{0}] to [{1} / {2}] current {3}/{4}={5}",
+					"Setting [{0}] to [{1} / {2}] current {3:X8}/{4}={5}",
 					value,
 					Storyboard.GetTargetName(this), Storyboard.GetTargetProperty(this),
-					PropertyInfo?.GetHashCode(),
+					PropertyInfo?.DataContext?.GetHashCode(),
 					PropertyInfo?.DataContext?.GetType(),
 					PropertyInfo?.Value
 				);
