@@ -7,7 +7,7 @@ list view on each platform for high performance. This document explains how Uno'
 
 This is a stripped-down view of the default style for ListView in Uno:
 
-```
+```xml
 	<!-- Default style for Windows.UI.Xaml.Controls.ListView -->
 	<xamarin:Style TargetType="ListView">
 		<Setter Property="ItemsPanel">
@@ -36,7 +36,7 @@ As on Windows, the ItemsPanelTemplate can be set; ItemsStackPanel and ItemsWrapG
 
 In fact there is only one difference from the Windows style, which is a custom Style on the ScrollViewer element. Below is the custom ScrollViewer style in its entirety:
 
-```
+```xml
 	<!--This is a Uno-only Style which removes the ScrollContentPresenter, in order for ListViewBase to use the default Windows style (nearly)
 	while delegating to a native implementation for performance.-->
 	<xamarin:Style TargetType="ScrollViewer"

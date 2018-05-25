@@ -44,6 +44,7 @@ logger that may output content in Android's LogCat, or iOS syslog.
 
 Here's how enable it :
 
+```csharp
 	Uno.Logging.LogManager.LoggerSelector = Uno.Logging.ConsoleLogger.Instance.GetLog;
 	Uno.Logging.ConsoleLogger.Instance.LogLevel = Uno.Logging.LogLevel.Warn;
 
@@ -59,6 +60,7 @@ Here's how enable it :
 		return passList.Any(n => name.StartsWith(n))
 			? Uno.Logging.ConsoleLogger.FilterResult.Pass : Uno.Logging.ConsoleLogger.FilterResult.Ignore;
 	};
+```
 
 Note that enabling debug logging may significantly slow down the application. It is **strongly** 
 suggested to keep the logging level to **LogLevel.Warn**.
@@ -89,7 +91,9 @@ These namespaces are to be declared on top of each xaml file that will be includ
 
 Also, the following ignorables must be declared :
 
+```xml
     mc:Ignorable="d ios android xamarin"
+```
 
 This list is mandatory for the Windows Xaml parser to ignore non-windows markup.
 
@@ -97,36 +101,43 @@ On Xamarin based platforms, the Uno.UI will selectively remove or add the approp
 
 For instance, on Xamarin.iOS, the Ignorable attribute will automatically be set to :
 
+```xml
     mc:Ignorable="d win android"
+```
 
 which will make the win and android namespaces ignored by the Umbrella UI parser.
 
 Similarly, on Xamarin.Android, the Ignorable attribute will automatically be set to : 
 
+```xml
     mc:Ignorable="d win ios"
+```
 
 which will make the win and ios namespaces ignored by the Umbrella UI parser.
 
 In the Xaml file, it is then possible to write the following :
 
+```xml
     <ItemsPanelTemplate>  
           <xamarin:WrapPanel ItemWidth="100" Name="WrapPanelElement_SimpleHorizontal" />  
           <win:WrapGrid ItemWidth="100" Name="WrapGridElement" />  
     </ItemsPanelTemplate>
+```
 
 Where depending on the platform, a panel will be selected at compile time.
 
 Here's a complete file sample :
 
+```xml
     <UserControl
         x:Class="GenericApp.Views.Content.UITests.MyControl"
-        xmlns="[http://schemas.microsoft.com/winfx/2006/xaml/presentation](http://schemas.microsoft.com/winfx/2006/xaml/presentation)"
-        xmlns:x="[http://schemas.microsoft.com/winfx/2006/xaml](http://schemas.microsoft.com/winfx/2006/xaml)"
-        xmlns:d="[http://schemas.microsoft.com/expression/blend/2008](http://schemas.microsoft.com/expression/blend/2008)"
-        xmlns:mc="[http://schemas.openxmlformats.org/markup-compatibility/2006](http://schemas.openxmlformats.org/markup-compatibility/2006)"
-        xmlns:ios="[http://nventive.com/ios](http://nventive.com/ios)"
-        xmlns:win="[http://schemas.microsoft.com/winfx/2006/xaml/presentation](http://schemas.microsoft.com/winfx/2006/xaml/presentation)"
-        xmlns:android="[http://nventive.com/android](http://nventive.com/android)"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:ios="http://nventive.com/ios"
+        xmlns:win="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:android="http://nventive.com/android"
         mc:Ignorable="d ios android"
         d:DesignHeight="300"
         d:DesignWidth="400">
@@ -137,6 +148,7 @@ Here's a complete file sample :
        </ItemsPanelTemplate>  
     
     </UserControl>
+```
 
 ## Using platform-specific code-behind
 
@@ -144,16 +156,20 @@ There are some cases where the Xaml representation of a layout is not possible. 
 
 For instance :
 
+```xml
     <ios:TextBox x:Name="MySampleTextBox" />
+```
 
 Will force the creation of the following method :
 
+```csharp
 	public MyPage()
     {
         this.InitializeComponent();
 
         c.Started += (s, e) => Debug.WriteLine("Text editing has started");  
     }
+```
 
 ## Uno.UI Layout Behavior
 
@@ -173,6 +189,7 @@ interface `DependencyProperty`, to gain access to the GetValue and SetValue meth
 
 Here is an example of declaration:
 
+```csharp
     public class ControlTemplateTest : Control  
     {  
        public string MyCustomContent  
@@ -184,6 +201,7 @@ Here is an example of declaration:
        public static readonly DependencyProperty MyCustomContentProperty =  
              DependencyProperty.Register("MyCustomContent", typeof(string), typeof(ControlTemplateTest), new PropertyMetadata(null));  
     }
+```
 
 In visual studio, this code can be created using the `propdp`
 [code snippet](https://msdn.microsoft.com/en-us/library/ms165392.aspx).
@@ -194,6 +212,7 @@ Uno.UI provides the ability to create control templates, which provide another w
 
 For the following control class :  
 
+```csharp
     public class MyUserControl : Control  
     {  
         public string MyCustomContent  
@@ -205,9 +224,11 @@ For the following control class :
         public static readonly DependencyProperty MyCustomContentProperty =  
              DependencyProperty.Register("MyCustomContent", typeof(string), typeof(MyUserControl), new PropertyMetadata(null));  
     }
+```
 
 Which exposes a `MyCustomContent` property, it is then possible to apply a template that uses template bindings :
 
+```xml
     <UserControl
         x:Class="GenericApp.Views.Pages.Main.MyUserControl"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
@@ -228,8 +249,9 @@ Which exposes a `MyCustomContent` property, it is then possible to apply a templ
      </UserControl.Template>
     
     </UserControl>
+```
 
- Where the bindings applied to the control on the MyHeader property will be propagated to the template binding automatically.
+Where the bindings applied to the control on the MyHeader property will be propagated to the template binding automatically.
 
 ## Using Static Resources
 
@@ -370,9 +392,13 @@ For more information, see the [TextBlock](https://msdn.microsoft.com/en-us/libra
 Fonts must be placed in the `Assets` folder of the head project, matching the path of the fonts in Windows, and marked as `AndroidAsset`.
 The format is the same as Windows, as follows:
 
-    <Setter Property="FontFamily" Value="/Assets/Fonts/Roboto-Regular.ttf#Roboto" />
-    or
-    <Setter Property="FontFamily" Value="ms-appx:///Assets/Fonts/Roboto-Regular.ttf#Roboto" />
+```xml
+<Setter Property="FontFamily" Value="/Assets/Fonts/Roboto-Regular.ttf#Roboto" />
+```
+   or
+```xml
+<Setter Property="FontFamily" Value="ms-appx:///Assets/Fonts/Roboto-Regular.ttf#Roboto" />
+```
 
 #### Custom Fonts on iOS
 Fonts must be placed in the `Resources` folder of the head project, be marked as
@@ -380,18 +406,24 @@ Fonts must be placed in the `Resources` folder of the head project, be marked as
 
 Each custom font **must** then be specified in the `info.plist` file as follows:
 
-    <key>UIAppFonts</key>
-	<array>
-		<string>yourfont01.ttf</string>
-		<string>yourfonr02.ttf</string>
-		<string>yourfonr03.ttf</string>
-    </array>
+```xml
+<key>UIAppFonts</key>
+<array>
+    <string>yourfont01.ttf</string>
+    <string>yourfonr02.ttf</string>
+    <string>yourfonr03.ttf</string>
+</array>
+```
 
 The format is the same as Windows, as follows:
 
-    <Setter Property="FontFamily" Value="/Assets/Fonts/yourfont01.ttf#Roboto" />
+```xml
+<Setter Property="FontFamily" Value="/Assets/Fonts/yourfont01.ttf#Roboto" />
+```
     or
-    <Setter Property="FontFamily" Value="ms-appx:///Assets/Fonts/yourfont01.ttf#Roboto" />
+```xml
+<Setter Property="FontFamily" Value="ms-appx:///Assets/Fonts/yourfont01.ttf#Roboto" />
+```
 
 ### TextBox
 
@@ -420,8 +452,10 @@ In order for the DisplayInformation's AutoRotationPreferences to work properly, 
 ##### Warning for iOS 9+ Development
 As of iOS 9, the system does not allow iPad applications to dictate their orientation if they support [Multitasking / Split View](https://developer.apple.com/library/prerelease/content/documentation/WindowsViews/Conceptual/AdoptingMultitaskingOniPad/). In order to control orientation through the DisplayInformation class, you will need to opt-out of Multitasking / Split View by ensuring that you have defined the following in your `info.plist`:
 
-    <key>UIRequiresFullScreen</key>
-    <true/>
+```xml
+<key>UIRequiresFullScreen</key>
+<true/>
+```
 
 ## Creating/Using Android Activities
 At the root of every Android Uno app lies a `BaseActivity` class that extends from `Android.Support.V7.App.AppCompatActivity` which is part of the [Android v7 AppCompat Support Library](https://developer.android.com/topic/libraries/support-library/features.html#v7-appcompat). If you ever need to create a new Activity within your app or within Uno you must be sure to extend `BaseActivity` and, if you need to apply a Theme to the activity, ensure that the Theme you set is a `Theme.AppCompat` theme (or descendant).
