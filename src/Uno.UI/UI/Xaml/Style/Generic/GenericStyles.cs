@@ -24,8 +24,7 @@ namespace Windows.UI.Xaml
 		{
 			if (Uno.UI.FeatureConfiguration.Style.UseUWPDefaultStyles)
 			{
-				// netstd is disabled until the codegen is fixed on 15.6
-#if !NET46 && !NETSTANDARD2_0
+#if !NET46
 				Style.RegisterDefaultStyleForType(typeof(Controls.Button), Uno.UI.GlobalStaticResources.XamlDefaultButton);
 				Style.RegisterDefaultStyleForType(typeof(Controls.TextBox), Uno.UI.GlobalStaticResources.XamlDefaultTextBox);
 				Style.RegisterDefaultStyleForType(typeof(Controls.CheckBox), Uno.UI.GlobalStaticResources.XamlDefaultCheckBox);
@@ -36,7 +35,10 @@ namespace Windows.UI.Xaml
 				Style.RegisterDefaultStyleForType(typeof(Controls.Frame), Uno.UI.GlobalStaticResources.XamlDefaultFrame);
 				Style.RegisterDefaultStyleForType(typeof(Controls.ProgressBar), Uno.UI.GlobalStaticResources.XamlDefaultProgressBar);
 				Style.RegisterDefaultStyleForType(typeof(Controls.Slider), Uno.UI.GlobalStaticResources.XamlDefaultSlider);
+
+#if !NETSTANDARD2_0
 				Style.RegisterDefaultStyleForType(typeof(Controls.AppBar), Uno.UI.GlobalStaticResources.XamlCommandBar);
+#endif
 #endif
 			}
 		}
