@@ -35,18 +35,18 @@ You can do the same thing with Uno.UI, although only a subset of those qualifier
 
 Not all scales are supported on all platforms:
 
-| Scale | UWP | iOS | Android |
-|-------|:---:|:---:|:-------:|
-| `100` | x   | x   | x       |
-| `125` | x   |     |         |
-| `150` | x   |     | x       |
-| `200` | x   | x   | x       |
-| `300` | x   | x   | x       |
-| `400` | x   |     | x       |
+| Scale | UWP         | iOS      | Android |
+|-------|:-----------:|:--------:|:-------:|
+| `100` | scale-100   | @1x      | mdpi    |
+| `125` | scale-125   | N/A      | N/A     |
+| `150` | scale-150   | N/A      | hdpi    |
+| `200` | scale-200   | @2x      | xhdpi   |
+| `300` | scale-300   | @3x      | xxhdpi  |
+| `400` | scale-400   | N/A      | xxxhdpi |
 
 We recommend including assets for each of these scales: `100`, `150`, `200`, `300` and `400`. Only compatible scales will be included to each platform.
 
-*Note: Most of nventive's Android projects define the `UseHighDPIResources` property to `False` in debug. In those cases, only assets with scale `100` (mdpi) and scale `150` (hdpi) will be included. This reduces deployment time when debugging as fewer assets are processed and transferred to the device or simulator.*
+*Note: In the Android head project (via the csproj), you can define the `UseHighDPIResources` property to `False` in debug. In those cases, only assets with scale `100` (mdpi) and scale `150` (hdpi) will be included. This reduces deployment time when debugging as fewer assets are processed and transferred to the device or simulator.*
 
 #### Examples
 
