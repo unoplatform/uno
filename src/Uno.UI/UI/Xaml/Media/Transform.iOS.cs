@@ -79,10 +79,36 @@ namespace Windows.UI.Xaml.Media
 			if (View != null)
 			{
 				var size = GetViewSize(View);
-				View.Layer.AnchorPoint = GetAnchorPoint(size);
+				SetAnchorPoint(GetAnchorPoint(size), View);
 				// Center (CenterX/CenterY) is already part of AnchorPoint, we don't want to apply it twice.
-				View.Transform = ToNativeTransform(size, withCenter: false); 
+				View.Transform = ToNativeTransform(size, withCenter: false);
 			}
+		}
+
+		/// <summary>
+		/// Change a view's anchor point without moving it 
+		/// </summary>
+		/// <remarks>
+		/// Source: https://stackoverflow.com/a/5666430
+		/// </remarks>
+		private static void SetAnchorPoint(CGPoint anchorPoint, UIView view)
+		{
+			var newPoint = new CGPoint(view.Bounds.Size.Width * anchorPoint.X, view.Bounds.Size.Height * anchorPoint.Y);
+			var oldPoint = new CGPoint(view.Bounds.Size.Width * view.Layer.AnchorPoint.X, view.Bounds.Size.Height * view.Layer.AnchorPoint.Y);
+
+			newPoint = view.Transform.TransformPoint(newPoint);
+			oldPoint = view.Transform.TransformPoint(oldPoint);
+
+			var position = view.Layer.Position;
+
+			position.X -= oldPoint.X;
+			position.X += newPoint.X;
+
+			position.Y -= oldPoint.Y;
+			position.Y += newPoint.Y;
+
+			view.Layer.AnchorPoint = anchorPoint;
+			view.Layer.Position = position;
 		}
 
 		/// <summary>
