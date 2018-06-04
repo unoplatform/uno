@@ -310,13 +310,9 @@ namespace Windows.UI.Xaml.Controls
 				ItemsPanelRoot.SetValue(DataContextProperty, DataContext, DependencyPropertyValuePrecedences.Inheritance);
 				OnApplyTemplatePartial();
 
-				if (ScrollViewer?.Style.Precedence == DependencyPropertyValuePrecedences.ImplicitStyle)
+				if (ScrollViewer?.Style?.Precedence == DependencyPropertyValuePrecedences.ImplicitStyle)
 				{
-					if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Warning))
-					{
-						this.Log().Warn($"Performance hit: {this} is using a ScrollViewer in its template with a default style, which will break virtualization. A Style containing {nameof(ListViewBaseScrollContentPresenter)} should be used.");
-					}
-					ScrollViewer.Style = Uno.UI.GlobalStaticResources.ListViewBaseScrollViewerStyle;
+					throw new InvalidOperationException($"Performance hit: {this} is using a ScrollViewer in its template with a default style, which would break virtualization. A Style containing {nameof(ListViewBaseScrollContentPresenter)} must be used.");
 				}
 
 				if (ScrollViewer != null)

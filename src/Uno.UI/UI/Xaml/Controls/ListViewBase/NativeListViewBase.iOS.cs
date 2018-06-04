@@ -525,9 +525,22 @@ namespace Windows.UI.Xaml.Controls
 			var index = IndexPathForItem(item);
 			if (index != null)
 			{
-				//Scroll to individual item, We set the UICollectionViewScrollPosition to None to have the same behavior as windows.
-				//We can potentially customize this By using ConvertScrollAlignment and use different alignments.
-				ScrollToItem(index, ConvertSnapPointsAlignmentToScrollPosition(), AnimateScrollIntoView);
+				if (IndexPathsForVisibleItems.Length == 0)
+				{
+					//Item is present but no items are visible, probably being called on first load. Dispatch so that it actually does something.
+					Dispatcher.RunAsync(CoreDispatcherPriority.Normal, ScrollInner);
+				}
+				else
+				{
+					ScrollInner();
+				}
+
+				void ScrollInner()
+				{
+					//Scroll to individual item, We set the UICollectionViewScrollPosition to None to have the same behavior as windows.
+					//We can potentially customize this By using ConvertScrollAlignment and use different alignments.
+					ScrollToItem(index, ConvertSnapPointsAlignmentToScrollPosition(), AnimateScrollIntoView);
+				}
 			}
 		}
 
