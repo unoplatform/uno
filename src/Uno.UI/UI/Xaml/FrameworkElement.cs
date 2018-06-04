@@ -268,7 +268,10 @@ namespace Windows.UI.Xaml
 			{
 				ApplyDefaultStyle();
 
-				if (FeatureConfiguration.FrameworkElement.ClearPreviousOnStyleChange)
+				if (FeatureConfiguration.FrameworkElement.ClearPreviousOnStyleChange && 
+					// Don't clear the default Style, which should always be present.
+					!(bool)(oldStyle == Style.DefaultStyleForType(GetType()))
+				)
 				{
 					oldStyle?.ClearStyle(this);
 				}
