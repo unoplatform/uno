@@ -497,5 +497,26 @@ namespace UIKit
 
 			return null;
 		}
+		
+		/// <summary>
+		/// Displays all the visual descendants of <paramref name="view"/> for diagnostic purposes. 
+		/// </summary>
+		public static string ShowDescendants(this UIView view, StringBuilder sb = null, string spacing = "")
+		{
+			sb = sb ?? new StringBuilder();
+			AppendView(view);
+			spacing += "  ";
+			foreach (var child in view.Subviews)
+			{
+				ShowDescendants(child, sb, spacing);
+			}
+
+			return sb.ToString();
+
+			void AppendView(UIView innerView)
+			{
+				sb.AppendLine($"{spacing}>{innerView.ToString()}-({innerView.Frame.Width}x{innerView.Frame.Height})");
+			}
+		}
 	}
 }

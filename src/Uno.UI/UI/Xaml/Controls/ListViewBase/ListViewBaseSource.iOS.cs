@@ -56,6 +56,11 @@ namespace Windows.UI.Xaml.Controls
 		/// </summary>
 		internal const int SupplementarySections = 1;
 
+		/// <summary>
+		/// Visual element which stops layout requests from propagating up. Used for measuring templates.
+		/// </summary>
+		private BlockLayout BlockLayout { get; } = new BlockLayout();
+
 		public static class TraceProvider
 		{
 			public readonly static Guid Id = Guid.Parse("{EE64E62E-67BD-496A-A8B1-4A142642B3A3}");
@@ -81,7 +86,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		#region Properties
-		
+
 		private WeakReference<NativeListViewBase> _owner;
 
 		public NativeListViewBase Owner
@@ -510,7 +515,19 @@ namespace Windows.UI.Xaml.Controls
 				}
 
 				container.ContentTemplate = dataTemplate;
-				size = Owner.NativeLayout.Layouter.MeasureChild(container, new Size(double.MaxValue, double.MaxValue));
+				try
+				{
+					// Attach templated container to visual tree while measuring. This works around the bug that default Style is not 
+					// applied until view is loaded.
+					Owner.XamlParent.AddSubview(BlockLayout);
+					BlockLayout.AddSubview(container);
+					size = Owner.NativeLayout.Layouter.MeasureChild(container, new Size(double.MaxValue, double.MaxValue));
+				}
+				finally
+				{
+					Owner.XamlParent.RemoveChild(BlockLayout);
+					BlockLayout.RemoveChild(container);
+				}
 
 				_templateCache[dataTemplate ?? _nullDataTemplateKey] = size;
 			}
@@ -643,6 +660,12 @@ namespace Windows.UI.Xaml.Controls
 			get => base.Bounds;
 			set
 			{
+				if (_measuredContentSize.HasValue)
+				{
+					// At some points, eg during a collection change, iOS seems to apply an outdated size even after we've updated the 
+					// LayoutAttributes. Keep the good size.
+					SetExtent(ref value, _measuredContentSize.Value);
+				}
 				base.Bounds = value;
 				UpdateContentViewFrame();
 			}
@@ -833,6 +856,18 @@ namespace Windows.UI.Xaml.Controls
 			{
 				frame.Width = targetSize.Width;
 			}
+		}
+	}
+
+	internal partial class BlockLayout : Border
+	{
+		public override void SetNeedsLayout()
+		{
+			//Block
+		}
+		public override void SetSuperviewNeedsLayout()
+		{
+			//Block
 		}
 	}
 }

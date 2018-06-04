@@ -685,9 +685,10 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			var propertyInitializedVariable = "_{0}Initialized".InvariantCultureFormat(sanitizedPropertyName);
             var backingFieldVariable = "__{0}BackingField".InvariantCultureFormat(sanitizedPropertyName);
             var staticModifier = isStatic ? "static" : "";
+
+            // The property type may be partially qualified, try resolving it through FindType
 			var propertySymbol = FindType(propertyType);
 			propertyType = propertySymbol?.GetFullName() ?? propertyType;
-
 
 			writer.AppendLineInvariant($"private {staticModifier} bool {propertyInitializedVariable} = false;");
             writer.AppendLineInvariant($"private {staticModifier} {GetGlobalizedTypeName(propertyType)} {backingFieldVariable};");

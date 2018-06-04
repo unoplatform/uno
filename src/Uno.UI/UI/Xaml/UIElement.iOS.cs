@@ -728,6 +728,8 @@ namespace Windows.UI.Xaml
 		public Controls.ContentControl[] ContentControlsOfInterest => ViewsOfInterest.OfType<Controls.ContentControl>().ToArray();
 
 		public Controls.Panel[] PanelsOfInterest => ViewsOfInterest.OfType<Controls.Panel>().ToArray();
+
+		public string ShowDescendants() => UIViewExtensions.ShowDescendants(this);
 #endif
 
 		private class TappedGestureHandler : GestureHandler

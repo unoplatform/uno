@@ -85,6 +85,18 @@ namespace Windows.UI.Xaml.Controls
 					_implicitItemWidth = measuredWidth;
 					_implicitItemHeight = measuredHeight;
 
+					// When an item dimension is not fixed, we need to arrange based on the measured size,
+					// otherwise the arrange will be passed a dimension that is too large and the first
+					// few items will not be visible
+					if (double.IsNaN(ItemWidth))
+					{
+						slotSize.Width = ViewHelper.PhysicalToLogicalPixels(_implicitItemWidth.Value);
+					}
+					if (double.IsNaN(ItemHeight))
+					{
+						slotSize.Height = ViewHelper.PhysicalToLogicalPixels(_implicitItemHeight.Value);
+					}
+
 					availableWidth = ResolveAvailableWidth(availableBreadth);
 					availableHeight = ResolveAvailableHeight(availableBreadth);
 
@@ -96,7 +108,7 @@ namespace Windows.UI.Xaml.Controls
 					//We always lay out view 'top down' so that it is aligned correctly if its height is less than the line height
 					direction == FillDirection.Forward ? extentOffset : extentOffset - ResolveItemExtent().Value,
 					breadthOffset + usedBreadth,
-					new Foundation.Size(width: slotSize.Width, height: slotSize.Height)
+					slotSize
 				);
 
 				usedBreadth += ResolveItemBreadth().Value;

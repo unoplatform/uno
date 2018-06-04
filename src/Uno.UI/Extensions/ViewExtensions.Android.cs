@@ -24,18 +24,18 @@ namespace Uno.UI
 	public static class ViewExtensions
 	{
 		public static void Measure(this View view, Size size)
-        {
-            view.Measure(
-                ViewHelper.MakeMeasureSpec(size.Width, MeasureSpecMode.AtMost),
+		{
+			view.Measure(
+				ViewHelper.MakeMeasureSpec(size.Width, MeasureSpecMode.AtMost),
 				ViewHelper.MakeMeasureSpec(size.Height, MeasureSpecMode.AtMost)
-            );
-        }
+			);
+		}
 
 		public static bool HasParent(this View view)
 		{
 			var provider = view as DependencyObject;
 
-			if(provider != null)
+			if (provider != null)
 			{
 				// This value is set in OnLoaded, which avoids 
 				// interacting with JNI, for performance.
@@ -52,7 +52,7 @@ namespace Uno.UI
 		/// <param name="view"></param>
 		/// <returns>First parent of the view of specified T type.</returns>
 		public static T FindFirstParent<T>(this IViewParent view)
-			where T:class
+			where T : class
 		{
 			view = view?.Parent;
 
@@ -106,7 +106,7 @@ namespace Uno.UI
 			{
 				yield return parent as View;
 
-				if(parent == view.Parent)
+				if (parent == view.Parent)
 				{
 					break;
 				}
@@ -157,7 +157,7 @@ namespace Uno.UI
 			}
 			else
 			{
-				if(group.ChildCount != 0)
+				if (group.ChildCount != 0)
 				{
 					return group.GetChildAt(0);
 				}
@@ -172,7 +172,7 @@ namespace Uno.UI
 		private static IEnumerable<View> GetChildrenSlow(ViewGroup group)
 		{
 			var count = group.ChildCount;
-			
+
 			for (int i = 0; i < count; i++)
 			{
 				yield return group.GetChildAt(i);
@@ -187,7 +187,7 @@ namespace Uno.UI
 		/// <returns>An enumerator of the children</returns>
 		public static IEnumerable<View> GetChildren(this ViewGroup group, Func<View, bool> filter)
 		{
-			foreach(var child in GetChildren(group))
+			foreach (var child in GetChildren(group))
 			{
 				if (filter(child))
 				{
@@ -315,7 +315,7 @@ namespace Uno.UI
 		{
 			var bindableView = view as Controls.BindableView;
 
-			if(bindableView != null)
+			if (bindableView != null)
 			{
 				// Use the C# implementation of RemoveView so that it is
 				// executed faster. See UnoViewGroup for details.
@@ -376,7 +376,8 @@ namespace Uno.UI
 			var listener = ViewAttachedStateChangedHelper.CreateChangedListener(attachedHandler, detachedHandler);
 			view.AddOnAttachStateChangeListener(listener);
 
-			return Disposable.Create(() => {
+			return Disposable.Create(() =>
+			{
 				view.RunIfNativeInstanceAvailable(v => v.RemoveOnAttachStateChangeListener(listener));
 
 				ViewAttachedStateChangedHelper.ReleaseChangedListener(listener);
@@ -481,5 +482,35 @@ namespace Uno.UI
 
 			return tcs.Task;
 		}
+		
+		/// <summary>
+		/// Displays all the visual descendants of <paramref name="viewGroup"/> for diagnostic purposes. 
+		/// </summary>
+		public static string ShowDescendants(this ViewGroup viewGroup, StringBuilder sb = null, string spacing = "")
+		{
+			sb = sb ?? new StringBuilder();
+			AppendView(viewGroup);
+			spacing += "  ";
+			for (int i = 0; i < viewGroup.ChildCount; i++)
+			{
+				var child = viewGroup.GetChildAt(i);
+				if (child is ViewGroup childViewGroup)
+				{
+					ShowDescendants(childViewGroup, sb, spacing);
+				}
+				else
+				{
+					AppendView(child);
+				}
+			}
+
+			return sb.ToString();
+
+			void AppendView(View view)
+			{
+				sb.AppendLine($"{spacing}>{view.ToString()}-({ViewHelper.PhysicalToLogicalPixels(view.Width)}x{ViewHelper.PhysicalToLogicalPixels(view.Height)})");
+			}
+		}
 	}
+
 }

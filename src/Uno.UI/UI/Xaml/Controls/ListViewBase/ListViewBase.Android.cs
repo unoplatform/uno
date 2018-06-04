@@ -12,6 +12,7 @@ using Microsoft.Extensions.Logging;
 using System;
 using Android.Support.V7.Widget;
 using Windows.UI.Xaml.Data;
+using Windows.UI.Core;
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -282,9 +283,14 @@ namespace Windows.UI.Xaml.Controls
 
 		public void ScrollIntoView(object item, ScrollIntoViewAlignment alignment)
 		{
-			var index = IndexFromItem(item);
-			var displayPosition = ConvertIndexToDisplayPosition(index);
-			NativePanel?.ScrollIntoView(displayPosition, alignment);
+			// Dispatching ScrollIntoView on Android prevents issues where layout/render changes
+			// occuring during scrolling are not always properly picked up by the layouting/rendering engine.
+			Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+			{
+				var index = IndexFromItem(item);
+				var displayPosition = ConvertIndexToDisplayPosition(index);
+				NativePanel?.ScrollIntoView(displayPosition, alignment);
+			});
 		}
 
 		protected internal override IEnumerable<DependencyObject> GetItemsPanelChildren()
