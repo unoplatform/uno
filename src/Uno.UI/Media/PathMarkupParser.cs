@@ -260,6 +260,13 @@ namespace Uno.Media
             ref Command command,
             ref bool relative)
         {
+			// https://www.w3.org/TR/SVG/paths.html#PathDataMovetoCommands
+			// If a moveto is followed by multiple pairs of coordinates, the subsequent pairs are treated as implicit lineto commands
+			if (command == Command.Move)
+			{
+				command = Command.Line;
+			}
+
 			ReadWhitespace(reader);
 
             int i = reader.Peek();
