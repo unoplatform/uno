@@ -68,6 +68,11 @@ namespace Windows.UI.Xaml.Controls
 		/// collection (InsertItems, etc) shouldn't be called because they will result in a NSInternalInconsistencyException
 		/// </summary>
 		private bool _needsLayoutAfterReloadData = false;
+		/// <summary>
+		/// List was empty last time ReloadData() was called. If inserting items into an empty collection we should do a refresh instead, 
+		/// to work around a UICollectionView bug https://stackoverflow.com/questions/12611292/uicollectionview-assertion-failure
+		/// </summary>
+		private bool _listEmptyLastRefresh = false;
 		private bool _isReloadDataDispatched = false;
 		#endregion
 
@@ -173,7 +178,7 @@ namespace Windows.UI.Xaml.Controls
 
 			ShowsHorizontalScrollIndicator = true;
 			ShowsVerticalScrollIndicator = true;
-			
+
 			if (ScrollViewer.UseContentInsetAdjustmentBehavior)
 			{
 				ContentInsetAdjustmentBehavior = UIScrollViewContentInsetAdjustmentBehavior.Never;
@@ -317,7 +322,7 @@ namespace Windows.UI.Xaml.Controls
 		/// </summary>
 		private bool TryApplyCollectionChange()
 		{
-			if (_needsLayoutAfterReloadData)
+			if (_needsLayoutAfterReloadData || _listEmptyLastRefresh)
 			{
 				SetNeedsReloadData();
 				if (XamlParent.AreEmptyGroupsHidden)
@@ -435,9 +440,9 @@ namespace Windows.UI.Xaml.Controls
 				)
 				{
 					// This is a failsafe for in-place collection changes which leave the list in an inconsistent state, for exact reasons known only to UICollectionView.
-					if (this.Log().IsEnabled(LogLevel.Error))
+					if (this.Log().IsEnabled(LogLevel.Warning))
 					{
-						(this).Log().Error($"Cell had context {actualItem} instead of {expectedItem}, scheduling a refresh to ensure correct display of list. (IndexPath={tuple.Path}");
+						(this).Log().Warn($"Cell had context {actualItem} instead of {expectedItem}, scheduling a refresh to ensure correct display of list. (IndexPath={tuple.Path}");
 					}
 					DispatchReloadData();
 				}
@@ -666,6 +671,8 @@ namespace Windows.UI.Xaml.Controls
 				ReloadData();
 
 				NativeLayout?.ReloadData();
+
+				_listEmptyLastRefresh = XamlParent?.NumberOfItems == 0;
 			}
 		}
 
