@@ -307,6 +307,8 @@ namespace Uno.Media
 
         private static FillRule ReadFillRule(StringReader reader)
         {
+			ReadWhitespace(reader);
+
             int i = reader.Read();
             if (i == -1)
             {
