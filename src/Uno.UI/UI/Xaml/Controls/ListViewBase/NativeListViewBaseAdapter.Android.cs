@@ -78,6 +78,14 @@ namespace Windows.UI.Xaml.Controls
 				parent.PrepareContainerForIndex(container, index);
 			}
 
+			RegisterPhaseBinding(holder);
+		}
+
+		/// <summary>
+		/// Register provided list item for Phase binding.
+		/// </summary>
+		internal void RegisterPhaseBinding(RecyclerView.ViewHolder holder)
+		{
 			FrameworkElement.RegisterPhaseBinding(holder.ItemView as ContentControl, a => Owner.ViewCache.OnRecycled(holder as UnoViewHolder, a));
 		}
 

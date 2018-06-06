@@ -79,7 +79,7 @@ namespace Windows.UI.Xaml.Controls
 
 		public ListViewBase XamlParent { get; set; }
 
-		private ScrollingViewCache ViewCache => XamlParent?.NativePanel.ViewCache;
+		private BufferViewCache ViewCache => XamlParent?.NativePanel.ViewCache;
 
 		public Orientation Orientation
 		{
@@ -132,9 +132,9 @@ namespace Windows.UI.Xaml.Controls
 				if (_pendingScrollToPositionRequest != null)
 				{
 					ApplyScrollToPosition(
-						_pendingScrollToPositionRequest.Position, 
-						_pendingScrollToPositionRequest.Alignment, 
-						recycler, 
+						_pendingScrollToPositionRequest.Position,
+						_pendingScrollToPositionRequest.Alignment,
+						recycler,
 						state
 					);
 
@@ -274,7 +274,7 @@ namespace Windows.UI.Xaml.Controls
 			FillLayout(FillDirection.Forward, 0, Extent, ContentBreadth, recycler, state);
 			FillLayout(FillDirection.Back, 0, Extent, ContentBreadth, recycler, state);
 		}
-		
+
 		private class ScrollToPositionRequest
 		{
 			public int Position { get; }
@@ -853,6 +853,8 @@ namespace Windows.UI.Xaml.Controls
 			}
 			actualOffset = ScrollByInner(offset, recycler, state);
 
+			ViewCache.UpdateBuffers(recycler);
+
 			return actualOffset;
 		}
 
@@ -940,6 +942,8 @@ namespace Windows.UI.Xaml.Controls
 			XamlParent?.TryLoadMoreItems(LastVisibleIndex);
 
 			UpdateScrollPosition(recycler, state);
+
+			ViewCache.UpdateBuffers(recycler);
 		}
 
 		/// <summary>
@@ -1449,6 +1453,32 @@ namespace Windows.UI.Xaml.Controls
 
 			_areHeaderAndFooterCreated = false;
 			_isInitialExtentOffsetApplied = false;
+		}
+
+		/// <summary>
+		/// Attach view to window if it has been detached.
+		/// </summary>
+		internal void TryAttachView(View view)
+		{
+			var holder = XamlParent?.NativePanel?.GetChildViewHolder(view) as UnoViewHolder;
+			if (holder.IsDetached)
+			{
+				AttachView(view);
+				holder.IsDetached = false;
+			}
+		}
+
+		/// <summary>
+		/// Detach view from window if not already detached.
+		/// </summary>
+		internal void TryDetachView(View view)
+		{
+			var holder = XamlParent?.NativePanel?.GetChildViewHolder(view) as UnoViewHolder;
+			if (!holder.IsDetached)
+			{
+				DetachView(view);
+				holder.IsDetached = true;
+			}
 		}
 
 		private IEnumerable<float> GetSnapPointsInner(SnapPointsAlignment alignment)
