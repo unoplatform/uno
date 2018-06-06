@@ -18,7 +18,7 @@ namespace Uno.Media
 
 		public GeneratedStreamGeometryContext()
 		{
-			_builder = new StringBuilder("Uno.Media.GeometryHelper.Build(c =>\n{\n");
+			_builder = new StringBuilder("global::Uno.Media.GeometryHelper.Build(c =>\n{\n");
 		}
 
 		public override void ArcTo(Point Point, Size Size, double rotationAngle, bool isLargeArc, SweepDirection sweepDirection, bool isStroked, bool isSmoothJoin)
