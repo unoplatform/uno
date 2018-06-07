@@ -510,7 +510,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			ScrollIntoView(item, ScrollIntoViewAlignment.Default);
 		}
-
+		
 		public void ScrollIntoView(object item, ScrollIntoViewAlignment alignment)
 		{
 			//Check if item is a group
@@ -533,11 +533,21 @@ namespace Windows.UI.Xaml.Controls
 				if (IndexPathsForVisibleItems.Length == 0)
 				{
 					//Item is present but no items are visible, probably being called on first load. Dispatch so that it actually does something.
-					Dispatcher.RunAsync(CoreDispatcherPriority.Normal, ScrollInner);
+						Dispatcher.RunAsync(CoreDispatcherPriority.Normal, DispatchedScrollInner);
 				}
 				else
 				{
 					ScrollInner();
+				}
+
+				void DispatchedScrollInner()
+				{
+					index = IndexPathForItem(item);
+					// Recheck item because it may no longer be there
+					if (index != null)
+					{
+						ScrollInner();
+					}
 				}
 
 				void ScrollInner()
