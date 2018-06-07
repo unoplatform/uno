@@ -107,11 +107,11 @@ namespace Uno.UI.Controls
 			// Even though we set the CommandBar as the parent of the TitleView,
 			// it will change to the native control when the view is added.
 			// This control is the visual parent but is not a DependencyObject and will not propagate the DataContext.
-			// In order to ensure the DataContext is propagated properly, we restore the previous
+			// In order to ensure the DataContext is propagated properly, we restore the CommandBar
 			// parent that can propagate the DataContext.
-			if (args.NewParent != null && !(args.NewParent is DependencyObject))
+			if (args.NewParent != Element)
 			{
-				_titleView.SetParent(args.PreviousParent);
+				_titleView.SetParent(Element);
 			}
 		}
 
