@@ -139,10 +139,10 @@ namespace Windows.UI.Xaml.Controls
 				WebErrorStatus = status
 			};
 
-			NavigationCompleted?.Invoke(this, args);
-
 			CanGoBack = _nativeWebView.CanGoBack;
 			CanGoForward = _nativeWebView.CanGoForward;
+
+			NavigationCompleted?.Invoke(this, args);
 		}
 
 		partial void StopPartial()
