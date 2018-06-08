@@ -56,7 +56,7 @@ namespace Windows.UI.Xaml.Controls
 			if (_trace.IsEnabled)
 			{
 				traceActivity = _trace.WriteEventActivity(
-					FrameworkElement.TraceProvider.FrameworkElement_MeasureStart, 
+					FrameworkElement.TraceProvider.FrameworkElement_MeasureStart,
 					FrameworkElement.TraceProvider.FrameworkElement_MeasureStop,
 					new object[] { LoggingOwnerTypeName, Panel.GetDependencyObjectId() }
 				);
@@ -73,7 +73,26 @@ namespace Windows.UI.Xaml.Controls
 				//MaxWidth/MaxHeight/MinWidth/MinHeight/Width/Height
 				var size = GetConstrainedSize(measuredSize);
 
-				SetDesiredChildSize(this.Panel as View, size);
+				var desiredSize = size;
+
+				if (this.Panel is FrameworkElement frameworkElement)
+				{
+					// DesiredSize must include margins
+					// However, we report the size to the parent without the margins
+					var margin = frameworkElement.Margin;
+
+					// This condition is required because of the measure caching that 
+					// some systems apply (Like android UI).
+					if (margin != Thickness.Empty)
+					{
+						desiredSize = new Size(
+							desiredSize.Width + margin.Left + margin.Right,
+							desiredSize.Height + margin.Top + margin.Bottom
+						);
+					}
+				}
+
+				SetDesiredChildSize(this.Panel as View, desiredSize);
 
 				return size;
 			}
@@ -90,7 +109,7 @@ namespace Windows.UI.Xaml.Controls
 			{
 				traceActivity = _trace.WriteEventActivity(
 					FrameworkElement.TraceProvider.FrameworkElement_ArrangeStart,
-					FrameworkElement.TraceProvider.FrameworkElement_ArrangeStop, 
+					FrameworkElement.TraceProvider.FrameworkElement_ArrangeStop,
 					new object[] { LoggingOwnerTypeName, Panel.GetDependencyObjectId() }
 				);
 			}
@@ -172,7 +191,7 @@ namespace Windows.UI.Xaml.Controls
 				var childHeight = frameworkElement.Height;
 				var childMaxHeight = frameworkElement.MaxHeight;
 
-                var optionalMaxWidth = !IsInfinity(childMaxWidth) && !IsNaN(childMaxWidth) ? childMaxWidth : (double?)null;
+				var optionalMaxWidth = !IsInfinity(childMaxWidth) && !IsNaN(childMaxWidth) ? childMaxWidth : (double?)null;
 				var optionalWidth = !IsNaN(childWidth) ? childWidth : (double?)null;
 				var optionalMaxHeight = !IsInfinity(childMaxHeight) && !IsNaN(childMaxHeight) ? childMaxHeight : (double?)null;
 				var optionalHeight = !IsNaN(childHeight) ? childHeight : (double?)null;
@@ -460,15 +479,15 @@ namespace Windows.UI.Xaml.Controls
 		/// <summary>
 		/// Get actual width based on MinWidth, MaxWidth, Width and HorizontalAlignment
 		/// </summary>
-		private double GetActualWidth(double width, 
-			HorizontalAlignment childHorizontalAlignment, 
-			double childMaxWidth, 
-			double childMinWidth, 
-			double childWidth, 
-			Thickness childMargin, 
-			bool hasChildWidth, 
-			bool hasChildMaxWidth, 
-			bool hasChildMinWidth, 
+		private double GetActualWidth(double width,
+			HorizontalAlignment childHorizontalAlignment,
+			double childMaxWidth,
+			double childMinWidth,
+			double childWidth,
+			Thickness childMargin,
+			bool hasChildWidth,
+			bool hasChildMaxWidth,
+			bool hasChildMinWidth,
 			Size desiredSize)
 		{
 			//Default value
@@ -512,8 +531,8 @@ namespace Windows.UI.Xaml.Controls
 		/// <summary>
 		/// Get actual height based on MinHeight, MaxHeight, Height and VerticalAlignment
 		/// </summary>
-		private double GetActualHeight(double height, 
-			VerticalAlignment childVerticalAlignment, 
+		private double GetActualHeight(double height,
+			VerticalAlignment childVerticalAlignment,
 			double childMaxHeight,
 			double childMinHeight,
 			double childHeight,
