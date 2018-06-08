@@ -32,7 +32,7 @@ namespace Windows.UI.Xaml.Controls
 		private readonly NativeListViewBase _owner;
 		private VirtualizingPanelLayout Layout => _owner.NativeLayout as VirtualizingPanelLayout;
 
-		private int CacheHalfLength => 4; //TODO: should be calculated from CacheLength and number of visible views
+		private int CacheHalfLength => Layout.CacheHalfLengthInViews;
 
 		private Dictionary<UnoViewHolder, List<Action>> _onRecycled = new Dictionary<UnoViewHolder, List<Action>>(); //Used by Phase binding
 
@@ -56,6 +56,9 @@ namespace Windows.UI.Xaml.Controls
 		private int LeadingBufferEnd => _leadingBuffer.Count > 0 ? _leadingBuffer[_leadingBuffer.Count - 1].DisplayPosition + 1 : -1;
 
 		private const int IntermediateCacheLimit = 10;
+
+		public int FirstCacheIndex => TrailingBufferStart;
+		public int LastCacheIndex => LeadingBufferEnd;
 
 		public BufferViewCache(NativeListViewBase owner)
 		{
@@ -501,7 +504,7 @@ namespace Windows.UI.Xaml.Controls
 
 			actions.Add(action);
 		}
-		
+
 		private struct ElementViewRecord
 		{
 			public static ElementViewRecord Empty => new ElementViewRecord(isEmpty: true);
@@ -521,7 +524,7 @@ namespace Windows.UI.Xaml.Controls
 
 			public int DisplayPosition { get; }
 			public UnoViewHolder ViewHolder { get; }
-			public View View => ViewHolder.ItemView;
+			public View View => ViewHolder?.ItemView;
 
 			public bool IsEmpty { get; }
 

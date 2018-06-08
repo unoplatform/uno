@@ -12,6 +12,13 @@ namespace Windows.UI.Xaml.Controls
 		public int FirstVisibleIndex => _layout?.FirstVisibleIndex ?? -1;
 		public int LastVisibleIndex => _layout?.LastVisibleIndex ?? -1;
 
+#if XAMARIN_ANDROID
+		public int FirstCacheIndex => _layout.XamlParent.NativePanel.ViewCache.FirstCacheIndex;
+		public int LastCacheIndex => _layout.XamlParent.NativePanel.ViewCache.LastCacheIndex;
+#endif
+
+		// public ItemsStackPanel() { }
+
 		VirtualizingPanelLayout IVirtualizingPanel.GetLayouter()
 		{
 			if (_layout == null)
@@ -21,6 +28,9 @@ namespace Windows.UI.Xaml.Controls
 				_layout.BindToEquivalentProperty(this, nameof(AreStickyGroupHeadersEnabled));
 				_layout.BindToEquivalentProperty(this, nameof(GroupHeaderPlacement));
 				_layout.BindToEquivalentProperty(this, nameof(GroupPadding));
+#if XAMARIN_ANDROID
+				_layout.BindToEquivalentProperty(this, nameof(CacheLength));
+#endif
 			}
 			return _layout;
 		}

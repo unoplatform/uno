@@ -7,7 +7,7 @@ namespace Windows.UI.Xaml.Controls
 	#endif
 	public  partial class ItemsWrapGrid : global::Windows.UI.Xaml.Controls.Panel
 	{
-		#if false || false || false || false
+#if false || false || false || false
 		[global::Uno.NotImplemented]
 		public  global::Windows.UI.Xaml.Controls.Primitives.GroupHeaderPlacement GroupHeaderPlacement
 		{
@@ -20,8 +20,8 @@ namespace Windows.UI.Xaml.Controls
 				this.SetValue(GroupHeaderPlacementProperty, value);
 			}
 		}
-		#endif
-		#if false || false || false || false
+#endif
+#if false || false || false || false
 		[global::Uno.NotImplemented]
 		public  double ItemHeight
 		{
@@ -34,8 +34,8 @@ namespace Windows.UI.Xaml.Controls
 				this.SetValue(ItemHeightProperty, value);
 			}
 		}
-		#endif
-		#if false || false || false || false
+#endif
+#if false || false || false || false
 		[global::Uno.NotImplemented]
 		public  global::Windows.UI.Xaml.Thickness GroupPadding
 		{
@@ -48,8 +48,8 @@ namespace Windows.UI.Xaml.Controls
 				this.SetValue(GroupPaddingProperty, value);
 			}
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+#endif
+#if false || __IOS__ || NET46 || __WASM__
 		[global::Uno.NotImplemented]
 		public  double CacheLength
 		{
@@ -62,8 +62,8 @@ namespace Windows.UI.Xaml.Controls
 				this.SetValue(CacheLengthProperty, value);
 			}
 		}
-		#endif
-		#if false || false || false || false
+#endif
+#if false || false || false || false
 		[global::Uno.NotImplemented]
 		public  global::Windows.UI.Xaml.Controls.Orientation Orientation
 		{
@@ -76,8 +76,8 @@ namespace Windows.UI.Xaml.Controls
 				this.SetValue(OrientationProperty, value);
 			}
 		}
-		#endif
-		#if false || false || false || false
+#endif
+#if false || false || false || false
 		[global::Uno.NotImplemented]
 		public  int MaximumRowsOrColumns
 		{
@@ -125,7 +125,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		#if false || __IOS__ || NET46 || __WASM__
 		[global::Uno.NotImplemented]
 		public  int LastCacheIndex
 		{
@@ -154,8 +154,8 @@ namespace Windows.UI.Xaml.Controls
 				throw new global::System.NotImplementedException("The member PanelScrollingDirection ItemsWrapGrid.ScrollingDirection is not implemented in Uno.");
 			}
 		}
-		#endif
-		#if false || false || false || false
+#endif
+#if false || false || false || false
 		[global::Uno.NotImplemented]
 		public  bool AreStickyGroupHeadersEnabled
 		{
@@ -168,78 +168,78 @@ namespace Windows.UI.Xaml.Controls
 				this.SetValue(AreStickyGroupHeadersEnabledProperty, value);
 			}
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+#endif
+#if false || __IOS__ || NET46 || __WASM__
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty CacheLengthProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
 			"CacheLength", typeof(double), 
 			typeof(global::Windows.UI.Xaml.Controls.ItemsWrapGrid), 
 			new FrameworkPropertyMetadata(default(double)));
-		#endif
-		#if false || false || false || false
+#endif
+#if false || false || false || false
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty GroupHeaderPlacementProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
 			"GroupHeaderPlacement", typeof(global::Windows.UI.Xaml.Controls.Primitives.GroupHeaderPlacement), 
 			typeof(global::Windows.UI.Xaml.Controls.ItemsWrapGrid), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Controls.Primitives.GroupHeaderPlacement)));
-		#endif
-		#if false || false || false || false
+#endif
+#if false || false || false || false
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty GroupPaddingProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
 			"GroupPadding", typeof(global::Windows.UI.Xaml.Thickness), 
 			typeof(global::Windows.UI.Xaml.Controls.ItemsWrapGrid), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Thickness)));
-		#endif
-		#if false || false || false || false
+#endif
+#if false || false || false || false
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty ItemHeightProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
 			"ItemHeight", typeof(double), 
 			typeof(global::Windows.UI.Xaml.Controls.ItemsWrapGrid), 
 			new FrameworkPropertyMetadata(default(double)));
-		#endif
-		#if false || false || false || false
+#endif
+#if false || false || false || false
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty ItemWidthProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
 			"ItemWidth", typeof(double), 
 			typeof(global::Windows.UI.Xaml.Controls.ItemsWrapGrid), 
 			new FrameworkPropertyMetadata(default(double)));
-		#endif
-		#if false || false || false || false
+#endif
+#if false || false || false || false
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty MaximumRowsOrColumnsProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
 			"MaximumRowsOrColumns", typeof(int), 
 			typeof(global::Windows.UI.Xaml.Controls.ItemsWrapGrid), 
 			new FrameworkPropertyMetadata(default(int)));
-		#endif
-		#if false || false || false || false
+#endif
+#if false || false || false || false
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty OrientationProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
 			"Orientation", typeof(global::Windows.UI.Xaml.Controls.Orientation), 
 			typeof(global::Windows.UI.Xaml.Controls.ItemsWrapGrid), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Controls.Orientation)));
-		#endif
-		#if false || false || false || false
+#endif
+#if false || false || false || false
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty AreStickyGroupHeadersEnabledProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
 			"AreStickyGroupHeadersEnabled", typeof(bool), 
 			typeof(global::Windows.UI.Xaml.Controls.ItemsWrapGrid), 
 			new FrameworkPropertyMetadata(default(bool)));
-		#endif
-		#if false || false || false || false
+#endif
+#if false || false || false || false
 		[global::Uno.NotImplemented]
 		public ItemsWrapGrid() : base()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.ItemsWrapGrid", "ItemsWrapGrid.ItemsWrapGrid()");
 		}
-		#endif
+#endif
 		// Forced skipping of method Windows.UI.Xaml.Controls.ItemsWrapGrid.ItemsWrapGrid()
 		// Forced skipping of method Windows.UI.Xaml.Controls.ItemsWrapGrid.GroupPadding.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.ItemsWrapGrid.GroupPadding.set

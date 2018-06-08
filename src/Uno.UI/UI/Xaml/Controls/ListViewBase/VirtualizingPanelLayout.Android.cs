@@ -67,6 +67,8 @@ namespace Windows.UI.Xaml.Controls
 		/// </summary>
 		private int FirstItemView => HeaderViewCount;
 
+		internal int CacheHalfLengthInViews { get; private set; }
+
 		// Item about to be shown after call to ScrollIntoView().
 		private ScrollToPositionRequest _pendingScrollToPositionRequest;
 
@@ -694,6 +696,7 @@ namespace Windows.UI.Xaml.Controls
 			_needsHeaderAndFooterUpdate = false;
 
 			ViewCache?.EmptyAndRemove();
+			CacheHalfLengthInViews = 0;
 
 			_pendingGroupOperations.Clear();
 		}
@@ -853,7 +856,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 			actualOffset = ScrollByInner(offset, recycler, state);
 
-			ViewCache.UpdateBuffers(recycler);
+			UpdateBuffers(recycler);
 
 			return actualOffset;
 		}
@@ -943,7 +946,7 @@ namespace Windows.UI.Xaml.Controls
 
 			UpdateScrollPosition(recycler, state);
 
-			ViewCache.UpdateBuffers(recycler);
+			UpdateBuffers(recycler);
 		}
 
 		/// <summary>
@@ -1479,6 +1482,44 @@ namespace Windows.UI.Xaml.Controls
 				DetachView(view);
 				holder.IsDetached = true;
 			}
+		}
+
+		private void UpdateBuffers(RecyclerView.Recycler recycler)
+		{
+			UpdateCacheHalfLength();
+			ViewCache.UpdateBuffers(recycler);
+		}
+
+		private void UpdateCacheHalfLength()
+		{
+			var averageExtent = GetAverageVisibleItemExtent();
+			var itemsVisible = Extent / averageExtent;
+			var newCacheHalfLength = (itemsVisible * CacheLength) / 2;
+			newCacheHalfLength = Math.Round(newCacheHalfLength);
+			// Err on the side of overestimation by taking the largest potential cache size yet seen
+			CacheHalfLengthInViews = Math.Max(CacheHalfLengthInViews, (int)newCacheHalfLength);
+		}
+
+		private double GetAverageVisibleItemExtent()
+		{
+			if (ItemViewCount == 0)
+			{
+				return 0;
+			}
+
+			double totalExtent = 0;
+			for (int i = FirstItemView; i < FirstItemView + ItemViewCount; i++)
+			{
+				totalExtent += GetChildExtentWithMargins(i);
+			}
+
+			var average = totalExtent / ItemViewCount;
+			return average;
+		}
+
+		partial void OnCacheLengthChangedPartialNative(double oldCacheLength, double newCacheLength)
+		{
+			CacheHalfLengthInViews = 0;
 		}
 
 		private IEnumerable<float> GetSnapPointsInner(SnapPointsAlignment alignment)
