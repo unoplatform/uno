@@ -24,6 +24,7 @@
 
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 
@@ -902,6 +903,88 @@ namespace Nito.Collections
 				get
 				{
 					return deque.ToArray();
+				}
+			}
+		}
+
+		internal static class CollectionHelpers
+		{
+			public static IReadOnlyCollection<TElement> ReifyCollection<TElement>(IEnumerable<TElement> source)
+			{
+				if (source == null)
+					throw new ArgumentNullException(nameof(source));
+
+				var result = source as IReadOnlyCollection<TElement>;
+				if (result != null)
+					return result;
+				var collection = source as ICollection<TElement>;
+				if (collection != null)
+					return new CollectionWrapper<TElement>(collection);
+				var nongenericCollection = source as ICollection;
+				if (nongenericCollection != null)
+					return new NongenericCollectionWrapper<TElement>(nongenericCollection);
+
+				return new List<TElement>(source);
+			}
+
+			private sealed class NongenericCollectionWrapper<TElement> : IReadOnlyCollection<TElement>
+			{
+				private readonly ICollection _collection;
+
+				public NongenericCollectionWrapper(ICollection collection)
+				{
+					if (collection == null)
+						throw new ArgumentNullException(nameof(collection));
+					_collection = collection;
+				}
+
+				public int Count
+				{
+					get
+					{
+						return _collection.Count;
+					}
+				}
+
+				public IEnumerator<TElement> GetEnumerator()
+				{
+					foreach (TElement item in _collection)
+						yield return item;
+				}
+
+				IEnumerator IEnumerable.GetEnumerator()
+				{
+					return _collection.GetEnumerator();
+				}
+			}
+
+			private sealed class CollectionWrapper<TElement> : IReadOnlyCollection<TElement>
+			{
+				private readonly ICollection<TElement> _collection;
+
+				public CollectionWrapper(ICollection<TElement> collection)
+				{
+					if (collection == null)
+						throw new ArgumentNullException(nameof(collection));
+					_collection = collection;
+				}
+
+				public int Count
+				{
+					get
+					{
+						return _collection.Count;
+					}
+				}
+
+				public IEnumerator<TElement> GetEnumerator()
+				{
+					return _collection.GetEnumerator();
+				}
+
+				IEnumerator IEnumerable.GetEnumerator()
+				{
+					return _collection.GetEnumerator();
 				}
 			}
 		}
