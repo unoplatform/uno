@@ -121,7 +121,7 @@ namespace Windows.UI.Xaml.Controls
 				{
 					//Note: the Deque implementation used (https://github.com/StephenCleary/Deque/blob/master/src/Nito.Collections.Deque/Deque.cs) 
 					//doesn't appear to actually release the reference to the item on calling the RemoveFrom_() methods.
-					//This isn't really a problem here, but precludes its use for storing, eg, views.
+					//This isn't really a problem here, but precludes its use for storing, eg, views. TODO
 					var removed = _lines.RemoveFromFront();
 					//Move Start forward because we are removing a line from the start
 					Start += removed.Extent;
