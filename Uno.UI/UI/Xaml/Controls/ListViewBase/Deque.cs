@@ -655,9 +655,16 @@ namespace Nito.Collections
 		/// <returns>The former last element.</returns>
 		private T DoRemoveFromBack()
 		{
-			T ret = _buffer[DequeIndexToBufferIndex(Count - 1)];
-			--Count;
-			return ret;
+			int index = DequeIndexToBufferIndex(Count - 1);
+			try
+			{
+				return _buffer[index];
+			}
+			finally
+			{
+				_buffer[index] = default;
+				--Count;
+			}
 		}
 
 		/// <summary>
@@ -667,7 +674,15 @@ namespace Nito.Collections
 		private T DoRemoveFromFront()
 		{
 			--Count;
-			return _buffer[PostIncrement(1)];
+			int index = PostIncrement(1);
+			try
+			{
+				return _buffer[index];
+			}
+			finally
+			{
+				_buffer[index] = default;
+			}
 		}
 
 		/// <summary>
@@ -724,6 +739,10 @@ namespace Nito.Collections
 		/// <param name="collectionCount">The number of elements in the range. This must be greater than 0 and less than or equal to <see cref="Count"/>.</param>
 		private void DoRemoveRange(int index, int collectionCount)
 		{
+			for (int i = index; i < index + collectionCount; i++)
+			{
+				DoSetItem(i, default);
+			}
 			if (index == 0)
 			{
 				// Removing from the beginning: rotate to the new view
