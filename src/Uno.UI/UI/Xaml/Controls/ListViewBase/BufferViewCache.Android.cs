@@ -6,7 +6,6 @@ using System.Text;
 using System.Threading.Tasks;
 using Android.Support.V7.Widget;
 using Android.Views;
-using Nito.Collections;
 using Uno.Extensions;
 using Uno.Logging;
 

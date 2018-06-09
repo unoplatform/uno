@@ -28,7 +28,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 
-namespace Nito.Collections
+namespace Windows.UI.Xaml.Controls
 {
 	/// <summary>
 	/// A double-ended queue (deque), which provides O(1) indexed access, O(1) removals from the front and back, amortized O(1) insertions to the front and back, and O(N) insertions and removals anywhere else (with the operations getting slower as the index approaches the middle).
@@ -36,7 +36,7 @@ namespace Nito.Collections
 	/// <typeparam name="T">The type of elements contained in the deque.</typeparam>
 	[DebuggerDisplay("Count = {Count}, Capacity = {Capacity}")]
 	[DebuggerTypeProxy(typeof(Deque<>.DebugView))]
-	public sealed class Deque<T> : IList<T>, IReadOnlyList<T>, System.Collections.IList
+	public sealed class Deque<T> : IList<T>, IReadOnlyList<T>, IList
 	{
 		/// <summary>
 		/// The default capacity.
@@ -299,7 +299,7 @@ namespace Nito.Collections
 		/// <returns>
 		/// An <see cref="T:System.Collections.IEnumerator"/> object that can be used to iterate through the collection.
 		/// </returns>
-		System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+		IEnumerator IEnumerable.GetEnumerator()
 		{
 			return GetEnumerator();
 		}
@@ -316,7 +316,7 @@ namespace Nito.Collections
 			return default(T) == null;
 		}
 
-		int System.Collections.IList.Add(object value)
+		int IList.Add(object value)
 		{
 			if (value == null && default(T) != null)
 				throw new ArgumentNullException(nameof(value), "Value cannot be null.");
@@ -326,17 +326,17 @@ namespace Nito.Collections
 			return Count - 1;
 		}
 
-		bool System.Collections.IList.Contains(object value)
+		bool IList.Contains(object value)
 		{
 			return IsT(value) ? ((ICollection<T>)this).Contains((T)value) : false;
 		}
 
-		int System.Collections.IList.IndexOf(object value)
+		int IList.IndexOf(object value)
 		{
 			return IsT(value) ? IndexOf((T)value) : -1;
 		}
 
-		void System.Collections.IList.Insert(int index, object value)
+		void IList.Insert(int index, object value)
 		{
 			if (value == null && default(T) != null)
 				throw new ArgumentNullException("value", "Value cannot be null.");
@@ -345,23 +345,23 @@ namespace Nito.Collections
 			Insert(index, (T)value);
 		}
 
-		bool System.Collections.IList.IsFixedSize
+		bool IList.IsFixedSize
 		{
 			get { return false; }
 		}
 
-		bool System.Collections.IList.IsReadOnly
+		bool IList.IsReadOnly
 		{
 			get { return false; }
 		}
 
-		void System.Collections.IList.Remove(object value)
+		void IList.Remove(object value)
 		{
 			if (IsT(value))
 				Remove((T)value);
 		}
 
-		object System.Collections.IList.this[int index]
+		object IList.this[int index]
 		{
 			get
 			{
@@ -378,7 +378,7 @@ namespace Nito.Collections
 			}
 		}
 
-		void System.Collections.ICollection.CopyTo(Array array, int index)
+		void ICollection.CopyTo(Array array, int index)
 		{
 			if (array == null)
 				throw new ArgumentNullException(nameof(array), "Destination array cannot be null.");
@@ -398,12 +398,12 @@ namespace Nito.Collections
 			}
 		}
 
-		bool System.Collections.ICollection.IsSynchronized
+		bool ICollection.IsSynchronized
 		{
 			get { return false; }
 		}
 
-		object System.Collections.ICollection.SyncRoot
+		object ICollection.SyncRoot
 		{
 			get { return this; }
 		}
