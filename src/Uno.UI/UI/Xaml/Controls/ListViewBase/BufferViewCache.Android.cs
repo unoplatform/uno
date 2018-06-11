@@ -129,21 +129,25 @@ namespace Windows.UI.Xaml.Controls
 				while (_trailingBuffer.Count > 0 && _trailingBuffer[0].IsEmpty)
 				{
 					_trailingBuffer.RemoveFromFront();
+					CheckValidState();
 				}
 
 				while (_trailingBuffer.Count > 0 && _trailingBuffer[_trailingBuffer.Count - 1].IsEmpty)
 				{
 					_trailingBuffer.RemoveFromBack();
+					CheckValidState();
 				}
 
 				while (_leadingBuffer.Count > 0 && _leadingBuffer[0].IsEmpty)
 				{
 					_leadingBuffer.RemoveFromFront();
+					CheckValidState();
 				}
 
 				while (_leadingBuffer.Count > 0 && _leadingBuffer[_leadingBuffer.Count - 1].IsEmpty)
 				{
 					_leadingBuffer.RemoveFromBack();
+					CheckValidState();
 				}
 			}
 
@@ -154,6 +158,7 @@ namespace Windows.UI.Xaml.Controls
 					while (_trailingBuffer.Count > 0)
 					{
 						var record = _trailingBuffer.RemoveFromBack();
+						CheckValidState();
 						SendToIntermediateCache(recycler, record);
 					}
 					return;
@@ -166,6 +171,7 @@ namespace Windows.UI.Xaml.Controls
 						return;
 					}
 					var record = _trailingBuffer.RemoveFromFront();
+					CheckValidState();
 					SendToIntermediateCache(recycler, record);
 				}
 
@@ -177,6 +183,7 @@ namespace Windows.UI.Xaml.Controls
 						return;
 					}
 					var record = _trailingBuffer.RemoveFromBack();
+					CheckValidState();
 					SendToIntermediateCache(recycler, record);
 				}
 			}
@@ -188,6 +195,7 @@ namespace Windows.UI.Xaml.Controls
 					while (_leadingBuffer.Count > 0)
 					{
 						var record = _leadingBuffer.RemoveFromBack();
+						CheckValidState();
 						SendToIntermediateCache(recycler, record);
 					}
 					return;
@@ -200,6 +208,7 @@ namespace Windows.UI.Xaml.Controls
 						return;
 					}
 					var record = _leadingBuffer.RemoveFromFront();
+					CheckValidState();
 					SendToIntermediateCache(recycler, record);
 				}
 
@@ -210,6 +219,7 @@ namespace Windows.UI.Xaml.Controls
 						return;
 					}
 					var record = _leadingBuffer.RemoveFromBack();
+					CheckValidState();
 					SendToIntermediateCache(recycler, record);
 				}
 			}
@@ -235,18 +245,21 @@ namespace Windows.UI.Xaml.Controls
 				{
 					var record = PrefetchView(recycler, TrailingBufferTargetStart);
 					_trailingBuffer.AddToBack(record);
+					CheckValidState();
 				}
 
 				while (TrailingBufferStart > TrailingBufferTargetStart)
 				{
 					var record = PrefetchView(recycler, TrailingBufferStart - 1);
 					_trailingBuffer.AddToFront(record);
+					CheckValidState();
 				}
 
 				while (TrailingBufferEnd < TrailingBufferTargetEnd)
 				{
 					var record = PrefetchView(recycler, TrailingBufferEnd);
 					_trailingBuffer.AddToBack(record);
+					CheckValidState();
 				}
 			}
 
@@ -262,18 +275,21 @@ namespace Windows.UI.Xaml.Controls
 				{
 					var record = PrefetchView(recycler, LeadingBufferTargetStart);
 					_leadingBuffer.AddToBack(record);
+					CheckValidState();
 				}
 
 				while (LeadingBufferStart > LeadingBufferTargetStart)
 				{
 					var record = PrefetchView(recycler, LeadingBufferStart - 1);
 					_leadingBuffer.AddToFront(record);
+					CheckValidState();
 				}
 
 				while (LeadingBufferEnd < LeadingBufferTargetEnd)
 				{
 					var record = PrefetchView(recycler, LeadingBufferEnd);
 					_leadingBuffer.AddToBack(record);
+					CheckValidState();
 				}
 			}
 		}
@@ -502,6 +518,37 @@ namespace Windows.UI.Xaml.Controls
 			}
 
 			actions.Add(action);
+		}
+
+		[Conditional("DEBUG")]
+		private void CheckValidState()
+		{
+			if (_trailingBuffer.Count > 0)
+			{
+				var expectedPosition = TrailingBufferStart;
+				for (int i = 0; i < _trailingBuffer.Count; i++)
+				{
+					var record = _trailingBuffer[i];
+					if (expectedPosition != record.DisplayPosition && !record.IsEmpty)
+					{
+						throw new InvalidOperationException($"Expected position {expectedPosition} but got position {record.DisplayPosition} in trailing buffer.");
+					}
+					expectedPosition++;
+				}
+			}
+			if (_leadingBuffer.Count > 0)
+			{
+				var expectedPosition = LeadingBufferStart;
+				for (int i = 0; i < _leadingBuffer.Count; i++)
+				{
+					var record = _leadingBuffer[i];
+					if (expectedPosition != record.DisplayPosition && !record.IsEmpty)
+					{
+						throw new InvalidOperationException($"Expected position {expectedPosition} but got position {record.DisplayPosition} in trailing buffer.");
+					}
+					expectedPosition++;
+				}
+			}
 		}
 
 		private struct ElementViewRecord
