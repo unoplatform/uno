@@ -54,7 +54,21 @@ namespace Windows.UI.Xaml.Controls
 		// Exclusive
 		private int LeadingBufferEnd => _leadingBuffer.Count > 0 ? _leadingBuffer[_leadingBuffer.Count - 1].DisplayPosition + 1 : -1;
 
-		private const int IntermediateCacheLimit = 10;
+		private bool _isInitiallyPopulated;
+		/// <summary>
+		/// Don't return views from the intermediate cache if true: used when the specific intent is to populate the cache.
+		/// </summary>
+		private bool _shouldBlockIntermediateCache;
+
+		private int IntermediateCacheLimit
+		{
+			get
+			{
+				const int DefaultIntermediateCacheLimit = 10;
+				return Math.Max(DefaultIntermediateCacheLimit, UnpopulatedCacheSize());
+				int UnpopulatedCacheSize() => CacheHalfLength * 2 - _trailingBuffer.Count - _leadingBuffer.Count + 1;
+			}
+		}
 
 		public int FirstCacheIndex => TrailingBufferStart;
 		public int LastCacheIndex => LeadingBufferEnd;
@@ -122,34 +136,6 @@ namespace Windows.UI.Xaml.Controls
 			UnbufferTrailing();
 			UnbufferLeading();
 			TrimEmpty(); //Empty items may have been exposed by unbuffering
-
-			// Prune empty records from the edges of the buffer
-			void TrimEmpty()
-			{
-				while (_trailingBuffer.Count > 0 && _trailingBuffer[0].IsEmpty)
-				{
-					_trailingBuffer.RemoveFromFront();
-					CheckValidState();
-				}
-
-				while (_trailingBuffer.Count > 0 && _trailingBuffer[_trailingBuffer.Count - 1].IsEmpty)
-				{
-					_trailingBuffer.RemoveFromBack();
-					CheckValidState();
-				}
-
-				while (_leadingBuffer.Count > 0 && _leadingBuffer[0].IsEmpty)
-				{
-					_leadingBuffer.RemoveFromFront();
-					CheckValidState();
-				}
-
-				while (_leadingBuffer.Count > 0 && _leadingBuffer[_leadingBuffer.Count - 1].IsEmpty)
-				{
-					_leadingBuffer.RemoveFromBack();
-					CheckValidState();
-				}
-			}
 
 			void UnbufferTrailing()
 			{
@@ -226,12 +212,51 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		/// <summary>
+		/// Prune empty records from the edges of the buffer (as subsequent retrieval logic expects).
+		/// </summary>
+		private void TrimEmpty()
+		{
+			while (_trailingBuffer.Count > 0 && _trailingBuffer[0].IsEmpty)
+			{
+				_trailingBuffer.RemoveFromFront();
+				CheckValidState();
+			}
+
+			while (_trailingBuffer.Count > 0 && _trailingBuffer[_trailingBuffer.Count - 1].IsEmpty)
+			{
+				_trailingBuffer.RemoveFromBack();
+				CheckValidState();
+			}
+
+			while (_leadingBuffer.Count > 0 && _leadingBuffer[0].IsEmpty)
+			{
+				_leadingBuffer.RemoveFromFront();
+				CheckValidState();
+			}
+
+			while (_leadingBuffer.Count > 0 && _leadingBuffer[_leadingBuffer.Count - 1].IsEmpty)
+			{
+				_leadingBuffer.RemoveFromBack();
+				CheckValidState();
+			}
+		}
+
+		/// <summary>
 		/// Prefetch views in the target range that aren't yet in the buffer.
 		/// </summary>
 		private void PrefetchViews(RecyclerView.Recycler recycler)
 		{
+			if (Layout.ItemCount == 0 || CacheHalfLength == 0)
+			{
+				return;
+			}
 			PrefetchTrailing();
 			PrefetchLeading();
+			if (!_isInitiallyPopulated)
+			{
+				PrefetchExtra();
+				_isInitiallyPopulated = true;
+			}
 
 			void PrefetchTrailing()
 			{
@@ -292,6 +317,32 @@ namespace Windows.UI.Xaml.Controls
 					CheckValidState();
 				}
 			}
+
+			// Initially pre-cache a half-width of items directly to the intermediate cache. This is an optimization so that new views 
+			// aren't created to fill the trailing buffer when the user first scrolls.
+			void PrefetchExtra()
+			{
+				if (TrailingBufferTargetSize > 0)
+				{
+					// Only want to perform this step when scroll position is at start of list
+					return;
+				}
+
+				var targetEnd = Math.Min(Layout.ItemCount, LeadingBufferEnd + CacheHalfLength + 1);
+				try
+				{
+					_shouldBlockIntermediateCache = true;
+					for (int i = LeadingBufferEnd; i < targetEnd; i++)
+					{
+						var record = PrefetchView(recycler, i);
+						SendToIntermediateCache(recycler, record);
+					}
+				}
+				finally
+				{
+					_shouldBlockIntermediateCache = false;
+				}
+			}
 		}
 
 		/// <summary>
@@ -304,7 +355,7 @@ namespace Windows.UI.Xaml.Controls
 			{
 				view = recycler.GetViewForPosition(displayPosition);
 
-				//
+				// Add->Detach allows view to be efficiently re-displayed
 				Layout.AddView(view);
 				Layout.TryDetachView(view);
 			}
@@ -320,7 +371,10 @@ namespace Windows.UI.Xaml.Controls
 		/// </summary>
 		private View GetViewFromIntermediateCache(RecyclerView.Recycler recycler, int displayPosition)
 		{
-
+			if (_shouldBlockIntermediateCache)
+			{
+				return null;
+			}
 			UnoViewHolder result = null;
 			List<UnoViewHolder> views;
 			var type = _owner.CurrentAdapter.GetItemViewType(displayPosition);
@@ -430,40 +484,47 @@ namespace Windows.UI.Xaml.Controls
 		/// </summary>
 		private ElementViewRecord? DequeueRecordFromBuffer(int displayPosition)
 		{
-			if (displayPosition == TrailingBufferEnd)
+			try
 			{
-				return _trailingBuffer.RemoveFromBack();
-			}
+				if (displayPosition == TrailingBufferEnd)
+				{
+					return _trailingBuffer.RemoveFromBack();
+				}
 
-			if (displayPosition == LeadingBufferStart)
-			{
-				return _leadingBuffer.RemoveFromFront();
-			}
+				if (displayPosition == LeadingBufferStart)
+				{
+					return _leadingBuffer.RemoveFromFront();
+				}
 
-			if (displayPosition >= TrailingBufferStart && displayPosition < TrailingBufferEnd)
-			{
-				var index = displayPosition - TrailingBufferStart;
-				try
+				if (displayPosition >= TrailingBufferStart && displayPosition < TrailingBufferEnd)
 				{
-					return _trailingBuffer[index];
+					var index = displayPosition - TrailingBufferStart;
+					try
+					{
+						return _trailingBuffer[index];
+					}
+					finally
+					{
+						_trailingBuffer[index] = ElementViewRecord.Empty;
+					}
 				}
-				finally
+
+				if ((displayPosition >= LeadingBufferStart && displayPosition < LeadingBufferEnd))
 				{
-					_trailingBuffer[index] = ElementViewRecord.Empty;
+					var index = displayPosition - LeadingBufferStart;
+					try
+					{
+						return _leadingBuffer[index];
+					}
+					finally
+					{
+						_leadingBuffer[index] = ElementViewRecord.Empty;
+					}
 				}
 			}
-
-			if ((displayPosition >= LeadingBufferStart && displayPosition < LeadingBufferEnd))
+			finally
 			{
-				var index = displayPosition - LeadingBufferStart;
-				try
-				{
-					return _leadingBuffer[index];
-				}
-				finally
-				{
-					_leadingBuffer[index] = ElementViewRecord.Empty;
-				}
+				TrimEmpty();
 			}
 
 			return null;
@@ -504,6 +565,7 @@ namespace Windows.UI.Xaml.Controls
 			_trailingBuffer.Clear();
 			_leadingBuffer.Clear();
 			_intermediateCache.Clear();
+			_isInitiallyPopulated = false;
 		}
 
 		private void NotifyViewRecycled(UnoViewHolder holder)
