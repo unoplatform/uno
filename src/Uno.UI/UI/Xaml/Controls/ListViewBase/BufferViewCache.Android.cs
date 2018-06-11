@@ -345,9 +345,17 @@ namespace Windows.UI.Xaml.Controls
 			}
 			if (result == null && views.Count > 0)
 			{
-				//Get any match of correct type
-				result = views[views.Count - 1];
-				views.RemoveAt(views.Count - 1);
+				// Get any match of correct type except views that could be reused without rebinding
+				for (int i = views.Count - 1; i >= 0; i--)
+				{
+					var view = views[i];
+					if (!IsInTargetRange(view.LayoutPosition))
+					{
+						result = view;
+						views.RemoveAt(i);
+						break;
+					}
+				}
 			}
 
 			if (result != null)
@@ -462,7 +470,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		/// <summary>
-		/// 
+		/// Remove all views from the window and clear all local caches
 		/// </summary>
 		internal void EmptyAndRemove()
 		{
@@ -518,6 +526,12 @@ namespace Windows.UI.Xaml.Controls
 			}
 
 			actions.Add(action);
+		}
+
+		private bool IsInTargetRange(int position)
+		{
+			return (TrailingBufferTargetStart <= position && TrailingBufferTargetEnd > position) ||
+				(LeadingBufferTargetStart <= position && LeadingBufferTargetEnd > position);
 		}
 
 		[Conditional("DEBUG")]
