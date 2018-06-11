@@ -35,6 +35,25 @@ namespace Uno.UI.Tests.BorderTests
 			Assert.AreEqual(fixedSize, measuredSize);
 		}
 
+        [TestMethod]
+        public void When_Border_Has_Margin()
+        {
+            var fixedSize = new Windows.Foundation.Size(100, 120);
+            var margin = new Thickness(10,20,30,40);
+            var totalSize = new Windows.Foundation.Size(fixedSize.Width + margin.Left + margin.Right, fixedSize.Height + margin.Top + margin.Bottom);
+
+            var SUT = new Border()
+            {
+                Width = fixedSize.Width,
+                Height = fixedSize.Height,
+                Margin = margin,
+            };
+
+            SUT.Measure(new Windows.Foundation.Size(500, 500));
+            var measuredSize = SUT.DesiredSize;
+            Assert.AreEqual(totalSize, measuredSize);
+        }
+
 		[TestMethod]
 		public void When_Child_Has_Fixed_Size_Smaller_than_Parent()
 		{
