@@ -245,7 +245,13 @@ namespace Windows.UI.Xaml.Media
 
 		partial void InitFromResource(Uri uri)
 		{
-			var path = uri.PathAndQuery.TrimStart('/');
+			var path = uri
+				.PathAndQuery
+				.TrimStart('/')
+
+				// UWP supports backward slash in path for directory separators.
+				.Replace("\\", "/");
+
 			BundlePath = path;
 
 			BundleName = uri != null
