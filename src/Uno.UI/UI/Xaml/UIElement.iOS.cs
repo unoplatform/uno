@@ -429,6 +429,16 @@ namespace Windows.UI.Xaml
 			}
 		}
 
+		private void UnregisterDoubleTapped(DoubleTappedEventHandler handler)
+		{
+			_doubleTap.Value.Event -= handler;
+
+			if (_doubleTap.Value.IsAttached)
+			{
+				_doubleTap.Value.Detach();
+			}
+		}
+
 		public override void TouchesBegan(NSSet touches, UIEvent evt)
 		{
 			try
@@ -597,15 +607,6 @@ namespace Windows.UI.Xaml
 			if (!args.Handled)
 			{
 				PointerCanceled?.Invoke(sender, args);
-			}
-		}
-
-		private void UnregisterDoubleTapped(DoubleTappedEventHandler handler)
-		{
-			DoubleTapped -= handler;
-			if (_doubleTap.Value.IsAttached)
-			{
-				_doubleTap.Value.Detach();
 			}
 		}
 		#endregion
