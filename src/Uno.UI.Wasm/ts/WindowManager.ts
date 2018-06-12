@@ -482,11 +482,18 @@
 				element.style.maxWidth = maxWidth ? `${maxWidth}px` : "";
 				element.style.maxHeight = maxHeight ? `${maxHeight}px` : "";
 
-				const resultWidth = element.offsetWidth ? element.offsetWidth : element.clientWidth;
-				const resultHeight = element.offsetHeight ? element.offsetHeight : element.clientHeight;
-				const size = `${resultWidth};${resultHeight}`;
+                if (element.tagName.toUpperCase() == "IMG") {
+                    const imgElement = element as HTMLImageElement;
+                    const size = `${imgElement.naturalWidth};${imgElement.naturalHeight}`;
+                    return size;
+                }
+                else {
+                    const resultWidth = element.offsetWidth ? element.offsetWidth : element.clientWidth;
+                    const resultHeight = element.offsetHeight ? element.offsetHeight : element.clientHeight;
+                    const size = `${resultWidth};${resultHeight}`;
 
-				return size;
+                    return size;
+                }
 			} finally {
 				element.style.width = previousWidth;
                 element.style.height = previousHeight;
