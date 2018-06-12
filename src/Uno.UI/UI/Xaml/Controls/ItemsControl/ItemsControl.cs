@@ -126,7 +126,7 @@ namespace Windows.UI.Xaml.Controls
 		/// </summary>
 		private bool ShouldItemsControlManageChildren { get { return ItemsPanelRoot == InternalItemsPanelRoot; } }
 
-#region ItemsPanel DependencyProperty
+		#region ItemsPanel DependencyProperty
 
 		public ItemsPanelTemplate ItemsPanel
 		{
@@ -153,9 +153,9 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-#endregion
+		#endregion
 
-#region ItemTemplate DependencyProperty
+		#region ItemTemplate DependencyProperty
 
 		public DataTemplate ItemTemplate
 		{
@@ -179,9 +179,9 @@ namespace Windows.UI.Xaml.Controls
 			SetNeedsUpdateItems();
 		}
 
-#endregion
+		#endregion
 
-#region ItemTemplateSelector DependencyProperty
+		#region ItemTemplateSelector DependencyProperty
 
 		public DataTemplateSelector ItemTemplateSelector
 		{
@@ -205,9 +205,9 @@ namespace Windows.UI.Xaml.Controls
 			SetNeedsUpdateItems();
 		}
 
-#endregion
+		#endregion
 
-#region ItemsSource DependencyProperty
+		#region ItemsSource DependencyProperty
 		public object ItemsSource
 		{
 			get { return (object)this.GetValue(ItemsSourceProperty); }
@@ -221,7 +221,7 @@ namespace Windows.UI.Xaml.Controls
 				typeof(ItemsControl),
 				new PropertyMetadata(null, (s, e) => ((ItemsControl)s).OnItemsSourceChanged(e))
 		);
-#endregion
+		#endregion
 
 		private ItemCollection _items;
 		//TODO: this should reflect the content of ItemsSource, if that property is set. For now, it only exists for setting ItemsControl's contents in xaml.
@@ -292,9 +292,11 @@ namespace Windows.UI.Xaml.Controls
 		//Return either the contents of ItemsSource or of Items. This method will be obsolete when Items' contents properly reflect ItemsSource
 		internal IEnumerable GetItems()
 		{
-			if (ItemsSource != null)
+			var unwrappedSource = UnwrapItemsSource();
+
+			if (unwrappedSource != null)
 			{
-				return ItemsSource as IEnumerable;
+				return unwrappedSource as IEnumerable;
 			}
 			if (Items?.Any() ?? false)
 			{
@@ -303,7 +305,7 @@ namespace Windows.UI.Xaml.Controls
 			return null;
 		}
 
-#region ItemContainerStyle DependencyProperty
+		#region ItemContainerStyle DependencyProperty
 		public Style ItemContainerStyle
 		{
 			get { return (Style)GetValue(ItemContainerStyleProperty); }
@@ -317,9 +319,9 @@ namespace Windows.UI.Xaml.Controls
 					);
 
 		protected virtual void OnItemContainerStyleChanged(Style oldItemContainerStyle, Style newItemContainerStyle) { }
-#endregion
+		#endregion
 
-#region ItemContainerStyleSelector DependencyProperty
+		#region ItemContainerStyleSelector DependencyProperty
 		public StyleSelector ItemContainerStyleSelector
 		{
 			get { return (StyleSelector)GetValue(ItemContainerStyleSelectorProperty); }
@@ -334,11 +336,11 @@ namespace Windows.UI.Xaml.Controls
 
 		protected virtual void OnItemContainerStyleSelectorChanged(StyleSelector oldItemContainerStyleSelector, StyleSelector newItemContainerStyleSelector) { }
 
-#endregion
+		#endregion
 
 		public IObservableVector<GroupStyle> GroupStyle { get; } = new ObservableVector<GroupStyle>();
 
-#region IsGrouping DependencyProperty
+		#region IsGrouping DependencyProperty
 		public bool IsGrouping
 		{
 			get { return (bool)GetValue(IsGroupingProperty); }
@@ -347,9 +349,9 @@ namespace Windows.UI.Xaml.Controls
 
 		public static readonly DependencyProperty IsGroupingProperty =
 			DependencyProperty.Register("IsGrouping", typeof(bool), typeof(ItemsControl), new PropertyMetadata(false));
-#endregion
+		#endregion
 
-#region Internal Attached Properties
+		#region Internal Attached Properties
 
 		internal static readonly DependencyProperty IndexForItemContainerProperty =
 			DependencyProperty.RegisterAttached(
@@ -367,7 +369,7 @@ namespace Windows.UI.Xaml.Controls
 				new PropertyMetadata(DependencyProperty.UnsetValue)
 			);
 
-#endregion
+		#endregion
 
 		internal bool AreEmptyGroupsHidden => CollectionGroups != null && (GroupStyle.FirstOrDefault()?.HidesIfEmpty ?? false);
 
@@ -606,10 +608,15 @@ namespace Windows.UI.Xaml.Controls
 
 		internal int GetDisplayGroupCount(int displaySection) => IsGrouping ? GetGroupAtDisplaySection(displaySection).GroupItems.Count : 0;
 
+		internal object UnwrapItemsSource()
+			=> ItemsSource is CollectionViewSource cvs ? (object)cvs.View : ItemsSource;
+
 		internal void ObserveCollectionChanged()
 		{
+			var unwrappedSource = UnwrapItemsSource();
+
 			//Subscribe to changes on grouped source that is an observable collection
-			if (ItemsSource is CollectionView collectionView && collectionView.CollectionGroups != null && collectionView.InnerCollection is INotifyCollectionChanged observableGroupedSource)
+			if (unwrappedSource is CollectionView collectionView && collectionView.CollectionGroups != null && collectionView.InnerCollection is INotifyCollectionChanged observableGroupedSource)
 			{
 				// This is a workaround for a bug with EventRegistrationTokenTable on Xamarin, where subscribing/unsubscribing to a class method directly won't 
 				// remove the handler.
@@ -620,7 +627,7 @@ namespace Windows.UI.Xaml.Controls
 				observableGroupedSource.CollectionChanged += handler;
 			}
 			//Subscribe to changes on ICollectionView that is grouped
-			else if (ItemsSource is ICollectionView iCollectionView && iCollectionView.CollectionGroups != null)
+			else if (unwrappedSource is ICollectionView iCollectionView && iCollectionView.CollectionGroups != null)
 			{
 				// This is a workaround for a bug with EventRegistrationTokenTable on Xamarin, where subscribing/unsubscribing to a class method directly won't 
 				// remove the handler.
@@ -632,7 +639,7 @@ namespace Windows.UI.Xaml.Controls
 
 			}
 			//Subscribe to changes on observable collection
-			else if (ItemsSource is INotifyCollectionChanged existingObservable)
+			else if (unwrappedSource is INotifyCollectionChanged existingObservable)
 			{
 				// This is a workaround for a bug with EventRegistrationTokenTable on Xamarin, where subscribing/unsubscribing to a class method directly won't 
 				// remove the handler.
@@ -642,7 +649,7 @@ namespace Windows.UI.Xaml.Controls
 				);
 				existingObservable.CollectionChanged += handler;
 			}
-			else if (ItemsSource is IObservableVector<object> observableVector)
+			else if (unwrappedSource is IObservableVector<object> observableVector)
 			{
 				// This is a workaround for a bug with EventRegistrationTokenTable on Xamarin, where subscribing/unsubscribing to a class method directly won't 
 				// remove the handler.
@@ -660,7 +667,7 @@ namespace Windows.UI.Xaml.Controls
 			_notifyCollectionGroupsChanged.Disposable = null;
 
 			//Subscribe to group changes if they are observable collections
-			if (ItemsSource is ICollectionView collectionViewGrouped && collectionViewGrouped.CollectionGroups != null)
+			if (unwrappedSource is ICollectionView collectionViewGrouped && collectionViewGrouped.CollectionGroups != null)
 			{
 				var disposables = new CompositeDisposable();
 				int i = -1;
@@ -844,9 +851,9 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		protected virtual void UpdateItems()
-		{			
+		{
 			if (ItemsPanelRoot != null && ShouldItemsControlManageChildren)
-			{				
+			{
 				_needsUpdateItems = false;
 
 				var items = GetItems() ?? Enumerable.Empty<object>();
@@ -1133,9 +1140,11 @@ namespace Windows.UI.Xaml.Controls
 
 		internal IndexPath GetIndexPathFromItem(object item)
 		{
+			var unwrappedSource = UnwrapItemsSource();
+
 			if (IsGrouping)
 			{
-				return (ItemsSource as ICollectionView).GetIndexPathForItem(item);
+				return (unwrappedSource as ICollectionView).GetIndexPathForItem(item);
 			}
 
 			var index = GetItems()?.IndexOf(item) ?? -1;
