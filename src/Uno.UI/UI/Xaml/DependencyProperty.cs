@@ -52,7 +52,7 @@ namespace Windows.UI.Xaml
 		{
 			_name = name;
 			_propertyType = propertyType;
-			_ownerType = IsTypeDependencyObject(ownerType) ? ownerType : typeof(_View);
+			_ownerType = attached || IsTypeDependencyObject(ownerType) ? ownerType : typeof(_View);
 			_isAttached = attached;
 			_hasAutoDataContextInherit = CanAutoInheritDataContext(propertyType);
 			_isTypeNullable = propertyType.IsNullableCached();
