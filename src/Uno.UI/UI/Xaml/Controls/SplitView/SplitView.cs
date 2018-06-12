@@ -314,13 +314,17 @@ namespace Windows.UI.Xaml.Controls
         {
 			// Manual propagation of the templated parent to the content property
 			// until we get the propagation running properly
-			if (Content is IFrameworkElement binder)
+			if (Content is IFrameworkElement contentBinder)
 			{
-				binder.TemplatedParent = this.TemplatedParent;
+				contentBinder.TemplatedParent = this.TemplatedParent;
+			}
+			if (Pane is IFrameworkElement paneBinder)
+			{
+				paneBinder.TemplatedParent = this.TemplatedParent;
 			}
 		}
 
-        private void UpdateControl()
+		private void UpdateControl()
 		{
 			if (_isViewReady && _runningSubscription.Disposable != null)
 			{
