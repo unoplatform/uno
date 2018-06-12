@@ -15,9 +15,9 @@ using Uno.Foundation;
 using Uno.Logging;
 using Uno;
 using System.Globalization;
-using Windows.System;
 using Microsoft.Extensions.Logging;
 using Uno.Core.Comparison;
+using Windows.Devices.Input;
 
 namespace Windows.UI.Xaml
 {
@@ -536,7 +536,10 @@ namespace Windows.UI.Xaml
 			}
 			else
 			{
-				this.Log().Error(message: $"No handler registered for event {eventName}.");
+				if (this.Log().IsEnabled(LogLevel.Debug))
+				{
+					this.Log().Debug(message: $"No handler registered for event {eventName}.");
+				}
 			}
 		}
 
@@ -693,7 +696,13 @@ namespace Windows.UI.Xaml
 			return HtmlId;
 		}
 
-		internal void RaiseTapped(TappedRoutedEventArgs args) => Tapped?.Invoke(this, args);
+		internal void RaiseTapped(TappedRoutedEventArgs args)
+		{
+			if (this.Log().IsEnabled(LogLevel.Warning))
+			{
+				this.Log().Warn("RaiseTapped is not supported");
+			}
+		}
 
 		public GeneralTransform TransformToVisual(UIElement visual)
 		{
@@ -828,6 +837,91 @@ namespace Windows.UI.Xaml
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.UIElement", "void UIElement.AddHandler(RoutedEvent routedEvent, object handler, bool handledEventsToo)");
 			}
+		}
+
+		private const string leftPointerEventFilter =
+			"evt ? (!evt.button || evt.button == 0) : false";
+
+		private const string pointerEventExtractor =
+			"evt ? \"\"+evt.pointerId+\";\"+evt.clientX+\";\"+evt.clientY+\";\"+(evt.ctrlKey?\"1\":\"0\")+\";\"+(evt.shiftKey?\"1\":\"0\")+\";\"+evt.button+\";\"+evt.pointerType : \"\"";
+
+		private EventArgs PayloadToPointerArgs(string payload)
+		{
+			var parts = payload?.Split(';');
+			if (parts?.Length != 7)
+			{
+				return null;
+			}
+
+			var pointerId = uint.Parse(parts[0], CultureInfo.InvariantCulture);
+			var x = double.Parse(parts[1], CultureInfo.InvariantCulture);
+			var y = double.Parse(parts[2], CultureInfo.InvariantCulture);
+			var ctrl = parts[3] == "1";
+			var shift = parts[4] == "1";
+			var buttons = int.Parse(parts[5], CultureInfo.InvariantCulture); // -1: none, 0:main, 1:middle, 2:other (commonly main=left, other=right)
+			var typeStr = parts[6];
+
+			var keys = ctrl ? VirtualKeyModifiers.Control : (shift ? VirtualKeyModifiers.Shift : VirtualKeyModifiers.None);
+			var type = ConvertPointerTypeString(typeStr);
+
+			var args = new PointerRoutedEventArgs(new Point(x, y))
+			{
+				KeyModifiers = keys,
+				Pointer = new Pointer(pointerId, type)
+			};
+
+			return args;
+		}
+
+
+		private EventArgs PayloadToTappedArgs(string payload)
+		{
+			var parts = payload?.Split(';');
+			if (parts?.Length != 7)
+			{
+				return null;
+			}
+
+			var pointerId = uint.Parse(parts[0], CultureInfo.InvariantCulture);
+			var x = double.Parse(parts[1], CultureInfo.InvariantCulture);
+			var y = double.Parse(parts[2], CultureInfo.InvariantCulture);
+			var typeStr = parts[6];
+
+			var type = ConvertPointerTypeString(typeStr);
+
+			var args = new TappedRoutedEventArgs(new Point(x, y))
+			{
+				PointerDeviceType = type
+			};
+
+			return args;
+		}
+
+		private static PointerDeviceType ConvertPointerTypeString(string typeStr)
+		{
+			PointerDeviceType type;
+			switch (typeStr.ToUpper())
+			{
+				case "MOUSE":
+				default:
+					type = PointerDeviceType.Mouse;
+					break;
+				case "PEN":
+					type = PointerDeviceType.Pen;
+					break;
+				case "TOUCH":
+					type = PointerDeviceType.Touch;
+					break;
+			}
+
+			return type;
+		}
+
+		private bool ValidateIsHitTest(EventArgs args)
+		{
+			// Note: IsHitVisible is inherited and directly propagated to the view (cf. UpdateHitTest),
+			//		 here we only validate the LOCAL override (like Panel.Background != null).
+			return IsViewHit();
 		}
 	}
 }

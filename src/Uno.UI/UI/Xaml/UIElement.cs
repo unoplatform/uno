@@ -74,62 +74,6 @@ namespace Windows.UI.Xaml
 		public event global::Windows.UI.Xaml.Input.PointerEventHandler PointerCaptureLost;
 #pragma warning restore 67 // Unused member
 
-#if __WASM__
-		private const string leftPointerEventFilter =
-			"evt ? (!evt.button || evt.button == 0) : false";
-
-		private const string pointerEventExtractor =
-			"evt ? \"\"+evt.pointerId+\";\"+evt.clientX+\";\"+evt.clientY+\";\"+(evt.ctrlKey?\"1\":\"0\")+\";\"+(evt.shiftKey?\"1\":\"0\")+\";\"+evt.button+\";\"+evt.pointerType : \"\"";
-
-		private EventArgs PayloadToPointerArgs(string payload)
-		{
-			var parts = payload?.Split(';');
-			if (parts?.Length != 7)
-			{
-				return null;
-			}
-
-			var pointerId = uint.Parse(parts[0], CultureInfo.InvariantCulture);
-			var x = double.Parse(parts[1], CultureInfo.InvariantCulture);
-			var y = double.Parse(parts[2], CultureInfo.InvariantCulture);
-			var ctrl = parts[3] == "1";
-			var shift = parts[4] == "1";
-			var buttons = int.Parse(parts[5], CultureInfo.InvariantCulture); // -1: none, 0:main, 1:middle, 2:other (commonly main=left, other=right)
-			var typeStr = parts[6];
-
-			var keys = ctrl ? VirtualKeyModifiers.Control : (shift ? VirtualKeyModifiers.Shift : VirtualKeyModifiers.None);
-			PointerDeviceType type;
-			switch (typeStr.ToUpper())
-			{
-				case "MOUSE":
-				default:
-					type = PointerDeviceType.Mouse;
-					break;
-				case "PEN":
-					type = PointerDeviceType.Pen;
-					break;
-				case "TOUCH":
-					type = PointerDeviceType.Touch;
-					break;
-			}
-
-			var args = new PointerRoutedEventArgs(new Point(x, y))
-			{
-				KeyModifiers = keys,
-				Pointer = new Pointer(pointerId, type)
-			};
-
-			return args;
-		}
-
-		private bool ValidateIsHitTest(EventArgs args)
-		{
-			// Note: IsHitVisible is inherited and directly propagated to the view (cf. UpdateHitTest),
-			//		 here we only validate the LOCAL override (like Panel.Background != null).
-			return IsViewHit();
-		}
-#endif
-
 #pragma warning disable CS0067 // The event is never used
 		public event PointerEventHandler PointerEntered
 #pragma warning restore CS0067 // The event is never used
@@ -251,6 +195,16 @@ namespace Windows.UI.Xaml
 			add { RegisterTapped(value); }
 			remove { UnregisterTapped(value); }
 		}
+#elif __WASM__
+		{
+			add => RegisterEventHandler(
+				"pointerup",
+				value,
+				eventFilterScript: leftPointerEventFilter,
+				eventExtractorScript: pointerEventExtractor,
+				payloadConverter: PayloadToTappedArgs);
+			remove => UnregisterEventHandler("pointerup", value);
+		}
 #else
 		;
 #endif
@@ -283,7 +237,7 @@ namespace Windows.UI.Xaml
 
 		protected internal bool IsPointerOver { get; set; }
 
-		#region Clip DependencyProperty
+#region Clip DependencyProperty
 
 		public RectangleGeometry Clip
 		{
@@ -316,9 +270,9 @@ namespace Windows.UI.Xaml
 			);
 		}
 
-		#endregion
+#endregion
 
-		#region RenderTransform Dependency Property
+#region RenderTransform Dependency Property
 
 		/// <summary>
 		/// This is a Transformation for a UIElement.  It binds the Render Transform to the View
@@ -335,9 +289,9 @@ namespace Windows.UI.Xaml
 
 		static partial void OnRenderTransformChanged(object dependencyObject, DependencyPropertyChangedEventArgs args);
 
-		#endregion
+#endregion
 
-		#region RenderTransformOrigin Dependency Property
+#region RenderTransformOrigin Dependency Property
 
 		/// <summary>
 		/// This is a Transformation for a UIElement.  It binds the Render Transform to the View
@@ -355,9 +309,9 @@ namespace Windows.UI.Xaml
 
 		static partial void OnRenderTransformOriginChanged(object dependencyObject, DependencyPropertyChangedEventArgs args);
 
-		#endregion
+#endregion
 
-		#region IsHitTestVisible Dependency Property
+#region IsHitTestVisible Dependency Property
 
 		public bool IsHitTestVisible
 		{
@@ -382,9 +336,9 @@ namespace Windows.UI.Xaml
 
 		partial void OnIsHitTestVisibleChangedPartial(bool oldValue, bool newValue);
 
-		#endregion
+#endregion
 
-		#region Opacity Dependency Property
+#region Opacity Dependency Property
 
 		public double Opacity
 		{
@@ -397,9 +351,9 @@ namespace Windows.UI.Xaml
 
 		partial void OnOpacityChanged(DependencyPropertyChangedEventArgs args);
 
-		#endregion
+#endregion
 
-		#region Visibility Dependency Property
+#region Visibility Dependency Property
 
 		/// <summary>
 		/// Sets the visibility of the current view
@@ -424,7 +378,7 @@ namespace Windows.UI.Xaml
 					(s, e) => (s as UIElement).OnVisibilityChanged((Visibility)e.OldValue, (Visibility)e.NewValue)
 				)
 			);
-		#endregion
+#endregion
 
 		internal bool IsRenderingSuspended { get; set; }
 
