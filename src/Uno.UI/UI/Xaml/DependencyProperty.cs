@@ -52,7 +52,7 @@ namespace Windows.UI.Xaml
 		{
 			_name = name;
 			_propertyType = propertyType;
-			_ownerType = ownerType;
+			_ownerType = IsTypeDependencyObject(ownerType) ? ownerType : typeof(_View);
 			_isAttached = attached;
 			_hasAutoDataContextInherit = CanAutoInheritDataContext(propertyType);
 			_isTypeNullable = propertyType.IsNullableCached();
@@ -171,7 +171,7 @@ namespace Windows.UI.Xaml
 			if (!_metadata.TryGetValue(forType, out metadata))
 			{
 				if (
-					!(typeof(DependencyObject).IsAssignableFrom(forType))
+					!IsTypeDependencyObject(forType)
 
 					// This check must be removed when Panel.Children will support only 
 					// UIElement as its elements. See #103492
@@ -192,6 +192,8 @@ namespace Windows.UI.Xaml
 
 			return metadata;
 		}
+
+		private static bool IsTypeDependencyObject(Type forType) => typeof(DependencyObject).IsAssignableFrom(forType);
 
 		internal void OverrideMetadata(Type forType, PropertyMetadata typeMetadata)
 		{
