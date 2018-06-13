@@ -1373,7 +1373,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
                                     }
                                     else
                                     {
-                                        if (implicitContentChild.Objects.Any())
+										if (implicitContentChild.Objects.Any())
                                         {
                                             writer.AppendLineInvariant(setterPrefix + contentProperty.Name + " = ");
 
@@ -1389,7 +1389,19 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
                                                 writer.AppendLineInvariant(",");
                                             }
                                         }
-                                    }
+										else if(
+											implicitContentChild.Value is string implicitValue 
+											&& implicitValue.HasValueTrimmed()
+										)
+										{
+											writer.AppendLineInvariant(setterPrefix + contentProperty.Name + " = \"" + implicitValue + "\"");
+
+                                            if (isInline)
+                                            {
+                                                writer.AppendLineInvariant(",");
+                                            }
+										}
+									}
                                 }
                             }
                         }
