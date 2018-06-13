@@ -14,7 +14,7 @@ namespace XamlGenerationTests.Core
 
 	public class TestPanel
 	{
-		public Test()
+		public TestPanel()
 		{
 			new NativeObject();
 		}
