@@ -539,7 +539,9 @@ namespace Windows.UI.Xaml
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		private void PopCurrentlySettingProperty(DependencyProperty property)
 		{
-			var popped = _currentlySettingProperty ?? _currentlySettingPropertyStack.Pop();
+			var popped = _currentlySettingPropertyStack.Count > 0
+				? _currentlySettingPropertyStack.Pop()
+				: _currentlySettingProperty;
 
 			_currentlySettingProperty = null;
 

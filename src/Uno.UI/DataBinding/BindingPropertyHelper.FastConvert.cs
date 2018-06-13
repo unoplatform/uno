@@ -220,6 +220,13 @@ namespace Uno.UI.DataBinding
 				return true;
 			}
 
+			// Fallback for Enums. Leave it at the end.
+			if (outputType.IsEnum)
+			{
+				output = Enum.Parse(outputType, input, true);
+				return true;
+			}
+
 			return false;
 		}
 

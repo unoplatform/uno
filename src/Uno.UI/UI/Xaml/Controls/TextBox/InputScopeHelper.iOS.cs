@@ -5,14 +5,15 @@ using Foundation;
 using UIKit;
 using CoreGraphics;
 using Windows.UI.Xaml.Input;
+using System.Linq;
 
 namespace Windows.UI.Xaml.Controls
 {
     internal static class InputScopeHelper
     {
-		public static UITextAutocapitalizationType ConvertInputScopeToCapitalization(InputScopeNameValue value)
+		public static UITextAutocapitalizationType ConvertInputScopeToCapitalization(InputScope value)
 		{
-			switch (value)
+			switch (GetInputScopeName(value))
 			{
 				case InputScopeNameValue.PersonalFullName:
 					return UITextAutocapitalizationType.Sentences;
@@ -22,9 +23,9 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		public static UIKeyboardType ConvertInputScopeToKeyboardType(InputScopeNameValue value)
+		public static UIKeyboardType ConvertInputScopeToKeyboardType(InputScope value)
 		{
-			switch (value)
+			switch (GetInputScopeName(value) ?? InputScopeNameValue.Default)
 			{
 				default:
 					return UIKeyboardType.Default;
@@ -52,6 +53,9 @@ namespace Windows.UI.Xaml.Controls
 					return UIKeyboardType.EmailAddress;
 			}
 		}
+
+		private static InputScopeNameValue? GetInputScopeName(InputScope value)
+			=> value?.Names?.FirstOrDefault()?.NameValue;
 
 		public static InputScopeNameValue ConvertInputScope(UIKeyboardType keyboardType)
 		{

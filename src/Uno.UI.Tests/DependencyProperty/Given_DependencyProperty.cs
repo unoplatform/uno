@@ -1313,6 +1313,41 @@ namespace Uno.UI.Tests.BinderTests
 
 			Assert.IsNotNull(dp1p);
 		}
+
+		[TestMethod]
+		public void When_SetValue_With_Nested_Callbacks()
+		{
+			var SUT = new MockDependencyObject();
+
+			DependencyProperty property1 = null;
+			DependencyProperty property2 = null;
+			DependencyProperty property3 = null;
+
+			PropertyChangedCallback OnProperty1Changed = (s, e) =>
+			{
+				SUT.SetValue(property3, 0); // we expect value 0 to be overwritten by property2's callback
+				SUT.SetValue(property2, 2);
+			};
+
+			PropertyChangedCallback OnProperty2Changed = (s, e) =>
+			{
+				SUT.SetValue(property3, 3);
+			};
+			
+			PropertyChangedCallback OnProperty3Changed = (s, e) =>
+			{
+			};
+
+			property1 = DependencyProperty.Register("Property1", typeof(int), typeof(MockDependencyObject), new PropertyMetadata(0, OnProperty1Changed));
+			property2 = DependencyProperty.Register("Property2", typeof(int), typeof(MockDependencyObject), new PropertyMetadata(0, OnProperty2Changed));
+			property3 = DependencyProperty.Register("Property3", typeof(int), typeof(MockDependencyObject), new PropertyMetadata(0, OnProperty3Changed));
+
+			SUT.SetValue(property1, 1);
+
+			Assert.AreEqual(1, SUT.GetValue(property1));
+			Assert.AreEqual(2, SUT.GetValue(property2));
+			Assert.AreEqual(3, SUT.GetValue(property3));
+		}
 	}
 
     #region DependencyObjects

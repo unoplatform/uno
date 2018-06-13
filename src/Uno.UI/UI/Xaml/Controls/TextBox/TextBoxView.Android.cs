@@ -139,9 +139,9 @@ namespace Windows.UI.Xaml.Controls
 					var editor = _editorField.Get(editText);
 					_cursorDrawableField.Set(editor, drawables);
 				}
-				catch (Exception ex)
+				catch (Exception)
 				{
-					editText.Log().Error("Failed to change the cursor color.", ex);
+					editText.Log().WarnIfEnabled(() => "Failed to change the cursor color. Some devices don't support this.");
 				}
 			}
 		}

@@ -80,6 +80,8 @@
 			  Fill="Black"
 			  Height="100"
 			  Width="100" />
-		
+
+		<Path Data="F 1 M 0,0" />
+
 	</Grid>
 </UserControl>

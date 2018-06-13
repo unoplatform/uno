@@ -2909,7 +2909,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
             var resource = _globalStaticResourcesMap.FindResource(resourceName);
             if (resource != null)
             {
-                return $"{resource.Namespace}.GlobalStaticResources.{SanitizeResourceName(resourceName)}";
+                return $"global::{resource.Namespace}.GlobalStaticResources.{SanitizeResourceName(resourceName)}";
             }
             else
             {

@@ -167,8 +167,6 @@ namespace {0}
 
 			private bool NeedsExplicitDefaultCtor(INamedTypeSymbol typeSymbol)
 			{
-				var isPanel = typeSymbol.Is(_panelSymbol);
-
 				var hasExplicitConstructor = typeSymbol
 					.GetMethods()
 					.Where(m => m.MethodKind == MethodKind.Constructor && m.Parameters.Length == 0 && !m.IsImplicitlyDeclared)
@@ -180,7 +178,7 @@ namespace {0}
 					.Where(m => m.MethodKind == MethodKind.Constructor && m.Parameters.Length == 0)
 					.Any() ?? false;
 
-				return !hasExplicitConstructor && baseHasDefaultCtor && !isPanel;
+				return !hasExplicitConstructor && baseHasDefaultCtor;
 			}
 		}
 	}

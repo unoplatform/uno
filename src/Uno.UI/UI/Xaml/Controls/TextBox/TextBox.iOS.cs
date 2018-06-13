@@ -181,12 +181,12 @@ namespace Windows.UI.Xaml.Controls
 
 			if (_textBoxView != null)
 			{
-				_textBoxView.KeyboardType = InputScopeHelper.ConvertInputScopeToKeyboardType((InputScopeNameValue)e.NewValue);
+				_textBoxView.KeyboardType = InputScopeHelper.ConvertInputScopeToKeyboardType((InputScope)e.NewValue);
 
 				//If SpellCheck is enabled we already set the Capitalization.
 				if (!IsSpellCheckEnabled)
 				{
-					_textBoxView.AutocapitalizationType = InputScopeHelper.ConvertInputScopeToCapitalization((InputScopeNameValue)e.NewValue);
+					_textBoxView.AutocapitalizationType = InputScopeHelper.ConvertInputScopeToCapitalization((InputScope)e.NewValue);
 				}
 			}
 		}

@@ -80,14 +80,70 @@ namespace Windows.UI.Xaml.Controls
 			InvalidateArrange();
 		}
 
+		protected override Size ArrangeOverride(Size finalSize)
+		{
+			return base.ArrangeOverride(finalSize);
+		}
+
 		protected override Size MeasureOverride(Size availableSize)
 		{
-			return MeasureView(availableSize);
+			var measuredSize = MeasureView(availableSize);
+			Size ret;
+
+			if (
+				double.IsInfinity(availableSize.Width)
+				|| double.IsInfinity(availableSize.Height)
+			)
+			{
+				ret = measuredSize;
+			}
+			else
+			{
+				ret = AdjustSize(availableSize, measuredSize);
+			}
+
+			return ret;
 		}
 
 		internal override bool IsViewHit()
 		{
 			return Source != null || base.IsViewHit();
+		}
+
+		private (double x, double y) BuildScale(Size destinationSize, Size sourceSize)
+		{
+			if (Stretch != Stretch.None)
+			{
+				var scale = (
+					x: destinationSize.Width / sourceSize.Width,
+					y: destinationSize.Height / sourceSize.Height
+				);
+
+				switch (Stretch)
+				{
+					case Stretch.UniformToFill:
+						var max = Math.Max(scale.x, scale.y);
+						scale = (max, max);
+						break;
+
+					case Stretch.Uniform:
+						var min = Math.Min(scale.x, scale.y);
+						scale =  (min, min);
+						break;
+				}
+
+				return scale;
+			}
+			else
+			{
+				return (1, 1);
+			}
+		}
+
+		private Size AdjustSize(Size availableSize, Size measuredSize)
+		{
+			var scale = BuildScale(availableSize, measuredSize);
+			return new Size(measuredSize.Width * scale.x, measuredSize.Height * scale.y);
 		}
 	}
 }

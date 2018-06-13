@@ -627,6 +627,16 @@ namespace Uno.UI.Tests.BinderTests
 			Assert.AreEqual(Visibility.Collapsed, SUT.MyVisibilityProperty);
 		}
 
+		[TestMethod]
+		public void When_DependencyProperty_Object_AttachedProperty()
+		{
+			var SUT = new MyObjectTest();
+			SUT.MyProperty = 42;
+			Assert.AreEqual(42, SUT.MyProperty);
+
+			var props = MyObjectTest.MyPropertyProperty.GetMetadata(typeof(MyObjectTest));
+		}
+
 		public partial class BaseTarget : DependencyObject
 		{
 			private List<object> _dataContextChangedList = new List<object>();
@@ -853,6 +863,29 @@ namespace Uno.UI.Tests.BinderTests
 			}
 		}
 	}
+
+	public partial class MyObjectTest : DependencyObject
+	{
+		#region MyProperty DependencyProperty
+
+		public int MyProperty
+		{
+			get { return (int)GetValue(MyPropertyProperty); }
+			set { SetValue(MyPropertyProperty, value); }
+		}
+
+		// Using a DependencyProperty as the backing store for MyProperty.  This enables animation, styling, binding, etc...
+		public static readonly DependencyProperty MyPropertyProperty =
+			DependencyProperty.Register("MyProperty", typeof(int), typeof(object), new PropertyMetadata(0));
+
+
+		private void OnMyPropertyChanged(DependencyPropertyChangedEventArgs e)
+		{
+		}
+
+		#endregion
+	}
+
 
 	public partial class MyControl : DependencyObject
 	{
