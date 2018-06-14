@@ -453,7 +453,7 @@ namespace Windows.UI.Xaml.Controls
 
 		public static DependencyProperty BringIntoViewOnFocusChangeProperty { get; } =
 			DependencyProperty.RegisterAttached(
-				"BringIntoViewOnFocusChange", 
+				"BringIntoViewOnFocusChange",
 				typeof(bool),
 				typeof(ScrollViewer),
 				new FrameworkPropertyMetadata(true, OnBringIntoViewOnFocusChangeChanged));
@@ -559,20 +559,26 @@ namespace Windows.UI.Xaml.Controls
 				SynchronizeContentTemplatedParent(TemplatedParent);
 			}
 
-			if (Content is IFrameworkElement element)
+			UpdateSizeChangedSubscription();
+		}
+
+		private void UpdateSizeChangedSubscription(bool isCleanupRequired = false)
+		{
+			if (!isCleanupRequired
+				&& Content is IFrameworkElement element)
 			{
-				_sizeChangedSubscription.Disposable = Disposable.Create(() => element.SizeChanged -= onSizeChanged);
-				element.SizeChanged += onSizeChanged;
+				_sizeChangedSubscription.Disposable = Disposable.Create(() => element.SizeChanged -= OnElementSizeChanged);
+				element.SizeChanged += OnElementSizeChanged;
 			}
 			else
 			{
 				_sizeChangedSubscription.Disposable = null;
 			}
+		}
 
-			void onSizeChanged(object sender, SizeChangedEventArgs args)
-			{
-				UpdateDimensionProperties();
-			}
+		private void OnElementSizeChanged(object sender, SizeChangedEventArgs args)
+		{
+			UpdateDimensionProperties();
 		}
 
 		internal protected override void OnTemplatedParentChanged(DependencyPropertyChangedEventArgs e)
@@ -660,7 +666,7 @@ namespace Windows.UI.Xaml.Controls
 			ZoomFactor = zoomFactor;
 
 			ViewChanged?.Invoke(this, new ScrollViewerViewChangedEventArgs());
-			
+
 			UpdateZoomedContentAlignment();
 		}
 

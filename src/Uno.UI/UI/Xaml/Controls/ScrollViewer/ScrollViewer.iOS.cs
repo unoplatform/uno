@@ -119,5 +119,11 @@ namespace Windows.UI.Xaml.Controls
 				_sv.ContentInset = new UIEdgeInsets((nfloat)insetTop, (nfloat)insetLeft, 0, 0);
 			}
 		}
+
+		public override void WillMoveToSuperview(UIView newsuper)
+		{
+			base.WillMoveToSuperview(newsuper);
+			UpdateSizeChangedSubscription(isCleanupRequired: newsuper == null);
+		}
 	}
 }
