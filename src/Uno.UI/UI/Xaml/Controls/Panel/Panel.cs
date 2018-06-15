@@ -227,7 +227,13 @@ namespace Windows.UI.Xaml.Controls
 		}
 		#endregion
 
-		internal ItemsControl ItemsOwner { get; private set; }
+		private WeakReference<ItemsControl> _itemsOwnerRef = new WeakReference<ItemsControl>(null);
+
+		internal ItemsControl ItemsOwner
+		{
+			get => _itemsOwnerRef.GetTarget();
+			private set => _itemsOwnerRef.SetTarget(value);
+		}
 
 		internal void SetItemsOwner(ItemsControl itemsOwner)
 		{
