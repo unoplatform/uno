@@ -27,6 +27,7 @@ namespace Windows.UI.Xaml
 #if !NET46
 				Style.RegisterDefaultStyleForType(typeof(Controls.Button), Uno.UI.GlobalStaticResources.XamlDefaultButton);
 				Style.RegisterDefaultStyleForType(typeof(Controls.TextBox), Uno.UI.GlobalStaticResources.XamlDefaultTextBox);
+				Style.RegisterDefaultStyleForType(typeof(Controls.PasswordBox), Uno.UI.GlobalStaticResources.XamlDefaultPasswordBox);
 				Style.RegisterDefaultStyleForType(typeof(Controls.CheckBox), Uno.UI.GlobalStaticResources.XamlDefaultCheckBox);
 				Style.RegisterDefaultStyleForType(typeof(Controls.RadioButton), Uno.UI.GlobalStaticResources.XamlDefaultRadioButton);
 				Style.RegisterDefaultStyleForType(typeof(Controls.AppBarSeparator), Uno.UI.GlobalStaticResources.XamlAppBarSeparator);
@@ -35,6 +36,8 @@ namespace Windows.UI.Xaml
 				Style.RegisterDefaultStyleForType(typeof(Controls.Frame), Uno.UI.GlobalStaticResources.XamlDefaultFrame);
 				Style.RegisterDefaultStyleForType(typeof(Controls.ProgressBar), Uno.UI.GlobalStaticResources.XamlDefaultProgressBar);
 				Style.RegisterDefaultStyleForType(typeof(Controls.Slider), Uno.UI.GlobalStaticResources.XamlDefaultSlider);
+				Style.RegisterDefaultStyleForType(typeof(Controls.Primitives.ToggleButton), Uno.UI.GlobalStaticResources.XamlDefaultToggleButton);
+				Style.RegisterDefaultStyleForType(typeof(Controls.ToggleSwitch), Uno.UI.GlobalStaticResources.XamlDefaultToggleSwitch);
 
 #if !NETSTANDARD2_0
 				Style.RegisterDefaultStyleForType(typeof(Controls.AppBar), Uno.UI.GlobalStaticResources.XamlCommandBar);

@@ -48,10 +48,11 @@ namespace Uno.UI.Controls
 				// According to Google's Material Design Guidelines, the Toolbar must have a minimum height of 48.
 				// https://material.io/guidelines/layout/structure.html
 				Height = 48,
-			};
+			};			
 			_contentContainer.SetParent(Element);
 			Native.AddView(_contentContainer);
 			yield return Disposable.Create(() => Native.RemoveView(_contentContainer));
+			yield return _contentContainer.RegisterParentChangedCallback(this, OnContentContainerParentChanged);
 
 			// Commands.Click
 			Native.MenuItemClick += Native_MenuItemClick;
@@ -67,7 +68,7 @@ namespace Uno.UI.Controls
 			Element.SecondaryCommands.VectorChanged += OnVectorChanged;
 			yield return Disposable.Create(() => Element.PrimaryCommands.VectorChanged -= OnVectorChanged);
 			yield return Disposable.Create(() => Element.SecondaryCommands.VectorChanged -= OnVectorChanged);
-
+			
 			// Properties
 			yield return Element.RegisterDisposableNestedPropertyChangedCallback(
 				(s, e) => Invalidate(),
@@ -89,6 +90,19 @@ namespace Uno.UI.Controls
 				new[] { BackButtonForegroundProperty },
 				new[] { BackButtonIconProperty }
 			);
+		}
+
+		private void OnContentContainerParentChanged(object instance, object key, DependencyObjectParentChangedEventArgs args)
+		{
+			// Even though we set the CommandBar as the parent of the _contentContainer,
+			// it will change to the native control when the view is added.
+			// This control is the visual parent but is not a DependencyObject and will not propagate the DataContext.
+			// In order to ensure the DataContext is propagated properly, we restore the CommandBar
+			// parent that can propagate the DataContext.
+			if (args.NewParent != Element)
+			{
+				_contentContainer.SetParent(Element);
+			}
 		}
 
 		protected override void Render()

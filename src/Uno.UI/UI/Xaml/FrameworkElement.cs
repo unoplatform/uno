@@ -208,7 +208,13 @@ namespace Windows.UI.Xaml
 		protected void ArrangeElement(View view, Rect finalRect)
 		{
 #if __WASM__
-			view.Arrange(finalRect);
+			var adjust = GetThicknessAdjust();
+
+			// HTML mooves the origin along with the border thickness.
+			// Adjust the child based on this element's border thickness.
+			var rect = new Rect(finalRect.X - adjust.Left, finalRect.Y - adjust.Top, finalRect.Width, finalRect.Height);
+
+			view.Arrange(rect);
 #else
 			_layouter.ArrangeElement(view, finalRect);
 #endif
