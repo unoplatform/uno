@@ -58,7 +58,7 @@
       <Version>1.22.0-dev.23</Version>
     </PackageReference>
     <PackageReference Include="Uno.SourceGenerationTasks">
-      <Version>1.22.0-dev.32</Version>
+      <Version>1.22.0-dev.49</Version>
     </PackageReference>
   </ItemGroup>
   <ItemGroup>

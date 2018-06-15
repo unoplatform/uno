@@ -13,7 +13,7 @@
 
 	<ItemGroup>
 		<PackageReference Include="Uno.SourceGenerationTasks">
-			<Version>1.22.0-dev.32</Version>
+			<Version>1.22.0-dev.49</Version>
 			<NoWarn>NU1701</NoWarn>
 		</PackageReference>
 		<PackageReference Include="Uno.Wasm.Bootstrap" Version="1.0.0-dev.17" />

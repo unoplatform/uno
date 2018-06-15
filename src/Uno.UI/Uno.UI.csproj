@@ -20,6 +20,8 @@
 
 	<!-- Ensures the .xr.xml files are generated in a proper layout folder -->
 	<GenerateLibraryLayout>true</GenerateLibraryLayout>
+	
+	<UnoSourceGeneratorUnsecureBinLogEnabled>true</UnoSourceGeneratorUnsecureBinLogEnabled>
   </PropertyGroup>
 
   <Import Project="$(MSBuildSDKExtrasTargets)" Condition="Exists('$(MSBuildSDKExtrasTargets)')" />
@@ -69,35 +71,24 @@
 	</Compile>
   </ItemGroup>
 
-  <ItemGroup Condition="'$(TargetFramework)'!='net46'">
-	<None Include="**\*.xaml" Exclude="bin\**\*.xaml;obj\**\*.xaml" />
+  <Choose>
+	<When Condition="'$(TargetFramework)'=='net46'">
+	  <ItemGroup>
+		<None Include="$(MSBuildThisFileDirectory)**/*.xaml" Exclude="bin/**/*.xaml;obj/**/*.xaml" />
+		<Page Remove="@(Page)" />
+	  </ItemGroup>
+	</When>
+	<Otherwise>
+	  <ItemGroup>
+		<None Include="$(MSBuildThisFileDirectory)**/*.xaml" Exclude="bin/**/*.xaml;obj/**/*.xaml" />
 
-	<!-- remove files included by msbuild extras -->
-	<Page Remove="@(Page)" />
-	<Page Include="**\*.xaml" Exclude="bin\**\*.xaml;obj\**\*.xaml" />
-  </ItemGroup>
-  <ItemGroup Condition="'$(TargetFramework)'=='net46'">
-	<None Include="**\*.xaml" Exclude="bin\**\*.xaml;obj\**\*.xaml" />
-	<Page Remove="@(Page)" />
-  </ItemGroup>
+		<!-- remove files included by msbuild extras -->
+		<Page Remove="@(Page)" />
+		<Page Include="$(MSBuildThisFileDirectory)**/*.xaml" Exclude="bin/**/*.xaml;obj/**/*.xaml" />
+	  </ItemGroup>
+	</Otherwise>
+  </Choose>
 
-  <Target Name="AdjustPage" BeforeTargets="Compile" Condition="'$(BuildingInsideUnoSourceGenerator)'=='true'">
-
-	<!-- Workaround for VS15.6 build agent issue -->
-	
-	<ItemGroup Condition="'$(TargetFramework)'!='net46'">
-	  <None Include="**\*.xaml" Exclude="bin\**\*.xaml;obj\**\*.xaml" />
-
-	  <!-- remove files included by msbuild extras -->
-	  <Page Remove="@(Page)" />
-	  <Page Include="**\*.xaml" Exclude="bin\**\*.xaml;obj\**\*.xaml" />
-	</ItemGroup>
-	<ItemGroup Condition="'$(TargetFramework)'=='net46'">
-	  <None Include="**\*.xaml" Exclude="bin\**\*.xaml;obj\**\*.xaml" />
-	  <Page Remove="@(Page)" />
-	</ItemGroup>
-	
-  </Target>
 
   <ItemGroup>
 	<None Include="Resources\AboutResources.txt" />
@@ -141,7 +132,7 @@
   <ItemGroup>
 	<PackageReference Include="MSBuild.Sdk.Extras" Version="1.5.4" PrivateAssets="All" />
 	<PackageReference Include="Uno.SourceGenerationTasks">
-	  <Version>1.22.0-dev.32</Version>
+	  <Version>1.22.0-dev.49</Version>
 	</PackageReference>
 	<PackageReference Include="Uno.Core">
 	  <Version>1.22.0-dev.23</Version>
