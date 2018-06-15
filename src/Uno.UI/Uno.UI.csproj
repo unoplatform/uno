@@ -70,33 +70,33 @@
   </ItemGroup>
 
   <ItemGroup Condition="'$(TargetFramework)'!='net46'">
-	<None Include="**\*.xaml" Exclude="bin\**\*.xaml;obj\**\*.xaml" />
+	<None Include="$(MSBuildThisFileDirectory)**/*.xaml" Exclude="bin/**/*.xaml;obj/**/*.xaml" />
 
 	<!-- remove files included by msbuild extras -->
 	<Page Remove="@(Page)" />
-	<Page Include="**\*.xaml" Exclude="bin\**\*.xaml;obj\**\*.xaml" />
+	<Page Include="$(MSBuildThisFileDirectory)**/*.xaml" Exclude="bin/**/*.xaml;obj/**/*.xaml" />
   </ItemGroup>
   <ItemGroup Condition="'$(TargetFramework)'=='net46'">
-	<None Include="**\*.xaml" Exclude="bin\**\*.xaml;obj\**\*.xaml" />
+	<None Include="$(MSBuildThisFileDirectory)**/*.xaml" Exclude="bin/**/*.xaml;obj/**/*.xaml" />
 	<Page Remove="@(Page)" />
   </ItemGroup>
 
   <Target Name="AdjustPage" BeforeTargets="Compile" Condition="'$(BuildingInsideUnoSourceGenerator)'=='true'">
 
 	<!-- Workaround for VS15.6 build agent issue -->
-	
+
 	<ItemGroup Condition="'$(TargetFramework)'!='net46'">
-	  <None Include="**\*.xaml" Exclude="bin\**\*.xaml;obj\**\*.xaml" />
+	  <None Include="$(MSBuildThisFileDirectory)**/*.xaml" Exclude="bin/**/*.xaml;obj/**/*.xaml" />
 
 	  <!-- remove files included by msbuild extras -->
 	  <Page Remove="@(Page)" />
-	  <Page Include="**\*.xaml" Exclude="bin\**\*.xaml;obj\**\*.xaml" />
+	  <Page Include="$(MSBuildThisFileDirectory)**/*.xaml" Exclude="bin/**/*.xaml;obj/**/*.xaml" />
 	</ItemGroup>
 	<ItemGroup Condition="'$(TargetFramework)'=='net46'">
-	  <None Include="**\*.xaml" Exclude="bin\**\*.xaml;obj\**\*.xaml" />
+	  <None Include="$(MSBuildThisFileDirectory)**/*.xaml" Exclude="bin/**/*.xaml;obj/**/*.xaml" />
 	  <Page Remove="@(Page)" />
 	</ItemGroup>
-	
+
   </Target>
 
   <ItemGroup>
