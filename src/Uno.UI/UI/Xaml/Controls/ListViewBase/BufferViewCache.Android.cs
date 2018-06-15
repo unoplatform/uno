@@ -8,6 +8,7 @@ using Android.Support.V7.Widget;
 using Android.Views;
 using Uno.Extensions;
 using Uno.Logging;
+using Windows.UI.Xaml.Controls.Primitives;
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -30,6 +31,7 @@ namespace Windows.UI.Xaml.Controls
 		private readonly Dictionary<int, List<UnoViewHolder>> _intermediateCache = new Dictionary<int, List<UnoViewHolder>>();
 		private readonly NativeListViewBase _owner;
 		private VirtualizingPanelLayout Layout => _owner.NativeLayout as VirtualizingPanelLayout;
+		private int NumberOfItems => _owner.XamlParent.NumberOfItems;
 
 		private int CacheHalfLength => Layout.CacheHalfLengthInViews;
 
@@ -42,10 +44,10 @@ namespace Windows.UI.Xaml.Controls
 		//Inclusive
 		private int LeadingBufferTargetStart => Layout?.GetLastVisibleDisplayPosition() + 1 ?? -1;
 		// Exclusive
-		private int LeadingBufferTargetEnd => Math.Min(Layout.ItemCount, LeadingBufferTargetStart + CacheHalfLength);
+		private int LeadingBufferTargetEnd => Math.Min(NumberOfItems, LeadingBufferTargetStart + CacheHalfLength);
 
-		private int TrailingBufferTargetSize => TrailingBufferTargetEnd - TrailingBufferTargetStart;
-		private int LeadingBufferTargetSize => LeadingBufferTargetEnd - LeadingBufferTargetStart;
+		private int TrailingBufferTargetSize => Math.Max(0, TrailingBufferTargetEnd - TrailingBufferTargetStart);
+		private int LeadingBufferTargetSize => Math.Max(0, LeadingBufferTargetEnd - LeadingBufferTargetStart);
 
 		private int TrailingBufferStart => _trailingBuffer.Count > 0 ? _trailingBuffer[0].DisplayPosition : -1;
 		// Exclusive
@@ -73,6 +75,10 @@ namespace Windows.UI.Xaml.Controls
 		public int FirstCacheIndex => TrailingBufferStart;
 		public int LastCacheIndex => LeadingBufferEnd;
 
+		// Used for debugging
+		private int _initialChildCount;
+		private int _initialItemViewCount;
+
 		public BufferViewCache(NativeListViewBase owner)
 		{
 			_owner = owner;
@@ -84,8 +90,16 @@ namespace Windows.UI.Xaml.Controls
 			var record = DequeueRecordFromBuffer(position);
 			if (record?.View != null)
 			{
-				Layout.TryAttachView(record.Value.View);
-				return record.Value.View;
+				if (record.Value.ItemViewType == type)
+				{
+					Layout.TryAttachView(record.Value.View);
+					return record.Value.View;
+				}
+				else
+				{
+					// View is no longer valid for this position, but still potentially reusable.
+					SendToIntermediateCache(recycler, record.Value);
+				}
 			}
 
 			if (record?.IsEmpty ?? false)
@@ -111,6 +125,8 @@ namespace Windows.UI.Xaml.Controls
 		/// </summary>
 		public void UpdateBuffers(RecyclerView.Recycler recycler)
 		{
+			_initialChildCount = Layout.ChildCount;
+			_initialItemViewCount = Layout.ItemViewCount;
 			UnbufferViews(recycler);
 			PrefetchViews(recycler);
 			TrimIntermediateCache(recycler);
@@ -157,6 +173,7 @@ namespace Windows.UI.Xaml.Controls
 						return;
 					}
 					var record = _trailingBuffer.RemoveFromFront();
+					TrimEmpty();
 					CheckValidState();
 					SendToIntermediateCache(recycler, record);
 				}
@@ -169,6 +186,7 @@ namespace Windows.UI.Xaml.Controls
 						return;
 					}
 					var record = _trailingBuffer.RemoveFromBack();
+					TrimEmpty();
 					CheckValidState();
 					SendToIntermediateCache(recycler, record);
 				}
@@ -194,6 +212,7 @@ namespace Windows.UI.Xaml.Controls
 						return;
 					}
 					var record = _leadingBuffer.RemoveFromFront();
+					TrimEmpty();
 					CheckValidState();
 					SendToIntermediateCache(recycler, record);
 				}
@@ -205,6 +224,7 @@ namespace Windows.UI.Xaml.Controls
 						return;
 					}
 					var record = _leadingBuffer.RemoveFromBack();
+					TrimEmpty();
 					CheckValidState();
 					SendToIntermediateCache(recycler, record);
 				}
@@ -328,7 +348,12 @@ namespace Windows.UI.Xaml.Controls
 					return;
 				}
 
-				var targetEnd = Math.Min(Layout.ItemCount, LeadingBufferEnd + CacheHalfLength + 1);
+				if (LeadingBufferTargetSize == 0)
+				{
+					// No need for extra items
+					return;
+				}
+				var targetEnd = Math.Min(NumberOfItems, LeadingBufferEnd + CacheHalfLength + 1);
 				try
 				{
 					_shouldBlockIntermediateCache = true;
@@ -350,6 +375,10 @@ namespace Windows.UI.Xaml.Controls
 		/// </summary>
 		private ElementViewRecord PrefetchView(RecyclerView.Recycler recycler, int displayPosition)
 		{
+			if (displayPosition < 0)
+			{
+				throw new ArgumentException($"{nameof(displayPosition)} must be greater than 0.");
+			}
 			var view = GetViewFromIntermediateCache(recycler, displayPosition);
 			if (view == null)
 			{
@@ -361,6 +390,10 @@ namespace Windows.UI.Xaml.Controls
 			}
 			var viewHolder = _owner.GetChildViewHolder(view) as UnoViewHolder;
 
+			if (!(view is SelectorItem))
+			{
+				throw new InvalidOperationException($"{nameof(PrefetchView)} received {view?.GetType()} in place of {nameof(SelectorItem)}.");
+			}
 
 			return new ElementViewRecord(displayPosition, viewHolder);
 
@@ -484,9 +517,11 @@ namespace Windows.UI.Xaml.Controls
 		/// </summary>
 		private ElementViewRecord? DequeueRecordFromBuffer(int displayPosition)
 		{
+			_initialChildCount = Layout.ChildCount;
+			_initialItemViewCount = Layout.ItemViewCount;
 			try
 			{
-				if (displayPosition == TrailingBufferEnd)
+				if (displayPosition == TrailingBufferEnd - 1)
 				{
 					return _trailingBuffer.RemoveFromBack();
 				}
@@ -620,10 +655,19 @@ namespace Windows.UI.Xaml.Controls
 					var record = _leadingBuffer[i];
 					if (expectedPosition != record.DisplayPosition && !record.IsEmpty)
 					{
-						throw new InvalidOperationException($"Expected position {expectedPosition} but got position {record.DisplayPosition} in trailing buffer.");
+						throw new InvalidOperationException($"Expected position {expectedPosition} but got position {record.DisplayPosition} in leading buffer.");
 					}
 					expectedPosition++;
 				}
+			}
+
+			if (Layout.ChildCount != _initialChildCount)
+			{
+				throw new InvalidOperationException($"Owner ChildCount has changed from {_initialChildCount} to {Layout.ChildCount}. Cache update should not modify owner.");
+			}
+			if (Layout.ItemViewCount != _initialItemViewCount)
+			{
+				throw new InvalidOperationException($"Owner ItemViewCount has changed from {_initialItemViewCount} to {Layout.ItemViewCount}. Cache update should not modify owner.");
 			}
 		}
 
@@ -647,6 +691,7 @@ namespace Windows.UI.Xaml.Controls
 			public int DisplayPosition { get; }
 			public UnoViewHolder ViewHolder { get; }
 			public View View => ViewHolder?.ItemView;
+			public int ItemViewType => ViewHolder?.ItemViewType ?? int.MinValue;
 
 			public bool IsEmpty { get; }
 

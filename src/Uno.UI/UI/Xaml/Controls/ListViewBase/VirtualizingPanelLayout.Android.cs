@@ -57,7 +57,7 @@ namespace Windows.UI.Xaml.Controls
 		/// <summary>
 		/// The count of views that correspond to collection items (and not group headers, etc)
 		/// </summary>
-		private int ItemViewCount { get; set; }
+		internal int ItemViewCount { get; set; }
 		private int GroupHeaderViewCount { get; set; }
 		private int HeaderViewCount { get; set; }
 		private int FooterViewCount { get; set; }
@@ -830,6 +830,8 @@ namespace Windows.UI.Xaml.Controls
 			{
 				ItemViewCount++;
 			}
+
+			AssertValidState();
 		}
 
 		/// <summary>
@@ -990,6 +992,8 @@ namespace Windows.UI.Xaml.Controls
 				_areHeaderAndFooterCreated = true;
 			}
 
+			AssertValidState();
+
 			if (!_isInitialExtentOffsetApplied)
 			{
 				var group = GetTrailingGroup(direction);
@@ -1012,11 +1016,16 @@ namespace Windows.UI.Xaml.Controls
 				_previousHeaderExtent = null;
 				_isInitialExtentOffsetApplied = true;
 			}
+
+			AssertValidState();
+
 			if (!_isInitialGroupHeaderCreated && isGrouping && XamlParent.NumberOfDisplayGroups > 0)
 			{
 				CreateGroupHeader(direction, InitialBreadthPadding, availableBreadth, recycler, state, GetLeadingGroup(direction));
 				_isInitialGroupHeaderCreated = true;
 			}
+
+			AssertValidState();
 
 			var nextItemPath = GetNextUnmaterializedItem(direction, _dynamicSeedIndex ?? GetLeadingMaterializedItem(direction));
 			while (nextItemPath != null)
@@ -1025,8 +1034,10 @@ namespace Windows.UI.Xaml.Controls
 				if (_groups.Count == 0)
 				{
 					CreateGroupsAtLeadingEdge(nextItemPath.Value.Section, direction, scrollOffset, availableExtent, availableBreadth, recycler, state);
+					AssertValidState();
 				}
 				var createdLine = TryCreateLine(direction, scrollOffset, availableExtent, availableBreadth, recycler, state, nextItemPath.Value);
+				AssertValidState();
 				if (!createdLine) { break; }
 				nextItemPath = GetNextUnmaterializedItem(direction);
 			}
@@ -1039,6 +1050,7 @@ namespace Windows.UI.Xaml.Controls
 				{
 					//Create empty groups at start/end
 					CreateGroupsAtLeadingEdge(endGroupIndex, direction, scrollOffset, availableExtent, availableBreadth, recycler, state);
+					AssertValidState();
 				}
 			}
 
@@ -1491,9 +1503,14 @@ namespace Windows.UI.Xaml.Controls
 
 		private void UpdateCacheHalfLength()
 		{
+			if (ItemViewCount == 0)
+			{
+				return;
+			}
+
 			var averageExtent = GetAverageVisibleItemExtent();
 			var itemsVisible = Extent / averageExtent;
-			var newCacheHalfLength = (itemsVisible * CacheLength) / 2;
+			var newCacheHalfLength = (itemsVisible * CacheLength) / 2 * GetTrailingLine(FillDirection.Forward).NumberOfViews; ;
 			newCacheHalfLength = Math.Round(newCacheHalfLength);
 			// Err on the side of overestimation by taking the largest potential cache size yet seen
 			CacheHalfLengthInViews = Math.Max(CacheHalfLengthInViews, (int)newCacheHalfLength);
