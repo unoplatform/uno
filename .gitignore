@@ -237,7 +237,7 @@ FakesAssemblies/
 # Xamarin
 */Resources/Resource.Desginer.cs
 /nuget_version_override.txt
-/crosstargeting_override.props
+/src/crosstargeting_override.props
 msbuild.binlog
 /Uno/Uno.UI.TestComparer/Properties/launchSettings.json
 *.diagsession
