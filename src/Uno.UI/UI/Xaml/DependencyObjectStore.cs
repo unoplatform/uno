@@ -825,7 +825,7 @@ namespace Windows.UI.Xaml
 						that._parentChangedCallbacks = that._parentChangedCallbacks.Remove(weakDelegate);
 					}
 
-					WeakReferencePool.ReturnWeakReference(this, wr);
+					WeakReferencePool.ReturnWeakReference(that, wr);
 
 					// Force a closure on the callback, to make its lifetime as long 
 					// as the subscription being held by the callee.
