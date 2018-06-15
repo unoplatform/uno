@@ -5,6 +5,7 @@ using System.ComponentModel;
 using System.Text;
 using System.Windows.Input;
 using Uno;
+using Uno.Extensions;
 using Windows.UI.Xaml.Controls.Primitives;
 
 namespace Windows.UI.Xaml.Controls
@@ -15,7 +16,13 @@ namespace Windows.UI.Xaml.Controls
 
 		public bool AreVerticalSnapPointsRegular => ((IScrollSnapPointsInfo)NativeLayout).AreVerticalSnapPointsRegular;
 
-		internal ListViewBase XamlParent { get; set; }
+		private global::System.WeakReference<ListViewBase> _xamlParentWeakReference = new global::System.WeakReference<ListViewBase>(null);
+
+		internal ListViewBase XamlParent
+		{
+			get => _xamlParentWeakReference.GetTarget();
+			set => _xamlParentWeakReference.SetTarget(value);
+		}
 
 		[NotImplemented]
 		public event EventHandler<object> HorizontalSnapPointsChanged
