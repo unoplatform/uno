@@ -27,7 +27,6 @@ namespace Windows.UI.Xaml.Controls
 		{
 			var item = GetFlatItemIndex(nextVisibleItem);
 			var view = recycler.GetViewForPosition(item, state);
-			ContainsView(view);
 			if (!(view is SelectorItem))
 			{
 				throw new InvalidOperationException($"Expected {nameof(SelectorItem)} but received {view?.GetType().ToString() ?? "<null>"}");

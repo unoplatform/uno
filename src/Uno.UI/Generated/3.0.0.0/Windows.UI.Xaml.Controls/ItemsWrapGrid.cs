@@ -105,7 +105,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		#if false || __IOS__ || NET46 || __WASM__
 		[global::Uno.NotImplemented]
 		public  int FirstCacheIndex
 		{

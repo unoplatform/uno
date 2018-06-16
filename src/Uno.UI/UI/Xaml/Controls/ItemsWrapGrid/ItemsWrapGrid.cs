@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Uno.UI;
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -18,7 +19,13 @@ namespace Windows.UI.Xaml.Controls
 		public int LastCacheIndex => _layout.XamlParent.NativePanel.ViewCache.LastCacheIndex;
 #endif
 
-		public ItemsWrapGrid() { }
+		public ItemsWrapGrid()
+		{
+			if (FeatureConfiguration.ListViewBase.DefaultCacheLength.HasValue)
+			{
+				CacheLength = FeatureConfiguration.ListViewBase.DefaultCacheLength.Value;
+			}
+		}
 
 		VirtualizingPanelLayout IVirtualizingPanel.GetLayouter()
 		{

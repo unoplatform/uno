@@ -6,7 +6,7 @@ using System.Text;
 using System.Windows.Input;
 using Uno;
 using Uno.Extensions;
-using Uno.UI.Binding;
+using Uno.UI.DataBinding;
 using Windows.UI.Xaml.Controls.Primitives;
 
 namespace Windows.UI.Xaml.Controls
