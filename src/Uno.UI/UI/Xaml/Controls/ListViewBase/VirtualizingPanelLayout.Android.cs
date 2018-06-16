@@ -928,12 +928,14 @@ namespace Windows.UI.Xaml.Controls
 				// operation, and one 'after.' Here we provide the 'before' by very simply not modifying the layout at all.
 				return;
 			}
-			if (isMeasure && availableExtent > 0 && availableBreadth > 0 && ChildCount > 0)
+			var needsScrapOnMeasure = isMeasure && availableExtent > 0 && availableBreadth > 0 && ChildCount > 0;
+			var willRunAnimations = state.WillRunSimpleAnimations();
+			if (needsScrapOnMeasure)
 			{
 				//Always rebuild the layout on measure, because child dimensions may have changed
 				ScrapLayout(recycler, availableBreadth);
 			}
-			else if (state.WillRunSimpleAnimations())
+			else if (willRunAnimations)
 			{
 				//An INotifyCollectionChanged operation is triggering an animated update of the list.
 				ScrapLayout(recycler, availableBreadth);
@@ -947,7 +949,14 @@ namespace Windows.UI.Xaml.Controls
 
 			UpdateScrollPosition(recycler, state);
 
-			UpdateBuffers(recycler);
+			if (!needsScrapOnMeasure && !willRunAnimations)
+			{
+				// Don't modify buffer on the same cycle as scrapping all views, because buffer is liable to 'suck up' scrapped views 
+				// leading to weird behaviour
+				AssertValidState();
+				UpdateBuffers(recycler);
+				AssertValidState();
+			}
 		}
 
 		/// <summary>
@@ -1221,7 +1230,10 @@ namespace Windows.UI.Xaml.Controls
 		{
 			var displayItemIndex = GetGroupHeaderAdapterIndex(group.GroupIndex);
 			var headerView = recycler.GetViewForPosition(displayItemIndex, state);
-			Debug.Assert(headerView is ListViewBaseHeaderItem, "view is ListViewBaseHeaderItem (We should never be given a regular item container)");
+			if (!(headerView is ListViewBaseHeaderItem))
+			{
+				throw new InvalidOperationException($"Expected {nameof(ListViewBaseHeaderItem)} but received {headerView?.GetType().ToString() ?? "<null>"}");
+			}
 			group.RelativeHeaderPlacement = RelativeGroupHeaderPlacement;
 
 			AddViewAtOffset(headerView, fillDirection, group.Start, breadthOffset, availableBreadth, viewType: ViewType.GroupHeader);
@@ -1842,7 +1854,10 @@ namespace Windows.UI.Xaml.Controls
 		private View GetGroupHeaderAt(int groupHeaderIndex)
 		{
 			var view = GetChildAt(GetGroupHeaderViewIndex(groupHeaderIndex));
-			Debug.Assert(view is ListViewBaseHeaderItem, "view is ListViewBaseHeaderItem");
+			if (!(view is ListViewBaseHeaderItem))
+			{
+				throw new InvalidOperationException($"Expected {nameof(ListViewBaseHeaderItem)} but received {view?.GetType().ToString() ?? "<null>"}");
+			}
 			return view;
 		}
 

@@ -27,7 +27,11 @@ namespace Windows.UI.Xaml.Controls
 		{
 			var item = GetFlatItemIndex(nextVisibleItem);
 			var view = recycler.GetViewForPosition(item, state);
-			Debug.Assert(view is SelectorItem, "view is SelectorItem (we should never be given a group header)");
+			ContainsView(view);
+			if (!(view is SelectorItem))
+			{
+				throw new InvalidOperationException($"Expected {nameof(SelectorItem)} but received {view?.GetType().ToString() ?? "<null>"}");
+			}
 			var size = AddViewAtOffset(view, direction, extentOffset, breadthOffset, availableBreadth);
 			var physicalSize = size.LogicalToPhysicalPixels();
 
