@@ -6,6 +6,7 @@ using System.Text;
 using System.Windows.Input;
 using Uno;
 using Uno.Extensions;
+using Uno.UI.Binding;
 using Windows.UI.Xaml.Controls.Primitives;
 
 namespace Windows.UI.Xaml.Controls
@@ -16,12 +17,16 @@ namespace Windows.UI.Xaml.Controls
 
 		public bool AreVerticalSnapPointsRegular => ((IScrollSnapPointsInfo)NativeLayout).AreVerticalSnapPointsRegular;
 
-		private global::System.WeakReference<ListViewBase> _xamlParentWeakReference = new global::System.WeakReference<ListViewBase>(null);
+		private ManagedWeakReference _xamlParentWeakReference;
 
 		internal ListViewBase XamlParent
 		{
-			get => _xamlParentWeakReference.GetTarget();
-			set => _xamlParentWeakReference.SetTarget(value);
+			get => _xamlParentWeakReference.Target as ListViewBase;
+			set
+			{
+				WeakReferencePool.ReturnWeakReference(this, _xamlParentWeakReference);
+				_xamlParentWeakReference = WeakReferencePool.RentWeakReference(this, value);
+			}
 		}
 
 		[NotImplemented]
