@@ -188,12 +188,12 @@ namespace Windows.UI.Xaml.Controls
 
 		public override bool CanScrollVertically()
 		{
-			return ScrollOrientation == Orientation.Vertical;
+			return ScrollOrientation == Orientation.Vertical && ChildCount > 0;
 		}
 
 		public override bool CanScrollHorizontally()
 		{
-			return ScrollOrientation == Orientation.Horizontal;
+			return ScrollOrientation == Orientation.Horizontal && ChildCount > 0;
 		}
 
 		public override void ScrollToPosition(int position)
