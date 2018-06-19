@@ -50,7 +50,11 @@ namespace Windows.Storage
 				=> NSUserDefaults.StandardUserDefaults.ToDictionary().Keys.Select(k => k.ToString()).ToList();
 
 			public ICollection<object> Values
-				=> NSUserDefaults.StandardUserDefaults.ToDictionary().Values.Select(k => (object)k).ToList();
+				=> NSUserDefaults.StandardUserDefaults
+				.ToDictionary()
+				.Values
+				.Select(k => DataTypeSerializer.Deserialize(k?.ToString()))
+				.ToList();
 
 			public int Count
 				=> (int)NSUserDefaults.StandardUserDefaults.ToDictionary().Count;
@@ -101,7 +105,7 @@ namespace Windows.Storage
 			{
 				if (NSUserDefaults.StandardUserDefaults.ToDictionary().TryGetValue((NSString)key, out var nsvalue))
 				{
-					value = nsvalue;
+					value = DataTypeSerializer.Deserialize(nsvalue?.ToString());
 					return true;
 				}
 
