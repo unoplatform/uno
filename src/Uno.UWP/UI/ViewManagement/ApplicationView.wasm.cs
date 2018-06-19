@@ -14,7 +14,7 @@ namespace Windows.UI.ViewManagement
 			set
 			{
 				var escapedValue = WebAssemblyRuntime.EscapeJs(value);
-				var command = "(function(t){document.title = t;})(\"" + escapedValue + "\");";
+				var command = "(function(t){document.title = t; return \"\";})(\"" + escapedValue + "\");";
 				WebAssemblyRuntime.InvokeJS(command);
 			}
 		}
