@@ -38,13 +38,13 @@ namespace Windows.UI.Xaml.Controls
 		private Dictionary<UnoViewHolder, List<Action>> _onRecycled = new Dictionary<UnoViewHolder, List<Action>>(); //Used by Phase binding
 
 		//Inclusive
-		private int TrailingBufferTargetStart => Math.Max(0, TrailingBufferTargetEnd - CacheHalfLength);
+		private int TrailingBufferTargetStart => Math.Max(ConvertIndexToDisplayPosition(0), TrailingBufferTargetEnd - CacheHalfLength);
 		// Exclusive
 		private int TrailingBufferTargetEnd => Layout?.GetFirstVisibleDisplayPosition() ?? -1;
 		//Inclusive
 		private int LeadingBufferTargetStart => Layout?.GetLastVisibleDisplayPosition() + 1 ?? -1;
 		// Exclusive
-		private int LeadingBufferTargetEnd => Math.Min(NumberOfItems, LeadingBufferTargetStart + CacheHalfLength);
+		private int LeadingBufferTargetEnd => Math.Min(ConvertIndexToDisplayPosition(NumberOfItems), LeadingBufferTargetStart + CacheHalfLength);
 
 		private int TrailingBufferTargetSize => Math.Max(0, TrailingBufferTargetEnd - TrailingBufferTargetStart);
 		private int LeadingBufferTargetSize => Math.Max(0, LeadingBufferTargetEnd - LeadingBufferTargetStart);
@@ -630,6 +630,8 @@ namespace Windows.UI.Xaml.Controls
 			return (TrailingBufferTargetStart <= position && TrailingBufferTargetEnd > position) ||
 				(LeadingBufferTargetStart <= position && LeadingBufferTargetEnd > position);
 		}
+
+		private int ConvertIndexToDisplayPosition(int index) => _owner.XamlParent.ConvertIndexToDisplayPosition(index);
 
 		[Conditional("DEBUG")]
 		private void CheckValidState()

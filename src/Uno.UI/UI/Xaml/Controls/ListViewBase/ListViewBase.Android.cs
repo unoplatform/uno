@@ -225,7 +225,7 @@ namespace Windows.UI.Xaml.Controls
 			return base.GetIsGroupHeader(ConvertDisplayPositionToIndex(displayPosition));
 		}
 
-		private int ConvertIndexToDisplayPosition(int index)
+		internal int ConvertIndexToDisplayPosition(int index)
 		{
 			if (ShouldShowHeader)
 			{
