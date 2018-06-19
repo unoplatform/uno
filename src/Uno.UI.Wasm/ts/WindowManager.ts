@@ -628,7 +628,7 @@
 		}
 
 		private resize() {
-			const sizeStr = MonoRuntime.mono_string(`${window.innerWidth};${window.innerHeight}`);
+			const sizeStr = this.getMonoString(`${window.innerWidth};${window.innerHeight}`);
 			MonoRuntime.call_method(WindowManager.resizeMethod, null, [sizeStr]);
 		}
 
@@ -641,15 +641,23 @@
 				throw `No attribute XamlHandle on element ${element}. Can't raise event.`;
 			}
 
-			const htmlIdStr = MonoRuntime.mono_string(htmlId);
-			const eventNameStr = MonoRuntime.mono_string(eventName);
-            const eventPayloadStr = eventPayload ? MonoRuntime.mono_string(eventPayload) : null;
+            const htmlIdStr = this.getMonoString(htmlId);
+            const eventNameStr = this.getMonoString(eventName);
+            const eventPayloadStr = this.getMonoString(eventPayload);
 
 			var handledHandle = MonoRuntime.call_method(WindowManager.dispatchEventMethod, null, [htmlIdStr, eventNameStr, eventPayloadStr]);
-			var handledStr = MonoRuntime.conv_string(handledHandle);
+            var handledStr = this.fromMonoString(handledHandle);
 			var handled = handledStr == "True";
 			return handled;
-		}
+        }
+
+        private getMonoString(str: string): Interop.IMonoStringHandle {
+            return str ? MonoRuntime.mono_string(str) : null;
+        }
+
+        private fromMonoString(strHandle: Interop.IMonoStringHandle): string {
+            return strHandle ? MonoRuntime.conv_string(strHandle) : "";
+        }
 
 		private GetIsConnectedToRootElement(element: HTMLElement | SVGElement): boolean {
 			const rootElement = this.rootContent;
