@@ -53,7 +53,15 @@ namespace Windows.UI.Xaml.Controls
 			{
 				if(url.IsAbsoluteUri)
 				{
-					SetAttribute("src", url.AbsoluteUri);
+					if (url.Scheme.Equals("file", StringComparison.OrdinalIgnoreCase))
+					{
+						// Local files are assumed as coming from the remoter server
+						SetAttribute("src", url.PathAndQuery);
+					}
+					else
+					{
+						SetAttribute("src", url.AbsoluteUri);
+					}
 				}
 				else
 				{
