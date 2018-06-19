@@ -27,9 +27,13 @@
 				ManagedObject.init();
 			}
 
-			const handleStr = MonoRuntime.mono_string(handle);
-			const methodStr = MonoRuntime.mono_string(method);
-			const parametersStr = MonoRuntime.mono_string(parameters);
+            const handleStr = handle ? MonoRuntime.mono_string(handle) : null;
+            const methodStr = method ? MonoRuntime.mono_string(method) : null;
+            const parametersStr = parameters ? MonoRuntime.mono_string(parameters) : null;
+
+            if (methodStr == null) {
+                throw "Cannot dispatch to unknown method";
+            }
 
 			MonoRuntime.call_method(ManagedObject.dispatchMethod, null, [handleStr, methodStr, parametersStr]);
 		}
