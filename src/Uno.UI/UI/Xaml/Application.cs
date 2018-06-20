@@ -49,6 +49,13 @@ namespace Windows.UI.Xaml
 
 		}
 
+		public static void Start(global::Windows.UI.Xaml.ApplicationInitializationCallback callback)
+		{
+			StartPartial(callback);
+		}
+
+		static partial void StartPartial(ApplicationInitializationCallback callback);
+
 		protected internal virtual void OnActivated(IActivatedEventArgs args) { }
 
 		protected internal virtual void OnLaunched(LaunchActivatedEventArgs args) { }
