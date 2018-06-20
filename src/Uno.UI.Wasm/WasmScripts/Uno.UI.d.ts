@@ -188,6 +188,8 @@ declare namespace Uno.UI {
         private removeLoading();
         private resize();
         private dispatchEvent(element, eventName, eventPayload?);
+        private getMonoString(str);
+        private fromMonoString(strHandle);
         private GetIsConnectedToRootElement(element);
     }
 }

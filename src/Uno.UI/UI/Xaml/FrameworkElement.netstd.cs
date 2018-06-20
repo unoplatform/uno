@@ -27,6 +27,8 @@ namespace Windows.UI.Xaml
 			}
 
 			OnLoadingPartial();
+
+			ApplyCompiledBindings();
 		}
 
 		private void OnLoaded(object sender, RoutedEventArgs args)
