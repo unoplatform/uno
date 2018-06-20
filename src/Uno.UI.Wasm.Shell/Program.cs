@@ -21,7 +21,7 @@ namespace Uno.UI.Wasm.Shell
 		{
 			ConfigureFilters(LogExtensionPoint.AmbientLoggerFactory);
 
-			new App.App();
+			Application.Start(_ => new App.App());
 		}
 
 		static void ConfigureFilters(ILoggerFactory factory)
