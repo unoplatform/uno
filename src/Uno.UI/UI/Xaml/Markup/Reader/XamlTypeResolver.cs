@@ -1,4 +1,5 @@
-﻿using System;
+﻿
+using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
@@ -252,7 +253,12 @@ namespace Windows.UI.Xaml.Markup.Reader
 
         public Type FindType(string name)
         {
-            return _findType(name);
+			if (name.IsNullOrWhiteSpace())
+			{
+				return null;
+			}
+
+			return _findType(name);
         }
 
         public Type FindType(XamlType type)
