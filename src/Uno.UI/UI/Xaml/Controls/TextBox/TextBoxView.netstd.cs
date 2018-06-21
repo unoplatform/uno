@@ -92,5 +92,10 @@ namespace Windows.UI.Xaml.Controls
 			get => int.Parse(GetProperty("selectionEnd"));
 			set => SetProperty("selectionEnd", value.ToString());
 		}
+
+		internal override bool IsViewHit()
+		{
+			return true;
+		}
 	}
 }
