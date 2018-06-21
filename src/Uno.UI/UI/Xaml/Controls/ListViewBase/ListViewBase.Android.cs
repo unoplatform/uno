@@ -288,6 +288,10 @@ namespace Windows.UI.Xaml.Controls
 			Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
 			{
 				var index = IndexFromItem(item);
+				if (index < 0)
+				{
+					return;
+				}
 				var displayPosition = ConvertIndexToDisplayPosition(index);
 				NativePanel?.ScrollIntoView(displayPosition, alignment);
 			});
