@@ -1047,7 +1047,7 @@ namespace Uno.UI.Tests.BinderTests
 			Assert.AreEqual("default2", SUT2.GetValue(MyDependencyObject1.MyPropertyProperty));
 			Assert.AreEqual("default3", SUT3.GetValue(MyDependencyObject1.MyPropertyProperty));
 		}
-
+		
 		[TestMethod]
 		public void When_OverrideMetadata_CoerceValueCallback()
 		{
@@ -1078,6 +1078,17 @@ namespace Uno.UI.Tests.BinderTests
 			Assert.AreEqual(4, SUT1.CoerceValueCallbackCount);
 			Assert.AreEqual(4, SUT2.CoerceValueCallbackCount);
 			Assert.AreEqual(4, SUT3.CoerceValueCallbackCount);
+		}
+
+		[TestMethod]
+		public void When_SetValue_Inheritance_And_CoerceValue_Then_GetValue_Local_Is_UnsetValue()
+		{
+			var SUT = new MyDependencyObject1();
+
+			SUT.SetValue(MyDependencyObject1.MyPropertyProperty, "value", DependencyPropertyValuePrecedences.Inheritance);
+			SUT.CoerceValue(MyDependencyObject1.MyPropertyProperty);
+
+			Assert.AreEqual(DependencyProperty.UnsetValue, SUT.GetValue(MyDependencyObject1.MyPropertyProperty, DependencyPropertyValuePrecedences.Local));
 		}
 
 		[TestMethod]

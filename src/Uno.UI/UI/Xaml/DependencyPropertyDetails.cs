@@ -146,7 +146,7 @@ namespace Windows.UI.Xaml
 		/// </summary>
 		/// <param name="precedence">The value precedence under which to fetch a value</param>
 		/// <returns>The value at the highest precedence level under the specified one</returns>
-		internal object GetValueUnderPrecedence(DependencyPropertyValuePrecedences precedence)
+		internal (object value, DependencyPropertyValuePrecedences precedence) GetValueUnderPrecedence(DependencyPropertyValuePrecedences precedence)
 		{
 			// Start from current precedence and find next highest
 			for (int i = (int)precedence + 1; i < (int)DependencyPropertyValuePrecedences.DefaultValue; i++)
@@ -155,11 +155,11 @@ namespace Windows.UI.Xaml
 
 				if (value != DependencyProperty.UnsetValue)
 				{
-					return value;
+					return (value, (DependencyPropertyValuePrecedences)i);
 				}
 			}
 
-			return _stack[(int)DependencyPropertyValuePrecedences.DefaultValue];
+			return (_stack[(int)DependencyPropertyValuePrecedences.DefaultValue], DependencyPropertyValuePrecedences.DefaultValue);
 		}
 
 		/// <summary>
