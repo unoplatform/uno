@@ -7,7 +7,7 @@ namespace Windows.UI.Xaml.Controls
 	#endif
 	public  partial class Pivot 
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+#if false
 		[global::Uno.NotImplemented]
 		public  global::Windows.UI.Xaml.DataTemplate TitleTemplate
 		{
@@ -20,8 +20,8 @@ namespace Windows.UI.Xaml.Controls
 				this.SetValue(TitleTemplateProperty, value);
 			}
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+#endif
+#if false
 		[global::Uno.NotImplemented]
 		public  object Title
 		{
@@ -34,8 +34,8 @@ namespace Windows.UI.Xaml.Controls
 				this.SetValue(TitleProperty, value);
 			}
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+#endif
+#if false
 		[global::Uno.NotImplemented]
 		public  object SelectedItem
 		{
@@ -48,8 +48,8 @@ namespace Windows.UI.Xaml.Controls
 				this.SetValue(SelectedItemProperty, value);
 			}
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+#endif
+#if false
 		[global::Uno.NotImplemented]
 		public  int SelectedIndex
 		{
@@ -62,8 +62,8 @@ namespace Windows.UI.Xaml.Controls
 				this.SetValue(SelectedIndexProperty, value);
 			}
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+#endif
+#if __ANDROID__ || __IOS__ || NET46 || __WASM__
 		[global::Uno.NotImplemented]
 		public  bool IsLocked
 		{
@@ -76,8 +76,8 @@ namespace Windows.UI.Xaml.Controls
 				this.SetValue(IsLockedProperty, value);
 			}
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+#endif
+#if false
 		[global::Uno.NotImplemented]
 		public  global::Windows.UI.Xaml.DataTemplate HeaderTemplate
 		{
@@ -90,8 +90,8 @@ namespace Windows.UI.Xaml.Controls
 				this.SetValue(HeaderTemplateProperty, value);
 			}
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+#endif
+#if false
 		[global::Uno.NotImplemented]
 		public  global::Windows.UI.Xaml.DataTemplate RightHeaderTemplate
 		{
@@ -104,8 +104,8 @@ namespace Windows.UI.Xaml.Controls
 				this.SetValue(RightHeaderTemplateProperty, value);
 			}
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+#endif
+#if false
 		[global::Uno.NotImplemented]
 		public  object RightHeader
 		{
@@ -118,8 +118,8 @@ namespace Windows.UI.Xaml.Controls
 				this.SetValue(RightHeaderProperty, value);
 			}
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+#endif
+#if false
 		[global::Uno.NotImplemented]
 		public  global::Windows.UI.Xaml.DataTemplate LeftHeaderTemplate
 		{
@@ -132,8 +132,8 @@ namespace Windows.UI.Xaml.Controls
 				this.SetValue(LeftHeaderTemplateProperty, value);
 			}
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+#endif
+#if false
 		[global::Uno.NotImplemented]
 		public  object LeftHeader
 		{
@@ -146,8 +146,8 @@ namespace Windows.UI.Xaml.Controls
 				this.SetValue(LeftHeaderProperty, value);
 			}
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+#endif
+#if __ANDROID__ || __IOS__ || NET46 || __WASM__
 		[global::Uno.NotImplemented]
 		public  bool IsHeaderItemsCarouselEnabled
 		{
@@ -174,96 +174,96 @@ namespace Windows.UI.Xaml.Controls
 				this.SetValue(HeaderFocusVisualPlacementProperty, value);
 			}
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+#endif
+#if false
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty HeaderTemplateProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
 			"HeaderTemplate", typeof(global::Windows.UI.Xaml.DataTemplate), 
 			typeof(global::Windows.UI.Xaml.Controls.Pivot), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.DataTemplate)));
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+#endif
+#if false
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty IsLockedProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
 			"IsLocked", typeof(bool), 
 			typeof(global::Windows.UI.Xaml.Controls.Pivot), 
 			new FrameworkPropertyMetadata(default(bool)));
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+#endif
+#if false
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty SelectedIndexProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
 			"SelectedIndex", typeof(int), 
 			typeof(global::Windows.UI.Xaml.Controls.Pivot), 
 			new FrameworkPropertyMetadata(default(int)));
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+#endif
+#if false
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty SelectedItemProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
 			"SelectedItem", typeof(object), 
 			typeof(global::Windows.UI.Xaml.Controls.Pivot), 
 			new FrameworkPropertyMetadata(default(object)));
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+#endif
+#if __ANDROID__ || __IOS__ || NET46 || __WASM__
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty SlideInAnimationGroupProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.RegisterAttached(
 			"SlideInAnimationGroup", typeof(global::Windows.UI.Xaml.Controls.PivotSlideInAnimationGroup), 
 			typeof(global::Windows.UI.Xaml.Controls.Pivot), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Controls.PivotSlideInAnimationGroup)));
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+#endif
+#if false
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty TitleProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
 			"Title", typeof(object), 
 			typeof(global::Windows.UI.Xaml.Controls.Pivot), 
 			new FrameworkPropertyMetadata(default(object)));
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+#endif
+#if false
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty TitleTemplateProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
 			"TitleTemplate", typeof(global::Windows.UI.Xaml.DataTemplate), 
 			typeof(global::Windows.UI.Xaml.Controls.Pivot), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.DataTemplate)));
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+#endif
+#if false
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty LeftHeaderProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
 			"LeftHeader", typeof(object), 
 			typeof(global::Windows.UI.Xaml.Controls.Pivot), 
 			new FrameworkPropertyMetadata(default(object)));
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+#endif
+#if false
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty LeftHeaderTemplateProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
 			"LeftHeaderTemplate", typeof(global::Windows.UI.Xaml.DataTemplate), 
 			typeof(global::Windows.UI.Xaml.Controls.Pivot), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.DataTemplate)));
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+#endif
+#if false
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty RightHeaderProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
 			"RightHeader", typeof(object), 
 			typeof(global::Windows.UI.Xaml.Controls.Pivot), 
 			new FrameworkPropertyMetadata(default(object)));
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+#endif
+#if false
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty RightHeaderTemplateProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
 			"RightHeaderTemplate", typeof(global::Windows.UI.Xaml.DataTemplate), 
 			typeof(global::Windows.UI.Xaml.Controls.Pivot), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.DataTemplate)));
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+#endif
+#if __ANDROID__ || __IOS__ || NET46 || __WASM__
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty HeaderFocusVisualPlacementProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
@@ -347,8 +347,8 @@ namespace Windows.UI.Xaml.Controls
 		{
 			element.SetValue(SlideInAnimationGroupProperty, value);
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+#endif
+#if false
 		[global::Uno.NotImplemented]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Xaml.Controls.Pivot, global::Windows.UI.Xaml.Controls.PivotItemEventArgs> PivotItemLoaded
 		{
@@ -363,8 +363,8 @@ namespace Windows.UI.Xaml.Controls
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.Pivot", "event TypedEventHandler<Pivot, PivotItemEventArgs> Pivot.PivotItemLoaded");
 			}
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+#endif
+#if false
 		[global::Uno.NotImplemented]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Xaml.Controls.Pivot, global::Windows.UI.Xaml.Controls.PivotItemEventArgs> PivotItemLoading
 		{
@@ -379,8 +379,8 @@ namespace Windows.UI.Xaml.Controls
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.Pivot", "event TypedEventHandler<Pivot, PivotItemEventArgs> Pivot.PivotItemLoading");
 			}
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+#endif
+#if false
 		[global::Uno.NotImplemented]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Xaml.Controls.Pivot, global::Windows.UI.Xaml.Controls.PivotItemEventArgs> PivotItemUnloaded
 		{
@@ -395,10 +395,9 @@ namespace Windows.UI.Xaml.Controls
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.Pivot", "event TypedEventHandler<Pivot, PivotItemEventArgs> Pivot.PivotItemUnloaded");
 			}
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
-		[global::Uno.NotImplemented]
-		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Xaml.Controls.Pivot, global::Windows.UI.Xaml.Controls.PivotItemEventArgs> PivotItemUnloading
+#endif
+#if false
+		public event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Xaml.Controls.Pivot, global::Windows.UI.Xaml.Controls.PivotItemEventArgs> PivotItemUnloading
 		{
 			[global::Uno.NotImplemented]
 			add
@@ -411,8 +410,8 @@ namespace Windows.UI.Xaml.Controls
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.Pivot", "event TypedEventHandler<Pivot, PivotItemEventArgs> Pivot.PivotItemUnloading");
 			}
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+#endif
+#if false
 		[global::Uno.NotImplemented]
 		public  event global::Windows.UI.Xaml.Controls.SelectionChangedEventHandler SelectionChanged
 		{
@@ -427,6 +426,6 @@ namespace Windows.UI.Xaml.Controls
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.Pivot", "event SelectionChangedEventHandler Pivot.SelectionChanged");
 			}
 		}
-		#endif
+#endif
 	}
 }

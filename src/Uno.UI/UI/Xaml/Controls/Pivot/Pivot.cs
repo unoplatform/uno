@@ -1,37 +1,222 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
-using Windows.UI.Xaml.Markup;
+using System.Linq;
+using System.Runtime.InteropServices.WindowsRuntime;
+using Uno.Extensions;
+using Windows.Foundation;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls.Primitives;
+using Windows.UI.Xaml.Data;
+using Windows.UI.Xaml.Documents;
+using Windows.UI.Xaml.Input;
+using Windows.UI.Xaml.Media;
 
 namespace Windows.UI.Xaml.Controls
 {
-	[ContentProperty(Name = "Items")]
-	public partial class Pivot : Control
+	public partial class Pivot : ItemsControl
 	{
-		public Pivot()
-		{
-			Initialize();
-		}
+		private ContentControl _titleContentControl;
+		private PivotHeaderPanel _staticHeader;
+		private PivotHeaderPanel _header;
+		private RectangleGeometry _headerClipperGeometry;
+		private ContentControl _headerClipper;
+		private bool _isTemplateApplied;
 
-		public ItemCollection Items { get; private set; }
+		private bool _isUWPTemplate;
 
-		private void Initialize()
+		protected override void OnApplyTemplate()
 		{
-			Items = new ItemCollection();
-			Items.VectorChanged += Items_VectorChanged;
-			InitializePartial();
-		}
+			base.OnApplyTemplate();
 
-		private void Items_VectorChanged(Foundation.Collections.IObservableVector<object> sender, Foundation.Collections.IVectorChangedEventArgs @event)
-		{
-			if (@event.CollectionChange == Foundation.Collections.CollectionChange.ItemInserted)
+			_staticHeader = this.GetTemplateChild("StaticHeader") as PivotHeaderPanel;
+			_titleContentControl = this.GetTemplateChild("TitleContentControl") as ContentControl;
+			_header = this.GetTemplateChild("Header") as PivotHeaderPanel;
+			_headerClipperGeometry = this.GetTemplateChild("HeaderClipperGeometry") as RectangleGeometry;
+			_headerClipper = this.GetTemplateChild("HeaderClipper") as ContentControl;
+
+			_isUWPTemplate = _staticHeader != null;
+
+			if (!_isUWPTemplate)
 			{
-				UpdateItems();
+				ItemsPanelRoot = null;
+			}
+
+			_isTemplateApplied = true;
+
+			UpdateProperties();
+
+			Loaded += (s, e) => RegisterHeaderEvents();
+			Unloaded += (s, e) => UnregisterHeaderEvents();
+		}
+
+		private void UnregisterHeaderEvents()
+		{
+			foreach (var item in _staticHeader.Children)
+			{
+				if (item is PivotHeaderItem pivotHeaderItem)
+				{
+					pivotHeaderItem.PointerPressed -= OnItemPointerPressed;
+				}
 			}
 		}
 
-		partial void InitializePartial();
+		private void RegisterHeaderEvents()
+		{
+			UnregisterHeaderEvents();
 
-		partial void UpdateItems();
+			foreach (var item in _staticHeader.Children)
+			{
+				if (item is PivotHeaderItem pivotHeaderItem)
+				{
+					pivotHeaderItem.PointerPressed += OnItemPointerPressed;
+				}
+			}
+		}
+
+		private void UpdateProperties()
+		{
+			if ( 
+				_isUWPTemplate
+				&& _isTemplateApplied
+			)
+			{
+				if(_headerClipper != null)
+				{
+					// Disable clipping until it gets properly supported.
+					_headerClipper.Clip = null;
+				}
+
+				_header.Visibility = Visibility.Collapsed;
+				_titleContentControl.Visibility = Title != null ? Visibility.Visible : Visibility.Collapsed;
+			}
+		}
+
+		protected override bool IsItemItsOwnContainerOverride(object item)
+			=> _isUWPTemplate ? item is PivotItem : base.IsItemItsOwnContainerOverride(item);
+
+		protected override DependencyObject GetContainerForItemOverride()
+			=> _isUWPTemplate ? new PivotItem()  : GetContainerForItemOverride();
+
+		protected override void UpdateItems()
+		{
+			base.UpdateItems();
+
+			if (_isUWPTemplate)
+			{
+				_staticHeader.Visibility = Items.Count != 0 ? Visibility.Visible : Visibility.Collapsed;
+
+				UnregisterHeaderEvents();
+				_staticHeader.Children.Clear();
+
+				foreach (var item in Items)
+				{
+					if (item is PivotItem pivotItem)
+					{
+						var headerItem = new PivotHeaderItem()
+						{
+							Content = pivotItem.Header,
+							ContentTemplate = HeaderTemplate,
+							IsHitTestVisible = true
+						};
+
+						headerItem.SetBinding(
+							ContentControl.ContentTemplateProperty,
+							new Binding
+							{
+								Path = "HeaderTemplate",
+								RelativeSource = RelativeSource.TemplatedParent
+							}
+						);
+
+						_staticHeader.Children.Add(headerItem);
+					}
+				}
+
+				if (SelectedIndex == -1 && Items.Count != 0)
+				{
+					SelectedIndex = 0;
+				}
+				else
+				{
+					SynchronizeSelectedItem();
+				}
+
+				RegisterHeaderEvents();
+			}
+			else
+			{
+				if(TemplatedRoot is NativePivotPresenter presenter)
+				{
+					presenter.Items.Clear();
+					presenter.Items.AddRange(Items);
+				}
+			}
+		}
+
+		private void OnItemPointerPressed(object sender, PointerRoutedEventArgs e)
+		{
+			if (_isUWPTemplate)
+			{
+				if (sender is PivotHeaderItem selectedHeaderItem)
+				{
+					SelectedIndex = _staticHeader.Children.IndexOf(selectedHeaderItem);
+				}
+			}
+		}
+
+		private void OnSelectedIndexChanged(int oldValue, int newValue)
+		{
+			if (_isUWPTemplate)
+			{
+				SynchronizeSelectedItem();
+			}
+		}
+
+		private void SynchronizeSelectedItem()
+		{
+			if (SelectedIndex != -1 && Items.Count != 0)
+			{
+				var selectedIndex = Math.Max(Math.Min(SelectedIndex, Items.Count - 1), 0);
+
+				var selectedHeader = _staticHeader.Children[selectedIndex] as PivotHeaderItem;
+				var selectedPivotitem = Items[selectedIndex] as PivotItem;
+
+				SelectedItem = selectedPivotitem;
+
+				foreach (var item in Items)
+				{
+					if (item is PivotItem pivotItem && item != selectedPivotitem)
+					{
+						pivotItem.Opacity = 0;
+						pivotItem.IsHitTestVisible = false;
+					}
+				}
+
+				selectedPivotitem.Opacity = 1;
+				selectedPivotitem.IsHitTestVisible = true;
+
+				foreach (var child in _staticHeader.Children)
+				{
+					if (child is PivotHeaderItem headerItem && child != selectedHeader)
+					{
+						VisualStateManager.GoToState(headerItem, "Unselected", true);
+					}
+				}
+
+				VisualStateManager.GoToState(selectedHeader, "Selected", true);
+			}
+		}
+
+		private static void OnTitlePropertyChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs args)
+		{
+			if (dependencyObject is Pivot pivot)
+			{
+				if (pivot._isUWPTemplate)
+				{
+					pivot.UpdateProperties();
+				}
+			}
+		}
 	}
 }

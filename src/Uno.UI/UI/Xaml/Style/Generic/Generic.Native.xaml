@@ -235,7 +235,18 @@
     <not_wasm:Style BasedOn="{StaticResource NativeDefaultTextBox}" TargetType="TextBox" />
     
     <!-- Default native Pivot styles -->
-    <ios:Style x:Key="NativeDefaultPivot" TargetType="Pivot">
+    <xamarin:Style x:Key="NativeDefaultPivot" TargetType="Pivot">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Pivot">
+					<NativePivotPresenter x:Name="NativePresenter" />
+				</ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </xamarin:Style>
+
+    <!-- Default native Pivot styles -->
+    <ios:Style TargetType="NativePivotPresenter">
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="Pivot">
@@ -252,19 +263,17 @@
         </Setter>
     </ios:Style>
 
-	<android:Style x:Key="NativeDefaultPivot" TargetType="Pivot">
+	<android:Style TargetType="NativePivotPresenter">
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="Pivot">
-                    <Grid>
-                        <ExtendedViewPager OffscreenPageLimit="1" SwipeEnabled="true" />
-                    </Grid>
+                    <ExtendedViewPager OffscreenPageLimit="1" SwipeEnabled="true" />
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
     </android:Style>
-    
-    <not_wasm:Style BasedOn="{StaticResource NativeDefaultPivot}" TargetType="Pivot" />
+
+	<not_wasm:Style BasedOn="{StaticResource NativeDefaultPivot}" TargetType="Pivot" />
 
 	<ios:Style x:Key="NativeDefaultCommandBar"
 			   TargetType="CommandBar">
