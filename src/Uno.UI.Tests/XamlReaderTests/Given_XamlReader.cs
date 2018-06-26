@@ -550,6 +550,25 @@ namespace Uno.UI.Tests.XamlReaderTests
 			Assert.AreEqual("Segoe UI", r2.FontFamily.Source);
 		}
 
+		[TestMethod]
+		public void When_MultipleImplicitStyle()
+		{
+			var s = GetContent(nameof(When_MultipleImplicitStyle));
+			var r = Windows.UI.Xaml.Markup.XamlReader.Load(s) as UserControl;
+
+			Assert.IsTrue(r.Resources.ContainsKey(typeof(Grid)));
+			Assert.IsTrue(r.Resources.ContainsKey(typeof(TextBlock)));
+		}
+
+		[TestMethod]
+		public void When_ImplicitStyle_WithoutKey()
+		{
+			Assert.ThrowsException<InvalidOperationException>(() => {
+				var s = GetContent(nameof(When_ImplicitStyle_WithoutKey));
+				var r = Windows.UI.Xaml.Markup.XamlReader.Load(s) as UserControl;
+			});
+		}
+
 		private string GetContent(string testName)
         {
             var assembly = this.GetType().Assembly;

@@ -10,7 +10,7 @@
 	position: absolute;
 	display: inline;
 	outline: none;
-	pointer-events: inherit;
+	pointer-events: auto;
 }
 
 .uno-frameworkelement.uno-unarranged {

@@ -8,7 +8,7 @@ namespace $ext_safeprojectname$.Wasm
 
 		static void Main(string[] args)
 		{
-			_app = new App();
+			Application.Start(_ => _app = new App());
 		}
 	}
 }

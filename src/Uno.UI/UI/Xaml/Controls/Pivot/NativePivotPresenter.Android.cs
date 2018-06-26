@@ -15,7 +15,7 @@ using Windows.UI.Xaml.Media;
 
 namespace Windows.UI.Xaml.Controls
 {
-	public partial class Pivot
+	public partial class NativePivotPresenter
 	{
 		private SlidingTabLayout _tabStrip;
 		private ViewPager _pager;

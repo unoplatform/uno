@@ -506,8 +506,8 @@ namespace Windows.UI.Xaml
 		internal void CoerceValue(DependencyProperty property)
 		{
 			// Trigger the coercion mechanism of SetValue, by re-applying the base value (non-coerced value).
-			var baseValue = GetValueUnderPrecedence(property, DependencyPropertyValuePrecedences.Coercion);
-			SetValue(property, baseValue);
+			var (baseValue, basePrecedence) = GetValueUnderPrecedence(property, DependencyPropertyValuePrecedences.Coercion);
+			SetValue(property, baseValue, basePrecedence);
 		}
 
 		/// <summary>
@@ -834,7 +834,7 @@ namespace Windows.UI.Xaml
 			);
 		}
 
-		internal object GetValueUnderPrecedence(DependencyProperty property, DependencyPropertyValuePrecedences precedence)
+		internal (object value, DependencyPropertyValuePrecedences precedence) GetValueUnderPrecedence(DependencyProperty property, DependencyPropertyValuePrecedences precedence)
 		{
 			var stack = _properties.GetPropertyDetails(property);
 

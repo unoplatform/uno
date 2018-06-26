@@ -385,7 +385,7 @@ namespace Windows.UI.Xaml
 
 				invocationList.Add(handler);
 				if (_subscribeCommand != null && invocationList.Count == 1 && !_isSubscribed)
-				{ 
+				{
 					WebAssemblyRuntime.InvokeJS(_subscribeCommand);
 					_isSubscribed = true;
 				}
@@ -480,7 +480,7 @@ namespace Windows.UI.Xaml
 				finally
 				{
 					_isDispatching = false;
-					
+
 					// An handler was added / removed while dispatching the event, so apply the change.
 					if (_pendingInvocationList != null)
 					{
@@ -729,19 +729,7 @@ namespace Windows.UI.Xaml
 
 		internal void UpdateHitTest()
 		{
-			// Note: We don't use the 'IsHitTestOverride()'.
-			//		 As it's only a *LOCAL* value (eg. Background == null), it should not impact the enability of the children. 
-			//		 But as by default we set the 'pointer-events: inherit', if we disable events here, all chidren will be impacted.
-			//		 Instead we validate the 'IsHitTestOverride' before raising any pointer related event.
-
-			if (IsHitTestVisible && Visibility == Visibility.Visible && IsEnabledOverride())
-			{
-				SetStyle("pointer-events", "inherit");
-			}
-			else
-			{
-				SetStyle("pointer-events", "none");
-			}
+			this.CoerceValue(HitTestVisibilityProperty);
 		}
 
 		internal virtual bool IsEnabledOverride() => true;
@@ -917,11 +905,105 @@ namespace Windows.UI.Xaml
 			return type;
 		}
 
-		private bool ValidateIsHitTest(EventArgs args)
+		#region HitTestVisibility
+
+		private enum HitTestVisibility
 		{
-			// Note: IsHitVisible is inherited and directly propagated to the view (cf. UpdateHitTest),
-			//		 here we only validate the LOCAL override (like Panel.Background != null).
-			return IsViewHit();
+			/// <summary>
+			/// The element and its children can't be targeted by hit-testing.
+			/// </summary>
+			/// <remarks>
+			/// This occurs when IsHitTestVisible="False", IsEnabled="False", or Visibility="Collapsed".
+			/// </remarks>
+			Collapsed,
+
+			/// <summary>
+			/// The element can't be targeted by hit-testing.
+			/// </summary>
+			/// <remarks>
+			/// This usually occurs if an element doesn't have a Background/Fill.
+			/// </remarks>
+			Invisible,
+
+			/// <summary>
+			/// The element can be targeted by hit-testing.
+			/// </summary>
+			Visible,
 		}
+
+		/// <summary>
+		/// Represents the final calculated hit-test visibility of the element.
+		/// </summary>
+		/// <remarks>
+		/// This property should never be directly set, and its value should always be calculated through coercion (see <see cref="CoerceHitTestVisibility(DependencyObject, object, bool)"/>.
+		/// </remarks>
+		private static readonly DependencyProperty HitTestVisibilityProperty =
+			DependencyProperty.Register(
+				"HitTestVisibility",
+				typeof(HitTestVisibility),
+				typeof(UIElement),
+				new FrameworkPropertyMetadata(
+					HitTestVisibility.Visible,
+					FrameworkPropertyMetadataOptions.Inherits,
+					coerceValueCallback: (s, e) => CoerceHitTestVisibility(s, e),
+					propertyChangedCallback: (s, e) => OnHitTestVisibilityChanged(s, e)
+				)
+			);
+
+		/// <summary>
+		/// This calculates the final hit-test visibility of an element.
+		/// </summary>
+		/// <returns></returns>
+		private static object CoerceHitTestVisibility(DependencyObject dependencyObject, object baseValue)
+		{
+			var element = (UIElement)dependencyObject;
+
+			// The HitTestVisibilityProperty is never set directly. This means that baseValue is always the result of the parent's CoerceHitTestVisibility.
+			var baseHitTestVisibility = (HitTestVisibility)baseValue;
+
+			// If the parent is collapsed, we should be collapsed as well. This takes priority over everything else, even if we would be visible otherwise.
+			if (baseHitTestVisibility == HitTestVisibility.Collapsed)
+			{
+				return HitTestVisibility.Collapsed;
+			}
+
+			// If we're not locally hit-test visible, visible, or enabled, we should be collapsed. Our children will be collapsed as well.
+			if (!element.IsHitTestVisible || element.Visibility != Visibility.Visible || !element.IsEnabledOverride())
+			{
+				return HitTestVisibility.Collapsed;
+			}
+
+			// If we're not hit (usually means we don't have a Background/Fill), we're invisible. Our children will be visible or not, depending on their state.
+			if (!element.IsViewHit())
+			{
+				return HitTestVisibility.Invisible;
+			}
+
+			// If we're not collapsed or invisible, we can be targeted by hit-testing. This means that we can be the source of pointer events.
+			return HitTestVisibility.Visible;
+		}
+
+		private static void OnHitTestVisibilityChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs args)
+		{
+			if (dependencyObject is UIElement element && args.NewValue is HitTestVisibility hitTestVisibility)
+			{
+				if (hitTestVisibility == HitTestVisibility.Visible)
+				{
+					// By default, elements have 'pointer-event' set to 'auto' (see Uno.UI.css .uno-uielement class).
+					// This means that they can be the target of hit-testing and will raise pointer events when interacted with.
+					// This is aligned with HitTestVisibilityProperty's default value of Visible.
+					element.SetStyle("pointer-events", "auto");
+				}
+				else
+				{
+					// If HitTestVisibilityProperty is calculated to Invisible or Collapsed,
+					// we don't want to be the target of hit-testing and raise any pointer events.
+					// This is done by setting 'pointer-events' to 'none'.
+					element.SetStyle("pointer-events", "none");
+				}
+			}
+		}
+
+		#endregion
 	}
 }

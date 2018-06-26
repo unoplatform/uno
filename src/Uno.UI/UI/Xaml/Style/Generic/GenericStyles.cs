@@ -38,6 +38,7 @@ namespace Windows.UI.Xaml
 				Style.RegisterDefaultStyleForType(typeof(Controls.Slider), Uno.UI.GlobalStaticResources.XamlDefaultSlider);
 				Style.RegisterDefaultStyleForType(typeof(Controls.Primitives.ToggleButton), Uno.UI.GlobalStaticResources.XamlDefaultToggleButton);
 				Style.RegisterDefaultStyleForType(typeof(Controls.ToggleSwitch), Uno.UI.GlobalStaticResources.XamlDefaultToggleSwitch);
+				Style.RegisterDefaultStyleForType(typeof(Controls.Pivot), Uno.UI.GlobalStaticResources.XamlDefaultPivot);
 
 #if !NETSTANDARD2_0
 				Style.RegisterDefaultStyleForType(typeof(Controls.AppBar), Uno.UI.GlobalStaticResources.XamlCommandBar);
