@@ -602,6 +602,9 @@ var Uno;
                 if (element) {
                     element.parentElement.removeChild(element);
                 }
+                // UWP Window's default background is white.
+                const body = document.getElementsByTagName("body")[0];
+                body.style.backgroundColor = '#fff';
             }
             resize() {
                 const sizeStr = this.getMonoString(`${window.innerWidth};${window.innerHeight}`);
