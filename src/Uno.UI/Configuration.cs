@@ -52,6 +52,13 @@ namespace Uno.UI
 			/// Make the default value of VerticalContentAlignment and HorizontalContentAlignment be Stretch instead of Center
 			/// </summary>
 			public static bool UseLegacyContentAlignment { get; set; } = false;
+
+			/// <summary>
+			/// Enables the lazy materialization of <see cref="Windows.UI.Xaml.Controls.Control"/> template. This behavior
+			/// is not aligned with UWP, which materializes templates immediately, making x:Name controls available
+			/// in the constructor of a control.
+			/// </summary>
+			public static bool UseLegacyLazyApplyTemplate { get; set; } = false;
 		}
 	}
 }
