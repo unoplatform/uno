@@ -482,11 +482,11 @@ namespace Uno.UI
 
 			return tcs.Task;
 		}
-		
+
 		/// <summary>
 		/// Displays all the visual descendants of <paramref name="viewGroup"/> for diagnostic purposes. 
 		/// </summary>
-		public static string ShowDescendants(this ViewGroup viewGroup, StringBuilder sb = null, string spacing = "")
+		public static string ShowDescendants(this ViewGroup viewGroup, StringBuilder sb = null, string spacing = "", ViewGroup viewOfInterest = null)
 		{
 			sb = sb ?? new StringBuilder();
 			AppendView(viewGroup);
@@ -496,7 +496,7 @@ namespace Uno.UI
 				var child = viewGroup.GetChildAt(i);
 				if (child is ViewGroup childViewGroup)
 				{
-					ShowDescendants(childViewGroup, sb, spacing);
+					ShowDescendants(childViewGroup, sb, spacing, viewOfInterest);
 				}
 				else
 				{
@@ -508,8 +508,32 @@ namespace Uno.UI
 
 			void AppendView(View view)
 			{
-				sb.AppendLine($"{spacing}>{view.ToString()}-({ViewHelper.PhysicalToLogicalPixels(view.Width)}x{ViewHelper.PhysicalToLogicalPixels(view.Height)})");
+				sb.AppendLine($"{spacing}{(view == viewOfInterest ? "*" : "")}>{view.ToString()}-({ViewHelper.PhysicalToLogicalPixels(view.Width)}x{ViewHelper.PhysicalToLogicalPixels(view.Height)})");
 			}
+		}
+
+		/// <summary>
+		/// Displays the visual tree in the vicinity of <paramref name="viewGroup"/> for diagnostic purposes.
+		/// </summary>
+		/// <param name="viewGroup">The view to display tree for.</param>
+		/// <param name="fromHeight">How many levels above <paramref name="viewGroup"/> should be included in the displayed subtree.</param>
+		/// <returns>A formatted string representing the visual tree around <paramref name="viewGroup"/>.</returns>
+		public static string ShowLocalVisualTree(this ViewGroup viewGroup, int fromHeight = 0)
+		{
+			var root = viewGroup;
+			for (int i = 0; i < fromHeight; i++)
+			{
+				if (root.Parent is ViewGroup)
+				{
+					root = root.Parent as ViewGroup;
+				}
+				else
+				{
+					break;
+				}
+			}
+
+			return ShowDescendants(root, viewOfInterest: viewGroup);
 		}
 	}
 
