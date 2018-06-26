@@ -25,6 +25,8 @@ namespace Windows.UI.Xaml.Controls
 			Header = header;
 		}
 
+		protected override bool CanCreateTemplateWithoutParent => true;
+
 		public object Header
 		{
 			get { return this.GetValue(HeaderProperty); }

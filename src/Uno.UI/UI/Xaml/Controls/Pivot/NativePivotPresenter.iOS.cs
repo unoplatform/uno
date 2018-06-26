@@ -8,7 +8,7 @@ using Uno.Extensions;
 
 namespace Windows.UI.Xaml.Controls
 {
-	public partial class Pivot
+	public partial class NativePivotPresenter
 	{
 		private Panel _content;
 		private UITabBar _tabBar;
@@ -69,7 +69,10 @@ namespace Windows.UI.Xaml.Controls
 
 				_tabBar.SelectedItem = _tabBar.Items.FirstOrDefault();
 
-				SetSelectedTab((int)_tabBar.SelectedItem.Tag);
+				if (_tabBar.SelectedItem != null)
+				{
+					SetSelectedTab((int)_tabBar.SelectedItem.Tag);
+				}
 			}
 		}
 

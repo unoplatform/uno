@@ -9,10 +9,10 @@ namespace Windows.UI.Xaml.Controls
 {
 	public class PivotAdapter : FragmentPagerAdapter
 	{
-		private readonly Pivot _pivot;
+		private readonly NativePivotPresenter _pivot;
 		private List<PivotItemFragment> _fragments;
 
-		public PivotAdapter(Android.Support.V4.App.FragmentManager fragmentManager, Pivot pivot)
+		public PivotAdapter(Android.Support.V4.App.FragmentManager fragmentManager, NativePivotPresenter pivot)
 			: base(fragmentManager)
 		{
 			if (pivot == null)
@@ -63,10 +63,26 @@ namespace Windows.UI.Xaml.Controls
 			_fragments = _pivot
 				.SelectOrDefault(p => p.Items)
 				.Safe()
-				.Select(item => new PivotItemFragment(item as PivotItem)
+				.Select(item =>
 				{
-					DataContext = _pivot.DataContext,
-					TemplatedParent = (IFrameworkElement)_pivot.TemplatedParent
+					var pivotItem = item as PivotItem;
+
+					if (
+						pivotItem.Parent != null
+						&& pivotItem.Parent.GetType() != typeof(PivotItemFragment)
+						)
+					{
+						// Assume items have been added to the UWP default items container
+						// Remove it until a cleanup can be done properly in style management.
+						(pivotItem.Parent as Panel).Children.Remove(pivotItem);
+					}
+
+					var fragment = new PivotItemFragment(pivotItem)
+					{
+						DataContext = _pivot.DataContext,
+						TemplatedParent = (IFrameworkElement)_pivot.TemplatedParent
+					};
+					return fragment;
 				})
 				.ToList();
 		}

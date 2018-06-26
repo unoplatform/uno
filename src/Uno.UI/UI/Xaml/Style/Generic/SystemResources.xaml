@@ -558,20 +558,50 @@
     <SolidColorBrush x:Key="MenuFlyoutItemPressedBackgroundThemeBrush" Color="#FF000000" />
     <SolidColorBrush x:Key="MenuFlyoutItemPressedForegroundThemeBrush" Color="#FFFFFFFF" />
     <SolidColorBrush x:Key="MenuFlyoutSeparatorThemeBrush" Color="#FF7A7A7A" />
-    <SolidColorBrush x:Key="PivotForegroundThemeBrush" Color="#FF000000"/>
-    <SolidColorBrush x:Key="PivotHeaderBackgroundSelectedBrush" Color="Transparent" />
-    <SolidColorBrush x:Key="PivotHeaderBackgroundUnselectedBrush" Color="Transparent" />
-    <SolidColorBrush x:Key="PivotHeaderForegroundSelectedBrush" Color="#FF000000" />
-    <SolidColorBrush x:Key="PivotHeaderForegroundUnselectedBrush" Color="#66000000" />
-    <SolidColorBrush x:Key="PivotNavButtonBackgroundThemeBrush" Color="#59D5D5D5" />
-    <SolidColorBrush x:Key="PivotNavButtonBorderThemeBrush" Color="#59D5D5D5" />
-    <SolidColorBrush x:Key="PivotNavButtonForegroundThemeBrush" Color="#99000000" />
-    <SolidColorBrush x:Key="PivotNavButtonPointerOverBackgroundThemeBrush" Color="#F0D7D7D7" />
-    <SolidColorBrush x:Key="PivotNavButtonPointerOverBorderThemeBrush" Color="#9EC1C1C1" />
-    <SolidColorBrush x:Key="PivotNavButtonPointerOverForegroundThemeBrush" Color="#FF000000" />
-    <SolidColorBrush x:Key="PivotNavButtonPressedBackgroundThemeBrush" Color="#BD292929" />
-    <SolidColorBrush x:Key="PivotNavButtonPressedBorderThemeBrush" Color="#BD292929" />
-    <SolidColorBrush x:Key="PivotNavButtonPressedForegroundThemeBrush" Color="#FFFFFFFF" />
+	
+    <!-- Resources for Windows.UI.Xaml.Controls.Pivot -->
+    <SolidColorBrush x:Key="PivotBackground" Color="Transparent" />
+    <SolidColorBrush x:Key="PivotHeaderBackground" Color="Transparent" />
+    <SolidColorBrush x:Key="PivotNextButtonBackground" Color="{StaticResource SystemBaseMediumLowColor}" />
+    <SolidColorBrush x:Key="PivotNextButtonBackgroundPointerOver" Color="{StaticResource SystemBaseMediumColor}" />
+    <SolidColorBrush x:Key="PivotNextButtonBackgroundPressed" Color="{StaticResource SystemBaseMediumHighColor}" />
+    <SolidColorBrush x:Key="PivotNextButtonBorderBrush" Color="Transparent" />
+    <SolidColorBrush x:Key="PivotNextButtonBorderBrushPointerOver" Color="Transparent" />
+    <SolidColorBrush x:Key="PivotNextButtonBorderBrushPressed" Color="Transparent" />
+    <SolidColorBrush x:Key="PivotNextButtonForeground" Color="{StaticResource SystemAltMediumHighColor}" />
+    <SolidColorBrush x:Key="PivotNextButtonForegroundPointerOver" Color="{StaticResource SystemAltMediumHighColor}" />
+    <SolidColorBrush x:Key="PivotNextButtonForegroundPressed" Color="{StaticResource SystemAltMediumHighColor}" />
+    <SolidColorBrush x:Key="PivotPreviousButtonBackground" Color="{StaticResource SystemBaseMediumLowColor}" />
+    <SolidColorBrush x:Key="PivotPreviousButtonBackgroundPointerOver" Color="{StaticResource SystemBaseMediumColor}" />
+    <SolidColorBrush x:Key="PivotPreviousButtonBackgroundPressed" Color="{StaticResource SystemBaseMediumHighColor}" />
+    <SolidColorBrush x:Key="PivotPreviousButtonBorderBrush" Color="Transparent" />
+    <SolidColorBrush x:Key="PivotPreviousButtonBorderBrushPointerOver" Color="Transparent" />
+    <SolidColorBrush x:Key="PivotPreviousButtonBorderBrushPressed" Color="Transparent" />
+    <SolidColorBrush x:Key="PivotPreviousButtonForeground" Color="{StaticResource SystemAltMediumHighColor}" />
+    <SolidColorBrush x:Key="PivotPreviousButtonForegroundPointerOver" Color="{StaticResource SystemAltMediumHighColor}" />
+    <SolidColorBrush x:Key="PivotPreviousButtonForegroundPressed" Color="{StaticResource SystemAltMediumHighColor}" />
+
+    <!-- Resources for Windows.UI.Xaml.Controls.PivotItem -->
+    <SolidColorBrush x:Key="PivotItemBackground" Color="Transparent" />
+
+    <!-- Resources for Windows.UI.Xaml.Controls.Primitives.PivotHeaderItem -->
+    <SolidColorBrush x:Key="PivotHeaderItemBackgroundUnselected" Color="Transparent" />
+    <SolidColorBrush x:Key="PivotHeaderItemBackgroundUnselectedPointerOver" Color="Transparent" />
+    <SolidColorBrush x:Key="PivotHeaderItemBackgroundUnselectedPressed" Color="Transparent" />
+    <SolidColorBrush x:Key="PivotHeaderItemBackgroundSelected" Color="Transparent" />
+    <SolidColorBrush x:Key="PivotHeaderItemBackgroundSelectedPointerOver" Color="Transparent" />
+    <SolidColorBrush x:Key="PivotHeaderItemBackgroundSelectedPressed" Color="Transparent" />
+    <SolidColorBrush x:Key="PivotHeaderItemBackgroundDisabled" Color="Transparent" />
+    <SolidColorBrush x:Key="PivotHeaderItemForegroundUnselected" Color="{StaticResource SystemBaseMediumColor}" />
+    <SolidColorBrush x:Key="PivotHeaderItemForegroundUnselectedPointerOver" Color="{StaticResource SystemBaseMediumHighColor}" />
+    <SolidColorBrush x:Key="PivotHeaderItemForegroundUnselectedPressed" Color="{StaticResource SystemBaseMediumHighColor}" />
+    <SolidColorBrush x:Key="PivotHeaderItemForegroundSelected" Color="{StaticResource SystemBaseHighColor}" />
+    <SolidColorBrush x:Key="PivotHeaderItemForegroundSelectedPointerOver" Color="{StaticResource SystemBaseMediumHighColor}" />
+    <SolidColorBrush x:Key="PivotHeaderItemForegroundSelectedPressed" Color="{StaticResource SystemBaseMediumHighColor}" />
+    <SolidColorBrush x:Key="PivotHeaderItemForegroundDisabled" Color="{StaticResource SystemBaseMediumLowColor}" />
+    <SolidColorBrush x:Key="PivotHeaderItemFocusPipeFill" Color="{StaticResource SystemAccentColor}" />
+    <SolidColorBrush x:Key="PivotHeaderItemSelectedPipeFill" Color="{StaticResource SystemAccentColor}" />
+	
     <SolidColorBrush x:Key="ProgressBarBackgroundThemeBrush" Color="#30000000" />
     <SolidColorBrush x:Key="ProgressBarBorderThemeBrush" Color="Transparent" />
     <SolidColorBrush x:Key="ProgressBarForegroundThemeBrush" Color="#FF4617B4" />

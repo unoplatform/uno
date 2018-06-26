@@ -94,7 +94,7 @@ namespace Windows.UI.Xaml.Markup.Reader
 										if(_styleTargetTypeStack.Pop() != targetType)
 										{
 											throw new InvalidOperationException("StyleTargetType is out of synchronization");
-										}									
+										}
 									}
 								);
 							}
@@ -365,10 +365,19 @@ namespace Windows.UI.Xaml.Markup.Reader
 						var item = LoadObject(child);
 
 						var resourceKey = GetResourceKey(child);
+						var resourceTargetType = GetResourceTargetType(child);
+
+						if (
+							item.GetType() == typeof(Style)
+							&& resourceTargetType == null
+						)
+						{
+							throw new InvalidOperationException($"No target type was specified (Line {member.LineNumber}:{member.LinePosition}");
+						}
 
 						var propertyInstance = propertyInfo.GetMethod.Invoke(instance, null);
 
-						addMethod.Invoke(propertyInstance, new[] { resourceKey ?? item.GetType(), item });
+						addMethod.Invoke(propertyInstance, new[] { resourceKey ?? resourceTargetType, item });
 					}
 				}
 				else if (TypeResolver.IsNewableProperty(propertyInfo, out var collectionType))
@@ -448,7 +457,7 @@ namespace Windows.UI.Xaml.Markup.Reader
 
 					_postActions.Enqueue(ResolveResource);
 				}
-			
+
 			}
 		}
 
@@ -556,7 +565,7 @@ namespace Windows.UI.Xaml.Markup.Reader
 			_elementNames.Add((elementName, subject));
 		}
 
-		private bool IsBindingMarkupNode(XamlMemberDefinition member) 
+		private bool IsBindingMarkupNode(XamlMemberDefinition member)
 			=> member.Objects.Any(o => o.Type.Name == "Binding" || o.Type.Name == "TemplateBinding");
 
 		private static bool IsMarkupExtension(XamlMemberDefinition member)
@@ -591,6 +600,14 @@ namespace Windows.UI.Xaml.Markup.Reader
 			?.Value
 			?.ToString();
 
+		private Type GetResourceTargetType(XamlObjectDefinition child) =>
+				TypeResolver.FindType(child.Members.FirstOrDefault(m =>
+					string.Equals(m.Member.Name, "TargetType", StringComparison.OrdinalIgnoreCase)
+				)
+				?.Value
+				?.ToString() ?? ""
+			);
+
 		private PropertyInfo GetMemberProperty(XamlObjectDefinition control, XamlMemberDefinition member)
 		{
 			if (member.Member.Name == "_UnknownContent")
@@ -622,7 +639,7 @@ namespace Windows.UI.Xaml.Markup.Reader
 				{
 					if (propertyType == typeof(Type))
 					{
-						return TypeResolver.FindType(memberValue); 
+						return TypeResolver.FindType(memberValue);
 					}
 					else if (propertyType == typeof(DependencyProperty) && member.Owner.Type.Name == "Setter")
 					{
@@ -640,7 +657,7 @@ namespace Windows.UI.Xaml.Markup.Reader
 					else
 					{
 						return BuildLiteralValue(propertyType, memberValue);
-					}					
+					}
 				}
 				else
 				{

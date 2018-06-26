@@ -10,6 +10,7 @@ using Windows.UI.Core;
 using Uno.Foundation;
 using Uno.Extensions;
 using Uno.Logging;
+using System.Threading;
 
 namespace Windows.UI.Xaml
 {
@@ -19,6 +20,16 @@ namespace Windows.UI.Xaml
 		{
 			CoreDispatcher.Main.RunAsync(CoreDispatcherPriority.Normal, Initialize);
 		}
+
+		static partial void StartPartial(ApplicationInitializationCallback callback)
+		{
+			SynchronizationContext.SetSynchronizationContext(
+				new CoreDispatcherSynchronizationContext(CoreDispatcher.Main, CoreDispatcherPriority.Normal)
+			);
+
+			callback(new ApplicationInitializationCallbackParams());
+		}
+
 
 		private void Initialize()
 		{

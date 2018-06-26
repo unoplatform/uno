@@ -28,6 +28,11 @@ namespace Windows.UI.Xaml
 		{
 		}
 
+		static partial void StartPartial(ApplicationInitializationCallback callback)
+		{
+			callback(new ApplicationInitializationCallbackParams());
+		}
+
 		public override void FinishedLaunching(UIApplication application)
 		{
 			OnLaunched(new LaunchActivatedEventArgs());

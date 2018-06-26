@@ -111,5 +111,10 @@ namespace Windows.UI.Xaml.Controls
 
 			return finalSize;
 		}
+
+		internal override bool IsViewHit()
+		{
+			return true;
+		}
 	}
 }

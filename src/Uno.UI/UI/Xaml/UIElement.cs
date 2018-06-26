@@ -89,8 +89,7 @@ namespace Windows.UI.Xaml
 				"pointerenter", 
 				value, 
 				eventExtractorScript: pointerEventExtractor, 
-				payloadConverter: PayloadToPointerArgs, 
-				eventFilterManaged: ValidateIsHitTest);
+				payloadConverter: PayloadToPointerArgs);
 			remove => UnregisterEventHandler("pointerenter", value);
 		}
 #else
@@ -111,8 +110,7 @@ namespace Windows.UI.Xaml
 				"pointerleave", 
 				value, 
 				eventExtractorScript: pointerEventExtractor, 
-				payloadConverter: PayloadToPointerArgs, 
-				eventFilterManaged: ValidateIsHitTest);
+				payloadConverter: PayloadToPointerArgs);
 			remove => UnregisterEventHandler("pointerleave", value);
 		}
 #else
@@ -133,8 +131,7 @@ namespace Windows.UI.Xaml
 				"pointermove", 
 				value, 
 				eventExtractorScript: pointerEventExtractor, 
-				payloadConverter: PayloadToPointerArgs, 
-				eventFilterManaged: ValidateIsHitTest);
+				payloadConverter: PayloadToPointerArgs);
 			remove => UnregisterEventHandler("pointermove", value);
 		}
 #else
@@ -156,8 +153,7 @@ namespace Windows.UI.Xaml
 				value, 
 				eventFilterScript: leftPointerEventFilter, 
 				eventExtractorScript: pointerEventExtractor, 
-				payloadConverter: PayloadToPointerArgs, 
-				eventFilterManaged: ValidateIsHitTest);
+				payloadConverter: PayloadToPointerArgs);
 			remove => UnregisterEventHandler("pointerdown", value);
 		}
 #else
@@ -179,8 +175,7 @@ namespace Windows.UI.Xaml
 				value, 
 				eventFilterScript: leftPointerEventFilter, 
 				eventExtractorScript: pointerEventExtractor, 
-				payloadConverter: PayloadToPointerArgs, 
-				eventFilterManaged: ValidateIsHitTest);
+				payloadConverter: PayloadToPointerArgs);
 			remove => UnregisterEventHandler("pointerup", value);
 		}
 #else
@@ -216,19 +211,17 @@ namespace Windows.UI.Xaml
 				"keydown",
 				value,
 				eventExtractorScript: "(evt instanceof KeyboardEvent) ? evt.key : \"0\"",
-				payloadConverter: keyStr => new KeyRoutedEventArgs { Key = VirtualKeyHelper.FromKey(keyStr), OriginalSource = this },
-				eventFilterManaged: ValidateIsHitTest);
+				payloadConverter: keyStr => new KeyRoutedEventArgs { Key = VirtualKeyHelper.FromKey(keyStr), OriginalSource = this});
 			remove => UnregisterEventHandler("keydown", value);
 		}
-
+		
 		public event KeyEventHandler KeyUp
 		{
 			add => RegisterEventHandler(
 				"keyup",
 				value,
 				eventExtractorScript: "(evt instanceof KeyboardEvent) ? evt.key : \"0\"",
-				payloadConverter: keyStr => new KeyRoutedEventArgs {Key = VirtualKeyHelper.FromKey(keyStr), OriginalSource = this},
-				eventFilterManaged: ValidateIsHitTest);
+				payloadConverter: keyStr => new KeyRoutedEventArgs {Key = VirtualKeyHelper.FromKey(keyStr), OriginalSource = this});
 			remove => UnregisterEventHandler("keyup", value);
 		}
 #endif

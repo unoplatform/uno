@@ -16,6 +16,11 @@ namespace Windows.UI.Xaml
 			Current = this;
 		}
 
+		static partial void StartPartial(ApplicationInitializationCallback callback)
+		{
+			callback(new ApplicationInitializationCallbackParams());
+		}
+
 		internal void OnResuming()
 		{
 			Resuming?.Invoke(null, null);

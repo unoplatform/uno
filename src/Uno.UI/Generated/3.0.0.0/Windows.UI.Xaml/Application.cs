@@ -204,7 +204,7 @@ namespace Windows.UI.Xaml
 		// Forced skipping of method Windows.UI.Xaml.Application.HighContrastAdjustment.get
 		// Forced skipping of method Windows.UI.Xaml.Application.HighContrastAdjustment.set
 		// Forced skipping of method Windows.UI.Xaml.Application.Current.get
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		#if false
 		[global::Uno.NotImplemented]
 		public static void Start( global::Windows.UI.Xaml.ApplicationInitializationCallback callback)
 		{

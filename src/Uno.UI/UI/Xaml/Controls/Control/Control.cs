@@ -90,7 +90,12 @@ namespace Windows.UI.Xaml.Controls
 		/// <param name="forceUpdate">If true, forces an update even if the control has no parent.</param>
 		internal void SetUpdateControlTemplate(bool forceUpdate = false)
 		{
-			if (forceUpdate || this.HasParent() || CanCreateTemplateWithoutParent)
+			if (
+				!FeatureConfiguration.Control.UseLegacyLazyApplyTemplate
+				|| forceUpdate
+				|| this.HasParent()
+				|| CanCreateTemplateWithoutParent
+			)
 			{
 				UpdateTemplate();
 				this.InvalidateMeasure();

@@ -624,7 +624,11 @@
 			const element = document.getElementById(this.loadingElementId);
 			if (element) {
 				element.parentElement.removeChild(element);
-			}
+            }
+
+            // UWP Window's default background is white.
+            const body = document.getElementsByTagName("body")[0];
+            body.style.backgroundColor = '#fff';
 		}
 
 		private resize() {
