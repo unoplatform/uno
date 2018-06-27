@@ -49,29 +49,47 @@ namespace Windows.UI.Xaml
 		/// <param name="property">A dependency property</param>
 		/// <returns>The details of the property</returns>
 		public DependencyPropertyDetails GetPropertyDetails(DependencyProperty property)
+			=> TryGetPropertyDetails(property, forceCreate: true);
+
+		/// <summary>
+		/// Finds the <see cref="DependencyPropertyDetails"/> for a specific <see cref="DependencyProperty"/> if it exists.
+		/// </summary>
+		/// <param name="property">A dependency property</param>
+		/// <returns>The details of the property if it exists, otherwise null.</returns>
+		public DependencyPropertyDetails FindPropertyDetails(DependencyProperty property)
+			=> TryGetPropertyDetails(property, forceCreate: false);
+
+		private DependencyPropertyDetails TryGetPropertyDetails(DependencyProperty property, bool forceCreate)
 		{
 			ref var propertyEntry = ref GetEntry(property.UniqueId);
 
 			if (propertyEntry.Id == -1)
 			{
-				// The property was not known at startup time, add it.
-				var newEntries = new PropertyEntry[_entries.Length + 1];
-
-				if (_entries.Length != 0)
+				if (forceCreate)
 				{
-					Array.Copy(_entries, 0, newEntries, 0, _entries.Length);
+					// The property was not known at startup time, add it.
+					var newEntries = new PropertyEntry[_entries.Length + 1];
+
+					if (_entries.Length != 0)
+					{
+						Array.Copy(_entries, 0, newEntries, 0, _entries.Length);
+					}
+
+					ref var newEntry = ref newEntries[_entries.Length];
+
+					var details = new DependencyPropertyDetails(property, _ownerType);
+
+					newEntry.Id = property.UniqueId;
+					newEntry.Details = details;
+
+					AssignEntries(newEntries, sort: true);
+
+					return details;
 				}
-
-				ref var newEntry = ref newEntries[_entries.Length];
-
-				var details = new DependencyPropertyDetails(property, _ownerType);
-
-				newEntry.Id = property.UniqueId;
-				newEntry.Details = details;
-
-				AssignEntries(newEntries, sort: true);
-
-				return details;
+				else
+				{
+					return null;
+				}
 			}
 			else
 			{

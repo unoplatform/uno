@@ -444,6 +444,8 @@ namespace Windows.UI.Xaml
 							OnDataContextChanged(value, newValue, precedence);
 						}
 
+						TryUpdateInheritedAttachedProperty(property, propertyDetails);
+
 						RaiseCallbacks(actualInstanceAlias, propertyDetails, previousValue, previousPrecedence, newValue, newPrecedence);
 					}
 				}
@@ -459,6 +461,20 @@ namespace Windows.UI.Xaml
 				{
 					PopCurrentlySettingProperty(property);
 				}
+			}
+		}
+
+		private void TryUpdateInheritedAttachedProperty(DependencyProperty property, DependencyPropertyDetails propertyDetails)
+		{
+			if (
+				property.IsAttached
+				&& propertyDetails.Metadata is FrameworkPropertyMetadata fm
+				&& fm.Options.HasInherits())
+			{
+				// Add inheritable attached properties to the inherited forwarded
+				// properties, so they can be automatically propagated when a child
+				// store is late added.
+				_inheritedForwardedProperties[property] = _originalObjectRef;
 			}
 		}
 
@@ -986,6 +1002,19 @@ namespace Windows.UI.Xaml
 						return (localProperty, propertyDetails);
 					}
 				}
+
+				// Then look for attached inheritable properties, only if a property details
+				// has been initialized. This avoids creating the details if the property has
+				// not been attached on a child, or if there's no property changed callback
+				// attached to a child.
+				else if(
+					property.IsAttached
+					&& _properties.FindPropertyDetails(property) is DependencyPropertyDetails attachedDetails
+					&& HasInherits(attachedDetails)
+				)
+				{
+					return (property, attachedDetails);
+				}
 			}
 
 			return (null, null);
@@ -1055,7 +1084,13 @@ namespace Windows.UI.Xaml
 
 			foreach (var sourceInstanceProperties in _inheritedForwardedProperties)
 			{
-				if (IsAncestor(actualInstanceAlias, ancestors, sourceInstanceProperties.Value.Target))
+				if (
+					IsAncestor(actualInstanceAlias, ancestors, sourceInstanceProperties.Value.Target)
+					|| (
+						sourceInstanceProperties.Key.IsAttached
+						&& actualInstanceAlias == sourceInstanceProperties.Value.Target
+					)
+				)
 				{
 					void Propagate(DependencyObjectStore store)
 					{
