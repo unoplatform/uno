@@ -133,6 +133,7 @@
 - StatusBar Management (Occlusion, Color, events)            
 - Xaml Reader
 - Phased Binding (x:Phase)
+- Xaml code-behind Events registration
 
 ### Non-UI features
 

@@ -75,7 +75,9 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
         private Func<string, string, INamedTypeSymbol> _findPropertyTypeByName;
         private Func<XamlMember, INamedTypeSymbol> _findPropertyTypeByXamlMember;
         private Func<XamlMember, IEventSymbol> _findEventType;
-        private readonly static Func<INamedTypeSymbol, IPropertySymbol> _findContentProperty;
+		private (string ns, string className) _className;
+		private bool _hasLiteralEventsRegistration = false;
+		private readonly static Func<INamedTypeSymbol, IPropertySymbol> _findContentProperty;
         private readonly static Func<INamedTypeSymbol, string, bool> _isAttachedProperty;
 
         static XamlFileGenerator()
@@ -229,23 +231,23 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					BuildResourceDictionary(writer, topLevelControl);
 				}
 
-                var className = GetClassName(topLevelControl);
+                _className = GetClassName(topLevelControl);
 
-                using (writer.BlockInvariant("namespace {0}", className.Item1))
+                using (writer.BlockInvariant("namespace {0}", _className.ns))
                 {
                     AnalyzerSuppressionsGenerator.Generate(writer, _analyzerSuppressions);
 
                     var controlBaseType = GetType(topLevelControl.Type);
 
-                    using (writer.BlockInvariant("public sealed partial class {0} : {1}", className.Item2, controlBaseType.ToDisplayString()))
+                    using (writer.BlockInvariant("public sealed partial class {0} : {1}", _className.className, controlBaseType.ToDisplayString()))
                     {
-                        var isDirectUserControlChild = IsUserControl(topLevelControl.Type, checkInheritance: false);
+						var isDirectUserControlChild = IsUserControl(topLevelControl.Type, checkInheritance: false);
 
-                        using (Scope("{0}{1}".InvariantCultureFormat(className.Item1.Replace(".", ""), className.Item2)))
+                        using (Scope("{0}{1}".InvariantCultureFormat(_className.ns.Replace(".", ""), _className.className)))
                         {
-                            using (writer.BlockInvariant(BuildControlInitializerDeclaration(className.Item2, topLevelControl)))
+							using (writer.BlockInvariant(BuildControlInitializerDeclaration(_className.className, topLevelControl)))
                             {
-                                if (IsApplication(topLevelControl.Type))
+								if (IsApplication(topLevelControl.Type))
                                 {
                                     BuildApplicationInitializerBody(writer, topLevelControl);
                                 }
@@ -259,13 +261,13 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
                             if (isDirectUserControlChild)
                             {
-                                using (writer.BlockInvariant("public {0}(bool skipsInitializeComponents)", className.Item2))
+                                using (writer.BlockInvariant("public {0}(bool skipsInitializeComponents)", _className.className))
                                 {
                                 }
 
                                 using (writer.BlockInvariant("private void InitializeComponent()"))
                                 {
-                                    writer.AppendLineInvariant("Content = (_View)GetContent();");
+									writer.AppendLineInvariant("Content = (_View)GetContent();");
                                 }
                             }
 
@@ -274,13 +276,14 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
                             BuildBackingFields(writer);
 
                             BuildChildSubclasses(writer);
+
                         }
 
                         if (!IsApplication(topLevelControl.Type))
                         {
                             using (writer.BlockInvariant("class StaticResources"))
                             {
-                                using (Scope("{0}{1}StaticResources".InvariantCultureFormat(className.Item1.Replace(".", ""), className.Item2)))
+                                using (Scope("{0}{1}StaticResources".InvariantCultureFormat(_className.ns.Replace(".", ""), _className.className)))
                                 {
                                     BuildStaticResources(writer, _staticResources, isGlobalResources: false);
 
@@ -289,6 +292,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
                                 }
                             }
                         }
+
+						BuildInitializeXamlOwner(writer);
                     }
                 }
             }
@@ -299,7 +304,20 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
             return writer.ToString();
         }
 
-        private void BuildXamlApplyBlocks(IndentedStringBuilder writer)
+		private void BuildInitializeXamlOwner(IndentedStringBuilder writer)
+		{
+			using (writer.BlockInvariant("private void InitializeXamlOwner()"))
+			{ 
+				if (_hasLiteralEventsRegistration)
+				{
+					// We only propagate the xaml owner in the tree if there are event registrations in the file
+					// to avoid the performance impact of having a unused dependency property.
+					writer.AppendLineInvariant("global::Uno.UI.Xaml.XamlInfo.SetXamlInfo(this, new global::Uno.UI.Xaml.XamlInfo(this));");
+				}
+			}
+		}
+
+		private void BuildXamlApplyBlocks(IndentedStringBuilder writer)
         {
             using (writer.BlockInvariant("namespace {0}", _defaultNamespace))
             {
@@ -334,9 +352,9 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
             BuildProperties(writer, topLevelControl, isInline: false, returnsContent: false);
             writer.AppendLineInvariant(";");
-        }
+		}
 
-        private void BuildGenericControlInitializerBody(IndentedStringBuilder writer, XamlObjectDefinition topLevelControl, bool isDirectUserControlChild)
+		private void BuildGenericControlInitializerBody(IndentedStringBuilder writer, XamlObjectDefinition topLevelControl, bool isDirectUserControlChild)
         {
             RegisterPartial("void OnInitializeCompleted()");
 
@@ -375,6 +393,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
             }
 
             writer.AppendLineInvariant("OnInitializeCompleted();");
+            writer.AppendLineInvariant("InitializeXamlOwner();");
 
 			if (isDirectUserControlChild)
 			{
@@ -579,13 +598,13 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
         {
             var className = FindClassName(topLevelControl);
 
-            if (className != null)
+            if (className.ns != null)
             {
                 var controlBaseType = GetType(topLevelControl.Type);
 
-                using (writer.BlockInvariant("namespace {0}", className.Item1))
+                using (writer.BlockInvariant("namespace {0}", className.ns))
                 {
-                    using (writer.BlockInvariant("public sealed partial class {0} : {1}", className.Item2, GetGlobalizedTypeName(controlBaseType.ToDisplayString())))
+                    using (writer.BlockInvariant("public sealed partial class {0} : {1}", className.className, GetGlobalizedTypeName(controlBaseType.ToDisplayString())))
                     {
                         using (writer.BlockInvariant("public void InitializeComponent()"))
                         {
@@ -1149,11 +1168,11 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
             return member;
         }
 
-        private System.Tuple<string, string> GetClassName(XamlObjectDefinition control)
+        private (string ns, string className) GetClassName(XamlObjectDefinition control)
         {
             var classMember = FindClassName(control);
 
-            if (classMember == null)
+            if (classMember.ns == null)
             {
                 throw new Exception("Unable to find class name for toplevel control");
             }
@@ -1161,7 +1180,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
             return classMember;
         }
 
-        private static System.Tuple<string, string> FindClassName(XamlObjectDefinition control)
+        private static (string ns, string className) FindClassName(XamlObjectDefinition control)
         {
             var classMember = control.Members.FirstOrDefault(m => m.Member.Name == "Class");
 
@@ -1171,11 +1190,11 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
                 var index = fullName.LastIndexOf('.');
 
-                return Tuple.Create(fullName.Substring(0, index), fullName.Substring(index + 1));
+                return (fullName.Substring(0, index), fullName.Substring(index + 1));
             }
             else
             {
-                return null;
+                return (null, null);
             }
         }
 
@@ -2024,7 +2043,31 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 									}
 									else if (FindEventType(member.Member) != null)
 									{
-										writer.AppendLineInvariant($"{closureName}.{member.Member.Name} += {member.Value};");
+										// If a binding is inside a DataTemplate, the binding root in the case of an x:Bind is
+										// the DataContext, not the control's instance.
+										var isInsideDataTemplate = IsMemberInsideFrameworkTemplate(member.Owner);
+
+										if (!isInsideDataTemplate)
+										{
+											writer.AppendLineInvariant($"{closureName}.{member.Member.Name} += {member.Value};");
+										}
+										else if(_className.className != null)
+										{
+											_hasLiteralEventsRegistration = true;
+											writer.AppendLineInvariant($"{closureName}.RegisterPropertyChangedCallback(");
+											using(writer.BlockInvariant($"global::Uno.UI.Xaml.XamlInfo.XamlInfoProperty, (s, p) =>"))
+											{
+												using(writer.BlockInvariant($"if (global::Uno.UI.Xaml.XamlInfo.GetXamlInfo({closureName})?.Owner is {_className.className} owner)"))
+												{
+													writer.AppendLineInvariant($"{closureName}.{member.Member.Name} += owner.{member.Value};");
+												}
+											}
+											writer.AppendLineInvariant($");");
+										}
+										else
+										{
+											GenerateError(writer, $"Unable to use event {member.Member.Name} without a backing class (use x:Class)");
+										}
 									}
 									else
 									{
@@ -2257,6 +2300,11 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 		private bool IsMemberInsideDataTemplate(XamlObjectDefinition xamlObject)
 			=> IsMemberInside(xamlObject, "DataTemplate");
+
+		private bool IsMemberInsideFrameworkTemplate(XamlObjectDefinition xamlObject)
+			=> IsMemberInside(xamlObject, "DataTemplate")
+			|| IsMemberInside(xamlObject, "ControlTemplate")
+			|| IsMemberInside(xamlObject, "ItemsPanelTemplate");
 
 		private bool IsMemberInsideResourceDictionary(XamlObjectDefinition xamlObject)
 			=> IsMemberInside(xamlObject, "ResourceDictionary", maxDepth: 1);
