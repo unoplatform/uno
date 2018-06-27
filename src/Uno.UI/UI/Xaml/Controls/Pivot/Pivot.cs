@@ -4,6 +4,7 @@ using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using Uno.Extensions;
 using Windows.Foundation;
+using Windows.Foundation.Collections;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
@@ -48,6 +49,7 @@ namespace Windows.UI.Xaml.Controls
 
 			Loaded += (s, e) => RegisterHeaderEvents();
 			Unloaded += (s, e) => UnregisterHeaderEvents();
+			Items.VectorChanged += OnItemsVectorChanged;
 		}
 
 		private void UnregisterHeaderEvents()
@@ -98,10 +100,8 @@ namespace Windows.UI.Xaml.Controls
 		protected override DependencyObject GetContainerForItemOverride()
 			=> _isUWPTemplate ? new PivotItem()  : GetContainerForItemOverride();
 
-		protected override void UpdateItems()
+		private void OnItemsVectorChanged(IObservableVector<object> sender, IVectorChangedEventArgs @event)
 		{
-			base.UpdateItems();
-
 			if (_isUWPTemplate)
 			{
 				_staticHeader.Visibility = Items.Count != 0 ? Visibility.Visible : Visibility.Collapsed;
