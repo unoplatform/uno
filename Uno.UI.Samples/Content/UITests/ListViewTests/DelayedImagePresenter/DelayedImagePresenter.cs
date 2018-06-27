@@ -36,6 +36,11 @@ namespace Uno.UI.Samples.Content.UITests.ListViewTests
 
 		private void OnSourceChanged(ImageSource oldValue, ImageSource newValue)
 		{
+			if (_image == null)
+			{
+				return;
+			}
+
 			_image.Source = newValue;
 
 			if (newValue == null)
