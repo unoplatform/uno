@@ -7,7 +7,7 @@ namespace Windows.UI.Xaml.Controls
 	#endif
 	public  partial class AppBarSeparator : global::Windows.UI.Xaml.Controls.ICommandBarElement,global::Windows.UI.Xaml.Controls.ICommandBarElement2
 	{
-		#if false || false || NET46 || __WASM__
+		#if false 
 		[global::Uno.NotImplemented]
 		public  bool IsCompact
 		{
@@ -21,7 +21,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 		#endif
-		#if false || false || NET46 || __WASM__
+		#if false 
 		[global::Uno.NotImplemented]
 		public  int DynamicOverflowOrder
 		{
@@ -35,7 +35,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 		#endif
-		#if false || false || NET46 || __WASM__
+		#if false 
 		[global::Uno.NotImplemented]
 		public  bool IsInOverflow
 		{
@@ -45,7 +45,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 		#endif
-		#if false || false || NET46 || __WASM__
+		#if false 
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty IsCompactProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
@@ -53,7 +53,7 @@ namespace Windows.UI.Xaml.Controls
 			typeof(global::Windows.UI.Xaml.Controls.AppBarSeparator), 
 			new FrameworkPropertyMetadata(default(bool)));
 		#endif
-		#if false || false || NET46 || __WASM__
+		#if false 
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty DynamicOverflowOrderProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
@@ -61,7 +61,7 @@ namespace Windows.UI.Xaml.Controls
 			typeof(global::Windows.UI.Xaml.Controls.AppBarSeparator), 
 			new FrameworkPropertyMetadata(default(int)));
 		#endif
-		#if false || false || NET46 || __WASM__
+		#if false 
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty IsInOverflowProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
@@ -69,7 +69,7 @@ namespace Windows.UI.Xaml.Controls
 			typeof(global::Windows.UI.Xaml.Controls.AppBarSeparator), 
 			new FrameworkPropertyMetadata(default(bool)));
 		#endif
-		#if false || false || NET46 || __WASM__
+		#if false 
 		[global::Uno.NotImplemented]
 		public AppBarSeparator() : base()
 		{
