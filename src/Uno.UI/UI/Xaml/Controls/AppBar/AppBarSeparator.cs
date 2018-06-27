@@ -1,4 +1,3 @@
-#if XAMARIN
 using System;
 
 namespace Windows.UI.Xaml.Controls
@@ -66,4 +65,3 @@ namespace Windows.UI.Xaml.Controls
 		#endregion
 	}
 }
-#endif
