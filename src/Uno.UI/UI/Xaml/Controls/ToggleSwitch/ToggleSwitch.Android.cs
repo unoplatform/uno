@@ -11,25 +11,15 @@ namespace Windows.UI.Xaml.Controls
 {
 	public partial class ToggleSwitch
 	{
-		private readonly SerialDisposable _touchSubscription = new SerialDisposable();
-
 		protected override void OnLoaded()
 		{
 			base.OnLoaded();
+
 			PointerExited += OnPointerExited;
 			PointerEntered += OnPointerEntered;
 			PointerCanceled += OnPointerCanceled;
 			PointerPressed += OnPointerPressed;
 			PointerReleased += OnPointerReleased;
-
-			_touchSubscription.Disposable = Disposable.Create(() =>
-			{
-				PointerExited -= OnPointerExited;
-				PointerEntered -= OnPointerEntered;
-				PointerCanceled -= OnPointerCanceled;
-				PointerPressed -= OnPointerPressed;
-				PointerReleased -= OnPointerReleased;
-			});
 		}
 
 		private void OnPointerReleased(object sender, PointerRoutedEventArgs e)
@@ -60,7 +50,12 @@ namespace Windows.UI.Xaml.Controls
 		protected override void OnUnloaded()
 		{
 			base.OnUnloaded();
-			_touchSubscription.Dispose();
+
+			PointerExited -= OnPointerExited;
+			PointerEntered -= OnPointerEntered;
+			PointerCanceled -= OnPointerCanceled;
+			PointerPressed -= OnPointerPressed;
+			PointerReleased -= OnPointerReleased;
 		}
 	}
 }
