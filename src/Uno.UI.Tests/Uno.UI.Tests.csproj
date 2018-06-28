@@ -84,6 +84,7 @@
     <None Remove="XamlReaderTests\When_ElementName.xamltest" />
     <None Remove="XamlReaderTests\When_MultipleBindings.xamltest" />
     <None Remove="XamlReaderTests\When_StaticResource.xamltest" />
+    <None Remove="XamlReaderTests\When_StaticResource_Style_And_Binding.xamltest" />
     <None Remove="XamlReaderTests\When_Style_FontWeight.xamltest" />
     <None Remove="XamlReaderTests\When_TextBlock_Basic.xamltest" />
     <None Remove="XamlReaderTests\When_TextBlock_FontFamily.xamltest" />

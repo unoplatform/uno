@@ -61,6 +61,25 @@ namespace Uno.UI.DataBinding
 				}
 			}
 
+			if (input is bool boolInput)
+			{
+				if (FastBooleanConvert(outputType, boolInput, ref output))
+				{
+					return true;
+				}
+			}
+
+			return false;
+		}
+
+		private static bool FastBooleanConvert(Type outputType, bool boolInput, ref object output)
+		{
+			if (outputType == typeof(Visibility))
+			{
+				output = boolInput ? Visibility.Visible : Visibility.Collapsed;
+				return true;
+			}
+
 			return false;
 		}
 

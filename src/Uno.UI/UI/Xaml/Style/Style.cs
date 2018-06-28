@@ -29,6 +29,7 @@ namespace Windows.UI.Xaml
 
 		public Style()
 		{
+			Precedence = DependencyPropertyValuePrecedences.ExplicitStyle;
 		}
 
 		public Style(Type targetType)
@@ -41,7 +42,7 @@ namespace Windows.UI.Xaml
 			TargetType = targetType;
 
 			Precedence = DependencyPropertyValuePrecedences.ExplicitStyle;
-        }
+		}
 
 		public Style(Type targetType, Style basedOn)
 			: this(targetType, basedOn, false)

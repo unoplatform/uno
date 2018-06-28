@@ -20,7 +20,10 @@ namespace Windows.UI.Xaml.Controls
 
 		protected override IEnumerable<View> ClearCore()
 		{
-			throw new NotImplementedException();
+			var old = _elements.ToArray();
+			_elements.Clear();
+
+			return old;
 		}
 
 		protected override bool ContainsCore(View item)
