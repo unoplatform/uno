@@ -15,6 +15,8 @@ using Windows.UI;
 using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Documents;
 using FluentAssertions;
+using Windows.UI.Xaml.Controls.Primitives;
+using Microsoft.Extensions.Logging;
 
 namespace Uno.UI.Tests.XamlReaderTests
 {
@@ -31,6 +33,11 @@ namespace Uno.UI.Tests.XamlReaderTests
 		public void Initialize()
 		{
 			ResourceDictionary.DefaultResolver = null;
+
+			Uno.Extensions.LogExtensionPoint
+				.AmbientLoggerFactory
+				.AddConsole(LogLevel.Debug)
+				.AddDebug(LogLevel.Debug);
 		}
 
 		[TestMethod]
@@ -558,6 +565,31 @@ namespace Uno.UI.Tests.XamlReaderTests
 
 			Assert.IsTrue(r.Resources.ContainsKey(typeof(Grid)));
 			Assert.IsTrue(r.Resources.ContainsKey(typeof(TextBlock)));
+		}
+
+		[TestMethod]
+		public void When_StaticResource_Style_And_Binding()
+		{
+			var s = GetContent(nameof(When_StaticResource_Style_And_Binding));
+			var r = Windows.UI.Xaml.Markup.XamlReader.Load(s) as UserControl;
+
+			Assert.IsTrue(r.Resources.ContainsKey("test"));
+
+			var tb1 = r.FindName("tb1") as ToggleButton;
+			var tb2 = r.FindName("tb2") as ToggleButton;
+
+			Assert.IsTrue((bool)tb1.IsChecked);
+			Assert.IsTrue((bool)tb2.IsChecked);
+
+			tb1.IsChecked = false;
+
+			Assert.IsFalse((bool)tb1.IsChecked);
+			Assert.IsFalse((bool)tb2.IsChecked);
+
+			tb2.IsChecked = true;
+
+			Assert.IsTrue((bool)tb1.IsChecked);
+			Assert.IsTrue((bool)tb2.IsChecked);
 		}
 
 		[TestMethod]
