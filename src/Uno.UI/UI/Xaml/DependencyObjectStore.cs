@@ -304,9 +304,22 @@ namespace Windows.UI.Xaml
 			}
 			else
 			{
+				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+				{
+					this.Log().Debug($"OverrideLocalPrecedence({precedence})");
+				}
+
 				_precedenceOverride = precedence;
 
-				return Disposable.Create(() => _precedenceOverride = null);
+				return Disposable.Create(() => {
+
+					_precedenceOverride = null;
+
+					if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+					{
+						this.Log().Debug("OverrideLocalPrecedence(None)");
+					}
+				});
 			}
 		}
 
@@ -445,6 +458,16 @@ namespace Windows.UI.Xaml
 						}
 
 						TryUpdateInheritedAttachedProperty(property, propertyDetails);
+
+						if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+						{
+							var name = (_originalObjectRef.Target as IFrameworkElement)?.Name ?? _originalObjectRef.Target?.GetType().Name;
+							var hashCode = _originalObjectRef.Target?.GetHashCode();
+
+							this.Log().Debug(
+								$"SetValue on [{name}/{hashCode:X8}] for [{property.Name}] to [{newValue}] (req:{value} reqp:{precedence} p:{previousValue} pp:{previousPrecedence} np:{newPrecedence})"
+							);
+						}
 
 						RaiseCallbacks(actualInstanceAlias, propertyDetails, previousValue, previousPrecedence, newValue, newPrecedence);
 					}
