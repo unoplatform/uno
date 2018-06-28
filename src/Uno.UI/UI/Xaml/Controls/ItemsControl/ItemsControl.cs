@@ -43,6 +43,7 @@ namespace Windows.UI.Xaml.Controls
 
 		private bool _isReady; // Template applied
 		private bool _needsUpdateItems;
+		private ItemCollection _items = new ItemCollection();
 
 		// This gets prepended to MaterializedContainers to ensure it's being considered 
 		// even if it might not yet have be added to the ItemsPanel (e.eg., NativeListViewBase).
@@ -82,6 +83,10 @@ namespace Windows.UI.Xaml.Controls
 			InitializePartial();
 
 			OnDisplayMemberPathChangedPartial(string.Empty, this.DisplayMemberPath);
+
+			_items.VectorChanged += (s, e) => {
+				SetNeedsUpdateItems();
+			};
 		}
 
 		partial void InitializePartial();
@@ -223,19 +228,7 @@ namespace Windows.UI.Xaml.Controls
 		);
 		#endregion
 
-		private ItemCollection _items;
-		//TODO: this should reflect the content of ItemsSource, if that property is set. For now, it only exists for setting ItemsControl's contents in xaml.
-		public ItemCollection Items
-		{
-			get { return _items; }
-			set
-			{
-				_items = value;
-
-				SetNeedsUpdateItems();
-				OnItemsChanged();
-			}
-		}
+		public ItemCollection Items => _items;
 
 		internal virtual void OnItemsChanged() { }
 
@@ -838,6 +831,7 @@ namespace Windows.UI.Xaml.Controls
 		public void SetNeedsUpdateItems()
 		{
 			_needsUpdateItems = true;
+			UpdateItemsIfNeeded();
 			RequestLayoutPartial();
 		}
 
