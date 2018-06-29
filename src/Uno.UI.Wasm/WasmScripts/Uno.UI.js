@@ -396,8 +396,8 @@ var Uno;
                 if (!childElement) {
                     throw `addView: Child element id ${parentId} not found.`;
                 }
-                const alreadyLoaded = this.GetIsConnectedToRootElement(childElement);
-                const isLoading = !alreadyLoaded && this.GetIsConnectedToRootElement(parentElement);
+                const alreadyLoaded = this.getIsConnectedToRootElement(childElement);
+                const isLoading = !alreadyLoaded && this.getIsConnectedToRootElement(parentElement);
                 if (isLoading) {
                     this.dispatchEvent(childElement, "loading");
                 }
@@ -427,7 +427,7 @@ var Uno;
                 if (!childElement) {
                     throw `removeView: Child element id ${parentId} not found.`;
                 }
-                const loaded = this.GetIsConnectedToRootElement(childElement);
+                const loaded = this.getIsConnectedToRootElement(childElement);
                 parentElement.removeChild(childElement);
                 if (loaded) {
                     this.dispatchEvent(childElement, "unloaded");
@@ -482,13 +482,22 @@ var Uno;
                 const previousHeight = element.style.height;
                 const previousPosition = element.style.position;
                 try {
+                    if (!element.isConnected) {
+                        // If the element is not connected to the DOM, we need it
+                        // to be connected for the measure to provide a meaningful value.
+                        let unconnectedRoot = element;
+                        while (unconnectedRoot.parentElement) {
+                            unconnectedRoot = unconnectedRoot.parentElement;
+                        }
+                        this.containerElement.appendChild(unconnectedRoot);
+                    }
                     element.style.width = "";
                     element.style.height = "";
                     // This is required for an unconstrained measure (otherwise the parents size is taken into accound)
                     element.style.position = "fixed";
                     element.style.maxWidth = maxWidth ? `${maxWidth}px` : "";
                     element.style.maxHeight = maxHeight ? `${maxHeight}px` : "";
-                    if (element.tagName.toUpperCase() == "IMG") {
+                    if (element.tagName.toUpperCase() === "IMG") {
                         const imgElement = element;
                         const size = `${imgElement.naturalWidth};${imgElement.naturalHeight}`;
                         return size;
@@ -630,7 +639,7 @@ var Uno;
             fromMonoString(strHandle) {
                 return strHandle ? MonoRuntime.conv_string(strHandle) : "";
             }
-            GetIsConnectedToRootElement(element) {
+            getIsConnectedToRootElement(element) {
                 const rootElement = this.rootContent;
                 if (!rootElement) {
                     return false;

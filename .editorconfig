@@ -6,14 +6,25 @@ tab_width = 4
 trim_trailing_whitespace = true
 insert_final_newline = true
 
-[*.xml]
+[{*.xaml, *.xml, *.targets, *.props}]
 indent_style = tab
 
-[*.xaml]
+[{*.cs, *.tt}]
 indent_style = tab
 
-[*.cs]
+[{*.ts, *.json}]
 indent_style = tab
 
-[*.json]
+[*.csproj]
 indent_style = tab
+tab_width = 2
+indent_size = 2
+
+[*.js]
+indent_style = space
+
+[*.yml]
+indent_style = space
+
+[*.md]
+indent_style = space

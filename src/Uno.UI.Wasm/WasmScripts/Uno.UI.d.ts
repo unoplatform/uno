@@ -190,7 +190,7 @@ declare namespace Uno.UI {
         private dispatchEvent(element, eventName, eventPayload?);
         private getMonoString(str);
         private fromMonoString(strHandle);
-        private GetIsConnectedToRootElement(element);
+        private getIsConnectedToRootElement(element);
     }
 }
 declare module Uno.UI {
