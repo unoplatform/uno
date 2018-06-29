@@ -1,0 +1,226 @@
+
+using System;
+using System.Linq;
+using Uno.Extensions;
+using Uno.Extensions.Specialized;
+using Uno.Logging;
+using Uno.UI;
+using Windows.Foundation;
+using Windows.Foundation.Collections;
+using Windows.UI.Xaml.Data;
+using Windows.UI.Xaml.Input;
+using Windows.UI.Xaml.Media;
+
+#if __IOS__
+using UIKit;
+#endif
+
+namespace Windows.UI.Xaml.Controls
+{
+	public  partial class AutoSuggestBox : ItemsControl
+	{
+		private TextBox _textBox;
+		private Popup _popup;
+		private Grid _layoutRoot;
+		private Border _suggestionContainer;
+		private ListView _suggestionsList;
+		private Button _queryButton;
+
+		public AutoSuggestBox() : base()
+		{
+			Items.VectorChanged += OnItemsChanged;
+		}
+
+		protected override void OnApplyTemplate()
+		{
+			base.OnApplyTemplate();
+
+			_textBox = GetTemplateChild("TextBox") as TextBox;
+			_popup = GetTemplateChild("SuggestionsPopup") as Popup;
+			_layoutRoot = GetTemplateChild("LayoutRoot") as Grid;
+			_suggestionContainer = GetTemplateChild("SuggestionsContainer") as Border;
+			_suggestionsList = GetTemplateChild("SuggestionsList") as ListView;
+			_queryButton = GetTemplateChild("QueryButton") as Button;
+
+			_textBox.SetBinding(
+				TextBox.TextProperty,
+				new Binding()
+				{
+					Path = "Text",
+					RelativeSource = RelativeSource.TemplatedParent,
+					UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged,
+					Mode = BindingMode.TwoWay
+				}
+			);
+
+			Loaded += (s, e) => RegisterEvents();
+			Unloaded += (s, e) => UnregisterEvents();
+
+			if (IsLoaded)
+			{
+				RegisterEvents();
+			}
+		}
+
+		private void OnItemsChanged(IObservableVector<object> sender, IVectorChangedEventArgs @event)
+		{
+			if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+			{
+				this.Log().Debug("ItemsChanged, refreshing suggestion list");
+			}
+
+			_suggestionsList.ItemsSource = GetItems();
+
+			if(GetItems().Count() == 0)
+			{
+				IsSuggestionListOpen = false;
+			}
+			else
+			{
+				IsSuggestionListOpen = true;
+				_suggestionsList.ItemsSource = GetItems();
+
+				LayoutPopup();
+			}
+		}
+
+		private void LayoutPopup()
+		{
+			if (_popup.IsOpen && _popup.Child is FrameworkElement popupChild)
+			{
+				if (_popup is Popup popup)
+				{
+					if (_layoutRoot is FrameworkElement background)
+					{
+						// Reset popup offsets (Windows seems to do that)
+						popup.VerticalOffset = 0;
+						popup.HorizontalOffset = 0;
+
+						// Inject layouting constraints
+						popupChild.MinHeight = background.ActualHeight;
+						popupChild.MinWidth = background.ActualWidth;
+						popupChild.MaxHeight = MaxSuggestionListHeight;
+
+						var windowRect = Xaml.Window.Current.Bounds;
+
+						var popupTransform = popup.TransformToVisual(Xaml.Window.Current.Content) as TranslateTransform;
+						var popupRect = new Rect(popupTransform.X, popupTransform.Y, popup.ActualWidth, popup.ActualHeight);
+
+						var backgroundTransform = background.TransformToVisual(Xaml.Window.Current.Content) as TranslateTransform;
+						var backgroundRect = new Rect(backgroundTransform.X, backgroundTransform.Y + background.ActualHeight, background.ActualWidth, background.ActualHeight);
+
+						// Because Popup.Child is not part of the visual tree until Popup.IsOpen,
+						// some descendent Controls may never have loaded and materialized their templates.
+						// We force the materialization of all templates to ensure that Measure works properly.
+						foreach (var control in popupChild.EnumerateAllChildren().OfType<Control>())
+						{
+							control.ApplyTemplate();
+						}
+
+						popupChild.Measure(windowRect.Size);
+						var popupChildRect = new Rect(new Point(), popupChild.DesiredSize);
+
+						// Align left of popup with left of background 
+						popupChildRect.X = backgroundRect.Left;
+						if (popupChildRect.Right > windowRect.Right) // popup overflows at right
+						{
+							// Align right of popup with right of background
+							popupChildRect.X = backgroundRect.Right - popupChildRect.Width;
+						}
+						if (popupChildRect.Left < windowRect.Left) // popup overflows at left
+						{
+							// Align center of popup with center of window
+							popupChildRect.X = (windowRect.Width - popupChildRect.Width) / 2.0;
+						}
+
+						// Align top of popup with top of background
+						popupChildRect.Y = backgroundRect.Top;
+						if (popupChildRect.Bottom > windowRect.Bottom) // popup overflows at bottom
+						{
+							// Align bottom of popup with bottom of background
+							popupChildRect.Y = backgroundRect.Bottom - popupChildRect.Height;
+						}
+						if (popupChildRect.Top < windowRect.Top) // popup overflows at top
+						{
+							// Align center of popup with center of window
+							popupChildRect.Y = (windowRect.Height - popupChildRect.Height) / 2.0;
+						}
+
+						popup.HorizontalOffset = popupChildRect.X - popupRect.X;
+						popup.VerticalOffset = popupChildRect.Y - popupRect.Y;
+					}
+				}
+			}
+		}
+
+		void RegisterEvents()
+		{
+			_textBox.KeyDown += OnTextBoxKeyDown;
+			_queryButton.Click += OnQueryButtonClick;
+			_suggestionsList.ItemClick += OnSuggestionListItemClick;
+		}
+
+		private void OnIsSuggestionListOpenChanged(DependencyPropertyChangedEventArgs e)
+		{
+			if (e.NewValue is bool isOpened)
+			{
+				_popup.IsOpen = isOpened;
+			}
+		}
+
+		private void OnSuggestionListItemClick(object sender, ItemClickEventArgs e)
+		{
+			if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+			{
+				this.Log().Debug($"Suggestion item clicked {e.ClickedItem}");
+			}
+
+			SuggestionChosen?.Invoke(this, new AutoSuggestBoxSuggestionChosenEventArgs(e.ClickedItem));
+			IsSuggestionListOpen = false;
+		}
+
+		private void OnQueryButtonClick(object sender, RoutedEventArgs e)
+		{
+			if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+			{
+				this.Log().Debug($"Query button clicked");
+			}
+
+			SubmitSearch();
+		}
+
+		private void SubmitSearch()
+		{
+			QuerySubmitted?.Invoke(this, new AutoSuggestBoxQuerySubmittedEventArgs(null, Text));
+			IsSuggestionListOpen = false;
+		}
+
+		private void OnTextBoxKeyDown(object sender, KeyRoutedEventArgs e)
+		{
+			if(e.Key == System.VirtualKey.Enter)
+			{
+				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+				{
+					this.Log().Debug($"Enter key pressed");
+				}
+
+				SubmitSearch();
+			}
+		}
+
+		private static void OnTextChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs args)
+		{
+			if(dependencyObject is AutoSuggestBox tb)
+			{
+				tb.TextChanged?.Invoke(tb, new AutoSuggestBoxTextChangedEventArgs() { Reason = AutoSuggestionBoxTextChangeReason.UserInput });
+			}
+		}
+
+		void UnregisterEvents()
+		{
+			_textBox.KeyDown -= OnTextBoxKeyDown;
+			_queryButton.Click -= OnQueryButtonClick;
+			_suggestionsList.ItemClick -= OnSuggestionListItemClick;
+		}
+	}
+}

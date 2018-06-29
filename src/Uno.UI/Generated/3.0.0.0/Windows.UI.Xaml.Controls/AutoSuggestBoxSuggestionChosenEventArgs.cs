@@ -7,7 +7,7 @@ namespace Windows.UI.Xaml.Controls
 	#endif
 	public  partial class AutoSuggestBoxSuggestionChosenEventArgs : global::Windows.UI.Xaml.DependencyObject
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		#if false
 		[global::Uno.NotImplemented]
 		public  object SelectedItem
 		{

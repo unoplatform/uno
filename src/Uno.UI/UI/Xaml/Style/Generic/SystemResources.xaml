@@ -242,6 +242,7 @@
 	<FontWeight x:Key="HubHeaderThemeFontWeight">Light</FontWeight>
 	<FontWeight x:Key="HubSectionHeaderThemeFontWeight">Normal</FontWeight>
 	<GridLength x:Key="AppBarExpandButtonThemeWidthGridLength">48</GridLength>
+	<x:Boolean x:Key="IsApplicationFocusVisualKindReveal">False</x:Boolean>
 
 
 	<!--
@@ -559,6 +560,10 @@
     <SolidColorBrush x:Key="MenuFlyoutItemPressedForegroundThemeBrush" Color="#FFFFFFFF" />
     <SolidColorBrush x:Key="MenuFlyoutSeparatorThemeBrush" Color="#FF7A7A7A" />
 	
+	<!-- Resources for AutoSuggestBox -->
+    <SolidColorBrush x:Key="AutoSuggestBoxSuggestionsListBackground" Color="{StaticResource SystemChromeMediumLowColor}" />
+    <SolidColorBrush x:Key="AutoSuggestBoxSuggestionsListBorderBrush" Color="{StaticResource SystemChromeHighColor}" />
+
     <!-- Resources for Windows.UI.Xaml.Controls.Pivot -->
     <SolidColorBrush x:Key="PivotBackground" Color="Transparent" />
     <SolidColorBrush x:Key="PivotHeaderBackground" Color="Transparent" />
