@@ -37,9 +37,9 @@
 			this.initDom();
 		}
 
- 		/**
+		/**
 			* Creates the UWP-compatible splash screen
-            * 
+			* 
 			*/
 		static setupSplashScreen(): void {
 
@@ -72,26 +72,26 @@
 					unoBody.appendChild(unoLoading);
 				}
 			}
-        }
+		}
 
- 		/**
+		/**
 			* Reads the window's search parameters
-            * 
+			* 
 			*/
-        static findLaunchArguments(): string {
-            if (typeof URLSearchParams === "function") {
-                return new URLSearchParams(window.location.search).toString();
-            }
-            else {
-                let queryIndex = document.location.search.indexOf('?');
+		static findLaunchArguments(): string {
+			if (typeof URLSearchParams === "function") {
+				return new URLSearchParams(window.location.search).toString();
+			}
+			else {
+				let queryIndex = document.location.search.indexOf('?');
 
-                if (queryIndex != -1) {
-                    return document.location.search.substring(queryIndex + 1);
-                }
+				if (queryIndex != -1) {
+					return document.location.search.substring(queryIndex + 1);
+				}
 
-                return "";
-            }
-        }
+				return "";
+			}
+		}
 
 		/**
 			* Create a html DOM element representing a Xaml element.
@@ -270,7 +270,7 @@
 			window.alert(message);
 
 			return "ok";
-        }
+		}
 
 		/**
 			* Add an event handler to a html element.
@@ -281,23 +281,23 @@
 		public registerEventOnView(
 			elementId: string,
 			eventName: string,
-            onCapturePhase: boolean = false,
-            eventFilter?: (event: Event) => boolean,
-            eventExtractor?: (event: Event) => any): string {
+			onCapturePhase: boolean = false,
+			eventFilter?: (event: Event) => boolean,
+			eventExtractor?: (event: Event) => any): string {
 			const htmlElement: HTMLElement | SVGElement = this.allActiveElementsById[elementId];
 			if (!htmlElement) {
 				throw `Element id ${elementId} not found.`;
 			}
 
-            const eventHandler = (event: Event) => {
-                if (eventFilter && !eventFilter(event)) {
-                    return;
-                }
+			const eventHandler = (event: Event) => {
+				if (eventFilter && !eventFilter(event)) {
+					return;
+				}
 
 				const eventPayload =
 					eventExtractor
 						? `${eventExtractor(event)}`
-                        : "";
+						: "";
 
 				var handled = this.dispatchEvent(htmlElement, eventName, eventPayload);
 				if (handled) {
@@ -434,7 +434,7 @@
 			}
 
 			return "ok";
-        }
+		}
 
 		public getBoundingClientRect(elementId: string): string {
 			const htmlElement: HTMLElement | SVGElement = this.allActiveElementsById[elementId];
@@ -469,35 +469,35 @@
 			}
 
 			const previousWidth = element.style.width;
-            const previousHeight = element.style.height;
-            const previousPosition = element.style.position;
+			const previousHeight = element.style.height;
+			const previousPosition = element.style.position;
 
 			try {
 				element.style.width = "";
-                element.style.height = "";
+				element.style.height = "";
 
-                // This is required for an unconstrained measure (otherwise the parents size is taken into accound)
-                element.style.position = "fixed";
+				// This is required for an unconstrained measure (otherwise the parents size is taken into accound)
+				element.style.position = "fixed";
 
 				element.style.maxWidth = maxWidth ? `${maxWidth}px` : "";
 				element.style.maxHeight = maxHeight ? `${maxHeight}px` : "";
 
-                if (element.tagName.toUpperCase() == "IMG") {
-                    const imgElement = element as HTMLImageElement;
-                    const size = `${imgElement.naturalWidth};${imgElement.naturalHeight}`;
-                    return size;
-                }
-                else {
-                    const resultWidth = element.offsetWidth ? element.offsetWidth : element.clientWidth;
-                    const resultHeight = element.offsetHeight ? element.offsetHeight : element.clientHeight;
-                    const size = `${resultWidth};${resultHeight}`;
+				if (element.tagName.toUpperCase() == "IMG") {
+					const imgElement = element as HTMLImageElement;
+					const size = `${imgElement.naturalWidth};${imgElement.naturalHeight}`;
+					return size;
+				}
+				else {
+					const resultWidth = element.offsetWidth ? element.offsetWidth : element.clientWidth;
+					const resultHeight = element.offsetHeight ? element.offsetHeight : element.clientHeight;
+					const size = `${resultWidth};${resultHeight}`;
 
-                    return size;
-                }
+					return size;
+				}
 			} finally {
 				element.style.width = previousWidth;
-                element.style.height = previousHeight;
-                element.style.position = previousPosition;
+				element.style.height = previousHeight;
+				element.style.position = previousPosition;
 
 				element.style.maxWidth = "";
 				element.style.maxHeight = "";
@@ -624,11 +624,11 @@
 			const element = document.getElementById(this.loadingElementId);
 			if (element) {
 				element.parentElement.removeChild(element);
-            }
+			}
 
-            // UWP Window's default background is white.
-            const body = document.getElementsByTagName("body")[0];
-            body.style.backgroundColor = '#fff';
+			// UWP Window's default background is white.
+			const body = document.getElementsByTagName("body")[0];
+			body.style.backgroundColor = '#fff';
 		}
 
 		private resize() {
@@ -645,23 +645,23 @@
 				throw `No attribute XamlHandle on element ${element}. Can't raise event.`;
 			}
 
-            const htmlIdStr = this.getMonoString(htmlId);
-            const eventNameStr = this.getMonoString(eventName);
-            const eventPayloadStr = this.getMonoString(eventPayload);
+			const htmlIdStr = this.getMonoString(htmlId);
+			const eventNameStr = this.getMonoString(eventName);
+			const eventPayloadStr = this.getMonoString(eventPayload);
 
 			var handledHandle = MonoRuntime.call_method(WindowManager.dispatchEventMethod, null, [htmlIdStr, eventNameStr, eventPayloadStr]);
-            var handledStr = this.fromMonoString(handledHandle);
+			var handledStr = this.fromMonoString(handledHandle);
 			var handled = handledStr == "True";
 			return handled;
-        }
+		}
 
-        private getMonoString(str: string): Interop.IMonoStringHandle {
-            return str ? MonoRuntime.mono_string(str) : null;
-        }
+		private getMonoString(str: string): Interop.IMonoStringHandle {
+			return str ? MonoRuntime.mono_string(str) : null;
+		}
 
-        private fromMonoString(strHandle: Interop.IMonoStringHandle): string {
-            return strHandle ? MonoRuntime.conv_string(strHandle) : "";
-        }
+		private fromMonoString(strHandle: Interop.IMonoStringHandle): string {
+			return strHandle ? MonoRuntime.conv_string(strHandle) : "";
+		}
 
 		private GetIsConnectedToRootElement(element: HTMLElement | SVGElement): boolean {
 			const rootElement = this.rootContent;
