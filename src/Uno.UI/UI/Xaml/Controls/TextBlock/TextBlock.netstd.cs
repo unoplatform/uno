@@ -27,7 +27,6 @@ namespace Windows.UI.Xaml.Controls
 		protected override Size MeasureOverride(Size availableSize)
 		{
 			var size = MeasureView(availableSize);
-			size.Width += 1.0; // Necessary because MeasureView seems to return rounded values.
 			return size;
 		}
 
@@ -104,6 +103,11 @@ namespace Windows.UI.Xaml.Controls
 		partial void OnTextWrappingChangedPartial()
 		{
 			this.SetTextWrapping(TextWrapping);
+		}
+
+		partial void OnPaddingChangedPartial()
+		{
+			this.SetTextPadding(Padding);
 		}
 
 		internal override bool IsViewHit()
