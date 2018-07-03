@@ -22,7 +22,6 @@ namespace Windows.UI.Xaml.Controls
 		private TextBox _textBox;
 		private Popup _popup;
 		private Grid _layoutRoot;
-		private Border _suggestionContainer;
 		private ListView _suggestionsList;
 		private Button _queryButton;
 
@@ -38,11 +37,10 @@ namespace Windows.UI.Xaml.Controls
 			_textBox = GetTemplateChild("TextBox") as TextBox;
 			_popup = GetTemplateChild("SuggestionsPopup") as Popup;
 			_layoutRoot = GetTemplateChild("LayoutRoot") as Grid;
-			_suggestionContainer = GetTemplateChild("SuggestionsContainer") as Border;
 			_suggestionsList = GetTemplateChild("SuggestionsList") as ListView;
 			_queryButton = GetTemplateChild("QueryButton") as Button;
 
-			_textBox.SetBinding(
+			_textBox?.SetBinding(
 				TextBox.TextProperty,
 				new Binding()
 				{
@@ -64,29 +62,36 @@ namespace Windows.UI.Xaml.Controls
 
 		private void OnItemsChanged(IObservableVector<object> sender, IVectorChangedEventArgs @event)
 		{
-			if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+			if (_suggestionsList != null)
 			{
-				this.Log().Debug("ItemsChanged, refreshing suggestion list");
-			}
+				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+				{
+					this.Log().Debug("ItemsChanged, refreshing suggestion list");
+				}
 
-			_suggestionsList.ItemsSource = GetItems();
-
-			if(GetItems().Count() == 0)
-			{
-				IsSuggestionListOpen = false;
-			}
-			else
-			{
-				IsSuggestionListOpen = true;
 				_suggestionsList.ItemsSource = GetItems();
 
-				LayoutPopup();
+				if (GetItems().Count() == 0)
+				{
+					IsSuggestionListOpen = false;
+				}
+				else
+				{
+					IsSuggestionListOpen = true;
+					_suggestionsList.ItemsSource = GetItems();
+
+					LayoutPopup();
+				}
 			}
 		}
 
 		private void LayoutPopup()
 		{
-			if (_popup.IsOpen && _popup.Child is FrameworkElement popupChild)
+			if (
+				_popup != null
+				&& _popup.IsOpen
+				&& _popup.Child is FrameworkElement popupChild
+			)
 			{
 				if (_popup is Popup popup)
 				{
@@ -155,14 +160,25 @@ namespace Windows.UI.Xaml.Controls
 
 		void RegisterEvents()
 		{
-			_textBox.KeyDown += OnTextBoxKeyDown;
-			_queryButton.Click += OnQueryButtonClick;
-			_suggestionsList.ItemClick += OnSuggestionListItemClick;
+			if (_textBox != null)
+			{
+				_textBox.KeyDown += OnTextBoxKeyDown;
+			}
+
+			if (_queryButton != null)
+			{
+				_queryButton.Click += OnQueryButtonClick;
+			}
+
+			if (_suggestionsList != null)
+			{
+				_suggestionsList.ItemClick += OnSuggestionListItemClick;
+			}
 		}
 
 		private void OnIsSuggestionListOpenChanged(DependencyPropertyChangedEventArgs e)
 		{
-			if (e.NewValue is bool isOpened)
+			if (e.NewValue is bool isOpened && _popup != null)
 			{
 				_popup.IsOpen = isOpened;
 			}
@@ -218,9 +234,20 @@ namespace Windows.UI.Xaml.Controls
 
 		void UnregisterEvents()
 		{
-			_textBox.KeyDown -= OnTextBoxKeyDown;
-			_queryButton.Click -= OnQueryButtonClick;
-			_suggestionsList.ItemClick -= OnSuggestionListItemClick;
+			if (_textBox != null)
+			{
+				_textBox.KeyDown -= OnTextBoxKeyDown;
+			}
+
+			if (_queryButton != null)
+			{
+				_queryButton.Click -= OnQueryButtonClick;
+			}
+
+			if (_suggestionsList != null)
+			{
+				_suggestionsList.ItemClick -= OnSuggestionListItemClick;
+			}
 		}
 	}
 }
