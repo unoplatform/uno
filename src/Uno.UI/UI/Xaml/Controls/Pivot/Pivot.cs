@@ -188,15 +188,11 @@ namespace Windows.UI.Xaml.Controls
 				{
 					if (item is PivotItem pivotItem && item != selectedPivotitem)
 					{
-						pivotItem.Opacity = 0;
-						pivotItem.IsHitTestVisible = false;
 						pivotItem.Visibility = Visibility.Collapsed;
 					}
 				}
 
-				selectedPivotitem.Opacity = 1;
 				selectedPivotitem.Visibility = Visibility.Visible;
-				selectedPivotitem.IsHitTestVisible = true;
 
 				foreach (var child in _staticHeader.Children)
 				{
