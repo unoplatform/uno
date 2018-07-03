@@ -359,6 +359,7 @@
     <SolidColorBrush x:Key="SystemControlPageTextBaseHighBrush" Color="{StaticResource SystemBaseHighColor}"/>
     <SolidColorBrush x:Key="SystemControlPageTextBaseMediumBrush" Color="{StaticResource SystemBaseMediumColor}"/>
     <SolidColorBrush x:Key="SystemControlPageTextChromeBlackMediumLowBrush" Color="{StaticResource SystemChromeBlackMediumLowColor}"/>
+	<SolidColorBrush x:Key="SystemControlBackgroundAltMediumBrush" Color="{StaticResource SystemAltMediumColor}" />
 
     <!-- Legacy brushes -->
     <SolidColorBrush x:Key="AppBarBackgroundThemeBrush" Color="#FFF0F0F0" />
@@ -776,5 +777,46 @@
     <SolidColorBrush x:Key="ToolTipBackgroundThemeBrush" Color="#FFFFFFFF" />
     <SolidColorBrush x:Key="ToolTipBorderThemeBrush" Color="#FF808080" />
     <SolidColorBrush x:Key="ToolTipForegroundThemeBrush" Color="#FF666666" />
+
+
+	    <!--
+        Resources for:
+                
+        Windows.UI.Xaml.Controls.TextBox
+        Windows.UI.Xaml.Controls.PasswordBox
+        Windows.UI.Xaml.Controls.RichEditBox
+        AutoSuggestTextBoxStyle
+    -->
+    <SolidColorBrush x:Key="TextControlForeground"  Color="{StaticResource SystemBaseHighColor}" />
+    <SolidColorBrush x:Key="TextControlForegroundPointerOver"  Color="{StaticResource SystemBaseHighColor}" />
+    <SolidColorBrush x:Key="TextControlForegroundFocused" Color="{StaticResource SystemChromeBlackHighColor}" />
+    <SolidColorBrush x:Key="TextControlForegroundDisabled" Color="{StaticResource SystemChromeDisabledLowColor}" />
+    <SolidColorBrush x:Key="TextControlBackground" Color="{StaticResource SystemAltMediumLowColor}" />
+    <SolidColorBrush x:Key="TextControlBackgroundPointerOver" Color="{StaticResource SystemAltMediumColor}" />
+    <SolidColorBrush x:Key="TextControlBackgroundFocused" Color="{StaticResource SystemChromeWhiteColor}" />
+    <SolidColorBrush x:Key="TextControlBackgroundDisabled" Color="{StaticResource SystemBaseLowColor}" />
+    <SolidColorBrush x:Key="TextControlBorderBrush" Color="{StaticResource SystemBaseMediumLowColor}" />
+    <SolidColorBrush x:Key="TextControlBorderBrushPointerOver" Color="{StaticResource SystemBaseMediumColor}"/>
+    <SolidColorBrush x:Key="TextControlBorderBrushFocused" Color="{ThemeResource SystemAccentColor}" />
+    <SolidColorBrush x:Key="TextControlBorderBrushDisabled" Color="{StaticResource SystemBaseLowColor}" />
+    <SolidColorBrush x:Key="TextControlPlaceholderForeground" Color="{StaticResource SystemBaseMediumColor}" />
+    <SolidColorBrush x:Key="TextControlPlaceholderForegroundPointerOver" Color="{StaticResource SystemBaseMediumColor}" />
+    <SolidColorBrush x:Key="TextControlPlaceholderForegroundFocused" Color="{StaticResource SystemChromeBlackMediumLowColor}" />
+    <SolidColorBrush x:Key="TextControlPlaceholderForegroundDisabled" Color="{StaticResource SystemChromeDisabledLowColor}" />
+    <SolidColorBrush x:Key="TextControlHeaderForeground"  Color="{StaticResource SystemBaseHighColor}" />
+    <SolidColorBrush x:Key="TextControlHeaderForegroundDisabled" Color="{StaticResource SystemBaseMediumLowColor}" />
+    <SolidColorBrush x:Key="TextControlSelectionHighlightColor" Color="{ThemeResource SystemAccentColor}" />
+    <SolidColorBrush x:Key="TextControlButtonBackground" Color="Transparent"  />
+    <SolidColorBrush x:Key="TextControlButtonBackgroundPointerOver" Color="Transparent" />
+    <SolidColorBrush x:Key="TextControlButtonBackgroundPressed" Color="{ThemeResource SystemAccentColor}" />
+    <SolidColorBrush x:Key="TextControlButtonBorderBrush" Color="Transparent" />
+    <SolidColorBrush x:Key="TextControlButtonBorderBrushPointerOver" Color="Transparent" />
+    <SolidColorBrush x:Key="TextControlButtonBorderBrushPressed" Color="Transparent" />
+    <SolidColorBrush x:Key="TextControlButtonForeground" Color="{StaticResource SystemChromeBlackMediumColor}" />
+    <SolidColorBrush x:Key="TextControlButtonForegroundPointerOver" Color="{ThemeResource SystemAccentColor}" />
+    <SolidColorBrush x:Key="TextControlButtonForegroundPressed" Color="{StaticResource SystemChromeWhiteColor}" />
+    <SolidColorBrush x:Key="ContentLinkForegroundColor" Color="{ThemeResource SystemAccentColor}" />
+    <SolidColorBrush x:Key="ContentLinkBackgroundColor" Color="{StaticResource SystemChromeAltLowColor}" />
+
 
 </ResourceDictionary>
