@@ -17,7 +17,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			IsMultiline = isMultiline;
 			_textBox = textBox;
-			OnTextChanged(textBox, new TextChangedEventArgs()); // TODO
+			SynchronizeTextBoxText();
 
 			SetStyle(
 				("overflow-x", "visible"),
@@ -40,6 +40,8 @@ namespace Windows.UI.Xaml.Controls
 
 			_textBox.TextChanged += OnTextChanged;
 			HtmlInput += OnInput;
+
+			SynchronizeTextBoxText();
 		}
 
 		protected override void OnUnloaded()
@@ -49,6 +51,9 @@ namespace Windows.UI.Xaml.Controls
 			_textBox.TextChanged -= OnTextChanged;
 			HtmlInput -= OnInput;
 		}
+
+		private void SynchronizeTextBoxText()
+			=> OnTextChanged(_textBox, new TextChangedEventArgs());
 
 		private void OnInput(object sender, EventArgs eventArgs)
 		{
