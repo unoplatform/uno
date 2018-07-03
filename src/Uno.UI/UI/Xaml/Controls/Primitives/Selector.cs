@@ -37,8 +37,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			typeof(Selector),
 			new PropertyMetadata(
 				defaultValue: null,
-				propertyChangedCallback: (s, e) => (s as Selector).OnSelectedItemChanged(e.OldValue, e.NewValue),
-				coerceValueCallback: (s, e) => (s as Selector).CoerceSelectedItem(e)
+				propertyChangedCallback: (s, e) => (s as Selector).OnSelectedItemChanged(e.OldValue, e.NewValue)
 			)
 		);
 
@@ -48,28 +47,23 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			set { this.SetValue(SelectedItemProperty, value); }
 		}
 
-		private bool ItemsSourceContains(object value)
-		{
-			return GetItems()?.Contains(value) ?? false;
-		}
-
-		private object CoerceSelectedItem(object baseValue)
-		{
-			if (baseValue == null || ItemsSourceContains(baseValue))
-			{
-				return baseValue;
-			}
-						
-			// The property system will treat any CoerceValueCallback that returns the value UnsetValue as a special case. 
-			// This special case means that the property change that resulted in the CoerceValueCallback being called should be rejected by the property system, 
-			// and that the property system should instead report whatever previous value the property had. 
-			return DependencyProperty.UnsetValue;
-		}
-
 		internal virtual void OnSelectedItemChanged(object oldSelectedItem, object selectedItem)
 		{
-			var wasSelectionUnset = oldSelectedItem == null && !ItemsSourceContains(oldSelectedItem);
-			var isSelectionUnset = selectedItem == null && !ItemsSourceContains(selectedItem);
+			var wasSelectionUnset = oldSelectedItem == null && (!GetItems()?.Contains(null) ?? false);
+			var isSelectionUnset = false;
+			if (!GetItems()?.Contains(selectedItem) ?? false)
+			{
+				if (selectedItem == null)
+				{
+					isSelectionUnset = true;
+				}
+				else
+				{
+					//Prevent SelectedItem being set to an invalid value
+					SelectedItem = oldSelectedItem;
+					return;
+				}
+			}
 
 			// If SelectedIndex is -1 and SelectedItem is being changed from non-null to null, this indicates that we're desetting 
 			// SelectedItem, not setting a null inside the collection as selected. Little edge case there. (Note that this relies 
@@ -113,7 +107,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 		private void OnSelectedIndexChanged(int oldSelectedIndex, int newSelectedIndex)
 		{
-			 var newSelectedItem = ItemFromIndex(newSelectedIndex);
+			var newSelectedItem = ItemFromIndex(newSelectedIndex);
 
 			if (ItemsSource is ICollectionView collectionView)
 			{
