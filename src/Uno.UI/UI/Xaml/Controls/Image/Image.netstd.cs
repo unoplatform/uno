@@ -7,11 +7,14 @@ using Uno.Extensions;
 using Uno.Foundation;
 using Uno.Logging;
 using Windows.UI.Xaml.Media.Imaging;
+using Uno.Disposables;
 
 namespace Windows.UI.Xaml.Controls
 {
 	partial class Image : FrameworkElement
 	{
+		private readonly SerialDisposable _sourceDisposable = new SerialDisposable();
+
 		public Image() : base("img")
 		{
 			ImageOpened += (snd, evt) => InvalidateMeasure();
@@ -47,27 +50,46 @@ namespace Windows.UI.Xaml.Controls
 			UpdateHitTest();
 
 			var source = e.NewValue as ImageSource;
-			var url = source?.WebUri;
 
-			if (url != null)
+			void setImageUrl()
 			{
-				if(url.IsAbsoluteUri)
+				var url = source?.WebUri;
+
+				if (url != null)
 				{
-					if (url.Scheme.Equals("file", StringComparison.OrdinalIgnoreCase))
+					if (url.IsAbsoluteUri)
 					{
-						// Local files are assumed as coming from the remoter server
-						SetAttribute("src", url.PathAndQuery);
+						if (url.Scheme.Equals("file", StringComparison.OrdinalIgnoreCase))
+						{
+							// Local files are assumed as coming from the remoter server
+							SetAttribute("src", url.PathAndQuery);
+						}
+						else
+						{
+							SetAttribute("src", url.AbsoluteUri);
+						}
 					}
 					else
 					{
-						SetAttribute("src", url.AbsoluteUri);
+						SetAttribute("src", url.OriginalString);
 					}
 				}
-				else
-				{
-					SetAttribute("src", url.OriginalString);
-				}
 			}
+
+			_sourceDisposable.Disposable = null;
+
+			_sourceDisposable.Disposable =
+				Source?.RegisterDisposablePropertyChangedCallback(
+					BitmapImage.UriSourceProperty, (o, args) =>
+					{
+						if (!object.Equals(e.OldValue, args.NewValue))
+						{
+							setImageUrl();
+						}
+					}
+				);
+
+			setImageUrl();
 		}
 
 		#endregion

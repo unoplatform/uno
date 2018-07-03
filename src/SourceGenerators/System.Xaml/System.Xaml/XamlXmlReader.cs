@@ -540,7 +540,7 @@ namespace Uno.Xaml
 				string aname = nsidx > 0 ? p.Key.Substring (nsidx + 1) : p.Key;
 				int propidx = aname.IndexOf ('.');
 				if (propidx > 0) {
-					string apns = prefix.Length > 0 ? r.LookupNamespace (prefix) : r.NamespaceURI;
+					string apns = r.LookupNamespace(prefix);
 					var apname = aname.Substring (0, propidx);
 					var axtn = new XamlTypeName (apns, apname, null);
 

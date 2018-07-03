@@ -7,7 +7,7 @@ namespace Windows.UI.Xaml.Controls
 	#endif
 	public  partial class AutoSuggestBox : global::Windows.UI.Xaml.Controls.ItemsControl
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+#if false
 		[global::Uno.NotImplemented]
 		public  string PlaceholderText
 		{
@@ -20,8 +20,8 @@ namespace Windows.UI.Xaml.Controls
 				this.SetValue(PlaceholderTextProperty, value);
 			}
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+#endif
+#if false
 		[global::Uno.NotImplemented]
 		public  double MaxSuggestionListHeight
 		{
@@ -34,8 +34,8 @@ namespace Windows.UI.Xaml.Controls
 				this.SetValue(MaxSuggestionListHeightProperty, value);
 			}
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+#endif
+#if false
 		[global::Uno.NotImplemented]
 		public  bool IsSuggestionListOpen
 		{
@@ -48,8 +48,8 @@ namespace Windows.UI.Xaml.Controls
 				this.SetValue(IsSuggestionListOpenProperty, value);
 			}
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+#endif
+#if false
 		[global::Uno.NotImplemented]
 		public  object Header
 		{
@@ -62,8 +62,8 @@ namespace Windows.UI.Xaml.Controls
 				this.SetValue(HeaderProperty, value);
 			}
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+#endif
+#if false
 		[global::Uno.NotImplemented]
 		public  bool AutoMaximizeSuggestionArea
 		{
@@ -76,8 +76,8 @@ namespace Windows.UI.Xaml.Controls
 				this.SetValue(AutoMaximizeSuggestionAreaProperty, value);
 			}
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+#endif
+#if false
 		[global::Uno.NotImplemented]
 		public  bool UpdateTextOnSelect
 		{
@@ -90,8 +90,8 @@ namespace Windows.UI.Xaml.Controls
 				this.SetValue(UpdateTextOnSelectProperty, value);
 			}
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+#endif
+#if false
 		[global::Uno.NotImplemented]
 		public  string TextMemberPath
 		{
@@ -104,8 +104,8 @@ namespace Windows.UI.Xaml.Controls
 				this.SetValue(TextMemberPathProperty, value);
 			}
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+#endif
+#if false
 		[global::Uno.NotImplemented]
 		public  global::Windows.UI.Xaml.Style TextBoxStyle
 		{
@@ -118,8 +118,8 @@ namespace Windows.UI.Xaml.Controls
 				this.SetValue(TextBoxStyleProperty, value);
 			}
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+#endif
+#if false
 		[global::Uno.NotImplemented]
 		public  string Text
 		{
@@ -132,8 +132,8 @@ namespace Windows.UI.Xaml.Controls
 				this.SetValue(TextProperty, value);
 			}
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+#endif
+#if false
 		[global::Uno.NotImplemented]
 		public  global::Windows.UI.Xaml.Controls.IconElement QueryIcon
 		{
@@ -146,8 +146,8 @@ namespace Windows.UI.Xaml.Controls
 				this.SetValue(QueryIconProperty, value);
 			}
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+#endif
+#if __ANDROID__ || __IOS__ || NET46 || __WASM__
 		[global::Uno.NotImplemented]
 		public  global::Windows.UI.Xaml.Controls.LightDismissOverlayMode LightDismissOverlayMode
 		{
@@ -160,101 +160,95 @@ namespace Windows.UI.Xaml.Controls
 				this.SetValue(LightDismissOverlayModeProperty, value);
 			}
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+#endif
+
+#if false
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty MaxSuggestionListHeightProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
 			"MaxSuggestionListHeight", typeof(double), 
 			typeof(global::Windows.UI.Xaml.Controls.AutoSuggestBox), 
 			new FrameworkPropertyMetadata(default(double)));
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+#endif
+#if false
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty PlaceholderTextProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
 			"PlaceholderText", typeof(string), 
 			typeof(global::Windows.UI.Xaml.Controls.AutoSuggestBox), 
 			new FrameworkPropertyMetadata(default(string)));
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+#endif
+#if false
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty TextBoxStyleProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
 			"TextBoxStyle", typeof(global::Windows.UI.Xaml.Style), 
 			typeof(global::Windows.UI.Xaml.Controls.AutoSuggestBox), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Style)));
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+#endif
+#if false
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty TextMemberPathProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
 			"TextMemberPath", typeof(string), 
 			typeof(global::Windows.UI.Xaml.Controls.AutoSuggestBox), 
 			new FrameworkPropertyMetadata(default(string)));
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+#endif
+#if false
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty TextProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
 			"Text", typeof(string), 
 			typeof(global::Windows.UI.Xaml.Controls.AutoSuggestBox), 
 			new FrameworkPropertyMetadata(default(string)));
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+#endif
+#if false
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty UpdateTextOnSelectProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
 			"UpdateTextOnSelect", typeof(bool), 
 			typeof(global::Windows.UI.Xaml.Controls.AutoSuggestBox), 
 			new FrameworkPropertyMetadata(default(bool)));
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+#endif
+#if false
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty AutoMaximizeSuggestionAreaProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
 			"AutoMaximizeSuggestionArea", typeof(bool), 
 			typeof(global::Windows.UI.Xaml.Controls.AutoSuggestBox), 
 			new FrameworkPropertyMetadata(default(bool)));
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+#endif
+#if false
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty HeaderProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
 			"Header", typeof(object), 
 			typeof(global::Windows.UI.Xaml.Controls.AutoSuggestBox), 
 			new FrameworkPropertyMetadata(default(object)));
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+#endif
+#if false
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty IsSuggestionListOpenProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
 			"IsSuggestionListOpen", typeof(bool), 
 			typeof(global::Windows.UI.Xaml.Controls.AutoSuggestBox), 
 			new FrameworkPropertyMetadata(default(bool)));
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+#endif
+#if false
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty QueryIconProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
 			"QueryIcon", typeof(global::Windows.UI.Xaml.Controls.IconElement), 
 			typeof(global::Windows.UI.Xaml.Controls.AutoSuggestBox), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Controls.IconElement)));
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+#endif
+	#if __ANDROID__ || __IOS__ || NET46 || __WASM__
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty LightDismissOverlayModeProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
 			"LightDismissOverlayMode", typeof(global::Windows.UI.Xaml.Controls.LightDismissOverlayMode), 
 			typeof(global::Windows.UI.Xaml.Controls.AutoSuggestBox), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Controls.LightDismissOverlayMode)));
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
-		[global::Uno.NotImplemented]
-		public AutoSuggestBox() : base()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.AutoSuggestBox", "AutoSuggestBox.AutoSuggestBox()");
-		}
 		#endif
 		// Forced skipping of method Windows.UI.Xaml.Controls.AutoSuggestBox.AutoSuggestBox()
 		// Forced skipping of method Windows.UI.Xaml.Controls.AutoSuggestBox.MaxSuggestionListHeight.get
@@ -296,53 +290,5 @@ namespace Windows.UI.Xaml.Controls
 		// Forced skipping of method Windows.UI.Xaml.Controls.AutoSuggestBox.HeaderProperty.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.AutoSuggestBox.AutoMaximizeSuggestionAreaProperty.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.AutoSuggestBox.TextBoxStyleProperty.get
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
-		[global::Uno.NotImplemented]
-		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Xaml.Controls.AutoSuggestBox, global::Windows.UI.Xaml.Controls.AutoSuggestBoxSuggestionChosenEventArgs> SuggestionChosen
-		{
-			[global::Uno.NotImplemented]
-			add
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.AutoSuggestBox", "event TypedEventHandler<AutoSuggestBox, AutoSuggestBoxSuggestionChosenEventArgs> AutoSuggestBox.SuggestionChosen");
-			}
-			[global::Uno.NotImplemented]
-			remove
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.AutoSuggestBox", "event TypedEventHandler<AutoSuggestBox, AutoSuggestBoxSuggestionChosenEventArgs> AutoSuggestBox.SuggestionChosen");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
-		[global::Uno.NotImplemented]
-		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Xaml.Controls.AutoSuggestBox, global::Windows.UI.Xaml.Controls.AutoSuggestBoxTextChangedEventArgs> TextChanged
-		{
-			[global::Uno.NotImplemented]
-			add
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.AutoSuggestBox", "event TypedEventHandler<AutoSuggestBox, AutoSuggestBoxTextChangedEventArgs> AutoSuggestBox.TextChanged");
-			}
-			[global::Uno.NotImplemented]
-			remove
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.AutoSuggestBox", "event TypedEventHandler<AutoSuggestBox, AutoSuggestBoxTextChangedEventArgs> AutoSuggestBox.TextChanged");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
-		[global::Uno.NotImplemented]
-		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Xaml.Controls.AutoSuggestBox, global::Windows.UI.Xaml.Controls.AutoSuggestBoxQuerySubmittedEventArgs> QuerySubmitted
-		{
-			[global::Uno.NotImplemented]
-			add
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.AutoSuggestBox", "event TypedEventHandler<AutoSuggestBox, AutoSuggestBoxQuerySubmittedEventArgs> AutoSuggestBox.QuerySubmitted");
-			}
-			[global::Uno.NotImplemented]
-			remove
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.AutoSuggestBox", "event TypedEventHandler<AutoSuggestBox, AutoSuggestBoxQuerySubmittedEventArgs> AutoSuggestBox.QuerySubmitted");
-			}
-		}
-		#endif
 	}
 }

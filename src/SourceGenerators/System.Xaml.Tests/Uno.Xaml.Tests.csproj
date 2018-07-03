@@ -23,16 +23,9 @@
 	</ItemGroup>
 	
 	<ItemGroup>
-	  <None Remove="Test\XmlFiles\BindingMembers.xaml" />
-	  <None Remove="Test\XmlFiles\Binding_Escape.xaml" />
-	  <None Remove="Test\XmlFiles\CustomAttachedProperty.xaml" />
-	  <None Remove="Test\XmlFiles\RunSpace01.xaml" />
-	  <None Remove="Test\XmlFiles\RunSpace02.xaml" />
-	  <None Remove="Test\XmlFiles\TextLiteral.xaml" />
-	  <None Remove="Test\XmlFiles\WhiteSpacePreservation.xaml" />
-	  <None Remove="Test\XmlFiles\xBind.xaml" />
+	  <None Remove="Test\XmlFiles\AttachedPropertyWithNamespace.xaml" />
 	</ItemGroup>
-	
+		
 	<ItemGroup>
 	  <ProjectReference Include="..\System.Xaml\Uno.Xaml.csproj" />
 	</ItemGroup>
@@ -41,22 +34,7 @@
 		<Service Include="{82a7f48d-3b50-4b1e-b82e-3ada8210c358}" />
 	</ItemGroup>
 
-	<ItemGroup>
-	  <Content Update="Test\XmlFiles\CustomAttachedProperty.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </Content>
-	  <Content Update="Test\XmlFiles\RunSpace01.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </Content>
-	  <Content Update="Test\XmlFiles\RunSpace02.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </Content>
-	  <Content Update="Test\XmlFiles\xBind.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </Content>
-	</ItemGroup>
-
-	<ItemGroup>
+  <ItemGroup>
 	  <Reference Update="System.Xml">
 	    <Aliases>msxaml,%(Aliases)</Aliases>
 	  </Reference>

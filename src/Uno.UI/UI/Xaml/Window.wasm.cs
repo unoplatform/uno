@@ -177,11 +177,24 @@ namespace Windows.UI.Xaml
 
 		internal IDisposable OpenPopup(Popup popup)
 		{
+			if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+			{
+				this.Log().Debug($"Creating popup");
+			}
+			
 			var popupChild = popup.Child;
 			_popupRoot.Children.Add(popupChild);
 
 			return new CompositeDisposable(
-				Disposable.Create(() => _popupRoot.Children.Remove(popupChild)),
+				Disposable.Create(() => {
+
+					if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+					{
+						this.Log().Debug($"Closing popup");
+					}
+
+					_popupRoot.Children.Remove(popupChild);
+				}),
 				VisualTreeHelper.RegisterOpenPopup(popup)
 			);
 		}

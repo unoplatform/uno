@@ -13,17 +13,29 @@ namespace Windows.UI.Xaml.Controls
 {
 	public partial class Popup
 	{
-		public UIView MainWindow { get; private set; }
+		private UIView _mainWindow;
 
 		public Popup()
 		{
-			MainWindow = UIApplication.SharedApplication.KeyWindow ?? UIApplication.SharedApplication.Windows[0];
+		}
 
-			PopupPanel = new PopupPanel(this);
+		public UIView MainWindow
+		{
+			get
+			{
+				if (_mainWindow == null)
+				{
+					_mainWindow = UIApplication.SharedApplication.KeyWindow ?? UIApplication.SharedApplication.Windows[0];
 
-			MainWindow.AddSubview(PopupPanel);
+					PopupPanel = new PopupPanel(this);
 
-			UpdateDismissTriggers();
+					MainWindow.AddSubview(PopupPanel);
+
+					UpdateDismissTriggers();
+				}
+
+				return _mainWindow;
+			}
 		}
 
 		partial void OnPopupPanelChanged(DependencyPropertyChangedEventArgs e)

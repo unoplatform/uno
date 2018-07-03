@@ -24,6 +24,8 @@
 		
 	<ItemGroup>
 	  <None Remove="XmlFiles\AttachedProperty.xaml" />
+	  <None Remove="XmlFiles\AttachedPropertyWithNamespace.xaml" />
+	  <None Remove="XmlFiles\AttachedPropertyWIthoutNamespace.xaml" />
 	  <None Remove="XmlFiles\RunSpace01.xaml" />
 	  <None Remove="XmlFiles\RunSpace02.xaml" />
 	  <None Remove="XmlFiles\TextLiteral.xaml" />
