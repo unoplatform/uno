@@ -24,6 +24,32 @@ var Uno;
         Utils.Clipboard = Clipboard;
     })(Utils = Uno.Utils || (Uno.Utils = {}));
 })(Uno || (Uno = {}));
+var Uno;
+(function (Uno) {
+    var UI;
+    (function (UI) {
+        class HtmlDom {
+            /**
+             * Initialize various polyfills used by Uno
+             */
+            static initPolyfills() {
+                this.isConnectedPolyfill();
+            }
+            static isConnectedPolyfill() {
+                function get() {
+                    // polyfill implementation
+                    return document.contains(this);
+                }
+                (supported => {
+                    if (!supported) {
+                        Object.defineProperty(Node.prototype, "isConnected", { get });
+                    }
+                })("isConnected" in Node.prototype);
+            }
+        }
+        UI.HtmlDom = HtmlDom;
+    })(UI = Uno.UI || (Uno.UI = {}));
+})(Uno || (Uno = {}));
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     return new (P || (P = Promise))(function (resolve, reject) {
         function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
@@ -127,6 +153,7 @@ var Uno;
                     throw "Already initialized";
                 }
                 WindowManager.initMethods();
+                UI.HtmlDom.initPolyfills();
                 this.current = new WindowManager(containerElementId, loadingElementId);
                 this.current.init();
                 return "ok";
@@ -487,6 +514,8 @@ var Uno;
                         // to be connected for the measure to provide a meaningful value.
                         let unconnectedRoot = element;
                         while (unconnectedRoot.parentElement) {
+                            // Need to find the top most "unconnected" parent
+                            // of this element
                             unconnectedRoot = unconnectedRoot.parentElement;
                         }
                         this.containerElement.appendChild(unconnectedRoot);
@@ -570,14 +599,6 @@ var Uno;
             init() {
             }
             static initMethods() {
-                (function (supported) {
-                    if (supported)
-                        return;
-                    Object.defineProperty(Node.prototype, 'isConnected', { get });
-                    function get() {
-                        return document.contains(this);
-                    }
-                })('isConnected' in Node.prototype);
                 if (!WindowManager.assembly) {
                     WindowManager.assembly = MonoRuntime.assembly_load("Uno.UI");
                     if (!WindowManager.assembly) {

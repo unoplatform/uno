@@ -18,6 +18,7 @@
 				throw "Already initialized";
 			}
 			WindowManager.initMethods();
+			HtmlDom.initPolyfills();
 
 			this.current = new WindowManager(containerElementId, loadingElementId);
 			this.current.init();
@@ -479,6 +480,8 @@
 
 					let unconnectedRoot = element;
 					while (unconnectedRoot.parentElement) {
+						// Need to find the top most "unconnected" parent
+						// of this element
 						unconnectedRoot = unconnectedRoot.parentElement as HTMLElement;
 					}
 
@@ -584,14 +587,6 @@
 		}
 
 		private static initMethods() {
-
-			(function (supported) {
-				if (supported) return;
-				Object.defineProperty(Node.prototype, 'isConnected', { get })
-				function get() {
-					return document.contains(this);
-				}
-			})('isConnected' in Node.prototype);
 
 			if (!WindowManager.assembly) {
 				WindowManager.assembly = MonoRuntime.assembly_load("Uno.UI");
