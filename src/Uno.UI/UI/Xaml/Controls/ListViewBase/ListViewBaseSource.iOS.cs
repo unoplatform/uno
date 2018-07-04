@@ -523,9 +523,11 @@ namespace Windows.UI.Xaml.Controls
 					BlockLayout.AddSubview(container);
 					size = Owner.NativeLayout.Layouter.MeasureChild(container, new Size(double.MaxValue, double.MaxValue));
 
-					if (size.Height > nfloat.MaxValue / 2 || size.Width > nfloat.MaxValue / 2)
+					if ((size.Height > nfloat.MaxValue / 2 || size.Width > nfloat.MaxValue / 2) &&
+						this.Log().IsEnabled(LogLevel.Warning)
+					)
 					{
-						throw new InvalidOperationException($"Infinite item size reported, this will crash {nameof(UICollectionView)}.");
+						this.Log().LogWarning($"Infinite item size reported, this can crash {nameof(UICollectionView)}.");
 					}
 				}
 				finally
