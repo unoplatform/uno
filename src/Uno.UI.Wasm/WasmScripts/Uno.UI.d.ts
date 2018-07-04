@@ -3,6 +3,15 @@ declare namespace Uno.Utils {
         static setText(text: string): string;
     }
 }
+declare namespace Uno.UI {
+    class HtmlDom {
+        /**
+         * Initialize various polyfills used by Uno
+         */
+        static initPolyfills(): void;
+        private static isConnectedPolyfill();
+    }
+}
 declare namespace Uno.Http {
     interface IHttpClientConfig {
         id: string;
