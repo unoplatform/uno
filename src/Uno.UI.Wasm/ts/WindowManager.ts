@@ -584,6 +584,15 @@
 		}
 
 		private static initMethods() {
+
+			(function (supported) {
+				if (supported) return;
+				Object.defineProperty(Node.prototype, 'isConnected', { get })
+				function get() {
+					return document.contains(this);
+				}
+			})('isConnected' in Node.prototype);
+
 			if (!WindowManager.assembly) {
 				WindowManager.assembly = MonoRuntime.assembly_load("Uno.UI");
 
