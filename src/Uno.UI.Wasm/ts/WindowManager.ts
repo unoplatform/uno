@@ -274,6 +274,22 @@
 		}
 
 		/**
+			* Sets the browser window title
+			* @param message the new title
+			*/
+		public setWindowTitle(title: string): string {
+			document.title = title || UnoAppManifest.displayName;
+			return "ok";
+		}
+
+		/**
+			* Gets the currently set browser window title
+			*/
+		public getWindowTitle(): string {
+			return document.title || UnoAppManifest.displayName;
+		}
+
+		/**
 			* Add an event handler to a html element.
 			*
 			* @param eventName The name of the event
@@ -584,6 +600,11 @@
 		}
 
 		private init() {
+
+			if (UnoAppManifest.displayName) {
+				document.title = UnoAppManifest.displayName;
+			}
+
 		}
 
 		private static initMethods() {

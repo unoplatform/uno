@@ -8,13 +8,13 @@ namespace Windows.UI.ViewManagement
 		{
 			get
 			{
-				const string command = "(function(){return document.title || \"\";})();";
+				const string command = "Uno.UI.WindowManager.current.getWindowTitle()";
 				return WebAssemblyRuntime.InvokeJS(command);
 			}
 			set
 			{
 				var escapedValue = WebAssemblyRuntime.EscapeJs(value);
-				var command = "(function(t){document.title = t; return \"\";})(\"" + escapedValue + "\");";
+				var command = "Uno.UI.WindowManager.current.setWindowTitle(\"" + escapedValue + "\");";
 				WebAssemblyRuntime.InvokeJS(command);
 			}
 		}
