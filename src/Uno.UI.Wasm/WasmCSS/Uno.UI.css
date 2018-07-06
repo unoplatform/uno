@@ -16,7 +16,6 @@
 .uno-frameworkelement.uno-unarranged {
 	-ms-opacity: 0;
 	opacity: 0;
-	position: fixed; /* This is used to ensure measureView will ignore parents constraints */
 }
 
 .uno-textblock {
