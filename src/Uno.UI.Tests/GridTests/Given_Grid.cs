@@ -511,5 +511,27 @@ namespace Uno.UI.Tests.GridTests
 			ColumnDefinition1.Width = new GridLength(10);
 			Assert.AreEqual(3, SUT.InvalidateMeasureCallCount);
 		}
+
+		[TestMethod]
+		public void When_Grid_Has_Two_Columns_And_VerticalAlignment_Top()
+		{
+			var SUT = new Grid() { Name = "test" };
+
+			SUT.VerticalAlignment = VerticalAlignment.Top;
+
+			SUT.ColumnDefinitions.Add(new ColumnDefinition { Width = "*" });
+			SUT.ColumnDefinitions.Add(new ColumnDefinition { Width = "*" });
+
+			var child = new View { Name = "Child01", RequestedDesiredSize = new Windows.Foundation.Size(10, 10) };
+			SUT.AddChild(child);
+
+			SUT.Measure(new Windows.Foundation.Size(20, 20));
+			var measuredSize = SUT.DesiredSize;
+			SUT.Arrange(new Windows.Foundation.Rect(0, 0, 20, 20));
+			var childArrangedSize = child.Arranged;
+
+			Assert.AreEqual(measuredSize, new Windows.Foundation.Size(20, 10));
+			Assert.AreEqual(new Windows.Foundation.Rect(0, 0, 10, 10), childArrangedSize);
+		}
 	}
 }

@@ -34,9 +34,6 @@
 		<PackageReference Include="Xamarin.Android.Support.v7.RecyclerView">
 			<Version>25.3.1</Version>
 		</PackageReference>
-		<PackageReference Include="Nito.Collections.Deque">
-			<Version>1.0.0</Version>
-		</PackageReference>
 	</ItemGroup>
 	
 	<ItemGroup Condition=" '$(TargetFramework)' == 'MonoAndroid80'">
@@ -48,9 +45,6 @@
 		</PackageReference>
 		<PackageReference Include="Xamarin.Android.Support.v7.RecyclerView">
 			<Version>26.1.0.1</Version>
-		</PackageReference>
-		<PackageReference Include="Nito.Collections.Deque">
-			<Version>1.0.0</Version>
 		</PackageReference>
 	</ItemGroup>
 

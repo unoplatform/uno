@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 using System.Runtime.InteropServices;
 using Microsoft.Extensions.Logging;
 using Uno.Extensions;
@@ -8,8 +9,9 @@ using Windows.Foundation;
 using Windows.Foundation.Metadata;
 namespace Windows.UI.Xaml
 {
-    public delegate object SetterValueProviderHandler();
+	public delegate object SetterValueProviderHandler();
 
+	[DebuggerDisplay("{DebuggerDisplay}")]
 	public sealed partial class Setter : SetterBase
 	{
 		public Setter()
@@ -142,5 +144,7 @@ namespace Windows.UI.Xaml
 		{
 			_bindingPath?.ClearValue();
 		}
+
+		private string DebuggerDisplay => $"Property={Property?.Name ?? "<null>"},Target={Target?.Target?.ToString() ?? Target?.TargetName ?? "<null>"},Value={Value?.ToString() ?? "<null>"}";
 	}
 }

@@ -225,7 +225,7 @@ namespace Windows.UI.Xaml.Controls
 			return base.GetIsGroupHeader(ConvertDisplayPositionToIndex(displayPosition));
 		}
 
-		private int ConvertIndexToDisplayPosition(int index)
+		internal int ConvertIndexToDisplayPosition(int index)
 		{
 			if (ShouldShowHeader)
 			{
@@ -288,6 +288,10 @@ namespace Windows.UI.Xaml.Controls
 			Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
 			{
 				var index = IndexFromItem(item);
+				if (index < 0)
+				{
+					return;
+				}
 				var displayPosition = ConvertIndexToDisplayPosition(index);
 				NativePanel?.ScrollIntoView(displayPosition, alignment);
 			});

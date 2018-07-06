@@ -20,6 +20,11 @@ namespace Windows.UI.Xaml
 
 		internal Size ActualSize => _actualSize;
 
+		/// <summary>
+		/// The parent of the <see cref="FrameworkElement"/> in the visual tree, which may differ from its <see cref="Parent"/> (ie if it's a child of a native view).
+		/// </summary>
+		internal IViewParent VisualParent => (this as View).Parent;
+
 		public FrameworkElement()
 		{
 			Initialize();
@@ -32,7 +37,7 @@ namespace Windows.UI.Xaml
 			// see StretchAffectsMeasure for details.
 			this.SetValue(
 				StretchAffectsMeasureProperty,
-				!(Parent is DependencyObject),
+				!(VisualParent is DependencyObject),
 				DependencyPropertyValuePrecedences.DefaultValue
 			);
 		}

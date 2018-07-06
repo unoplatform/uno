@@ -49,9 +49,6 @@
 			<Version>23.4.0.1</Version>
 			<PrivateAssets>none</PrivateAssets>
 		</PackageReference>
-		<PackageReference Include="Nito.Collections.Deque">
-			<Version>1.0.0</Version>
-		</PackageReference>
 	</ItemGroup>
 
 	<ItemGroup Condition=" '$(TargetFramework)' == 'MonoAndroid71'">
@@ -67,9 +64,6 @@
 			<Version>25.3.1</Version>
 			<PrivateAssets>none</PrivateAssets>
 		</PackageReference>
-		<PackageReference Include="Nito.Collections.Deque">
-			<Version>1.0.0</Version>
-		</PackageReference>
 	</ItemGroup>
 
 	<ItemGroup Condition=" '$(TargetFramework)' == 'MonoAndroid80'">
@@ -84,9 +78,6 @@
 		<PackageReference Include="Xamarin.Android.Support.v7.RecyclerView">
 			<Version>26.1.0.1</Version>
 			<PrivateAssets>none</PrivateAssets>
-		</PackageReference>
-		<PackageReference Include="Nito.Collections.Deque">
-			<Version>1.0.0</Version>
 		</PackageReference>
 	</ItemGroup>
 

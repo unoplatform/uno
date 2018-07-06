@@ -6,7 +6,6 @@ using System.Linq;
 using System.Text;
 using Android.Support.V7.Widget;
 using Android.Views;
-using Nito.Collections;
 using Uno.Extensions;
 using Uno.UI;
 using Uno.Logging;
@@ -58,7 +57,7 @@ namespace Windows.UI.Xaml.Controls
 		/// <summary>
 		/// The count of views that correspond to collection items (and not group headers, etc)
 		/// </summary>
-		private int ItemViewCount { get; set; }
+		internal int ItemViewCount { get; set; }
 		private int GroupHeaderViewCount { get; set; }
 		private int HeaderViewCount { get; set; }
 		private int FooterViewCount { get; set; }
@@ -66,6 +65,8 @@ namespace Windows.UI.Xaml.Controls
 		/// The index of the first child view that is an item (ie not a header/footer/group header).
 		/// </summary>
 		private int FirstItemView => HeaderViewCount;
+
+		internal int CacheHalfLengthInViews { get; private set; }
 
 		// Item about to be shown after call to ScrollIntoView().
 		private ScrollToPositionRequest _pendingScrollToPositionRequest;
@@ -79,7 +80,7 @@ namespace Windows.UI.Xaml.Controls
 
 		public ListViewBase XamlParent { get; set; }
 
-		private ScrollingViewCache ViewCache => XamlParent?.NativePanel.ViewCache;
+		private BufferViewCache ViewCache => XamlParent?.NativePanel.ViewCache;
 
 		public Orientation Orientation
 		{
@@ -132,9 +133,9 @@ namespace Windows.UI.Xaml.Controls
 				if (_pendingScrollToPositionRequest != null)
 				{
 					ApplyScrollToPosition(
-						_pendingScrollToPositionRequest.Position, 
-						_pendingScrollToPositionRequest.Alignment, 
-						recycler, 
+						_pendingScrollToPositionRequest.Position,
+						_pendingScrollToPositionRequest.Alignment,
+						recycler,
 						state
 					);
 
@@ -187,12 +188,12 @@ namespace Windows.UI.Xaml.Controls
 
 		public override bool CanScrollVertically()
 		{
-			return ScrollOrientation == Orientation.Vertical;
+			return ScrollOrientation == Orientation.Vertical && ChildCount > 0;
 		}
 
 		public override bool CanScrollHorizontally()
 		{
-			return ScrollOrientation == Orientation.Horizontal;
+			return ScrollOrientation == Orientation.Horizontal && ChildCount > 0;
 		}
 
 		public override void ScrollToPosition(int position)
@@ -274,7 +275,7 @@ namespace Windows.UI.Xaml.Controls
 			FillLayout(FillDirection.Forward, 0, Extent, ContentBreadth, recycler, state);
 			FillLayout(FillDirection.Back, 0, Extent, ContentBreadth, recycler, state);
 		}
-		
+
 		private class ScrollToPositionRequest
 		{
 			public int Position { get; }
@@ -694,6 +695,7 @@ namespace Windows.UI.Xaml.Controls
 			_needsHeaderAndFooterUpdate = false;
 
 			ViewCache?.EmptyAndRemove();
+			CacheHalfLengthInViews = 0;
 
 			_pendingGroupOperations.Clear();
 		}
@@ -828,6 +830,8 @@ namespace Windows.UI.Xaml.Controls
 			{
 				ItemViewCount++;
 			}
+
+			AssertValidState();
 		}
 
 		/// <summary>
@@ -852,6 +856,8 @@ namespace Windows.UI.Xaml.Controls
 				actualOffset = ScrollByInner(appliedOffset, recycler, state);
 			}
 			actualOffset = ScrollByInner(offset, recycler, state);
+
+			UpdateBuffers(recycler);
 
 			return actualOffset;
 		}
@@ -922,12 +928,14 @@ namespace Windows.UI.Xaml.Controls
 				// operation, and one 'after.' Here we provide the 'before' by very simply not modifying the layout at all.
 				return;
 			}
-			if (isMeasure && availableExtent > 0 && availableBreadth > 0 && ChildCount > 0)
+			var needsScrapOnMeasure = isMeasure && availableExtent > 0 && availableBreadth > 0 && ChildCount > 0;
+			var willRunAnimations = state.WillRunSimpleAnimations();
+			if (needsScrapOnMeasure)
 			{
 				//Always rebuild the layout on measure, because child dimensions may have changed
 				ScrapLayout(recycler, availableBreadth);
 			}
-			else if (state.WillRunSimpleAnimations())
+			else if (willRunAnimations)
 			{
 				//An INotifyCollectionChanged operation is triggering an animated update of the list.
 				ScrapLayout(recycler, availableBreadth);
@@ -940,6 +948,15 @@ namespace Windows.UI.Xaml.Controls
 			XamlParent?.TryLoadMoreItems(LastVisibleIndex);
 
 			UpdateScrollPosition(recycler, state);
+
+			if (!needsScrapOnMeasure && !willRunAnimations)
+			{
+				// Don't modify buffer on the same cycle as scrapping all views, because buffer is liable to 'suck up' scrapped views 
+				// leading to weird behaviour
+				AssertValidState();
+				UpdateBuffers(recycler);
+				AssertValidState();
+			}
 		}
 
 		/// <summary>
@@ -984,6 +1001,8 @@ namespace Windows.UI.Xaml.Controls
 				_areHeaderAndFooterCreated = true;
 			}
 
+			AssertValidState();
+
 			if (!_isInitialExtentOffsetApplied)
 			{
 				var group = GetTrailingGroup(direction);
@@ -1006,11 +1025,16 @@ namespace Windows.UI.Xaml.Controls
 				_previousHeaderExtent = null;
 				_isInitialExtentOffsetApplied = true;
 			}
+
+			AssertValidState();
+
 			if (!_isInitialGroupHeaderCreated && isGrouping && XamlParent.NumberOfDisplayGroups > 0)
 			{
 				CreateGroupHeader(direction, InitialBreadthPadding, availableBreadth, recycler, state, GetLeadingGroup(direction));
 				_isInitialGroupHeaderCreated = true;
 			}
+
+			AssertValidState();
 
 			var nextItemPath = GetNextUnmaterializedItem(direction, _dynamicSeedIndex ?? GetLeadingMaterializedItem(direction));
 			while (nextItemPath != null)
@@ -1019,8 +1043,10 @@ namespace Windows.UI.Xaml.Controls
 				if (_groups.Count == 0)
 				{
 					CreateGroupsAtLeadingEdge(nextItemPath.Value.Section, direction, scrollOffset, availableExtent, availableBreadth, recycler, state);
+					AssertValidState();
 				}
 				var createdLine = TryCreateLine(direction, scrollOffset, availableExtent, availableBreadth, recycler, state, nextItemPath.Value);
+				AssertValidState();
 				if (!createdLine) { break; }
 				nextItemPath = GetNextUnmaterializedItem(direction);
 			}
@@ -1033,6 +1059,7 @@ namespace Windows.UI.Xaml.Controls
 				{
 					//Create empty groups at start/end
 					CreateGroupsAtLeadingEdge(endGroupIndex, direction, scrollOffset, availableExtent, availableBreadth, recycler, state);
+					AssertValidState();
 				}
 			}
 
@@ -1203,7 +1230,10 @@ namespace Windows.UI.Xaml.Controls
 		{
 			var displayItemIndex = GetGroupHeaderAdapterIndex(group.GroupIndex);
 			var headerView = recycler.GetViewForPosition(displayItemIndex, state);
-			Debug.Assert(headerView is ListViewBaseHeaderItem, "view is ListViewBaseHeaderItem (We should never be given a regular item container)");
+			if (!(headerView is ListViewBaseHeaderItem))
+			{
+				throw new InvalidOperationException($"Expected {nameof(ListViewBaseHeaderItem)} but received {headerView?.GetType().ToString() ?? "<null>"}");
+			}
 			group.RelativeHeaderPlacement = RelativeGroupHeaderPlacement;
 
 			AddViewAtOffset(headerView, fillDirection, group.Start, breadthOffset, availableBreadth, viewType: ViewType.GroupHeader);
@@ -1449,6 +1479,75 @@ namespace Windows.UI.Xaml.Controls
 
 			_areHeaderAndFooterCreated = false;
 			_isInitialExtentOffsetApplied = false;
+		}
+
+		/// <summary>
+		/// Attach view to window if it has been detached.
+		/// </summary>
+		internal void TryAttachView(View view)
+		{
+			var holder = XamlParent?.NativePanel?.GetChildViewHolder(view) as UnoViewHolder;
+			if (holder.IsDetached)
+			{
+				AttachView(view);
+				holder.IsDetached = false;
+			}
+		}
+
+		/// <summary>
+		/// Detach view from window if not already detached.
+		/// </summary>
+		internal void TryDetachView(View view)
+		{
+			var holder = XamlParent?.NativePanel?.GetChildViewHolder(view) as UnoViewHolder;
+			if (!holder.IsDetached)
+			{
+				DetachView(view);
+				holder.IsDetached = true;
+			}
+		}
+
+		private void UpdateBuffers(RecyclerView.Recycler recycler)
+		{
+			UpdateCacheHalfLength();
+			ViewCache.UpdateBuffers(recycler);
+		}
+
+		private void UpdateCacheHalfLength()
+		{
+			if (ItemViewCount == 0)
+			{
+				return;
+			}
+
+			var averageExtent = GetAverageVisibleItemExtent();
+			var itemsVisible = Extent / averageExtent;
+			var newCacheHalfLength = (itemsVisible * CacheLength) / 2 * GetTrailingLine(FillDirection.Forward).NumberOfViews; ;
+			newCacheHalfLength = Math.Round(newCacheHalfLength);
+			// Err on the side of overestimation by taking the largest potential cache size yet seen
+			CacheHalfLengthInViews = Math.Max(CacheHalfLengthInViews, (int)newCacheHalfLength);
+		}
+
+		private double GetAverageVisibleItemExtent()
+		{
+			if (ItemViewCount == 0)
+			{
+				return 0;
+			}
+
+			double totalExtent = 0;
+			for (int i = FirstItemView; i < FirstItemView + ItemViewCount; i++)
+			{
+				totalExtent += GetChildExtentWithMargins(i);
+			}
+
+			var average = totalExtent / ItemViewCount;
+			return average;
+		}
+
+		partial void OnCacheLengthChangedPartialNative(double oldCacheLength, double newCacheLength)
+		{
+			CacheHalfLengthInViews = 0;
 		}
 
 		private IEnumerable<float> GetSnapPointsInner(SnapPointsAlignment alignment)
@@ -1755,7 +1854,10 @@ namespace Windows.UI.Xaml.Controls
 		private View GetGroupHeaderAt(int groupHeaderIndex)
 		{
 			var view = GetChildAt(GetGroupHeaderViewIndex(groupHeaderIndex));
-			Debug.Assert(view is ListViewBaseHeaderItem, "view is ListViewBaseHeaderItem");
+			if (!(view is ListViewBaseHeaderItem))
+			{
+				throw new InvalidOperationException($"Expected {nameof(ListViewBaseHeaderItem)} but received {view?.GetType().ToString() ?? "<null>"}");
+			}
 			return view;
 		}
 

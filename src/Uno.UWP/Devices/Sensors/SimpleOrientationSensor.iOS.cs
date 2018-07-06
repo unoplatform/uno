@@ -18,16 +18,13 @@ namespace Windows.Devices.Sensors
 		private const double _threshold = 0.5;
 		partial void Initialize()
 		{
-			GetOrientation();
-		}
-		private void GetOrientation()
-		{
 			_motionManager = new CMMotionManager();
 			if (_motionManager.DeviceMotionAvailable) // DeviceMotion is not available on all devices. iOS4+
 			{
+				var operationQueue = (NSOperationQueue.CurrentQueue == null || NSOperationQueue.CurrentQueue == NSOperationQueue.MainQueue) ? new NSOperationQueue() : NSOperationQueue.CurrentQueue;
 				this.Log().ErrorIfEnabled(() => "DeviceMotion is available");
 				_motionManager.DeviceMotionUpdateInterval = _updateInterval;
-				_motionManager.StartDeviceMotionUpdates(NSOperationQueue.CurrentQueue, (motion, error) =>
+				_motionManager.StartDeviceMotionUpdates(operationQueue, (motion, error) =>
 				{
 					OnMotionChanged(motion);
 				});
