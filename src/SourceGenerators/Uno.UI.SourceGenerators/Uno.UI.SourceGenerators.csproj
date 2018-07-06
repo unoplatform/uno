@@ -134,24 +134,25 @@
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <PropertyGroup>
-    <PostBuildEvent>
-			@REM -- DON'T UPDATE THIS SCRIPT! SEE Build\_HOW-TO-BUILD-AND-DEBUG-APPS.md !!
-			@REM ------ ------ ------ ------ ------
-			SET OVERRIDE_FILE=$(SolutionDir)\nuget_version_override.txt
-			if EXIST %25OVERRIDE_FILE%25 (
-			SET /P VERSION=&lt;%25OVERRIDE_FILE%25
-			)
-			IF "%25VERSION%25" EQU "" GOTO :END
-			@Echo NUGET VERSION IS "%25VERSION%25".
-			SET DEST_PATH="%25USERPROFILE%25\.nuget\packages\Uno.UI\%25VERSION%25\tools"
-			ECHO Copying to path %25DEST_PATH%25
-			mkdir "%25DEST_PATH%25"
-			Xcopy "$(TargetDir)*.*" "%25DEST_PATH%25" /e /s /y
-			:END
-		</PostBuildEvent>
-  </PropertyGroup>
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+	
+	<Target Name="_UnoToolkitOverrideNuget" AfterTargets="AfterBuild" DependsOnTargets="BuiltProjectOutputGroup" Condition="'$(UnoNugetOverrideVersion)'!=''">
+
+		<PropertyGroup>
+			<_OverrideTargetFramework>$(TargetFramework)</_OverrideTargetFramework>
+			<_TargetNugetFolder>$(USERPROFILE)\.nuget\packages\Uno.UI\$(UnoNugetOverrideVersion)\tools\$(_OverrideTargetFramework)</_TargetNugetFolder>
+		</PropertyGroup>
+		<ItemGroup>
+			<_OutputFiles Include="$(TargetDir)*.*" />
+		</ItemGroup>
+		<MakeDir Directories="$(_TargetNugetFolder)" />
+
+		<Message Importance="high" Text="OVERRIDING NUGET PACKAGE CACHE: $(_TargetNugetFolder)" />
+
+		<Copy SourceFiles="@(_OutputFiles)" DestinationFiles="@(_OutputFiles->'$(_TargetNugetFolder)\%(RecursiveDir)%(Filename)%(Extension)')" />
+		<Copy SourceFiles="@(_OutputFilesPDB)" DestinationFiles="@(_OutputFilesPDB->'$(_TargetNugetFolder)\%(RecursiveDir)%(Filename).pdb')" />
+	</Target>
+
+	<!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
   </Target>
