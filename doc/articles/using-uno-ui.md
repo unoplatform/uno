@@ -76,7 +76,7 @@ the **Show all Files** icon at the top.
 If you notice an issue, or an error in the commented code of the generated file, you may need to alter you Xaml.
 
 ## Configure the Manifest for the WebAssembly Head
-In you WASM head, create a folder named `WasmScripts`, with a file containing the javascript below
+In your WASM head, create a folder named `WasmScripts`, with a file containing the javascript below
 (e.g. `AppManifest.js`) and the `Embedded resource` build action.
 
 The manifest file should contain the following:
