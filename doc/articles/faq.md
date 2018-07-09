@@ -10,7 +10,9 @@ You may want to try our latest dev bits, and here's how to do it:
 
 ## C# Edit and Continue does not work
 
-There's an issue in Visual Studio that makes the C# edit and continue for the UWP head fail with an error message if the Android, iOS or Wasm heads are loaded. Temporary unload those projects to use C# edit and continue in the Windows head.
+There's an [issue in Visual Studio](https://developercommunity.visualstudio.com/content/problem/289600/c-edit-and-continue-changes-are-not-allowed-for-cr.html) that
+makes the C# edit and continue for the UWP head fail with an error message if the Android, iOS or Wasm
+heads are loaded. Temporary unload those projects to use C# edit and continue in the Windows head.
 
 ## XAML Edit and Continue does not work
 
@@ -66,7 +68,10 @@ If they are being recompiled on top of Uno.UI, they could be running yes.
 
 ## Will Uno.UI support a single .NET Standard 2.0 binary model ?
 
-Not at the moment. iOS and Android platform support relies on the underlying APIs being visible through class hierarchy for performance reasons. Also, the .NET Standard model is based on binary sharing, which makes very difficult to use platform features without jumping through hoops such as Dependency Injection and Inversion of Control.
+Not at the moment. iOS and Android platform support relies on the underlying APIs being visible through
+class hierarchy for performance reasons. Also, the .NET Standard model is based on binary sharing, which
+makes very difficult to use platform features without jumping through hoops such as Dependency Injection,
+Inversion of Control or reflection.
 
 ## Does Uno.UI support having controls in a class library ?
 
@@ -198,7 +203,7 @@ You can add them using the add button. Only properties explicitly defined in the
 
 The event on button is called Click
 
-## What does the _UnoSourceGenerator do in the build?
+## What does the `_UnoSourceGenerator` do in the build?
 
 This is part of the [Uno.SourceGeneration package](https://github.com/nventive/Uno.SourceGeneration), and it's used to generate code like XAML to C#.
 
