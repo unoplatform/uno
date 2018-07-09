@@ -2,7 +2,7 @@
 
 ## How do I update the to latest Uno.UI nuget package, I don't see any update ?
 
-You may want to try our latest dev bits, and here's how to do it:
+You may want to try our latest dev builds, and here's how to do it:
 
 - On your solution node, select **Manage Nuget packages for Solution**
 - Next to the Search text box, check the **Include prerelease** box
@@ -24,7 +24,7 @@ You need to make sure that:
 - That you've closed all XAML editor Windows after having build the application
 - That the project selector at the left of the XAML editor is selecting your windows project
 
-If you're still having issues, **restart visual studio** and/or **unload the iOS/Android and WASM projects**, using right-click on the project, then **unload**.
+If you're still having issues, **restart Visual Studio** and/or **unload the iOS/Android and WASM projects**, using right-click on the project, then **unload**.
 
 ## Is Uno.UI's Performance on WebAssembly going to improve
 Yes! The current performance is bound the runtime interpreted mode of mono-wasm. The Mono is working on implementing **AOT** compilation, which will improve significantly the performance. See [Miguel de Icaza's status update](https://gitter.im/aspnet/Blazor?at=5b1ab670dd54362753f8a168) for more details.
@@ -37,7 +37,7 @@ Not yet. We're still in a wait and see posture, until Apple's Marzipan cross mac
 
 No, not at the moment. Our assumption for now is that the WebAssembly part of Uno.UI will be efficient for it to be a viable alternative, but if you find that native support still is a viable scenario, please open a GitHub issue.
 
-## Getting started with uwp?
+## Getting started with UWP?
 
 Visit Microsoft's documentation for a primer on UWP : https://docs.microsoft.com/en-us/windows/uwp/get-started/
 
@@ -52,13 +52,10 @@ at System.Threading.Thread.StartInternal (System.Security.Principal.IPrincipal p
 
 Keep the version 1.1.1 of Microsoft.Extensions.Logging; latest version of Logging Extensions is starting a new thread and it's not supported in Wasm.
 
-## I created my first solution and ran the uwp project. Then I wanted to test the magic so I changed the "Hello world" text, hit save and... no live update. Am I missing something?
+## I created my first solution and ran the UWP project. Then I wanted to test the magic so I changed the "Hello world" text, hit save and... no live update. Am I missing something?
 
 For live update on UWP you need to edit the xaml while the project is debugging, no need for save, it updates on every keystroke (more or less) you need to update to the latest UWP sdk in your project configuration, change target version to latest
 
-## if a 3rd party has some plugins for uwp, would they render on devices?
-
-If they are being recompiled on top of Uno.UI, they could be running yes.
 
 ##	I don't see any "Uno.UI App Solution" from File->Project->New ?
 
@@ -87,6 +84,12 @@ First create a shared project and move all .cs and .xaml files into it and refer
 4. ios/ android specific heads should be relatively empty, only used os specific implementation (push notification handeling/ deeplinking / permissions)
 5. Test, debug and publish.
 
+## How to port an existing UWP library to Uno.UI ?
+
+This is essentially the same process as porting an app, but using cross-targeted projects. Use
+[this project](https://github.com/nventive/Uno.Samples/blob/master/UI/ControlLibrary/XamlControlLibrary/XamlControlLibrary.csproj)
+as a base for your cross-targeted library.
+
 # Is it at all possible to make http web requests using the WASM target?
 
 Yes it is possible, but you need to use the provided HttpHandler by Uno.UI like what we did in the Uno.UI Playground:
@@ -103,7 +106,7 @@ var httpClient = new HttpClient(handler);
 
 ## Can I know at runtime which APIs are implemented ?
 
-Yes, through the [`ApiImformation`](https://docs.microsoft.com/en-us/uwp/api/Windows.Foundation.Metadata.ApiInformation) class.
+Yes, through the [`ApiInformation`](https://docs.microsoft.com/en-us/uwp/api/Windows.Foundation.Metadata.ApiInformation) class.
 
 ## Wasm-based applications are getting blocked by my firewall/ad-blocker/proxy
 
@@ -173,7 +176,7 @@ The `DataContext` can be passed as a navigation parameter, then set as `DataCont
 
 It's an existing issue, caused by Roslyn. You must add all your TargetFrameworks to your netstd2.0 project, and use Oren's MSBuid.Extras for that [source generation issue](https://github.com/nventive/Uno.SourceGeneration/issues/2)
 
-# Can Uno.UI convert a uwp control to native android/ios and also has the option to use android native controls within xaml?
+# Can Uno.UI convert a UWP control to native android/ios and also has the option to use android native controls within xaml?
 
 That's exactly right, see [this](https://github.com/nventive/Uno/blob/a69879a3154f61b2d493be433aa08bc3b8aa1b06/src/Uno.UI/UI/Xaml/Style/Generic/Generic.xaml#L2843) for the XAML-UWP button, and [this](https://github.com/nventive/Uno/blob/a69879a3154f61b2d493be433aa08bc3b8aa1b06/src/Uno.UI/UI/Xaml/Style/Generic/Generic.Native.xaml#L20) for the iOS native button When complete XAML is used for rendering, it's not so much a conversion but more of  a vector rendering. For instance, Uno.UI.iOS uses CGLayer for rendering content it's different because Uno.UI integrates within the layouting system of the platform, which allows for mixed rendering. Uno.UI supports webviews, whereas Flutter does not. Flutter also has to render everything, including what the platform provides by default, such as the Magnifier in the TextBox for accessibility (they is not yet supported either).
 
