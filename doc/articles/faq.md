@@ -200,7 +200,9 @@ PointerPressed += (s, e) => { e.Handled = true; };
 
 ## Do I need a reference of Uno.UI in UWP?
 
-Only Wasm, Android and iOS projects need a reference to Uno.UI. Adding a reference to the Uno.UI package provides access to the [`VisibleBoundsPadding`](https://github.com/nventive/Uno/blob/master/src/Uno.UI.Toolkit/VisibleBoundsPadding.md) behavior for notch'ed devices.
+Only Wasm, Android and iOS projects need a reference to Uno.UI. Adding a reference to the Uno.UI package provides access to the
+[`VisibleBoundsPadding`](https://github.com/nventive/Uno/blob/master/src/Uno.UI.Toolkit/VisibleBoundsPadding.md)
+attached property for notch'ed devices.
 
 ## Edit & Continue is great but the properties view is greyed out.
 
