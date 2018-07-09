@@ -36,9 +36,23 @@ namespace Windows.UI.Xaml.Controls
 {
 	public partial class TextBlock : UILabel, IFrameworkElement, IFontScalable
 	{
+		/// <summary>
+		/// Indicates the kind of target on which an NSAttributedString will be applied.
+		/// </summary>
+		/// <remarks>
+		/// The same NSAttributedString will produce different results
+		/// when applied to different targets (e.g., LineBreakMode, BaselineOffset).
+		/// </remarks>
+		private enum NSAttributedStringTarget
+		{
+			UILabel,
+			NSTextStorage,
+		}
+
 		private bool _measureInvalidated;
 		private CGSize? _previousAvailableSize;
 		private CGSize _previousDesiredSize;
+		private NSLayoutManager _layoutManager;
 		private CGRect _drawRect;
 
 		private UIFont _currentFont;
@@ -224,7 +238,7 @@ namespace Windows.UI.Xaml.Controls
 
 		private void UpdateText()
 		{
-			var attributedText = GetAttributedText();
+			var attributedText = GetAttributedText(NSAttributedStringTarget.UILabel);
 			if (attributedText != null)
 			{
 				AttributedText = attributedText;
@@ -235,10 +249,11 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		private NSAttributedString GetAttributedText()
+		private NSAttributedString GetAttributedText(NSAttributedStringTarget target)
 		{
-			if (UseInlinesFastPath && LineHeight == 0 && CharacterSpacing == 0)
+			if (target == NSAttributedStringTarget.UILabel && UseInlinesFastPath && LineHeight == 0 && CharacterSpacing == 0)
 			{
+				// Fast path in case everything can be set directly on UILabel without using NSAttributedString.
 				return null;
 			}
 			else
@@ -246,17 +261,7 @@ namespace Windows.UI.Xaml.Controls
 				var mutableAttributedString = new NSMutableAttributedString(Text);
 				mutableAttributedString.BeginEditing();
 
-				// Apply CharacterSpacing
-				if (CharacterSpacing != 0)
-				{
-					mutableAttributedString.AddAttributes(GetCharacterSpacingAttributes(), new NSRange(0, mutableAttributedString.Length));
-				}
-
-				// Apply LineHeight
-				if (LineHeight != 0)
-				{
-					mutableAttributedString.AddAttributes(GetLineHeightAttributes(), new NSRange(0, mutableAttributedString.Length));
-				}
+				mutableAttributedString.AddAttributes(GetAttributes(target), new NSRange(0, mutableAttributedString.Length));
 
 				// Apply Inlines
 				foreach (var inline in GetEffectiveInlines())
@@ -269,42 +274,68 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		private UIStringAttributes GetLineHeightAttributes()
+		private UIStringAttributes GetAttributes(NSAttributedStringTarget target)
 		{
 			var attributes = new UIStringAttributes();
 
-			var paragraphStyle = new NSMutableParagraphStyle()
+			// We only apply these values to NSTextStorage, as they're already applied to UILabel.
+			// See: UpdateFont, UpdateTextColor, etc.
+			if (target == NSAttributedStringTarget.NSTextStorage)
 			{
-				MinimumLineHeight = (nfloat)LineHeight,
-				Alignment = TextAlignment.ToNativeTextAlignment(),
-				LineBreakMode = GetLineBreakMode(),
-			};
-			if (LineStackingStrategy != LineStackingStrategy.MaxHeight)
-			{
-				paragraphStyle.MaximumLineHeight = (nfloat)LineHeight;
+				attributes.Font = _currentFont;
+				attributes.ForegroundColor = _currentColor;
 			}
-			attributes.ParagraphStyle = paragraphStyle;
 
-			// BaselineOffset calculation is only required when the text's font size does not take up the entire line height
-			// Otherwise this calculation will result in invalid values causing the text to be pushed out of the UILabel's rect
-			if (Font != null && Font.LineHeight < LineHeight)
+			if (target == NSAttributedStringTarget.NSTextStorage || LineHeight != 0)
 			{
-				// iOS puts text at the bottom of the line box, whereas Windows puts it at the top. Empirically this offset gives similar positioning to Windows. 
-				// (Note that Descender is typically a negative value.)
-				var verticalOffset = ((float)LineHeight - (float)Font.LineHeight) * .56f + (float)Font.Descender;
-				attributes.BaselineOffset = verticalOffset;
+				var paragraphStyle = new NSMutableParagraphStyle()
+				{
+					MinimumLineHeight = (nfloat)LineHeight,
+					Alignment = TextAlignment.ToNativeTextAlignment(),
+					LineBreakMode = GetLineBreakMode(),
+				};
+
+				// For unknown reasons, the LineBreakMode must be set to WordWrap
+				// when applied to a NSTextStorage for text to wrap (but not when applied to a UILabel).
+				if (target == NSAttributedStringTarget.NSTextStorage)
+				{
+					paragraphStyle.LineBreakMode = UILineBreakMode.WordWrap;
+				}
+
+				if (LineStackingStrategy != LineStackingStrategy.MaxHeight)
+				{
+					paragraphStyle.MaximumLineHeight = (nfloat)LineHeight;
+				}
+				attributes.ParagraphStyle = paragraphStyle;
+
+				if (Font != null)
+				{
+					// iOS puts text at the bottom of the line box, whereas Windows puts it at the top. 
+					// Empirically this offset gives similar positioning to Windows. 
+					// Note: Descender is typically a negative value.
+					var verticalOffset = LineHeight - Font.LineHeight + Font.Descender;
+
+					// For unknown reasons, the verticalOffset must be divided by 2 
+					// when applied to a UILabel (but not when applied to a NSTextStorage).
+					if (target == NSAttributedStringTarget.UILabel)
+					{
+						verticalOffset /= 2;
+					}
+
+					// Because we're trying to move the text up (toward the top of the line box), 
+					// we only set BaselineOffset to a positive value. 
+					// A negative value indicates that the the text is already bottom-aligned.
+					attributes.BaselineOffset = Math.Max(0, (float)verticalOffset);
+				}
+			}
+
+			if (CharacterSpacing != 0)
+			{
+				//CharacterSpacing is in 1/1000 of an em, iOS KerningAdjustment is in points. 1 em = 12 points
+				attributes.KerningAdjustment = (CharacterSpacing / 1000f) * 12;
 			}
 
 			return attributes;
-		}
-
-		private UIStringAttributes GetCharacterSpacingAttributes()
-		{
-			return new UIStringAttributes()
-			{
-				//CharacterSpacing is in 1/1000 of an em, iOS KerningAdjustment is in points. 1 em = 12 points
-				KerningAdjustment = (CharacterSpacing / 1000f) * 12
-			};
 		}
 
 		#endregion
@@ -376,15 +407,8 @@ namespace Windows.UI.Xaml.Controls
 
 			// Configure textStorage
 			var textStorage = new NSTextStorage();
-			textStorage.SetString(AttributedText);
+			textStorage.SetString(GetAttributedText(NSAttributedStringTarget.NSTextStorage));
 			textStorage.AddLayoutManager(_layoutManager);
-			textStorage.SetAttributes(
-				new UIStringAttributes()
-				{
-					Font = Font
-				},
-				new NSRange(0, textStorage.Length)
-			);
 
 			if (FeatureConfiguration.TextBlock.ShowHyperlinkLayouts)
 			{
