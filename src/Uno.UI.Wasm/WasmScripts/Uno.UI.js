@@ -352,6 +352,21 @@ var Uno;
                 return "ok";
             }
             /**
+                * Issue a browser alert to user
+                * @param message message to display
+                */
+            setWindowTitle(title) {
+                document.title = title || UnoAppManifest.displayName;
+                return "ok";
+            }
+            /**
+                * Issue a browser alert to user
+                * @param message message to display
+                */
+            getWindowTitle() {
+                return document.title || UnoAppManifest.displayName;
+            }
+            /**
                 * Add an event handler to a html element.
                 *
                 * @param eventName The name of the event
@@ -597,6 +612,9 @@ var Uno;
                 return "ok";
             }
             init() {
+                if (UnoAppManifest.displayName) {
+                    document.title = UnoAppManifest.displayName;
+                }
             }
             static initMethods() {
                 if (!WindowManager.assembly) {
