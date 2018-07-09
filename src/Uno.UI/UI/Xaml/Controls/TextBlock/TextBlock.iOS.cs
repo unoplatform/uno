@@ -13,6 +13,7 @@ using Windows.UI.Xaml.Media;
 using Windows.Foundation;
 using Uno.UI.Controls;
 using Windows.UI.Xaml.Input;
+using Uno.UI;
 
 #if XAMARIN_IOS_UNIFIED
 using Foundation;
@@ -55,6 +56,12 @@ namespace Windows.UI.Xaml.Controls
 		{
 			_drawRect = GetDrawRect(rect);
 			base.DrawText(_drawRect);
+
+			if (FeatureConfiguration.TextBlock.ShowHyperlinkLayouts)
+			{
+				UpdateHyperlinkLayout();
+				_layoutManager?.DrawGlyphs(new NSRange(0, Text.Length), _drawRect.Location);
+			}
 		}
 
 		private CGRect GetDrawRect(CGRect rect)
@@ -256,12 +263,12 @@ namespace Windows.UI.Xaml.Controls
 				{
 					mutableAttributedString.AddAttributes(inline.inline.GetAttributes(), new NSRange(inline.start, inline.end - inline.start));
 				}
-				
+
 				mutableAttributedString.EndEditing();
 				return mutableAttributedString;
 			}
 		}
-		
+
 		private UIStringAttributes GetLineHeightAttributes()
 		{
 			var attributes = new UIStringAttributes();
@@ -354,13 +361,8 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		private int GetCharacterIndexAtPoint(Point point)
+		private void UpdateHyperlinkLayout()
 		{
-			if (!_drawRect.Contains(point))
-			{
-				return -1;
-			}
-			
 			// Configure textContainer
 			var textContainer = new NSTextContainer();
 			textContainer.LineFragmentPadding = 0;
@@ -369,13 +371,13 @@ namespace Windows.UI.Xaml.Controls
 			textContainer.Size = _drawRect.Size;
 
 			// Configure layoutManager
-			var layoutManager = new NSLayoutManager();
-			layoutManager.AddTextContainer(textContainer);
+			_layoutManager = new NSLayoutManager();
+			_layoutManager.AddTextContainer(textContainer);
 
 			// Configure textStorage
 			var textStorage = new NSTextStorage();
 			textStorage.SetString(AttributedText);
-			textStorage.AddLayoutManager(layoutManager);
+			textStorage.AddLayoutManager(_layoutManager);
 			textStorage.SetAttributes(
 				new UIStringAttributes()
 				{
@@ -383,11 +385,32 @@ namespace Windows.UI.Xaml.Controls
 				},
 				new NSRange(0, textStorage.Length)
 			);
-			
+
+			if (FeatureConfiguration.TextBlock.ShowHyperlinkLayouts)
+			{
+				textStorage.AddAttributes(
+					new UIStringAttributes()
+					{
+						ForegroundColor = UIColor.Red
+					},
+					new NSRange(0, textStorage.Length)
+				);
+			}
+		}
+
+		private int GetCharacterIndexAtPoint(Point point)
+		{
+			if (!_drawRect.Contains(point))
+			{
+				return -1;
+			}
+
+			UpdateHyperlinkLayout();
+
 			// Find the tapped character's index
 			var partialFraction = (nfloat)0;
 			var pointInTextContainer = new CGPoint(point.X - _drawRect.X, point.Y - _drawRect.Y);
-			var characterIndex = (int)layoutManager.CharacterIndexForPoint(pointInTextContainer, textContainer, ref partialFraction);
+			var characterIndex = (int)_layoutManager.CharacterIndexForPoint(pointInTextContainer, _layoutManager.TextContainers.FirstOrDefault(), ref partialFraction);
 
 			return characterIndex;
 		}
