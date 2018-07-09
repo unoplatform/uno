@@ -76,12 +76,13 @@ Yes, here's a [project sample](https://github.com/nventive/Uno.Samples/tree/mast
 
 ##	How to port an existing UWP app to Uno.UI?
 
-First create a shared project and move all .cs and .xaml files into it and reference the project in your UWP head project.  Ensure everything still working and add other projects for other platforms referencing the same shared project.
+First create a shared project and move all .cs and .xaml files into it and reference the project in your UWP head
+project.  Ensure everything is still working and add other projects for other platforms referencing the same shared project.
 
 1. Create a project with Uno.UI template.
 2. Copying as much code as possible from the existing UWP app to the "My Project.Shared"
 3. Add platform specific code using suffixing files in the shared project (ex: ".iOS.cs")
-4. ios/ android specific heads should be relatively empty, only used os specific implementation (push notification handeling/ deeplinking / permissions)
+4. ios/android specific heads should be relatively empty, only used os specific implementation (push notification handling/deeplinking/permissions)
 5. Test, debug and publish.
 
 ## How to port an existing UWP library to Uno.UI ?
@@ -101,8 +102,9 @@ var httpClient = new HttpClient(handler);
 
 ## How do you choose which APIs are being implemented ?
 
-- If the API is present in .NET Standard, it is generally suggested to use this on instead of the UWP one. (e.g System.IO or System.Net.HttpClient)
-- Based on the popularity of suggestions in the [Uno.UI issues list](https://github.com/nventive/Uno/issues). Make sure to open one for the APIs you need.
+- If the API is present in .NET Standard, it is generally suggested to use this one instead of the UWP one. (e.g System.IO or System.Net.HttpClient)
+- Missing APIs will be implemented based on the popularity of suggestions in the [Uno.UI issues list](https://github.com/nventive/Uno/issues). Make sure
+to open one for the APIs you need.
 
 ## Can I know at runtime which APIs are implemented ?
 
@@ -121,12 +123,13 @@ If you encounter this type of issue, please open an issue with your setup's rele
 I'm getting the following error:
 	`System.InvalidOperationException: The project(s) [...] did not provide any metadata reference. `
  
-To work around this, you must include all the platforms you want to support in your TargetFrameworks node, which in your case is MonoAndroid80 (or similar). https://stackoverflow.com/questions/50608089/referencing-a-netstandard2-0-project-in-a-platform-uno-project
-
+To work around this, you must include all the platforms you want to support in your TargetFrameworks node. See [this
+question](https://stackoverflow.com/questions/50608089/referencing-a-netstandard2-0-project-in-a-platform-uno-project).
 
 ## Is the iPhone X supported by Uno.UI ?
 
-Yes, use the [VisibleBoundsPadding](https://github.com/nventive/Uno/blob/master/src/Uno.UI.Toolkit/VisibleBoundsPadding.md) behavior.
+Yes, use the [VisibleBoundsPadding](https://github.com/nventive/Uno/blob/master/src/Uno.UI.Toolkit/VisibleBoundsPadding.md)
+behavior to manage the _notch_ correctly.
 
 ## Does Uno.UI support wpf CustomControls 
 
@@ -138,15 +141,16 @@ Uno.UI is making use of the Open-Source WinJS symbols font, which must be instal
 - See the [Playground for an actual use example](https://github.com/nventive/Uno.Playground/tree/master/Uno.UI.Demo.iOS/Resources/Fonts).
 - See the documentation for adding fonts for [iOS](https://github.com/nventive/Uno/blob/master/doc/articles/using-uno-ui.md#custom-fonts-on-ios),  [Android](https://github.com/nventive/Uno/blob/master/doc/articles/using-uno-ui.md#custom-fonts-on-android) and [WebAssembly](https://github.com/nventive/Uno.Playground/blob/80322aec3d759d009f6a900bca4a07bc63ae6a62/Uno.UI.Demo.WASM/Uno.UI.Demo.WASM.csproj#L29).
 
-## Where the best place to start in order to implement new controls?
+## Where is the best place to start in order to implement new controls?
 
-The best way is to create a QuickStart app using the Uno.UI template, take the style from the Microsoft `generic.xaml`, place it in a resource dictionary and see what the XAML parser is telling.
+The best way is to create a QuickStart app using the Uno.UI template, take the style from the Microsoft `generic.xaml`,
+place it in a resource dictionary and see what the XAML parser is telling.
 
 ## How does the navigation in a Uno.UI App compare to how Xamarin.forms "pushes" pages
 
 Navigation is done through [`Frame`](https://docs.microsoft.com/en-us/windows/uwp/design/basics/navigate-between-two-pages)
 	
-Frame is more or less the same as a NavigationPage in Xamarin.Forms, and MasterDetails page in Xamarin.Forms is a splitview in UWP.
+Frame is more or less the same as a NavigationPage in Xamarin.Forms, and MasterDetails page in Xamarin.Forms is a `SplitView` in UWP.
 
 ## I never worked with shared project only PCL
 
