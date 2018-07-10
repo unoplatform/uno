@@ -302,7 +302,6 @@ namespace Windows.UI.Xaml.Controls
 					var drawablePaint = linearDrawable.Paint;
 					drawablePaint.Color = fillPaint.Color;
 					drawablePaint.SetShader(fillPaint.Shader);
-					SetDrawableAlpha(linearDrawable, fillPaint.Alpha);
 
 					return linearDrawable;
 				}
@@ -315,7 +314,6 @@ namespace Windows.UI.Xaml.Controls
 			var paint = drawable.Paint;
 			paint.Color = fillPaint.Color;
 			paint.SetShader(fillPaint.Shader);
-			SetDrawableAlpha(drawable, fillPaint.Alpha);
 			return drawable;
 		}
 
