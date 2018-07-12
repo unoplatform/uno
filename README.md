@@ -29,6 +29,7 @@ Visit [our documentation](doc/index.md) for more details.
 * UWP Code Support
     * [MVVM Light Toolkit](http://www.mvvmlight.net/)
     * Microsoft Xaml Behaviors
+    * [Prism](https://prismlibrary.github.io/) (soon)[<sup>^</sup>](https://github.com/nventive/Uno/issues/60#issuecomment-400278037)
     * [MVVMCross](https://www.mvvmcross.com/) (soon)
     * [ReactiveUI](https://reactiveui.net/) (soon)
     * Any UWP project
