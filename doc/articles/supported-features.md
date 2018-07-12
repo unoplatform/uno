@@ -3,13 +3,14 @@
 ## Development flow
 - Uno's UWP Xaml
     - **Windows-first development**
-    - **Faster compilation** for most of the developement cycle, including UI code. iOS and Android can only be used only for platform specific features.
+    - **Faster compilation** for most of the developement cycle, including UI code. iOS and Android can only be used for platform specific features.
     - Ability to develop responsive layout in Windowed mode using Windows 10.
-    - Allows for **Xaml edit and continue** support from VS2017
+    - Allows for **
+    edit and continue** support from VS2017
     - Allows for **UI and Non-UI code edit and continue** support
 - Conditional platform features access
-    - All Xaml controls have **access to native properties** through conditional xaml
-    - Ability to **add native controls in Xaml** 
+    - All XAML controls have **access to native properties** through conditional XAML
+    - Ability to **add native controls in XAML** 
 - Full UWP availability at compile time
     - Allows for the **compilation of open-source libraries** that depend only on UWP and multi-targeted nuget packages
         - **XamlBehaviors library** support
@@ -92,7 +93,7 @@
 
 ### Others
 
-- Native properties access from any Xaml controls                        
+- Native properties access from any XAML controls                        
 - Localization for any property via x:Uid, using resw files (Size localization)
 - FocusManager (advanced large forms navigation, dynamic UIs) 
 - Advanced WebView support (scripting, scrolling, string, custom agent)
@@ -131,9 +132,9 @@
 - Accessibility (Font Scaling, screen readers)		                                 
 - Xamarin UITest support and full Dependency Property access
 - StatusBar Management (Occlusion, Color, events)            
-- Xaml Reader
+- XAML Reader
 - Phased Binding (x:Phase)
-- Xaml code-behind Events registration
+- XAML code-behind Events registration
 
 ### Non-UI features
 
@@ -142,4 +143,3 @@
 - Windows.UI.CoreDispatcher
     - UI Priority dispatch
 - Windows.Graphics.Display.DisplayInformation orientation
-
