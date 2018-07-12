@@ -31,4 +31,16 @@
 
 	</Target>
 
+  <Target Name="ReplaceRefAssemblies" AfterTargets="_ResolveAssemblies" Condition="'$(AndroidApplication)'=='true'">
+	<!-- This is a workaround for https://github.com/xamarin/xamarin-android/issues/1162#issuecomment-359475008 -->
+	<ItemGroup>
+	  <ResolvedAssembliesFixedWindows Include="@(ResolvedAssemblies->Replace('\ref\','\lib\'))" />
+	  <ResolvedAssembliesFixedUnix Include="@(ResolvedAssemblies->Replace('/ref/','/lib/'))" />
+	  <ResolvedAssembliesFixed Include="@(ResolvedAssembliesFixedWindows)" Condition="@(ResolvedAssembliesFixedWindows) != @(ResolvedAssemblies)" />
+	  <ResolvedAssembliesFixed Include="@(ResolvedAssembliesFixedUnix)" Condition="@(ResolvedAssembliesFixedUnix) != @(ResolvedAssemblies)" />
+	  <ResolvedAssemblies Condition="'@(ResolvedAssembliesFixed->Count())' &gt; 0" Remove="@(ResolvedAssemblies)" />
+	  <ResolvedAssemblies Include="@(ResolvedAssembliesFixed)" />
+	</ItemGroup>
+  </Target>
+
 </Project>
