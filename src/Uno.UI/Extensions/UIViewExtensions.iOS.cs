@@ -497,26 +497,49 @@ namespace UIKit
 
 			return null;
 		}
-		
+
 		/// <summary>
 		/// Displays all the visual descendants of <paramref name="view"/> for diagnostic purposes. 
 		/// </summary>
-		public static string ShowDescendants(this UIView view, StringBuilder sb = null, string spacing = "")
+		public static string ShowDescendants(this UIView view, StringBuilder sb = null, string spacing = "", UIView viewOfInterest = null)
 		{
 			sb = sb ?? new StringBuilder();
 			AppendView(view);
 			spacing += "  ";
 			foreach (var child in view.Subviews)
 			{
-				ShowDescendants(child, sb, spacing);
+				ShowDescendants(child, sb, spacing, viewOfInterest);
 			}
 
 			return sb.ToString();
 
 			void AppendView(UIView innerView)
 			{
-				sb.AppendLine($"{spacing}>{innerView.ToString()}-({innerView.Frame.Width}x{innerView.Frame.Height})");
+				sb.AppendLine($"{spacing}{(innerView == viewOfInterest ? "*" : "")}>{innerView.ToString()}-({innerView.Frame.Width}x{innerView.Frame.Height})");
 			}
+		}
+
+		/// <summary>
+		/// Displays the visual tree in the vicinity of <paramref name="view"/> for diagnostic purposes.
+		/// </summary>
+		/// <param name="view">The view to display tree for.</param>
+		/// <param name="fromHeight">How many levels above <paramref name="view"/> should be included in the displayed subtree.</param>
+		/// <returns>A formatted string representing the visual tree around <paramref name="view"/>.</returns>
+		public static string ShowLocalVisualTree(this UIView view, int fromHeight = 0)
+		{
+			var root = view;
+			for (int i = 0; i < fromHeight; i++)
+			{
+				if (root.Superview != null)
+				{
+					root = root.Superview;
+				}
+				else
+				{
+					break;
+				}
+			}
+			return ShowDescendants(root, viewOfInterest: view);
 		}
 	}
 }

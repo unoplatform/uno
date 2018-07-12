@@ -430,21 +430,7 @@ namespace Windows.UI.Xaml.Markup.Reader
 				{
 					void ResolveResource()
 					{
-						var staticResource = (instance as FrameworkElement)
-							.Flatten(i => (i.Parent as FrameworkElement))
-							.Select(fe => {
-								if (fe.Resources.TryGetValue(keyName, out var resource))
-								{
-									return resource;
-								}
-								return null;
-							})
-							.Trim()
-							.FirstOrDefault();
-
-						staticResource = staticResource ?? ResourceDictionary.DefaultResolver?.Invoke(
-							keyName
-						);
+						object staticResource = ResolveStaticResource(instance, keyName);
 
 						if (staticResource != null)
 						{
@@ -457,8 +443,28 @@ namespace Windows.UI.Xaml.Markup.Reader
 
 					_postActions.Enqueue(ResolveResource);
 				}
-
 			}
+		}
+
+		private static object ResolveStaticResource(object instance, string keyName)
+		{
+			var staticResource = (instance as FrameworkElement)
+					.Flatten(i => (i.Parent as FrameworkElement))
+					.Select(fe =>
+					{
+						if (fe.Resources.TryGetValue(keyName, out var resource))
+						{
+							return resource;
+						}
+						return null;
+					})
+					.Trim()
+					.FirstOrDefault();
+
+			staticResource = staticResource ?? ResourceDictionary.DefaultResolver?.Invoke(
+				keyName
+			);
+			return staticResource;
 		}
 
 		private bool IsStaticResourceMarkupNode(XamlMemberDefinition member)
@@ -533,6 +539,38 @@ namespace Windows.UI.Xaml.Markup.Reader
 						else
 						{
 							throw new NotSupportedException($"Invalid binding mode {bindingProperty.Value}");
+						}
+						break;
+
+					case nameof(Binding.ConverterParameter):
+						binding.ConverterParameter = bindingProperty.Value?.ToString();
+						break;
+
+					case nameof(Binding.Converter):
+						if (
+							bindingProperty.Objects.First() is XamlObjectDefinition converterResource
+						)
+						{
+							if (converterResource.Type.Name == "StaticResource")
+							{
+								string staticResourceName = converterResource.Members.FirstOrDefault()?.Value?.ToString();
+
+								void ResolveResource()
+								{
+									object staticResource = ResolveStaticResource(instance, staticResourceName);
+
+									if (staticResource != null)
+									{
+										binding.Converter = staticResource as IValueConverter;
+									}
+								}
+
+								_postActions.Enqueue(ResolveResource);
+							}
+							else
+							{
+								throw new NotSupportedException($"Markup extension {converterResource.Type.Name} is not supported for Bindiner.Converter");
+							}
 						}
 						break;
 

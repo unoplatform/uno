@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Uno.UI;
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -13,7 +14,18 @@ namespace Windows.UI.Xaml.Controls
 
 		public int LastVisibleIndex => _layout?.LastVisibleIndex ?? -1;
 
-		public ItemsWrapGrid() { }
+#if XAMARIN_ANDROID
+		public int FirstCacheIndex => _layout.XamlParent.NativePanel.ViewCache.FirstCacheIndex;
+		public int LastCacheIndex => _layout.XamlParent.NativePanel.ViewCache.LastCacheIndex;
+#endif
+
+		public ItemsWrapGrid()
+		{
+			if (FeatureConfiguration.ListViewBase.DefaultCacheLength.HasValue)
+			{
+				CacheLength = FeatureConfiguration.ListViewBase.DefaultCacheLength.Value;
+			}
+		}
 
 		VirtualizingPanelLayout IVirtualizingPanel.GetLayouter()
 		{
@@ -27,6 +39,9 @@ namespace Windows.UI.Xaml.Controls
 				_layout.BindToEquivalentProperty(this, nameof(MaximumRowsOrColumns));
 				_layout.BindToEquivalentProperty(this, nameof(GroupHeaderPlacement));
 				_layout.BindToEquivalentProperty(this, nameof(GroupPadding));
+#if XAMARIN_ANDROID
+				_layout.BindToEquivalentProperty(this, nameof(CacheLength));
+#endif
 			}
 			return _layout;
 		}

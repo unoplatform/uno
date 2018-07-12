@@ -7,7 +7,7 @@ namespace Windows.UI.Xaml.Controls
 	#endif
 	public  partial class AutoSuggestBoxTextChangedEventArgs : global::Windows.UI.Xaml.DependencyObject
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		#if false
 		[global::Uno.NotImplemented]
 		public  global::Windows.UI.Xaml.Controls.AutoSuggestionBoxTextChangeReason Reason
 		{
@@ -21,7 +21,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		#if false
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty ReasonProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
@@ -29,12 +29,12 @@ namespace Windows.UI.Xaml.Controls
 			typeof(global::Windows.UI.Xaml.Controls.AutoSuggestBoxTextChangedEventArgs), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Controls.AutoSuggestionBoxTextChangeReason)));
 		#endif
-		#if false || false || false || false
+		#if false
 		[global::Uno.NotImplemented]
 		public AutoSuggestBoxTextChangedEventArgs() : base()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.AutoSuggestBoxTextChangedEventArgs", "AutoSuggestBoxTextChangedEventArgs.AutoSuggestBoxTextChangedEventArgs()");
-		}
+		} 
 		#endif
 		// Forced skipping of method Windows.UI.Xaml.Controls.AutoSuggestBoxTextChangedEventArgs.AutoSuggestBoxTextChangedEventArgs()
 		// Forced skipping of method Windows.UI.Xaml.Controls.AutoSuggestBoxTextChangedEventArgs.Reason.get

@@ -577,6 +577,13 @@ namespace Windows.UI.Xaml.Controls
 			hitCheck = Source?.HasSource() ?? false;
 		}
 
+		public bool IsJavaFinalized { get; private set; }
+		protected override void JavaFinalize()
+		{
+			IsJavaFinalized = true;
+			base.JavaFinalize();
+		}
+
 		private partial class ImageLayouter
 		{
 			protected override void MeasureChild(View view, int widthSpec, int heightSpec)

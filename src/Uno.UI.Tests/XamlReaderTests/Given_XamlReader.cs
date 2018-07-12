@@ -568,6 +568,36 @@ namespace Uno.UI.Tests.XamlReaderTests
 		}
 
 		[TestMethod]
+		public void When_Binding_Converter()
+		{
+			var s = GetContent(nameof(When_Binding_Converter));
+			var r = Windows.UI.Xaml.Markup.XamlReader.Load(s) as UserControl;
+
+			var c = r.Content as ContentControl;
+
+			Assert.AreEqual(Visibility.Visible, c.Visibility);
+
+			c.DataContext = false;
+
+			Assert.AreEqual(Visibility.Collapsed, c.Visibility);
+
+			c.DataContext = true;
+
+			Assert.AreEqual(Visibility.Visible, c.Visibility);
+		}
+
+		[TestMethod]
+		public void When_Binding_ConverterParameter()
+		{
+			var s = GetContent(nameof(When_Binding_ConverterParameter));
+			var r = Windows.UI.Xaml.Markup.XamlReader.Load(s) as UserControl;
+
+			var c = r.Content as ContentControl;
+
+			Assert.AreEqual("42", c.GetBindingExpression(UIElement.VisibilityProperty).ParentBinding.ConverterParameter);
+		}
+
+		[TestMethod]
 		public void When_StaticResource_Style_And_Binding()
 		{
 			var s = GetContent(nameof(When_StaticResource_Style_And_Binding));
@@ -590,6 +620,28 @@ namespace Uno.UI.Tests.XamlReaderTests
 
 			Assert.IsTrue((bool)tb1.IsChecked);
 			Assert.IsTrue((bool)tb2.IsChecked);
+		}
+		
+		[TestMethod]
+		public void When_GridRowDefinitions()
+		{
+			var s = GetContent(nameof(When_GridRowDefinitions));
+			var r = Windows.UI.Xaml.Markup.XamlReader.Load(s) as UserControl;
+
+			var root = r.FindName("root") as Grid;
+
+			Assert.AreEqual(3, root.RowDefinitions.Count);
+			Assert.AreEqual(GridUnitType.Star, root.RowDefinitions[0].Height.GridUnitType);
+			Assert.AreEqual(1.0, root.RowDefinitions[0].Height.Value);
+			Assert.AreEqual(GridUnitType.Star, root.RowDefinitions[1].Height.GridUnitType);
+			Assert.AreEqual(1.0, root.RowDefinitions[1].Height.Value);
+
+			var panel = r.FindName("innerPanel") as EmptyTestControl;
+			Assert.AreEqual(1, Grid.GetRow(panel));
+
+			var panel2 = r.FindName("innerPanel2") as StackPanel;
+			Assert.AreEqual(2, Grid.GetRow(panel2));
+
 		}
 
 		[TestMethod]

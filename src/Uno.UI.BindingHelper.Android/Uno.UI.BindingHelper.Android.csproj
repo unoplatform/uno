@@ -6,6 +6,9 @@
 
 		<AndroidUseIntermediateDesignerFile>True</AndroidUseIntermediateDesignerFile>
 		<AndroidResgenFile>obj\$(TargetFramework)\Resources\Resource.Designer.cs</AndroidResgenFile>
+		
+		<ProduceReferenceAssembly>true</ProduceReferenceAssembly>
+		<Deterministic>true</Deterministic>
 	</PropertyGroup>
 	
 	<ItemGroup>

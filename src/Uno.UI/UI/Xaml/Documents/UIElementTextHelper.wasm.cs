@@ -118,7 +118,21 @@ namespace Uno.UI.UI.Xaml.Documents
 			}
 			else
 			{
-				element.SetStyle("text-overflow", ((TextTrimming)localValue).ToCssString());
+				switch (localValue)
+				{
+					case TextTrimming.CharacterEllipsis:
+					case TextTrimming.WordEllipsis: // Word-level ellipsis not supported by HTML/CSS
+						element.SetStyle("text-overflow", "ellipsis");
+						break;
+
+					case TextTrimming.Clip:
+						element.SetStyle("text-overflow", "clip");
+						break;
+
+					default:
+						element.SetStyle("text-overflow", "");
+						break;
+				}
 			}
 		}
 
@@ -255,7 +269,7 @@ namespace Uno.UI.UI.Xaml.Documents
 		{
 			if (localValue == DependencyProperty.UnsetValue)
 			{
-				element.ResetStyle("line-height");
+				element.ResetStyle("text-decoration");
 			}
 			else
 			{
@@ -269,6 +283,31 @@ namespace Uno.UI.UI.Xaml.Documents
 						element.SetStyle("text-decoration", "underline");
 						break;
 				}
+			}
+		}
+
+		internal static void SetTextPadding(this UIElement element, object localValue)
+		{
+			if (localValue == DependencyProperty.UnsetValue)
+			{
+				element.ResetStyle("padding");
+			}
+			else
+			{
+				var padding = (Thickness)localValue;
+				var paddingStr = new[]
+				{
+					padding.Top.ToStringInvariant(),
+					"px ",
+					padding.Right.ToStringInvariant(),
+					"px ",
+					padding.Bottom.ToStringInvariant(),
+					"px ",
+					padding.Left.ToStringInvariant(),
+					"px"
+				};
+
+				element.SetStyle("padding", string.Concat(paddingStr));
 			}
 		}
 	}

@@ -1,34 +1,56 @@
 <Project ToolsVersion="15.0">
-	
-	<Import Project="$(SolutionDir)\crosstargeting_override.props" Condition="exists('$(SolutionDir)\crosstargeting_override.props')" />
 
-	<Import Project="$(MSBuildSDKExtrasTargets)" Condition="Exists('$(MSBuildSDKExtrasTargets)')" />
-	
-	<PropertyGroup>	
-		<NoWarn>$(NoWarn);1998</NoWarn>
-		<DebugType>full</DebugType>
-		<DebugSymbols>True</DebugSymbols>
-		<RepositoryUrl>$(BUILD_REPOSITORY_URI)</RepositoryUrl>
-		<Copyright>nventive</Copyright>
-		<Author>nventive</Author>
-		<AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
-		<GenerateBindingRedirectsOutputType>true</GenerateBindingRedirectsOutputType>
-		
-		<!-- Version management is now done through NuGet, this avoids issues related version mismatch -->
-		<Version>255.255.255.255</Version>
-		
-		<Product>$(AssemblyName) ($(TargetFramework))</Product>
-		<DefaultLanguage>en-US</DefaultLanguage>
-	</PropertyGroup>
+  <Import Project="$(SolutionDir)\crosstargeting_override.props" Condition="exists('$(SolutionDir)\crosstargeting_override.props')" />
 
-	<PropertyGroup>
-		<!-- 
+  <Import Project="$(MSBuildSDKExtrasTargets)" Condition="Exists('$(MSBuildSDKExtrasTargets)')" />
+
+  <PropertyGroup>
+	<NoWarn>$(NoWarn);1998</NoWarn>
+	<DebugType>full</DebugType>
+	<DebugSymbols>True</DebugSymbols>
+	<RepositoryUrl>$(BUILD_REPOSITORY_URI)</RepositoryUrl>
+	<Copyright>nventive</Copyright>
+	<Author>nventive</Author>
+	<AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+	<GenerateBindingRedirectsOutputType>true</GenerateBindingRedirectsOutputType>
+
+	<!-- Version management is now done through NuGet, this avoids issues related version mismatch -->
+	<Version>255.255.255.255</Version>
+
+	<Product>$(AssemblyName) ($(TargetFramework))</Product>
+	<DefaultLanguage>en-US</DefaultLanguage>
+  </PropertyGroup>
+
+  <PropertyGroup>
+	<IsTestProject>$(MSBuildProjectName.Contains('Test'))</IsTestProject>
+	<IsSampleProject>$(MSBuildProjectName.Contains('Sample'))</IsSampleProject>
+  </PropertyGroup>
+
+  <PropertyGroup>
+	<!-- 
 		This works around the fact that AndroidResgenFile is 
 		automatically included as compiled file, even if AndroidUseIntermediateDesignerFile
 		is set to true.
 		-->
-		<AndroidUseIntermediateDesignerFile>True</AndroidUseIntermediateDesignerFile>
-		<AndroidResgenFile>obj\$(TargetFramework)\Resources\Resource.Designer.cs</AndroidResgenFile>
-	</PropertyGroup>
-		
+	<AndroidUseIntermediateDesignerFile>True</AndroidUseIntermediateDesignerFile>
+	<AndroidResgenFile>obj\$(TargetFramework)\Resources\Resource.Designer.cs</AndroidResgenFile>
+  </PropertyGroup>
+
+  <Choose>
+	<When Condition="'$(IsTestProject)' != 'true' and '$(SourceLinkEnabled)' != 'false' and '$(IsSampleProject)' != 'true'">
+	  <PropertyGroup>
+		<!-- Optional: Declare that the Repository URL can be published to NuSpec -->
+		<PublishRepositoryUrl>true</PublishRepositoryUrl>
+		<!-- Optional: Embed source files that are not tracked by the source control manager to the PDB -->
+		<EmbedUntrackedSources>true</EmbedUntrackedSources>
+		<!-- Optional: Include PDB in the built .nupkg -->
+		<AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
+	  </PropertyGroup>
+	  <ItemGroup>
+		<PackageReference Include="Microsoft.SourceLink.Vsts.Git" Version="1.0.0-beta-62925-02" PrivateAssets="All"/>
+		<PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0-beta-62925-02" PrivateAssets="All"/>
+	  </ItemGroup>
+	</When>
+  </Choose>
+
 </Project>

@@ -266,9 +266,13 @@ namespace Windows.UI.Xaml.Controls
 			out double maxHeightMeasured
 		)
 		{
-			// this variable is only used for the fast paths calculation 
-			maxHeightMeasured = 0;
-
+			// This variable is only used for the fast paths calculation 
+			maxHeightMeasured = isMeasuring
+				// This is the measure phase. The value will be set when measuring children.
+				? 0 
+				// This is the arrange phase. We already know the measured size of children.
+				: Children.Max(child => GetElementDesiredSize(child).Height); 
+			
 			var calculatedPixelColumns = columns
 						 .SelectToList(c => c.Width.IsPixelSize ? c.Width.PixelSize.GetValueOrDefault() : 0);
 
@@ -437,8 +441,12 @@ namespace Windows.UI.Xaml.Controls
 			out double maxMeasuredWidth
 		)
 		{
-			// this variable is only used for the fast paths calculation
-			maxMeasuredWidth = 0;
+			// This variable is only used for the fast paths calculation 
+			maxMeasuredWidth = isMeasuring
+				// This is the measure phase. The value will be set when measuring children.
+				? 0
+				// This is the arrange phase. We already know the measured size of children.
+				: Children.Max(child => GetElementDesiredSize(child).Width);
 
 			var calculatedPixelRows = rows
 						 .SelectToList(c => c.Height.IsPixelSize ? c.Height.PixelSize.GetValueOrDefault() : 0);

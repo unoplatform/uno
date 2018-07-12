@@ -13,7 +13,7 @@ namespace Windows.UI.Xaml.Shapes
 	{
 		protected override CGPath GetPath()
 		{
-			var streamGeometry = Data.ToStreamGeometry();
+			var streamGeometry = Data?.ToStreamGeometry();
 			return streamGeometry?.ToCGPath();
 		}
 

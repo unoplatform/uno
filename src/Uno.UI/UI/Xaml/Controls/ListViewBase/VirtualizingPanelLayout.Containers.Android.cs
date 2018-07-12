@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using Nito.Collections;
 using Uno.UI;
 using System.Linq;
 
@@ -119,9 +118,6 @@ namespace Windows.UI.Xaml.Controls
 			{
 				if (fillDirection == FillDirection.Forward)
 				{
-					//Note: the Deque implementation used (https://github.com/StephenCleary/Deque/blob/master/src/Nito.Collections.Deque/Deque.cs) 
-					//doesn't appear to actually release the reference to the item on calling the RemoveFrom_() methods.
-					//This isn't really a problem here, but precludes its use for storing, eg, views.
 					var removed = _lines.RemoveFromFront();
 					//Move Start forward because we are removing a line from the start
 					Start += removed.Extent;

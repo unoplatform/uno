@@ -12,6 +12,9 @@ phases:
     clean: true
     
   - task: GitVersion@3
+    # Ignore gitversion for forks, until this is fixed:
+    # https://developercommunity.visualstudio.com/content/problem/284991/public-vsts-previouw-cant-set-build-number-of-pr-b.html
+    condition: eq(variables['System.PullRequest.IsFork'], 'False')
     inputs:
       updateAssemblyInfo: false
 
@@ -60,23 +63,12 @@ phases:
       flattenFolders: false
 
   - task: PublishBuildArtifacts@1
-    condition: always()
+    # https://developercommunity.visualstudio.com/content/problem/284991/public-vsts-previouw-cant-set-build-number-of-pr-b.html
+    condition: eq(variables['System.PullRequest.IsFork'], 'False')
     inputs:
       PathtoPublish: $(build.artifactstagingdirectory)
       ArtifactName: NugetPackages
       ArtifactType: Container
-
-  - task: PublishSymbols@2
-    condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
-    inputs:
-      SymbolsFolder:
-      SearchPattern: '**/bin/**/*.pdb'
-      IndexSources: true
-      PublishSymbol: true
-      SymbolServerType: TeamServices
-      DetailedLog: false
-      TreatNotIndexedAsWarning: false
-      SymbolsArtifactName: Symbols_$(BuildConfiguration)
 
   - powershell: |
       git clean -fdx

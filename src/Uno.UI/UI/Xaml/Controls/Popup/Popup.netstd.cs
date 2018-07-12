@@ -6,6 +6,7 @@ using System.Linq;
 using System.Drawing;
 using Uno.Disposables;
 using Windows.UI.Xaml.Media;
+using Uno.Logging;
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -26,6 +27,11 @@ namespace Windows.UI.Xaml.Controls
 		protected override void OnIsOpenChanged(bool oldIsOpen, bool newIsOpen)
 		{
 			base.OnIsOpenChanged(oldIsOpen, newIsOpen);
+
+			if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+			{
+				this.Log().Debug($"Popup.IsOpenChanged({oldIsOpen}, {newIsOpen})");
+			}
 
 			if (newIsOpen)
 			{

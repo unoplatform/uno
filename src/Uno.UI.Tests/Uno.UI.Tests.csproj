@@ -78,10 +78,13 @@
     <None Remove="XamlReaderTests\When_AttachedProperty_Same_Target.xamltest" />
     <None Remove="XamlReaderTests\When_BasicProperty.xamltest" />
     <None Remove="XamlReaderTests\When_BasicRoot.xamltest" />
+    <None Remove="XamlReaderTests\When_Binding_Converter.xamltest" />
+    <None Remove="XamlReaderTests\When_Binding_ConverterParameter.xamltest" />
     <None Remove="XamlReaderTests\When_Binding_TargetNull.xamltest" />
     <None Remove="XamlReaderTests\When_Binding_TwoWay.xamltest" />
     <None Remove="XamlReaderTests\When_Binding_TwoWay_UpdateSourceTrigger.xamltest" />
     <None Remove="XamlReaderTests\When_ElementName.xamltest" />
+    <None Remove="XamlReaderTests\When_GridRowDefinitions.xamltest" />
     <None Remove="XamlReaderTests\When_MultipleBindings.xamltest" />
     <None Remove="XamlReaderTests\When_StaticResource.xamltest" />
     <None Remove="XamlReaderTests\When_StaticResource_Style_And_Binding.xamltest" />

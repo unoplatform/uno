@@ -184,6 +184,21 @@ namespace Uno.UI.Tests.BinderTests_DataContext
 			Assert.AreEqual(42, sub1.DataContext);
 			Assert.AreEqual(templatedParent, sub1.TemplatedParent);
 		}
+
+		[TestMethod]
+		public void When_DataContext_Inherited_And_Parent_Changed()
+		{
+			var SUT = new Border();
+			var parent1 = new Border();
+			parent1.DataContext = 10;
+			var parent2 = new Border();
+			parent2.DataContext = 42;
+			SUT.SetParent(parent1);
+			Assert.AreEqual(10, SUT.DataContext);
+			SUT.SetParent(parent2);
+			Assert.AreEqual(42, SUT.DataContext);
+
+		}
 	}
 
 	public partial class MyBasicListType : DependencyObject

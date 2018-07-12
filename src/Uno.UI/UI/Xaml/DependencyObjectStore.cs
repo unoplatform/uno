@@ -101,6 +101,7 @@ namespace Windows.UI.Xaml
 		private Dictionary<long, IDisposable> _propertyChangedTokens = new Dictionary<long, IDisposable>();
 
 		private bool _registeringInheritedProperties;
+		private bool _unregisteringInheritedProperties;
 
 		private static bool _validatePropertyOwner = Debugger.IsAttached;
 
@@ -920,6 +921,7 @@ namespace Windows.UI.Xaml
 		{
 			if (
 				!_registeringInheritedProperties
+				&& !_unregisteringInheritedProperties
 				&& _inheritedProperties.Disposable == null 
 				&& (
 					IsAutoPropertyInheritanceEnabled 
@@ -983,17 +985,26 @@ namespace Windows.UI.Xaml
 			// Register for unset values
 			disposable.Add(() =>
 			{
-				_inheritedForwardedProperties.Clear();
-
-				if (ActualInstance != null)
+				try
 				{
-					foreach (var dp in _updatedProperties)
-					{
-						SetValue(dp, DependencyProperty.UnsetValue, DependencyPropertyValuePrecedences.Inheritance);
-					}
+					_unregisteringInheritedProperties = true;
 
-					SetValue(_dataContextProperty, DependencyProperty.UnsetValue, DependencyPropertyValuePrecedences.Inheritance);
-					SetValue(_templatedParentProperty, DependencyProperty.UnsetValue, DependencyPropertyValuePrecedences.Inheritance);
+					_inheritedForwardedProperties.Clear();
+
+					if (ActualInstance != null)
+					{
+						foreach (var dp in _updatedProperties)
+						{
+							SetValue(dp, DependencyProperty.UnsetValue, DependencyPropertyValuePrecedences.Inheritance);
+						}
+
+						SetValue(_dataContextProperty, DependencyProperty.UnsetValue, DependencyPropertyValuePrecedences.Inheritance);
+						SetValue(_templatedParentProperty, DependencyProperty.UnsetValue, DependencyPropertyValuePrecedences.Inheritance);
+					}
+				}
+				finally
+				{
+					_unregisteringInheritedProperties = false;
 				}
 			});
 

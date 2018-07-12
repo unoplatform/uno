@@ -44,7 +44,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			_element = element;
 		}
-
+		
 		/// <summary>
 		/// Determine the size of the panel.
 		/// </summary>
@@ -75,7 +75,7 @@ namespace Windows.UI.Xaml.Controls
 
 				var desiredSize = size;
 
-				if (this.Panel is FrameworkElement frameworkElement)
+				if (this.Panel is FrameworkElement frameworkElement && frameworkElement.Visibility == Visibility.Visible)
 				{
 					// DesiredSize must include margins
 					// However, we report the size to the parent without the margins
