@@ -4,8 +4,8 @@ using System.Text;
 
 namespace Uno.UI
 {
-    public static class FeatureConfiguration
-    {
+	public static class FeatureConfiguration
+	{
 		public static class UIElement
 		{
 			/// <summary>
@@ -59,6 +59,16 @@ namespace Uno.UI
 			/// in the constructor of a control.
 			/// </summary>
 			public static bool UseLegacyLazyApplyTemplate { get; set; } = false;
+		}
+
+		public static class ListViewBase
+		{
+			/// <summary>
+			/// Sets the value to use for <see cref="ItemsStackPanel.CacheLength"/> and <see cref="ItemsWrapGrid.CacheLength"/> if not set 
+			/// explicitly in Xaml or code. Higher values will cache more views either side of the visible window, improving list performance 
+			/// at the expense of consuming more memory. Setting this to null will leave the default value at the UWP default of 4.0.
+			/// </summary>
+			public static double? DefaultCacheLength = 1.0;
 		}
 	}
 }

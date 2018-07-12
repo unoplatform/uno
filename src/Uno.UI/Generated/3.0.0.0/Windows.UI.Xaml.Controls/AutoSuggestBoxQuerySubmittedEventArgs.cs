@@ -7,7 +7,7 @@ namespace Windows.UI.Xaml.Controls
 	#endif
 	public  partial class AutoSuggestBoxQuerySubmittedEventArgs : global::Windows.UI.Xaml.DependencyObject
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		#if false
 		[global::Uno.NotImplemented]
 		public  object ChosenSuggestion
 		{
@@ -17,7 +17,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		#if false
 		[global::Uno.NotImplemented]
 		public  string QueryText
 		{
@@ -27,7 +27,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 		#endif
-		#if false || false || false || false
+		#if false
 		[global::Uno.NotImplemented]
 		public AutoSuggestBoxQuerySubmittedEventArgs() : base()
 		{

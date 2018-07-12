@@ -34,6 +34,7 @@
 		<CallTarget Targets="GenerateAPIDiff" Condition="'$(Configuration)'=='Release'" />
 		<CallTarget Targets="GenerateDoc" Condition="'$(Configuration)'=='Release'" />
 	</Target>
+  
 	<Target Name="UpdateFileVersions">
 		
 		<XmlUpdate
@@ -45,12 +46,11 @@
 
 	</Target>
 
-	
 	<Target Name="BuildCI">
 
 		<MSBuild Properties="Configuration=Release;VisualStudioVersion=15.0;CopyDSYM=False;InformationalVersion=$(GITVERSION_InformationalVersion);CI_Build=true;_IsCIBuild=true"
 						 Projects="..\src\Uno.UI.sln"
-             Targets="Build"
+						 Targets="Build"
 						 RebaseOutputs="false"
 						 BuildInParallel="true" />
 
@@ -77,42 +77,34 @@
 		<Exec Command="..\src\Uno.UI.AssemblyComparer\Bin\Release\Uno.UI.AssemblyComparer.exe &quot;$(Wasm_UnoUIDefinition)&quot; &quot;$(WindowsDefinition)&quot; &quot;output.txt&quot;" />
 		<Exec Command="copy .\output.txt &quot;$(OutputDir)\Wasm_API_Diff.txt&quot;" />
 	</Target>
-	
-	<Target Name="PublishVisx">
+
+  <Target Name="PublishVisx">
 		<Copy SourceFiles="..\src\SolutionTemplate\UnoSolutionTemplate.VISX\bin\Release\UnoSolutionTemplate.vsix"
-					DestinationFolder="$(OutputDir)" />
+					DestinationFiles="$(OutputDir)\UnoPlatform-$(GITVERSION_FullSemVer).vsix" />
 	</Target>
 
 	<Target Name="BuildNuGetPackage" DependsOnTargets="_FillMsBuildVersion">
 
 		<PropertyGroup>
 			<NugetNamespace>http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd</NugetNamespace>
-
-			<!-- Package version labels depends on the VS version (15.2 is adev, 15.4 is dev) -->
-			<NuGetPackageVersion Condition="'$(MicrosoftBuildVersion)' &gt;= '15.4'">$(GITVERSION_FullSemVer)</NuGetPackageVersion>
-			<NuGetPackageVersion Condition="'$(MicrosoftBuildVersion)' &lt; '15.4'">$(GITVERSION_FullSemVer.Replace('dev', 'adev'))</NuGetPackageVersion>
-			<NuGetPackageVersion Condition="'$(MicrosoftBuildVersion)' &lt; '15.4' and !$(GITVERSION_FullSemVer.Contains('-'))">$(GITVERSION_FullSemVer)-stable152</NuGetPackageVersion>
 		</PropertyGroup>
-
-		<Message Condition="'$(PublishNuget)'!=''" Text="NuGet package publishing is ENABLED (Target: $(NuGetRepositoryPath))" />
-		<Message Condition="'$(PublishNuget)'==''" Text="NuGet package publishing is DISABLED (Target: $(NuGetRepositoryPath))" />
 
 		<XmlUpdate
 			XmlFileName=".\Uno.UI.nuspec"
 			XPath="/x:package/x:metadata/x:version"
-			Value="$(NuGetPackageVersion)"
+			Value="$(GITVERSION_FullSemVer)"
 			Namespace="$(NugetNamespace)"
 			Prefix="x"/>
 
 		<XmlUpdate
 			XmlFileName=".\Uno.UI.nuspec"
 			XPath="/x:package/x:metadata/x:dependencies/x:dependency/@version"
-			Value="$(NuGetPackageVersion)"
+			Value="$(GITVERSION_FullSemVer)"
 			Namespace="$(NugetNamespace)"
 			Prefix="x"/>
 
 		<!-- Create the packages -->
-    <Exec Command="$(NuGetBin) pack Uno.UI.nuspec -Verbosity Detailed" />
+	  <Exec Command="$(NuGetBin) pack Uno.UI.nuspec -Verbosity Detailed" />
 	</Target>
 
 	<Import Project="GetMsBuildVersion.targets" />

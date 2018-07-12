@@ -109,7 +109,7 @@ namespace Uno.UI.Controls
 			// This control is the visual parent but is not a DependencyObject and will not propagate the DataContext.
 			// In order to ensure the DataContext is propagated properly, we restore the CommandBar
 			// parent that can propagate the DataContext.
-			if (args.NewParent != Element)
+			if (args.NewParent != Element && args.NewParent != null)
 			{
 				_titleView.SetParent(Element);
 			}
@@ -134,6 +134,8 @@ namespace Uno.UI.Controls
 
 	internal partial class TitleView : Border
 	{
+		private bool _blockReentrantMeasure;
+		private Size _childSize;
 		public TitleView()
 		{
 			if (UIDevice.CurrentDevice.CheckSystemVersion(11, 0))
@@ -154,35 +156,50 @@ namespace Uno.UI.Controls
 
 		protected override Size MeasureOverride(Size availableSize)
 		{
-			Size childSize;
-			// By default, iOS will horizontally center the TitleView inside the UINavigationBar,
-			// ignoring the size of the left and right buttons.
-
-			childSize = base.MeasureOverride(availableSize);
-
-			if (Child is IFrameworkElement frameworkElement
-				&& frameworkElement.HorizontalAlignment == HorizontalAlignment.Stretch)
+			if (_blockReentrantMeasure)
 			{
-				// To make the content stretch horizontally (instead of being centered),
-				// we can set HorizontalAlignment.Stretch on it.
-				// This will force the TitleView to take all available horizontal space.
-				childSize.Width = availableSize.Width;
+				// In some cases setting the Frame below can prompt iOS to call SizeThatFits with 0 height, which would screw up the desired 
+				// size of children if we're within LayoutSubviews(). In this case simply return the existing measure.
+				return _childSize;
 			}
-			else
+
+			try
 			{
-				if (!childSize.Width.IsNaN()
-					&& !childSize.Height.IsNaN()
-					&& childSize.Height != 0
-					&& childSize.Width != 0
-					&& (Frame.Width != childSize.Width
-					|| Frame.Height != childSize.Height))
+				_blockReentrantMeasure = true;
+
+				// By default, iOS will horizontally center the TitleView inside the UINavigationBar,
+				// ignoring the size of the left and right buttons.
+
+				_childSize = base.MeasureOverride(availableSize);
+
+				if (Child is IFrameworkElement frameworkElement
+					&& frameworkElement.HorizontalAlignment == HorizontalAlignment.Stretch)
 				{
-					// Set the frame size to the child size so that the OS centers properly.
-					Frame = new CGRect(Frame.X, Frame.Y, childSize.Width, childSize.Height);
+					// To make the content stretch horizontally (instead of being centered),
+					// we can set HorizontalAlignment.Stretch on it.
+					// This will force the TitleView to take all available horizontal space.
+					_childSize.Width = availableSize.Width;
 				}
-			}
+				else
+				{
+					if (!_childSize.Width.IsNaN()
+						&& !_childSize.Height.IsNaN()
+						&& _childSize.Height != 0
+						&& _childSize.Width != 0
+						&& (Frame.Width != _childSize.Width
+						|| Frame.Height != _childSize.Height))
+					{
+						// Set the frame size to the child size so that the OS centers properly.
+						Frame = new CGRect(Frame.X, Frame.Y, _childSize.Width, _childSize.Height);
+					}
+				}
 
-			return childSize;
+				return _childSize;
+			}
+			finally
+			{
+				_blockReentrantMeasure = false;
+			}
 		}
 
 		public override CGRect Frame

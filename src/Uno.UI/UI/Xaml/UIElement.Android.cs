@@ -365,6 +365,7 @@ namespace Windows.UI.Xaml
 		public FrameworkElement FrameworkElementOfInterest => ViewOfInterest as FrameworkElement;
 
 		public string ShowDescendants() => ViewExtensions.ShowDescendants(this);
+		public string ShowLocalVisualTree(int fromHeight) => ViewExtensions.ShowLocalVisualTree(this, fromHeight);
 #endif
 	}
 }

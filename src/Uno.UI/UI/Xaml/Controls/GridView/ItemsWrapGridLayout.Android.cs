@@ -68,7 +68,10 @@ namespace Windows.UI.Xaml.Controls
 			{
 				var view = recycler.GetViewForPosition(GetFlatItemIndex(currentItem.Value), state);
 
-				Debug.Assert(view is SelectorItem, "view is SelectorItem (we should never be given a group header)");
+				if (!(view is SelectorItem))
+				{
+					throw new InvalidOperationException($"Expected {nameof(SelectorItem)} but received {view?.GetType().ToString() ?? "<null>"}");
+				}
 
 				//Add view before we measure it, this ensures that DP inheritances are correctly applied
 				AddView(view, direction);

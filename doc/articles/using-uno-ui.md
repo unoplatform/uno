@@ -75,6 +75,27 @@ the **Show all Files** icon at the top.
 
 If you notice an issue, or an error in the commented code of the generated file, you may need to alter you Xaml.
 
+## Configure the Manifest for the WebAssembly Head
+In your WASM head, create a folder named `WasmScripts`, with a file containing the javascript below
+(e.g. `AppManifest.js`) and the `Embedded resource` build action.
+
+The manifest file should contain the following:
+
+```javascript
+var UnoAppManifest = {
+
+    splashScreenImage: "Assets/AppSplashScreen.scale-200.png",
+    splashScreenColor: "#3750D1",
+    displayName: "My Sample App"
+
+}
+```
+
+The properties are :
+* **splashScreenImage**: defines the image that will be centered on the window during the application's loading time
+* **splashScreenColor**: defines the background color of the splash screen
+* **displayName**: defines the default name of the application in the browser's window title
+
 ## Supporting multiple Platforms in Xaml files
 
 The Uno.UI Xaml parser has the ability to manage specific namespaces, giving the ability to ignore or enable specific Xaml nodes and attributes.

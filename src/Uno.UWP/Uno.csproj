@@ -18,6 +18,9 @@
 		<GenerateLibraryLayout>true</GenerateLibraryLayout>
 		
 		<NoWarn>$(NoWarn);NU1701</NoWarn>
+		
+		<ProduceReferenceAssembly>true</ProduceReferenceAssembly>
+		<Deterministic>true</Deterministic>
 	</PropertyGroup>
 
 	<Import Project="$(MSBuildSDKExtrasTargets)" Condition="Exists('$(MSBuildSDKExtrasTargets)')" />

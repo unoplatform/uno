@@ -221,6 +221,28 @@ namespace System.Xaml.Tests.MS
 		}
 
 		[Test]
+		public void Read_AttachedPropertyWithNamespace()
+		{
+			var s = WriteTest("AttachedPropertyWithNamespace.xaml");
+
+			var sequence = new SequenceItem[] {
+			};
+
+			ReadSequence("AttachedPropertyWithNamespace.xaml", sequence);
+		}
+
+		[Test]
+		public void Read_AttachedPropertyWithoutNamespace()
+		{
+			var s = WriteTest("AttachedPropertyWithoutNamespace.xaml");
+
+			var sequence = new SequenceItem[] {
+			};
+
+			ReadSequence("AttachedPropertyWithoutNamespace.xaml", sequence);
+		}
+
+		[Test]
 		public void Read_GenericWithProperty()
 		{
 			var s = WriteTest("GenericWithProperty.xaml");

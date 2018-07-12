@@ -19,7 +19,9 @@ namespace Windows.UI.Popups
 			var command = $"Uno.UI.WindowManager.current.alert(\"{Content}\");";
 			Uno.Foundation.WebAssemblyRuntime.InvokeJS(command);
 
-			return null;
+			return AsyncOperation.FromTask<IUICommand>(
+				async ct => new UICommand("OK") // TODO: Localize (PBI 28711)
+			);
 		}
 
 		partial void ValidateCommands()

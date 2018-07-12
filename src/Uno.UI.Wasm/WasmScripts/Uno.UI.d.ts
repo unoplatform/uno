@@ -3,6 +3,15 @@ declare namespace Uno.Utils {
         static setText(text: string): string;
     }
 }
+declare namespace Uno.UI {
+    class HtmlDom {
+        /**
+         * Initialize various polyfills used by Uno
+         */
+        static initPolyfills(): void;
+        private static isConnectedPolyfill();
+    }
+}
 declare namespace Uno.Http {
     interface IHttpClientConfig {
         id: string;
@@ -126,6 +135,16 @@ declare namespace Uno.UI {
             */
         alert(message: string): string;
         /**
+            * Issue a browser alert to user
+            * @param message message to display
+            */
+        setWindowTitle(title: string): string;
+        /**
+            * Issue a browser alert to user
+            * @param message message to display
+            */
+        getWindowTitle(): string;
+        /**
             * Add an event handler to a html element.
             *
             * @param eventName The name of the event
@@ -197,6 +216,7 @@ declare module Uno.UI {
     interface IAppManifest {
         splashScreenImage: URL;
         splashScreenColor: string;
+        displayName: string;
     }
 }
 declare module Uno.UI.Interop {

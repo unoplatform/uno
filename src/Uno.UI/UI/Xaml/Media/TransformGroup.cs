@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Windows.UI.Xaml.Markup;
 
 #if XAMARIN_ANDROID
 using Android.Views;
@@ -17,6 +18,7 @@ namespace Windows.UI.Xaml.Media
 	/// TransformGroup :  Based on the WinRT TransformGroup
 	/// https://msdn.microsoft.com/en-us/library/system.windows.media.transformgroup(v=vs.110).aspx
 	/// </summary>
+	[ContentProperty(Name = "Children")]
 	public partial class TransformGroup : Transform
 	{
 

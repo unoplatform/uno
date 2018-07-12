@@ -730,7 +730,13 @@ namespace Windows.UI.Xaml
 
 		public Controls.Panel[] PanelsOfInterest => ViewsOfInterest.OfType<Controls.Panel>().ToArray();
 
+		/// <summary>
+		/// Strongly-typed superview, purely a debugger convenience.
+		/// </summary>
+		public FrameworkElement FrameworkElementSuperview => Superview as FrameworkElement;
+
 		public string ShowDescendants() => UIViewExtensions.ShowDescendants(this);
+		public string ShowLocalVisualTree(int fromHeight) => UIViewExtensions.ShowLocalVisualTree(this, fromHeight);
 #endif
 
 		private class TappedGestureHandler : GestureHandler

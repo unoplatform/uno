@@ -14,8 +14,8 @@ namespace Windows.UI.Xaml.Controls
 		/// Is the RecyclerView currently undergoing animated scrolling, either user-initiated or programmatic.
 		/// </summary>
 		private bool _isInAnimatedScroll;
-
-		internal ScrollingViewCache ViewCache { get; }
+		
+		internal BufferViewCache ViewCache { get; }
 
 		public NativeListViewBase() : base(ContextHelper.Current)
 		{
@@ -23,7 +23,7 @@ namespace Windows.UI.Xaml.Controls
 			VerticalScrollBarEnabled = true;
 			HorizontalScrollBarEnabled = true;
 
-			ViewCache = new ScrollingViewCache(this);
+			ViewCache = new BufferViewCache(this);
 			SetViewCacheExtension(ViewCache);
 
 			InitializeSnapHelper();
