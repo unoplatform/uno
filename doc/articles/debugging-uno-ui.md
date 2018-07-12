@@ -9,6 +9,13 @@ Using Visual Studio 2017 (15.5 or later):
 
 Inside Visual Studio, the number of platforms is restricted to limit the compilation time.
 
+## Microsoft Source Link support
+Uno.UI supports [SourceLink](https://github.com/dotnet/sourcelink/) and it now possible to
+step into Uno.UI without downloading the repository.
+
+Make sure **Enable source link support** check box is checked in **Tools** / **Options**
+/ **Debugging** / **General** properties page. 
+
 # Debugging Uno.UI
 
 To debug Uno.UI inside of an existing project, the simplest way (until Microsoft provides a better way to avoid overriding the global cache) is to :
