@@ -5,7 +5,7 @@ using Windows.UI.Xaml.Controls.Primitives;
 
 namespace Windows.UI.Xaml.Controls.Primitives
 {
-	public partial class ToggleButton : ButtonBase
+	public partial class ToggleButton : ButtonBase, IFrameworkTemplatePoolAware
 	{
 		//Renamed to have the same naming as Windows.
 		//https://msdn.microsoft.com/en-us/library/system.windows.controls.primitives.togglebutton.checked(v=vs.110).aspx
@@ -66,10 +66,8 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			}
 		}
 
-		protected override void OnUnloaded()
+		public void OnTemplateRecycled()
 		{
-			base.OnUnloaded();
-
 			IsChecked = false;
 		}
 	}

@@ -24,7 +24,7 @@ namespace Windows.UI.Xaml.Controls
 		public const string DeleteButtonPartName = "DeleteButton";
 	}
 
-	public partial class TextBox : Control
+	public partial class TextBox : Control, IFrameworkTemplatePoolAware
 	{
 		private const string ButtonVisibleStateName = "ButtonVisible";
 		private const string ButtonCollapsedStateName = "ButtonCollapsed";
@@ -521,6 +521,11 @@ namespace Windows.UI.Xaml.Controls
 		internal void OnSelectionChanged()
 		{
 			SelectionChanged?.Invoke(this, new RoutedEventArgs());
+		}
+
+		public void OnTemplateRecycled()
+		{
+			DeleteText();
 		}
 	}
 }
