@@ -40,6 +40,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			var columnCount = columns.Count;
 			var rowCount = rows.Count;
+
 			if (columnCount == 1 && rowCount == 1)
 			{
 				// 1x1
@@ -90,10 +91,19 @@ namespace Windows.UI.Xaml.Controls
 				measuredRows.Sum(r => r.MinValue)
 			);
 
+			//If MinWidth property is set on the Grid we need to take it into account in order to match UWP behavior
+			var minWidth = size.Width;
+
+			if (MinWidth != 0 && MinWidth > size.Width)
+			{
+				minWidth = MinWidth;
+			}
+
 			size = new Size(
-				Math.Min(availableSize.Width, size.Width),
+				Math.Min(availableSize.Width, minWidth),
 				Math.Min(availableSize.Height, size.Height)
 			);
+
 			return size;
 		}
 
@@ -109,6 +119,7 @@ namespace Windows.UI.Xaml.Controls
 				availableSize.Height = pixelHeight;
 				size.Height = pixelHeight;
 			}
+
 			var positions = GetPositions();
 			var measureChild = GetDirectMeasureChild();
 
@@ -120,10 +131,19 @@ namespace Windows.UI.Xaml.Controls
 				Math.Max(size.Height, maxHeightMeasured)
 			);
 
+			//If MinHeight property is set on the Grid we need to take it into account in order to match UWP behavior
+			var minHeight = size.Height;
+
+			if (MinHeight != 0 && MinHeight > size.Height)
+			{
+				minHeight = MinHeight;
+			}
+
 			size = new Size(
 				Math.Min(availableSize.Width, size.Width),
-				Math.Min(availableSize.Height, size.Height)
+				Math.Min(availableSize.Height, minHeight)
 			);
+
 			return size;
 		}
 
@@ -184,7 +204,7 @@ namespace Windows.UI.Xaml.Controls
 				return true;
 			}
 
-            return false;
+			return false;
 		}
 
 		/// <summary>
@@ -244,7 +264,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 
 			LayoutChildren(calculatedColumns, calculatedRows, positions);
-        }
+		}
 
 		/// <summary>
 		/// Arranges the children knowing the grid is 1x1
@@ -264,24 +284,44 @@ namespace Windows.UI.Xaml.Controls
 			if (isMeasureRequired)
 			{
 				finalSize = MeasureChildren(finalSize, column.Width.IsAuto, row.Height.IsAuto);
-            }
+			}
 
 			var offset = GetChildrenOffset();
 			foreach (var child in Children)
 			{
 				var childFrame = new Foundation.Rect(
-					offset.X, 
-					offset.Y, 
-					finalSize.Width, 
+					offset.X,
+					offset.Y,
+					finalSize.Width,
 					finalSize.Height
 				);
 				ArrangeElement(child, childFrame);
-            }
+			}
 		}
 
+		/// <summary>
+		/// Measure the children knowing the grid is 1x1
+		/// </summary>
 		private Size MeasureChildren(Size availableSize, bool isAutoWidth, bool isAutoHeight)
 		{
 			var minSize = default(Size);
+			var minWidth = MinWidth - GetHorizontalOffset();
+			var minHeight = MinHeight - GetVerticalOffset();
+
+			//If MinWidth or MinHeight properties are set on the Grid we need to take them into account
+			if (MinWidth != 0 && MinHeight != 0)
+			{
+				minSize = new Size(minWidth, minHeight);
+			}
+			else if (MinWidth != 0)
+			{
+				minSize = new Size(minWidth, 0);
+			}
+			else if (MinHeight != 0)
+			{
+				minSize = new Size(0, minHeight);
+			}
+
 			foreach (var child in Children)
 			{
 				var childSize = MeasureElement(child, availableSize);
@@ -294,6 +334,7 @@ namespace Windows.UI.Xaml.Controls
 					minSize.Height = Math.Max(minSize.Height, childSize.Height);
 				}
 			}
+
 			if (!isAutoWidth)
 			{
 				minSize.Width = availableSize.Width;
@@ -302,6 +343,7 @@ namespace Windows.UI.Xaml.Controls
 			{
 				minSize.Height = availableSize.Height;
 			}
+
 			return minSize;
 		}
 	}
