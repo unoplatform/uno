@@ -65,5 +65,12 @@ namespace Windows.UI.Xaml.Controls.Primitives
 				Unchecked?.Invoke(this, new RoutedEventArgs());
 			}
 		}
+
+		protected override void OnUnloaded()
+		{
+			base.OnUnloaded();
+
+			IsChecked = false;
+		}
 	}
 }
