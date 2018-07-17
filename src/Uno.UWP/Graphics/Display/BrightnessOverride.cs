@@ -6,10 +6,8 @@ namespace Windows.Graphics.Display
 {
 	public sealed partial class BrightnessOverride
 	{
-#pragma warning disable CS0649
 		private static double _defaultBrightnessLevel;
 		private static double _targetBrightnessLevel;
-#pragma warning disable CS0649
 
 		private static BrightnessOverride _instance;
 
