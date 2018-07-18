@@ -13,7 +13,7 @@ The vast majority of the time, development in Uno.UI should be done in C#. Howev
 
 ```
 sourceSets {
-        main.java.srcDirs += 'C:/<Your Uno repository>/Uno/Uno.UI.BindingHelper.Android/Uno/UI'
+        main.java.srcDirs += 'C:/<Your Uno repository>/Uno.UI.BindingHelper.Android/Uno/UI'
     }
 ```
 
@@ -31,7 +31,7 @@ sourceSets {
 
 ![Attach-to-process](Assets/Debugging-Android-Studio/Attach-to-process.png)
 
-* You should now be able to debug and place breakpoints Uno.UI code. 
+* You should now be able to debug and place breakpoints in Uno.UI code. 
 * Android Studio supports a similar feature set to Visual Studio. Here are some of the basics:
     * Breakpoints: Ctrl-F8 places a breakpoint. You can step over (F8) and step into (F7) code.
     * Inspect values of local variables and fields.

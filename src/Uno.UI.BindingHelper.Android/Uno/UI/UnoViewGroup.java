@@ -1,10 +1,10 @@
 package Uno.UI;
 
+import android.graphics.Matrix;
 import android.view.*;
-import android.graphics.PointF;
 import android.graphics.Rect;
 import android.util.Log;
-import android.support.v4.view.*;
+
 import java.lang.*;
 import java.lang.reflect.*;
 
@@ -25,6 +25,9 @@ public abstract class UnoViewGroup
 	private boolean _isPointInView;
 
 	private int _currentPointerId = -1;
+
+	private float _transformedTouchX;
+	private float _transformedTouchY;
 
     private static Method _setFrameMethod;
 
@@ -335,20 +338,23 @@ public abstract class UnoViewGroup
             return false; 
         }
 
-        // Always dispatch the touch events, otherwise system controls may not behave
-        // properly, such as not displaying "material design" animation cues (e.g. the 
-        // growing circles in buttons when keeping pressed).
-        boolean superDispatchTouchEvent = super.dispatchTouchEvent(e);
+		updateTransformedTouchCoordinate(e);
 
         final boolean wasPointInView = _isPointInView;
 
         // It's possible that for visual constraints (e.g. clipping),
         // the view must not handle the touch. If that's the case,
         // the touch event must be dispatched to other controls. 
-        // This check must be done after the gestureDetector has been tested
+        // This check must be done independent of whether the gestureDetector is tested
         // because some controls may want to react to the gesture (e.g. action_cancel, action_up)
         // even if the point is outside the view bounds.
-        _isPointInView = isPointInView(new PointF(e.getRawX(), e.getRawY())); // takes clipping into account
+        _isPointInView = isLocalTouchPointInView(_transformedTouchX, _transformedTouchY); // takes clipping into account
+
+		// Always dispatch the touch events, otherwise system controls may not behave
+		// properly, such as not displaying "material design" animation cues (e.g. the
+		// growing circles in buttons when keeping pressed (RippleEffect)).
+		boolean superDispatchTouchEvent = super.dispatchTouchEvent(e);
+
 		final boolean didPointerExit = wasPointInView &&
 				!_isPointInView &&
 				(e.getActionMasked() == MotionEvent.ACTION_MOVE || e.getActionMasked() == MotionEvent.ACTION_CANCEL);
@@ -511,6 +517,21 @@ public abstract class UnoViewGroup
 		_isEnabled = isEnabled;
 	}
 
+	/**
+	 * The x-coordinate of the current motion event in the view's local coordinate space (ie its top left corner is at (0,0).
+	 * @return
+	 */
+	public final float getTransformedTouchX() {
+		return _transformedTouchX;
+	}
+
+	/**
+	 * The y-coordinate of the current motion event in the view's local coordinate space (ie its top left corner is at (0,0).
+	 */
+	public final float getTransformedTouchY() {
+		return _transformedTouchY;
+	}
+
     protected abstract boolean nativeHitCheck();
 
     protected final void onAttachedToWindow()
@@ -575,55 +596,108 @@ public abstract class UnoViewGroup
     }
     */
 
-    public boolean isPointInView(PointF point) {
+	/**
+	 * Checks if the given point in the view's local coordinate space is within its bounds, taking any clipping and ancestral clipping into account.
+	 * This will *only* return a valid value if the method has also been called for all visual ancestors for the same absolute (screen-space) point,
+	 * as occurs for UnoViewGroup.dispatchTouchEvent().
+	 * @param x X-coordinate in the view's local coordinate space.
+	 * @param y Y-coordinate in the view's local coordinate space.
+	 * @return True if the point is within the view's bounds, false otherwise.
+	 */
+    public boolean isLocalTouchPointInView(float x, float y) {
+		return x >= 0 && x < getWidth() && y >= 0 && y < getHeight() &&
+				isWithinClipBounds(x, y) &&
+				getIsParentPointInView(getParent()); // Ensures parent clipping (if any) is taken into account.
+	}
 
-        Rect bounds = getViewBoundsOnScreen(this);
+	private boolean isWithinClipBounds(float x, float y) {
+		Rect clipBounds = android.support.v4.view.ViewCompat.getClipBounds(this);
+		if (clipBounds != null) {
+			return x >= clipBounds.left && x < clipBounds.right && y >= clipBounds.top && y < clipBounds.bottom;
+		}
+		return true;
+	}
 
-        return !(point.x < bounds.left || point.x > bounds.right || point.y < bounds.top || point.y > bounds.bottom);
-    }
+	private static boolean getIsParentPointInView(ViewParent vp) {
+    	if (vp instanceof UnoViewGroup) {
+    		return ((UnoViewGroup) vp).getIsPointInView();
+		}
+		if (vp instanceof View) {
+    		return getIsParentPointInView(vp.getParent());
+		}
 
-    private Rect getViewBoundsOnScreen(View view) {
-        int[] viewLocationOnScreen = new int[2];
+		// Reached Window
+		return true;
+	}
 
-        View tmpView = view;
-        Rect finalViewBoundsOnScreen = null;
-    
-        while (tmpView != null)
-        {
-            tmpView.getLocationOnScreen(viewLocationOnScreen);
+    private void updateTransformedTouchCoordinate(MotionEvent e) {
+    	float[] coord = getTransformedTouchCoordinate(getParent(), e);
+    	calculateTransformedPoint(this, coord);
+    	_transformedTouchX = coord[0];
+    	_transformedTouchY = coord[1];
+	}
 
-            Rect tmpViewBoundsOnScreen = new Rect(
-                viewLocationOnScreen[0], 
-                viewLocationOnScreen[1], 
-                viewLocationOnScreen[0] + tmpView.getWidth(), 
-                viewLocationOnScreen[1] + tmpView.getHeight()
-            );
+	/**
+	 * Transforms a point from the coordinate space of a view's parent to the view's coordinate space.
+	 *
+	 * The logic here is essentially the inverse of {@link #android.view.View.transformFromViewToWindowSpace(int[])} (which walks up the tree instead of down).
+	 * @param view The view to put the point in the coordinate space of.
+	 * @param point The point to be transformed as [x, y]
+	 */
+	private static void calculateTransformedPoint(View view, float[] point) {
+		ViewParent viewParent = view.getParent();
+    	if (viewParent instanceof View) {
+			final View parent = (View) viewParent;
+    		point[0] += parent.getScrollX();
+    		point[1] += parent.getScrollY();
+		}
 
-            if (finalViewBoundsOnScreen == null)
-            {
-                finalViewBoundsOnScreen = tmpViewBoundsOnScreen;
-            }
+    	point[0] -= view.getLeft();
+    	point[1] -= view.getTop();
 
-            // Apply view clipping if any
-            Rect clipBounds = android.support.v4.view.ViewCompat.getClipBounds(tmpView);
-            if (clipBounds != null)
-            {
-                // Offset the local clip bounds to get the clip bounds on screen
-                clipBounds.offsetTo(tmpViewBoundsOnScreen.left, tmpViewBoundsOnScreen.top);
+    	if (!hasIdentityMatrix(view)) {
+    		Matrix inverse = new Matrix();
+    		if (getInvertedMatrix(view, inverse)) {
+    			inverse.mapPoints(point);
+			}
+		}
+	}
 
-                // The result is the intersection of the view bounds and the clip bounds
-                // If there is no intersection, keep the view bounds
-                tmpViewBoundsOnScreen.intersect(clipBounds);
-            }
-            
-            finalViewBoundsOnScreen.intersect(tmpViewBoundsOnScreen);
+	/**
+	 * Get touch coordinate transformed to a view's local space. If view is a UnoViewGroup, use already-calculated value;
+	 * interpolate offsets for any non-UnoViewGroups in the visual hierarchy, and use the raw absolute position at the
+	 * very top of the tree.
+	 */
+	private static float[] getTransformedTouchCoordinate(ViewParent view, MotionEvent e) {
+    	if (view instanceof UnoViewGroup) {
+    		// Just use cached value
+			float[] point = new float[2];
+    		point[0] = ((UnoViewGroup) view).getTransformedTouchX();
+    		point[1] = ((UnoViewGroup) view).getTransformedTouchY();
+    		return point;
+		}
+		else if (view instanceof View) {
+    		// Non-UIElement view, walk upward
+    		float[] coords = getTransformedTouchCoordinate(view.getParent(),e);
+    		calculateTransformedPoint((View) view, coords);
+    		return coords;
+		}
+		else {
+    		// Reached the top of the tree
+			float[] point = new float[2];
+			point[0] = e.getRawX();
+			point[1] = e.getRawY();
+			return point;
+		}
+	}
 
-            Object parent = tmpView.getParent();
-            tmpView = parent instanceof View ? (View) parent : null;
-        }
+	private static boolean hasIdentityMatrix(View view) {
+    	return view.getMatrix().isIdentity();
+	}
 
-        return finalViewBoundsOnScreen;
-    }
+	private static boolean getInvertedMatrix(View view, Matrix outMatrix) {
+    	return view.getMatrix().invert(outMatrix);
+	}
 
     // Allows UI automation operations to look for a single 'Text' property for both ViewGroup and TextView elements. 
     // Is mapped to the UIAutomationText property
