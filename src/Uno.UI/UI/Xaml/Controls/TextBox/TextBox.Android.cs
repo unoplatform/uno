@@ -1,26 +1,25 @@
-﻿using Android.App;
+﻿using System;
+using System.Linq;
+using System.Threading.Tasks;
+using Android.App;
 using Android.Graphics;
+using Android.Runtime;
 using Android.Text;
 using Android.Util;
 using Android.Views;
 using Android.Views.InputMethods;
+using Android.Widget;
+using Uno.Disposables;
 using Uno.Extensions;
+using Uno.Logging;
+using Uno.UI;
+using Uno.UI.Extensions;
+using Windows.UI.Core;
+using Windows.UI.Text;
 using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using Uno.Disposables;
-using System.Text;
-using Uno.UI;
-using Windows.UI.Core;
-using Android.Runtime;
-using static Android.Widget.TextView;
-using Android.Widget;
 using Windows.UI.Xaml.Media;
-using System.Threading.Tasks;
-using Windows.UI.Text;
-using Uno.Logging;
+using static Android.Widget.TextView;
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -225,6 +224,11 @@ namespace Windows.UI.Xaml.Controls
 			if (_textBoxView != null)
 			{
 				_textBoxView.InputType = types;
+
+				if (!types.HasPasswordFlag())
+				{
+					UpdateFontPartial(this);
+				}
 			}
 		}
 
