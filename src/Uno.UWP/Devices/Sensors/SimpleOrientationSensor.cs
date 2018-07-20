@@ -71,5 +71,39 @@ namespace Windows.Devices.Sensors
 				OrientationChanged?.Invoke(this, args);
 			}
 		}
+
+		private static SimpleOrientation ToSimpleOrientation(double gravityX, double gravityY, double gravityZ, double threshold, SimpleOrientation previous)
+		{
+			// Ensures orientation only changes when within close range to new orientation.
+			if (Math.Abs(gravityX) > Math.Abs(gravityY) + threshold && Math.Abs(gravityX) > Math.Abs(gravityZ) + threshold)
+			{
+				if (gravityX > 0)
+				{
+					return SimpleOrientation.Rotated270DegreesCounterclockwise;
+				}
+
+				return SimpleOrientation.Rotated90DegreesCounterclockwise;
+			}
+			else if (Math.Abs(gravityY) > Math.Abs(gravityX) + threshold && Math.Abs(gravityY) > Math.Abs(gravityZ) + threshold)
+			{
+				if (gravityY > 0)
+				{
+					return SimpleOrientation.Rotated180DegreesCounterclockwise;
+				}
+
+				return SimpleOrientation.NotRotated;
+			}
+			else if (Math.Abs(gravityZ) > Math.Abs(gravityY) + threshold && Math.Abs(gravityZ) > Math.Abs(gravityX) + threshold)
+			{
+				if (gravityZ > 0)
+				{
+					return SimpleOrientation.Facedown;
+				}
+
+				return SimpleOrientation.Faceup;
+			}
+
+			return previous;
+		}
 	}
 }
