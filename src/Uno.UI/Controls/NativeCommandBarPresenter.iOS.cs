@@ -54,8 +54,8 @@ namespace Uno.UI.Controls
 				navigationBar.Superview.SetNeedsLayout();
 			}
 
-			// if device is iOS 10+ and a iPhone, we need to adapt the size of the bar based on the orientation
-			if (UIDevice.CurrentDevice.CheckSystemVersion(10, 0)
+			// if device is iOS 11+ and a iPhone, we need to adapt the size of the bar based on the orientation
+			if (UIDevice.CurrentDevice.CheckSystemVersion(11, 0)
 				&& UIDevice.CurrentDevice.UserInterfaceIdiom == UIUserInterfaceIdiom.Phone)
 			{
 				// Set height based on current orientation and listen to orientation changes
@@ -64,7 +64,7 @@ namespace Uno.UI.Controls
 			}
 			else
 			{
-				// Below iOS 10 or on iPads, status bar is always the same size
+				// Below iOS 11 or on iPads, status bar is always the same size
 				this.Height = _defaultCommandBarHeight;
 			}
 
