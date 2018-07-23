@@ -292,7 +292,7 @@
 					<Border BorderBrush="{TemplateBinding Background}"
 						    BorderThickness="{TemplateBinding Padding}">						
 						<!-- TODO: 1px line -->
-						<NativeCommandBarPresenter Height="44" />
+						<NativeCommandBarPresenter />
 					</Border>
 				</ControlTemplate>
 			</Setter.Value>
