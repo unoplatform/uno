@@ -478,6 +478,10 @@ namespace Windows.UI.Xaml.Controls
 					RemoveItems(args.OldStartingIndex, args.OldItems.Count, section);
 					break;
 				case NotifyCollectionChangedAction.Replace:
+					if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+					{
+						this.Log().Debug($"Replacing {args.NewItems.Count} items starting at {args.NewStartingIndex}");
+					}
 					ReplaceItems(args.NewStartingIndex, args.NewItems.Count, section);
 					break;
 				case NotifyCollectionChangedAction.Move:
