@@ -47,6 +47,16 @@ For a larger example and features demo:
 * Visit the [Uno Gallery and Playground](https://github.com/nventive/Uno.Playground) repository
 * Try the [WebAssembly Uno Playground](https://playground.platform.uno) live in your browser
 
+# Live Wasm Apps
+
+Here's a list of live apps made with the Uno Platform for WebAssembly.
+
+* The [Uno Platform Playground](https://playground.platform.uno) ([Source](https://github.com/nventive/Uno.Playground))
+* The [Uno.RoslynQuoter](http://roslynquoter-wasm.platform.uno/), a [Roslyn]() based C# analysis tool ([Source](https://github.com/nventive/Uno.RoslynQuoter))
+* The [Uno.BikeSharing360 App](http://bikerider-wasm.platform.uno/), a Xamarin.Forms app running on top of Uno for WebAssembly ([Source](https://github.com/nventive/Uno.BikeSharing360_MobileApps))
+
+Let us know if you've made your app publicly available, we'll list it here!
+
 # Contributing
 
 We're getting started, but there are many ways that you can contribute to the Uno Platform, as the UWP api is pretty large! Read our [contributing guide](CONTRIBUTING.md) to learn about our development process and how to propose bug fixes and improvements.
