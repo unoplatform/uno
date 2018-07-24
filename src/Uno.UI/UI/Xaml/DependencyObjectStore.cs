@@ -1377,8 +1377,7 @@ namespace Windows.UI.Xaml
 			{
 				if (frameworkPropertyMetadata.Options.HasLogicalChild())
 				{
-					var dependencyObject = newValue as DependencyObject;
-					dependencyObject?.SetParent(actualInstanceAlias);
+					UpdateAutoParent(actualInstanceAlias, previousValue, newValue);
 				}
 
 				if (frameworkPropertyMetadata.Options.HasAffectsMeasure())
@@ -1405,6 +1404,18 @@ namespace Windows.UI.Xaml
 					}
 				}
 			}
+			else
+			{
+				if (property.IsDependencyObjectCollection)
+				{
+					// Force the parent of a DependencyObjectCollection to the current instance/
+					// There is no public UWP API that allows to set the parent of a DependencyObject,
+					// even though defining a DependencyObjectCollection dependency property automatically propagates
+					// the compiled and normal bindings properly. We emulate this behavior here, but only if the
+					// metadata is PropertyMetadata, not FrameworkPropertyMetadata.
+					UpdateAutoParent(actualInstanceAlias, previousValue, newValue);
+				}
+			}
 
 			// Raise the changes for the callback register to the property itself
 			propertyMetadata.RaisePropertyChanged(actualInstanceAlias, eventArgs);
@@ -1418,6 +1429,26 @@ namespace Windows.UI.Xaml
 			foreach (var callback in _genericCallbacks.Data)
 			{
 				callback.Invoke(instanceRef, property, eventArgs);
+			}
+		}
+
+		/// <summary>
+		/// Updates the parent of the <paramref name="newValue"/> to the
+		/// <paramref name="actualInstanceAlias"/> and resets the parent of <paramref name="previousValue"/>.
+		/// </summary>
+		private static void UpdateAutoParent(DependencyObject actualInstanceAlias, object previousValue, object newValue)
+		{
+			if (
+				previousValue is DependencyObject previousObject
+				&& ReferenceEquals(previousObject.GetParent(), actualInstanceAlias)
+			)
+			{
+				previousObject.SetParent(null);
+			}
+
+			if (newValue is DependencyObject newObject)
+			{
+				newObject.SetParent(actualInstanceAlias);
 			}
 		}
 

@@ -18,39 +18,21 @@ using System.ComponentModel;
 using Uno.UI;
 using Windows.UI.Xaml;
 using System.Threading;
+using Microsoft.Extensions.Logging;
 
 namespace Uno.UI.Tests.BinderTests
 {
 	[TestClass]
 	public partial class Given_DependencyProperty
 	{
-#if !IS_UNO
-		private Uno.Patterns.IoC.Container _container;
-
-		[TestInitialize]
-		public void Init()
+		[AssemblyInitialize]
+		public static void Init(TestContext ctx)
 		{
-			_container = new Uno.Patterns.IoC.Container();
-			_container.Register<IResourceRegistry>(new Mock<IResourceRegistry>().Object);
-
-			ServiceLocator.SetLocatorProvider(() => _container);
-
-			LogManager
-				.Repository
-				.Loggers
-				.OfType<DebuggerLogger>()
-				.FirstOrDefault()
-				.SelectOrDefault(l =>
-				{
-					l.LogLevel = LogLevel.Debug;
-					l.RequiresAttachedDebugger = false;
-
-					return l;
-				});
-
-			LogManager.RefreshLogLevel();
+			Uno.Extensions.LogExtensionPoint
+				.AmbientLoggerFactory
+				.AddConsole(LogLevel.Debug)
+				.AddDebug(LogLevel.Debug);
 		}
-#endif
 
 		[TestMethod]
 		public void When_SetValue_and_NoMetadata()
@@ -1359,6 +1341,26 @@ namespace Uno.UI.Tests.BinderTests
 			Assert.AreEqual(2, SUT.GetValue(property2));
 			Assert.AreEqual(3, SUT.GetValue(property3));
 		}
+
+		[TestMethod]
+		public void When_NullablePropertyBinding()
+		{
+			var SUT = new Windows.UI.Xaml.Controls.Border();
+			SUT.Tag = new NullablePropertyOwner() { MyNullable = 42 };
+
+			var o2 = new Windows.UI.Xaml.Controls.Border();
+			o2.SetBinding(
+				Windows.UI.Xaml.Controls.Border.TagProperty,
+				new Binding() {
+					Path = "Tag.MyNullable.Value",
+					CompiledSource = SUT
+				}
+			);
+
+			o2.ApplyCompiledBindings();
+
+			Assert.AreEqual(42, o2.Tag);
+		}
 	}
 
     #region DependencyObjects
@@ -1442,6 +1444,38 @@ namespace Uno.UI.Tests.BinderTests
 		}
 
 		public MyDependencyObject3() { }
+	}
+
+	partial class NullablePropertyOwner : DependencyObject
+	{
+
+		#region MyNullable DependencyProperty
+
+		public int? MyNullable
+		{
+			get { return (int?)GetValue(MyNullableProperty); }
+			set { SetValue(MyNullableProperty, value); }
+		}
+
+		// Using a DependencyProperty as the backing store for MyNullable.  This enables animation, styling, binding, etc...
+		public static readonly DependencyProperty MyNullableProperty =
+			DependencyProperty.Register(
+				"MyNullable",
+				typeof(int?),
+				typeof(NullablePropertyOwner),
+				new PropertyMetadata(
+					null,
+					(s, e) => ((NullablePropertyOwner)s)?.OnMyNullableChanged(e)
+				)
+			);
+
+
+		private void OnMyNullableChanged(DependencyPropertyChangedEventArgs e)
+		{
+		}
+
+		#endregion
+
 	}
 
 	#endregion

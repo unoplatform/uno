@@ -43,6 +43,7 @@ namespace Windows.UI.Xaml
 		private readonly bool _isTypeNullable;
 		private readonly int _uniqueId;
 		private readonly bool _hasAutoDataContextInherit;
+		private readonly bool _isDependencyObjectCollection;
 		private readonly bool _hasWeakStorage;
 		private object _fallbackDefaultValue;
 
@@ -55,6 +56,7 @@ namespace Windows.UI.Xaml
 			_ownerType = attached || IsTypeDependencyObject(ownerType) ? ownerType : typeof(_View);
 			_isAttached = attached;
 			_hasAutoDataContextInherit = CanAutoInheritDataContext(propertyType);
+			_isDependencyObjectCollection = typeof(DependencyObjectCollection).IsAssignableFrom(propertyType);
 			_isTypeNullable = propertyType.IsNullableCached();
 			_uniqueId = Interlocked.Increment(ref _globalId);
 			_hasWeakStorage = (defaultMetadata as FrameworkPropertyMetadata)?.Options.HasWeakStorage() ?? false;
@@ -87,6 +89,11 @@ namespace Windows.UI.Xaml
 		/// Determines if the property storage should be backed by a <see cref="Uno.UI.DataBinding.ManagedWeakReference"/>
 		/// </summary>
 		internal bool HasWeakStorage => _hasWeakStorage;
+
+		/// <summary>
+		/// Determines if the property type inherits from <see cref="DependencyObjectCollection"/>
+		/// </summary>
+		internal bool IsDependencyObjectCollection => _isDependencyObjectCollection;
 
 		/// <summary>
 		/// Registers a dependency property on the specified <paramref name="ownerType"/>.

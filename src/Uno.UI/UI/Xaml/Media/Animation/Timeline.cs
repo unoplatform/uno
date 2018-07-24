@@ -147,7 +147,13 @@ namespace Windows.UI.Xaml.Media.Animation
 				{
 					var target = Target ?? GetTargetFromName();
 
-					_propertyInfo = new BindingPath(path: Storyboard.GetTargetProperty(this), fallbackValue: null, precedence: DependencyPropertyValuePrecedences.Animations);
+					_propertyInfo = new BindingPath(
+						path: Storyboard.GetTargetProperty(this),
+						fallbackValue: null,
+						precedence: DependencyPropertyValuePrecedences.Animations,
+						allowPrivateMembers: false
+					);
+
 					_propertyInfo.DataContext = target;
 				}
 

@@ -29,10 +29,6 @@ namespace Uno.UI.Tests.BinderTests.ManualPropagation
 		[TestInitialize]
 		public void Init()
 		{
-			Uno.Extensions.LogExtensionPoint
-				.AmbientLoggerFactory
-				.AddConsole(LogLevel.Debug)
-				.AddDebug(LogLevel.Debug);
 
 			global::System.Runtime.CompilerServices.RuntimeHelpers.RunClassConstructor(typeof(SubObject).TypeHandle);
 			global::System.Runtime.CompilerServices.RuntimeHelpers.RunClassConstructor(typeof(MyObject).TypeHandle);
@@ -59,13 +55,28 @@ namespace Uno.UI.Tests.BinderTests.ManualPropagation
 			Assert.AreEqual("", inner.MyStringProperty);
 
 			inner.SetBinding(
-				SubObject.MyStringPropertyProperty, 
-				new Binding() {
+				SubObject.MyStringPropertyProperty,
+				new Binding()
+				{
 				}
 			);
 
 			Assert.AreEqual(42, inner.LastDataContextChangedValue);
 			Assert.AreEqual("42", inner.MyStringProperty);
+		}
+
+		[TestMethod]
+		public void When_PropertyReset_Then_Parent_removed()
+		{
+			var SUT = new MyObject();
+			var inner = new SubObject();
+
+			SUT.SubObject = inner;
+
+			Assert.AreEqual(SUT, inner.GetParent());
+
+			SUT.SubObject = null;
+			Assert.IsNull(inner.GetParent());
 		}
 
 		[TestMethod]
@@ -354,7 +365,85 @@ namespace Uno.UI.Tests.BinderTests.ManualPropagation
 			Assert.IsNotNull(brushDataContextValue);
 			Assert.AreEqual(Windows.UI.Colors.Lime, brush.Color);
 		}
+
+		[TestMethod]
+		public void When_DependencyObjectCollection_And_XBind()
+		{
+			var SUT = new Border();
+
+			var root = new
+			{
+				MyElement = new Border() { Tag = true }
+			};
+
+			var group = new VisualStateGroup();
+			var state = new VisualState();
+
+			var compositeTrigger = new CompositeTrigger();
+
+			var stateTrigger = new StateTrigger();
+			stateTrigger.SetBinding(
+				StateTrigger.IsActiveProperty,
+				new Binding {
+					Path = "MyElement.Tag",
+					CompiledSource = root
+				}
+			);
+
+			Assert.AreEqual(false, stateTrigger.IsActive);
+
+			var triggers = new DependencyObjectCollection();
+			triggers.Add(stateTrigger);
+			compositeTrigger.TriggerCollection = triggers;
+
+			state.StateTriggers.Add(compositeTrigger);
+
+			group.States.Add(state);
+
+			VisualStateManager.SetVisualStateGroups(SUT, new List<VisualStateGroup>() { group });
+
+			SUT.ForceLoaded();
+			SUT.ApplyCompiledBindings();
+
+			Assert.AreEqual(true, stateTrigger.IsActive);
+
+			compositeTrigger.TriggerCollection = null;
+
+			Assert.IsNull(triggers.GetParent());
+		}
 	}
+
+	public partial class CompositeTrigger : StateTriggerBase
+	{
+		#region TriggerCollection DependencyProperty
+
+		public DependencyObjectCollection TriggerCollection
+		{
+			get => (DependencyObjectCollection)GetValue(TriggerCollectionProperty);
+			set => SetValue(TriggerCollectionProperty, value);
+		}
+
+		// Using a DependencyProperty as the backing store for TriggerCollection.  This enables animation, styling, binding, etc...
+		public static readonly DependencyProperty TriggerCollectionProperty =
+			DependencyProperty.Register(
+				"TriggerCollection",
+				typeof(DependencyObjectCollection),
+				typeof(CompositeTrigger),
+				new PropertyMetadata(
+					defaultValue: null,
+					propertyChangedCallback: (s, e) => ((CompositeTrigger)s)?.OnTriggerCollectionChanged(e)
+				)
+			);
+
+
+		private void OnTriggerCollectionChanged(DependencyPropertyChangedEventArgs e)
+		{
+		}
+
+		#endregion
+	}
+
+
 
 	public partial class MyObject : DependencyObject
 	{
