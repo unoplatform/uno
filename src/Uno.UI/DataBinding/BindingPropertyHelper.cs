@@ -318,6 +318,9 @@ namespace Uno.UI.DataBinding
 		/// earlier, the highest match would be returned, but the .NET core 
 		/// implementation found in Mono 4.2+ throws an ambiguous match exception.
 		/// This requires a recursive search using the <see cref="BindingFlags.DeclaredOnly"/> flag.
+		///
+		/// The private members lookup is present to enable the binding to
+		/// x:Name elements in x:Bind operations.
 		/// </remarks>
 		private static PropertyInfo GetPropertyInfo(Type type, string name)
 		{
@@ -328,7 +331,7 @@ namespace Uno.UI.DataBinding
 					BindingFlags.Instance |
 					BindingFlags.Static |
 					BindingFlags.Public |
-					BindingFlags.DeclaredOnly
+					BindingFlags.NonPublic
 				);
 
 				if (info != null)
@@ -464,16 +467,6 @@ namespace Uno.UI.DataBinding
 							{
 								return instance => indexerMethod(instance, indexerString);
 							}
-							else
-							{
-								var empty = Funcs.CreateMemoized<object>(() =>
-								{
-									_log.ErrorFormat("The Indexer property getter does not exist on type [{0}]", type);
-									return DependencyProperty.UnsetValue;
-								});
-
-								return instance => empty();
-							}
 						}
 					}
 				}
@@ -544,16 +537,6 @@ namespace Uno.UI.DataBinding
 
 							return instance => getter(instance, precedence);
 						}
-						else
-						{
-							var empty = Funcs.CreateMemoized<object>(() =>
-							{
-								_log.ErrorFormat("The [{0}] property getter does not exist on type [{1}]", property, type);
-								return DependencyProperty.UnsetValue;
-							});
-
-							return instance => empty();
-						}
 					}
 				}
 			}
@@ -585,7 +568,7 @@ namespace Uno.UI.DataBinding
 				var propertyInfo = GetPropertyInfo(type, property);
 				if (propertyInfo != null)
 				{
-					var getMethod = propertyInfo.GetGetMethod();
+					var getMethod = propertyInfo.GetGetMethod(nonPublic: true);
 
 					if (getMethod == null)
 					{
@@ -635,6 +618,17 @@ namespace Uno.UI.DataBinding
 
 						return null;
 					};
+				}
+
+				if(
+					type.IsPrimitive
+					&& property == "Value"
+				)
+				{
+					// This case is trying assuming that Value for a primitive is used for the case
+					// of a Nullable primitive.
+
+					return instance => instance;
 				}
 
 				// No getter has been found

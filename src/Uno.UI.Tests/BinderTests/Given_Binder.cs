@@ -19,57 +19,21 @@ using Uno.UI;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Media;
 using Uno.Conversion;
+using Microsoft.Extensions.Logging;
 
 namespace Uno.UI.Tests.BinderTests
 {
 	[TestClass]
 	public partial class Given_Binder
 	{
-#if !IS_UNO
-		private Uno.Patterns.IoC.Container _container;
-
 		[TestInitialize]
 		public void Init()
 		{
-			_container = new Uno.Patterns.IoC.Container();
-			_container.Register<IResourceRegistry>(new Mock<IResourceRegistry>().Object);
-			this._container.Register<IConversionExtensions>(
-				c => new DefaultConversionExtensions()
-			);
-			this._container.Register<IReflectionExtensions>(
-				c => new DefaultReflectionExtensions()
-			);
-
-			ServiceLocator.SetLocatorProvider(() => _container);
-
-			LogManager
-				.Repository
-				.Loggers
-				.OfType<DebuggerLogger>()
-				.FirstOrDefault()
-				.SelectOrDefault(l =>
-				{
-					l.LogLevel = LogLevel.Debug;
-					l.RequiresAttachedDebugger = false;
-
-					return l;
-				});
-
-			LogManager.RefreshLogLevel();
+			Uno.Extensions.LogExtensionPoint
+				.AmbientLoggerFactory
+				.AddConsole(LogLevel.Debug)
+				.AddDebug(LogLevel.Debug);
 		}
-#endif
-		//[TestInitialize]
-		//public void Initialize()
-		//{
-		//	DependencyProperty.ClearRegistry();
-		//}
-
-		//[TestCleanup]
-		//public void Cleanup()
-		//{
-		//	DependencyProperty.ClearRegistry();
-		//}
-
 
 		[TestMethod]
 		public void When_Inherited_data_Context()
@@ -637,6 +601,25 @@ namespace Uno.UI.Tests.BinderTests
 			var props = MyObjectTest.MyPropertyProperty.GetMetadata(typeof(MyObjectTest));
 		}
 
+		[TestMethod]
+		public void When_PrivateProperty_And_XBind()
+		{
+			var source = new PrivateProperty(42);
+			var SUT = new Windows.UI.Xaml.Controls.Grid();
+
+			SUT.SetBinding(
+				Windows.UI.Xaml.Controls.Grid.TagProperty,
+				new Binding() {
+					Path = "MyProperty",
+					CompiledSource = source
+				}
+			);
+
+			SUT.ApplyCompiledBindings();
+
+			Assert.AreEqual(42, SUT.Tag);
+		}
+
 		public partial class BaseTarget : DependencyObject
 		{
 			private List<object> _dataContextChangedList = new List<object>();
@@ -861,6 +844,16 @@ namespace Uno.UI.Tests.BinderTests
 			{
 				DependencyObjectExtensions.SetValue(view, MyValueProperty, row);
 			}
+		}
+
+		public partial class PrivateProperty
+		{
+			public PrivateProperty(int value)
+			{
+				MyProperty = value;
+			}
+
+			private int MyProperty { get; set; }
 		}
 	}
 
