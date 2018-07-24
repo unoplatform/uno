@@ -136,7 +136,7 @@ namespace Windows.UI.Xaml
 
 		private void BuildBindingPath(DependencyPropertyValuePrecedences precedence)
 		{
-			_bindingPath = new BindingPath(path: Target.Path, fallbackValue: null, precedence: precedence);
+			_bindingPath = new BindingPath(path: Target.Path, fallbackValue: null, precedence: precedence, allowPrivateMembers: false);
 			_bindingPath.DataContext = Target.Target;
 		}
 

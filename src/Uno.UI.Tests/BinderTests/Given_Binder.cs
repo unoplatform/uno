@@ -609,7 +609,8 @@ namespace Uno.UI.Tests.BinderTests
 
 			SUT.SetBinding(
 				Windows.UI.Xaml.Controls.Grid.TagProperty,
-				new Binding() {
+				new Binding()
+				{
 					Path = "MyProperty",
 					CompiledSource = source
 				}
@@ -618,6 +619,25 @@ namespace Uno.UI.Tests.BinderTests
 			SUT.ApplyCompiledBindings();
 
 			Assert.AreEqual(42, SUT.Tag);
+		}
+
+		[TestMethod]
+		public void When_PrivateProperty_And_Binding()
+		{
+			var source = new PrivateProperty(42);
+			var SUT = new Windows.UI.Xaml.Controls.Grid();
+
+			SUT.SetBinding(
+				Windows.UI.Xaml.Controls.Grid.TagProperty,
+				new Binding()
+				{
+					Path = "MyProperty"
+				}
+			);
+
+			SUT.DataContext = source;
+
+			Assert.IsNull(SUT.Tag);
 		}
 
 		public partial class BaseTarget : DependencyObject

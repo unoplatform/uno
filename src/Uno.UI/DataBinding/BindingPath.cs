@@ -19,7 +19,6 @@ namespace Uno.UI.DataBinding
 	internal class BindingPath : IDisposable, IValueChangedListener
 	{
 		private static List<PropertyChangedRegistrationHandler> _propertyChangedHandlers = new List<PropertyChangedRegistrationHandler>();
-
 		private readonly string _path;
 
 		private BindingItem _chain;
@@ -55,7 +54,7 @@ namespace Uno.UI.DataBinding
 		/// <param name="path"></param>
 		/// <param name="fallbackValue">Provides the fallback value to apply when the source is invalid.</param>
 		public BindingPath(string path, object fallbackValue) :
-			this(path, fallbackValue, null)
+			this(path, fallbackValue, null, false)
 		{
 		}
 
@@ -65,7 +64,8 @@ namespace Uno.UI.DataBinding
 		/// <param name="path">The path to the property</param>
 		/// <param name="fallbackValue">Provides the fallback value to apply when the source is invalid.</param>
 		/// <param name="precedence">The precedence value to manipulate if the path matches to a DependencyProperty.</param>
-		internal BindingPath(string path, object fallbackValue, DependencyPropertyValuePrecedences? precedence)
+		/// <param name="allowPrivateMembers">Allows for the binding engine to include private properties in the lookup</param>
+		internal BindingPath(string path, object fallbackValue, DependencyPropertyValuePrecedences? precedence, bool allowPrivateMembers)
 		{
 			_path = (path ?? "").Trim();
 
@@ -77,7 +77,7 @@ namespace Uno.UI.DataBinding
 
 			foreach (var item in parsedItems.Reverse())
 			{
-				bindingItem = new BindingItem(bindingItem, item, fallbackValue, precedence);
+				bindingItem = new BindingItem(bindingItem, item, fallbackValue, precedence, allowPrivateMembers);
 				_chain = bindingItem;
 
 				if (_value == null)
@@ -351,7 +351,7 @@ namespace Uno.UI.DataBinding
 			private bool _disposed;
 			private readonly DependencyPropertyValuePrecedences? _precedence;
 			private readonly object _fallbackValue;
-
+			private readonly bool _allowPrivateMembers;
 			private ValueGetterHandler _valueGetter;
 			private ValueGetterHandler _precedenceSpecificGetter;
 			private ValueGetterHandler _substituteValueGetter;
@@ -361,16 +361,17 @@ namespace Uno.UI.DataBinding
 			private Type _dataContextType;
 
 			public BindingItem(BindingItem next, string property, object fallbackValue) :
-				this(next, property, fallbackValue, null)
+				this(next, property, fallbackValue, null, false)
 			{
 			}
 
-			internal BindingItem(BindingItem next, string property, object fallbackValue, DependencyPropertyValuePrecedences? precedence)
+			internal BindingItem(BindingItem next, string property, object fallbackValue, DependencyPropertyValuePrecedences? precedence, bool allowPrivateMembers)
 			{
 				Next = next;
 				PropertyName = property;
 				_precedence = precedence;
 				_fallbackValue = fallbackValue;
+				_allowPrivateMembers = allowPrivateMembers;
 			}
 
 			public object DataContext
@@ -541,9 +542,7 @@ namespace Uno.UI.DataBinding
 			{
 				if (_valueGetter == null && _dataContextType != null)
 				{
-					_valueGetter = _precedence == null ?
-						BindingPropertyHelper.GetValueGetter(_dataContextType, PropertyName) :
-						BindingPropertyHelper.GetValueGetter(_dataContextType, PropertyName, _precedence.Value);
+					_valueGetter = BindingPropertyHelper.GetValueGetter(_dataContextType, PropertyName, _precedence, _allowPrivateMembers);
 				}
 			}
 
@@ -551,9 +550,7 @@ namespace Uno.UI.DataBinding
 			{
 				if (_precedenceSpecificGetter == null && _dataContextType != null)
 				{
-					_precedenceSpecificGetter = _precedence == null ?
-						BindingPropertyHelper.GetValueGetter(_dataContextType, PropertyName) :
-						BindingPropertyHelper.GetPrecedenceSpecificValueGetter(_dataContextType, PropertyName, _precedence.Value);
+					_precedenceSpecificGetter = BindingPropertyHelper.GetValueGetter(_dataContextType, PropertyName, _precedence, _allowPrivateMembers);
 				}
 			}
 

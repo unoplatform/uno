@@ -271,7 +271,12 @@ namespace Windows.UI.Xaml.Data
 
 			_targetOwnerType = targetPropertyDetails.Property.OwnerType;
 			TargetPropertyDetails = targetPropertyDetails;
-			_bindingPath = new BindingPath(path: ParentBinding.Path, fallbackValue: ParentBinding.FallbackValue);
+			_bindingPath = new BindingPath(
+				path: ParentBinding.Path,
+				fallbackValue: ParentBinding.FallbackValue,
+				precedence: null,
+				allowPrivateMembers: ParentBinding.CompiledSource != null
+			);
 			_boundPropertyType = targetPropertyDetails.Property.Type;
 
 			ExplicitSource = binding.Source;
