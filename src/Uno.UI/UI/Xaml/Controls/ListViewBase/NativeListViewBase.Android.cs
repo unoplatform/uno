@@ -14,7 +14,7 @@ namespace Windows.UI.Xaml.Controls
 		/// Is the RecyclerView currently undergoing animated scrolling, either user-initiated or programmatic.
 		/// </summary>
 		private bool _isInAnimatedScroll;
-		
+
 		internal BufferViewCache ViewCache { get; }
 
 		public NativeListViewBase() : base(ContextHelper.Current)
@@ -194,6 +194,40 @@ namespace Windows.UI.Xaml.Controls
 			return NativeLayout.CanCurrentlyScrollVertically(direction);
 		}
 
+		protected override void AttachViewToParent(View child, int index, ViewGroup.LayoutParams layoutParams)
+		{
+			var vh = GetChildViewHolder(child);
+			if (vh != null)
+			{
+				vh.IsDetached = false;
+			}
+			base.AttachViewToParent(child, index, layoutParams);
+		}
+
+		protected override void DetachViewFromParent(int index)
+		{
+			var view = GetChildAt(index);
+			if (view != null)
+			{
+				var vh = GetChildViewHolder(view);
+				if (vh != null)
+				{
+					vh.IsDetached = true;
+				}
+			}
+			base.DetachViewFromParent(index);
+		}
+
+		protected override void RemoveDetachedView(View child, bool animate)
+		{
+			var vh = GetChildViewHolder(child);
+			if (vh != null)
+			{
+				vh.IsDetached = false;
+			}
+			base.RemoveDetachedView(child, animate);
+		}
+
 		public void Refresh()
 		{
 			CurrentAdapter?.NotifyDataSetChanged();
@@ -216,6 +250,8 @@ namespace Windows.UI.Xaml.Controls
 				asVirtualizingPanelLayout.Padding = this.Padding;
 			}
 		}
+
+		internal new UnoViewHolder GetChildViewHolder(View view) => base.GetChildViewHolder(view) as UnoViewHolder;
 
 		bool ILayoutConstraints.IsWidthConstrained(View requester)
 		{

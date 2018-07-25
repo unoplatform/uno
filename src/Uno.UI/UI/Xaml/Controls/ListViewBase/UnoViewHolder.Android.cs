@@ -10,7 +10,7 @@ namespace Windows.UI.Xaml.Controls
 		public UnoViewHolder(ContentControl itemView) : base(itemView) { }
 
 		/// <summary>
-		/// Has the ItemView been detached from the window?
+		/// Has the ItemView been detached from the window? This is a public mirror of the internal ViewHolder.isTmpDetached() method.
 		/// </summary>
 		public bool IsDetached { get; set; }
 	}

@@ -1490,7 +1490,6 @@ namespace Windows.UI.Xaml.Controls
 			if (holder.IsDetached)
 			{
 				AttachView(view);
-				holder.IsDetached = false;
 			}
 		}
 
@@ -1503,7 +1502,6 @@ namespace Windows.UI.Xaml.Controls
 			if (!holder.IsDetached)
 			{
 				DetachView(view);
-				holder.IsDetached = true;
 			}
 		}
 
