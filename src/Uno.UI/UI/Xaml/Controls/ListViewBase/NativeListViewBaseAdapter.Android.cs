@@ -16,6 +16,7 @@ using Java.Lang;
 using System.Threading.Tasks;
 using System.Diagnostics;
 using Windows.UI.Core;
+using Uno.UI.DataBinding;
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -27,8 +28,19 @@ namespace Windows.UI.Xaml.Controls
 		private const int FooterItemType = -3;
 
 		private const int MaxRecycledViewsPerViewType = 10;
-		
-		internal NativeListViewBase Owner { get; set; }
+
+
+		private ManagedWeakReference _ownerWeakReference;
+
+		internal NativeListViewBase Owner
+		{
+			get => _ownerWeakReference?.Target as NativeListViewBase;
+			set
+			{
+				WeakReferencePool.ReturnWeakReference(this, _ownerWeakReference);
+				_ownerWeakReference = WeakReferencePool.RentWeakReference(this, value);
+			}
+		}
 
 		private ListViewBase XamlParent { get { return Owner?.XamlParent; } }
 
