@@ -13,6 +13,7 @@ using System.Runtime.CompilerServices;
 using Windows.UI.Xaml.Controls.Primitives;
 using Android.Graphics;
 using Uno.UI.Extensions;
+using Uno.UI.DataBinding;
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -77,8 +78,18 @@ namespace Windows.UI.Xaml.Controls
 		{
 			ResetLayoutInfo();
 		}
+		
+		private ManagedWeakReference _xamlParentWeakReference;
 
-		public ListViewBase XamlParent { get; set; }
+		public ListViewBase XamlParent
+		{
+			get => _xamlParentWeakReference?.Target as ListViewBase;
+			set
+			{
+				WeakReferencePool.ReturnWeakReference(this, _xamlParentWeakReference);
+				_xamlParentWeakReference = WeakReferencePool.RentWeakReference(this, value);
+			}
+		}
 
 		private BufferViewCache ViewCache => XamlParent?.NativePanel.ViewCache;
 
