@@ -10,6 +10,17 @@ Use the UWP tooling from Windows in [Visual Studio](https://www.visualstudio.com
 
 Visit [our documentation](doc/index.md) for more details.
 
+# Live WebAssembly Apps
+
+Here's a list of live apps made with the Uno Platform for WebAssembly.
+
+* The [Uno Platform Playground](http://playground.platform.uno) ([Source](https://github.com/nventive/Uno.Playground))
+* The [Uno.RoslynQuoter](http://roslynquoter-wasm.platform.uno/), a [Roslyn]() based C# analysis tool ([Source](https://github.com/nventive/Uno.RoslynQuoter))
+* The [Uno.BikeSharing360 App](http://bikerider-wasm.platform.uno/), a Xamarin.Forms app running on top of Uno for WebAssembly ([Source](https://github.com/nventive/Uno.BikeSharing360_MobileApps))
+* The [Uno.WindowsStateTriggers App](http://winstatetriggers-wasm.platform.uno/), a demo of the [Morten's WindowsStateTriggers](https://github.com/dotMorten/WindowsStateTriggers) ([Source](https://github.com/nventive/Uno.WindowsStateTriggers))
+
+Let us know if you've made your app publicly available, we'll list it here!
+
 # Uno Features
 * Supported platforms:
     * Windows (via the standard UWP Toolkit)
@@ -26,11 +37,16 @@ Visit [our documentation](doc/index.md) for more details.
     * [Styling](https://docs.microsoft.com/en-us/windows/uwp/design/controls-and-patterns/xaml-styles)
     * [Rich Animations](https://docs.microsoft.com/en-us/windows/uwp/design/motion/xaml-animation)
 * UWP Code Support
-    * [MVVM Light Toolkit](http://www.mvvmlight.net/)
-    * Microsoft XAML Behaviors
-    * [Prism](https://prismlibrary.github.io/) (soon)[<sup>^</sup>](https://github.com/nventive/Uno/issues/60#issuecomment-400278037)
+    * [Windows Community Toolkit](https://github.com/nventive/Uno.WindowsCommunityToolkit)
+    * [MVVM Light Toolkit](https://github.com/nventive/uno.mvvmlight)
+    * [Microsoft XAML Behaviors](https://github.com/nventive/Uno.XamlBehaviors)
+    * [Prism](https://github.com/nventive/Uno.Prism)
     * [MVVMCross](https://www.mvvmcross.com/) (soon)
-    * [ReactiveUI](https://reactiveui.net/) (soon)
+    * [ReactiveUI](https://github.com/nventive/Uno.ReactiveUI)
+    * [WindowsStateTriggers](https://github.com/nventive/Uno.WindowsStateTriggers)
+    * [Xamarin.Forms for UWP](https://github.com/nventive/Uno.Xamarin.Forms)
+    * [Rx.NET](https://github.com/nventive/Uno.Rx.NET)
+    * [ColorCode-Universal](https://github.com/nventive/Uno.ColorCode-Universal)
     * Any UWP project
 * Responsive Design
     * [Visual State Manager](https://docs.microsoft.com/en-us/uwp/api/Windows.UI.Xaml.VisualStateManager)
@@ -47,16 +63,11 @@ For a larger example and features demo:
 * Visit the [Uno Gallery and Playground](https://github.com/nventive/Uno.Playground) repository
 * Try the [WebAssembly Uno Playground](https://playground.platform.uno) live in your browser
 
-# Live Wasm Apps
+# Have questions? Feature requests? Issues?
 
-Here's a list of live apps made with the Uno Platform for WebAssembly.
-
-* The [Uno Platform Playground](https://playground.platform.uno) ([Source](https://github.com/nventive/Uno.Playground))
-* The [Uno.RoslynQuoter](http://roslynquoter-wasm.platform.uno/), a [Roslyn]() based C# analysis tool ([Source](https://github.com/nventive/Uno.RoslynQuoter))
-* The [Uno.BikeSharing360 App](http://bikerider-wasm.platform.uno/), a Xamarin.Forms app running on top of Uno for WebAssembly ([Source](https://github.com/nventive/Uno.BikeSharing360_MobileApps))
-
-Let us know if you've made your app publicly available, we'll list it here!
+Make sure to visit our [FAQ](doc/articles/faq.md), [create an issue](https://github.com/nventive/Uno/issues) or [visit our gitter](https://gitter.im/uno-platform/Lobby).
 
 # Contributing
 
-We're getting started, but there are many ways that you can contribute to the Uno Platform, as the UWP api is pretty large! Read our [contributing guide](CONTRIBUTING.md) to learn about our development process and how to propose bug fixes and improvements.
+We're getting started, but there are many ways that you can contribute to the Uno Platform, as the UWP api is
+pretty large! Read our [contributing guide](CONTRIBUTING.md) to learn about our development process and how to propose bug fixes and improvements.

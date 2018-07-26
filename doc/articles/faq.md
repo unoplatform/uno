@@ -27,7 +27,13 @@ You need to make sure that:
 If you're still having issues, **restart Visual Studio** and/or **unload the iOS/Android and WASM projects**, using right-click on the project, then **unload**.
 
 ## Is Uno.UI's Performance on WebAssembly going to improve
-Yes! The current performance is bound the runtime interpreted mode of mono-wasm. The Mono is working on implementing **AOT** compilation, which will improve significantly the performance. See [Miguel de Icaza's status update](https://gitter.im/aspnet/Blazor?at=5b1ab670dd54362753f8a168) for more details.
+Yes! The current performance is bound the runtime interpreted mode of mono-wasm. The Mono is working on implementing **AOT** compilation,
+which will improve significantly the performance. See [Miguel de Icaza's status update](https://gitter.im/aspnet/Blazor?at=5b1ab670dd54362753f8a168) for more details.
+
+## Why is Chrome slower than Firefox or Microsoft Edge to execute mono-wasm based applications ?
+
+This is a [known Chromium issue](https://bugs.chromium.org/p/v8/issues/detail?id=7838#c7), which should be improving with
+the release of [Chrome 69](https://www.chromium.org/developers/calendar).
 
 ## Does Uno.UI support macOS ?
 
