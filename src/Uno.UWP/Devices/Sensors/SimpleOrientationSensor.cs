@@ -1,4 +1,5 @@
 using System;
+using Windows.UI.Core;
 
 namespace Windows.Devices.Sensors
 {
@@ -60,16 +61,19 @@ namespace Windows.Devices.Sensors
 
 		private void SetCurrentOrientation(SimpleOrientation orientation)
 		{
-			if (_currentOrientation != orientation)
+			CoreDispatcher.Main.RunAsync(CoreDispatcherPriority.Normal, async ct =>
 			{
-				_currentOrientation = orientation;
-				var args = new SimpleOrientationSensorOrientationChangedEventArgs()
+				if (_currentOrientation != orientation)
 				{
-					Orientation = orientation,
-					Timestamp = DateTimeOffset.Now,
-				};
-				OrientationChanged?.Invoke(this, args);
-			}
+					_currentOrientation = orientation;
+					var args = new SimpleOrientationSensorOrientationChangedEventArgs()
+					{
+						Orientation = orientation,
+						Timestamp = DateTimeOffset.Now,
+					};
+					OrientationChanged?.Invoke(this, args);
+				}
+			});
 		}
 
 		private static SimpleOrientation ToSimpleOrientation(double gravityX, double gravityY, double gravityZ, double threshold, SimpleOrientation previous)
