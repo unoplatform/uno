@@ -15,6 +15,7 @@ using Android.OS;
 using Android.Widget;
 using Android.Graphics.Drawables;
 using Android.Graphics;
+using Android.Util;
 using Windows.UI.ViewManagement;
 
 namespace Windows.UI.Xaml
@@ -38,11 +39,18 @@ namespace Windows.UI.Xaml
 		private void Initialize()
 		{
 			Instance = this;
-			RaiseConfigurationChanges(Android.App.Application.Context.Resources.Configuration);
 
 			_inputPane = InputPane.GetForCurrentView();
 			_inputPane.Showing += OnInputPaneVisibilityChanged;
 			_inputPane.Hiding += OnInputPaneVisibilityChanged;
+		}
+
+		public override void OnAttachedToWindow()
+		{
+			base.OnAttachedToWindow();
+			// Cannot call this in ctor: see
+			// https://stackoverflow.com/questions/10593022/monodroid-error-when-calling-constructor-of-custom-view-twodscrollview#10603714
+			RaiseConfigurationChanges(Resources.DisplayMetrics);
 		}
 
 		private void OnInputPaneVisibilityChanged(InputPane sender, InputPaneVisibilityEventArgs args)
@@ -133,7 +141,7 @@ namespace Windows.UI.Xaml
 		{
 			base.OnResume();
 
-			RaiseConfigurationChanges(Android.App.Application.Context.Resources.Configuration);
+			RaiseConfigurationChanges(Resources.DisplayMetrics);
 		}
 
 		protected override void OnPause()
@@ -156,12 +164,12 @@ namespace Windows.UI.Xaml
 		{
 			base.OnConfigurationChanged(newConfig);
 
-			RaiseConfigurationChanges(newConfig);
+			RaiseConfigurationChanges(Resources.DisplayMetrics);
 		}
 
-		private static void RaiseConfigurationChanges(Configuration newConfig)
+		private static void RaiseConfigurationChanges(DisplayMetrics displayMetrics)
 		{
-			Windows.UI.Xaml.Window.Current?.RaiseNativeSizeChanged(newConfig.ScreenWidthDp, newConfig.ScreenHeightDp);
+			Xaml.Window.Current?.RaiseNativeSizeChanged(displayMetrics.WidthPixels, displayMetrics.HeightPixels);
 			ViewHelper.RefreshFontScale();
 		}
 
