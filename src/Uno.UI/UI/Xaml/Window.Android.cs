@@ -50,22 +50,24 @@ namespace Windows.UI.Xaml
 			return _current;
 		}
 
-		internal void RaiseNativeSizeChanged(int screenWidthDp, int screenHeightDp)
+		internal void RaiseNativeSizeChanged(int screenWidth, int screenHeight)
 		{
-			var newBounds = new Rect(0, 0, screenWidthDp, screenHeightDp);
+			var newBounds = ViewHelper.PhysicalToLogicalPixels(new Rect(0, 0, screenWidth, screenHeight));
 
 			if (Bounds != newBounds)
 			{
 				Bounds = newBounds;
 
-				ApplicationView.GetForCurrentView().VisibleBounds = newBounds;
-
 				RaiseSizeChanged(
 					new WindowSizeChangedEventArgs(
-						new Windows.Foundation.Size(screenWidthDp, screenHeightDp)
+						new Windows.Foundation.Size(Bounds.Width, Bounds.Height)
 					)
 				);
 			}
+
+			var visibleBoundsConfig = Android.App.Application.Context.Resources.Configuration;
+			var newVisibleBounds = new Rect(0, 0, visibleBoundsConfig.ScreenWidthDp, visibleBoundsConfig.ScreenHeightDp);
+			ApplicationView.GetForCurrentView().VisibleBounds = newVisibleBounds;
 		}
 	}
 }
