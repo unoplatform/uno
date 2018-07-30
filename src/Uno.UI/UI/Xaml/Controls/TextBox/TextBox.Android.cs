@@ -67,6 +67,7 @@ namespace Windows.UI.Xaml.Controls
 
 			PointerPressed += OnPointerPressed;
 			SetupTextBoxView();
+			UpdateCommonStates();
 		}
 
 		// TODO: remove event handler when override is correctly called from Control
