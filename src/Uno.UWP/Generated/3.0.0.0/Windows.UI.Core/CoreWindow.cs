@@ -95,16 +95,6 @@ namespace Windows.UI.Core
 		#endif
 		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
 		[global::Uno.NotImplemented]
-		public  global::Windows.UI.Core.CoreDispatcher Dispatcher
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member CoreDispatcher CoreWindow.Dispatcher is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
-		[global::Uno.NotImplemented]
 		public  bool Visible
 		{
 			get

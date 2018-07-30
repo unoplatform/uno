@@ -8,6 +8,7 @@ namespace Windows.UI.Core
 {
 	public partial class CoreWindow 
 	{
-
+		public global::Windows.UI.Core.CoreDispatcher Dispatcher
+			=> CoreDispatcher.Main;
 	}
 }
