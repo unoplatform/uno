@@ -47,6 +47,8 @@ namespace Windows.Graphics.Display
 			return _instance;
 		}
 
+#pragma warning disable CS0067
 		public event Foundation.TypedEventHandler<DisplayInformation, object> OrientationChanged;
+#pragma warning restore CS0067
 	}
 }

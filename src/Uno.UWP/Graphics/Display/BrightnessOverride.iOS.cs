@@ -5,7 +5,7 @@ using System.Text;
 using Uno.Extensions;
 using UIKit;
 using Uno.Logging;
-using Windows.UI.Xaml;
+using Windows.ApplicationModel.Core;
 
 namespace Windows.Graphics.Display
 {
@@ -32,8 +32,8 @@ namespace Windows.Graphics.Display
 			this.Log().InfoIfEnabled(() => "Starting brightness override");
 
 			//This was added to make sure the brightness is restored when re-opening the app after a lock.
-			Application.Current.Resuming -= OnResuming;
-			Application.Current.Resuming += OnResuming;
+			CoreApplication.Resuming -= OnResuming;
+			CoreApplication.Resuming += OnResuming;
 
 			_defaultBrightnessLevel = Window.Brightness;
 
@@ -51,7 +51,7 @@ namespace Windows.Graphics.Display
 			{
 				this.Log().InfoIfEnabled(() => "Stopping brightness override");
 
-				Application.Current.Resuming -= OnResuming;
+				CoreApplication.Resuming -= OnResuming;
 				Window.Brightness = (float)_defaultBrightnessLevel;
 				GetForCurrentView().IsOverrideActive = false;
 			}
