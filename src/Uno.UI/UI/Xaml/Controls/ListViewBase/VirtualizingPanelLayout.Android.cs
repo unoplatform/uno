@@ -78,7 +78,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			ResetLayoutInfo();
 		}
-		
+
 		private ManagedWeakReference _xamlParentWeakReference;
 
 		public ListViewBase XamlParent
@@ -328,7 +328,22 @@ namespace Windows.UI.Xaml.Controls
 		/// </summary>
 		public override void RemoveAllViews()
 		{
+			var views = new List<ContentControl>();
+			for (int i = 0; i < ChildCount; i++)
+			{
+				var view = GetChildAt(i);
+				if (view is ContentControl contentControl)
+				{
+					views.Add(contentControl);
+				}
+			}
 			base.RemoveAllViews();
+
+			// Clean up container after removing from visual tree, to ensure it doesn't have inherited DataContext (which would needlessly recreate template)
+			foreach (var contentControl in views)
+			{
+				XamlParent.CleanUpContainer(contentControl);
+			}
 			ContentOffset = 0;
 
 			ResetLayoutInfo();

@@ -165,19 +165,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			{
 				selectorItem.IsSelected = IsSelected(IndexFromContainer(element));
 			}
-
-			PrepareContainerForItemOverridePartial(element, item);
 		}
-
-		protected override void ClearContainerForItemOverride(DependencyObject element, object item)
-		{
-			base.ClearContainerForItemOverride(element, item);
-
-			ClearContainerForItemOverridePartial(element, item);
-		}
-
-		partial void PrepareContainerForItemOverridePartial(DependencyObject element, object item);
-		partial void ClearContainerForItemOverridePartial(DependencyObject element, object item);
 
 		internal virtual bool IsSelected(int index)
 		{
