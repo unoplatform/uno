@@ -26,9 +26,7 @@ namespace Windows.UI.Popups
 				.Select((command, index) => UIAlertAction
 					.Create(
 						title: command.Label ?? "",
-						style: index == CancelCommandIndex
-							? UIAlertActionStyle.Cancel
-							: UIAlertActionStyle.Default,
+						style: UIAlertActionStyle.Default,
 						handler: _ =>
 						{
 							command.Invoked?.Invoke(command);
