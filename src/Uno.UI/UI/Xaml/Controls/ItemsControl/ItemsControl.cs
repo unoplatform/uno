@@ -102,7 +102,7 @@ namespace Windows.UI.Xaml.Controls
 			get { return _internalItemsPanelRoot; }
 			set
 			{
-				if(_internalItemsPanelRoot is IDependencyObjectStoreProvider provider)
+				if (_internalItemsPanelRoot is IDependencyObjectStoreProvider provider)
 				{
 					provider.SetParent(null);
 				}
@@ -866,14 +866,35 @@ namespace Windows.UI.Xaml.Controls
 				{
 					if (removed is DependencyObject removedObject)
 					{
-						ClearContainerForItemOverride(removedObject, removedObject is ContentPresenter p ? p.Content : removedObject);
+						CleanUpContainer(removedObject);
 					}
 				}
 			}
 		}
 
-		protected virtual void ClearContainerForItemOverride(global::Windows.UI.Xaml.DependencyObject element, object item)
+		protected virtual void ClearContainerForItemOverride(DependencyObject element, object item) { }
+
+		/// <summary>
+		/// Unset content of container. This should be called when the container is no longer going to be used.
+		/// </summary>
+		internal void CleanUpContainer(global::Windows.UI.Xaml.DependencyObject element)
 		{
+			object item;
+			switch (element)
+			{
+				case ContentPresenter cp when cp is ContentPresenter:
+					item = cp.Content;
+					break;
+				case ContentControl cc when cc is ContentControl:
+					item = cc.Content;
+					break;
+				default:
+					item = element;
+					break;
+
+			}
+			ClearContainerForItemOverride(element, item);
+
 			if (element is ContentPresenter presenter
 				&& (
 				presenter.ContentTemplate == ItemTemplate
@@ -887,6 +908,10 @@ namespace Windows.UI.Xaml.Controls
 
 				presenter.ClearValue(ContentPresenter.ContentTemplateProperty);
 				presenter.ClearValue(ContentPresenter.ContentTemplateSelectorProperty);
+			}
+			else if (element is ContentControl contentControl)
+			{
+				contentControl.ClearValue(DataContextProperty);
 			}
 		}
 
@@ -1021,7 +1046,7 @@ namespace Windows.UI.Xaml.Controls
 
 		public object ItemFromContainer(DependencyObject container)
 		{
-			var index = (int)container.GetValue(IndexForItemContainerProperty);
+			var index = IndexFromContainer(container);
 			var item = ItemFromIndex(index);
 
 			return item;
@@ -1167,7 +1192,7 @@ namespace Windows.UI.Xaml.Controls
 		/// </remarks>
 		internal void SetItemsPresenter(ItemsPresenter itemsPresenter)
 		{
-			if(_itemsPresenter != itemsPresenter)
+			if (_itemsPresenter != itemsPresenter)
 			{
 				_itemsPresenter = itemsPresenter;
 				_itemsPresenter?.SetItemsPanel(InternalItemsPanelRoot);

@@ -574,8 +574,7 @@ namespace Windows.UI.Xaml.Controls
 			{
 				if (record.View != null)
 				{
-					Layout.TryDetachView(record.View);
-					Layout.RemoveDetachedView(record.View);
+					CleanUpView(record.View);
 				}
 			}
 
@@ -583,8 +582,7 @@ namespace Windows.UI.Xaml.Controls
 			{
 				if (record.View != null)
 				{
-					Layout.TryDetachView(record.View);
-					Layout.RemoveDetachedView(record.View);
+					CleanUpView(record.View);
 				}
 			}
 
@@ -592,8 +590,7 @@ namespace Windows.UI.Xaml.Controls
 			{
 				foreach (var holder in kvp.Value)
 				{
-					Layout.TryDetachView(holder.ItemView);
-					Layout.RemoveDetachedView(holder.ItemView);
+					CleanUpView(holder.ItemView);
 				}
 			}
 
@@ -601,6 +598,13 @@ namespace Windows.UI.Xaml.Controls
 			_leadingBuffer.Clear();
 			_intermediateCache.Clear();
 			_isInitiallyPopulated = false;
+
+			void CleanUpView(View viewToClean)
+			{
+				Layout.TryDetachView(viewToClean);
+				Layout.RemoveDetachedView(viewToClean);
+				_owner.XamlParent.CleanUpContainer(viewToClean as ContentControl);
+			}
 		}
 
 		private void NotifyViewRecycled(UnoViewHolder holder)
