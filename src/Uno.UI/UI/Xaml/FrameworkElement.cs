@@ -45,6 +45,18 @@ namespace Windows.UI.Xaml
 
 		private bool _constraintsChanged;
 
+		/// <remarks>
+		/// Both flags are present to avoid recursion (setting a style causes the root template
+		/// element to apply force the parent to apply its style, reverting the change that
+		/// is being made) caused by the shortcomings of the application of default styles
+		/// management. Once default/implicit styles are implemented properly,
+		/// this should be removed.
+		///
+		/// See https://github.com/nventive/Uno/issues/119 for details.
+		/// </remarks>
+		private bool _styleChanging = false;
+		private bool _defaultStyleApplied = false;
+
 		internal bool RequiresArrange { get; private set; }
 
 		internal bool RequiresMeasure { get; private set; }
@@ -239,7 +251,9 @@ namespace Windows.UI.Xaml
 
 		private void InitializeStyle()
 		{
-			if (!FeatureConfiguration.FrameworkElement.UseLegacyApplyStylePhase)
+			if (
+				!_styleChanging // See _styleChanging documentation for details
+				&& !FeatureConfiguration.FrameworkElement.UseLegacyApplyStylePhase)
 			{
 				(this.Parent as FrameworkElement)?.InitializeStyle();
 
@@ -266,37 +280,56 @@ namespace Windows.UI.Xaml
 				)
 			);
 
-#endregion
+		#endregion
 
 		protected virtual void OnStyleChanged(Style oldStyle, Style newStyle)
 		{
-			if (!FeatureConfiguration.FrameworkElement.UseLegacyApplyStylePhase)
+			try
 			{
-				ApplyDefaultStyle();
+				var currentStyleChanging = _styleChanging;
+				_styleChanging = true;
 
-				if (FeatureConfiguration.FrameworkElement.ClearPreviousOnStyleChange && 
-					// Don't clear the default Style, which should always be present.
-					!(bool)(oldStyle == Style.DefaultStyleForType(GetType()))
-				)
+				_defaultStyleApplied = false;
+
+				if (!FeatureConfiguration.FrameworkElement.UseLegacyApplyStylePhase)
 				{
-					oldStyle?.ClearStyle(this);
-				}
+					if (!currentStyleChanging)
+					{
+						// See _styleChanging documentation for details
+						ApplyDefaultStyle();
+					}
 
-				newStyle?.ApplyTo(this);
+					if (FeatureConfiguration.FrameworkElement.ClearPreviousOnStyleChange &&
+						// Don't clear the default Style, which should always be present.
+						!(bool)(oldStyle == Style.DefaultStyleForType(GetType()))
+					)
+					{
+						oldStyle?.ClearStyle(this);
+					}
+
+					newStyle?.ApplyTo(this);
+				}
+				else
+				{
+					newStyle?.ApplyTo(this);
+				}
 			}
-			else
+			finally
 			{
-				newStyle?.ApplyTo(this);
+				_styleChanging = false;
 			}
 		}
 
 		private void ApplyDefaultStyle()
 		{
 			if (
-				Style.DefaultStyleForType(GetType()) is Style defaultStyle
+				!_defaultStyleApplied
+				&& Style.DefaultStyleForType(GetType()) is Style defaultStyle
 				&& this.GetPrecedenceSpecificValue(StyleProperty, Style.DefaultStylePrecedence) == DependencyProperty.UnsetValue
 			)
 			{
+				_defaultStyleApplied = true;
+
 				// Force apply the style to the specific precedence
 				this.SetValue(StyleProperty, defaultStyle, Style.DefaultStylePrecedence);
 
