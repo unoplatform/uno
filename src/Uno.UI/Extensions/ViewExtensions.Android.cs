@@ -484,6 +484,26 @@ namespace Uno.UI
 		}
 
 		/// <summary>
+		/// Returns the root of the view's local visual tree.
+		/// </summary>
+		public static ViewGroup GetTopLevelParent(this View view)
+		{
+			var current = view as ViewGroup;
+
+			while (current != null)
+			{
+				var visualParent = current.Parent as ViewGroup;
+				if (visualParent == null)
+				{
+					return current;
+				}
+				current = visualParent;
+			}
+
+			return null;
+		}
+
+		/// <summary>
 		/// Displays all the visual descendants of <paramref name="viewGroup"/> for diagnostic purposes. 
 		/// </summary>
 		public static string ShowDescendants(this ViewGroup viewGroup, StringBuilder sb = null, string spacing = "", ViewGroup viewOfInterest = null)
