@@ -45,11 +45,12 @@ namespace Windows.UI.Xaml.Controls
 
 			_isTemplateApplied = true;
 
-			UpdateProperties();
-
 			Loaded += (s, e) => RegisterHeaderEvents();
 			Unloaded += (s, e) => UnregisterHeaderEvents();
 			Items.VectorChanged += OnItemsVectorChanged;
+
+			UpdateProperties();
+			SynchronizeItems();
 		}
 
 		private void UnregisterHeaderEvents()
@@ -78,7 +79,7 @@ namespace Windows.UI.Xaml.Controls
 
 		private void UpdateProperties()
 		{
-			if ( 
+			if (
 				_isUWPTemplate
 				&& _isTemplateApplied
 			)
@@ -98,9 +99,14 @@ namespace Windows.UI.Xaml.Controls
 			=> _isUWPTemplate ? item is PivotItem : base.IsItemItsOwnContainerOverride(item);
 
 		protected override DependencyObject GetContainerForItemOverride()
-			=> _isUWPTemplate ? new PivotItem()  : GetContainerForItemOverride();
+			=> _isUWPTemplate ? new PivotItem() : GetContainerForItemOverride();
 
 		private void OnItemsVectorChanged(IObservableVector<object> sender, IVectorChangedEventArgs @event)
+		{
+			SynchronizeItems();
+		}
+
+		private void SynchronizeItems()
 		{
 			if (_isUWPTemplate)
 			{
