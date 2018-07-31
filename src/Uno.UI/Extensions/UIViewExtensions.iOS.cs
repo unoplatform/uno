@@ -497,6 +497,24 @@ namespace UIKit
 
 			return null;
 		}
+		
+		/// <summary>
+		/// Returns the root of the view's local visual tree.
+		/// </summary>
+		public static UIView GetTopLevelParent(this UIView view)
+		{
+			var current = view;
+			while (current != null)
+			{
+				if (current.Superview == null)
+				{
+					return current;
+				}
+				current = current.Superview;
+			}
+
+			throw new ArgumentNullException(nameof(view));
+		}
 
 		/// <summary>
 		/// Displays all the visual descendants of <paramref name="view"/> for diagnostic purposes. 
