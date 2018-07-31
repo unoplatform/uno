@@ -54,7 +54,7 @@ public abstract class UnoGestureDetector extends GestureDetector {
 	@Override
 	public boolean onTouchEvent(MotionEvent ev) {
 		boolean wasPointInView = _target.getIsPointInView();
-		boolean isPointInView = _target.isPointInView(new PointF(ev.getRawX(), ev.getRawY()));
+		boolean isPointInView = _target.isLocalTouchPointInView(_target.getTransformedTouchX(), _target.getTransformedTouchY());
 		return onTouchEvent(ev, isPointInView, wasPointInView, _target.getIsPointerCaptured(), _target.isCurrentPointer(ev, isPointInView));
 	}
 
@@ -190,7 +190,7 @@ public abstract class UnoGestureDetector extends GestureDetector {
 
 				boolean onDown = false;
 
-				boolean isPointInView = target.isPointInView(new PointF(e.getRawX(), e.getRawY()));
+				boolean isPointInView = target.isLocalTouchPointInView(target.getTransformedTouchX(), target.getTransformedTouchY());
 
 				//If we want to handle single tap then we need to return true here, or onSingleTapUp will never be called
 				return onDown || detector.shouldHandleSingleTapMotion(e, isPointInView);
@@ -204,7 +204,7 @@ public abstract class UnoGestureDetector extends GestureDetector {
 			@Override
 			public boolean onSingleTapUp(MotionEvent e) {
 				UnoGestureDetector detector = target.getGestureDetector();
-				boolean isPointInView = target.isPointInView(new PointF(e.getRawX(), e.getRawY()));
+				boolean isPointInView = target.isLocalTouchPointInView(target.getTransformedTouchX(), target.getTransformedTouchY());
 
 				if(detector == null || !detector.shouldHandleSingleTapMotion(e, isPointInView)) {
 					return  false;
@@ -239,7 +239,7 @@ public abstract class UnoGestureDetector extends GestureDetector {
 			@Override
 			public boolean onDoubleTap(MotionEvent e) {
 				UnoGestureDetector detector = target.getGestureDetector();
-				boolean isPointInView = target.isPointInView(new PointF(e.getRawX(), e.getRawY()));
+				boolean isPointInView = target.isLocalTouchPointInView(target.getTransformedTouchX(), target.getTransformedTouchY());
 
 				if (detector == null || !detector.shouldHandleDoubleTapMotion(e, isPointInView)) {
 					return false;

@@ -21,12 +21,12 @@ namespace Windows.UI.Xaml
 			callback(new ApplicationInitializationCallbackParams());
 		}
 
-		internal void OnResuming()
+		partial void OnResumingPartial()
 		{
 			Resuming?.Invoke(null, null);
 		}
 
-		internal void OnSuspending()
+		partial void OnSuspendingPartial()
 		{
 			Suspending?.Invoke(this, new ApplicationModel.SuspendingEventArgs(new ApplicationModel.SuspendingOperation(DateTime.Now.AddSeconds(30))));
 		}

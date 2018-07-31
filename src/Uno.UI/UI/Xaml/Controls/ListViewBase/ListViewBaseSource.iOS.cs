@@ -125,7 +125,7 @@ namespace Windows.UI.Xaml.Controls
 
 			if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
 			{
-				this.Log().Debug($"Count requested, returning {count}");
+				this.Log().Debug($"Count requested for section {section}, returning {count}");
 			}
 			return count;
 		}
@@ -164,6 +164,11 @@ namespace Windows.UI.Xaml.Controls
 			{
 				foreach (var a in actions) { a(); }
 				_onRecycled.Remove(key);
+			}
+
+			if (this.Log().IsEnabled(LogLevel.Debug))
+			{
+				this.Log().LogDebug($"CellDisplayingEnded for cell at {indexPath}");
 			}
 		}
 
@@ -247,6 +252,11 @@ namespace Windows.UI.Xaml.Controls
 			}
 
 			FrameworkElement.RegisterPhaseBinding(container.Content, a => RegisterForRecycled(container, a));
+
+			if (this.Log().IsEnabled(LogLevel.Debug))
+			{
+				this.Log().LogDebug($"WillDisplayCell for cell at {indexPath}");
+			}
 		}
 
 		public override UICollectionReusableView GetViewForSupplementaryElement(
@@ -602,7 +612,7 @@ namespace Windows.UI.Xaml.Controls
 		private Orientation ScrollOrientation => Owner.NativeLayout.ScrollOrientation;
 		private bool SupportsDynamicItemSizes => Owner.NativeLayout.SupportsDynamicItemSizes;
 		private ILayouter Layouter => Owner.NativeLayout.Layouter;
-
+		
 		protected override void Dispose(bool disposing)
 		{
 			if (!disposing)
@@ -708,7 +718,7 @@ namespace Windows.UI.Xaml.Controls
 				{
 					_lastUsedSize = size;
 					var availableSize = AdjustAvailableSize(layoutAttributes.Frame.Size.ToFoundationSize());
-					if (Window != null)
+					if (Window != null || Owner.XamlParent.Window == null)
 					{
 						using (InterceptSetNeedsLayout())
 						{

@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using System.Text;
 using Uno.Extensions;
 using UIKit;
+using Uno.Logging;
+using Windows.ApplicationModel.Core;
 
 namespace Windows.Graphics.Display
 {
@@ -27,11 +29,17 @@ namespace Windows.Graphics.Display
 		/// </summary>
 		public void StartOverride()
 		{
+			this.Log().InfoIfEnabled(() => "Starting brightness override");
+
+			//This was added to make sure the brightness is restored when re-opening the app after a lock.
+			CoreApplication.Resuming -= OnResuming;
+			CoreApplication.Resuming += OnResuming;
+
 			_defaultBrightnessLevel = Window.Brightness;
 
 			Window.Brightness = (float)_targetBrightnessLevel;
 
-			GetForCurrentView().IsOverrideActive = true;
+			GetForCurrentView().IsOverrideActive = true;		
 		}
 
 		/// <summary>
@@ -41,9 +49,17 @@ namespace Windows.Graphics.Display
 		{
 			if (GetForCurrentView().IsOverrideActive)
 			{
+				this.Log().InfoIfEnabled(() => "Stopping brightness override");
+
+				CoreApplication.Resuming -= OnResuming;
 				Window.Brightness = (float)_defaultBrightnessLevel;
 				GetForCurrentView().IsOverrideActive = false;
 			}
+		}
+
+		private void OnResuming(object sender, object e)
+		{
+			StartOverride();
 		}
 	}
 }

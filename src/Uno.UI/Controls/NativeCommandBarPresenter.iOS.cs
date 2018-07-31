@@ -11,12 +11,18 @@ using Windows.UI.Xaml;
 using System.IO;
 using Windows.UI.ViewManagement;
 using Uno.Disposables;
+using Windows.Graphics.Display;
+using UIKit;
 
 namespace Uno.UI.Controls
 {
 	public partial class NativeCommandBarPresenter : ContentPresenter
 	{
 		private readonly SerialDisposable _statusBarSubscription = new SerialDisposable();
+		private readonly SerialDisposable _orientationSubscription = new SerialDisposable();
+
+		private static readonly double _defaultCommandBarHeight = 44;
+		private static readonly double _landscapePhoneCommandBarHeight = 32;
 
 		protected override void OnLoaded()
 		{
@@ -47,6 +53,45 @@ namespace Uno.UI.Controls
 				navigationBar.SetNeedsLayout();
 				navigationBar.Superview.SetNeedsLayout();
 			}
+
+			// if device is iOS 11+ and a iPhone, we need to adapt the size of the bar based on the orientation
+			if (UIDevice.CurrentDevice.CheckSystemVersion(11, 0)
+				&& UIDevice.CurrentDevice.UserInterfaceIdiom == UIUserInterfaceIdiom.Phone)
+			{
+				// Set height based on current orientation and listen to orientation changes
+				this.Height = GetCommandBarHeight(DisplayInformation.GetForCurrentView().CurrentOrientation);
+				DisplayInformation.GetForCurrentView().OrientationChanged += OrientationChanged;
+			}
+			else
+			{
+				// Below iOS 11 or on iPads, status bar is always the same size
+				this.Height = _defaultCommandBarHeight;
+			}
+
+			_orientationSubscription.Disposable = Disposable.Create(() =>
+			{
+				DisplayInformation.GetForCurrentView().OrientationChanged -= OrientationChanged;
+			});
+
+			void OrientationChanged(DisplayInformation displayInformation, object args)
+			{
+				this.Height = GetCommandBarHeight(displayInformation.CurrentOrientation);
+			}
+		}
+
+		private double GetCommandBarHeight(DisplayOrientations orientation)
+		{
+			switch (orientation)
+			{
+				case DisplayOrientations.Landscape:
+				case DisplayOrientations.LandscapeFlipped:
+					return _landscapePhoneCommandBarHeight;
+				case DisplayOrientations.Portrait:
+				case DisplayOrientations.PortraitFlipped:
+				case DisplayOrientations.None:
+				default:
+					return _defaultCommandBarHeight;
+			}
 		}
 
 		protected override void OnUnloaded()
@@ -54,6 +99,7 @@ namespace Uno.UI.Controls
 			base.OnUnloaded();
 
 			_statusBarSubscription.Disposable = null;
+			_orientationSubscription.Disposable = null;
 		}
 	}
 }

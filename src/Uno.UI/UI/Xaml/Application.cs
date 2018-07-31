@@ -77,5 +77,23 @@ namespace Windows.UI.Xaml
 				return null;
 			}
 		}
+
+		internal void OnResuming()
+		{
+			ApplicationModel.Core.CoreApplication.RaiseResuming();
+
+			OnResumingPartial();
+		}
+
+		partial void OnResumingPartial();
+
+		internal void OnSuspending()
+		{
+			ApplicationModel.Core.CoreApplication.RaiseSuspending(new ApplicationModel.SuspendingEventArgs(new ApplicationModel.SuspendingOperation(DateTime.Now.AddSeconds(30))));
+
+			OnSuspendingPartial();
+		}
+
+		partial void OnSuspendingPartial();
 	}
 }

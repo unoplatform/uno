@@ -200,6 +200,7 @@ namespace Windows.UI.Xaml.Controls
 
 				if (previousValue != null)
 				{
+					ResetContentDataContextOverride();
 					UnregisterContentTemplateRoot();
 
 					UpdateContentTransitions(this.ContentTransitions, null);

@@ -64,6 +64,52 @@ namespace Uno.UI.Tests.GridTests
 		}
 
 		[TestMethod]
+		public void When_Grid_Has_One_Element_And_MinWidth_MinHeight_VerticalAlignment_Top_HorizontalAlignment_Center()
+		{
+			var SUT = new Grid() { Name = "test" };
+
+			SUT.MinWidth = 40;
+			SUT.MinHeight = 40;
+			SUT.VerticalAlignment = VerticalAlignment.Top;
+			SUT.HorizontalAlignment = HorizontalAlignment.Center;
+
+			SUT.AddChild(new View { Name = "Child01", RequestedDesiredSize = new Windows.Foundation.Size(20, 20) });
+
+			SUT.Measure(new Windows.Foundation.Size(60, 60));
+			var measuredSize = SUT.DesiredSize;
+			SUT.Arrange(new Windows.Foundation.Rect(0, 0, 60, 60));
+
+			Assert.AreEqual(new Windows.Foundation.Rect(0, 0, 40, 40), SUT.GetChildren().First().Arranged);
+
+			Assert.AreEqual(measuredSize, new Windows.Foundation.Size(40, 40));
+			Assert.AreEqual(1, SUT.GetChildren().Count());
+		}
+
+		[TestMethod]
+		public void When_Grid_Has_Two_Elements_And_MinWidth_MinHeight_VerticalAlignment_Top_HorizontalAlignment_Center_And_Child_Stretched_And_Centered()
+		{
+			var SUT = new Grid() { Name = "test" };
+
+			SUT.MinWidth = 40;
+			SUT.MinHeight = 40;
+			SUT.VerticalAlignment = VerticalAlignment.Top;
+			SUT.HorizontalAlignment = HorizontalAlignment.Center;
+
+			var c1 = SUT.AddChild(new View { Name = "Child01", RequestedDesiredSize = new Windows.Foundation.Size(20, 20), HorizontalAlignment = HorizontalAlignment.Stretch, VerticalAlignment = VerticalAlignment.Stretch });
+			var c2 = SUT.AddChild(new View { Name = "Child02", RequestedDesiredSize = new Windows.Foundation.Size(20, 20), HorizontalAlignment = HorizontalAlignment.Center, VerticalAlignment = VerticalAlignment.Center });
+
+			SUT.Measure(new Windows.Foundation.Size(60, 60));
+			var measuredSize = SUT.DesiredSize;
+			SUT.Arrange(new Windows.Foundation.Rect(0, 0, 60, 60));
+
+			Assert.AreEqual(new Windows.Foundation.Rect(0, 0, 40, 40), c1.Arranged);
+			Assert.AreEqual(new Windows.Foundation.Rect(10, 10, 20, 20), c2.Arranged);
+
+			Assert.AreEqual(measuredSize, new Windows.Foundation.Size(40, 40));
+			Assert.AreEqual(2, SUT.GetChildren().Count());
+		}
+
+		[TestMethod]
 		public void When_Grid_Has_One_Colums_And_One_Row_And_No_Size_Spec()
 		{
 			var SUT = new Grid() { Name = "test" };
@@ -110,6 +156,126 @@ namespace Uno.UI.Tests.GridTests
 		}
 
 		[TestMethod]
+		public void When_Grid_Has_Two_Colums_And_One_Row_And_MinWidth_MinHeight_VerticalAlignment_Top_HorizontalAlignment_Center_And_Child_Stretched_And_Centered()
+		{
+			var SUT = new Grid() { Name = "test" };
+
+			SUT.MinWidth = 80;
+			SUT.MinHeight = 80;
+			SUT.VerticalAlignment = VerticalAlignment.Top;
+			SUT.HorizontalAlignment = HorizontalAlignment.Center;
+
+			SUT.ColumnDefinitions.Add(new ColumnDefinition { Width = "*" });
+			SUT.ColumnDefinitions.Add(new ColumnDefinition { Width = "*" });
+
+			var c1 = SUT.AddChild(new View { Name = "Child01", RequestedDesiredSize = new Windows.Foundation.Size(20, 20), HorizontalAlignment = HorizontalAlignment.Stretch, VerticalAlignment = VerticalAlignment.Stretch });
+			var c2 = SUT.AddChild(new View { Name = "Child02", RequestedDesiredSize = new Windows.Foundation.Size(20, 20), HorizontalAlignment = HorizontalAlignment.Center, VerticalAlignment = VerticalAlignment.Center });
+
+			Grid.SetColumn(c1, 0);
+			Grid.SetColumn(c2, 1);
+
+			SUT.Measure(new Windows.Foundation.Size(100, 100));
+			var measuredSize = SUT.DesiredSize;
+			SUT.Arrange(new Windows.Foundation.Rect(0, 0, 100, 100));
+
+			Assert.AreEqual(new Windows.Foundation.Rect(0, 0, 40, 80), c1.Arranged);
+			Assert.AreEqual(new Windows.Foundation.Rect(50, 30, 20, 20), c2.Arranged);
+
+			Assert.AreEqual(measuredSize, new Windows.Foundation.Size(80, 80));
+			Assert.AreEqual(2, SUT.GetChildren().Count());
+		}
+
+		[TestMethod]
+		public void When_Grid_Has_Two_Colums_And_One_Row_And_MinWidth_MinHeight_VerticalAlignment_Top_HorizontalAlignment_Center_And_Child_Stretched_With_ColumnSpan_And_Centered()
+		{
+			var SUT = new Grid() { Name = "test" };
+
+			SUT.MinWidth = 80;
+			SUT.MinHeight = 80;
+			SUT.VerticalAlignment = VerticalAlignment.Top;
+			SUT.HorizontalAlignment = HorizontalAlignment.Center;
+
+			SUT.ColumnDefinitions.Add(new ColumnDefinition { Width = "*" });
+			SUT.ColumnDefinitions.Add(new ColumnDefinition { Width = "*" });
+
+			var c1 = SUT.AddChild(new View { Name = "Child01", RequestedDesiredSize = new Windows.Foundation.Size(20, 20), HorizontalAlignment = HorizontalAlignment.Stretch, VerticalAlignment = VerticalAlignment.Stretch }.GridColumnSpan(2));
+			var c2 = SUT.AddChild(new View { Name = "Child02", RequestedDesiredSize = new Windows.Foundation.Size(20, 20), HorizontalAlignment = HorizontalAlignment.Center, VerticalAlignment = VerticalAlignment.Center });
+
+			Grid.SetColumn(c1, 0);
+			Grid.SetColumn(c2, 1);
+
+			SUT.Measure(new Windows.Foundation.Size(100, 100));
+			var measuredSize = SUT.DesiredSize;
+			SUT.Arrange(new Windows.Foundation.Rect(0, 0, 100, 100));
+
+			Assert.AreEqual(new Windows.Foundation.Rect(0, 0, 80, 80), c1.Arranged);
+			Assert.AreEqual(new Windows.Foundation.Rect(50, 30, 20, 20), c2.Arranged);
+
+			Assert.AreEqual(measuredSize, new Windows.Foundation.Size(80, 80));
+			Assert.AreEqual(2, SUT.GetChildren().Count());
+		}
+
+		[TestMethod]
+		public void When_Grid_Has_Two_Rows_And_One_Column_And_MinWidth_MinHeight_VerticalAlignment_Top_HorizontalAlignment_Center_And_Child_Stretched_With_RowSpan_And_Centered()
+		{
+			var SUT = new Grid() { Name = "test" };
+
+			SUT.MinWidth = 80;
+			SUT.MinHeight = 80;
+			SUT.VerticalAlignment = VerticalAlignment.Top;
+			SUT.HorizontalAlignment = HorizontalAlignment.Center;
+
+			SUT.RowDefinitions.Add(new RowDefinition { Height = "*" });
+			SUT.RowDefinitions.Add(new RowDefinition { Height = "*" });
+
+			var c1 = SUT.AddChild(new View { Name = "Child01", RequestedDesiredSize = new Windows.Foundation.Size(20, 20), HorizontalAlignment = HorizontalAlignment.Stretch, VerticalAlignment = VerticalAlignment.Stretch }.GridRowSpan(2));
+			var c2 = SUT.AddChild(new View { Name = "Child02", RequestedDesiredSize = new Windows.Foundation.Size(20, 20), HorizontalAlignment = HorizontalAlignment.Center, VerticalAlignment = VerticalAlignment.Center });
+
+			Grid.SetRow(c1, 0);
+			Grid.SetRow(c2, 1);
+
+			SUT.Measure(new Windows.Foundation.Size(100, 100));
+			var measuredSize = SUT.DesiredSize;
+			SUT.Arrange(new Windows.Foundation.Rect(0, 0, 100, 100));
+
+			Assert.AreEqual(new Windows.Foundation.Rect(0, 0, 80, 80), c1.Arranged);
+			Assert.AreEqual(new Windows.Foundation.Rect(30, 50, 20, 20), c2.Arranged);
+
+			Assert.AreEqual(measuredSize, new Windows.Foundation.Size(80, 80));
+			Assert.AreEqual(2, SUT.GetChildren().Count());
+		}
+
+		[TestMethod]
+		public void When_Grid_Has_Two_Rows_And_One_Column_And_MinWidth_MinHeight_VerticalAlignment_Top_HorizontalAlignment_Center_And_Child_Stretched_And_Centered()
+		{
+			var SUT = new Grid() { Name = "test" };
+
+			SUT.MinWidth = 80;
+			SUT.MinHeight = 80;
+			SUT.VerticalAlignment = VerticalAlignment.Top;
+			SUT.HorizontalAlignment = HorizontalAlignment.Center;
+
+			SUT.RowDefinitions.Add(new RowDefinition { Height = "*" });
+			SUT.RowDefinitions.Add(new RowDefinition { Height = "*" });
+
+			var c1 = SUT.AddChild(new View { Name = "Child01", RequestedDesiredSize = new Windows.Foundation.Size(20, 20), HorizontalAlignment = HorizontalAlignment.Stretch, VerticalAlignment = VerticalAlignment.Stretch });
+			var c2 = SUT.AddChild(new View { Name = "Child02", RequestedDesiredSize = new Windows.Foundation.Size(20, 20), HorizontalAlignment = HorizontalAlignment.Center, VerticalAlignment = VerticalAlignment.Center });
+
+			Grid.SetRow(c1, 0);
+			Grid.SetRow(c2, 1);
+
+			SUT.Measure(new Windows.Foundation.Size(100, 100));
+			var measuredSize = SUT.DesiredSize;
+			SUT.Arrange(new Windows.Foundation.Rect(0, 0, 100, 100));
+
+			Assert.AreEqual(new Windows.Foundation.Rect(0, 0, 80, 40), c1.Arranged);
+			Assert.AreEqual(new Windows.Foundation.Rect(30, 50, 20, 20), c2.Arranged);
+
+			Assert.AreEqual(measuredSize, new Windows.Foundation.Size(80, 80));
+			Assert.AreEqual(2, SUT.GetChildren().Count());
+		}
+
+		[TestMethod]
 		public void When_Grid_Has_Two_Colums_And_Two_Rows_And_No_Size_Spec()
 		{
 			var SUT = new Grid() { Name = "test" };
@@ -151,6 +317,55 @@ namespace Uno.UI.Tests.GridTests
 
 			//Assert.AreEqual(new Windows.Foundation.Rect(0, 0, 20, 20), Windows.Foundation.default(Size));
 			Assert.AreEqual(measuredSize, new Windows.Foundation.Size(20, 20));
+			Assert.AreEqual(4, SUT.GetChildren().Count());
+		}
+
+		[TestMethod]
+		public void When_Grid_Has_Two_Colums_And_Two_Rows_And_MinWidth_MinHeight_VerticalAlignment_Top_HorizontalAlignment_Center_And_Child_Stretched_And_Centered()
+		{
+			var SUT = new Grid() { Name = "test" };
+
+			SUT.MinWidth = 80;
+			SUT.MinHeight = 80;
+			SUT.VerticalAlignment = VerticalAlignment.Top;
+			SUT.HorizontalAlignment = HorizontalAlignment.Center;
+
+			SUT.ColumnDefinitions.Add(new ColumnDefinition { Width = "*" });
+			SUT.ColumnDefinitions.Add(new ColumnDefinition { Width = "*" });
+
+			SUT.RowDefinitions.Add(new RowDefinition { Height = "*" });
+			SUT.RowDefinitions.Add(new RowDefinition { Height = "*" });
+
+			var c1 = SUT.AddChild(
+				new View { Name = "Child01", RequestedDesiredSize = new Windows.Foundation.Size(20, 20), HorizontalAlignment = HorizontalAlignment.Stretch, VerticalAlignment = VerticalAlignment.Stretch }
+				.GridPosition(0, 0)
+			);
+
+			var c2 = SUT.AddChild(
+				new View { Name = "Child02", RequestedDesiredSize = new Windows.Foundation.Size(20, 20), HorizontalAlignment = HorizontalAlignment.Center, VerticalAlignment = VerticalAlignment.Center }
+				.GridPosition(0, 1)
+			);
+
+			var c3 = SUT.AddChild(
+				new View { Name = "Child03", RequestedDesiredSize = new Windows.Foundation.Size(20, 20), HorizontalAlignment = HorizontalAlignment.Center, VerticalAlignment = VerticalAlignment.Center }
+				.GridPosition(1, 0)
+			);
+
+			var c4 = SUT.AddChild(
+				new View { Name = "Child04", RequestedDesiredSize = new Windows.Foundation.Size(20, 20), HorizontalAlignment = HorizontalAlignment.Stretch, VerticalAlignment = VerticalAlignment.Stretch }
+				.GridPosition(1, 1)
+			);
+
+			SUT.Measure(new Windows.Foundation.Size(100, 100));
+			var measuredSize = SUT.DesiredSize;
+			SUT.Arrange(new Windows.Foundation.Rect(0, 0, 100, 100));
+
+			Assert.AreEqual(new Windows.Foundation.Rect(0, 0, 40, 40), c1.Arranged);
+			Assert.AreEqual(new Windows.Foundation.Rect(50, 10, 20, 20), c2.Arranged);
+			Assert.AreEqual(new Windows.Foundation.Rect(10, 50, 20, 20), c3.Arranged);
+			Assert.AreEqual(new Windows.Foundation.Rect(40, 40, 40, 40), c4.Arranged);
+
+			Assert.AreEqual(measuredSize, new Windows.Foundation.Size(80, 80));
 			Assert.AreEqual(4, SUT.GetChildren().Count());
 		}
 
@@ -208,7 +423,7 @@ namespace Uno.UI.Tests.GridTests
 
 			Assert.AreEqual(new Windows.Foundation.Rect(0, 0, 5, 20), c1.Arranged);
 			Assert.AreEqual(new Windows.Foundation.Rect(5, 0, 15, 20), c2.Arranged);
-			
+
 			Assert.AreEqual(new Windows.Foundation.Size(15, 10), measuredSize);
 			Assert.AreEqual(2, SUT.GetChildren().Count());
 		}
@@ -311,7 +526,6 @@ namespace Uno.UI.Tests.GridTests
 		public void When_Grid_Has_Three_Element_With_ColSpan_and_Four_Progressing_Columns()
 		{
 			var SUT = new Grid() { Name = "test" };
-			
 
 			SUT.ColumnDefinitions.Add(new ColumnDefinition { Width = "*" });
 			SUT.ColumnDefinitions.Add(new ColumnDefinition { Width = "2*" });
@@ -355,7 +569,6 @@ namespace Uno.UI.Tests.GridTests
 		public void When_Grid_Has_One_Element_With_ColSpan_and_RowSpan_and_Three_Columns()
 		{
 			var SUT = new Grid() { Name = "test" };
-			
 
 			SUT.ColumnDefinitions.Add(new ColumnDefinition { Width = "*" });
 			SUT.ColumnDefinitions.Add(new ColumnDefinition { Width = "*" });
@@ -379,7 +592,7 @@ namespace Uno.UI.Tests.GridTests
 				new Windows.Foundation.Rect(0, 0, (20.0 / 3.0) * 2.0, (20.0 / 3.0) * 2.0),
 				SUT.GetChildren().First().Arranged
 			);
-			
+
 			Assert.AreEqual(new Windows.Foundation.Size(15, 15), measuredSize);
 			Assert.AreEqual(1, SUT.GetChildren().Count());
 		}
@@ -388,7 +601,6 @@ namespace Uno.UI.Tests.GridTests
 		public void When_Grid_Has_One_Element_With_ColSpan_and_RowSpan_and_Three_Columns_And_Middle()
 		{
 			var SUT = new Grid() { Name = "test" };
-			
 
 			SUT.ColumnDefinitions.Add(new ColumnDefinition { Width = "*" });
 			SUT.ColumnDefinitions.Add(new ColumnDefinition { Width = "*" });
@@ -418,7 +630,7 @@ namespace Uno.UI.Tests.GridTests
 				),
 				SUT.GetChildren().First().Arranged
 			);
-			
+
 			Assert.AreEqual(new Windows.Foundation.Size(15, 15), measuredSize);
 			Assert.AreEqual(1, SUT.GetChildren().Count());
 		}
@@ -427,7 +639,6 @@ namespace Uno.UI.Tests.GridTests
 		public void When_Grid_Has_One_Element_With_ColSpan_Overflow_and_Three_Columns()
 		{
 			var SUT = new Grid() { Name = "test" };
-			
 
 			SUT.ColumnDefinitions.Add(new ColumnDefinition { Width = "*" });
 			SUT.ColumnDefinitions.Add(new ColumnDefinition { Width = "*" });
@@ -443,7 +654,7 @@ namespace Uno.UI.Tests.GridTests
 			SUT.Arrange(new Windows.Foundation.Rect(0, 0, 20, 20));
 
 			Assert.AreEqual(new Windows.Foundation.Rect(0, 0, 20, 20), SUT.GetChildren().First().Arranged);
-			
+
 			Assert.AreEqual(new Windows.Foundation.Size(10, 10), measuredSize);
 			Assert.AreEqual(1, SUT.GetChildren().Count());
 		}
@@ -530,8 +741,126 @@ namespace Uno.UI.Tests.GridTests
 			SUT.Arrange(new Windows.Foundation.Rect(0, 0, 20, 20));
 			var childArrangedSize = child.Arranged;
 
-			Assert.AreEqual(measuredSize, new Windows.Foundation.Size(20, 10));
+			Assert.AreEqual(new Windows.Foundation.Size(20, 10), measuredSize);
 			Assert.AreEqual(new Windows.Foundation.Rect(0, 0, 10, 10), childArrangedSize);
+		}
+
+		[TestMethod]
+		public void When_Grid_Has_Two_StarColums_One_Variable_Column_And_Two_StarRows_One_Variable_Row_And_MinWidth_MinHeight_VerticalAlignment_Top_HorizontalAlignment_Center_And_Child_Stretched_And_Centered()
+		{
+			var SUT = new Grid() { Name = "test" };
+
+			SUT.MinWidth = 80;
+			SUT.MinHeight = 80;
+			SUT.VerticalAlignment = VerticalAlignment.Top;
+			SUT.HorizontalAlignment = HorizontalAlignment.Center;
+
+			SUT.ColumnDefinitions.Add(new ColumnDefinition { Width = "*" });
+			SUT.ColumnDefinitions.Add(new ColumnDefinition { Width = "Auto" });
+			SUT.ColumnDefinitions.Add(new ColumnDefinition { Width = "*" });
+
+			SUT.RowDefinitions.Add(new RowDefinition { Height = "*" });
+			SUT.RowDefinitions.Add(new RowDefinition { Height = "Auto" });
+			SUT.RowDefinitions.Add(new RowDefinition { Height = "*" });
+
+			var c1 = SUT.AddChild(
+				new View { Name = "Child01", RequestedDesiredSize = new Windows.Foundation.Size(10, 10), HorizontalAlignment = HorizontalAlignment.Stretch, VerticalAlignment = VerticalAlignment.Stretch }
+				.GridPosition(0, 0)
+			);
+
+			var c2 = SUT.AddChild(
+				new View { Name = "Child02", RequestedDesiredSize = new Windows.Foundation.Size(10, 10), HorizontalAlignment = HorizontalAlignment.Center, VerticalAlignment = VerticalAlignment.Center }
+				.GridPosition(1, 1)
+			);
+
+			var c3 = SUT.AddChild(
+				new View { Name = "Child03", RequestedDesiredSize = new Windows.Foundation.Size(10, 10), HorizontalAlignment = HorizontalAlignment.Stretch, VerticalAlignment = VerticalAlignment.Stretch }
+				.GridPosition(2, 1)
+			);
+
+			var c4 = SUT.AddChild(
+				new View { Name = "Child04", RequestedDesiredSize = new Windows.Foundation.Size(10, 10), HorizontalAlignment = HorizontalAlignment.Center, VerticalAlignment = VerticalAlignment.Center }
+				.GridPosition(2, 2)
+			);
+
+			SUT.Measure(new Windows.Foundation.Size(100, 100));
+			var measuredSize = SUT.DesiredSize;
+			SUT.Arrange(new Windows.Foundation.Rect(0, 0, 100, 100));
+
+			Assert.AreEqual(new Windows.Foundation.Rect(0, 0, 35, 35), c1.Arranged);
+			Assert.AreEqual(new Windows.Foundation.Rect(35, 35, 10, 10), c2.Arranged);
+			Assert.AreEqual(new Windows.Foundation.Rect(35, 45, 10, 35), c3.Arranged);
+			Assert.AreEqual(new Windows.Foundation.Rect(57.5, 57.5, 10, 10), c4.Arranged);
+
+			Assert.AreEqual(measuredSize, new Windows.Foundation.Size(80, 80));
+			Assert.AreEqual(4, SUT.GetChildren().Count());
+		}
+
+		[TestMethod]
+		public void When_Grid_Has_Two_StarColums_One_Variable_Column_And_Two_StarRows_One_Variable_Row_And_MinWidth_MinHeight_VerticalAlignment_Top_HorizontalAlignment_Center_And_Child_Stretched_And_Centered_With_RowSpan_And_ColumnSpan()
+		{
+			var SUT = new Grid() { Name = "test" };
+
+			SUT.MinWidth = 80;
+			SUT.MinHeight = 80;
+			SUT.VerticalAlignment = VerticalAlignment.Top;
+			SUT.HorizontalAlignment = HorizontalAlignment.Center;
+
+			SUT.ColumnDefinitions.Add(new ColumnDefinition { Width = "*" });
+			SUT.ColumnDefinitions.Add(new ColumnDefinition { Width = "Auto" });
+			SUT.ColumnDefinitions.Add(new ColumnDefinition { Width = "*" });
+
+			SUT.RowDefinitions.Add(new RowDefinition { Height = "*" });
+			SUT.RowDefinitions.Add(new RowDefinition { Height = "Auto" });
+			SUT.RowDefinitions.Add(new RowDefinition { Height = "*" });
+
+			var c1 = SUT.AddChild(
+				new View { Name = "Child01", RequestedDesiredSize = new Windows.Foundation.Size(10, 10), HorizontalAlignment = HorizontalAlignment.Stretch, VerticalAlignment = VerticalAlignment.Stretch }
+				.GridPosition(0, 0)
+				.GridColumnSpan(2)
+			);
+
+			var c2 = SUT.AddChild(
+				new View { Name = "Child02", RequestedDesiredSize = new Windows.Foundation.Size(10, 10), HorizontalAlignment = HorizontalAlignment.Center, VerticalAlignment = VerticalAlignment.Center }
+				.GridPosition(0, 2)
+			);
+
+			var c3 = SUT.AddChild(
+				new View { Name = "Child03", RequestedDesiredSize = new Windows.Foundation.Size(10, 10), HorizontalAlignment = HorizontalAlignment.Stretch, VerticalAlignment = VerticalAlignment.Stretch }
+				.GridPosition(1, 0)
+				.GridRowSpan(2)
+			);
+
+			var c4 = SUT.AddChild(
+				new View { Name = "Child04", RequestedDesiredSize = new Windows.Foundation.Size(10, 10), HorizontalAlignment = HorizontalAlignment.Stretch, VerticalAlignment = VerticalAlignment.Stretch }
+				.GridPosition(1, 1)
+				.GridColumnSpan(2)
+			);
+
+			var c5 = SUT.AddChild(
+				new View { Name = "Child05", RequestedDesiredSize = new Windows.Foundation.Size(10, 10), HorizontalAlignment = HorizontalAlignment.Center, VerticalAlignment = VerticalAlignment.Center }
+				.GridPosition(2, 1)
+				.GridColumnSpan(2)
+			);
+
+			var c6 = SUT.AddChild(
+				new View { Name = "Child06", RequestedDesiredSize = new Windows.Foundation.Size(10, 10), HorizontalAlignment = HorizontalAlignment.Center, VerticalAlignment = VerticalAlignment.Center }
+				.GridPosition(1, 1)
+			);
+
+			SUT.Measure(new Windows.Foundation.Size(100, 100));
+			var measuredSize = SUT.DesiredSize;
+			SUT.Arrange(new Windows.Foundation.Rect(0, 0, 100, 100));
+
+			Assert.AreEqual(new Windows.Foundation.Rect(0, 0, 45, 35), c1.Arranged);
+			Assert.AreEqual(new Windows.Foundation.Rect(57.5, 12.5, 10, 10), c2.Arranged);
+			Assert.AreEqual(new Windows.Foundation.Rect(0, 35, 35, 45), c3.Arranged);
+			Assert.AreEqual(new Windows.Foundation.Rect(35, 35, 45, 10), c4.Arranged);
+			Assert.AreEqual(new Windows.Foundation.Rect(52.5, 57.5, 10, 10), c5.Arranged);
+			Assert.AreEqual(new Windows.Foundation.Rect(35, 35, 10, 10), c6.Arranged);
+
+			Assert.AreEqual(measuredSize, new Windows.Foundation.Size(80, 80));
+			Assert.AreEqual(6, SUT.GetChildren().Count());
 		}
 	}
 }

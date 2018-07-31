@@ -9,7 +9,7 @@ using Windows.UI.Xaml.Media;
 
 namespace Windows.UI.Xaml.Controls
 {
-	public partial class ToggleSwitch : Control
+	public partial class ToggleSwitch : Control, IFrameworkTemplatePoolAware
 	{
 		private readonly SerialDisposable _eventSubscriptions = new SerialDisposable();
 
@@ -293,6 +293,11 @@ namespace Windows.UI.Xaml.Controls
 			{
 				VisualStateManager.GoToState(this, "OffContent", useTransition);
 			}
+		}
+
+		public void OnTemplateRecycled()
+		{
+			IsOn = false;
 		}
 	}
 }

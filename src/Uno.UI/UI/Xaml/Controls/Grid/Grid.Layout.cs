@@ -253,26 +253,39 @@ namespace Windows.UI.Xaml.Controls
 				var height = GetSpanSum(gridPosition.Row, gridPosition.RowSpan, calculatedPixelRows.SelectToList(cs => cs.MinValue));
 				var childFrame = new Rect(x, y, width, height);
 				ArrangeElement(child, childFrame);
-            }
+			}
 		}
 
 		private List<DoubleRange> CalculateColumns(
-			Size availableSize, 
+			Size availableSize,
 			List<ViewPosition> positions,
-			Func<View, Size, Size> measureChild, 
-			List<Column> columns, 
+			Func<View, Size, Size> measureChild,
+			List<Column> columns,
 			List<Column> definedColumns,
-			bool isMeasuring, 
+			bool isMeasuring,
 			out double maxHeightMeasured
 		)
 		{
-			// This variable is only used for the fast paths calculation 
-			maxHeightMeasured = isMeasuring
-				// This is the measure phase. The value will be set when measuring children.
-				? 0 
-				// This is the arrange phase. We already know the measured size of children.
-				: Children.Max(child => GetElementDesiredSize(child).Height); 
-			
+			// maxHeightMeasured variable is only used for the fast paths calculation
+			if (isMeasuring)
+			{
+				//This is the measure phase. The value will be set when measuring children.
+				maxHeightMeasured = 0;
+			}
+			else
+			{
+				//This is the arrange phase. We already know the measured size of children.
+				var minHeight = Children.Max(child => GetElementDesiredSize(child).Height);
+
+				//If MinHeight property is set on the Grid we need to take it into account in order to match UWP behavior
+				if (MinHeight > minHeight)
+				{
+					minHeight = MinHeight;
+				}
+
+				maxHeightMeasured = minHeight;
+			}
+
 			var calculatedPixelColumns = columns
 						 .SelectToList(c => c.Width.IsPixelSize ? c.Width.PixelSize.GetValueOrDefault() : 0);
 
@@ -295,6 +308,13 @@ namespace Windows.UI.Xaml.Controls
 				.ToList();
 
 			var availaibleWidth = availableSize.Width;
+
+			//If MinWidth property is set on the Grid that is not stretching horizontally we need to take it into account in order to match UWP behavior
+			if (MinWidth != 0 && HorizontalAlignment != HorizontalAlignment.Stretch)
+			{
+				availaibleWidth = MinWidth - GetHorizontalOffset();
+			}
+
 			double remainingSpace(int current) => availaibleWidth - calculatedPixelColumns
 				.Where((_, i) => i != current)
 				.Sum();
@@ -336,7 +356,7 @@ namespace Windows.UI.Xaml.Controls
 				var pixelSize = pixelColumns.Sum(pair => pair.Value.PixelSize.GetValueOrDefault());
 
 				if (autoColumns.Count == 1)
-				{ 
+				{
 					// The child has only one auto column in its ColumnSpan
 					var currentSize = autoColumns.Sum(pair => calculatedPixelColumns[pair.Key]);
 					if (childSize.Width - pixelSize > currentSize)
@@ -368,7 +388,7 @@ namespace Windows.UI.Xaml.Controls
 
 			// Star size: We always measure to set the desired size, but measuring would only be required for the columns calculation when the Star doesn't mean remaining space.
 			var usedWidth = calculatedPixelColumns.Sum();
-			double remainingWidth = Math.Max(0, availableSize.Width - usedWidth);
+			double remainingWidth = Math.Max(0, availaibleWidth - usedWidth);
 			var totalStarSizedWidth = GetTotalStarSizedWidth(columns);
 			var defaultStarWidth = remainingWidth / totalStarSizedWidth;
 			var starCalculatedPixelColumns = columns
@@ -431,22 +451,35 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		private List<DoubleRange> CalculateRows(
-			Size availableSize, 
+			Size availableSize,
 			List<ViewPosition> positions,
-			Func<View, Size, Size> measureChild, 
+			Func<View, Size, Size> measureChild,
 			List<DoubleRange> calculatedColumns,
 			List<Row> rows,
-			List<Row> definedRows, 
-			bool isMeasuring, 
+			List<Row> definedRows,
+			bool isMeasuring,
 			out double maxMeasuredWidth
 		)
 		{
-			// This variable is only used for the fast paths calculation 
-			maxMeasuredWidth = isMeasuring
-				// This is the measure phase. The value will be set when measuring children.
-				? 0
-				// This is the arrange phase. We already know the measured size of children.
-				: Children.Max(child => GetElementDesiredSize(child).Width);
+			// maxMeasuredWidth variable is only used for the fast paths calculation
+			if (isMeasuring)
+			{
+				//This is the measure phase. The value will be set when measuring children.
+				maxMeasuredWidth = 0;
+			}
+			else
+			{
+				//This is the arrange phase. We already know the measured size of children.
+				var minWidth = Children.Max(child => GetElementDesiredSize(child).Width);
+
+				//If MinHeight property is set on the Grid we need to take it into account in order to match UWP behavior
+				if (MinWidth > minWidth)
+				{
+					minWidth = MinWidth;
+				}
+
+				maxMeasuredWidth = minWidth;
+			}
 
 			var calculatedPixelRows = rows
 						 .SelectToList(c => c.Height.IsPixelSize ? c.Height.PixelSize.GetValueOrDefault() : 0);
@@ -470,6 +503,13 @@ namespace Windows.UI.Xaml.Controls
 				.ToList();
 
 			var availaibleHeight = availableSize.Height;
+
+			//If MinHeight property is set on the Grid that is not stretching vertically we need to take it into account in order to match UWP behavior
+			if (MinHeight != 0 && VerticalAlignment != VerticalAlignment.Stretch)
+			{
+				availaibleHeight = MinHeight - GetVerticalOffset();
+			}
+
 			Func<int, double> remainingSpace = (current) => availaibleHeight - calculatedPixelRows
 				.Where((_, i) => i != current)
 				.Sum();
@@ -546,7 +586,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 
 			var usedHeight = calculatedPixelRows.Sum();
-			double remainingHeight = Math.Max(0, availableSize.Height - usedHeight);
+			double remainingHeight = Math.Max(0, availaibleHeight - usedHeight);
 			var totalStarSizedHeight = GetTotalStarSizedHeight(rows);
 			var defaultStarHeight = remainingHeight / totalStarSizedHeight;
 			var starCalculatedPixelRows = rows
@@ -600,23 +640,29 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		// Star sizes revert to auto in the cases where the star sized items are not allowed to stretch.
+		// Only exception is when MinHeight is set on the Grid in order to match UWP behavior.
+		// In that specific case, star sized items will take at least the entire MinHeight available space
 		private bool ConsiderStarRowsAsAuto(double availableHeight)
 		{
+			var hasMinHeight = MinHeight != 0;
 			var hasFixedHeight = !double.IsNaN(Height);
 			var isStretch = VerticalAlignment == VerticalAlignment.Stretch;
 			var isInsideInfinity = double.IsInfinity(availableHeight);
 
-			return !hasFixedHeight && !(isStretch && !isInsideInfinity);
+			return !hasFixedHeight && !((isStretch || hasMinHeight) && !isInsideInfinity);
 		}
 
 		// Star sizes revert to auto in the cases where the star sized items are not allowed to stretch.
+		// Only exception is when MinWidth is set on the Grid in order to match UWP behavior.
+		// In that specific case, star sized items will take at least the entire MinWidth available space
 		private bool ConsiderStarColumnsAsAuto(double availableWidth)
 		{
+			var hasMinWidth = MinWidth != 0;
 			var hasFixedWidth = !double.IsNaN(Width);
 			var isStretch = HorizontalAlignment == HorizontalAlignment.Stretch;
 			var isInsideInfinity = double.IsInfinity(availableWidth);
 
-			return !hasFixedWidth && !(isStretch && !isInsideInfinity);
+			return !hasFixedWidth && !((isStretch || hasMinWidth) && !isInsideInfinity);
 		}
 
 		private static List<(int Key, GridSize Value)> GetSizes(int index, int span, List<GridSize> sizes)
@@ -650,9 +696,9 @@ namespace Windows.UI.Xaml.Controls
 			var hasAuto = false;
 			var hasStarSize = false;
 
-			foreach(var s in cached)
+			foreach (var s in cached)
 			{
-				if(s.IsAuto)
+				if (s.IsAuto)
 				{
 					hasAuto = true;
 					break;
@@ -756,7 +802,7 @@ namespace Windows.UI.Xaml.Controls
 
 				var measured = MeasureElement(view, availableSize);
 				viewToPreviousMeasure[view] = Tuple.Create(availableSize, measured);
-                return measured;
+				return measured;
 			});
 		}
 
@@ -768,7 +814,7 @@ namespace Windows.UI.Xaml.Controls
 			return MeasureElement;
 		}
 
-		private List<ViewPosition> GetPositions() 
+		private List<ViewPosition> GetPositions()
 			=> Children
 				.SelectToList(c =>
 					new ViewPosition(c, new GridPosition(Grid.GetColumn(c), Grid.GetRow(c), Grid.GetColumnSpan(c), Grid.GetRowSpan(c)))
@@ -785,7 +831,7 @@ namespace Windows.UI.Xaml.Controls
 			public static Column Auto { get; } = new Column(GridSize.Auto);
 		}
 
-        private struct Row
+		private struct Row
 		{
 			public GridSize Height { get; private set; }
 			public Row(GridSize height)
@@ -796,7 +842,7 @@ namespace Windows.UI.Xaml.Controls
 			public static Row Auto { get; } = new Row(GridSize.Auto);
 		}
 
-        private struct GridSize
+		private struct GridSize
 		{
 			public static GridSize Auto { get { return new GridSize() { PixelSize = double.NaN }; } }
 			public static GridSize Star(double coeficient = 1f)

@@ -16,7 +16,7 @@ namespace Uno.UI
 			public static bool UseLegacyClipping { get; set; } = true;
 
 			/// <summary>
-			/// Enable the visualization of clipping bounds.
+			/// Enable the visualization of clipping bounds (intended for diagnostic purposes).
 			/// </summary>
 			public static bool ShowClippingBounds { get; set; } = false;
 		}
@@ -69,6 +69,14 @@ namespace Uno.UI
 			/// at the expense of consuming more memory. Setting this to null will leave the default value at the UWP default of 4.0.
 			/// </summary>
 			public static double? DefaultCacheLength = 1.0;
+		}
+
+		public static class TextBlock
+		{
+			/// <summary>
+			/// Enable the visualization of hyperlink hit-testing layouts (intended for diagnostic purposes).
+			/// </summary>
+			public static bool ShowHyperlinkLayouts { get; set; } = false;
 		}
 	}
 }

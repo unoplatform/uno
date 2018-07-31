@@ -21,7 +21,7 @@ namespace Windows.UI.Xaml.Controls
 
 		internal ListViewBase XamlParent
 		{
-			get => _xamlParentWeakReference.Target as ListViewBase;
+			get => _xamlParentWeakReference?.Target as ListViewBase;
 			set
 			{
 				WeakReferencePool.ReturnWeakReference(this, _xamlParentWeakReference);

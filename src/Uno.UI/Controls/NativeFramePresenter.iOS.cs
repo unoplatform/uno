@@ -218,11 +218,11 @@ namespace Uno.UI.Controls
 
 					if (topCommandBar != null)
 					{
-						NavigationController.SetNavigationBarHidden(false, true);
-
 						// Hook CommandBar to NavigationBar
 						// We do it here because we know the NavigationController is set (and NavigationBar is available)
 						topCommandBar.GetRenderer(() => new CommandBarRenderer(topCommandBar)).Native = NavigationController.NavigationBar;
+
+						NavigationController.SetNavigationBarHidden(false, true);
 					}
 					else // No CommandBar
 					{

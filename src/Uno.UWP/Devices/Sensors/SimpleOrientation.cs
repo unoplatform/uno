@@ -37,9 +37,6 @@ namespace Windows.Devices.Sensors
 		/// <summary>
 		/// The device is face-down and the display is hidden from the user.
 		/// </summary>
-#if __ANDROID__
-		[Uno.NotImplemented]
-#endif
 		Facedown = 5
 	}
 }

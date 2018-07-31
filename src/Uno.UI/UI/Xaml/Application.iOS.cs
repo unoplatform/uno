@@ -39,6 +39,9 @@ namespace Windows.UI.Xaml
 		}
 
 		public override void DidEnterBackground(UIApplication application)
+			=> OnSuspending();
+
+		partial void OnSuspendingPartial()
 		{
 			var operation = new SuspendingOperation(DateTime.Now.AddSeconds(10));
 
@@ -48,8 +51,11 @@ namespace Windows.UI.Xaml
 		}
 
 		public override void WillEnterForeground(UIApplication application)
+			=> OnResuming();
+
+		partial void OnResumingPartial()
 		{
-			if(_suspended)
+			if (_suspended)
 			{
 				_suspended = false;
 
