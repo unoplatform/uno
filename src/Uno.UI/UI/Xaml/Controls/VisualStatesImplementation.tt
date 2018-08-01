@@ -151,13 +151,13 @@ namespace <#= mixin.NamespaceName #>
 			this.UpdateCommonStates(true);
 		}
 
-#if __IOS__
-		protected override void OnApplyTemplate()
+#if __IOS__	
+		internal override void OnApplyTemplateInternal()
 		{
-			base.OnApplyTemplate();
+			base.OnApplyTemplateInternal();
 			RegisterEvents();
 		}
-				
+
 		private UIControl ContentTemplateRootControl
 		{
 			get
