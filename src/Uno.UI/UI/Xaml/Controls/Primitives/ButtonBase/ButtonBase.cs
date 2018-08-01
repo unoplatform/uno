@@ -133,8 +133,13 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		protected override void OnApplyTemplate()
 		{
 			base.OnApplyTemplate();
+			OnApplyTemplateInternal();
 
 			RegisterEvents();
+		}
+
+		internal virtual void OnApplyTemplateInternal()
+		{
 		}
 
 		private void OnClick(PointerRoutedEventArgs args = null)
