@@ -43,7 +43,7 @@ namespace Windows.UI.Xaml.Controls
 			DraggingEnded += OnDraggingEnded;
 			DecelerationEnded += OnDecelerationEnded;
 			ScrollAnimationEnded += OnScrollAnimationEnded;
-			
+
 			if (ScrollViewer.UseContentInsetAdjustmentBehavior)
 			{
 				ContentInsetAdjustmentBehavior = UIScrollViewContentInsetAdjustmentBehavior.Never;
@@ -214,8 +214,8 @@ namespace Windows.UI.Xaml.Controls
 					var verticalMargin = frameworkElement.Margin.Top + frameworkElement.Margin.Bottom;
 
 					var adjustedMeasure = new CGSize(
-						GetAdjustedArrangeWidth(frameworkElement, horizontalMargin),
-						GetAdjustedArrangeHeight(frameworkElement, verticalMargin)
+						GetAdjustedArrangeWidth(frameworkElement, (nfloat)horizontalMargin),
+						GetAdjustedArrangeHeight(frameworkElement, (nfloat)verticalMargin)
 					);
 
 					// Zoom works by applying a transform to the child view. If a view has a non-identity transform, its Frame shouldn't be set.
@@ -274,7 +274,7 @@ namespace Windows.UI.Xaml.Controls
 				case HorizontalAlignment.Stretch: //Treat Stretch the same as Center here even if the child is not the same Width as the container, adjustments have already been applied
 				case HorizontalAlignment.Center:
 					var layoutWidth = adjustedMeasuredSize.Width + horizontalMargin;
-					if (layoutWidth <= frameSize.Width )
+					if (layoutWidth <= frameSize.Width)
 					{
 						var marginToFrame = (frameSize.Width - layoutWidth) / 2;
 						return (nfloat)(marginToFrame + child.Margin.Left);
@@ -307,7 +307,7 @@ namespace Windows.UI.Xaml.Controls
 				case VerticalAlignment.Stretch: //Treat Stretch the same as Center even if the child is not the same Height as the container, adjustments have already been applied
 				case VerticalAlignment.Center:
 					var layoutHeight = adjustedMeasuredSize.Height + verticalMargin;
-					if (layoutHeight<=frameSize.Height)
+					if (layoutHeight <= frameSize.Height)
 					{
 						var marginToFrame = (frameSize.Height - layoutHeight) / 2;
 						return (nfloat)(marginToFrame + child.Margin.Top);
@@ -322,23 +322,23 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		private nfloat GetAdjustedArrangeWidth(IFrameworkElement child, double horizontalMargin)
+		private nfloat GetAdjustedArrangeWidth(IFrameworkElement child, nfloat horizontalMargin)
 		{
-			var adjustedWidth = _measuredSize.Width;
-			var viewPortWidth = Frame.Size.Width;
+			var adjustedWidth = _measuredSize.Width - horizontalMargin;
+			var viewPortWidth = Frame.Size.Width - horizontalMargin;
 
 			// Apply Stretch
 			if (child.HorizontalAlignment == HorizontalAlignment.Stretch)
 			{
 				// Make it at least as big as the view port
-				adjustedWidth = (nfloat)Math.Max(adjustedWidth, viewPortWidth - horizontalMargin);
+				adjustedWidth = (nfloat)Math.Max(adjustedWidth, viewPortWidth);
 			}
 
 			// Apply ScrollMode
 			if (HorizontalScrollMode == ScrollMode.Disabled || HorizontalScrollBarVisibility == ScrollBarVisibility.Disabled)
 			{
 				// Make it at most as big as the view port
-				adjustedWidth = (nfloat)Math.Min(adjustedWidth, viewPortWidth - horizontalMargin);
+				adjustedWidth = (nfloat)Math.Min(adjustedWidth, viewPortWidth);
 			}
 
 			var childDesiredWidth = GetDesiredValue(child.MinWidth, child.Width, child.MaxWidth);
@@ -401,23 +401,23 @@ namespace Windows.UI.Xaml.Controls
 
 		}
 
-		private nfloat GetAdjustedArrangeHeight(IFrameworkElement child, double verticalMargin)
+		private nfloat GetAdjustedArrangeHeight(IFrameworkElement child, nfloat verticalMargin)
 		{
-			var adjustedHeight = _measuredSize.Height;
-			var viewPortHeight = Frame.Size.Height;
+			var adjustedHeight = _measuredSize.Height - verticalMargin;
+			var viewPortHeight = Frame.Size.Height - verticalMargin;
 
 			// Apply Stretch
 			if (child.VerticalAlignment == VerticalAlignment.Stretch)
 			{
 				// Make it at least as big as the view port
-				adjustedHeight = (nfloat)Math.Max(adjustedHeight, viewPortHeight - verticalMargin);
+				adjustedHeight = (nfloat)Math.Max(adjustedHeight, viewPortHeight);
 			}
 
 			// Apply ScrollMode
 			if (VerticalScrollMode == ScrollMode.Disabled || VerticalScrollBarVisibility == ScrollBarVisibility.Disabled)
 			{
 				// Make it at most as big as the view port
-				adjustedHeight = (nfloat)Math.Min(adjustedHeight, viewPortHeight - verticalMargin);
+				adjustedHeight = (nfloat)Math.Min(adjustedHeight, viewPortHeight);
 			}
 
 			var childDesiredHeight = GetDesiredValue(child.MinHeight, child.Height, child.MaxHeight);
