@@ -20,7 +20,7 @@ namespace Uno.UI
 				double fontSize,
 				int characterSpacing,
 				BaseLineAlignment baseLineAlignment,
-				UnderlineStyle underlineStyle, 
+				TextDecorations textDecorations,
 				float? preferredBodyFontSize
 			),
 			UIStringAttributes
@@ -40,10 +40,10 @@ namespace Uno.UI
 			double fontSize,
 			int characterSpacing,
 			BaseLineAlignment baseLineAlignment,
-			UnderlineStyle underlineStyle
+			TextDecorations textDecorations
 		)
 		{
-			return _getAttributes((fontWeight, fontStyle, fontFamily, foreground, fontSize, characterSpacing, baseLineAlignment, underlineStyle, UIFont.PreferredBody.FontDescriptor.FontAttributes.Size));
+			return _getAttributes((fontWeight, fontStyle, fontFamily, foreground, fontSize, characterSpacing, baseLineAlignment, textDecorations, UIFont.PreferredBody.FontDescriptor.FontAttributes.Size));
 		}
 
 		private static UIStringAttributes InternalGetAttributes((
@@ -54,7 +54,7 @@ namespace Uno.UI
 			double fontSize,
 			int characterSpacing,
 			BaseLineAlignment baseLineAlignment,
-			UnderlineStyle underlineStyle,
+			TextDecorations textDecorations,
 			float? preferredBodyFontSize) tuple
 		)
 		{
@@ -80,9 +80,12 @@ namespace Uno.UI
 				ForegroundColor = (tuple.foreground as SolidColorBrush)?.ColorWithOpacity,
 				Font = font,
 				BaselineOffset = GetBaselineOffset(),
-				UnderlineStyle = tuple.underlineStyle == UnderlineStyle.Single
+				UnderlineStyle = (tuple.textDecorations & TextDecorations.Underline) == TextDecorations.Underline
 					? NSUnderlineStyle.Single
-					: NSUnderlineStyle.None
+					: NSUnderlineStyle.None,
+				StrikethroughStyle = (tuple.textDecorations & TextDecorations.Strikethrough) == TextDecorations.Strikethrough
+					? NSUnderlineStyle.Single
+					: NSUnderlineStyle.None,			
 			};
 
 			if (tuple.characterSpacing != 0f)

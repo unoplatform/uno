@@ -265,7 +265,7 @@ namespace Uno.UI.UI.Xaml.Documents
 			}
 		}
 
-		internal static void SetUnderlineStyle(this UIElement element, object localValue)
+		internal static void SetTextDecorations(this UIElement element, object localValue)
 		{
 			if (localValue == DependencyProperty.UnsetValue)
 			{
@@ -273,14 +273,20 @@ namespace Uno.UI.UI.Xaml.Documents
 			}
 			else
 			{
-				var value = (UnderlineStyle)localValue;
+				var value = (TextDecorations)localValue;
 				switch (value)
 				{
-					case UnderlineStyle.None:
+					case TextDecorations.None:
 						element.SetStyle("text-decoration", "none");
 						break;
-					case UnderlineStyle.Single:
+					case TextDecorations.Underline:
 						element.SetStyle("text-decoration", "underline");
+						break;
+					case TextDecorations.Strikethrough:
+						element.SetStyle("text-decoration", "line-through");
+						break;
+					case TextDecorations.Underline | TextDecorations.Strikethrough:
+						element.SetStyle("text-decoration", "underline line-through");
 						break;
 				}
 			}

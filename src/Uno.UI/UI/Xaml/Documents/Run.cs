@@ -82,12 +82,12 @@ namespace Windows.UI.Xaml.Documents
 			this.InvalidateInlines();
 		}
 
-		internal protected override void OnUnderlineStyleChanged()
+		protected override void OnTextDecorationsChanged()
 		{
-			base.OnUnderlineStyleChanged();
+			base.OnTextDecorationsChanged();
 			this.InvalidateInlines();
 		}
-
+		
 		protected override void OnStyleChanged()
 		{
 			if (Style == null)

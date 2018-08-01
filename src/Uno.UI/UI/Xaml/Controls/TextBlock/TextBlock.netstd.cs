@@ -100,6 +100,11 @@ namespace Windows.UI.Xaml.Controls
 			this.SetCharacterSpacing(CharacterSpacing);
 		}
 
+		partial void OnTextDecorationsChangedPartial()
+		{
+			this.SetTextDecorations(TextDecorations);
+		}
+
 		partial void OnTextWrappingChangedPartial()
 		{
 			this.SetTextWrapping(TextWrapping);

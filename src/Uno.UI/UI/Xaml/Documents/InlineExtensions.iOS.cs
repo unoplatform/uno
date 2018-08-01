@@ -18,7 +18,7 @@ namespace Windows.UI.Xaml.Documents
 				inline.FontSize,
 				inline.CharacterSpacing,
 				inline.BaseLineAlignment,
-				inline.InternalUnderlineStyle
+				inline.TextDecorations
 			);
 		}
 	}

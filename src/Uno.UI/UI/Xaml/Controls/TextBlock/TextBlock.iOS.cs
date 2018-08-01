@@ -14,6 +14,7 @@ using Windows.Foundation;
 using Uno.UI.Controls;
 using Windows.UI.Xaml.Input;
 using Uno.UI;
+using Windows.UI.Text;
 
 #if XAMARIN_IOS_UNIFIED
 using Foundation;
@@ -251,7 +252,7 @@ namespace Windows.UI.Xaml.Controls
 
 		private NSAttributedString GetAttributedText(NSAttributedStringTarget target)
 		{
-			if (target == NSAttributedStringTarget.UILabel && UseInlinesFastPath && LineHeight == 0 && CharacterSpacing == 0)
+			if (target == NSAttributedStringTarget.UILabel && UseInlinesFastPath && LineHeight == 0 && CharacterSpacing == 0 && TextDecorations == TextDecorations.None)
 			{
 				// Fast path in case everything can be set directly on UILabel without using NSAttributedString.
 				return null;
@@ -284,6 +285,17 @@ namespace Windows.UI.Xaml.Controls
 			{
 				attributes.Font = _currentFont;
 				attributes.ForegroundColor = _currentColor;
+			}
+
+			if (TextDecorations != TextDecorations.None)
+			{
+				attributes.UnderlineStyle = (TextDecorations & TextDecorations.Underline) == TextDecorations.Underline
+					? NSUnderlineStyle.Single
+					: NSUnderlineStyle.None;
+
+				attributes.StrikethroughStyle = (TextDecorations & TextDecorations.Strikethrough) == TextDecorations.Strikethrough
+					? NSUnderlineStyle.Single
+					: NSUnderlineStyle.None;
 			}
 
 			if (target == NSAttributedStringTarget.NSTextStorage || LineHeight != 0)

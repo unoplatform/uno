@@ -48,9 +48,9 @@ namespace Windows.UI.Xaml.Documents
 
 		}
 
-		partial void OnUnderlineStyleChangedPartial()
+		partial void OnTextDecorationsChangedPartial()
 		{
-			this.SetUnderlineStyle(ReadLocalValue(InternalUnderlineStyleProperty));
+			this.SetTextDecorations(ReadLocalValue(TextDecorationsProperty));
 		}
 	}
 }

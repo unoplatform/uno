@@ -525,7 +525,37 @@ namespace Windows.UI.Xaml.Controls
 
 		partial void OnCharacterSpacingChangedPartial();
 
-#endregion
+		#endregion
+
+		#region TextDecorations
+
+		public TextDecorations TextDecorations
+		{
+			get { return (TextDecorations)this.GetValue(TextDecorationsProperty); }
+			set { this.SetValue(TextDecorationsProperty, value); }
+		}
+
+		public static DependencyProperty TextDecorationsProperty =
+			DependencyProperty.Register(
+				"TextDecorations",
+				typeof(int),
+				typeof(TextBlock),
+				new FrameworkPropertyMetadata(
+					defaultValue: TextDecorations.None,
+					options: FrameworkPropertyMetadataOptions.Inherits,
+					propertyChangedCallback: (s, e) => ((TextBlock)s).OnTextDecorationsChanged()
+				)
+			);
+
+		private void OnTextDecorationsChanged()
+		{
+			OnTextDecorationsChangedPartial();
+			this.InvalidateMeasure();
+		}
+
+		partial void OnTextDecorationsChangedPartial();
+
+		#endregion
 
 		/// <summary>
 		/// Gets whether the TextBlock is using the fast path in which Inlines

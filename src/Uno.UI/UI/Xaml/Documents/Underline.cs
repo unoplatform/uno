@@ -5,7 +5,7 @@ namespace Windows.UI.Xaml.Documents
 #if !__WASM__
 		public Underline()
 		{
-			InternalUnderlineStyle = UnderlineStyle.Single;
+			TextDecorations = Text.TextDecorations.Underline; // TODO
 		}
 #endif
 
