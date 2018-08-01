@@ -62,14 +62,6 @@ namespace <#= mixin.NamespaceName #>
 
 #if <#= mixin.HasCommonStates #>
 			UpdateCommonStates(false);
-
-#if __IOS__ && <#= mixin.HasCommonPressedState #>
-			RegisterLoadActions(
-				() => RegisterEvents(),
-				() => _eventSubscriptions.Disposable = null
-            );
-#endif
-
 #endif
 
 #if <#= mixin.HasCheckedStates #>
@@ -150,64 +142,6 @@ namespace <#= mixin.NamespaceName #>
 			
 			this.UpdateCommonStates(true);
 		}
-
-#if __IOS__	
-		internal override void OnApplyTemplateInternal()
-		{
-			base.OnApplyTemplateInternal();
-			RegisterEvents();
-		}
-
-		private UIControl ContentTemplateRootControl
-		{
-			get
-			{
-				return TemplatedRoot as UIControl 
-					?? TemplatedRoot
-						?.FindFirstChild<ContentPresenter>()
-						?.ContentTemplateRoot as UIControl;
-
-			}
-		}
-
-
-		private readonly SerialDisposable _eventSubscriptions = new SerialDisposable();
-
-		private void RegisterEvents()
-		{
-			_eventSubscriptions.Disposable = null;
-
-			if (Window == null)
-			{
-				// Will be invoked again when this control will be attached loaded.
-				return;
-			}
-
-			var uiControl = ContentTemplateRootControl;
-
-			if (uiControl != null)
-			{
-				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
-				{
-					this.Log().Debug("ControlTemplateRoot is a UIControl, hooking on to Pressed");
-				}
-
-				EventHandler pressHandler = (e, s) =>
-				{
-					if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
-					{
-						this.Log().Debug("Pressed");
-					}
-
-					UpdateCommonStates(true);
-				};
-
-				uiControl.AllTouchEvents += pressHandler;
-				_eventSubscriptions.Disposable = Disposable.Create(() => uiControl.AllTouchEvents -= pressHandler);
-			}
-		}
-#endif
-
 #endif
 
 #if <#= mixin.HasCommonFocusedState #>
