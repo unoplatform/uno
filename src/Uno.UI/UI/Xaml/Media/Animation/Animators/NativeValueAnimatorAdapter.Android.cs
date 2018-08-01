@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Text;
 using Android.Animation;
 using Android.Views.Animations;
+using Uno.Extensions;
+using Uno.Logging;
 
 namespace Windows.UI.Xaml.Media.Animation
 {
@@ -10,6 +12,8 @@ namespace Windows.UI.Xaml.Media.Animation
     {
 		private readonly Dictionary<EventHandler, EventHandler<ValueAnimator.AnimatorUpdateEventArgs>> _updateHandlers = new Dictionary<EventHandler, EventHandler<ValueAnimator.AnimatorUpdateEventArgs>>();
 		private readonly Dictionary<EventHandler, EventHandler<Animator.AnimationPauseEventArgs>> _pauseHandlers = new Dictionary<EventHandler, EventHandler<Animator.AnimationPauseEventArgs>>();
+		private readonly Dictionary<EventHandler, EventHandler> _endHandlers = new Dictionary<EventHandler, EventHandler>();
+		private readonly Dictionary<EventHandler, EventHandler> _cancelHandlers = new Dictionary<EventHandler, EventHandler>();
 
 		private readonly ValueAnimator _adaptee;
 
@@ -26,7 +30,18 @@ namespace Windows.UI.Xaml.Media.Animation
 		{
 			add
 			{
-				EventHandler<ValueAnimator.AnimatorUpdateEventArgs> handler = (snd, e) => value(snd, e);
+				EventHandler<ValueAnimator.AnimatorUpdateEventArgs> handler = (snd, e) =>
+				{
+					try
+					{
+						value(this, e);
+					}
+					catch (Exception ex)
+					{
+						Application.Current.RaiseRecoverableUnhandledException(ex);
+					}
+				};
+
 				if (_updateHandlers.TryAdd(value, handler))
 				{
 					_adaptee.Update += handler;
@@ -47,7 +62,18 @@ namespace Windows.UI.Xaml.Media.Animation
 		{
 			add
 			{
-				EventHandler<Animator.AnimationPauseEventArgs> handler = (snd, e) => value(snd, e);
+				EventHandler<Animator.AnimationPauseEventArgs> handler = (snd, e) =>
+				{
+					try
+					{
+						value(this, e);
+					}
+					catch (Exception ex)
+					{
+						Application.Current.RaiseRecoverableUnhandledException(ex);
+					}
+				};
+
 				if (_pauseHandlers.TryAdd(value, handler))
 				{
 					_adaptee.AnimationPause += handler;
@@ -66,15 +92,63 @@ namespace Windows.UI.Xaml.Media.Animation
 		/// <inheritdoc />
 		public event EventHandler AnimationEnd
 		{
-			add => _adaptee.AnimationEnd += value;
-			remove => _adaptee.AnimationEnd -= value;
+			add
+			{
+				EventHandler handler = (snd, e) => {
+					try
+					{
+						value(this, e);
+					}
+					catch (Exception ex)
+					{
+						Application.Current.RaiseRecoverableUnhandledException(ex);
+					}
+				};
+
+				if (_endHandlers.TryAdd(value, handler))
+				{
+					_adaptee.AnimationEnd += handler;
+				}
+			}
+			remove
+			{
+				if (_endHandlers.TryGetValue(value, out var handler))
+				{
+					_adaptee.AnimationEnd -= handler;
+					_endHandlers.Remove(value);
+				}
+			}
 		}
 
 		/// <inheritdoc />
 		public event EventHandler AnimationCancel
 		{
-			add => _adaptee.AnimationCancel += value;
-			remove => _adaptee.AnimationCancel -= value;
+			add
+			{
+				EventHandler handler = (snd, e) => {
+					try
+					{
+						value(this, e);
+					}
+					catch (Exception ex)
+					{
+						Application.Current.RaiseRecoverableUnhandledException(ex);
+					}
+				};
+
+				if (_cancelHandlers.TryAdd(value, handler))
+				{
+					_adaptee.AnimationCancel += handler;
+				}
+			}
+			remove
+			{
+				if (_cancelHandlers.TryGetValue(value, out var handler))
+				{
+					_adaptee.AnimationCancel -= handler;
+					_cancelHandlers.Remove(value);
+				}
+			}
 		}
 
 		/// <inheritdoc />
