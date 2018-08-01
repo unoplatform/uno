@@ -15,7 +15,9 @@ In the same direction we took for the other libraries ([MVVMLight](https://githu
 [ReactiveUI](https://github.com/nventive/Uno.ReactiveUI), [WindowsStateTriggers](https://github.com/nventive/Uno.WindowsStateTriggers),
 [Prism](https://github.com/nventive/Uno.Prism), ...) the Uno-compatible packages are forks of the original repositories, in order to demonstrate 
 the viability of Uno as a target for those libraries. Ultimately, the Uno Platform developers will make pull requests back to the original 
-repositories, once it makes sense for the original maintainers and that the sources will no longer need significant structural changes.
+repositories, once it makes sense for the original maintainers and that the sources will no longer need significant structural
+changes. For some of those libraries, changes are very limited as the UWP target can be adjusted to include iOS/Android/Wasm, where as for others
+platform support is bundled in one single nuget package, requiring the extraction of platform specific code into new packages.
 
 ## Building support for the Windows Community Toolkit for Uno
 
