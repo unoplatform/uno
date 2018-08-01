@@ -31,8 +31,9 @@ public class TextPaintSpan
 		paint.setAntiAlias(true);
 		paint.setTypeface(_paint.getTypeface());
 		paint.setTextSize(_paint.getTextSize());
-		paint.density = _paint.density;
+		paint.density = _paint.density;		
 		paint.setUnderlineText(_paint.isUnderlineText());
+		paint.setStrikeThruText(_paint.isStrikeThruText());
 		paint.setColor(_paint.getColor());
 		paint.baselineShift = _paint.baselineShift;
 

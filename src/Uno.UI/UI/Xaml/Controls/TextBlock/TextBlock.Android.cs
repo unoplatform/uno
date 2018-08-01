@@ -217,7 +217,7 @@ namespace Windows.UI.Xaml.Controls
 				CharacterSpacing,
 				(Foreground as SolidColorBrush)?.Color ?? Colors.Transparent,
 				BaseLineAlignment.Baseline,
-				UnderlineStyle.None
+				TextDecorations
 			);
 		}
 

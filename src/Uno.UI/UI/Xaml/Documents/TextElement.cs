@@ -264,7 +264,36 @@ namespace Windows.UI.Xaml.Documents
 
 		partial void OnCharacterSpacingChangedPartial();
 
-#endregion
+		#endregion
+
+		#region TextDecorations
+
+		public TextDecorations TextDecorations
+		{
+			get { return (TextDecorations)GetValue(TextDecorationsProperty); }
+			set { SetValue(TextDecorationsProperty, value); }
+		}
+
+		public static DependencyProperty TextDecorationsProperty =
+			DependencyProperty.Register(
+				"TextDecorations",
+				typeof(int),
+				typeof(TextElement),
+				new FrameworkPropertyMetadata(
+					defaultValue: TextDecorations.None,
+					options: FrameworkPropertyMetadataOptions.Inherits,
+					propertyChangedCallback: (s, e) => ((TextElement)s).OnTextDecorationsChanged()
+				)
+			);
+
+		protected virtual void OnTextDecorationsChanged()
+		{
+			OnTextDecorationsChangedPartial();
+		}
+
+		partial void OnTextDecorationsChangedPartial();
+
+		#endregion
 
 		#region BaseLineAlignment Dependency Property
 
@@ -286,41 +315,14 @@ namespace Windows.UI.Xaml.Documents
 				)
 			);
 
+		private string _name;
+
 		protected virtual void OnBaseLineAlignmentChanged()
 		{
 			OnBaseLineAlignmentChangedPartial();
 		}
 
 		partial void OnBaseLineAlignmentChangedPartial();
-
-#endregion
-
-		#region UnderlineStyle
-
-		internal UnderlineStyle InternalUnderlineStyle
-		{
-			get => (UnderlineStyle)this.GetValue(InternalUnderlineStyleProperty);
-			set => this.SetValue(InternalUnderlineStyleProperty, value);
-		}
-
-		internal static DependencyProperty InternalUnderlineStyleProperty { get; } =
-			DependencyProperty.Register(
-				"UnderlineStyle",
-				typeof(UnderlineStyle),
-				typeof(TextElement),
-				new FrameworkPropertyMetadata(
-					defaultValue: UnderlineStyle.None,
-					options: FrameworkPropertyMetadataOptions.Inherits,
-					propertyChangedCallback: (s, e) => ((TextElement)s).OnUnderlineStyleChanged()
-				)
-			);
-
-		internal protected virtual void OnUnderlineStyleChanged()
-		{
-			OnUnderlineStyleChangedPartial();
-		}
-
-		partial void OnUnderlineStyleChangedPartial();
 
 		#endregion
 

@@ -76,7 +76,7 @@ namespace Windows.UI.Xaml.Documents
 				&& inline.FontSize == textBlock.FontSize
 				&& inline.CharacterSpacing == textBlock.CharacterSpacing
 				&& inline.BaseLineAlignment == BaseLineAlignment.Baseline
-				&& inline.InternalUnderlineStyle == UnderlineStyle.None;
+				&& inline.TextDecorations == textBlock.TextDecorations;
 		}
 	}
 }
