@@ -15,6 +15,7 @@ Visit [our documentation](doc/index.md) for more details.
 Here's a list of live apps made with the Uno Platform for WebAssembly.
 
 * The [Uno Platform Playground](http://playground.platform.uno) ([Source](https://github.com/nventive/Uno.Playground))
+* The [Uno.WindowsCommunityToolkit](http://windowstoolkit-wasm.platform.uno/), ([Source](https://github.com/nventive/Uno.WindowsCommunityToolkit))
 * The [Uno.RoslynQuoter](http://roslynquoter-wasm.platform.uno/), a [Roslyn]() based C# analysis tool ([Source](https://github.com/nventive/Uno.RoslynQuoter))
 * The [Uno.BikeSharing360 App](http://bikerider-wasm.platform.uno/), a Xamarin.Forms app running on top of Uno for WebAssembly ([Source](https://github.com/nventive/Uno.BikeSharing360_MobileApps))
 * The [Uno.WindowsStateTriggers App](http://winstatetriggers-wasm.platform.uno/), a demo of the [Morten's WindowsStateTriggers](https://github.com/dotMorten/WindowsStateTriggers) ([Source](https://github.com/nventive/Uno.WindowsStateTriggers))
