@@ -280,7 +280,7 @@ namespace Windows.UI.Xaml.Controls
 				//If MinHeight property is set on the Grid we need to take it into account in order to match UWP behavior
 				if (MinHeight > minHeight)
 				{
-					minHeight = MinHeight;
+					minHeight = MinHeight - GetVerticalOffset();
 				}
 
 				maxHeightMeasured = minHeight;
@@ -472,10 +472,10 @@ namespace Windows.UI.Xaml.Controls
 				//This is the arrange phase. We already know the measured size of children.
 				var minWidth = Children.Max(child => GetElementDesiredSize(child).Width);
 
-				//If MinHeight property is set on the Grid we need to take it into account in order to match UWP behavior
+				//If MinWidth property is set on the Grid we need to take it into account in order to match UWP behavior
 				if (MinWidth > minWidth)
 				{
-					minWidth = MinWidth;
+					minWidth = MinWidth - GetHorizontalOffset();
 				}
 
 				maxMeasuredWidth = minWidth;
