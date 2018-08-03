@@ -8,6 +8,8 @@ using Uno.Foundation;
 using Uno.Logging;
 using Windows.UI.Xaml.Media.Imaging;
 using Uno.Disposables;
+using Windows.Storage.Streams;
+using System.Runtime.InteropServices;
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -51,45 +53,69 @@ namespace Windows.UI.Xaml.Controls
 
 			var source = e.NewValue as ImageSource;
 
-			void setImageUrl()
+			if (source is WriteableBitmap wb)
 			{
-				var url = source?.WebUri;
-
-				if (url != null)
+				if (wb.PixelBuffer is InMemoryBuffer mb)
 				{
-					if (url.IsAbsoluteUri)
+					var gch = GCHandle.Alloc(mb.Data, GCHandleType.Pinned);
+					var pinnedData = gch.AddrOfPinnedObject();
+
+					try
 					{
-						if (url.Scheme.Equals("file", StringComparison.OrdinalIgnoreCase))
-						{
-							// Local files are assumed as coming from the remoter server
-							SetAttribute("src", url.PathAndQuery);
-						}
-						else
-						{
-							SetAttribute("src", url.AbsoluteUri);
-						}
+						WebAssemblyRuntime.InvokeJS(
+							"Uno.UI.WindowManager.current.setImageRawData(\"" + HtmlId + "\", " + pinnedData + ", " + wb.PixelWidth + ", " + wb.PixelHeight + ");"
+						);
+
+						InvalidateMeasure();
 					}
-					else
+					finally
 					{
-						SetAttribute("src", url.OriginalString);
+						gch.Free();
 					}
 				}
 			}
+			else
+			{
+				void setImageContent()
+				{
+					var url = source?.WebUri;
 
-			_sourceDisposable.Disposable = null;
-
-			_sourceDisposable.Disposable =
-				Source?.RegisterDisposablePropertyChangedCallback(
-					BitmapImage.UriSourceProperty, (o, args) =>
+					if (url != null)
 					{
-						if (!object.Equals(e.OldValue, args.NewValue))
+						if (url.IsAbsoluteUri)
 						{
-							setImageUrl();
+							if (url.Scheme.Equals("file", StringComparison.OrdinalIgnoreCase))
+							{
+								// Local files are assumed as coming from the remoter server
+								SetAttribute("src", url.PathAndQuery);
+							}
+							else
+							{
+								SetAttribute("src", url.AbsoluteUri);
+							}
+						}
+						else
+						{
+							SetAttribute("src", url.OriginalString);
 						}
 					}
-				);
+				}
 
-			setImageUrl();
+				_sourceDisposable.Disposable = null;
+
+				_sourceDisposable.Disposable =
+					Source?.RegisterDisposablePropertyChangedCallback(
+						BitmapImage.UriSourceProperty, (o, args) =>
+						{
+							if (!object.Equals(e.OldValue, args.NewValue))
+							{
+								setImageContent();
+							}
+						}
+					);
+
+				setImageContent();
+			}
 		}
 
 		#endregion
@@ -158,7 +184,7 @@ namespace Windows.UI.Xaml.Controls
 
 					case Stretch.Uniform:
 						var min = Math.Min(scale.x, scale.y);
-						scale =  (min, min);
+						scale = (min, min);
 						break;
 				}
 
