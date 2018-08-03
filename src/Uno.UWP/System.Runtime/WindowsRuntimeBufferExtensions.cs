@@ -14,7 +14,7 @@ namespace System.Runtime.InteropServices.WindowsRuntime
 		public static IBuffer AsBuffer(this byte[] source, int offset, int length){ throw new NotImplementedException(); }
 		[Uno.NotImplemented]
 		public static IBuffer AsBuffer(this byte[] source, int offset, int length, int capacity){ throw new NotImplementedException(); }
-		[Uno.NotImplemented]
+
 		public static Stream AsStream(this IBuffer source)
 		{
 			switch (source)
