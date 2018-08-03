@@ -135,6 +135,7 @@
 - XAML Reader
 - Phased Binding (x:Phase)
 - XAML code-behind Events registration
+- WriteableBitmap
 
 ### Non-UI features
 
