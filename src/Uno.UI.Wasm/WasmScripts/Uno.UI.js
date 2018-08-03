@@ -352,16 +352,15 @@ var Uno;
                 return "ok";
             }
             /**
-                * Issue a browser alert to user
-                * @param message message to display
+                * Sets the browser window title
+                * @param message the new title
                 */
             setWindowTitle(title) {
                 document.title = title || UnoAppManifest.displayName;
                 return "ok";
             }
             /**
-                * Issue a browser alert to user
-                * @param message message to display
+                * Gets the currently set browser window title
                 */
             getWindowTitle() {
                 return document.title || UnoAppManifest.displayName;
@@ -559,6 +558,30 @@ var Uno;
                     element.style.position = previousPosition;
                     element.style.maxWidth = "";
                     element.style.maxHeight = "";
+                }
+            }
+            setImageRawData(viewId, dataPtr, width, height) {
+                const element = this.allActiveElementsById[viewId];
+                if (!element) {
+                    throw `setPointerCapture: Element id ${viewId} not found.`;
+                }
+                if (element.tagName.toUpperCase() === "IMG") {
+                    const imgElement = element;
+                    var rawCanvas = document.createElement("canvas");
+                    rawCanvas.width = width;
+                    rawCanvas.height = height;
+                    var ctx = rawCanvas.getContext("2d");
+                    var imgData = ctx.createImageData(width, height);
+                    var bufferSize = width * height * 4;
+                    for (var i = 0; i < bufferSize; i += 4) {
+                        imgData.data[i + 0] = Module.HEAPU8[dataPtr + i + 2];
+                        imgData.data[i + 1] = Module.HEAPU8[dataPtr + i + 1];
+                        imgData.data[i + 2] = Module.HEAPU8[dataPtr + i + 0];
+                        imgData.data[i + 3] = Module.HEAPU8[dataPtr + i + 3];
+                    }
+                    ctx.putImageData(imgData, 0, 0);
+                    imgElement.src = rawCanvas.toDataURL();
+                    return "ok";
                 }
             }
             setPointerCapture(viewId, pointerId) {
