@@ -22,6 +22,8 @@ using Android.Runtime;
 using System.Threading;
 using Uno.UI;
 using Windows.UI.Core;
+using Windows.UI.Xaml.Media.Imaging;
+using Windows.Storage.Streams;
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -289,8 +291,12 @@ namespace Windows.UI.Xaml.Controls
 			{
 				try
 				{
+					if (_openedImage is WriteableBitmap wb)
+					{
+						SetFromWriteableBitmap(wb);
+					}
 					// We want to reset the image when there is no source provided.
-					if (!_openedImage?.HasSource() ?? true)
+					else if (!_openedImage?.HasSource() ?? true)
 					{
 						ResetSource();
 					}
@@ -444,6 +450,29 @@ namespace Windows.UI.Xaml.Controls
 				var unused = SetSourceBitmapAsync(CancellationToken.None, newImageSource);
 			}
 		}
+
+		private void SetFromWriteableBitmap(WriteableBitmap bitmap)
+		{
+			var drawableBuffer = new int[bitmap.PixelWidth * bitmap.PixelHeight];
+			var sourceBuffer = (bitmap.PixelBuffer as InMemoryBuffer).Data;
+			for (int i = 0; i < drawableBuffer.Length; i++)
+			{
+				var a = sourceBuffer[i * 4 + 3];
+				var r = sourceBuffer[i * 4 + 2];
+				var g = sourceBuffer[i * 4 + 1];
+				var b = sourceBuffer[i * 4 + 0];
+
+				drawableBuffer[i] = (a << 24)| (r << 16)| (g << 8)| b;
+			}
+
+			var bm = Bitmap.CreateBitmap(drawableBuffer, bitmap.PixelWidth, bitmap.PixelHeight, Bitmap.Config.Argb8888);
+			var drawable = new BitmapDrawable(Context.Resources, bm);
+
+			SetImageDrawable(drawable);
+			UpdateSourceImageSize(new Windows.Foundation.Size(bm.Width, bm.Height), isLogicalPixels: true);
+			OnImageOpened(bitmap);
+		}
+
 		private async Task SetSourceBitmapAsync(CancellationToken ct, ImageSource newImageSource)
 		{
 			SetImageBitmap(newImageSource.ImageData);
