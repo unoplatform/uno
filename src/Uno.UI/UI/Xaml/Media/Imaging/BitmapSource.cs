@@ -16,7 +16,7 @@ namespace Windows.UI.Xaml.Media.Imaging
 
 		// Using a DependencyProperty as the backing store for PixelHeight.  This enables animation, styling, binding, etc...
 		public static readonly DependencyProperty PixelHeightProperty =
-			DependencyProperty.Register("PixelHeight", typeof(int), typeof(BitmapImage), new PropertyMetadata(0, (s, e) => ((BitmapSource)s)?.OnPixelHeightChanged(e)));
+			DependencyProperty.Register("PixelHeight", typeof(int), typeof(BitmapSource), new PropertyMetadata(0, (s, e) => ((BitmapSource)s)?.OnPixelHeightChanged(e)));
 
 		private void OnPixelHeightChanged(DependencyPropertyChangedEventArgs e)
 		{
