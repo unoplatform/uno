@@ -44,6 +44,25 @@
 			Namespace="http://schemas.microsoft.com/developer/vsx-schema/2011"
 			Prefix="x"/>
 
+	  <XmlUpdate
+		  XmlFileName="..\src\SolutionTemplate\UnoSolutionTemplate\UnoQuickStart.Droid\UnoQuickStart.Droid.csproj"
+		  XPath="//x:PackageReference[@Include='Uno.UI']/@Version"
+		  Value="$(GitVersion_FullSemVer)"
+		  Namespace="http://schemas.microsoft.com/developer/msbuild/2003"
+		  Prefix="x"/>
+
+	  <XmlUpdate
+		  XmlFileName="..\src\SolutionTemplate\UnoSolutionTemplate\UnoQuickStart.iOS\UnoQuickStart.iOS.csproj"
+		  XPath="//x:PackageReference[@Include='Uno.UI']/@Version"
+		  Value="$(GitVersion_FullSemVer)"
+		  Namespace="http://schemas.microsoft.com/developer/msbuild/2003"
+		  Prefix="x"/>
+
+	  <XmlUpdate
+		  XmlFileName="..\src\SolutionTemplate\UnoSolutionTemplate\UnoQuickStart.Wasm\UnoQuickStart.Wasm.csproj"
+		  XPath="//PackageReference[@Include='Uno.UI']/@Version"
+		  Value="$(GitVersion_FullSemVer)" />
+
 	</Target>
 
 	<Target Name="BuildCI">
