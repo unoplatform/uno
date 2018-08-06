@@ -31,17 +31,6 @@ namespace UnoSolutionTemplate.Wizard
 
 		public void RunFinished()
 		{
-			var nugetConfigPath = Path.Combine(_targetPath, "..\\nuget.config");
-
-			if (!File.Exists(nugetConfigPath))
-			{
-                Directory.CreateDirectory(Path.Combine(_targetPath, "..\\PackageCache"));
-
-				using (var reader = new StreamReader(GetType().Assembly.GetManifestResourceStream($"{GetType().Assembly.GetName().Name}.NuGet.config")))
-				{
-					File.WriteAllText(nugetConfigPath, reader.ReadToEnd());
-				}
-			}
 		}
 
 		public void RunStarted(object automationObject, Dictionary<string, string> replacementsDictionary, WizardRunKind runKind, object[] customParams)
