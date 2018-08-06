@@ -16,7 +16,7 @@ namespace Windows.UI.Xaml
 {
 	public partial class FrameworkTemplate : DependencyObject
 	{
-		private static FrameworkTemplatePool _pool = new FrameworkTemplatePool();
+		private static readonly FrameworkTemplatePool _pool = new FrameworkTemplatePool();
 
 		private readonly Func<View> _viewFactory;
 		private readonly int _hashCode;

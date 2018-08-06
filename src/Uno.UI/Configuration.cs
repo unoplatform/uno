@@ -78,5 +78,13 @@ namespace Uno.UI
 			/// </summary>
 			public static bool ShowHyperlinkLayouts { get; set; } = false;
 		}
+
+		public static class Page
+		{
+			/// <summary>
+			/// Enables reuse of <see cref="Page"/> instances. Enabling can improve performance when using <see cref="Frame"/> navigation.
+			/// </summary>
+			public static bool IsPoolingEnabled { get; set; } = false;
+		}
 	}
 }
