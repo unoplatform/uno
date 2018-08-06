@@ -5,6 +5,8 @@ continuous-delivery-fallback-tag: ""
 branches:
   master:
     tag: dev
+  beta:
+    tag: beta
   (stable):
     tag: 
   dev/.*?/(.*?):
