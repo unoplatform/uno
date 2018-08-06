@@ -19,8 +19,8 @@
     <TargetFrameworkVersion>v8.0</TargetFrameworkVersion>
     <AndroidManifest>Properties\AndroidManifest.xml</AndroidManifest>
     <AndroidUseIntermediateDesignerFile>True</AndroidUseIntermediateDesignerFile>
-		<ResourcesDirectory>..\$ext_safeprojectname$.Shared\Strings</ResourcesDirectory>
-	</PropertyGroup>
+    <ResourcesDirectory>..\$ext_safeprojectname$.Shared\Strings</ResourcesDirectory>
+  </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
@@ -54,9 +54,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Uno.UI">
-      <Version>1.28.1-dev.2183</Version>
-    </PackageReference>
+    <PackageReference Include="Uno.UI" Version="1.28.1-dev.2183" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="MainActivity.cs" />
