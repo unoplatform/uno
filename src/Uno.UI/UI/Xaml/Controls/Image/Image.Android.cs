@@ -455,6 +455,10 @@ namespace Windows.UI.Xaml.Controls
 		{
 			var drawableBuffer = new int[bitmap.PixelWidth * bitmap.PixelHeight];
 			var sourceBuffer = (bitmap.PixelBuffer as InMemoryBuffer).Data;
+
+			// WriteableBitmap PixelBuffer is using BGRA format, Android's bitmap input buffer
+			// requires Argb8888, so we swap bytes to conform to this format.
+
 			for (int i = 0; i < drawableBuffer.Length; i++)
 			{
 				var a = sourceBuffer[i * 4 + 3];
@@ -462,7 +466,7 @@ namespace Windows.UI.Xaml.Controls
 				var g = sourceBuffer[i * 4 + 1];
 				var b = sourceBuffer[i * 4 + 0];
 
-				drawableBuffer[i] = (a << 24)| (r << 16)| (g << 8)| b;
+				drawableBuffer[i] = (a << 24) | (r << 16) | (g << 8) | b;
 			}
 
 			var bm = Bitmap.CreateBitmap(drawableBuffer, bitmap.PixelWidth, bitmap.PixelHeight, Bitmap.Config.Argb8888);
