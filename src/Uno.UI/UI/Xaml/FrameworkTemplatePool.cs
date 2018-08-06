@@ -95,34 +95,33 @@ namespace Windows.UI.Xaml
 
 		private async void Scavenger(IdleDispatchedHandlerArgs e)
 		{
-			while (true)
+			var now = _watch.Elapsed;
+			var removedInstancesCount = 0;
+
+			foreach (var list in _pooledInstances.Values)
 			{
-				var now = _watch.Elapsed;
-				var removedInstancesCount = 0;
-
-				foreach (var list in _pooledInstances.Values)
-				{
-					removedInstancesCount += list.RemoveAll(t => now - t.CreationTime > TimeToLive);
-				}
-
-				if (removedInstancesCount > 0)
-				{
-					if (_trace.IsEnabled)
-					{
-						for (int i = 0; i < removedInstancesCount; i++)
-						{
-							_trace.WriteEvent(TraceProvider.ReleaseTemplate);
-						}
-					}
-
-					// Under iOS and Android, we need to force the collection for the GC
-					// to pick up the orphan instances that we've just released.
-
-					GC.Collect();
-				}
-
-				await Task.Delay(TimeSpan.FromSeconds(30));
+				removedInstancesCount += list.RemoveAll(t => now - t.CreationTime > TimeToLive);
 			}
+
+			if (removedInstancesCount > 0)
+			{
+				if (_trace.IsEnabled)
+				{
+					for (int i = 0; i < removedInstancesCount; i++)
+					{
+						_trace.WriteEvent(TraceProvider.ReleaseTemplate);
+					}
+				}
+
+				// Under iOS and Android, we need to force the collection for the GC
+				// to pick up the orphan instances that we've just released.
+
+				GC.Collect();
+			}
+
+			await Task.Delay(TimeSpan.FromSeconds(30));
+
+			CoreDispatcher.Main.RunIdleAsync(Scavenger);
 		}
 
 		internal View DequeueTemplate(FrameworkTemplate template)
