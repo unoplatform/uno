@@ -140,7 +140,7 @@ namespace Windows.UI.Xaml
 
 				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
 				{
-					this.Log().Debug($"Creating new template, id={GetTemplateDebugId(template)}"); 
+					this.Log().Debug($"Creating new template, id={GetTemplateDebugId(template)}");
 				}
 
 				instance = template.LoadContent();
@@ -163,7 +163,7 @@ namespace Windows.UI.Xaml
 
 				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
 				{
-					this.Log().Debug($"Recycling template,    id={GetTemplateDebugId(template)}, {list.Count} items remaining in cache"); 
+					this.Log().Debug($"Recycling template,    id={GetTemplateDebugId(template)}, {list.Count} items remaining in cache");
 				}
 			}
 
@@ -204,7 +204,7 @@ namespace Windows.UI.Xaml
 
 				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
 				{
-					(this).Log().Debug($"Caching template,      id={GetTemplateDebugId(key as FrameworkTemplate)}, {list.Count} items now in cache"); 
+					(this).Log().Debug($"Caching template,      id={GetTemplateDebugId(key as FrameworkTemplate)}, {list.Count} items now in cache");
 				}
 			}
 			else
@@ -218,13 +218,13 @@ namespace Windows.UI.Xaml
 			}
 		}
 
-		private void PropagateOnTemplateReused(object instance)
+		internal static void PropagateOnTemplateReused(object instance)
 		{
 			if (instance is IFrameworkTemplatePoolAware a)
 			{
 				a.OnTemplateRecycled();
 			}
-			
+
 			//Try Panel.Children before ViewGroup.GetChildren - this results in fewer allocations
 			if (instance is Controls.Panel p)
 			{
