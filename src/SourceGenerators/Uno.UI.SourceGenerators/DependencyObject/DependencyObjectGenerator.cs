@@ -534,44 +534,6 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 							BinderCollector.RequestCollect();
 						}}
 					}}
-#elif __ANDROID__ && {isViewGroup}
-					public bool IsJavaFinalized {{ get; private set; }}
-
-					protected sealed override void JavaFinalize()
-					{{
-						Dispatcher.RunIdleAsync(_ => FinalizeView());
-						base.JavaFinalize();
-						IsJavaFinalized = true;
-					}}
-
-
-					private void FinalizeView()
-					{{
-						for (int i = ChildCount - 1; i >= 0; i--)
-						{{
-							// Don't detach already-finalized views because this tends to cause undefined behavior, esp. when they are using unmanaged resources. 
-							// FrameworkElement views that have been finalized will have already released their own children.
-							if (!IsFinalized(GetChildAt(i)))
-							{{
-								RemoveViewAt(i);
-							}}
-						}}
-					}}
-		
-					private bool IsFinalized(Android.Views.View view)
-					{{
-						if (view is BindableView bindableView)
-						{{
-							return bindableView.IsJavaFinalized;
-						}}
-						if (view is Windows.UI.Xaml.Controls.Image image)
-						{{
-							return image.IsJavaFinalized;
-						}}
-
-						// Assume that non-FrameworkElements are already finalized. No need to release them since they don't participate in template pooling.
-						return true;
-					}}
 #endif
 				");
 				}
