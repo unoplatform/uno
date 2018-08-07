@@ -305,7 +305,7 @@ namespace Windows.UI.Xaml.Controls
 
 		private void LogArrange(View view, Rect frame)
 		{
-			//if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+			if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
 			{
 				var viewName = (view as IFrameworkElement).SelectOrDefault(f => f.Name, "NativeView");
 				var margin = (view as IFrameworkElement).SelectOrDefault(f => f.Margin, Thickness.Empty);
