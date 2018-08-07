@@ -1,4 +1,5 @@
 ﻿using System;
+using Windows.UI.Xaml;
 
 namespace $ext_safeprojectname$.Wasm
 {

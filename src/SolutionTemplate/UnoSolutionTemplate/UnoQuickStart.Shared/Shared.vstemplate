@@ -1,44 +1,45 @@
 <VSTemplate Version="3.0.0" xmlns="http://schemas.microsoft.com/developer/vstemplate/2005" Type="Project">
   <TemplateData>
-    <Name>UnoQuickStart.Shared</Name>
-    <Description>
-    </Description>
-    <ProjectType>Code Sharing Projects</ProjectType>
-    <ProjectSubType>
-    </ProjectSubType>
-    <SortOrder>1000</SortOrder>
-    <CreateNewFolder>true</CreateNewFolder>
-    <DefaultName>UnoQuickStart.Shared</DefaultName>
-    <ProvideDefaultName>true</ProvideDefaultName>
-    <LocationField>Enabled</LocationField>
-    <EnableLocationBrowseButton>true</EnableLocationBrowseButton>
-    <CreateInPlace>true</CreateInPlace>
-    <Icon>__TemplateIcon.png</Icon>
-    <PreviewImage>__PreviewImage.png</PreviewImage>
+	<Name>UnoQuickStart.Shared</Name>
+	<Description>
+	</Description>
+	<ProjectType>Code Sharing Projects</ProjectType>
+	<ProjectSubType>
+	</ProjectSubType>
+	<SortOrder>1000</SortOrder>
+	<CreateNewFolder>true</CreateNewFolder>
+	<DefaultName>UnoQuickStart.Shared</DefaultName>
+	<ProvideDefaultName>true</ProvideDefaultName>
+	<LocationField>Enabled</LocationField>
+	<EnableLocationBrowseButton>true</EnableLocationBrowseButton>
+	<CreateInPlace>true</CreateInPlace>
+	<Icon>__TemplateIcon.png</Icon>
+	<Hidden>true</Hidden>
+	<PreviewImage>__PreviewImage.png</PreviewImage>
   </TemplateData>
   <TemplateContent>
-    <Project TargetFileName="$ext_safeprojectname$.Shared.shproj" File="UnoQuickStart.Shared.shproj" ReplaceParameters="true">
+	<Project TargetFileName="$ext_safeprojectname$.Shared.shproj" File="UnoQuickStart.Shared.shproj" ReplaceParameters="true">
 
-			<Folder Name="Assets" TargetFolderName="Assets">
-				<ProjectItem TargetFileName="lockscreenlogo.scale-200.png" ReplaceParameters="false">lockscreenlogo.scale-200.png</ProjectItem>
-				<ProjectItem TargetFileName="splashscreen.scale-200.png" ReplaceParameters="false">splashscreen.scale-200.png</ProjectItem>
-				<ProjectItem TargetFileName="square150x150logo.scale-200.png" ReplaceParameters="false">square150x150logo.scale-200.png</ProjectItem>
-				<ProjectItem TargetFileName="square44x44logo.scale-200.png" ReplaceParameters="false">square44x44logo.scale-200.png</ProjectItem>
-				<ProjectItem TargetFileName="square44x44logo.targetsize-24_altform-unplated.png" ReplaceParameters="false">square44x44logo.targetsize-24_altform-unplated.png</ProjectItem>
-				<ProjectItem TargetFileName="storelogo.png" ReplaceParameters="false">storelogo.png</ProjectItem>
-				<ProjectItem TargetFileName="wide310x150logo.scale-200.png" ReplaceParameters="false">wide310x150logo.scale-200.png</ProjectItem>
-			</Folder>
-			<Folder Name="Strings" TargetFolderName="Strings">
-				<Folder Name="en" TargetFolderName="en">
-					<ProjectItem TargetFileName="Resources.resw" ReplaceParameters="true">Resources.resw</ProjectItem>
-				</Folder>
-			</Folder>
+	  <Folder Name="Assets" TargetFolderName="Assets">
+		<ProjectItem TargetFileName="lockscreenlogo.scale-200.png" ReplaceParameters="false">lockscreenlogo.scale-200.png</ProjectItem>
+		<ProjectItem TargetFileName="splashscreen.scale-200.png" ReplaceParameters="false">splashscreen.scale-200.png</ProjectItem>
+		<ProjectItem TargetFileName="square150x150logo.scale-200.png" ReplaceParameters="false">square150x150logo.scale-200.png</ProjectItem>
+		<ProjectItem TargetFileName="square44x44logo.scale-200.png" ReplaceParameters="false">square44x44logo.scale-200.png</ProjectItem>
+		<ProjectItem TargetFileName="square44x44logo.targetsize-24_altform-unplated.png" ReplaceParameters="false">square44x44logo.targetsize-24_altform-unplated.png</ProjectItem>
+		<ProjectItem TargetFileName="storelogo.png" ReplaceParameters="false">storelogo.png</ProjectItem>
+		<ProjectItem TargetFileName="wide310x150logo.scale-200.png" ReplaceParameters="false">wide310x150logo.scale-200.png</ProjectItem>
+	  </Folder>
+	  <Folder Name="Strings" TargetFolderName="Strings">
+		<Folder Name="en" TargetFolderName="en">
+		  <ProjectItem TargetFileName="Resources.resw" ReplaceParameters="true">Resources.resw</ProjectItem>
+		</Folder>
+	  </Folder>
 
-			<ProjectItem TargetFileName="$ext_safeprojectname$.Shared.projitems" ReplaceParameters="true">UnoQuickStart.Shared.projitems</ProjectItem>
-			<ProjectItem TargetFileName="App.xaml" ReplaceParameters="true">app.xaml</ProjectItem>
-			<ProjectItem TargetFileName="App.xaml.cs" ReplaceParameters="true">app.xaml.cs</ProjectItem>
-			<ProjectItem TargetFileName="MainPage.xaml" ReplaceParameters="true">mainpage.xaml</ProjectItem>
-			<ProjectItem TargetFileName="MainPage.xaml.cs" ReplaceParameters="true">mainpage.xaml.cs</ProjectItem>
-		</Project>
+	  <ProjectItem TargetFileName="$ext_safeprojectname$.Shared.projitems" ReplaceParameters="true">UnoQuickStart.Shared.projitems</ProjectItem>
+	  <ProjectItem TargetFileName="App.xaml" ReplaceParameters="true">app.xaml</ProjectItem>
+	  <ProjectItem TargetFileName="App.xaml.cs" ReplaceParameters="true">app.xaml.cs</ProjectItem>
+	  <ProjectItem TargetFileName="MainPage.xaml" ReplaceParameters="true">mainpage.xaml</ProjectItem>
+	  <ProjectItem TargetFileName="MainPage.xaml.cs" ReplaceParameters="true">mainpage.xaml.cs</ProjectItem>
+	</Project>
   </TemplateContent>
 </VSTemplate>

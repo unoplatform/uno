@@ -58,7 +58,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="key.snk" />
-    <EmbeddedResource Include="NuGet.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
@@ -68,5 +67,5 @@
   <Target Name="AfterBuild">
   </Target>
   -->
-<Import Project="..\..\Common.targets" />
+  <Import Project="..\..\Common.targets" />
 </Project>
