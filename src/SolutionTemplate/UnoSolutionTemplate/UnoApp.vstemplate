@@ -1,7 +1,7 @@
 <VSTemplate Version="3.0.0" Type="ProjectGroup" xmlns="http://schemas.microsoft.com/developer/vstemplate/2005">
   <TemplateData>
-	<Name>Uno Platform Solution</Name>
-	<Description>Uno Platform App Cross Platform XAML Solution</Description>
+	<Name>Cross-Platform App (Uno Platform)</Name>
+	<Description>Solution template for creating a cross-platform XAML app with the Uno Platform that targets UWP, Android, iOS, and WebAssembly</Description>
 	<ProjectType>CSharp</ProjectType>
 	<ProjectSubType />
 	<SortOrder>1000</SortOrder>
