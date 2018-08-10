@@ -4,7 +4,9 @@ using System.Drawing;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading;
+using Android.App;
 using Android.Content.Res;
+using Android.Views;
 using Uno.UI;
 using Windows.Foundation;
 using Windows.Foundation.Metadata;
@@ -52,6 +54,21 @@ namespace Windows.UI.Xaml
 
 		internal void RaiseNativeSizeChanged(int screenWidth, int screenHeight)
 		{
+			int statusBarHeightDp = 0;
+
+			var activity = ContextHelper.Current as Activity;
+			var decorView = activity.Window.DecorView;
+			var isStatusBarVisible = ((int)decorView.SystemUiVisibility & (int)SystemUiFlags.Fullscreen) == 0;
+
+			if (isStatusBarVisible)
+			{
+				int resourceId = Android.Content.Res.Resources.System.GetIdentifier("status_bar_height", "dimen", "android");
+				if (resourceId > 0)
+				{
+					statusBarHeightDp = (int)(Android.Content.Res.Resources.System.GetDimensionPixelSize(resourceId) / Android.App.Application.Context.Resources.DisplayMetrics.Density);
+				}
+			}
+
 			var newBounds = ViewHelper.PhysicalToLogicalPixels(new Rect(0, 0, screenWidth, screenHeight));
 
 			if (Bounds != newBounds)
@@ -66,8 +83,8 @@ namespace Windows.UI.Xaml
 			}
 
 			var visibleBoundsConfig = Android.App.Application.Context.Resources.Configuration;
-			var newVisibleBounds = new Rect(0, 0, visibleBoundsConfig.ScreenWidthDp, visibleBoundsConfig.ScreenHeightDp);
-			ApplicationView.GetForCurrentView().VisibleBounds = newVisibleBounds;
+			var newVisibleBounds = new Rect(0, statusBarHeightDp, visibleBoundsConfig.ScreenWidthDp, visibleBoundsConfig.ScreenHeightDp);
+			ApplicationView.GetForCurrentView().SetVisibleBounds(newVisibleBounds);
 		}
 	}
 }
