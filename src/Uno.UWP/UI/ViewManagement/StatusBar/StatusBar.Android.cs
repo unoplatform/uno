@@ -139,6 +139,7 @@ namespace Windows.UI.ViewManagement
 			}
 
 			decorView.SystemUiVisibility = (StatusBarVisibility)newUiOptions;
+			activity.OnConfigurationChanged(activity.Resources.Configuration);
 		}
 	}
 }
