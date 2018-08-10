@@ -305,8 +305,6 @@ namespace Windows.UI.Xaml.Controls
 			//ContentTemplate/ContentTemplateSelector will only be applied to a control with no Template, normally the innermost element
 			if (IsContentPresenterBypassEnabled)
 			{
-				// Reset the flag telling that the content's datacontext has been forcibly overriden
-				_localContentDataContextOverride = false;
 
 				var dataTemplate = this.ResolveContentTemplate();
 
