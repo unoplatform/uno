@@ -528,7 +528,9 @@ namespace Uno.UI
 
 			void AppendView(View view)
 			{
-				sb.AppendLine($"{spacing}{(view == viewOfInterest ? "*" : "")}>{view.ToString()}-({ViewHelper.PhysicalToLogicalPixels(view.Width)}x{ViewHelper.PhysicalToLogicalPixels(view.Height)})");
+				var name = (view as IFrameworkElement)?.Name;
+				var namePart = !name.IsNullOrEmpty() ? $"-'{name}'" : "";
+				sb.AppendLine($"{spacing}{(view == viewOfInterest ? "*" : "")}>{view.ToString()}{namePart}-({ViewHelper.PhysicalToLogicalPixels(view.Width)}x{ViewHelper.PhysicalToLogicalPixels(view.Height)})");
 			}
 		}
 
