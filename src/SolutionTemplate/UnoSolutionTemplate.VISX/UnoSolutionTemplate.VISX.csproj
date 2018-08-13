@@ -69,6 +69,13 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\UnoLibraryTemplate\UnoLibraryTemplate.csproj">
+      <Project>{22CF09C6-4281-49A2-A13F-477C8D539C0B}</Project>
+      <Name>UnoLibraryTemplate</Name>
+      <VSIXSubPath>ProjectTemplates</VSIXSubPath>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+      <IncludeOutputGroupsInVSIX>TemplateProjectOutputGroup%3b</IncludeOutputGroupsInVSIX>
+    </ProjectReference>
     <ProjectReference Include="..\UnoSolutionTemplate.Wizard\UnoSolutionTemplate.Wizard.csproj">
       <Project>{d8dbbd63-8c85-46a8-9455-9b678c2f713f}</Project>
       <Name>UnoSolutionTemplate.Wizard</Name>
