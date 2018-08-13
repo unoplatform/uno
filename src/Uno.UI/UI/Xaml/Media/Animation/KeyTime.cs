@@ -15,6 +15,9 @@ namespace Windows.UI.Xaml.Media.Animation
 			return new KeyTime() { TimeSpan = timeSpan };
 		}
 
+		public static implicit operator KeyTime(string timeSpan)
+			=> FromTimeSpan(TimeSpan.Parse(timeSpan));
+
 		public static bool operator ==(KeyTime t1, KeyTime t2)
 		{
 			return Equals(t1, t2);

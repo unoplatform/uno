@@ -22,6 +22,9 @@ namespace Windows.UI.Xaml
 
 		public TimeSpan TimeSpan { get; private set; }
 
+		public static implicit operator Duration(string timeSpan)
+			=> new Duration(TimeSpan.Parse(timeSpan));
+
 		public bool HasTimeSpan
 		{
 			get
