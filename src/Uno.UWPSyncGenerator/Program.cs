@@ -17,10 +17,10 @@ namespace Uno.UWPSyncGenerator
 			Console.WriteLine("Press any key to continue...");
 			Console.ReadLine();
 
-			new Generator().Build(@"..\..\..\..\Uno.Foundation", "Uno.Foundation", "Windows.Foundation.FoundationContract");
-			new Generator().Build(@"..\..\..\..\Uno.UWP", "Uno", "Windows.Foundation.UniversalApiContract");
-			new Generator().Build(@"..\..\..\..\Uno.UWP", "Uno", "Windows.Phone.PhoneContract");
-			new Generator().Build(@"..\..\..\..\Uno.UI", "Uno.UI", "Windows.Foundation.UniversalApiContract");
+			new SyncGenerator().Build(@"..\..\..\..\Uno.Foundation", "Uno.Foundation", "Windows.Foundation.FoundationContract");
+			new SyncGenerator().Build(@"..\..\..\..\Uno.UWP", "Uno", "Windows.Foundation.UniversalApiContract");
+			new SyncGenerator().Build(@"..\..\..\..\Uno.UWP", "Uno", "Windows.Phone.PhoneContract");
+			new SyncGenerator().Build(@"..\..\..\..\Uno.UI", "Uno.UI", "Windows.Foundation.UniversalApiContract");
 		}
 	}
 }
