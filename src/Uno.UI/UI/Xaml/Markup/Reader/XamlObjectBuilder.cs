@@ -589,12 +589,12 @@ namespace Windows.UI.Xaml.Markup.Reader
 				}
 				else
 				{
-					throw new NotSupportedException($"Unknown dependency property {member}");
+					throw new NotSupportedException($"Unknown dependency property {member.Member}");
 				}
 			}
 			else
 			{
-				throw new NotSupportedException($"Binding is not supported on {member}");
+				throw new NotSupportedException($"Binding is not supported on {member.Member}");
 			}
 		}
 
