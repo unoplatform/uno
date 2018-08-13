@@ -5,6 +5,8 @@ _You can find [the code of the `TreeView`](https://github.com/nventive/Uno.UI.To
 In this blog post series, we're going to cover the migration of the code for the
 [Silverlight Toolkit TreeView control](https://github.com/MicrosoftArchive/SilverlightToolkit) [TreeView control](https://github.com/MicrosoftArchive/SilverlightToolkit/tree/master/Release/Silverlight4/Source/Controls/TreeView) to UWP and the [Uno Platform](https://github.com/nventive/Uno), a control widely used in many line of business applications still in use today.
 
+![header](Assets/sl-treeview-part1-header.png)
+
 This includes parts of the features that may or may not work initially, as well as modifications that will have to be made in the Uno Platform to conform to UWP if required. While the Uno Platform includes all the APIs of the Spring Creators Update (17134), many of these APIs are not implemented yet and there may be some that are used by the Silverlight `TreeView` control.
 
 Also, the point of this exercise is to walk through a migration process from a Silverlight code base, as there is already an existing `TreeView` control API in UWP. As of the writing of this article, the UWP `TreeView` is not implemented in the Uno Platform and migrating this Silverlight control is not an option, as the APIs are significantly different and not directly compatible.
