@@ -76,6 +76,8 @@ namespace Windows.UI.Xaml.Controls
 			UpdateCommonState();
 		}
 
+		public global::Windows.UI.Xaml.Controls.Primitives.ToggleSwitchTemplateSettings TemplateSettings { get; } = new ToggleSwitchTemplateSettings();
+
 		public bool IsOn
 		{
 			get { return (bool)this.GetValue(IsOnProperty); }
