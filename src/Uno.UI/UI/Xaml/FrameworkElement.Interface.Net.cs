@@ -12,9 +12,19 @@ namespace Windows.UI.Xaml
 {
 	public partial class FrameworkElement : UIElement, IFrameworkElement
 	{
-		public T FindFirstParent<T>()
+		public T FindFirstParent<T>() where T:class
 		{
-			throw new NotSupportedException();
+			var view = this.Parent;
+			while (view != null)
+			{
+				var typed = view as T;
+				if (typed != null)
+				{
+					return typed;
+				}
+				view = view.GetParent() as DependencyObject;
+			}
+			return null;
 		}
 
 		partial void Initialize();
