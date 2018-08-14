@@ -14,6 +14,7 @@ namespace Windows.UI.Xaml.Input
 		Url,
 		TelephoneNumber,
 		Search,
+		EmailNameOrAddress,
 		EmailSmtpAddress,
 		PersonalFullName,
 		NumericPin,

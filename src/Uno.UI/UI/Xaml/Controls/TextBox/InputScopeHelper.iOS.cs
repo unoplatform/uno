@@ -49,6 +49,7 @@ namespace Windows.UI.Xaml.Controls
 				case InputScopeNameValue.Search:
 					return UIKeyboardType.Default;
 
+				case InputScopeNameValue.EmailNameOrAddress:
 				case InputScopeNameValue.EmailSmtpAddress:
 					return UIKeyboardType.EmailAddress;
 			}
