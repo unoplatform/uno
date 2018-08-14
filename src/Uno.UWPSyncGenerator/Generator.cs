@@ -169,16 +169,43 @@ namespace Uno.UWPSyncGenerator
 			public void AppendIf(IndentedStringBuilder b)
 			{
 				var defines = new[] {
-					AndroidSymbol == null ? AndroidDefine : "false",
-					IOSSymbol == null ? iOSDefine : "false",
-					net46ymbol == null ? net46Define : "false",
-					WasmSymbol == null ? WasmDefine : "false",
+					IsNotDefinedByUno(AndroidSymbol) ? AndroidDefine : "false",
+					IsNotDefinedByUno(IOSSymbol) ? iOSDefine : "false",
+					IsNotDefinedByUno(net46ymbol) ? net46Define : "false",
+					IsNotDefinedByUno(WasmSymbol) ? WasmDefine : "false",
 #if HAS_MACOS
 					MacOSSymbol == null ? MacDefine : "false",
 #endif
 				};
 
 				b.AppendLineInvariant($"#if {defines.JoinBy(" || ")}");
+			}
+
+			private static bool IsNotDefinedByUno(ISymbol symbol)
+			{
+				if (symbol == null) { return true; }
+				if (!(symbol is INamedTypeSymbol type)) { return false; }
+
+				var onlyGenerated = type.DeclaringSyntaxReferences.All(r => IsGeneratedFile(r.SyntaxTree.FilePath));
+				return onlyGenerated;
+			}
+
+			private static bool IsGeneratedFile(string filePath)
+			{
+				if (filePath.EndsWith(".g.cs"))
+				{
+					return true;
+				}
+				if (filePath.Contains(@"Generated\3.0.0.0"))
+				{
+					return true;
+				}
+				if (filePath.Contains(@"Generated\2.0.0.0"))
+				{
+					return true;
+				}
+
+				return false;
 			}
 		}
 
