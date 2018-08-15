@@ -1,6 +1,6 @@
-# Migrating the Silverlight Toolkit TreeView control into the UWP and the Uno Platform
+# Migrating the Silverlight Toolkit TreeView control to UWP and the Uno Platform
 
-_You can find [the code of the `TreeView`](https://github.com/nventive/Uno.UI.Toolkit.SL/tree/master/Uno.UI.Toolkit.SL/Controls/TreeView) for this article in the [Uno.UI.Toolkit.SL](https://github.com/nventive/Uno.UI.Toolkit.SL), in which we will add new controls and accept contributions for controls as they are made available._
+_You can find [the code of the `TreeView`](https://github.com/nventive/Uno.UI.Toolkit.SL/tree/master/Uno.UI.Toolkit.SL/Controls/TreeView) for this article in the [Uno.UI.Toolkit.SL](https://github.com/nventive/Uno.UI.Toolkit.SL) repository, in which we will add new controls and accept contributions for controls as they are made available._
 
 In this blog post series, we're going to cover the migration of the code for the
 [Silverlight Toolkit TreeView control](https://github.com/MicrosoftArchive/SilverlightToolkit) [TreeView control](https://github.com/MicrosoftArchive/SilverlightToolkit/tree/master/Release/Silverlight4/Source/Controls/TreeView) to UWP and the [Uno Platform](https://github.com/nventive/Uno), a control widely used in many line of business applications still in use today.
