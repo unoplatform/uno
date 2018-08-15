@@ -472,12 +472,46 @@ namespace Windows.UI.Xaml.Markup.Reader
 
 		private void ProcessBindingMarkupNode(object instance, XamlMemberDefinition member)
 		{
+			var binding = BuildBindingExpression(instance, member);
+
+			if (instance is IDependencyObjectStoreProvider provider)
+			{
+				var dependencyProperty = TypeResolver.FindDependencyProperty(member);
+
+				if (dependencyProperty != null)
+				{
+					provider.Store.SetBinding(dependencyProperty, binding);
+				}
+				else if (TypeResolver.GetPropertyByName(member.Owner.Type, member.Member.Name) is PropertyInfo propertyInfo)
+				{
+					if (member.Objects.Empty())
+					{
+						propertyInfo.SetMethod.Invoke(instance, new[] { BuildLiteralValue(member, propertyInfo.PropertyType) });
+					}
+					else
+					{
+						propertyInfo.SetMethod.Invoke(instance, new[] { BuildBindingExpression(null, member) });
+					}
+				}
+				else
+				{
+					throw new NotSupportedException($"Unknown dependency property {member.Member}");
+				}
+			}
+			else
+			{
+				throw new NotSupportedException($"Binding is not supported on {member.Member}");
+			}
+		}
+
+		private Binding BuildBindingExpression(object instance, XamlMemberDefinition member)
+		{
 			var bindingNode = member.Objects.FirstOrDefault(o => o.Type.Name == "Binding");
 			var templateBindingNode = member.Objects.FirstOrDefault(o => o.Type.Name == "TemplateBinding");
 
 			var binding = new Data.Binding();
 
-			if(templateBindingNode!= null)
+			if (templateBindingNode != null)
 			{
 				binding.RelativeSource = RelativeSource.TemplatedParent;
 			}
@@ -520,7 +554,8 @@ namespace Windows.UI.Xaml.Markup.Reader
 						if (bindingProperty.Objects.First() is XamlObjectDefinition relativeSource && relativeSource.Type.Name == "RelativeSource")
 						{
 							string relativeSourceValue = relativeSource.Members.FirstOrDefault()?.Value?.ToString()?.ToLowerInvariant();
-							switch (relativeSourceValue) {
+							switch (relativeSourceValue)
+							{
 								case "templatedparent":
 									binding.RelativeSource = RelativeSource.TemplatedParent;
 									break;
@@ -532,7 +567,7 @@ namespace Windows.UI.Xaml.Markup.Reader
 						break;
 
 					case nameof(Binding.Mode):
-						if(Enum.TryParse<Data.BindingMode>(bindingProperty.Value?.ToString(), out var mode))
+						if (Enum.TryParse<Data.BindingMode>(bindingProperty.Value?.ToString(), out var mode))
 						{
 							binding.Mode = mode;
 						}
@@ -579,23 +614,7 @@ namespace Windows.UI.Xaml.Markup.Reader
 				}
 			}
 
-			if (instance is IDependencyObjectStoreProvider provider)
-			{
-				var dependencyProperty = TypeResolver.FindDependencyProperty(member);
-
-				if (dependencyProperty != null)
-				{
-					provider.Store.SetBinding(dependencyProperty, binding);
-				}
-				else
-				{
-					throw new NotSupportedException($"Unknown dependency property {member.Member}");
-				}
-			}
-			else
-			{
-				throw new NotSupportedException($"Binding is not supported on {member.Member}");
-			}
+			return binding;
 		}
 
 		private void AddElementName(string elementName, ElementNameSubject subject)
