@@ -228,6 +228,11 @@ namespace Windows.UI.Xaml.Controls
 			base.RemoveDetachedView(child, animate);
 		}
 
+		partial void OnUnloadedPartial()
+		{
+			ViewCache?.OnUnloaded();
+		}
+
 		public void Refresh()
 		{
 			CurrentAdapter?.NotifyDataSetChanged();
