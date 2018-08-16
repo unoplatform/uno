@@ -32,25 +32,6 @@ namespace <#= mixin.NamespaceName #>
 	{
 		private readonly static IEventProvider _trace = Tracing.Get(FrameworkElement.TraceProvider.Id);
 
-#if <#= mixin.HasAttachedToWindow #>
-		partial void OnAttachedToWindowPartial()
-		{
-			((IDependencyObjectStoreProvider)this).Store.Parent = base.Parent;
-			OnLoading();
-			OnLoaded();
-		}
-
-		partial void OnDetachedFromWindowPartial()
-		{
-			OnUnloaded();
-			
-			if(base.Parent == null)
-            {
-                ((IDependencyObjectStoreProvider)this).Store.Parent = null;
-            }
-		}
-#endif
-
 #if <#= mixin.OverridesAttachedToWindow #>
 		protected override void OnNativeLoaded()
 		{
@@ -915,7 +896,6 @@ namespace <#= mixin.NamespaceName #>
 		bool hasNewWidthHeight = true, 
 		bool hasNewMinWidthHeight = false,
 		bool hasNewMaxWidthHeight = false,
-		bool hasAttachedToWindow = true,
 		bool overridesAttachedToWindow = false,
 		bool isFocusable = false,
 		bool overridesOnLayout = true
@@ -928,7 +908,6 @@ namespace <#= mixin.NamespaceName #>
 				HasNewWidthHeight = hasNewWidthHeight ? "new" : "",
 				HasNewMinWidthHeight = hasNewMinWidthHeight ? "new" : "",
 				HasNewMaxWidthHeight = hasNewMaxWidthHeight ? "new" : "",
-				HasAttachedToWindow = hasAttachedToWindow ? "true" : "false",
 				OverridesAttachedToWindow = overridesAttachedToWindow ? "true" : "false",
 				IsFocusable = isFocusable ? "true" : "false",
 				IsUnoViewGroup = className == "FrameworkElement" ? "true" : "false",
@@ -945,7 +924,6 @@ namespace <#= mixin.NamespaceName #>
 		public string HasNewWidthHeight;
 		public string HasNewMinWidthHeight;
 		public string HasNewMaxWidthHeight;
-		public string HasAttachedToWindow;
 		public string OverridesAttachedToWindow;
 		public string IsFocusable;
 		public string IsUnoViewGroup;

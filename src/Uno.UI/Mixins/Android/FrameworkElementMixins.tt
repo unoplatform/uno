@@ -2,13 +2,13 @@
 <#@output extension="g.cs" #>
 #if XAMARIN_ANDROID
 <# 
-	AddClass("Uno.UI.Controls.Legacy", "GridView", hasAttachedToWindow: false);
-	AddClass("Windows.UI.Xaml", "FrameworkElement", hasAttachedToWindow: false, overridesAttachedToWindow:true, overridesOnLayout: false);
+	AddClass("Uno.UI.Controls.Legacy", "GridView");
+	AddClass("Windows.UI.Xaml", "FrameworkElement", overridesAttachedToWindow:true, overridesOnLayout: false);
 	AddClass("Uno.UI.Controls.Legacy", "ListView");
 	AddClass("Windows.UI.Xaml.Controls", "Image", hasNewMaxWidthHeight: true);
 	AddClass("Uno.UI.Controls.Legacy", "HorizontalGridView");
 	AddClass("Uno.UI.Controls.Legacy", "HorizontalListView");
-	AddClass("Windows.UI.Xaml.Controls", "ProgressRing", hasAttachedToWindow: false);
+	AddClass("Windows.UI.Xaml.Controls", "ProgressRing");
 	AddClass("Windows.UI.Xaml.Controls", "ScrollContentPresenter");
 	AddClass("Windows.UI.Xaml.Controls", "NativePagedView");
 	AddClass("Windows.UI.Xaml.Controls", "TextBoxView", hasNewMinWidthHeight: true, hasNewMaxWidthHeight: true);
