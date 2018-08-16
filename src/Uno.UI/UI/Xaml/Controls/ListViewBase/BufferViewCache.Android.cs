@@ -607,6 +607,48 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
+		/// <summary>
+		/// Remove detached views completely when list is unloaded. This prevents errors where the view's attached window info isn't 
+		/// properly updated. (Which is very bad.)
+		/// </summary>
+		internal void OnUnloaded()
+		{
+			foreach (var record in _trailingBuffer)
+			{
+				UnloadView(record.ViewHolder);
+			}
+
+			foreach (var record in _leadingBuffer)
+			{
+				UnloadView(record.ViewHolder);
+			}
+
+			foreach (var holder in _intermediateCache.Values.SelectMany(l => l))
+			{
+				UnloadView(holder);
+			}
+
+			void UnloadView(UnoViewHolder holder)
+			{
+				if (holder?.ItemView == null)
+				{
+					return;
+				}
+				if (!holder.IsDetached)
+				{
+					return;
+				}
+
+				Layout.TryAttachView(holder.ItemView);
+				Layout.RemoveView(holder.ItemView);
+			}
+		}
+
+		internal void OnLoaded()
+		{
+
+		}
+
 		private void NotifyViewRecycled(UnoViewHolder holder)
 		{
 			if (_onRecycled.TryGetValue(holder, out var actions))
