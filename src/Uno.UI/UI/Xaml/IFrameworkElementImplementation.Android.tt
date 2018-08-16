@@ -912,7 +912,7 @@ namespace <#= mixin.NamespaceName #>
     public void AddClass(
 		string namespaceName, 
 		string className, 
-		bool hasNewWidthHeight = false, 
+		bool hasNewWidthHeight = true, 
 		bool hasNewMinWidthHeight = false,
 		bool hasNewMaxWidthHeight = false,
 		bool hasAttachedToWindow = true,
