@@ -260,7 +260,10 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				{
 					var key = resource.Members.FirstOrDefault(m => m.Member.Name == "Key");
 
-					if (key != null)
+					if (
+						key != null
+						&& resource.Type.Name != "StaticResource"
+					)
 					{
 						map.Add(key.Value.ToString(), _defaultNamespace, XamlGlobalStaticResourcesMap.ResourcePrecedence.Local);
 					}

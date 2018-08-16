@@ -86,6 +86,8 @@
     <None Remove="XamlReaderTests\When_ElementName.xamltest" />
     <None Remove="XamlReaderTests\When_GridRowDefinitions.xamltest" />
     <None Remove="XamlReaderTests\When_MultipleBindings.xamltest" />
+    <None Remove="XamlReaderTests\When_NonDependencyPropertyAssignable.xamltest" />
+    <None Remove="XamlReaderTests\When_NonDependencyProperty_Binding.xamltest" />
     <None Remove="XamlReaderTests\When_StaticResource.xamltest" />
     <None Remove="XamlReaderTests\When_StaticResource_Style_And_Binding.xamltest" />
     <None Remove="XamlReaderTests\When_Style_FontWeight.xamltest" />

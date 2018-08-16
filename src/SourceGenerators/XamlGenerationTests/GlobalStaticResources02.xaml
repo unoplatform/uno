@@ -14,7 +14,7 @@
 
 	<x:Double x:Key="OtherResources01">280</x:Double>
 	<x:Double x:Key="OtherResources02">90</x:Double>
-	
+
 	<GradientStop x:Key="ColorResource" Color="Yellow" />
 	<GradientStop x:Name="ColorResource_asName" Color="Yellow" />
 
@@ -42,10 +42,18 @@
     </Style>
 	
 	<x:Double x:Key="Double-Resource-With-Dashes">42</x:Double>
-	
+
+	<x:String x:Key="testTimeSpanString">00:00:42</x:String>
+
+	<x:DoubleAnimation x:Key="testDoubleAnination"
+					   Duration="{StaticResource testTimeSpanString}" />
+
 	<GradientStop x:Key="GradientStop-with-dash" Color="Yellow" />
 
-    <Style x:Key="ComboBoxWithSpinnerExStyle" TargetType="ComboBox">
+	<StaticResource x:Key="GradientStop-with-dash-alias"
+					ResourceKey="GradientStop-with-dash" />
+
+	<Style x:Key="ComboBoxWithSpinnerExStyle" TargetType="ComboBox">
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate>

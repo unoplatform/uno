@@ -38,8 +38,8 @@ namespace Windows.UI.Popups
 		/// </summary>
 		/// <param name="label"></param>
 		/// <param name="action"></param>
-		/// <param name="id"></param>
-		public UICommand(string label, UICommandInvokedHandler action, object id)
+		/// <param name="commandId"></param>
+		public UICommand(string label, UICommandInvokedHandler action, object commandId)
 		{
 			if (label == null)
 			{
@@ -49,7 +49,7 @@ namespace Windows.UI.Popups
 			Label = label;
 			// These can be null
 			Invoked = action;
-			Id = id;
+			Id = commandId;
 		}
 
 		/// <summary>

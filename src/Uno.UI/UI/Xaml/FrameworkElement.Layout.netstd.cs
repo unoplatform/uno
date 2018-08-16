@@ -40,6 +40,16 @@ namespace Windows.UI.Xaml
 
 				var desiredSize = MeasureOverride(frameworkAvailableSize);
 
+				if(
+					double.IsNaN(desiredSize.Width)
+					|| double.IsNaN(desiredSize.Height)
+					|| double.IsInfinity(desiredSize.Width)
+					|| double.IsInfinity(desiredSize.Height)
+				)
+				{
+					throw new InvalidOperationException($"Invalid measured size {desiredSize}/{GetType()}/{Name}");
+				}
+
 				desiredSize = desiredSize.AtLeast(minSize);
 				
 				_unclippedDesiredSize = desiredSize;
@@ -155,7 +165,19 @@ namespace Windows.UI.Xaml
 			var oldRect = new Rect(oldOffset, oldRenderSize); 
 			var newRect = new Rect(offset, RenderSize);
 			if (oldRect != newRect)
-			{				
+			{
+				if(
+					newRect.Width < 0
+					|| newRect.Height < 0
+					|| double.IsNaN(newRect.Width)
+					|| double.IsNaN(newRect.Height)
+					|| double.IsNaN(newRect.X)
+					|| double.IsNaN(newRect.Y)
+				)
+				{
+					throw new InvalidOperationException($"Invalid frame size {newRect} for {HtmlId}/{GetType()}/{Name}");
+				}
+
 				// Disable clipping for Scrollviewer (edge seems to disable scrolling if 
 				// the clipping is enabled to the size of the scrollviewer, even if overflow-y is auto)
 				var clip = this is Controls.ScrollViewer 

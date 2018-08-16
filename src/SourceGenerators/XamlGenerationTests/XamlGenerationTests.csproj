@@ -53,6 +53,10 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <None Remove="NonDPAssignableTest.xaml" />
+	</ItemGroup>
+
+	<ItemGroup>
 		<PackageReference Include="MSBuild.Sdk.Extras" Version="1.5.4" PrivateAssets="All" />
 		<PackageReference Include="xamarin.build.download" Version="0.4.9" />
 	</ItemGroup>
@@ -72,6 +76,13 @@
 	<ItemGroup>
 		<ProjectReference Include="..\..\Uno.UI.Toolkit\Uno.UI.Toolkit.csproj" />
 		<ProjectReference Include="..\XamlGenerationTests.Core\XamlGenerationTests.Core.csproj" />
+	</ItemGroup>
+
+		
+	<ItemGroup>
+	  <Page Update="NonDPAssignableTest.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </Page>
 	</ItemGroup>
 	
 	<Import Project="..\Uno.UI.SourceGenerators\Content\Uno.UI.SourceGenerators.props" Condition="'$(TargetFrameworkIdentifier)'=='MonoAndroid' or '$(TargetFrameworkIdentifier)'=='Xamarin.iOS'" />

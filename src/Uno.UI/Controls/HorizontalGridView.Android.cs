@@ -92,7 +92,9 @@ namespace Uno.UI.Controls
 			{
 				var deltaX = Math.Abs(_downPoint.Value.X - ev.RawX);
 				var deltaY = Math.Abs(_downPoint.Value.Y - ev.RawY);
+#pragma warning disable CS0618 // Type or member is obsolete
 				var viewConfiguration = new ViewConfiguration();
+#pragma warning restore CS0618 // Type or member is obsolete
 
 				_downPoint = null;
 

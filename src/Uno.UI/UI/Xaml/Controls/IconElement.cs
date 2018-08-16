@@ -77,11 +77,9 @@ namespace Windows.UI.Xaml.Controls
 			RegisterSubView(child);
         }
 
-#if !NET46
 		public static implicit operator IconElement(string symbol)
 		{
 			return new SymbolIcon() { Symbol = (Symbol)Enum.Parse(typeof(Symbol), symbol, true) };
 		}
-#endif
 	}
 }

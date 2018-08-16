@@ -188,7 +188,10 @@ namespace Windows.UI.Xaml.Controls
 						break;
 				}
 
-				return scale;
+				return (
+					double.IsNaN(scale.x) || double.IsInfinity(scale.x) ? 1 : scale.x
+					, double.IsNaN(scale.y) || double.IsInfinity(scale.y) ? 1 : scale.y
+				);
 			}
 			else
 			{

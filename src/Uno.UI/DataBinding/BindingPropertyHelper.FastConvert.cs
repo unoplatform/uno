@@ -239,10 +239,26 @@ namespace Uno.UI.DataBinding
 				return true;
 			}
 
+			if (FastStringToIconElement(outputType, input, ref output))
+			{
+				return true;
+			}
+
 			// Fallback for Enums. Leave it at the end.
 			if (outputType.IsEnum)
 			{
 				output = Enum.Parse(outputType, input, true);
+				return true;
+			}
+
+			return false;
+		}
+
+		private static bool FastStringToIconElement(Type outputType, string input, ref object output)
+		{
+			if (outputType == typeof(Windows.UI.Xaml.Controls.IconElement))
+			{
+				output = (Windows.UI.Xaml.Controls.IconElement)input;
 				return true;
 			}
 

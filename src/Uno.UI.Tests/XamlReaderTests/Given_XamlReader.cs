@@ -652,6 +652,34 @@ namespace Uno.UI.Tests.XamlReaderTests
 				var r = Windows.UI.Xaml.Markup.XamlReader.Load(s) as UserControl;
 			});
 		}
+		
+		[TestMethod]
+		public void When_NonDependencyPropertyAssignable()
+		{
+			var s = GetContent(nameof(When_NonDependencyPropertyAssignable));
+			var r = Windows.UI.Xaml.Markup.XamlReader.Load(s) as UserControl;
+
+			var root = r.FindName("root") as Grid;
+			var inner = root.Children.First() as NonDependencyPropertyAssignable;
+
+			Assert.AreEqual("innerPanel", inner.Name);
+			Assert.AreEqual("42", inner.Tag);
+			Assert.AreEqual(43, inner.MyProperty);
+		}
+		
+		[TestMethod]
+		public void When_NonDependencyProperty_Binding()
+		{
+			var s = GetContent(nameof(When_NonDependencyProperty_Binding));
+			var r = Windows.UI.Xaml.Markup.XamlReader.Load(s) as UserControl;
+
+			var root = r.FindName("root") as Grid;
+			var inner = root.Children.First() as NonDependencyPropertyAssignable;
+
+			Assert.AreEqual("innerPanel", inner.Name);
+			Assert.IsNotNull(inner.MyBinding);
+			Assert.AreEqual("Text", inner.MyBinding.Path.Path);
+		}
 
 		private string GetContent(string testName)
         {
