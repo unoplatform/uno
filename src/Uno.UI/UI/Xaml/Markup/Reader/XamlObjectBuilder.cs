@@ -201,7 +201,7 @@ namespace Windows.UI.Xaml.Markup.Reader
 							}
 							else
 							{
-								propertyInfo.SetMethod.Invoke(instance, new[] { BuildLiteralValue(member, propertyInfo.PropertyType) });
+								GetPropertySetter(propertyInfo).Invoke(instance, new[] { BuildLiteralValue(member, propertyInfo.PropertyType) });
 							}
 						}
 					}
@@ -256,7 +256,7 @@ namespace Windows.UI.Xaml.Markup.Reader
 				// name of a control using x:Name instead of Name.
 				if (TypeResolver.GetPropertyByName(control.Type, "Name") is PropertyInfo nameInfo)
 				{
-					nameInfo.SetMethod.Invoke(instance, new[] { member.Value });
+					GetPropertySetter(nameInfo).Invoke(instance, new[] { member.Value });
 				}
 			}
 		}
@@ -317,9 +317,9 @@ namespace Windows.UI.Xaml.Markup.Reader
 					}
 				}
 			}
-			else if(GetMemberProperty(control, member) is PropertyInfo propertyInfo)
+			else if (GetMemberProperty(control, member) is PropertyInfo propertyInfo)
 			{
-				propertyInfo.SetMethod.Invoke(instance, new[] { BuildLiteralValue(member, propertyInfo.PropertyType) });
+				GetPropertySetter(propertyInfo).Invoke(instance, new[] { BuildLiteralValue(member, propertyInfo.PropertyType) });
 			}
 		}
 
@@ -386,7 +386,7 @@ namespace Windows.UI.Xaml.Markup.Reader
 
 					AddCollectionItems(collection, member.Objects);
 
-					propertyInfo.SetMethod.Invoke(instance, new[] { collection });
+					GetPropertySetter(propertyInfo).Invoke(instance, new[] { collection });
 				}
 				else if (TypeResolver.IsInitializedCollection(propertyInfo))
 				{
@@ -401,9 +401,12 @@ namespace Windows.UI.Xaml.Markup.Reader
 			}
 			else
 			{
-				propertyInfo.SetMethod.Invoke(instance, new[] { LoadObject(member.Objects.First()) });
+				GetPropertySetter(propertyInfo).Invoke(instance, new[] { LoadObject(member.Objects.First()) });
 			}
 		}
+
+		private static MethodInfo GetPropertySetter(PropertyInfo propertyInfo)
+			=> propertyInfo?.SetMethod ?? throw new InvalidOperationException($"Unable to find setter for property [{propertyInfo}]");
 
 		private void ProcessMemberMarkupExtension(object instance, XamlMemberDefinition member)
 		{
@@ -486,11 +489,11 @@ namespace Windows.UI.Xaml.Markup.Reader
 				{
 					if (member.Objects.Empty())
 					{
-						propertyInfo.SetMethod.Invoke(instance, new[] { BuildLiteralValue(member, propertyInfo.PropertyType) });
+						GetPropertySetter(propertyInfo).Invoke(instance, new[] { BuildLiteralValue(member, propertyInfo.PropertyType) });
 					}
 					else
 					{
-						propertyInfo.SetMethod.Invoke(instance, new[] { BuildBindingExpression(null, member) });
+						GetPropertySetter(propertyInfo).Invoke(instance, new[] { BuildBindingExpression(null, member) });
 					}
 				}
 				else
