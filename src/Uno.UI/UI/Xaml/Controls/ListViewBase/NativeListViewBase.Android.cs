@@ -225,6 +225,13 @@ namespace Windows.UI.Xaml.Controls
 			{
 				vh.IsDetached = false;
 			}
+#if DEBUG
+			if (!vh.IsDetachedPrivate)
+			{
+				// Preempt the unmanaged exception 'Java.Lang.IllegalArgumentException: Called removeDetachedView with a view which is not flagged as tmp detached.' for easier debugging.
+				throw new InvalidOperationException($"View {child} is not flagged tmp detached.");
+			}
+#endif
 			base.RemoveDetachedView(child, animate);
 		}
 
