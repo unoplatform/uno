@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Android.Support.V7.Widget;
 using Android.Views;
+using Microsoft.Extensions.Logging;
 using Uno.Extensions;
 using Uno.Logging;
 using Windows.UI.Xaml.Controls.Primitives;
@@ -601,8 +602,19 @@ namespace Windows.UI.Xaml.Controls
 
 			void CleanUpView(View viewToClean)
 			{
-				Layout.TryDetachView(viewToClean);
-				Layout.RemoveDetachedView(viewToClean);
+				if ((viewToClean as FrameworkElement).Parent != null)
+				{
+					Layout.TryDetachView(viewToClean);
+					Layout.RemoveDetachedView(viewToClean);
+				}
+				else
+				{
+					// If Parent is null, the cached view was probably already removed during unloading, and detaching it is unnecessary (and indeed illegal).
+					if (this.Log().IsEnabled(LogLevel.Debug))
+					{
+						this.Log().Debug($"Skipping detach of view {viewToClean.GetHashCode()}");
+					}
+				}
 				_owner.XamlParent.CleanUpContainer(viewToClean as ContentControl);
 			}
 		}
@@ -641,6 +653,10 @@ namespace Windows.UI.Xaml.Controls
 
 				Layout.TryAttachView(holder.ItemView);
 				Layout.RemoveView(holder.ItemView);
+				if (this.Log().IsEnabled(LogLevel.Debug))
+				{
+					this.Log().Debug($"Removed cached view {holder.ItemView.GetHashCode()}");
+				}
 			}
 		}
 
