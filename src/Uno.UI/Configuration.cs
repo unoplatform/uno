@@ -71,14 +71,6 @@ namespace Uno.UI
 			public static double? DefaultCacheLength = 1.0;
 		}
 
-		public static class TextBlock
-		{
-			/// <summary>
-			/// Enable the visualization of hyperlink hit-testing layouts (intended for diagnostic purposes).
-			/// </summary>
-			public static bool ShowHyperlinkLayouts { get; set; } = false;
-		}
-
 		public static class Page
 		{
 			/// <summary>
