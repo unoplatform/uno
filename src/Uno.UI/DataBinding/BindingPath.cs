@@ -379,9 +379,9 @@ namespace Uno.UI.DataBinding
 				get => _dataContextWeakStorage?.Target;
 				set
 				{
-					var weakDataContext = WeakReferencePool.RentWeakReference(this, value);
-					if (!_disposed && DependencyObjectStore.AreDifferent(DataContext, weakDataContext?.Target))
+					if (!_disposed && DependencyObjectStore.AreDifferent(DataContext, value))
 					{
+						var weakDataContext = WeakReferencePool.RentWeakReference(this, value);
 						SetWeakDataContext(weakDataContext);
 					}
 				}
