@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using Uno.Disposables;
 using System.Text;
 using Windows.UI.Xaml.Input;
+using Windows.UI.Xaml.Automation.Peers;
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -115,6 +116,17 @@ namespace Windows.UI.Xaml.Controls
 			base.OnTextChanged(e);
 
 			Password = (string)e.NewValue;
+		}
+
+		protected override AutomationPeer OnCreateAutomationPeer()
+		{
+			return new PasswordBoxAutomationPeer(this);
+		}
+
+		public override string GetAccessibilityInnerText()
+		{
+			// We don't want to reveal the password
+			return null; 
 		}
 	}
 }

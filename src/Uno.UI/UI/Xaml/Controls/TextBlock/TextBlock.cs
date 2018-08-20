@@ -18,6 +18,7 @@ using Windows.UI.Xaml.Media;
 using Windows.UI.Text;
 using Windows.Foundation;
 using Windows.UI.Xaml.Input;
+using Windows.UI.Xaml.Automation.Peers;
 
 #if XAMARIN_IOS
 using UIKit;
@@ -693,7 +694,17 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-#endregion
+		#endregion
+
+		protected override AutomationPeer OnCreateAutomationPeer()
+		{
+			return new TextBlockAutomationPeer(this);
+		}
+
+		public override string GetAccessibilityInnerText()
+		{
+			return Text;
+		}
 	}
 }
 #endif

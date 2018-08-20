@@ -18,34 +18,6 @@ namespace Windows.UI.Xaml.Controls
 	public partial class TextBox
 	{
 		private ITextBoxView _textBoxView;
-		private ContentControl _contentElement;
-
-		protected override void OnApplyTemplate()
-		{
-			base.OnApplyTemplate();
-
-			// Ensures we don't keep a reference to a textBoxView that exists in a previous template
-			_textBoxView = null;
-
-			_placeHolder = this.GetTemplateChild(TextBoxConstants.PlaceHolderPartName) as IFrameworkElement;
-			_contentElement = this.GetTemplateChild(TextBoxConstants.ContentElementPartName) as ContentControl;
-
-			var scrollViewer = _contentElement as ScrollViewer;
-			if (scrollViewer != null)
-			{
-				// We disable horizontal scrolling because the inner SingleLineTextBoxView provides its own horizontal scrolling
-				scrollViewer.HorizontalScrollMode = ScrollMode.Disabled;
-			}
-
-			var button = this.GetTemplateChild(TextBoxConstants.DeleteButtonPartName) as Button;
-			if (button != null)
-			{
-				_deleteButton = new WeakReference<Button>(button);
-			}
-
-			UpdateTextBoxView();
-            InitializeProperties();
-		}
 
 		//Only implemented in TextBox in IOS. Key events are not passed to UIViews that dont implement UIKeyInput protocol
 		//http://stackoverflow.com/questions/24106882/how-do-i-get-keyboard-events-without-a-textbox

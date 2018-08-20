@@ -19,36 +19,7 @@ namespace Windows.UI.Xaml.Controls
 	public partial class TextBox : Control
 	{
 		private TextBoxView _textBoxView;
-		private ContentControl _contentElement;
-
-		protected override void OnApplyTemplate()
-		{
-			base.OnApplyTemplate();
-
-			// Ensures we don't keep a reference to a textBoxView that exists in a previous template
-			_textBoxView = null;
-
-			_placeHolder = this.GetTemplateChild(TextBoxConstants.PlaceHolderPartName) as IFrameworkElement;
-			_contentElement = this.GetTemplateChild(TextBoxConstants.ContentElementPartName) as ContentControl;
-
-			if (_contentElement is ScrollViewer scrollViewer)
-			{
-				// We disable scrolling because the inner TextBoxView provides its own scrolling
-				scrollViewer.HorizontalScrollMode = ScrollMode.Disabled;
-				scrollViewer.VerticalScrollMode = ScrollMode.Disabled;
-				scrollViewer.HorizontalScrollBarVisibility = ScrollBarVisibility.Disabled;
-				scrollViewer.VerticalScrollBarVisibility = ScrollBarVisibility.Disabled;
-			}
-
-			if (this.GetTemplateChild(TextBoxConstants.DeleteButtonPartName) is Button button)
-			{
-				_deleteButton = new WeakReference<Button>(button);
-			}
-
-			UpdateTextBoxView();
-			InitializeProperties();
-		}
-
+		
 		protected override bool IsDelegatingFocusToTemplateChild() => true; // _textBoxView
 		protected override bool RequestFocus(FocusState state) => FocusTextView();
 		partial void OnTextClearedPartial() => FocusTextView();

@@ -6,6 +6,7 @@ using Uno.Client;
 using System.Collections;
 using Uno.UI.Controls;
 using Uno.Extensions;
+using Windows.UI.Xaml.Automation.Peers;
 using Windows.UI.Xaml.Input;
 using Uno.Logging;
 using Windows.UI.Xaml.Media;
@@ -313,6 +314,11 @@ namespace Windows.UI.Xaml.Controls
 		{
 			var state = IsEnabled ? "Normal" : "Disabled";
 			VisualStateManager.GoToState(this, state, true);
+		}
+
+		protected override AutomationPeer OnCreateAutomationPeer()
+		{
+			return new ComboBoxAutomationPeer(this);
 		}
 	}
 }

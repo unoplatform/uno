@@ -15,6 +15,10 @@ namespace Windows.UI.Xaml.Controls
 		{
 			base.OnLoaded();
 
+			Clickable = true;
+			Focusable = true;
+			FocusableInTouchMode = true;
+
 			PointerExited += OnPointerExited;
 			PointerEntered += OnPointerEntered;
 			PointerCanceled += OnPointerCanceled;

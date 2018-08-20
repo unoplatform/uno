@@ -5,11 +5,14 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 using System.Text;
 using System.Windows.Input;
 using Uno.Extensions;
 using Uno.UI.Common;
 using Windows.UI.Text;
+using Windows.UI.Xaml.Automation;
+using Windows.UI.Xaml.Automation.Peers;
 using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
@@ -31,8 +34,9 @@ namespace Windows.UI.Xaml.Controls
 
 #pragma warning disable CS0067, CS0649
 		private IFrameworkElement _placeHolder;
+		private ContentControl _contentElement;
 		private WeakReference<Button> _deleteButton;
-#pragma warning restore CS0067, CS0649 
+#pragma warning restore CS0067, CS0649
 
 		private ContentPresenter _header;
 		private bool _isPassword;
@@ -77,6 +81,44 @@ namespace Windows.UI.Xaml.Controls
 			InitializePropertiesPartial();
 		}
 
+		protected override void OnApplyTemplate()
+		{
+			base.OnApplyTemplate();
+
+#if !NET46
+			// Ensures we don't keep a reference to a textBoxView that exists in a previous template
+			_textBoxView = null;
+#endif
+
+			_placeHolder = GetTemplateChild(TextBoxConstants.PlaceHolderPartName) as IFrameworkElement;
+			_contentElement = GetTemplateChild(TextBoxConstants.ContentElementPartName) as ContentControl;
+			_header = GetTemplateChild(TextBoxConstants.HeaderContentPartName) as ContentPresenter;
+
+			if (_contentElement is ScrollViewer scrollViewer)
+			{
+#if __IOS__
+				// We disable scrolling because the inner TextBoxView provides its own scrolling
+				scrollViewer.HorizontalScrollMode = ScrollMode.Disabled;
+				scrollViewer.VerticalScrollMode = ScrollMode.Disabled;
+				scrollViewer.HorizontalScrollBarVisibility = ScrollBarVisibility.Disabled;
+				scrollViewer.VerticalScrollBarVisibility = ScrollBarVisibility.Disabled;
+#elif NETSTANDARD2_0
+				// We disable horizontal scrolling because the inner SingleLineTextBoxView provides its own horizontal scrolling
+				scrollViewer.HorizontalScrollMode = ScrollMode.Disabled;
+#endif
+			}
+
+			if (GetTemplateChild(TextBoxConstants.DeleteButtonPartName) is Button button)
+			{
+				_deleteButton = new WeakReference<Button>(button);
+			}
+
+#if !NET46
+			UpdateTextBoxView();
+#endif
+			InitializeProperties();
+		}
+
 		partial void InitializePropertiesPartial();
 
 		private DependencyPropertyChangedEventArgs CreateInitialValueChangerEventArgs(DependencyProperty property, object oldValue, object newValue)
@@ -84,7 +126,7 @@ namespace Windows.UI.Xaml.Controls
 			return new DependencyPropertyChangedEventArgs(property, oldValue, DependencyPropertyValuePrecedences.DefaultValue, newValue, DependencyPropertyValuePrecedences.DefaultValue);
 		}
 
-		#region Text DependencyProperty
+#region Text DependencyProperty
 
 		public string Text
 		{
@@ -118,7 +160,7 @@ namespace Windows.UI.Xaml.Controls
 			UpdateButtonStates();
 		}
 
-		#endregion
+#endregion
 
 		protected override void OnFontSizeChanged(double oldValue, double newValue)
 		{
@@ -153,7 +195,7 @@ namespace Windows.UI.Xaml.Controls
 
 		partial void OnForegroundColorChangedPartial(Brush newValue);
 
-		#region PlaceholderText DependencyProperty
+#region PlaceholderText DependencyProperty
 
 		public string PlaceholderText
 		{
@@ -169,9 +211,9 @@ namespace Windows.UI.Xaml.Controls
 				new PropertyMetadata(defaultValue: string.Empty)
 			);
 
-		#endregion
+#endregion
 
-		#region InputScope DependencyProperty
+#region InputScope DependencyProperty
 
 		public InputScope InputScope
 		{
@@ -205,9 +247,9 @@ namespace Windows.UI.Xaml.Controls
 		}
 		partial void OnInputScopeChangedPartial(DependencyPropertyChangedEventArgs e);
 
-		#endregion
+#endregion
 
-		#region MaxLength DependencyProperty
+#region MaxLength DependencyProperty
 
 		public int MaxLength
 		{
@@ -233,9 +275,9 @@ namespace Windows.UI.Xaml.Controls
 
 		partial void OnMaxLengthChangedPartial(DependencyPropertyChangedEventArgs e);
 
-		#endregion
+#endregion
 
-		#region AcceptsReturn DependencyProperty
+#region AcceptsReturn DependencyProperty
 
 		public bool AcceptsReturn
 		{
@@ -262,9 +304,9 @@ namespace Windows.UI.Xaml.Controls
 
 		partial void OnAcceptsReturnChangedPartial(DependencyPropertyChangedEventArgs e);
 
-		#endregion
+#endregion
 
-		#region TextWrapping DependencyProperty
+#region TextWrapping DependencyProperty
 		public TextWrapping TextWrapping
 		{
 			get { return (TextWrapping)this.GetValue(TextWrappingProperty); }
@@ -289,9 +331,9 @@ namespace Windows.UI.Xaml.Controls
 
 		partial void OnTextWrappingChangedPartial(DependencyPropertyChangedEventArgs e);
 
-		#endregion
+#endregion
 
-		#region IsReadOnly DependencyProperty
+#region IsReadOnly DependencyProperty
 
 		public bool IsReadOnly
 		{
@@ -318,9 +360,9 @@ namespace Windows.UI.Xaml.Controls
 
 		partial void OnIsReadonlyChangedPartial(DependencyPropertyChangedEventArgs e);
 
-		#endregion
+#endregion
 
-		#region Header DependencyProperties
+#region Header DependencyProperties
 
 		public object Header
 		{
@@ -355,20 +397,15 @@ namespace Windows.UI.Xaml.Controls
 		{
 			var headerVisibility = (Header != null || HeaderTemplate != null) ? Visibility.Visible : Visibility.Collapsed;
 
-			if (headerVisibility == Visibility.Visible && _header == null)
-			{
-				_header = this.GetTemplateChild(TextBoxConstants.HeaderContentPartName) as ContentPresenter;
-			}
-
 			if (_header != null)
 			{
 				_header.Visibility = headerVisibility;
 			}
 		}
 
-		#endregion
+#endregion
 
-		#region IsSpellCheckEnabled DependencyProperty
+#region IsSpellCheckEnabled DependencyProperty
 
 		public bool IsSpellCheckEnabled
 		{
@@ -394,9 +431,9 @@ namespace Windows.UI.Xaml.Controls
 
 		partial void OnIsSpellCheckEnabledChangedPartial(DependencyPropertyChangedEventArgs e);
 
-		#endregion
+#endregion
 
-		#region IsTextPredictionEnabled DependencyProperty
+#region IsTextPredictionEnabled DependencyProperty
 
 		public bool IsTextPredictionEnabled
 		{
@@ -422,9 +459,9 @@ namespace Windows.UI.Xaml.Controls
 
 		partial void OnIsTextPredictionEnabledChangedPartial(DependencyPropertyChangedEventArgs e);
 
-		#endregion
+#endregion
 
-		#region TextAlignment DependencyProperty
+#region TextAlignment DependencyProperty
 
 #if XAMARIN_ANDROID
 		public new TextAlignment TextAlignment
@@ -447,7 +484,7 @@ namespace Windows.UI.Xaml.Controls
 
 		partial void OnTextAlignmentChangedPartial(DependencyPropertyChangedEventArgs e);
 
-		#endregion
+#endregion
 
 		protected override void OnFocusStateChanged(FocusState oldValue, FocusState newValue)
 		{
@@ -526,6 +563,16 @@ namespace Windows.UI.Xaml.Controls
 		public void OnTemplateRecycled()
 		{
 			DeleteText();
+		}
+
+		protected override AutomationPeer OnCreateAutomationPeer()
+		{
+			return new TextBoxAutomationPeer(this);
+		}
+
+		public override string GetAccessibilityInnerText()
+		{
+			return Text;
 		}
 	}
 }

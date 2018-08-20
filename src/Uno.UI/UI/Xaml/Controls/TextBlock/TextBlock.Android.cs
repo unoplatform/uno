@@ -125,10 +125,6 @@ namespace Windows.UI.Xaml.Controls
 		partial void OnTextChangedPartial()
 		{
 			_textFormatted = null;
-			if (AutomationConfiguration.IsAccessibilityEnabled)
-			{
-				ContentDescription = UIAutomationText;
-			}
 		}
 
 		// Invalidate _paint

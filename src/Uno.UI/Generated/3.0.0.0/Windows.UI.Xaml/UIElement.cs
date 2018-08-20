@@ -1229,13 +1229,6 @@ namespace Windows.UI.Xaml
 		#endif
 		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
 		[global::Uno.NotImplemented]
-		protected virtual global::Windows.UI.Xaml.Automation.Peers.AutomationPeer OnCreateAutomationPeer()
-		{
-			throw new global::System.NotImplementedException("The member AutomationPeer UIElement.OnCreateAutomationPeer() is not implemented in Uno.");
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
-		[global::Uno.NotImplemented]
 		protected virtual void OnDisconnectVisualChildren()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.UIElement", "void UIElement.OnDisconnectVisualChildren()");
