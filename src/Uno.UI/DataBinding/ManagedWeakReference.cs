@@ -37,7 +37,7 @@ namespace Uno.UI.DataBinding
 			{
 				if (_disposed)
 				{
-					throw new InvalidOperationException();
+					throw new ObjectDisposedException(nameof(ManagedWeakReference));
 				}
 
 				return _targetHandle?.Target;
@@ -51,7 +51,7 @@ namespace Uno.UI.DataBinding
 		{
 			if (_disposed)
 			{
-				throw new InvalidOperationException();
+				throw new ObjectDisposedException(nameof(ManagedWeakReference));
 			}
 
 			return _targetHandle;
@@ -65,7 +65,7 @@ namespace Uno.UI.DataBinding
 		{
 			if (_disposed)
 			{
-				throw new InvalidOperationException();
+				throw new ObjectDisposedException(nameof(ManagedWeakReference));
 			}
 
 			return new WeakReference(_targetHandle?.Target);
@@ -78,7 +78,7 @@ namespace Uno.UI.DataBinding
 		{
 			if (_disposed)
 			{
-				throw new InvalidOperationException();
+				throw new ObjectDisposedException(nameof(ManagedWeakReference));
 			}
 
 			return _ownerHandle;
