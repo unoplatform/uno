@@ -53,6 +53,13 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <Compile Remove="__temp-to-delete\**" />
+	  <EmbeddedResource Remove="__temp-to-delete\**" />
+	  <None Remove="__temp-to-delete\**" />
+	  <Page Remove="__temp-to-delete\**" />
+	</ItemGroup>
+
+	<ItemGroup>
 	  <None Remove="NonDPAssignableTest.xaml" />
 	</ItemGroup>
 
@@ -88,5 +95,9 @@
 	<Import Project="..\Uno.UI.SourceGenerators\Content\Uno.UI.SourceGenerators.props" Condition="'$(TargetFrameworkIdentifier)'=='MonoAndroid' or '$(TargetFrameworkIdentifier)'=='Xamarin.iOS'" />
 
 	<Import Project="..\..\Common.targets" />
+
+	<ItemGroup>
+	  <_ResxFiles Remove="__temp-to-delete\**" />
+	</ItemGroup>
 
 </Project>

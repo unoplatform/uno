@@ -32,6 +32,10 @@
 
 	<ItemGroup>
 		<Compile Remove="Mixins\**\*.cs" />
+		<Compile Remove="__temp-to-delete\**" />
+		<EmbeddedResource Remove="__temp-to-delete\**" />
+		<None Remove="__temp-to-delete\**" />
+		<Page Remove="__temp-to-delete\**" />
 		<Compile Include="Mixins\Android\BaseActivity.Callbacks.g.cs">
 			<DesignTime>True</DesignTime>
 			<AutoGen>True</AutoGen>
@@ -311,5 +315,9 @@
 	<Target Name="GetNativeManifest" Condition=" '$(TargetFramework)' == 'xamarinios10' " />
 
 	<Target Name="GetBuiltProjectOutputRecursive" Condition=" '$(TargetFramework)' == 'xamarinios10' " />
+
+	<ItemGroup>
+	  <_ResxFiles Remove="__temp-to-delete\**" />
+	</ItemGroup>
 
 </Project>

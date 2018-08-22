@@ -15,6 +15,12 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+	  <Compile Remove="__temp-to-delete\**" />
+	  <EmbeddedResource Remove="__temp-to-delete\**" />
+	  <None Remove="__temp-to-delete\**" />
+	</ItemGroup>
+
+	<ItemGroup>
 		<PackageReference Include="MSBuild.Sdk.Extras" Version="1.5.4" PrivateAssets="All" />
     <PackageReference Include="Uno.SourceGenerationTasks">
       <Version>1.22.0-dev.49</Version>
@@ -32,5 +38,11 @@
 	
 	<Import Project="$(MSBuildSDKExtrasTargets)" Condition="Exists('$(MSBuildSDKExtrasTargets)')" />
 	<Import Project="..\Uno.CrossTargetting.props" />
+	<ItemGroup>
+	  <Page Remove="__temp-to-delete\**" />
+	</ItemGroup>
+	<ItemGroup>
+	  <_ResxFiles Remove="__temp-to-delete\**" />
+	</ItemGroup>
 
 </Project>

@@ -2,7 +2,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Media.SpeechRecognition
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+	#if NET46 || __WASM__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class SpeechRecognizer : global::System.IDisposable
@@ -17,7 +17,7 @@ namespace Windows.Media.SpeechRecognition
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		#if NET46 || __WASM__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Globalization.Language CurrentLanguage
 		{
@@ -27,7 +27,7 @@ namespace Windows.Media.SpeechRecognition
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		#if NET46 || __WASM__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Media.SpeechRecognition.SpeechRecognizerTimeouts Timeouts
 		{
@@ -37,7 +37,7 @@ namespace Windows.Media.SpeechRecognition
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		#if NET46 || __WASM__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Media.SpeechRecognition.SpeechRecognizerUIOptions UIOptions
 		{
@@ -57,7 +57,7 @@ namespace Windows.Media.SpeechRecognition
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		#if NET46 || __WASM__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Media.SpeechRecognition.SpeechRecognizerState State
 		{
@@ -97,7 +97,7 @@ namespace Windows.Media.SpeechRecognition
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		#if NET46 || __WASM__
 		[global::Uno.NotImplemented]
 		public SpeechRecognizer( global::Windows.Globalization.Language language) 
 		{
@@ -105,7 +105,7 @@ namespace Windows.Media.SpeechRecognition
 		}
 		#endif
 		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognizer.SpeechRecognizer(Windows.Globalization.Language)
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		#if NET46 || __WASM__
 		[global::Uno.NotImplemented]
 		public SpeechRecognizer() 
 		{
@@ -117,14 +117,14 @@ namespace Windows.Media.SpeechRecognition
 		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognizer.Constraints.get
 		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognizer.Timeouts.get
 		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognizer.UIOptions.get
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		#if NET46 || __WASM__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Foundation.IAsyncOperation<global::Windows.Media.SpeechRecognition.SpeechRecognitionCompilationResult> CompileConstraintsAsync()
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<SpeechRecognitionCompilationResult> SpeechRecognizer.CompileConstraintsAsync() is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		#if NET46 || __WASM__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Foundation.IAsyncOperation<global::Windows.Media.SpeechRecognition.SpeechRecognitionResult> RecognizeAsync()
 		{
@@ -142,7 +142,7 @@ namespace Windows.Media.SpeechRecognition
 		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognizer.RecognitionQualityDegrading.remove
 		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognizer.StateChanged.add
 		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognizer.StateChanged.remove
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		#if NET46 || __WASM__
 		[global::Uno.NotImplemented]
 		public  void Dispose()
 		{
@@ -151,7 +151,7 @@ namespace Windows.Media.SpeechRecognition
 		#endif
 		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognizer.ContinuousRecognitionSession.get
 		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognizer.State.get
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		#if NET46 || __WASM__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Foundation.IAsyncAction StopRecognitionAsync()
 		{
@@ -186,7 +186,7 @@ namespace Windows.Media.SpeechRecognition
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		#if NET46 || __WASM__
 		[global::Uno.NotImplemented]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Media.SpeechRecognition.SpeechRecognizer, global::Windows.Media.SpeechRecognition.SpeechRecognizerStateChangedEventArgs> StateChanged
 		{
@@ -202,7 +202,7 @@ namespace Windows.Media.SpeechRecognition
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		#if NET46 || __WASM__
 		[global::Uno.NotImplemented]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Media.SpeechRecognition.SpeechRecognizer, global::Windows.Media.SpeechRecognition.SpeechRecognitionHypothesisGeneratedEventArgs> HypothesisGenerated
 		{
