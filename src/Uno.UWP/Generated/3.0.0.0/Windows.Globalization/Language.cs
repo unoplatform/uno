@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Globalization
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+	#if NET46 || __WASM__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class Language 
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		#if NET46 || __WASM__
 		[global::Uno.NotImplemented]
 		public  string DisplayName
 		{
@@ -17,7 +17,7 @@ namespace Windows.Globalization
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		#if NET46 || __WASM__
 		[global::Uno.NotImplemented]
 		public  string LanguageTag
 		{
@@ -27,7 +27,7 @@ namespace Windows.Globalization
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		#if NET46 || __WASM__
 		[global::Uno.NotImplemented]
 		public  string NativeName
 		{
@@ -67,7 +67,7 @@ namespace Windows.Globalization
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		#if  NET46 || __WASM__
 		[global::Uno.NotImplemented]
 		public Language( string languageTag) 
 		{
