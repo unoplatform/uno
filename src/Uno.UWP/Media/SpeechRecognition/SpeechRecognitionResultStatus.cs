@@ -1,46 +1,57 @@
-#pragma warning disable 108 // new keyword hiding
-#pragma warning disable 114 // new keyword hiding
 namespace Windows.Media.SpeechRecognition
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__
-	[global::Uno.NotImplemented]
-	#endif
-	public   enum SpeechRecognitionResultStatus 
+	public enum SpeechRecognitionResultStatus 
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
 		Success,
-		#endif
+
 		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		[global::Uno.NotImplemented]
+		#endif
 		TopicLanguageNotSupported,
-		#endif
+
 		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		[global::Uno.NotImplemented]
+		#endif
 		GrammarLanguageMismatch,
-		#endif
+
 		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		[global::Uno.NotImplemented]
+		#endif
 		GrammarCompilationFailure,
-		#endif
+
 		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		[global::Uno.NotImplemented]
+		#endif
 		AudioQualityFailure,
-		#endif
+
 		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		[global::Uno.NotImplemented]
+		#endif
 		UserCanceled,
-		#endif
+
 		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		[global::Uno.NotImplemented]
+		#endif
 		Unknown,
-		#endif
+
 		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		[global::Uno.NotImplemented]
+		#endif
 		TimeoutExceeded,
-		#endif
+
 		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		[global::Uno.NotImplemented]
+		#endif
 		PauseLimitExceeded,
-		#endif
+
 		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		[global::Uno.NotImplemented]
+		#endif
 		NetworkFailure,
-		#endif
+
 		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
-		MicrophoneUnavailable,
+		[global::Uno.NotImplemented]
 		#endif
+		MicrophoneUnavailable
 	}
-	#endif
 }

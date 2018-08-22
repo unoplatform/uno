@@ -2,10 +2,10 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Media.SpeechRecognition
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+	#if NET46 || __WASM__
 	[global::Uno.NotImplemented]
 	#endif
-	public  partial class SpeechRecognitionResult 
+	public  partial class SpeechRecognitionResult
 	{
 		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
 		[global::Uno.NotImplemented]
@@ -27,7 +27,7 @@ namespace Windows.Media.SpeechRecognition
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		#if NET46 || __WASM__
 		[global::Uno.NotImplemented]
 		public  double RawConfidence
 		{
@@ -67,7 +67,7 @@ namespace Windows.Media.SpeechRecognition
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		#if NET46 || __WASM__
 		[global::Uno.NotImplemented]
 		public  string Text
 		{
@@ -101,7 +101,7 @@ namespace Windows.Media.SpeechRecognition
 		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognitionResult.Text.get
 		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognitionResult.Confidence.get
 		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognitionResult.SemanticInterpretation.get
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		#if NET46 || __WASM__
 		[global::Uno.NotImplemented]
 		public  global::System.Collections.Generic.IReadOnlyList<global::Windows.Media.SpeechRecognition.SpeechRecognitionResult> GetAlternates( uint maxAlternates)
 		{
