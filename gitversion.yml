@@ -5,10 +5,13 @@ continuous-delivery-fallback-tag: ""
 branches:
   master:
     tag: dev
+    increment: none
   beta:
     tag: beta
+    increment: none
   (stable):
     tag: 
+    increment: none
   dev/.*?/(.*?):
     tag: dev.{BranchName}
   projects/(.*?):
