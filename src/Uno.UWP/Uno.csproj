@@ -25,12 +25,6 @@
 
 	<Import Project="$(MSBuildSDKExtrasTargets)" Condition="Exists('$(MSBuildSDKExtrasTargets)')" />
 	<Import Project="..\Uno.CrossTargetting.props" />
-	<ItemGroup>
-	  <Compile Remove="__temp-to-delete\**" />
-	  <EmbeddedResource Remove="__temp-to-delete\**" />
-	  <None Remove="__temp-to-delete\**" />
-	  <Page Remove="__temp-to-delete\**" />
-	</ItemGroup>
 
 	<ItemGroup>
 		<PackageReference Include="MSBuild.Sdk.Extras" Version="1.5.4" PrivateAssets="All" />
@@ -76,9 +70,5 @@
 	</ItemGroup>
 	
 	<Target Name="GetBuiltProjectOutputRecursive" Condition=" '$(TargetFramework)' == 'xamarinios10' " />
-	
-	<ItemGroup>
-	  <_ResxFiles Remove="__temp-to-delete\**" />
-	</ItemGroup>
 
 </Project>

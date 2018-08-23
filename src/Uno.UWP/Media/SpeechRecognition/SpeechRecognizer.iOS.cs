@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Timers;
 using AVFoundation;
 using Foundation;
 using Speech;
@@ -14,25 +15,35 @@ namespace Windows.Media.SpeechRecognition
 {
 	public partial class SpeechRecognizer : IDisposable
 	{
-		private AVAudioEngine audioEngine = new AVAudioEngine();
+		private AVAudioEngine _audioEngine = new AVAudioEngine();
 
-		private SFSpeechRecognizer speechRecognizer;
-		private SFSpeechAudioBufferRecognitionRequest recognitionRequest;
-		private SFSpeechRecognitionTask recognitionTask;
+		private SFSpeechRecognizer _speechRecognizer;
+		private SFSpeechAudioBufferRecognitionRequest _recognitionRequest;
+		private SFSpeechRecognitionTask _recognitionTask;
+		private Timer _endSilenceTimeout;
+		private Timer _initialSilenceTimeout;
 
 		private void InitializeSpeechRecognizer()
 		{
-			speechRecognizer?.Dispose();
-			speechRecognizer = new SFSpeechRecognizer(new NSLocale(CurrentLanguage.LanguageTag));
+			_speechRecognizer?.Dispose();
+			_speechRecognizer = new SFSpeechRecognizer(new NSLocale(CurrentLanguage.LanguageTag));
 		}
 
 		public IAsyncOperation<SpeechRecognitionResult> RecognizeAsync()
 		{
+			_initialSilenceTimeout = new Timer();
+			_initialSilenceTimeout.Interval = Math.Max(Timeouts.InitialSilenceTimeout.TotalMilliseconds, 5000);
+			_initialSilenceTimeout.Elapsed += OnTimeout;
+
+			_endSilenceTimeout = new Timer();
+			_endSilenceTimeout.Interval = Math.Max(Timeouts.EndSilenceTimeout.TotalMilliseconds, 150);
+			_endSilenceTimeout.Elapsed += OnTimeout;
+
 			// Cancel the previous task if it's running.
-			recognitionTask?.Cancel();
-			recognitionTask = null;
-			recognitionRequest?.Dispose();
-			recognitionRequest = null;
+			_recognitionTask?.Cancel();
+			_recognitionTask = null;
+			_recognitionRequest?.Dispose();
+			_recognitionRequest = null;
 
 			var audioSession = AVAudioSession.SharedInstance();
 			NSError err;
@@ -40,14 +51,14 @@ namespace Windows.Media.SpeechRecognition
 			audioSession.SetMode(AVAudioSession.ModeMeasurement, out err);
 			err = audioSession.SetActive(true, AVAudioSessionSetActiveOptions.NotifyOthersOnDeactivation);
 
-			// Configure request so that results are returned before audio recording is finished
-			recognitionRequest = new SFSpeechAudioBufferRecognitionRequest
+			// Configure request to get partial results
+			_recognitionRequest = new SFSpeechAudioBufferRecognitionRequest
 			{
 				ShouldReportPartialResults = true,
 				TaskHint = SFSpeechRecognitionTaskHint.Dictation
 			};
 
-			var inputNode = audioEngine.InputNode;
+			var inputNode = _audioEngine.InputNode;
 			if (inputNode == null)
 			{
 				throw new InvalidProgramException("Audio engine has no input node");
@@ -55,15 +66,18 @@ namespace Windows.Media.SpeechRecognition
 
 			var tcs = new FastTaskCompletionSource<SpeechRecognitionResult>();
 
-			// A recognition task represents a speech recognition session.
-			// We keep a reference to the task so that it can be cancelled.
-			recognitionTask = speechRecognizer.GetRecognitionTask(recognitionRequest, (result, error) =>
+			// Keep a reference to the task so that it can be cancelled.
+			_recognitionTask = _speechRecognizer.GetRecognitionTask(_recognitionRequest, (result, error) =>
 			{
 				var isFinal = false;
 				var bestMatch = default(SpeechRecognitionResult);
 
 				if (result != null)
 				{
+					_initialSilenceTimeout.Stop();
+					_endSilenceTimeout.Stop();
+					_endSilenceTimeout.Start();
+
 					bestMatch = new SpeechRecognitionResult()
 					{
 						Text = result.BestTranscription.FormattedString,
@@ -81,17 +95,21 @@ namespace Windows.Media.SpeechRecognition
 
 				if (error != null || isFinal)
 				{
-					audioEngine.Stop();
+					_initialSilenceTimeout.Stop();
+					_endSilenceTimeout.Stop();
+
+					_audioEngine.Stop();
 
 					inputNode.RemoveTapOnBus(0);
+					inputNode.Reset();
 
 					audioSession = AVAudioSession.SharedInstance();
 					err = audioSession.SetCategory(AVAudioSessionCategory.Playback);
 					audioSession.SetMode(AVAudioSession.ModeDefault, out err);
 					err = audioSession.SetActive(false, AVAudioSessionSetActiveOptions.NotifyOthersOnDeactivation);
 
-					recognitionRequest = null;
-					recognitionTask = null;
+					_recognitionRequest = null;
+					_recognitionTask = null;
 					
 					OnStateChanged(SpeechRecognizerState.Idle);
 
@@ -101,36 +119,45 @@ namespace Windows.Media.SpeechRecognition
 					}
 					else
 					{
-						tcs.TrySetException(new Exception(error.LocalizedDescription));
+						tcs.TrySetException(new Exception($"Error during speech recognition: {error.LocalizedDescription}"));
 					}
 				}
 			});
 
 			var recordingFormat = new AVAudioFormat(sampleRate: 44100, channels: 1);
 			inputNode.InstallTapOnBus(0, 1024, recordingFormat, (buffer, when) => {
-				recognitionRequest?.Append(buffer);
+				_recognitionRequest?.Append(buffer);
 			});
 
-			audioEngine.Prepare();
-			audioEngine.StartAndReturnError(out err);
+			_initialSilenceTimeout.Start();
+
+			_audioEngine.Prepare();
+			_audioEngine.StartAndReturnError(out err);
 
 			OnStateChanged(SpeechRecognizerState.Capturing);
 
 			return tcs.Task.AsAsyncOperation();
 		}
 
+		private void OnTimeout(object sender, ElapsedEventArgs e)
+		{
+			StopRecognitionAsync();
+		}
+
 		public IAsyncAction StopRecognitionAsync()
 		{
-			recognitionRequest?.EndAudio();
+			_recognitionRequest?.EndAudio();
 			return Task.CompletedTask.AsAsyncAction();
 		}
 
 		public void Dispose()
 		{
-			speechRecognizer?.Dispose();
-			audioEngine?.Dispose();
-			recognitionRequest?.Dispose();
-			recognitionTask?.Dispose();
+			_speechRecognizer?.Dispose();
+			_audioEngine?.Dispose();
+			_recognitionRequest?.Dispose();
+			_recognitionTask?.Dispose();
+			_initialSilenceTimeout?.Dispose();
+			_endSilenceTimeout?.Dispose();
 		}
 	}
 }

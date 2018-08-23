@@ -16,12 +16,6 @@
 
 	<Import Project="$(MSBuildSDKExtrasTargets)" Condition="Exists('$(MSBuildSDKExtrasTargets)')" />
 	<Import Project="..\Uno.CrossTargetting.props" />
-	<ItemGroup>
-	  <Compile Remove="__temp-to-delete\**" />
-	  <EmbeddedResource Remove="__temp-to-delete\**" />
-	  <None Remove="__temp-to-delete\**" />
-	  <Page Remove="__temp-to-delete\**" />
-	</ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Uno.SourceGenerationTasks">
@@ -140,8 +134,4 @@
 		<Copy SourceFiles="@(_OutputFiles)" DestinationFiles="@(_OutputFiles->'$(_TargetNugetFolder)\%(RecursiveDir)%(Filename)%(Extension)')" />
 		<Copy SourceFiles="@(_OutputFilesPDB)" DestinationFiles="@(_OutputFilesPDB->'$(_TargetNugetFolder)\%(RecursiveDir)%(Filename).pdb')" />
 	</Target>
-	
-	<ItemGroup>
-	  <_ResxFiles Remove="__temp-to-delete\**" />
-	</ItemGroup>
 </Project>
