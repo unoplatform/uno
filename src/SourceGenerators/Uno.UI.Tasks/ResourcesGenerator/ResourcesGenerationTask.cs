@@ -95,7 +95,7 @@ namespace Uno.UI.Tasks.ResourcesGenerator
 			}
 			catch (Exception ex)
 			{
-				this.Log().Error("Failed to generate resources", ex);
+				this.Log().Error($"Failed to generate resources. Details: {ex.Message}");
 			}
 
 			return false;
