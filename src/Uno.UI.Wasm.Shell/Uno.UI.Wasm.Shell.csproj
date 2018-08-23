@@ -41,14 +41,6 @@
 	<ItemGroup>
 		<UpToDateCheckInput Include="**\*.xaml" Exclude="bin\**\*.xaml;obj\**\*.xaml" />
 	</ItemGroup>
-
-	<ItemGroup>
-	  <Compile Remove="__temp-to-delete\**" />
-	  <EmbeddedResource Remove="__temp-to-delete\**" />
-	  <None Remove="__temp-to-delete\**" />
-	  <Page Remove="__temp-to-delete\**" />
-	  <UpToDateCheckInput Remove="__temp-to-delete\**" />
-	</ItemGroup>
 	
 	<PropertyGroup>
 		<UnoUIGeneratorsBinPath>..\SourceGenerators\Uno.UI.SourceGenerators\bin\$(Configuration)</UnoUIGeneratorsBinPath>
