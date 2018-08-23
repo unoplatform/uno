@@ -12,10 +12,12 @@ namespace Uno.UI.Tasks.ResourcesGenerator
 				.Load(filePath)
 				.Root
 				.Elements("data")
-				.ToDictionary(
-					element => element.Attribute("name").Value,
-					element => element.Element("value").Value
-			);
+				.Select(element => new KeyValuePair<string, string>(
+					element.Attribute("name").Value,
+					element.Element("value").Value
+				))
+				.Distinct()
+				.ToDictionary(x => x.Key, x => x.Value);
 		}
 	}
 }
