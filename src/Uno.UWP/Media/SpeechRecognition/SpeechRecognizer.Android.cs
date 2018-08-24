@@ -1,9 +1,7 @@
-#if __ANDROID__
 using System;
 using System.Threading.Tasks;
 using Android.Content;
 using Android.Speech;
-using Uno.Threading;
 using Windows.Foundation;
 
 namespace Windows.Media.SpeechRecognition
@@ -19,7 +17,7 @@ namespace Windows.Media.SpeechRecognition
 
 		public IAsyncOperation<SpeechRecognitionResult> RecognizeAsync()
 		{
-			var tcs = new FastTaskCompletionSource<SpeechRecognitionResult>();
+			var tcs = new TaskCompletionSource<SpeechRecognitionResult>();
 
 			var listener = new SpeechRecognitionListener
 			{
@@ -83,4 +81,3 @@ namespace Windows.Media.SpeechRecognition
 		}
 	}
 }
-#endif

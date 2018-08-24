@@ -1,5 +1,4 @@
-﻿#if __ANDROID__
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using Android.OS;
@@ -89,6 +88,7 @@ namespace Windows.Media.SpeechRecognition
 			}
 
 			// Find the best match
+			// Note that matches and scores should have the same length (See: https://developer.android.com/reference/android/speech/SpeechRecognizer#CONFIDENCE_SCORES)
 			var bestIndex = 0;
 			for (var i = 0; i < scores.Length; i++)
 			{
@@ -127,4 +127,3 @@ namespace Windows.Media.SpeechRecognition
 		}
 	}
 }
-#endif

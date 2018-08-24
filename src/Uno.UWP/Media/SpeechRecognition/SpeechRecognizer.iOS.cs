@@ -1,14 +1,10 @@
-#if __IOS__
 using System;
-using System.Diagnostics;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Timers;
 using AVFoundation;
 using Foundation;
 using Speech;
-using Uno.Threading;
 using Windows.Foundation;
 
 namespace Windows.Media.SpeechRecognition
@@ -42,8 +38,6 @@ namespace Windows.Media.SpeechRecognition
 			// Cancel the previous task if it's running.
 			_recognitionTask?.Cancel();
 			_recognitionTask = null;
-			_recognitionRequest?.Dispose();
-			_recognitionRequest = null;
 
 			var audioSession = AVAudioSession.SharedInstance();
 			NSError err;
@@ -64,7 +58,7 @@ namespace Windows.Media.SpeechRecognition
 				throw new InvalidProgramException("Audio engine has no input node");
 			}
 
-			var tcs = new FastTaskCompletionSource<SpeechRecognitionResult>();
+			var tcs = new TaskCompletionSource<SpeechRecognitionResult>();
 
 			// Keep a reference to the task so that it can be cancelled.
 			_recognitionTask = _speechRecognizer.GetRecognitionTask(_recognitionRequest, (result, error) =>
@@ -107,8 +101,7 @@ namespace Windows.Media.SpeechRecognition
 					err = audioSession.SetCategory(AVAudioSessionCategory.Playback);
 					audioSession.SetMode(AVAudioSession.ModeDefault, out err);
 					err = audioSession.SetActive(false, AVAudioSessionSetActiveOptions.NotifyOthersOnDeactivation);
-
-					_recognitionRequest = null;
+					
 					_recognitionTask = null;
 					
 					OnStateChanged(SpeechRecognizerState.Idle);
@@ -147,6 +140,9 @@ namespace Windows.Media.SpeechRecognition
 		public IAsyncAction StopRecognitionAsync()
 		{
 			_recognitionRequest?.EndAudio();
+			_recognitionRequest?.Dispose();
+			_recognitionRequest = null;
+
 			return Task.CompletedTask.AsAsyncAction();
 		}
 
@@ -161,4 +157,3 @@ namespace Windows.Media.SpeechRecognition
 		}
 	}
 }
-#endif
