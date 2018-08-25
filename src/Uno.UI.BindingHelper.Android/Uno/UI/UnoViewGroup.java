@@ -669,48 +669,58 @@ public abstract class UnoViewGroup
 	 * very top of the tree.
 	 */
 	private static float[] getTransformedTouchCoordinate(ViewParent view, MotionEvent e) {
-    	if (view instanceof UnoViewGroup) {
-    		// Just use cached value
+		if (view instanceof UnoViewGroup) {
+			// Just use cached value
 			float[] point = new float[2];
-    		point[0] = ((UnoViewGroup) view).getTransformedTouchX();
-    		point[1] = ((UnoViewGroup) view).getTransformedTouchY();
-    		return point;
+			point[0] = ((UnoViewGroup) view).getTransformedTouchX();
+			point[1] = ((UnoViewGroup) view).getTransformedTouchY();
+			return point;
 		}
-		else if (view instanceof View) {
-    		// Non-UIElement view, walk upward
-    		float[] coords = getTransformedTouchCoordinate(view.getParent(),e);
-    		calculateTransformedPoint((View) view, coords);
-    		return coords;
-		}
-		else {
-    		// Reached the top of the tree
+
+		// Non-UIElement view
+		final ViewParent parent = view.getParent();
+		if (parent instanceof View) {
+			// Not at root, walk upward
+			float[] coords = getTransformedTouchCoordinate(parent, e);
+			calculateTransformedPoint((View) view, coords);
+			return coords;
+		} else {
+			// Reached the top of the tree
 			float[] point = new float[2];
 			point[0] = e.getRawX();
 			point[1] = e.getRawY();
+			if (view instanceof View) {
+				// Call getLocationOnScreen() to get window offsets which may be non-zero, eg in the case of a popup
+				int[] screenLocation = new int[2];
+				((View) view).getLocationOnScreen(screenLocation);
+				point[0] -= screenLocation[0];
+				point[1] -= screenLocation[1];
+			}
 			return point;
 		}
 	}
 
 	private static boolean hasIdentityMatrix(View view) {
-    	return view.getMatrix().isIdentity();
+		return view.getMatrix().isIdentity();
 	}
 
 	private static boolean getInvertedMatrix(View view, Matrix outMatrix) {
-    	return view.getMatrix().invert(outMatrix);
+		return view.getMatrix().invert(outMatrix);
 	}
 
-    // Allows UI automation operations to look for a single 'Text' property for both ViewGroup and TextView elements. 
-    // Is mapped to the UIAutomationText property
-    public String getText(){
-        return null;
-    }
+	// Allows UI automation operations to look for a single 'Text' property for both ViewGroup and TextView elements.
+	// Is mapped to the UIAutomationText property
+	public String getText() {
+		return null;
+	}
 
-    boolean getIsPointInView() {
-    	return _isPointInView;
+	boolean getIsPointInView() {
+		return _isPointInView;
 	}
 
 	/**
 	 * Get the depth of this view in the visual tree. For debugging use only.
+	 *
 	 * @return Depth
 	 */
 	public int getViewDepth() {
