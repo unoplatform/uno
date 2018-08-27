@@ -16,6 +16,7 @@ using System.Linq;
 using UIKit;
 using Uno.UI.Services;
 using Microsoft.Extensions.Logging;
+using Windows.ApplicationModel.Resources;
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -31,9 +32,9 @@ namespace Windows.UI.Xaml.Controls
 
 		public UnoWKWebView() : base(CGRect.Empty, new WebKit.WKWebViewConfiguration())
 		{
-			ResourceHelper.ResourcesService = new ResourcesService(new[] { NSBundle.MainBundle });
-			var ok = ResourceHelper.FindResourceString(OkResourceKey);
-			var cancel = ResourceHelper.FindResourceString(CancelResourceKey);
+			var resourceLoader = ResourceLoader.GetForCurrentView();
+			var ok = resourceLoader.GetString("OkResourceKey");
+			var cancel = resourceLoader.GetString("CancelResourceKey");
 
 			if (NSLocale.CurrentLocale.LanguageCode == "en")
 			{

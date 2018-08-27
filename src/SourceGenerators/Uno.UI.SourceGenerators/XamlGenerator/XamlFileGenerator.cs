@@ -2435,7 +2435,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
                 var fullKey = objectUid + "." + memberName;
                 if (_resourceKeys.Any(k => k == fullKey))
                 {
-                    return @"ResourceHelper.FindResourceString(""" + fullKey + @""")";
+                    return @"global::Windows.ApplicationModel.Resources.ResourceLoader.GetForCurrentView().GetString(""" + fullKey + @""")";
                 }
             }
 
