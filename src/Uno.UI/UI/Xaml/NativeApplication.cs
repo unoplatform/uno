@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Text;
 using Android.App;
 using Java.Interop;
+using Uno.UI.Services;
 using Windows.ApplicationModel.Activation;
 
 namespace Windows.UI.Xaml
@@ -16,6 +17,7 @@ namespace Windows.UI.Xaml
 			: base(javaReference, transfer)
 		{
 			_app = app;
+			ResourceHelper.ResourcesService = new ResourcesService(this);
 		}
 
 		public override void OnCreate()

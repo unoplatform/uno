@@ -9,6 +9,7 @@ using Windows.UI.Xaml.Controls.Primitives;
 using Windows.ApplicationModel;
 using ObjCRuntime;
 using Windows.Graphics.Display;
+using Uno.UI.Services;
 
 namespace Windows.UI.Xaml
 {
@@ -22,6 +23,7 @@ namespace Windows.UI.Xaml
 		{
 			Current = this;
 			Windows.UI.Xaml.GenericStyles.Initialize();
+			ResourceHelper.ResourcesService = new ResourcesService(new[] { NSBundle.MainBundle });
 		}
 
 		public Application(IntPtr handle) : base(handle)
