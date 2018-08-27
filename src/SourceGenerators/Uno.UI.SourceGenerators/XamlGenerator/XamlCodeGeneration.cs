@@ -76,7 +76,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				.ToArray();
 
 			_resourceFiles = msbProject
-				.GetItems("XamlCodeGenerationResourceFiles")
+				.GetItems("PRIResource")
 				.Select(i => i.EvaluatedInclude)
 				.ToArray();
 
@@ -295,6 +295,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 							.Select(node => node.GetAttribute("name"))
 							.ToArray()
 						)
+						.Distinct()
 						.ToArray();
 				}
 			}
