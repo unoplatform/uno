@@ -15,7 +15,7 @@
 	<Target Name="ResourcesGeneration"
 					BeforeTargets="PrepareForBuild;_CheckForContent"
 					DependsOnTargets="AssignLinkMetadata"
-					Condition="'$(ResourcesDirectory)'!='' and '$(BuildingInsideUnoSourceGenerator)' == ''">
+					Condition="'$(BuildingInsideUnoSourceGenerator)' == ''">
 		<!-- String resources -->
 		<PropertyGroup>
 			<!-- LEGACY: Old projects define DefaultApplicationLanguage instead of DefaultLanguage -->
@@ -23,7 +23,7 @@
 			<!-- Default to English if DefaultLanguage isn't set -->
 			<DefaultLanguage Condition="'$(DefaultLanguage)'==''">en</DefaultLanguage>			
 		</PropertyGroup>
-		<ResourcesGenerationTask ResourcesDirectory="$(ResourcesDirectory)"
+		<ResourcesGenerationTask Resources="@(PRIResource)"
 														 TargetProjectDirectory="$(ProjectDir)"
 														 TargetPlatform="$(XamarinProjectType)"
 														 IntermediateOutputPath="$(IntermediateOutputPath)"
