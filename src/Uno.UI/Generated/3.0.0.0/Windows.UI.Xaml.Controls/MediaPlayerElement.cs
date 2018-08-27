@@ -35,7 +35,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		#if false || false || NET46 || __WASM__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Media.Playback.IMediaPlaybackSource Source
 		{
@@ -49,7 +49,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		#if false || false || NET46 || __WASM__
 		[global::Uno.NotImplemented]
 		public  global::Windows.UI.Xaml.Media.ImageSource PosterSource
 		{
@@ -77,7 +77,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		#if false || false || NET46 || __WASM__
 		[global::Uno.NotImplemented]
 		public  bool AutoPlay
 		{
@@ -105,7 +105,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		#if false || false || NET46 || __WASM__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Media.Playback.MediaPlayer MediaPlayer
 		{
@@ -123,7 +123,7 @@ namespace Windows.UI.Xaml.Controls
 			typeof(global::Windows.UI.Xaml.Controls.MediaPlayerElement), 
 			new FrameworkPropertyMetadata(default(bool)));
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		#if false || false || NET46 || __WASM__
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty AutoPlayProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
@@ -139,7 +139,7 @@ namespace Windows.UI.Xaml.Controls
 			typeof(global::Windows.UI.Xaml.Controls.MediaPlayerElement), 
 			new FrameworkPropertyMetadata(default(bool)));
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		#if false || false || NET46 || __WASM__
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty MediaPlayerProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
@@ -147,7 +147,7 @@ namespace Windows.UI.Xaml.Controls
 			typeof(global::Windows.UI.Xaml.Controls.MediaPlayerElement), 
 			new FrameworkPropertyMetadata(default(global::Windows.Media.Playback.MediaPlayer)));
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		#if false || false || NET46 || __WASM__
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty PosterSourceProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
@@ -155,7 +155,7 @@ namespace Windows.UI.Xaml.Controls
 			typeof(global::Windows.UI.Xaml.Controls.MediaPlayerElement), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.ImageSource)));
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		#if false || false || NET46 || __WASM__
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty SourceProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
@@ -171,7 +171,7 @@ namespace Windows.UI.Xaml.Controls
 			typeof(global::Windows.UI.Xaml.Controls.MediaPlayerElement), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.Stretch)));
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		#if false || false || NET46 || __WASM__
 		[global::Uno.NotImplemented]
 		public MediaPlayerElement() : base()
 		{
@@ -194,12 +194,12 @@ namespace Windows.UI.Xaml.Controls
 		// Forced skipping of method Windows.UI.Xaml.Controls.MediaPlayerElement.IsFullWindow.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.MediaPlayerElement.IsFullWindow.set
 		// Forced skipping of method Windows.UI.Xaml.Controls.MediaPlayerElement.MediaPlayer.get
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
-		[global::Uno.NotImplemented]
-		public  void SetMediaPlayer( global::Windows.Media.Playback.MediaPlayer mediaPlayer)
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.MediaPlayerElement", "void MediaPlayerElement.SetMediaPlayer(MediaPlayer mediaPlayer)");
-		}
+		#if false || false || NET46 || __WASM__
+				[global::Uno.NotImplemented]
+				public  void SetMediaPlayer( global::Windows.Media.Playback.MediaPlayer mediaPlayer)
+				{
+					global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.MediaPlayerElement", "void MediaPlayerElement.SetMediaPlayer(MediaPlayer mediaPlayer)");
+				}
 		#endif
 		// Forced skipping of method Windows.UI.Xaml.Controls.MediaPlayerElement.SourceProperty.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.MediaPlayerElement.AreTransportControlsEnabledProperty.get
