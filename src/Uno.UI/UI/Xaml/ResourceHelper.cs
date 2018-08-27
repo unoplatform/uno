@@ -6,11 +6,17 @@ using Uno.Logging;
 using Uno.UI.Converters;
 using Windows.UI.Xaml.Data;
 using Uno.UI;
+using Windows.ApplicationModel.Resources;
 
 namespace Windows.UI.Xaml
 {
     public static class ResourceHelper
     {
+		static ResourceHelper()
+		{
+			ResourceLoader.GetStringInternal = key => ResourcesService.Get(key);
+		}
+
 		/// <summary>
 		/// Provides a global registry, similar to the Application.Current.Resources in WinRT.
 		/// </summary>

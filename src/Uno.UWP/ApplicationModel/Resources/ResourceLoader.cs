@@ -16,7 +16,12 @@ namespace Windows.ApplicationModel.Resources
 
 		public string GetString(string resource)
 		{
-			throw new NotImplementedException(); // ResourceHelper.FindResourceString(resource);
+			if (GetStringInternal == null)
+			{
+				throw new InvalidOperationException($"ResourceLoader.GetStringInternal hasn't been set. Make sure ResourceHelper is initialized properly.");
+			}
+
+			return GetStringInternal.Invoke(resource);
 		}
 
 		public string GetStringForUri(Uri uri) { throw new NotSupportedException(); }
@@ -30,5 +35,8 @@ namespace Windows.ApplicationModel.Resources
 		public static ResourceLoader GetForViewIndependentUse(string name) => _loader;
 
 		public static string GetStringForReference(Uri uri) { throw new NotSupportedException(); }
+
+		// TODO: Remove this property when getting rid of ResourceHelper
+		public static Func<string, string> GetStringInternal { get; set; }
 	}
 }
