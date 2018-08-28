@@ -297,20 +297,6 @@ namespace Windows.UI.Xaml.Documents
 		#endif
 		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
 		[global::Uno.NotImplemented]
-		public  global::Windows.UI.Text.TextDecorations TextDecorations
-		{
-			get
-			{
-				return (global::Windows.UI.Text.TextDecorations)this.GetValue(TextDecorationsProperty);
-			}
-			set
-			{
-				this.SetValue(TextDecorationsProperty, value);
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
-		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty LanguageProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
 			"Language", typeof(string), 
@@ -404,14 +390,6 @@ namespace Windows.UI.Xaml.Documents
 			"AccessKey", typeof(string), 
 			typeof(global::Windows.UI.Xaml.Documents.TextElement), 
 			new FrameworkPropertyMetadata(default(string)));
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
-		[global::Uno.NotImplemented]
-		public static global::Windows.UI.Xaml.DependencyProperty TextDecorationsProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			"TextDecorations", typeof(global::Windows.UI.Text.TextDecorations), 
-			typeof(global::Windows.UI.Xaml.Documents.TextElement), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Text.TextDecorations)));
 		#endif
 		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
 		[global::Uno.NotImplemented]

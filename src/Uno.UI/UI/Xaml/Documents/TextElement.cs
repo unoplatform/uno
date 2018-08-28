@@ -315,8 +315,6 @@ namespace Windows.UI.Xaml.Documents
 				)
 			);
 
-		private string _name;
-
 		protected virtual void OnBaseLineAlignmentChanged()
 		{
 			OnBaseLineAlignmentChangedPartial();
