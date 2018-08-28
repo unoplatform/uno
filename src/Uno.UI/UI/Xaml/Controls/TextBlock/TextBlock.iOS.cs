@@ -283,42 +283,6 @@ namespace Windows.UI.Xaml.Controls
 			return true;
 		}
 
-		public override void TouchesBegan(NSSet touches, UIEvent evt)
-		{
-			var point = (touches.AnyObject as UITouch).LocationInView(this);
-			var args = new PointerRoutedEventArgs(point);
-			OnPointerPressed(args);
-			if (!args.Handled)
-			{
-				// Give parent a chance to handle the event.
-				base.TouchesBegan(touches, evt);
-			}
-		}
-
-		public override void TouchesEnded(NSSet touches, UIEvent evt)
-		{
-			var point = (touches.AnyObject as UITouch).LocationInView(this);
-			var args = new PointerRoutedEventArgs(point);
-			OnPointerReleased(args);
-			if (!args.Handled)
-			{
-				// Give parent a chance to handle the event.
-				base.TouchesEnded(touches, evt);
-			}
-		}
-
-		public override void TouchesCancelled(NSSet touches, UIEvent evt)
-		{
-			var point = (touches.AnyObject as UITouch).LocationInView(this);
-			var args = new PointerRoutedEventArgs(point);
-			OnPointerCanceled(args);
-			if (!args.Handled)
-			{
-				// Give parent a chance to handle the event.
-				base.TouchesCancelled(touches, evt);
-			}
-		}
-
 		#endregion
 
 		private void UpdateTypography()
