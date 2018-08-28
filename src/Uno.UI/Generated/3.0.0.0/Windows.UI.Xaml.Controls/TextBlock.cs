@@ -387,20 +387,6 @@ namespace Windows.UI.Xaml.Controls
 		#endif
 		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
 		[global::Uno.NotImplemented]
-		public  global::Windows.UI.Text.TextDecorations TextDecorations
-		{
-			get
-			{
-				return (global::Windows.UI.Text.TextDecorations)this.GetValue(TextDecorationsProperty);
-			}
-			set
-			{
-				this.SetValue(TextDecorationsProperty, value);
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
-		[global::Uno.NotImplemented]
 		public  global::Windows.UI.Xaml.TextAlignment HorizontalTextAlignment
 		{
 			get
@@ -616,14 +602,6 @@ namespace Windows.UI.Xaml.Controls
 			"IsTextScaleFactorEnabled", typeof(bool), 
 			typeof(global::Windows.UI.Xaml.Controls.TextBlock), 
 			new FrameworkPropertyMetadata(default(bool)));
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
-		[global::Uno.NotImplemented]
-		public static global::Windows.UI.Xaml.DependencyProperty TextDecorationsProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			"TextDecorations", typeof(global::Windows.UI.Text.TextDecorations), 
-			typeof(global::Windows.UI.Xaml.Controls.TextBlock), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Text.TextDecorations)));
 		#endif
 		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
 		[global::Uno.NotImplemented]
