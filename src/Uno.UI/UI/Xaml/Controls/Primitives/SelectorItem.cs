@@ -27,13 +27,6 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 		public SelectorItem()
 		{
-#if XAMARIN_ANDROID
-			//TODO: remove these subscriptions when Control.OnPointerPressed et al. are properly supported on Android
-			PointerPressed += (o, e) => OnPointerPressed(e);
-			PointerCanceled += (o, e) => OnPointerCanceled(e);
-			PointerReleased += (o, e) => OnPointerReleased(e);
-			PointerExited += (o, e) => OnPointerExited(e);
-#endif
 		}
 
 		/// <remarks>

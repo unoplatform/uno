@@ -53,7 +53,6 @@ namespace Windows.UI.Xaml.Controls
 			base.OnUnloaded();
 
 			_keyPressDisposable.Disposable = null;
-			PointerPressed -= OnPointerPressed;
 
 			if (_textBoxView != null)
 			{
@@ -64,16 +63,8 @@ namespace Windows.UI.Xaml.Controls
 		protected override void OnLoaded()
 		{
 			base.OnLoaded();
-
-			PointerPressed += OnPointerPressed;
 			SetupTextBoxView();
 			UpdateCommonStates();
-		}
-
-		// TODO: remove event handler when override is correctly called from Control
-		private void OnPointerPressed(object sender, PointerRoutedEventArgs args)
-		{
-			OnPointerPressed(args);
 		}
 
 		partial void InitializePropertiesPartial()
