@@ -18,48 +18,6 @@ namespace Windows.UI.Xaml.Controls
 			Clickable = true;
 			Focusable = true;
 			FocusableInTouchMode = true;
-
-			PointerExited += OnPointerExited;
-			PointerEntered += OnPointerEntered;
-			PointerCanceled += OnPointerCanceled;
-			PointerPressed += OnPointerPressed;
-			PointerReleased += OnPointerReleased;
-		}
-
-		private void OnPointerReleased(object sender, PointerRoutedEventArgs e)
-		{
-			OnPointerReleased(e);
-		}
-
-		private void OnPointerPressed(object sender, PointerRoutedEventArgs e)
-		{
-			OnPointerPressed(e);
-		}
-
-		private void OnPointerCanceled(object sender, PointerRoutedEventArgs e)
-		{
-			OnPointerCanceled(e);
-		}
-
-		private void OnPointerEntered(object sender, PointerRoutedEventArgs e)
-		{
-			OnPointerEntered(e);
-		}
-
-		private void OnPointerExited(object sender, PointerRoutedEventArgs e)
-		{
-			OnPointerExited(e);
-		}
-
-		protected override void OnUnloaded()
-		{
-			base.OnUnloaded();
-
-			PointerExited -= OnPointerExited;
-			PointerEntered -= OnPointerEntered;
-			PointerCanceled -= OnPointerCanceled;
-			PointerPressed -= OnPointerPressed;
-			PointerReleased -= OnPointerReleased;
 		}
 	}
 }

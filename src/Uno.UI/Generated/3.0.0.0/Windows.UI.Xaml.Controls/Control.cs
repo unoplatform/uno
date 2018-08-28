@@ -531,7 +531,7 @@ namespace Windows.UI.Xaml.Controls
 		// Skipping already declared method Windows.UI.Xaml.Controls.Control.OnPointerMoved(Windows.UI.Xaml.Input.PointerRoutedEventArgs)
 		// Skipping already declared method Windows.UI.Xaml.Controls.Control.OnPointerReleased(Windows.UI.Xaml.Input.PointerRoutedEventArgs)
 		// Skipping already declared method Windows.UI.Xaml.Controls.Control.OnPointerExited(Windows.UI.Xaml.Input.PointerRoutedEventArgs)
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if false || false || false || false || false
 		[global::Uno.NotImplemented]
 		protected virtual void OnPointerCaptureLost( global::Windows.UI.Xaml.Input.PointerRoutedEventArgs e)
 		{

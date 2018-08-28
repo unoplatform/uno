@@ -146,6 +146,27 @@ namespace Windows.UI.Xaml.Controls
 			SetUpdateControlTemplate();
 
 			base.OnLoaded();
+
+			PointerPressed += OnPointerPressed;
+			PointerReleased += OnPointerReleased;
+			PointerMoved += OnPointerMoved;
+			PointerEntered += OnPointerEntered;
+			PointerExited += OnPointerExited;
+			PointerCanceled += OnPointerCanceled;
+			PointerCaptureLost += OnPointerCaptureLost;
+		}
+
+		protected override void OnUnloaded()
+		{
+			base.OnUnloaded();
+			
+			PointerPressed -= OnPointerPressed;
+			PointerReleased -= OnPointerReleased;
+			PointerMoved -= OnPointerMoved;
+			PointerEntered -= OnPointerEntered;
+			PointerExited -= OnPointerExited;
+			PointerCanceled -= OnPointerCanceled;
+			PointerCaptureLost -= OnPointerCaptureLost;
 		}
 
 		/// <summary>
@@ -645,5 +666,42 @@ namespace Windows.UI.Xaml.Controls
 		protected virtual void OnPointerMoved(PointerRoutedEventArgs args) { }
 
 		protected virtual void OnPointerCanceled(PointerRoutedEventArgs args) { }
+
+		protected virtual void OnPointerCaptureLost(PointerRoutedEventArgs args) { }
+
+		private void OnPointerPressed(object sender, PointerRoutedEventArgs args)
+		{
+			OnPointerPressed(args);
+		}
+
+		private void OnPointerReleased(object sender, PointerRoutedEventArgs args)
+		{
+			OnPointerReleased(args);
+		}
+
+		private void OnPointerEntered(object sender, PointerRoutedEventArgs args)
+		{
+			OnPointerEntered(args);
+		}
+
+		private void OnPointerExited(object sender, PointerRoutedEventArgs args)
+		{
+			OnPointerExited(args);
+		}
+
+		private void OnPointerMoved(object sender, PointerRoutedEventArgs args)
+		{
+			OnPointerMoved(args);
+		}
+
+		private void OnPointerCanceled(object sender, PointerRoutedEventArgs args)
+		{
+			OnPointerCanceled(args);
+		}
+
+		private void OnPointerCaptureLost(object sender, PointerRoutedEventArgs args)
+		{
+			OnPointerCaptureLost(args);
+		}
 	}
 }

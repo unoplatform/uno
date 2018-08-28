@@ -62,12 +62,17 @@ namespace Windows.UI.Xaml.Controls
 
 			UpdateHeaderVisibility();
 			UpdateContentPresenter();
+		}
 
 #if __ANDROID__
-			PointerPressed += (s, e) => { e.Handled = true; }; // For some reasons, PointerReleased is not raised unless PointerPressed is Handled.
-			PointerReleased += (s, e) => OnPointerReleased(new PointerRoutedEventArgs());
-#endif
+		protected override void OnPointerPressed(PointerRoutedEventArgs args)
+		{
+			base.OnPointerPressed(args);
+
+			// For some reasons, PointerReleased is not raised unless PointerPressed is Handled.
+			args.Handled = true;
 		}
+#endif
 
 		protected override void OnLoaded()
 		{
