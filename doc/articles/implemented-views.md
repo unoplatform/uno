@@ -9,13 +9,13 @@ This document has been automatically generated based on whether the type (member
 ## Implemented - all platforms (iOS, Android, WebAssembly)
 
 
-| Windows.UI.Xaml |
-| --- |
+| Windows.UI.Xaml |  |  |
+| --- | --- | --- |
 | FrameworkElement | [properties, methods, events](#frameworkelement) | [uwp doc](https://docs.microsoft.com/en-us/uwp/api/windows.ui.xaml.frameworkelement) |
 | UIElement | [properties, methods, events](#uielement) | [uwp doc](https://docs.microsoft.com/en-us/uwp/api/windows.ui.xaml.uielement) |
 
-| Windows.UI.Xaml.Controls |
-| --- |
+| Windows.UI.Xaml.Controls |  |  |
+| --- | --- | --- |
 | AppBar | [properties, methods, events](#appbar) | [uwp doc](https://docs.microsoft.com/en-us/uwp/api/windows.ui.xaml.controls.appbar) |
 | AppBarSeparator | [properties, methods, events](#appbarseparator) | [uwp doc](https://docs.microsoft.com/en-us/uwp/api/windows.ui.xaml.controls.appbarseparator) |
 | AppBarToggleButton | [properties, methods, events](#appbartogglebutton) | [uwp doc](https://docs.microsoft.com/en-us/uwp/api/windows.ui.xaml.controls.appbartogglebutton) |
@@ -75,8 +75,8 @@ This document has been automatically generated based on whether the type (member
 | VariableSizedWrapGrid | [properties, methods, events](#variablesizedwrapgrid) | [uwp doc](https://docs.microsoft.com/en-us/uwp/api/windows.ui.xaml.controls.variablesizedwrapgrid) |
 | WebView | [properties, methods, events](#webview) | [uwp doc](https://docs.microsoft.com/en-us/uwp/api/windows.ui.xaml.controls.webview) |
 
-| Windows.UI.Xaml.Controls.Primitives |
-| --- |
+| Windows.UI.Xaml.Controls.Primitives |  |  |
+| --- | --- | --- |
 | ButtonBase | [properties, methods, events](#buttonbase) | [uwp doc](https://docs.microsoft.com/en-us/uwp/api/windows.ui.xaml.controls.primitives.buttonbase) |
 | CarouselPanel | [properties, methods, events](#carouselpanel) | [uwp doc](https://docs.microsoft.com/en-us/uwp/api/windows.ui.xaml.controls.primitives.carouselpanel) |
 | PivotHeaderItem | [properties, methods, events](#pivotheaderitem) | [uwp doc](https://docs.microsoft.com/en-us/uwp/api/windows.ui.xaml.controls.primitives.pivotheaderitem) |
@@ -88,8 +88,8 @@ This document has been automatically generated based on whether the type (member
 | TickBar | [properties, methods, events](#tickbar) | [uwp doc](https://docs.microsoft.com/en-us/uwp/api/windows.ui.xaml.controls.primitives.tickbar) |
 | ToggleButton | [properties, methods, events](#togglebutton) | [uwp doc](https://docs.microsoft.com/en-us/uwp/api/windows.ui.xaml.controls.primitives.togglebutton) |
 
-| Windows.UI.Xaml.Shapes |
-| --- |
+| Windows.UI.Xaml.Shapes |  |  |
+| --- | --- | --- |
 | Ellipse | [properties, methods, events](#ellipse) | [uwp doc](https://docs.microsoft.com/en-us/uwp/api/windows.ui.xaml.shapes.ellipse) |
 | Line | [properties, methods, events](#line) | [uwp doc](https://docs.microsoft.com/en-us/uwp/api/windows.ui.xaml.shapes.line) |
 | Path | [properties, methods, events](#path) | [uwp doc](https://docs.microsoft.com/en-us/uwp/api/windows.ui.xaml.shapes.path) |
@@ -101,8 +101,8 @@ This document has been automatically generated based on whether the type (member
 ## Implemented - Android + iOS only
 
 
-| Windows.UI.Xaml.Controls |
-| --- |
+| Windows.UI.Xaml.Controls |  |  |
+| --- | --- | --- |
 | AppBarButton | [properties, methods, events](#appbarbutton) | [uwp doc](https://docs.microsoft.com/en-us/uwp/api/windows.ui.xaml.controls.appbarbutton) |
 | BitmapIcon | [properties, methods, events](#bitmapicon) | [uwp doc](https://docs.microsoft.com/en-us/uwp/api/windows.ui.xaml.controls.bitmapicon) |
 | CommandBarOverflowPresenter | [properties, methods, events](#commandbaroverflowpresenter) | [uwp doc](https://docs.microsoft.com/en-us/uwp/api/windows.ui.xaml.controls.commandbaroverflowpresenter) |
@@ -113,8 +113,8 @@ This document has been automatically generated based on whether the type (member
 | SymbolIcon | [properties, methods, events](#symbolicon) | [uwp doc](https://docs.microsoft.com/en-us/uwp/api/windows.ui.xaml.controls.symbolicon) |
 | TimePicker | [properties, methods, events](#timepicker) | [uwp doc](https://docs.microsoft.com/en-us/uwp/api/windows.ui.xaml.controls.timepicker) |
 
-| Windows.UI.Xaml.Controls.Primitives |
-| --- |
+| Windows.UI.Xaml.Controls.Primitives |  |  |
+| --- | --- | --- |
 | GridViewItemPresenter | [properties, methods, events](#gridviewitempresenter) | [uwp doc](https://docs.microsoft.com/en-us/uwp/api/windows.ui.xaml.controls.primitives.gridviewitempresenter) |
 | ListViewItemPresenter | [properties, methods, events](#listviewitempresenter) | [uwp doc](https://docs.microsoft.com/en-us/uwp/api/windows.ui.xaml.controls.primitives.listviewitempresenter) |
 

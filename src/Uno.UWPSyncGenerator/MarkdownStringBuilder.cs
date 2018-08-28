@@ -100,6 +100,12 @@ namespace Uno.UWPSyncGenerator
 			{
 				throw new InvalidOperationException($"{nameof(AppendRow)} must be called within a using ({nameof(Table)}) block.");
 			}
+
+			if (columnEntries.Length > _tableColumns.Value)
+			{
+				throw new InvalidOperationException($"Row has {columnEntries.Length} columns but current table only has {_tableColumns.Value} columns.");
+			}
+
 			AppendLine("");
 			Append("|");
 			foreach (var entry in columnEntries)

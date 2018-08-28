@@ -159,15 +159,21 @@ namespace Uno.UWPSyncGenerator
 						continue;
 					}
 
-					using (_sb.Table(group.Key.ToDisplayString()))
+					if (showLinks)
 					{
-						foreach (var type in group.Where(appendCondition).OrderBy(ps => ps.UAPSymbol.Name))
+						using (_sb.Table(group.Key.ToDisplayString(), "", ""))
 						{
-							if (showLinks)
+							foreach (var type in group.Where(appendCondition).OrderBy(ps => ps.UAPSymbol.Name))
 							{
 								_sb.AppendRow(type.UAPSymbol.Name, MarkdownStringBuilder.Hyperlink("properties, methods, events", $"#{type.UAPSymbol.Name.ToLowerInvariant()}"), MarkdownStringBuilder.Hyperlink("uwp doc", @"https://docs.microsoft.com/en-us/uwp/api/" + type.UAPSymbol.ToDisplayString().ToLowerInvariant()));
 							}
-							else
+						}
+					}
+					else
+					{
+						using (_sb.Table(group.Key.ToDisplayString()))
+						{
+							foreach (var type in group.Where(appendCondition).OrderBy(ps => ps.UAPSymbol.Name))
 							{
 								_sb.AppendRow(type.UAPSymbol.Name);
 							}
