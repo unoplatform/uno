@@ -2,6 +2,8 @@
   href: intro.md
 - name: Supported Features
   href: supported-features.md
+- name: Frequently Asked Questions
+  href: faq.md
 - name: API Differences
   href: api-differences.md
 - name: Uno.UI Performance Tips
