@@ -7,6 +7,7 @@ using Microsoft.Build.Utilities;
 using Uno.Extensions;
 using Uno.Logging;
 using Uno.UI.Tasks.Helpers;
+using Windows.ApplicationModel.Resources.Core;
 
 namespace Uno.UI.Tasks.ResourcesGenerator
 {
@@ -22,14 +23,14 @@ namespace Uno.UI.Tasks.ResourcesGenerator
 	Source: {1}
 ";
 		[Required]
-		public string ResourcesDirectory { get; set; }
-				
+		public ITaskItem[] Resources { get; set; }
+
 		[Required]
 		public string TargetPlatform { get; set; }
 
 		[Required]
 		public string TargetProjectDirectory { get; set; }
-		
+
 		[Required]
 		public string IntermediateOutputPath { get; set; }
 
@@ -38,7 +39,7 @@ namespace Uno.UI.Tasks.ResourcesGenerator
 
 		[Output]
 		public ITaskItem[] GeneratedFiles { get; set; }
-		
+
 		private string OutputPath => Path.Combine(TargetProjectDirectory, IntermediateOutputPath, "g", "ResourcesGenerator");
 
 		public override bool Execute()
@@ -49,15 +50,27 @@ namespace Uno.UI.Tasks.ResourcesGenerator
 
 			try
 			{
-				GeneratedFiles = Directory
-					.EnumerateDirectories(ResourcesDirectory)
-					.Select(directory =>
+				GeneratedFiles = Resources
+					// TODO: Add support for other resources file names
+					.Where(resource => resource.ItemSpec?.EndsWith("Resources.resw") ?? false)
+					// TODO: Merge duplicates (based on file name and qualifiers)
+					.Select(resource =>
 					{
-						var language = new DirectoryInfo(directory).Name;
+						this.Log().Info("Resources file found : {0}".InvariantCultureFormat(resource.ItemSpec));
+
+						var resourceCandidate = ResourceCandidate.Parse(resource.ItemSpec, resource.ItemSpec);
+
+						var language = resourceCandidate.GetQualifierValue("language");
+						if (language == null)
+						{
+							// TODO: Add support for resources without a language qualifier
+							this.Log().Info("No language found, resources ignored");
+							return null;
+						}
 
 						this.Log().Info("Language found : {0}".InvariantCultureFormat(language));
 
-						var resourceFile = Path.Combine(directory, "Resources.resw");
+						var resourceFile = resource.ItemSpec;
 						var sourceLastWriteTime = new FileInfo(resourceFile).LastWriteTimeUtc;
 						var resources = WindowsResourcesReader.Read(resourceFile);
 						var comment = CommentPattern.InvariantCultureFormat(this.GetType().Name, resourceFile);
