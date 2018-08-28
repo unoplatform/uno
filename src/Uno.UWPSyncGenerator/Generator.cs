@@ -35,6 +35,7 @@ namespace Uno.UWPSyncGenerator
 
 		private ISymbol _voidSymbol;
 		private ISymbol _dependencyPropertySymbol;
+		protected ISymbol UIElementSymbol { get; private set; }
 		private static string MSBuildBasePath;
 
 		static Generator()
@@ -58,6 +59,7 @@ namespace Uno.UWPSyncGenerator
 
 			_voidSymbol = _referenceCompilation.GetTypeByMetadataName("System.Void");
 			_dependencyPropertySymbol = _referenceCompilation.GetTypeByMetadataName("Windows.UI.Xaml.DependencyProperty");
+			UIElementSymbol = _referenceCompilation.GetTypeByMetadataName("Windows.UI.Xaml.UIElement");
 			var a = _referenceCompilation.GetTypeByMetadataName("Windows.UI.ViewManagement.StatusBar");
 
 
@@ -138,6 +140,11 @@ namespace Uno.UWPSyncGenerator
 			public T net46ymbol;
 			public T MacOSSymbol;
 			public T WasmSymbol;
+			public T UAPSymbol;
+
+			private ImplementedFor _implementedFor;
+			public ImplementedFor ImplementedFor => _implementedFor;
+			public ImplementedFor ImplementedForMain => ImplementedFor & ImplementedFor.Main;
 
 			public PlatformSymbols(
 				T androidType,
@@ -146,7 +153,8 @@ namespace Uno.UWPSyncGenerator
 				T macOSType,
 #endif
 				T unitTestType,
-				T wasmType
+				T wasmType,
+				T uapType
 			)
 			{
 				this.AndroidSymbol = androidType;
@@ -156,6 +164,30 @@ namespace Uno.UWPSyncGenerator
 #if HAS_MACOS
 				this.MacOSSymbol = macOSType;
 #endif
+				this.UAPSymbol = uapType;
+
+				if (IsImplemented(AndroidSymbol))
+				{
+					_implementedFor |= ImplementedFor.Android;
+				}
+				if (IsImplemented(IOSSymbol))
+				{
+					_implementedFor |= ImplementedFor.iOS;
+				}
+				if (IsImplemented(net46ymbol))
+				{
+					_implementedFor |= ImplementedFor.Net46;
+				}
+#if HAS_MACOS
+				if (IsImplemented(MacOSSymbol))
+				{
+					_implementedFor |= ImplementedFor.MacOS;
+				}
+#endif
+				if (IsImplemented(WasmSymbol))
+				{
+					_implementedFor |= ImplementedFor.WASM;
+				}
 			}
 
 			public bool HasUndefined =>
@@ -207,20 +239,33 @@ namespace Uno.UWPSyncGenerator
 
 				return false;
 			}
+
+			private static bool IsImplemented(ISymbol symbol)
+			{
+				if (symbol == null) { return false; }
+				if (symbol.GetAttributes().Any(a => a.AttributeClass.Name == "NotImplementedAttribute")) { return false; }
+				if (IsNotDefinedByUno(symbol)) { return false; }
+
+				return true;
+			}
 		}
 
-		protected PlatformSymbols<INamedTypeSymbol> GetAllSymbols(string name)
-			=> new PlatformSymbols<INamedTypeSymbol>(
-				_androidCompilation.GetTypeByMetadataName(name),
-				_iOSCompilation.GetTypeByMetadataName(name),
+		protected PlatformSymbols<INamedTypeSymbol> GetAllSymbols(INamedTypeSymbol uapType)
+		{
+			var name = uapType.ContainingNamespace + "." + uapType.MetadataName;
+			return new PlatformSymbols<INamedTypeSymbol>(
+				  _androidCompilation.GetTypeByMetadataName(name),
+				  _iOSCompilation.GetTypeByMetadataName(name),
 #if HAS_MACOS
 				_macCompilation?.GetTypeByMetadataName(name),
 #endif
 				_net46Compilation.GetTypeByMetadataName(name),
-				_wasmCompilation.GetTypeByMetadataName(name)
-			);
+				  _wasmCompilation.GetTypeByMetadataName(name),
+				  uapType
+			  );
+		}
 
-		private PlatformSymbols<ISymbol> GetAllGetNonGeneratedMembers(PlatformSymbols<INamedTypeSymbol> types, string name, Func<IEnumerable<ISymbol>, ISymbol> filter)
+		private PlatformSymbols<ISymbol> GetAllGetNonGeneratedMembers(PlatformSymbols<INamedTypeSymbol> types, string name, Func<IEnumerable<ISymbol>, ISymbol> filter, ISymbol uapSymbol = null)
 			=> new PlatformSymbols<ISymbol>(
 				filter(GetNonGeneratedMembers(types.AndroidSymbol, name)),
 				filter(GetNonGeneratedMembers(types.IOSSymbol, name)),
@@ -228,10 +273,11 @@ namespace Uno.UWPSyncGenerator
 				filter(GetNonGeneratedMembers(types.MacOSSymbol, name)),
 #endif
 				filter(GetNonGeneratedMembers(types.net46ymbol, name)),
-				filter(GetNonGeneratedMembers(types.WasmSymbol, name))
+				filter(GetNonGeneratedMembers(types.WasmSymbol, name)),
+				uapType: uapSymbol
 			);
 
-		private PlatformSymbols<IMethodSymbol> GetAllMatchingMethods(PlatformSymbols<INamedTypeSymbol> types, IMethodSymbol method)
+		protected PlatformSymbols<IMethodSymbol> GetAllMatchingMethods(PlatformSymbols<INamedTypeSymbol> types, IMethodSymbol method)
 			=> new PlatformSymbols<IMethodSymbol>(
 				FindMatchingMethod(types.AndroidSymbol, method),
 				FindMatchingMethod(types.IOSSymbol, method),
@@ -239,10 +285,11 @@ namespace Uno.UWPSyncGenerator
 				FindMatchingMethod(types.MacOSSymbol, method),
 #endif
 				FindMatchingMethod(types.net46ymbol, method),
-				FindMatchingMethod(types.WasmSymbol, method)
+				FindMatchingMethod(types.WasmSymbol, method),
+				uapType: method
 			);
 
-		private PlatformSymbols<IPropertySymbol> GetAllMatchingPropertyMember(PlatformSymbols<INamedTypeSymbol> types, IPropertySymbol property)
+		protected PlatformSymbols<IPropertySymbol> GetAllMatchingPropertyMember(PlatformSymbols<INamedTypeSymbol> types, IPropertySymbol property)
 			=> new PlatformSymbols<IPropertySymbol>(
 				GetMatchingPropertyMember(types.AndroidSymbol, property),
 				GetMatchingPropertyMember(types.IOSSymbol, property),
@@ -250,8 +297,14 @@ namespace Uno.UWPSyncGenerator
 				GetMatchingPropertyMember(types.MacOSSymbol, property),
 #endif
 				GetMatchingPropertyMember(types.net46ymbol, property),
-				GetMatchingPropertyMember(types.WasmSymbol, property)
+				GetMatchingPropertyMember(types.WasmSymbol, property),
+				uapType: property
 			);
+
+		protected PlatformSymbols<ISymbol> GetAllMatchingEvents(PlatformSymbols<INamedTypeSymbol> types, IEventSymbol eventMember)
+		{
+			return GetAllGetNonGeneratedMembers(types, eventMember.Name, q => q.OfType<IEventSymbol>().FirstOrDefault(), eventMember);
+		}
 
 		protected bool SkippedType(INamedTypeSymbol type)
 		{
@@ -668,7 +721,7 @@ namespace Uno.UWPSyncGenerator
 		{
 			foreach (var eventMember in type.GetMembers().OfType<IEventSymbol>())
 			{
-				var allMembers = GetAllGetNonGeneratedMembers(types, eventMember.Name, q => q.OfType<IEventSymbol>().FirstOrDefault());
+				var allMembers = GetAllMatchingEvents(types, eventMember);
 
 				if (allMembers.HasUndefined)
 				{

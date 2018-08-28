@@ -40,7 +40,7 @@ namespace Uno.UWPSyncGenerator
 		{
 			var kind = type.TypeKind;
 			var partialModifier = type.TypeKind != TypeKind.Enum ? "partial" : "";
-			var allSymbols = GetAllSymbols(type.ContainingNamespace + "." + type.MetadataName);
+			var allSymbols = GetAllSymbols(type);
 
 			var staticQualifier = (type.IsAbstract && type.IsSealed) ? "static" : "";
 
