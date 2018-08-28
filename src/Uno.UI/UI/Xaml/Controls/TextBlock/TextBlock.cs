@@ -40,6 +40,22 @@ namespace Windows.UI.Xaml.Controls
 
 			InitializePartial();
 		}
+
+		protected override void OnLoaded()
+		{
+			base.OnLoaded();			
+			PointerPressed += OnPointerPressed;
+			PointerReleased += OnPointerReleased;
+			PointerCanceled += OnPointerCanceled;
+		}
+
+		protected override void OnUnloaded()
+		{
+			base.OnUnloaded();
+			PointerPressed -= OnPointerPressed;
+			PointerReleased -= OnPointerReleased;
+			PointerCanceled -= OnPointerCanceled;
+		}
 #endif
 
 		/// <summary>
@@ -661,17 +677,17 @@ namespace Windows.UI.Xaml.Controls
 			return _hyperlinks.FirstOrDefault(h => h.start <= characterIndex && h.end > characterIndex).hyperlink;
 		}
 
-		protected virtual void OnPointerPressed(PointerRoutedEventArgs e)
+		private void OnPointerPressed(object sender, PointerRoutedEventArgs e)
 		{
-			_pressedHyperlink = GetHyperlinkAtPoint(e.GetCurrentPoint());
+			_pressedHyperlink = GetHyperlinkAtPoint(e.GetCurrentPoint(this).Position);
 			_pressedHyperlink?.OnPointerPressed(e);
 		}
 
-		protected virtual void OnPointerReleased(PointerRoutedEventArgs e)
+		private void OnPointerReleased(object sender, PointerRoutedEventArgs e)
 		{
 			if (_pressedHyperlink != null)
 			{
-				var releasedHyperlink = GetHyperlinkAtPoint(e.GetCurrentPoint());
+				var releasedHyperlink = GetHyperlinkAtPoint(e.GetCurrentPoint(this).Position);
 				if (releasedHyperlink == _pressedHyperlink)
 				{
 					_pressedHyperlink.OnPointerReleased(e);
@@ -685,7 +701,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		protected virtual void OnPointerCanceled(PointerRoutedEventArgs e)
+		private void OnPointerCanceled(object sender, PointerRoutedEventArgs e)
 		{
 			if (_pressedHyperlink != null)
 			{
