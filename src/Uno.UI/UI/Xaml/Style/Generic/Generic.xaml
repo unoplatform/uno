@@ -8232,5 +8232,37 @@
         </Setter>
     </Style>
 
-	
+	<Style TargetType="MediaPlayerElement">
+        <Setter Property="HorizontalAlignment"
+				Value="Stretch" />
+        <Setter Property="VerticalAlignment"
+				Value="Stretch" />
+        <Setter Property="IsTabStop"
+				Value="False" />
+        <Setter Property="Stretch"
+				Value="Uniform" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="MediaPlayerElement">
+                    <Grid x:Name="LayoutRoot"
+						   Background="green">
+                        <Border Background="Transparent" />
+                        <Image x:Name="PosterImage"
+                               Visibility="Collapsed"
+                               Source="{TemplateBinding PosterSource}"
+                               Stretch="{TemplateBinding Stretch}" />
+                        <MediaPlayerPresenter x:Name="MediaPlayerPresenter"
+											  IsFullWindow="{TemplateBinding IsFullWindow}"
+											  Stretch="{TemplateBinding Stretch}"
+											  MediaPlayer="{TemplateBinding MediaPlayer}" 
+											  Background="Yellow"/>
+                        <!--<ContentPresenter x:Name="TransportControlsPresenter"
+										  Visibility="{TemplateBinding AreTransportControlsEnabled}" />-->
+                        <!--<Grid x:Name="TimedTextSourcePresenter" />-->
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
 </ResourceDictionary>

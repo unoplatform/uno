@@ -5,29 +5,30 @@ using Windows.UI.Xaml.Media;
 
 namespace Windows.UI.Xaml.Controls
 {
-	public  partial class MediaPlayerPresenter : Border
+	public partial class MediaPlayerPresenter : Border
 	{
 		#region MediaPlayer Property
 
-		public MediaPlayer MediaPlayer
+		public Windows.Media.Playback.MediaPlayer MediaPlayer
 		{
-			get { return (MediaPlayer)GetValue(MediaPlayerProperty); }
+			get { return (Windows.Media.Playback.MediaPlayer)GetValue(MediaPlayerProperty); }
 			set { SetValue(MediaPlayerProperty, value); }
 		}
 
 		public static DependencyProperty MediaPlayerProperty { get; } =
 			DependencyProperty.Register(
 				nameof(MediaPlayer),
-				typeof(bool),
+				typeof(Windows.Media.Playback.MediaPlayer),
 				typeof(MediaPlayerPresenter),
-				new FrameworkPropertyMetadata(default(MediaPlayer), OnMediaPlayerChanged));
+				new FrameworkPropertyMetadata(default(Windows.Media.Playback.MediaPlayer), OnMediaPlayerChanged));
 
 		private static void OnMediaPlayerChanged(DependencyObject sender, DependencyPropertyChangedEventArgs args)
 		{
 			if (sender is MediaPlayerPresenter presenter &&
-				args.NewValue is MediaPlayer mediaPlayer)
+				args.NewValue is Windows.Media.Playback.MediaPlayer mediaPlayer)
 			{
-				presenter.Child = mediaPlayer.GetSurface();
+				Console.WriteLine($"MEDIAPLAYERIMPL - MediaPlayerPresenter OnMediaPlayerChanged");
+				presenter.SetVideoSurface(mediaPlayer.RenderSurface);
 			}
 		}
 
@@ -69,6 +70,7 @@ namespace Windows.UI.Xaml.Controls
 
 		public MediaPlayerPresenter() : base()
 		{
+			Console.WriteLine($"MEDIAPLAYERIMPL - MediaPlayerPresenter created");
 		}
 	}
 }
