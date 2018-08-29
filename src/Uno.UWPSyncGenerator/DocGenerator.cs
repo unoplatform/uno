@@ -183,12 +183,9 @@ namespace Uno.UWPSyncGenerator
 					}
 					else
 					{
-						using (_sb.Table(group.Key.ToDisplayString()))
+						using (_sb.Table(group.Key.ToDisplayString(), "", ""))
 						{
-							foreach (var type in group.Where(appendCondition).OrderBy(ps => ps.UAPSymbol.Name))
-							{
-								_sb.AppendRow(type.UAPSymbol.Name);
-							}
+							_sb.AppendCells(group.Where(appendCondition).Select(ps => ps.UAPSymbol.Name).OrderBy(n => n).ToList());
 						}
 					}
 				};

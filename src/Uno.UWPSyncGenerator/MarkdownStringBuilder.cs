@@ -116,6 +116,35 @@ namespace Uno.UWPSyncGenerator
 		}
 
 		/// <summary>
+		/// Append each cell to the current Markdown table, wrapping to a new row when necessary.
+		/// </summary>
+		/// <param name="cells">Cell contents</param>
+		public void AppendCells(IList<string> cells)
+		{
+			if (!_tableColumns.HasValue)
+			{
+				throw new InvalidOperationException($"{nameof(AppendCells)} must be called within a using ({nameof(Table)}) block.");
+			}
+
+			for (int i = 0; i < cells.Count; i++)
+			{
+				if (i % _tableColumns.Value == 0)
+				{
+					// Wrap to new row
+					if (i != 0)
+					{
+						AppendLine();
+					}
+					AppendLine("");
+					Append("|");
+				}
+
+				Append($" {cells[i]} |");
+			}
+			AppendLine();
+		}
+
+		/// <summary>
 		/// Append a comment string which won't be visible in the displayed Markdown document.
 		/// </summary>
 		/// <param name="comment">Comment content</param>

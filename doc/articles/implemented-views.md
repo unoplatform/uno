@@ -133,96 +133,47 @@ This document has been automatically generated based on whether the type (member
 If there's a specific control you'd like to see implemented, [create an issue!](https://github.com/nventive/Uno/issues)
 
 
-| Windows.UI.Xaml.Controls |
-| --- |
-| CalendarDatePicker |
-| CalendarView |
-| CalendarViewDayItem |
-| CaptureElement |
-| ColorPicker |
-| ContentDialog |
-| GroupItem |
-| HandwritingView |
-| Hub |
-| HubSection |
-| InkCanvas |
-| InkToolbar |
-| InkToolbarBallpointPenButton |
-| InkToolbarCustomPenButton |
-| InkToolbarCustomToggleButton |
-| InkToolbarCustomToolButton |
-| InkToolbarEraserButton |
-| InkToolbarFlyoutItem |
-| InkToolbarHighlighterButton |
-| InkToolbarMenuButton |
-| InkToolbarPenButton |
-| InkToolbarPencilButton |
-| InkToolbarPenConfigurationControl |
-| InkToolbarRulerButton |
-| InkToolbarStencilButton |
-| InkToolbarToggleButton |
-| InkToolbarToolButton |
-| ListBox |
-| ListBoxItem |
-| ListPickerFlyoutPresenter |
-| MediaElement |
-| MediaPlayerElement |
-| MediaPlayerPresenter |
-| MediaTransportControls |
-| MenuFlyoutPresenter |
-| MenuFlyoutSeparator |
-| MenuFlyoutSubItem |
-| NavigationView |
-| NavigationViewItem |
-| NavigationViewItemBase |
-| NavigationViewItemHeader |
-| NavigationViewItemSeparator |
-| NavigationViewList |
-| ParallaxView |
-| PersonPicture |
-| PickerFlyoutPresenter |
-| RatingControl |
-| RefreshContainer |
-| RefreshVisualizer |
-| RichEditBox |
-| RichTextBlock |
-| RichTextBlockOverflow |
-| SearchBox |
-| SemanticZoom |
-| SettingsFlyout |
-| SwapChainBackgroundPanel |
-| SwapChainPanel |
-| SwipeControl |
-| ToolTip |
-| TreeView |
-| TreeViewItem |
-| TreeViewList |
-| Viewbox |
-| VirtualizingStackPanel |
-| WrapGrid |
+| Windows.UI.Xaml.Controls |  |  |
+| --- | --- | --- |
+| CalendarDatePicker | CalendarView | CalendarViewDayItem |
+| CaptureElement | ColorPicker | ContentDialog |
+| GroupItem | HandwritingView | Hub |
+| HubSection | InkCanvas | InkToolbar |
+| InkToolbarBallpointPenButton | InkToolbarCustomPenButton | InkToolbarCustomToggleButton |
+| InkToolbarCustomToolButton | InkToolbarEraserButton | InkToolbarFlyoutItem |
+| InkToolbarHighlighterButton | InkToolbarMenuButton | InkToolbarPenButton |
+| InkToolbarPencilButton | InkToolbarPenConfigurationControl | InkToolbarRulerButton |
+| InkToolbarStencilButton | InkToolbarToggleButton | InkToolbarToolButton |
+| ListBox | ListBoxItem | ListPickerFlyoutPresenter |
+| MediaElement | MediaPlayerElement | MediaPlayerPresenter |
+| MediaTransportControls | MenuFlyoutPresenter | MenuFlyoutSeparator |
+| MenuFlyoutSubItem | NavigationView | NavigationViewItem |
+| NavigationViewItemBase | NavigationViewItemHeader | NavigationViewItemSeparator |
+| NavigationViewList | ParallaxView | PersonPicture |
+| PickerFlyoutPresenter | RatingControl | RefreshContainer |
+| RefreshVisualizer | RichEditBox | RichTextBlock |
+| RichTextBlockOverflow | SearchBox | SemanticZoom |
+| SettingsFlyout | SwapChainBackgroundPanel | SwapChainPanel |
+| SwipeControl | ToolTip | TreeView |
+| TreeViewItem | TreeViewList | Viewbox |
+| VirtualizingStackPanel | WrapGrid |
 
-| Windows.UI.Xaml.Controls.Maps |
-| --- |
+| Windows.UI.Xaml.Controls.Maps |  |  |
+| --- | --- | --- |
 | MapControl |
 
-| Windows.UI.Xaml.Controls.Primitives |
-| --- |
-| CalendarPanel |
-| ColorPickerSlider |
-| ColorSpectrum |
-| LoopingSelector |
-| LoopingSelectorItem |
-| LoopingSelectorPanel |
-| PivotPanel |
-| RepeatButton |
-| ScrollBar |
+| Windows.UI.Xaml.Controls.Primitives |  |  |
+| --- | --- | --- |
+| CalendarPanel | ColorPickerSlider | ColorSpectrum |
+| LoopingSelector | LoopingSelectorItem | LoopingSelectorPanel |
+| PivotPanel | RepeatButton | ScrollBar |
 
-| Windows.UI.Xaml.Documents |
-| --- |
+| Windows.UI.Xaml.Documents |  |  |
+| --- | --- | --- |
 | Glyphs |
 
-| Windows.UI.Xaml.Shapes |
-| --- |
+| Windows.UI.Xaml.Shapes |  |  |
+| --- | --- | --- |
 | Polyline |
 
 
