@@ -21,6 +21,11 @@ using global::Windows.UI.Xaml.Input;
 using Point = Windows.Foundation.Point;
 using Uno.UI;
 using Uno.Diagnostics.Eventing;
+using Windows.UI.Xaml.Automation.Peers;
+using Windows.UI.Xaml.Automation.Provider;
+using Windows.UI.Xaml.Automation;
+using Android.Views.Accessibility;
+using Android.Runtime;
 
 <# 
 	foreach(var mixin in _mixins) { 
@@ -883,6 +888,71 @@ namespace <#= mixin.NamespaceName #>
 #endif
 
 		public Uri BaseUri => new Uri("ms-appx:///");
+
+		#region AutomationPeer
+
+		private AutomationPeer _automationPeer;
+
+#if !<#= mixin.HasAutomationPeer #>
+		private AutomationPeer OnCreateAutomationPeerOverride()
+		{
+			return null;
+		}
+		
+		private string GetAccessibilityInnerTextOverride()
+		{
+			return null;
+		}
+#endif
+
+		protected virtual AutomationPeer OnCreateAutomationPeer()
+		{
+			if (OnCreateAutomationPeerOverride() is AutomationPeer automationPeer)
+			{
+				return automationPeer;
+			}
+
+			if (AutomationProperties.GetName(this) is string name && !string.IsNullOrEmpty(name))
+			{
+				return new FrameworkElementAutomationPeer(this);
+			}
+
+			return null;
+		}
+
+		public virtual string GetAccessibilityInnerText()
+		{
+			if (GetAccessibilityInnerTextOverride() is string innerText)
+			{
+				return innerText;
+			}
+
+			return null;
+		}
+
+		public AutomationPeer GetAutomationPeer()
+		{
+			if (_automationPeer == null)
+			{
+				_automationPeer = OnCreateAutomationPeer();
+			}
+
+			return _automationPeer;
+		}
+
+		public override void OnInitializeAccessibilityNodeInfo(AccessibilityNodeInfo info)
+		{
+			base.OnInitializeAccessibilityNodeInfo(info);
+			GetAutomationPeer()?.OnInitializeAccessibilityNodeInfo(info);
+		}
+
+		public override void SendAccessibilityEvent([GeneratedEnum] EventTypes eventType)
+		{
+			base.SendAccessibilityEvent(eventType);
+			GetAutomationPeer()?.SendAccessibilityEvent(eventType);
+		}
+		
+		#endregion
 	}
 }
 <#
@@ -898,7 +968,8 @@ namespace <#= mixin.NamespaceName #>
 		bool hasNewMaxWidthHeight = false,
 		bool overridesAttachedToWindow = false,
 		bool isFocusable = false,
-		bool overridesOnLayout = true
+		bool overridesOnLayout = true,
+		bool hasAutomationPeer = false
 	)
 	{
         _mixins.Add(
@@ -913,6 +984,7 @@ namespace <#= mixin.NamespaceName #>
 				IsUnoViewGroup = className == "FrameworkElement" ? "true" : "false",
 				OverridesOnLayout = overridesOnLayout ? "true" : "false",
 				IsFrameworkElement = className == "FrameworkElement" ? "true" : "false",
+				HasAutomationPeer = hasAutomationPeer ? "true" : "false",
 			}
 		);
     }
@@ -929,6 +1001,7 @@ namespace <#= mixin.NamespaceName #>
 		public string IsUnoViewGroup;
 		public string OverridesOnLayout;
 		public string IsFrameworkElement;
+		public string HasAutomationPeer;
 	}
 
 	private List<MixinParams> _mixins = new List<MixinParams>();

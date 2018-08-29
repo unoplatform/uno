@@ -1,6 +1,7 @@
 ﻿#if !NET46 && !NETSTANDARD2_0
 using Uno.Extensions;
 using Uno.Diagnostics.Eventing;
+using Windows.UI.Xaml.Automation.Peers;
 using Windows.UI.Xaml.Media;
 using System;
 using System.Collections.Generic;
@@ -224,6 +225,23 @@ namespace Windows.UI.Xaml.Controls
 		{
 			return base.ToString() + ";Source={0}".InvariantCultureFormat(Source?.ToString() ?? "[null]");
 		}
+
+#if __ANDROID__ || __IOS__
+		private AutomationPeer OnCreateAutomationPeerOverride()
+		{
+			return new ImageAutomationPeer(this);
+		}
+
+		private string GetAccessibilityInnerTextOverride()
+		{
+			return null;
+		}
+#else
+		protected AutomationPeer OnCreateAutomationPeer()
+		{
+			return new ImageAutomationPeer(this);
+		}
+#endif
 
 		private partial class ImageLayouter : Layouter
 		{

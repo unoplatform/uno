@@ -3,8 +3,9 @@ using System.Drawing;
 using System.Linq;
 using Uno.Extensions;
 using Uno.UI;
+using Windows.UI.Xaml.Automation.Peers;
+using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
-using UIKit;
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -12,8 +13,11 @@ namespace Windows.UI.Xaml.Controls
 	{
 		public FlipViewItem()
 		{
-			
+		}
+
+		protected override AutomationPeer OnCreateAutomationPeer()
+		{
+			return new FlipViewItemAutomationPeer(this);
 		}
 	}
 }
-

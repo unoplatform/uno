@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using Windows.System;
+using Windows.UI.Xaml.Automation.Peers;
 using Windows.UI.Xaml.Controls.Primitives;
 using Windows.Foundation;
 using Windows.UI.Xaml.Media;
@@ -60,5 +61,10 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		partial void NavigatePartial();
+
+		protected override AutomationPeer OnCreateAutomationPeer()
+		{
+			return new HyperlinkButtonAutomationPeer(this);
+		}
 	}
 }

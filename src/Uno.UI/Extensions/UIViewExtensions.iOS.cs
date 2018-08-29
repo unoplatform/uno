@@ -197,7 +197,18 @@ namespace UIKit
 		/// <returns>A lazy enumerable of views</returns>
 		public static IEnumerable<UIView> EnumerateAllChildren(this UIView view, int maxDepth = 20)
 		{
-			return FindSubviews(view, _ => true, maxDepth);
+			foreach (var subview in view.Subviews)
+			{
+				yield return subview;
+
+				if (maxDepth > 0)
+				{
+					foreach (var subResult in subview.EnumerateAllChildren(maxDepth - 1))
+					{
+						yield return subResult;
+					}
+				}
+			}
 		}
 
 		public static IEnumerable<T> FindSubviewsOfType<T>(this UIView view, int maxDepth = 20) where T : class

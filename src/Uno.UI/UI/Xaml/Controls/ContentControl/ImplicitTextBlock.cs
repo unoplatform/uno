@@ -1,7 +1,7 @@
-﻿#if IS_UNO && !NET46
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using Windows.UI.Xaml.Automation;
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -15,7 +15,11 @@ namespace Windows.UI.Xaml.Controls
 	[Data.Bindable]
 	public partial class ImplicitTextBlock : TextBlock
 	{
-		public ImplicitTextBlock() { }
+		public ImplicitTextBlock(DependencyObject parent)
+		{
+			// Propagate the parent's (ContentPresenter or ContentControl) AutomationProperties.AccessibilityView to ImplicitTextBlock once.
+			var accessibilityView = AutomationProperties.GetAccessibilityView(parent);
+			AutomationProperties.SetAccessibilityView(this, accessibilityView);
+		}
 	}
 }
-#endif

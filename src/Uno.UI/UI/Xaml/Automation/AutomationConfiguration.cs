@@ -13,6 +13,6 @@ namespace Windows.UI.Xaml.Automation
 		/// Indicates if Accessibility features, such as VoiceOver/TalkBack, are enabled.
 		/// True by default, set this to False if you need to override certain Accessibility features for things like UI Automation
 		/// </summary>
-		public static bool IsAccessibilityEnabled { get; set; }
+		public static bool IsAccessibilityEnabled { get; set; } = true;
 	}
 }

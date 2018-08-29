@@ -65,14 +65,6 @@ namespace Windows.UI.Xaml.Automation
 		#endif
 		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
 		[global::Uno.NotImplemented]
-		public static global::Windows.UI.Xaml.DependencyProperty LabeledByProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.RegisterAttached(
-			"LabeledBy", typeof(global::Windows.UI.Xaml.UIElement), 
-			typeof(global::Windows.UI.Xaml.Automation.AutomationProperties), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.UIElement)));
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
-		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty LiveSettingProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.RegisterAttached(
 			"LiveSetting", typeof(global::Windows.UI.Xaml.Automation.Peers.AutomationLiveSetting), 
@@ -94,14 +86,6 @@ namespace Windows.UI.Xaml.Automation
 			"ControlledPeers", typeof(global::System.Collections.Generic.IList<global::Windows.UI.Xaml.UIElement>), 
 			typeof(global::Windows.UI.Xaml.Automation.AutomationProperties), 
 			new FrameworkPropertyMetadata(default(global::System.Collections.Generic.IList<global::Windows.UI.Xaml.UIElement>)));
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
-		[global::Uno.NotImplemented]
-		public static global::Windows.UI.Xaml.DependencyProperty AccessibilityViewProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.RegisterAttached(
-			"AccessibilityView", typeof(global::Windows.UI.Xaml.Automation.Peers.AccessibilityView), 
-			typeof(global::Windows.UI.Xaml.Automation.AutomationProperties), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Automation.Peers.AccessibilityView)));
 		#endif
 		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
 		[global::Uno.NotImplemented]
@@ -153,14 +137,6 @@ namespace Windows.UI.Xaml.Automation
 		#endif
 		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
 		[global::Uno.NotImplemented]
-		public static global::Windows.UI.Xaml.DependencyProperty LocalizedControlTypeProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.RegisterAttached(
-			"LocalizedControlType", typeof(string), 
-			typeof(global::Windows.UI.Xaml.Automation.AutomationProperties), 
-			new FrameworkPropertyMetadata(default(string)));
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
-		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty IsPeripheralProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.RegisterAttached(
 			"IsPeripheral", typeof(bool), 
@@ -188,14 +164,6 @@ namespace Windows.UI.Xaml.Automation
 		public static global::Windows.UI.Xaml.DependencyProperty FlowsToProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.RegisterAttached(
 			"FlowsTo", typeof(global::System.Collections.Generic.IList<global::Windows.UI.Xaml.DependencyObject>), 
-			typeof(global::Windows.UI.Xaml.Automation.AutomationProperties), 
-			new FrameworkPropertyMetadata(default(global::System.Collections.Generic.IList<global::Windows.UI.Xaml.DependencyObject>)));
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
-		[global::Uno.NotImplemented]
-		public static global::Windows.UI.Xaml.DependencyProperty DescribedByProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.RegisterAttached(
-			"DescribedBy", typeof(global::System.Collections.Generic.IList<global::Windows.UI.Xaml.DependencyObject>), 
 			typeof(global::Windows.UI.Xaml.Automation.AutomationProperties), 
 			new FrameworkPropertyMetadata(default(global::System.Collections.Generic.IList<global::Windows.UI.Xaml.DependencyObject>)));
 		#endif
@@ -299,28 +267,7 @@ namespace Windows.UI.Xaml.Automation
 		}
 		#endif
 		// Forced skipping of method Windows.UI.Xaml.Automation.AutomationProperties.LocalizedControlTypeProperty.get
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
-		[global::Uno.NotImplemented]
-		public static string GetLocalizedControlType( global::Windows.UI.Xaml.DependencyObject element)
-		{
-			return (string)element.GetValue(LocalizedControlTypeProperty);
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
-		[global::Uno.NotImplemented]
-		public static void SetLocalizedControlType( global::Windows.UI.Xaml.DependencyObject element,  string value)
-		{
-			element.SetValue(LocalizedControlTypeProperty, value);
-		}
-		#endif
 		// Forced skipping of method Windows.UI.Xaml.Automation.AutomationProperties.DescribedByProperty.get
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
-		[global::Uno.NotImplemented]
-		public static global::System.Collections.Generic.IList<global::Windows.UI.Xaml.DependencyObject> GetDescribedBy( global::Windows.UI.Xaml.DependencyObject element)
-		{
-			return (global::System.Collections.Generic.IList<global::Windows.UI.Xaml.DependencyObject>)element.GetValue(DescribedByProperty);
-		}
-		#endif
 		// Forced skipping of method Windows.UI.Xaml.Automation.AutomationProperties.FlowsToProperty.get
 		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
 		[global::Uno.NotImplemented]
@@ -421,20 +368,6 @@ namespace Windows.UI.Xaml.Automation
 		}
 		#endif
 		// Forced skipping of method Windows.UI.Xaml.Automation.AutomationProperties.AccessibilityViewProperty.get
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
-		[global::Uno.NotImplemented]
-		public static global::Windows.UI.Xaml.Automation.Peers.AccessibilityView GetAccessibilityView( global::Windows.UI.Xaml.DependencyObject element)
-		{
-			return (global::Windows.UI.Xaml.Automation.Peers.AccessibilityView)element.GetValue(AccessibilityViewProperty);
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
-		[global::Uno.NotImplemented]
-		public static void SetAccessibilityView( global::Windows.UI.Xaml.DependencyObject element,  global::Windows.UI.Xaml.Automation.Peers.AccessibilityView value)
-		{
-			element.SetValue(AccessibilityViewProperty, value);
-		}
-		#endif
 		// Forced skipping of method Windows.UI.Xaml.Automation.AutomationProperties.ControlledPeersProperty.get
 		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
 		[global::Uno.NotImplemented]
@@ -549,20 +482,6 @@ namespace Windows.UI.Xaml.Automation
 		}
 		#endif
 		// Forced skipping of method Windows.UI.Xaml.Automation.AutomationProperties.LabeledByProperty.get
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
-		[global::Uno.NotImplemented]
-		public static global::Windows.UI.Xaml.UIElement GetLabeledBy( global::Windows.UI.Xaml.DependencyObject element)
-		{
-			return (global::Windows.UI.Xaml.UIElement)element.GetValue(LabeledByProperty);
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
-		[global::Uno.NotImplemented]
-		public static void SetLabeledBy( global::Windows.UI.Xaml.DependencyObject element,  global::Windows.UI.Xaml.UIElement value)
-		{
-			element.SetValue(LabeledByProperty, value);
-		}
-		#endif
 		// Forced skipping of method Windows.UI.Xaml.Automation.AutomationProperties.NameProperty.get
 		#if false || false || false || false
 		[global::Uno.NotImplemented]

@@ -256,5 +256,10 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		{
 			OnClick(args);
 		}
+
+		internal void AutomationPeerClick()
+		{
+			OnClick();
+		}
 	}
 }

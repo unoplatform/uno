@@ -19,6 +19,9 @@ using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Animation;
 using Uno.Logging;
 using Windows.Foundation;
+using Windows.UI.Xaml.Automation.Peers;
+using Windows.UI.Xaml.Automation.Provider;
+using Windows.UI.Xaml.Automation;
 
 <# 
 	foreach(var mixin in _mixins) { 
@@ -996,6 +999,70 @@ namespace <#= mixin.NamespaceName #>
 			// If all else fails, just return the string representation of the DP's value
 			return new global::Foundation.NSString(dpValue.ToString());
 		}
+		
+		#region AutomationPeer
+
+		private AutomationPeer _automationPeer;
+
+#if !<#= mixin.HasAutomationPeer #>
+		private AutomationPeer OnCreateAutomationPeerOverride()
+		{
+			return null;
+		}
+		
+		private string GetAccessibilityInnerTextOverride()
+		{
+			return null;
+		}
+#endif
+
+		protected virtual AutomationPeer OnCreateAutomationPeer()
+		{
+			if (OnCreateAutomationPeerOverride() is AutomationPeer automationPeer)
+			{
+				return automationPeer;
+			}
+
+			if (AutomationProperties.GetName(this) is string name && !string.IsNullOrEmpty(name))
+			{
+				return new FrameworkElementAutomationPeer(this);
+			}
+
+			return null;
+		}
+
+		public virtual string GetAccessibilityInnerText() // TODO: internal
+		{
+			if (GetAccessibilityInnerTextOverride() is string innerText)
+			{
+				return innerText;
+			}
+
+			return null;
+		}
+
+		public AutomationPeer GetAutomationPeer() // TODO: internal
+		{
+			if (_automationPeer == null)
+			{
+				_automationPeer = OnCreateAutomationPeer();
+			}
+
+			return _automationPeer;
+		}
+
+		public override bool AccessibilityActivate()
+		{
+			return GetAutomationPeer()?.AccessibilityActivate() ?? false;
+		}
+
+		public override bool IsAccessibilityElement
+		{
+			get => GetAutomationPeer()?.UpdateAccessibilityElement() ?? false;
+			set => base.IsAccessibilityElement = value;
+		}
+		
+		#endregion
 	}
 }
 <#
@@ -1011,7 +1078,8 @@ namespace <#= mixin.NamespaceName #>
 		bool isUIControl = false,
 		bool hasAttachedToWindow = true,
 		bool overridesAttachedToWindow = false,
-		bool isNewBackground = false
+		bool isNewBackground = false,
+		bool hasAutomationPeer = false
 	)
 	{
         _mixins.Add(
@@ -1025,6 +1093,7 @@ namespace <#= mixin.NamespaceName #>
 				OverridesAttachedToWindow = overridesAttachedToWindow ? "true" : "false",
 				IsNewBackground = isNewBackground ? "new" : "",
 				IsFrameworkElement = className == "FrameworkElement" ? "true" : "false",
+				HasAutomationPeer = hasAutomationPeer ? "true" : "false",
 			}
 		);
     }
@@ -1040,6 +1109,7 @@ namespace <#= mixin.NamespaceName #>
 		public string OverridesAttachedToWindow;
 		public string IsNewBackground;
 		public string IsFrameworkElement;
+		public string HasAutomationPeer;
 	}
 
 	private List<MixinParams> _mixins = new List<MixinParams>();
