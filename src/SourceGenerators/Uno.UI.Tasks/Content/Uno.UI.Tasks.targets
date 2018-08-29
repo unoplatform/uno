@@ -15,7 +15,7 @@
 	<Target Name="ResourcesGeneration"
 					BeforeTargets="PrepareForBuild;_CheckForContent"
 					DependsOnTargets="AssignLinkMetadata"
-					Condition="'$(BuildingInsideUnoSourceGenerator)' == ''">
+					Condition="'$(BuildingInsideUnoSourceGenerator)' == '' and '$(XamarinProjectType)'!=''">
 		<!-- String resources -->
 		<PropertyGroup>
 			<!-- LEGACY: Old projects define DefaultApplicationLanguage instead of DefaultLanguage -->
