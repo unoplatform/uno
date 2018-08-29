@@ -16,6 +16,7 @@ namespace Uno.UWPSyncGenerator
 	{
 		private const string DocPath = @"..\..\..\..\..\doc\articles";
 		private const string ImplementedViewsFileName = "implemented-views.md";
+		private const string ImplementedMembersPrefix = "implemented-view-members-";
 
 		private MarkdownStringBuilder _sb;
 		private List<PlatformSymbols<INamedTypeSymbol>> _views;
@@ -68,85 +69,96 @@ namespace Uno.UWPSyncGenerator
 
 					AppendTypes(ps => ps.ImplementedForMain == ImplementedFor.None, false);
 				}
-
-				using (_sb.Section("Implemented members by control"))
-				{
-					_sb.AppendParagraph("This section lists which individual properties, methods, and events are implemented and not implemented per control.");
-					foreach (var group in _viewsGrouped)
-					{
-						if (group.All(ps => ps.ImplementedForMain == ImplementedFor.None))
-						{
-							_sb.AppendComment($"No controls implemented in namespace {group.Key.ToDisplayString()}");
-							continue;
-						}
-
-						using (_sb.Section(group.Key.ToDisplayString()))
-						{
-							foreach (var view in group.Where(ps => ps.ImplementedForMain != ImplementedFor.None))
-							{
-
-								using (_sb.Section(view.UAPSymbol.Name))
-								{
-									//TODO: inherits from + (Uno inheritance if different)
-
-									_sb.AppendParagraph($"*Implemented for:* {ToDisplayString(view.ImplementedForMain)}");
-
-									var properties = view.UAPSymbol.GetMembers().OfType<IPropertySymbol>().Select(p => GetAllMatchingPropertyMember(view, p)).ToArray();
-									var methods = view.UAPSymbol.GetMembers().OfType<IMethodSymbol>().Where(m => m.MethodKind == MethodKind.Ordinary).Select(m => GetAllMatchingMethods(view, m)).ToArray();
-									var events = view.UAPSymbol.GetMembers().OfType<IEventSymbol>().Select(e => GetAllMatchingEvents(view, e)).ToArray();
-
-									AppendImplementedMembers("properties", properties);
-									AppendImplementedMembers("methods", methods);
-									AppendImplementedMembers("events", events);
-
-									_sb.AppendHorizontalRule();
-
-									AppendNotImplementedMembers("properties", properties);
-									AppendNotImplementedMembers("methods", methods);
-									AppendNotImplementedMembers("events", events);
-
-									_sb.AppendHorizontalRule();
-
-									void AppendImplementedMembers<T>(string memberType, IEnumerable<PlatformSymbols<T>> members) where T : ISymbol
-									{
-										var implemented = members.Where(ps => ps.ImplementedForMain != ImplementedFor.None);
-										if (implemented.None())
-										{
-											return;
-										}
-										_sb.AppendLine($"**Implemented {memberType}:** ");
-										foreach (var member in implemented)
-										{
-											var implementedQualifier = member.ImplementedForMain != ImplementedFor.Main ? $" *({ToDisplayString(member.ImplementedForMain)})* " : "";
-											_sb.Append($"{member.UAPSymbol.ToDisplayString(DisplayFormat)}{implementedQualifier}; ");
-										}
-										_sb.AppendParagraph();
-									}
-
-									void AppendNotImplementedMembers<T>(string memberType, IEnumerable<PlatformSymbols<T>> members) where T : ISymbol
-									{
-										var notImplemented = members.Where(ps => ps.ImplementedForMain != ImplementedFor.Main);
-										if (notImplemented.None())
-										{
-											return;
-										}
-										_sb.AppendLine($"**Not implemented {memberType}:** ");
-										foreach (var member in notImplemented)
-										{
-											var notImplementedQualifier = member.ImplementedForMain != ImplementedFor.None ? $" *({ToDisplayString(member.ImplementedForMain ^ ImplementedFor.Main)})* " : "";
-											_sb.Append($"{member.UAPSymbol.ToDisplayString(DisplayFormat)}{notImplementedQualifier}; ");
-										}
-										_sb.AppendParagraph();
-									}
-								}
-							}
-						}
-					}
-				}
 			}
 			using (var fileWriter = new StreamWriter(Path.Combine(DocPath, ImplementedViewsFileName)))
 			{
 				fileWriter.Write(_sb.ToString());
+			}
+
+			BuildMemberLists();
+
+			void BuildMemberLists()
+			{
+
+				foreach (var group in _viewsGrouped)
+				{
+					if (group.All(ps => ps.ImplementedForMain == ImplementedFor.None))
+					{
+						continue;
+					}
+
+					_sb = new MarkdownStringBuilder();
+
+					var currentNamespace = group.Key.ToDisplayString();
+					using (_sb.Section($"Implemented members by control - {currentNamespace}"))
+					{
+						_sb.AppendParagraph($"This document lists which individual properties, methods, and events are implemented and not implemented per control in the namespace {currentNamespace}.");
+
+						foreach (var view in group.Where(ps => ps.ImplementedForMain != ImplementedFor.None).OrderBy(ps => ps.UAPSymbol.Name))
+						{
+							using (_sb.Section(view.UAPSymbol.Name))
+							{
+								//TODO: inherits from + (Uno inheritance if different)
+
+								_sb.AppendParagraph($"*Implemented for:* {ToDisplayString(view.ImplementedForMain)}");
+
+								var properties = view.UAPSymbol.GetMembers().OfType<IPropertySymbol>().Select(p => GetAllMatchingPropertyMember(view, p)).ToArray();
+								var methods = view.UAPSymbol.GetMembers().OfType<IMethodSymbol>().Where(m => m.MethodKind == MethodKind.Ordinary).Select(m => GetAllMatchingMethods(view, m)).ToArray();
+								var events = view.UAPSymbol.GetMembers().OfType<IEventSymbol>().Select(e => GetAllMatchingEvents(view, e)).ToArray();
+
+								AppendImplementedMembers("properties", properties);
+								AppendImplementedMembers("methods", methods);
+								AppendImplementedMembers("events", events);
+
+								_sb.AppendHorizontalRule();
+
+								AppendNotImplementedMembers("properties", properties);
+								AppendNotImplementedMembers("methods", methods);
+								AppendNotImplementedMembers("events", events);
+
+								_sb.AppendHorizontalRule();
+
+								void AppendImplementedMembers<T>(string memberType, IEnumerable<PlatformSymbols<T>> members) where T : ISymbol
+								{
+									var implemented = members.Where(ps => ps.ImplementedForMain != ImplementedFor.None);
+									if (implemented.None())
+									{
+										return;
+									}
+									_sb.AppendLine($"**Implemented {memberType}:** ");
+									foreach (var member in implemented)
+									{
+										var implementedQualifier = member.ImplementedForMain != ImplementedFor.Main ? $" *({ToDisplayString(member.ImplementedForMain)})* " : "";
+										_sb.Append($"{member.UAPSymbol.ToDisplayString(DisplayFormat)}{implementedQualifier}; ");
+									}
+									_sb.AppendParagraph();
+								}
+
+								void AppendNotImplementedMembers<T>(string memberType, IEnumerable<PlatformSymbols<T>> members) where T : ISymbol
+								{
+									var notImplemented = members.Where(ps => ps.ImplementedForMain != ImplementedFor.Main);
+									if (notImplemented.None())
+									{
+										return;
+									}
+									_sb.AppendLine($"**Not implemented {memberType}:** ");
+									foreach (var member in notImplemented)
+									{
+										var notImplementedQualifier = member.ImplementedForMain != ImplementedFor.None ? $" *({ToDisplayString(member.ImplementedForMain ^ ImplementedFor.Main)})* " : "";
+										_sb.Append($"{member.UAPSymbol.ToDisplayString(DisplayFormat)}{notImplementedQualifier}; ");
+									}
+									_sb.AppendParagraph();
+								}
+							}
+						}
+					}
+
+
+					using (var fileWriter = new StreamWriter(Path.Combine(DocPath, GetImplementedMembersFilename(group.Key))))
+					{
+						fileWriter.Write(_sb.ToString());
+					}
+				}
 			}
 
 			void AppendTypes(Func<PlatformSymbols<INamedTypeSymbol>, bool> appendCondition, bool showLinks)
@@ -165,7 +177,7 @@ namespace Uno.UWPSyncGenerator
 						{
 							foreach (var type in group.Where(appendCondition).OrderBy(ps => ps.UAPSymbol.Name))
 							{
-								_sb.AppendRow(type.UAPSymbol.Name, MarkdownStringBuilder.Hyperlink("properties, methods, events", $"#{type.UAPSymbol.Name.ToLowerInvariant()}"), MarkdownStringBuilder.Hyperlink("uwp doc", @"https://docs.microsoft.com/en-us/uwp/api/" + type.UAPSymbol.ToDisplayString().ToLowerInvariant()));
+								_sb.AppendRow(type.UAPSymbol.Name, MarkdownStringBuilder.Hyperlink("properties, methods, events", $"{GetImplementedMembersFilename(group.Key)}#{type.UAPSymbol.Name.ToLowerInvariant()}"), MarkdownStringBuilder.Hyperlink("uwp doc", @"https://docs.microsoft.com/en-us/uwp/api/" + type.UAPSymbol.ToDisplayString().ToLowerInvariant()));
 							}
 						}
 					}
@@ -216,6 +228,11 @@ namespace Uno.UWPSyncGenerator
 			return types.GroupBy(t => t.UAPSymbol.ContainingNamespace)
 				.OrderBy(g => g.Key.ToDisplayString())
 				.ToArray();
+		}
+
+		private static string GetImplementedMembersFilename(INamespaceSymbol namespaceSymbol)
+		{
+			return $"{ImplementedMembersPrefix}{namespaceSymbol.ToDisplayString().ToLowerInvariant().Replace('.', '-')}.md";
 		}
 
 		private static SymbolDisplayFormat DisplayFormat { get; } = new SymbolDisplayFormat(SymbolDisplayGlobalNamespaceStyle.Omitted, SymbolDisplayTypeQualificationStyle.NameAndContainingTypes, SymbolDisplayGenericsOptions.IncludeTypeParameters, SymbolDisplayMemberOptions.IncludeParameters | SymbolDisplayMemberOptions.IncludeType, SymbolDisplayDelegateStyle.NameAndSignature, SymbolDisplayExtensionMethodStyle.Default, SymbolDisplayParameterOptions.IncludeType, SymbolDisplayPropertyStyle.NameOnly, SymbolDisplayLocalOptions.None, SymbolDisplayKindOptions.None, SymbolDisplayMiscellaneousOptions.UseSpecialTypes | SymbolDisplayMiscellaneousOptions.UseErrorTypeSymbolName);
