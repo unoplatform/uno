@@ -1,4 +1,4 @@
-# How Uno implements views
+# Pushing the right buttons: How Uno implements views
 
 
 In a [previous article](./201808-UnoUnderTheHoodIntro.md), I outlined the three main jobs of the [Uno Platform](https://platform.uno/) in order to run a UWP app on iOS, Android, and in the browser: 
@@ -13,7 +13,7 @@ In a [previous article](./201808-UnoUnderTheHoodIntro.md), I outlined the three 
 
 In this article I want to focus on that last point. How does Uno implement UWP's views? As a case study I'm going to use that humbly ubiquitous UI control, the button. 
 
-## Pushing the right buttons
+## The number goes up
 
 I present the simplest interactive application imaginable, one step above 'Hello World': 
 
@@ -67,16 +67,23 @@ namespace UnoExtTestbed
 
 I made a blank app using the [Uno Solution template](https://marketplace.visualstudio.com/items?itemName=nventivecorp.uno-platform-addin) and put this code on the main page. Whenever the [Button](https://docs.microsoft.com/en-us/uwp/api/windows.ui.xaml.controls.button) is clicked, the number goes up. Add a bit more chrome and we could have a [viral hit](https://en.wikipedia.org/wiki/Cow_Clicker). 
 
-Note that the XAML is useful here but not obligatory, either on UWP or Uno. We could have defined and created all our views in C#, had we really wanted to.  
-## Exhibit A
+Note that the XAML is useful here but not obligatory, either on UWP or Uno. We could have defined and created all our views in C#, had we really wanted to.
+
+## Exhibit A - the visual tree
 
 
-![Visualtree Uwp](Assets/Button/visualtree-uwp.png) ![Visualtree Android](Assets/Button/visualtree-android.png) ![Visualtree Ios](Assets/Button/visualtree-ios.png) ![Visualtree Wasm](Assets/Button/visualtree-wasm.png)
-*Visual tree information for UWP, Android, iOS, and WASM*
+![Visualtree Uwp](Assets/Button/visualtree-uwp.png)
+*Visual tree information for UWP*
+![Visualtree Android](Assets/Button/visualtree-android.png)
+*Visual tree information for Android*
+![Visualtree Ios](Assets/Button/visualtree-ios.png)
+*Visual tree information for iOS*
+![Visualtree Wasm](Assets/Button/visualtree-wasm.png)
+*Visual tree information for WASM*
 
 So what does that get us? You can see the resulting visual trees on each target platform. They're all substantially similar. The top-level wrapping varies a little, but inside we can see the `MainPage`, `StackPanel`, `TextBlock` and `Button` we defined in XAML. (The `Frame` is created in the stock `App.xaml.cs` code that comes with the project template.)  
 
-You might notice there are a couple of extra views inside the `Button` that weren't explicitly defined in the XAML. These are part of Button's [default template](https://msdn.microsoft.com/en-us/library/windows/apps/mt299109.aspx?f=255&MSPPError=-2147217396). If you're not familiar with UWP/WPF/Silverlight/etc's concept of templating, there's a lot to say about [the subject](https://docs.microsoft.com/en-us/windows/uwp/design/controls-and-patterns/control-templates), but the gist of it is that any view which inherits from `Control` is a tabula rasa, an empty vessel which will be filled with subviews as defined in its template. (Some of these subviews might be templated controls themselves.) 
+You might notice there are a couple of extra views inside the `Button` that weren't explicitly defined in the XAML. These are part of Button's [default template](https://msdn.microsoft.com/en-us/library/windows/apps/mt299109.aspx). If you're not familiar with UWP/WPF/Silverlight/etc's concept of templating, there's a lot to say about [the subject](https://docs.microsoft.com/en-us/windows/uwp/design/controls-and-patterns/control-templates), but the gist of it is that any view which inherits from `Control` is a tabula rasa, an empty vessel which will be filled with inner views as defined in its template. (Some of these child views might be templated controls themselves.) 
 
 How do we go from a logical tree defined in XAML to a native visual tree? 
 
@@ -115,7 +122,7 @@ In WebAssembly, for now the inheritance hierarchy is a bit simpler and `UIElemen
 
 ## Style points
 
-The code above nets us a very plain, workaday button, but we could easily spice it up. We set the `Content` property to a text string, but `Content` can be anything, even another view. Our button could be an image, a shape, or a complex visual hierarchy. It could even have another button inside of it. 
+The code above nets us a very plain, workaday button, but we could easily spice it up. We set the `Content` property to a text string, but `Content` can be anything, even another view. Our button could be an [image](https://github.com/nventive/Uno.Playground/blob/master/src/Uno.Playground.Shared/Samples/Image.xaml), a [shape](https://github.com/nventive/Uno.Playground/blob/master/src/Uno.Playground.Shared/Samples/Shapes.xaml), or a complex visual hierarchy. It could even have another button inside of it. 
 
 What if we want to go in the opposite direction? What if we want to abdicate control over our button's appearance entirely? 
 
