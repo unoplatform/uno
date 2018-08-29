@@ -32,7 +32,6 @@
 		<CallTarget Targets="BuildNuGetPackage" Condition="'$(Configuration)'=='Release'" />
 		<CallTarget Targets="PublishVisx" Condition="'$(Configuration)'=='Release'" />
 		<CallTarget Targets="GenerateAPIDiff" Condition="'$(Configuration)'=='Release'" />
-		<CallTarget Targets="GenerateDoc" Condition="'$(Configuration)'=='Release'" />
 	</Target>
   
 	<Target Name="UpdateFileVersions">
