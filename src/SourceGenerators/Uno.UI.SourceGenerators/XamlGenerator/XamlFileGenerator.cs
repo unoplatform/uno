@@ -1835,6 +1835,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 		private void BuildExtendedProperties(IIndentedStringBuilder outerwriter, XamlObjectDefinition objectDefinition, bool useChildTypeForNamedElement = false, bool useGenericApply = false)
 		{
+			var objectUid = GetObjectUid(objectDefinition);
+
 			var extendedProperties = GetExtendedProperties(objectDefinition);
 			bool hasChildrenWithPhase = HasChildrenWithPhase(objectDefinition);
 
@@ -2058,7 +2060,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 								{
 									if (FindPropertyType(member.Member) != null)
 									{
-										BuildSetAttachedProperty(writer, closureName, member);
+										BuildSetAttachedProperty(writer, closureName, member, objectUid);
 									}
 									else if (FindEventType(member.Member) != null)
 									{
@@ -2183,18 +2185,18 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
                 name.Equals("AlignVerticalCenterWith");
         }
 
-        private void BuildSetAttachedProperty(IIndentedStringBuilder writer, string closureName, XamlMemberDefinition member)
-        {
-            writer.AppendLineInvariant(
+		private void BuildSetAttachedProperty(IIndentedStringBuilder writer, string closureName, XamlMemberDefinition member, string objectUid)
+		{
+			writer.AppendLineInvariant(
 				"{0}.Set{1}({3}, {2});",
 				GetGlobalizedTypeName(FindType(member.Member.DeclaringType).SelectOrDefault(t => t.ToDisplayString(), member.Member.DeclaringType.Name)),
-                member.Member.Name,
-                BuildLiteralValue(member),
-                closureName
-            );
-        }
+				member.Member.Name,
+				BuildLiteralValue(member, owner: member, objectUid: objectUid),
+				closureName
+			);
+		}
 
-        private XamlLazyApplyBlockIIndentedStringBuilder CreateApplyBlock(IIndentedStringBuilder writer, INamedTypeSymbol appliedType, out string closureName)
+		private XamlLazyApplyBlockIIndentedStringBuilder CreateApplyBlock(IIndentedStringBuilder writer, INamedTypeSymbol appliedType, out string closureName)
         {
             closureName = "c" + (_applyIndex++).ToString(CultureInfo.InvariantCulture);
 
@@ -2433,7 +2435,16 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
             {
                 //windows 10 localization concat the xUid Value with the member value (Text, Content, Header etc...)
                 var fullKey = objectUid + "." + memberName;
-                if (_resourceKeys.Any(k => k == fullKey))
+
+				if (owner != null && IsAttachedProperty(owner))
+				{
+					var declaringType = GetType(owner.Member.DeclaringType);
+					var ns = declaringType.ContainingNamespace.GetFullName();
+					var type = declaringType.Name;
+					fullKey = $"{objectUid}.[using:{ns}]{type}.{memberName}";
+				}
+
+				if (_resourceKeys.Any(k => k == fullKey))
                 {
                     return @"global::Windows.ApplicationModel.Resources.ResourceLoader.GetForCurrentView().GetString(""" + fullKey + @""")";
                 }
