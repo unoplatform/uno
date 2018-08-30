@@ -67,7 +67,7 @@ namespace UnoExtTestbed
 
 I made a blank app using the [Uno Solution template](https://marketplace.visualstudio.com/items?itemName=nventivecorp.uno-platform-addin) and put this code on the main page. Whenever the [Button](https://docs.microsoft.com/en-us/uwp/api/windows.ui.xaml.controls.button) is clicked, the number goes up. Add a bit more chrome and we could have a [viral hit](https://en.wikipedia.org/wiki/Cow_Clicker). 
 
-Note that the XAML is useful here but not obligatory, either on UWP or Uno. We could have defined and created all our views in C#, had we really wanted to.
+Note that the XAML is useful here but not obligatory, either on UWP or Uno. We could have defined and created all our views in C#, had we really wanted to. That flexibility is handy to have.
 
 ## Exhibit A - the visual tree
 
@@ -83,7 +83,7 @@ Note that the XAML is useful here but not obligatory, either on UWP or Uno. We c
 
 So what does that get us? You can see the resulting visual trees on each target platform. They're all substantially similar. The top-level wrapping varies a little, but inside we can see the `MainPage`, `StackPanel`, `TextBlock` and `Button` we defined in XAML. (The `Frame` is created in the stock `App.xaml.cs` code that comes with the project template.)  
 
-You might notice there are a couple of extra views inside the `Button` that weren't explicitly defined in the XAML. These are part of Button's [default template](https://msdn.microsoft.com/en-us/library/windows/apps/mt299109.aspx). If you're not familiar with UWP/WPF/Silverlight/etc's concept of templating, there's a lot to say about [the subject](https://docs.microsoft.com/en-us/windows/uwp/design/controls-and-patterns/control-templates), but the gist of it is that any view which inherits from `Control` is a tabula rasa, an empty vessel which will be filled with inner views as defined in its template. (Some of these child views might be templated controls themselves.) 
+You might notice there are a couple of extra views inside the `Button` that weren't explicitly defined in the XAML. These are part of Button's [default template](https://msdn.microsoft.com/en-us/library/windows/apps/mt299109.aspx). If you're not familiar with UWP/WPF/Silverlight/etc's concept of control templating, there's a lot to say about [the subject](https://docs.microsoft.com/en-us/windows/uwp/design/controls-and-patterns/control-templates), but the gist of it is that any view which inherits from `Control` is a tabula rasa, an empty vessel which will be filled with inner views as defined in its template. (Some of these child views might be templated controls themselves.) It's a powerful means to customise the look of a reusable control.
 
 How do we go from a logical tree defined in XAML to a native visual tree? 
 
@@ -114,6 +114,8 @@ In Uno.Android and Uno.iOS, any `UIElement` is an instance of the native base vi
 </Page>
 ````
 
+This is uniquely easy to do in Uno. We talk about 'leaving an escape hatch': the goal is 100% code reuse, but if you positively have to use a platform-specific feature or view library, the flexibility is there.
+
 But wait, what about `DependencyObject`? 
 
 Since it's an important part of the UWP contract, we didn't want to leave `DependencyObject` out of the picture, but we also have to be able to support `DependencyObjects` that aren't views at all. ([Brushes](https://docs.microsoft.com/en-us/windows/uwp/design/style/brushes) and [Transforms](https://docs.microsoft.com/en-us/windows/uwp/design/layout/transforms), to name just a few.) In Uno therefore `DependencyObject` is defined as an [interface](../articles/api-differences.md#dependencyobject-is-an-interface). It's a 'special' interface however: Uno's code generation automatically adds the backing methods when it finds a class like `MyDependencyObject : DependencyObject`, allowing code written for UWP to mostly 'just work.' I'll talk more about it in a future article on code generation in Uno.
@@ -141,7 +143,7 @@ Since Android's default button looks rather similar to UWP's, I'm going with a m
 ![Toggleswitch Android](Assets/Button/toggleswitch-android.jpg) ![Toggleswitch Ios](Assets/Button/toggleswitch-ios.jpg)
 *Uno's ToggleSwitch control on Android and iOS, using default and native styles.*
 
-The `ToggleSwitch` with the default style looks the same on all platforms, both statically and in motion. On Android and iOS, however, the `ToggleSwitch` with the `NativeDefaultToggleSwitch` style replicates the native toggle control of each platform. Of course you can still bind to its properties in XAML as you normally would. 
+The `ToggleSwitch` with the default style looks the same on all platforms, both statically and in motion. On Android and iOS, however, the `ToggleSwitch` with the `NativeDefaultToggleSwitch` style replicates the native toggle control of each platform. Of course you can still bind to its properties in XAML as you normally would. This is another powerful option to have: for some apps it makes sense to look as 'native' as possible, for others its desirable to have a rich, customised UI. You may even want to mix and match different approaches for different screens in your app. With Uno it's straightforward.
 
 ## What if I don't like buttons?
 
