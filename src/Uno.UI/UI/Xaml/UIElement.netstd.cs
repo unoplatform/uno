@@ -806,42 +806,99 @@ namespace Windows.UI.Xaml
 			return _children;
 		}
 
-		[global::Uno.NotImplemented]
-		public static global::Windows.UI.Xaml.RoutedEvent DoubleTappedEvent { get; } = new RoutedEvent();
-
-		[global::Uno.NotImplemented]
-		public static global::Windows.UI.Xaml.RoutedEvent TappedEvent { get; } = new RoutedEvent();
-
-		[global::Uno.NotImplemented]
-		public void AddHandler(global::Windows.UI.Xaml.RoutedEvent routedEvent, object handler, bool handledEventsToo)
+		private static Dictionary<RoutedEvent, string> RoutedEventNames = new Dictionary<RoutedEvent, string>
 		{
-			if (routedEvent == UIElement.TappedEvent)
-			{
-				var h = (TappedEventHandler)handler;
-				var pointerHandler = new PointerEventHandler((snd, e) => h(snd, new TappedRoutedEventArgs(e.GetCurrentPoint())));
+			// Add more events
+			{ PointerPressedEvent, "pointerdown" },
+			{ PointerReleasedEvent, "pointerup" },
+			{ PointerMovedEvent, "pointermove" },
+			{ PointerEnteredEvent, "pointerenter" },
+			{ PointerExitedEvent, "pointerleave" },
+			{ KeyDownEvent, "keydown" },
+			{ KeyUpEvent, "keyup" },
+			{ GotFocusEvent, "focus" },
+		};
 
-				this.PointerPressed += pointerHandler;
-			}
-			else if (routedEvent == UIElement.DoubleTappedEvent)
+		// We keep track of registered routed events to avoid registering the same one twice (mainly because RemoveHandler is not implemented)
+		private HashSet<RoutedEvent> _registeredRoutedEvents = new HashSet<RoutedEvent>();
+
+		partial void AddHandlerPartial(RoutedEvent routedEvent, object handler)
+		{
+			if (!_registeredRoutedEvents.Contains(routedEvent))
 			{
-				var h = (DoubleTappedEventHandler)handler;
-				var lastTapped = DateTimeOffset.MinValue.AddDays(2);
-				this.PointerPressed += (snd, e) =>
+				_registeredRoutedEvents.Add(routedEvent);
+
+				// TODO: Properly implement Tapped and DoubleTapped events,
+				// possibly in shared AddHandler implementation for all platforms
+				if (routedEvent == TappedEvent)
 				{
-					var now = DateTimeOffset.Now;
-					if (lastTapped.AddMilliseconds(250) < now)
+					var pointerHandler = new PointerEventHandler((snd, e) => RaiseEvent(TappedEvent, new TappedRoutedEventArgs(e.GetCurrentPoint())));
+
+					PointerPressed += pointerHandler;
+				}
+				else if (routedEvent == DoubleTappedEvent)
+				{
+					var lastTapped = DateTimeOffset.MinValue.AddDays(2);
+					PointerPressed += (snd, e) =>
 					{
-						h(this, new DoubleTappedRoutedEventArgs(e.GetCurrentPoint()));
-					}
-					else
+						var now = DateTimeOffset.Now;
+						if (lastTapped.AddMilliseconds(250) > now)
+						{
+							RaiseEvent(TappedEvent, new DoubleTappedRoutedEventArgs(e.GetCurrentPoint()));
+						}
+						else
+						{
+							lastTapped = now;
+						}
+					};
+				}
+				else if (RoutedEventNames.TryGetValue(routedEvent, out string eventName))
+				{
+					string eventFilterScript;
+					string eventExtractorScript;
+					Func<string, EventArgs> payloadConverter;
+
+					// TODO: How expensive is this?
+					switch (handler)
 					{
-						lastTapped = now;
+						case PointerEventHandler pointer:
+							eventFilterScript = (routedEvent == PointerPressedEvent || routedEvent == PointerReleasedEvent)
+								? leftPointerEventFilter
+								: null;
+							eventExtractorScript = pointerEventExtractor;
+							payloadConverter = PayloadToPointerArgs;
+							break;
+						case TappedEventHandler tapped:
+							eventFilterScript = leftPointerEventFilter;
+							eventExtractorScript = pointerEventExtractor;
+							payloadConverter = PayloadToTappedArgs;
+							break;
+						case DoubleTappedEventHandler doubleTapped:
+							eventFilterScript = leftPointerEventFilter;
+							eventExtractorScript = pointerEventExtractor;
+							payloadConverter = PayloadToTappedArgs;
+							break;
+						case KeyEventHandler key:
+							eventFilterScript = null;
+							eventExtractorScript = keyEventExtractor;
+							payloadConverter = PayloadToKeyArgs;
+							break;
+						default:
+							eventFilterScript = null;
+							eventExtractorScript = null;
+							payloadConverter = null;
+							break;
 					}
-				};
-			}
-			else
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.UIElement", "void UIElement.AddHandler(RoutedEvent routedEvent, object handler, bool handledEventsToo)");
+
+					RegisterEventHandler(
+						eventName,
+						new RoutedEventHandler((sender, args) => RaiseEvent(routedEvent, args)),
+						false,
+						eventFilterScript,
+						eventExtractorScript,
+						payloadConverter
+					);
+				}
 			}
 		}
 
@@ -851,7 +908,10 @@ namespace Windows.UI.Xaml
 		private const string pointerEventExtractor =
 			"evt ? \"\"+evt.pointerId+\";\"+evt.clientX+\";\"+evt.clientY+\";\"+(evt.ctrlKey?\"1\":\"0\")+\";\"+(evt.shiftKey?\"1\":\"0\")+\";\"+evt.button+\";\"+evt.pointerType : \"\"";
 
-		private EventArgs PayloadToPointerArgs(string payload)
+		private const string keyEventExtractor =
+			"(evt instanceof KeyboardEvent) ? evt.key : \"0\"";
+
+		private PointerRoutedEventArgs PayloadToPointerArgs(string payload)
 		{
 			var parts = payload?.Split(';');
 			if (parts?.Length != 7)
@@ -872,6 +932,7 @@ namespace Windows.UI.Xaml
 
 			var args = new PointerRoutedEventArgs(new Point(x, y))
 			{
+				OriginalSource = this,
 				KeyModifiers = keys,
 				Pointer = new Pointer(pointerId, type)
 			};
@@ -879,8 +940,7 @@ namespace Windows.UI.Xaml
 			return args;
 		}
 
-
-		private EventArgs PayloadToTappedArgs(string payload)
+		private TappedRoutedEventArgs PayloadToTappedArgs(string payload)
 		{
 			var parts = payload?.Split(';');
 			if (parts?.Length != 7)
@@ -897,10 +957,20 @@ namespace Windows.UI.Xaml
 
 			var args = new TappedRoutedEventArgs(new Point(x, y))
 			{
+				OriginalSource = this,
 				PointerDeviceType = type
 			};
 
 			return args;
+		}
+
+		private KeyRoutedEventArgs PayloadToKeyArgs(string payload)
+		{
+			return new KeyRoutedEventArgs
+			{
+				OriginalSource = this,
+				Key = System.VirtualKeyHelper.FromKey(payload),
+			};
 		}
 
 		private static PointerDeviceType ConvertPointerTypeString(string typeStr)

@@ -640,12 +640,12 @@ namespace Windows.UI.Xaml.Controls
 			if (newValue == FocusState.Unfocused)
 			{
 				OnLostFocus(eventArgs);
-				RaiseLostFocus(eventArgs);
+				RaiseEvent(LostFocusEvent, eventArgs);
 			}
 			else
 			{
 				OnGotFocus(eventArgs);
-				RaiseGotFocus(eventArgs);
+				RaiseEvent(GotFocusEvent, eventArgs);
 			}
 		}
 

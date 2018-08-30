@@ -468,7 +468,7 @@ namespace Windows.UI.Xaml
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.CacheMode)));
 		#endif
 		// Skipping already declared property ClipProperty
-		#if __ANDROID__ || __IOS__ || NET46 || false || __MACOS__
+		#if false || false || false || false || false
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.RoutedEvent DoubleTappedEvent
 		{
@@ -518,7 +518,7 @@ namespace Windows.UI.Xaml
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if false || false || false || false || false
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.RoutedEvent HoldingEvent
 		{
@@ -560,7 +560,7 @@ namespace Windows.UI.Xaml
 			typeof(global::Windows.UI.Xaml.UIElement), 
 			new FrameworkPropertyMetadata(default(bool)));
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if false || false || false || false || false
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.RoutedEvent KeyUpEvent
 		{
@@ -628,7 +628,7 @@ namespace Windows.UI.Xaml
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if false || false || false || false || false
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.RoutedEvent PointerCanceledEvent
 		{
@@ -638,7 +638,7 @@ namespace Windows.UI.Xaml
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if false || false || false || false || false
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.RoutedEvent PointerCaptureLostEvent
 		{
@@ -649,7 +649,7 @@ namespace Windows.UI.Xaml
 		}
 		#endif
 		// Skipping already declared property PointerCapturesProperty
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if false || false || false || false || false
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.RoutedEvent PointerEnteredEvent
 		{
@@ -659,7 +659,7 @@ namespace Windows.UI.Xaml
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if false || false || false || false || false
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.RoutedEvent PointerExitedEvent
 		{
@@ -669,7 +669,7 @@ namespace Windows.UI.Xaml
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if false || false || false || false || false
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.RoutedEvent PointerMovedEvent
 		{
@@ -679,7 +679,7 @@ namespace Windows.UI.Xaml
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if false || false || false || false || false
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.RoutedEvent PointerPressedEvent
 		{
@@ -689,7 +689,7 @@ namespace Windows.UI.Xaml
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if false || false || false || false || false
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.RoutedEvent PointerReleasedEvent
 		{
@@ -727,7 +727,7 @@ namespace Windows.UI.Xaml
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || false || __MACOS__
+		#if false || false || false || false || false
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.RoutedEvent TappedEvent
 		{
@@ -745,7 +745,7 @@ namespace Windows.UI.Xaml
 			typeof(global::Windows.UI.Xaml.UIElement), 
 			new FrameworkPropertyMetadata(default(bool)));
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if false || false || false || false || false
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.RoutedEvent KeyDownEvent
 		{
@@ -1101,14 +1101,14 @@ namespace Windows.UI.Xaml
 		// Skipping already declared method Windows.UI.Xaml.UIElement.CapturePointer(Windows.UI.Xaml.Input.Pointer)
 		// Skipping already declared method Windows.UI.Xaml.UIElement.ReleasePointerCapture(Windows.UI.Xaml.Input.Pointer)
 		// Skipping already declared method Windows.UI.Xaml.UIElement.ReleasePointerCaptures()
-		#if __ANDROID__ || __IOS__ || NET46 || false || __MACOS__
+		#if false || false || false || false || false
 		[global::Uno.NotImplemented]
 		public  void AddHandler( global::Windows.UI.Xaml.RoutedEvent routedEvent,  object handler,  bool handledEventsToo)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.UIElement", "void UIElement.AddHandler(RoutedEvent routedEvent, object handler, bool handledEventsToo)");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if false || false || false || false || false
 		[global::Uno.NotImplemented]
 		public  void RemoveHandler( global::Windows.UI.Xaml.RoutedEvent routedEvent,  object handler)
 		{
@@ -1443,7 +1443,7 @@ namespace Windows.UI.Xaml
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || false || __MACOS__
+		#if false || false || false || false || false
 		[global::Uno.NotImplemented]
 		public  event global::Windows.UI.Xaml.Input.KeyEventHandler KeyDown
 		{
@@ -1459,7 +1459,7 @@ namespace Windows.UI.Xaml
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || false || __MACOS__
+		#if false || false || false || false || false
 		[global::Uno.NotImplemented]
 		public  event global::Windows.UI.Xaml.Input.KeyEventHandler KeyUp
 		{

@@ -1,4 +1,4 @@
-﻿#if NET46 || NETSTANDARD2_0
+﻿﻿#if NET46 || NETSTANDARD2_0
 #pragma warning disable CS0067
 #endif
 
@@ -43,190 +43,233 @@ namespace Windows.UI.Xaml
 		/// </summary>
 		internal bool ClipChildrenToBounds { get; set; } = true;
 
-		public event RoutedEventHandler LostFocus;
-		internal void RaiseLostFocus(RoutedEventArgs args) => LostFocus?.Invoke(this, args);
+		#region Routed Events
 
-		public event RoutedEventHandler GotFocus;
-		internal void RaiseGotFocus(RoutedEventArgs args) => GotFocus?.Invoke(this, args);
+		public static RoutedEvent PointerPressedEvent { get; } = new RoutedEvent();
+		public static RoutedEvent PointerReleasedEvent { get; } = new RoutedEvent();
+		public static RoutedEvent PointerEnteredEvent { get; } = new RoutedEvent();
+		public static RoutedEvent PointerExitedEvent { get; } = new RoutedEvent();
+		public static RoutedEvent PointerMovedEvent { get; } = new RoutedEvent();
+		public static RoutedEvent PointerCanceledEvent { get; } = new RoutedEvent();
+		public static RoutedEvent PointerCaptureLostEvent { get; } = new RoutedEvent();
+		public static RoutedEvent TappedEvent { get; } = new RoutedEvent();
+		public static RoutedEvent DoubleTappedEvent { get; } = new RoutedEvent();
+		public static RoutedEvent KeyDownEvent { get; } = new RoutedEvent();
+		public static RoutedEvent KeyUpEvent { get; } = new RoutedEvent();
+		internal static RoutedEvent GotFocusEvent { get; } = new RoutedEvent();
+		internal static RoutedEvent LostFocusEvent { get; } = new RoutedEvent();
+
+		private struct RoutedEventHandlerInfo
+		{
+			public RoutedEventHandlerInfo(object handler, bool handledEventsToo)
+			{
+				Handler = handler;
+				HandledEventsToo = handledEventsToo;
+			}
+
+			public object Handler { get; }
+			public bool HandledEventsToo { get; }
+		}
+
+		private Dictionary<RoutedEvent, List<RoutedEventHandlerInfo>> _eventHandlerStore = new Dictionary<RoutedEvent, List<RoutedEventHandlerInfo>>();
+
+		public event RoutedEventHandler LostFocus
+		{
+			add { AddHandler(LostFocusEvent, value, false); }
+			remove { RemoveHandler(LostFocusEvent, value); }
+		}
+
+		public event RoutedEventHandler GotFocus
+		{
+			add { AddHandler(GotFocusEvent, value, false); }
+			remove { RemoveHandler(GotFocusEvent, value); }
+		}
 
 		public event DoubleTappedEventHandler DoubleTapped
-#if XAMARIN
 		{
-			add { RegisterDoubleTapped(value); }
-			remove { UnregisterDoubleTapped(value); }
+			add { AddHandler(DoubleTappedEvent, value, false); }
+			remove { RemoveHandler(DoubleTappedEvent, value); }
 		}
-#else
-		;
-#endif
 
 #pragma warning disable 67 // Unused member
 		public event PointerEventHandler PointerCanceled
-#if XAMARIN_ANDROID
 		{
-			add { RegisterPointerCanceled(value); }
-			remove { UnregisterPointerCanceled(value); }
+			add { AddHandler(PointerCanceledEvent, value, false); }
+			remove { RemoveHandler(PointerCanceledEvent, value); }
 		}
-#else
-		;
-#endif
 #pragma warning restore 67 // Unused member
 
-#pragma warning disable 67 // Unused member
-		[NotImplemented]
-		public event global::Windows.UI.Xaml.Input.PointerEventHandler PointerCaptureLost;
-#pragma warning restore 67 // Unused member
-
-#pragma warning disable CS0067 // The event is never used
-		public event PointerEventHandler PointerEntered
-#pragma warning restore CS0067 // The event is never used
-
-#if XAMARIN_ANDROID
+		public event PointerEventHandler PointerCaptureLost
 		{
-			add { RegisterPointerEntered(value); }
-			remove { UnregisterPointerEntered(value); }
-		}
-#elif __WASM__
-		{
-			add => RegisterEventHandler(
-				"pointerenter", 
-				value, 
-				eventExtractorScript: pointerEventExtractor, 
-				payloadConverter: PayloadToPointerArgs);
-			remove => UnregisterEventHandler("pointerenter", value);
-		}
-#else
-		;
-#endif
-
-#pragma warning disable CS0067 // The event is never used
-		public event PointerEventHandler PointerExited
-#pragma warning restore CS0067 // The event is never used
-#if XAMARIN_ANDROID
-		{
-			add { RegisterPointerExited(value); }
-			remove { UnregisterPointerExited(value); }
-		}
-#elif __WASM__
-		{
-			add => RegisterEventHandler(
-				"pointerleave", 
-				value, 
-				eventExtractorScript: pointerEventExtractor, 
-				payloadConverter: PayloadToPointerArgs);
-			remove => UnregisterEventHandler("pointerleave", value);
-		}
-#else
-		;
-#endif
-
-#pragma warning disable CS0067 // The event is never used
-		public event PointerEventHandler PointerMoved
-#pragma warning restore CS0067 // The event is never used
-#if XAMARIN_ANDROID
-		{
-			add { RegisterPointerMoved(value); }
-			remove { UnregisterPointerMoved(value); }
-		}
-#elif __WASM__
-		{
-			add => RegisterEventHandler(
-				"pointermove", 
-				value, 
-				eventExtractorScript: pointerEventExtractor, 
-				payloadConverter: PayloadToPointerArgs);
-			remove => UnregisterEventHandler("pointermove", value);
-		}
-#else
-		;
-#endif
-
-#pragma warning disable CS0067 // The event is never used
-		public event PointerEventHandler PointerPressed
-#pragma warning restore CS0067 // The event is never used
-#if XAMARIN_ANDROID
-		{
-			add { RegisterPointerPressed(value); }
-			remove { UnregisterPointerPressed(value); }
-		}
-#elif __WASM__
-		{
-			add => RegisterEventHandler(
-				"pointerdown", 
-				value, 
-				eventFilterScript: leftPointerEventFilter, 
-				eventExtractorScript: pointerEventExtractor, 
-				payloadConverter: PayloadToPointerArgs);
-			remove => UnregisterEventHandler("pointerdown", value);
-		}
-#else
-		;
-#endif
-
-#pragma warning disable CS0067 // The event is never used
-		public event PointerEventHandler PointerReleased
-#pragma warning restore CS0067 // The event is never used
-#if XAMARIN_ANDROID
-		{
-			add { RegisterPointerReleased(value); }
-			remove { UnregisterPointerReleased(value); }
-		}
-#elif __WASM__
-		{
-			add => RegisterEventHandler(
-				"pointerup", 
-				value, 
-				eventFilterScript: leftPointerEventFilter, 
-				eventExtractorScript: pointerEventExtractor, 
-				payloadConverter: PayloadToPointerArgs);
-			remove => UnregisterEventHandler("pointerup", value);
-		}
-#else
-		;
-#endif
-
-		//public event PointerEventHandler PointerWheelChanged;
-
-		public event TappedEventHandler Tapped
-#if XAMARIN
-		{
-			add { RegisterTapped(value); }
-			remove { UnregisterTapped(value); }
-		}
-#elif __WASM__
-		{
-			add => RegisterEventHandler(
-				"pointerup",
-				value,
-				eventFilterScript: leftPointerEventFilter,
-				eventExtractorScript: pointerEventExtractor,
-				payloadConverter: PayloadToTappedArgs);
-			remove => UnregisterEventHandler("pointerup", value);
-		}
-#else
-		;
-#endif
-
-#if __WASM__
-		public event KeyEventHandler KeyDown
-		{
-			add => RegisterEventHandler(
-				"keydown",
-				value,
-				eventExtractorScript: "(evt instanceof KeyboardEvent) ? evt.key : \"0\"",
-				payloadConverter: keyStr => new KeyRoutedEventArgs { Key = VirtualKeyHelper.FromKey(keyStr), OriginalSource = this});
-			remove => UnregisterEventHandler("keydown", value);
+			add { AddHandler(PointerCaptureLostEvent, value, false); }
+			remove { RemoveHandler(PointerCaptureLostEvent, value); }
 		}
 		
-		public event KeyEventHandler KeyUp
+		public event PointerEventHandler PointerEntered
 		{
-			add => RegisterEventHandler(
-				"keyup",
-				value,
-				eventExtractorScript: "(evt instanceof KeyboardEvent) ? evt.key : \"0\"",
-				payloadConverter: keyStr => new KeyRoutedEventArgs {Key = VirtualKeyHelper.FromKey(keyStr), OriginalSource = this});
-			remove => UnregisterEventHandler("keyup", value);
+			add { AddHandler(PointerEnteredEvent, value, false); }
+			remove { RemoveHandler(PointerEnteredEvent, value); }
 		}
+		
+		public event PointerEventHandler PointerExited
+		{
+			add { AddHandler(PointerExitedEvent, value, false); }
+			remove { RemoveHandler(PointerExitedEvent, value); }
+		}
+
+		public event PointerEventHandler PointerMoved
+		{
+			add { AddHandler(PointerMovedEvent, value, false); }
+			remove { RemoveHandler(PointerMovedEvent, value); }
+		}
+
+		public event PointerEventHandler PointerPressed
+		{
+			add { AddHandler(PointerPressedEvent, value, false); }
+			remove { RemoveHandler(PointerPressedEvent, value); }
+		}
+		
+		public event PointerEventHandler PointerReleased
+		{
+			add { AddHandler(PointerReleasedEvent, value, false); }
+			remove { RemoveHandler(PointerReleasedEvent, value); }
+		}
+
+		public event TappedEventHandler Tapped
+		{
+			add { AddHandler(TappedEvent, value, false); }
+			remove { RemoveHandler(TappedEvent, value); }
+		}
+
+#if __MACOS__
+		public new event KeyEventHandler KeyDown
+#else
+		public event KeyEventHandler KeyDown
 #endif
+		{
+			add { AddHandler(KeyDownEvent, value, false); }
+			remove { RemoveHandler(KeyDownEvent, value); }
+		}
+
+#if __MACOS__
+		public new event KeyEventHandler KeyUp
+#else
+		public event KeyEventHandler KeyUp
+#endif
+		{
+			add { AddHandler(KeyUpEvent, value, false); }
+			remove { RemoveHandler(KeyUpEvent, value); }
+		}
+
+		public void AddHandler(RoutedEvent routedEvent, object handler, bool handledEventsToo)
+		{
+			var handlers = _eventHandlerStore.FindOrCreate(routedEvent, () => new List<RoutedEventHandlerInfo>());
+			handlers.Add(new RoutedEventHandlerInfo(handler, handledEventsToo));
+
+			AddHandlerPartial(routedEvent, handler);
+		}
+
+		partial void AddHandlerPartial(RoutedEvent routedEvent, object handler);
+
+		public void RemoveHandler(RoutedEvent routedEvent, object handler)
+		{
+			if (_eventHandlerStore.TryGetValue(routedEvent, out List<RoutedEventHandlerInfo> handlers))
+			{
+				handlers.Remove(handlerInfo => handlerInfo.Handler == handler);
+			}
+
+			RemoveHandlerPartial(routedEvent, handler);
+		}
+
+		partial void RemoveHandlerPartial(RoutedEvent routedEvent, object handler);
+
+		internal void RaiseEvent(RoutedEvent routedEvent, RoutedEventArgs args)
+		{
+			if (_eventHandlerStore.TryGetValue(routedEvent, out List<RoutedEventHandlerInfo> handlers))
+			{
+				foreach (var handler in handlers)
+				{
+					if (!IsHandled(args) || handler.HandledEventsToo)
+					{
+						InvokeHandler(handler.Handler, args);
+					}
+				}
+
+				var isHandled = IsHandled(args);
+
+				// We don't need to manually bubble up non-handled events on the managed side.
+				// We already take care to bubble up non-handled events on the native side:
+				// - Android: UnoViewGroup.java -> Return false in dispatchTouchEvent
+				// - iOS: UIElement.iOS.cs -> Call base.TouchesBegan, base.TouchesEnded, etc.
+				// - Wasm: WindowManager.ts -> Don't call event.stopPropagation()
+				// In the future, we might decide to stop bubbling up events on the native side, and do it all on the managed side instead.
+				// The first element hit by hit-testing would natively handle the event (stop native bubble up),
+				// become the OriginalSource of the associated RoutedEventArgs, and we would manually bubble up the event on the managed side.
+				var bubblesUpNatively = !isHandled;
+
+				// According to Microsoft, handled events shouldn't bubble up:
+				// https://docs.microsoft.com/en-us/windows/uwp/xaml-platform/events-and-routed-events-overview#the-handled-property
+				// However, an ancestor might have used AddHandler(..., handledEventsToo: true), in which case we need to route the event to it.
+				// Here, we systematically bubble up events in case an ancestor used AddHandler(..., handledEventsToo: true).
+				// This is a naive approach, and it's probably expensive. We should find a better solution.
+				var bubbleUpHandledEventsToo = true;
+
+				if (!bubblesUpNatively && (!isHandled || bubbleUpHandledEventsToo))
+				{
+					// We bubble up the event
+#if __IOS__ || __ANDROID__
+					var parent = this.FindFirstParent<UIElement>();
+#else
+					var parent = this.GetParent() as UIElement;
+#endif
+					parent?.RaiseEvent(routedEvent, args);
+				}
+			}
+		}
+
+		private static bool IsHandled(RoutedEventArgs args)
+		{
+			// TODO: WPF reads Handled directly on RoutedEventArgs. 
+			switch (args)
+			{
+				case PointerRoutedEventArgs pointer:
+					return pointer.Handled;
+				case TappedRoutedEventArgs tapped:
+					return tapped.Handled;
+				case DoubleTappedRoutedEventArgs doubleTapped:
+					return doubleTapped.Handled;
+				case KeyRoutedEventArgs key:
+					return key.Handled;
+				default:
+					return false;
+			}
+		}
+
+		private void InvokeHandler(object handler, RoutedEventArgs args)
+		{
+			// TODO: WPF calls a virtual RoutedEventArgs.InvokeEventHandler(Delegate handler, object target) method,
+			// instead of going through all possible cases like we do here.
+			switch (handler)
+			{
+				case RoutedEventHandler routedEventHandler:
+					routedEventHandler(this, args);
+					break;
+				case PointerEventHandler pointerEventHandler:
+					pointerEventHandler(this, (PointerRoutedEventArgs)args);
+					break;
+				case TappedEventHandler tappedEventHandler:
+					tappedEventHandler(this, (TappedRoutedEventArgs)args);
+					break;
+				case DoubleTappedEventHandler doubleTappedEventHandler:
+					doubleTappedEventHandler(this, (DoubleTappedRoutedEventArgs)args);
+					break;
+				case KeyEventHandler keyEventHandler:
+					keyEventHandler(this, (KeyRoutedEventArgs)args);
+					break;
+			}
+		}
+
+#endregion
 
 		protected internal bool IsPointerPressed { get; set; }
 
@@ -497,9 +540,9 @@ namespace Windows.UI.Xaml
 #if __IOS__ || __ANDROID__
 			Dispatcher.RunAsync(Core.CoreDispatcherPriority.Normal, () =>
 			{
-		// This currently doesn't support nested scrolling.
-		// This currently doesn't support BringIntoViewOptions.AnimationDesired.
-		var scrollContentPresenter = this.FindFirstParent<IScrollContentPresenter>();
+				// This currently doesn't support nested scrolling.
+				// This currently doesn't support BringIntoViewOptions.AnimationDesired.
+				var scrollContentPresenter = this.FindFirstParent<IScrollContentPresenter>();
 				scrollContentPresenter?.MakeVisible(this, options.TargetRect ?? Rect.Empty);
 			});
 #endif

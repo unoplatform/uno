@@ -165,7 +165,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			// This is a naive implementation that doesn't consider ClickMode or the distance traveled between press and release.
 			// Will be implemented properly when pointer logic is moved to UIElement.
 			// It is important that Tapped is raised after Click.
-			RaiseTapped(new TappedRoutedEventArgs());
+			RaiseEvent(TappedEvent, new TappedRoutedEventArgs());
 		}
 
 		protected override void OnPointerPressed(PointerRoutedEventArgs args)
