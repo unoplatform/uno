@@ -95,6 +95,7 @@
     <None Remove="XamlReaderTests\When_TextBlock_FontFamily.xamltest" />
     <None Remove="XamlReaderTests\When_TextBlock_ImplicitRun.xamltest" />
     <None Remove="XamlReaderTests\When_TextBlock_NestedSpan.xamltest" />
+    <None Remove="XamlReaderTests\When_TypeConverters.xamltest" />
     <None Remove="XamlReaderTests\When_UserControl_With_Content.xamltest" />
     <None Remove="XamlReaderTests\When_UserControl_With_Grid.xamltest" />
     <None Remove="XamlReaderTests\When_VisualStateGroup.xamltest" />
