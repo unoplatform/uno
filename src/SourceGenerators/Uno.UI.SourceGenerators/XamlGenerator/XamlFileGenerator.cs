@@ -2488,6 +2488,9 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				case "System.Uri":
 					return "new System.Uri(\"" + memberValue + "\")";
 
+				case "System.Type":
+					return $"typeof({GetGlobalizedTypeName(GetType(memberValue).ToDisplayString())})";
+
 				case XamlConstants.Types.Geometry:
 					if (_isWasm)
 					{
