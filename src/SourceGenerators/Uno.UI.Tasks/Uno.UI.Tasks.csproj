@@ -74,6 +74,9 @@
     <Compile Include="..\..\Uno.UWP\ApplicationModel\Resources\Core\ResourceQualifier.cs">
       <Link>Resources\ResourceQualifier.cs</Link>
     </Compile>
+    <Compile Include="..\..\Uno.UI\Services\AndroidResourceNameEncoder.cs">
+      <Link>Resources\AndroidResourceNameEncoder.cs</Link>
+    </Compile>
     <Compile Include="Assets\RetargetAssets.cs" />
     <Compile Include="Helpers\AnalyzerSuppressions.cs" />
     <Compile Include="Helpers\PathHelper.cs" />
