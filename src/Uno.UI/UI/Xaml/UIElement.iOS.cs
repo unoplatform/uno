@@ -38,18 +38,6 @@ namespace Windows.UI.Xaml
 
 		internal bool IsPointerCaptured { get; set; }
 
-		#region Logs
-		private static readonly ILogger _log = typeof(UIElement).Log();
-		private static readonly Action LogRegisterPointerCanceledNotImplemented = Actions.CreateOnce(() => _log.Error("Unable to RegisterPointerCanceled on UIElement for iOS. Not Implemented."));
-		private static readonly Action LogUnregisterPointerCanceledNotImplemented = Actions.CreateOnce(() => _log.Error("Unable to UnregisterPointerCanceled on UIElement for iOS. Not Implemented."));
-		private static readonly Action LogRegisterPointerExitedNotImplemented = Actions.CreateOnce(() => _log.Error("Unable to RegisterPointerExited on UIElement for iOS. Not Implemented."));
-		private static readonly Action LogUnRegisterPointerExitedNotImplemented = Actions.CreateOnce(() => _log.Error("Unable to UnregisterPointerExited on UIElement for iOS. Not Implemented."));
-		private static readonly Action LogRegisterPointerPressedNotImplemented = Actions.CreateOnce(() => _log.Error("Unable to RegisterPointerPressed on UIElement for iOS. Not Implemented."));
-		private static readonly Action LogUnRegisterPointerPressedNotImplemented = Actions.CreateOnce(() => _log.Error("Unable to UnRegisterPointerPressed on UIElement for iOS. Not Implemented."));
-		private static readonly Action LogRegisterPointerReleasedNotImplemented = Actions.CreateOnce(() => _log.Error("Unable to RegisterPointerReleased on UIElement for iOS. Not Implemented."));
-		private static readonly Action LogUnRegisterPointerReleasedNotImplemented = Actions.CreateOnce(() => _log.Error("Unable to UnregisterPointerReleased on UIElement for iOS. Not Implemented."));
-		#endregion
-
 		public UIElement()
 		{
 			_tap = new Lazy<TappedGestureHandler>(() => new TappedGestureHandler(this));
@@ -402,7 +390,6 @@ namespace Windows.UI.Xaml
 		#region DoubleTapped event
 		private void RegisterDoubleTapped(DoubleTappedEventHandler handler)
 		{
-			_doubleTap.Value.Event += handler;
 			if (_areGesturesAttached)
 			{
 				_doubleTap.Value.Attach();
@@ -411,13 +398,12 @@ namespace Windows.UI.Xaml
 
 		private void UnregisterDoubleTapped(DoubleTappedEventHandler handler)
 		{
-			_doubleTap.Value.Event -= handler;
-
 			if (_doubleTap.Value.IsAttached)
 			{
 				_doubleTap.Value.Detach();
 			}
 		}
+		#endregion
 
 		public override void TouchesBegan(NSSet touches, UIEvent evt)
 		{
@@ -428,14 +414,12 @@ namespace Windows.UI.Xaml
 				{
 					IsPointerPressed = true;
 					IsPointerOver = true;
-					OnPointerEnteredInternal(this, args = new PointerRoutedEventArgs(touches, evt));
 
-					if (!args.Handled)
-					{
-						OnPointerPressedInternal(this, args = new PointerRoutedEventArgs(touches, evt));
-					}
+					RaiseEvent(PointerEnteredEvent, args = new PointerRoutedEventArgs(touches, evt));
+					RaiseEvent(PointerPressedEvent, args = new PointerRoutedEventArgs(touches, evt));
 				}
 
+				// TODO
 				if (!(args?.Handled ?? false))
 				{
 					base.TouchesBegan(touches, evt);
@@ -451,9 +435,10 @@ namespace Windows.UI.Xaml
 		{
 			try
 			{
+				// TODO
 				base.TouchesCancelled(touches, evt);
 
-				OnPointerCanceledInternal(this, new PointerRoutedEventArgs(touches, evt));
+				RaiseEvent(PointerCanceledEvent, new PointerRoutedEventArgs(touches, evt));
 
 				IsPointerPressed = false;
 				IsPointerOver = false;
@@ -469,6 +454,7 @@ namespace Windows.UI.Xaml
 		{
 			try
 			{
+				// TODO
 				base.TouchesEnded(touches, evt);
 
 				var wasPointerOver = IsPointerOver;
@@ -477,21 +463,21 @@ namespace Windows.UI.Xaml
 				// Call entered/exited one last time
 				if (!wasPointerOver && IsPointerOver)
 				{
-					OnPointerEnteredInternal(this, new PointerRoutedEventArgs(touches, evt));
+					RaiseEvent(PointerEnteredEvent, new PointerRoutedEventArgs(touches, evt));
 				}
 				else if (wasPointerOver && !IsPointerOver)
 				{
-					OnPointerExitedInternal(this, new PointerRoutedEventArgs(touches, evt));
+					RaiseEvent(PointerExitedEvent, new PointerRoutedEventArgs(touches, evt));
 				}
 
 				if (IsPointerCaptured || IsPointerOver)
 				{
-					OnPointerReleasedInternal(this, new PointerRoutedEventArgs(touches, evt));
+					RaiseEvent(PointerReleasedEvent, new PointerRoutedEventArgs(touches, evt));
 				}
 
 				if (IsPointerCaptured)
 				{
-					OnPointerCaptureLostInternal(this, new PointerRoutedEventArgs(touches, evt));
+					RaiseEvent(PointerCaptureLostEvent, new PointerRoutedEventArgs(touches, evt));
 				}
 
 				IsPointerPressed = false;
@@ -508,6 +494,7 @@ namespace Windows.UI.Xaml
 		{
 			try
 			{
+				// TODO
 				base.TouchesMoved(touches, evt);
 
 				var wasPointerOver = IsPointerOver;
@@ -515,18 +502,17 @@ namespace Windows.UI.Xaml
 
 				if (IsPointerCaptured || IsPointerOver)
 				{
-					OnPointerMovedInternal(this, new PointerRoutedEventArgs(touches, evt));
+					RaiseEvent(PointerMovedEvent, new PointerRoutedEventArgs(touches, evt));
 				}
 
 				if (!wasPointerOver && IsPointerOver)
 				{
-					OnPointerEnteredInternal(this, new PointerRoutedEventArgs(touches, evt));
+					RaiseEvent(PointerEnteredEvent, new PointerRoutedEventArgs(touches, evt));
 				}
 				else if (wasPointerOver && !IsPointerOver)
 				{
-					OnPointerExitedInternal(this, new PointerRoutedEventArgs(touches, evt));
+					RaiseEvent(PointerExitedEvent, new PointerRoutedEventArgs(touches, evt));
 				}
-
 			}
 			catch (Exception e)
 			{
@@ -534,115 +520,9 @@ namespace Windows.UI.Xaml
 			}
 		}
 
-		internal virtual void OnPointerPressedInternal(object sender, PointerRoutedEventArgs args)
-		{
-			if (!args.Handled)
-			{
-				PointerPressed?.Invoke(sender, args);
-			}
-		}
-
-		internal virtual void OnPointerReleasedInternal(object sender, PointerRoutedEventArgs args)
-		{
-			if (!args.Handled)
-			{
-				PointerReleased?.Invoke(sender, args);
-			}
-		}
-
-		internal virtual void OnPointerCaptureLostInternal(object sender, PointerRoutedEventArgs args)
-		{
-			if (!args.Handled)
-			{
-				PointerCaptureLost?.Invoke(sender, args);
-			}
-		}
-
-		internal virtual void OnPointerEnteredInternal(object sender, PointerRoutedEventArgs args)
-		{
-			if (!args.Handled)
-			{
-				PointerEntered?.Invoke(sender, args);
-			}
-		}
-
-		internal virtual void OnPointerExitedInternal(object sender, PointerRoutedEventArgs args)
-		{
-			if (!args.Handled)
-			{
-				PointerExited?.Invoke(sender, args);
-			}
-		}
-
-		internal virtual void OnPointerMovedInternal(object sender, PointerRoutedEventArgs args)
-		{
-			if (!args.Handled)
-			{
-				PointerMoved?.Invoke(sender, args);
-			}
-		}
-
-		internal virtual void OnPointerCanceledInternal(object sender, PointerRoutedEventArgs args)
-		{
-			if (!args.Handled)
-			{
-				PointerCanceled?.Invoke(sender, args);
-			}
-		}
-		#endregion
-
-		#region PointerCanceled event
-		private void RegisterPointerCanceled(PointerEventHandler handler)
-		{
-			LogRegisterPointerCanceledNotImplemented();
-		}
-
-		private void UnregisterPointerCanceled(PointerEventHandler handler)
-		{
-			LogUnregisterPointerCanceledNotImplemented();
-		}
-		#endregion
-
-		#region PointerExited event
-		private void RegisterPointerExited(PointerEventHandler handler)
-		{
-			LogRegisterPointerExitedNotImplemented();
-		}
-
-		private void UnregisterPointerExited(PointerEventHandler handler)
-		{
-			LogUnRegisterPointerExitedNotImplemented();
-		}
-		#endregion
-
-		#region PointerPressed event
-		private void RegisterPointerPressed(PointerEventHandler handler)
-		{
-			LogRegisterPointerPressedNotImplemented();
-		}
-
-		private void UnregisterPointerPressed(PointerEventHandler handler)
-		{
-			LogUnRegisterPointerPressedNotImplemented();
-		}
-		#endregion
-
-		#region PointerReleased event
-		private void RegisterPointerReleased(PointerEventHandler handler)
-		{
-			LogRegisterPointerReleasedNotImplemented();
-		}
-
-		private void UnregisterPointerReleased(PointerEventHandler handler)
-		{
-			LogUnRegisterPointerReleasedNotImplemented();
-		}
-		#endregion
-
 		#region Tapped event
 		private void RegisterTapped(TappedEventHandler handler)
 		{
-			_tap.Value.Event += handler;
 			if (_areGesturesAttached)
 			{
 				_tap.Value.Attach();
@@ -651,16 +531,12 @@ namespace Windows.UI.Xaml
 
 		private void UnregisterTapped(TappedEventHandler handler)
 		{
-			_tap.Value.Event -= handler;
 			if (_tap.Value.IsAttached)
 			{
 				_tap.Value.Detach();
 			}
 		}
 		#endregion
-
-		internal void RaiseTapped(TappedRoutedEventArgs args) => _tap.Value.RaiseTapped(this, args);
-
 #if DEBUG
 		public static Predicate<UIView> ViewOfInterestSelector { get; set; } = v => (v as FrameworkElement)?.Name == "TargetView";
 
@@ -718,23 +594,18 @@ namespace Windows.UI.Xaml
 		public string ShowDescendants() => UIViewExtensions.ShowDescendants(this);
 		public string ShowLocalVisualTree(int fromHeight) => UIViewExtensions.ShowLocalVisualTree(this, fromHeight);
 #endif
-
 		private class TappedGestureHandler : GestureHandler
 		{
-			public event TappedEventHandler Event;
-
 			public TappedGestureHandler(UIElement owner)
 				: base(owner)
 			{
 			}
 
-			internal void RaiseTapped(object sender, TappedRoutedEventArgs args) => Event?.Invoke(this, args);
-
 			protected override UIGestureRecognizer CreateRecognizer(UIElement owner)
 			{
 				var recognizer = new UITapGestureRecognizer(r =>
 				{
-					Event?.Invoke(owner, new TappedRoutedEventArgs(r.LocationInView(owner))
+					owner.RaiseEvent(TappedEvent, new TappedRoutedEventArgs(r.LocationInView(owner))
 					{
 						OriginalSource = owner,
 						PointerDeviceType = PointerDeviceType.Touch,
@@ -752,8 +623,6 @@ namespace Windows.UI.Xaml
 
 		private class DoubleTappedGestureHandler : GestureHandler
 		{
-			public event DoubleTappedEventHandler Event;
-
 			public DoubleTappedGestureHandler(UIElement owner)
 				: base(owner)
 			{
@@ -763,7 +632,7 @@ namespace Windows.UI.Xaml
 			{
 				var recognizer = new UITapGestureRecognizer(r =>
 				{
-					Event?.Invoke(owner, new DoubleTappedRoutedEventArgs(r.LocationInView(owner))
+					owner.RaiseEvent(DoubleTappedEvent, new DoubleTappedRoutedEventArgs(r.LocationInView(owner))
 					{
 						OriginalSource = owner,
 						PointerDeviceType = PointerDeviceType.Touch,

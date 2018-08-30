@@ -12,135 +12,44 @@ namespace Windows.UI.Xaml
 {
 	internal sealed class GestureHandler : UnoGestureDetector
 	{
-		internal void RaiseTapped(object sender, TappedRoutedEventArgs args) => Tapped?.Invoke(sender, args);
+		private UIElement _target;
 
-		#region Tapped event
-		private event TappedEventHandler Tapped;
-
-		internal void RegisterTapped(TappedEventHandler handler)
+		internal void UpdateShouldHandle(RoutedEvent routedEvent, bool shouldHandle)
 		{
-			Tapped += handler;
-			SetShouldHandleSingleTap(true);
+			// TODO: How expensive is this?
+			if (routedEvent == UIElement.PointerPressedEvent)
+			{
+				SetShouldHandleDown(shouldHandle);
+			}
+			else if (routedEvent == UIElement.PointerReleasedEvent)
+			{
+				SetShouldHandleUp(shouldHandle);
+			}
+			else if (routedEvent == UIElement.PointerMovedEvent)
+			{
+				SetShouldHandleMove(shouldHandle);
+			}
+			else if (routedEvent == UIElement.PointerEnteredEvent)
+			{
+				SetShouldHandleEnter(shouldHandle);
+			}
+			else if (routedEvent == UIElement.PointerExitedEvent)
+			{
+				SetShouldHandleExit(shouldHandle);
+			}
+			else if (routedEvent == UIElement.PointerCanceledEvent)
+			{
+				SetShouldHandleCancel(shouldHandle);
+			}
+			else if (routedEvent == UIElement.TappedEvent)
+			{
+				SetShouldHandleSingleTap(shouldHandle);
+			}
+			else if (routedEvent == UIElement.DoubleTappedEvent)
+			{
+				SetShouldHandleDoubleTap(shouldHandle);
+			}
 		}
-
-		internal void UnregisterTapped(TappedEventHandler handler)
-		{
-			Tapped -= handler;
-			SetShouldHandleSingleTap(Tapped != null);
-		}
-		#endregion
-
-		#region DoubleTapped event
-		private event DoubleTappedEventHandler DoubleTapped;
-
-		internal void RegisterDoubleTapped(DoubleTappedEventHandler handler)
-		{
-			DoubleTapped += handler;
-			SetShouldHandleDoubleTap(true);
-		}
-
-		internal void UnregisterDoubleTapped(DoubleTappedEventHandler handler)
-		{
-			DoubleTapped -= handler;
-			SetShouldHandleDoubleTap(DoubleTapped != null);
-		}
-		#endregion
-
-		#region PointerPressed event
-		private event PointerEventHandler PointerPressed;
-
-		internal void RegisterPointerPressed(PointerEventHandler handler)
-		{
-			PointerPressed += handler;
-			SetShouldHandleDown(true);
-		}
-
-		internal void UnregisterPointerPressed(PointerEventHandler handler)
-		{
-			PointerPressed -= handler;
-			SetShouldHandleDown(PointerPressed != null);
-		}
-		#endregion
-
-		#region PointerReleased event
-		private event PointerEventHandler PointerReleased;
-
-		internal void RegisterPointerReleased(PointerEventHandler handler)
-		{
-			PointerReleased += handler;
-			SetShouldHandleUp(true);
-		}
-
-		internal void UnregisterPointerReleased(PointerEventHandler handler)
-		{
-			PointerReleased -= handler;
-			SetShouldHandleUp(PointerReleased != null);
-		}
-		#endregion
-
-		#region PointerMoved event
-		private event PointerEventHandler PointerMoved;
-
-		internal void RegisterPointerMoved(PointerEventHandler handler)
-		{
-			PointerMoved += handler;
-			SetShouldHandleMove(true);
-		}
-
-		internal void UnregisterPointerMoved(PointerEventHandler handler)
-		{
-			PointerMoved -= handler;
-			SetShouldHandleMove(PointerMoved != null);
-		}
-		#endregion
-
-		#region PointerExited event
-		private event PointerEventHandler PointerExited;
-
-		internal void RegisterPointerExited(PointerEventHandler handler)
-		{
-			PointerExited += handler;
-			SetShouldHandleExit(true);
-		}
-
-		internal void UnregisterPointerExited(PointerEventHandler handler)
-		{
-			PointerExited -= handler;
-			SetShouldHandleExit(PointerExited != null);
-		}
-		#endregion
-
-		#region PointerEntered event
-		private event PointerEventHandler PointerEntered;
-
-		internal void RegisterPointerEntered(PointerEventHandler handler)
-		{
-			PointerEntered += handler;
-			SetShouldHandleEnter(true);
-		}
-
-		internal void UnregisterPointerEntered(PointerEventHandler handler)
-		{
-			PointerEntered -= handler;
-			SetShouldHandleEnter(PointerEntered != null);
-		}
-		#endregion
-
-		#region PointerCanceled event
-		private event PointerEventHandler PointerCanceled;
-
-		internal void RegisterPointerCanceled(PointerEventHandler handler)
-		{
-			PointerCanceled += handler;
-			SetShouldHandleCancel(true);
-		}
-
-		internal void UnregisterPointerCanceled(PointerEventHandler handler)
-		{
-			PointerCanceled -= handler;
-			SetShouldHandleCancel(PointerCanceled != null);
-		}
-		#endregion
 
 		internal static GestureHandler Create(UIElement target)
 		{
@@ -154,6 +63,7 @@ namespace Windows.UI.Xaml
 		private GestureHandler(UIElement target)
 			: base(ContextHelper.Current, target)
 		{
+			_target = target;
 		}
 
 		protected override bool OnSingleTap(MotionEvent e)
@@ -167,7 +77,7 @@ namespace Windows.UI.Xaml
 					PointerDeviceType = pointer.PointerDeviceType
 				};
 
-				Tapped?.Invoke(Target, args);
+				_target.RaiseEvent(UIElement.TappedEvent, args);
 
 				return args.Handled;
 			}
@@ -190,7 +100,7 @@ namespace Windows.UI.Xaml
 					PointerDeviceType = pointer.PointerDeviceType
 				};
 
-				DoubleTapped?.Invoke(Target, args);
+				_target.RaiseEvent(UIElement.DoubleTappedEvent, args);
 
 				return args.Handled;
 			}
@@ -207,7 +117,7 @@ namespace Windows.UI.Xaml
 			{
 				var args = GetPointerEventArgs(e, 0);
 
-				PointerPressed?.Invoke(Target, args);
+				_target.RaiseEvent(UIElement.PointerPressedEvent, args);
 
 				return args.Handled;
 			}
@@ -224,7 +134,7 @@ namespace Windows.UI.Xaml
 			{
 				var args = GetPointerEventArgs(e, 0);
 
-				PointerReleased?.Invoke(Target, args);
+				_target.RaiseEvent(UIElement.PointerReleasedEvent, args);
 
 				return args.Handled;
 			}
@@ -241,7 +151,7 @@ namespace Windows.UI.Xaml
 			{
 				var args = GetPointerEventArgs(e, 0);
 
-				PointerMoved?.Invoke(Target, args);
+				_target.RaiseEvent(UIElement.PointerMovedEvent, args);
 
 				return args.Handled;
 			}
@@ -258,7 +168,7 @@ namespace Windows.UI.Xaml
 			{
 				var args = GetPointerEventArgs(e, 0);
 
-				PointerExited?.Invoke(Target, args);
+				_target.RaiseEvent(UIElement.PointerExitedEvent, args);
 
 				return args.Handled;
 			}
@@ -275,7 +185,7 @@ namespace Windows.UI.Xaml
 			{
 				var args = GetPointerEventArgs(p0, 0);
 
-				PointerEntered?.Invoke(Target, args);
+				_target.RaiseEvent(UIElement.PointerEnteredEvent, args);
 
 				return args.Handled;
 			}
@@ -292,7 +202,7 @@ namespace Windows.UI.Xaml
 			{
 				var args = GetPointerEventArgs(e, 0);
 
-				PointerCanceled?.Invoke(Target, args);
+				_target.RaiseEvent(UIElement.PointerCanceledEvent, args);
 
 				return args.Handled;
 			}
