@@ -184,8 +184,8 @@ namespace Uno.UI
 		}
 		else
 		{
-			type = $"{name}EventArgs";
-			value = $"new {name}EventArgs({baseParameters})";
+			type = name + "EventArgs";
+			value = "new " +  name + "EventArgs(" + baseParameters + ")";
 			//type = $"System.Tuple<{string.Join(", ", parameters.Select(p => p.type))}>";
 			//value = $"System.Tuple.Create({string.Join(", ", parameters.Select(p => p.name))})";
 			#>
