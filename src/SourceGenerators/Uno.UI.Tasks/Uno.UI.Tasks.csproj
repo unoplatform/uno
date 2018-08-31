@@ -9,7 +9,7 @@
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Uno.UI.Tasks</RootNamespace>
-    <AssemblyName>Uno.UI.Tasks</AssemblyName>
+    <AssemblyName>Uno.UI.Tasks.v0</AssemblyName>
     <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <SccProjectName>SAK</SccProjectName>
