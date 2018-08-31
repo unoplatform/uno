@@ -2,20 +2,20 @@ About Uno platform
 
 ## What is the Uno Platform?
 The Uno Platform is a Universal Windows Platform Bridge to allow UWP based code to run on iOS, Android, and WebAssembly. It provides the full API definitions of the UWP Spring Creators Update (17134), and the implementation of parts of the UWP API, such as Windows.UI.Xaml, to enable applications to run on these platforms.
-This allows the use the UWP tooling from Windows in Visual Studio, such as Xaml Edit and Continue and C# Edit and Continue, to build an application as much as possible on Windows, then validate that the application runs on iOS, Android and WebAssembly.
+This allows the use the UWP tooling from Windows in Visual Studio, such as XAML Edit and Continue and C# Edit and Continue, to build an application as much as possible on Windows, then validate that the application runs on iOS, Android and WebAssembly.
 The XAML User Interface (UI) provides the ability to display the same XAML files on Windows, iOS, Android and WebAssembly platforms. Uno also provides support for the MVVM pattern on all platforms, with binding, styling, control and data-templating features.
 As the Uno Platform provides all of the APIs of the complete UWP platform, any UWP library can be compiled on top of Uno (e.g. XamlBehaviors), with the ability to determine which APIs are implemented or not via the IDE using C# Analyzers.
 
 ## What does UNO Platform do?
 
-**For users**, it provides can provide a consistent experience across platforms, particularly between mobile and desktop browsers.
+**For users**, it can provide can provide a consistent experience across platforms, particularly between mobile and desktop browsers.
 
-**For developers**, it provides a common development experience across all platforms, using Microsoft's tooling as a base for a more efficient development loop.
+**For developers**, it can provide a consistent development experience across all platforms, using Microsoft's tooling as a base for a more efficient development loop.
 
-**For designers**, XAML provides a common way to use pixel-perfect designs and use rich UI interactions.
+**For designers**, XAML can provide a shared way to use pixel-perfect designs and use rich UI interactions.
 
 ## Why Uno ?
-Developing for Windows (phone, desktop, tablet, XBox), iOS (tablet and phone), Android (tablet and Phone) and WebAssembly at once can be a complex process, especially when it comes to the user interface. Each platform has its own ways of defining dynamic layouts, with some being more efficient, some more verbose, some more elegant, and some more performant than others.
+Developing for Windows (phone, desktop, tablet, XBox), iOS (tablet and phone), Android (tablet and phone) and the Web via WebAssembly at once can be a complex process, especially when it comes to the user interface. Each platform has its own ways of defining dynamic layouts, with some being more efficient, some more verbose, some more elegant, and some more performant than others.
 Yet, being able to master all these frameworks at once is a particularly difficult task, because of the amount of platform-specific knowledge required to master each platform. Most of the time it boils down to different teams developing the same application multiple times, with each requiring a full development cycle.
 With Xamarin, C# comes to all these platforms; however, it only provides transparent translations of the UI frameworks available for iOS and Android. Most non-UI code can be shared, but when it comes to the UI, almost nothing can be shared.
 To avoid having to learn the UI-layout techniques and approaches for each platform, Uno.UI mimics the Windows XAML approach of defining UI and layouts. This translates into the ability to share styles, layouts, and data-bindings while retaining the ability to mix XAML-style and native layouts. For instance, a StackPanel can easily contain a RelativeLayout on Android, or a MKMapView on iOS.
@@ -35,7 +35,7 @@ Yes, the Uno Platform is open source, under the [Apache 2.0 license](https://git
 
 # Getting started
 ## How can I try Uno platform?
-You can try uno using the [Uno Platform Playground](https://playground.platform.uno), the [Quick Start GitHub repository](https://github.com/nventive/Uno.QuickStart), or through our  [Visual Studio Extension](https://marketplace.visualstudio.com/items?itemName=nventivecorp.uno-platform-addin).
+You can try the Uno Platform using the [Uno Platform Playground](https://playground.platform.uno), the [Quick Start GitHub repository](https://github.com/nventive/Uno.QuickStart), or through our  [Visual Studio Extension](https://marketplace.visualstudio.com/items?itemName=nventivecorp.uno-platform-addin).
 
 ## How experienced do I need to be to use Uno Platform?
 
@@ -43,13 +43,13 @@ You can try uno using the [Uno Platform Playground](https://playground.platform.
 The [Uno Platform Playground](https://playground.platform.uno) is a convenient way to experiment with the Uno platform, using the only a WebAssembly compatible web browser.
 
 ## Where can I get support?
-Support is available through our [twitter account](https://twitter.com/unoplatform), [gitter](https://gitter.im/uno-platform/Lobby) and email [info@platform.uno](mailto:info@platform.uno).
+Support is available through our [gitter](https://gitter.im/uno-platform/Lobby), [twitter account](https://twitter.com/unoplatform), and email [info@platform.uno](mailto:info@platform.uno).
 
 ## How can I get involved?
 There are lots of ways to contribute to the Uno Platform and we appreciate the help from the community. You can provide feedback, report bugs, give suggestions, contribute code, and participate in the platform discussions.
 
 ## How can I report a bug?
-- If you think you've found a bug, please log a new issue in the Uno Platform GitHub issue tracker. When filing issues, please use our bug filing template. The best way to get your bug fixed is to be as detailed as you can be about the problem. Providing a minimal project with steps to reproduce the problem is ideal. Here are questions you can answer before you file a bug to make sure you're not missing any important information.
+- If you think you've found a bug, please [log a new issue](https://github.com/nventive/Uno/issues) in the Uno Platform GitHub issue tracker. When filing issues, please use our bug filing template. The best way to get your bug fixed is to be as detailed as you can be about the problem. Providing a minimal project with steps to reproduce the problem is ideal. Here are questions you can answer before you file a bug to make sure you're not missing any important information.
 - Did you read the [documentation](https://github.com/nventive/Uno/tree/master/doc/)?
 - Did you include the snippet of broken code in the issue?
 - What are the EXACT steps to reproduce this problem?
@@ -73,7 +73,7 @@ While the former provides a high flexibility in terms of rendering fidelity and 
 
 The latter, however, provides full fidelity with the underlying platform, making it blend easily with native applications. While this can be interesting for some kinds of applications, designers usually want to have a branded pixel-perfect look and feel which stays consistent across platforms, where drawing primitives are not available.
 
-The Uno Platform sits in the middle, using the power of Xaml to provide the ability to custom draw and animate UI, while reusing key parts of the underlying UI Toolkit (such as chrome-less native text boxes) to provide native system interactions support and native accessibility features.
+The Uno Platform sits in the middle, using the power of XAML to provide the ability to custom draw and animate UI, while reusing key parts of the underlying UI Toolkit (such as chrome-less native text boxes) to provide native system interactions support and native accessibility features.
 
 ## How does my Uno Platform-based application code run on Android or iOS?
 Uno Platform-based applications on iOS and Android are no different than any other Xamarin-based applications. See [the details here](https://docs.microsoft.com/en-us/xamarin/cross-platform/app-fundamentals/building-cross-platform-applications/understanding-the-xamarin-mobile-platform).
@@ -95,9 +95,9 @@ Not yet. We're still waiting for Apple's Marzipan cross macOS-iOS APIs to become
 ## Does Uno.UI support Linux ?
 No, not at the moment. Our assumption for now is that the WebAssembly part of Uno.UI will be efficient enough to be a viable alternative. If you find that native support still is a viable scenario, please open a GitHub issue.
 
-## Does Uno.UI support wpf CustomControls 
+## Does Uno.UI support what WPF is calling CustomControls ? 
 
-Yes, those are called Templated Controls, because they inherit from Control Uno.UI currently handles styles a bit differently from what WPF/UWP is doing and Uno.UI parser does not handle `<Style.Setters>` properly. These should not be impacting as long as you have a resource dictionary file containing your style. See here: https://github.com/nventive/Uno/blob/master/doc/articles/api-differences.md#styles
+Yes, those are called Templated Controls in the UWP dialect, because they inherit from Control Uno.UI currently handles styles a bit differently from what WPF/UWP is doing and Uno.UI parser does not handle `<Style.Setters>` properly. These should not be impacting as long as you have a resource dictionary file containing your style. See here: https://github.com/nventive/Uno/blob/master/doc/articles/api-differences.md#styles
 
 ## Is the iPhone X supported by Uno.UI ?
 
@@ -177,8 +177,10 @@ You need to make sure that:
 If you're still having issues, **restart Visual Studio** and/or **unload the iOS/Android and WASM projects**, using right-click on the project, then **unload**.
 
 ## Is Uno.UI's Performance on WebAssembly going to improve
-Yes! The current performance are limited to the runtime interpreted mode of mono-wasm. The Mono is working on implementing **AOT** compilation,
+Yes! The current performance is limited by the runtime interpreted mode of mono-wasm. The Mono team is working on implementing **AOT** compilation,
 which will improve significantly the performance. See [Miguel de Icaza's status update](https://gitter.im/aspnet/Blazor?at=5b1ab670dd54362753f8a168) for more details.
+
+You can subscribe to this [mono issue's updates for progress](https://github.com/mono/mono/issues/10222).
 
 ## Why is Chrome slower than Firefox or Microsoft Edge to execute mono-wasm based applications ?
 
