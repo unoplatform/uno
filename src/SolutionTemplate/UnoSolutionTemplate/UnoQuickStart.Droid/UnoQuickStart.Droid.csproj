@@ -54,7 +54,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Uno.UI" Version="1.28.1-dev.2183" />
+    <PackageReference Include="Uno.UI" Version="1.40.0-dev.350" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="MainActivity.cs" />

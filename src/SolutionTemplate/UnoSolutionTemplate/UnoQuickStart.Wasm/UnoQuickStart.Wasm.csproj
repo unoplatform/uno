@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
 		<OutputType>Exe</OutputType>
@@ -35,7 +35,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Uno.UI" Version="1.31.0-dev.235" />
+		<PackageReference Include="Uno.UI" Version="1.40.0-dev.350" />
 		<PackageReference Include="Uno.Wasm.Bootstrap" Version="1.0.0-dev.40" />
 	</ItemGroup>
 

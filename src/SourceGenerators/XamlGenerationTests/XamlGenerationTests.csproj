@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="15.0">
+<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="15.0">
 	<PropertyGroup>
 		<TargetFrameworks>MonoAndroid80;xamarinios10</TargetFrameworks>
 		<TargetFrameworksCI>MonoAndroid71;MonoAndroid80;xamarinios10</TargetFrameworksCI>
@@ -14,11 +14,11 @@
 
 	<ItemGroup>
 		<PackageReference Include="Uno.SourceGenerationTasks">
-			<Version>1.22.0-dev.49</Version>
+			<Version>1.25.0-dev.72</Version>
 			<ExcludeAssets>Runtime</ExcludeAssets>
 		</PackageReference>
 		<PackageReference Include="Uno.Core.Build">
-			<Version>1.22.0-dev.23</Version>
+			<Version>1.24.0-dev.49</Version>
 		</PackageReference>
 	</ItemGroup>
 
