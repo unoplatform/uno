@@ -28,8 +28,6 @@ Uno Platform was created by Team nventive over the past 4 years.
 ## What makes UNO Platform unique?
 The Uno Platform is the only implementation of the UWP API that runs across iOS, Android and WebAssembly. 
 
-## Where does the name Uno Platform come from?
-
 ## Is Uno Platform open source?
 Yes, the Uno Platform is open source, under the [Apache 2.0 license](https://github.com/nventive/Uno/blob/master/License.md).
 
@@ -106,7 +104,13 @@ behavior to manage the _notch_ correctly.
 
 ## What features will UNO Platform support?
 
+The end goal is to implement most features of the UWP API, but the [road map article](roadmap.md) details what is upcoming.
+
 ## Why XAML? What is it, how does it work?
+
+XAML stands for **eXtensible Application Markup Language**, and is used to provide a declarative way to define user interfaces. Its ability to provide a clear separation of concerns between the UI definition and application logic using data binding provides a good experience for small to very large applications where integrators can easily create UI without having to deal with C# code.
+
+For a good introduction to the use of XAML and MVVM patterns see [Microsoft's Laurent Bugnion presentation](https://twitter.com/LBugnion).
 
 ## What are the different flavors of XAML?
 Over the years, Microsoft has been working on different implementations that use XAML for defining User Interfaces, and currently, three main flavors co-exist: WPF, UWP, Xamarin.Forms and the legacy Silverlight.
