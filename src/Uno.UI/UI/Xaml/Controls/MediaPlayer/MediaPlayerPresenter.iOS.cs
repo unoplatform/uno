@@ -8,7 +8,6 @@ namespace Windows.UI.Xaml.Controls
 	{
 		private void SetVideoSurface(IVideoSurface videoSurface)
 		{
-			Console.WriteLine($"MEDIAPLAYERIMPL - MediaPlayerPresenter SetVideoSurface : {this} / {videoSurface}");
 			this.Child = videoSurface as UIView;
 			((UIView)videoSurface).Frame = this.Frame;
 		}

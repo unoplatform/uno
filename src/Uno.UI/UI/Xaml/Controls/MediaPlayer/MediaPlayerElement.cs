@@ -30,7 +30,6 @@ namespace Windows.UI.Xaml.Controls
 			{
 				if (mpe.MediaPlayer != null)
 				{
-					Console.WriteLine("MEDIAPLAYERIMPL - OnSourceChanged");
 					mpe.MediaPlayer.Source = args.NewValue as IMediaPlaybackSource;
 				}
 			});
@@ -76,7 +75,6 @@ namespace Windows.UI.Xaml.Controls
 			{
 				if (mpe.MediaPlayer != null)
 				{
-					Console.WriteLine("MEDIAPLAYERIMPL - OnAutoPlayChanged");
 					mpe.MediaPlayer.AutoPlay = (bool)args.NewValue;
 				}
 			});
@@ -103,13 +101,39 @@ namespace Windows.UI.Xaml.Controls
 		{
 			sender.Maybe<MediaPlayerElement>(mpe =>
 			{
-				Console.WriteLine("MEDIAPLAYERIMPL - OnMediaPlayerChanged");
 				mpe.MediaPlayer.AutoPlay = mpe.AutoPlay;
 				mpe.MediaPlayer.Source = mpe.Source;
 			});
 		}
 
 		#endregion
+
+		#region AreTransportControlsEnabled Property
+
+		public bool AreTransportControlsEnabled
+		{
+			get { return (bool)GetValue(AreTransportControlsEnabledProperty); }
+			set { SetValue(AreTransportControlsEnabledProperty, value); }
+		}
+
+		public static DependencyProperty AreTransportControlsEnabledProperty { get; } =
+			DependencyProperty.Register(
+				nameof(AreTransportControlsEnabled),
+				typeof(bool),
+				typeof(MediaPlayerElement),
+				new FrameworkPropertyMetadata(false, OnAreTransportControlsEnabledChanged));
+
+		private static void OnAreTransportControlsEnabledChanged(DependencyObject sender, DependencyPropertyChangedEventArgs args)
+		{
+			sender.Maybe<MediaPlayerElement>(mpe =>
+			{
+				// TODO
+			});
+		}
+
+		#endregion
+
+		public MediaTransportControls TransportControls { get; set; } = new MediaTransportControls();
 
 		public MediaPlayerElement() : base()
 		{
@@ -121,13 +145,11 @@ namespace Windows.UI.Xaml.Controls
 
 			if (MediaPlayer == null)
 			{
-				Console.WriteLine("MEDIAPLAYERIMPL - Create MediaPlayer");
 				MediaPlayer = new Windows.Media.Playback.MediaPlayer();
 			}
 
 			if (AutoPlay && MediaPlayer.CurrentState == MediaPlayerState.Closed)
 			{
-				Console.WriteLine("MEDIAPLAYERIMPL - Let's play!");
 				MediaPlayer.Play();
 			}
 		}

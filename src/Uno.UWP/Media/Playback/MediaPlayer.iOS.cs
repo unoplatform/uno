@@ -19,7 +19,6 @@ namespace Windows.Media.Playback
 
 		private void TryDisposePlayer()
 		{
-			Console.WriteLine($"MEDIAPLAYERIMPL - TryDisposePlayer");
 			if (_player != null)
 			{
 				try
@@ -38,7 +37,6 @@ namespace Windows.Media.Playback
 		private void InitializePlayer()
 		{
 			TryDisposePlayer();
-			Console.WriteLine($"MEDIAPLAYERIMPL - InitializePlayer");
 
 			_player = new AVPlayer();
 			_videoLayer = AVPlayerLayer.FromPlayer(_player);
@@ -61,16 +59,13 @@ namespace Windows.Media.Playback
 
 		public void Play()
 		{
-			Console.WriteLine($"MEDIAPLAYERIMPL - Play");
 			if (Source == null)
 			{
-				Console.WriteLine($"MEDIAPLAYERIMPL - Play - Source is null");
 				return;
 			}
 
 			if (_player != null && CurrentState == MediaPlayerState.Paused)
 			{
-				Console.WriteLine($"MEDIAPLAYERIMPL - Play - Resume");
 				//We are simply paused so just start again
 				CurrentState = MediaPlayerState.Playing;
 				_player.Play();
@@ -103,14 +98,12 @@ namespace Windows.Media.Playback
 				{
 					_player.CurrentItem.SelectMediaOption(null, mediaSelectionGroup);
 				}
-
-				Console.WriteLine($"MEDIAPLAYERIMPL - Play - Play");
+				
 				_player.Play();
 			}
-			catch (Exception ex)
+			catch (Exception)
 			{
 				//OnMediaFailed(new MediaFailedEventArgs(ex.Message, ex));
-				Console.WriteLine($"MEDIAPLAYERIMPL - Play - Exception {ex.Message}");
 				CurrentState = MediaPlayerState.Stopped;
 			}
 		}
@@ -129,11 +122,8 @@ namespace Windows.Media.Playback
 		{
 			if (_player?.CurrentItem != null)
 			{
-				Console.WriteLine($"MEDIAPLAYERIMPL - Player status: {_player.Status} / Item status: {_player.CurrentItem.Status} / ");
-
 				if (_player.CurrentItem.Status == AVPlayerItemStatus.Failed)
 				{
-					Console.WriteLine($"MEDIAPLAYERIMPL - Player error: {_player.CurrentItem.Error.LocalizedFailureReason}");
 					//OnMediaFileFailed();
 					return;
 				}

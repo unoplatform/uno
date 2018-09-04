@@ -27,7 +27,6 @@ namespace Windows.UI.Xaml.Controls
 			if (sender is MediaPlayerPresenter presenter &&
 				args.NewValue is Windows.Media.Playback.MediaPlayer mediaPlayer)
 			{
-				Console.WriteLine($"MEDIAPLAYERIMPL - MediaPlayerPresenter OnMediaPlayerChanged");
 				presenter.SetVideoSurface(mediaPlayer.RenderSurface);
 			}
 		}
@@ -70,7 +69,6 @@ namespace Windows.UI.Xaml.Controls
 
 		public MediaPlayerPresenter() : base()
 		{
-			Console.WriteLine($"MEDIAPLAYERIMPL - MediaPlayerPresenter created");
 		}
 	}
 }

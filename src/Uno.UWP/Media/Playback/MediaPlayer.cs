@@ -18,8 +18,6 @@ namespace Windows.Media.Playback
 			}
 			set
 			{
-
-				Console.WriteLine("MEDIAPLAYERIMPL - Source changed");
 				Pause();
 
 				_source = value;
@@ -43,7 +41,6 @@ namespace Windows.Media.Playback
 			set
 			{
 				_currentState = value;
-				Console.WriteLine($"MEDIAPLAYERIMPL - State changed {_currentState}");
 				CurrentStateChanged?.Invoke(this, null);
 			}
 		}
