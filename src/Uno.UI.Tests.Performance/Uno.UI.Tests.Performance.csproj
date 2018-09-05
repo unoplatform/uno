@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="15.0">
+<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="15.0">
   <PropertyGroup>
     <TargetFramework>net46</TargetFramework>
     <IsPackable>false</IsPackable>
@@ -45,10 +45,10 @@
       <Version>1.3.1</Version>
     </PackageReference>
     <PackageReference Include="Uno.SourceGenerationTasks">
-      <Version>1.22.0-dev.49</Version>
+      <Version>1.25.0-dev.72</Version>
     </PackageReference>
     <PackageReference Include="Uno.Core">
-      <Version>1.22.0-dev.23</Version>
+      <Version>1.24.0-dev.49</Version>
     </PackageReference>
   </ItemGroup>
 
