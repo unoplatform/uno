@@ -55,6 +55,7 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Uno.UI" Version="1.40.0-dev.350" />
+	<PackageReference Include="Uno.UniversalImageLoader" Version="1.9.31" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="MainActivity.cs" />
