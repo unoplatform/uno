@@ -39,7 +39,7 @@
 	<XmlUpdate
 		XmlFileName="..\src\SolutionTemplate\UnoSolutionTemplate.VISX\source.extension.vsixmanifest"
 		XPath="/x:PackageManifest/x:Metadata/x:Identity/@Version"
-		Value="$(GITVERSION_MajorMinorPatch)"
+		Value="$(GITVERSION_MajorMinorPatch).$(GITVERSION_CommitsSinceVersionSource)"
 		Namespace="http://schemas.microsoft.com/developer/vsx-schema/2011"
 		Prefix="x"/>
 
