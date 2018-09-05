@@ -117,8 +117,11 @@ namespace Windows.UI.Core
 		/// <param name="priority">The execution priority for the handler</param>
 		/// <param name="handler">The handler to execute</param>
 		/// <returns>An async operation for the scheduled handler.</returns>
-		public UIAsyncOperation RunAsync(CoreDispatcherPriority priority, CancellableDispatchedHandler handler)
+		/// <remarks>Can only be invoked on the UI thread</remarks>
+		internal UIAsyncOperation RunAsync(CoreDispatcherPriority priority, CancellableDispatchedHandler handler)
 		{
+			CoreDispatcher.CheckThreadAccess();
+
 			UIAsyncOperation operation = null;
 
 			DispatchedHandler nonCancellableHandler = () => handler(operation.Token);

@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
 		<OutputType>Exe</OutputType>
@@ -13,10 +13,10 @@
 
 	<ItemGroup>
 		<PackageReference Include="Uno.SourceGenerationTasks">
-			<Version>1.22.0-dev.49</Version>
+			<Version>1.25.0-dev.72</Version>
 			<NoWarn>NU1701</NoWarn>
 		</PackageReference>
-		<PackageReference Include="Uno.Wasm.Bootstrap" Version="1.0.0-dev.17" />
+		<PackageReference Include="Uno.Wasm.Bootstrap" Version="1.0.0-dev.40" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Console" Version="1.1.1" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Filter" Version="1.1.1" />
 		<PackageReference Include="Microsoft.TypeScript.Compiler" Version="2.8.3" />

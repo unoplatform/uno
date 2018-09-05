@@ -1,4 +1,4 @@
-﻿<Project Sdk="MSBuild.Sdk.Extras/1.6.46">
+<Project Sdk="MSBuild.Sdk.Extras/1.6.46">
 
   <PropertyGroup>
     <TargetFrameworks>netstandard2.0;xamarinios10;monoandroid80;uap10.0.16299</TargetFrameworks>
@@ -12,7 +12,7 @@
 	</PropertyGroup>
 	
 	<ItemGroup Condition="'$(TargetFramework)'=='xamarinios10' or '$(TargetFramework)'=='monoandroid80' or '$(TargetFramework)'=='netstandard2.0'">
-		<PackageReference Include="Uno.UI" Version="1.31.0-dev.191" />
+		<PackageReference Include="Uno.UI" Version="1.40.0-dev.350" />
 	</ItemGroup>
 	
 	<ItemGroup>
