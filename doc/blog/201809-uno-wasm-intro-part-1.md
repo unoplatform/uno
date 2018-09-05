@@ -1,6 +1,6 @@
 # Introduction to WebAssembly for the Uno Platform (Part 1)
 
-WebAssembly, Wasm for shorts, is a hot topic these days and for good reasons. It has lots of promises and particularly one that interest the Uno Platform: Open up the Web to other languages and frameworks.
+WebAssembly, Wasm for shorts, is a hot topic these days and for good reasons. It has lots of promises and particularly one that interests the Uno Platform: Open up the Web to other languages and frameworks.
 
 ## What is WebAssembly ?
 
@@ -37,7 +37,7 @@ For Web non-Microsoft crowds, for which the development model is quite mature, t
 
 For Web Microsoft crowds, there's the [Blazor experiment](https://blazor.net/) which is aiming at making C# and .NET the only development language for making web sites or Web Apps, using HTML.
 
-For other crowds more in the mobile or desktop sides, there's not a lot to experiment with yet. Good examples found in [awesome-wasm](https://github.com/mbasso/awesome-wasm) such as [OOui](https://github.com/praeclarum/Ooui), [QT-Wasm](https://wiki.qt.io/Qt_for_WebAssembly) are work checking out, and that's where the Uno Platform is trying to be an answer using C# and XAML for application developers, for .NET UWP, WPF, Xamarin and Silverlight developers.
+For other crowds more in the mobile or desktop sides, there's not a lot to experiment with yet. Good examples found in [awesome-wasm](https://github.com/mbasso/awesome-wasm) such as [OOui](https://github.com/praeclarum/Ooui), [QT-Wasm](https://wiki.qt.io/Qt_for_WebAssembly) are worth checking out, and that's where the Uno Platform is trying to be an answer using C# and XAML for application developers, for .NET UWP, WPF, Xamarin and Silverlight developers.
 
 In fine, WebAssembly is a target that most developers will never have to interact with directly, in the same way most developers never have to interact with x86_64 or ARM64 directly. It may become important if you want to dive deep into AOT engines, LLVM backends or similar technologies. Otherwise, it will mostly stay a compilation target, an element in a drop down list next to x86 and ARM64.
 
@@ -47,7 +47,7 @@ In a lot of cases, developers and companies have been avoiding the web altogethe
 
 Those reasons are obviously debateable, but the single-language environment is one  main blocker. Yet, the deployment ease and ubiquitous presence of browsers make it difficult to ignore, and Wasm is allowing for the software industry to benefit from those two aspects. Software developed for the past 30 years is now able to reach the Web as a deployment target and execution environment.
 
-## Website, WebApp, App, Mobile App, SPA, RIA, Application or Program ?
+## Website, WebApp, App, Mobile App, Single Page Application (SPA), Rich Internet Application (RIA), Application or Program ?
 
 The basic notion of a program has changed significantly over the years. It was caused by the evolving data locality, mobility, processing power, web/native environments, and the blending of those environments. In all of this, to be able to name a combination of all these constraints, terms have appeared to ease up the understanding.
 
@@ -55,11 +55,11 @@ Now that it is possible to install a C#/C++/Rust program from an URL installed a
 
 For now, the name that makes the most sense would be WebApp or SPA when run in a browser, though App does also make a lot of sense. The term may also be diluted if the same code runs in an electron shell, for instance.
 
-There are concerns over the SEO aspect of such WebAssembly apps. Wasm apps can be easily compared to Mobile Apps in their searchable aspect, or to large desktop or SPAs (like GMail) for which the searchable aspect is not particularly relevant.
+There are concerns over the _Seach Engine Optimizations_ (SEO) aspect of such WebAssembly apps. Wasm apps can be easily compared to Mobile Apps in their searchable aspect, or to large desktop or SPAs (like GMail) for which the searchable aspect is not particularly relevant.
 
 ## Wasm, Performance and .NET JITing
 
-Microsoft has been working on a WebAssembly [port of the Mono runtime for a while now](https://www.mono-project.com/news/2017/08/09/hello-webassembly/), and [progress has been steady](https://www.mono-project.com/news/2018/01/16/mono-static-webassembly-compilation/) since the beginning of 2018. The runtime is so far looking as stable as it is on iOS and Android using the [Uno Platform](https://github.com/nventive/Uno) as a point of reference, which is quite the achievement.
+Microsoft has been working on a WebAssembly [port of the Mono runtime for a while now](https://www.mono-project.com/news/2017/08/09/hello-webassembly/), and [progress has been steady](https://www.mono-project.com/news/2018/01/16/mono-static-webassembly-compilation/) since the beginning of 2018. The runtime is looking as stable as it is on iOS and Android using the [Uno Platform](https://github.com/nventive/Uno) as a point of reference, which is quite the achievement.
 
 There's also the .NET Core Runtime (CoreRT) team that is working [on a WebAssembly port of the .NET Native engine](https://github.com/dotnet/corert/blob/master/Documentation/how-to-build-WebAssembly.md), and significant progress is made there as well.
 
