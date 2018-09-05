@@ -15,9 +15,17 @@ The secure part of the goal is very important because it makes it very different
 The performance aspect is also very important. 
 
 ![Chakra Pipeline](Assets/chakra-pipeline.png)
+
 _[Chakra & ChakraCore’s multi-tiered execution pipeline](https://blogs.windows.com/msedgedev/2015/12/05/open-source-chakra-core)_
 
-JS execution engines have become very fast since the language origins, and they have also become very complex. Those are full of JITing tiered engines that can optimize, de-optimize and re-optimize portions of code based on various performance heuristics. Wasm on the other hand, because of the relative simplicity of the instruction set, is able to perform compilation optimizations on the fly through [streaming compilation](https://webassembly.github.io/spec/web-api/index.html#streaming-modules) concurrently as the code is being downloaded.
+JS execution engines have become very fast since the language origins, and they have also become very complex. Those are full of JITing tiered engines that can optimize, de-optimize and re-optimize portions of code based on various performance heuristics. 
+
+![V8 Liftoff](Assets/v8-liftoff.png)
+
+_[V8's new compilation pipeline (Liftoff)](https://v8project.blogspot.com/2018/08/liftoff.html)_
+
+
+Wasm on the other hand, because of the relative simplicity of the instruction set, is able to [perform compilation optimizations](https://v8project.blogspot.com/2018/08/liftoff.html) on the fly through [streaming compilation](https://webassembly.github.io/spec/web-api/index.html#streaming-modules) concurrently as the code is being downloaded.
 
 Another aspect of WebAssembly is in its agnostic definition, even though its name contains "Web", it's meant to be used a generic byte code. That's what allows for projects like [Ethereum](https://github.com/ewasm/design), [Nebulet](https://github.com/nebulet/nebulet) or [WebAssembly for .NET](https://github.com/RyanLamansky/dotnet-webassembly) to run without any browser in sight. As [Jay Phelps often mentions](https://twitter.com/_jayphelps/status/1034663875839504384) WebAssembly is neither Web nor Assembly, and can fit in many scenarios. It has the potential to ultimately be a true universal binary format, for kind of programming.
 
