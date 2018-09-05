@@ -51,7 +51,7 @@ Those reasons are obviously debateable, but the single-language environment is o
 
 The basic notion of a program has changed significantly over the years. It was caused by the evolving data locality, mobility, processing power, web/native environments, and the blending of those environments. In all of this, to be able to name a combination of all these constraints, terms have appeared to ease up the understanding.
 
-Now that it is possible to install a C#/C++/Rust program from an URL installed as a **Progressive WebApp** that uses OpenGL or XAML, what makes it that much different from a Mobile App that is downloaded from an app store using an internal API call? Is a WebApp it because program uses Javascript? Or HTML? What will be its kind if  none are used once browsers can run wasm without JS ?
+Now that it is possible to install a C#/C++/Rust program from an URL installed as a **Progressive WebApp** that uses OpenGL or XAML, what makes it that much different from a Mobile App that is downloaded from an app store using an internal API call? Is it a WebApp because it uses Javascript? Or HTML? Is it still a WebApp is there is no Javascript code, once browsers can run wasm without JS ?
 
 For now, the name that makes the most sense would be WebApp or SPA when run in a browser, though App does also make a lot of sense. The term may also be diluted if the same code runs in an electron shell, for instance.
 
