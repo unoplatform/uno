@@ -37,7 +37,7 @@ namespace $ext_safeprojectname$.Droid
 
 			ImageLoader.Instance.Init(config);
 
-		ImageSource.DefaultImageLoader = ImageLoader.Instance.LoadImageAsync;
+			ImageSource.DefaultImageLoader = ImageLoader.Instance.LoadImageAsync;
 		}
 	}
 }
