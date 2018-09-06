@@ -1,10 +1,10 @@
 # Talkin' 'bout my generation: How the Uno Platform generates code, part 1
 
-In previous articles we've covered how the [Uno Platform](https://platform.uno/) takes a visual tree defined in the [XAML](https://docs.microsoft.com/en-us/windows/uwp/xaml-platform/xaml-overview) markup language and creates it on iOS, Android, and WebAssembly. In this article I want to dive into a key intermediate step: how the XAML is parsed and mapped to generated C# code. In part 2, we'll look at a few other ways in which Uno leverages code generation to make the wheels turn.  
+In previous articles we've covered how the [Uno Platform](https://platform.uno/) takes a visual tree defined in the [XAML](https://docs.microsoft.com/en-us/windows/uwp/xaml-platform/xaml-overview) markup language and creates it on iOS, Android, and WebAssembly. In this article I want to dive into a key intermediate step: how the XAML is parsed and mapped to generated C# code. In part 2, we'll look at a few other ways in which Uno leverages code generation to make the wheels turn. 
 
 ## Parsing XAML
 
-XAML stands for eXtensible Application Markup Language. It's an XML-based syntax. Although it can be used to describe pretty much anything, it's geared toward describing the structure of an application. It was first used in [Windows Presentation Foundation](https://en.wikipedia.org/wiki/Windows_Presentation_Foundation), and since then has been used (with minor syntactic differences) in a number of contexts, including Silverlight (RIP), WinRT, Xamarin Forms, and the Universal Windows Platform. 
+XAML stands for eXtensible Application Markup Language. It's an XML-based syntax. Although it can be used to describe [pretty much anything](https://docs.microsoft.com/en-us/dotnet/framework/windows-workflow-foundation/serializing-workflows-and-activities-to-and-from-xaml), it's geared toward describing the structure of an application. It was first used in [Windows Presentation Foundation](https://en.wikipedia.org/wiki/Windows_Presentation_Foundation), and since then has been used (with minor syntactic differences) in a number of contexts, including Silverlight (RIP), WinRT, Xamarin Forms, and the Universal Windows Platform. 
 
 XAML hits a sweet spot: it's human readable, expressive, and sufficiently structured to support design tools like [Blend](https://docs.microsoft.com/en-us/visualstudio/designers/creating-a-ui-by-using-blend-for-visual-studio?view=vs-2017) and [XAML Designer](https://docs.microsoft.com/en-us/visualstudio/designers/creating-a-ui-by-using-xaml-designer-in-visual-studio?view=vs-2017). One nice feature is that it can be seamlessly intermingled with C# via [code-behind](https://docs.microsoft.com/en-us/dotnet/framework/wpf/advanced/code-behind-and-xaml-in-wpf) files. 
 
@@ -32,6 +32,7 @@ Let's look at a concrete example. This is part of the markup we put in `MainPage
 The generated output can be found in the 'obj' folder under the project head. 
 
 ![Xaml Code Generation Location](Assets/xaml-code-generation-location.png)
+
 *The code file generated from MainPage.xaml.*
 
 This is a part of the generated code, showing the output for the XAML snippet above: 
@@ -77,8 +78,10 @@ This is a part of the generated code, showing the output for the XAML snippet ab
             }
 ````
 
-What a mouthful! In the normal course of Uno development you don't need to look at code generated from XAML or even know that it's there, though occasionally it's useful to take a peek when debugging.
+What a mouthful! Generated code tends to be optimized for machine readability, rather than for human readability. For example, the explicit casts to `XamlApplyHandler` were added when we found that the compiler was having to do a lot of computationally-expensive type inference. That one change doubled the compilation speed for large XAML files. 
+
+In the normal course of Uno development you don't need to look at code generated from XAML or even know that it's there, though occasionally it's useful to take a peek when debugging.
 
 Recall that the `Button_Click` event is defined in [the code-behind](https://medium.com/@unoplatform/pushing-the-right-buttons-how-uno-implements-views-under-the-hood-a5e93ea86688#the-number-goes-up) for MainPage. As far as the compiler is concerned, both the authored and generated files are just [partial definitions](https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/classes-and-structs/partial-classes-and-methods) of the same class. 
 
-One last fun fact: when building on MacOS using [Visual Studio for Mac](https://visualstudio.microsoft.com/vs/mac/) (which Uno tentatively supports in preview), Uno uses an internal port in place of the System.Xaml namespace (which isn't available on Mac). The same code backs Uno's support for runtime Xaml interpretation via [Windows.UI.Xaml.Markup.XamlReader](https://docs.microsoft.com/en-us/uwp/api/windows.ui.xaml.markup.xamlreader), which is used in the [interactive mode](https://github.com/nventive/Uno.Playground/blob/master/src/Uno.Playground.Shared/Samples/Playground.xaml) of the [Uno Gallery app](https://github.com/nventive/Uno.Playground) and [Uno.Playground website](https://playground.platform.uno/). 
+One last fun fact: when building on MacOS using [Visual Studio for Mac](https://visualstudio.microsoft.com/vs/mac/) (which Uno tentatively supports in preview), Uno uses an internal port in place of the System.Xaml namespace which isn't available on Mac. The same code backs Uno's support for runtime Xaml interpretation via [Windows.UI.Xaml.Markup.XamlReader](https://docs.microsoft.com/en-us/uwp/api/windows.ui.xaml.markup.xamlreader), which is used in the [interactive mode](https://github.com/nventive/Uno.Playground/blob/master/src/Uno.Playground.Shared/Samples/Playground.xaml) of the [Uno Gallery app](https://github.com/nventive/Uno.Playground) and [Uno.Playground website](https://playground.platform.uno/). 
