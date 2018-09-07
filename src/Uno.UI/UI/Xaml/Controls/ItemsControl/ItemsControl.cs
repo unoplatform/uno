@@ -85,6 +85,7 @@ namespace Windows.UI.Xaml.Controls
 			OnDisplayMemberPathChangedPartial(string.Empty, this.DisplayMemberPath);
 
 			_items.VectorChanged += (s, e) => {
+				OnItemsChanged(null);
 				SetNeedsUpdateItems();
 			};
 		}
@@ -230,7 +231,9 @@ namespace Windows.UI.Xaml.Controls
 
 		public ItemCollection Items => _items;
 
-		internal virtual void OnItemsChanged() { }
+		protected virtual void OnItemsChanged(object e)
+		{
+		}
 
 		/// <summary>
 		/// The number of groups in the <see cref="ItemsSource"/>, zero if it is ungrouped.
