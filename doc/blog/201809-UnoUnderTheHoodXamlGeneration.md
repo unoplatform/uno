@@ -1,6 +1,6 @@
 # Talkin' 'bout my generation: How the Uno Platform generates code, part 1
 
-In previous articles we've covered how the [Uno Platform](https://platform.uno/) takes a visual tree defined in the [XAML](https://docs.microsoft.com/en-us/windows/uwp/xaml-platform/xaml-overview) markup language and creates it on iOS, Android, and WebAssembly. In this article I want to dive into a key intermediate step: how the XAML is parsed and mapped to generated C# code. In part 2, we'll look at a few other ways in which Uno leverages code generation to make the wheels turn. 
+In [previous](https://medium.com/@unoplatform/under-the-hood-an-introduction-to-uno-platform-6064a765d6a) [articles](https://hackernoon.com/pushing-the-right-buttons-how-uno-implements-views-under-the-hood-a5e93ea86688) we've covered how the [Uno Platform](https://platform.uno/) takes a visual tree defined in the [XAML](https://docs.microsoft.com/en-us/windows/uwp/xaml-platform/xaml-overview) markup language and creates it on iOS, Android, and WebAssembly. In this article I want to dive into a key intermediate step: how the XAML is parsed and mapped to generated C# code. In an upcoming part 2, we'll look at a few other ways in which Uno leverages code generation to make the wheels turn. 
 
 ## Parsing XAML
 
@@ -10,9 +10,7 @@ XAML hits a sweet spot: it's human readable, expressive, and sufficiently struct
 
 To tap into that power, Uno needs to be able to read a XAML file and convert it into compileable C# code.  
 
-The first step is to parse the file into a Xaml object tree, using the [System.Xaml](https://docs.microsoft.com/en-us/dotnet/api/system.xaml?view=netframework-4.7.2) namespace. 
-
-Next, the Xaml object tree is processed into a C# class definition. The bulk of the heavy lifting is done in the mammoth [XamlFileGenerator](https://github.com/nventive/Uno/blob/master/src/SourceGenerators/Uno.UI.SourceGenerators/XamlGenerator/XamlFileGenerator.cs) class. We lean on the [Microsoft.CodeAnalysis API](https://github.com/dotnet/roslyn) here (aka 'Roslyn') to match types used in XAML to types defined in the app assembly or its dependencies. The output is saved to a generated file.  
+The first step is to parse the file into a Xaml object tree, using the [System.Xaml](https://docs.microsoft.com/en-us/dotnet/api/system.xaml?view=netframework-4.7.2) namespace. Next, the Xaml object tree is processed into a C# class definition. The bulk of the heavy lifting is done in the mammoth [XamlFileGenerator](https://github.com/nventive/Uno/blob/master/src/SourceGenerators/Uno.UI.SourceGenerators/XamlGenerator/XamlFileGenerator.cs) class. We lean on the [Microsoft.CodeAnalysis API](https://github.com/dotnet/roslyn) here (aka 'Roslyn') to match types used in XAML to types defined in the app assembly or its dependencies. The output is saved to a generated file.  
 
 All this happens behind the scenes whenever you build an Uno head. 
 
@@ -78,10 +76,10 @@ This is a part of the generated code, showing the output for the XAML snippet ab
             }
 ````
 
-What a mouthful! Generated code tends to be optimized for machine readability, rather than for human readability. For example, the explicit casts to `XamlApplyHandler` were added when we found that the compiler was having to do a lot of computationally-expensive type inference. That one change doubled the compilation speed for large XAML files. 
+What a mouthful! Bear in mind that generated code tends to be optimized for machine readability, rather than for human readability. For example, the explicit casts to `XamlApplyHandler` were added when we found that the compiler was having to do a lot of computationally-expensive type inference. That one change **doubled** the compilation speed for large XAML files. 
 
 In the normal course of Uno development you don't need to look at code generated from XAML or even know that it's there, though occasionally it's useful to take a peek when debugging.
 
-Recall that the `Button_Click` event is defined in [the code-behind](https://medium.com/@unoplatform/pushing-the-right-buttons-how-uno-implements-views-under-the-hood-a5e93ea86688#the-number-goes-up) for MainPage. As far as the compiler is concerned, both the authored and generated files are just [partial definitions](https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/classes-and-structs/partial-classes-and-methods) of the same class. 
+You can see that something called `Button_Click` is subscribed to the Button's Click event. Recall that `Button_Click` is defined in [the code-behind](https://medium.com/@unoplatform/pushing-the-right-buttons-how-uno-implements-views-under-the-hood-a5e93ea86688#the-number-goes-up) in `MainPage.xaml.cs`. As far as the compiler is concerned, both the authored and generated files are just [partial definitions](https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/classes-and-structs/partial-classes-and-methods) of the same class. 
 
-One last fun fact: when building on MacOS using [Visual Studio for Mac](https://visualstudio.microsoft.com/vs/mac/) (which Uno tentatively supports in preview), Uno uses an internal port in place of the System.Xaml namespace which isn't available on Mac. The same code backs Uno's support for runtime Xaml interpretation via [Windows.UI.Xaml.Markup.XamlReader](https://docs.microsoft.com/en-us/uwp/api/windows.ui.xaml.markup.xamlreader), which is used in the [interactive mode](https://github.com/nventive/Uno.Playground/blob/master/src/Uno.Playground.Shared/Samples/Playground.xaml) of the [Uno Gallery app](https://github.com/nventive/Uno.Playground) and [Uno.Playground website](https://playground.platform.uno/). 
+One last fun fact: when building on MacOS using [Visual Studio for Mac](https://visualstudio.microsoft.com/vs/mac/) (which Uno tentatively supports in preview), Uno uses an internal port in place of the System.Xaml namespace which isn't available on Mac. The same code backs Uno's support for runtime Xaml interpretation via [Windows.UI.Xaml.Markup.XamlReader](https://docs.microsoft.com/en-us/uwp/api/windows.ui.xaml.markup.xamlreader). That in turn is used in the [interactive mode](https://github.com/nventive/Uno.Playground/blob/master/src/Uno.Playground.Shared/Samples/Playground.xaml) of the [Uno Gallery app](https://github.com/nventive/Uno.Playground) and [Uno.Playground website](https://playground.platform.uno/), which allows you to edit snippets of XAML and see the results in realtime. Check it out!
