@@ -366,8 +366,26 @@ By default, Uno.UI provides a working but slow way to download images from exter
 For both platforms, the `ImageSource.DefaultDownloader` can be set to an instance
 of `IImageSourceDownloader`, which provides a localy downloaded representation of the remote file.
 
-On Android, for a more efficient handling of images, the Image control can be provided a 
-ImageSource.DefaultImageLoader which is more suited to be used with the [Android Universal Image Loader](https://github.com/nostra13/Android-Universal-Image-Loader).
+On Android, to handle the loading of images, the Image control has to be provided a 
+ImageSource.DefaultImageLoader such as the [Android Universal Image Loader](https://github.com/nostra13/Android-Universal-Image-Loader).
+
+This package is installed by default when using the [Uno Cross-Platform solution templates](https://marketplace.visualstudio.com/items?itemName=nventivecorp.uno-platform-addin),
+or you can install the [nventive.UniversalImageLoader](https://www.nuget.org/packages/nventive.UniversalImageLoader/) and call the following code
+from your application's App constructor :
+
+```csharp
+private void ConfigureUniversalImageLoader()
+{
+	// Create global configuration and initialize ImageLoader with this config
+	ImageLoaderConfiguration config = new ImageLoaderConfiguration
+		.Builder(Context)
+		.Build();
+
+	ImageLoader.Instance.Init(config);
+
+	ImageSource.DefaultImageLoader = ImageLoader.Instance.LoadImageAsync;
+}
+```
 
 On iOS, bundle images can be selected using "bundle://" (e.g. bundle:///SplashScreen). When selecting the bundle resource, do not include the zoom factor, nor the file extension.
 
