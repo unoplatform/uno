@@ -150,7 +150,11 @@ namespace Windows.Media.Playback
 
 		public void Pause()
 		{
-
+			if (CurrentState == MediaPlayerState.Playing)
+			{
+				_player.Pause();
+				CurrentState = MediaPlayerState.Paused;
+			}
 		}
 	}
 }

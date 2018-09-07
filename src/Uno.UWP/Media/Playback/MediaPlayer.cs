@@ -41,7 +41,7 @@ namespace Windows.Media.Playback
 			set
 			{
 				_currentState = value;
-				CurrentStateChanged?.Invoke(this, null);
+				CurrentStateChanged?.Invoke(this, _currentState);
 			}
 		}
 

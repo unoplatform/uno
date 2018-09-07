@@ -9,6 +9,12 @@ namespace Windows.UI.Xaml.Controls
 {
 	public partial class MediaPlayerElement : IDisposable
 	{
+		private const string TransportControlsPresenterName = "TransportControlsPresenter";
+
+		private ContentPresenter _transportControlsPresenter;
+
+		private bool _isTransportControlsBound;
+
 		#region Source Property
 
 		public IMediaPlaybackSource Source
@@ -103,6 +109,12 @@ namespace Windows.UI.Xaml.Controls
 			{
 				mpe.MediaPlayer.AutoPlay = mpe.AutoPlay;
 				mpe.MediaPlayer.Source = mpe.Source;
+
+				if (mpe.AreTransportControlsEnabled)
+				{
+					mpe.TransportControls?.Bind(mpe.MediaPlayer);
+					mpe._isTransportControlsBound = true;
+				}
 			});
 		}
 
@@ -121,15 +133,7 @@ namespace Windows.UI.Xaml.Controls
 				nameof(AreTransportControlsEnabled),
 				typeof(bool),
 				typeof(MediaPlayerElement),
-				new FrameworkPropertyMetadata(false, OnAreTransportControlsEnabledChanged));
-
-		private static void OnAreTransportControlsEnabledChanged(DependencyObject sender, DependencyPropertyChangedEventArgs args)
-		{
-			sender.Maybe<MediaPlayerElement>(mpe =>
-			{
-				// TODO
-			});
-		}
+				new FrameworkPropertyMetadata(false));
 
 		#endregion
 
@@ -143,9 +147,18 @@ namespace Windows.UI.Xaml.Controls
 		{
 			base.OnApplyTemplate();
 
+			_transportControlsPresenter = this.GetTemplateChild(TransportControlsPresenterName) as ContentPresenter;
+			_transportControlsPresenter.Content = TransportControls;
+
 			if (MediaPlayer == null)
 			{
 				MediaPlayer = new Windows.Media.Playback.MediaPlayer();
+			}
+
+			if (AreTransportControlsEnabled && !_isTransportControlsBound)
+			{
+				TransportControls?.Bind(MediaPlayer);
+				_isTransportControlsBound = true;
 			}
 
 			if (AutoPlay && MediaPlayer.CurrentState == MediaPlayerState.Closed)
