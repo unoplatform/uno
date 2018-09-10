@@ -8702,6 +8702,26 @@
 				Value="{ThemeResource SystemControlPageBackgroundAltMediumBrush}" />
 		<Setter Property="Padding"
 				Value="0" />
+		<Setter Property="MinWidth"
+				Value="50" />
+		<Setter Property="MinHeight"
+				Value="50" />
+		<Setter Property="Template">
+			<Setter.Value>
+				<ControlTemplate TargetType="FlyoutPresenter">
+					<Border Background="{TemplateBinding Background}"
+							HorizontalAlignment="Stretch"
+							VerticalAlignment="Stretch">
+						
+						<ContentPresenter ContentTemplate="{TemplateBinding ContentTemplate}"
+										  ContentTransitions="{TemplateBinding ContentTransitions}"
+										  Content="{TemplateBinding Content}"
+										  HorizontalAlignment="{TemplateBinding HorizontalAlignment}"
+										  VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
+					</Border>					
+				</ControlTemplate>
+			</Setter.Value>
+		</Setter>
 	</Style>
 
 	<Style TargetType="MediaTransportControls">
@@ -9022,15 +9042,13 @@
 										Grid.Column="0"
 										Grid.Row="1"
 										Visibility="Collapsed">
-									<AppBarButton x:Name="PlayPauseButtonOnLeft"
-												  Margin="0"
-												  VerticalAlignment="Center"
-												  Style="{StaticResource MTC_ButtonStyle}">
-										<AppBarButton.Icon>
-											<SymbolIcon x:Name="PlayPauseSymbolLeft"
-														Symbol="Play" />
-										</AppBarButton.Icon>
-									</AppBarButton>
+									<Button x:Name='PlayPauseButtonOnLeft'
+											Margin="0"
+											VerticalAlignment="Center"
+											Style='{StaticResource MTC_ButtonStyle}'>
+										<SymbolIcon x:Name='PlayPauseSymbolLeft'
+													Symbol='Play' />
+									</Button>
 								</Border>
 								<Border x:Name="MediaTransportControls_Command_Border"
 										Grid.Column="1"
@@ -9049,6 +9067,7 @@
 													Style='{StaticResource MTC_ButtonStyle}'>
 												<Button.Flyout>
 													<Flyout x:Name='VolumeFlyout'
+															Placement="Right"
 															FlyoutPresenterStyle="{StaticResource MTC_FlyoutStyle}">
 														<StackPanel Orientation="Horizontal">
 															<Button x:Name='AudioMuteButton'

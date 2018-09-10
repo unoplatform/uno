@@ -88,5 +88,15 @@ namespace Windows.Media.Playback
 				CurrentState = MediaPlayerState.Paused;
 			}
 		}
+
+		private void ToggleMute()
+		{
+			// TODO
+		}
+
+		private void OnVolumeChanged()
+		{
+			// TODO
+		}
 	}
 }
