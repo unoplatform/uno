@@ -11,7 +11,7 @@ ISSUES MISSING IMPORTANT INFORMATION MAY BE CLOSED WITHOUT INVESTIGATION.
 <!-- - Feature request --> 
 <!-- - Sample app request -->
 <!-- - Documentation issue or request -->
-<!-- - Question of Support request => Please do not submit support request here, instead see https://github.com/nventige/Uno/blob/master/contributing.md#askquestions -->
+<!-- - Question of Support request => Please do not submit support request here, instead see https://github.com/nventive/Uno/blob/master/README.md#have-questions-feature-requests-issues -->
 
 ## Current behavior
 <!-- Describe how the issue manifests. -->
@@ -46,4 +46,6 @@ Visual Studio
 - [ ] 2017 Preview (version: )
 - [ ] for Mac (version: )
 
+Relevant plugins
+- [ ] Resharper (version: )
 ```
