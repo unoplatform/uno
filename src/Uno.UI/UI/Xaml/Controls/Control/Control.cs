@@ -91,10 +91,10 @@ namespace Windows.UI.Xaml.Controls
 		internal void SetUpdateControlTemplate(bool forceUpdate = false)
 		{
 			if (
-				!FeatureConfiguration.Control.UseLegacyLazyApplyTemplate
-				|| forceUpdate
-				|| this.HasParent()
-				|| CanCreateTemplateWithoutParent
+				(!FeatureConfiguration.Control.UseLegacyLazyApplyTemplate
+					|| forceUpdate
+					|| CanCreateTemplateWithoutParent)
+				&& this.HasParent() // Instead we should check if we are in a the visual tree
 			)
 			{
 				UpdateTemplate();

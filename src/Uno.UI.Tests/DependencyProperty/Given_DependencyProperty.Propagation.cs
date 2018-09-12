@@ -476,6 +476,8 @@ namespace Uno.UI.Tests.BinderTests.Propagation
 			});
 
 			SUT.Template = template;
+
+			new Grid().Children.Add(SUT); // This is enough for now, but the `SUT` should be in the visual tree for its template to get applied
 			SUT.ApplyTemplate();
 
 			Assert.IsNotNull(anim);
