@@ -18,11 +18,11 @@ WebAssembly being a binary format, it's not human readable, but it has a textual
 
 [WebAssembly Studio](http://webassembly.studio/) is a good way have a peek inside the generated WebAssembly, where building this C code :
 
-![Wasm Code](assets/wasm-intro-c-code.png)
+![C Code](Assets/wasm-intro-c-code.png)
 
 becomes this WebAssembly literal code:
 
-![Wasm Code](assets/wasm-intro-wasm-code.png)
+![Wasm Code](Assets/wasm-intro-wasm-code.png)
 
 It's not particularly easy to read, as would any similar assembler code, but it gives an idea on how a stack based virtual machine language works.
 
