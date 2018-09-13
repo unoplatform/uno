@@ -18,7 +18,7 @@ namespace Windows.UI.Xaml.Controls
 			DependencyProperty.Register(
 				nameof(IsFullWindowButtonVisible),
 				typeof(bool),
-				typeof(MediaPlayerElement),
+				typeof(MediaTransportControls),
 				new FrameworkPropertyMetadata(true));
 
 		#endregion
@@ -35,7 +35,7 @@ namespace Windows.UI.Xaml.Controls
 			DependencyProperty.Register(
 				nameof(IsPlaybackRateEnabled),
 				typeof(bool),
-				typeof(MediaPlayerElement),
+				typeof(MediaTransportControls),
 				new FrameworkPropertyMetadata(true));
 
 		#endregion
@@ -52,7 +52,7 @@ namespace Windows.UI.Xaml.Controls
 			DependencyProperty.Register(
 				nameof(IsFastRewindEnabled),
 				typeof(bool),
-				typeof(MediaPlayerElement),
+				typeof(MediaTransportControls),
 				new FrameworkPropertyMetadata(true));
 
 		#endregion
@@ -69,7 +69,7 @@ namespace Windows.UI.Xaml.Controls
 			DependencyProperty.Register(
 				nameof(IsFastRewindButtonVisible),
 				typeof(bool),
-				typeof(MediaPlayerElement),
+				typeof(MediaTransportControls),
 				new FrameworkPropertyMetadata(true));
 
 		#endregion
@@ -86,7 +86,7 @@ namespace Windows.UI.Xaml.Controls
 			DependencyProperty.Register(
 				nameof(IsFullWindowEnabled),
 				typeof(bool),
-				typeof(MediaPlayerElement),
+				typeof(MediaTransportControls),
 				new FrameworkPropertyMetadata(true));
 
 		#endregion
@@ -103,7 +103,7 @@ namespace Windows.UI.Xaml.Controls
 			DependencyProperty.Register(
 				nameof(IsFastForwardEnabled),
 				typeof(bool),
-				typeof(MediaPlayerElement),
+				typeof(MediaTransportControls),
 				new FrameworkPropertyMetadata(true));
 
 		#endregion
@@ -120,8 +120,8 @@ namespace Windows.UI.Xaml.Controls
 			DependencyProperty.Register(
 				nameof(IsCompact),
 				typeof(bool),
-				typeof(MediaPlayerElement),
-				new FrameworkPropertyMetadata(false));
+				typeof(MediaTransportControls),
+				new FrameworkPropertyMetadata(false, OnIsCompactChanged));
 
 		#endregion
 
@@ -137,7 +137,7 @@ namespace Windows.UI.Xaml.Controls
 			DependencyProperty.Register(
 				nameof(IsSeekEnabled),
 				typeof(bool),
-				typeof(MediaPlayerElement),
+				typeof(MediaTransportControls),
 				new FrameworkPropertyMetadata(true));
 
 		#endregion
@@ -154,7 +154,7 @@ namespace Windows.UI.Xaml.Controls
 			DependencyProperty.Register(
 				nameof(IsStopEnabled),
 				typeof(bool),
-				typeof(MediaPlayerElement),
+				typeof(MediaTransportControls),
 				new FrameworkPropertyMetadata(true));
 
 		#endregion
@@ -171,7 +171,7 @@ namespace Windows.UI.Xaml.Controls
 			DependencyProperty.Register(
 				nameof(IsFastForwardButtonVisible),
 				typeof(bool),
-				typeof(MediaPlayerElement),
+				typeof(MediaTransportControls),
 				new FrameworkPropertyMetadata(true));
 
 		#endregion
@@ -188,7 +188,7 @@ namespace Windows.UI.Xaml.Controls
 			DependencyProperty.Register(
 				nameof(IsStopButtonVisible),
 				typeof(bool),
-				typeof(MediaPlayerElement),
+				typeof(MediaTransportControls),
 				new FrameworkPropertyMetadata(true));
 
 		#endregion
@@ -205,7 +205,7 @@ namespace Windows.UI.Xaml.Controls
 			DependencyProperty.Register(
 				nameof(IsVolumeButtonVisible),
 				typeof(bool),
-				typeof(MediaPlayerElement),
+				typeof(MediaTransportControls),
 				new FrameworkPropertyMetadata(true));
 
 		#endregion
@@ -222,7 +222,7 @@ namespace Windows.UI.Xaml.Controls
 			DependencyProperty.Register(
 				nameof(IsSeekBarVisible),
 				typeof(bool),
-				typeof(MediaPlayerElement),
+				typeof(MediaTransportControls),
 				new FrameworkPropertyMetadata(true));
 
 		#endregion
@@ -239,7 +239,7 @@ namespace Windows.UI.Xaml.Controls
 			DependencyProperty.Register(
 				nameof(IsPlaybackRateButtonVisible),
 				typeof(bool),
-				typeof(MediaPlayerElement),
+				typeof(MediaTransportControls),
 				new FrameworkPropertyMetadata(true));
 
 		#endregion
@@ -256,7 +256,7 @@ namespace Windows.UI.Xaml.Controls
 			DependencyProperty.Register(
 				nameof(IsZoomEnabled),
 				typeof(bool),
-				typeof(MediaPlayerElement),
+				typeof(MediaTransportControls),
 				new FrameworkPropertyMetadata(true));
 
 		#endregion
@@ -273,7 +273,7 @@ namespace Windows.UI.Xaml.Controls
 			DependencyProperty.Register(
 				nameof(IsZoomButtonVisible),
 				typeof(bool),
-				typeof(MediaPlayerElement),
+				typeof(MediaTransportControls),
 				new FrameworkPropertyMetadata(true));
 
 		#endregion
@@ -290,7 +290,7 @@ namespace Windows.UI.Xaml.Controls
 			DependencyProperty.Register(
 				nameof(IsVolumeEnabled),
 				typeof(bool),
-				typeof(MediaPlayerElement),
+				typeof(MediaTransportControls),
 				new FrameworkPropertyMetadata(true));
 
 		#endregion
@@ -307,7 +307,7 @@ namespace Windows.UI.Xaml.Controls
 			DependencyProperty.Register(
 				nameof(IsSkipBackwardButtonVisible),
 				typeof(bool),
-				typeof(MediaPlayerElement),
+				typeof(MediaTransportControls),
 				new FrameworkPropertyMetadata(true));
 
 		#endregion
@@ -324,7 +324,7 @@ namespace Windows.UI.Xaml.Controls
 			DependencyProperty.Register(
 				nameof(IsNextTrackButtonVisible),
 				typeof(bool),
-				typeof(MediaPlayerElement),
+				typeof(MediaTransportControls),
 				new FrameworkPropertyMetadata(true));
 
 		#endregion
@@ -341,7 +341,7 @@ namespace Windows.UI.Xaml.Controls
 			DependencyProperty.Register(
 				nameof(FastPlayFallbackBehaviour),
 				typeof(Media.FastPlayFallbackBehaviour),
-				typeof(MediaPlayerElement),
+				typeof(MediaTransportControls),
 				new FrameworkPropertyMetadata(default(Media.FastPlayFallbackBehaviour)));
 
 		#endregion
@@ -358,7 +358,7 @@ namespace Windows.UI.Xaml.Controls
 			DependencyProperty.Register(
 				nameof(IsSkipForwardEnabled),
 				typeof(bool),
-				typeof(MediaPlayerElement),
+				typeof(MediaTransportControls),
 				new FrameworkPropertyMetadata(true));
 
 		#endregion
@@ -375,7 +375,7 @@ namespace Windows.UI.Xaml.Controls
 			DependencyProperty.Register(
 				nameof(IsPreviousTrackButtonVisible),
 				typeof(bool),
-				typeof(MediaPlayerElement),
+				typeof(MediaTransportControls),
 				new FrameworkPropertyMetadata(true));
 
 		#endregion
@@ -392,7 +392,7 @@ namespace Windows.UI.Xaml.Controls
 			DependencyProperty.Register(
 				nameof(IsSkipForwardButtonVisible),
 				typeof(bool),
-				typeof(MediaPlayerElement),
+				typeof(MediaTransportControls),
 				new FrameworkPropertyMetadata(true));
 
 		#endregion
@@ -409,7 +409,7 @@ namespace Windows.UI.Xaml.Controls
 			DependencyProperty.Register(
 				nameof(IsSkipBackwardEnabled),
 				typeof(bool),
-				typeof(MediaPlayerElement),
+				typeof(MediaTransportControls),
 				new FrameworkPropertyMetadata(true));
 
 		#endregion
@@ -426,8 +426,8 @@ namespace Windows.UI.Xaml.Controls
 			DependencyProperty.Register(
 				nameof(ShowAndHideAutomatically),
 				typeof(bool),
-				typeof(MediaPlayerElement),
-				new FrameworkPropertyMetadata(true));
+				typeof(MediaTransportControls),
+				new FrameworkPropertyMetadata(true, OnShowAndHideAutomaticallyChanged));
 
 		#endregion
 
@@ -443,7 +443,7 @@ namespace Windows.UI.Xaml.Controls
 			DependencyProperty.Register(
 				nameof(IsRepeatButtonVisible),
 				typeof(bool),
-				typeof(MediaPlayerElement),
+				typeof(MediaTransportControls),
 				new FrameworkPropertyMetadata(true));
 
 		#endregion
@@ -460,7 +460,7 @@ namespace Windows.UI.Xaml.Controls
 			DependencyProperty.Register(
 				nameof(IsRepeatEnabled),
 				typeof(bool),
-				typeof(MediaPlayerElement),
+				typeof(MediaTransportControls),
 				new FrameworkPropertyMetadata(true));
 
 		#endregion
@@ -477,7 +477,7 @@ namespace Windows.UI.Xaml.Controls
 			DependencyProperty.Register(
 				nameof(IsCompactOverlayEnabled),
 				typeof(bool),
-				typeof(MediaPlayerElement),
+				typeof(MediaTransportControls),
 				new FrameworkPropertyMetadata(true));
 
 		#endregion
@@ -494,7 +494,7 @@ namespace Windows.UI.Xaml.Controls
 			DependencyProperty.Register(
 				nameof(IsCompactOverlayButtonVisible),
 				typeof(bool),
-				typeof(MediaPlayerElement),
+				typeof(MediaTransportControls),
 				new FrameworkPropertyMetadata(true));
 
 		#endregion

@@ -31,20 +31,6 @@ namespace Windows.Media.Playback
 			}
 		}
 
-		private MediaPlayerState _currentState = MediaPlayerState.Closed;
-		public MediaPlayerState CurrentState
-		{
-			get
-			{
-				return _currentState;
-			}
-			set
-			{
-				_currentState = value;
-				CurrentStateChanged?.Invoke(this, _currentState);
-			}
-		}
-
 		public bool AutoPlay { get; set; }
 
 		private bool _isMuted = false;
@@ -73,23 +59,32 @@ namespace Windows.Media.Playback
 			{
 				_volume = value;
 				OnVolumeChanged();
-				VolumeChanged?.Invoke(this, _isMuted);
+				VolumeChanged?.Invoke(this, _volume);
 			}
 		}
+
+		public MediaPlaybackSession PlaybackSession { get; }
 
 		#endregion
 
 		#region Events
 
 		public event TypedEventHandler<MediaPlayer, object> SourceChanged;
-
-		public event TypedEventHandler<MediaPlayer, object> CurrentStateChanged;
-
+		
 		public event TypedEventHandler<MediaPlayer, object> IsMutedChanged;
 
 		public event TypedEventHandler<MediaPlayer, object> VolumeChanged;
 
+		public event TypedEventHandler<MediaPlayer, object> MediaEnded;
+
+		public event TypedEventHandler<MediaPlayer, MediaPlayerFailedEventArgs> MediaFailed;
+
 		#endregion
+
+		public MediaPlayer()
+		{
+			PlaybackSession = new MediaPlaybackSession(this);
+		}
 	}
 }
 #endif

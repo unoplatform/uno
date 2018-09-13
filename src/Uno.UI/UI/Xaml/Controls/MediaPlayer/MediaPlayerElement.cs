@@ -112,7 +112,7 @@ namespace Windows.UI.Xaml.Controls
 
 				if (mpe.AreTransportControlsEnabled)
 				{
-					mpe.TransportControls?.Bind(mpe.MediaPlayer);
+					mpe.TransportControls?.SetMediaPlayer(mpe.MediaPlayer);
 					mpe._isTransportControlsBound = true;
 				}
 			});
@@ -157,11 +157,11 @@ namespace Windows.UI.Xaml.Controls
 
 			if (AreTransportControlsEnabled && !_isTransportControlsBound)
 			{
-				TransportControls?.Bind(MediaPlayer);
+				TransportControls?.SetMediaPlayer(MediaPlayer);
 				_isTransportControlsBound = true;
 			}
 
-			if (AutoPlay && MediaPlayer.CurrentState == MediaPlayerState.Closed)
+			if (AutoPlay && MediaPlayer.PlaybackSession.PlaybackState == MediaPlaybackState.None)
 			{
 				MediaPlayer.Play();
 			}

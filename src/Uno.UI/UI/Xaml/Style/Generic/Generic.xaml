@@ -8295,7 +8295,7 @@
 		<Setter Property="FontFamily"
 				Value="{ThemeResource MTCMediaFontFamily}" />
 		<Setter Property="Style"
-				Value="{ThemeResource CaptionTextBlockStyle }" />
+				Value="{ThemeResource CaptionTextBlockStyle}" />
 		<Setter Property="IsTextScaleFactorEnabled"
 				Value="False" />
 	</Style>
@@ -8752,8 +8752,8 @@
 											<EasingDoubleKeyFrame KeyTime="0:0:0.3"
 																  Value="1" />
 										</DoubleAnimationUsingKeyFrames>
-										<DoubleAnimation Storyboard.TargetProperty="Y"
-														 Storyboard.TargetName="TranslateVertical"
+										<DoubleAnimation Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.Y)"
+														 Storyboard.TargetName="ControlPanelGrid"
 														 From="50"
 														 To="0.5"
 														 Duration="0:0:0.3" />
@@ -8773,8 +8773,8 @@
 											<DiscreteObjectKeyFrame KeyTime="0"
 																	Value="False" />
 										</ObjectAnimationUsingKeyFrames>
-										<DoubleAnimation Storyboard.TargetProperty="Y"
-														 Storyboard.TargetName="TranslateVertical"
+										<DoubleAnimation Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.Y)"
+														 Storyboard.TargetName="ControlPanelGrid"
 														 From="0.5"
 														 To="50"
 														 Duration="0:0:0.7" />
@@ -8968,10 +8968,10 @@
 						<Border x:Name="ControlPanel_ControlPanelVisibilityStates_Border">
 							<Grid x:Name="ControlPanelGrid"
 								  Background="{ThemeResource SystemControlPageBackgroundAltMediumBrush}"
-								  VerticalAlignment="Bottom"
-								  RenderTransformOrigin="0.5,0.5">
+								  VerticalAlignment="Bottom">
 								<Grid.RenderTransform>
-									<TranslateTransform x:Name="TranslateVertical" />
+									<TranslateTransform X="0"
+														Y="0.5" />
 								</Grid.RenderTransform>
 								<Grid.ColumnDefinitions>
 									<ColumnDefinition Width="Auto" />
@@ -9167,15 +9167,18 @@
 										<StackPanel Orientation="Horizontal"
 													Grid.Column="2">
 											<Button x:Name='ZoomButton'
-													Style='{StaticResource MTC_ButtonStyle}'>
+													Style='{StaticResource MTC_ButtonStyle}'
+													Visibility='Collapsed'>
 												<FontIcon Glyph="&#xE799;" />
 											</Button>
 											<Button x:Name='CastButton'
-													Style='{StaticResource MTC_ButtonStyle}'>
+													Style='{StaticResource MTC_ButtonStyle}'
+													Visibility='Collapsed'>
 												<FontIcon Glyph="&#xEC15;" />
 											</Button>
 											<Button x:Name='FullWindowButton'
-													Style='{StaticResource MTC_ButtonStyle}'>
+													Style='{StaticResource MTC_ButtonStyle}'
+													Visibility='Collapsed'>
 												<SymbolIcon x:Name='FullWindowSymbol'
 															Symbol='FullScreen' />
 											</Button>

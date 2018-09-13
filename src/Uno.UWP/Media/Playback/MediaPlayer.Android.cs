@@ -10,6 +10,7 @@ namespace Windows.Media.Playback
 {
 	public partial class MediaPlayer :
 		Java.Lang.Object,
+		AndroidMediaPlayer.IOnCompletionListener,
 		AndroidMediaPlayer.IOnErrorListener,
 		AndroidMediaPlayer.IOnPreparedListener
 	{
@@ -38,25 +39,23 @@ namespace Windows.Media.Playback
 				isPlayerReady = true;
 			}
 
-			if (CurrentState == MediaPlayerState.Paused)
+			if (PlaybackSession.PlaybackState == MediaPlaybackState.Paused)
 			{
-				//We are simply paused so just continue
 				VideoViewCanvas.SeekTo(lastPosition);
 				VideoViewCanvas.Start();
-				CurrentState = MediaPlayerState.Playing;
+				PlaybackSession.PlaybackState = MediaPlaybackState.Playing;
 				return;
 			}
 
 			try
 			{
 				lastPosition = 0;
-				CurrentState = MediaPlayerState.Buffering;
+				PlaybackSession.PlaybackState = MediaPlaybackState.Buffering;
 				VideoViewCanvas.SetVideoURI(Android.Net.Uri.Parse(((MediaSource)Source).Uri.ToString()));
 			}
 			catch (Exception)
 			{
-				//OnMediaFailed(new MediaFailedEventArgs(ex.Message, ex));
-				CurrentState = MediaPlayerState.Stopped;
+				OnMediaFailed();
 			}
 		}
 		
@@ -67,16 +66,26 @@ namespace Windows.Media.Playback
 				VideoViewCanvas.Start();
 			}
 
-			CurrentState = MediaPlayerState.Playing;
+			PlaybackSession.PlaybackState = MediaPlaybackState.Playing;
 		}
 
 		public bool OnError(AndroidMediaPlayer mp, MediaError what, int extra)
 		{
 			VideoViewCanvas?.StopPlayback();
-			CurrentState = MediaPlayerState.Stopped;
-			Console.WriteLine($"MEDIAPLAYERIMPL - Play - Exception {what.ToString()}");
-			//OnMediaFailed(new MediaFailedEventArgs(what.ToString(), new System.Exception()));
+			PlaybackSession.PlaybackState = MediaPlaybackState.None;
+			OnMediaFailed();
 			return true;
+		}
+
+		public void OnCompletion(AndroidMediaPlayer mp)
+		{
+			MediaEnded?.Invoke(this, null);
+		}
+
+		private void OnMediaFailed()
+		{
+			MediaFailed?.Invoke(this, new MediaPlayerFailedEventArgs());
+			PlaybackSession.PlaybackState = MediaPlaybackState.None;
 		}
 
 		public void Pause()
@@ -85,8 +94,14 @@ namespace Windows.Media.Playback
 			{
 				lastPosition = VideoViewCanvas.CurrentPosition;
 				VideoViewCanvas.Pause();
-				CurrentState = MediaPlayerState.Paused;
+				PlaybackSession.PlaybackState = MediaPlaybackState.Paused;
 			}
+		}
+
+		internal void Stop()
+		{
+			VideoViewCanvas.StopPlayback();
+			PlaybackSession.PlaybackState = MediaPlaybackState.None;
 		}
 
 		private void ToggleMute()
