@@ -1,5 +1,5 @@
 <Project ToolsVersion="15.0">
- 	<!--
+	<!--
 		This file is used to control the platforms compiled by visual studio, and 
       		allow for a faster build when testing for a single platform.
     
@@ -16,11 +16,11 @@
     	This property controls the platform built by Visual Studio.
 		
       	Available build targets:
-      				uap10.0 (Windows)
-				xamarinios10 (iOS)
-				MonoAndroid80 (Android 8.0)
-				netstandard2.0 (WebAssembly)
-				net46 (Tests)
+								uap10.0 (Windows)
+								xamarinios10 (iOS)
+								MonoAndroid80 (Android 8.0)
+								netstandard2.0 (WebAssembly)
+								net46 (Tests)
 			
      	Note that if the BuildTargetFramework is not part of a project's 
      	TargetFrameworksDefault list, all target frameworks will be built.
