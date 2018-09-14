@@ -19,9 +19,8 @@
       				uap10.0 (Windows)
 				xamarinios10 (iOS)
 				MonoAndroid80 (Android 8.0)
-				MonoAndroid71 (Android 7.1)
-				net46 (Tests)
 				netstandard2.0 (WebAssembly)
+				net46 (Tests)
 			
      	Note that if the BuildTargetFramework is not part of a project's 
      	TargetFrameworksDefault list, all target frameworks will be built.
@@ -33,7 +32,8 @@
     <!-- 
     This property allows the override of the nuget local cache.
     Set it to the version you want to override, used in another app.
-    The packages are located under this directory: "%USERPROFILE%\.nuget\packages"
+    You will see the override path in the build output.
+    The packages are located under this directory: "%USERPROFILE%\.nuget\packages".
     -->
     <!--<UnoNugetOverrideVersion>2.23.2-dev.667</UnoNugetOverrideVersion>-->
   </PropertyGroup>
