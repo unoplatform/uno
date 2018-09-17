@@ -2,7 +2,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.System.Threading
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+	#if false || false || false || false
 	public delegate void TimerDestroyedHandler(global::Windows.System.Threading.ThreadPoolTimer @timer);
 	#endif
 }

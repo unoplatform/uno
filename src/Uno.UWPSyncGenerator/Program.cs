@@ -11,16 +11,36 @@ namespace Uno.UWPSyncGenerator
 {
 	class Program
 	{
+		const string SyncMode = "sync";
+		const string DocMode = "doc";
+		const string AllMode = "all";
+
 		static void Main(string[] args)
 		{
-			Console.WriteLine("*** WARNING: Close all editor files in visual studio, otherwise VS will freeze for a few minutes ****");
-			Console.WriteLine("Press any key to continue...");
-			Console.ReadLine();
+			if (args.Length == 0)
+			{
+				Console.WriteLine("No mode selected.");
+				return;
+			}
 
-			new Generator().Build(@"..\..\..\..\Uno.Foundation", "Uno.Foundation", "Windows.Foundation.FoundationContract");
-			new Generator().Build(@"..\..\..\..\Uno.UWP", "Uno", "Windows.Foundation.UniversalApiContract");
-			new Generator().Build(@"..\..\..\..\Uno.UWP", "Uno", "Windows.Phone.PhoneContract");
-			new Generator().Build(@"..\..\..\..\Uno.UI", "Uno.UI", "Windows.Foundation.UniversalApiContract");
+			var mode = args[0].ToLowerInvariant();
+
+			if (mode == SyncMode || mode == AllMode)
+			{
+				Console.WriteLine("*** WARNING: Close all editor files in visual studio, otherwise VS will freeze for a few minutes ****");
+				Console.WriteLine("Press any key to continue...");
+				Console.ReadLine();
+
+				new SyncGenerator().Build(@"..\..\..\..\Uno.Foundation", "Uno.Foundation", "Windows.Foundation.FoundationContract");
+				new SyncGenerator().Build(@"..\..\..\..\Uno.UWP", "Uno", "Windows.Foundation.UniversalApiContract");
+				new SyncGenerator().Build(@"..\..\..\..\Uno.UWP", "Uno", "Windows.Phone.PhoneContract");
+				new SyncGenerator().Build(@"..\..\..\..\Uno.UI", "Uno.UI", "Windows.Foundation.UniversalApiContract");
+			}
+
+			if (mode == DocMode || mode == AllMode)
+			{
+				new DocGenerator().Build(@"..\..\..\..\Uno.UI", "Uno.UI", "Windows.Foundation.UniversalApiContract");
+			}
 		}
 	}
 }
