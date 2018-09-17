@@ -599,6 +599,35 @@
 		}
 
 		/**
+		 * default event filter to be used with registerEventOnView to
+		 * use for most routed events
+		 * @param evt
+		 */
+		private defaultEventFilter(evt: any): boolean {
+			return evt ? evt.eventPhase == 2 : false;
+		}
+
+		/**
+		 * Gets the event filter function. See UIElement.HtmlEventFilter
+		 * @param eventFilterName an event filter name.
+		 */
+		private getEventFilter(eventFilterName: string): any {
+
+			if (eventFilterName) {
+				switch (eventFilterName) {
+				case "LeftPointerEventFilter":
+					return this.leftPointerEventFilter;
+				case "Default":
+					return this.defaultEventFilter;
+				}
+
+				throw `Event filter ${eventFilterName} is not supported`;
+			}
+
+			return null;
+		}
+
+		/**
 		 * pointer event extractor to be used with registerEventOnView
 		 * @param evt
 		 */
@@ -614,24 +643,6 @@
 		 */
 		private keyboardEventExtractor(evt: any): string {
 			return (evt instanceof KeyboardEvent) ? evt.key : "0";
-		}
-
-		/**
-		 * Gets the event filter function. See UIElement.HtmlEventFilter
-		 * @param eventFilterName an event filter name.
-		 */
-		private getEventFilter(eventFilterName: string): any {
-
-			if (eventFilterName) {
-				switch (eventFilterName) {
-					case "LeftPointerEventFilter":
-						return this.leftPointerEventFilter;
-				}
-
-				throw `Event filter ${eventFilterName} is not supported`;
-			}
-
-			return null;
 		}
 
 		/**

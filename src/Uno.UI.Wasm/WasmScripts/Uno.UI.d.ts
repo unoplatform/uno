@@ -285,6 +285,17 @@ declare namespace Uno.UI {
          */
         private leftPointerEventFilter(evt);
         /**
+         * default event filter to be used with registerEventOnView to
+         * use for most routed events
+         * @param evt
+         */
+        private defaultEventFilter(evt);
+        /**
+         * Gets the event filter function. See UIElement.HtmlEventFilter
+         * @param eventFilterName an event filter name.
+         */
+        private getEventFilter(eventFilterName);
+        /**
          * pointer event extractor to be used with registerEventOnView
          * @param evt
          */
@@ -294,11 +305,6 @@ declare namespace Uno.UI {
          * @param evt
          */
         private keyboardEventExtractor(evt);
-        /**
-         * Gets the event filter function. See UIElement.HtmlEventFilter
-         * @param eventFilterName an event filter name.
-         */
-        private getEventFilter(eventFilterName);
         /**
          * Gets the event extractor function. See UIElement.HtmlEventExtractor
          * @param eventExtractorName an event extractor name.

@@ -717,6 +717,30 @@ var Uno;
                 return evt ? (!evt.button || evt.button == 0) : false;
             }
             /**
+             * default event filter to be used with registerEventOnView to
+             * use for most routed events
+             * @param evt
+             */
+            defaultEventFilter(evt) {
+                return evt ? evt.eventPhase == 2 : false;
+            }
+            /**
+             * Gets the event filter function. See UIElement.HtmlEventFilter
+             * @param eventFilterName an event filter name.
+             */
+            getEventFilter(eventFilterName) {
+                if (eventFilterName) {
+                    switch (eventFilterName) {
+                        case "LeftPointerEventFilter":
+                            return this.leftPointerEventFilter;
+                        case "Default":
+                            return this.defaultEventFilter;
+                    }
+                    throw `Event filter ${eventFilterName} is not supported`;
+                }
+                return null;
+            }
+            /**
              * pointer event extractor to be used with registerEventOnView
              * @param evt
              */
@@ -731,20 +755,6 @@ var Uno;
              */
             keyboardEventExtractor(evt) {
                 return (evt instanceof KeyboardEvent) ? evt.key : "0";
-            }
-            /**
-             * Gets the event filter function. See UIElement.HtmlEventFilter
-             * @param eventFilterName an event filter name.
-             */
-            getEventFilter(eventFilterName) {
-                if (eventFilterName) {
-                    switch (eventFilterName) {
-                        case "LeftPointerEventFilter":
-                            return this.leftPointerEventFilter;
-                    }
-                    throw `Event filter ${eventFilterName} is not supported`;
-                }
-                return null;
             }
             /**
              * Gets the event extractor function. See UIElement.HtmlEventExtractor
