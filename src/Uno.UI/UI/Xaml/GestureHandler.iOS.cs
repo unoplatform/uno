@@ -10,34 +10,26 @@ namespace Windows.UI.Xaml
 	internal abstract class GestureHandler
 	{
 		private readonly UIElement _owner;
-		private readonly UIGestureRecognizer _recognizer;
+		private readonly Lazy<UIGestureRecognizer> _recognizer;
 
-		public GestureHandler(UIElement owner)
+		protected GestureHandler(UIElement owner)
 		{
-			if(owner == null)
-			{
-				throw new ArgumentNullException(nameof(owner));
-			}
-
-			_owner = owner;
-			_recognizer = CreateRecognizer(owner);
+			_owner = owner ?? throw new ArgumentNullException(nameof(owner));
+			_recognizer = new Lazy<UIGestureRecognizer>(() => CreateRecognizer(owner));
 		}
 
 		protected abstract UIGestureRecognizer CreateRecognizer(UIElement owner);
 
-		public bool IsAttached
-		{
-			get { return _owner.GestureRecognizers?.Contains(_recognizer) ?? false; }
-		}
+		public bool IsAttached => _owner.GestureRecognizers?.Contains(_recognizer.Value) ?? false;
 
 		public void Attach()
 		{
-			_owner.AddGestureRecognizer(_recognizer);
+			_owner.AddGestureRecognizer(_recognizer.Value);
 		}
 
 		public void Detach()
 		{
-			_owner.RemoveGestureRecognizer(_recognizer);
+			_owner.RemoveGestureRecognizer(_recognizer.Value);
 		}
 	}
 }

@@ -7,6 +7,7 @@ using Windows.Foundation;
 using Windows.UI.Xaml.Input;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using UIKit;
@@ -43,14 +44,14 @@ namespace Windows.UI.Xaml
 			_tap = new Lazy<TappedGestureHandler>(() => new TappedGestureHandler(this));
 			_doubleTap = new Lazy<DoubleTappedGestureHandler>(() => new DoubleTappedGestureHandler(this));
 
-			RegisterLoadActions(AttachedGestureHandlers, DetachedGestureHandlers);
+			RegisterLoadActions(AttachGestureHandlers, DetachGestureHandlers);
 
 			InitializeCapture();
 		}
 
 		partial void InitializeCapture();
 
-		private void AttachedGestureHandlers()
+		private void AttachGestureHandlers()
 		{
 			if (_tap.IsValueCreated)
 			{
@@ -64,7 +65,7 @@ namespace Windows.UI.Xaml
 			_areGesturesAttached = true;
 		}
 
-		private void DetachedGestureHandlers()
+		private void DetachGestureHandlers()
 		{
 			if (_tap.IsValueCreated && _tap.Value.IsAttached)
 			{
@@ -76,6 +77,18 @@ namespace Windows.UI.Xaml
 			}
 
 			_areGesturesAttached = false;
+		}
+
+		partial void AddHandlerPartial(RoutedEvent routedEvent, object handler)
+		{
+			if (routedEvent == TappedEvent)
+			{
+				var x = _tap.Value; // materialize it
+			}
+			else if (routedEvent == DoubleTappedEvent)
+			{
+				var x = _doubleTap.Value; // materialize it
+			}
 		}
 
 		partial void EnsureClip(Rect rect)
@@ -540,23 +553,6 @@ namespace Windows.UI.Xaml
 			}
 		}
 
-		#region Tapped event
-		private void RegisterTapped(TappedEventHandler handler)
-		{
-			if (_areGesturesAttached)
-			{
-				_tap.Value.Attach();
-			}
-		}
-
-		private void UnregisterTapped(TappedEventHandler handler)
-		{
-			if (_tap.Value.IsAttached)
-			{
-				_tap.Value.Detach();
-			}
-		}
-		#endregion
 #if DEBUG
 		public static Predicate<UIView> ViewOfInterestSelector { get; set; } = v => (v as FrameworkElement)?.Name == "TargetView";
 
@@ -612,6 +608,7 @@ namespace Windows.UI.Xaml
 		public FrameworkElement FrameworkElementSuperview => Superview as FrameworkElement;
 
 		public string ShowDescendants() => UIViewExtensions.ShowDescendants(this);
+
 		public string ShowLocalVisualTree(int fromHeight) => UIViewExtensions.ShowLocalVisualTree(this, fromHeight);
 #endif
 		private class TappedGestureHandler : GestureHandler
@@ -623,21 +620,19 @@ namespace Windows.UI.Xaml
 
 			protected override UIGestureRecognizer CreateRecognizer(UIElement owner)
 			{
-				var recognizer = new UITapGestureRecognizer(r =>
-				{
-					owner.RaiseEvent(TappedEvent, new TappedRoutedEventArgs(r.LocationInView(owner))
-					{
-						OriginalSource = owner,
-						PointerDeviceType = PointerDeviceType.Touch,
-					});
-				})
+				var recognizer = new UITapGestureRecognizer(OnGesture)
 				{
 					NumberOfTapsRequired = 1,
 				};
 
-				recognizer.ShouldReceiveTouch += (_, touch) => (touch.View == owner);
+				recognizer.ShouldReceiveTouch += (_, touch) => true;
 
 				return recognizer;
+
+				void OnGesture(UITapGestureRecognizer r)
+				{
+					owner.RaiseEvent(TappedEvent, new TappedRoutedEventArgs(r.LocationInView(owner)) { OriginalSource = owner, PointerDeviceType = PointerDeviceType.Touch, });
+				}
 			}
 		}
 
@@ -650,14 +645,7 @@ namespace Windows.UI.Xaml
 
 			protected override UIGestureRecognizer CreateRecognizer(UIElement owner)
 			{
-				var recognizer = new UITapGestureRecognizer(r =>
-				{
-					owner.RaiseEvent(DoubleTappedEvent, new DoubleTappedRoutedEventArgs(r.LocationInView(owner))
-					{
-						OriginalSource = owner,
-						PointerDeviceType = PointerDeviceType.Touch,
-					});
-				})
+				var recognizer = new UITapGestureRecognizer(OnGesture)
 				{
 					NumberOfTapsRequired = 2,
 				};
@@ -665,6 +653,11 @@ namespace Windows.UI.Xaml
 				recognizer.ShouldReceiveTouch += (_, touch) => (touch.View == owner);
 
 				return recognizer;
+
+				void OnGesture(UITapGestureRecognizer r)
+				{
+					owner.RaiseEvent(DoubleTappedEvent, new DoubleTappedRoutedEventArgs(r.LocationInView(owner)) { OriginalSource = owner, PointerDeviceType = PointerDeviceType.Touch, });
+				}
 			}
 		}
 	}
