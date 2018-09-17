@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-
+using System.Threading;
 using Android.App;
 using Android.Content;
 using Android.OS;
@@ -24,12 +24,16 @@ namespace Uno.UI
 		{
 			get
 			{
+				if (_current == null)
+				{
+					throw new InvalidOperationException(
+						"ContextHelper.Current not defined. " +
+						"For compatibility with Uno, you should ensure your `MainActivity` " +
+						"is deriving from Windows.UI.Xaml.ApplicationActivity.");
+				}
 				return _current;
 			}
-			set
-			{
-				_current = value;
-			}
+			set => _current = value;
 		}
 	}
 }
