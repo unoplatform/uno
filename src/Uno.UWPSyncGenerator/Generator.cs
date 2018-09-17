@@ -45,6 +45,7 @@ namespace Uno.UWPSyncGenerator
 
 		public virtual void Build(string basePath, string baseName, string sourceAssembly)
 		{
+			Directory.SetCurrentDirectory(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location));
 			InitializeRoslyn();
 
 			_referenceCompilation = LoadProject(@"..\..\..\..\Uno.UWPSyncGenerator.Reference\Uno.UWPSyncGenerator.Reference.csproj");
