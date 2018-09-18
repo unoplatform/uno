@@ -86,6 +86,7 @@
     <Compile Include="ResourcesGenerator\AndroidResourcesWriter.cs" />
     <Compile Include="ResourcesGenerator\iOSResourcesWriter.cs" />
     <Compile Include="ResourcesGenerator\ResourcesGenerationTask.cs" />
+    <Compile Include="ResourcesGenerator\UnoPRIResourcesWriter.cs" />
     <Compile Include="ResourcesGenerator\WindowsResourcesReader.cs" />
   </ItemGroup>
   <ItemGroup>
