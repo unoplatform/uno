@@ -14,6 +14,7 @@ namespace Windows.UI.Xaml.Controls
 	public partial class MediaTransportControls : Control
 	{
 		private Windows.Media.Playback.MediaPlayer _mediaPlayer;
+		private bool _isScrubbing = false;
 
 		internal void SetMediaPlayer(Windows.Media.Playback.MediaPlayer mediaPlayer)
 		{
@@ -39,6 +40,10 @@ namespace Windows.UI.Xaml.Controls
 			_audioMuteButton.Click += ToggleMute;
 			_volumeSlider.ValueChanged += OnVolumeChanged;
 			_stopButton.Click += Stop;
+			_skipForwardButton.Click += SkipForward;
+			_skipBackwardButton.Click += SkipBackward;
+
+			AttachThumbEventHandlers(_progressSlider);
 		}
 
 		private void UnbindMediaPlayer()
@@ -55,6 +60,10 @@ namespace Windows.UI.Xaml.Controls
 				_audioMuteButton.Click -= ToggleMute;
 				_volumeSlider.ValueChanged -= OnVolumeChanged;
 				_stopButton.Click -= Stop;
+				_skipForwardButton.Click -= SkipForward;
+				_skipBackwardButton.Click -= SkipBackward;
+
+				DetachThumbEventHandlers(_progressSlider);
 			}
 			catch (Exception ex)
 			{
@@ -68,16 +77,20 @@ namespace Windows.UI.Xaml.Controls
 			
 			switch (state)
 			{
+				case MediaPlaybackState.Opening:
 				case MediaPlaybackState.Paused:
 				case MediaPlaybackState.None:
 					CancelControlsVisibilityTimer();
 					VisualStateManager.GoToState(this, "PlayState", false);
+					VisualStateManager.GoToState(this, "Normal", false);
 					break;
 				case MediaPlaybackState.Playing:
-				case MediaPlaybackState.Buffering:
-				case MediaPlaybackState.Opening:
 					ResetControlsVisibilityTimer();
 					VisualStateManager.GoToState(this, "PauseState", false);
+					VisualStateManager.GoToState(this, "Normal", false);
+					break;
+				case MediaPlaybackState.Buffering:
+					VisualStateManager.GoToState(this, "Buffering", false);
 					break;
 			}
 		}
@@ -90,18 +103,12 @@ namespace Windows.UI.Xaml.Controls
 		{
 			Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
 			{
-				var duration = args as TimeSpan?;
-				if (duration.HasValue)
+				if (_mediaPlayer.PlaybackSession.PlaybackState != MediaPlaybackState.Playing && _mediaPlayer.PlaybackSession.PlaybackState != MediaPlaybackState.Paused)
 				{
-					_timeRemainingElement.Text = $"{duration.Value.TotalHours:0}:{duration.Value.Minutes:00}:{duration.Value.Seconds:00}";
+					var duration = args as TimeSpan? ?? TimeSpan.Zero;
+					_timeRemainingElement.Text = $"{duration.TotalHours:0}:{duration.Minutes:00}:{duration.Seconds:00}";
 					_progressSlider.Minimum = 0;
-					_progressSlider.Maximum = duration.Value.TotalSeconds;
-				}
-				else
-				{
-					_timeRemainingElement.Text = "0:00:00";
-					_progressSlider.Minimum = 0;
-					_progressSlider.Maximum = 0;
+					_progressSlider.Maximum = duration.TotalSeconds;
 				}
 			});
 		}
@@ -110,17 +117,12 @@ namespace Windows.UI.Xaml.Controls
 		{
 			Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
 			{
-				var elapsed = args as TimeSpan?;
-				if (elapsed.HasValue)
-				{
-					_timeElapsedElement.Text = $"{elapsed.Value.TotalHours:0}:{elapsed.Value.Minutes:00}:{elapsed.Value.Seconds:00}";
-					_progressSlider.Value = elapsed.Value.TotalSeconds;
-				}
-				else
-				{
-					_timeElapsedElement.Text = "0:00:00";
-					_progressSlider.Value = 0;
-				}
+				var elapsed = args as TimeSpan? ?? TimeSpan.Zero;
+				_timeElapsedElement.Text = $"{elapsed.TotalHours:0}:{elapsed.Minutes:00}:{elapsed.Seconds:00}";
+				_progressSlider.Value = elapsed.TotalSeconds;
+
+				var remaining = _mediaPlayer.PlaybackSession.NaturalDuration - elapsed;
+				_timeRemainingElement.Text = $"{remaining.TotalHours:0}:{remaining.Minutes:00}:{remaining.Seconds:00}";
 			});
 		}
 
@@ -141,6 +143,16 @@ namespace Windows.UI.Xaml.Controls
 			_mediaPlayer.Stop();
 		}
 
+		private void SkipBackward(object sender, RoutedEventArgs e)
+		{
+			_mediaPlayer.PlaybackSession.Position = _mediaPlayer.PlaybackSession.Position - TimeSpan.FromSeconds(10);
+		}
+
+		private void SkipForward(object sender, RoutedEventArgs e)
+		{
+			_mediaPlayer.PlaybackSession.Position = _mediaPlayer.PlaybackSession.Position + TimeSpan.FromSeconds(30);
+		}
+
 		private void OnVolumeChanged(object sender, RangeBaseValueChangedEventArgs e)
 		{
 			_mediaPlayer.Volume = e.NewValue;
@@ -153,6 +165,65 @@ namespace Windows.UI.Xaml.Controls
 			_mediaPlayer.IsMuted = !_mediaPlayer.IsMuted;
 			VisualStateManager.GoToState(this, _mediaPlayer.IsMuted ? "MuteState" : "VolumeState", false);
 			ResetControlsVisibilityTimer();
+		}
+
+		private void AttachThumbEventHandlers(Slider slider)
+		{
+			var thumb = slider.GetTemplateChild(HorizontalThumbName) as Thumb;
+
+			if (thumb != null)
+			{
+				thumb.DragStarted -= ThumbOnDragStarted;
+				thumb.DragStarted += ThumbOnDragStarted;
+
+				thumb.DragCompleted -= ThumbOnDragCompleted;
+				thumb.DragCompleted += ThumbOnDragCompleted;
+			}
+		}
+
+		private void DetachThumbEventHandlers(Slider slider)
+		{
+			var thumb = slider.GetTemplateChild(HorizontalThumbName) as Thumb;
+
+			if (thumb != null)
+			{
+				thumb.DragStarted -= ThumbOnDragStarted;
+				thumb.DragStarted += ThumbOnDragStarted;
+
+				thumb.DragCompleted -= ThumbOnDragCompleted;
+				thumb.DragCompleted += ThumbOnDragCompleted;
+			}
+		}
+
+		private void ThumbOnDragCompleted(object sender, DragCompletedEventArgs dragCompletedEventArgs)
+		{
+			if (double.IsNaN(_progressSlider.Value))
+			{
+				return;
+			}
+
+			if (_mediaPlayer != null)
+			{
+				_mediaPlayer.PlaybackSession.Position = TimeSpan.FromSeconds(_progressSlider.Value);
+
+				if (_wasPlaying)
+				{
+					_mediaPlayer.Play();
+				}
+			}
+
+			_isScrubbing = false;
+		}
+
+		private void ThumbOnDragStarted(object sender, DragStartedEventArgs dragStartedEventArgs)
+		{
+			if (_mediaPlayer != null && !_isScrubbing)
+			{
+				_wasPlaying = _mediaPlayer.PlaybackSession.PlaybackState == MediaPlaybackState.Buffering || _mediaPlayer.PlaybackSession.PlaybackState == MediaPlaybackState.Playing;
+				_mediaPlayer.Pause();
+
+				_isScrubbing = true;
+			}
 		}
 	}
 }

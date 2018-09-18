@@ -9007,7 +9007,6 @@
 											<RowDefinition Height="Auto" />
 										</Grid.RowDefinitions>
 										<Slider x:Name="ProgressSlider"
-												Style="{StaticResource MediaSliderStyle}"
 												Margin="12,0"
 												MinWidth="80"
 												Height="33"

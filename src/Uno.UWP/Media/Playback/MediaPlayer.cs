@@ -18,16 +18,18 @@ namespace Windows.Media.Playback
 			}
 			set
 			{
-				Pause();
+				Stop();
 
 				_source = value;
 
-				if (AutoPlay)
+				InitializeSource();
+
+				SourceChanged?.Invoke(this, null);
+
+				if (_source != null && AutoPlay)
 				{
 					Play();
 				}
-
-				SourceChanged?.Invoke(this, null);
 			}
 		}
 
@@ -78,6 +80,8 @@ namespace Windows.Media.Playback
 		public event TypedEventHandler<MediaPlayer, object> MediaEnded;
 
 		public event TypedEventHandler<MediaPlayer, MediaPlayerFailedEventArgs> MediaFailed;
+
+		public event TypedEventHandler<MediaPlayer, object> MediaOpened;
 
 		#endregion
 

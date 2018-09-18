@@ -14,25 +14,25 @@ using Windows.UI.Xaml.Input;
 namespace Windows.UI.Xaml.Controls
 {
 	[TemplatePart(Name = "RootGrid", Type = typeof(Grid))]
-	[TemplatePart(Name = "PlayPauseButtonName", Type = typeof(Button))]
-	[TemplatePart(Name = "PlayPauseButtonOnLeftName", Type = typeof(Button))]
-	[TemplatePart(Name = "VolumeMuteButtonName", Type = typeof(Button))]
-	[TemplatePart(Name = "AudioMuteButtonName", Type = typeof(Button))]
-	[TemplatePart(Name = "VolumeSliderName", Type = typeof(Slider))]
-	[TemplatePart(Name = "FullWindowButtonName", Type = typeof(Button))]
-	[TemplatePart(Name = "CastButtonName", Type = typeof(Button))]
-	[TemplatePart(Name = "ZoomButtonName", Type = typeof(Button))]
-	[TemplatePart(Name = "PlaybackRateButtonName", Type = typeof(Button))]
-	[TemplatePart(Name = "PlaybackRateButtonName", Type = typeof(Button))]
-	[TemplatePart(Name = "SkipForwardButtonName", Type = typeof(Button))]
-	[TemplatePart(Name = "NextTrackButtonName", Type = typeof(Button))]
-	[TemplatePart(Name = "FastForwardButtonName", Type = typeof(Button))]
-	[TemplatePart(Name = "RewindButtonName", Type = typeof(Button))]
-	[TemplatePart(Name = "PreviousTrackButtonName", Type = typeof(Button))]
-	[TemplatePart(Name = "SkipBackwardButtonName", Type = typeof(Button))]
-	[TemplatePart(Name = "StopButtonName", Type = typeof(Button))]
-	[TemplatePart(Name = "AudioTracksSelectionButtonName", Type = typeof(Button))]
-	[TemplatePart(Name = "CCSelectionButtonName", Type = typeof(Button))]
+	[TemplatePart(Name = "PlayPauseButton", Type = typeof(Button))]
+	[TemplatePart(Name = "PlayPauseButtonOnLeft", Type = typeof(Button))]
+	[TemplatePart(Name = "VolumeMuteButton", Type = typeof(Button))]
+	[TemplatePart(Name = "AudioMuteButton", Type = typeof(Button))]
+	[TemplatePart(Name = "VolumeSlider", Type = typeof(Slider))]
+	[TemplatePart(Name = "FullWindowButton", Type = typeof(Button))]
+	[TemplatePart(Name = "CastButton", Type = typeof(Button))]
+	[TemplatePart(Name = "ZoomButton", Type = typeof(Button))]
+	[TemplatePart(Name = "PlaybackRateButton", Type = typeof(Button))]
+	[TemplatePart(Name = "PlaybackRateButton", Type = typeof(Button))]
+	[TemplatePart(Name = "SkipForwardButton", Type = typeof(Button))]
+	[TemplatePart(Name = "NextTrackButton", Type = typeof(Button))]
+	[TemplatePart(Name = "FastForwardButton", Type = typeof(Button))]
+	[TemplatePart(Name = "RewindButton", Type = typeof(Button))]
+	[TemplatePart(Name = "PreviousTrackButton", Type = typeof(Button))]
+	[TemplatePart(Name = "SkipBackwardButton", Type = typeof(Button))]
+	[TemplatePart(Name = "StopButton", Type = typeof(Button))]
+	[TemplatePart(Name = "AudioTracksSelectionButton", Type = typeof(Button))]
+	[TemplatePart(Name = "CCSelectionButton", Type = typeof(Button))]
 	[TemplatePart(Name = "TimeElapsedElement", Type = typeof(TextBlock))]
 	[TemplatePart(Name = "TimeRemainingElement", Type = typeof(TextBlock))]
 	[TemplatePart(Name = "ProgressSlider", Type = typeof(Slider))]
@@ -62,6 +62,8 @@ namespace Windows.UI.Xaml.Controls
 		private const string TimeRemainingElementName = "TimeRemainingElement";
 		private const string ProgressSliderName = "ProgressSlider";
 		private const string BufferingProgressBarName = "BufferingProgressBar";
+		private const string TimelineContainerName = "MediaTransportControls_Timeline_Border";
+		private const string HorizontalThumbName = "HorizontalThumb";
 
 		private Grid _rootGrid;
 		private Button _playPauseButton;
@@ -86,8 +88,10 @@ namespace Windows.UI.Xaml.Controls
 		private TextBlock _timeRemainingElement;
 		private Slider _progressSlider;
 		private ProgressBar _bufferingProgressBar;
+		private Border _timelineContainer;
 
 		private Timer _controlsVisibilityTimer;
+		private bool _wasPlaying;
 
 		public MediaTransportControls() : base()
 		{
@@ -198,10 +202,12 @@ namespace Windows.UI.Xaml.Controls
 
 			_bufferingProgressBar = this.GetTemplateChild(BufferingProgressBarName) as ProgressBar;
 
+			_timelineContainer = this.GetTemplateChild(TimelineContainerName) as Border;
+
 			_rootGrid = this.GetTemplateChild(RootGridName) as Grid;
 			_rootGrid.Tapped -= OnRootGridTapped;
 			_rootGrid.Tapped += OnRootGridTapped;
-
+			
 			if (_mediaPlayer != null)
 			{
 				BindMediaPlayer();
@@ -220,7 +226,10 @@ namespace Windows.UI.Xaml.Controls
 		{
 			Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
 			{
-				VisualStateManager.GoToState(this, "ControlPanelFadeOut", false);
+				if (_mediaPlayer.PlaybackSession.PlaybackState == MediaPlaybackState.Buffering || _mediaPlayer.PlaybackSession.PlaybackState == MediaPlaybackState.Playing)
+				{
+					VisualStateManager.GoToState(this, "ControlPanelFadeOut", false);
+				}
 			});
 		}
 
@@ -249,6 +258,16 @@ namespace Windows.UI.Xaml.Controls
 			{
 				((MediaTransportControls)dependencyObject).CancelControlsVisibilityTimer();
 			}
+		}
+
+		private static void OnIsSeekBarVisibleChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs args)
+		{
+			((MediaTransportControls)dependencyObject)._timelineContainer.Visibility = (bool)args.NewValue ? Visibility.Visible : Visibility.Collapsed;
+		}
+
+		private static void OnIsSeekEnabledChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs args)
+		{
+			VisualStateManager.GoToState(((MediaTransportControls)dependencyObject)._progressSlider, (bool)args.NewValue ? "Normal" : "Disabled", false);
 		}
 	}
 }

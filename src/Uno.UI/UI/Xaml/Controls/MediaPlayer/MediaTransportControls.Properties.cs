@@ -1,5 +1,6 @@
 #if __ANDROID__ || __IOS__
 
+using System;
 using Windows.Media.Playback;
 
 namespace Windows.UI.Xaml.Controls
@@ -138,7 +139,7 @@ namespace Windows.UI.Xaml.Controls
 				nameof(IsSeekEnabled),
 				typeof(bool),
 				typeof(MediaTransportControls),
-				new FrameworkPropertyMetadata(true));
+				new FrameworkPropertyMetadata(true, OnIsSeekEnabledChanged));
 
 		#endregion
 
@@ -223,7 +224,7 @@ namespace Windows.UI.Xaml.Controls
 				nameof(IsSeekBarVisible),
 				typeof(bool),
 				typeof(MediaTransportControls),
-				new FrameworkPropertyMetadata(true));
+				new FrameworkPropertyMetadata(true, OnIsSeekBarVisibleChanged));
 
 		#endregion
 

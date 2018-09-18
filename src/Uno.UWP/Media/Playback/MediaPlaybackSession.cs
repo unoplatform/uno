@@ -8,7 +8,6 @@ namespace Windows.Media.Playback
 	{
 		public Windows.Media.Playback.MediaPlayer MediaPlayer { get; }
 
-
 		private TimeSpan _position;
 		public TimeSpan Position
 		{
@@ -18,7 +17,41 @@ namespace Windows.Media.Playback
 			}
 			set
 			{
-				_position = value;
+				if (value < TimeSpan.Zero)
+				{
+					_position = TimeSpan.Zero;
+				}
+				else if (value > NaturalDuration)
+				{
+					_position = NaturalDuration;
+				}
+				else
+				{
+					_position = value;
+				}
+				
+				MediaPlayer.Position = _position;
+				PositionChanged?.Invoke(this, _position);
+			}
+		}
+		
+		internal TimeSpan PositionFromPlayer
+		{
+			set
+			{
+				if (value < TimeSpan.Zero)
+				{
+					_position = TimeSpan.Zero;
+				}
+				else if (value > NaturalDuration)
+				{
+					_position = NaturalDuration;
+				}
+				else
+				{
+					_position = value;
+				}
+
 				PositionChanged?.Invoke(this, _position);
 			}
 		}

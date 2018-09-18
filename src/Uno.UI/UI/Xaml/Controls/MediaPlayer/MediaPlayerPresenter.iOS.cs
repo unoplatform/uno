@@ -4,7 +4,7 @@ using Uno.Media.Playback;
 
 namespace Windows.UI.Xaml.Controls
 {
-	public partial class MediaPlayerPresenter : Border
+	public partial class MediaPlayerPresenter
 	{
 		private void SetVideoSurface(IVideoSurface videoSurface)
 		{

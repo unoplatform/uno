@@ -1,0 +1,60 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>MonoAndroid80</TargetFrameworks>
+    <TargetFrameworksCI>MonoAndroid71;MonoAndroid80</TargetFrameworksCI>
+  </PropertyGroup>
+
+  <PropertyGroup>
+		<AssemblyName>Uno.Extensions.ExoMediaPlayer</AssemblyName>
+		<RootNamespace>Uno.Extensions.ExoMediaPlayer</RootNamespace>
+		<DefineConstants>$(DefineConstants);XAMARIN;IS_UNO;HAS_UMBRELLA_UI;HAS_UMBRELLA_BINDING;HAS_CRIPPLEDREFLECTION</DefineConstants>
+		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+
+		<AndroidUseIntermediateDesignerFile>True</AndroidUseIntermediateDesignerFile>
+		<AndroidResgenFile>obj\$(TargetFramework)\Resources\Resource.Designer.cs</AndroidResgenFile>
+
+		<!-- Ensures the .xr.xml files are generated in a proper layout folder -->
+		<GenerateLibraryLayout>true</GenerateLibraryLayout>
+		
+		<NoWarn>$(NoWarn);NU1701</NoWarn>
+		
+		<ProduceReferenceAssembly>true</ProduceReferenceAssembly>
+		<Deterministic>true</Deterministic>
+	</PropertyGroup>
+	
+	<Import Project="$(MSBuildSDKExtrasTargets)" Condition="Exists('$(MSBuildSDKExtrasTargets)')" />
+	<Import Project="..\Uno.CrossTargetting.props" />
+
+	<ItemGroup>
+		<PackageReference Include="MSBuild.Sdk.Extras" Version="1.5.4" PrivateAssets="All" />
+		<PackageReference Include="Xam.Plugins.Android.ExoPlayer" Version="2.6.0" />
+	</ItemGroup>
+	
+	<ItemGroup Condition=" '$(TargetFramework)' == 'MonoAndroid71'">
+		<PackageReference Include="Xamarin.Android.Support.v4">
+			<Version>25.3.1</Version>
+			<PrivateAssets>none</PrivateAssets>
+		</PackageReference>
+		<PackageReference Include="Xamarin.Android.Support.v7.AppCompat">
+			<Version>25.3.1</Version>
+			<PrivateAssets>none</PrivateAssets>
+		</PackageReference>
+	</ItemGroup>
+	
+	<ItemGroup Condition=" '$(TargetFramework)' == 'MonoAndroid80'">
+		<PackageReference Include="Xamarin.Android.Support.v4">
+			<Version>26.1.0.1</Version>
+			<PrivateAssets>none</PrivateAssets>
+		</PackageReference>
+		<PackageReference Include="Xamarin.Android.Support.v7.AppCompat">
+			<Version>26.1.0.1</Version>
+			<PrivateAssets>none</PrivateAssets>
+		</PackageReference>
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\Uno.UWP\Uno.csproj" />
+	</ItemGroup>
+
+</Project>

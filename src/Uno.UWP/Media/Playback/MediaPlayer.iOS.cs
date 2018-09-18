@@ -34,6 +34,7 @@ namespace Windows.Media.Playback
 
 					Player.CurrentItem?.RemoveObserver(this, new NSString("loadedTimeRanges"), Player.Handle);
 					Player.CurrentItem?.RemoveObserver(this, new NSString("status"), Player.Handle);
+					Player.CurrentItem?.RemoveObserver(this, new NSString("duration"), Player.Handle);
 					Player.RemoveTimeObserver(_periodicTimeObserverObject);
 				}
 				finally
@@ -49,16 +50,15 @@ namespace Windows.Media.Playback
 				}
 			}
 		}
+
 		private void InitializePlayer()
 		{
-			TryDisposePlayer();
-
 			Player = new AVPlayer();
 			_videoLayer = AVPlayerLayer.FromPlayer(Player);
 			_videoLayer.Frame = ((VideoSurface)RenderSurface).Frame;
 			_videoLayer.VideoGravity = AVLayerVideoGravity.ResizeAspect;
 			((VideoSurface)RenderSurface).Layer.AddSublayer(_videoLayer);
-			
+
 			var avSession = AVAudioSession.SharedInstance();
 			avSession.SetCategory(AVAudioSessionCategory.Playback);
 
@@ -79,44 +79,41 @@ namespace Windows.Media.Playback
 					return;
 				}
 
-				PlaybackSession.Position = TimeSpan.FromSeconds(Player.CurrentItem.CurrentTime.Seconds);
-
-				// TODO Set NaturalDuration only once
-				PlaybackSession.NaturalDuration = TimeSpan.FromSeconds(Player.CurrentItem.Duration.Seconds);
+				if (PlaybackSession.PlaybackState == MediaPlaybackState.Playing)
+				{
+					PlaybackSession.PositionFromPlayer = Position;
+				}
 			});
 		}
 
-		#endregion
-
-		public void Play()
+		protected virtual void InitializeSource()
 		{
+			PlaybackSession.NaturalDuration = TimeSpan.Zero;
+			PlaybackSession.Position = TimeSpan.Zero;
+			
 			if (Source == null)
 			{
 				return;
 			}
 
-			if (Player != null && PlaybackSession.PlaybackState == MediaPlaybackState.Paused)
-			{
-				//We are simply paused so just start again
-				PlaybackSession.PlaybackState = MediaPlaybackState.Playing;
-				Player.Play();
-				return;
-			}
-
 			try
 			{
+				// Reset player
+				TryDisposePlayer();
 				InitializePlayer();
 
-				PlaybackSession.PlaybackState = MediaPlaybackState.Buffering;
+				PlaybackSession.PlaybackState = MediaPlaybackState.Opening;
 
 				var nsAsset = AVAsset.FromUrl(new NSUrl(((MediaSource)Source).Uri.ToString()));
 				var streamingItem = AVPlayerItem.FromAsset(nsAsset);
 
+				Player.CurrentItem?.RemoveObserver(this, new NSString("duration"), Player.Handle);
 				Player.CurrentItem?.RemoveObserver(this, new NSString("status"), Player.Handle);
 				Player.CurrentItem?.RemoveObserver(this, new NSString("loadedTimeRanges"), Player.Handle);
 
 				Player.ReplaceCurrentItemWithPlayerItem(streamingItem);
 
+				Player.CurrentItem.AddObserver(this, new NSString("duration"), NSKeyValueObservingOptions.Initial, Player.Handle);
 				Player.CurrentItem.AddObserver(this, new NSString("status"), NSKeyValueObservingOptions.New | NSKeyValueObservingOptions.Initial, Player.Handle);
 				Player.CurrentItem.AddObserver(this, new NSString("loadedTimeRanges"), NSKeyValueObservingOptions.Initial | NSKeyValueObservingOptions.New, Player.Handle);
 
@@ -132,7 +129,35 @@ namespace Windows.Media.Playback
 					Player.CurrentItem.SelectMediaOption(null, mediaSelectionGroup);
 				}
 				
+				MediaOpened?.Invoke(this, null);
+			}
+			catch (Exception)
+			{
+				OnMediaFailed();
+				PlaybackSession.PlaybackState = MediaPlaybackState.None;
+			}
+		}
+
+		#endregion
+
+		public void Play()
+		{
+			if (Source == null || Player == null)
+			{
+				return;
+			}
+
+			try
+			{
+				// If we reached the end of media, we need to reset position to 0
+				if (PlaybackSession.PlaybackState == MediaPlaybackState.None)
+				{
+					PlaybackSession.Position = TimeSpan.Zero;
+				}
+
+				PlaybackSession.PlaybackState = MediaPlaybackState.Buffering;
 				Player.Play();
+				PlaybackSession.PlaybackState = MediaPlaybackState.Playing;
 			}
 			catch (Exception)
 			{
@@ -165,6 +190,10 @@ namespace Windows.Media.Playback
 
 				case "loadedTimeRanges":
 					ObserveBufferingProgress();
+					return;
+
+				case "duration":
+					ObserveCurrentItemDuration();
 					return;
 			}
 		}
@@ -207,6 +236,16 @@ namespace Windows.Media.Playback
 			}
 		}
 
+		private void ObserveCurrentItemDuration()
+		{
+			var duration = Player.CurrentItem.Duration;
+
+			if (duration != CMTime.Indefinite)
+			{
+				PlaybackSession.NaturalDuration = TimeSpan.FromSeconds(duration.Seconds);
+			}
+		}
+
 		public void Pause()
 		{
 			if (PlaybackSession.PlaybackState == MediaPlaybackState.Playing)
@@ -216,7 +255,7 @@ namespace Windows.Media.Playback
 			}
 		}
 
-		internal void Stop()
+		public void Stop()
 		{
 			Player?.Pause();
 			Player?.CurrentItem?.Seek(CMTime.Zero);
@@ -236,6 +275,21 @@ namespace Windows.Media.Playback
 			if (Player != null)
 			{
 				Player.Volume = (float)Volume / 100;
+			}
+		}
+
+		public TimeSpan Position
+		{
+			get
+			{
+				return TimeSpan.FromSeconds(Player.CurrentItem.CurrentTime.Seconds);
+			}
+			set
+			{
+				if (Player?.CurrentItem != null)
+				{
+					Player.CurrentItem.Seek(CMTime.FromSeconds(value.TotalSeconds, 100), CMTime.Zero, CMTime.Zero);
+				}
 			}
 		}
 	}

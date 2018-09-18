@@ -3,15 +3,23 @@ using System;
 using System.ComponentModel;
 using Uno.Extensions;
 using Windows.Media.Playback;
+using Windows.UI.Core;
 using Windows.UI.Xaml.Media;
 
 namespace Windows.UI.Xaml.Controls
 {
+	[TemplatePart(Name = "PosterImage", Type = typeof(Image))]
+	[TemplatePart(Name = "TransportControlsPresenter", Type = typeof(ContentPresenter))]
+	[TemplatePart(Name = "MediaPlayerPresenter", Type = typeof(MediaPlayerPresenter))]
 	public partial class MediaPlayerElement : IDisposable
 	{
+		private const string PosterImageName = "PosterImage";
 		private const string TransportControlsPresenterName = "TransportControlsPresenter";
-
+		private const string MediaPlayerPresenterName = "MediaPlayerPresenter";
+		
+		private Image _posterImage;
 		private ContentPresenter _transportControlsPresenter;
+		private MediaPlayerPresenter _mediaPlayerPresenter;
 
 		private bool _isTransportControlsBound;
 
@@ -34,9 +42,17 @@ namespace Windows.UI.Xaml.Controls
 		{
 			sender.Maybe<MediaPlayerElement>(mpe =>
 			{
+				var source = args.NewValue as IMediaPlaybackSource;
+
 				if (mpe.MediaPlayer != null)
 				{
-					mpe.MediaPlayer.Source = args.NewValue as IMediaPlaybackSource;
+					mpe.MediaPlayer.Source = source;
+				}
+
+				if (source == null && mpe._posterImage != null && mpe.PosterSource != null)
+				{
+					mpe._posterImage.Visibility = Visibility.Visible;
+					mpe._mediaPlayerPresenter.Opacity = 0;
 				}
 			});
 		}
@@ -56,7 +72,21 @@ namespace Windows.UI.Xaml.Controls
 				nameof(PosterSource),
 				typeof(ImageSource),
 				typeof(MediaPlayerElement),
-				new FrameworkPropertyMetadata(default(ImageSource)));
+				new FrameworkPropertyMetadata(default(ImageSource), OnPosterSourceChanged));
+
+		private static void OnPosterSourceChanged(DependencyObject sender, DependencyPropertyChangedEventArgs args)
+		{
+			sender.Maybe<MediaPlayerElement>(mpe =>
+			{
+				var source = args.NewValue as ImageSource;
+
+				if (source != null && (mpe.MediaPlayer == null || mpe.MediaPlayer.PlaybackSession.PlaybackState == MediaPlaybackState.None) && mpe._posterImage != null)
+				{
+					mpe._posterImage.Visibility = Visibility.Visible;
+					mpe._mediaPlayerPresenter.Opacity = 0;
+				}
+			});
+		}
 
 		#endregion
 
@@ -107,13 +137,44 @@ namespace Windows.UI.Xaml.Controls
 		{
 			sender.Maybe<MediaPlayerElement>(mpe =>
 			{
-				mpe.MediaPlayer.AutoPlay = mpe.AutoPlay;
-				mpe.MediaPlayer.Source = mpe.Source;
-
-				if (mpe.AreTransportControlsEnabled)
+				if (args.OldValue is Windows.Media.Playback.MediaPlayer oldMediaPlayer)
 				{
-					mpe.TransportControls?.SetMediaPlayer(mpe.MediaPlayer);
+					oldMediaPlayer.MediaFailed -= mpe.OnMediaFailed;
+					oldMediaPlayer.MediaFailed -= mpe.OnMediaOpened;
+				}
+
+				if (args.NewValue is Windows.Media.Playback.MediaPlayer newMediaPlayer)
+				{
+					//newMediaPlayer.AutoPlay = mpe.AutoPlay;
+					newMediaPlayer.Source = mpe.Source;
+					newMediaPlayer.MediaFailed += mpe.OnMediaFailed;
+					newMediaPlayer.MediaOpened += mpe.OnMediaOpened;
+					mpe.TransportControls?.SetMediaPlayer(newMediaPlayer);
 					mpe._isTransportControlsBound = true;
+				}
+			});
+		}
+
+		private void OnMediaFailed(Windows.Media.Playback.MediaPlayer session, object args)
+		{
+			Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+			{
+				if (PosterSource != null && _posterImage != null)
+				{
+					_posterImage.Visibility = Visibility.Visible;
+					_mediaPlayerPresenter.Opacity = 0;
+				}
+			});
+		}
+
+		private void OnMediaOpened(Windows.Media.Playback.MediaPlayer session, object args)
+		{
+			Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+			{
+				if (_posterImage != null)
+				{
+					_posterImage.Visibility = Visibility.Collapsed;
+					_mediaPlayerPresenter.Opacity = 1;
 				}
 			});
 		}
@@ -143,10 +204,25 @@ namespace Windows.UI.Xaml.Controls
 		{
 		}
 
+		protected override void OnLoaded()
+		{
+			base.OnLoaded();
+
+			MediaPlayer.AutoPlay = AutoPlay;
+
+			if(MediaPlayer.PlaybackSession.PlaybackState == MediaPlaybackState.Opening && AutoPlay)
+			{
+				MediaPlayer.Play();
+			}
+		}
+
+
 		protected override void OnApplyTemplate()
 		{
 			base.OnApplyTemplate();
 
+			_posterImage = this.GetTemplateChild(PosterImageName) as Image;
+			_mediaPlayerPresenter = this.GetTemplateChild(MediaPlayerPresenterName) as MediaPlayerPresenter;
 			_transportControlsPresenter = this.GetTemplateChild(TransportControlsPresenterName) as ContentPresenter;
 			_transportControlsPresenter.Content = TransportControls;
 
@@ -155,15 +231,16 @@ namespace Windows.UI.Xaml.Controls
 				MediaPlayer = new Windows.Media.Playback.MediaPlayer();
 			}
 
-			if (AreTransportControlsEnabled && !_isTransportControlsBound)
+			if (PosterSource != null && MediaPlayer.PlaybackSession.PlaybackState == MediaPlaybackState.None)
+			{
+				_posterImage.Visibility = Visibility.Visible;
+				_mediaPlayerPresenter.Opacity = 0;
+			}
+
+			if (!_isTransportControlsBound)
 			{
 				TransportControls?.SetMediaPlayer(MediaPlayer);
 				_isTransportControlsBound = true;
-			}
-
-			if (AutoPlay && MediaPlayer.PlaybackSession.PlaybackState == MediaPlaybackState.None)
-			{
-				MediaPlayer.Play();
 			}
 		}
 

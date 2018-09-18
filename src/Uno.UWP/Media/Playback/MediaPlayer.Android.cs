@@ -15,10 +15,12 @@ namespace Windows.Media.Playback
 		AndroidMediaPlayer.IOnPreparedListener
 	{
 		private VideoView VideoViewCanvas => RenderSurface as VideoView;
-		private int lastPosition = 0;
-		private bool isPlayerReady = false;
+		private int _lastPosition = 0;
+		private bool _isPlayerReady = false;
+		private bool _isPlayRequested = false;
+		private bool _isPlayerPrepared = false;
 
-		public IVideoSurface RenderSurface { get; } = new VideoSurface(Application.Context);
+		public virtual IVideoSurface RenderSurface { get; } = new VideoSurface(Application.Context);
 		
 		private void Init()
 		{
@@ -26,32 +28,53 @@ namespace Windows.Media.Playback
 			VideoViewCanvas.SetOnPreparedListener(this);
 		}
 
-		public void Play()
+		protected virtual void InitializeSource()
 		{
+			PlaybackSession.NaturalDuration = TimeSpan.Zero;
+			PlaybackSession.Position = TimeSpan.Zero;
+			_lastPosition = 0;
+
 			if (Source == null)
 			{
 				return;
 			}
 
-			if (isPlayerReady == false)
+			try
 			{
-				Init();
-				isPlayerReady = true;
-			}
+				if (_isPlayerReady == false)
+				{
+					Init();
+					_isPlayerReady = true;
+				}
+				
+				PlaybackSession.PlaybackState = MediaPlaybackState.Opening;
+				VideoViewCanvas.SetVideoURI(Android.Net.Uri.Parse(((MediaSource)Source).Uri.ToString()));
 
-			if (PlaybackSession.PlaybackState == MediaPlaybackState.Paused)
+				MediaOpened?.Invoke(this, null);
+			}
+			catch (Exception)
 			{
-				VideoViewCanvas.SeekTo(lastPosition);
-				VideoViewCanvas.Start();
-				PlaybackSession.PlaybackState = MediaPlaybackState.Playing;
+				OnMediaFailed();
+			}
+		}
+
+		public virtual void Play()
+		{
+			if (Source == null || !_isPlayerReady)
+			{
 				return;
 			}
 
 			try
 			{
-				lastPosition = 0;
-				PlaybackSession.PlaybackState = MediaPlaybackState.Buffering;
-				VideoViewCanvas.SetVideoURI(Android.Net.Uri.Parse(((MediaSource)Source).Uri.ToString()));
+				_isPlayRequested = true;
+
+				if (_isPlayerPrepared)
+				{
+					VideoViewCanvas.SeekTo(_lastPosition);
+					VideoViewCanvas.Start();
+					PlaybackSession.PlaybackState = MediaPlaybackState.Playing;
+				}
 			}
 			catch (Exception)
 			{
@@ -61,12 +84,15 @@ namespace Windows.Media.Playback
 		
 		public void OnPrepared(AndroidMediaPlayer mp)
 		{
-			if (CurrentState == MediaPlayerState.Buffering)
+			PlaybackSession.NaturalDuration = TimeSpan.FromSeconds(VideoViewCanvas.Duration);
+
+			if (_isPlayRequested && PlaybackSession.PlaybackState == MediaPlaybackState.Opening)
 			{
 				VideoViewCanvas.Start();
+				PlaybackSession.PlaybackState = MediaPlaybackState.Playing;
 			}
 
-			PlaybackSession.PlaybackState = MediaPlaybackState.Playing;
+			_isPlayerPrepared = true;
 		}
 
 		public bool OnError(AndroidMediaPlayer mp, MediaError what, int extra)
@@ -88,17 +114,17 @@ namespace Windows.Media.Playback
 			PlaybackSession.PlaybackState = MediaPlaybackState.None;
 		}
 
-		public void Pause()
+		public virtual void Pause()
 		{
-			if (CurrentState == MediaPlayerState.Playing)
+			if (PlaybackSession.PlaybackState == MediaPlaybackState.Playing)
 			{
-				lastPosition = VideoViewCanvas.CurrentPosition;
+				_lastPosition = VideoViewCanvas.CurrentPosition;
 				VideoViewCanvas.Pause();
 				PlaybackSession.PlaybackState = MediaPlaybackState.Paused;
 			}
 		}
 
-		internal void Stop()
+		public virtual void Stop()
 		{
 			VideoViewCanvas.StopPlayback();
 			PlaybackSession.PlaybackState = MediaPlaybackState.None;
@@ -113,5 +139,7 @@ namespace Windows.Media.Playback
 		{
 			// TODO
 		}
+
+		public virtual TimeSpan Position { get; set; }
 	}
 }
