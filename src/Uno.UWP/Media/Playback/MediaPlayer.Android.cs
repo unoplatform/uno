@@ -155,9 +155,6 @@ namespace Windows.Media.Playback
 
 		public virtual void Play()
 		{
-			global::System.Diagnostics.StackTrace t = new global::System.Diagnostics.StackTrace();
-			Console.WriteLine($"MEDIAPLAYER - Play() {t.ToString()}");
-
 			if (Source == null || _player == null)
 			{
 				return;
@@ -245,8 +242,6 @@ namespace Windows.Media.Playback
 
 		private void OnMediaFailed(global::System.Exception ex = null, string message = null)
 		{
-			Console.WriteLine($"MEDIAPLAYER - Error {ex.Message ?? message}");
-
 			MediaFailed?.Invoke(this, new MediaPlayerFailedEventArgs()
 			{
 				Error = MediaPlayerError.Unknown,
