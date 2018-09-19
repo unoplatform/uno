@@ -1067,7 +1067,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					if (isDependencyProperty)
 					{
 						writer.AppendLineInvariant(
-							"new global::Windows.UI.Xaml.Setter({0}.{1}Property, ({2}){3})" + lineEnding,
+							"new global::Windows.UI.Xaml.Setter({0}.{1}Property, (global::{2}){3})" + lineEnding,
 							GetGlobalizedTypeName(fullTargetType),
 							property,
 							propertyType,
