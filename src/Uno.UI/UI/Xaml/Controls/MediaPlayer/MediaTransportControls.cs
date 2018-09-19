@@ -1,13 +1,9 @@
 #if __ANDROID__ || __IOS__
-
 using System;
 using System.Timers;
-using Uno.Extensions;
-using Uno.Logging;
 using Uno.UI.Converters;
 using Windows.Media.Playback;
 using Windows.UI.Core;
-using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 

@@ -27,8 +27,7 @@ namespace Windows.Media.Playback
 		AndroidMediaPlayer.IOnSeekCompleteListener
 	{
 		private AndroidMediaPlayer _player;
-
-		private int _lastPosition = 0;
+		
 		private bool _isPlayRequested = false;
 		private bool _isPlayerPrepared = false;
 		private bool _hasValidHolder = false;
@@ -100,7 +99,6 @@ namespace Windows.Media.Playback
 		{
 			PlaybackSession.NaturalDuration = TimeSpan.Zero;
 			PlaybackSession.PositionFromPlayer = TimeSpan.Zero;
-			_lastPosition = 0;
 
 			if (Source == null)
 			{
@@ -172,7 +170,6 @@ namespace Windows.Media.Playback
 
 				if (_isPlayerPrepared)
 				{
-					_player.SeekTo(_lastPosition);
 					_player.Start();
 					PlaybackSession.PlaybackState = MediaPlaybackState.Playing;
 				}
@@ -256,7 +253,6 @@ namespace Windows.Media.Playback
 		{
 			if (PlaybackSession.PlaybackState == MediaPlaybackState.Playing)
 			{
-				_lastPosition = _player.CurrentPosition;
 				_player?.Pause();
 				PlaybackSession.PlaybackState = MediaPlaybackState.Paused;
 			}
@@ -268,7 +264,6 @@ namespace Windows.Media.Playback
 			{
 				_player?.Pause(); // Do not call stop, otherwise player will need to be prepared again
 				_player?.SeekTo(0);
-				_lastPosition = 0;
 				PlaybackSession.PlaybackState = MediaPlaybackState.None;
 			}
 		}
@@ -331,7 +326,7 @@ namespace Windows.Media.Playback
 			{
 				if (PlaybackSession.PlaybackState != MediaPlaybackState.None)
 				{
-					_player?.SeekTo((int)value.TotalMilliseconds);
+					_player?.SeekTo((int)value.TotalMilliseconds, MediaPlayerSeekMode.Closest);
 				}
 			}
 		}

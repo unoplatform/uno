@@ -54,3 +54,7 @@ _If you need to set source programmatically (ie, using `_mediaPlayerElement.Sour
 `<uses-permission android:name="android.permission.INTERNET" />` needs to be defined in your AndroidManifest.xml in order to play remote media
 
 ## Known issues
+
+- Unable to aooly style on Slider, due to a bug in Uno
+- Volume flyout does not display on iOS
+- Video streching issue, especially on Android 
