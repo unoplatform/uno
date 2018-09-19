@@ -149,7 +149,9 @@ namespace Windows.UI.Xaml.Controls
 			_audioMuteButton = this.GetTemplateChild(AudioMuteButtonName) as Button;
 
 			_volumeSlider = this.GetTemplateChild(VolumeSliderName) as Slider;
-
+			_volumeSlider.Maximum = 100;
+			_volumeSlider.Value = 100;
+			
 			_fullWindowButton = this.GetTemplateChild(FullWindowButtonName) as Button;
 			_fullWindowButton?.SetBinding(Button.VisibilityProperty, new Binding { Path = "IsFullWindowButtonVisible", Source = this, Mode = BindingMode.OneWay, FallbackValue = Visibility.Collapsed, Converter = trueToVisible });
 			_fullWindowButton?.SetBinding(Button.IsEnabledProperty, new Binding { Path = "IsFullWindowEnabled", Source = this, Mode = BindingMode.OneWay, FallbackValue = true });

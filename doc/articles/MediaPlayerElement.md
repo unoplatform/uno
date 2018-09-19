@@ -8,10 +8,10 @@ See [MediaPlayerElement](https://docs.microsoft.com/en-us/uwp/api/windows.ui.xam
 |-------------------------------------------------------|-------|-----------|-----------------------------------|
 | Local MP4 Support										| X     | X  		|									|
 | Remote MP4 Support									| X     | X  		|									|
-| HLSv3	Support											| X     | -  		| See ExoPlayer section				|
-| HLSv4	Support											| X     | -  		| See ExoPlayer section				|
-| MPEG-Dash	Support										| -     | -  		| See ExoPlayer section				|
-| Smooth Streaming Support								| -     | -  		| See ExoPlayer section				|
+| HLSv3	Support											| X     | X  		| 									|
+| HLSv4	Support											| X     | X  		|									|
+| MPEG-Dash	Support										| -     | -  		| 									|
+| Smooth Streaming Support								| -     | -  		| 									|
 
 _If you need to set source programmatically (ie, using `_mediaPlayerElement.Source = [source]`), please note that only source created with `MediaSource.CreateFromUri()` are currently supported_
 
@@ -40,6 +40,7 @@ _If you need to set source programmatically (ie, using `_mediaPlayerElement.Sour
 |						| Change playback rate									| -     | -  		|									|
 |						| Zoom mode												| -     | -  		|									|
 |						| Locked screen support  								| -     | -  		|									|
+|						| Playlists support		  								| -     | -  		|									|
 
 
 ## Requirement
@@ -51,13 +52,5 @@ _If you need to set source programmatically (ie, using `_mediaPlayerElement.Sour
 ### Android
 
 `<uses-permission android:name="android.permission.INTERNET" />` needs to be defined in your AndroidManifest.xml in order to play remote media
-
-## ExoPlayer Support
-
-Native Android video player does not support HLS or any adaptive media.
-To enable this feature, we have to use another implementation of video player based on [Google ExoPlayer](https://github.com/google/ExoPlayer)
-
-1. Add dependency to `Uno.Extensions.ExoMediaPlayer` NuGet package
-2. Set MediaPlayerElement video player (TODO)
 
 ## Known issues

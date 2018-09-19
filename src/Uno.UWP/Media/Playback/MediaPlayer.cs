@@ -83,6 +83,8 @@ namespace Windows.Media.Playback
 
 		public event TypedEventHandler<MediaPlayer, object> MediaOpened;
 
+		public event TypedEventHandler<MediaPlayer, object> SeekCompleted;
+
 		#endregion
 
 		public MediaPlayer()

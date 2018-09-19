@@ -4,7 +4,7 @@ using Windows.Media.Playback;
 
 namespace Windows.Media.Core
 {
-	public  partial class MediaSource : IDisposable, IMediaPlaybackSource
+	public partial class MediaSource : IDisposable, IMediaPlaybackSource
 	{
 		public Uri Uri { get; private set; }
 		

@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 using System.Linq;
 using AVFoundation;
 using CoreFoundation;
@@ -13,12 +14,14 @@ namespace Windows.Media.Playback
 {
 	public partial class MediaPlayer : NSObject
 	{
-		internal AVPlayer Player { get; private set; }
-
+		private AVPlayer _player;
 		private AVPlayerLayer _videoLayer;
 		private NSObject _periodicTimeObserverObject;
 		private NSObject _itemFailedToPlayToEndTimeNotification;
 		private NSObject _didPlayToEndTimeNotification;
+
+		const string MsAppXScheme = "ms-appx";
+		const string MsAppDataScheme = "ms-appdata";
 
 		public IVideoSurface RenderSurface { get; } = new VideoSurface();
 
@@ -26,16 +29,16 @@ namespace Windows.Media.Playback
 
 		private void TryDisposePlayer()
 		{
-			if (Player != null)
+			if (_player != null)
 			{
 				try
 				{
 					_videoLayer.RemoveFromSuperLayer();
 
-					Player.CurrentItem?.RemoveObserver(this, new NSString("loadedTimeRanges"), Player.Handle);
-					Player.CurrentItem?.RemoveObserver(this, new NSString("status"), Player.Handle);
-					Player.CurrentItem?.RemoveObserver(this, new NSString("duration"), Player.Handle);
-					Player.RemoveTimeObserver(_periodicTimeObserverObject);
+					_player.CurrentItem?.RemoveObserver(this, new NSString("loadedTimeRanges"), _player.Handle);
+					_player.CurrentItem?.RemoveObserver(this, new NSString("status"), _player.Handle);
+					_player.CurrentItem?.RemoveObserver(this, new NSString("duration"), _player.Handle);
+					_player.RemoveTimeObserver(_periodicTimeObserverObject);
 				}
 				finally
 				{
@@ -44,17 +47,17 @@ namespace Windows.Media.Playback
 
 					_videoLayer?.Dispose();
 
-					Player?.CurrentItem?.Dispose();
-					Player?.Dispose();
-					Player = null;
+					_player?.CurrentItem?.Dispose();
+					_player?.Dispose();
+					_player = null;
 				}
 			}
 		}
 
 		private void InitializePlayer()
 		{
-			Player = new AVPlayer();
-			_videoLayer = AVPlayerLayer.FromPlayer(Player);
+			_player = new AVPlayer();
+			_videoLayer = AVPlayerLayer.FromPlayer(_player);
 			_videoLayer.Frame = ((VideoSurface)RenderSurface).Frame;
 			_videoLayer.VideoGravity = AVLayerVideoGravity.ResizeAspect;
 			((VideoSurface)RenderSurface).Layer.AddSublayer(_videoLayer);
@@ -69,12 +72,12 @@ namespace Windows.Media.Playback
 				this.Log().WarnIfEnabled(() => $"Could not activate audio session: {activationError.LocalizedDescription}");
 			}
 
-			_itemFailedToPlayToEndTimeNotification = AVPlayerItem.Notifications.ObserveItemFailedToPlayToEndTime((sender, args) => OnMediaFailed());
+			_itemFailedToPlayToEndTimeNotification = AVPlayerItem.Notifications.ObserveItemFailedToPlayToEndTime((sender, args) => OnMediaFailed(new Exception(args.Error.LocalizedDescription)));
 			_didPlayToEndTimeNotification = AVPlayerItem.Notifications.ObserveDidPlayToEndTime((sender, args) => OnMediaEnded());
 
-			_periodicTimeObserverObject = Player.AddPeriodicTimeObserver(new CMTime(1, 4), DispatchQueue.MainQueue, delegate
+			_periodicTimeObserverObject = _player.AddPeriodicTimeObserver(new CMTime(1, 4), DispatchQueue.MainQueue, delegate
 			{
-				if (Player?.CurrentItem == null)
+				if (_player?.CurrentItem == null)
 				{
 					return;
 				}
@@ -89,7 +92,7 @@ namespace Windows.Media.Playback
 		protected virtual void InitializeSource()
 		{
 			PlaybackSession.NaturalDuration = TimeSpan.Zero;
-			PlaybackSession.Position = TimeSpan.Zero;
+			PlaybackSession.PositionFromPlayer = TimeSpan.Zero;
 			
 			if (Source == null)
 			{
@@ -104,45 +107,70 @@ namespace Windows.Media.Playback
 
 				PlaybackSession.PlaybackState = MediaPlaybackState.Opening;
 
-				var nsAsset = AVAsset.FromUrl(new NSUrl(((MediaSource)Source).Uri.ToString()));
+				var nsAsset = AVAsset.FromUrl(DecodeUri(((MediaSource)Source).Uri));
 				var streamingItem = AVPlayerItem.FromAsset(nsAsset);
 
-				Player.CurrentItem?.RemoveObserver(this, new NSString("duration"), Player.Handle);
-				Player.CurrentItem?.RemoveObserver(this, new NSString("status"), Player.Handle);
-				Player.CurrentItem?.RemoveObserver(this, new NSString("loadedTimeRanges"), Player.Handle);
+				_player.CurrentItem?.RemoveObserver(this, new NSString("duration"), _player.Handle);
+				_player.CurrentItem?.RemoveObserver(this, new NSString("status"), _player.Handle);
+				_player.CurrentItem?.RemoveObserver(this, new NSString("loadedTimeRanges"), _player.Handle);
 
-				Player.ReplaceCurrentItemWithPlayerItem(streamingItem);
+				_player.ReplaceCurrentItemWithPlayerItem(streamingItem);
 
-				Player.CurrentItem.AddObserver(this, new NSString("duration"), NSKeyValueObservingOptions.Initial, Player.Handle);
-				Player.CurrentItem.AddObserver(this, new NSString("status"), NSKeyValueObservingOptions.New | NSKeyValueObservingOptions.Initial, Player.Handle);
-				Player.CurrentItem.AddObserver(this, new NSString("loadedTimeRanges"), NSKeyValueObservingOptions.Initial | NSKeyValueObservingOptions.New, Player.Handle);
+				_player.CurrentItem.AddObserver(this, new NSString("duration"), NSKeyValueObservingOptions.Initial, _player.Handle);
+				_player.CurrentItem.AddObserver(this, new NSString("status"), NSKeyValueObservingOptions.New | NSKeyValueObservingOptions.Initial, _player.Handle);
+				_player.CurrentItem.AddObserver(this, new NSString("loadedTimeRanges"), NSKeyValueObservingOptions.Initial | NSKeyValueObservingOptions.New, _player.Handle);
 
-				Player.CurrentItem.SeekingWaitsForVideoCompositionRendering = true;
+				_player.CurrentItem.SeekingWaitsForVideoCompositionRendering = true;
 
 				// Adapt pitch to prevent "metallic echo" when changing playback rate
-				Player.CurrentItem.AudioTimePitchAlgorithm = AVAudioTimePitchAlgorithm.TimeDomain;
+				_player.CurrentItem.AudioTimePitchAlgorithm = AVAudioTimePitchAlgorithm.TimeDomain;
 
 				// Disable subtitles if any
-				var mediaSelectionGroup = Player.CurrentItem.Asset.MediaSelectionGroupForMediaCharacteristic(AVMediaCharacteristic.Legible);
+				var mediaSelectionGroup = _player.CurrentItem.Asset.MediaSelectionGroupForMediaCharacteristic(AVMediaCharacteristic.Legible);
 				if (mediaSelectionGroup != null)
 				{
-					Player.CurrentItem.SelectMediaOption(null, mediaSelectionGroup);
+					_player.CurrentItem.SelectMediaOption(null, mediaSelectionGroup);
 				}
 				
 				MediaOpened?.Invoke(this, null);
 			}
-			catch (Exception)
+			catch (Exception ex)
 			{
-				OnMediaFailed();
-				PlaybackSession.PlaybackState = MediaPlaybackState.None;
+				OnMediaFailed(ex);
 			}
+		}
+
+		private static NSUrl DecodeUri(Uri uri)
+		{
+			if (!uri.IsAbsoluteUri || uri.Scheme == "")
+			{
+				uri = new Uri(MsAppXScheme + ":///" + uri.OriginalString.TrimStart("/"));
+			}
+
+			var isResource = uri.Scheme.Equals(MsAppXScheme, StringComparison.OrdinalIgnoreCase)
+							|| uri.Scheme.Equals(MsAppDataScheme, StringComparison.OrdinalIgnoreCase);
+
+			if (isResource)
+			{
+				var file = uri.PathAndQuery.TrimStart('/');
+				var fileName = Path.GetFileNameWithoutExtension(file);
+				var fileExtension = Path.GetExtension(file)?.Replace(".", "");
+				return NSBundle.MainBundle.GetUrlForResource(fileName, fileExtension);
+			}
+
+			if (uri.IsFile)
+			{
+				return new NSUrl(uri.PathAndQuery);
+			}
+			
+			return new NSUrl(uri.ToString());
 		}
 
 		#endregion
 
 		public void Play()
 		{
-			if (Source == null || Player == null)
+			if (Source == null || _player == null)
 			{
 				return;
 			}
@@ -156,13 +184,12 @@ namespace Windows.Media.Playback
 				}
 
 				PlaybackSession.PlaybackState = MediaPlaybackState.Buffering;
-				Player.Play();
+				_player.Play();
 				PlaybackSession.PlaybackState = MediaPlaybackState.Playing;
 			}
-			catch (Exception)
+			catch (Exception ex)
 			{
-				OnMediaFailed();
-				PlaybackSession.PlaybackState = MediaPlaybackState.None;
+				OnMediaFailed(ex);
 			}
 		}
 
@@ -172,9 +199,15 @@ namespace Windows.Media.Playback
 			PlaybackSession.PlaybackState = MediaPlaybackState.None;
 		}
 
-		private void OnMediaFailed()
+		private void OnMediaFailed(Exception ex = null, string message = null)
 		{
-			MediaFailed?.Invoke(this, new MediaPlayerFailedEventArgs());
+			MediaFailed?.Invoke(this, new MediaPlayerFailedEventArgs()
+			{
+				Error = MediaPlayerError.Unknown,
+				ExtendedErrorCode = ex,
+				ErrorMessage = message ?? ex?.Message
+			});
+
 			PlaybackSession.PlaybackState = MediaPlaybackState.None;
 
 			TryDisposePlayer();
@@ -200,15 +233,15 @@ namespace Windows.Media.Playback
 
 		private void ObserveStatus()
 		{
-			if (Player?.CurrentItem != null)
+			if (_player?.CurrentItem != null)
 			{
-				if (Player.CurrentItem.Status == AVPlayerItemStatus.Failed || Player.Status == AVPlayerStatus.Failed)
+				if (_player.CurrentItem.Status == AVPlayerItemStatus.Failed || _player.Status == AVPlayerStatus.Failed)
 				{
 					OnMediaFailed();
 					return;
 				}
 
-				if (Player.Status == AVPlayerStatus.ReadyToPlay && PlaybackSession.PlaybackState == MediaPlaybackState.Buffering)
+				if (_player.Status == AVPlayerStatus.ReadyToPlay && PlaybackSession.PlaybackState == MediaPlaybackState.Buffering)
 				{
 					//if (Rate == 0.0)
 					//{
@@ -217,7 +250,7 @@ namespace Windows.Media.Playback
 					//else
 					//{
 					PlaybackSession.PlaybackState = MediaPlaybackState.Playing;
-					Player.Play();
+					_player.Play();
 					//}
 				}
 			}
@@ -225,7 +258,7 @@ namespace Windows.Media.Playback
 
 		private void ObserveBufferingProgress()
 		{
-			var loadedTimeRanges = Player?.CurrentItem?.LoadedTimeRanges;
+			var loadedTimeRanges = _player?.CurrentItem?.LoadedTimeRanges;
 			if (loadedTimeRanges == null || loadedTimeRanges.Length == 0 || PlaybackSession.NaturalDuration == TimeSpan.Zero)
 			{
 				PlaybackSession.BufferingProgress = 0;
@@ -238,7 +271,7 @@ namespace Windows.Media.Playback
 
 		private void ObserveCurrentItemDuration()
 		{
-			var duration = Player.CurrentItem.Duration;
+			var duration = _player.CurrentItem.Duration;
 
 			if (duration != CMTime.Indefinite)
 			{
@@ -250,31 +283,31 @@ namespace Windows.Media.Playback
 		{
 			if (PlaybackSession.PlaybackState == MediaPlaybackState.Playing)
 			{
-				Player?.Pause();
+				_player?.Pause();
 				PlaybackSession.PlaybackState = MediaPlaybackState.Paused;
 			}
 		}
 
 		public void Stop()
 		{
-			Player?.Pause();
-			Player?.CurrentItem?.Seek(CMTime.Zero);
+			_player?.Pause();
+			_player?.CurrentItem?.Seek(CMTime.Zero);
 			PlaybackSession.PlaybackState = MediaPlaybackState.None;
 		}
 
 		private void ToggleMute()
 		{
-			if (Player != null)
+			if (_player != null)
 			{
-				Player.Muted = IsMuted;
+				_player.Muted = IsMuted;
 			}
 		}
 
 		private void OnVolumeChanged()
 		{
-			if (Player != null)
+			if (_player != null)
 			{
-				Player.Volume = (float)Volume / 100;
+				_player.Volume = (float)Volume / 100;
 			}
 		}
 
@@ -282,14 +315,22 @@ namespace Windows.Media.Playback
 		{
 			get
 			{
-				return TimeSpan.FromSeconds(Player.CurrentItem.CurrentTime.Seconds);
+				return TimeSpan.FromSeconds(_player.CurrentItem.CurrentTime.Seconds);
 			}
 			set
 			{
-				if (Player?.CurrentItem != null)
+				if (_player?.CurrentItem != null)
 				{
-					Player.CurrentItem.Seek(CMTime.FromSeconds(value.TotalSeconds, 100), CMTime.Zero, CMTime.Zero);
+					_player.CurrentItem.Seek(CMTime.FromSeconds(value.TotalSeconds, 100), CMTime.Zero, CMTime.Zero, completion: OnSeekCompleted);
 				}
+			}
+		}
+
+		private void OnSeekCompleted(bool finished)
+		{
+			if (finished)
+			{
+				SeekCompleted?.Invoke(this, null);
 			}
 		}
 	}

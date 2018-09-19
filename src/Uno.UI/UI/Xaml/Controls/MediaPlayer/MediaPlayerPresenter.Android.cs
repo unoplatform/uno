@@ -1,5 +1,5 @@
 using System;
-using Android.Widget;
+using Android.Views;
 using Uno.Media.Playback;
 
 namespace Windows.UI.Xaml.Controls
@@ -8,7 +8,7 @@ namespace Windows.UI.Xaml.Controls
 	{
 		private void SetVideoSurface(IVideoSurface videoSurface)
 		{
-			this.Child = videoSurface as VideoView;
+			this.Child = videoSurface as SurfaceView;
 		}
 	}
 }

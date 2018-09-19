@@ -8745,29 +8745,34 @@
 							<VisualStateGroup x:Name="ControlPanelVisibilityStates">
 								<VisualState x:Name="ControlPanelFadeIn">
 									<Storyboard>
-										<DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="Opacity"
+										<!--<DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="Opacity"
 																	   Storyboard.TargetName="ControlPanel_ControlPanelVisibilityStates_Border">
 											<EasingDoubleKeyFrame KeyTime="0"
 																  Value="0" />
 											<EasingDoubleKeyFrame KeyTime="0:0:0.3"
 																  Value="1" />
-										</DoubleAnimationUsingKeyFrames>
+										</DoubleAnimationUsingKeyFrames>-->
 										<DoubleAnimation Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.Y)"
 														 Storyboard.TargetName="ControlPanelGrid"
 														 From="50"
 														 To="0.5"
 														 Duration="0:0:0.3" />
+										<DoubleAnimation Storyboard.TargetProperty="Opacity"
+														 Storyboard.TargetName="ControlPanel_ControlPanelVisibilityStates_Border"
+														 From="0"
+														 To="1"
+														 Duration="0:0:0.3" />
 									</Storyboard>
 								</VisualState>
 								<VisualState x:Name="ControlPanelFadeOut">
 									<Storyboard>
-										<DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="Opacity"
+										<!--<DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="Opacity"
 																	   Storyboard.TargetName="ControlPanel_ControlPanelVisibilityStates_Border">
 											<EasingDoubleKeyFrame KeyTime="0"
 																  Value="1" />
 											<EasingDoubleKeyFrame KeyTime="0:0:0.7"
 																  Value="0" />
-										</DoubleAnimationUsingKeyFrames>
+										</DoubleAnimationUsingKeyFrames>-->
 										<ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="IsHitTestVisible"
 																	   Storyboard.TargetName="ControlPanel_ControlPanelVisibilityStates_Border">
 											<DiscreteObjectKeyFrame KeyTime="0"
@@ -8777,6 +8782,11 @@
 														 Storyboard.TargetName="ControlPanelGrid"
 														 From="0.5"
 														 To="50"
+														 Duration="0:0:0.7" />
+										<DoubleAnimation Storyboard.TargetProperty="Opacity"
+														 Storyboard.TargetName="ControlPanel_ControlPanelVisibilityStates_Border"
+														 From="1"
+														 To="0"
 														 Duration="0:0:0.7" />
 									</Storyboard>
 								</VisualState>

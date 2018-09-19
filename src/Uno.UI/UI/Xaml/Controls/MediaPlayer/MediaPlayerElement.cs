@@ -215,8 +215,7 @@ namespace Windows.UI.Xaml.Controls
 				MediaPlayer.Play();
 			}
 		}
-
-
+		
 		protected override void OnApplyTemplate()
 		{
 			base.OnApplyTemplate();
@@ -225,6 +224,7 @@ namespace Windows.UI.Xaml.Controls
 			_mediaPlayerPresenter = this.GetTemplateChild(MediaPlayerPresenterName) as MediaPlayerPresenter;
 			_transportControlsPresenter = this.GetTemplateChild(TransportControlsPresenterName) as ContentPresenter;
 			_transportControlsPresenter.Content = TransportControls;
+			TransportControls.ApplyTemplate();
 
 			if (MediaPlayer == null)
 			{

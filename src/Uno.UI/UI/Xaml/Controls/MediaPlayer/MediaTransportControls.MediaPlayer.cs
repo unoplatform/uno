@@ -103,12 +103,13 @@ namespace Windows.UI.Xaml.Controls
 		{
 			Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
 			{
+				var duration = args as TimeSpan? ?? TimeSpan.Zero;
+				_progressSlider.Minimum = 0;
+				_progressSlider.Maximum = duration.TotalSeconds;
+
 				if (_mediaPlayer.PlaybackSession.PlaybackState != MediaPlaybackState.Playing && _mediaPlayer.PlaybackSession.PlaybackState != MediaPlaybackState.Paused)
 				{
-					var duration = args as TimeSpan? ?? TimeSpan.Zero;
 					_timeRemainingElement.Text = $"{duration.TotalHours:0}:{duration.Minutes:00}:{duration.Seconds:00}";
-					_progressSlider.Minimum = 0;
-					_progressSlider.Maximum = duration.TotalSeconds;
 				}
 			});
 		}
