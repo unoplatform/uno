@@ -92,9 +92,11 @@
     <Compile Include="DependencyObject\DependencyObjectGenerator.cs" />
     <Compile Include="DependencyObject\MethodCallFinder.cs" />
     <Compile Include="Helpers\AnalyzerSuppressions.cs" />
+    <Compile Include="Helpers\NamedTypeSymbolExtensions.cs" />
     <Compile Include="Helpers\PathHelper.cs" />
     <Compile Include="Helpers\RoslynMetadataHelper.cs" />
     <Compile Include="Helpers\SymbolExtensions.cs" />
+    <Compile Include="Helpers\TypeSymbolExtensions.cs" />
     <Compile Include="NativeCtor\NativeCtorsGenerator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="XamlGenerator\BackingFieldDefinition.cs" />
