@@ -265,7 +265,8 @@ namespace Windows.Media.Playback
 			}
 			else
 			{
-				PlaybackSession.BufferingProgress = loadedTimeRanges.Select(tr => tr.CMTimeRangeValue.Start.Seconds + tr.CMTimeRangeValue.Duration.Seconds).Max() / PlaybackSession.NaturalDuration.TotalSeconds;
+				var buffer = loadedTimeRanges.Select(tr => tr.CMTimeRangeValue.Start.Seconds + tr.CMTimeRangeValue.Duration.Seconds).Max() / PlaybackSession.NaturalDuration.TotalSeconds * 100;
+				PlaybackSession.BufferingProgress = buffer;
 			}
 		}
 

@@ -24,10 +24,11 @@ namespace Windows.Media.Playback
 		AndroidMediaPlayer.IOnCompletionListener,
 		AndroidMediaPlayer.IOnErrorListener,
 		AndroidMediaPlayer.IOnPreparedListener,
-		AndroidMediaPlayer.IOnSeekCompleteListener
+		AndroidMediaPlayer.IOnSeekCompleteListener,
+		AndroidMediaPlayer.IOnBufferingUpdateListener
 	{
 		private AndroidMediaPlayer _player;
-		
+
 		private bool _isPlayRequested = false;
 		private bool _isPlayerPrepared = false;
 		private bool _hasValidHolder = false;
@@ -76,10 +77,10 @@ namespace Windows.Media.Playback
 			{
 				surfaceHolder.AddCallback(this);
 			}
-
-			_player.SetOnErrorListener(this);
+						_player.SetOnErrorListener(this);
 			_player.SetOnPreparedListener(this);
 			_player.SetOnSeekCompleteListener(this);
+			_player.SetOnBufferingUpdateListener(this);
 
 			PlaybackSession.PlaybackStateChanged -= OnStatusChanged;
 			PlaybackSession.PlaybackStateChanged += OnStatusChanged;
@@ -312,6 +313,15 @@ namespace Windows.Media.Playback
 		public void OnSeekComplete(AndroidMediaPlayer mp)
 		{
 			SeekCompleted?.Invoke(this, null);
+		}
+
+		#endregion
+
+		#region AndroidMediaPlayer.IOnBufferingUpdateListener implementation
+
+		public void OnBufferingUpdate(AndroidMediaPlayer mp, int percent)
+		{
+			PlaybackSession.BufferingProgress = percent;
 		}
 
 		#endregion

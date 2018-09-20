@@ -33,6 +33,7 @@ namespace Windows.UI.Xaml.Controls
 	[TemplatePart(Name = "TimeRemainingElement", Type = typeof(TextBlock))]
 	[TemplatePart(Name = "ProgressSlider", Type = typeof(Slider))]
 	[TemplatePart(Name = "BufferingProgressBar", Type = typeof(ProgressBar))]
+	[TemplatePart(Name = "DownloadProgressIndicator", Type = typeof(ProgressBar))]
 	public partial class MediaTransportControls : Control
 	{
 		private const string RootGridName = "RootGrid";
@@ -60,6 +61,7 @@ namespace Windows.UI.Xaml.Controls
 		private const string BufferingProgressBarName = "BufferingProgressBar";
 		private const string TimelineContainerName = "MediaTransportControls_Timeline_Border";
 		private const string HorizontalThumbName = "HorizontalThumb";
+		private const string DownloadProgressIndicatorName = "DownloadProgressIndicator";
 
 		private Grid _rootGrid;
 		private Button _playPauseButton;
@@ -85,6 +87,7 @@ namespace Windows.UI.Xaml.Controls
 		private Slider _progressSlider;
 		private ProgressBar _bufferingProgressBar;
 		private Border _timelineContainer;
+		private ProgressBar _downloadProgressIndicator;
 
 		private Timer _controlsVisibilityTimer;
 		private bool _wasPlaying;
@@ -202,6 +205,8 @@ namespace Windows.UI.Xaml.Controls
 
 			_timelineContainer = this.GetTemplateChild(TimelineContainerName) as Border;
 
+			_downloadProgressIndicator = _progressSlider.GetTemplateChild(DownloadProgressIndicatorName) as ProgressBar;
+			
 			_rootGrid = this.GetTemplateChild(RootGridName) as Grid;
 			_rootGrid.Tapped -= OnRootGridTapped;
 			_rootGrid.Tapped += OnRootGridTapped;

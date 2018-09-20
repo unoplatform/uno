@@ -97,6 +97,14 @@ namespace Windows.UI.Xaml.Controls
 
 		private void OnBufferingProgressChanged(MediaPlaybackSession sender, object args)
 		{
+
+			Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+			{
+				if (_downloadProgressIndicator != null)
+				{
+					_downloadProgressIndicator.Value = (double)args;
+				}
+			});
 		}
 
 		private void OnNaturalDurationChanged(MediaPlaybackSession sender, object args)

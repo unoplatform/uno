@@ -35,12 +35,13 @@ _If you need to set source programmatically (ie, using `_mediaPlayerElement.Sour
 |						| Enable/Disable MediaTransportControls commands  		| X     | X  		|									|
 |						| Skip forwoard											| X     | X  		|									|
 |						| Skip backward											| X     | X  		|									|
-|						| Show buffering progress						  		| -     | -  		|									|
+|						| Show buffering progress						  		| X     | X  		|									|
 |						| Fullscreen mode								  		| -     | -  		|									|
 |						| Change playback rate									| -     | -  		|									|
 |						| Zoom mode												| -     | -  		|									|
 |						| Locked screen support  								| -     | -  		|									|
 |						| Playlists support		  								| -     | -  		|									|
+|						| Subtitles	support			  								| -     | -  		|									|
 
 
 ## Requirement
@@ -52,9 +53,10 @@ _If you need to set source programmatically (ie, using `_mediaPlayerElement.Sour
 ### Android
 
 `<uses-permission android:name="android.permission.INTERNET" />` needs to be defined in your AndroidManifest.xml in order to play remote media
+`<uses-permission android:name="android.permission.WAKE_LOCK" />` needs to be defined in your AndroidManifest.xml to allow player to keep the screen on while playing
 
 ## Known issues
 
-- Unable to aooly style on Slider, due to a bug in Uno
-- Volume flyout does not display on iOS
-- Video streching issue, especially on Android 
+- Slider not draggable (Uno issue)
+- Volume flyout does not display on iOS (Uno issue)
+- Video streching issue, especially on Android (Impl issue)

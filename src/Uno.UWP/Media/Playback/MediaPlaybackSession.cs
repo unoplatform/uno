@@ -111,7 +111,7 @@ namespace Windows.Media.Playback
 				PlaybackStateChanged?.Invoke(this, _playbackState);
 			}
 		}
-		
+
 		public event TypedEventHandler<MediaPlaybackSession, object> BufferingProgressChanged;
 
 		public event TypedEventHandler<MediaPlaybackSession, object> NaturalDurationChanged;
