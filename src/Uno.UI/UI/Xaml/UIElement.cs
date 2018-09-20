@@ -39,7 +39,7 @@ namespace Windows.UI.Xaml
 
 
 		/// <summary>
-		/// Deteremines if an <see cref="UIElement"/> clips its children to its bounds.
+		/// Determines if an <see cref="UIElement"/> clips its children to its bounds.
 		/// </summary>
 		internal bool ClipChildrenToBounds { get; set; } = true;
 
@@ -194,36 +194,36 @@ namespace Windows.UI.Xaml
 						InvokeHandler(handler.Handler, args);
 					}
 				}
+			}
 
-				var isHandled = IsHandled(args);
+			var isHandled = IsHandled(args);
 
-				// We don't need to manually bubble up non-handled events on the managed side.
-				// We already take care to bubble up non-handled events on the native side:
-				// - Android: UnoViewGroup.java -> Return false in dispatchTouchEvent
-				// - iOS: UIElement.iOS.cs -> Call base.TouchesBegan, base.TouchesEnded, etc.
-				// - Wasm: WindowManager.ts -> Don't call event.stopPropagation()
-				// In the future, we might decide to stop bubbling up events on the native side, and do it all on the managed side instead.
-				// The first element hit by hit-testing would natively handle the event (stop native bubble up),
-				// become the OriginalSource of the associated RoutedEventArgs, and we would manually bubble up the event on the managed side.
-				var bubblesUpNatively = !isHandled;
+			// We don't need to manually bubble up non-handled events on the managed side.
+			// We already take care to bubble up non-handled events on the native side:
+			// - Android: UnoViewGroup.java -> Return false in dispatchTouchEvent
+			// - iOS: UIElement.iOS.cs -> Call base.TouchesBegan, base.TouchesEnded, etc.
+			// - Wasm: WindowManager.ts -> Don't call event.stopPropagation()
+			// In the future, we might decide to stop bubbling up events on the native side, and do it all on the managed side instead.
+			// The first element hit by hit-testing would natively handle the event (stop native bubble up),
+			// become the OriginalSource of the associated RoutedEventArgs, and we would manually bubble up the event on the managed side.
+			var bubblesUpNatively = IsBubblingNatively(args);
 
-				// According to Microsoft, handled events shouldn't bubble up:
-				// https://docs.microsoft.com/en-us/windows/uwp/xaml-platform/events-and-routed-events-overview#the-handled-property
-				// However, an ancestor might have used AddHandler(..., handledEventsToo: true), in which case we need to route the event to it.
-				// Here, we systematically bubble up events in case an ancestor used AddHandler(..., handledEventsToo: true).
-				// This is a naive approach, and it's probably expensive. We should find a better solution.
-				var bubbleUpHandledEventsToo = true;
+			// According to Microsoft, handled events shouldn't bubble up:
+			// https://docs.microsoft.com/en-us/windows/uwp/xaml-platform/events-and-routed-events-overview#the-handled-property
+			// However, an ancestor might have used AddHandler(..., handledEventsToo: true), in which case we need to route the event to it.
+			// Here, we systematically bubble up events in case an ancestor used AddHandler(..., handledEventsToo: true).
+			// This is a naive approach, and it's probably expensive. We should find a better solution.
+			var bubbleUpHandledEventsToo = true;
 
-				if (!bubblesUpNatively && (!isHandled || bubbleUpHandledEventsToo))
-				{
-					// We bubble up the event
+			if (!bubblesUpNatively && (!isHandled || bubbleUpHandledEventsToo))
+			{
+				// We bubble up the event
 #if __IOS__ || __ANDROID__
-					var parent = this.FindFirstParent<UIElement>();
+				var parent = this.FindFirstParent<UIElement>();
 #else
 					var parent = this.GetParent() as UIElement;
 #endif
-					parent?.RaiseEvent(routedEvent, args);
-				}
+				parent?.RaiseEvent(routedEvent, args);
 			}
 		}
 
@@ -243,6 +243,16 @@ namespace Windows.UI.Xaml
 				default:
 					return false;
 			}
+		}
+
+		private static bool IsBubblingNatively(RoutedEventArgs args)
+		{
+			if (args is ICancellableRoutedEventArgs cancellable)
+			{
+				return !cancellable.Handled;
+			}
+
+			return false;
 		}
 
 		private void InvokeHandler(object handler, RoutedEventArgs args)

@@ -6,7 +6,7 @@ using Uno;
 
 namespace Windows.UI.Xaml.Input
 {
-	public sealed partial class PointerRoutedEventArgs : RoutedEventArgs
+	public sealed partial class PointerRoutedEventArgs : RoutedEventArgs, ICancellableRoutedEventArgs
 	{
 		private Point _point;
 

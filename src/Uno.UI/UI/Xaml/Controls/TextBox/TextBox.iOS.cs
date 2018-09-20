@@ -21,8 +21,6 @@ namespace Windows.UI.Xaml.Controls
 
 		//Only implemented in TextBox in IOS. Key events are not passed to UIViews that dont implement UIKeyInput protocol
 		//http://stackoverflow.com/questions/24106882/how-do-i-get-keyboard-events-without-a-textbox
-		public new event KeyEventHandler KeyUp;
-        public new event KeyEventHandler KeyDown;
 
 		partial void InitializePropertiesPartial()
 		{
@@ -63,11 +61,11 @@ namespace Windows.UI.Xaml.Controls
 		{
 		}
 
-        public override bool BecomeFirstResponder()
-        {
-            return (_textBoxView?.BecomeFirstResponder())
-                .GetValueOrDefault(false);
-        }
+		public override bool BecomeFirstResponder()
+		{
+			return (_textBoxView?.BecomeFirstResponder())
+				.GetValueOrDefault(false);
+		}
 
 		partial void OnAcceptsReturnChangedPartial(DependencyPropertyChangedEventArgs e)
 		{
@@ -82,7 +80,7 @@ namespace Windows.UI.Xaml.Controls
 		partial void OnTextAlignmentChangedPartial(DependencyPropertyChangedEventArgs e)
 		{
 			_textBoxView?.UpdateTextAlignment();
-        }
+		}
 
 		internal MultilineTextBoxView MultilineTextBox
 		{
@@ -98,10 +96,10 @@ namespace Windows.UI.Xaml.Controls
 			{
 				if (AcceptsReturn || TextWrapping != TextWrapping.NoWrap)
 				{
-                    if (_textBoxView is MultilineTextBoxView)
-                    {
-                        return;
-                    }
+					if (_textBoxView is MultilineTextBoxView)
+					{
+						return;
+					}
 
 					_textBoxView = new MultilineTextBoxView(this)
 					.Binding("Text", new Data.Binding()
@@ -116,12 +114,12 @@ namespace Windows.UI.Xaml.Controls
 				}
 				else
 				{
-                    if (_textBoxView is SinglelineTextBoxView)
-                    {
-                        return;
-                    }
+					if (_textBoxView is SinglelineTextBoxView)
+					{
+						return;
+					}
 
-                    _textBoxView = new SinglelineTextBoxView(this)
+					_textBoxView = new SinglelineTextBoxView(this)
 					.Binding("Text", new Data.Binding()
 					{
 						Path = "Text",
@@ -130,22 +128,25 @@ namespace Windows.UI.Xaml.Controls
 					});
 
 					_contentElement.Content = _textBoxView;
-                    InitializeProperties();
-                }
-            }
+					InitializeProperties();
+				}
+			}
 		}
-        internal bool OnKey(char key)
-        {
-            var keyRoutedEventArgs = new KeyRoutedEventArgs()
-            {
-                Key = key.ToVirtualKey()
-            };
 
-            KeyDown?.Invoke(this, keyRoutedEventArgs);
-            KeyUp?.Invoke(this, keyRoutedEventArgs);
+		internal bool OnKey(char key)
+		{
+			var keyRoutedEventArgs = new KeyRoutedEventArgs()
+			{
+				Key = key.ToVirtualKey()
+			};
 
-            return keyRoutedEventArgs.Handled;
-        }
+			RaiseEvent(KeyDownEvent, keyRoutedEventArgs);
+			var downHandled = keyRoutedEventArgs.Handled;
+			keyRoutedEventArgs.Handled = false; // reset to unhandled
+			RaiseEvent(KeyUpEvent, keyRoutedEventArgs);
+
+			return downHandled || keyRoutedEventArgs.Handled;
+		}
 
 		partial void OnInputScopeChangedPartial(DependencyPropertyChangedEventArgs e)
 		{
