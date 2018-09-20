@@ -1070,7 +1070,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 							"new global::Windows.UI.Xaml.Setter({0}.{1}Property, ({2}){3})" + lineEnding,
 							GetGlobalizedTypeName(fullTargetType),
 							property,
-							propertyType,
+							propertyType.GetSymbolNames().GetSymbolFullNameWithGenerics(),
 							BuildLiteralValue(valueNode, propertyType)
 						);
 					}
