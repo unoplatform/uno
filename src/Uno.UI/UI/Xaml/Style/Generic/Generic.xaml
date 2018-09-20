@@ -8889,6 +8889,11 @@
 								<VisualState x:Name="NormalMode" />
 								<VisualState x:Name="CompactMode">
 									<Storyboard>
+										<ObjectAnimationUsingKeyFrames Storyboard.TargetName="VolumeFlyout"
+																	   Storyboard.TargetProperty="Placement">
+											<DiscreteObjectKeyFrame KeyTime="0"
+																	Value="Top" />
+										</ObjectAnimationUsingKeyFrames>
 										<ObjectAnimationUsingKeyFrames Storyboard.TargetName="LeftSidePlayBorder"
 																	   Storyboard.TargetProperty="Visibility">
 											<DiscreteObjectKeyFrame KeyTime="0"
