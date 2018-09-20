@@ -17,9 +17,11 @@ public MyBindableObject : DependencyObject {
  
 There are non-view framework types, too, which inherit from `DependencyObject`, like `Transforms` and `Brushes`. 
  
-We face a weaker form of this problem - wanting to have two base types - in other cases is well. In a few places in the framework we inherit from a more derived native view type. For example, `ScrollContentPresenter` inherits from the native scroll view on Android and iOS. But we also want `ScrollContentPresenter` to expose the methods and properties of `FrameworkElement`. 
+We face a weaker form of this problem - wanting to have two base types - in other cases is well. In a few places in the framework we inherit from a more derived native view type. For example, `ScrollContentPresenter` inherits from the native scroll view on Android and iOS. But we also want `ScrollContentPresenter` to expose the methods and properties of `FrameworkElement`.
+
+We successfully addressed both of these problems by using code generation to implement mixins in C#.
  
-## Mixing it up 
+## Mixing things up 
 Most statically-typed languages don't permit multiple base classes on account of the added complexity it brings (the 'diamond problem'). (C++ is a notable exception.) In dynamically-typed languages though it's quite common to bolt on extra functionality to a class in a reusable way with [mixins](https://en.wikipedia.org/wiki/Mixin).  
  
 C#, as a statically-typed language, doesn't support mixins as a first-class language feature. Code generation allows us to simulate it, though. Uno  uses code generation to add mixins in (at least) two different ways. 
