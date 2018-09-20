@@ -6,7 +6,7 @@ using Windows.Foundation;
 
 namespace Windows.UI.Xaml.Input
 {
-	public sealed partial class DoubleTappedRoutedEventArgs : RoutedEventArgs
+	public sealed partial class DoubleTappedRoutedEventArgs : RoutedEventArgs, ICancellableRoutedEventArgs
 	{
 		private readonly Point _position;
 
