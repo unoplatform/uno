@@ -338,5 +338,10 @@ namespace Windows.Media.Playback
 				SeekCompleted?.Invoke(this, null);
 			}
 		}
+
+		internal void UpdateVideoGravity(AVLayerVideoGravity gravity)
+		{
+			_videoLayer.VideoGravity = gravity;
+		}
 	}
 }

@@ -43,6 +43,9 @@ _If you need to set source programmatically (ie, using `_mediaPlayerElement.Sour
 |						| Playlists support		  								| -     | -  		|									|
 |						| Subtitles	support			  								| -     | -  		|									|
 
+## Extra features
+
+- Pause media when headphones unplugged
 
 ## Requirement
 

@@ -46,7 +46,7 @@ namespace Windows.UI.Xaml.Controls
 				nameof(Stretch),
 				typeof(Stretch),
 				typeof(MediaPlayerPresenter),
-				new FrameworkPropertyMetadata(default(Stretch)));
+				new FrameworkPropertyMetadata(Stretch.Uniform, (s, e) => ((MediaPlayerPresenter)s).OnStretchChanged((Stretch)e.NewValue, (Stretch)e.OldValue)));
 
 		#endregion
 

@@ -198,6 +198,23 @@ namespace Windows.UI.Xaml.Controls
 
 		#endregion
 
+		#region Stretch Property
+
+		public Stretch Stretch
+		{
+			get { return (Stretch)GetValue(StretchProperty); }
+			set { SetValue(StretchProperty, value); }
+		}
+
+		public static DependencyProperty StretchProperty { get; } =
+			DependencyProperty.Register(
+				nameof(Stretch),
+				typeof(Stretch),
+				typeof(MediaPlayerElement),
+				new FrameworkPropertyMetadata(Stretch.Uniform));
+
+		#endregion
+
 		public MediaTransportControls TransportControls { get; set; } = new MediaTransportControls();
 
 		public MediaPlayerElement() : base()

@@ -8253,7 +8253,8 @@
                         <MediaPlayerPresenter x:Name="MediaPlayerPresenter"
 											  IsFullWindow="{TemplateBinding IsFullWindow}"
 											  Stretch="{TemplateBinding Stretch}"
-											  MediaPlayer="{TemplateBinding MediaPlayer}" />
+											  MediaPlayer="{TemplateBinding MediaPlayer}"
+											  Background="Black" />
 						<ContentPresenter x:Name="TransportControlsPresenter"
 										  Visibility="{TemplateBinding AreTransportControlsEnabled}" />
 						<Grid x:Name="TimedTextSourcePresenter" />
