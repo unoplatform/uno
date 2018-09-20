@@ -32,13 +32,25 @@ namespace Windows.Media.Playback
 		private bool _isPlayRequested = false;
 		private bool _isPlayerPrepared = false;
 		private bool _hasValidHolder = false;
+
 		private IScheduledExecutorService _executorService = Executors.NewSingleThreadScheduledExecutor();
 		private IScheduledFuture _scheduledFuture;
+		private AudioPlayerBroadcastReceiver _noisyAudioStreamReceiver;
 
 		const string MsAppXScheme = "ms-appx";
 		const string MsAppDataScheme = "ms-appdata";
 
 		public virtual IVideoSurface RenderSurface { get; } = new VideoSurface(Application.Context);
+
+		private void Initialize()
+		{
+			// Register intent to pause media when audio become noisy (unplugged headphones, for example) 
+			_noisyAudioStreamReceiver = new AudioPlayerBroadcastReceiver(this);
+			var intentFilter = new IntentFilter(AudioManager.ActionAudioBecomingNoisy);
+			Application.Context.RegisterReceiver(_noisyAudioStreamReceiver, intentFilter);
+		}
+
+		#region Player Initialization
 
 		private void TryDisposePlayer()
 		{
@@ -77,23 +89,14 @@ namespace Windows.Media.Playback
 			{
 				surfaceHolder.AddCallback(this);
 			}
-						_player.SetOnErrorListener(this);
+
+			_player.SetOnErrorListener(this);
 			_player.SetOnPreparedListener(this);
 			_player.SetOnSeekCompleteListener(this);
 			_player.SetOnBufferingUpdateListener(this);
 
 			PlaybackSession.PlaybackStateChanged -= OnStatusChanged;
 			PlaybackSession.PlaybackStateChanged += OnStatusChanged;
-		}
-
-		private void OnStatusChanged(MediaPlaybackSession sender, object args)
-		{
-			CancelPlayingHandler();
-
-			if ((MediaPlaybackState)args == MediaPlaybackState.Playing)
-			{
-				StartPlayingHandler();
-			}
 		}
 
 		protected virtual void InitializeSource()
@@ -111,7 +114,7 @@ namespace Windows.Media.Playback
 				// Reset player
 				TryDisposePlayer();
 				InitializePlayer();
-				
+
 				PlaybackSession.PlaybackState = MediaPlaybackState.Opening;
 				SetVideoSource(((MediaSource)Source).Uri);
 
@@ -150,6 +153,18 @@ namespace Windows.Media.Playback
 			}
 
 			_player.SetDataSource(Application.Context, Android.Net.Uri.Parse(uri.ToString()));
+		}
+
+		#endregion
+
+		private void OnStatusChanged(MediaPlaybackSession sender, object args)
+		{
+			CancelPlayingHandler();
+
+			if ((MediaPlaybackState)args == MediaPlaybackState.Playing)
+			{
+				StartPlayingHandler();
+			}
 		}
 
 		public virtual void Play()
@@ -288,6 +303,21 @@ namespace Windows.Media.Playback
 			_player?.SetVolume(volume, volume);
 		}
 
+		public virtual TimeSpan Position
+		{
+			get
+			{
+				return TimeSpan.FromMilliseconds(_player.CurrentPosition);
+			}
+			set
+			{
+				if (PlaybackSession.PlaybackState != MediaPlaybackState.None)
+				{
+					_player?.SeekTo((int)value.TotalMilliseconds, MediaPlayerSeekMode.Closest);
+				}
+			}
+		}
+
 		#region ISurfaceHolderCallback implementation
 
 		public void SurfaceChanged(ISurfaceHolder holder, [GeneratedEnum] Format format, int width, int height)
@@ -325,20 +355,5 @@ namespace Windows.Media.Playback
 		}
 
 		#endregion
-
-		public virtual TimeSpan Position
-		{
-			get
-			{
-				return TimeSpan.FromMilliseconds(_player.CurrentPosition);
-			}
-			set
-			{
-				if (PlaybackSession.PlaybackState != MediaPlaybackState.None)
-				{
-					_player?.SeekTo((int)value.TotalMilliseconds, MediaPlayerSeekMode.Closest);
-				}
-			}
-		}
 	}
 }

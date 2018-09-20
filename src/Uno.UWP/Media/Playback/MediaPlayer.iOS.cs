@@ -25,6 +25,10 @@ namespace Windows.Media.Playback
 
 		public IVideoSurface RenderSurface { get; } = new VideoSurface();
 
+		private void Initialize()
+		{
+		}
+
 		#region Player Initialization
 
 		private void TryDisposePlayer()

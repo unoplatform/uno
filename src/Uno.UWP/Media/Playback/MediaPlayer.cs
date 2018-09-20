@@ -90,6 +90,8 @@ namespace Windows.Media.Playback
 		public MediaPlayer()
 		{
 			PlaybackSession = new MediaPlaybackSession(this);
+
+			Initialize();
 		}
 	}
 }
