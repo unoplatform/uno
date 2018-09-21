@@ -554,7 +554,15 @@ namespace Windows.UI.Xaml.Controls
 				{
 					//Scroll to individual item, We set the UICollectionViewScrollPosition to None to have the same behavior as windows.
 					//We can potentially customize this By using ConvertScrollAlignment and use different alignments.
-					ScrollToItem(index, ConvertSnapPointsAlignmentToScrollPosition(), AnimateScrollIntoView);
+					var needsMaterialize = Source.UpdateLastMaterializedItem(index);
+					if (needsMaterialize)
+					{
+						NativeLayout.InvalidateLayout();
+					}
+
+					var offset = NativeLayout.GetTargetScrollOffset(index, alignment);
+					SetContentOffset(offset, AnimateScrollIntoView);
+					NativeLayout.UpdateStickyHeaderPositions();
 				}
 			}
 		}
@@ -680,6 +688,7 @@ namespace Windows.UI.Xaml.Controls
 				_needsLayoutAfterReloadData = true;
 				ReloadData();
 
+				Source?.ReloadData();
 				NativeLayout?.ReloadData();
 
 				_listEmptyLastRefresh = XamlParent?.NumberOfItems == 0;

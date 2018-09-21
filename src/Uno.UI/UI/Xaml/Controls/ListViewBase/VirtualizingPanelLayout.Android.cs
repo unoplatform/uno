@@ -226,7 +226,7 @@ namespace Windows.UI.Xaml.Controls
 		private void ApplyScrollToPosition(int targetPosition, ScrollIntoViewAlignment alignment, RecyclerView.Recycler recycler, RecyclerView.State state)
 		{
 			int offsetToApply = 0;
-			bool shouldSnapToStart = false;
+			bool shouldSnapToStart = false; //Initial values: if the item is fully visible, it shouldn't snap (alignment = default)
 			bool shouldSnapToEnd = false;
 
 			// 1. Incrementally scroll until target position lies within range of visible positions
@@ -234,14 +234,14 @@ namespace Windows.UI.Xaml.Controls
 			int appliedOffset = 0;
 			while (targetPosition > GetLastVisibleDisplayPosition() && GetNextUnmaterializedItem(FillDirection.Forward) != null)
 			{
-				shouldSnapToEnd = true;
+				shouldSnapToEnd = true; //If the item is below the viewport, it should be snapped to the bottom of the viewport (alignment = default)
 				appliedOffset += GetScrollConsumptionIncrement(FillDirection.Forward);
 				offsetToApply += ScrollByInner(appliedOffset, recycler, state);
 			}
 			//While target position is before first visible position, scroll backward
 			while (targetPosition < GetFirstVisibleDisplayPosition() && GetNextUnmaterializedItem(FillDirection.Back) != null)
 			{
-				shouldSnapToStart = true;
+				shouldSnapToStart = true; //If the item is above the viewport, it should be snapped to the bottom of the viewport (alignment = default)
 				appliedOffset -= GetScrollConsumptionIncrement(FillDirection.Back);
 				offsetToApply += ScrollByInner(appliedOffset, recycler, state);
 			}
@@ -251,6 +251,7 @@ namespace Windows.UI.Xaml.Controls
 
 			if (alignment == ScrollIntoViewAlignment.Leading)
 			{
+				// 'Leading' means that the item always snaps to the top of the viewport no matter what
 				shouldSnapToStart = true;
 				shouldSnapToEnd = false;
 			}
