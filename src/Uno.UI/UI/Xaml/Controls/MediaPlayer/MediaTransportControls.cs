@@ -6,6 +6,13 @@ using Windows.Media.Playback;
 using Windows.UI.Core;
 using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
+using Windows.UI.Xaml.Media;
+
+#if __IOS__
+using UIKit;
+#elif __ANDROID__
+using Uno.UI;
+#endif
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -160,6 +167,8 @@ namespace Windows.UI.Xaml.Controls
 			_zoomButton = this.GetTemplateChild(ZoomButtonName) as Button;
 			_zoomButton?.SetBinding(Button.VisibilityProperty, new Binding { Path = "IsZoomButtonVisible", Source = this, Mode = BindingMode.OneWay, FallbackValue = Visibility.Collapsed, Converter = trueToVisible });
 			_zoomButton?.SetBinding(Button.IsEnabledProperty, new Binding { Path = "IsZoomEnabled", Source = this, Mode = BindingMode.OneWay, FallbackValue = true });
+			_zoomButton.Click -= ZoomButtonClick;
+			_zoomButton.Click += ZoomButtonClick;
 
 			_playbackRateButton = this.GetTemplateChild(PlaybackRateButtonName) as Button;
 			_playbackRateButton?.SetBinding(Button.VisibilityProperty, new Binding { Path = "IsPlaybackRateButtonVisible", Source = this, Mode = BindingMode.OneWay, FallbackValue = Visibility.Collapsed, Converter = trueToVisible });
@@ -214,6 +223,23 @@ namespace Windows.UI.Xaml.Controls
 			if (_mediaPlayer != null)
 			{
 				BindMediaPlayer();
+			}
+		}
+
+		private void ZoomButtonClick(object sender, RoutedEventArgs e)
+		{
+			var mpe = this.FindFirstParent<MediaPlayerElement>();
+
+			if (mpe != null)
+			{
+				if (mpe.Stretch == Stretch.Uniform)
+				{
+					mpe.Stretch = Stretch.UniformToFill;
+				}
+				else
+				{
+					mpe.Stretch = Stretch.Uniform;
+				}
 			}
 		}
 
