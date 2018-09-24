@@ -259,7 +259,9 @@ namespace Windows.UI.Xaml.Controls
 			//2. If view for position lies partially outside visible bounds, bring it into view
 			var target = FindViewByAdapterPosition(targetPosition);
 
-			var gapToStart = 0 - GetChildStartWithMargin(target);
+			var gapToStart = 0 - GetChildStartWithMargin(target)
+				// Ensure sticky group header doesn't cover item
+				+ GetStickyGroupHeaderExtent();
 			if (!shouldSnapToStart)
 			{
 				gapToStart = Math.Max(0, gapToStart);
@@ -287,6 +289,11 @@ namespace Windows.UI.Xaml.Controls
 			FillLayout(FillDirection.Forward, 0, Extent, ContentBreadth, recycler, state);
 			FillLayout(FillDirection.Back, 0, Extent, ContentBreadth, recycler, state);
 		}
+
+		/// <summary>
+		/// Get extent of currently sticking group header (if any)
+		/// </summary>
+		private int GetStickyGroupHeaderExtent() => GetFirstGroup().ItemsExtentOffset;
 
 		private class ScrollToPositionRequest
 		{

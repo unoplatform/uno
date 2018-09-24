@@ -1239,7 +1239,8 @@ namespace Windows.UI.Xaml.Controls
 			nfloat GetBaseOffset()
 			{
 				var frame = LayoutAttributesForItem(item).Frame;
-				var frameExtentStart = GetExtentStart(frame);
+				var headerCorrection = GetStickyHeaderExtent(item.Section);
+				var frameExtentStart = GetExtentStart(frame) - headerCorrection;
 				if (alignment == ScrollIntoViewAlignment.Leading)
 				{
 					// Alignment=Leading snaps item to same position no matter where it currently is
@@ -1268,6 +1269,13 @@ namespace Windows.UI.Xaml.Controls
 				}
 			}
 		}
+
+		/// <summary>
+		/// Get extent added by sticky group header for given section, if any.
+		/// </summary>
+		private nfloat GetStickyHeaderExtent(int section) => AreStickyGroupHeadersEnabled && RelativeGroupHeaderPlacement == RelativeHeaderPlacement.Inline ?
+			GetExtent(_inlineHeaderFrames[section].Size) :
+			0;
 
 		/// <summary>
 		/// Get all LayoutAttributes for every display element.
