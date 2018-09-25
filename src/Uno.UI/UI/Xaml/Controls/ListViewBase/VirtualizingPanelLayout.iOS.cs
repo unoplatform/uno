@@ -862,6 +862,18 @@ namespace Windows.UI.Xaml.Controls
 			return false;
 		}
 
+		/// <summary>
+		/// Triggers an update of the sticky group header positions.
+		/// </summary>
+		public void UpdateStickyHeaderPositions()
+		{
+			if (AreStickyGroupHeadersEnabled)
+			{
+				_invalidatingHeadersOnBoundsChange = true;
+				InvalidateLayout(); 
+			}
+		}
+
 		public override void InvalidateLayout()
 		{
 			//Called in response to INotifyCollectionChanged operation, update layout reusing already-calculated databound element sizes
@@ -1207,6 +1219,63 @@ namespace Windows.UI.Xaml.Controls
 					throw new InvalidOperationException($"{SnapPointsAlignment} out of range.");
 			}
 		}
+
+		/// <summary>
+		/// Get offset to apply to scroll item into view
+		/// </summary>
+		internal CGPoint GetTargetScrollOffset(NSIndexPath item, ScrollIntoViewAlignment alignment)
+		{
+			var baseOffsetExtent = GetBaseOffset();
+			var snapTo = GetSnapTo(scrollVelocity: 0, (float)baseOffsetExtent);
+			if (snapTo.HasValue)
+			{
+				return GetSnapToAsOffset(snapTo.Value);
+			}
+			else
+			{
+				return SetExtentOffset(CGPoint.Empty, baseOffsetExtent);
+			}
+
+			nfloat GetBaseOffset()
+			{
+				var frame = LayoutAttributesForItem(item).Frame;
+				var headerCorrection = GetStickyHeaderExtent(item.Section);
+				var frameExtentStart = GetExtentStart(frame) - headerCorrection;
+				if (alignment == ScrollIntoViewAlignment.Leading)
+				{
+					// Alignment=Leading snaps item to same position no matter where it currently is
+					return frameExtentStart;
+				}
+				else // Alignment=Default
+				{
+					var currentOffset = GetExtent(Owner.ContentOffset);
+					var targetOffset = currentOffset;
+					var frameExtentEnd = GetExtentEnd(frame);
+					var viewportHeight = GetExtent(CollectionView.Bounds.Size);
+
+					if (frameExtentStart < currentOffset)
+					{
+						// Start of item is above viewport, it should snap to start of viewport
+						targetOffset = frameExtentStart;
+					}
+					if (frameExtentEnd > currentOffset + viewportHeight)
+					{
+						//End of item is below viewport, it should snap to end of viewport
+						targetOffset = frameExtentEnd - viewportHeight;
+					}
+					// (If neither of the conditions apply, item is already fully in view, return current offset unaltered)
+
+					return targetOffset;
+				}
+			}
+		}
+
+		/// <summary>
+		/// Get extent added by sticky group header for given section, if any.
+		/// </summary>
+		private nfloat GetStickyHeaderExtent(int section) => AreStickyGroupHeadersEnabled && RelativeGroupHeaderPlacement == RelativeHeaderPlacement.Inline ?
+			GetExtent(_inlineHeaderFrames[section].Size) :
+			0;
 
 		/// <summary>
 		/// Get all LayoutAttributes for every display element.
