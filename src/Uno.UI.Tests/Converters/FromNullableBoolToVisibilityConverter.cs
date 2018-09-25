@@ -3,9 +3,10 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Text;
+using Uno.UI.Converters;
 using Windows.UI.Xaml;
 
-namespace Uno.UI.Converters
+namespace Uno.UI.Tests.Converters
 {
 	/// <summary>
 	/// This converter will output a visibility based on if a nullable bool is set to true or otherwise.
