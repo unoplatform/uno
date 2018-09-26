@@ -242,7 +242,7 @@ namespace Windows.UI.Xaml.Controls
 
 		public void Refresh()
 		{
-			CurrentAdapter?.NotifyDataSetChanged();
+			CurrentAdapter?.Refresh();
 
 			var isScrollResetting = NativeLayout != null && NativeLayout.ContentOffset != 0;
 			NativeLayout?.Refresh();
