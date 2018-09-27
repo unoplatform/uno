@@ -264,6 +264,9 @@ namespace Windows.UI.Xaml.Controls
 		/// </summary>
 		private bool IsMaterialized(NSIndexPath itemPath) => itemPath.Compare(_lastMaterializedItem) >= 0;
 
+		// Consider group header to be materialized if first item in group is materialized
+		private bool IsMaterialized(int section) => section <= _lastMaterializedItem.Section;
+
 		public override void WillDisplayCell(UICollectionView collectionView, UICollectionViewCell cell, NSIndexPath indexPath)
 		{
 			var index = Owner?.XamlParent?.GetIndexFromIndexPath(IndexPath.FromNSIndexPath(indexPath)) ?? -1;
@@ -318,6 +321,9 @@ namespace Windows.UI.Xaml.Controls
 
 			else if (elementKind == NativeListViewBase.ListViewSectionHeaderElementKind)
 			{
+				// Ensure correct template can be retrieved
+				UpdateLastMaterializedItem(indexPath);
+
 				return GetBindableSupplementaryView(
 					collectionView: collectionView,
 					elementKind: NativeListViewBase.ListViewSectionHeaderElementKindNS,
@@ -325,7 +331,7 @@ namespace Windows.UI.Xaml.Controls
 					reuseIdentifier: NativeListViewBase.ListViewSectionHeaderReuseIdentifierNS,
 					//ICollectionViewGroup.Group is used as context for sectionHeader
 					context: listView.XamlParent.GetGroupAtDisplaySection(indexPath.Section).Group,
-					template: listView.GroupStyle?.HeaderTemplate,
+					template: GetTemplateForGroupHeader(indexPath.Section),
 					style: listView.GroupStyle?.HeaderContainerStyle
 				);
 			}
@@ -477,9 +483,10 @@ namespace Windows.UI.Xaml.Controls
 			return Owner.FooterTemplate != null ? GetTemplateSize(Owner.FooterTemplate, NativeListViewBase.ListViewFooterElementKindNS) : CGSize.Empty;
 		}
 
-		internal CGSize GetSectionHeaderSize()
+		internal CGSize GetSectionHeaderSize(int section)
 		{
-			return (Owner.GroupStyle?.HeaderTemplate).SelectOrDefault(ht => GetTemplateSize(ht, NativeListViewBase.ListViewSectionHeaderElementKindNS), CGSize.Empty);
+			var template = GetTemplateForGroupHeader(section);
+			return template.SelectOrDefault(ht => GetTemplateSize(ht, NativeListViewBase.ListViewSectionHeaderElementKindNS), CGSize.Empty);
 		}
 
 
@@ -519,6 +526,19 @@ namespace Windows.UI.Xaml.Controls
 			{
 				// Ignore ItemTemplateSelector since we do not know what the item is
 				return Owner?.ItemTemplate;
+			}
+		}
+
+		private DataTemplate GetTemplateForGroupHeader(int section)
+		{
+				var groupStyle = Owner.GroupStyle;
+			if (IsMaterialized(section))
+			{
+				return DataTemplateHelper.ResolveTemplate(groupStyle?.HeaderTemplate, groupStyle?.HeaderTemplateSelector, Owner.XamlParent.GetGroupAtDisplaySection(section).Group);
+			}
+			else
+			{
+				return groupStyle?.HeaderTemplate;
 			}
 		}
 

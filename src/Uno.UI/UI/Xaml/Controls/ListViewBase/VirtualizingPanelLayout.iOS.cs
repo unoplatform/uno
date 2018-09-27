@@ -516,7 +516,7 @@ namespace Windows.UI.Xaml.Controls
 					availableGroupBreadth -= (nfloat)GroupPaddingBreadthEnd;
 
 					//a. Layout group header, if present
-					frame.Size = oldGroupHeaderSizes?.UnoGetValueOrDefault(section) ?? GetSectionHeaderSize();
+					frame.Size = oldGroupHeaderSizes?.UnoGetValueOrDefault(section) ?? GetSectionHeaderSize(section);
 					if (RelativeGroupHeaderPlacement != RelativeHeaderPlacement.Adjacent)
 					{
 						//Give the maximum breadth available, since for now we don't adjust the measured width of the list based on the databound item
@@ -819,19 +819,19 @@ namespace Windows.UI.Xaml.Controls
 			return Source.GetTarget()?.GetItemSize(CollectionView, indexPath) ?? CGSize.Empty;
 		}
 
-		protected CGSize GetHeaderSize()
+		private CGSize GetHeaderSize()
 		{
 			return Source.GetTarget()?.GetHeaderSize() ?? CGSize.Empty;
 		}
 
-		protected CGSize GetFooterSize()
+		private CGSize GetFooterSize()
 		{
 			return Source.GetTarget()?.GetFooterSize() ?? CGSize.Empty;
 		}
 
-		protected CGSize GetSectionHeaderSize()
+		private CGSize GetSectionHeaderSize(int section)
 		{
-			return Source.GetTarget()?.GetSectionHeaderSize() ?? CGSize.Empty;
+			return Source.GetTarget()?.GetSectionHeaderSize(section) ?? CGSize.Empty;
 		}
 
 		/// <summary>
