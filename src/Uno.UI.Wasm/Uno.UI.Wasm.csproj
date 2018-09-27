@@ -21,10 +21,10 @@
 	<ItemGroup>
 	  <UpToDateCheckInput Remove="ts\AppManifest.ts" />
 	  <UpToDateCheckInput Remove="ts\Interop\IAppManifest.ts" />
-	  <UpToDateCheckInput Remove="ts\Interop\IWebAssemblyModule.ts" />
 	</ItemGroup>
 
 	<ItemGroup>
+    <PackageReference Include="emscripten.TypeScript.DefinitelyTyped" Version="0.6.6" />
     <PackageReference Include="Uno.Core">
       <Version>1.24.0-dev.49</Version>
       <ExcludeAssets>Runtime</ExcludeAssets>
