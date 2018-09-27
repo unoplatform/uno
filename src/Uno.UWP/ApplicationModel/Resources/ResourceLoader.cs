@@ -115,14 +115,15 @@ namespace Windows.ApplicationModel.Resources
 		{
 			using (var reader = new BinaryReader(input))
 			{
+				// "Magic" sequence to ensure we're reading a proper resource file
 				if (!reader.ReadBytes(3).SequenceEqual(new byte[] { 0x75, 0x6E, 0x6F }))
 				{
-					throw new InvalidCastException($"The file {name} is not a resource file");
+					throw new InvalidOperationException($"The file {name} is not a resource file");
 				}
 
 				if (reader.ReadInt32() != 1)
 				{
-					throw new InvalidCastException($"The resource file {name} has an invalid version");
+					throw new InvalidOperationException($"The resource file {name} has an invalid version");
 				}
 
 				var culture = reader.ReadString();

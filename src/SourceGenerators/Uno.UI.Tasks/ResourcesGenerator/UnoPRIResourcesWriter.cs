@@ -13,7 +13,9 @@ namespace Uno.UI.Tasks.ResourcesGenerator
 			{
 				using (var writer = new BinaryWriter(file, Encoding.UTF8))
 				{
-					writer.Write(new byte[] { 0x75, 0x6E, 0x6F }); // Magic
+					// "Magic" sequence to ensure we'll be reading a proper
+					// resource file at runtime
+					writer.Write(new byte[] { 0x75, 0x6E, 0x6F });
 					writer.Write(1); // version
 
 					writer.Write(language);
