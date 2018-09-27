@@ -13,46 +13,64 @@ namespace Uno.UI.Tests.ControlTests
 	public partial class Given_Control
 	{
 		[TestMethod]
-		public void When_ManualyApplyTemplate()
+		public void When_ManuallyApplyTemplate()
 		{
-			var templatedRoot = default(UIElement);
-			var sut = new MyControl
+			var current = FeatureConfiguration.Control.UseLegacyLazyApplyTemplate;
+			try
 			{
-				Template = new ControlTemplate(() => templatedRoot = new Grid())
-			};
+				FeatureConfiguration.Control.UseLegacyLazyApplyTemplate = true;
+				var templatedRoot = default(UIElement);
+				var sut = new MyControl
+				{
+					Template = new ControlTemplate(() => templatedRoot = new Grid())
+				};
 
-			Assert.IsNull(sut.TemplatedRoot);
-			Assert.IsNull(templatedRoot);
+				Assert.IsNull(sut.TemplatedRoot);
+				Assert.IsNull(templatedRoot);
 
-			new Grid().Children.Add(sut); // This kind-of simulate that the control is in the visual tree.
+				new Grid().Children.Add(sut); // This kind-of simulate that the control is in the visual tree.
 
-			Assert.IsNull(sut.TemplatedRoot);
-			Assert.IsNull(templatedRoot);
+				Assert.IsNull(sut.TemplatedRoot);
+				Assert.IsNull(templatedRoot);
 
-			var applied = sut.ApplyTemplate();
+				var applied = sut.ApplyTemplate();
 
-			Assert.IsTrue(applied);
-			Assert.IsNotNull(sut.TemplatedRoot);
-			Assert.AreSame(templatedRoot, sut.TemplatedRoot);
+				Assert.IsTrue(applied);
+				Assert.IsNotNull(sut.TemplatedRoot);
+				Assert.AreSame(templatedRoot, sut.TemplatedRoot);
+			}
+			finally
+			{
+				FeatureConfiguration.Control.UseLegacyLazyApplyTemplate = current;
+			}
 		}
 
 		[TestMethod]
-		public void When_ManualyApplyTemplate_OutOfVisualTree()
+		public void When_ManuallyApplyTemplate_OutOfVisualTree()
 		{
-			var templatedRoot = default(UIElement);
-			var sut = new MyControl
+			var current = FeatureConfiguration.Control.UseLegacyLazyApplyTemplate;
+			try
 			{
-				Template = new ControlTemplate(() => templatedRoot = new Grid())
-			};
+				FeatureConfiguration.Control.UseLegacyLazyApplyTemplate = true;
+				var templatedRoot = default(UIElement);
+				var sut = new MyControl
+				{
+					Template = new ControlTemplate(() => templatedRoot = new Grid())
+				};
 
-			Assert.IsNull(sut.TemplatedRoot);
-			Assert.IsNull(templatedRoot);
+				Assert.IsNull(sut.TemplatedRoot);
+				Assert.IsNull(templatedRoot);
 
-			var applied = sut.ApplyTemplate();
+				var applied = sut.ApplyTemplate();
 
-			Assert.IsFalse(applied);
-			Assert.IsNull(sut.TemplatedRoot);
-			Assert.IsNull(templatedRoot);
+				Assert.IsTrue(applied);
+				Assert.IsNotNull(sut.TemplatedRoot);
+				Assert.AreSame(templatedRoot, sut.TemplatedRoot);
+			}
+			finally
+			{
+				FeatureConfiguration.Control.UseLegacyLazyApplyTemplate = current;
+			}
 		}
 
 		public partial class MyControl : Control
