@@ -18,6 +18,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 	{
 		private string[] _xamlSourceFiles;
 		private string _targetPath;
+		private readonly string _defaultLanguage;
 		private bool _isWasm;
 		private string _defaultNamespace;
 		private string[] _assemblySearchPaths;
@@ -100,6 +101,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				msbProject.GetProperty("IntermediateOutputPath").EvaluatedValue
 			);
 
+			_defaultLanguage = msbProject.GetProperty("DefaultLanguage")?.EvaluatedValue;
+
 			_analyzerSuppressions = msbProject
 				.GetItems("XamlGeneratorAnalyzerSuppressions")
 				.Select(i => i.EvaluatedInclude)
@@ -158,6 +161,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 							resourceKeys: resourceKeys,
 							isUiAutomationMappingEnabled: _isUiAutomationMappingEnabled,
 							uiAutomationMappings: _uiAutomationMappings,
+							defaultLanguage: _defaultLanguage,
 							isWasm: _isWasm
 						)
 						.GenerateFile()

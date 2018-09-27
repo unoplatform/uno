@@ -3,6 +3,7 @@
 ## Next version
 
 ### Features
+* Support for WebAssembly localization
 
 ### Breaking changes
 
