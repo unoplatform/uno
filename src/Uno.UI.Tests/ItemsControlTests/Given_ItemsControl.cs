@@ -40,9 +40,6 @@ namespace Uno.UI.Tests.ItemsControlTests
 				}
 			};
 
-			new Grid().Children.Add(SUT); // This is enough for now, but the `SUT` should be in the visual tree for its template to get applied
-			SUT.ApplyTemplate();
-
 			// Search on the panel for now, as the name lookup is not properly
 			// aligned on net46.
 			Assert.IsNotNull(panel.FindName("b1"));
