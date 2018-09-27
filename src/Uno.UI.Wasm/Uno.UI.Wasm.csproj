@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="15.0">
+﻿<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="15.0">
   <PropertyGroup>
 		<TargetFrameworks>netstandard2.0</TargetFrameworks>
 	</PropertyGroup>
@@ -24,7 +24,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-    <PackageReference Include="emscripten.TypeScript.DefinitelyTyped" Version="0.6.6" />
     <PackageReference Include="Uno.Core">
       <Version>1.24.0-dev.49</Version>
       <ExcludeAssets>Runtime</ExcludeAssets>

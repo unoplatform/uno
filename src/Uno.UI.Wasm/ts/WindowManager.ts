@@ -47,7 +47,6 @@
 		 * */
 		static setupStorage(localStoragePath: string): void {
 			if (WindowManager.isIndexDBAvailable()) {
-				console.debug(`Initializing IDBFS at ${localStoragePath}`);
 
 				FS.mkdir(localStoragePath);
 				FS.mount(IDBFS, {}, localStoragePath);
@@ -72,6 +71,9 @@
 			}
 		}
 
+		/**
+		 * Determine if IndexDB is available, some browsers and modes disable it.
+		 * */
 		static isIndexDBAvailable(): boolean {
 			try {
 				// IndexedDB may not be available in private mode
@@ -82,6 +84,9 @@
 			}
 		}
 
+		/**
+		 * Synchronize the IDBFS memory cache back to IndexDB
+		 * */
 		static synchronizeFileSystem(): void {
 			FS.syncfs(
 				err => {
