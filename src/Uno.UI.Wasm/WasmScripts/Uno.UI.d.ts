@@ -57,7 +57,7 @@ declare namespace Uno.UI {
             * @param containerElementId The ID of the container element for the Xaml UI
             * @param loadingElementId The ID of the loading element to remove once ready
             */
-        static init(containerElementId?: string, loadingElementId?: string): string;
+        static init(localStoragePath: string, containerElementId?: string, loadingElementId?: string): string;
         private containerElement;
         private rootContent;
         private allActiveElementsById;
@@ -65,6 +65,13 @@ declare namespace Uno.UI {
         private static resizeMethod;
         private static dispatchEventMethod;
         private constructor();
+        /**
+         * Setup the storage persistence
+         *
+         * */
+        static setupStorage(localStoragePath: string): void;
+        static isIndexDBAvailable(): boolean;
+        static synchronizeFileSystem(): void;
         /**
             * Creates the UWP-compatible splash screen
             *
@@ -251,19 +258,6 @@ declare module Uno.UI.Interop {
         main_class: Interop.IMonoClassHandle;
     }
 }
-declare module Uno.UI.Interop {
-    interface IWebAssemblyModule {
-        getValue(ptr: number, format: string): number;
-        HEAPU8: Uint8Array;
-        HEAP8: Int8Array;
-        HEAP16: Int16Array;
-        HEAPU16: Uint16Array;
-        HEAP32: Int32Array;
-        HEAPU32: Uint32Array;
-        HEAPF32: Float32Array;
-        HEAPF64: Float64Array;
-    }
-}
 declare namespace Uno.Foundation.Interop {
     class ManagedObject {
         private static assembly;
@@ -285,4 +279,3 @@ declare namespace Uno.UI.Interop {
 declare const MonoRuntime: Uno.UI.Interop.IMonoRuntime;
 declare const WebAssemblyApp: Uno.UI.Interop.IWebAssemblyApp;
 declare const UnoAppManifest: Uno.UI.IAppManifest;
-declare const Module: Uno.UI.Interop.IWebAssemblyModule;
