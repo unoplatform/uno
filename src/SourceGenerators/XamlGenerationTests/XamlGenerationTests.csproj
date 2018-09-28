@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk" ToolsVersion="15.0">
 	<PropertyGroup>
-		<TargetFrameworks>MonoAndroid80;xamarinios10</TargetFrameworks>
-		<TargetFrameworksCI>MonoAndroid71;MonoAndroid80;xamarinios10</TargetFrameworksCI>
+		<TargetFrameworks>MonoAndroid80;MonoAndroid90;xamarinios10</TargetFrameworks>
+		<TargetFrameworksCI>MonoAndroid71;MonoAndroid80;MonoAndroid90;xamarinios10</TargetFrameworksCI>
 	</PropertyGroup>
 
 	<PropertyGroup>
@@ -45,6 +45,19 @@
 		</PackageReference>
 		<PackageReference Include="Xamarin.Android.Support.v7.RecyclerView">
 			<Version>26.1.0.1</Version>
+		</PackageReference>
+		
+	</ItemGroup>
+	
+		<ItemGroup Condition=" '$(TargetFramework)' == 'MonoAndroid90'">
+		<PackageReference Include="Xamarin.Android.Support.v4">
+			<Version>27.0.2.1</Version>
+		</PackageReference>
+		<PackageReference Include="Xamarin.Android.Support.v7.AppCompat">
+			<Version>27.0.2.1</Version>
+		</PackageReference>
+		<PackageReference Include="Xamarin.Android.Support.v7.RecyclerView">
+			<Version>27.0.2.1</Version>
 		</PackageReference>
 	</ItemGroup>
 

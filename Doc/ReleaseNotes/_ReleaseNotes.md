@@ -1,7 +1,7 @@
 # Release notes
 
 ## Next version
-
+* Updated Uno to target MonoAndroid90
 ### Features
 
 ### Breaking changes
