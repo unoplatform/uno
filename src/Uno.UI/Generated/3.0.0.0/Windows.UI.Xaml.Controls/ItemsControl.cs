@@ -321,7 +321,7 @@ namespace Windows.UI.Xaml.Controls
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.ItemsControl", "void ItemsControl.PrepareContainerForItemOverride(DependencyObject element, object item)");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		#if false || false || false || false
 		[global::Uno.NotImplemented]
 		protected virtual void OnItemsChanged( object e)
 		{

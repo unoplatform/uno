@@ -1,24 +1,39 @@
 <Project ToolsVersion="15.0">
+	<!--
+		This file is used to control the platforms compiled by visual studio, and 
+      		allow for a faster build when testing for a single platform.
+    
+    		Instructions:
+			1) Copy this file and remove the ".sample" name
+			2) Adjust the BuildTargetFramework property below, there can only be one.
+			3) Make sure to do a Rebuild, so that nuget restores the proper packages for the new target
+	-->
+
   <PropertyGroup>
     <IsUnoUIProject>false</IsUnoUIProject>
     <IsUnoUIProject Condition="'$(AssemblyName)'=='Uno' or '$(AssemblyName)'=='Uno.UI' or '$(AssemblyName)'=='Uno.Foundation'">true</IsUnoUIProject>
-    
     <!--
-      This file is used to control the platforms compiled by visual studio, and 
-      allow for a faster build when testing for a single platform.
-    
-			Instructions:
-			1) Copy this file and remove the ".sample" name
-			2) Adjust the BuildTargetFramework property below, there can only be one.
-      
-      Note that if the BuildTargetFramework is not part of a project's 
-      TargetFrameworksDefault list, all target frameworks will be built.
-		-->
+    	This property controls the platform built by Visual Studio.
+		
+      	Available build targets:
+								uap10.0 (Windows)
+								xamarinios10 (iOS)
+								MonoAndroid80 (Android 8.0)
+								netstandard2.0 (WebAssembly)
+								net46 (Tests)
+			
+     	Note that if the BuildTargetFramework is not part of a project's 
+     	TargetFrameworksDefault list, all target frameworks will be built.
+			
+    	To build multiple targets, separate them with ; (e.g. uap10.0;net46)
+    -->
     <BuildTargetFramework>MonoAndroid80</BuildTargetFramework>
 
     <!-- 
     This property allows the override of the nuget local cache.
     Set it to the version you want to override, used in another app.
+    You will see the override path in the build output.
+    The packages are located under this directory: "%USERPROFILE%\.nuget\packages".
     -->
     <!--<UnoNugetOverrideVersion>2.23.2-dev.667</UnoNugetOverrideVersion>-->
   </PropertyGroup>

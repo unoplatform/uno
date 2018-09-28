@@ -74,6 +74,10 @@ namespace Windows.UI.Xaml.Controls
 		private DataTemplateSelector _currentSelector;
 		private Dictionary<DataTemplate, CGSize> _templateCache = new Dictionary<DataTemplate, CGSize>(DataTemplate.FrameworkTemplateEqualityComparer.Default);
 		private Dictionary<DataTemplate, NSString> _templateCells = new Dictionary<DataTemplate, NSString>(DataTemplate.FrameworkTemplateEqualityComparer.Default);
+		/// <summary>
+		/// The furthest item in the source which has already been materialized. Items up to this point can safely be retrieved.
+		/// </summary>
+		private NSIndexPath _lastMaterializedItem = NSIndexPath.FromRowSection(0, 0);
 
 		/// <summary>
 		/// Is the UICollectionView currently undergoing animated scrolling, either user-initiated or programmatic.
@@ -198,10 +202,7 @@ namespace Windows.UI.Xaml.Controls
 				// is used during the calculation of the layout.
 				// This is required for paged lists, so that the layout calculation
 				// does not eagerly get all the items of the ItemsSource.
-				if (!_materializedItems.Contains(indexPath))
-				{
-					_materializedItems.Add(indexPath);
-				}
+				UpdateLastMaterializedItem(indexPath);
 
 				var index = Owner?.XamlParent?.GetIndexFromIndexPath(IndexPath.FromNSIndexPath(indexPath)) ?? -1;
 
@@ -239,6 +240,32 @@ namespace Windows.UI.Xaml.Controls
 				return cell;
 			}
 		}
+
+		/// <summary>
+		/// Update record of the furthest item materialized.
+		/// </summary>
+		/// <param name="newItem">Item currently being materialized.</param>
+		/// <returns>True if the value has changed and the layout would change.</returns>
+		internal bool UpdateLastMaterializedItem(NSIndexPath newItem)
+		{
+			if (newItem.Compare(_lastMaterializedItem) > 0)
+			{
+				_lastMaterializedItem = newItem;
+				return Owner.ItemTemplateSelector != null; ;
+			}
+			else
+			{
+				return false;
+			}
+		}
+
+		/// <summary>
+		/// Is item in the range of already-materialized items?
+		/// </summary>
+		private bool IsMaterialized(NSIndexPath itemPath) => itemPath.Compare(_lastMaterializedItem) >= 0;
+
+		// Consider group header to be materialized if first item in group is materialized
+		private bool IsMaterialized(int section) => section <= _lastMaterializedItem.Section;
 
 		public override void WillDisplayCell(UICollectionView collectionView, UICollectionViewCell cell, NSIndexPath indexPath)
 		{
@@ -294,6 +321,9 @@ namespace Windows.UI.Xaml.Controls
 
 			else if (elementKind == NativeListViewBase.ListViewSectionHeaderElementKind)
 			{
+				// Ensure correct template can be retrieved
+				UpdateLastMaterializedItem(indexPath);
+
 				return GetBindableSupplementaryView(
 					collectionView: collectionView,
 					elementKind: NativeListViewBase.ListViewSectionHeaderElementKindNS,
@@ -301,7 +331,7 @@ namespace Windows.UI.Xaml.Controls
 					reuseIdentifier: NativeListViewBase.ListViewSectionHeaderReuseIdentifierNS,
 					//ICollectionViewGroup.Group is used as context for sectionHeader
 					context: listView.XamlParent.GetGroupAtDisplaySection(indexPath.Section).Group,
-					template: listView.GroupStyle?.HeaderTemplate,
+					template: GetTemplateForGroupHeader(indexPath.Section),
 					style: listView.GroupStyle?.HeaderContainerStyle
 				);
 			}
@@ -418,6 +448,11 @@ namespace Windows.UI.Xaml.Controls
 
 		#endregion
 
+		internal void ReloadData()
+		{
+			_lastMaterializedItem = NSIndexPath.FromRowSection(0, 0);
+		}
+
 		/// <summary>
 		/// Get item container corresponding to an element kind (header, footer, list item, etc)
 		/// </summary>
@@ -448,12 +483,12 @@ namespace Windows.UI.Xaml.Controls
 			return Owner.FooterTemplate != null ? GetTemplateSize(Owner.FooterTemplate, NativeListViewBase.ListViewFooterElementKindNS) : CGSize.Empty;
 		}
 
-		internal CGSize GetSectionHeaderSize()
+		internal CGSize GetSectionHeaderSize(int section)
 		{
-			return (Owner.GroupStyle?.HeaderTemplate).SelectOrDefault(ht => GetTemplateSize(ht, NativeListViewBase.ListViewSectionHeaderElementKindNS), CGSize.Empty);
+			var template = GetTemplateForGroupHeader(section);
+			return template.SelectOrDefault(ht => GetTemplateSize(ht, NativeListViewBase.ListViewSectionHeaderElementKindNS), CGSize.Empty);
 		}
 
-		HashSet<NSIndexPath> _materializedItems = new HashSet<NSIndexPath>();
 
 		public virtual CGSize GetItemSize(UICollectionView collectionView, NSIndexPath indexPath)
 		{
@@ -483,7 +518,7 @@ namespace Windows.UI.Xaml.Controls
 
 		private DataTemplate GetTemplateForItem(NSIndexPath indexPath)
 		{
-			if (_materializedItems.Contains(indexPath))
+			if (IsMaterialized(indexPath))
 			{
 				return Owner?.ResolveItemTemplate(Owner.XamlParent.GetDisplayItemFromIndexPath(indexPath.ToIndexPath()));
 			}
@@ -491,6 +526,19 @@ namespace Windows.UI.Xaml.Controls
 			{
 				// Ignore ItemTemplateSelector since we do not know what the item is
 				return Owner?.ItemTemplate;
+			}
+		}
+
+		private DataTemplate GetTemplateForGroupHeader(int section)
+		{
+				var groupStyle = Owner.GroupStyle;
+			if (IsMaterialized(section))
+			{
+				return DataTemplateHelper.ResolveTemplate(groupStyle?.HeaderTemplate, groupStyle?.HeaderTemplateSelector, Owner.XamlParent.GetGroupAtDisplaySection(section).Group);
+			}
+			else
+			{
+				return groupStyle?.HeaderTemplate;
 			}
 		}
 

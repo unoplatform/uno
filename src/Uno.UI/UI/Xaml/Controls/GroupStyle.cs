@@ -7,7 +7,14 @@ namespace Windows.UI.Xaml.Controls
 	public partial class GroupStyle
 	{
 		public DataTemplate HeaderTemplate { get; set; }
-        public Style HeaderContainerStyle { get; set; }
-        public bool HidesIfEmpty { get; set; }
+
+#if false || false || NET46 || __WASM__
+		[Uno.NotImplemented]
+#endif
+		public DataTemplateSelector HeaderTemplateSelector { get; set; }
+
+		public Style HeaderContainerStyle { get; set; }
+
+		public bool HidesIfEmpty { get; set; }
 	}
 }

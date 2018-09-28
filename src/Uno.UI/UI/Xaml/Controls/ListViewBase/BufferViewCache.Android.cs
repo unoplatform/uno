@@ -153,6 +153,7 @@ namespace Windows.UI.Xaml.Controls
 			UnbufferTrailing();
 			UnbufferLeading();
 			TrimEmpty(); //Empty items may have been exposed by unbuffering
+			CheckValidSteadyState();
 
 			void UnbufferTrailing()
 			{
@@ -215,6 +216,7 @@ namespace Windows.UI.Xaml.Controls
 					var record = _leadingBuffer.RemoveFromFront();
 					TrimEmpty();
 					CheckValidState();
+					CheckValidSteadyState();
 					SendToIntermediateCache(recycler, record);
 				}
 
@@ -227,6 +229,7 @@ namespace Windows.UI.Xaml.Controls
 					var record = _leadingBuffer.RemoveFromBack();
 					TrimEmpty();
 					CheckValidState();
+					CheckValidSteadyState();
 					SendToIntermediateCache(recycler, record);
 				}
 			}
@@ -260,6 +263,7 @@ namespace Windows.UI.Xaml.Controls
 				_leadingBuffer.RemoveFromBack();
 				CheckValidState();
 			}
+			CheckValidSteadyState();
 		}
 
 		/// <summary>
@@ -278,6 +282,8 @@ namespace Windows.UI.Xaml.Controls
 				PrefetchExtra();
 				_isInitiallyPopulated = true;
 			}
+
+			CheckValidSteadyState();
 
 			void PrefetchTrailing()
 			{
@@ -518,6 +524,7 @@ namespace Windows.UI.Xaml.Controls
 		/// </summary>
 		private ElementViewRecord? DequeueRecordFromBuffer(int displayPosition)
 		{
+			CheckValidSteadyState();
 			_initialChildCount = Layout.ChildCount;
 			_initialItemViewCount = Layout.ItemViewCount;
 			try
@@ -561,6 +568,7 @@ namespace Windows.UI.Xaml.Controls
 			finally
 			{
 				TrimEmpty();
+				CheckValidSteadyState();
 			}
 
 			return null;
@@ -695,10 +703,13 @@ namespace Windows.UI.Xaml.Controls
 
 		private int ConvertIndexToDisplayPosition(int index) => _owner.XamlParent.ConvertIndexToDisplayPosition(index);
 
+		/// <summary>
+		/// Check that the buffers are in a consistent state. This is safe to call during certain intermediate operations.
+		/// </summary>
 		[Conditional("DEBUG")]
 		private void CheckValidState()
 		{
-			if (_trailingBuffer.Count > 0)
+			if (_trailingBuffer.Count > 0 && !_trailingBuffer[0].IsEmpty)
 			{
 				var expectedPosition = TrailingBufferStart;
 				for (int i = 0; i < _trailingBuffer.Count; i++)
@@ -711,7 +722,7 @@ namespace Windows.UI.Xaml.Controls
 					expectedPosition++;
 				}
 			}
-			if (_leadingBuffer.Count > 0)
+			if (_leadingBuffer.Count > 0 && !_leadingBuffer[0].IsEmpty)
 			{
 				var expectedPosition = LeadingBufferStart;
 				for (int i = 0; i < _leadingBuffer.Count; i++)
@@ -732,6 +743,37 @@ namespace Windows.UI.Xaml.Controls
 			if (Layout.ItemViewCount != _initialItemViewCount)
 			{
 				throw new InvalidOperationException($"Owner ItemViewCount has changed from {_initialItemViewCount} to {Layout.ItemViewCount}. Cache update should not modify owner.");
+			}
+		}
+
+		/// <summary>
+		/// Check that the buffers are in a consistent state. This should only be called after intermediate operations have completed.
+		/// </summary>
+		[Conditional("DEBUG")]
+		private void CheckValidSteadyState()
+		{
+			if (_leadingBuffer.Count > 0)
+			{
+				if (_leadingBuffer[0].IsEmpty)
+				{
+					throw new InvalidOperationException();
+				}
+				if (_leadingBuffer.Last().IsEmpty)
+				{
+					throw new InvalidOperationException();
+				}
+			}
+
+			if (_trailingBuffer.Count > 0)
+			{
+				if (_trailingBuffer[0].IsEmpty)
+				{
+					throw new InvalidOperationException();
+				}
+				if (_trailingBuffer.Last().IsEmpty)
+				{
+					throw new InvalidOperationException();
+				}
 			}
 		}
 

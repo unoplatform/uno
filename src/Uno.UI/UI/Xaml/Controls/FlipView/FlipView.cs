@@ -36,9 +36,9 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		internal override void OnItemsChanged()
+		protected override void OnItemsChanged(object e)
 		{
-			base.OnItemsChanged();
+			base.OnItemsChanged(e);
 
 			if (HasItems)
 			{

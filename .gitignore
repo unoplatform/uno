@@ -3,6 +3,7 @@
 
 # Remove everything beginning with a dot
 .*/
+!.github/
 
 # Umbrella
 umbrella_installlog.txt
@@ -29,6 +30,7 @@ Resource.Designer.cs
 bld/
 [Bb]in/
 [Oo]bj/
+logfile=obj/
 
 # Visual Studio 2015 cache/options directory
 .vs/

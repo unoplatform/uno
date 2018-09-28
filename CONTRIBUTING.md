@@ -14,7 +14,7 @@ We want to hear about your experience, scenarios, and requirements.
 
 ### Report a bug
 
-If you think you've found a bug, please log a new issue in the [Uno Platform GitHub issue tracker](https://github.com/nventive/Uno/issues). When filing issues, please use our [bug filing template](https://github.com/nventive/Uno/wiki/Functional-Bug-Template).
+If you think you've found a bug, please log a new issue in the [Uno Platform GitHub issue tracker](https://github.com/nventive/Uno/issues). When filing issues, please use our [bug filing template](.github/ISSUE_TEMPLATE.md).
 The best way to get your bug fixed is to be as detailed as you can be about the problem.
 Providing a minimal project with steps to reproduce the problem is ideal.
 Here are questions you can answer before you file a bug to make sure you're not missing any important information.
@@ -33,7 +33,9 @@ If you have an idea for a new feature or enhancement let us know by filing an [i
 
 ### Ask questions
 
-If you have a question be sure to first checkout our [documentation](https://github.com/nventive/Uno/tree/master/doc/index.md). But if you are still stuck, file an [issue](https://github.com/nventive/Uno/issues) and we'll do our best to answer it.
+If you have a question be sure to first checkout our [documentation](https://github.com/nventive/Uno/tree/master/doc/index.md). But if you are still stuck, you'll have a better chance of getting help on [StackOverflow](https://stackoverflow.com/questions/tagged/uno-platform) and we'll do our best to answer it. Questions asked there should be tagged with `uno-platform`.
+
+For a more direct conversation, [our gitter is also a good place to visit](https://gitter.im/uno-platform/Lobby).
 
 ## Contributing code and content
 
