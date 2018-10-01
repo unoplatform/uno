@@ -17,19 +17,19 @@ namespace Windows.UI.Xaml.Controls
 			switch (newValue)
 			{
 				case Stretch.Uniform:
-					MediaPlayer.UpdateVideoStretch(Windows.Media.Playback.MediaPlayer.VideoStrech.Uniform);
+					MediaPlayer.UpdateVideoStretch(Windows.Media.Playback.MediaPlayer.VideoStretch.Uniform);
 					break;
 
 				case Stretch.Fill:
-					MediaPlayer.UpdateVideoStretch(Windows.Media.Playback.MediaPlayer.VideoStrech.Fill);
+					MediaPlayer.UpdateVideoStretch(Windows.Media.Playback.MediaPlayer.VideoStretch.Fill);
 					break;
 
 				case Stretch.None:
-					MediaPlayer.UpdateVideoStretch(Windows.Media.Playback.MediaPlayer.VideoStrech.None);
+					MediaPlayer.UpdateVideoStretch(Windows.Media.Playback.MediaPlayer.VideoStretch.None);
 					break;
 
 				case Stretch.UniformToFill:
-					MediaPlayer.UpdateVideoStretch(Windows.Media.Playback.MediaPlayer.VideoStrech.UniformToFill);
+					MediaPlayer.UpdateVideoStretch(Windows.Media.Playback.MediaPlayer.VideoStretch.UniformToFill);
 					break;
 
 				default:

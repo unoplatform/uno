@@ -327,7 +327,7 @@ namespace Windows.Media.Playback
 			}
 		}
 
-		internal void UpdateVideoStretch(VideoStrech stretch)
+		internal void UpdateVideoStretch(VideoStretch stretch)
 		{
 			if (_player != null && RenderSurface is SurfaceView surface && !_isUpdatingStretch)
 			{
@@ -349,12 +349,12 @@ namespace Windows.Media.Playback
 
 					switch (stretch)
 					{
-						case VideoStrech.Fill:
+						case VideoStretch.Fill:
 							var fillHeight = height != 0 ? height : width / ratio;
 							surface.Layout(0, 0, width, (int)fillHeight);
 							break;
 
-						case VideoStrech.Uniform:
+						case VideoStretch.Uniform:
 							if (parentRatio < ratio)
 							{
 								var uniformHeight = height - (width / ratio);
@@ -368,7 +368,7 @@ namespace Windows.Media.Playback
 
 							break;
 
-						case VideoStrech.UniformToFill:
+						case VideoStretch.UniformToFill:
 							if (parentRatio < ratio)
 							{
 								var uniformFillWidth = (height * ratio) - width;
@@ -382,7 +382,7 @@ namespace Windows.Media.Playback
 
 							break;
 
-						case VideoStrech.None:
+						case VideoStretch.None:
 						default:
 							var noneHeight = videoHeight - height;
 							var nonewidth = videoWidth - width;
@@ -397,7 +397,7 @@ namespace Windows.Media.Playback
 			}
 		}
 
-		public enum VideoStrech
+		public enum VideoStretch
 		{
 			Uniform,
 			Fill,
