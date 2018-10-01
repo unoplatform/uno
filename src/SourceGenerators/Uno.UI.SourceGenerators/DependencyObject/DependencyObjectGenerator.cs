@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
 using Uno.Extensions;
 using Uno.SourceGeneration;
+using Uno.UI.SourceGenerators.Helpers;
 using Uno.UI.SourceGenerators.XamlGenerator;
 
 namespace Uno.UI.SourceGenerators.DependencyObject
@@ -123,7 +124,7 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 						}
 					}
 
-					_context.AddCompilationUnit(typeSymbol.GetFullName(), builder.ToString());
+					_context.AddCompilationUnit(HashBuilder.BuildIDFromSymbol(typeSymbol), builder.ToString());
 				}
 			}
 
