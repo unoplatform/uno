@@ -10,9 +10,17 @@ namespace Windows.UI.Core
     {
 		private Timer _timer;
 
+		/// <summary>
+		/// Provide a action that will delegate the dispach of CoreDispatcher work
+		/// </summary>
+		public static Action<Action> DispatchOverride;
+
 		partial void Initialize()
 		{
-			_timer = new Timer(_ => DispatchItems());
+			if (DispatchOverride == null)
+			{
+				_timer = new Timer(_ => DispatchItems());
+			}
 		}
 
 		// Always reschedule, otherwise we may end up in live-lock.
@@ -24,7 +32,14 @@ namespace Windows.UI.Core
 
 		partial void EnqueueNative()
 		{
-			_timer.Change(0, -1);
+			if (DispatchOverride == null)
+			{
+				_timer.Change(0, -1);
+			}
+			else
+			{
+				DispatchOverride(() => DispatchItems());
+			}
 		}
 	}
 }

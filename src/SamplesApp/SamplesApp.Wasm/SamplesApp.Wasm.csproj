@@ -1,0 +1,56 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <WasmHead>true</WasmHead>
+    <DefineConstants>$(DefineConstants);__WASM__</DefineConstants>
+    <NoWarn>NU1701</NoWarn>
+  </PropertyGroup>
+  <ItemGroup>
+    <Content Include="..\SamplesApp.UWP\Assets\*.png" Link="Assets\%(FileName)%(Extension)" />
+    <Content Include="Fonts\winjs-symbols.woff2" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="WasmCSS\Fonts.css" />
+    <EmbeddedResource Include="WasmScripts\AppManifest.js" />
+  </ItemGroup>
+  <ItemGroup>
+    <LinkerDescriptor Include="LinkerConfig.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <!-- 
+    This item group is required by the project templace because of the
+    new SDK-Style project, otherwise some files are not aded automatically.
+    
+    You can safely this ItemGroup completely.
+    -->
+    <Compile Remove="Program.cs" />
+    <Compile Include="Program.cs" />
+    <Content Include="LinkerConfig.xml" />
+  </ItemGroup>
+	
+  <ItemGroup>
+		<PackageReference Include="Uno.SourceGenerationTasks">
+			<Version>1.25.0-dev.72</Version>
+			<NoWarn>NU1701</NoWarn>
+		</PackageReference>
+		<PackageReference Include="Uno.Wasm.Bootstrap" Version="1.0.0-dev.58" />
+  </ItemGroup>
+	
+	<ItemGroup>
+		<ProjectReference Include="..\..\Uno.Foundation\Uno.Foundation.csproj" />
+		<ProjectReference Include="..\..\Uno.UI\Uno.UI.csproj" />
+		<ProjectReference Include="..\..\Uno.UWP\Uno.csproj" />
+		<ProjectReference Include="..\..\Uno.UI.Wasm\Uno.UI.Wasm.csproj" />
+	</ItemGroup>
+	
+	<PropertyGroup>
+		<UnoUIGeneratorsBinPath>..\..\SourceGenerators\Uno.UI.SourceGenerators\bin\$(Configuration)</UnoUIGeneratorsBinPath>
+	</PropertyGroup>
+
+	<Import Project="..\..\SourceGenerators\Uno.UI.SourceGenerators\Content\Uno.UI.SourceGenerators.props" />
+
+
+	<Import Project="..\SamplesApp.Shared\SamplesApp.Shared.projitems" Label="Shared" Condition="Exists('..\SamplesApp.Shared\SamplesApp.Shared.projitems')" />
+</Project>
