@@ -148,15 +148,54 @@ var Uno;
                 * @param containerElementId The ID of the container element for the Xaml UI
                 * @param loadingElementId The ID of the loading element to remove once ready
                 */
-            static init(containerElementId = "uno-body", loadingElementId = "uno-loading") {
+            static init(localStoragePath, containerElementId = "uno-body", loadingElementId = "uno-loading") {
                 if (WindowManager.assembly) {
                     throw "Already initialized";
                 }
                 WindowManager.initMethods();
                 UI.HtmlDom.initPolyfills();
+                WindowManager.setupStorage(localStoragePath);
                 this.current = new WindowManager(containerElementId, loadingElementId);
                 this.current.init();
                 return "ok";
+            }
+            /**
+             * Setup the storage persistence
+             *
+             * */
+            static setupStorage(localStoragePath) {
+                if (WindowManager.isIndexDBAvailable()) {
+                    console.debug(`Initializing IDBFS at ${localStoragePath}`);
+                    FS.mkdir(localStoragePath);
+                    FS.mount(IDBFS, {}, localStoragePath);
+                    FS.syncfs(true, err => {
+                        if (err) {
+                            console.error(`Error synchronizing filsystem from IndexDB: ${err}`);
+                        }
+                    });
+                    window.addEventListener("beforeunload", () => WindowManager.synchronizeFileSystem());
+                    setInterval(() => WindowManager.synchronizeFileSystem(), 10000);
+                }
+                else {
+                    console.warn("IndexedDB is not available (private mode?), changed will not be persisted.");
+                }
+            }
+            static isIndexDBAvailable() {
+                try {
+                    // IndexedDB may not be available in private mode
+                    window.indexedDB;
+                    return true;
+                }
+                catch (err) {
+                    return false;
+                }
+            }
+            static synchronizeFileSystem() {
+                FS.syncfs(err => {
+                    if (err) {
+                        console.error(`Error synchronizing filsystem from IndexDB: ${err}`);
+                    }
+                });
             }
             /**
                 * Creates the UWP-compatible splash screen
@@ -720,7 +759,19 @@ var Uno;
         WindowManager.unoRootClassName = "uno-root-element";
         WindowManager.unoUnarrangedClassName = "uno-unarranged";
         UI.WindowManager = WindowManager;
-        document.addEventListener("DOMContentLoaded", () => WindowManager.setupSplashScreen());
+        if (typeof define === 'function') {
+            define(['AppManifest'], () => {
+                if (document.readyState === "loading") {
+                    document.addEventListener("DOMContentLoaded", () => WindowManager.setupSplashScreen());
+                }
+                else {
+                    WindowManager.setupSplashScreen();
+                }
+            });
+        }
+        else {
+            throw `The Uno.Wasm.Boostrap is not up to date, please upgrade to a later version`;
+        }
     })(UI = Uno.UI || (Uno.UI = {}));
 })(Uno || (Uno = {}));
 // Ensure the "Uno" namespace is availablle globally

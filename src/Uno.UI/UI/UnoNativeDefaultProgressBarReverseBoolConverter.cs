@@ -7,13 +7,9 @@ using System.Text;
 namespace Uno.UI.Converters
 {
 	/// <summary>
-	/// This converter will return the opposite value of a nullable bool.
-	/// 
-	/// If null or false, the converter will return true.
-	/// 
-	/// This may be used to have the a reversed value bound to that of a ToggleButton.
+	/// Do not use outside of Uno
 	/// </summary>
-	public class FromNullableBoolToReverseBoolConverter : ConverterBase
+	public class UnoNativeDefaultProgressBarReverseBoolConverter : ConverterBase
 	{
 		[SuppressMessage("Microsoft.Globalization", "CA1305:SpecifyIFormatProvider", Justification = "Not for end user")]
 		protected override object Convert(object value, Type targetType, object parameter)
