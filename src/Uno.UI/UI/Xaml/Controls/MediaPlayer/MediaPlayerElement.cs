@@ -145,7 +145,6 @@ namespace Windows.UI.Xaml.Controls
 
 				if (args.NewValue is Windows.Media.Playback.MediaPlayer newMediaPlayer)
 				{
-					//newMediaPlayer.AutoPlay = mpe.AutoPlay;
 					newMediaPlayer.Source = mpe.Source;
 					newMediaPlayer.MediaFailed += mpe.OnMediaFailed;
 					newMediaPlayer.MediaOpened += mpe.OnMediaOpened;

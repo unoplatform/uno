@@ -4,7 +4,6 @@ using Android.Widget;
 using Uno.Media.Playback;
 using Windows.Media.Core;
 using Android.Media;
-using AndroidMediaPlayer = Android.Media.MediaPlayer;
 using Android.OS;
 using Java.Lang;
 using Java.Util.Concurrent;
@@ -15,6 +14,8 @@ using Android.Content;
 using Android.Views;
 using Android.Graphics;
 using Android.Runtime;
+using Uno.Logging;
+using AndroidMediaPlayer = Android.Media.MediaPlayer;
 
 namespace Windows.Media.Playback
 {
@@ -25,13 +26,16 @@ namespace Windows.Media.Playback
 		AndroidMediaPlayer.IOnErrorListener,
 		AndroidMediaPlayer.IOnPreparedListener,
 		AndroidMediaPlayer.IOnSeekCompleteListener,
-		AndroidMediaPlayer.IOnBufferingUpdateListener
+		AndroidMediaPlayer.IOnBufferingUpdateListener,
+		View.IOnLayoutChangeListener
 	{
 		private AndroidMediaPlayer _player;
 
 		private bool _isPlayRequested = false;
 		private bool _isPlayerPrepared = false;
 		private bool _hasValidHolder = false;
+		private VideoStrech _currentStretch = VideoStrech.Uniform;
+		private bool _isUpdatingStretch = false;
 
 		private IScheduledExecutorService _executorService = Executors.NewSingleThreadScheduledExecutor();
 		private IScheduledFuture _scheduledFuture;
@@ -40,10 +44,12 @@ namespace Windows.Media.Playback
 		const string MsAppXScheme = "ms-appx";
 		const string MsAppDataScheme = "ms-appdata";
 
-		public virtual IVideoSurface RenderSurface { get; } = new VideoSurface(Application.Context);
+		public virtual IVideoSurface RenderSurface { get; private set; } = new VideoSurface(Application.Context);
 
 		private void Initialize()
 		{
+			((VideoSurface)RenderSurface).AddOnLayoutChangeListener(this);
+
 			// Register intent to pause media when audio become noisy (unplugged headphones, for example) 
 			_noisyAudioStreamReceiver = new AudioPlayerBroadcastReceiver(this);
 			var intentFilter = new IntentFilter(AudioManager.ActionAudioBecomingNoisy);
@@ -63,8 +69,7 @@ namespace Windows.Media.Playback
 					_player.Release();
 
 					var surfaceView = RenderSurface as SurfaceView;
-					var surfaceHolder = surfaceView.Holder;
-					surfaceHolder.RemoveCallback(this);
+					surfaceView?.Holder?.RemoveCallback(this);
 				}
 				finally
 				{
@@ -78,16 +83,15 @@ namespace Windows.Media.Playback
 		{
 			_player = new AndroidMediaPlayer();
 			var surfaceView = RenderSurface as SurfaceView;
-			var surfaceHolder = surfaceView.Holder;
 
 			if (_hasValidHolder)
 			{
-				_player.SetDisplay(surfaceHolder);
+				_player.SetDisplay(surfaceView.Holder);
 				_player.SetScreenOnWhilePlaying(true);
 			}
 			else
 			{
-				surfaceHolder.AddCallback(this);
+				surfaceView.Holder.AddCallback(this);
 			}
 
 			_player.SetOnErrorListener(this);
@@ -220,17 +224,22 @@ namespace Windows.Media.Playback
 		{
 			PlaybackSession.NaturalDuration = TimeSpan.FromMilliseconds(_player.Duration);
 
-			if (_isPlayRequested && PlaybackSession.PlaybackState == MediaPlaybackState.Opening)
+			if (PlaybackSession.PlaybackState == MediaPlaybackState.Opening)
 			{
-				_player.Start();
-				PlaybackSession.PlaybackState = MediaPlaybackState.Playing;
-			}
-			else
-			{
-				// To display first image of media when setting a new source. Otherwise, last image of previous source remains visible
-				_player.Start();
-				_player.Pause();
-				_player.SeekTo(0);
+				UpdateVideoStretch(_currentStretch);
+
+				if (_isPlayRequested)
+				{
+					_player.Start();
+					PlaybackSession.PlaybackState = MediaPlaybackState.Playing;
+				}
+				else
+				{
+					// To display first image of media when setting a new source. Otherwise, last image of previous source remains visible
+					_player.Start();
+					_player.Pause();
+					_player.SeekTo(0);
+				}
 			}
 
 			_isPlayerPrepared = true;
@@ -318,10 +327,89 @@ namespace Windows.Media.Playback
 			}
 		}
 
+		internal void UpdateVideoStretch(VideoStrech stretch)
+		{
+			if (_player != null && RenderSurface is SurfaceView surface && !_isUpdatingStretch)
+			{
+				try
+				{
+					_isUpdatingStretch = true;
+
+					var parent = (View)surface.Parent;
+
+					var width = parent.Width;
+					var height = parent.Height;
+					var parentRatio = (double)width / height;
+
+					var videoWidth = _player.VideoWidth;
+					var videoHeight = _player.VideoHeight;
+					var ratio = (double)_player.VideoWidth / _player.VideoHeight;
+
+					_currentStretch = stretch;
+
+					switch (stretch)
+					{
+						case VideoStrech.Fill:
+							var fillHeight = height != 0 ? height : width / ratio;
+							surface.Layout(0, 0, width, (int)fillHeight);
+							break;
+
+						case VideoStrech.Uniform:
+							if (parentRatio < ratio)
+							{
+								var uniformHeight = height - (width / ratio);
+								surface.Layout(0, (int)(uniformHeight / 2), width, height - (int)(uniformHeight / 2));
+							}
+							else
+							{
+								var uniformWidth = width - (height * ratio);
+								surface.Layout((int)(uniformWidth / 2), 0, width - (int)(uniformWidth / 2), height);
+							}
+
+							break;
+
+						case VideoStrech.UniformToFill:
+							if (parentRatio < ratio)
+							{
+								var uniformFillWidth = (height * ratio) - width;
+								surface.Layout(-(int)(uniformFillWidth / 2), 0, width + (int)(uniformFillWidth / 2), height);
+							}
+							else
+							{
+								var uniformFillHeight = (width / ratio) - height;
+								surface.Layout(0, -(int)(uniformFillHeight / 2), width, height + (int)(uniformFillHeight / 2));
+							}
+
+							break;
+
+						case VideoStrech.None:
+						default:
+							var noneHeight = videoHeight - height;
+							var nonewidth = videoWidth - width;
+							surface.Layout(-nonewidth / 2, -noneHeight / 2, width + (nonewidth / 2), height + (noneHeight / 2));
+							break;
+					}
+				}
+				finally
+				{
+					_isUpdatingStretch = false;
+				}
+			}
+		}
+
+		public enum VideoStrech
+		{
+			Uniform,
+			Fill,
+			None,
+			UniformToFill
+		}
+
 		#region ISurfaceHolderCallback implementation
 
 		public void SurfaceChanged(ISurfaceHolder holder, [GeneratedEnum] Format format, int width, int height)
 		{
+			UpdateVideoStretch(_currentStretch);
 		}
 
 		public void SurfaceCreated(ISurfaceHolder holder)
@@ -329,6 +417,8 @@ namespace Windows.Media.Playback
 			_player.SetDisplay(holder);
 			_player.SetScreenOnWhilePlaying(true);
 			_hasValidHolder = true;
+
+			UpdateVideoStretch(_currentStretch);
 		}
 
 		public void SurfaceDestroyed(ISurfaceHolder holder)
@@ -352,6 +442,11 @@ namespace Windows.Media.Playback
 		public void OnBufferingUpdate(AndroidMediaPlayer mp, int percent)
 		{
 			PlaybackSession.BufferingProgress = percent;
+		}
+
+		public void OnLayoutChange(View v, int left, int top, int right, int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom)
+		{
+			UpdateVideoStretch(_currentStretch);
 		}
 
 		#endregion

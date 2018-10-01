@@ -17,32 +17,33 @@ _If you need to set source programmatically (ie, using `_mediaPlayerElement.Sour
 
 ## Features
 
-| Section				| Feature    											| iOS	| Android	| Remarks								|
-|-----------------------|-------------------------------------------------------|-------|-----------|---------------------------------------|
-| MediaPlayerElement	| AutoPlay  											| X     | X  		|										|
-|						| Show poster image										| X     | X  		|										|
-|						| Enable/Disable MediaTransportControls			  		| X     | X  		|										|
-|						| Stretch										  		| X     | -  		| Stretch.None behave like Stretch.Fill	|
-| TransportControls		| Play/Pause 											| X     | X  		|										|
-|						| Stop  												| X     | X  		|										|
-| 						| Seek  												| X     | X  		|										|
-|						| Volume change											| X     | X  		|										|
-|						| Mute													| X     | X  		|										|
-|						| Show elapsed time										| X     | X  		|										|
-|						| Show remaining time									| X     | X  		|										|
-|						| Show/Hide MediaTransportControls automatically		| X     | X  		|										|
-|						| MediaTransportControls compact mode					| X     | X  		|										|
-|						| Show/Hide MediaTransportControls commands  			| X     | X  		|										|
-|						| Enable/Disable MediaTransportControls commands  		| X     | X  		|										|
-|						| Skip forwoard											| X     | X  		|										|
-|						| Skip backward											| X     | X  		|										|
-|						| Show buffering progress						  		| X     | X  		|										|
-|						| Fullscreen mode								  		| -     | -  		|										|
-|						| Change playback rate									| -     | -  		|										|
-|						| Zoom mode												| X     | -  		|										|
-|						| Player controls on locked screen support  			| -     | -  		|										|
-|						| Playlists support		  								| -     | -  		|										|
-|						| Subtitles	support			  							| -     | -  		|										|
+| Section				| Feature    											| iOS	| Android	| Remarks										|
+|-----------------------|-------------------------------------------------------|-------|-----------|-----------------------------------------------|
+| MediaPlayerElement	| AutoPlay  											| X     | X  		|												|
+|						| Poster image											| X     | X  		| Does not show when playing music				|
+|						| Enable/Disable MediaTransportControls			  		| X     | X  		|												|
+|						| Stretch										  		| X     | X  		| Stretch.None behave like Stretch.Fill on iOS	|
+| TransportControls		| Transport controls custom style						| X     | X  		|												|
+| 			    		| Play/Pause 											| X     | X  		|												|
+|						| Stop  												| X     | X  		|												|
+| 						| Seek  												| X     | X  		|												|
+|						| Volume change											| X     | X  		|												|
+|						| Mute													| X     | X  		|												|
+|						| Show elapsed time										| X     | X  		|												|
+|						| Show remaining time									| X     | X  		|												|
+|						| Show/Hide MediaTransportControls automatically		| X     | X  		|												|
+|						| MediaTransportControls compact mode					| X     | X  		|												|
+|						| Show/Hide MediaTransportControls commands  			| X     | X  		|												|
+|						| Enable/Disable MediaTransportControls commands  		| X     | X  		|												|
+|						| Skip forwoard											| X     | X  		|												|
+|						| Skip backward											| X     | X  		|												|
+|						| Show buffering progress						  		| X     | X  		|												|
+|						| Zoom mode												| X     | X  		| 												|
+|						| Fullscreen mode								  		| -     | -  		|												|
+|						| Change playback rate									| -     | -  		|												|
+|						| Player controls on locked screen support  			| -     | -  		|												|
+|						| Playlists support		  								| -     | -  		|												|
+|						| Subtitles	support			  							| -     | -  		|												|
 
 ## Extra features
 
@@ -67,4 +68,4 @@ _If you need to set source programmatically (ie, using `_mediaPlayerElement.Sour
 
 - Slider not draggable (Uno issue)
 - Volume flyout does not display on iOS (Uno issue)
-- Video streching not yet supported on Android 
+- Dynamic width/height not fully supported at this time

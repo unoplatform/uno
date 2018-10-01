@@ -14,10 +14,10 @@ namespace Windows.UI.Xaml.Controls
 			Child = videoSurface as UIView;
 			((UIView)videoSurface).Frame = this.Frame;
 		}
-
-		private void UpdateContentMode(Stretch stretch)
+		
+		private void OnStretchChanged(Stretch newValue, Stretch oldValue)
 		{
-			switch (stretch)
+			switch (newValue)
 			{
 				case Stretch.Uniform:
 					MediaPlayer.UpdateVideoGravity(AVLayerVideoGravity.ResizeAspect);
@@ -33,13 +33,8 @@ namespace Windows.UI.Xaml.Controls
 					break;
 
 				default:
-					throw new NotSupportedException($"Strech mode {stretch} is not supported");
+					throw new NotSupportedException($"Strech mode {newValue} is not supported");
 			}
-		}
-		
-		private void OnStretchChanged(Stretch newValue, Stretch oldValue)
-		{
-			UpdateContentMode(newValue);
 		}
 	}
 }

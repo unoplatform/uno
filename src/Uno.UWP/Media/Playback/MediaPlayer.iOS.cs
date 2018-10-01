@@ -20,6 +20,8 @@ namespace Windows.Media.Playback
 		private NSObject _itemFailedToPlayToEndTimeNotification;
 		private NSObject _didPlayToEndTimeNotification;
 
+		public static NSString RateObservationContext = new NSString("AVCustomEditPlayerViewControllerRateObservationContext");
+
 		const string MsAppXScheme = "ms-appx";
 		const string MsAppDataScheme = "ms-appdata";
 
@@ -42,6 +44,7 @@ namespace Windows.Media.Playback
 					_player.CurrentItem?.RemoveObserver(this, new NSString("loadedTimeRanges"), _player.Handle);
 					_player.CurrentItem?.RemoveObserver(this, new NSString("status"), _player.Handle);
 					_player.CurrentItem?.RemoveObserver(this, new NSString("duration"), _player.Handle);
+					_player.RemoveObserver(this, new NSString("rate"), RateObservationContext.Handle);
 					_player.RemoveTimeObserver(_periodicTimeObserverObject);
 				}
 				finally
@@ -75,6 +78,8 @@ namespace Windows.Media.Playback
 			{
 				this.Log().WarnIfEnabled(() => $"Could not activate audio session: {activationError.LocalizedDescription}");
 			}
+
+			_player.AddObserver(this, new NSString("rate"), NSKeyValueObservingOptions.New | NSKeyValueObservingOptions.Initial, RateObservationContext.Handle);
 
 			_itemFailedToPlayToEndTimeNotification = AVPlayerItem.Notifications.ObserveItemFailedToPlayToEndTime((sender, args) => OnMediaFailed(new Exception(args.Error.LocalizedDescription)));
 			_didPlayToEndTimeNotification = AVPlayerItem.Notifications.ObserveDidPlayToEndTime((sender, args) => OnMediaEnded());
@@ -232,6 +237,10 @@ namespace Windows.Media.Playback
 				case "duration":
 					ObserveCurrentItemDuration();
 					return;
+
+				case "rate":
+					ObserveRate();
+					return;
 			}
 		}
 
@@ -247,15 +256,29 @@ namespace Windows.Media.Playback
 
 				if (_player.Status == AVPlayerStatus.ReadyToPlay && PlaybackSession.PlaybackState == MediaPlaybackState.Buffering)
 				{
-					//if (Rate == 0.0)
-					//{
-					//	CurrentState = MediaPlayerStatus.Paused;
-					//}
-					//else
-					//{
-					PlaybackSession.PlaybackState = MediaPlaybackState.Playing;
-					_player.Play();
-					//}
+					if (_player.Rate == 0.0)
+					{
+						PlaybackSession.PlaybackState = MediaPlaybackState.Paused;
+					}
+					else
+					{
+						PlaybackSession.PlaybackState = MediaPlaybackState.Playing;
+						_player.Play();
+					}
+				}
+			}
+		}
+
+		private void ObserveRate()
+		{
+			if (_player != null)
+			{
+				var stoppedPlaying = _player.Rate == 0.0;
+
+				if (stoppedPlaying && PlaybackSession.PlaybackState == MediaPlaybackState.Playing)
+				{
+					//Update the status because the system changed the rate.
+					PlaybackSession.PlaybackState = MediaPlaybackState.Paused;
 				}
 			}
 		}
