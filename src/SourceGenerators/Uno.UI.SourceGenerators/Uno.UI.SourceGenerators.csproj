@@ -92,6 +92,7 @@
     <Compile Include="DependencyObject\DependencyObjectGenerator.cs" />
     <Compile Include="DependencyObject\MethodCallFinder.cs" />
     <Compile Include="Helpers\AnalyzerSuppressions.cs" />
+    <Compile Include="Helpers\HashBuilder.cs" />
     <Compile Include="Helpers\PathHelper.cs" />
     <Compile Include="Helpers\RoslynMetadataHelper.cs" />
     <Compile Include="Helpers\SymbolExtensions.cs" />
