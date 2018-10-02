@@ -325,7 +325,11 @@ namespace Windows.Media.Playback
 			{
 				if (PlaybackSession.PlaybackState != MediaPlaybackState.None)
 				{
+#if __ANDROID_26__
 					_player?.SeekTo((int)value.TotalMilliseconds, MediaPlayerSeekMode.Closest);
+#else
+					_player?.SeekTo((int)value.TotalMilliseconds);
+#endif
 				}
 			}
 		}
@@ -408,7 +412,7 @@ namespace Windows.Media.Playback
 			UniformToFill
 		}
 
-		#region ISurfaceHolderCallback implementation
+#region ISurfaceHolderCallback implementation
 
 		public void SurfaceChanged(ISurfaceHolder holder, [GeneratedEnum] Format format, int width, int height)
 		{
@@ -429,42 +433,42 @@ namespace Windows.Media.Playback
 			_hasValidHolder = false;
 		}
 
-		#endregion
+#endregion
 
-		#region AndroidMediaPlayer.IOnSeekCompleteListener implementation
+#region AndroidMediaPlayer.IOnSeekCompleteListener implementation
 
 		public void OnSeekComplete(AndroidMediaPlayer mp)
 		{
 			SeekCompleted?.Invoke(this, null);
 		}
 
-		#endregion
+#endregion
 
-		#region AndroidMediaPlayer.IOnBufferingUpdateListener implementation
+#region AndroidMediaPlayer.IOnBufferingUpdateListener implementation
 
 		public void OnBufferingUpdate(AndroidMediaPlayer mp, int percent)
 		{
 			PlaybackSession.BufferingProgress = percent;
 		}
 
-		#endregion
+#endregion
 
-		#region View.IOnLayoutChangeListener
+#region View.IOnLayoutChangeListener
 
 		public void OnLayoutChange(View v, int left, int top, int right, int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom)
 		{
 			UpdateVideoStretch(_currentStretch);
 		}
 
-		#endregion
+#endregion
 
-		#region AndroidMediaPlayer.IOnVideoSizeChangedListener
+#region AndroidMediaPlayer.IOnVideoSizeChangedListener
 
 		public void OnVideoSizeChanged(AndroidMediaPlayer mp, int width, int height)
 		{
 			
 		}
 
-		#endregion
+#endregion
 	}
 }
