@@ -55,7 +55,7 @@ Let us know if you've made your app publicly available, we'll list it here!
     * [State Triggers](https://blogs.msdn.microsoft.com/mvpawardprogram/2017/02/07/state-triggers-uwp-apps/)
     * [Adaptive Triggers](https://docs.microsoft.com/en-us/uwp/api/Windows.UI.Xaml.AdaptiveTrigger)
 * Platform Specific 
-    * Native controls and properties via [conditional XAML](doc/articles/using-uno-ui.md)
+    * Native controls and properties via [conditional XAML](doc/articles/using-uno-ui.md#supporting-multiple-platforms-in-xaml-files)
     * Any of the existing Xamarin iOS/Android libraries available
 
 # Getting Started
