@@ -145,8 +145,16 @@
 		Namespace="$(NugetNamespace)"
 		Prefix="x"/>
 
+	<XmlUpdate
+		XmlFileName=".\Uno.UI.WpfHost.nuspec"
+		XPath="/x:package/x:metadata/x:dependencies/x:dependency[id='Uno.UI']/@version"
+		Value="$(GITVERSION_FullSemVer)"
+		Namespace="$(NugetNamespace)"
+		Prefix="x"/>
+
 	<!-- Create the packages -->
 	<Exec Command="$(NuGetBin) pack Uno.UI.nuspec -Verbosity Detailed" />
+	<Exec Command="$(NuGetBin) pack Uno.UI.WpfHost.nuspec -Verbosity Detailed" />
   </Target>
 
   <Import Project="GetMsBuildVersion.targets" />
