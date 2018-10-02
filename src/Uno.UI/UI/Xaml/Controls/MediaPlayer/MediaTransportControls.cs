@@ -7,6 +7,7 @@ using Windows.UI.Core;
 using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
+using Uno.UI.Xaml.Controls.MediaPlayer.Internal;
 
 #if __IOS__
 using UIKit;
@@ -139,10 +140,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			base.OnApplyTemplate();
 
-			var trueToVisible = new FromNullableBoolToVisibilityConverter()
-			{
-				VisibilityIfTrue = VisibilityIfTrue.Visible
-			};
+			var trueToVisible = new FromNullableBoolToVisibilityConverter();
 
 			_playPauseButton = this.GetTemplateChild(PlayPauseButtonName) as Button;
 

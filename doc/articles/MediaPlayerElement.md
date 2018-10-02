@@ -69,4 +69,4 @@ _If you need to set source programmatically (ie, using `_mediaPlayerElement.Sour
 
 - Slider not draggable (Uno issue)
 - Volume flyout does not display on iOS (Uno issue)
-- Dynamic width/height not fully supported on iOS 
+- Dynamic width/height not supported when playing audio
