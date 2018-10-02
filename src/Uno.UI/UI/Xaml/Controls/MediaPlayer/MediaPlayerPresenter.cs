@@ -84,36 +84,26 @@ namespace Windows.UI.Xaml.Controls
 		
 		private void OnVideoRatioChanged(Windows.Media.Playback.MediaPlayer sender, double args)
 		{
-			Console.WriteLine($"MEDIAPLAYER - MeasureOverride: Update Ratio = {args}");
 			_currentRatio = args;
 			InvalidateArrange();
 		}
 
 		protected override Size MeasureOverride(Size availableSize)
 		{
-			Console.WriteLine($"MEDIAPLAYER - MeasureOverride: Available Size = {availableSize.Width} * {availableSize.Height}");
-			Console.WriteLine($"MEDIAPLAYER - MeasureOverride: Current Ratio = {_currentRatio}");
-
 			if (double.IsNaN(Width) && double.IsNaN(Height))
 			{
 				availableSize.Width = availableSize.Width;
 				availableSize.Height = availableSize.Width / _currentRatio;
-
-				Console.WriteLine($"MEDIAPLAYER - MeasureOverride: (both null) Computed Size = {availableSize.Width} * {availableSize.Height}");
 			}
 			else if (double.IsNaN(Width))
 			{
 				availableSize.Width = Height * _currentRatio;
 				availableSize.Height = Height;
-
-				Console.WriteLine($"MEDIAPLAYER - MeasureOverride: (width null) Computed Size = {availableSize.Width} * {availableSize.Height}");
 			}
 			else if (double.IsNaN(Height))
 			{
 				availableSize.Width = Width;
 				availableSize.Height = Width / _currentRatio;
-
-				Console.WriteLine($"MEDIAPLAYER - MeasureOverride: (height null) Computed Size = {availableSize.Width} * {availableSize.Height}");
 			}
 			
 			base.MeasureOverride(availableSize);

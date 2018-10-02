@@ -44,6 +44,7 @@ _If you need to set source programmatically (ie, using `_mediaPlayerElement.Sour
 |						| Player controls on locked screen support  			| -     | -  		|												|
 |						| Playlists support		  								| -     | -  		|												|
 |						| Subtitles	support			  							| -     | -  		|												|
+|						| Languages	support			  							| -     | -  		|												|
 
 ## Extra features
 
@@ -68,4 +69,4 @@ _If you need to set source programmatically (ie, using `_mediaPlayerElement.Sour
 
 - Slider not draggable (Uno issue)
 - Volume flyout does not display on iOS (Uno issue)
-- Dynamic width/height not fully supported at this time
+- Dynamic width/height not fully supported on iOS 
