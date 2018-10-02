@@ -32,8 +32,17 @@ namespace Windows.UI.Xaml.Controls
 
 			_isInitialized = true;
 
-            // This ensures the TextBoxView gets resized as Text changes
-            LayoutParameters = new Android.Views.ViewGroup.LayoutParams(
+			this.KeyDown += (s, e) =>
+			{
+				Console.WriteLine("!");
+			};
+			this.KeyUp += (s, e) =>
+			{
+				Console.WriteLine("!");
+			};
+
+			// This ensures the TextBoxView gets resized as Text changes
+			LayoutParameters = new Android.Views.ViewGroup.LayoutParams(
                  Android.Views.ViewGroup.LayoutParams.WrapContent,
                  Android.Views.ViewGroup.LayoutParams.WrapContent
             );

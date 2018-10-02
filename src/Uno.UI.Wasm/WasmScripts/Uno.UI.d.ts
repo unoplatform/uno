@@ -53,7 +53,7 @@ declare namespace Uno.UI {
         private static _isHosted;
         /**
          * Defines if the WindowManager is running in hosted mode, and should skip the
-         * initialization of WebAssembly, use this mode in conjuction with the Uno.UI.WpfHost
+         * initialization of WebAssembly, use this mode in conjunction with the Uno.UI.WpfHost
          * to improve debuggability.
          */
         static readonly isHosted: boolean;
@@ -167,7 +167,7 @@ declare namespace Uno.UI {
             * Add an event handler to a html element.
             *
             * @param eventName The name of the event
-            * @param onCapturePhase true means "on trickle down", false means "on bubble up". Default is false.
+            * @param onCapturePhase true means "on trickle down" (going down to target), false means "on bubble up" (bubbling back to ancestors). Default is false.
             */
         registerEventOnView(elementId: string, eventName: string, onCapturePhase?: boolean, eventFilter?: (event: Event) => boolean, eventExtractor?: (event: Event) => any): string;
         /**
@@ -177,7 +177,7 @@ declare namespace Uno.UI {
         /**
             * Set a view as a child of another one.
             *
-            * "Loading" & "Loaded" events will be raised if nescessary.
+            * "Loading" & "Loaded" events will be raised if necessary.
             *
             * @param index Position in children list. Appended at end if not specified.
             */
@@ -185,7 +185,7 @@ declare namespace Uno.UI {
         /**
             * Remove a child from a parent element.
             *
-            * "Unloading" & "Unloaded" events will be raised if nescessary.
+            * "Unloading" & "Unloaded" events will be raised if necessary.
             */
         removeView(parentId: string, childId: string): string;
         /**

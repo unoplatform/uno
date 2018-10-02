@@ -25,6 +25,7 @@ namespace Windows.UI.Xaml
 	{
 		private InputPane _inputPane;
 		private KeyboardRectProvider _keyboardRectProvider;
+		private KeyboardListener _keyboardListener = new KeyboardListener();
 
 		public ApplicationActivity(IntPtr ptr, Android.Runtime.JniHandleOwnership owner) : base(ptr, owner)
 		{
@@ -122,6 +123,7 @@ namespace Windows.UI.Xaml
 				if (view.IsAttachedToWindow)
 				{
 					_keyboardRectProvider.Start(view);
+					_keyboardListener.SetRootContent(view as UIElement);
 				}
 				else
 				{
@@ -129,6 +131,7 @@ namespace Windows.UI.Xaml
 					handler = (s, e) =>
 					{
 						_keyboardRectProvider.Start(view);
+						_keyboardListener.SetRootContent(view as UIElement);
 						view.ViewAttachedToWindow -= handler;
 					};
 					view.ViewAttachedToWindow += handler;

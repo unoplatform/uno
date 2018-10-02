@@ -145,7 +145,7 @@ var Uno;
             }
             /**
              * Defines if the WindowManager is running in hosted mode, and should skip the
-             * initialization of WebAssembly, use this mode in conjuction with the Uno.UI.WpfHost
+             * initialization of WebAssembly, use this mode in conjunction with the Uno.UI.WpfHost
              * to improve debuggability.
              */
             static get isHosted() {
@@ -252,8 +252,8 @@ var Uno;
                     return new URLSearchParams(window.location.search).toString();
                 }
                 else {
-                    let queryIndex = document.location.search.indexOf('?');
-                    if (queryIndex != -1) {
+                    let queryIndex = document.location.search.indexOf("?");
+                    if (queryIndex !== -1) {
                         return document.location.search.substring(queryIndex + 1);
                     }
                     return "";
@@ -279,7 +279,7 @@ var Uno;
                     element["tabindex"] = contentDefinition.isFocusable ? 0 : -1;
                 }
                 else {
-                    element.setAttribute("tabindex", contentDefinition.isFocusable ? '0' : '-1');
+                    element.setAttribute("tabindex", contentDefinition.isFocusable ? "0" : "-1");
                 }
                 if (contentDefinition) {
                     for (const className of contentDefinition.classes) {
@@ -427,7 +427,7 @@ var Uno;
                 * Add an event handler to a html element.
                 *
                 * @param eventName The name of the event
-                * @param onCapturePhase true means "on trickle down", false means "on bubble up". Default is false.
+                * @param onCapturePhase true means "on trickle down" (going down to target), false means "on bubble up" (bubbling back to ancestors). Default is false.
                 */
             registerEventOnView(elementId, eventName, onCapturePhase = false, eventFilter, eventExtractor) {
                 const htmlElement = this.allActiveElementsById[elementId];
@@ -482,7 +482,7 @@ var Uno;
             /**
                 * Set a view as a child of another one.
                 *
-                * "Loading" & "Loaded" events will be raised if nescessary.
+                * "Loading" & "Loaded" events will be raised if necessary.
                 *
                 * @param index Position in children list. Appended at end if not specified.
                 */
@@ -515,7 +515,7 @@ var Uno;
             /**
                 * Remove a child from a parent element.
                 *
-                * "Unloading" & "Unloaded" events will be raised if nescessary.
+                * "Unloading" & "Unloaded" events will be raised if necessary.
                 */
             removeView(parentId, childId) {
                 const parentElement = this.allActiveElementsById[parentId];
@@ -594,7 +594,7 @@ var Uno;
                     }
                     element.style.width = "";
                     element.style.height = "";
-                    // This is required for an unconstrained measure (otherwise the parents size is taken into accound)
+                    // This is required for an unconstrained measure (otherwise the parents size is taken into account)
                     element.style.position = "fixed";
                     element.style.maxWidth = maxWidth ? `${maxWidth}px` : "";
                     element.style.maxHeight = maxHeight ? `${maxHeight}px` : "";
@@ -746,7 +746,7 @@ var Uno;
                 }
                 // UWP Window's default background is white.
                 const body = document.getElementsByTagName("body")[0];
-                body.style.backgroundColor = '#fff';
+                body.style.backgroundColor = "#fff";
             }
             resize() {
                 if (WindowManager.isHosted) {
@@ -798,8 +798,8 @@ var Uno;
         WindowManager.unoRootClassName = "uno-root-element";
         WindowManager.unoUnarrangedClassName = "uno-unarranged";
         UI.WindowManager = WindowManager;
-        if (typeof define === 'function') {
-            define(['AppManifest'], () => {
+        if (typeof define === "function") {
+            define(["AppManifest"], () => {
                 if (document.readyState === "loading") {
                     document.addEventListener("DOMContentLoaded", () => WindowManager.setupSplashScreen());
                 }

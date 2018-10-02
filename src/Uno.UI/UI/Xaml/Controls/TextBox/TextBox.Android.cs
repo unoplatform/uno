@@ -27,7 +27,7 @@ namespace Windows.UI.Xaml.Controls
 	{
 		private int _keyboardAccessDelay = 50;
 		private TextBoxView _textBoxView;
-		private readonly SerialDisposable _keyPressDisposable = new SerialDisposable();
+		//private readonly SerialDisposable _keyPressDisposable = new SerialDisposable();
 		private readonly SerialDisposable _keyboardDisposable = new SerialDisposable();
 
 		public bool PreventKeyboardDisplayOnProgrammaticFocus
@@ -52,7 +52,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			base.OnUnloaded();
 
-			_keyPressDisposable.Disposable = null;
+			//_keyPressDisposable.Disposable = null;
 
 			if (_textBoxView != null)
 			{
@@ -402,7 +402,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			if (_textBoxView != null)
 			{
-				_keyPressDisposable.Disposable = _textBoxView.RegisterKeyPress(OnKeyPress);
+				//_keyPressDisposable.Disposable = _textBoxView.RegisterKeyPress(OnKeyPress);
 				_textBoxView.OnFocusChangeListener = this;
 				_textBoxView.SetOnEditorActionListener(this);
 			}
@@ -496,8 +496,12 @@ namespace Windows.UI.Xaml.Controls
 		public bool OnEditorAction(TextView v, [GeneratedEnum] ImeAction actionId, KeyEvent e)
 		{
 			//We need to force a keypress event on editor action.
-			//the key press event is not trigerred if we press the enter key depending on the ime.options
+			//the key press event is not triggered if we press the enter key depending on the ime.options
+
 			OnKeyPress(v, new KeyEventArgs(true, Keycode.Enter, new KeyEvent(KeyEventActions.Up, Keycode.Enter)));
+#if !DEBUG
+#error !!!
+#endif
 
 			// Action will be ImeNull if AcceptsReturn is true, in which case we return false to allow the new line to register.
 			// Otherwise we return true to allow the focus to change correctly.
