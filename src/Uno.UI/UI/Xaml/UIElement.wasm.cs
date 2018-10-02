@@ -274,6 +274,7 @@ namespace Windows.UI.Xaml
 
 			private readonly UIElement _owner;
 			private readonly string _eventName;
+			private readonly bool _isBubblingNatively;
 			private readonly Func<string, EventArgs> _payloadConverter;
 			private readonly Func<EventArgs, bool> _eventFilterManaged;
 			private readonly Action _subscribeCommand;
@@ -287,6 +288,7 @@ namespace Windows.UI.Xaml
 				UIElement owner,
 				string eventName,
 				bool onCapturePhase = false,
+				bool isBubblingNatively = false,
 				HtmlEventFilter? eventFilter = null,
 				HtmlEventExtractor? eventExtractor = null,
 				Func<string, EventArgs> payloadConverter = null,
@@ -294,6 +296,7 @@ namespace Windows.UI.Xaml
 			{
 				_owner = owner;
 				_eventName = eventName;
+				_isBubblingNatively = isBubblingNatively;
 				_payloadConverter = payloadConverter;
 				_eventFilterManaged = eventFilterManaged ?? _emptyFilter;
 				if (noRegistrationEventNames.Contains(eventName))
@@ -346,12 +349,14 @@ namespace Windows.UI.Xaml
 			{
 				if (_invocationList.Count == 0)
 				{
-					// Nothing to do (should not occures once we can remove handler in HTML)
+					// Nothing to do (should not occured once we can remove handler in HTML)
 					return false;
 				}
 
 				try
 				{
+					var isBubblingInManagedCode = !_isBubblingNatively;
+
 					_isDispatching = true;
 
 					if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
@@ -378,7 +383,7 @@ namespace Windows.UI.Xaml
 								}
 							}
 
-							return false;
+							return isBubblingInManagedCode; // will call ".preventDefault()" in JS when bubbling in managed code
 
 						case RoutedEventHandler reh:
 							var routedEventArgs = args as RoutedEventArgs ?? RoutedEventArgs.Empty;
@@ -390,7 +395,7 @@ namespace Windows.UI.Xaml
 								}
 							}
 
-							return false;
+							return isBubblingInManagedCode; // will call ".preventDefault()" in JS when bubbling in managed code
 
 						default:
 							if (_eventFilterManaged(args))
@@ -401,7 +406,9 @@ namespace Windows.UI.Xaml
 								}
 							}
 
-							return args is IHandlableEventArgs handelable && handelable.Handled;
+							return (args is IHandlableEventArgs handelable
+								&& handelable.Handled)
+								|| isBubblingInManagedCode;
 					}
 				}
 				catch (Exception e)
@@ -433,12 +440,22 @@ namespace Windows.UI.Xaml
 			string eventName,
 			Delegate handler,
 			bool onCapturePhase = false,
+			bool isBubblingNatively = false,
 			HtmlEventFilter? eventFilter = null,
 			HtmlEventExtractor? eventExtractor = null,
 			Func<string, EventArgs> payloadConverter = null,
 			Func<EventArgs, bool> eventFilterManaged = null)
 		{
-			RegisterEventHandlerEx(eventName, eventName, handler, onCapturePhase, eventFilter, eventExtractor, payloadConverter, eventFilterManaged);
+			RegisterEventHandlerEx(
+			    eventName,
+			    eventName,
+			    handler,
+			    onCapturePhase,
+			    isBubblingNatively,
+			    eventFilter,
+			    eventExtractor,
+			    payloadConverter,
+			    eventFilterManaged);
 		}
 
 		internal void RegisterEventHandlerEx(
@@ -446,6 +463,7 @@ namespace Windows.UI.Xaml
 			string eventName,
 			Delegate handler,
 			bool onCapturePhase = false,
+			bool isBubblingNatively = false,
 			HtmlEventFilter? eventFilter = null,
 			HtmlEventExtractor? eventExtractor = null,
 			Func<string, EventArgs> payloadConverter = null,
@@ -453,7 +471,14 @@ namespace Windows.UI.Xaml
 		{
 			if (!_eventHandlers.TryGetValue(eventName, out var registration))
 			{
-				_eventHandlers[managedEventIdentifier] = registration = new EventRegistration(this, eventName, onCapturePhase, eventFilter, eventExtractor, payloadConverter);
+				_eventHandlers[managedEventIdentifier] = registration = new EventRegistration(
+					this,
+					eventName,
+					onCapturePhase,
+					isBubblingNatively,
+					eventFilter,
+					eventExtractor,
+					payloadConverter);
 			}
 
 			registration.Add(handler);
@@ -818,6 +843,8 @@ namespace Windows.UI.Xaml
 			{ KeyDownEvent, "keydown" },
 			{ KeyUpEvent, "keyup" },
 			{ GotFocusEvent, "focus" },
+			{ LostFocusEvent, "focusout" },
+			{ DoubleTappedEvent, "dblclick" }
 		};
 
 		// We keep track of registered routed events to avoid registering the same one twice (mainly because RemoveHandler is not implemented)
@@ -840,6 +867,7 @@ namespace Windows.UI.Xaml
 				else if (routedEvent == DoubleTappedEvent)
 				{
 					var lastTapped = DateTimeOffset.MinValue.AddDays(2);
+
 					PointerPressed += (snd, e) =>
 					{
 						var now = DateTimeOffset.Now;
@@ -893,11 +921,12 @@ namespace Windows.UI.Xaml
 
 					RegisterEventHandler(
 						eventName,
-						new RoutedEventHandler((sender, args) => RaiseEvent(routedEvent, args)),
-						true,
-						eventFilter ?? HtmlEventFilter.Default,
-						eventExtractor,
-						payloadConverter
+						handler: new RoutedEventHandler((sender, args) => RaiseEvent(routedEvent, args)),
+						onCapturePhase: false,
+						isBubblingNatively: true,
+						eventFilter: eventFilter ?? HtmlEventFilter.Default,
+						eventExtractor: eventExtractor,
+						payloadConverter: payloadConverter
 					);
 				}
 			}

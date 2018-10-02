@@ -30,7 +30,7 @@ namespace Windows.UI.Xaml
 {
 	public partial class UIElement : DependencyObject
 	{
-		private SerialDisposable _clipSubscription = new SerialDisposable();
+		private readonly SerialDisposable _clipSubscription = new SerialDisposable();
 		private readonly List<Pointer> _pointCaptures = new List<Pointer>();
 		private readonly List<KeyboardAccelerator> _keyboardAccelerators = new List<KeyboardAccelerator>();
 
