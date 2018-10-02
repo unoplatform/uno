@@ -25,12 +25,6 @@
 
 	<Import Project="$(MSBuildSDKExtrasTargets)" Condition="Exists('$(MSBuildSDKExtrasTargets)')" />
 	<Import Project="..\Uno.CrossTargetting.props" />
-	<ItemGroup>
-	  <Compile Remove="Media\Playback\AudioPlayerBroadcastReceiver.Android.cs" />
-	</ItemGroup>
-	<ItemGroup>
-	  <None Remove="Media\Playback\Internal\AudioPlayerBroadcastReceiver.Android.cs" />
-	</ItemGroup>
 
 	<ItemGroup>
 		<PackageReference Include="MSBuild.Sdk.Extras" Version="1.5.4" PrivateAssets="All" />
