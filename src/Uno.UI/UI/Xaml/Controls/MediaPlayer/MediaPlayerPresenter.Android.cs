@@ -1,6 +1,7 @@
 using System;
 using Android.Views;
 using Uno.Media.Playback;
+using Windows.Foundation;
 using Windows.UI.Xaml.Media;
 
 namespace Windows.UI.Xaml.Controls

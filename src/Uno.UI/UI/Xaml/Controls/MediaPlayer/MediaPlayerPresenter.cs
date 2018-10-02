@@ -1,5 +1,6 @@
 #if __ANDROID__ || __IOS__
 using System;
+using Windows.Foundation;
 using Windows.Media.Playback;
 using Windows.UI.Xaml.Media;
 
@@ -7,6 +8,8 @@ namespace Windows.UI.Xaml.Controls
 {
 	public partial class MediaPlayerPresenter : Border
 	{
+		private double _currentRatio = 1;
+
 		#region MediaPlayer Property
 
 		public Windows.Media.Playback.MediaPlayer MediaPlayer
@@ -24,10 +27,18 @@ namespace Windows.UI.Xaml.Controls
 
 		private static void OnMediaPlayerChanged(DependencyObject sender, DependencyPropertyChangedEventArgs args)
 		{
-			if (sender is MediaPlayerPresenter presenter &&
-				args.NewValue is Windows.Media.Playback.MediaPlayer mediaPlayer)
+			if (sender is MediaPlayerPresenter presenter)
 			{
-				presenter.SetVideoSurface(mediaPlayer.RenderSurface);
+				if (args.OldValue is Windows.Media.Playback.MediaPlayer oldPlayer)
+				{
+					oldPlayer.VideoRatioChanged -= presenter.OnVideoRatioChanged;
+				}
+
+				if (args.NewValue is Windows.Media.Playback.MediaPlayer newPlayer)
+				{
+					newPlayer.VideoRatioChanged += presenter.OnVideoRatioChanged;
+					presenter.SetVideoSurface(newPlayer.RenderSurface);
+				}
 			}
 		}
 
@@ -69,6 +80,45 @@ namespace Windows.UI.Xaml.Controls
 
 		public MediaPlayerPresenter() : base()
 		{
+		}
+		
+		private void OnVideoRatioChanged(Windows.Media.Playback.MediaPlayer sender, double args)
+		{
+			Console.WriteLine($"MEDIAPLAYER - MeasureOverride: Update Ratio = {args}");
+			_currentRatio = args;
+			InvalidateArrange();
+		}
+
+		protected override Size MeasureOverride(Size availableSize)
+		{
+			Console.WriteLine($"MEDIAPLAYER - MeasureOverride: Available Size = {availableSize.Width} * {availableSize.Height}");
+			Console.WriteLine($"MEDIAPLAYER - MeasureOverride: Current Ratio = {_currentRatio}");
+
+			if (double.IsNaN(Width) && double.IsNaN(Height))
+			{
+				availableSize.Width = availableSize.Width;
+				availableSize.Height = availableSize.Width / _currentRatio;
+
+				Console.WriteLine($"MEDIAPLAYER - MeasureOverride: (both null) Computed Size = {availableSize.Width} * {availableSize.Height}");
+			}
+			else if (double.IsNaN(Width))
+			{
+				availableSize.Width = Height * _currentRatio;
+				availableSize.Height = Height;
+
+				Console.WriteLine($"MEDIAPLAYER - MeasureOverride: (width null) Computed Size = {availableSize.Width} * {availableSize.Height}");
+			}
+			else if (double.IsNaN(Height))
+			{
+				availableSize.Width = Width;
+				availableSize.Height = Width / _currentRatio;
+
+				Console.WriteLine($"MEDIAPLAYER - MeasureOverride: (height null) Computed Size = {availableSize.Width} * {availableSize.Height}");
+			}
+			
+			base.MeasureOverride(availableSize);
+
+			return availableSize;
 		}
 	}
 }

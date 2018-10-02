@@ -8239,9 +8239,9 @@
 				Value="Stretch" />
         <Setter Property="IsTabStop"
 				Value="False" />
-        <Setter Property="Stretch"
+		<Setter Property="Stretch"
 				Value="Uniform" />
-        <Setter Property="Template">
+		<Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="MediaPlayerElement">
                     <Grid x:Name="LayoutRoot">

@@ -27,6 +27,7 @@ namespace Windows.Media.Playback
 		AndroidMediaPlayer.IOnPreparedListener,
 		AndroidMediaPlayer.IOnSeekCompleteListener,
 		AndroidMediaPlayer.IOnBufferingUpdateListener,
+		AndroidMediaPlayer.IOnVideoSizeChangedListener,
 		View.IOnLayoutChangeListener
 	{
 		private AndroidMediaPlayer _player;
@@ -34,7 +35,7 @@ namespace Windows.Media.Playback
 		private bool _isPlayRequested = false;
 		private bool _isPlayerPrepared = false;
 		private bool _hasValidHolder = false;
-		private VideoStrech _currentStretch = VideoStrech.Uniform;
+		private VideoStretch _currentStretch = VideoStretch.Uniform;
 		private bool _isUpdatingStretch = false;
 
 		private IScheduledExecutorService _executorService = Executors.NewSingleThreadScheduledExecutor();
@@ -223,6 +224,8 @@ namespace Windows.Media.Playback
 		public void OnPrepared(AndroidMediaPlayer mp)
 		{
 			PlaybackSession.NaturalDuration = TimeSpan.FromMilliseconds(_player.Duration);
+
+			VideoRatioChanged?.Invoke(this, (double)mp.VideoWidth / global::System.Math.Max(mp.VideoHeight, 1));
 
 			if (PlaybackSession.PlaybackState == MediaPlaybackState.Opening)
 			{
@@ -444,9 +447,22 @@ namespace Windows.Media.Playback
 			PlaybackSession.BufferingProgress = percent;
 		}
 
+		#endregion
+
+		#region View.IOnLayoutChangeListener
+
 		public void OnLayoutChange(View v, int left, int top, int right, int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom)
 		{
 			UpdateVideoStretch(_currentStretch);
+		}
+
+		#endregion
+
+		#region AndroidMediaPlayer.IOnVideoSizeChangedListener
+
+		public void OnVideoSizeChanged(AndroidMediaPlayer mp, int width, int height)
+		{
+			
 		}
 
 		#endregion

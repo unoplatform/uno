@@ -39,6 +39,7 @@ namespace Windows.Media.Playback
 			{
 				try
 				{
+					_videoLayer.RemoveObserver(this, new NSString("videoRect"), _videoLayer.Handle);
 					_videoLayer.RemoveFromSuperLayer();
 
 					_player.CurrentItem?.RemoveObserver(this, new NSString("loadedTimeRanges"), _player.Handle);
@@ -79,6 +80,7 @@ namespace Windows.Media.Playback
 				this.Log().WarnIfEnabled(() => $"Could not activate audio session: {activationError.LocalizedDescription}");
 			}
 
+			_videoLayer.AddObserver(this, new NSString("videoRect"), NSKeyValueObservingOptions.New | NSKeyValueObservingOptions.Initial, _videoLayer.Handle);
 			_player.AddObserver(this, new NSString("rate"), NSKeyValueObservingOptions.New | NSKeyValueObservingOptions.Initial, RateObservationContext.Handle);
 
 			_itemFailedToPlayToEndTimeNotification = AVPlayerItem.Notifications.ObserveItemFailedToPlayToEndTime((sender, args) => OnMediaFailed(new Exception(args.Error.LocalizedDescription)));
@@ -241,6 +243,10 @@ namespace Windows.Media.Playback
 				case "rate":
 					ObserveRate();
 					return;
+
+				case "videoRect":
+					ObserveVideoRect();
+					return;
 			}
 		}
 
@@ -266,6 +272,14 @@ namespace Windows.Media.Playback
 						_player.Play();
 					}
 				}
+			}
+		}
+
+		private void ObserveVideoRect()
+		{
+			if (_videoLayer?.VideoRect != null)
+			{
+				VideoRatioChanged?.Invoke(this, _videoLayer.VideoRect.Width / Math.Max(_videoLayer.VideoRect.Height, 1));
 			}
 		}
 
