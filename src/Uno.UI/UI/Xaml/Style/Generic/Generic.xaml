@@ -9131,9 +9131,11 @@
 													VerticalAlignment="Center">
 
 											<Button x:Name='StopButton'
-													Icon='Stop'
 													Style='{StaticResource MTC_ButtonStyle}'
-													Visibility='Collapsed' />
+													Visibility='Collapsed'>
+												<SymbolIcon x:Name='StopSymbol'
+															Symbol='Stop' />
+											</Button>
 											<Button x:Name='SkipBackwardButton'
 													Style='{StaticResource MTC_ButtonStyle}'
 													Visibility='Collapsed'>
@@ -9161,7 +9163,6 @@
 												<FontIcon Glyph="&#xEB9D;" />
 											</Button>
 											<Button x:Name='NextTrackButton'
-													Icon='Next'
 													Style='{StaticResource MTC_ButtonStyle}'
 													Visibility='Collapsed'>
 												<SymbolIcon x:Name='NextTrackSymbol'
