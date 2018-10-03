@@ -23,6 +23,7 @@ _If you need to set source programmatically (ie, using `_mediaPlayerElement.Sour
 |						| Poster image											| X     | X  		| Does not show when playing music				|
 |						| Enable/Disable MediaTransportControls			  		| X     | X  		|												|
 |						| Stretch										  		| X     | X  		| Stretch.None behave like Stretch.Fill on iOS	|
+|						| Pause media when headphones unplugged			  		| X     | X  		| 												|
 | TransportControls		| Transport controls custom style						| X     | X  		|												|
 | 			    		| Play/Pause 											| X     | X  		|												|
 |						| Stop  												| X     | X  		|												|
@@ -46,27 +47,46 @@ _If you need to set source programmatically (ie, using `_mediaPlayerElement.Sour
 |						| Subtitles	support			  							| -     | -  		|												|
 |						| Languages	support			  							| -     | -  		|												|
 
-## Extra features
-
-- Pause media when headphones unplugged
-
 ## Requirement
 
 ### iOS
 
-`NSAppTransportSecurity` needs to be defined in your info.plist in order to play remote media
+Add the folowwing to your info.plist
+
+```xml
+<key>NSAppTransportSecurity</key>
+<dict>
+	<key>NSAllowsArbitraryLoads</key>
+	<true/>
+	<key>NSExceptionMinimumTLSVersion</key>
+	<string>TLSv1.2</string>
+</dict>
+```
+
+__Note:__ Don't just copy/paste, but properly setup `NSAppTransportSecurity` as required by your project
 
 ### Android
 
-`<uses-permission android:name="android.permission.INTERNET" />` needs to be defined in your AndroidManifest.xml in order to play remote media
-`<uses-permission android:name="android.permission.WAKE_LOCK" />` needs to be defined in your AndroidManifest.xml to allow player to keep the screen on while playing
+Add the folowwing to your AndroidManifest.xml
+
+```xml
+<!-- Required to play remote media -->
+<uses-permission android:name="android.permission.INTERNET" />
+<!-- Required to keep the screen on while playing -->
+<uses-permission android:name="android.permission.WAKE_LOCK" />
+```
 
 ## Future improvement
 
+- Playback rate support
 - React to audio focus changes (pause/stop playback or reduce audio volume)
+- Subtitles support
+- Languages support	
+- Display poster for audio media
 
 ## Known issues
 
 - Slider not draggable (Uno issue)
 - Volume flyout does not display on iOS (Uno issue)
 - Dynamic width/height not supported when playing audio
+- Sometimes flickers during resizing when using dynamic width/height

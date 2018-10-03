@@ -141,6 +141,7 @@ namespace Windows.UI.Xaml.Controls
 				{
 					oldMediaPlayer.MediaFailed -= mpe.OnMediaFailed;
 					oldMediaPlayer.MediaFailed -= mpe.OnMediaOpened;
+					oldMediaPlayer?.Dispose();
 				}
 
 				if (args.NewValue is Windows.Media.Playback.MediaPlayer newMediaPlayer)
@@ -262,7 +263,6 @@ namespace Windows.UI.Xaml.Controls
 
 		public void SetMediaPlayer(Windows.Media.Playback.MediaPlayer mediaPlayer)
 		{
-			MediaPlayer?.Dispose();
 			MediaPlayer = mediaPlayer;
 		}
 	}

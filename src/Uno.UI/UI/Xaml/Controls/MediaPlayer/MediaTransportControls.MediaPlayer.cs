@@ -67,7 +67,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 			catch (Exception ex)
 			{
-				this.Log().ErrorIfEnabled(() => $"Unable to unbing MediaTransportControls properly: {ex.Message}", ex);
+				this.Log().ErrorIfEnabled(() => $"Unable to unbind MediaTransportControls properly: {ex.Message}", ex);
 			}
 		}
 
