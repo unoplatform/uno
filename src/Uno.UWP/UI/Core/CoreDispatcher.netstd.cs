@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -13,6 +14,7 @@ namespace Windows.UI.Core
 		/// <summary>
 		/// Provide a action that will delegate the dispach of CoreDispatcher work
 		/// </summary>
+		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static Action<Action> DispatchOverride;
 
 		partial void Initialize()
