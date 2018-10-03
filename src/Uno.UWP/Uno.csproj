@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="15.0">
+﻿<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="15.0">
   
   <PropertyGroup>
     <TargetFrameworks>MonoAndroid80;xamarinios10;net46;netstandard2.0</TargetFrameworks>
@@ -19,7 +19,7 @@
 		
 		<NoWarn>$(NoWarn);NU1701</NoWarn>
 		
-		<ProduceReferenceAssembly>true</ProduceReferenceAssembly>
+		<ProduceReferenceAssembly>false</ProduceReferenceAssembly>
 		<Deterministic>true</Deterministic>
 	</PropertyGroup>
 
