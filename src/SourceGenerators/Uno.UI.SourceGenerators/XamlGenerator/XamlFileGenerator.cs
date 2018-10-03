@@ -2580,7 +2580,10 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 				case "Windows.UI.Xaml.Controls.IconElement":
 					return "new Windows.UI.Xaml.Controls.SymbolIcon { Symbol = Windows.UI.Xaml.Controls.Symbol." + memberValue + "}";
-            }
+
+				case "Windows.Media.Playback.IMediaPlaybackSource":
+					return "Windows.Media.Core.MediaSource.CreateFromUri(new Uri(\"" + memberValue + "\"))";
+			}
 
 			var isEnum = propertyType
                 .TypeKind == TypeKind.Enum;
