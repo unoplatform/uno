@@ -469,6 +469,12 @@ namespace Windows.Media.Playback
 			
 		}
 
-#endregion
+		#endregion
+
+		protected override void Dispose(bool disposing)
+		{
+			Application.Context.UnregisterReceiver(_noisyAudioStreamReceiver);
+			base.Dispose(disposing);
+		}
 	}
 }
