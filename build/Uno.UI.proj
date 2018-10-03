@@ -147,7 +147,7 @@
 
 	<XmlUpdate
 		XmlFileName=".\Uno.UI.WpfHost.nuspec"
-		XPath="/x:package/x:metadata/x:dependencies/x:dependency[id='Uno.UI']/@version"
+		XPath="/x:package/x:metadata/x:dependencies//x:dependency[@id='Uno.UI']/@version"
 		Value="$(GITVERSION_FullSemVer)"
 		Namespace="$(NugetNamespace)"
 		Prefix="x"/>
