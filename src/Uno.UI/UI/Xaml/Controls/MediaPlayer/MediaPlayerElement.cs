@@ -225,11 +225,14 @@ namespace Windows.UI.Xaml.Controls
 		{
 			base.OnLoaded();
 
-			MediaPlayer.AutoPlay = AutoPlay;
-
-			if(MediaPlayer.PlaybackSession.PlaybackState == MediaPlaybackState.Opening && AutoPlay)
+			if (MediaPlayer != null)
 			{
-				MediaPlayer.Play();
+				MediaPlayer.AutoPlay = AutoPlay;
+
+				if (MediaPlayer.PlaybackSession.PlaybackState == MediaPlaybackState.Opening && AutoPlay)
+				{
+					MediaPlayer.Play();
+				}
 			}
 		}
 		
