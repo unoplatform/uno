@@ -59,6 +59,17 @@ namespace Windows.UI.Xaml.Controls
 				_thirdTextBlockColumn = columns.ElementAt(periodColumnPosition);
 			}
 
+			SetupFlyoutButton();
+		}
+
+		protected override void OnLoaded()
+		{
+			base.OnLoaded();
+			SetupFlyoutButton();
+		}
+
+		private void SetupFlyoutButton()
+		{
 			if (_flyoutButton != null)
 			{
 				_flyoutButton.Flyout = new TimePickerFlyout

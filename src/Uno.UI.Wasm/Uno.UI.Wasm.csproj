@@ -21,6 +21,7 @@
 	<ItemGroup>
 	  <UpToDateCheckInput Remove="ts\AppManifest.ts" />
 	  <UpToDateCheckInput Remove="ts\Interop\IAppManifest.ts" />
+	  <UpToDateCheckInput Remove="ts\Interop\IUnoDispatch.ts" />
 	</ItemGroup>
 
 	<ItemGroup>

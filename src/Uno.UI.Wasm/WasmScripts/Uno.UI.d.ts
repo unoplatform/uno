@@ -50,6 +50,12 @@ declare namespace Uno.UI {
         private containerElementId;
         private loadingElementId;
         static current: WindowManager;
+        /**
+         * Defines if the WindowManager is running in hosted mode, and should skip the
+         * initialization of WebAssembly, use this mode in conjuction with the Uno.UI.WpfHost
+         * to improve debuggability.
+         */
+        private static isHosted;
         private static readonly unoRootClassName;
         private static readonly unoUnarrangedClassName;
         /**
@@ -57,7 +63,7 @@ declare namespace Uno.UI {
             * @param containerElementId The ID of the container element for the Xaml UI
             * @param loadingElementId The ID of the loading element to remove once ready
             */
-        static init(localStoragePath: string, containerElementId?: string, loadingElementId?: string): string;
+        static init(localStoragePath: string, isHosted: boolean, containerElementId?: string, loadingElementId?: string): string;
         private containerElement;
         private rootContent;
         private allActiveElementsById;
@@ -70,7 +76,13 @@ declare namespace Uno.UI {
          *
          * */
         static setupStorage(localStoragePath: string): void;
+        /**
+         * Determine if IndexDB is available, some browsers and modes disable it.
+         * */
         static isIndexDBAvailable(): boolean;
+        /**
+         * Synchronize the IDBFS memory cache back to IndexDB
+         * */
         static synchronizeFileSystem(): void;
         /**
             * Creates the UWP-compatible splash screen
@@ -253,6 +265,12 @@ declare module Uno.UI.Interop {
     }
 }
 declare module Uno.UI.Interop {
+    interface IUnoDispatch {
+        resize(size: string): void;
+        dispatch(htmlIdStr: string, eventNameStr: string, eventPayloadStr: string): string;
+    }
+}
+declare module Uno.UI.Interop {
     interface IWebAssemblyApp {
         main_module: Interop.IMonoAssemblyHandle;
         main_class: Interop.IMonoClassHandle;
@@ -279,3 +297,4 @@ declare namespace Uno.UI.Interop {
 declare const MonoRuntime: Uno.UI.Interop.IMonoRuntime;
 declare const WebAssemblyApp: Uno.UI.Interop.IWebAssemblyApp;
 declare const UnoAppManifest: Uno.UI.IAppManifest;
+declare const UnoDispatch: Uno.UI.Interop.IUnoDispatch;
