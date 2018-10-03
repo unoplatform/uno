@@ -10,7 +10,7 @@
 		<NoWarn>$(NoWarn);NU1701</NoWarn>
 		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
 		
-		<ProduceReferenceAssembly>true</ProduceReferenceAssembly>
+		<ProduceReferenceAssembly>false</ProduceReferenceAssembly>
 		<Deterministic>true</Deterministic>
 	</PropertyGroup>
 

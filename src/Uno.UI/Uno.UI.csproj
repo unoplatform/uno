@@ -13,7 +13,7 @@
 		<NoWarn>$(NoWarn);NU1701</NoWarn>
 		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
 		
-		<ProduceReferenceAssembly>true</ProduceReferenceAssembly>
+		<ProduceReferenceAssembly>false</ProduceReferenceAssembly>
 		<Deterministic>true</Deterministic>
 
 		<T4Bin>..\T4Generator\bin\$(Configuration)\T4Generator.exe</T4Bin>
