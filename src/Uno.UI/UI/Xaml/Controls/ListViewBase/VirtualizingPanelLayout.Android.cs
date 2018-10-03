@@ -39,7 +39,8 @@ namespace Windows.UI.Xaml.Controls
 		private readonly Deque<Group> _groups = new Deque<Group>();
 		private bool _isInitialGroupHeaderCreated;
 		private bool _areHeaderAndFooterCreated;
-		private bool _isInitialExtentOffsetApplied;
+		private bool _isInitialHeaderExtentOffsetApplied;
+		private bool _isInitialPaddingExtentOffsetApplied;
 		//The previous item to the old first visible item, used when a lightweight layout rebuild is called
 		private IndexPath? _dynamicSeedIndex;
 		//Start position of the old first group, used when a lightweight layout rebuild is called
@@ -725,8 +726,9 @@ namespace Windows.UI.Xaml.Controls
 
 			_isInitialGroupHeaderCreated = false;
 			_areHeaderAndFooterCreated = false;
-			_isInitialExtentOffsetApplied = false;
+			_isInitialHeaderExtentOffsetApplied = false;
 			_needsHeaderAndFooterUpdate = false;
+			_isInitialPaddingExtentOffsetApplied = false;
 
 			ViewCache?.EmptyAndRemove();
 			CacheHalfLengthInViews = 0;
@@ -925,10 +927,13 @@ namespace Windows.UI.Xaml.Controls
 			{
 				// If this value is negative, collection dimensions are larger than all children and we should not scroll
 				maxPossibleDelta = Math.Max(0, GetContentEnd() - Extent);
+				// In the rare case that GetContentStart() is positive (see below), permit a positive value.
+				maxPossibleDelta = Math.Max(GetContentStart(), maxPossibleDelta);
 			}
 			else
 			{
-				maxPossibleDelta = GetContentStart() - 0;
+				// This value may be positive in certain cases where the layouting properties change, eg Padding goes from non-zero to zero. Restrict to be negative.
+				maxPossibleDelta = Math.Min(0, GetContentStart() - 0);
 			}
 			maxPossibleDelta = Math.Abs(maxPossibleDelta);
 			var actualOffset = MathEx.Clamp(offset, -maxPossibleDelta, maxPossibleDelta);
@@ -981,7 +986,7 @@ namespace Windows.UI.Xaml.Controls
 
 			XamlParent?.TryLoadMoreItems(LastVisibleIndex);
 
-			UpdateScrollPosition(recycler, state);
+			UpdateScrollPositionForPaddingChanges(recycler, state);
 
 			if (!needsScrapOnMeasure && !willRunAnimations)
 			{
@@ -996,10 +1001,25 @@ namespace Windows.UI.Xaml.Controls
 		/// <summary>
 		/// Scroll to close the gap between the end of the content and the end of the panel if any.
 		/// </summary>
-		private void UpdateScrollPosition(RecyclerView.Recycler recycler, RecyclerView.State state)
+		private void UpdateScrollPositionForPaddingChanges(RecyclerView.Recycler recycler, RecyclerView.State state)
 		{
 			if (XamlParent?.NativePanel != null && XamlParent.NativePanel.ChildCount > 0)
 			{
+				var gapToStart = GetContentStart();
+				if (gapToStart > 0)
+				{
+					if(ScrollOrientation == Orientation.Vertical)
+					{
+						ScrollVerticallyBy(gapToStart, recycler, state);
+						XamlParent.NativePanel.OnScrolled(gapToStart, 0);
+					}
+					else
+					{
+						ScrollHorizontallyBy(gapToStart, recycler, state);
+						XamlParent.NativePanel.OnScrolled(gapToStart, 0);
+					}
+				}
+
 				var gapToEnd = Extent - GetContentEnd();
 
 				if (gapToEnd > 0)
@@ -1037,7 +1057,20 @@ namespace Windows.UI.Xaml.Controls
 
 			AssertValidState();
 
-			if (!_isInitialExtentOffsetApplied)
+			if (!_isInitialPaddingExtentOffsetApplied)
+			{
+				var group = GetTrailingGroup(direction);
+				if(group != null)
+				{
+					group.Start += InitialExtentPadding;
+				}
+
+				_isInitialPaddingExtentOffsetApplied = true;
+			}
+
+			AssertValidState();
+
+			if (!_isInitialHeaderExtentOffsetApplied)
 			{
 				var group = GetTrailingGroup(direction);
 				if (group != null)
@@ -1057,7 +1090,7 @@ namespace Windows.UI.Xaml.Controls
 					_dynamicSeedStart = _dynamicSeedStart.Value - _previousHeaderExtent.Value + headerOffset;
 				}
 				_previousHeaderExtent = null;
-				_isInitialExtentOffsetApplied = true;
+				_isInitialHeaderExtentOffsetApplied = true;
 			}
 
 			AssertValidState();
@@ -1376,7 +1409,7 @@ namespace Windows.UI.Xaml.Controls
 			)
 			{
 				// If the header is visible, ensure to reapply its size in case it changes. 
-				_isInitialExtentOffsetApplied = false;
+				_isInitialHeaderExtentOffsetApplied = false;
 				_previousHeaderExtent = GetChildExtentWithMargins(GetHeaderViewIndex());
 			}
 
@@ -1512,7 +1545,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 
 			_areHeaderAndFooterCreated = false;
-			_isInitialExtentOffsetApplied = false;
+			_isInitialHeaderExtentOffsetApplied = false;
 		}
 
 		/// <summary>

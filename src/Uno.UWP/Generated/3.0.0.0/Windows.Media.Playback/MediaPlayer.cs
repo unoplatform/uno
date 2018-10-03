@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Media.Playback
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+	#if false || false || NET46 || __WASM__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class MediaPlayer : global::System.IDisposable
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		#if false || false || NET46 || __WASM__
 		[global::Uno.NotImplemented]
 		public  double Volume
 		{
@@ -21,7 +21,7 @@ namespace Windows.Media.Playback
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		#if false || false || NET46 || __WASM__
 		[global::Uno.NotImplemented]
 		public  global::System.TimeSpan Position
 		{
@@ -63,7 +63,7 @@ namespace Windows.Media.Playback
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		#if false || false || NET46 || __WASM__
 		[global::Uno.NotImplemented]
 		public  bool IsMuted
 		{
@@ -77,7 +77,7 @@ namespace Windows.Media.Playback
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		#if false || false || NET46 || __WASM__
 		[global::Uno.NotImplemented]
 		public  bool AutoPlay
 		{
@@ -303,7 +303,7 @@ namespace Windows.Media.Playback
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		#if false || false || NET46 || __WASM__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Media.Playback.MediaPlaybackSession PlaybackSession
 		{
@@ -351,7 +351,7 @@ namespace Windows.Media.Playback
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		#if false || false || NET46 || __WASM__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Media.Playback.IMediaPlaybackSource Source
 		{
@@ -365,13 +365,13 @@ namespace Windows.Media.Playback
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		#if false || false || NET46 || __WASM__
 		[global::Uno.NotImplemented]
 		public MediaPlayer() 
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.MediaPlayer", "MediaPlayer.MediaPlayer()");
 		}
-		#endif
+#endif
 		// Forced skipping of method Windows.Media.Playback.MediaPlayer.MediaPlayer()
 		// Forced skipping of method Windows.Media.Playback.MediaPlayer.AutoPlay.get
 		// Forced skipping of method Windows.Media.Playback.MediaPlayer.AutoPlay.set
@@ -412,14 +412,14 @@ namespace Windows.Media.Playback
 		// Forced skipping of method Windows.Media.Playback.MediaPlayer.BufferingStarted.remove
 		// Forced skipping of method Windows.Media.Playback.MediaPlayer.BufferingEnded.add
 		// Forced skipping of method Windows.Media.Playback.MediaPlayer.BufferingEnded.remove
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		#if false || false || NET46 || __WASM__
 		[global::Uno.NotImplemented]
 		public  void Play()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.MediaPlayer", "void MediaPlayer.Play()");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		#if false || false || NET46 || __WASM__
 		[global::Uno.NotImplemented]
 		public  void Pause()
 		{
@@ -635,7 +635,7 @@ namespace Windows.Media.Playback
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		#if false || false || NET46 || __WASM__
 		[global::Uno.NotImplemented]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Media.Playback.MediaPlayer, object> MediaEnded
 		{
@@ -651,7 +651,7 @@ namespace Windows.Media.Playback
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		#if false || false || NET46 || __WASM__
 		[global::Uno.NotImplemented]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Media.Playback.MediaPlayer, global::Windows.Media.Playback.MediaPlayerFailedEventArgs> MediaFailed
 		{
@@ -667,7 +667,7 @@ namespace Windows.Media.Playback
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		#if false || false || NET46 || __WASM__
 		[global::Uno.NotImplemented]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Media.Playback.MediaPlayer, object> MediaOpened
 		{
@@ -715,7 +715,7 @@ namespace Windows.Media.Playback
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		#if false || false || NET46 || __WASM__
 		[global::Uno.NotImplemented]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Media.Playback.MediaPlayer, object> SeekCompleted
 		{
@@ -731,7 +731,7 @@ namespace Windows.Media.Playback
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		#if false || false || NET46 || __WASM__
 		[global::Uno.NotImplemented]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Media.Playback.MediaPlayer, object> VolumeChanged
 		{
@@ -747,7 +747,7 @@ namespace Windows.Media.Playback
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		#if false || false || NET46 || __WASM__
 		[global::Uno.NotImplemented]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Media.Playback.MediaPlayer, object> IsMutedChanged
 		{
@@ -763,7 +763,7 @@ namespace Windows.Media.Playback
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		#if false || false || NET46 || __WASM__
 		[global::Uno.NotImplemented]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Media.Playback.MediaPlayer, object> SourceChanged
 		{
