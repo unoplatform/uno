@@ -12,3 +12,4 @@
  * 134189 [iOS] The Time Picker flyout placement is not always respected
  * 134132 [Android] Fix loading of ItemsPresenter
  * 134104 [iOS] Fixed an issue when back swiping from a page with a collapsed CommandBar
+ * 134026 [iOS] Setting a different DP from TextBox.TextChanging can cause an infinite 'ping pong' of changing Text values
