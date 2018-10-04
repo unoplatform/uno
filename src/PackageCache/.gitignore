@@ -1,0 +1,6 @@
+# exclude everything
+**
+
+# except this file and the .md file
+!_this_folder.md
+!.gitignore
