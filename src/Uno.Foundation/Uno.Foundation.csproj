@@ -10,18 +10,18 @@
 		<NoWarn>$(NoWarn);NU1701</NoWarn>
 		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
 		
-		<ProduceReferenceAssembly>true</ProduceReferenceAssembly>
+		<ProduceReferenceAssembly>false</ProduceReferenceAssembly>
 		<Deterministic>true</Deterministic>
 	</PropertyGroup>
 
 	<ItemGroup>
 		<PackageReference Include="MSBuild.Sdk.Extras" Version="1.5.4" PrivateAssets="All" />
     <PackageReference Include="Uno.SourceGenerationTasks">
-      <Version>1.25.0-dev.72</Version>
+      <Version>1.27.0-dev.94</Version>
       <ExcludeAssets>Runtime</ExcludeAssets>
     </PackageReference>
     <PackageReference Include="Uno.Core">
-      <Version>1.24.0-dev.49</Version>
+      <Version>1.25.0-dev.53</Version>
       <ExcludeAssets>Runtime</ExcludeAssets>
     </PackageReference>
 	</ItemGroup>

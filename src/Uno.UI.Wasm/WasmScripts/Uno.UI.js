@@ -148,15 +148,65 @@ var Uno;
                 * @param containerElementId The ID of the container element for the Xaml UI
                 * @param loadingElementId The ID of the loading element to remove once ready
                 */
-            static init(containerElementId = "uno-body", loadingElementId = "uno-loading") {
+            static init(localStoragePath, isHosted, containerElementId = "uno-body", loadingElementId = "uno-loading") {
                 if (WindowManager.assembly) {
                     throw "Already initialized";
                 }
+                WindowManager.isHosted = isHosted;
                 WindowManager.initMethods();
                 UI.HtmlDom.initPolyfills();
+                WindowManager.setupStorage(localStoragePath);
                 this.current = new WindowManager(containerElementId, loadingElementId);
                 this.current.init();
                 return "ok";
+            }
+            /**
+             * Setup the storage persistence
+             *
+             * */
+            static setupStorage(localStoragePath) {
+                if (WindowManager.isHosted) {
+                    console.debug("Hosted Mode: skipping IndexDB initialization");
+                }
+                else {
+                    if (WindowManager.isIndexDBAvailable()) {
+                        FS.mkdir(localStoragePath);
+                        FS.mount(IDBFS, {}, localStoragePath);
+                        FS.syncfs(true, err => {
+                            if (err) {
+                                console.error(`Error synchronizing filsystem from IndexDB: ${err}`);
+                            }
+                        });
+                        window.addEventListener("beforeunload", () => WindowManager.synchronizeFileSystem());
+                        setInterval(() => WindowManager.synchronizeFileSystem(), 10000);
+                    }
+                    else {
+                        console.warn("IndexedDB is not available (private mode?), changed will not be persisted.");
+                    }
+                }
+            }
+            /**
+             * Determine if IndexDB is available, some browsers and modes disable it.
+             * */
+            static isIndexDBAvailable() {
+                try {
+                    // IndexedDB may not be available in private mode
+                    window.indexedDB;
+                    return true;
+                }
+                catch (err) {
+                    return false;
+                }
+            }
+            /**
+             * Synchronize the IDBFS memory cache back to IndexDB
+             * */
+            static synchronizeFileSystem() {
+                FS.syncfs(err => {
+                    if (err) {
+                        console.error(`Error synchronizing filsystem from IndexDB: ${err}`);
+                    }
+                });
             }
             /**
                 * Creates the UWP-compatible splash screen
@@ -640,27 +690,32 @@ var Uno;
                 }
             }
             static initMethods() {
-                if (!WindowManager.assembly) {
-                    WindowManager.assembly = MonoRuntime.assembly_load("Uno.UI");
+                if (WindowManager.isHosted) {
+                    console.debug("Hosted Mode: Skipping MonoRuntime initialization ");
+                }
+                else {
                     if (!WindowManager.assembly) {
-                        throw `Unable to find assembly Uno.UI`;
+                        WindowManager.assembly = MonoRuntime.assembly_load("Uno.UI");
+                        if (!WindowManager.assembly) {
+                            throw `Unable to find assembly Uno.UI`;
+                        }
                     }
-                }
-                if (!WindowManager.resizeMethod) {
-                    const type = MonoRuntime.find_class(WindowManager.assembly, "Windows.UI.Xaml", "Window");
-                    if (!type) {
-                        throw `Unable to find type Windows.UI.Xaml.Window`;
-                    }
-                    WindowManager.resizeMethod = MonoRuntime.find_method(type, "Resize", -1);
                     if (!WindowManager.resizeMethod) {
-                        throw `Unable to find Windows.UI.Xaml.Window.Resize method`;
+                        const type = MonoRuntime.find_class(WindowManager.assembly, "Windows.UI.Xaml", "Window");
+                        if (!type) {
+                            throw `Unable to find type Windows.UI.Xaml.Window`;
+                        }
+                        WindowManager.resizeMethod = MonoRuntime.find_method(type, "Resize", -1);
+                        if (!WindowManager.resizeMethod) {
+                            throw `Unable to find Windows.UI.Xaml.Window.Resize method`;
+                        }
                     }
-                }
-                if (!WindowManager.dispatchEventMethod) {
-                    const type = MonoRuntime.find_class(WindowManager.assembly, "Windows.UI.Xaml", "UIElement");
-                    WindowManager.dispatchEventMethod = MonoRuntime.find_method(type, "DispatchEvent", -1);
                     if (!WindowManager.dispatchEventMethod) {
-                        throw `Unable to find Windows.UI.Xaml.UIElement.DispatchEvent method`;
+                        const type = MonoRuntime.find_class(WindowManager.assembly, "Windows.UI.Xaml", "UIElement");
+                        WindowManager.dispatchEventMethod = MonoRuntime.find_method(type, "DispatchEvent", -1);
+                        if (!WindowManager.dispatchEventMethod) {
+                            throw `Unable to find Windows.UI.Xaml.UIElement.DispatchEvent method`;
+                        }
                     }
                 }
             }
@@ -686,8 +741,13 @@ var Uno;
                 body.style.backgroundColor = '#fff';
             }
             resize() {
-                const sizeStr = this.getMonoString(`${window.innerWidth};${window.innerHeight}`);
-                MonoRuntime.call_method(WindowManager.resizeMethod, null, [sizeStr]);
+                if (WindowManager.isHosted) {
+                    UnoDispatch.resize(`${window.innerWidth};${window.innerHeight}`);
+                }
+                else {
+                    const sizeStr = this.getMonoString(`${window.innerWidth};${window.innerHeight}`);
+                    MonoRuntime.call_method(WindowManager.resizeMethod, null, [sizeStr]);
+                }
             }
             dispatchEvent(element, eventName, eventPayload = null) {
                 const htmlId = element.getAttribute("XamlHandle");
@@ -695,13 +755,22 @@ var Uno;
                 if (!htmlId) {
                     throw `No attribute XamlHandle on element ${element}. Can't raise event.`;
                 }
-                const htmlIdStr = this.getMonoString(htmlId);
-                const eventNameStr = this.getMonoString(eventName);
-                const eventPayloadStr = this.getMonoString(eventPayload);
-                var handledHandle = MonoRuntime.call_method(WindowManager.dispatchEventMethod, null, [htmlIdStr, eventNameStr, eventPayloadStr]);
-                var handledStr = this.fromMonoString(handledHandle);
-                var handled = handledStr == "True";
-                return handled;
+                if (WindowManager.isHosted) {
+                    // Dispatch to the C# backed UnoDispatch class. Events propagated
+                    // this way always succeed because synchronous calls are not possible
+                    // between the host and the browser, unlike wasm.
+                    UnoDispatch.dispatch(htmlId, eventName, eventPayload);
+                    return true;
+                }
+                else {
+                    const htmlIdStr = this.getMonoString(htmlId);
+                    const eventNameStr = this.getMonoString(eventName);
+                    const eventPayloadStr = this.getMonoString(eventPayload);
+                    var handledHandle = MonoRuntime.call_method(WindowManager.dispatchEventMethod, null, [htmlIdStr, eventNameStr, eventPayloadStr]);
+                    var handledStr = this.fromMonoString(handledHandle);
+                    var handled = handledStr == "True";
+                    return handled;
+                }
             }
             getMonoString(str) {
                 return str ? MonoRuntime.mono_string(str) : null;
@@ -720,7 +789,19 @@ var Uno;
         WindowManager.unoRootClassName = "uno-root-element";
         WindowManager.unoUnarrangedClassName = "uno-unarranged";
         UI.WindowManager = WindowManager;
-        document.addEventListener("DOMContentLoaded", () => WindowManager.setupSplashScreen());
+        if (typeof define === 'function') {
+            define(['AppManifest'], () => {
+                if (document.readyState === "loading") {
+                    document.addEventListener("DOMContentLoaded", () => WindowManager.setupSplashScreen());
+                }
+                else {
+                    WindowManager.setupSplashScreen();
+                }
+            });
+        }
+        else {
+            throw `The Uno.Wasm.Boostrap is not up to date, please upgrade to a later version`;
+        }
     })(UI = Uno.UI || (Uno.UI = {}));
 })(Uno || (Uno = {}));
 // Ensure the "Uno" namespace is availablle globally

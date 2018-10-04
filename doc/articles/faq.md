@@ -144,7 +144,7 @@ Yes, those are called Templated Controls, because they inherit from Control	Uno.
 ## My application on iOS/Android/Wasm is not showing icons properly
 
 Uno.UI is making use of the Open-Source WinJS symbols font, which must be installed in your application directly:
-- See the [Playground for an actual use example](https://github.com/nventive/Uno.Playground/tree/master/Uno.UI.Demo.iOS/Resources/Fonts).
+- See the [Playground for an actual use example](https://github.com/nventive/Uno.Playground/tree/master/src/Uno.Playground.iOS/Resources/Fonts).
 - See the documentation for adding fonts for [iOS](https://github.com/nventive/Uno/blob/master/doc/articles/using-uno-ui.md#custom-fonts-on-ios),  [Android](https://github.com/nventive/Uno/blob/master/doc/articles/using-uno-ui.md#custom-fonts-on-android) and [WebAssembly](https://github.com/nventive/Uno.Playground/blob/80322aec3d759d009f6a900bca4a07bc63ae6a62/Uno.UI.Demo.WASM/Uno.UI.Demo.WASM.csproj#L29).
 
 ## Where is the best place to start in order to implement new controls?

@@ -44,5 +44,40 @@ namespace Uno.UI.Tests.ItemsControlTests
 			// aligned on net46.
 			Assert.IsNotNull(panel.FindName("b1"));
 		}
+
+		[TestMethod]
+		public void When_ItemsChanged()
+		{
+			var SUT = new MyItemsControl();
+
+			int onVectorChanged = 0;
+
+			SUT.Items.VectorChanged += (s, e) => onVectorChanged++;
+
+			Assert.AreEqual(0, SUT.OnItemsChangedCallCount);
+			Assert.AreEqual(0, onVectorChanged);
+
+			SUT.Items.Add(new Border());
+
+			Assert.AreEqual(1, SUT.OnItemsChangedCallCount);
+			Assert.AreEqual(1, onVectorChanged);
+
+			SUT.Items.RemoveAt(0);
+
+			Assert.AreEqual(2, SUT.OnItemsChangedCallCount);
+			Assert.AreEqual(2, onVectorChanged);
+			Assert.AreEqual(0, SUT.Items.Count);
+		}
+	}
+
+	public class MyItemsControl : ItemsControl
+	{
+		public int OnItemsChangedCallCount { get; private set; }
+
+		protected override void OnItemsChanged(object e)
+		{
+			OnItemsChangedCallCount++;
+			base.OnItemsChanged(e);
+		}
 	}
 }

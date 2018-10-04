@@ -130,7 +130,7 @@ namespace Windows.UI.Xaml
 										BorderBrush = SolidColorBrushHelper.Blue,
 										BorderThickness = new Thickness(2),
 									}
-									.Binding("Visibility", new TemplateBinding("IsSelected", converter: new FromNullableBoolToVisibilityConverter())),
+									.Binding("Visibility", new TemplateBinding("IsSelected", converter: new UnoNativeDefaultProgressBarReverseBoolConverter())),
 								}
 							}
 						)
@@ -159,7 +159,7 @@ namespace Windows.UI.Xaml
 										BorderBrush = SolidColorBrushHelper.Blue,
 										BorderThickness = new Thickness(2),
 									}
-									.Binding("Visibility", new TemplateBinding("IsSelected", converter: new FromNullableBoolToVisibilityConverter())),
+									.Binding("Visibility", new TemplateBinding("IsSelected", converter: new UnoNativeDefaultProgressBarReverseBoolConverter())),
 								}
 							}
 						)

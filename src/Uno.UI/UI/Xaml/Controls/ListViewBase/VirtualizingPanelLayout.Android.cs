@@ -39,7 +39,8 @@ namespace Windows.UI.Xaml.Controls
 		private readonly Deque<Group> _groups = new Deque<Group>();
 		private bool _isInitialGroupHeaderCreated;
 		private bool _areHeaderAndFooterCreated;
-		private bool _isInitialExtentOffsetApplied;
+		private bool _isInitialHeaderExtentOffsetApplied;
+		private bool _isInitialPaddingExtentOffsetApplied;
 		//The previous item to the old first visible item, used when a lightweight layout rebuild is called
 		private IndexPath? _dynamicSeedIndex;
 		//Start position of the old first group, used when a lightweight layout rebuild is called
@@ -226,7 +227,7 @@ namespace Windows.UI.Xaml.Controls
 		private void ApplyScrollToPosition(int targetPosition, ScrollIntoViewAlignment alignment, RecyclerView.Recycler recycler, RecyclerView.State state)
 		{
 			int offsetToApply = 0;
-			bool shouldSnapToStart = false;
+			bool shouldSnapToStart = false; //Initial values: if the item is fully visible, it shouldn't snap (alignment = default)
 			bool shouldSnapToEnd = false;
 
 			// 1. Incrementally scroll until target position lies within range of visible positions
@@ -234,14 +235,14 @@ namespace Windows.UI.Xaml.Controls
 			int appliedOffset = 0;
 			while (targetPosition > GetLastVisibleDisplayPosition() && GetNextUnmaterializedItem(FillDirection.Forward) != null)
 			{
-				shouldSnapToEnd = true;
+				shouldSnapToEnd = true; //If the item is below the viewport, it should be snapped to the bottom of the viewport (alignment = default)
 				appliedOffset += GetScrollConsumptionIncrement(FillDirection.Forward);
 				offsetToApply += ScrollByInner(appliedOffset, recycler, state);
 			}
 			//While target position is before first visible position, scroll backward
 			while (targetPosition < GetFirstVisibleDisplayPosition() && GetNextUnmaterializedItem(FillDirection.Back) != null)
 			{
-				shouldSnapToStart = true;
+				shouldSnapToStart = true; //If the item is above the viewport, it should be snapped to the bottom of the viewport (alignment = default)
 				appliedOffset -= GetScrollConsumptionIncrement(FillDirection.Back);
 				offsetToApply += ScrollByInner(appliedOffset, recycler, state);
 			}
@@ -251,6 +252,7 @@ namespace Windows.UI.Xaml.Controls
 
 			if (alignment == ScrollIntoViewAlignment.Leading)
 			{
+				// 'Leading' means that the item always snaps to the top of the viewport no matter what
 				shouldSnapToStart = true;
 				shouldSnapToEnd = false;
 			}
@@ -258,7 +260,9 @@ namespace Windows.UI.Xaml.Controls
 			//2. If view for position lies partially outside visible bounds, bring it into view
 			var target = FindViewByAdapterPosition(targetPosition);
 
-			var gapToStart = 0 - GetChildStartWithMargin(target);
+			var gapToStart = 0 - GetChildStartWithMargin(target)
+				// Ensure sticky group header doesn't cover item
+				+ GetStickyGroupHeaderExtent();
 			if (!shouldSnapToStart)
 			{
 				gapToStart = Math.Max(0, gapToStart);
@@ -286,6 +290,11 @@ namespace Windows.UI.Xaml.Controls
 			FillLayout(FillDirection.Forward, 0, Extent, ContentBreadth, recycler, state);
 			FillLayout(FillDirection.Back, 0, Extent, ContentBreadth, recycler, state);
 		}
+
+		/// <summary>
+		/// Get extent of currently sticking group header (if any)
+		/// </summary>
+		private int GetStickyGroupHeaderExtent() => GetFirstGroup().ItemsExtentOffset;
 
 		private class ScrollToPositionRequest
 		{
@@ -717,8 +726,9 @@ namespace Windows.UI.Xaml.Controls
 
 			_isInitialGroupHeaderCreated = false;
 			_areHeaderAndFooterCreated = false;
-			_isInitialExtentOffsetApplied = false;
+			_isInitialHeaderExtentOffsetApplied = false;
 			_needsHeaderAndFooterUpdate = false;
+			_isInitialPaddingExtentOffsetApplied = false;
 
 			ViewCache?.EmptyAndRemove();
 			CacheHalfLengthInViews = 0;
@@ -917,10 +927,13 @@ namespace Windows.UI.Xaml.Controls
 			{
 				// If this value is negative, collection dimensions are larger than all children and we should not scroll
 				maxPossibleDelta = Math.Max(0, GetContentEnd() - Extent);
+				// In the rare case that GetContentStart() is positive (see below), permit a positive value.
+				maxPossibleDelta = Math.Max(GetContentStart(), maxPossibleDelta);
 			}
 			else
 			{
-				maxPossibleDelta = GetContentStart() - 0;
+				// This value may be positive in certain cases where the layouting properties change, eg Padding goes from non-zero to zero. Restrict to be negative.
+				maxPossibleDelta = Math.Min(0, GetContentStart() - 0);
 			}
 			maxPossibleDelta = Math.Abs(maxPossibleDelta);
 			var actualOffset = MathEx.Clamp(offset, -maxPossibleDelta, maxPossibleDelta);
@@ -973,7 +986,7 @@ namespace Windows.UI.Xaml.Controls
 
 			XamlParent?.TryLoadMoreItems(LastVisibleIndex);
 
-			UpdateScrollPosition(recycler, state);
+			UpdateScrollPositionForPaddingChanges(recycler, state);
 
 			if (!needsScrapOnMeasure && !willRunAnimations)
 			{
@@ -988,10 +1001,25 @@ namespace Windows.UI.Xaml.Controls
 		/// <summary>
 		/// Scroll to close the gap between the end of the content and the end of the panel if any.
 		/// </summary>
-		private void UpdateScrollPosition(RecyclerView.Recycler recycler, RecyclerView.State state)
+		private void UpdateScrollPositionForPaddingChanges(RecyclerView.Recycler recycler, RecyclerView.State state)
 		{
 			if (XamlParent?.NativePanel != null && XamlParent.NativePanel.ChildCount > 0)
 			{
+				var gapToStart = GetContentStart();
+				if (gapToStart > 0)
+				{
+					if(ScrollOrientation == Orientation.Vertical)
+					{
+						ScrollVerticallyBy(gapToStart, recycler, state);
+						XamlParent.NativePanel.OnScrolled(gapToStart, 0);
+					}
+					else
+					{
+						ScrollHorizontallyBy(gapToStart, recycler, state);
+						XamlParent.NativePanel.OnScrolled(gapToStart, 0);
+					}
+				}
+
 				var gapToEnd = Extent - GetContentEnd();
 
 				if (gapToEnd > 0)
@@ -1029,7 +1057,20 @@ namespace Windows.UI.Xaml.Controls
 
 			AssertValidState();
 
-			if (!_isInitialExtentOffsetApplied)
+			if (!_isInitialPaddingExtentOffsetApplied)
+			{
+				var group = GetTrailingGroup(direction);
+				if(group != null)
+				{
+					group.Start += InitialExtentPadding;
+				}
+
+				_isInitialPaddingExtentOffsetApplied = true;
+			}
+
+			AssertValidState();
+
+			if (!_isInitialHeaderExtentOffsetApplied)
 			{
 				var group = GetTrailingGroup(direction);
 				if (group != null)
@@ -1049,7 +1090,7 @@ namespace Windows.UI.Xaml.Controls
 					_dynamicSeedStart = _dynamicSeedStart.Value - _previousHeaderExtent.Value + headerOffset;
 				}
 				_previousHeaderExtent = null;
-				_isInitialExtentOffsetApplied = true;
+				_isInitialHeaderExtentOffsetApplied = true;
 			}
 
 			AssertValidState();
@@ -1368,7 +1409,7 @@ namespace Windows.UI.Xaml.Controls
 			)
 			{
 				// If the header is visible, ensure to reapply its size in case it changes. 
-				_isInitialExtentOffsetApplied = false;
+				_isInitialHeaderExtentOffsetApplied = false;
 				_previousHeaderExtent = GetChildExtentWithMargins(GetHeaderViewIndex());
 			}
 
@@ -1504,7 +1545,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 
 			_areHeaderAndFooterCreated = false;
-			_isInitialExtentOffsetApplied = false;
+			_isInitialHeaderExtentOffsetApplied = false;
 		}
 
 		/// <summary>

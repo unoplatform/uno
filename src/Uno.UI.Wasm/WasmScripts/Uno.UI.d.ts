@@ -50,6 +50,12 @@ declare namespace Uno.UI {
         private containerElementId;
         private loadingElementId;
         static current: WindowManager;
+        /**
+         * Defines if the WindowManager is running in hosted mode, and should skip the
+         * initialization of WebAssembly, use this mode in conjuction with the Uno.UI.WpfHost
+         * to improve debuggability.
+         */
+        private static isHosted;
         private static readonly unoRootClassName;
         private static readonly unoUnarrangedClassName;
         /**
@@ -57,7 +63,7 @@ declare namespace Uno.UI {
             * @param containerElementId The ID of the container element for the Xaml UI
             * @param loadingElementId The ID of the loading element to remove once ready
             */
-        static init(containerElementId?: string, loadingElementId?: string): string;
+        static init(localStoragePath: string, isHosted: boolean, containerElementId?: string, loadingElementId?: string): string;
         private containerElement;
         private rootContent;
         private allActiveElementsById;
@@ -65,6 +71,19 @@ declare namespace Uno.UI {
         private static resizeMethod;
         private static dispatchEventMethod;
         private constructor();
+        /**
+         * Setup the storage persistence
+         *
+         * */
+        static setupStorage(localStoragePath: string): void;
+        /**
+         * Determine if IndexDB is available, some browsers and modes disable it.
+         * */
+        static isIndexDBAvailable(): boolean;
+        /**
+         * Synchronize the IDBFS memory cache back to IndexDB
+         * */
+        static synchronizeFileSystem(): void;
         /**
             * Creates the UWP-compatible splash screen
             *
@@ -246,22 +265,15 @@ declare module Uno.UI.Interop {
     }
 }
 declare module Uno.UI.Interop {
-    interface IWebAssemblyApp {
-        main_module: Interop.IMonoAssemblyHandle;
-        main_class: Interop.IMonoClassHandle;
+    interface IUnoDispatch {
+        resize(size: string): void;
+        dispatch(htmlIdStr: string, eventNameStr: string, eventPayloadStr: string): string;
     }
 }
 declare module Uno.UI.Interop {
-    interface IWebAssemblyModule {
-        getValue(ptr: number, format: string): number;
-        HEAPU8: Uint8Array;
-        HEAP8: Int8Array;
-        HEAP16: Int16Array;
-        HEAPU16: Uint16Array;
-        HEAP32: Int32Array;
-        HEAPU32: Uint32Array;
-        HEAPF32: Float32Array;
-        HEAPF64: Float64Array;
+    interface IWebAssemblyApp {
+        main_module: Interop.IMonoAssemblyHandle;
+        main_class: Interop.IMonoClassHandle;
     }
 }
 declare namespace Uno.Foundation.Interop {
@@ -285,4 +297,4 @@ declare namespace Uno.UI.Interop {
 declare const MonoRuntime: Uno.UI.Interop.IMonoRuntime;
 declare const WebAssemblyApp: Uno.UI.Interop.IWebAssemblyApp;
 declare const UnoAppManifest: Uno.UI.IAppManifest;
-declare const Module: Uno.UI.Interop.IWebAssemblyModule;
+declare const UnoDispatch: Uno.UI.Interop.IUnoDispatch;

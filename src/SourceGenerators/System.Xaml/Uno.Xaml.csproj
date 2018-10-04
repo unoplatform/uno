@@ -6,7 +6,7 @@
 
 		<AndroidUseIntermediateDesignerFile>True</AndroidUseIntermediateDesignerFile>
 		<AndroidResgenFile>obj\$(TargetFramework)\Resources\Resource.Designer.cs</AndroidResgenFile>
-		<ProduceReferenceAssembly>true</ProduceReferenceAssembly>
+		<ProduceReferenceAssembly>false</ProduceReferenceAssembly>
 		<Deterministic>true</Deterministic>
 		<OutputPath>bin\$(Configuration)\$(TargetFramework)\</OutputPath>
 		<IntermediateOutputPath>$(BaseIntermediateOutputPath)$(Configuration)\$(TargetFramework)\</IntermediateOutputPath>

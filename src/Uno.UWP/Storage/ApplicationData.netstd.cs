@@ -6,12 +6,12 @@ namespace Windows.Storage
 	public  partial class ApplicationData 
 	{
 		private static string GetLocalCacheFolder()
-			=> Path.GetTempPath();
+			=> "/cache";
 
 		private static string GetTemporaryFolder()
-			=> Path.GetTempPath();
+			=> "/temp";
 
 		private static string GetLocalFolder()
-			=> AppDomain.CurrentDomain.BaseDirectory ?? "/";
+			=> "/local";
 	}
 }

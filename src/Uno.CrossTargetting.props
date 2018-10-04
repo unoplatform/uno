@@ -106,7 +106,7 @@
 	</ItemGroup>
 	<MakeDir Directories="$(_TargetNugetFolder)" />
 
-	<Message Importance="high" Text="OVERRIDING NUGET PACKAGE CACHE: $(_TargetNugetFolder)" />
+	<Message Importance="high" Text="OVERRIDING NUGET PACKAGE CACHE: $(_TargetNugetFolder) and $(_TargetNugetRefFolder)" />
 
 	<Copy SourceFiles="@(_OutputFiles)"
 		  DestinationFiles="@(_OutputFiles->'$(_TargetNugetFolder)\%(RecursiveDir)%(Filename)%(Extension)')" />

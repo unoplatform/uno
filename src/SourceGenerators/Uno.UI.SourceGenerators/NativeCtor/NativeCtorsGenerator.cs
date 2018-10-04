@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Uno.SourceGeneration;
+using Uno.UI.SourceGenerators.Helpers;
 
 namespace Uno.UI.SourceGenerators.NativeCtor
 {
@@ -129,7 +130,7 @@ namespace {0}
 					if (nativeCtor == null)
 					{
 						_context.AddCompilationUnit(
-							$"{(_fileIndex++).ToString("000")}_{typeSymbol.ToString()}", 
+							HashBuilder.BuildIDFromSymbol(typeSymbol), 
 							string.Format(
 								BaseClassFormat, 
 								typeSymbol.ContainingNamespace,
@@ -152,7 +153,7 @@ namespace {0}
 					if (nativeCtor == null)
 					{
 						_context.AddCompilationUnit(
-							typeSymbol.GetFullName(),
+							HashBuilder.BuildIDFromSymbol(typeSymbol),
 							string.Format(
 								BaseClassFormat, 
 								typeSymbol.ContainingNamespace,

@@ -9,6 +9,8 @@ using Android.OS;
 using Android.Runtime;
 using Android.Views;
 using Android.Widget;
+using Com.Nostra13.Universalimageloader.Core;
+using Windows.UI.Xaml.Media;
 
 namespace $ext_safeprojectname$.Droid
 {
@@ -23,6 +25,19 @@ namespace $ext_safeprojectname$.Droid
 		public Application(IntPtr javaReference, JniHandleOwnership transfer)
 			: base(new App(), javaReference, transfer)
 		{
+			ConfigureUniversalImageLoader();
+		}
+
+		private void ConfigureUniversalImageLoader()
+		{
+			// Create global configuration and initialize ImageLoader with this config
+			ImageLoaderConfiguration config = new ImageLoaderConfiguration
+				.Builder(Context)
+				.Build();
+
+			ImageLoader.Instance.Init(config);
+
+			ImageSource.DefaultImageLoader = ImageLoader.Instance.LoadImageAsync;
 		}
 	}
 }

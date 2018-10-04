@@ -85,6 +85,10 @@ namespace Uno.UI.Tasks.ResourcesGenerator
 						{
 							return GenerateiOSResources(language, sourceLastWriteTime, resources, comment);
 						}
+						else if (TargetPlatform == "wasm")
+						{
+							return GenerateUnoPRIResources(language, sourceLastWriteTime, resources, comment);
+						}
 
 						return null;
 					})
@@ -99,6 +103,36 @@ namespace Uno.UI.Tasks.ResourcesGenerator
 			}
 
 			return false;
+		}
+
+		private ITaskItem GenerateUnoPRIResources(string language, DateTime sourceLastWriteTime, Dictionary<string, string> resources, string comment)
+		{
+			var logicalTargetPath = Path.Combine($"{language}", "resources.upri");
+			var actualTargetPath = Path.Combine(OutputPath, logicalTargetPath);
+
+			Directory.CreateDirectory(Path.GetDirectoryName(actualTargetPath));
+
+			var targetLastWriteTime = new FileInfo(actualTargetPath).LastWriteTimeUtc;
+
+			if (sourceLastWriteTime > targetLastWriteTime)
+			{
+				this.Log().Info("Writing resources to {0}".InvariantCultureFormat(actualTargetPath));
+
+				UnoPRIResourcesWriter.Write(language, resources, actualTargetPath, comment);
+			}
+			else
+			{
+				this.Log().Info($"Skipping unmodified file {actualTargetPath}");
+			}
+
+			return new TaskItem
+			(
+				actualTargetPath,
+				new Dictionary<string, string>()
+				{
+					{ "LogicalName", logicalTargetPath.Replace(Path.DirectorySeparatorChar, '.') }
+				}
+			);
 		}
 
 		private ITaskItem GenerateiOSResources(string language, DateTime sourceLastWriteTime, Dictionary<string, string> resources, string comment)

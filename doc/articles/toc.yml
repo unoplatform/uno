@@ -16,3 +16,7 @@
   href: debugging-uno-ui.md
 - name: Feature Flags
   href: feature-flags.md
+- name: Speech Recognition
+  href: SpeechRecognition.md
+- name: Media Player
+  href: MediaPlayerElement.md
