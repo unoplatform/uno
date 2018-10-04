@@ -66,10 +66,11 @@ namespace Windows.UI.Xaml
 
 		static partial void OnGenericPropertyUpdatedPartial(object dependencyObject, DependencyPropertyChangedEventArgs args);
 
-		public bool IsLoaded => true;
+		public bool IsLoaded { get; private set; }
 
 		public void ForceLoaded()
 		{
+			IsLoaded = true;
 			OnLoaded();
 		}
 
