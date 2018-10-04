@@ -11,7 +11,7 @@ But as I alluded to in an earlier article, this poses a challenge for reproducin
 
  
 
-We want to inherit from `ViewGroup` or `UIView`. We also want to inherit from `DependencyObject.` C# doesn't permit multiple inheritance, so what do we do? Since we can't change the iOS or Android frameworks, we opted instead within Uno to make `DependencyObject` an interface[]. That allows an Uno `FrameworkElement` to 'be' a `UIView` and at the same time to 'be' a `DependencyObject.' But that alone isn't enough. 
+We want to inherit from `ViewGroup` or `UIView`. We also want to inherit from `DependencyObject.` C# doesn't permit multiple inheritance, so what do we do? Since we can't change the iOS or Android frameworks, we opted instead within Uno to make `DependencyObject` an [interface](https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/interfaces/index). That allows an Uno `FrameworkElement` to be a `UIView` and at the same time to be a `DependencyObject`. But that alone isn't enough. 
 
  
 What if you have code like this in your app? 
@@ -45,9 +45,14 @@ What if you have code like this in your app?
 
 We're inheriting from `DependencyObject` and defining a `DependencyProperty` using the standard syntax, which uses the `DependencyObject.GetValue` and `DependencyObject.SetValue` methods. On UWP these are defined in the base class, but if `DependencyObject` is an interface then there _is_ no base class. In fact if it's just an interface then the code won't compile, because the interface hasn't been implemented. 
 
- 
+Luckily `DependencyObject` isn't _just_ an interface in Uno, and the code above will compile as-is on Android and iOS, just as it does on UWP. Code generation makes it happen. Here's some programmer art to illustrate the point. The detailed explanation is below.
 
-Luckily `DependencyObject` isn't _just_ an interface in Uno, and the code above will compile as-is on Android and iOS, just as it does on UWP. Code generation makes it happen, as I explain in more detail below.
+![UWP inheritance](Assets/DependencyObjectGeneration/DependencyObjectGenerator_UWP.png)
+*On UWP, `UIElement` inherits from the `DependencyObject` class.*
+![Multiple inheritance](Assets/DependencyObjectGeneration/DependencyObjectGenerator_nope.png)
+*Multiple inheritance - not an option.*
+![Multiple inheritance](Assets/DependencyObjectGeneration/DependencyObjectGenerator_Uno.png)
+*In Uno, `DependencyObject` is an interface, with the implementation automagically supplied by code generation.*
  
 We face a weaker form of this problem - wanting to have two base types - in other cases is well. In a few places in the framework we inherit from a more derived native view type. For example, `ScrollContentPresenter` inherits from the native scroll view on Android and iOS. But we also want `ScrollContentPresenter` to expose the methods and properties of `FrameworkElement`.
 
