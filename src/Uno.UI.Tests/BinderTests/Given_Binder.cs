@@ -20,6 +20,7 @@ using Windows.UI.Xaml;
 using Windows.UI.Xaml.Media;
 using Uno.Conversion;
 using Microsoft.Extensions.Logging;
+using Windows.UI.Xaml.Controls;
 
 namespace Uno.UI.Tests.BinderTests
 {
@@ -638,6 +639,39 @@ namespace Uno.UI.Tests.BinderTests
 			SUT.DataContext = source;
 
 			Assert.IsNull(SUT.Tag);
+		}
+
+		[TestMethod]
+		//TODO: Amend this test when Uno correctly supports reentrantly modifying DPs.
+		public void When_Reentrant_Set()
+		{
+			var sut = new TextBox();
+
+			sut.TextChanged += (o, e) =>
+			{
+				sut.Text = "Bob";
+			};
+
+			sut.Text = "Alice";
+
+			Assert.AreEqual("Alice", sut.Text);
+		}
+
+		[TestMethod]
+		//TODO: Amend this test when Uno correctly supports reentrantly modifying DPs.
+		public void When_Reentrant_Set_With_Additional_Set()
+		{
+			var sut = new TextBox();
+
+			sut.TextChanged += (o, e) =>
+			{
+				sut.SetValue(Grid.RowProperty, 0);
+				sut.Text = "Bob";
+			};
+
+			sut.Text = "Alice";
+
+			Assert.AreEqual("Alice", sut.Text);
 		}
 
 		public partial class BaseTarget : DependencyObject
