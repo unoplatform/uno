@@ -26,7 +26,9 @@ namespace Windows.UI.Popups
 				.Select((command, index) => UIAlertAction
 					.Create(
 						title: command.Label ?? "",
-						style: UIAlertActionStyle.Default,
+						style: (command as UICommand)?.IsDestructive ?? false
+							? UIAlertActionStyle.Destructive
+							: UIAlertActionStyle.Default,
 						handler: _ =>
 						{
 							command.Invoked?.Invoke(command);
