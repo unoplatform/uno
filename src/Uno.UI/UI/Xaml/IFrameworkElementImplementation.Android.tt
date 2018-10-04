@@ -34,7 +34,7 @@ using Android.Runtime;
 
 namespace <#= mixin.NamespaceName #>
 {
-    public partial class <#= mixin.ClassName #> : IFrameworkElement
+	public partial class <#= mixin.ClassName #> : IFrameworkElement
 	{
 		private readonly static IEventProvider _trace = Tracing.Get(FrameworkElement.TraceProvider.Id);
 
@@ -76,17 +76,17 @@ namespace <#= mixin.NamespaceName #>
 		/// called when the parent is an UnoViewGroup.
 		/// </summary>
 		protected override void OnRemovedFromParent()
-            {
+			{
 			base.OnRemovedFromParent();
 
-                ((IDependencyObjectStoreProvider)this).Store.Parent = null;
-            }
+				((IDependencyObjectStoreProvider)this).Store.Parent = null;
+			}
 		
 #endif
 
 		public event DependencyPropertyChangedEventHandler IsEnabledChanged;
 
-        public event TypedEventHandler<DependencyObject, object> Loading;
+		public event TypedEventHandler<DependencyObject, object> Loading;
 
 		public event RoutedEventHandler Loaded;
 
@@ -112,7 +112,7 @@ namespace <#= mixin.NamespaceName #>
 		
 		partial void AdjustArrangePartial(ref Size size);
 
-        Size IFrameworkElement.AdjustArrange(Size size)		
+		Size IFrameworkElement.AdjustArrange(Size size)		
 		{
 			AdjustArrangePartial(ref size);
 
@@ -227,20 +227,20 @@ namespace <#= mixin.NamespaceName #>
 
 #if !<#= mixin.IsFrameworkElement #>
 		#region Opacity Dependency Property
-        public double Opacity
-        {
-            get { return (double)this.GetValue(OpacityProperty); }
-            set { this.SetValue(OpacityProperty, value); }
-        }
+		public double Opacity
+		{
+			get { return (double)this.GetValue(OpacityProperty); }
+			set { this.SetValue(OpacityProperty, value); }
+		}
 
-        // Using a DependencyProperty as the backing store for Opacity.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty OpacityProperty =
-            DependencyProperty.Register("Opacity", typeof(double), typeof(<#= mixin.ClassName #>), new PropertyMetadata(1.0, (s, a) => ((<#= mixin.ClassName #>)s).OnOpacityChanged()));
+		// Using a DependencyProperty as the backing store for Opacity.  This enables animation, styling, binding, etc...
+		public static readonly DependencyProperty OpacityProperty =
+			DependencyProperty.Register("Opacity", typeof(double), typeof(<#= mixin.ClassName #>), new PropertyMetadata(1.0, (s, a) => ((<#= mixin.ClassName #>)s).OnOpacityChanged()));
 
-        private void OnOpacityChanged()
-        {
+		private void OnOpacityChanged()
+		{
 			Alpha = IsRenderingSuspended ? 0 : (float)Opacity;
-        }
+		}
 		#endregion
 
 		#region Style DependencyProperty
@@ -371,37 +371,35 @@ namespace <#= mixin.NamespaceName #>
 		private SerialDisposable _nativeKeyPressRegistration = new SerialDisposable();
 
 		protected void OnKeyPress(object sender, KeyEventArgs e)
-        {
-            e.Handled = false;
-            if (e.Event == null)
-            {
-                return;
-            }
+		{
+			e.Handled = false;
+			if (e.Event == null)
+			{
+				return;
+			}
 
-			global::System.Diagnostics.Debugger.Break();
+			var keyRoutedEventArgs = new KeyRoutedEventArgs()
+			{
+				Key = e.Event.KeyCode.ToVirtualKey()
+			};
 
-            var keyRoutedEventArgs = new KeyRoutedEventArgs()
-            {
-                Key = e.Event.KeyCode.ToVirtualKey()
-            };
-
-            if (e.Event.Action == KeyEventActions.Up)
-            {
+			if (e.Event.Action == KeyEventActions.Up)
+			{
 				_keyUpHandlers?.Invoke(this, keyRoutedEventArgs);
-            }
-            else if (e.Event.Action == KeyEventActions.Down)
-            {
+			}
+			else if (e.Event.Action == KeyEventActions.Down)
+			{
 				_keyDownHandlers?.Invoke(this, keyRoutedEventArgs);
-            }
+			}
 
-            e.Handled = keyRoutedEventArgs.Handled;
-        }
+			e.Handled = keyRoutedEventArgs.Handled;
+		}
 
 		/// <summary>
-        /// Lazily creates an event registration to the native KeyPress event, so that
+		/// Lazily creates an event registration to the native KeyPress event, so that
 		/// the cost of observing a key is only paid when there is a registation to
 		/// either KeyUp or KeyDown events.
-        /// </summary>
+		/// </summary>
 		private void TryCreateKeyRegistration()
 		{
 			if(
@@ -425,9 +423,9 @@ namespace <#= mixin.NamespaceName #>
 		}
 
 		/// <summary>
-        /// An event raised when a keyboard key has gone up.
-        /// </summary>
-        public event KeyEventHandler KeyUp 
+		/// An event raised when a keyboard key has gone up.
+		/// </summary>
+		public event KeyEventHandler KeyUp 
 		{
 			add 
 			{ 
@@ -442,9 +440,9 @@ namespace <#= mixin.NamespaceName #>
 		}
 
 		/// <summary>
-        /// An event raised when a keyboard key has gone down.
-        /// </summary>
-        public event KeyEventHandler KeyDown 
+		/// An event raised when a keyboard key has gone down.
+		/// </summary>
+		public event KeyEventHandler KeyDown 
 		{
 			add 
 			{ 
@@ -704,18 +702,18 @@ namespace <#= mixin.NamespaceName #>
 		
 		#region Transitions Dependency Property
 		
-        public TransitionCollection Transitions
-        {
-            get { return (TransitionCollection)this.GetValue(TransitionsProperty); }
-            set { this.SetValue(TransitionsProperty, value); }
-        }
-
-        public static readonly DependencyProperty TransitionsProperty =
-            DependencyProperty.Register("Transitions", typeof(TransitionCollection), typeof(<#= mixin.ClassName #>), new PropertyMetadata(null, OnTransitionsChanged));
-			
-	    private static void OnTransitionsChanged(object dependencyObject, DependencyPropertyChangedEventArgs args)
+		public TransitionCollection Transitions
 		{
-            var frameworkElement = dependencyObject as IFrameworkElement;
+			get { return (TransitionCollection)this.GetValue(TransitionsProperty); }
+			set { this.SetValue(TransitionsProperty, value); }
+		}
+
+		public static readonly DependencyProperty TransitionsProperty =
+			DependencyProperty.Register("Transitions", typeof(TransitionCollection), typeof(<#= mixin.ClassName #>), new PropertyMetadata(null, OnTransitionsChanged));
+			
+		private static void OnTransitionsChanged(object dependencyObject, DependencyPropertyChangedEventArgs args)
+		{
+			var frameworkElement = dependencyObject as IFrameworkElement;
 
 			if (frameworkElement != null)
 			{
@@ -723,7 +721,7 @@ namespace <#= mixin.NamespaceName #>
 
 				if (oldValue != null)				
 				{
-				    foreach (var item in oldValue)
+					foreach (var item in oldValue)
 					{
 						item.DetachFromElement(frameworkElement);
 					}					
@@ -733,7 +731,7 @@ namespace <#= mixin.NamespaceName #>
 
 				if (newValue != null)				
 				{
-				    foreach (var item in newValue)
+					foreach (var item in newValue)
 					{
 						item.AttachToElement(frameworkElement);
 					}					
@@ -761,22 +759,22 @@ namespace <#= mixin.NamespaceName #>
 
 #if !<#= mixin.IsFrameworkElement #>
 		#region RenderTransform Dependency Property
-       
+	   
 		/// <summary>
-        /// This is a Transformation for a UIElement.  It binds the Render Transform to the View
-        /// </summary>
-        public Transform RenderTransform
-        {
-            get { return (Transform)this.GetValue(RenderTransformProperty); }
-            set { this.SetValue(RenderTransformProperty, value); }
-        }
+		/// This is a Transformation for a UIElement.  It binds the Render Transform to the View
+		/// </summary>
+		public Transform RenderTransform
+		{
+			get { return (Transform)this.GetValue(RenderTransformProperty); }
+			set { this.SetValue(RenderTransformProperty, value); }
+		}
 
-        // Using a DependencyProperty as the backing store for RenderTransform.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty RenderTransformProperty =
-            DependencyProperty.Register("RenderTransform", typeof(Transform), typeof(<#= mixin.ClassName #>), new PropertyMetadata(null, OnRenderTransformChanged));
+		// Using a DependencyProperty as the backing store for RenderTransform.  This enables animation, styling, binding, etc...
+		public static readonly DependencyProperty RenderTransformProperty =
+			DependencyProperty.Register("RenderTransform", typeof(Transform), typeof(<#= mixin.ClassName #>), new PropertyMetadata(null, OnRenderTransformChanged));
 
   
-    	private static void OnRenderTransformChanged(object dependencyObject, DependencyPropertyChangedEventArgs args)
+		private static void OnRenderTransformChanged(object dependencyObject, DependencyPropertyChangedEventArgs args)
 		{
 			var newValue = args.NewValue as Transform;
 			var oldValue = args.OldValue as Transform;
@@ -784,34 +782,34 @@ namespace <#= mixin.NamespaceName #>
 			{
 				var view = ((<#= mixin.ClassName #>)dependencyObject);
 				
-                newValue.View = view;
+				newValue.View = view;
 				newValue.Origin = view.RenderTransformOrigin;
 			}        
 			if (oldValue != null)
 			{
-                oldValue.View =null;
+				oldValue.View =null;
 			}         
 		}
 
 		#endregion
 
 		#region RenderTransformOrigin Dependency Property
-       
+	   
 		/// <summary>
-        /// This is a Transformation for a UIElement.  It binds the Render Transform to the View
-        /// </summary>
-        public Point RenderTransformOrigin
-        {
-            get { return (Point)this.GetValue(RenderTransformOriginProperty); }
-            set { this.SetValue(RenderTransformOriginProperty, value); }
-        }
+		/// This is a Transformation for a UIElement.  It binds the Render Transform to the View
+		/// </summary>
+		public Point RenderTransformOrigin
+		{
+			get { return (Point)this.GetValue(RenderTransformOriginProperty); }
+			set { this.SetValue(RenderTransformOriginProperty, value); }
+		}
 
-        // Using a DependencyProperty as the backing store for RenderTransformOrigin.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty RenderTransformOriginProperty =
-            DependencyProperty.Register("RenderTransformOrigin", typeof(Point), typeof(<#= mixin.ClassName #>), new PropertyMetadata(default(Point), OnRenderTransformOriginChanged));
+		// Using a DependencyProperty as the backing store for RenderTransformOrigin.  This enables animation, styling, binding, etc...
+		public static readonly DependencyProperty RenderTransformOriginProperty =
+			DependencyProperty.Register("RenderTransformOrigin", typeof(Point), typeof(<#= mixin.ClassName #>), new PropertyMetadata(default(Point), OnRenderTransformOriginChanged));
 
   
-    	private static void OnRenderTransformOriginChanged(object dependencyObject, DependencyPropertyChangedEventArgs args)
+		private static void OnRenderTransformOriginChanged(object dependencyObject, DependencyPropertyChangedEventArgs args)
 		{
 			var view = ((<#= mixin.ClassName #>)dependencyObject);
 			if(view.RenderTransform != null)
@@ -824,8 +822,8 @@ namespace <#= mixin.NamespaceName #>
 #endif
 		
 		/// <summary>
-        /// Determines if the view is currently loaded (attached to the a window)
-        /// </summary>
+		/// Determines if the view is currently loaded (attached to the a window)
+		/// </summary>
 		protected bool IsLoaded { get; private set;}
 
 		internal virtual void OnLoading()
@@ -887,7 +885,7 @@ namespace <#= mixin.NamespaceName #>
 #if <#= mixin.OverridesOnLayout #>
 		private Size _actualSize;
 		protected override void OnLayout(bool changed, int left, int top, int right, int bottom)
-	    {
+		{
 			var newSize = new Size(right - left, bottom - top).PhysicalToLogicalPixels();
 			var previousSize = _actualSize;
 
@@ -901,7 +899,7 @@ namespace <#= mixin.NamespaceName #>
 				SizeChanged?.Invoke(this, new SizeChangedEventArgs(previousSize, newSize));
 				RenderTransform?.OnViewSizeChanged(previousSize, newSize);
 			}
-	    }
+		}
 
 		partial void OnLayoutPartial(bool changed, int left, int top, int right, int bottom);
 #endif
@@ -985,7 +983,7 @@ namespace <#= mixin.NamespaceName #>
 #>
 
 <#+
-    public void AddClass(
+	public void AddClass(
 		string namespaceName, 
 		string className, 
 		bool hasNewWidthHeight = true, 
@@ -997,7 +995,7 @@ namespace <#= mixin.NamespaceName #>
 		bool hasAutomationPeer = false
 	)
 	{
-        _mixins.Add(
+		_mixins.Add(
 			new MixinParams { 
 				NamespaceName = namespaceName, 
 				ClassName = className,
@@ -1012,7 +1010,7 @@ namespace <#= mixin.NamespaceName #>
 				HasAutomationPeer = hasAutomationPeer ? "true" : "false",
 			}
 		);
-    }
+	}
 
 	private class MixinParams
 	{

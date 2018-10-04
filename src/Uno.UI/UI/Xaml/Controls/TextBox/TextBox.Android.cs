@@ -499,9 +499,6 @@ namespace Windows.UI.Xaml.Controls
 			//the key press event is not triggered if we press the enter key depending on the ime.options
 
 			OnKeyPress(v, new KeyEventArgs(true, Keycode.Enter, new KeyEvent(KeyEventActions.Up, Keycode.Enter)));
-#if !DEBUG
-#error !!!
-#endif
 
 			// Action will be ImeNull if AcceptsReturn is true, in which case we return false to allow the new line to register.
 			// Otherwise we return true to allow the focus to change correctly.
