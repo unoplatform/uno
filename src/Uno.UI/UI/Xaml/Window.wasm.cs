@@ -39,7 +39,10 @@ namespace Windows.UI.Xaml
 		{
 			Dispatcher = CoreDispatcher.Main;
 
-			bool isHostedMode = !RuntimeInformation.IsOSPlatform(OSPlatform.Create("WEBASSEMBLY"));
+			var isHostedMode =
+				!RuntimeInformation.IsOSPlatform(OSPlatform.Create("WEBASSEMBLY"))
+					? "true"
+					: "false";
 
 			WebAssemblyRuntime.InvokeJS($"Uno.UI.WindowManager.init(\"{Windows.Storage.ApplicationData.Current.LocalFolder.Path}\", {isHostedMode.ToString().ToLowerInvariant()});");
 			CoreWindow = new CoreWindow();

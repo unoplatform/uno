@@ -46,10 +46,10 @@ namespace SamplesApp
 		protected override void OnLaunched(LaunchActivatedEventArgs e)
 		{
 #if DEBUG
-            if (System.Diagnostics.Debugger.IsAttached)
-            {
-               // this.DebugSettings.EnableFrameRateCounter = true;
-            }
+			if (System.Diagnostics.Debugger.IsAttached)
+			{
+				// this.DebugSettings.EnableFrameRateCounter = true;
+			}
 #endif
 			Frame rootFrame = Windows.UI.Xaml.Window.Current.Content as Frame;
 
@@ -78,7 +78,7 @@ namespace SamplesApp
 					// When the navigation stack isn't restored navigate to the first page,
 					// configuring the new page by passing required information as a navigation
 					// parameter
-					rootFrame.Navigate(typeof(MainPage), e.Arguments);
+					rootFrame.Navigate(typeof(RoutedEventsPage), e.Arguments);
 				}
 				// Ensure the current window is active
 				Windows.UI.Xaml.Window.Current.Activate();
