@@ -55,12 +55,13 @@ namespace Windows.UI.Xaml
 		internal void RaiseNativeSizeChanged(int screenWidth, int screenHeight)
 		{
 			var newBounds = ViewHelper.PhysicalToLogicalPixels(new Rect(0, 0, screenWidth, screenHeight));
+			var statusBarHeight = GetLogicalStatusBarHeight();
 
 			var newVisibleBounds = new Rect(
-				x: newBounds.Left,
-				y: newBounds.Top,
+				x: newBounds.X,
+				y: newBounds.Y + statusBarHeight,
 				width: newBounds.Width,
-				height: newBounds.Height - GetLogicalStatusBarHeight()
+				height: newBounds.Height - statusBarHeight
 			);
 
 			var applicationView = ApplicationView.GetForCurrentView();
