@@ -2,7 +2,13 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Media.Capture
 {
-	public  partial class CameraCaptureUIPhotoCaptureSettings 
+	public enum CameraCaptureUIMaxPhotoResolution
 	{
+		HighestAvailable,
+		VerySmallQvga,
+		SmallVga,
+		MediumXga,
+		Large3M,
+		VeryLarge5M,
 	}
 }
