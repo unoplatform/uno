@@ -129,13 +129,13 @@
 			<LastGenOutput>VisualStatesMixins.g.cs</LastGenOutput>
 		</None>
 		<None Include="Resources\IResourceRegistry.cs" />
-		<None Include="Resources\ResourceRegistry.cs" />
+		<None Include="Resources\ResourceRegistry.cs" />  
 	</ItemGroup>
 
 	<ItemGroup>
 		<PackageReference Include="MSBuild.Sdk.Extras" Version="1.5.4" PrivateAssets="All" />
 		<PackageReference Include="Uno.SourceGenerationTasks">
-			<Version>1.27.0-dev.94</Version>
+			<Version>1.27.0-dev.94</Version> 
 		</PackageReference>
 		<PackageReference Include="Uno.Core">
 			<Version>1.25.0-dev.53</Version>
@@ -295,6 +295,7 @@
 
 	<ItemGroup>
 		<Folder Include="Mixins\Wasm\" />
+		<Folder Include="UI\Xaml\Maps\Presenters\" />
 	</ItemGroup>
 
 	<Target Name="BuildManualDependencies" BeforeTargets="_UnoSourceGenerator" Condition="!Exists($(T4Bin))">
