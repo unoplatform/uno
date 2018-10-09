@@ -144,6 +144,14 @@ var Uno;
                 this.initDom();
             }
             /**
+             * Defines if the WindowManager is running in hosted mode, and should skip the
+             * initialization of WebAssembly, use this mode in conjuction with the Uno.UI.WpfHost
+             * to improve debuggability.
+             */
+            static get isHosted() {
+                return WindowManager._isHosted;
+            }
+            /**
                 * Initialize the WindowManager
                 * @param containerElementId The ID of the container element for the Xaml UI
                 * @param loadingElementId The ID of the loading element to remove once ready
@@ -152,7 +160,7 @@ var Uno;
                 if (WindowManager.assembly) {
                     throw "Already initialized";
                 }
-                WindowManager.isHosted = isHosted;
+                WindowManager._isHosted = isHosted;
                 WindowManager.initMethods();
                 UI.HtmlDom.initPolyfills();
                 WindowManager.setupStorage(localStoragePath);
@@ -786,6 +794,7 @@ var Uno;
                 return rootElement === element || rootElement.contains(element);
             }
         }
+        WindowManager._isHosted = false;
         WindowManager.unoRootClassName = "uno-root-element";
         WindowManager.unoUnarrangedClassName = "uno-unarranged";
         UI.WindowManager = WindowManager;
@@ -814,17 +823,22 @@ var Uno;
         (function (Interop) {
             class ManagedObject {
                 static init() {
-                    if (!ManagedObject.assembly) {
-                        ManagedObject.assembly = MonoRuntime.assembly_load("Uno.Foundation");
-                        if (!ManagedObject.assembly) {
-                            throw "Unable to find assembly Uno.Foundation";
-                        }
+                    if (Uno.UI.WindowManager.isHosted) {
+                        console.debug("Hosted Mode: skipping IndexDB initialization");
                     }
-                    if (!ManagedObject.dispatchMethod) {
-                        const type = MonoRuntime.find_class(ManagedObject.assembly, "Uno.Foundation.Interop", "JSObject");
-                        ManagedObject.dispatchMethod = MonoRuntime.find_method(type, "Dispatch", -1);
+                    else {
+                        if (!ManagedObject.assembly) {
+                            ManagedObject.assembly = MonoRuntime.assembly_load("Uno.Foundation");
+                            if (!ManagedObject.assembly) {
+                                throw "Unable to find assembly Uno.Foundation";
+                            }
+                        }
                         if (!ManagedObject.dispatchMethod) {
-                            throw "Unable to find Uno.Foundation.Interop.JSObject.Dispatch method";
+                            const type = MonoRuntime.find_class(ManagedObject.assembly, "Uno.Foundation.Interop", "JSObject");
+                            ManagedObject.dispatchMethod = MonoRuntime.find_method(type, "Dispatch", -1);
+                            if (!ManagedObject.dispatchMethod) {
+                                throw "Unable to find Uno.Foundation.Interop.JSObject.Dispatch method";
+                            }
                         }
                     }
                 }
@@ -832,13 +846,18 @@ var Uno;
                     if (!ManagedObject.dispatchMethod) {
                         ManagedObject.init();
                     }
-                    const handleStr = handle ? MonoRuntime.mono_string(handle) : null;
-                    const methodStr = method ? MonoRuntime.mono_string(method) : null;
-                    const parametersStr = parameters ? MonoRuntime.mono_string(parameters) : null;
-                    if (methodStr == null) {
-                        throw "Cannot dispatch to unknown method";
+                    if (Uno.UI.WindowManager.isHosted) {
+                        const handleStr = handle ? MonoRuntime.mono_string(handle) : null;
+                        const methodStr = method ? MonoRuntime.mono_string(method) : null;
+                        const parametersStr = parameters ? MonoRuntime.mono_string(parameters) : null;
+                        if (methodStr == null) {
+                            throw "Cannot dispatch to unknown method";
+                        }
+                        MonoRuntime.call_method(ManagedObject.dispatchMethod, null, [handleStr, methodStr, parametersStr]);
                     }
-                    MonoRuntime.call_method(ManagedObject.dispatchMethod, null, [handleStr, methodStr, parametersStr]);
+                    else {
+                        UnoDispatch.managedObjectDispatch(handle, method, parameters);
+                    }
                 }
             }
             Interop.ManagedObject = ManagedObject;

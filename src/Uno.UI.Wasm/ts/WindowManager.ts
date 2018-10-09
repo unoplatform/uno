@@ -3,13 +3,16 @@
 	export class WindowManager {
 
 		public static current: WindowManager;
+		private static _isHosted: boolean = false;
 
 		/**
 		 * Defines if the WindowManager is running in hosted mode, and should skip the
 		 * initialization of WebAssembly, use this mode in conjuction with the Uno.UI.WpfHost
 		 * to improve debuggability.
 		 */
-		private static isHosted: boolean;
+		public static get isHosted(): boolean {
+			return WindowManager._isHosted;
+		}
 
 		private static readonly unoRootClassName = "uno-root-element";
 		private static readonly unoUnarrangedClassName = "uno-unarranged";
@@ -25,7 +28,7 @@
 				throw "Already initialized";
 			}
 
-			WindowManager.isHosted = isHosted;
+			WindowManager._isHosted = isHosted;
 
 			WindowManager.initMethods();
 			HtmlDom.initPolyfills();
