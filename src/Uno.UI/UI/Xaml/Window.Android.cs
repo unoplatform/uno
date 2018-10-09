@@ -18,7 +18,7 @@ namespace Windows.UI.Xaml
 	public sealed partial class Window
 	{
 		private static Window _current;
-		private UIElement _content; 
+		private UIElement _content;
 
 		public Window()
 		{
@@ -44,7 +44,7 @@ namespace Windows.UI.Xaml
 
 		private static Window InternalGetCurrentWindow()
 		{
-			if(_current == null)
+			if (_current == null)
 			{
 				_current = new Window();
 			}
@@ -54,22 +54,21 @@ namespace Windows.UI.Xaml
 
 		internal void RaiseNativeSizeChanged(int screenWidth, int screenHeight)
 		{
-			int statusBarHeightDp = 0;
-
-			var activity = ContextHelper.Current as Activity;
-			var decorView = activity.Window.DecorView;
-			var isStatusBarVisible = ((int)decorView.SystemUiVisibility & (int)SystemUiFlags.Fullscreen) == 0;
-
-			if (isStatusBarVisible)
-			{
-				int resourceId = Android.Content.Res.Resources.System.GetIdentifier("status_bar_height", "dimen", "android");
-				if (resourceId > 0)
-				{
-					statusBarHeightDp = (int)(Android.Content.Res.Resources.System.GetDimensionPixelSize(resourceId) / Android.App.Application.Context.Resources.DisplayMetrics.Density);
-				}
-			}
-
 			var newBounds = ViewHelper.PhysicalToLogicalPixels(new Rect(0, 0, screenWidth, screenHeight));
+			var statusBarHeight = GetLogicalStatusBarHeight();
+
+			var newVisibleBounds = new Rect(
+				x: newBounds.X,
+				y: newBounds.Y + statusBarHeight,
+				width: newBounds.Width,
+				height: newBounds.Height - statusBarHeight
+			);
+
+			var applicationView = ApplicationView.GetForCurrentView();
+			if (applicationView != null && applicationView.VisibleBounds != newVisibleBounds)
+			{
+				applicationView.SetCoreBounds(newBounds);
+			}
 
 			if (Bounds != newBounds)
 			{
@@ -81,10 +80,26 @@ namespace Windows.UI.Xaml
 					)
 				);
 			}
+		}
 
-			var visibleBoundsConfig = Android.App.Application.Context.Resources.Configuration;
-			var newVisibleBounds = new Rect(0, statusBarHeightDp, visibleBoundsConfig.ScreenWidthDp, visibleBoundsConfig.ScreenHeightDp);
-			ApplicationView.GetForCurrentView().SetVisibleBounds(newVisibleBounds);
+		private int GetLogicalStatusBarHeight()
+		{
+			int logicalStatusBarHeight = 0;
+
+			var activity = ContextHelper.Current as Activity;
+			var decorView = activity.Window.DecorView;
+			var isStatusBarVisible = ((int)decorView.SystemUiVisibility & (int)SystemUiFlags.Fullscreen) == 0;
+
+			if (isStatusBarVisible)
+			{
+				int resourceId = Android.Content.Res.Resources.System.GetIdentifier("status_bar_height", "dimen", "android");
+				if (resourceId > 0)
+				{
+					logicalStatusBarHeight = (int)(Android.Content.Res.Resources.System.GetDimensionPixelSize(resourceId) / Android.App.Application.Context.Resources.DisplayMetrics.Density);
+				}
+			}
+
+			return logicalStatusBarHeight;
 		}
 	}
 }
