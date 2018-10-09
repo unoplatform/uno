@@ -50,12 +50,13 @@ declare namespace Uno.UI {
         private containerElementId;
         private loadingElementId;
         static current: WindowManager;
+        private static _isHosted;
         /**
          * Defines if the WindowManager is running in hosted mode, and should skip the
          * initialization of WebAssembly, use this mode in conjuction with the Uno.UI.WpfHost
          * to improve debuggability.
          */
-        private static isHosted;
+        static readonly isHosted: boolean;
         private static readonly unoRootClassName;
         private static readonly unoUnarrangedClassName;
         /**
@@ -268,6 +269,7 @@ declare module Uno.UI.Interop {
     interface IUnoDispatch {
         resize(size: string): void;
         dispatch(htmlIdStr: string, eventNameStr: string, eventPayloadStr: string): string;
+        managedObjectDispatch(handle: string, method: string, parameters: string): string;
     }
 }
 declare module Uno.UI.Interop {
