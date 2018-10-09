@@ -222,10 +222,16 @@ namespace Uno.UI.Controls
 						// We do it here because we know the NavigationController is set (and NavigationBar is available)
 						topCommandBar.GetRenderer(() => new CommandBarRenderer(topCommandBar)).Native = NavigationController.NavigationBar;
 
-
 						// We call this method after rendering the CommandBar to work around buggy behaviour on iOS 11, but we have to make 
 						// sure not to overwrite the visibility set by the renderer.
-						NavigationController.SetNavigationBarHidden(hidden: topCommandBar.Visibility == Visibility.Collapsed, animated: true);
+						var isHidden = topCommandBar.Visibility == Visibility.Collapsed;
+						NavigationController.SetNavigationBarHidden(hidden: isHidden, animated: true);
+
+						if (isHidden && NavigationController.InteractivePopGestureRecognizer != null)
+						{
+							//set a gesture recognizer in the case that the UINavigationBar is hidden
+			 				NavigationController.InteractivePopGestureRecognizer.Delegate = new NativeFramePresenterUIGestureRecognizerDelegate(() => NavigationController);
+						}
 					}
 					else // No CommandBar
 					{
