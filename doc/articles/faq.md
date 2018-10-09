@@ -286,3 +286,87 @@ Yes, make sure to use the following project definition:
     <Reference Include="System.Runtime.Serialization" />
 </ItemGroup>
 ```
+
+## Does Uno offer a TreeView control?
+
+It's in the UWP API, but [not implemented yet](https://docs.microsoft.com/en-us/windows/uwp/design/controls-and-patterns/tree-view)
+We have an open Github (issue.)[https://github.com/nventive/Uno/issues/3]
+
+## Is there a table of all UWP controls and their features compared to what's offered under Uno?
+
+https://github.com/nventive/Uno/blob/master/doc/articles/supported-features.md
+
+##  Is there an Uno template that is based on portable class library?
+
+No, but use the (Cross-Platform library template)[https://marketplace.visualstudio.com/items?itemName=nventivecorp.uno-platform-addin] instead to achieve a similar goal.
+
+## Is there a Visual Studio template for Uno that incorporates the Prism library?
+
+No, but this sample can serve as a base: https://github.com/nventive/Uno.Prism/tree/uno/Sandbox/Windows10/HelloWorld
+
+## I get errors when serializing Json in Uno Wasm
+
+If you are using JSON.NET, you need [this](https://github.com/nventive/Uno.Playground/blob/master/src/Uno.Playground.WASM/LinkerConfig.xml) 
+This file is referenced in the .csproj like [that](https://github.com/nventive/Uno.Playground/blob/master/src/Uno.Playground.WASM/Uno.Playground.WASM.csproj#L43)
+
+## Is NavigationView supported in Uno?
+
+It is indeed not implemented at the time, see [nventive/Uno#4](https://github.com/nventive/Uno/issues/4) for now
+
+## Is there any particular reason that Uno uses a shared project? and is it possible to use a netstandard project instead?
+
+The view layer needs to be in a shared project because it has native dependencies.
+For your view models and business logic, it's fine to use a separate netstandard project.
+Shared projects are also used to work around the fact that Visual Studio is not able to selectively compile a single Target Framework when building a cross-targeted library.
+Using a shared project improves the build performance when debugging a single platform.
+
+## Are there any Visual Studio project creation templates for Uno yet?
+
+Yes. Here are the [templates].(https://marketplace.visualstudio.com/items?itemName=nventivecorp.uno-platform-addin)
+
+## How do I add the NuGet package if there's no Packages node for Shared Projects?
+
+Go to 'Manage NuGet packages for solution...'
+Find the ReactiveUI package
+Select all your platform heads (.Wasm, .Android etc) and hit Install
+
+## Is RichEditBox supported in Uno.Platform?
+
+Not yet.
+
+## Is there a way to use local css/js libraries and not those on a CDN?
+
+you can specify a custom HTML template like [this](https://github.com/nventive/Uno.Wasm.Bootstrap#indexhtml-content-override)
+
+## Debugging a published nuget package breaks the Xamarin iOS and Android debugger
+
+This has been fixed starting from Visual Studio 15.9 Preview 3
+Please see this [Developer Community thread.](https://developercommunity.visualstudio.com/content/problem/306764/debugging-a-published-nuget-package-break-the-xama.html)
+
+## Does Uno offer an `AutoSuggestBox`?
+
+[Yes](https://github.com/nventive/Uno/blob/master/src/Uno.UI/UI/Xaml/Controls/AutoSuggestBox/AutoSuggestBox.cs)
+
+## Is there a database that works on all platforms?
+
+Yes, and you can use this (WebAssembly SQLite provider)[https://github.com/nventive/Uno.SQLitePCLRaw.Wasm]
+
+## Are Popups/RichEditbox implemented in Uno?
+
+No. You can use Conditional Xaml to work around it: https://github.com/nventive/Uno/blob/master/doc/articles/using-uno-ui.md#supporting-multiple-platforms-in-xaml-files
+
+## Does Uno support all UWP animations?
+
+We've implemented parts of the supported animations, there are others that are still stubbed.
+
+## Visual Studio is requiring Android API v26 but I want to test on an older device.
+
+The target API does not affect the min API. You just need to have the API day installed in your android sdk manager. The min sdk is specified in the androidmanifest file.
+
+## Is there a workaround for ScrollViewer.ScrollToVerticalOffset method, since it isnt implemented in Uno?
+
+You can use ChangeView instead
+
+## I am having issues running a Wasm project head
+
+Follow the instructions on how to run the WASM head (here)[https://github.com/nventive/Uno.QuickStart#create-an-application-from-the-solution-template]
