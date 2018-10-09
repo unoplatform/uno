@@ -99,6 +99,9 @@
 		<Reference Include="Xamarin.iOS" />
 	</ItemGroup>
 	<ItemGroup>
+		<BundleResource Include="Resources\Fonts\winjs-symbols.ttf" />
+	</ItemGroup>
+	<ItemGroup>
 		<PackageReference Include="Uno.UI" Version="1.40.0-dev.436" />
 	</ItemGroup>
 	<Import Project="..\$ext_safeprojectname$.Shared\$ext_safeprojectname$.Shared.projitems" Label="Shared" Condition="Exists('..\$ext_safeprojectname$.Shared\$ext_safeprojectname$.Shared.projitems')" />
