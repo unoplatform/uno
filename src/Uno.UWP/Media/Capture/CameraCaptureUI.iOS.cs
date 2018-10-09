@@ -1,4 +1,3 @@
-#if __IOS__
 using System;
 using System.IO;
 using System.Threading;
@@ -203,4 +202,3 @@ namespace Windows.Media.Capture
 		}
 	}
 }
-#endif
