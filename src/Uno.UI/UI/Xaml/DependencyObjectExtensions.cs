@@ -232,7 +232,7 @@ namespace Windows.UI.Xaml
 		/// <param name="instance">The instance for which to observe properties changes</param>
 		/// <param name="callback">The callback</param>
 		/// <returns>A disposable that will unregister the callback when disposed.</returns>
-		internal static IDisposable RegisterDisposablePropertyChangedCallback(this object instance, ExplicitPropertyChangedCallback handler)
+		public static IDisposable RegisterDisposablePropertyChangedCallback(this object instance, ExplicitPropertyChangedCallback handler)
 		{
 			return GetStore(instance).RegisterPropertyChangedCallback(handler);
 		}

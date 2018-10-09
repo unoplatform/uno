@@ -2,5 +2,9 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Devices.Geolocation
 {
-
+	public enum PositionAccuracy
+	{
+		Default,
+		High,
+	}
 }
