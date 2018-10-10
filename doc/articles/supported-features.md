@@ -145,3 +145,4 @@
     - UI Priority dispatch
 - Windows.Graphics.Display.DisplayInformation orientation
 - Windows.Media.SpeechRecognition
+- Windows.Media.Capture.CameraCaptureUI

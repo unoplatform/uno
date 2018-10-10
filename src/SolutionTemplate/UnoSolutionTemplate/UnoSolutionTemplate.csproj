@@ -75,6 +75,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <None Include="UnoQuickStart.Droid\Assets\Fonts\winjs-symbols.ttf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="UnoQuickStart.iOS\Resources\Fonts\winjs-symbols.ttf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="UnoQuickStart.Shared\Strings\en\Resources.resw">
       <SubType>Designer</SubType>
     </None>
@@ -104,7 +110,9 @@
     </None>
     <None Include="UnoQuickStart.iOS\iOS.vstemplate" />
     <None Include="UnoQuickStart.iOS\Resources\Default-568h%402x.png" />
-    <None Include="UnoQuickStart.iOS\UnoQuickStart.iOS.csproj" />
+    <None Include="UnoQuickStart.iOS\UnoQuickStart.iOS.csproj">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="UnoQuickStart.Shared\Shared.vstemplate" />
     <None Include="UnoQuickStart.Shared\Assets\LockScreenLogo.scale-200.png" />
     <None Include="UnoQuickStart.Shared\Assets\SplashScreen.scale-200.png" />
@@ -114,7 +122,9 @@
     <None Include="UnoQuickStart.Shared\Assets\StoreLogo.png" />
     <None Include="UnoQuickStart.Shared\Assets\Wide310x150Logo.scale-200.png" />
     <None Include="UnoQuickStart.UWP\Properties\Default.rd.xml" />
-    <None Include="UnoQuickStart.UWP\UnoQuickStart.Uwp.csproj" />
+    <None Include="UnoQuickStart.UWP\UnoQuickStart.Uwp.csproj">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="UnoQuickStart.UWP\Uwp.vstemplate">
       <SubType>Designer</SubType>
     </None>

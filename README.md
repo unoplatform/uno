@@ -19,7 +19,7 @@ Here's a list of live apps made with the Uno Platform for WebAssembly.
 * The [Uno.RoslynQuoter](http://roslynquoter-wasm.platform.uno/), a [Roslyn]() based C# analysis tool ([Source](https://github.com/nventive/Uno.RoslynQuoter))
 * The [Uno.BikeSharing360 App](http://bikerider-wasm.platform.uno/), a Xamarin.Forms app running on top of Uno for WebAssembly ([Source](https://github.com/nventive/Uno.BikeSharing360_MobileApps))
 * The [Uno.WindowsStateTriggers App](http://winstatetriggers-wasm.platform.uno/), a demo of the [Morten's WindowsStateTriggers](https://github.com/dotMorten/WindowsStateTriggers) ([Source](https://github.com/nventive/Uno.WindowsStateTriggers))
-* The [SQLite + Entity Framework Core App](http://http://sqliteefcore-wasm.platform.uno), a demo of the combination of [Roslyn](https://github.com/dotnet/roslyn), [Entity Framework Core](https://docs.microsoft.com/en-us/ef/core/), [SQLite](https://github.com/nventive/Uno.SQLitePCLRaw.Wasm) and the Uno Platform to manipulate an in-browser database.
+* The [SQLite + Entity Framework Core App](http://sqliteefcore-wasm.platform.uno), a demo of the combination of [Roslyn](https://github.com/dotnet/roslyn), [Entity Framework Core](https://docs.microsoft.com/en-us/ef/core/), [SQLite](https://github.com/nventive/Uno.SQLitePCLRaw.Wasm) and the Uno Platform to manipulate an in-browser database.
 
 Let us know if you've made your app publicly available, we'll list it here!
 
@@ -55,7 +55,7 @@ Let us know if you've made your app publicly available, we'll list it here!
     * [State Triggers](https://blogs.msdn.microsoft.com/mvpawardprogram/2017/02/07/state-triggers-uwp-apps/)
     * [Adaptive Triggers](https://docs.microsoft.com/en-us/uwp/api/Windows.UI.Xaml.AdaptiveTrigger)
 * Platform Specific 
-    * Native controls and properties via [conditional XAML](doc/articles/using-uno-ui.md)
+    * Native controls and properties via [conditional XAML](doc/articles/using-uno-ui.md#supporting-multiple-platforms-in-xaml-files)
     * Any of the existing Xamarin iOS/Android libraries available
 
 # Getting Started
