@@ -25,17 +25,15 @@ namespace Windows.UI.Xaml.Media
 
 		static ImageSource()
 		{
-			// The CheckForIllegalCrossThreadCalls field is not thread safe and cannot be changed on the fly.
-			// See https://bugzilla.xamarin.com/show_bug.cgi?id=40520 for more details.
-			SupportsAsyncFromBundle = UIDevice.CurrentDevice.CheckSystemVersion(9, 0) && !UIApplication.CheckForIllegalCrossThreadCalls;
-			SupportsFromBundle = UIDevice.CurrentDevice.CheckSystemVersion(8, 0);			
+			SupportsAsyncFromBundle = UIDevice.CurrentDevice.CheckSystemVersion(9, 0);
+			SupportsFromBundle = UIDevice.CurrentDevice.CheckSystemVersion(8, 0);
 		}
 
 		protected ImageSource()
 		{
 			UseTargetSize = true;
-            InitializeDownloader();
-        }
+			InitializeDownloader();
+		}
 
 		protected ImageSource(UIImage image)
 		{
@@ -157,8 +155,7 @@ namespace Windows.UI.Xaml.Media
 
 					if (SupportsAsyncFromBundle)
 					{
-						// Since iOS9, UIImage.FromBundle is thread safe, so we need to disable 
-						// the Xamarin binding check, which is unconditional.
+						// Since iOS9, UIImage.FromBundle is thread safe.
 						ImageData = UIImage.FromBundle(localFileUri.LocalPath);
 					}
 					else
