@@ -102,6 +102,11 @@ namespace Windows.UI.Xaml.Media
 			   )
 			)
 			{
+				if (ct.IsCancellationRequested)
+				{
+					return null;
+				}
+
 				if (Stream != null)
 				{
 					Stream.Position = 0;
