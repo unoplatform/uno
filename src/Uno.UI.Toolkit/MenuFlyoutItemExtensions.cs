@@ -8,7 +8,12 @@ using Windows.UI.Xaml.Controls;
 
 namespace Uno.UI.Toolkit
 {
-    public static class MenuFlyoutItemExtensions
+#if __IOS__
+	[Foundation.PreserveAttribute(AllMembers = true)]
+#elif __ANDROID__
+	[Android.Runtime.PreserveAttribute(AllMembers = true)]
+#endif
+	public static class MenuFlyoutItemExtensions
 	{
 		#region IsDestructive
 

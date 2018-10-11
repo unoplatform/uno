@@ -13,3 +13,4 @@
  * 134132 [Android] Fix loading of ItemsPresenter
  * 134104 [iOS] Fixed an issue when back swiping from a page with a collapsed CommandBar
  * 134026 [iOS] Setting a different DP from TextBox.TextChanging can cause an infinite 'ping pong' of changing Text values
+ * 134415 [iOS] MenuFlyout was not loaded correctly, causing templates containing a MenuFlyout to fail
