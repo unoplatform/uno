@@ -171,6 +171,12 @@ namespace Uno.UI.Tasks.ResourcesGenerator
 			var logicalTargetPath = Path.Combine(localizedDirectory, "strings.xml"); // this path is required by Xamarin
 			var actualTargetPath = Path.Combine(OutputPath, logicalTargetPath);
 
+			string fileName = Path.GetFileName(actualTargetPath);
+			if (fileName.Contains('-'))
+			{
+				this.Log().Error($"Invalid file name: must contain only [a-z0-9_.] {fileName} is invalid");
+			}
+
 			var targetLastWriteTime = new FileInfo(actualTargetPath).LastWriteTimeUtc;
 
 			if (sourceLastWriteTime > targetLastWriteTime)
