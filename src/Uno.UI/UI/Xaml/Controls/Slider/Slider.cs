@@ -50,6 +50,9 @@ namespace Windows.UI.Xaml.Controls
 		{
 			base.OnApplyTemplate();
 
+			// Dispose previously registered handlers if any
+			_eventSubscriptions.Disposable = null;
+
 			_headerContentPresenter = GetTemplateChild("HeaderContentPresenter") as ContentPresenter;
 			_horizontalThumb = GetTemplateChild("HorizontalThumb") as Thumb;
 			_verticalThumb = GetTemplateChild("VerticalThumb") as Thumb;
@@ -63,7 +66,10 @@ namespace Windows.UI.Xaml.Controls
 			_horizontalDecreaseRect = GetTemplateChild("HorizontalDecreaseRect") as Rectangle;
 			_sliderContainer = GetTemplateChild("SliderContainer") as FrameworkElement;
 
-			_eventSubscriptions.Disposable = RegisterHandlers();
+			if (!IsLoaded)
+			{
+				_eventSubscriptions.Disposable = RegisterHandlers();
+			}
 
 			if (HasXamlTemplate)
 			{
@@ -78,7 +84,10 @@ namespace Windows.UI.Xaml.Controls
 		{
 			base.OnLoaded();
 
-			_eventSubscriptions.Disposable = RegisterHandlers();
+			if (_eventSubscriptions.Disposable == null)
+			{
+				_eventSubscriptions.Disposable = RegisterHandlers();
+			}
 
 			if (_sliderContainer != null)
 			{

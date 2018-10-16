@@ -140,6 +140,8 @@ namespace Windows.UI.Xaml.Controls
 		{
 			base.OnApplyTemplate();
 
+			UnbindMediaPlayer();
+
 			var trueToVisible = new FromNullableBoolToVisibilityConverter();
 
 			_playPauseButton = this.GetTemplateChild(PlayPauseButtonName) as Button;
@@ -207,12 +209,14 @@ namespace Windows.UI.Xaml.Controls
 			_timeRemainingElement = this.GetTemplateChild(TimeRemainingElementName) as TextBlock;
 
 			_progressSlider = this.GetTemplateChild(ProgressSliderName) as Slider;
+			PropertyChangedCallback callback = OnSliderTemplateChanged;
+			_progressSlider?.RegisterDisposablePropertyChangedCallback(Slider.TemplateProperty, callback);
 
 			_bufferingProgressBar = this.GetTemplateChild(BufferingProgressBarName) as ProgressBar;
 
 			_timelineContainer = this.GetTemplateChild(TimelineContainerName) as Border;
 
-			_downloadProgressIndicator = _progressSlider.GetTemplateChild(DownloadProgressIndicatorName) as ProgressBar;
+			_downloadProgressIndicator = _progressSlider?.GetTemplateChild(DownloadProgressIndicatorName) as ProgressBar;
 			
 			_rootGrid = this.GetTemplateChild(RootGridName) as Grid;
 			_rootGrid.Tapped -= OnRootGridTapped;
