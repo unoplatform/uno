@@ -107,7 +107,7 @@ namespace CustomHost
 
             if(!Path.IsPathRooted(requestFileName))
             {
-                requestFileName = Path.Combine(Path.GetDirectoryName(TemplateFile), requestFileName.Replace('\\', Path.VolumeSeparatorChar));
+                requestFileName = Path.Combine(Path.GetDirectoryName(TemplateFile), requestFileName.Replace('\\', Path.DirectorySeparatorChar));
             }
 
             //If the argument is the fully qualified path of an existing file,  
@@ -220,7 +220,7 @@ namespace CustomHost
             //Maybe the file is in the same folder as the text template that   
             //called the directive.  
             //----------------------------------------------------------------  
-            string candidate = Path.Combine(Path.GetDirectoryName(this.TemplateFile), fileName.Replace('\\', Path.PathSeparator));
+            string candidate = Path.Combine(Path.GetDirectoryName(this.TemplateFile), fileName.Replace('\\', Path.DirectorySeparatorChar));
             if (File.Exists(candidate))
             {
                 return candidate;
