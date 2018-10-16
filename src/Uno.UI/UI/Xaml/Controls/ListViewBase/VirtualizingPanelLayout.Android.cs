@@ -1008,10 +1008,10 @@ namespace Windows.UI.Xaml.Controls
 				var gapToStart = GetContentStart();
 				if (gapToStart > 0)
 				{
-					if(ScrollOrientation == Orientation.Vertical)
+					if (ScrollOrientation == Orientation.Vertical)
 					{
 						ScrollVerticallyBy(gapToStart, recycler, state);
-						XamlParent.NativePanel.OnScrolled(gapToStart, 0);
+						XamlParent.NativePanel.OnScrolled(0, gapToStart);
 					}
 					else
 					{
@@ -1060,7 +1060,7 @@ namespace Windows.UI.Xaml.Controls
 			if (!_isInitialPaddingExtentOffsetApplied)
 			{
 				var group = GetTrailingGroup(direction);
-				if(group != null)
+				if (group != null)
 				{
 					group.Start += InitialExtentPadding;
 				}
@@ -1236,7 +1236,7 @@ namespace Windows.UI.Xaml.Controls
 		)
 		{
 			var leadingGroup = GetLeadingGroup(fillDirection);
-			var leadingEdge = leadingGroup?.GetLeadingEdge(fillDirection) ?? _dynamicSeedStart ?? 0;
+			var leadingEdge = leadingGroup?.GetLeadingEdge(fillDirection) ?? _dynamicSeedStart ?? GetDynamicStartFromHeader() ?? 0;
 			_dynamicSeedStart = null;
 			var increment = fillDirection == FillDirection.Forward ? 1 : -1;
 
@@ -1433,6 +1433,21 @@ namespace Windows.UI.Xaml.Controls
 			HeaderViewCount = 0;
 			FooterViewCount = 0;
 			_areHeaderAndFooterCreated = false;
+		}
+
+		// If there are no groups, this probably means that the source is grouped and Header or Footer are pushing all items completely out of view.
+		int? GetDynamicStartFromHeader()
+		{
+			if (HeaderViewCount > 0)
+			{
+				return GetChildEndWithMargin(GetHeaderViewIndex());
+			}
+			if (FooterViewCount > 0)
+			{
+				return GetChildStartWithMargin(GetFooterViewIndex());
+			}
+
+			return null;
 		}
 
 		/// <summary>
@@ -1828,13 +1843,25 @@ namespace Windows.UI.Xaml.Controls
 		/// </summary>
 		private int GetContentEnd()
 		{
-			int contentEnd = GetLeadingGroup(FillDirection.Forward)?.End ?? 0;
+			int contentEnd = GetLeadingGroup(FillDirection.Forward)?.End ?? GetHeaderEnd();
 			if (FooterViewCount > 0)
 			{
 				contentEnd += GetChildExtentWithMargins(GetFooterViewIndex());
 			}
 			contentEnd += FinalExtentPadding;
 			return contentEnd;
+
+			int GetHeaderEnd()
+			{
+				if (HeaderViewCount > 0)
+				{
+					return GetChildExtentWithMargins(GetHeaderViewIndex());
+				}
+				else
+				{
+					return 0;
+				}
+			}
 		}
 
 		/// <summary>

@@ -16,3 +16,4 @@
  * 134415 [iOS] MenuFlyout was not loaded correctly, causing templates containing a MenuFlyout to fail
  * 133247 [iOS] Image performance improvements
  * 135112 [Android] Fix crash in UpdateItemsPanelRoot() in the ItemsControl class.
+ * 132014, 134103 [Android] Set the leading edge considering header can push groups out off the screen
