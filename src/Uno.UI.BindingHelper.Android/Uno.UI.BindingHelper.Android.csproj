@@ -10,7 +10,7 @@
 		<ProduceReferenceAssembly>false</ProduceReferenceAssembly>
 		<Deterministic>true</Deterministic>
 		
-		<IsBindingProject Condition="'$(TargetFrameworkIdentifier)' == 'MonoAndroid'">true</IsBindingProject>
+		<IsBindingProject Condition="'$(TargetFramework)' == 'MonoAndroid71' or '$(TargetFramework)' == 'MonoAndroid80'">true</IsBindingProject>
 		<_isWindows>$([MSBuild]::IsOsPlatform(Windows))</_isWindows>
 	</PropertyGroup>
 	
