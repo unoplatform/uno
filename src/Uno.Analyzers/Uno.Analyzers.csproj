@@ -64,23 +64,6 @@
   <ItemGroup>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <PropertyGroup>
-    <PostBuildEvent>
-@REM -- DON'T UPDATE THIS SCRIPT! SEE Build\_HOW-TO-BUILD-AND-DEBUG-APPS.md !!
-@REM ------ ------ ------ ------ ------
-SET OVERRIDE_FILE=$(SolutionDir)\nuget_version_override.txt 
-if EXIST %25OVERRIDE_FILE%25 (
-    SET /P VERSION=&lt;%25OVERRIDE_FILE%25
-)
-IF "%25VERSION%25" EQU "" GOTO :END
-@Echo NUGET VERSION IS "%25VERSION%25".
-SET DEST_PATH="%25USERPROFILE%25\.nuget\packages\Uno.UI\%25VERSION%25\Analyzers"
-ECHO Copying to path %25DEST_PATH%25
-mkdir "%25DEST_PATH%25"
-copy "$(TargetDir)\$(TargetName).dll" "%25DEST_PATH%25"
-copy "$(TargetDir)\$(TargetName).pdb" "%25DEST_PATH%25"
-:END
-</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

@@ -96,12 +96,6 @@
     </None>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <PropertyGroup>
-    <PostBuildEvent>rem copy /Y "$(TargetDir)\*.*" "C:\s\git\HealthClinic.biz\packages\uno.ui.tasks.2.8.8826\build"
-rem copy /Y "$(TargetDir)\*.*" "C:\s\Uno.UI\Src\packages\Uno.UI.Tasks.2.8.8555-uno\build"
-rem copy /Y "$(TargetDir)\*.*" "C:\s\temp\Universal Windows app samples\XAML user and custom controls sample\C#\packages\Uno.UI.Tasks.2.8.8123-uno\build"
-</PostBuildEvent>
-  </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
