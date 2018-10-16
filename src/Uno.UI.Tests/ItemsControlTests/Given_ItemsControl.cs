@@ -68,6 +68,38 @@ namespace Uno.UI.Tests.ItemsControlTests
 			Assert.AreEqual(2, onVectorChanged);
 			Assert.AreEqual(0, SUT.Items.Count);
 		}
+
+		[TestMethod]
+		public void When_TemplatedParent_Before_Loading()
+		{
+			var itemsPresenter = new ItemsPresenter();
+
+			var style = new Style(typeof(ItemsControl))
+			{
+				Setters =  {
+					new Setter<ItemsControl>("Template", t =>
+						t.Template = Funcs.Create(() => itemsPresenter)
+					)
+				}
+			};
+
+			var panel = new StackPanel();
+
+			var SUT = new ItemsControl()
+			{
+				ItemsPanel = new ItemsPanelTemplate(() => panel),
+				Items = {
+					new Border { Name = "b1" }
+				},
+				Style = style
+			};
+
+			Assert.IsNull(SUT.ItemsPresenter);
+			
+			itemsPresenter.ForceLoaded();
+
+			Assert.IsNotNull(SUT.ItemsPresenter);
+		}
 	}
 
 	public class MyItemsControl : ItemsControl

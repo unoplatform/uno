@@ -38,6 +38,8 @@ namespace Windows.UI.Xaml.Controls
 
 			set
 			{
+				// The native control will ignore a value of null and retain an empty string. We coalesce the null to prevent a spurious empty string getting bounced back via two-way binding.
+				value = value ?? string.Empty;
 				if (base.Text != value)
 				{
 					base.Text = value;

@@ -9,10 +9,10 @@ namespace Windows.UI.Core
     /// <summary>
     /// Provides a CoreDispatched Synchronization context, to allow for async methods to keep the dispatcher priority.
     /// </summary>
-    internal class CoreDispatcherSynchronizationContext : SynchronizationContext
+    internal sealed class CoreDispatcherSynchronizationContext : SynchronizationContext
     {
-        private CoreDispatcher _dispatcher;
-        private CoreDispatcherPriority _priority;
+        private readonly CoreDispatcher _dispatcher;
+        private readonly CoreDispatcherPriority _priority;
 
         public CoreDispatcherSynchronizationContext(CoreDispatcher dispatcher, CoreDispatcherPriority priority)
         {
@@ -43,14 +43,12 @@ namespace Windows.UI.Core
         /// <summary>
         /// Creates a scoped assignment of <see cref="SynchronizationContext.Current"/>.
         /// </summary>
-        /// <param name="dispatcher"></param>
-        /// <param name="priority"></param>
         /// <returns></returns>
-        public static IDisposable Apply(CoreDispatcher dispatcher, CoreDispatcherPriority priority)
+        public IDisposable Apply()
         {
             var current = SynchronizationContext.Current;
 
-            SetSynchronizationContext(new CoreDispatcherSynchronizationContext(dispatcher, priority));
+            SetSynchronizationContext(this);
 
             return Disposable.Create(() => SetSynchronizationContext(current));
         }
