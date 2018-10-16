@@ -4,6 +4,7 @@
 
 ### Features
 
+*123761 - Added AnalyticsInfo to get the device type (idiom) and the device system.
 ### Breaking changes
 
 ### Bug fixes
@@ -15,10 +16,4 @@
  * 134026 [iOS] Setting a different DP from TextBox.TextChanging can cause an infinite 'ping pong' of changing Text values
  * 134415 [iOS] MenuFlyout was not loaded correctly, causing templates containing a MenuFlyout to fail
  * 133247 [iOS] Image performance improvements
- * 135192 [iOS] Fixed ImageBrush flash/flickering occurs when transitioning to a new page.
  * 135112 [Android] Fix crash in UpdateItemsPanelRoot() in the ItemsControl class.
- * 132014, 134103 [Android] Set the leading edge considering header can push groups out off the screen
- * 131998 [Android] Window bounds set too late
- * 131768 [iOS] Improve ListView.ScrollIntoView() when ItemTemplateSelector is set
- * 135202, 131884 [Android] Content occasionally fails to show because binding throws an exception
- 
