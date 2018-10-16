@@ -63,12 +63,22 @@ namespace Windows.UI.Core
 			}
 		}
 
-		private int _globalCount;
+		private readonly CoreDispatcherSynchronizationContext _highSyncCtx;
+		private readonly CoreDispatcherSynchronizationContext _normalSyncCtx;
+		private readonly CoreDispatcherSynchronizationContext _lowSyncCtx;
+		private readonly CoreDispatcherSynchronizationContext _idleSyncCtx;
 		private readonly IdleDispatchedHandlerArgs _idleDispatchedHandlerArgs;
-		private object _gate = new object();
+		private readonly object _gate = new object();
+
+		private int _globalCount;
 
 		public CoreDispatcher()
 		{
+			_highSyncCtx = new CoreDispatcherSynchronizationContext(this, CoreDispatcherPriority.High);
+			_normalSyncCtx = new CoreDispatcherSynchronizationContext(this, CoreDispatcherPriority.Normal);
+			_lowSyncCtx = new CoreDispatcherSynchronizationContext(this, CoreDispatcherPriority.Low);
+			_idleSyncCtx = new CoreDispatcherSynchronizationContext(this, CoreDispatcherPriority.Idle);
+
 			_idleDispatchedHandlerArgs = new IdleDispatchedHandlerArgs(() => IsQueueIdle);
 
 			Initialize();
@@ -247,7 +257,7 @@ namespace Windows.UI.Core
 
 						using (runActivity)
 						{
-                            using (CoreDispatcherSynchronizationContext.Apply(this, operationPriority))
+                            using (GetSyncContext(operationPriority).Apply())
                             {
                                 operation.Action();
                                 operation.Complete();
@@ -275,6 +285,18 @@ namespace Windows.UI.Core
 			else
 			{
 				throw new InvalidOperationException("Dispatch queue is empty");
+			}
+		}
+
+		private CoreDispatcherSynchronizationContext GetSyncContext(CoreDispatcherPriority priority)
+		{
+			switch (priority)
+			{
+				case CoreDispatcherPriority.High: return _highSyncCtx;
+				case CoreDispatcherPriority.Normal: return _normalSyncCtx;
+				case CoreDispatcherPriority.Low: return _lowSyncCtx;
+				case CoreDispatcherPriority.Idle: return _idleSyncCtx;
+				default: throw new ArgumentOutOfRangeException(nameof(priority));
 			}
 		}
 	}

@@ -309,20 +309,13 @@ namespace UIKit
 
 			do
 			{
-				var uiView = responder as UIView;
-
-				if (uiView != null)
+				if (responder is UIView uiView)
 				{
 					responder = uiView.NextResponder;
 				}
-				else
+				else if (responder is UIViewController uiViewController)
 				{
-					var uiViewController = responder as UIViewController;
-
-					if (uiViewController != null)
-					{
-						return uiViewController;
-					}
+					return uiViewController;
 				}
 
 			} while (responder != null);

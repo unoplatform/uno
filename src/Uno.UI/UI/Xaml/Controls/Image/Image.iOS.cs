@@ -130,7 +130,7 @@ namespace Windows.UI.Xaml.Controls
 						}
 					};
 
-					Dispatch(scheduledFetch);
+					Execute(scheduledFetch);
 				}
 			}
 		}

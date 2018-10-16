@@ -192,6 +192,15 @@ namespace Windows.UI.Xaml.Controls
 			_imageFetchDisposable.Disposable = cd;
 		}
 
+		private void Execute(Func<CancellationToken, Task> handler)
+		{
+			var cd = new CancellationDisposable();
+
+			var dummy = handler(cd.Token);
+
+			_imageFetchDisposable.Disposable = cd;
+		}
+
 		/// <summary>
 		/// True if horizontally stretched within finite container, or defined by this.Width
 		/// </summary>

@@ -86,7 +86,6 @@ Add the folowwing to your AndroidManifest.xml
 
 ## Known issues
 
-- Slider not draggable (Uno issue)
 - Volume flyout does not display on iOS (Uno issue)
 - Dynamic width/height not supported when playing audio
 - Sometimes flickers during resizing when using dynamic width/height
