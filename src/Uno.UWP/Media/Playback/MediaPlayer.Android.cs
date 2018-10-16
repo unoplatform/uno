@@ -325,11 +325,7 @@ namespace Windows.Media.Playback
 			{
 				if (PlaybackSession.PlaybackState != MediaPlaybackState.None)
 				{
-#if __ANDROID_26__
-					_player?.SeekTo((int)value.TotalMilliseconds, MediaPlayerSeekMode.Closest);
-#else
 					_player?.SeekTo((int)value.TotalMilliseconds);
-#endif
 				}
 			}
 		}
