@@ -2403,10 +2403,9 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				{
 					return $"{GetCastString(targetPropertyType, _staticResources[resourcePath])}StaticResources.{SanitizeResourceName(resourcePath)}";
 				}
-				else if(targetPropertyType.Name == "TimeSpan")
+				else if(targetPropertyType?.Name == "TimeSpan")
 				{
 					// explicit support for TimeSpan because we can't override the parsing.
-
 					return $"global::System.TimeSpan.Parse({GetGlobalStaticResource(resourcePath)}.ToString())";
 				}
 				else

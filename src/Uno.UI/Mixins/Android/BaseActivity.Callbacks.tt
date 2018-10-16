@@ -1,4 +1,4 @@
-﻿<#@template language="C#"#>
+﻿<#@template language="C#" compilerOptions="/debug-" debug="false" #>
 <#@output extension="g.cs" #>
 #if XAMARIN_ANDROID
 <#@include file="..\..\BaseActivity.Callbacks.Implementation.Android.tt"#>

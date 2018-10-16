@@ -13,6 +13,7 @@
 	<AppEnvironment Condition="'$(CombinedConfiguration)' != '' and $(CombinedConfiguration.Split('|').Length) > 2">$(CombinedConfiguration.Split('|')[2])</AppEnvironment>
 
 	<UpdateAssemblyInfo>false</UpdateAssemblyInfo>
+	<_isWindows>$([MSBuild]::IsOsPlatform(Windows))</_isWindows>
   </PropertyGroup>
 
   <Import Project=".\obj\Uno.UI.Build.csproj.nuget.g.props"/>
@@ -25,13 +26,14 @@
     Use NuGet 4.3.0 or later for the restore 
     CI_Build environment is required for the restore to pickup the TargetFrameworksCI property in projects.
     -->
-	<Exec Command="set NUGET_RESTORE_MSBUILD_ARGS=/p:CI_Build=true &amp; nuget\nuget.exe restore ..\src\Uno.UI.sln" Condition="'$(AppEnvironment)'=='' " />
+	<Exec Command="set NUGET_RESTORE_MSBUILD_ARGS=/p:CI_Build=true &amp; nuget\nuget.exe restore ..\src\Uno.UI.sln"
+		Condition="'$(AppEnvironment)'=='' and $(_isWindows) " />
 
 	<CallTarget Targets="BuildCI" Condition="'$(Configuration)'=='Release'" />
 
 	<CallTarget Targets="BuildNuGetPackage" Condition="'$(Configuration)'=='Release'" />
-	<CallTarget Targets="PublishVisx" Condition="'$(Configuration)'=='Release'" />
-	<CallTarget Targets="GenerateAPIDiff" Condition="'$(Configuration)'=='Release'" />
+	<CallTarget Targets="PublishVisx" Condition="'$(Configuration)'=='Release' and $(_isWindows)" />
+	<CallTarget Targets="GenerateAPIDiff" Condition="'$(Configuration)'=='Release' and $(_isWindows)" />
   </Target>
 
   <Target Name="UpdateFileVersions">

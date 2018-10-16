@@ -133,7 +133,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="MSBuild.Sdk.Extras" Version="1.5.4" PrivateAssets="All" />
+		<PackageReference Include="MSBuild.Sdk.Extras" Version="1.6.55" PrivateAssets="All" />
 		<PackageReference Include="Uno.SourceGenerationTasks">
 			<Version>1.28.0-dev.145</Version> 
 		</PackageReference>
@@ -146,31 +146,25 @@
 	</ItemGroup>
 
 	<ItemGroup Condition=" '$(TargetFramework)' == 'MonoAndroid71'">
-		<PackageReference Include="Xamarin.Android.Support.v4">
-			<Version>25.3.1</Version>
+		<PackageReference Include="Xamarin.Android.Support.v4" Version="25.3.1">
 			<PrivateAssets>none</PrivateAssets>
 		</PackageReference>
-		<PackageReference Include="Xamarin.Android.Support.v7.AppCompat">
-			<Version>25.3.1</Version>
+		<PackageReference Include="Xamarin.Android.Support.v7.AppCompat" Version="25.3.1">
 			<PrivateAssets>none</PrivateAssets>
 		</PackageReference>
-		<PackageReference Include="Xamarin.Android.Support.v7.RecyclerView">
-			<Version>25.3.1</Version>
+		<PackageReference Include="Xamarin.Android.Support.v7.RecyclerView" Version="25.3.1">
 			<PrivateAssets>none</PrivateAssets>
 		</PackageReference>
 	</ItemGroup>
 
 	<ItemGroup Condition=" '$(TargetFramework)' == 'MonoAndroid80'">
-		<PackageReference Include="Xamarin.Android.Support.v4">
-			<Version>26.1.0.1</Version>
+		<PackageReference Include="Xamarin.Android.Support.v4" Version="26.1.0.1">
 			<PrivateAssets>none</PrivateAssets>
 		</PackageReference>
-		<PackageReference Include="Xamarin.Android.Support.v7.AppCompat">
-			<Version>26.1.0.1</Version>
+		<PackageReference Include="Xamarin.Android.Support.v7.AppCompat" Version="26.1.0.1">
 			<PrivateAssets>none</PrivateAssets>
 		</PackageReference>
-		<PackageReference Include="Xamarin.Android.Support.v7.RecyclerView">
-			<Version>26.1.0.1</Version>
+		<PackageReference Include="Xamarin.Android.Support.v7.RecyclerView" Version="26.1.0.1">
 			<PrivateAssets>none</PrivateAssets>
 		</PackageReference>
 	</ItemGroup>

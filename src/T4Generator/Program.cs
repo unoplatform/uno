@@ -107,7 +107,7 @@ namespace CustomHost
 
             if(!Path.IsPathRooted(requestFileName))
             {
-                requestFileName = Path.Combine(Path.GetDirectoryName(TemplateFile), requestFileName);
+                requestFileName = Path.Combine(Path.GetDirectoryName(TemplateFile), requestFileName.Replace('\\', Path.VolumeSeparatorChar));
             }
 
             //If the argument is the fully qualified path of an existing file,  
@@ -137,8 +137,8 @@ namespace CustomHost
         {
             object returnObject;
             switch (optionName)
-            {
-                case "CacheAssemblies":
+			{
+				case "CacheAssemblies":
                     returnObject = true;
                     break;
                 default:
@@ -206,7 +206,7 @@ namespace CustomHost
         //---------------------------------------------------------------------  
         public string ResolvePath(string fileName)
         {
-            if (fileName == null)
+			if (fileName == null)
             {
                 throw new ArgumentNullException("the file name cannot be null");
             }
@@ -220,7 +220,7 @@ namespace CustomHost
             //Maybe the file is in the same folder as the text template that   
             //called the directive.  
             //----------------------------------------------------------------  
-            string candidate = Path.Combine(Path.GetDirectoryName(this.TemplateFile), fileName);
+            string candidate = Path.Combine(Path.GetDirectoryName(this.TemplateFile), fileName.Replace('\\', Path.PathSeparator));
             if (File.Exists(candidate))
             {
                 return candidate;
@@ -343,7 +343,7 @@ namespace CustomHost
 
             CustomCmdLineHost host = new CustomCmdLineHost();
             Engine engine = new Engine();
-            host.TemplateFileValue = templateFileName;
+			host.TemplateFileValue = templateFileName;
             //Read the text template.  
             string input = File.ReadAllText(templateFileName);
             //Transform the text template.  
