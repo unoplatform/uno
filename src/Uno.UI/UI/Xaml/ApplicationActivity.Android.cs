@@ -112,6 +112,7 @@ namespace Windows.UI.Xaml
 			base.OnCreate(bundle);
 
 			_keyboardRectProvider = new KeyboardRectProvider(this, OnKeyboardRectChanged);
+			RaiseConfigurationChanges(Resources.DisplayMetrics);
 		}
 
 		public override void SetContentView(View view)
