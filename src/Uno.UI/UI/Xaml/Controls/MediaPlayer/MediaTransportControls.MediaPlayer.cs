@@ -2,6 +2,7 @@
 
 using System;
 using System.Timers;
+using Uno.Disposables;
 using Uno.Extensions;
 using Uno.Logging;
 using Windows.Media.Playback;
@@ -15,7 +16,8 @@ namespace Windows.UI.Xaml.Controls
 	{
 		private Windows.Media.Playback.MediaPlayer _mediaPlayer;
 		private bool _isScrubbing = false;
-
+		private SerialDisposable _subscriptions = new SerialDisposable();
+		
 		internal void SetMediaPlayer(Windows.Media.Playback.MediaPlayer mediaPlayer)
 		{
 			UnbindMediaPlayer();
@@ -30,6 +32,8 @@ namespace Windows.UI.Xaml.Controls
 
 		private void BindMediaPlayer()
 		{
+			_subscriptions.Disposable = null;
+
 			_mediaPlayer.PlaybackSession.PlaybackStateChanged += OnPlaybackStateChanged;
 			_mediaPlayer.PlaybackSession.BufferingProgressChanged += OnBufferingProgressChanged;
 			_mediaPlayer.PlaybackSession.NaturalDurationChanged += OnNaturalDurationChanged;
@@ -43,13 +47,25 @@ namespace Windows.UI.Xaml.Controls
 			_skipForwardButton.Click += SkipForward;
 			_skipBackwardButton.Click += SkipBackward;
 
-			AttachThumbEventHandlers(_progressSlider);
+			_subscriptions.Disposable = AttachThumbEventHandlers(_progressSlider);
+		}
+
+		private void OnSliderTemplateChanged(DependencyObject sender, DependencyPropertyChangedEventArgs args)
+		{
+			_subscriptions.Disposable = null;
+
+			if (_mediaPlayer != null)
+			{
+				_subscriptions.Disposable = AttachThumbEventHandlers(_progressSlider);
+			}
 		}
 
 		private void UnbindMediaPlayer()
 		{
 			try
 			{
+				_subscriptions.Disposable = null;
+
 				_mediaPlayer.PlaybackSession.PlaybackStateChanged -= OnPlaybackStateChanged;
 				_mediaPlayer.PlaybackSession.BufferingProgressChanged -= OnBufferingProgressChanged;
 				_mediaPlayer.PlaybackSession.NaturalDurationChanged -= OnNaturalDurationChanged;
@@ -62,8 +78,6 @@ namespace Windows.UI.Xaml.Controls
 				_stopButton.Click -= Stop;
 				_skipForwardButton.Click -= SkipForward;
 				_skipBackwardButton.Click -= SkipBackward;
-
-				DetachThumbEventHandlers(_progressSlider);
 			}
 			catch (Exception ex)
 			{
@@ -176,32 +190,23 @@ namespace Windows.UI.Xaml.Controls
 			ResetControlsVisibilityTimer();
 		}
 
-		private void AttachThumbEventHandlers(Slider slider)
+		private IDisposable AttachThumbEventHandlers(Slider slider)
 		{
 			var thumb = slider.GetTemplateChild(HorizontalThumbName) as Thumb;
 
 			if (thumb != null)
 			{
-				thumb.DragStarted -= ThumbOnDragStarted;
 				thumb.DragStarted += ThumbOnDragStarted;
-
-				thumb.DragCompleted -= ThumbOnDragCompleted;
 				thumb.DragCompleted += ThumbOnDragCompleted;
+
+				return Disposable.Create(() =>
+				{
+					thumb.DragStarted -= ThumbOnDragStarted;
+					thumb.DragCompleted -= ThumbOnDragCompleted;
+				});
 			}
-		}
 
-		private void DetachThumbEventHandlers(Slider slider)
-		{
-			var thumb = slider.GetTemplateChild(HorizontalThumbName) as Thumb;
-
-			if (thumb != null)
-			{
-				thumb.DragStarted -= ThumbOnDragStarted;
-				thumb.DragStarted += ThumbOnDragStarted;
-
-				thumb.DragCompleted -= ThumbOnDragCompleted;
-				thumb.DragCompleted += ThumbOnDragCompleted;
-			}
+			return Disposable.Empty;
 		}
 
 		private void ThumbOnDragCompleted(object sender, DragCompletedEventArgs dragCompletedEventArgs)
