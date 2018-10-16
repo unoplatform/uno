@@ -209,8 +209,8 @@ namespace Windows.UI.Xaml.Controls
 			_timeRemainingElement = this.GetTemplateChild(TimeRemainingElementName) as TextBlock;
 
 			_progressSlider = this.GetTemplateChild(ProgressSliderName) as Slider;
-			PropertyChangedCallback test = OnSliderTemplateChanged;
-			_progressSlider?.RegisterDisposablePropertyChangedCallback(Slider.TemplateProperty, test);
+			PropertyChangedCallback callback = OnSliderTemplateChanged;
+			_progressSlider?.RegisterDisposablePropertyChangedCallback(Slider.TemplateProperty, callback);
 
 			_bufferingProgressBar = this.GetTemplateChild(BufferingProgressBarName) as ProgressBar;
 
