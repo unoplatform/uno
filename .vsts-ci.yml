@@ -94,7 +94,7 @@ phases:
   - task: NuGetCommand@2
     inputs:
       command: restore
-      solution: src/Uno.UI.sln
+      solution: src/Uno.UI-vs4mac.sln
       selectOrConfig: select
       includeNuGetOrg: true
       verbosityRestore: Normal

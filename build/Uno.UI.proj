@@ -29,7 +29,8 @@
 	<Exec Command="set NUGET_RESTORE_MSBUILD_ARGS=/p:CI_Build=true &amp; nuget\nuget.exe restore ..\src\Uno.UI.sln"
 		Condition="'$(AppEnvironment)'=='' and $(_isWindows) " />
 
-	<CallTarget Targets="BuildCI" Condition="'$(Configuration)'=='Release'" />
+	<CallTarget Targets="BuildCI" Condition="'$(Configuration)'=='Release' and $(_isWindows)" />
+	<CallTarget Targets="BuildCImacOS" Condition="'$(Configuration)'=='Release' and !$(_isWindows)" />
 
 	<CallTarget Targets="BuildNuGetPackage" Condition="'$(Configuration)'=='Release'" />
 	<CallTarget Targets="PublishVisx" Condition="'$(Configuration)'=='Release' and $(_isWindows)" />
@@ -96,7 +97,17 @@
 
   </Target>
 
-	<Target Name="GenerateDoc">
+  <Target Name="BuildCImacOS">
+
+	<MSBuild Properties="Configuration=Release;VisualStudioVersion=15.0;CopyDSYM=False;InformationalVersion=$(GITVERSION_InformationalVersion);CI_Build=true;_IsCIBuild=true"
+					 Projects="..\src\Uno.UI-vs4mac.sln"
+					 Targets="Build"
+					 RebaseOutputs="false"
+					 BuildInParallel="true" />
+
+  </Target>
+
+  <Target Name="GenerateDoc">
 	  <MSBuild Properties="Configuration=Release;VisualStudioVersion=15.0"
 				Projects="..\src\Uno.UWPSyncGenerator\Uno.UWPSyncGenerator.csproj"
 				Targets="Build" />
