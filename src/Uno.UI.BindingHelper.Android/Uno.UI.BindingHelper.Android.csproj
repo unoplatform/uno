@@ -9,10 +9,13 @@
 		
 		<ProduceReferenceAssembly>false</ProduceReferenceAssembly>
 		<Deterministic>true</Deterministic>
+		
+		<IsBindingProject Condition="'$(TargetFrameworkIdentifier)' == 'MonoAndroid'">true</IsBindingProject>
+		<_isWindows>$([MSBuild]::IsOsPlatform(Windows))</_isWindows>
 	</PropertyGroup>
 	
 	<ItemGroup>
-		<PackageReference Include="MSBuild.Sdk.Extras" Version="1.5.4" PrivateAssets="All" />
+		<PackageReference Include="MSBuild.Sdk.Extras" Version="1.6.55" PrivateAssets="All" />
 		<PackageReference Include="Xamarin.Build.Download" Version="0.4.9" />
 	</ItemGroup>
 	<ItemGroup Condition=" '$(TargetFramework)' == 'MonoAndroid60' or '$(TargetFramework)' == 'MonoAndroid70'">
@@ -80,8 +83,6 @@
 	
 		<ItemGroup>
 			<_AndroidJar Include="%ProgramFiles(x86)%\Reference Assemblies\Microsoft\Framework\MonoAndroid\$(TargetFrameworkVersion)\mono.android.jar" />
-			<_AndroidJar Include="%localappdata%\Xamarin\Xamarin.Android.Support.v4\23.4.0.0\embedded\classes.jar" Condition="'$(TargetFrameworkVersion)'=='v6.0' or '$(TargetFrameworkVersion)'=='v7.0'" />
-			<_AndroidJar Include="%localappdata%\Xamarin\Xamarin.Android.Support.v7.RecyclerView\23.4.0.0\embedded\classes.jar" Condition="'$(TargetFrameworkVersion)'=='v6.0' or '$(TargetFrameworkVersion)'=='v7.0'" />	
 			<_AndroidJar Include="$(IntermediateOutputPath)\__library_projects__\Xamarin.Android.Support.Annotations\library_project_imports\support-annotations.jar" />
 			<_AndroidJar Include="$(IntermediateOutputPath)\__library_projects__\**\classes.jar" />
 			<_AndroidJar Include="$(IntermediateOutputPath)\lp\**\classes.jar" />
@@ -91,7 +92,16 @@
 
 			<_JavaVersion Condition="'$(MicrosoftBuildVersion)' &lt; '15.4'">1.7</_JavaVersion>
 
-			<_CompileCommand>"$(_JavaSdkDirectory)bin\javac.exe" -g -source $(_javaVersion) -d .\$(IntermediateOutputPath)\unoclasses -target $(_javaVersion) -J-Dfile.encoding=UTF8 -classpath "@(_AndroidJar)" -bootclasspath "$(_AndroidSdkDirectory)platforms\android-$(_AndroidApiLevel)\android.jar" -encoding UTF-8 .\Uno\UI\*.java</_CompileCommand>
+			<_JavaCBinPath>javac</_JavaCBinPath>
+			<_JavaCBinPath Condition="Exists('$(_JavaSdkDirectory)bin\javac.exe')">$(_JavaSdkDirectory)bin\javac.exe</_JavaCBinPath>
+			
+			<_JarBinPath>$(_JavaSdkDirectory)bin\jar</_JarBinPath>
+			<_JarBinPath Condition="Exists('$(_JavaSdkDirectory)bin\jar.exe')">$(_JavaSdkDirectory)bin\jar.exe</_JarBinPath>
+
+			<_flattenAndroidJar Condition="!$(_isWindows)">@(_AndroidJar, ':')</_flattenAndroidJar>
+			<_flattenAndroidJar Condition="$(_isWindows)">@(_AndroidJar)</_flattenAndroidJar>
+
+			<_CompileCommand>&quot;$(_JavaCBinPath)&quot; -g -source $(_javaVersion) -d .\$(IntermediateOutputPath)\unoclasses -target $(_javaVersion) -J-Dfile.encoding=UTF8 -classpath "$(_flattenAndroidJar)" -bootclasspath "$(_AndroidSdkDirectory)platforms\android-$(_AndroidApiLevel)\android.jar" -encoding UTF-8 .\Uno\UI\*.java</_CompileCommand>
 		</PropertyGroup>
 		
 		<Error Text="The Android SDK for API level $(_AndroidApiLevel) is not installed. Install it through the Android SDK manager." Condition="!Exists('$(_AndroidSdkDirectory)platforms\android-$(_AndroidApiLevel)\android.jar')" />
@@ -102,7 +112,7 @@
 		<Exec Command="$(_CompileCommand)" />
 		
 		<MakeDir Directories="$(IntermediateOutputPath)\unojars" />
-		<Exec Command="&quot;$(_JavaSdkDirectory)bin\jar.exe&quot; cvf @(EmbeddedJar) -C $(IntermediateOutputPath)unoclasses ." />
+		<Exec Command="&quot;$(_JarBinPath)&quot; cvf @(EmbeddedJar) -C $(IntermediateOutputPath)unoclasses ." />
 	
 	</Target>
 
@@ -115,9 +125,7 @@
 		</CreateItem>
 	</Target>
 
-	<PropertyGroup Condition="'$(TargetFrameworkIdentifier)' == 'MonoAndroid' ">
-		<LanguageTargets>$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.Bindings.targets</LanguageTargets>
-	</PropertyGroup>
+	
 
 	<!-- This is to be removed when VS15.3 will be released. This is caused by conditional ProjectReference from Uno.UI -->
 	<ItemGroup Condition="'$(TargetFrameworkIdentifier)' != 'MonoAndroid'">
