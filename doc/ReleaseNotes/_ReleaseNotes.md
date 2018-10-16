@@ -15,3 +15,4 @@
  * 134026 [iOS] Setting a different DP from TextBox.TextChanging can cause an infinite 'ping pong' of changing Text values
  * 134415 [iOS] MenuFlyout was not loaded correctly, causing templates containing a MenuFlyout to fail
  * 133247 [iOS] Image performance improvements
+ * 135112 [Android] Fix crash in UpdateItemsPanelRoot() in the ItemsControl class.
