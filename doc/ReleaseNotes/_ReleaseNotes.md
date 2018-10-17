@@ -19,4 +19,5 @@
  * 132014, 134103 [Android] Set the leading edge considering header can push groups out off the screen
  * 131998 [Android] Window bounds set too late
  * 131768 [iOS] Improve ListView.ScrollIntoView() when ItemTemplateSelector is set
+ * 135202, 131884 [Android] Content occasionally fails to show because binding throws an exception
  
