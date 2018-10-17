@@ -2,216 +2,30 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml.Media
 {
-	#if false || false || false || false
+	#if false || false || false || false || false
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class CompositeTransform : global::Windows.UI.Xaml.Media.Transform
 	{
-		#if false || false || false || false
-		[global::Uno.NotImplemented]
-		public  double TranslateY
-		{
-			get
-			{
-				return (double)this.GetValue(TranslateYProperty);
-			}
-			set
-			{
-				this.SetValue(TranslateYProperty, value);
-			}
-		}
-		#endif
-		#if false || false || false || false
-		[global::Uno.NotImplemented]
-		public  double TranslateX
-		{
-			get
-			{
-				return (double)this.GetValue(TranslateXProperty);
-			}
-			set
-			{
-				this.SetValue(TranslateXProperty, value);
-			}
-		}
-		#endif
-		#if false || false || false || false
-		[global::Uno.NotImplemented]
-		public  double SkewY
-		{
-			get
-			{
-				return (double)this.GetValue(SkewYProperty);
-			}
-			set
-			{
-				this.SetValue(SkewYProperty, value);
-			}
-		}
-		#endif
-		#if false || false || false || false
-		[global::Uno.NotImplemented]
-		public  double SkewX
-		{
-			get
-			{
-				return (double)this.GetValue(SkewXProperty);
-			}
-			set
-			{
-				this.SetValue(SkewXProperty, value);
-			}
-		}
-		#endif
-		#if false || false || false || false
-		[global::Uno.NotImplemented]
-		public  double ScaleY
-		{
-			get
-			{
-				return (double)this.GetValue(ScaleYProperty);
-			}
-			set
-			{
-				this.SetValue(ScaleYProperty, value);
-			}
-		}
-		#endif
-		#if false || false || false || false
-		[global::Uno.NotImplemented]
-		public  double ScaleX
-		{
-			get
-			{
-				return (double)this.GetValue(ScaleXProperty);
-			}
-			set
-			{
-				this.SetValue(ScaleXProperty, value);
-			}
-		}
-		#endif
-		#if false || false || false || false
-		[global::Uno.NotImplemented]
-		public  double Rotation
-		{
-			get
-			{
-				return (double)this.GetValue(RotationProperty);
-			}
-			set
-			{
-				this.SetValue(RotationProperty, value);
-			}
-		}
-		#endif
-		#if false || false || false || false
-		[global::Uno.NotImplemented]
-		public  double CenterY
-		{
-			get
-			{
-				return (double)this.GetValue(CenterYProperty);
-			}
-			set
-			{
-				this.SetValue(CenterYProperty, value);
-			}
-		}
-		#endif
-		#if false || false || false || false
-		[global::Uno.NotImplemented]
-		public  double CenterX
-		{
-			get
-			{
-				return (double)this.GetValue(CenterXProperty);
-			}
-			set
-			{
-				this.SetValue(CenterXProperty, value);
-			}
-		}
-		#endif
-		#if false || false || false || false
-		[global::Uno.NotImplemented]
-		public static global::Windows.UI.Xaml.DependencyProperty CenterXProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			"CenterX", typeof(double), 
-			typeof(global::Windows.UI.Xaml.Media.CompositeTransform), 
-			new FrameworkPropertyMetadata(default(double)));
-		#endif
-		#if false || false || false || false
-		[global::Uno.NotImplemented]
-		public static global::Windows.UI.Xaml.DependencyProperty CenterYProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			"CenterY", typeof(double), 
-			typeof(global::Windows.UI.Xaml.Media.CompositeTransform), 
-			new FrameworkPropertyMetadata(default(double)));
-		#endif
-		#if false || false || false || false
-		[global::Uno.NotImplemented]
-		public static global::Windows.UI.Xaml.DependencyProperty RotationProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			"Rotation", typeof(double), 
-			typeof(global::Windows.UI.Xaml.Media.CompositeTransform), 
-			new FrameworkPropertyMetadata(default(double)));
-		#endif
-		#if false || false || false || false
-		[global::Uno.NotImplemented]
-		public static global::Windows.UI.Xaml.DependencyProperty ScaleXProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			"ScaleX", typeof(double), 
-			typeof(global::Windows.UI.Xaml.Media.CompositeTransform), 
-			new FrameworkPropertyMetadata(default(double)));
-		#endif
-		#if false || false || false || false
-		[global::Uno.NotImplemented]
-		public static global::Windows.UI.Xaml.DependencyProperty ScaleYProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			"ScaleY", typeof(double), 
-			typeof(global::Windows.UI.Xaml.Media.CompositeTransform), 
-			new FrameworkPropertyMetadata(default(double)));
-		#endif
-		#if false || false || false || false
-		[global::Uno.NotImplemented]
-		public static global::Windows.UI.Xaml.DependencyProperty SkewXProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			"SkewX", typeof(double), 
-			typeof(global::Windows.UI.Xaml.Media.CompositeTransform), 
-			new FrameworkPropertyMetadata(default(double)));
-		#endif
-		#if false || false || false || false
-		[global::Uno.NotImplemented]
-		public static global::Windows.UI.Xaml.DependencyProperty SkewYProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			"SkewY", typeof(double), 
-			typeof(global::Windows.UI.Xaml.Media.CompositeTransform), 
-			new FrameworkPropertyMetadata(default(double)));
-		#endif
-		#if false || false || false || false
-		[global::Uno.NotImplemented]
-		public static global::Windows.UI.Xaml.DependencyProperty TranslateXProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			"TranslateX", typeof(double), 
-			typeof(global::Windows.UI.Xaml.Media.CompositeTransform), 
-			new FrameworkPropertyMetadata(default(double)));
-		#endif
-		#if false || false || false || false
-		[global::Uno.NotImplemented]
-		public static global::Windows.UI.Xaml.DependencyProperty TranslateYProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			"TranslateY", typeof(double), 
-			typeof(global::Windows.UI.Xaml.Media.CompositeTransform), 
-			new FrameworkPropertyMetadata(default(double)));
-		#endif
-		#if false || false || false || false
-		[global::Uno.NotImplemented]
-		public CompositeTransform() 
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Media.CompositeTransform", "CompositeTransform.CompositeTransform()");
-		}
-		#endif
+		// Skipping already declared property TranslateY
+		// Skipping already declared property TranslateX
+		// Skipping already declared property SkewY
+		// Skipping already declared property SkewX
+		// Skipping already declared property ScaleY
+		// Skipping already declared property ScaleX
+		// Skipping already declared property Rotation
+		// Skipping already declared property CenterY
+		// Skipping already declared property CenterX
+		// Skipping already declared property CenterXProperty
+		// Skipping already declared property CenterYProperty
+		// Skipping already declared property RotationProperty
+		// Skipping already declared property ScaleXProperty
+		// Skipping already declared property ScaleYProperty
+		// Skipping already declared property SkewXProperty
+		// Skipping already declared property SkewYProperty
+		// Skipping already declared property TranslateXProperty
+		// Skipping already declared property TranslateYProperty
+		// Skipping already declared method Windows.UI.Xaml.Media.CompositeTransform.CompositeTransform()
 		// Forced skipping of method Windows.UI.Xaml.Media.CompositeTransform.CompositeTransform()
 		// Forced skipping of method Windows.UI.Xaml.Media.CompositeTransform.CenterX.get
 		// Forced skipping of method Windows.UI.Xaml.Media.CompositeTransform.CenterX.set

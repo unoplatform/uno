@@ -72,12 +72,14 @@ namespace Windows.UI.Xaml.Controls
 		{
 			if (_flyoutButton != null)
 			{
+#if __IOS__
 				_flyoutButton.Flyout = new TimePickerFlyout
 				{
 					Placement = FlyoutPlacement,
 					Time = this.Time,
 					ClockIdentifier = this.ClockIdentifier
 				};
+#endif
 				BindToFlyout(nameof(Time));
 				BindToFlyout(nameof(ClockIdentifier));
 			}

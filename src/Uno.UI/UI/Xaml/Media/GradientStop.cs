@@ -13,9 +13,12 @@ using View = MonoTouch.UIKit.UIView;
 using Color = MonoTouch.UIKit.UIColor;
 using Font = MonoTouch.UIKit.UIFont;
 using MonoTouch.UIKit;
+#elif __MACOS__
+using Color = Windows.UI.Color;
 #else
 using Color = System.Drawing.Color;
 #endif
+
 namespace Windows.UI.Xaml.Media
 {
 	public partial class GradientStop : DependencyObject

@@ -2,26 +2,13 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml.Controls
 {
-	#if false || false || false || false
+	#if false || false || false || false || false
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class ItemsPresenter : global::Windows.UI.Xaml.FrameworkElement,global::Windows.UI.Xaml.Controls.Primitives.IScrollSnapPointsInfo
 	{
-		#if false || false || false || false
-		[global::Uno.NotImplemented]
-		public  global::Windows.UI.Xaml.Thickness Padding
-		{
-			get
-			{
-				return (global::Windows.UI.Xaml.Thickness)this.GetValue(PaddingProperty);
-			}
-			set
-			{
-				this.SetValue(PaddingProperty, value);
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		// Skipping already declared property Padding
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.UI.Xaml.Media.Animation.TransitionCollection HeaderTransitions
 		{
@@ -35,7 +22,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.UI.Xaml.DataTemplate HeaderTemplate
 		{
@@ -49,7 +36,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  object Header
 		{
@@ -63,7 +50,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.UI.Xaml.Media.Animation.TransitionCollection FooterTransitions
 		{
@@ -77,7 +64,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.UI.Xaml.DataTemplate FooterTemplate
 		{
@@ -91,7 +78,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  object Footer
 		{
@@ -105,27 +92,9 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 		#endif
-		#if false || false || false || false
-		[global::Uno.NotImplemented]
-		public  bool AreHorizontalSnapPointsRegular
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool ItemsPresenter.AreHorizontalSnapPointsRegular is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if false || false || false || false
-		[global::Uno.NotImplemented]
-		public  bool AreVerticalSnapPointsRegular
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool ItemsPresenter.AreVerticalSnapPointsRegular is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		// Skipping already declared property AreHorizontalSnapPointsRegular
+		// Skipping already declared property AreVerticalSnapPointsRegular
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty HeaderProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
@@ -133,7 +102,7 @@ namespace Windows.UI.Xaml.Controls
 			typeof(global::Windows.UI.Xaml.Controls.ItemsPresenter), 
 			new FrameworkPropertyMetadata(default(object)));
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty HeaderTemplateProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
@@ -141,7 +110,7 @@ namespace Windows.UI.Xaml.Controls
 			typeof(global::Windows.UI.Xaml.Controls.ItemsPresenter), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.DataTemplate)));
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty HeaderTransitionsProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
@@ -149,15 +118,8 @@ namespace Windows.UI.Xaml.Controls
 			typeof(global::Windows.UI.Xaml.Controls.ItemsPresenter), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.Animation.TransitionCollection)));
 		#endif
-		#if false || false || false || false
-		[global::Uno.NotImplemented]
-		public static global::Windows.UI.Xaml.DependencyProperty PaddingProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			"Padding", typeof(global::Windows.UI.Xaml.Thickness), 
-			typeof(global::Windows.UI.Xaml.Controls.ItemsPresenter), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Thickness)));
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		// Skipping already declared property PaddingProperty
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty FooterProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
@@ -165,7 +127,7 @@ namespace Windows.UI.Xaml.Controls
 			typeof(global::Windows.UI.Xaml.Controls.ItemsPresenter), 
 			new FrameworkPropertyMetadata(default(object)));
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty FooterTemplateProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
@@ -173,7 +135,7 @@ namespace Windows.UI.Xaml.Controls
 			typeof(global::Windows.UI.Xaml.Controls.ItemsPresenter), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.DataTemplate)));
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty FooterTransitionsProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
@@ -181,13 +143,7 @@ namespace Windows.UI.Xaml.Controls
 			typeof(global::Windows.UI.Xaml.Controls.ItemsPresenter), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.Animation.TransitionCollection)));
 		#endif
-		#if false || false || false || false
-		[global::Uno.NotImplemented]
-		public ItemsPresenter() : base()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.ItemsPresenter", "ItemsPresenter.ItemsPresenter()");
-		}
-		#endif
+		// Skipping already declared method Windows.UI.Xaml.Controls.ItemsPresenter.ItemsPresenter()
 		// Forced skipping of method Windows.UI.Xaml.Controls.ItemsPresenter.ItemsPresenter()
 		// Forced skipping of method Windows.UI.Xaml.Controls.ItemsPresenter.Header.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.ItemsPresenter.Header.set
@@ -203,20 +159,8 @@ namespace Windows.UI.Xaml.Controls
 		// Forced skipping of method Windows.UI.Xaml.Controls.ItemsPresenter.HorizontalSnapPointsChanged.remove
 		// Forced skipping of method Windows.UI.Xaml.Controls.ItemsPresenter.VerticalSnapPointsChanged.add
 		// Forced skipping of method Windows.UI.Xaml.Controls.ItemsPresenter.VerticalSnapPointsChanged.remove
-		#if false || false || false || false
-		[global::Uno.NotImplemented]
-		public  global::System.Collections.Generic.IReadOnlyList<float> GetIrregularSnapPoints( global::Windows.UI.Xaml.Controls.Orientation orientation,  global::Windows.UI.Xaml.Controls.Primitives.SnapPointsAlignment alignment)
-		{
-			throw new global::System.NotImplementedException("The member IReadOnlyList<float> ItemsPresenter.GetIrregularSnapPoints(Orientation orientation, SnapPointsAlignment alignment) is not implemented in Uno.");
-		}
-		#endif
-		#if false || false || false || false
-		[global::Uno.NotImplemented]
-		public  float GetRegularSnapPoints( global::Windows.UI.Xaml.Controls.Orientation orientation,  global::Windows.UI.Xaml.Controls.Primitives.SnapPointsAlignment alignment, out float offset)
-		{
-			throw new global::System.NotImplementedException("The member float ItemsPresenter.GetRegularSnapPoints(Orientation orientation, SnapPointsAlignment alignment, out float offset) is not implemented in Uno.");
-		}
-		#endif
+		// Skipping already declared method Windows.UI.Xaml.Controls.ItemsPresenter.GetIrregularSnapPoints(Windows.UI.Xaml.Controls.Orientation, Windows.UI.Xaml.Controls.Primitives.SnapPointsAlignment)
+		// Skipping already declared method Windows.UI.Xaml.Controls.ItemsPresenter.GetRegularSnapPoints(Windows.UI.Xaml.Controls.Orientation, Windows.UI.Xaml.Controls.Primitives.SnapPointsAlignment, out float)
 		// Forced skipping of method Windows.UI.Xaml.Controls.ItemsPresenter.Footer.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.ItemsPresenter.Footer.set
 		// Forced skipping of method Windows.UI.Xaml.Controls.ItemsPresenter.FooterTemplate.get
@@ -230,7 +174,7 @@ namespace Windows.UI.Xaml.Controls
 		// Forced skipping of method Windows.UI.Xaml.Controls.ItemsPresenter.HeaderTemplateProperty.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.ItemsPresenter.HeaderTransitionsProperty.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.ItemsPresenter.PaddingProperty.get
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  event global::System.EventHandler<object> HorizontalSnapPointsChanged
 		{
@@ -246,7 +190,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  event global::System.EventHandler<object> VerticalSnapPointsChanged
 		{

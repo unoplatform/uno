@@ -27,12 +27,12 @@ namespace Uno.UI.Media
 			return _path;
 		}
 
-		public override UIImage ToUIImage()
+		public override UIImage ToNativeImage()
 		{
 			throw new NotImplementedException();
 		}
 
-		public override UIImage ToUIImage(CGSize targetSize, UIColor color = null, Thickness margin = default(Thickness))
+		public override UIImage ToNativeImage(CGSize targetSize, UIColor color = null, Thickness margin = default(Thickness))
 		{
 			throw new NotImplementedException();
 		}

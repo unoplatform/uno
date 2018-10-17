@@ -2,71 +2,17 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml.Controls.Primitives
 {
-	#if false || false || false || false
+	#if false || false || false || false || false
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class SplitViewTemplateSettings : global::Windows.UI.Xaml.DependencyObject
 	{
-		#if false || false || false || false
-		[global::Uno.NotImplemented]
-		public  global::Windows.UI.Xaml.GridLength CompactPaneGridLength
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member GridLength SplitViewTemplateSettings.CompactPaneGridLength is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if false || false || false || false
-		[global::Uno.NotImplemented]
-		public  double NegativeOpenPaneLength
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member double SplitViewTemplateSettings.NegativeOpenPaneLength is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if false || false || false || false
-		[global::Uno.NotImplemented]
-		public  double NegativeOpenPaneLengthMinusCompactLength
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member double SplitViewTemplateSettings.NegativeOpenPaneLengthMinusCompactLength is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if false || false || false || false
-		[global::Uno.NotImplemented]
-		public  global::Windows.UI.Xaml.GridLength OpenPaneGridLength
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member GridLength SplitViewTemplateSettings.OpenPaneGridLength is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if false || false || false || false
-		[global::Uno.NotImplemented]
-		public  double OpenPaneLength
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member double SplitViewTemplateSettings.OpenPaneLength is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if false || false || false || false
-		[global::Uno.NotImplemented]
-		public  double OpenPaneLengthMinusCompactLength
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member double SplitViewTemplateSettings.OpenPaneLengthMinusCompactLength is not implemented in Uno.");
-			}
-		}
-		#endif
+		// Skipping already declared property CompactPaneGridLength
+		// Skipping already declared property NegativeOpenPaneLength
+		// Skipping already declared property NegativeOpenPaneLengthMinusCompactLength
+		// Skipping already declared property OpenPaneGridLength
+		// Skipping already declared property OpenPaneLength
+		// Skipping already declared property OpenPaneLengthMinusCompactLength
 		// Forced skipping of method Windows.UI.Xaml.Controls.Primitives.SplitViewTemplateSettings.OpenPaneLength.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.Primitives.SplitViewTemplateSettings.NegativeOpenPaneLength.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.Primitives.SplitViewTemplateSettings.OpenPaneLengthMinusCompactLength.get

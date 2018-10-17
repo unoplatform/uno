@@ -2,21 +2,15 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml.Controls
 {
-	#if false || false || false || false
-	#if false || false || false || false
+	#if false || false || false || false || false
+	#if false || false || false || false || false
 	[global::Uno.NotImplemented]
 	#endif
 	public   enum ScrollMode 
 	{
-		#if false || false || false || false
-		Disabled,
-		#endif
-		#if false || false || false || false
-		Enabled,
-		#endif
-		#if false || false || false || false
-		Auto,
-		#endif
+		// Skipping already declared field Windows.UI.Xaml.Controls.ScrollMode.Disabled
+		// Skipping already declared field Windows.UI.Xaml.Controls.ScrollMode.Enabled
+		// Skipping already declared field Windows.UI.Xaml.Controls.ScrollMode.Auto
 	}
 	#endif
 }

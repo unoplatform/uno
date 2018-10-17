@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk" ToolsVersion="15.0">
 	<PropertyGroup>
-		<TargetFrameworks>MonoAndroid80;xamarinios10;net46;netstandard2.0</TargetFrameworks>
-		<TargetFrameworksCI>MonoAndroid71;MonoAndroid80;xamarinios10;net46;netstandard2.0</TargetFrameworksCI>
+		<TargetFrameworks>MonoAndroid80;xamarinios10;net46;netstandard2.0;xamarinmac20</TargetFrameworks>
+		<TargetFrameworksCI>MonoAndroid71;MonoAndroid80;xamarinios10;net46;netstandard2.0;xamarinmac20</TargetFrameworksCI>
 	</PropertyGroup>
 
 	<PropertyGroup>
@@ -25,6 +25,7 @@
 		<GenerateLibraryLayout>true</GenerateLibraryLayout>
 
 		<UnoSourceGeneratorUnsecureBinLogEnabled>true</UnoSourceGeneratorUnsecureBinLogEnabled>
+		<!--<BuildingInsideUnoSourceGenerator>true</BuildingInsideUnoSourceGenerator>-->
 	</PropertyGroup>
 
 	<Import Project="$(MSBuildSDKExtrasTargets)" Condition="Exists('$(MSBuildSDKExtrasTargets)')" />
@@ -51,6 +52,16 @@
 			<DesignTime>True</DesignTime>
 			<AutoGen>True</AutoGen>
 			<DependentUpon>DependencyPropertyMixins.tt</DependentUpon>
+		</Compile>
+		<Compile Include="Mixins\macOS\FrameworkElementMixins.g.cs">
+		  <DependentUpon>FrameworkElementMixins.tt</DependentUpon>
+		  <DesignTime>True</DesignTime>
+		  <AutoGen>True</AutoGen>
+		</Compile>
+		<Compile Include="Mixins\macOS\VisualStatesMixins.g.cs">
+		  <DependentUpon>VisualStatesMixins.tt</DependentUpon>
+		  <DesignTime>True</DesignTime>
+		  <AutoGen>True</AutoGen>
 		</Compile>
 		<Compile Include="Mixins\iOS\FrameworkElementMixins.g.cs">
 			<DesignTime>True</DesignTime>
@@ -94,6 +105,7 @@
 
 
 	<ItemGroup>
+		<None Include="Extensions\CGSizeExtensions.iOSmacOS.cs" />
 		<None Include="Resources\AboutResources.txt" />
 		<None Include="Resources\Values\Attrs.xml" />
 		<None Include="Resources\Values\Styles.xml" />
@@ -129,7 +141,8 @@
 			<LastGenOutput>VisualStatesMixins.g.cs</LastGenOutput>
 		</None>
 		<None Include="Resources\IResourceRegistry.cs" />
-		<None Include="Resources\ResourceRegistry.cs" />  
+		<None Include="Resources\ResourceRegistry.cs" />
+		<None Include="UI\Xaml\Controls\Panel\Panel.macOS.cs" />  
 	</ItemGroup>
 
 	<ItemGroup>
@@ -186,7 +199,7 @@
 		</ProjectReference>
 	</ItemGroup>
 
-	<ItemGroup Condition="'$(TargetFrameworkIdentifier)'=='MonoAndroid' or '$(TargetFrameworkIdentifier)'=='Xamarin.iOS'">
+	<ItemGroup Condition="'$(TargetFrameworkIdentifier)'=='MonoAndroid' or '$(TargetFrameworkIdentifier)'=='Xamarin.iOS' or '$(TargetFramework)'=='xamarinmac20'">
 		<Reference Include="System.Numerics" />
 		<Reference Include="System.Numerics.Vectors" />
 		<Reference Include="System.json" />
@@ -202,9 +215,12 @@
 		<MixinInput Include=".\UI\Xaml\IFrameworkElementImplementation.Android.tt" />
 		<MixinInput Include=".\Mixins\iOS\FrameworkElementMixins.tt" />
 		<MixinInput Include=".\Mixins\iOS\VisualStatesMixins.tt" />
+		<MixinInput Include=".\Mixins\macOS\FrameworkElementMixins.tt" />
+		<MixinInput Include=".\Mixins\macOS\VisualStatesMixins.tt" />
 		<MixinInput Include=".\Mixins\Wasm\VisualStatesMixins.tt" />
 		<MixinInput Include=".\Mixins\net46\VisualStatesMixins.tt" />
 		<MixinInput Include=".\UI\Xaml\IFrameworkElementImplementation.iOS.tt" />
+		<MixinInput Include=".\UI\Xaml\IFrameworkElementImplementation.macOS.tt" />
 
 		<MixinOutput Include=".\Mixins\Android\BaseActivity.Callbacks.g.cs" />
 		<MixinOutput Include=".\Mixins\Android\FrameworkElementMixins.g.cs" />
@@ -212,6 +228,8 @@
 		<MixinOutput Include=".\Mixins\DependencyPropertyMixins.g.cs" />
 		<MixinOutput Include=".\Mixins\iOS\FrameworkElementMixins.g.cs" />
 		<MixinOutput Include=".\Mixins\iOS\VisualStatesMixins.g.cs" />
+		<MixinOutput Include=".\Mixins\macOS\FrameworkElementMixins.g.cs" />
+		<MixinOutput Include=".\Mixins\macOS\VisualStatesMixins.g.cs" />
 		<MixinOutput Include=".\Mixins\Wasm\VisualStatesMixins.g.cs" />
 		<MixinOutput Include=".\Mixins\net46\VisualStatesMixins.g.cs" />
 	</ItemGroup>
@@ -240,6 +258,12 @@
 			</MixinDefinition>
 			<MixinDefinition Include="$(MSBuildThisFileFullPath)">
 				<Properties>InputFile=.\Mixins\iOS\VisualStatesMixins.tt;OutputPath=.\Mixins\iOS;Configuration=$(Configuration);Platform=$(Platform)</Properties>
+			</MixinDefinition>
+			<MixinDefinition Include="$(MSBuildThisFileFullPath)">
+				<Properties>InputFile=.\Mixins\macOS\FrameworkElementMixins.tt;OutputPath=.\Mixins\macOS;Configuration=$(Configuration);Platform=$(Platform)</Properties>
+			</MixinDefinition>
+			<MixinDefinition Include="$(MSBuildThisFileFullPath)">
+				<Properties>InputFile=.\Mixins\macOS\VisualStatesMixins.tt;OutputPath=.\Mixins\macOS;Configuration=$(Configuration);Platform=$(Platform)</Properties>
 			</MixinDefinition>
 			<MixinDefinition Include="$(MSBuildThisFileFullPath)">
 				<Properties>InputFile=.\Mixins\Wasm\VisualStatesMixins.tt;OutputPath=.\Mixins\Wasm;Configuration=$(Configuration);Platform=$(Platform)</Properties>
@@ -281,9 +305,26 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<None Update="Mixins\macOS\FrameworkElementMixins.tt">
+		  <Generator>TextTemplatingFileGenerator</Generator>
+		  <LastGenOutput>FrameworkElementMixins.g.cs</LastGenOutput>
+		</None>
+		<None Update="Mixins\macOS\VisualStatesMixins.tt">
+		  <Generator>TextTemplatingFileGenerator</Generator>
+		  <LastGenOutput>VisualStatesMixins.g.cs</LastGenOutput>
+		</None>
 		<None Update="Mixins\Wasm\VisualStatesMixins.tt">
 			<Generator>TextTemplatingFileGenerator</Generator>
 			<LastGenOutput>VisualStatesMixins.g.cs</LastGenOutput>
+		</None>
+		<None Update="UI\Xaml\IFrameworkElementImplementation.macOS.cs">
+		  <DesignTime>True</DesignTime>
+		  <AutoGen>True</AutoGen>
+		  <DependentUpon>IFrameworkElementImplementation.macOS.tt</DependentUpon>
+		</None>
+		<None Update="UI\Xaml\IFrameworkElementImplementation.macOS.tt">
+		  <Generator>TextTemplatingFileGenerator</Generator>
+		  <LastGenOutput>IFrameworkElementImplementation.macOS.cs</LastGenOutput>
 		</None>
 	</ItemGroup>
 

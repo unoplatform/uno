@@ -2,20 +2,14 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Devices.Geolocation
 {
-	#if false || false || false || false
+	#if false || false || false || false || false
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial struct BasicGeoposition 
 	{
 		// Forced skipping of method Windows.Devices.Geolocation.BasicGeoposition.BasicGeoposition()
-		#if false || false || false || false
-		public  double Latitude;
-		#endif
-		#if false || false || false || false
-		public  double Longitude;
-		#endif
-		#if false || false || false || false
-		public  double Altitude;
-		#endif
+		// Skipping already declared field Windows.Devices.Geolocation.BasicGeoposition.Latitude
+		// Skipping already declared field Windows.Devices.Geolocation.BasicGeoposition.Longitude
+		// Skipping already declared field Windows.Devices.Geolocation.BasicGeoposition.Altitude
 	}
 }

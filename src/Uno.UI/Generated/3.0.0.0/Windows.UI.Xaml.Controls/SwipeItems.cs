@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml.Controls
 {
-	#if false || false || false || false
+	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || false
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class SwipeItems : global::Windows.UI.Xaml.DependencyObject,global::System.Collections.Generic.IList<global::Windows.UI.Xaml.Controls.SwipeItem>,global::System.Collections.Generic.IEnumerable<global::Windows.UI.Xaml.Controls.SwipeItem>
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  uint Size
 		{
@@ -17,7 +17,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.UI.Xaml.Controls.SwipeMode Mode
 		{
@@ -31,7 +31,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty ModeProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
@@ -39,7 +39,7 @@ namespace Windows.UI.Xaml.Controls
 			typeof(global::Windows.UI.Xaml.Controls.SwipeItems), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Controls.SwipeMode)));
 		#endif
-		#if false || false || false || false
+		#if __ANDROID__ || false || false || false || false
 		[global::Uno.NotImplemented]
 		public SwipeItems() : base()
 		{
@@ -64,7 +64,7 @@ namespace Windows.UI.Xaml.Controls
 		// Forced skipping of method Windows.UI.Xaml.Controls.SwipeItems.First()
 		// Forced skipping of method Windows.UI.Xaml.Controls.SwipeItems.ModeProperty.get
 		// Processing: System.Collections.Generic.IList<Windows.UI.Xaml.Controls.SwipeItem>
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		// DeclaringType: System.Collections.Generic.IList<Windows.UI.Xaml.Controls.SwipeItem>
 		[global::Uno.NotImplemented]
 		public int IndexOf( global::Windows.UI.Xaml.Controls.SwipeItem item)
@@ -72,7 +72,7 @@ namespace Windows.UI.Xaml.Controls
 			throw new global::System.NotSupportedException();
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		// DeclaringType: System.Collections.Generic.IList<Windows.UI.Xaml.Controls.SwipeItem>
 		[global::Uno.NotImplemented]
 		public void Insert( int index,  global::Windows.UI.Xaml.Controls.SwipeItem item)
@@ -80,7 +80,7 @@ namespace Windows.UI.Xaml.Controls
 			throw new global::System.NotSupportedException();
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		// DeclaringType: System.Collections.Generic.IList<Windows.UI.Xaml.Controls.SwipeItem>
 		[global::Uno.NotImplemented]
 		public void RemoveAt( int index)
@@ -88,7 +88,7 @@ namespace Windows.UI.Xaml.Controls
 			throw new global::System.NotSupportedException();
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public global::Windows.UI.Xaml.Controls.SwipeItem this[int index]
 		{
@@ -103,7 +103,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 		#endif
 		// Processing: System.Collections.Generic.ICollection<Windows.UI.Xaml.Controls.SwipeItem>
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		// DeclaringType: System.Collections.Generic.ICollection<Windows.UI.Xaml.Controls.SwipeItem>
 		[global::Uno.NotImplemented]
 		public void Add( global::Windows.UI.Xaml.Controls.SwipeItem item)
@@ -111,7 +111,7 @@ namespace Windows.UI.Xaml.Controls
 			throw new global::System.NotSupportedException();
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		// DeclaringType: System.Collections.Generic.ICollection<Windows.UI.Xaml.Controls.SwipeItem>
 		[global::Uno.NotImplemented]
 		public void Clear()
@@ -119,7 +119,7 @@ namespace Windows.UI.Xaml.Controls
 			throw new global::System.NotSupportedException();
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		// DeclaringType: System.Collections.Generic.ICollection<Windows.UI.Xaml.Controls.SwipeItem>
 		[global::Uno.NotImplemented]
 		public bool Contains( global::Windows.UI.Xaml.Controls.SwipeItem item)
@@ -127,7 +127,7 @@ namespace Windows.UI.Xaml.Controls
 			throw new global::System.NotSupportedException();
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		// DeclaringType: System.Collections.Generic.ICollection<Windows.UI.Xaml.Controls.SwipeItem>
 		[global::Uno.NotImplemented]
 		public void CopyTo( global::Windows.UI.Xaml.Controls.SwipeItem[] array,  int arrayIndex)
@@ -135,7 +135,7 @@ namespace Windows.UI.Xaml.Controls
 			throw new global::System.NotSupportedException();
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		// DeclaringType: System.Collections.Generic.ICollection<Windows.UI.Xaml.Controls.SwipeItem>
 		[global::Uno.NotImplemented]
 		public bool Remove( global::Windows.UI.Xaml.Controls.SwipeItem item)
@@ -143,7 +143,7 @@ namespace Windows.UI.Xaml.Controls
 			throw new global::System.NotSupportedException();
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public int Count
 		{
@@ -157,7 +157,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public bool IsReadOnly
 		{
@@ -172,7 +172,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 		#endif
 		// Processing: System.Collections.Generic.IEnumerable<Windows.UI.Xaml.Controls.SwipeItem>
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		// DeclaringType: System.Collections.Generic.IEnumerable<Windows.UI.Xaml.Controls.SwipeItem>
 		[global::Uno.NotImplemented]
 		public global::System.Collections.Generic.IEnumerator<global::Windows.UI.Xaml.Controls.SwipeItem> GetEnumerator()
@@ -181,7 +181,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 		#endif
 		// Processing: System.Collections.IEnumerable
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		// DeclaringType: System.Collections.IEnumerable
 		[global::Uno.NotImplemented]
 		 global::System.Collections.IEnumerator global::System.Collections.IEnumerable.GetEnumerator()

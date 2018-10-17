@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml.Controls
 {
-	#if false || false || false || false
+	#if false || false || false || false || false
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class Image 
 	{
-		#if false || false || NET46 || false
+		#if false || false || NET46 || false || false
 		[global::Uno.NotImplemented]
 		public  global::Windows.UI.Xaml.Media.Stretch Stretch
 		{
@@ -21,7 +21,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 		#endif
-		#if false || false || NET46 || false
+		#if false || false || NET46 || false || false
 		[global::Uno.NotImplemented]
 		public  global::Windows.UI.Xaml.Media.ImageSource Source
 		{
@@ -35,7 +35,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.UI.Xaml.Thickness NineGrid
 		{
@@ -49,7 +49,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Media.PlayTo.PlayToSource PlayToSource
 		{
@@ -59,7 +59,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty NineGridProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
@@ -67,7 +67,7 @@ namespace Windows.UI.Xaml.Controls
 			typeof(global::Windows.UI.Xaml.Controls.Image), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Thickness)));
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty PlayToSourceProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
@@ -75,7 +75,7 @@ namespace Windows.UI.Xaml.Controls
 			typeof(global::Windows.UI.Xaml.Controls.Image), 
 			new FrameworkPropertyMetadata(default(global::Windows.Media.PlayTo.PlayToSource)));
 		#endif
-		#if false || false || NET46 || false
+		#if false || false || NET46 || false || false
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty SourceProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
@@ -83,7 +83,7 @@ namespace Windows.UI.Xaml.Controls
 			typeof(global::Windows.UI.Xaml.Controls.Image), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.ImageSource)));
 		#endif
-		#if false || false || NET46 || false
+		#if false || false || NET46 || false || false
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty StretchProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
@@ -91,13 +91,7 @@ namespace Windows.UI.Xaml.Controls
 			typeof(global::Windows.UI.Xaml.Controls.Image), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.Stretch)));
 		#endif
-		#if false || false || false || false
-		[global::Uno.NotImplemented]
-		public Image() : base()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.Image", "Image.Image()");
-		}
-		#endif
+		// Skipping already declared method Windows.UI.Xaml.Controls.Image.Image()
 		// Forced skipping of method Windows.UI.Xaml.Controls.Image.Image()
 		// Forced skipping of method Windows.UI.Xaml.Controls.Image.Source.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.Image.Source.set
@@ -110,14 +104,14 @@ namespace Windows.UI.Xaml.Controls
 		// Forced skipping of method Windows.UI.Xaml.Controls.Image.ImageFailed.remove
 		// Forced skipping of method Windows.UI.Xaml.Controls.Image.ImageOpened.add
 		// Forced skipping of method Windows.UI.Xaml.Controls.Image.ImageOpened.remove
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Media.Casting.CastingSource GetAsCastingSource()
 		{
 			throw new global::System.NotImplementedException("The member CastingSource Image.GetAsCastingSource() is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.UI.Composition.CompositionBrush GetAlphaMask()
 		{
@@ -128,7 +122,7 @@ namespace Windows.UI.Xaml.Controls
 		// Forced skipping of method Windows.UI.Xaml.Controls.Image.StretchProperty.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.Image.NineGridProperty.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.Image.PlayToSourceProperty.get
-		#if false || false || NET46 || false
+		#if false || false || NET46 || false || false
 		[global::Uno.NotImplemented]
 		public  event global::Windows.UI.Xaml.ExceptionRoutedEventHandler ImageFailed
 		{
@@ -144,7 +138,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 		#endif
-		#if false || false || NET46 || false
+		#if false || false || NET46 || false || false
 		[global::Uno.NotImplemented]
 		public  event global::Windows.UI.Xaml.RoutedEventHandler ImageOpened
 		{

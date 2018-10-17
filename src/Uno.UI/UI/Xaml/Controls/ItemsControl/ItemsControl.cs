@@ -27,6 +27,9 @@ using _ViewGroup = UIKit.UIView;
 using Color = UIKit.UIColor;
 using Font = UIKit.UIFont;
 using UIKit;
+#elif __MACOS__
+using View = AppKit.NSView;
+using Color = Windows.UI.Color;
 #else
 using Color = System.Drawing.Color;
 using View = Windows.UI.Xaml.UIElement;

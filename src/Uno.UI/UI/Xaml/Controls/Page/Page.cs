@@ -63,7 +63,7 @@ namespace Windows.UI.Xaml.Controls
 		#region Frame
 
 		public
-#if __IOS__
+#if __IOS__ || __MACOS__
 			new
 #endif
 			Frame Frame

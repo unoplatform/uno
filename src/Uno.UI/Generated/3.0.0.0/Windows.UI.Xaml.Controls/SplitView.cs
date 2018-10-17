@@ -2,134 +2,21 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml.Controls
 {
-	#if false || false || false || false
+	#if false || false || false || false || false
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class SplitView : global::Windows.UI.Xaml.Controls.Control
 	{
-		#if false || false || false || false
-		[global::Uno.NotImplemented]
-		public  global::Windows.UI.Xaml.Controls.SplitViewPanePlacement PanePlacement
-		{
-			get
-			{
-				return (global::Windows.UI.Xaml.Controls.SplitViewPanePlacement)this.GetValue(PanePlacementProperty);
-			}
-			set
-			{
-				this.SetValue(PanePlacementProperty, value);
-			}
-		}
-		#endif
-		#if false || false || false || false
-		[global::Uno.NotImplemented]
-		public  global::Windows.UI.Xaml.Media.Brush PaneBackground
-		{
-			get
-			{
-				return (global::Windows.UI.Xaml.Media.Brush)this.GetValue(PaneBackgroundProperty);
-			}
-			set
-			{
-				this.SetValue(PaneBackgroundProperty, value);
-			}
-		}
-		#endif
-		#if false || false || false || false
-		[global::Uno.NotImplemented]
-		public  global::Windows.UI.Xaml.UIElement Pane
-		{
-			get
-			{
-				return (global::Windows.UI.Xaml.UIElement)this.GetValue(PaneProperty);
-			}
-			set
-			{
-				this.SetValue(PaneProperty, value);
-			}
-		}
-		#endif
-		#if false || false || false || false
-		[global::Uno.NotImplemented]
-		public  double OpenPaneLength
-		{
-			get
-			{
-				return (double)this.GetValue(OpenPaneLengthProperty);
-			}
-			set
-			{
-				this.SetValue(OpenPaneLengthProperty, value);
-			}
-		}
-		#endif
-		#if false || false || false || false
-		[global::Uno.NotImplemented]
-		public  bool IsPaneOpen
-		{
-			get
-			{
-				return (bool)this.GetValue(IsPaneOpenProperty);
-			}
-			set
-			{
-				this.SetValue(IsPaneOpenProperty, value);
-			}
-		}
-		#endif
-		#if false || false || false || false
-		[global::Uno.NotImplemented]
-		public  global::Windows.UI.Xaml.Controls.SplitViewDisplayMode DisplayMode
-		{
-			get
-			{
-				return (global::Windows.UI.Xaml.Controls.SplitViewDisplayMode)this.GetValue(DisplayModeProperty);
-			}
-			set
-			{
-				this.SetValue(DisplayModeProperty, value);
-			}
-		}
-		#endif
-		#if false || false || false || false
-		[global::Uno.NotImplemented]
-		public  global::Windows.UI.Xaml.UIElement Content
-		{
-			get
-			{
-				return (global::Windows.UI.Xaml.UIElement)this.GetValue(ContentProperty);
-			}
-			set
-			{
-				this.SetValue(ContentProperty, value);
-			}
-		}
-		#endif
-		#if false || false || false || false
-		[global::Uno.NotImplemented]
-		public  double CompactPaneLength
-		{
-			get
-			{
-				return (double)this.GetValue(CompactPaneLengthProperty);
-			}
-			set
-			{
-				this.SetValue(CompactPaneLengthProperty, value);
-			}
-		}
-		#endif
-		#if false || false || false || false
-		[global::Uno.NotImplemented]
-		public  global::Windows.UI.Xaml.Controls.Primitives.SplitViewTemplateSettings TemplateSettings
-		{
-			get
-			{
-				return (global::Windows.UI.Xaml.Controls.Primitives.SplitViewTemplateSettings)this.GetValue(TemplateSettingsProperty);
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		// Skipping already declared property PanePlacement
+		// Skipping already declared property PaneBackground
+		// Skipping already declared property Pane
+		// Skipping already declared property OpenPaneLength
+		// Skipping already declared property IsPaneOpen
+		// Skipping already declared property DisplayMode
+		// Skipping already declared property Content
+		// Skipping already declared property CompactPaneLength
+		// Skipping already declared property TemplateSettings
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.UI.Xaml.Controls.LightDismissOverlayMode LightDismissOverlayMode
 		{
@@ -143,79 +30,16 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 		#endif
-		#if false || false || false || false
-		[global::Uno.NotImplemented]
-		public static global::Windows.UI.Xaml.DependencyProperty CompactPaneLengthProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			"CompactPaneLength", typeof(double), 
-			typeof(global::Windows.UI.Xaml.Controls.SplitView), 
-			new FrameworkPropertyMetadata(default(double)));
-		#endif
-		#if false || false || false || false
-		[global::Uno.NotImplemented]
-		public static global::Windows.UI.Xaml.DependencyProperty ContentProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			"Content", typeof(global::Windows.UI.Xaml.UIElement), 
-			typeof(global::Windows.UI.Xaml.Controls.SplitView), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.UIElement)));
-		#endif
-		#if false || false || false || false
-		[global::Uno.NotImplemented]
-		public static global::Windows.UI.Xaml.DependencyProperty DisplayModeProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			"DisplayMode", typeof(global::Windows.UI.Xaml.Controls.SplitViewDisplayMode), 
-			typeof(global::Windows.UI.Xaml.Controls.SplitView), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Controls.SplitViewDisplayMode)));
-		#endif
-		#if false || false || false || false
-		[global::Uno.NotImplemented]
-		public static global::Windows.UI.Xaml.DependencyProperty IsPaneOpenProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			"IsPaneOpen", typeof(bool), 
-			typeof(global::Windows.UI.Xaml.Controls.SplitView), 
-			new FrameworkPropertyMetadata(default(bool)));
-		#endif
-		#if false || false || false || false
-		[global::Uno.NotImplemented]
-		public static global::Windows.UI.Xaml.DependencyProperty OpenPaneLengthProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			"OpenPaneLength", typeof(double), 
-			typeof(global::Windows.UI.Xaml.Controls.SplitView), 
-			new FrameworkPropertyMetadata(default(double)));
-		#endif
-		#if false || false || false || false
-		[global::Uno.NotImplemented]
-		public static global::Windows.UI.Xaml.DependencyProperty PaneBackgroundProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			"PaneBackground", typeof(global::Windows.UI.Xaml.Media.Brush), 
-			typeof(global::Windows.UI.Xaml.Controls.SplitView), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.Brush)));
-		#endif
-		#if false || false || false || false
-		[global::Uno.NotImplemented]
-		public static global::Windows.UI.Xaml.DependencyProperty PanePlacementProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			"PanePlacement", typeof(global::Windows.UI.Xaml.Controls.SplitViewPanePlacement), 
-			typeof(global::Windows.UI.Xaml.Controls.SplitView), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Controls.SplitViewPanePlacement)));
-		#endif
-		#if false || false || false || false
-		[global::Uno.NotImplemented]
-		public static global::Windows.UI.Xaml.DependencyProperty PaneProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			"Pane", typeof(global::Windows.UI.Xaml.UIElement), 
-			typeof(global::Windows.UI.Xaml.Controls.SplitView), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.UIElement)));
-		#endif
-		#if false || false || false || false
-		[global::Uno.NotImplemented]
-		public static global::Windows.UI.Xaml.DependencyProperty TemplateSettingsProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			"TemplateSettings", typeof(global::Windows.UI.Xaml.Controls.Primitives.SplitViewTemplateSettings), 
-			typeof(global::Windows.UI.Xaml.Controls.SplitView), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Controls.Primitives.SplitViewTemplateSettings)));
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		// Skipping already declared property CompactPaneLengthProperty
+		// Skipping already declared property ContentProperty
+		// Skipping already declared property DisplayModeProperty
+		// Skipping already declared property IsPaneOpenProperty
+		// Skipping already declared property OpenPaneLengthProperty
+		// Skipping already declared property PaneBackgroundProperty
+		// Skipping already declared property PanePlacementProperty
+		// Skipping already declared property PaneProperty
+		// Skipping already declared property TemplateSettingsProperty
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty LightDismissOverlayModeProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
@@ -223,13 +47,7 @@ namespace Windows.UI.Xaml.Controls
 			typeof(global::Windows.UI.Xaml.Controls.SplitView), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Controls.LightDismissOverlayMode)));
 		#endif
-		#if false || false || false || false
-		[global::Uno.NotImplemented]
-		public SplitView() : base()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.SplitView", "SplitView.SplitView()");
-		}
-		#endif
+		// Skipping already declared method Windows.UI.Xaml.Controls.SplitView.SplitView()
 		// Forced skipping of method Windows.UI.Xaml.Controls.SplitView.SplitView()
 		// Forced skipping of method Windows.UI.Xaml.Controls.SplitView.Content.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.SplitView.Content.set
@@ -268,39 +86,9 @@ namespace Windows.UI.Xaml.Controls
 		// Forced skipping of method Windows.UI.Xaml.Controls.SplitView.DisplayModeProperty.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.SplitView.TemplateSettingsProperty.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.SplitView.PaneBackgroundProperty.get
-		#if false || false || false || false
-		[global::Uno.NotImplemented]
-		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Xaml.Controls.SplitView, object> PaneClosed
-		{
-			[global::Uno.NotImplemented]
-			add
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.SplitView", "event TypedEventHandler<SplitView, object> SplitView.PaneClosed");
-			}
-			[global::Uno.NotImplemented]
-			remove
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.SplitView", "event TypedEventHandler<SplitView, object> SplitView.PaneClosed");
-			}
-		}
-		#endif
-		#if false || false || false || false
-		[global::Uno.NotImplemented]
-		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Xaml.Controls.SplitView, global::Windows.UI.Xaml.Controls.SplitViewPaneClosingEventArgs> PaneClosing
-		{
-			[global::Uno.NotImplemented]
-			add
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.SplitView", "event TypedEventHandler<SplitView, SplitViewPaneClosingEventArgs> SplitView.PaneClosing");
-			}
-			[global::Uno.NotImplemented]
-			remove
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.SplitView", "event TypedEventHandler<SplitView, SplitViewPaneClosingEventArgs> SplitView.PaneClosing");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		// Skipping already declared event Windows.UI.Xaml.Controls.SplitView.PaneClosed
+		// Skipping already declared event Windows.UI.Xaml.Controls.SplitView.PaneClosing
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Xaml.Controls.SplitView, object> PaneOpened
 		{
@@ -316,7 +104,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Xaml.Controls.SplitView, object> PaneOpening
 		{

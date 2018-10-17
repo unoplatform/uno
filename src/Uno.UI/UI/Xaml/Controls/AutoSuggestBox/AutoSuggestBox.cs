@@ -13,6 +13,8 @@ using Windows.UI.Xaml.Media;
 
 #if __IOS__
 using UIKit;
+#elif __MACOS__
+using AppKit;
 #endif
 
 namespace Windows.UI.Xaml.Controls

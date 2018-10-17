@@ -2,68 +2,16 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml.Controls
 {
-	#if false || false || false || false
+	#if false || false || false || false || false
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class Pivot 
 	{
-#if false
-		[global::Uno.NotImplemented]
-		public  global::Windows.UI.Xaml.DataTemplate TitleTemplate
-		{
-			get
-			{
-				return (global::Windows.UI.Xaml.DataTemplate)this.GetValue(TitleTemplateProperty);
-			}
-			set
-			{
-				this.SetValue(TitleTemplateProperty, value);
-			}
-		}
-#endif
-#if false
-		[global::Uno.NotImplemented]
-		public  object Title
-		{
-			get
-			{
-				return (object)this.GetValue(TitleProperty);
-			}
-			set
-			{
-				this.SetValue(TitleProperty, value);
-			}
-		}
-#endif
-#if false
-		[global::Uno.NotImplemented]
-		public  object SelectedItem
-		{
-			get
-			{
-				return (object)this.GetValue(SelectedItemProperty);
-			}
-			set
-			{
-				this.SetValue(SelectedItemProperty, value);
-			}
-		}
-#endif
-#if false
-		[global::Uno.NotImplemented]
-		public  int SelectedIndex
-		{
-			get
-			{
-				return (int)this.GetValue(SelectedIndexProperty);
-			}
-			set
-			{
-				this.SetValue(SelectedIndexProperty, value);
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		// Skipping already declared property TitleTemplate
+		// Skipping already declared property Title
+		// Skipping already declared property SelectedItem
+		// Skipping already declared property SelectedIndex
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  bool IsLocked
 		{
@@ -76,78 +24,13 @@ namespace Windows.UI.Xaml.Controls
 				this.SetValue(IsLockedProperty, value);
 			}
 		}
-#endif
-#if false
-		[global::Uno.NotImplemented]
-		public  global::Windows.UI.Xaml.DataTemplate HeaderTemplate
-		{
-			get
-			{
-				return (global::Windows.UI.Xaml.DataTemplate)this.GetValue(HeaderTemplateProperty);
-			}
-			set
-			{
-				this.SetValue(HeaderTemplateProperty, value);
-			}
-		}
-#endif
-#if false
-		[global::Uno.NotImplemented]
-		public  global::Windows.UI.Xaml.DataTemplate RightHeaderTemplate
-		{
-			get
-			{
-				return (global::Windows.UI.Xaml.DataTemplate)this.GetValue(RightHeaderTemplateProperty);
-			}
-			set
-			{
-				this.SetValue(RightHeaderTemplateProperty, value);
-			}
-		}
-#endif
-#if false
-		[global::Uno.NotImplemented]
-		public  object RightHeader
-		{
-			get
-			{
-				return (object)this.GetValue(RightHeaderProperty);
-			}
-			set
-			{
-				this.SetValue(RightHeaderProperty, value);
-			}
-		}
-#endif
-#if false
-		[global::Uno.NotImplemented]
-		public  global::Windows.UI.Xaml.DataTemplate LeftHeaderTemplate
-		{
-			get
-			{
-				return (global::Windows.UI.Xaml.DataTemplate)this.GetValue(LeftHeaderTemplateProperty);
-			}
-			set
-			{
-				this.SetValue(LeftHeaderTemplateProperty, value);
-			}
-		}
-#endif
-#if false
-		[global::Uno.NotImplemented]
-		public  object LeftHeader
-		{
-			get
-			{
-				return (object)this.GetValue(LeftHeaderProperty);
-			}
-			set
-			{
-				this.SetValue(LeftHeaderProperty, value);
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		#endif
+		// Skipping already declared property HeaderTemplate
+		// Skipping already declared property RightHeaderTemplate
+		// Skipping already declared property RightHeader
+		// Skipping already declared property LeftHeaderTemplate
+		// Skipping already declared property LeftHeader
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  bool IsHeaderItemsCarouselEnabled
 		{
@@ -161,7 +44,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.UI.Xaml.Controls.PivotHeaderFocusVisualPlacement HeaderFocusVisualPlacement
 		{
@@ -174,96 +57,26 @@ namespace Windows.UI.Xaml.Controls
 				this.SetValue(HeaderFocusVisualPlacementProperty, value);
 			}
 		}
-#endif
-#if false
-		[global::Uno.NotImplemented]
-		public static global::Windows.UI.Xaml.DependencyProperty HeaderTemplateProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			"HeaderTemplate", typeof(global::Windows.UI.Xaml.DataTemplate), 
-			typeof(global::Windows.UI.Xaml.Controls.Pivot), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.DataTemplate)));
-#endif
-#if false
-		[global::Uno.NotImplemented]
-		public static global::Windows.UI.Xaml.DependencyProperty IsLockedProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			"IsLocked", typeof(bool), 
-			typeof(global::Windows.UI.Xaml.Controls.Pivot), 
-			new FrameworkPropertyMetadata(default(bool)));
-#endif
-#if false
-		[global::Uno.NotImplemented]
-		public static global::Windows.UI.Xaml.DependencyProperty SelectedIndexProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			"SelectedIndex", typeof(int), 
-			typeof(global::Windows.UI.Xaml.Controls.Pivot), 
-			new FrameworkPropertyMetadata(default(int)));
-#endif
-#if false
-		[global::Uno.NotImplemented]
-		public static global::Windows.UI.Xaml.DependencyProperty SelectedItemProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			"SelectedItem", typeof(object), 
-			typeof(global::Windows.UI.Xaml.Controls.Pivot), 
-			new FrameworkPropertyMetadata(default(object)));
-#endif
-#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		#endif
+		// Skipping already declared property HeaderTemplateProperty
+		// Skipping already declared property IsLockedProperty
+		// Skipping already declared property SelectedIndexProperty
+		// Skipping already declared property SelectedItemProperty
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty SlideInAnimationGroupProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.RegisterAttached(
 			"SlideInAnimationGroup", typeof(global::Windows.UI.Xaml.Controls.PivotSlideInAnimationGroup), 
 			typeof(global::Windows.UI.Xaml.Controls.Pivot), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Controls.PivotSlideInAnimationGroup)));
-#endif
-#if false
-		[global::Uno.NotImplemented]
-		public static global::Windows.UI.Xaml.DependencyProperty TitleProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			"Title", typeof(object), 
-			typeof(global::Windows.UI.Xaml.Controls.Pivot), 
-			new FrameworkPropertyMetadata(default(object)));
-#endif
-#if false
-		[global::Uno.NotImplemented]
-		public static global::Windows.UI.Xaml.DependencyProperty TitleTemplateProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			"TitleTemplate", typeof(global::Windows.UI.Xaml.DataTemplate), 
-			typeof(global::Windows.UI.Xaml.Controls.Pivot), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.DataTemplate)));
-#endif
-#if false
-		[global::Uno.NotImplemented]
-		public static global::Windows.UI.Xaml.DependencyProperty LeftHeaderProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			"LeftHeader", typeof(object), 
-			typeof(global::Windows.UI.Xaml.Controls.Pivot), 
-			new FrameworkPropertyMetadata(default(object)));
-#endif
-#if false
-		[global::Uno.NotImplemented]
-		public static global::Windows.UI.Xaml.DependencyProperty LeftHeaderTemplateProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			"LeftHeaderTemplate", typeof(global::Windows.UI.Xaml.DataTemplate), 
-			typeof(global::Windows.UI.Xaml.Controls.Pivot), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.DataTemplate)));
-#endif
-#if false
-		[global::Uno.NotImplemented]
-		public static global::Windows.UI.Xaml.DependencyProperty RightHeaderProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			"RightHeader", typeof(object), 
-			typeof(global::Windows.UI.Xaml.Controls.Pivot), 
-			new FrameworkPropertyMetadata(default(object)));
-#endif
-#if false
-		[global::Uno.NotImplemented]
-		public static global::Windows.UI.Xaml.DependencyProperty RightHeaderTemplateProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			"RightHeaderTemplate", typeof(global::Windows.UI.Xaml.DataTemplate), 
-			typeof(global::Windows.UI.Xaml.Controls.Pivot), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.DataTemplate)));
-#endif
-#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		#endif
+		// Skipping already declared property TitleProperty
+		// Skipping already declared property TitleTemplateProperty
+		// Skipping already declared property LeftHeaderProperty
+		// Skipping already declared property LeftHeaderTemplateProperty
+		// Skipping already declared property RightHeaderProperty
+		// Skipping already declared property RightHeaderTemplateProperty
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty HeaderFocusVisualPlacementProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
@@ -271,7 +84,7 @@ namespace Windows.UI.Xaml.Controls
 			typeof(global::Windows.UI.Xaml.Controls.Pivot), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Controls.PivotHeaderFocusVisualPlacement)));
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty IsHeaderItemsCarouselEnabledProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
@@ -279,13 +92,7 @@ namespace Windows.UI.Xaml.Controls
 			typeof(global::Windows.UI.Xaml.Controls.Pivot), 
 			new FrameworkPropertyMetadata(default(bool)));
 		#endif
-		#if false || false || false || false
-		[global::Uno.NotImplemented]
-		public Pivot() : base()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.Pivot", "Pivot.Pivot()");
-		}
-		#endif
+		// Skipping already declared method Windows.UI.Xaml.Controls.Pivot.Pivot()
 		// Forced skipping of method Windows.UI.Xaml.Controls.Pivot.Pivot()
 		// Forced skipping of method Windows.UI.Xaml.Controls.Pivot.Title.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.Pivot.Title.set
@@ -334,98 +141,24 @@ namespace Windows.UI.Xaml.Controls
 		// Forced skipping of method Windows.UI.Xaml.Controls.Pivot.SelectedItemProperty.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.Pivot.IsLockedProperty.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.Pivot.SlideInAnimationGroupProperty.get
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.Controls.PivotSlideInAnimationGroup GetSlideInAnimationGroup( global::Windows.UI.Xaml.FrameworkElement element)
 		{
 			return (global::Windows.UI.Xaml.Controls.PivotSlideInAnimationGroup)element.GetValue(SlideInAnimationGroupProperty);
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static void SetSlideInAnimationGroup( global::Windows.UI.Xaml.FrameworkElement element,  global::Windows.UI.Xaml.Controls.PivotSlideInAnimationGroup value)
 		{
 			element.SetValue(SlideInAnimationGroupProperty, value);
 		}
-#endif
-#if false
-		[global::Uno.NotImplemented]
-		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Xaml.Controls.Pivot, global::Windows.UI.Xaml.Controls.PivotItemEventArgs> PivotItemLoaded
-		{
-			[global::Uno.NotImplemented]
-			add
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.Pivot", "event TypedEventHandler<Pivot, PivotItemEventArgs> Pivot.PivotItemLoaded");
-			}
-			[global::Uno.NotImplemented]
-			remove
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.Pivot", "event TypedEventHandler<Pivot, PivotItemEventArgs> Pivot.PivotItemLoaded");
-			}
-		}
-#endif
-#if false
-		[global::Uno.NotImplemented]
-		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Xaml.Controls.Pivot, global::Windows.UI.Xaml.Controls.PivotItemEventArgs> PivotItemLoading
-		{
-			[global::Uno.NotImplemented]
-			add
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.Pivot", "event TypedEventHandler<Pivot, PivotItemEventArgs> Pivot.PivotItemLoading");
-			}
-			[global::Uno.NotImplemented]
-			remove
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.Pivot", "event TypedEventHandler<Pivot, PivotItemEventArgs> Pivot.PivotItemLoading");
-			}
-		}
-#endif
-#if false
-		[global::Uno.NotImplemented]
-		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Xaml.Controls.Pivot, global::Windows.UI.Xaml.Controls.PivotItemEventArgs> PivotItemUnloaded
-		{
-			[global::Uno.NotImplemented]
-			add
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.Pivot", "event TypedEventHandler<Pivot, PivotItemEventArgs> Pivot.PivotItemUnloaded");
-			}
-			[global::Uno.NotImplemented]
-			remove
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.Pivot", "event TypedEventHandler<Pivot, PivotItemEventArgs> Pivot.PivotItemUnloaded");
-			}
-		}
-#endif
-#if false
-		public event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Xaml.Controls.Pivot, global::Windows.UI.Xaml.Controls.PivotItemEventArgs> PivotItemUnloading
-		{
-			[global::Uno.NotImplemented]
-			add
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.Pivot", "event TypedEventHandler<Pivot, PivotItemEventArgs> Pivot.PivotItemUnloading");
-			}
-			[global::Uno.NotImplemented]
-			remove
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.Pivot", "event TypedEventHandler<Pivot, PivotItemEventArgs> Pivot.PivotItemUnloading");
-			}
-		}
-#endif
-#if false
-		[global::Uno.NotImplemented]
-		public  event global::Windows.UI.Xaml.Controls.SelectionChangedEventHandler SelectionChanged
-		{
-			[global::Uno.NotImplemented]
-			add
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.Pivot", "event SelectionChangedEventHandler Pivot.SelectionChanged");
-			}
-			[global::Uno.NotImplemented]
-			remove
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.Pivot", "event SelectionChangedEventHandler Pivot.SelectionChanged");
-			}
-		}
-#endif
+		#endif
+		// Skipping already declared event Windows.UI.Xaml.Controls.Pivot.PivotItemLoaded
+		// Skipping already declared event Windows.UI.Xaml.Controls.Pivot.PivotItemLoading
+		// Skipping already declared event Windows.UI.Xaml.Controls.Pivot.PivotItemUnloaded
+		// Skipping already declared event Windows.UI.Xaml.Controls.Pivot.PivotItemUnloading
+		// Skipping already declared event Windows.UI.Xaml.Controls.Pivot.SelectionChanged
 	}
 }

@@ -2,13 +2,16 @@
 
 	<PropertyGroup>
 		<_HasWindowsXaml>false</_HasWindowsXaml>
-		<_HasWindowsXaml Condition="'$(TargetFramework)'=='uap10.0' or '$(TargetFrameworkIdentifier)'=='Xamarin.iOS' or '$(TargetFrameworkIdentifier)'=='MonoAndroid'">true</_HasWindowsXaml>
+		<_HasWindowsXaml Condition="'$(TargetFramework)'=='uap10.0' or '$(TargetFrameworkIdentifier)'=='Xamarin.iOS' or '$(TargetFrameworkIdentifier)'=='MonoAndroid' or '$(TargetFramework)'=='xamarinmac20'">true</_HasWindowsXaml>
 
 		<_IsAndroid>false</_IsAndroid>
 		<_IsAndroid Condition="'$(TargetFrameworkIdentifier)'=='MonoAndroid'">true</_IsAndroid>
 
 		<_IsIOS>false</_IsIOS>
 		<_IsIOS Condition="'$(TargetFrameworkIdentifier)'=='Xamarin.iOS'">true</_IsIOS>
+
+		<_IsMacOS>false</_IsMacOS>
+		<_IsMacOS Condition="'$(TargetFramework)'=='xamarinmac20'">true</_IsMacOS>
 
 		<_IsNet>false</_IsNet>
 		<_IsNet Condition="'$(TargetFramework)'=='net46'">true</_IsNet>
@@ -22,6 +25,10 @@
 
 	<PropertyGroup Condition="$(_IsIOS)">
 		<DefineConstants>$(DefineConstants);IOS1_0;XAMARIN;XAMARIN_IOS;XAMARIN_IOS_UNIFIED</DefineConstants>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="$(_IsMacOS)">
+		<DefineConstants>$(DefineConstants);XAMARIN</DefineConstants>
 	</PropertyGroup>
 	
 	<PropertyGroup Condition="$(_IsAndroid)">
@@ -50,6 +57,18 @@
 		<Compile Include="**\*.iOS.cs" 
 						 Exclude="bin\**\*.iOS.cs;obj\**\*.iOS.cs"
 						 Condition="$(_IsIOS)" />
+	  
+		<None Include="**\*.macOS.cs" Exclude="bin\**\*.macOS.cs;obj\**\*.macOS.cs" />
+		<Compile Remove="**\*.macOS.cs" />
+		<Compile Include="**\*.macOS.cs" 
+						 Exclude="bin\**\*.macOS.cs;obj\**\*.macOS.cs"
+						 Condition="$(_IsMacOS)" />
+	  
+		<None Include="**\*.iOSmacOS.cs" Exclude="bin\**\*.iOSmacOS.cs;obj\**\*.iOSmacOS.cs" />
+		<Compile Remove="**\*.iOSmacOS.cs" />
+		<Compile Include="**\*.iOSmacOS.cs" 
+						 Exclude="bin\**\*.iOSmacOS.cs;obj\**\*.iOSmacOS.cs"
+						 Condition="$(_IsMacOS) or $(_IsIOS)" />
 
 		<None Include="**\*.Android.cs" Exclude="bin\**\*.Android.cs;obj\**\*.Android.cs" />
 		<Compile Remove="**\*.Android.cs" />
@@ -83,7 +102,7 @@
 
 		<Page Include="**\*.xaml" 
 					Exclude="bin/**/*.xaml;obj/**/*.xaml" 
-					Condition="$(_IsAndroid) or $(_IsIOS) or $(_IsUWP) or $(_IsNetStd)" />
+					Condition="$(_IsAndroid) or $(_IsIOS) or $(_IsUWP) or $(_IsNetStd) or $(_IsMacOS)" />
 		
 	</ItemGroup>
 	

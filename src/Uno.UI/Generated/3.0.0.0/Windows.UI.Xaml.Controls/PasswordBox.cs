@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml.Controls
 {
-	#if false || false || false || false
+	#if false || false || false || false || false
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class PasswordBox 
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  string PasswordChar
 		{
@@ -21,35 +21,9 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 		#endif
-		#if false || false || false || false
-		[global::Uno.NotImplemented]
-		public  string Password
-		{
-			get
-			{
-				return (string)this.GetValue(PasswordProperty);
-			}
-			set
-			{
-				this.SetValue(PasswordProperty, value);
-			}
-		}
-		#endif
-		#if false || false || false || false
-		[global::Uno.NotImplemented]
-		public  int MaxLength
-		{
-			get
-			{
-				return (int)this.GetValue(MaxLengthProperty);
-			}
-			set
-			{
-				this.SetValue(MaxLengthProperty, value);
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		// Skipping already declared property Password
+		// Skipping already declared property MaxLength
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  bool IsPasswordRevealButtonEnabled
 		{
@@ -63,35 +37,9 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 		#endif
-		#if false || false || false || false
-		[global::Uno.NotImplemented]
-		public  global::Windows.UI.Xaml.DataTemplate HeaderTemplate
-		{
-			get
-			{
-				return (global::Windows.UI.Xaml.DataTemplate)this.GetValue(HeaderTemplateProperty);
-			}
-			set
-			{
-				this.SetValue(HeaderTemplateProperty, value);
-			}
-		}
-		#endif
-		#if false || false || false || false
-		[global::Uno.NotImplemented]
-		public  object Header
-		{
-			get
-			{
-				return (object)this.GetValue(HeaderProperty);
-			}
-			set
-			{
-				this.SetValue(HeaderProperty, value);
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		// Skipping already declared property HeaderTemplate
+		// Skipping already declared property Header
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.UI.Xaml.Media.SolidColorBrush SelectionHighlightColor
 		{
@@ -105,7 +53,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 		#endif
-		#if false || __IOS__ || NET46 || __WASM__
+		#if false || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  bool PreventKeyboardDisplayOnProgrammaticFocus
 		{
@@ -119,21 +67,8 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 		#endif
-		#if false || false || false || false
-		[global::Uno.NotImplemented]
-		public  string PlaceholderText
-		{
-			get
-			{
-				return (string)this.GetValue(PlaceholderTextProperty);
-			}
-			set
-			{
-				this.SetValue(PlaceholderTextProperty, value);
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		// Skipping already declared property PlaceholderText
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.UI.Xaml.TextReadingOrder TextReadingOrder
 		{
@@ -147,7 +82,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.UI.Xaml.Controls.PasswordRevealMode PasswordRevealMode
 		{
@@ -161,29 +96,9 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 		#endif
-		#if false || false || false || false
-		[global::Uno.NotImplemented]
-		public  global::Windows.UI.Xaml.Input.InputScope InputScope
-		{
-			get
-			{
-				return (global::Windows.UI.Xaml.Input.InputScope)this.GetValue(InputScopeProperty);
-			}
-			set
-			{
-				this.SetValue(InputScopeProperty, value);
-			}
-		}
-		#endif
-		#if false || false || false || false
-		[global::Uno.NotImplemented]
-		public static global::Windows.UI.Xaml.DependencyProperty PasswordProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			"Password", typeof(string), 
-			typeof(global::Windows.UI.Xaml.Controls.PasswordBox), 
-			new FrameworkPropertyMetadata(default(string)));
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		// Skipping already declared property InputScope
+		// Skipping already declared property PasswordProperty
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty IsPasswordRevealButtonEnabledProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
@@ -191,15 +106,8 @@ namespace Windows.UI.Xaml.Controls
 			typeof(global::Windows.UI.Xaml.Controls.PasswordBox), 
 			new FrameworkPropertyMetadata(default(bool)));
 		#endif
-		#if false || false || false || false
-		[global::Uno.NotImplemented]
-		public static global::Windows.UI.Xaml.DependencyProperty MaxLengthProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			"MaxLength", typeof(int), 
-			typeof(global::Windows.UI.Xaml.Controls.PasswordBox), 
-			new FrameworkPropertyMetadata(default(int)));
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		// Skipping already declared property MaxLengthProperty
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty PasswordCharProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
@@ -207,31 +115,10 @@ namespace Windows.UI.Xaml.Controls
 			typeof(global::Windows.UI.Xaml.Controls.PasswordBox), 
 			new FrameworkPropertyMetadata(default(string)));
 		#endif
-		#if false || false || false || false
-		[global::Uno.NotImplemented]
-		public static global::Windows.UI.Xaml.DependencyProperty HeaderProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			"Header", typeof(object), 
-			typeof(global::Windows.UI.Xaml.Controls.PasswordBox), 
-			new FrameworkPropertyMetadata(default(object)));
-		#endif
-		#if false || false || false || false
-		[global::Uno.NotImplemented]
-		public static global::Windows.UI.Xaml.DependencyProperty HeaderTemplateProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			"HeaderTemplate", typeof(global::Windows.UI.Xaml.DataTemplate), 
-			typeof(global::Windows.UI.Xaml.Controls.PasswordBox), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.DataTemplate)));
-		#endif
-		#if false || false || false || false
-		[global::Uno.NotImplemented]
-		public static global::Windows.UI.Xaml.DependencyProperty PlaceholderTextProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			"PlaceholderText", typeof(string), 
-			typeof(global::Windows.UI.Xaml.Controls.PasswordBox), 
-			new FrameworkPropertyMetadata(default(string)));
-		#endif
-		#if false || __IOS__ || NET46 || __WASM__
+		// Skipping already declared property HeaderProperty
+		// Skipping already declared property HeaderTemplateProperty
+		// Skipping already declared property PlaceholderTextProperty
+		#if false || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty PreventKeyboardDisplayOnProgrammaticFocusProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
@@ -239,7 +126,7 @@ namespace Windows.UI.Xaml.Controls
 			typeof(global::Windows.UI.Xaml.Controls.PasswordBox), 
 			new FrameworkPropertyMetadata(default(bool)));
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty SelectionHighlightColorProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
@@ -247,7 +134,7 @@ namespace Windows.UI.Xaml.Controls
 			typeof(global::Windows.UI.Xaml.Controls.PasswordBox), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.SolidColorBrush)));
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty TextReadingOrderProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
@@ -255,7 +142,7 @@ namespace Windows.UI.Xaml.Controls
 			typeof(global::Windows.UI.Xaml.Controls.PasswordBox), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.TextReadingOrder)));
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty PasswordRevealModeProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
@@ -263,21 +150,8 @@ namespace Windows.UI.Xaml.Controls
 			typeof(global::Windows.UI.Xaml.Controls.PasswordBox), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Controls.PasswordRevealMode)));
 		#endif
-		#if false || false || false || false
-		[global::Uno.NotImplemented]
-		public static global::Windows.UI.Xaml.DependencyProperty InputScopeProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			"InputScope", typeof(global::Windows.UI.Xaml.Input.InputScope), 
-			typeof(global::Windows.UI.Xaml.Controls.PasswordBox), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Input.InputScope)));
-		#endif
-		#if false || false || false || false
-		[global::Uno.NotImplemented]
-		public PasswordBox() : base()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.PasswordBox", "PasswordBox.PasswordBox()");
-		}
-		#endif
+		// Skipping already declared property InputScopeProperty
+		// Skipping already declared method Windows.UI.Xaml.Controls.PasswordBox.PasswordBox()
 		// Forced skipping of method Windows.UI.Xaml.Controls.PasswordBox.PasswordBox()
 		// Forced skipping of method Windows.UI.Xaml.Controls.PasswordBox.Password.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.PasswordBox.Password.set
@@ -291,7 +165,7 @@ namespace Windows.UI.Xaml.Controls
 		// Forced skipping of method Windows.UI.Xaml.Controls.PasswordBox.PasswordChanged.remove
 		// Forced skipping of method Windows.UI.Xaml.Controls.PasswordBox.ContextMenuOpening.add
 		// Forced skipping of method Windows.UI.Xaml.Controls.PasswordBox.ContextMenuOpening.remove
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  void SelectAll()
 		{
@@ -330,7 +204,7 @@ namespace Windows.UI.Xaml.Controls
 		// Forced skipping of method Windows.UI.Xaml.Controls.PasswordBox.PasswordCharProperty.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.PasswordBox.IsPasswordRevealButtonEnabledProperty.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.PasswordBox.MaxLengthProperty.get
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  event global::Windows.UI.Xaml.Controls.ContextMenuOpeningEventHandler ContextMenuOpening
 		{
@@ -346,23 +220,8 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 		#endif
-		#if false || false || false || false
-		[global::Uno.NotImplemented]
-		public  event global::Windows.UI.Xaml.RoutedEventHandler PasswordChanged
-		{
-			[global::Uno.NotImplemented]
-			add
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.PasswordBox", "event RoutedEventHandler PasswordBox.PasswordChanged");
-			}
-			[global::Uno.NotImplemented]
-			remove
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.PasswordBox", "event RoutedEventHandler PasswordBox.PasswordChanged");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		// Skipping already declared event Windows.UI.Xaml.Controls.PasswordBox.PasswordChanged
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  event global::Windows.UI.Xaml.Controls.TextControlPasteEventHandler Paste
 		{
@@ -378,7 +237,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Xaml.Controls.PasswordBox, global::Windows.UI.Xaml.Controls.PasswordBoxPasswordChangingEventArgs> PasswordChanging
 		{

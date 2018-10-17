@@ -2,18 +2,14 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml
 {
-	#if false || false || false || false
-	#if false || false || false || false
+	#if false || false || false || false || false
+	#if false || false || false || false || false
 	[global::Uno.NotImplemented]
 	#endif
 	public   enum ApplicationTheme 
 	{
-		#if false || false || false || false
-		Light,
-		#endif
-		#if false || false || false || false
-		Dark,
-		#endif
+		// Skipping already declared field Windows.UI.Xaml.ApplicationTheme.Light
+		// Skipping already declared field Windows.UI.Xaml.ApplicationTheme.Dark
 	}
 	#endif
 }

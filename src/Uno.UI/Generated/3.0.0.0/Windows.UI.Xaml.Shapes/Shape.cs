@@ -2,54 +2,15 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml.Shapes
 {
-	#if false || false || false || false
+	#if false || false || false || false || false
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class Shape : global::Windows.UI.Xaml.FrameworkElement
 	{
-		#if false || false || false || false
-		[global::Uno.NotImplemented]
-		public  global::Windows.UI.Xaml.Media.DoubleCollection StrokeDashArray
-		{
-			get
-			{
-				return (global::Windows.UI.Xaml.Media.DoubleCollection)this.GetValue(StrokeDashArrayProperty);
-			}
-			set
-			{
-				this.SetValue(StrokeDashArrayProperty, value);
-			}
-		}
-		#endif
-		#if false || false || false || false
-		[global::Uno.NotImplemented]
-		public  global::Windows.UI.Xaml.Media.Brush Stroke
-		{
-			get
-			{
-				return (global::Windows.UI.Xaml.Media.Brush)this.GetValue(StrokeProperty);
-			}
-			set
-			{
-				this.SetValue(StrokeProperty, value);
-			}
-		}
-		#endif
-		#if false || false || false || false
-		[global::Uno.NotImplemented]
-		public  global::Windows.UI.Xaml.Media.Stretch Stretch
-		{
-			get
-			{
-				return (global::Windows.UI.Xaml.Media.Stretch)this.GetValue(StretchProperty);
-			}
-			set
-			{
-				this.SetValue(StretchProperty, value);
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		// Skipping already declared property StrokeDashArray
+		// Skipping already declared property Stroke
+		// Skipping already declared property Stretch
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.UI.Xaml.Media.PenLineCap StrokeDashCap
 		{
@@ -63,35 +24,9 @@ namespace Windows.UI.Xaml.Shapes
 			}
 		}
 		#endif
-		#if false || false || false || false
-		[global::Uno.NotImplemented]
-		public  global::Windows.UI.Xaml.Media.Brush Fill
-		{
-			get
-			{
-				return (global::Windows.UI.Xaml.Media.Brush)this.GetValue(FillProperty);
-			}
-			set
-			{
-				this.SetValue(FillProperty, value);
-			}
-		}
-		#endif
-		#if false || false || false || false
-		[global::Uno.NotImplemented]
-		public  double StrokeThickness
-		{
-			get
-			{
-				return (double)this.GetValue(StrokeThicknessProperty);
-			}
-			set
-			{
-				this.SetValue(StrokeThicknessProperty, value);
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		// Skipping already declared property Fill
+		// Skipping already declared property StrokeThickness
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.UI.Xaml.Media.PenLineCap StrokeStartLineCap
 		{
@@ -105,7 +40,7 @@ namespace Windows.UI.Xaml.Shapes
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  double StrokeMiterLimit
 		{
@@ -119,7 +54,7 @@ namespace Windows.UI.Xaml.Shapes
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.UI.Xaml.Media.PenLineJoin StrokeLineJoin
 		{
@@ -133,7 +68,7 @@ namespace Windows.UI.Xaml.Shapes
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.UI.Xaml.Media.PenLineCap StrokeEndLineCap
 		{
@@ -147,7 +82,7 @@ namespace Windows.UI.Xaml.Shapes
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  double StrokeDashOffset
 		{
@@ -161,7 +96,7 @@ namespace Windows.UI.Xaml.Shapes
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.UI.Xaml.Media.Transform GeometryTransform
 		{
@@ -171,31 +106,10 @@ namespace Windows.UI.Xaml.Shapes
 			}
 		}
 		#endif
-		#if false || false || false || false
-		[global::Uno.NotImplemented]
-		public static global::Windows.UI.Xaml.DependencyProperty FillProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			"Fill", typeof(global::Windows.UI.Xaml.Media.Brush), 
-			typeof(global::Windows.UI.Xaml.Shapes.Shape), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.Brush)));
-		#endif
-		#if false || false || false || false
-		[global::Uno.NotImplemented]
-		public static global::Windows.UI.Xaml.DependencyProperty StretchProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			"Stretch", typeof(global::Windows.UI.Xaml.Media.Stretch), 
-			typeof(global::Windows.UI.Xaml.Shapes.Shape), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.Stretch)));
-		#endif
-		#if false || false || false || false
-		[global::Uno.NotImplemented]
-		public static global::Windows.UI.Xaml.DependencyProperty StrokeDashArrayProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			"StrokeDashArray", typeof(global::Windows.UI.Xaml.Media.DoubleCollection), 
-			typeof(global::Windows.UI.Xaml.Shapes.Shape), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.DoubleCollection)));
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		// Skipping already declared property FillProperty
+		// Skipping already declared property StretchProperty
+		// Skipping already declared property StrokeDashArrayProperty
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty StrokeDashCapProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
@@ -203,7 +117,7 @@ namespace Windows.UI.Xaml.Shapes
 			typeof(global::Windows.UI.Xaml.Shapes.Shape), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.PenLineCap)));
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty StrokeDashOffsetProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
@@ -211,7 +125,7 @@ namespace Windows.UI.Xaml.Shapes
 			typeof(global::Windows.UI.Xaml.Shapes.Shape), 
 			new FrameworkPropertyMetadata(default(double)));
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty StrokeEndLineCapProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
@@ -219,7 +133,7 @@ namespace Windows.UI.Xaml.Shapes
 			typeof(global::Windows.UI.Xaml.Shapes.Shape), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.PenLineCap)));
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty StrokeLineJoinProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
@@ -227,7 +141,7 @@ namespace Windows.UI.Xaml.Shapes
 			typeof(global::Windows.UI.Xaml.Shapes.Shape), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.PenLineJoin)));
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty StrokeMiterLimitProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
@@ -235,15 +149,8 @@ namespace Windows.UI.Xaml.Shapes
 			typeof(global::Windows.UI.Xaml.Shapes.Shape), 
 			new FrameworkPropertyMetadata(default(double)));
 		#endif
-		#if false || false || false || false
-		[global::Uno.NotImplemented]
-		public static global::Windows.UI.Xaml.DependencyProperty StrokeProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			"Stroke", typeof(global::Windows.UI.Xaml.Media.Brush), 
-			typeof(global::Windows.UI.Xaml.Shapes.Shape), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.Brush)));
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		// Skipping already declared property StrokeProperty
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty StrokeStartLineCapProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
@@ -251,21 +158,8 @@ namespace Windows.UI.Xaml.Shapes
 			typeof(global::Windows.UI.Xaml.Shapes.Shape), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.PenLineCap)));
 		#endif
-		#if false || false || false || false
-		[global::Uno.NotImplemented]
-		public static global::Windows.UI.Xaml.DependencyProperty StrokeThicknessProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			"StrokeThickness", typeof(double), 
-			typeof(global::Windows.UI.Xaml.Shapes.Shape), 
-			new FrameworkPropertyMetadata(default(double)));
-		#endif
-		#if false || false || false || false
-		[global::Uno.NotImplemented]
-		protected Shape() : base()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Shapes.Shape", "Shape.Shape()");
-		}
-		#endif
+		// Skipping already declared property StrokeThicknessProperty
+		// Skipping already declared method Windows.UI.Xaml.Shapes.Shape.Shape()
 		// Forced skipping of method Windows.UI.Xaml.Shapes.Shape.Shape()
 		// Forced skipping of method Windows.UI.Xaml.Shapes.Shape.Fill.get
 		// Forced skipping of method Windows.UI.Xaml.Shapes.Shape.Fill.set
@@ -290,7 +184,7 @@ namespace Windows.UI.Xaml.Shapes
 		// Forced skipping of method Windows.UI.Xaml.Shapes.Shape.Stretch.get
 		// Forced skipping of method Windows.UI.Xaml.Shapes.Shape.Stretch.set
 		// Forced skipping of method Windows.UI.Xaml.Shapes.Shape.GeometryTransform.get
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.UI.Composition.CompositionBrush GetAlphaMask()
 		{

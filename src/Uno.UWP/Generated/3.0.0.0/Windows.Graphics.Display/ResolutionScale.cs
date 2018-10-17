@@ -2,63 +2,29 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Graphics.Display
 {
-	#if false || false || false || false
-	#if false || false || false || false
+	#if false || false || false || false || false
+	#if false || false || false || false || false
 	[global::Uno.NotImplemented]
 	#endif
 	public   enum ResolutionScale 
 	{
-		#if false || false || false || false
-		Invalid,
-		#endif
-		#if false || false || false || false
-		Scale100Percent,
-		#endif
-		#if false || false || false || false
-		Scale120Percent,
-		#endif
-		#if false || false || false || false
-		Scale125Percent,
-		#endif
-		#if false || false || false || false
-		Scale140Percent,
-		#endif
-		#if false || false || false || false
-		Scale150Percent,
-		#endif
-		#if false || false || false || false
-		Scale160Percent,
-		#endif
-		#if false || false || false || false
-		Scale175Percent,
-		#endif
-		#if false || false || false || false
-		Scale180Percent,
-		#endif
-		#if false || false || false || false
-		Scale200Percent,
-		#endif
-		#if false || false || false || false
-		Scale225Percent,
-		#endif
-		#if false || false || false || false
-		Scale250Percent,
-		#endif
-		#if false || false || false || false
-		Scale300Percent,
-		#endif
-		#if false || false || false || false
-		Scale350Percent,
-		#endif
-		#if false || false || false || false
-		Scale400Percent,
-		#endif
-		#if false || false || false || false
-		Scale450Percent,
-		#endif
-		#if false || false || false || false
-		Scale500Percent,
-		#endif
+		// Skipping already declared field Windows.Graphics.Display.ResolutionScale.Invalid
+		// Skipping already declared field Windows.Graphics.Display.ResolutionScale.Scale100Percent
+		// Skipping already declared field Windows.Graphics.Display.ResolutionScale.Scale120Percent
+		// Skipping already declared field Windows.Graphics.Display.ResolutionScale.Scale125Percent
+		// Skipping already declared field Windows.Graphics.Display.ResolutionScale.Scale140Percent
+		// Skipping already declared field Windows.Graphics.Display.ResolutionScale.Scale150Percent
+		// Skipping already declared field Windows.Graphics.Display.ResolutionScale.Scale160Percent
+		// Skipping already declared field Windows.Graphics.Display.ResolutionScale.Scale175Percent
+		// Skipping already declared field Windows.Graphics.Display.ResolutionScale.Scale180Percent
+		// Skipping already declared field Windows.Graphics.Display.ResolutionScale.Scale200Percent
+		// Skipping already declared field Windows.Graphics.Display.ResolutionScale.Scale225Percent
+		// Skipping already declared field Windows.Graphics.Display.ResolutionScale.Scale250Percent
+		// Skipping already declared field Windows.Graphics.Display.ResolutionScale.Scale300Percent
+		// Skipping already declared field Windows.Graphics.Display.ResolutionScale.Scale350Percent
+		// Skipping already declared field Windows.Graphics.Display.ResolutionScale.Scale400Percent
+		// Skipping already declared field Windows.Graphics.Display.ResolutionScale.Scale450Percent
+		// Skipping already declared field Windows.Graphics.Display.ResolutionScale.Scale500Percent
 	}
 	#endif
 }

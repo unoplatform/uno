@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.ApplicationModel.Store.Preview
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class StoreConfiguration 
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.ApplicationModel.Store.Preview.StoreHardwareManufacturerInfo HardwareManufacturerInfo
 		{
@@ -17,7 +17,7 @@ namespace Windows.ApplicationModel.Store.Preview
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static uint? PurchasePromptingPolicy
 		{
@@ -31,105 +31,105 @@ namespace Windows.ApplicationModel.Store.Preview
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static string GetStoreWebAccountId()
 		{
 			throw new global::System.NotImplementedException("The member string StoreConfiguration.GetStoreWebAccountId() is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static string GetStoreWebAccountIdForUser( global::Windows.System.User user)
 		{
 			throw new global::System.NotImplementedException("The member string StoreConfiguration.GetStoreWebAccountIdForUser(User user) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static void SetEnterpriseStoreWebAccountId( string webAccountId)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Store.Preview.StoreConfiguration", "void StoreConfiguration.SetEnterpriseStoreWebAccountId(string webAccountId)");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static void SetEnterpriseStoreWebAccountIdForUser( global::Windows.System.User user,  string webAccountId)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Store.Preview.StoreConfiguration", "void StoreConfiguration.SetEnterpriseStoreWebAccountIdForUser(User user, string webAccountId)");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static string GetEnterpriseStoreWebAccountId()
 		{
 			throw new global::System.NotImplementedException("The member string StoreConfiguration.GetEnterpriseStoreWebAccountId() is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static string GetEnterpriseStoreWebAccountIdForUser( global::Windows.System.User user)
 		{
 			throw new global::System.NotImplementedException("The member string StoreConfiguration.GetEnterpriseStoreWebAccountIdForUser(User user) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static bool ShouldRestrictToEnterpriseStoreOnly()
 		{
 			throw new global::System.NotImplementedException("The member bool StoreConfiguration.ShouldRestrictToEnterpriseStoreOnly() is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static bool ShouldRestrictToEnterpriseStoreOnlyForUser( global::Windows.System.User user)
 		{
 			throw new global::System.NotImplementedException("The member bool StoreConfiguration.ShouldRestrictToEnterpriseStoreOnlyForUser(User user) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static bool HasStoreWebAccount()
 		{
 			throw new global::System.NotImplementedException("The member bool StoreConfiguration.HasStoreWebAccount() is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static bool HasStoreWebAccountForUser( global::Windows.System.User user)
 		{
 			throw new global::System.NotImplementedException("The member bool StoreConfiguration.HasStoreWebAccountForUser(User user) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.Streams.IRandomAccessStreamReference> GetStoreLogDataAsync( global::Windows.ApplicationModel.Store.Preview.StoreLogOptions options)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<IRandomAccessStreamReference> StoreConfiguration.GetStoreLogDataAsync(StoreLogOptions options) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static void SetStoreWebAccountIdForUser( global::Windows.System.User user,  string webAccountId)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Store.Preview.StoreConfiguration", "void StoreConfiguration.SetStoreWebAccountIdForUser(User user, string webAccountId)");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static bool IsStoreWebAccountIdForUser( global::Windows.System.User user,  string webAccountId)
 		{
 			throw new global::System.NotImplementedException("The member bool StoreConfiguration.IsStoreWebAccountIdForUser(User user, string webAccountId) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static uint? GetPurchasePromptingPolicyForUser( global::Windows.System.User user)
 		{
 			throw new global::System.NotImplementedException("The member uint? StoreConfiguration.GetPurchasePromptingPolicyForUser(User user) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static void SetPurchasePromptingPolicyForUser( global::Windows.System.User user,  uint? value)
 		{
@@ -138,28 +138,28 @@ namespace Windows.ApplicationModel.Store.Preview
 		#endif
 		// Forced skipping of method Windows.ApplicationModel.Store.Preview.StoreConfiguration.PurchasePromptingPolicy.get
 		// Forced skipping of method Windows.ApplicationModel.Store.Preview.StoreConfiguration.PurchasePromptingPolicy.set
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static void SetSystemConfiguration( string catalogHardwareManufacturerId,  string catalogStoreContentModifierId,  global::System.DateTimeOffset systemConfigurationExpiration,  string catalogHardwareDescriptor)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Store.Preview.StoreConfiguration", "void StoreConfiguration.SetSystemConfiguration(string catalogHardwareManufacturerId, string catalogStoreContentModifierId, DateTimeOffset systemConfigurationExpiration, string catalogHardwareDescriptor)");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static void SetMobileOperatorConfiguration( string mobileOperatorId,  uint appDownloadLimitInMegabytes,  uint updateDownloadLimitInMegabytes)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Store.Preview.StoreConfiguration", "void StoreConfiguration.SetMobileOperatorConfiguration(string mobileOperatorId, uint appDownloadLimitInMegabytes, uint updateDownloadLimitInMegabytes)");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static void SetStoreWebAccountId( string webAccountId)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Store.Preview.StoreConfiguration", "void StoreConfiguration.SetStoreWebAccountId(string webAccountId)");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static bool IsStoreWebAccountId( string webAccountId)
 		{
@@ -167,7 +167,7 @@ namespace Windows.ApplicationModel.Store.Preview
 		}
 		#endif
 		// Forced skipping of method Windows.ApplicationModel.Store.Preview.StoreConfiguration.HardwareManufacturerInfo.get
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IReadOnlyList<global::Windows.ApplicationModel.Store.Preview.StoreSystemFeature>> FilterUnsupportedSystemFeaturesAsync( global::System.Collections.Generic.IEnumerable<global::Windows.ApplicationModel.Store.Preview.StoreSystemFeature> systemFeatures)
 		{
