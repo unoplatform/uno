@@ -51,7 +51,7 @@ namespace Windows.UI.Xaml.Media
 
 			_imageScheduler.Disposable = cd;
 
-			var image = await Task.Run(async () => await newValue.Open(cd.Token));
+			var image = await Task.Run(() => newValue.Open(cd.Token));
 
 			if (cd.Token.IsCancellationRequested)
 			{
