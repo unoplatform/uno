@@ -2,18 +2,14 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml.Media.Animation
 {
-	#if false || false || false || false
-	#if false || false || false || false
+	#if false || false || false || false || false
+	#if false || false || false || false || false
 	[global::Uno.NotImplemented]
 	#endif
 	public   enum FillBehavior 
 	{
-		#if false || false || false || false
-		HoldEnd,
-		#endif
-		#if false || false || false || false
-		Stop,
-		#endif
+		// Skipping already declared field Windows.UI.Xaml.Media.Animation.FillBehavior.HoldEnd
+		// Skipping already declared field Windows.UI.Xaml.Media.Animation.FillBehavior.Stop
 	}
 	#endif
 }

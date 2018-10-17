@@ -2,31 +2,17 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Foundation
 {
-	#if false || false || false || false
+	#if false || false || false || false || false
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial interface IAsyncActionWithProgress<TProgress> : global::Windows.Foundation.IAsyncInfo
 	{
-		#if false || false || false || false
-		global::Windows.Foundation.AsyncActionProgressHandler<TProgress> Progress
-		{
-			get;
-			set;
-		}
-		#endif
-		#if false || false || false || false
-		global::Windows.Foundation.AsyncActionWithProgressCompletedHandler<TProgress> Completed
-		{
-			get;
-			set;
-		}
-		#endif
+		// Skipping already declared property Progress
+		// Skipping already declared property Completed
 		// Forced skipping of method Windows.Foundation.IAsyncActionWithProgress<TProgress>.Progress.set
 		// Forced skipping of method Windows.Foundation.IAsyncActionWithProgress<TProgress>.Progress.get
 		// Forced skipping of method Windows.Foundation.IAsyncActionWithProgress<TProgress>.Completed.set
 		// Forced skipping of method Windows.Foundation.IAsyncActionWithProgress<TProgress>.Completed.get
-		#if false || false || false || false
-		void GetResults();
-		#endif
+		// Skipping already declared method Windows.Foundation.IAsyncActionWithProgress<TProgress>.GetResults()
 	}
 }

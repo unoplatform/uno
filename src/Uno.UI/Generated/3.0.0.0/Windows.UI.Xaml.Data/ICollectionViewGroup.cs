@@ -2,23 +2,13 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml.Data
 {
-	#if false || false || false || false
+	#if false || false || false || false || false
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial interface ICollectionViewGroup 
 	{
-		#if false || false || false || false
-		object Group
-		{
-			get;
-		}
-		#endif
-		#if false || false || false || false
-		global::Windows.Foundation.Collections.IObservableVector<object> GroupItems
-		{
-			get;
-		}
-		#endif
+		// Skipping already declared property Group
+		// Skipping already declared property GroupItems
 		// Forced skipping of method Windows.UI.Xaml.Data.ICollectionViewGroup.Group.get
 		// Forced skipping of method Windows.UI.Xaml.Data.ICollectionViewGroup.GroupItems.get
 	}

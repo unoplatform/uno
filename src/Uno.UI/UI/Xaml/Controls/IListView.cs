@@ -9,7 +9,7 @@ namespace Windows.UI.Xaml.Controls
     public interface IListView : IItemsControl, IFrameworkElement
     {
 		bool IsItemClickEnabled { get; set; }
-#if XAMARIN
+#if XAMARIN && !__MACOS__
 		ICommand ItemClickCommand { get; set; }
 #endif
 		ItemsPanelTemplate ItemsPanel { get; set; }

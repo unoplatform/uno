@@ -59,6 +59,7 @@ namespace Windows.UI.Xaml
 		;
 #endif
 
+#pragma warning disable 67 // Unused member
 		public event PointerEventHandler PointerCanceled
 #if XAMARIN_ANDROID
 		{
@@ -68,6 +69,7 @@ namespace Windows.UI.Xaml
 #else
 		;
 #endif
+#pragma warning restore 67 // Unused member
 
 #pragma warning disable 67 // Unused member
 		[NotImplemented]

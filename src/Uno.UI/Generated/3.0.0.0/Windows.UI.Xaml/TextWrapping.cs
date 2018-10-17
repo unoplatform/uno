@@ -2,21 +2,15 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml
 {
-	#if false || false || false || false
-	#if false || false || false || false
+	#if false || false || false || false || false
+	#if false || false || false || false || false
 	[global::Uno.NotImplemented]
 	#endif
 	public   enum TextWrapping 
 	{
-		#if false || false || false || false
-		NoWrap,
-		#endif
-		#if false || false || false || false
-		Wrap,
-		#endif
-		#if false || false || false || false
-		WrapWholeWords,
-		#endif
+		// Skipping already declared field Windows.UI.Xaml.TextWrapping.NoWrap
+		// Skipping already declared field Windows.UI.Xaml.TextWrapping.Wrap
+		// Skipping already declared field Windows.UI.Xaml.TextWrapping.WrapWholeWords
 	}
 	#endif
 }

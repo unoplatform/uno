@@ -6,6 +6,8 @@ using Uno.Extensions;
 using View = Android.Views.View;
 #elif XAMARIN_IOS_UNIFIED
 using View = UIKit.UIView;
+#elif __MACOS__
+using View = AppKit.NSView;
 #elif XAMARIN_IOS
 using View = MonoTouch.UIKit.UIView;
 #else

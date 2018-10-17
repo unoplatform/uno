@@ -9,6 +9,8 @@ using Windows.UI.Xaml.Input;
 using Uno.Logging;
 #if XAMARIN_IOS
 using View = UIKit.UIView;
+#elif __MACOS__
+using View = AppKit.NSView;
 #elif __ANDROID__
 using View = Android.Views.View;
 #else
@@ -52,7 +54,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 		partial void PartialInitializeProperties();
 
-		#region Command (DP)
+#region Command (DP)
 		public static readonly DependencyProperty CommandProperty = DependencyProperty.Register(
 			"Command", typeof(ICommand), typeof(ButtonBase), new PropertyMetadata(default(ICommand), OnCommandChanged));
 

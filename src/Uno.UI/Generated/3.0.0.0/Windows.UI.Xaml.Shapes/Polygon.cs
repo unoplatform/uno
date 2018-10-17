@@ -2,26 +2,13 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml.Shapes
 {
-	#if false || false || false || false
+	#if false || false || false || false || false
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class Polygon 
 	{
-		#if false || false || false || false
-		[global::Uno.NotImplemented]
-		public  global::Windows.UI.Xaml.Media.PointCollection Points
-		{
-			get
-			{
-				return (global::Windows.UI.Xaml.Media.PointCollection)this.GetValue(PointsProperty);
-			}
-			set
-			{
-				this.SetValue(PointsProperty, value);
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		// Skipping already declared property Points
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.UI.Xaml.Media.FillRule FillRule
 		{
@@ -35,7 +22,7 @@ namespace Windows.UI.Xaml.Shapes
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty FillRuleProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
@@ -43,21 +30,8 @@ namespace Windows.UI.Xaml.Shapes
 			typeof(global::Windows.UI.Xaml.Shapes.Polygon), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.FillRule)));
 		#endif
-		#if false || false || false || false
-		[global::Uno.NotImplemented]
-		public static global::Windows.UI.Xaml.DependencyProperty PointsProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			"Points", typeof(global::Windows.UI.Xaml.Media.PointCollection), 
-			typeof(global::Windows.UI.Xaml.Shapes.Polygon), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.PointCollection)));
-		#endif
-		#if false || false || false || false
-		[global::Uno.NotImplemented]
-		public Polygon() : base()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Shapes.Polygon", "Polygon.Polygon()");
-		}
-		#endif
+		// Skipping already declared property PointsProperty
+		// Skipping already declared method Windows.UI.Xaml.Shapes.Polygon.Polygon()
 		// Forced skipping of method Windows.UI.Xaml.Shapes.Polygon.Polygon()
 		// Forced skipping of method Windows.UI.Xaml.Shapes.Polygon.FillRule.get
 		// Forced skipping of method Windows.UI.Xaml.Shapes.Polygon.FillRule.set

@@ -211,8 +211,10 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
             writer.AppendLineInvariant("");
             writer.AppendLineInvariant("#if __ANDROID__");
             writer.AppendLineInvariant("using _View = Android.Views.View;");
-            writer.AppendLineInvariant("#elif __IOS__");
-            writer.AppendLineInvariant("using _View = UIKit.UIView;");
+			writer.AppendLineInvariant("#elif __IOS__");
+			writer.AppendLineInvariant("using _View = UIKit.UIView;");
+			writer.AppendLineInvariant("#elif __MACOS__");
+			writer.AppendLineInvariant("using _View = AppKit.NSView;");
 			writer.AppendLineInvariant("#elif __WASM__");
 			writer.AppendLineInvariant("using _View = Windows.UI.Xaml.UIElement;");
 			writer.AppendLineInvariant("#elif NET46");
@@ -2833,7 +2835,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
                 {
                     if (type.Kind == SymbolKind.ErrorType)
                     {
-                        throw new InvalidOperationException($"Unable to resolve {type} (SymbolKind is ErrorType)");
+                        throw new InvalidOperationException($"Unable to resolve {type} (SymbolKind is ErrorType) {type}");
                     }
 
                     var resolvedType = type;

@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Storage
 {
-	#if false || false || false || false
+	#if false || false || false || false || false
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class ApplicationDataContainer 
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::System.Collections.Generic.IReadOnlyDictionary<string, global::Windows.Storage.ApplicationDataContainer> Containers
 		{
@@ -17,48 +17,21 @@ namespace Windows.Storage
 			}
 		}
 		#endif
-		#if false || false || false || false
-		[global::Uno.NotImplemented]
-		public  global::Windows.Storage.ApplicationDataLocality Locality
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member ApplicationDataLocality ApplicationDataContainer.Locality is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if false || false || false || false
-		[global::Uno.NotImplemented]
-		public  string Name
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string ApplicationDataContainer.Name is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if false || false || false || false
-		[global::Uno.NotImplemented]
-		public  global::Windows.Foundation.Collections.IPropertySet Values
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member IPropertySet ApplicationDataContainer.Values is not implemented in Uno.");
-			}
-		}
-		#endif
+		// Skipping already declared property Locality
+		// Skipping already declared property Name
+		// Skipping already declared property Values
 		// Forced skipping of method Windows.Storage.ApplicationDataContainer.Name.get
 		// Forced skipping of method Windows.Storage.ApplicationDataContainer.Locality.get
 		// Forced skipping of method Windows.Storage.ApplicationDataContainer.Values.get
 		// Forced skipping of method Windows.Storage.ApplicationDataContainer.Containers.get
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Storage.ApplicationDataContainer CreateContainer( string name,  global::Windows.Storage.ApplicationDataCreateDisposition disposition)
 		{
 			throw new global::System.NotImplementedException("The member ApplicationDataContainer ApplicationDataContainer.CreateContainer(string name, ApplicationDataCreateDisposition disposition) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  void DeleteContainer( string name)
 		{

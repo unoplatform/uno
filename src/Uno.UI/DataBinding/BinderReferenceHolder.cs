@@ -14,6 +14,10 @@ using Windows.UI.Xaml;
 using UIKit;
 using _NativeReference = global::Foundation.NSObject;
 using _NativeView = UIKit.UIView;
+#elif __MACOS__
+using AppKit;
+using _NativeReference = global::Foundation.NSObject;
+using _NativeView = AppKit.NSView;
 #elif XAMARIN_ANDROID
 using _NativeReference = Android.Views.View;
 using _NativeView = Android.Views.View;

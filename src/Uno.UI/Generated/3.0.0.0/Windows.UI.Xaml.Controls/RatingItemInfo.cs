@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml.Controls
 {
-	#if false || false || false || false
+	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || false
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class RatingItemInfo : global::Windows.UI.Xaml.DependencyObject
 	{
-		#if false || false || false || false
+		#if __ANDROID__ || false || false || false || false
 		[global::Uno.NotImplemented]
 		public RatingItemInfo() : base()
 		{

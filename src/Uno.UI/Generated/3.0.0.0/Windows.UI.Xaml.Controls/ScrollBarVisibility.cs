@@ -2,24 +2,16 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml.Controls
 {
-	#if false || false || false || false
-	#if false || false || false || false
+	#if false || false || false || false || false
+	#if false || false || false || false || false
 	[global::Uno.NotImplemented]
 	#endif
 	public   enum ScrollBarVisibility 
 	{
-		#if false || false || false || false
-		Disabled,
-		#endif
-		#if false || false || false || false
-		Auto,
-		#endif
-		#if false || false || false || false
-		Hidden,
-		#endif
-		#if false || false || false || false
-		Visible,
-		#endif
+		// Skipping already declared field Windows.UI.Xaml.Controls.ScrollBarVisibility.Disabled
+		// Skipping already declared field Windows.UI.Xaml.Controls.ScrollBarVisibility.Auto
+		// Skipping already declared field Windows.UI.Xaml.Controls.ScrollBarVisibility.Hidden
+		// Skipping already declared field Windows.UI.Xaml.Controls.ScrollBarVisibility.Visible
 	}
 	#endif
 }

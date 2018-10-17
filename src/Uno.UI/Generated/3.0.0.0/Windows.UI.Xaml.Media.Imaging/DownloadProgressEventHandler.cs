@@ -2,7 +2,5 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml.Media.Imaging
 {
-	#if false || false || false || false
-	public delegate void DownloadProgressEventHandler(object @sender, global::Windows.UI.Xaml.Media.Imaging.DownloadProgressEventArgs @e);
-	#endif
+	// Skipping already declared delegate Windows.UI.Xaml.Media.Imaging.DownloadProgressEventHandler
 }

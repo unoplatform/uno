@@ -9,6 +9,10 @@ using Windows.UI.Xaml.Media;
 using CoreGraphics;
 using UIKit;
 using View = UIKit.UIView;
+#elif __MACOS__
+using CoreGraphics;
+using AppKit;
+using View = AppKit.NSView;
 #elif XAMARIN_ANDROID
 using View = Android.Views.View;
 #elif NET46 || NETSTANDARD2_0

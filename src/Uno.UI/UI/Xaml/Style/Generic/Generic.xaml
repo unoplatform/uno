@@ -3993,7 +3993,7 @@
 	while delegating to a native implementation for performance.-->
 	<xamarin:Style TargetType="ScrollViewer"
 				   x:Key="ListViewBaseScrollViewerStyle">
-		<not_wasm:Setter Property="Template">
+		<ios:Setter Property="Template">
 			<Setter.Value>
 				<ControlTemplate TargetType="ScrollViewer">
 					<ListViewBaseScrollContentPresenter x:Name="ScrollContentPresenter"
@@ -4003,7 +4003,18 @@
 														Background="{TemplateBinding Background}" />
 				</ControlTemplate>
 			</Setter.Value>
-		</not_wasm:Setter>
+		</ios:Setter>
+		<android:Setter Property="Template">
+			<Setter.Value>
+				<ControlTemplate TargetType="ScrollViewer">
+					<ListViewBaseScrollContentPresenter x:Name="ScrollContentPresenter"
+														Content="{TemplateBinding Content}"
+														ContentTemplate="{TemplateBinding ContentTemplate}"
+														ContentTemplateSelector="{TemplateBinding ContentTemplateSelector}"
+														Background="{TemplateBinding Background}" />
+				</ControlTemplate>
+			</Setter.Value>
+		</android:Setter>
 	</xamarin:Style>
 
 	<!-- Default style for Windows.UI.Xaml.Controls.ListView -->

@@ -2,24 +2,16 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Storage
 {
-	#if false || false || false || false
-	#if false || false || false || false
+	#if false || false || false || false || false
+	#if false || false || false || false || false
 	[global::Uno.NotImplemented]
 	#endif
 	public   enum CreationCollisionOption 
 	{
-		#if false || false || false || false
-		GenerateUniqueName,
-		#endif
-		#if false || false || false || false
-		ReplaceExisting,
-		#endif
-		#if false || false || false || false
-		FailIfExists,
-		#endif
-		#if false || false || false || false
-		OpenIfExists,
-		#endif
+		// Skipping already declared field Windows.Storage.CreationCollisionOption.GenerateUniqueName
+		// Skipping already declared field Windows.Storage.CreationCollisionOption.ReplaceExisting
+		// Skipping already declared field Windows.Storage.CreationCollisionOption.FailIfExists
+		// Skipping already declared field Windows.Storage.CreationCollisionOption.OpenIfExists
 	}
 	#endif
 }

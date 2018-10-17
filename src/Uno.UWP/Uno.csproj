@@ -1,8 +1,8 @@
 <Project Sdk="Microsoft.NET.Sdk" ToolsVersion="15.0">
   
   <PropertyGroup>
-    <TargetFrameworks>xamarinios10;MonoAndroid80;net46;netstandard2.0</TargetFrameworks>
-    <TargetFrameworksCI>MonoAndroid71;MonoAndroid80;xamarinios10;net46;netstandard2.0</TargetFrameworksCI>
+    <TargetFrameworks>xamarinios10;MonoAndroid80;net46;netstandard2.0;xamarinmac20</TargetFrameworks>
+    <TargetFrameworksCI>MonoAndroid71;MonoAndroid80;xamarinios10;net46;netstandard2.0;xamarinmac20</TargetFrameworksCI>
   </PropertyGroup>
 
   <PropertyGroup>
@@ -60,7 +60,7 @@
 		</PackageReference>
 	</ItemGroup>
 
-	<ItemGroup Condition="'$(TargetFrameworkIdentifier)'=='MonoAndroid' or '$(TargetFrameworkIdentifier)'=='Xamarin.iOS'">
+	<ItemGroup Condition="'$(TargetFrameworkIdentifier)'=='MonoAndroid' or '$(TargetFrameworkIdentifier)'=='Xamarin.iOS' or '$(TargetFramework)'=='xamarinmac20'">
 		<Reference Include="System.Numerics" />
 		<Reference Include="System.Numerics.Vectors" />
 	</ItemGroup>

@@ -25,6 +25,14 @@ using Font = UIKit.UIFont;
 using Windows.UI.Xaml.Controls;
 using DependencyObject = System.Object;
 using UIKit;
+#elif __MACOS__
+using View = AppKit.NSView;
+using ViewGroup = AppKit.NSView;
+using Color = AppKit.NSColor;
+using Font = AppKit.NSFont;
+using Windows.UI.Xaml.Controls;
+using DependencyObject = System.Object;
+using AppKit;
 #elif METRO
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;

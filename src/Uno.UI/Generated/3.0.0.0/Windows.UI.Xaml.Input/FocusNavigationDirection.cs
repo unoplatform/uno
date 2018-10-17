@@ -2,33 +2,19 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml.Input
 {
-	#if false || false || false || false
-	#if false || false || false || false
+	#if false || false || false || false || false
+	#if false || false || false || false || false
 	[global::Uno.NotImplemented]
 	#endif
 	public   enum FocusNavigationDirection 
 	{
-		#if false || false || false || false
-		Next,
-		#endif
-		#if false || false || false || false
-		Previous,
-		#endif
-		#if false || false || false || false
-		Up,
-		#endif
-		#if false || false || false || false
-		Down,
-		#endif
-		#if false || false || false || false
-		Left,
-		#endif
-		#if false || false || false || false
-		Right,
-		#endif
-		#if false || false || false || false
-		None,
-		#endif
+		// Skipping already declared field Windows.UI.Xaml.Input.FocusNavigationDirection.Next
+		// Skipping already declared field Windows.UI.Xaml.Input.FocusNavigationDirection.Previous
+		// Skipping already declared field Windows.UI.Xaml.Input.FocusNavigationDirection.Up
+		// Skipping already declared field Windows.UI.Xaml.Input.FocusNavigationDirection.Down
+		// Skipping already declared field Windows.UI.Xaml.Input.FocusNavigationDirection.Left
+		// Skipping already declared field Windows.UI.Xaml.Input.FocusNavigationDirection.Right
+		// Skipping already declared field Windows.UI.Xaml.Input.FocusNavigationDirection.None
 	}
 	#endif
 }

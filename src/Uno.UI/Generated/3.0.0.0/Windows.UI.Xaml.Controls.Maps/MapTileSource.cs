@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml.Controls.Maps
 {
-	#if false || false || false || false
+	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || false
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class MapTileSource : global::Windows.UI.Xaml.DependencyObject
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  bool IsRetryEnabled
 		{
@@ -21,7 +21,7 @@ namespace Windows.UI.Xaml.Controls.Maps
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  bool IsFadingEnabled
 		{
@@ -35,7 +35,7 @@ namespace Windows.UI.Xaml.Controls.Maps
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.UI.Xaml.Controls.Maps.MapTileDataSource DataSource
 		{
@@ -49,7 +49,7 @@ namespace Windows.UI.Xaml.Controls.Maps
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Devices.Geolocation.GeoboundingBox Bounds
 		{
@@ -63,7 +63,7 @@ namespace Windows.UI.Xaml.Controls.Maps
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  bool AllowOverstretch
 		{
@@ -77,7 +77,7 @@ namespace Windows.UI.Xaml.Controls.Maps
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.UI.Xaml.Controls.Maps.MapZoomLevelRange ZoomLevelRange
 		{
@@ -91,7 +91,7 @@ namespace Windows.UI.Xaml.Controls.Maps
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  int ZIndex
 		{
@@ -105,7 +105,7 @@ namespace Windows.UI.Xaml.Controls.Maps
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  bool Visible
 		{
@@ -119,7 +119,7 @@ namespace Windows.UI.Xaml.Controls.Maps
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  int TilePixelSize
 		{
@@ -133,7 +133,7 @@ namespace Windows.UI.Xaml.Controls.Maps
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.UI.Xaml.Controls.Maps.MapTileLayer Layer
 		{
@@ -147,7 +147,7 @@ namespace Windows.UI.Xaml.Controls.Maps
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  bool IsTransparencyEnabled
 		{
@@ -161,7 +161,7 @@ namespace Windows.UI.Xaml.Controls.Maps
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty AllowOverstretchProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
@@ -169,7 +169,7 @@ namespace Windows.UI.Xaml.Controls.Maps
 			typeof(global::Windows.UI.Xaml.Controls.Maps.MapTileSource), 
 			new FrameworkPropertyMetadata(default(bool)));
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty BoundsProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
@@ -177,7 +177,7 @@ namespace Windows.UI.Xaml.Controls.Maps
 			typeof(global::Windows.UI.Xaml.Controls.Maps.MapTileSource), 
 			new FrameworkPropertyMetadata(default(global::Windows.Devices.Geolocation.GeoboundingBox)));
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty DataSourceProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
@@ -185,7 +185,7 @@ namespace Windows.UI.Xaml.Controls.Maps
 			typeof(global::Windows.UI.Xaml.Controls.Maps.MapTileSource), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Controls.Maps.MapTileDataSource)));
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty IsFadingEnabledProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
@@ -193,7 +193,7 @@ namespace Windows.UI.Xaml.Controls.Maps
 			typeof(global::Windows.UI.Xaml.Controls.Maps.MapTileSource), 
 			new FrameworkPropertyMetadata(default(bool)));
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty IsRetryEnabledProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
@@ -201,7 +201,7 @@ namespace Windows.UI.Xaml.Controls.Maps
 			typeof(global::Windows.UI.Xaml.Controls.Maps.MapTileSource), 
 			new FrameworkPropertyMetadata(default(bool)));
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty IsTransparencyEnabledProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
@@ -209,7 +209,7 @@ namespace Windows.UI.Xaml.Controls.Maps
 			typeof(global::Windows.UI.Xaml.Controls.Maps.MapTileSource), 
 			new FrameworkPropertyMetadata(default(bool)));
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty LayerProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
@@ -217,7 +217,7 @@ namespace Windows.UI.Xaml.Controls.Maps
 			typeof(global::Windows.UI.Xaml.Controls.Maps.MapTileSource), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Controls.Maps.MapTileLayer)));
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty TilePixelSizeProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
@@ -225,7 +225,7 @@ namespace Windows.UI.Xaml.Controls.Maps
 			typeof(global::Windows.UI.Xaml.Controls.Maps.MapTileSource), 
 			new FrameworkPropertyMetadata(default(int)));
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty VisibleProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
@@ -233,7 +233,7 @@ namespace Windows.UI.Xaml.Controls.Maps
 			typeof(global::Windows.UI.Xaml.Controls.Maps.MapTileSource), 
 			new FrameworkPropertyMetadata(default(bool)));
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty ZIndexProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
@@ -241,7 +241,7 @@ namespace Windows.UI.Xaml.Controls.Maps
 			typeof(global::Windows.UI.Xaml.Controls.Maps.MapTileSource), 
 			new FrameworkPropertyMetadata(default(int)));
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty ZoomLevelRangeProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
@@ -249,7 +249,7 @@ namespace Windows.UI.Xaml.Controls.Maps
 			typeof(global::Windows.UI.Xaml.Controls.Maps.MapTileSource), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Controls.Maps.MapZoomLevelRange)));
 		#endif
-		#if false || false || false || false
+		#if __ANDROID__ || false || false || false || false
 		[global::Uno.NotImplemented]
 		public MapTileSource() : base()
 		{
@@ -257,7 +257,7 @@ namespace Windows.UI.Xaml.Controls.Maps
 		}
 		#endif
 		// Forced skipping of method Windows.UI.Xaml.Controls.Maps.MapTileSource.MapTileSource()
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public MapTileSource( global::Windows.UI.Xaml.Controls.Maps.MapTileDataSource dataSource) : base()
 		{
@@ -265,7 +265,7 @@ namespace Windows.UI.Xaml.Controls.Maps
 		}
 		#endif
 		// Forced skipping of method Windows.UI.Xaml.Controls.Maps.MapTileSource.MapTileSource(Windows.UI.Xaml.Controls.Maps.MapTileDataSource)
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public MapTileSource( global::Windows.UI.Xaml.Controls.Maps.MapTileDataSource dataSource,  global::Windows.UI.Xaml.Controls.Maps.MapZoomLevelRange zoomLevelRange) : base()
 		{
@@ -273,7 +273,7 @@ namespace Windows.UI.Xaml.Controls.Maps
 		}
 		#endif
 		// Forced skipping of method Windows.UI.Xaml.Controls.Maps.MapTileSource.MapTileSource(Windows.UI.Xaml.Controls.Maps.MapTileDataSource, Windows.UI.Xaml.Controls.Maps.MapZoomLevelRange)
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public MapTileSource( global::Windows.UI.Xaml.Controls.Maps.MapTileDataSource dataSource,  global::Windows.UI.Xaml.Controls.Maps.MapZoomLevelRange zoomLevelRange,  global::Windows.Devices.Geolocation.GeoboundingBox bounds) : base()
 		{
@@ -281,7 +281,7 @@ namespace Windows.UI.Xaml.Controls.Maps
 		}
 		#endif
 		// Forced skipping of method Windows.UI.Xaml.Controls.Maps.MapTileSource.MapTileSource(Windows.UI.Xaml.Controls.Maps.MapTileDataSource, Windows.UI.Xaml.Controls.Maps.MapZoomLevelRange, Windows.Devices.Geolocation.GeoboundingBox)
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public MapTileSource( global::Windows.UI.Xaml.Controls.Maps.MapTileDataSource dataSource,  global::Windows.UI.Xaml.Controls.Maps.MapZoomLevelRange zoomLevelRange,  global::Windows.Devices.Geolocation.GeoboundingBox bounds,  int tileSizeInPixels) : base()
 		{

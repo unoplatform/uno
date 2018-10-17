@@ -2,7 +2,5 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml
 {
-	#if false || false || false || false
-	public delegate void BindingFailedEventHandler(object @sender, global::Windows.UI.Xaml.BindingFailedEventArgs @e);
-	#endif
+	// Skipping already declared delegate Windows.UI.Xaml.BindingFailedEventHandler
 }

@@ -2,121 +2,22 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Text
 {
-	#if false || false || false || false
+	#if false || false || false || false || false
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class FontWeights 
 	{
-		#if false || false || false || false
-		[global::Uno.NotImplemented]
-		public static global::Windows.UI.Text.FontWeight Black
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member FontWeight FontWeights.Black is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if false || false || false || false
-		[global::Uno.NotImplemented]
-		public static global::Windows.UI.Text.FontWeight Bold
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member FontWeight FontWeights.Bold is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if false || false || false || false
-		[global::Uno.NotImplemented]
-		public static global::Windows.UI.Text.FontWeight ExtraBlack
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member FontWeight FontWeights.ExtraBlack is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if false || false || false || false
-		[global::Uno.NotImplemented]
-		public static global::Windows.UI.Text.FontWeight ExtraBold
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member FontWeight FontWeights.ExtraBold is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if false || false || false || false
-		[global::Uno.NotImplemented]
-		public static global::Windows.UI.Text.FontWeight ExtraLight
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member FontWeight FontWeights.ExtraLight is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if false || false || false || false
-		[global::Uno.NotImplemented]
-		public static global::Windows.UI.Text.FontWeight Light
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member FontWeight FontWeights.Light is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if false || false || false || false
-		[global::Uno.NotImplemented]
-		public static global::Windows.UI.Text.FontWeight Medium
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member FontWeight FontWeights.Medium is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if false || false || false || false
-		[global::Uno.NotImplemented]
-		public static global::Windows.UI.Text.FontWeight Normal
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member FontWeight FontWeights.Normal is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if false || false || false || false
-		[global::Uno.NotImplemented]
-		public static global::Windows.UI.Text.FontWeight SemiBold
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member FontWeight FontWeights.SemiBold is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if false || false || false || false
-		[global::Uno.NotImplemented]
-		public static global::Windows.UI.Text.FontWeight SemiLight
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member FontWeight FontWeights.SemiLight is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if false || false || false || false
-		[global::Uno.NotImplemented]
-		public static global::Windows.UI.Text.FontWeight Thin
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member FontWeight FontWeights.Thin is not implemented in Uno.");
-			}
-		}
-		#endif
+		// Skipping already declared property Black
+		// Skipping already declared property Bold
+		// Skipping already declared property ExtraBlack
+		// Skipping already declared property ExtraBold
+		// Skipping already declared property ExtraLight
+		// Skipping already declared property Light
+		// Skipping already declared property Medium
+		// Skipping already declared property Normal
+		// Skipping already declared property SemiBold
+		// Skipping already declared property SemiLight
+		// Skipping already declared property Thin
 		// Forced skipping of method Windows.UI.Text.FontWeights.Black.get
 		// Forced skipping of method Windows.UI.Text.FontWeights.Bold.get
 		// Forced skipping of method Windows.UI.Text.FontWeights.ExtraBlack.get

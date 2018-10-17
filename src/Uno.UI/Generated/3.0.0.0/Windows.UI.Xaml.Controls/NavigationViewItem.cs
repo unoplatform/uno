@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml.Controls
 {
-	#if false || false || NET46 || __WASM__
+	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class NavigationViewItem : global::Windows.UI.Xaml.Controls.NavigationViewItemBase
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.UI.Xaml.Controls.IconElement Icon
 		{
@@ -21,7 +21,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  double CompactPaneLength
 		{
@@ -31,7 +31,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty CompactPaneLengthProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
@@ -39,7 +39,7 @@ namespace Windows.UI.Xaml.Controls
 			typeof(global::Windows.UI.Xaml.Controls.NavigationViewItem), 
 			new FrameworkPropertyMetadata(default(double)));
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty IconProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
@@ -47,7 +47,7 @@ namespace Windows.UI.Xaml.Controls
 			typeof(global::Windows.UI.Xaml.Controls.NavigationViewItem), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Controls.IconElement)));
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public NavigationViewItem() 
 		{
