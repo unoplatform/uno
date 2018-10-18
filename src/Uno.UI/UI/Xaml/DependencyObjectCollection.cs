@@ -191,7 +191,7 @@ namespace Windows.UI.Xaml
 	/// </summary>
 	public partial class DependencyObjectCollection : DependencyObjectCollection<DependencyObject>
 	{
-		internal DependencyObjectCollection()
+		public DependencyObjectCollection()
 		{
 		}
 
