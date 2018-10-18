@@ -13,7 +13,7 @@ using Uno.Logging;
 
 namespace Uno.UWPSyncGenerator
 {
-	class Generator
+	abstract class Generator
 	{
 		private const string net46Define = "NET46";
 		private const string AndroidDefine = "__ANDROID__";
@@ -35,6 +35,7 @@ namespace Uno.UWPSyncGenerator
 
 		private ISymbol _voidSymbol;
 		private ISymbol _dependencyPropertySymbol;
+		protected ISymbol UIElementSymbol { get; private set; }
 		private static string MSBuildBasePath;
 
 		static Generator()
@@ -42,8 +43,9 @@ namespace Uno.UWPSyncGenerator
 			RegisterAssemblyLoader();
 		}
 
-		public void Build(string basePath, string baseName, string sourceAssembly)
+		public virtual void Build(string basePath, string baseName, string sourceAssembly)
 		{
+			Directory.SetCurrentDirectory(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location));
 			InitializeRoslyn();
 
 			_referenceCompilation = LoadProject(@"..\..\..\..\Uno.UWPSyncGenerator.Reference\Uno.UWPSyncGenerator.Reference.csproj");
@@ -58,6 +60,7 @@ namespace Uno.UWPSyncGenerator
 
 			_voidSymbol = _referenceCompilation.GetTypeByMetadataName("System.Void");
 			_dependencyPropertySymbol = _referenceCompilation.GetTypeByMetadataName("Windows.UI.Xaml.DependencyProperty");
+			UIElementSymbol = _referenceCompilation.GetTypeByMetadataName("Windows.UI.Xaml.UIElement");
 			var a = _referenceCompilation.GetTypeByMetadataName("Windows.UI.ViewManagement.StatusBar");
 
 
@@ -87,31 +90,12 @@ namespace Uno.UWPSyncGenerator
 			{
 				foreach (var type in ns.Types)
 				{
-					var folder = $@"{GetNamespaceBasePath(type)}\{ns.Namespace}";
-					var info = Directory.CreateDirectory(folder);
-
-					// Console.WriteLine(type.ToString());
-
-					// if (type.Name == "BrushCollection" || type.Name == "StringMap")
-					// if (type.Name == "StatusBar")
-					{
-						using (var typeWriter = new StreamWriter(Path.Combine(folder, type.Name) + ".cs"))
-						{
-							var b = new IndentedStringBuilder();
-
-							b.AppendLineInvariant($"#pragma warning disable 108 // new keyword hiding");
-							b.AppendLineInvariant($"#pragma warning disable 114 // new keyword hiding");
-							using (b.BlockInvariant($"namespace {ns.Namespace}"))
-							{
-								WriteType(type, b);
-							}
-
-							typeWriter.Write(b.ToString());
-						}
-					}
+					ProcessType(type, ns.Namespace);
 				}
 			}
 		}
+
+		protected abstract void ProcessType(INamedTypeSymbol type, INamespaceSymbol ns);
 
 		private static void InitializeRoslyn()
 		{
@@ -128,19 +112,19 @@ namespace Uno.UWPSyncGenerator
 			var process = System.Diagnostics.Process.Start(pi);
 			process.WaitForExit();
 			var installPath = process.StandardOutput.ReadToEnd().TrimEnd("\r\n");
-		
+
 			Environment.SetEnvironmentVariable("VSINSTALLDIR", installPath);
 
 			MSBuildBasePath = Path.Combine(installPath, "MSBuild\\15.0\\Bin");
 		}
 
-		private string GetNamespaceBasePath(INamedTypeSymbol type)
+		protected string GetNamespaceBasePath(INamedTypeSymbol type)
 		{
-			if(type.ContainingAssembly.Name == "Windows.Foundation.FoundationContract")
+			if (type.ContainingAssembly.Name == "Windows.Foundation.FoundationContract")
 			{
 				return @"..\..\..\..\Uno.Foundation\Generated\2.0.0.0";
 			}
-			else if(!type.ContainingNamespace.ToString().StartsWith("Windows.UI.Xaml"))
+			else if (!type.ContainingNamespace.ToString().StartsWith("Windows.UI.Xaml"))
 			{
 				return @"..\..\..\..\Uno.UWP\Generated\3.0.0.0";
 			}
@@ -150,13 +134,18 @@ namespace Uno.UWPSyncGenerator
 			}
 		}
 
-		private class PlatformSymbols<T> where T:ISymbol
+		protected class PlatformSymbols<T> where T : ISymbol
 		{
 			public T AndroidSymbol;
 			public T IOSSymbol;
 			public T net46ymbol;
 			public T MacOSSymbol;
 			public T WasmSymbol;
+			public T UAPSymbol;
+
+			private ImplementedFor _implementedFor;
+			public ImplementedFor ImplementedFor => _implementedFor;
+			public ImplementedFor ImplementedForMain => ImplementedFor & ImplementedFor.Main;
 
 			public PlatformSymbols(
 				T androidType,
@@ -165,7 +154,8 @@ namespace Uno.UWPSyncGenerator
 				T macOSType,
 #endif
 				T unitTestType,
-				T wasmType
+				T wasmType,
+				T uapType
 			)
 			{
 				this.AndroidSymbol = androidType;
@@ -175,6 +165,30 @@ namespace Uno.UWPSyncGenerator
 #if HAS_MACOS
 				this.MacOSSymbol = macOSType;
 #endif
+				this.UAPSymbol = uapType;
+
+				if (IsImplemented(AndroidSymbol))
+				{
+					_implementedFor |= ImplementedFor.Android;
+				}
+				if (IsImplemented(IOSSymbol))
+				{
+					_implementedFor |= ImplementedFor.iOS;
+				}
+				if (IsImplemented(net46ymbol))
+				{
+					_implementedFor |= ImplementedFor.Net46;
+				}
+#if HAS_MACOS
+				if (IsImplemented(MacOSSymbol))
+				{
+					_implementedFor |= ImplementedFor.MacOS;
+				}
+#endif
+				if (IsImplemented(WasmSymbol))
+				{
+					_implementedFor |= ImplementedFor.WASM;
+				}
 			}
 
 			public bool HasUndefined =>
@@ -188,10 +202,10 @@ namespace Uno.UWPSyncGenerator
 			public void AppendIf(IndentedStringBuilder b)
 			{
 				var defines = new[] {
-					AndroidSymbol == null ? AndroidDefine : "false",
-					IOSSymbol == null ? iOSDefine : "false",
-					net46ymbol == null ? net46Define : "false",
-					WasmSymbol == null ? WasmDefine : "false",
+					IsNotDefinedByUno(AndroidSymbol) ? AndroidDefine : "false",
+					IsNotDefinedByUno(IOSSymbol) ? iOSDefine : "false",
+					IsNotDefinedByUno(net46ymbol) ? net46Define : "false",
+					IsNotDefinedByUno(WasmSymbol) ? WasmDefine : "false",
 #if HAS_MACOS
 					MacOSSymbol == null ? MacDefine : "false",
 #endif
@@ -199,20 +213,60 @@ namespace Uno.UWPSyncGenerator
 
 				b.AppendLineInvariant($"#if {defines.JoinBy(" || ")}");
 			}
+
+			private static bool IsNotDefinedByUno(ISymbol symbol)
+			{
+				if (symbol == null) { return true; }
+				if (!(symbol is INamedTypeSymbol type)) { return false; }
+
+				var onlyGenerated = type.DeclaringSyntaxReferences.All(r => IsGeneratedFile(r.SyntaxTree.FilePath));
+				return onlyGenerated;
+			}
+
+			private static bool IsGeneratedFile(string filePath)
+			{
+				if (filePath.EndsWith(".g.cs"))
+				{
+					return true;
+				}
+				if (filePath.Contains(@"Generated\3.0.0.0"))
+				{
+					return true;
+				}
+				if (filePath.Contains(@"Generated\2.0.0.0"))
+				{
+					return true;
+				}
+
+				return false;
+			}
+
+			private static bool IsImplemented(ISymbol symbol)
+			{
+				if (symbol == null) { return false; }
+				if (symbol.GetAttributes().Any(a => a.AttributeClass.Name == "NotImplementedAttribute")) { return false; }
+				if (IsNotDefinedByUno(symbol)) { return false; }
+
+				return true;
+			}
 		}
 
-		private PlatformSymbols<INamedTypeSymbol> GetAllSymbols(string name) 
-			=> new PlatformSymbols<INamedTypeSymbol>(
-				_androidCompilation.GetTypeByMetadataName(name),
-				_iOSCompilation.GetTypeByMetadataName(name),
+		protected PlatformSymbols<INamedTypeSymbol> GetAllSymbols(INamedTypeSymbol uapType)
+		{
+			var name = uapType.ContainingNamespace + "." + uapType.MetadataName;
+			return new PlatformSymbols<INamedTypeSymbol>(
+				  _androidCompilation.GetTypeByMetadataName(name),
+				  _iOSCompilation.GetTypeByMetadataName(name),
 #if HAS_MACOS
 				_macCompilation?.GetTypeByMetadataName(name),
 #endif
 				_net46Compilation.GetTypeByMetadataName(name),
-				_wasmCompilation.GetTypeByMetadataName(name)
-			);
+				  _wasmCompilation.GetTypeByMetadataName(name),
+				  uapType
+			  );
+		}
 
-		private PlatformSymbols<ISymbol> GetAllGetNonGeneratedMembers(PlatformSymbols<INamedTypeSymbol> types, string name, Func<IEnumerable<ISymbol>, ISymbol> filter)
+		private PlatformSymbols<ISymbol> GetAllGetNonGeneratedMembers(PlatformSymbols<INamedTypeSymbol> types, string name, Func<IEnumerable<ISymbol>, ISymbol> filter, ISymbol uapSymbol = null)
 			=> new PlatformSymbols<ISymbol>(
 				filter(GetNonGeneratedMembers(types.AndroidSymbol, name)),
 				filter(GetNonGeneratedMembers(types.IOSSymbol, name)),
@@ -220,10 +274,11 @@ namespace Uno.UWPSyncGenerator
 				filter(GetNonGeneratedMembers(types.MacOSSymbol, name)),
 #endif
 				filter(GetNonGeneratedMembers(types.net46ymbol, name)),
-				filter(GetNonGeneratedMembers(types.WasmSymbol, name))
+				filter(GetNonGeneratedMembers(types.WasmSymbol, name)),
+				uapType: uapSymbol
 			);
 
-		private PlatformSymbols<IMethodSymbol> GetAllMatchingMethods(PlatformSymbols<INamedTypeSymbol> types, IMethodSymbol method)
+		protected PlatformSymbols<IMethodSymbol> GetAllMatchingMethods(PlatformSymbols<INamedTypeSymbol> types, IMethodSymbol method)
 			=> new PlatformSymbols<IMethodSymbol>(
 				FindMatchingMethod(types.AndroidSymbol, method),
 				FindMatchingMethod(types.IOSSymbol, method),
@@ -231,10 +286,11 @@ namespace Uno.UWPSyncGenerator
 				FindMatchingMethod(types.MacOSSymbol, method),
 #endif
 				FindMatchingMethod(types.net46ymbol, method),
-				FindMatchingMethod(types.WasmSymbol, method)
+				FindMatchingMethod(types.WasmSymbol, method),
+				uapType: method
 			);
 
-		private PlatformSymbols<IPropertySymbol> GetAllMatchingPropertyMember(PlatformSymbols<INamedTypeSymbol> types, IPropertySymbol property)
+		protected PlatformSymbols<IPropertySymbol> GetAllMatchingPropertyMember(PlatformSymbols<INamedTypeSymbol> types, IPropertySymbol property)
 			=> new PlatformSymbols<IPropertySymbol>(
 				GetMatchingPropertyMember(types.AndroidSymbol, property),
 				GetMatchingPropertyMember(types.IOSSymbol, property),
@@ -242,71 +298,16 @@ namespace Uno.UWPSyncGenerator
 				GetMatchingPropertyMember(types.MacOSSymbol, property),
 #endif
 				GetMatchingPropertyMember(types.net46ymbol, property),
-				GetMatchingPropertyMember(types.WasmSymbol, property)
+				GetMatchingPropertyMember(types.WasmSymbol, property),
+				uapType: property
 			);
 
-		private void WriteType(INamedTypeSymbol type, IndentedStringBuilder b)
+		protected PlatformSymbols<ISymbol> GetAllMatchingEvents(PlatformSymbols<INamedTypeSymbol> types, IEventSymbol eventMember)
 		{
-			var kind = type.TypeKind;
-			var partialModifier = type.TypeKind != TypeKind.Enum ? "partial" : "";
-			var allSymbols = GetAllSymbols(type.ContainingNamespace + "." + type.MetadataName);
-
-			var staticQualifier = (type.IsAbstract && type.IsSealed) ? "static" : "";
-
-			if (SkippedType(type))
-			{
-				b.AppendLineInvariant($"// Skipped type, see SkippedType method");
-				return;
-			}
-
-			var writtenSymbols = new List<ISymbol>();
-
-			if (type.TypeKind == TypeKind.Delegate)
-			{
-				BuildDelegate(type, b, allSymbols, writtenSymbols);
-			}
-			else
-			{
-				if (type.Name == "DependencyObject")
-				{
-					kind = TypeKind.Interface;
-				}
-
-
-				if (type.TypeKind == TypeKind.Enum)
-				{
-					allSymbols.AppendIf(b);
-				}
-
-				allSymbols.AppendIf(b);
-				b.AppendLineInvariant($"[global::Uno.NotImplemented]");
-				b.AppendLineInvariant($"#endif");
-
-				using (b.BlockInvariant($"public {staticQualifier} {partialModifier} {kind.ToString().ToLower()} {type.ToDisplayString(SymbolDisplayFormat.MinimallyQualifiedFormat)} {BuildInterfaces(type)}"))
-				{
-					if (type.TypeKind != TypeKind.Enum)
-					{
-						BuildProperties(type, b, allSymbols, writtenSymbols);
-						BuildMethods(type, b, allSymbols, writtenSymbols);
-						BuildEvents(type, b, allSymbols, writtenSymbols);
-					}
-
-					BuildFields(type, b, allSymbols, writtenSymbols);
-
-					if (type.TypeKind != TypeKind.Enum)
-					{
-						BuildInterfaceImplementations(type, b, allSymbols, writtenSymbols);
-					}
-				}
-
-				if (type.TypeKind == TypeKind.Enum)
-				{
-					b.AppendLineInvariant($"#endif");
-				}
-			}
+			return GetAllGetNonGeneratedMembers(types, eventMember.Name, q => q.OfType<IEventSymbol>().FirstOrDefault(), eventMember);
 		}
 
-		private bool SkippedType(INamedTypeSymbol type)
+		protected bool SkippedType(INamedTypeSymbol type)
 		{
 			switch (type.ToString())
 			{
@@ -341,7 +342,7 @@ namespace Uno.UWPSyncGenerator
 			return false;
 		}
 
-		private void BuildInterfaceImplementations(INamedTypeSymbol type, IndentedStringBuilder b, PlatformSymbols<INamedTypeSymbol> types, List<ISymbol> writtenSymbols)
+		protected void BuildInterfaceImplementations(INamedTypeSymbol type, IndentedStringBuilder b, PlatformSymbols<INamedTypeSymbol> types, List<ISymbol> writtenSymbols)
 		{
 			if (type.TypeKind != TypeKind.Interface)
 			{
@@ -565,7 +566,7 @@ namespace Uno.UWPSyncGenerator
 			return typeName;
 		}
 
-		private string BuildInterfaces(INamedTypeSymbol type)
+		protected string BuildInterfaces(INamedTypeSymbol type)
 		{
 			var ifaces = new List<string>();
 
@@ -665,7 +666,7 @@ namespace Uno.UWPSyncGenerator
 			return false;
 		}
 
-		private void BuildDelegate(INamedTypeSymbol type, IndentedStringBuilder b, PlatformSymbols<INamedTypeSymbol> types, List<ISymbol> writtenSymbols)
+		protected void BuildDelegate(INamedTypeSymbol type, IndentedStringBuilder b, PlatformSymbols<INamedTypeSymbol> types, List<ISymbol> writtenSymbols)
 		{
 			if (types.HasUndefined)
 			{
@@ -684,7 +685,7 @@ namespace Uno.UWPSyncGenerator
 			}
 		}
 
-		private void BuildFields(INamedTypeSymbol type, IndentedStringBuilder b, PlatformSymbols<INamedTypeSymbol> types, List<ISymbol> writtenSymbols)
+		protected void BuildFields(INamedTypeSymbol type, IndentedStringBuilder b, PlatformSymbols<INamedTypeSymbol> types, List<ISymbol> writtenSymbols)
 		{
 			foreach (var field in type.GetMembers().OfType<IFieldSymbol>())
 			{
@@ -717,11 +718,11 @@ namespace Uno.UWPSyncGenerator
 			}
 		}
 
-		private void BuildEvents(INamedTypeSymbol type, IndentedStringBuilder b, PlatformSymbols<INamedTypeSymbol> types, List<ISymbol> writtenSymbols)
+		protected void BuildEvents(INamedTypeSymbol type, IndentedStringBuilder b, PlatformSymbols<INamedTypeSymbol> types, List<ISymbol> writtenSymbols)
 		{
 			foreach (var eventMember in type.GetMembers().OfType<IEventSymbol>())
 			{
-				var allMembers = GetAllGetNonGeneratedMembers(types, eventMember.Name, q => q.OfType<IEventSymbol>().FirstOrDefault());
+				var allMembers = GetAllMatchingEvents(types, eventMember);
 
 				if (allMembers.HasUndefined)
 				{
@@ -780,7 +781,7 @@ namespace Uno.UWPSyncGenerator
 			}
 		}
 
-		private void BuildMethods(INamedTypeSymbol type, IndentedStringBuilder b, PlatformSymbols<INamedTypeSymbol> types, List<ISymbol> writtenSymbols)
+		protected void BuildMethods(INamedTypeSymbol type, IndentedStringBuilder b, PlatformSymbols<INamedTypeSymbol> types, List<ISymbol> writtenSymbols)
 		{
 			foreach (var method in type.GetMembers().OfType<IMethodSymbol>())
 			{
@@ -892,7 +893,7 @@ namespace Uno.UWPSyncGenerator
 									if (method.Name.StartsWith("Get"))
 									{
 										b.AppendLineInvariant($"return ({SanitizeType(method.ReturnType)}){instanceParamName}.GetValue({filteredName}Property);");
-										
+
 									}
 									else if (method.Name.StartsWith("Set"))
 									{
@@ -902,7 +903,7 @@ namespace Uno.UWPSyncGenerator
 								}
 								else
 								{
-									bool hasReturnValue = 
+									bool hasReturnValue =
 										method.ReturnType != _voidSymbol
 										|| method.Parameters.Any(p => p.RefKind == RefKind.Out);
 
@@ -931,7 +932,7 @@ namespace Uno.UWPSyncGenerator
 		{
 			if (method.ContainingType.Name == "Grid")
 			{
-				switch(method.Name)
+				switch (method.Name)
 				{
 					// The base type does not match for this parameter until Uno adjusts the 
 					// hierarchy based on IFrameworkElement.
@@ -955,7 +956,7 @@ namespace Uno.UWPSyncGenerator
 		private bool IsObjectCtor(IMethodSymbol androidMember)
 			=> androidMember?.Name == ".ctor" && androidMember?.OriginalDefinition.ContainingType.Name == "Object";
 
-		private static string GetParameterRefKind(IParameterSymbol p) 
+		private static string GetParameterRefKind(IParameterSymbol p)
 			=> p.RefKind != RefKind.None ? p.RefKind.ToString().ToLowerInvariant() : "";
 
 		private bool IsNotUWPMapping(INamedTypeSymbol type, IMethodSymbol method)
@@ -1077,7 +1078,7 @@ namespace Uno.UWPSyncGenerator
 
 
 
-		private void BuildProperties(INamedTypeSymbol type, IndentedStringBuilder b, PlatformSymbols<INamedTypeSymbol> types, List<ISymbol> writtenSymbols)
+		protected void BuildProperties(INamedTypeSymbol type, IndentedStringBuilder b, PlatformSymbols<INamedTypeSymbol> types, List<ISymbol> writtenSymbols)
 		{
 			foreach (var property in type.GetMembers().OfType<IPropertySymbol>())
 			{
@@ -1143,7 +1144,7 @@ namespace Uno.UWPSyncGenerator
 								b.AppendLineInvariant($"internal static object {property.Name} {{{{ get; }}}}");
 							}
 						}
-						else if(
+						else if (
 							!property.IsStatic
 							&& property.ContainingType.GetMembers(property.Name + "Property").Any()
 						)
@@ -1348,7 +1349,7 @@ namespace Uno.UWPSyncGenerator
 			else
 			{
 				return q
-					.FirstOrDefault(m => 
+					.FirstOrDefault(m =>
 					{
 						var sourceParams = sourceMethod
 							.Parameters
@@ -1357,7 +1358,7 @@ namespace Uno.UWPSyncGenerator
 								.Parameters
 								.Select(p => p.Type.ToDisplayString());
 						return sourceParams.SequenceEqual(targetParams);
-						}
+					}
 					);
 			}
 		}
@@ -1377,7 +1378,7 @@ namespace Uno.UWPSyncGenerator
 								//{ "UseSharedCompilation", "false" },
 							};
 
-			if(targetFramework != null)
+			if (targetFramework != null)
 			{
 				properties.Add("TargetFramework", targetFramework);
 			}

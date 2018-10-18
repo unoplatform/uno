@@ -27,7 +27,7 @@
     This item group is required by the project templace because of the
     new SDK-Style project, otherwise some files are not aded automatically.
     
-    You can safely this ItemGroup completely.
+    You can safely remove this ItemGroup completely.
     -->
 		<Compile Remove="Program.cs" />
 		<Compile Include="Program.cs" />
@@ -35,8 +35,8 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Uno.UI" Version="1.40.0-dev.350" />
-		<PackageReference Include="Uno.Wasm.Bootstrap" Version="1.0.0-dev.40" />
+		<PackageReference Include="Uno.UI" Version="1.40.0" />
+		<PackageReference Include="Uno.Wasm.Bootstrap" Version="1.0.0-dev.58" />
 	</ItemGroup>
 
 	<Import Project="..\$ext_safeprojectname$.Shared\$ext_safeprojectname$.Shared.projitems" Label="Shared" Condition="Exists('..\$ext_safeprojectname$.Shared\$ext_safeprojectname$.Shared.projitems')" />

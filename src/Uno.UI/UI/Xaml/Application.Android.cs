@@ -1,5 +1,6 @@
 ﻿#if XAMARIN_ANDROID
 using System;
+using Uno.UI.Extensions;
 using Windows.ApplicationModel.Activation;
 using Windows.Foundation;
 using Windows.Foundation.Metadata;
@@ -14,6 +15,7 @@ namespace Windows.UI.Xaml
 			Windows.UI.Xaml.GenericStyles.Initialize();
 			Window.Current.ToString();
 			Current = this;
+			PermissionsHelper.Initialize();
 		}
 
 		static partial void StartPartial(ApplicationInitializationCallback callback)

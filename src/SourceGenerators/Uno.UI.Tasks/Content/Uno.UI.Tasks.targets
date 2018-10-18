@@ -34,6 +34,7 @@
 	<ItemGroup>
 	  <BundleResource Condition="'$(XamarinProjectType)'=='ios'" Include="@(GeneratedFiles)" />
 	  <AndroidResource Condition="'$(XamarinProjectType)'=='android'" Include="@(GeneratedFiles)" />
+	  <EmbeddedResource Condition="'$(XamarinProjectType)'=='wasm'" Include="@(GeneratedFiles)" />
 	</ItemGroup>
 	<!-- Assets -->
 	<PropertyGroup>

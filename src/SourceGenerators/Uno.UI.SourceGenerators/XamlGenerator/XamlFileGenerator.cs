@@ -62,7 +62,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
         private XamlGlobalStaticResourcesMap _globalStaticResourcesMap;
         private readonly bool _isUiAutomationMappingEnabled;
         private readonly Dictionary<string, string[]> _uiAutomationMappings;
-        private readonly string _relativePath;
+		private readonly string _defaultLanguage;
+		private readonly string _relativePath;
 
 		private List<INamedTypeSymbol> _xamlAppliedTypes = new List<INamedTypeSymbol>();
 
@@ -100,6 +101,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
             XamlGlobalStaticResourcesMap globalStaticResourcesMap,
             bool isUiAutomationMappingEnabled,
             Dictionary<string, string[]> uiAutomationMappings,
+			string defaultLanguage,
 			bool isWasm
 		)
         {
@@ -115,8 +117,9 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
             _globalStaticResourcesMap = globalStaticResourcesMap;
             _isUiAutomationMappingEnabled = isUiAutomationMappingEnabled;
             _uiAutomationMappings = uiAutomationMappings;
+			_defaultLanguage = defaultLanguage.HasValue() ? defaultLanguage : "en";
 
-            _findType = Funcs.Create<string, INamedTypeSymbol>(SourceFindType).AsLockedMemoized();
+			_findType = Funcs.Create<string, INamedTypeSymbol>(SourceFindType).AsLockedMemoized();
             _findPropertyTypeByXamlMember = Funcs.Create<XamlMember, INamedTypeSymbol>(SourceFindPropertyType).AsLockedMemoized();
             _findEventType = Funcs.Create<XamlMember, IEventSymbol>(SourceFindEventType).AsLockedMemoized();
             _findPropertyTypeByName = Funcs.Create<string, string, INamedTypeSymbol>(SourceFindPropertyType).AsLockedMemoized();
@@ -344,8 +347,10 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
         private void BuildApplicationInitializerBody(IndentedStringBuilder writer, XamlObjectDefinition topLevelControl)
         {
             writer.AppendLineInvariant($"global::Windows.UI.Xaml.GenericStyles.Initialize();");
-            writer.AppendLineInvariant($"global::Windows.UI.Xaml.ResourceDictionary.DefaultResolver = global::{_defaultNamespace}.GlobalStaticResources.FindResource;");
-            writer.AppendLineInvariant($"global::{_defaultNamespace}.GlobalStaticResources.Initialize();");
+			writer.AppendLineInvariant($"global::Windows.UI.Xaml.ResourceDictionary.DefaultResolver = global::{_defaultNamespace}.GlobalStaticResources.FindResource;");
+			writer.AppendLineInvariant($"global::Windows.ApplicationModel.Resources.ResourceLoader.AddLookupAssembly(GetType().Assembly);");
+			writer.AppendLineInvariant($"global::Windows.ApplicationModel.Resources.ResourceLoader.DefaultLanguage = \"{_defaultLanguage}\";");
+			writer.AppendLineInvariant($"global::{_defaultNamespace}.GlobalStaticResources.Initialize();");
             writer.AppendLineInvariant($"global::Uno.UI.DataBinding.BindableMetadata.Provider = new global::{_defaultNamespace}.BindableMetadataProvider();");
 
             writer.AppendLineInvariant($"#if __ANDROID__");
@@ -2575,7 +2580,10 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 				case "Windows.UI.Xaml.Controls.IconElement":
 					return "new Windows.UI.Xaml.Controls.SymbolIcon { Symbol = Windows.UI.Xaml.Controls.Symbol." + memberValue + "}";
-            }
+
+				case "Windows.Media.Playback.IMediaPlaybackSource":
+					return "Windows.Media.Core.MediaSource.CreateFromUri(new Uri(\"" + memberValue + "\"))";
+			}
 
 			var isEnum = propertyType
                 .TypeKind == TypeKind.Enum;

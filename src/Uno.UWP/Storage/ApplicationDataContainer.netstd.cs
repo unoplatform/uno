@@ -4,6 +4,9 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using Microsoft.Extensions.Logging;
+using Uno.Extensions;
+using Uno.Logging;
 using Windows.Foundation.Collections;
 
 namespace Windows.Storage
@@ -12,15 +15,15 @@ namespace Windows.Storage
 	{
 		partial void InitializePartial()
 		{
-			Values = new NSUserDefaultsPropertySet();
+			Values = new FilePropertySet();
 		}
 
-		private class NSUserDefaultsPropertySet : IPropertySet
+		private class FilePropertySet : IPropertySet
 		{
 			private const string UWPFileName = ".UWPAppSettings";
 			private Dictionary<string, string> _values = new Dictionary<string, string>();
 
-			public NSUserDefaultsPropertySet()
+			public FilePropertySet()
 			{
 				ReadFromFile();
 			}
@@ -62,7 +65,10 @@ namespace Windows.Storage
 					{
 						var count = reader.ReadInt32();
 
-						Console.WriteLine($"Reading {count} values");
+						if (this.Log().IsEnabled(LogLevel.Debug))
+						{
+							this.Log().Debug($"Reading {count} settings values");
+						}
 
 						for (int i = 0; i < count; i++)
 						{
@@ -75,7 +81,10 @@ namespace Windows.Storage
 				}
 				else
 				{
-					Console.WriteLine($"File {filePath} does not exist, skipping reading settings");
+					if (this.Log().IsEnabled(LogLevel.Debug))
+					{
+						this.Log().Debug($"File {filePath} does not exist, skipping reading settings");
+					}
 				}
 			}
 
@@ -84,7 +93,10 @@ namespace Windows.Storage
 				var folderPath = ApplicationData.Current.LocalFolder.Path;
 				var filePath = Path.Combine(folderPath, UWPFileName);
 
-				Console.WriteLine($"Writing {_values.Count} settings to {filePath}");
+				if (this.Log().IsEnabled(LogLevel.Debug))
+				{
+					this.Log().Debug($"Writing {_values.Count} settings to {filePath}");
+				}
 
 				using (var writer = new BinaryWriter(File.OpenWrite(filePath)))
 				{

@@ -6,6 +6,7 @@ using System.Text;
 using Microsoft.Extensions.Logging;
 using UIKit;
 using Uno.Extensions;
+using Uno.UI.Helpers;
 using Uno.Logging;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -192,20 +193,7 @@ namespace Uno.UI.Controls
 				Page = page;
 				View = Page;
 
-				var topCommandBar = GetCommandBar();
-
-				if (topCommandBar == null)
-				{
-					// The default CommandBar style contains information that might be relevant to all pages, including those without a CommandBar.
-					// For example the Uno.UI.Toolkit.CommandBarExtensions.BackButtonTitle attached property is often set globally to "" through 
-					// a default CommandBar style in order to remove the back button text throughout an entire application.
-					// In order to leverage this information, we create a new CommandBar instance that only exists to "render" the NavigationItem.
-					topCommandBar = new CommandBar();
-				}
-
-				// Hook CommandBar to NavigationItem
-				var navigationCommandBarRenderer = topCommandBar.GetRenderer(() => new CommandBarNavigationItemRenderer(topCommandBar));
-				navigationCommandBarRenderer.Native = NavigationItem;
+				CommandBarHelper.PageCreated(this);
 			}
 
 			public override void ViewWillAppear(bool animated)
@@ -214,23 +202,7 @@ namespace Uno.UI.Controls
 				{
 					base.ViewWillAppear(animated);
 
-					var topCommandBar = GetCommandBar();
-
-					if (topCommandBar != null)
-					{
-						// Hook CommandBar to NavigationBar
-						// We do it here because we know the NavigationController is set (and NavigationBar is available)
-						topCommandBar.GetRenderer(() => new CommandBarRenderer(topCommandBar)).Native = NavigationController.NavigationBar;
-
-
-						// We call this method after rendering the CommandBar to work around buggy behaviour on iOS 11, but we have to make 
-						// sure not to overwrite the visibility set by the renderer.
-						NavigationController.SetNavigationBarHidden(hidden: topCommandBar.Visibility == Visibility.Collapsed, animated: true);
-					}
-					else // No CommandBar
-					{
-						NavigationController.SetNavigationBarHidden(true, true);
-					}
+					CommandBarHelper.PageWillAppear(this);
 				}
 				catch (Exception e)
 				{
@@ -244,13 +216,7 @@ namespace Uno.UI.Controls
 				{
 					base.ViewDidDisappear(animated);
 
-					var topCommandBar = GetCommandBar();
-
-					// Set the native navigation bar to null so it does not render when the page is not visible
-					if (topCommandBar != null)
-					{
-						topCommandBar.GetRenderer(() => new CommandBarRenderer(topCommandBar)).Native = null;
-					}
+					CommandBarHelper.PageDidDisappear(this);
 				}
 				catch (Exception e)
 				{

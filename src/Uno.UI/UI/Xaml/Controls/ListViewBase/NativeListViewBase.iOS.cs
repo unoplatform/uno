@@ -558,6 +558,7 @@ namespace Windows.UI.Xaml.Controls
 					if (needsMaterialize)
 					{
 						NativeLayout.InvalidateLayout();
+						NativeLayout.PrepareLayout();
 					}
 
 					var offset = NativeLayout.GetTargetScrollOffset(index, alignment);

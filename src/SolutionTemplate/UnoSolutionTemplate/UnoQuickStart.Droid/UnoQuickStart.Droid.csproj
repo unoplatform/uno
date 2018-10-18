@@ -54,7 +54,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Uno.UI" Version="1.40.0-dev.350" />
+    <PackageReference Include="Uno.UI" Version="1.40.0" />
 	<PackageReference Include="Uno.UniversalImageLoader" Version="1.9.31" />
   </ItemGroup>
   <ItemGroup>
@@ -63,6 +63,7 @@
     <Compile Include="Main.cs" />
   </ItemGroup>
   <ItemGroup>
+		<AndroidAsset Include="Assets\Fonts\winjs-symbols.ttf" />
     <None Include="Resources\AboutResources.txt" />
     <None Include="Assets\AboutAssets.txt" />
   </ItemGroup>
@@ -77,7 +78,7 @@
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\values\Styles.xml" />
-  </ItemGroup>
+  </ItemGroup>	
   <Import Project="..\$ext_safeprojectname$.Shared\$ext_safeprojectname$.Shared.projitems" Label="Shared" Condition="Exists('..\$ext_safeprojectname$.Shared\$ext_safeprojectname$.Shared.projitems')" />
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

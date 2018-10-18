@@ -45,7 +45,7 @@
       <Version>1.3.1</Version>
     </PackageReference>
     <PackageReference Include="Uno.SourceGenerationTasks">
-      <Version>1.26.0-beta.90</Version>
+      <Version>1.27.0-beta.114</Version>
     </PackageReference>
     <PackageReference Include="Uno.Core">
       <Version>1.24.0</Version>
@@ -73,6 +73,9 @@
     <EmbeddedResource Include="$(MSBuildThisFileDirectory)..\Uno.Net.Shared\Resources\**\*.resx">
       <Link>Resources\%(RecursiveDir)%(FileName)%(Extension)</Link>
     </EmbeddedResource>
+    <None Remove="ResourceLoader\When_ResourceFile-en.upri" />
+    <None Remove="ResourceLoader\When_ResourceFile_Neutral_Both-en.upri" />
+    <None Remove="ResourceLoader\When_ResourceFile_Neutral_Both-fr.upri" />
     <None Remove="XamlReaderTests\When_AttachedProperty_Binding.xamltest" />
     <None Remove="XamlReaderTests\When_AttachedProperty_Different_Target.xamltest" />
     <None Remove="XamlReaderTests\When_AttachedProperty_Same_Target.xamltest" />
@@ -120,6 +123,12 @@
   
   <ItemGroup>
     <EmbeddedResource Include="XamlReaderTests\*.xamltest" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <EmbeddedResource Include="ResourceLoader\When_ResourceFile-en.upri" />
+    <EmbeddedResource Include="ResourceLoader\When_ResourceFile_Neutral_Both-en.upri" />
+    <EmbeddedResource Include="ResourceLoader\When_ResourceFile_Neutral_Both-fr.upri" />
   </ItemGroup>
 
   <ItemGroup>

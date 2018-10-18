@@ -25,7 +25,16 @@ namespace Windows.UI.Xaml.Controls
 		internal protected override void OnTemplatedParentChanged(DependencyPropertyChangedEventArgs e)
 		{
 			base.OnTemplatedParentChanged(e);
-			if (TemplatedParent is ItemsControl itemsControl)
+			if (TemplatedParent is ItemsControl itemsControl && IsLoaded)
+			{
+				itemsControl.SetItemsPresenter(this);
+			}
+		}
+
+		protected override void OnLoaded()
+		{
+			base.OnLoaded();
+			if (TemplatedParent is ItemsControl itemsControl && IsLoaded)
 			{
 				itemsControl.SetItemsPresenter(this);
 			}
@@ -110,9 +119,9 @@ namespace Windows.UI.Xaml.Controls
 			}
 
 			_itemsPanel = panel;
-			
+
 			RemoveChildViews();
-			
+
 			if (_itemsPanel != null)
 			{
 #if XAMARIN_IOS
