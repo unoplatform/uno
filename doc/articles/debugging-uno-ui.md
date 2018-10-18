@@ -40,7 +40,7 @@ A few steps to be able to build:
 - In both `Uno` and `Uno.UI` the ItemGroups containing references to `Xamarin.Android.Support.v4` and `Xamarin.Android.Support.v7.AppCompat` must be commented out.
 Failing to remove those groups will make the nuget restore fail, because VS4Mac does not support conditional package references.
 - In `Uno.UI`, comment the project reference to the `Uno.UI.BindingHelper` project, because VS4Mac does not support conditional project references.
-- Disable both nuget restore features in 
+- Disable both nuget restore features in Visual Studio for Mac configuration
 
 To build and run:
 - In a shell in the `src/Uno.UI` folder, run `msbuild /r`. This will make the nuget restore work properly.
