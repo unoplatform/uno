@@ -15,9 +15,6 @@ namespace Windows.UI.Xaml
 	[Register("UnoAppDelegate")]
 	public partial class Application : NSApplicationDelegate
 	{
-		private bool _suspended;
-		internal bool IsSuspended => _suspended;
-
 		public Application()
 		{
 			Current = this;
