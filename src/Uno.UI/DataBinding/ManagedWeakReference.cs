@@ -5,9 +5,9 @@ using System.Text;
 using Uno.Extensions;
 using Uno.Logging;
 #if __ANDROID__
-using _NativeObject = Android.Runtime.IJavaObject;
+using INativeObject = Android.Runtime.IJavaObject;
 #elif __IOS__
-using _NativeObject = ObjCRuntime.INativeObject;
+using INativeObject = ObjCRuntime.INativeObject;
 #endif
 
 namespace Uno.UI.DataBinding
@@ -127,7 +127,7 @@ namespace Uno.UI.DataBinding
 		/// </summary>
 		private static bool IsNativeAlive(object obj)
 		{
-			if (obj is _NativeObject nativeObj)
+			if (obj is INativeObject nativeObj)
 			{
 				return nativeObj.Handle != IntPtr.Zero;
 			}
@@ -150,12 +150,18 @@ namespace Uno.UI.DataBinding
 			_disposed = true;
 		}
 
+	}
+
 #if !__ANDROID__ && !__IOS__
-		// Dummy interface to compile on WASM and unit tests. (Isn't implemented by anything, so IsNativeAlive will always return true)
-		private interface _NativeObject
+#if NET46
+	public
+#else
+		internal
+#endif
+		// Dummy interface to compile on WASM and unit tests. (On WASM isn't implemented by anything, so IsNativeAlive will always return true)
+	interface INativeObject
 		{
 			IntPtr Handle { get; }
 		}
 #endif
-	}
 }
