@@ -31,9 +31,13 @@ namespace Windows.UI.Xaml
 
 		public Window()
 		{
-			_window = new Uno.UI.Controls.Window();
+			var style = NSWindowStyle.Closable | NSWindowStyle.Resizable | NSWindowStyle.Titled;
+			var rect = new CoreGraphics.CGRect(100, 100, 1024, 768);
+			_window = new Uno.UI.Controls.Window(rect, style, NSBackingStore.Buffered, false);
 
 			_mainController = ViewControllerGenerator?.Invoke() ?? new RootViewController();
+
+			_window.TitleVisibility = NSWindowTitleVisibility.Hidden;
 
 			ObserveOrientationAndSize();
 
@@ -46,9 +50,10 @@ namespace Windows.UI.Xaml
 			//_window.FrameChanged +=
 			//	() => RaiseNativeSizeChanged(ViewHelper.GetScreenSize());
 
-			var statusBar = StatusBar.GetForCurrentView();
-			statusBar.Showing += (o, e) => UpdateCoreBounds();
-			statusBar.Hiding += (o, e) => UpdateCoreBounds();
+			// TODO macOS
+			//var statusBar = StatusBar.GetForCurrentView();
+			//statusBar.Showing += (o, e) => UpdateCoreBounds();
+			//statusBar.Hiding += (o, e) => UpdateCoreBounds();
 
 			RaiseNativeSizeChanged(ViewHelper.GetScreenSize());
 		}
@@ -56,7 +61,8 @@ namespace Windows.UI.Xaml
 		private void InternalActivate()
 		{
 			_window.ContentViewController = _mainController;
-			_window.MakeKeyWindow();
+			_window.Display();
+			_window.MakeKeyAndOrderFront(NSApplication.SharedApplication);
 		}
 
 		private void InternalSetContent(UIElement value)
@@ -64,7 +70,7 @@ namespace Windows.UI.Xaml
 			_content?.RemoveFromSuperview();
 
 			_content = value;
-			_mainController.View.AddSubview(value);
+			_mainController.View = value;
 			value.Frame = _mainController.View.Bounds;
 			value.AutoresizingMask = NSViewResizingMask.WidthSizable | NSViewResizingMask.HeightSizable;
 		}

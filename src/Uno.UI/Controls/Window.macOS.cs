@@ -30,8 +30,8 @@ namespace Uno.UI.Controls
 		/// <summary>
 		/// ctor.
 		/// </summary>
-		public Window()
-			: base()
+		public Window(CGRect contentRect, NSWindowStyle aStyle, NSBackingStore bufferingType, bool deferCreation)
+			: base(contentRect, aStyle, bufferingType, deferCreation)
 		{
 		}
 	}

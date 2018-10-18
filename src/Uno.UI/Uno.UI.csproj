@@ -1,6 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk" ToolsVersion="15.0">
 	<PropertyGroup>
-		<TargetFrameworks>MonoAndroid80;xamarinios10;net46;netstandard2.0;xamarinmac20</TargetFrameworks>
+		<TargetFrameworks>xamarinmac20;MonoAndroid80;xamarinios10;net46;netstandard2.0</TargetFrameworks>
 		<TargetFrameworksCI>MonoAndroid71;MonoAndroid80;xamarinios10;net46;netstandard2.0;xamarinmac20</TargetFrameworksCI>
 	</PropertyGroup>
 
@@ -25,7 +25,6 @@
 		<GenerateLibraryLayout>true</GenerateLibraryLayout>
 
 		<UnoSourceGeneratorUnsecureBinLogEnabled>true</UnoSourceGeneratorUnsecureBinLogEnabled>
-		<!--<BuildingInsideUnoSourceGenerator>true</BuildingInsideUnoSourceGenerator>-->
 	</PropertyGroup>
 
 	<Import Project="$(MSBuildSDKExtrasTargets)" Condition="Exists('$(MSBuildSDKExtrasTargets)')" />
@@ -158,7 +157,7 @@
 		</PackageReference>
 	</ItemGroup>
 
-	<ItemGroup Condition=" '$(TargetFramework)' == 'MonoAndroid71'">
+	 <ItemGroup Condition=" '$(TargetFramework)' == 'MonoAndroid71'">
 		<PackageReference Include="Xamarin.Android.Support.v4" Version="25.3.1">
 			<PrivateAssets>none</PrivateAssets>
 		</PackageReference>
@@ -180,7 +179,7 @@
 		<PackageReference Include="Xamarin.Android.Support.v7.RecyclerView" Version="26.1.0.1">
 			<PrivateAssets>none</PrivateAssets>
 		</PackageReference>
-	</ItemGroup>
+	</ItemGroup> 
 
 	<ItemGroup>
 		<PackageReference Include="xamarin.build.download" Version="0.4.9" />
@@ -194,9 +193,9 @@
 			<TreatAsPackageReference>false</TreatAsPackageReference>
 		</ProjectReference>
 		<ProjectReference Include="..\SourceGenerators\System.Xaml\Uno.Xaml.csproj" />
-		<ProjectReference Include="..\Uno.UI.BindingHelper.Android\Uno.UI.BindingHelper.Android.csproj" Condition="'$(TargetFrameworkIdentifier)'=='MonoAndroid'">
+		 <ProjectReference Include="..\Uno.UI.BindingHelper.Android\Uno.UI.BindingHelper.Android.csproj" Condition="'$(TargetFrameworkIdentifier)'=='MonoAndroid'">
 			<TreatAsPackageReference>false</TreatAsPackageReference>
-		</ProjectReference>
+		</ProjectReference> 
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(TargetFrameworkIdentifier)'=='MonoAndroid' or '$(TargetFrameworkIdentifier)'=='Xamarin.iOS' or '$(TargetFramework)'=='xamarinmac20'">

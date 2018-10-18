@@ -6,14 +6,12 @@
 	  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	  mc:Ignorable="d">
 
-	<Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
-		<StackPanel>
-			<TextBlock Text="Hello, WPF !"
-					   Margin="20"
-					   FontSize="30"
-					   TextWrapping="Wrap" />
-			<Slider x:Name="test" />
-			<TextBlock Text="{Binding Value, ElementName=test}" />
-		</StackPanel>
-	</Grid>
+  <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+	<StackPanel>
+	  <TextBlock Text="Hello, world !"
+				 Margin="20"
+				 FontSize="30"
+				 TextWrapping="Wrap" />
+	</StackPanel>
+  </Grid>
 </Page>

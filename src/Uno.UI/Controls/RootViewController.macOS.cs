@@ -13,5 +13,11 @@ namespace Uno.UI.Controls
 		public RootViewController()
 		{
 		}
+
+		public override void LoadView()
+		{
+			// Don't call base, we're loading the view without a nib
+			// base.LoadView();
+		}
 	}
 }
