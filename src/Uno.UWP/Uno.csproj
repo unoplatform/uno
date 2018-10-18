@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk" ToolsVersion="15.0">
   
   <PropertyGroup>
-    <TargetFrameworks>xamarinios10;MonoAndroid80;net46;netstandard2.0;xamarinmac20</TargetFrameworks>
+    <TargetFrameworks>xamarinmac20;xamarinios10;MonoAndroid80;net46;netstandard2.0</TargetFrameworks>
     <TargetFrameworksCI>MonoAndroid71;MonoAndroid80;xamarinios10;net46;netstandard2.0;xamarinmac20</TargetFrameworksCI>
   </PropertyGroup>
 
@@ -38,7 +38,7 @@
 		</PackageReference>
 	</ItemGroup>
 	
-	<ItemGroup Condition=" '$(TargetFramework)' == 'MonoAndroid71'">
+	 <ItemGroup Condition=" '$(TargetFramework)' == 'MonoAndroid71'">
 		<PackageReference Include="Xamarin.Android.Support.v4">
 			<Version>25.3.1</Version>
 			<PrivateAssets>none</PrivateAssets>

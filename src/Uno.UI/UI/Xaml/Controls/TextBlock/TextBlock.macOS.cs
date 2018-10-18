@@ -36,9 +36,7 @@ namespace Windows.UI.Xaml.Controls
 		/// To enable these scenarios, we must use a (more expensive) NSLayoutManager for layouting and rendering.
 		/// </remarks>
 		private bool UseLayoutManager =>
-			HasHyperlink ||
-			CanWrap && CanTrim ||
-			CanWrap && MaxLines != 0;
+			true;
 
 		private bool CanWrap => TextWrapping != TextWrapping.NoWrap && MaxLines != 1;
 

@@ -35,8 +35,7 @@ namespace Windows.UI.Xaml
 				return newContent;				
 #elif __MACOS__
 				// macOS TODO
-				// currentSuperview?.InsertSubview(newContent, currentPosition);
-				throw new NotImplementedException();
+				currentSuperview.AddSubview(newContent, NSWindowOrderingMode.Above, currentSuperview.Subviews[currentPosition]);
 #endif
 			}
 
