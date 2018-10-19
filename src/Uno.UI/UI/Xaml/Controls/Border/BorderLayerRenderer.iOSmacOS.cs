@@ -64,8 +64,11 @@ namespace Windows.UI.Xaml.Shapes
 					(borderThickness != Thickness.Empty && borderBrush != null)
 				)
 				{
-					_layerDisposable.Disposable = null;
+#if __MACOS__
 					owner.WantsLayer = true;
+#endif
+
+					_layerDisposable.Disposable = null;
 					_layerDisposable.Disposable = InnerCreateLayer(owner.Layer, area, background, borderThickness, borderBrush, cornerRadius);
 				}
 				else
