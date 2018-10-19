@@ -5,6 +5,7 @@ using System.Text;
 using UIKit;
 using Uno.Extensions;
 using Uno.Logging;
+using Windows.UI.Core;
 
 namespace Windows.UI.ViewManagement
 {
@@ -42,6 +43,19 @@ namespace Windows.UI.ViewManagement
 			}
 
 			VisibleBoundsChanged?.Invoke(this, null);
+		}
+
+		public bool TryEnterFullScreenMode()
+		{
+			CoreDispatcher.CheckThreadAccess();
+			UIApplication.SharedApplication.StatusBarHidden = true;
+			return UIApplication.SharedApplication.StatusBarHidden;
+		}
+
+		public void ExitFullScreenMode()
+		{
+			CoreDispatcher.CheckThreadAccess();
+			UIApplication.SharedApplication.StatusBarHidden = false;
 		}
 	}
 }

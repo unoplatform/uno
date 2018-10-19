@@ -40,7 +40,7 @@ _If you need to set source programmatically (ie, using `_mediaPlayerElement.Sour
 |						| Skip backward											| X     | X  		|												|
 |						| Show buffering progress						  		| X     | X  		|												|
 |						| Zoom mode												| X     | X  		| 												|
-|						| Fullscreen mode								  		| -     | -  		|												|
+|						| Fullscreen mode								  		| X     | X  		|												|
 |						| Change playback rate									| -     | -  		|												|
 |						| Player controls on locked screen support  			| -     | -  		|												|
 |						| Playlists support		  								| -     | -  		|												|
@@ -86,6 +86,8 @@ Add the folowwing to your AndroidManifest.xml
 
 ## Known issues
 
-- Volume flyout does not display on iOS (Uno issue)
-- Dynamic width/height not supported when playing audio
-- Sometimes flickers during resizing when using dynamic width/height
+- `[iOS]` Volume flyout does not display (Uno issue)
+- `[All]` Dynamic width/height not supported when playing audio
+- `[All]` Sometimes flickers during resizing when using dynamic width/height
+- `[All]` Zoom button does not work anymore after displaying video fullscreen
+- `[Android]` Poster image disappears when putting video to fullscreen

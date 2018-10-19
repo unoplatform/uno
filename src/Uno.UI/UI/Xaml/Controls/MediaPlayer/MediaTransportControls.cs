@@ -99,9 +99,11 @@ namespace Windows.UI.Xaml.Controls
 
 		private Timer _controlsVisibilityTimer;
 		private bool _wasPlaying;
+		private MediaPlayerElement _mpe;
 
 		public MediaTransportControls() : base()
 		{
+
 			_controlsVisibilityTimer = new Timer()
 			{
 				AutoReset = false,
@@ -109,6 +111,11 @@ namespace Windows.UI.Xaml.Controls
 			};
 
 			_controlsVisibilityTimer.Elapsed += ControlsVisibilityTimerElapsed;
+		}
+		
+		internal void SetMediaPlayerElement(MediaPlayerElement mediaPlayerElement)
+		{
+			_mpe = mediaPlayerElement;
 		}
 
 		private void ControlsVisibilityTimerElapsed(object sender, ElapsedEventArgs args)
@@ -161,6 +168,8 @@ namespace Windows.UI.Xaml.Controls
 			_fullWindowButton = this.GetTemplateChild(FullWindowButtonName) as Button;
 			_fullWindowButton?.SetBinding(Button.VisibilityProperty, new Binding { Path = "IsFullWindowButtonVisible", Source = this, Mode = BindingMode.OneWay, FallbackValue = Visibility.Collapsed, Converter = trueToVisible });
 			_fullWindowButton?.SetBinding(Button.IsEnabledProperty, new Binding { Path = "IsFullWindowEnabled", Source = this, Mode = BindingMode.OneWay, FallbackValue = true });
+			_fullWindowButton.Click -= FullWindowButtonClick;
+			_fullWindowButton.Click += FullWindowButtonClick;
 
 			_castButton = this.GetTemplateChild(CastButtonName) as Button;
 
@@ -228,20 +237,33 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
+		private void FullWindowButtonClick(object sender, RoutedEventArgs e)
+		{
+			_mpe.IsFullWindow = !_mpe.IsFullWindow;
+			UpdateFullscreenButtonStyle();
+		}
+
+		private void UpdateFullscreenButtonStyle()
+		{
+			if (_mpe.IsFullWindow)
+			{
+				VisualStateManager.GoToState(this, "FullWindowState", false);
+			}
+			else
+			{
+				VisualStateManager.GoToState(this, "NonFullWindowState", false);
+			}
+		}
+
 		private void ZoomButtonClick(object sender, RoutedEventArgs e)
 		{
-			var mpe = this.FindFirstParent<MediaPlayerElement>();
-
-			if (mpe != null)
+			if (_mpe.Stretch == Stretch.Uniform)
 			{
-				if (mpe.Stretch == Stretch.Uniform)
-				{
-					mpe.Stretch = Stretch.UniformToFill;
-				}
-				else
-				{
-					mpe.Stretch = Stretch.Uniform;
-				}
+				_mpe.Stretch = Stretch.UniformToFill;
+			}
+			else
+			{
+				_mpe.Stretch = Stretch.Uniform;
 			}
 		}
 

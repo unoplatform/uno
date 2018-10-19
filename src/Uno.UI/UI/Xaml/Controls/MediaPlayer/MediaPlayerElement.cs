@@ -1,25 +1,28 @@
 #if __IOS__ || __ANDROID__
 using System;
-using System.ComponentModel;
 using Uno.Extensions;
 using Windows.Media.Playback;
 using Windows.UI.Core;
+using Windows.UI.ViewManagement;
 using Windows.UI.Xaml.Media;
 
 namespace Windows.UI.Xaml.Controls
 {
-	[TemplatePart(Name = "PosterImage", Type = typeof(Image))]
-	[TemplatePart(Name = "TransportControlsPresenter", Type = typeof(ContentPresenter))]
-	[TemplatePart(Name = "MediaPlayerPresenter", Type = typeof(MediaPlayerPresenter))]
+	[TemplatePart(Name = PosterImageName, Type = typeof(Image))]
+	[TemplatePart(Name = TransportControlsPresenterName, Type = typeof(ContentPresenter))]
+	[TemplatePart(Name = MediaPlayerPresenterName, Type = typeof(MediaPlayerPresenter))]
+	[TemplatePart(Name = LayoutRootName, Type = typeof(Grid))]
 	public partial class MediaPlayerElement : IDisposable
 	{
 		private const string PosterImageName = "PosterImage";
 		private const string TransportControlsPresenterName = "TransportControlsPresenter";
 		private const string MediaPlayerPresenterName = "MediaPlayerPresenter";
-		
+		private const string LayoutRootName = "LayoutRoot";
+
 		private Image _posterImage;
 		private ContentPresenter _transportControlsPresenter;
 		private MediaPlayerPresenter _mediaPlayerPresenter;
+		private Grid _layoutRoot;
 
 		private bool _isTransportControlsBound;
 
@@ -43,16 +46,15 @@ namespace Windows.UI.Xaml.Controls
 			sender.Maybe<MediaPlayerElement>(mpe =>
 			{
 				var source = args.NewValue as IMediaPlaybackSource;
-
+				
 				if (mpe.MediaPlayer != null)
 				{
 					mpe.MediaPlayer.Source = source;
 				}
 
-				if (source == null && mpe._posterImage != null && mpe.PosterSource != null)
+				if (source == null)
 				{
-					mpe._posterImage.Visibility = Visibility.Visible;
-					mpe._mediaPlayerPresenter.Opacity = 0;
+					mpe.TogglePosterImage(true);
 				}
 			});
 		}
@@ -78,12 +80,9 @@ namespace Windows.UI.Xaml.Controls
 		{
 			sender.Maybe<MediaPlayerElement>(mpe =>
 			{
-				var source = args.NewValue as ImageSource;
-
-				if (source != null && (mpe.MediaPlayer == null || mpe.MediaPlayer.PlaybackSession.PlaybackState == MediaPlaybackState.None) && mpe._posterImage != null)
+				if (mpe.MediaPlayer == null || mpe.MediaPlayer.PlaybackSession.PlaybackState == MediaPlaybackState.None)
 				{
-					mpe._posterImage.Visibility = Visibility.Visible;
-					mpe._mediaPlayerPresenter.Opacity = 0;
+					mpe.TogglePosterImage(true);
 				}
 			});
 		}
@@ -118,7 +117,68 @@ namespace Windows.UI.Xaml.Controls
 
 		#endregion
 
-		#region MediaPlayer Property
+		#region IsFullWindow Property
+
+		public bool IsFullWindow
+		{
+			get { return (bool)GetValue(IsFullWindowProperty); }
+			set { SetValue(IsFullWindowProperty, value); }
+		}
+
+		public static DependencyProperty IsFullWindowProperty { get; } =
+			DependencyProperty.Register(
+				nameof(IsFullWindow),
+				typeof(bool),
+				typeof(MediaPlayerElement),
+				new FrameworkPropertyMetadata(false, OnIsFullWindowChanged));
+
+
+		private static void OnIsFullWindowChanged(DependencyObject sender, DependencyPropertyChangedEventArgs args)
+		{
+			sender.Maybe<MediaPlayerElement>(mpe =>
+			{
+				mpe.ToogleFullScreen((bool)args.NewValue);
+			});
+		}
+
+		private object _mainContent;
+
+		private void ToogleFullScreen(bool showFullScreen)
+		{
+			if (showFullScreen)
+			{
+				Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+				{
+					ApplicationView.GetForCurrentView().TryEnterFullScreenMode();
+				});
+
+				_mainContent = (Windows.UI.Xaml.Window.Current.Content as Frame).Content;
+				(Windows.UI.Xaml.Window.Current.Content as Frame).Content = _layoutRoot;
+
+#if __ANDROID__
+				this.RemoveView(_layoutRoot);
+#endif
+			}
+			else
+			{
+				Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+				{
+					ApplicationView.GetForCurrentView().ExitFullScreenMode();
+				});
+
+				(Windows.UI.Xaml.Window.Current.Content as Frame).Content = _mainContent;
+
+#if __ANDROID__
+				this.AddView(_layoutRoot);
+#elif __IOS__
+				this.Add(_layoutRoot);
+#endif
+			}
+		}
+
+#endregion
+
+#region MediaPlayer Property
 
 		public Windows.Media.Playback.MediaPlayer MediaPlayer
 		{
@@ -159,11 +219,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
 			{
-				if (PosterSource != null && _posterImage != null)
-				{
-					_posterImage.Visibility = Visibility.Visible;
-					_mediaPlayerPresenter.Opacity = 0;
-				}
+				TogglePosterImage(true);
 			});
 		}
 
@@ -171,17 +227,13 @@ namespace Windows.UI.Xaml.Controls
 		{
 			Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
 			{
-				if (_posterImage != null)
-				{
-					_posterImage.Visibility = Visibility.Collapsed;
-					_mediaPlayerPresenter.Opacity = 1;
-				}
+				TogglePosterImage(false);
 			});
 		}
 
-		#endregion
+#endregion
 
-		#region AreTransportControlsEnabled Property
+#region AreTransportControlsEnabled Property
 
 		public bool AreTransportControlsEnabled
 		{
@@ -196,9 +248,9 @@ namespace Windows.UI.Xaml.Controls
 				typeof(MediaPlayerElement),
 				new FrameworkPropertyMetadata(false));
 
-		#endregion
+#endregion
 
-		#region Stretch Property
+#region Stretch Property
 
 		public Stretch Stretch
 		{
@@ -213,12 +265,25 @@ namespace Windows.UI.Xaml.Controls
 				typeof(MediaPlayerElement),
 				new FrameworkPropertyMetadata(Stretch.Uniform));
 
-		#endregion
+#endregion
 
-		public MediaTransportControls TransportControls { get; set; } = new MediaTransportControls();
+		private MediaTransportControls _transportControls;
+		public MediaTransportControls TransportControls
+		{
+			get
+			{
+				return _transportControls;
+			}
+			set
+			{
+				_transportControls = value;
+				_transportControls.SetMediaPlayerElement(this);
+			}
+		}
 
 		public MediaPlayerElement() : base()
 		{
+			TransportControls = new MediaTransportControls();
 		}
 
 		protected override void OnLoaded()
@@ -232,16 +297,35 @@ namespace Windows.UI.Xaml.Controls
 				if (MediaPlayer.PlaybackSession.PlaybackState == MediaPlaybackState.Opening && AutoPlay)
 				{
 					MediaPlayer.Play();
+					TogglePosterImage(false);
 				}
 			}
 		}
-		
+
+		private void TogglePosterImage(bool showPoster)
+		{
+			if (PosterSource != null)
+			{
+				if (_posterImage != null)
+				{
+					_posterImage.Visibility = showPoster ? Visibility.Visible : Visibility.Collapsed;
+				}
+
+				if (_mediaPlayerPresenter != null)
+				{
+					_mediaPlayerPresenter.Opacity = showPoster ? 0 : 1;
+				}
+			}
+		}
+
 		protected override void OnApplyTemplate()
 		{
 			base.OnApplyTemplate();
-
+			
+			_layoutRoot = this.GetTemplateChild(LayoutRootName) as Grid;
 			_posterImage = this.GetTemplateChild(PosterImageName) as Image;
 			_mediaPlayerPresenter = this.GetTemplateChild(MediaPlayerPresenterName) as MediaPlayerPresenter;
+
 			_transportControlsPresenter = this.GetTemplateChild(TransportControlsPresenterName) as ContentPresenter;
 			_transportControlsPresenter.Content = TransportControls;
 			TransportControls.ApplyTemplate();
@@ -251,10 +335,9 @@ namespace Windows.UI.Xaml.Controls
 				MediaPlayer = new Windows.Media.Playback.MediaPlayer();
 			}
 
-			if (PosterSource != null && MediaPlayer.PlaybackSession.PlaybackState == MediaPlaybackState.None)
+			if (!IsLoaded && MediaPlayer.PlaybackSession.PlaybackState == MediaPlaybackState.None)
 			{
-				_posterImage.Visibility = Visibility.Visible;
-				_mediaPlayerPresenter.Opacity = 0;
+				TogglePosterImage(true);
 			}
 
 			if (!_isTransportControlsBound)
