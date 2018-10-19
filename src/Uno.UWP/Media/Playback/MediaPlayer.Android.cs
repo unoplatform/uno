@@ -55,6 +55,8 @@ namespace Windows.Media.Playback
 			_noisyAudioStreamReceiver = new AudioPlayerBroadcastReceiver(this);
 			var intentFilter = new IntentFilter(AudioManager.ActionAudioBecomingNoisy);
 			Application.Context.RegisterReceiver(_noisyAudioStreamReceiver, intentFilter);
+
+			InitializePlayer();
 		}
 
 		#region Player Initialization
@@ -68,9 +70,6 @@ namespace Windows.Media.Playback
 					_isPlayRequested = false;
 					_isPlayerPrepared = false;
 					_player.Release();
-
-					var surfaceView = RenderSurface as SurfaceView;
-					surfaceView?.Holder?.RemoveCallback(this);
 				}
 				finally
 				{

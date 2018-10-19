@@ -21,4 +21,5 @@
  * 131998 [Android] Window bounds set too late
  * 131768 [iOS] Improve ListView.ScrollIntoView() when ItemTemplateSelector is set
  * 135202, 131884 [Android] Content occasionally fails to show because binding throws an exception
+ * 135646 [Android] Binding MediaPlayerElement.Source causes video to go blank
  
