@@ -42,6 +42,79 @@ namespace Uno.UI.Tests.BinderTests_Weak
 			SUT.ClearValue(MyObject.ValueProperty, DependencyPropertyValuePrecedences.Inheritance);
 			Assert.AreEqual(null, SUT.GetValue(MyObject.ValueProperty));
 		}
+
+		[TestMethod]
+		public void When_Native()
+		{
+			var SUT = new MyNativeObject();
+			var source = new MyObject();
+			SUT.SetBinding(
+					MyNativeObject.MyValueProperty,
+					new Binding
+					{
+						Path = new PropertyPath("Value"),
+						Source = source,
+						Mode = BindingMode.OneWay
+					}
+				);
+
+			Assert.AreEqual(0, SUT.MyValue);
+
+			source.Value = 22;
+			Assert.AreEqual(22, SUT.MyValue);
+		}
+
+		[TestMethod]
+		public void When_Native_And_Collected()
+		{
+			var SUT = new MyNativeObject();
+			var source = new MyObject();
+			SUT.SetBinding(
+					MyNativeObject.MyValueProperty,
+					new Binding
+					{
+						Path = new PropertyPath("Value"),
+						Source = source,
+						Mode = BindingMode.OneWay
+					}
+				);
+
+			Assert.AreEqual(0, SUT.MyValue);
+
+			source.Value = 22;
+			Assert.AreEqual(22, SUT.MyValue);
+
+			SUT.Dispose();
+			source.Value = 99;
+			Assert.AreEqual(22, SUT.MyValue); //Binding shouldn't be updated after target is natively collected
+		}
+	}
+
+	public partial class MyNativeObject : DependencyObject, INativeObject, IDisposable
+	{
+		public IntPtr Handle { get; private set; }
+
+		public MyNativeObject()
+		{
+			Handle = new IntPtr(1);
+		}
+
+		public int MyValue
+		{
+			get { return (int)GetValue(MyValueProperty); }
+			set { SetValue(MyValueProperty, value); }
+		}
+
+		// Using a DependencyProperty as the backing store for MyValue.  This enables animation, styling, binding, etc...
+		public static readonly DependencyProperty MyValueProperty =
+			DependencyProperty.Register("MyValue", typeof(int), typeof(MyNativeObject), new PropertyMetadata(0));
+
+
+
+		public void Dispose()
+		{
+			Handle = IntPtr.Zero;
+		}
 	}
 
 	public partial class MyObject : DependencyObject

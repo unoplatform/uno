@@ -39,24 +39,29 @@ namespace Windows.UI.Xaml.Media
 			{
 				SetImage(null, failIfNull: false);
 				oldValue?.Dispose();
-
-				_imageScheduler.Disposable = CoreDispatcher.Main.RunAsync(
-					CoreDispatcherPriority.Normal,
-					async ct =>
-					{
-						var image = await Task.Run(async () => await newValue.Open(ct));
-
-						if (ct.IsCancellationRequested)
-						{
-							return;
-						}
-						
-						SetImage(image);
-					});
+				OpenImageAsync(newValue);
 			}
 		}
 
-		private void SetImage(UIImage image,  bool failIfNull = true)
+		private async void OpenImageAsync(ImageSource newValue)
+		{
+			CoreDispatcher.CheckThreadAccess();
+
+			var cd = new CancellationDisposable();
+
+			_imageScheduler.Disposable = cd;
+
+			var image = await Task.Run(() => newValue.Open(cd.Token));
+
+			if (cd.Token.IsCancellationRequested)
+			{
+				return;
+			}
+
+			SetImage(image);
+		}
+
+		private void SetImage(UIImage image, bool failIfNull = true)
 		{
 			ImageChanged?.Invoke(image);
 
