@@ -3,6 +3,7 @@
 ## Next version
 
 ### Features
+* Add base infrastructure platform for macOS
 * 136259 Add a behavior so that tap makes controls fade out
 
 ### Breaking changes
