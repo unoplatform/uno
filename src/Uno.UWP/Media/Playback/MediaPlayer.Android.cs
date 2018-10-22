@@ -468,6 +468,7 @@ namespace Windows.Media.Playback
 
 		protected override void Dispose(bool disposing)
 		{
+			TryDisposePlayer();
 			Application.Context.UnregisterReceiver(_noisyAudioStreamReceiver);
 			base.Dispose(disposing);
 		}
