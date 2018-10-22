@@ -3,6 +3,7 @@
 ## Next version
 
 ### Features
+* Add base infrastructure platform for macOS
 * 136259 Add a behavior so that tap makes controls fade out
 * 135985 [Android], [iOS] ListViewBase: Support [MultiSelectStates](https://msdn.microsoft.com/en-us/library/windows/apps/mt299136.aspx?f=255&MSPPError=-2147217396) on ListViewItem. This allows the item container to visually adapt when multiple selection is enabled or disabled.
 
