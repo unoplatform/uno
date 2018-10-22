@@ -380,5 +380,10 @@ namespace Windows.Media.Playback
 		{
 			_videoLayer.VideoGravity = gravity;
 		}
+
+		protected override void Dispose(bool disposing)
+		{
+			TryDisposePlayer();
+		}
 	}
 }
