@@ -61,20 +61,25 @@ namespace Uno.UI.Controls
 			var topCommandBar = pageController.FindTopCommandBar();
 			if (topCommandBar != null)
 			{
-				// Hook CommandBar to NavigationBar
-				// We do it here because we know the NavigationController is set (and NavigationBar is available)
-				SetNavigationBar(topCommandBar, pageController.NavigationController.NavigationBar);
-
-				// We call this method after rendering the CommandBar to work around buggy behaviour on iOS 11, but we have to make 
-				// sure not to overwrite the visibility set by the renderer.
-				var isHidden = topCommandBar.Visibility == Visibility.Collapsed;
-				pageController.NavigationController.SetNavigationBarHidden(hidden: isHidden, animated: true);
-
-				if (isHidden && pageController.NavigationController.InteractivePopGestureRecognizer != null)
+				if (topCommandBar.Visibility == Visibility.Visible)
 				{
-					//set a gesture recognizer in the case that the UINavigationBar is hidden
-					var callback = new Uno.UI.Helpers.NativeFramePresenterUIGestureRecognizerDelegate(() => pageController.NavigationController);
-					pageController.NavigationController.InteractivePopGestureRecognizer.Delegate = callback;
+					SetNavigationBar(topCommandBar, pageController.NavigationController.NavigationBar);
+
+					// When the CommandBar is visible, we need to call SetNavigationBarHidden
+					// AFTER it has been rendered. Otherwise, it causes a bug introduced
+					// in iOS 11 in which the BackButtonIcon is not rendered properly.
+					pageController.NavigationController.SetNavigationBarHidden(hidden: false, animated: true);
+				}
+				else
+				{
+					// Even if the CommandBar should technically be collapsed,
+					// we don't hide it using the NavigationController because it
+					// automatically disables the back gesture.
+					// In order to visually hide it, the CommandBarRenderer
+					// will hide the native view using the UIView.Hidden property.
+					pageController.NavigationController.SetNavigationBarHidden(hidden: false, animated: true);
+
+					SetNavigationBar(topCommandBar, pageController.NavigationController.NavigationBar);
 				}
 			}
 			else // No CommandBar

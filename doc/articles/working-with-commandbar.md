@@ -269,7 +269,10 @@ Unlike the `PrimaryCommands` or `SecondaryCommands`, which appear to the right o
 
 This is typically used for burger menus.
 
-Setting `NavigationCommand` on pages with a back button will replace it (and disable the back gesture on **iOS**).
+On **iOS**, the back gesture can be enabled or disabled using this property.
+
+- When a `CommandBar` (visible or collapsed) is in the visual tree, the back gesture is **enabled**.
+- When a `CommandBar` has a `NavigationCommand`, the back gesture is **disabled**.
 
 On **Android**, only icons are supported (`AppBarButton.Icon`). This is due to a platform limitation, which can be explained by the fact that `CommandBar.Content` is left-aligned.
 
