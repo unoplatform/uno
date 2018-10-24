@@ -44,7 +44,8 @@ namespace Windows.UI.Xaml.Controls
 			Thickness borderThickness,
 			Brush borderBrush,
 			CornerRadius cornerRadius,
-			Thickness padding
+			Thickness padding,
+			bool willUpdateMeasures = false
 			)
 		{
 			// This is required because android Height and Width are hidden by Control.
@@ -88,7 +89,14 @@ namespace Windows.UI.Xaml.Controls
 					}
 				}
 
-				view.Invalidate();
+				if (willUpdateMeasures)
+				{
+					view.RequestLayout();
+				}
+				else
+				{
+					view.Invalidate();
+				}
 
 				_currentState = newState;
 			}

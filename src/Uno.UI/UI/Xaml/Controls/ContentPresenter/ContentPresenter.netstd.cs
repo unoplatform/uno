@@ -41,5 +41,10 @@ namespace Windows.UI.Xaml.Controls
 		{
 			SetBorder(BorderThickness, BorderBrush, CornerRadius);
 		}
+
+		partial void OnPaddingChangedPartial(Thickness oldValue, Thickness newValue)
+		{
+			UpdateBorder();
+		}
 	}
 }

@@ -445,8 +445,10 @@ namespace Windows.UI.Xaml.Controls
 
 		private void OnPaddingChanged(Thickness oldValue, Thickness newValue)
 		{
-			UpdateBorder();
+			OnPaddingChangedPartial(oldValue, newValue);
 		}
+
+		partial void OnPaddingChangedPartial(Thickness oldValue, Thickness newValue);
 
 		#endregion
 
