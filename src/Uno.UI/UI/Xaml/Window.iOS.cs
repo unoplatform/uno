@@ -69,7 +69,7 @@ namespace Windows.UI.Xaml
 			RaiseNativeSizeChanged(ViewHelper.GetScreenSize());
 		}
 
-		private void InternalActivate()
+		partial void InternalActivate()
 		{
 			_window.RootViewController = _mainController;
 			_window.MakeKeyAndVisible();

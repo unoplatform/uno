@@ -44,7 +44,12 @@ namespace Windows.UI.Xaml.Controls
 
 		partial void Initialize();
 
-		public void UpdateBorder()
+		private void UpdateBorder()
+		{
+			UpdateBorder(false);
+		}
+
+		private void UpdateBorder(bool willUpdateMeasures)
 		{
 			if (IsLoaded)
 			{
@@ -54,7 +59,8 @@ namespace Windows.UI.Xaml.Controls
 					BorderThickness,
 					BorderBrush,
 					CornerRadius,
-					Padding
+					Padding,
+					willUpdateMeasures
 				);
 			}
 		}
@@ -73,7 +79,7 @@ namespace Windows.UI.Xaml.Controls
 
 		partial void OnPaddingChangedPartial(Thickness oldValue, Thickness newValue)
 		{
-			UpdateBorder();
+			UpdateBorder(true);
 		}
 
 		partial void OnBorderBrushChangedPartial(Brush oldValue, Brush newValue)
