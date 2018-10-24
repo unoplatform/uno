@@ -89,5 +89,4 @@ Add the folowwing to your AndroidManifest.xml
 - `[iOS]` Volume flyout does not display (Uno issue)
 - `[All]` Dynamic width/height not supported when playing audio
 - `[All]` Sometimes flickers during resizing when using dynamic width/height
-- `[All]` Zoom button does not work anymore after displaying video fullscreen
 - `[Android]` Poster image disappears when putting video to fullscreen

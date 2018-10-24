@@ -49,7 +49,10 @@ namespace Windows.UI.Xaml.Controls
                 RemoveView(previousValue);
             }
 
-            AddView(newValue);
+			if (newValue != null)
+			{
+				AddView(newValue);
+			}
         }
 
 		private void UpdateBorder()

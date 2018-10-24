@@ -141,32 +141,25 @@ namespace Windows.UI.Xaml.Controls
 			});
 		}
 
-		private object _mainContent;
-
-		private void ToogleFullScreen(bool showFullScreen)
+		private void ToogleFullScreen(bool showFullscreen)
 		{
-			if (showFullScreen)
+			if (showFullscreen)
 			{
-				Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
-				{
-					ApplicationView.GetForCurrentView().TryEnterFullScreenMode();
-				});
-
-				_mainContent = (Windows.UI.Xaml.Window.Current.Content as Frame).Content;
-				(Windows.UI.Xaml.Window.Current.Content as Frame).Content = _layoutRoot;
+				ApplicationView.GetForCurrentView().TryEnterFullScreenMode();
 
 #if __ANDROID__
 				this.RemoveView(_layoutRoot);
+#elif __IOS__
+				_layoutRoot.RemoveFromSuperview();
 #endif
+
+				Windows.UI.Xaml.Window.Current.DisplayFullscreen(_layoutRoot);
 			}
 			else
 			{
-				Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
-				{
-					ApplicationView.GetForCurrentView().ExitFullScreenMode();
-				});
+				ApplicationView.GetForCurrentView().ExitFullScreenMode();
 
-				(Windows.UI.Xaml.Window.Current.Content as Frame).Content = _mainContent;
+				Windows.UI.Xaml.Window.Current.DisplayFullscreen(null);
 
 #if __ANDROID__
 				this.AddView(_layoutRoot);
@@ -176,9 +169,9 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-#endregion
+		#endregion
 
-#region MediaPlayer Property
+		#region MediaPlayer Property
 
 		public Windows.Media.Playback.MediaPlayer MediaPlayer
 		{
@@ -231,9 +224,9 @@ namespace Windows.UI.Xaml.Controls
 			});
 		}
 
-#endregion
+		#endregion
 
-#region AreTransportControlsEnabled Property
+		#region AreTransportControlsEnabled Property
 
 		public bool AreTransportControlsEnabled
 		{
@@ -248,9 +241,9 @@ namespace Windows.UI.Xaml.Controls
 				typeof(MediaPlayerElement),
 				new FrameworkPropertyMetadata(false));
 
-#endregion
+		#endregion
 
-#region Stretch Property
+		#region Stretch Property
 
 		public Stretch Stretch
 		{
@@ -265,7 +258,7 @@ namespace Windows.UI.Xaml.Controls
 				typeof(MediaPlayerElement),
 				new FrameworkPropertyMetadata(Stretch.Uniform));
 
-#endregion
+		#endregion
 
 		private MediaTransportControls _transportControls;
 		public MediaTransportControls TransportControls
