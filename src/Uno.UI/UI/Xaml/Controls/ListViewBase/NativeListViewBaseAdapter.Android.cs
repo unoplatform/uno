@@ -159,7 +159,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 			else
 			{
-				viewType = isGroupHeader ? NoTemplateGroupHeaderType : NoTemplateGroupHeaderType;
+				viewType = isGroupHeader ? NoTemplateGroupHeaderType : NoTemplateItemType;
 			}
 
 			if (isGroupHeader)
