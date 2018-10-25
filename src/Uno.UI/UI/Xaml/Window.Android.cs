@@ -6,12 +6,16 @@ using Uno.UI;
 using Windows.Foundation;
 using Windows.UI.Core;
 using Windows.UI.ViewManagement;
+using Windows.UI.Xaml.Controls;
 
 namespace Windows.UI.Xaml
 {
 	public sealed partial class Window
 	{
 		private static Window _current;
+		private Grid _main;
+		private Border _rootBorder;
+		private Border _fullWindow;
 		private UIElement _content;
 
 		public Window()
@@ -26,14 +30,37 @@ namespace Windows.UI.Xaml
 
 		private void InternalSetContent(UIElement value)
 		{
-			_content = value;
-			ApplicationActivity.Instance?.SetContentView(value);
+			if (_main == null)
+			{
+				_rootBorder = new Border();
+				_fullWindow = new Border()
+				{
+					VerticalAlignment = VerticalAlignment.Stretch,
+					HorizontalAlignment = HorizontalAlignment.Stretch,
+					Visibility = Visibility.Collapsed
+				};
+
+				_main = new Grid()
+				{
+					Children =
+					{
+						_rootBorder,
+						_fullWindow
+					}
+				};
+
+				ApplicationActivity.Instance?.SetContentView(_main);
+			}
+			
+			_rootBorder.Child = _content = value;
 		}
 
 		private UIElement InternalGetContent()
 		{
 			return _content;
 		}
+
+		internal UIElement MainContent => _main;
 
 		private static Window InternalGetCurrentWindow()
 		{
@@ -126,6 +153,20 @@ namespace Windows.UI.Xaml
 			}
 
 			return logicalNavigationBarHeight;
+		}
+
+		internal void DisplayFullscreen(UIElement element)
+		{
+			if (element == null)
+			{
+				_fullWindow.Child = null;
+				_fullWindow.Visibility = Visibility.Collapsed;
+			}
+			else
+			{
+				_fullWindow.Visibility = Visibility.Visible;
+				_fullWindow.Child = element;
+			}
 		}
 	}
 }

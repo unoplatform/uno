@@ -425,6 +425,7 @@ namespace Windows.Media.Playback
 
 		public void SurfaceDestroyed(ISurfaceHolder holder)
 		{
+			_player.SetDisplay(null);
 			_hasValidHolder = false;
 		}
 
