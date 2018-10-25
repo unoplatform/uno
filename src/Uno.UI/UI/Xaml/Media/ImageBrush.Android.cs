@@ -49,12 +49,7 @@ namespace Windows.UI.Xaml.Media
 			{
 				if (ImageSource != null)
 				{
-					_refreshPaint.Disposable =
-						CoreDispatcher.Main
-						.RunAsync(
-							CoreDispatcherPriority.Normal,
-							async (ct) => await RefreshImage(ct, drawRect
-						));
+					RefreshImageAsync(drawRect);
 				}
 				else
 				{
@@ -63,6 +58,17 @@ namespace Windows.UI.Xaml.Media
 				_imageSourceChanged = false;
 				_lastDrawRect = drawRect;
 			}
+		}
+
+		private async void RefreshImageAsync(Windows.Foundation.Rect drawRect)
+		{
+			CoreDispatcher.CheckThreadAccess();
+
+			var cd = new CancellationDisposable();
+
+			_refreshPaint.Disposable = cd;
+
+			await RefreshImage(cd.Token, drawRect);
 		}
 
 		private async Task RefreshImage(CancellationToken ct, Windows.Foundation.Rect drawRect)
@@ -81,7 +87,7 @@ namespace Windows.UI.Xaml.Media
 						OnImageFailed();
 					}
 				}
-				catch(Exception ex)
+				catch (Exception ex)
 				{
 					this.Log().Error("RefreshImage failed", ex);
 					OnImageFailed();
@@ -218,7 +224,7 @@ namespace Windows.UI.Xaml.Media
 
 			var sourceRect = new Foundation.Rect(0, 0, bitmap.Width, bitmap.Height);
 			var destinationRect = GetArrangedImageRect(sourceRect.Size, drawRect);
-			
+
 			matrix.SetRectToRect(sourceRect.ToRectF(), destinationRect.ToRectF(), Android.Graphics.Matrix.ScaleToFit.Fill);
 
 			RelativeTransform?.ToNativeTransform(matrix, new Size(drawRect.Width, drawRect.Height), isBrush: true);
