@@ -850,7 +850,7 @@ namespace Windows.UI.Xaml
 		// We keep track of registered routed events to avoid registering the same one twice (mainly because RemoveHandler is not implemented)
 		private HashSet<RoutedEvent> _registeredRoutedEvents = new HashSet<RoutedEvent>();
 
-		partial void AddHandlerPartial(RoutedEvent routedEvent, object handler)
+		partial void AddHandlerPartial(RoutedEvent routedEvent, object handler, bool handledEventsToo)
 		{
 			if (!_registeredRoutedEvents.Contains(routedEvent))
 			{
@@ -860,26 +860,33 @@ namespace Windows.UI.Xaml
 				// possibly in shared AddHandler implementation for all platforms
 				if (routedEvent == TappedEvent)
 				{
-					var pointerHandler = new PointerEventHandler((snd, e) => RaiseEvent(TappedEvent, new TappedRoutedEventArgs(e.GetCurrentPoint())));
+					void PointerToTappedHandler(object sender, PointerRoutedEventArgs pointerArgs)
+					{
+						var position = pointerArgs.GetCurrentPoint();
+						RaiseEvent(TappedEvent, new TappedRoutedEventArgs(position));
+					}
 
-					PointerPressed += pointerHandler;
+					AddHandler(PointerPressedEvent, new PointerEventHandler(PointerToTappedHandler), handledEventsToo);
 				}
 				else if (routedEvent == DoubleTappedEvent)
 				{
 					var lastTapped = DateTimeOffset.MinValue.AddDays(2);
 
-					PointerPressed += (snd, e) =>
+					void PointerToDoubleTappedHandler(object sender, PointerRoutedEventArgs pointerArgs)
 					{
 						var now = DateTimeOffset.Now;
 						if (lastTapped.AddMilliseconds(250) < now)
 						{
-							RaiseEvent(TappedEvent, new DoubleTappedRoutedEventArgs(e.GetCurrentPoint()));
+							var position = pointerArgs.GetCurrentPoint();
+							RaiseEvent(DoubleTappedEvent, new DoubleTappedRoutedEventArgs(position));
 						}
 						else
 						{
 							lastTapped = now;
 						}
-					};
+					}
+
+					AddHandler(PointerPressedEvent, new PointerEventHandler(PointerToDoubleTappedHandler), handledEventsToo);
 				}
 				else if (RoutedEventNames.TryGetValue(routedEvent, out string eventName))
 				{

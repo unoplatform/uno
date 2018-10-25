@@ -24,7 +24,7 @@
 						<Border MaxHeight="50" Background="#48000000" VerticalAlignment="Top">
 							<TextBlock x:Name="resultScroll" TextWrapping="Wrap" MaxHeight="50" />
 						</Border>
-						<Button>You can focus this button</Button>
+						<Button x:Name="btn">You can focus this button</Button>
 						<TextBox VerticalAlignment="Bottom" />
 					</Grid>
 				</ScrollViewer>

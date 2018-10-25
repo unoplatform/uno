@@ -17,6 +17,9 @@ namespace SamplesApp.Samples.RoutedEvents
 			HookEvents(middle, resultMiddle);
 			HookEvents(inner, resultInner);
 			HookEvents(scroll, resultScroll);
+
+			btn.Click += (s, e) => btn.Content = $"{btn.Content}.Clk";
+			btn.Tapped += (s, e) => btn.Content = $"{btn.Content}+T";
 		}
 
 		private void HookEvents(Grid grid, TextBlock textBlock)
