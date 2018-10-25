@@ -79,7 +79,7 @@ namespace Windows.UI.Xaml
 			_areGesturesAttached = false;
 		}
 
-		partial void AddHandlerPartial(RoutedEvent routedEvent, object handler)
+		partial void AddHandlerPartial(RoutedEvent routedEvent, object handler, bool handledEventsToo)
 		{
 			if (routedEvent == TappedEvent)
 			{

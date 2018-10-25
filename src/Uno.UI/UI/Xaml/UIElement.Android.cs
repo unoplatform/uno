@@ -72,7 +72,7 @@ namespace Windows.UI.Xaml
 			return _eventHandlerStore.TryGetValue(routedEvent, out List<RoutedEventHandlerInfo> handlers) && handlers.Any();
 		}
 
-		partial void AddHandlerPartial(RoutedEvent routedEvent, object handler)
+		partial void AddHandlerPartial(RoutedEvent routedEvent, object handler, bool handledEventsToo)
 		{
 			_gestures.Value.UpdateShouldHandle(routedEvent, HasHandler(routedEvent));
 		}

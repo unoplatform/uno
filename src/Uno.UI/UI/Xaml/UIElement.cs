@@ -166,10 +166,10 @@ namespace Windows.UI.Xaml
 			var handlers = _eventHandlerStore.FindOrCreate(routedEvent, () => new List<RoutedEventHandlerInfo>());
 			handlers.Add(new RoutedEventHandlerInfo(handler, handledEventsToo));
 
-			AddHandlerPartial(routedEvent, handler);
+			AddHandlerPartial(routedEvent, handler, handledEventsToo);
 		}
 
-		partial void AddHandlerPartial(RoutedEvent routedEvent, object handler);
+		partial void AddHandlerPartial(RoutedEvent routedEvent, object handler, bool handledEventsToo);
 
 		public void RemoveHandler(RoutedEvent routedEvent, object handler)
 		{
