@@ -112,6 +112,30 @@ namespace Windows.UI.Xaml.Controls
 			return finalSize;
 		}
 
+		protected override void OnLoaded()
+		{
+			base.OnLoaded();
+			RegisterEventHandler("scroll", (EventHandler)OnScroll);
+		}
+
+		protected override void OnUnloaded()
+		{
+			base.OnUnloaded();
+			UnregisterEventHandler("scroll", (EventHandler)OnScroll);
+		}
+
+		private void OnScroll(object sender, EventArgs args)
+		{
+			int.TryParse(GetProperty("scrollLeft"), out var horizontalOffset);
+			int.TryParse(GetProperty("scrollTop"), out var verticalOffset);
+			
+			(TemplatedParent as ScrollViewer)?.OnScrollInternal(
+				horizontalOffset,
+				verticalOffset,
+				isIntermediate: false
+			);
+		}
+
 		internal override bool IsViewHit()
 		{
 			return true;
