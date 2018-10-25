@@ -29,3 +29,4 @@
  * 134819, 134828 [iOS] Ensures the back gesture is enabled and disabled properly when the CommandBar is visible, collapsed, visible with a navigation command and collapsed with a navigation command. 
  * 135258 [Android] Fixed ImageBrush flash/flickering occurs when transitioning to a new page for the first time.
  * 131768 [iOS] Fixed bug where stale ScrollIntoView() request could overwrite more recent request
+ * 136092 [iOS] ScrollIntoView() throws exception for ungrouped lists
