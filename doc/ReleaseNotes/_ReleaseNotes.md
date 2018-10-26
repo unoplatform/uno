@@ -26,7 +26,9 @@
  * 131768 [iOS] Improve ListView.ScrollIntoView() when ItemTemplateSelector is set
  * 135202, 131884 [Android] Content occasionally fails to show because binding throws an exception
  * 135646 [Android] Binding MediaPlayerElement.Source causes video to go blank
+ * 136093, 136172 [iOS] ComboBox does not display its Popup
  * 134819, 134828 [iOS] Ensures the back gesture is enabled and disabled properly when the CommandBar is visible, collapsed, visible with a navigation command and collapsed with a navigation command. 
  * 135258 [Android] Fixed ImageBrush flash/flickering occurs when transitioning to a new page for the first time.
  * 131768 [iOS] Fixed bug where stale ScrollIntoView() request could overwrite more recent request
  * 136092 [iOS] ScrollIntoView() throws exception for ungrouped lists
+ * 131768 [iOS] Fixed bug where stale ScrollIntoView() request could overwrite more recent request

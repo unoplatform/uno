@@ -26,12 +26,6 @@ namespace Windows.UI.Xaml.Controls
 				if (_mainWindow == null)
 				{
 					_mainWindow = UIApplication.SharedApplication.KeyWindow ?? UIApplication.SharedApplication.Windows[0];
-
-					PopupPanel = new PopupPanel(this);
-
-					MainWindow.AddSubview(PopupPanel);
-
-					UpdateDismissTriggers();
 				}
 
 				return _mainWindow;
@@ -55,6 +49,12 @@ namespace Windows.UI.Xaml.Controls
 			{
 				if (Child != null)
 				{
+					// Make sure that the child does not find itself without a TemplatedParent
+					if (PopupPanel.TemplatedParent == null)
+					{
+						PopupPanel.TemplatedParent = TemplatedParent;
+					}
+
 					PopupPanel.AddSubview(Child);
 				}
 
@@ -71,7 +71,13 @@ namespace Windows.UI.Xaml.Controls
 
 		private void RegisterPopupPanel()
 		{
-			if (PopupPanel?.Superview == null)
+			if (PopupPanel == null)
+			{
+				PopupPanel = new PopupPanel(this);
+				UpdateDismissTriggers();
+			}
+
+			if (PopupPanel.Superview == null)
 			{
 				MainWindow.AddSubview(PopupPanel);
 			}
