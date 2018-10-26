@@ -55,6 +55,12 @@ namespace Windows.UI.Xaml.Controls
 			{
 				if (Child != null)
 				{
+					// Make sure that the child does not find itself without a TemplatedParent
+					if (PopupPanel.TemplatedParent == null)
+					{
+						PopupPanel.TemplatedParent = TemplatedParent;
+					}
+
 					PopupPanel.AddSubview(Child);
 				}
 
