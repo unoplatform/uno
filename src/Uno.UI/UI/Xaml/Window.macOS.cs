@@ -58,7 +58,7 @@ namespace Windows.UI.Xaml
 			RaiseNativeSizeChanged(ViewHelper.GetScreenSize());
 		}
 
-		private void InternalActivate()
+		partial void InternalActivate()
 		{
 			_window.ContentViewController = _mainController;
 			_window.Display();
