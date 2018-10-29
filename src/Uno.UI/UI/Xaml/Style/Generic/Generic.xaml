@@ -8254,6 +8254,7 @@
 											  IsFullWindow="{TemplateBinding IsFullWindow}"
 											  Stretch="{TemplateBinding Stretch}"
 											  MediaPlayer="{TemplateBinding MediaPlayer}"
+											  Visibility="Collapsed"
 											  Background="Black" />
 						<ContentPresenter x:Name="TransportControlsPresenter"
 										  Visibility="{TemplateBinding AreTransportControlsEnabled}" />

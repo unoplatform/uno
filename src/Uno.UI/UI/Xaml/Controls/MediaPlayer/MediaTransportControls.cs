@@ -99,6 +99,7 @@ namespace Windows.UI.Xaml.Controls
 
 		private Timer _controlsVisibilityTimer;
 		private bool _wasPlaying;
+		private bool _isInteractive;
 		private MediaPlayerElement _mpe;
 
 		public MediaTransportControls() : base()
@@ -269,14 +270,18 @@ namespace Windows.UI.Xaml.Controls
 
 		public void Show()
 		{
+			_isInteractive = true;
+
 			Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
 			{
 				VisualStateManager.GoToState(this, "ControlPanelFadeIn", false);
 			});
 		}
-		
+
 		public void Hide()
 		{
+			_isInteractive = false;
+
 			Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
 			{
 				if (_mediaPlayer.PlaybackSession.PlaybackState == MediaPlaybackState.Buffering || _mediaPlayer.PlaybackSession.PlaybackState == MediaPlaybackState.Playing)
@@ -288,11 +293,19 @@ namespace Windows.UI.Xaml.Controls
 
 		private void OnRootGridTapped(object sender, TappedRoutedEventArgs e)
 		{
-			Show();
-
-			if (ShowAndHideAutomatically)
+			if (_isInteractive)
 			{
-				ResetControlsVisibilityTimer();
+				_controlsVisibilityTimer.Stop();
+				Hide();
+			}
+			else
+			{
+				Show();
+
+				if (ShowAndHideAutomatically)
+				{
+					ResetControlsVisibilityTimer();
+				}
 			}
 		}
 

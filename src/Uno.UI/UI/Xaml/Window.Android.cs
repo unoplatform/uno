@@ -160,11 +160,13 @@ namespace Windows.UI.Xaml
 			if (element == null)
 			{
 				_fullWindow.Child = null;
+				_rootBorder.Visibility = Visibility.Visible;
 				_fullWindow.Visibility = Visibility.Collapsed;
 			}
 			else
 			{
 				_fullWindow.Visibility = Visibility.Visible;
+				_rootBorder.Visibility = Visibility.Collapsed;
 				_fullWindow.Child = element;
 			}
 		}

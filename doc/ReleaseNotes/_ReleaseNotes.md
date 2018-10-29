@@ -5,6 +5,7 @@
 ### Features
 
 * 135799 Implemented MediaPlayer.Dispose()
+* 136259 Add a behavior so that tap makes controls fade out
 
 ### Breaking changes
 
