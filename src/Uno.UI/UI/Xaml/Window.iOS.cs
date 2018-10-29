@@ -42,7 +42,7 @@ namespace Windows.UI.Xaml
 			_mainController = ViewControllerGenerator?.Invoke() ?? new RootViewController();
 			_mainController.View.BackgroundColor = UIColor.White;
 			_mainController.NavigationBarHidden = true;
-
+			
 			ObserveOrientationAndSize();
 
 			Dispatcher = CoreDispatcher.Main;
@@ -66,9 +66,12 @@ namespace Windows.UI.Xaml
 			_window.FrameChanged +=
 				() => RaiseNativeSizeChanged(ViewHelper.GetScreenSize());
 
+			_mainController.VisibleBoundsChanged +=
+				() => RaiseNativeSizeChanged(ViewHelper.GetScreenSize());
+
 			var statusBar = StatusBar.GetForCurrentView();
-			statusBar.Showing += (o, e) => UpdateCoreBounds();
-			statusBar.Hiding += (o, e) => UpdateCoreBounds();
+			statusBar.Showing += (o, e) => RaiseNativeSizeChanged(ViewHelper.GetScreenSize());
+			statusBar.Hiding += (o, e) => RaiseNativeSizeChanged(ViewHelper.GetScreenSize());
 
 			RaiseNativeSizeChanged(ViewHelper.GetScreenSize());
 		}
@@ -125,30 +128,21 @@ namespace Windows.UI.Xaml
 		{
 			var newBounds = new Rect(0, 0, size.Width, size.Height);
 
+			var applicationView = ApplicationView.GetForCurrentView();
+			if (applicationView != null)
+			{
+				applicationView.SetCoreBounds(_window, newBounds);
+			}
+
 			if (Bounds != newBounds)
 			{
 				Bounds = newBounds;
-
-				var applicationView = ApplicationView.GetForCurrentView();
-				if (applicationView != null)
-				{
-					applicationView.SetCoreBounds(_window, newBounds);
-				}
 
 				RaiseSizeChanged(
 					new WindowSizeChangedEventArgs(
 						new Windows.Foundation.Size((float)size.Width, (float)size.Height)
 					)
 				);
-			}
-		}
-
-		private void UpdateCoreBounds()
-		{
-			var applicationView = ApplicationView.GetForCurrentView();
-			if (applicationView != null)
-			{
-				applicationView.SetCoreBounds(_window, Bounds);
 			}
 		}
 
