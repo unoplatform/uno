@@ -22,7 +22,7 @@ namespace Uno.UI.Controls
 		private readonly SerialDisposable _orientationSubscription = new SerialDisposable();
 
 		private static readonly double _defaultCommandBarHeight = 44;
-		private static readonly double _landscapePhoneCommandBarHeight = 32;
+		private static readonly double _landscapeSmallPhoneCommandBarHeight = 32;
 
 		protected override void OnLoaded()
 		{
@@ -36,6 +36,8 @@ namespace Uno.UI.Controls
 			{
 				Content = navigationBar;
 			}
+
+			this.Height = GetCommandBarHeight();
 
 			var statusBar = StatusBar.GetForCurrentView();
 
@@ -53,21 +55,7 @@ namespace Uno.UI.Controls
 				navigationBar.SetNeedsLayout();
 				navigationBar.Superview.SetNeedsLayout();
 			}
-
-			// if device is iOS 11+ and a iPhone, we need to adapt the size of the bar based on the orientation
-			if (UIDevice.CurrentDevice.CheckSystemVersion(11, 0)
-				&& UIDevice.CurrentDevice.UserInterfaceIdiom == UIUserInterfaceIdiom.Phone)
-			{
-				// Set height based on current orientation and listen to orientation changes
-				this.Height = GetCommandBarHeight(DisplayInformation.GetForCurrentView().CurrentOrientation);
-				DisplayInformation.GetForCurrentView().OrientationChanged += OrientationChanged;
-			}
-			else
-			{
-				// Below iOS 11 or on iPads, status bar is always the same size
-				this.Height = _defaultCommandBarHeight;
-			}
-
+			DisplayInformation.GetForCurrentView().OrientationChanged += OrientationChanged;
 			_orientationSubscription.Disposable = Disposable.Create(() =>
 			{
 				DisplayInformation.GetForCurrentView().OrientationChanged -= OrientationChanged;
@@ -75,22 +63,39 @@ namespace Uno.UI.Controls
 
 			void OrientationChanged(DisplayInformation displayInformation, object args)
 			{
-				this.Height = GetCommandBarHeight(displayInformation.CurrentOrientation);
+				this.Height = GetCommandBarHeight();
 			}
 		}
 
-		private double GetCommandBarHeight(DisplayOrientations orientation)
+		private double GetCommandBarHeight()
 		{
-			switch (orientation)
+			// For phones with a screen size of 4.7 inches or less, the navigation bar size is different in portrait and landscape mode
+			// Navigation bar height depending of device : https://kapeli.com/cheat_sheets/iOS_Design.docset/Contents/Resources/Documents/index
+			// Devices screen specifications : https://www.idev101.com/code/User_Interface/sizes.html
+			var bounds = UIScreen.MainScreen.Bounds;
+			var height = Math.Max(bounds.Width, bounds.Height);
+			var width = Math.Min(bounds.Width, bounds.Height);
+			var isPhoneSmallScreen = height <= 667 && width <= 375;
+			
+			if (isPhoneSmallScreen && UIDevice.CurrentDevice.UserInterfaceIdiom == UIUserInterfaceIdiom.Phone)
 			{
-				case DisplayOrientations.Landscape:
-				case DisplayOrientations.LandscapeFlipped:
-					return _landscapePhoneCommandBarHeight;
-				case DisplayOrientations.Portrait:
-				case DisplayOrientations.PortraitFlipped:
-				case DisplayOrientations.None:
-				default:
-					return _defaultCommandBarHeight;
+				var orientation = DisplayInformation.GetForCurrentView().CurrentOrientation;
+
+				switch (orientation)
+				{
+					case DisplayOrientations.Landscape:
+					case DisplayOrientations.LandscapeFlipped:
+						return _landscapeSmallPhoneCommandBarHeight;
+					case DisplayOrientations.Portrait:
+					case DisplayOrientations.PortraitFlipped:
+					case DisplayOrientations.None:
+					default:
+						return _defaultCommandBarHeight;
+				}
+			}
+			else
+			{
+				return _defaultCommandBarHeight;
 			}
 		}
 
