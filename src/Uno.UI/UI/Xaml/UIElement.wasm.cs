@@ -547,7 +547,7 @@ namespace Windows.UI.Xaml
 
 		partial void InitializeCapture();
 
-		internal bool IsPointerCaptured { get; set; }
+		internal bool IsPointerCaptured => _pointCaptures.Any();
 
 		public int MeasureCallCount { get; protected set; }
 		public int ArrangeCallCount { get; protected set; }

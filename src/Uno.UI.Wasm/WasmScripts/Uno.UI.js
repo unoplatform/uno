@@ -714,7 +714,7 @@ var Uno;
              * @param evt
              */
             leftPointerEventFilter(evt) {
-                return evt ? evt.eventPhase === 3 && (!evt.button || evt.button === 0) : false;
+                return evt ? evt.eventPhase === 2 || evt.eventPhase === 3 && (!evt.button || evt.button === 0) : false;
             }
             /**
              * default event filter to be used with registerEventOnView to
@@ -722,7 +722,7 @@ var Uno;
              * @param evt
              */
             defaultEventFilter(evt) {
-                return evt ? evt.eventPhase === 3 : false;
+                return evt ? evt.eventPhase === 2 || evt.eventPhase === 3 : false;
             }
             /**
              * Gets the event filter function. See UIElement.HtmlEventFilter

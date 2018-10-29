@@ -7,25 +7,26 @@
 	mc:Ignorable="d"
 	Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
-	<Grid Margin="50" x:Name="outer" Background="Aqua" BorderBrush="Blue">
+	<Grid Margin="50" x:Name="outer" Background="Aqua">
 		<Border MaxHeight="50" Background="#48000000" VerticalAlignment="Top">
 			<TextBlock x:Name="resultOuter" TextWrapping="Wrap" MaxHeight="50" />
 		</Border>
-		<Grid Margin="50" x:Name="middle" Background="Bisque" BorderBrush="Blue">
+		<Grid Margin="50" x:Name="middle" Background="Bisque">
 			<Border MaxHeight="50" Background="#48000000" VerticalAlignment="Top">
 				<TextBlock x:Name="resultMiddle" TextWrapping="Wrap" MaxHeight="50" />
 			</Border>
-			<Grid Margin="50" MinWidth="200" MinHeight="200" x:Name="inner" Background="DeepSkyBlue" BorderBrush="Blue">
+			<Grid Margin="50" MinWidth="200" MinHeight="200" x:Name="inner" Background="DeepSkyBlue">
 				<Border MaxHeight="50" Background="#48000000" VerticalAlignment="Top">
 					<TextBlock x:Name="resultInner" TextWrapping="Wrap" MaxHeight="50" />
 				</Border>
 				<ScrollViewer Margin="30">
-					<Grid Margin="50" MinWidth="200" MinHeight="200" x:Name="scroll" Background="YellowGreen" BorderBrush="Blue">
+					<Grid Margin="50" MinWidth="200" MinHeight="200" x:Name="scroll" Background="YellowGreen">
 						<Border MaxHeight="50" Background="#48000000" VerticalAlignment="Top">
 							<TextBlock x:Name="resultScroll" TextWrapping="Wrap" MaxHeight="50" />
 						</Border>
 						<Button x:Name="btn">You can focus this button</Button>
 						<TextBox VerticalAlignment="Bottom" />
+						<Slider VerticalAlignment="Bottom" Margin="0, 40" Value="0.5" Minimum="-1" Maximum="1.5" StepFrequency="0.1" />
 					</Grid>
 				</ScrollViewer>
 				<TextBox VerticalAlignment="Bottom" />

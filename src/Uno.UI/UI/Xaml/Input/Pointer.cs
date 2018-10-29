@@ -6,7 +6,7 @@ using Windows.Devices.Input;
 
 namespace Windows.UI.Xaml.Input
 {
-	public partial class Pointer
+	public partial class Pointer : IEquatable<Pointer>
 	{
 
 #if XAMARIN_ANDROID
@@ -78,9 +78,39 @@ namespace Windows.UI.Xaml.Input
 
 		public PointerDeviceType PointerDeviceType { get; private set; }
 
-#if !__WASM__
-		[NotImplemented]
-#endif
+#if __WASM__ || XAMARIN_ANDROID
 		public uint PointerId { get; private set; }
+#else
+		[NotImplemented]
+		public uint PointerId => 1;
+#endif
+
+		public override string ToString()
+		{
+			return $"{PointerDeviceType}/{PointerId}";
+		}
+
+		public bool Equals(Pointer other)
+		{
+			if (ReferenceEquals(null, other)) return false;
+			if (ReferenceEquals(this, other)) return true;
+			return PointerDeviceType == other.PointerDeviceType && PointerId == other.PointerId;
+		}
+
+		public override bool Equals(object obj)
+		{
+			if (ReferenceEquals(null, obj)) return false;
+			if (ReferenceEquals(this, obj)) return true;
+			if (obj.GetType() != this.GetType()) return false;
+			return Equals((Pointer) obj);
+		}
+
+		public override int GetHashCode()
+		{
+			unchecked
+			{
+				return ((int) PointerDeviceType * 397) ^ (int) PointerId;
+			}
+		}
 	}
 }

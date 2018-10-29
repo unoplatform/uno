@@ -3,6 +3,7 @@ using Uno.UI.Samples.Controls;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Input;
+using Windows.UI.Xaml.Media;
 
 namespace SamplesApp.Samples.RoutedEvents
 {
@@ -71,13 +72,16 @@ namespace SamplesApp.Samples.RoutedEvents
 			grid.PointerPressed += (s, e) =>
 			{
 				textBlock.Text += "_";
-				grid.BorderThickness = new Thickness(3);
+				grid.BorderBrush = SolidColorBrushHelper.Blue;
 			};
 			grid.PointerReleased += (s, e) =>
 			{
 				textBlock.Text += "-";
-				grid.BorderThickness = new Thickness(0);
+				grid.BorderBrush = SolidColorBrushHelper.WhiteSmoke;
 			};
+
+			grid.BorderBrush = SolidColorBrushHelper.WhiteSmoke;
+			grid.BorderThickness = new Thickness(3.5);
 
 			grid.GotFocus += (s, e) => textBlock.Text += ".F";
 			grid.LostFocus += (s, e) => textBlock.Text += ".f";
