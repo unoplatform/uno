@@ -33,3 +33,4 @@
  * 131768 [iOS] Fixed bug where stale ScrollIntoView() request could overwrite more recent request
  * 136092 [iOS] ScrollIntoView() throws exception for ungrouped lists
  * 131768 [iOS] Fixed bug where stale ScrollIntoView() request could overwrite more recent request
+ * 136199 [Android] TextBlock.Text isn't visually updated if it changes while device is locked
