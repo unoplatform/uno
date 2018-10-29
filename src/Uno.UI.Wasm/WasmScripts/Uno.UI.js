@@ -621,7 +621,7 @@ var Uno;
             setImageRawData(viewId, dataPtr, width, height) {
                 const element = this.allActiveElementsById[viewId];
                 if (!element) {
-                    throw `setPointerCapture: Element id ${viewId} not found.`;
+                    throw `setImageRawData: Element id ${viewId} not found.`;
                 }
                 if (element.tagName.toUpperCase() === "IMG") {
                     const imgElement = element;

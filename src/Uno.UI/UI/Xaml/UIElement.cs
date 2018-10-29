@@ -500,27 +500,43 @@ namespace Windows.UI.Xaml
 
 		public bool CapturePointer(Pointer value)
 		{
-			IsPointerCaptured = true;
-			_pointCaptures.Add(value);
+			if (_pointCaptures.Contains(value))
+			{
+				this.Log().Error($"{this}: Pointer {value} already captured.");
+			}
+			else
+			{
+				_pointCaptures.Add(value);
 #if __WASM__
-			CapturePointerNative(value);
+				CapturePointerNative(value);
 #endif
+			}
 			return true;
 		}
 
 		public void ReleasePointerCapture(Pointer value)
 		{
-			IsPointerCaptured = false;
-			_pointCaptures.Remove(value);
+			if(_pointCaptures.Contains(value))
+			{
+				_pointCaptures.Remove(value);
 
 #if __WASM__
-			ReleasePointerCaptureNative(value);
+				ReleasePointerCaptureNative(value);
 #endif
+			}
+			else
+			{
+				this.Log().Error($"{this}: Cannot release pointer {value}: not captured by this control.");
+			}
 		}
 
 		public void ReleasePointerCaptures()
 		{
-			IsPointerCaptured = false;
+			if (_pointCaptures.Count == 0)
+			{
+				this.Log().Warn($"{this}: no pointers to release.");
+				return;
+			}
 #if __WASM__
 			foreach (var pointer in _pointCaptures)
 			{

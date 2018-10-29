@@ -14,13 +14,13 @@
 | `KeyDown`             | No(3) | Yes(3) | Yes    | [Documentation](https://docs.microsoft.com/uwp/api/windows.ui.xaml.uielement.keydown) |
 | `KeyUp`               | No(3) | Yes(3) | Yes    | [Documentation](https://docs.microsoft.com/uwp/api/windows.ui.xaml.uielement.keyup) |
 | _pointerd events_
-| `PointerCanceled`     | Yes   | Yes    | Yes    | [Documentation](https://docs.microsoft.com/uwp/api/windows.ui.xaml.uielement.pointercanceled) |
-| `PointerCaptureLost`  | Yes   | Yes    | Yes    | [Documentation](https://docs.microsoft.com/uwp/api/windows.ui.xaml.uielement.pointercapturelost) |
-| `PointerEntered`      | Yes   | Yes    | Yes    | [Documentation](https://docs.microsoft.com/uwp/api/windows.ui.xaml.uielement.pointerentered) |
-| `PointerExited`       | Yes   | Yes    | Yes    | [Documentation](https://docs.microsoft.com/uwp/api/windows.ui.xaml.uielement.pointerexited) |
-| `PointerMoved`        | Yes   | Yes    | Yes    | [Documentation](https://docs.microsoft.com/uwp/api/windows.ui.xaml.uielement.pointermoved) |
-| `PointerPressed`      | Yes   | Yes    | Yes    | [Documentation](https://docs.microsoft.com/uwp/api/windows.ui.xaml.uielement.pointerpressed) |
-| `PointerReleased`     | Yes   | Yes    | Yes    | [Documentation](https://docs.microsoft.com/uwp/api/windows.ui.xaml.uielement.pointerreleased) |
+| `PointerCanceled`     | Yes   | No     | Yes    | [Documentation](https://docs.microsoft.com/uwp/api/windows.ui.xaml.uielement.pointercanceled) |
+| `PointerCaptureLost`  | Yes   | No     | Yes    | [Documentation](https://docs.microsoft.com/uwp/api/windows.ui.xaml.uielement.pointercapturelost) |
+| `PointerEntered`      | Yes   | No     | Yes    | [Documentation](https://docs.microsoft.com/uwp/api/windows.ui.xaml.uielement.pointerentered) |
+| `PointerExited`       | Yes   | No     | Yes    | [Documentation](https://docs.microsoft.com/uwp/api/windows.ui.xaml.uielement.pointerexited) |
+| `PointerMoved`        | Yes   | No     | Yes    | [Documentation](https://docs.microsoft.com/uwp/api/windows.ui.xaml.uielement.pointermoved) |
+| `PointerPressed`      | Yes   | No     | Yes    | [Documentation](https://docs.microsoft.com/uwp/api/windows.ui.xaml.uielement.pointerpressed) |
+| `PointerReleased`     | Yes   | No     | Yes    | [Documentation](https://docs.microsoft.com/uwp/api/windows.ui.xaml.uielement.pointerreleased) |
 
 Notes:
 
