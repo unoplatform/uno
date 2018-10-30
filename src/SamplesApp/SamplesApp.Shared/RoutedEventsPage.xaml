@@ -26,7 +26,10 @@
 						</Border>
 						<Button x:Name="btn">You can focus this button</Button>
 						<TextBox VerticalAlignment="Bottom" />
-						<Slider VerticalAlignment="Bottom" Margin="0, 40" Value="0.5" Minimum="-1" Maximum="1.5" StepFrequency="0.1" />
+						<StackPanel Margin="0, 40">
+							<ToggleSwitch />
+							<Slider VerticalAlignment="Bottom" Value="0.5" Minimum="-1" Maximum="1.5" StepFrequency="0.1" />
+						</StackPanel>
 					</Grid>
 				</ScrollViewer>
 				<TextBox VerticalAlignment="Bottom" />
