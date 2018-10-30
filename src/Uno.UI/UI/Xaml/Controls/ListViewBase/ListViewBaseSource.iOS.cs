@@ -272,10 +272,11 @@ namespace Windows.UI.Xaml.Controls
 			var index = Owner?.XamlParent?.GetIndexFromIndexPath(IndexPath.FromNSIndexPath(indexPath)) ?? -1;
 			var container = cell as ListViewBaseInternalContainer;
 			var selectorItem = container?.Content as SelectorItem;
-			//Update IsSelected immediately before display, in case it was modified after cell was prefetched but before it became visible
+			//Update IsSelected and multi-select state immediately before display, in case either was modified after cell was prefetched but before it became visible
 			if (selectorItem != null)
 			{
 				selectorItem.IsSelected = Owner?.XamlParent?.IsSelected(index) ?? false;
+				Owner?.XamlParent?.ApplyMultiSelectState(selectorItem);
 			}
 
 			FrameworkElement.RegisterPhaseBinding(container.Content, a => RegisterForRecycled(container, a));
