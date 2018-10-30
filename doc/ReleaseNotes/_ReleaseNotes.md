@@ -3,10 +3,20 @@
 ## Next version
 
 ### Features
-
-* 135799 Implemented MediaPlayer.Dispose()
+* 
 
 ### Breaking changes
+* 
+
+### Bug fixes
+* 
+
+## Release 1.41
+
+### Features
+
+* [#154](https://github.com/nventive/Uno/issues/154) Implement the MediaPlayerElement control
+* 135799 Implemented MediaPlayer.Dispose()
 
 ### Bug fixes
 
