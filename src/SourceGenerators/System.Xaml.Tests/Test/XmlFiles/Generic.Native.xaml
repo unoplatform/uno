@@ -161,7 +161,7 @@
     </android:Style>
     <xamarin:Style BasedOn="{StaticResource NativeDefaultSlider}" TargetType="Slider" />
 
-    <converters:FromNullableBoolToReverseBoolConverter x:Key="nativeDefaultProgressBarReverseBool" />
+    <converters:UnoNativeDefaultProgressBarReverseBoolConverter x:Key="nativeDefaultProgressBarReverseBool" />
     
     <!-- Default native ProgressBar styles -->
     <ios:Style x:Key="NativeDefaultProgressBar" TargetType="ProgressBar">

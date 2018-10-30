@@ -13,6 +13,7 @@ using UIKit;
 using Uno.Logging;
 using Windows.UI.Core;
 using Uno.Disposables;
+using Microsoft.Extensions.Logging;
 
 namespace Windows.UI.Xaml.Media
 {
@@ -25,17 +26,26 @@ namespace Windows.UI.Xaml.Media
 
 		static ImageSource()
 		{
-			// The CheckForIllegalCrossThreadCalls field is not thread safe and cannot be changed on the fly.
-			// See https://bugzilla.xamarin.com/show_bug.cgi?id=40520 for more details.
-			SupportsAsyncFromBundle = UIDevice.CurrentDevice.CheckSystemVersion(9, 0) && !UIApplication.CheckForIllegalCrossThreadCalls;
-			SupportsFromBundle = UIDevice.CurrentDevice.CheckSystemVersion(8, 0);			
+			SupportsAsyncFromBundle = UIDevice.CurrentDevice.CheckSystemVersion(9, 0);
+			SupportsFromBundle = UIDevice.CurrentDevice.CheckSystemVersion(8, 0);
+		}
+
+		private static NSUrlSession _defaultSession;
+		/// <summary>
+		/// The <see cref="NSUrlSession"/> to use for remote url downloads, if using the platform downloader.
+		/// By default <see cref="NSUrlSession.SharedSession"/> will be used.
+		/// </summary>
+		public static NSUrlSession DefaultSession
+		{
+			get => _defaultSession ?? NSUrlSession.SharedSession;
+			set => _defaultSession = value;
 		}
 
 		protected ImageSource()
 		{
 			UseTargetSize = true;
-            InitializeDownloader();
-        }
+			InitializeDownloader();
+		}
 
 		protected ImageSource(UIImage image)
 		{
@@ -102,6 +112,11 @@ namespace Windows.UI.Xaml.Media
 			   )
 			)
 			{
+				if (ct.IsCancellationRequested)
+				{
+					return null;
+				}
+
 				if (Stream != null)
 				{
 					Stream.Position = 0;
@@ -152,8 +167,7 @@ namespace Windows.UI.Xaml.Media
 
 					if (SupportsAsyncFromBundle)
 					{
-						// Since iOS9, UIImage.FromBundle is thread safe, so we need to disable 
-						// the Xamarin binding check, which is unconditional.
+						// Since iOS9, UIImage.FromBundle is thread safe.
 						ImageData = UIImage.FromBundle(localFileUri.LocalPath);
 					}
 					else
@@ -188,44 +202,65 @@ namespace Windows.UI.Xaml.Media
 		/// </summary>
 		private async Task OpenUsingPlatformDownloader(CancellationToken ct)
 		{
-			if (SupportsAsyncFromBundle)
+			if (ct.IsCancellationRequested)
 			{
-				DownloadUsingPlatformDownloader();
+				return;
 			}
-			else
-			{
-				await CoreDispatcher.Main.RunAsync(
-					CoreDispatcherPriority.Normal,
-					() =>
-					{
-						DownloadUsingPlatformDownloader();
-					}
-				).AsTask(ct);
-			}
-		}
 
-		private void DownloadUsingPlatformDownloader()
-		{
 			using (var url = new NSUrl(WebUri.OriginalString))
 			{
-				NSError error;
-
-				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+				using (var request = NSUrlRequest.FromUrl(url))
 				{
-					this.Log().Debug($"Loading image from [{WebUri.OriginalString}]");
-				}
+					NSUrlSessionDataTask task;
+					var awaitable = DefaultSession.CreateDataTaskAsync(request, out task);
+					ct.Register(OnCancel);
+					try
+					{
+						task.Resume(); // We need to call this manually https://bugzilla.xamarin.com/show_bug.cgi?id=28425#c3
+						var result = await awaitable;
+						task = null;
+						var response = result.Response as NSHttpUrlResponse;
 
-				// fallback on the platform's loader
-				using (var data = NSData.FromUrl(url, NSDataReadingOptions.Coordinated, out error))
-				{
-					if (error != null)
-					{
-						this.Log().Error(error.LocalizedDescription);
+						if (ct.IsCancellationRequested)
+						{
+							return;
+						}
+						else if (!IsSuccessful(response.StatusCode))
+						{
+							if (this.Log().IsEnabled(LogLevel.Error))
+							{
+								this.Log().LogError(NSHttpUrlResponse.LocalizedStringForStatusCode(response.StatusCode));
+							}
+
+						}
+						else
+						{
+							ImageData = UIImage.LoadFromData(result.Data);
+						}
 					}
-					else
+					catch (NSErrorException e)
 					{
-						ImageData = UIImage.LoadFromData(data);
+						// This can occur for various reasons: download was cancelled, NSAppTransportSecurity blocks download, host couldn't be resolved...
+						if (ct.IsCancellationRequested)
+						{
+							if (this.Log().IsEnabled(LogLevel.Debug))
+							{
+								this.Log().LogDebug(e.ToString());
+							}
+						}
+						else if (this.Log().IsEnabled(LogLevel.Error))
+						{
+							this.Log().LogError(e.ToString());
+						}
 					}
+
+					void OnCancel()
+					{
+						// Cancel the current download
+						task?.Cancel();
+					}
+
+					bool IsSuccessful(nint status) => status < 300;
 				}
 			}
 		}

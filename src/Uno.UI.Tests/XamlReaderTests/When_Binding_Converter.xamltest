@@ -1,6 +1,6 @@
 ﻿<UserControl xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-	  xmlns:converters="using:Uno.UI.Converters"
+	  xmlns:converters="using:Uno.UI.Tests.Converters"
       x:Name="testPage">
   <UserControl.Resources>
 	<converters:FromNullableBoolToVisibilityConverter x:Key="myConverter"/>

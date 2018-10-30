@@ -262,7 +262,7 @@ namespace Windows.UI.Xaml.Controls
 		/// <summary>
 		/// Is item in the range of already-materialized items?
 		/// </summary>
-		private bool IsMaterialized(NSIndexPath itemPath) => itemPath.Compare(_lastMaterializedItem) >= 0;
+		private bool IsMaterialized(NSIndexPath itemPath) => itemPath.Compare(_lastMaterializedItem) <= 0;
 
 		// Consider group header to be materialized if first item in group is materialized
 		private bool IsMaterialized(int section) => section <= _lastMaterializedItem.Section;

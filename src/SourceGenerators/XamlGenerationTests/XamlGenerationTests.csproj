@@ -14,7 +14,7 @@
 
 	<ItemGroup>
 		<PackageReference Include="Uno.SourceGenerationTasks">
-			<Version>1.26.0</Version>
+			<Version>1.27.0</Version>
 			<ExcludeAssets>Runtime</ExcludeAssets>
 		</PackageReference>
 		<PackageReference Include="Uno.Core.Build">

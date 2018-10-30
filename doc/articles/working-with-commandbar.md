@@ -269,7 +269,10 @@ Unlike the `PrimaryCommands` or `SecondaryCommands`, which appear to the right o
 
 This is typically used for burger menus.
 
-Setting `NavigationCommand` on pages with a back button will replace it (and disable the back gesture on **iOS**).
+On **iOS**, the back gesture can be enabled or disabled using this property.
+
+- When a `CommandBar` (visible or collapsed) is in the visual tree, the back gesture is **enabled**.
+- When a `CommandBar` has a `NavigationCommand`, the back gesture is **disabled**.
 
 On **Android**, only icons are supported (`AppBarButton.Icon`). This is due to a platform limitation, which can be explained by the fact that `CommandBar.Content` is left-aligned.
 
@@ -294,6 +297,12 @@ To ensure everything works properly, you must follow a few rules:
 * The `CommandBar` can't move (i.e., don't put it inside a `ScrollViewer`)
 * The `CommandBar` must be accessible as soon as the page is being navigated to (i.e., don't put it inside a `DataTemplate` or an `AsyncValuePresenter`).
 * There can only be one `CommandBar` per page.
+
+## Extensibility
+
+The `CommandBar` it automatically managed by the `Frame` control, however you can still use the "native" mode of the `CommandBar` with your own navigation mechanisim.
+
+On **iOS** a `CommandBarHelper` is available for this purpose, you only have to invoke each of the provided method in your own `UIViewController` implementation.
 
 # AppBarButton
 

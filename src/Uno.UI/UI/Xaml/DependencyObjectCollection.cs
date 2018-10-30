@@ -191,5 +191,13 @@ namespace Windows.UI.Xaml
 	/// </summary>
 	public partial class DependencyObjectCollection : DependencyObjectCollection<DependencyObject>
 	{
+		public DependencyObjectCollection()
+		{
+		}
+
+		internal DependencyObjectCollection(DependencyObject parent, bool isAutoPropertyInheritanceEnabled = true)
+			: base(parent, isAutoPropertyInheritanceEnabled)
+		{
+		}
 	}
 }

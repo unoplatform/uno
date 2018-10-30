@@ -238,16 +238,16 @@ namespace Windows.UI.Xaml
 			{
 				Setters =
 				{
-					new Setter<FlipView>("Template", t =>
-						t.Template = new ControlTemplate(() =>
-							new ItemsPresenter()
-						)
-					),
 					new Setter<FlipView>("ItemsPanel", t=>
 						t.ItemsPanel = new ItemsPanelTemplate(()=>
 							new NativePagedView()
 						)
-					)
+					),
+					new Setter<FlipView>("Template", t =>
+						t.Template = new ControlTemplate(() =>
+							new ItemsPresenter()
+						)
+					)					
 				}
 			};
 

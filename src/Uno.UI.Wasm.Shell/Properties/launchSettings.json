@@ -1,8 +1,0 @@
-{
-  "profiles": {
-    "Uno.UI.Wasm.Shell": {
-      "commandName": "Executable",
-      "executablePath": "C:\\Windows\\System32\\whoami.exe"
-    }
-  }
-}
