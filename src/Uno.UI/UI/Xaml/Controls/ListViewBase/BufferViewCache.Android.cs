@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Android.Support.V7.Widget;
 using Android.Views;
+using Microsoft.Extensions.Logging;
 using Uno.Extensions;
 using Uno.Logging;
 using Windows.UI.Xaml.Controls.Primitives;
@@ -152,6 +153,7 @@ namespace Windows.UI.Xaml.Controls
 			UnbufferTrailing();
 			UnbufferLeading();
 			TrimEmpty(); //Empty items may have been exposed by unbuffering
+			CheckValidSteadyState();
 
 			void UnbufferTrailing()
 			{
@@ -214,6 +216,7 @@ namespace Windows.UI.Xaml.Controls
 					var record = _leadingBuffer.RemoveFromFront();
 					TrimEmpty();
 					CheckValidState();
+					CheckValidSteadyState();
 					SendToIntermediateCache(recycler, record);
 				}
 
@@ -226,6 +229,7 @@ namespace Windows.UI.Xaml.Controls
 					var record = _leadingBuffer.RemoveFromBack();
 					TrimEmpty();
 					CheckValidState();
+					CheckValidSteadyState();
 					SendToIntermediateCache(recycler, record);
 				}
 			}
@@ -259,6 +263,7 @@ namespace Windows.UI.Xaml.Controls
 				_leadingBuffer.RemoveFromBack();
 				CheckValidState();
 			}
+			CheckValidSteadyState();
 		}
 
 		/// <summary>
@@ -277,6 +282,8 @@ namespace Windows.UI.Xaml.Controls
 				PrefetchExtra();
 				_isInitiallyPopulated = true;
 			}
+
+			CheckValidSteadyState();
 
 			void PrefetchTrailing()
 			{
@@ -517,6 +524,7 @@ namespace Windows.UI.Xaml.Controls
 		/// </summary>
 		private ElementViewRecord? DequeueRecordFromBuffer(int displayPosition)
 		{
+			CheckValidSteadyState();
 			_initialChildCount = Layout.ChildCount;
 			_initialItemViewCount = Layout.ItemViewCount;
 			try
@@ -560,6 +568,7 @@ namespace Windows.UI.Xaml.Controls
 			finally
 			{
 				TrimEmpty();
+				CheckValidSteadyState();
 			}
 
 			return null;
@@ -574,8 +583,7 @@ namespace Windows.UI.Xaml.Controls
 			{
 				if (record.View != null)
 				{
-					Layout.TryDetachView(record.View);
-					Layout.RemoveDetachedView(record.View);
+					CleanUpView(record.View);
 				}
 			}
 
@@ -583,8 +591,7 @@ namespace Windows.UI.Xaml.Controls
 			{
 				if (record.View != null)
 				{
-					Layout.TryDetachView(record.View);
-					Layout.RemoveDetachedView(record.View);
+					CleanUpView(record.View);
 				}
 			}
 
@@ -592,8 +599,7 @@ namespace Windows.UI.Xaml.Controls
 			{
 				foreach (var holder in kvp.Value)
 				{
-					Layout.TryDetachView(holder.ItemView);
-					Layout.RemoveDetachedView(holder.ItemView);
+					CleanUpView(holder.ItemView);
 				}
 			}
 
@@ -601,6 +607,70 @@ namespace Windows.UI.Xaml.Controls
 			_leadingBuffer.Clear();
 			_intermediateCache.Clear();
 			_isInitiallyPopulated = false;
+
+			void CleanUpView(View viewToClean)
+			{
+				if ((viewToClean as FrameworkElement).Parent != null)
+				{
+					Layout.TryDetachView(viewToClean);
+					Layout.RemoveDetachedView(viewToClean);
+				}
+				else
+				{
+					// If Parent is null, the cached view was probably already removed during unloading, and detaching it is unnecessary (and indeed illegal).
+					if (this.Log().IsEnabled(LogLevel.Debug))
+					{
+						this.Log().Debug($"Skipping detach of view {viewToClean.GetHashCode()}");
+					}
+				}
+				_owner.XamlParent.CleanUpContainer(viewToClean as ContentControl);
+			}
+		}
+
+		/// <summary>
+		/// Remove detached views completely when list is unloaded. This prevents errors where the view's attached window info isn't 
+		/// properly updated. (Which is very bad.)
+		/// </summary>
+		internal void OnUnloaded()
+		{
+			foreach (var record in _trailingBuffer)
+			{
+				UnloadView(record.ViewHolder);
+			}
+
+			foreach (var record in _leadingBuffer)
+			{
+				UnloadView(record.ViewHolder);
+			}
+
+			foreach (var holder in _intermediateCache.Values.SelectMany(l => l))
+			{
+				UnloadView(holder);
+			}
+
+			void UnloadView(UnoViewHolder holder)
+			{
+				if (holder?.ItemView == null)
+				{
+					return;
+				}
+				if (!holder.IsDetached)
+				{
+					return;
+				}
+
+				Layout.TryAttachView(holder.ItemView);
+				Layout.RemoveView(holder.ItemView);
+				if (this.Log().IsEnabled(LogLevel.Debug))
+				{
+					this.Log().Debug($"Removed cached view {holder.ItemView.GetHashCode()}");
+				}
+			}
+		}
+
+		internal void OnLoaded()
+		{
+
 		}
 
 		private void NotifyViewRecycled(UnoViewHolder holder)
@@ -633,10 +703,13 @@ namespace Windows.UI.Xaml.Controls
 
 		private int ConvertIndexToDisplayPosition(int index) => _owner.XamlParent.ConvertIndexToDisplayPosition(index);
 
+		/// <summary>
+		/// Check that the buffers are in a consistent state. This is safe to call during certain intermediate operations.
+		/// </summary>
 		[Conditional("DEBUG")]
 		private void CheckValidState()
 		{
-			if (_trailingBuffer.Count > 0)
+			if (_trailingBuffer.Count > 0 && !_trailingBuffer[0].IsEmpty)
 			{
 				var expectedPosition = TrailingBufferStart;
 				for (int i = 0; i < _trailingBuffer.Count; i++)
@@ -649,7 +722,7 @@ namespace Windows.UI.Xaml.Controls
 					expectedPosition++;
 				}
 			}
-			if (_leadingBuffer.Count > 0)
+			if (_leadingBuffer.Count > 0 && !_leadingBuffer[0].IsEmpty)
 			{
 				var expectedPosition = LeadingBufferStart;
 				for (int i = 0; i < _leadingBuffer.Count; i++)
@@ -670,6 +743,37 @@ namespace Windows.UI.Xaml.Controls
 			if (Layout.ItemViewCount != _initialItemViewCount)
 			{
 				throw new InvalidOperationException($"Owner ItemViewCount has changed from {_initialItemViewCount} to {Layout.ItemViewCount}. Cache update should not modify owner.");
+			}
+		}
+
+		/// <summary>
+		/// Check that the buffers are in a consistent state. This should only be called after intermediate operations have completed.
+		/// </summary>
+		[Conditional("DEBUG")]
+		private void CheckValidSteadyState()
+		{
+			if (_leadingBuffer.Count > 0)
+			{
+				if (_leadingBuffer[0].IsEmpty)
+				{
+					throw new InvalidOperationException();
+				}
+				if (_leadingBuffer.Last().IsEmpty)
+				{
+					throw new InvalidOperationException();
+				}
+			}
+
+			if (_trailingBuffer.Count > 0)
+			{
+				if (_trailingBuffer[0].IsEmpty)
+				{
+					throw new InvalidOperationException();
+				}
+				if (_trailingBuffer.Last().IsEmpty)
+				{
+					throw new InvalidOperationException();
+				}
 			}
 		}
 

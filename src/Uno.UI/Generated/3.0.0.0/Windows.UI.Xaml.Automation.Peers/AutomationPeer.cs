@@ -68,13 +68,6 @@ namespace Windows.UI.Xaml.Automation.Peers
 		#endif
 		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
 		[global::Uno.NotImplemented]
-		public  global::Windows.UI.Xaml.Automation.Peers.AutomationControlType GetAutomationControlType()
-		{
-			throw new global::System.NotImplementedException("The member AutomationControlType AutomationPeer.GetAutomationControlType() is not implemented in Uno.");
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
-		[global::Uno.NotImplemented]
 		public  string GetAutomationId()
 		{
 			throw new global::System.NotImplementedException("The member string AutomationPeer.GetAutomationId() is not implemented in Uno.");
@@ -92,13 +85,6 @@ namespace Windows.UI.Xaml.Automation.Peers
 		public  global::System.Collections.Generic.IList<global::Windows.UI.Xaml.Automation.Peers.AutomationPeer> GetChildren()
 		{
 			throw new global::System.NotImplementedException("The member IList<AutomationPeer> AutomationPeer.GetChildren() is not implemented in Uno.");
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
-		[global::Uno.NotImplemented]
-		public  string GetClassName()
-		{
-			throw new global::System.NotImplementedException("The member string AutomationPeer.GetClassName() is not implemented in Uno.");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
@@ -131,27 +117,6 @@ namespace Windows.UI.Xaml.Automation.Peers
 		#endif
 		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
 		[global::Uno.NotImplemented]
-		public  global::Windows.UI.Xaml.Automation.Peers.AutomationPeer GetLabeledBy()
-		{
-			throw new global::System.NotImplementedException("The member AutomationPeer AutomationPeer.GetLabeledBy() is not implemented in Uno.");
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
-		[global::Uno.NotImplemented]
-		public  string GetLocalizedControlType()
-		{
-			throw new global::System.NotImplementedException("The member string AutomationPeer.GetLocalizedControlType() is not implemented in Uno.");
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
-		[global::Uno.NotImplemented]
-		public  string GetName()
-		{
-			throw new global::System.NotImplementedException("The member string AutomationPeer.GetName() is not implemented in Uno.");
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
-		[global::Uno.NotImplemented]
 		public  global::Windows.UI.Xaml.Automation.Peers.AutomationOrientation GetOrientation()
 		{
 			throw new global::System.NotImplementedException("The member AutomationOrientation AutomationPeer.GetOrientation() is not implemented in Uno.");
@@ -162,27 +127,6 @@ namespace Windows.UI.Xaml.Automation.Peers
 		public  bool HasKeyboardFocus()
 		{
 			throw new global::System.NotImplementedException("The member bool AutomationPeer.HasKeyboardFocus() is not implemented in Uno.");
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
-		[global::Uno.NotImplemented]
-		public  bool IsContentElement()
-		{
-			throw new global::System.NotImplementedException("The member bool AutomationPeer.IsContentElement() is not implemented in Uno.");
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
-		[global::Uno.NotImplemented]
-		public  bool IsControlElement()
-		{
-			throw new global::System.NotImplementedException("The member bool AutomationPeer.IsControlElement() is not implemented in Uno.");
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
-		[global::Uno.NotImplemented]
-		public  bool IsEnabled()
-		{
-			throw new global::System.NotImplementedException("The member bool AutomationPeer.IsEnabled() is not implemented in Uno.");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
@@ -201,13 +145,6 @@ namespace Windows.UI.Xaml.Automation.Peers
 		#endif
 		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
 		[global::Uno.NotImplemented]
-		public  bool IsPassword()
-		{
-			throw new global::System.NotImplementedException("The member bool AutomationPeer.IsPassword() is not implemented in Uno.");
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
-		[global::Uno.NotImplemented]
 		public  bool IsRequiredForForm()
 		{
 			throw new global::System.NotImplementedException("The member bool AutomationPeer.IsRequiredForForm() is not implemented in Uno.");
@@ -215,23 +152,9 @@ namespace Windows.UI.Xaml.Automation.Peers
 		#endif
 		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
 		[global::Uno.NotImplemented]
-		public  void SetFocus()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Automation.Peers.AutomationPeer", "void AutomationPeer.SetFocus()");
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
-		[global::Uno.NotImplemented]
 		public  global::Windows.UI.Xaml.Automation.Peers.AutomationPeer GetParent()
 		{
 			throw new global::System.NotImplementedException("The member AutomationPeer AutomationPeer.GetParent() is not implemented in Uno.");
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
-		[global::Uno.NotImplemented]
-		public  void InvalidatePeer()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Automation.Peers.AutomationPeer", "void AutomationPeer.InvalidatePeer()");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
@@ -271,13 +194,6 @@ namespace Windows.UI.Xaml.Automation.Peers
 		#endif
 		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
 		[global::Uno.NotImplemented]
-		protected virtual global::Windows.UI.Xaml.Automation.Peers.AutomationControlType GetAutomationControlTypeCore()
-		{
-			throw new global::System.NotImplementedException("The member AutomationControlType AutomationPeer.GetAutomationControlTypeCore() is not implemented in Uno.");
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
-		[global::Uno.NotImplemented]
 		protected virtual string GetAutomationIdCore()
 		{
 			throw new global::System.NotImplementedException("The member string AutomationPeer.GetAutomationIdCore() is not implemented in Uno.");
@@ -295,13 +211,6 @@ namespace Windows.UI.Xaml.Automation.Peers
 		protected virtual global::System.Collections.Generic.IList<global::Windows.UI.Xaml.Automation.Peers.AutomationPeer> GetChildrenCore()
 		{
 			throw new global::System.NotImplementedException("The member IList<AutomationPeer> AutomationPeer.GetChildrenCore() is not implemented in Uno.");
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
-		[global::Uno.NotImplemented]
-		protected virtual string GetClassNameCore()
-		{
-			throw new global::System.NotImplementedException("The member string AutomationPeer.GetClassNameCore() is not implemented in Uno.");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
@@ -334,27 +243,6 @@ namespace Windows.UI.Xaml.Automation.Peers
 		#endif
 		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
 		[global::Uno.NotImplemented]
-		protected virtual global::Windows.UI.Xaml.Automation.Peers.AutomationPeer GetLabeledByCore()
-		{
-			throw new global::System.NotImplementedException("The member AutomationPeer AutomationPeer.GetLabeledByCore() is not implemented in Uno.");
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
-		[global::Uno.NotImplemented]
-		protected virtual string GetLocalizedControlTypeCore()
-		{
-			throw new global::System.NotImplementedException("The member string AutomationPeer.GetLocalizedControlTypeCore() is not implemented in Uno.");
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
-		[global::Uno.NotImplemented]
-		protected virtual string GetNameCore()
-		{
-			throw new global::System.NotImplementedException("The member string AutomationPeer.GetNameCore() is not implemented in Uno.");
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
-		[global::Uno.NotImplemented]
 		protected virtual global::Windows.UI.Xaml.Automation.Peers.AutomationOrientation GetOrientationCore()
 		{
 			throw new global::System.NotImplementedException("The member AutomationOrientation AutomationPeer.GetOrientationCore() is not implemented in Uno.");
@@ -365,27 +253,6 @@ namespace Windows.UI.Xaml.Automation.Peers
 		protected virtual bool HasKeyboardFocusCore()
 		{
 			throw new global::System.NotImplementedException("The member bool AutomationPeer.HasKeyboardFocusCore() is not implemented in Uno.");
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
-		[global::Uno.NotImplemented]
-		protected virtual bool IsContentElementCore()
-		{
-			throw new global::System.NotImplementedException("The member bool AutomationPeer.IsContentElementCore() is not implemented in Uno.");
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
-		[global::Uno.NotImplemented]
-		protected virtual bool IsControlElementCore()
-		{
-			throw new global::System.NotImplementedException("The member bool AutomationPeer.IsControlElementCore() is not implemented in Uno.");
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
-		[global::Uno.NotImplemented]
-		protected virtual bool IsEnabledCore()
-		{
-			throw new global::System.NotImplementedException("The member bool AutomationPeer.IsEnabledCore() is not implemented in Uno.");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
@@ -404,23 +271,9 @@ namespace Windows.UI.Xaml.Automation.Peers
 		#endif
 		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
 		[global::Uno.NotImplemented]
-		protected virtual bool IsPasswordCore()
-		{
-			throw new global::System.NotImplementedException("The member bool AutomationPeer.IsPasswordCore() is not implemented in Uno.");
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
-		[global::Uno.NotImplemented]
 		protected virtual bool IsRequiredForFormCore()
 		{
 			throw new global::System.NotImplementedException("The member bool AutomationPeer.IsRequiredForFormCore() is not implemented in Uno.");
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
-		[global::Uno.NotImplemented]
-		protected virtual void SetFocusCore()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Automation.Peers.AutomationPeer", "void AutomationPeer.SetFocusCore()");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
@@ -666,13 +519,6 @@ namespace Windows.UI.Xaml.Automation.Peers
 		protected virtual string GetFullDescriptionCore()
 		{
 			throw new global::System.NotImplementedException("The member string AutomationPeer.GetFullDescriptionCore() is not implemented in Uno.");
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
-		[global::Uno.NotImplemented]
-		protected virtual global::System.Collections.Generic.IEnumerable<global::Windows.UI.Xaml.Automation.Peers.AutomationPeer> GetDescribedByCore()
-		{
-			throw new global::System.NotImplementedException("The member IEnumerable<AutomationPeer> AutomationPeer.GetDescribedByCore() is not implemented in Uno.");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET46 || __WASM__

@@ -1,6 +1,7 @@
 ﻿#if !NET46 && !NETSTANDARD2_0
 using Uno.Extensions;
 using Uno.Diagnostics.Eventing;
+using Windows.UI.Xaml.Automation.Peers;
 using Windows.UI.Xaml.Media;
 using System;
 using System.Collections.Generic;
@@ -191,6 +192,15 @@ namespace Windows.UI.Xaml.Controls
 			_imageFetchDisposable.Disposable = cd;
 		}
 
+		private void Execute(Func<CancellationToken, Task> handler)
+		{
+			var cd = new CancellationDisposable();
+
+			var dummy = handler(cd.Token);
+
+			_imageFetchDisposable.Disposable = cd;
+		}
+
 		/// <summary>
 		/// True if horizontally stretched within finite container, or defined by this.Width
 		/// </summary>
@@ -224,6 +234,23 @@ namespace Windows.UI.Xaml.Controls
 		{
 			return base.ToString() + ";Source={0}".InvariantCultureFormat(Source?.ToString() ?? "[null]");
 		}
+
+#if __ANDROID__ || __IOS__
+		private AutomationPeer OnCreateAutomationPeerOverride()
+		{
+			return new ImageAutomationPeer(this);
+		}
+
+		private string GetAccessibilityInnerTextOverride()
+		{
+			return null;
+		}
+#else
+		protected AutomationPeer OnCreateAutomationPeer()
+		{
+			return new ImageAutomationPeer(this);
+		}
+#endif
 
 		private partial class ImageLayouter : Layouter
 		{

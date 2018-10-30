@@ -1,11 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using Windows.UI.Xaml.Automation;
+using Windows.UI.Xaml.Automation.Peers;
+using Windows.UI.Xaml.Controls;
 
 namespace Uno.UI
 {
-	public static class FeatureConfiguration
-	{
+    public static class FeatureConfiguration
+    {
 		public static class UIElement
 		{
 			/// <summary>
@@ -71,12 +74,37 @@ namespace Uno.UI
 			public static double? DefaultCacheLength = 1.0;
 		}
 
-		public static class TextBlock
+		public static class Page
 		{
 			/// <summary>
-			/// Enable the visualization of hyperlink hit-testing layouts (intended for diagnostic purposes).
+			/// Enables reuse of <see cref="Page"/> instances. Enabling can improve performance when using <see cref="Frame"/> navigation.
 			/// </summary>
-			public static bool ShowHyperlinkLayouts { get; set; } = false;
+			public static bool IsPoolingEnabled { get; set; } = false;
+		}
+
+		public static class AutomationPeer
+		{
+			/// <summary>
+			/// Enable a mode that simplifies accessibility by automatically grouping accessible elements into top-level accessible elements. The default value is false.
+			/// </summary>
+			/// <remarks>
+			/// When enabled, the accessibility name of top-level accessible elements (elements that return a non-null AutomationPeer in <see cref="UIElement.OnCreateAutomationPeer()"/> and/or have <see cref="AutomationProperties.Name" /> set to a non-empty string) 
+			/// will be an aggregate of the accessibility name of all child accessible elements.
+			/// 
+			/// For example, if you have a <see cref="Button"/> that contains 3 <see cref="TextBlock"/> "A" "B" "C", the accessibility name of the <see cref="Button"/> will be "A, B, C". 
+			/// These 3 <see cref="TextBlock"/> will also be automatically excluded from accessibility focus.
+			/// 
+			/// This greatly facilitates accessibility, as you would need to do this manually on UWP.
+			/// 
+			/// A limitation of this strategy is that you can't nest interactive elements, as children of an accessible elements are excluded from accessibility focus.
+			/// For example, if you put a <see cref="Button"/> inside another <see cref="Button"/>, only the parent <see cref="Button"/> will be focusable.
+			/// This happens to match a limitation of iOS, which does this by default and forces developers to make elements as siblings instead of nesting them.
+			/// 
+			/// To prevent a top-level accessible element from being accessible and make its children accessibility focusable, you can set <see cref="AutomationProperties.AccessibilityViewProperty"/> to <see cref="AccessibilityView.Raw"/>.
+			/// 
+			/// Note: This is incompatible with the way accessibility works on UWP.
+			/// </remarks>
+			public static bool UseSimpleAccessibility { get; set; } = false;
 		}
 	}
 }

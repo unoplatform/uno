@@ -15,6 +15,11 @@ using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media;
 using Android.Support.V4.Graphics.Drawable;
+using Android.Support.V7.App;
+using Android.App;
+using Uno.Extensions;
+using Uno.Logging;
+using Microsoft.Extensions.Logging;
 
 namespace Uno.UI.Controls
 {
@@ -25,6 +30,30 @@ namespace Uno.UI.Controls
 		private static DependencyProperty BackButtonVisibilityProperty = ToolkitHelper.GetProperty("Uno.UI.Toolkit.CommandBarExtensions", "BackButtonVisibility");
 		private static DependencyProperty BackButtonForegroundProperty = ToolkitHelper.GetProperty("Uno.UI.Toolkit.CommandBarExtensions", "BackButtonForeground");
 		private static DependencyProperty BackButtonIconProperty = ToolkitHelper.GetProperty("Uno.UI.Toolkit.CommandBarExtensions", "BackButtonIcon");
+
+		private static string _actionBarUpDescription;
+		private static string ActionBarUpDescription
+		{
+			get
+			{
+				if (_actionBarUpDescription == null)
+				{
+					if (ContextHelper.Current is Activity activity && activity.Resources.GetIdentifier("action_bar_up_description", "string", "android") is int resourceId)
+					{
+						_actionBarUpDescription = activity.Resources.GetString(resourceId);
+					}
+					else
+					{
+						if (typeof(CommandBarRenderer).Log().IsEnabled(LogLevel.Error))
+						{
+							typeof(CommandBarRenderer).Log().Error("Couldn't resolve resource 'action_bar_up_description'.");
+						}
+					}
+				}
+
+				return _actionBarUpDescription;
+			}
+		}
 
 		private Android.Graphics.Color? _originalTitleTextColor;
 		private Android.Graphics.Drawables.Drawable _originalBackground;
@@ -48,7 +77,7 @@ namespace Uno.UI.Controls
 				// According to Google's Material Design Guidelines, the Toolbar must have a minimum height of 48.
 				// https://material.io/guidelines/layout/structure.html
 				Height = 48,
-			};			
+			};
 			_contentContainer.SetParent(Element);
 			Native.AddView(_contentContainer);
 			yield return Disposable.Create(() => Native.RemoveView(_contentContainer));
@@ -68,7 +97,7 @@ namespace Uno.UI.Controls
 			Element.SecondaryCommands.VectorChanged += OnVectorChanged;
 			yield return Disposable.Create(() => Element.PrimaryCommands.VectorChanged -= OnVectorChanged);
 			yield return Disposable.Create(() => Element.SecondaryCommands.VectorChanged -= OnVectorChanged);
-			
+
 			// Properties
 			yield return Element.RegisterDisposableNestedPropertyChangedCallback(
 				(s, e) => Invalidate(),
@@ -203,6 +232,8 @@ namespace Uno.UI.Controls
 							break;
 					}
 				}
+
+				Native.NavigationContentDescription = ActionBarUpDescription;
 			}
 			else
 			{

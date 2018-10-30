@@ -125,10 +125,6 @@ namespace Windows.UI.Xaml.Controls
 		partial void OnTextChangedPartial()
 		{
 			_textFormatted = null;
-			if (AutomationConfiguration.IsAccessibilityEnabled)
-			{
-				ContentDescription = UIAutomationText;
-			}
 		}
 
 		// Invalidate _paint
@@ -217,7 +213,7 @@ namespace Windows.UI.Xaml.Controls
 				CharacterSpacing,
 				(Foreground as SolidColorBrush)?.Color ?? Colors.Transparent,
 				BaseLineAlignment.Baseline,
-				UnderlineStyle.None
+				TextDecorations
 			);
 		}
 
@@ -363,6 +359,7 @@ namespace Windows.UI.Xaml.Controls
 				LogicalToPhysicalPixels(padding.Left),
 				LogicalToPhysicalPixels(padding.Top)
 			);
+			Invalidate(); // This ensures that OnDraw() will be called, which is typically the case anyway after OnLayout() but not always (eg, if device is being unlocked).
 		}
 
 		/// <summary>

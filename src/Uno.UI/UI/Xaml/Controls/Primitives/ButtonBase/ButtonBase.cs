@@ -136,7 +136,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 			RegisterEvents();
 		}
-
+		
 		private void OnClick(PointerRoutedEventArgs args = null)
 		{
 			Click?.Invoke(this, new RoutedEventArgs());
@@ -255,6 +255,11 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		internal void RaiseClick(PointerRoutedEventArgs args = null)
 		{
 			OnClick(args);
+		}
+
+		internal void AutomationPeerClick()
+		{
+			OnClick();
 		}
 	}
 }

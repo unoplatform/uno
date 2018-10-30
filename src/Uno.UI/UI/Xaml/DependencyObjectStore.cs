@@ -579,16 +579,20 @@ namespace Windows.UI.Xaml
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		private void PopCurrentlySettingProperty(DependencyProperty property)
 		{
-			var popped = _currentlySettingPropertyStack.Count > 0
+			var hasStack = _currentlySettingPropertyStack.Count > 0;
+			var popped = hasStack
 				? _currentlySettingPropertyStack.Pop()
 				: _currentlySettingProperty;
 
-			_currentlySettingProperty = null;
+			if (!hasStack)
+			{
+				_currentlySettingProperty = null;
+			}
 
 			if (popped != property && property.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
 			{
 				property.Log().DebugFormat(
-					"Invalid stack state for DependecyObject.SetValue()."
+					"Invalid stack state for DependencyObject.SetValue()."
 					, property.Name
 					, _originalObjectType
 				);

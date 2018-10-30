@@ -132,8 +132,11 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			base.OnItemsSourceChanged(e);
 			if (ItemsSource is ICollectionView collectionView)
 			{
-				_collectionViewSubscription.Disposable = Disposable.Create(() => collectionView.CurrentChanged -= OnCollectionViewCurrentChanged);
-				collectionView.CurrentChanged += OnCollectionViewCurrentChanged;
+				// This is a workaround to support the use of EventRegistrationTokenTable in consumer code. EventRegistrationTokenTable 
+				// currently has a bug on Xamarin that prevents instance methods subscribed directly from ever being unsubscribed.
+				EventHandler<object> currentChangedHandler = OnCollectionViewCurrentChanged;
+				_collectionViewSubscription.Disposable = Disposable.Create(() => collectionView.CurrentChanged -= currentChangedHandler);
+				collectionView.CurrentChanged += currentChangedHandler;
 				SelectedIndex = collectionView.CurrentPosition;
 			}
 			else
@@ -162,19 +165,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			{
 				selectorItem.IsSelected = IsSelected(IndexFromContainer(element));
 			}
-
-			PrepareContainerForItemOverridePartial(element, item);
 		}
-
-		protected override void ClearContainerForItemOverride(DependencyObject element, object item)
-		{
-			base.ClearContainerForItemOverride(element, item);
-
-			ClearContainerForItemOverridePartial(element, item);
-		}
-
-		partial void PrepareContainerForItemOverridePartial(DependencyObject element, object item);
-		partial void ClearContainerForItemOverridePartial(DependencyObject element, object item);
 
 		internal virtual bool IsSelected(int index)
 		{

@@ -4,17 +4,17 @@ using System.Text;
 
 namespace Windows.UI.Xaml
 {
-    public static partial class GenericStyles
-    {
+	public static partial class GenericStyles
+	{
 		private static bool _initialized = false;
 
 		public static void Initialize()
 		{
 			if (!_initialized)
 			{
-				InitStyles();
-
 				_initialized = true;
+
+				InitStyles();
 
 				InitializeDefaultStyles();
 			}
@@ -48,5 +48,5 @@ namespace Windows.UI.Xaml
 		}
 
 		static partial void InitStyles();
-    }
+	}
 }

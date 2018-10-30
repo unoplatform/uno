@@ -244,6 +244,16 @@ namespace Uno.UI.DataBinding
 				return true;
 			}
 
+			if (FastStringToUriConvert(outputType, input, ref output))
+			{
+				return true;
+			}
+
+			if (FastStringToTypeConvert(outputType, input, ref output))
+			{
+				return true;
+			}
+
 			// Fallback for Enums. Leave it at the end.
 			if (outputType.IsEnum)
 			{
@@ -746,6 +756,32 @@ namespace Uno.UI.DataBinding
 			}
 
 			return false;
+		}
+
+		private static bool FastStringToUriConvert(Type outputType, string input, ref object output)
+		{
+			if (outputType == typeof(Uri))
+			{
+				output = new Uri(input);
+				return true;
+			}
+			else
+			{
+				return false;
+			}
+		}
+
+		private static bool FastStringToTypeConvert(Type outputType, string input, ref object output)
+		{
+			if (outputType == typeof(Type))
+			{
+				output = Type.GetType(input, throwOnError: true);
+				return true;
+			}
+			else
+			{
+				return false;
+			}
 		}
 	}
 }

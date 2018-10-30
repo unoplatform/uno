@@ -62,7 +62,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
         private XamlGlobalStaticResourcesMap _globalStaticResourcesMap;
         private readonly bool _isUiAutomationMappingEnabled;
         private readonly Dictionary<string, string[]> _uiAutomationMappings;
-        private readonly string _relativePath;
+		private readonly string _defaultLanguage;
+		private readonly string _relativePath;
 
 		private List<INamedTypeSymbol> _xamlAppliedTypes = new List<INamedTypeSymbol>();
 
@@ -100,6 +101,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
             XamlGlobalStaticResourcesMap globalStaticResourcesMap,
             bool isUiAutomationMappingEnabled,
             Dictionary<string, string[]> uiAutomationMappings,
+			string defaultLanguage,
 			bool isWasm
 		)
         {
@@ -115,8 +117,9 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
             _globalStaticResourcesMap = globalStaticResourcesMap;
             _isUiAutomationMappingEnabled = isUiAutomationMappingEnabled;
             _uiAutomationMappings = uiAutomationMappings;
+			_defaultLanguage = defaultLanguage.HasValue() ? defaultLanguage : "en";
 
-            _findType = Funcs.Create<string, INamedTypeSymbol>(SourceFindType).AsLockedMemoized();
+			_findType = Funcs.Create<string, INamedTypeSymbol>(SourceFindType).AsLockedMemoized();
             _findPropertyTypeByXamlMember = Funcs.Create<XamlMember, INamedTypeSymbol>(SourceFindPropertyType).AsLockedMemoized();
             _findEventType = Funcs.Create<XamlMember, IEventSymbol>(SourceFindEventType).AsLockedMemoized();
             _findPropertyTypeByName = Funcs.Create<string, string, INamedTypeSymbol>(SourceFindPropertyType).AsLockedMemoized();
@@ -344,8 +347,10 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
         private void BuildApplicationInitializerBody(IndentedStringBuilder writer, XamlObjectDefinition topLevelControl)
         {
             writer.AppendLineInvariant($"global::Windows.UI.Xaml.GenericStyles.Initialize();");
-            writer.AppendLineInvariant($"global::Windows.UI.Xaml.ResourceDictionary.DefaultResolver = global::{_defaultNamespace}.GlobalStaticResources.FindResource;");
-            writer.AppendLineInvariant($"global::{_defaultNamespace}.GlobalStaticResources.Initialize();");
+			writer.AppendLineInvariant($"global::Windows.UI.Xaml.ResourceDictionary.DefaultResolver = global::{_defaultNamespace}.GlobalStaticResources.FindResource;");
+			writer.AppendLineInvariant($"global::Windows.ApplicationModel.Resources.ResourceLoader.AddLookupAssembly(GetType().Assembly);");
+			writer.AppendLineInvariant($"global::Windows.ApplicationModel.Resources.ResourceLoader.DefaultLanguage = \"{_defaultLanguage}\";");
+			writer.AppendLineInvariant($"global::{_defaultNamespace}.GlobalStaticResources.Initialize();");
             writer.AppendLineInvariant($"global::Uno.UI.DataBinding.BindableMetadata.Provider = new global::{_defaultNamespace}.BindableMetadataProvider();");
 
             writer.AppendLineInvariant($"#if __ANDROID__");
@@ -1322,15 +1327,15 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
                         {
                             BuildCollection(writer, isInline, setterPrefix + "GradientStops", implicitContentChild);
                         }
-                        else if (IsInitializableCollection(topLevelControl))
-                        {
-                            foreach (var child in implicitContentChild.Objects)
-                            {
-                                BuildChild(writer, implicitContentChild, child);
-                                writer.AppendLineInvariant(",");
-                            }
-                        }
-                        else
+						else if (IsInitializableCollection(topLevelControl))
+						{
+							foreach (var child in implicitContentChild.Objects)
+							{
+								BuildChild(writer, implicitContentChild, child);
+								writer.AppendLineInvariant(",");
+							}
+						}
+						else
                         {
                             var elementType = FindType(topLevelControl.Type);
 
@@ -1377,15 +1382,26 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
                                                     .InvariantCultureFormat(contentProperty.Name));
                                             }
 
-                                            using (writer.BlockInvariant("{0}{1} = new {2} ", setterPrefix, contentProperty.Name, newableTypeName))
-                                            {
-                                                foreach (var child in implicitContentChild.Objects)
-                                                {
-                                                    BuildChild(writer, implicitContentChild, child);
-                                                    writer.AppendLineInvariant(",");
-                                                }
-                                            }
-                                        }
+											// Explicitly instantiate the collection and set it using the content property
+											if (implicitContentChild.Objects.Count == 1
+												&& contentProperty.Type == FindType(implicitContentChild.Objects[0].Type))
+											{
+												writer.AppendFormatInvariant(contentProperty.Name + " = ");
+												BuildChild(writer, implicitContentChild, implicitContentChild.Objects[0]);
+												writer.AppendLineInvariant(",");
+											}
+											else
+											{
+												using (writer.BlockInvariant("{0}{1} = new {2} ", setterPrefix, contentProperty.Name, newableTypeName))
+												{
+													foreach (var child in implicitContentChild.Objects)
+													{
+														BuildChild(writer, implicitContentChild, child);
+														writer.AppendLineInvariant(",");
+													}
+												}
+											}
+										}
                                         else if (GetKnownNewableListOrCollectionInterface(contentProperty as INamedTypeSymbol, out newableTypeName))
                                         {
                                             if (string.IsNullOrWhiteSpace(newableTypeName))
@@ -1457,7 +1473,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
             catch (Exception e)
             {
                 throw new InvalidOperationException(
-                    "An error occured when processing {0} at line {1}:{2} ({3}) : {4}"
+                    "An error occurred when processing {0} at line {1}:{2} ({3}) : {4}"
                     .InvariantCultureFormat(
                         topLevelControl.Type.Name,
                         topLevelControl.LineNumber,
@@ -1835,6 +1851,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 		private void BuildExtendedProperties(IIndentedStringBuilder outerwriter, XamlObjectDefinition objectDefinition, bool useChildTypeForNamedElement = false, bool useGenericApply = false)
 		{
+			var objectUid = GetObjectUid(objectDefinition);
+
 			var extendedProperties = GetExtendedProperties(objectDefinition);
 			bool hasChildrenWithPhase = HasChildrenWithPhase(objectDefinition);
 
@@ -1878,7 +1896,19 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						}
 						else if (member.Objects.Any())
 						{
-							if (!IsType(objectDefinition.Type, member.Member.DeclaringType))
+							if (member.Member.Name == "_UnknownContent") // So : FindType(member.Owner.Type) is INamedTypeSymbol type && IsCollectionOrListType(type)
+							{
+								foreach (var item in member.Objects)
+								{
+									writer.AppendLineInvariant($"{closureName}.Add(");
+									using (writer.Indent())
+									{
+										BuildChild(writer, member, item);
+									}
+									writer.AppendLineInvariant(");");
+								}
+							}
+							else if (!IsType(objectDefinition.Type, member.Member.DeclaringType))
 							{
 								var ownerType = GetType(member.Member.DeclaringType);
 
@@ -2058,7 +2088,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 								{
 									if (FindPropertyType(member.Member) != null)
 									{
-										BuildSetAttachedProperty(writer, closureName, member);
+										BuildSetAttachedProperty(writer, closureName, member, objectUid);
 									}
 									else if (FindEventType(member.Member) != null)
 									{
@@ -2183,18 +2213,18 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
                 name.Equals("AlignVerticalCenterWith");
         }
 
-        private void BuildSetAttachedProperty(IIndentedStringBuilder writer, string closureName, XamlMemberDefinition member)
-        {
-            writer.AppendLineInvariant(
+		private void BuildSetAttachedProperty(IIndentedStringBuilder writer, string closureName, XamlMemberDefinition member, string objectUid)
+		{
+			writer.AppendLineInvariant(
 				"{0}.Set{1}({3}, {2});",
 				GetGlobalizedTypeName(FindType(member.Member.DeclaringType).SelectOrDefault(t => t.ToDisplayString(), member.Member.DeclaringType.Name)),
-                member.Member.Name,
-                BuildLiteralValue(member),
-                closureName
-            );
-        }
+				member.Member.Name,
+				BuildLiteralValue(member, owner: member, objectUid: objectUid),
+				closureName
+			);
+		}
 
-        private XamlLazyApplyBlockIIndentedStringBuilder CreateApplyBlock(IIndentedStringBuilder writer, INamedTypeSymbol appliedType, out string closureName)
+		private XamlLazyApplyBlockIIndentedStringBuilder CreateApplyBlock(IIndentedStringBuilder writer, INamedTypeSymbol appliedType, out string closureName)
         {
             closureName = "c" + (_applyIndex++).ToString(CultureInfo.InvariantCulture);
 
@@ -2433,9 +2463,18 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
             {
                 //windows 10 localization concat the xUid Value with the member value (Text, Content, Header etc...)
                 var fullKey = objectUid + "." + memberName;
-                if (_resourceKeys.Any(k => k == fullKey))
+
+				if (owner != null && IsAttachedProperty(owner))
+				{
+					var declaringType = GetType(owner.Member.DeclaringType);
+					var ns = declaringType.ContainingNamespace.GetFullName();
+					var type = declaringType.Name;
+					fullKey = $"{objectUid}.[using:{ns}]{type}.{memberName}";
+				}
+
+				if (_resourceKeys.Any(k => k == fullKey))
                 {
-                    return @"ResourceHelper.FindResourceString(""" + fullKey + @""")";
+                    return @"global::Windows.ApplicationModel.Resources.ResourceLoader.GetForCurrentView().GetString(""" + fullKey + @""")";
                 }
             }
 
@@ -2488,6 +2527,9 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				case "System.Uri":
 					return "new System.Uri(\"" + memberValue + "\")";
 
+				case "System.Type":
+					return $"typeof({GetGlobalizedTypeName(GetType(memberValue).ToDisplayString())})";
+
 				case XamlConstants.Types.Geometry:
 					if (_isWasm)
 					{
@@ -2538,7 +2580,10 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 				case "Windows.UI.Xaml.Controls.IconElement":
 					return "new Windows.UI.Xaml.Controls.SymbolIcon { Symbol = Windows.UI.Xaml.Controls.Symbol." + memberValue + "}";
-            }
+
+				case "Windows.Media.Playback.IMediaPlaybackSource":
+					return "Windows.Media.Core.MediaSource.CreateFromUri(new Uri(\"" + memberValue + "\"))";
+			}
 
 			var isEnum = propertyType
                 .TypeKind == TypeKind.Enum;
@@ -3078,7 +3123,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
                     if (IsType(objectDefinition.Type, member.Member.DeclaringType)
                         && !IsAttachedProperty(member)
                         && FindEventType(member.Member) == null
-                    )
+						&& member.Member.Name != "_UnknownContent" // We are defining the elements of a collection explicitly declared in XAML
+					)
                     {
                         if (member.Objects.None())
                         {
@@ -3362,29 +3408,25 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
                 || type.OriginalDefinition.ToDisplayString() == "System.Collections.Generic.IList<T>";
         }
 
-        /// <summary>
-        /// Determines if the provided member is an C# initializable list (where the collection already exists, and no set property is present)
-        /// </summary>
-        private bool IsInitializableCollection(XamlObjectDefinition definition)
-        {
-            var type = FindType(definition.Type);
+		/// <summary>
+		/// Determines if the provided object definition is of a C# initializable list
+		/// </summary>
+		private bool IsInitializableCollection(XamlObjectDefinition definition)
+		{
+			if (definition.Members.Any(m => m.Member.Name != "_UnknownContent"))
+			{
+				return false;
+			}
 
-            if (type != null)
-            {
-                var propertyType = type;
+			var type = FindType(definition.Type);
+			if (type == null)
+			{
+				return false;
+			}
 
-                if (
-                    IsImplementingInterface(propertyType, "System.Collections.ICollection") ||
-                    IsImplementingInterface(propertyType, "System.Collections.Generic.ICollection<T>")
-                )
-                {
-                    return true;
-                }
-
-            }
-
-            return false;
-        }
+			return IsImplementingInterface(type, "System.Collections.ICollection")
+				|| IsImplementingInterface(type, "System.Collections.Generic.ICollection<T>");
+		}
 
         /// <summary>
         /// Gets the 
@@ -3418,13 +3460,14 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
         private IEnumerable<XamlMemberDefinition> GetExtendedProperties(XamlObjectDefinition objectDefinition)
         {
             var objectUid = GetObjectUid(objectDefinition);
+			var hasUnkownContentOnly = objectDefinition.Members.All(m => m.Member.Name == "_UnknownContent");
 
             return objectDefinition
                 .Members
                 .Where(m =>
                     (
                         m.Member.Name != "_UnknownContent"
-
+						
                         // Style requires a special treatment, as it needs to be set before anything else in Literal Properties
                         && m.Member.Name != "Style"
 
@@ -3444,6 +3487,12 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
                         m.Member.Name == "Style" && HasBindingMarkupExtension(m)
                     )
                     || IsAttachedProperty(m)
+					||
+					(
+						// If the object is a collection and it has both _UnknownContent (i.e. an item) and other properties defined,
+						// we cannot use property ADN collection initializer syntax at same time, so we will add items using an ApplyBlock.
+						m.Member.Name == "_UnknownContent" && !hasUnkownContentOnly && FindType(m.Owner.Type) is INamedTypeSymbol type && IsCollectionOrListType(type)
+					)
                 );
         }
 
@@ -3514,8 +3563,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
             {
                 writer.AppendLineInvariant("new {0}(skipsInitializeComponents: true).GetContent()", GetGlobalizedTypeName(fullTypeName));
 
-                string closureName;
-                using (var innerWriter = CreateApplyBlock(writer, null, out closureName))
+				using (var innerWriter = CreateApplyBlock(writer, null, out var closureName))
                 {
                     BuildLiteralProperties(innerWriter, xamlObjectDefinition, closureName);
                     BuildProperties(innerWriter, xamlObjectDefinition, closureName: closureName);

@@ -5,6 +5,7 @@ using System.Globalization;
 using System.Linq;
 using System.Text;
 using Windows.UI.Xaml.Data;
+using Windows.UI.Xaml.Automation.Peers;
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -39,7 +40,7 @@ namespace Windows.UI.Xaml.Controls
 
 		partial void OnDateChangedPartial();
 		#endregion
-		
+
 		#region DayVisibleProperty
 		public bool DayVisible
 		{
@@ -111,7 +112,7 @@ namespace Windows.UI.Xaml.Controls
 		#endregion
 
 #if XAMARIN
-		
+
 		#region Template parts
 		public const string DayTextBlockPartName = "DayTextBlock";
 		public const string MonthTextBlockPartName = "MonthTextBlock";
@@ -173,30 +174,30 @@ namespace Windows.UI.Xaml.Controls
 				SetupFlyoutButton();
 			}
 		}
-        
-        private void SetupFlyoutButton()
-        {
-            _flyoutButton.Flyout = new DatePickerFlyout()
-            {
+
+		private void SetupFlyoutButton()
+		{
+			_flyoutButton.Flyout = new DatePickerFlyout()
+			{
 #if XAMARIN_IOS
                 Placement = FlyoutPlacement,
 #endif
-                Date = Date,
-                MinYear = MinYear,
-                MaxYear = MaxYear
-            };
+				Date = Date,
+				MinYear = MinYear,
+				MaxYear = MaxYear
+			};
 
-            BindToFlyout("Date");
-            BindToFlyout("MinYear");
-            BindToFlyout("MaxYear");
-        }
+			BindToFlyout("Date");
+			BindToFlyout("MinYear");
+			BindToFlyout("MaxYear");
+		}
 
-        private void BindToFlyout(string propertyName)
-        {
-            this.Binding(propertyName, propertyName, _flyoutButton.Flyout, BindingMode.TwoWay);
-        }
+		private void BindToFlyout(string propertyName)
+		{
+			this.Binding(propertyName, propertyName, _flyoutButton.Flyout, BindingMode.TwoWay);
+		}
 
-        private void InitializeTextBlocks(IFrameworkElement container)
+		private void InitializeTextBlocks(IFrameworkElement container)
 		{
 			var items = GetOrderedTextBlocksForCulture(CultureInfo.CurrentCulture);
 			var flyoutButtonGrid = container.GetTemplateChild(FlyoutButtonGridPartName) as Grid;
@@ -263,6 +264,11 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 #endif
-            }
+
+		protected override AutomationPeer OnCreateAutomationPeer()
+		{
+			return new DatePickerAutomationPeer(this);
+		}
+	}
 }
 

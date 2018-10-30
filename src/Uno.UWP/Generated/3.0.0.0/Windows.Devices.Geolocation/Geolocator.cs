@@ -35,7 +35,7 @@ namespace Windows.Devices.Geolocation
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		#if NET46 || __WASM__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Devices.Geolocation.PositionAccuracy DesiredAccuracy
 		{
@@ -97,7 +97,7 @@ namespace Windows.Devices.Geolocation
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		#if NET46 || __WASM__
 		[global::Uno.NotImplemented]
 		public Geolocator() 
 		{
@@ -112,14 +112,14 @@ namespace Windows.Devices.Geolocation
 		// Forced skipping of method Windows.Devices.Geolocation.Geolocator.ReportInterval.get
 		// Forced skipping of method Windows.Devices.Geolocation.Geolocator.ReportInterval.set
 		// Forced skipping of method Windows.Devices.Geolocation.Geolocator.LocationStatus.get
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		#if NET46 || __WASM__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Geolocation.Geoposition> GetGeopositionAsync()
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<Geoposition> Geolocator.GetGeopositionAsync() is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		#if NET46 || __WASM__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Geolocation.Geoposition> GetGeopositionAsync( global::System.TimeSpan maximumAge,  global::System.TimeSpan timeout)
 		{
@@ -142,7 +142,7 @@ namespace Windows.Devices.Geolocation
 		// Forced skipping of method Windows.Devices.Geolocation.Geolocator.IsDefaultGeopositionRecommended.get
 		// Forced skipping of method Windows.Devices.Geolocation.Geolocator.DefaultGeoposition.set
 		// Forced skipping of method Windows.Devices.Geolocation.Geolocator.DefaultGeoposition.get
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		#if NET46 || __WASM__
 		[global::Uno.NotImplemented]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Geolocation.GeolocationAccessStatus> RequestAccessAsync()
 		{
@@ -163,7 +163,7 @@ namespace Windows.Devices.Geolocation
 			throw new global::System.NotImplementedException("The member IAsyncOperation<IReadOnlyList<Geoposition>> Geolocator.GetGeopositionHistoryAsync(DateTimeOffset startTime, TimeSpan duration) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		#if NET46 || __WASM__
 		[global::Uno.NotImplemented]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Devices.Geolocation.Geolocator, global::Windows.Devices.Geolocation.PositionChangedEventArgs> PositionChanged
 		{

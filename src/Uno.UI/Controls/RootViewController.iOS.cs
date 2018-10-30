@@ -10,6 +10,8 @@ namespace Uno.UI.Controls
 {
     public class RootViewController : UINavigationController, IRotationAwareViewController
     {
+		internal event Action VisibleBoundsChanged;
+
 		public RootViewController()
 		{
 			// Dismiss on device rotation: this reproduces the windows behavior
@@ -19,6 +21,13 @@ namespace Uno.UI.Controls
 			// Dismiss when the app is entering background
 			UIApplication.Notifications
 				.ObserveWillResignActive((sender, args) => VisualTreeHelper.CloseAllPopups());
+		}
+
+		// This will handle when the status bar is showed / hidden by the system on iPhones
+		public override void ViewSafeAreaInsetsDidChange()
+		{
+			base.ViewSafeAreaInsetsDidChange();
+			VisibleBoundsChanged?.Invoke();
 		}
 
 		public override UIInterfaceOrientationMask GetSupportedInterfaceOrientations()

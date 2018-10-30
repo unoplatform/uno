@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Windows.UI.Xaml.Automation.Peers;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
 
@@ -19,5 +20,10 @@ namespace Windows.UI.Xaml.Controls
 
 		[global::Uno.NotImplemented]
 		public global::Windows.UI.Xaml.Controls.Primitives.ListViewItemTemplateSettings TemplateSettings { get; } = new Primitives.ListViewItemTemplateSettings();
+
+		protected override AutomationPeer OnCreateAutomationPeer()
+		{
+			return new ListViewItemAutomationPeer(this);
+		}
 	}
 }

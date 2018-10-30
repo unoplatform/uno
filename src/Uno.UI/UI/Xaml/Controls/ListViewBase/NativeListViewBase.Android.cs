@@ -225,12 +225,24 @@ namespace Windows.UI.Xaml.Controls
 			{
 				vh.IsDetached = false;
 			}
+#if DEBUG
+			if (!vh.IsDetachedPrivate)
+			{
+				// Preempt the unmanaged exception 'Java.Lang.IllegalArgumentException: Called removeDetachedView with a view which is not flagged as tmp detached.' for easier debugging.
+				throw new InvalidOperationException($"View {child} is not flagged tmp detached.");
+			}
+#endif
 			base.RemoveDetachedView(child, animate);
+		}
+
+		partial void OnUnloadedPartial()
+		{
+			ViewCache?.OnUnloaded();
 		}
 
 		public void Refresh()
 		{
-			CurrentAdapter?.NotifyDataSetChanged();
+			CurrentAdapter?.Refresh();
 
 			var isScrollResetting = NativeLayout != null && NativeLayout.ContentOffset != 0;
 			NativeLayout?.Refresh();

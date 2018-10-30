@@ -13,5 +13,10 @@ namespace Windows.UI.Xaml.Controls
 		/// Has the ItemView been detached from the window? This is a public mirror of the internal ViewHolder.isTmpDetached() method.
 		/// </summary>
 		public bool IsDetached { get; set; }
+
+#if DEBUG
+		// This is as dirty as it looks. We only use it as a sanity check and only in debug.
+		public bool IsDetachedPrivate => ToString().Contains("tmpDetached");
+#endif
 	}
 }

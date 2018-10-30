@@ -14,7 +14,7 @@ namespace Windows.UI.Popups
 		/// Creates a new instance of the MessageDialog class, using the specified message content and no title.
 		/// </summary>
 		/// <param name="content"></param>
-		public MessageDialog(string content)
+		public MessageDialog(string content) 
 			: this(content, "")
 		{
 		}

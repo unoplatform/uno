@@ -96,7 +96,7 @@ namespace Windows.UI.Xaml.Controls
 
 			if (MinWidth != 0 && MinWidth > size.Width)
 			{
-				minWidth = MinWidth;
+				minWidth = MinWidth - GetHorizontalOffset();
 			}
 
 			size = new Size(
@@ -136,7 +136,7 @@ namespace Windows.UI.Xaml.Controls
 
 			if (MinHeight != 0 && MinHeight > size.Height)
 			{
-				minHeight = MinHeight;
+				minHeight = MinHeight - GetVerticalOffset();
 			}
 
 			size = new Size(

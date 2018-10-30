@@ -26,8 +26,8 @@ namespace Windows.UI.Popups
 				.Select((command, index) => UIAlertAction
 					.Create(
 						title: command.Label ?? "",
-						style: index == CancelCommandIndex
-							? UIAlertActionStyle.Cancel
+						style: (command as UICommand)?.IsDestructive ?? false
+							? UIAlertActionStyle.Destructive
 							: UIAlertActionStyle.Default,
 						handler: _ =>
 						{

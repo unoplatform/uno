@@ -305,8 +305,6 @@ namespace Windows.UI.Xaml.Controls
 			//ContentTemplate/ContentTemplateSelector will only be applied to a control with no Template, normally the innermost element
 			if (IsContentPresenterBypassEnabled)
 			{
-				// Reset the flag telling that the content's datacontext has been forcibly overriden
-				_localContentDataContextOverride = false;
 
 				var dataTemplate = this.ResolveContentTemplate();
 
@@ -347,7 +345,7 @@ namespace Windows.UI.Xaml.Controls
 				this.Log().DebugFormat("No ContentTemplate was specified for {0} and content is not a UIView, defaulting to TextBlock.", GetType().Name);
 			}
 
-			ContentTemplateRoot = new ImplicitTextBlock()
+			ContentTemplateRoot = new ImplicitTextBlock(this)
 				.Binding("Text", "")
 				.Binding("HorizontalAlignment", new Binding { Path = "HorizontalContentAlignment", Source = this, Mode = BindingMode.OneWay })
 				.Binding("VerticalAlignment", new Binding { Path = "VerticalContentAlignment", Source = this, Mode = BindingMode.OneWay });
@@ -459,5 +457,20 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 #endif
+
+		public override string GetAccessibilityInnerText()
+		{
+			switch (Content)
+			{
+				case string str:
+					return str;
+				case IFrameworkElement frameworkElement:
+					return frameworkElement.GetAccessibilityInnerText();
+				case object content:
+					return content.ToString();
+				default:
+					return null;
+			}
+		}
 	}
 }

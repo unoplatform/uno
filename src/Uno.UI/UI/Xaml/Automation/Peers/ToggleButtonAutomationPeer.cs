@@ -1,20 +1,45 @@
-#pragma warning disable 108 // new keyword hiding
-using System;
+using Windows.UI.Xaml.Controls.Primitives;
 
 namespace Windows.UI.Xaml.Automation.Peers
 {
-	public  partial class ToggleButtonAutomationPeer : global::Windows.UI.Xaml.Automation.Peers.ButtonBaseAutomationPeer,global::Windows.UI.Xaml.Automation.Provider.IToggleProvider
+	public partial class ToggleButtonAutomationPeer : ButtonBaseAutomationPeer, Provider.IToggleProvider
 	{
-		[Uno.NotImplemented]
-		public ToggleButtonAutomationPeer(IFrameworkElement element) : base(element)
+		public ToggleButtonAutomationPeer(ToggleButton element) : base(element)
 		{
-			throw new NotImplementedException();
 		}
 
-		[Uno.NotImplemented]
-		public ToggleButtonAutomationPeer(object element) : base(null)
+		protected override string GetClassNameCore()
 		{
-			throw new NotImplementedException();
+			return "ToggleButton";
+		}
+
+		protected override AutomationControlType GetAutomationControlTypeCore()
+		{
+			return AutomationControlType.Button;
+		}
+
+		public ToggleState ToggleState
+		{
+			get
+			{
+				switch (((ToggleButton)Owner).IsChecked)
+				{
+					case (true):
+						return ToggleState.On;
+					case (false):
+						return ToggleState.Off;
+					default:
+						return ToggleState.Indeterminate;
+				}
+			}
+		}
+
+		public void Toggle()
+		{
+			if (IsEnabled())
+			{
+				((ToggleButton)Owner).AutomationPeerToggle();
+			}
 		}
 	}
 }

@@ -42,6 +42,8 @@ namespace Windows.UI.Xaml
 			Activated?.Invoke(this, new WindowActivatedEventArgs(CoreWindowActivationState.CodeActivated));
 		}
 
+		partial void InternalActivate();
+
 		public void Close() { }
 
 		public void SetTitleBar(UIElement value) { }

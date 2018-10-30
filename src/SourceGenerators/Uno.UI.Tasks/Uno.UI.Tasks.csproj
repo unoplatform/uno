@@ -9,7 +9,7 @@
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Uno.UI.Tasks</RootNamespace>
-    <AssemblyName>Uno.UI.Tasks</AssemblyName>
+    <AssemblyName>Uno.UI.Tasks.v0</AssemblyName>
     <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <SccProjectName>SAK</SccProjectName>
@@ -55,10 +55,10 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Uno.Core">
-      <Version>1.22.0-dev.23</Version>
+      <Version>1.25.0-dev.53</Version>
     </PackageReference>
     <PackageReference Include="Uno.SourceGenerationTasks">
-      <Version>1.22.0-dev.49</Version>
+      <Version>1.27.0-dev.94</Version>
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
@@ -74,6 +74,9 @@
     <Compile Include="..\..\Uno.UWP\ApplicationModel\Resources\Core\ResourceQualifier.cs">
       <Link>Resources\ResourceQualifier.cs</Link>
     </Compile>
+    <Compile Include="..\..\Uno.UI\Services\AndroidResourceNameEncoder.cs">
+      <Link>Resources\AndroidResourceNameEncoder.cs</Link>
+    </Compile>
     <Compile Include="Assets\RetargetAssets.cs" />
     <Compile Include="Helpers\AnalyzerSuppressions.cs" />
     <Compile Include="Helpers\PathHelper.cs" />
@@ -83,6 +86,7 @@
     <Compile Include="ResourcesGenerator\AndroidResourcesWriter.cs" />
     <Compile Include="ResourcesGenerator\iOSResourcesWriter.cs" />
     <Compile Include="ResourcesGenerator\ResourcesGenerationTask.cs" />
+    <Compile Include="ResourcesGenerator\UnoPRIResourcesWriter.cs" />
     <Compile Include="ResourcesGenerator\WindowsResourcesReader.cs" />
   </ItemGroup>
   <ItemGroup>

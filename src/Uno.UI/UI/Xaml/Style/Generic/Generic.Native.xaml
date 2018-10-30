@@ -13,6 +13,8 @@
 					xmlns:native_ios="using:UIKit"
 					xmlns:native_android="using:Android.Widget"
 					xmlns:toolkit="using:Uno.UI.Toolkit"
+					xmlns:maps="using:Windows.UI.Xaml.Controls.Maps" 
+					xmlns:mapsPresenter="using:Windows.UI.Xaml.Controls.Maps" 
 					xmlns:not_wasm="http://uno.ui/not_wasm"
 					mc:Ignorable="d xamarin ios android not_wasm">
 	
@@ -163,7 +165,7 @@
     </android:Style>
     <not_wasm:Style BasedOn="{StaticResource NativeDefaultSlider}" TargetType="Slider" />
 
-    <converters:FromNullableBoolToReverseBoolConverter x:Key="nativeDefaultProgressBarReverseBool" />
+    <converters:UnoNativeDefaultProgressBarReverseBoolConverter x:Key="nativeDefaultProgressBarReverseBool" />
     
     <!-- Default native ProgressBar styles -->
     <ios:Style x:Key="NativeDefaultProgressBar" TargetType="ProgressBar">

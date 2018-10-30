@@ -18,6 +18,7 @@ using Windows.UI.Xaml.Media;
 using Windows.UI.Text;
 using Windows.Foundation;
 using Windows.UI.Xaml.Input;
+using Windows.UI.Xaml.Automation.Peers;
 
 #if XAMARIN_IOS
 using UIKit;
@@ -525,7 +526,37 @@ namespace Windows.UI.Xaml.Controls
 
 		partial void OnCharacterSpacingChangedPartial();
 
-#endregion
+		#endregion
+
+		#region TextDecorations
+
+		public TextDecorations TextDecorations
+		{
+			get { return (TextDecorations)this.GetValue(TextDecorationsProperty); }
+			set { this.SetValue(TextDecorationsProperty, value); }
+		}
+
+		public static DependencyProperty TextDecorationsProperty =
+			DependencyProperty.Register(
+				"TextDecorations",
+				typeof(int),
+				typeof(TextBlock),
+				new FrameworkPropertyMetadata(
+					defaultValue: TextDecorations.None,
+					options: FrameworkPropertyMetadataOptions.Inherits,
+					propertyChangedCallback: (s, e) => ((TextBlock)s).OnTextDecorationsChanged()
+				)
+			);
+
+		private void OnTextDecorationsChanged()
+		{
+			OnTextDecorationsChangedPartial();
+			this.InvalidateMeasure();
+		}
+
+		partial void OnTextDecorationsChangedPartial();
+
+		#endregion
 
 		/// <summary>
 		/// Gets whether the TextBlock is using the fast path in which Inlines
@@ -663,7 +694,17 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-#endregion
+		#endregion
+
+		protected override AutomationPeer OnCreateAutomationPeer()
+		{
+			return new TextBlockAutomationPeer(this);
+		}
+
+		public override string GetAccessibilityInnerText()
+		{
+			return Text;
+		}
 	}
 }
 #endif

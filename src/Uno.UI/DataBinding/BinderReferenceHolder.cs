@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Text;
 using Uno.Extensions;
 using Uno.Logging;
+using Uno.UI.Extensions;
 using System.Diagnostics;
 using System.ComponentModel;
 using Windows.UI.Xaml;
@@ -12,10 +13,13 @@ using Windows.UI.Xaml;
 #if XAMARIN_IOS
 using UIKit;
 using _NativeReference = global::Foundation.NSObject;
+using _NativeView = UIKit.UIView;
 #elif XAMARIN_ANDROID
 using _NativeReference = Android.Views.View;
+using _NativeView = Android.Views.View;
 #else
 using _NativeReference = Windows.UI.Xaml.UIElement;
+using _NativeView = Windows.UI.Xaml.UIElement;
 #endif
 
 namespace Uno.UI.DataBinding
@@ -43,7 +47,7 @@ namespace Uno.UI.DataBinding
 		private readonly Dictionary<IntPtr, System.Tuple<Type, WeakReference>> _newReferences = new Dictionary<IntPtr, System.Tuple<Type, WeakReference>>();
 		private readonly IntPtr _handle;
 
-		public static bool IsEnabled { get; set; } =  false;
+		public static bool IsEnabled { get; set; } = false;
 
 		public BinderReferenceHolder(Type type, object target)
 		{
@@ -62,7 +66,7 @@ namespace Uno.UI.DataBinding
 
 				var view = target as _NativeReference;
 
-				if(view != null)
+				if (view != null)
 				{
 					_handle = view.Handle;
 					_nativeHolders[_handle] = _ref;
@@ -126,6 +130,32 @@ namespace Uno.UI.DataBinding
 		}
 
 		/// <summary>
+		/// Retrieves a list of binders that are native views that 
+		/// aren't attached to the window. These views may be part 
+		/// of a leaked control.
+		/// </summary>
+		public static BinderReferenceHolder[] GetInactiveChildViewBinders()
+		{
+			var q = from r in _holders.Concat(_nativeHolders.Values)
+					let holder = r.Target as BinderReferenceHolder
+					let view = holder?._target.Target as _NativeView
+					where view != null && !IsInactiveView(view) && IsInactiveView(view.GetTopLevelParent())
+					select holder;
+
+			return q.ToArray();
+		}
+
+		/// <summary>
+		/// Retrieves all inactive views of the specified type.
+		/// </summary>
+		public static T[] GetInactiveInstancesOfType<T>() => GetInactiveViewBinders().Select(h => h._target.Target).OfType<T>().ToArray();
+
+		/// <summary>
+		/// Retrieves all children of the specified type whose top-level parent is detached from the window.
+		/// </summary>
+		public static T[] GetInactiveChildInstancesOfType<T>() => GetInactiveChildViewBinders().Select(h => h._target.Target).OfType<T>().ToArray();
+
+		/// <summary>
 		/// Retreives statistics about the live instances.
 		/// </summary>
 		public static System.Tuple<Type, int>[] GetReferenceStats()
@@ -169,7 +199,7 @@ namespace Uno.UI.DataBinding
 				var sb = new StringBuilder();
 				sb.Append("Detailed binder references: \r\n");
 
-				foreach(var activref in q)
+				foreach (var activref in q)
 				{
 					sb.AppendFormatInvariant("\t{0}: {1}, [{2}]\r\n", activref.Item1, activref.Item2, string.Join(", ", activref.Item3));
 				}
@@ -264,7 +294,7 @@ namespace Uno.UI.DataBinding
 					typeof(BinderReferenceHolder).Log().Info(sb.ToString());
 				}
 			}
-			catch(Exception ex)
+			catch (Exception ex)
 			{
 				if (typeof(BinderReferenceHolder).Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Error))
 				{
@@ -273,19 +303,21 @@ namespace Uno.UI.DataBinding
 			}
 		}
 
-		private bool IsInactiveView()
+		private bool IsInactiveView() => IsInactiveView(_target.Target);
+
+		private static bool IsInactiveView(object target)
 		{
 			try
 			{
 #if XAMARIN_IOS
-				var uiView = _target.Target as UIView;
+				var uiView = target as UIView;
 
 				if (uiView != null && ObjCRuntime.Runtime.TryGetNSObject(uiView.Handle) != null)
 				{
 					return uiView.Superview == null && uiView.Window == null;
 				}
 #elif XAMARIN_ANDROID
-				var uiView = _target.Target as Android.Views.ViewGroup;
+				var uiView = target as Android.Views.View;
 
 				if (uiView != null)
 				{

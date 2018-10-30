@@ -3,6 +3,7 @@ using System.Linq;
 using Uno.Extensions;
 using Windows.UI.Xaml;
 using Uno.UI.DataBinding;
+using Windows.UI.Xaml.Automation.Peers;
 using Windows.UI.Xaml.Data;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -117,6 +118,10 @@ namespace Windows.UI.Xaml
 
 		void SetSubviewsNeedLayout();
 #endif
+
+		AutomationPeer GetAutomationPeer();
+
+		string GetAccessibilityInnerText();
 	}
 
 	public static class IFrameworkElementHelper
@@ -141,7 +146,7 @@ namespace Windows.UI.Xaml
 			}
 
 			if (
-				!FeatureConfiguration.UIElement.UseLegacyClipping 
+				!FeatureConfiguration.UIElement.UseLegacyClipping
 				&& e is UIElement uiElement
 			)
 			{
@@ -152,10 +157,15 @@ namespace Windows.UI.Xaml
 #endif
 			}
 
-#if XAMARIN_ANDROID
-			if (Debugger.IsAttached)
+#if __ANDROID__
+			if (e is View view)
 			{
-				(e as View).ContentDescription = e.GetType().ToString();
+				// TODO:
+				// This causes Android to cycle through every visible IFrameworkElement every time the accessibility focus is changed
+				// and calls the overriden InitializeAccessibilityNodeInfo method.
+				// This could become a performance problem (due to interop) in complex UIs (only if TalkBack is enabled).
+				// A possible optimization could be to set it to ImportantForAccessibility.No if FrameworkElement.CreateAutomationPeer returns null.
+				view.ImportantForAccessibility = Android.Views.ImportantForAccessibility.Yes;
 			}
 #endif
 		}

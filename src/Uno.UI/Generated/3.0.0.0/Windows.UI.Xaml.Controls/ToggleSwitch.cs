@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml.Controls
 {
-	#if false || false || NET46 || false
+	#if false || false || false || false
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class ToggleSwitch : global::Windows.UI.Xaml.Controls.Control
 	{
-		#if false || false || NET46 || false
+		#if false || false || false || false
 		[global::Uno.NotImplemented]
 		public  global::Windows.UI.Xaml.DataTemplate OnContentTemplate
 		{
@@ -21,7 +21,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 		#endif
-		#if false || false || NET46 || false
+		#if false || false || false || false
 		[global::Uno.NotImplemented]
 		public  object OnContent
 		{
@@ -35,7 +35,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 		#endif
-		#if false || false || NET46 || false
+		#if false || false || false || false
 		[global::Uno.NotImplemented]
 		public  global::Windows.UI.Xaml.DataTemplate OffContentTemplate
 		{
@@ -49,7 +49,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 		#endif
-		#if false || false || NET46 || false
+		#if false || false || false || false
 		[global::Uno.NotImplemented]
 		public  object OffContent
 		{
@@ -63,7 +63,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 		#endif
-		#if false || false || NET46 || false
+		#if false || false || false || false
 		[global::Uno.NotImplemented]
 		public  bool IsOn
 		{
@@ -77,7 +77,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 		#endif
-		#if false || false || NET46 || false
+		#if false || false || false || false
 		[global::Uno.NotImplemented]
 		public  global::Windows.UI.Xaml.DataTemplate HeaderTemplate
 		{
@@ -91,7 +91,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 		#endif
-		#if false || false || NET46 || false
+		#if false || false || false || false
 		[global::Uno.NotImplemented]
 		public  object Header
 		{
@@ -115,7 +115,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 		#endif
-		#if false || false || NET46 || false
+		#if false || false || false || false
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty HeaderProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
@@ -123,7 +123,7 @@ namespace Windows.UI.Xaml.Controls
 			typeof(global::Windows.UI.Xaml.Controls.ToggleSwitch), 
 			new FrameworkPropertyMetadata(default(object)));
 		#endif
-		#if false || false || NET46 || false
+		#if false || false || false || false
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty HeaderTemplateProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
@@ -131,7 +131,7 @@ namespace Windows.UI.Xaml.Controls
 			typeof(global::Windows.UI.Xaml.Controls.ToggleSwitch), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.DataTemplate)));
 		#endif
-		#if false || false || NET46 || false
+		#if false || false || false || false
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty IsOnProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
@@ -139,7 +139,7 @@ namespace Windows.UI.Xaml.Controls
 			typeof(global::Windows.UI.Xaml.Controls.ToggleSwitch), 
 			new FrameworkPropertyMetadata(default(bool)));
 		#endif
-		#if false || false || NET46 || false
+		#if false || false || false || false
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty OffContentProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
@@ -147,7 +147,7 @@ namespace Windows.UI.Xaml.Controls
 			typeof(global::Windows.UI.Xaml.Controls.ToggleSwitch), 
 			new FrameworkPropertyMetadata(default(object)));
 		#endif
-		#if false || false || NET46 || false
+		#if false || false || false || false
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty OffContentTemplateProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
@@ -155,7 +155,7 @@ namespace Windows.UI.Xaml.Controls
 			typeof(global::Windows.UI.Xaml.Controls.ToggleSwitch), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.DataTemplate)));
 		#endif
-		#if false || false || NET46 || false
+		#if false || false || false || false
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty OnContentProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
@@ -163,7 +163,7 @@ namespace Windows.UI.Xaml.Controls
 			typeof(global::Windows.UI.Xaml.Controls.ToggleSwitch), 
 			new FrameworkPropertyMetadata(default(object)));
 		#endif
-		#if false || false || NET46 || false
+		#if false || false || false || false
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty OnContentTemplateProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
@@ -171,7 +171,7 @@ namespace Windows.UI.Xaml.Controls
 			typeof(global::Windows.UI.Xaml.Controls.ToggleSwitch), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.DataTemplate)));
 		#endif
-		#if false || false || NET46 || false
+		#if false || false || false || false
 		[global::Uno.NotImplemented]
 		public ToggleSwitch() : base()
 		{
@@ -202,8 +202,8 @@ namespace Windows.UI.Xaml.Controls
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.ToggleSwitch", "void ToggleSwitch.OnToggled()");
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+#endif
+#if __ANDROID__ || __IOS__ || NET46 || __WASM__
 		[global::Uno.NotImplemented]
 		protected virtual void OnOnContentChanged( object oldContent,  object newContent)
 		{
@@ -231,7 +231,7 @@ namespace Windows.UI.Xaml.Controls
 		// Forced skipping of method Windows.UI.Xaml.Controls.ToggleSwitch.OnContentTemplateProperty.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.ToggleSwitch.OffContentProperty.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.ToggleSwitch.OffContentTemplateProperty.get
-		#if false || false || NET46 || false
+		#if false || false || false || false
 		[global::Uno.NotImplemented]
 		public  event global::Windows.UI.Xaml.RoutedEventHandler Toggled
 		{

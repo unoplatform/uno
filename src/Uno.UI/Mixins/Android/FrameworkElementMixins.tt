@@ -2,17 +2,17 @@
 <#@output extension="g.cs" #>
 #if XAMARIN_ANDROID
 <# 
-	AddClass("Uno.UI.Controls.Legacy", "GridView", hasNewWidthHeight: true, hasAttachedToWindow: false);
-	AddClass("Windows.UI.Xaml", "FrameworkElement", hasNewWidthHeight: true, hasAttachedToWindow: false, overridesAttachedToWindow:true, overridesOnLayout: false);
-	AddClass("Uno.UI.Controls.Legacy", "ListView", hasNewWidthHeight: true);
-	AddClass("Windows.UI.Xaml.Controls", "Image", hasNewWidthHeight: true, hasNewMaxWidthHeight: true);
-	AddClass("Uno.UI.Controls.Legacy", "HorizontalGridView", hasNewWidthHeight: true);
-	AddClass("Uno.UI.Controls.Legacy", "HorizontalListView", hasNewWidthHeight: true);
-	AddClass("Windows.UI.Xaml.Controls", "ProgressRing", hasNewWidthHeight: true, hasAttachedToWindow: false, overridesAttachedToWindow: false);
-	AddClass("Windows.UI.Xaml.Controls", "ScrollContentPresenter", hasNewWidthHeight: true);
-	AddClass("Windows.UI.Xaml.Controls", "NativePagedView", hasNewWidthHeight: true);
-	AddClass("Windows.UI.Xaml.Controls", "TextBoxView", hasNewWidthHeight: true, hasNewMinWidthHeight: true, hasNewMaxWidthHeight: true);
-	AddClass("Windows.UI.Xaml.Controls", "NativeListViewBase", hasNewWidthHeight: true);
+	AddClass("Uno.UI.Controls.Legacy", "GridView");
+	AddClass("Windows.UI.Xaml", "FrameworkElement", overridesAttachedToWindow:true, overridesOnLayout: false);
+	AddClass("Uno.UI.Controls.Legacy", "ListView");
+	AddClass("Windows.UI.Xaml.Controls", "Image", hasNewMaxWidthHeight: true, hasAutomationPeer: true);
+	AddClass("Uno.UI.Controls.Legacy", "HorizontalGridView");
+	AddClass("Uno.UI.Controls.Legacy", "HorizontalListView");
+	AddClass("Windows.UI.Xaml.Controls", "ProgressRing");
+	AddClass("Windows.UI.Xaml.Controls", "ScrollContentPresenter");
+	AddClass("Windows.UI.Xaml.Controls", "NativePagedView");
+	AddClass("Windows.UI.Xaml.Controls", "TextBoxView", hasNewMinWidthHeight: true, hasNewMaxWidthHeight: true);
+	AddClass("Windows.UI.Xaml.Controls", "NativeListViewBase");
 #>
 <#@include file="..\..\UI\Xaml\IFrameworkElementImplementation.Android.tt"#>
 #endif

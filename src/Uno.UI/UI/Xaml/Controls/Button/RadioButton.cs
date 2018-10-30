@@ -6,6 +6,7 @@ using System.Linq;
 using Uno.Disposables;
 using Uno.Logging;
 using Windows.UI.Xaml.Controls.Primitives;
+using Windows.UI.Xaml.Automation.Peers;
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -131,6 +132,11 @@ namespace Windows.UI.Xaml.Controls
 			base.OnUnloaded();
 
 			_groupMembership.Disposable = null;
+		}
+
+		protected override AutomationPeer OnCreateAutomationPeer()
+		{
+			return new RadioButtonAutomationPeer(this);
 		}
 	}
 }

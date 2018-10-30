@@ -445,8 +445,10 @@ namespace Windows.UI.Xaml.Controls
 
 		private void OnPaddingChanged(Thickness oldValue, Thickness newValue)
 		{
-			UpdateBorder();
+			OnPaddingChangedPartial(oldValue, newValue);
 		}
+
+		partial void OnPaddingChangedPartial(Thickness oldValue, Thickness newValue);
 
 		#endregion
 
@@ -788,7 +790,7 @@ namespace Windows.UI.Xaml.Controls
 				this.Log().DebugFormat("No ContentTemplate was specified for {0} and content is not a UIView, defaulting to TextBlock.", GetType().Name);
 			}
 
-			var textBlock = new ImplicitTextBlock();
+			var textBlock = new ImplicitTextBlock(this);
 
 			void setBinding(DependencyProperty property, string path) 
 				=> textBlock.SetBinding(

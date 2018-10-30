@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Uno.Extensions;
+using Windows.UI.Xaml.Automation.Peers;
 using Windows.UI.Xaml.Controls.Primitives;
 
 namespace Windows.UI.Xaml.Controls
@@ -47,5 +48,10 @@ namespace Windows.UI.Xaml.Controls
 				)
 			);
 		#endregion
+
+		protected override AutomationPeer OnCreateAutomationPeer()
+		{
+			return new ButtonAutomationPeer(this);
+		}
 	}
 }

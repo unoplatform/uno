@@ -67,6 +67,7 @@ namespace Windows.UI.Xaml.Controls
 
 			PointerPressed += OnPointerPressed;
 			SetupTextBoxView();
+			UpdateCommonStates();
 		}
 
 		// TODO: remove event handler when override is correctly called from Control
@@ -80,22 +81,11 @@ namespace Windows.UI.Xaml.Controls
 			OnImeOptionsChanged(ImeOptions);
 		}
 
-		protected override void OnApplyTemplate()
+		private void UpdateTextBoxView()
 		{
-			base.OnApplyTemplate();
-
-			var contentElement = this.GetTemplateChild(TextBoxConstants.ContentElementPartName) as ContentControl;
-
-			if (contentElement != null)
+			if (_textBoxView == null && _contentElement != null)
 			{
-				_placeHolder = this.GetTemplateChild(TextBoxConstants.PlaceHolderPartName) as IFrameworkElement;
-				_textBoxView = contentElement.GetChildren().FirstOrDefault() as TextBoxView;
-
-				var button = this.GetTemplateChild(TextBoxConstants.DeleteButtonPartName) as Button;
-				if (button != null)
-				{
-					_deleteButton = new WeakReference<Button>(button);
-				}
+				_textBoxView = _contentElement.GetChildren().FirstOrDefault() as TextBoxView;
 
 				if (_textBoxView == null)
 				{
@@ -107,12 +97,10 @@ namespace Windows.UI.Xaml.Controls
 							Mode = BindingMode.TwoWay
 						});
 
-					contentElement.Content = _textBoxView;
+					_contentElement.Content = _textBoxView;
 				}
 
 				SetupTextBoxView();
-
-				InitializeProperties();
 			}
 		}
 

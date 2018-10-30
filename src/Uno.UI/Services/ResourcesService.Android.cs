@@ -1,3 +1,4 @@
+using System;
 
 namespace Uno.UI.Services
 {
@@ -14,7 +15,7 @@ namespace Uno.UI.Services
 		public string Get(string id)
 		{
 			// double reflection in GetIdentifier, should be replaced by something better
-			var intId = _applicationContext.Resources.GetIdentifier(id, "string", _applicationContext.PackageName);
+			var intId = _applicationContext.Resources.GetIdentifier(AndroidResourceNameEncoder.Encode(id), "string", _applicationContext.PackageName);
 
 			if (intId != 0)
 			{

@@ -17,10 +17,16 @@ using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Animation;
 using Android.Views;
 using Uno.UI.Extensions;
+using Uno.Logging;
 using global::Windows.UI.Xaml.Input;
 using Point = Windows.Foundation.Point;
 using Uno.UI;
 using Uno.Diagnostics.Eventing;
+using Windows.UI.Xaml.Automation.Peers;
+using Windows.UI.Xaml.Automation.Provider;
+using Windows.UI.Xaml.Automation;
+using Android.Views.Accessibility;
+using Android.Runtime;
 
 <# 
 	foreach(var mixin in _mixins) { 
@@ -32,40 +38,37 @@ namespace <#= mixin.NamespaceName #>
 	{
 		private readonly static IEventProvider _trace = Tracing.Get(FrameworkElement.TraceProvider.Id);
 
-#if <#= mixin.HasAttachedToWindow #>
-		partial void OnAttachedToWindowPartial()
-		{
-			((IDependencyObjectStoreProvider)this).Store.Parent = base.Parent;
-			OnLoading();
-			OnLoaded();
-		}
-
-		partial void OnDetachedFromWindowPartial()
-		{
-			OnUnloaded();
-			
-			if(base.Parent == null)
-            {
-                ((IDependencyObjectStoreProvider)this).Store.Parent = null;
-            }
-		}
-#endif
-
 #if <#= mixin.OverridesAttachedToWindow #>
 		protected override void OnNativeLoaded()
 		{
-			((IDependencyObjectStoreProvider)this).Store.Parent = base.Parent;
-			OnLoading();
-			OnLoaded();
+			try
+			{
+				((IDependencyObjectStoreProvider)this).Store.Parent = base.Parent;
+				OnLoading();
+				OnLoaded();
 
-			base.OnNativeLoaded();
+				base.OnNativeLoaded();
+			}
+			catch (Exception ex)
+			{
+				this.Log().Error("OnNativeLoaded failed in FrameworkElementMixins", ex);
+				Application.Current.RaiseRecoverableUnhandledException(ex);
+			}
 		}
 
 		protected override void OnNativeUnloaded()
 		{
-			OnUnloaded();
+			try
+			{
+				OnUnloaded();
 
-			base.OnNativeUnloaded();
+				base.OnNativeUnloaded();
+			}
+			catch(Exception ex)
+			{
+				this.Log().Error("OnNativeUnloaded failed in FrameworkElementMixins", ex);
+				Application.Current.RaiseRecoverableUnhandledException(ex);
+			}
 		}
 			
 		/// <summary>
@@ -902,6 +905,71 @@ namespace <#= mixin.NamespaceName #>
 #endif
 
 		public Uri BaseUri => new Uri("ms-appx:///");
+
+		#region AutomationPeer
+
+		private AutomationPeer _automationPeer;
+
+#if !<#= mixin.HasAutomationPeer #>
+		private AutomationPeer OnCreateAutomationPeerOverride()
+		{
+			return null;
+		}
+		
+		private string GetAccessibilityInnerTextOverride()
+		{
+			return null;
+		}
+#endif
+
+		protected virtual AutomationPeer OnCreateAutomationPeer()
+		{
+			if (OnCreateAutomationPeerOverride() is AutomationPeer automationPeer)
+			{
+				return automationPeer;
+			}
+
+			if (AutomationProperties.GetName(this) is string name && !string.IsNullOrEmpty(name))
+			{
+				return new FrameworkElementAutomationPeer(this);
+			}
+
+			return null;
+		}
+
+		public virtual string GetAccessibilityInnerText()
+		{
+			if (GetAccessibilityInnerTextOverride() is string innerText)
+			{
+				return innerText;
+			}
+
+			return null;
+		}
+
+		public AutomationPeer GetAutomationPeer()
+		{
+			if (_automationPeer == null)
+			{
+				_automationPeer = OnCreateAutomationPeer();
+			}
+
+			return _automationPeer;
+		}
+
+		public override void OnInitializeAccessibilityNodeInfo(AccessibilityNodeInfo info)
+		{
+			base.OnInitializeAccessibilityNodeInfo(info);
+			GetAutomationPeer()?.OnInitializeAccessibilityNodeInfo(info);
+		}
+
+		public override void SendAccessibilityEvent([GeneratedEnum] EventTypes eventType)
+		{
+			base.SendAccessibilityEvent(eventType);
+			GetAutomationPeer()?.SendAccessibilityEvent(eventType);
+		}
+		
+		#endregion
 	}
 }
 <#
@@ -912,13 +980,13 @@ namespace <#= mixin.NamespaceName #>
     public void AddClass(
 		string namespaceName, 
 		string className, 
-		bool hasNewWidthHeight = false, 
+		bool hasNewWidthHeight = true, 
 		bool hasNewMinWidthHeight = false,
 		bool hasNewMaxWidthHeight = false,
-		bool hasAttachedToWindow = true,
 		bool overridesAttachedToWindow = false,
 		bool isFocusable = false,
-		bool overridesOnLayout = true
+		bool overridesOnLayout = true,
+		bool hasAutomationPeer = false
 	)
 	{
         _mixins.Add(
@@ -928,12 +996,12 @@ namespace <#= mixin.NamespaceName #>
 				HasNewWidthHeight = hasNewWidthHeight ? "new" : "",
 				HasNewMinWidthHeight = hasNewMinWidthHeight ? "new" : "",
 				HasNewMaxWidthHeight = hasNewMaxWidthHeight ? "new" : "",
-				HasAttachedToWindow = hasAttachedToWindow ? "true" : "false",
 				OverridesAttachedToWindow = overridesAttachedToWindow ? "true" : "false",
 				IsFocusable = isFocusable ? "true" : "false",
 				IsUnoViewGroup = className == "FrameworkElement" ? "true" : "false",
 				OverridesOnLayout = overridesOnLayout ? "true" : "false",
 				IsFrameworkElement = className == "FrameworkElement" ? "true" : "false",
+				HasAutomationPeer = hasAutomationPeer ? "true" : "false",
 			}
 		);
     }
@@ -945,12 +1013,12 @@ namespace <#= mixin.NamespaceName #>
 		public string HasNewWidthHeight;
 		public string HasNewMinWidthHeight;
 		public string HasNewMaxWidthHeight;
-		public string HasAttachedToWindow;
 		public string OverridesAttachedToWindow;
 		public string IsFocusable;
 		public string IsUnoViewGroup;
 		public string OverridesOnLayout;
 		public string IsFrameworkElement;
+		public string HasAutomationPeer;
 	}
 
 	private List<MixinParams> _mixins = new List<MixinParams>();

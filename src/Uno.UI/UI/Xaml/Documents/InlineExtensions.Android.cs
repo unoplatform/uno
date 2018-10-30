@@ -23,7 +23,7 @@ namespace Windows.UI.Xaml.Documents
 				inline.CharacterSpacing,
 				(inline.Foreground as SolidColorBrush)?.Color ?? Colors.Transparent,
 				inline.BaseLineAlignment,
-				inline.InternalUnderlineStyle
+				inline.TextDecorations
 			);
 		}
 	}

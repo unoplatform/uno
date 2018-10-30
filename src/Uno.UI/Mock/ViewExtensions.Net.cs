@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Uno.Disposables;
 using System.Text;
+using Windows.UI.Xaml;
 
 namespace Uno.UI
 {
@@ -17,5 +18,7 @@ namespace Uno.UI
 		{
 			return new object[0];
 		}
+
+		public static FrameworkElement GetTopLevelParent(this UIElement view) => throw new NotImplementedException();
 	}
 }

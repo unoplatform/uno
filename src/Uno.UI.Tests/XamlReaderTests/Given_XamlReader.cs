@@ -681,15 +681,27 @@ namespace Uno.UI.Tests.XamlReaderTests
 			Assert.AreEqual("Text", inner.MyBinding.Path.Path);
 		}
 
+		[TestMethod]
+		public void When_TypeConverters()
+		{
+			var s = GetContent(nameof(When_TypeConverters));
+			var r = Windows.UI.Xaml.Markup.XamlReader.Load(s) as UserControl;
+
+			var root = (TypeConvertersControl)r.Content;
+
+			Assert.AreEqual(typeof(TypeConvertersControl), root.TypeProperty);
+			Assert.AreEqual(new Uri("https://platform.uno/"), root.UriProperty);
+		}
+
 		private string GetContent(string testName)
-        {
-            var assembly = this.GetType().Assembly;
-            var name = $"{GetType().Namespace}.{testName}.xamltest";
-            // "Uno.UI.Tests.XamlReaderTests.BasicReader.xamltest"
-            using (var stream = assembly.GetManifestResourceStream(name))
-            {
-                return stream.ReadToEnd();
-            }
-        }
-    }
+		{
+			var assembly = this.GetType().Assembly;
+			var name = $"{GetType().Namespace}.{testName}.xamltest";
+			// "Uno.UI.Tests.XamlReaderTests.BasicReader.xamltest"
+			using (var stream = assembly.GetManifestResourceStream(name))
+			{
+				return stream.ReadToEnd();
+			}
+		}
+	}
 }

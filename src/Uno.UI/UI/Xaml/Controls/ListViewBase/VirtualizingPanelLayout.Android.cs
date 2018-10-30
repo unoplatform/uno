@@ -13,6 +13,7 @@ using System.Runtime.CompilerServices;
 using Windows.UI.Xaml.Controls.Primitives;
 using Android.Graphics;
 using Uno.UI.Extensions;
+using Uno.UI.DataBinding;
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -38,7 +39,8 @@ namespace Windows.UI.Xaml.Controls
 		private readonly Deque<Group> _groups = new Deque<Group>();
 		private bool _isInitialGroupHeaderCreated;
 		private bool _areHeaderAndFooterCreated;
-		private bool _isInitialExtentOffsetApplied;
+		private bool _isInitialHeaderExtentOffsetApplied;
+		private bool _isInitialPaddingExtentOffsetApplied;
 		//The previous item to the old first visible item, used when a lightweight layout rebuild is called
 		private IndexPath? _dynamicSeedIndex;
 		//Start position of the old first group, used when a lightweight layout rebuild is called
@@ -78,7 +80,17 @@ namespace Windows.UI.Xaml.Controls
 			ResetLayoutInfo();
 		}
 
-		public ListViewBase XamlParent { get; set; }
+		private ManagedWeakReference _xamlParentWeakReference;
+
+		public ListViewBase XamlParent
+		{
+			get => _xamlParentWeakReference?.Target as ListViewBase;
+			set
+			{
+				WeakReferencePool.ReturnWeakReference(this, _xamlParentWeakReference);
+				_xamlParentWeakReference = WeakReferencePool.RentWeakReference(this, value);
+			}
+		}
 
 		private BufferViewCache ViewCache => XamlParent?.NativePanel.ViewCache;
 
@@ -215,7 +227,7 @@ namespace Windows.UI.Xaml.Controls
 		private void ApplyScrollToPosition(int targetPosition, ScrollIntoViewAlignment alignment, RecyclerView.Recycler recycler, RecyclerView.State state)
 		{
 			int offsetToApply = 0;
-			bool shouldSnapToStart = false;
+			bool shouldSnapToStart = false; //Initial values: if the item is fully visible, it shouldn't snap (alignment = default)
 			bool shouldSnapToEnd = false;
 
 			// 1. Incrementally scroll until target position lies within range of visible positions
@@ -223,14 +235,14 @@ namespace Windows.UI.Xaml.Controls
 			int appliedOffset = 0;
 			while (targetPosition > GetLastVisibleDisplayPosition() && GetNextUnmaterializedItem(FillDirection.Forward) != null)
 			{
-				shouldSnapToEnd = true;
+				shouldSnapToEnd = true; //If the item is below the viewport, it should be snapped to the bottom of the viewport (alignment = default)
 				appliedOffset += GetScrollConsumptionIncrement(FillDirection.Forward);
 				offsetToApply += ScrollByInner(appliedOffset, recycler, state);
 			}
 			//While target position is before first visible position, scroll backward
 			while (targetPosition < GetFirstVisibleDisplayPosition() && GetNextUnmaterializedItem(FillDirection.Back) != null)
 			{
-				shouldSnapToStart = true;
+				shouldSnapToStart = true; //If the item is above the viewport, it should be snapped to the bottom of the viewport (alignment = default)
 				appliedOffset -= GetScrollConsumptionIncrement(FillDirection.Back);
 				offsetToApply += ScrollByInner(appliedOffset, recycler, state);
 			}
@@ -240,6 +252,7 @@ namespace Windows.UI.Xaml.Controls
 
 			if (alignment == ScrollIntoViewAlignment.Leading)
 			{
+				// 'Leading' means that the item always snaps to the top of the viewport no matter what
 				shouldSnapToStart = true;
 				shouldSnapToEnd = false;
 			}
@@ -247,7 +260,9 @@ namespace Windows.UI.Xaml.Controls
 			//2. If view for position lies partially outside visible bounds, bring it into view
 			var target = FindViewByAdapterPosition(targetPosition);
 
-			var gapToStart = 0 - GetChildStartWithMargin(target);
+			var gapToStart = 0 - GetChildStartWithMargin(target)
+				// Ensure sticky group header doesn't cover item
+				+ GetStickyGroupHeaderExtent();
 			if (!shouldSnapToStart)
 			{
 				gapToStart = Math.Max(0, gapToStart);
@@ -275,6 +290,11 @@ namespace Windows.UI.Xaml.Controls
 			FillLayout(FillDirection.Forward, 0, Extent, ContentBreadth, recycler, state);
 			FillLayout(FillDirection.Back, 0, Extent, ContentBreadth, recycler, state);
 		}
+
+		/// <summary>
+		/// Get extent of currently sticking group header (if any)
+		/// </summary>
+		private int GetStickyGroupHeaderExtent() => GetFirstGroup().ItemsExtentOffset;
 
 		private class ScrollToPositionRequest
 		{
@@ -317,7 +337,22 @@ namespace Windows.UI.Xaml.Controls
 		/// </summary>
 		public override void RemoveAllViews()
 		{
+			var views = new List<ContentControl>();
+			for (int i = 0; i < ChildCount; i++)
+			{
+				var view = GetChildAt(i);
+				if (view is ContentControl contentControl)
+				{
+					views.Add(contentControl);
+				}
+			}
 			base.RemoveAllViews();
+
+			// Clean up container after removing from visual tree, to ensure it doesn't have inherited DataContext (which would needlessly recreate template)
+			foreach (var contentControl in views)
+			{
+				XamlParent.CleanUpContainer(contentControl);
+			}
 			ContentOffset = 0;
 
 			ResetLayoutInfo();
@@ -691,8 +726,9 @@ namespace Windows.UI.Xaml.Controls
 
 			_isInitialGroupHeaderCreated = false;
 			_areHeaderAndFooterCreated = false;
-			_isInitialExtentOffsetApplied = false;
+			_isInitialHeaderExtentOffsetApplied = false;
 			_needsHeaderAndFooterUpdate = false;
+			_isInitialPaddingExtentOffsetApplied = false;
 
 			ViewCache?.EmptyAndRemove();
 			CacheHalfLengthInViews = 0;
@@ -891,10 +927,13 @@ namespace Windows.UI.Xaml.Controls
 			{
 				// If this value is negative, collection dimensions are larger than all children and we should not scroll
 				maxPossibleDelta = Math.Max(0, GetContentEnd() - Extent);
+				// In the rare case that GetContentStart() is positive (see below), permit a positive value.
+				maxPossibleDelta = Math.Max(GetContentStart(), maxPossibleDelta);
 			}
 			else
 			{
-				maxPossibleDelta = GetContentStart() - 0;
+				// This value may be positive in certain cases where the layouting properties change, eg Padding goes from non-zero to zero. Restrict to be negative.
+				maxPossibleDelta = Math.Min(0, GetContentStart() - 0);
 			}
 			maxPossibleDelta = Math.Abs(maxPossibleDelta);
 			var actualOffset = MathEx.Clamp(offset, -maxPossibleDelta, maxPossibleDelta);
@@ -947,7 +986,7 @@ namespace Windows.UI.Xaml.Controls
 
 			XamlParent?.TryLoadMoreItems(LastVisibleIndex);
 
-			UpdateScrollPosition(recycler, state);
+			UpdateScrollPositionForPaddingChanges(recycler, state);
 
 			if (!needsScrapOnMeasure && !willRunAnimations)
 			{
@@ -962,10 +1001,25 @@ namespace Windows.UI.Xaml.Controls
 		/// <summary>
 		/// Scroll to close the gap between the end of the content and the end of the panel if any.
 		/// </summary>
-		private void UpdateScrollPosition(RecyclerView.Recycler recycler, RecyclerView.State state)
+		private void UpdateScrollPositionForPaddingChanges(RecyclerView.Recycler recycler, RecyclerView.State state)
 		{
 			if (XamlParent?.NativePanel != null && XamlParent.NativePanel.ChildCount > 0)
 			{
+				var gapToStart = GetContentStart();
+				if (gapToStart > 0)
+				{
+					if (ScrollOrientation == Orientation.Vertical)
+					{
+						ScrollVerticallyBy(gapToStart, recycler, state);
+						XamlParent.NativePanel.OnScrolled(0, gapToStart);
+					}
+					else
+					{
+						ScrollHorizontallyBy(gapToStart, recycler, state);
+						XamlParent.NativePanel.OnScrolled(gapToStart, 0);
+					}
+				}
+
 				var gapToEnd = Extent - GetContentEnd();
 
 				if (gapToEnd > 0)
@@ -1003,7 +1057,20 @@ namespace Windows.UI.Xaml.Controls
 
 			AssertValidState();
 
-			if (!_isInitialExtentOffsetApplied)
+			if (!_isInitialPaddingExtentOffsetApplied)
+			{
+				var group = GetTrailingGroup(direction);
+				if (group != null)
+				{
+					group.Start += InitialExtentPadding;
+				}
+
+				_isInitialPaddingExtentOffsetApplied = true;
+			}
+
+			AssertValidState();
+
+			if (!_isInitialHeaderExtentOffsetApplied)
 			{
 				var group = GetTrailingGroup(direction);
 				if (group != null)
@@ -1023,7 +1090,7 @@ namespace Windows.UI.Xaml.Controls
 					_dynamicSeedStart = _dynamicSeedStart.Value - _previousHeaderExtent.Value + headerOffset;
 				}
 				_previousHeaderExtent = null;
-				_isInitialExtentOffsetApplied = true;
+				_isInitialHeaderExtentOffsetApplied = true;
 			}
 
 			AssertValidState();
@@ -1169,7 +1236,7 @@ namespace Windows.UI.Xaml.Controls
 		)
 		{
 			var leadingGroup = GetLeadingGroup(fillDirection);
-			var leadingEdge = leadingGroup?.GetLeadingEdge(fillDirection) ?? _dynamicSeedStart ?? 0;
+			var leadingEdge = leadingGroup?.GetLeadingEdge(fillDirection) ?? _dynamicSeedStart ?? GetDynamicStartFromHeader() ?? 0;
 			_dynamicSeedStart = null;
 			var increment = fillDirection == FillDirection.Forward ? 1 : -1;
 
@@ -1342,7 +1409,7 @@ namespace Windows.UI.Xaml.Controls
 			)
 			{
 				// If the header is visible, ensure to reapply its size in case it changes. 
-				_isInitialExtentOffsetApplied = false;
+				_isInitialHeaderExtentOffsetApplied = false;
 				_previousHeaderExtent = GetChildExtentWithMargins(GetHeaderViewIndex());
 			}
 
@@ -1366,6 +1433,21 @@ namespace Windows.UI.Xaml.Controls
 			HeaderViewCount = 0;
 			FooterViewCount = 0;
 			_areHeaderAndFooterCreated = false;
+		}
+
+		// If there are no groups, this probably means that the source is grouped and Header or Footer are pushing all items completely out of view.
+		int? GetDynamicStartFromHeader()
+		{
+			if (HeaderViewCount > 0)
+			{
+				return GetChildEndWithMargin(GetHeaderViewIndex());
+			}
+			if (FooterViewCount > 0)
+			{
+				return GetChildStartWithMargin(GetFooterViewIndex());
+			}
+
+			return null;
 		}
 
 		/// <summary>
@@ -1478,7 +1560,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 
 			_areHeaderAndFooterCreated = false;
-			_isInitialExtentOffsetApplied = false;
+			_isInitialHeaderExtentOffsetApplied = false;
 		}
 
 		/// <summary>
@@ -1761,13 +1843,25 @@ namespace Windows.UI.Xaml.Controls
 		/// </summary>
 		private int GetContentEnd()
 		{
-			int contentEnd = GetLeadingGroup(FillDirection.Forward)?.End ?? 0;
+			int contentEnd = GetLeadingGroup(FillDirection.Forward)?.End ?? GetHeaderEnd();
 			if (FooterViewCount > 0)
 			{
 				contentEnd += GetChildExtentWithMargins(GetFooterViewIndex());
 			}
 			contentEnd += FinalExtentPadding;
 			return contentEnd;
+
+			int GetHeaderEnd()
+			{
+				if (HeaderViewCount > 0)
+				{
+					return GetChildExtentWithMargins(GetHeaderViewIndex());
+				}
+				else
+				{
+					return 0;
+				}
+			}
 		}
 
 		/// <summary>

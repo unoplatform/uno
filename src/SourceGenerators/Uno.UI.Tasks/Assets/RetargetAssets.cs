@@ -18,7 +18,7 @@ namespace Uno.UI.Tasks.Assets
 	/// <remarks>
 	/// Currently supports .png, .jpg, .jpeg and .gif.
 	/// </remarks>
-	public class RetargetAssets : Task
+	public class RetargetAssets_v0 : Task
 	{
 		private const int HighDPIThresholdScale = 150;
 
@@ -56,7 +56,8 @@ namespace Uno.UI.Tasks.Assets
 					resourceToTargetPath = resource => AndroidResourceConverter.Convert(resource, DefaultLanguage);
 					break;
 				default:
-					throw new NotSupportedException($"{nameof(TargetPlatform)} must be either 'ios' or 'android'.");
+					this.Log().Info($"Skipping unknown platform {TargetPlatform}");
+					return true;
 			}
 
 			Assets = ContentItems.Where(content => IsAsset(content.ItemSpec)).ToArray();

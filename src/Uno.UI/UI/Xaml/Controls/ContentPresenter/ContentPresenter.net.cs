@@ -38,5 +38,10 @@ namespace Windows.UI.Xaml.Controls
 		private void UpdateBorder()
 		{
 		}
+
+		partial void OnPaddingChangedPartial(Thickness oldValue, Thickness newValue)
+		{
+			UpdateBorder();
+		}
 	}
 }

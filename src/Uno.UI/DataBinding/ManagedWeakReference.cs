@@ -4,6 +4,11 @@ using System.Runtime.InteropServices;
 using System.Text;
 using Uno.Extensions;
 using Uno.Logging;
+#if __ANDROID__
+using INativeObject = Android.Runtime.IJavaObject;
+#elif __IOS__
+using INativeObject = ObjCRuntime.INativeObject;
+#endif
 
 namespace Uno.UI.DataBinding
 {
@@ -37,10 +42,18 @@ namespace Uno.UI.DataBinding
 			{
 				if (_disposed)
 				{
-					throw new InvalidOperationException();
+					throw new ObjectDisposedException(nameof(ManagedWeakReference));
 				}
 
-				return _targetHandle?.Target;
+				var target = _targetHandle?.Target;
+				if (IsNativeAlive(target))
+				{
+					return target;
+				}
+				else
+				{
+					return null;
+				}
 			}
 		}
 
@@ -51,7 +64,7 @@ namespace Uno.UI.DataBinding
 		{
 			if (_disposed)
 			{
-				throw new InvalidOperationException();
+				throw new ObjectDisposedException(nameof(ManagedWeakReference));
 			}
 
 			return _targetHandle;
@@ -65,7 +78,7 @@ namespace Uno.UI.DataBinding
 		{
 			if (_disposed)
 			{
-				throw new InvalidOperationException();
+				throw new ObjectDisposedException(nameof(ManagedWeakReference));
 			}
 
 			return new WeakReference(_targetHandle?.Target);
@@ -78,7 +91,7 @@ namespace Uno.UI.DataBinding
 		{
 			if (_disposed)
 			{
-				throw new InvalidOperationException();
+				throw new ObjectDisposedException(nameof(ManagedWeakReference));
 			}
 
 			return _ownerHandle;
@@ -87,12 +100,42 @@ namespace Uno.UI.DataBinding
 		/// <summary>
 		/// <see cref="WeakReference.IsAlive"/>
 		/// </summary>
-		public bool IsAlive => !_disposed && _targetHandle?.Target != null;
+		public bool IsAlive
+		{
+			get
+			{
+				if (_disposed)
+				{
+					return false;
+				}
+				var target = _targetHandle?.Target;
+				if (!IsNativeAlive(target))
+				{
+					return false;
+				}
+				return target != null;
+			}
+		}
 
 		/// <summary>
 		/// Determines if this instance is a self reference
 		/// </summary>
 		public bool IsSelfReference { get; }
+
+		/// <summary>
+		/// Check if the target is a managed peer whose underlying native object has been collected.
+		/// </summary>
+		private static bool IsNativeAlive(object obj)
+		{
+			if (obj is INativeObject nativeObj)
+			{
+				return nativeObj.Handle != IntPtr.Zero;
+			}
+			else
+			{
+				return true;
+			}
+		}
 
 		/// <summary>
 		/// Determines if the current instance has been disposed via <see cref="Dispose"/>.
@@ -106,5 +149,19 @@ namespace Uno.UI.DataBinding
 		{
 			_disposed = true;
 		}
+
 	}
+
+#if !__ANDROID__ && !__IOS__
+#if NET46
+	public
+#else
+		internal
+#endif
+		// Dummy interface to compile on WASM and unit tests. (On WASM isn't implemented by anything, so IsNativeAlive will always return true)
+	interface INativeObject
+		{
+			IntPtr Handle { get; }
+		}
+#endif
 }

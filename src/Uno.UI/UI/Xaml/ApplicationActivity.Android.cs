@@ -15,6 +15,7 @@ using Android.OS;
 using Android.Widget;
 using Android.Graphics.Drawables;
 using Android.Graphics;
+using Android.Util;
 using Windows.UI.ViewManagement;
 
 namespace Windows.UI.Xaml
@@ -38,11 +39,18 @@ namespace Windows.UI.Xaml
 		private void Initialize()
 		{
 			Instance = this;
-			RaiseConfigurationChanges(Android.App.Application.Context.Resources.Configuration);
 
 			_inputPane = InputPane.GetForCurrentView();
 			_inputPane.Showing += OnInputPaneVisibilityChanged;
 			_inputPane.Hiding += OnInputPaneVisibilityChanged;
+		}
+
+		public override void OnAttachedToWindow()
+		{
+			base.OnAttachedToWindow();
+			// Cannot call this in ctor: see
+			// https://stackoverflow.com/questions/10593022/monodroid-error-when-calling-constructor-of-custom-view-twodscrollview#10603714
+			RaiseConfigurationChanges();
 		}
 
 		private void OnInputPaneVisibilityChanged(InputPane sender, InputPaneVisibilityEventArgs args)
@@ -64,7 +72,7 @@ namespace Windows.UI.Xaml
 		{
 			// Sometimes, within the same Application lifecycle, the main Activity is destroyed and a new one is created (i.e., when pressing the back button on the first page).
 			// This code transfers the content from the previous activity to the new one (if applicable).
-			if (Xaml.Window.Current.Content is View content)
+			if (Xaml.Window.Current.MainContent is View content)
 			{
 				(content.GetParent() as ViewGroup)?.RemoveView(content);
 				SetContentView(content);
@@ -104,6 +112,7 @@ namespace Windows.UI.Xaml
 			base.OnCreate(bundle);
 
 			_keyboardRectProvider = new KeyboardRectProvider(this, OnKeyboardRectChanged);
+			RaiseConfigurationChanges();
 		}
 
 		public override void SetContentView(View view)
@@ -133,7 +142,7 @@ namespace Windows.UI.Xaml
 		{
 			base.OnResume();
 
-			RaiseConfigurationChanges(Android.App.Application.Context.Resources.Configuration);
+			RaiseConfigurationChanges();
 		}
 
 		protected override void OnPause()
@@ -156,12 +165,12 @@ namespace Windows.UI.Xaml
 		{
 			base.OnConfigurationChanged(newConfig);
 
-			RaiseConfigurationChanges(newConfig);
+			RaiseConfigurationChanges();
 		}
 
-		private static void RaiseConfigurationChanges(Configuration newConfig)
+		private static void RaiseConfigurationChanges()
 		{
-			Windows.UI.Xaml.Window.Current?.RaiseNativeSizeChanged(newConfig.ScreenWidthDp, newConfig.ScreenHeightDp);
+			Xaml.Window.Current?.RaiseNativeSizeChanged();
 			ViewHelper.RefreshFontScale();
 		}
 

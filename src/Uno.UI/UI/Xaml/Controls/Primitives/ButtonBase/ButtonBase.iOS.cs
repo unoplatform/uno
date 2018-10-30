@@ -52,17 +52,26 @@ namespace Windows.UI.Xaml.Controls.Primitives
 				return;
 			}
 
-			var uiButton = GetContentElement() as UIButton;
-
-			if (uiButton != null)
+			var uiControl = GetContentElement() as UIControl;
+			if (uiControl != null)
 			{
 				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
 				{
-					this.Log().Debug("ControlTemplateRoot is a UIButton, hooking on to TouchUpInside");
+					this.Log().Debug("ControlTemplateRoot is a UIControl, hooking on to AllTouchEvents and TouchUpInside");
 				}
 
 				CompositeDisposable subscriptions = new CompositeDisposable();
 				_clickSubscription.Disposable = subscriptions;
+
+				EventHandler pressHandler = (e, s) =>
+				{
+					if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+					{
+						this.Log().Debug("AllTouchEvents, trigger OnPointerPressed");
+					}
+
+					OnPointerPressed(new PointerRoutedEventArgs());
+				};
 
 				EventHandler clickHandler = (e, s) =>
 				{
@@ -74,13 +83,18 @@ namespace Windows.UI.Xaml.Controls.Primitives
 					OnClick();
 				};
 
-				uiButton.TouchUpInside += clickHandler;
-				subscriptions.Add(() => uiButton.TouchUpInside -= clickHandler);
+				uiControl.AllTouchEvents += pressHandler;
+				uiControl.TouchUpInside += clickHandler;
+				subscriptions.Add(() =>
+				{
+					uiControl.AllTouchEvents -= pressHandler;
+					uiControl.TouchUpInside -= clickHandler;
+				});
 
 				//
 				// Bind the enabled handler
 				// 
-				var enabledHandler = (DependencyPropertyChangedEventHandler)((e, s) => uiButton.Enabled = IsEnabled);
+				var enabledHandler = (DependencyPropertyChangedEventHandler)((e, s) => uiControl.Enabled = IsEnabled);
 				IsEnabledChanged += enabledHandler;
 				subscriptions.Add(() => IsEnabledChanged -= enabledHandler);
 			}

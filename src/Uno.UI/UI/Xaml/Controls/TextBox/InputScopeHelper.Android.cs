@@ -71,6 +71,7 @@ namespace Windows.UI.Xaml.Controls
 				case InputScopeNameValue.Search:
 					return InputTypes.ClassText;
 
+				case InputScopeNameValue.EmailNameOrAddress:
 				case InputScopeNameValue.EmailSmtpAddress:
 					return InputTypes.ClassText | InputTypes.TextVariationEmailAddress;
 

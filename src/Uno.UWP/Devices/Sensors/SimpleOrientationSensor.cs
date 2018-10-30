@@ -61,19 +61,31 @@ namespace Windows.Devices.Sensors
 
 		private void SetCurrentOrientation(SimpleOrientation orientation)
 		{
-			CoreDispatcher.Main.RunAsync(CoreDispatcherPriority.Normal, async ct =>
+			if (CoreDispatcher.Main.HasThreadAccess)
 			{
-				if (_currentOrientation != orientation)
+				CalculateCurrentOrientation(orientation);
+			}
+			else
+			{
+				CoreDispatcher.Main.RunAsync(CoreDispatcherPriority.Normal, () =>
 				{
-					_currentOrientation = orientation;
-					var args = new SimpleOrientationSensorOrientationChangedEventArgs()
-					{
-						Orientation = orientation,
-						Timestamp = DateTimeOffset.Now,
-					};
-					OrientationChanged?.Invoke(this, args);
-				}
-			});
+					CalculateCurrentOrientation(orientation);
+				});
+			}
+		}
+
+		private void CalculateCurrentOrientation(SimpleOrientation orientation)
+		{
+			if (_currentOrientation != orientation)
+			{
+				_currentOrientation = orientation;
+				var args = new SimpleOrientationSensorOrientationChangedEventArgs()
+				{
+					Orientation = orientation,
+					Timestamp = DateTimeOffset.Now,
+				};
+				OrientationChanged?.Invoke(this, args);
+			}
 		}
 
 		private static SimpleOrientation ToSimpleOrientation(double gravityX, double gravityY, double gravityZ, double threshold, SimpleOrientation previous)

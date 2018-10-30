@@ -18,6 +18,8 @@ namespace Windows.UI.Popups
 {
 	public partial class MessageDialog
 	{
+		const int MaximumCommands = 3;
+
 		public IAsyncOperation<IUICommand> ShowAsync()
 		{
 			var invokedCommand = new TaskCompletionSource<IUICommand>();
@@ -32,11 +34,12 @@ namespace Windows.UI.Popups
 			var dialog = Commands
 				.Where(command => !(command is UICommandSeparator)) // Not supported on Android
 				.DefaultIfEmpty(new UICommand("Close")) // TODO: Localize (PBI 28711)
+				.Reverse()
 				.Select((command, index) => 
 					new
 					{
 						Command = command,
-						ButtonType = GetDialogButtonType(index, DefaultCommandIndex, CancelCommandIndex)
+						ButtonType = GetDialogButtonType(index)
 					})
 				.Aggregate(
 					new global::Android.Support.V7.App.AlertDialog.Builder(ContextHelper.Current)
@@ -79,21 +82,15 @@ namespace Windows.UI.Popups
 		{
 			// On Android, providing more than 3 commands will skip all but the first two and the last.
 			// We intercept this bad situation right away.
-			const int MaximumCommands = 3;
-
 			if (this.Commands.Count > MaximumCommands)
 			{
 				throw new ArgumentOutOfRangeException("Commands", $"This platform does not support more than {MaximumCommands} commands.");
 			}
 		}
 
-		private static int GetDialogButtonType(int commandIndex, uint defaultAcceptIndex, uint defaultCancelIndex)
+		private int GetDialogButtonType(int commandIndex)
 		{
-			return (commandIndex == defaultAcceptIndex)
-				? (int)DialogButtonType.Positive
-				: (commandIndex == defaultCancelIndex)
-					? (int)DialogButtonType.Negative
-					: (int)DialogButtonType.Neutral;
+			return (int)DialogButtonType.Positive - commandIndex;
 		}
 
 		private class DialogListener : Java.Lang.Object, IDialogInterfaceOnCancelListener, IDialogInterfaceOnDismissListener

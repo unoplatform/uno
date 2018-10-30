@@ -20,9 +20,9 @@
 		<dependency id="Xamarin.Android.Support.v4" version="25.3.1" />
 		<dependency id="Xamarin.Android.Support.v7.AppCompat" version="25.3.1" />
 		<dependency id="Xamarin.Android.Support.v7.RecyclerView" version="25.3.1" />
-		<dependency id="Uno.SourceGenerationTasks" version="1.21.0" />
-		<dependency id="Uno.Core" version="1.21.0" />
-		<dependency id="Uno.Core.Build" version="1.21.0" />
+		<dependency id="Uno.SourceGenerationTasks" version="1.27.0-dev.94" />
+		<dependency id="Uno.Core" version="1.25.0-dev.53" />
+		<dependency id="Uno.Core.Build" version="1.25.0-dev.53" />
 	  </group>
 
 	  <!-- Android 8.0 -->
@@ -30,23 +30,23 @@
 		<dependency id="Xamarin.Android.Support.v4" version="26.1.0.1" />
 		<dependency id="Xamarin.Android.Support.v7.AppCompat" version="26.1.0.1" />
 		<dependency id="Xamarin.Android.Support.v7.RecyclerView" version="26.1.0.1" />
-		<dependency id="Uno.SourceGenerationTasks" version="1.21.0" />
-		<dependency id="Uno.Core" version="1.21.0" />
-		<dependency id="Uno.Core.Build" version="1.21.0" />
+		<dependency id="Uno.SourceGenerationTasks" version="1.27.0-dev.94" />
+		<dependency id="Uno.Core" version="1.25.0-dev.53" />
+		<dependency id="Uno.Core.Build" version="1.25.0-dev.53" />
 	  </group>
 
 	  <!-- iOS -->
 	  <group targetFramework="xamarinios10">
-		<dependency id="Uno.SourceGenerationTasks" version="1.21.0" />
-		<dependency id="Uno.Core" version="1.21.0" />
-		<dependency id="Uno.Core.Build" version="1.21.0" />
+		<dependency id="Uno.SourceGenerationTasks" version="1.27.0-dev.94" />
+		<dependency id="Uno.Core" version="1.25.0-dev.53" />
+		<dependency id="Uno.Core.Build" version="1.25.0-dev.53" />
 	  </group>
 
 	  <!-- .NET Standard 2.0 -->
 	  <group targetFramework="netstandard2.0">
-		<dependency id="Uno.SourceGenerationTasks" version="1.22.0-dev.32" />
-		<dependency id="Uno.Core" version="1.22.0-dev.23" />
-		<dependency id="Uno.Core.Build" version="1.22.0-dev.23" />
+		<dependency id="Uno.SourceGenerationTasks" version="1.27.0-dev.94" />
+		<dependency id="Uno.Core" version="1.25.0-dev.53" />
+		<dependency id="Uno.Core.Build" version="1.25.0-dev.53" />
 		<dependency id="System.Numerics.Vectors" version="4.5.0-preview1-26216-02" />
 		<dependency id="System.Runtime.InteropServices.WindowsRuntime" version="4.3.0" />
 	  </group>
@@ -109,13 +109,6 @@
 	<file src="..\src\Uno.UI.Toolkit\bin\Release\xamarinios10\Uno.UI.Toolkit.pdb" target="lib\xamarinios10" />
 	<file src="..\src\Uno.UI.Toolkit\bin\Release\netstandard2.0\Uno.UI.Toolkit.dll" target="lib\netstandard2.0" />
 	<file src="..\src\Uno.UI.Toolkit\bin\Release\netstandard2.0\Uno.UI.Toolkit.pdb" target="lib\netstandard2.0" />
-	
-	<!-- Uno.UI.Toolkit Ref -->
-	<file src="..\src\Uno.UI.Toolkit\bin\Release\uap10.0\ref\Uno.UI.Toolkit.dll" target="ref\UAP" />
-	<file src="..\src\Uno.UI.Toolkit\bin\Release\MonoAndroid71\ref\Uno.UI.Toolkit.dll" target="ref\MonoAndroid71" />
-	<file src="..\src\Uno.UI.Toolkit\bin\Release\MonoAndroid80\ref\Uno.UI.Toolkit.dll" target="ref\MonoAndroid80" />
-	<file src="..\src\Uno.UI.Toolkit\bin\Release\xamarinios10\ref\Uno.UI.Toolkit.dll" target="ref\xamarinios10" />
-	<file src="..\src\Uno.UI.Toolkit\bin\Release\netstandard2.0\ref\Uno.UI.Toolkit.dll" target="ref\netstandard2.0" />
 
 	<!-- Android 7.1 -->
 	<file src="..\src\Uno.UI\Bin\Release\monoandroid71\Uno.dll" target="lib\MonoAndroid71" />
@@ -130,12 +123,6 @@
 	<file src="..\src\Uno.UI\Bin\Release\monoandroid71\Uno.Xaml.pdb" target="lib\MonoAndroid71" />
 	<file src="..\src\Uno.UI\Bin\Release\monoandroid71\*.xml" target="lib\MonoAndroid71" />
 
-	<!-- Android 7.1 Ref -->
-	<file src="..\src\Uno.UWP\Bin\Release\monoandroid71\ref\Uno.dll" target="ref\MonoAndroid71" />
-	<file src="..\src\Uno.Foundation\Bin\Release\monoandroid71\ref\Uno.Foundation.dll" target="ref\MonoAndroid71" />
-	<file src="..\src\Uno.UI.BindingHelper.Android\Bin\Release\monoandroid71\ref\Uno.UI.BindingHelper.Android.dll" target="ref\MonoAndroid71" />
-	<file src="..\src\Uno.UI\Bin\Release\monoandroid71\ref\Uno.UI.dll" target="ref\MonoAndroid71" />
-	<file src="..\src\SourceGenerators\System.Xaml\bin\Release\monoandroid71\ref\Uno.Xaml.dll" target="ref\MonoAndroid71" />
 
 	<!-- Android 8.0 -->
 	<file src="..\src\Uno.UI\Bin\Release\monoandroid80\Uno.dll" target="lib\MonoAndroid80" />
@@ -150,13 +137,6 @@
 	<file src="..\src\Uno.UI\Bin\Release\monoandroid80\Uno.Xaml.pdb" target="lib\MonoAndroid80" />
 	<file src="..\src\Uno.UI\Bin\Release\monoandroid80\*.xml" target="lib\MonoAndroid80" />
 
-	<!-- Android 8.0 Ref -->
-	<file src="..\src\Uno.UWP\Bin\Release\monoandroid80\ref\Uno.dll" target="ref\MonoAndroid80" />
-	<file src="..\src\Uno.Foundation\Bin\Release\monoandroid80\ref\Uno.Foundation.dll" target="ref\MonoAndroid80" />
-	<file src="..\src\Uno.UI.BindingHelper.Android\Bin\Release\monoandroid80\ref\Uno.UI.BindingHelper.Android.dll" target="ref\MonoAndroid80" />
-	<file src="..\src\Uno.UI\Bin\Release\monoandroid80\ref\Uno.UI.dll" target="ref\MonoAndroid80" />
-	<file src="..\src\SourceGenerators\System.Xaml\bin\Release\monoandroid80\ref\Uno.Xaml.dll" target="ref\MonoAndroid80" />
-
 	<!-- iOS Unified -->
 	<file src="..\src\Uno.UI\Bin\Release\xamarinios10\Uno.dll" target="lib\xamarinios10" />
 	<file src="..\src\Uno.UI\Bin\Release\xamarinios10\Uno.pdb" target="lib\xamarinios10" />
@@ -167,12 +147,6 @@
 	<file src="..\src\Uno.UI\Bin\Release\xamarinios10\Uno.Xaml.dll" target="lib\xamarinios10" />
 	<file src="..\src\Uno.UI\Bin\Release\xamarinios10\Uno.Xaml.pdb" target="lib\xamarinios10" />
 	<file src="..\src\Uno.UI\bin\Release\xamarinios10\*.xml" target="lib\xamarinios10" />
-
-	<!-- iOS Unified Ref -->
-	<file src="..\src\Uno.UWP\Bin\Release\xamarinios10\ref\Uno.dll" target="ref\xamarinios10" />
-	<file src="..\src\Uno.Foundation\Bin\Release\xamarinios10\ref\Uno.Foundation.dll" target="ref\xamarinios10" />
-	<file src="..\src\Uno.UI\Bin\Release\xamarinios10\ref\Uno.UI.dll" target="ref\xamarinios10" />
-	<file src="..\src\SourceGenerators\System.Xaml\bin\Release\xamarinios10\ref\Uno.Xaml.dll" target="ref\xamarinios10" />
 
 	<!-- .NET Standard 2.0 -->
 	<file src="..\src\Uno.UI\Bin\Release\netstandard2.0\Uno.dll" target="lib\netstandard2.0" />
@@ -186,13 +160,6 @@
 	<file src="..\src\Uno.UI.Wasm\bin\Release\netstandard2.0\Uno.UI.Wasm.dll" target="lib\netstandard2.0" />
 	<file src="..\src\Uno.UI.Wasm\bin\Release\netstandard2.0\Uno.UI.Wasm.pdb" target="lib\netstandard2.0" />
 	<file src="..\src\Uno.UI\bin\Release\netstandard2.0\*.xml" target="lib\netstandard2.0" />
-	
-	<!-- .NET Standard 2.0 Ref -->
-	<file src="..\src\Uno.UWP\Bin\Release\netstandard2.0\ref\Uno.dll" target="ref\netstandard2.0" />
-	<file src="..\src\Uno.Foundation\Bin\Release\netstandard2.0\ref\Uno.Foundation.dll" target="ref\netstandard2.0" />
-	<file src="..\src\Uno.UI\Bin\Release\netstandard2.0\ref\Uno.UI.dll" target="ref\netstandard2.0" />
-	<file src="..\src\SourceGenerators\System.Xaml\bin\Release\netstandard2.0\ref\Uno.Xaml.dll" target="ref\netstandard2.0" />
-	<file src="..\src\Uno.UI.Wasm\bin\Release\netstandard2.0\ref\Uno.UI.Wasm.dll" target="ref\netstandard2.0" />
 
 	<file src="..\src\Uno.Analyzers\Bin\Release\Uno.Analyzers.dll" target="analyzers" />
 	<file src="..\src\Uno.Analyzers\Bin\Release\Uno.Analyzers.pdb" target="analyzers" />

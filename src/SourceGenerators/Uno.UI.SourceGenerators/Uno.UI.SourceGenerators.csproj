@@ -48,13 +48,13 @@
       <Version>2.3.1</Version>
     </PackageReference>
     <PackageReference Include="Uno.Core">
-      <Version>1.22.0-dev.23</Version>
+      <Version>1.25.0-dev.53</Version>
     </PackageReference>
     <PackageReference Include="Uno.SourceGeneration">
-      <Version>1.21.0</Version>
+      <Version>1.27.0-dev.94</Version>
     </PackageReference>
     <PackageReference Include="Uno.SourceGenerationTasks">
-      <Version>1.22.0-dev.49</Version>
+      <Version>1.27.0-dev.94</Version>
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
@@ -92,6 +92,7 @@
     <Compile Include="DependencyObject\DependencyObjectGenerator.cs" />
     <Compile Include="DependencyObject\MethodCallFinder.cs" />
     <Compile Include="Helpers\AnalyzerSuppressions.cs" />
+    <Compile Include="Helpers\HashBuilder.cs" />
     <Compile Include="Helpers\PathHelper.cs" />
     <Compile Include="Helpers\RoslynMetadataHelper.cs" />
     <Compile Include="Helpers\SymbolExtensions.cs" />
@@ -134,25 +135,20 @@
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-	
-	<Target Name="_UnoToolkitOverrideNuget" AfterTargets="AfterBuild" DependsOnTargets="BuiltProjectOutputGroup" Condition="'$(UnoNugetOverrideVersion)'!=''">
-
-		<PropertyGroup>
-			<_OverrideTargetFramework>$(TargetFramework)</_OverrideTargetFramework>
-			<_TargetNugetFolder>$(USERPROFILE)\.nuget\packages\Uno.UI\$(UnoNugetOverrideVersion)\tools\$(_OverrideTargetFramework)</_TargetNugetFolder>
-		</PropertyGroup>
-		<ItemGroup>
-			<_OutputFiles Include="$(TargetDir)*.*" />
-		</ItemGroup>
-		<MakeDir Directories="$(_TargetNugetFolder)" />
-
-		<Message Importance="high" Text="OVERRIDING NUGET PACKAGE CACHE: $(_TargetNugetFolder)" />
-
-		<Copy SourceFiles="@(_OutputFiles)" DestinationFiles="@(_OutputFiles->'$(_TargetNugetFolder)\%(RecursiveDir)%(Filename)%(Extension)')" />
-		<Copy SourceFiles="@(_OutputFilesPDB)" DestinationFiles="@(_OutputFilesPDB->'$(_TargetNugetFolder)\%(RecursiveDir)%(Filename).pdb')" />
-	</Target>
-
-	<!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+  <Target Name="_UnoToolkitOverrideNuget" AfterTargets="AfterBuild" DependsOnTargets="BuiltProjectOutputGroup" Condition="'$(UnoNugetOverrideVersion)'!=''">
+    <PropertyGroup>
+      <_OverrideTargetFramework>$(TargetFramework)</_OverrideTargetFramework>
+      <_TargetNugetFolder>$(USERPROFILE)\.nuget\packages\Uno.UI\$(UnoNugetOverrideVersion)\tools\$(_OverrideTargetFramework)</_TargetNugetFolder>
+    </PropertyGroup>
+    <ItemGroup>
+      <_OutputFiles Include="$(TargetDir)*.*" />
+    </ItemGroup>
+    <MakeDir Directories="$(_TargetNugetFolder)" />
+    <Message Importance="high" Text="OVERRIDING NUGET PACKAGE CACHE: $(_TargetNugetFolder)" />
+		<Copy SourceFiles="@(_OutputFiles)" DestinationFiles="@(_OutputFiles-&gt;'$(_TargetNugetFolder)\%(RecursiveDir)%(Filename)%(Extension)')" />
+		<Copy SourceFiles="@(_OutputFilesPDB)" DestinationFiles="@(_OutputFilesPDB-&gt;'$(_TargetNugetFolder)\%(RecursiveDir)%(Filename).pdb')" />
+  </Target>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
   </Target>

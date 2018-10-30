@@ -10,10 +10,6 @@ namespace Windows.UI.Xaml.Controls
 {
 	public partial class FlipViewItem : SelectorItem
 	{
-		public FlipViewItem()
-		{
-		}
-
 		protected override Size MeasureOverride(Size availableSize)
 		{
 			//If a dimension is set, we stretch to that dimension. Otherwise, measure the child.

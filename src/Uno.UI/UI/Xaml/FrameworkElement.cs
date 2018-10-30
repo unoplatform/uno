@@ -11,6 +11,8 @@ using System.Threading.Tasks;
 using Windows.UI.Xaml.Media.Animation;
 using Uno.Extensions;
 using Uno.Logging;
+using Windows.UI.Xaml.Automation.Peers;
+using Windows.UI.Xaml.Automation;
 #if XAMARIN_ANDROID
 using View = Android.Views.View;
 #elif XAMARIN_IOS_UNIFIED
@@ -44,7 +46,7 @@ namespace Windows.UI.Xaml
 #endif
 
 		private bool _constraintsChanged;
-
+		
 		/// <remarks>
 		/// Both flags are present to avoid recursion (setting a style causes the root template
 		/// element to apply force the parent to apply its style, reverting the change that
@@ -261,7 +263,7 @@ namespace Windows.UI.Xaml
 			}
 		}
 
-#region Style DependencyProperty
+		#region Style DependencyProperty
 
 		public Style Style
 		{
@@ -517,6 +519,37 @@ namespace Windows.UI.Xaml
 			}
 		}
 #endif
+
+		#region AutomationPeer
+#if !__IOS__ && !__ANDROID__ // This code is generated in FrameworkElementMixins
+		private AutomationPeer _automationPeer;
+
+		protected virtual AutomationPeer OnCreateAutomationPeer()
+		{
+			if (AutomationProperties.GetName(this) is string name && !string.IsNullOrEmpty(name))
+			{
+				return new FrameworkElementAutomationPeer(this);
+			}
+
+			return null;
+		}
+
+		public virtual string GetAccessibilityInnerText()
+		{
+			return null;
+		}
+
+		public AutomationPeer GetAutomationPeer()
+		{
+			if (_automationPeer == null)
+			{
+				_automationPeer = OnCreateAutomationPeer();
+			}
+
+			return _automationPeer;
+		}
+#endif
+		#endregion
 
 #if !__WASM__
 		private class FrameworkElementLayouter : Layouter

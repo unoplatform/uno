@@ -8,6 +8,7 @@ using Windows.Globalization;
 using Windows.UI.Xaml.Data;
 using System.Linq;
 using Windows.UI.Xaml.Controls.Primitives;
+using Windows.UI.Xaml.Automation.Peers;
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -58,6 +59,17 @@ namespace Windows.UI.Xaml.Controls
 				_thirdTextBlockColumn = columns.ElementAt(periodColumnPosition);
 			}
 
+			SetupFlyoutButton();
+		}
+
+		protected override void OnLoaded()
+		{
+			base.OnLoaded();
+			SetupFlyoutButton();
+		}
+
+		private void SetupFlyoutButton()
+		{
 			if (_flyoutButton != null)
 			{
 				_flyoutButton.Flyout = new TimePickerFlyout
@@ -118,6 +130,11 @@ namespace Windows.UI.Xaml.Controls
 		private void BindToFlyout(string propertyName)
 		{
 			this.Binding(propertyName, propertyName, _flyoutButton.Flyout, BindingMode.TwoWay);
+		}
+		
+		protected override AutomationPeer OnCreateAutomationPeer()
+		{
+			return new TimePickerAutomationPeer(this);
 		}
 	}
 }

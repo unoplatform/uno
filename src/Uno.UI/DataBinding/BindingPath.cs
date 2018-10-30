@@ -377,23 +377,27 @@ namespace Uno.UI.DataBinding
 			public object DataContext
 			{
 				get => _dataContextWeakStorage?.Target;
-				set => SetWeakDataContext(Uno.UI.DataBinding.WeakReferencePool.RentWeakReference(this, value));
+				set
+				{
+					if (!_disposed && DependencyObjectStore.AreDifferent(DataContext, value))
+					{
+						var weakDataContext = WeakReferencePool.RentWeakReference(this, value);
+						SetWeakDataContext(weakDataContext);
+					}
+				}
 			}
 
 			internal void SetWeakDataContext(ManagedWeakReference weakDataContext, bool transferReferenceOwnership = false)
 			{
-				if (!_disposed && DependencyObjectStore.AreDifferent(DataContext, weakDataContext?.Target))
-				{
-					var previousStorage = _dataContextWeakStorage;
+				var previousStorage = _dataContextWeakStorage;
 
-					_dataContextWeakStorage = weakDataContext;
-					OnDataContextChanged();
+				_dataContextWeakStorage = weakDataContext;
+				OnDataContextChanged();
 
-					// Return the reference to the pool after it's been released from the next BindingItem instances.
-					// Failing to do so makes the reference change without the bindings knowing about it,
-					// making the reference comparison always equal.
-					Uno.UI.DataBinding.WeakReferencePool.ReturnWeakReference(this, previousStorage);
-				}
+				// Return the reference to the pool after it's been released from the next BindingItem instances.
+				// Failing to do so makes the reference change without the bindings knowing about it,
+				// making the reference comparison always equal.
+				Uno.UI.DataBinding.WeakReferencePool.ReturnWeakReference(this, previousStorage);
 			}
 
 			public BindingItem Next { get; }
@@ -579,7 +583,7 @@ namespace Uno.UI.DataBinding
 				{
 					try
 					{
-						return getter(dataContext);						
+						return getter(dataContext);
 					}
 					catch (Exception exception)
 					{

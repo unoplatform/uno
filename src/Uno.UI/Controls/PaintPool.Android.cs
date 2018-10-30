@@ -30,9 +30,9 @@ namespace Uno.UI.Controls
 			public readonly double CharacterSpacing;
 			public readonly Windows.UI.Color Foreground;
 			public readonly BaseLineAlignment BaseLineAlignment;
-			public readonly UnderlineStyle UnderlineStyle;
+			public readonly TextDecorations TextDecorations;
 
-			public Entry(FontWeight fontWeight, FontStyle fontStyle, FontFamily fontFamily, double fontSize, double characterSpacing, Windows.UI.Color foreground, BaseLineAlignment baselineAlignment, UnderlineStyle underlineStyle)
+			public Entry(FontWeight fontWeight, FontStyle fontStyle, FontFamily fontFamily, double fontSize, double characterSpacing, Windows.UI.Color foreground, BaseLineAlignment baselineAlignment, TextDecorations textDecorations)
 			{
 				FontWeight = fontWeight;
 				FontStyle = fontStyle;
@@ -41,7 +41,7 @@ namespace Uno.UI.Controls
 				CharacterSpacing = characterSpacing;
 				Foreground = foreground;
 				BaseLineAlignment = baselineAlignment;
-				UnderlineStyle = underlineStyle;
+				TextDecorations = textDecorations;
 			}
 		}
 
@@ -55,7 +55,7 @@ namespace Uno.UI.Controls
 				&& x.FontSize == y.FontSize
 				&& x.CharacterSpacing == y.CharacterSpacing
 				&& x.BaseLineAlignment == y.BaseLineAlignment
-				&& x.UnderlineStyle == y.UnderlineStyle;
+				&& x.TextDecorations == y.TextDecorations;
 
 			public int GetHashCode(Entry entry) =>
 				entry.FontWeight.GetHashCode()
@@ -65,7 +65,7 @@ namespace Uno.UI.Controls
 				^ entry.FontSize.GetHashCode()
 				^ entry.CharacterSpacing.GetHashCode()
 				^ entry.BaseLineAlignment.GetHashCode()
-				^ entry.UnderlineStyle.GetHashCode();
+				^ entry.TextDecorations.GetHashCode();
 		}
 
 		private static Dictionary<Entry, TextPaint> _entries = new Dictionary<Entry, TextPaint>(new EntryComparer());
@@ -82,19 +82,19 @@ namespace Uno.UI.Controls
 		/// can be tricky to place properly.
 		/// </remarks>
 		/// <returns>A <see cref="TextPaint"/> instance.</returns>
-		public static TextPaint GetPaint(FontWeight fontWeight, FontStyle fontStyle, FontFamily fontFamily, double fontSize, double characterSpacing, Windows.UI.Color foreground, BaseLineAlignment baselineAlignment, UnderlineStyle underlineStyle)
+		public static TextPaint GetPaint(FontWeight fontWeight, FontStyle fontStyle, FontFamily fontFamily, double fontSize, double characterSpacing, Windows.UI.Color foreground, BaseLineAlignment baselineAlignment, TextDecorations textDecorations)
 		{
-			var key = new Entry(fontWeight, fontStyle, fontFamily, fontSize, characterSpacing, foreground, baselineAlignment, underlineStyle);
+			var key = new Entry(fontWeight, fontStyle, fontFamily, fontSize, characterSpacing, foreground, baselineAlignment, textDecorations);
 
 			if (!_entries.TryGetValue(key, out var paint))
 			{
-				_entries.Add(key, paint = InnerBuildPaint(fontWeight, fontStyle, fontFamily, fontSize, characterSpacing, foreground, baselineAlignment, underlineStyle));
+				_entries.Add(key, paint = InnerBuildPaint(fontWeight, fontStyle, fontFamily, fontSize, characterSpacing, foreground, baselineAlignment, textDecorations));
 			}
 
 			return paint;
 		}
 
-		private static TextPaint InnerBuildPaint(FontWeight fontWeight, FontStyle fontStyle, FontFamily fontFamily, double fontSize, double characterSpacing, Windows.UI.Color foreground, BaseLineAlignment baselineAlignment, UnderlineStyle underlineStyle)
+		private static TextPaint InnerBuildPaint(FontWeight fontWeight, FontStyle fontStyle, FontFamily fontFamily, double fontSize, double characterSpacing, Windows.UI.Color foreground, BaseLineAlignment baselineAlignment, TextDecorations textDecorations)
 		{
 			var paint = new TextPaint(PaintFlags.AntiAlias);
 
@@ -102,7 +102,8 @@ namespace Uno.UI.Controls
 
 			paint.Density = paintSpecs.density;
 			paint.TextSize = paintSpecs.textSize;
-			paint.UnderlineText = underlineStyle == UnderlineStyle.Single;
+			paint.UnderlineText = (textDecorations & TextDecorations.Underline) == TextDecorations.Underline;
+			paint.StrikeThruText = (textDecorations & TextDecorations.Strikethrough) == TextDecorations.Strikethrough;
 
 			if (baselineAlignment == BaseLineAlignment.Superscript)
 			{

@@ -13,7 +13,7 @@
 		<NoWarn>$(NoWarn);NU1701</NoWarn>
 		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
 		
-		<ProduceReferenceAssembly>true</ProduceReferenceAssembly>
+		<ProduceReferenceAssembly>false</ProduceReferenceAssembly>
 		<Deterministic>true</Deterministic>
 
 		<T4Bin>..\T4Generator\bin\$(Configuration)\T4Generator.exe</T4Bin>
@@ -129,19 +129,19 @@
 			<LastGenOutput>VisualStatesMixins.g.cs</LastGenOutput>
 		</None>
 		<None Include="Resources\IResourceRegistry.cs" />
-		<None Include="Resources\ResourceRegistry.cs" />
+		<None Include="Resources\ResourceRegistry.cs" />  
 	</ItemGroup>
 
 	<ItemGroup>
 		<PackageReference Include="MSBuild.Sdk.Extras" Version="1.5.4" PrivateAssets="All" />
 		<PackageReference Include="Uno.SourceGenerationTasks">
-			<Version>1.22.0-dev.49</Version>
+			<Version>1.27.0-dev.94</Version> 
 		</PackageReference>
 		<PackageReference Include="Uno.Core">
-			<Version>1.22.0-dev.23</Version>
+			<Version>1.25.0-dev.53</Version>
 		</PackageReference>
 		<PackageReference Include="Uno.Core.Build">
-			<Version>1.22.0-dev.23</Version>
+			<Version>1.25.0-dev.53</Version>
 		</PackageReference>
 	</ItemGroup>
 
@@ -295,6 +295,7 @@
 
 	<ItemGroup>
 		<Folder Include="Mixins\Wasm\" />
+		<Folder Include="UI\Xaml\Maps\Presenters\" />
 	</ItemGroup>
 
 	<Target Name="BuildManualDependencies" BeforeTargets="_UnoSourceGenerator" Condition="!Exists($(T4Bin))">

@@ -1,8 +1,8 @@
-﻿#if IS_UNO && !NET46
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
 using Uno.Disposables;
+using Windows.UI.Xaml.Automation.Peers;
 using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
@@ -183,6 +183,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			// On windows the event is raised first, then the ui is updated
 			Toggled?.Invoke(this, new RoutedEventArgs());
+			UpdateSwitchKnobPosition(0);
 			UpdateToggleState();
 			UpdateContentState();
 		}
@@ -301,6 +302,15 @@ namespace Windows.UI.Xaml.Controls
 		{
 			IsOn = false;
 		}
+
+		protected override AutomationPeer OnCreateAutomationPeer()
+		{
+			return new ToggleSwitchAutomationPeer(this);
+		}
+
+		internal void AutomationPeerToggle()
+		{
+			IsOn = !IsOn;
+		}
 	}
 }
-#endif

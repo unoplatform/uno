@@ -37,7 +37,7 @@ namespace Windows.UI.Xaml.Documents
 #if !__WASM__
 		public Hyperlink()
 		{
-			UnderlineStyle = UnderlineStyle.Single;
+			OnUnderlineStyleChanged();
 			Foreground = DefaultForeground;
 		}
 #endif
@@ -79,7 +79,24 @@ namespace Windows.UI.Xaml.Documents
 			set => this.SetValue(UnderlineStyleProperty, value);
 		}
 
-		public static DependencyProperty UnderlineStyleProperty { get; } = InternalUnderlineStyleProperty;
+		internal static DependencyProperty UnderlineStyleProperty { get; } =
+			DependencyProperty.Register(
+				"UnderlineStyle",
+				typeof(UnderlineStyle),
+				typeof(Hyperlink),
+				new FrameworkPropertyMetadata(
+					defaultValue: UnderlineStyle.Single,
+					options: FrameworkPropertyMetadataOptions.Inherits,
+					propertyChangedCallback: (s, e) => ((Hyperlink)s).OnUnderlineStyleChanged()
+				)
+			);
+
+		internal protected virtual void OnUnderlineStyleChanged()
+		{
+			TextDecorations = UnderlineStyle == UnderlineStyle.Single
+				? Text.TextDecorations.Underline
+				: Text.TextDecorations.None;
+		}
 
 		#endregion
 

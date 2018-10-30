@@ -16,7 +16,6 @@ namespace Windows.UI.Xaml
 {
 	public partial class FrameworkTemplate : DependencyObject
 	{
-		private static FrameworkTemplatePool _pool = new FrameworkTemplatePool();
 
 		private readonly Func<View> _viewFactory;
 		private readonly int _hashCode;
@@ -50,7 +49,7 @@ namespace Windows.UI.Xaml
 		/// </remarks>
 		internal View LoadContentCached()
 		{
-			return _pool.DequeueTemplate(this);
+			return FrameworkTemplatePool.Instance.DequeueTemplate(this);
 		}
 
 		/// <summary>

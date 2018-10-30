@@ -69,13 +69,6 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		// Forced skipping of method Windows.UI.Xaml.Controls.Primitives.ToggleButton.Unchecked.remove
 		// Forced skipping of method Windows.UI.Xaml.Controls.Primitives.ToggleButton.Indeterminate.add
 		// Forced skipping of method Windows.UI.Xaml.Controls.Primitives.ToggleButton.Indeterminate.remove
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
-		[global::Uno.NotImplemented]
-		protected virtual void OnToggle()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.Primitives.ToggleButton", "void ToggleButton.OnToggle()");
-		}
-		#endif
 		// Forced skipping of method Windows.UI.Xaml.Controls.Primitives.ToggleButton.IsCheckedProperty.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.Primitives.ToggleButton.IsThreeStateProperty.get
 		#if false || false || false || false

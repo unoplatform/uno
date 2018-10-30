@@ -25,6 +25,9 @@
       </Folder>
       <Folder Name="Resources" TargetFolderName="Resources">
         <ProjectItem ReplaceParameters="false" TargetFileName="Default-568h@2x.png">Default-568h@2x.png</ProjectItem>
+		<Folder Name="Fonts" TargetFolderName="Fonts">
+		  <ProjectItem ReplaceParameters="false" TargetFileName="winjs-symbols.ttf">winjs-symbols.ttf</ProjectItem>
+		</Folder>
       </Folder>
     </Project>
   </TemplateContent>
