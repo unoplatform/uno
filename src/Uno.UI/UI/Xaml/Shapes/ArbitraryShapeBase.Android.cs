@@ -55,7 +55,7 @@ namespace Windows.UI.Xaml.Shapes
 
 		private IDisposable BuildDrawableLayer()
 		{
-			if(_controlHeight == 0 || _controlWidth == 0)
+			if (_controlHeight == 0 || _controlWidth == 0)
 			{
 				return Disposable.Empty;
 			}
@@ -113,14 +113,14 @@ namespace Windows.UI.Xaml.Shapes
 			// Draw the fill
 			var drawArea = new Foundation.Rect(0, 0, _controlWidth, _controlHeight);
 
-            var imageBrushFill = Fill as ImageBrush;
-            if (imageBrushFill != null)
-            {
+			var imageBrushFill = Fill as ImageBrush;
+			if (imageBrushFill != null)
+			{
 				var bitmapDrawable = new BitmapDrawable(Context.Resources, imageBrushFill.TryGetBitmap(drawArea, () => RefreshShape(forceRefresh: true), path));
 				drawables.Add(bitmapDrawable);
-            }
-            else
-            {
+			}
+			else
+			{
 				var fill = Fill ?? SolidColorBrushHelper.Transparent;
 				var fillPaint = fill.GetFillPaint(drawArea);
 
@@ -157,11 +157,11 @@ namespace Windows.UI.Xaml.Shapes
 
 			var layerDrawable = new LayerDrawable(drawables.ToArray());
 
-            // Set bounds must always be called, otherwise the android layout engine can't determine
-            // the rendering size. See Drawable documentation for details.
-            layerDrawable.SetBounds(0, 0, (int)_controlWidth, (int)_controlHeight);
+			// Set bounds must always be called, otherwise the android layout engine can't determine
+			// the rendering size. See Drawable documentation for details.
+			layerDrawable.SetBounds(0, 0, (int)_controlWidth, (int)_controlHeight);
 
-            return SetOverlay(this, layerDrawable);
+			return SetOverlay(this, layerDrawable);
 		}
 
 		private IDisposable SetOverlay(View view, Drawable drawable)
@@ -175,7 +175,8 @@ namespace Windows.UI.Xaml.Shapes
 				}
 
 				return Disposable.Create(
-					() => {
+					() =>
+					{
 						using (PreventRequestLayout())
 						{
 							Overlay.Remove(drawable);
@@ -188,9 +189,9 @@ namespace Windows.UI.Xaml.Shapes
 			{
 #pragma warning disable 0618 // Used for compatibility with SetBackgroundDrawable and previous API Levels
 
-                // Set overlay is not supported by this platform, set use the background instead.
-                // It'll break some scenarios, like having borders on top of the content.
-                view.SetBackgroundDrawable(drawable);
+				// Set overlay is not supported by this platform, set use the background instead.
+				// It'll break some scenarios, like having borders on top of the content.
+				view.SetBackgroundDrawable(drawable);
 				return Disposable.Create(() => view.SetBackgroundDrawable(null));
 
 #pragma warning restore 0618
@@ -217,7 +218,7 @@ namespace Windows.UI.Xaml.Shapes
 
 			_pathWidth = pathBounds.Width();
 			_pathHeight = pathBounds.Height();
-			
+
 			if (ShouldPreserveOrigin)
 			{
 				_pathWidth += pathBounds.Left;
@@ -254,7 +255,7 @@ namespace Windows.UI.Xaml.Shapes
 							{
 								_controlWidth = _pathWidth;
 							}
-                            break;
+							break;
 						default:
 							_controlWidth = _pathWidth;
 							break;
@@ -323,7 +324,7 @@ namespace Windows.UI.Xaml.Shapes
 			_calculatedWidth += this.PhysicalStrokeThickness;
 			_calculatedHeight += this.PhysicalStrokeThickness;
 
-			SetMeasuredDimension((int)_calculatedWidth, (int)_calculatedHeight);
+			SetMeasuredDimension((int)Math.Ceiling(_calculatedWidth), (int)Math.Ceiling(_calculatedHeight));
 			IFrameworkElementHelper.OnMeasureOverride(this);
 		}
 	}
