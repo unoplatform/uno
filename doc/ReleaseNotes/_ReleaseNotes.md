@@ -3,18 +3,21 @@
 ## Next version
 
 ### Features
-* 
-
-* 135799 Implemented MediaPlayer.Dispose()
 * 136259 Add a behavior so that tap makes controls fade out
 
 ### Breaking changes
-* 
-
 * 132002 [Android] The collapsible button bar is now taken into account by visible bounds calculation. Apps which use VisibleBoundsPadding or have command bars will therefore see an adjustment to the height of their windows on Android.
 
 ### Bug fixes
-* 
+ * 135258 [Android] Fixed ImageBrush flash/flickering occurs when transitioning to a new page for the first time.
+ * 131768 [iOS] Fixed bug where stale ScrollIntoView() request could overwrite more recent request
+ * 136092 [iOS] ScrollIntoView() throws exception for ungrouped lists
+ * 131768 [iOS] Fixed bug where stale ScrollIntoView() request could overwrite more recent request
+ * 136199 [Android] TextBlock.Text isn't visually updated if it changes while device is locked
+ * Fix Android and iOS may fail to break on breakpoints in `.xaml.cs` if the debugging symbol type is Full in projects created from templates
+ * 136210 [Android] Path is cut off by a pixel
+ * 132004 [Android] Window bounds incorrect for screen with rounded corners
+
 
 ## Release 1.41
 
@@ -42,14 +45,3 @@
  * 136093, 136172 [iOS] ComboBox does not display its Popup
  * 134819, 134828 [iOS] Ensures the back gesture is enabled and disabled properly when the CommandBar is visible, collapsed, visible with a navigation command and collapsed with a navigation command. 
  * 136092 [iOS] ScrollIntoView() throws exception for ungrouped lists
- * 135646 [Android] Binding MediaPlayerElement.Source causes video to go blank
- * 136093, 136172 [iOS] ComboBox does not display its Popup
- * 134819, 134828 [iOS] Ensures the back gesture is enabled and disabled properly when the CommandBar is visible, collapsed, visible with a navigation command and collapsed with a navigation command. 
- * 135258 [Android] Fixed ImageBrush flash/flickering occurs when transitioning to a new page for the first time.
- * 131768 [iOS] Fixed bug where stale ScrollIntoView() request could overwrite more recent request
- * 136092 [iOS] ScrollIntoView() throws exception for ungrouped lists
- * 131768 [iOS] Fixed bug where stale ScrollIntoView() request could overwrite more recent request
- * 136199 [Android] TextBlock.Text isn't visually updated if it changes while device is locked
- * Fix Android and iOS may fail to break on breakpoints in `.xaml.cs` if the debugging symbol type is Full in projects created from templates
- * 136210 [Android] Path is cut off by a pixel
- * 132004 [Android] Window bounds incorrect for screen with rounded corners
