@@ -80,10 +80,7 @@ namespace Uno.UI.Controls
 		/// <param name="oldIndex">The old index of the item</param>
 		/// <param name="newIndex">The new index of the item</param>
 		/// <remarks>
-		/// The trick for this method is to move the child from one position to the other
-		/// without calling RemoveView and AddView. In this context, the only way to do this is
-		/// to call BringSubviewToFront, which is the only available method on ViewGroup that manipulates 
-		/// the index of a view, even if it does not allow for specifying an index.
+		/// TBD
 		/// </remarks>
 		internal void MoveViewTo(int oldIndex, int newIndex)
 		{
