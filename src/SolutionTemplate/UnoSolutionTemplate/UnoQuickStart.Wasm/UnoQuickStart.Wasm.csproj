@@ -35,7 +35,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Uno.UI" Version="1.41.1-beta.174" />
+		<PackageReference Include="Uno.UI" Version="1.40.0" />
 		<PackageReference Include="Uno.Wasm.Bootstrap" Version="1.0.0-dev.58" />
 	</ItemGroup>
 
