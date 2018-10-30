@@ -51,7 +51,7 @@ namespace Windows.UI.Xaml
 
 				ApplicationActivity.Instance?.SetContentView(_main);
 			}
-			
+
 			_rootBorder.Child = _content = value;
 		}
 
@@ -72,9 +72,17 @@ namespace Windows.UI.Xaml
 			return _current;
 		}
 
-		internal void RaiseNativeSizeChanged(int screenWidth, int screenHeight)
+		internal void RaiseNativeSizeChanged()
 		{
-			var newBounds = ViewHelper.PhysicalToLogicalPixels(new Rect(0, 0, screenWidth, screenHeight));
+			var display = (ContextHelper.Current as Activity)?.WindowManager?.DefaultDisplay;
+			var fullScreenMetrics = new DisplayMetrics();
+
+			// To get the real size of the screen, we should use GetRealMetrics
+			// GetMetrics or Resources.DisplayMetrics return the usable metrics, ignoring the bottom rounded space on device like LG G7 ThinQ for example
+			display?.GetRealMetrics(outMetrics: fullScreenMetrics);
+
+			var newBounds = ViewHelper.PhysicalToLogicalPixels(new Rect(0, 0, fullScreenMetrics.WidthPixels, fullScreenMetrics.HeightPixels));
+
 			var statusBarHeight = GetLogicalStatusBarHeight();
 			var navigationBarHeight = GetLogicalNavigationBarHeight();
 
