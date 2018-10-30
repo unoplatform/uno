@@ -14,6 +14,11 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 		private void UpdateItemSelectedState(object item, bool updateTo)
 		{
+			if (item == null)
+			{
+				return;
+			}
+
 			var container = ContainerFromItem(item);
 			if (container is SelectorItem selectorItem)
 			{
