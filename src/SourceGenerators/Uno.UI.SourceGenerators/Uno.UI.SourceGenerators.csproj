@@ -48,13 +48,13 @@
       <Version>2.3.1</Version>
     </PackageReference>
     <PackageReference Include="Uno.Core">
-      <Version>1.24.0</Version>
+      <Version>1.25.0-dev.56</Version>
     </PackageReference>
     <PackageReference Include="Uno.SourceGeneration">
-      <Version>1.27.0</Version>
+      <Version>1.28.0-dev.145</Version>
     </PackageReference>
     <PackageReference Include="Uno.SourceGenerationTasks">
-      <Version>1.27.0</Version>
+      <Version>1.28.0-dev.145</Version>
     </PackageReference>
   </ItemGroup>
   <ItemGroup>

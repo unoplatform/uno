@@ -54,7 +54,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Uno.UI" Version="1.40.0" />
+    <PackageReference Include="Uno.UI" Version="1.41.1-dev.208" />
 	<PackageReference Include="Uno.UniversalImageLoader" Version="1.9.32" />
   </ItemGroup>
   <ItemGroup>
