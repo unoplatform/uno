@@ -1,5 +1,6 @@
 ﻿using System;
 using Uno.UI.Samples.Controls;
+using Windows.UI;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Input;
@@ -21,6 +22,11 @@ namespace SamplesApp.Samples.RoutedEvents
 
 			btn.Click += (s, e) => btn.Content = $"{btn.Content}.Clk";
 			btn.Tapped += (s, e) => btn.Content = $"{btn.Content}+T";
+
+			list.Items.Add("A");
+			list.Items.Add("B");
+			list.Items.Add("C");
+			list.Items.Add("D");
 		}
 
 		private void HookEvents(Grid grid, TextBlock textBlock)
@@ -69,18 +75,21 @@ namespace SamplesApp.Samples.RoutedEvents
 
 			grid.PointerExited += (s, e) => textBlock.Text += ">>";
 
+			var blue = new SolidColorBrush(Colors.Blue);
+			var white = new SolidColorBrush(Colors.WhiteSmoke);
+
 			grid.PointerPressed += (s, e) =>
 			{
 				textBlock.Text += "_";
-				grid.BorderBrush = SolidColorBrushHelper.Blue;
+				grid.BorderBrush = blue;
 			};
 			grid.PointerReleased += (s, e) =>
 			{
 				textBlock.Text += "-";
-				grid.BorderBrush = SolidColorBrushHelper.WhiteSmoke;
+				grid.BorderBrush = white;
 			};
 
-			grid.BorderBrush = SolidColorBrushHelper.WhiteSmoke;
+			grid.BorderBrush = white;
 			grid.BorderThickness = new Thickness(3.5);
 
 			grid.GotFocus += (s, e) => textBlock.Text += ".F";

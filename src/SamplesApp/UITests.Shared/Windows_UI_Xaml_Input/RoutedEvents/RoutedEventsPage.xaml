@@ -29,6 +29,13 @@
 						<StackPanel Margin="0, 40">
 							<ToggleSwitch />
 							<Slider VerticalAlignment="Bottom" Value="0.5" Minimum="-1" Maximum="1.5" StepFrequency="0.1" />
+							<ListView x:Name="list">
+								<ListView.ItemsPanel>
+									<ItemsPanelTemplate>
+										<StackPanel Orientation="Horizontal" />
+									</ItemsPanelTemplate>
+								</ListView.ItemsPanel>
+							</ListView>
 						</StackPanel>
 					</Grid>
 				</ScrollViewer>
