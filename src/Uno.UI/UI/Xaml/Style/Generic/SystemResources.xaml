@@ -841,5 +841,10 @@
     <SolidColorBrush x:Key="ContentLinkForegroundColor" Color="{ThemeResource SystemAccentColor}" />
     <SolidColorBrush x:Key="ContentLinkBackgroundColor" Color="{StaticResource SystemChromeAltLowColor}" />
 
+	<!-- SplitView, NavigationView -->
+	<x:Double x:Key="PaneToggleButtonHeight">44</x:Double>
+    <x:Double x:Key="PaneToggleButtonWidth">48</x:Double>
+
+
 
 </ResourceDictionary>

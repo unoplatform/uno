@@ -26,5 +26,15 @@ namespace SamplesApp
 		{
 			this.InitializeComponent();
 		}
+
+		private void NavigationView_Loaded(object sender, RoutedEventArgs e)
+		{
+			Console.WriteLine("NavigationView_Loaded");
+		}
+
+		private void NavigationView_SelectionChanged(NavigationView sender, NavigationViewSelectionChangedEventArgs args)
+		{
+			Console.WriteLine("NavigationView_SelectionChanged");
+		}
 	}
 }
