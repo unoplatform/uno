@@ -5,6 +5,7 @@ using Android.Support.V7.Widget;
 using Android.Views;
 using Uno.Extensions;
 using Uno.UI;
+using Windows.UI.Xaml.Controls.Primitives;
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -16,6 +17,8 @@ namespace Windows.UI.Xaml.Controls
 		private bool _isInAnimatedScroll;
 
 		internal BufferViewCache ViewCache { get; }
+
+		internal IEnumerable<SelectorItem> CachedItemViews => ViewCache.CachedItemViews;
 
 		public NativeListViewBase() : base(ContextHelper.Current)
 		{

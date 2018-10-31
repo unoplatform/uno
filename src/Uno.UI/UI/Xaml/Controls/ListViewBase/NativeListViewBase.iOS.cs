@@ -152,6 +152,8 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
+		internal IEnumerable<SelectorItem> CachedItemViews => Enumerable.Empty<SelectorItem>();
+
 		public NativeListViewBase() :
 			this(new RectangleF(),
 				//Supply a layout, otherwise UICollectionView constructor throws ArgumentNullException. This will later be set to ListViewLayout or GridViewLayout as desired.
