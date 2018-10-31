@@ -44,13 +44,13 @@ namespace Uno.UWPSyncGenerator
 
 				_sb.AppendParagraph($"If you notice incorrect or incomplete information here, please open an {MarkdownStringBuilder.Hyperlink("issue", "https://github.com/nventive/Uno/issues")}.");
 
-				using (_sb.Section("Implemented - all platforms (iOS, Android, WebAssembly)"))
+				using (_sb.Section("Implemented - all platforms (iOS, Android, WebAssembly, MacOS)"))
 				{
 					AppendTypes(ps => ps.ImplementedForMain == ImplementedFor.Main, true);
 				}
 				using (_sb.Section("Implemented - Android + iOS only"))
 				{
-					AppendTypes(ps => ps.ImplementedForMain == ImplementedFor.Xamarin, true);
+					AppendTypes(ps => ps.ImplementedForMain == ImplementedFor.Mobile, true);
 				}
 				using (_sb.Section("Implemented - select platforms")) //These all seem to be lies
 				{
@@ -58,9 +58,9 @@ namespace Uno.UWPSyncGenerator
 					{
 						foreach (var view in _views)
 						{
-							if (view.ImplementedForMain != ImplementedFor.Main && view.ImplementedFor != ImplementedFor.Xamarin && view.ImplementedFor != ImplementedFor.None)
+							if (view.ImplementedForMain != ImplementedFor.Main && view.ImplementedFor != ImplementedFor.Mobile && view.ImplementedFor != ImplementedFor.None)
 							{
-								_sb.AppendRow(view.UAPSymbol.ToDisplayString(), view.ImplementedForMain.ToString());
+								_sb.AppendRow(view.UAPSymbol.ToDisplayString(), ToDisplayString(view.ImplementedForMain));
 							}
 						}
 					}
@@ -102,8 +102,6 @@ namespace Uno.UWPSyncGenerator
 						{
 							using (_sb.Section($"{view.UAPSymbol.Name} : {ConstructBaseClassString(view)}"))
 							{
-								//TODO: inherits from + (Uno inheritance if different)
-
 								_sb.AppendParagraph($"*Implemented for:* {ToDisplayString(view.ImplementedForMain)}");
 
 								var properties = view.UAPSymbol.GetMembers().OfType<IPropertySymbol>().Select(p => GetAllMatchingPropertyMember(view, p)).ToArray();
@@ -277,9 +275,7 @@ namespace Uno.UWPSyncGenerator
 				yield return (view.AndroidSymbol, ImplementedFor.Android);
 				yield return (view.IOSSymbol, ImplementedFor.iOS);
 				yield return (view.WasmSymbol, ImplementedFor.WASM);
-#if HAS_MACOS
 				yield return (view.MacOSSymbol, ImplementedFor.MacOS);
-#endif
 			}
 		}
 
@@ -308,10 +304,14 @@ namespace Uno.UWPSyncGenerator
 			{
 				case ImplementedFor.Main:
 					return "all platforms";
-				case ImplementedFor.Xamarin:
+				case ImplementedFor.Mobile:
 					return "Android, iOS";
+				case ImplementedFor.Xamarin:
+					return "Android, iOS, MacOS";
 				case ImplementedFor.UAP:
 					return "UWP";
+				case (ImplementedFor.Mobile | ImplementedFor.WASM):
+					return "Android, iOS, WASM";
 				default:
 					return implementedFor.ToString();
 			}
