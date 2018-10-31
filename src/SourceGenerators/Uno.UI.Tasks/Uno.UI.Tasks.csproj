@@ -55,7 +55,7 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Uno.Core">
-      <Version>1.25.0-dev.56</Version>
+      <Version>1.25.0-dev.57</Version>
     </PackageReference>
     <PackageReference Include="Uno.SourceGenerationTasks">
       <Version>1.28.0-dev.145</Version>

@@ -62,7 +62,7 @@
 
 	<ItemGroup>
 		<PackageReference Include="Uno.SourceGenerationTasks">
-			<Version>1.27.0-dev.112</Version>
+			<Version>1.27.0-dev.145</Version>
 			<NoWarn>NU1701</NoWarn>
 		</PackageReference>
 		<PackageReference Include="Microsoft.Extensions.Logging.Console" Version="1.1.1" />

@@ -26,7 +26,7 @@
 
 	<ItemGroup>
     <PackageReference Include="Uno.Core">
-      <Version>1.25.0-dev.56</Version>
+      <Version>1.25.0-dev.57</Version>
       <ExcludeAssets>Runtime</ExcludeAssets>
     </PackageReference>
 		<PackageReference Include="Microsoft.TypeScript.Compiler" Version="2.8.3" />

@@ -21,7 +21,7 @@
       <ExcludeAssets>Runtime</ExcludeAssets>
     </PackageReference>
     <PackageReference Include="Uno.Core">
-      <Version>1.25.0-dev.56</Version>
+      <Version>1.25.0-dev.57</Version>
       <ExcludeAssets>Runtime</ExcludeAssets>
     </PackageReference>
 	</ItemGroup>
