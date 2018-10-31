@@ -2,7 +2,5 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml
 {
-	#if false || false || false || false
-	public delegate void WindowSizeChangedEventHandler(object @sender, global::Windows.UI.Core.WindowSizeChangedEventArgs @e);
-	#endif
+	// Skipping already declared delegate Windows.UI.Xaml.WindowSizeChangedEventHandler
 }

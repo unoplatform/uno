@@ -2,130 +2,68 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.ApplicationModel.Activation
 {
-	#if false || false || false || false
-	#if false || false || false || false
+	#if false || false || false || false || false
+	#if false || false || false || false || false
 	[global::Uno.NotImplemented]
 	#endif
 	public   enum ActivationKind 
 	{
-		#if false || false || false || false
-		Launch,
-		#endif
-		#if false || false || false || false
-		Search,
-		#endif
-		#if false || false || false || false
-		ShareTarget,
-		#endif
-		#if false || false || false || false
-		File,
-		#endif
-		#if false || false || false || false
-		Protocol,
-		#endif
-		#if false || false || false || false
-		FileOpenPicker,
-		#endif
-		#if false || false || false || false
-		FileSavePicker,
-		#endif
-		#if false || false || false || false
-		CachedFileUpdater,
-		#endif
-		#if false || false || false || false
-		ContactPicker,
-		#endif
-		#if false || false || false || false
-		Device,
-		#endif
-		#if false || false || false || false
-		PrintTaskSettings,
-		#endif
-		#if false || false || false || false
-		CameraSettings,
-		#endif
-		#if false || false || false || false
-		RestrictedLaunch,
-		#endif
-		#if false || false || false || false
-		AppointmentsProvider,
-		#endif
-		#if false || false || false || false
-		Contact,
-		#endif
-		#if false || false || false || false
-		LockScreenCall,
-		#endif
-		#if false || false || false || false
-		VoiceCommand,
-		#endif
-		#if false || false || false || false
-		LockScreen,
-		#endif
-		#if false || false || false || false
-		PickerReturned,
-		#endif
-		#if false || false || false || false
-		WalletAction,
-		#endif
-		#if false || false || false || false
-		PickFileContinuation,
-		#endif
-		#if false || false || false || false
-		PickSaveFileContinuation,
-		#endif
-		#if false || false || false || false
-		PickFolderContinuation,
-		#endif
-		#if false || false || false || false
-		WebAuthenticationBrokerContinuation,
-		#endif
-		#if false || false || false || false
-		WebAccountProvider,
-		#endif
-		#if false || false || false || false
-		ComponentUI,
-		#endif
-		#if false || false || false || false
-		ProtocolForResults,
-		#endif
-		#if false || false || false || false
-		ToastNotification,
-		#endif
-		#if false || false || false || false
-		Print3DWorkflow,
-		#endif
-		#if false || false || false || false
-		DialReceiver,
-		#endif
-		#if false || false || false || false
-		DevicePairing,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		// Skipping already declared field Windows.ApplicationModel.Activation.ActivationKind.Launch
+		// Skipping already declared field Windows.ApplicationModel.Activation.ActivationKind.Search
+		// Skipping already declared field Windows.ApplicationModel.Activation.ActivationKind.ShareTarget
+		// Skipping already declared field Windows.ApplicationModel.Activation.ActivationKind.File
+		// Skipping already declared field Windows.ApplicationModel.Activation.ActivationKind.Protocol
+		// Skipping already declared field Windows.ApplicationModel.Activation.ActivationKind.FileOpenPicker
+		// Skipping already declared field Windows.ApplicationModel.Activation.ActivationKind.FileSavePicker
+		// Skipping already declared field Windows.ApplicationModel.Activation.ActivationKind.CachedFileUpdater
+		// Skipping already declared field Windows.ApplicationModel.Activation.ActivationKind.ContactPicker
+		// Skipping already declared field Windows.ApplicationModel.Activation.ActivationKind.Device
+		// Skipping already declared field Windows.ApplicationModel.Activation.ActivationKind.PrintTaskSettings
+		// Skipping already declared field Windows.ApplicationModel.Activation.ActivationKind.CameraSettings
+		// Skipping already declared field Windows.ApplicationModel.Activation.ActivationKind.RestrictedLaunch
+		// Skipping already declared field Windows.ApplicationModel.Activation.ActivationKind.AppointmentsProvider
+		// Skipping already declared field Windows.ApplicationModel.Activation.ActivationKind.Contact
+		// Skipping already declared field Windows.ApplicationModel.Activation.ActivationKind.LockScreenCall
+		// Skipping already declared field Windows.ApplicationModel.Activation.ActivationKind.VoiceCommand
+		// Skipping already declared field Windows.ApplicationModel.Activation.ActivationKind.LockScreen
+		// Skipping already declared field Windows.ApplicationModel.Activation.ActivationKind.PickerReturned
+		// Skipping already declared field Windows.ApplicationModel.Activation.ActivationKind.WalletAction
+		// Skipping already declared field Windows.ApplicationModel.Activation.ActivationKind.PickFileContinuation
+		// Skipping already declared field Windows.ApplicationModel.Activation.ActivationKind.PickSaveFileContinuation
+		// Skipping already declared field Windows.ApplicationModel.Activation.ActivationKind.PickFolderContinuation
+		// Skipping already declared field Windows.ApplicationModel.Activation.ActivationKind.WebAuthenticationBrokerContinuation
+		// Skipping already declared field Windows.ApplicationModel.Activation.ActivationKind.WebAccountProvider
+		// Skipping already declared field Windows.ApplicationModel.Activation.ActivationKind.ComponentUI
+		// Skipping already declared field Windows.ApplicationModel.Activation.ActivationKind.ProtocolForResults
+		// Skipping already declared field Windows.ApplicationModel.Activation.ActivationKind.ToastNotification
+		// Skipping already declared field Windows.ApplicationModel.Activation.ActivationKind.Print3DWorkflow
+		// Skipping already declared field Windows.ApplicationModel.Activation.ActivationKind.DialReceiver
+		// Skipping already declared field Windows.ApplicationModel.Activation.ActivationKind.DevicePairing
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		UserDataAccountsProvider,
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		FilePickerExperience,
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		LockScreenComponent,
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		ContactPanel,
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		PrintWorkflowForegroundTask,
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		GameUIProvider,
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		StartupTask,
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		CommandLineLaunch,
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		BarcodeScannerProvider,
 		#endif
 	}

@@ -18,6 +18,10 @@ using View = Android.Views.View;
 #elif XAMARIN_IOS_UNIFIED
 using View = UIKit.UIView;
 using UIKit;
+#elif __MACOS__
+using AppKit;
+using View = AppKit.NSView;
+using Color = Windows.UI.Color;
 #else
 using Color = System.Drawing.Color;
 using View = Windows.UI.Xaml.UIElement;
@@ -500,7 +504,7 @@ namespace Windows.UI.Xaml
 #if __ANDROID__
 					// Schedule on the animation dispatcher so the callback appears faster.
 					action = presenterRoot.Dispatcher.RunAnimation(ApplyPhase);
-#elif __IOS__
+#elif __IOS__ || __MACOS__
 					action = presenterRoot.Dispatcher.RunAsync(Core.CoreDispatcherPriority.High, ApplyPhase);
 #endif
 
@@ -521,7 +525,7 @@ namespace Windows.UI.Xaml
 #endif
 
 		#region AutomationPeer
-#if !__IOS__ && !__ANDROID__ // This code is generated in FrameworkElementMixins
+#if !__IOS__ && !__ANDROID__ && !__MACOS__ // This code is generated in FrameworkElementMixins
 		private AutomationPeer _automationPeer;
 
 		protected virtual AutomationPeer OnCreateAutomationPeer()
@@ -548,7 +552,29 @@ namespace Windows.UI.Xaml
 
 			return _automationPeer;
 		}
+#elif __MACOS__
+		private AutomationPeer _automationPeer;
+
+		protected override AutomationPeer OnCreateAutomationPeer()
+		{
+			return null;
+		}
+
+		public virtual string GetAccessibilityInnerText()
+		{
+			return null;
+		}
+		public AutomationPeer GetAutomationPeer()
+		{
+			if (_automationPeer == null)
+			{
+				_automationPeer = OnCreateAutomationPeer();
+			}
+
+			return _automationPeer;
+		}
 #endif
+
 		#endregion
 
 #if !__WASM__

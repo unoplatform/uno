@@ -7,6 +7,8 @@ using System.Text;
 using View = Android.Views.View;
 #elif XAMARIN_IOS_UNIFIED
 using View = UIKit.UIView;
+#elif __MACOS__
+using View = AppKit.NSView;
 #else
 using View = System.Object;
 #endif

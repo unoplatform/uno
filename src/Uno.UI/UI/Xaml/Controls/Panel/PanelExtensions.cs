@@ -10,6 +10,8 @@ using GenericColor = UIKit.UIColor;
 using GenericColor = MonoTouch.UIKit.UIColor;
 #elif XAMARIN_ANDROID
 using GenericColor = Android.Graphics.Color;
+#elif __MACOS__
+using GenericColor = Windows.UI.Color;
 #else
 using GenericColor = System.Drawing.Color;
 #endif

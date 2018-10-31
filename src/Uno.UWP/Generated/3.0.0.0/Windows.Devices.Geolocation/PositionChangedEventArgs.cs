@@ -2,4 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Devices.Geolocation
 {
+	#if false || false || false || false || false
+	[global::Uno.NotImplemented]
+	#endif
+	public  partial class PositionChangedEventArgs 
+	{
+		// Skipping already declared property Position
+		// Forced skipping of method Windows.Devices.Geolocation.PositionChangedEventArgs.Position.get
+	}
 }

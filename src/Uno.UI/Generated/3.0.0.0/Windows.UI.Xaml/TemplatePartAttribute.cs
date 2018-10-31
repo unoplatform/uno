@@ -2,24 +2,14 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml
 {
-	#if false || false || false || false
+	#if false || false || false || false || false
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class TemplatePartAttribute : global::System.Attribute
 	{
-		#if false || false || false || false
-		[global::Uno.NotImplemented]
-		public TemplatePartAttribute() : base()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.TemplatePartAttribute", "TemplatePartAttribute.TemplatePartAttribute()");
-		}
-		#endif
+		// Skipping already declared method Windows.UI.Xaml.TemplatePartAttribute.TemplatePartAttribute()
 		// Forced skipping of method Windows.UI.Xaml.TemplatePartAttribute.TemplatePartAttribute()
-		#if false || false || false || false
-		public  string Name;
-		#endif
-		#if false || false || false || false
-		public  global::System.Type Type;
-		#endif
+		// Skipping already declared field Windows.UI.Xaml.TemplatePartAttribute.Name
+		// Skipping already declared field Windows.UI.Xaml.TemplatePartAttribute.Type
 	}
 }

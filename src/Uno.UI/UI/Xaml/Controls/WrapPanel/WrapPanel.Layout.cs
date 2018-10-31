@@ -19,6 +19,12 @@ using View = UIKit.UIView;
 using Color = UIKit.UIColor;
 using Font = UIKit.UIFont;
 using ViewGroup = UIKit.UIView;
+#elif __MACOS__
+using AppKit;
+using View = AppKit.NSView;
+using Color = AppKit.NSColor;
+using Font = AppKit.NSFont;
+using ViewGroup = AppKit.NSView;
 #else
 using View = Windows.UI.Xaml.UIElement;
 #endif

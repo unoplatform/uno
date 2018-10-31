@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml.Media
 {
-	#if false || false || false || false
+	#if false || false || false || false || false
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class DoubleCollection : global::System.Collections.Generic.IList<double>,global::System.Collections.Generic.IEnumerable<double>
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  uint Size
 		{
@@ -17,13 +17,7 @@ namespace Windows.UI.Xaml.Media
 			}
 		}
 		#endif
-		#if false || false || false || false
-		[global::Uno.NotImplemented]
-		public DoubleCollection() 
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Media.DoubleCollection", "DoubleCollection.DoubleCollection()");
-		}
-		#endif
+		// Skipping already declared method Windows.UI.Xaml.Media.DoubleCollection.DoubleCollection()
 		// Forced skipping of method Windows.UI.Xaml.Media.DoubleCollection.DoubleCollection()
 		// Forced skipping of method Windows.UI.Xaml.Media.DoubleCollection.GetAt(uint)
 		// Forced skipping of method Windows.UI.Xaml.Media.DoubleCollection.Size.get
@@ -39,100 +33,10 @@ namespace Windows.UI.Xaml.Media
 		// Forced skipping of method Windows.UI.Xaml.Media.DoubleCollection.ReplaceAll(double[])
 		// Forced skipping of method Windows.UI.Xaml.Media.DoubleCollection.First()
 		// Processing: System.Collections.Generic.IList<double>
-		#if false || false || false || false
-		// DeclaringType: System.Collections.Generic.IList<double>
-		[global::Uno.NotImplemented]
-		public int IndexOf( double item)
-		{
-			throw new global::System.NotSupportedException();
-		}
-		#endif
-		#if false || false || false || false
-		// DeclaringType: System.Collections.Generic.IList<double>
-		[global::Uno.NotImplemented]
-		public void Insert( int index,  double item)
-		{
-			throw new global::System.NotSupportedException();
-		}
-		#endif
-		#if false || false || false || false
-		// DeclaringType: System.Collections.Generic.IList<double>
-		[global::Uno.NotImplemented]
-		public void RemoveAt( int index)
-		{
-			throw new global::System.NotSupportedException();
-		}
-		#endif
-		#if false || false || false || false
-		[global::Uno.NotImplemented]
-		public double this[int index]
-		{
-			get
-			{
-				throw new global::System.NotSupportedException();
-			}
-			set
-			{
-				throw new global::System.NotSupportedException();
-			}
-		}
-		#endif
+		// Skipping already implement System.Collections.Generic.IList<double>.this[int]
 		// Processing: System.Collections.Generic.ICollection<double>
-		#if false || false || false || false
-		// DeclaringType: System.Collections.Generic.ICollection<double>
-		[global::Uno.NotImplemented]
-		public void Add( double item)
-		{
-			throw new global::System.NotSupportedException();
-		}
-		#endif
-		#if false || false || false || false
-		// DeclaringType: System.Collections.Generic.ICollection<double>
-		[global::Uno.NotImplemented]
-		public void Clear()
-		{
-			throw new global::System.NotSupportedException();
-		}
-		#endif
-		#if false || false || false || false
-		// DeclaringType: System.Collections.Generic.ICollection<double>
-		[global::Uno.NotImplemented]
-		public bool Contains( double item)
-		{
-			throw new global::System.NotSupportedException();
-		}
-		#endif
-		#if false || false || false || false
-		// DeclaringType: System.Collections.Generic.ICollection<double>
-		[global::Uno.NotImplemented]
-		public void CopyTo( double[] array,  int arrayIndex)
-		{
-			throw new global::System.NotSupportedException();
-		}
-		#endif
-		#if false || false || false || false
-		// DeclaringType: System.Collections.Generic.ICollection<double>
-		[global::Uno.NotImplemented]
-		public bool Remove( double item)
-		{
-			throw new global::System.NotSupportedException();
-		}
-		#endif
-		#if false || false || false || false
-		[global::Uno.NotImplemented]
-		public int Count
-		{
-			get
-			{
-				throw new global::System.NotSupportedException();
-			}
-			set
-			{
-				throw new global::System.NotSupportedException();
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		// Skipping already implement System.Collections.Generic.ICollection<double>.Count
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public bool IsReadOnly
 		{
@@ -147,22 +51,6 @@ namespace Windows.UI.Xaml.Media
 		}
 		#endif
 		// Processing: System.Collections.Generic.IEnumerable<double>
-		#if false || false || false || false
-		// DeclaringType: System.Collections.Generic.IEnumerable<double>
-		[global::Uno.NotImplemented]
-		public global::System.Collections.Generic.IEnumerator<double> GetEnumerator()
-		{
-			throw new global::System.NotSupportedException();
-		}
-		#endif
 		// Processing: System.Collections.IEnumerable
-		#if false || false || false || false
-		// DeclaringType: System.Collections.IEnumerable
-		[global::Uno.NotImplemented]
-		 global::System.Collections.IEnumerator global::System.Collections.IEnumerable.GetEnumerator()
-		{
-			throw new global::System.NotSupportedException();
-		}
-		#endif
 	}
 }

@@ -2,24 +2,14 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml
 {
-	#if false || false || false || false
+	#if false || false || false || false || false
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class TemplateVisualStateAttribute : global::System.Attribute
 	{
-		#if false || false || false || false
-		[global::Uno.NotImplemented]
-		public TemplateVisualStateAttribute() : base()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.TemplateVisualStateAttribute", "TemplateVisualStateAttribute.TemplateVisualStateAttribute()");
-		}
-		#endif
+		// Skipping already declared method Windows.UI.Xaml.TemplateVisualStateAttribute.TemplateVisualStateAttribute()
 		// Forced skipping of method Windows.UI.Xaml.TemplateVisualStateAttribute.TemplateVisualStateAttribute()
-		#if false || false || false || false
-		public  string Name;
-		#endif
-		#if false || false || false || false
-		public  string GroupName;
-		#endif
+		// Skipping already declared field Windows.UI.Xaml.TemplateVisualStateAttribute.Name
+		// Skipping already declared field Windows.UI.Xaml.TemplateVisualStateAttribute.GroupName
 	}
 }

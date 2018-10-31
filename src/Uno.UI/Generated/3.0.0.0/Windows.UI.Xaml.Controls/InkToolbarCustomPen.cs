@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml.Controls
 {
-	#if false || false || false || false
+	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || false
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class InkToolbarCustomPen : global::Windows.UI.Xaml.DependencyObject
 	{
-		#if false || false || false || false
+		#if __ANDROID__ || false || false || false || false
 		[global::Uno.NotImplemented]
 		protected InkToolbarCustomPen() : base()
 		{
@@ -15,14 +15,14 @@ namespace Windows.UI.Xaml.Controls
 		}
 		#endif
 		// Forced skipping of method Windows.UI.Xaml.Controls.InkToolbarCustomPen.InkToolbarCustomPen()
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.UI.Input.Inking.InkDrawingAttributes CreateInkDrawingAttributes( global::Windows.UI.Xaml.Media.Brush brush,  double strokeWidth)
 		{
 			throw new global::System.NotImplementedException("The member InkDrawingAttributes InkToolbarCustomPen.CreateInkDrawingAttributes(Brush brush, double strokeWidth) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		protected virtual global::Windows.UI.Input.Inking.InkDrawingAttributes CreateInkDrawingAttributesCore( global::Windows.UI.Xaml.Media.Brush brush,  double strokeWidth)
 		{

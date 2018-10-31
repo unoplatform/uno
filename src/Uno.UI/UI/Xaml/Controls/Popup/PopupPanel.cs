@@ -9,6 +9,9 @@ using Windows.UI.Xaml.Media;
 #if XAMARIN_IOS
 using UIKit;
 using View = UIKit.UIView;
+#elif __MACOS__
+using AppKit;
+using View = AppKit.NSView;
 #elif __ANDROID__
 using View = Android.Views.View;
 #elif NET46 || NETSTANDARD2_0

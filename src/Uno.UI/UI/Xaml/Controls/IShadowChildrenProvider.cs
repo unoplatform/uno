@@ -7,6 +7,8 @@ using System.Text;
 using View = UIKit.UIView;
 #elif XAMARIN_ANDROID
 using View = Android.Views.View;
+#elif __MACOS__
+using View = AppKit.NSView;
 #endif
 
 namespace Uno.UI.Controls

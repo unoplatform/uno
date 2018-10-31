@@ -7,7 +7,7 @@ using Windows.UI.Xaml.Controls;
 
 namespace Windows.UI.Xaml.Automation.Peers
 {
-	public class TextBlockAutomationPeer : FrameworkElementAutomationPeer
+	public partial class TextBlockAutomationPeer : FrameworkElementAutomationPeer
 	{
 		public TextBlockAutomationPeer(TextBlock owner) : base(owner)
 		{

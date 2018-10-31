@@ -2,7 +2,5 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Core
 {
-	#if false || false || false || false
-	public delegate void IdleDispatchedHandler(global::Windows.UI.Core.IdleDispatchedHandlerArgs @e);
-	#endif
+	// Skipping already declared delegate Windows.UI.Core.IdleDispatchedHandler
 }

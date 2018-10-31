@@ -177,15 +177,15 @@ namespace Windows.UI.Xaml.Controls
 
 		private void SetupFlyoutButton()
 		{
+#if __IOS__
 			_flyoutButton.Flyout = new DatePickerFlyout()
 			{
-#if XAMARIN_IOS
                 Placement = FlyoutPlacement,
-#endif
 				Date = Date,
 				MinYear = MinYear,
 				MaxYear = MaxYear
 			};
+#endif
 
 			BindToFlyout("Date");
 			BindToFlyout("MinYear");

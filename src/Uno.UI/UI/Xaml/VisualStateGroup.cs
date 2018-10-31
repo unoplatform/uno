@@ -16,6 +16,8 @@ using Windows.Foundation.Collections;
 
 #if XAMARIN_IOS
 using UIKit;
+#elif __MACOS__
+using AppKit;
 #endif
 
 namespace Windows.UI.Xaml

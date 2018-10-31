@@ -2,172 +2,23 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml.Data
 {
-	#if false || false || false || false
+	#if false || false || false || false || false
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class Binding : global::Windows.UI.Xaml.Data.BindingBase
 	{
-		#if false || false || false || false
-		[global::Uno.NotImplemented]
-		public  global::Windows.UI.Xaml.Data.BindingMode Mode
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member BindingMode Binding.Mode is not implemented in Uno.");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Data.Binding", "BindingMode Binding.Mode");
-			}
-		}
-		#endif
-		#if false || false || false || false
-		[global::Uno.NotImplemented]
-		public  string ElementName
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string Binding.ElementName is not implemented in Uno.");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Data.Binding", "string Binding.ElementName");
-			}
-		}
-		#endif
-		#if false || false || false || false
-		[global::Uno.NotImplemented]
-		public  object ConverterParameter
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member object Binding.ConverterParameter is not implemented in Uno.");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Data.Binding", "object Binding.ConverterParameter");
-			}
-		}
-		#endif
-		#if false || false || false || false
-		[global::Uno.NotImplemented]
-		public  string ConverterLanguage
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string Binding.ConverterLanguage is not implemented in Uno.");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Data.Binding", "string Binding.ConverterLanguage");
-			}
-		}
-		#endif
-		#if false || false || false || false
-		[global::Uno.NotImplemented]
-		public  global::Windows.UI.Xaml.Data.IValueConverter Converter
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member IValueConverter Binding.Converter is not implemented in Uno.");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Data.Binding", "IValueConverter Binding.Converter");
-			}
-		}
-		#endif
-		#if false || false || false || false
-		[global::Uno.NotImplemented]
-		public  object Source
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member object Binding.Source is not implemented in Uno.");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Data.Binding", "object Binding.Source");
-			}
-		}
-		#endif
-		#if false || false || false || false
-		[global::Uno.NotImplemented]
-		public  global::Windows.UI.Xaml.Data.RelativeSource RelativeSource
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member RelativeSource Binding.RelativeSource is not implemented in Uno.");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Data.Binding", "RelativeSource Binding.RelativeSource");
-			}
-		}
-		#endif
-		#if false || false || false || false
-		[global::Uno.NotImplemented]
-		public  global::Windows.UI.Xaml.PropertyPath Path
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member PropertyPath Binding.Path is not implemented in Uno.");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Data.Binding", "PropertyPath Binding.Path");
-			}
-		}
-		#endif
-		#if false || false || false || false
-		[global::Uno.NotImplemented]
-		public  global::Windows.UI.Xaml.Data.UpdateSourceTrigger UpdateSourceTrigger
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member UpdateSourceTrigger Binding.UpdateSourceTrigger is not implemented in Uno.");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Data.Binding", "UpdateSourceTrigger Binding.UpdateSourceTrigger");
-			}
-		}
-		#endif
-		#if false || false || false || false
-		[global::Uno.NotImplemented]
-		public  object TargetNullValue
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member object Binding.TargetNullValue is not implemented in Uno.");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Data.Binding", "object Binding.TargetNullValue");
-			}
-		}
-		#endif
-		#if false || false || false || false
-		[global::Uno.NotImplemented]
-		public  object FallbackValue
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member object Binding.FallbackValue is not implemented in Uno.");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Data.Binding", "object Binding.FallbackValue");
-			}
-		}
-		#endif
-		#if false || false || false || false
-		[global::Uno.NotImplemented]
-		public Binding() : base()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Data.Binding", "Binding.Binding()");
-		}
-		#endif
+		// Skipping already declared property Mode
+		// Skipping already declared property ElementName
+		// Skipping already declared property ConverterParameter
+		// Skipping already declared property ConverterLanguage
+		// Skipping already declared property Converter
+		// Skipping already declared property Source
+		// Skipping already declared property RelativeSource
+		// Skipping already declared property Path
+		// Skipping already declared property UpdateSourceTrigger
+		// Skipping already declared property TargetNullValue
+		// Skipping already declared property FallbackValue
+		// Skipping already declared method Windows.UI.Xaml.Data.Binding.Binding()
 		// Forced skipping of method Windows.UI.Xaml.Data.Binding.Binding()
 		// Forced skipping of method Windows.UI.Xaml.Data.Binding.Path.get
 		// Forced skipping of method Windows.UI.Xaml.Data.Binding.Path.set
