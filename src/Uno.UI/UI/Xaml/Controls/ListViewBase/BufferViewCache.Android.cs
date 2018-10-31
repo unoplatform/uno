@@ -80,6 +80,17 @@ namespace Windows.UI.Xaml.Controls
 		private int _initialChildCount;
 		private int _initialItemViewCount;
 
+		internal IEnumerable<SelectorItem> CachedItemViews =>
+			_trailingBuffer
+				.Concat(_leadingBuffer)
+				.Select(vr => vr.View)
+				.Concat(_intermediateCache
+					.Values
+					.SelectMany(l => l.Select(vh => vh.ItemView))
+				)
+				.OfType<SelectorItem>();
+
+
 		public BufferViewCache(NativeListViewBase owner)
 		{
 			_owner = owner;
