@@ -6,12 +6,16 @@ using Uno.UI;
 using Windows.Foundation;
 using Windows.UI.Core;
 using Windows.UI.ViewManagement;
+using Windows.UI.Xaml.Controls;
 
 namespace Windows.UI.Xaml
 {
 	public sealed partial class Window
 	{
 		private static Window _current;
+		private Grid _main;
+		private Border _rootBorder;
+		private Border _fullWindow;
 		private UIElement _content;
 
 		public Window()
@@ -26,14 +30,37 @@ namespace Windows.UI.Xaml
 
 		private void InternalSetContent(UIElement value)
 		{
-			_content = value;
-			ApplicationActivity.Instance?.SetContentView(value);
+			if (_main == null)
+			{
+				_rootBorder = new Border();
+				_fullWindow = new Border()
+				{
+					VerticalAlignment = VerticalAlignment.Stretch,
+					HorizontalAlignment = HorizontalAlignment.Stretch,
+					Visibility = Visibility.Collapsed
+				};
+
+				_main = new Grid()
+				{
+					Children =
+					{
+						_rootBorder,
+						_fullWindow
+					}
+				};
+
+				ApplicationActivity.Instance?.SetContentView(_main);
+			}
+
+			_rootBorder.Child = _content = value;
 		}
 
 		private UIElement InternalGetContent()
 		{
 			return _content;
 		}
+
+		internal UIElement MainContent => _main;
 
 		private static Window InternalGetCurrentWindow()
 		{
@@ -45,9 +72,17 @@ namespace Windows.UI.Xaml
 			return _current;
 		}
 
-		internal void RaiseNativeSizeChanged(int screenWidth, int screenHeight)
+		internal void RaiseNativeSizeChanged()
 		{
-			var newBounds = ViewHelper.PhysicalToLogicalPixels(new Rect(0, 0, screenWidth, screenHeight));
+			var display = (ContextHelper.Current as Activity)?.WindowManager?.DefaultDisplay;
+			var fullScreenMetrics = new DisplayMetrics();
+
+			// To get the real size of the screen, we should use GetRealMetrics
+			// GetMetrics or Resources.DisplayMetrics return the usable metrics, ignoring the bottom rounded space on device like LG G7 ThinQ for example
+			display?.GetRealMetrics(outMetrics: fullScreenMetrics);
+
+			var newBounds = ViewHelper.PhysicalToLogicalPixels(new Rect(0, 0, fullScreenMetrics.WidthPixels, fullScreenMetrics.HeightPixels));
+
 			var statusBarHeight = GetLogicalStatusBarHeight();
 			var navigationBarHeight = GetLogicalNavigationBarHeight();
 
@@ -126,6 +161,22 @@ namespace Windows.UI.Xaml
 			}
 
 			return logicalNavigationBarHeight;
+		}
+
+		internal void DisplayFullscreen(UIElement element)
+		{
+			if (element == null)
+			{
+				_fullWindow.Child = null;
+				_rootBorder.Visibility = Visibility.Visible;
+				_fullWindow.Visibility = Visibility.Collapsed;
+			}
+			else
+			{
+				_fullWindow.Visibility = Visibility.Visible;
+				_rootBorder.Visibility = Visibility.Collapsed;
+				_fullWindow.Child = element;
+			}
 		}
 	}
 }

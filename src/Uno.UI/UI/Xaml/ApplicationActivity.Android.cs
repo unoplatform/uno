@@ -50,7 +50,7 @@ namespace Windows.UI.Xaml
 			base.OnAttachedToWindow();
 			// Cannot call this in ctor: see
 			// https://stackoverflow.com/questions/10593022/monodroid-error-when-calling-constructor-of-custom-view-twodscrollview#10603714
-			RaiseConfigurationChanges(Resources.DisplayMetrics);
+			RaiseConfigurationChanges();
 		}
 
 		private void OnInputPaneVisibilityChanged(InputPane sender, InputPaneVisibilityEventArgs args)
@@ -72,7 +72,7 @@ namespace Windows.UI.Xaml
 		{
 			// Sometimes, within the same Application lifecycle, the main Activity is destroyed and a new one is created (i.e., when pressing the back button on the first page).
 			// This code transfers the content from the previous activity to the new one (if applicable).
-			if (Xaml.Window.Current.Content is View content)
+			if (Xaml.Window.Current.MainContent is View content)
 			{
 				(content.GetParent() as ViewGroup)?.RemoveView(content);
 				SetContentView(content);
@@ -112,7 +112,7 @@ namespace Windows.UI.Xaml
 			base.OnCreate(bundle);
 
 			_keyboardRectProvider = new KeyboardRectProvider(this, OnKeyboardRectChanged);
-			RaiseConfigurationChanges(Resources.DisplayMetrics);
+			RaiseConfigurationChanges();
 		}
 
 		public override void SetContentView(View view)
@@ -142,7 +142,7 @@ namespace Windows.UI.Xaml
 		{
 			base.OnResume();
 
-			RaiseConfigurationChanges(Resources.DisplayMetrics);
+			RaiseConfigurationChanges();
 		}
 
 		protected override void OnPause()
@@ -165,12 +165,12 @@ namespace Windows.UI.Xaml
 		{
 			base.OnConfigurationChanged(newConfig);
 
-			RaiseConfigurationChanges(Resources.DisplayMetrics);
+			RaiseConfigurationChanges();
 		}
 
-		private static void RaiseConfigurationChanges(DisplayMetrics displayMetrics)
+		private static void RaiseConfigurationChanges()
 		{
-			Xaml.Window.Current?.RaiseNativeSizeChanged(displayMetrics.WidthPixels, displayMetrics.HeightPixels);
+			Xaml.Window.Current?.RaiseNativeSizeChanged();
 			ViewHelper.RefreshFontScale();
 		}
 

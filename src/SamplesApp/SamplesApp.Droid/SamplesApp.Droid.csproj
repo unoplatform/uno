@@ -57,11 +57,11 @@
 	</ItemGroup>
 	
   <ItemGroup>
-    <PackageReference Include="Uno.UniversalImageLoader" Version="1.9.31" />
+    <PackageReference Include="Uno.UniversalImageLoader" Version="1.9.32" />
   </ItemGroup>
 	<ItemGroup>
 		<PackageReference Include="Uno.SourceGenerationTasks">
-			<Version>1.27.0-dev.94</Version>
+			<Version>1.28.0-dev.145</Version>
 			<NoWarn>NU1701</NoWarn>
 		</PackageReference>
 		<PackageReference Include="Uno.Wasm.Bootstrap" Version="1.0.0-dev.58" />

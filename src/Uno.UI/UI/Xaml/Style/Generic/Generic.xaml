@@ -8243,23 +8243,24 @@
 				Value="Uniform" />
 		<Setter Property="Template">
             <Setter.Value>
-                <ControlTemplate TargetType="MediaPlayerElement">
-                    <Grid x:Name="LayoutRoot">
-                        <Border Background="Transparent" />
-                        <Image x:Name="PosterImage"
-                               Visibility="Collapsed"
-                               Source="{TemplateBinding PosterSource}"
-                               Stretch="{TemplateBinding Stretch}" />
-                        <MediaPlayerPresenter x:Name="MediaPlayerPresenter"
+				<ControlTemplate TargetType="MediaPlayerElement">
+					<Grid x:Name="LayoutRoot">
+						<Border Background="Transparent" />
+						<Image x:Name="PosterImage"
+							   Visibility="Collapsed"
+							   Source="{TemplateBinding PosterSource}"
+							   Stretch="{TemplateBinding Stretch}" />
+						<MediaPlayerPresenter x:Name="MediaPlayerPresenter"
 											  IsFullWindow="{TemplateBinding IsFullWindow}"
 											  Stretch="{TemplateBinding Stretch}"
 											  MediaPlayer="{TemplateBinding MediaPlayer}"
+											  Visibility="Collapsed"
 											  Background="Black" />
 						<ContentPresenter x:Name="TransportControlsPresenter"
 										  Visibility="{TemplateBinding AreTransportControlsEnabled}" />
 						<Grid x:Name="TimedTextSourcePresenter" />
-                    </Grid>
-                </ControlTemplate>
+					</Grid>
+				</ControlTemplate>
             </Setter.Value>
         </Setter>
     </Style>

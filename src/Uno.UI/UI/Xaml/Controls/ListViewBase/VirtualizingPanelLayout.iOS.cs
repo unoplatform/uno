@@ -1273,7 +1273,7 @@ namespace Windows.UI.Xaml.Controls
 		/// <summary>
 		/// Get extent added by sticky group header for given section, if any.
 		/// </summary>
-		private nfloat GetStickyHeaderExtent(int section) => AreStickyGroupHeadersEnabled && RelativeGroupHeaderPlacement == RelativeHeaderPlacement.Inline ?
+		private nfloat GetStickyHeaderExtent(int section) => XamlParent.IsGrouping && AreStickyGroupHeadersEnabled && RelativeGroupHeaderPlacement == RelativeHeaderPlacement.Inline ?
 			GetExtent(_inlineHeaderFrames[section].Size) :
 			0;
 

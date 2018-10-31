@@ -2,6 +2,7 @@
 using System;
 using Windows.Foundation;
 using Windows.Media.Playback;
+using Windows.UI.Core;
 using Windows.UI.Xaml.Media;
 
 namespace Windows.UI.Xaml.Controls
@@ -32,11 +33,13 @@ namespace Windows.UI.Xaml.Controls
 				if (args.OldValue is Windows.Media.Playback.MediaPlayer oldPlayer)
 				{
 					oldPlayer.VideoRatioChanged -= presenter.OnVideoRatioChanged;
+					oldPlayer.MediaFailed -= presenter.OnMediaFailed;
 				}
 
 				if (args.NewValue is Windows.Media.Playback.MediaPlayer newPlayer)
 				{
 					newPlayer.VideoRatioChanged += presenter.OnVideoRatioChanged;
+					newPlayer.MediaFailed += presenter.OnMediaFailed;
 					presenter.SetVideoSurface(newPlayer.RenderSurface);
 				}
 			}
@@ -85,7 +88,21 @@ namespace Windows.UI.Xaml.Controls
 		private void OnVideoRatioChanged(Windows.Media.Playback.MediaPlayer sender, double args)
 		{
 			_currentRatio = args;
+
+			Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+			{
+				Visibility = Visibility.Visible;
+			});
+
 			InvalidateArrange();
+		}
+
+		private void OnMediaFailed(Windows.Media.Playback.MediaPlayer sender, MediaPlayerFailedEventArgs args)
+		{
+			Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+			{
+				Visibility = Visibility.Collapsed;
+			});
 		}
 
 		protected override Size MeasureOverride(Size availableSize)

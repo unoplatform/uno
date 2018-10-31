@@ -15,7 +15,7 @@
 	</PropertyGroup>
 	<PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|iPhoneSimulator' ">
 		<DebugSymbols>true</DebugSymbols>
-		<DebugType>full</DebugType>
+		<DebugType>portable</DebugType>
 		<Optimize>false</Optimize>
 		<OutputPath>bin\iPhoneSimulator\Debug</OutputPath>
 		<DefineConstants>DEBUG</DefineConstants>
@@ -27,7 +27,7 @@
 		<MtouchDebug>true</MtouchDebug>
 	</PropertyGroup>
 	<PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|iPhoneSimulator' ">
-		<DebugType>none</DebugType>
+		<DebugType>portable</DebugType>
 		<Optimize>true</Optimize>
 		<OutputPath>bin\iPhoneSimulator\Release</OutputPath>
 		<ErrorReport>prompt</ErrorReport>
@@ -102,7 +102,7 @@
 		<BundleResource Include="Resources\Fonts\winjs-symbols.ttf" />
 	</ItemGroup>
 	<ItemGroup>
-		<PackageReference Include="Uno.UI" Version="1.40.0-dev.436" />
+		<PackageReference Include="Uno.UI" Version="1.41.1-dev.208" />
 	</ItemGroup>
 	<Import Project="..\$ext_safeprojectname$.Shared\$ext_safeprojectname$.Shared.projitems" Label="Shared" Condition="Exists('..\$ext_safeprojectname$.Shared\$ext_safeprojectname$.Shared.projitems')" />
 	<Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />
