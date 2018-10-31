@@ -4,6 +4,8 @@
   href: supported-features.md
 - name: API Differences
   href: api-differences.md
+- name: Supported Controls
+  href: implemented-views.md
 - name: Uno.UI Performance Tips
   href: Uno-UI-Performance.md
 - name: Working with Assets
