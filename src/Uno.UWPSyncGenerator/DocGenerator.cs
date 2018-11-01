@@ -21,6 +21,7 @@ namespace Uno.UWPSyncGenerator
 		private MarkdownStringBuilder _sb;
 		private List<PlatformSymbols<INamedTypeSymbol>> _views;
 		private IGrouping<INamespaceSymbol, PlatformSymbols<INamedTypeSymbol>>[] _viewsGrouped;
+		private HashSet<(string name, string namespaceString)> _kosherFrameworkViews;
 
 		public override void Build(string basePath, string baseName, string sourceAssembly)
 		{
@@ -33,6 +34,7 @@ namespace Uno.UWPSyncGenerator
 			base.Build(basePath, baseName, sourceAssembly);
 
 			_viewsGrouped = GroupByNamespace(_views);
+			_kosherFrameworkViews = new HashSet<(string name, string namespaceString)>(_views.Select(ps => (ps.UAPSymbol.Name, ps.UAPSymbol.ContainingNamespace.ToDisplayString())));
 
 			using (_sb.Section("List of views implemented in Uno"))
 			{
@@ -42,13 +44,13 @@ namespace Uno.UWPSyncGenerator
 
 				_sb.AppendParagraph($"If you notice incorrect or incomplete information here, please open an {MarkdownStringBuilder.Hyperlink("issue", "https://github.com/nventive/Uno/issues")}.");
 
-				using (_sb.Section("Implemented - all platforms (iOS, Android, WebAssembly)"))
+				using (_sb.Section("Implemented - all platforms (iOS, Android, WebAssembly, MacOS)"))
 				{
 					AppendTypes(ps => ps.ImplementedForMain == ImplementedFor.Main, true);
 				}
 				using (_sb.Section("Implemented - Android + iOS only"))
 				{
-					AppendTypes(ps => ps.ImplementedForMain == ImplementedFor.Xamarin, true);
+					AppendTypes(ps => ps.ImplementedForMain == ImplementedFor.Mobile, true);
 				}
 				using (_sb.Section("Implemented - select platforms")) //These all seem to be lies
 				{
@@ -56,9 +58,9 @@ namespace Uno.UWPSyncGenerator
 					{
 						foreach (var view in _views)
 						{
-							if (view.ImplementedForMain != ImplementedFor.Main && view.ImplementedFor != ImplementedFor.Xamarin && view.ImplementedFor != ImplementedFor.None)
+							if (view.ImplementedForMain != ImplementedFor.Main && view.ImplementedFor != ImplementedFor.Mobile && view.ImplementedFor != ImplementedFor.None)
 							{
-								_sb.AppendRow(view.UAPSymbol.ToDisplayString(), view.ImplementedForMain.ToString());
+								_sb.AppendRow(view.UAPSymbol.ToDisplayString(), ToDisplayString(view.ImplementedForMain));
 							}
 						}
 					}
@@ -98,10 +100,8 @@ namespace Uno.UWPSyncGenerator
 
 						foreach (var view in group.Where(ps => ps.ImplementedForMain != ImplementedFor.None).OrderBy(ps => ps.UAPSymbol.Name))
 						{
-							using (_sb.Section(view.UAPSymbol.Name))
+							using (_sb.Section($"{view.UAPSymbol.Name} : {ConstructBaseClassString(view)}"))
 							{
-								//TODO: inherits from + (Uno inheritance if different)
-
 								_sb.AppendParagraph($"*Implemented for:* {ToDisplayString(view.ImplementedForMain)}");
 
 								var properties = view.UAPSymbol.GetMembers().OfType<IPropertySymbol>().Select(p => GetAllMatchingPropertyMember(view, p)).ToArray();
@@ -222,6 +222,63 @@ namespace Uno.UWPSyncGenerator
 			return IsViewType(type.BaseType);
 		}
 
+		private string ConstructBaseClassString(PlatformSymbols<INamedTypeSymbol> view)
+		{
+			var uniqueBaseTypes = AllSymbols()
+				.Where(s => s.Symbol != null)
+				.Select(s => (s.Symbol.BaseType.Name, s.Symbol.BaseType.ContainingNamespace.ToDisplayString()))
+				.Distinct()
+				.ToArray();
+			if (uniqueBaseTypes.Length == 1)
+			{
+				var tuple = uniqueBaseTypes.Single();
+				return MarkdownStringBuilder.Hyperlink(tuple.Item1, GetLinkTarget(tuple));
+			}
+			else
+			{
+				var output = "";
+				foreach (var tuple in uniqueBaseTypes)
+				{
+					var link = GetLinkTarget(tuple);
+					var name = link != null ?
+						MarkdownStringBuilder.Hyperlink(tuple.Item1, link) :
+						tuple.Item1;
+					var matchingPlatforms = AllSymbols()
+						.Where(s => s.Symbol != null)
+						.Where(s => s.Symbol.BaseType.Name == tuple.Item1 && s.Symbol.BaseType.ContainingNamespace.ToDisplayString() == tuple.Item2)
+						.Select(t => ToDisplayString(t.ImplementedFor));
+					output += $"{name} ({matchingPlatforms.JoinBy(@"/")}) ";
+				}
+
+				return output;
+			}
+
+			string GetLinkTarget((string symbolName, string symbolNamespace) tuple)
+			{
+				if (tuple.symbolNamespace == view.UAPSymbol.ContainingNamespace.ToDisplayString())
+				{
+					return $"#{tuple.symbolName}";
+				}
+				else if (_kosherFrameworkViews.Contains(tuple))
+				{
+					return $"{GetImplementedMembersFilename(tuple.symbolNamespace)}#{tuple.symbolName}";
+				}
+				else
+				{
+					return null;
+				}
+			}
+
+			IEnumerable<(INamedTypeSymbol Symbol, ImplementedFor ImplementedFor)> AllSymbols()
+			{
+				yield return (view.UAPSymbol, ImplementedFor.UAP);
+				yield return (view.AndroidSymbol, ImplementedFor.Android);
+				yield return (view.IOSSymbol, ImplementedFor.iOS);
+				yield return (view.WasmSymbol, ImplementedFor.WASM);
+				yield return (view.MacOSSymbol, ImplementedFor.MacOS);
+			}
+		}
+
 		private static IGrouping<INamespaceSymbol, PlatformSymbols<INamedTypeSymbol>>[] GroupByNamespace(IEnumerable<PlatformSymbols<INamedTypeSymbol>> types)
 		{
 			return types.GroupBy(t => t.UAPSymbol.ContainingNamespace)
@@ -231,7 +288,12 @@ namespace Uno.UWPSyncGenerator
 
 		private static string GetImplementedMembersFilename(INamespaceSymbol namespaceSymbol)
 		{
-			return $"{ImplementedMembersPrefix}{namespaceSymbol.ToDisplayString().ToLowerInvariant().Replace('.', '-')}.md";
+			return GetImplementedMembersFilename(namespaceSymbol.ToDisplayString());
+		}
+
+		private static string GetImplementedMembersFilename(string namespaceString)
+		{
+			return $"{ImplementedMembersPrefix}{namespaceString.ToLowerInvariant().Replace('.', '-')}.md";
 		}
 
 		private static SymbolDisplayFormat DisplayFormat { get; } = new SymbolDisplayFormat(SymbolDisplayGlobalNamespaceStyle.Omitted, SymbolDisplayTypeQualificationStyle.NameAndContainingTypes, SymbolDisplayGenericsOptions.IncludeTypeParameters, SymbolDisplayMemberOptions.IncludeParameters | SymbolDisplayMemberOptions.IncludeType, SymbolDisplayDelegateStyle.NameAndSignature, SymbolDisplayExtensionMethodStyle.Default, SymbolDisplayParameterOptions.IncludeType, SymbolDisplayPropertyStyle.NameOnly, SymbolDisplayLocalOptions.None, SymbolDisplayKindOptions.None, SymbolDisplayMiscellaneousOptions.UseSpecialTypes | SymbolDisplayMiscellaneousOptions.UseErrorTypeSymbolName);
@@ -242,8 +304,14 @@ namespace Uno.UWPSyncGenerator
 			{
 				case ImplementedFor.Main:
 					return "all platforms";
-				case ImplementedFor.Xamarin:
+				case ImplementedFor.Mobile:
 					return "Android, iOS";
+				case ImplementedFor.Xamarin:
+					return "Android, iOS, MacOS";
+				case ImplementedFor.UAP:
+					return "UWP";
+				case (ImplementedFor.Mobile | ImplementedFor.WASM):
+					return "Android, iOS, WASM";
 				default:
 					return implementedFor.ToString();
 			}
