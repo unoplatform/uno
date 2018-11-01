@@ -25,13 +25,7 @@ namespace Windows.UI.Xaml.Printing
 			typeof(global::Windows.UI.Xaml.Printing.PrintDocument), 
 			new FrameworkPropertyMetadata(default(global::Windows.Graphics.Printing.IPrintDocumentSource)));
 		#endif
-		#if __ANDROID__ || false || false || false || false
-		[global::Uno.NotImplemented]
-		public PrintDocument() : base()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Printing.PrintDocument", "PrintDocument.PrintDocument()");
-		}
-		#endif
+		// Skipping already declared method Windows.UI.Xaml.Printing.PrintDocument.PrintDocument()
 		// Forced skipping of method Windows.UI.Xaml.Printing.PrintDocument.PrintDocument()
 		// Forced skipping of method Windows.UI.Xaml.Printing.PrintDocument.DocumentSource.get
 		// Forced skipping of method Windows.UI.Xaml.Printing.PrintDocument.Paginate.add

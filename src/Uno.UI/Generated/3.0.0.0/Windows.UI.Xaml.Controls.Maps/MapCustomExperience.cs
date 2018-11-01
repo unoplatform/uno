@@ -7,13 +7,7 @@ namespace Windows.UI.Xaml.Controls.Maps
 	#endif
 	public  partial class MapCustomExperience : global::Windows.UI.Xaml.DependencyObject
 	{
-		#if __ANDROID__ || false || false || false || false
-		[global::Uno.NotImplemented]
-		public MapCustomExperience() : base()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.Maps.MapCustomExperience", "MapCustomExperience.MapCustomExperience()");
-		}
-		#endif
+		// Skipping already declared method Windows.UI.Xaml.Controls.Maps.MapCustomExperience.MapCustomExperience()
 		// Forced skipping of method Windows.UI.Xaml.Controls.Maps.MapCustomExperience.MapCustomExperience()
 	}
 }

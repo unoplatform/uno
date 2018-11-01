@@ -27,13 +27,7 @@ namespace Windows.UI.Xaml.Controls.Maps
 			}
 		}
 		#endif
-		#if __ANDROID__ || false || false || false || false
-		[global::Uno.NotImplemented]
-		public MapInputEventArgs() : base()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.Maps.MapInputEventArgs", "MapInputEventArgs.MapInputEventArgs()");
-		}
-		#endif
+		// Skipping already declared method Windows.UI.Xaml.Controls.Maps.MapInputEventArgs.MapInputEventArgs()
 		// Forced skipping of method Windows.UI.Xaml.Controls.Maps.MapInputEventArgs.MapInputEventArgs()
 		// Forced skipping of method Windows.UI.Xaml.Controls.Maps.MapInputEventArgs.Position.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.Maps.MapInputEventArgs.Location.get

@@ -7,13 +7,7 @@ namespace Windows.UI.Xaml.Media
 	#endif
 	public  partial class CacheMode : global::Windows.UI.Xaml.DependencyObject
 	{
-		#if __ANDROID__ || false || false || false || false
-		[global::Uno.NotImplemented]
-		protected CacheMode() : base()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Media.CacheMode", "CacheMode.CacheMode()");
-		}
-		#endif
+		// Skipping already declared method Windows.UI.Xaml.Media.CacheMode.CacheMode()
 		// Forced skipping of method Windows.UI.Xaml.Media.CacheMode.CacheMode()
 	}
 }
