@@ -215,7 +215,7 @@ namespace Windows.UI.Xaml.Controls
 		Windows.UI.Xaml.DependencyProperty.Register(
 			"IsPaneOpen", typeof(bool),
 			typeof(NavigationView),
-			new FrameworkPropertyMetadata(true));
+			new FrameworkPropertyMetadata(true, (s, e) => (s as NavigationView)?.OnIsPaneOpenChanged()));
 
 		[Uno.NotImplemented]
 		public static DependencyProperty IsPaneToggleButtonVisibleProperty { get; } =

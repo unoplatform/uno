@@ -138,6 +138,11 @@ namespace Windows.UI.Xaml.Controls
 				}
 			}
 
+			if(_togglePaneButton != null)
+			{
+				_togglePaneButton.Click += OnTogglePaneButton_Click;
+			}
+
 			if(SettingsItem is NavigationViewItem item)
 			{
 				item.Content = "Settings";
@@ -145,6 +150,19 @@ namespace Windows.UI.Xaml.Controls
 			}
 
 			OnIsSettingsVisibleChanged();
+		}
+
+		private void OnTogglePaneButton_Click(object sender, RoutedEventArgs e)
+		{
+			IsPaneOpen = !IsPaneOpen;
+		}
+
+		private void OnIsPaneOpenChanged()
+		{
+			foreach (var item in MenuItems.OfType<NavigationViewItemHeader>())
+			{
+				VisualStateManager.GoToState(item, IsPaneOpen ? "HeaderTextVisible" : "HeaderTextCollapsed", true);
+			}
 		}
 
 		private void OnSettingsPressed()
