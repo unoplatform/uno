@@ -845,6 +845,8 @@
 	<x:Double x:Key="PaneToggleButtonHeight">44</x:Double>
     <x:Double x:Key="PaneToggleButtonWidth">48</x:Double>
 
+    <Thickness x:Key="NavigationViewToggleBorderThickness">1</Thickness>
+
 
 
 </ResourceDictionary>

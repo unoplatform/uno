@@ -1,5 +1,7 @@
 #pragma warning disable 108 // new keyword hiding
 #pragma warning disable 114 // new keyword hiding
+using System;
+using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Shapes;
 
 namespace Windows.UI.Xaml.Controls
@@ -36,6 +38,15 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		internal Rectangle SelectionIndicator { get; private set; }
+
+		protected override void OnPointerPressed(PointerRoutedEventArgs args)
+		{
+			base.OnPointerPressed(args);
+
+			InternalPointerPressed?.Invoke();
+		}
+
+		internal event Action InternalPointerPressed;
 
 		protected override void OnApplyTemplate()
 		{

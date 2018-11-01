@@ -12,21 +12,18 @@ namespace Windows.UI.Xaml.Controls
 			set => SetValue(SelectedItemProperty, value);
 		}
 
-		[Uno.NotImplemented]
 		public Style PaneToggleButtonStyle
 		{
 			get => (Style)GetValue(PaneToggleButtonStyleProperty);
 			set => SetValue(PaneToggleButtonStyleProperty, value);
 		}
 
-		[Uno.NotImplemented]
 		public UIElement PaneFooter
 		{
 			get => (UIElement)GetValue(PaneFooterProperty);
 			set => SetValue(PaneFooterProperty, value);
 		}
 
-		[Uno.NotImplemented]
 		public double OpenPaneLength
 		{
 			get => (double)GetValue(OpenPaneLengthProperty);
@@ -39,28 +36,24 @@ namespace Windows.UI.Xaml.Controls
 			set => SetValue(MenuItemsSourceProperty, value);
 		}
 
-		[Uno.NotImplemented]
 		public DataTemplateSelector MenuItemTemplateSelector
 		{
 			get => (DataTemplateSelector)GetValue(MenuItemTemplateSelectorProperty);
 			set => SetValue(MenuItemTemplateSelectorProperty, value);
 		}
 
-		[Uno.NotImplemented]
 		public DataTemplate MenuItemTemplate
 		{
 			get => (DataTemplate)GetValue(MenuItemTemplateProperty);
 			set => SetValue(MenuItemTemplateProperty, value);
 		}
 
-		[Uno.NotImplemented]
 		public StyleSelector MenuItemContainerStyleSelector
 		{
 			get => (StyleSelector)GetValue(MenuItemContainerStyleSelectorProperty);
 			set => SetValue(MenuItemContainerStyleSelectorProperty, value);
 		}
 
-		[Uno.NotImplemented]
 		public Style MenuItemContainerStyle
 		{
 			get => (Style)GetValue(MenuItemContainerStyleProperty);
@@ -81,7 +74,6 @@ namespace Windows.UI.Xaml.Controls
 			set => SetValue(IsPaneToggleButtonVisibleProperty, value);
 		}
 
-		[Uno.NotImplemented]
 		public bool IsPaneOpen
 		{
 			get => (bool)GetValue(IsPaneOpenProperty);
@@ -102,28 +94,24 @@ namespace Windows.UI.Xaml.Controls
 			set => SetValue(HeaderProperty, value);
 		}
 
-		[Uno.NotImplemented]
 		public double ExpandedModeThresholdWidth
 		{
 			get => (double)GetValue(ExpandedModeThresholdWidthProperty);
 			set => SetValue(ExpandedModeThresholdWidthProperty, value);
 		}
 
-		[Uno.NotImplemented]
 		public double CompactPaneLength
 		{
 			get => (double)GetValue(CompactPaneLengthProperty);
 			set => SetValue(CompactPaneLengthProperty, value);
 		}
 
-		[Uno.NotImplemented]
 		public double CompactModeThresholdWidth
 		{
 			get => (double)GetValue(CompactModeThresholdWidthProperty);
 			set => SetValue(CompactModeThresholdWidthProperty, value);
 		}
 
-		[Uno.NotImplemented]
 		public AutoSuggestBox AutoSuggestBox
 		{
 			get => (AutoSuggestBox)GetValue(AutoSuggestBoxProperty);
@@ -142,10 +130,8 @@ namespace Windows.UI.Xaml.Controls
 
 		public IList<object> MenuItems => (IList<object>)GetValue(MenuItemsProperty);
 
-		[Uno.NotImplemented]
 		public object SettingsItem => (object)GetValue(SettingsItemProperty);
 
-		[Uno.NotImplemented]
 		public string PaneTitle
 		{
 			get => (string)GetValue(PaneTitleProperty);
@@ -180,14 +166,14 @@ namespace Windows.UI.Xaml.Controls
 			typeof(NavigationView),
 			new FrameworkPropertyMetadata(default(AutoSuggestBox)));
 
-		[Uno.NotImplemented]
 		public static DependencyProperty CompactModeThresholdWidthProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"CompactModeThresholdWidth", typeof(double),
-			typeof(NavigationView),
-			new FrameworkPropertyMetadata(default(double)));
+			name: nameof(CompactModeThresholdWidth),
+			propertyType: typeof(double),
+			ownerType: typeof(NavigationView),
+			typeMetadata: new FrameworkPropertyMetadata(defaultValue: 641.0)
+		);
 
-		[Uno.NotImplemented]
 		public static DependencyProperty CompactPaneLengthProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
 			name: nameof(CompactPaneLength),
@@ -196,19 +182,19 @@ namespace Windows.UI.Xaml.Controls
 			typeMetadata: new FrameworkPropertyMetadata(defaultValue: 48.0)
 		);
 
-		[Uno.NotImplemented]
 		public static DependencyProperty DisplayModeProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
 			"DisplayMode", typeof(NavigationViewDisplayMode),
 			typeof(NavigationView),
 			new FrameworkPropertyMetadata(default(NavigationViewDisplayMode)));
 
-		[Uno.NotImplemented]
 		public static DependencyProperty ExpandedModeThresholdWidthProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"ExpandedModeThresholdWidth", typeof(double),
-			typeof(NavigationView),
-			new FrameworkPropertyMetadata(default(double)));
+			name: nameof(ExpandedModeThresholdWidth),
+			propertyType: typeof(double),
+			ownerType: typeof(NavigationView),
+			typeMetadata: new FrameworkPropertyMetadata(1008.0)
+		);
 
 		[Uno.NotImplemented]
 		public static DependencyProperty HeaderProperty { get; } =
@@ -292,7 +278,6 @@ namespace Windows.UI.Xaml.Controls
 			typeof(NavigationView),
 			new FrameworkPropertyMetadata(default(object)));
 
-		[Uno.NotImplemented]
 		public static DependencyProperty OpenPaneLengthProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
 			name: nameof(OpenPaneLength),
@@ -301,28 +286,25 @@ namespace Windows.UI.Xaml.Controls
 			typeMetadata: new FrameworkPropertyMetadata(defaultValue: 320.0)
 		);
 
-		[Uno.NotImplemented]
 		public static DependencyProperty PaneFooterProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
 			"PaneFooter", typeof(UIElement),
 			typeof(NavigationView),
 			new FrameworkPropertyMetadata(default(UIElement)));
 
-		[Uno.NotImplemented]
 		public static DependencyProperty PaneToggleButtonStyleProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
 			"PaneToggleButtonStyle", typeof(Style),
 			typeof(NavigationView),
-			new FrameworkPropertyMetadata(default(Style)));
+			new FrameworkPropertyMetadata(null)
+		);
 
-		[Uno.NotImplemented]
 		public static DependencyProperty SelectedItemProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
 			"SelectedItem", typeof(object),
 			typeof(NavigationView),
 			new FrameworkPropertyMetadata(default(object)));
 
-		[Uno.NotImplemented]
 		public static DependencyProperty SettingsItemProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
 			"SettingsItem", typeof(object),
@@ -343,7 +325,6 @@ namespace Windows.UI.Xaml.Controls
 			typeof(NavigationView),
 			new FrameworkPropertyMetadata(default(bool)));
 
-		[Uno.NotImplemented]
 		public static DependencyProperty PaneTitleProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
 			"PaneTitle", typeof(string),

@@ -9287,8 +9287,245 @@
         <Setter Property="Margin" Value="12,5,0,11" />
         <Setter Property="VerticalAlignment" Value="Stretch" />
     </Style>
+
+    <Style x:Key="NavigationBackButtonNormalStyle" TargetType="Button">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="Foreground" Value="{ThemeResource SystemControlForegroundBaseHighBrush}" />
+        <Setter Property="FontFamily" Value="{ThemeResource SymbolThemeFontFamily}" />
+        <Setter Property="FontSize" Value="16" />
+        <Setter Property="Height" Value="44" />
+        <Setter Property="Width" Value="48" />
+        <Setter Property="HorizontalContentAlignment" Value="Center" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+        <win:Setter Property="UseSystemFocusVisuals" Value="{StaticResource UseSystemFocusVisuals}" />
+        <win:Setter Property="Content" Value="&#xE72B;" />
+        <xamarin:Setter Property="Content" Value="&#xE0D5;" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Grid x:Name="RootGrid" Background="{TemplateBinding Background}">
+
+                        <VisualStateManager.VisualStateGroups>
+                            <VisualStateGroup x:Name="CommonStates">
+                                <VisualState x:Name="Normal" />
+
+                                <VisualState x:Name="PointerOver">
+
+                                    <Storyboard>
+                                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="RootGrid" Storyboard.TargetProperty="Background">
+                                            <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SystemControlHighlightListLowBrush}" />
+                                        </ObjectAnimationUsingKeyFrames>
+                                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Content" Storyboard.TargetProperty="Foreground">
+                                            <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SystemControlHighlightAltBaseHighBrush}" />
+                                        </ObjectAnimationUsingKeyFrames>
+                                    </Storyboard>
+                                </VisualState>
+
+                                <VisualState x:Name="Pressed">
+
+                                    <Storyboard>
+                                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="RootGrid" Storyboard.TargetProperty="Background">
+                                            <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SystemControlHighlightListMediumBrush}" />
+                                        </ObjectAnimationUsingKeyFrames>
+                                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Content" Storyboard.TargetProperty="Foreground">
+                                            <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SystemControlHighlightAltBaseHighBrush}" />
+                                        </ObjectAnimationUsingKeyFrames>
+                                    </Storyboard>
+                                </VisualState>
+
+                                <VisualState x:Name="Disabled">
+
+                                    <Storyboard>
+                                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Content" Storyboard.TargetProperty="Foreground">
+                                            <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SystemControlDisabledBaseMediumLowBrush}" />
+                                        </ObjectAnimationUsingKeyFrames>
+                                    </Storyboard>
+                                </VisualState>
+                            </VisualStateGroup>
+
+                        </VisualStateManager.VisualStateGroups>
+                        <ContentPresenter x:Name="Content"
+                            Content="{TemplateBinding Content}"
+                            Foreground="{TemplateBinding Foreground}"
+                            HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                            VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                            AutomationProperties.AccessibilityView="Raw" />
+                    
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
 	
-    <Style TargetType="NavigationView">
+    <Style x:Key="NavigationBackButtonSmallStyle" TargetType="Button" BasedOn="{StaticResource NavigationBackButtonNormalStyle}">
+        <Setter Property="FontSize" Value="20" />
+        <Setter Property="Height" Value="32" />
+        <Setter Property="Width" Value="32" />
+    </Style>
+
+	<Style x:Key="PaneToggleButtonStyle"
+		   TargetType="Button">
+		<Setter Property="FontSize"
+				Value="16" />
+		<Setter Property="FontFamily"
+				Value="{StaticResource SymbolThemeFontFamily}" />
+		<Setter Property="MinHeight"
+				Value="{StaticResource PaneToggleButtonHeight}" />
+		<Setter Property="MinWidth"
+				Value="{StaticResource PaneToggleButtonWidth}" />
+		<Setter Property="Padding"
+				Value="0" />
+		<Setter Property="HorizontalAlignment"
+				Value="Left" />
+		<Setter Property="VerticalAlignment"
+				Value="Top" />
+		<Setter Property="HorizontalContentAlignment"
+				Value="Center" />
+		<Setter Property="VerticalContentAlignment"
+				Value="Center" />
+		<Setter Property="Background"
+				Value="{ThemeResource NavigationViewItemBackground}" />
+		<Setter Property="Foreground"
+				Value="{ThemeResource NavigationViewItemForeground}" />
+		<Setter Property="BorderBrush"
+				Value="{ThemeResource NavigationViewItemBorderBrush}" />
+		<Setter Property="BorderThickness"
+				Value="{ThemeResource NavigationViewToggleBorderThickness}" />
+		<win:Setter Property="Content"
+					Value="&#xE700;" />
+		<xamarin:Setter Property="Content"
+						Value="&#xE1A1;" />
+		<Setter Property="Template">
+			<Setter.Value>
+				<ControlTemplate TargetType="Button">
+					<Grid x:Name="LayoutRoot"
+						  Height="{TemplateBinding MinHeight}"
+						  Margin="{TemplateBinding Padding}"
+						  Background="{TemplateBinding Background}"
+						  HorizontalAlignment="Stretch">
+
+						<VisualStateManager.VisualStateGroups>
+							<VisualStateGroup x:Name="CommonStates">
+								<VisualState x:Name="Normal" />
+
+								<VisualState x:Name="PointerOver">
+									<VisualState.Setters>
+										<Setter Target="LayoutRoot.(RevealBrush.State)"
+												Value="PointerOver" />
+										<Setter Target="LayoutRoot.Background"
+												Value="{ThemeResource NavigationViewItemBackgroundPointerOver}" />
+										<Setter Target="RevealBorder.BorderBrush"
+												Value="{ThemeResource NavigationViewItemBorderBrushPointerOver}" />
+										<Setter Target="_ContentPresenter.Foreground"
+												Value="{ThemeResource NavigationViewItemForegroundPointerOver}" />
+									</VisualState.Setters>
+								</VisualState>
+
+								<VisualState x:Name="Pressed">
+									<VisualState.Setters>
+										<Setter Target="LayoutRoot.(RevealBrush.State)"
+												Value="Pressed" />
+										<Setter Target="LayoutRoot.Background"
+												Value="{ThemeResource NavigationViewItemBackgroundPressed}" />
+										<Setter Target="RevealBorder.BorderBrush"
+												Value="{ThemeResource NavigationViewItemBorderBrushPressed}" />
+										<Setter Target="_ContentPresenter.Foreground"
+												Value="{ThemeResource NavigationViewItemForegroundPressed}" />
+									</VisualState.Setters>
+								</VisualState>
+
+								<VisualState x:Name="Disabled">
+									<VisualState.Setters>
+										<Setter Target="LayoutRoot.Background"
+												Value="{ThemeResource NavigationViewItemBackgroundDisabled}" />
+										<Setter Target="RevealBorder.BorderBrush"
+												Value="{ThemeResource NavigationViewItemBorderBrushDisabled}" />
+										<Setter Target="_ContentPresenter.Foreground"
+												Value="{ThemeResource NavigationViewItemForegroundDisabled}" />
+									</VisualState.Setters>
+								</VisualState>
+								<VisualState x:Name="Checked">
+									<VisualState.Setters>
+										<Setter Target="LayoutRoot.Background"
+												Value="{ThemeResource NavigationViewItemBackgroundChecked}" />
+										<Setter Target="RevealBorder.BorderBrush"
+												Value="{ThemeResource NavigationViewItemBorderBrushChecked}" />
+										<Setter Target="_ContentPresenter.Foreground"
+												Value="{ThemeResource NavigationViewItemForegroundChecked}" />
+									</VisualState.Setters>
+								</VisualState>
+								<VisualState x:Name="CheckedPointerOver">
+									<VisualState.Setters>
+										<Setter Target="LayoutRoot.(RevealBrush.State)"
+												Value="PointerOver" />
+										<Setter Target="LayoutRoot.Background"
+												Value="{ThemeResource NavigationViewItemBackgroundCheckedPointerOver}" />
+										<Setter Target="RevealBorder.BorderBrush"
+												Value="{ThemeResource NavigationViewItemBorderBrushCheckedPointerOver}" />
+										<Setter Target="_ContentPresenter.Foreground"
+												Value="{ThemeResource NavigationViewItemForegroundCheckedPointerOver}" />
+									</VisualState.Setters>
+								</VisualState>
+								<VisualState x:Name="CheckedPressed">
+									<VisualState.Setters>
+										<Setter Target="LayoutRoot.(RevealBrush.State)"
+												Value="Pressed" />
+										<Setter Target="LayoutRoot.Background"
+												Value="{ThemeResource NavigationViewItemBackgroundCheckedPressed}" />
+										<Setter Target="RevealBorder.BorderBrush"
+												Value="{ThemeResource NavigationViewItemBorderBrushCheckedPressed}" />
+										<Setter Target="_ContentPresenter.Foreground"
+												Value="{ThemeResource NavigationViewItemForegroundCheckedPressed}" />
+									</VisualState.Setters>
+								</VisualState>
+								<VisualState x:Name="CheckedDisabled">
+									<VisualState.Setters>
+										<Setter Target="LayoutRoot.Background"
+												Value="{ThemeResource NavigationViewItemBackgroundCheckedDisabled}" />
+										<Setter Target="RevealBorder.BorderBrush"
+												Value="{ThemeResource NavigationViewItemBorderBrushCheckedDisabled}" />
+										<Setter Target="_ContentPresenter.Foreground"
+												Value="{ThemeResource NavigationViewItemForegroundCheckedDisabled}" />
+									</VisualState.Setters>
+								</VisualState>
+							</VisualStateGroup>
+
+						</VisualStateManager.VisualStateGroups>
+
+						<Grid Width="{TemplateBinding MinWidth}"
+							  HorizontalAlignment="Left">
+							<win:Viewbox x:Name="IconHost"
+										 Width="16"
+										 Height="16"
+										 HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+										 VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+										 AutomationProperties.AccessibilityView="Raw">
+								<ContentPresenter x:Name="_ContentPresenter"
+												  Content="{TemplateBinding Content}"
+												  FontSize="{TemplateBinding FontSize}"
+												  AutomationProperties.AccessibilityView="Raw" />
+							</win:Viewbox>
+						</Grid>
+
+						<xamarin:ContentPresenter x:Name="_ContentPresenter"
+												  Width="16"
+												  Height="16"
+												  HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+												  VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+												  Content="{TemplateBinding Content}"
+												  FontSize="{TemplateBinding FontSize}"
+												  AutomationProperties.AccessibilityView="Raw" />
+						<Border x:Name="RevealBorder"
+								BorderBrush="{TemplateBinding BorderBrush}"
+								BorderThickness="{TemplateBinding BorderThickness}" />
+
+					</Grid>
+				</ControlTemplate>
+			</Setter.Value>
+		</Setter>
+	</Style>
+
+	<Style TargetType="NavigationView">
         <Setter Property="PaneToggleButtonStyle" Value="{StaticResource PaneToggleButtonStyle}" />
         <Setter Property="IsTabStop" Value="False" />
         <Setter Property="Template">
@@ -9385,10 +9622,13 @@
                                 <VisualState x:Name="TitleBarVisible" />
                                 <VisualState x:Name="TitleBarCollapsed">
                                     <VisualState.Setters>
-                                        <!--
+                                        
+										<!--
+										This property does not exist in the original style
 										<Setter Target="PaneButtonGrid.Margin" Value="0,32,0,0" />
-                                        <Setter Target="PaneContentGrid.Margin" Value="0,32,0,0" />
 										-->
+                                        <Setter Target="PaneContentGrid.Margin" Value="0,32,0,0" />
+										
                                     </VisualState.Setters>
                                 </VisualState>
                             </VisualStateGroup>

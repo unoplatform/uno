@@ -16,6 +16,8 @@
 							x:Name="nvSample"
 							IsSettingsVisible="true"
 							IsTabStop="False"
+							IsBackButtonVisible="Visible"
+							PaneTitle="This the pane title"
 							Header="This is header text.">
 				<NavigationView.MenuItems>
 					<NavigationViewItem Content="Menu Item1"
@@ -38,6 +40,17 @@
 						</NavigationViewItem.Icon>
 					</NavigationViewItem>
 				</NavigationView.MenuItems>
+				
+				<NavigationView.AutoSuggestBox>
+					<AutoSuggestBox x:Name="controlsSearchBox"
+									VerticalAlignment="Center"
+									x:FieldModifier="public"
+									PlaceholderText="Search"
+									QueryIcon="Find"
+									RequestedTheme="Light">
+					</AutoSuggestBox>
+				</NavigationView.AutoSuggestBox>
+
 				<Frame x:Name="contentFrame">
 					<Frame.ContentTransitions>
 						<TransitionCollection>
