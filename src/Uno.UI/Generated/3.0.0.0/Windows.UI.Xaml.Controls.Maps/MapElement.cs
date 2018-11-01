@@ -161,13 +161,7 @@ namespace Windows.UI.Xaml.Controls.Maps
 			typeof(global::Windows.UI.Xaml.Controls.Maps.MapElement), 
 			new FrameworkPropertyMetadata(default(bool)));
 		#endif
-		#if __ANDROID__ || false || false || false || false
-		[global::Uno.NotImplemented]
-		public MapElement() : base()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.Maps.MapElement", "MapElement.MapElement()");
-		}
-		#endif
+		// Skipping already declared method Windows.UI.Xaml.Controls.Maps.MapElement.MapElement()
 		// Forced skipping of method Windows.UI.Xaml.Controls.Maps.MapElement.MapElement()
 		// Forced skipping of method Windows.UI.Xaml.Controls.Maps.MapElement.ZIndex.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.Maps.MapElement.ZIndex.set

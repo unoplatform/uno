@@ -67,13 +67,7 @@ namespace Windows.UI.Xaml.Automation.Peers
 		}
 		#endif
 		// Forced skipping of method Windows.UI.Xaml.Automation.Peers.AutomationPeerAnnotation.AutomationPeerAnnotation(Windows.UI.Xaml.Automation.AnnotationType, Windows.UI.Xaml.Automation.Peers.AutomationPeer)
-		#if __ANDROID__ || false || false || false || false
-		[global::Uno.NotImplemented]
-		public AutomationPeerAnnotation() : base()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Automation.Peers.AutomationPeerAnnotation", "AutomationPeerAnnotation.AutomationPeerAnnotation()");
-		}
-		#endif
+		// Skipping already declared method Windows.UI.Xaml.Automation.Peers.AutomationPeerAnnotation.AutomationPeerAnnotation()
 		// Forced skipping of method Windows.UI.Xaml.Automation.Peers.AutomationPeerAnnotation.AutomationPeerAnnotation()
 		// Forced skipping of method Windows.UI.Xaml.Automation.Peers.AutomationPeerAnnotation.Type.get
 		// Forced skipping of method Windows.UI.Xaml.Automation.Peers.AutomationPeerAnnotation.Type.set

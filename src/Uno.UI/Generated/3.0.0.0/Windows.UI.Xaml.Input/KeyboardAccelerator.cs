@@ -95,13 +95,7 @@ namespace Windows.UI.Xaml.Input
 			typeof(global::Windows.UI.Xaml.Input.KeyboardAccelerator), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.DependencyObject)));
 		#endif
-		#if __ANDROID__ || false || false || false || false
-		[global::Uno.NotImplemented]
-		public KeyboardAccelerator() : base()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Input.KeyboardAccelerator", "KeyboardAccelerator.KeyboardAccelerator()");
-		}
-		#endif
+		// Skipping already declared method Windows.UI.Xaml.Input.KeyboardAccelerator.KeyboardAccelerator()
 		// Forced skipping of method Windows.UI.Xaml.Input.KeyboardAccelerator.KeyboardAccelerator()
 		// Forced skipping of method Windows.UI.Xaml.Input.KeyboardAccelerator.Key.get
 		// Forced skipping of method Windows.UI.Xaml.Input.KeyboardAccelerator.Key.set

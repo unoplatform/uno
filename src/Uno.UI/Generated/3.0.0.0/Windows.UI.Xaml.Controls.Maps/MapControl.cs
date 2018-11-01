@@ -138,9 +138,11 @@ namespace Windows.UI.Xaml.Controls.Maps
 		// Skipping already declared method Windows.UI.Xaml.Controls.Maps.MapControl.GetLocationFromOffset(Windows.Foundation.Point, out Windows.Devices.Geolocation.Geopoint)
 		// Skipping already declared method Windows.UI.Xaml.Controls.Maps.MapControl.GetOffsetFromLocation(Windows.Devices.Geolocation.Geopoint, out Windows.Foundation.Point)
 		// Skipping already declared method Windows.UI.Xaml.Controls.Maps.MapControl.IsLocationInView(Windows.Devices.Geolocation.Geopoint, out bool)
+		// Skipping already declared method Windows.UI.Xaml.Controls.Maps.MapControl.TrySetViewBoundsAsync(Windows.Devices.Geolocation.GeoboundingBox, Windows.UI.Xaml.Thickness?, Windows.UI.Xaml.Controls.Maps.MapAnimationKind)
 		// Skipping already declared method Windows.UI.Xaml.Controls.Maps.MapControl.TrySetViewAsync(Windows.Devices.Geolocation.Geopoint)
 		// Skipping already declared method Windows.UI.Xaml.Controls.Maps.MapControl.TrySetViewAsync(Windows.Devices.Geolocation.Geopoint, double?)
 		// Skipping already declared method Windows.UI.Xaml.Controls.Maps.MapControl.TrySetViewAsync(Windows.Devices.Geolocation.Geopoint, double?, double?, double?)
+		// Skipping already declared method Windows.UI.Xaml.Controls.Maps.MapControl.TrySetViewAsync(Windows.Devices.Geolocation.Geopoint, double?, double?, double?, Windows.UI.Xaml.Controls.Maps.MapAnimationKind)
 		// Forced skipping of method Windows.UI.Xaml.Controls.Maps.MapControl.BusinessLandmarksVisible.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.Maps.MapControl.BusinessLandmarksVisible.set
 		// Forced skipping of method Windows.UI.Xaml.Controls.Maps.MapControl.TransitFeaturesVisible.get
@@ -188,12 +190,15 @@ namespace Windows.UI.Xaml.Controls.Maps
 		// Skipping already declared method Windows.UI.Xaml.Controls.Maps.MapControl.TryZoomInAsync()
 		// Skipping already declared method Windows.UI.Xaml.Controls.Maps.MapControl.TryZoomOutAsync()
 		// Skipping already declared method Windows.UI.Xaml.Controls.Maps.MapControl.TryZoomToAsync(double)
+		// Skipping already declared method Windows.UI.Xaml.Controls.Maps.MapControl.TrySetSceneAsync(Windows.UI.Xaml.Controls.Maps.MapScene)
+		// Skipping already declared method Windows.UI.Xaml.Controls.Maps.MapControl.TrySetSceneAsync(Windows.UI.Xaml.Controls.Maps.MapScene, Windows.UI.Xaml.Controls.Maps.MapAnimationKind)
 		// Forced skipping of method Windows.UI.Xaml.Controls.Maps.MapControl.MapRightTapped.add
 		// Forced skipping of method Windows.UI.Xaml.Controls.Maps.MapControl.MapRightTapped.remove
 		// Forced skipping of method Windows.UI.Xaml.Controls.Maps.MapControl.BusinessLandmarksEnabled.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.Maps.MapControl.BusinessLandmarksEnabled.set
 		// Forced skipping of method Windows.UI.Xaml.Controls.Maps.MapControl.TransitFeaturesEnabled.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.Maps.MapControl.TransitFeaturesEnabled.set
+		// Skipping already declared method Windows.UI.Xaml.Controls.Maps.MapControl.GetVisibleRegion(Windows.UI.Xaml.Controls.Maps.MapVisibleRegionKind)
 		// Forced skipping of method Windows.UI.Xaml.Controls.Maps.MapControl.MapProjection.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.Maps.MapControl.MapProjection.set
 		// Forced skipping of method Windows.UI.Xaml.Controls.Maps.MapControl.StyleSheet.get

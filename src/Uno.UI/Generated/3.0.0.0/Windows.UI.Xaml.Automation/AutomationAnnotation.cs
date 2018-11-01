@@ -67,13 +67,7 @@ namespace Windows.UI.Xaml.Automation
 		}
 		#endif
 		// Forced skipping of method Windows.UI.Xaml.Automation.AutomationAnnotation.AutomationAnnotation(Windows.UI.Xaml.Automation.AnnotationType, Windows.UI.Xaml.UIElement)
-		#if __ANDROID__ || false || false || false || false
-		[global::Uno.NotImplemented]
-		public AutomationAnnotation() : base()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Automation.AutomationAnnotation", "AutomationAnnotation.AutomationAnnotation()");
-		}
-		#endif
+		// Skipping already declared method Windows.UI.Xaml.Automation.AutomationAnnotation.AutomationAnnotation()
 		// Forced skipping of method Windows.UI.Xaml.Automation.AutomationAnnotation.AutomationAnnotation()
 		// Forced skipping of method Windows.UI.Xaml.Automation.AutomationAnnotation.Type.get
 		// Forced skipping of method Windows.UI.Xaml.Automation.AutomationAnnotation.Type.set

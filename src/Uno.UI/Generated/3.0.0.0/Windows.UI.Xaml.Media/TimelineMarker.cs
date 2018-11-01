@@ -73,13 +73,7 @@ namespace Windows.UI.Xaml.Media
 			typeof(global::Windows.UI.Xaml.Media.TimelineMarker), 
 			new FrameworkPropertyMetadata(default(string)));
 		#endif
-		#if __ANDROID__ || false || false || false || false
-		[global::Uno.NotImplemented]
-		public TimelineMarker() : base()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Media.TimelineMarker", "TimelineMarker.TimelineMarker()");
-		}
-		#endif
+		// Skipping already declared method Windows.UI.Xaml.Media.TimelineMarker.TimelineMarker()
 		// Forced skipping of method Windows.UI.Xaml.Media.TimelineMarker.TimelineMarker()
 		// Forced skipping of method Windows.UI.Xaml.Media.TimelineMarker.Time.get
 		// Forced skipping of method Windows.UI.Xaml.Media.TimelineMarker.Time.set

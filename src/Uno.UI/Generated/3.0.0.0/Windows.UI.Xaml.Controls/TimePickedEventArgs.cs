@@ -27,13 +27,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 		#endif
-		#if __ANDROID__ || false || false || false || false
-		[global::Uno.NotImplemented]
-		public TimePickedEventArgs() : base()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.TimePickedEventArgs", "TimePickedEventArgs.TimePickedEventArgs()");
-		}
-		#endif
+		// Skipping already declared method Windows.UI.Xaml.Controls.TimePickedEventArgs.TimePickedEventArgs()
 		// Forced skipping of method Windows.UI.Xaml.Controls.TimePickedEventArgs.TimePickedEventArgs()
 		// Forced skipping of method Windows.UI.Xaml.Controls.TimePickedEventArgs.OldTime.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.TimePickedEventArgs.NewTime.get
