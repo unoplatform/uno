@@ -79,13 +79,7 @@ namespace Windows.UI.Xaml.Controls
 			typeof(global::Windows.UI.Xaml.Controls.TreeViewItemTemplateSettings), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Thickness)));
 		#endif
-		#if __ANDROID__ || false || false || false || false
-		[global::Uno.NotImplemented]
-		public TreeViewItemTemplateSettings() : base()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.TreeViewItemTemplateSettings", "TreeViewItemTemplateSettings.TreeViewItemTemplateSettings()");
-		}
-		#endif
+		// Skipping already declared method Windows.UI.Xaml.Controls.TreeViewItemTemplateSettings.TreeViewItemTemplateSettings()
 		// Forced skipping of method Windows.UI.Xaml.Controls.TreeViewItemTemplateSettings.TreeViewItemTemplateSettings()
 		// Forced skipping of method Windows.UI.Xaml.Controls.TreeViewItemTemplateSettings.ExpandedGlyphVisibility.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.TreeViewItemTemplateSettings.CollapsedGlyphVisibility.get

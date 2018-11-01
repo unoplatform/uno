@@ -7,13 +7,7 @@ namespace Windows.UI.Xaml.Media
 	#endif
 	public  partial class Projection : global::Windows.UI.Xaml.DependencyObject
 	{
-		#if __ANDROID__ || false || false || false || false
-		[global::Uno.NotImplemented]
-		protected Projection() : base()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Media.Projection", "Projection.Projection()");
-		}
-		#endif
+		// Skipping already declared method Windows.UI.Xaml.Media.Projection.Projection()
 		// Forced skipping of method Windows.UI.Xaml.Media.Projection.Projection()
 	}
 }

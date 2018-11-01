@@ -7,13 +7,7 @@ namespace Windows.UI.Xaml.Controls
 	#endif
 	public  partial class InkToolbarCustomPen : global::Windows.UI.Xaml.DependencyObject
 	{
-		#if __ANDROID__ || false || false || false || false
-		[global::Uno.NotImplemented]
-		protected InkToolbarCustomPen() : base()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.InkToolbarCustomPen", "InkToolbarCustomPen.InkToolbarCustomPen()");
-		}
-		#endif
+		// Skipping already declared method Windows.UI.Xaml.Controls.InkToolbarCustomPen.InkToolbarCustomPen()
 		// Forced skipping of method Windows.UI.Xaml.Controls.InkToolbarCustomPen.InkToolbarCustomPen()
 		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]

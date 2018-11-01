@@ -51,13 +51,7 @@ namespace Windows.UI.Xaml.Media.Animation
 			typeof(global::Windows.UI.Xaml.Media.Animation.ColorKeyFrame), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Color)));
 		#endif
-		#if __ANDROID__ || false || false || false || false
-		[global::Uno.NotImplemented]
-		protected ColorKeyFrame() : base()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Media.Animation.ColorKeyFrame", "ColorKeyFrame.ColorKeyFrame()");
-		}
-		#endif
+		// Skipping already declared method Windows.UI.Xaml.Media.Animation.ColorKeyFrame.ColorKeyFrame()
 		// Forced skipping of method Windows.UI.Xaml.Media.Animation.ColorKeyFrame.ColorKeyFrame()
 		// Forced skipping of method Windows.UI.Xaml.Media.Animation.ColorKeyFrame.Value.get
 		// Forced skipping of method Windows.UI.Xaml.Media.Animation.ColorKeyFrame.Value.set

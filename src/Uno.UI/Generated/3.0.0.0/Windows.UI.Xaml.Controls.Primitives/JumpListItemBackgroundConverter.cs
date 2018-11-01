@@ -51,13 +51,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			typeof(global::Windows.UI.Xaml.Controls.Primitives.JumpListItemBackgroundConverter), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.Brush)));
 		#endif
-		#if __ANDROID__ || false || false || false || false
-		[global::Uno.NotImplemented]
-		public JumpListItemBackgroundConverter() : base()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.Primitives.JumpListItemBackgroundConverter", "JumpListItemBackgroundConverter.JumpListItemBackgroundConverter()");
-		}
-		#endif
+		// Skipping already declared method Windows.UI.Xaml.Controls.Primitives.JumpListItemBackgroundConverter.JumpListItemBackgroundConverter()
 		// Forced skipping of method Windows.UI.Xaml.Controls.Primitives.JumpListItemBackgroundConverter.JumpListItemBackgroundConverter()
 		// Forced skipping of method Windows.UI.Xaml.Controls.Primitives.JumpListItemBackgroundConverter.Enabled.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.Primitives.JumpListItemBackgroundConverter.Enabled.set

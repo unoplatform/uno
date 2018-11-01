@@ -7,13 +7,7 @@ namespace Windows.UI.Xaml.Controls
 	#endif
 	public  partial class RatingItemInfo : global::Windows.UI.Xaml.DependencyObject
 	{
-		#if __ANDROID__ || false || false || false || false
-		[global::Uno.NotImplemented]
-		public RatingItemInfo() : base()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.RatingItemInfo", "RatingItemInfo.RatingItemInfo()");
-		}
-		#endif
+		// Skipping already declared method Windows.UI.Xaml.Controls.RatingItemInfo.RatingItemInfo()
 		// Forced skipping of method Windows.UI.Xaml.Controls.RatingItemInfo.RatingItemInfo()
 	}
 }

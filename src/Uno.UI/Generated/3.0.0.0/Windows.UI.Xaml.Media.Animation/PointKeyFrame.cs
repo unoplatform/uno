@@ -51,13 +51,7 @@ namespace Windows.UI.Xaml.Media.Animation
 			typeof(global::Windows.UI.Xaml.Media.Animation.PointKeyFrame), 
 			new FrameworkPropertyMetadata(default(global::Windows.Foundation.Point)));
 		#endif
-		#if __ANDROID__ || false || false || false || false
-		[global::Uno.NotImplemented]
-		protected PointKeyFrame() : base()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Media.Animation.PointKeyFrame", "PointKeyFrame.PointKeyFrame()");
-		}
-		#endif
+		// Skipping already declared method Windows.UI.Xaml.Media.Animation.PointKeyFrame.PointKeyFrame()
 		// Forced skipping of method Windows.UI.Xaml.Media.Animation.PointKeyFrame.PointKeyFrame()
 		// Forced skipping of method Windows.UI.Xaml.Media.Animation.PointKeyFrame.Value.get
 		// Forced skipping of method Windows.UI.Xaml.Media.Animation.PointKeyFrame.Value.set

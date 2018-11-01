@@ -7,13 +7,7 @@ namespace Windows.UI.Xaml.Controls.Maps
 	#endif
 	public  partial class MapModel3D : global::Windows.UI.Xaml.DependencyObject
 	{
-		#if __ANDROID__ || false || false || false || false
-		[global::Uno.NotImplemented]
-		public MapModel3D() : base()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.Maps.MapModel3D", "MapModel3D.MapModel3D()");
-		}
-		#endif
+		// Skipping already declared method Windows.UI.Xaml.Controls.Maps.MapModel3D.MapModel3D()
 		// Forced skipping of method Windows.UI.Xaml.Controls.Maps.MapModel3D.MapModel3D()
 		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]

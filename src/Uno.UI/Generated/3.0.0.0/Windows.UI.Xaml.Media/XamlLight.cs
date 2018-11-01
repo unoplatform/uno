@@ -21,13 +21,7 @@ namespace Windows.UI.Xaml.Media
 			}
 		}
 		#endif
-		#if __ANDROID__ || false || false || false || false
-		[global::Uno.NotImplemented]
-		public XamlLight() : base()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Media.XamlLight", "XamlLight.XamlLight()");
-		}
-		#endif
+		// Skipping already declared method Windows.UI.Xaml.Media.XamlLight.XamlLight()
 		// Forced skipping of method Windows.UI.Xaml.Media.XamlLight.XamlLight()
 		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]

@@ -73,13 +73,7 @@ namespace Windows.UI.Xaml.Controls.Maps
 			typeof(global::Windows.UI.Xaml.Controls.Maps.MapLayer), 
 			new FrameworkPropertyMetadata(default(int)));
 		#endif
-		#if __ANDROID__ || false || false || false || false
-		[global::Uno.NotImplemented]
-		public MapLayer() : base()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.Maps.MapLayer", "MapLayer.MapLayer()");
-		}
-		#endif
+		// Skipping already declared method Windows.UI.Xaml.Controls.Maps.MapLayer.MapLayer()
 		// Forced skipping of method Windows.UI.Xaml.Controls.Maps.MapLayer.MapLayer()
 		// Forced skipping of method Windows.UI.Xaml.Controls.Maps.MapLayer.MapTabIndex.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.Maps.MapLayer.MapTabIndex.set
