@@ -23,6 +23,7 @@ namespace Windows.UI.Xaml.Controls
 	public partial class UnoWKWebView : WKWebView, INativeWebView
 	{
 		private WebView _parentWebView;
+		private bool _isCancelling;
 
 		private const string OkResourceKey = "WebView_Ok";
 		private const string CancelResourceKey = "WebView_Cancel";
@@ -245,6 +246,8 @@ namespace Windows.UI.Xaml.Controls
 				this.Log().DebugFormat("OnStarted: {0}", webView.Url.ToUri());
 			}
 
+			_isCancelling = false;
+
 			var args = new WebViewNavigationStartingEventArgs()
 			{
 				Cancel = false,
@@ -255,6 +258,7 @@ namespace Windows.UI.Xaml.Controls
 
 			if (args.Cancel)
 			{
+				_isCancelling = true;
 				StopLoading();
 			}
 		}
@@ -270,7 +274,8 @@ namespace Windows.UI.Xaml.Controls
 
 			_errorMap.TryGetValue((NSUrlError)(int)error.Code, out status);
 
-			if (status != WebErrorStatus.OperationCanceled)
+			// We use the _isCancelling flag because the NSError caused by the StopLoading() doesn't always translate to WebErrorStatus.OperationCanceled.
+			if (status != WebErrorStatus.OperationCanceled && !_isCancelling)
 			{
 				Uri uri;
 				//If the url which failed to load is available in the user info, use it because with the WKWebView the 
@@ -293,6 +298,8 @@ namespace Windows.UI.Xaml.Controls
 
 				_parentWebView.OnComplete(uri, false, status);
 			}
+
+			_isCancelling = false;
 		}
 
 		public override bool CanGoBack => base.CanGoBack && GetNearestValidHistoryItem(direction: -1) != null;

@@ -19,6 +19,7 @@
  * 136210 [Android] Path is cut off by a pixel
  * 132004 [Android] Window bounds incorrect for screen with rounded corners
  * #312 [Wasm] Text display was chopped on Wasm.
+ * 135839 `WebView` No longer raises NavigationFailed and NavigationCompleted events when navigation is cancelled on iOS.
 
 ## Release 1.41
 
