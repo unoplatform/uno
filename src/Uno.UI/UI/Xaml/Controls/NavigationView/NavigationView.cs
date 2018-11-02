@@ -163,6 +163,8 @@ namespace Windows.UI.Xaml.Controls
 			{
 				VisualStateManager.GoToState(item, IsPaneOpen ? "HeaderTextVisible" : "HeaderTextCollapsed", true);
 			}
+
+			VisualStateManager.GoToState(this, IsPaneOpen ? "AutoSuggestBoxVisible" : "AutoSuggestBoxCollapsed", true);
 		}
 
 		private void OnSettingsPressed()
@@ -186,7 +188,8 @@ namespace Windows.UI.Xaml.Controls
 
 		private void UpdateSelectedItem()
 		{
-			void updateOpacity(NavigationViewItem item) {
+			void updateOpacity(NavigationViewItem item)
+			{
 				if (item.SelectionIndicator != null)
 				{
 					item.SelectionIndicator.Opacity = SelectedItem == item ? 1 : 0;

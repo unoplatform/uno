@@ -5,7 +5,6 @@ namespace Windows.UI.Xaml.Controls
 {
 	public partial class NavigationView : ContentControl
 	{
-		[Uno.NotImplemented]
 		public object SelectedItem
 		{
 			get => (object)GetValue(SelectedItemProperty);
@@ -60,7 +59,6 @@ namespace Windows.UI.Xaml.Controls
 			set => SetValue(MenuItemContainerStyleProperty, value);
 		}
 
-		[Uno.NotImplemented]
 		public bool IsSettingsVisible
 		{
 			get => (bool)GetValue(IsSettingsVisibleProperty);
@@ -224,7 +222,6 @@ namespace Windows.UI.Xaml.Controls
 			typeof(NavigationView),
 			new FrameworkPropertyMetadata(default(bool)));
 
-		[Uno.NotImplemented]
 		public static DependencyProperty IsSettingsVisibleProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
 			name: "IsSettingsVisible",
