@@ -26,7 +26,7 @@ uid: front-page
 <div class="col-md-6 col-xs-12 headerbox">
     <div class="headerbox-inner clearfix">
         <h2>Supported features</h2>
-        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+        <p>A list of supported Uno Platform features.</p>
         <a href="/articles/supported-features.html" class="button turquoise">Learn more</a>
         <img src="images/features.png" alt="features" class="icon" />
     </div>       
@@ -35,7 +35,7 @@ uid: front-page
 <div class="col-md-6 col-xs-12 headerbox">
     <div class="headerbox-inner clearfix">
         <h2>Using Uno.UI</h2>
-        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+        <p>An introduction to developing with the Uno Platform.</p>
         <a href="/articles/using-uno-ui.html" class="button turquoise">Learn more</a>
         <img src="images/keyboard.png" alt="keyboard" class="icon" />
     </div>       
@@ -44,7 +44,7 @@ uid: front-page
 <div class="col-md-6 col-xs-12 headerbox">
     <div class="headerbox-inner clearfix">
         <h2>Debugging Uno.UI</h2>
-        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+        <p>How to contribute to the Uno Platform.</p>
         <a href="/articles/debugging-uno-ui.html" class="button turquoise">Learn more</a>
         <img src="images/bug.png" alt="bug" class="icon" />
     </div>       
