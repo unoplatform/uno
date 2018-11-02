@@ -88,9 +88,14 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Main.cs" />
+    <None Include="Resources\Default-568h%402x.png" />
     <None Include="Info.plist" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Content Include="Entitlements.plist" />
+    <BundleResource Include="Resources\Fonts\winjs-symbols.ttf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </BundleResource>
+    <None Include="Resources\LaunchScreen.xib" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -100,37 +105,32 @@
     <Reference Include="System.Numerics" />
     <Reference Include="System.Numerics.Vectors" />
   </ItemGroup>
-	
-	<ItemGroup>
-		<PackageReference Include="Uno.SourceGenerationTasks">
-			<Version>1.28.0-dev.145</Version>
-			<NoWarn>NU1701</NoWarn>
-		</PackageReference>
-		<PackageReference Include="Microsoft.Extensions.Logging.Console" Version="1.1.1" />
-		<PackageReference Include="Microsoft.Extensions.Logging.Filter" Version="1.1.1" />
-	</ItemGroup>
-
-	<ItemGroup>
-		<ProjectReference Include="..\..\Uno.Foundation\Uno.Foundation.csproj">
-		  <Project>{528AE586-5DF3-4DAD-AA5C-F12F4D5E0605}</Project>
-		  <Name>Uno.Foundation</Name>
-		</ProjectReference>
-		<ProjectReference Include="..\..\Uno.UI\Uno.UI.csproj">
-		  <Project>{C6884723-81DB-43BD-924F-3FA367633E64}</Project>
-		  <Name>Uno.UI</Name>
-		</ProjectReference>
-		<ProjectReference Include="..\..\Uno.UWP\Uno.csproj">
-		  <Project>{58C0CBAB-2619-4F58-BC41-5C74DBE31261}</Project>
-		  <Name>Uno</Name>
-		</ProjectReference>
-	</ItemGroup>
-
-	<PropertyGroup>
-		<UnoUIGeneratorsBinPath>..\..\SourceGenerators\Uno.UI.SourceGenerators\bin\$(Configuration)</UnoUIGeneratorsBinPath>
-	</PropertyGroup>
-
-	<Import Project="..\..\SourceGenerators\Uno.UI.SourceGenerators\Content\Uno.UI.SourceGenerators.props" />
-
-	<Import Project="..\SamplesApp.Shared\SamplesApp.Shared.projitems" Label="Shared" Condition="Exists('..\SamplesApp.Shared\SamplesApp.Shared.projitems')" />
+  <ItemGroup>
+    <PackageReference Include="Uno.SourceGenerationTasks">
+      <Version>1.28.0-dev.145</Version>
+      <NoWarn>NU1701</NoWarn>
+    </PackageReference>
+    <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="1.1.1" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Filter" Version="1.1.1" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\Uno.Foundation\Uno.Foundation.csproj">
+      <Project>{528AE586-5DF3-4DAD-AA5C-F12F4D5E0605}</Project>
+      <Name>Uno.Foundation</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Uno.UI\Uno.UI.csproj">
+      <Project>{C6884723-81DB-43BD-924F-3FA367633E64}</Project>
+      <Name>Uno.UI</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Uno.UWP\Uno.csproj">
+      <Project>{58C0CBAB-2619-4F58-BC41-5C74DBE31261}</Project>
+      <Name>Uno</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <PropertyGroup>
+    <UnoUIGeneratorsBinPath>..\..\SourceGenerators\Uno.UI.SourceGenerators\bin\$(Configuration)</UnoUIGeneratorsBinPath>
+  </PropertyGroup>
+  <Import Project="..\..\SourceGenerators\Uno.UI.SourceGenerators\Content\Uno.UI.SourceGenerators.props" />
+  <Import Project="..\SamplesApp.Shared\SamplesApp.Shared.projitems" Label="Shared" Condition="Exists('..\SamplesApp.Shared\SamplesApp.Shared.projitems')" />
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />
 </Project>
