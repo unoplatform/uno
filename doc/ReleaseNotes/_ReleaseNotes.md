@@ -25,6 +25,7 @@
  * #312 [Wasm] Text display was chopped on Wasm.
  * 135839 `WebView` No longer raises NavigationFailed and NavigationCompleted events when navigation is cancelled on iOS.
  * 136188 [Android] Page elements are aligned differently upon back navigation
+ * 136114 [iOS] Image inside Frame doesn't respond to orientation changes
 
 ## Release 1.41
 
