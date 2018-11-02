@@ -14,21 +14,30 @@ namespace Windows.UI.Xaml.Controls
 
 		public FontIcon()
 		{
-			_textBlock = new TextBlock()
-			{
-				Text = Glyph,
-				FontSize = FontSize,
-				FontStyle = FontStyle,
-				FontFamily = FontFamily,
-				Foreground = Foreground,
-
-				VerticalAlignment = VerticalAlignment.Center,
-				HorizontalAlignment = HorizontalAlignment.Center,
-			};
+			_textBlock = new TextBlock();
 
 			AddIconElementView(_textBlock);
+
+			Loaded += FontIcon_Loaded;
 		}
-		
+
+		private void FontIcon_Loaded(object sender, RoutedEventArgs e)
+		{
+			SynchronizeProperties();
+		}
+
+		private void SynchronizeProperties()
+		{
+			_textBlock.Text = Glyph;
+			_textBlock.FontSize = FontSize;
+			_textBlock.FontStyle = FontStyle;
+			_textBlock.FontFamily = FontFamily;
+			_textBlock.Foreground = Foreground;
+
+			_textBlock.VerticalAlignment = VerticalAlignment.Center;
+			_textBlock.HorizontalAlignment = HorizontalAlignment.Center;
+		}
+
 		#region Glyph
 
 		public string Glyph
@@ -60,14 +69,21 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		public static readonly DependencyProperty FontFamilyProperty =
-			DependencyProperty.Register("FontFamily", typeof(FontFamily), typeof(FontIcon), new PropertyMetadata(new FontFamily("ms-appx:///Assets/Fonts/segmdl2.ttf#Segoe MDL2 Assets"),
-				(s, e) => ((FontIcon)s).OnFontFamilyChanged((FontFamily)e.NewValue)));
+			DependencyProperty.Register(
+				name: nameof(FontFamily),
+				propertyType: typeof(FontFamily),
+				ownerType: typeof(FontIcon),
+				typeMetadata: new PropertyMetadata(
+					defaultValue: new FontFamily(Uno.UI.FeatureConfiguration.Font.SymbolsFont),
+					propertyChangedCallback: (s, e) => ((FontIcon)s).OnFontFamilyChanged((FontFamily)e.NewValue)
+				)
+		);
 
 		private void OnFontFamilyChanged(FontFamily newValue)
 		{
 			if (_textBlock != null)
 			{
-				_textBlock.FontFamily = newValue;
+				_textBlock.FontFamily = newValue; 
 			}
 		}
 
