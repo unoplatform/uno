@@ -65,7 +65,6 @@ namespace Windows.UI.Xaml.Controls
 			set => SetValue(IsSettingsVisibleProperty, value);
 		}
 
-		[Uno.NotImplemented]
 		public bool IsPaneToggleButtonVisible
 		{
 			get => (bool)GetValue(IsPaneToggleButtonVisibleProperty);
@@ -123,8 +122,17 @@ namespace Windows.UI.Xaml.Controls
 			set => SetValue(AlwaysShowHeaderProperty, value);
 		}
 
-		[Uno.NotImplemented]
-		public NavigationViewDisplayMode DisplayMode => (NavigationViewDisplayMode)GetValue(DisplayModeProperty);
+		public NavigationViewDisplayMode DisplayMode
+		{
+			get
+			{
+				return (NavigationViewDisplayMode)GetValue(DisplayModeProperty);
+			}
+			internal set
+			{
+				SetValue(DisplayModeProperty, value);
+			}
+		}
 
 		public IList<object> MenuItems => (IList<object>)GetValue(MenuItemsProperty);
 
@@ -182,9 +190,14 @@ namespace Windows.UI.Xaml.Controls
 
 		public static DependencyProperty DisplayModeProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"DisplayMode", typeof(NavigationViewDisplayMode),
-			typeof(NavigationView),
-			new FrameworkPropertyMetadata(default(NavigationViewDisplayMode)));
+			name: nameof(DisplayMode),
+			propertyType: typeof(NavigationViewDisplayMode),
+			ownerType: typeof(NavigationView),
+			typeMetadata: new FrameworkPropertyMetadata(
+				NavigationViewDisplayMode.Expanded,
+				(s, e) => (s as NavigationView)?.OnDisplayModeChanged()
+			)
+		);
 
 		public static DependencyProperty ExpandedModeThresholdWidthProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
@@ -220,7 +233,7 @@ namespace Windows.UI.Xaml.Controls
 		Windows.UI.Xaml.DependencyProperty.Register(
 			"IsPaneToggleButtonVisible", typeof(bool),
 			typeof(NavigationView),
-			new FrameworkPropertyMetadata(default(bool)));
+			new FrameworkPropertyMetadata(true, (s, e) => (s as NavigationView)?.OnPaneToggleButtonVisibleChanged()));
 
 		public static DependencyProperty IsSettingsVisibleProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
@@ -228,7 +241,8 @@ namespace Windows.UI.Xaml.Controls
 			propertyType: typeof(bool),
 			ownerType: typeof(NavigationView),
 			typeMetadata: new FrameworkPropertyMetadata(
-				defaultValue: true, propertyChangedCallback: (s, e) => (s as NavigationView)?.OnIsSettingsVisibleChanged()
+				defaultValue: true,
+				propertyChangedCallback: (s, e) => (s as NavigationView)?.OnIsSettingsVisibleChanged()
 			)
 		);
 
@@ -298,9 +312,14 @@ namespace Windows.UI.Xaml.Controls
 
 		public static DependencyProperty SelectedItemProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"SelectedItem", typeof(object),
-			typeof(NavigationView),
-			new FrameworkPropertyMetadata(default(object)));
+			name: nameof(SelectedItem),
+			propertyType: typeof(object),
+			ownerType: typeof(NavigationView),
+			typeMetadata: new FrameworkPropertyMetadata(
+				null,
+				propertyChangedCallback: (s, e) => (s as NavigationView)?.OnSelectedItemChanged()
+			)
+		);
 
 		public static DependencyProperty SettingsItemProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
@@ -308,14 +327,12 @@ namespace Windows.UI.Xaml.Controls
 			typeof(NavigationView),
 			new FrameworkPropertyMetadata(default(object)));
 
-		[Uno.NotImplemented]
 		public static DependencyProperty IsBackButtonVisibleProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
 			"IsBackButtonVisible", typeof(NavigationViewBackButtonVisible),
 			typeof(NavigationView),
 			new FrameworkPropertyMetadata(default(NavigationViewBackButtonVisible)));
 
-		[Uno.NotImplemented]
 		public static DependencyProperty IsBackEnabledProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
 			"IsBackEnabled", typeof(bool),

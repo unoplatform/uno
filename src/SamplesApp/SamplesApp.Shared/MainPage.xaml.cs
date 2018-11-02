@@ -36,5 +36,15 @@ namespace SamplesApp
 		{
 			Console.WriteLine("NavigationView_SelectionChanged");
 		}
+
+		private void NvSample_ItemInvoked(NavigationView sender, NavigationViewItemInvokedEventArgs args)
+		{
+			Console.WriteLine("NvSample_ItemInvoked");
+		}
+
+		private void NvSample_BackRequested(NavigationView sender, NavigationViewBackRequestedEventArgs args)
+		{
+			Console.WriteLine("NvSample_BackRequested");
+		}
 	}
 }

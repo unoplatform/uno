@@ -1,11 +1,15 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using Uno.Disposables;
 using Uno.Extensions;
+using Uno.Logging;
 
 namespace Windows.UI.Xaml.Controls
 {
 	public partial class NavigationView : ContentControl
 	{
+		private readonly SerialDisposable _subscriptions = new SerialDisposable();
 		private readonly ObservableVector<object> _menuItems;
 		private NavigationViewList _menuItemsHost;
 		private Grid _paneContentGrid;
@@ -19,6 +23,8 @@ namespace Windows.UI.Xaml.Controls
 			_menuItems = new ObservableVector<object>();
 			SetValue(MenuItemsProperty, _menuItems);
 			SizeChanged += NavigationView_SizeChanged;
+			Loaded += (s, e) => RegisterEvents();
+			Unloaded += (s, e) => UnregisterEvents();
 		}
 
 		private void NavigationView_SizeChanged(object sender, SizeChangedEventArgs args)
@@ -44,7 +50,7 @@ namespace Windows.UI.Xaml.Controls
 
 		private void MinimalMode()
 		{
-			VisualStateManager.GoToState(this, IsBackButtonVisible != NavigationViewBackButtonVisible.Collapsed ? "MinimalWithBackButton" : "Minimal", true);
+			DisplayMode = NavigationViewDisplayMode.Minimal;
 
 			if (_paneContentGrid != null && _buttonHolderGrid != null)
 			{
@@ -64,7 +70,7 @@ namespace Windows.UI.Xaml.Controls
 
 		private void UpdateExpandedMode()
 		{
-			VisualStateManager.GoToState(this, "Expanded", true);
+			DisplayMode = NavigationViewDisplayMode.Expanded;
 
 			if (_paneContentGrid != null && _navigationViewBackButton != null)
 			{
@@ -84,7 +90,7 @@ namespace Windows.UI.Xaml.Controls
 
 		private void UpdateCompactMode()
 		{
-			VisualStateManager.GoToState(this, "Compact", true);
+			DisplayMode = NavigationViewDisplayMode.Compact;
 
 			if (_paneContentGrid != null && _buttonHolderGrid != null)
 			{
@@ -129,32 +135,124 @@ namespace Windows.UI.Xaml.Controls
 
 			if(_menuItemsHost != null)
 			{
-				_menuItemsHost.SelectionChanged += OnMenuItemsHost_SelectionChanged;
-
-				if(MenuItemsSource == null)
+				if (MenuItemsSource == null)
 				{
 					_menuItemsHost.Items.Clear();
 					_menuItemsHost.Items.AddRange(_menuItems);
 				}
 			}
 
-			if(_togglePaneButton != null)
-			{
-				_togglePaneButton.Click += OnTogglePaneButton_Click;
-			}
-
-			if(SettingsItem is NavigationViewItem item)
+			if (SettingsItem is NavigationViewItem item)
 			{
 				item.Content = "Settings";
-				item.InternalPointerPressed += OnSettingsPressed;
 			}
 
 			OnIsSettingsVisibleChanged();
+			RegisterEvents();
+		}
+
+		private void RegisterEvents()
+		{
+			_subscriptions.Disposable = null;
+
+			if (IsLoaded)
+			{
+				if (_menuItemsHost != null)
+				{
+					_menuItemsHost.SelectionChanged += OnMenuItemsHost_SelectionChanged;
+					_menuItemsHost.ItemClick += OnMenuItemsHost_ItemClick;
+				}
+
+				if (_togglePaneButton != null)
+				{
+					_togglePaneButton.Click += OnTogglePaneButton_Click;
+				}
+
+				if (_navigationViewBackButton != null)
+				{
+					_navigationViewBackButton.Click += OnNavigationViewBackButtonClick;
+				}
+
+				if (SettingsItem is NavigationViewItem item)
+				{
+					item.InternalPointerPressed += OnSettingsPressed;
+				}
+
+				_subscriptions.Disposable = Disposable.Create(() => {
+					if (_menuItemsHost != null)
+					{
+						_menuItemsHost.SelectionChanged -= OnMenuItemsHost_SelectionChanged;
+						_menuItemsHost.ItemClick -= OnMenuItemsHost_ItemClick;
+					}
+
+					if (_togglePaneButton != null)
+					{
+						_togglePaneButton.Click -= OnTogglePaneButton_Click;
+					}
+
+					if (_navigationViewBackButton != null)
+					{
+						_navigationViewBackButton.Click -= OnNavigationViewBackButtonClick;
+					}
+
+					if (SettingsItem is NavigationViewItem item2)
+					{
+						item2.InternalPointerPressed -= OnSettingsPressed;
+					}
+				});
+			}
+		}
+
+		private void UnregisterEvents()
+		{
+			_subscriptions.Disposable = null;
+		}
+
+		private void OnMenuItemsHost_ItemClick(object sender, ItemClickEventArgs e)
+		{
+			ItemInvoked?.Invoke(
+				this,
+				new NavigationViewItemInvokedEventArgs {
+					InvokedItem = e.ClickedItem,
+					IsSettingsInvoked = SettingsItem == e.ClickedItem
+				}
+			);
+		}
+
+		private void OnNavigationViewBackButtonClick(object sender, RoutedEventArgs e)
+		{
+			BackRequested?.Invoke(this, new NavigationViewBackRequestedEventArgs());
 		}
 
 		private void OnTogglePaneButton_Click(object sender, RoutedEventArgs e)
 		{
+			var closing = new NavigationViewPaneClosingEventArgs();
+
+			if (IsPaneOpen)
+			{
+				PaneClosing?.Invoke(this, closing);
+
+				if (closing.Cancel)
+				{
+					this.Log().DebugIfEnabled(() => "Close pane canceled");
+					return;
+				}
+			}
+			else
+			{
+				PaneOpening?.Invoke(this, null);
+			}
+
 			IsPaneOpen = !IsPaneOpen;
+
+			if (IsPaneOpen)
+			{
+				PaneOpened?.Invoke(this, null);
+			}
+			else
+			{
+				PaneClosed?.Invoke(this, null);
+			}
 		}
 
 		private void OnIsPaneOpenChanged()
@@ -169,24 +267,35 @@ namespace Windows.UI.Xaml.Controls
 
 		private void OnSettingsPressed()
 		{
-			_menuItemsHost.SelectedItem = null;
-
 			if (SettingsItem is NavigationViewItem item)
 			{
 				SelectedItem = SettingsItem;
-				item.IsSelected = true;
-				UpdateSelectedItem();
+				_menuItemsHost.SelectedItem = null;
+
+				ItemInvoked?.Invoke(
+					this,
+					new NavigationViewItemInvokedEventArgs
+					{
+						InvokedItem = SettingsItem,
+						IsSettingsInvoked = true
+					}
+				);
 			}
 		}
 
 		private void OnMenuItemsHost_SelectionChanged(object sender, SelectionChangedEventArgs e)
 		{
-			SelectedItem = _menuItemsHost.SelectedItem;
-
-			UpdateSelectedItem();
+			if (_menuItemsHost.SelectedItem == null && SelectedItem == SettingsItem)
+			{
+				// Ignore the change, we just selected the settings.
+			}
+			else
+			{
+				SelectedItem = _menuItemsHost.SelectedItem;
+			}
 		}
 
-		private void UpdateSelectedItem()
+		private void OnSelectedItemChanged()
 		{
 			void updateOpacity(NavigationViewItem item)
 			{
@@ -218,6 +327,31 @@ namespace Windows.UI.Xaml.Controls
 		private void OnIsSettingsVisibleChanged()
 		{
 			VisualStateManager.GoToState(this, IsSettingsVisible ? "SettingsVisible" : "SettingsCollapsed", true);
+		}
+
+		private void OnPaneToggleButtonVisibleChanged()
+		{
+			VisualStateManager.GoToState(this, IsPaneToggleButtonVisible ? "TogglePaneButtonVisible" : "TogglePaneButtonCollapsed", true);
+		}
+
+		private void OnDisplayModeChanged()
+		{
+			switch (DisplayMode)
+			{
+				case NavigationViewDisplayMode.Expanded:
+					VisualStateManager.GoToState(this, "Expanded", true);
+					break;
+
+				case NavigationViewDisplayMode.Compact:
+					VisualStateManager.GoToState(this, "Compact", true);
+					break;
+
+				case NavigationViewDisplayMode.Minimal:
+					VisualStateManager.GoToState(this, IsBackButtonVisible != NavigationViewBackButtonVisible.Collapsed ? "MinimalWithBackButton" : "Minimal", true);
+					break;
+			}
+
+			DisplayModeChanged?.Invoke(this, new NavigationViewDisplayModeChangedEventArgs { DisplayMode = DisplayMode });
 		}
 	}
 }

@@ -13,6 +13,8 @@
 							Margin="0,12,0,0"
 							Grid.Row="2"
 							SelectionChanged="NavigationView_SelectionChanged"
+							ItemInvoked="NvSample_ItemInvoked"
+							BackRequested="NvSample_BackRequested"
 							x:Name="nvSample"
 							IsSettingsVisible="true"
 							IsTabStop="False"
