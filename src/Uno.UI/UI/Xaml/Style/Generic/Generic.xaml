@@ -9391,10 +9391,8 @@
 				Value="{ThemeResource NavigationViewItemBorderBrush}" />
 		<Setter Property="BorderThickness"
 				Value="{ThemeResource NavigationViewToggleBorderThickness}" />
-		<win:Setter Property="Content"
+		<Setter Property="Content"
 					Value="&#xE700;" />
-		<xamarin:Setter Property="Content"
-						Value="&#xE1A1;" />
 		<Setter Property="Template">
 			<Setter.Value>
 				<ControlTemplate TargetType="Button">
@@ -9883,7 +9881,10 @@
                                 <ColumnDefinition Width="*" />
                             </Grid.ColumnDefinitions>
 
-                            <Viewbox x:Name="IconBox"
+                            <win:Viewbox x:Name="IconBox"
+                                Child="{TemplateBinding Icon}"
+                                Margin="16,12"/>
+                            <xamarin:Border x:Name="IconBox"
                                 Child="{TemplateBinding Icon}"
                                 Margin="16,12"/>
 
