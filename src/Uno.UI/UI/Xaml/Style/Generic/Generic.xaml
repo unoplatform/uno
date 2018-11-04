@@ -9225,8 +9225,13 @@
 		</Setter>
 	</Style>
 
+    <win:AcrylicBrush x:Key="SystemControlChromeMediumLowAcrylicElementMediumBrush" BackgroundSource="Backdrop" TintColor="{StaticResource SystemChromeAltHighColor}" TintOpacity="0.6" FallbackColor="{StaticResource SystemChromeMediumLowColor}" />
+    <xamarin:SolidColorBrush x:Key="SystemControlChromeMediumLowAcrylicElementMediumBrush" Color="{StaticResource SystemChromeMediumLowColor}" />
 	<StaticResource x:Key="NavigationViewDefaultPaneBackground" ResourceKey="SystemControlChromeMediumLowAcrylicElementMediumBrush" />
     <Color x:Key="SystemChromeMediumHighColor">#FF323232</Color>
+	
+	<win:AcrylicBrush x:Key="SystemControlChromeMediumLowAcrylicWindowMediumBrush" BackgroundSource="HostBackdrop" TintColor="{StaticResource SystemChromeAltHighColor}" TintOpacity="0.6" FallbackColor="{StaticResource SystemChromeMediumLowColor}" />
+	<xamarin:SolidColorBrush x:Key="SystemControlChromeMediumLowAcrylicWindowMediumBrush" Color="{StaticResource SystemChromeMediumLowColor}" />
     <StaticResource x:Key="NavigationViewExpandedPaneBackground" ResourceKey="SystemControlChromeMediumLowAcrylicWindowMediumBrush" />
 
 	<!--
@@ -9636,33 +9641,6 @@
 
                         </VisualStateManager.VisualStateGroups>
 
-                        <Grid
-                            x:Name="PaneToggleButtonGrid"
-                            Margin="0,0,0,8"
-                            HorizontalAlignment="Left"
-                            VerticalAlignment="Top"
-                            Canvas.ZIndex="100">
-
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition Height="Auto" />
-                            </Grid.RowDefinitions>
-                            <Grid x:Name="TogglePaneTopPadding" />
-
-                            <Grid x:Name="ButtonHolderGrid" Grid.Row="1">
-                                <Button x:Name="NavigationViewBackButton"
-                                        Style="{StaticResource NavigationBackButtonNormalStyle}"
-                                        VerticalAlignment="Top"
-                                        IsEnabled="{TemplateBinding IsBackEnabled}"/>
-
-                                <Button
-                                    x:Name="TogglePaneButton"
-                                    Style="{TemplateBinding PaneToggleButtonStyle}"
-                                    AutomationProperties.LandmarkType="Navigation"
-                                    VerticalAlignment="Top"/>
-                            </Grid>
-                        </Grid>
-
                         <SplitView
                             x:Name="RootSplitView"
                             Background="{TemplateBinding Background}"
@@ -9763,6 +9741,34 @@
                                 </Grid>
                             </SplitView.Content>
                         </SplitView>
+
+                        <Grid
+                            x:Name="PaneToggleButtonGrid"
+                            Margin="0,0,0,8"
+                            HorizontalAlignment="Left"
+                            VerticalAlignment="Top"
+                            Canvas.ZIndex="100">
+							<!-- Canvas.ZIndex is not supported in Uno Grid yet, see https://github.com/nventive/Uno/issues/325 -->
+
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+                            <Grid x:Name="TogglePaneTopPadding" />
+
+                            <Grid x:Name="ButtonHolderGrid" Grid.Row="1">
+                                <Button x:Name="NavigationViewBackButton"
+                                        Style="{StaticResource NavigationBackButtonNormalStyle}"
+                                        VerticalAlignment="Top"
+                                        IsEnabled="{TemplateBinding IsBackEnabled}"/>
+
+                                <Button
+                                    x:Name="TogglePaneButton"
+                                    Style="{TemplateBinding PaneToggleButtonStyle}"
+                                    AutomationProperties.LandmarkType="Navigation"
+                                    VerticalAlignment="Top"/>
+                            </Grid>
+                        </Grid>
                     
                     </Grid>
                 </ControlTemplate>

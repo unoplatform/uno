@@ -17,6 +17,7 @@ namespace Windows.UI.Xaml.Controls
 		private TextBlock _paneTitleTextBlock;
 		private Button _togglePaneButton;
 		private Button _navigationViewBackButton;
+		private SplitView _rootSplitView;
 
 		public NavigationView()
 		{
@@ -46,30 +47,42 @@ namespace Windows.UI.Xaml.Controls
 			{
 				MinimalMode();
 			}
+
+			VisualStateManager.GoToState(this, !IsPaneOpen ? "ListSizeCompact" : "ListSizeFull", true);
 		}
 
 		private void MinimalMode()
 		{
+			if (_rootSplitView != null)
+			{
+				_rootSplitView.DisplayMode = SplitViewDisplayMode.CompactOverlay;
+			}
+
 			DisplayMode = NavigationViewDisplayMode.Minimal;
 
-			if (_paneContentGrid != null && _buttonHolderGrid != null)
+			if (_paneContentGrid != null && _navigationViewBackButton != null)
 			{
-				_paneContentGrid.RowDefinitions.ElementAt(1).Height = GridLengthHelper.FromPixels(0);
+				_paneContentGrid.RowDefinitions.ElementAt(1).Height = GridLengthHelper.FromPixels(_navigationViewBackButton.RenderSize.Height);
+			}
+
+			if (_paneTitleTextBlock != null && _togglePaneButton != null)
+			{
+				_paneTitleTextBlock.Margin = new Thickness(_togglePaneButton.RenderSize.Width, 0, 0, 0);
 			}
 
 			if (_togglePaneButton != null && _navigationViewBackButton != null)
 			{
 				_togglePaneButton.Margin = new Thickness(0, _navigationViewBackButton.RenderSize.Height, 0, 0);
 			}
-
-			if (_paneTitleTextBlock != null)
-			{
-				_paneTitleTextBlock.Margin = new Thickness(0, 0, 0, 0);
-			}
 		}
 
 		private void UpdateExpandedMode()
 		{
+			if (_rootSplitView != null)
+			{
+				_rootSplitView.DisplayMode = SplitViewDisplayMode.CompactInline;
+			}
+
 			DisplayMode = NavigationViewDisplayMode.Expanded;
 
 			if (_paneContentGrid != null && _navigationViewBackButton != null)
@@ -90,6 +103,11 @@ namespace Windows.UI.Xaml.Controls
 
 		private void UpdateCompactMode()
 		{
+			if (_rootSplitView != null)
+			{
+				_rootSplitView.DisplayMode = SplitViewDisplayMode.Overlay;
+			}
+
 			DisplayMode = NavigationViewDisplayMode.Compact;
 
 			if (_paneContentGrid != null && _buttonHolderGrid != null)
@@ -99,7 +117,7 @@ namespace Windows.UI.Xaml.Controls
 
 			if (_paneTitleTextBlock != null)
 			{
-				_paneTitleTextBlock.Margin = new Thickness(0, 0, 0, 0);
+				_paneTitleTextBlock.Margin = IsPaneOpen ? new Thickness(_togglePaneButton.RenderSize.Width + _navigationViewBackButton.RenderSize.Width, 0, 0, 0) : new Thickness(0, 0, 0, 0);
 			}
 
 			if (_togglePaneButton != null && _navigationViewBackButton != null)
@@ -130,6 +148,7 @@ namespace Windows.UI.Xaml.Controls
 			_paneTitleTextBlock = GetTemplateChild("PaneTitleTextBlock") as TextBlock;
 			_togglePaneButton = GetTemplateChild("TogglePaneButton") as Button;
 			_navigationViewBackButton = GetTemplateChild("NavigationViewBackButton") as Button;
+			_rootSplitView = GetTemplateChild("RootSplitView") as SplitView;
 
 			SetValue(SettingsItemProperty, GetTemplateChild("SettingsNavPaneItem"));
 
@@ -263,6 +282,11 @@ namespace Windows.UI.Xaml.Controls
 			}
 
 			VisualStateManager.GoToState(this, IsPaneOpen ? "AutoSuggestBoxVisible" : "AutoSuggestBoxCollapsed", true);
+
+			bool isClosedCompact = !IsPaneOpen && DisplayMode == NavigationViewDisplayMode.Compact;
+			VisualStateManager.GoToState(this, isClosedCompact ? "ClosedCompact" : "NotClosedCompact", true);
+
+			UpdatePositions();
 		}
 
 		private void OnSettingsPressed()
@@ -343,11 +367,11 @@ namespace Windows.UI.Xaml.Controls
 					break;
 
 				case NavigationViewDisplayMode.Compact:
-					VisualStateManager.GoToState(this, "Compact", true);
+					VisualStateManager.GoToState(this, IsBackButtonVisible != NavigationViewBackButtonVisible.Collapsed ? "MinimalWithBackButton" : "Compact", true);
 					break;
 
 				case NavigationViewDisplayMode.Minimal:
-					VisualStateManager.GoToState(this, IsBackButtonVisible != NavigationViewBackButtonVisible.Collapsed ? "MinimalWithBackButton" : "Minimal", true);
+					VisualStateManager.GoToState(this, "Minimal", true);
 					break;
 			}
 
