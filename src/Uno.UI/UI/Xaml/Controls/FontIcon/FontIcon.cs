@@ -36,6 +36,7 @@ namespace Windows.UI.Xaml.Controls
 
 			_textBlock.VerticalAlignment = VerticalAlignment.Center;
 			_textBlock.HorizontalAlignment = HorizontalAlignment.Center;
+			_textBlock.TextAlignment = Windows.UI.Xaml.TextAlignment.Center;
 		}
 
 		#region Glyph
