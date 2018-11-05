@@ -346,7 +346,7 @@ namespace Windows.UI.Xaml.Controls
 				ApplyMultiSelectState(item);
 			}
 
-			foreach (var item in NativePanel?.CachedItemViews.Safe())
+			foreach (var item in (NativePanel?.CachedItemViews).Safe())
 			{
 				ApplyMultiSelectState(item);
 			}

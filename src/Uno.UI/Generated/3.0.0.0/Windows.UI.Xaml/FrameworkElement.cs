@@ -582,13 +582,7 @@ namespace Windows.UI.Xaml
 		// Forced skipping of method Windows.UI.Xaml.FrameworkElement.LayoutUpdated.add
 		// Forced skipping of method Windows.UI.Xaml.FrameworkElement.LayoutUpdated.remove
 		// Skipping already declared method Windows.UI.Xaml.FrameworkElement.FindName(string)
-		#if __ANDROID__ || false || false || false || false
-		[global::Uno.NotImplemented]
-		public  void SetBinding( global::Windows.UI.Xaml.DependencyProperty dp,  global::Windows.UI.Xaml.Data.BindingBase binding)
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.FrameworkElement", "void FrameworkElement.SetBinding(DependencyProperty dp, BindingBase binding)");
-		}
-		#endif
+		// Skipping already declared method Windows.UI.Xaml.FrameworkElement.SetBinding(Windows.UI.Xaml.DependencyProperty, Windows.UI.Xaml.Data.BindingBase)
 		// Skipping already declared method Windows.UI.Xaml.FrameworkElement.MeasureOverride(Windows.Foundation.Size)
 		// Skipping already declared method Windows.UI.Xaml.FrameworkElement.ArrangeOverride(Windows.Foundation.Size)
 		// Skipping already declared method Windows.UI.Xaml.FrameworkElement.OnApplyTemplate()
@@ -596,13 +590,7 @@ namespace Windows.UI.Xaml
 		// Forced skipping of method Windows.UI.Xaml.FrameworkElement.RequestedTheme.set
 		// Forced skipping of method Windows.UI.Xaml.FrameworkElement.DataContextChanged.add
 		// Forced skipping of method Windows.UI.Xaml.FrameworkElement.DataContextChanged.remove
-		#if __ANDROID__ || false || false || false || false
-		[global::Uno.NotImplemented]
-		public  global::Windows.UI.Xaml.Data.BindingExpression GetBindingExpression( global::Windows.UI.Xaml.DependencyProperty dp)
-		{
-			throw new global::System.NotImplementedException("The member BindingExpression FrameworkElement.GetBindingExpression(DependencyProperty dp) is not implemented in Uno.");
-		}
-		#endif
+		// Skipping already declared method Windows.UI.Xaml.FrameworkElement.GetBindingExpression(Windows.UI.Xaml.DependencyProperty)
 		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		protected virtual bool GoToElementStateCore( string stateName,  bool useTransitions)
@@ -726,22 +714,7 @@ namespace Windows.UI.Xaml
 			}
 		}
 		#endif
-		#if __ANDROID__ || false || false || false || false
-		[global::Uno.NotImplemented]
-		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Xaml.FrameworkElement, global::Windows.UI.Xaml.DataContextChangedEventArgs> DataContextChanged
-		{
-			[global::Uno.NotImplemented]
-			add
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.FrameworkElement", "event TypedEventHandler<FrameworkElement, DataContextChangedEventArgs> FrameworkElement.DataContextChanged");
-			}
-			[global::Uno.NotImplemented]
-			remove
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.FrameworkElement", "event TypedEventHandler<FrameworkElement, DataContextChangedEventArgs> FrameworkElement.DataContextChanged");
-			}
-		}
-		#endif
+		// Skipping already declared event Windows.UI.Xaml.FrameworkElement.DataContextChanged
 		#if false || false || NET46 || false || false
 		[global::Uno.NotImplemented]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Xaml.FrameworkElement, object> Loading

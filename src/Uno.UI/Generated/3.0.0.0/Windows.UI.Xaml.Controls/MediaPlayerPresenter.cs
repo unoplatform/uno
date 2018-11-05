@@ -2,10 +2,10 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml.Controls
 {
-	#if false || false || NET46 || __WASM__ || __MACOS__
+	#if false || false || false || false || false
 	[global::Uno.NotImplemented]
 	#endif
-	public  partial class MediaPlayerPresenter
+	public  partial class MediaPlayerPresenter 
 	{
 		#if false || false || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
@@ -73,13 +73,7 @@ namespace Windows.UI.Xaml.Controls
 			typeof(global::Windows.UI.Xaml.Controls.MediaPlayerPresenter), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.Stretch)));
 		#endif
-		#if false || false || NET46 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public MediaPlayerPresenter() : base()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.MediaPlayerPresenter", "MediaPlayerPresenter.MediaPlayerPresenter()");
-		}
-		#endif
+		// Skipping already declared method Windows.UI.Xaml.Controls.MediaPlayerPresenter.MediaPlayerPresenter()
 		// Forced skipping of method Windows.UI.Xaml.Controls.MediaPlayerPresenter.MediaPlayerPresenter()
 		// Forced skipping of method Windows.UI.Xaml.Controls.MediaPlayerPresenter.MediaPlayer.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.MediaPlayerPresenter.MediaPlayer.set

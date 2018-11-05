@@ -528,7 +528,7 @@ namespace Windows.UI.Xaml
 #if !__IOS__ && !__ANDROID__ && !__MACOS__ // This code is generated in FrameworkElementMixins
 		private AutomationPeer _automationPeer;
 
-		protected virtual AutomationPeer OnCreateAutomationPeer()
+		protected override AutomationPeer OnCreateAutomationPeer()
 		{
 			if (AutomationProperties.GetName(this) is string name && !string.IsNullOrEmpty(name))
 			{

@@ -27,13 +27,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 		#endif
-		#if __ANDROID__ || false || false || false || false
-		[global::Uno.NotImplemented]
-		public ItemsPickedEventArgs() : base()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.ItemsPickedEventArgs", "ItemsPickedEventArgs.ItemsPickedEventArgs()");
-		}
-		#endif
+		// Skipping already declared method Windows.UI.Xaml.Controls.ItemsPickedEventArgs.ItemsPickedEventArgs()
 		// Forced skipping of method Windows.UI.Xaml.Controls.ItemsPickedEventArgs.ItemsPickedEventArgs()
 		// Forced skipping of method Windows.UI.Xaml.Controls.ItemsPickedEventArgs.AddedItems.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.ItemsPickedEventArgs.RemovedItems.get
