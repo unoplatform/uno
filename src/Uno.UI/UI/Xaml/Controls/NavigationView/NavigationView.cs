@@ -4,6 +4,7 @@ using System.Linq;
 using Uno.Disposables;
 using Uno.Extensions;
 using Uno.Logging;
+using Windows.ApplicationModel.Resources;
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -45,13 +46,13 @@ namespace Windows.UI.Xaml.Controls
 			}
 			else
 			{
-				MinimalMode();
+				UpdateMinimalMode();
 			}
 
 			VisualStateManager.GoToState(this, !IsPaneOpen ? "ListSizeCompact" : "ListSizeFull", true);
 		}
 
-		private void MinimalMode()
+		private void UpdateMinimalMode()
 		{
 			if (_rootSplitView != null)
 			{
@@ -163,7 +164,7 @@ namespace Windows.UI.Xaml.Controls
 
 			if (SettingsItem is NavigationViewItem item)
 			{
-				item.Content = "Settings";
+				item.Content = ResourceLoader.GetForCurrentView().GetString("NavigationView_Settings_Content");
 			}
 
 			OnIsSettingsVisibleChanged();

@@ -9,6 +9,7 @@
 * #325 Add support for `NavigationView` control
 * Add support for `SymbolIcon` control for WebAssembly
 * Add support for `UIElement.Clip` for WebAssembly
+* Add support for inner-Uno.UI strings localization
 
 ### Breaking changes
 * 132002 [Android] The collapsible button bar is now taken into account by visible bounds calculation. Apps which use VisibleBoundsPadding or have command bars will therefore see an adjustment to the height of their windows on Android.
