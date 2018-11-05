@@ -91,6 +91,11 @@ namespace Windows.UI.Xaml
 			}
 		}
 
+		private static bool IsBubblingNatively(RoutedEvent routedEvent, RoutedEventArgs args)
+		{
+			return args is ICancellableRoutedEventArgs cancellable && !cancellable.Handled;
+		}
+
 		partial void EnsureClip(Rect rect)
 		{
 			if (rect.IsEmpty

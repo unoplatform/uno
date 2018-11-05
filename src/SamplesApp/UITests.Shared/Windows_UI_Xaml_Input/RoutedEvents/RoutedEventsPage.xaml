@@ -37,13 +37,13 @@
 								</ListView.ItemsPanel>
 							</ListView>
 						</StackPanel>
-						<TextBox VerticalAlignment="Bottom" />
+						<TextBox VerticalAlignment="Bottom" PlaceholderText="Type something, the 'E' is normally filtered-out" />
 					</Grid>
 				</ScrollViewer>
-				<TextBox VerticalAlignment="Bottom" />
+				<TextBox VerticalAlignment="Bottom" PlaceholderText="Type something, the 'E' is normally filtered-out" />
 			</Grid>
-			<TextBox VerticalAlignment="Bottom" />
+			<TextBox VerticalAlignment="Bottom" PlaceholderText="Type something, the 'E' is normally filtered-out" />
 		</Grid>
-		<TextBox VerticalAlignment="Bottom" />
+		<TextBox VerticalAlignment="Bottom" PlaceholderText="Type something, the 'E' is normally filtered-out" />
 	</Grid>
 </Page>

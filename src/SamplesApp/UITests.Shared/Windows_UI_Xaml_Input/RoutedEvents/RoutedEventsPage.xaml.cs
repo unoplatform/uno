@@ -95,8 +95,23 @@ namespace SamplesApp.Samples.RoutedEvents
 			grid.GotFocus += (s, e) => textBlock.Text += ".F";
 			grid.LostFocus += (s, e) => textBlock.Text += ".f";
 
-			grid.KeyDown += (s, e) => textBlock.Text += ".K";
-			grid.KeyUp += (s, e) => textBlock.Text += ".k";
+			grid.KeyDown += (s, e) =>
+			{
+				textBlock.Text += ".K";
+				if (e.Key == Windows.System.VirtualKey.E)
+				{
+					e.Handled = true;
+				}
+			};
+
+			grid.KeyUp += (s, e) =>
+			{
+				textBlock.Text += ".k";
+				if (e.Key == Windows.System.VirtualKey.E)
+				{
+					e.Handled = true;
+				}
+			};
 		}
 	}
 }
