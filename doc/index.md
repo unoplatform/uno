@@ -9,7 +9,7 @@ uid: front-page
 <p>Build native apps for <strong>Mobile</strong> and <strong>Web</strong> using <strong>XAML</strong> and <strong>C#</strong>.</p>
 <span class="button white">
 
-[Get started](~/articles/intro.md)
+[Get started](articles/intro.md)
 
 </span>
 </section>
@@ -24,7 +24,7 @@ uid: front-page
 <p>Uno is a free UWP Bridge for iOS, Android and WebAssembly.</p>
 <span class="button turquoise">
 
-[Learn more](~/articles/intro.md)
+[Learn more](articles/intro.md)
 
 </span>
 <img src="images/uno.png" alt="uno logo" class="icon" />
@@ -37,7 +37,7 @@ uid: front-page
 <p>A list of supported Uno Platform features.</p>
 <span class="button turquoise">
 
-[Learn more](~/articles/supported-features.md)
+[Learn more](articles/supported-features.md)
 
 </span>
 <img src="images/features.png" alt="features" class="icon" />
@@ -50,7 +50,7 @@ uid: front-page
 <p>An introduction to developing with the Uno Platform.</p>
 <span class="button turquoise">
 
-[Learn more](~/articles/using-uno-ui.md)
+[Learn more](articles/using-uno-ui.md)
 
 </span>
 <img src="images/keyboard.png" alt="keyboard" class="icon" />
@@ -63,7 +63,7 @@ uid: front-page
 <p>How to contribute to the Uno Platform.</p>
 <span class="button turquoise">
 
-[Learn more](~/articles/debugging-uno-ui.md)
+[Learn more](articles/debugging-uno-ui.md)
 
 </span>
 <img src="images/bug.png" alt="bug" class="icon" />
