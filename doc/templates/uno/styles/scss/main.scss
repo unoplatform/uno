@@ -240,16 +240,17 @@ h3 {
     }
 
     .button {
-        display: inline-block;
-        padding: 7px 17px;
-        font-size: 20px;
-        font-weight: bold;
-        box-shadow: 0 2px 4px 0 rgba(31, 31, 31, 0.25);
-        border-radius: 20px;
-        transition: color .2s ease-in-out,background-color .2s ease-in-out;
+        a {
+            display: inline-block;
+            padding: 7px 17px;
+            font-size: 20px;
+            font-weight: bold;
+            box-shadow: 0 2px 4px 0 rgba(31, 31, 31, 0.25);
+            border-radius: 20px;
+            transition: color .2s ease-in-out,background-color .2s ease-in-out;
+        }
 
-
-        &.white {
+        &.white a {
             background: #fff;
             color: $dgray;
 
@@ -259,7 +260,7 @@ h3 {
             }
         }
 
-        &.turquoise {
+        &.turquoise a {
             background: $turquoise;
             color: #fff;
 
@@ -318,7 +319,7 @@ h3 {
             font-weight: normal;
         }
 
-        .button {
+        .button a {
             margin-top: 20px;
         }
     }
