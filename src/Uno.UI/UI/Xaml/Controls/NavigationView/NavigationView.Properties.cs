@@ -77,14 +77,12 @@ namespace Windows.UI.Xaml.Controls
 			set => SetValue(IsPaneOpenProperty, value);
 		}
 
-		[Uno.NotImplemented]
 		public DataTemplate HeaderTemplate
 		{
 			get => (DataTemplate)GetValue(HeaderTemplateProperty);
 			set => SetValue(HeaderTemplateProperty, value);
 		}
 
-		[Uno.NotImplemented]
 		public object Header
 		{
 			get => (object)GetValue(HeaderProperty);
@@ -163,7 +161,6 @@ namespace Windows.UI.Xaml.Controls
 			typeof(NavigationView),
 			new FrameworkPropertyMetadata(default(bool)));
 
-		[Uno.NotImplemented]
 		public static DependencyProperty AutoSuggestBoxProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
 			"AutoSuggestBox", typeof(AutoSuggestBox),
@@ -205,28 +202,24 @@ namespace Windows.UI.Xaml.Controls
 			typeMetadata: new FrameworkPropertyMetadata(1008.0)
 		);
 
-		[Uno.NotImplemented]
 		public static DependencyProperty HeaderProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
 			"Header", typeof(object),
 			typeof(NavigationView),
 			new FrameworkPropertyMetadata(default(object)));
 
-		[Uno.NotImplemented]
 		public static DependencyProperty HeaderTemplateProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
 			"HeaderTemplate", typeof(DataTemplate),
 			typeof(NavigationView),
 			new FrameworkPropertyMetadata(default(DataTemplate)));
 
-		[Uno.NotImplemented]
 		public static DependencyProperty IsPaneOpenProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
 			"IsPaneOpen", typeof(bool),
 			typeof(NavigationView),
 			new FrameworkPropertyMetadata(true, (s, e) => (s as NavigationView)?.OnIsPaneOpenChanged()));
 
-		[Uno.NotImplemented]
 		public static DependencyProperty IsPaneToggleButtonVisibleProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
 			"IsPaneToggleButtonVisible", typeof(bool),
@@ -244,28 +237,24 @@ namespace Windows.UI.Xaml.Controls
 			)
 		);
 
-		[Uno.NotImplemented]
 		public static DependencyProperty MenuItemContainerStyleProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
 			"MenuItemContainerStyle", typeof(Style),
 			typeof(NavigationView),
 			new FrameworkPropertyMetadata(default(Style)));
 
-		[Uno.NotImplemented]
 		public static DependencyProperty MenuItemContainerStyleSelectorProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
 			"MenuItemContainerStyleSelector", typeof(StyleSelector),
 			typeof(NavigationView),
 			new FrameworkPropertyMetadata(default(StyleSelector)));
 
-		[Uno.NotImplemented]
 		public static DependencyProperty MenuItemTemplateProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
 			"MenuItemTemplate", typeof(DataTemplate),
 			typeof(NavigationView),
 			new FrameworkPropertyMetadata(default(DataTemplate)));
 
-		[Uno.NotImplemented]
 		public static DependencyProperty MenuItemTemplateSelectorProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
 			"MenuItemTemplateSelector", typeof(DataTemplateSelector),
