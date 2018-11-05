@@ -7,28 +7,28 @@
 	mc:Ignorable="d"
 	Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
-	<Grid Margin="50" x:Name="outer" Background="Aqua">
-		<Border MaxHeight="50" Background="#48000000" VerticalAlignment="Top">
-			<TextBlock x:Name="resultOuter" TextWrapping="Wrap" MaxHeight="50" />
+	<Grid Margin="5" x:Name="outer" Background="Aqua">
+		<Border Background="#48000000" VerticalAlignment="Top">
+			<TextBlock x:Name="resultOuter" TextWrapping="Wrap" MaxHeight="75" />
 		</Border>
 		<Grid Margin="50" x:Name="middle" Background="Bisque">
-			<Border MaxHeight="50" Background="#48000000" VerticalAlignment="Top">
-				<TextBlock x:Name="resultMiddle" TextWrapping="Wrap" MaxHeight="50" />
+			<Border Background="#48000000" VerticalAlignment="Top">
+				<TextBlock x:Name="resultMiddle" TextWrapping="Wrap" MaxHeight="75" />
 			</Border>
 			<Grid Margin="50" MinWidth="200" MinHeight="200" x:Name="inner" Background="DeepSkyBlue">
-				<Border MaxHeight="50" Background="#48000000" VerticalAlignment="Top">
-					<TextBlock x:Name="resultInner" TextWrapping="Wrap" MaxHeight="50" />
-				</Border>
-				<ScrollViewer Margin="30">
+				<StackPanel Background="#48000000" VerticalAlignment="Top">
+					<TextBlock x:Name="resultInner" TextWrapping="Wrap" MaxHeight="75" />
+					<Slider VerticalAlignment="Bottom" Value="0.5" Minimum="-1" Maximum="1.5" StepFrequency="0.1" />
+				</StackPanel>
+				<ScrollViewer Margin="30,45">
 					<Grid Margin="50" MinWidth="200" MinHeight="200" x:Name="scroll" Background="YellowGreen">
-						<Border MaxHeight="50" Background="#48000000" VerticalAlignment="Top">
-							<TextBlock x:Name="resultScroll" TextWrapping="Wrap" MaxHeight="50" />
-						</Border>
-						<Button x:Name="btn">You can focus this button</Button>
-						<TextBox VerticalAlignment="Bottom" />
-						<StackPanel Margin="0, 40">
+						<StackPanel VerticalAlignment="Top" Margin="0, 0, 0, 40">
+							<Border Background="#48000000">
+								<TextBlock x:Name="resultScroll" TextWrapping="Wrap" MaxHeight="75" />
+							</Border>
+							<Button x:Name="btn">You can focus this button</Button>
 							<ToggleSwitch />
-							<Slider VerticalAlignment="Bottom" Value="0.5" Minimum="-1" Maximum="1.5" StepFrequency="0.1" />
+							<Slider Value="0.5" Minimum="-1" Maximum="1.5" StepFrequency="0.1" />
 							<ListView x:Name="list">
 								<ListView.ItemsPanel>
 									<ItemsPanelTemplate>
@@ -37,6 +37,7 @@
 								</ListView.ItemsPanel>
 							</ListView>
 						</StackPanel>
+						<TextBox VerticalAlignment="Bottom" />
 					</Grid>
 				</ScrollViewer>
 				<TextBox VerticalAlignment="Bottom" />
