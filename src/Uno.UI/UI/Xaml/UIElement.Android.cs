@@ -69,7 +69,7 @@ namespace Windows.UI.Xaml
 
 		private bool HasHandler(RoutedEvent routedEvent)
 		{
-			return _eventHandlerStore.TryGetValue(routedEvent, out List<RoutedEventHandlerInfo> handlers) && handlers.Any();
+			return _eventHandlerStore.TryGetValue(routedEvent, out var handlers) && handlers.Any();
 		}
 
 		partial void AddHandlerPartial(RoutedEvent routedEvent, object handler, bool handledEventsToo)
@@ -80,6 +80,31 @@ namespace Windows.UI.Xaml
 		partial void RemoveHandlerPartial(RoutedEvent routedEvent, object handler)
 		{
 			_gestures.Value.UpdateShouldHandle(routedEvent, HasHandler(routedEvent));
+		}
+
+		private static bool IsBubblingNatively(RoutedEvent routedEvent, RoutedEventArgs args)
+		{
+			if(!(args is ICancellableRoutedEventArgs cancellable))
+			{
+				return false;
+			}
+
+			if(cancellable.Handled)
+			{
+				return true; // no need to bubble up
+			}
+
+			// "routed" Keyboard events not supported yet.
+			//if(routedEvent == KeyDownEvent)
+			//{
+			//	return false;
+			//}
+			//if (routedEvent == KeyUpEvent)
+			//{
+			//	return false;
+			//}
+
+			return !cancellable.Handled;
 		}
 
 		protected virtual void OnVisibilityChanged(Visibility oldValue, Visibility newValue)

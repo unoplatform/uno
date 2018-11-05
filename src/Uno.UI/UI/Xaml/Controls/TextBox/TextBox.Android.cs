@@ -402,7 +402,6 @@ namespace Windows.UI.Xaml.Controls
 		{
 			if (_textBoxView != null)
 			{
-				//_keyPressDisposable.Disposable = _textBoxView.RegisterKeyPress(OnKeyPress);
 				_textBoxView.OnFocusChangeListener = this;
 				_textBoxView.SetOnEditorActionListener(this);
 			}

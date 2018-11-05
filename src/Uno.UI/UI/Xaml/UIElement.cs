@@ -206,7 +206,7 @@ namespace Windows.UI.Xaml
 			// In the future, we might decide to stop bubbling up events on the native side, and do it all on the managed side instead.
 			// The first element hit by hit-testing would natively handle the event (stop native bubble up),
 			// become the OriginalSource of the associated RoutedEventArgs, and we would manually bubble up the event on the managed side.
-			var bubblesUpNatively = IsBubblingNatively(args);
+			var bubblesUpNatively = IsBubblingNatively(routedEvent, args);
 
 			// According to Microsoft, handled events shouldn't bubble up:
 			// https://docs.microsoft.com/en-us/windows/uwp/xaml-platform/events-and-routed-events-overview#the-handled-property
@@ -221,7 +221,7 @@ namespace Windows.UI.Xaml
 #if __IOS__ || __ANDROID__
 				var parent = this.FindFirstParent<UIElement>();
 #else
-					var parent = this.GetParent() as UIElement;
+				var parent = this.GetParent() as UIElement;
 #endif
 				parent?.RaiseEvent(routedEvent, args);
 			}
@@ -229,30 +229,7 @@ namespace Windows.UI.Xaml
 
 		private static bool IsHandled(RoutedEventArgs args)
 		{
-			// TODO: WPF reads Handled directly on RoutedEventArgs. 
-			switch (args)
-			{
-				case PointerRoutedEventArgs pointer:
-					return pointer.Handled;
-				case TappedRoutedEventArgs tapped:
-					return tapped.Handled;
-				case DoubleTappedRoutedEventArgs doubleTapped:
-					return doubleTapped.Handled;
-				case KeyRoutedEventArgs key:
-					return key.Handled;
-				default:
-					return false;
-			}
-		}
-
-		private static bool IsBubblingNatively(RoutedEventArgs args)
-		{
-			if (args is ICancellableRoutedEventArgs cancellable)
-			{
-				return !cancellable.Handled;
-			}
-
-			return false;
+			return args is ICancellableRoutedEventArgs cancellable && cancellable.Handled;
 		}
 
 		private void InvokeHandler(object handler, RoutedEventArgs args)

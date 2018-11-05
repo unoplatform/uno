@@ -10,6 +10,13 @@ using Android.Graphics.Drawables;
 using Uno.Extensions;
 using Windows.UI.Xaml.Media;
 using Uno.Logging;
+using Android.Views;
+using Android.Runtime;
+using Android.Text;
+using Android.Views.InputMethods;
+using Android.OS;
+using Windows.UI.Xaml.Input;
+using Uno.UI.Extensions;
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -32,21 +39,12 @@ namespace Windows.UI.Xaml.Controls
 
 			_isInitialized = true;
 
-			this.KeyDown += (s, e) =>
-			{
-				Console.WriteLine("!");
-			};
-			this.KeyUp += (s, e) =>
-			{
-				Console.WriteLine("!");
-			};
-
 			// This ensures the TextBoxView gets resized as Text changes
 			LayoutParameters = new Android.Views.ViewGroup.LayoutParams(
-                 Android.Views.ViewGroup.LayoutParams.WrapContent,
-                 Android.Views.ViewGroup.LayoutParams.WrapContent
-            );
-        }
+				 Android.Views.ViewGroup.LayoutParams.WrapContent,
+				 Android.Views.ViewGroup.LayoutParams.WrapContent
+			);
+		}
 
 		/// <summary>
 		/// An alias to the Text property, that allows the interception of the changes.
@@ -141,8 +139,8 @@ namespace Windows.UI.Xaml.Controls
 
 					var mCursorDrawableRes = _cursorDrawableResField.GetInt(editText);
 					var drawables = new Drawable[2];
-                    drawables[0] = Android.Support.V4.Content.ContextCompat.GetDrawable(editText.Context, mCursorDrawableRes);
-                    drawables[1] = Android.Support.V4.Content.ContextCompat.GetDrawable(editText.Context, mCursorDrawableRes);
+					drawables[0] = Android.Support.V4.Content.ContextCompat.GetDrawable(editText.Context, mCursorDrawableRes);
+					drawables[1] = Android.Support.V4.Content.ContextCompat.GetDrawable(editText.Context, mCursorDrawableRes);
 					drawables[0].SetColorFilter(color, PorterDuff.Mode.SrcIn);
 					drawables[1].SetColorFilter(color, PorterDuff.Mode.SrcIn);
 					var editor = _editorField.Get(editText);
@@ -155,33 +153,33 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-        public override void RequestLayout()
-        {
-            if (IsLoaded && HasSelection) // Getting HasSelection throws an exception if TextBoxView is not loaded.
-            {
-                // We don't want to RequestLayout when selecting text because
-                // it triggers a layout pass which resets selection and
-                // dismisses the copy/cut/paste context bar (Android 4.4 and below).
-                return;
-            }
+		public override void RequestLayout()
+		{
+			if (IsLoaded && HasSelection) // Getting HasSelection throws an exception if TextBoxView is not loaded.
+			{
+				// We don't want to RequestLayout when selecting text because
+				// it triggers a layout pass which resets selection and
+				// dismisses the copy/cut/paste context bar (Android 4.4 and below).
+				return;
+			}
 
-            base.RequestLayout();
-        }
+			base.RequestLayout();
+		}
 
-        protected override void OnMeasure(int widthMeasureSpec, int heightMeasureSpec)
-        {
-            base.OnMeasure(widthMeasureSpec, heightMeasureSpec);
+		protected override void OnMeasure(int widthMeasureSpec, int heightMeasureSpec)
+		{
+			base.OnMeasure(widthMeasureSpec, heightMeasureSpec);
 
-            // On some devices (LG G3), the cursor doesn't appear if the Text is empty.
-            // This is due to the TextBoxView's content having a width of 0 if the Text is empty.
-            // This code ensures that the TextBoxView's content always has a minimum width, allowing the cursor to be visible.
-            var minContentWidth = ViewHelper.LogicalToPhysicalPixels(10d); // arbitrary number, large enough to accomodate cursor
-            var minWidth = PaddingLeft + minContentWidth + PaddingRight;
-            var newMeasuredWidth = Math.Max(MeasuredWidth, minWidth);
-            SetMeasuredDimension(newMeasuredWidth, MeasuredHeight);
-        }
+			// On some devices (LG G3), the cursor doesn't appear if the Text is empty.
+			// This is due to the TextBoxView's content having a width of 0 if the Text is empty.
+			// This code ensures that the TextBoxView's content always has a minimum width, allowing the cursor to be visible.
+			var minContentWidth = ViewHelper.LogicalToPhysicalPixels(10d); // arbitrary number, large enough to accomodate cursor
+			var minWidth = PaddingLeft + minContentWidth + PaddingRight;
+			var newMeasuredWidth = Math.Max(MeasuredWidth, minWidth);
+			SetMeasuredDimension(newMeasuredWidth, MeasuredHeight);
+		}
 
-        public
+		public
 #if __ANDROID_23__
 		new
 #endif

@@ -583,6 +583,11 @@ namespace Windows.UI.Xaml
 			}
 		}
 
+		private static bool IsBubblingNatively(RoutedEvent routedEvent, RoutedEventArgs args)
+		{
+			return args is ICancellableRoutedEventArgs cancellable && !cancellable.Handled;
+		}
+
 		internal bool InternalDispatchEvent(string eventName, EventArgs eventArgs = null, string nativeEventPayload = null)
 		{
 			try

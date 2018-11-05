@@ -16,52 +16,51 @@ using Microsoft.CodeAnalysis.CSharp.Formatting;
 using Microsoft.CodeAnalysis.MSBuild;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.Formatting;
-using System.Threading;
 using Uno;
 using Uno.Logging;
 using Uno.UI.SourceGenerators.XamlGenerator.XamlRedirection;
 
 namespace Uno.UI.SourceGenerators.XamlGenerator
 {
-    internal class XamlFileGenerator
-    {
-        private const string ImplicitStyleMarker = "__ImplicitStyle_";
-        private const string GlobalPrefix = "global::";
-        private const string QualifiedNamespaceMarker = ".";
+	internal class XamlFileGenerator
+	{
+		private const string ImplicitStyleMarker = "__ImplicitStyle_";
+		private const string GlobalPrefix = "global::";
+		private const string QualifiedNamespaceMarker = ".";
 
-        private readonly Dictionary<string, string[]> _knownNamespaces = new Dictionary<string, string[]>
-        {
-            {
-                XamlConstants.PresentationXamlXmlNamespace,
-                XamlConstants.Namespaces.PresentationNamespaces
-            },
-            {
-                XamlConstants.XamlXmlNamespace,
-                new [] {
-                    "System",
-                }
-            },
-        };
+		private readonly Dictionary<string, string[]> _knownNamespaces = new Dictionary<string, string[]>
+		{
+			{
+				XamlConstants.PresentationXamlXmlNamespace,
+				XamlConstants.Namespaces.PresentationNamespaces
+			},
+			{
+				XamlConstants.XamlXmlNamespace,
+				new [] {
+					"System",
+				}
+			},
+		};
 
-        private Dictionary<string, XamlObjectDefinition> _staticResources = new Dictionary<string, XamlObjectDefinition>();
-        private Dictionary<string, XamlObjectDefinition> _namedResources = new Dictionary<string, XamlObjectDefinition>();
-        private List<string> _partials = new List<string>();
-        private Stack<NameScope> _scopeStack = new Stack<NameScope>();
-        private readonly XamlFileDefinition _fileDefinition;
-        private readonly string _targetPath;
-        private readonly string _defaultNamespace;
-        private RoslynMetadataHelper _medataHelper;
-        private readonly string _fileUniqueId;
-        private readonly DateTime _lastReferenceUpdateTime;
-        private readonly string[] _analyzerSuppressions;
-        private readonly string[] _resourceKeys;
-        private readonly bool _outputSourceComments;
-        private int _applyIndex = 0;
-        private int _collectionIndex = 0;
-        private int _subclassIndex = 0;
-        private XamlGlobalStaticResourcesMap _globalStaticResourcesMap;
-        private readonly bool _isUiAutomationMappingEnabled;
-        private readonly Dictionary<string, string[]> _uiAutomationMappings;
+		private Dictionary<string, XamlObjectDefinition> _staticResources = new Dictionary<string, XamlObjectDefinition>();
+		private Dictionary<string, XamlObjectDefinition> _namedResources = new Dictionary<string, XamlObjectDefinition>();
+		private List<string> _partials = new List<string>();
+		private Stack<NameScope> _scopeStack = new Stack<NameScope>();
+		private readonly XamlFileDefinition _fileDefinition;
+		private readonly string _targetPath;
+		private readonly string _defaultNamespace;
+		private RoslynMetadataHelper _medataHelper;
+		private readonly string _fileUniqueId;
+		private readonly DateTime _lastReferenceUpdateTime;
+		private readonly string[] _analyzerSuppressions;
+		private readonly string[] _resourceKeys;
+		private readonly bool _outputSourceComments;
+		private int _applyIndex = 0;
+		private int _collectionIndex = 0;
+		private int _subclassIndex = 0;
+		private XamlGlobalStaticResourcesMap _globalStaticResourcesMap;
+		private readonly bool _isUiAutomationMappingEnabled;
+		private readonly Dictionary<string, string[]> _uiAutomationMappings;
 		private readonly string _defaultLanguage;
 		private readonly string _relativePath;
 
@@ -74,63 +73,63 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 		// Caches
 		private Func<string, INamedTypeSymbol> _findType;
-        private Func<string, string, INamedTypeSymbol> _findPropertyTypeByName;
-        private Func<XamlMember, INamedTypeSymbol> _findPropertyTypeByXamlMember;
-        private Func<XamlMember, IEventSymbol> _findEventType;
+		private Func<string, string, INamedTypeSymbol> _findPropertyTypeByName;
+		private Func<XamlMember, INamedTypeSymbol> _findPropertyTypeByXamlMember;
+		private Func<XamlMember, IEventSymbol> _findEventType;
 		private (string ns, string className) _className;
 		private bool _hasLiteralEventsRegistration = false;
 		private readonly static Func<INamedTypeSymbol, IPropertySymbol> _findContentProperty;
-        private readonly static Func<INamedTypeSymbol, string, bool> _isAttachedProperty;
+		private readonly static Func<INamedTypeSymbol, string, bool> _isAttachedProperty;
 
-        static XamlFileGenerator()
-        {
-            _findContentProperty = Funcs.Create<INamedTypeSymbol, IPropertySymbol>(SourceFindContentProperty).AsLockedMemoized();
-            _isAttachedProperty = Funcs.Create<INamedTypeSymbol, string, bool>(SourceIsAttachedProperty).AsLockedMemoized();
-        }
+		static XamlFileGenerator()
+		{
+			_findContentProperty = Funcs.Create<INamedTypeSymbol, IPropertySymbol>(SourceFindContentProperty).AsLockedMemoized();
+			_isAttachedProperty = Funcs.Create<INamedTypeSymbol, string, bool>(SourceIsAttachedProperty).AsLockedMemoized();
+		}
 
-        public XamlFileGenerator(
-            XamlFileDefinition file,
-            string targetPath,
-            string defaultNamespace,
-            RoslynMetadataHelper medataHelper,
-            string fileUniqueId,
-            DateTime lastReferenceUpdateTime,
-            string[] analyzerSuppressions,
-            string[] resourceKeys,
-            bool outputSourceComments,
-            XamlGlobalStaticResourcesMap globalStaticResourcesMap,
-            bool isUiAutomationMappingEnabled,
-            Dictionary<string, string[]> uiAutomationMappings,
+		public XamlFileGenerator(
+			XamlFileDefinition file,
+			string targetPath,
+			string defaultNamespace,
+			RoslynMetadataHelper medataHelper,
+			string fileUniqueId,
+			DateTime lastReferenceUpdateTime,
+			string[] analyzerSuppressions,
+			string[] resourceKeys,
+			bool outputSourceComments,
+			XamlGlobalStaticResourcesMap globalStaticResourcesMap,
+			bool isUiAutomationMappingEnabled,
+			Dictionary<string, string[]> uiAutomationMappings,
 			string defaultLanguage,
 			bool isWasm
 		)
-        {
-            _fileDefinition = file;
-            _targetPath = targetPath;
-            _defaultNamespace = defaultNamespace;
-            _medataHelper = medataHelper;
-            _fileUniqueId = fileUniqueId;
-            _lastReferenceUpdateTime = lastReferenceUpdateTime;
-            _analyzerSuppressions = analyzerSuppressions;
-            _resourceKeys = resourceKeys;
-            _outputSourceComments = outputSourceComments;
-            _globalStaticResourcesMap = globalStaticResourcesMap;
-            _isUiAutomationMappingEnabled = isUiAutomationMappingEnabled;
-            _uiAutomationMappings = uiAutomationMappings;
+		{
+			_fileDefinition = file;
+			_targetPath = targetPath;
+			_defaultNamespace = defaultNamespace;
+			_medataHelper = medataHelper;
+			_fileUniqueId = fileUniqueId;
+			_lastReferenceUpdateTime = lastReferenceUpdateTime;
+			_analyzerSuppressions = analyzerSuppressions;
+			_resourceKeys = resourceKeys;
+			_outputSourceComments = outputSourceComments;
+			_globalStaticResourcesMap = globalStaticResourcesMap;
+			_isUiAutomationMappingEnabled = isUiAutomationMappingEnabled;
+			_uiAutomationMappings = uiAutomationMappings;
 			_defaultLanguage = defaultLanguage.HasValue() ? defaultLanguage : "en";
 
 			_findType = Funcs.Create<string, INamedTypeSymbol>(SourceFindType).AsLockedMemoized();
-            _findPropertyTypeByXamlMember = Funcs.Create<XamlMember, INamedTypeSymbol>(SourceFindPropertyType).AsLockedMemoized();
-            _findEventType = Funcs.Create<XamlMember, IEventSymbol>(SourceFindEventType).AsLockedMemoized();
-            _findPropertyTypeByName = Funcs.Create<string, string, INamedTypeSymbol>(SourceFindPropertyType).AsLockedMemoized();
+			_findPropertyTypeByXamlMember = Funcs.Create<XamlMember, INamedTypeSymbol>(SourceFindPropertyType).AsLockedMemoized();
+			_findEventType = Funcs.Create<XamlMember, IEventSymbol>(SourceFindEventType).AsLockedMemoized();
+			_findPropertyTypeByName = Funcs.Create<string, string, INamedTypeSymbol>(SourceFindPropertyType).AsLockedMemoized();
 
-            _relativePath = PathHelper.GetRelativePath(_targetPath, _fileDefinition.FilePath);
+			_relativePath = PathHelper.GetRelativePath(_targetPath, _fileDefinition.FilePath);
 			_stringSymbol = GetType("System.String");
 			_elementStubSymbol = GetType(XamlConstants.Types.ElementStub);
 			_contentPresenterSymbol = GetType(XamlConstants.Types.ContentPresenter);
 
 			_isWasm = isWasm;
-        }
+		}
 
 		/// <summary>
 		/// Indicates if the code generation should write #error in the generated code (and break at compile time) or write a // Warning, which would be silent.
@@ -139,78 +138,78 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		public static bool ShouldWriteErrorOnInvalidXaml { get; set; } = false;
 
 		public string GenerateFile()
-        {
-            this.Log().Info("Processing file {0}".InvariantCultureFormat(_fileDefinition.FilePath));
+		{
+			this.Log().Info("Processing file {0}".InvariantCultureFormat(_fileDefinition.FilePath));
 
-            var partialFileName = Path.GetFileNameWithoutExtension(_fileDefinition.FilePath);
+			var partialFileName = Path.GetFileNameWithoutExtension(_fileDefinition.FilePath);
 
-            // Check for the Roslyn generator's output location
-            var outputFile = Path.Combine(
-                _targetPath,
-                $@"g\{typeof(XamlCodeGenerator).Name}\{_fileDefinition.UniqueID}.g.cs"
-                );
+			// Check for the Roslyn generator's output location
+			var outputFile = Path.Combine(
+				_targetPath,
+				$@"g\{typeof(XamlCodeGenerator).Name}\{_fileDefinition.UniqueID}.g.cs"
+				);
 
-            if (File.Exists(outputFile))
-            {
-                var outputInfo = new FileInfo(outputFile);
-                var inputInfo = new FileInfo(_fileDefinition.FilePath);
+			if (File.Exists(outputFile))
+			{
+				var outputInfo = new FileInfo(outputFile);
+				var inputInfo = new FileInfo(_fileDefinition.FilePath);
 
-                if (
-                    outputInfo.LastWriteTime >= inputInfo.LastWriteTime
+				if (
+					outputInfo.LastWriteTime >= inputInfo.LastWriteTime
 
-                    // Check for the references update time. If the file has been generated before the last write time
-                    // on the references, regenerate the output.
-                    && outputInfo.LastWriteTime > _lastReferenceUpdateTime
+					// Check for the references update time. If the file has been generated before the last write time
+					// on the references, regenerate the output.
+					&& outputInfo.LastWriteTime > _lastReferenceUpdateTime
 
-                    // Empty files should be regenerated
-                    && outputInfo.Length != 0
-                )
-                {
-                    this.Log().Info("Skipping unmodified file {0}".InvariantCultureFormat(_fileDefinition.FilePath));
-                    return File.ReadAllText(outputFile);
-                }
-            }
+					// Empty files should be regenerated
+					&& outputInfo.Length != 0
+				)
+				{
+					this.Log().Info("Skipping unmodified file {0}".InvariantCultureFormat(_fileDefinition.FilePath));
+					return File.ReadAllText(outputFile);
+				}
+			}
 
-            try
-            {
-                return InnerGenerateFile();
-            }
-            catch (Exception)
-            {
-                this.Log().Error("Processing failed for file {0}".InvariantCultureFormat(_fileDefinition.FilePath));
-                throw;
-            }
-        }
+			try
+			{
+				return InnerGenerateFile();
+			}
+			catch (Exception)
+			{
+				this.Log().Error("Processing failed for file {0}".InvariantCultureFormat(_fileDefinition.FilePath));
+				throw;
+			}
+		}
 
-        private string InnerGenerateFile()
-        {
+		private string InnerGenerateFile()
+		{
 			var writer = new IndentedStringBuilder();
 
-            writer.AppendLineInvariant("// <autogenerated />");
-            writer.AppendLineInvariant("// Xaml Source Generation is using the {0} Xaml Parser", XamlRedirection.XamlConfig.IsUnoXaml ? "Uno.UI" : "System");
-            writer.AppendLineInvariant("#pragma warning disable 618 // Ignore obsolete members warnings");
-            writer.AppendLineInvariant("#pragma warning disable 105 // Ignore duplicate namespaces");
-            writer.AppendLineInvariant("using System;");
-            writer.AppendLineInvariant("using System.Collections.Generic;");
-            writer.AppendLineInvariant("using System.Diagnostics;");
-            writer.AppendLineInvariant("using System.Linq;");
-            writer.AppendLineInvariant("using Uno.UI;");
+			writer.AppendLineInvariant("// <autogenerated />");
+			writer.AppendLineInvariant("// Xaml Source Generation is using the {0} Xaml Parser", XamlRedirection.XamlConfig.IsUnoXaml ? "Uno.UI" : "System");
+			writer.AppendLineInvariant("#pragma warning disable 618 // Ignore obsolete members warnings");
+			writer.AppendLineInvariant("#pragma warning disable 105 // Ignore duplicate namespaces");
+			writer.AppendLineInvariant("using System;");
+			writer.AppendLineInvariant("using System.Collections.Generic;");
+			writer.AppendLineInvariant("using System.Diagnostics;");
+			writer.AppendLineInvariant("using System.Linq;");
+			writer.AppendLineInvariant("using Uno.UI;");
 
-            //TODO Determine the list of namespaces to use
-            foreach (var ns in XamlConstants.Namespaces.All)
-            {
-                writer.AppendLineInvariant($"using {ns};");
-            }
+			//TODO Determine the list of namespaces to use
+			foreach (var ns in XamlConstants.Namespaces.All)
+			{
+				writer.AppendLineInvariant($"using {ns};");
+			}
 
-            writer.AppendLineInvariant("using Uno.Extensions;");
-            writer.AppendLineInvariant("using Uno;");
+			writer.AppendLineInvariant("using Uno.Extensions;");
+			writer.AppendLineInvariant("using Uno;");
 
-            writer.AppendLineInvariant("using {0};", _defaultNamespace);
+			writer.AppendLineInvariant("using {0};", _defaultNamespace);
 
-            // For Subclass build functionality
-            writer.AppendLineInvariant("");
-            writer.AppendLineInvariant("#if __ANDROID__");
-            writer.AppendLineInvariant("using _View = Android.Views.View;");
+			// For Subclass build functionality
+			writer.AppendLineInvariant("");
+			writer.AppendLineInvariant("#if __ANDROID__");
+			writer.AppendLineInvariant("using _View = Android.Views.View;");
 			writer.AppendLineInvariant("#elif __IOS__");
 			writer.AppendLineInvariant("using _View = UIKit.UIView;");
 			writer.AppendLineInvariant("#elif __MACOS__");
@@ -221,13 +220,13 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			writer.AppendLineInvariant("using _View = Windows.UI.Xaml.UIElement;");
 			writer.AppendLineInvariant("#endif");
 
-            writer.AppendLineInvariant("");
+			writer.AppendLineInvariant("");
 
-            var topLevelControl = _fileDefinition.Objects.First();
+			var topLevelControl = _fileDefinition.Objects.First();
 
-            if (topLevelControl.Type.Name == "ResourceDictionary")
-            {
-                BuildEmptyBackingClass(writer, topLevelControl);
+			if (topLevelControl.Type.Name == "ResourceDictionary")
+			{
+				BuildEmptyBackingClass(writer, topLevelControl);
 
 				BuildResourceDictionary(writer, topLevelControl);
 			}
@@ -238,78 +237,78 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					BuildResourceDictionary(writer, topLevelControl);
 				}
 
-                _className = GetClassName(topLevelControl);
+				_className = GetClassName(topLevelControl);
 
-                using (writer.BlockInvariant("namespace {0}", _className.ns))
-                {
-                    AnalyzerSuppressionsGenerator.Generate(writer, _analyzerSuppressions);
+				using (writer.BlockInvariant("namespace {0}", _className.ns))
+				{
+					AnalyzerSuppressionsGenerator.Generate(writer, _analyzerSuppressions);
 
-                    var controlBaseType = GetType(topLevelControl.Type);
+					var controlBaseType = GetType(topLevelControl.Type);
 
-                    using (writer.BlockInvariant("public sealed partial class {0} : {1}", _className.className, controlBaseType.ToDisplayString()))
-                    {
+					using (writer.BlockInvariant("public sealed partial class {0} : {1}", _className.className, controlBaseType.ToDisplayString()))
+					{
 						var isDirectUserControlChild = IsUserControl(topLevelControl.Type, checkInheritance: false);
 
-                        using (Scope("{0}{1}".InvariantCultureFormat(_className.ns.Replace(".", ""), _className.className)))
-                        {
+						using (Scope("{0}{1}".InvariantCultureFormat(_className.ns.Replace(".", ""), _className.className)))
+						{
 							using (writer.BlockInvariant(BuildControlInitializerDeclaration(_className.className, topLevelControl)))
-                            {
+							{
 								if (IsApplication(topLevelControl.Type))
-                                {
-                                    BuildApplicationInitializerBody(writer, topLevelControl);
-                                }
-                                else
-                                {
-                                    BuildGenericControlInitializerBody(writer, topLevelControl, isDirectUserControlChild);
-                                }
+								{
+									BuildApplicationInitializerBody(writer, topLevelControl);
+								}
+								else
+								{
+									BuildGenericControlInitializerBody(writer, topLevelControl, isDirectUserControlChild);
+								}
 
-                                BuildNamedResources(writer, _namedResources);
-                            }
+								BuildNamedResources(writer, _namedResources);
+							}
 
-                            if (isDirectUserControlChild)
-                            {
-                                using (writer.BlockInvariant("public {0}(bool skipsInitializeComponents)", _className.className))
-                                {
-                                }
+							if (isDirectUserControlChild)
+							{
+								using (writer.BlockInvariant("public {0}(bool skipsInitializeComponents)", _className.className))
+								{
+								}
 
-                                using (writer.BlockInvariant("private void InitializeComponent()"))
-                                {
+								using (writer.BlockInvariant("private void InitializeComponent()"))
+								{
 									writer.AppendLineInvariant("Content = (_View)GetContent();");
-                                }
-                            }
+								}
+							}
 
-                            BuildPartials(writer, isStatic: false);
+							BuildPartials(writer, isStatic: false);
 
-                            BuildBackingFields(writer);
+							BuildBackingFields(writer);
 
-                            BuildChildSubclasses(writer);
+							BuildChildSubclasses(writer);
 
-                        }
+						}
 
-                        if (!IsApplication(topLevelControl.Type))
-                        {
-                            using (writer.BlockInvariant("class StaticResources"))
-                            {
-                                using (Scope("{0}{1}StaticResources".InvariantCultureFormat(_className.ns.Replace(".", ""), _className.className)))
-                                {
-                                    BuildStaticResources(writer, _staticResources, isGlobalResources: false);
+						if (!IsApplication(topLevelControl.Type))
+						{
+							using (writer.BlockInvariant("class StaticResources"))
+							{
+								using (Scope("{0}{1}StaticResources".InvariantCultureFormat(_className.ns.Replace(".", ""), _className.className)))
+								{
+									BuildStaticResources(writer, _staticResources, isGlobalResources: false);
 
-                                    // Build child subclasses for static resources
-                                    BuildChildSubclasses(writer);
-                                }
-                            }
-                        }
+									// Build child subclasses for static resources
+									BuildChildSubclasses(writer);
+								}
+							}
+						}
 
 						BuildInitializeXamlOwner(writer);
-                    }
-                }
-            }
+					}
+				}
+			}
 
-            BuildXamlApplyBlocks(writer);
+			BuildXamlApplyBlocks(writer);
 
-            // var formattedCode = ReformatCode(writer.ToString());
-            return writer.ToString();
-        }
+			// var formattedCode = ReformatCode(writer.ToString());
+			return writer.ToString();
+		}
 
 		private void BuildInitializeXamlOwner(IndentedStringBuilder writer)
 		{
@@ -325,85 +324,85 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		}
 
 		private void BuildXamlApplyBlocks(IndentedStringBuilder writer)
-        {
-            using (writer.BlockInvariant("namespace {0}", _defaultNamespace))
-            {
-                using (writer.BlockInvariant("static class {0}XamlApplyExtensions", _fileUniqueId))
-                {
-                    foreach (var typeInfo in _xamlAppliedTypes.Select((type, i) => new { type, Index = i }))
-                    {
-                        writer.AppendLineInvariant($"public delegate void XamlApplyHandler{typeInfo.Index}({GetGlobalizedTypeName(typeInfo.type.ToString())} instance);");
+		{
+			using (writer.BlockInvariant("namespace {0}", _defaultNamespace))
+			{
+				using (writer.BlockInvariant("static class {0}XamlApplyExtensions", _fileUniqueId))
+				{
+					foreach (var typeInfo in _xamlAppliedTypes.Select((type, i) => new { type, Index = i }))
+					{
+						writer.AppendLineInvariant($"public delegate void XamlApplyHandler{typeInfo.Index}({GetGlobalizedTypeName(typeInfo.type.ToString())} instance);");
 
-                        using (writer.BlockInvariant(
-                            $"public static {GetGlobalizedTypeName(typeInfo.type.ToString())} {_fileUniqueId}_XamlApply(this {GetGlobalizedTypeName(typeInfo.type.ToString())} instance, XamlApplyHandler{typeInfo.Index} handler)"
-                        ))
-                        {
-                            writer.AppendLineInvariant($"handler(instance);");
-                            writer.AppendLineInvariant($"return instance;");
-                        }
-                    }
-                }
-            }
-        }
+						using (writer.BlockInvariant(
+							$"public static {GetGlobalizedTypeName(typeInfo.type.ToString())} {_fileUniqueId}_XamlApply(this {GetGlobalizedTypeName(typeInfo.type.ToString())} instance, XamlApplyHandler{typeInfo.Index} handler)"
+						))
+						{
+							writer.AppendLineInvariant($"handler(instance);");
+							writer.AppendLineInvariant($"return instance;");
+						}
+					}
+				}
+			}
+		}
 
-        private void BuildApplicationInitializerBody(IndentedStringBuilder writer, XamlObjectDefinition topLevelControl)
-        {
-            writer.AppendLineInvariant($"global::Windows.UI.Xaml.GenericStyles.Initialize();");
+		private void BuildApplicationInitializerBody(IndentedStringBuilder writer, XamlObjectDefinition topLevelControl)
+		{
+			writer.AppendLineInvariant($"global::Windows.UI.Xaml.GenericStyles.Initialize();");
 			writer.AppendLineInvariant($"global::Windows.UI.Xaml.ResourceDictionary.DefaultResolver = global::{_defaultNamespace}.GlobalStaticResources.FindResource;");
 			writer.AppendLineInvariant($"global::Windows.ApplicationModel.Resources.ResourceLoader.AddLookupAssembly(GetType().Assembly);");
 			writer.AppendLineInvariant($"global::Windows.ApplicationModel.Resources.ResourceLoader.AddLookupAssembly(typeof(Windows.UI.Xaml.GenericStyles).Assembly);");
 			writer.AppendLineInvariant($"global::Windows.ApplicationModel.Resources.ResourceLoader.DefaultLanguage = \"{_defaultLanguage}\";");
 			writer.AppendLineInvariant($"global::{_defaultNamespace}.GlobalStaticResources.Initialize();");
-            writer.AppendLineInvariant($"global::Uno.UI.DataBinding.BindableMetadata.Provider = new global::{_defaultNamespace}.BindableMetadataProvider();");
+			writer.AppendLineInvariant($"global::Uno.UI.DataBinding.BindableMetadata.Provider = new global::{_defaultNamespace}.BindableMetadataProvider();");
 
-            writer.AppendLineInvariant($"#if __ANDROID__");
-            writer.AppendLineInvariant($"global::Windows.UI.Xaml.Media.ImageSource.Drawables = typeof(global::{_defaultNamespace}.Resource.Drawable);");
-            writer.AppendLineInvariant($"#endif");
+			writer.AppendLineInvariant($"#if __ANDROID__");
+			writer.AppendLineInvariant($"global::Windows.UI.Xaml.Media.ImageSource.Drawables = typeof(global::{_defaultNamespace}.Resource.Drawable);");
+			writer.AppendLineInvariant($"#endif");
 
-            BuildProperties(writer, topLevelControl, isInline: false, returnsContent: false);
-            writer.AppendLineInvariant(";");
+			BuildProperties(writer, topLevelControl, isInline: false, returnsContent: false);
+			writer.AppendLineInvariant(";");
 		}
 
 		private void BuildGenericControlInitializerBody(IndentedStringBuilder writer, XamlObjectDefinition topLevelControl, bool isDirectUserControlChild)
-        {
-            RegisterPartial("void OnInitializeCompleted()");
+		{
+			RegisterPartial("void OnInitializeCompleted()");
 
 			writer.AppendLineInvariant("var nameScope = new global::Windows.UI.Xaml.NameScope();");
 			writer.AppendLineInvariant("NameScope.SetNameScope(this, nameScope);");
 
-            var hasContent = BuildProperties(writer, topLevelControl, isInline: false, returnsContent: isDirectUserControlChild);
+			var hasContent = BuildProperties(writer, topLevelControl, isInline: false, returnsContent: isDirectUserControlChild);
 
-            writer.AppendLineInvariant(";");
+			writer.AppendLineInvariant(";");
 
-            if (hasContent)
-            {
-                writer.AppendLineInvariant("");
-                writer.AppendLineInvariant(isDirectUserControlChild ? "content" : "this");
+			if (hasContent)
+			{
+				writer.AppendLineInvariant("");
+				writer.AppendLineInvariant(isDirectUserControlChild ? "content" : "this");
 
-                string closure;
+				string closure;
 
-                using (var blockWriter = CreateApplyBlock(writer, null, out closure))
-                {
-                    blockWriter.AppendLineInvariant(
-                        "// Source {0} (Line {1}:{2})",
-                        _fileDefinition.FilePath,
-                        topLevelControl.LineNumber,
-                        topLevelControl.LinePosition
-                    );
+				using (var blockWriter = CreateApplyBlock(writer, null, out closure))
+				{
+					blockWriter.AppendLineInvariant(
+						"// Source {0} (Line {1}:{2})",
+						_fileDefinition.FilePath,
+						topLevelControl.LineNumber,
+						topLevelControl.LinePosition
+					);
 
-                    BuildLiteralProperties(blockWriter, topLevelControl, closure);
-                }
+					BuildLiteralProperties(blockWriter, topLevelControl, closure);
+				}
 
-                if (IsFrameworkElement(topLevelControl.Type))
-                {
-                    BuildExtendedProperties(writer, topLevelControl, isDirectUserControlChild, useGenericApply: true);
-                }
+				if (IsFrameworkElement(topLevelControl.Type))
+				{
+					BuildExtendedProperties(writer, topLevelControl, isDirectUserControlChild, useGenericApply: true);
+				}
 
-                writer.AppendLineInvariant(";");
-            }
+				writer.AppendLineInvariant(";");
+			}
 
-            writer.AppendLineInvariant("OnInitializeCompleted();");
-            writer.AppendLineInvariant("InitializeXamlOwner();");
+			writer.AppendLineInvariant("OnInitializeCompleted();");
+			writer.AppendLineInvariant("InitializeXamlOwner();");
 
 			if (isDirectUserControlChild)
 			{
@@ -411,57 +410,57 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			}
 		}
 
-        private static string ReformatCode(string generatedCode)
-        {
-            using (var workspace = MSBuildWorkspace.Create())
-            {
-                var syntaxTree = CSharpSyntaxTree.ParseText(generatedCode);
+		private static string ReformatCode(string generatedCode)
+		{
+			using (var workspace = MSBuildWorkspace.Create())
+			{
+				var syntaxTree = CSharpSyntaxTree.ParseText(generatedCode);
 
-                var options = workspace.Options
-                    .WithChangedOption(FormattingOptions.SmartIndent, LanguageNames.CSharp, FormattingOptions.IndentStyle.Block)
-                    .WithChangedOption(FormattingOptions.NewLine, LanguageNames.CSharp, Environment.NewLine)
-                    .WithChangedOption(FormattingOptions.UseTabs, LanguageNames.CSharp, true)
-                    .WithChangedOption(CSharpFormattingOptions.SpaceAfterDot, false)
-                    .WithChangedOption(CSharpFormattingOptions.SpaceBeforeDot, false)
-                    .WithChangedOption(CSharpFormattingOptions.NewLineForElse, true)
-                    .WithChangedOption(CSharpFormattingOptions.NewLineForCatch, true)
-                    .WithChangedOption(CSharpFormattingOptions.NewLineForClausesInQuery, true)
-                    .WithChangedOption(CSharpFormattingOptions.NewLineForFinally, true)
-                    .WithChangedOption(CSharpFormattingOptions.NewLinesForBracesInAnonymousMethods, true)
-                    .WithChangedOption(CSharpFormattingOptions.NewLinesForBracesInLambdaExpressionBody, true)
-                    .WithChangedOption(CSharpFormattingOptions.NewLinesForBracesInAnonymousTypes, true)
-                    .WithChangedOption(CSharpFormattingOptions.NewLinesForBracesInControlBlocks, true)
-                    .WithChangedOption(CSharpFormattingOptions.NewLinesForBracesInMethods, true)
-                    .WithChangedOption(CSharpFormattingOptions.NewLinesForBracesInObjectCollectionArrayInitializers, true)
-                    .WithChangedOption(CSharpFormattingOptions.NewLinesForBracesInTypes, true)
-                    .WithChangedOption(CSharpFormattingOptions.SpaceAfterCast, false)
-                    .WithChangedOption(CSharpFormattingOptions.SpaceWithinCastParentheses, false)
-                    .WithChangedOption(CSharpFormattingOptions.SpacingAroundBinaryOperator, BinaryOperatorSpacingOptions.Single)
-                    .WithChangedOption(CSharpFormattingOptions.SpacingAfterMethodDeclarationName, true)
-                    .WithChangedOption(CSharpFormattingOptions.IndentBlock, true)
-                    .WithChangedOption(CSharpFormattingOptions.IndentBraces, false)
-                    .WithChangedOption(CSharpFormattingOptions.IndentSwitchCaseSection, true)
-                    .WithChangedOption(CSharpFormattingOptions.IndentSwitchSection, true)
-                    .WithChangedOption(CSharpFormattingOptions.NewLineForMembersInObjectInit, true);
+				var options = workspace.Options
+					.WithChangedOption(FormattingOptions.SmartIndent, LanguageNames.CSharp, FormattingOptions.IndentStyle.Block)
+					.WithChangedOption(FormattingOptions.NewLine, LanguageNames.CSharp, Environment.NewLine)
+					.WithChangedOption(FormattingOptions.UseTabs, LanguageNames.CSharp, true)
+					.WithChangedOption(CSharpFormattingOptions.SpaceAfterDot, false)
+					.WithChangedOption(CSharpFormattingOptions.SpaceBeforeDot, false)
+					.WithChangedOption(CSharpFormattingOptions.NewLineForElse, true)
+					.WithChangedOption(CSharpFormattingOptions.NewLineForCatch, true)
+					.WithChangedOption(CSharpFormattingOptions.NewLineForClausesInQuery, true)
+					.WithChangedOption(CSharpFormattingOptions.NewLineForFinally, true)
+					.WithChangedOption(CSharpFormattingOptions.NewLinesForBracesInAnonymousMethods, true)
+					.WithChangedOption(CSharpFormattingOptions.NewLinesForBracesInLambdaExpressionBody, true)
+					.WithChangedOption(CSharpFormattingOptions.NewLinesForBracesInAnonymousTypes, true)
+					.WithChangedOption(CSharpFormattingOptions.NewLinesForBracesInControlBlocks, true)
+					.WithChangedOption(CSharpFormattingOptions.NewLinesForBracesInMethods, true)
+					.WithChangedOption(CSharpFormattingOptions.NewLinesForBracesInObjectCollectionArrayInitializers, true)
+					.WithChangedOption(CSharpFormattingOptions.NewLinesForBracesInTypes, true)
+					.WithChangedOption(CSharpFormattingOptions.SpaceAfterCast, false)
+					.WithChangedOption(CSharpFormattingOptions.SpaceWithinCastParentheses, false)
+					.WithChangedOption(CSharpFormattingOptions.SpacingAroundBinaryOperator, BinaryOperatorSpacingOptions.Single)
+					.WithChangedOption(CSharpFormattingOptions.SpacingAfterMethodDeclarationName, true)
+					.WithChangedOption(CSharpFormattingOptions.IndentBlock, true)
+					.WithChangedOption(CSharpFormattingOptions.IndentBraces, false)
+					.WithChangedOption(CSharpFormattingOptions.IndentSwitchCaseSection, true)
+					.WithChangedOption(CSharpFormattingOptions.IndentSwitchSection, true)
+					.WithChangedOption(CSharpFormattingOptions.NewLineForMembersInObjectInit, true);
 
-                var formatted = Formatter.Format(syntaxTree.GetRoot(), workspace, options);
+				var formatted = Formatter.Format(syntaxTree.GetRoot(), workspace, options);
 
-                return formatted.ToFullString();
-            }
-        }
+				return formatted.ToFullString();
+			}
+		}
 
-        private void BuildPartials(IIndentedStringBuilder writer, bool isStatic)
-        {
-            foreach (var partialDefinition in _partials)
-            {
-                writer.AppendLineInvariant("{0}partial " + partialDefinition + ";", isStatic ? "static " : "");
-            }
-        }
+		private void BuildPartials(IIndentedStringBuilder writer, bool isStatic)
+		{
+			foreach (var partialDefinition in _partials)
+			{
+				writer.AppendLineInvariant("{0}partial " + partialDefinition + ";", isStatic ? "static " : "");
+			}
+		}
 
-        private void BuildBackingFields(IIndentedStringBuilder writer)
-        {
-            foreach (var backingFieldDefinition in CurrentScope.BackingFields)
-            {
+		private void BuildBackingFields(IIndentedStringBuilder writer)
+		{
+			foreach (var backingFieldDefinition in CurrentScope.BackingFields)
+			{
 				var sanitizedFieldName = SanitizeResourceName(backingFieldDefinition.Name);
 				
 				CurrentScope.ReferencedElementNames.Remove(sanitizedFieldName);
@@ -493,7 +492,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		private static string SanitizeResourceName(string name) => name.Replace("-", "_");
 
 		private void BuildChildSubclasses(IIndentedStringBuilder writer, bool isTopLevel = false)
-        {
+		{
 			var disposable = isTopLevel ? writer.BlockInvariant("namespace {0}.__Resources", _defaultNamespace) : null;
 
 			using (disposable)
@@ -530,32 +529,32 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					}
 				}
 			}
-        }
+		}
 
-        private string BuildControlInitializerDeclaration(string className, XamlObjectDefinition topLevelControl)
-        {
-            if (IsPage(topLevelControl.Type))
-            {
-                return "protected override void InitializeComponent()";
-            }
-            else if (IsUserControl(topLevelControl.Type, checkInheritance: false))
-            {
-                string contentTypeDisplayString = GetImplicitChildTypeDisplayString(topLevelControl);
+		private string BuildControlInitializerDeclaration(string className, XamlObjectDefinition topLevelControl)
+		{
+			if (IsPage(topLevelControl.Type))
+			{
+				return "protected override void InitializeComponent()";
+			}
+			else if (IsUserControl(topLevelControl.Type, checkInheritance: false))
+			{
+				string contentTypeDisplayString = GetImplicitChildTypeDisplayString(topLevelControl);
 
-                return "public {0} GetContent()".InvariantCultureFormat(contentTypeDisplayString);
-            }
-            else
-            {
-                return "private void InitializeComponent()";
-            }
-        }
+				return "public {0} GetContent()".InvariantCultureFormat(contentTypeDisplayString);
+			}
+			else
+			{
+				return "private void InitializeComponent()";
+			}
+		}
 
-        private string GetImplicitChildTypeDisplayString(XamlObjectDefinition topLevelControl)
-        {
-            var contentType = FindImplicitContentMember(topLevelControl)?.Objects.FirstOrDefault()?.Type;
+		private string GetImplicitChildTypeDisplayString(XamlObjectDefinition topLevelControl)
+		{
+			var contentType = FindImplicitContentMember(topLevelControl)?.Objects.FirstOrDefault()?.Type;
 
-            return contentType == null ? XamlConstants.Types.IFrameworkElement : FindType(contentType)?.ToDisplayString() ?? XamlConstants.Types.IFrameworkElement;
-        }
+			return contentType == null ? XamlConstants.Types.IFrameworkElement : FindType(contentType)?.ToDisplayString() ?? XamlConstants.Types.IFrameworkElement;
+		}
 
 		private void BuildResourceDictionary(IIndentedStringBuilder writer, XamlObjectDefinition topLevelControl)
 		{
@@ -604,34 +603,34 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			}
 		}
 
-        private void BuildEmptyBackingClass(IIndentedStringBuilder writer, XamlObjectDefinition topLevelControl)
-        {
-            var className = FindClassName(topLevelControl);
+		private void BuildEmptyBackingClass(IIndentedStringBuilder writer, XamlObjectDefinition topLevelControl)
+		{
+			var className = FindClassName(topLevelControl);
 
-            if (className.ns != null)
-            {
-                var controlBaseType = GetType(topLevelControl.Type);
+			if (className.ns != null)
+			{
+				var controlBaseType = GetType(topLevelControl.Type);
 
-                using (writer.BlockInvariant("namespace {0}", className.ns))
-                {
-                    using (writer.BlockInvariant("public sealed partial class {0} : {1}", className.className, GetGlobalizedTypeName(controlBaseType.ToDisplayString())))
-                    {
-                        using (writer.BlockInvariant("public void InitializeComponent()"))
-                        {
-                        }
-                    }
-                }
-            }
-        }
+				using (writer.BlockInvariant("namespace {0}", className.ns))
+				{
+					using (writer.BlockInvariant("public sealed partial class {0} : {1}", className.className, GetGlobalizedTypeName(controlBaseType.ToDisplayString())))
+					{
+						using (writer.BlockInvariant("public void InitializeComponent()"))
+						{
+						}
+					}
+				}
+			}
+		}
 
-        private Dictionary<string, XamlObjectDefinition> ImportResourceDictionary(
-            IIndentedStringBuilder writer,
-            XamlObjectDefinition topLevelControl
-        )
-        {
-            var resources = new Dictionary<string, XamlObjectDefinition>();
+		private Dictionary<string, XamlObjectDefinition> ImportResourceDictionary(
+			IIndentedStringBuilder writer,
+			XamlObjectDefinition topLevelControl
+		)
+		{
+			var resources = new Dictionary<string, XamlObjectDefinition>();
 
-            XamlMemberDefinition contentNode;
+			XamlMemberDefinition contentNode;
 
 			if (IsApplication(topLevelControl.Type))
 			{
@@ -643,107 +642,107 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			}
 
 
-            if (contentNode != null)
-            {
-                foreach (var resource in contentNode.Objects)
-                {
-                    var key = resource.Members.FirstOrDefault(m => m.Member.Name == "Key" || m.Member.Name == "Name");
+			if (contentNode != null)
+			{
+				foreach (var resource in contentNode.Objects)
+				{
+					var key = resource.Members.FirstOrDefault(m => m.Member.Name == "Key" || m.Member.Name == "Name");
 
-                    if (key != null)
-                    {
-                        if (!resources.ContainsKey(key.Value.ToString()))
-                        {
-                            resources.Add(key.Value.ToString(), resource);
-                        }
-                        else
-                        {
-                            throw new InvalidOperationException($"Duplicate resource {key.Value.ToString()}");
-                        }
-                    }
-                    else
-                    {
-                        if (resource.Type.Name == "Style")
-                        {
-                            var targetType = FindMember(resource, "TargetType")?.Value.ToString();
+					if (key != null)
+					{
+						if (!resources.ContainsKey(key.Value.ToString()))
+						{
+							resources.Add(key.Value.ToString(), resource);
+						}
+						else
+						{
+							throw new InvalidOperationException($"Duplicate resource {key.Value.ToString()}");
+						}
+					}
+					else
+					{
+						if (resource.Type.Name == "Style")
+						{
+							var targetType = FindMember(resource, "TargetType")?.Value.ToString();
 
-                            if (targetType != null)
-                            {
-                                var fullTargetType = FindType(targetType).SelectOrDefault(t => t.ToDisplayString(), targetType);
+							if (targetType != null)
+							{
+								var fullTargetType = FindType(targetType).SelectOrDefault(t => t.ToDisplayString(), targetType);
 
-                                var keyName = (ImplicitStyleMarker + fullTargetType).Replace(".", "_");
+								var keyName = (ImplicitStyleMarker + fullTargetType).Replace(".", "_");
 
-                                if (resources.ContainsKey(keyName))
-                                {
-                                    throw new InvalidOperationException($"Implicit resource for {keyName} already exists");
-                                }
-                                else
-                                {
-                                    resources.Add(keyName, resource);
-                                }
-                            }
-                            else
-                            {
-                                throw new InvalidOperationException("The implicit resource must have a TargetType atttribute");
-                            }
-                        }
+								if (resources.ContainsKey(keyName))
+								{
+									throw new InvalidOperationException($"Implicit resource for {keyName} already exists");
+								}
+								else
+								{
+									resources.Add(keyName, resource);
+								}
+							}
+							else
+							{
+								throw new InvalidOperationException("The implicit resource must have a TargetType atttribute");
+							}
+						}
 						else if(resource.Type.Name == "ResourceDictionary")
 						{
 							// ResourceDictionaries and MergedDictionaries are handled elsewhere
 						}
-                        else
-                        {
+						else
+						{
 							GenerateError(
 								writer,
-                                "Implicit resource other than Style in inline resources are not supported ({0}, Line {1}:{2})",
-                                contentNode.Member.Type,
-                                contentNode.LineNumber,
-                                contentNode.LinePosition
-                            );
-                        }
-                    }
-                }
-            }
+								"Implicit resource other than Style in inline resources are not supported ({0}, Line {1}:{2})",
+								contentNode.Member.Type,
+								contentNode.LineNumber,
+								contentNode.LinePosition
+							);
+						}
+					}
+				}
+			}
 
-            return resources;
-        }
+			return resources;
+		}
 
-        private void BuildSingleTimeInitializer(IIndentedStringBuilder writer, string propertyType, string propertyName, Action propertyBodyBuilder, bool isStatic = true)
-        {
+		private void BuildSingleTimeInitializer(IIndentedStringBuilder writer, string propertyType, string propertyName, Action propertyBodyBuilder, bool isStatic = true)
+		{
 			var sanitizedPropertyName = SanitizeResourceName(propertyName);
 
 			var propertyInitializedVariable = "_{0}Initialized".InvariantCultureFormat(sanitizedPropertyName);
-            var backingFieldVariable = "__{0}BackingField".InvariantCultureFormat(sanitizedPropertyName);
-            var staticModifier = isStatic ? "static" : "";
+			var backingFieldVariable = "__{0}BackingField".InvariantCultureFormat(sanitizedPropertyName);
+			var staticModifier = isStatic ? "static" : "";
 
-            // The property type may be partially qualified, try resolving it through FindType
+			// The property type may be partially qualified, try resolving it through FindType
 			var propertySymbol = FindType(propertyType);
 			propertyType = propertySymbol?.GetFullName() ?? propertyType;
 
 			writer.AppendLineInvariant($"private {staticModifier} bool {propertyInitializedVariable} = false;");
-            writer.AppendLineInvariant($"private {staticModifier} {GetGlobalizedTypeName(propertyType)} {backingFieldVariable};");
+			writer.AppendLineInvariant($"private {staticModifier} {GetGlobalizedTypeName(propertyType)} {backingFieldVariable};");
 
-            writer.AppendLine();
+			writer.AppendLine();
 
-            using (writer.BlockInvariant($"public {staticModifier} {GetGlobalizedTypeName(propertyType)} {sanitizedPropertyName}"))
-            {
-                using (writer.BlockInvariant("get"))
-                {
-                    using (writer.BlockInvariant($"if(!{propertyInitializedVariable})"))
-                    {
-                        writer.AppendLineInvariant($"{backingFieldVariable} = ");
-                        using (writer.Indent())
-                        {
-                            propertyBodyBuilder();
-                        }
-                        writer.AppendLineInvariant($"{propertyInitializedVariable} = true;");
-                    }
+			using (writer.BlockInvariant($"public {staticModifier} {GetGlobalizedTypeName(propertyType)} {sanitizedPropertyName}"))
+			{
+				using (writer.BlockInvariant("get"))
+				{
+					using (writer.BlockInvariant($"if(!{propertyInitializedVariable})"))
+					{
+						writer.AppendLineInvariant($"{backingFieldVariable} = ");
+						using (writer.Indent())
+						{
+							propertyBodyBuilder();
+						}
+						writer.AppendLineInvariant($"{propertyInitializedVariable} = true;");
+					}
 
-                    writer.AppendLineInvariant($"return {backingFieldVariable};");
-                }
-            }
+					writer.AppendLineInvariant($"return {backingFieldVariable};");
+				}
+			}
 
-            writer.AppendLine();
-        }
+			writer.AppendLine();
+		}
 
 		private void BuildSourceLineInfo(IIndentedStringBuilder writer, XamlObjectDefinition definition)
 		{
@@ -758,47 +757,47 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			}
 		}
 
-        private void BuildStaticResources(
-            IIndentedStringBuilder writer,
-            Dictionary<string, XamlObjectDefinition> resources,
-            bool isGlobalResources
-        )
-        {
-            BuildKeyedStaticResources(writer, isGlobalResources, resources);
+		private void BuildStaticResources(
+			IIndentedStringBuilder writer,
+			Dictionary<string, XamlObjectDefinition> resources,
+			bool isGlobalResources
+		)
+		{
+			BuildKeyedStaticResources(writer, isGlobalResources, resources);
 
-            if (isGlobalResources)
-            {
-                BuildImplicitStaticResources(writer, isGlobalResources, resources);
-            }
-        }
+			if (isGlobalResources)
+			{
+				BuildImplicitStaticResources(writer, isGlobalResources, resources);
+			}
+		}
 
-        private void BuildImplicitStaticResources(IIndentedStringBuilder writer, bool isGlobalResources, IEnumerable<KeyValuePair<string, XamlObjectDefinition>> resources)
-        {
-            var styleResources = resources.Where(r =>
-                r.Value.Type.Name == "Style" && r.Key.StartsWith(ImplicitStyleMarker)
-            );
+		private void BuildImplicitStaticResources(IIndentedStringBuilder writer, bool isGlobalResources, IEnumerable<KeyValuePair<string, XamlObjectDefinition>> resources)
+		{
+			var styleResources = resources.Where(r =>
+				r.Value.Type.Name == "Style" && r.Key.StartsWith(ImplicitStyleMarker)
+			);
 
-            if (styleResources.Any())
-            {
-                // The index is used to generate the methods per partial file, so that a global
-                // file can call them one by one.
-                using (writer.BlockInvariant("static partial void RegisterImplicitStylesResources_{0}()", _fileUniqueId.ToString()))
-                {
-                    foreach (var resource in styleResources)
-                    {
-                        BuildSourceLineInfo(writer, resource.Value);
+			if (styleResources.Any())
+			{
+				// The index is used to generate the methods per partial file, so that a global
+				// file can call them one by one.
+				using (writer.BlockInvariant("static partial void RegisterImplicitStylesResources_{0}()", _fileUniqueId.ToString()))
+				{
+					foreach (var resource in styleResources)
+					{
+						BuildSourceLineInfo(writer, resource.Value);
 
-                        var targetType = GetMember(resource.Value, "TargetType")?.Value.ToString();
+						var targetType = GetMember(resource.Value, "TargetType")?.Value.ToString();
 
-                        var fullTargetType = GetType(targetType).ToDisplayString();
+						var fullTargetType = GetType(targetType).ToDisplayString();
 
-                        writer.AppendLineInvariant(
-                            $"{XamlConstants.Types.Style}.RegisterDefaultStyleForType(typeof({GetGlobalizedTypeName(fullTargetType)}), () => {resource.Key});"
-                        );
-                    }
-                }
-            }
-        }
+						writer.AppendLineInvariant(
+							$"{XamlConstants.Types.Style}.RegisterDefaultStyleForType(typeof({GetGlobalizedTypeName(fullTargetType)}), () => {resource.Key});"
+						);
+					}
+				}
+			}
+		}
 
 		/// <summary>
 		/// Gets the full target type, ensuring it is prefixed by "global::"
@@ -818,44 +817,44 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		}
 
 		private void BuildNamedResources(
-            IIndentedStringBuilder writer,
-            IEnumerable<KeyValuePair<string, XamlObjectDefinition>> namedResources
-        )
-        {
-            foreach (var namedResource in namedResources)
-            {
-                BuildSourceLineInfo(writer, namedResource.Value);
+			IIndentedStringBuilder writer,
+			IEnumerable<KeyValuePair<string, XamlObjectDefinition>> namedResources
+		)
+		{
+			foreach (var namedResource in namedResources)
+			{
+				BuildSourceLineInfo(writer, namedResource.Value);
 
-                BuildChild(writer, null, namedResource.Value);
-                writer.AppendLineInvariant(0, ";", namedResource.Value.Type);
-            }
-        }
+				BuildChild(writer, null, namedResource.Value);
+				writer.AppendLineInvariant(0, ";", namedResource.Value.Type);
+			}
+		}
 
-        private bool IsSingleTimeInitializable(XamlType type)
-        {
-            var resourceType = GetType(type);
+		private bool IsSingleTimeInitializable(XamlType type)
+		{
+			var resourceType = GetType(type);
 
-            return resourceType.IsValueType
-                || resourceType.SpecialType != SpecialType.None
-                || type.Name == "Double"
-                || type.Name == "Single"
-                || type.Name == "Integer"
-                || type.Name == "String"
-                || type.Name == "Boolean"
-            ;
-        }
+			return resourceType.IsValueType
+				|| resourceType.SpecialType != SpecialType.None
+				|| type.Name == "Double"
+				|| type.Name == "Single"
+				|| type.Name == "Integer"
+				|| type.Name == "String"
+				|| type.Name == "Boolean"
+			;
+		}
 
-        private static string FormatResourcePropertyName(string key)
-        {
-            if (key.Contains(":"))
-            {
-                return key.Replace(":", "_");
-            }
+		private static string FormatResourcePropertyName(string key)
+		{
+			if (key.Contains(":"))
+			{
+				return key.Replace(":", "_");
+			}
 
-            return key;
-        }
+			return key;
+		}
 
-        private void BuildKeyedStaticResources(
+		private void BuildKeyedStaticResources(
 			IIndentedStringBuilder writer,
 			bool isGlobalResources,
 			IEnumerable<KeyValuePair<string, XamlObjectDefinition>> keyedResources
@@ -900,40 +899,40 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			}
 
 			if (keyedResources.Any())
-            {
-                if (isGlobalResources)
-                {
-                    // Generate the lookup table, using the index provided at construction.
-                    // The index is used to generate the methods per partial file, so that a global
-                    // file can call them one by one.
-                    using (writer.BlockInvariant("static partial void RegisterResources_{0}()", _fileUniqueId.ToString()))
-                    {
-                        using (writer.BlockInvariant("AddResolver(name =>"))
-                        {
-                            BuildGetResources(writer, keyedResources);
-                        }
+			{
+				if (isGlobalResources)
+				{
+					// Generate the lookup table, using the index provided at construction.
+					// The index is used to generate the methods per partial file, so that a global
+					// file can call them one by one.
+					using (writer.BlockInvariant("static partial void RegisterResources_{0}()", _fileUniqueId.ToString()))
+					{
+						using (writer.BlockInvariant("AddResolver(name =>"))
+						{
+							BuildGetResources(writer, keyedResources);
+						}
 
-                        writer.AppendLineInvariant(");");
-                    }
-                }
-                else
-                {
-                    // If there is no method suffix, 
-                    using (writer.BlockInvariant("public object FindResource(string name)"))
-                    {
-                        BuildGetResources(writer, keyedResources);
-                    }
-                }
-            }
-        }
+						writer.AppendLineInvariant(");");
+					}
+				}
+				else
+				{
+					// If there is no method suffix, 
+					using (writer.BlockInvariant("public object FindResource(string name)"))
+					{
+						BuildGetResources(writer, keyedResources);
+					}
+				}
+			}
+		}
 
 
 		private void BuildGetResources(IIndentedStringBuilder writer, IEnumerable<KeyValuePair<string, XamlObjectDefinition>> resources)
-        {
-            using (writer.BlockInvariant("switch(name)"))
-            {
-                foreach (var resource in resources)
-                {
+		{
+			using (writer.BlockInvariant("switch(name)"))
+			{
+				foreach (var resource in resources)
+				{
 					if (resource.Value.Type.Name == "StaticResource")
 					{
 						writer.AppendLineInvariant($"case \"{resource.Key}\":");
@@ -949,10 +948,10 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						writer.AppendLineInvariant("\treturn {0};", SanitizeResourceName(resource.Key));
 					}
 				}
-            }
+			}
 
-            writer.AppendLineInvariant("return null;");
-        }
+			writer.AppendLineInvariant("return null;");
+		}
 
 		private string GenerateTypeName(KeyValuePair<string, XamlObjectDefinition> definition)
 		{
@@ -965,62 +964,62 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 			// Color is an alias the base color type for the target platform.
 			if (typeName == "Color" || typeName == "ListViewBaseLayoutTemplate")
-            {
+			{
 
-                return GetType(typeName).ToDisplayString();
-            }
+				return GetType(typeName).ToDisplayString();
+			}
 
-            return typeName;
-        }
+			return typeName;
+		}
 
-        private void BuildStyle(IIndentedStringBuilder writer, KeyValuePair<string, XamlObjectDefinition> resource)
-        {
-            BuildSingleTimeInitializer(writer, "global::Windows.UI.Xaml.Style", resource.Key, () =>
-            {
-                BuildInlineStyle(writer, resource.Value);
+		private void BuildStyle(IIndentedStringBuilder writer, KeyValuePair<string, XamlObjectDefinition> resource)
+		{
+			BuildSingleTimeInitializer(writer, "global::Windows.UI.Xaml.Style", resource.Key, () =>
+			{
+				BuildInlineStyle(writer, resource.Value);
 
-                var partialOverrideNode = resource.Value.Members.FirstOrDefault(o => o.Member.Name.Equals("PartialOverride", StringComparison.OrdinalIgnoreCase));
+				var partialOverrideNode = resource.Value.Members.FirstOrDefault(o => o.Member.Name.Equals("PartialOverride", StringComparison.OrdinalIgnoreCase));
 
-                if (partialOverrideNode != null
-                    && partialOverrideNode.Value.SelectOrDefault(v => v.ToString()).Equals("true", StringComparison.OrdinalIgnoreCase)
-                )
-                {
-                    writer.AppendLineInvariant(".Apply(s => On{0}Override(s))", resource.Key);
-                    RegisterPartial("void On{0}Override(Style s)", resource.Key);
-                }
+				if (partialOverrideNode != null
+					&& partialOverrideNode.Value.SelectOrDefault(v => v.ToString()).Equals("true", StringComparison.OrdinalIgnoreCase)
+				)
+				{
+					writer.AppendLineInvariant(".Apply(s => On{0}Override(s))", resource.Key);
+					RegisterPartial("void On{0}Override(Style s)", resource.Key);
+				}
 
-                writer.AppendLineInvariant(";", resource.Value.Type);
-            });
-        }
+				writer.AppendLineInvariant(";", resource.Value.Type);
+			});
+		}
 
-        private void BuildInlineStyle(IIndentedStringBuilder writer, XamlObjectDefinition style)
-        {
-            var targetTypeNode = GetMember(style, "TargetType");
-            var targetType = targetTypeNode.Value.ToString();
-            var fullTargetType = FindType(targetType).SelectOrDefault(t => t.ToDisplayString(), targetType);
+		private void BuildInlineStyle(IIndentedStringBuilder writer, XamlObjectDefinition style)
+		{
+			var targetTypeNode = GetMember(style, "TargetType");
+			var targetType = targetTypeNode.Value.ToString();
+			var fullTargetType = FindType(targetType).SelectOrDefault(t => t.ToDisplayString(), targetType);
 
-            using (writer.BlockInvariant("new global::Windows.UI.Xaml.Style(typeof({0}))", GetGlobalizedTypeName(fullTargetType)))
-            {
-                var basedOnNode = style.Members.FirstOrDefault(o => o.Member.Name == "BasedOn");
+			using (writer.BlockInvariant("new global::Windows.UI.Xaml.Style(typeof({0}))", GetGlobalizedTypeName(fullTargetType)))
+			{
+				var basedOnNode = style.Members.FirstOrDefault(o => o.Member.Name == "BasedOn");
 
-                if (basedOnNode != null)
-                {
-                    writer.AppendLineInvariant("BasedOn = (global::Windows.UI.Xaml.Style){0},", BuildBindingOption(basedOnNode, null, prependCastToType: false));
-                }
+				if (basedOnNode != null)
+				{
+					writer.AppendLineInvariant("BasedOn = (global::Windows.UI.Xaml.Style){0},", BuildBindingOption(basedOnNode, null, prependCastToType: false));
+				}
 
-                using (writer.BlockInvariant("Setters = ", fullTargetType))
-                {
-                    var contentNode = FindMember(style, "_UnknownContent");
+				using (writer.BlockInvariant("Setters = ", fullTargetType))
+				{
+					var contentNode = FindMember(style, "_UnknownContent");
 
-                    if (contentNode != null)
-                    {
-                        foreach (var child in contentNode.Objects)
-                        {
-                            if (child.Type.Name == "Setter")
-                            {
-                                var propertyNode = FindMember(child, "Property");
-                                var valueNode = FindMember(child, "Value");
-                                var property = propertyNode?.Value.SelectOrDefault(p => p.ToString());
+					if (contentNode != null)
+					{
+						foreach (var child in contentNode.Objects)
+						{
+							if (child.Type.Name == "Setter")
+							{
+								var propertyNode = FindMember(child, "Property");
+								var valueNode = FindMember(child, "Value");
+								var property = propertyNode?.Value.SelectOrDefault(p => p.ToString());
 
 								if (valueNode != null)
 								{
@@ -1031,15 +1030,15 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 									GenerateError(writer, $"No value was specified for {property} on {child.Type.Name}");
 								}
 							}
-                            else
-                            {
+							else
+							{
 								GenerateError(writer, "Support for {0} is not implemented", child.Type.Name);
-                            }
-                        }
-                    }
-                }
-            }
-        }
+							}
+						}
+					}
+				}
+			}
+		}
 
 		private void BuildPropertySetter(IIndentedStringBuilder writer, string fullTargetType, string lineEnding, string property, XamlMemberDefinition valueNode, string targetInstance = null)
 		{
@@ -1133,7 +1132,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		}
 
 		private void GenerateError(IIndentedStringBuilder writer, string message, params object[] options)
-        {
+		{
 			if(ShouldWriteErrorOnInvalidXaml)
 			{
 				// it's important to add a new line to make sure #error is on its own line.
@@ -1155,92 +1154,92 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		}
 
 		private bool HasMarkupExtension(XamlMemberDefinition valueNode)
-        {
-            return valueNode
-                .Objects
-                .Any(o =>
-                    o.Type.Name == "StaticResource"
-                    || o.Type.Name == "ThemeResource"
-                    || o.Type.Name == "Binding"
-                    || o.Type.Name == "Bind"
-                    || o.Type.Name == "TemplateBinding"
-                );
-        }
+		{
+			return valueNode
+				.Objects
+				.Any(o =>
+					o.Type.Name == "StaticResource"
+					|| o.Type.Name == "ThemeResource"
+					|| o.Type.Name == "Binding"
+					|| o.Type.Name == "Bind"
+					|| o.Type.Name == "TemplateBinding"
+				);
+		}
 
-        private bool HasBindingMarkupExtension(XamlMemberDefinition valueNode)
-        {
-            return valueNode
-                .Objects
-                .Any(o =>
-                    o.Type.Name == "Binding"
-                    || o.Type.Name == "Bind"
-                    || o.Type.Name == "TemplateBinding"
-                );
-        }
+		private bool HasBindingMarkupExtension(XamlMemberDefinition valueNode)
+		{
+			return valueNode
+				.Objects
+				.Any(o =>
+					o.Type.Name == "Binding"
+					|| o.Type.Name == "Bind"
+					|| o.Type.Name == "TemplateBinding"
+				);
+		}
 
-        private XamlMemberDefinition FindMember(XamlObjectDefinition xamlObjectDefinition, string memberName)
-        {
-            return xamlObjectDefinition.Members.FirstOrDefault(m => m.Member.Name == memberName);
-        }
+		private XamlMemberDefinition FindMember(XamlObjectDefinition xamlObjectDefinition, string memberName)
+		{
+			return xamlObjectDefinition.Members.FirstOrDefault(m => m.Member.Name == memberName);
+		}
 
-        private XamlMemberDefinition GetMember(XamlObjectDefinition xamlObjectDefinition, string memberName)
-        {
-            var member = FindMember(xamlObjectDefinition, memberName);
+		private XamlMemberDefinition GetMember(XamlObjectDefinition xamlObjectDefinition, string memberName)
+		{
+			var member = FindMember(xamlObjectDefinition, memberName);
 
-            if (member == null)
-            {
-                throw new InvalidOperationException($"Unable to find {memberName} on {xamlObjectDefinition}");
-            }
+			if (member == null)
+			{
+				throw new InvalidOperationException($"Unable to find {memberName} on {xamlObjectDefinition}");
+			}
 
-            return member;
-        }
+			return member;
+		}
 
-        private (string ns, string className) GetClassName(XamlObjectDefinition control)
-        {
-            var classMember = FindClassName(control);
+		private (string ns, string className) GetClassName(XamlObjectDefinition control)
+		{
+			var classMember = FindClassName(control);
 
-            if (classMember.ns == null)
-            {
-                throw new Exception("Unable to find class name for toplevel control");
-            }
+			if (classMember.ns == null)
+			{
+				throw new Exception("Unable to find class name for toplevel control");
+			}
 
-            return classMember;
-        }
+			return classMember;
+		}
 
-        private static (string ns, string className) FindClassName(XamlObjectDefinition control)
-        {
-            var classMember = control.Members.FirstOrDefault(m => m.Member.Name == "Class");
+		private static (string ns, string className) FindClassName(XamlObjectDefinition control)
+		{
+			var classMember = control.Members.FirstOrDefault(m => m.Member.Name == "Class");
 
-            if (classMember != null)
-            {
-                var fullName = classMember.Value.ToString();
+			if (classMember != null)
+			{
+				var fullName = classMember.Value.ToString();
 
-                var index = fullName.LastIndexOf('.');
+				var index = fullName.LastIndexOf('.');
 
-                return (fullName.Substring(0, index), fullName.Substring(index + 1));
-            }
-            else
-            {
-                return (null, null);
-            }
-        }
+				return (fullName.Substring(0, index), fullName.Substring(index + 1));
+			}
+			else
+			{
+				return (null, null);
+			}
+		}
 
-        private bool BuildProperties(IIndentedStringBuilder writer, XamlObjectDefinition topLevelControl, bool isInline = true, bool returnsContent = false, string closureName = null)
-        {
-            try
-            {
-                BuildSourceLineInfo(writer, topLevelControl);
+		private bool BuildProperties(IIndentedStringBuilder writer, XamlObjectDefinition topLevelControl, bool isInline = true, bool returnsContent = false, string closureName = null)
+		{
+			try
+			{
+				BuildSourceLineInfo(writer, topLevelControl);
 
-                if (topLevelControl.Members.Any())
-                {
-                    var setterPrefix = string.IsNullOrWhiteSpace(closureName) ? string.Empty : closureName + ".";
+				if (topLevelControl.Members.Any())
+				{
+					var setterPrefix = string.IsNullOrWhiteSpace(closureName) ? string.Empty : closureName + ".";
 
-                    RegisterResources(topLevelControl);
+					RegisterResources(topLevelControl);
 
-                    var implicitContentChild = FindImplicitContentMember(topLevelControl);
+					var implicitContentChild = FindImplicitContentMember(topLevelControl);
 
-                    if (implicitContentChild != null)
-                    {
+					if (implicitContentChild != null)
+					{
 						if (IsTextBlock(topLevelControl.Type))
 						{
 							if (implicitContentChild.Objects.Count != 0)
@@ -1290,51 +1289,51 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 								}
 							}
 						}
-                        else if (IsUserControl(topLevelControl.Type))
-                        {
-                            if (implicitContentChild.Objects.Any())
-                            {
-                                var firstChild = implicitContentChild.Objects.First();
+						else if (IsUserControl(topLevelControl.Type))
+						{
+							if (implicitContentChild.Objects.Any())
+							{
+								var firstChild = implicitContentChild.Objects.First();
 
 								var elementType = FindType(topLevelControl.Type);
 								var contentProperty = FindContentProperty(elementType);
 
 								writer.AppendFormatInvariant(returnsContent ? "{0} content = " : "{1}{2} = ",
-                                    GetType(firstChild.Type).ToDisplayString(),
-                                    setterPrefix,
+									GetType(firstChild.Type).ToDisplayString(),
+									setterPrefix,
 									contentProperty != null ? contentProperty.Name : "Content"
 								);
 
-                                BuildChild(writer, implicitContentChild, firstChild);
-                            }
-                        }
-                        else if (IsPage(topLevelControl.Type))
-                        {
-                            if (implicitContentChild.Objects.Any())
-                            {
-                                writer.AppendFormatInvariant("{0}Content = ", setterPrefix);
+								BuildChild(writer, implicitContentChild, firstChild);
+							}
+						}
+						else if (IsPage(topLevelControl.Type))
+						{
+							if (implicitContentChild.Objects.Any())
+							{
+								writer.AppendFormatInvariant("{0}Content = ", setterPrefix);
 
-                                BuildChild(writer, implicitContentChild, implicitContentChild.Objects.First());
-                            }
-                        }
-                        else if (IsBorder(topLevelControl.Type))
-                        {
-                            if (implicitContentChild.Objects.Any())
-                            {
-                                if (implicitContentChild.Objects.Count > 1)
-                                {
-                                    throw new InvalidOperationException("The type {0} does not support multiple children.".InvariantCultureFormat(topLevelControl.Type.Name));
-                                }
+								BuildChild(writer, implicitContentChild, implicitContentChild.Objects.First());
+							}
+						}
+						else if (IsBorder(topLevelControl.Type))
+						{
+							if (implicitContentChild.Objects.Any())
+							{
+								if (implicitContentChild.Objects.Count > 1)
+								{
+									throw new InvalidOperationException("The type {0} does not support multiple children.".InvariantCultureFormat(topLevelControl.Type.Name));
+								}
 
-                                writer.AppendFormatInvariant("{0}Child = ", setterPrefix);
+								writer.AppendFormatInvariant("{0}Child = ", setterPrefix);
 
-                                BuildChild(writer, implicitContentChild, implicitContentChild.Objects.First());
-                            }
-                        }
-                        else if (IsLinearGradientBrush(topLevelControl.Type))
-                        {
-                            BuildCollection(writer, isInline, setterPrefix + "GradientStops", implicitContentChild);
-                        }
+								BuildChild(writer, implicitContentChild, implicitContentChild.Objects.First());
+							}
+						}
+						else if (IsLinearGradientBrush(topLevelControl.Type))
+						{
+							BuildCollection(writer, isInline, setterPrefix + "GradientStops", implicitContentChild);
+						}
 						else if (IsInitializableCollection(topLevelControl))
 						{
 							foreach (var child in implicitContentChild.Objects)
@@ -1344,51 +1343,51 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 							}
 						}
 						else
-                        {
-                            var elementType = FindType(topLevelControl.Type);
+						{
+							var elementType = FindType(topLevelControl.Type);
 
-                            if (elementType != null)
-                            {
-                                var contentProperty = FindContentProperty(elementType);
+							if (elementType != null)
+							{
+								var contentProperty = FindContentProperty(elementType);
 
-                                if (contentProperty != null)
-                                {
-                                    if (IsCollectionOrListType(contentProperty.Type as INamedTypeSymbol))
-                                    {
-                                        string newableTypeName;
+								if (contentProperty != null)
+								{
+									if (IsCollectionOrListType(contentProperty.Type as INamedTypeSymbol))
+									{
+										string newableTypeName;
 
-                                        if (IsInitializableProperty(contentProperty))
-                                        {
-                                            if (isInline)
-                                            {
-                                                using (writer.BlockInvariant(contentProperty.Name + " = "))
-                                                {
-                                                    foreach (var child in implicitContentChild.Objects)
-                                                    {
-                                                        BuildChild(writer, implicitContentChild, child);
-                                                        writer.AppendLineInvariant(",");
-                                                    }
-                                                }
-                                            }
-                                            else
-                                            {
-                                                foreach (var inner in implicitContentChild.Objects)
-                                                {
-                                                    writer.AppendLine($"{contentProperty.Name}.Add(");
+										if (IsInitializableProperty(contentProperty))
+										{
+											if (isInline)
+											{
+												using (writer.BlockInvariant(contentProperty.Name + " = "))
+												{
+													foreach (var child in implicitContentChild.Objects)
+													{
+														BuildChild(writer, implicitContentChild, child);
+														writer.AppendLineInvariant(",");
+													}
+												}
+											}
+											else
+											{
+												foreach (var inner in implicitContentChild.Objects)
+												{
+													writer.AppendLine($"{contentProperty.Name}.Add(");
 
-                                                    BuildChild(writer, implicitContentChild, inner);
+													BuildChild(writer, implicitContentChild, inner);
 
-                                                    writer.AppendLineInvariant(");");
-                                                }
-                                            }
-                                        }
-                                        else if (IsNewableProperty(contentProperty, out newableTypeName))
-                                        {
-                                            if (string.IsNullOrWhiteSpace(newableTypeName))
-                                            {
-                                                throw new InvalidOperationException("Unable to initialize newable collection type.  Type name for property {0} is empty."
-                                                    .InvariantCultureFormat(contentProperty.Name));
-                                            }
+													writer.AppendLineInvariant(");");
+												}
+											}
+										}
+										else if (IsNewableProperty(contentProperty, out newableTypeName))
+										{
+											if (string.IsNullOrWhiteSpace(newableTypeName))
+											{
+												throw new InvalidOperationException("Unable to initialize newable collection type.  Type name for property {0} is empty."
+													.InvariantCultureFormat(contentProperty.Name));
+											}
 
 											// Explicitly instantiate the collection and set it using the content property
 											if (implicitContentChild.Objects.Count == 1
@@ -1410,47 +1409,47 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 												}
 											}
 										}
-                                        else if (GetKnownNewableListOrCollectionInterface(contentProperty as INamedTypeSymbol, out newableTypeName))
-                                        {
-                                            if (string.IsNullOrWhiteSpace(newableTypeName))
-                                            {
-                                                throw new InvalidOperationException("Unable to initialize known newable collection or list interface.  Type name for property {0} is empty."
-                                                    .InvariantCultureFormat(contentProperty.Name));
-                                            }
+										else if (GetKnownNewableListOrCollectionInterface(contentProperty as INamedTypeSymbol, out newableTypeName))
+										{
+											if (string.IsNullOrWhiteSpace(newableTypeName))
+											{
+												throw new InvalidOperationException("Unable to initialize known newable collection or list interface.  Type name for property {0} is empty."
+													.InvariantCultureFormat(contentProperty.Name));
+											}
 
-                                            using (writer.BlockInvariant("{0}{1} = new {2} ", setterPrefix, contentProperty.Name, newableTypeName))
-                                            {
-                                                foreach (var child in implicitContentChild.Objects)
-                                                {
-                                                    BuildChild(writer, implicitContentChild, child);
-                                                    writer.AppendLineInvariant(",");
-                                                }
-                                            }
-                                        }
-                                        else
-                                        {
-                                            throw new InvalidOperationException("There is no known way to initialize collection property {0}."
-                                                .InvariantCultureFormat(contentProperty.Name));
-                                        }
-                                    }
-                                    else
-                                    {
+											using (writer.BlockInvariant("{0}{1} = new {2} ", setterPrefix, contentProperty.Name, newableTypeName))
+											{
+												foreach (var child in implicitContentChild.Objects)
+												{
+													BuildChild(writer, implicitContentChild, child);
+													writer.AppendLineInvariant(",");
+												}
+											}
+										}
+										else
+										{
+											throw new InvalidOperationException("There is no known way to initialize collection property {0}."
+												.InvariantCultureFormat(contentProperty.Name));
+										}
+									}
+									else
+									{
 										if (implicitContentChild.Objects.Any())
-                                        {
-                                            writer.AppendLineInvariant(setterPrefix + contentProperty.Name + " = ");
+										{
+											writer.AppendLineInvariant(setterPrefix + contentProperty.Name + " = ");
 
-                                            if (implicitContentChild.Objects.Count > 1)
-                                            {
-                                                throw new InvalidOperationException("The type {0} does not support multiple children.".InvariantCultureFormat(topLevelControl.Type.Name));
-                                            }
+											if (implicitContentChild.Objects.Count > 1)
+											{
+												throw new InvalidOperationException("The type {0} does not support multiple children.".InvariantCultureFormat(topLevelControl.Type.Name));
+											}
 
-                                            BuildChild(writer, implicitContentChild, implicitContentChild.Objects.First());
+											BuildChild(writer, implicitContentChild, implicitContentChild.Objects.First());
 
-                                            if (isInline)
-                                            {
-                                                writer.AppendLineInvariant(",");
-                                            }
-                                        }
+											if (isInline)
+											{
+												writer.AppendLineInvariant(",");
+											}
+										}
 										else if(
 											implicitContentChild.Value is string implicitValue 
 											&& implicitValue.HasValueTrimmed()
@@ -1458,171 +1457,171 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 										{
 											writer.AppendLineInvariant(setterPrefix + contentProperty.Name + " = \"" + implicitValue + "\"");
 
-                                            if (isInline)
-                                            {
-                                                writer.AppendLineInvariant(",");
-                                            }
+											if (isInline)
+											{
+												writer.AppendLineInvariant(",");
+											}
 										}
 									}
-                                }
-                            }
-                        }
+								}
+							}
+						}
 
-                        return true;
-                    }
-                    else if (returnsContent && IsUserControl(topLevelControl.Type))
-                    {
-                        writer.AppendFormatInvariant(XamlConstants.Types.IFrameworkElement + " content = null");
-                    }
-                }
+						return true;
+					}
+					else if (returnsContent && IsUserControl(topLevelControl.Type))
+					{
+						writer.AppendFormatInvariant(XamlConstants.Types.IFrameworkElement + " content = null");
+					}
+				}
 
-                return false;
-            }
-            catch (Exception e)
-            {
-                throw new InvalidOperationException(
-                    "An error occurred when processing {0} at line {1}:{2} ({3}) : {4}"
-                    .InvariantCultureFormat(
-                        topLevelControl.Type.Name,
-                        topLevelControl.LineNumber,
-                        topLevelControl.LinePosition,
-                        _fileDefinition.FilePath,
-                        e.Message
-                    )
-                    , e
-                );
-            }
-        }
+				return false;
+			}
+			catch (Exception e)
+			{
+				throw new InvalidOperationException(
+					"An error occurred when processing {0} at line {1}:{2} ({3}) : {4}"
+					.InvariantCultureFormat(
+						topLevelControl.Type.Name,
+						topLevelControl.LineNumber,
+						topLevelControl.LinePosition,
+						_fileDefinition.FilePath,
+						e.Message
+					)
+					, e
+				);
+			}
+		}
 
-        private static IPropertySymbol FindContentProperty(INamedTypeSymbol elementType)
-        {
-            return _findContentProperty(elementType);
-        }
+		private static IPropertySymbol FindContentProperty(INamedTypeSymbol elementType)
+		{
+			return _findContentProperty(elementType);
+		}
 
-        private static IPropertySymbol SourceFindContentProperty(INamedTypeSymbol elementType)
-        {
-            var data = elementType
-                .GetAllAttributes()
-                .FirstOrDefault(t => t.AttributeClass.ToDisplayString() == XamlConstants.Types.ContentPropertyAttribute);
+		private static IPropertySymbol SourceFindContentProperty(INamedTypeSymbol elementType)
+		{
+			var data = elementType
+				.GetAllAttributes()
+				.FirstOrDefault(t => t.AttributeClass.ToDisplayString() == XamlConstants.Types.ContentPropertyAttribute);
 
-            if (data != null)
-            {
-                var nameProperty = data.NamedArguments.Where(f => f.Key == "Name").FirstOrDefault();
+			if (data != null)
+			{
+				var nameProperty = data.NamedArguments.Where(f => f.Key == "Name").FirstOrDefault();
 
-                if (nameProperty.Value.Value != null)
-                {
-                    var name = nameProperty.Value.Value.ToString();
+				if (nameProperty.Value.Value != null)
+				{
+					var name = nameProperty.Value.Value.ToString();
 
-                    return elementType?.GetAllProperties().FirstOrDefault(p => p.Name == name);
-                }
-            }
+					return elementType?.GetAllProperties().FirstOrDefault(p => p.Name == name);
+				}
+			}
 
-            return null;
-        }
+			return null;
+		}
 
-        private string GetFullGenericTypeName(INamedTypeSymbol propertyType)
-        {
-            if (propertyType == null)
-            {
-                return string.Empty;
-            }
+		private string GetFullGenericTypeName(INamedTypeSymbol propertyType)
+		{
+			if (propertyType == null)
+			{
+				return string.Empty;
+			}
 
-            return "{0}.{1}".InvariantCultureFormat(propertyType.ContainingNamespace, propertyType.Name) +
-                (
-                    propertyType.IsGenericType ?
-                    "<{0}>".InvariantCultureFormat(propertyType.TypeArguments.Select(ts => GetFullGenericTypeName(ts as INamedTypeSymbol)).JoinBy(",")) :
-                    string.Empty
-                );
-        }
+			return "{0}.{1}".InvariantCultureFormat(propertyType.ContainingNamespace, propertyType.Name) +
+				(
+					propertyType.IsGenericType ?
+					"<{0}>".InvariantCultureFormat(propertyType.TypeArguments.Select(ts => GetFullGenericTypeName(ts as INamedTypeSymbol)).JoinBy(",")) :
+					string.Empty
+				);
+		}
 
-        private void BuildCollection(IIndentedStringBuilder writer, bool isInline, string name, XamlMemberDefinition implicitContentChild)
-        {
-            if (isInline)
-            {
-                using (writer.BlockInvariant(name + " = "))
-                {
-                    foreach (var child in implicitContentChild.Objects)
-                    {
-                        BuildChild(writer, implicitContentChild, child);
-                        writer.AppendLineInvariant(",");
-                    }
-                }
-            }
-            else
-            {
-                foreach (var child in implicitContentChild.Objects)
-                {
-                    writer.AppendLineInvariant(name + ".Add(");
-                    BuildChild(writer, implicitContentChild, child);
-                    writer.AppendLineInvariant(");");
-                }
-            }
-        }
+		private void BuildCollection(IIndentedStringBuilder writer, bool isInline, string name, XamlMemberDefinition implicitContentChild)
+		{
+			if (isInline)
+			{
+				using (writer.BlockInvariant(name + " = "))
+				{
+					foreach (var child in implicitContentChild.Objects)
+					{
+						BuildChild(writer, implicitContentChild, child);
+						writer.AppendLineInvariant(",");
+					}
+				}
+			}
+			else
+			{
+				foreach (var child in implicitContentChild.Objects)
+				{
+					writer.AppendLineInvariant(name + ".Add(");
+					BuildChild(writer, implicitContentChild, child);
+					writer.AppendLineInvariant(");");
+				}
+			}
+		}
 
-        private bool IsPage(XamlType xamlType) => IsType(xamlType, XamlConstants.Types.NativePage);
+		private bool IsPage(XamlType xamlType) => IsType(xamlType, XamlConstants.Types.NativePage);
 
-        private bool IsApplication(XamlType xamlType) => IsType(xamlType, XamlConstants.Types.Application);
+		private bool IsApplication(XamlType xamlType) => IsType(xamlType, XamlConstants.Types.Application);
 
-        private XamlMemberDefinition FindImplicitContentMember(XamlObjectDefinition topLevelControl)
-        {
-            return topLevelControl
-                .Members
-                .FirstOrDefault(m => m.Member.Name == "_UnknownContent");
-        }
+		private XamlMemberDefinition FindImplicitContentMember(XamlObjectDefinition topLevelControl)
+		{
+			return topLevelControl
+				.Members
+				.FirstOrDefault(m => m.Member.Name == "_UnknownContent");
+		}
 
-        private void RegisterResources(XamlObjectDefinition topLevelControl)
-        {
-            var resourcesMember = topLevelControl.Members.FirstOrDefault(m => m.Member.Name == "Resources");
+		private void RegisterResources(XamlObjectDefinition topLevelControl)
+		{
+			var resourcesMember = topLevelControl.Members.FirstOrDefault(m => m.Member.Name == "Resources");
 
-            if (resourcesMember != null)
-            {
-                var isExplicitResDictionary = resourcesMember.Objects.Any(o => o.Type.Name == "ResourceDictionary");
+			if (resourcesMember != null)
+			{
+				var isExplicitResDictionary = resourcesMember.Objects.Any(o => o.Type.Name == "ResourceDictionary");
 
-                if (isExplicitResDictionary)
-                {
-                    // To be able to have MergedDictionaries, the first node of the Resource node 
-                    // must be an explicit resource dictionary.
+				if (isExplicitResDictionary)
+				{
+					// To be able to have MergedDictionaries, the first node of the Resource node 
+					// must be an explicit resource dictionary.
 
-                    resourcesMember = FindImplicitContentMember(resourcesMember.Objects.First());
-                }
+					resourcesMember = FindImplicitContentMember(resourcesMember.Objects.First());
+				}
 
-                if (resourcesMember != null)
-                {
-                    foreach (var resource in resourcesMember.Objects)
-                    {
-                        var key = resource.Members.FirstOrDefault(m => m.Member.Name == "Key");
-                        var name = resource.Members.FirstOrDefault(m => m.Member.Name == "Name");
-                        var mergedDictionaries = resource.Members.FirstOrDefault(m => m.Member.Name == "MergedDictionaries");
+				if (resourcesMember != null)
+				{
+					foreach (var resource in resourcesMember.Objects)
+					{
+						var key = resource.Members.FirstOrDefault(m => m.Member.Name == "Key");
+						var name = resource.Members.FirstOrDefault(m => m.Member.Name == "Name");
+						var mergedDictionaries = resource.Members.FirstOrDefault(m => m.Member.Name == "MergedDictionaries");
 
-                        if (key != null)
-                        {
-                            _staticResources.Add(key.Value.ToString(), resource);
-                        }
-                        else if (mergedDictionaries != null)
-                        {
-                            // Nothing for now. Since merged dictionaries are parsed separately, they are
-                            // considered as Global Resources.
-                        }
-                        else if (name != null)
-                        {
-                            _namedResources.Add(name.Value.ToString(), resource);
-                        }
-                        else
-                        {
-                            throw new Exception(
-                                "Implicit styles in inline resources are not supported ({0}, Line {1}:{2})"
-                                .InvariantCultureFormat(topLevelControl.Type.Name, topLevelControl.LineNumber, topLevelControl.LinePosition)
-                            );
-                        }
-                    }
-                }
-            }
-        }
+						if (key != null)
+						{
+							_staticResources.Add(key.Value.ToString(), resource);
+						}
+						else if (mergedDictionaries != null)
+						{
+							// Nothing for now. Since merged dictionaries are parsed separately, they are
+							// considered as Global Resources.
+						}
+						else if (name != null)
+						{
+							_namedResources.Add(name.Value.ToString(), resource);
+						}
+						else
+						{
+							throw new Exception(
+								"Implicit styles in inline resources are not supported ({0}, Line {1}:{2})"
+								.InvariantCultureFormat(topLevelControl.Type.Name, topLevelControl.LineNumber, topLevelControl.LinePosition)
+							);
+						}
+					}
+				}
+			}
+		}
 
-        private bool IsTextBlock(XamlType xamlType)
-        {
-            return IsType(xamlType, XamlConstants.Types.TextBlock);
-        }
+		private bool IsTextBlock(XamlType xamlType)
+		{
+			return IsType(xamlType, XamlConstants.Types.TextBlock);
+		}
 
 		private bool IsRun(XamlType xamlType)
 		{
@@ -1634,228 +1633,228 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			return IsType(xamlType, XamlConstants.Types.Span);
 		}
 
-        private bool IsType(XamlType xamlType, XamlType baseType)
-        {
-            if (xamlType == baseType)
-            {
-                return true;
-            }
+		private bool IsType(XamlType xamlType, XamlType baseType)
+		{
+			if (xamlType == baseType)
+			{
+				return true;
+			}
 
-            if (baseType == null || xamlType == null)
-            {
-                return false;
-            }
+			if (baseType == null || xamlType == null)
+			{
+				return false;
+			}
 
-            var clrBaseType = FindType(baseType);
+			var clrBaseType = FindType(baseType);
 
-            if (clrBaseType != null)
-            {
-                return IsType(xamlType, clrBaseType.ToDisplayString());
-            }
-            else
-            {
-                return false;
-            }
-        }
+			if (clrBaseType != null)
+			{
+				return IsType(xamlType, clrBaseType.ToDisplayString());
+			}
+			else
+			{
+				return false;
+			}
+		}
 
-        private bool IsType(XamlType xamlType, string typeName)
-        {
-            var type = FindType(xamlType);
+		private bool IsType(XamlType xamlType, string typeName)
+		{
+			var type = FindType(xamlType);
 
-            if (type != null)
-            {
-                do
-                {
-                    if (type.ToDisplayString() == typeName)
-                    {
-                        return true;
-                    }
+			if (type != null)
+			{
+				do
+				{
+					if (type.ToDisplayString() == typeName)
+					{
+						return true;
+					}
 
-                    type = type.BaseType;
+					type = type.BaseType;
 
-                    if (type == null)
-                    {
-                        break;
-                    }
+					if (type == null)
+					{
+						break;
+					}
 
-                } while (type.Name != "Object");
-            }
+				} while (type.Name != "Object");
+			}
 
-            return false;
-        }
+			return false;
+		}
 
-        public bool HasProperty(XamlType xamlType, string propertyName)
-        {
-            var type = FindType(xamlType);
+		public bool HasProperty(XamlType xamlType, string propertyName)
+		{
+			var type = FindType(xamlType);
 
-            if (type != null)
-            {
-                do
-                {
-                    if (type.GetAllProperties().Any(property => property.Name == propertyName))
-                    {
-                        return true;
-                    }
+			if (type != null)
+			{
+				do
+				{
+					if (type.GetAllProperties().Any(property => property.Name == propertyName))
+					{
+						return true;
+					}
 
-                    type = type.BaseType;
+					type = type.BaseType;
 
-                    if (type == null)
-                    {
-                        break;
-                    }
+					if (type == null)
+					{
+						break;
+					}
 
-                } while (type.Name != "Object");
-            }
+				} while (type.Name != "Object");
+			}
 
-            return false;
-        }
+			return false;
+		}
 
-        private bool IsImplementingInterface(XamlType xamlType, string interfaceName)
-        {
-            return IsImplementingInterface(FindType(xamlType), interfaceName);
-        }
+		private bool IsImplementingInterface(XamlType xamlType, string interfaceName)
+		{
+			return IsImplementingInterface(FindType(xamlType), interfaceName);
+		}
 
-        private bool IsImplementingInterface(INamedTypeSymbol symbol, string interfaceName)
-        {
-            Func<INamedTypeSymbol, string, bool> _isSameType =
-                (sym, name) => sym.ToDisplayString() == name || sym.OriginalDefinition.ToDisplayString() == name;
+		private bool IsImplementingInterface(INamedTypeSymbol symbol, string interfaceName)
+		{
+			Func<INamedTypeSymbol, string, bool> _isSameType =
+				(sym, name) => sym.ToDisplayString() == name || sym.OriginalDefinition.ToDisplayString() == name;
 
-            if (symbol != null)
-            {
-                if (_isSameType(symbol, interfaceName))
-                {
-                    return true;
-                }
+			if (symbol != null)
+			{
+				if (_isSameType(symbol, interfaceName))
+				{
+					return true;
+				}
 
-                do
-                {
-                    if (symbol.Interfaces.Any(i => _isSameType(i, interfaceName)))
-                    {
-                        return true;
-                    }
+				do
+				{
+					if (symbol.Interfaces.Any(i => _isSameType(i, interfaceName)))
+					{
+						return true;
+					}
 
-                    symbol = symbol.BaseType;
+					symbol = symbol.BaseType;
 
-                    if (symbol == null)
-                    {
-                        break;
-                    }
+					if (symbol == null)
+					{
+						break;
+					}
 
-                } while (symbol.Name != "Object");
-            }
+				} while (symbol.Name != "Object");
+			}
 
-            return false;
-        }
+			return false;
+		}
 
-        private bool IsBorder(XamlType xamlType)
-        {
-            return IsType(xamlType, XamlConstants.Types.Border);
-        }
+		private bool IsBorder(XamlType xamlType)
+		{
+			return IsType(xamlType, XamlConstants.Types.Border);
+		}
 
-        private bool IsUserControl(XamlType xamlType, bool checkInheritance = true)
-        {
-            return checkInheritance ?
-                IsType(xamlType, XamlConstants.Types.UserControl) :
-                FindType(xamlType)?.ToDisplayString().Equals(XamlConstants.Types.UserControl) ?? false;
-        }
+		private bool IsUserControl(XamlType xamlType, bool checkInheritance = true)
+		{
+			return checkInheritance ?
+				IsType(xamlType, XamlConstants.Types.UserControl) :
+				FindType(xamlType)?.ToDisplayString().Equals(XamlConstants.Types.UserControl) ?? false;
+		}
 
-        private bool IsContentControl(XamlType xamlType)
-        {
-            return IsType(xamlType, XamlConstants.Types.ContentControl);
-        }
+		private bool IsContentControl(XamlType xamlType)
+		{
+			return IsType(xamlType, XamlConstants.Types.ContentControl);
+		}
 
-        private bool IsPanel(XamlType xamlType)
-        {
-            return IsType(xamlType, XamlConstants.Types.Panel);
-        }
+		private bool IsPanel(XamlType xamlType)
+		{
+			return IsType(xamlType, XamlConstants.Types.Panel);
+		}
 
-        private bool IsLinearGradientBrush(XamlType xamlType)
-        {
-            return IsType(xamlType, XamlConstants.Types.LinearGradientBrush);
-        }
+		private bool IsLinearGradientBrush(XamlType xamlType)
+		{
+			return IsType(xamlType, XamlConstants.Types.LinearGradientBrush);
+		}
 
-        private bool IsFrameworkElement(XamlType xamlType)
-        {
-            return IsImplementingInterface(FindType(xamlType), XamlConstants.Types.IFrameworkElement);
-        }
+		private bool IsFrameworkElement(XamlType xamlType)
+		{
+			return IsImplementingInterface(FindType(xamlType), XamlConstants.Types.IFrameworkElement);
+		}
 
-        private bool IsAndroidView(XamlType xamlType)
-        {
-            return IsType(xamlType, "Android.Views.View");
-        }
+		private bool IsAndroidView(XamlType xamlType)
+		{
+			return IsType(xamlType, "Android.Views.View");
+		}
 
-        private bool IsIOSUIView(XamlType xamlType)
-        {
-            return IsType(xamlType, "UIKit.UIView");
-        }
+		private bool IsIOSUIView(XamlType xamlType)
+		{
+			return IsType(xamlType, "UIKit.UIView");
+		}
 
-        private bool IsTransform(XamlType xamlType)
-        {
-            return IsType(xamlType, XamlConstants.Types.Transform);
-        }
+		private bool IsTransform(XamlType xamlType)
+		{
+			return IsType(xamlType, XamlConstants.Types.Transform);
+		}
 
-        private void TryExtractAutomationId(XamlMemberDefinition member, string[] targetMembers, ref string uiAutomationId)
-        {
-            if (uiAutomationId.HasValue())
-            {
-                return;
-            }
+		private void TryExtractAutomationId(XamlMemberDefinition member, string[] targetMembers, ref string uiAutomationId)
+		{
+			if (uiAutomationId.HasValue())
+			{
+				return;
+			}
 
-            var fullMemberName = $"{FindType(member.Member.DeclaringType)?.GetFullMetadataName()}.{member.Member.Name}";
+			var fullMemberName = $"{FindType(member.Member.DeclaringType)?.GetFullMetadataName()}.{member.Member.Name}";
 
-            // Try to match each potential candidate by comparing based only on the name of the member first. 
-            // If that fails, try matching based on the full metadata name of the member 
-            var hasUiAutomationMapping = targetMembers
-                .Any(candidateMember =>
-                    (!candidateMember.Contains(".") && candidateMember == member.Member.Name) ||
-                    candidateMember == fullMemberName
-                );
+			// Try to match each potential candidate by comparing based only on the name of the member first. 
+			// If that fails, try matching based on the full metadata name of the member 
+			var hasUiAutomationMapping = targetMembers
+				.Any(candidateMember =>
+					(!candidateMember.Contains(".") && candidateMember == member.Member.Name) ||
+					candidateMember == fullMemberName
+				);
 
 			if (!hasUiAutomationMapping)
 			{
 				return;
 			}
 
-            var bindingMembers = member
-                .Objects
-                .FirstOrDefault(o => o.Type.Name == "Binding" || o.Type.Name == "TemplateBinding")
-                ?.Members
-                .ToArray();
+			var bindingMembers = member
+				.Objects
+				.FirstOrDefault(o => o.Type.Name == "Binding" || o.Type.Name == "TemplateBinding")
+				?.Members
+				.ToArray();
 
-            string bindingPath;
+			string bindingPath;
 
-            // Checks the first binding member, which can be used to implicitlty declare the binding path (i.e. without 
-            // declaring a "Path=" specifier). Otherwise, the we look for any explicit binding path declaration.
-            var firstBindingMember = bindingMembers?.FirstOrDefault();
-            if (firstBindingMember != null &&
-                (firstBindingMember.Member.Name == "Path" ||
-                 firstBindingMember.Member.Name == "_PositionalParameters" ||
-                 firstBindingMember.Member.Name.IsNullOrWhiteSpace())
-            )
-            {
-                bindingPath = firstBindingMember.Value.ToString();
-            }
-            else
-            {
-                bindingPath = bindingMembers
-                    ?.FirstOrDefault(bindingMember => bindingMember.Member.Name == "Path")
-                    ?.Value
-                    ?.ToString();
-            }
+			// Checks the first binding member, which can be used to implicitlty declare the binding path (i.e. without 
+			// declaring a "Path=" specifier). Otherwise, the we look for any explicit binding path declaration.
+			var firstBindingMember = bindingMembers?.FirstOrDefault();
+			if (firstBindingMember != null &&
+				(firstBindingMember.Member.Name == "Path" ||
+				 firstBindingMember.Member.Name == "_PositionalParameters" ||
+				 firstBindingMember.Member.Name.IsNullOrWhiteSpace())
+			)
+			{
+				bindingPath = firstBindingMember.Value.ToString();
+			}
+			else
+			{
+				bindingPath = bindingMembers
+					?.FirstOrDefault(bindingMember => bindingMember.Member.Name == "Path")
+					?.Value
+					?.ToString();
+			}
 
-            if (bindingPath.IsNullOrEmpty())
-            {
-                return;
-            }
+			if (bindingPath.IsNullOrEmpty())
+			{
+				return;
+			}
 
-            // Replace bracket-based notation with dot notation.
-            // ex: [FirstMember][SecondMember] --> FirstMember.SecondMember
-            uiAutomationId = new string(bindingPath
-                .TrimStart("Parent")
-                .Replace("][", ".")
-                .Where(c => c != '[' && c != ']')
-                .ToArray());
-        }
+			// Replace bracket-based notation with dot notation.
+			// ex: [FirstMember][SecondMember] --> FirstMember.SecondMember
+			uiAutomationId = new string(bindingPath
+				.TrimStart("Parent")
+				.Replace("][", ".")
+				.Where(c => c != '[' && c != ']')
+				.ToArray());
+		}
 
 		private void BuildExtendedProperties(IIndentedStringBuilder outerwriter, XamlObjectDefinition objectDefinition, bool useChildTypeForNamedElement = false, bool useGenericApply = false)
 		{
@@ -2187,39 +2186,39 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		}
 
 		private void BuildUiAutomationId(IIndentedStringBuilder writer, string closureName, string uiAutomationId, XamlObjectDefinition parent)
-        {
-            if (uiAutomationId.IsNullOrEmpty())
-            {
-                return;
-            }
+		{
+			if (uiAutomationId.IsNullOrEmpty())
+			{
+				return;
+			}
 
-            writer.AppendLineInvariant("// UI automation id: {0}", uiAutomationId);
+			writer.AppendLineInvariant("// UI automation id: {0}", uiAutomationId);
 
-            // ContentDescription and AccessibilityIdentifier are used by Xamarin.UITest (Test Cloud) to identify visual elements
-            if (IsAndroidView(parent.Type))
-            {
-                writer.AppendLineInvariant("{0}.ContentDescription = \"{1}\";", closureName, uiAutomationId);
-            };
+			// ContentDescription and AccessibilityIdentifier are used by Xamarin.UITest (Test Cloud) to identify visual elements
+			if (IsAndroidView(parent.Type))
+			{
+				writer.AppendLineInvariant("{0}.ContentDescription = \"{1}\";", closureName, uiAutomationId);
+			};
 
-            if (IsIOSUIView(parent.Type))
-            {
-                writer.AppendLineInvariant("{0}.AccessibilityIdentifier = \"{1}\";", closureName, uiAutomationId);
-            }
-        }
+			if (IsIOSUIView(parent.Type))
+			{
+				writer.AppendLineInvariant("{0}.AccessibilityIdentifier = \"{1}\";", closureName, uiAutomationId);
+			}
+		}
 
-        private bool IsRelativePanelSiblingProperty(string name)
-        {
-            return name.Equals("Above") ||
-                name.Equals("Below") ||
-                name.Equals("LeftOf") ||
-                name.Equals("RightOf") ||
-                name.Equals("AlignBottomWith") ||
-                name.Equals("AlignHorizontalCenterWith") ||
-                name.Equals("AlignLeftWith") ||
-                name.Equals("AlignRightWith") ||
-                name.Equals("AlignTopWith") ||
-                name.Equals("AlignVerticalCenterWith");
-        }
+		private bool IsRelativePanelSiblingProperty(string name)
+		{
+			return name.Equals("Above") ||
+				name.Equals("Below") ||
+				name.Equals("LeftOf") ||
+				name.Equals("RightOf") ||
+				name.Equals("AlignBottomWith") ||
+				name.Equals("AlignHorizontalCenterWith") ||
+				name.Equals("AlignLeftWith") ||
+				name.Equals("AlignRightWith") ||
+				name.Equals("AlignTopWith") ||
+				name.Equals("AlignVerticalCenterWith");
+		}
 
 		private void BuildSetAttachedProperty(IIndentedStringBuilder writer, string closureName, XamlMemberDefinition member, string objectUid)
 		{
@@ -2233,8 +2232,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		}
 
 		private XamlLazyApplyBlockIIndentedStringBuilder CreateApplyBlock(IIndentedStringBuilder writer, INamedTypeSymbol appliedType, out string closureName)
-        {
-            closureName = "c" + (_applyIndex++).ToString(CultureInfo.InvariantCulture);
+		{
+			closureName = "c" + (_applyIndex++).ToString(CultureInfo.InvariantCulture);
 
 			//
 			// Since we're using strings to generate the code, we can't know ahead of time if 
@@ -2257,37 +2256,37 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				delegateType = $"{_fileUniqueId}XamlApplyExtensions.XamlApplyHandler{typeIndex}";
 			}
 
-            return new XamlLazyApplyBlockIIndentedStringBuilder(writer, closureName, appliedType != null ? _fileUniqueId : null, delegateType);
-        }
+			return new XamlLazyApplyBlockIIndentedStringBuilder(writer, closureName, appliedType != null ? _fileUniqueId : null, delegateType);
+		}
 
-        private void RegisterPartial(string format, params object[] values)
-        {
-            _partials.Add(format.InvariantCultureFormat(values));
-        }
+		private void RegisterPartial(string format, params object[] values)
+		{
+			_partials.Add(format.InvariantCultureFormat(values));
+		}
 
-        private void RegisterBackingField(string type, string name)
-        {
-            CurrentScope.BackingFields.Add(new BackingFieldDefinition(type, name));
-        }
+		private void RegisterBackingField(string type, string name)
+		{
+			CurrentScope.BackingFields.Add(new BackingFieldDefinition(type, name));
+		}
 
-        private void RegisterChildSubclass(string name, XamlMemberDefinition owner, string returnType)
-        {
-            CurrentScope.Subclasses[name] = new Subclass { ContentOwner = owner, ReturnType = returnType };
-        }
+		private void RegisterChildSubclass(string name, XamlMemberDefinition owner, string returnType)
+		{
+			CurrentScope.Subclasses[name] = new Subclass { ContentOwner = owner, ReturnType = returnType };
+		}
 
-        private void BuildComplexPropertyValue(IIndentedStringBuilder writer, XamlMemberDefinition member, string prefix, string closureName = null)
-        {
-            Func<string, string> formatLine = format => prefix + format + (prefix.HasValue() ? ";\r\n" : "");
+		private void BuildComplexPropertyValue(IIndentedStringBuilder writer, XamlMemberDefinition member, string prefix, string closureName = null)
+		{
+			Func<string, string> formatLine = format => prefix + format + (prefix.HasValue() ? ";\r\n" : "");
 
-            var bindingNode = member.Objects.FirstOrDefault(o => o.Type.Name == "Binding");
-            var bindNode = member.Objects.FirstOrDefault(o => o.Type.Name == "Bind");
-            var templateBindingNode = member.Objects.FirstOrDefault(o => o.Type.Name == "TemplateBinding");
+			var bindingNode = member.Objects.FirstOrDefault(o => o.Type.Name == "Binding");
+			var bindNode = member.Objects.FirstOrDefault(o => o.Type.Name == "Bind");
+			var templateBindingNode = member.Objects.FirstOrDefault(o => o.Type.Name == "TemplateBinding");
 
 			// If a binding is inside a DataTemplate, the binding root in the case of an x:Bind is
 			// the DataContext, not the control's instance.
 			var isInsideDataTemplate = IsMemberInsideDataTemplate(member.Owner);
 
-            string GetBindingOptions()
+			string GetBindingOptions()
 			{
 				if (bindingNode != null || bindNode != null)
 				{
@@ -2310,50 +2309,50 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				return null;
 			};
 
-            var bindingOptions = GetBindingOptions();
+			var bindingOptions = GetBindingOptions();
 
-            if (bindingOptions != null)
-            {
-                var isAttachedProperty = IsDependencyProperty(member.Member);
+			if (bindingOptions != null)
+			{
+				var isAttachedProperty = IsDependencyProperty(member.Member);
 
-                if (isAttachedProperty)
-                {
-                    var propertyOwner = GetType(member.Member.DeclaringType);
+				if (isAttachedProperty)
+				{
+					var propertyOwner = GetType(member.Member.DeclaringType);
 
-                    writer.AppendLine(formatLine($"SetBinding({GetGlobalizedTypeName(propertyOwner.ToDisplayString())}.{member.Member.Name}Property, new {XamlConstants.Types.Binding}{{ {bindingOptions} }})"));
-                }
-                else
-                {
-                    writer.AppendLine(formatLine($"SetBinding(\"{member.Member.Name}\", new {XamlConstants.Types.Binding}{{ {bindingOptions} }})"));
-                }
-            }
+					writer.AppendLine(formatLine($"SetBinding({GetGlobalizedTypeName(propertyOwner.ToDisplayString())}.{member.Member.Name}Property, new {XamlConstants.Types.Binding}{{ {bindingOptions} }})"));
+				}
+				else
+				{
+					writer.AppendLine(formatLine($"SetBinding(\"{member.Member.Name}\", new {XamlConstants.Types.Binding}{{ {bindingOptions} }})"));
+				}
+			}
 
-            var resourceName = GetStaticResourceName(member);
+			var resourceName = GetStaticResourceName(member);
 
-            if (resourceName != null)
-            {
-                var isAttachedProperty = IsAttachedProperty(member);
+			if (resourceName != null)
+			{
+				var isAttachedProperty = IsAttachedProperty(member);
 
-                if (isAttachedProperty)
-                {
-                    var propertyOwner = GetType(member.Member.DeclaringType);
+				if (isAttachedProperty)
+				{
+					var propertyOwner = GetType(member.Member.DeclaringType);
 
 					writer.AppendFormatInvariant("{0}.Set{1}({2},{3});\r\n",
 						GetGlobalizedTypeName(propertyOwner.ToDisplayString()),
-                        member.Member.Name,
-                        closureName,
-                        resourceName
-                    );
-                }
-                else
-                {
-                    writer.AppendLineInvariant(0, formatLine("{0} = {1}"),
-                        member.Member.Name,
-                        resourceName
-                    );
-                }
-            }
-        }
+						member.Member.Name,
+						closureName,
+						resourceName
+					);
+				}
+				else
+				{
+					writer.AppendLineInvariant(0, formatLine("{0} = {1}"),
+						member.Member.Name,
+						resourceName
+					);
+				}
+			}
+		}
 
 		private bool IsMemberInsideDataTemplate(XamlObjectDefinition xamlObject)
 			=> IsMemberInside(xamlObject, "DataTemplate");
@@ -2389,23 +2388,23 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		}
 
 		private string GetStaticResourceName(XamlMemberDefinition member, INamedTypeSymbol targetPropertyType = null)
-        {
-            var staticResourceNode = member.Objects.FirstOrDefault(o => o.Type.Name == "StaticResource");
-            var themeResourceNode = member.Objects.FirstOrDefault(o => o.Type.Name == "ThemeResource");
+		{
+			var staticResourceNode = member.Objects.FirstOrDefault(o => o.Type.Name == "StaticResource");
+			var themeResourceNode = member.Objects.FirstOrDefault(o => o.Type.Name == "ThemeResource");
 
-            var staticResourcePath = staticResourceNode?.Members.First().Value.ToString();
-            var themeResourcePath = themeResourceNode?.Members.First().Value.ToString();
+			var staticResourcePath = staticResourceNode?.Members.First().Value.ToString();
+			var themeResourcePath = themeResourceNode?.Members.First().Value.ToString();
 
-            //For now, both ThemeResource and StaticResource are considered as StaticResource
-            if (staticResourcePath == null && themeResourcePath == null)
-            {
-                return null;
-            }
-            else
-            {
-                var resourcePath = staticResourcePath ?? themeResourcePath;
+			//For now, both ThemeResource and StaticResource are considered as StaticResource
+			if (staticResourcePath == null && themeResourcePath == null)
+			{
+				return null;
+			}
+			else
+			{
+				var resourcePath = staticResourcePath ?? themeResourcePath;
 
-                targetPropertyType = targetPropertyType ?? FindPropertyType(member.Member);
+				targetPropertyType = targetPropertyType ?? FindPropertyType(member.Member);
 
 				if(_staticResources.ContainsKey(resourcePath))
 				{
@@ -2420,26 +2419,26 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				{
 					return $"{GetCastString(targetPropertyType, null)}{GetGlobalStaticResource(resourcePath)}";
 				}
-            }
-        }
+			}
+		}
 
-        /// <summary>
-        /// Inserts explicit cast if a resource is being assigned to a property of a different type
-        /// </summary>
-        /// <param name="targetProperty"></param>
-        /// <param name="targettingValue"></param>
-        /// <returns></returns>
-        private string GetCastString(INamedTypeSymbol targetProperty, XamlObjectDefinition targettingValue)
-        {
-            if (targetProperty != null
-                && targetProperty.Name != targettingValue?.Type.Name
-                && (targettingValue == null || IsPrimitive(targettingValue))
-                )
-            {
-                return $"({targetProperty.ToDisplayString()})";
-            }
-            return "";
-        }
+		/// <summary>
+		/// Inserts explicit cast if a resource is being assigned to a property of a different type
+		/// </summary>
+		/// <param name="targetProperty"></param>
+		/// <param name="targettingValue"></param>
+		/// <returns></returns>
+		private string GetCastString(INamedTypeSymbol targetProperty, XamlObjectDefinition targettingValue)
+		{
+			if (targetProperty != null
+				&& targetProperty.Name != targettingValue?.Type.Name
+				&& (targettingValue == null || IsPrimitive(targettingValue))
+				)
+			{
+				return $"({targetProperty.ToDisplayString()})";
+			}
+			return "";
+		}
 
 		private bool IsDependencyProperty(XamlMember member)
 		{
@@ -2465,11 +2464,11 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		}
 
 		private string BuildLiteralValue(INamedTypeSymbol propertyType, string memberValue, XamlMemberDefinition owner = null, string memberName = "", string objectUid = "")
-        {
-            if (IsLocalizedString(propertyType, objectUid))
-            {
-                //windows 10 localization concat the xUid Value with the member value (Text, Content, Header etc...)
-                var fullKey = objectUid + "." + memberName;
+		{
+			if (IsLocalizedString(propertyType, objectUid))
+			{
+				//windows 10 localization concat the xUid Value with the member value (Text, Content, Header etc...)
+				var fullKey = objectUid + "." + memberName;
 
 				if (owner != null && IsAttachedProperty(owner))
 				{
@@ -2480,10 +2479,10 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				}
 
 				if (_resourceKeys.Any(k => k == fullKey))
-                {
-                    return @"global::Windows.ApplicationModel.Resources.ResourceLoader.GetForCurrentView().GetString(""" + fullKey + @""")";
-                }
-            }
+				{
+					return @"global::Windows.ApplicationModel.Resources.ResourceLoader.GetForCurrentView().GetString(""" + fullKey + @""")";
+				}
+			}
 
 			switch (propertyType.ToDisplayString())
 			{
@@ -2600,46 +2599,46 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			}
 
 			var isEnum = propertyType
-                .TypeKind == TypeKind.Enum;
+				.TypeKind == TypeKind.Enum;
 
-            if (isEnum)
-            {
-                var validFlags = propertyType.GetFields().Select(field => field.Name);
-                var actualFlags = memberValue.Split(',').Select(part => part.Trim());
+			if (isEnum)
+			{
+				var validFlags = propertyType.GetFields().Select(field => field.Name);
+				var actualFlags = memberValue.Split(',').Select(part => part.Trim());
 
-                var invalidFlags = actualFlags.Except(validFlags, StringComparer.OrdinalIgnoreCase);
-                if (invalidFlags.Any())
-                {
-                    throw new Exception($"The following values are not valid members of the '{propertyType.Name}' enumeration: {string.Join(", ", invalidFlags)}");
-                }
+				var invalidFlags = actualFlags.Except(validFlags, StringComparer.OrdinalIgnoreCase);
+				if (invalidFlags.Any())
+				{
+					throw new Exception($"The following values are not valid members of the '{propertyType.Name}' enumeration: {string.Join(", ", invalidFlags)}");
+				}
 
-                var finalFlags = validFlags.Intersect(actualFlags, StringComparer.OrdinalIgnoreCase);
-                return string.Join("|", finalFlags.Select(flag => $"{propertyType.ToDisplayString()}.{flag}"));
-            }
+				var finalFlags = validFlags.Intersect(actualFlags, StringComparer.OrdinalIgnoreCase);
+				return string.Join("|", finalFlags.Select(flag => $"{propertyType.ToDisplayString()}.{flag}"));
+			}
 
-            var hasImplictToString = propertyType
-                .GetMethods()
-                .Any(m =>
-                    m.Name == "op_Implicit"
-                    && m.Parameters.FirstOrDefault().SelectOrDefault(p => p.Type.ToDisplayString() == "string")
-                );
+			var hasImplictToString = propertyType
+				.GetMethods()
+				.Any(m =>
+					m.Name == "op_Implicit"
+					&& m.Parameters.FirstOrDefault().SelectOrDefault(p => p.Type.ToDisplayString() == "string")
+				);
 
-            if (hasImplictToString
+			if (hasImplictToString
 
-                // Can be an object (e.g. in case of Binding.ConverterParameter).
-                || propertyType.ToDisplayString() == "object"
-            )
-            {
-                return "@\"" + memberValue.ToString() + "\"";
-            }
+				// Can be an object (e.g. in case of Binding.ConverterParameter).
+				|| propertyType.ToDisplayString() == "object"
+			)
+			{
+				return "@\"" + memberValue.ToString() + "\"";
+			}
 
 			if (memberValue == null && propertyType.IsReferenceType)
 			{
 				return "null";
 			}
 
-            throw new Exception("Unable to convert {0} for {1} with type {2}".InvariantCultureFormat(memberValue, memberName, propertyType));
-        }
+			throw new Exception("Unable to convert {0} for {1} with type {2}".InvariantCultureFormat(memberValue, memberName, propertyType));
+		}
 
 		private string ParseCacheMode(string memberValue)
 		{
@@ -2648,387 +2647,387 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				return "new global::Windows.UI.Xaml.Media.BitmapCache()";
 			}
 
-            throw new Exception($"The [{memberValue}] cache mode is not supported");
-        }
+			throw new Exception($"The [{memberValue}] cache mode is not supported");
+		}
 
-        private static string DoubleEscape(string thisString)
-        {
-            //http://stackoverflow.com/questions/366124/inserting-a-tab-character-into-text-using-c-sharp
-            return thisString
-                .Replace("\\", "\\\\")
+		private static string DoubleEscape(string thisString)
+		{
+			//http://stackoverflow.com/questions/366124/inserting-a-tab-character-into-text-using-c-sharp
+			return thisString
+				.Replace("\\", "\\\\")
 				.Replace("\"", "\\\"")
 				.Replace("\n", "\\n")
-                .Replace("\r", "\\r")
-                .Replace("\t", "\\t");
-        }
+				.Replace("\r", "\\r")
+				.Replace("\t", "\\t");
+		}
 
-        private static string ParseTimeSpan(string memberValue)
-        {
-            var value = TimeSpan.Parse(memberValue);
+		private static string ParseTimeSpan(string memberValue)
+		{
+			var value = TimeSpan.Parse(memberValue);
 
 			return $"global::System.TimeSpan.FromTicks({value.Ticks} /* {memberValue} */)";
 		}
 
-        private static string BuildGridLength(string memberValue)
-        {
+		private static string BuildGridLength(string memberValue)
+		{
 			var gridLength = Windows.UI.Xaml.GridLength.ParseGridLength(memberValue).FirstOrDefault();
 
 			return $"new {XamlConstants.Types.GridLength}({gridLength.Value.ToStringInvariant()}f, {XamlConstants.Types.GridUnitType}.{gridLength.GridUnitType})";
-        }
+		}
 
-        private string BuildLiteralValue(XamlMemberDefinition member, INamedTypeSymbol propertyType = null, XamlMemberDefinition owner = null, string objectUid = "")
-        {
-            if (member.Objects.None())
-            {
-                var memberValue = member.Value?.ToString();
+		private string BuildLiteralValue(XamlMemberDefinition member, INamedTypeSymbol propertyType = null, XamlMemberDefinition owner = null, string objectUid = "")
+		{
+			if (member.Objects.None())
+			{
+				var memberValue = member.Value?.ToString();
 
-                propertyType = propertyType ?? FindPropertyType(member.Member);
+				propertyType = propertyType ?? FindPropertyType(member.Member);
 
-                if (propertyType != null)
-                {
-                    return BuildLiteralValue(propertyType, memberValue, owner, member.Member.Name, objectUid);
-                }
-                else
-                {
-                    throw new Exception($"The property {member.Owner?.Type?.Name}.{member.Member?.Name} is unknown".InvariantCultureFormat(member.Member?.Name));
-                }
-            }
-            else
-            {
-                var expression = member.Objects.First();
+				if (propertyType != null)
+				{
+					return BuildLiteralValue(propertyType, memberValue, owner, member.Member.Name, objectUid);
+				}
+				else
+				{
+					throw new Exception($"The property {member.Owner?.Type?.Name}.{member.Member?.Name} is unknown".InvariantCultureFormat(member.Member?.Name));
+				}
+			}
+			else
+			{
+				var expression = member.Objects.First();
 
-                if (expression.Type.Name == "StaticResource" || expression.Type.Name == "ThemeResource")
-                {
-                    return GetGlobalStaticResource(expression.Members.First().Value?.ToString());
-                }
+				if (expression.Type.Name == "StaticResource" || expression.Type.Name == "ThemeResource")
+				{
+					return GetGlobalStaticResource(expression.Members.First().Value?.ToString());
+				}
 				else if (expression.Type.Name == "NullExtension")
 				{
 					return "null";
 				}
 				else
-                {
-                    throw new NotSupportedException("MarkupExtension {0} is not supported.".InvariantCultureFormat(expression.Type.Name));
-                }
-            }
-        }
+				{
+					throw new NotSupportedException("MarkupExtension {0} is not supported.".InvariantCultureFormat(expression.Type.Name));
+				}
+			}
+		}
 
-        private string BuildFontWeight(string memberValue)
-        {
-            var fontWeights = (INamedTypeSymbol)_medataHelper.GetTypeByFullName(XamlConstants.Types.FontWeights);
+		private string BuildFontWeight(string memberValue)
+		{
+			var fontWeights = (INamedTypeSymbol)_medataHelper.GetTypeByFullName(XamlConstants.Types.FontWeights);
 
-            if (fontWeights.GetFields().Any(m => m.Name.Equals(memberValue, StringComparison.OrdinalIgnoreCase)))
-            {
-                return "FontWeights." + memberValue;
-            }
-            else
-            {
-                return "FontWeights.Normal /* Warning {0} is not supported on this platform */".InvariantCultureFormat(memberValue);
-            }
-        }
+			if (fontWeights.GetFields().Any(m => m.Name.Equals(memberValue, StringComparison.OrdinalIgnoreCase)))
+			{
+				return "FontWeights." + memberValue;
+			}
+			else
+			{
+				return "FontWeights.Normal /* Warning {0} is not supported on this platform */".InvariantCultureFormat(memberValue);
+			}
+		}
 
-        private string BuildBrush(string memberValue)
-        {
-            var colorHelper = (INamedTypeSymbol)_medataHelper.GetTypeByFullName(XamlConstants.Types.SolidColorBrushHelper);
+		private string BuildBrush(string memberValue)
+		{
+			var colorHelper = (INamedTypeSymbol)_medataHelper.GetTypeByFullName(XamlConstants.Types.SolidColorBrushHelper);
 
-            // This ensures that a memberValue "DarkGoldenRod" gets converted to colorName "DarkGoldenrod" (notice the lowercase 'r')
-            var colorName = colorHelper.GetProperties().FirstOrDefault(m => m.Name.Equals(memberValue, StringComparison.OrdinalIgnoreCase))?.Name;
-            if (colorName != null)
-            {
-                return "SolidColorBrushHelper." + colorName;
-            }
-            else
-            {
-                memberValue = string.Join(", ", ColorCodeParser.ParseColorCode(memberValue));
+			// This ensures that a memberValue "DarkGoldenRod" gets converted to colorName "DarkGoldenrod" (notice the lowercase 'r')
+			var colorName = colorHelper.GetProperties().FirstOrDefault(m => m.Name.Equals(memberValue, StringComparison.OrdinalIgnoreCase))?.Name;
+			if (colorName != null)
+			{
+				return "SolidColorBrushHelper." + colorName;
+			}
+			else
+			{
+				memberValue = string.Join(", ", ColorCodeParser.ParseColorCode(memberValue));
 
-                return "SolidColorBrushHelper.FromARGB({0})".InvariantCultureFormat(memberValue);
-            }
-        }
+				return "SolidColorBrushHelper.FromARGB({0})".InvariantCultureFormat(memberValue);
+			}
+		}
 
-        private static string BuildThickness(string memberValue)
-        {
-            // This is until we find an appropriate way to convert strings to Thickness.
-            if (!memberValue.Contains(","))
-            {
-                memberValue = memberValue.Replace(" ", ",");
-            }
+		private static string BuildThickness(string memberValue)
+		{
+			// This is until we find an appropriate way to convert strings to Thickness.
+			if (!memberValue.Contains(","))
+			{
+				memberValue = memberValue.Replace(" ", ",");
+			}
 
-            if (memberValue.Contains("."))
-            {
-                // Append 'f' to every decimal value in the thickness
-                memberValue = AppendFloatSuffix(memberValue);
-            }
+			if (memberValue.Contains("."))
+			{
+				// Append 'f' to every decimal value in the thickness
+				memberValue = AppendFloatSuffix(memberValue);
+			}
 
-            return "new global::Windows.UI.Xaml.Thickness(" + memberValue + ")";
-        }
+			return "new global::Windows.UI.Xaml.Thickness(" + memberValue + ")";
+		}
 
-        private static string AppendFloatSuffix(string memberValue)
-        {
-            return memberValue.Split(',')
-                    .Select(s => s.Contains(".") ? s + "f" : s)
-                    .Aggregate((s1, s2) => "{0},{1}".InvariantCultureFormat(s1, s2));
-        }
+		private static string AppendFloatSuffix(string memberValue)
+		{
+			return memberValue.Split(',')
+					.Select(s => s.Contains(".") ? s + "f" : s)
+					.Aggregate((s1, s2) => "{0},{1}".InvariantCultureFormat(s1, s2));
+		}
 
-        private string BuildColor(string memberValue)
-        {
-            var colorHelper = (INamedTypeSymbol)_medataHelper.GetTypeByFullName(XamlConstants.Types.Colors);
+		private string BuildColor(string memberValue)
+		{
+			var colorHelper = (INamedTypeSymbol)_medataHelper.GetTypeByFullName(XamlConstants.Types.Colors);
 
-            if (colorHelper.GetFields().Any(m => m.Name.Equals(memberValue, StringComparison.OrdinalIgnoreCase)))
-            {
-                return $"{XamlConstants.Types.Colors}.{memberValue}";
-            }
-            else
-            {
-                memberValue = string.Join(", ", ColorCodeParser.ParseColorCode(memberValue));
+			if (colorHelper.GetFields().Any(m => m.Name.Equals(memberValue, StringComparison.OrdinalIgnoreCase)))
+			{
+				return $"{XamlConstants.Types.Colors}.{memberValue}";
+			}
+			else
+			{
+				memberValue = string.Join(", ", ColorCodeParser.ParseColorCode(memberValue));
 
-                return "Windows.UI.ColorHelper.FromARGB({0})".InvariantCultureFormat(memberValue);
-            }
-        }
+				return "Windows.UI.ColorHelper.FromARGB({0})".InvariantCultureFormat(memberValue);
+			}
+		}
 
-        private INamedTypeSymbol GetPropertyType(XamlMember xamlMember)
-        {
-            var definition = FindPropertyType(xamlMember);
+		private INamedTypeSymbol GetPropertyType(XamlMember xamlMember)
+		{
+			var definition = FindPropertyType(xamlMember);
 
-            if (definition == null)
-            {
-                throw new Exception($"The property {xamlMember.Type?.Name}.{xamlMember.Name} is unknown");
-            }
+			if (definition == null)
+			{
+				throw new Exception($"The property {xamlMember.Type?.Name}.{xamlMember.Name} is unknown");
+			}
 
-            return definition;
-        }
+			return definition;
+		}
 
-        private INamedTypeSymbol GetPropertyType(string ownerType, string propertyName)
-        {
-            var definition = FindPropertyType(ownerType, propertyName);
+		private INamedTypeSymbol GetPropertyType(string ownerType, string propertyName)
+		{
+			var definition = FindPropertyType(ownerType, propertyName);
 
-            if (definition == null)
-            {
-                throw new Exception("The property {0}.{1} is unknown".InvariantCultureFormat(ownerType, propertyName));
-            }
+			if (definition == null)
+			{
+				throw new Exception("The property {0}.{1} is unknown".InvariantCultureFormat(ownerType, propertyName));
+			}
 
-            return definition;
-        }
+			return definition;
+		}
 
-        private INamedTypeSymbol FindPropertyType(XamlMember xamlMember) => _findPropertyTypeByXamlMember(xamlMember);
+		private INamedTypeSymbol FindPropertyType(XamlMember xamlMember) => _findPropertyTypeByXamlMember(xamlMember);
 
-        private INamedTypeSymbol SourceFindPropertyType(XamlMember xamlMember)
-        {
-            // Search for the type the clr namespaces registered with the xml namespace
-            if (xamlMember.DeclaringType != null)
-            {
-                var clrNamespaces = _knownNamespaces.UnoGetValueOrDefault(xamlMember.DeclaringType.PreferredXamlNamespace, new string[0]);
+		private INamedTypeSymbol SourceFindPropertyType(XamlMember xamlMember)
+		{
+			// Search for the type the clr namespaces registered with the xml namespace
+			if (xamlMember.DeclaringType != null)
+			{
+				var clrNamespaces = _knownNamespaces.UnoGetValueOrDefault(xamlMember.DeclaringType.PreferredXamlNamespace, new string[0]);
 
-                foreach (var clrNamespace in clrNamespaces)
-                {
-                    string declaringTypeName = xamlMember.DeclaringType.Name;
+				foreach (var clrNamespace in clrNamespaces)
+				{
+					string declaringTypeName = xamlMember.DeclaringType.Name;
 
-                    var propertyType = FindPropertyType(clrNamespace + "." + declaringTypeName, xamlMember.Name);
+					var propertyType = FindPropertyType(clrNamespace + "." + declaringTypeName, xamlMember.Name);
 
-                    if (propertyType != null)
-                    {
-                        return propertyType;
-                    }
-                }
-            }
+					if (propertyType != null)
+					{
+						return propertyType;
+					}
+				}
+			}
 
-            var type = FindType(xamlMember.DeclaringType);
+			var type = FindType(xamlMember.DeclaringType);
 
-            // If not, try to find the closest match using the name only.
-            return FindPropertyType(type.SelectOrDefault(t => t.ToDisplayString(), "$$unknown"), xamlMember.Name);
-        }
+			// If not, try to find the closest match using the name only.
+			return FindPropertyType(type.SelectOrDefault(t => t.ToDisplayString(), "$$unknown"), xamlMember.Name);
+		}
 
-        private INamedTypeSymbol FindPropertyType(string ownerType, string propertyName) => _findPropertyTypeByName(ownerType, propertyName);
+		private INamedTypeSymbol FindPropertyType(string ownerType, string propertyName) => _findPropertyTypeByName(ownerType, propertyName);
 
-        private INamedTypeSymbol SourceFindPropertyType(string ownerType, string propertyName)
-        {
-            var type = FindType(ownerType);
+		private INamedTypeSymbol SourceFindPropertyType(string ownerType, string propertyName)
+		{
+			var type = FindType(ownerType);
 
-            if (type != null)
-            {
-                do
-                {
-                    if (type.Kind == SymbolKind.ErrorType)
-                    {
-                        throw new InvalidOperationException($"Unable to resolve {type} (SymbolKind is ErrorType) {type}");
-                    }
+			if (type != null)
+			{
+				do
+				{
+					if (type.Kind == SymbolKind.ErrorType)
+					{
+						throw new InvalidOperationException($"Unable to resolve {type} (SymbolKind is ErrorType) {type}");
+					}
 
-                    var resolvedType = type;
+					var resolvedType = type;
 
-                    var property = resolvedType.GetAllProperties().FirstOrDefault(p => p.Name == propertyName);
-                    var setMethod = resolvedType.GetMethods().FirstOrDefault(p => p.Name == "Set" + propertyName);
+					var property = resolvedType.GetAllProperties().FirstOrDefault(p => p.Name == propertyName);
+					var setMethod = resolvedType.GetMethods().FirstOrDefault(p => p.Name == "Set" + propertyName);
 
-                    if (property != null)
-                    {
-                        if (property.Type.OriginalDefinition != null
-                            && property.Type.OriginalDefinition?.ToDisplayString() == "System.Nullable<T>")
-                        {
-                            //TODO
-                            return (property.Type as INamedTypeSymbol).TypeArguments.First() as INamedTypeSymbol;
-                        }
-                        else
-                        {
-                            var finalType = property.Type as INamedTypeSymbol;
+					if (property != null)
+					{
+						if (property.Type.OriginalDefinition != null
+							&& property.Type.OriginalDefinition?.ToDisplayString() == "System.Nullable<T>")
+						{
+							//TODO
+							return (property.Type as INamedTypeSymbol).TypeArguments.First() as INamedTypeSymbol;
+						}
+						else
+						{
+							var finalType = property.Type as INamedTypeSymbol;
 
-                            if (finalType == null)
-                            {
-                                return FindType(property.Type.ToDisplayString());
-                            }
+							if (finalType == null)
+							{
+								return FindType(property.Type.ToDisplayString());
+							}
 
-                            return finalType;
-                        }
-                    }
-                    else
-                    {
-                        if (setMethod != null)
-                        {
-                            return setMethod.Parameters.ElementAt(1).Type as INamedTypeSymbol;
-                        }
-                        else
-                        {
-                            var baseType = type.BaseType;
+							return finalType;
+						}
+					}
+					else
+					{
+						if (setMethod != null)
+						{
+							return setMethod.Parameters.ElementAt(1).Type as INamedTypeSymbol;
+						}
+						else
+						{
+							var baseType = type.BaseType;
 
-                            if (baseType == null)
-                            {
-                                baseType = FindType(type.BaseType.ToDisplayString());
-                            }
+							if (baseType == null)
+							{
+								baseType = FindType(type.BaseType.ToDisplayString());
+							}
 
-                            type = baseType;
+							type = baseType;
 
-                            if (type == null || type.Name == "Object")
-                            {
-                                return null;
-                            }
-                        }
-                    }
-                } while (true);
-            }
-            else
-            {
-                return null;
-            }
-        }
+							if (type == null || type.Name == "Object")
+							{
+								return null;
+							}
+						}
+					}
+				} while (true);
+			}
+			else
+			{
+				return null;
+			}
+		}
 
-        private IEventSymbol FindEventType(XamlMember xamlMember)
-        {
-            return _findEventType(xamlMember);
-        }
+		private IEventSymbol FindEventType(XamlMember xamlMember)
+		{
+			return _findEventType(xamlMember);
+		}
 
-        private IEventSymbol SourceFindEventType(XamlMember xamlMember)
-        {
-            // Search for the type the clr namespaces registered with the xml namespace
-            if (xamlMember.DeclaringType != null)
-            {
-                var clrNamespaces = _knownNamespaces.UnoGetValueOrDefault(xamlMember.DeclaringType.PreferredXamlNamespace, new string[0]);
+		private IEventSymbol SourceFindEventType(XamlMember xamlMember)
+		{
+			// Search for the type the clr namespaces registered with the xml namespace
+			if (xamlMember.DeclaringType != null)
+			{
+				var clrNamespaces = _knownNamespaces.UnoGetValueOrDefault(xamlMember.DeclaringType.PreferredXamlNamespace, new string[0]);
 
-                foreach (var clrNamespace in clrNamespaces)
-                {
-                    var propertyType = FindEventType(clrNamespace + "." + xamlMember.DeclaringType.Name, xamlMember.Name);
+				foreach (var clrNamespace in clrNamespaces)
+				{
+					var propertyType = FindEventType(clrNamespace + "." + xamlMember.DeclaringType.Name, xamlMember.Name);
 
-                    if (propertyType != null)
-                    {
-                        return propertyType;
-                    }
-                }
-            }
+					if (propertyType != null)
+					{
+						return propertyType;
+					}
+				}
+			}
 
-            var type = FindType(xamlMember.DeclaringType);
+			var type = FindType(xamlMember.DeclaringType);
 
-            // If not, try to find the closest match using the name only.
-            return FindEventType(type.SelectOrDefault(t => t.ToDisplayString(), "$$unknown"), xamlMember.Name);
-        }
+			// If not, try to find the closest match using the name only.
+			return FindEventType(type.SelectOrDefault(t => t.ToDisplayString(), "$$unknown"), xamlMember.Name);
+		}
 
-        private IEventSymbol FindEventType(string ownerType, string eventName)
-        {
-            var type = FindType(ownerType);
+		private IEventSymbol FindEventType(string ownerType, string eventName)
+		{
+			var type = FindType(ownerType);
 
-            if (type != null)
-            {
-                do
-                {
-                    if (type.Kind == SymbolKind.ErrorType)
-                    {
-                        throw new InvalidOperationException($"Unable to resolve {type} (SymbolKind is ErrorType)");
-                    }
+			if (type != null)
+			{
+				do
+				{
+					if (type.Kind == SymbolKind.ErrorType)
+					{
+						throw new InvalidOperationException($"Unable to resolve {type} (SymbolKind is ErrorType)");
+					}
 
-                    var resolvedType = type;
+					var resolvedType = type;
 
-                    var eventSymbol = resolvedType.GetAllEvents().FirstOrDefault(p => p.Name == eventName);
+					var eventSymbol = resolvedType.GetAllEvents().FirstOrDefault(p => p.Name == eventName);
 
-                    if (eventSymbol != null)
-                    {
-                        return eventSymbol;
-                    }
-                    else
-                    {
-                        var baseType = type.BaseType;
+					if (eventSymbol != null)
+					{
+						return eventSymbol;
+					}
+					else
+					{
+						var baseType = type.BaseType;
 
-                        if (baseType == null)
-                        {
-                            baseType = FindType(type.BaseType.ToDisplayString());
-                        }
+						if (baseType == null)
+						{
+							baseType = FindType(type.BaseType.ToDisplayString());
+						}
 
-                        type = baseType;
+						type = baseType;
 
-                        if (type == null || type.Name == "Object")
-                        {
-                            return null;
-                        }
-                    }
-                }
-                while (true);
-            }
-            else
-            {
-                return null;
-            }
-        }
+						if (type == null || type.Name == "Object")
+						{
+							return null;
+						}
+					}
+				}
+				while (true);
+			}
+			else
+			{
+				return null;
+			}
+		}
 
-        private string BuildBindingOption(XamlMemberDefinition m, INamedTypeSymbol propertyType, bool prependCastToType)
-        {
-            // The default member is Path
-            var memberName = m.Member.Name == "_PositionalParameters" ? "Path" : m.Member.Name;
+		private string BuildBindingOption(XamlMemberDefinition m, INamedTypeSymbol propertyType, bool prependCastToType)
+		{
+			// The default member is Path
+			var memberName = m.Member.Name == "_PositionalParameters" ? "Path" : m.Member.Name;
 
-            if (m.Objects.Any())
-            {
-                var bindingType = m.Objects.First();
+			if (m.Objects.Any())
+			{
+				var bindingType = m.Objects.First();
 
-                if (
-                    bindingType.Type.Name == "StaticResource"
-                    || bindingType.Type.Name == "ThemeResource"
-                    )
-                {
-                    var resourceName = bindingType.Members.First().Value.ToString();
-                    if (_staticResources.ContainsKey(resourceName))
-                    {
-                        return "{0}StaticResources.{1}".InvariantCultureFormat(
-                            GetCastString(prependCastToType ? propertyType : null, _staticResources[resourceName]),
-                            resourceName);
-                    }
-                    else if (_namedResources.ContainsKey(resourceName))
-                    {
-                        return resourceName;
-                    }
-                    else
-                    {
-                        return "{0}{1}".InvariantCultureFormat(
-                            GetCastString(prependCastToType ? propertyType : null, null),
-                            GetGlobalStaticResource(resourceName)
-                        );
-                    }
-                }
+				if (
+					bindingType.Type.Name == "StaticResource"
+					|| bindingType.Type.Name == "ThemeResource"
+					)
+				{
+					var resourceName = bindingType.Members.First().Value.ToString();
+					if (_staticResources.ContainsKey(resourceName))
+					{
+						return "{0}StaticResources.{1}".InvariantCultureFormat(
+							GetCastString(prependCastToType ? propertyType : null, _staticResources[resourceName]),
+							resourceName);
+					}
+					else if (_namedResources.ContainsKey(resourceName))
+					{
+						return resourceName;
+					}
+					else
+					{
+						return "{0}{1}".InvariantCultureFormat(
+							GetCastString(prependCastToType ? propertyType : null, null),
+							GetGlobalStaticResource(resourceName)
+						);
+					}
+				}
 
-                if (bindingType.Type.Name == "RelativeSource")
-                {
-                    var resourceName = bindingType.Members.First().Value.ToString();
+				if (bindingType.Type.Name == "RelativeSource")
+				{
+					var resourceName = bindingType.Members.First().Value.ToString();
 
-                    return "new RelativeSource(RelativeSourceMode.TemplatedParent)";
-                }
+					return "new RelativeSource(RelativeSourceMode.TemplatedParent)";
+				}
 
-                return "Unsupported";
-            }
-            else
-            {
+				return "Unsupported";
+			}
+			else
+			{
 
-                var value = BuildLiteralValue(m, GetPropertyType("Binding", memberName));
+				var value = BuildLiteralValue(m, GetPropertyType("Binding", memberName));
 
 				if (memberName == "Path")
 				{
@@ -3053,108 +3052,108 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				}
 
 
-                return value;
-            }
-        }
+				return value;
+			}
+		}
 
-        private string GetGlobalStaticResource(string resourceName)
-        {
-            var resource = _globalStaticResourcesMap.FindResource(resourceName);
-            if (resource != null)
-            {
-                return $"global::{resource.Namespace}.GlobalStaticResources.{SanitizeResourceName(resourceName)}";
-            }
-            else
-            {
-                return $"global::Windows.UI.Xaml.Application.Current.Resources[\"{resourceName}\"]"; 
-            }
-        }
+		private string GetGlobalStaticResource(string resourceName)
+		{
+			var resource = _globalStaticResourcesMap.FindResource(resourceName);
+			if (resource != null)
+			{
+				return $"global::{resource.Namespace}.GlobalStaticResources.{SanitizeResourceName(resourceName)}";
+			}
+			else
+			{
+				return $"global::Windows.UI.Xaml.Application.Current.Resources[\"{resourceName}\"]"; 
+			}
+		}
 
-        private string RewriteAttachedPropertyPath(string value)
-        {
-            if (value.Contains("("))
-            {
-                foreach (var ns in _fileDefinition.Namespaces)
-                {
-                    if (ns != null)
-                    {
-                        var clrNamespace = ns.Namespace.TrimStart("using:");
+		private string RewriteAttachedPropertyPath(string value)
+		{
+			if (value.Contains("("))
+			{
+				foreach (var ns in _fileDefinition.Namespaces)
+				{
+					if (ns != null)
+					{
+						var clrNamespace = ns.Namespace.TrimStart("using:");
 
-                        value = value.Replace("(" + ns.Prefix + ":", "(" + clrNamespace + ":");
-                    }
-                }
+						value = value.Replace("(" + ns.Prefix + ":", "(" + clrNamespace + ":");
+					}
+				}
 
-                var match = Regex.Match(value, @"(\(.*?\))");
+				var match = Regex.Match(value, @"(\(.*?\))");
 
-                if (match.Success)
-                {
-                    do
-                    {
-                        if (!match.Value.Contains(":"))
-                        {
-                            // if there is no ":" this means that the type is using the default
-                            // namespace, so try to resolve the best way we can.
+				if (match.Success)
+				{
+					do
+					{
+						if (!match.Value.Contains(":"))
+						{
+							// if there is no ":" this means that the type is using the default
+							// namespace, so try to resolve the best way we can.
 
-                            var parts = match.Value.Trim(new[] { '(', ')' }).Split('.');
+							var parts = match.Value.Trim(new[] { '(', ')' }).Split('.');
 
-                            if (parts.Length == 2)
-                            {
-                                var targetType = SourceFindType(parts[0]);
+							if (parts.Length == 2)
+							{
+								var targetType = SourceFindType(parts[0]);
 
-                                if (targetType != null)
-                                {
-                                    var newPath = targetType.ContainingNamespace.ToDisplayString() + ":" + targetType.Name + "." + parts[1];
+								if (targetType != null)
+								{
+									var newPath = targetType.ContainingNamespace.ToDisplayString() + ":" + targetType.Name + "." + parts[1];
 
-                                    value = value.Replace(match.Value, '(' + newPath + ')');
-                                }
-                            }
-                        }
-                    }
-                    while ((match = match.NextMatch()).Success);
-                }
-            }
+									value = value.Replace(match.Value, '(' + newPath + ')');
+								}
+							}
+						}
+					}
+					while ((match = match.NextMatch()).Success);
+				}
+			}
 
-            return value;
-        }
+			return value;
+		}
 
-        private void BuildLiteralProperties(IIndentedStringBuilder writer, XamlObjectDefinition objectDefinition, string closureName = null)
-        {
+		private void BuildLiteralProperties(IIndentedStringBuilder writer, XamlObjectDefinition objectDefinition, string closureName = null)
+		{
 			var closingPunctuation = string.IsNullOrWhiteSpace(closureName) ? "," : ";";
 
 			BuildStyleProperty(writer, objectDefinition, closingPunctuation);
 
-            var extendedProperties = GetExtendedProperties(objectDefinition);
+			var extendedProperties = GetExtendedProperties(objectDefinition);
 
-            var objectUid = GetObjectUid(objectDefinition);
+			var objectUid = GetObjectUid(objectDefinition);
 
-            if (extendedProperties.Any())
-            {
-                foreach (var member in extendedProperties)
-                {
-                    var fullValueSetter = string.IsNullOrWhiteSpace(closureName) ? member.Member.Name : "{0}.{1}".InvariantCultureFormat(closureName, member.Member.Name);
+			if (extendedProperties.Any())
+			{
+				foreach (var member in extendedProperties)
+				{
+					var fullValueSetter = string.IsNullOrWhiteSpace(closureName) ? member.Member.Name : "{0}.{1}".InvariantCultureFormat(closureName, member.Member.Name);
 
 					// Exclude attached properties, must be set in the extended apply section.
 					// If there is no type attached, this can be a binding.
 					if (IsType(objectDefinition.Type, member.Member.DeclaringType)
-                        && !IsAttachedProperty(member)
-                        && FindEventType(member.Member) == null
+						&& !IsAttachedProperty(member)
+						&& FindEventType(member.Member) == null
 						&& member.Member.Name != "_UnknownContent" // We are defining the elements of a collection explicitly declared in XAML
 					)
 					{
 						if (member.Objects.None())
-                        {
-                            if (IsInitializableCollection(member.Member))
-                            {
-                                writer.AppendLineInvariant("// Empty collection");
-                            }
-                            else
-                            {
-                                if (FindPropertyType(member.Member) != null)
+						{
+							if (IsInitializableCollection(member.Member))
+							{
+								writer.AppendLineInvariant("// Empty collection");
+							}
+							else
+							{
+								if (FindPropertyType(member.Member) != null)
 								{
 									writer.AppendLineInvariant("{0} = {1}{2}", fullValueSetter, BuildLiteralValue(member, objectUid: objectUid), closingPunctuation);
-                                }
-                                else
-                                {
+								}
+								else
+								{
 									if(IsRelevantNamespace(member?.Member?.PreferredXamlNamespace) 
 										&& IsRelevantProperty(member?.Member))
 									{
@@ -3175,61 +3174,61 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 											member?.Member?.DeclaringType,
 											member?.Member?.PreferredXamlNamespace);
 									}
-                                }
-                            }
-                        }
-                        else
+								}
+							}
+						}
+						else
 						{
 							var nonBindingObjects = member
-                                .Objects
-                                .Where(m =>
-                                    m.Type.Name != "Binding"
-                                    && m.Type.Name != "Bind"
-                                    && m.Type.Name != "StaticResource"
-                                    && m.Type.Name != "ThemeResource"
-                                    && m.Type.Name != "TemplateBinding"
-                                );
+								.Objects
+								.Where(m =>
+									m.Type.Name != "Binding"
+									&& m.Type.Name != "Bind"
+									&& m.Type.Name != "StaticResource"
+									&& m.Type.Name != "ThemeResource"
+									&& m.Type.Name != "TemplateBinding"
+								);
 
-                            if (nonBindingObjects.Any())
-                            {
+							if (nonBindingObjects.Any())
+							{
 								var isInitializableCollection = IsInitializableCollection(member.Member);
 								var isInlineCollection = IsInlineCollection(member.Member, nonBindingObjects);
 
 								if (isInitializableCollection || isInlineCollection)
-                                {
-                                    using (writer.BlockInvariant($"{fullValueSetter} = "))
-                                    {
-                                        foreach (var child in nonBindingObjects)
-                                        {
-                                            BuildChild(writer, member, child);											
+								{
+									using (writer.BlockInvariant($"{fullValueSetter} = "))
+									{
+										foreach (var child in nonBindingObjects)
+										{
+											BuildChild(writer, member, child);											
 											writer.AppendLineInvariant(",");
 										}
-                                    }
-                                }
+									}
+								}
 								else
 								{
 									writer.AppendFormatInvariant($"{fullValueSetter} = ");
-                                    BuildChild(writer, member, nonBindingObjects.First());
-                                }
+									BuildChild(writer, member, nonBindingObjects.First());
+								}
 								
 								writer.AppendLineInvariant(closingPunctuation);
-                            }
-                        }
-                    }
-                    else if (member.Member.DeclaringType == null && member.Member.Name == "Name")
-                    {
-                        // This is a special case, where the declaring type is from the x: namespace, 
-                        // but is considered of an unknown type. This can happen when providing the
-                        // name of a control using x:Name instead of Name.
-                        var hasNameProperty = HasProperty(objectDefinition.Type, "Name");
-                        if (hasNameProperty)
-                        {
-                            writer.AppendLineInvariant("{0} = \"{1}\"{2}", fullValueSetter, member.Value, closingPunctuation);
-                        }
-                    }
-                }
-            }
-        }
+							}
+						}
+					}
+					else if (member.Member.DeclaringType == null && member.Member.Name == "Name")
+					{
+						// This is a special case, where the declaring type is from the x: namespace, 
+						// but is considered of an unknown type. This can happen when providing the
+						// name of a control using x:Name instead of Name.
+						var hasNameProperty = HasProperty(objectDefinition.Type, "Name");
+						if (hasNameProperty)
+						{
+							writer.AppendLineInvariant("{0} = \"{1}\"{2}", fullValueSetter, member.Value, closingPunctuation);
+						}
+					}
+				}
+			}
+		}
 
 		/// <summary>
 		/// Determines if the member is inline initializable and the first item is not a new collection instance
@@ -3254,53 +3253,53 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		}
 
 		private void BuildStyleProperty(IIndentedStringBuilder writer, XamlObjectDefinition objectDefinition, string closingPunctuation)
-        {
-            var styleMember = FindMember(objectDefinition, "Style");
+		{
+			var styleMember = FindMember(objectDefinition, "Style");
 
-            if (styleMember != null)
-            {
-                // Explicitly search for StaticResource, as the style could be set using a binding.
-                if (styleMember.Objects.Any(o => o.Type.Name == "StaticResource"))
+			if (styleMember != null)
+			{
+				// Explicitly search for StaticResource, as the style could be set using a binding.
+				if (styleMember.Objects.Any(o => o.Type.Name == "StaticResource"))
 				{
 					BuildComplexPropertyValue(writer, styleMember, "");
-                    writer.AppendLineInvariant(0, closingPunctuation);
-                }
-            }
-        }
+					writer.AppendLineInvariant(0, closingPunctuation);
+				}
+			}
+		}
 
-        private bool IsLocalizedString(INamedTypeSymbol propertyType, string objectUid)
-        {
-            return objectUid.HasValue()
-                && (propertyType.ToDisplayString() == "string"
-                || propertyType.ToDisplayString() == "object");
-        }
+		private bool IsLocalizedString(INamedTypeSymbol propertyType, string objectUid)
+		{
+			return objectUid.HasValue()
+				&& (propertyType.ToDisplayString() == "string"
+				|| propertyType.ToDisplayString() == "object");
+		}
 
-        private string GetObjectUid(XamlObjectDefinition objectDefinition)
-        {
-            string objectUid = null;
-            var localizedObject = FindMember(objectDefinition, "Uid");
-            if (localizedObject != null)
-            {
-                objectUid = localizedObject.Value.ToString();
-            }
+		private string GetObjectUid(XamlObjectDefinition objectDefinition)
+		{
+			string objectUid = null;
+			var localizedObject = FindMember(objectDefinition, "Uid");
+			if (localizedObject != null)
+			{
+				objectUid = localizedObject.Value.ToString();
+			}
 
-            return objectUid;
-        }
+			return objectUid;
+		}
 
-        private bool IsAttachedProperty(XamlMemberDefinition member)
-        {
-            if (member.Member.DeclaringType != null)
-            {
-                var type = FindType(member.Member.DeclaringType);
+		private bool IsAttachedProperty(XamlMemberDefinition member)
+		{
+			if (member.Member.DeclaringType != null)
+			{
+				var type = FindType(member.Member.DeclaringType);
 
-                if (type != null)
-                {
-                    return _isAttachedProperty(type, member.Member.Name);
-                }
-            }
+				if (type != null)
+				{
+					return _isAttachedProperty(type, member.Member.Name);
+				}
+			}
 
-            return false;
-        }
+			return false;
+		}
 
 		private bool IsRelevantNamespace(string xamlNamespace)
 		{
@@ -3323,31 +3322,31 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		}
 
 		private static bool SourceIsAttachedProperty(INamedTypeSymbol type, string name)
-        {
-            do
-            {
-                var property = type.GetAllProperties().FirstOrDefault(p => p.Name == name);
-                var setMethod = type.GetMethods().FirstOrDefault(p => p.Name == "Set" + name);
+		{
+			do
+			{
+				var property = type.GetAllProperties().FirstOrDefault(p => p.Name == name);
+				var setMethod = type.GetMethods().FirstOrDefault(p => p.Name == "Set" + name);
 
-                if (property != null && property.GetMethod.IsStatic)
-                {
-                    return true;
-                }
+				if (property != null && property.GetMethod.IsStatic)
+				{
+					return true;
+				}
 
-                if (setMethod != null && setMethod.IsStatic)
-                {
-                    return true;
-                }
+				if (setMethod != null && setMethod.IsStatic)
+				{
+					return true;
+				}
 
-                type = type.BaseType;
+				type = type.BaseType;
 
-                if (type == null || type.Name == "Object")
-                {
-                    return false;
-                }
+				if (type == null || type.Name == "Object")
+				{
+					return false;
+				}
 
-            } while (true);
-        }
+			} while (true);
+		}
 
 
 		/// <summary>
@@ -3382,46 +3381,46 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		/// Returns true if the property does not have a accessible setter
 		/// </summary>
 		private bool IsInitializableProperty(IPropertySymbol property)
-        {
-            return !property.SetMethod.SelectOrDefault(m => m.DeclaredAccessibility == Accessibility.Public, false);
-        }
+		{
+			return !property.SetMethod.SelectOrDefault(m => m.DeclaredAccessibility == Accessibility.Public, false);
+		}
 
-        /// <summary>
-        /// Returns true if the property has an accessible public setter and has a parameterless constructor
-        /// </summary>
-        private bool IsNewableProperty(IPropertySymbol property, out string newableTypeName)
-        {
-            var namedType = property.Type as INamedTypeSymbol;
+		/// <summary>
+		/// Returns true if the property has an accessible public setter and has a parameterless constructor
+		/// </summary>
+		private bool IsNewableProperty(IPropertySymbol property, out string newableTypeName)
+		{
+			var namedType = property.Type as INamedTypeSymbol;
 
-            var isNewable = property.SetMethod.SelectOrDefault(m => m.DeclaredAccessibility == Accessibility.Public, false) &&
-                namedType.SelectOrDefault(nts => nts.Constructors.Any(ms => ms.Parameters.Length == 0), false);
+			var isNewable = property.SetMethod.SelectOrDefault(m => m.DeclaredAccessibility == Accessibility.Public, false) &&
+				namedType.SelectOrDefault(nts => nts.Constructors.Any(ms => ms.Parameters.Length == 0), false);
 
-            newableTypeName = isNewable ? GetFullGenericTypeName(namedType) : null;
+			newableTypeName = isNewable ? GetFullGenericTypeName(namedType) : null;
 
-            return isNewable;
-        }
+			return isNewable;
+		}
 
-        /// <summary>
-        /// Returns true if the type implements either ICollection, IList or one of their generics
-        /// </summary>
-        private bool IsCollectionOrListType(INamedTypeSymbol propertyType)
-        {
-            return IsImplementingInterface(propertyType, "System.Collections.ICollection") ||
-                IsImplementingInterface(propertyType, "System.Collections.Generic.ICollection<T>") ||
-                IsImplementingInterface(propertyType, "System.Collections.IList") ||
-                IsImplementingInterface(propertyType, "System.Collections.Generic.IList<T>");
-        }
+		/// <summary>
+		/// Returns true if the type implements either ICollection, IList or one of their generics
+		/// </summary>
+		private bool IsCollectionOrListType(INamedTypeSymbol propertyType)
+		{
+			return IsImplementingInterface(propertyType, "System.Collections.ICollection") ||
+				IsImplementingInterface(propertyType, "System.Collections.Generic.ICollection<T>") ||
+				IsImplementingInterface(propertyType, "System.Collections.IList") ||
+				IsImplementingInterface(propertyType, "System.Collections.Generic.IList<T>");
+		}
 
-        /// <summary>
-        /// Returns true if the type exactly implements either ICollection, IList or one of their generics
-        /// </summary>
-        private bool IsExactlyCollectionOrListType(INamedTypeSymbol type)
-        {
-            return type.ToDisplayString() == "System.Collections.ICollection"
-                || type.OriginalDefinition.ToDisplayString() == "System.Collections.ICollection<T>"
-                || type.ToDisplayString() == "System.Collections.IList"
-                || type.OriginalDefinition.ToDisplayString() == "System.Collections.Generic.IList<T>";
-        }
+		/// <summary>
+		/// Returns true if the type exactly implements either ICollection, IList or one of their generics
+		/// </summary>
+		private bool IsExactlyCollectionOrListType(INamedTypeSymbol type)
+		{
+			return type.ToDisplayString() == "System.Collections.ICollection"
+				|| type.OriginalDefinition.ToDisplayString() == "System.Collections.ICollection<T>"
+				|| type.ToDisplayString() == "System.Collections.IList"
+				|| type.OriginalDefinition.ToDisplayString() == "System.Collections.Generic.IList<T>";
+		}
 
 		/// <summary>
 		/// Determines if the provided object definition is of a C# initializable list
@@ -3443,239 +3442,239 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				|| IsImplementingInterface(type, "System.Collections.Generic.ICollection<T>");
 		}
 
-        /// <summary>
-        /// Gets the 
-        /// </summary>
-        private IPropertySymbol GetPropertyByName(XamlType declaringType, string propertyName)
-        {
-            var type = FindType(declaringType);
+		/// <summary>
+		/// Gets the 
+		/// </summary>
+		private IPropertySymbol GetPropertyByName(XamlType declaringType, string propertyName)
+		{
+			var type = FindType(declaringType);
 
-            return type?.GetAllProperties().FirstOrDefault(p => p.Name == propertyName);
-        }
+			return type?.GetAllProperties().FirstOrDefault(p => p.Name == propertyName);
+		}
 
-        /// <summary>
-        /// Gets a basic class that implements a know collection or list interface
-        /// </summary>
-        private bool GetKnownNewableListOrCollectionInterface(INamedTypeSymbol type, out string newableTypeName)
-        {
-            switch (type?.Name)
-            {
-                case "ICollection":
-                case "IList":
-                    newableTypeName = type.IsGenericType ?
-                        "List<{0}>".InvariantCultureFormat(GetFullGenericTypeName(type.TypeArguments.Single() as INamedTypeSymbol)) :
-                        "List<System.Object>";
-                    return true;
-            };
+		/// <summary>
+		/// Gets a basic class that implements a know collection or list interface
+		/// </summary>
+		private bool GetKnownNewableListOrCollectionInterface(INamedTypeSymbol type, out string newableTypeName)
+		{
+			switch (type?.Name)
+			{
+				case "ICollection":
+				case "IList":
+					newableTypeName = type.IsGenericType ?
+						"List<{0}>".InvariantCultureFormat(GetFullGenericTypeName(type.TypeArguments.Single() as INamedTypeSymbol)) :
+						"List<System.Object>";
+					return true;
+			};
 
-            newableTypeName = null;
-            return false;
-        }
+			newableTypeName = null;
+			return false;
+		}
 
-        private IEnumerable<XamlMemberDefinition> GetExtendedProperties(XamlObjectDefinition objectDefinition)
-        {
-            var objectUid = GetObjectUid(objectDefinition);
+		private IEnumerable<XamlMemberDefinition> GetExtendedProperties(XamlObjectDefinition objectDefinition)
+		{
+			var objectUid = GetObjectUid(objectDefinition);
 			var hasUnkownContentOnly = objectDefinition.Members.All(m => m.Member.Name == "_UnknownContent");
 
-            return objectDefinition
-                .Members
-                .Where(m =>
-                    (
-                        m.Member.Name != "_UnknownContent"
+			return objectDefinition
+				.Members
+				.Where(m =>
+					(
+						m.Member.Name != "_UnknownContent"
 						
-                        // Style requires a special treatment, as it needs to be set before anything else in Literal Properties
-                        && m.Member.Name != "Style"
+						// Style requires a special treatment, as it needs to be set before anything else in Literal Properties
+						&& m.Member.Name != "Style"
 
-                        && m.Member.Name != "Resources"
-                        && m.Member.Name != "Key"
-                    )
-                    ||
-                    (
-                        m.Member.Name == "Content" && HasMarkupExtension(m)
-                    )
-                    ||
-                    (
-                        m.Member.Name == "Content" && IsLocalizedString(FindPropertyType(m.Member), objectUid)
-                    )
-                    ||
-                    (
-                        m.Member.Name == "Style" && HasBindingMarkupExtension(m)
-                    )
-                    || IsAttachedProperty(m)
+						&& m.Member.Name != "Resources"
+						&& m.Member.Name != "Key"
+					)
+					||
+					(
+						m.Member.Name == "Content" && HasMarkupExtension(m)
+					)
+					||
+					(
+						m.Member.Name == "Content" && IsLocalizedString(FindPropertyType(m.Member), objectUid)
+					)
+					||
+					(
+						m.Member.Name == "Style" && HasBindingMarkupExtension(m)
+					)
+					|| IsAttachedProperty(m)
 					||
 					(
 						// If the object is a collection and it has both _UnknownContent (i.e. an item) and other properties defined,
 						// we cannot use property ADN collection initializer syntax at same time, so we will add items using an ApplyBlock.
 						m.Member.Name == "_UnknownContent" && !hasUnkownContentOnly && FindType(m.Owner.Type) is INamedTypeSymbol type && IsCollectionOrListType(type)
 					)
-                );
-        }
+				);
+		}
 
-        private void BuildChild(IIndentedStringBuilder writer, XamlMemberDefinition owner, XamlObjectDefinition xamlObjectDefinition)
-        {
-            var typeName = xamlObjectDefinition.Type.Name;
-            var fullTypeName = xamlObjectDefinition.Type.Name;
+		private void BuildChild(IIndentedStringBuilder writer, XamlMemberDefinition owner, XamlObjectDefinition xamlObjectDefinition)
+		{
+			var typeName = xamlObjectDefinition.Type.Name;
+			var fullTypeName = xamlObjectDefinition.Type.Name;
 
-            var knownType = FindType(xamlObjectDefinition.Type);
+			var knownType = FindType(xamlObjectDefinition.Type);
 
-            if (knownType == null && xamlObjectDefinition.Type.PreferredXamlNamespace.StartsWith("using:"))
-            {
-                fullTypeName = xamlObjectDefinition.Type.PreferredXamlNamespace.TrimStart("using:") + "." + xamlObjectDefinition.Type.Name;
-            }
+			if (knownType == null && xamlObjectDefinition.Type.PreferredXamlNamespace.StartsWith("using:"))
+			{
+				fullTypeName = xamlObjectDefinition.Type.PreferredXamlNamespace.TrimStart("using:") + "." + xamlObjectDefinition.Type.Name;
+			}
 
-            if (knownType != null)
-            {
-                // Override the using with the type that was found in the list of loaded assemblies
-                fullTypeName = knownType.ToDisplayString();
-            }
+			if (knownType != null)
+			{
+				// Override the using with the type that was found in the list of loaded assemblies
+				fullTypeName = knownType.ToDisplayString();
+			}
 
-            var isItemsPanelTemplate = typeName == "ItemsPanelTemplate";
+			var isItemsPanelTemplate = typeName == "ItemsPanelTemplate";
 
-            if (
-                typeName == "DataTemplate"
-                || isItemsPanelTemplate
-                || typeName == "ControlTemplate"
+			if (
+				typeName == "DataTemplate"
+				|| isItemsPanelTemplate
+				|| typeName == "ControlTemplate"
 
-                // This case is specific the custom ListView for iOS. Should be removed
-                // when the list rebuilt to be compatible.
-                || typeName == "ListViewBaseLayoutTemplate"
-            )
-            {
-                writer.AppendFormatInvariant("new {0}(() => ", GetGlobalizedTypeName(fullTypeName));
+				// This case is specific the custom ListView for iOS. Should be removed
+				// when the list rebuilt to be compatible.
+				|| typeName == "ListViewBaseLayoutTemplate"
+			)
+			{
+				writer.AppendFormatInvariant("new {0}(() => ", GetGlobalizedTypeName(fullTypeName));
 
-                var contentOwner = xamlObjectDefinition.Members.FirstOrDefault(m => m.Member.Name == "_UnknownContent");
+				var contentOwner = xamlObjectDefinition.Members.FirstOrDefault(m => m.Member.Name == "_UnknownContent");
 
-                if (contentOwner != null)
-                {
-                    // This case is to support the layout switching for the ListViewBaseLayout, which is not 
-                    // a FrameworkTemplate. Thsi will need to be removed when this custom list view is removed.
-                    var returnType = typeName == "ListViewBaseLayoutTemplate" ? "Uno.UI.Controls.Legacy.ListViewBaseLayout" : "_View";
+				if (contentOwner != null)
+				{
+					// This case is to support the layout switching for the ListViewBaseLayout, which is not 
+					// a FrameworkTemplate. Thsi will need to be removed when this custom list view is removed.
+					var returnType = typeName == "ListViewBaseLayoutTemplate" ? "Uno.UI.Controls.Legacy.ListViewBaseLayout" : "_View";
 
-                    BuildChildThroughSubclass(writer, contentOwner, returnType);
+					BuildChildThroughSubclass(writer, contentOwner, returnType);
 
-                    writer.AppendFormatInvariant(")");
-                }
-                else
-                {
-                    writer.AppendFormatInvariant("/* This template does not have a content for this platform */");
-                }
-            }
-            else if (typeName == "NullExtension")
-            {
-                writer.AppendFormatInvariant("null");
-            }
-            else if (
-                typeName == "StaticResource"
-                || typeName == "ThemeResource"
-                || typeName == "Binding"
-                || typeName == "Bind"
-                || typeName == "TemplateBinding"
-                )
-            {
-                BuildComplexPropertyValue(writer, owner, "c.");
-            }
-            else if (IsDirectUserControlSubType(xamlObjectDefinition) && HasNoUserControlProperties(xamlObjectDefinition))
-            {
-                writer.AppendLineInvariant("new {0}(skipsInitializeComponents: true).GetContent()", GetGlobalizedTypeName(fullTypeName));
+					writer.AppendFormatInvariant(")");
+				}
+				else
+				{
+					writer.AppendFormatInvariant("/* This template does not have a content for this platform */");
+				}
+			}
+			else if (typeName == "NullExtension")
+			{
+				writer.AppendFormatInvariant("null");
+			}
+			else if (
+				typeName == "StaticResource"
+				|| typeName == "ThemeResource"
+				|| typeName == "Binding"
+				|| typeName == "Bind"
+				|| typeName == "TemplateBinding"
+				)
+			{
+				BuildComplexPropertyValue(writer, owner, "c.");
+			}
+			else if (IsDirectUserControlSubType(xamlObjectDefinition) && HasNoUserControlProperties(xamlObjectDefinition))
+			{
+				writer.AppendLineInvariant("new {0}(skipsInitializeComponents: true).GetContent()", GetGlobalizedTypeName(fullTypeName));
 
 				using (var innerWriter = CreateApplyBlock(writer, null, out var closureName))
-                {
-                    BuildLiteralProperties(innerWriter, xamlObjectDefinition, closureName);
-                    BuildProperties(innerWriter, xamlObjectDefinition, closureName: closureName);
-                }
+				{
+					BuildLiteralProperties(innerWriter, xamlObjectDefinition, closureName);
+					BuildProperties(innerWriter, xamlObjectDefinition, closureName: closureName);
+				}
 
-                BuildExtendedProperties(writer, xamlObjectDefinition, useGenericApply: true);
-            }
-            else if (HasInitializer(xamlObjectDefinition))
-            {
-                BuildInitializer(writer, xamlObjectDefinition, owner);
-                BuildLiteralProperties(writer, xamlObjectDefinition);
-            }
-            else if (fullTypeName == XamlConstants.Types.Style)
-            {
-                BuildInlineStyle(writer, xamlObjectDefinition);
-            }
-            else if (fullTypeName == XamlConstants.Types.Setter)
-            {
-                var propertyNode = FindMember(xamlObjectDefinition, "Property");
-                var targetNode = FindMember(xamlObjectDefinition, "Target");
-                var valueNode = FindMember(xamlObjectDefinition, "Value");
+				BuildExtendedProperties(writer, xamlObjectDefinition, useGenericApply: true);
+			}
+			else if (HasInitializer(xamlObjectDefinition))
+			{
+				BuildInitializer(writer, xamlObjectDefinition, owner);
+				BuildLiteralProperties(writer, xamlObjectDefinition);
+			}
+			else if (fullTypeName == XamlConstants.Types.Style)
+			{
+				BuildInlineStyle(writer, xamlObjectDefinition);
+			}
+			else if (fullTypeName == XamlConstants.Types.Setter)
+			{
+				var propertyNode = FindMember(xamlObjectDefinition, "Property");
+				var targetNode = FindMember(xamlObjectDefinition, "Target");
+				var valueNode = FindMember(xamlObjectDefinition, "Value");
 
-                var property = propertyNode?.Value.SelectOrDefault(p => p.ToString());
-                var target = targetNode?.Value.SelectOrDefault(p => p.ToString());
+				var property = propertyNode?.Value.SelectOrDefault(p => p.ToString());
+				var target = targetNode?.Value.SelectOrDefault(p => p.ToString());
 
-                if (property != null)
-                {
-                    var value = BuildLiteralValue(valueNode);
+				if (property != null)
+				{
+					var value = BuildLiteralValue(valueNode);
 
-                    // This builds property setters for the owner of the setter.
-                    writer.AppendLineInvariant($"new Windows.UI.Xaml.Setter(new Windows.UI.Xaml.TargetPropertyPath(this, \"{property}\"), {value})");
-                }
-                else if (target != null)
-                {
-                    // This builds property setters for specified member setter.
-                    var separatorIndex = target.IndexOf(".");
-                    var elementName = target.Substring(0, separatorIndex);
-                    var propertyName = target.Substring(separatorIndex + 1);
+					// This builds property setters for the owner of the setter.
+					writer.AppendLineInvariant($"new Windows.UI.Xaml.Setter(new Windows.UI.Xaml.TargetPropertyPath(this, \"{property}\"), {value})");
+				}
+				else if (target != null)
+				{
+					// This builds property setters for specified member setter.
+					var separatorIndex = target.IndexOf(".");
+					var elementName = target.Substring(0, separatorIndex);
+					var propertyName = target.Substring(separatorIndex + 1);
 
-                    var ownerControl = GetControlOwner(owner.Owner);
+					var ownerControl = GetControlOwner(owner.Owner);
 
-                    string value = BuildLiteralValue(valueNode);
+					string value = BuildLiteralValue(valueNode);
 
-                    if (ownerControl != null)
-                    {
-                        var targetElement = FindSubElementByName(ownerControl, elementName);
+					if (ownerControl != null)
+					{
+						var targetElement = FindSubElementByName(ownerControl, elementName);
 
-                        if (targetElement != null)
-                        {
-                            var targetElementType = GetType(targetElement.Type);
-                            var propertyType = FindPropertyType(targetElementType.ToString(), propertyName);
+						if (targetElement != null)
+						{
+							var targetElementType = GetType(targetElement.Type);
+							var propertyType = FindPropertyType(targetElementType.ToString(), propertyName);
 
-                            if (propertyType != null)
-                            {
-                                if (HasMarkupExtension(valueNode))
-                                {
-                                    value = GetStaticResourceName(valueNode, propertyType);
-                                }
-                                else
-                                {
-                                    value = BuildLiteralValue(valueNode, propertyType);
-                                }
-                            }
-                        }
-                    }
+							if (propertyType != null)
+							{
+								if (HasMarkupExtension(valueNode))
+								{
+									value = GetStaticResourceName(valueNode, propertyType);
+								}
+								else
+								{
+									value = BuildLiteralValue(valueNode, propertyType);
+								}
+							}
+						}
+					}
 
-                    // Attached properties need to be expanded using the namespace, otherwise the resolution will be 
-                    // performed at runtime at a higher cost.
-                    propertyName = RewriteAttachedPropertyPath(propertyName);
+					// Attached properties need to be expanded using the namespace, otherwise the resolution will be 
+					// performed at runtime at a higher cost.
+					propertyName = RewriteAttachedPropertyPath(propertyName);
 
-                    writer.AppendLineInvariant($"new Windows.UI.Xaml.Setter(new Windows.UI.Xaml.TargetPropertyPath({elementName}, \"{propertyName}\"), {value.Replace("{", "{{").Replace("}", "}}")})");
-                }
-            }
-            else
-            {
-                var hasCustomInitalizer = HasCustomInitializer(xamlObjectDefinition);
+					writer.AppendLineInvariant($"new Windows.UI.Xaml.Setter(new Windows.UI.Xaml.TargetPropertyPath({elementName}, \"{propertyName}\"), {value.Replace("{", "{{").Replace("}", "}}")})");
+				}
+			}
+			else
+			{
+				var hasCustomInitalizer = HasCustomInitializer(xamlObjectDefinition);
 
-                if (hasCustomInitalizer)
-                {
-                    var propertyType = FindType(xamlObjectDefinition.Type);
-                    writer.AppendFormatInvariant(BuildLiteralValue(FindImplicitContentMember(xamlObjectDefinition), propertyType, owner));
-                }
-                else
-                {
-                    using (TryGenerateDeferedLoadStrategy(writer, knownType, xamlObjectDefinition))
-                    {
-                        using (writer.BlockInvariant("new {0}{1}", GetGlobalizedTypeName(fullTypeName), GenerateConstructorParameters(xamlObjectDefinition.Type)))
-                        {
-                            BuildLiteralProperties(writer, xamlObjectDefinition);
-                            BuildProperties(writer, xamlObjectDefinition);
-                        }
+				if (hasCustomInitalizer)
+				{
+					var propertyType = FindType(xamlObjectDefinition.Type);
+					writer.AppendFormatInvariant(BuildLiteralValue(FindImplicitContentMember(xamlObjectDefinition), propertyType, owner));
+				}
+				else
+				{
+					using (TryGenerateDeferedLoadStrategy(writer, knownType, xamlObjectDefinition))
+					{
+						using (writer.BlockInvariant("new {0}{1}", GetGlobalizedTypeName(fullTypeName), GenerateConstructorParameters(xamlObjectDefinition.Type)))
+						{
+							BuildLiteralProperties(writer, xamlObjectDefinition);
+							BuildProperties(writer, xamlObjectDefinition);
+						}
 
-                        BuildExtendedProperties(writer, xamlObjectDefinition);
-                    }
-                }
-            }
-        }
+						BuildExtendedProperties(writer, xamlObjectDefinition);
+					}
+				}
+			}
+		}
 
 		private bool HasChildrenWithPhase(XamlObjectDefinition xamlObjectDefinition)
 		{
@@ -3715,36 +3714,36 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		}
 
 		private bool HasNoUserControlProperties(XamlObjectDefinition objectDefinition)
-        {
-            return
-            objectDefinition
-                .Members
-                .Where(m =>
-                    (
-                        m.Member.Name != "DataContext"
-                        && m.Member.Name != "_UnknownContent"
-                    )
-                )
-                .None();
-        }
+		{
+			return
+			objectDefinition
+				.Members
+				.Where(m =>
+					(
+						m.Member.Name != "DataContext"
+						&& m.Member.Name != "_UnknownContent"
+					)
+				)
+				.None();
+		}
 
-        private XamlObjectDefinition GetControlOwner(XamlObjectDefinition owner)
-        {
-            do
-            {
-                var type = GetType(owner.Type);
+		private XamlObjectDefinition GetControlOwner(XamlObjectDefinition owner)
+		{
+			do
+			{
+				var type = GetType(owner.Type);
 
-                if (type.Is(XamlConstants.Types.Control))
-                {
-                    return owner;
-                }
+				if (type.Is(XamlConstants.Types.Control))
+				{
+					return owner;
+				}
 
-                owner = owner.Owner;
-            }
-            while (owner != null);
+				owner = owner.Owner;
+			}
+			while (owner != null);
 
-            return null;
-        }
+			return null;
+		}
 
 
 		/// <summary>
@@ -3807,9 +3806,9 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			yield break;
 		}
 
-        private IDisposable TryGenerateDeferedLoadStrategy(IIndentedStringBuilder writer, INamedTypeSymbol targetType, XamlObjectDefinition definition)
-        {
-            var strategy = FindMember(definition, "DeferLoadStrategy");
+		private IDisposable TryGenerateDeferedLoadStrategy(IIndentedStringBuilder writer, INamedTypeSymbol targetType, XamlObjectDefinition definition)
+		{
+			var strategy = FindMember(definition, "DeferLoadStrategy");
 
 			
 			if (!_isWasm && strategy?.Value?.ToString() == "Lazy")
@@ -3824,206 +3823,206 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					return null;
 				}
 
-                if (visibilityMember != null)
-                {
-                    var hasVisibilityMarkup = HasMarkupExtension(visibilityMember);
-                    var isLiteralVisible = !hasVisibilityMarkup && (visibilityMember.Value?.ToString() == "Visible");
+				if (visibilityMember != null)
+				{
+					var hasVisibilityMarkup = HasMarkupExtension(visibilityMember);
+					var isLiteralVisible = !hasVisibilityMarkup && (visibilityMember.Value?.ToString() == "Visible");
 
-                    var hasDataContextMarkup = dataContextMember != null && HasMarkupExtension(dataContextMember);
+					var hasDataContextMarkup = dataContextMember != null && HasMarkupExtension(dataContextMember);
 
-                    var disposable = writer.BlockInvariant($"new {XamlConstants.Types.ElementStub}()");
+					var disposable = writer.BlockInvariant($"new {XamlConstants.Types.ElementStub}()");
 
-                    writer.Append("ContentBuilder = () => ");
+					writer.Append("ContentBuilder = () => ");
 
-                    return new DisposableAction(() =>
-                        {
-                            disposable.Dispose();
+					return new DisposableAction(() =>
+						{
+							disposable.Dispose();
 
-                            string closureName;
-                            using (var innerWriter = CreateApplyBlock(writer, GetType(XamlConstants.Types.ElementStub), out closureName))
-                            {
-                                if (hasDataContextMarkup)
-                                {
-                                    // We need to generate the datacontext binding, since the Visibility
-                                    // may require it to bind properly.
+							string closureName;
+							using (var innerWriter = CreateApplyBlock(writer, GetType(XamlConstants.Types.ElementStub), out closureName))
+							{
+								if (hasDataContextMarkup)
+								{
+									// We need to generate the datacontext binding, since the Visibility
+									// may require it to bind properly.
 
-                                    var def = new XamlMemberDefinition(
-                                        new XamlMember("DataContext",
-                                            new XamlType("", "ElementStub", new List<XamlType>(), new XamlSchemaContext()),
-                                            false
-                                        ), 0, 0
-                                    );
+									var def = new XamlMemberDefinition(
+										new XamlMember("DataContext",
+											new XamlType("", "ElementStub", new List<XamlType>(), new XamlSchemaContext()),
+											false
+										), 0, 0
+									);
 
-                                    def.Objects.AddRange(dataContextMember.Objects);
+									def.Objects.AddRange(dataContextMember.Objects);
 
-                                    BuildComplexPropertyValue(innerWriter, def, closureName + ".", closureName);
-                                }
+									BuildComplexPropertyValue(innerWriter, def, closureName + ".", closureName);
+								}
 
-                                if (hasVisibilityMarkup)
-                                {
-                                    var def = new XamlMemberDefinition(
-                                        new XamlMember("Visibility",
-                                            new XamlType("", "ElementStub", new List<XamlType>(), new XamlSchemaContext()),
-                                            false
-                                        ), 0, 0
-                                    );
+								if (hasVisibilityMarkup)
+								{
+									var def = new XamlMemberDefinition(
+										new XamlMember("Visibility",
+											new XamlType("", "ElementStub", new List<XamlType>(), new XamlSchemaContext()),
+											false
+										), 0, 0
+									);
 
-                                    def.Objects.AddRange(visibilityMember.Objects);
+									def.Objects.AddRange(visibilityMember.Objects);
 
-                                    BuildComplexPropertyValue(innerWriter, def, closureName + ".", closureName);
-                                }
-                                else
-                                {
-                                    innerWriter.AppendLineInvariant(
-                                        "{0}.Visibility = {1};",
-                                        closureName,
-                                        BuildLiteralValue(visibilityMember)
-                                    );
+									BuildComplexPropertyValue(innerWriter, def, closureName + ".", closureName);
+								}
+								else
+								{
+									innerWriter.AppendLineInvariant(
+										"{0}.Visibility = {1};",
+										closureName,
+										BuildLiteralValue(visibilityMember)
+									);
 
-                                    if (nameMember != null)
-                                    {
-                                        innerWriter.AppendLineInvariant(
-                                            $"{closureName}.Name = \"{nameMember.Value}\";"
-                                        );
+									if (nameMember != null)
+									{
+										innerWriter.AppendLineInvariant(
+											$"{closureName}.Name = \"{nameMember.Value}\";"
+										);
 
-                                        // Set the element name to the stub, then when the stub will be replaced
-                                        // the actual target control will override it.
-                                        innerWriter.AppendLineInvariant(
-                                            $"_{nameMember.Value}Subject.ElementInstance = {closureName};"
-                                        );
-                                    }
-                                }
-                            }
-                        }
-                    );
-                }
-            }
+										// Set the element name to the stub, then when the stub will be replaced
+										// the actual target control will override it.
+										innerWriter.AppendLineInvariant(
+											$"_{nameMember.Value}Subject.ElementInstance = {closureName};"
+										);
+									}
+								}
+							}
+						}
+					);
+				}
+			}
 
-            return null;
-        }
+			return null;
+		}
 
-        private void BuildChildThroughSubclass(IIndentedStringBuilder writer, XamlMemberDefinition contentOwner, string returnType)
-        {
-            // To prevent conflicting names whenever we are working with dictionaries, subClass index is a Guid in those cases
-            var subClassPrefix = _scopeStack.Aggregate("", (val, scope) => val + scope.Name);
+		private void BuildChildThroughSubclass(IIndentedStringBuilder writer, XamlMemberDefinition contentOwner, string returnType)
+		{
+			// To prevent conflicting names whenever we are working with dictionaries, subClass index is a Guid in those cases
+			var subClassPrefix = _scopeStack.Aggregate("", (val, scope) => val + scope.Name);
 
 			var namespacePrefix = _scopeStack.Count == 1 && _scopeStack.Last().Name.EndsWith("RD") ? "__Resources." : "";
 
 			var subclassName = $"_{_fileUniqueId}_{subClassPrefix}SC{(_subclassIndex++).ToString(CultureInfo.InvariantCulture)}";
 
-            RegisterChildSubclass(subclassName, contentOwner, returnType);
+			RegisterChildSubclass(subclassName, contentOwner, returnType);
 
-            writer.AppendLineInvariant($"new {namespacePrefix}{subclassName}().Build()");
-        }
+			writer.AppendLineInvariant($"new {namespacePrefix}{subclassName}().Build()");
+		}
 
-        private string GenerateConstructorParameters(XamlType xamlType)
-        {
-            if (IsType(xamlType, "Android.Views.View"))
-            {
-                // For android, all native control must take a context as their first parameters
-                // To be able to use this control from the Xaml, we need to generate a constructor
-                // call that takes the ContextHelper.Current as the first parameter.
+		private string GenerateConstructorParameters(XamlType xamlType)
+		{
+			if (IsType(xamlType, "Android.Views.View"))
+			{
+				// For android, all native control must take a context as their first parameters
+				// To be able to use this control from the Xaml, we need to generate a constructor
+				// call that takes the ContextHelper.Current as the first parameter.
 
-                var type = FindType(xamlType);
+				var type = FindType(xamlType);
 
-                if (type != null)
-                {
-                    var q = from m in type.Constructors
-                            where m.Parameters.Count() == 1
-                            where m.Parameters.First().Type.ToDisplayString() == "Android.Content.Context"
-                            select m;
+				if (type != null)
+				{
+					var q = from m in type.Constructors
+							where m.Parameters.Count() == 1
+							where m.Parameters.First().Type.ToDisplayString() == "Android.Content.Context"
+							select m;
 
-                    var hasContextConstructor = q.Any();
+					var hasContextConstructor = q.Any();
 
-                    if (hasContextConstructor)
-                    {
-                        return "(Uno.UI.ContextHelper.Current)";
-                    }
-                }
-            }
+					if (hasContextConstructor)
+					{
+						return "(Uno.UI.ContextHelper.Current)";
+					}
+				}
+			}
 
-            return "";
-        }
+			return "";
+		}
 
-        private bool HasCustomInitializer(XamlObjectDefinition definition)
-        {
-            var propertyType = FindType(definition.Type);
+		private bool HasCustomInitializer(XamlObjectDefinition definition)
+		{
+			var propertyType = FindType(definition.Type);
 
-            if (propertyType != null)
-            {
+			if (propertyType != null)
+			{
 				if (propertyType.TypeKind == TypeKind.Enum)
 				{
 					return true;
 				}
 
-                switch (propertyType.ToDisplayString())
-                {
-                    case "int":
-                    case "float":
-                    case "long":
-                    case "short":
-                    case "byte":
-                    case "double":
-                    case "string":
-                    case "bool":
-                    case XamlConstants.Types.Thickness:
-                    case XamlConstants.Types.FontFamily:
-                    case XamlConstants.Types.FontWeight:
-                    case XamlConstants.Types.GridLength:
+				switch (propertyType.ToDisplayString())
+				{
+					case "int":
+					case "float":
+					case "long":
+					case "short":
+					case "byte":
+					case "double":
+					case "string":
+					case "bool":
+					case XamlConstants.Types.Thickness:
+					case XamlConstants.Types.FontFamily:
+					case XamlConstants.Types.FontWeight:
+					case XamlConstants.Types.GridLength:
 					case XamlConstants.Types.CornerRadius:
-                    case "UIKit.UIColor":
-                    case "Windows.UI.Color":
-                    case "Color":
+					case "UIKit.UIColor":
+					case "Windows.UI.Color":
+					case "Color":
 						return true;
-                }
-            }
+				}
+			}
 
-            return false;
-        }
+			return false;
+		}
 
-        private void BuildInitializer(IIndentedStringBuilder writer, XamlObjectDefinition xamlObjectDefinition, XamlMemberDefinition owner = null)
-        {
-            var initializer = xamlObjectDefinition.Members.First(m => m.Member.Name == "_Initialization");
+		private void BuildInitializer(IIndentedStringBuilder writer, XamlObjectDefinition xamlObjectDefinition, XamlMemberDefinition owner = null)
+		{
+			var initializer = xamlObjectDefinition.Members.First(m => m.Member.Name == "_Initialization");
 
-            if (IsPrimitive(xamlObjectDefinition))
-            {
-                if (xamlObjectDefinition.Type.Name == "Double" || xamlObjectDefinition.Type.Name == "Single")
-                {
-                    writer.AppendFormatInvariant("{0}", GetFloatingPointLiteral(initializer.Value.ToString(), GetType(xamlObjectDefinition.Type), owner));
-                }
-                else if (xamlObjectDefinition.Type.Name == "Boolean")
-                {
-                    writer.AppendFormatInvariant("{1}", xamlObjectDefinition.Type.Name, initializer.Value.ToString().ToLowerInvariant());
-                }
-                else
-                {
-                    writer.AppendFormatInvariant("{1}", xamlObjectDefinition.Type.Name, initializer.Value);
-                }
-            }
-            else if (IsString(xamlObjectDefinition))
-            {
-                writer.AppendFormatInvariant("\"{1}\"", xamlObjectDefinition.Type.Name, DoubleEscape(initializer.Value?.ToString()));
-            }
+			if (IsPrimitive(xamlObjectDefinition))
+			{
+				if (xamlObjectDefinition.Type.Name == "Double" || xamlObjectDefinition.Type.Name == "Single")
+				{
+					writer.AppendFormatInvariant("{0}", GetFloatingPointLiteral(initializer.Value.ToString(), GetType(xamlObjectDefinition.Type), owner));
+				}
+				else if (xamlObjectDefinition.Type.Name == "Boolean")
+				{
+					writer.AppendFormatInvariant("{1}", xamlObjectDefinition.Type.Name, initializer.Value.ToString().ToLowerInvariant());
+				}
+				else
+				{
+					writer.AppendFormatInvariant("{1}", xamlObjectDefinition.Type.Name, initializer.Value);
+				}
+			}
+			else if (IsString(xamlObjectDefinition))
+			{
+				writer.AppendFormatInvariant("\"{1}\"", xamlObjectDefinition.Type.Name, DoubleEscape(initializer.Value?.ToString()));
+			}
 			else
-            {
-                writer.AppendFormatInvariant("new {0}({1})", GetGlobalizedTypeName(xamlObjectDefinition.Type.Name), initializer.Value);
-            }
-        }
+			{
+				writer.AppendFormatInvariant("new {0}({1})", GetGlobalizedTypeName(xamlObjectDefinition.Type.Name), initializer.Value);
+			}
+		}
 
-        private string GetFloatingPointLiteral(string memberValue, INamedTypeSymbol type, XamlMemberDefinition owner)
-        {
-            var name = ValidatePropertyType(type, owner);
+		private string GetFloatingPointLiteral(string memberValue, INamedTypeSymbol type, XamlMemberDefinition owner)
+		{
+			var name = ValidatePropertyType(type, owner);
 
-            var isDouble = IsDouble(name);
+			var isDouble = IsDouble(name);
 
-            if (memberValue.EndsWith("nan", StringComparison.OrdinalIgnoreCase) || memberValue.Equals("auto", StringComparison.OrdinalIgnoreCase))
-            {
-                return "{0}.NaN".InvariantCultureFormat(isDouble ? "double" : "float");
-            }
-            else if (memberValue.ToLowerInvariant().EndsWith("positiveinfinity"))
-            {
-                return "{0}.PositiveInfinity".InvariantCultureFormat(isDouble ? "double" : "float");
-            }
+			if (memberValue.EndsWith("nan", StringComparison.OrdinalIgnoreCase) || memberValue.Equals("auto", StringComparison.OrdinalIgnoreCase))
+			{
+				return "{0}.NaN".InvariantCultureFormat(isDouble ? "double" : "float");
+			}
+			else if (memberValue.ToLowerInvariant().EndsWith("positiveinfinity"))
+			{
+				return "{0}.PositiveInfinity".InvariantCultureFormat(isDouble ? "double" : "float");
+			}
 			else if (memberValue.ToLowerInvariant().EndsWith("negativeinfinity"))
 			{
 				return "{0}.NegativeInfinity".InvariantCultureFormat(isDouble ? "double" : "float");
@@ -4035,167 +4034,167 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			}
 
 			return "{0}{1}".InvariantCultureFormat(memberValue, isDouble ? "d" : "f");
-        }
+		}
 
-        private string ValidatePropertyType(INamedTypeSymbol propertyType, XamlMemberDefinition owner)
-        {
-            if (IsDouble(propertyType.ToDisplayString()) &&
-                owner != null && (
-                owner.Member.Name == "Width" ||
-                owner.Member.Name == "Height" ||
-                owner.Member.Name == "MinWidth" ||
-                owner.Member.Name == "MinHeight" ||
-                owner.Member.Name == "MaxWidth" ||
-                owner.Member.Name == "MaxHeight"
-                ))
-            {
-                return "float";
-            }
+		private string ValidatePropertyType(INamedTypeSymbol propertyType, XamlMemberDefinition owner)
+		{
+			if (IsDouble(propertyType.ToDisplayString()) &&
+				owner != null && (
+				owner.Member.Name == "Width" ||
+				owner.Member.Name == "Height" ||
+				owner.Member.Name == "MinWidth" ||
+				owner.Member.Name == "MinHeight" ||
+				owner.Member.Name == "MaxWidth" ||
+				owner.Member.Name == "MaxHeight"
+				))
+			{
+				return "float";
+			}
 
-            return propertyType.ToDisplayString();
-        }
+			return propertyType.ToDisplayString();
+		}
 
-        private static bool IsDouble(string typeName)
-        {
-            // handles cases where name is "Java.Lang.Double"
-            // TODO: Fix type resolution
-            return typeName.Equals("double", StringComparison.InvariantCultureIgnoreCase)
-                || typeName.EndsWith(".double", StringComparison.InvariantCultureIgnoreCase);
-        }
+		private static bool IsDouble(string typeName)
+		{
+			// handles cases where name is "Java.Lang.Double"
+			// TODO: Fix type resolution
+			return typeName.Equals("double", StringComparison.InvariantCultureIgnoreCase)
+				|| typeName.EndsWith(".double", StringComparison.InvariantCultureIgnoreCase);
+		}
 
-        private bool IsString(XamlObjectDefinition xamlObjectDefinition)
-        {
-            return xamlObjectDefinition.Type.Name == "String";
-        }
+		private bool IsString(XamlObjectDefinition xamlObjectDefinition)
+		{
+			return xamlObjectDefinition.Type.Name == "String";
+		}
 
-        private bool IsPrimitive(XamlObjectDefinition xamlObjectDefinition)
-        {
-            switch (xamlObjectDefinition.Type.Name)
-            {
-                case "Double":
-                case "Int32":
-                case "Int16":
-                case "Single":
-                case "Boolean":
-                    return true;
-            }
+		private bool IsPrimitive(XamlObjectDefinition xamlObjectDefinition)
+		{
+			switch (xamlObjectDefinition.Type.Name)
+			{
+				case "Double":
+				case "Int32":
+				case "Int16":
+				case "Single":
+				case "Boolean":
+					return true;
+			}
 
-            return false;
-        }
+			return false;
+		}
 
-        private bool HasInitializer(XamlObjectDefinition objectDefinition)
-        {
-            return objectDefinition.Members.Any(m => m.Member.Name == "_Initialization");
-        }
+		private bool HasInitializer(XamlObjectDefinition objectDefinition)
+		{
+			return objectDefinition.Members.Any(m => m.Member.Name == "_Initialization");
+		}
 
-        private bool IsDirectUserControlSubType(XamlObjectDefinition objectDefinition)
-        {
-            return string.Equals(
-                FindType(objectDefinition.Type)
-                    ?.BaseType
-                    ?.ToDisplayString(),
-                XamlConstants.Types.UserControl);
-        }
+		private bool IsDirectUserControlSubType(XamlObjectDefinition objectDefinition)
+		{
+			return string.Equals(
+				FindType(objectDefinition.Type)
+					?.BaseType
+					?.ToDisplayString(),
+				XamlConstants.Types.UserControl);
+		}
 
-        private INamedTypeSymbol FindType(string name)
-        {
-            return _findType(name);
-        }
+		private INamedTypeSymbol FindType(string name)
+		{
+			return _findType(name);
+		}
 
-        private INamedTypeSymbol FindType(XamlType type)
-        {
-            if (type != null)
-            {
-                var ns = _fileDefinition.Namespaces.FirstOrDefault(n => n.Namespace == type.PreferredXamlNamespace);
-                var isKnownNamespace = ns?.Prefix?.HasValue() ?? false;
+		private INamedTypeSymbol FindType(XamlType type)
+		{
+			if (type != null)
+			{
+				var ns = _fileDefinition.Namespaces.FirstOrDefault(n => n.Namespace == type.PreferredXamlNamespace);
+				var isKnownNamespace = ns?.Prefix?.HasValue() ?? false;
 
-                if (
-                    type.PreferredXamlNamespace == XamlConstants.XamlXmlNamespace
-                    && type.Name == "Bind"
-                   )
-                {
-                    return _findType(XamlConstants.Namespaces.Data + ".Binding");
-                }
+				if (
+					type.PreferredXamlNamespace == XamlConstants.XamlXmlNamespace
+					&& type.Name == "Bind"
+				   )
+				{
+					return _findType(XamlConstants.Namespaces.Data + ".Binding");
+				}
 
-                var fullName = isKnownNamespace ? ns.Prefix + ":" + type.Name : type.Name;
+				var fullName = isKnownNamespace ? ns.Prefix + ":" + type.Name : type.Name;
 
-                return _findType(fullName);
-            }
-            else
-            {
-                return null;
-            }
-        }
+				return _findType(fullName);
+			}
+			else
+			{
+				return null;
+			}
+		}
 
-        private INamedTypeSymbol GetType(string name)
-        {
-            var type = _findType(name);
+		private INamedTypeSymbol GetType(string name)
+		{
+			var type = _findType(name);
 
-            if (type == null)
-            {
-                throw new InvalidOperationException("The type {0} could not be found".InvariantCultureFormat(name));
-            }
+			if (type == null)
+			{
+				throw new InvalidOperationException("The type {0} could not be found".InvariantCultureFormat(name));
+			}
 
-            return type;
-        }
+			return type;
+		}
 
-        private INamedTypeSymbol GetType(XamlType type)
-        {
-            var clrType = FindType(type);
+		private INamedTypeSymbol GetType(XamlType type)
+		{
+			var clrType = FindType(type);
 
-            if (clrType == null)
-            {
-                throw new InvalidOperationException("The type {0} could not be found".InvariantCultureFormat(type));
-            }
+			if (clrType == null)
+			{
+				throw new InvalidOperationException("The type {0} could not be found".InvariantCultureFormat(type));
+			}
 
-            return clrType;
-        }
+			return clrType;
+		}
 
-        private INamedTypeSymbol SourceFindType(string name)
-        {
-            var originalName = name;
+		private INamedTypeSymbol SourceFindType(string name)
+		{
+			var originalName = name;
 
-            if (name.Contains(":"))
-            {
-                var fields = name.Split(':');
+			if (name.Contains(":"))
+			{
+				var fields = name.Split(':');
 
-                var ns = _fileDefinition.Namespaces.FirstOrDefault(n => n.Prefix == fields[0]);
+				var ns = _fileDefinition.Namespaces.FirstOrDefault(n => n.Prefix == fields[0]);
 
-                if (ns != null)
-                {
-                    var nsName = ns.Namespace.TrimStart("using:");
+				if (ns != null)
+				{
+					var nsName = ns.Namespace.TrimStart("using:");
 
-                    if (nsName.StartsWith("clr-namespace:"))
-                    {
-                        nsName = nsName.Split(';')[0].TrimStart("clr-namespace:");
-                    }
+					if (nsName.StartsWith("clr-namespace:"))
+					{
+						nsName = nsName.Split(';')[0].TrimStart("clr-namespace:");
+					}
 
-                    name = nsName + "." + fields[1];
-                }
-            }
-            else
-            {
-                var defaultXmlNamespace = _fileDefinition
-                        .Namespaces
-                        .Where(n => n.Prefix.None())
-                        .FirstOrDefault()
-                        .SelectOrDefault(n => n.Namespace);
+					name = nsName + "." + fields[1];
+				}
+			}
+			else
+			{
+				var defaultXmlNamespace = _fileDefinition
+						.Namespaces
+						.Where(n => n.Prefix.None())
+						.FirstOrDefault()
+						.SelectOrDefault(n => n.Namespace);
 
-                var clrNamespaces = _knownNamespaces.UnoGetValueOrDefault(defaultXmlNamespace, new string[0]);
+				var clrNamespaces = _knownNamespaces.UnoGetValueOrDefault(defaultXmlNamespace, new string[0]);
 
-                // Search first using the default namespace
-                foreach (var clrNamespace in clrNamespaces)
-                {
-                    var type = _medataHelper.FindTypeByFullName(clrNamespace + "." + name) as INamedTypeSymbol;
+				// Search first using the default namespace
+				foreach (var clrNamespace in clrNamespaces)
+				{
+					var type = _medataHelper.FindTypeByFullName(clrNamespace + "." + name) as INamedTypeSymbol;
 
-                    if (type != null)
-                    {
-                        return type;
-                    }
-                }
-            }
+					if (type != null)
+					{
+						return type;
+					}
+				}
+			}
 
-            var resolvers = new Func<INamedTypeSymbol>[] {
+			var resolvers = new Func<INamedTypeSymbol>[] {
 
 				// The sanitized name
 				() => _medataHelper.FindTypeByName(name) as INamedTypeSymbol,
@@ -4208,27 +4207,27 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 				// As a partial name using the non-qualified name
 				() => _medataHelper.FindTypeByName(originalName.Split(':').ElementAtOrDefault(1)) as INamedTypeSymbol,
-            };
+			};
 
-            return resolvers
-                .Select(m => m())
-                .Trim()
-                .FirstOrDefault();
-        }
+			return resolvers
+				.Select(m => m())
+				.Trim()
+				.FirstOrDefault();
+		}
 
-        private NameScope CurrentScope
-        {
-            get
-            {
-                return _scopeStack.Peek();
-            }
-        }
+		private NameScope CurrentScope
+		{
+			get
+			{
+				return _scopeStack.Peek();
+			}
+		}
 
-        private IDisposable Scope(string name)
-        {
-            _scopeStack.Push(new NameScope(name));
+		private IDisposable Scope(string name)
+		{
+			_scopeStack.Push(new NameScope(name));
 
-            return new DisposableAction(() => _scopeStack.Pop());
-        }
-    }
+			return new DisposableAction(() => _scopeStack.Pop());
+		}
+	}
 }
