@@ -8,15 +8,9 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		protected override bool IsItemItsOwnContainerOverride(object item)
-		{
-			return item is NavigationViewItem
-				|| item is NavigationViewItemHeader
-				|| item is NavigationViewItemSeparator;
-		}
+			=> item is NavigationViewItemBase;
 
 		protected override DependencyObject GetContainerForItemOverride()
-		{
-			return new NavigationViewItem() { IsGeneratedContainer = true };
-		}
+			=> new NavigationViewItem() { IsGeneratedContainer = true };
 	}
 }
