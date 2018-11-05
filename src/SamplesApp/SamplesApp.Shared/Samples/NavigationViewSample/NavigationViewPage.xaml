@@ -46,7 +46,6 @@
 			<NavigationView.AutoSuggestBox>
 				<AutoSuggestBox x:Name="controlsSearchBox"
 								VerticalAlignment="Center"
-								x:FieldModifier="public"
 								PlaceholderText="Search"
 								QueryIcon="Find"
 								RequestedTheme="Light">
