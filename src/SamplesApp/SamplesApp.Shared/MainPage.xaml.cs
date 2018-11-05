@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using SamplesApp.Samples.NavigationViewSample;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.UI.Xaml;
@@ -27,24 +28,9 @@ namespace SamplesApp
 			this.InitializeComponent();
 		}
 
-		private void NavigationView_Loaded(object sender, RoutedEventArgs e)
+		private void OnNavigationView(object sender, RoutedEventArgs e)
 		{
-			Console.WriteLine("NavigationView_Loaded");
-		}
-
-		private void NavigationView_SelectionChanged(NavigationView sender, NavigationViewSelectionChangedEventArgs args)
-		{
-			Console.WriteLine("NavigationView_SelectionChanged");
-		}
-
-		private void NvSample_ItemInvoked(NavigationView sender, NavigationViewItemInvokedEventArgs args)
-		{
-			Console.WriteLine("NvSample_ItemInvoked");
-		}
-
-		private void NvSample_BackRequested(NavigationView sender, NavigationViewBackRequestedEventArgs args)
-		{
-			Console.WriteLine("NvSample_BackRequested");
+			Frame.Navigate(typeof(NavigationViewPage));
 		}
 	}
 }
