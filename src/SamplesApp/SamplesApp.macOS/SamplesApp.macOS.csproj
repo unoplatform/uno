@@ -65,6 +65,8 @@
 			<Version>1.27.0-dev.112</Version>
 			<NoWarn>NU1701</NoWarn>
 		</PackageReference>
+		<PackageReference Include="Microsoft.Extensions.Logging.Console" Version="1.1.1" />
+		<PackageReference Include="Microsoft.Extensions.Logging.Filter" Version="1.1.1" />
 	</ItemGroup>
 
 	<ItemGroup>
