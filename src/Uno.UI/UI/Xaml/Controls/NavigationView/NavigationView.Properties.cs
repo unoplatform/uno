@@ -144,14 +144,12 @@ namespace Windows.UI.Xaml.Controls
 			set => SetValue(PaneTitleProperty, value);
 		}
 
-		[Uno.NotImplemented]
 		public bool IsBackEnabled
 		{
 			get => (bool)GetValue(IsBackEnabledProperty);
 			set => SetValue(IsBackEnabledProperty, value);
 		}
 
-		[Uno.NotImplemented]
 		public NavigationViewBackButtonVisible IsBackButtonVisible
 		{
 			get => (NavigationViewBackButtonVisible)GetValue(IsBackButtonVisibleProperty);
@@ -331,13 +329,13 @@ namespace Windows.UI.Xaml.Controls
 		Windows.UI.Xaml.DependencyProperty.Register(
 			"IsBackButtonVisible", typeof(NavigationViewBackButtonVisible),
 			typeof(NavigationView),
-			new FrameworkPropertyMetadata(default(NavigationViewBackButtonVisible)));
+			new FrameworkPropertyMetadata(NavigationViewBackButtonVisible.Auto));
 
 		public static DependencyProperty IsBackEnabledProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
 			"IsBackEnabled", typeof(bool),
 			typeof(NavigationView),
-			new FrameworkPropertyMetadata(default(bool)));
+			new FrameworkPropertyMetadata(true));
 
 		public static DependencyProperty PaneTitleProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
