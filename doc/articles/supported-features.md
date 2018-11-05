@@ -136,6 +136,7 @@
 - Phased Binding (x:Phase)
 - XAML code-behind Events registration
 - WriteableBitmap
+- NavigationView
 
 ### Non-UI features
 
