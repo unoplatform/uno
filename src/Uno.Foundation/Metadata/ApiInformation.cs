@@ -79,9 +79,20 @@ namespace Windows.Foundation.Metadata
 		public static bool IsEnumNamedValuePresent(string enumTypeName, string valueName) 
 			=> GetValidType(enumTypeName)?.GetField(valueName) != null;
 
-		public static bool IsApiContractPresent(string contractName, ushort majorVersion) => false;
+		public static bool IsApiContractPresent(string contractName, ushort majorVersion)
+			=> IsApiContractPresent(contractName, majorVersion, 0);
 
-		public static bool IsApiContractPresent(string contractName, ushort majorVersion, ushort minorVersion) => false;
+		public static bool IsApiContractPresent(string contractName, ushort majorVersion, ushort minorVersion)
+		{
+			switch (contractName)
+			{
+				case "Windows.Foundation.UniversalApiContract":
+					return majorVersion <= 6;
+
+				default:
+					return false;
+			}
+		}
 
 		/// <summary>
 		/// Determines if runtime use of not implemented members raises an exception, or logs an error message.
