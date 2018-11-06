@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="15.0">
+﻿<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="15.0">
 	<PropertyGroup>
 		<TargetFrameworks>xamarinmac20;MonoAndroid80;xamarinios10;net46;netstandard2.0</TargetFrameworks>
 		<TargetFrameworksCI>MonoAndroid71;MonoAndroid80;xamarinios10;net46;netstandard2.0;xamarinmac20</TargetFrameworksCI>
@@ -24,7 +24,8 @@
 		<!-- Ensures the .xr.xml files are generated in a proper layout folder -->
 		<GenerateLibraryLayout>true</GenerateLibraryLayout>
 
-		<UnoSourceGeneratorUnsecureBinLogEnabled>true</UnoSourceGeneratorUnsecureBinLogEnabled>
+		<!-- Force the generation of upri files for Uno.UI self localization -->
+		<UnoForceProcessPRIResource>true</UnoForceProcessPRIResource>
 	</PropertyGroup>
 
 	<Import Project="$(MSBuildSDKExtrasTargets)" Condition="Exists('$(MSBuildSDKExtrasTargets)')" />
@@ -32,6 +33,7 @@
 
 	<ItemGroup>
 		<Compile Remove="Mixins\**\*.cs" />
+		
 		<Compile Include="Mixins\Android\BaseActivity.Callbacks.g.cs">
 			<DesignTime>True</DesignTime>
 			<AutoGen>True</AutoGen>
@@ -101,7 +103,6 @@
 			</ItemGroup>
 		</Otherwise>
 	</Choose>
-
 
 	<ItemGroup>
 		<None Include="Extensions\CGSizeExtensions.iOSmacOS.cs" />
@@ -295,9 +296,11 @@
 
 	<PropertyGroup>
 		<UnoUIGeneratorsBinPath>..\SourceGenerators\Uno.UI.SourceGenerators\bin\$(Configuration)</UnoUIGeneratorsBinPath>
+		<UnoUIMSBuildTasksPath>$(MSBuildThisFileDirectory)..\SourceGenerators\Uno.UI.Tasks\bin\$(Configuration)</UnoUIMSBuildTasksPath>
 	</PropertyGroup>
 
 	<Import Project="..\SourceGenerators\Uno.UI.SourceGenerators\Content\Uno.UI.SourceGenerators.props" />
+	<Import Project="..\SourceGenerators\Uno.UI.Tasks\Content\Uno.UI.Tasks.targets" Condition="'$(SkipUnoResourceGeneration)' == '' " />
 
 	<ItemGroup>
 		<Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
@@ -332,10 +335,15 @@
 		<Folder Include="UI\Xaml\Maps\Presenters\" />
 	</ItemGroup>
 
+	<ItemGroup>
+		<PRIResource Include="Resources\Strings\**\*.resw" />
+	</ItemGroup>
+
 	<Target Name="BuildManualDependencies" BeforeTargets="_UnoSourceGenerator" Condition="!Exists($(T4Bin))">
 		<Message Text="Building Generators" Importance="high" />
 		<!-- This is required because the non-reference dependencies are not properly handled -->
 		<MSBuild Properties="Configuration=$(Configuration);Platform=AnyCPU" Targets="Build" Projects="..\SourceGenerators\Uno.UI.SourceGenerators\Uno.UI.SourceGenerators.csproj" RebaseOutputs="false" />
+		<MSBuild Properties="Configuration=$(Configuration);Platform=AnyCPU" Targets="Build" Projects="..\SourceGenerators\Uno.UI.Tasks\Uno.UI.Tasks.csproj" RebaseOutputs="false" />
 		<MSBuild Properties="Configuration=$(Configuration);Platform=AnyCPU" Targets="Build" Projects="..\T4Generator\T4Generator.csproj" RebaseOutputs="false" />
 	</Target>
 

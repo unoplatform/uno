@@ -42,6 +42,11 @@ namespace Windows.UI.Xaml.Controls
 			_suggestionsList = GetTemplateChild("SuggestionsList") as ListView;
 			_queryButton = GetTemplateChild("QueryButton") as Button;
 
+			if(_queryButton != null)
+			{
+				_queryButton.Content = new SymbolIcon(Symbol.Find);
+			}
+
 			_textBox?.SetBinding(
 				TextBox.TextProperty,
 				new Binding()

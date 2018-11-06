@@ -351,6 +351,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
             writer.AppendLineInvariant($"global::Windows.UI.Xaml.GenericStyles.Initialize();");
 			writer.AppendLineInvariant($"global::Windows.UI.Xaml.ResourceDictionary.DefaultResolver = global::{_defaultNamespace}.GlobalStaticResources.FindResource;");
 			writer.AppendLineInvariant($"global::Windows.ApplicationModel.Resources.ResourceLoader.AddLookupAssembly(GetType().Assembly);");
+			writer.AppendLineInvariant($"global::Windows.ApplicationModel.Resources.ResourceLoader.AddLookupAssembly(typeof(Windows.UI.Xaml.GenericStyles).Assembly);");
 			writer.AppendLineInvariant($"global::Windows.ApplicationModel.Resources.ResourceLoader.DefaultLanguage = \"{_defaultLanguage}\";");
 			writer.AppendLineInvariant($"global::{_defaultNamespace}.GlobalStaticResources.Initialize();");
             writer.AppendLineInvariant($"global::Uno.UI.DataBinding.BindableMetadata.Provider = new global::{_defaultNamespace}.BindableMetadataProvider();");

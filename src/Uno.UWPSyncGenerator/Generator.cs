@@ -1346,10 +1346,10 @@ namespace Uno.UWPSyncGenerator
 
 			var properties = new Dictionary<string, string>
 							{
-								{ "VisualStudioVersion", "15.0" }
+								{ "VisualStudioVersion", "15.0" },
 								// { "Configuration", "Debug" },
 								//{ "BuildingInsideVisualStudio", "true" },
-								//{ "BuildingInsideUnoSourceGenerator", "true" },
+								{ "SkipUnoResourceGeneration", "true" }, // Required to avoid loading a non-existent task
 								//{ "DesignTimeBuild", "true" },
 								//{ "UseHostCompilerIfAvailable", "false" },
 								//{ "UseSharedCompilation", "false" },
