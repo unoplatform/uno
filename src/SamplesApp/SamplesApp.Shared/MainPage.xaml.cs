@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using SamplesApp.Samples.NavigationViewSample;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.UI.Xaml;
@@ -25,6 +26,11 @@ namespace SamplesApp
 		public MainPage()
 		{
 			this.InitializeComponent();
+		}
+
+		private void OnNavigationView(object sender, RoutedEventArgs e)
+		{
+			Frame.Navigate(typeof(NavigationViewPage));
 		}
 	}
 }

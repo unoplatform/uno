@@ -25,7 +25,6 @@ namespace Uno.UI.Tasks.ResourcesGenerator
 		[Required]
 		public ITaskItem[] Resources { get; set; }
 
-		[Required]
 		public string TargetPlatform { get; set; }
 
 		[Required]
@@ -85,7 +84,7 @@ namespace Uno.UI.Tasks.ResourcesGenerator
 						{
 							return GenerateiOSResources(language, sourceLastWriteTime, resources, comment);
 						}
-						else if (TargetPlatform == "wasm")
+						else if (TargetPlatform == "wasm" || string.IsNullOrWhiteSpace(TargetPlatform))
 						{
 							return GenerateUnoPRIResources(language, sourceLastWriteTime, resources, comment);
 						}

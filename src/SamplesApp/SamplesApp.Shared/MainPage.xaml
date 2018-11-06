@@ -6,12 +6,10 @@
 	  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	  mc:Ignorable="d">
 
-  <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
-	<StackPanel>
-	  <TextBlock Text="Hello, world !"
-				 Margin="20"
-				 FontSize="30"
-				 TextWrapping="Wrap" />
-	</StackPanel>
-  </Grid>
+	<Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+		<StackPanel>
+			<!-- Initiali sample structure to be replaced by the sample control -->
+			<Button Content="Navigation View" Click="OnNavigationView" />
+		</StackPanel>
+	</Grid>
 </Page>
