@@ -11,16 +11,19 @@ namespace Windows.UI.ViewManagement
 {
 	partial class ApplicationView
 	{
-		internal void SetCoreBounds(Rect visibleBounds)
+		internal void SetVisibleBounds(Rect newVisibleBounds)
 		{
-			VisibleBounds = visibleBounds;
-
-			if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+			if (newVisibleBounds != VisibleBounds)
 			{
-				this.Log().Debug($"Updated visible bounds {VisibleBounds}");
-			}
+				VisibleBounds = newVisibleBounds;
 
-			VisibleBoundsChanged?.Invoke(this, null);
+				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+				{
+					this.Log().Debug($"Updated visible bounds {VisibleBounds}");
+				}
+
+				VisibleBoundsChanged?.Invoke(this, null);
+			}
 		}
 
 		public bool TryEnterFullScreenMode()
