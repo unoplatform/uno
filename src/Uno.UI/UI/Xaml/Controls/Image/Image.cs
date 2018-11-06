@@ -69,6 +69,11 @@ namespace Windows.UI.Xaml.Controls
 		public event RoutedEventHandler ImageOpened;
 		public event ExceptionRoutedEventHandler ImageFailed;
 
+		/// <summary>
+		/// When set, the resulting image is tentatively converted to Monochrome.
+		/// </summary>
+		internal Color? MonochromeColor { get; set; }
+
 		protected virtual void OnImageFailed(ImageSource imageSource)
 		{
 			if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
