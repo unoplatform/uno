@@ -3106,7 +3106,9 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
         private void BuildLiteralProperties(IIndentedStringBuilder writer, XamlObjectDefinition objectDefinition, string closureName = null)
         {
-            BuildStyleProperty(writer, objectDefinition);
+			var closingPunctuation = string.IsNullOrWhiteSpace(closureName) ? "," : ";";
+
+			BuildStyleProperty(writer, objectDefinition, closingPunctuation);
 
             var extendedProperties = GetExtendedProperties(objectDefinition);
 
@@ -3117,17 +3119,16 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
                 foreach (var member in extendedProperties)
                 {
                     var fullValueSetter = string.IsNullOrWhiteSpace(closureName) ? member.Member.Name : "{0}.{1}".InvariantCultureFormat(closureName, member.Member.Name);
-                    var closingPunctuation = string.IsNullOrWhiteSpace(closureName) ? "," : ";";
 
-                    // Exclude attached properties, must be set in the extended apply section.
-                    // If there is no type attached, this can be a binding.
-                    if (IsType(objectDefinition.Type, member.Member.DeclaringType)
+					// Exclude attached properties, must be set in the extended apply section.
+					// If there is no type attached, this can be a binding.
+					if (IsType(objectDefinition.Type, member.Member.DeclaringType)
                         && !IsAttachedProperty(member)
                         && FindEventType(member.Member) == null
 						&& member.Member.Name != "_UnknownContent" // We are defining the elements of a collection explicitly declared in XAML
 					)
-                    {
-                        if (member.Objects.None())
+					{
+						if (member.Objects.None())
                         {
                             if (IsInitializableCollection(member.Member))
                             {
@@ -3136,8 +3137,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
                             else
                             {
                                 if (FindPropertyType(member.Member) != null)
-                                {
-                                    writer.AppendLineInvariant("{0} = {1}{2}", fullValueSetter, BuildLiteralValue(member, objectUid: objectUid), closingPunctuation);
+								{
+									writer.AppendLineInvariant("{0} = {1}{2}", fullValueSetter, BuildLiteralValue(member, objectUid: objectUid), closingPunctuation);
                                 }
                                 else
                                 {
@@ -3165,8 +3166,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
                             }
                         }
                         else
-                        {
-                            var nonBindingObjects = member
+						{
+							var nonBindingObjects = member
                                 .Objects
                                 .Where(m =>
                                     m.Type.Name != "Binding"
@@ -3187,18 +3188,18 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
                                     {
                                         foreach (var child in nonBindingObjects)
                                         {
-                                            BuildChild(writer, member, child);
-                                            writer.AppendLineInvariant(",");
-                                        }
+                                            BuildChild(writer, member, child);											
+											writer.AppendLineInvariant(",");
+										}
                                     }
                                 }
 								else
-                                {
-                                    writer.AppendFormatInvariant($"{fullValueSetter} = ");
+								{
+									writer.AppendFormatInvariant($"{fullValueSetter} = ");
                                     BuildChild(writer, member, nonBindingObjects.First());
                                 }
-
-                                writer.AppendLineInvariant(closingPunctuation);
+								
+								writer.AppendLineInvariant(closingPunctuation);
                             }
                         }
                     }
@@ -3239,7 +3240,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			return false;
 		}
 
-		private void BuildStyleProperty(IIndentedStringBuilder writer, XamlObjectDefinition objectDefinition)
+		private void BuildStyleProperty(IIndentedStringBuilder writer, XamlObjectDefinition objectDefinition, string closingPunctuation)
         {
             var styleMember = FindMember(objectDefinition, "Style");
 
@@ -3247,9 +3248,9 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
             {
                 // Explicitly search for StaticResource, as the style could be set using a binding.
                 if (styleMember.Objects.Any(o => o.Type.Name == "StaticResource"))
-                {
-                    BuildComplexPropertyValue(writer, styleMember, "");
-                    writer.AppendLineInvariant(0, ",");
+				{
+					BuildComplexPropertyValue(writer, styleMember, "");
+                    writer.AppendLineInvariant(0, closingPunctuation);
                 }
             }
         }
