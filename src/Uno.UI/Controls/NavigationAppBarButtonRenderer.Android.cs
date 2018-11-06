@@ -40,7 +40,11 @@ namespace Uno.UI.Controls
 			{
 				// Icon
 				var iconUri = (Element.Icon as BitmapIcon)?.UriSource;
-				Native.NavigationIcon = DrawableHelper.FromUri(iconUri);
+
+				if (iconUri != null)
+				{
+					Native.NavigationIcon = DrawableHelper.FromUri(iconUri);
+				}
 
 				// Foreground
 				var foreground = (Element.Foreground as SolidColorBrush);
