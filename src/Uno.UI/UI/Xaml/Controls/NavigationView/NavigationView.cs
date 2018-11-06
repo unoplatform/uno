@@ -23,6 +23,8 @@ namespace Windows.UI.Xaml.Controls
 		public NavigationView()
 		{
 			_menuItems = new ObservableVector<object>();
+			_menuItems.VectorChanged += (s, e) => SynchronizeItems();
+
 			SetValue(MenuItemsProperty, _menuItems);
 			SizeChanged += NavigationView_SizeChanged;
 			Loaded += (s, e) => RegisterEvents();
@@ -157,8 +159,7 @@ namespace Windows.UI.Xaml.Controls
 			{
 				if (MenuItemsSource == null)
 				{
-					_menuItemsHost.Items.Clear();
-					_menuItemsHost.Items.AddRange(_menuItems);
+					SynchronizeItems();
 				}
 			}
 
@@ -169,6 +170,15 @@ namespace Windows.UI.Xaml.Controls
 
 			OnIsSettingsVisibleChanged();
 			RegisterEvents();
+		}
+
+		private void SynchronizeItems()
+		{
+			if (_menuItemsHost != null)
+			{
+				_menuItemsHost.Items.Clear();
+				_menuItemsHost.Items.AddRange(_menuItems);
+			}
 		}
 
 		private void RegisterEvents()
@@ -232,11 +242,33 @@ namespace Windows.UI.Xaml.Controls
 		{
 			ItemInvoked?.Invoke(
 				this,
-				new NavigationViewItemInvokedEventArgs {
-					InvokedItem = e.ClickedItem,
-					IsSettingsInvoked = SettingsItem == e.ClickedItem
-				}
+				CreateInvokedItemParameter(e.ClickedItem)
 			);
+		}
+
+		private NavigationViewItemInvokedEventArgs CreateInvokedItemParameter(object clickedItem)
+		{
+			if (clickedItem is NavigationViewItem nvi)
+			{
+				if(SettingsItem == clickedItem)
+				{
+					return new NavigationViewItemInvokedEventArgs
+					{
+						InvokedItem = SettingsItem,
+						IsSettingsInvoked = true
+					};
+				}
+				else
+				{
+					return new NavigationViewItemInvokedEventArgs
+					{
+						InvokedItem = nvi.Content,
+						IsSettingsInvoked = false
+					};
+				}
+			}
+
+			throw new InvalidOperationException($"Item [{clickedItem}] is not a NavigationViewItem");
 		}
 
 		private void OnNavigationViewBackButtonClick(object sender, RoutedEventArgs e)
@@ -299,11 +331,7 @@ namespace Windows.UI.Xaml.Controls
 
 				ItemInvoked?.Invoke(
 					this,
-					new NavigationViewItemInvokedEventArgs
-					{
-						InvokedItem = SettingsItem,
-						IsSettingsInvoked = true
-					}
+					CreateInvokedItemParameter(item)
 				);
 			}
 		}
