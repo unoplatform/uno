@@ -20,6 +20,7 @@
  * 132004 [Android] Window bounds incorrect for screen with rounded corners
  * #312 [Wasm] Text display was chopped on Wasm.
  * 135839 `WebView` No longer raises NavigationFailed and NavigationCompleted events when navigation is cancelled on iOS.
+ * 136188 [Android] Page elements are aligned differently upon back navigation
 
 ## Release 1.41
 

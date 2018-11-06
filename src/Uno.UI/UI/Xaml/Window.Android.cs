@@ -93,11 +93,7 @@ namespace Windows.UI.Xaml
 				height: newBounds.Height - statusBarHeight - navigationBarHeight
 			);
 
-			var applicationView = ApplicationView.GetForCurrentView();
-			if (applicationView != null && applicationView.VisibleBounds != newVisibleBounds)
-			{
-				applicationView.SetCoreBounds(newVisibleBounds);
-			}
+			ApplicationView.GetForCurrentView()?.SetVisibleBounds(newVisibleBounds);
 
 			if (Bounds != newBounds)
 			{

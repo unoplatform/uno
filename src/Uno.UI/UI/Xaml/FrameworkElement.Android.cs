@@ -135,6 +135,10 @@ namespace Windows.UI.Xaml
 				);
 			}
 
+			var previousSize = _actualSize;
+			_actualSize = newSize;
+			RenderSize = _actualSize;
+
 			if (
 				// If the layout has changed, but the final size has not, this is just a translation.
 				// So unless there was a layout requested, we can skip arranging the children.
@@ -153,10 +157,6 @@ namespace Windows.UI.Xaml
 				OnLayoutUpdated();
 				OnAfterArrange();
 			}
-
-			var previousSize = _actualSize;
-			_actualSize = newSize;
-			RenderSize = _actualSize;
 
 			if (previousSize != newSize)
 			{
