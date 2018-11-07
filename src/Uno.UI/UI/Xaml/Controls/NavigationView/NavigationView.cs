@@ -27,8 +27,16 @@ namespace Windows.UI.Xaml.Controls
 
 			SetValue(MenuItemsProperty, _menuItems);
 			SizeChanged += NavigationView_SizeChanged;
-			Loaded += (s, e) => RegisterEvents();
+			Loaded += (s, e) => OnNavigationViewLoaded();
 			Unloaded += (s, e) => UnregisterEvents();
+		}
+
+		private void OnNavigationViewLoaded()
+		{
+			RegisterEvents();
+
+			// Update posision uses RenderSize, which is computed late, reevaluate the positions.
+			UpdatePositions();
 		}
 
 		private void NavigationView_SizeChanged(object sender, SizeChangedEventArgs args)
@@ -170,6 +178,7 @@ namespace Windows.UI.Xaml.Controls
 
 			OnIsSettingsVisibleChanged();
 			RegisterEvents();
+			UpdatePositions();
 		}
 
 		private void SynchronizeItems()
