@@ -2532,7 +2532,14 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					return BuildColor(memberValue);
 
 				case "System.Uri":
-					return "new System.Uri(\"" + memberValue + "\")";
+					if (memberValue.StartsWith("/"))
+					{
+						return "new System.Uri(\"ms-appx://" + memberValue + "\")";
+					}
+					else
+					{
+						return "new System.Uri(\"" + memberValue + "\")";
+					}
 
 				case "System.Type":
 					return $"typeof({GetGlobalizedTypeName(GetType(memberValue).ToDisplayString())})";
