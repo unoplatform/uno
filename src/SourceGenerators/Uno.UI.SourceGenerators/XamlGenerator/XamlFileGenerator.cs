@@ -1296,9 +1296,14 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
                             {
                                 var firstChild = implicitContentChild.Objects.First();
 
-                                writer.AppendFormatInvariant(returnsContent ? "{0} content = " : "{1}Content = ",
+								var elementType = FindType(topLevelControl.Type);
+								var contentProperty = FindContentProperty(elementType);
+
+								writer.AppendFormatInvariant(returnsContent ? "{0} content = " : "{1}{2} = ",
                                     GetType(firstChild.Type).ToDisplayString(),
-                                    setterPrefix);
+                                    setterPrefix,
+									contentProperty != null ? contentProperty.Name : "Content"
+								);
 
                                 BuildChild(writer, implicitContentChild, firstChild);
                             }
