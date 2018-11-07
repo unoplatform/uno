@@ -21,14 +21,17 @@ namespace Windows.UI.Xaml
 
 		private void OnLoading(object sender, RoutedEventArgs args)
 		{
+			OnLoadingPartial();
+
+			ApplyCompiledBindings();
+
+			// Explicit propagation of the loading even must be performed
+			// after the compiled bindings are applied, as there may be altered
+			// properties that affect the visual tree.
 			foreach (var child in _children)
 			{
 				(child as FrameworkElement)?.InternalDispatchEvent("loading", args);
 			}
-
-			OnLoadingPartial();
-
-			ApplyCompiledBindings();
 		}
 
 		private void OnLoaded(object sender, RoutedEventArgs args)
