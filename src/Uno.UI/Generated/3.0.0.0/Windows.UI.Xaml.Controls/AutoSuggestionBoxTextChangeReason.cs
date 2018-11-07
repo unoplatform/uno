@@ -2,21 +2,15 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml.Controls
 {
-	#if false
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+	#if false || false || false || false || false
+	#if false || false || false || false || false
 	[global::Uno.NotImplemented]
 	#endif
 	public   enum AutoSuggestionBoxTextChangeReason 
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
-		UserInput,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
-		ProgrammaticChange,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
-		SuggestionChosen,
-		#endif
+		// Skipping already declared field Windows.UI.Xaml.Controls.AutoSuggestionBoxTextChangeReason.UserInput
+		// Skipping already declared field Windows.UI.Xaml.Controls.AutoSuggestionBoxTextChangeReason.ProgrammaticChange
+		// Skipping already declared field Windows.UI.Xaml.Controls.AutoSuggestionBoxTextChangeReason.SuggestionChosen
 	}
 	#endif
 }

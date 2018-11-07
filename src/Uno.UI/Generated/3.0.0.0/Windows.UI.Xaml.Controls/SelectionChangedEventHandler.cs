@@ -2,7 +2,5 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml.Controls
 {
-	#if false || false || false || false
-	public delegate void SelectionChangedEventHandler(object @sender, global::Windows.UI.Xaml.Controls.SelectionChangedEventArgs @e);
-	#endif
+	// Skipping already declared delegate Windows.UI.Xaml.Controls.SelectionChangedEventHandler
 }

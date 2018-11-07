@@ -10,6 +10,8 @@ using _View = Android.Views.View;
 #elif XAMARIN_IOS_UNIFIED
 using _View = UIKit.UIView;
 using UIKit;
+#elif __MACOS__
+using _View = AppKit.NSView;
 #else
 using _View = Windows.UI.Xaml.UIElement;
 #endif

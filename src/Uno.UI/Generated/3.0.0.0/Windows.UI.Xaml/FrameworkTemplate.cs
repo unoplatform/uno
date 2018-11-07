@@ -2,18 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml
 {
-	#if false || false || false || false
+	#if false || false || false || false || false
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class FrameworkTemplate : global::Windows.UI.Xaml.DependencyObject
 	{
-		#if false || false || false || false
-		[global::Uno.NotImplemented]
-		protected FrameworkTemplate() : base()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.FrameworkTemplate", "FrameworkTemplate.FrameworkTemplate()");
-		}
-		#endif
+		// Skipping already declared method Windows.UI.Xaml.FrameworkTemplate.FrameworkTemplate()
 		// Forced skipping of method Windows.UI.Xaml.FrameworkTemplate.FrameworkTemplate()
 	}
 }

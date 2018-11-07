@@ -93,7 +93,7 @@ namespace Uno.UI.Controls
 		/// <remarks>
 		/// The trick for this method is to move the child from one position to the other
 		/// without calling RemoveView and AddView. In this context, the only way to do this is
-		/// to call BringSubviewToFront, which is the only available method on ViewGroup that manipulates 
+		/// to call BringSubviewToFront, which is the only available method on UIView that manipulates 
 		/// the index of a view, even if it does not allow for specifying an index.
 		/// </remarks>
 		internal void MoveViewTo(int oldIndex, int newIndex)

@@ -8,12 +8,8 @@
 
 	<Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 		<StackPanel>
-			<TextBlock Text="Hello, WPF !"
-					   Margin="20"
-					   FontSize="30"
-					   TextWrapping="Wrap" />
-			<Slider x:Name="test" />
-			<TextBlock Text="{Binding Value, ElementName=test}" />
+			<!-- Initiali sample structure to be replaced by the sample control -->
+			<Button Content="Navigation View" Click="OnNavigationView" />
 		</StackPanel>
 	</Grid>
 </Page>

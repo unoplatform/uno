@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml.Controls
 {
-	#if false || false || false || false
+	#if false || false || false || false || false
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class RowDefinition : global::Windows.UI.Xaml.DependencyObject
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  double MinHeight
 		{
@@ -21,7 +21,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  double MaxHeight
 		{
@@ -35,21 +35,8 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 		#endif
-		#if false || false || false || false
-		[global::Uno.NotImplemented]
-		public  global::Windows.UI.Xaml.GridLength Height
-		{
-			get
-			{
-				return (global::Windows.UI.Xaml.GridLength)this.GetValue(HeightProperty);
-			}
-			set
-			{
-				this.SetValue(HeightProperty, value);
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		// Skipping already declared property Height
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  double ActualHeight
 		{
@@ -59,15 +46,8 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 		#endif
-		#if false || false || false || false
-		[global::Uno.NotImplemented]
-		public static global::Windows.UI.Xaml.DependencyProperty HeightProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			"Height", typeof(global::Windows.UI.Xaml.GridLength), 
-			typeof(global::Windows.UI.Xaml.Controls.RowDefinition), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.GridLength)));
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		// Skipping already declared property HeightProperty
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty MaxHeightProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
@@ -75,7 +55,7 @@ namespace Windows.UI.Xaml.Controls
 			typeof(global::Windows.UI.Xaml.Controls.RowDefinition), 
 			new FrameworkPropertyMetadata(default(double)));
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty MinHeightProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
@@ -83,13 +63,7 @@ namespace Windows.UI.Xaml.Controls
 			typeof(global::Windows.UI.Xaml.Controls.RowDefinition), 
 			new FrameworkPropertyMetadata(default(double)));
 		#endif
-		#if false || false || false || false
-		[global::Uno.NotImplemented]
-		public RowDefinition() : base()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.RowDefinition", "RowDefinition.RowDefinition()");
-		}
-		#endif
+		// Skipping already declared method Windows.UI.Xaml.Controls.RowDefinition.RowDefinition()
 		// Forced skipping of method Windows.UI.Xaml.Controls.RowDefinition.RowDefinition()
 		// Forced skipping of method Windows.UI.Xaml.Controls.RowDefinition.Height.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.RowDefinition.Height.set

@@ -2,7 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml.Controls.Primitives
 {
+	#if false || false || false || false || false
+	[global::Uno.NotImplemented]
+	#endif
 	public  partial class PivotHeaderItem : global::Windows.UI.Xaml.Controls.ContentControl
 	{
+		// Skipping already declared method Windows.UI.Xaml.Controls.Primitives.PivotHeaderItem.PivotHeaderItem()
+		// Forced skipping of method Windows.UI.Xaml.Controls.Primitives.PivotHeaderItem.PivotHeaderItem()
 	}
 }

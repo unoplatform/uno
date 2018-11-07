@@ -23,6 +23,9 @@ using View = MonoTouch.UIKit.UIView;
 using Color = MonoTouch.UIKit.UIColor;
 using Font = MonoTouch.UIKit.UIFont;
 using MonoTouch.UIKit;
+#elif __MACOS__
+using View = Windows.UI.Xaml.UIElement;
+using Color = Windows.UI.Color;
 #else
 using Color = System.Drawing.Color;
 using View = Windows.UI.Xaml.UIElement;

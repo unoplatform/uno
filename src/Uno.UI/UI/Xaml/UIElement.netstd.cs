@@ -321,6 +321,24 @@ namespace Windows.UI.Xaml
 
 			InvalidateMeasure();
 		}
+		partial void EnsureClip(Rect rect)
+		{
+			if (rect.IsEmpty)
+			{
+				SetStyle("clip", "");
+				return;
+			}
+
+			SetStyle(
+				"clip",
+				"rect("
+				+ Math.Floor(rect.Y) + "px,"
+				+ Math.Ceiling(rect.X + rect.Width) + "px,"
+				+ Math.Ceiling(rect.Y + rect.Height) + "px,"
+				+ Math.Floor(rect.X) + "px"
+				+ ")"
+			);
+		}
 
 		private class EventRegistration
 		{

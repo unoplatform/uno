@@ -2,32 +2,14 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Popups
 {
-	#if false || false || false || false
+	#if false || false || false || false || false
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial interface IUICommand 
 	{
-		#if false || false || false || false
-		object Id
-		{
-			get;
-			set;
-		}
-		#endif
-		#if false || false || false || false
-		global::Windows.UI.Popups.UICommandInvokedHandler Invoked
-		{
-			get;
-			set;
-		}
-		#endif
-		#if false || false || false || false
-		string Label
-		{
-			get;
-			set;
-		}
-		#endif
+		// Skipping already declared property Id
+		// Skipping already declared property Invoked
+		// Skipping already declared property Label
 		// Forced skipping of method Windows.UI.Popups.IUICommand.Label.get
 		// Forced skipping of method Windows.UI.Popups.IUICommand.Label.set
 		// Forced skipping of method Windows.UI.Popups.IUICommand.Invoked.get

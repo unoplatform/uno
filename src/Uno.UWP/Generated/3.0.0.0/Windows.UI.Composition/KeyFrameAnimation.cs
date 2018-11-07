@@ -2,106 +2,19 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Composition
 {
-	#if false || false || false || false
+	#if false || false || false || false || false
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class KeyFrameAnimation : global::Windows.UI.Composition.CompositionAnimation
 	{
-		#if false || false || false || false
-		[global::Uno.NotImplemented]
-		public  global::Windows.UI.Composition.AnimationStopBehavior StopBehavior
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member AnimationStopBehavior KeyFrameAnimation.StopBehavior is not implemented in Uno.");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.KeyFrameAnimation", "AnimationStopBehavior KeyFrameAnimation.StopBehavior");
-			}
-		}
-		#endif
-		#if false || false || false || false
-		[global::Uno.NotImplemented]
-		public  int IterationCount
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member int KeyFrameAnimation.IterationCount is not implemented in Uno.");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.KeyFrameAnimation", "int KeyFrameAnimation.IterationCount");
-			}
-		}
-		#endif
-		#if false || false || false || false
-		[global::Uno.NotImplemented]
-		public  global::Windows.UI.Composition.AnimationIterationBehavior IterationBehavior
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member AnimationIterationBehavior KeyFrameAnimation.IterationBehavior is not implemented in Uno.");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.KeyFrameAnimation", "AnimationIterationBehavior KeyFrameAnimation.IterationBehavior");
-			}
-		}
-		#endif
-		#if false || false || false || false
-		[global::Uno.NotImplemented]
-		public  global::System.TimeSpan Duration
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member TimeSpan KeyFrameAnimation.Duration is not implemented in Uno.");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.KeyFrameAnimation", "TimeSpan KeyFrameAnimation.Duration");
-			}
-		}
-		#endif
-		#if false || false || false || false
-		[global::Uno.NotImplemented]
-		public  global::System.TimeSpan DelayTime
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member TimeSpan KeyFrameAnimation.DelayTime is not implemented in Uno.");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.KeyFrameAnimation", "TimeSpan KeyFrameAnimation.DelayTime");
-			}
-		}
-		#endif
-		#if false || false || false || false
-		[global::Uno.NotImplemented]
-		public  int KeyFrameCount
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member int KeyFrameAnimation.KeyFrameCount is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if false || false || false || false
-		[global::Uno.NotImplemented]
-		public  global::Windows.UI.Composition.AnimationDirection Direction
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member AnimationDirection KeyFrameAnimation.Direction is not implemented in Uno.");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.KeyFrameAnimation", "AnimationDirection KeyFrameAnimation.Direction");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		// Skipping already declared property StopBehavior
+		// Skipping already declared property IterationCount
+		// Skipping already declared property IterationBehavior
+		// Skipping already declared property Duration
+		// Skipping already declared property DelayTime
+		// Skipping already declared property KeyFrameCount
+		// Skipping already declared property Direction
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.UI.Composition.AnimationDelayBehavior DelayBehavior
 		{
@@ -126,14 +39,14 @@ namespace Windows.UI.Composition
 		// Forced skipping of method Windows.UI.Composition.KeyFrameAnimation.KeyFrameCount.get
 		// Forced skipping of method Windows.UI.Composition.KeyFrameAnimation.StopBehavior.get
 		// Forced skipping of method Windows.UI.Composition.KeyFrameAnimation.StopBehavior.set
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  void InsertExpressionKeyFrame( float normalizedProgressKey,  string value)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.KeyFrameAnimation", "void KeyFrameAnimation.InsertExpressionKeyFrame(float normalizedProgressKey, string value)");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  void InsertExpressionKeyFrame( float normalizedProgressKey,  string value,  global::Windows.UI.Composition.CompositionEasingFunction easingFunction)
 		{

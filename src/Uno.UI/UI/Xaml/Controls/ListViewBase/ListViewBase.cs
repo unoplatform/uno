@@ -1,4 +1,4 @@
-﻿#if !NET46 && !NETSTANDARD2_0
+﻿#if !NET46 && !NETSTANDARD2_0 && !__MACOS__
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -346,7 +346,7 @@ namespace Windows.UI.Xaml.Controls
 				ApplyMultiSelectState(item);
 			}
 
-			foreach (var item in NativePanel?.CachedItemViews.Safe())
+			foreach (var item in (NativePanel?.CachedItemViews).Safe())
 			{
 				ApplyMultiSelectState(item);
 			}

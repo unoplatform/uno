@@ -2,24 +2,16 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml.Navigation
 {
-	#if false || false || false || false
-	#if false || false || false || false
+	#if false || false || false || false || false
+	#if false || false || false || false || false
 	[global::Uno.NotImplemented]
 	#endif
 	public   enum NavigationMode 
 	{
-		#if false || false || false || false
-		New,
-		#endif
-		#if false || false || false || false
-		Back,
-		#endif
-		#if false || false || false || false
-		Forward,
-		#endif
-		#if false || false || false || false
-		Refresh,
-		#endif
+		// Skipping already declared field Windows.UI.Xaml.Navigation.NavigationMode.New
+		// Skipping already declared field Windows.UI.Xaml.Navigation.NavigationMode.Back
+		// Skipping already declared field Windows.UI.Xaml.Navigation.NavigationMode.Forward
+		// Skipping already declared field Windows.UI.Xaml.Navigation.NavigationMode.Refresh
 	}
 	#endif
 }

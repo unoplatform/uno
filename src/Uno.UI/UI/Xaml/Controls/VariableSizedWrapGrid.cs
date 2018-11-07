@@ -4,12 +4,7 @@ using System;
 
 namespace Windows.UI.Xaml.Controls
 {
-	#if false
 	[global::Uno.NotImplemented]
-	#endif
-	#if false
-	[global::Uno.NotImplemented]
-	#endif
 	public  partial class VariableSizedWrapGrid : global::Windows.UI.Xaml.Controls.Panel
 	{
 		[Uno.NotImplemented]

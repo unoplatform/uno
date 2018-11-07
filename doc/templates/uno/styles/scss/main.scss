@@ -18,6 +18,24 @@ a {
     }
 }
 
+h1 {
+    font-size: 36px;
+    font-weight: 800;
+    text-transform: uppercase;
+}
+
+h2 {
+    font-size: 30px;
+    font-weight: 800;
+    text-transform: uppercase;
+}
+
+h3 {
+    font-size: 24px;
+    font-weight: 800;
+    text-transform: uppercase;
+}
+
 .body-content .article {
     margin-top: 120px;
     margin-right: 0;
@@ -223,15 +241,18 @@ a {
 
     .button {
         display: inline-block;
-        padding: 7px 17px;
-        font-size: 20px;
-        font-weight: bold;
-        box-shadow: 0 2px 4px 0 rgba(31, 31, 31, 0.25);
-        border-radius: 20px;
-        transition: color .2s ease-in-out,background-color .2s ease-in-out;
 
+        a {
+            display: inline-block;
+            padding: 7px 17px;
+            font-size: 20px;
+            font-weight: bold;
+            box-shadow: 0 2px 4px 0 rgba(31, 31, 31, 0.25);
+            border-radius: 20px;
+            transition: color .2s ease-in-out,background-color .2s ease-in-out;
+        }
 
-        &.white {
+        &.white a {
             background: #fff;
             color: $dgray;
 
@@ -241,7 +262,7 @@ a {
             }
         }
 
-        &.turquoise {
+        &.turquoise a {
             background: $turquoise;
             color: #fff;
 
@@ -300,7 +321,7 @@ a {
             font-weight: normal;
         }
 
-        .button {
+        .button a {
             margin-top: 20px;
         }
     }

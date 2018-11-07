@@ -69,7 +69,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			base.OnLayoutCore(changed, left, top, right, bottom);
 
-			UpdateBorder();
+			UpdateBorder(changed);
 		}
 
 		protected virtual void OnChildrenChanged()

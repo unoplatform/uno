@@ -38,5 +38,9 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
+  <key>UIAppFonts</key>
+  <array>
+	<string>Fonts/winjs-symbols.ttf</string>
+  </array>
 </dict>
 </plist>

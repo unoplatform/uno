@@ -2,7 +2,5 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml.Navigation
 {
-	#if false || false || false || false
-	public delegate void NavigationFailedEventHandler(object @sender, global::Windows.UI.Xaml.Navigation.NavigationFailedEventArgs @e);
-	#endif
+	// Skipping already declared delegate Windows.UI.Xaml.Navigation.NavigationFailedEventHandler
 }

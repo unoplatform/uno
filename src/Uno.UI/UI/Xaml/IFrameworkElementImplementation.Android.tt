@@ -922,7 +922,13 @@ namespace <#= mixin.NamespaceName #>
 		}
 #endif
 
-		protected virtual AutomationPeer OnCreateAutomationPeer()
+		protected
+#if !<#= mixin.IsFrameworkElement #>
+		virtual
+#else
+		override
+#endif
+		AutomationPeer OnCreateAutomationPeer()
 		{
 			if (OnCreateAutomationPeerOverride() is AutomationPeer automationPeer)
 			{

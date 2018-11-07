@@ -2,19 +2,15 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Core
 {
-	#if false || false || false || false
-	#if false || false || false || false
+	#if false || false || false || false || false
+	#if false || false || false || false || false
 	[global::Uno.NotImplemented]
 	#endif
 	public   enum AppViewBackButtonVisibility 
 	{
-		#if false || false || false || false
-		Visible,
-		#endif
-		#if false || false || false || false
-		Collapsed,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		// Skipping already declared field Windows.UI.Core.AppViewBackButtonVisibility.Visible
+		// Skipping already declared field Windows.UI.Core.AppViewBackButtonVisibility.Collapsed
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		Disabled,
 		#endif
 	}

@@ -3,8 +3,13 @@
 ## Next version
 
 ### Features
+* Add base infrastructure platform for macOS
 * 136259 Add a behavior so that tap makes controls fade out
-* 135985 [Android], [iOS] ListViewBase: Support [MultiSelectStates](https://msdn.microsoft.com/en-us/library/windows/apps/mt299136.aspx?f=255&MSPPError=-2147217396) on ListViewItem. This allows the item container to visually adapt when multiple selection is enabled or disabled.
+* 135985 [Android], [iOS] ListViewBase Support [MultiSelectStates](https://msdn.microsoft.com/en-us/library/windows/apps/mt299136.aspx?f=255&MSPPError=-2147217396) on ListViewItem. This allows the item container to visually adapt when multiple selection is enabled or disabled.
+* #325 Add support for `NavigationView` control
+* Add support for `SymbolIcon` control for WebAssembly
+* Add support for `UIElement.Clip` for WebAssembly
+* Add support for inner-Uno.UI strings localization
 
 ### Breaking changes
 * 132002 [Android] The collapsible button bar is now taken into account by visible bounds calculation. Apps which use VisibleBoundsPadding or have command bars will therefore see an adjustment to the height of their windows on Android.
@@ -18,6 +23,9 @@
  * 136210 [Android] Path is cut off by a pixel
  * 132004 [Android] Window bounds incorrect for screen with rounded corners
  * #312 [Wasm] Text display was chopped on Wasm.
+ * 135839 `WebView` No longer raises NavigationFailed and NavigationCompleted events when navigation is cancelled on iOS.
+ * 136188 [Android] Page elements are aligned differently upon back navigation
+ * 136114 [iOS] Image inside Frame doesn't respond to orientation changes
 
 ## Release 1.41
 
@@ -44,9 +52,4 @@
  * 135646 [Android] Binding MediaPlayerElement.Source causes video to go blank
  * 136093, 136172 [iOS] ComboBox does not display its Popup
  * 134819, 134828 [iOS] Ensures the back gesture is enabled and disabled properly when the CommandBar is visible, collapsed, visible with a navigation command and collapsed with a navigation command. 
-
-
-
-
-
-
+ * 137081 Xaml generator doesn't support setting a style on the root control

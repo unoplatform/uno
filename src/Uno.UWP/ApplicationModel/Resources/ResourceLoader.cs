@@ -45,21 +45,44 @@ namespace Windows.ApplicationModel.Resources
 			{
 				return value;
 			}
-			else if (FindForCulture(CultureInfo.CurrentUICulture.Parent.IetfLanguageTag, resource, out var parentValue))
+			else if (FindForCulture(GetParentUICulture(), resource, out var parentValue))
 			{
 				return parentValue;
 			}
 
+#if !__WASM__
 			if (GetStringInternal == null)
 			{
 				throw new InvalidOperationException($"ResourceLoader.GetStringInternal hasn't been set. Make sure ResourceHelper is initialized properly.");
 			}
 
 			return GetStringInternal.Invoke(resource);
+#else
+			return "[" + resource + "]";
+#endif
+		}
+
+		private static string GetParentUICulture()
+		{
+#if __WASM__
+			var index = DefaultLanguage.IndexOf('-');
+
+			if(index != -1)
+			{
+				return DefaultLanguage.Substring(0, index);
+			}
+
+			return DefaultLanguage;
+#else
+			return CultureInfo.CurrentUICulture.Parent.IetfLanguageTag;
+#endif
 		}
 
 		private bool FindForCulture(string culture, string resource, out string resourceValue)
 		{
+			Console.WriteLine($"FindForCulture {culture}, {resource}");
+
+
 			if (_resources.TryGetValue(culture, out var values))
 			{
 				if (values.TryGetValue(resource, out var value))
@@ -104,6 +127,9 @@ namespace Windows.ApplicationModel.Resources
 			}
 		}
 
+		/// <summary>
+		/// Provides the default culture if CurrentUICulture cannot provide it.
+		/// </summary>
 		public static string DefaultLanguage { get; set; }
 
 		internal static void ClearResources()
@@ -139,6 +165,7 @@ namespace Windows.ApplicationModel.Resources
 					var key = reader.ReadString();
 					var value = reader.ReadString();
 
+					Console.WriteLine($"[{name}, {culture}] Adding resource {key}={value}");
 					resources[key] = value;
 				}
 			}

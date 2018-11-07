@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using Microsoft.Extensions.Logging;
+using Uno.Extensions;
 using Windows.ApplicationModel;
 using Windows.ApplicationModel.Activation;
 using Windows.Foundation;
@@ -28,6 +30,10 @@ namespace SamplesApp
 		/// </summary>
 		public App()
 		{
+#if DEBUG
+			ConfigureFilters(LogExtensionPoint.AmbientLoggerFactory);
+#endif
+
 			this.InitializeComponent();
 			this.Suspending += OnSuspending;
 		}
@@ -86,7 +92,7 @@ namespace SamplesApp
 		/// <param name="e">Details about the navigation failure</param>
 		void OnNavigationFailed(object sender, NavigationFailedEventArgs e)
 		{
-			throw new Exception("Failed to load Page " + e.SourcePageType.FullName);
+			throw new Exception($"Failed to load Page {e.SourcePageType}: {e.Exception}");
 		}
 
 		/// <summary>
@@ -102,5 +108,38 @@ namespace SamplesApp
 			//TODO: Save application state and stop any background activity
 			deferral.Complete();
 		}
+
+		static void ConfigureFilters(ILoggerFactory factory)
+		{
+			factory
+				.WithFilter(new FilterLoggerSettings
+					{
+						{ "Uno", LogLevel.Warning },
+						{ "Windows", LogLevel.Warning },
+						
+						// Generic Xaml events
+						//{ "Windows.UI.Xaml", LogLevel.Debug },
+						// { "Windows.UI.Xaml.Shapes", LogLevel.Debug },
+						//{ "Windows.UI.Xaml.VisualStateGroup", LogLevel.Debug },
+						//{ "Windows.UI.Xaml.StateTriggerBase", LogLevel.Debug },
+						// { "Windows.UI.Xaml.UIElement", LogLevel.Debug },
+						// { "Windows.UI.Xaml.Setter", LogLevel.Debug },
+						   
+						// Layouter specific messages
+						// { "Windows.UI.Xaml.Controls", LogLevel.Debug },
+						//{ "Windows.UI.Xaml.Controls.Layouter", LogLevel.Debug },
+						//{ "Windows.UI.Xaml.Controls.Panel", LogLevel.Debug },
+						   
+						// Binding related messages
+						// { "Windows.UI.Xaml.Data", LogLevel.Debug },
+						// { "Windows.UI.Xaml.Data", LogLevel.Debug },
+						   
+						//  Binder memory references tracking
+						// { "ReferenceHolder", LogLevel.Debug },
+					}
+				)
+				.AddConsole(LogLevel.Debug);
+		}
+
 	}
 }

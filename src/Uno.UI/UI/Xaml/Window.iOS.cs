@@ -128,11 +128,7 @@ namespace Windows.UI.Xaml
 		{
 			var newBounds = new Rect(0, 0, size.Width, size.Height);
 
-			var applicationView = ApplicationView.GetForCurrentView();
-			if (applicationView != null)
-			{
-				applicationView.SetCoreBounds(_window, newBounds);
-			}
+			ApplicationView.GetForCurrentView()?.SetVisibleBounds(_window, newBounds);
 
 			if (Bounds != newBounds)
 			{

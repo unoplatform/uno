@@ -2,27 +2,17 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml.Controls.Primitives
 {
-	#if false || false || false || false
-	#if false || false || false || false
+	#if false || false || false || false || false
+	#if false || false || false || false || false
 	[global::Uno.NotImplemented]
 	#endif
 	public   enum TickPlacement 
 	{
-		#if false || false || false || false
-		None,
-		#endif
-		#if false || false || false || false
-		TopLeft,
-		#endif
-		#if false || false || false || false
-		BottomRight,
-		#endif
-		#if false || false || false || false
-		Outside,
-		#endif
-		#if false || false || false || false
-		Inline,
-		#endif
+		// Skipping already declared field Windows.UI.Xaml.Controls.Primitives.TickPlacement.None
+		// Skipping already declared field Windows.UI.Xaml.Controls.Primitives.TickPlacement.TopLeft
+		// Skipping already declared field Windows.UI.Xaml.Controls.Primitives.TickPlacement.BottomRight
+		// Skipping already declared field Windows.UI.Xaml.Controls.Primitives.TickPlacement.Outside
+		// Skipping already declared field Windows.UI.Xaml.Controls.Primitives.TickPlacement.Inline
 	}
 	#endif
 }
