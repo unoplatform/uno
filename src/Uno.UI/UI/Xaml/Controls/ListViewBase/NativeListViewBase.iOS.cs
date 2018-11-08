@@ -90,10 +90,6 @@ namespace Windows.UI.Xaml.Controls
 
 		public Style ItemContainerStyle => XamlParent?.ItemContainerStyle;
 
-		public StyleSelector ItemContainerStyleSelector => XamlParent?.ItemContainerStyleSelector;
-
-		public virtual DataTemplate ItemTemplate => XamlParent?.ItemTemplate;
-
 		public DataTemplate HeaderTemplate
 		{
 			get { return XamlParent?.HeaderTemplate; }
@@ -726,11 +722,6 @@ namespace Windows.UI.Xaml.Controls
 				_isReloadDataDispatched = false;
 				SetNeedsReloadData();
 			}
-		}
-
-		internal DataTemplate ResolveItemTemplate(object item)
-		{
-			return DataTemplateHelper.ResolveTemplate(ItemTemplate, ItemTemplateSelector, item);
 		}
 
 		public Thickness Padding
