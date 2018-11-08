@@ -994,15 +994,6 @@ namespace Windows.UI.Xaml.Controls
 			ClearCaches();
 		}
 
-		public Orientation Orientation
-		{
-			get { return (Orientation)GetValue(OrientationProperty); }
-			set { SetValue(OrientationProperty, value); }
-		}
-
-		public static readonly DependencyProperty OrientationProperty =
-			DependencyProperty.Register("Orientation", typeof(Orientation), typeof(VirtualizingPanelLayout), new PropertyMetadata(Orientation.Vertical, (o, e) => ((VirtualizingPanelLayout)o).OnOrientationChanged((Orientation)e.NewValue)));
-
 		private void OnOrientationChanged(Orientation newValue)
 		{
 			InvalidateLayout();

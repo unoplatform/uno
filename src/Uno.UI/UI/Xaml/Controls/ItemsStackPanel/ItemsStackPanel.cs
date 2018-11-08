@@ -1,7 +1,8 @@
-﻿#if !NET46 && !NETSTANDARD2_0 && !__MACOS__
+﻿#if !NET46 && !__MACOS__
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Uno;
 using Uno.UI;
 
 namespace Windows.UI.Xaml.Controls
@@ -10,7 +11,13 @@ namespace Windows.UI.Xaml.Controls
 	{
 		VirtualizingPanelLayout _layout;
 
+#if NETSTANDARD2_0
+		[NotImplemented]
+#endif
 		public int FirstVisibleIndex => _layout?.FirstVisibleIndex ?? -1;
+#if NETSTANDARD2_0
+		[NotImplemented]
+#endif
 		public int LastVisibleIndex => _layout?.LastVisibleIndex ?? -1;
 
 #if XAMARIN_ANDROID

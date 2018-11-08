@@ -43,7 +43,7 @@ namespace Windows.UI.Xaml
 			return element;
 		}
 
-#if XAMARIN
+#if !NET46
 		public static T Binding<T>(this T element, string property, string propertyPath, object source, BindingMode mode) where T : DependencyObject
 		{
 			return element.Binding(property,
@@ -209,7 +209,7 @@ namespace Windows.UI.Xaml
 			return element.Margin(new Thickness(leftRight, topBottom, leftRight, topBottom));
 		}
 
-#if XAMARIN
+#if !NET46
 		/// <summary>
 		/// Bind property on <param name="element"/> to a property on <param name="source"/> of the same name.
 		/// </summary>
