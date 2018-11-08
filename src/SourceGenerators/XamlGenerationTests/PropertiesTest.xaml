@@ -57,7 +57,9 @@
 		</TextBlock>
 
 		<RichTextBlock Style="{StaticResource XamlCodeRichTextBlockStyle}">
-			<Run x:Name="rtbRun">Vertical</Run>
+			<Paragraph>
+				<Run x:Name="rtbRun">Vertical</Run>
+			</Paragraph>
 		</RichTextBlock>
 
 
