@@ -283,16 +283,6 @@ namespace Windows.UI.Xaml.Controls
 		#endif
 		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
-		public  global::Windows.UI.Xaml.Documents.BlockCollection Blocks
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member BlockCollection RichTextBlock.Blocks is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
 		public  global::Windows.UI.Xaml.Documents.TextPointer ContentEnd
 		{
 			get
@@ -680,13 +670,6 @@ namespace Windows.UI.Xaml.Controls
 			"IsTextTrimmed", typeof(bool), 
 			typeof(global::Windows.UI.Xaml.Controls.RichTextBlock), 
 			new FrameworkPropertyMetadata(default(bool)));
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public RichTextBlock() : base()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.RichTextBlock", "RichTextBlock.RichTextBlock()");
-		}
 		#endif
 		// Forced skipping of method Windows.UI.Xaml.Controls.RichTextBlock.RichTextBlock()
 		// Forced skipping of method Windows.UI.Xaml.Controls.RichTextBlock.FontSize.get

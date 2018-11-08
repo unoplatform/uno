@@ -17,6 +17,8 @@ namespace XamlGenerationTests.Shared
 #endif
 
 			GradientStopEffect.ToString();
+			testRun.ToString();
+			rtbRun.ToString();
 		}
 	}
 }

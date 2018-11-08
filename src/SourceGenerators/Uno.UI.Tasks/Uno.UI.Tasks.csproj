@@ -16,7 +16,7 @@
     <SccLocalPath>SAK</SccLocalPath>
     <SccAuxPath>SAK</SccAuxPath>
     <SccProvider>SAK</SccProvider>
-  </PropertyGroup>
+	</PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
@@ -96,12 +96,21 @@
     </None>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
+	
+	<Target Name="_copyUnoTasksBuildTime" AfterTargets="Build">
+		<ItemGroup>
+			<_unoTasksFiles Include="$(OutputPath)\*.*"/>
+		</ItemGroup>
+		<!--
+		Copy the files to an alternal location, using deterministic build.
+		Don't fail the build if the file is locked
+		-->
+		<Copy SkipUnchangedFiles="true"
+					SourceFiles="@(_unoTasksFiles)"
+					DestinationFolder="$(OutputPath)\..\$(Configuration)_Shadow"
+					Retries="1"
+					RetryDelayMilliseconds="500"
+					ContinueOnError="true" />
+	</Target>
   <Import Project="..\..\Common.targets" />
 </Project>
