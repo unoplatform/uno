@@ -35,6 +35,7 @@
  * Adjust compiled binding application ordering when loading controls
  * Ensure the SplitView templated parent is propagated properly for FindName
  * Fix infinite loop when parsing empty Attached Properties on macOS
+ * 137137 [iOS] Fixed `DatePickerSelector` not propagating coerced initial value
 
 ## Release 1.41
 
