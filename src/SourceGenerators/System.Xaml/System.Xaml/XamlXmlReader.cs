@@ -742,8 +742,21 @@ namespace Uno.Xaml
 			}
 			else
 			{
-				foreach (var ni in ReadCollectionItems(xt, xm))
-					yield return ni;
+
+				if (r.Name.Contains(".") && r.IsEmptyElement && !r.HasAttributes)
+				{
+					// This case is present to handle self closing attached property nodes.
+
+					yield return Node(XamlNodeType.StartMember, xm);
+					yield return Node(XamlNodeType.EndMember, xm);
+					r.Read();
+					yield break;
+				}
+				else
+				{ 
+					foreach (var ni in ReadCollectionItems(xt, xm))
+						yield return ni;
+				}
 			}
 		}
 
