@@ -20,7 +20,6 @@
 		<AndroidUseIntermediateDesignerFile>True</AndroidUseIntermediateDesignerFile>
 		<AndroidResgenFile>obj\$(TargetFramework)\Resources\Resource.Designer.cs</AndroidResgenFile>
 
-
 		<!-- Ensures the .xr.xml files are generated in a proper layout folder -->
 		<GenerateLibraryLayout>true</GenerateLibraryLayout>
 
@@ -33,7 +32,7 @@
 
 	<ItemGroup>
 		<Compile Remove="Mixins\**\*.cs" />
-		
+
 		<Compile Include="Mixins\Android\BaseActivity.Callbacks.g.cs">
 			<DesignTime>True</DesignTime>
 			<AutoGen>True</AutoGen>
@@ -291,13 +290,13 @@
 		<Reference Remove="PresentationFramework" />
 		<Reference Remove="PresentationCore" />
 		<Reference Remove="WindowsBase" />
-		<Reference Remove="System.Xaml" />
+		<Reference Remove="System.Xaml" /> 
 	</ItemGroup>
 
-	<PropertyGroup>
-		<UnoUIGeneratorsBinPath>..\SourceGenerators\Uno.UI.SourceGenerators\bin\$(Configuration)</UnoUIGeneratorsBinPath>
-		<UnoUIMSBuildTasksPath>$(MSBuildThisFileDirectory)..\SourceGenerators\Uno.UI.Tasks\bin\$(Configuration)</UnoUIMSBuildTasksPath>
-	</PropertyGroup>
+	<PropertyGroup> 
+		<UnoUIGeneratorsBinPath>..\SourceGenerators\Uno.UI.SourceGenerators\bin\$(Configuration)</UnoUIGeneratorsBinPath> 
+		<UnoUIMSBuildTasksPath>$(MSBuildThisFileDirectory)..\SourceGenerators\Uno.UI.Tasks\bin\$(Configuration)_Shadow</UnoUIMSBuildTasksPath>
+	</PropertyGroup> 
 
 	<Import Project="..\SourceGenerators\Uno.UI.SourceGenerators\Content\Uno.UI.SourceGenerators.props" />
 	<Import Project="..\SourceGenerators\Uno.UI.Tasks\Content\Uno.UI.Tasks.targets" Condition="'$(SkipUnoResourceGeneration)' == '' " />
@@ -337,6 +336,10 @@
 
 	<ItemGroup>
 		<PRIResource Include="Resources\Strings\**\*.resw" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <None Remove="Extensions\UIImageExtensions.iOS.cs" />
 	</ItemGroup>
 
 	<Target Name="BuildManualDependencies" BeforeTargets="_UnoSourceGenerator" Condition="!Exists($(T4Bin))">
