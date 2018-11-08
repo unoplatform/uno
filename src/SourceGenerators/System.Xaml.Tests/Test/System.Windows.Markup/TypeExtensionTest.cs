@@ -38,24 +38,30 @@ namespace MonoTests.System.Windows.Markup
 	public class TypeExtensionTest
 	{
 		[Test]
-		[ExpectedException (typeof (ArgumentNullException))]
 		public void ConstructorNullType ()
 		{
-			new TypeExtension ((Type) null);
+			Assert.Throws(typeof(ArgumentNullException), () =>
+			{
+				new TypeExtension((Type)null);
+			});
 		}
 
 		[Test]
-		[ExpectedException (typeof (ArgumentNullException))]
 		public void ConstructorNullName ()
 		{
-			new TypeExtension ((string) null);
+			Assert.Throws(typeof(ArgumentNullException), () =>
+			{
+				new TypeExtension((string)null);
+			});
 		}
 
 		[Test]
-		[ExpectedException (typeof (InvalidOperationException))]
 		public void ProvideValueWithoutTypeOrName ()
 		{
-			new TypeExtension ().ProvideValue (null);
+			Assert.Throws(typeof(InvalidOperationException), () =>
+			{
+				new TypeExtension().ProvideValue(null);
+			});
 		}
 
 		[Test]
@@ -66,27 +72,33 @@ namespace MonoTests.System.Windows.Markup
 		}
 
 		[Test]
-		[ExpectedException (typeof (ArgumentNullException))]
 		public void ProvideValueWithNameWithoutResolver ()
 		{
-			var x = new TypeExtension ("System.Int32");
-			x.ProvideValue (null); // serviceProvider is required.
+			Assert.Throws(typeof(ArgumentNullException), () =>
+			{
+				var x = new TypeExtension("System.Int32");
+				x.ProvideValue(null); // serviceProvider is required.
+			});
 		}
 
 		[Test]
-		[ExpectedException (typeof (InvalidOperationException))]
 		public void ProvideValueWithNameWithProviderNoResolver ()
 		{
-			var x = new TypeExtension ("System.Int32");
-			x.ProvideValue (new Resolver (false, false));
+			Assert.Throws(typeof(InvalidOperationException), () =>
+			{
+				var x = new TypeExtension("System.Int32");
+				x.ProvideValue(new Resolver(false, false));
+			});
 		}
 
 		[Test]
-		[ExpectedException (typeof (InvalidOperationException))]
 		public void ProvideValueWithNameWithProviderResolveFail ()
 		{
-			var x = new TypeExtension ("System.Int32");
-			x.ProvideValue (new Resolver (true, false)); // raise an error (do not return null)
+			Assert.Throws(typeof(InvalidOperationException), () =>
+			{
+				var x = new TypeExtension("System.Int32");
+				x.ProvideValue(new Resolver(true, false)); // raise an error (do not return null)
+			});
 		}
 
 		[Test]

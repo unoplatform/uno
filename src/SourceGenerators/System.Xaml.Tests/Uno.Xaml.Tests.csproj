@@ -1,16 +1,14 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="15.0">
   <PropertyGroup>
-    <TargetFramework>net46</TargetFramework>
+    <TargetFramework>net462</TargetFramework>
     <DefineConstants>$(DefineConstants);NET_4_0;NET_4_5;NET_4_6;MONO;WIN_PLATFORM;MULTIPLEX_OS</DefineConstants>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <DebugType>full</DebugType>
+		<DebugType>full</DebugType>
     <DebugSymbols>true</DebugSymbols>
-  </PropertyGroup>
+	</PropertyGroup>
 	<ItemGroup>
-		<PackageReference Include="NUnit" Version="2.6.4" />
-		<PackageReference Include="NUnitTestAdapter" Version="2.1.1" />
+		<PackageReference Include="NUnit" Version="3.11.0" />
+		<PackageReference Include="NUnit3TestAdapter" Version="3.11.0" />
 	</ItemGroup>
 	
 	<ItemGroup>
@@ -24,6 +22,7 @@
 	
 	<ItemGroup>
 	  <None Remove="Test\XmlFiles\AttachedPropertyWithNamespace.xaml" />
+	  <None Remove="Test\XmlFiles\EmptyAttachedPropertyNode.xaml" />
 	</ItemGroup>
 		
 	<ItemGroup>
@@ -32,6 +31,12 @@
 
 	<ItemGroup>
 		<Service Include="{82a7f48d-3b50-4b1e-b82e-3ada8210c358}" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Content Update="Test\XmlFiles\EmptyAttachedPropertyNode.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </Content>
 	</ItemGroup>
 
   <ItemGroup>

@@ -41,12 +41,14 @@ namespace MonoTests.System.Windows.Markup
 	public class XDataTest
 	{
 		[Test]
-		[ExpectedException (typeof (ArgumentNullException))]
 		public void GetXmlReaderWithNullText ()
 		{
-			var x = new XData ();
-			Assert.IsNull (x.Text, "#1");
-			Assert.IsNull (x.XmlReader, "#2");
+			Assert.Throws(typeof(ArgumentNullException), () =>
+			{
+				var x = new XData();
+				Assert.IsNull(x.Text, "#1");
+				Assert.IsNull(x.XmlReader, "#2");
+			});
 		}
 
 		[Test]
@@ -74,13 +76,15 @@ namespace MonoTests.System.Windows.Markup
 		}
 
 		[Test]
-		[ExpectedException (typeof (ArgumentNullException))]
 		public void SetNonXmlReader ()
 		{
-			var x = new XData ();
-			XmlReader r;
-			x.XmlReader = "<foo/>"; // not allowed. It does *not* raise an error, but the value becomes null.
-			r = x.XmlReader as XmlReader; // and thus it causes ANE.
+			Assert.Throws(typeof(ArgumentNullException), () =>
+			{
+				var x = new XData();
+				XmlReader r;
+				x.XmlReader = "<foo/>"; // not allowed. It does *not* raise an error, but the value becomes null.
+				r = x.XmlReader as XmlReader; // and thus it causes ANE.
+			});
 		}
 
 		[Test]

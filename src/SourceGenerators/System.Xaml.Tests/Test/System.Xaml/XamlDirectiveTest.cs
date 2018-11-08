@@ -47,10 +47,12 @@ namespace MonoTests.Uno.Xaml
 		}
 
 		[Test]
-		[ExpectedException (typeof (ArgumentNullException))]
 		public void ConstructorNamespaceNull ()
 		{
-			new XamlDirective (null, "Foo");
+			Assert.Throws(typeof(ArgumentNullException), () =>
+			{
+				new XamlDirective(null, "Foo");
+			});
 		}
 
 		[Test]
@@ -60,17 +62,21 @@ namespace MonoTests.Uno.Xaml
 		}
 
 		[Test]
-		[ExpectedException (typeof (ArgumentNullException))]
 		public void ConstructorComplexParamsTypeNull ()
 		{
-			new XamlDirective (new string [] {"urn:foo"}, "Foo", null, null, AllowedMemberLocations.Any);
+			Assert.Throws(typeof(ArgumentNullException), () =>
+			{
+				new XamlDirective(new string[] { "urn:foo" }, "Foo", null, null, AllowedMemberLocations.Any);
+			});
 		}
 
 		[Test]
-		[ExpectedException (typeof (ArgumentNullException))]
 		public void ConstructorComplexParamsNullNamespaces ()
 		{
-			var d = new XamlDirective (null, "Foo", new XamlType (typeof (object), sctx), null, AllowedMemberLocations.Any);
+			Assert.Throws(typeof(ArgumentNullException), () =>
+			{
+				var d = new XamlDirective(null, "Foo", new XamlType(typeof(object), sctx), null, AllowedMemberLocations.Any);
+			});
 		}
 
 		[Test]

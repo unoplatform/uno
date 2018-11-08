@@ -42,7 +42,9 @@ namespace MonoTests.Uno.Xaml
 	{
 		XamlReader GetReader (string filename)
 		{
-			return new XamlXmlReader (XmlReader.Create (Path.Combine ("Test/XmlFiles", filename), new XmlReaderSettings () { CloseInput =true }));
+			var directory = Path.GetDirectoryName(new Uri(GetType().Assembly.CodeBase).LocalPath);
+
+			return new XamlXmlReader (XmlReader.Create (Path.Combine (directory, "Test/XmlFiles", filename), new XmlReaderSettings () { CloseInput =true }));
 		}
 
 		void ReadTest (string filename)

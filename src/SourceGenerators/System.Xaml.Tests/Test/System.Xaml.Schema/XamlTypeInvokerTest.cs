@@ -40,10 +40,12 @@ namespace MonoTests.Uno.Xaml.Schema
 		XamlSchemaContext sctx = new XamlSchemaContext (new XamlSchemaContextSettings ());
 
 		[Test]
-		[ExpectedException (typeof (ArgumentNullException))]
 		public void ConstructorTypeNull ()
 		{
-			new XamlTypeInvoker (null);
+			Assert.Throws(typeof(ArgumentNullException), () =>
+			{
+				new XamlTypeInvoker(null);
+			});
 		}
 
 		[Test]
@@ -62,11 +64,13 @@ namespace MonoTests.Uno.Xaml.Schema
 		// SetMarkupExtensionHandler
 		
 		[Test]
-		[ExpectedException (typeof (ArgumentException))]
 		public void SetHandleMarkupExtensionInvalid ()
 		{
-			var i = new XamlTypeInvoker (new XamlType (typeof (TestClassMarkupExtension1), sctx));
-			Assert.IsNull (i.SetMarkupExtensionHandler, "#1");
+			Assert.Throws(typeof(ArgumentException), () =>
+			{
+				var i = new XamlTypeInvoker(new XamlType(typeof(TestClassMarkupExtension1), sctx));
+				Assert.IsNull(i.SetMarkupExtensionHandler, "#1");
+			});
 		}
 
 		[XamlSetMarkupExtension ("HandleMarkupExtension")]
@@ -79,11 +83,13 @@ namespace MonoTests.Uno.Xaml.Schema
 		}
 		
 		[Test]
-		[ExpectedException (typeof (ArgumentException))]
 		public void SetHandleMarkupExtensionInvalid2 ()
 		{
-			var i = new XamlTypeInvoker (new XamlType (typeof (TestClassMarkupExtension2), sctx));
-			Assert.IsNull (i.SetMarkupExtensionHandler, "#1");
+			Assert.Throws(typeof(ArgumentException), () =>
+			{
+				var i = new XamlTypeInvoker(new XamlType(typeof(TestClassMarkupExtension2), sctx));
+				Assert.IsNull(i.SetMarkupExtensionHandler, "#1");
+			});
 		}
 
 		[XamlSetMarkupExtension ("HandleMarkupExtension")]
@@ -96,11 +102,13 @@ namespace MonoTests.Uno.Xaml.Schema
 		}
 		
 		[Test]
-		[ExpectedException (typeof (ArgumentException))]
 		public void SetHandleMarkupExtensionInvalid3 ()
 		{
-			var i = new XamlTypeInvoker (new XamlType (typeof (TestClassMarkupExtension3), sctx));
-			Assert.IsNull (i.SetMarkupExtensionHandler, "#1");
+			Assert.Throws(typeof(ArgumentException), () =>
+			{
+				var i = new XamlTypeInvoker(new XamlType(typeof(TestClassMarkupExtension3), sctx));
+				Assert.IsNull(i.SetMarkupExtensionHandler, "#1");
+			});
 		}
 
 		[XamlSetMarkupExtension ("HandleMarkupExtension")]
@@ -127,11 +135,13 @@ namespace MonoTests.Uno.Xaml.Schema
 		}
 		
 		[Test]
-		[ExpectedException (typeof (ArgumentException))]
 		public void SetHandleTypeConverterInvalid ()
 		{
-			var i = new XamlTypeInvoker (new XamlType (typeof (TestClassTypeConverter1), sctx));
-			Assert.IsNull (i.SetTypeConverterHandler, "#1");
+			Assert.Throws(typeof(ArgumentException), () =>
+			{
+				var i = new XamlTypeInvoker(new XamlType(typeof(TestClassTypeConverter1), sctx));
+				Assert.IsNull(i.SetTypeConverterHandler, "#1");
+			});
 		}
 
 		[XamlSetTypeConverter ("HandleTypeConverter")]
@@ -144,11 +154,13 @@ namespace MonoTests.Uno.Xaml.Schema
 		}
 		
 		[Test]
-		[ExpectedException (typeof (ArgumentException))]
 		public void SetHandleTypeConverterInvalid2 ()
 		{
-			var i = new XamlTypeInvoker (new XamlType (typeof (TestClassTypeConverter2), sctx));
-			Assert.IsNull (i.SetTypeConverterHandler, "#1");
+			Assert.Throws(typeof(ArgumentException), () =>
+			{
+				var i = new XamlTypeInvoker(new XamlType(typeof(TestClassTypeConverter2), sctx));
+				Assert.IsNull(i.SetTypeConverterHandler, "#1");
+			});
 		}
 
 		[XamlSetTypeConverter ("HandleTypeConverter")]
@@ -161,11 +173,13 @@ namespace MonoTests.Uno.Xaml.Schema
 		}
 		
 		[Test]
-		[ExpectedException (typeof (ArgumentException))]
 		public void SetHandleTypeConverterInvalid3 ()
 		{
-			var i = new XamlTypeInvoker (new XamlType (typeof (TestClassTypeConverter3), sctx));
-			Assert.IsNull (i.SetTypeConverterHandler, "#1");
+			Assert.Throws(typeof(ArgumentException), () =>
+			{
+				var i = new XamlTypeInvoker(new XamlType(typeof(TestClassTypeConverter3), sctx));
+				Assert.IsNull(i.SetTypeConverterHandler, "#1");
+			});
 		}
 
 		[XamlSetTypeConverter ("HandleTypeConverter")]
@@ -194,21 +208,25 @@ namespace MonoTests.Uno.Xaml.Schema
 		}
 
 		[Test]
-		[ExpectedException (typeof (NotSupportedException))]
 		public void AddToCollectionArrayExtension ()
 		{
-			var i = XamlLanguage.Array.Invoker;
-			var ax = new ArrayExtension ();
-			i.AddToCollection (ax, 5);
+			Assert.Throws(typeof(NotSupportedException), () =>
+			{
+				var i = XamlLanguage.Array.Invoker;
+				var ax = new ArrayExtension();
+				i.AddToCollection(ax, 5);
+			});
 		}
 		
 		[Test]
-		[ExpectedException (typeof (NotSupportedException))]
 		public void AddToCollectionArrayInstance ()
 		{
-			var i = new XamlTypeInvoker (new XamlType (typeof (int []), sctx));
-			var ax = new ArrayExtension ();
-			i.AddToCollection (ax, 5);
+			Assert.Throws(typeof(NotSupportedException), () =>
+			{
+				var i = new XamlTypeInvoker(new XamlType(typeof(int[]), sctx));
+				var ax = new ArrayExtension();
+				i.AddToCollection(ax, 5);
+			});
 		}
 		
 		[Test]
@@ -266,22 +284,26 @@ namespace MonoTests.Uno.Xaml.Schema
 		}
 		
 		[Test]
-		[ExpectedException (typeof (ArgumentException))]
 		public void AddToCollectionTypeMismatch ()
 		{
-			var i = new XamlTypeInvoker (new XamlType (typeof (List<int>), sctx));
-			var l = new List<int> ();
-			i.AddToCollection (l, "5");
+			Assert.Throws(typeof(ArgumentException), () =>
+			{
+				var i = new XamlTypeInvoker(new XamlType(typeof(List<int>), sctx));
+				var l = new List<int>();
+				i.AddToCollection(l, "5");
+			});
 		}
 
 		// CreateInstance
 
 		[Test]
-		[ExpectedException (typeof (NotSupportedException))]
 		public void CreateInstanceNoUnderlyingType ()
 		{
-			var i = new XamlTypeInvoker (new XamlType ("urn:foo", "FooType", null, sctx));
-			i.CreateInstance (new object [0]); // unkown type is not supported
+			Assert.Throws(typeof(NotSupportedException), () =>
+			{
+				var i = new XamlTypeInvoker(new XamlType("urn:foo", "FooType", null, sctx));
+				i.CreateInstance(new object[0]); // unkown type is not supported
+			});
 		}
 
 		[Test]
@@ -292,19 +314,23 @@ namespace MonoTests.Uno.Xaml.Schema
 		}
 		
 		[Test]
-		[ExpectedException (typeof (MissingMethodException))]
 		public void CreateInstanceArray ()
 		{
-			var i = new XamlTypeInvoker (new XamlType (typeof (int []), sctx));
-			i.CreateInstance (new object [0]); // no default constructor.
+			Assert.Throws(typeof(MissingMethodException), () =>
+			{
+				var i = new XamlTypeInvoker(new XamlType(typeof(int[]), sctx));
+				i.CreateInstance(new object[0]); // no default constructor.
+			});
 		}
 		
 		[Test]
-		[ExpectedException (typeof (MissingMethodException))]
 		public void CreateInstanceList_ArgumentMismatch ()
 		{
-			var i = new XamlTypeInvoker (new XamlType (typeof (List<int>), sctx));
-			i.CreateInstance (new object [] {"foo"});
+			Assert.Throws(typeof(MissingMethodException), () =>
+			{
+				var i = new XamlTypeInvoker(new XamlType(typeof(List<int>), sctx));
+				i.CreateInstance(new object[] { "foo" });
+			});
 		}
 		
 		[Test]
@@ -345,10 +371,12 @@ namespace MonoTests.Uno.Xaml.Schema
 		}
 
 		[Test]
-		[ExpectedException (typeof (NotSupportedException))]
 		public void UnknownInvokerCreateInstance ()
 		{
-			XamlTypeInvoker.UnknownInvoker.CreateInstance (new object [0]);
+			Assert.Throws(typeof(NotSupportedException), () =>
+			{
+				XamlTypeInvoker.UnknownInvoker.CreateInstance(new object[0]);
+			});
 		}
 
 		[Test]
