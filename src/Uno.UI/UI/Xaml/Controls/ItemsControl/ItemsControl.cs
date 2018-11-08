@@ -1204,5 +1204,10 @@ namespace Windows.UI.Xaml.Controls
 				_itemsPresenter?.SetItemsPanel(InternalItemsPanelRoot);
 			}
 		}
+
+		internal DataTemplate ResolveItemTemplate(object item)
+		{
+			return DataTemplateHelper.ResolveTemplate(ItemTemplate, ItemTemplateSelector, item);
+		}
 	}
 }
