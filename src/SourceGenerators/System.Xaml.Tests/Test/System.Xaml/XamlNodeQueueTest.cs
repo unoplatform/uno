@@ -32,10 +32,12 @@ namespace MonoTests.Uno.Xaml
 	public class XamlNodeQueueTest
 	{
 		[Test]
-		[ExpectedException (typeof (ArgumentNullException))]
 		public void ConstructorNull ()
 		{
-			new XamlNodeQueue (null);
+			Assert.Throws(typeof(ArgumentNullException), () =>
+			{
+				new XamlNodeQueue(null);
+			});
 		}
 	
 		[Test]

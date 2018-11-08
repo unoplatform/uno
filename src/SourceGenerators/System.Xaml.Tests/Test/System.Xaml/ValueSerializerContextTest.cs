@@ -53,7 +53,7 @@ namespace MonoTests.Uno.Xaml
 		}
 
 		[Test]
-		[Ignore]
+		[Ignore("?")]
 		public void GetService ()
 		{
 			var obj = new TestValueSerialized ();
@@ -105,7 +105,7 @@ namespace MonoTests.Uno.Xaml
 		}
 
 		[Test]
-		[Ignore]
+		[Ignore("?")]
 		public void NameResolver ()
 		{
 			var nr = (IXamlNameResolver) Provider.GetService (typeof (IXamlNameResolver));

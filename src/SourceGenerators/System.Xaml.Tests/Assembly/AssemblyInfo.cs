@@ -36,6 +36,7 @@ using System.Security.Permissions;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using NUnit.Framework;
 
 // General Information about the Uno.Xaml assembly
 
@@ -68,3 +69,5 @@ using System.Runtime.InteropServices;
 #if !MOBILE
 [assembly: TypeForwardedTo (typeof (System.Windows.Markup.ValueSerializerAttribute))]
 #endif
+
+[assembly: Parallelizable(ParallelScope.None)]
