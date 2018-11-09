@@ -35,6 +35,7 @@
  * Adjust compiled binding application ordering when loading controls
  * Ensure the SplitView templated parent is propagated properly for FindName
  * Fix infinite loop when parsing empty Attached Properties on macOS
+ * 103116 [iOS] Navigating to a _second_ local html file with `WebView` doesn't work.
 
 ## Release 1.41
 
