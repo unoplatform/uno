@@ -5,6 +5,7 @@
 ### Features
 * [Wasm] Improve general performance and memory pressure by removing Javascript interop evaluations.
 * Add support for Windows 10 SDK 17763 (1809)
+* Improve the Uno.UI solution memory consumption for Android targets
 
 ### Breaking changes
 
