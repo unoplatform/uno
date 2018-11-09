@@ -15,6 +15,7 @@
 * Add `BitmapIcon.ShowAsMonochrome` support
 * Add support for `Windows.Foundation.UniversalApiContract` in `IsApiContractPresent`
 * Add support for ContentProperty on UserControl
+* Add DelegateCommand<T>
 
 ### Breaking changes
 * 132002 [Android] The collapsible button bar is now taken into account by visible bounds calculation. Apps which use VisibleBoundsPadding or have command bars will therefore see an adjustment to the height of their windows on Android.
