@@ -24,7 +24,7 @@ namespace Windows.UI.Xaml.Controls
 		private int? _implicitItemWidth;
 		private int? _implicitItemHeight;
 
-		protected override Line CreateLine(FillDirection direction,
+		protected override Line CreateLine(GeneratorDirection direction,
 			int extentOffset,
 			int breadthOffset,
 			int availableBreadth,
@@ -38,7 +38,7 @@ namespace Windows.UI.Xaml.Controls
 			var firstItemInLine = nextVisibleItem;
 
 			//Find first item in line, since the item we are passed is the last
-			if (direction == FillDirection.Back)
+			if (direction == GeneratorDirection.Backward)
 			{
 				// We are recreating the last line of the group - it may be truncated (if the total items are not an even multiple 
 				// of the items-per-line).
@@ -48,7 +48,7 @@ namespace Windows.UI.Xaml.Controls
 				}
 				for (int i = 0; i < itemsInLine - 1; i++)
 				{
-					firstItemInLine = GetNextUnmaterializedItem(FillDirection.Back, firstItemInLine).Value;
+					firstItemInLine = GetNextUnmaterializedItem(GeneratorDirection.Backward, firstItemInLine).Value;
 					var isCorrectGroup = firstItemInLine.Section == nextVisibleItem.Section;
 					if (!isCorrectGroup)
 					{
@@ -107,9 +107,9 @@ namespace Windows.UI.Xaml.Controls
 				}
 
 				LayoutChild(view,
-					FillDirection.Forward,
+					GeneratorDirection.Forward,
 					//We always lay out view 'top down' so that it is aligned correctly if its height is less than the line height
-					direction == FillDirection.Forward ? extentOffset : extentOffset - ResolveItemExtent().Value,
+					direction == GeneratorDirection.Forward ? extentOffset : extentOffset - ResolveItemExtent().Value,
 					breadthOffset + usedBreadth,
 					slotSize
 				);
@@ -117,7 +117,7 @@ namespace Windows.UI.Xaml.Controls
 				usedBreadth += ResolveItemBreadth().Value;
 				lastItemInLine = currentItem.Value;
 
-				currentItem = GetNextUnmaterializedItem(FillDirection.Forward, currentItem);
+				currentItem = GetNextUnmaterializedItem(GeneratorDirection.Forward, currentItem);
 				if (currentItem == null || currentItem.Value.Section != firstItemInLine.Section)
 				{
 					itemsInLine = i + 1;
@@ -281,7 +281,7 @@ namespace Windows.UI.Xaml.Controls
 			var itemsPerLine = ResolveMaximumItemsInLine(availableBreadth);
 			while (currentItem != null)
 			{
-				currentItem = GetNextUnmaterializedItem(FillDirection.Back, currentItem);
+				currentItem = GetNextUnmaterializedItem(GeneratorDirection.Backward, currentItem);
 				if (currentItem?.Section != firstVisibleItem?.Section)
 				{
 					return currentItem;

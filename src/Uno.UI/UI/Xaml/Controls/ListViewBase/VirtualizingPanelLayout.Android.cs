@@ -33,7 +33,6 @@ namespace Windows.UI.Xaml.Controls
 		/// Leading: When scrolling, the edge that is coming into view. ie, if the scrolling forward in a vertical orientation, the bottom edge.
 		/// Trailing: When scrolling, the edge that is disappearing from view.
 
-		protected enum FillDirection { Forward, Back }
 		protected enum ViewType { Item, GroupHeader, Header, Footer }
 
 		private readonly Deque<Group> _groups = new Deque<Group>();
@@ -146,7 +145,7 @@ namespace Windows.UI.Xaml.Controls
 				}
 				else
 				{
-					UpdateLayout(FillDirection.Forward, Extent, ContentBreadth, recycler, state, isMeasure: false);
+					UpdateLayout(GeneratorDirection.Forward, Extent, ContentBreadth, recycler, state, isMeasure: false);
 				}
 			}
 			catch (Exception e)
@@ -224,17 +223,17 @@ namespace Windows.UI.Xaml.Controls
 			// 1. Incrementally scroll until target position lies within range of visible positions
 			//While target position is after last visible position, scroll forward
 			int appliedOffset = 0;
-			while (targetPosition > GetLastVisibleDisplayPosition() && GetNextUnmaterializedItem(FillDirection.Forward) != null)
+			while (targetPosition > GetLastVisibleDisplayPosition() && GetNextUnmaterializedItem(GeneratorDirection.Forward) != null)
 			{
 				shouldSnapToEnd = true; //If the item is below the viewport, it should be snapped to the bottom of the viewport (alignment = default)
-				appliedOffset += GetScrollConsumptionIncrement(FillDirection.Forward);
+				appliedOffset += GetScrollConsumptionIncrement(GeneratorDirection.Forward);
 				offsetToApply += ScrollByInner(appliedOffset, recycler, state);
 			}
 			//While target position is before first visible position, scroll backward
-			while (targetPosition < GetFirstVisibleDisplayPosition() && GetNextUnmaterializedItem(FillDirection.Back) != null)
+			while (targetPosition < GetFirstVisibleDisplayPosition() && GetNextUnmaterializedItem(GeneratorDirection.Backward) != null)
 			{
 				shouldSnapToStart = true; //If the item is above the viewport, it should be snapped to the bottom of the viewport (alignment = default)
-				appliedOffset -= GetScrollConsumptionIncrement(FillDirection.Back);
+				appliedOffset -= GetScrollConsumptionIncrement(GeneratorDirection.Backward);
 				offsetToApply += ScrollByInner(appliedOffset, recycler, state);
 			}
 
@@ -276,10 +275,10 @@ namespace Windows.UI.Xaml.Controls
 			}
 
 			//Remove any excess views
-			UnfillLayout(FillDirection.Forward, 0, Extent, recycler, state);
-			UnfillLayout(FillDirection.Back, 0, Extent, recycler, state);
-			FillLayout(FillDirection.Forward, 0, Extent, ContentBreadth, recycler, state);
-			FillLayout(FillDirection.Back, 0, Extent, ContentBreadth, recycler, state);
+			UnfillLayout(GeneratorDirection.Forward, 0, Extent, recycler, state);
+			UnfillLayout(GeneratorDirection.Backward, 0, Extent, recycler, state);
+			FillLayout(GeneratorDirection.Forward, 0, Extent, ContentBreadth, recycler, state);
+			FillLayout(GeneratorDirection.Backward, 0, Extent, ContentBreadth, recycler, state);
 		}
 
 		/// <summary>
@@ -373,7 +372,7 @@ namespace Windows.UI.Xaml.Controls
 				if (totalBreadth > 0)
 				{
 					//Populate the panel with items
-					UpdateLayout(FillDirection.Forward, extent, breadth, recycler, state, isMeasure: true);
+					UpdateLayout(GeneratorDirection.Forward, extent, breadth, recycler, state, isMeasure: true);
 				}
 
 				int measuredWidth, measuredHeight;
@@ -558,7 +557,7 @@ namespace Windows.UI.Xaml.Controls
 		private int ComputeScrollRange(RecyclerView.State state)
 		{
 			//Assume as a dirt-simple heuristic that all items are uniform. Could refine this to only estimate for unmaterialized content.
-			var leadingLine = GetLeadingNonEmptyGroup(FillDirection.Forward)?.GetLeadingLine(FillDirection.Forward);
+			var leadingLine = GetLeadingNonEmptyGroup(GeneratorDirection.Forward)?.GetLeadingLine(GeneratorDirection.Forward);
 			if (leadingLine == null)
 			{
 				return 0;
@@ -571,7 +570,7 @@ namespace Windows.UI.Xaml.Controls
 			int remainingGroupExtent = 0;
 			if (XamlParent.NumberOfDisplayGroups > 0 && RelativeGroupHeaderPlacement == RelativeHeaderPlacement.Inline)
 			{
-				var lastGroup = GetLeadingGroup(FillDirection.Forward);
+				var lastGroup = GetLeadingGroup(GeneratorDirection.Forward);
 				var remainingGroups = XamlParent.NumberOfDisplayGroups - lastGroup.GroupIndex - 1;
 				remainingGroupExtent = remainingGroups * lastGroup.HeaderExtent;
 			}
@@ -612,14 +611,14 @@ namespace Windows.UI.Xaml.Controls
 			if (HeaderViewCount > 0)
 			{
 				var header = GetChildAt(GetHeaderViewIndex());
-				var delta = GetTrailingGroup(FillDirection.Forward).Start - GetChildEndWithMargin(header);
+				var delta = GetTrailingGroup(GeneratorDirection.Forward).Start - GetChildEndWithMargin(header);
 				OffsetChildAlongExtent(header, delta);
 			}
 
 			if (FooterViewCount > 0)
 			{
 				var footer = GetChildAt(GetFooterViewIndex());
-				var delta = GetLeadingGroup(FillDirection.Forward).End - GetChildStartWithMargin(footer);
+				var delta = GetLeadingGroup(GeneratorDirection.Forward).End - GetChildStartWithMargin(footer);
 				OffsetChildAlongExtent(footer, delta);
 			}
 		}
@@ -731,7 +730,7 @@ namespace Windows.UI.Xaml.Controls
 		/// Add view and layout it with a particular offset.
 		/// </summary>
 		/// <returns>Child's frame in logical pixels, including its margins</returns>
-		protected Size AddViewAtOffset(View child, FillDirection direction, int extentOffset, int breadthOffset, int availableBreadth, ViewType viewType = ViewType.Item)
+		protected Size AddViewAtOffset(View child, GeneratorDirection direction, int extentOffset, int breadthOffset, int availableBreadth, ViewType viewType = ViewType.Item)
 		{
 			AddView(child, direction, viewType);
 
@@ -783,7 +782,7 @@ namespace Windows.UI.Xaml.Controls
 		/// <summary>
 		/// Layout child view at desired offsets.
 		/// </summary>
-		protected void LayoutChild(View child, FillDirection direction, int extentOffset, int breadthOffset, Size size)
+		protected void LayoutChild(View child, GeneratorDirection direction, int extentOffset, int breadthOffset, Size size)
 		{
 			var logicalBreadthOffset = ViewHelper.PhysicalToLogicalPixels(breadthOffset);
 			var logicalExtentOffset = ViewHelper.PhysicalToLogicalPixels(extentOffset);
@@ -795,39 +794,39 @@ namespace Windows.UI.Xaml.Controls
 
 				left = logicalBreadthOffset;
 				// Subtracting a very small number mitigates floating point errors when converting negative numbers between physical and logical pixels (because it can happen that a/b*b != a)
-				top = direction == FillDirection.Forward ? logicalExtentOffset : logicalExtentOffset - size.Height - eps;
+				top = direction == GeneratorDirection.Forward ? logicalExtentOffset : logicalExtentOffset - size.Height - eps;
 			}
 			else
 			{
-				left = direction == FillDirection.Forward ? logicalExtentOffset : logicalExtentOffset - size.Width - eps;
+				left = direction == GeneratorDirection.Forward ? logicalExtentOffset : logicalExtentOffset - size.Width - eps;
 				top = logicalBreadthOffset;
 			}
 			var frame = new Windows.Foundation.Rect(new Windows.Foundation.Point(left, top), size);
 			_layouter.ArrangeChild(child, frame);
 
-			Debug.Assert(direction == FillDirection.Forward || GetChildEndWithMargin(child) == extentOffset, GetAssertMessage("Extent offset not applied correctly"));
+			Debug.Assert(direction == GeneratorDirection.Forward || GetChildEndWithMargin(child) == extentOffset, GetAssertMessage("Extent offset not applied correctly"));
 		}
 
 		/// <summary>
 		/// Adds a child view to the list in either the leading or trailing direction, incrementing the count of the corresponding
 		/// view type and the position of <see cref="FirstItemView"/> as appropriate.
 		/// </summary>
-		protected void AddView(View child, FillDirection direction, ViewType viewType = ViewType.Item)
+		protected void AddView(View child, GeneratorDirection direction, ViewType viewType = ViewType.Item)
 		{
 			int viewIndex = 0;
-			if (direction == FillDirection.Forward && viewType == ViewType.Item)
+			if (direction == GeneratorDirection.Forward && viewType == ViewType.Item)
 			{
 				viewIndex = FirstItemView + ItemViewCount;
 			}
-			if (direction == FillDirection.Back && viewType == ViewType.Item)
+			if (direction == GeneratorDirection.Backward && viewType == ViewType.Item)
 			{
 				viewIndex = FirstItemView;
 			}
-			if (direction == FillDirection.Forward && viewType == ViewType.GroupHeader)
+			if (direction == GeneratorDirection.Forward && viewType == ViewType.GroupHeader)
 			{
 				viewIndex = FirstItemView + ItemViewCount + GroupHeaderViewCount;
 			}
-			if (direction == FillDirection.Back && viewType == ViewType.GroupHeader)
+			if (direction == GeneratorDirection.Backward && viewType == ViewType.GroupHeader)
 			{
 				viewIndex = FirstItemView + ItemViewCount;
 			}
@@ -867,7 +866,7 @@ namespace Windows.UI.Xaml.Controls
 		/// <returns>The actual amount scrolled (which may be less than requested if the end of the list is reached).</returns>
 		private int ScrollBy(int offset, RecyclerView.Recycler recycler, RecyclerView.State state)
 		{
-			var fillDirection = offset >= 0 ? FillDirection.Forward : FillDirection.Back;
+			var fillDirection = offset >= 0 ? GeneratorDirection.Forward : GeneratorDirection.Backward;
 			int unconsumedOffset = offset;
 			int actualOffset = 0;
 			int appliedOffset = 0;
@@ -889,7 +888,7 @@ namespace Windows.UI.Xaml.Controls
 			return actualOffset;
 		}
 
-		private int GetScrollConsumptionIncrement(FillDirection fillDirection)
+		private int GetScrollConsumptionIncrement(GeneratorDirection fillDirection)
 		{
 			if (ItemViewCount > 0)
 			{
@@ -908,13 +907,13 @@ namespace Windows.UI.Xaml.Controls
 		/// <returns>The actual scroll offset (which may be less than requested if the end of the list is reached).</returns>
 		private int ScrollByInner(int offset, RecyclerView.Recycler recycler, RecyclerView.State state)
 		{
-			var fillDirection = offset >= 0 ? FillDirection.Forward : FillDirection.Back;
+			var fillDirection = offset >= 0 ? GeneratorDirection.Forward : GeneratorDirection.Backward;
 
 			//Add newly visible views
 			FillLayout(fillDirection, offset, Extent, ContentBreadth, recycler, state);
 
 			int maxPossibleDelta;
-			if (fillDirection == FillDirection.Forward)
+			if (fillDirection == GeneratorDirection.Forward)
 			{
 				// If this value is negative, collection dimensions are larger than all children and we should not scroll
 				maxPossibleDelta = Math.Max(0, GetContentEnd() - Extent);
@@ -945,7 +944,7 @@ namespace Windows.UI.Xaml.Controls
 		/// <param name="availableBreadth">The available breadth (dimension of the viewport orthogonal to the scroll direction).</param>
 		/// <param name="recycler">Supplied recycler.</param>
 		/// <param name="state">Supplied state object.</param>
-		private void UpdateLayout(FillDirection direction, int availableExtent, int availableBreadth, RecyclerView.Recycler recycler, RecyclerView.State state, bool isMeasure)
+		private void UpdateLayout(GeneratorDirection direction, int availableExtent, int availableBreadth, RecyclerView.Recycler recycler, RecyclerView.State state, bool isMeasure)
 		{
 			if (_needsHeaderAndFooterUpdate)
 			{
@@ -1034,7 +1033,7 @@ namespace Windows.UI.Xaml.Controls
 		/// fill space and (b) available items. 
 		/// Also initializes header, footer, and internal state if need be.
 		/// </summary>
-		private void FillLayout(FillDirection direction, int scrollOffset, int availableExtent, int availableBreadth, RecyclerView.Recycler recycler, RecyclerView.State state)
+		private void FillLayout(GeneratorDirection direction, int scrollOffset, int availableExtent, int availableBreadth, RecyclerView.Recycler recycler, RecyclerView.State state)
 		{
 			int extentOffset = scrollOffset;
 			var isGrouping = XamlParent?.IsGrouping ?? false;
@@ -1112,7 +1111,7 @@ namespace Windows.UI.Xaml.Controls
 
 			if (nextItemPath == null && isGrouping)
 			{
-				var endGroupIndex = direction == FillDirection.Forward ? XamlParent.NumberOfDisplayGroups - 1 : 0;
+				var endGroupIndex = direction == GeneratorDirection.Forward ? XamlParent.NumberOfDisplayGroups - 1 : 0;
 				if (endGroupIndex != GetLeadingGroup(direction)?.GroupIndex && endGroupIndex >= 0)
 				{
 					//Create empty groups at start/end
@@ -1129,7 +1128,7 @@ namespace Windows.UI.Xaml.Controls
 		/// the new line is in a different group).
 		/// </summary>
 		/// <returns>True if a new line was created, false otherwise.</returns>
-		private bool TryCreateLine(FillDirection fillDirection,
+		private bool TryCreateLine(GeneratorDirection fillDirection,
 			int scrollOffset,
 			int availableExtent,
 			int availableBreadth,
@@ -1170,7 +1169,7 @@ namespace Windows.UI.Xaml.Controls
 		/// <summary>
 		/// Materializes a new line in the desired fill direction and adds it to the corresponding group.
 		/// </summary>
-		private void AddLine(FillDirection fillDirection,
+		private void AddLine(GeneratorDirection fillDirection,
 			int availableBreadth,
 			RecyclerView.Recycler recycler,
 			RecyclerView.State state,
@@ -1202,7 +1201,7 @@ namespace Windows.UI.Xaml.Controls
 		/// <param name="nextVisibleItem">The first item in the line to draw (or the last, if we're filling backwards)</param>
 		/// <param name="isNewGroup">Whether this is the first line materialized in a new group.</param>
 		/// <returns>An object containing information about the created line.</returns>
-		protected abstract Line CreateLine(FillDirection fillDirection,
+		protected abstract Line CreateLine(GeneratorDirection fillDirection,
 			int extentOffset,
 			int breadthOffset,
 			int availableBreadth,
@@ -1218,7 +1217,7 @@ namespace Windows.UI.Xaml.Controls
 		/// </summary>
 		private void CreateGroupsAtLeadingEdge(
 			int targetGroupIndex,
-			FillDirection fillDirection,
+			GeneratorDirection fillDirection,
 			int scrollOffset,
 			int availableExtent,
 			int availableBreadth,
@@ -1229,7 +1228,7 @@ namespace Windows.UI.Xaml.Controls
 			var leadingGroup = GetLeadingGroup(fillDirection);
 			var leadingEdge = leadingGroup?.GetLeadingEdge(fillDirection) ?? _dynamicSeedStart ?? GetDynamicStartFromHeader() ?? 0;
 			_dynamicSeedStart = null;
-			var increment = fillDirection == FillDirection.Forward ? 1 : -1;
+			var increment = fillDirection == GeneratorDirection.Forward ? 1 : -1;
 
 			int groupToCreate = leadingGroup?.GroupIndex ?? _dynamicSeedIndex?.Section ?? -1;
 			//The 'seed' index may be in the same group as the target to create if we are doing a lightweight layout rebuild
@@ -1264,14 +1263,14 @@ namespace Windows.UI.Xaml.Controls
 		/// Add a new group to the internal state of the layout. It will be added at the end if filling forward or the start if 
 		/// filling backward. If filling backward, the cached layout information of the group will be restored.
 		/// </summary>
-		private void CreateGroupAtLeadingEdge(int groupIndex, FillDirection fillDirection, int availableBreadth, RecyclerView.Recycler recycler, RecyclerView.State state, int trailingEdge)
+		private void CreateGroupAtLeadingEdge(int groupIndex, GeneratorDirection fillDirection, int availableBreadth, RecyclerView.Recycler recycler, RecyclerView.State state, int trailingEdge)
 		{
 			var group = new Group(groupIndex);
 			group.Start = trailingEdge;
 
 			CreateGroupHeader(fillDirection, InitialBreadthPadding, availableBreadth, recycler, state, group);
 
-			if (fillDirection == FillDirection.Forward)
+			if (fillDirection == GeneratorDirection.Forward)
 			{
 				_groups.AddToBack(group);
 			}
@@ -1284,7 +1283,7 @@ namespace Windows.UI.Xaml.Controls
 		/// <summary>
 		/// Materialize a view for a group header.
 		/// </summary>
-		private void CreateGroupHeader(FillDirection fillDirection, int breadthOffset, int availableBreadth, RecyclerView.Recycler recycler, RecyclerView.State state, Group group)
+		private void CreateGroupHeader(GeneratorDirection fillDirection, int breadthOffset, int availableBreadth, RecyclerView.Recycler recycler, RecyclerView.State state, Group group)
 		{
 			var displayItemIndex = GetGroupHeaderAdapterIndex(group.GroupIndex);
 			var headerView = recycler.GetViewForPosition(displayItemIndex, state);
@@ -1299,7 +1298,7 @@ namespace Windows.UI.Xaml.Controls
 			group.HeaderExtent = GetChildExtentWithMargins(headerView);
 			group.HeaderBreadth = GetChildBreadthWithMargins(headerView);
 
-			if (fillDirection == FillDirection.Back)
+			if (fillDirection == GeneratorDirection.Backward)
 			{
 				//If filling backward, adjust the start of the group to account for the header's extent.
 				group.Start -= group.HeaderExtent;
@@ -1322,14 +1321,14 @@ namespace Windows.UI.Xaml.Controls
 			if (XamlParent.ShouldShowHeader)
 			{
 				var header = recycler.GetViewForPosition(0, state);
-				AddViewAtOffset(header, FillDirection.Forward, extentOffset, breadthOffset, availableBreadth, viewType: ViewType.Header);
+				AddViewAtOffset(header, GeneratorDirection.Forward, extentOffset, breadthOffset, availableBreadth, viewType: ViewType.Header);
 				headerExtent = GetChildExtentWithMargins(header);
 			}
 
 			if (XamlParent.ShouldShowFooter)
 			{
 				var footer = recycler.GetViewForPosition(XamlParent.ShouldShowHeader ? 1 : 0, state);
-				AddViewAtOffset(footer, FillDirection.Forward, extentOffset + headerExtent, breadthOffset, availableBreadth, viewType: ViewType.Footer);
+				AddViewAtOffset(footer, GeneratorDirection.Forward, extentOffset + headerExtent, breadthOffset, availableBreadth, viewType: ViewType.Footer);
 			}
 
 			return headerExtent;
@@ -1338,7 +1337,7 @@ namespace Windows.UI.Xaml.Controls
 		/// <summary>
 		/// Dematerialize lines and group headers that are no longer visible with the nominated offset.
 		/// </summary>
-		private void UnfillLayout(FillDirection direction, int offset, int availableExtent, RecyclerView.Recycler recycler, RecyclerView.State state)
+		private void UnfillLayout(GeneratorDirection direction, int offset, int availableExtent, RecyclerView.Recycler recycler, RecyclerView.State state)
 		{
 			// Keep at least one item materialized, this permits Header and Footer to be positioned correctly.
 			while (ItemViewCount > 1)
@@ -1388,7 +1387,7 @@ namespace Windows.UI.Xaml.Controls
 		/// </summary>
 		private void ScrapLayout(RecyclerView.Recycler recycler, int availableBreadth)
 		{
-			var direction = FillDirection.Forward;
+			var direction = GeneratorDirection.Forward;
 			var firstVisibleItem = GetTrailingLine(direction)?.FirstItem;
 			//Get 'seed' information for recreating layout
 			var adjustedFirstItem = GetAdjustedFirstItem(firstVisibleItem);
@@ -1413,7 +1412,7 @@ namespace Windows.UI.Xaml.Controls
 
 			while (ItemViewCount > 0)
 			{
-				RemoveTrailingLine(FillDirection.Back, recycler, detachOnly: true);
+				RemoveTrailingLine(GeneratorDirection.Backward, recycler, detachOnly: true);
 			}
 
 			while (GroupHeaderViewCount > 0)
@@ -1461,7 +1460,7 @@ namespace Windows.UI.Xaml.Controls
 				// None of the previously-visible indices are now present in the updated items source
 				return null;
 			}
-			return GetNextUnmaterializedItem(FillDirection.Back, firstVisibleItem);
+			return GetNextUnmaterializedItem(GeneratorDirection.Backward, firstVisibleItem);
 		}
 
 		/// <summary>
@@ -1593,7 +1592,7 @@ namespace Windows.UI.Xaml.Controls
 
 			var averageExtent = GetAverageVisibleItemExtent();
 			var itemsVisible = Extent / averageExtent;
-			var newCacheHalfLength = (itemsVisible * CacheLength) / 2 * GetTrailingLine(FillDirection.Forward).NumberOfViews; ;
+			var newCacheHalfLength = (itemsVisible * CacheLength) / 2 * GetTrailingLine(GeneratorDirection.Forward).NumberOfViews; ;
 			newCacheHalfLength = Math.Round(newCacheHalfLength);
 			// Err on the side of overestimation by taking the largest potential cache size yet seen
 			CacheHalfLengthInViews = Math.Max(CacheHalfLengthInViews, (int)newCacheHalfLength);
@@ -1667,7 +1666,7 @@ namespace Windows.UI.Xaml.Controls
 		/// Returns true if there is space between the edge of the leading item within the group and the edge of the viewport in the 
 		/// desired fill direction, false otherwise.
 		/// </summary>
-		private bool IsThereAGapWithinGroup(Group group, FillDirection fillDirection, int offset, int availableExtent)
+		private bool IsThereAGapWithinGroup(Group group, GeneratorDirection fillDirection, int offset, int availableExtent)
 		{
 			var leadingEdge = GetLeadingEdgeWithinGroup(group, fillDirection);
 			return IsThereAGap(leadingEdge, fillDirection, offset, availableExtent);
@@ -1677,17 +1676,17 @@ namespace Windows.UI.Xaml.Controls
 		/// Get the edge of the leading item of the group in the desired fill direction. Note that this may differ from the Start/End of 
 		/// the group because if the group header is <see cref="RelativeHeaderPlacement.Adjacent"/>, it may take up more extent than the items themselves.
 		/// </summary>
-		private int GetLeadingEdgeWithinGroup(Group group, FillDirection fillDirection)
+		private int GetLeadingEdgeWithinGroup(Group group, GeneratorDirection fillDirection)
 		{
 			var leadingLine = group.GetLeadingLine(fillDirection);
 			if (leadingLine == null)
 			{
-				return fillDirection == FillDirection.Forward ?
+				return fillDirection == GeneratorDirection.Forward ?
 					group.Start + group.ItemsExtentOffset :
 					group.End;
 			}
 			var view = GetLeadingItemView(fillDirection);
-			return fillDirection == FillDirection.Forward ?
+			return fillDirection == GeneratorDirection.Forward ?
 				GetChildStartWithMargin(view) + leadingLine.Extent :
 				GetChildStartWithMargin(view);
 		}
@@ -1696,9 +1695,9 @@ namespace Windows.UI.Xaml.Controls
 		/// True if there is space between the leading edge of the group and the edge of the viewport in the 
 		/// desired fill direction, false otherwise.
 		/// </summary>
-		private bool IsThereAGapOutsideGroup(Group group, FillDirection fillDirection, int offset, int availableExtent)
+		private bool IsThereAGapOutsideGroup(Group group, GeneratorDirection fillDirection, int offset, int availableExtent)
 		{
-			var leadingEdge = fillDirection == FillDirection.Forward ?
+			var leadingEdge = fillDirection == GeneratorDirection.Forward ?
 				group.End :
 				group.Start;
 			return IsThereAGap(leadingEdge, fillDirection, offset, availableExtent);
@@ -1708,9 +1707,9 @@ namespace Windows.UI.Xaml.Controls
 		/// True if there is a gap between the nominated leading edge and the edge of the viewport after the nominated scroll offset is applied,
 		/// false otherwise.
 		/// </summary>
-		private bool IsThereAGap(int leadingEdge, FillDirection fillDirection, int offset, int availableExtent)
+		private bool IsThereAGap(int leadingEdge, GeneratorDirection fillDirection, int offset, int availableExtent)
 		{
-			if (fillDirection == FillDirection.Forward)
+			if (fillDirection == GeneratorDirection.Forward)
 			{
 				return leadingEdge - offset < availableExtent;
 			}
@@ -1723,11 +1722,11 @@ namespace Windows.UI.Xaml.Controls
 		/// <summary>
 		/// True if the nominated line is still visible after the nominated scroll offset is applied, false otherwise.
 		/// </summary>
-		private bool IsLineVisible(FillDirection direction, Line line, int availableExtent, int offset)
+		private bool IsLineVisible(GeneratorDirection direction, Line line, int availableExtent, int offset)
 		{
 			int near = 0;
 
-			var childStart = GetChildStartWithMargin(direction == FillDirection.Forward ? FirstItemView : FirstItemView + ItemViewCount - 1);
+			var childStart = GetChildStartWithMargin(direction == GeneratorDirection.Forward ? FirstItemView : FirstItemView + ItemViewCount - 1);
 			// If availableExtent is set to MaxValue, halve it to avoid integer overflow
 			if (availableExtent == int.MaxValue) { availableExtent /= 2; }
 			return childStart < (availableExtent + offset) && (childStart + line.Extent) > (near + offset);
@@ -1834,7 +1833,7 @@ namespace Windows.UI.Xaml.Controls
 		/// </summary>
 		private int GetContentEnd()
 		{
-			int contentEnd = GetLeadingGroup(FillDirection.Forward)?.End ?? GetHeaderEnd();
+			int contentEnd = GetLeadingGroup(GeneratorDirection.Forward)?.End ?? GetHeaderEnd();
 			if (FooterViewCount > 0)
 			{
 				contentEnd += GetChildExtentWithMargins(GetFooterViewIndex());
@@ -1860,7 +1859,7 @@ namespace Windows.UI.Xaml.Controls
 		/// </summary>
 		private int GetContentStart()
 		{
-			int contentStart = GetLeadingGroup(FillDirection.Back)?.Start ?? 0;
+			int contentStart = GetLeadingGroup(GeneratorDirection.Backward)?.Start ?? 0;
 			if (HeaderViewCount > 0)
 			{
 				contentStart -= GetChildExtentWithMargins(GetHeaderViewIndex());
@@ -1869,16 +1868,16 @@ namespace Windows.UI.Xaml.Controls
 			return contentStart;
 		}
 
-		private Group GetLeadingGroup(FillDirection fillDirection)
+		private Group GetLeadingGroup(GeneratorDirection fillDirection)
 		{
-			return fillDirection == FillDirection.Forward ?
+			return fillDirection == GeneratorDirection.Forward ?
 				GetLastGroup() :
 				GetFirstGroup();
 		}
 
-		private Group GetTrailingGroup(FillDirection fillDirection)
+		private Group GetTrailingGroup(GeneratorDirection fillDirection)
 		{
-			return fillDirection == FillDirection.Forward ?
+			return fillDirection == GeneratorDirection.Forward ?
 				GetFirstGroup() :
 				GetLastGroup();
 		}
@@ -1886,11 +1885,11 @@ namespace Windows.UI.Xaml.Controls
 		/// <summary>
 		/// Get the leading non-empty group in the nominated fill direction.
 		/// </summary>
-		private Group GetLeadingNonEmptyGroup(FillDirection fillDirection)
+		private Group GetLeadingNonEmptyGroup(GeneratorDirection fillDirection)
 		{
-			var startingValue = fillDirection == FillDirection.Forward ?
+			var startingValue = fillDirection == GeneratorDirection.Forward ?
 				_groups.Count - 1 : 0;
-			var increment = fillDirection == FillDirection.Forward ? -1 : 1;
+			var increment = fillDirection == GeneratorDirection.Forward ? -1 : 1;
 			for (int i = startingValue; i >= 0 && i < _groups.Count; i += increment)
 			{
 				var group = _groups[i];
@@ -1902,26 +1901,26 @@ namespace Windows.UI.Xaml.Controls
 			return null;
 		}
 
-		private Group GetTrailingNonEmptyGroup(FillDirection fillDirection)
+		private Group GetTrailingNonEmptyGroup(GeneratorDirection fillDirection)
 		{
-			var oppositeDirection = fillDirection == FillDirection.Forward ? FillDirection.Back : FillDirection.Forward;
+			var oppositeDirection = fillDirection == GeneratorDirection.Forward ? GeneratorDirection.Backward : GeneratorDirection.Forward;
 
 			return GetLeadingNonEmptyGroup(oppositeDirection);
 		}
 
-		private Line GetTrailingLine(FillDirection fillDirection)
+		private Line GetTrailingLine(GeneratorDirection fillDirection)
 		{
 			var containingGroup = GetTrailingNonEmptyGroup(fillDirection);
 			return containingGroup?.GetTrailingLine(fillDirection);
 		}
 
-		private Line GetLeadingLine(FillDirection fillDirection)
+		private Line GetLeadingLine(GeneratorDirection fillDirection)
 		{
 			var containingGroup = GetLeadingNonEmptyGroup(fillDirection);
 			return containingGroup?.GetLeadingLine(fillDirection);
 		}
 
-		private IndexPath? GetNextUnmaterializedItem(FillDirection fillDirection)
+		private IndexPath? GetNextUnmaterializedItem(GeneratorDirection fillDirection)
 		{
 			return GetNextUnmaterializedItem(fillDirection, GetLeadingMaterializedItem(fillDirection));
 		}
@@ -1929,9 +1928,9 @@ namespace Windows.UI.Xaml.Controls
 		/// <summary>
 		/// Get the index of the next item that has not yet been materialized in the nominated fill direction. Returns null if there are no more available items in the source.
 		/// </summary>
-		protected IndexPath? GetNextUnmaterializedItem(FillDirection fillDirection, IndexPath? currentMaterializedItem)
+		protected IndexPath? GetNextUnmaterializedItem(GeneratorDirection fillDirection, IndexPath? currentMaterializedItem)
 		{
-			return XamlParent?.GetNextItemIndex(currentMaterializedItem, fillDirection == FillDirection.Forward ? 1 : -1);
+			return XamlParent?.GetNextItemIndex(currentMaterializedItem, fillDirection == GeneratorDirection.Forward ? 1 : -1);
 		}
 
 		private View GetGroupHeaderAt(int groupHeaderIndex)
@@ -1967,27 +1966,27 @@ namespace Windows.UI.Xaml.Controls
 			return ChildCount - 1;
 		}
 
-		private IndexPath? GetLeadingMaterializedItem(FillDirection fillDirection)
+		private IndexPath? GetLeadingMaterializedItem(GeneratorDirection fillDirection)
 		{
 			var group = GetLeadingNonEmptyGroup(fillDirection);
 			return group?.GetLeadingMaterializedItem(fillDirection);
 		}
 
-		private View GetLeadingItemView(FillDirection fillDirection)
+		private View GetLeadingItemView(GeneratorDirection fillDirection)
 		{
 			return GetChildAt(GetLeadingItemViewIndex(fillDirection));
 		}
 
-		private int GetTrailingItemViewIndex(FillDirection fillDirection)
+		private int GetTrailingItemViewIndex(GeneratorDirection fillDirection)
 		{
-			return fillDirection == FillDirection.Forward ?
+			return fillDirection == GeneratorDirection.Forward ?
 				FirstItemView :
 				FirstItemView + ItemViewCount - 1;
 		}
 
-		private int GetLeadingItemViewIndex(FillDirection fillDirection)
+		private int GetLeadingItemViewIndex(GeneratorDirection fillDirection)
 		{
-			return fillDirection == FillDirection.Forward ?
+			return fillDirection == GeneratorDirection.Forward ?
 				FirstItemView + ItemViewCount - 1 :
 				FirstItemView;
 		}
@@ -1995,7 +1994,7 @@ namespace Windows.UI.Xaml.Controls
 		/// <summary>
 		/// Remove the trailing item view in the nominated fill direction and update the internal layout state.
 		/// </summary>
-		private void RemoveTrailingView(FillDirection fillDirection, RecyclerView.Recycler recycler, bool detachOnly)
+		private void RemoveTrailingView(GeneratorDirection fillDirection, RecyclerView.Recycler recycler, bool detachOnly)
 		{
 			var trailingViewIndex = GetTrailingItemViewIndex(fillDirection);
 			if (!detachOnly)
@@ -2008,7 +2007,7 @@ namespace Windows.UI.Xaml.Controls
 		/// <summary>
 		/// Remove the trailing line in the nominated fill direction and update the internal layout state.
 		/// </summary>
-		private void RemoveTrailingLine(FillDirection fillDirection, RecyclerView.Recycler recycler, bool detachOnly = false)
+		private void RemoveTrailingLine(GeneratorDirection fillDirection, RecyclerView.Recycler recycler, bool detachOnly = false)
 		{
 			var containingGroup = GetTrailingNonEmptyGroup(fillDirection);
 			var line = containingGroup.GetTrailingLine(fillDirection);
@@ -2022,17 +2021,17 @@ namespace Windows.UI.Xaml.Controls
 		/// <summary>
 		/// Remove the trailing group in the nominated fill direction and update the internal layout state.
 		/// </summary>
-		private void RemoveTrailingGroup(FillDirection fillDirection, RecyclerView.Recycler recycler, bool detachOnly = false)
+		private void RemoveTrailingGroup(GeneratorDirection fillDirection, RecyclerView.Recycler recycler, bool detachOnly = false)
 		{
 			Debug.Assert(GetTrailingGroup(fillDirection).Lines.Count == 0, "No lines remaining in group being removed");
 
 			if (!detachOnly)
 			{
-				ViewCache.DetachAndCacheView(GetChildAt(GetGroupHeaderViewIndex(fillDirection == FillDirection.Forward ? 0 : GroupHeaderViewCount - 1)), recycler);
+				ViewCache.DetachAndCacheView(GetChildAt(GetGroupHeaderViewIndex(fillDirection == GeneratorDirection.Forward ? 0 : GroupHeaderViewCount - 1)), recycler);
 			}
 			GroupHeaderViewCount--;
 
-			if (fillDirection == FillDirection.Forward)
+			if (fillDirection == GeneratorDirection.Forward)
 			{
 				var group = GetFirstGroup();
 				_groups.RemoveFromFront();
@@ -2078,7 +2077,7 @@ namespace Windows.UI.Xaml.Controls
 
 		private IndexPath GetFirstVisibleIndexPath()
 		{
-			return GetTrailingNonEmptyGroup(FillDirection.Forward)?.GetTrailingMaterializedItem(FillDirection.Forward) ?? IndexPath.FromRowSection(-1, 0);
+			return GetTrailingNonEmptyGroup(GeneratorDirection.Forward)?.GetTrailingMaterializedItem(GeneratorDirection.Forward) ?? IndexPath.FromRowSection(-1, 0);
 		}
 
 		internal int GetLastVisibleDisplayPosition()
@@ -2088,7 +2087,7 @@ namespace Windows.UI.Xaml.Controls
 
 		private IndexPath GetLastVisibleIndexPath()
 		{
-			return GetLeadingNonEmptyGroup(FillDirection.Forward)?.GetLeadingMaterializedItem(FillDirection.Forward) ?? IndexPath.FromRowSection(-1, 0);
+			return GetLeadingNonEmptyGroup(GeneratorDirection.Forward)?.GetLeadingMaterializedItem(GeneratorDirection.Forward) ?? IndexPath.FromRowSection(-1, 0);
 		}
 
 		/// <summary>
