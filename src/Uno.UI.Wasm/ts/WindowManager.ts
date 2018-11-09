@@ -614,7 +614,7 @@
 		public setImageRawData(viewId: string, dataPtr: number, width: number, height: number): string {
 			const element = this.allActiveElementsById[viewId] as HTMLElement;
 			if (!element) {
-				throw `setPointerCapture: Element id ${viewId} not found.`;
+				throw `setImageRawData: Element id ${viewId} not found.`;
 			}
 
 			if (element.tagName.toUpperCase() === "IMG") {
@@ -640,6 +640,51 @@
 				imgElement.src = rawCanvas.toDataURL();
 
 				return "ok";
+			}
+		}
+
+
+		/**
+		 * Sets the provided image with a mono-chrome version of the provided url.
+		 * @param viewId the image to manipulate
+		 * @param url the source image
+		 * @param color the color to apply to the monochrome pixels
+		 */
+		public setImageAsMonochrome(viewId: string, url: string, color: string): string {
+			const element = this.allActiveElementsById[viewId] as HTMLElement;
+			if (!element) {
+				throw `setImageAsMonochrome: Element id ${viewId} not found.`;
+			}
+
+			if (element.tagName.toUpperCase() === "IMG") {
+
+				const imgElement = element as HTMLImageElement;
+				var img = new Image();
+				img.onload = buildMonochromeImage;
+				img.src = url;
+
+				function buildMonochromeImage() {
+
+					// create a colored version of img
+					var c = document.createElement('canvas');
+					var ctx = c.getContext('2d');
+
+					c.width = img.width;
+					c.height = img.height;
+
+					ctx.drawImage(img, 0, 0);
+					ctx.globalCompositeOperation = 'source-atop';
+					ctx.fillStyle = color;
+					ctx.fillRect(0, 0, img.width, img.height);
+					ctx.globalCompositeOperation = 'source-over';
+
+					imgElement.src = c.toDataURL();
+				}
+
+				return "ok";
+			}
+			else {
+				throw `setImageAsMonochrome: Element id ${viewId} is not an Img.`;
 			}
 		}
 
