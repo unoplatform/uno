@@ -14,7 +14,6 @@ namespace Uno.UI.Common
 		public DelegateCommand(Action<T> action)
 		{
 			_action = action;
-			OnCanExecuteChanged(true);
 		}
 
 		public bool CanExecute(object parameter)
@@ -24,7 +23,18 @@ namespace Uno.UI.Common
 
 		public void Execute(object parameter)
 		{
-			_action?.Invoke((T)parameter);
+			if (parameter is T t)
+			{
+				_action?.Invoke(t);
+			}
+			else if (parameter == null && !typeof(T).IsValueType)
+			{
+				_action?.Invoke(default(T));
+			}
+			else
+			{
+				throw new InvalidCastException($"parameter must be a {typeof(T)}");
+			}
 		}
 
 		private void OnCanExecuteChanged(bool canExecute)
