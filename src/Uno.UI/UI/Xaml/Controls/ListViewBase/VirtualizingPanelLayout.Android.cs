@@ -838,7 +838,7 @@ namespace Windows.UI.Xaml.Controls
 			{
 				viewIndex = ChildCount;
 			}
-			base.AddView(child, viewIndex);
+			AddView(child, viewIndex);
 			Debug.Assert(GetChildAt(viewIndex) == child, "GetChildAt(viewIndex) == child");
 			if (viewType == ViewType.GroupHeader)
 			{
@@ -896,7 +896,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 			else
 			{
-				//No children are materialized, this can occur when header/group header is larger than viewport. Just use the first child.
+				//No item views are materialized, this can occur when header/group header is larger than viewport. Just use the first child.
 				return GetChildExtentWithMargins(0);
 			}
 		}
@@ -1923,14 +1923,6 @@ namespace Windows.UI.Xaml.Controls
 		private IndexPath? GetNextUnmaterializedItem(GeneratorDirection fillDirection)
 		{
 			return GetNextUnmaterializedItem(fillDirection, GetLeadingMaterializedItem(fillDirection));
-		}
-
-		/// <summary>
-		/// Get the index of the next item that has not yet been materialized in the nominated fill direction. Returns null if there are no more available items in the source.
-		/// </summary>
-		protected IndexPath? GetNextUnmaterializedItem(GeneratorDirection fillDirection, IndexPath? currentMaterializedItem)
-		{
-			return XamlParent?.GetNextItemIndex(currentMaterializedItem, fillDirection == GeneratorDirection.Forward ? 1 : -1);
 		}
 
 		private View GetGroupHeaderAt(int groupHeaderIndex)

@@ -13,6 +13,8 @@ using Uno.UI.DataBinding;
 using Windows.UI.Xaml.Controls.Primitives;
 using Windows.Foundation;
 using Uno;
+using Uno.Extensions;
+using Microsoft.Extensions.Logging;
 
 #if XAMARIN_ANDROID
 using View = Android.Views.View;
@@ -36,6 +38,9 @@ namespace Windows.UI.Xaml.Controls
 		public event EventHandler<ScrollViewerViewChangedEventArgs> ViewChanged;
 
 		private readonly SerialDisposable _sizeChangedSubscription = new SerialDisposable();
+
+		internal Foundation.Size ViewportMeasureSize { get; private set; }
+		internal Foundation.Size ViewportArrangeSize { get; private set; }
 
 		static ScrollViewer()
 		{
@@ -477,12 +482,21 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
+		protected override Foundation.Size MeasureOverride(Foundation.Size availableSize)
+		{
+			ViewportMeasureSize = availableSize;
+
+			return base.MeasureOverride(availableSize);
+		}
+
 #pragma warning disable 649 // unused member for Unit tests
 		private IScrollContentPresenter _sv;
 #pragma warning restore 649 // unused member for Unit tests
 
 		protected override Foundation.Size ArrangeOverride(Foundation.Size finalSize)
 		{
+			ViewportArrangeSize = finalSize;
+
 			var size = base.ArrangeOverride(finalSize);
 
 			UpdateDimensionProperties();
@@ -502,6 +516,11 @@ namespace Windows.UI.Xaml.Controls
 
 			ScrollableHeight = Math.Max(ExtentHeight - ViewportHeight, 0);
 			ScrollableWidth = Math.Max(ExtentWidth - ViewportWidth, 0);
+
+			if (this.Log().IsEnabled(LogLevel.Debug))
+			{
+				this.Log().LogDebug($"ScrollViewer setting ViewportHeight={ViewportHeight}, ViewportWidth={ViewportWidth}");
+			}
 		}
 
 #if !NET46
