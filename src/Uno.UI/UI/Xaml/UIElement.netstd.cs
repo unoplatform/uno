@@ -321,6 +321,17 @@ namespace Windows.UI.Xaml
 
 			InvalidateMeasure();
 		}
+
+		internal void MoveViewTo(int oldIndex, int newIndex)
+		{
+			var view = _children[oldIndex];
+			
+			var command = "Uno.UI.WindowManager.current.addView(\"" + HtmlId + "\", \"" + view.HtmlId + "\", " + newIndex + ");";
+			WebAssemblyRuntime.InvokeJS(command);
+
+			InvalidateMeasure();
+		}
+
 		partial void EnsureClip(Rect rect)
 		{
 			if (rect.IsEmpty)
