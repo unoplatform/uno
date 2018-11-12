@@ -85,8 +85,6 @@ namespace Windows.UI.Xaml.Controls
 
 		partial void OnChildChangedPartial(View previousValue, View newValue);
 
-        
-
 		#endregion
 
 		#region CornerRadius

@@ -74,12 +74,11 @@ namespace Windows.UI.Xaml
 				var args = new TappedRoutedEventArgs(new Point(e.GetX(), e.GetY()))
 				{
 					OriginalSource = this,
-					PointerDeviceType = pointer.PointerDeviceType
+					PointerDeviceType = pointer.PointerDeviceType,
+					CanBubbleNatively = true
 				};
 
-				_target.RaiseEvent(UIElement.TappedEvent, args);
-
-				return args.Handled;
+				return _target.RaiseEvent(UIElement.TappedEvent, args);
 			}
 			catch (Exception ex)
 			{
@@ -97,12 +96,11 @@ namespace Windows.UI.Xaml
 				var args = new DoubleTappedRoutedEventArgs(new Point(e.GetX(), e.GetY()))
 				{
 					OriginalSource = this,
-					PointerDeviceType = pointer.PointerDeviceType
+					PointerDeviceType = pointer.PointerDeviceType,
+					CanBubbleNatively = true
 				};
 
-				_target.RaiseEvent(UIElement.DoubleTappedEvent, args);
-
-				return args.Handled;
+				return _target.RaiseEvent(UIElement.DoubleTappedEvent, args);
 			}
 			catch (Exception ex)
 			{
@@ -117,9 +115,7 @@ namespace Windows.UI.Xaml
 			{
 				var args = GetPointerEventArgs(e, 0);
 
-				_target.RaiseEvent(UIElement.PointerPressedEvent, args);
-
-				return args.Handled;
+				return _target.RaiseEvent(UIElement.PointerPressedEvent, args);
 			}
 			catch (Exception ex)
 			{
@@ -134,9 +130,7 @@ namespace Windows.UI.Xaml
 			{
 				var args = GetPointerEventArgs(e, 0);
 
-				_target.RaiseEvent(UIElement.PointerReleasedEvent, args);
-
-				return args.Handled;
+				return _target.RaiseEvent(UIElement.PointerReleasedEvent, args);
 			}
 			catch (Exception ex)
 			{
@@ -151,9 +145,7 @@ namespace Windows.UI.Xaml
 			{
 				var args = GetPointerEventArgs(e, 0);
 
-				_target.RaiseEvent(UIElement.PointerMovedEvent, args);
-
-				return args.Handled;
+				return _target.RaiseEvent(UIElement.PointerMovedEvent, args);
 			}
 			catch (Exception ex)
 			{
@@ -168,9 +160,7 @@ namespace Windows.UI.Xaml
 			{
 				var args = GetPointerEventArgs(e, 0);
 
-				_target.RaiseEvent(UIElement.PointerExitedEvent, args);
-
-				return args.Handled;
+				return _target.RaiseEvent(UIElement.PointerExitedEvent, args);
 			}
 			catch (Exception ex)
 			{
@@ -185,9 +175,7 @@ namespace Windows.UI.Xaml
 			{
 				var args = GetPointerEventArgs(p0, 0);
 
-				_target.RaiseEvent(UIElement.PointerEnteredEvent, args);
-
-				return args.Handled;
+				return _target.RaiseEvent(UIElement.PointerEnteredEvent, args);
 			}
 			catch (Exception ex)
 			{
@@ -202,9 +190,7 @@ namespace Windows.UI.Xaml
 			{
 				var args = GetPointerEventArgs(e, 0);
 
-				_target.RaiseEvent(UIElement.PointerCanceledEvent, args);
-
-				return args.Handled;
+				return _target.RaiseEvent(UIElement.PointerCanceledEvent, args);
 			}
 			catch (Exception ex)
 			{
@@ -218,7 +204,8 @@ namespace Windows.UI.Xaml
 			return new PointerRoutedEventArgs(ev)
 			{
 				OriginalSource = this,
-				Pointer = ev.GetPointer(pointerIndex)
+				Pointer = ev.GetPointer(pointerIndex),
+				CanBubbleNatively = true
 			};
 		}
 	}

@@ -1,5 +1,6 @@
 ﻿using Uno.UI;
 using Uno.UI.Controls;
+using Uno.UI.Xaml.Input;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -100,31 +101,6 @@ namespace Windows.UI.Xaml
 		partial void RemoveHandlerPartial(RoutedEvent routedEvent, object handler)
 		{
 			_gestures.Value.UpdateShouldHandle(routedEvent, HasHandler(routedEvent));
-		}
-
-		private static bool IsBubblingNatively(RoutedEvent routedEvent, RoutedEventArgs args)
-		{
-			if(!(args is ICancellableRoutedEventArgs cancellable))
-			{
-				return false;
-			}
-
-			if(cancellable.Handled)
-			{
-				return true; // no need to bubble up
-			}
-
-			// "routed" Keyboard events not supported yet.
-			//if(routedEvent == KeyDownEvent)
-			//{
-			//	return false;
-			//}
-			//if (routedEvent == KeyUpEvent)
-			//{
-			//	return false;
-			//}
-
-			return !cancellable.Handled;
 		}
 
 		protected virtual void OnVisibilityChanged(Visibility oldValue, Visibility newValue)

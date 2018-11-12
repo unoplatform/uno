@@ -11,7 +11,8 @@ using Windows.UI.Xaml.Media;
 using Windows.UI.Text;
 using Windows.UI.Xaml.Markup;
 using System.ComponentModel;
-
+using System.Reflection;
+using Uno.UI.Xaml;
 #if XAMARIN_ANDROID
 using View = Android.Views.View;
 using ViewGroup = Android.Views.ViewGroup;
@@ -147,26 +148,144 @@ namespace Windows.UI.Xaml.Controls
 
 			base.OnLoaded();
 
-			PointerPressed += OnPointerPressed;
-			PointerReleased += OnPointerReleased;
-			PointerMoved += OnPointerMoved;
-			PointerEntered += OnPointerEntered;
-			PointerExited += OnPointerExited;
-			PointerCanceled += OnPointerCanceled;
-			PointerCaptureLost += OnPointerCaptureLost;
+			var implementedEvents = GetImplementedRoutedEvents(GetType());
+
+			if (implementedEvents.HasFlag(RoutedEventFlag.PointerPressed))
+			{
+				PointerPressed += OnPointerPressed;
+			}
+
+			if (implementedEvents.HasFlag(RoutedEventFlag.PointerReleased))
+			{
+				PointerReleased += OnPointerReleased;
+			}
+
+			if (implementedEvents.HasFlag(RoutedEventFlag.PointerMoved))
+			{
+				PointerMoved += OnPointerMoved;
+			}
+
+			if (implementedEvents.HasFlag(RoutedEventFlag.PointerEntered))
+			{
+				PointerEntered += OnPointerEntered;
+			}
+
+			if (implementedEvents.HasFlag(RoutedEventFlag.PointerExited))
+			{
+				PointerExited += OnPointerExited;
+			}
+
+			if (implementedEvents.HasFlag(RoutedEventFlag.PointerCanceled))
+			{
+				PointerCanceled += OnPointerCanceled;
+			}
+
+			if (implementedEvents.HasFlag(RoutedEventFlag.PointerCaptureLost))
+			{
+				PointerCaptureLost += OnPointerCaptureLost;
+			}
+
+			if (implementedEvents.HasFlag(RoutedEventFlag.Tapped))
+			{
+				Tapped += OnTapped;
+			}
+
+			if (implementedEvents.HasFlag(RoutedEventFlag.DoubleTapped))
+			{
+				DoubleTapped += OnDoubleTapped;
+			}
+
+			if (implementedEvents.HasFlag(RoutedEventFlag.KeyDown))
+			{
+				KeyDown += OnKeyDown;
+			}
+
+			if (implementedEvents.HasFlag(RoutedEventFlag.KeyUp))
+			{
+				KeyUp += OnKeyUp;
+			}
+
+			if (implementedEvents.HasFlag(RoutedEventFlag.GotFocus))
+			{
+				GotFocus += OnGotFocus;
+			}
+
+			if (implementedEvents.HasFlag(RoutedEventFlag.LostFocus))
+			{
+				LostFocus += OnLostFocus;
+			}
 		}
 
 		protected override void OnUnloaded()
 		{
 			base.OnUnloaded();
-			
-			PointerPressed -= OnPointerPressed;
-			PointerReleased -= OnPointerReleased;
-			PointerMoved -= OnPointerMoved;
-			PointerEntered -= OnPointerEntered;
-			PointerExited -= OnPointerExited;
-			PointerCanceled -= OnPointerCanceled;
-			PointerCaptureLost -= OnPointerCaptureLost;
+
+			var implementedEvents = GetImplementedRoutedEvents(GetType());
+
+			if (implementedEvents.HasFlag(RoutedEventFlag.PointerPressed))
+			{
+				PointerPressed -= OnPointerPressed;
+			}
+
+			if (implementedEvents.HasFlag(RoutedEventFlag.PointerReleased))
+			{
+				PointerReleased -= OnPointerReleased;
+			}
+
+			if (implementedEvents.HasFlag(RoutedEventFlag.PointerMoved))
+			{
+				PointerMoved -= OnPointerMoved;
+			}
+
+			if (implementedEvents.HasFlag(RoutedEventFlag.PointerEntered))
+			{
+				PointerEntered -= OnPointerEntered;
+			}
+
+			if (implementedEvents.HasFlag(RoutedEventFlag.PointerExited))
+			{
+				PointerExited -= OnPointerExited;
+			}
+
+			if (implementedEvents.HasFlag(RoutedEventFlag.PointerCanceled))
+			{
+				PointerCanceled -= OnPointerCanceled;
+			}
+
+			if (implementedEvents.HasFlag(RoutedEventFlag.PointerCaptureLost))
+			{
+				PointerCaptureLost -= OnPointerCaptureLost;
+			}
+
+			if (implementedEvents.HasFlag(RoutedEventFlag.Tapped))
+			{
+				Tapped -= OnTapped;
+			}
+
+			if (implementedEvents.HasFlag(RoutedEventFlag.DoubleTapped))
+			{
+				DoubleTapped -= OnDoubleTapped;
+			}
+
+			if (implementedEvents.HasFlag(RoutedEventFlag.KeyDown))
+			{
+				KeyDown += OnKeyDown;
+			}
+
+			if (implementedEvents.HasFlag(RoutedEventFlag.KeyUp))
+			{
+				KeyUp += OnKeyUp;
+			}
+
+			if (implementedEvents.HasFlag(RoutedEventFlag.GotFocus))
+			{
+				GotFocus -= OnGotFocus;
+			}
+
+			if (implementedEvents.HasFlag(RoutedEventFlag.LostFocus))
+			{
+				LostFocus -= OnLostFocus;
+			}
 		}
 
 		/// <summary>
@@ -627,6 +746,11 @@ namespace Windows.UI.Xaml.Controls
 
 		protected virtual void OnFocusStateChanged(FocusState oldValue, FocusState newValue)
 		{
+			if (newValue == FocusState.Unfocused && oldValue == newValue)
+			{
+				return;
+			}
+
 			OnFocusStateChangedPartial(oldValue, newValue);
 #if XAMARIN || __WASM__
 			FocusManager.OnFocusChanged(this, newValue);
@@ -635,39 +759,35 @@ namespace Windows.UI.Xaml.Controls
 			var eventArgs = new RoutedEventArgs
 			{
 				OriginalSource = this,
+				CanBubbleNatively = false
 			};
 
 			if (newValue == FocusState.Unfocused)
 			{
-				OnLostFocus(eventArgs);
 				RaiseEvent(LostFocusEvent, eventArgs);
 			}
 			else
 			{
-				OnGotFocus(eventArgs);
 				RaiseEvent(GotFocusEvent, eventArgs);
 			}
 		}
 
 		partial void OnFocusStateChangedPartial(FocusState oldValue, FocusState newValue);
 
+		protected virtual void OnPointerPressed(PointerRoutedEventArgs args) { }
+		protected virtual void OnPointerReleased(PointerRoutedEventArgs args) { }
+		protected virtual void OnPointerEntered(PointerRoutedEventArgs args) { }
+		protected virtual void OnPointerExited(PointerRoutedEventArgs args) { }
+		protected virtual void OnPointerMoved(PointerRoutedEventArgs args) { }
+		protected virtual void OnPointerCanceled(PointerRoutedEventArgs args) { }
+		protected virtual void OnPointerCaptureLost(PointerRoutedEventArgs args) { }
+		protected virtual void OnTapped(TappedRoutedEventArgs e) { }
+		protected virtual void OnDoubleTapped(DoubleTappedRoutedEventArgs e) { }
+		protected virtual void OnKeyDown(KeyRoutedEventArgs args) { }
+		protected virtual void OnKeyUp(KeyRoutedEventArgs args) { }
+		protected virtual void OnGotFocus(RoutedEventArgs e) { }
 		protected virtual void OnLostFocus(RoutedEventArgs e) { }
 
-		protected virtual void OnGotFocus(RoutedEventArgs e) { }
-
-		protected virtual void OnPointerPressed(PointerRoutedEventArgs args) { }
-
-		protected virtual void OnPointerReleased(PointerRoutedEventArgs args) { }
-
-		protected virtual void OnPointerEntered(PointerRoutedEventArgs args) { }
-
-		protected virtual void OnPointerExited(PointerRoutedEventArgs args) { }
-
-		protected virtual void OnPointerMoved(PointerRoutedEventArgs args) { }
-
-		protected virtual void OnPointerCanceled(PointerRoutedEventArgs args) { }
-
-		protected virtual void OnPointerCaptureLost(PointerRoutedEventArgs args) { }
 
 		private void OnPointerPressed(object sender, PointerRoutedEventArgs args)
 		{
@@ -702,6 +822,147 @@ namespace Windows.UI.Xaml.Controls
 		private void OnPointerCaptureLost(object sender, PointerRoutedEventArgs args)
 		{
 			OnPointerCaptureLost(args);
+		}
+
+		private void OnTapped(object sender, TappedRoutedEventArgs args)
+		{
+			OnTapped(args);
+		}
+
+		private void OnDoubleTapped(object sender, DoubleTappedRoutedEventArgs args)
+		{
+			OnDoubleTapped(args);
+		}
+
+		private void OnKeyDown(object sender, KeyRoutedEventArgs args)
+		{
+			OnKeyDown(args);
+		}
+
+		private void OnKeyUp(object sender, KeyRoutedEventArgs args)
+		{
+			OnKeyUp(args);
+		}
+
+		private void OnGotFocus(object sender, RoutedEventArgs args)
+		{
+			OnGotFocus(args);
+		}
+
+		private void OnLostFocus(object sender, RoutedEventArgs args)
+		{
+			OnLostFocus(args);
+		}
+
+		private static readonly Dictionary<Type, RoutedEventFlag> ImplementedRoutedEvents
+			= new Dictionary<Type, RoutedEventFlag>();
+
+		protected static RoutedEventFlag GetImplementedRoutedEvents(Type type)
+		{
+			// TODO: GetImplementedRoutedEvents() should be evaluated at compile-time
+			// and the result placed in a partial file.
+
+			if (ImplementedRoutedEvents.TryGetValue(type, out var result))
+			{
+				return result;
+			}
+
+			result = RoutedEventFlag.None;
+
+			var baseClass = type.BaseType;
+			if (baseClass == null || type == typeof(Control) || type == typeof(UIElement))
+			{
+				return result;
+			}
+
+			// TODO: make those static members
+			var pointerArgs = new[] {typeof(PointerRoutedEventArgs)};
+			var tappedArgs = new[] {typeof(TappedRoutedEventArgs)};
+			var doubleTappedArgs = new[] { typeof(DoubleTappedRoutedEventArgs) };
+			var keyArgs = new[] { typeof(KeyRoutedEventArgs) };
+			var routedArgs = new[] { typeof(RoutedEventArgs) };
+
+			if (__GetIsIOverrideImplemented(type, "OnPointerPressed", pointerArgs))
+			{
+				result |= RoutedEventFlag.PointerPressed;
+			}
+
+			if (__GetIsIOverrideImplemented(type, "OnPointerReleased", pointerArgs))
+			{
+				result |= RoutedEventFlag.PointerReleased;
+			}
+
+			if (__GetIsIOverrideImplemented(type, "OnPointerEntered", pointerArgs))
+			{
+				result |= RoutedEventFlag.PointerEntered;
+			}
+
+			if (__GetIsIOverrideImplemented(type, "OnPointerExited", pointerArgs))
+			{
+				result |= RoutedEventFlag.PointerExited;
+			}
+
+			if (__GetIsIOverrideImplemented(type, "OnPointerMoved", pointerArgs))
+			{
+				result |= RoutedEventFlag.PointerMoved;
+			}
+
+			if (__GetIsIOverrideImplemented(type, "OnPointerCanceled", pointerArgs))
+			{
+				result |= RoutedEventFlag.PointerCanceled;
+			}
+
+			if (__GetIsIOverrideImplemented(type, "OnPointerCaptureLost", pointerArgs))
+			{
+				result |= RoutedEventFlag.PointerCaptureLost;
+			}
+
+			if (__GetIsIOverrideImplemented(type, "OnTapped", tappedArgs))
+			{
+				result |= RoutedEventFlag.Tapped;
+			}
+
+			if (__GetIsIOverrideImplemented(type, "OnDoubleTapped", doubleTappedArgs))
+			{
+				result |= RoutedEventFlag.DoubleTapped;
+			}
+
+			if (__GetIsIOverrideImplemented(type, "OnKeyDown", keyArgs))
+			{
+				result |= RoutedEventFlag.KeyDown;
+			}
+
+			if (__GetIsIOverrideImplemented(type, "OnKeyUp", keyArgs))
+			{
+				result |= RoutedEventFlag.KeyUp;
+			}
+
+			if (__GetIsIOverrideImplemented(type, "OnLostFocus", routedArgs))
+			{
+				result |= RoutedEventFlag.LostFocus;
+			}
+
+			if (__GetIsIOverrideImplemented(type, "OnGotFocus", routedArgs))
+			{
+				result |= RoutedEventFlag.GotFocus;
+			}
+
+			return ImplementedRoutedEvents[type] = result;
+		}
+
+		private static bool __GetIsIOverrideImplemented(Type type, string name, Type[] args)
+		{
+			var method = type
+				.GetMethod(
+					name,
+					BindingFlags.NonPublic | BindingFlags.Instance,
+					null,
+					args,
+					null);
+
+			return method != null
+				&& method.IsVirtual
+				&& method.DeclaringType != typeof(Control);
 		}
 	}
 }

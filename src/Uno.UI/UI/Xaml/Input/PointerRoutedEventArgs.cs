@@ -3,13 +3,14 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using Uno;
+using Uno.UI.Xaml.Input;
 using Windows.System;
 
 namespace Windows.UI.Xaml.Input
 {
 	public sealed partial class PointerRoutedEventArgs : RoutedEventArgs, ICancellableRoutedEventArgs
 	{
-		private Point _point;
+		private readonly Point _point;
 
 		internal PointerRoutedEventArgs()
 		{

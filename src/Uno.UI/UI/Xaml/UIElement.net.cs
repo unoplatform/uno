@@ -45,10 +45,5 @@ namespace Windows.UI.Xaml
 		protected virtual void OnVisibilityChanged(Visibility oldValue, Visibility newVisibility)
 		{
 		}
-
-		private static bool IsBubblingNatively(RoutedEvent routedEvent, RoutedEventArgs args)
-		{
-			return true;
-		}
 	}
 }

@@ -594,7 +594,7 @@
 		 * left pointer event filter to be used with registerEventOnView
 		 * @param evt
 		 */
-		private leftPointerEventFilter(evt: any): boolean {
+		private leftPointerEventFilter(evt: PointerEvent): boolean {
 			return evt ? evt.eventPhase === 2 || evt.eventPhase === 3 && (!evt.button || evt.button === 0) : false;
 		}
 
@@ -603,7 +603,7 @@
 		 * use for most routed events
 		 * @param evt
 		 */
-		private defaultEventFilter(evt: any): boolean {
+		private defaultEventFilter(evt: Event): boolean {
 			return evt ? evt.eventPhase === 2 || evt.eventPhase === 3 : false;
 		}
 
@@ -631,7 +631,7 @@
 		 * pointer event extractor to be used with registerEventOnView
 		 * @param evt
 		 */
-		private pointerEventExtractor(evt: any): string {
+		private pointerEventExtractor(evt: PointerEvent): string {
 			return evt
 				? `${evt.pointerId};${evt.clientX};${evt.clientY};${(evt.ctrlKey ? "1" : "0")};${(evt.shiftKey ? "1" : "0")};${evt.button};${evt.pointerType}`
 				: "";
@@ -641,15 +641,25 @@
 		 * keyboard event extractor to be used with registerEventOnView
 		 * @param evt
 		 */
-		private keyboardEventExtractor(evt: any): string {
+		private keyboardEventExtractor(evt: Event): string {
 			return (evt instanceof KeyboardEvent) ? evt.key : "0";
+		}
+
+		/**
+		 * tapped (mouse clicked / double clicked) event extractor to be used with registerEventOnView
+		 * @param evt
+		 */
+		private tappedEventExtractor(evt: MouseEvent): string {
+			return evt
+				? `0;${evt.clientX};${evt.clientY};${(evt.ctrlKey ? "1" : "0")};${(evt.shiftKey ? "1" : "0")};${evt.button};mouse`
+				: "";
 		}
 
 		/**
 		 * Gets the event extractor function. See UIElement.HtmlEventExtractor
 		 * @param eventExtractorName an event extractor name.
 		 */
-		private getEventExtractor(eventExtractorName: string): any {
+		private getEventExtractor(eventExtractorName: string): (evt: Event) => string {
 
 			if (eventExtractorName) {
 				switch (eventExtractorName) {
@@ -658,6 +668,9 @@
 
 					case "KeyboardEventExtractor":
 						return this.keyboardEventExtractor;
+
+					case "TappedEventExtractor":
+						return this.tappedEventExtractor;
 				}
 
 				throw `Event filter ${eventExtractorName} is not supported`;

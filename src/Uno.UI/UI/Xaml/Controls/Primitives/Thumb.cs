@@ -73,42 +73,46 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		protected override void OnPointerPressed(PointerRoutedEventArgs args)
 		{
 			base.OnPointerPressed(args);
-			args.Handled = true;
+
 			if (ShouldCapturePointer)
 			{
+				args.Handled = true;
 				CapturePointer(args.Pointer);
+				StartDrag(args.GetCurrentPoint(this).Position);
 			}
-			StartDrag(args.GetCurrentPoint(this).Position);
 		}
 
 		protected override void OnPointerCanceled(PointerRoutedEventArgs args)
 		{
 			base.OnPointerCanceled(args);
-			args.Handled = true;
+
 			if (ShouldCapturePointer)
 			{
+				args.Handled = true;
 				ReleasePointerCapture(args.Pointer);
+				CompleteDrag(args.GetCurrentPoint(this).Position);
 			}
-			CompleteDrag(args.GetCurrentPoint(this).Position);
 		}
 
 		protected override void OnPointerReleased(PointerRoutedEventArgs args)
 		{
 			base.OnPointerReleased(args);
-			args.Handled = true;
+
 			if (ShouldCapturePointer)
 			{
+				args.Handled = true;
 				ReleasePointerCapture(args.Pointer);
+				CompleteDrag(args.GetCurrentPoint(this).Position);
 			}
-			CompleteDrag(args.GetCurrentPoint(this).Position);
 		}
 
 		protected override void OnPointerMoved(PointerRoutedEventArgs args)
 		{
 			base.OnPointerMoved(args);
-			args.Handled = true;
+
 			if (ShouldCapturePointer && IsPointerCaptured)
 			{
+				args.Handled = true;
 				DeltaDrag(args.GetCurrentPoint(this).Position);
 			}
 		}

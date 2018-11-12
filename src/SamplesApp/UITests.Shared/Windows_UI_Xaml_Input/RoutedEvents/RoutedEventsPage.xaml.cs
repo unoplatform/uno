@@ -27,6 +27,8 @@ namespace SamplesApp.Samples.RoutedEvents
 			list.Items.Add("B");
 			list.Items.Add("C");
 			list.Items.Add("D");
+
+			(new Slider()).Value = 3;
 		}
 
 		private void HookEvents(Grid grid, TextBlock textBlock)
@@ -112,6 +114,14 @@ namespace SamplesApp.Samples.RoutedEvents
 					e.Handled = true;
 				}
 			};
+		}
+
+		protected override void OnTapped(TappedRoutedEventArgs e)
+		{
+			base.OnTapped(e);
+#if !WINDOWS_UWP
+			Console.WriteLine("Tapped!");
+#endif
 		}
 	}
 }

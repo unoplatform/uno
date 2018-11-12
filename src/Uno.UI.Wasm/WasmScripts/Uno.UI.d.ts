@@ -306,6 +306,11 @@ declare namespace Uno.UI {
          */
         private keyboardEventExtractor(evt);
         /**
+         * tapped (mouse clicked / double clicked) event extractor to be used with registerEventOnView
+         * @param evt
+         */
+        private tappedEventExtractor(evt);
+        /**
          * Gets the event extractor function. See UIElement.HtmlEventExtractor
          * @param eventExtractorName an event extractor name.
          */

@@ -8,7 +8,7 @@ using Windows.UI.Xaml.Media;
 
 namespace Windows.UI.Xaml.Input
 {
-	public partial class PointerRoutedEventArgs : UIElement.IHandlableEventArgs
+	public partial class PointerRoutedEventArgs
 	{
 		public PointerPoint GetCurrentPoint(UIElement relativeTo)
 		{

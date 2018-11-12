@@ -11,10 +11,8 @@ namespace Windows.UI.Xaml.Controls
 {
 	public partial class ToggleSwitch
 	{
-		protected override void OnLoaded()
+		partial void OnLoadedPartial()
 		{
-			base.OnLoaded();
-
 			Clickable = true;
 			Focusable = true;
 			FocusableInTouchMode = true;

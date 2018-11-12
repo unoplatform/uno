@@ -27,7 +27,6 @@ namespace Windows.UI.Xaml.Controls
 	{
 		private int _keyboardAccessDelay = 50;
 		private TextBoxView _textBoxView;
-		//private readonly SerialDisposable _keyPressDisposable = new SerialDisposable();
 		private readonly SerialDisposable _keyboardDisposable = new SerialDisposable();
 
 		public bool PreventKeyboardDisplayOnProgrammaticFocus
@@ -51,8 +50,6 @@ namespace Windows.UI.Xaml.Controls
 		protected override void OnUnloaded()
 		{
 			base.OnUnloaded();
-
-			//_keyPressDisposable.Disposable = null;
 
 			if (_textBoxView != null)
 			{
