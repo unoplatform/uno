@@ -1,4 +1,4 @@
-﻿namespace Windows.UI.Xaml.Input
+﻿namespace Uno.UI.Xaml.Input
 {
 	internal interface ICancellableRoutedEventArgs
 	{

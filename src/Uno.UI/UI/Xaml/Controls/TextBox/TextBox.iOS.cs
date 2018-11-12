@@ -137,15 +137,16 @@ namespace Windows.UI.Xaml.Controls
 		{
 			var keyRoutedEventArgs = new KeyRoutedEventArgs()
 			{
-				Key = key.ToVirtualKey()
+				Key = key.ToVirtualKey(),
+				CanBubbleNatively = true
 			};
 
-			RaiseEvent(KeyDownEvent, keyRoutedEventArgs);
-			var downHandled = keyRoutedEventArgs.Handled;
-			keyRoutedEventArgs.Handled = false; // reset to unhandled
-			RaiseEvent(KeyUpEvent, keyRoutedEventArgs);
+			var downHandled = RaiseEvent(KeyDownEvent, keyRoutedEventArgs);
 
-			return downHandled || keyRoutedEventArgs.Handled;
+			keyRoutedEventArgs.Handled = false; // reset to unhandled for Up
+			var upHandled = RaiseEvent(KeyUpEvent, keyRoutedEventArgs);
+
+			return downHandled || upHandled;
 		}
 
 		partial void OnInputScopeChangedPartial(DependencyPropertyChangedEventArgs e)

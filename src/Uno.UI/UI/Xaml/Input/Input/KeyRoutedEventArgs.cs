@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using Windows.System;
+using Uno.UI.Xaml.Input;
 
 namespace Windows.UI.Xaml.Input
 {

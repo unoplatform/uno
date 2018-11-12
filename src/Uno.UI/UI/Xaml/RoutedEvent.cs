@@ -1,19 +1,27 @@
-﻿using System.Runtime.CompilerServices;
+﻿using System.Diagnostics;
+using System.Runtime.CompilerServices;
+using Uno.UI.Xaml;
 
 namespace Windows.UI.Xaml
 {
+	[DebuggerDisplay("{" + nameof(Name) + "}")]
 	public partial class RoutedEvent
 	{
-		public string Name { get; private set; }
+		public string Name { get; }
+
+		internal RoutedEventFlag Flag { get; }
 
 		public RoutedEvent([CallerMemberName] string name = null)
+			: this(RoutedEventFlag.None, name)
 		{
-			Name = name;
 		}
 
-		public override string ToString()
+		internal RoutedEvent(
+			RoutedEventFlag flag,
+			[CallerMemberName] string name = null)
 		{
-			return Name;
+			Flag = flag;
+			Name = name;
 		}
 	}
 }

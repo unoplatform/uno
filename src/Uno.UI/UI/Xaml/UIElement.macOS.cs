@@ -265,11 +265,6 @@ namespace Windows.UI.Xaml
 			return value;
 		}
 
-		private static bool IsBubblingNatively(RoutedEvent routedEvent, RoutedEventArgs args)
-		{
-			return args is ICancellableRoutedEventArgs cancellable && !cancellable.Handled;
-		}
-
 #region DoubleTapped event
 		private void RegisterDoubleTapped(DoubleTappedEventHandler handler)
 		{

@@ -9,6 +9,7 @@ using Android.Support.V4.View;
 using Windows.UI.Xaml.Media;
 using Android.Views;
 using System.Linq;
+using Uno.UI.Xaml.Input;
 
 namespace Windows.UI.Xaml
 {
@@ -80,31 +81,6 @@ namespace Windows.UI.Xaml
 		partial void RemoveHandlerPartial(RoutedEvent routedEvent, object handler)
 		{
 			_gestures.Value.UpdateShouldHandle(routedEvent, HasHandler(routedEvent));
-		}
-
-		private static bool IsBubblingNatively(RoutedEvent routedEvent, RoutedEventArgs args)
-		{
-			if(!(args is ICancellableRoutedEventArgs cancellable))
-			{
-				return false;
-			}
-
-			if(cancellable.Handled)
-			{
-				return true; // no need to bubble up
-			}
-
-			// "routed" Keyboard events not supported yet.
-			//if(routedEvent == KeyDownEvent)
-			//{
-			//	return false;
-			//}
-			//if (routedEvent == KeyUpEvent)
-			//{
-			//	return false;
-			//}
-
-			return !cancellable.Handled;
 		}
 
 		protected virtual void OnVisibilityChanged(Visibility oldValue, Visibility newValue)

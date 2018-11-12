@@ -65,7 +65,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-        protected override void OnTextChanged(Java.Lang.ICharSequence text, int start, int lengthBefore, int lengthAfter)
+		protected override void OnTextChanged(Java.Lang.ICharSequence text, int start, int lengthBefore, int lengthAfter)
 		{
 			if (!_isRunningTextChanged && _isInitialized)
 			{
