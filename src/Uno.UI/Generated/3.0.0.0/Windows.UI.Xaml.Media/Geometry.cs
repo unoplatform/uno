@@ -2,26 +2,13 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml.Media
 {
-	#if false || false || false || false
+	#if false || false || false || false || false
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class Geometry : global::Windows.UI.Xaml.DependencyObject
 	{
-		#if false || false || false || false
-		[global::Uno.NotImplemented]
-		public  global::Windows.UI.Xaml.Media.Transform Transform
-		{
-			get
-			{
-				return (global::Windows.UI.Xaml.Media.Transform)this.GetValue(TransformProperty);
-			}
-			set
-			{
-				this.SetValue(TransformProperty, value);
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		// Skipping already declared property Transform
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Foundation.Rect Bounds
 		{
@@ -31,7 +18,7 @@ namespace Windows.UI.Xaml.Media
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.Media.Geometry Empty
 		{
@@ -41,7 +28,7 @@ namespace Windows.UI.Xaml.Media
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static double StandardFlatteningTolerance
 		{
@@ -51,14 +38,7 @@ namespace Windows.UI.Xaml.Media
 			}
 		}
 		#endif
-		#if false || false || false || false
-		[global::Uno.NotImplemented]
-		public static global::Windows.UI.Xaml.DependencyProperty TransformProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			"Transform", typeof(global::Windows.UI.Xaml.Media.Transform), 
-			typeof(global::Windows.UI.Xaml.Media.Geometry), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.Transform)));
-		#endif
+		// Skipping already declared property TransformProperty
 		// Forced skipping of method Windows.UI.Xaml.Media.Geometry.Transform.get
 		// Forced skipping of method Windows.UI.Xaml.Media.Geometry.Transform.set
 		// Forced skipping of method Windows.UI.Xaml.Media.Geometry.Bounds.get

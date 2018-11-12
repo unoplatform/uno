@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml.Media.Animation
 {
-	#if false || false || false || false
+	#if false || false || false || false || false
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class Timeline : global::Windows.UI.Xaml.DependencyObject
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  double SpeedRatio
 		{
@@ -21,63 +21,11 @@ namespace Windows.UI.Xaml.Media.Animation
 			}
 		}
 		#endif
-		#if false || false || false || false
-		[global::Uno.NotImplemented]
-		public  global::Windows.UI.Xaml.Media.Animation.RepeatBehavior RepeatBehavior
-		{
-			get
-			{
-				return (global::Windows.UI.Xaml.Media.Animation.RepeatBehavior)this.GetValue(RepeatBehaviorProperty);
-			}
-			set
-			{
-				this.SetValue(RepeatBehaviorProperty, value);
-			}
-		}
-		#endif
-		#if false || false || false || false
-		[global::Uno.NotImplemented]
-		public  global::Windows.UI.Xaml.Media.Animation.FillBehavior FillBehavior
-		{
-			get
-			{
-				return (global::Windows.UI.Xaml.Media.Animation.FillBehavior)this.GetValue(FillBehaviorProperty);
-			}
-			set
-			{
-				this.SetValue(FillBehaviorProperty, value);
-			}
-		}
-		#endif
-		#if false || false || false || false
-		[global::Uno.NotImplemented]
-		public  global::Windows.UI.Xaml.Duration Duration
-		{
-			get
-			{
-				return (global::Windows.UI.Xaml.Duration)this.GetValue(DurationProperty);
-			}
-			set
-			{
-				this.SetValue(DurationProperty, value);
-			}
-		}
-		#endif
-		#if false || false || false || false
-		[global::Uno.NotImplemented]
-		public  global::System.TimeSpan? BeginTime
-		{
-			get
-			{
-				return (global::System.TimeSpan?)this.GetValue(BeginTimeProperty);
-			}
-			set
-			{
-				this.SetValue(BeginTimeProperty, value);
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		// Skipping already declared property RepeatBehavior
+		// Skipping already declared property FillBehavior
+		// Skipping already declared property Duration
+		// Skipping already declared property BeginTime
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  bool AutoReverse
 		{
@@ -91,7 +39,7 @@ namespace Windows.UI.Xaml.Media.Animation
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static bool AllowDependentAnimations
 		{
@@ -105,7 +53,7 @@ namespace Windows.UI.Xaml.Media.Animation
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty AutoReverseProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
@@ -113,39 +61,11 @@ namespace Windows.UI.Xaml.Media.Animation
 			typeof(global::Windows.UI.Xaml.Media.Animation.Timeline), 
 			new FrameworkPropertyMetadata(default(bool)));
 		#endif
-		#if false || false || false || false
-		[global::Uno.NotImplemented]
-		public static global::Windows.UI.Xaml.DependencyProperty BeginTimeProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			"BeginTime", typeof(global::System.TimeSpan?), 
-			typeof(global::Windows.UI.Xaml.Media.Animation.Timeline), 
-			new FrameworkPropertyMetadata(default(global::System.TimeSpan?)));
-		#endif
-		#if false || false || false || false
-		[global::Uno.NotImplemented]
-		public static global::Windows.UI.Xaml.DependencyProperty DurationProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			"Duration", typeof(global::Windows.UI.Xaml.Duration), 
-			typeof(global::Windows.UI.Xaml.Media.Animation.Timeline), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Duration)));
-		#endif
-		#if false || false || false || false
-		[global::Uno.NotImplemented]
-		public static global::Windows.UI.Xaml.DependencyProperty FillBehaviorProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			"FillBehavior", typeof(global::Windows.UI.Xaml.Media.Animation.FillBehavior), 
-			typeof(global::Windows.UI.Xaml.Media.Animation.Timeline), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.Animation.FillBehavior)));
-		#endif
-		#if false || false || false || false
-		[global::Uno.NotImplemented]
-		public static global::Windows.UI.Xaml.DependencyProperty RepeatBehaviorProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			"RepeatBehavior", typeof(global::Windows.UI.Xaml.Media.Animation.RepeatBehavior), 
-			typeof(global::Windows.UI.Xaml.Media.Animation.Timeline), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.Animation.RepeatBehavior)));
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		// Skipping already declared property BeginTimeProperty
+		// Skipping already declared property DurationProperty
+		// Skipping already declared property FillBehaviorProperty
+		// Skipping already declared property RepeatBehaviorProperty
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty SpeedRatioProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
@@ -153,13 +73,7 @@ namespace Windows.UI.Xaml.Media.Animation
 			typeof(global::Windows.UI.Xaml.Media.Animation.Timeline), 
 			new FrameworkPropertyMetadata(default(double)));
 		#endif
-		#if false || false || false || false
-		[global::Uno.NotImplemented]
-		protected Timeline() : base()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Media.Animation.Timeline", "Timeline.Timeline()");
-		}
-		#endif
+		// Skipping already declared method Windows.UI.Xaml.Media.Animation.Timeline.Timeline()
 		// Forced skipping of method Windows.UI.Xaml.Media.Animation.Timeline.Timeline()
 		// Forced skipping of method Windows.UI.Xaml.Media.Animation.Timeline.AutoReverse.get
 		// Forced skipping of method Windows.UI.Xaml.Media.Animation.Timeline.AutoReverse.set
@@ -183,21 +97,6 @@ namespace Windows.UI.Xaml.Media.Animation
 		// Forced skipping of method Windows.UI.Xaml.Media.Animation.Timeline.SpeedRatioProperty.get
 		// Forced skipping of method Windows.UI.Xaml.Media.Animation.Timeline.FillBehaviorProperty.get
 		// Forced skipping of method Windows.UI.Xaml.Media.Animation.Timeline.RepeatBehaviorProperty.get
-		#if false || false || false || false
-		[global::Uno.NotImplemented]
-		public  event global::System.EventHandler<object> Completed
-		{
-			[global::Uno.NotImplemented]
-			add
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Media.Animation.Timeline", "event EventHandler<object> Timeline.Completed");
-			}
-			[global::Uno.NotImplemented]
-			remove
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Media.Animation.Timeline", "event EventHandler<object> Timeline.Completed");
-			}
-		}
-		#endif
+		// Skipping already declared event Windows.UI.Xaml.Media.Animation.Timeline.Completed
 	}
 }

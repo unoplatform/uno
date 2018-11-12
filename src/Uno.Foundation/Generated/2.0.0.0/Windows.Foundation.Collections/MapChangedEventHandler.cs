@@ -2,7 +2,5 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Foundation.Collections
 {
-	#if false || false || false || false
-	public delegate void MapChangedEventHandler<K, V>(global::Windows.Foundation.Collections.IObservableMap<K, V> @sender, global::Windows.Foundation.Collections.IMapChangedEventArgs<K> @event);
-	#endif
+	// Skipping already declared delegate Windows.Foundation.Collections.MapChangedEventHandler<K, V>
 }

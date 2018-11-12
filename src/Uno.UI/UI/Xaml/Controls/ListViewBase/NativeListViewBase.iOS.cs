@@ -74,6 +74,8 @@ namespace Windows.UI.Xaml.Controls
 		/// </summary>
 		private bool _listEmptyLastRefresh = false;
 		private bool _isReloadDataDispatched = false;
+
+		private readonly SerialDisposable _scrollIntoViewSubscription = new SerialDisposable();
 		#endregion
 
 		#region Properties
@@ -149,6 +151,8 @@ namespace Windows.UI.Xaml.Controls
 				}
 			}
 		}
+
+		internal IEnumerable<SelectorItem> CachedItemViews => Enumerable.Empty<SelectorItem>();
 
 		public NativeListViewBase() :
 			this(new RectangleF(),
@@ -510,7 +514,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			ScrollIntoView(item, ScrollIntoViewAlignment.Default);
 		}
-		
+
 		public void ScrollIntoView(object item, ScrollIntoViewAlignment alignment)
 		{
 			//Check if item is a group
@@ -532,11 +536,14 @@ namespace Windows.UI.Xaml.Controls
 			{
 				if (IndexPathsForVisibleItems.Length == 0)
 				{
+					var cd = new CancellationDisposable();
+					_scrollIntoViewSubscription.Disposable = cd;
 					//Item is present but no items are visible, probably being called on first load. Dispatch so that it actually does something.
-						Dispatcher.RunAsync(CoreDispatcherPriority.Normal, DispatchedScrollInner);
+					Dispatcher.RunAsync(CoreDispatcherPriority.Normal, DispatchedScrollInner).AsTask(cd.Token);
 				}
 				else
 				{
+					_scrollIntoViewSubscription.Disposable = null; //Cancel any pending dispatched ScrollIntoView
 					ScrollInner();
 				}
 

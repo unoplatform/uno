@@ -2,18 +2,14 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml.Controls.Maps
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+	#if false || false || false || false || false
+	#if false || false || false || false || false
 	[global::Uno.NotImplemented]
 	#endif
 	public   enum MapVisibleRegionKind 
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
-		Near,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
-		Full,
-		#endif
+		// Skipping already declared field Windows.UI.Xaml.Controls.Maps.MapVisibleRegionKind.Near
+		// Skipping already declared field Windows.UI.Xaml.Controls.Maps.MapVisibleRegionKind.Full
 	}
 	#endif
 }

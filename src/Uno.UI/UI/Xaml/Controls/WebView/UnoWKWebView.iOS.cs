@@ -23,6 +23,7 @@ namespace Windows.UI.Xaml.Controls
 	public partial class UnoWKWebView : WKWebView, INativeWebView
 	{
 		private WebView _parentWebView;
+		private bool _isCancelling;
 
 		private const string OkResourceKey = "WebView_Ok";
 		private const string CancelResourceKey = "WebView_Cancel";
@@ -245,6 +246,8 @@ namespace Windows.UI.Xaml.Controls
 				this.Log().DebugFormat("OnStarted: {0}", webView.Url.ToUri());
 			}
 
+			_isCancelling = false;
+
 			var args = new WebViewNavigationStartingEventArgs()
 			{
 				Cancel = false,
@@ -255,6 +258,7 @@ namespace Windows.UI.Xaml.Controls
 
 			if (args.Cancel)
 			{
+				_isCancelling = true;
 				StopLoading();
 			}
 		}
@@ -270,7 +274,8 @@ namespace Windows.UI.Xaml.Controls
 
 			_errorMap.TryGetValue((NSUrlError)(int)error.Code, out status);
 
-			if (status != WebErrorStatus.OperationCanceled)
+			// We use the _isCancelling flag because the NSError caused by the StopLoading() doesn't always translate to WebErrorStatus.OperationCanceled.
+			if (status != WebErrorStatus.OperationCanceled && !_isCancelling)
 			{
 				Uri uri;
 				//If the url which failed to load is available in the user info, use it because with the WKWebView the 
@@ -293,6 +298,8 @@ namespace Windows.UI.Xaml.Controls
 
 				_parentWebView.OnComplete(uri, false, status);
 			}
+
+			_isCancelling = false;
 		}
 
 		public override bool CanGoBack => base.CanGoBack && GetNearestValidHistoryItem(direction: -1) != null;
@@ -389,13 +396,14 @@ namespace Windows.UI.Xaml.Controls
 
 			if (UIKit.UIDevice.CurrentDevice.CheckSystemVersion(9, 0))
 			{
-				var folderPath = Path.GetDirectoryName(uri.LocalPath);
+				var readAccessFolderPath = GetBestFolderPath(uri);
+	
+				Uri readAccessUri;
 
-				Uri folderUri;
-
-				if (Uri.TryCreate("file://" + folderPath, UriKind.Absolute, out folderUri))
+				if (Uri.TryCreate("file://" + readAccessFolderPath, UriKind.Absolute, out readAccessUri))
 				{
-					LoadFileUrl(uri, folderUri);
+					// LoadFileUrl will always fail on physical devices if readAccessUri changes for the same WebView instance.
+					LoadFileUrl(uri, readAccessUri);
 				}
 				else
 				{
@@ -449,6 +457,37 @@ namespace Windows.UI.Xaml.Controls
 		{
 			var navList = direction == 1 ? BackForwardList.ForwardList : BackForwardList.BackList.Reverse();
 			return navList.FirstOrDefault(item => _parentWebView.GetIsHistoryEntryValid(item.InitialUrl.AbsoluteString));
+		}
+
+		private static string GetBestFolderPath(Uri fileUri)
+		{
+			// Here we go up in the folder hierarchy to support as many folders as possible
+			// because navigating to a subsequent file in a different folder branch will fail.
+			// To do that, we try to target the first folder after the app sandbox.
+
+			var directFileParentPath = Path.GetDirectoryName(fileUri.LocalPath);
+			var documentsPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+			var appRootPath = directFileParentPath.Substring(0, documentsPath.LastIndexOf('/'));
+
+			if (directFileParentPath.StartsWith(appRootPath))
+			{
+				var relativePath = directFileParentPath.Substring(appRootPath.Length, directFileParentPath.Length - appRootPath.Length);
+				var topFolder = relativePath.Split(separator: new char[] { '/' }, options: StringSplitOptions.RemoveEmptyEntries).FirstOrDefault();
+
+				if (topFolder != null)
+				{
+					var finalPath = Path.Combine(appRootPath, topFolder);
+					return finalPath;
+				}
+				else
+				{
+					return directFileParentPath;
+				}
+			}
+			else
+			{
+				return directFileParentPath;
+			}
 		}
 
 		private class LocalWKUIDelegate : WKUIDelegate

@@ -2,42 +2,15 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.ApplicationModel.Activation
 {
-	#if false || false || false || false
+	#if false || false || false || false || false
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class SearchActivatedEventArgs : global::Windows.ApplicationModel.Activation.ISearchActivatedEventArgs,global::Windows.ApplicationModel.Activation.IActivatedEventArgs,global::Windows.ApplicationModel.Activation.IApplicationViewActivatedEventArgs,global::Windows.ApplicationModel.Activation.ISearchActivatedEventArgsWithLinguisticDetails,global::Windows.ApplicationModel.Activation.IViewSwitcherProvider,global::Windows.ApplicationModel.Activation.IActivatedEventArgsWithUser
 	{
-		#if false || false || false || false
-		[global::Uno.NotImplemented]
-		public  global::Windows.ApplicationModel.Activation.ActivationKind Kind
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member ActivationKind SearchActivatedEventArgs.Kind is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if false || false || false || false
-		[global::Uno.NotImplemented]
-		public  global::Windows.ApplicationModel.Activation.ApplicationExecutionState PreviousExecutionState
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member ApplicationExecutionState SearchActivatedEventArgs.PreviousExecutionState is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if false || false || false || false
-		[global::Uno.NotImplemented]
-		public  global::Windows.ApplicationModel.Activation.SplashScreen SplashScreen
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member SplashScreen SearchActivatedEventArgs.SplashScreen is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		// Skipping already declared property Kind
+		// Skipping already declared property PreviousExecutionState
+		// Skipping already declared property SplashScreen
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.System.User User
 		{
@@ -47,37 +20,10 @@ namespace Windows.ApplicationModel.Activation
 			}
 		}
 		#endif
-		#if false || false || false || false
-		[global::Uno.NotImplemented]
-		public  int CurrentlyShownApplicationViewId
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member int SearchActivatedEventArgs.CurrentlyShownApplicationViewId is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if false || false || false || false
-		[global::Uno.NotImplemented]
-		public  string Language
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string SearchActivatedEventArgs.Language is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if false || false || false || false
-		[global::Uno.NotImplemented]
-		public  string QueryText
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string SearchActivatedEventArgs.QueryText is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		// Skipping already declared property CurrentlyShownApplicationViewId
+		// Skipping already declared property Language
+		// Skipping already declared property QueryText
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.ApplicationModel.Search.SearchPaneQueryLinguisticDetails LinguisticDetails
 		{
@@ -87,7 +33,7 @@ namespace Windows.ApplicationModel.Activation
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.UI.ViewManagement.ActivationViewSwitcher ViewSwitcher
 		{

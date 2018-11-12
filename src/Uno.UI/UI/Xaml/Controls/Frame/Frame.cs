@@ -25,7 +25,12 @@ namespace Windows.UI.Xaml.Controls
 			var backStack = new ObservableCollection<PageStackEntry>();
 			var forwardStack = new ObservableCollection<PageStackEntry>();
 
-			backStack.CollectionChanged += (s, e) => CanGoBack = BackStack.Any();
+			backStack.CollectionChanged += (s, e) =>
+			{
+				CanGoBack = BackStack.Any();
+				BackStackDepth = BackStack.Count;
+			};
+
 			forwardStack.CollectionChanged += (s, e) => CanGoForward = ForwardStack.Any();
 
 			BackStack = backStack;

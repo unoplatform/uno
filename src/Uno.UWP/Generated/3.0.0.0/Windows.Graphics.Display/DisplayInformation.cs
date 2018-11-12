@@ -2,22 +2,13 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Graphics.Display
 {
-	#if false || false || false || false
+	#if false || false || false || false || false
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class DisplayInformation 
 	{
-		#if false || false || false || false
-		[global::Uno.NotImplemented]
-		public  global::Windows.Graphics.Display.DisplayOrientations CurrentOrientation
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member DisplayOrientations DisplayInformation.CurrentOrientation is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		// Skipping already declared property CurrentOrientation
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  float LogicalDpi
 		{
@@ -27,17 +18,8 @@ namespace Windows.Graphics.Display
 			}
 		}
 		#endif
-		#if false || false || false || false
-		[global::Uno.NotImplemented]
-		public  global::Windows.Graphics.Display.DisplayOrientations NativeOrientation
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member DisplayOrientations DisplayInformation.NativeOrientation is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		// Skipping already declared property NativeOrientation
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  float RawDpiX
 		{
@@ -47,7 +29,7 @@ namespace Windows.Graphics.Display
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  float RawDpiY
 		{
@@ -57,7 +39,7 @@ namespace Windows.Graphics.Display
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Graphics.Display.ResolutionScale ResolutionScale
 		{
@@ -67,7 +49,7 @@ namespace Windows.Graphics.Display
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  bool StereoEnabled
 		{
@@ -77,7 +59,7 @@ namespace Windows.Graphics.Display
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  double RawPixelsPerViewPixel
 		{
@@ -87,7 +69,7 @@ namespace Windows.Graphics.Display
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  double? DiagonalSizeInInches
 		{
@@ -97,7 +79,7 @@ namespace Windows.Graphics.Display
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  uint ScreenHeightInRawPixels
 		{
@@ -107,7 +89,7 @@ namespace Windows.Graphics.Display
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  uint ScreenWidthInRawPixels
 		{
@@ -117,20 +99,7 @@ namespace Windows.Graphics.Display
 			}
 		}
 		#endif
-		#if false || false || false || false
-		[global::Uno.NotImplemented]
-		public static global::Windows.Graphics.Display.DisplayOrientations AutoRotationPreferences
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member DisplayOrientations DisplayInformation.AutoRotationPreferences is not implemented in Uno.");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Display.DisplayInformation", "DisplayOrientations DisplayInformation.AutoRotationPreferences");
-			}
-		}
-		#endif
+		// Skipping already declared property AutoRotationPreferences
 		// Forced skipping of method Windows.Graphics.Display.DisplayInformation.CurrentOrientation.get
 		// Forced skipping of method Windows.Graphics.Display.DisplayInformation.NativeOrientation.get
 		// Forced skipping of method Windows.Graphics.Display.DisplayInformation.OrientationChanged.add
@@ -144,7 +113,7 @@ namespace Windows.Graphics.Display
 		// Forced skipping of method Windows.Graphics.Display.DisplayInformation.StereoEnabled.get
 		// Forced skipping of method Windows.Graphics.Display.DisplayInformation.StereoEnabledChanged.add
 		// Forced skipping of method Windows.Graphics.Display.DisplayInformation.StereoEnabledChanged.remove
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.Streams.IRandomAccessStream> GetColorProfileAsync()
 		{
@@ -157,7 +126,7 @@ namespace Windows.Graphics.Display
 		// Forced skipping of method Windows.Graphics.Display.DisplayInformation.DiagonalSizeInInches.get
 		// Forced skipping of method Windows.Graphics.Display.DisplayInformation.ScreenWidthInRawPixels.get
 		// Forced skipping of method Windows.Graphics.Display.DisplayInformation.ScreenHeightInRawPixels.get
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Graphics.Display.AdvancedColorInfo GetAdvancedColorInfo()
 		{
@@ -166,18 +135,12 @@ namespace Windows.Graphics.Display
 		#endif
 		// Forced skipping of method Windows.Graphics.Display.DisplayInformation.AdvancedColorInfoChanged.add
 		// Forced skipping of method Windows.Graphics.Display.DisplayInformation.AdvancedColorInfoChanged.remove
-		#if false || false || false || false
-		[global::Uno.NotImplemented]
-		public static global::Windows.Graphics.Display.DisplayInformation GetForCurrentView()
-		{
-			throw new global::System.NotImplementedException("The member DisplayInformation DisplayInformation.GetForCurrentView() is not implemented in Uno.");
-		}
-		#endif
+		// Skipping already declared method Windows.Graphics.Display.DisplayInformation.GetForCurrentView()
 		// Forced skipping of method Windows.Graphics.Display.DisplayInformation.AutoRotationPreferences.get
 		// Forced skipping of method Windows.Graphics.Display.DisplayInformation.AutoRotationPreferences.set
 		// Forced skipping of method Windows.Graphics.Display.DisplayInformation.DisplayContentsInvalidated.add
 		// Forced skipping of method Windows.Graphics.Display.DisplayInformation.DisplayContentsInvalidated.remove
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Graphics.Display.DisplayInformation, object> ColorProfileChanged
 		{
@@ -193,7 +156,7 @@ namespace Windows.Graphics.Display
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Graphics.Display.DisplayInformation, object> DpiChanged
 		{
@@ -209,23 +172,8 @@ namespace Windows.Graphics.Display
 			}
 		}
 		#endif
-		#if false || false || false || false
-		[global::Uno.NotImplemented]
-		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Graphics.Display.DisplayInformation, object> OrientationChanged
-		{
-			[global::Uno.NotImplemented]
-			add
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Display.DisplayInformation", "event TypedEventHandler<DisplayInformation, object> DisplayInformation.OrientationChanged");
-			}
-			[global::Uno.NotImplemented]
-			remove
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Display.DisplayInformation", "event TypedEventHandler<DisplayInformation, object> DisplayInformation.OrientationChanged");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		// Skipping already declared event Windows.Graphics.Display.DisplayInformation.OrientationChanged
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Graphics.Display.DisplayInformation, object> StereoEnabledChanged
 		{
@@ -241,7 +189,7 @@ namespace Windows.Graphics.Display
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Graphics.Display.DisplayInformation, object> AdvancedColorInfoChanged
 		{
@@ -257,7 +205,7 @@ namespace Windows.Graphics.Display
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static event global::Windows.Foundation.TypedEventHandler<global::Windows.Graphics.Display.DisplayInformation, object> DisplayContentsInvalidated
 		{

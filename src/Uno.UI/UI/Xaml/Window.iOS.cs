@@ -12,6 +12,7 @@ using Uno.UI.Controls;
 using System.Drawing;
 using Windows.UI.ViewManagement;
 using Uno.UI;
+using Windows.UI.Xaml.Controls;
 
 namespace Windows.UI.Xaml
 {
@@ -20,6 +21,9 @@ namespace Windows.UI.Xaml
 		private Uno.UI.Controls.Window _window;
 
 		private static Window _current;
+		private Grid _main;
+		private Border _rootBorder;
+		private Border _fullWindow;
 		private RootViewController _mainController;
 		private UIElement _content;
 		private NSObject _orientationRegistration;
@@ -38,7 +42,7 @@ namespace Windows.UI.Xaml
 			_mainController = ViewControllerGenerator?.Invoke() ?? new RootViewController();
 			_mainController.View.BackgroundColor = UIColor.White;
 			_mainController.NavigationBarHidden = true;
-
+			
 			ObserveOrientationAndSize();
 
 			Dispatcher = CoreDispatcher.Main;
@@ -62,14 +66,17 @@ namespace Windows.UI.Xaml
 			_window.FrameChanged +=
 				() => RaiseNativeSizeChanged(ViewHelper.GetScreenSize());
 
+			_mainController.VisibleBoundsChanged +=
+				() => RaiseNativeSizeChanged(ViewHelper.GetScreenSize());
+
 			var statusBar = StatusBar.GetForCurrentView();
-			statusBar.Showing += (o, e) => UpdateCoreBounds();
-			statusBar.Hiding += (o, e) => UpdateCoreBounds();
+			statusBar.Showing += (o, e) => RaiseNativeSizeChanged(ViewHelper.GetScreenSize());
+			statusBar.Hiding += (o, e) => RaiseNativeSizeChanged(ViewHelper.GetScreenSize());
 
 			RaiseNativeSizeChanged(ViewHelper.GetScreenSize());
 		}
 
-		private void InternalActivate()
+		partial void InternalActivate()
 		{
 			_window.RootViewController = _mainController;
 			_window.MakeKeyAndVisible();
@@ -77,12 +84,32 @@ namespace Windows.UI.Xaml
 
 		private void InternalSetContent(UIElement value)
 		{
-			_content?.RemoveFromSuperview();
+			if (_main == null)
+			{
+				_rootBorder = new Border();
+				_fullWindow = new Border()
+				{
+					VerticalAlignment = VerticalAlignment.Stretch,
+					HorizontalAlignment = HorizontalAlignment.Stretch,
+					Visibility = Visibility.Collapsed
+				};
 
-			_content = value;
-			_mainController.View.AddSubview(value);
-			value.Frame = _mainController.View.Bounds;
-			value.AutoresizingMask = UIViewAutoresizing.All;
+				_main = new Grid()
+				{
+					Children =
+					{
+						_rootBorder,
+						_fullWindow
+					}
+				};
+				
+				_mainController.View.AddSubview(_main);
+				_main.Frame = _mainController.View.Bounds;
+				_main.AutoresizingMask = UIViewAutoresizing.All;
+			}
+
+			_rootBorder.Child?.RemoveFromSuperview();
+			_rootBorder.Child = _content = value;
 		}
 
 		private UIElement InternalGetContent() => _content;
@@ -101,15 +128,11 @@ namespace Windows.UI.Xaml
 		{
 			var newBounds = new Rect(0, 0, size.Width, size.Height);
 
+			ApplicationView.GetForCurrentView()?.SetVisibleBounds(_window, newBounds);
+
 			if (Bounds != newBounds)
 			{
 				Bounds = newBounds;
-
-				var applicationView = ApplicationView.GetForCurrentView();
-				if (applicationView != null)
-				{
-					applicationView.SetCoreBounds(_window, newBounds);
-				}
 
 				RaiseSizeChanged(
 					new WindowSizeChangedEventArgs(
@@ -119,12 +142,19 @@ namespace Windows.UI.Xaml
 			}
 		}
 
-		private void UpdateCoreBounds()
+		internal void DisplayFullscreen(UIElement element)
 		{
-			var applicationView = ApplicationView.GetForCurrentView();
-			if (applicationView != null)
+			if (element == null)
 			{
-				applicationView.SetCoreBounds(_window, Bounds);
+				_fullWindow.Child = null;
+				_rootBorder.Opacity = 1;
+				_fullWindow.Visibility = Visibility.Collapsed;
+			}
+			else
+			{
+				_fullWindow.Visibility = Visibility.Visible;
+				_rootBorder.Opacity = 0;
+				_fullWindow.Child = element;
 			}
 		}
 	}

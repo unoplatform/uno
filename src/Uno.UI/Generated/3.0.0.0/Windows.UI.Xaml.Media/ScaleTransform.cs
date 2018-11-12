@@ -2,106 +2,20 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml.Media
 {
-	#if false || false || false || false
+	#if false || false || false || false || false
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class ScaleTransform : global::Windows.UI.Xaml.Media.Transform
 	{
-		#if false || false || false || false
-		[global::Uno.NotImplemented]
-		public  double ScaleY
-		{
-			get
-			{
-				return (double)this.GetValue(ScaleYProperty);
-			}
-			set
-			{
-				this.SetValue(ScaleYProperty, value);
-			}
-		}
-		#endif
-		#if false || false || false || false
-		[global::Uno.NotImplemented]
-		public  double ScaleX
-		{
-			get
-			{
-				return (double)this.GetValue(ScaleXProperty);
-			}
-			set
-			{
-				this.SetValue(ScaleXProperty, value);
-			}
-		}
-		#endif
-		#if false || false || false || false
-		[global::Uno.NotImplemented]
-		public  double CenterY
-		{
-			get
-			{
-				return (double)this.GetValue(CenterYProperty);
-			}
-			set
-			{
-				this.SetValue(CenterYProperty, value);
-			}
-		}
-		#endif
-		#if false || false || false || false
-		[global::Uno.NotImplemented]
-		public  double CenterX
-		{
-			get
-			{
-				return (double)this.GetValue(CenterXProperty);
-			}
-			set
-			{
-				this.SetValue(CenterXProperty, value);
-			}
-		}
-		#endif
-		#if false || false || false || false
-		[global::Uno.NotImplemented]
-		public static global::Windows.UI.Xaml.DependencyProperty CenterXProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			"CenterX", typeof(double), 
-			typeof(global::Windows.UI.Xaml.Media.ScaleTransform), 
-			new FrameworkPropertyMetadata(default(double)));
-		#endif
-		#if false || false || false || false
-		[global::Uno.NotImplemented]
-		public static global::Windows.UI.Xaml.DependencyProperty CenterYProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			"CenterY", typeof(double), 
-			typeof(global::Windows.UI.Xaml.Media.ScaleTransform), 
-			new FrameworkPropertyMetadata(default(double)));
-		#endif
-		#if false || false || false || false
-		[global::Uno.NotImplemented]
-		public static global::Windows.UI.Xaml.DependencyProperty ScaleXProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			"ScaleX", typeof(double), 
-			typeof(global::Windows.UI.Xaml.Media.ScaleTransform), 
-			new FrameworkPropertyMetadata(default(double)));
-		#endif
-		#if false || false || false || false
-		[global::Uno.NotImplemented]
-		public static global::Windows.UI.Xaml.DependencyProperty ScaleYProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			"ScaleY", typeof(double), 
-			typeof(global::Windows.UI.Xaml.Media.ScaleTransform), 
-			new FrameworkPropertyMetadata(default(double)));
-		#endif
-		#if false || false || false || false
-		[global::Uno.NotImplemented]
-		public ScaleTransform() 
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Media.ScaleTransform", "ScaleTransform.ScaleTransform()");
-		}
-		#endif
+		// Skipping already declared property ScaleY
+		// Skipping already declared property ScaleX
+		// Skipping already declared property CenterY
+		// Skipping already declared property CenterX
+		// Skipping already declared property CenterXProperty
+		// Skipping already declared property CenterYProperty
+		// Skipping already declared property ScaleXProperty
+		// Skipping already declared property ScaleYProperty
+		// Skipping already declared method Windows.UI.Xaml.Media.ScaleTransform.ScaleTransform()
 		// Forced skipping of method Windows.UI.Xaml.Media.ScaleTransform.ScaleTransform()
 		// Forced skipping of method Windows.UI.Xaml.Media.ScaleTransform.CenterX.get
 		// Forced skipping of method Windows.UI.Xaml.Media.ScaleTransform.CenterX.set

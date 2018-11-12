@@ -38,6 +38,7 @@ using CategoryAttribute = NUnit.Framework.CategoryAttribute;
 namespace MonoTests.Uno.Xaml
 {
 	[TestFixture]
+	[Ignore("To be updated after uno support")]
 	public class XamlObjectWriterTest
 	{
 		PropertyInfo str_len = typeof (string).GetProperty ("Length");
@@ -81,10 +82,12 @@ namespace MonoTests.Uno.Xaml
 		}
 		
 		[Test]
-		[ExpectedException (typeof (ArgumentNullException))]
 		public void SchemaContextNull ()
 		{
-			new XamlObjectWriter (null);
+			Assert.Throws(typeof(ArgumentNullException), () =>
+			{
+				new XamlObjectWriter(null);
+			});
 		}
 
 		[Test]
@@ -96,38 +99,48 @@ namespace MonoTests.Uno.Xaml
 		}
 
 		[Test]
-		[ExpectedException (typeof (XamlObjectWriterException))]
 		public void InitWriteEndMember ()
 		{
-			new XamlObjectWriter (sctx, null).WriteEndMember ();
+			Assert.Throws(typeof(XamlObjectWriterException), () =>
+			{
+				new XamlObjectWriter(sctx, null).WriteEndMember();
+			});
 		}
 
 		[Test]
-		[ExpectedException (typeof (XamlObjectWriterException))]
 		public void InitWriteEndObject ()
 		{
-			new XamlObjectWriter (sctx, null).WriteEndObject ();
+			Assert.Throws(typeof(XamlObjectWriterException), () =>
+			{
+				new XamlObjectWriter(sctx, null).WriteEndObject();
+			});
 		}
 
 		[Test]
-		[ExpectedException (typeof (XamlObjectWriterException))]
 		public void InitWriteGetObject ()
 		{
-			new XamlObjectWriter (sctx, null).WriteGetObject ();
+			Assert.Throws(typeof(XamlObjectWriterException), () =>
+			{
+				new XamlObjectWriter(sctx, null).WriteGetObject();
+			});
 		}
 
 		[Test]
-		[ExpectedException (typeof (XamlObjectWriterException))]
 		public void InitWriteValue ()
 		{
-			new XamlObjectWriter (sctx, null).WriteValue ("foo");
+			Assert.Throws(typeof(XamlObjectWriterException), () =>
+			{
+				new XamlObjectWriter(sctx, null).WriteValue("foo");
+			});
 		}
 
 		[Test]
-		[ExpectedException (typeof (XamlObjectWriterException))]
 		public void InitWriteStartMember ()
 		{
-			new XamlObjectWriter (sctx, null).WriteStartMember (new XamlMember (str_len, sctx));
+			Assert.Throws(typeof(XamlObjectWriterException), () =>
+			{
+				new XamlObjectWriter(sctx, null).WriteStartMember(new XamlMember(str_len, sctx));
+			});
 		}
 
 		[Test]
@@ -140,10 +153,12 @@ namespace MonoTests.Uno.Xaml
 		}
 
 		[Test]
-		[ExpectedException (typeof (ArgumentNullException))]
 		public void WriteNamespaceNull ()
 		{
-			new XamlObjectWriter (sctx, null).WriteNamespace (null);
+			Assert.Throws(typeof(ArgumentNullException), () =>
+			{
+				new XamlObjectWriter(sctx, null).WriteNamespace(null);
+			});
 		}
 
 		[Test]
@@ -156,12 +171,14 @@ namespace MonoTests.Uno.Xaml
 		}
 
 		[Test]
-		[ExpectedException (typeof (XamlObjectWriterException))]
 		public void GetObjectAfterStartObject ()
 		{
-			var xw = new XamlObjectWriter (sctx, null);
-			xw.WriteStartObject (xt3);
-			xw.WriteGetObject ();
+			Assert.Throws(typeof(XamlObjectWriterException), () =>
+			{
+				var xw = new XamlObjectWriter(sctx, null);
+				xw.WriteStartObject(xt3);
+				xw.WriteGetObject();
+			});
 		}
 
 		[Test]
@@ -176,22 +193,26 @@ namespace MonoTests.Uno.Xaml
 		}
 
 		[Test]
-		[ExpectedException (typeof (XamlObjectWriterException))]
 		public void WriteEndObjectExcess ()
 		{
-			var xw = new XamlObjectWriter (sctx, null);
-			xw.WriteStartObject (xt3);
-			xw.WriteEndObject ();
-			xw.WriteEndObject ();
+			Assert.Throws(typeof(XamlObjectWriterException), () =>
+			{
+				var xw = new XamlObjectWriter(sctx, null);
+				xw.WriteStartObject(xt3);
+				xw.WriteEndObject();
+				xw.WriteEndObject();
+			});
 		}
 
 		[Test]
-		[ExpectedException (typeof (XamlObjectWriterException))]
 		public void StartObjectWriteEndMember ()
 		{
-			var xw = new XamlObjectWriter (sctx, null);
-			xw.WriteStartObject (xt3);
-			xw.WriteEndMember ();
+			Assert.Throws(typeof(XamlObjectWriterException), () =>
+			{
+				var xw = new XamlObjectWriter(sctx, null);
+				xw.WriteStartObject(xt3);
+				xw.WriteEndMember();
+			});
 		}
 
 		[Test]
@@ -216,13 +237,15 @@ namespace MonoTests.Uno.Xaml
 		}
 
 		[Test]
-		[ExpectedException (typeof (XamlObjectWriterException))]
 		public void StartMemberWriteStartMember ()
 		{
-			var xw = new XamlObjectWriter (sctx, null);
-			xw.WriteStartObject (xt3);
-			xw.WriteStartMember (xm3);
-			xw.WriteStartMember (xm3);
+			Assert.Throws(typeof(XamlObjectWriterException), () =>
+			{
+				var xw = new XamlObjectWriter(sctx, null);
+				xw.WriteStartObject(xt3);
+				xw.WriteStartMember(xm3);
+				xw.WriteStartMember(xm3);
+			});
 		}
 
 		[Test]
@@ -238,64 +261,73 @@ namespace MonoTests.Uno.Xaml
 		}
 
 		[Test]
-		[ExpectedException (typeof (XamlDuplicateMemberException))]
-		public void ValueAfterObject ()
+		public void ValueAfterObject()
 		{
-			var xw = new XamlObjectWriter (sctx, null);
-			xw.WriteStartObject (xt3);
-			xw.WriteStartMember (xm3);
-			xw.WriteStartObject (xt3);
-			xw.WriteEndObject ();
-			// passes here, but ...
-			xw.WriteValue ("foo");
-			// rejected here, unlike XamlXmlWriter.
-			xw.WriteEndMember ();
+			Assert.Throws(typeof(XamlDuplicateMemberException), () =>
+			{
+				var xw = new XamlObjectWriter(sctx, null);
+				xw.WriteStartObject(xt3);
+				xw.WriteStartMember(xm3);
+				xw.WriteStartObject(xt3);
+				xw.WriteEndObject();
+				// passes here, but ...
+				xw.WriteValue("foo");
+				// rejected here, unlike XamlXmlWriter.
+				xw.WriteEndMember();
+			});
 		}
 
 		[Test]
-		[ExpectedException (typeof (XamlDuplicateMemberException))]
 		public void ValueAfterObject2 ()
 		{
-			var xw = new XamlObjectWriter (sctx, null);
-			xw.WriteStartObject (xt3);
-			xw.WriteStartMember (xm3);
-			xw.WriteStartObject (xt3);
-			xw.WriteEndObject ();
-			// passes here, but should be rejected later.
-			xw.WriteValue ("foo");
+			Assert.Throws(typeof(XamlDuplicateMemberException), () =>
+			{
+				var xw = new XamlObjectWriter(sctx, null);
+				xw.WriteStartObject(xt3);
+				xw.WriteStartMember(xm3);
+				xw.WriteStartObject(xt3);
+				xw.WriteEndObject();
+				// passes here, but should be rejected later.
+				xw.WriteValue("foo");
 
-			xw.WriteEndMember (); // Though this raises an error.
+				xw.WriteEndMember(); // Though this raises an error.
+			});
 		}
 
 		[Test]
-		[ExpectedException (typeof (XamlDuplicateMemberException))]
 		public void DuplicateAssignment ()
 		{
-			var xw = new XamlObjectWriter (sctx, null);
-			xw.WriteStartObject (xt3);
-			xw.WriteStartMember (xm3);
-			xw.WriteStartObject (xt3);
-			xw.WriteEndObject ();
-			xw.WriteValue ("foo"); // causes duplicate assignment.
-			xw.WriteEndMember ();
+			Assert.Throws(typeof(XamlDuplicateMemberException), () =>
+			{
+				var xw = new XamlObjectWriter(sctx, null);
+				xw.WriteStartObject(xt3);
+				xw.WriteStartMember(xm3);
+				xw.WriteStartObject(xt3);
+				xw.WriteEndObject();
+				xw.WriteValue("foo"); // causes duplicate assignment.
+				xw.WriteEndMember();
+			});
 		}
 
 		[Test]
-		[ExpectedException (typeof (XamlDuplicateMemberException))]
 		public void DuplicateAssignment2 ()
 		{
-			var xw = new XamlObjectWriter (sctx, null);
-			xw.WriteStartObject (xt3);
-			xw.WriteStartMember (xm3);
-			xw.WriteStartObject (xt3);
-			xw.WriteEndObject ();
-			xw.WriteEndMember ();
-			xw.WriteStartMember (xm3);
+			Assert.Throws(typeof(XamlDuplicateMemberException), () =>
+			   {
+
+				   var xw = new XamlObjectWriter(sctx, null);
+				   xw.WriteStartObject(xt3);
+				   xw.WriteStartMember(xm3);
+				   xw.WriteStartObject(xt3);
+				   xw.WriteEndObject();
+				   xw.WriteEndMember();
+				   xw.WriteStartMember(xm3);
+			   });
 		}
 
 		[Test]
 		//[ExpectedException (typeof (ArgumentException))] // oh? XamlXmlWriter raises this.
-		[Ignore] // so, it's not worthy of passing.
+		[Ignore("")] // so, it's not worthy of passing.
 		public void WriteValueTypeMismatch ()
 		{
 			var xw = new XamlObjectWriter (sctx, null);
@@ -309,14 +341,16 @@ namespace MonoTests.Uno.Xaml
 		}
 
 		[Test]
-		[ExpectedException (typeof (XamlObjectWriterException))] // it fails to convert type and set property value.
 		public void WriteValueTypeMismatch2 ()
 		{
-			var xw = new XamlObjectWriter (sctx, null);
-			xw.WriteStartObject (xt3);
-			xw.WriteStartMember (xm3);
-			xw.WriteValue ("foo");
-			xw.WriteEndMember ();
+			Assert.Throws(typeof(XamlObjectWriterException), () =>
+			{
+				var xw = new XamlObjectWriter(sctx, null);
+				xw.WriteStartObject(xt3);
+				xw.WriteStartMember(xm3);
+				xw.WriteValue("foo");
+				xw.WriteEndMember();
+			});
 		}
 
 		[Test]
@@ -333,7 +367,7 @@ namespace MonoTests.Uno.Xaml
 
 		[Test]
 		// This behavior is different from XamlXmlWriter. Compare to XamlXmlWriterTest.WriteValueList().
-		[Ignore] // not worthy of passing
+		[Ignore("")] // not worthy of passing
 		public void WriteValueList ()
 		{
 			var xw = new XamlObjectWriter (sctx, null);
@@ -357,44 +391,52 @@ namespace MonoTests.Uno.Xaml
 		// We should disable this test and introduce better code (which
 		// is already in XamlWriterInternalBase).
 		[Test]
-		[ExpectedException (typeof (XamlObjectWriterException))]
 		[Ignore ("See the comment in XamlObjectWriterTest.cs")]
 		public void CloseWithoutEndMember ()
 		{
-			var xw = new XamlObjectWriter (sctx, null);
-			xw.WriteStartObject (xt);
-			xw.WriteStartMember (XamlLanguage.Initialization);
-			xw.WriteValue ("foo");
-			xw.Close ();
+			Assert.Throws(typeof(XamlObjectWriterException), () =>
+			{
+				var xw = new XamlObjectWriter(sctx, null);
+				xw.WriteStartObject(xt);
+				xw.WriteStartMember(XamlLanguage.Initialization);
+				xw.WriteValue("foo");
+				xw.Close();
+			});
 		}
 
 		[Test]
-		[ExpectedException (typeof (XamlObjectWriterException))]
 		public void WriteValueAfterValue ()
 		{
-			var xw = new XamlObjectWriter (sctx, null);
-			xw.WriteStartObject (xt);
-			xw.WriteValue ("foo");
-			xw.WriteValue ("bar");
+			Assert.Throws(typeof(XamlObjectWriterException), () =>
+			{
+				var xw = new XamlObjectWriter(sctx, null);
+				xw.WriteStartObject(xt);
+				xw.WriteValue("foo");
+				xw.WriteValue("bar");
+			});
 		}
 
 		[Test]
-		[ExpectedException (typeof (XamlObjectWriterException))]
 		public void WriteValueAfterNullValue ()
 		{
-			var xw = new XamlObjectWriter (sctx, null);
-			xw.WriteStartObject (xt);
-			xw.WriteValue (null);
-			xw.WriteValue ("bar");
+			Assert.Throws(typeof(XamlObjectWriterException), () =>
+			{
+				var xw = new XamlObjectWriter(sctx, null);
+				xw.WriteStartObject(xt);
+				xw.WriteValue(null);
+				xw.WriteValue("bar");
+			});
 		}
 
-		[ExpectedException (typeof (XamlObjectWriterException))]
 		public void StartMemberWriteEndObject ()
 		{
-			var xw = new XamlObjectWriter (sctx, null);
-			xw.WriteStartObject (xt3);
-			xw.WriteStartMember (xm3);
-			xw.WriteEndObject ();
+			Assert.Throws(typeof(XamlObjectWriterException), () =>
+			{
+				var xw = new XamlObjectWriter(sctx, null);
+				xw.WriteStartObject(xt3);
+				xw.WriteStartMember(xm3);
+				xw.WriteEndObject();
+			});
 		}
 
 		[Test]
@@ -411,132 +453,155 @@ namespace MonoTests.Uno.Xaml
 		}
 
 		[Test]
-		[ExpectedException (typeof (XamlObjectWriterException))]
 		public void StartObjectStartObject ()
 		{
-			var xw = new XamlObjectWriter (sctx, null);
-			xw.WriteStartObject (xt3);
-			xw.WriteStartObject (xt3);
+			Assert.Throws(typeof(XamlObjectWriterException), () =>
+			{
+				var xw = new XamlObjectWriter(sctx, null);
+				xw.WriteStartObject(xt3);
+				xw.WriteStartObject(xt3);
+			});
 		}
 
 		[Test]
-		[ExpectedException (typeof (XamlObjectWriterException))]
 		public void StartObjectValue ()
 		{
-			var xw = new XamlObjectWriter (sctx, null);
-			xw.WriteStartObject (xt3);
-			xw.WriteValue ("foo");
+			Assert.Throws(typeof(XamlObjectWriterException), () =>
+			{
+				var xw = new XamlObjectWriter(sctx, null);
+				xw.WriteStartObject(xt3);
+				xw.WriteValue("foo");
+			});
 		}
 
 		[Test]
-		[ExpectedException (typeof (XamlDuplicateMemberException))] // duplicate member assignment
 		public void ObjectContainsObjectAndObject ()
 		{
-			var xw = new XamlObjectWriter (sctx, null);
-			xw.WriteStartObject (xt3);
-			xw.WriteStartMember (xm3);
-			xw.WriteStartObject (xt3);
-			xw.WriteEndObject ();
-			xw.WriteStartObject (xt3);
-			xw.WriteEndObject (); // the exception happens *here*
-			// FIXME: so, WriteEndMember() should not be required, but we fail here. Practically this difference should not matter.
-			xw.WriteEndMember (); // of xm3
+			Assert.Throws(typeof(XamlDuplicateMemberException), () =>
+			{
+				var xw = new XamlObjectWriter(sctx, null);
+				xw.WriteStartObject(xt3);
+				xw.WriteStartMember(xm3);
+				xw.WriteStartObject(xt3);
+				xw.WriteEndObject();
+				xw.WriteStartObject(xt3);
+				xw.WriteEndObject(); // the exception happens *here*
+									 // FIXME: so, WriteEndMember() should not be required, but we fail here. Practically this difference should not matter.
+				xw.WriteEndMember(); // of xm3
+			});
 		}
 
 		[Test]
-		[ExpectedException (typeof (XamlDuplicateMemberException))] // duplicate member assignment
 		public void ObjectContainsObjectAndValue ()
 		{
-			var xw = new XamlObjectWriter (sctx, null);
-			xw.WriteStartObject (xt3);
-			xw.WriteStartMember (xm3);
-			xw.WriteStartObject (xt3);
-			xw.WriteEndObject ();
-			xw.WriteValue ("foo"); // but this is allowed ...
+			Assert.Throws(typeof(XamlDuplicateMemberException), () =>
+			{
+				var xw = new XamlObjectWriter(sctx, null);
+				xw.WriteStartObject(xt3);
+				xw.WriteStartMember(xm3);
+				xw.WriteStartObject(xt3);
+				xw.WriteEndObject();
+				xw.WriteValue("foo"); // but this is allowed ...
 
-			xw.WriteEndMember (); // Though this raises an error.
+				xw.WriteEndMember(); // Though this raises an error.
+			});
 		}
 
 		[Test]
-		[ExpectedException (typeof (XamlDuplicateMemberException))] // duplicate member assignment
 		public void ObjectContainsObjectAndValue2 ()
 		{
-			var xw = new XamlObjectWriter (sctx, null);
-			xw.WriteStartObject (xt3);
-			xw.WriteStartMember (xm3);
-			xw.WriteStartObject (xt3);
-			xw.WriteEndObject ();
-			xw.WriteValue ("foo");
-			xw.WriteEndMember (); // ... until here.
+			Assert.Throws(typeof(XamlDuplicateMemberException), () =>
+			{
+				var xw = new XamlObjectWriter(sctx, null);
+				xw.WriteStartObject(xt3);
+				xw.WriteStartMember(xm3);
+				xw.WriteStartObject(xt3);
+				xw.WriteEndObject();
+				xw.WriteValue("foo");
+				xw.WriteEndMember(); // ... until here.
+			});
 		}
 
 		[Test]
-		[ExpectedException (typeof (XamlObjectWriterException))] // unlike XamlXmlWriter (IOE)
 		public void EndObjectAfterNamespace ()
 		{
-			var xw = new XamlObjectWriter (sctx, null);
-			xw.WriteStartObject (xt3);
-			xw.WriteNamespace (new NamespaceDeclaration ("urn:foo", "y"));
-			xw.WriteEndObject ();
+			Assert.Throws(typeof(XamlObjectWriterException), () =>
+			{
+				var xw = new XamlObjectWriter(sctx, null);
+				xw.WriteStartObject(xt3);
+				xw.WriteNamespace(new NamespaceDeclaration("urn:foo", "y"));
+				xw.WriteEndObject();
+			});
 		}
 
 		[Test]
-		[ExpectedException (typeof (XamlObjectWriterException))] // ... unlike XamlXmlWriter (throws IOE)
 		public void WriteValueAfterNamespace ()
 		{
-			var xw = new XamlObjectWriter (sctx, null);
-			xw.WriteStartObject (xt);
-			xw.WriteStartMember (XamlLanguage.Initialization);
-			xw.WriteNamespace (new NamespaceDeclaration ("urn:foo", "y"));
-			xw.WriteValue ("foo");
+			Assert.Throws(typeof(XamlObjectWriterException), () =>
+			{
+
+				var xw = new XamlObjectWriter(sctx, null);
+				xw.WriteStartObject(xt);
+				xw.WriteStartMember(XamlLanguage.Initialization);
+				xw.WriteNamespace(new NamespaceDeclaration("urn:foo", "y"));
+				xw.WriteValue("foo");
+			});
 		}
 
 		[Test]
-		[ExpectedException (typeof (XamlObjectWriterException))] // ... unlike XamlXmlWriter (allowed)
 		public void ValueThenStartObject ()
 		{
-			var xw = new XamlObjectWriter (sctx, null);
-			xw.WriteStartObject (xt3);
-			xw.WriteStartMember (xm2);
-			xw.WriteValue ("foo");
-			xw.WriteStartObject (xt3);
-			xw.Close ();
+			Assert.Throws(typeof(XamlObjectWriterException), () =>
+			{
+				var xw = new XamlObjectWriter(sctx, null);
+				xw.WriteStartObject(xt3);
+				xw.WriteStartMember(xm2);
+				xw.WriteValue("foo");
+				xw.WriteStartObject(xt3);
+				xw.Close();
+			});
 		}
 
 		[Test]
-		[ExpectedException (typeof (XamlObjectWriterException))] // ... unlike XamlXmlWriter (allowed, as it allows StartObject after Value)
 		public void ValueThenNamespace ()
 		{
-			var xw = new XamlObjectWriter (sctx, null);
-			xw.WriteStartObject (xt3);
-			xw.WriteStartMember (xm2);
-			xw.WriteValue ("foo");
-			xw.WriteNamespace (new NamespaceDeclaration ("y", "urn:foo")); // this does not raise an error (since it might start another object)
+			Assert.Throws(typeof(XamlObjectWriterException), () =>
+			{
+				var xw = new XamlObjectWriter(sctx, null);
+				xw.WriteStartObject(xt3);
+				xw.WriteStartMember(xm2);
+				xw.WriteValue("foo");
+				xw.WriteNamespace(new NamespaceDeclaration("y", "urn:foo")); // this does not raise an error (since it might start another object)
+			});
 		}
 
 		[Test]
-		[ExpectedException (typeof (XamlObjectWriterException))] // strange, this does *not* result in IOE...
 		public void ValueThenNamespaceThenEndMember ()
 		{
-			var xw = new XamlObjectWriter (sctx, null);
-			xw.WriteStartObject (xt3);
-			xw.WriteStartMember (xm2);
-			xw.WriteValue ("foo");
-			xw.WriteNamespace (new NamespaceDeclaration ("y", "urn:foo"));
-			xw.WriteEndMember ();
+			Assert.Throws(typeof(XamlObjectWriterException), () =>
+			{
+				var xw = new XamlObjectWriter(sctx, null);
+				xw.WriteStartObject(xt3);
+				xw.WriteStartMember(xm2);
+				xw.WriteValue("foo");
+				xw.WriteNamespace(new NamespaceDeclaration("y", "urn:foo"));
+				xw.WriteEndMember();
+			});
 		}
 
 		[Test]
-		[ExpectedException (typeof (XamlObjectWriterException))] // This is also very different, requires exactly opposite namespace output manner to XamlXmlWriter (namespace first, object follows).
 		public void StartMemberAfterNamespace ()
 		{
-			var xw = new XamlObjectWriter (sctx, null);
-			xw.WriteStartObject (xt3);
-			xw.WriteNamespace (new NamespaceDeclaration ("urn:foo", "y"));
+			Assert.Throws(typeof(XamlObjectWriterException), () =>
+			{
+				var xw = new XamlObjectWriter(sctx, null);
+				xw.WriteStartObject(xt3);
+				xw.WriteNamespace(new NamespaceDeclaration("urn:foo", "y"));
+			});
 		}
 
 		[Test]
-		[Ignore] // not worthy of passing
+		[Ignore("")] // not worthy of passing
 		public void StartMemberBeforeNamespace ()
 		{
 			var xw = new XamlObjectWriter (sctx, null);
@@ -548,51 +613,60 @@ namespace MonoTests.Uno.Xaml
 		}
 
 		[Test]
-		[ExpectedException (typeof (XamlObjectWriterException))]
 		public void StartMemberBeforeNamespace2 ()
 		{
-			var xw = new XamlObjectWriter (sctx, null);
-			xw.WriteStartObject (xt3);
-			xw.WriteStartMember (xm2);
-			xw.WriteNamespace (new NamespaceDeclaration ("urn:foo", "y"));
-			// and here, NamespaceDeclaration is written as if it 
-			// were another value object( unlike XamlXmlWriter)
-			// and rejects further value.
-			xw.WriteValue ("foo");
+			Assert.Throws(typeof(XamlObjectWriterException), () =>
+			{
+				var xw = new XamlObjectWriter(sctx, null);
+				xw.WriteStartObject(xt3);
+				xw.WriteStartMember(xm2);
+				xw.WriteNamespace(new NamespaceDeclaration("urn:foo", "y"));
+				// and here, NamespaceDeclaration is written as if it 
+				// were another value object( unlike XamlXmlWriter)
+				// and rejects further value.
+				xw.WriteValue("foo");
+			});
 		}
 
 		[Test]
-		[ExpectedException (typeof (XamlObjectWriterException))]
 		public void EndMemberThenStartObject ()
 		{
-			var xw = new XamlObjectWriter (sctx, null);
-			xw.WriteStartObject (xt3);
-			xw.WriteStartMember (xm2);
-			xw.WriteValue ("foo");
-			xw.WriteEndMember ();
-			xw.WriteStartObject (xt3);
+			Assert.Throws(typeof(XamlObjectWriterException), () =>
+			{
+				var xw = new XamlObjectWriter(sctx, null);
+				xw.WriteStartObject(xt3);
+				xw.WriteStartMember(xm2);
+				xw.WriteValue("foo");
+				xw.WriteEndMember();
+				xw.WriteStartObject(xt3);
+			});
 		}
 
 		// The semantics on WriteGetObject() is VERY different from XamlXmlWriter.
 
 		[Test]
-		[ExpectedException (typeof (XamlObjectWriterException))]
 		public void GetObjectOnNullValue ()
 		{
-			var xw = new XamlObjectWriter (sctx, null);
-			xw.WriteStartObject (xt3);
-			xw.WriteStartMember (xm2);
-			xw.WriteGetObject ();
+			Assert.Throws(typeof(XamlObjectWriterException), () =>
+			{
+				var xw = new XamlObjectWriter(sctx, null);
+				xw.WriteStartObject(xt3);
+				xw.WriteStartMember(xm2);
+				xw.WriteGetObject();
+			});
 		}
 
 		[Test]
-		[ExpectedException (typeof (XamlObjectWriterException))]
 		public void GetObjectOnNullValue2 ()
 		{
-			var xw = new XamlObjectWriter (sctx, null);
-			xw.WriteStartObject (xt4);
-			xw.WriteStartMember (new XamlMember (typeof (Foo).GetProperty ("Baz"), sctx)); // unlike Bar, Baz is not initialized.
-			xw.WriteGetObject (); // fails, because it is null.
+			Assert.Throws(typeof(XamlObjectWriterException), () =>
+			{
+
+				var xw = new XamlObjectWriter(sctx, null);
+				xw.WriteStartObject(xt4);
+				xw.WriteStartMember(new XamlMember(typeof(Foo).GetProperty("Baz"), sctx)); // unlike Bar, Baz is not initialized.
+				xw.WriteGetObject(); // fails, because it is null.
+			});
 		}
 
 		[Test]
@@ -628,36 +702,44 @@ namespace MonoTests.Uno.Xaml
 		}
 
 		[Test]
-		[ExpectedException (typeof (XamlObjectWriterException))]
 		public void ValueAfterGetObject ()
 		{
-			var xw = new XamlObjectWriter (sctx, null);
-			xw.WriteStartObject (xt4);
-			xw.WriteStartMember (new XamlMember (typeof (Foo).GetProperty ("Bar"), sctx));
-			xw.WriteGetObject ();
-			xw.WriteValue ("foo");
+			Assert.Throws(typeof(XamlObjectWriterException), () =>
+			{
+				var xw = new XamlObjectWriter(sctx, null);
+				xw.WriteStartObject(xt4);
+				xw.WriteStartMember(new XamlMember(typeof(Foo).GetProperty("Bar"), sctx));
+				xw.WriteGetObject();
+				xw.WriteValue("foo");
+			});
 		}
 
 		[Test]
-		[ExpectedException (typeof (XamlObjectWriterException))]
+		[Ignore("Todo after uno support")]
 		public void StartObjectAfterGetObject ()
 		{
-			var xw = new XamlObjectWriter (sctx, null);
-			xw.WriteStartObject (xt4);
-			xw.WriteStartMember (new XamlMember (typeof (Foo).GetProperty ("Bar"), sctx));
-			xw.WriteGetObject ();
-			xw.WriteStartObject (xt);
+			Assert.Throws(typeof(XamlDuplicateMemberException), () =>
+			{
+				var xw = new XamlObjectWriter(sctx, null);
+				xw.WriteStartObject(xt4);
+				xw.WriteStartMember(new XamlMember(typeof(Foo).GetProperty("Bar"), sctx));
+				xw.WriteGetObject();
+
+				xw.WriteStartObject(xt);
+			});
 		}
 
 		[Test]
-		[ExpectedException (typeof (XamlObjectWriterException))]
 		public void EndMemberAfterGetObject ()
 		{
-			var xw = new XamlObjectWriter (sctx, null);
-			xw.WriteStartObject (xt4);
-			xw.WriteStartMember (new XamlMember (typeof (Foo).GetProperty ("Bar"), sctx));
-			xw.WriteGetObject ();
-			xw.WriteEndMember (); // ...!?
+			Assert.Throws(typeof(XamlObjectWriterException), () =>
+			{
+				var xw = new XamlObjectWriter(sctx, null);
+				xw.WriteStartObject(xt4);
+				xw.WriteStartMember(new XamlMember(typeof(Foo).GetProperty("Bar"), sctx));
+				xw.WriteGetObject();
+				xw.WriteEndMember(); // ...!?
+			});
 		}
 
 		[Test]
@@ -739,6 +821,7 @@ namespace MonoTests.Uno.Xaml
 		}
 		
 		[Test] // bug #3003 repro
+		[Ignore("")]
 		public void EventsAndProcessingOrder ()
 		{
 			var asm = Assembly.GetExecutingAssembly ();
@@ -816,10 +899,12 @@ namespace MonoTests.Uno.Xaml
 		}
 		
 		[Test]
-		[ExpectedException (typeof (XamlObjectWriterException))]
 		public void LookupCorrectEventBoundMethod2 ()
 		{
-			XamlServices.Load (GetReader ("LookupCorrectEvent2.xml"));
+			Assert.Throws(typeof(XamlObjectWriterException), () =>
+			{
+				XamlServices.Load(GetReader("LookupCorrectEvent2.xml"));
+			});
 		}
 		
 		[Test]
@@ -832,7 +917,9 @@ namespace MonoTests.Uno.Xaml
 
 		XamlReader GetReader (string filename)
 		{
-			string xml = File.ReadAllText (Path.Combine ("Test/XmlFiles", filename)).Replace ("System.Xaml_test_net_4_0", "Uno.Xaml.Tests");
+			var directory = Path.GetDirectoryName(new Uri(GetType().Assembly.CodeBase).LocalPath);
+
+			string xml = File.ReadAllText (Path.Combine (directory, "Test/XmlFiles", filename)).Replace ("System.Xaml_test_net_4_0", "Uno.Xaml.Tests");
 			return new XamlXmlReader (XmlReader.Create (new StringReader (xml)));
 		}
 
@@ -930,14 +1017,17 @@ namespace MonoTests.Uno.Xaml
 		}
 
 		[Test]
-		[ExpectedException (typeof (XamlObjectWriterException))] // cannot resolve the StaticExtension value.
 		public void Write_StaticExtension ()
 		{
-			var obj = new StaticExtension ("FooBar");
-			using (var xr = GetReader ("StaticExtension.xml")) {
-				var des = XamlServices.Load (xr);
-				Assert.AreEqual (obj, des, "#1");
-			}
+			Assert.Throws(typeof(XamlDuplicateMemberException), () =>
+			{
+				var obj = new StaticExtension("FooBar");
+				using (var xr = GetReader("StaticExtension.xml"))
+				{
+					var des = XamlServices.Load(xr);
+					Assert.AreEqual(obj, des, "#1");
+				}
+			});
 		}
 
 		[Test]
@@ -1157,14 +1247,17 @@ namespace MonoTests.Uno.Xaml
 		}
 
 		[Test]
-		[ExpectedException (typeof (InvalidCastException))] // unable to cast string to MarkupExtension
-		[Ignore]
+		[Ignore("")]
 		public void Write_MyExtension2 ()
 		{
-			//var obj = new MyExtension2 () { Foo = typeof (int), Bar = "v2"};
-			using (var xr = GetReader ("MyExtension2.xml")) {
-				XamlServices.Load (xr);
-			}
+			Assert.Throws(typeof(InvalidCastException), () =>
+			{
+				//var obj = new MyExtension2 () { Foo = typeof (int), Bar = "v2"};
+				using (var xr = GetReader("MyExtension2.xml"))
+				{
+					XamlServices.Load(xr);
+				}
+			});
 		}
 
 		[Test]
@@ -1179,14 +1272,17 @@ namespace MonoTests.Uno.Xaml
 		}
 
 		[Test]
-		[ExpectedException (typeof (XamlObjectWriterException))] // wrong TypeConverter input (input string for DateTimeConverter invalid)
 		public void Write_MyExtension4 ()
 		{
-			var obj = new MyExtension4 () { Foo = typeof (int), Bar = "v2"};
-			using (var xr = GetReader ("MyExtension4.xml")) {
-				var des = XamlServices.Load (xr);
-				Assert.AreEqual (obj, des, "#1");
-			}
+			Assert.Throws(typeof(XamlDuplicateMemberException), () =>
+			{
+				var obj = new MyExtension4() { Foo = typeof(int), Bar = "v2" };
+				using (var xr = GetReader("MyExtension4.xml"))
+				{
+					var des = XamlServices.Load(xr);
+					Assert.AreEqual(obj, des, "#1");
+				}
+			});
 		}
 
 		[Test]
@@ -1349,25 +1445,31 @@ namespace MonoTests.Uno.Xaml
 		}
 
 		[Test]
-		[ExpectedException (typeof (XamlDuplicateMemberException))] // for two occurence of Event1 ...
 		public void Write_EventStore2 ()
 		{
-			using (var xr = GetReader ("EventStore2.xml")) {
-				XamlServices.Load (xr);
-			}
+			Assert.Throws(typeof(XamlDuplicateMemberException), () =>
+			{
+				using (var xr = GetReader("EventStore2.xml"))
+				{
+					XamlServices.Load(xr);
+				}
+			});
 		}
 
 		[Test]
-		[ExpectedException (typeof (XamlObjectWriterException))] // attaching nonexistent method
 		public void Write_EventStore3 ()
 		{
-			using (var xr = GetReader ("EventStore3.xml")) {
-				XamlServices.Load (xr);
-			}
+			Assert.Throws(typeof(XamlObjectWriterException), () =>
+			{
+				using (var xr = GetReader("EventStore3.xml"))
+				{
+					XamlServices.Load(xr);
+				}
+			});
 		}
 
 		[Test]
-		[Ignore] // type resolution failure.
+		[Ignore("type resolution failure")]
 		public void Write_EventStore4 ()
 		{
 			using (var xr = GetReader ("EventStore4.xml")) {

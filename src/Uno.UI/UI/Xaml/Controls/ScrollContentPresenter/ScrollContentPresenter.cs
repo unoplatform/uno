@@ -18,6 +18,11 @@ using UIKit;
 using View = UIKit.UIView;
 using Color = UIKit.UIColor;
 using Font = UIKit.UIFont;
+#elif __MACOS__
+using AppKit;
+using View = AppKit.NSView;
+using Color = AppKit.NSColor;
+using Font = AppKit.NSFont;
 #else
 using View = Windows.UI.Xaml.UIElement;
 #endif
@@ -44,7 +49,11 @@ namespace Windows.UI.Xaml.Controls
 #if XAMARIN
 		private View _content;
 
-		public View Content
+		public
+#if __MACOS__
+			new
+#endif
+			View Content
 		{
 			get { return _content; }
 			set

@@ -2,40 +2,14 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml
 {
-	#if false || false || false || false
+	#if false || false || false || false || false
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class BringIntoViewOptions 
 	{
-		#if false || false || false || false
-		[global::Uno.NotImplemented]
-		public  global::Windows.Foundation.Rect? TargetRect
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member Rect? BringIntoViewOptions.TargetRect is not implemented in Uno.");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.BringIntoViewOptions", "Rect? BringIntoViewOptions.TargetRect");
-			}
-		}
-		#endif
-		#if false || false || false || false
-		[global::Uno.NotImplemented]
-		public  bool AnimationDesired
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool BringIntoViewOptions.AnimationDesired is not implemented in Uno.");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.BringIntoViewOptions", "bool BringIntoViewOptions.AnimationDesired");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		// Skipping already declared property TargetRect
+		// Skipping already declared property AnimationDesired
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  double VerticalOffset
 		{
@@ -49,7 +23,7 @@ namespace Windows.UI.Xaml
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  double VerticalAlignmentRatio
 		{
@@ -63,7 +37,7 @@ namespace Windows.UI.Xaml
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  double HorizontalOffset
 		{
@@ -77,7 +51,7 @@ namespace Windows.UI.Xaml
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  double HorizontalAlignmentRatio
 		{
@@ -91,13 +65,7 @@ namespace Windows.UI.Xaml
 			}
 		}
 		#endif
-		#if false || false || false || false
-		[global::Uno.NotImplemented]
-		public BringIntoViewOptions() 
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.BringIntoViewOptions", "BringIntoViewOptions.BringIntoViewOptions()");
-		}
-		#endif
+		// Skipping already declared method Windows.UI.Xaml.BringIntoViewOptions.BringIntoViewOptions()
 		// Forced skipping of method Windows.UI.Xaml.BringIntoViewOptions.BringIntoViewOptions()
 		// Forced skipping of method Windows.UI.Xaml.BringIntoViewOptions.AnimationDesired.get
 		// Forced skipping of method Windows.UI.Xaml.BringIntoViewOptions.AnimationDesired.set

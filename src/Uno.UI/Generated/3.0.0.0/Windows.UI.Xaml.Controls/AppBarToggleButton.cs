@@ -2,54 +2,15 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml.Controls
 {
-	#if false || false || false || false
+	#if false || false || false || false || false
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class AppBarToggleButton : global::Windows.UI.Xaml.Controls.ICommandBarElement,global::Windows.UI.Xaml.Controls.ICommandBarElement2
 	{
-		#if false || false || false || false
-		[global::Uno.NotImplemented]
-		public  string Label
-		{
-			get
-			{
-				return (string)this.GetValue(LabelProperty);
-			}
-			set
-			{
-				this.SetValue(LabelProperty, value);
-			}
-		}
-		#endif
-		#if false || false || false || false
-		[global::Uno.NotImplemented]
-		public  global::Windows.UI.Xaml.Controls.IconElement Icon
-		{
-			get
-			{
-				return (global::Windows.UI.Xaml.Controls.IconElement)this.GetValue(IconProperty);
-			}
-			set
-			{
-				this.SetValue(IconProperty, value);
-			}
-		}
-		#endif
-		#if false || false || false || false
-		[global::Uno.NotImplemented]
-		public  global::Windows.UI.Xaml.Controls.CommandBarLabelPosition LabelPosition
-		{
-			get
-			{
-				return (global::Windows.UI.Xaml.Controls.CommandBarLabelPosition)this.GetValue(LabelPositionProperty);
-			}
-			set
-			{
-				this.SetValue(LabelPositionProperty, value);
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		// Skipping already declared property Label
+		// Skipping already declared property Icon
+		// Skipping already declared property LabelPosition
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  string KeyboardAcceleratorTextOverride
 		{
@@ -63,7 +24,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.UI.Xaml.Controls.Primitives.AppBarToggleButtonTemplateSettings TemplateSettings
 		{
@@ -73,93 +34,16 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 		#endif
-		#if false || false || false || false
-		[global::Uno.NotImplemented]
-		public  bool IsCompact
-		{
-			get
-			{
-				return (bool)this.GetValue(IsCompactProperty);
-			}
-			set
-			{
-				this.SetValue(IsCompactProperty, value);
-			}
-		}
-		#endif
-		#if false || false || false || false
-		[global::Uno.NotImplemented]
-		public  int DynamicOverflowOrder
-		{
-			get
-			{
-				return (int)this.GetValue(DynamicOverflowOrderProperty);
-			}
-			set
-			{
-				this.SetValue(DynamicOverflowOrderProperty, value);
-			}
-		}
-		#endif
-		#if false || false || false || false
-		[global::Uno.NotImplemented]
-		public  bool IsInOverflow
-		{
-			get
-			{
-				return (bool)this.GetValue(IsInOverflowProperty);
-			}
-		}
-		#endif
-		#if false || false || false || false
-		[global::Uno.NotImplemented]
-		public static global::Windows.UI.Xaml.DependencyProperty IconProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			"Icon", typeof(global::Windows.UI.Xaml.Controls.IconElement), 
-			typeof(global::Windows.UI.Xaml.Controls.AppBarToggleButton), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Controls.IconElement)));
-		#endif
-		#if false || false || false || false
-		[global::Uno.NotImplemented]
-		public static global::Windows.UI.Xaml.DependencyProperty IsCompactProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			"IsCompact", typeof(bool), 
-			typeof(global::Windows.UI.Xaml.Controls.AppBarToggleButton), 
-			new FrameworkPropertyMetadata(default(bool)));
-		#endif
-		#if false || false || false || false
-		[global::Uno.NotImplemented]
-		public static global::Windows.UI.Xaml.DependencyProperty LabelProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			"Label", typeof(string), 
-			typeof(global::Windows.UI.Xaml.Controls.AppBarToggleButton), 
-			new FrameworkPropertyMetadata(default(string)));
-		#endif
-		#if false || false || false || false
-		[global::Uno.NotImplemented]
-		public static global::Windows.UI.Xaml.DependencyProperty DynamicOverflowOrderProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			"DynamicOverflowOrder", typeof(int), 
-			typeof(global::Windows.UI.Xaml.Controls.AppBarToggleButton), 
-			new FrameworkPropertyMetadata(default(int)));
-		#endif
-		#if false || false || false || false
-		[global::Uno.NotImplemented]
-		public static global::Windows.UI.Xaml.DependencyProperty IsInOverflowProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			"IsInOverflow", typeof(bool), 
-			typeof(global::Windows.UI.Xaml.Controls.AppBarToggleButton), 
-			new FrameworkPropertyMetadata(default(bool)));
-		#endif
-		#if false || false || false || false
-		[global::Uno.NotImplemented]
-		public static global::Windows.UI.Xaml.DependencyProperty LabelPositionProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			"LabelPosition", typeof(global::Windows.UI.Xaml.Controls.CommandBarLabelPosition), 
-			typeof(global::Windows.UI.Xaml.Controls.AppBarToggleButton), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Controls.CommandBarLabelPosition)));
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		// Skipping already declared property IsCompact
+		// Skipping already declared property DynamicOverflowOrder
+		// Skipping already declared property IsInOverflow
+		// Skipping already declared property IconProperty
+		// Skipping already declared property IsCompactProperty
+		// Skipping already declared property LabelProperty
+		// Skipping already declared property DynamicOverflowOrderProperty
+		// Skipping already declared property IsInOverflowProperty
+		// Skipping already declared property LabelPositionProperty
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty KeyboardAcceleratorTextOverrideProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
@@ -167,13 +51,7 @@ namespace Windows.UI.Xaml.Controls
 			typeof(global::Windows.UI.Xaml.Controls.AppBarToggleButton), 
 			new FrameworkPropertyMetadata(default(string)));
 		#endif
-		#if false || false || false || false
-		[global::Uno.NotImplemented]
-		public AppBarToggleButton() : base()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.AppBarToggleButton", "AppBarToggleButton.AppBarToggleButton()");
-		}
-		#endif
+		// Skipping already declared method Windows.UI.Xaml.Controls.AppBarToggleButton.AppBarToggleButton()
 		// Forced skipping of method Windows.UI.Xaml.Controls.AppBarToggleButton.AppBarToggleButton()
 		// Forced skipping of method Windows.UI.Xaml.Controls.AppBarToggleButton.Label.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.AppBarToggleButton.Label.set

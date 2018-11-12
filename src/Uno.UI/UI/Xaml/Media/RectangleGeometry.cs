@@ -53,12 +53,12 @@ namespace Windows.UI.Xaml.Media
 		}
 
 #if XAMARIN_IOS
-		public override UIImage ToUIImage()
+		public override UIImage ToNativeImage()
 		{
 			throw new NotImplementedException();
 		}
 
-		public override UIImage ToUIImage(CoreGraphics.CGSize targetSize, UIColor color = null, Thickness margin = default(Thickness))
+		public override UIImage ToNativeImage(CoreGraphics.CGSize targetSize, UIColor color = null, Thickness margin = default(Thickness))
 		{
 			throw new NotImplementedException();
 		}

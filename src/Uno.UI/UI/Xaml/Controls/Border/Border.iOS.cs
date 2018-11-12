@@ -111,7 +111,10 @@ namespace Windows.UI.Xaml.Controls
 		{
 			previousValue?.RemoveFromSuperview();
 
-            AddSubview(newValue);
+			if (newValue != null)
+			{
+				AddSubview(newValue);
+			}
 
 			UpdateBorderLayer();
 		}

@@ -123,7 +123,7 @@ namespace Windows.UI.Xaml
 			}
 		}
 
-		private void InternalActivate()
+		partial void InternalActivate()
 		{
 			WebAssemblyRuntime.InvokeJS("Uno.UI.WindowManager.current.activate();");
 		}

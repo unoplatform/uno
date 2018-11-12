@@ -2,18 +2,14 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml.Controls.Primitives
 {
-	#if false || false || false || false
-	#if false || false || false || false
+	#if false || false || false || false || false
+	#if false || false || false || false || false
 	[global::Uno.NotImplemented]
 	#endif
 	public   enum GroupHeaderPlacement 
 	{
-		#if false || false || false || false
-		Top,
-		#endif
-		#if false || false || false || false
-		Left,
-		#endif
+		// Skipping already declared field Windows.UI.Xaml.Controls.Primitives.GroupHeaderPlacement.Top
+		// Skipping already declared field Windows.UI.Xaml.Controls.Primitives.GroupHeaderPlacement.Left
 	}
 	#endif
 }

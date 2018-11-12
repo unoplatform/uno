@@ -2,33 +2,19 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Services.Maps
 {
-	#if false || false || false || false
-	#if false || false || false || false
+	#if false || false || false || false || false
+	#if false || false || false || false || false
 	[global::Uno.NotImplemented]
 	#endif
 	public   enum MapLocationFinderStatus 
 	{
-		#if false || false || false || false
-		Success,
-		#endif
-		#if false || false || false || false
-		UnknownError,
-		#endif
-		#if false || false || false || false
-		InvalidCredentials,
-		#endif
-		#if false || false || false || false
-		BadLocation,
-		#endif
-		#if false || false || false || false
-		IndexFailure,
-		#endif
-		#if false || false || false || false
-		NetworkFailure,
-		#endif
-		#if false || false || false || false
-		NotSupported,
-		#endif
+		// Skipping already declared field Windows.Services.Maps.MapLocationFinderStatus.Success
+		// Skipping already declared field Windows.Services.Maps.MapLocationFinderStatus.UnknownError
+		// Skipping already declared field Windows.Services.Maps.MapLocationFinderStatus.InvalidCredentials
+		// Skipping already declared field Windows.Services.Maps.MapLocationFinderStatus.BadLocation
+		// Skipping already declared field Windows.Services.Maps.MapLocationFinderStatus.IndexFailure
+		// Skipping already declared field Windows.Services.Maps.MapLocationFinderStatus.NetworkFailure
+		// Skipping already declared field Windows.Services.Maps.MapLocationFinderStatus.NotSupported
 	}
 	#endif
 }

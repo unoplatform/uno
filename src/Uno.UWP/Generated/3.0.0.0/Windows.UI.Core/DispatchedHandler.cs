@@ -2,7 +2,5 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Core
 {
-	#if false || false || false || false
-	public delegate void DispatchedHandler();
-	#endif
+	// Skipping already declared delegate Windows.UI.Core.DispatchedHandler
 }

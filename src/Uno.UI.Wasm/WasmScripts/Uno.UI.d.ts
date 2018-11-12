@@ -269,7 +269,6 @@ declare module Uno.UI.Interop {
     interface IUnoDispatch {
         resize(size: string): void;
         dispatch(htmlIdStr: string, eventNameStr: string, eventPayloadStr: string): string;
-        managedObjectDispatch(handle: string, method: string, parameters: string): string;
     }
 }
 declare module Uno.UI.Interop {

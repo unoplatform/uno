@@ -25,6 +25,12 @@ using View = UIKit.UIView;
 using ViewGroup = UIKit.UIView;
 using Color = UIKit.UIColor;
 using Font = UIKit.UIFont;
+#elif __MACOS__
+using AppKit;
+using View = AppKit.NSView;
+using ViewGroup = AppKit.NSView;
+using Color = AppKit.NSColor;
+using Font = AppKit.NSFont;
 #elif __WASM__ || NET46
 using View = Windows.UI.Xaml.UIElement;
 using ViewGroup = Windows.UI.Xaml.UIElement;
@@ -445,8 +451,10 @@ namespace Windows.UI.Xaml.Controls
 
 		private void OnPaddingChanged(Thickness oldValue, Thickness newValue)
 		{
-			UpdateBorder();
+			OnPaddingChangedPartial(oldValue, newValue);
 		}
+
+		partial void OnPaddingChangedPartial(Thickness oldValue, Thickness newValue);
 
 		#endregion
 

@@ -14,6 +14,9 @@ using View = Android.Views.View;
 #elif XAMARIN_IOS
 using UIKit;
 using View = UIKit.UIView;
+#elif __MACOS__
+using AppKit;
+using View = AppKit.NSView;
 #else
 using View = Windows.UI.Xaml.UIElement;
 #endif
@@ -83,7 +86,7 @@ namespace Windows.UI.Xaml.Controls
 		/// for controls which delegate to a native implementation (eg <see cref="ListViewBase"/>).
 		/// </summary>
 		private bool IsWithinScrollableArea =>
-#if XAMARIN
+#if XAMARIN && !__MACOS__
 			!(_itemsPanel is NativeListViewBase);
 #else
 			true;
@@ -154,7 +157,7 @@ namespace Windows.UI.Xaml.Controls
 
 		private void PropagatePadding()
 		{
-#if XAMARIN
+#if XAMARIN && !__MACOS__
 			var asListViewBase = _itemsPanel as NativeListViewBase;
 			if (asListViewBase != null)
 			{

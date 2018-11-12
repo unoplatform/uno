@@ -2,24 +2,16 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml.Controls.Maps
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+	#if false || false || false || false || false
+	#if false || false || false || false || false
 	[global::Uno.NotImplemented]
 	#endif
 	public   enum MapAnimationKind 
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
-		Default,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
-		None,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
-		Linear,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
-		Bow,
-		#endif
+		// Skipping already declared field Windows.UI.Xaml.Controls.Maps.MapAnimationKind.Default
+		// Skipping already declared field Windows.UI.Xaml.Controls.Maps.MapAnimationKind.None
+		// Skipping already declared field Windows.UI.Xaml.Controls.Maps.MapAnimationKind.Linear
+		// Skipping already declared field Windows.UI.Xaml.Controls.Maps.MapAnimationKind.Bow
 	}
 	#endif
 }

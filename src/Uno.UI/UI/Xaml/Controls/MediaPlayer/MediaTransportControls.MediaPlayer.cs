@@ -39,13 +39,13 @@ namespace Windows.UI.Xaml.Controls
 			_mediaPlayer.PlaybackSession.NaturalDurationChanged += OnNaturalDurationChanged;
 			_mediaPlayer.PlaybackSession.PositionChanged += OnPositionChanged;
 
-			_playPauseButton.Click += PlayPause;
-			_playPauseButtonOnLeft.Click += PlayPause;
-			_audioMuteButton.Click += ToggleMute;
-			_volumeSlider.ValueChanged += OnVolumeChanged;
-			_stopButton.Click += Stop;
-			_skipForwardButton.Click += SkipForward;
-			_skipBackwardButton.Click += SkipBackward;
+			_playPauseButton.Maybe(p => p.Click += PlayPause);
+			_playPauseButtonOnLeft.Maybe(p => p.Click += PlayPause);
+			_audioMuteButton.Maybe(p => p.Click += ToggleMute);
+			_volumeSlider.Maybe(p => p.ValueChanged += OnVolumeChanged);
+			_stopButton.Maybe(p => p.Click += Stop);
+			_skipForwardButton.Maybe(p => p.Click += SkipForward);
+			_skipBackwardButton.Maybe(p => p.Click += SkipBackward);
 
 			_subscriptions.Disposable = AttachThumbEventHandlers(_progressSlider);
 		}
@@ -66,18 +66,21 @@ namespace Windows.UI.Xaml.Controls
 			{
 				_subscriptions.Disposable = null;
 
-				_mediaPlayer.PlaybackSession.PlaybackStateChanged -= OnPlaybackStateChanged;
-				_mediaPlayer.PlaybackSession.BufferingProgressChanged -= OnBufferingProgressChanged;
-				_mediaPlayer.PlaybackSession.NaturalDurationChanged -= OnNaturalDurationChanged;
-				_mediaPlayer.PlaybackSession.PositionChanged -= OnPositionChanged;
+				if (_mediaPlayer != null)
+				{
+					_mediaPlayer.PlaybackSession.PlaybackStateChanged -= OnPlaybackStateChanged;
+					_mediaPlayer.PlaybackSession.BufferingProgressChanged -= OnBufferingProgressChanged;
+					_mediaPlayer.PlaybackSession.NaturalDurationChanged -= OnNaturalDurationChanged;
+					_mediaPlayer.PlaybackSession.PositionChanged -= OnPositionChanged;
+				}
 
-				_playPauseButton.Click -= PlayPause;
-				_playPauseButtonOnLeft.Click -= PlayPause;
-				_audioMuteButton.Click -= ToggleMute;
-				_volumeSlider.ValueChanged -= OnVolumeChanged;
-				_stopButton.Click -= Stop;
-				_skipForwardButton.Click -= SkipForward;
-				_skipBackwardButton.Click -= SkipBackward;
+				_playPauseButton.Maybe(p => p.Click -= PlayPause);
+				_playPauseButtonOnLeft.Maybe(p => p.Click -= PlayPause);
+				_audioMuteButton.Maybe(p => p.Click -= ToggleMute);
+				_volumeSlider.Maybe(p => p.ValueChanged -= OnVolumeChanged);
+				_stopButton.Maybe(p => p.Click -= Stop);
+				_skipForwardButton.Maybe(p => p.Click -= SkipForward);
+				_skipBackwardButton.Maybe(p => p.Click -= SkipBackward);
 			}
 			catch (Exception ex)
 			{

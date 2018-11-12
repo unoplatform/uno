@@ -2,135 +2,53 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Foundation
 {
-	#if false || false || false || false
+	#if false || false || false || false || false
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial interface IPropertyValue 
 	{
-		#if false || false || false || false
-		bool IsNumericScalar
-		{
-			get;
-		}
-		#endif
-		#if false || false || false || false
-		global::Windows.Foundation.PropertyType Type
-		{
-			get;
-		}
-		#endif
+		// Skipping already declared property IsNumericScalar
+		// Skipping already declared property Type
 		// Forced skipping of method Windows.Foundation.IPropertyValue.Type.get
 		// Forced skipping of method Windows.Foundation.IPropertyValue.IsNumericScalar.get
-		#if false || false || false || false
-		byte GetUInt8();
-		#endif
-		#if false || false || false || false
-		short GetInt16();
-		#endif
-		#if false || false || false || false
-		ushort GetUInt16();
-		#endif
-		#if false || false || false || false
-		int GetInt32();
-		#endif
-		#if false || false || false || false
-		uint GetUInt32();
-		#endif
-		#if false || false || false || false
-		long GetInt64();
-		#endif
-		#if false || false || false || false
-		ulong GetUInt64();
-		#endif
-		#if false || false || false || false
-		float GetSingle();
-		#endif
-		#if false || false || false || false
-		double GetDouble();
-		#endif
-		#if false || false || false || false
-		char GetChar16();
-		#endif
-		#if false || false || false || false
-		bool GetBoolean();
-		#endif
-		#if false || false || false || false
-		string GetString();
-		#endif
-		#if false || false || false || false
-		global::System.Guid GetGuid();
-		#endif
-		#if false || false || false || false
-		global::System.DateTimeOffset GetDateTime();
-		#endif
-		#if false || false || false || false
-		global::System.TimeSpan GetTimeSpan();
-		#endif
-		#if false || false || false || false
-		global::Windows.Foundation.Point GetPoint();
-		#endif
-		#if false || false || false || false
-		global::Windows.Foundation.Size GetSize();
-		#endif
-		#if false || false || false || false
-		global::Windows.Foundation.Rect GetRect();
-		#endif
-		#if false || false || false || false
-		void GetUInt8Array(out byte[] value);
-		#endif
-		#if false || false || false || false
-		void GetInt16Array(out short[] value);
-		#endif
-		#if false || false || false || false
-		void GetUInt16Array(out ushort[] value);
-		#endif
-		#if false || false || false || false
-		void GetInt32Array(out int[] value);
-		#endif
-		#if false || false || false || false
-		void GetUInt32Array(out uint[] value);
-		#endif
-		#if false || false || false || false
-		void GetInt64Array(out long[] value);
-		#endif
-		#if false || false || false || false
-		void GetUInt64Array(out ulong[] value);
-		#endif
-		#if false || false || false || false
-		void GetSingleArray(out float[] value);
-		#endif
-		#if false || false || false || false
-		void GetDoubleArray(out double[] value);
-		#endif
-		#if false || false || false || false
-		void GetChar16Array(out char[] value);
-		#endif
-		#if false || false || false || false
-		void GetBooleanArray(out bool[] value);
-		#endif
-		#if false || false || false || false
-		void GetStringArray(out string[] value);
-		#endif
-		#if false || false || false || false
-		void GetInspectableArray(out object[] value);
-		#endif
-		#if false || false || false || false
-		void GetGuidArray(out global::System.Guid[] value);
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		// Skipping already declared method Windows.Foundation.IPropertyValue.GetUInt8()
+		// Skipping already declared method Windows.Foundation.IPropertyValue.GetInt16()
+		// Skipping already declared method Windows.Foundation.IPropertyValue.GetUInt16()
+		// Skipping already declared method Windows.Foundation.IPropertyValue.GetInt32()
+		// Skipping already declared method Windows.Foundation.IPropertyValue.GetUInt32()
+		// Skipping already declared method Windows.Foundation.IPropertyValue.GetInt64()
+		// Skipping already declared method Windows.Foundation.IPropertyValue.GetUInt64()
+		// Skipping already declared method Windows.Foundation.IPropertyValue.GetSingle()
+		// Skipping already declared method Windows.Foundation.IPropertyValue.GetDouble()
+		// Skipping already declared method Windows.Foundation.IPropertyValue.GetChar16()
+		// Skipping already declared method Windows.Foundation.IPropertyValue.GetBoolean()
+		// Skipping already declared method Windows.Foundation.IPropertyValue.GetString()
+		// Skipping already declared method Windows.Foundation.IPropertyValue.GetGuid()
+		// Skipping already declared method Windows.Foundation.IPropertyValue.GetDateTime()
+		// Skipping already declared method Windows.Foundation.IPropertyValue.GetTimeSpan()
+		// Skipping already declared method Windows.Foundation.IPropertyValue.GetPoint()
+		// Skipping already declared method Windows.Foundation.IPropertyValue.GetSize()
+		// Skipping already declared method Windows.Foundation.IPropertyValue.GetRect()
+		// Skipping already declared method Windows.Foundation.IPropertyValue.GetUInt8Array(out byte[])
+		// Skipping already declared method Windows.Foundation.IPropertyValue.GetInt16Array(out short[])
+		// Skipping already declared method Windows.Foundation.IPropertyValue.GetUInt16Array(out ushort[])
+		// Skipping already declared method Windows.Foundation.IPropertyValue.GetInt32Array(out int[])
+		// Skipping already declared method Windows.Foundation.IPropertyValue.GetUInt32Array(out uint[])
+		// Skipping already declared method Windows.Foundation.IPropertyValue.GetInt64Array(out long[])
+		// Skipping already declared method Windows.Foundation.IPropertyValue.GetUInt64Array(out ulong[])
+		// Skipping already declared method Windows.Foundation.IPropertyValue.GetSingleArray(out float[])
+		// Skipping already declared method Windows.Foundation.IPropertyValue.GetDoubleArray(out double[])
+		// Skipping already declared method Windows.Foundation.IPropertyValue.GetChar16Array(out char[])
+		// Skipping already declared method Windows.Foundation.IPropertyValue.GetBooleanArray(out bool[])
+		// Skipping already declared method Windows.Foundation.IPropertyValue.GetStringArray(out string[])
+		// Skipping already declared method Windows.Foundation.IPropertyValue.GetInspectableArray(out object[])
+		// Skipping already declared method Windows.Foundation.IPropertyValue.GetGuidArray(out System.Guid[])
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		void GetDateTimeArray(out global::System.DateTimeOffset[] value);
 		#endif
-		#if false || false || false || false
-		void GetTimeSpanArray(out global::System.TimeSpan[] value);
-		#endif
-		#if false || false || false || false
-		void GetPointArray(out global::Windows.Foundation.Point[] value);
-		#endif
-		#if false || false || false || false
-		void GetSizeArray(out global::Windows.Foundation.Size[] value);
-		#endif
-		#if false || false || false || false
-		void GetRectArray(out global::Windows.Foundation.Rect[] value);
-		#endif
+		// Skipping already declared method Windows.Foundation.IPropertyValue.GetTimeSpanArray(out System.TimeSpan[])
+		// Skipping already declared method Windows.Foundation.IPropertyValue.GetPointArray(out Windows.Foundation.Point[])
+		// Skipping already declared method Windows.Foundation.IPropertyValue.GetSizeArray(out Windows.Foundation.Size[])
+		// Skipping already declared method Windows.Foundation.IPropertyValue.GetRectArray(out Windows.Foundation.Rect[])
 	}
 }

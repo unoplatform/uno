@@ -2,21 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml
 {
-	#if false || false || false || false
+	#if false || false || false || false || false
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class ExceptionRoutedEventArgs : global::Windows.UI.Xaml.RoutedEventArgs
 	{
-		#if false || false || false || false
-		[global::Uno.NotImplemented]
-		public  string ErrorMessage
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string ExceptionRoutedEventArgs.ErrorMessage is not implemented in Uno.");
-			}
-		}
-		#endif
+		// Skipping already declared property ErrorMessage
 		// Forced skipping of method Windows.UI.Xaml.ExceptionRoutedEventArgs.ErrorMessage.get
 	}
 }

@@ -2,35 +2,13 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Core
 {
-	#if false || false || false || false
+	#if false || false || false || false || false
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class VisibilityChangedEventArgs : global::Windows.UI.Core.ICoreWindowEventArgs
 	{
-		#if false || false || false || false
-		[global::Uno.NotImplemented]
-		public  bool Handled
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool VisibilityChangedEventArgs.Handled is not implemented in Uno.");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Core.VisibilityChangedEventArgs", "bool VisibilityChangedEventArgs.Handled");
-			}
-		}
-		#endif
-		#if false || false || false || false
-		[global::Uno.NotImplemented]
-		public  bool Visible
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool VisibilityChangedEventArgs.Visible is not implemented in Uno.");
-			}
-		}
-		#endif
+		// Skipping already declared property Handled
+		// Skipping already declared property Visible
 		// Forced skipping of method Windows.UI.Core.VisibilityChangedEventArgs.Visible.get
 		// Forced skipping of method Windows.UI.Core.VisibilityChangedEventArgs.Handled.get
 		// Forced skipping of method Windows.UI.Core.VisibilityChangedEventArgs.Handled.set

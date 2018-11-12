@@ -2,7 +2,5 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml
 {
-	#if false || false || false || false
-	public delegate void SuspendingEventHandler(object @sender, global::Windows.ApplicationModel.SuspendingEventArgs @e);
-	#endif
+	// Skipping already declared delegate Windows.UI.Xaml.SuspendingEventHandler
 }

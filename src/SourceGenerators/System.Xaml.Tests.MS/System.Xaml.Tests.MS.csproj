@@ -9,8 +9,8 @@
     <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
 	<ItemGroup>
-		<PackageReference Include="NUnit" Version="2.6.4" />
-		<PackageReference Include="NUnitTestAdapter" Version="2.1.1" />
+		<PackageReference Include="NUnit" Version="3.11.0" />
+		<PackageReference Include="NUnit3TestAdapter" Version="3.11.0" />
 	</ItemGroup>
 		
 	<ItemGroup>
@@ -26,6 +26,7 @@
 	  <None Remove="XmlFiles\AttachedProperty.xaml" />
 	  <None Remove="XmlFiles\AttachedPropertyWithNamespace.xaml" />
 	  <None Remove="XmlFiles\AttachedPropertyWIthoutNamespace.xaml" />
+	  <None Remove="XmlFiles\EmptyAttachedPropertyNode.xaml" />
 	  <None Remove="XmlFiles\RunSpace01.xaml" />
 	  <None Remove="XmlFiles\RunSpace02.xaml" />
 	  <None Remove="XmlFiles\TextLiteral.xaml" />
@@ -43,6 +44,9 @@
 
 	<ItemGroup>
 	  <Content Update="XmlFiles\AttachedProperty.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </Content>
+	  <Content Update="XmlFiles\EmptyAttachedPropertyNode.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </Content>
 	  <Content Update="XmlFiles\RunSpace02.xaml">

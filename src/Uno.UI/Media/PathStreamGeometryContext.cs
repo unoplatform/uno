@@ -9,9 +9,9 @@ using static System.Math;
 #if XAMARIN_IOS_UNIFIED
 using UIKit;
 using Path = UIKit.UIBezierPath;
-#elif XAMARIN_IOS
-using MonoTouch.UIKit;
-using Path = MonoTouch.UIKit.UIBezierPath;
+#elif __MACOS__
+using AppKit;
+using Path = AppKit.NSBezierPath;
 #elif XAMARIN_ANDROID
 using Android.Graphics.Drawables.Shapes;
 using Path = Android.Graphics.Path;

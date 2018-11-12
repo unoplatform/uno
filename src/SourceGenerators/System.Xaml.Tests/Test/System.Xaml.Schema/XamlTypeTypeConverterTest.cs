@@ -63,38 +63,48 @@ namespace MonoTests.Uno.Xaml.Schema
 		// ConvertFrom() is not supported in either way.
 
 		[Test]
-		[ExpectedException (typeof (NotSupportedException))]
 		public void ConvertFrom ()
 		{
-			c.ConvertFrom (null, null, XamlLanguage.String);
+			Assert.Throws(typeof(NotSupportedException), () =>
+			{
+				c.ConvertFrom(null, null, XamlLanguage.String);
+			});
 		}
 
 		[Test]
-		[ExpectedException (typeof (NotSupportedException))]
 		public void ConvertFrom2 ()
 		{
-			c.ConvertFrom (null, null, "System.Int32");
+			Assert.Throws(typeof(NotSupportedException), () =>
+			{
+				c.ConvertFrom(null, null, "System.Int32");
+			});
 		}
 
 		[Test]
-		[ExpectedException (typeof (NotSupportedException))]
 		public void ConvertXamlTypeToXamlType ()
 		{
-			Assert.AreEqual ("", c.ConvertTo (null, null, XamlLanguage.String, typeof (XamlType)), "#1");
+			Assert.Throws(typeof(NotSupportedException), () =>
+			{
+				Assert.AreEqual("", c.ConvertTo(null, null, XamlLanguage.String, typeof(XamlType)), "#1");
+			});
 		}
 
 		[Test]
-		[ExpectedException (typeof (NotSupportedException))]
 		public void ConvertXamlTypeToXamlType2 ()
 		{
-			Assert.AreEqual ("", c.ConvertTo (new DummyValueSerializerContext (), null, XamlLanguage.String, typeof (XamlType)), "#1");
+			Assert.Throws(typeof(NotSupportedException), () =>
+			{
+				Assert.AreEqual("", c.ConvertTo(new DummyValueSerializerContext(), null, XamlLanguage.String, typeof(XamlType)), "#1");
+			});
 		}
 
 		[Test]
-		[ExpectedException (typeof (NotSupportedException))]
 		public void ConvertXamlTypeToType ()
 		{
-			c.ConvertTo (null, null, XamlLanguage.String, typeof (Type));
+			Assert.Throws(typeof(NotSupportedException), () =>
+			{
+				c.ConvertTo(null, null, XamlLanguage.String, typeof(Type));
+			});
 		}
 
 		[Test]
@@ -119,10 +129,12 @@ namespace MonoTests.Uno.Xaml.Schema
 		}
 
 		[Test]
-		[ExpectedException (typeof (NotSupportedException))]
 		public void ConvertStringToXamlType ()
 		{
-			Assert.AreEqual ("", c.ConvertTo (new DummyValueSerializerContext (), null, "System.String", typeof (XamlType)), "#1");
+			Assert.Throws(typeof(NotSupportedException), () =>
+			{
+				Assert.AreEqual("", c.ConvertTo(new DummyValueSerializerContext(), null, "System.String", typeof(XamlType)), "#1");
+			});
 		}
 	}
 }

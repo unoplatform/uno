@@ -1,4 +1,158 @@
-# Uno.UI Platorms Frequently Asked Questions
+About Uno platform
+
+## What is the Uno Platform?
+The Uno Platform is a Universal Windows Platform Bridge to allow UWP based code to run on iOS, Android, and WebAssembly. It provides the full API definitions of the UWP Spring Creators Update (17134), and the implementation of parts of the UWP API, such as Windows.UI.Xaml, to enable applications to run on these platforms.
+This allows the use the UWP tooling from Windows in Visual Studio, such as XAML Edit and Continue and C# Edit and Continue, to build an application as much as possible on Windows, then validate that the application runs on iOS, Android and WebAssembly.
+The XAML User Interface (UI) provides the ability to display the same XAML files on Windows, iOS, Android and WebAssembly platforms. Uno also provides support for the MVVM pattern on all platforms, with binding, styling, control and data-templating features.
+As the Uno Platform provides all of the APIs of the complete UWP platform, any UWP library can be compiled on top of Uno (e.g. XamlBehaviors), with the ability to determine which APIs are implemented or not via the IDE using C# Analyzers.
+
+## What does UNO Platform do?
+
+**For users**, it can provide can provide a consistent experience across platforms, particularly between mobile and desktop browsers.
+
+**For developers**, it can provide a consistent development experience across all platforms, using Microsoft's tooling as a base for a more efficient development loop.
+
+**For designers**, XAML can provide a shared way to use pixel-perfect designs and use rich UI interactions.
+
+## Why Uno ?
+Developing for Windows (phone, desktop, tablet, XBox), iOS (tablet and phone), Android (tablet and phone) and the Web via WebAssembly at once can be a complex process, especially when it comes to the user interface. Each platform has its own ways of defining dynamic layouts, with some being more efficient, some more verbose, some more elegant, and some more performant than others.
+Yet, being able to master all these frameworks at once is a particularly difficult task, because of the amount of platform-specific knowledge required to master each platform. Most of the time it boils down to different teams developing the same application multiple times, with each requiring a full development cycle.
+With Xamarin, C# comes to all these platforms; however, it only provides transparent translations of the UI frameworks available for iOS and Android. Most non-UI code can be shared, but when it comes to the UI, almost nothing can be shared.
+To avoid having to learn the UI-layout techniques and approaches for each platform, Uno.UI mimics the Windows XAML approach of defining UI and layouts. This translates into the ability to share styles, layouts, and data-bindings while retaining the ability to mix XAML-style and native layouts. For instance, a StackPanel can easily contain a RelativeLayout on Android, or a MKMapView on iOS.
+Uno.UI provides the ability for developers to reuse known layout and coding techniques on all platforms, resulting in a gain of overall productivity when creating UI-rich applications.
+
+
+## Who makes UNO platform?
+Uno Platform was created by Team nventive over the past 4 years.
+
+## What makes UNO Platform unique?
+The Uno Platform is the only implementation of the UWP API that runs across iOS, Android and WebAssembly. 
+
+## Is Uno Platform open source?
+Yes, the Uno Platform is open source, under the [Apache 2.0 license](https://github.com/nventive/Uno/blob/master/License.md).
+
+# Getting started
+## How can I try Uno platform?
+You can try the Uno Platform using the [Uno Platform Playground](https://playground.platform.uno), the [Quick Start GitHub repository](https://github.com/nventive/Uno.QuickStart), or through our  [Visual Studio Extension](https://marketplace.visualstudio.com/items?itemName=nventivecorp.uno-platform-addin).
+
+## How experienced do I need to be to use Uno Platform?
+
+## What is the playground?
+The [Uno Platform Playground](https://playground.platform.uno) is a convenient way to experiment with the Uno platform, using the only a WebAssembly compatible web browser.
+
+## Where can I get support?
+Support is available through our [gitter](https://gitter.im/uno-platform/Lobby), [twitter account](https://twitter.com/unoplatform), and email [info@platform.uno](mailto:info@platform.uno).
+
+## How can I get involved?
+There are lots of ways to contribute to the Uno Platform and we appreciate the help from the community. You can provide feedback, report bugs, give suggestions, contribute code, and participate in the platform discussions.
+
+## How can I report a bug?
+- If you think you've found a bug, please [log a new issue](https://github.com/nventive/Uno/issues) in the Uno Platform GitHub issue tracker. When filing issues, please use our bug filing template. The best way to get your bug fixed is to be as detailed as you can be about the problem. Providing a minimal project with steps to reproduce the problem is ideal. Here are questions you can answer before you file a bug to make sure you're not missing any important information.
+- Did you read the [documentation](https://github.com/nventive/Uno/tree/master/doc/)?
+- Did you include the snippet of broken code in the issue?
+- What are the EXACT steps to reproduce this problem?
+- What specific version or build are you using?
+- What operating system are you using?
+
+GitHub supports markdown, so when filing bugs make sure you check the formatting before clicking submit.
+
+# Technology
+
+## What is UWP?
+
+Universal Windows Platform (UWP) is an API created by Microsoft and first introduced in Windows 10. The purpose of this platform is to help develop universal apps that run on Windows 10, Windows 10 Mobile, Xbox One and HoloLens without the need to be re-written for each. It supports Windows app development using C++, C#, VB.NET, and XAML. The API is implemented in C++, and supported in C++, VB.NET, C#, F# and JavaScript. Designed as an extension to the Windows Runtime platform first introduced in Windows Server 2012 and Windows 8, UWP allows developers to create apps that will potentially run on multiple types of devices.
+
+Visit Microsoft's documentation for a primer on UWP : https://docs.microsoft.com/en-us/windows/uwp/get-started/
+
+## How is Uno platform different from Xamarin forms or Avalonia?
+Multiple techniques can be used to render UI, ranging from rendering pixels in a Frame Buffer (Avalonia), to rendering only using platform-provided controls (Xamarin.Forms). 
+
+While the former provides a high flexibility in terms of rendering fidelity and the ability to add new platforms, it has the drawback of not following the platform native behaviors. For instance, interactions with text boxes, has to be re-implemented completely in order to match the native behavior, and has to be updated regularly to follow platform updates. This approach also makes it very difficult to integrate native UI components "in-canvas", such as Map or Browser controls.
+
+The latter, however, provides full fidelity with the underlying platform, making it blend easily with native applications. While this can be interesting for some kinds of applications, designers usually want to have a branded pixel-perfect look and feel which stays consistent across platforms, where drawing primitives are not available.
+
+The Uno Platform sits in the middle, using the power of XAML to provide the ability to custom draw and animate UI, while reusing key parts of the underlying UI Toolkit (such as chrome-less native text boxes) to provide native system interactions support and native accessibility features.
+
+## How does my Uno Platform-based application code run on Android or iOS?
+Uno Platform-based applications on iOS and Android are no different than any other Xamarin-based applications. See [the details here](https://docs.microsoft.com/en-us/xamarin/cross-platform/app-fundamentals/building-cross-platform-applications/understanding-the-xamarin-mobile-platform).
+
+## How does my Uno platform code run on the web?
+On the Web, the application is built using the standard .NET tooling. The application is then transformed into a static website though the [Uno Web Boostrapper](https://github.com/nventive/Uno.Wasm.Bootstrap), which uses [mono-wasm](https://github.com/mono/mono/tree/master/sdks/wasm) to run the C# code in the browser.
+
+## Is WebAssembly supported in all browsers?
+WebAssembly is supported in 4 major browser engines, see the [WebAssembly official site](https://webassembly.org/roadmap/) for more details.
+
+## Where can I deploy my Uno Platform based app?
+For iOS and Android, it can be deployed like any Xamarin-based application through the App Store and Play Store, respectively.
+
+For WebAssembly, it can be deployed using [GitHub Pages](https://pages.github.com/), Azure [Web Apps](https://azure.microsoft.com/en-us/services/app-service/web/), [Azure Static Web Sites](https://docs.microsoft.com/en-us/azure/storage/blobs/storage-blob-static-website), or any other static web site hosting provider.
+
+## Does Uno.UI support macOS?
+Not yet. We're still waiting for Apple's Marzipan cross macOS-iOS APIs to become available. We’ll see from there. 
+
+## Does Uno.UI support Linux ?
+No, not at the moment. Our assumption for now is that the WebAssembly part of Uno.UI will be efficient enough to be a viable alternative. If you find that native support still is a viable scenario, please open a GitHub issue.
+
+## Does Uno.UI support what WPF is calling CustomControls ? 
+
+Yes, those are called Templated Controls in the UWP dialect, because they inherit from Control Uno.UI currently handles styles a bit differently from what WPF/UWP is doing and Uno.UI parser does not handle `<Style.Setters>` properly. These should not be impacting as long as you have a resource dictionary file containing your style. See here: https://github.com/nventive/Uno/blob/master/doc/articles/api-differences.md#styles
+
+## Is the iPhone X supported by Uno.UI ?
+
+Yes, use the [VisibleBoundsPadding](https://github.com/nventive/Uno/blob/master/src/Uno.UI.Toolkit/VisibleBoundsPadding.md)
+behavior to manage the _notch_ correctly.
+
+## What features will UNO Platform support?
+
+The end goal is to implement most features of the UWP API, but the [road map article](roadmap.md) details what is upcoming.
+
+## Why XAML? What is it, how does it work?
+
+XAML stands for **eXtensible Application Markup Language**, and is used to provide a declarative way to define user interfaces. Its ability to provide a clear separation of concerns between the UI definition and application logic using data binding provides a good experience for small to very large applications where integrators can easily create UI without having to deal with C# code.
+
+For a good introduction to the use of XAML and MVVM patterns see [Microsoft's Laurent Bugnion presentation](https://twitter.com/LBugnion).
+
+## What are the different flavors of XAML?
+Over the years, Microsoft has been working on different implementations that use XAML for defining User Interfaces, and currently, three main flavors co-exist: WPF, UWP, Xamarin.Forms and the legacy Silverlight.
+
+All these implementations use the same base XAML definition language, with minor differences in terns of the interpretation of the XML namespaces (`clr-namespace` vs. `using:`), and major differences in terms of the APIs used by the XAML parser.
+
+For instance, WPF has [`System.Windows.Controls.StackPanel`](https://docs.microsoft.com/en-us/dotnet/api/system.windows.controls.stackpanel?redirectedfrom=MSDN&view=netframework-4.7.2), UWP
+has [`Windows.UI.Xaml.Controls.StackPanel`](https://docs.microsoft.com/en-us/uwp/api/Windows.UI.Xaml.Controls.StackPanel) and Xamarin.Forms
+has [`Xamarin.Forms.StackLayout`](https://docs.microsoft.com/en-us/dotnet/api/Xamarin.Forms.StackLayout?view=xamarin-forms). All three essentially behave in the same way, but have implementation differences and feature differences, though UWP, WPF and Silverlight have a very similar behavior.
+
+## Why Mono?
+[Mono](https://github.com/mono/mono) is currently the best (and only) mobile-friendly implementation of .NET that targets iOS, Android and WebAssembly. It shares a lot -- and increasing -- of code from the BCL implementation with [.NET core](https://github.com/dotnet/core), making the runtime behavior very similar and in most cases, identical across platforms.
+
+## What do you mean by #UWPeverywhere?
+
+Our ultimate goal is to allow for the UWP api to run on all platforms, using Microsoft's own UWP implementation as a reference.
+
+## What is a bridge?
+
+Our definition of a bridge is the ability to reuse UWP-compatible source code unmodified, and allow it to compile on a different platform, yet behave at runtime the same way.
+
+This definition comes from what microsoft used to call when working on [Islandwood](https://developer.microsoft.com/en-us/windows/bridges/ios) and Astoria bridges to make iOS and Android code or binaries run on Windows.
+
+## Why .NET?
+
+Microsoft describes it best in its [What is .NET](https://www.microsoft.com/net/learn/what-is-dotnet) page:
+
+> .NET is a free, cross-platform, open source developer platform for building many different types of applications. With .NET, you can use multiple languages, editors, and libraries to build for web, mobile, desktop, gaming, and IoT.
+
+## Why build cross platform apps on the Microsoft stack?
+
+## Will the Uno platform make my app look and run the same way on iOS and Android?
+
+## What are the advantages of using Uno platform over Flutter/React Native/Xamarin Forms?
+
+# Uno.UI Platforms Frequently Asked Questions
+
+## Does Uno.UI support a single .NET Standard 2.0 binary model?
+Not at the moment. iOS and Android platform support relies on the underlying APIs being visible through class hierarchy for performance reasons. Also, the .NET Standard model is based on binary sharing, which makes very difficult to use platform features without jumping through hoops such as Dependency Injection, Inversion of Control or reflection.
+
+## Does Uno.UI support having controls in a class library?
+Yes, here's a project sample.  https://github.com/nventive/Uno.Samples/tree/master/UI/ControlLibrary. It is also possible to create a new Cross-Platform class library using the [Uno Platform Visual Studio extension](https://marketplace.visualstudio.com/items?itemName=nventivecorp.uno-platform-addin).
 
 ## How do I update the to latest Uno.UI nuget package, I don't see any update ?
 
@@ -27,27 +181,18 @@ You need to make sure that:
 If you're still having issues, **restart Visual Studio** and/or **unload the iOS/Android and WASM projects**, using right-click on the project, then **unload**.
 
 ## Is Uno.UI's Performance on WebAssembly going to improve
-Yes! The current performance is bound the runtime interpreted mode of mono-wasm. The Mono is working on implementing **AOT** compilation,
+Yes! The current performance is limited by the runtime interpreted mode of mono-wasm. The Mono team is working on implementing **AOT** compilation,
 which will improve significantly the performance. See [Miguel de Icaza's status update](https://gitter.im/aspnet/Blazor?at=5b1ab670dd54362753f8a168) for more details.
+
+You can subscribe to this [mono issue's updates for progress](https://github.com/mono/mono/issues/10222).
 
 ## Why is Chrome slower than Firefox or Microsoft Edge to execute mono-wasm based applications ?
 
 This is a [known Chromium issue](https://bugs.chromium.org/p/v8/issues/detail?id=7838#c7), which should be improving with
 the release of [Chrome 69](https://www.chromium.org/developers/calendar).
 
-## Does Uno.UI support macOS ?
 
-Not yet. We're still in a wait and see posture, until Apple's Marzipan cross macOS-iOS APIs become available.
-
-## Does Uno.UI support Linux ?
-
-No, not at the moment. Our assumption for now is that the WebAssembly part of Uno.UI will be efficient for it to be a viable alternative, but if you find that native support still is a viable scenario, please open a GitHub issue.
-
-## Getting started with UWP?
-
-Visit Microsoft's documentation for a primer on UWP : https://docs.microsoft.com/en-us/windows/uwp/get-started/
-
-## Error: `System.SystemException: Thread creation failed.` on WebAssembly
+## I’m getting this error on WebAssembly : Error: System.SystemException: Thread creation failed.
 
 If you're getting this error:
 ```
@@ -58,29 +203,19 @@ at System.Threading.Thread.StartInternal (System.Security.Principal.IPrincipal p
 
 Keep the version 1.1.1 of Microsoft.Extensions.Logging; latest version of Logging Extensions is starting a new thread and it's not supported in Wasm.
 
-## I created my first solution and ran the UWP project. Then I wanted to test the magic so I changed the "Hello world" text, hit save and... no live update. Am I missing something?
+## Live updates doesn’t work on UWP project. 
 
 For live update on UWP you need to edit the xaml while the project is debugging, no need for save, it updates on every keystroke (more or less) you need to update to the latest UWP sdk in your project configuration, change target version to latest
 
 
-##	I don't see any "Uno.UI App Solution" from File->Project->New ?
+## I don't see any "Uno.UI App Solution" from File->Project->New ?
 
 1. Install **Uno.UI Solution Template Visual Studio Extension** https://github.com/nventive/Uno/releases
 2. Look for Uno.UI App Solution under Visual C#
 3. if you still havent found it, try and use the Search box
 
-## Will Uno.UI support a single .NET Standard 2.0 binary model ?
 
-Not at the moment. iOS and Android platform support relies on the underlying APIs being visible through
-class hierarchy for performance reasons. Also, the .NET Standard model is based on binary sharing, which
-makes very difficult to use platform features without jumping through hoops such as Dependency Injection,
-Inversion of Control or reflection.
-
-## Does Uno.UI support having controls in a class library ?
-
-Yes, here's a [project sample](https://github.com/nventive/Uno.Samples/tree/master/UI/ControlLibrary).
-
-##	How to port an existing UWP app to Uno.UI?
+## How to port an existing UWP app to Uno.UI?
 
 First create a shared project and move all .cs and .xaml files into it and reference the project in your UWP head
 project.  Ensure everything is still working and add other projects for other platforms referencing the same shared project.
@@ -91,13 +226,13 @@ project.  Ensure everything is still working and add other projects for other pl
 4. ios/android specific heads should be relatively empty, only used os specific implementation (push notification handling/deeplinking/permissions)
 5. Test, debug and publish.
 
-## How to port an existing UWP library to Uno.UI ?
+## How to port an existing UWP library to Uno.UI ? 
 
-This is essentially the same process as porting an app, but using cross-targeted projects. Use
+This is essentially the same process as porting an app(add steps anyways), but using cross-targeted projects. Use
 [this project](https://github.com/nventive/Uno.Samples/blob/master/UI/ControlLibrary/XamlControlLibrary/XamlControlLibrary.csproj)
 as a base for your cross-targeted library.
 
-# Is it at all possible to make http web requests using the WASM target?
+# Is it possible to make http web requests using the WASM target?
 
 Yes it is possible, but you need to use the provided HttpHandler by Uno.UI like what we did in the Uno.UI Playground:
 
@@ -108,8 +243,7 @@ var httpClient = new HttpClient(handler);
 
 ## How do you choose which APIs are being implemented ?
 
-- If the API is present in .NET Standard, it is generally suggested to use this one instead of the UWP one. (e.g System.IO or System.Net.HttpClient)
-- Missing APIs will be implemented based on the popularity of suggestions in the [Uno.UI issues list](https://github.com/nventive/Uno/issues). Make sure
+- If the API is present in .NET Standard, it is generally suggested to use this one instead of the UWP one. (e.g System.IO or System.Net.HttpClient)Missing APIs will be implemented based on the popularity of suggestions in the [Uno.UI issues list](https://github.com/nventive/Uno/issues). Make sure
 to open one for the APIs you need.
 
 ## Can I know at runtime which APIs are implemented ?
@@ -132,14 +266,7 @@ I'm getting the following error:
 To work around this, you must include all the platforms you want to support in your TargetFrameworks node. See [this
 question](https://stackoverflow.com/questions/50608089/referencing-a-netstandard2-0-project-in-a-platform-uno-project).
 
-## Is the iPhone X supported by Uno.UI ?
 
-Yes, use the [VisibleBoundsPadding](https://github.com/nventive/Uno/blob/master/src/Uno.UI.Toolkit/VisibleBoundsPadding.md)
-behavior to manage the _notch_ correctly.
-
-## Does Uno.UI support wpf CustomControls 
-
-Yes, those are called Templated Controls, because they inherit from Control	Uno.UI currently handles styles a bit differently from what WPF/UWP is doing and Uno.UI parser does not handle `<Style.Setters>` properly. These should not be impacting as long as you have a resource dictionary file containing your style. See here: https://github.com/nventive/Uno/blob/master/doc/articles/api-differences.md#styles
 
 ## My application on iOS/Android/Wasm is not showing icons properly
 
@@ -162,7 +289,7 @@ Frame is more or less the same as a NavigationPage in Xamarin.Forms, and MasterD
 
 Working with a shared project is not much different than working with PCLs, it's simply more flexible as you have access to all platforms, preferably via partial classes.
 
-## I'm used to tell R# about my datacontext this way: d:DataContext="{d:DesignInstance vm:IFeedPageViewModel}" is there a UWP way?
+## Is there a UWP way to tell R# about my datacontext? 
 
 https://docs.microsoft.com/en-us/windows/uwp/data-binding/displaying-data-in-the-designer#sample-data-from-class-and-design-time-attributes
 
@@ -188,9 +315,9 @@ It's an existing issue, caused by Roslyn. You must add all your TargetFrameworks
 
 # Can Uno.UI convert a UWP control to native android/ios and also has the option to use android native controls within xaml?
 
-That's exactly right, see [this](https://github.com/nventive/Uno/blob/a69879a3154f61b2d493be433aa08bc3b8aa1b06/src/Uno.UI/UI/Xaml/Style/Generic/Generic.xaml#L2843) for the XAML-UWP button, and [this](https://github.com/nventive/Uno/blob/a69879a3154f61b2d493be433aa08bc3b8aa1b06/src/Uno.UI/UI/Xaml/Style/Generic/Generic.Native.xaml#L20) for the iOS native button When complete XAML is used for rendering, it's not so much a conversion but more of  a vector rendering. For instance, Uno.UI.iOS uses CGLayer for rendering content it's different because Uno.UI integrates within the layouting system of the platform, which allows for mixed rendering. Uno.UI supports webviews, whereas Flutter does not. Flutter also has to render everything, including what the platform provides by default, such as the Magnifier in the TextBox for accessibility (they is not yet supported either).
+That's exactly right, see [this](https://github.com/nventive/Uno/blob/a69879a3154f61b2d493be433aa08bc3b8aa1b06/src/Uno.UI/UI/Xaml/Style/Generic/Generic.xaml#L2843) for the XAML-UWP button, and [this](https://github.com/nventive/Uno/blob/a69879a3154f61b2d493be433aa08bc3b8aa1b06/src/Uno.UI/UI/Xaml/Style/Generic/Generic.Native.xaml#L20) for the iOS native button When complete XAML is used for rendering, it's not so much a conversion but more of  a vector rendering. For instance, Uno.UI.iOS uses CGLayer for rendering content it's different because Uno.UI integrates within the layouting system of the platform, which allows for mixed rendering. Uno.UI supports webviews, whereas Flutter does not. Flutter also has to render everything, including what the platform provides by default, such as the Magnifier in the TextBox for accessibility (this is not yet supported either).
 
-## Can I have a screen and use a Map and put markers, using UNO, for Android, and Windows 10?
+## Can I have a screen, use a Map and put markers, using UNO, for Android, and Windows 10?
 > And can I access the camera, take a picture and Post to a REST WebAPI? can I access Photos / files in phone?
 	
 For now, we have internal code to do all of that, but in the meantime, you have to do this by hand on each. Parts of https://docs.microsoft.com/en-us/xamarin/essentials/ allows to do it.
@@ -210,7 +337,7 @@ Only Wasm, Android and iOS projects need a reference to Uno.UI. Adding a referen
 [`VisibleBoundsPadding`](https://github.com/nventive/Uno/blob/master/src/Uno.UI.Toolkit/VisibleBoundsPadding.md)
 attached property for notch'ed devices.
 
-## Edit & Continue is great but the properties view is greyed out.
+## How can I un-grey the properties view In Edit & Continue?  
 
 You can add them using the add button. Only properties explicitly defined in the xaml will show up at first
 
@@ -226,13 +353,13 @@ This is part of the [Uno.SourceGeneration package](https://github.com/nventive/U
 
 `clr-namespace:` is not supported by UWP, `using:` is.
 
-## How to persist data  with wasm? I do caching with libraries like akavache or others based on sqlite, how can we make them work with wasm?
+## How to persist data  with wasm? 
 
 For now, persistence is not yet configured, it's using the in-memory filesystem of emscripten, so this has to be worked on. For now, you can use standard File IO, but it won't persist yet
 
 ## Any pull to refresh on listview?
 
-Not yet.
+Not yet. Any plans to?
 
 ## Does debugging work for ios through uno? 
 
@@ -240,7 +367,7 @@ Yes, debugging works for iOS and Android, as in any Xamarin native application. 
 
 ## Does Uno.UI works with MVVM or Prism?
 
-MVVMLight and ReactiveUI are supported, MvvmCross is coming, Prism as well.
+MVVMLight, Prism and ReactiveUI are supported, MvvmCross is coming.
 
 ## Does Uno.UI have an XAML AutoComplete?
 

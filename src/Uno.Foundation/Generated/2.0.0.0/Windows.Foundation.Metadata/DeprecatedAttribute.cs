@@ -2,34 +2,16 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Foundation.Metadata
 {
-	#if false || false || false || false
+	#if false || false || false || false || false
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class DeprecatedAttribute : global::System.Attribute
 	{
-		#if false || false || false || false
-		[global::Uno.NotImplemented]
-		public DeprecatedAttribute( string message,  global::Windows.Foundation.Metadata.DeprecationType type,  uint version) : base()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Foundation.Metadata.DeprecatedAttribute", "DeprecatedAttribute.DeprecatedAttribute(string message, DeprecationType type, uint version)");
-		}
-		#endif
+		// Skipping already declared method Windows.Foundation.Metadata.DeprecatedAttribute.DeprecatedAttribute(string, Windows.Foundation.Metadata.DeprecationType, uint)
 		// Forced skipping of method Windows.Foundation.Metadata.DeprecatedAttribute.DeprecatedAttribute(string, Windows.Foundation.Metadata.DeprecationType, uint)
-		#if false || false || false || false
-		[global::Uno.NotImplemented]
-		public DeprecatedAttribute( string message,  global::Windows.Foundation.Metadata.DeprecationType type,  uint version,  global::Windows.Foundation.Metadata.Platform platform) : base()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Foundation.Metadata.DeprecatedAttribute", "DeprecatedAttribute.DeprecatedAttribute(string message, DeprecationType type, uint version, Platform platform)");
-		}
-		#endif
+		// Skipping already declared method Windows.Foundation.Metadata.DeprecatedAttribute.DeprecatedAttribute(string, Windows.Foundation.Metadata.DeprecationType, uint, Windows.Foundation.Metadata.Platform)
 		// Forced skipping of method Windows.Foundation.Metadata.DeprecatedAttribute.DeprecatedAttribute(string, Windows.Foundation.Metadata.DeprecationType, uint, Windows.Foundation.Metadata.Platform)
-		#if false || false || false || false
-		[global::Uno.NotImplemented]
-		public DeprecatedAttribute( string message,  global::Windows.Foundation.Metadata.DeprecationType type,  uint version,  string contract) : base()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Foundation.Metadata.DeprecatedAttribute", "DeprecatedAttribute.DeprecatedAttribute(string message, DeprecationType type, uint version, string contract)");
-		}
-		#endif
+		// Skipping already declared method Windows.Foundation.Metadata.DeprecatedAttribute.DeprecatedAttribute(string, Windows.Foundation.Metadata.DeprecationType, uint, string)
 		// Forced skipping of method Windows.Foundation.Metadata.DeprecatedAttribute.DeprecatedAttribute(string, Windows.Foundation.Metadata.DeprecationType, uint, string)
 	}
 }

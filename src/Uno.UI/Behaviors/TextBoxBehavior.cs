@@ -10,6 +10,8 @@ using Windows.System;
 using Android.Views;
 #elif __IOS__
 using View = UIKit.UIView;
+#elif __MACOS__
+using View = AppKit.NSView;
 #else
 using View = Windows.UI.Xaml.DependencyObject;
 #endif
@@ -66,10 +68,10 @@ namespace Uno.UI.Behaviors
                 var nextControl = GetNextControl(textBox) as View;
 #if XAMARIN_ANDROID
                 nextControl?.RequestFocus();
-#else
-                nextControl?.BecomeFirstResponder();
+#elif __IOS__ || __MACOS__
+				nextControl?.BecomeFirstResponder();
 #endif
-                e.Handled = true;
+				e.Handled = true;
             }
         }
 

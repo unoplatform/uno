@@ -2,96 +2,18 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml.Controls
 {
-	#if false || false || false || false
+	#if false || false || NET46 || false || false
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class DatePickerFlyout 
 	{
-		#if false || false || false || false
-		[global::Uno.NotImplemented]
-		public  bool YearVisible
-		{
-			get
-			{
-				return (bool)this.GetValue(YearVisibleProperty);
-			}
-			set
-			{
-				this.SetValue(YearVisibleProperty, value);
-			}
-		}
-		#endif
-		#if false || false || false || false
-		[global::Uno.NotImplemented]
-		public  bool MonthVisible
-		{
-			get
-			{
-				return (bool)this.GetValue(MonthVisibleProperty);
-			}
-			set
-			{
-				this.SetValue(MonthVisibleProperty, value);
-			}
-		}
-		#endif
-		#if false || false || false || false
-		[global::Uno.NotImplemented]
-		public  global::System.DateTimeOffset MinYear
-		{
-			get
-			{
-				return (global::System.DateTimeOffset)this.GetValue(MinYearProperty);
-			}
-			set
-			{
-				this.SetValue(MinYearProperty, value);
-			}
-		}
-		#endif
-		#if false || false || false || false
-		[global::Uno.NotImplemented]
-		public  global::System.DateTimeOffset MaxYear
-		{
-			get
-			{
-				return (global::System.DateTimeOffset)this.GetValue(MaxYearProperty);
-			}
-			set
-			{
-				this.SetValue(MaxYearProperty, value);
-			}
-		}
-		#endif
-		#if false || false || false || false
-		[global::Uno.NotImplemented]
-		public  bool DayVisible
-		{
-			get
-			{
-				return (bool)this.GetValue(DayVisibleProperty);
-			}
-			set
-			{
-				this.SetValue(DayVisibleProperty, value);
-			}
-		}
-		#endif
-		#if false || false || false || false
-		[global::Uno.NotImplemented]
-		public  global::System.DateTimeOffset Date
-		{
-			get
-			{
-				return (global::System.DateTimeOffset)this.GetValue(DateProperty);
-			}
-			set
-			{
-				this.SetValue(DateProperty, value);
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		// Skipping already declared property YearVisible
+		// Skipping already declared property MonthVisible
+		// Skipping already declared property MinYear
+		// Skipping already declared property MaxYear
+		// Skipping already declared property DayVisible
+		// Skipping already declared property Date
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  string CalendarIdentifier
 		{
@@ -105,7 +27,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  string YearFormat
 		{
@@ -119,7 +41,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  string MonthFormat
 		{
@@ -133,7 +55,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  string DayFormat
 		{
@@ -147,7 +69,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty CalendarIdentifierProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
@@ -155,55 +77,13 @@ namespace Windows.UI.Xaml.Controls
 			typeof(global::Windows.UI.Xaml.Controls.DatePickerFlyout), 
 			new FrameworkPropertyMetadata(default(string)));
 		#endif
-		#if false || false || false || false
-		[global::Uno.NotImplemented]
-		public static global::Windows.UI.Xaml.DependencyProperty DateProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			"Date", typeof(global::System.DateTimeOffset), 
-			typeof(global::Windows.UI.Xaml.Controls.DatePickerFlyout), 
-			new FrameworkPropertyMetadata(default(global::System.DateTimeOffset)));
-		#endif
-		#if false || false || false || false
-		[global::Uno.NotImplemented]
-		public static global::Windows.UI.Xaml.DependencyProperty DayVisibleProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			"DayVisible", typeof(bool), 
-			typeof(global::Windows.UI.Xaml.Controls.DatePickerFlyout), 
-			new FrameworkPropertyMetadata(default(bool)));
-		#endif
-		#if false || false || false || false
-		[global::Uno.NotImplemented]
-		public static global::Windows.UI.Xaml.DependencyProperty MaxYearProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			"MaxYear", typeof(global::System.DateTimeOffset), 
-			typeof(global::Windows.UI.Xaml.Controls.DatePickerFlyout), 
-			new FrameworkPropertyMetadata(default(global::System.DateTimeOffset)));
-		#endif
-		#if false || false || false || false
-		[global::Uno.NotImplemented]
-		public static global::Windows.UI.Xaml.DependencyProperty MinYearProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			"MinYear", typeof(global::System.DateTimeOffset), 
-			typeof(global::Windows.UI.Xaml.Controls.DatePickerFlyout), 
-			new FrameworkPropertyMetadata(default(global::System.DateTimeOffset)));
-		#endif
-		#if false || false || false || false
-		[global::Uno.NotImplemented]
-		public static global::Windows.UI.Xaml.DependencyProperty MonthVisibleProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			"MonthVisible", typeof(bool), 
-			typeof(global::Windows.UI.Xaml.Controls.DatePickerFlyout), 
-			new FrameworkPropertyMetadata(default(bool)));
-		#endif
-		#if false || false || false || false
-		[global::Uno.NotImplemented]
-		public static global::Windows.UI.Xaml.DependencyProperty YearVisibleProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			"YearVisible", typeof(bool), 
-			typeof(global::Windows.UI.Xaml.Controls.DatePickerFlyout), 
-			new FrameworkPropertyMetadata(default(bool)));
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		// Skipping already declared property DateProperty
+		// Skipping already declared property DayVisibleProperty
+		// Skipping already declared property MaxYearProperty
+		// Skipping already declared property MinYearProperty
+		// Skipping already declared property MonthVisibleProperty
+		// Skipping already declared property YearVisibleProperty
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty DayFormatProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
@@ -211,7 +91,7 @@ namespace Windows.UI.Xaml.Controls
 			typeof(global::Windows.UI.Xaml.Controls.DatePickerFlyout), 
 			new FrameworkPropertyMetadata(default(string)));
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty MonthFormatProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
@@ -219,7 +99,7 @@ namespace Windows.UI.Xaml.Controls
 			typeof(global::Windows.UI.Xaml.Controls.DatePickerFlyout), 
 			new FrameworkPropertyMetadata(default(string)));
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty YearFormatProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
@@ -227,13 +107,7 @@ namespace Windows.UI.Xaml.Controls
 			typeof(global::Windows.UI.Xaml.Controls.DatePickerFlyout), 
 			new FrameworkPropertyMetadata(default(string)));
 		#endif
-		#if false || false || false || false
-		[global::Uno.NotImplemented]
-		public DatePickerFlyout() : base()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.DatePickerFlyout", "DatePickerFlyout.DatePickerFlyout()");
-		}
-		#endif
+		// Skipping already declared method Windows.UI.Xaml.Controls.DatePickerFlyout.DatePickerFlyout()
 		// Forced skipping of method Windows.UI.Xaml.Controls.DatePickerFlyout.DatePickerFlyout()
 		// Forced skipping of method Windows.UI.Xaml.Controls.DatePickerFlyout.CalendarIdentifier.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.DatePickerFlyout.CalendarIdentifier.set
@@ -251,7 +125,7 @@ namespace Windows.UI.Xaml.Controls
 		// Forced skipping of method Windows.UI.Xaml.Controls.DatePickerFlyout.MaxYear.set
 		// Forced skipping of method Windows.UI.Xaml.Controls.DatePickerFlyout.DatePicked.add
 		// Forced skipping of method Windows.UI.Xaml.Controls.DatePickerFlyout.DatePicked.remove
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Foundation.IAsyncOperation<global::System.DateTimeOffset?> ShowAtAsync( global::Windows.UI.Xaml.FrameworkElement target)
 		{
@@ -274,7 +148,7 @@ namespace Windows.UI.Xaml.Controls
 		// Forced skipping of method Windows.UI.Xaml.Controls.DatePickerFlyout.YearVisibleProperty.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.DatePickerFlyout.MinYearProperty.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.DatePickerFlyout.MaxYearProperty.get
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Xaml.Controls.DatePickerFlyout, global::Windows.UI.Xaml.Controls.DatePickedEventArgs> DatePicked
 		{
