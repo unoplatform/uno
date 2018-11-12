@@ -37,6 +37,8 @@
  * Ensure the SplitView templated parent is propagated properly for FindName
  * Fix infinite loop when parsing empty Attached Properties on macOS
  * 103116 [iOS] Navigating to a _second_ local html file with `WebView` doesn't work.
+ * 137945 [iOS 12] Some UI elements are misaligned after device goes from landscape back to portrait
+ * 138043 [iOS] Text elements misaligned after leaving and returning to the app
 
 ## Release 1.41
 
