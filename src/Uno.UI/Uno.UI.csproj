@@ -145,7 +145,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="MSBuild.Sdk.Extras" Version="1.6.55" PrivateAssets="All" />
+		<PackageReference Include="MSBuild.Sdk.Extras" Version="1.6.61" PrivateAssets="All" />
 		<PackageReference Include="System.Numerics.Vectors" Version="4.5.0" />
 		<PackageReference Include="Uno.SourceGenerationTasks">
 			<Version>1.28.0-dev.145</Version> 

@@ -70,7 +70,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-	<PackageReference Include="MSBuild.Sdk.Extras" Version="1.5.4" PrivateAssets="All" />
+	<PackageReference Include="MSBuild.Sdk.Extras" Version="1.6.61" PrivateAssets="All" />
 	<PackageReference Include="xamarin.build.download" Version="0.4.9" />
   </ItemGroup>
 

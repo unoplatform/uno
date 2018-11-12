@@ -205,6 +205,13 @@ declare namespace Uno.UI {
             */
         measureView(viewId: string, maxWidth: string, maxHeight: string): string;
         setImageRawData(viewId: string, dataPtr: number, width: number, height: number): string;
+        /**
+         * Sets the provided image with a mono-chrome version of the provided url.
+         * @param viewId the image to manipulate
+         * @param url the source image
+         * @param color the color to apply to the monochrome pixels
+         */
+        setImageAsMonochrome(viewId: string, url: string, color: string): string;
         setPointerCapture(viewId: string, pointerId: number): string;
         releasePointerCapture(viewId: string, pointerId: number): string;
         focusView(elementId: string): string;

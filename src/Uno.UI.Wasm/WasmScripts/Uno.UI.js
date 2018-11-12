@@ -642,6 +642,41 @@ var Uno;
                     return "ok";
                 }
             }
+            /**
+             * Sets the provided image with a mono-chrome version of the provided url.
+             * @param viewId the image to manipulate
+             * @param url the source image
+             * @param color the color to apply to the monochrome pixels
+             */
+            setImageAsMonochrome(viewId, url, color) {
+                const element = this.allActiveElementsById[viewId];
+                if (!element) {
+                    throw `setImageAsMonochrome: Element id ${viewId} not found.`;
+                }
+                if (element.tagName.toUpperCase() === "IMG") {
+                    const imgElement = element;
+                    var img = new Image();
+                    img.onload = buildMonochromeImage;
+                    img.src = url;
+                    function buildMonochromeImage() {
+                        // create a colored version of img
+                        var c = document.createElement('canvas');
+                        var ctx = c.getContext('2d');
+                        c.width = img.width;
+                        c.height = img.height;
+                        ctx.drawImage(img, 0, 0);
+                        ctx.globalCompositeOperation = 'source-atop';
+                        ctx.fillStyle = color;
+                        ctx.fillRect(0, 0, img.width, img.height);
+                        ctx.globalCompositeOperation = 'source-over';
+                        imgElement.src = c.toDataURL();
+                    }
+                    return "ok";
+                }
+                else {
+                    throw `setImageAsMonochrome: Element id ${viewId} is not an Img.`;
+                }
+            }
             setPointerCapture(viewId, pointerId) {
                 const element = this.allActiveElementsById[viewId];
                 if (!element) {

@@ -79,6 +79,10 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Uno.UI.Wasm", "Uno.UI.Wasm\Uno.UI.Wasm.csproj", "{10F0BC33-9AE4-4F5B-BC31-69364BDAF438}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "_Build", "_Build", "{1071515E-5F7A-4DE5-9F06-655BDCA5D6FD}"
+	ProjectSection(SolutionItems) = preProject
+		global.json = global.json
+		Uno.CrossTargetting.props = Uno.CrossTargetting.props
+	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Uno.UI.Build", "..\build\Uno.UI.Build.csproj", "{30CFACE3-3A58-4FF2-B390-43CD825F8928}"
 EndProject
