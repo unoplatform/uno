@@ -84,7 +84,7 @@ namespace Windows.UI.Xaml.Controls
 		protected internal override void OnInvalidateMeasure()
 		{
 			base.OnInvalidateMeasure();
-			SetNeedsDisplay();
+			SetNeedsLayout();
 			_measureInvalidated = true;
 		}
 
