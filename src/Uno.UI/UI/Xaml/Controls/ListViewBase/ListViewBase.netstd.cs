@@ -12,6 +12,8 @@ namespace Windows.UI.Xaml.Controls
 
 		private int PageSize => throw new NotImplementedException();
 
+		private protected override bool ShouldItemsControlManageChildren => !(ItemsPanelRoot is IVirtualizingPanel);
+
 		private void Refresh()
 		{
 			//TODO

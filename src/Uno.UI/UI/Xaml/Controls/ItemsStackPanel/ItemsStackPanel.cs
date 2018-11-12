@@ -31,9 +31,20 @@ namespace Windows.UI.Xaml.Controls
 			{
 				CacheLength = FeatureConfiguration.ListViewBase.DefaultCacheLength.Value;
 			}
+
+#if NETSTANDARD2_0
+			CreateLayoutIfNeeded();
+			_layout.Initialize(this);
+#endif
 		}
 
 		VirtualizingPanelLayout IVirtualizingPanel.GetLayouter()
+		{
+			CreateLayoutIfNeeded();
+			return _layout;
+		}
+
+		private void CreateLayoutIfNeeded()
 		{
 			if (_layout == null)
 			{
@@ -42,11 +53,10 @@ namespace Windows.UI.Xaml.Controls
 				_layout.BindToEquivalentProperty(this, nameof(AreStickyGroupHeadersEnabled));
 				_layout.BindToEquivalentProperty(this, nameof(GroupHeaderPlacement));
 				_layout.BindToEquivalentProperty(this, nameof(GroupPadding));
-#if XAMARIN_ANDROID
+#if !XAMARIN_IOS
 				_layout.BindToEquivalentProperty(this, nameof(CacheLength));
 #endif
 			}
-			return _layout;
 		}
 	}
 }

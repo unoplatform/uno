@@ -133,7 +133,7 @@ namespace Windows.UI.Xaml.Controls
 		/// <summary>
 		/// True if ItemsControl should manage the children of ItemsPanel, false if this is handled by an inheriting class.
 		/// </summary>
-		private bool ShouldItemsControlManageChildren { get { return ItemsPanelRoot == InternalItemsPanelRoot; } }
+		private protected virtual bool ShouldItemsControlManageChildren { get { return ItemsPanelRoot == InternalItemsPanelRoot; } }
 
 		#region ItemsPanel DependencyProperty
 
@@ -1145,13 +1145,16 @@ namespace Windows.UI.Xaml.Controls
 		{
 			if (!IsGrouping)
 			{
-				return GetItems()?.ElementAtOrDefault(indexPath.Row);
+				return GetItemFromIndex(indexPath.Row);
 			}
 
 			return GetGroupAtDisplaySection(indexPath.Section)?.GroupItems?[indexPath.Row];
 		}
 
-		private object GetItemFromIndex(int index)
+		/// <summary>
+		/// Return the item in the source collection at a given item index.
+		/// </summary>
+		internal object GetItemFromIndex(int index)
 		{
 			var items = GetItems();
 			if (items is IList<object> list)
