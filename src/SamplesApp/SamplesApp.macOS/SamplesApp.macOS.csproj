@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -62,7 +62,7 @@
 
 	<ItemGroup>
 		<PackageReference Include="Uno.SourceGenerationTasks">
-			<Version>1.27.0-dev.112</Version>
+			<Version>1.27.0</Version>
 			<NoWarn>NU1701</NoWarn>
 		</PackageReference>
 		<PackageReference Include="Microsoft.Extensions.Logging.Console" Version="1.1.1" />
