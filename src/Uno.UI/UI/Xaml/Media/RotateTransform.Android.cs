@@ -38,8 +38,8 @@ namespace Windows.UI.Xaml.Media
 
 			if(View != null)
 			{
-				View.PivotX = (float)(Origin.X * View.MeasuredWidth) + ViewHelper.LogicalToPhysicalPixels(CenterX);
-				View.PivotY = (float)(Origin.Y * View.MeasuredHeight) + ViewHelper.LogicalToPhysicalPixels(CenterY);
+				View.PivotX = (float)(Origin.X * View.Width) + ViewHelper.LogicalToPhysicalPixels(CenterX);
+				View.PivotY = (float)(Origin.Y * View.Height) + ViewHelper.LogicalToPhysicalPixels(CenterY);
 				View.Rotation = (float)Angle;
 			}
 		}

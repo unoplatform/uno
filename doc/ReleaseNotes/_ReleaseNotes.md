@@ -41,6 +41,7 @@
  * Image with partial size constraint now display properly under Wasm.
  * 138297 [iOS][TextBlock] Measurement is always different since we use Math.Ceiling
  * 137204 [iOS] ListView - fix bug where item view is clipped
+ * 137979 [Android] Incorrect offset when applying RotateTransform to stretched view
 
 ## Release 1.41
 
