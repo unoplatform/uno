@@ -38,6 +38,7 @@
  * Fix infinite loop when parsing empty Attached Properties on macOS
  * 103116 [iOS] Navigating to a _second_ local html file with `WebView` doesn't work.
  * 134573 CommandBar doesn't take the proper space on iOS phones in landscape
+ * Image with partial size constraint now display properly under Wasm.
 
 ## Release 1.41
 

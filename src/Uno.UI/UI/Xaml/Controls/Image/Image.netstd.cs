@@ -167,7 +167,7 @@ namespace Windows.UI.Xaml.Controls
 
 			if (
 				double.IsInfinity(availableSize.Width)
-				|| double.IsInfinity(availableSize.Height)
+				&& double.IsInfinity(availableSize.Height)
 			)
 			{
 				ret = measuredSize;
