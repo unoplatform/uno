@@ -43,6 +43,7 @@ namespace Windows.UI.Xaml.Controls
 
 		private void InitializeControl()
 		{
+			SubscribeToOverridenRoutedEvents();
 			OnIsFocusableChanged();
 		}
 
@@ -142,11 +143,11 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		protected override void OnLoaded()
+		private void SubscribeToOverridenRoutedEvents()
 		{
-			SetUpdateControlTemplate();
-
-			base.OnLoaded();
+			// Overriden Events are registered from constructor to ensure they are
+			// registered first in event handlers.
+			// https://docs.microsoft.com/en-us/uwp/api/windows.ui.xaml.controls.control.onpointerpressed#remarks
 
 			var implementedEvents = GetImplementedRoutedEvents(GetType());
 
@@ -216,76 +217,12 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		protected override void OnUnloaded()
+		protected override void OnLoaded()
 		{
-			base.OnUnloaded();
+			SetUpdateControlTemplate();
 
-			var implementedEvents = GetImplementedRoutedEvents(GetType());
+			base.OnLoaded();
 
-			if (implementedEvents.HasFlag(RoutedEventFlag.PointerPressed))
-			{
-				PointerPressed -= OnPointerPressed;
-			}
-
-			if (implementedEvents.HasFlag(RoutedEventFlag.PointerReleased))
-			{
-				PointerReleased -= OnPointerReleased;
-			}
-
-			if (implementedEvents.HasFlag(RoutedEventFlag.PointerMoved))
-			{
-				PointerMoved -= OnPointerMoved;
-			}
-
-			if (implementedEvents.HasFlag(RoutedEventFlag.PointerEntered))
-			{
-				PointerEntered -= OnPointerEntered;
-			}
-
-			if (implementedEvents.HasFlag(RoutedEventFlag.PointerExited))
-			{
-				PointerExited -= OnPointerExited;
-			}
-
-			if (implementedEvents.HasFlag(RoutedEventFlag.PointerCanceled))
-			{
-				PointerCanceled -= OnPointerCanceled;
-			}
-
-			if (implementedEvents.HasFlag(RoutedEventFlag.PointerCaptureLost))
-			{
-				PointerCaptureLost -= OnPointerCaptureLost;
-			}
-
-			if (implementedEvents.HasFlag(RoutedEventFlag.Tapped))
-			{
-				Tapped -= OnTapped;
-			}
-
-			if (implementedEvents.HasFlag(RoutedEventFlag.DoubleTapped))
-			{
-				DoubleTapped -= OnDoubleTapped;
-			}
-
-			if (implementedEvents.HasFlag(RoutedEventFlag.KeyDown))
-			{
-				KeyDown += OnKeyDown;
-			}
-
-			if (implementedEvents.HasFlag(RoutedEventFlag.KeyUp))
-			{
-				KeyUp += OnKeyUp;
-			}
-
-			if (implementedEvents.HasFlag(RoutedEventFlag.GotFocus))
-			{
-				GotFocus -= OnGotFocus;
-			}
-
-			if (implementedEvents.HasFlag(RoutedEventFlag.LostFocus))
-			{
-				LostFocus -= OnLostFocus;
-			}
 		}
 
 		/// <summary>
@@ -301,7 +238,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		/// <summary>
-		/// Finds a realised element in the control template
+		/// Finds a realized element in the control template
 		/// </summary>
 		/// <param name="e">The framework element instance</param>
 		/// <param name="name">The name of the template part</param>
@@ -882,67 +819,67 @@ namespace Windows.UI.Xaml.Controls
 			var keyArgs = new[] { typeof(KeyRoutedEventArgs) };
 			var routedArgs = new[] { typeof(RoutedEventArgs) };
 
-			if (__GetIsIOverrideImplemented(type, "OnPointerPressed", pointerArgs))
+			if (GetIsEventOverrideImplemented(type, "OnPointerPressed", pointerArgs))
 			{
 				result |= RoutedEventFlag.PointerPressed;
 			}
 
-			if (__GetIsIOverrideImplemented(type, "OnPointerReleased", pointerArgs))
+			if (GetIsEventOverrideImplemented(type, "OnPointerReleased", pointerArgs))
 			{
 				result |= RoutedEventFlag.PointerReleased;
 			}
 
-			if (__GetIsIOverrideImplemented(type, "OnPointerEntered", pointerArgs))
+			if (GetIsEventOverrideImplemented(type, "OnPointerEntered", pointerArgs))
 			{
 				result |= RoutedEventFlag.PointerEntered;
 			}
 
-			if (__GetIsIOverrideImplemented(type, "OnPointerExited", pointerArgs))
+			if (GetIsEventOverrideImplemented(type, "OnPointerExited", pointerArgs))
 			{
 				result |= RoutedEventFlag.PointerExited;
 			}
 
-			if (__GetIsIOverrideImplemented(type, "OnPointerMoved", pointerArgs))
+			if (GetIsEventOverrideImplemented(type, "OnPointerMoved", pointerArgs))
 			{
 				result |= RoutedEventFlag.PointerMoved;
 			}
 
-			if (__GetIsIOverrideImplemented(type, "OnPointerCanceled", pointerArgs))
+			if (GetIsEventOverrideImplemented(type, "OnPointerCanceled", pointerArgs))
 			{
 				result |= RoutedEventFlag.PointerCanceled;
 			}
 
-			if (__GetIsIOverrideImplemented(type, "OnPointerCaptureLost", pointerArgs))
+			if (GetIsEventOverrideImplemented(type, "OnPointerCaptureLost", pointerArgs))
 			{
 				result |= RoutedEventFlag.PointerCaptureLost;
 			}
 
-			if (__GetIsIOverrideImplemented(type, "OnTapped", tappedArgs))
+			if (GetIsEventOverrideImplemented(type, "OnTapped", tappedArgs))
 			{
 				result |= RoutedEventFlag.Tapped;
 			}
 
-			if (__GetIsIOverrideImplemented(type, "OnDoubleTapped", doubleTappedArgs))
+			if (GetIsEventOverrideImplemented(type, "OnDoubleTapped", doubleTappedArgs))
 			{
 				result |= RoutedEventFlag.DoubleTapped;
 			}
 
-			if (__GetIsIOverrideImplemented(type, "OnKeyDown", keyArgs))
+			if (GetIsEventOverrideImplemented(type, "OnKeyDown", keyArgs))
 			{
 				result |= RoutedEventFlag.KeyDown;
 			}
 
-			if (__GetIsIOverrideImplemented(type, "OnKeyUp", keyArgs))
+			if (GetIsEventOverrideImplemented(type, "OnKeyUp", keyArgs))
 			{
 				result |= RoutedEventFlag.KeyUp;
 			}
 
-			if (__GetIsIOverrideImplemented(type, "OnLostFocus", routedArgs))
+			if (GetIsEventOverrideImplemented(type, "OnLostFocus", routedArgs))
 			{
 				result |= RoutedEventFlag.LostFocus;
 			}
 
-			if (__GetIsIOverrideImplemented(type, "OnGotFocus", routedArgs))
+			if (GetIsEventOverrideImplemented(type, "OnGotFocus", routedArgs))
 			{
 				result |= RoutedEventFlag.GotFocus;
 			}
@@ -950,7 +887,7 @@ namespace Windows.UI.Xaml.Controls
 			return ImplementedRoutedEvents[type] = result;
 		}
 
-		private static bool __GetIsIOverrideImplemented(Type type, string name, Type[] args)
+		private static bool GetIsEventOverrideImplemented(Type type, string name, Type[] args)
 		{
 			var method = type
 				.GetMethod(
