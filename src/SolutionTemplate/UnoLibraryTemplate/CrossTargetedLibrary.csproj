@@ -12,7 +12,7 @@
 	</PropertyGroup>
 	
 	<ItemGroup Condition="'$(TargetFramework)'=='xamarinios10' or '$(TargetFramework)'=='monoandroid80' or '$(TargetFramework)'=='netstandard2.0'">
-		<PackageReference Include="Uno.UI" Version="1.41.1" />
+		<PackageReference Include="Uno.UI" Version="1.42.0-beta.349" />
 	</ItemGroup>
 	
 	<ItemGroup>
