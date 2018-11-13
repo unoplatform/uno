@@ -102,7 +102,7 @@
 		<BundleResource Include="Resources\Fonts\winjs-symbols.ttf" />
 	</ItemGroup>
 	<ItemGroup>
-		<PackageReference Include="Uno.UI" Version="1.41.1" />
+		<PackageReference Include="Uno.UI" Version="1.42.0-beta.349" />
 	</ItemGroup>
 	<Import Project="..\$ext_safeprojectname$.Shared\$ext_safeprojectname$.Shared.projitems" Label="Shared" Condition="Exists('..\$ext_safeprojectname$.Shared\$ext_safeprojectname$.Shared.projitems')" />
 	<Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />
