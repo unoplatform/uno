@@ -37,6 +37,7 @@
  * Ensure the SplitView templated parent is propagated properly for FindName
  * Fix infinite loop when parsing empty Attached Properties on macOS
  * 103116 [iOS] Navigating to a _second_ local html file with `WebView` doesn't work.
+ * 134573 CommandBar doesn't take the proper space on iOS phones in landscape
 
 ## Release 1.41
 
