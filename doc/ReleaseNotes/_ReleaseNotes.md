@@ -39,6 +39,7 @@
  * 103116 [iOS] Navigating to a _second_ local html file with `WebView` doesn't work.
  * 134573 CommandBar doesn't take the proper space on iOS phones in landscape
  * Image with partial size constraint now display properly under Wasm.
+ * 138297 [iOS][TextBlock] Measurement is always different since we use Math.Ceiling
 
 ## Release 1.41
 
