@@ -9653,6 +9653,10 @@
                             PaneBackground="{ThemeResource NavigationViewDefaultPaneBackground}">
 
                             <SplitView.Pane>
+								<!--
+								InternalVisibleBoundsPadding is added to this control to make this template compatible
+								with notched devices by default. This behavior is not present in Microsoft's default UWP default.
+								-->
                                 <Grid x:Name="PaneContentGrid"
 										uBehaviors:InternalVisibleBoundsPadding.PaddingMask="All">
                                     <Grid.RowDefinitions>
@@ -9751,7 +9755,13 @@
                             VerticalAlignment="Top"
                             Canvas.ZIndex="100"
 							uBehaviors:InternalVisibleBoundsPadding.PaddingMask="Top,Left">
-							<!-- Canvas.ZIndex is not supported in Uno Grid yet, see https://github.com/nventive/Uno/issues/325 -->
+							<!--
+							Notes:
+							- InternalVisibleBoundsPadding is added to this control to make this template compatible
+							  with notched devices by default. This behavior is not present in Microsoft's default UWP default.
+
+							- Canvas.ZIndex is not supported in Uno Grid yet, see https://github.com/nventive/Uno/issues/325
+							-->
 
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="Auto" />
