@@ -22,6 +22,11 @@ namespace Windows.UI.Xaml.Controls
 			ImageOpened += (snd, evt) => InvalidateMeasure();
 		}
 
+		/// <summary>
+		/// When set, the resulting image is tentatively converted to Monochrome.
+		/// </summary>
+		internal Color? MonochromeColor { get; set; }
+
 		public event RoutedEventHandler ImageOpened
 		{
 			add => RegisterEventHandler("load", value);
@@ -87,16 +92,16 @@ namespace Windows.UI.Xaml.Controls
 							if (url.Scheme.Equals("file", StringComparison.OrdinalIgnoreCase))
 							{
 								// Local files are assumed as coming from the remoter server
-								SetAttribute("src", url.PathAndQuery);
+								SetImageUrl(url.PathAndQuery);
 							}
 							else
 							{
-								SetAttribute("src", url.AbsoluteUri);
+								SetImageUrl(url.AbsoluteUri);
 							}
 						}
 						else
 						{
-							SetAttribute("src", url.OriginalString);
+							SetImageUrl(url.OriginalString);
 						}
 					}
 				}
@@ -115,6 +120,20 @@ namespace Windows.UI.Xaml.Controls
 					);
 
 				setImageContent();
+			}
+		}
+
+		private void SetImageUrl(string url)
+		{
+			if (MonochromeColor != null)
+			{
+				WebAssemblyRuntime.InvokeJS(
+					"Uno.UI.WindowManager.current.setImageAsMonochrome(\"" + HtmlId + "\", \"" + url + "\", \"" + MonochromeColor.Value.ToCssString() + "\");"
+				);
+			}
+			else
+			{
+				SetAttribute("src", url);
 			}
 		}
 
@@ -148,7 +167,7 @@ namespace Windows.UI.Xaml.Controls
 
 			if (
 				double.IsInfinity(availableSize.Width)
-				|| double.IsInfinity(availableSize.Height)
+				&& double.IsInfinity(availableSize.Height)
 			)
 			{
 				ret = measuredSize;

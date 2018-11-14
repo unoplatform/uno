@@ -23,7 +23,7 @@ namespace Windows.UI.Xaml.Controls
 		public NavigationView()
 		{
 			_menuItems = new ObservableVector<object>();
-			_menuItems.VectorChanged += (s, e) => SynchronizeItems();
+			_menuItems.VectorChanged += (s, e) => _menuItemsHost?.Items.Update(_menuItems);
 
 			SetValue(MenuItemsProperty, _menuItems);
 			SizeChanged += NavigationView_SizeChanged;
@@ -167,7 +167,8 @@ namespace Windows.UI.Xaml.Controls
 			{
 				if (MenuItemsSource == null)
 				{
-					SynchronizeItems();
+					_menuItemsHost.Items.Clear();
+					_menuItemsHost.Items.AddRange(_menuItems);
 				}
 			}
 
@@ -179,15 +180,6 @@ namespace Windows.UI.Xaml.Controls
 			OnIsSettingsVisibleChanged();
 			RegisterEvents();
 			UpdatePositions();
-		}
-
-		private void SynchronizeItems()
-		{
-			if (_menuItemsHost != null)
-			{
-				_menuItemsHost.Items.Clear();
-				_menuItemsHost.Items.AddRange(_menuItems);
-			}
 		}
 
 		private void RegisterEvents()
@@ -335,13 +327,13 @@ namespace Windows.UI.Xaml.Controls
 		{
 			if (SettingsItem is NavigationViewItem item)
 			{
-				SelectedItem = SettingsItem;
-				_menuItemsHost.SelectedItem = null;
-
 				ItemInvoked?.Invoke(
 					this,
 					CreateInvokedItemParameter(item)
 				);
+
+				SelectedItem = SettingsItem;
+				_menuItemsHost.SelectedItem = null;
 			}
 		}
 

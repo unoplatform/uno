@@ -5,13 +5,13 @@ using System.Windows.Input;
 
 namespace Uno.UI.Common
 {
-	public class DelegateCommand : ICommand
+	public class DelegateCommand<T> : ICommand
 	{
-		private Action _action;
+		private Action<T> _action;
 
 		public event EventHandler CanExecuteChanged;
 
-		public DelegateCommand(Action action)
+		public DelegateCommand(Action<T> action)
 		{
 			_action = action;
 		}
@@ -23,7 +23,18 @@ namespace Uno.UI.Common
 
 		public void Execute(object parameter)
 		{
-			_action?.Invoke();
+			if (parameter is T t)
+			{
+				_action?.Invoke(t);
+			}
+			else if (parameter == null && !typeof(T).IsValueType)
+			{
+				_action?.Invoke(default(T));
+			}
+			else
+			{
+				throw new InvalidCastException($"parameter must be a {typeof(T)}");
+			}
 		}
 
 		private void OnCanExecuteChanged(bool canExecute)
