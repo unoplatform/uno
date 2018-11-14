@@ -14,8 +14,24 @@ using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 #if XAMARIN_IOS
 using UIKit;
+#elif __MACOS__
+using AppKit;
 #endif
 
+#if IS_UNO
+namespace Uno.UI.Behaviors
+{
+	/// <summary>
+	/// Internal Uno behavior, use VisibleBoundsPadding instead.
+	/// </summary>
+	/// <remarks>
+	/// This class is located in the same source file as the VisibleBoundsPadding class to avoid code duplication.
+	/// This is required to ensure that both Uno.UI styles and UWP (through Uno.UI.Toolkit) can use this behavior
+	/// and not have to synchronize two code files. The internal implementation is not supposed to be used outside 
+	/// of the Uno.UI assembly, Uno.UI.Toolkit.VisibleBoundsPadding should be used by dependents.
+	/// </remarks>
+	internal static class InternalVisibleBoundsPadding
+#else
 namespace Uno.UI.Toolkit
 {
 	/// <summary>
@@ -24,6 +40,7 @@ namespace Uno.UI.Toolkit
 	/// or set PaddingMask to another value to enable it only on a particular side or sides.
 	/// </summary>
 	public static class VisibleBoundsPadding
+#endif
 	{
 		[Flags]
 		public enum PaddingMask
