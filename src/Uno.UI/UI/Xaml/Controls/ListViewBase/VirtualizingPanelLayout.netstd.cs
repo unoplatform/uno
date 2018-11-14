@@ -76,7 +76,7 @@ namespace Windows.UI.Xaml.Controls
 		/// </summary>
 		private double ViewportEnd => ScrollOffset + ViewportExtent;
 
-		public double ViewportExtension => CacheLength * ViewportExtent * 0.5;
+		private double ViewportExtension => CacheLength * ViewportExtent * 0.5;
 		/// <summary>
 		/// The start of the 'extended viewport,' the area of the visible viewport plus the buffer area defined by <see cref="CacheLength"/>.
 		/// </summary>
@@ -149,20 +149,20 @@ namespace Windows.UI.Xaml.Controls
 			var unappliedDelta = Abs(delta);
 			var fillDirection = sign > 0 ? GeneratorDirection.Forward : GeneratorDirection.Backward;
 
-			while (unappliedDelta > 0)
-			{
-				// Apply scroll in bite-sized increments. This is crucial for good performance, since the delta may be in the 100s or 1000s of pixels, and we want to recycle unseen views at the same rate that we dequeue newly-visible views.
-				var scrollIncrement = GetScrollConsumptionIncrement(fillDirection);
-				if (scrollIncrement == 0)
+				while (unappliedDelta > 0)
 				{
-					break;
+					// Apply scroll in bite-sized increments. This is crucial for good performance, since the delta may be in the 100s or 1000s of pixels, and we want to recycle unseen views at the same rate that we dequeue newly-visible views.
+					var scrollIncrement = GetScrollConsumptionIncrement(fillDirection);
+					if (scrollIncrement == 0)
+					{
+						break;
+					}
+					unappliedDelta -= scrollIncrement;
+					unappliedDelta = Max(0, unappliedDelta);
+					UpdateLayout(extentAdjustment: sign * -unappliedDelta);
 				}
-				unappliedDelta -= scrollIncrement;
-				unappliedDelta = Max(0, unappliedDelta);
-				UpdateLayout(extentAdjustment: sign * -unappliedDelta);
-			}
-
 			UpdateCompleted();
+
 			_lastScrollOffset = ScrollOffset;
 		}
 
@@ -276,10 +276,7 @@ namespace Windows.UI.Xaml.Controls
 				while (firstMaterializedLine != null && GetEnd(firstMaterializedLine.FirstView) < ExtendedViewportStart + extentAdjustment)
 				{
 					// Dematerialize lines that are entirely outside extended viewport
-					for (int i = 0; i < firstMaterializedLine.ContainerViews.Length; i++)
-					{
-						Generator.RecycleViewForItem(firstMaterializedLine.ContainerViews[i], firstMaterializedLine.FirstItemFlat + i);
-					}
+					RecycleLine(firstMaterializedLine);
 					_materializedLines.RemoveFromFront();
 					firstMaterializedLine = GetFirstMaterializedLine();
 				}
@@ -291,13 +288,18 @@ namespace Windows.UI.Xaml.Controls
 				while (lastMaterializedLine != null && GetStart(lastMaterializedLine.FirstView) > ExtendedViewportEnd + extentAdjustment)
 				{
 					// Dematerialize lines that are entirely outside extended viewport
-					for (int i = 0; i < lastMaterializedLine.ContainerViews.Length; i++)
-					{
-						Generator.RecycleViewForItem(lastMaterializedLine.ContainerViews[i], lastMaterializedLine.FirstItemFlat + i);
-					}
+					RecycleLine(lastMaterializedLine);
 					_materializedLines.RemoveFromBack();
 					lastMaterializedLine = GetLastMaterializedLine();
 				}
+			}
+		}
+
+		private void RecycleLine(Line firstMaterializedLine)
+		{
+			for (int i = 0; i < firstMaterializedLine.ContainerViews.Length; i++)
+			{
+				Generator.RecycleViewForItem(firstMaterializedLine.ContainerViews[i], firstMaterializedLine.FirstItemFlat + i);
 			}
 		}
 
@@ -328,6 +330,17 @@ namespace Windows.UI.Xaml.Controls
 				Console.WriteLine($"{GetMethodTag()}=>{estimatedExtent}, GetContentEnd()={GetContentEnd()}, remainingLines={remainingLines}, averageLineHeight={averageLineHeight}");
 				return estimatedExtent;
 			}
+		}
+
+		internal void Refresh()
+		{
+			foreach (var line in _materializedLines)
+			{
+				RecycleLine(line);
+			}
+			_materializedLines.Clear();
+
+			UpdateCompleted();
 		}
 
 		private void OnOrientationChanged(Orientation newValue)
