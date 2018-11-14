@@ -345,22 +345,25 @@ namespace Windows.UI.Xaml.Controls
 
 		private void OnOrientationChanged(Orientation newValue)
 		{
-			throw new NotImplementedException();
+			Refresh();
+
+			//TODO: preserve scroll position
+			OwnerPanel.InvalidateMeasure();
 		}
 
 		private IndexPath GetFirstVisibleIndexPath()
 		{
-			throw new NotImplementedException();
+			throw new NotImplementedException(); //TODO: FirstVisibleIndex
 		}
 
 		private IndexPath GetLastVisibleIndexPath()
 		{
-			throw new NotImplementedException();
+			throw new NotImplementedException(); //TODO: LastVisibleIndex
 		}
 
 		private IEnumerable<float> GetSnapPointsInner(SnapPointsAlignment alignment)
 		{
-			throw new NotImplementedException();
+			throw new NotImplementedException(); //TODO: snap points support
 		}
 
 		private float AdjustOffsetForSnapPointsAlignment(float offset) => throw new NotImplementedException();
