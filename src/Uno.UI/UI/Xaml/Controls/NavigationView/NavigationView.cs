@@ -327,13 +327,13 @@ namespace Windows.UI.Xaml.Controls
 		{
 			if (SettingsItem is NavigationViewItem item)
 			{
-				SelectedItem = SettingsItem;
-				_menuItemsHost.SelectedItem = null;
-
 				ItemInvoked?.Invoke(
 					this,
 					CreateInvokedItemParameter(item)
 				);
+
+				SelectedItem = SettingsItem;
+				_menuItemsHost.SelectedItem = null;
 			}
 		}
 

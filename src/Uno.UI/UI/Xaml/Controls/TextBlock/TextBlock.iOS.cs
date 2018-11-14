@@ -92,17 +92,20 @@ namespace Windows.UI.Xaml.Controls
 
 		protected override Size MeasureOverride(Size size)
 		{
+			// Size used to compare with the previous one. We don't want to use this one for the calculation.
+			var ceiledNewSize = new CGSize(Math.Ceiling(size.Width), Math.Ceiling(size.Height));
+
 			var hasSameDesiredSize =
 				!_measureInvalidated
 				&& _previousAvailableSize != null
-				&& _previousDesiredSize.Width == size.Width
-				&& _previousDesiredSize.Height == size.Height;
+				&& _previousDesiredSize.Width == ceiledNewSize.Width
+				&& _previousDesiredSize.Height == ceiledNewSize.Height;
 
 			var isSingleLineNarrower =
 				!_measureInvalidated
 				&& _previousAvailableSize != null
-				&& _previousDesiredSize.Width <= size.Width
-				&& _previousDesiredSize.Height == size.Height;
+				&& _previousDesiredSize.Width <= ceiledNewSize.Width
+				&& _previousDesiredSize.Height == ceiledNewSize.Height;
 
 			if (hasSameDesiredSize || isSingleLineNarrower)
 			{
