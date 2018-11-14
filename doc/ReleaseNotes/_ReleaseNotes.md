@@ -36,6 +36,7 @@
  * Adjust compiled binding application ordering when loading controls
  * Ensure the SplitView templated parent is propagated properly for FindName
  * Fix infinite loop when parsing empty Attached Properties on macOS
+ * 137137 [iOS] Fixed `DatePickerSelector` not propagating coerced initial value
  * 103116 [iOS] Navigating to a _second_ local html file with `WebView` doesn't work.
  * 134573 CommandBar doesn't take the proper space on iOS phones in landscape
  * Image with partial size constraint now display properly under Wasm.
