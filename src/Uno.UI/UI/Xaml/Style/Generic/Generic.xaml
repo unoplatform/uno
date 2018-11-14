@@ -14,6 +14,7 @@
 					xmlns:wasm="http://uno.ui/wasm"
 					xmlns:native_ios="using:UIKit"
 					xmlns:native_android="using:Android.Widget"
+					xmlns:uBehaviors="using:Uno.UI.Behaviors"
 					mc:Ignorable="d xamarin ios android not_wasm wasm">
 
 	<!-- TODO: How does UWP override the default FontFamily value of 11 with 15? -->
@@ -9652,7 +9653,8 @@
                             PaneBackground="{ThemeResource NavigationViewDefaultPaneBackground}">
 
                             <SplitView.Pane>
-                                <Grid x:Name="PaneContentGrid">
+                                <Grid x:Name="PaneContentGrid"
+										uBehaviors:InternalVisibleBoundsPadding.PaddingMask="All">
                                     <Grid.RowDefinitions>
                                         <RowDefinition Height="Auto" />
                                         <RowDefinition Height="0" />
@@ -9747,7 +9749,8 @@
                             Margin="0,0,0,8"
                             HorizontalAlignment="Left"
                             VerticalAlignment="Top"
-                            Canvas.ZIndex="100">
+                            Canvas.ZIndex="100"
+							uBehaviors:InternalVisibleBoundsPadding.PaddingMask="Top,Left">
 							<!-- Canvas.ZIndex is not supported in Uno Grid yet, see https://github.com/nventive/Uno/issues/325 -->
 
                             <Grid.RowDefinitions>
