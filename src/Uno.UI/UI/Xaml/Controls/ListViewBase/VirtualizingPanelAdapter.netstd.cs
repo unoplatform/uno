@@ -67,9 +67,6 @@ namespace Windows.UI.Xaml.Controls
 
 			var cache = _itemContainerCache.FindOrCreate(id, () => new Stack<FrameworkElement>());
 
-			// This is a crude means of 'hiding' the view. We prefer not to unload it because recycling is cheaper if it stays in the visual tree, but we should probably go to greater effort to conceal it from, eg, traversals of the visual tree.
-			container.Visibility = Visibility.Collapsed;
-
 			if (cache.Count < CacheLimit)
 			{
 				cache.Push(container);
@@ -81,6 +78,23 @@ namespace Windows.UI.Xaml.Controls
 				if (parent != null)
 				{
 					parent.Children.Remove(container);
+				}
+			}
+		}
+
+		/// <summary>
+		/// Hide cached views that are no longer displaying materialized items. Doing this in a single batch, rather than repeatedly toggling
+		/// the visibility as items are recycled and then reused, significantly improves scrolling performance.
+		/// </summary>
+		public void UpdateVisibilities()
+		{
+			foreach (var cache in _itemContainerCache)
+			{
+				foreach (var view in cache.Value)
+				{
+					// This is a crude means of 'hiding' the view. We prefer not to unload it because recycling is cheaper if it stays in
+					// the visual tree, but we should probably go to greater effort to conceal it from, eg, traversals of the visual tree.
+					view.Visibility = Visibility.Collapsed;
 				}
 			}
 		}
