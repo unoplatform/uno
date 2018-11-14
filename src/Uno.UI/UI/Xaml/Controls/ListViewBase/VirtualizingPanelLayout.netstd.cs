@@ -162,6 +162,7 @@ namespace Windows.UI.Xaml.Controls
 				UpdateLayout(extentAdjustment: sign * -unappliedDelta);
 			}
 
+			UpdateCompleted();
 			_lastScrollOffset = ScrollOffset;
 		}
 
@@ -211,16 +212,23 @@ namespace Windows.UI.Xaml.Controls
 			return EstimatePanelSize();
 		}
 
-		private void UpdateLayout(double extentAdjustment = 0)
+		private void UpdateLayout(double? extentAdjustment = null)
 		{
-			UnfillLayout(extentAdjustment);
-			FillLayout(extentAdjustment);
+			UnfillLayout(extentAdjustment ?? 0);
+			FillLayout(extentAdjustment ?? 0);
 
 			if (this.Log().IsEnabled(LogLevel.Debug))
 			{
 				this.Log().LogDebug($"Called {GetMethodTag()}, {GetDebugInfo()} extentAdjustment={extentAdjustment}");
 			}
+
+			if (!extentAdjustment.HasValue)
+			{
+				UpdateCompleted();
+			}
 		}
+
+		private void UpdateCompleted() => Generator.UpdateVisibilities();
 
 		/// <summary>
 		/// Fill in extended viewport with views.
