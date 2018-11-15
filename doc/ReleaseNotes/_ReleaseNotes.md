@@ -44,6 +44,7 @@
  * 137204 [iOS] ListView - fix bug where item view is clipped
  * 137979 [Android] Incorrect offset when applying RotateTransform to stretched view
  * Now supports internal object in desource dictionaries
+ * 134573 CommandBar doesn't take the proper space on iOS phones in landscape
 
 ## Release 1.41
 

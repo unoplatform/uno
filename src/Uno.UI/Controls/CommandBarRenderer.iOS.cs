@@ -47,6 +47,15 @@ namespace Uno.UI.Controls
 				new[] { BackButtonForegroundProperty },
 				new[] { BackButtonIconProperty }
 			);
+
+			if (Native is UnoNavigationBar unoNavigationBar)
+			{
+				unoNavigationBar.SizeChanged += Invalidate;
+
+				yield return Disposable.Create(() =>
+					unoNavigationBar.SizeChanged -= Invalidate
+				);
+			}
 		}
 
 		protected override void Render()
@@ -111,6 +120,10 @@ namespace Uno.UI.Controls
 				: null;
 			Native.BackIndicatorImage = backButtonIcon;
 			Native.BackIndicatorTransitionMaskImage = backButtonIcon;
+
+			Element.Presenter.Height = Native.Hidden
+				? 0
+				: Native.Frame.Size.Height;
 		}
 	}
 }

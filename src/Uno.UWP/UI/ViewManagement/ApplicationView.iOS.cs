@@ -17,17 +17,16 @@ namespace Windows.UI.ViewManagement
 		{
 			var inset = UseSafeAreaInsets
 					? keyWindow.SafeAreaInsets
-					: new UIEdgeInsets(0, 0, 0, 0);
+					: UIEdgeInsets.Zero;
 
 			// Not respecting its own documentation. https://developer.apple.com/documentation/uikit/uiview/2891103-safeareainsets?language=objc
-			// iOS returns all zeros for SafeAreaInsets on non-iPhones. (ignoring nav bars or status bars)
+			// iOS returns all zeros for SafeAreaInsets on non-iPhones and iOS11. (ignoring nav bars or status bars)
 			// So we need to update the top inset depending of the status bar visibilty on other devices
-			if (UIDevice.CurrentDevice.UserInterfaceIdiom != UIUserInterfaceIdiom.Phone)
-			{
-				inset.Top = UIApplication.SharedApplication.StatusBarHidden
+			var statusBarHeight = UIApplication.SharedApplication.StatusBarHidden
 					? 0
 					: UIApplication.SharedApplication.StatusBarFrame.Size.Height;
-			}
+
+			inset.Top = (nfloat)Math.Max(inset.Top, statusBarHeight);
 
 			var newVisibleBounds = new Foundation.Rect(
 				x: windowBounds.Left + inset.Left,
