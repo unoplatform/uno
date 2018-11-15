@@ -714,8 +714,11 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			var propertyInitializedVariable = "_{0}Initialized".InvariantCultureFormat(sanitizedPropertyName);
             var backingFieldVariable = "__{0}BackingField".InvariantCultureFormat(sanitizedPropertyName);
             var staticModifier = isStatic ? "static" : "";
+			var publicPropertyType = FindType(propertyType)?.DeclaredAccessibility == Accessibility.Public
+				? GetGlobalizedTypeName(propertyType)
+				: "object";
 
-            // The property type may be partially qualified, try resolving it through FindType
+			// The property type may be partially qualified, try resolving it through FindType
 			var propertySymbol = FindType(propertyType);
 			propertyType = propertySymbol?.GetFullName() ?? propertyType;
 
@@ -724,7 +727,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
             writer.AppendLine();
 
-            using (writer.BlockInvariant($"public {staticModifier} {GetGlobalizedTypeName(propertyType)} {sanitizedPropertyName}"))
+			using (writer.BlockInvariant($"public {staticModifier} {publicPropertyType} {sanitizedPropertyName}"))
             {
                 using (writer.BlockInvariant("get"))
                 {
@@ -2433,7 +2436,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
         {
             if (targetProperty != null
                 && targetProperty.Name != targettingValue?.Type.Name
-                && (targettingValue == null || IsPrimitive(targettingValue))
                 )
             {
                 return $"({targetProperty.ToDisplayString()})";
@@ -3012,7 +3014,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
                         return "{0}{1}".InvariantCultureFormat(
                             GetCastString(prependCastToType ? propertyType : null, null),
                             GetGlobalStaticResource(resourceName)
-                        );
+						);
                     }
                 }
 
@@ -4155,7 +4157,11 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
         {
             var originalName = name;
 
-            if (name.Contains(":"))
+			if (name.StartsWith(GlobalPrefix))
+			{
+				name = name.TrimStart(GlobalPrefix);
+			}
+            else if (name.Contains(":"))
             {
                 var fields = name.Split(':');
 

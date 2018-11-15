@@ -43,6 +43,7 @@
  * 138297 [iOS][TextBlock] Measurement is always different since we use Math.Ceiling
  * 137204 [iOS] ListView - fix bug where item view is clipped
  * 137979 [Android] Incorrect offset when applying RotateTransform to stretched view
+ * Now supports internal object in desource dictionaries
 
 ## Release 1.41
 
