@@ -163,7 +163,19 @@ namespace Windows.UI.Xaml.Controls
 
 			SetValue(SettingsItemProperty, GetTemplateChild("SettingsNavPaneItem"));
 
-			if(_menuItemsHost != null)
+			if (
+				_navigationViewBackButton != null
+				&& (
+				double.IsNaN(_navigationViewBackButton.Height)
+				|| double.IsNaN(_navigationViewBackButton.Width)
+				)
+			)
+			{
+				throw new InvalidOperationException("NavigationViewBackButton must have a Width and Height set");
+			}
+
+
+			if (_menuItemsHost != null)
 			{
 				if (MenuItemsSource == null)
 				{
