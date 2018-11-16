@@ -7,15 +7,37 @@ using System.Text;
 using Uno.Collections;
 using Uno.Extensions;
 using Uno.Logging;
-using Uno.UI.Toolkit.Extensions;
 using Windows.Foundation;
 using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 #if XAMARIN_IOS
 using UIKit;
+#elif __MACOS__
+using AppKit;
 #endif
 
+#if IS_UNO
+using _VisibleBoundsPadding = Uno.UI.Behaviors.InternalVisibleBoundsPadding;
+#else
+using Uno.UI.Toolkit.Extensions;
+using _VisibleBoundsPadding = Uno.UI.Toolkit.VisibleBoundsPadding;
+#endif
+
+#if IS_UNO
+namespace Uno.UI.Behaviors
+{
+	/// <summary>
+	/// Internal Uno behavior, use VisibleBoundsPadding instead.
+	/// </summary>
+	/// <remarks>
+	/// This class is located in the same source file as the VisibleBoundsPadding class to avoid code duplication.
+	/// This is required to ensure that both Uno.UI styles and UWP (through Uno.UI.Toolkit) can use this behavior
+	/// and not have to synchronize two code files. The internal implementation is not supposed to be used outside 
+	/// of the Uno.UI assembly, Uno.UI.Toolkit.VisibleBoundsPadding should be used by dependents.
+	/// </remarks>
+	internal static class InternalVisibleBoundsPadding
+#else
 namespace Uno.UI.Toolkit
 {
 	/// <summary>
@@ -24,6 +46,7 @@ namespace Uno.UI.Toolkit
 	/// or set PaddingMask to another value to enable it only on a particular side or sides.
 	/// </summary>
 	public static class VisibleBoundsPadding
+#endif
 	{
 		[Flags]
 		public enum PaddingMask
@@ -78,7 +101,7 @@ namespace Uno.UI.Toolkit
 			=> obj.SetValue(PaddingMaskProperty, value);
 
 		public static readonly DependencyProperty PaddingMaskProperty =
-			DependencyProperty.RegisterAttached("PaddingMask", typeof(PaddingMask), typeof(VisibleBoundsPadding), new PropertyMetadata(PaddingMask.None, OnIsPaddingMaskChanged));
+			DependencyProperty.RegisterAttached("PaddingMask", typeof(PaddingMask), typeof(_VisibleBoundsPadding), new PropertyMetadata(PaddingMask.None, OnIsPaddingMaskChanged));
 
 		private static void OnIsPaddingMaskChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs args)
 			=> VisibleBoundsDetails.GetInstance(dependencyObject as FrameworkElement).OnIsPaddingMaskChanged((PaddingMask)args.OldValue, (PaddingMask)args.NewValue);
