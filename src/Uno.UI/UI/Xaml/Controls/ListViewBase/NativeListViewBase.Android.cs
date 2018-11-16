@@ -20,6 +20,30 @@ namespace Windows.UI.Xaml.Controls
 
 		internal IEnumerable<SelectorItem> CachedItemViews => ViewCache.CachedItemViews;
 
+		public override OverScrollMode OverScrollMode
+		{
+			get
+			{
+				// This duplicates the logic in Android.Views.View.overScrollBy(), which for some reason RecyclerView doesn't use, but
+				// only checks getOverScrollMode(). This ensures edge effects aren't shown if content is too small to scroll.
+				if (NativeLayout == null)
+				{
+					return base.OverScrollMode;
+				}
+				else if (NativeLayout.ScrollOrientation == Orientation.Vertical)
+				{
+					return ComputeVerticalScrollRange() > ComputeVerticalScrollExtent() ?
+						base.OverScrollMode :
+						OverScrollMode.Never;
+				}
+				else
+				{
+					return ComputeHorizontalScrollRange() > ComputeHorizontalScrollExtent() ?
+						base.OverScrollMode :
+						OverScrollMode.Never;
+				}
+			}
+		}
 		public NativeListViewBase() : base(ContextHelper.Current)
 		{
 			InitializeScrollbars();
