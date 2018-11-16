@@ -20,12 +20,7 @@ namespace Uno.UI.Controls
 	{
 		private readonly SerialDisposable _statusBarSubscription = new SerialDisposable();
 		private readonly SerialDisposable _orientationSubscription = new SerialDisposable();
-
-		// See https://ivomynttinen.com/blog/ios-design-guidelines#nav-bar
-		private static readonly double _defaultCommandBarHeight = 44;
-		private static readonly double _landscapeSmallPhoneCommandBarHeight = 32;
-		private static readonly double _iPad12CommandBarHeight = 50;
-
+		
 		protected override void OnLoaded()
 		{
 			base.OnLoaded();
@@ -38,8 +33,6 @@ namespace Uno.UI.Controls
 			{
 				Content = navigationBar;
 			}
-
-			this.Height = GetCommandBarHeight();
 
 			var statusBar = StatusBar.GetForCurrentView();
 
@@ -56,62 +49,6 @@ namespace Uno.UI.Controls
 			{
 				navigationBar.SetNeedsLayout();
 				navigationBar.Superview.SetNeedsLayout();
-			}
-			DisplayInformation.GetForCurrentView().OrientationChanged += OrientationChanged;
-			_orientationSubscription.Disposable = Disposable.Create(() =>
-			{
-				DisplayInformation.GetForCurrentView().OrientationChanged -= OrientationChanged;
-			});
-
-			void OrientationChanged(DisplayInformation displayInformation, object args)
-			{
-				this.Height = GetCommandBarHeight();
-			}
-		}
-
-		private double GetCommandBarHeight()
-		{
-			if (UIDevice.CurrentDevice.UserInterfaceIdiom == UIUserInterfaceIdiom.Phone)
-			{
-				// For phones with a screen size of 4.7 inches or less, the navigation bar size is different in portrait and landscape mode
-				// Navigation bar height depending of device : https://kapeli.com/cheat_sheets/iOS_Design.docset/Contents/Resources/Documents/index
-				// Devices screen specifications : https://www.idev101.com/code/User_Interface/sizes.html
-				var bounds = UIScreen.MainScreen.Bounds;
-				var height = Math.Max(bounds.Width, bounds.Height);
-				var width = Math.Min(bounds.Width, bounds.Height);
-				var isPhoneSmallScreen = height <= 667 && width <= 375;
-
-				if (isPhoneSmallScreen || UIDevice.CurrentDevice.CheckSystemVersion(11, 0))
-				{
-					var orientation = DisplayInformation.GetForCurrentView().CurrentOrientation;
-
-					switch (orientation)
-					{
-						case DisplayOrientations.Landscape:
-						case DisplayOrientations.LandscapeFlipped:
-							return _landscapeSmallPhoneCommandBarHeight;
-						case DisplayOrientations.Portrait:
-						case DisplayOrientations.PortraitFlipped:
-						case DisplayOrientations.None:
-						default:
-							return _defaultCommandBarHeight;
-					}
-				}
-				else
-				{
-					return _defaultCommandBarHeight;
-				}
-			}
-			else
-			{
-				if (UIDevice.CurrentDevice.CheckSystemVersion(12, 0))
-				{
-					return _iPad12CommandBarHeight;
-				}
-				else
-				{
-					return _defaultCommandBarHeight;
-				}
 			}
 		}
 

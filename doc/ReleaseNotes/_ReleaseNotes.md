@@ -43,6 +43,9 @@
  * 138297 [iOS][TextBlock] Measurement is always different since we use Math.Ceiling
  * 137204 [iOS] ListView - fix bug where item view is clipped
  * 137979 [Android] Incorrect offset when applying RotateTransform to stretched view
+ * Now supports internal object in desource dictionaries
+ * 134573 CommandBar doesn't take the proper space on iOS phones in landscape
+ * #26 The explicit property <Style.Setters> does not intialize style setters properly
 
 ## Release 1.41
 
