@@ -16,7 +16,7 @@ namespace Windows.UI.Xaml.Controls
 		protected enum RelativeHeaderPlacement { Inline, Adjacent }
 
 		public abstract Orientation ScrollOrientation { get; }
-#if !NETSTANDARD2_0
+#if !__WASM__
 		protected readonly ILayouter _layouter = new VirtualizingPanelLayouter();
 		internal ILayouter Layouter => _layouter;
 #endif
@@ -207,7 +207,7 @@ namespace Windows.UI.Xaml.Controls
 			return (minItem, min);
 		}
 
-#if !NETSTANDARD2_0
+#if !__WASM__
 		private class VirtualizingPanelLayouter : Layouter
 		{
 

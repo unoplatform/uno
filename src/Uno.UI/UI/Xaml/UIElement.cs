@@ -1,4 +1,4 @@
-﻿#if NET46 || NETSTANDARD2_0
+﻿#if NET46 || __WASM__
 #pragma warning disable CS0067
 #endif
 

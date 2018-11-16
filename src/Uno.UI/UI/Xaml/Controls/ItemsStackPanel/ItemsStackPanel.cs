@@ -11,11 +11,11 @@ namespace Windows.UI.Xaml.Controls
 	{
 		VirtualizingPanelLayout _layout;
 
-#if NETSTANDARD2_0
+#if __WASM__
 		[NotImplemented]
 #endif
 		public int FirstVisibleIndex => _layout?.FirstVisibleIndex ?? -1;
-#if NETSTANDARD2_0
+#if __WASM__
 		[NotImplemented]
 #endif
 		public int LastVisibleIndex => _layout?.LastVisibleIndex ?? -1;
@@ -32,7 +32,7 @@ namespace Windows.UI.Xaml.Controls
 				CacheLength = FeatureConfiguration.ListViewBase.DefaultCacheLength.Value;
 			}
 
-#if NETSTANDARD2_0
+#if __WASM__
 			CreateLayoutIfNeeded();
 			_layout.Initialize(this);
 #endif
