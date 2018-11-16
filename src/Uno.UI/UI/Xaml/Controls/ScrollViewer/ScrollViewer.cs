@@ -530,7 +530,7 @@ namespace Windows.UI.Xaml.Controls
 		/// <param name="view"></param>
 		/// <remarks>Used in the context of member initialization</remarks>
 		public
-#if !NETSTANDARD2_0 && !__MACOS__
+#if !__WASM__ && !__MACOS__
 			new 
 #endif
 			void Add(View view)
