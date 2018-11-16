@@ -45,6 +45,7 @@
  * 137979 [Android] Incorrect offset when applying RotateTransform to stretched view
  * Now supports internal object in desource dictionaries
  * 134573 CommandBar doesn't take the proper space on iOS phones in landscape
+ * #26 The explicit property <Style.Setters> does not intialize style setters properly
 
 ## Release 1.41
 
