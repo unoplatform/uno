@@ -7,7 +7,6 @@ using System.Text;
 using Uno.Collections;
 using Uno.Extensions;
 using Uno.Logging;
-using Uno.UI.Toolkit.Extensions;
 using Windows.Foundation;
 using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
@@ -16,6 +15,13 @@ using Windows.UI.Xaml.Controls;
 using UIKit;
 #elif __MACOS__
 using AppKit;
+#endif
+
+#if IS_UNO
+using _VisibleBoundsPadding = Uno.UI.Behaviors.InternalVisibleBoundsPadding;
+#else
+using Uno.UI.Toolkit.Extensions;
+using _VisibleBoundsPadding = Uno.UI.Toolkit.VisibleBoundsPadding;
 #endif
 
 #if IS_UNO
@@ -95,7 +101,7 @@ namespace Uno.UI.Toolkit
 			=> obj.SetValue(PaddingMaskProperty, value);
 
 		public static readonly DependencyProperty PaddingMaskProperty =
-			DependencyProperty.RegisterAttached("PaddingMask", typeof(PaddingMask), typeof(VisibleBoundsPadding), new PropertyMetadata(PaddingMask.None, OnIsPaddingMaskChanged));
+			DependencyProperty.RegisterAttached("PaddingMask", typeof(PaddingMask), typeof(_VisibleBoundsPadding), new PropertyMetadata(PaddingMask.None, OnIsPaddingMaskChanged));
 
 		private static void OnIsPaddingMaskChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs args)
 			=> VisibleBoundsDetails.GetInstance(dependencyObject as FrameworkElement).OnIsPaddingMaskChanged((PaddingMask)args.OldValue, (PaddingMask)args.NewValue);
