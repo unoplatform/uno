@@ -32,6 +32,20 @@
 			<Setter Property="Grid.Column"
 					Value="{StaticResource MyColumn}" />
 		</Style>
+		<Style x:Key="explicitSettersStyle"
+			   TargetType="Grid"
+			   BasedOn="{StaticResource testStyle}">
+			<Style.Setters>
+				<Setter Property="Tag"
+						Value="Red" />
+				<Setter Property="Width"
+						Value="42" />
+				<Setter Property="Grid.Row"
+						Value="42" />
+				<Setter Property="Grid.Column"
+						Value="{StaticResource MyColumn}" />
+			</Style.Setters>
+		</Style>
 	</Grid.Resources>
 
 	<StackPanel>

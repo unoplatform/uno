@@ -1,11 +1,8 @@
 phases:
 - phase: VS_Latest
   variables:
-    NUGET_PACKAGES: $(Agent.WorkFolder)\.nuget
-    NUGET_HTTP_CACHE_PATH: $(Agent.WorkFolder)\.nuget-http-cache
     CombinedConfiguration: Release|Any CPU
     CI_Build: true
-
 
   steps:
   - checkout: self
