@@ -83,7 +83,7 @@ namespace Windows.UI.Xaml.Controls
 
 			if (_togglePaneButton != null && _navigationViewBackButton != null)
 			{
-				_togglePaneButton.Margin = new Thickness(0, _navigationViewBackButton.RenderSize.Height, 0, 0);
+				_togglePaneButton.Margin = new Thickness(0, _navigationViewBackButton.Height, 0, 0);
 			}
 		}
 
@@ -108,7 +108,7 @@ namespace Windows.UI.Xaml.Controls
 
 			if (_togglePaneButton != null && _navigationViewBackButton != null)
 			{
-				_togglePaneButton.Margin = new Thickness(0, _navigationViewBackButton.RenderSize.Height, 0, 0);
+				_togglePaneButton.Margin = new Thickness(0, _navigationViewBackButton.Height, 0, 0);
 			}
 		}
 
@@ -133,7 +133,7 @@ namespace Windows.UI.Xaml.Controls
 
 			if (_togglePaneButton != null && _navigationViewBackButton != null)
 			{
-				_togglePaneButton.Margin = new Thickness(_navigationViewBackButton.RenderSize.Width, 0, 0, 0);
+				_togglePaneButton.Margin = new Thickness(_navigationViewBackButton.Width, 0, 0, 0);
 			}
 		}
 
@@ -163,7 +163,19 @@ namespace Windows.UI.Xaml.Controls
 
 			SetValue(SettingsItemProperty, GetTemplateChild("SettingsNavPaneItem"));
 
-			if(_menuItemsHost != null)
+			if (
+				_navigationViewBackButton != null
+				&& (
+				double.IsNaN(_navigationViewBackButton.Height)
+				|| double.IsNaN(_navigationViewBackButton.Width)
+				)
+			)
+			{
+				throw new InvalidOperationException("NavigationViewBackButton must have a Width and Height set");
+			}
+
+
+			if (_menuItemsHost != null)
 			{
 				if (MenuItemsSource == null)
 				{
@@ -241,10 +253,20 @@ namespace Windows.UI.Xaml.Controls
 
 		private void OnMenuItemsHost_ItemClick(object sender, ItemClickEventArgs e)
 		{
+			RaiseItemInvoked(CreateInvokedItemParameter(e.ClickedItem));
+		}
+
+		private void RaiseItemInvoked(NavigationViewItemInvokedEventArgs e)
+		{
 			ItemInvoked?.Invoke(
 				this,
-				CreateInvokedItemParameter(e.ClickedItem)
+				e
 			);
+
+			if(_rootSplitView != null && DisplayMode != NavigationViewDisplayMode.Expanded)
+			{
+				_rootSplitView.IsPaneOpen = false;
+			}
 		}
 
 		private NavigationViewItemInvokedEventArgs CreateInvokedItemParameter(object clickedItem)
