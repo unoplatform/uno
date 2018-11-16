@@ -4057,8 +4057,7 @@
 		<Setter Property="ItemsPanel">
 			<Setter.Value>
 				<ItemsPanelTemplate>
-					<wasm:StackPanel Orientation="Vertical" />
-					<not_wasm:ItemsStackPanel Orientation="Vertical" />
+					<ItemsStackPanel Orientation="Vertical" />
 				</ItemsPanelTemplate>
 			</Setter.Value>
 		</Setter>
