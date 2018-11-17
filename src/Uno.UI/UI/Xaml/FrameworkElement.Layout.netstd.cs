@@ -14,6 +14,10 @@ namespace Windows.UI.Xaml
 	{
 		private Size _unclippedDesiredSize;
 		private Point _visualOffset;
+		/// <summary>
+		/// The origin of the view's bounds relative to its parent.
+		/// </summary>
+		internal Point RelativePosition => _visualOffset;
 
 		internal sealed override Size MeasureCore(Size availableSize)
 		{

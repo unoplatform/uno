@@ -1,4 +1,4 @@
-﻿#if !NET46 && !NETSTANDARD2_0 && !__MACOS__
+﻿#if !NET46 && !__MACOS__
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -16,7 +16,10 @@ namespace Windows.UI.Xaml.Controls
 		protected enum RelativeHeaderPlacement { Inline, Adjacent }
 
 		public abstract Orientation ScrollOrientation { get; }
+#if !NETSTANDARD2_0
 		protected readonly ILayouter _layouter = new VirtualizingPanelLayouter();
+		internal ILayouter Layouter => _layouter;
+#endif
 
 #pragma warning disable 67 // Unused member
 		[NotImplemented]
@@ -26,7 +29,6 @@ namespace Windows.UI.Xaml.Controls
 		public event EventHandler<object> VerticalSnapPointsChanged;
 #pragma warning restore 67 // Unused member
 
-		internal ILayouter Layouter => _layouter;
 
 		private double GroupPaddingExtentStart => ScrollOrientation == Orientation.Vertical ? GroupPadding.Top : GroupPadding.Left;
 		private double GroupPaddingExtentEnd => ScrollOrientation == Orientation.Vertical ? GroupPadding.Bottom : GroupPadding.Right;
@@ -35,7 +37,7 @@ namespace Windows.UI.Xaml.Controls
 
 		public int FirstVisibleIndex => XamlParent?.GetIndexFromIndexPath(GetFirstVisibleIndexPath()) ?? -1;
 		public int LastVisibleIndex => XamlParent?.GetIndexFromIndexPath(GetLastVisibleIndexPath()) ?? -1;
-		
+
 		/// <summary>
 		/// The placement of group headers with respect to the scroll direction of the panel.
 		/// </summary>
@@ -93,6 +95,15 @@ namespace Windows.UI.Xaml.Controls
 				}
 			}
 		}
+
+		public Orientation Orientation
+		{
+			get { return (Orientation)GetValue(OrientationProperty); }
+			set { SetValue(OrientationProperty, value); }
+		}
+
+		public static readonly DependencyProperty OrientationProperty =
+			DependencyProperty.Register("Orientation", typeof(Orientation), typeof(VirtualizingPanelLayout), new PropertyMetadata(Orientation.Vertical, (o, e) => ((VirtualizingPanelLayout)o).OnOrientationChanged((Orientation)e.NewValue)));
 
 		public IReadOnlyList<float> GetIrregularSnapPoints(Orientation orientation, SnapPointsAlignment alignment)
 		{
@@ -154,6 +165,14 @@ namespace Windows.UI.Xaml.Controls
 			return null;
 		}
 
+		/// <summary>
+		/// Get the index of the next item that has not yet been materialized in the nominated fill direction. Returns null if there are no more available items in the source.
+		/// </summary>
+		protected IndexPath? GetNextUnmaterializedItem(GeneratorDirection fillDirection, IndexPath? currentMaterializedItem)
+		{
+			return XamlParent?.GetNextItemIndex(currentMaterializedItem, fillDirection == GeneratorDirection.Forward ? 1 : -1);
+		}
+
 		// Note that Item1 is used intead of Item to work around an issue
 		// in VS15.2 and its associated Roslyn issue: 
 		// Uno\Uno.UI.Shared.Xamarin\UI\Xaml\Controls\ListViewBase\VirtualizingPanelLayout.cs(122,31): Error CS0570: 'EnumerableExtensions.MinBy<TSource, TComparable>(IEnumerable<TSource>, Func<TSource, TComparable>)' is not supported by the language
@@ -188,7 +207,7 @@ namespace Windows.UI.Xaml.Controls
 			return (minItem, min);
 		}
 
-
+#if !NETSTANDARD2_0
 		private class VirtualizingPanelLayouter : Layouter
 		{
 
@@ -215,6 +234,7 @@ namespace Windows.UI.Xaml.Controls
 				throw new NotSupportedException($"{nameof(VirtualizingPanelLayouter)} is only used for measuring and arranging child views.");
 			}
 		}
+#endif
 	}
 }
 

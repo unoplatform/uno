@@ -15,7 +15,7 @@ namespace Windows.UI.Xaml.Controls
 	internal partial class ItemsStackPanelLayout : VirtualizingPanelLayout
 	{
 
-		protected override Line CreateLine(FillDirection direction,
+		protected override Line CreateLine(GeneratorDirection direction,
 			int extentOffset,
 			int breadthOffset,
 			int availableBreadth,

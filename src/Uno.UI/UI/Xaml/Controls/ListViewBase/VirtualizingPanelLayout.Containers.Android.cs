@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using Uno.UI;
 using System.Linq;
+using Windows.UI.Xaml.Controls.Primitives;
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -87,23 +88,23 @@ namespace Windows.UI.Xaml.Controls
 
 			public int ItemsBreadthOffset => RelativeHeaderPlacement == RelativeHeaderPlacement.Adjacent ? HeaderBreadth : 0;
 			
-			public Line GetTrailingLine(FillDirection fillDirection)
+			public Line GetTrailingLine(GeneratorDirection fillDirection)
 			{
-				return fillDirection == FillDirection.Forward ?
+				return fillDirection == GeneratorDirection.Forward ?
 					GetFirstLine() :
 					GetLastLine();
 			}
 
-			public Line GetLeadingLine(FillDirection fillDirection)
+			public Line GetLeadingLine(GeneratorDirection fillDirection)
 			{
-				return fillDirection == FillDirection.Forward ?
+				return fillDirection == GeneratorDirection.Forward ?
 					GetLastLine() :
 					GetFirstLine();
 			}
 
-			public void AddLine(Line newLine, FillDirection fillDirection)
+			public void AddLine(Line newLine, GeneratorDirection fillDirection)
 			{
-				if (fillDirection == FillDirection.Forward)
+				if (fillDirection == GeneratorDirection.Forward)
 				{
 					_lines.AddToBack(newLine);
 				}
@@ -114,9 +115,9 @@ namespace Windows.UI.Xaml.Controls
 				}
 			}
 
-			public void RemoveTrailingLine(FillDirection fillDirection)
+			public void RemoveTrailingLine(GeneratorDirection fillDirection)
 			{
-				if (fillDirection == FillDirection.Forward)
+				if (fillDirection == GeneratorDirection.Forward)
 				{
 					var removed = _lines.RemoveFromFront();
 					//Move Start forward because we are removing a line from the start
@@ -128,23 +129,23 @@ namespace Windows.UI.Xaml.Controls
 				}
 			}
 
-			public int GetLeadingEdge(FillDirection fillDirection)
+			public int GetLeadingEdge(GeneratorDirection fillDirection)
 			{
-				return fillDirection == FillDirection.Forward ?
+				return fillDirection == GeneratorDirection.Forward ?
 					End :
 					Start;
 			}
 
-			public IndexPath GetLeadingMaterializedItem(FillDirection fillDirection)
+			public IndexPath GetLeadingMaterializedItem(GeneratorDirection fillDirection)
 			{
-				return fillDirection == FillDirection.Forward ?
+				return fillDirection == GeneratorDirection.Forward ?
 					GetLastLine().LastItem :
 					GetFirstLine().FirstItem;
 			}
 
-			public IndexPath GetTrailingMaterializedItem(FillDirection fillDirection)
+			public IndexPath GetTrailingMaterializedItem(GeneratorDirection fillDirection)
 			{
-				return fillDirection == FillDirection.Forward ?
+				return fillDirection == GeneratorDirection.Forward ?
 					GetFirstLine().FirstItem :
 					GetLastLine().LastItem;
 			}

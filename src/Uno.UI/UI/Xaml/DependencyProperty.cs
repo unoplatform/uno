@@ -116,7 +116,7 @@ namespace Windows.UI.Xaml
 			catch (ArgumentException e)
 			{
 				throw new InvalidOperationException(
-					"The dependency property {0} already exists in type {1}".InvariantCultureFormat(name, propertyType),
+					"The dependency property {0} already exists in type {1}".InvariantCultureFormat(name, ownerType),
 					e
 				);
 			}
@@ -144,7 +144,7 @@ namespace Windows.UI.Xaml
 			catch (ArgumentException e)
 			{
 				throw new InvalidOperationException(
-					"The dependency property {0} already exists in type {1}".InvariantCultureFormat(name, propertyType),
+					"The dependency property {0} already exists in type {1}".InvariantCultureFormat(name, ownerType),
 					e
 				);
 			}
