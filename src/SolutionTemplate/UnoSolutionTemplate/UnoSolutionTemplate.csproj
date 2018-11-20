@@ -78,6 +78,11 @@
     <None Include="UnoQuickStart.Droid\Assets\Fonts\winjs-symbols.ttf">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Include="UnoQuickStart.iOS\LaunchScreen.storyboard">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="UnoQuickStart.iOS\Media.xcassets\AppIcons.appiconset\Contents.json" />
+    <None Include="UnoQuickStart.iOS\Media.xcassets\LaunchImages.launchimage\Contents.json" />
     <None Include="UnoQuickStart.iOS\Resources\Fonts\winjs-symbols.ttf">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
@@ -136,7 +141,6 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <None Include="UnoQuickStart.iOS\Resources\LaunchScreen.xib" />
     <None Include="UnoQuickStart.Shared\UnoQuickStart.Shared.projitems" />
     <None Include="UnoQuickStart.Shared\UnoQuickStart.Shared.shproj" />
     <None Include="UnoQuickStart.UWP\Package.appxmanifest" />
@@ -165,6 +169,15 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="UnoQuickStart.iOS\Media.xcassets\AppIcons.appiconset\ios-marketing-1024x1024%401x.png" />
+    <Content Include="UnoQuickStart.iOS\Media.xcassets\AppIcons.appiconset\iPad-76x76%402x.png" />
+    <Content Include="UnoQuickStart.iOS\Media.xcassets\AppIcons.appiconset\iPad-84x84%402x.png" />
+    <Content Include="UnoQuickStart.iOS\Media.xcassets\AppIcons.appiconset\iPhone-20x20%402x.png" />
+    <Content Include="UnoQuickStart.iOS\Media.xcassets\AppIcons.appiconset\iPhone-20x20%403x.png" />
+    <Content Include="UnoQuickStart.iOS\Media.xcassets\AppIcons.appiconset\iPhone-40x40%403x.png" />
+    <Content Include="UnoQuickStart.iOS\Media.xcassets\AppIcons.appiconset\iPhone-60x60%402x.png" />
+    <Content Include="UnoQuickStart.iOS\Resources\SplashScreen%402x.png" />
+    <Content Include="UnoQuickStart.iOS\Resources\SplashScreen%403x.png" />
     <Content Include="UnoQuickStart.Wasm\LinkerConfig.xml" />
     <Content Include="UnoQuickStart.Wasm\WasmCSS\Fonts.css" />
     <Content Include="UnoQuickStart.Wasm\WasmScripts\AppManifest.js" />

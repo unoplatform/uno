@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
-<dict>
+  <dict>
 	<key>CFBundleDisplayName</key>
 	<string>UnoQuickStart.iOS</string>
 	<key>CFBundleIdentifier</key>
@@ -16,31 +16,40 @@
 	<string></string>
 	<key>UIDeviceFamily</key>
 	<array>
-		<integer>1</integer>
-		<integer>2</integer>
+	  <integer>1</integer>
+	  <integer>2</integer>
 	</array>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>UIRequiredDeviceCapabilities</key>
 	<array>
-		<string>armv7</string>
+	  <string>armv7</string>
+	  <string>arm64</string>
 	</array>
 	<key>UISupportedInterfaceOrientations</key>
 	<array>
-		<string>UIInterfaceOrientationPortrait</string>
-		<string>UIInterfaceOrientationLandscapeLeft</string>
-		<string>UIInterfaceOrientationLandscapeRight</string>
+	  <string>UIInterfaceOrientationPortrait</string>
+	  <string>UIInterfaceOrientationLandscapeLeft</string>
+	  <string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
 	<key>UISupportedInterfaceOrientations~ipad</key>
 	<array>
-		<string>UIInterfaceOrientationPortrait</string>
-		<string>UIInterfaceOrientationPortraitUpsideDown</string>
-		<string>UIInterfaceOrientationLandscapeLeft</string>
-		<string>UIInterfaceOrientationLandscapeRight</string>
+	  <string>UIInterfaceOrientationPortrait</string>
+	  <string>UIInterfaceOrientationPortraitUpsideDown</string>
+	  <string>UIInterfaceOrientationLandscapeLeft</string>
+	  <string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
-  <key>UIAppFonts</key>
-  <array>
-	<string>Fonts/winjs-symbols.ttf</string>
-  </array>
-</dict>
+	<key>UIAppFonts</key>
+	<array>
+	  <string>Fonts/winjs-symbols.ttf</string>
+	</array>
+	<key>UIViewControllerBasedStatusBarAppearance</key>
+	<false/>
+	<key>UILaunchImageMinimumOSVersion</key>
+	<string>9.0</string>
+	<key>UILaunchImageOrientation</key>
+	<string>Portait</string>
+	<key>UILaunchImageSize</key>
+	<string>{320, 568}</string>
+  </dict>
 </plist>
