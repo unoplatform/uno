@@ -14,7 +14,7 @@ using AppKit;
 using View = AppKit.NSView;
 #elif __ANDROID__
 using View = Android.Views.View;
-#elif NET46 || NETSTANDARD2_0
+#elif NET46 || __WASM__
 using View = Windows.UI.Xaml.UIElement;
 #endif
 
