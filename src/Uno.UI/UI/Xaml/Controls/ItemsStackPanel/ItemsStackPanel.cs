@@ -1,7 +1,8 @@
-﻿#if !NET46 && !NETSTANDARD2_0 && !__MACOS__
+﻿#if !NET46 && !__MACOS__
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Uno;
 using Uno.UI;
 
 namespace Windows.UI.Xaml.Controls
@@ -10,7 +11,13 @@ namespace Windows.UI.Xaml.Controls
 	{
 		VirtualizingPanelLayout _layout;
 
+#if __WASM__
+		[NotImplemented]
+#endif
 		public int FirstVisibleIndex => _layout?.FirstVisibleIndex ?? -1;
+#if __WASM__
+		[NotImplemented]
+#endif
 		public int LastVisibleIndex => _layout?.LastVisibleIndex ?? -1;
 
 #if XAMARIN_ANDROID
@@ -24,9 +31,20 @@ namespace Windows.UI.Xaml.Controls
 			{
 				CacheLength = FeatureConfiguration.ListViewBase.DefaultCacheLength.Value;
 			}
+
+#if __WASM__
+			CreateLayoutIfNeeded();
+			_layout.Initialize(this);
+#endif
 		}
 
 		VirtualizingPanelLayout IVirtualizingPanel.GetLayouter()
+		{
+			CreateLayoutIfNeeded();
+			return _layout;
+		}
+
+		private void CreateLayoutIfNeeded()
 		{
 			if (_layout == null)
 			{
@@ -35,11 +53,10 @@ namespace Windows.UI.Xaml.Controls
 				_layout.BindToEquivalentProperty(this, nameof(AreStickyGroupHeadersEnabled));
 				_layout.BindToEquivalentProperty(this, nameof(GroupHeaderPlacement));
 				_layout.BindToEquivalentProperty(this, nameof(GroupPadding));
-#if XAMARIN_ANDROID
+#if !XAMARIN_IOS
 				_layout.BindToEquivalentProperty(this, nameof(CacheLength));
 #endif
 			}
-			return _layout;
 		}
 	}
 }

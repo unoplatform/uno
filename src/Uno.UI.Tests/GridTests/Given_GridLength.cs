@@ -12,83 +12,44 @@ namespace Uno.UI.Tests.GridTests
 	public class Given_GridLength
 	{
 		[TestMethod]
-		public void When_AbsoluteLength()
+		[DataRow("4", true, false, false, 4, null)]
+		[DataRow("42", true, false, false, 42, null)]
+		[DataRow("4*", false, true, false, 4, null)]
+		[DataRow("*", false, true, false, 1, null)]
+		[DataRow(" * ", false, true, false, 1, null)]
+		[DataRow("auto", false, false, true, 0, null)]
+		[DataRow(" auto", false, false, true, 0, null)]
+		[DataRow(" Auto", false, false, true, 0, null)]
+		[DataRow(" Auto ", false, false, true, 0, null)]
+		[DataRow(" auto ", false, false, true, 0, null)]
+		[DataRow(" auto ", false, false, true, 0, null)]
+		[DataRow("*1", false, false, true, 0, typeof(InvalidOperationException))]
+		[DataRow("Aauto", false, false, true, 0, typeof(InvalidOperationException))]
+		[DataRow("abc", false, false, true, 0, typeof(InvalidOperationException))]
+		[DataRow("42,5", false, false, true, 0, typeof(InvalidOperationException))]
+		public void When_String(string value, bool isAbsolute, bool isStar, bool isAuto, double length, Type expectedException)
 		{
-			var length = (GridLength)"4";
-			Assert.IsTrue(length.IsAbsolute);
-			Assert.IsFalse(length.IsStar);
-			Assert.IsFalse(length.IsAuto);
-			Assert.AreEqual(4, length.Value);
-		}
+			try
+			{
+				var gridLength = (GridLength)value;
+				Assert.AreEqual(isAbsolute, gridLength.IsAbsolute);
+				Assert.AreEqual(isStar, gridLength.IsStar);
+				Assert.AreEqual(isAuto, gridLength.IsAuto);
+				Assert.AreEqual(length, gridLength.Value);
 
-		[TestMethod]
-		public void When_LargeAbsoluteLength()
-		{
-			var length = (GridLength)"42";
-			Assert.IsTrue(length.IsAbsolute);
-			Assert.IsFalse(length.IsStar);
-			Assert.IsFalse(length.IsAuto);
-			Assert.AreEqual(42, length.Value);
-		}
-
-		[TestMethod]
-		public void When_SmallStartLength()
-		{
-			var length = (GridLength)"4*";
-			Assert.IsFalse(length.IsAbsolute);
-			Assert.IsTrue(length.IsStar);
-			Assert.IsFalse(length.IsAuto);
-			Assert.AreEqual(4, length.Value);
-		}
-
-		[TestMethod]
-		public void When_LargeStartLength()
-		{
-			var length = (GridLength)"42*";
-			Assert.IsFalse(length.IsAbsolute);
-			Assert.IsTrue(length.IsStar);
-			Assert.IsFalse(length.IsAuto);
-			Assert.AreEqual(42, length.Value);
-		}
-
-		[TestMethod]
-		public void When_StartLength()
-		{
-			var length = (GridLength)"*";
-			Assert.IsFalse(length.IsAbsolute);
-			Assert.IsTrue(length.IsStar);
-			Assert.IsFalse(length.IsAuto);
-			Assert.AreEqual(1, length.Value);
-		}
-
-		[TestMethod]
-		public void When_PaddedStartLength()
-		{
-			var length = (GridLength)" * ";
-			Assert.IsFalse(length.IsAbsolute);
-			Assert.IsTrue(length.IsStar);
-			Assert.IsFalse(length.IsAuto);
-			Assert.AreEqual(1, length.Value);
-		}
-
-		[TestMethod]
-		public void When_AutoLength1()
-		{
-			var length = (GridLength)"auto";
-			Assert.IsFalse(length.IsAbsolute);
-			Assert.IsFalse(length.IsStar);
-			Assert.IsTrue(length.IsAuto);
-			Assert.AreEqual(0, length.Value);
-		}
-
-		[TestMethod]
-		public void When_AutoLength2()
-		{
-			var length = (GridLength)"Auto";
-			Assert.IsFalse(length.IsAbsolute);
-			Assert.IsFalse(length.IsStar);
-			Assert.IsTrue(length.IsAuto);
-			Assert.AreEqual(0, length.Value);
+				if(expectedException != null)
+				{
+					throw new InvalidOperationException($"Expected exception {expectedException}, got none");
+				}
+			}
+			catch(Exception e)
+			{
+				if(e.GetType() != expectedException)
+				{
+					throw new InvalidOperationException($"Expected exception {e}, got {e}");
+				}
+			}
+			
 		}
 	}
 }

@@ -525,18 +525,18 @@ namespace Windows.UI.Xaml.Controls
 		{
 			if (IsMaterialized(indexPath))
 			{
-				return Owner?.ResolveItemTemplate(Owner.XamlParent.GetDisplayItemFromIndexPath(indexPath.ToIndexPath()));
+				return Owner?.XamlParent?.ResolveItemTemplate(Owner.XamlParent.GetDisplayItemFromIndexPath(indexPath.ToIndexPath()));
 			}
 			else
 			{
 				// Ignore ItemTemplateSelector since we do not know what the item is
-				return Owner?.ItemTemplate;
+				return Owner?.XamlParent?.ItemTemplate;
 			}
 		}
 
 		private DataTemplate GetTemplateForGroupHeader(int section)
 		{
-				var groupStyle = Owner.GroupStyle;
+			var groupStyle = Owner.GroupStyle;
 			if (IsMaterialized(section))
 			{
 				return DataTemplateHelper.ResolveTemplate(groupStyle?.HeaderTemplate, groupStyle?.HeaderTemplateSelector, Owner.XamlParent.GetGroupAtDisplaySection(section).Group);
@@ -665,7 +665,7 @@ namespace Windows.UI.Xaml.Controls
 		private Orientation ScrollOrientation => Owner.NativeLayout.ScrollOrientation;
 		private bool SupportsDynamicItemSizes => Owner.NativeLayout.SupportsDynamicItemSizes;
 		private ILayouter Layouter => Owner.NativeLayout.Layouter;
-		
+
 		protected override void Dispose(bool disposing)
 		{
 			if (!disposing)
