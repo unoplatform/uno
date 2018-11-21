@@ -125,9 +125,9 @@ When using a managed bubbling for a routed event, you'll have a the following li
 
 * Native container controls (scroll viewer, lists...) won't receive the event, so they can stop
   working properly.
-* Once a native event is converted to managed bubbling, it cannot be switched back to native
-  for propagations to parents and the event will bubble in managed code to the root, no matter
-  how the bubbling is configured.
+* Once an event is converted for _managed_ bubbling, it cannot be switched back to native
+  propagations : it will bubble in managed code to the root, no matter how the bubbling mode is
+  configured for this event type.
 
 ### Limitations of native bubbling
 
@@ -137,7 +137,7 @@ When using a managed bubbling for a routed event, you'll have a the following li
   add a handler in one one the children to give Uno a way to intercept the event and make it bubble
   in managed code.
 * Bubbling natively can lead to many back-in-forth between managed and native code, causing a lot
-  of marshalling.
+  of interop marshalling.
 
 ## Guidelines for performance
 
@@ -174,6 +174,6 @@ or referencing the element where the event crossed the _native-to-managed_ bound
 
 ### Reseting `Handled` to false won't behave like in UWP
 
-There's a strange behavior in UWP where you can switch back the `event.Handle` to `true` when
+There's a strange behavior in UWP where you can switch back the `event.Handle` to `false` when
 intercepted by a handler with `handledEventsToo: true`. In UWP the event will continue to bubble normally.
-Try to do this in Uno can lead to unreliable results.
+Trying to do this in Uno can lead to unreliable results.
