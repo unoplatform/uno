@@ -16,7 +16,7 @@
     <SccLocalPath>SAK</SccLocalPath>
     <SccAuxPath>SAK</SccAuxPath>
     <SccProvider>SAK</SccProvider>
-  </PropertyGroup>
+	</PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
@@ -55,10 +55,10 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Uno.Core">
-      <Version>1.24.0</Version>
+      <Version>1.25.0</Version>
     </PackageReference>
     <PackageReference Include="Uno.SourceGenerationTasks">
-      <Version>1.27.0</Version>
+      <Version>1.28.0</Version>
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
@@ -96,18 +96,16 @@
     </None>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <PropertyGroup>
-    <PostBuildEvent>rem copy /Y "$(TargetDir)\*.*" "C:\s\git\HealthClinic.biz\packages\uno.ui.tasks.2.8.8826\build"
-rem copy /Y "$(TargetDir)\*.*" "C:\s\Uno.UI\Src\packages\Uno.UI.Tasks.2.8.8555-uno\build"
-rem copy /Y "$(TargetDir)\*.*" "C:\s\temp\Universal Windows app samples\XAML user and custom controls sample\C#\packages\Uno.UI.Tasks.2.8.8123-uno\build"
-</PostBuildEvent>
-  </PropertyGroup>
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
+	
+	<Target Name="_copyUnoTasksBuildTime" AfterTargets="Build">
+		<ItemGroup>
+			<_unoTasksFiles Include="$(OutputPath)\*.*" />
+		</ItemGroup>
+		<!--
+		Copy the files to an alternal location, using deterministic build.
+		Don't fail the build if the file is locked
+		-->
+		<Copy SkipUnchangedFiles="true" SourceFiles="@(_unoTasksFiles)" DestinationFolder="$(OutputPath)\..\$(Configuration)_Shadow" Retries="1" RetryDelayMilliseconds="500" ContinueOnError="true" />
+	</Target>
   <Import Project="..\..\Common.targets" />
 </Project>

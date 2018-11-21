@@ -90,7 +90,7 @@ namespace MonoTests.Uno.Xaml
 		public void AllTypes ()
 		{
 			var l = XamlLanguage.AllTypes;
-			Assert.AreEqual (21, l.Count, "count");
+			Assert.AreEqual (22, l.Count, "count");
 			Assert.IsTrue (l.Contains (XamlLanguage.Array), "#0");
 			Assert.IsTrue (l.Contains (XamlLanguage.Boolean), "#1");
 			Assert.IsTrue (l.Contains (XamlLanguage.Byte), "#2");
@@ -102,7 +102,7 @@ namespace MonoTests.Uno.Xaml
 			Assert.IsTrue (l.Contains (XamlLanguage.Int64), "#8");
 			Assert.IsTrue (l.Contains (XamlLanguage.Member), "#9");
 			Assert.IsTrue (l.Contains (XamlLanguage.Null), "#10");
-			Assert.IsTrue (l.Contains (XamlLanguage.Object), "#11");
+			Assert.IsTrue (l.Contains(XamlLanguage.Object), "#11");
 			Assert.IsTrue (l.Contains (XamlLanguage.Property), "#12");
 			Assert.IsTrue (l.Contains (XamlLanguage.Reference), "#13");
 			Assert.IsTrue (l.Contains (XamlLanguage.Single), "#14");
@@ -112,6 +112,7 @@ namespace MonoTests.Uno.Xaml
 			Assert.IsTrue (l.Contains (XamlLanguage.Type), "#18");
 			Assert.IsTrue (l.Contains (XamlLanguage.Uri), "#19");
 			Assert.IsTrue (l.Contains (XamlLanguage.XData), "#20");
+			Assert.IsTrue (l.Contains(XamlLanguage.Bind), "#21");
 		}
 
 		// directive property details
@@ -195,10 +196,12 @@ namespace MonoTests.Uno.Xaml
 		}
 		
 		[Test]
-		[ExpectedException (typeof (NotSupportedException))]
 		public void InitializationGetValue ()
 		{
-			XamlLanguage.Initialization.Invoker.GetValue ("foo");
+			Assert.Throws(typeof(NotSupportedException), () =>
+			{
+				XamlLanguage.Initialization.Invoker.GetValue("foo");
+			});
 		}
 
 		[Test]

@@ -32,5 +32,22 @@ namespace Uno.UI.Tests.BitmapImageTests
 
 			Assert.AreEqual(new Uri(expected), SUT.WebUri);
 		}
+
+		[TestMethod]
+		[DataRow("http://example.com/image.png", "http://example.com/image.png")]
+		[DataRow("ms-appx:///image.png", "ms-appx:///image.png")]
+		[DataRow("ms-appx:///image.png", "image.png")]
+		[DataRow("ms-appx:///folder/image.png", "folder/image.png")]
+		[DataRow("ms-appx:///folder/image.png", "folder\\image.png")]
+		[DataRow("ms-appx:///folder/folder2/image.png", "folder/folder2/image.png")]
+		[DataRow("ms-appx:///folder/folder2/image.png", "folder\\folder2\\image.png")]
+		[DataRow("ms-appx:///image.png", "/image.png")]
+		[DataRow("ms-appx:///folder/image.png", "/folder/image.png")]
+		public void When_UriString(string expected, string uri)
+		{
+			var SUT = new BitmapImage(uri);
+
+			Assert.AreEqual(new Uri(expected), SUT.WebUri);
+		}
 	}
 }

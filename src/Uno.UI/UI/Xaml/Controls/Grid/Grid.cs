@@ -15,6 +15,8 @@ using Android.Views;
 using NativeView = Android.Views.View;
 #elif XAMARIN_IOS
 using NativeView = UIKit.UIView;
+#elif __MACOS__
+using NativeView = AppKit.NSView;
 #else
 using NativeView = Windows.UI.Xaml.UIElement;
 #endif

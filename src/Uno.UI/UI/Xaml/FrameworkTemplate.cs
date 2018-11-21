@@ -6,6 +6,8 @@ using Uno.Extensions;
 using View = Android.Views.View;
 #elif XAMARIN_IOS_UNIFIED
 using View = UIKit.UIView;
+#elif __MACOS__
+using View = AppKit.NSView;
 #elif XAMARIN_IOS
 using View = MonoTouch.UIKit.UIView;
 #else
@@ -16,7 +18,6 @@ namespace Windows.UI.Xaml
 {
 	public partial class FrameworkTemplate : DependencyObject
 	{
-		private static readonly FrameworkTemplatePool _pool = new FrameworkTemplatePool();
 
 		private readonly Func<View> _viewFactory;
 		private readonly int _hashCode;
@@ -50,7 +51,7 @@ namespace Windows.UI.Xaml
 		/// </remarks>
 		internal View LoadContentCached()
 		{
-			return _pool.DequeueTemplate(this);
+			return FrameworkTemplatePool.Instance.DequeueTemplate(this);
 		}
 
 		/// <summary>

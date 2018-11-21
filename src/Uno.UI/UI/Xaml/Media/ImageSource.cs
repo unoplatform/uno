@@ -64,6 +64,11 @@ namespace Windows.UI.Xaml.Media
 		{
 			Uri uri;
 
+			if (url.StartsWith("/"))
+			{
+				url = MsAppXScheme + "://" + url;
+			}
+
 			if (url.HasValueTrimmed() && Uri.TryCreate(url.Trim(), UriKind.RelativeOrAbsolute, out uri))
 			{
 				InitFromUri(uri);

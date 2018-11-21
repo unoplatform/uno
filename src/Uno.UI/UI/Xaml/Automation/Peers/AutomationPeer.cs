@@ -149,7 +149,7 @@ namespace Windows.UI.Xaml.Automation.Peers
 		#region NotImplemented
 
 		[Uno.NotImplemented]
-		public static bool ListenerExists(AutomationEvents eventId)
+		public static bool ListenerfExists(AutomationEvents eventId)
 		{
 			Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Automation.Peers.AutomationPeer", "bool AutomationPeer.ListenerExists");
 			return false;

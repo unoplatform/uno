@@ -25,6 +25,24 @@ namespace Windows.UI.Xaml
 			}
 		}
 
+#elif __MACOS__
+
+		internal static AppKit.NSTextAlignment ToNativeTextAlignment(this TextAlignment textAlignment)
+		{
+			switch (textAlignment)
+			{
+				case TextAlignment.Center:
+					return AppKit.NSTextAlignment.Center;
+				case TextAlignment.Right:
+					return AppKit.NSTextAlignment.Right;
+				case TextAlignment.Justify:
+					return AppKit.NSTextAlignment.Justified;
+				default:
+				case TextAlignment.Left:
+					return AppKit.NSTextAlignment.Left;
+			}
+		}
+
 #elif XAMARIN_ANDROID
 
 		internal static Android.Views.GravityFlags ToGravity(this TextAlignment textAlignment)

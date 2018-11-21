@@ -1,5 +1,16 @@
-- name: Articles
-  href: articles/
-- name: Api Documentation
-  href: api/
-  homepage: api/index.md
+- name: Overview
+  href: https://platform.uno/
+- name: Playground
+  href: https://platform.uno/playground/
+- name: Docs
+  href: /
+  homepage: index.md
+#  items:
+#    - name: Articles
+#      href: articles/
+- name: FAQ
+  href: https://platform.uno/faq/
+- name: Blog
+  href: https://platform.uno/blog/
+- name: Contact
+  href: https://platform.uno/contact/

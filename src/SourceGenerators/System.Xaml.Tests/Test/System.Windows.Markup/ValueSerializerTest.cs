@@ -65,7 +65,7 @@ namespace MonoTests.System.Windows.Markup
 			}
 		}
 
-		static readonly Type [] no_ser_types = {typeof (object), typeof (ArrayExtension), typeof (MemberDefinition), typeof (NullExtension), typeof (PropertyDefinition), typeof (Reference), typeof (StaticExtension), typeof (TypeExtension), typeof (XData)};
+		static readonly Type [] no_ser_types = {typeof (object), typeof (ArrayExtension), typeof (MemberDefinition), typeof (NullExtension), typeof (PropertyDefinition), typeof (Reference), typeof (StaticExtension), typeof (TypeExtension), typeof (XData), typeof(Bind)};
 
 		[Test]
 		public void GetSerializerForAllTypes ()

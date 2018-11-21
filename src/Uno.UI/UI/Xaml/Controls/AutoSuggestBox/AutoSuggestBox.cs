@@ -13,6 +13,8 @@ using Windows.UI.Xaml.Media;
 
 #if __IOS__
 using UIKit;
+#elif __MACOS__
+using AppKit;
 #endif
 
 namespace Windows.UI.Xaml.Controls
@@ -39,6 +41,11 @@ namespace Windows.UI.Xaml.Controls
 			_layoutRoot = GetTemplateChild("LayoutRoot") as Grid;
 			_suggestionsList = GetTemplateChild("SuggestionsList") as ListView;
 			_queryButton = GetTemplateChild("QueryButton") as Button;
+
+			if(_queryButton != null)
+			{
+				_queryButton.Content = new SymbolIcon(Symbol.Find);
+			}
 
 			_textBox?.SetBinding(
 				TextBox.TextProperty,

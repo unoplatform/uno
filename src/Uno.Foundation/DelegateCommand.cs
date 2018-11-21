@@ -14,7 +14,6 @@ namespace Uno.UI.Common
 		public DelegateCommand(Action action)
 		{
 			_action = action;
-			OnCanExecuteChanged(true);
 		}
 
 		public bool CanExecute(object parameter)

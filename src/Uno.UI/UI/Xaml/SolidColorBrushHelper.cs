@@ -16,6 +16,8 @@ using GenericColor = Android.Graphics.Color;
 using Windows.UI.Xaml.Media;
 using GenericColor = Windows.UI.Color;
 using Windows.UI;
+#elif __MACOS__
+using GenericColor = Windows.UI.Color;
 #else
 using GenericColor = System.Drawing.Color;
 #endif

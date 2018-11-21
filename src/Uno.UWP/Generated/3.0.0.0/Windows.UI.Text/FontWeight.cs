@@ -2,14 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Text
 {
-	#if false || false || false || false
+	#if false || false || false || false || false
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial struct FontWeight 
 	{
 		// Forced skipping of method Windows.UI.Text.FontWeight.FontWeight()
-		#if false || false || false || false
-		public  ushort Weight;
-		#endif
+		// Skipping already declared field Windows.UI.Text.FontWeight.Weight
 	}
 }

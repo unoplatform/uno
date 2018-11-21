@@ -41,436 +41,452 @@ namespace MonoTests.Uno.Xaml
 	public partial class XamlObjectReaderTest : XamlReaderTestBase
 	{
 		[Test]
-		public void ConstructorNullObject ()
+		public void ConstructorNullObject()
 		{
 			// allowed.
-			new XamlObjectReader (null);
+			new XamlObjectReader(null);
 		}
 
 		[Test]
-		[ExpectedException (typeof (ArgumentNullException))]
-		public void ConstructorNullSchemaContext ()
+		public void ConstructorNullSchemaContext()
 		{
-			new XamlObjectReader ("foo", (XamlSchemaContext) null);
+			Assert.Throws(typeof(ArgumentNullException), () =>
+			{
+				new XamlObjectReader("foo", (XamlSchemaContext)null);
+			});
 		}
 
 		[Test]
-		public void ConstructorNullSettings ()
+		public void ConstructorNullSettings()
 		{
-			new XamlObjectReader ("foo", (XamlObjectReaderSettings) null);
+			new XamlObjectReader("foo", (XamlObjectReaderSettings)null);
 		}
 
 		[Test]
-		[ExpectedException (typeof (ArgumentNullException))]
-		public void ConstructorNullSchemaContext2 ()
+		public void ConstructorNullSchemaContext2()
 		{
-			new XamlObjectReader ("foo", null, new XamlObjectReaderSettings ());
+			Assert.Throws(typeof(ArgumentNullException), () =>
+			{
+				new XamlObjectReader("foo", null, new XamlObjectReaderSettings());
+			});
 		}
 
 		[Test]
-		public void ConstructorNullSettings2 ()
+		public void ConstructorNullSettings2()
 		{
-			new XamlObjectReader ("foo", new XamlSchemaContext (null, null), null);
+			new XamlObjectReader("foo", new XamlSchemaContext(null, null), null);
 		}
 
 		[Test]
-		[ExpectedException (typeof (XamlObjectReaderException))]
-		public void ReadNonConstructible ()
+		public void ReadNonConstructible()
 		{
-			// XamlType has no default constructor.
-			new XamlObjectReader (XamlLanguage.String);
+			Assert.Throws(typeof(XamlObjectReaderException), () =>
+			{
+				// XamlType has no default constructor.
+				new XamlObjectReader(XamlLanguage.String);
+			});
 		}
 
 		[Test]
-		[ExpectedException (typeof (XamlObjectReaderException))]
-		public void NonPublicType ()
+		public void NonPublicType()
 		{
-			new XamlObjectReader (new TestClass1 ());
+			Assert.Throws(typeof(XamlObjectReaderException), () =>
+			{
+				new XamlObjectReader(new TestClass1());
+			});
 		}
 
 		[Test]
-		[ExpectedException (typeof (XamlObjectReaderException))]
-		public void NestedType ()
+		public void NestedType()
 		{
-			new XamlObjectReader (new TestClass2 ());
+			Assert.Throws(typeof(XamlObjectReaderException), () =>
+			{
+				new XamlObjectReader(new TestClass2());
+			});
 		}
-		
+
 		public class TestClass2
 		{
 		}
 
 		[Test]
-		public void ConstructibleType ()
+		public void ConstructibleType()
 		{
-			new XamlObjectReader (new TestClass3 ());
+			new XamlObjectReader(new TestClass3());
 		}
 
 		// Based on Common tests
 
 		[Test]
-		public void Read_String ()
+		public void Read_String()
 		{
-			var r = new XamlObjectReader ("foo");
-			Read_String (r);
+			var r = new XamlObjectReader("foo");
+			Read_String(r);
 		}
 
 		[Test]
-		public void WriteNullMemberAsObject ()
+		public void WriteNullMemberAsObject()
 		{
-			var r = new XamlObjectReader (new TestClass4 ());
-			WriteNullMemberAsObject (r, delegate {
-				Assert.IsNull (r.Instance, "#x"); }
+			var r = new XamlObjectReader(new TestClass4());
+			WriteNullMemberAsObject(r, delegate {
+				Assert.IsNull(r.Instance, "#x"); }
 				);
 		}
-		
+
 		[Test]
-		public void StaticMember ()
+		public void StaticMember()
 		{
-			var r = new XamlObjectReader (new TestClass5 ());
-			StaticMember (r);
+			var r = new XamlObjectReader(new TestClass5());
+			StaticMember(r);
 		}
 
 		[Test]
-		public void Skip ()
+		public void Skip()
 		{
-			var r = new XamlObjectReader ("Foo");
-			Skip (r);
-		}
-		
-		[Test]
-		public void Skip2 ()
-		{
-			var r = new XamlObjectReader ("Foo");
-			Skip2 (r);
+			var r = new XamlObjectReader("Foo");
+			Skip(r);
 		}
 
 		[Test]
-		public void Skip3 ()
+		public void Skip2()
 		{
-			var r = new XamlObjectReader (new ReadOnlyPropertyContainer () { Foo = "x" });
+			var r = new XamlObjectReader("Foo");
+			Skip2(r);
+		}
+
+		[Test]
+		public void Skip3()
+		{
+			var r = new XamlObjectReader(new ReadOnlyPropertyContainer() { Foo = "x" });
 			while (r.NodeType != XamlNodeType.StartMember)
-				r.Read ();
-			r.Skip ();
-			Assert.AreEqual (XamlNodeType.EndObject, r.NodeType, "#1");
+				r.Read();
+			r.Skip();
+			Assert.AreEqual(XamlNodeType.EndObject, r.NodeType, "#1");
 		}
 
 		[Test]
-		public void Read_XmlDocument ()
+		public void Read_XmlDocument()
 		{
-			var doc = new XmlDocument ();
-			doc.LoadXml ("<root xmlns='urn:foo'><elem attr='val' /></root>");
-			var r = new XamlObjectReader (doc);
-			Read_XmlDocument (r);
+			var doc = new XmlDocument();
+			doc.LoadXml("<root xmlns='urn:foo'><elem attr='val' /></root>");
+			var r = new XamlObjectReader(doc);
+			Read_XmlDocument(r);
 		}
 
 		[Test]
-		public void Read_NonPrimitive ()
+		public void Read_NonPrimitive()
 		{
-			var r = new XamlObjectReader (new TestClass3 ());
-			Read_NonPrimitive (r);
-		}
-		
-		[Test]
-		public void Read_Type ()
-		{
-			var r = new XamlObjectReader (typeof (int));
-			Read_TypeOrTypeExtension (r);
-		}
-		
-		[Test]
-		public void Read_TypeExtension ()
-		{
-			var tx = new TypeExtension (typeof (int));
-			var r = new XamlObjectReader (tx);
-			Read_TypeOrTypeExtension (r);
+			var r = new XamlObjectReader(new TestClass3());
+			Read_NonPrimitive(r);
 		}
 
-		void Read_TypeOrTypeExtension (XamlObjectReader r)
-		{
-			Read_TypeOrTypeExtension (r, delegate {
-				Assert.IsTrue (r.Instance is TypeExtension, "#26");
-				}, XamlLanguage.PositionalParameters);
-		}
-		
 		[Test]
-		public void Read_Type2 ()
+		public void Read_Type()
 		{
-			var r = new XamlObjectReader (typeof (TestClass1));
-			Read_TypeOrTypeExtension2 (r);
-		}
-		
-		[Test]
-		public void Read_TypeExtension2 ()
-		{
-			var r = new XamlObjectReader (new TypeExtension (typeof (TestClass1)));
-			Read_TypeOrTypeExtension2 (r);
+			var r = new XamlObjectReader(typeof(int));
+			Read_TypeOrTypeExtension(r);
 		}
 
-		void Read_TypeOrTypeExtension2 (XamlObjectReader r)
+		[Test]
+		public void Read_TypeExtension()
 		{
-			Read_TypeOrTypeExtension2 (r, delegate {
-				Assert.IsTrue (r.Instance is TypeExtension, "#26");
+			var tx = new TypeExtension(typeof(int));
+			var r = new XamlObjectReader(tx);
+			Read_TypeOrTypeExtension(r);
+		}
+
+		void Read_TypeOrTypeExtension(XamlObjectReader r)
+		{
+			Read_TypeOrTypeExtension(r, delegate {
+				Assert.IsTrue(r.Instance is TypeExtension, "#26");
 			}, XamlLanguage.PositionalParameters);
 		}
-		
+
 		[Test]
-		public void Read_Reference ()
+		public void Read_Type2()
 		{
-			var r = new XamlObjectReader (new Reference ("FooBar"));
-			Read_Reference (r);
-		}
-		
-		[Test]
-		public void Read_Null ()
-		{
-			var r = new XamlObjectReader (null);
-			Read_NullOrNullExtension (r, (object) null);
+			var r = new XamlObjectReader(typeof(TestClass1));
+			Read_TypeOrTypeExtension2(r);
 		}
 
 		[Test]
-		public void Read_NullExtension ()
+		public void Read_TypeExtension2()
 		{
-			var o = new NullExtension ();
-			var r = new XamlObjectReader (o);
-			Read_NullOrNullExtension (r, o);
+			var r = new XamlObjectReader(new TypeExtension(typeof(TestClass1)));
+			Read_TypeOrTypeExtension2(r);
 		}
-		
-		void Read_NullOrNullExtension (XamlObjectReader r, object instance)
+
+		void Read_TypeOrTypeExtension2(XamlObjectReader r)
 		{
-			Read_NullOrNullExtension (r, delegate {
-				Assert.AreEqual (instance, r.Instance, "#26"); // null and NullExtension are different here.
+			Read_TypeOrTypeExtension2(r, delegate {
+				Assert.IsTrue(r.Instance is TypeExtension, "#26");
+			}, XamlLanguage.PositionalParameters);
+		}
+
+		[Test]
+		public void Read_Reference()
+		{
+			var r = new XamlObjectReader(new Reference("FooBar"));
+			Read_Reference(r);
+		}
+
+		[Test]
+		public void Read_Null()
+		{
+			var r = new XamlObjectReader(null);
+			Read_NullOrNullExtension(r, (object)null);
+		}
+
+		[Test]
+		public void Read_NullExtension()
+		{
+			var o = new NullExtension();
+			var r = new XamlObjectReader(o);
+			Read_NullOrNullExtension(r, o);
+		}
+
+		void Read_NullOrNullExtension(XamlObjectReader r, object instance)
+		{
+			Read_NullOrNullExtension(r, delegate {
+				Assert.AreEqual(instance, r.Instance, "#26"); // null and NullExtension are different here.
 			});
 		}
-		
+
 		[Test]
-		public void Read_StaticExtension ()
+		public void Read_StaticExtension()
 		{
-			var r = new XamlObjectReader (new StaticExtension ("FooBar"));
-			Read_StaticExtension (r, XamlLanguage.PositionalParameters);
-		}
-		
-		[Test]
-		public void Read_ListInt32 ()
-		{
-			var obj = new List<int> (new int [] {5, -3, int.MaxValue, 0});
-			Read_ListInt32 (obj);
-		}
-		
-		[Test]
-		public void Read_ListInt32_2 ()
-		{
-			var obj = new List<int> (new int [0]);
-			Read_ListInt32 (obj);
-		}
-		
-		void Read_ListInt32 (List<int> obj)
-		{
-			var r = new XamlObjectReader (obj);
-			Read_ListInt32 (r, delegate {
-				Assert.AreEqual (obj, r.Instance, "#26");
-				}, obj);
-		}
-		
-		[Test]
-		public void Read_ListType ()
-		{
-			var obj = new List<Type> (new Type [] {typeof (int), typeof (Dictionary<Type, XamlType>)}) { Capacity = 2 };
-			var r = new XamlObjectReader (obj);
-			Read_ListType (r, true);
+			var r = new XamlObjectReader(new StaticExtension("FooBar"));
+			Read_StaticExtension(r, XamlLanguage.PositionalParameters);
 		}
 
 		[Test]
-		public void Read_ListArray ()
+		public void Read_ListInt32()
 		{
-			var obj = new List<Array> (new Array [] { new int [] { 1,2,3}, new string [] { "foo", "bar", "baz" }}) { Capacity = 2 };
-			var r = new XamlObjectReader (obj);
-			Read_ListArray (r);
+			var obj = new List<int>(new int[] { 5, -3, int.MaxValue, 0 });
+			Read_ListInt32(obj);
 		}
 
 		[Test]
-		public void Read_ArrayList ()
+		public void Read_ListInt32_2()
 		{
-			var obj = new ArrayList (new int [] {5, -3, 0});
-			var r = new XamlObjectReader (obj);
-			Read_ArrayList (r);
-		}
-		
-		[Test]
-		public void Read_Array ()
-		{
-			var obj = new int [] {5, -3, 0};
-			var r = new XamlObjectReader (obj);
-			Read_ArrayOrArrayExtension (r, obj);
-		}
-		
-		[Test]
-		public void Read_ArrayExtension ()
-		{
-			var obj = new ArrayExtension (new int [] {5, -3, 0});
-			var r = new XamlObjectReader (obj);
-			Read_ArrayOrArrayExtension (r, obj);
-		}
-		
-		[Test]
-		public void Read_MyArrayExtension ()
-		{
-			var obj = new MyArrayExtension (new int [] {5, -3, 0});
-			var r = new XamlObjectReader (obj);
-			Read_ArrayOrArrayExtensionOrMyArrayExtension (r, obj, typeof (MyArrayExtension));
+			var obj = new List<int>(new int[0]);
+			Read_ListInt32(obj);
 		}
 
-		void Read_ArrayOrArrayExtension (XamlObjectReader r, object instance)
+		void Read_ListInt32(List<int> obj)
 		{
-			Read_ArrayOrArrayExtensionOrMyArrayExtension (r, instance, typeof (ArrayExtension));
-		}
-
-		void Read_ArrayOrArrayExtensionOrMyArrayExtension (XamlObjectReader r, object instance, Type extType)
-		{
-			Read_ArrayOrArrayExtensionOrMyArrayExtension (r, delegate {
-				Assert.AreEqual (instance, r.Instance, "#26"); // different between Array and ArrayExtension. Also, different from Type and TypeExtension (Type returns TypeExtension, while Array remains to return Array)
-				}, extType);
+			var r = new XamlObjectReader(obj);
+			Read_ListInt32(r, delegate {
+				Assert.AreEqual(obj, r.Instance, "#26");
+			}, obj);
 		}
 
 		[Test]
-		public void Read_ArrayExtension2 ()
+		[Ignore("todo after uno update")]
+		public void Read_ListType()
 		{
-			var r = new XamlObjectReader (new ArrayExtension (typeof (int)));
-			Read_ArrayExtension2 (r);
-		}
-		
-		[Test]
-		public void Read_DateTime ()
-		{
-			var obj = new DateTime (2010, 4, 15);
-			var r = new XamlObjectReader (obj);
-			Read_CommonClrType (r, obj);
-			Assert.AreEqual ("2010-04-15", Read_Initialization (r, null), "#1");
+			var obj = new List<Type>(new Type[] { typeof(int), typeof(Dictionary<Type, XamlType>) }) { Capacity = 2 };
+			var r = new XamlObjectReader(obj);
+			Read_ListType(r, true);
 		}
 
 		[Test]
-		public void Read_TimeSpan ()
+		public void Read_ListArray()
 		{
-			Read_CommonXamlPrimitive (TimeSpan.FromMinutes (4));
+			var obj = new List<Array>(new Array[] { new int[] { 1, 2, 3 }, new string[] { "foo", "bar", "baz" } }) { Capacity = 2 };
+			var r = new XamlObjectReader(obj);
+			Read_ListArray(r);
 		}
 
 		[Test]
-		public void Read_Uri ()
+		public void Read_ArrayList()
 		{
-			Read_CommonXamlPrimitive (new Uri ("urn:foo"));
+			var obj = new ArrayList(new int[] { 5, -3, 0 });
+			var r = new XamlObjectReader(obj);
+			Read_ArrayList(r);
 		}
 
 		[Test]
-		public void Read_Guid ()
+		public void Read_Array()
 		{
-			var obj = Guid.NewGuid ();
-			var r = new XamlObjectReader (obj);
-			Assert.IsNotNull (r.SchemaContext.GetXamlType (typeof (Guid)).TypeConverter, "premise#1");
-			Read_CommonClrType (r, obj);
-			Assert.AreEqual (obj.ToString (), Read_Initialization (r, null), "#1");
+			var obj = new int[] { 5, -3, 0 };
+			var r = new XamlObjectReader(obj);
+			Read_ArrayOrArrayExtension(r, obj);
 		}
 
 		[Test]
-		[ExpectedException (typeof (XamlObjectReaderException))]
-		[Ignore]
-		public void Read_XData ()
+		public void Read_ArrayExtension()
 		{
-			var r = new XamlObjectReader (new XData () {Text = "xdata text"}); // XmlReader implementation is not visible.
+			var obj = new ArrayExtension(new int[] { 5, -3, 0 });
+			var r = new XamlObjectReader(obj);
+			Read_ArrayOrArrayExtension(r, obj);
+		}
+
+		[Test]
+		public void Read_MyArrayExtension()
+		{
+			var obj = new MyArrayExtension(new int[] { 5, -3, 0 });
+			var r = new XamlObjectReader(obj);
+			Read_ArrayOrArrayExtensionOrMyArrayExtension(r, obj, typeof(MyArrayExtension));
+		}
+
+		void Read_ArrayOrArrayExtension(XamlObjectReader r, object instance)
+		{
+			Read_ArrayOrArrayExtensionOrMyArrayExtension(r, instance, typeof(ArrayExtension));
+		}
+
+		void Read_ArrayOrArrayExtensionOrMyArrayExtension(XamlObjectReader r, object instance, Type extType)
+		{
+			Read_ArrayOrArrayExtensionOrMyArrayExtension(r, delegate {
+				Assert.AreEqual(instance, r.Instance, "#26"); // different between Array and ArrayExtension. Also, different from Type and TypeExtension (Type returns TypeExtension, while Array remains to return Array)
+			}, extType);
+		}
+
+		[Test]
+		public void Read_ArrayExtension2()
+		{
+			var r = new XamlObjectReader(new ArrayExtension(typeof(int)));
+			Read_ArrayExtension2(r);
+		}
+
+		[Test]
+		public void Read_DateTime()
+		{
+			var obj = new DateTime(2010, 4, 15);
+			var r = new XamlObjectReader(obj);
+			Read_CommonClrType(r, obj);
+			Assert.AreEqual("2010-04-15", Read_Initialization(r, null), "#1");
+		}
+
+		[Test]
+		public void Read_TimeSpan()
+		{
+			Read_CommonXamlPrimitive(TimeSpan.FromMinutes(4));
+		}
+
+		[Test]
+		public void Read_Uri()
+		{
+			Read_CommonXamlPrimitive(new Uri("urn:foo"));
+		}
+
+		[Test]
+		public void Read_Guid()
+		{
+			var obj = Guid.NewGuid();
+			var r = new XamlObjectReader(obj);
+			Assert.IsNotNull(r.SchemaContext.GetXamlType(typeof(Guid)).TypeConverter, "premise#1");
+			Read_CommonClrType(r, obj);
+			Assert.AreEqual(obj.ToString(), Read_Initialization(r, null), "#1");
+		}
+
+		[Test]
+		[Ignore("")]
+		public void Read_XData()
+		{
+			Assert.Throws(typeof(XamlObjectReaderException), () =>
+			{
+				var r = new XamlObjectReader(new XData() { Text = "xdata text" }); // XmlReader implementation is not visible.
+				while (!r.IsEof)
+					r.Read();
+			});
+		}
+
+		[Test]
+		[Ignore("")]
+		public void Read_XDataWrapper()
+		{
+			Assert.Throws(typeof(XamlObjectReaderException), () =>
+			{
+				var obj = new XDataWrapper() { Markup = new XData() { Text = "<my_xdata/>" } };
+				var r = new XamlObjectReader(obj);
+				while (!r.IsEof)
+					r.Read();
+			});
+		}
+
+		[Test]
+		public void ReadStandardTypes()
+		{
+			SimpleReadStandardType(new ArrayExtension());
+			SimpleReadStandardType(new NullExtension());
+			SimpleReadStandardType(new PropertyDefinition());
+			SimpleReadStandardType(new Reference());
+			SimpleReadStandardType(new StaticExtension());
+			SimpleReadStandardType(new TypeExtension());
+		}
+
+		void SimpleReadStandardType(object instance)
+		{
+			var r = new XamlObjectReader(instance);
 			while (!r.IsEof)
-				r.Read ();
+				r.Read();
 		}
 
 		[Test]
-		[ExpectedException (typeof (XamlObjectReaderException))]
-		[Ignore]
-		public void Read_XDataWrapper ()
+		public void Read_CustomMarkupExtension()
 		{
-			var obj = new XDataWrapper () { Markup = new XData () {Text = "<my_xdata/>" } };
-			var r = new XamlObjectReader (obj);
-			while (!r.IsEof)
-				r.Read ();
+			var r = new XamlObjectReader(new MyExtension() { Foo = typeof(int), Bar = "v2", Baz = "v7" });
+			Read_CustomMarkupExtension(r);
 		}
 
 		[Test]
-		public void ReadStandardTypes ()
+		public void Read_CustomMarkupExtension2()
 		{
-			SimpleReadStandardType (new ArrayExtension ());
-			SimpleReadStandardType (new NullExtension ());
-			SimpleReadStandardType (new PropertyDefinition ());
-			SimpleReadStandardType (new Reference ());
-			SimpleReadStandardType (new StaticExtension ());
-			SimpleReadStandardType (new TypeExtension ());
-		}
-
-		void SimpleReadStandardType (object instance)
-		{
-			var r = new XamlObjectReader (instance);
-			while (!r.IsEof)
-				r.Read ();
+			var r = new XamlObjectReader(new MyExtension2() { Foo = typeof(int), Bar = "v2" });
+			Read_CustomMarkupExtension2(r);
 		}
 
 		[Test]
-		public void Read_CustomMarkupExtension ()
+		public void Read_CustomMarkupExtension3()
 		{
-			var r = new XamlObjectReader (new MyExtension () { Foo = typeof (int), Bar = "v2", Baz = "v7"});
-			Read_CustomMarkupExtension (r);
+			var r = new XamlObjectReader(new MyExtension3() { Foo = typeof(int), Bar = "v2" });
+			Read_CustomMarkupExtension3(r);
 		}
-		
+
 		[Test]
-		public void Read_CustomMarkupExtension2 ()
+		public void Read_CustomMarkupExtension4()
 		{
-			var r = new XamlObjectReader (new MyExtension2 () { Foo = typeof (int), Bar = "v2"});
-			Read_CustomMarkupExtension2 (r);
+			var r = new XamlObjectReader(new MyExtension4() { Foo = typeof(int), Bar = "v2" });
+			Read_CustomMarkupExtension4(r);
 		}
-		
+
 		[Test]
-		public void Read_CustomMarkupExtension3 ()
-		{
-			var r = new XamlObjectReader (new MyExtension3 () { Foo = typeof (int), Bar = "v2"});
-			Read_CustomMarkupExtension3 (r);
-		}
-		
-		[Test]
-		public void Read_CustomMarkupExtension4 ()
-		{
-			var r = new XamlObjectReader (new MyExtension4 () { Foo = typeof (int), Bar = "v2"});
-			Read_CustomMarkupExtension4 (r);
-		}
-		
-		[Test]
-		public void Read_CustomMarkupExtension5 ()
+		public void Read_CustomMarkupExtension5()
 		{
 			// This cannot be written to XamlXmlWriter though...
 
-			var r = new XamlObjectReader (new MyExtension5 ("foo", "bar"));
-			Read_CustomMarkupExtension5 (r);
-		}
-		
-		[Test]
-		public void Read_CustomMarkupExtension6 ()
-		{
-			var r = new XamlObjectReader (new MyExtension6 ("foo"));
-			Read_CustomMarkupExtension6 (r);
+			var r = new XamlObjectReader(new MyExtension5("foo", "bar"));
+			Read_CustomMarkupExtension5(r);
 		}
 
 		[Test]
-		public void Read_ArgumentAttributed ()
+		public void Read_CustomMarkupExtension6()
 		{
-			var obj = new ArgumentAttributed ("foo", "bar");
-			var r = new XamlObjectReader (obj);
-			Read_ArgumentAttributed (r, obj);
+			var r = new XamlObjectReader(new MyExtension6("foo"));
+			Read_CustomMarkupExtension6(r);
 		}
 
 		[Test]
-		public void Read_Dictionary ()
+		public void Read_ArgumentAttributed()
 		{
-			var obj = new Dictionary<string,object> ();
-			obj ["Foo"] = 5.0;
-			obj ["Bar"] = -6.5;
-			var r = new XamlObjectReader (obj);
-			Read_Dictionary (r);
+			var obj = new ArgumentAttributed("foo", "bar");
+			var r = new XamlObjectReader(obj);
+			Read_ArgumentAttributed(r, obj);
 		}
-		
+
 		[Test]
+		public void Read_Dictionary()
+		{
+			var obj = new Dictionary<string, object>();
+			obj["Foo"] = 5.0;
+			obj["Bar"] = -6.5;
+			var r = new XamlObjectReader(obj);
+			Read_Dictionary(r);
+		}
+
+		[Test]
+		[Ignore("Todo after uno support")]
 		public void Read_Dictionary2 ()
 		{
 			var obj = new Dictionary<string,Type> ();
@@ -719,7 +735,7 @@ namespace MonoTests.Uno.Xaml
 		}
 
 		[Test]
-		[Ignore] // only member ordering difference, maybe.
+		[Ignore("")] // only member ordering difference, maybe.
 		public void Read_AmbientPropertyContainer ()
 		{
 			var obj = new SecondTest.ResourcesDict ();
@@ -733,7 +749,7 @@ namespace MonoTests.Uno.Xaml
 		}
 
 		[Test]
-		[Ignore] // only member ordering difference, maybe.
+		[Ignore("")] // only member ordering difference, maybe.
 		public void Read_AmbientPropertyContainer2 ()
 		{
 			var obj = new SecondTest.ResourcesDict ();

@@ -2,43 +2,20 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml
 {
-	#if false || false || false || false
+	#if false || false || false || false || false
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial interface DependencyObject 
 	{
-		#if false || false || false || false
-		[global::Uno.NotImplemented]
-		public  global::Windows.UI.Core.CoreDispatcher Dispatcher
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member CoreDispatcher DependencyObject.Dispatcher is not implemented in Uno.");
-			}
-		}
-		#endif
+		// Skipping already declared property Dispatcher
 		// Forced skipping of method Windows.UI.Xaml.DependencyObject.DependencyObject()
-		#if false || false || false || false
-		object GetValue( global::Windows.UI.Xaml.DependencyProperty dp);
-		#endif
-		#if false || false || false || false
-		void SetValue( global::Windows.UI.Xaml.DependencyProperty dp,  object value);
-		#endif
-		#if false || false || false || false
-		void ClearValue( global::Windows.UI.Xaml.DependencyProperty dp);
-		#endif
-		#if false || false || false || false
-		object ReadLocalValue( global::Windows.UI.Xaml.DependencyProperty dp);
-		#endif
-		#if false || false || false || false
-		object GetAnimationBaseValue( global::Windows.UI.Xaml.DependencyProperty dp);
-		#endif
+		// Skipping already declared method Windows.UI.Xaml.DependencyObject.GetValue(Windows.UI.Xaml.DependencyProperty)
+		// Skipping already declared method Windows.UI.Xaml.DependencyObject.SetValue(Windows.UI.Xaml.DependencyProperty, object)
+		// Skipping already declared method Windows.UI.Xaml.DependencyObject.ClearValue(Windows.UI.Xaml.DependencyProperty)
+		// Skipping already declared method Windows.UI.Xaml.DependencyObject.ReadLocalValue(Windows.UI.Xaml.DependencyProperty)
+		// Skipping already declared method Windows.UI.Xaml.DependencyObject.GetAnimationBaseValue(Windows.UI.Xaml.DependencyProperty)
 		// Forced skipping of method Windows.UI.Xaml.DependencyObject.Dispatcher.get
-		#if false || false || false || false
-		long RegisterPropertyChangedCallback( global::Windows.UI.Xaml.DependencyProperty dp,  global::Windows.UI.Xaml.DependencyPropertyChangedCallback callback);
-		#endif
-		#if false || false || false || false
-		void UnregisterPropertyChangedCallback( global::Windows.UI.Xaml.DependencyProperty dp,  long token);
-		#endif
+		// Skipping already declared method Windows.UI.Xaml.DependencyObject.RegisterPropertyChangedCallback(Windows.UI.Xaml.DependencyProperty, Windows.UI.Xaml.DependencyPropertyChangedCallback)
+		// Skipping already declared method Windows.UI.Xaml.DependencyObject.UnregisterPropertyChangedCallback(Windows.UI.Xaml.DependencyProperty, long)
 	}
 }

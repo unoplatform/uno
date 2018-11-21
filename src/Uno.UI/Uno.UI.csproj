@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk" ToolsVersion="15.0">
 	<PropertyGroup>
-		<TargetFrameworks>MonoAndroid80;xamarinios10;net46;netstandard2.0</TargetFrameworks>
-		<TargetFrameworksCI>MonoAndroid71;MonoAndroid80;xamarinios10;net46;netstandard2.0</TargetFrameworksCI>
+		<TargetFrameworks>xamarinmac20;MonoAndroid80;xamarinios10;net46;netstandard2.0</TargetFrameworks>
+		<TargetFrameworksCI>MonoAndroid71;MonoAndroid80;xamarinios10;net46;netstandard2.0;xamarinmac20</TargetFrameworksCI>
 	</PropertyGroup>
 
 	<PropertyGroup>
@@ -20,11 +20,11 @@
 		<AndroidUseIntermediateDesignerFile>True</AndroidUseIntermediateDesignerFile>
 		<AndroidResgenFile>obj\$(TargetFramework)\Resources\Resource.Designer.cs</AndroidResgenFile>
 
-
 		<!-- Ensures the .xr.xml files are generated in a proper layout folder -->
 		<GenerateLibraryLayout>true</GenerateLibraryLayout>
 
-		<UnoSourceGeneratorUnsecureBinLogEnabled>true</UnoSourceGeneratorUnsecureBinLogEnabled>
+		<!-- Force the generation of upri files for Uno.UI self localization -->
+		<UnoForceProcessPRIResource>true</UnoForceProcessPRIResource>
 	</PropertyGroup>
 
 	<Import Project="$(MSBuildSDKExtrasTargets)" Condition="Exists('$(MSBuildSDKExtrasTargets)')" />
@@ -32,6 +32,7 @@
 
 	<ItemGroup>
 		<Compile Remove="Mixins\**\*.cs" />
+
 		<Compile Include="Mixins\Android\BaseActivity.Callbacks.g.cs">
 			<DesignTime>True</DesignTime>
 			<AutoGen>True</AutoGen>
@@ -51,6 +52,16 @@
 			<DesignTime>True</DesignTime>
 			<AutoGen>True</AutoGen>
 			<DependentUpon>DependencyPropertyMixins.tt</DependentUpon>
+		</Compile>
+		<Compile Include="Mixins\macOS\FrameworkElementMixins.g.cs">
+		  <DependentUpon>FrameworkElementMixins.tt</DependentUpon>
+		  <DesignTime>True</DesignTime>
+		  <AutoGen>True</AutoGen>
+		</Compile>
+		<Compile Include="Mixins\macOS\VisualStatesMixins.g.cs">
+		  <DependentUpon>VisualStatesMixins.tt</DependentUpon>
+		  <DesignTime>True</DesignTime>
+		  <AutoGen>True</AutoGen>
 		</Compile>
 		<Compile Include="Mixins\iOS\FrameworkElementMixins.g.cs">
 			<DesignTime>True</DesignTime>
@@ -92,8 +103,8 @@
 		</Otherwise>
 	</Choose>
 
-
 	<ItemGroup>
+		<None Include="Extensions\CGSizeExtensions.iOSmacOS.cs" />
 		<None Include="Resources\AboutResources.txt" />
 		<None Include="Resources\Values\Attrs.xml" />
 		<None Include="Resources\Values\Styles.xml" />
@@ -129,51 +140,46 @@
 			<LastGenOutput>VisualStatesMixins.g.cs</LastGenOutput>
 		</None>
 		<None Include="Resources\IResourceRegistry.cs" />
-		<None Include="Resources\ResourceRegistry.cs" />  
+		<None Include="Resources\ResourceRegistry.cs" />
+		<None Include="UI\Xaml\Controls\Panel\Panel.macOS.cs" />  
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="MSBuild.Sdk.Extras" Version="1.5.4" PrivateAssets="All" />
+		<PackageReference Include="MSBuild.Sdk.Extras" Version="1.6.55" PrivateAssets="All" />
 		<PackageReference Include="Uno.SourceGenerationTasks">
-			<Version>1.27.0</Version> 
+			<Version>1.28.0</Version> 
 		</PackageReference>
 		<PackageReference Include="Uno.Core">
-			<Version>1.24.0</Version>
+			<Version>1.25.0</Version>
 		</PackageReference>
 		<PackageReference Include="Uno.Core.Build">
-			<Version>1.24.0</Version>
+			<Version>1.25.0</Version>
 		</PackageReference>
 	</ItemGroup>
 
-	<ItemGroup Condition=" '$(TargetFramework)' == 'MonoAndroid71'">
-		<PackageReference Include="Xamarin.Android.Support.v4">
-			<Version>25.3.1</Version>
+	 <ItemGroup Condition=" '$(TargetFramework)' == 'MonoAndroid71'">
+		<PackageReference Include="Xamarin.Android.Support.v4" Version="25.3.1">
 			<PrivateAssets>none</PrivateAssets>
 		</PackageReference>
-		<PackageReference Include="Xamarin.Android.Support.v7.AppCompat">
-			<Version>25.3.1</Version>
+		<PackageReference Include="Xamarin.Android.Support.v7.AppCompat" Version="25.3.1">
 			<PrivateAssets>none</PrivateAssets>
 		</PackageReference>
-		<PackageReference Include="Xamarin.Android.Support.v7.RecyclerView">
-			<Version>25.3.1</Version>
+		<PackageReference Include="Xamarin.Android.Support.v7.RecyclerView" Version="25.3.1">
 			<PrivateAssets>none</PrivateAssets>
 		</PackageReference>
 	</ItemGroup>
 
 	<ItemGroup Condition=" '$(TargetFramework)' == 'MonoAndroid80'">
-		<PackageReference Include="Xamarin.Android.Support.v4">
-			<Version>26.1.0.1</Version>
+		<PackageReference Include="Xamarin.Android.Support.v4" Version="26.1.0.1">
 			<PrivateAssets>none</PrivateAssets>
 		</PackageReference>
-		<PackageReference Include="Xamarin.Android.Support.v7.AppCompat">
-			<Version>26.1.0.1</Version>
+		<PackageReference Include="Xamarin.Android.Support.v7.AppCompat" Version="26.1.0.1">
 			<PrivateAssets>none</PrivateAssets>
 		</PackageReference>
-		<PackageReference Include="Xamarin.Android.Support.v7.RecyclerView">
-			<Version>26.1.0.1</Version>
+		<PackageReference Include="Xamarin.Android.Support.v7.RecyclerView" Version="26.1.0.1">
 			<PrivateAssets>none</PrivateAssets>
 		</PackageReference>
-	</ItemGroup>
+	</ItemGroup> 
 
 	<ItemGroup>
 		<PackageReference Include="xamarin.build.download" Version="0.4.9" />
@@ -187,12 +193,12 @@
 			<TreatAsPackageReference>false</TreatAsPackageReference>
 		</ProjectReference>
 		<ProjectReference Include="..\SourceGenerators\System.Xaml\Uno.Xaml.csproj" />
-		<ProjectReference Include="..\Uno.UI.BindingHelper.Android\Uno.UI.BindingHelper.Android.csproj" Condition="'$(TargetFrameworkIdentifier)'=='MonoAndroid'">
+		 <ProjectReference Include="..\Uno.UI.BindingHelper.Android\Uno.UI.BindingHelper.Android.csproj" Condition="'$(TargetFrameworkIdentifier)'=='MonoAndroid'">
 			<TreatAsPackageReference>false</TreatAsPackageReference>
-		</ProjectReference>
+		</ProjectReference> 
 	</ItemGroup>
 
-	<ItemGroup Condition="'$(TargetFrameworkIdentifier)'=='MonoAndroid' or '$(TargetFrameworkIdentifier)'=='Xamarin.iOS'">
+	<ItemGroup Condition="'$(TargetFrameworkIdentifier)'=='MonoAndroid' or '$(TargetFrameworkIdentifier)'=='Xamarin.iOS' or '$(TargetFramework)'=='xamarinmac20'">
 		<Reference Include="System.Numerics" />
 		<Reference Include="System.Numerics.Vectors" />
 		<Reference Include="System.json" />
@@ -208,9 +214,12 @@
 		<MixinInput Include=".\UI\Xaml\IFrameworkElementImplementation.Android.tt" />
 		<MixinInput Include=".\Mixins\iOS\FrameworkElementMixins.tt" />
 		<MixinInput Include=".\Mixins\iOS\VisualStatesMixins.tt" />
+		<MixinInput Include=".\Mixins\macOS\FrameworkElementMixins.tt" />
+		<MixinInput Include=".\Mixins\macOS\VisualStatesMixins.tt" />
 		<MixinInput Include=".\Mixins\Wasm\VisualStatesMixins.tt" />
 		<MixinInput Include=".\Mixins\net46\VisualStatesMixins.tt" />
 		<MixinInput Include=".\UI\Xaml\IFrameworkElementImplementation.iOS.tt" />
+		<MixinInput Include=".\UI\Xaml\IFrameworkElementImplementation.macOS.tt" />
 
 		<MixinOutput Include=".\Mixins\Android\BaseActivity.Callbacks.g.cs" />
 		<MixinOutput Include=".\Mixins\Android\FrameworkElementMixins.g.cs" />
@@ -218,6 +227,8 @@
 		<MixinOutput Include=".\Mixins\DependencyPropertyMixins.g.cs" />
 		<MixinOutput Include=".\Mixins\iOS\FrameworkElementMixins.g.cs" />
 		<MixinOutput Include=".\Mixins\iOS\VisualStatesMixins.g.cs" />
+		<MixinOutput Include=".\Mixins\macOS\FrameworkElementMixins.g.cs" />
+		<MixinOutput Include=".\Mixins\macOS\VisualStatesMixins.g.cs" />
 		<MixinOutput Include=".\Mixins\Wasm\VisualStatesMixins.g.cs" />
 		<MixinOutput Include=".\Mixins\net46\VisualStatesMixins.g.cs" />
 	</ItemGroup>
@@ -248,6 +259,12 @@
 				<Properties>InputFile=.\Mixins\iOS\VisualStatesMixins.tt;OutputPath=.\Mixins\iOS;Configuration=$(Configuration);Platform=$(Platform)</Properties>
 			</MixinDefinition>
 			<MixinDefinition Include="$(MSBuildThisFileFullPath)">
+				<Properties>InputFile=.\Mixins\macOS\FrameworkElementMixins.tt;OutputPath=.\Mixins\macOS;Configuration=$(Configuration);Platform=$(Platform)</Properties>
+			</MixinDefinition>
+			<MixinDefinition Include="$(MSBuildThisFileFullPath)">
+				<Properties>InputFile=.\Mixins\macOS\VisualStatesMixins.tt;OutputPath=.\Mixins\macOS;Configuration=$(Configuration);Platform=$(Platform)</Properties>
+			</MixinDefinition>
+			<MixinDefinition Include="$(MSBuildThisFileFullPath)">
 				<Properties>InputFile=.\Mixins\Wasm\VisualStatesMixins.tt;OutputPath=.\Mixins\Wasm;Configuration=$(Configuration);Platform=$(Platform)</Properties>
 			</MixinDefinition>
 			<MixinDefinition Include="$(MSBuildThisFileFullPath)">
@@ -273,23 +290,42 @@
 		<Reference Remove="PresentationFramework" />
 		<Reference Remove="PresentationCore" />
 		<Reference Remove="WindowsBase" />
-		<Reference Remove="System.Xaml" />
+		<Reference Remove="System.Xaml" /> 
 	</ItemGroup>
 
-	<PropertyGroup>
-		<UnoUIGeneratorsBinPath>..\SourceGenerators\Uno.UI.SourceGenerators\bin\$(Configuration)</UnoUIGeneratorsBinPath>
-	</PropertyGroup>
+	<PropertyGroup> 
+		<UnoUIGeneratorsBinPath>..\SourceGenerators\Uno.UI.SourceGenerators\bin\$(Configuration)</UnoUIGeneratorsBinPath> 
+		<UnoUIMSBuildTasksPath>$(MSBuildThisFileDirectory)..\SourceGenerators\Uno.UI.Tasks\bin\$(Configuration)_Shadow</UnoUIMSBuildTasksPath>
+	</PropertyGroup> 
 
 	<Import Project="..\SourceGenerators\Uno.UI.SourceGenerators\Content\Uno.UI.SourceGenerators.props" />
+	<Import Project="..\SourceGenerators\Uno.UI.Tasks\Content\Uno.UI.Tasks.targets" Condition="'$(SkipUnoResourceGeneration)' == '' " />
 
 	<ItemGroup>
 		<Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
 	</ItemGroup>
 
 	<ItemGroup>
+		<None Update="Mixins\macOS\FrameworkElementMixins.tt">
+		  <Generator>TextTemplatingFileGenerator</Generator>
+		  <LastGenOutput>FrameworkElementMixins.g.cs</LastGenOutput>
+		</None>
+		<None Update="Mixins\macOS\VisualStatesMixins.tt">
+		  <Generator>TextTemplatingFileGenerator</Generator>
+		  <LastGenOutput>VisualStatesMixins.g.cs</LastGenOutput>
+		</None>
 		<None Update="Mixins\Wasm\VisualStatesMixins.tt">
 			<Generator>TextTemplatingFileGenerator</Generator>
 			<LastGenOutput>VisualStatesMixins.g.cs</LastGenOutput>
+		</None>
+		<None Update="UI\Xaml\IFrameworkElementImplementation.macOS.cs">
+		  <DesignTime>True</DesignTime>
+		  <AutoGen>True</AutoGen>
+		  <DependentUpon>IFrameworkElementImplementation.macOS.tt</DependentUpon>
+		</None>
+		<None Update="UI\Xaml\IFrameworkElementImplementation.macOS.tt">
+		  <Generator>TextTemplatingFileGenerator</Generator>
+		  <LastGenOutput>IFrameworkElementImplementation.macOS.cs</LastGenOutput>
 		</None>
 	</ItemGroup>
 
@@ -298,10 +334,19 @@
 		<Folder Include="UI\Xaml\Maps\Presenters\" />
 	</ItemGroup>
 
+	<ItemGroup>
+		<PRIResource Include="Resources\Strings\**\*.resw" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <None Remove="Extensions\UIImageExtensions.iOS.cs" />
+	</ItemGroup>
+
 	<Target Name="BuildManualDependencies" BeforeTargets="_UnoSourceGenerator" Condition="!Exists($(T4Bin))">
 		<Message Text="Building Generators" Importance="high" />
 		<!-- This is required because the non-reference dependencies are not properly handled -->
 		<MSBuild Properties="Configuration=$(Configuration);Platform=AnyCPU" Targets="Build" Projects="..\SourceGenerators\Uno.UI.SourceGenerators\Uno.UI.SourceGenerators.csproj" RebaseOutputs="false" />
+		<MSBuild Properties="Configuration=$(Configuration);Platform=AnyCPU" Targets="Build" Projects="..\SourceGenerators\Uno.UI.Tasks\Uno.UI.Tasks.csproj" RebaseOutputs="false" />
 		<MSBuild Properties="Configuration=$(Configuration);Platform=AnyCPU" Targets="Build" Projects="..\T4Generator\T4Generator.csproj" RebaseOutputs="false" />
 	</Target>
 

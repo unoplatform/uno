@@ -288,11 +288,18 @@ namespace Windows.UI.Xaml.Controls
 			SetNeedsUpdateVisualStates();
 		}
 
+		protected internal override void OnTemplatedParentChanged(DependencyPropertyChangedEventArgs e)
+		{
+			base.OnTemplatedParentChanged(e);
+
+			// This is required to ensure that FrameworkElement.FindName can dig through the tree after
+			// the control has been created.
+			SynchronizeContentTemplatedParent();
+		}
+
 		protected override void OnLoaded()
 		{
 			base.OnLoaded();
-
-
 
 			_subscriptions = new CompositeDisposable();
 

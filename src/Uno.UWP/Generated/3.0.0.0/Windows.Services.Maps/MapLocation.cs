@@ -2,51 +2,15 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Services.Maps
 {
-	#if false || false || false || false
+	#if false || false || false || false || false
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class MapLocation 
 	{
-		#if false || false || false || false
-		[global::Uno.NotImplemented]
-		public  global::Windows.Services.Maps.MapAddress Address
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member MapAddress MapLocation.Address is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if false || false || false || false
-		[global::Uno.NotImplemented]
-		public  string Description
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string MapLocation.Description is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if false || false || false || false
-		[global::Uno.NotImplemented]
-		public  string DisplayName
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string MapLocation.DisplayName is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if false || false || false || false
-		[global::Uno.NotImplemented]
-		public  global::Windows.Devices.Geolocation.Geopoint Point
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member Geopoint MapLocation.Point is not implemented in Uno.");
-			}
-		}
-		#endif
+		// Skipping already declared property Address
+		// Skipping already declared property Description
+		// Skipping already declared property DisplayName
+		// Skipping already declared property Point
 		// Forced skipping of method Windows.Services.Maps.MapLocation.Point.get
 		// Forced skipping of method Windows.Services.Maps.MapLocation.DisplayName.get
 		// Forced skipping of method Windows.Services.Maps.MapLocation.Description.get

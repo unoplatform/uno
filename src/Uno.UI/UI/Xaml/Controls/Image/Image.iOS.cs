@@ -17,6 +17,7 @@ using Windows.Foundation;
 using Uno.Logging;
 using Windows.UI.Xaml.Media.Imaging;
 using Windows.Storage.Streams;
+using Uno.UI.Extensions;
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -189,6 +190,11 @@ namespace Windows.UI.Xaml.Controls
 				)
 			)
 			{
+				if (MonochromeColor != null)
+				{
+					image = image.AsMonochrome(MonochromeColor.Value);
+				}
+
 				Image = image;
 
 				SourceImageSize = image?.Size.ToFoundationSize() ?? default(Size);

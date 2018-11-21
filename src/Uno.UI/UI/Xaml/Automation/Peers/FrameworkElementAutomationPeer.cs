@@ -9,6 +9,9 @@ using View = Android.Views.ViewGroup;
 #elif __IOS__
 using View  = UIKit.UIView;
 using UIKit;
+#elif __MACOS__
+using View = AppKit.NSView;
+using AppKit;
 #else
 using View  = Windows.UI.Xaml.UIElement;
 #endif

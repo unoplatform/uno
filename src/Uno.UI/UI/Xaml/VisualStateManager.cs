@@ -158,7 +158,7 @@ namespace Windows.UI.Xaml
 			{
 				foreach(var state in group.States)
 				{
-					if(state.Name.Equals(stateName))
+					if(state.Name?.Equals(stateName) ?? false)
 					{
 						return (group, state);
 					}

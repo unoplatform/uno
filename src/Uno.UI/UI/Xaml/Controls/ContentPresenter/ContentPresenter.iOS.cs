@@ -74,5 +74,10 @@ namespace Windows.UI.Xaml.Controls
 				);
 			}
 		}
+
+		partial void OnPaddingChangedPartial(Thickness oldValue, Thickness newValue)
+		{
+			UpdateBorder();
+		}
 	}
 }

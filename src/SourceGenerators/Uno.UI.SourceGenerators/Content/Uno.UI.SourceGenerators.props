@@ -10,6 +10,7 @@
 
 		<XamarinProjectType Condition="'$(ProjectTypeGuids)'=='{FEACFBD2-3405-455C-9665-78FE426C6842};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}' or '$(TargetFrameworkIdentifier)'=='Xamarin.iOS'">ios</XamarinProjectType>
 		<XamarinProjectType Condition="'$(ProjectTypeGuids)'=='{EFBA0AD7-5A72-4C68-AF49-83D382785DCF};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}' or '$(TargetFrameworkIdentifier)'=='MonoAndroid'">android</XamarinProjectType>
+		<XamarinProjectType Condition="'$(ProjectTypeGuids)'=='{A3F8F2AB-B479-4A4A-A458-A89E7DC349F1};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}' or '$(TargetFramework)'=='xamarinmac20'">macos</XamarinProjectType>
 		<XamarinProjectType Condition="'$(TargetFramework)'=='netstandard2.0'">wasm</XamarinProjectType>
 	</PropertyGroup>
 
@@ -20,10 +21,15 @@
 		<ExcludeXamlNamespaces Include="win"/>
 		<!-- iOS -->
 		<ExcludeXamlNamespaces Condition="'$(XamarinProjectType)'=='ios'" Include="android" />
+		<ExcludeXamlNamespaces Condition="'$(XamarinProjectType)'=='ios'" Include="not_macos" />
 		<ExcludeXamlNamespaces Condition="'$(XamarinProjectType)'=='ios'" Include="not_ios" />
+		<!-- macOS -->
+		<ExcludeXamlNamespaces Condition="'$(XamarinProjectType)'=='macos'" Include="macos" />
+		<ExcludeXamlNamespaces Condition="'$(XamarinProjectType)'=='macos'" Include="not_ios" />
 		<!-- Android -->
 		<ExcludeXamlNamespaces Condition="'$(XamarinProjectType)'=='android'" Include="ios" />
 		<ExcludeXamlNamespaces Condition="'$(XamarinProjectType)'=='android'" Include="not_android" />
+		<ExcludeXamlNamespaces Condition="'$(XamarinProjectType)'=='android'" Include="not_macos" />
 
 		<!-- 
 			Those namespaces are to be *included* from the code generation,
@@ -36,14 +42,22 @@
 		<IncludeXamlNamespaces Condition="'$(XamarinProjectType)'=='ios'" Include="ios" />
 		<IncludeXamlNamespaces Condition="'$(XamarinProjectType)'=='ios'" Include="not_android" />
 		<IncludeXamlNamespaces Condition="'$(XamarinProjectType)'=='ios'" Include="not_wasm" />
+		<IncludeXamlNamespaces Condition="'$(XamarinProjectType)'=='ios'" Include="not_macos" />
+		<!-- macOS -->
+		<IncludeXamlNamespaces Condition="'$(XamarinProjectType)'=='macos'" Include="macos" />
+		<IncludeXamlNamespaces Condition="'$(XamarinProjectType)'=='macos'" Include="not_android" />
+		<IncludeXamlNamespaces Condition="'$(XamarinProjectType)'=='macos'" Include="not_wasm" />
+		<IncludeXamlNamespaces Condition="'$(XamarinProjectType)'=='macos'" Include="not_ios" />
 		<!-- Android -->
 		<IncludeXamlNamespaces Condition="'$(XamarinProjectType)'=='android'" Include="android" />
 		<IncludeXamlNamespaces Condition="'$(XamarinProjectType)'=='android'" Include="not_ios" />
 		<IncludeXamlNamespaces Condition="'$(XamarinProjectType)'=='android'" Include="not_wasm" />
+		<IncludeXamlNamespaces Condition="'$(XamarinProjectType)'=='android'" Include="not_macos" />
 		<!-- WASM -->
 		<IncludeXamlNamespaces Condition="'$(XamarinProjectType)'=='wasm'" Include="wasm" />
 		<IncludeXamlNamespaces Condition="'$(XamarinProjectType)'=='wasm'" Include="not_ios" />
 		<IncludeXamlNamespaces Condition="'$(XamarinProjectType)'=='wasm'" Include="not_android" />
+		<IncludeXamlNamespaces Condition="'$(XamarinProjectType)'=='wasm'" Include="not_macos" />
 
 		<!--
 				A list of analyzer suppressions to include in every generated class.

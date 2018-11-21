@@ -1,4 +1,4 @@
-﻿#if !NET46 && !NETSTANDARD2_0
+﻿#if !NET46 && !NETSTANDARD2_0 && !__MACOS__
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -340,6 +340,16 @@ namespace Windows.UI.Xaml.Controls
 				SetSelectedState(IndexFromItem(item), false);
 			}
 			SelectedItems.Clear();
+
+			foreach (var item in GetItemsPanelChildren().OfType<SelectorItem>())
+			{
+				ApplyMultiSelectState(item);
+			}
+
+			foreach (var item in (NativePanel?.CachedItemViews).Safe())
+			{
+				ApplyMultiSelectState(item);
+			}
 		}
 
 		protected override _View ResolveInternalItemsPanel(_View itemsPanel)
@@ -591,6 +601,32 @@ namespace Windows.UI.Xaml.Controls
 			if (groupContainer != null)
 			{
 				groupContainer.DataContext = group.Group;
+			}
+		}
+
+		protected override void PrepareContainerForItemOverride(DependencyObject element, object item)
+		{
+			base.PrepareContainerForItemOverride(element, item);
+
+			if (element is SelectorItem selectorItem)
+			{
+				ApplyMultiSelectState(selectorItem);
+			}
+		}
+
+		/// <summary>
+		/// Set appropriate visual state from MultiSelectStates group. (https://msdn.microsoft.com/en-us/library/windows/apps/mt299136.aspx?f=255&MSPPError=-2147217396)
+		/// </summary>
+		/// <param name="selectorItem"></param>
+		internal void ApplyMultiSelectState(SelectorItem selectorItem)
+		{
+			if (IsSelectionMultiple)
+			{
+				VisualStateManager.GoToState(selectorItem, "MultiSelectEnabled", useTransitions: true);
+			}
+			else
+			{
+				VisualStateManager.GoToState(selectorItem, "MultiSelectDisabled", useTransitions: true);
 			}
 		}
 

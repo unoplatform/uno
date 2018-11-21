@@ -29,6 +29,7 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 			private readonly INamedTypeSymbol _dependencyObjectSymbol;
 			private readonly INamedTypeSymbol _unoViewgroupSymbol;
 			private readonly INamedTypeSymbol _iosViewSymbol;
+			private readonly INamedTypeSymbol _macosViewSymbol;
 			private readonly INamedTypeSymbol _androidViewSymbol;
 			private readonly INamedTypeSymbol _javaObjectSymbol;
 			private readonly INamedTypeSymbol _androidActivitySymbol;
@@ -45,6 +46,7 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 				_dependencyObjectSymbol = context.Compilation.GetTypeByMetadataName(XamlConstants.Types.DependencyObject);
 				_unoViewgroupSymbol = context.Compilation.GetTypeByMetadataName("Uno.UI.UnoViewGroup");
 				_iosViewSymbol = context.Compilation.GetTypeByMetadataName("UIKit.UIView");
+				_macosViewSymbol = context.Compilation.GetTypeByMetadataName("AppKit.NSView");
 				_androidViewSymbol = context.Compilation.GetTypeByMetadataName("Android.Views.View");
 				_javaObjectSymbol = context.Compilation.GetTypeByMetadataName("Java.Lang.Object");
 				_androidActivitySymbol = context.Compilation.GetTypeByMetadataName("Android.App.Activity");
@@ -155,8 +157,10 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 				WriteAndroidAttachedToWindow(typeSymbol, builder);
 
 				WriteAttachToWindow(typeSymbol, builder);
+				WriteViewDidMoveToWindow(typeSymbol, builder);
 
 				WriteiOSMoveToSuperView(typeSymbol, builder);
+				WriteMacOSViewWillMoveToSuperview(typeSymbol, builder);
 
 				WriteDispose(typeSymbol, builder);
 
@@ -212,6 +216,45 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 				else
 				{
 					builder.AppendLine($"// Skipped _iosViewSymbol: {typeSymbol.Is(_iosViewSymbol)}, hasNoWillMoveToSuperviewMethod: {hasNoWillMoveToSuperviewMethod}");
+				}
+			}
+
+			private void WriteMacOSViewWillMoveToSuperview(INamedTypeSymbol typeSymbol, IndentedStringBuilder builder)
+			{
+				var isiosView = typeSymbol.Is(_macosViewSymbol);
+				var hasNoWillMoveToSuperviewMethod = typeSymbol
+					.GetMethods()
+					.Where(m => IsNotDependencyObjectGeneratorSourceFile(m))
+					.None(m => m.Name == "ViewWillMoveToSuperview");
+
+				var overridesWillMoveToSuperview = isiosView && hasNoWillMoveToSuperviewMethod;
+
+				if (overridesWillMoveToSuperview)
+				{
+					builder.AppendFormatInvariant(@"
+						public override void ViewWillMoveToSuperview(AppKit.NSView newsuper)
+						{{
+							base.ViewWillMoveToSuperview(newsuper);
+
+							WillMoveToSuperviewPartial(newsuper);
+
+							SyncBinder(newsuper, Window);
+						}}
+
+						partial void WillMoveToSuperviewPartial(AppKit.NSView newsuper);
+		
+						private void SyncBinder(AppKit.NSView superview, AppKit.NSWindow window)
+						{{
+							if(superview == null && window == null)
+							{{
+								TemplatedParent = null;
+							}}
+						}}
+					");
+				}
+				else
+				{
+					builder.AppendLine($"// Skipped _macosViewSymbol: {typeSymbol.Is(_macosViewSymbol)}, hasNoViewWillMoveToSuperviewMethod: {hasNoWillMoveToSuperviewMethod}");
 				}
 			}
 
@@ -331,7 +374,7 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 
 #if __ANDROID__
 						if(this.IsLoaded())
-#elif __IOS__
+#elif __IOS__ || __MACOS__
 						if(Window != null)
 #else
 #error Unsupported platform
@@ -362,6 +405,53 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 						public override void MovedToWindow()
 						{{
 							base.MovedToWindow();
+
+							if(Window != null)
+							{{
+								_loadActions.ForEach(a => a.Item1());
+								OnAttachedToWindowPartial();
+							}}
+							else
+							{{
+								_loadActions.ForEach(a => a.Item2());
+								OnDetachedFromWindowPartial();
+							}}
+						}}
+
+						/// <summary>
+						/// A method called when the control is attached to the Window (equivalent of Loaded)
+						/// </summary>
+						partial void OnAttachedToWindowPartial();
+
+						/// <summary>
+						/// A method called when the control is attached to the Window (equivalent of Unloaded)
+						/// </summary>
+						partial void OnDetachedFromWindowPartial();
+					");
+				}
+				else
+				{
+					builder.AppendLine($@"// hasOverridesAttachedToWindowiOS=false");
+				}
+			}
+
+			private void WriteViewDidMoveToWindow(INamedTypeSymbol typeSymbol, IndentedStringBuilder builder)
+			{
+				var hasOverridesAttachedToWindowiOS = typeSymbol.Is(_macosViewSymbol) &&
+									typeSymbol
+									.GetMethods()
+									.Where(m => m.Name == "ViewDidMoveToWindow")
+									.Where(m => IsNotDependencyObjectGeneratorSourceFile(m))
+									.None();
+
+				if (hasOverridesAttachedToWindowiOS)
+				{
+					WriteRegisterLoadActions(typeSymbol, builder);
+
+					builder.AppendLine($@"
+						public override void ViewDidMoveToWindow()
+						{{
+							base.ViewDidMoveToWindow();
 
 							if(Window != null)
 							{{

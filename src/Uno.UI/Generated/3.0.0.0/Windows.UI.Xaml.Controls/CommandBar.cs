@@ -2,152 +2,25 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml.Controls
 {
-	#if false || false || false || false
+	#if false || false || false || false || false
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class CommandBar 
 	{
-		#if false || false || false || false
-		[global::Uno.NotImplemented]
-		public  global::Windows.Foundation.Collections.IObservableVector<global::Windows.UI.Xaml.Controls.ICommandBarElement> PrimaryCommands
-		{
-			get
-			{
-				return (global::Windows.Foundation.Collections.IObservableVector<global::Windows.UI.Xaml.Controls.ICommandBarElement>)this.GetValue(PrimaryCommandsProperty);
-			}
-		}
-		#endif
-		#if false || false || false || false
-		[global::Uno.NotImplemented]
-		public  global::Windows.Foundation.Collections.IObservableVector<global::Windows.UI.Xaml.Controls.ICommandBarElement> SecondaryCommands
-		{
-			get
-			{
-				return (global::Windows.Foundation.Collections.IObservableVector<global::Windows.UI.Xaml.Controls.ICommandBarElement>)this.GetValue(SecondaryCommandsProperty);
-			}
-		}
-		#endif
-		#if false || false || false || false
-		[global::Uno.NotImplemented]
-		public  global::Windows.UI.Xaml.Style CommandBarOverflowPresenterStyle
-		{
-			get
-			{
-				return (global::Windows.UI.Xaml.Style)this.GetValue(CommandBarOverflowPresenterStyleProperty);
-			}
-			set
-			{
-				this.SetValue(CommandBarOverflowPresenterStyleProperty, value);
-			}
-		}
-		#endif
-		#if false || false || false || false
-		[global::Uno.NotImplemented]
-		public  global::Windows.UI.Xaml.Controls.Primitives.CommandBarTemplateSettings CommandBarTemplateSettings
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member CommandBarTemplateSettings CommandBar.CommandBarTemplateSettings is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if false || false || false || false
-		[global::Uno.NotImplemented]
-		public  global::Windows.UI.Xaml.Controls.CommandBarOverflowButtonVisibility OverflowButtonVisibility
-		{
-			get
-			{
-				return (global::Windows.UI.Xaml.Controls.CommandBarOverflowButtonVisibility)this.GetValue(OverflowButtonVisibilityProperty);
-			}
-			set
-			{
-				this.SetValue(OverflowButtonVisibilityProperty, value);
-			}
-		}
-		#endif
-		#if false || false || false || false
-		[global::Uno.NotImplemented]
-		public  bool IsDynamicOverflowEnabled
-		{
-			get
-			{
-				return (bool)this.GetValue(IsDynamicOverflowEnabledProperty);
-			}
-			set
-			{
-				this.SetValue(IsDynamicOverflowEnabledProperty, value);
-			}
-		}
-		#endif
-		#if false || false || false || false
-		[global::Uno.NotImplemented]
-		public  global::Windows.UI.Xaml.Controls.CommandBarDefaultLabelPosition DefaultLabelPosition
-		{
-			get
-			{
-				return (global::Windows.UI.Xaml.Controls.CommandBarDefaultLabelPosition)this.GetValue(DefaultLabelPositionProperty);
-			}
-			set
-			{
-				this.SetValue(DefaultLabelPositionProperty, value);
-			}
-		}
-		#endif
-		#if false || false || false || false
-		[global::Uno.NotImplemented]
-		public static global::Windows.UI.Xaml.DependencyProperty PrimaryCommandsProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			"PrimaryCommands", typeof(global::Windows.Foundation.Collections.IObservableVector<global::Windows.UI.Xaml.Controls.ICommandBarElement>), 
-			typeof(global::Windows.UI.Xaml.Controls.CommandBar), 
-			new FrameworkPropertyMetadata(default(global::Windows.Foundation.Collections.IObservableVector<global::Windows.UI.Xaml.Controls.ICommandBarElement>)));
-		#endif
-		#if false || false || false || false
-		[global::Uno.NotImplemented]
-		public static global::Windows.UI.Xaml.DependencyProperty SecondaryCommandsProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			"SecondaryCommands", typeof(global::Windows.Foundation.Collections.IObservableVector<global::Windows.UI.Xaml.Controls.ICommandBarElement>), 
-			typeof(global::Windows.UI.Xaml.Controls.CommandBar), 
-			new FrameworkPropertyMetadata(default(global::Windows.Foundation.Collections.IObservableVector<global::Windows.UI.Xaml.Controls.ICommandBarElement>)));
-		#endif
-		#if false || false || false || false
-		[global::Uno.NotImplemented]
-		public static global::Windows.UI.Xaml.DependencyProperty CommandBarOverflowPresenterStyleProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			"CommandBarOverflowPresenterStyle", typeof(global::Windows.UI.Xaml.Style), 
-			typeof(global::Windows.UI.Xaml.Controls.CommandBar), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Style)));
-		#endif
-		#if false || false || false || false
-		[global::Uno.NotImplemented]
-		public static global::Windows.UI.Xaml.DependencyProperty DefaultLabelPositionProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			"DefaultLabelPosition", typeof(global::Windows.UI.Xaml.Controls.CommandBarDefaultLabelPosition), 
-			typeof(global::Windows.UI.Xaml.Controls.CommandBar), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Controls.CommandBarDefaultLabelPosition)));
-		#endif
-		#if false || false || false || false
-		[global::Uno.NotImplemented]
-		public static global::Windows.UI.Xaml.DependencyProperty IsDynamicOverflowEnabledProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			"IsDynamicOverflowEnabled", typeof(bool), 
-			typeof(global::Windows.UI.Xaml.Controls.CommandBar), 
-			new FrameworkPropertyMetadata(default(bool)));
-		#endif
-		#if false || false || false || false
-		[global::Uno.NotImplemented]
-		public static global::Windows.UI.Xaml.DependencyProperty OverflowButtonVisibilityProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			"OverflowButtonVisibility", typeof(global::Windows.UI.Xaml.Controls.CommandBarOverflowButtonVisibility), 
-			typeof(global::Windows.UI.Xaml.Controls.CommandBar), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Controls.CommandBarOverflowButtonVisibility)));
-		#endif
-		#if false || false || false || false
-		[global::Uno.NotImplemented]
-		public CommandBar() : base()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.CommandBar", "CommandBar.CommandBar()");
-		}
-		#endif
+		// Skipping already declared property PrimaryCommands
+		// Skipping already declared property SecondaryCommands
+		// Skipping already declared property CommandBarOverflowPresenterStyle
+		// Skipping already declared property CommandBarTemplateSettings
+		// Skipping already declared property OverflowButtonVisibility
+		// Skipping already declared property IsDynamicOverflowEnabled
+		// Skipping already declared property DefaultLabelPosition
+		// Skipping already declared property PrimaryCommandsProperty
+		// Skipping already declared property SecondaryCommandsProperty
+		// Skipping already declared property CommandBarOverflowPresenterStyleProperty
+		// Skipping already declared property DefaultLabelPositionProperty
+		// Skipping already declared property IsDynamicOverflowEnabledProperty
+		// Skipping already declared property OverflowButtonVisibilityProperty
+		// Skipping already declared method Windows.UI.Xaml.Controls.CommandBar.CommandBar()
 		// Forced skipping of method Windows.UI.Xaml.Controls.CommandBar.CommandBar()
 		// Forced skipping of method Windows.UI.Xaml.Controls.CommandBar.PrimaryCommands.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.CommandBar.SecondaryCommands.get
@@ -168,21 +41,6 @@ namespace Windows.UI.Xaml.Controls
 		// Forced skipping of method Windows.UI.Xaml.Controls.CommandBar.CommandBarOverflowPresenterStyleProperty.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.CommandBar.PrimaryCommandsProperty.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.CommandBar.SecondaryCommandsProperty.get
-		#if false || false || false || false
-		[global::Uno.NotImplemented]
-		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Xaml.Controls.CommandBar, global::Windows.UI.Xaml.Controls.DynamicOverflowItemsChangingEventArgs> DynamicOverflowItemsChanging
-		{
-			[global::Uno.NotImplemented]
-			add
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.CommandBar", "event TypedEventHandler<CommandBar, DynamicOverflowItemsChangingEventArgs> CommandBar.DynamicOverflowItemsChanging");
-			}
-			[global::Uno.NotImplemented]
-			remove
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.CommandBar", "event TypedEventHandler<CommandBar, DynamicOverflowItemsChangingEventArgs> CommandBar.DynamicOverflowItemsChanging");
-			}
-		}
-		#endif
+		// Skipping already declared event Windows.UI.Xaml.Controls.CommandBar.DynamicOverflowItemsChanging
 	}
 }

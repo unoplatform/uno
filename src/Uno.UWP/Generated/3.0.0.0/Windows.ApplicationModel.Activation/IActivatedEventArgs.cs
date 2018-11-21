@@ -2,29 +2,14 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.ApplicationModel.Activation
 {
-	#if false || false || false || false
+	#if false || false || false || false || false
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial interface IActivatedEventArgs 
 	{
-		#if false || false || false || false
-		global::Windows.ApplicationModel.Activation.ActivationKind Kind
-		{
-			get;
-		}
-		#endif
-		#if false || false || false || false
-		global::Windows.ApplicationModel.Activation.ApplicationExecutionState PreviousExecutionState
-		{
-			get;
-		}
-		#endif
-		#if false || false || false || false
-		global::Windows.ApplicationModel.Activation.SplashScreen SplashScreen
-		{
-			get;
-		}
-		#endif
+		// Skipping already declared property Kind
+		// Skipping already declared property PreviousExecutionState
+		// Skipping already declared property SplashScreen
 		// Forced skipping of method Windows.ApplicationModel.Activation.IActivatedEventArgs.Kind.get
 		// Forced skipping of method Windows.ApplicationModel.Activation.IActivatedEventArgs.PreviousExecutionState.get
 		// Forced skipping of method Windows.ApplicationModel.Activation.IActivatedEventArgs.SplashScreen.get

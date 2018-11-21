@@ -18,6 +18,7 @@ namespace Windows.Media.Playback
 		private AVPlayerLayer _videoLayer;
 		private NSObject _periodicTimeObserverObject;
 		private NSObject _itemFailedToPlayToEndTimeNotification;
+		private NSObject _playbackStalledNotification;
 		private NSObject _didPlayToEndTimeNotification;
 
 		public static NSString RateObservationContext = new NSString("AVCustomEditPlayerViewControllerRateObservationContext");
@@ -51,6 +52,7 @@ namespace Windows.Media.Playback
 				finally
 				{
 					_itemFailedToPlayToEndTimeNotification?.Dispose();
+					_playbackStalledNotification?.Dispose();
 					_didPlayToEndTimeNotification?.Dispose();
 
 					_videoLayer?.Dispose();
@@ -84,6 +86,7 @@ namespace Windows.Media.Playback
 			_player.AddObserver(this, new NSString("rate"), NSKeyValueObservingOptions.New | NSKeyValueObservingOptions.Initial, RateObservationContext.Handle);
 
 			_itemFailedToPlayToEndTimeNotification = AVPlayerItem.Notifications.ObserveItemFailedToPlayToEndTime((sender, args) => OnMediaFailed(new Exception(args.Error.LocalizedDescription)));
+			_playbackStalledNotification = AVPlayerItem.Notifications.ObservePlaybackStalled((sender, args) => OnMediaFailed());
 			_didPlayToEndTimeNotification = AVPlayerItem.Notifications.ObserveDidPlayToEndTime((sender, args) => OnMediaEnded());
 
 			_periodicTimeObserverObject = _player.AddPeriodicTimeObserver(new CMTime(1, 4), DispatchQueue.MainQueue, delegate

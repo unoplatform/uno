@@ -2,27 +2,17 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Graphics.Display
 {
-	#if false || false || false || false
-	#if false || false || false || false
+	#if false || false || false || false || false
+	#if false || false || false || false || false
 	[global::Uno.NotImplemented]
 	#endif
 	public   enum DisplayOrientations 
 	{
-		#if false || false || false || false
-		None,
-		#endif
-		#if false || false || false || false
-		Landscape,
-		#endif
-		#if false || false || false || false
-		Portrait,
-		#endif
-		#if false || false || false || false
-		LandscapeFlipped,
-		#endif
-		#if false || false || false || false
-		PortraitFlipped,
-		#endif
+		// Skipping already declared field Windows.Graphics.Display.DisplayOrientations.None
+		// Skipping already declared field Windows.Graphics.Display.DisplayOrientations.Landscape
+		// Skipping already declared field Windows.Graphics.Display.DisplayOrientations.Portrait
+		// Skipping already declared field Windows.Graphics.Display.DisplayOrientations.LandscapeFlipped
+		// Skipping already declared field Windows.Graphics.Display.DisplayOrientations.PortraitFlipped
 	}
 	#endif
 }

@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml.Media.Animation
 {
-	#if false || false || false || false
+	#if false || false || false || false || false
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class RepositionThemeTransition : global::Windows.UI.Xaml.Media.Animation.Transition
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  bool IsStaggeringEnabled
 		{
@@ -21,7 +21,7 @@ namespace Windows.UI.Xaml.Media.Animation
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty IsStaggeringEnabledProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
@@ -29,13 +29,7 @@ namespace Windows.UI.Xaml.Media.Animation
 			typeof(global::Windows.UI.Xaml.Media.Animation.RepositionThemeTransition), 
 			new FrameworkPropertyMetadata(default(bool)));
 		#endif
-		#if false || false || false || false
-		[global::Uno.NotImplemented]
-		public RepositionThemeTransition() 
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Media.Animation.RepositionThemeTransition", "RepositionThemeTransition.RepositionThemeTransition()");
-		}
-		#endif
+		// Skipping already declared method Windows.UI.Xaml.Media.Animation.RepositionThemeTransition.RepositionThemeTransition()
 		// Forced skipping of method Windows.UI.Xaml.Media.Animation.RepositionThemeTransition.RepositionThemeTransition()
 		// Forced skipping of method Windows.UI.Xaml.Media.Animation.RepositionThemeTransition.IsStaggeringEnabled.get
 		// Forced skipping of method Windows.UI.Xaml.Media.Animation.RepositionThemeTransition.IsStaggeringEnabled.set

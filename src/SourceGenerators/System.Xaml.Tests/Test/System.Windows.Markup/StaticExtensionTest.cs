@@ -38,34 +38,40 @@ namespace MonoTests.System.Windows.Markup
 	public class StaticExtensionTest
 	{
 		[Test]
-		[ExpectedException (typeof (ArgumentException))]
 		public void ProvideValueWithoutType ()
 		{
-			var x = new StaticExtension ();
-			// it fails because it cannot be resolved to a static member.
-			// This possibly mean, there might be a member that 
-			// could be resolved only with the name, without type.
-			x.Member = "Foo";
-			x.ProvideValue (null);
+			Assert.Throws(typeof(ArgumentException), () =>
+			{
+				var x = new StaticExtension();
+				// it fails because it cannot be resolved to a static member.
+				// This possibly mean, there might be a member that 
+				// could be resolved only with the name, without type.
+				x.Member = "Foo";
+				x.ProvideValue(null);
+			});
 		}
 
 		[Test]
-		[ExpectedException (typeof (InvalidOperationException))]
 		public void ProvideValueWithoutMember ()
 		{
-			var x = new StaticExtension ();
-			x.MemberType = typeof (int);
-			x.ProvideValue (null);
+			Assert.Throws(typeof(InvalidOperationException), () =>
+			{
+				var x = new StaticExtension();
+				x.MemberType = typeof(int);
+				x.ProvideValue(null);
+			});
 		}
 
 		[Test]
-		[ExpectedException (typeof (ArgumentException))]
 		public void ProvideValueInstanceProperty ()
 		{
-			var x = new StaticExtension ();
-			x.MemberType = typeof (StaticExtension);
-			x.Member = "MemberType"; // instance property is out of scope.
-			x.ProvideValue (null);
+			Assert.Throws(typeof(ArgumentException), () =>
+			{
+				var x = new StaticExtension();
+				x.MemberType = typeof(StaticExtension);
+				x.Member = "MemberType"; // instance property is out of scope.
+				x.ProvideValue(null);
+			});
 		}
 
 		[Test]
@@ -87,26 +93,30 @@ namespace MonoTests.System.Windows.Markup
 		}
 
 		[Test]
-		[ExpectedException (typeof (ArgumentException))]
 		public void ProvideValuePrivateConst ()
 		{
-			var x = new StaticExtension ();
-			x.MemberType = GetType ();
-			x.Member = "FooBar"; // private const could not be resolved.
-			Assert.AreEqual ("foobar", x.ProvideValue (null), "#1");
+			Assert.Throws(typeof(ArgumentException), () =>
+			{
+				var x = new StaticExtension();
+				x.MemberType = GetType();
+				x.Member = "FooBar"; // private const could not be resolved.
+				Assert.AreEqual("foobar", x.ProvideValue(null), "#1");
+			});
 		}
 
 		const string FooBar = "foobar";
 
 
 		[Test]
-		[ExpectedException (typeof (ArgumentException))]
 		public void ProvideValueEvent ()
 		{
-			var x = new StaticExtension ();
-			x.MemberType = GetType ();
-			x.Member = "FooEvent"; // private const could not be resolved.
-			Assert.IsNotNull (x.ProvideValue (null), "#1");
+			Assert.Throws(typeof(ArgumentException), () =>
+			{
+				var x = new StaticExtension();
+				x.MemberType = GetType();
+				x.Member = "FooEvent"; // private const could not be resolved.
+				Assert.IsNotNull(x.ProvideValue(null), "#1");
+			});
 		}
 
 		public static event EventHandler<EventArgs> FooEvent;

@@ -2,88 +2,18 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml.Controls
 {
-	#if false || false || false || false
+	#if false || false || false || false || false
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class Grid : global::Windows.UI.Xaml.Controls.Panel
 	{
-		#if false || false || false || false
-		[global::Uno.NotImplemented]
-		public  global::Windows.UI.Xaml.Controls.ColumnDefinitionCollection ColumnDefinitions
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member ColumnDefinitionCollection Grid.ColumnDefinitions is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if false || false || false || false
-		[global::Uno.NotImplemented]
-		public  global::Windows.UI.Xaml.Controls.RowDefinitionCollection RowDefinitions
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member RowDefinitionCollection Grid.RowDefinitions is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if false || false || false || false
-		[global::Uno.NotImplemented]
-		public  global::Windows.UI.Xaml.Thickness Padding
-		{
-			get
-			{
-				return (global::Windows.UI.Xaml.Thickness)this.GetValue(PaddingProperty);
-			}
-			set
-			{
-				this.SetValue(PaddingProperty, value);
-			}
-		}
-		#endif
-		#if false || false || false || false
-		[global::Uno.NotImplemented]
-		public  global::Windows.UI.Xaml.CornerRadius CornerRadius
-		{
-			get
-			{
-				return (global::Windows.UI.Xaml.CornerRadius)this.GetValue(CornerRadiusProperty);
-			}
-			set
-			{
-				this.SetValue(CornerRadiusProperty, value);
-			}
-		}
-		#endif
-		#if false || false || false || false
-		[global::Uno.NotImplemented]
-		public  global::Windows.UI.Xaml.Thickness BorderThickness
-		{
-			get
-			{
-				return (global::Windows.UI.Xaml.Thickness)this.GetValue(BorderThicknessProperty);
-			}
-			set
-			{
-				this.SetValue(BorderThicknessProperty, value);
-			}
-		}
-		#endif
-		#if false || false || false || false
-		[global::Uno.NotImplemented]
-		public  global::Windows.UI.Xaml.Media.Brush BorderBrush
-		{
-			get
-			{
-				return (global::Windows.UI.Xaml.Media.Brush)this.GetValue(BorderBrushProperty);
-			}
-			set
-			{
-				this.SetValue(BorderBrushProperty, value);
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		// Skipping already declared property ColumnDefinitions
+		// Skipping already declared property RowDefinitions
+		// Skipping already declared property Padding
+		// Skipping already declared property CornerRadius
+		// Skipping already declared property BorderThickness
+		// Skipping already declared property BorderBrush
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  double RowSpacing
 		{
@@ -97,7 +27,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  double ColumnSpacing
 		{
@@ -111,71 +41,15 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 		#endif
-		#if false || false || false || false
-		[global::Uno.NotImplemented]
-		public static global::Windows.UI.Xaml.DependencyProperty ColumnProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.RegisterAttached(
-			"Column", typeof(int), 
-			typeof(global::Windows.UI.Xaml.Controls.Grid), 
-			new FrameworkPropertyMetadata(default(int)));
-		#endif
-		#if false || false || false || false
-		[global::Uno.NotImplemented]
-		public static global::Windows.UI.Xaml.DependencyProperty ColumnSpanProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.RegisterAttached(
-			"ColumnSpan", typeof(int), 
-			typeof(global::Windows.UI.Xaml.Controls.Grid), 
-			new FrameworkPropertyMetadata(default(int)));
-		#endif
-		#if false || false || false || false
-		[global::Uno.NotImplemented]
-		public static global::Windows.UI.Xaml.DependencyProperty RowProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.RegisterAttached(
-			"Row", typeof(int), 
-			typeof(global::Windows.UI.Xaml.Controls.Grid), 
-			new FrameworkPropertyMetadata(default(int)));
-		#endif
-		#if false || false || false || false
-		[global::Uno.NotImplemented]
-		public static global::Windows.UI.Xaml.DependencyProperty RowSpanProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.RegisterAttached(
-			"RowSpan", typeof(int), 
-			typeof(global::Windows.UI.Xaml.Controls.Grid), 
-			new FrameworkPropertyMetadata(default(int)));
-		#endif
-		#if false || false || false || false
-		[global::Uno.NotImplemented]
-		public static global::Windows.UI.Xaml.DependencyProperty BorderBrushProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			"BorderBrush", typeof(global::Windows.UI.Xaml.Media.Brush), 
-			typeof(global::Windows.UI.Xaml.Controls.Grid), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.Brush)));
-		#endif
-		#if false || false || false || false
-		[global::Uno.NotImplemented]
-		public static global::Windows.UI.Xaml.DependencyProperty BorderThicknessProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			"BorderThickness", typeof(global::Windows.UI.Xaml.Thickness), 
-			typeof(global::Windows.UI.Xaml.Controls.Grid), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Thickness)));
-		#endif
-		#if false || false || false || false
-		[global::Uno.NotImplemented]
-		public static global::Windows.UI.Xaml.DependencyProperty CornerRadiusProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			"CornerRadius", typeof(global::Windows.UI.Xaml.CornerRadius), 
-			typeof(global::Windows.UI.Xaml.Controls.Grid), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.CornerRadius)));
-		#endif
-		#if false || false || false || false
-		[global::Uno.NotImplemented]
-		public static global::Windows.UI.Xaml.DependencyProperty PaddingProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			"Padding", typeof(global::Windows.UI.Xaml.Thickness), 
-			typeof(global::Windows.UI.Xaml.Controls.Grid), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Thickness)));
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		// Skipping already declared property ColumnProperty
+		// Skipping already declared property ColumnSpanProperty
+		// Skipping already declared property RowProperty
+		// Skipping already declared property RowSpanProperty
+		// Skipping already declared property BorderBrushProperty
+		// Skipping already declared property BorderThicknessProperty
+		// Skipping already declared property CornerRadiusProperty
+		// Skipping already declared property PaddingProperty
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty ColumnSpacingProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
@@ -183,7 +57,7 @@ namespace Windows.UI.Xaml.Controls
 			typeof(global::Windows.UI.Xaml.Controls.Grid), 
 			new FrameworkPropertyMetadata(default(double)));
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty RowSpacingProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
@@ -191,13 +65,7 @@ namespace Windows.UI.Xaml.Controls
 			typeof(global::Windows.UI.Xaml.Controls.Grid), 
 			new FrameworkPropertyMetadata(default(double)));
 		#endif
-		#if false || false || false || false
-		[global::Uno.NotImplemented]
-		public Grid() : base()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.Grid", "Grid.Grid()");
-		}
-		#endif
+		// Skipping already declared method Windows.UI.Xaml.Controls.Grid.Grid()
 		// Forced skipping of method Windows.UI.Xaml.Controls.Grid.Grid()
 		// Forced skipping of method Windows.UI.Xaml.Controls.Grid.RowDefinitions.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.Grid.ColumnDefinitions.get

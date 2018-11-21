@@ -106,5 +106,18 @@ namespace Uno.UI
 			/// </remarks>
 			public static bool UseSimpleAccessibility { get; set; } = false;
 		}
+
+		public static class Font
+		{
+			/// <summary>
+			/// Defines the default font to be used when displaying symbols, such as in SymbolIcon.
+			/// </summary>
+			public static string SymbolsFont { get; set; } =
+#if !ANDROID
+			"Symbols";
+#else
+			"ms-appx:///Assets/Fonts/winjs-symbols.ttf#Symbols";
+#endif
+		}
 	}
 }

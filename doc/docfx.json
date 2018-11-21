@@ -1,25 +1,25 @@
 {
-  "metadata": [
-    {
-      "src": [
-        {
-          "src": "../src",
-          "exclude": [
-            "SolutionTemplate/**",
-            "SourceGenerators/SourceGeneratorsConsole/**",
-            "SourceGenerators/System.Xaml/**",
-            "T4Generator/**",
-            "ResourceConverter/**"
-          ],
-          "files": [
-            "**.csproj"
-          ]
-        }
-      ],
-      "dest": "api",
-      "disableGitFeatures": false
-    }
-  ],
+  //"metadata": [
+  //  {
+  //    "src": [
+  //      {
+  //        "src": "../src",
+  //        "exclude": [
+  //          "SolutionTemplate/**",
+  //          "SourceGenerators/SourceGeneratorsConsole/**",
+  //          "SourceGenerators/System.Xaml/**",
+  //          "T4Generator/**",
+  //          "ResourceConverter/**"
+  //        ],
+  //        "files": [
+  //          "**.csproj"
+  //        ]
+  //      }
+  //    ],
+  //    "dest": "api",
+  //    "disableGitFeatures": false
+  //  }
+  //],
   "build": {
     "content": [
       {
@@ -59,13 +59,18 @@
     "globalMetadataFiles": [],
     "fileMetadataFiles": [],
     "template": [
-      "default"
+      "default",
+      "templates/uno"
     ],
     "postProcessors": [],
     "markdownEngineName": "markdig",
     "noLangKeyword": false,
     "keepFileLink": false,
     "cleanupCacheHistory": false,
-    "disableGitFeatures": false
+    "disableGitFeatures": false,
+    "globalMetadata": {
+      "_appLogoPath": "images/UnoLogoSmall.png",
+      "_appFaviconPath": "images/UnoLogoSmall.png"
+    }
   }
 }

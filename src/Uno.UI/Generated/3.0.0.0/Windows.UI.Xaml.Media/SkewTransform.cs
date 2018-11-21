@@ -2,106 +2,20 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml.Media
 {
-	#if false || false || false || false
+	#if false || false || false || false || false
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class SkewTransform : global::Windows.UI.Xaml.Media.Transform
 	{
-		#if false || false || false || false
-		[global::Uno.NotImplemented]
-		public  double CenterY
-		{
-			get
-			{
-				return (double)this.GetValue(CenterYProperty);
-			}
-			set
-			{
-				this.SetValue(CenterYProperty, value);
-			}
-		}
-		#endif
-		#if false || false || false || false
-		[global::Uno.NotImplemented]
-		public  double CenterX
-		{
-			get
-			{
-				return (double)this.GetValue(CenterXProperty);
-			}
-			set
-			{
-				this.SetValue(CenterXProperty, value);
-			}
-		}
-		#endif
-		#if false || false || false || false
-		[global::Uno.NotImplemented]
-		public  double AngleY
-		{
-			get
-			{
-				return (double)this.GetValue(AngleYProperty);
-			}
-			set
-			{
-				this.SetValue(AngleYProperty, value);
-			}
-		}
-		#endif
-		#if false || false || false || false
-		[global::Uno.NotImplemented]
-		public  double AngleX
-		{
-			get
-			{
-				return (double)this.GetValue(AngleXProperty);
-			}
-			set
-			{
-				this.SetValue(AngleXProperty, value);
-			}
-		}
-		#endif
-		#if false || false || false || false
-		[global::Uno.NotImplemented]
-		public static global::Windows.UI.Xaml.DependencyProperty AngleXProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			"AngleX", typeof(double), 
-			typeof(global::Windows.UI.Xaml.Media.SkewTransform), 
-			new FrameworkPropertyMetadata(default(double)));
-		#endif
-		#if false || false || false || false
-		[global::Uno.NotImplemented]
-		public static global::Windows.UI.Xaml.DependencyProperty AngleYProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			"AngleY", typeof(double), 
-			typeof(global::Windows.UI.Xaml.Media.SkewTransform), 
-			new FrameworkPropertyMetadata(default(double)));
-		#endif
-		#if false || false || false || false
-		[global::Uno.NotImplemented]
-		public static global::Windows.UI.Xaml.DependencyProperty CenterXProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			"CenterX", typeof(double), 
-			typeof(global::Windows.UI.Xaml.Media.SkewTransform), 
-			new FrameworkPropertyMetadata(default(double)));
-		#endif
-		#if false || false || false || false
-		[global::Uno.NotImplemented]
-		public static global::Windows.UI.Xaml.DependencyProperty CenterYProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			"CenterY", typeof(double), 
-			typeof(global::Windows.UI.Xaml.Media.SkewTransform), 
-			new FrameworkPropertyMetadata(default(double)));
-		#endif
-		#if false || false || false || false
-		[global::Uno.NotImplemented]
-		public SkewTransform() 
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Media.SkewTransform", "SkewTransform.SkewTransform()");
-		}
-		#endif
+		// Skipping already declared property CenterY
+		// Skipping already declared property CenterX
+		// Skipping already declared property AngleY
+		// Skipping already declared property AngleX
+		// Skipping already declared property AngleXProperty
+		// Skipping already declared property AngleYProperty
+		// Skipping already declared property CenterXProperty
+		// Skipping already declared property CenterYProperty
+		// Skipping already declared method Windows.UI.Xaml.Media.SkewTransform.SkewTransform()
 		// Forced skipping of method Windows.UI.Xaml.Media.SkewTransform.SkewTransform()
 		// Forced skipping of method Windows.UI.Xaml.Media.SkewTransform.CenterX.get
 		// Forced skipping of method Windows.UI.Xaml.Media.SkewTransform.CenterX.set

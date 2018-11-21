@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Storage
 {
-	#if false || false || false || false
+	#if false || false || false || false || false
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class StorageStreamTransaction : global::System.IDisposable
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Storage.Streams.IRandomAccessStream Stream
 		{
@@ -18,20 +18,14 @@ namespace Windows.Storage
 		}
 		#endif
 		// Forced skipping of method Windows.Storage.StorageStreamTransaction.Stream.get
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Foundation.IAsyncAction CommitAsync()
 		{
 			throw new global::System.NotImplementedException("The member IAsyncAction StorageStreamTransaction.CommitAsync() is not implemented in Uno.");
 		}
 		#endif
-		#if false || false || false || false
-		[global::Uno.NotImplemented]
-		public  void Dispose()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.StorageStreamTransaction", "void StorageStreamTransaction.Dispose()");
-		}
-		#endif
+		// Skipping already declared method Windows.Storage.StorageStreamTransaction.Dispose()
 		// Processing: System.IDisposable
 	}
 }

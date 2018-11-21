@@ -25,6 +25,14 @@ using Font = UIKit.UIFont;
 using Windows.UI.Xaml.Controls;
 using DependencyObject = System.Object;
 using UIKit;
+#elif __MACOS__
+using View = AppKit.NSView;
+using ViewGroup = AppKit.NSView;
+using Color = AppKit.NSColor;
+using Font = AppKit.NSFont;
+using Windows.UI.Xaml.Controls;
+using DependencyObject = System.Object;
+using AppKit;
 #elif METRO
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -59,6 +67,7 @@ namespace Windows.UI.Xaml
 	/// </remarks>
 	public class FrameworkTemplatePool
 	{
+		internal static FrameworkTemplatePool Instance { get; } = new FrameworkTemplatePool();
 		public static class TraceProvider
 		{
 			public readonly static Guid Id = Guid.Parse("{266B850B-674C-4D3E-9B58-F680BE653E18}");
@@ -84,7 +93,7 @@ namespace Windows.UI.Xaml
 		/// </summary>
 		public static bool IsPoolingEnabled { get; set; } = true;
 
-		internal FrameworkTemplatePool()
+		private FrameworkTemplatePool()
 		{
 			_watch.Start();
 
@@ -95,12 +104,21 @@ namespace Windows.UI.Xaml
 
 		private async void Scavenger(IdleDispatchedHandlerArgs e)
 		{
+			Scavenge(false);
+
+			await Task.Delay(TimeSpan.FromSeconds(30));
+
+			CoreDispatcher.Main.RunIdleAsync(Scavenger);
+		}
+
+		private void Scavenge(bool isManual)
+		{
 			var now = _watch.Elapsed;
 			var removedInstancesCount = 0;
 
 			foreach (var list in _pooledInstances.Values)
 			{
-				removedInstancesCount += list.RemoveAll(t => now - t.CreationTime > TimeToLive);
+				removedInstancesCount += list.RemoveAll(t => isManual || now - t.CreationTime > TimeToLive);
 			}
 
 			if (removedInstancesCount > 0)
@@ -115,14 +133,17 @@ namespace Windows.UI.Xaml
 
 				// Under iOS and Android, we need to force the collection for the GC
 				// to pick up the orphan instances that we've just released.
-
+				
 				GC.Collect();
 			}
-
-			await Task.Delay(TimeSpan.FromSeconds(30));
-
-			CoreDispatcher.Main.RunIdleAsync(Scavenger);
 		}
+
+		/// <summary>
+		/// Release all templates that are currently held by the pool.
+		/// </summary>
+		/// <remarks>The pool will periodically release templates that haven't been reused within the span of <see cref="TimeToLive"/>, so
+		/// normally you shouldn't need to call this method. It may be useful in advanced memory management scenarios.</remarks>
+		public static void Scavenge() => Instance.Scavenge(true);
 
 		internal View DequeueTemplate(FrameworkTemplate template)
 		{

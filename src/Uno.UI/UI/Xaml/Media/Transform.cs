@@ -6,6 +6,8 @@ using Windows.Foundation;
 using Android.Views;
 #elif XAMARIN_IOS_UNIFIED
 using View = UIKit.UIView;
+#elif __MACOS__
+using View = AppKit.NSView;
 #elif __WASM__
 using View = Windows.UI.Xaml.UIElement;
 #else

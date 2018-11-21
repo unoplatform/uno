@@ -359,6 +359,7 @@ namespace Windows.UI.Xaml.Controls
 				LogicalToPhysicalPixels(padding.Left),
 				LogicalToPhysicalPixels(padding.Top)
 			);
+			Invalidate(); // This ensures that OnDraw() will be called, which is typically the case anyway after OnLayout() but not always (eg, if device is being unlocked).
 		}
 
 		/// <summary>

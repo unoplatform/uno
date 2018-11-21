@@ -1,4 +1,4 @@
-﻿#if NETSTANDARD2_0
+﻿#if NETSTANDARD2_0 || __MACOS__
 #pragma warning disable CS0067, CS0414
 #endif
 

@@ -52,6 +52,17 @@
 		
 		<TextBlock Text="{x:Null}" />
 
+		<TextBlock>
+			<Run x:Name="testRun" />
+		</TextBlock>
+
+		<RichTextBlock Style="{StaticResource XamlCodeRichTextBlockStyle}">
+			<Paragraph>
+				<Run x:Name="rtbRun">Vertical</Run>
+			</Paragraph>
+		</RichTextBlock>
+
+
 		<Border Height="float.NaN">
 			<Border.Width>
 				<x:Double>NaN</x:Double>
@@ -71,4 +82,3 @@
 
 	</Grid>
 </UserControl>
-   

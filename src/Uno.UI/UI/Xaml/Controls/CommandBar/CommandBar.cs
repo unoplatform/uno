@@ -8,6 +8,12 @@ using Windows.Foundation.Collections;
 using Windows.UI.Xaml.Markup;
 using Windows.UI.Xaml.Controls.Primitives;
 using Uno.Logging;
+using Uno.UI.Controls;
+#if __IOS__
+using UIKit;
+#elif __ANDROID__
+using Uno.UI;
+#endif
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -36,6 +42,10 @@ namespace Windows.UI.Xaml.Controls
 			CommandBarTemplateSettings = new CommandBarTemplateSettings(this);
 		}
 
+#if __ANDROID__ || __IOS__
+		internal NativeCommandBarPresenter Presenter { get; set; }
+#endif
+
 		protected override void OnApplyTemplate()
 		{
 			base.OnApplyTemplate();
@@ -44,7 +54,10 @@ namespace Windows.UI.Xaml.Controls
 			_overflowPopup = GetTemplateChild(OverflowPopup) as Popup;
 			_primaryItemsControl = GetTemplateChild(PrimaryItemsControl) as ItemsControl;
 			_secondaryItemsControl = GetTemplateChild(SecondaryItemsControl) as ItemsControl;
-			
+
+#if __ANDROID__ || __IOS__
+			Presenter = this.FindFirstChild<NativeCommandBarPresenter>();
+#endif
 			if (_moreButton != null)
 			{
 				_moreButton.Click += (s, e) =>
@@ -63,7 +76,7 @@ namespace Windows.UI.Xaml.Controls
 
 			PrimaryCommands.VectorChanged += (s, e) => UpdateCommands();
 			SecondaryCommands.VectorChanged += (s, e) => UpdateCommands();
-			
+
 			UpdateCommands();
 
 			this.RegisterPropertyChangedCallback(IsEnabledProperty, (s, e) => UpdateCommonState());
@@ -71,7 +84,7 @@ namespace Windows.UI.Xaml.Controls
 			this.RegisterPropertyChangedCallback(IsOpenProperty, (s, e) =>
 			{
 				// TODO: Consider the content of _secondaryItemsControl when IsDynamicOverflowEnabled is supported.
-				var hasSecondaryItems = SecondaryCommands.Any(); 
+				var hasSecondaryItems = SecondaryCommands.Any();
 				if (hasSecondaryItems)
 				{
 					if (_overflowPopup != null)
@@ -101,7 +114,7 @@ namespace Windows.UI.Xaml.Controls
 
 		public event TypedEventHandler<CommandBar, DynamicOverflowItemsChangingEventArgs> DynamicOverflowItemsChanging;
 
-#region PrimaryCommands
+		#region PrimaryCommands
 
 		public IObservableVector<ICommandBarElement> PrimaryCommands
 		{
@@ -120,9 +133,9 @@ namespace Windows.UI.Xaml.Controls
 				)
 			);
 
-#endregion
+		#endregion
 
-#region SecondaryCommands
+		#region SecondaryCommands
 
 		public IObservableVector<ICommandBarElement> SecondaryCommands
 		{
@@ -138,12 +151,12 @@ namespace Windows.UI.Xaml.Controls
 				new FrameworkPropertyMetadata(
 					default(IObservableVector<ICommandBarElement>),
 					FrameworkPropertyMetadataOptions.ValueInheritsDataContext
-				)			
+				)
 			);
 
-#endregion
+		#endregion
 
-#region CommandBarOverflowPresenterStyle
+		#region CommandBarOverflowPresenterStyle
 
 		public Style CommandBarOverflowPresenterStyle
 		{
@@ -160,9 +173,9 @@ namespace Windows.UI.Xaml.Controls
 				new FrameworkPropertyMetadata(default(Style))
 			);
 
-#endregion
+		#endregion
 
-#region OverflowButtonVisibility
+		#region OverflowButtonVisibility
 
 		public CommandBarOverflowButtonVisibility OverflowButtonVisibility
 		{
@@ -178,9 +191,9 @@ namespace Windows.UI.Xaml.Controls
 				new FrameworkPropertyMetadata(default(CommandBarOverflowButtonVisibility))
 			);
 
-#endregion
+		#endregion
 
-#region IsDynamicOverflowEnabled
+		#region IsDynamicOverflowEnabled
 
 		public bool IsDynamicOverflowEnabled
 		{
@@ -196,9 +209,9 @@ namespace Windows.UI.Xaml.Controls
 				new FrameworkPropertyMetadata(default(bool))
 			);
 
-#endregion
+		#endregion
 
-#region DefaultLabelPosition
+		#region DefaultLabelPosition
 
 		public CommandBarDefaultLabelPosition DefaultLabelPosition
 		{
@@ -214,7 +227,7 @@ namespace Windows.UI.Xaml.Controls
 				new FrameworkPropertyMetadata(default(CommandBarDefaultLabelPosition))
 			);
 
-#endregion
+		#endregion
 
 		public CommandBarTemplateSettings CommandBarTemplateSettings { get; }
 
@@ -234,7 +247,7 @@ namespace Windows.UI.Xaml.Controls
 
 			PrimaryCommands.OfType<ICommandBarElement3>().ForEach(command => command.IsInOverflow = false);
 			SecondaryCommands.OfType<ICommandBarElement3>().ForEach(command => command.IsInOverflow = true);
-			
+
 			UpdateAvailableCommandsState();
 		}
 

@@ -9,15 +9,13 @@ using Uno.Media;
 using Foundation;
 using UIKit;
 using CoreGraphics;
-#elif XAMARIN_IOS
-using MonoTouch.Foundation;
-using MonoTouch.UIKit;
-using MonoTouch.CoreGraphics;
-using CGRect = System.Drawing.Windows.Foundation.Rect;
-using nfloat = System.Single;
-using nint = System.Int32;
-using CGPoint = System.Drawing.PointF;
-using CGSize = System.Drawing.Windows.Foundation.Size;
+#elif __MACOS__
+using AppKit;
+using CoreGraphics;
+using UIImage = AppKit.NSImage;
+using UIColor = AppKit.NSColor;
+using UIGraphics = AppKit.NSGraphics;
+using Path = AppKit.NSBezierPath;
 #elif XAMARIN_ANDROID
 using Android.Graphics;
 #endif
@@ -50,10 +48,10 @@ namespace Windows.UI.Xaml.Media
 
 		#endregion
 
-#if XAMARIN_IOS_UNIFIED || XAMARIN_IOS
+#if XAMARIN_IOS_UNIFIED || XAMARIN_IOS || __MACOS__
 		public static implicit operator UIImage (Geometry g)
 		{
-			return g.ToUIImage();
+			return g.ToNativeImage();
 		}
 
 		public static implicit operator CGPath(Geometry g)
@@ -61,9 +59,9 @@ namespace Windows.UI.Xaml.Media
 			return g.ToCGPath();
 		}
 
-		public virtual UIImage ToUIImage() { throw new InvalidOperationException(); }
+		public virtual UIImage ToNativeImage() { throw new InvalidOperationException(); }
 
-		public virtual UIImage ToUIImage(CGSize targetSize, UIColor color = default(UIColor), Thickness margin = default(Thickness)) { throw new InvalidOperationException(); }
+		public virtual UIImage ToNativeImage(CGSize targetSize, UIColor color = default(UIColor), Thickness margin = default(Thickness)) { throw new InvalidOperationException(); }
 
 		public virtual CGPath ToCGPath() { throw new InvalidOperationException(); }
 

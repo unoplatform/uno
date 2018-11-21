@@ -236,6 +236,10 @@ namespace Uno.UI.Controls
 		{
 			private PageViewController LowerController => ViewControllers.Length > 1 ? ViewControllers[ViewControllers.Length - 2] as PageViewController : null;
 
+			public FrameNavigationController() : base(typeof(UnoNavigationBar), typeof(UIToolbar))
+			{
+			}
+
 			public override UIViewController PopViewController(bool animated)
 			{
 				var lowerCommandBar = LowerController?.GetCommandBar();

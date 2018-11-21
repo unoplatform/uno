@@ -233,6 +233,10 @@ namespace Windows.UI.Xaml.Controls
 					}
 
 					Owner?.XamlParent?.PrepareContainerForIndex(selectorItem, index);
+
+					// Normally this happens when the SelectorItem.Content is set, but there's an edge case where after a refresh, a
+					// container can be dequeued which happens to have had exactly the same DataContext as the new item.
+					cell.ClearMeasuredSize();
 				}
 
 				Owner?.XamlParent?.TryLoadMoreItems(index);
@@ -272,10 +276,11 @@ namespace Windows.UI.Xaml.Controls
 			var index = Owner?.XamlParent?.GetIndexFromIndexPath(IndexPath.FromNSIndexPath(indexPath)) ?? -1;
 			var container = cell as ListViewBaseInternalContainer;
 			var selectorItem = container?.Content as SelectorItem;
-			//Update IsSelected immediately before display, in case it was modified after cell was prefetched but before it became visible
+			//Update IsSelected and multi-select state immediately before display, in case either was modified after cell was prefetched but before it became visible
 			if (selectorItem != null)
 			{
 				selectorItem.IsSelected = Owner?.XamlParent?.IsSelected(index) ?? false;
+				Owner?.XamlParent?.ApplyMultiSelectState(selectorItem);
 			}
 
 			FrameworkElement.RegisterPhaseBinding(container.Content, a => RegisterForRecycled(container, a));
@@ -704,7 +709,7 @@ namespace Windows.UI.Xaml.Controls
 
 					ContentView.AddSubview(value);
 
-					_measuredContentSize = null;
+					ClearMeasuredSize();
 					_contentChangedDisposable.Disposable = value?.RegisterDisposablePropertyChangedCallback(ContentControl.ContentProperty, (_, __) => _measuredContentSize = null);
 				}
 			}
@@ -747,6 +752,11 @@ namespace Windows.UI.Xaml.Controls
 				ContentView.Frame = Bounds;
 			}
 		}
+
+		/// <summary>
+		/// Clear the cell's measured size, this allows the static template size to be updated with the correct databound size.
+		/// </summary>
+		internal void ClearMeasuredSize() => _measuredContentSize = null;
 
 		public override UICollectionViewLayoutAttributes PreferredLayoutAttributesFittingAttributes(UICollectionViewLayoutAttributes layoutAttributes)
 		{
@@ -861,7 +871,7 @@ namespace Windows.UI.Xaml.Controls
 			{
 				_needsLayout = true;
 				Owner?.NativeLayout?.RefreshLayout();
-				_measuredContentSize = null;
+				ClearMeasuredSize();
 				SetNeedsLayout();
 			}
 		}

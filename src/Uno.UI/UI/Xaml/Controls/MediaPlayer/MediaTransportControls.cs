@@ -99,9 +99,12 @@ namespace Windows.UI.Xaml.Controls
 
 		private Timer _controlsVisibilityTimer;
 		private bool _wasPlaying;
+		private bool _isInteractive;
+		private MediaPlayerElement _mpe;
 
 		public MediaTransportControls() : base()
 		{
+
 			_controlsVisibilityTimer = new Timer()
 			{
 				AutoReset = false,
@@ -109,6 +112,11 @@ namespace Windows.UI.Xaml.Controls
 			};
 
 			_controlsVisibilityTimer.Elapsed += ControlsVisibilityTimerElapsed;
+		}
+		
+		internal void SetMediaPlayerElement(MediaPlayerElement mediaPlayerElement)
+		{
+			_mpe = mediaPlayerElement;
 		}
 
 		private void ControlsVisibilityTimerElapsed(object sender, ElapsedEventArgs args)
@@ -155,20 +163,32 @@ namespace Windows.UI.Xaml.Controls
 			_audioMuteButton = this.GetTemplateChild(AudioMuteButtonName) as Button;
 
 			_volumeSlider = this.GetTemplateChild(VolumeSliderName) as Slider;
-			_volumeSlider.Maximum = 100;
-			_volumeSlider.Value = 100;
-			
+			if (_volumeSlider != null)
+			{
+				_volumeSlider.Maximum = 100;
+				_volumeSlider.Value = 100;
+			}
+
 			_fullWindowButton = this.GetTemplateChild(FullWindowButtonName) as Button;
-			_fullWindowButton?.SetBinding(Button.VisibilityProperty, new Binding { Path = "IsFullWindowButtonVisible", Source = this, Mode = BindingMode.OneWay, FallbackValue = Visibility.Collapsed, Converter = trueToVisible });
-			_fullWindowButton?.SetBinding(Button.IsEnabledProperty, new Binding { Path = "IsFullWindowEnabled", Source = this, Mode = BindingMode.OneWay, FallbackValue = true });
+			if (_fullWindowButton != null)
+			{
+				_fullWindowButton.SetBinding(Button.VisibilityProperty, new Binding { Path = "IsFullWindowButtonVisible", Source = this, Mode = BindingMode.OneWay, FallbackValue = Visibility.Collapsed, Converter = trueToVisible });
+				_fullWindowButton.SetBinding(Button.IsEnabledProperty, new Binding { Path = "IsFullWindowEnabled", Source = this, Mode = BindingMode.OneWay, FallbackValue = true });
+				_fullWindowButton.Click -= FullWindowButtonClick;
+				_fullWindowButton.Click += FullWindowButtonClick;
+			}
 
 			_castButton = this.GetTemplateChild(CastButtonName) as Button;
 
 			_zoomButton = this.GetTemplateChild(ZoomButtonName) as Button;
-			_zoomButton?.SetBinding(Button.VisibilityProperty, new Binding { Path = "IsZoomButtonVisible", Source = this, Mode = BindingMode.OneWay, FallbackValue = Visibility.Collapsed, Converter = trueToVisible });
-			_zoomButton?.SetBinding(Button.IsEnabledProperty, new Binding { Path = "IsZoomEnabled", Source = this, Mode = BindingMode.OneWay, FallbackValue = true });
-			_zoomButton.Click -= ZoomButtonClick;
-			_zoomButton.Click += ZoomButtonClick;
+
+			if (_zoomButton != null)
+			{
+				_zoomButton?.SetBinding(Button.VisibilityProperty, new Binding { Path = "IsZoomButtonVisible", Source = this, Mode = BindingMode.OneWay, FallbackValue = Visibility.Collapsed, Converter = trueToVisible });
+				_zoomButton?.SetBinding(Button.IsEnabledProperty, new Binding { Path = "IsZoomEnabled", Source = this, Mode = BindingMode.OneWay, FallbackValue = true });
+				_zoomButton.Click -= ZoomButtonClick;
+				_zoomButton.Click += ZoomButtonClick;
+			}
 
 			_playbackRateButton = this.GetTemplateChild(PlaybackRateButtonName) as Button;
 			_playbackRateButton?.SetBinding(Button.VisibilityProperty, new Binding { Path = "IsPlaybackRateButtonVisible", Source = this, Mode = BindingMode.OneWay, FallbackValue = Visibility.Collapsed, Converter = trueToVisible });
@@ -180,7 +200,7 @@ namespace Windows.UI.Xaml.Controls
 
 			_nextTrackButton = this.GetTemplateChild(NextTrackButtonName) as Button;
 			_nextTrackButton?.SetBinding(Button.VisibilityProperty, new Binding { Path = "IsNextTrackButtonVisible", Source = this, Mode = BindingMode.OneWay, FallbackValue = Visibility.Collapsed, Converter = trueToVisible });
-			
+
 			_fastForwardButton = this.GetTemplateChild(FastForwardButtonName) as Button;
 			_fastForwardButton?.SetBinding(Button.VisibilityProperty, new Binding { Path = "IsFastForwardButtonVisible", Source = this, Mode = BindingMode.OneWay, FallbackValue = Visibility.Collapsed, Converter = trueToVisible });
 			_fastForwardButton?.SetBinding(Button.IsEnabledProperty, new Binding { Path = "IsFastForwardEnabled", Source = this, Mode = BindingMode.OneWay, FallbackValue = true });
@@ -191,7 +211,7 @@ namespace Windows.UI.Xaml.Controls
 
 			_previousTrackButton = this.GetTemplateChild(PreviousTrackButtonName) as Button;
 			_previousTrackButton?.SetBinding(Button.VisibilityProperty, new Binding { Path = "IsPreviousTrackButtonVisible", Source = this, Mode = BindingMode.OneWay, FallbackValue = Visibility.Collapsed, Converter = trueToVisible });
-			
+
 			_skipBackwardButton = this.GetTemplateChild(SkipBackwardButtonName) as Button;
 			_skipBackwardButton?.SetBinding(Button.VisibilityProperty, new Binding { Path = "IsSkipBackwardButtonVisible", Source = this, Mode = BindingMode.OneWay, FallbackValue = Visibility.Collapsed, Converter = trueToVisible });
 			_skipBackwardButton?.SetBinding(Button.IsEnabledProperty, new Binding { Path = "IsSkipBackwardEnabled", Source = this, Mode = BindingMode.OneWay, FallbackValue = true });
@@ -217,10 +237,13 @@ namespace Windows.UI.Xaml.Controls
 			_timelineContainer = this.GetTemplateChild(TimelineContainerName) as Border;
 
 			_downloadProgressIndicator = _progressSlider?.GetTemplateChild(DownloadProgressIndicatorName) as ProgressBar;
-			
+
 			_rootGrid = this.GetTemplateChild(RootGridName) as Grid;
-			_rootGrid.Tapped -= OnRootGridTapped;
-			_rootGrid.Tapped += OnRootGridTapped;
+			if (_rootGrid != null)
+			{
+				_rootGrid.Tapped -= OnRootGridTapped;
+				_rootGrid.Tapped += OnRootGridTapped;
+			}
 			
 			if (_mediaPlayer != null)
 			{
@@ -228,33 +251,50 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
+		private void FullWindowButtonClick(object sender, RoutedEventArgs e)
+		{
+			_mpe.IsFullWindow = !_mpe.IsFullWindow;
+			UpdateFullscreenButtonStyle();
+		}
+
+		private void UpdateFullscreenButtonStyle()
+		{
+			if (_mpe.IsFullWindow)
+			{
+				VisualStateManager.GoToState(this, "FullWindowState", false);
+			}
+			else
+			{
+				VisualStateManager.GoToState(this, "NonFullWindowState", false);
+			}
+		}
+
 		private void ZoomButtonClick(object sender, RoutedEventArgs e)
 		{
-			var mpe = this.FindFirstParent<MediaPlayerElement>();
-
-			if (mpe != null)
+			if (_mpe.Stretch == Stretch.Uniform)
 			{
-				if (mpe.Stretch == Stretch.Uniform)
-				{
-					mpe.Stretch = Stretch.UniformToFill;
-				}
-				else
-				{
-					mpe.Stretch = Stretch.Uniform;
-				}
+				_mpe.Stretch = Stretch.UniformToFill;
+			}
+			else
+			{
+				_mpe.Stretch = Stretch.Uniform;
 			}
 		}
 
 		public void Show()
 		{
+			_isInteractive = true;
+
 			Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
 			{
 				VisualStateManager.GoToState(this, "ControlPanelFadeIn", false);
 			});
 		}
-		
+
 		public void Hide()
 		{
+			_isInteractive = false;
+
 			Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
 			{
 				if (_mediaPlayer.PlaybackSession.PlaybackState == MediaPlaybackState.Buffering || _mediaPlayer.PlaybackSession.PlaybackState == MediaPlaybackState.Playing)
@@ -266,11 +306,19 @@ namespace Windows.UI.Xaml.Controls
 
 		private void OnRootGridTapped(object sender, TappedRoutedEventArgs e)
 		{
-			Show();
-
-			if (ShowAndHideAutomatically)
+			if (_isInteractive)
 			{
-				ResetControlsVisibilityTimer();
+				_controlsVisibilityTimer.Stop();
+				Hide();
+			}
+			else
+			{
+				Show();
+
+				if (ShowAndHideAutomatically)
+				{
+					ResetControlsVisibilityTimer();
+				}
 			}
 		}
 

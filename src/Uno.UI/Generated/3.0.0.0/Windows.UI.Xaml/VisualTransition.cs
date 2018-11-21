@@ -2,40 +2,14 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml
 {
-	#if false || false || false || false
+	#if false || false || false || false || false
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class VisualTransition : global::Windows.UI.Xaml.DependencyObject
 	{
-		#if false || false || false || false
-		[global::Uno.NotImplemented]
-		public  string To
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string VisualTransition.To is not implemented in Uno.");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.VisualTransition", "string VisualTransition.To");
-			}
-		}
-		#endif
-		#if false || false || false || false
-		[global::Uno.NotImplemented]
-		public  global::Windows.UI.Xaml.Media.Animation.Storyboard Storyboard
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member Storyboard VisualTransition.Storyboard is not implemented in Uno.");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.VisualTransition", "Storyboard VisualTransition.Storyboard");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		// Skipping already declared property To
+		// Skipping already declared property Storyboard
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.UI.Xaml.Media.Animation.EasingFunctionBase GeneratedEasingFunction
 		{
@@ -49,7 +23,7 @@ namespace Windows.UI.Xaml
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.UI.Xaml.Duration GeneratedDuration
 		{
@@ -63,27 +37,8 @@ namespace Windows.UI.Xaml
 			}
 		}
 		#endif
-		#if false || false || false || false
-		[global::Uno.NotImplemented]
-		public  string From
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string VisualTransition.From is not implemented in Uno.");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.VisualTransition", "string VisualTransition.From");
-			}
-		}
-		#endif
-		#if false || false || false || false
-		[global::Uno.NotImplemented]
-		public VisualTransition() : base()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.VisualTransition", "VisualTransition.VisualTransition()");
-		}
-		#endif
+		// Skipping already declared property From
+		// Skipping already declared method Windows.UI.Xaml.VisualTransition.VisualTransition()
 		// Forced skipping of method Windows.UI.Xaml.VisualTransition.VisualTransition()
 		// Forced skipping of method Windows.UI.Xaml.VisualTransition.GeneratedDuration.get
 		// Forced skipping of method Windows.UI.Xaml.VisualTransition.GeneratedDuration.set

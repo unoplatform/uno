@@ -45,26 +45,32 @@ namespace MonoTests.System.Windows.Markup
 		}
 
 		[Test]
-		[ExpectedException (typeof (ArgumentNullException))]
 		public void ProvideValueWithoutTypeOrName ()
 		{
-			new Reference ().ProvideValue (null);
+			Assert.Throws(typeof(ArgumentNullException), () =>
+			{
+				new Reference().ProvideValue(null);
+			});
 		}
 
 		[Test]
-		[ExpectedException (typeof (ArgumentNullException))]
 		public void ProvideValueWithNameWithoutResolver ()
 		{
-			var x = new Reference ("X");
-			x.ProvideValue (null); // serviceProvider is required.
+			Assert.Throws(typeof(ArgumentNullException), () =>
+			{
+				var x = new Reference("X");
+				x.ProvideValue(null); // serviceProvider is required.
+			});
 		}
 
 		[Test]
-		[ExpectedException (typeof (InvalidOperationException))]
 		public void ProvideValueWithNameWithProviderNoResolver ()
 		{
-			var x = new Reference ("X");
-			x.ProvideValue (new NameServiceProvider (false, false));
+			Assert.Throws(typeof(InvalidOperationException), () =>
+			{
+				var x = new Reference("X");
+				x.ProvideValue(new NameServiceProvider(false, false));
+			});
 		}
 
 		[Test]

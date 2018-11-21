@@ -11,6 +11,7 @@ using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Animation;
 using Windows.UI.Xaml.Controls;
 using Uno.UI;
+using Windows.Foundation;
 
 #if XAMARIN_ANDROID
 using View = Android.Views.View;
@@ -26,6 +27,14 @@ using Point = Windows.Foundation.Point;
 using View = UIKit.UIView;
 using Color = UIKit.UIColor;
 using Font = UIKit.UIFont;
+using CoreGraphics;
+using _Size = Windows.Foundation.Size;
+using Point = Windows.Foundation.Point;
+#elif __MACOS__
+using AppKit;
+using View = AppKit.NSView;
+using Color = AppKit.NSColor;
+using Font = AppKit.NSFont;
 using CoreGraphics;
 using _Size = Windows.Foundation.Size;
 using Point = Windows.Foundation.Point;
@@ -109,7 +118,7 @@ namespace Windows.UI.Xaml
 		// void SetNeedsLayout ();
 		// void SetSuperviewNeedsLayout ();
 
-#if XAMARIN_IOS
+#if XAMARIN_IOS || __MACOS__
 
 		/// <summary>
 		/// The frame applied to this child when last arranged by its parent. This may differ from the current UIView.Frame if a RenderTransform is set.
@@ -196,6 +205,8 @@ namespace Windows.UI.Xaml
 			}
 #elif XAMARIN_IOS
 			(e as View).SetNeedsLayout();
+#elif __MACOS__
+			(e as View).NeedsLayout = true;
 #elif __WASM__
 			Window.InvalidateMeasure();
 #endif
@@ -224,7 +235,7 @@ namespace Windows.UI.Xaml
 
 				if (content != null)
 				{
-					frameworkElements = new[] { content };
+					frameworkElements = new IFrameworkElement[] { content };
 				}
 			}
 
@@ -252,6 +263,22 @@ namespace Windows.UI.Xaml
 		{
 #if XAMARIN_IOS
 			return ((View)element).SizeThatFits(new CoreGraphics.CGSize(availableSize.Width, availableSize.Height));
+#elif __MACOS__
+			if(element is NSControl nsControl)
+			{
+				return nsControl.SizeThatFits(new CoreGraphics.CGSize(availableSize.Width, availableSize.Height));
+			}
+			else if (element is FrameworkElement fe)
+			{
+				fe.Measure(new Size(availableSize.Width, availableSize.Height));
+				var desiredSize = fe.DesiredSize;
+				return new CGSize(desiredSize.Width, desiredSize.Height);
+			}
+			else
+			{
+				throw new NotSupportedException($"Unsupported measure for {element}");
+			}
+
 #elif XAMARIN_ANDROID
 			var widthSpec = ViewHelper.SpecFromLogicalSize(availableSize.Width);
 			var heightSpec = ViewHelper.SpecFromLogicalSize(availableSize.Height);
@@ -265,6 +292,27 @@ namespace Windows.UI.Xaml
 			return default(CGSize);
 #endif
 		}
+
+#if __MACOS__
+		public static CGSize Measure(this View element, _Size availableSize)
+		{
+			if (element is NSControl nsControl)
+			{
+				return nsControl.SizeThatFits(new CoreGraphics.CGSize(availableSize.Width, availableSize.Height));
+			}
+			else if (element is FrameworkElement fe)
+			{
+				fe.Measure(new Size(availableSize.Width, availableSize.Height));
+				var desiredSize = fe.DesiredSize;
+				return new CGSize(desiredSize.Width, desiredSize.Height);
+			}
+			else
+			{
+				throw new NotSupportedException($"Unsupported measure for {element}");
+			}
+		}
+
+#endif
 
 		public static CGSize SizeThatFits(IFrameworkElement e, CGSize size)
 		{
@@ -332,7 +380,7 @@ namespace Windows.UI.Xaml
 			return element;
 		}
 
-#if XAMARIN_IOS
+#if XAMARIN_IOS || __MACOS__
 		private static nfloat NumberOrDefault(this double number, nfloat defaultValue)
 		{
 			return NumberOrDefault((nfloat)number, defaultValue);
