@@ -32,10 +32,10 @@
 	
   <ItemGroup>
 		<PackageReference Include="Uno.SourceGenerationTasks">
-			<Version>1.28.0</Version>
+			<Version>1.29.0-dev.157</Version>
 			<NoWarn>NU1701</NoWarn>
 		</PackageReference>
-		<PackageReference Include="Uno.Wasm.Bootstrap" Version="1.0.0-dev.58" />
+		<PackageReference Include="Uno.Wasm.Bootstrap" Version="1.0.0-dev.112" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Console" Version="1.1.1" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Filter" Version="1.1.1" />
 	</ItemGroup>

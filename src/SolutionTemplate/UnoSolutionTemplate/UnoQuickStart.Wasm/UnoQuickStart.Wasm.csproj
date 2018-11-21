@@ -35,8 +35,8 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Uno.UI" Version="1.41.1" />
-		<PackageReference Include="Uno.Wasm.Bootstrap" Version="1.0.0-dev.58" />
+		<PackageReference Include="Uno.UI" Version="1.42.0-dev.395" />
+		<PackageReference Include="Uno.Wasm.Bootstrap" Version="1.0.0-dev.112" />
 	</ItemGroup>
 
 	<Import Project="..\$ext_safeprojectname$.Shared\$ext_safeprojectname$.Shared.projitems" Label="Shared" Condition="Exists('..\$ext_safeprojectname$.Shared\$ext_safeprojectname$.Shared.projitems')" />
