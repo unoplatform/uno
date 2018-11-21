@@ -2,7 +2,6 @@
 using Android.App;
 using Android.Graphics;
 using Android.Graphics.Drawables;
-using Android.Util;
 using Android.Views;
 using Android.Widget;
 
@@ -66,22 +65,17 @@ namespace Uno.UI
 		/// </summary>
 		void ViewTreeObserver.IOnGlobalLayoutListener.OnGlobalLayout()
 		{
-			var metrics = new DisplayMetrics();
-			_activity.WindowManager.DefaultDisplay.GetMetrics(metrics);
-
-			var realMetrics = new DisplayMetrics();
-			_activity.WindowManager.DefaultDisplay.GetRealMetrics(realMetrics);
+			var screenSize = new Point();
+			_activity.WindowManager.DefaultDisplay.GetSize(screenSize);
 
 			var popupRect = new Rect();
 			_popupView.GetWindowVisibleDisplayFrame(popupRect);
 
-			// We are only interested in the height above the navigation bar. If the navigation bar visibility changes, it will also raise OnGlobalLayout.
-			// While the keyboard is visible the navigation bar will always also be visible (enabling the close keyboard button).
 			var keyboardRect = new Rect(
 				0,
-				Math.Min(popupRect.Bottom, metrics.HeightPixels),
-				realMetrics.WidthPixels,
-				realMetrics.HeightPixels
+				popupRect.Bottom,
+				screenSize.X,
+				screenSize.Y
 			);
 
 			_onKeyboardRectChanged?.Invoke(keyboardRect);
