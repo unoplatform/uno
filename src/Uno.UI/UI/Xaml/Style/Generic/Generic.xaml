@@ -8254,6 +8254,8 @@
 				Value="False" />
 		<Setter Property="Stretch"
 				Value="Uniform" />
+		<Setter Property="Background"
+				Value="Black" />
 		<Setter Property="Template">
             <Setter.Value>
 				<ControlTemplate TargetType="MediaPlayerElement">
@@ -8268,7 +8270,7 @@
 											  Stretch="{TemplateBinding Stretch}"
 											  MediaPlayer="{TemplateBinding MediaPlayer}"
 											  Visibility="Collapsed"
-											  Background="Black" />
+											  Background="{TemplateBinding Background}" />
 						<ContentPresenter x:Name="TransportControlsPresenter"
 										  Visibility="{TemplateBinding AreTransportControlsEnabled}" />
 						<Grid x:Name="TimedTextSourcePresenter" />

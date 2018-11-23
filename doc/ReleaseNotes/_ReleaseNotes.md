@@ -7,6 +7,8 @@
 ### Breaking changes
 
 ### Bug fixes
+ * MediaPlayerElement [iOS] Subtitles are not disable on initial launch anymore
+ * MediaPlayerElement [Android]Player status is now properly updated on media end
 
 
 

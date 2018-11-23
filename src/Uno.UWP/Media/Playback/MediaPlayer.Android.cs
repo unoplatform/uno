@@ -262,6 +262,7 @@ namespace Windows.Media.Playback
 		public void OnCompletion(AndroidMediaPlayer mp)
 		{
 			MediaEnded?.Invoke(this, null);
+			PlaybackSession.PlaybackState = MediaPlaybackState.None;
 		}
 
 		private void OnMediaFailed(global::System.Exception ex = null, string message = null)

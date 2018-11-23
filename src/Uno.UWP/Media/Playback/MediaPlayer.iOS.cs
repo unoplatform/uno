@@ -138,15 +138,9 @@ namespace Windows.Media.Playback
 
 				// Adapt pitch to prevent "metallic echo" when changing playback rate
 				_player.CurrentItem.AudioTimePitchAlgorithm = AVAudioTimePitchAlgorithm.TimeDomain;
-
-				// Disable subtitles if any
-				var mediaSelectionGroup = _player.CurrentItem.Asset.MediaSelectionGroupForMediaCharacteristic(AVMediaCharacteristic.Legible);
-				if (mediaSelectionGroup != null)
-				{
-					_player.CurrentItem.SelectMediaOption(null, mediaSelectionGroup);
-				}
 				
 				MediaOpened?.Invoke(this, null);
+
 			}
 			catch (Exception ex)
 			{
