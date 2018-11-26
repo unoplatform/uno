@@ -7,7 +7,10 @@ namespace Windows.ApplicationModel.DataTransfer
 	{
 		public static void SetContent(DataPackage content)
 		{
-			UIPasteboard.General.String = content.Text;
+			if (content.Text != null)
+			{
+				UIPasteboard.General.String = content.Text;
+			}
 		}
 	}
 }

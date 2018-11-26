@@ -11,9 +11,12 @@ namespace Windows.ApplicationModel.DataTransfer
 	{
 		public static void SetContent(DataPackage content)
 		{
-			var manager = (ClipboardManager)ContextHelper.Current.GetSystemService(Context.ClipboardService);
+			if (content?.Text == null)
+			{
+				var manager = (ClipboardManager)ContextHelper.Current.GetSystemService(Context.ClipboardService);
 
-			manager.Text = content.Text;
+				manager.Text = content.Text;
+			}
 		}
 	}
 }

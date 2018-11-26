@@ -6,10 +6,13 @@ namespace Windows.ApplicationModel.DataTransfer
 	{
 		public static void SetContent(DataPackage content)
 		{
-			var text = WebAssemblyRuntime.EscapeJs(content.Text);
-			var command = $"Uno.Utils.Clipboard.setText(\"{text}\");";
+			if (content?.Text != null)
+			{
+				var text = WebAssemblyRuntime.EscapeJs(content.Text);
+				var command = $"Uno.Utils.Clipboard.setText(\"{text}\");";
 
-			WebAssemblyRuntime.InvokeJS(command);
+				WebAssemblyRuntime.InvokeJS(command);
+			}
 		}
 	}
 }
