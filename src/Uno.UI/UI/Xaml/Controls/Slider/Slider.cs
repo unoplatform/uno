@@ -202,9 +202,14 @@ namespace Windows.UI.Xaml.Controls
 #if XAMARIN_ANDROID
 				this.RequestDisallowInterceptTouchEvent(true);
 #endif
-
-				_horizontalInitial = GetSanitizedDimension(_horizontalDecreaseRect.Width);
-				_verticalInitial = GetSanitizedDimension(_verticalDecreaseRect.Height);
+				if (Orientation == Orientation.Horizontal)
+				{
+					_horizontalInitial = GetSanitizedDimension(_horizontalDecreaseRect.Width);
+				}
+				else
+				{
+					_verticalInitial = GetSanitizedDimension(_verticalDecreaseRect.Height);
+				}
 
 				IsPointerPressed = true;
 				UpdateCommonState();

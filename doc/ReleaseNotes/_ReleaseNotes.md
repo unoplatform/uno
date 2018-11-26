@@ -9,6 +9,7 @@
 ### Bug fixes
  * MediaPlayerElement [iOS] Subtitles are not disable on initial launch anymore
  * MediaPlayerElement [Android]Player status is now properly updated on media end
+ * #388 Slider: NRE when vertical template is not defined
 
 
 
