@@ -69,7 +69,7 @@ namespace Windows.ApplicationModel.DataTransfer
 			throw new global::System.NotImplementedException("The member DataPackageView Clipboard.GetContent() is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || false || __MACOS__
+		#if false || false || NET46 || false || __MACOS__
 		[global::Uno.NotImplemented]
 		public static void SetContent( global::Windows.ApplicationModel.DataTransfer.DataPackage content)
 		{
