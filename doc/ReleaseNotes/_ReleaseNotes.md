@@ -3,6 +3,7 @@
 ## Next version
 
 ### Features
+* [Wasm] Improve general performance and memory pressure by removing Javascript interop evaluations.
 
 ### Breaking changes
 

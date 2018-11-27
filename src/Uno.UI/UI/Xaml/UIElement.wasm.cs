@@ -32,13 +32,13 @@ namespace Windows.UI.Xaml
 
 		private static class ClassNames
 		{
-			private static readonly Dictionary<Type, string> _classNames = new Dictionary<Type, string>();
+			private static readonly Dictionary<Type, string[]> _classNames = new Dictionary<Type, string[]>();
 
-			internal static string GetForType(Type type)
+			internal static string[] GetForType(Type type)
 			{
 				if(!_classNames.TryGetValue(type, out var names))
 				{
-					_classNames[type] = names = string.Join(",", GetClassesForType(type));
+					_classNames[type] = names = GetClassesForType(type).ToArray();
 				}
 
 				return names;
@@ -48,7 +48,7 @@ namespace Windows.UI.Xaml
 			{
 				while (type != null && type != typeof(object))
 				{
-					yield return "\"" + type.Name.ToLowerInvariant() + "\"";
+					yield return type.Name.ToLowerInvariant();
 					type = type.BaseType;
 				}
 			}
@@ -68,17 +68,7 @@ namespace Windows.UI.Xaml
 
 		public Size MeasureView(Size availableSize)
 		{
-			var w = double.IsInfinity(availableSize.Width) ? "null" : availableSize.Width.ToStringInvariant();
-			var h = double.IsInfinity(availableSize.Height) ? "null" : availableSize.Height.ToStringInvariant();
-
-			var command = "Uno.UI.WindowManager.current.measureView(\"" + HtmlId + "\", \"" + w + "\", \"" + h + "\");";
-			var result = WebAssemblyRuntime.InvokeJS(command);
-
-			var parts = result.Split(';');
-
-			return new Size(
-				double.Parse(parts[0], CultureInfo.InvariantCulture) + 0.5,
-				double.Parse(parts[1], CultureInfo.InvariantCulture));
+			return Uno.UI.Xaml.WindowManagerInterop.MeasureView(HtmlId, availableSize);
 		}
 
 		public Rect GetBBox()
@@ -109,24 +99,19 @@ namespace Windows.UI.Xaml
 			var type = GetType();
 
 			Handle = GCHandle.ToIntPtr(_gcHandle);
-			HtmlId = type.Name + "-" + Handle;
+			HtmlId = Handle;
 
-			var isSvgStr = HtmlTagIsSvg ? "true" : "false";
-			var isFrameworkElementStr = this is FrameworkElement ? "true" : "false";
-			const string isFocusable = "false"; // by default all control are not focusable, it has to be change latter by the control itself
-			var classes = ClassNames.GetForType(type);
 
-			WebAssemblyRuntime.InvokeJS(
-				"Uno.UI.WindowManager.current.createContent({" +
-				"id:\"" + HtmlId + "\"," +
-				"tagName:\"" + HtmlTag + "\", " +
-				"handle:" + Handle + ", " +
-				"type:\"" + type.FullName + "\", " +
-				"isSvg:" + isSvgStr + ", " +
-				"isFrameworkElement:"  + isFrameworkElementStr + ", " +
-				"isFocusable:"  + isFocusable + ", " +
-				"classes:[" + classes + "]" +
-				"});");
+			Uno.UI.Xaml.WindowManagerInterop.CreateContent(
+				htmlId: HtmlId,
+				htmlTag: HtmlTag,
+				handle: Handle,
+				fullName: type.FullName,
+				htmlTagIsSvg: HtmlTagIsSvg,
+				isFrameworkElement: this is FrameworkElement,
+				isFocusable: false,
+				classes: ClassNames.GetForType(type)
+			);
 
 			UpdateHitTest();
 
@@ -140,15 +125,14 @@ namespace Windows.UI.Xaml
 				this.Log().Debug($"Collecting UIElement for [{HtmlId}]");
 			}
 
-			var command = "Uno.UI.WindowManager.current.destroyView(\"" + HtmlId + "\");";
-			WebAssemblyRuntime.InvokeJS(command);
+			Uno.UI.Xaml.WindowManagerInterop.DestroyView(HtmlId);
 
 			_gcHandle.Free();
 		}
 
 		public IntPtr Handle { get; }
 
-		public string HtmlId { get; }
+		public IntPtr HtmlId { get; }
 
 		public string HtmlTag { get; }
 
@@ -156,14 +140,7 @@ namespace Windows.UI.Xaml
 
 		protected internal void SetStyle(string name, string value)
 		{
-			var escapedvalue = WebAssemblyRuntime.EscapeJs(value);
-
-			var command = "Uno.UI.WindowManager.current.setStyle(\"" +
-				HtmlId + "\", " +
-				"{\"" + name +"\": \"" + escapedvalue + "\"}" +
-			");";
-
-			WebAssemblyRuntime.InvokeJS(command);
+			Uno.UI.Xaml.WindowManagerInterop.SetStyles(HtmlId, new[] { (name, value) });
 		}
 
 		protected internal void SetStyle(params (string name, string value)[] styles)
@@ -173,10 +150,7 @@ namespace Windows.UI.Xaml
 				return; // nothing to do
 			}
 
-			var stylesStr = string.Join(", ", styles.Select(s => "\"" + s.name + "\": \"" + WebAssemblyRuntime.EscapeJs(s.value) + "\""));
-			var command = "Uno.UI.WindowManager.current.setStyle(\"" + HtmlId + "\", {" + stylesStr + "});";
-
-			WebAssemblyRuntime.InvokeJS(command);
+			Uno.UI.Xaml.WindowManagerInterop.SetStyles(HtmlId, styles);
 		}
 
 #if DEBUG
@@ -189,18 +163,14 @@ namespace Windows.UI.Xaml
 			{
 				return; // nothing to do
 			}
-			var stylesStr = string.Join(", ", styles.Select(s => "\"" + s.name + "\": \"" + WebAssemblyRuntime.EscapeJs(s.value) + "\""));
+
+			Uno.UI.Xaml.WindowManagerInterop.SetStyles(HtmlId, styles, true);
 
 #if DEBUG
 			var count = Interlocked.Increment(ref _arrangeCount);
 
-			var command = "Uno.UI.WindowManager.current.setStyle(\"" + HtmlId + "\", {" + stylesStr + "}, true);" +
-				"Uno.UI.WindowManager.current.setAttribute(\"" + HtmlId + "\", {\"xamlArrangeCount\": \"" + count + "\"});";
-#else
-			var command = "Uno.UI.WindowManager.current.setStyle(\"" + HtmlId + "\", {" + stylesStr + "}, true);";
+			SetAttribute(("xamlArrangeCount", count.ToString()));
 #endif
-
-			WebAssemblyRuntime.InvokeJS(command);
 		}
 
 		protected internal void ResetStyle(params string[] names)
@@ -209,25 +179,14 @@ namespace Windows.UI.Xaml
 			{
 				// nothing to do
 			}
-			else if (names.Length == 1)
-			{
-				var command = "Uno.UI.WindowManager.current.resetStyle(\"" + HtmlId + "\", [\"" + names[0] + "\"]);";
-				WebAssemblyRuntime.InvokeJS(command);
-			}
-			else
-			{
-				var namesStr = string.Join(", ", names.Select(n => "\"" + n + "\""));
-				var command = "Uno.UI.WindowManager.current.resetStyle(\"" + HtmlId + "\", [\"" + namesStr + "\"]);";
-				WebAssemblyRuntime.InvokeJS(command);
-			}
+
+			Uno.UI.Xaml.WindowManagerInterop.ResetStyle(HtmlId, names);
 
 		}
 
 		protected internal void SetAttribute(string name, string value)
 		{
-			var escapedvalue = WebAssemblyRuntime.EscapeJs(value);
-			var command = "Uno.UI.WindowManager.current.setAttribute(\"" + HtmlId + "\", {\"" + name + "\": \"" + escapedvalue + "\"});";
-			WebAssemblyRuntime.InvokeJS(command);
+			Uno.UI.Xaml.WindowManagerInterop.SetAttribute(HtmlId, new[] { (name, value) });
 		}
 
 		protected internal void SetAttribute(params (string name, string value)[] attributes)
@@ -237,10 +196,7 @@ namespace Windows.UI.Xaml
 				return; // nothing to do
 			}
 
-			var attributesStr = string.Join(", ", attributes.Select(s => "\"" +s.name + "\": \"" + WebAssemblyRuntime.EscapeJs(s.value) + "\""));
-			var command = "Uno.UI.WindowManager.current.setAttribute(\"" + HtmlId + "\", {" + attributesStr + "});";
-
-			WebAssemblyRuntime.InvokeJS(command);
+			Uno.UI.Xaml.WindowManagerInterop.SetAttribute(HtmlId, attributes);
 		}
 
 		protected internal string GetAttribute(string name)
@@ -250,11 +206,7 @@ namespace Windows.UI.Xaml
 		}
 
 		protected internal void SetProperty(string name, string value)
-		{
-			var escapedvalue = WebAssemblyRuntime.EscapeJs(value);
-			var command = "Uno.UI.WindowManager.current.setProperty(\"" + HtmlId + "\", {\"" + name + "\": \"" + escapedvalue + "\"});";
-			WebAssemblyRuntime.InvokeJS(command);
-		}
+			=> SetProperty((name, value));
 
 		protected internal void SetProperty(params (string name, string value)[] properties)
 		{
@@ -263,10 +215,7 @@ namespace Windows.UI.Xaml
 				return; // nothing to do
 			}
 
-			var propertiesStr = string.Join(", ", properties.Select(s => "\"" + s.name + "\": \"" + WebAssemblyRuntime.EscapeJs(s.value) + "\""));
-			var command = "Uno.UI.WindowManager.current.setAttribute(\"" + HtmlId + "\", {" + propertiesStr + "});";
-
-			WebAssemblyRuntime.InvokeJS(command);
+			Uno.UI.Xaml.WindowManagerInterop.SetProperty(HtmlId, properties);
 		}
 
 		protected internal string GetProperty(string name)
@@ -290,8 +239,7 @@ namespace Windows.UI.Xaml
 				return;
 			}
 
-			var command = "Uno.UI.WindowManager.current.addView(\"" + HtmlId + "\", \"" + view.HtmlId + "\");";
-			WebAssemblyRuntime.InvokeJS(command);
+			Uno.UI.Xaml.WindowManagerInterop.AddView(HtmlId, view.HtmlId);
 
 			InvalidateMeasure();
 		}
@@ -303,8 +251,7 @@ namespace Windows.UI.Xaml
 				return;
 			}
 
-			var command = "Uno.UI.WindowManager.current.addView(\"" + HtmlId + "\", \"" + view.HtmlId + "\", " + index + ");";
-			WebAssemblyRuntime.InvokeJS(command);
+			Uno.UI.Xaml.WindowManagerInterop.AddView(HtmlId, view.HtmlId, index);
 
 			InvalidateMeasure();
 		}
@@ -316,8 +263,7 @@ namespace Windows.UI.Xaml
 				return;
 			}
 
-			var command = "Uno.UI.WindowManager.current.removeView(\"" + HtmlId + "\", \"" + view.HtmlId + "\");";
-			WebAssemblyRuntime.InvokeJS(command);
+			Uno.UI.Xaml.WindowManagerInterop.RemoveView(HtmlId, view.HtmlId);
 
 			InvalidateMeasure();
 		}
@@ -351,6 +297,17 @@ namespace Windows.UI.Xaml
 			);
 		}
 
+		internal enum HtmlEventFilter
+		{
+			LeftPointerEventFilter,
+		}
+
+		internal enum HtmlEventExtractor
+		{
+			PointerEventExtractor, // See PayloadToPointerArgs
+			KeyboardEventExtractor,
+		}
+
 		private class EventRegistration
 		{
 			private static readonly string[] noRegistrationEventNames = { "loading", "loaded", "unloaded" };
@@ -360,7 +317,7 @@ namespace Windows.UI.Xaml
 			private readonly string _eventName;
 			private readonly Func<string, EventArgs> _payloadConverter;
 			private readonly Func<EventArgs, bool> _eventFilterManaged;
-			private readonly string _subscribeCommand;
+			private readonly Action _subscribeCommand;
 
 			private List<Delegate> _invocationList = new List<Delegate>();
 			private List<Delegate> _pendingInvocationList;
@@ -371,8 +328,8 @@ namespace Windows.UI.Xaml
 				UIElement owner,
 				string eventName,
 				bool onCapturePhase = false,
-				string eventFilterScript = null,
-				string eventExtractorScript = null,
+				HtmlEventFilter? eventFilter = null,
+				HtmlEventExtractor? eventExtractor = null,
 				Func<string, EventArgs> payloadConverter = null,
 				Func<EventArgs, bool> eventFilterManaged = null)
 			{
@@ -386,17 +343,8 @@ namespace Windows.UI.Xaml
 				}
 				else
 				{
-					var onCapturePhaseStr = onCapturePhase
-						? "true"
-						: "false";
-					var filterFunction = eventFilterScript == null
-						? "null"
-						: "function(evt) { return " + eventFilterScript + "; }";
-					var extractorFunction = eventExtractorScript == null
-						? "null"
-						: "function(evt) { return " + eventExtractorScript + "; }";
-
-					_subscribeCommand = $"Uno.UI.WindowManager.current.registerEventOnView(\"{_owner.HtmlId}\", \"{eventName}\", {onCapturePhaseStr}, {filterFunction}, {extractorFunction});";
+					_subscribeCommand = () =>
+						Uno.UI.Xaml.WindowManagerInterop.RegisterEventOnView(_owner.HtmlId, eventName, onCapturePhase, eventFilter?.ToString(), eventExtractor?.ToString());
 				}
 			}
 
@@ -415,7 +363,7 @@ namespace Windows.UI.Xaml
 				invocationList.Add(handler);
 				if (_subscribeCommand != null && invocationList.Count == 1 && !_isSubscribed)
 				{
-					WebAssemblyRuntime.InvokeJS(_subscribeCommand);
+					_subscribeCommand();
 					_isSubscribed = true;
 				}
 			}
@@ -526,14 +474,14 @@ namespace Windows.UI.Xaml
 			string eventName,
 			Delegate handler,
 			bool onCapturePhase = false,
-			string eventFilterScript = null,
-			string eventExtractorScript = null,
+			HtmlEventFilter? eventFilter = null,
+			HtmlEventExtractor? eventExtractor = null,
 			Func<string, EventArgs> payloadConverter = null,
 			Func<EventArgs, bool> eventFilterManaged = null)
 		{
 			if(!_eventHandlers.TryGetValue(eventName, out var registartion))
 			{
-				_eventHandlers[eventName] = registartion = new EventRegistration(this, eventName, onCapturePhase, eventFilterScript, eventExtractorScript, payloadConverter);
+				_eventHandlers[eventName] = registartion = new EventRegistration(this, eventName, onCapturePhase, eventFilter, eventExtractor, payloadConverter);
 			}
 
 			registartion.Add(handler);
@@ -544,14 +492,14 @@ namespace Windows.UI.Xaml
 			string eventName,
 			Delegate handler,
 			bool onCapturePhase = false,
-			string eventFilterScript = null,
-			string eventExtractorScript = null,
+			HtmlEventFilter? eventFilter = null,
+			HtmlEventExtractor? eventExtractor = null,
 			Func<string, EventArgs> payloadConverter = null,
 			Func<EventArgs, bool> eventFilterManaged = null)
 		{
 			if (!_eventHandlers.TryGetValue(eventName, out var registartion))
 			{
-				_eventHandlers[managedEventIdentifier] = registartion = new EventRegistration(this, eventName, onCapturePhase, eventFilterScript, eventExtractorScript, payloadConverter);
+				_eventHandlers[managedEventIdentifier] = registartion = new EventRegistration(this, eventName, onCapturePhase, eventFilter, eventExtractor, payloadConverter);
 			}
 
 			registartion.Add(handler);
@@ -625,8 +573,7 @@ namespace Windows.UI.Xaml
 			{
 				_name = value;
 
-				var command = $"Uno.UI.WindowManager.current.setName(\"{HtmlId}\", \"{_name}\");";
-				WebAssemblyRuntime.InvokeJS(command);
+				Uno.UI.Xaml.WindowManagerInterop.SetName(HtmlId, _name);
 			}
 		}
 
@@ -722,7 +669,7 @@ namespace Windows.UI.Xaml
 
 		public override string ToString()
 		{
-			return HtmlId;
+			return GetType().Name + "-" + HtmlId;
 		}
 
 		internal void RaiseTapped(TappedRoutedEventArgs args)
@@ -855,12 +802,6 @@ namespace Windows.UI.Xaml
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.UIElement", "void UIElement.AddHandler(RoutedEvent routedEvent, object handler, bool handledEventsToo)");
 			}
 		}
-
-		private const string leftPointerEventFilter =
-			"evt ? (!evt.button || evt.button == 0) : false";
-
-		private const string pointerEventExtractor =
-			"evt ? \"\"+evt.pointerId+\";\"+evt.clientX+\";\"+evt.clientY+\";\"+(evt.ctrlKey?\"1\":\"0\")+\";\"+(evt.shiftKey?\"1\":\"0\")+\";\"+evt.button+\";\"+evt.pointerType : \"\"";
 
 		private EventArgs PayloadToPointerArgs(string payload)
 		{

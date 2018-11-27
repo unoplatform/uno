@@ -9,8 +9,9 @@
 			"locale": "en-US",
 			"target": "es2015"
 	},
-	"include": [
-		"ts/**/*"
-	]
+  "include": [
+    "ts/**/*",
+    "tsBindings/**/*"
+  ]
 }
 
