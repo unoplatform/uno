@@ -951,24 +951,30 @@ namespace Windows.UI.Xaml.Controls
 				ResetHeaderAndFooter(recycler);
 				_needsHeaderAndFooterUpdate = false;
 			}
-			if (isMeasure && state.WillRunSimpleAnimations())
+
+			var willRunAnimations = state.WillRunSimpleAnimations();
+			if (isMeasure && willRunAnimations)
 			{
 				// When an item is added/removed via an INotifyCollectionChanged operation, the RecyclerView expects two layouts: one 'before' the 
 				// operation, and one 'after.' Here we provide the 'before' by very simply not modifying the layout at all.
 				return;
 			}
+
 			var needsScrapOnMeasure = isMeasure && availableExtent > 0 && availableBreadth > 0 && ChildCount > 0;
-			var willRunAnimations = state.WillRunSimpleAnimations();
 			if (needsScrapOnMeasure)
 			{
-				//Always rebuild the layout on measure, because child dimensions may have changed
+				// Always rebuild the layout on measure, because child dimensions may have changed
 				ScrapLayout(recycler, availableBreadth);
 			}
 			else if (willRunAnimations)
 			{
-				//An INotifyCollectionChanged operation is triggering an animated update of the list.
+				// An INotifyCollectionChanged operation is triggering an animated update of the list.
 				ScrapLayout(recycler, availableBreadth);
+				// We actually need to update the buffer in this particular case to refresh the next item displayed.
+				// Since we don't scrap all views as forbidden below, we should be able to do that without weird behavior
+				UpdateBuffers(recycler);
 			}
+
 			FillLayout(direction, 0, availableExtent, availableBreadth, recycler, state);
 			UnfillLayout(direction, 0, availableExtent, recycler, state);
 			UpdateHeaderAndFooterPositions();
