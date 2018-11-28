@@ -59,7 +59,8 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
+		<DeployExtension>false</DeployExtension>
+	</PropertyGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -72,6 +73,13 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\UnoItemTemplate\UnoItemTemplate.csproj">
+      <Project>{CAB8553E-C1BA-43E8-880A-6F12CE0FAFD2}</Project>
+      <Name>UnoItemTemplate</Name>
+      <VSIXSubPath>ItemTemplates</VSIXSubPath>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+      <IncludeOutputGroupsInVSIX>TemplateProjectOutputGroup%3b</IncludeOutputGroupsInVSIX>
+    </ProjectReference>
     <ProjectReference Include="..\UnoLibraryTemplate\UnoLibraryTemplate.csproj">
       <Project>{22CF09C6-4281-49A2-A13F-477C8D539C0B}</Project>
       <Name>UnoLibraryTemplate</Name>
