@@ -377,7 +377,8 @@ It's partially implemented but there are parts that are closed source from Micro
 Yes, if you do not see it:
 - Make sure you are targetting the latest windows SDK version.
 - Choose "XAML Designer" as the default for opening your XAML files (right-click on your XAML file and then "Open With").
-- Relaunch your Visual Studio solution and select UWP on the top-left corner of your XAML file.
+- Relaunch your Visual Studio solution.
+- Select UWP on the top-left corner of your XAML file.
 
 ## `Program does not contain a static 'Main' method suitable for an entry point` when building the UWP project.
 
