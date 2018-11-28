@@ -11,6 +11,20 @@ namespace Windows.UI.Xaml.Controls
 		// Skipping already declared property CornerRadius
 		// Skipping already declared property BorderThickness
 		// Skipping already declared property BorderBrush
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  global::Windows.UI.Xaml.Controls.BackgroundSizing BackgroundSizing
+		{
+			get
+			{
+				return (global::Windows.UI.Xaml.Controls.BackgroundSizing)this.GetValue(BackgroundSizingProperty);
+			}
+			set
+			{
+				this.SetValue(BackgroundSizingProperty, value);
+			}
+		}
+		#endif
 		// Skipping already declared property AboveProperty
 		// Skipping already declared property AlignBottomWithPanelProperty
 		// Skipping already declared property AlignBottomWithProperty
@@ -31,6 +45,14 @@ namespace Windows.UI.Xaml.Controls
 		// Skipping already declared property LeftOfProperty
 		// Skipping already declared property PaddingProperty
 		// Skipping already declared property RightOfProperty
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public static global::Windows.UI.Xaml.DependencyProperty BackgroundSizingProperty { get; } = 
+		Windows.UI.Xaml.DependencyProperty.Register(
+			"BackgroundSizing", typeof(global::Windows.UI.Xaml.Controls.BackgroundSizing), 
+			typeof(global::Windows.UI.Xaml.Controls.RelativePanel), 
+			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Controls.BackgroundSizing)));
+		#endif
 		// Skipping already declared method Windows.UI.Xaml.Controls.RelativePanel.RelativePanel()
 		// Forced skipping of method Windows.UI.Xaml.Controls.RelativePanel.RelativePanel()
 		// Forced skipping of method Windows.UI.Xaml.Controls.RelativePanel.BorderBrush.get
@@ -41,6 +63,9 @@ namespace Windows.UI.Xaml.Controls
 		// Forced skipping of method Windows.UI.Xaml.Controls.RelativePanel.CornerRadius.set
 		// Forced skipping of method Windows.UI.Xaml.Controls.RelativePanel.Padding.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.RelativePanel.Padding.set
+		// Forced skipping of method Windows.UI.Xaml.Controls.RelativePanel.BackgroundSizing.get
+		// Forced skipping of method Windows.UI.Xaml.Controls.RelativePanel.BackgroundSizing.set
+		// Forced skipping of method Windows.UI.Xaml.Controls.RelativePanel.BackgroundSizingProperty.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.RelativePanel.LeftOfProperty.get
 		// Skipping already declared method Windows.UI.Xaml.Controls.RelativePanel.GetLeftOf(Windows.UI.Xaml.UIElement)
 		// Skipping already declared method Windows.UI.Xaml.Controls.RelativePanel.SetLeftOf(Windows.UI.Xaml.UIElement, object)

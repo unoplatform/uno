@@ -37,6 +37,16 @@ namespace Windows.UI.Text.Core
 			}
 		}
 		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  global::Windows.UI.Text.Core.CoreTextLayoutBounds LayoutBoundsVisualPixels
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member CoreTextLayoutBounds CoreTextLayoutRequest.LayoutBoundsVisualPixels is not implemented in Uno.");
+			}
+		}
+		#endif
 		// Forced skipping of method Windows.UI.Text.Core.CoreTextLayoutRequest.Range.get
 		// Forced skipping of method Windows.UI.Text.Core.CoreTextLayoutRequest.LayoutBounds.get
 		// Forced skipping of method Windows.UI.Text.Core.CoreTextLayoutRequest.IsCanceled.get
@@ -47,5 +57,6 @@ namespace Windows.UI.Text.Core
 			throw new global::System.NotImplementedException("The member Deferral CoreTextLayoutRequest.GetDeferral() is not implemented in Uno.");
 		}
 		#endif
+		// Forced skipping of method Windows.UI.Text.Core.CoreTextLayoutRequest.LayoutBoundsVisualPixels.get
 	}
 }

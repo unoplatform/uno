@@ -7,18 +7,18 @@ namespace Windows.UI.ViewManagement
 	#endif
 	public  partial class ApplicationViewTitleBar 
 	{
-		// Skipping already declared property ButtonInactiveBackgroundColor
-		// Skipping already declared property ButtonHoverForegroundColor
-		// Skipping already declared property ButtonHoverBackgroundColor
-		// Skipping already declared property ButtonForegroundColor
-		// Skipping already declared property ButtonBackgroundColor
-		// Skipping already declared property ButtonInactiveForegroundColor
-		// Skipping already declared property BackgroundColor
 		// Skipping already declared property InactiveForegroundColor
 		// Skipping already declared property InactiveBackgroundColor
 		// Skipping already declared property ForegroundColor
 		// Skipping already declared property ButtonPressedForegroundColor
 		// Skipping already declared property ButtonPressedBackgroundColor
+		// Skipping already declared property ButtonInactiveForegroundColor
+		// Skipping already declared property ButtonInactiveBackgroundColor
+		// Skipping already declared property ButtonHoverForegroundColor
+		// Skipping already declared property ButtonHoverBackgroundColor
+		// Skipping already declared property ButtonForegroundColor
+		// Skipping already declared property ButtonBackgroundColor
+		// Skipping already declared property BackgroundColor
 		// Forced skipping of method Windows.UI.ViewManagement.ApplicationViewTitleBar.ForegroundColor.set
 		// Forced skipping of method Windows.UI.ViewManagement.ApplicationViewTitleBar.ForegroundColor.get
 		// Forced skipping of method Windows.UI.ViewManagement.ApplicationViewTitleBar.BackgroundColor.set

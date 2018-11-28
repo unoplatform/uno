@@ -32,6 +32,9 @@ namespace Windows.Devices.Enumeration
 		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		AssociationEndpointService,
 		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		DevicePanel,
+		#endif
 	}
 	#endif
 }

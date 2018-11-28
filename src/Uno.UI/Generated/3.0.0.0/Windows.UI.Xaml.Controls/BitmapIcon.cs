@@ -2,62 +2,16 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml.Controls
 {
-	#if false 
+	#if false || false || false || false || false
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class BitmapIcon : global::Windows.UI.Xaml.Controls.IconElement
 	{
-		#if false 
-		[global::Uno.NotImplemented]
-		public  global::System.Uri UriSource
-		{
-			get
-			{
-				return (global::System.Uri)this.GetValue(UriSourceProperty);
-			}
-			set
-			{
-				this.SetValue(UriSourceProperty, value);
-			}
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented]
-		public  bool ShowAsMonochrome
-		{
-			get
-			{
-				return (bool)this.GetValue(ShowAsMonochromeProperty);
-			}
-			set
-			{
-				this.SetValue(ShowAsMonochromeProperty, value);
-			}
-		}
-		#endif
-		#if false 
-		[global::Uno.NotImplemented]
-		public static global::Windows.UI.Xaml.DependencyProperty UriSourceProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			"UriSource", typeof(global::System.Uri), 
-			typeof(global::Windows.UI.Xaml.Controls.BitmapIcon), 
-			new FrameworkPropertyMetadata(default(global::System.Uri)));
-		#endif
-		#if false
-		[global::Uno.NotImplemented]
-		public static global::Windows.UI.Xaml.DependencyProperty ShowAsMonochromeProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			"ShowAsMonochrome", typeof(bool), 
-			typeof(global::Windows.UI.Xaml.Controls.BitmapIcon), 
-			new FrameworkPropertyMetadata(default(bool)));
-		#endif
-		#if false 
-		[global::Uno.NotImplemented]
-		public BitmapIcon() 
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.BitmapIcon", "BitmapIcon.BitmapIcon()");
-		}
-		#endif
+		// Skipping already declared property UriSource
+		// Skipping already declared property ShowAsMonochrome
+		// Skipping already declared property UriSourceProperty
+		// Skipping already declared property ShowAsMonochromeProperty
+		// Skipping already declared method Windows.UI.Xaml.Controls.BitmapIcon.BitmapIcon()
 		// Forced skipping of method Windows.UI.Xaml.Controls.BitmapIcon.BitmapIcon()
 		// Forced skipping of method Windows.UI.Xaml.Controls.BitmapIcon.UriSource.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.BitmapIcon.UriSource.set

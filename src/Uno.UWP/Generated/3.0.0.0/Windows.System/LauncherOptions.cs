@@ -179,6 +179,10 @@ namespace Windows.System
 		}
 		#endif
 		// Forced skipping of method Windows.System.LauncherOptions.LauncherOptions()
+		// Forced skipping of method Windows.System.LauncherOptions.TargetApplicationPackageFamilyName.get
+		// Forced skipping of method Windows.System.LauncherOptions.TargetApplicationPackageFamilyName.set
+		// Forced skipping of method Windows.System.LauncherOptions.NeighboringFilesQuery.get
+		// Forced skipping of method Windows.System.LauncherOptions.NeighboringFilesQuery.set
 		// Forced skipping of method Windows.System.LauncherOptions.TreatAsUntrusted.get
 		// Forced skipping of method Windows.System.LauncherOptions.TreatAsUntrusted.set
 		// Forced skipping of method Windows.System.LauncherOptions.DisplayApplicationPicker.get
@@ -192,16 +196,12 @@ namespace Windows.System
 		// Forced skipping of method Windows.System.LauncherOptions.FallbackUri.set
 		// Forced skipping of method Windows.System.LauncherOptions.ContentType.get
 		// Forced skipping of method Windows.System.LauncherOptions.ContentType.set
-		// Forced skipping of method Windows.System.LauncherOptions.DesiredRemainingView.get
-		// Forced skipping of method Windows.System.LauncherOptions.DesiredRemainingView.set
-		// Forced skipping of method Windows.System.LauncherOptions.TargetApplicationPackageFamilyName.get
-		// Forced skipping of method Windows.System.LauncherOptions.TargetApplicationPackageFamilyName.set
-		// Forced skipping of method Windows.System.LauncherOptions.NeighboringFilesQuery.get
-		// Forced skipping of method Windows.System.LauncherOptions.NeighboringFilesQuery.set
 		// Forced skipping of method Windows.System.LauncherOptions.IgnoreAppUriHandlers.get
 		// Forced skipping of method Windows.System.LauncherOptions.IgnoreAppUriHandlers.set
 		// Forced skipping of method Windows.System.LauncherOptions.LimitPickerToCurrentAppAndAppUriHandlers.get
 		// Forced skipping of method Windows.System.LauncherOptions.LimitPickerToCurrentAppAndAppUriHandlers.set
+		// Forced skipping of method Windows.System.LauncherOptions.DesiredRemainingView.get
+		// Forced skipping of method Windows.System.LauncherOptions.DesiredRemainingView.set
 		// Processing: Windows.System.ILauncherViewOptions
 	}
 }

@@ -20,27 +20,6 @@ namespace Windows.UI.Xaml.Controls
 		// Forced skipping of method Windows.UI.Xaml.Controls.VirtualizingPanel.ItemContainerGenerator.get
 		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
-		protected virtual void OnItemsChanged( object sender,  global::Windows.UI.Xaml.Controls.Primitives.ItemsChangedEventArgs args)
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.VirtualizingPanel", "void VirtualizingPanel.OnItemsChanged(object sender, ItemsChangedEventArgs args)");
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		protected virtual void OnClearChildren()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.VirtualizingPanel", "void VirtualizingPanel.OnClearChildren()");
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		protected virtual void BringIndexIntoView( int index)
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.VirtualizingPanel", "void VirtualizingPanel.BringIndexIntoView(int index)");
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
 		protected  void AddInternalChild( global::Windows.UI.Xaml.UIElement child)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.VirtualizingPanel", "void VirtualizingPanel.AddInternalChild(UIElement child)");
@@ -58,6 +37,27 @@ namespace Windows.UI.Xaml.Controls
 		protected  void RemoveInternalChildRange( int index,  int range)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.VirtualizingPanel", "void VirtualizingPanel.RemoveInternalChildRange(int index, int range)");
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		protected virtual void OnItemsChanged( object sender,  global::Windows.UI.Xaml.Controls.Primitives.ItemsChangedEventArgs args)
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.VirtualizingPanel", "void VirtualizingPanel.OnItemsChanged(object sender, ItemsChangedEventArgs args)");
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		protected virtual void OnClearChildren()
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.VirtualizingPanel", "void VirtualizingPanel.OnClearChildren()");
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		protected virtual void BringIndexIntoView( int index)
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.VirtualizingPanel", "void VirtualizingPanel.BringIndexIntoView(int index)");
 		}
 		#endif
 	}

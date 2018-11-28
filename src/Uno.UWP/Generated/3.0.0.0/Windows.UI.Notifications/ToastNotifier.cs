@@ -67,5 +67,23 @@ namespace Windows.UI.Notifications
 			throw new global::System.NotImplementedException("The member NotificationUpdateResult ToastNotifier.Update(NotificationData data, string tag) is not implemented in Uno.");
 		}
 		#endif
+		// Forced skipping of method Windows.UI.Notifications.ToastNotifier.ScheduledToastNotificationShowing.add
+		// Forced skipping of method Windows.UI.Notifications.ToastNotifier.ScheduledToastNotificationShowing.remove
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Notifications.ToastNotifier, global::Windows.UI.Notifications.ScheduledToastNotificationShowingEventArgs> ScheduledToastNotificationShowing
+		{
+			[global::Uno.NotImplemented]
+			add
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Notifications.ToastNotifier", "event TypedEventHandler<ToastNotifier, ScheduledToastNotificationShowingEventArgs> ToastNotifier.ScheduledToastNotificationShowing");
+			}
+			[global::Uno.NotImplemented]
+			remove
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Notifications.ToastNotifier", "event TypedEventHandler<ToastNotifier, ScheduledToastNotificationShowingEventArgs> ToastNotifier.ScheduledToastNotificationShowing");
+			}
+		}
+		#endif
 	}
 }

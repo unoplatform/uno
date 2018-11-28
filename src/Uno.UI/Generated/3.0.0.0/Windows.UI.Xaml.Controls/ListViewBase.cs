@@ -7,6 +7,7 @@ namespace Windows.UI.Xaml.Controls
 	#endif
 	public  partial class ListViewBase : global::Windows.UI.Xaml.Controls.ISemanticZoomInformation
 	{
+		// Skipping already declared property SelectionMode
 		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  bool IsSwipeEnabled
@@ -21,6 +22,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 		#endif
+		// Skipping already declared property IsItemClickEnabled
 		// Skipping already declared property IncrementalLoadingTrigger
 		// Skipping already declared property IncrementalLoadingThreshold
 		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
@@ -39,7 +41,7 @@ namespace Windows.UI.Xaml.Controls
 		#endif
 		// Skipping already declared property HeaderTemplate
 		// Skipping already declared property Header
-		// Skipping already declared property IsItemClickEnabled
+		// Skipping already declared property DataFetchSize
 		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  bool CanReorderItems
@@ -68,8 +70,6 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 		#endif
-		// Skipping already declared property DataFetchSize
-		// Skipping already declared property SelectionMode
 		#if false || false || NET46 || false || false
 		[global::Uno.NotImplemented]
 		public  global::System.Collections.Generic.IList<object> SelectedItems
@@ -80,8 +80,6 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 		#endif
-		// Skipping already declared property Footer
-		// Skipping already declared property FooterTemplate
 		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  bool ShowsScrollingPlaceholders
@@ -110,6 +108,8 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 		#endif
+		// Skipping already declared property FooterTemplate
+		// Skipping already declared property Footer
 		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.UI.Xaml.Controls.ListViewReorderMode ReorderMode
@@ -231,6 +231,7 @@ namespace Windows.UI.Xaml.Controls
 			typeof(global::Windows.UI.Xaml.Controls.ListViewBase), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.Animation.TransitionCollection)));
 		#endif
+		// Skipping already declared property IncrementalLoadingThresholdProperty
 		// Skipping already declared property IncrementalLoadingTriggerProperty
 		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
@@ -266,7 +267,6 @@ namespace Windows.UI.Xaml.Controls
 			typeof(global::Windows.UI.Xaml.Controls.ListViewBase), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Controls.SemanticZoom)));
 		#endif
-		// Skipping already declared property IncrementalLoadingThresholdProperty
 		// Skipping already declared property FooterProperty
 		// Skipping already declared property FooterTemplateProperty
 		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
@@ -366,61 +366,6 @@ namespace Windows.UI.Xaml.Controls
 		// Forced skipping of method Windows.UI.Xaml.Controls.ListViewBase.HeaderTemplate.set
 		// Forced skipping of method Windows.UI.Xaml.Controls.ListViewBase.HeaderTransitions.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.ListViewBase.HeaderTransitions.set
-		// Forced skipping of method Windows.UI.Xaml.Controls.ListViewBase.SemanticZoomOwner.get
-		// Forced skipping of method Windows.UI.Xaml.Controls.ListViewBase.SemanticZoomOwner.set
-		// Forced skipping of method Windows.UI.Xaml.Controls.ListViewBase.IsActiveView.get
-		// Forced skipping of method Windows.UI.Xaml.Controls.ListViewBase.IsActiveView.set
-		// Forced skipping of method Windows.UI.Xaml.Controls.ListViewBase.IsZoomedInView.get
-		// Forced skipping of method Windows.UI.Xaml.Controls.ListViewBase.IsZoomedInView.set
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  void InitializeViewChange()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.ListViewBase", "void ListViewBase.InitializeViewChange()");
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  void CompleteViewChange()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.ListViewBase", "void ListViewBase.CompleteViewChange()");
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  void MakeVisible( global::Windows.UI.Xaml.Controls.SemanticZoomLocation item)
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.ListViewBase", "void ListViewBase.MakeVisible(SemanticZoomLocation item)");
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  void StartViewChangeFrom( global::Windows.UI.Xaml.Controls.SemanticZoomLocation source,  global::Windows.UI.Xaml.Controls.SemanticZoomLocation destination)
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.ListViewBase", "void ListViewBase.StartViewChangeFrom(SemanticZoomLocation source, SemanticZoomLocation destination)");
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  void StartViewChangeTo( global::Windows.UI.Xaml.Controls.SemanticZoomLocation source,  global::Windows.UI.Xaml.Controls.SemanticZoomLocation destination)
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.ListViewBase", "void ListViewBase.StartViewChangeTo(SemanticZoomLocation source, SemanticZoomLocation destination)");
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  void CompleteViewChangeFrom( global::Windows.UI.Xaml.Controls.SemanticZoomLocation source,  global::Windows.UI.Xaml.Controls.SemanticZoomLocation destination)
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.ListViewBase", "void ListViewBase.CompleteViewChangeFrom(SemanticZoomLocation source, SemanticZoomLocation destination)");
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  void CompleteViewChangeTo( global::Windows.UI.Xaml.Controls.SemanticZoomLocation source,  global::Windows.UI.Xaml.Controls.SemanticZoomLocation destination)
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.ListViewBase", "void ListViewBase.CompleteViewChangeTo(SemanticZoomLocation source, SemanticZoomLocation destination)");
-		}
-		#endif
 		// Forced skipping of method Windows.UI.Xaml.Controls.ListViewBase.ShowsScrollingPlaceholders.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.ListViewBase.ShowsScrollingPlaceholders.set
 		// Forced skipping of method Windows.UI.Xaml.Controls.ListViewBase.ContainerContentChanging.add
@@ -484,6 +429,61 @@ namespace Windows.UI.Xaml.Controls
 		public  global::Windows.UI.Xaml.Media.Animation.ConnectedAnimation PrepareConnectedAnimation( string key,  object item,  string elementName)
 		{
 			throw new global::System.NotImplementedException("The member ConnectedAnimation ListViewBase.PrepareConnectedAnimation(string key, object item, string elementName) is not implemented in Uno.");
+		}
+		#endif
+		// Forced skipping of method Windows.UI.Xaml.Controls.ListViewBase.SemanticZoomOwner.get
+		// Forced skipping of method Windows.UI.Xaml.Controls.ListViewBase.SemanticZoomOwner.set
+		// Forced skipping of method Windows.UI.Xaml.Controls.ListViewBase.IsActiveView.get
+		// Forced skipping of method Windows.UI.Xaml.Controls.ListViewBase.IsActiveView.set
+		// Forced skipping of method Windows.UI.Xaml.Controls.ListViewBase.IsZoomedInView.get
+		// Forced skipping of method Windows.UI.Xaml.Controls.ListViewBase.IsZoomedInView.set
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  void InitializeViewChange()
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.ListViewBase", "void ListViewBase.InitializeViewChange()");
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  void CompleteViewChange()
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.ListViewBase", "void ListViewBase.CompleteViewChange()");
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  void MakeVisible( global::Windows.UI.Xaml.Controls.SemanticZoomLocation item)
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.ListViewBase", "void ListViewBase.MakeVisible(SemanticZoomLocation item)");
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  void StartViewChangeFrom( global::Windows.UI.Xaml.Controls.SemanticZoomLocation source,  global::Windows.UI.Xaml.Controls.SemanticZoomLocation destination)
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.ListViewBase", "void ListViewBase.StartViewChangeFrom(SemanticZoomLocation source, SemanticZoomLocation destination)");
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  void StartViewChangeTo( global::Windows.UI.Xaml.Controls.SemanticZoomLocation source,  global::Windows.UI.Xaml.Controls.SemanticZoomLocation destination)
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.ListViewBase", "void ListViewBase.StartViewChangeTo(SemanticZoomLocation source, SemanticZoomLocation destination)");
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  void CompleteViewChangeFrom( global::Windows.UI.Xaml.Controls.SemanticZoomLocation source,  global::Windows.UI.Xaml.Controls.SemanticZoomLocation destination)
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.ListViewBase", "void ListViewBase.CompleteViewChangeFrom(SemanticZoomLocation source, SemanticZoomLocation destination)");
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  void CompleteViewChangeTo( global::Windows.UI.Xaml.Controls.SemanticZoomLocation source,  global::Windows.UI.Xaml.Controls.SemanticZoomLocation destination)
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.ListViewBase", "void ListViewBase.CompleteViewChangeTo(SemanticZoomLocation source, SemanticZoomLocation destination)");
 		}
 		#endif
 		// Forced skipping of method Windows.UI.Xaml.Controls.ListViewBase.SingleSelectionFollowsFocusProperty.get

@@ -4,6 +4,7 @@
 
 ### Features
 * [Wasm] Improve general performance and memory pressure by removing Javascript interop evaluations.
+* Add support for Windows 10 SDK 17763 (1809)
 
 ### Breaking changes
 

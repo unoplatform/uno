@@ -89,6 +89,16 @@ namespace Windows.UI.Xaml.Input
 			}
 		}
 		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  global::System.Guid CorrelationId
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member Guid GettingFocusEventArgs.CorrelationId is not implemented in Uno.");
+			}
+		}
+		#endif
 		// Forced skipping of method Windows.UI.Xaml.Input.GettingFocusEventArgs.OldFocusedElement.get
 		// Forced skipping of method Windows.UI.Xaml.Input.GettingFocusEventArgs.NewFocusedElement.get
 		// Forced skipping of method Windows.UI.Xaml.Input.GettingFocusEventArgs.NewFocusedElement.set
@@ -113,5 +123,6 @@ namespace Windows.UI.Xaml.Input
 			throw new global::System.NotImplementedException("The member bool GettingFocusEventArgs.TrySetNewFocusedElement(DependencyObject element) is not implemented in Uno.");
 		}
 		#endif
+		// Forced skipping of method Windows.UI.Xaml.Input.GettingFocusEventArgs.CorrelationId.get
 	}
 }

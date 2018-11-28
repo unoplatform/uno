@@ -7,9 +7,12 @@ namespace Windows.UI.Xaml.Controls
 	#endif
 	public  partial class ItemsWrapGrid : global::Windows.UI.Xaml.Controls.Panel
 	{
-		// Skipping already declared property GroupHeaderPlacement
+		// Skipping already declared property Orientation
+		// Skipping already declared property MaximumRowsOrColumns
+		// Skipping already declared property ItemWidth
 		// Skipping already declared property ItemHeight
 		// Skipping already declared property GroupPadding
+		// Skipping already declared property GroupHeaderPlacement
 		#if false || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  double CacheLength
@@ -24,9 +27,6 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 		#endif
-		// Skipping already declared property Orientation
-		// Skipping already declared property MaximumRowsOrColumns
-		// Skipping already declared property ItemWidth
 		#if false || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  int FirstCacheIndex

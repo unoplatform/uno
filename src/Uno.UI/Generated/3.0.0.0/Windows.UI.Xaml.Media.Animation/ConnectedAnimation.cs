@@ -21,6 +21,20 @@ namespace Windows.UI.Xaml.Media.Animation
 			}
 		}
 		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  global::Windows.UI.Xaml.Media.Animation.ConnectedAnimationConfiguration Configuration
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member ConnectedAnimationConfiguration ConnectedAnimation.Configuration is not implemented in Uno.");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Media.Animation.ConnectedAnimation", "ConnectedAnimationConfiguration ConnectedAnimation.Configuration");
+			}
+		}
+		#endif
 		// Forced skipping of method Windows.UI.Xaml.Media.Animation.ConnectedAnimation.Completed.add
 		// Forced skipping of method Windows.UI.Xaml.Media.Animation.ConnectedAnimation.Completed.remove
 		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
@@ -53,6 +67,8 @@ namespace Windows.UI.Xaml.Media.Animation
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Media.Animation.ConnectedAnimation", "void ConnectedAnimation.SetAnimationComponent(ConnectedAnimationComponent component, ICompositionAnimationBase animation)");
 		}
 		#endif
+		// Forced skipping of method Windows.UI.Xaml.Media.Animation.ConnectedAnimation.Configuration.get
+		// Forced skipping of method Windows.UI.Xaml.Media.Animation.ConnectedAnimation.Configuration.set
 		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Xaml.Media.Animation.ConnectedAnimation, object> Completed

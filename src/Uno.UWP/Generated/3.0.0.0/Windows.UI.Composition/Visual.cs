@@ -9,81 +9,6 @@ namespace Windows.UI.Composition
 	{
 		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
-		public  global::System.Numerics.Quaternion Orientation
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member Quaternion Visual.Orientation is not implemented in Uno.");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.Visual", "Quaternion Visual.Orientation");
-			}
-		}
-		#endif
-		// Skipping already declared property Opacity
-		// Skipping already declared property IsVisible
-		// Skipping already declared property CompositeMode
-		// Skipping already declared property CenterPoint
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  global::Windows.UI.Composition.CompositionBorderMode BorderMode
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member CompositionBorderMode Visual.BorderMode is not implemented in Uno.");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.Visual", "CompositionBorderMode Visual.BorderMode");
-			}
-		}
-		#endif
-		// Skipping already declared property Offset
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  global::Windows.UI.Composition.CompositionBackfaceVisibility BackfaceVisibility
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member CompositionBackfaceVisibility Visual.BackfaceVisibility is not implemented in Uno.");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.Visual", "CompositionBackfaceVisibility Visual.BackfaceVisibility");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  global::System.Numerics.Vector2 AnchorPoint
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member Vector2 Visual.AnchorPoint is not implemented in Uno.");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.Visual", "Vector2 Visual.AnchorPoint");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  global::Windows.UI.Composition.CompositionClip Clip
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member CompositionClip Visual.Clip is not implemented in Uno.");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.Visual", "CompositionClip Visual.Clip");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
 		public  global::System.Numerics.Matrix4x4 TransformMatrix
 		{
 			get
@@ -114,7 +39,96 @@ namespace Windows.UI.Composition
 			}
 		}
 		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  global::System.Numerics.Quaternion Orientation
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member Quaternion Visual.Orientation is not implemented in Uno.");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.Visual", "Quaternion Visual.Orientation");
+			}
+		}
+		#endif
+		// Skipping already declared property Opacity
+		// Skipping already declared property Offset
+		// Skipping already declared property IsVisible
+		// Skipping already declared property CompositeMode
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  global::Windows.UI.Composition.CompositionClip Clip
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member CompositionClip Visual.Clip is not implemented in Uno.");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.Visual", "CompositionClip Visual.Clip");
+			}
+		}
+		#endif
+		// Skipping already declared property CenterPoint
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  global::Windows.UI.Composition.CompositionBorderMode BorderMode
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member CompositionBorderMode Visual.BorderMode is not implemented in Uno.");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.Visual", "CompositionBorderMode Visual.BorderMode");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  global::Windows.UI.Composition.CompositionBackfaceVisibility BackfaceVisibility
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member CompositionBackfaceVisibility Visual.BackfaceVisibility is not implemented in Uno.");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.Visual", "CompositionBackfaceVisibility Visual.BackfaceVisibility");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  global::System.Numerics.Vector2 AnchorPoint
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member Vector2 Visual.AnchorPoint is not implemented in Uno.");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.Visual", "Vector2 Visual.AnchorPoint");
+			}
+		}
+		#endif
 		// Skipping already declared property Parent
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  global::System.Numerics.Vector2 RelativeSizeAdjustment
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member Vector2 Visual.RelativeSizeAdjustment is not implemented in Uno.");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.Visual", "Vector2 Visual.RelativeSizeAdjustment");
+			}
+		}
+		#endif
 		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::System.Numerics.Vector3 RelativeOffsetAdjustment
@@ -140,20 +154,6 @@ namespace Windows.UI.Composition
 			set
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.Visual", "Visual Visual.ParentForTransform");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  global::System.Numerics.Vector2 RelativeSizeAdjustment
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member Vector2 Visual.RelativeSizeAdjustment is not implemented in Uno.");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.Visual", "Vector2 Visual.RelativeSizeAdjustment");
 			}
 		}
 		#endif

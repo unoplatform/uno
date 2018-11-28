@@ -149,6 +149,16 @@ namespace Windows.Graphics.Imaging
 			}
 		}
 		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public static global::System.Guid HeifEncoderId
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member Guid BitmapEncoder.HeifEncoderId is not implemented in Uno.");
+			}
+		}
+		#endif
 		// Forced skipping of method Windows.Graphics.Imaging.BitmapEncoder.EncoderInformation.get
 		// Forced skipping of method Windows.Graphics.Imaging.BitmapEncoder.BitmapProperties.get
 		// Forced skipping of method Windows.Graphics.Imaging.BitmapEncoder.BitmapContainerProperties.get
@@ -194,6 +204,7 @@ namespace Windows.Graphics.Imaging
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Imaging.BitmapEncoder", "void BitmapEncoder.SetSoftwareBitmap(SoftwareBitmap bitmap)");
 		}
 		#endif
+		// Forced skipping of method Windows.Graphics.Imaging.BitmapEncoder.HeifEncoderId.get
 		// Forced skipping of method Windows.Graphics.Imaging.BitmapEncoder.BmpEncoderId.get
 		// Forced skipping of method Windows.Graphics.Imaging.BitmapEncoder.JpegEncoderId.get
 		// Forced skipping of method Windows.Graphics.Imaging.BitmapEncoder.PngEncoderId.get

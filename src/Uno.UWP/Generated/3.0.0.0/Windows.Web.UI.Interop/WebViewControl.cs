@@ -5,7 +5,7 @@ namespace Windows.Web.UI.Interop
 	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
-	public  partial class WebViewControl : global::Windows.Web.UI.IWebViewControl
+	public  partial class WebViewControl : global::Windows.Web.UI.IWebViewControl,global::Windows.Web.UI.IWebViewControl2
 	{
 		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
@@ -307,6 +307,17 @@ namespace Windows.Web.UI.Interop
 		// Forced skipping of method Windows.Web.UI.Interop.WebViewControl.MoveFocusRequested.remove
 		// Forced skipping of method Windows.Web.UI.Interop.WebViewControl.AcceleratorKeyPressed.add
 		// Forced skipping of method Windows.Web.UI.Interop.WebViewControl.AcceleratorKeyPressed.remove
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  void AddInitializeScript( string script)
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.UI.Interop.WebViewControl", "void WebViewControl.AddInitializeScript(string script)");
+		}
+		#endif
+		// Forced skipping of method Windows.Web.UI.Interop.WebViewControl.GotFocus.add
+		// Forced skipping of method Windows.Web.UI.Interop.WebViewControl.GotFocus.remove
+		// Forced skipping of method Windows.Web.UI.Interop.WebViewControl.LostFocus.add
+		// Forced skipping of method Windows.Web.UI.Interop.WebViewControl.LostFocus.remove
 		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Web.UI.IWebViewControl, object> ContainsFullScreenElementChanged
@@ -611,6 +622,39 @@ namespace Windows.Web.UI.Interop
 			}
 		}
 		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Web.UI.Interop.WebViewControl, object> GotFocus
+		{
+			[global::Uno.NotImplemented]
+			add
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.UI.Interop.WebViewControl", "event TypedEventHandler<WebViewControl, object> WebViewControl.GotFocus");
+			}
+			[global::Uno.NotImplemented]
+			remove
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.UI.Interop.WebViewControl", "event TypedEventHandler<WebViewControl, object> WebViewControl.GotFocus");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Web.UI.Interop.WebViewControl, object> LostFocus
+		{
+			[global::Uno.NotImplemented]
+			add
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.UI.Interop.WebViewControl", "event TypedEventHandler<WebViewControl, object> WebViewControl.LostFocus");
+			}
+			[global::Uno.NotImplemented]
+			remove
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.UI.Interop.WebViewControl", "event TypedEventHandler<WebViewControl, object> WebViewControl.LostFocus");
+			}
+		}
+		#endif
 		// Processing: Windows.Web.UI.IWebViewControl
+		// Processing: Windows.Web.UI.IWebViewControl2
 	}
 }

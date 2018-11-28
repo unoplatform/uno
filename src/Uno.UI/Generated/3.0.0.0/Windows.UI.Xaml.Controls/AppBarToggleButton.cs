@@ -57,16 +57,16 @@ namespace Windows.UI.Xaml.Controls
 		// Forced skipping of method Windows.UI.Xaml.Controls.AppBarToggleButton.Label.set
 		// Forced skipping of method Windows.UI.Xaml.Controls.AppBarToggleButton.Icon.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.AppBarToggleButton.Icon.set
-		// Forced skipping of method Windows.UI.Xaml.Controls.AppBarToggleButton.IsCompact.get
-		// Forced skipping of method Windows.UI.Xaml.Controls.AppBarToggleButton.IsCompact.set
 		// Forced skipping of method Windows.UI.Xaml.Controls.AppBarToggleButton.LabelPosition.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.AppBarToggleButton.LabelPosition.set
-		// Forced skipping of method Windows.UI.Xaml.Controls.AppBarToggleButton.IsInOverflow.get
-		// Forced skipping of method Windows.UI.Xaml.Controls.AppBarToggleButton.DynamicOverflowOrder.get
-		// Forced skipping of method Windows.UI.Xaml.Controls.AppBarToggleButton.DynamicOverflowOrder.set
 		// Forced skipping of method Windows.UI.Xaml.Controls.AppBarToggleButton.KeyboardAcceleratorTextOverride.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.AppBarToggleButton.KeyboardAcceleratorTextOverride.set
 		// Forced skipping of method Windows.UI.Xaml.Controls.AppBarToggleButton.TemplateSettings.get
+		// Forced skipping of method Windows.UI.Xaml.Controls.AppBarToggleButton.IsCompact.get
+		// Forced skipping of method Windows.UI.Xaml.Controls.AppBarToggleButton.IsCompact.set
+		// Forced skipping of method Windows.UI.Xaml.Controls.AppBarToggleButton.IsInOverflow.get
+		// Forced skipping of method Windows.UI.Xaml.Controls.AppBarToggleButton.DynamicOverflowOrder.get
+		// Forced skipping of method Windows.UI.Xaml.Controls.AppBarToggleButton.DynamicOverflowOrder.set
 		// Forced skipping of method Windows.UI.Xaml.Controls.AppBarToggleButton.KeyboardAcceleratorTextOverrideProperty.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.AppBarToggleButton.LabelPositionProperty.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.AppBarToggleButton.IsInOverflowProperty.get

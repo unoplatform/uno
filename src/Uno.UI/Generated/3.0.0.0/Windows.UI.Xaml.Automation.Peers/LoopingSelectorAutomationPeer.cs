@@ -5,7 +5,7 @@ namespace Windows.UI.Xaml.Automation.Peers
 	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
-	public  partial class LoopingSelectorAutomationPeer : global::Windows.UI.Xaml.Automation.Peers.FrameworkElementAutomationPeer,global::Windows.UI.Xaml.Automation.Provider.IExpandCollapseProvider,global::Windows.UI.Xaml.Automation.Provider.IItemContainerProvider,global::Windows.UI.Xaml.Automation.Provider.IScrollProvider,global::Windows.UI.Xaml.Automation.Provider.ISelectionProvider
+	public  partial class LoopingSelectorAutomationPeer : global::Windows.UI.Xaml.Automation.Peers.FrameworkElementAutomationPeer,global::Windows.UI.Xaml.Automation.Provider.ISelectionProvider,global::Windows.UI.Xaml.Automation.Provider.IItemContainerProvider,global::Windows.UI.Xaml.Automation.Provider.IExpandCollapseProvider,global::Windows.UI.Xaml.Automation.Provider.IScrollProvider
 	{
 		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
@@ -97,6 +97,22 @@ namespace Windows.UI.Xaml.Automation.Peers
 			}
 		}
 		#endif
+		// Forced skipping of method Windows.UI.Xaml.Automation.Peers.LoopingSelectorAutomationPeer.CanSelectMultiple.get
+		// Forced skipping of method Windows.UI.Xaml.Automation.Peers.LoopingSelectorAutomationPeer.IsSelectionRequired.get
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  global::Windows.UI.Xaml.Automation.Provider.IRawElementProviderSimple[] GetSelection()
+		{
+			throw new global::System.NotImplementedException("The member IRawElementProviderSimple[] LoopingSelectorAutomationPeer.GetSelection() is not implemented in Uno.");
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  global::Windows.UI.Xaml.Automation.Provider.IRawElementProviderSimple FindItemByProperty( global::Windows.UI.Xaml.Automation.Provider.IRawElementProviderSimple startAfter,  global::Windows.UI.Xaml.Automation.AutomationProperty automationProperty,  object value)
+		{
+			throw new global::System.NotImplementedException("The member IRawElementProviderSimple LoopingSelectorAutomationPeer.FindItemByProperty(IRawElementProviderSimple startAfter, AutomationProperty automationProperty, object value) is not implemented in Uno.");
+		}
+		#endif
 		// Forced skipping of method Windows.UI.Xaml.Automation.Peers.LoopingSelectorAutomationPeer.ExpandCollapseState.get
 		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
@@ -110,13 +126,6 @@ namespace Windows.UI.Xaml.Automation.Peers
 		public  void Expand()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Automation.Peers.LoopingSelectorAutomationPeer", "void LoopingSelectorAutomationPeer.Expand()");
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  global::Windows.UI.Xaml.Automation.Provider.IRawElementProviderSimple FindItemByProperty( global::Windows.UI.Xaml.Automation.Provider.IRawElementProviderSimple startAfter,  global::Windows.UI.Xaml.Automation.AutomationProperty automationProperty,  object value)
-		{
-			throw new global::System.NotImplementedException("The member IRawElementProviderSimple LoopingSelectorAutomationPeer.FindItemByProperty(IRawElementProviderSimple startAfter, AutomationProperty automationProperty, object value) is not implemented in Uno.");
 		}
 		#endif
 		// Forced skipping of method Windows.UI.Xaml.Automation.Peers.LoopingSelectorAutomationPeer.HorizontallyScrollable.get
@@ -139,18 +148,9 @@ namespace Windows.UI.Xaml.Automation.Peers
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Automation.Peers.LoopingSelectorAutomationPeer", "void LoopingSelectorAutomationPeer.SetScrollPercent(double horizontalPercent, double verticalPercent)");
 		}
 		#endif
-		// Forced skipping of method Windows.UI.Xaml.Automation.Peers.LoopingSelectorAutomationPeer.CanSelectMultiple.get
-		// Forced skipping of method Windows.UI.Xaml.Automation.Peers.LoopingSelectorAutomationPeer.IsSelectionRequired.get
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  global::Windows.UI.Xaml.Automation.Provider.IRawElementProviderSimple[] GetSelection()
-		{
-			throw new global::System.NotImplementedException("The member IRawElementProviderSimple[] LoopingSelectorAutomationPeer.GetSelection() is not implemented in Uno.");
-		}
-		#endif
-		// Processing: Windows.UI.Xaml.Automation.Provider.IExpandCollapseProvider
-		// Processing: Windows.UI.Xaml.Automation.Provider.IItemContainerProvider
-		// Processing: Windows.UI.Xaml.Automation.Provider.IScrollProvider
 		// Processing: Windows.UI.Xaml.Automation.Provider.ISelectionProvider
+		// Processing: Windows.UI.Xaml.Automation.Provider.IItemContainerProvider
+		// Processing: Windows.UI.Xaml.Automation.Provider.IExpandCollapseProvider
+		// Processing: Windows.UI.Xaml.Automation.Provider.IScrollProvider
 	}
 }

@@ -131,6 +131,16 @@ namespace Windows.Media.Import
 			}
 		}
 		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  string Path
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member string PhotoImportItem.Path is not implemented in Uno.");
+			}
+		}
+		#endif
 		// Forced skipping of method Windows.Media.Import.PhotoImportItem.Name.get
 		// Forced skipping of method Windows.Media.Import.PhotoImportItem.ItemKey.get
 		// Forced skipping of method Windows.Media.Import.PhotoImportItem.ContentType.get
@@ -144,5 +154,6 @@ namespace Windows.Media.Import
 		// Forced skipping of method Windows.Media.Import.PhotoImportItem.Thumbnail.get
 		// Forced skipping of method Windows.Media.Import.PhotoImportItem.ImportedFileNames.get
 		// Forced skipping of method Windows.Media.Import.PhotoImportItem.DeletedFileNames.get
+		// Forced skipping of method Windows.Media.Import.PhotoImportItem.Path.get
 	}
 }
