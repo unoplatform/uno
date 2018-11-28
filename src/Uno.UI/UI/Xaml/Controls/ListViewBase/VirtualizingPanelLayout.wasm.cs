@@ -305,31 +305,49 @@ namespace Windows.UI.Xaml.Controls
 
 		private Size EstimatePanelSize()
 		{
-			return ScrollOrientation == Orientation.Vertical ?
-			new Size(AvailableBreadth, EstimatePanelExtent()) :
-			new Size(EstimatePanelExtent(), AvailableBreadth);
+			var extent = EstimatePanelExtent();
 
-			double EstimatePanelExtent()
+			if (ScrollOrientation == Orientation.Vertical)
 			{
-				// Estimate remaining extent based on current average line height and remaining unmaterialized items
-				var lastIndexPath = GetLastMaterializedIndexPath();
-				if (lastIndexPath == null)
-				{
-					return 0;
-				}
-				var lastItem = GetFlatItemIndex(lastIndexPath.Value);
-
-				var remainingItems = ItemsControl.NumberOfItems - lastItem - 1;
-
-				var averageLineHeight = _materializedLines.Select(l => GetExtent(l.FirstView)).Average();
-
-				int itemsPerLine = GetItemsPerLine();
-				var remainingLines = remainingItems / itemsPerLine + remainingItems % itemsPerLine;
-
-				double estimatedExtent = GetContentEnd() + remainingLines * averageLineHeight;
-				Console.WriteLine($"{GetMethodTag()}=>{estimatedExtent}, GetContentEnd()={GetContentEnd()}, remainingLines={remainingLines}, averageLineHeight={averageLineHeight}");
-				return estimatedExtent;
+				return new Size(
+					AvailableBreadth,
+					double.IsInfinity(_availableSize.Height) ? extent : Max(extent, _availableSize.Height)
+				);
 			}
+			else
+			{
+				return new Size(
+					double.IsInfinity(_availableSize.Width) ? extent : Max(extent, _availableSize.Width),
+					AvailableBreadth
+				);
+			}
+		}
+
+		private double EstimatePanelExtent()
+		{
+			// Estimate remaining extent based on current average line height and remaining unmaterialized items
+			var lastIndexPath = GetLastMaterializedIndexPath();
+			if (lastIndexPath == null)
+			{
+				return 0;
+			}
+			var lastItem = GetFlatItemIndex(lastIndexPath.Value);
+
+			var remainingItems = ItemsControl.NumberOfItems - lastItem - 1;
+
+			var averageLineHeight = _materializedLines.Select(l => GetExtent(l.FirstView)).Average();
+
+			int itemsPerLine = GetItemsPerLine();
+			var remainingLines = remainingItems / itemsPerLine + remainingItems % itemsPerLine;
+
+			double estimatedExtent = GetContentEnd() + remainingLines * averageLineHeight;
+
+			if (this.Log().IsEnabled(LogLevel.Debug))
+			{
+				this.Log().LogDebug($"{GetMethodTag()}=>{estimatedExtent}, GetContentEnd()={GetContentEnd()}, remainingLines={remainingLines}, averageLineHeight={averageLineHeight}");
+			}
+
+			return estimatedExtent;
 		}
 
 		internal void Refresh()
@@ -415,7 +433,11 @@ namespace Windows.UI.Xaml.Controls
 				new Point(breadthOffset, extentOffset + extentOffsetAdjustment) :
 				new Point(extentOffset + extentOffsetAdjustment, breadthOffset);
 
-			var finalRect = new Rect(topLeft, view.DesiredSize);
+			var adjustedDesiredSize = ScrollOrientation == Orientation.Vertical
+				? new Size(AvailableBreadth, view.DesiredSize.Height)
+				: new Size(view.DesiredSize.Width, AvailableBreadth);
+
+			var finalRect = new Rect(topLeft, adjustedDesiredSize);
 			if (this.Log().IsEnabled(LogLevel.Debug))
 			{
 				this.Log().LogDebug($"{GetMethodTag()} finalRect={finalRect} DC={view.DataContext}");

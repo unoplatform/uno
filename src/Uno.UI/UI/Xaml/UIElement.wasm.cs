@@ -266,9 +266,8 @@ namespace Windows.UI.Xaml
 		internal void MoveViewTo(int oldIndex, int newIndex)
 		{
 			var view = _children[oldIndex];
-			
-			var command = "Uno.UI.WindowManager.current.addView(\"" + HtmlId + "\", \"" + view.HtmlId + "\", " + newIndex + ");";
-			WebAssemblyRuntime.InvokeJS(command);
+
+			Uno.UI.Xaml.WindowManagerInterop.AddView(HtmlId, view.HtmlId, newIndex);
 
 			InvalidateMeasure();
 		}
