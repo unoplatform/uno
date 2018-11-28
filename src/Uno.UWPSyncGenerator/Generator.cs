@@ -43,6 +43,8 @@ namespace Uno.UWPSyncGenerator
 			Directory.SetCurrentDirectory(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location));
 			InitializeRoslyn();
 
+			Console.WriteLine($"Generating for {baseName} {sourceAssembly}");
+
 			_referenceCompilation = LoadProject(@"..\..\..\..\Uno.UWPSyncGenerator.Reference\Uno.UWPSyncGenerator.Reference.csproj");
 			_iOSCompilation = LoadProject($@"{basePath}\{baseName}.csproj", "xamarinios10");
 			_androidCompilation = LoadProject($@"{basePath}\{baseName}.csproj", "MonoAndroid80");
@@ -699,6 +701,11 @@ namespace Uno.UWPSyncGenerator
 		{
 			foreach (var eventMember in type.GetMembers().OfType<IEventSymbol>())
 			{
+				if(!IsNotUWPMapping(type, eventMember))
+				{
+					return;
+				}
+
 				var allMembers = GetAllMatchingEvents(types, eventMember);
 
 				if (allMembers.HasUndefined)
@@ -936,6 +943,27 @@ namespace Uno.UWPSyncGenerator
 		private static string GetParameterRefKind(IParameterSymbol p)
 			=> p.RefKind != RefKind.None ? p.RefKind.ToString().ToLowerInvariant() : "";
 
+		private bool IsNotUWPMapping(INamedTypeSymbol type, IEventSymbol eventMember)
+		{
+			foreach (var iface in type.Interfaces.SelectMany(GetAllInterfaces))
+			{
+				var uwpIface = GetUWPIFace(iface);
+
+				if (uwpIface != null)
+				{
+					if (
+							uwpIface == "Windows.UI.Xaml.Input.ICommand"
+							&& eventMember.Name == "CanExecuteChanged"
+						)
+					{
+						return false;
+					}
+				}
+			}
+
+			return true;
+		}
+
 		private bool IsNotUWPMapping(INamedTypeSymbol type, IMethodSymbol method)
 		{
 			foreach (var iface in type.Interfaces.SelectMany(GetAllInterfaces))
@@ -972,7 +1000,17 @@ namespace Uno.UWPSyncGenerator
 					{
 						var type2 = _referenceCompilation.GetTypeByMetadataName(uwpIface);
 
-						var t3 = type2.Construct(iface.TypeArguments.ToArray());
+						INamedTypeSymbol build()
+						{
+							if (iface.TypeArguments.Length != 0)
+							{
+								return type2.Construct(iface.TypeArguments.ToArray());
+							}
+
+							return type2;
+						}
+
+						var t3 = build();
 
 						var q = from sourceMethod in t3.GetMembers().OfType<IMethodSymbol>()
 								where sourceMethod.Name == method.Name
