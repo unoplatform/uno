@@ -48,6 +48,12 @@ namespace Windows.UI.Xaml.Controls
 		{
 			_isPassword = false;
 			InitializeVisualStates();
+			this.RegisterParentChangedCallback(this, OnParentChanged);
+		}
+
+		private void OnParentChanged(object instance, object key, DependencyObjectParentChangedEventArgs args)
+		{
+			UpdateFontPartial(this);
 		}
 
 		protected TextBox(bool isPassword)

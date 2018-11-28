@@ -14,6 +14,8 @@
  * #388 Slider: NRE when vertical template is not defined
  * 138117 [Android] Removing a bookmarked/downloaded lesson can duplicate the assets of a different lesson.
  * [Wasm] Fix VirtualizingPanelAdapter measure and arrange
+ * 137892 [Android] Fixed FontFamily, FontSize and FontWeight are not applied anymore on the TextBox's content.
+
 
 ## Release 1.42
 
