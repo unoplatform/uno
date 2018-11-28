@@ -90,7 +90,7 @@ namespace Windows.UI.Xaml
 			add => RegisterEventHandler(
 				"pointerenter", 
 				value, 
-				eventExtractorScript: pointerEventExtractor, 
+				eventExtractor: HtmlEventExtractor.PointerEventExtractor, 
 				payloadConverter: PayloadToPointerArgs);
 			remove => UnregisterEventHandler("pointerenter", value);
 		}
@@ -111,7 +111,7 @@ namespace Windows.UI.Xaml
 			add => RegisterEventHandler(
 				"pointerleave", 
 				value, 
-				eventExtractorScript: pointerEventExtractor, 
+				eventExtractor: HtmlEventExtractor.PointerEventExtractor, 
 				payloadConverter: PayloadToPointerArgs);
 			remove => UnregisterEventHandler("pointerleave", value);
 		}
@@ -132,7 +132,7 @@ namespace Windows.UI.Xaml
 			add => RegisterEventHandler(
 				"pointermove", 
 				value, 
-				eventExtractorScript: pointerEventExtractor, 
+				eventExtractor: HtmlEventExtractor.PointerEventExtractor, 
 				payloadConverter: PayloadToPointerArgs);
 			remove => UnregisterEventHandler("pointermove", value);
 		}
@@ -153,8 +153,8 @@ namespace Windows.UI.Xaml
 			add => RegisterEventHandler(
 				"pointerdown", 
 				value, 
-				eventFilterScript: leftPointerEventFilter, 
-				eventExtractorScript: pointerEventExtractor, 
+				eventFilter:  HtmlEventFilter.LeftPointerEventFilter, 
+				eventExtractor: HtmlEventExtractor.PointerEventExtractor, 
 				payloadConverter: PayloadToPointerArgs);
 			remove => UnregisterEventHandler("pointerdown", value);
 		}
@@ -174,9 +174,9 @@ namespace Windows.UI.Xaml
 		{
 			add => RegisterEventHandler(
 				"pointerup", 
-				value, 
-				eventFilterScript: leftPointerEventFilter, 
-				eventExtractorScript: pointerEventExtractor, 
+				value,
+				eventFilter: HtmlEventFilter.LeftPointerEventFilter,
+				eventExtractor: HtmlEventExtractor.PointerEventExtractor,
 				payloadConverter: PayloadToPointerArgs);
 			remove => UnregisterEventHandler("pointerup", value);
 		}
@@ -197,8 +197,8 @@ namespace Windows.UI.Xaml
 			add => RegisterEventHandler(
 				"pointerup",
 				value,
-				eventFilterScript: leftPointerEventFilter,
-				eventExtractorScript: pointerEventExtractor,
+				eventFilter: HtmlEventFilter.LeftPointerEventFilter,
+				eventExtractor: HtmlEventExtractor.PointerEventExtractor,
 				payloadConverter: PayloadToTappedArgs);
 			remove => UnregisterEventHandler("pointerup", value);
 		}
@@ -212,7 +212,7 @@ namespace Windows.UI.Xaml
 			add => RegisterEventHandler(
 				"keydown",
 				value,
-				eventExtractorScript: "(evt instanceof KeyboardEvent) ? evt.key : \"0\"",
+				eventExtractor: HtmlEventExtractor.KeyboardEventExtractor,
 				payloadConverter: keyStr => new KeyRoutedEventArgs { Key = VirtualKeyHelper.FromKey(keyStr), OriginalSource = this});
 			remove => UnregisterEventHandler("keydown", value);
 		}
@@ -222,7 +222,7 @@ namespace Windows.UI.Xaml
 			add => RegisterEventHandler(
 				"keyup",
 				value,
-				eventExtractorScript: "(evt instanceof KeyboardEvent) ? evt.key : \"0\"",
+				eventExtractor: HtmlEventExtractor.KeyboardEventExtractor,
 				payloadConverter: keyStr => new KeyRoutedEventArgs {Key = VirtualKeyHelper.FromKey(keyStr), OriginalSource = this});
 			remove => UnregisterEventHandler("keyup", value);
 		}

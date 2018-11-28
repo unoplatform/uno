@@ -176,12 +176,43 @@
 			* You need to call addView to connect it to the DOM.
 			*/
 		public createContent(contentDefinition: IContentDefinition): string {
+			this.createContentInternal(contentDefinition);
+
+			return "ok";
+		}
+
+		/**
+			* Create a html DOM element representing a Xaml element.
+			*
+			* You need to call addView to connect it to the DOM.
+			*/
+		public createContentNative(pParams: number): boolean {
+
+			var params = WindowManagerCreateContentParams.unmarshal(pParams);
+
+			var def = <IContentDefinition> {
+				id: params.HtmlId,
+				handle: params.Handle,
+				isFocusable: params.IsFocusable,
+				isFrameworkElement: params.IsFrameworkElement,
+				isSvg: params.IsSvg,
+				tagName: params.TagName,
+				type: params.Type,
+				classes: params.Classes
+			};
+
+			this.createContentInternal(def);
+
+			return true;
+		}
+
+		private createContentInternal(contentDefinition: IContentDefinition): void {
 			// Create the HTML element
 			const element =
 				contentDefinition.isSvg
 					? document.createElementNS("http://www.w3.org/2000/svg", contentDefinition.tagName)
 					: document.createElement(contentDefinition.tagName);
-			element.id = contentDefinition.id;
+			element.id = String(contentDefinition.id);
 			element.setAttribute("XamlType", contentDefinition.type);
 			element.setAttribute("XamlHandle", `${contentDefinition.handle}`);
 			if (contentDefinition.isFrameworkElement) {
@@ -201,7 +232,15 @@
 
 			// Add the html element to list of elements
 			this.allActiveElementsById[contentDefinition.id] = element;
+		}
 
+		/**
+			* Set a name for an element.
+			*
+			* This is mostly for diagnostic purposes.
+			*/
+		public setName(elementId: number, name: string): string {
+			this.setNameInternal(elementId, name);
 			return "ok";
 		}
 
@@ -210,15 +249,19 @@
 			*
 			* This is mostly for diagnostic purposes.
 			*/
-		public setName(elementId: string, name: string): string {
+		public setNameNative(pParam: number): boolean {
+			let params = WindowManagerSetNameParams.unmarshal(pParam);
+			this.setNameInternal(params.HtmlId, params.Name);
+			return true;
+		}
+
+		private setNameInternal(elementId: number, name: string): void {
 			const htmlElement: HTMLElement | SVGElement = this.allActiveElementsById[elementId];
 			if (!htmlElement) {
 				throw `Element id ${elementId} not found.`;
 			}
 
 			htmlElement.setAttribute("XamlName", name);
-
-			return "ok";
 		}
 
 		/**
@@ -238,6 +281,25 @@
 			}
 
 			return "ok";
+		}
+
+		/**
+			* Set an attribute for an element.
+			*/
+		public setAttributeNative(pParams: number): boolean {
+
+			let params = WindowManagerSetAttributeParams.unmarshal(pParams);
+
+			const htmlElement: HTMLElement | SVGElement = this.allActiveElementsById[params.HtmlId];
+			if (!htmlElement) {
+				throw `Element id ${params.HtmlId} not found.`;
+			}
+
+			for (var i = 0; i < params.Pairs_Length; i += 2) {
+				htmlElement.setAttribute(params.Pairs[i], params.Pairs[i + 1]);
+			}
+
+			return true;
 		}
 
 		/**
@@ -268,6 +330,25 @@
 			}
 
 			return "ok";
+		}
+
+		/**
+			* Set a property for an element.
+			*/
+		public setPropertyNative(pParams:number): boolean {
+
+			let params = WindowManagerSetPropertyParams.unmarshal(pParams);
+
+			const htmlElement: HTMLElement | SVGElement = this.allActiveElementsById[params.HtmlId];
+			if (!htmlElement) {
+				throw `Element id ${params.HtmlId} not found.`;
+			}
+
+			for (var i = 0; i < params.Pairs_Length; i += 2) {
+				(htmlElement as any)[params.Pairs[i]] = params.Pairs[i + 1];
+			}
+
+			return true;
 		}
 
 		/**
@@ -308,12 +389,58 @@
 		}
 
 		/**
+		* Set the CSS style of a html element.
+		*
+		* To remove a value, set it to empty string.
+		* @param styles A dictionary of styles to apply on html element.
+		*/
+		public setStyleNative(pParams:number): boolean {
+
+			let params = WindowManagerSetStylesParams.unmarshal(pParams);
+
+			const htmlElement: HTMLElement | SVGElement = this.allActiveElementsById[params.HtmlId];
+			if (!htmlElement) {
+				throw `Element id ${params.HtmlId} not found.`;
+			}
+
+			for (var i = 0; i < params.Pairs_Length; i+=2) {
+				let key = params.Pairs[i];
+				let value = params.Pairs[i+1];
+
+				htmlElement.style.setProperty(key, value);
+			}
+
+			if (params.SetAsArranged) {
+				htmlElement.classList.remove(WindowManager.unoUnarrangedClassName);
+			}
+
+			return true;
+		}
+
+		/**
 			* Set the CSS style of a html element.
 			*
 			* To remove a value, set it to empty string.
 			* @param styles A dictionary of styles to apply on html element.
 			*/
-		public resetStyle(elementId: string, names: string[]): string {
+		public resetStyle(elementId: number, names: string[]): string {
+			this.resetStyleInternal(elementId, name);
+			return "ok";
+		}
+
+		/**
+			* Set the CSS style of a html element.
+			*
+			* To remove a value, set it to empty string.
+			* @param styles A dictionary of styles to apply on html element.
+			*/
+		public resetStyleNative(pParams: number): boolean {
+			let params = WindowManagerResetStyleParams.unmarshal(pParams);
+			this.resetStyleInternal(params.HtmlId, params.Styles);
+			return true;
+		}
+
+		private resetStyleInternal(elementId: number, names: string[]): void {
 			const htmlElement: HTMLElement | SVGElement = this.allActiveElementsById[elementId];
 			if (!htmlElement) {
 				throw `Element id ${elementId} not found.`;
@@ -322,8 +449,6 @@
 			for(const name of names) {
 				htmlElement.style.setProperty(name, "");
 			}
-
-			return "ok";
 		}
 
 		/**
@@ -372,15 +497,51 @@
 			* @param onCapturePhase true means "on trickle down", false means "on bubble up". Default is false.
 			*/
 		public registerEventOnView(
-			elementId: string,
+			elementId: number,
 			eventName: string,
 			onCapturePhase: boolean = false,
-			eventFilter?: (event: Event) => boolean,
-			eventExtractor?: (event: Event) => any): string {
+			eventFilterName?: string,
+			eventExtractorName?: string
+		): string {
+			this.registerEventOnViewInternal(elementId, eventName, onCapturePhase, eventFilterName, eventExtractorName);
+			return "ok";
+		}
+
+		/**
+			* Add an event handler to a html element.
+			*
+			* @param eventName The name of the event
+			* @param onCapturePhase true means "on trickle down", false means "on bubble up". Default is false.
+			*/
+		public registerEventOnViewNative(
+			pParams: number
+		): boolean {
+			let params = WindowManagerRegisterEventOnViewParams.unmarshal(pParams);
+
+			this.registerEventOnViewInternal(params.HtmlId, params.EventName, params.OnCapturePhase, params.EventFilterName, params.EventExtractorName);
+			return true;
+		}
+
+		/**
+			* Add an event handler to a html element.
+			*
+			* @param eventName The name of the event
+			* @param onCapturePhase true means "on trickle down", false means "on bubble up". Default is false.
+			*/
+		private registerEventOnViewInternal(
+			elementId: number,
+			eventName: string,
+			onCapturePhase: boolean = false,
+			eventFilterName?: string,
+			eventExtractorName?: string
+		): void {
 			const htmlElement: HTMLElement | SVGElement = this.allActiveElementsById[elementId];
 			if (!htmlElement) {
 				throw `Element id ${elementId} not found.`;
 			}
+
+			const eventFilter = this.getEventFilter(eventFilterName);
+			const eventExtractor = this.getEventExtractor(eventExtractorName);
 
 			const eventHandler = (event: Event) => {
 				if (eventFilter && !eventFilter(event)) {
@@ -402,8 +563,71 @@
 			};
 
 			htmlElement.addEventListener(eventName, eventHandler, onCapturePhase);
+		}
 
-			return "ok";
+		/**
+		 * left pointer event filter to be used with registerEventOnView
+		 * @param evt
+		 */
+		private leftPointerEventFilter(evt: any): boolean {
+			return evt ? (!evt.button || evt.button == 0) : false;
+		}
+
+		/**
+		 * pointer event extractor to be used with registerEventOnView
+		 * @param evt
+		 */
+		private pointerEventExtractor(evt: any): string {
+			return evt
+				? `${evt.pointerId};${evt.clientX};${evt.clientY};${(evt.ctrlKey ? "1" : "0")};${(evt.shiftKey ? "1" : "0")};${evt.button};${evt.pointerType}`
+				: "";
+		}
+
+		/**
+		 * keyboard event extractor to be used with registerEventOnView
+		 * @param evt
+		 */
+		private keyboardEventExtractor(evt: any): string {
+			return (evt instanceof KeyboardEvent) ? evt.key : "0";
+		}
+
+		/**
+		 * Gets the event filter function. See UIElement.HtmlEventFilter
+		 * @param eventFilterName an event filter name.
+		 */
+		private getEventFilter(eventFilterName: string): any {
+
+			if (eventFilterName) {
+				switch (eventFilterName) {
+					case "LeftPointerEventFilter":
+						return this.leftPointerEventFilter;
+				}
+
+				throw `Event filter ${eventFilterName} is not supported`;
+			}
+
+			return null;
+		}
+
+		/**
+		 * Gets the event extractor function. See UIElement.HtmlEventExtractor
+		 * @param eventExtractorName an event extractor name.
+		 */
+		private getEventExtractor(eventExtractorName: string): any {
+
+			if (eventExtractorName) {
+				switch (eventExtractorName) {
+					case "PointerEventExtractor":
+						return this.pointerEventExtractor;
+
+					case "KeyboardEventExtractor":
+						return this.keyboardEventExtractor;
+				}
+
+				throw `Event filter ${eventExtractorName} is not supported`;
+			}
+
+			return null;
 		}
 
 		/**
@@ -452,6 +676,30 @@
 			* @param index Position in children list. Appended at end if not specified.
 			*/
 		public addView(parentId: string, childId: string, index?: number): string {
+			this.addView(parentId, childId, index);
+			return "ok";
+		}
+
+		/**
+			* Set a view as a child of another one.
+			*
+			* "Loading" & "Loaded" events will be raised if nescessary.
+			*
+			* @param pParams Pointer to a WindowManagerAddViewParams native structure.
+			*/
+		public addViewNative(pParams: number): boolean {
+			let params = WindowManagerAddViewParams.unmarshal(pParams);
+
+			this.addViewInternal(
+				params.HtmlId,
+				params.ChildView,
+				params.Index != -1 ? params.Index : null
+			);
+
+			return true;
+		}
+
+		public addViewInternal(parentId: number, childId: number, index?: number): void {
 			const parentElement: HTMLElement | SVGElement = this.allActiveElementsById[parentId];
 			if (!parentElement) {
 				throw `addView: Parent element id ${parentId} not found.`;
@@ -479,7 +727,15 @@
 			if (isLoading) {
 				this.dispatchEvent(childElement, "loaded");
 			}
+		}
 
+		/**
+			* Remove a child from a parent element.
+			*
+			* "Unloading" & "Unloaded" events will be raised if nescessary.
+			*/
+		public removeView(parentId: number, childId: number): string {
+			this.removeViewInternal(parentId, childId);
 			return "ok";
 		}
 
@@ -488,7 +744,13 @@
 			*
 			* "Unloading" & "Unloaded" events will be raised if nescessary.
 			*/
-		public removeView(parentId: string, childId: string): string {
+		public removeViewNative(pParams: number): boolean {
+			var params = WindowManagerRemoveViewParams.unmarshal(pParams);
+			this.removeViewInternal(params.HtmlId, params.ChildView);
+			return true;
+		}
+
+		private removeViewInternal(parentId: number, childId: number): void {
 			const parentElement: HTMLElement | SVGElement = this.allActiveElementsById[parentId];
 			if (!parentElement) {
 				throw `removeView: Parent element id ${parentId} not found.`;
@@ -505,7 +767,16 @@
 			if (loaded) {
 				this.dispatchEvent(childElement, "unloaded");
 			}
+		}
 
+		/**
+			* Destroy a html element.
+			*
+			* The element won't be available anymore. Usually indicate the managed
+			* version has been scavenged by the GC.
+			*/
+		public destroyView(viewId: number): string {
+			this.destroyViewInternal(viewId);
 			return "ok";
 		}
 
@@ -515,7 +786,13 @@
 			* The element won't be available anymore. Usually indicate the managed
 			* version has been scavenged by the GC.
 			*/
-		public destroyView(viewId: string): string {
+		public destroyViewNative(pParams: number): boolean {
+			let params = WindowManagerDestroyViewParams.unmarshal(pParams);
+			this.destroyViewInternal(params.HtmlId);
+			return true;
+		}
+
+		private destroyViewInternal(viewId: number): void {
 			const element: HTMLElement | SVGElement = this.allActiveElementsById[viewId];
 			if (!element) {
 				throw `destroyView: Element id ${viewId} not found.`;
@@ -525,8 +802,6 @@
 				element.parentElement.removeChild(element);
 				delete this.allActiveElementsById[viewId];
 			}
-
-			return "ok";
 		}
 
 		public getBoundingClientRect(elementId: string): string {
@@ -539,14 +814,36 @@
 			return `${bounds.left};${bounds.top};${bounds.right-bounds.left};${bounds.bottom-bounds.top}`;
 		}
 
-		public getBBox(elementId: string): string {
+		public getBBox(elementId: number): string {
+			var bbox = this.getBBoxInternal(elementId);
+
+			return `${bbox.x};${bbox.y};${bbox.width};${bbox.height}`;
+		}
+
+		public getBBoxNative(pParams: number, pReturn: number): boolean {
+
+			let params = WindowManagerGetBBoxParams.unmarshal(pParams);
+
+			var bbox = this.getBBoxInternal(params.HtmlId);
+
+			var ret = new WindowManagerGetBBoxReturn();
+			ret.X = bbox.x;
+			ret.Y = bbox.y;
+			ret.Width = bbox.width;
+			ret.Height = bbox.height;
+
+			ret.marshal(pReturn);
+
+			return true;
+		}
+
+		private getBBoxInternal(elementId: number): any {
 			const htmlElement: HTMLElement | SVGElement = this.allActiveElementsById[elementId];
 			if (!htmlElement) {
 				throw `Element id ${elementId} not found.`;
 			}
 
-			var bbox = (<any>htmlElement).getBBox();
-			return `${bbox.x};${bbox.y};${bbox.width};${bbox.height}`;
+			return (<any>htmlElement).getBBox();
 		}
 
 		/**
@@ -556,6 +853,34 @@
 			* @param maxHeight string containing height in pixels. Empty string means infinite.
 			*/
 		public measureView(viewId: string, maxWidth: string, maxHeight: string): string {
+
+			var ret = this.measureViewInternal(Number(viewId), maxWidth ? Number(maxWidth) : NaN, maxHeight ? Number(maxHeight) : NaN);
+
+			return `${ret[0]};${ret[1]}`;
+		}
+
+		/**
+			* Use the Html engine to measure the element using specified constraints.
+			*
+			* @param maxWidth string containing width in pixels. Empty string means infinite.
+			* @param maxHeight string containing height in pixels. Empty string means infinite.
+			*/
+		public measureViewNative(pParams: number, pReturn: number): boolean {
+
+			var params = WindowManagerMeasureViewParams.unmarshal(pParams);
+
+			var ret = this.measureViewInternal(params.HtmlId, params.AvailableWidth, params.AvailableHeight);
+
+			var ret2 = new WindowManagerMeasureViewReturn();
+			ret2.DesiredWidth = ret[0];
+			ret2.DesiredHeight = ret[1];
+
+			ret2.marshal(pReturn);
+
+			return true;
+		}
+
+		private measureViewInternal(viewId: number, maxWidth: number, maxHeight: number): [number, number] {
 			const element = this.allActiveElementsById[viewId] as HTMLElement;
 			if (!element) {
 				throw `measureView: Element id ${viewId} not found.`;
@@ -586,20 +911,19 @@
 				// This is required for an unconstrained measure (otherwise the parents size is taken into accound)
 				element.style.position = "fixed";
 
-				element.style.maxWidth = maxWidth ? `${maxWidth}px` : "";
-				element.style.maxHeight = maxHeight ? `${maxHeight}px` : "";
+				element.style.maxWidth = Number.isFinite(maxWidth) ? `${maxWidth}px` : "";
+				element.style.maxHeight = Number.isFinite(maxHeight) ? `${maxHeight}px` : "";
 
 				if (element.tagName.toUpperCase() === "IMG") {
 					const imgElement = element as HTMLImageElement;
-					const size = `${imgElement.naturalWidth};${imgElement.naturalHeight}`;
-					return size;
+					return [imgElement.naturalWidth, imgElement.naturalHeight];
 				}
 				else {
 					const resultWidth = element.offsetWidth ? element.offsetWidth : element.clientWidth;
 					const resultHeight = element.offsetHeight ? element.offsetHeight : element.clientHeight;
-					const size = `${resultWidth};${resultHeight}`;
 
-					return size;
+					/* +0.5 is added to take rounding into account */
+					return [resultWidth + 0.5, resultHeight];
 				}
 			} finally {
 				element.style.width = previousWidth;
@@ -731,15 +1055,31 @@
 			* Those html elements won't be available as XamlElement in managed code.
 			* WARNING: you should avoid mixing this and `addView` for the same element.
 			*/
-		public setHtmlContent(viewId: string, html: string): string {
+		public setHtmlContent(viewId: number, html: string): string {
+			this.setHtmlContentInternal(viewId, html);
+			return "ok";
+		}
+
+		/**
+			* Set the Html content for an element.
+			*
+			* Those html elements won't be available as XamlElement in managed code.
+			* WARNING: you should avoid mixing this and `addView` for the same element.
+			*/
+		public setHtmlContentNative(pParams: number): boolean {
+			let params = WindowManagerSetContentHtmlParams.unmarshal(pParams);
+
+			this.setHtmlContentInternal(params.HtmlId, params.Html);
+			return true;
+		}
+
+		private setHtmlContentInternal(viewId: number, html: string): void {
 			const element: HTMLElement | SVGElement = this.allActiveElementsById[viewId];
 			if (!element) {
 				throw `setHtmlContent: Element id ${viewId} not found.`;
 			}
 
 			element.innerHTML = html;
-
-			return "ok";
 		}
 
 		/**

@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="15.0">
+﻿<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="15.0">
   <PropertyGroup>
 		<TargetFrameworks>netstandard2.0</TargetFrameworks>
 	</PropertyGroup>
@@ -8,6 +8,8 @@
 		
 		<ProduceReferenceAssembly>false</ProduceReferenceAssembly>
 		<Deterministic>true</Deterministic>
+
+		<TSBindingsPath>$(MSBuildThisFileDirectory)tsBindings</TSBindingsPath>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -16,12 +18,14 @@
 
 		<UpToDateCheckInput Include="WasmCSS\**\*" />
 		<UpToDateCheckInput Include="ts\**\*" />
+		<UpToDateCheckInput Include="tsBindings\**\*" />
 	</ItemGroup>
 
 	<ItemGroup>
 	  <UpToDateCheckInput Remove="ts\AppManifest.ts" />
 	  <UpToDateCheckInput Remove="ts\Interop\IAppManifest.ts" />
 	  <UpToDateCheckInput Remove="ts\Interop\IUnoDispatch.ts" />
+	  <UpToDateCheckInput Remove="ts\MonoSupport.ts" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -31,6 +35,9 @@
     </PackageReference>
 		<PackageReference Include="Microsoft.TypeScript.Compiler" Version="2.8.3" />
 		<PackageReference Include="Microsoft.TypeScript.MSBuild" Version="2.8.3" />
+		<PackageReference Include="Uno.SourceGenerationTasks">
+			<Version>1.29.0-dev.157</Version>
+		</PackageReference>
 	</ItemGroup>
 
 	<ItemGroup>
@@ -38,8 +45,21 @@
 		<ProjectReference Include="..\Uno.UWP\Uno.csproj" />
 		<ProjectReference Include="..\Uno.Foundation\Uno.Foundation.csproj" />
 	</ItemGroup>
+
+	<ItemGroup>
+	  <Folder Include="tsBindings\" />
+	</ItemGroup>
 	
 	<Import Project="..\Uno.CrossTargetting.props" />
+
+	<PropertyGroup>
+		<UnoUIGeneratorsBinPath>..\SourceGenerators\Uno.UI.SourceGenerators\bin\$(Configuration)</UnoUIGeneratorsBinPath>
+		<UnoUIMSBuildTasksPath>$(MSBuildThisFileDirectory)..\SourceGenerators\Uno.UI.Tasks\bin\$(Configuration)_Shadow</UnoUIMSBuildTasksPath>
+
+		<CompileTypeScriptDependsOn>_UnoSourceGenerator; $(CompileTypeScriptDependsOn)</CompileTypeScriptDependsOn>
+	</PropertyGroup>
+
+	<Import Project="..\SourceGenerators\Uno.UI.SourceGenerators\Content\Uno.UI.SourceGenerators.props" />
 
 	<Target Name="_UnoToolkitOverrideNuget" AfterTargets="AfterBuild" DependsOnTargets="BuiltProjectOutputGroup" Condition="'$(UnoNugetOverrideVersion)'!=''">
 
@@ -54,8 +74,8 @@
 
 		<Message Importance="high" Text="OVERRIDING NUGET PACKAGE CACHE: $(_TargetNugetFolder)" />
 
-		<Copy SourceFiles="@(_OutputFiles)" DestinationFiles="@(_OutputFiles-&gt;'$(_TargetNugetFolder)\%(RecursiveDir)%(Filename)%(Extension)')" />
-		<Copy SourceFiles="@(_OutputFilesPDB)" DestinationFiles="@(_OutputFilesPDB-&gt;'$(_TargetNugetFolder)\%(RecursiveDir)%(Filename).pdb')" />
+		<Copy SourceFiles="@(_OutputFiles)" DestinationFiles="@(_OutputFiles->'$(_TargetNugetFolder)\%(RecursiveDir)%(Filename)%(Extension)')" />
+		<Copy SourceFiles="@(_OutputFilesPDB)" DestinationFiles="@(_OutputFilesPDB->'$(_TargetNugetFolder)\%(RecursiveDir)%(Filename).pdb')" />
 	</Target>
 
 </Project>
