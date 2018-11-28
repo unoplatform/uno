@@ -684,7 +684,7 @@ var Uno;
                 * @param index Position in children list. Appended at end if not specified.
                 */
             addView(parentId, childId, index) {
-                this.addView(parentId, childId, index);
+                this.addViewInternal(parentId, childId, index);
                 return "ok";
             }
             /**

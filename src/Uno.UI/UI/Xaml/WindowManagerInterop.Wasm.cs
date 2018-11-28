@@ -92,6 +92,7 @@ namespace Uno.UI.Xaml
 				var isSvgStr = htmlTagIsSvg ? "true" : "false";
 				var isFrameworkElementStr = isFrameworkElement ? "true" : "false";
 				var isFocusableStr = isFocusable ? "true" : "false"; // by default all control are not focusable, it has to be change latter by the control itself
+				var classesParam = classes.Select(c => $"\"{c}\"").JoinBy(",");
 
 				WebAssemblyRuntime.InvokeJS(
 					"Uno.UI.WindowManager.current.createContent({" +
@@ -102,7 +103,7 @@ namespace Uno.UI.Xaml
 					"isSvg:" + isSvgStr + ", " +
 					"isFrameworkElement:" + isFrameworkElementStr + ", " +
 					"isFocusable:" + isFocusableStr + ", " +
-					"classes:[" + classes + "]" +
+					"classes:[" + classesParam + "]" +
 					"});");
 			}
 			else
