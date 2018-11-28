@@ -26,8 +26,6 @@ namespace Windows.UI.Xaml.Controls
 		// Forced skipping of method Windows.UI.Xaml.Controls.AppBar.Opened.remove
 		// Forced skipping of method Windows.UI.Xaml.Controls.AppBar.Closed.add
 		// Forced skipping of method Windows.UI.Xaml.Controls.AppBar.Closed.remove
-		// Skipping already declared method Windows.UI.Xaml.Controls.AppBar.OnClosed(object)
-		// Skipping already declared method Windows.UI.Xaml.Controls.AppBar.OnOpened(object)
 		// Forced skipping of method Windows.UI.Xaml.Controls.AppBar.ClosedDisplayMode.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.AppBar.ClosedDisplayMode.set
 		// Forced skipping of method Windows.UI.Xaml.Controls.AppBar.TemplateSettings.get
@@ -35,10 +33,12 @@ namespace Windows.UI.Xaml.Controls
 		// Forced skipping of method Windows.UI.Xaml.Controls.AppBar.Opening.remove
 		// Forced skipping of method Windows.UI.Xaml.Controls.AppBar.Closing.add
 		// Forced skipping of method Windows.UI.Xaml.Controls.AppBar.Closing.remove
-		// Skipping already declared method Windows.UI.Xaml.Controls.AppBar.OnClosing(object)
-		// Skipping already declared method Windows.UI.Xaml.Controls.AppBar.OnOpening(object)
 		// Forced skipping of method Windows.UI.Xaml.Controls.AppBar.LightDismissOverlayMode.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.AppBar.LightDismissOverlayMode.set
+		// Skipping already declared method Windows.UI.Xaml.Controls.AppBar.OnClosed(object)
+		// Skipping already declared method Windows.UI.Xaml.Controls.AppBar.OnOpened(object)
+		// Skipping already declared method Windows.UI.Xaml.Controls.AppBar.OnClosing(object)
+		// Skipping already declared method Windows.UI.Xaml.Controls.AppBar.OnOpening(object)
 		// Forced skipping of method Windows.UI.Xaml.Controls.AppBar.LightDismissOverlayModeProperty.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.AppBar.ClosedDisplayModeProperty.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.AppBar.IsOpenProperty.get

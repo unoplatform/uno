@@ -67,10 +67,10 @@ namespace Windows.UI.Xaml.Controls
 		// Forced skipping of method Windows.UI.Xaml.Controls.GroupStyle.HeaderTemplateSelector.set
 		// Forced skipping of method Windows.UI.Xaml.Controls.GroupStyle.HidesIfEmpty.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.GroupStyle.HidesIfEmpty.set
-		// Forced skipping of method Windows.UI.Xaml.Controls.GroupStyle.PropertyChanged.add
-		// Forced skipping of method Windows.UI.Xaml.Controls.GroupStyle.PropertyChanged.remove
 		// Forced skipping of method Windows.UI.Xaml.Controls.GroupStyle.HeaderContainerStyle.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.GroupStyle.HeaderContainerStyle.set
+		// Forced skipping of method Windows.UI.Xaml.Controls.GroupStyle.PropertyChanged.add
+		// Forced skipping of method Windows.UI.Xaml.Controls.GroupStyle.PropertyChanged.remove
 		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  event global::System.ComponentModel.PropertyChangedEventHandler PropertyChanged

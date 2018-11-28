@@ -11,6 +11,12 @@ namespace Windows.UI.Composition
 		// Skipping already declared field Windows.UI.Composition.CompositionBatchTypes.None
 		// Skipping already declared field Windows.UI.Composition.CompositionBatchTypes.Animation
 		// Skipping already declared field Windows.UI.Composition.CompositionBatchTypes.Effect
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		InfiniteAnimation,
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		AllAnimations,
+		#endif
 	}
 	#endif
 }

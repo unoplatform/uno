@@ -7,6 +7,21 @@ namespace Windows.UI.Xaml.Controls
 	#endif
 	public  partial class ItemsStackPanel : global::Windows.UI.Xaml.Controls.Panel
 	{
+		// Skipping already declared property Orientation
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  global::Windows.UI.Xaml.Controls.ItemsUpdatingScrollMode ItemsUpdatingScrollMode
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member ItemsUpdatingScrollMode ItemsStackPanel.ItemsUpdatingScrollMode is not implemented in Uno.");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.ItemsStackPanel", "ItemsUpdatingScrollMode ItemsStackPanel.ItemsUpdatingScrollMode");
+			}
+		}
+		#endif
 		// Skipping already declared property GroupPadding
 		// Skipping already declared property GroupHeaderPlacement
 		#if false || __IOS__ || NET46 || __WASM__ || __MACOS__
@@ -20,21 +35,6 @@ namespace Windows.UI.Xaml.Controls
 			set
 			{
 				this.SetValue(CacheLengthProperty, value);
-			}
-		}
-		#endif
-		// Skipping already declared property Orientation
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  global::Windows.UI.Xaml.Controls.ItemsUpdatingScrollMode ItemsUpdatingScrollMode
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member ItemsUpdatingScrollMode ItemsStackPanel.ItemsUpdatingScrollMode is not implemented in Uno.");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.ItemsStackPanel", "ItemsUpdatingScrollMode ItemsStackPanel.ItemsUpdatingScrollMode");
 			}
 		}
 		#endif

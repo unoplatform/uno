@@ -9,6 +9,62 @@ namespace Windows.UI.Composition
 	{
 		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
+		public  float QuadraticAttenuation
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member float SpotLight.QuadraticAttenuation is not implemented in Uno.");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.SpotLight", "float SpotLight.QuadraticAttenuation");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  global::Windows.UI.Color OuterConeColor
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member Color SpotLight.OuterConeColor is not implemented in Uno.");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.SpotLight", "Color SpotLight.OuterConeColor");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  float OuterConeAngleInDegrees
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member float SpotLight.OuterConeAngleInDegrees is not implemented in Uno.");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.SpotLight", "float SpotLight.OuterConeAngleInDegrees");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  float OuterConeAngle
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member float SpotLight.OuterConeAngle is not implemented in Uno.");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.SpotLight", "float SpotLight.OuterConeAngle");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
 		public  global::System.Numerics.Vector3 Offset
 		{
 			get
@@ -116,62 +172,6 @@ namespace Windows.UI.Composition
 			set
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.SpotLight", "float SpotLight.ConstantAttenuation");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  float QuadraticAttenuation
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member float SpotLight.QuadraticAttenuation is not implemented in Uno.");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.SpotLight", "float SpotLight.QuadraticAttenuation");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  global::Windows.UI.Color OuterConeColor
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member Color SpotLight.OuterConeColor is not implemented in Uno.");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.SpotLight", "Color SpotLight.OuterConeColor");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  float OuterConeAngleInDegrees
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member float SpotLight.OuterConeAngleInDegrees is not implemented in Uno.");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.SpotLight", "float SpotLight.OuterConeAngleInDegrees");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  float OuterConeAngle
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member float SpotLight.OuterConeAngle is not implemented in Uno.");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.SpotLight", "float SpotLight.OuterConeAngle");
 			}
 		}
 		#endif

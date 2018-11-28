@@ -7,18 +7,18 @@ namespace Windows.UI.Xaml.Controls.Maps
 	#endif
 	public  partial class MapControl : global::Windows.UI.Xaml.Controls.Control
 	{
-		// Skipping already declared property Style
-		// Skipping already declared property DesiredPitch
-		// Skipping already declared property ColorScheme
-		// Skipping already declared property PedestrianFeaturesVisible
-		// Skipping already declared property Center
-		// Skipping already declared property LandmarksVisible
-		// Skipping already declared property Heading
 		// Skipping already declared property WatermarkMode
+		// Skipping already declared property Style
 		// Skipping already declared property MapServiceToken
 		// Skipping already declared property TransformOrigin
 		// Skipping already declared property TrafficFlowVisible
+		// Skipping already declared property LandmarksVisible
+		// Skipping already declared property Heading
+		// Skipping already declared property DesiredPitch
+		// Skipping already declared property ColorScheme
+		// Skipping already declared property PedestrianFeaturesVisible
 		// Skipping already declared property ZoomLevel
+		// Skipping already declared property Center
 		// Skipping already declared property Children
 		// Skipping already declared property LoadingStatus
 		// Skipping already declared property MapElements
@@ -27,18 +27,18 @@ namespace Windows.UI.Xaml.Controls.Maps
 		// Skipping already declared property Pitch
 		// Skipping already declared property Routes
 		// Skipping already declared property TileSources
-		// Skipping already declared property CustomExperience
-		// Skipping already declared property BusinessLandmarksVisible
 		// Skipping already declared property ZoomInteractionMode
 		// Skipping already declared property TransitFeaturesVisible
-		// Skipping already declared property PanInteractionMode
 		// Skipping already declared property TiltInteractionMode
 		// Skipping already declared property Scene
 		// Skipping already declared property RotateInteractionMode
+		// Skipping already declared property PanInteractionMode
+		// Skipping already declared property CustomExperience
+		// Skipping already declared property BusinessLandmarksVisible
+		// Skipping already declared property ActualCamera
 		// Skipping already declared property Is3DSupported
 		// Skipping already declared property IsStreetsideSupported
 		// Skipping already declared property TargetCamera
-		// Skipping already declared property ActualCamera
 		// Skipping already declared property TransitFeaturesEnabled
 		// Skipping already declared property BusinessLandmarksEnabled
 		// Skipping already declared property ViewPadding
@@ -46,12 +46,10 @@ namespace Windows.UI.Xaml.Controls.Maps
 		// Skipping already declared property MapProjection
 		// Skipping already declared property Layers
 		// Skipping already declared property Region
-		// Skipping already declared property CenterProperty
-		// Skipping already declared property ChildrenProperty
 		// Skipping already declared property ColorSchemeProperty
-		// Skipping already declared property DesiredPitchProperty
 		// Skipping already declared property HeadingProperty
 		// Skipping already declared property LandmarksVisibleProperty
+		// Skipping already declared property LoadingStatusProperty
 		// Skipping already declared property LocationProperty
 		// Skipping already declared property MapElementsProperty
 		// Skipping already declared property MapServiceTokenProperty
@@ -64,17 +62,19 @@ namespace Windows.UI.Xaml.Controls.Maps
 		// Skipping already declared property TrafficFlowVisibleProperty
 		// Skipping already declared property TransformOriginProperty
 		// Skipping already declared property WatermarkModeProperty
+		// Skipping already declared property CenterProperty
+		// Skipping already declared property ChildrenProperty
 		// Skipping already declared property ZoomLevelProperty
-		// Skipping already declared property LoadingStatusProperty
+		// Skipping already declared property DesiredPitchProperty
 		// Skipping already declared property BusinessLandmarksVisibleProperty
 		// Skipping already declared property Is3DSupportedProperty
+		// Skipping already declared property IsStreetsideSupportedProperty
 		// Skipping already declared property PanInteractionModeProperty
 		// Skipping already declared property RotateInteractionModeProperty
+		// Skipping already declared property SceneProperty
 		// Skipping already declared property TiltInteractionModeProperty
 		// Skipping already declared property TransitFeaturesVisibleProperty
 		// Skipping already declared property ZoomInteractionModeProperty
-		// Skipping already declared property IsStreetsideSupportedProperty
-		// Skipping already declared property SceneProperty
 		// Skipping already declared property BusinessLandmarksEnabledProperty
 		// Skipping already declared property TransitFeaturesEnabledProperty
 		// Skipping already declared property MapProjectionProperty

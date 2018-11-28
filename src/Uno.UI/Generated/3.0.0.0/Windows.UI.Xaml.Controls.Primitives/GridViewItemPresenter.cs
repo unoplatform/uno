@@ -9,155 +9,15 @@ namespace Windows.UI.Xaml.Controls.Primitives
 	{
 		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
-		public  double DisabledOpacity
+		public  bool SelectionCheckMarkVisualEnabled
 		{
 			get
 			{
-				return (double)this.GetValue(DisabledOpacityProperty);
+				return (bool)this.GetValue(SelectionCheckMarkVisualEnabledProperty);
 			}
 			set
 			{
-				this.SetValue(DisabledOpacityProperty, value);
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  global::Windows.UI.Xaml.Thickness ContentMargin
-		{
-			get
-			{
-				return (global::Windows.UI.Xaml.Thickness)this.GetValue(ContentMarginProperty);
-			}
-			set
-			{
-				this.SetValue(ContentMarginProperty, value);
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  global::Windows.UI.Xaml.Media.Brush CheckHintBrush
-		{
-			get
-			{
-				return (global::Windows.UI.Xaml.Media.Brush)this.GetValue(CheckHintBrushProperty);
-			}
-			set
-			{
-				this.SetValue(CheckHintBrushProperty, value);
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  global::Windows.UI.Xaml.Media.Brush CheckBrush
-		{
-			get
-			{
-				return (global::Windows.UI.Xaml.Media.Brush)this.GetValue(CheckBrushProperty);
-			}
-			set
-			{
-				this.SetValue(CheckBrushProperty, value);
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  global::Windows.UI.Xaml.Thickness GridViewItemPresenterPadding
-		{
-			get
-			{
-				return (global::Windows.UI.Xaml.Thickness)this.GetValue(GridViewItemPresenterPaddingProperty);
-			}
-			set
-			{
-				this.SetValue(GridViewItemPresenterPaddingProperty, value);
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  global::Windows.UI.Xaml.HorizontalAlignment GridViewItemPresenterHorizontalContentAlignment
-		{
-			get
-			{
-				return (global::Windows.UI.Xaml.HorizontalAlignment)this.GetValue(GridViewItemPresenterHorizontalContentAlignmentProperty);
-			}
-			set
-			{
-				this.SetValue(GridViewItemPresenterHorizontalContentAlignmentProperty, value);
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  global::Windows.UI.Xaml.Media.Brush FocusBorderBrush
-		{
-			get
-			{
-				return (global::Windows.UI.Xaml.Media.Brush)this.GetValue(FocusBorderBrushProperty);
-			}
-			set
-			{
-				this.SetValue(FocusBorderBrushProperty, value);
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  global::Windows.UI.Xaml.Media.Brush PointerOverBackground
-		{
-			get
-			{
-				return (global::Windows.UI.Xaml.Media.Brush)this.GetValue(PointerOverBackgroundProperty);
-			}
-			set
-			{
-				this.SetValue(PointerOverBackgroundProperty, value);
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  double DragOpacity
-		{
-			get
-			{
-				return (double)this.GetValue(DragOpacityProperty);
-			}
-			set
-			{
-				this.SetValue(DragOpacityProperty, value);
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  global::Windows.UI.Xaml.Media.Brush DragForeground
-		{
-			get
-			{
-				return (global::Windows.UI.Xaml.Media.Brush)this.GetValue(DragForegroundProperty);
-			}
-			set
-			{
-				this.SetValue(DragForegroundProperty, value);
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  global::Windows.UI.Xaml.Media.Brush DragBackground
-		{
-			get
-			{
-				return (global::Windows.UI.Xaml.Media.Brush)this.GetValue(DragBackgroundProperty);
-			}
-			set
-			{
-				this.SetValue(DragBackgroundProperty, value);
+				this.SetValue(SelectionCheckMarkVisualEnabledProperty, value);
 			}
 		}
 		#endif
@@ -186,20 +46,6 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			set
 			{
 				this.SetValue(SelectedPointerOverBackgroundProperty, value);
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  global::Windows.UI.Xaml.Media.Brush CheckSelectingBrush
-		{
-			get
-			{
-				return (global::Windows.UI.Xaml.Media.Brush)this.GetValue(CheckSelectingBrushProperty);
-			}
-			set
-			{
-				this.SetValue(CheckSelectingBrushProperty, value);
 			}
 		}
 		#endif
@@ -247,20 +93,6 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		#endif
 		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
-		public  bool SelectionCheckMarkVisualEnabled
-		{
-			get
-			{
-				return (bool)this.GetValue(SelectionCheckMarkVisualEnabledProperty);
-			}
-			set
-			{
-				this.SetValue(SelectionCheckMarkVisualEnabledProperty, value);
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
 		public  double ReorderHintOffset
 		{
 			get
@@ -289,6 +121,20 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		#endif
 		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
+		public  global::Windows.UI.Xaml.Media.Brush PointerOverBackground
+		{
+			get
+			{
+				return (global::Windows.UI.Xaml.Media.Brush)this.GetValue(PointerOverBackgroundProperty);
+			}
+			set
+			{
+				this.SetValue(PointerOverBackgroundProperty, value);
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
 		public  global::Windows.UI.Xaml.Media.Brush PlaceholderBackground
 		{
 			get
@@ -312,6 +158,160 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			set
 			{
 				this.SetValue(GridViewItemPresenterVerticalContentAlignmentProperty, value);
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  global::Windows.UI.Xaml.Thickness GridViewItemPresenterPadding
+		{
+			get
+			{
+				return (global::Windows.UI.Xaml.Thickness)this.GetValue(GridViewItemPresenterPaddingProperty);
+			}
+			set
+			{
+				this.SetValue(GridViewItemPresenterPaddingProperty, value);
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  global::Windows.UI.Xaml.HorizontalAlignment GridViewItemPresenterHorizontalContentAlignment
+		{
+			get
+			{
+				return (global::Windows.UI.Xaml.HorizontalAlignment)this.GetValue(GridViewItemPresenterHorizontalContentAlignmentProperty);
+			}
+			set
+			{
+				this.SetValue(GridViewItemPresenterHorizontalContentAlignmentProperty, value);
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  global::Windows.UI.Xaml.Media.Brush FocusBorderBrush
+		{
+			get
+			{
+				return (global::Windows.UI.Xaml.Media.Brush)this.GetValue(FocusBorderBrushProperty);
+			}
+			set
+			{
+				this.SetValue(FocusBorderBrushProperty, value);
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  double DragOpacity
+		{
+			get
+			{
+				return (double)this.GetValue(DragOpacityProperty);
+			}
+			set
+			{
+				this.SetValue(DragOpacityProperty, value);
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  global::Windows.UI.Xaml.Media.Brush DragForeground
+		{
+			get
+			{
+				return (global::Windows.UI.Xaml.Media.Brush)this.GetValue(DragForegroundProperty);
+			}
+			set
+			{
+				this.SetValue(DragForegroundProperty, value);
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  global::Windows.UI.Xaml.Media.Brush DragBackground
+		{
+			get
+			{
+				return (global::Windows.UI.Xaml.Media.Brush)this.GetValue(DragBackgroundProperty);
+			}
+			set
+			{
+				this.SetValue(DragBackgroundProperty, value);
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  double DisabledOpacity
+		{
+			get
+			{
+				return (double)this.GetValue(DisabledOpacityProperty);
+			}
+			set
+			{
+				this.SetValue(DisabledOpacityProperty, value);
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  global::Windows.UI.Xaml.Thickness ContentMargin
+		{
+			get
+			{
+				return (global::Windows.UI.Xaml.Thickness)this.GetValue(ContentMarginProperty);
+			}
+			set
+			{
+				this.SetValue(ContentMarginProperty, value);
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  global::Windows.UI.Xaml.Media.Brush CheckSelectingBrush
+		{
+			get
+			{
+				return (global::Windows.UI.Xaml.Media.Brush)this.GetValue(CheckSelectingBrushProperty);
+			}
+			set
+			{
+				this.SetValue(CheckSelectingBrushProperty, value);
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  global::Windows.UI.Xaml.Media.Brush CheckHintBrush
+		{
+			get
+			{
+				return (global::Windows.UI.Xaml.Media.Brush)this.GetValue(CheckHintBrushProperty);
+			}
+			set
+			{
+				this.SetValue(CheckHintBrushProperty, value);
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  global::Windows.UI.Xaml.Media.Brush CheckBrush
+		{
+			get
+			{
+				return (global::Windows.UI.Xaml.Media.Brush)this.GetValue(CheckBrushProperty);
+			}
+			set
+			{
+				this.SetValue(CheckBrushProperty, value);
 			}
 		}
 		#endif

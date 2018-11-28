@@ -9,6 +9,34 @@ namespace Windows.System
 	{
 		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
+		public static global::Windows.Foundation.IAsyncOperation<bool> LaunchFolderPathAsync( string path)
+		{
+			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> Launcher.LaunchFolderPathAsync(string path) is not implemented in Uno.");
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public static global::Windows.Foundation.IAsyncOperation<bool> LaunchFolderPathAsync( string path,  global::Windows.System.FolderLauncherOptions options)
+		{
+			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> Launcher.LaunchFolderPathAsync(string path, FolderLauncherOptions options) is not implemented in Uno.");
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public static global::Windows.Foundation.IAsyncOperation<bool> LaunchFolderPathForUserAsync( global::Windows.System.User user,  string path)
+		{
+			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> Launcher.LaunchFolderPathForUserAsync(User user, string path) is not implemented in Uno.");
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public static global::Windows.Foundation.IAsyncOperation<bool> LaunchFolderPathForUserAsync( global::Windows.System.User user,  string path,  global::Windows.System.FolderLauncherOptions options)
+		{
+			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> Launcher.LaunchFolderPathForUserAsync(User user, string path, FolderLauncherOptions options) is not implemented in Uno.");
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.System.LaunchQuerySupportStatus> QueryAppUriSupportAsync( global::System.Uri uri)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<LaunchQuerySupportStatus> Launcher.QueryAppUriSupportAsync(Uri uri) is not implemented in Uno.");
@@ -61,6 +89,28 @@ namespace Windows.System
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.System.LaunchUriResult> LaunchUriForResultsForUserAsync( global::Windows.System.User user,  global::System.Uri uri,  global::Windows.System.LauncherOptions options,  global::Windows.Foundation.Collections.ValueSet inputData)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<LaunchUriResult> Launcher.LaunchUriForResultsForUserAsync(User user, Uri uri, LauncherOptions options, ValueSet inputData) is not implemented in Uno.");
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public static global::Windows.Foundation.IAsyncOperation<bool> LaunchFileAsync( global::Windows.Storage.IStorageFile file)
+		{
+			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> Launcher.LaunchFileAsync(IStorageFile file) is not implemented in Uno.");
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public static global::Windows.Foundation.IAsyncOperation<bool> LaunchFileAsync( global::Windows.Storage.IStorageFile file,  global::Windows.System.LauncherOptions options)
+		{
+			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> Launcher.LaunchFileAsync(IStorageFile file, LauncherOptions options) is not implemented in Uno.");
+		}
+		#endif
+		// Skipping already declared method Windows.System.Launcher.LaunchUriAsync(System.Uri)
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public static global::Windows.Foundation.IAsyncOperation<bool> LaunchUriAsync( global::System.Uri uri,  global::Windows.System.LauncherOptions options)
+		{
+			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> Launcher.LaunchUriAsync(Uri uri, LauncherOptions options) is not implemented in Uno.");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
@@ -145,28 +195,6 @@ namespace Windows.System
 		public static global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IReadOnlyList<global::Windows.ApplicationModel.AppInfo>> FindFileHandlersAsync( string extension)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<IReadOnlyList<AppInfo>> Launcher.FindFileHandlersAsync(string extension) is not implemented in Uno.");
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public static global::Windows.Foundation.IAsyncOperation<bool> LaunchFileAsync( global::Windows.Storage.IStorageFile file)
-		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> Launcher.LaunchFileAsync(IStorageFile file) is not implemented in Uno.");
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public static global::Windows.Foundation.IAsyncOperation<bool> LaunchFileAsync( global::Windows.Storage.IStorageFile file,  global::Windows.System.LauncherOptions options)
-		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> Launcher.LaunchFileAsync(IStorageFile file, LauncherOptions options) is not implemented in Uno.");
-		}
-		#endif
-		// Skipping already declared method Windows.System.Launcher.LaunchUriAsync(System.Uri)
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public static global::Windows.Foundation.IAsyncOperation<bool> LaunchUriAsync( global::System.Uri uri,  global::Windows.System.LauncherOptions options)
-		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> Launcher.LaunchUriAsync(Uri uri, LauncherOptions options) is not implemented in Uno.");
 		}
 		#endif
 	}

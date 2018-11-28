@@ -9,76 +9,6 @@ namespace Windows.UI.Xaml.Controls.Maps
 	{
 		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
-		public  bool IsRetryEnabled
-		{
-			get
-			{
-				return (bool)this.GetValue(IsRetryEnabledProperty);
-			}
-			set
-			{
-				this.SetValue(IsRetryEnabledProperty, value);
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  bool IsFadingEnabled
-		{
-			get
-			{
-				return (bool)this.GetValue(IsFadingEnabledProperty);
-			}
-			set
-			{
-				this.SetValue(IsFadingEnabledProperty, value);
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  global::Windows.UI.Xaml.Controls.Maps.MapTileDataSource DataSource
-		{
-			get
-			{
-				return (global::Windows.UI.Xaml.Controls.Maps.MapTileDataSource)this.GetValue(DataSourceProperty);
-			}
-			set
-			{
-				this.SetValue(DataSourceProperty, value);
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  global::Windows.Devices.Geolocation.GeoboundingBox Bounds
-		{
-			get
-			{
-				return (global::Windows.Devices.Geolocation.GeoboundingBox)this.GetValue(BoundsProperty);
-			}
-			set
-			{
-				this.SetValue(BoundsProperty, value);
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  bool AllowOverstretch
-		{
-			get
-			{
-				return (bool)this.GetValue(AllowOverstretchProperty);
-			}
-			set
-			{
-				this.SetValue(AllowOverstretchProperty, value);
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
 		public  global::Windows.UI.Xaml.Controls.Maps.MapZoomLevelRange ZoomLevelRange
 		{
 			get
@@ -158,6 +88,128 @@ namespace Windows.UI.Xaml.Controls.Maps
 			set
 			{
 				this.SetValue(IsTransparencyEnabledProperty, value);
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  bool IsRetryEnabled
+		{
+			get
+			{
+				return (bool)this.GetValue(IsRetryEnabledProperty);
+			}
+			set
+			{
+				this.SetValue(IsRetryEnabledProperty, value);
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  bool IsFadingEnabled
+		{
+			get
+			{
+				return (bool)this.GetValue(IsFadingEnabledProperty);
+			}
+			set
+			{
+				this.SetValue(IsFadingEnabledProperty, value);
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  global::Windows.UI.Xaml.Controls.Maps.MapTileDataSource DataSource
+		{
+			get
+			{
+				return (global::Windows.UI.Xaml.Controls.Maps.MapTileDataSource)this.GetValue(DataSourceProperty);
+			}
+			set
+			{
+				this.SetValue(DataSourceProperty, value);
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  global::Windows.Devices.Geolocation.GeoboundingBox Bounds
+		{
+			get
+			{
+				return (global::Windows.Devices.Geolocation.GeoboundingBox)this.GetValue(BoundsProperty);
+			}
+			set
+			{
+				this.SetValue(BoundsProperty, value);
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  bool AllowOverstretch
+		{
+			get
+			{
+				return (bool)this.GetValue(AllowOverstretchProperty);
+			}
+			set
+			{
+				this.SetValue(AllowOverstretchProperty, value);
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  global::System.TimeSpan FrameDuration
+		{
+			get
+			{
+				return (global::System.TimeSpan)this.GetValue(FrameDurationProperty);
+			}
+			set
+			{
+				this.SetValue(FrameDurationProperty, value);
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  int FrameCount
+		{
+			get
+			{
+				return (int)this.GetValue(FrameCountProperty);
+			}
+			set
+			{
+				this.SetValue(FrameCountProperty, value);
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  bool AutoPlay
+		{
+			get
+			{
+				return (bool)this.GetValue(AutoPlayProperty);
+			}
+			set
+			{
+				this.SetValue(AutoPlayProperty, value);
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  global::Windows.UI.Xaml.Controls.Maps.MapTileAnimationState AnimationState
+		{
+			get
+			{
+				return (global::Windows.UI.Xaml.Controls.Maps.MapTileAnimationState)this.GetValue(AnimationStateProperty);
 			}
 		}
 		#endif
@@ -249,6 +301,38 @@ namespace Windows.UI.Xaml.Controls.Maps
 			typeof(global::Windows.UI.Xaml.Controls.Maps.MapTileSource), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Controls.Maps.MapZoomLevelRange)));
 		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public static global::Windows.UI.Xaml.DependencyProperty AnimationStateProperty { get; } = 
+		Windows.UI.Xaml.DependencyProperty.Register(
+			"AnimationState", typeof(global::Windows.UI.Xaml.Controls.Maps.MapTileAnimationState), 
+			typeof(global::Windows.UI.Xaml.Controls.Maps.MapTileSource), 
+			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Controls.Maps.MapTileAnimationState)));
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public static global::Windows.UI.Xaml.DependencyProperty AutoPlayProperty { get; } = 
+		Windows.UI.Xaml.DependencyProperty.Register(
+			"AutoPlay", typeof(bool), 
+			typeof(global::Windows.UI.Xaml.Controls.Maps.MapTileSource), 
+			new FrameworkPropertyMetadata(default(bool)));
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public static global::Windows.UI.Xaml.DependencyProperty FrameCountProperty { get; } = 
+		Windows.UI.Xaml.DependencyProperty.Register(
+			"FrameCount", typeof(int), 
+			typeof(global::Windows.UI.Xaml.Controls.Maps.MapTileSource), 
+			new FrameworkPropertyMetadata(default(int)));
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public static global::Windows.UI.Xaml.DependencyProperty FrameDurationProperty { get; } = 
+		Windows.UI.Xaml.DependencyProperty.Register(
+			"FrameDuration", typeof(global::System.TimeSpan), 
+			typeof(global::Windows.UI.Xaml.Controls.Maps.MapTileSource), 
+			new FrameworkPropertyMetadata(default(global::System.TimeSpan)));
+		#endif
 		// Skipping already declared method Windows.UI.Xaml.Controls.Maps.MapTileSource.MapTileSource()
 		// Forced skipping of method Windows.UI.Xaml.Controls.Maps.MapTileSource.MapTileSource()
 		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
@@ -305,6 +389,38 @@ namespace Windows.UI.Xaml.Controls.Maps
 		// Forced skipping of method Windows.UI.Xaml.Controls.Maps.MapTileSource.TilePixelSize.set
 		// Forced skipping of method Windows.UI.Xaml.Controls.Maps.MapTileSource.Visible.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.Maps.MapTileSource.Visible.set
+		// Forced skipping of method Windows.UI.Xaml.Controls.Maps.MapTileSource.AnimationState.get
+		// Forced skipping of method Windows.UI.Xaml.Controls.Maps.MapTileSource.AutoPlay.get
+		// Forced skipping of method Windows.UI.Xaml.Controls.Maps.MapTileSource.AutoPlay.set
+		// Forced skipping of method Windows.UI.Xaml.Controls.Maps.MapTileSource.FrameCount.get
+		// Forced skipping of method Windows.UI.Xaml.Controls.Maps.MapTileSource.FrameCount.set
+		// Forced skipping of method Windows.UI.Xaml.Controls.Maps.MapTileSource.FrameDuration.get
+		// Forced skipping of method Windows.UI.Xaml.Controls.Maps.MapTileSource.FrameDuration.set
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  void Pause()
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.Maps.MapTileSource", "void MapTileSource.Pause()");
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  void Play()
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.Maps.MapTileSource", "void MapTileSource.Play()");
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  void Stop()
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.Maps.MapTileSource", "void MapTileSource.Stop()");
+		}
+		#endif
+		// Forced skipping of method Windows.UI.Xaml.Controls.Maps.MapTileSource.AnimationStateProperty.get
+		// Forced skipping of method Windows.UI.Xaml.Controls.Maps.MapTileSource.AutoPlayProperty.get
+		// Forced skipping of method Windows.UI.Xaml.Controls.Maps.MapTileSource.FrameCountProperty.get
+		// Forced skipping of method Windows.UI.Xaml.Controls.Maps.MapTileSource.FrameDurationProperty.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.Maps.MapTileSource.DataSourceProperty.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.Maps.MapTileSource.LayerProperty.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.Maps.MapTileSource.ZoomLevelRangeProperty.get

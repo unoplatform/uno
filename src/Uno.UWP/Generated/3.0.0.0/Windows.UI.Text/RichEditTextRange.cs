@@ -167,6 +167,8 @@ namespace Windows.UI.Text
 			}
 		}
 		#endif
+		// Forced skipping of method Windows.UI.Text.RichEditTextRange.ContentLinkInfo.get
+		// Forced skipping of method Windows.UI.Text.RichEditTextRange.ContentLinkInfo.set
 		// Forced skipping of method Windows.UI.Text.RichEditTextRange.Character.get
 		// Forced skipping of method Windows.UI.Text.RichEditTextRange.Character.set
 		// Forced skipping of method Windows.UI.Text.RichEditTextRange.CharacterFormat.get
@@ -411,8 +413,6 @@ namespace Windows.UI.Text
 			throw new global::System.NotImplementedException("The member int RichEditTextRange.StartOf(TextRangeUnit unit, bool extend) is not implemented in Uno.");
 		}
 		#endif
-		// Forced skipping of method Windows.UI.Text.RichEditTextRange.ContentLinkInfo.get
-		// Forced skipping of method Windows.UI.Text.RichEditTextRange.ContentLinkInfo.set
 		// Processing: Windows.UI.Text.ITextRange
 	}
 }

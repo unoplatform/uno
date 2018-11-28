@@ -7,20 +7,6 @@ namespace Windows.UI.ViewManagement
 	#endif
 	public  partial class ApplicationView 
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  bool IsScreenCaptureEnabled
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool ApplicationView.IsScreenCaptureEnabled is not implemented in Uno.");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.ViewManagement.ApplicationView", "bool ApplicationView.IsScreenCaptureEnabled");
-			}
-		}
-		#endif
 		#if __ANDROID__ || __IOS__ || NET46 || false || __MACOS__
 		[global::Uno.NotImplemented]
 		public  string Title
@@ -32,6 +18,20 @@ namespace Windows.UI.ViewManagement
 			set
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.ViewManagement.ApplicationView", "string ApplicationView.Title");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  bool IsScreenCaptureEnabled
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member bool ApplicationView.IsScreenCaptureEnabled is not implemented in Uno.");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.ViewManagement.ApplicationView", "bool ApplicationView.IsScreenCaptureEnabled");
 			}
 		}
 		#endif

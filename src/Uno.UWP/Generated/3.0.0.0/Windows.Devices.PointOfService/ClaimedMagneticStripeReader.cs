@@ -207,6 +207,8 @@ namespace Windows.Devices.PointOfService
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.PointOfService.ClaimedMagneticStripeReader", "void ClaimedMagneticStripeReader.Dispose()");
 		}
 		#endif
+		// Forced skipping of method Windows.Devices.PointOfService.ClaimedMagneticStripeReader.Closed.add
+		// Forced skipping of method Windows.Devices.PointOfService.ClaimedMagneticStripeReader.Closed.remove
 		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Devices.PointOfService.ClaimedMagneticStripeReader, global::Windows.Devices.PointOfService.MagneticStripeReaderAamvaCardDataReceivedEventArgs> AamvaCardDataReceived
@@ -284,6 +286,22 @@ namespace Windows.Devices.PointOfService
 			remove
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.PointOfService.ClaimedMagneticStripeReader", "event TypedEventHandler<ClaimedMagneticStripeReader, MagneticStripeReaderVendorSpecificCardDataReceivedEventArgs> ClaimedMagneticStripeReader.VendorSpecificDataReceived");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Devices.PointOfService.ClaimedMagneticStripeReader, global::Windows.Devices.PointOfService.ClaimedMagneticStripeReaderClosedEventArgs> Closed
+		{
+			[global::Uno.NotImplemented]
+			add
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.PointOfService.ClaimedMagneticStripeReader", "event TypedEventHandler<ClaimedMagneticStripeReader, ClaimedMagneticStripeReaderClosedEventArgs> ClaimedMagneticStripeReader.Closed");
+			}
+			[global::Uno.NotImplemented]
+			remove
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.PointOfService.ClaimedMagneticStripeReader", "event TypedEventHandler<ClaimedMagneticStripeReader, ClaimedMagneticStripeReaderClosedEventArgs> ClaimedMagneticStripeReader.Closed");
 			}
 		}
 		#endif

@@ -93,6 +93,132 @@ namespace Windows.ApplicationModel.Store.Preview.InstallControl
 		#endif
 		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
+		public  bool StageButDoNotInstall
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member bool AppInstallOptions.StageButDoNotInstall is not implemented in Uno.");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallOptions", "bool AppInstallOptions.StageButDoNotInstall");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  bool PinToTaskbarAfterInstall
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member bool AppInstallOptions.PinToTaskbarAfterInstall is not implemented in Uno.");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallOptions", "bool AppInstallOptions.PinToTaskbarAfterInstall");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  bool PinToStartAfterInstall
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member bool AppInstallOptions.PinToStartAfterInstall is not implemented in Uno.");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallOptions", "bool AppInstallOptions.PinToStartAfterInstall");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  bool PinToDesktopAfterInstall
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member bool AppInstallOptions.PinToDesktopAfterInstall is not implemented in Uno.");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallOptions", "bool AppInstallOptions.PinToDesktopAfterInstall");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  global::Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallationToastNotificationMode InstallInProgressToastNotificationMode
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member AppInstallationToastNotificationMode AppInstallOptions.InstallInProgressToastNotificationMode is not implemented in Uno.");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallOptions", "AppInstallationToastNotificationMode AppInstallOptions.InstallInProgressToastNotificationMode");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  bool InstallForAllUsers
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member bool AppInstallOptions.InstallForAllUsers is not implemented in Uno.");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallOptions", "bool AppInstallOptions.InstallForAllUsers");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  string ExtendedCampaignId
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member string AppInstallOptions.ExtendedCampaignId is not implemented in Uno.");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallOptions", "string AppInstallOptions.ExtendedCampaignId");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  global::Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallationToastNotificationMode CompletedInstallToastNotificationMode
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member AppInstallationToastNotificationMode AppInstallOptions.CompletedInstallToastNotificationMode is not implemented in Uno.");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallOptions", "AppInstallationToastNotificationMode AppInstallOptions.CompletedInstallToastNotificationMode");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  string CampaignId
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member string AppInstallOptions.CampaignId is not implemented in Uno.");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallOptions", "string AppInstallOptions.CampaignId");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
 		public AppInstallOptions() 
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallOptions", "AppInstallOptions.AppInstallOptions()");
@@ -111,5 +237,23 @@ namespace Windows.ApplicationModel.Store.Preview.InstallControl
 		// Forced skipping of method Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallOptions.TargetVolume.set
 		// Forced skipping of method Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallOptions.LaunchAfterInstall.get
 		// Forced skipping of method Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallOptions.LaunchAfterInstall.set
+		// Forced skipping of method Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallOptions.PinToDesktopAfterInstall.get
+		// Forced skipping of method Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallOptions.PinToDesktopAfterInstall.set
+		// Forced skipping of method Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallOptions.PinToStartAfterInstall.get
+		// Forced skipping of method Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallOptions.PinToStartAfterInstall.set
+		// Forced skipping of method Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallOptions.PinToTaskbarAfterInstall.get
+		// Forced skipping of method Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallOptions.PinToTaskbarAfterInstall.set
+		// Forced skipping of method Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallOptions.CompletedInstallToastNotificationMode.get
+		// Forced skipping of method Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallOptions.CompletedInstallToastNotificationMode.set
+		// Forced skipping of method Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallOptions.InstallInProgressToastNotificationMode.get
+		// Forced skipping of method Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallOptions.InstallInProgressToastNotificationMode.set
+		// Forced skipping of method Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallOptions.InstallForAllUsers.get
+		// Forced skipping of method Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallOptions.InstallForAllUsers.set
+		// Forced skipping of method Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallOptions.StageButDoNotInstall.get
+		// Forced skipping of method Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallOptions.StageButDoNotInstall.set
+		// Forced skipping of method Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallOptions.CampaignId.get
+		// Forced skipping of method Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallOptions.CampaignId.set
+		// Forced skipping of method Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallOptions.ExtendedCampaignId.get
+		// Forced skipping of method Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallOptions.ExtendedCampaignId.set
 	}
 }

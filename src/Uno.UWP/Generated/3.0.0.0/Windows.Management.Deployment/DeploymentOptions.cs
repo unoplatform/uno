@@ -26,6 +26,9 @@ namespace Windows.Management.Deployment
 		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		RequiredContentGroupOnly,
 		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		ForceUpdateFromAnyVersion,
+		#endif
 	}
 	#endif
 }

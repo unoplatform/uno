@@ -15,6 +15,20 @@ namespace Windows.Devices.Sensors
 		// Forced skipping of method Windows.Devices.Sensors.SimpleOrientationSensor.DeviceId.get
 		// Forced skipping of method Windows.Devices.Sensors.SimpleOrientationSensor.ReadingTransform.set
 		// Forced skipping of method Windows.Devices.Sensors.SimpleOrientationSensor.ReadingTransform.get
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public static string GetDeviceSelector()
+		{
+			throw new global::System.NotImplementedException("The member string SimpleOrientationSensor.GetDeviceSelector() is not implemented in Uno.");
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Sensors.SimpleOrientationSensor> FromIdAsync( string deviceId)
+		{
+			throw new global::System.NotImplementedException("The member IAsyncOperation<SimpleOrientationSensor> SimpleOrientationSensor.FromIdAsync(string deviceId) is not implemented in Uno.");
+		}
+		#endif
 		// Skipping already declared method Windows.Devices.Sensors.SimpleOrientationSensor.GetDefault()
 		// Skipping already declared event Windows.Devices.Sensors.SimpleOrientationSensor.OrientationChanged
 	}

@@ -7,26 +7,26 @@ namespace Windows.UI.Xaml.Controls
 	#endif
 	public  partial class Slider 
 	{
+		// Skipping already declared property TickPlacement
+		// Skipping already declared property TickFrequency
+		// Skipping already declared property ThumbToolTipValueConverter
+		// Skipping already declared property StepFrequency
 		// Skipping already declared property SnapsTo
 		// Skipping already declared property Orientation
 		// Skipping already declared property IsThumbToolTipEnabled
 		// Skipping already declared property IsDirectionReversed
 		// Skipping already declared property IntermediateValue
-		// Skipping already declared property TickPlacement
-		// Skipping already declared property TickFrequency
-		// Skipping already declared property ThumbToolTipValueConverter
-		// Skipping already declared property StepFrequency
 		// Skipping already declared property HeaderTemplate
 		// Skipping already declared property Header
+		// Skipping already declared property IntermediateValueProperty
+		// Skipping already declared property IsDirectionReversedProperty
+		// Skipping already declared property IsThumbToolTipEnabledProperty
 		// Skipping already declared property OrientationProperty
 		// Skipping already declared property SnapsToProperty
 		// Skipping already declared property StepFrequencyProperty
 		// Skipping already declared property ThumbToolTipValueConverterProperty
 		// Skipping already declared property TickFrequencyProperty
 		// Skipping already declared property TickPlacementProperty
-		// Skipping already declared property IntermediateValueProperty
-		// Skipping already declared property IsDirectionReversedProperty
-		// Skipping already declared property IsThumbToolTipEnabledProperty
 		// Skipping already declared property HeaderProperty
 		// Skipping already declared property HeaderTemplateProperty
 		// Skipping already declared method Windows.UI.Xaml.Controls.Slider.Slider()

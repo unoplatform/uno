@@ -41,6 +41,20 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  global::Windows.UI.Xaml.Controls.BackgroundSizing BackgroundSizing
+		{
+			get
+			{
+				return (global::Windows.UI.Xaml.Controls.BackgroundSizing)this.GetValue(BackgroundSizingProperty);
+			}
+			set
+			{
+				this.SetValue(BackgroundSizingProperty, value);
+			}
+		}
+		#endif
 		// Skipping already declared property ColumnProperty
 		// Skipping already declared property ColumnSpanProperty
 		// Skipping already declared property RowProperty
@@ -65,6 +79,14 @@ namespace Windows.UI.Xaml.Controls
 			typeof(global::Windows.UI.Xaml.Controls.Grid), 
 			new FrameworkPropertyMetadata(default(double)));
 		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public static global::Windows.UI.Xaml.DependencyProperty BackgroundSizingProperty { get; } = 
+		Windows.UI.Xaml.DependencyProperty.Register(
+			"BackgroundSizing", typeof(global::Windows.UI.Xaml.Controls.BackgroundSizing), 
+			typeof(global::Windows.UI.Xaml.Controls.Grid), 
+			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Controls.BackgroundSizing)));
+		#endif
 		// Skipping already declared method Windows.UI.Xaml.Controls.Grid.Grid()
 		// Forced skipping of method Windows.UI.Xaml.Controls.Grid.Grid()
 		// Forced skipping of method Windows.UI.Xaml.Controls.Grid.RowDefinitions.get
@@ -81,6 +103,9 @@ namespace Windows.UI.Xaml.Controls
 		// Forced skipping of method Windows.UI.Xaml.Controls.Grid.RowSpacing.set
 		// Forced skipping of method Windows.UI.Xaml.Controls.Grid.ColumnSpacing.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.Grid.ColumnSpacing.set
+		// Forced skipping of method Windows.UI.Xaml.Controls.Grid.BackgroundSizing.get
+		// Forced skipping of method Windows.UI.Xaml.Controls.Grid.BackgroundSizing.set
+		// Forced skipping of method Windows.UI.Xaml.Controls.Grid.BackgroundSizingProperty.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.Grid.RowSpacingProperty.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.Grid.ColumnSpacingProperty.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.Grid.BorderBrushProperty.get

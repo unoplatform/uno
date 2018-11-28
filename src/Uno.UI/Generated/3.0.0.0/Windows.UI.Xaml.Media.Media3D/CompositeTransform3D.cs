@@ -9,90 +9,6 @@ namespace Windows.UI.Xaml.Media.Media3D
 	{
 		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
-		public  double RotationZ
-		{
-			get
-			{
-				return (double)this.GetValue(RotationZProperty);
-			}
-			set
-			{
-				this.SetValue(RotationZProperty, value);
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  double RotationY
-		{
-			get
-			{
-				return (double)this.GetValue(RotationYProperty);
-			}
-			set
-			{
-				this.SetValue(RotationYProperty, value);
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  double RotationX
-		{
-			get
-			{
-				return (double)this.GetValue(RotationXProperty);
-			}
-			set
-			{
-				this.SetValue(RotationXProperty, value);
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  double CenterZ
-		{
-			get
-			{
-				return (double)this.GetValue(CenterZProperty);
-			}
-			set
-			{
-				this.SetValue(CenterZProperty, value);
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  double CenterY
-		{
-			get
-			{
-				return (double)this.GetValue(CenterYProperty);
-			}
-			set
-			{
-				this.SetValue(CenterYProperty, value);
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  double CenterX
-		{
-			get
-			{
-				return (double)this.GetValue(CenterXProperty);
-			}
-			set
-			{
-				this.SetValue(CenterXProperty, value);
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
 		public  double TranslateZ
 		{
 			get
@@ -172,6 +88,90 @@ namespace Windows.UI.Xaml.Media.Media3D
 			set
 			{
 				this.SetValue(ScaleXProperty, value);
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  double RotationZ
+		{
+			get
+			{
+				return (double)this.GetValue(RotationZProperty);
+			}
+			set
+			{
+				this.SetValue(RotationZProperty, value);
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  double RotationY
+		{
+			get
+			{
+				return (double)this.GetValue(RotationYProperty);
+			}
+			set
+			{
+				this.SetValue(RotationYProperty, value);
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  double RotationX
+		{
+			get
+			{
+				return (double)this.GetValue(RotationXProperty);
+			}
+			set
+			{
+				this.SetValue(RotationXProperty, value);
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  double CenterZ
+		{
+			get
+			{
+				return (double)this.GetValue(CenterZProperty);
+			}
+			set
+			{
+				this.SetValue(CenterZProperty, value);
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  double CenterY
+		{
+			get
+			{
+				return (double)this.GetValue(CenterYProperty);
+			}
+			set
+			{
+				this.SetValue(CenterYProperty, value);
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  double CenterX
+		{
+			get
+			{
+				return (double)this.GetValue(CenterXProperty);
+			}
+			set
+			{
+				this.SetValue(CenterXProperty, value);
 			}
 		}
 		#endif

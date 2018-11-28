@@ -29,6 +29,20 @@ namespace Windows.Data.Text
 		#endif
 		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
+		public  global::Windows.UI.Text.Core.CoreTextInputScope InputScope
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member CoreTextInputScope TextPredictionGenerator.InputScope is not implemented in Uno.");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Data.Text.TextPredictionGenerator", "CoreTextInputScope TextPredictionGenerator.InputScope");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
 		public TextPredictionGenerator( string languageTag) 
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Data.Text.TextPredictionGenerator", "TextPredictionGenerator.TextPredictionGenerator(string languageTag)");
@@ -51,5 +65,21 @@ namespace Windows.Data.Text
 			throw new global::System.NotImplementedException("The member IAsyncOperation<IReadOnlyList<string>> TextPredictionGenerator.GetCandidatesAsync(string input, uint maxCandidates) is not implemented in Uno.");
 		}
 		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IReadOnlyList<string>> GetCandidatesAsync( string input,  uint maxCandidates,  global::Windows.Data.Text.TextPredictionOptions predictionOptions,  global::System.Collections.Generic.IEnumerable<string> previousStrings)
+		{
+			throw new global::System.NotImplementedException("The member IAsyncOperation<IReadOnlyList<string>> TextPredictionGenerator.GetCandidatesAsync(string input, uint maxCandidates, TextPredictionOptions predictionOptions, IEnumerable<string> previousStrings) is not implemented in Uno.");
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IReadOnlyList<string>> GetNextWordCandidatesAsync( uint maxCandidates,  global::System.Collections.Generic.IEnumerable<string> previousStrings)
+		{
+			throw new global::System.NotImplementedException("The member IAsyncOperation<IReadOnlyList<string>> TextPredictionGenerator.GetNextWordCandidatesAsync(uint maxCandidates, IEnumerable<string> previousStrings) is not implemented in Uno.");
+		}
+		#endif
+		// Forced skipping of method Windows.Data.Text.TextPredictionGenerator.InputScope.get
+		// Forced skipping of method Windows.Data.Text.TextPredictionGenerator.InputScope.set
 	}
 }

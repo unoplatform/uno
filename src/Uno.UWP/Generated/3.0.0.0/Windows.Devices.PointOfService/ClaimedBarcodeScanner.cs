@@ -187,6 +187,8 @@ namespace Windows.Devices.PointOfService
 		#endif
 		// Forced skipping of method Windows.Devices.PointOfService.ClaimedBarcodeScanner.IsVideoPreviewShownOnEnable.set
 		// Forced skipping of method Windows.Devices.PointOfService.ClaimedBarcodeScanner.IsVideoPreviewShownOnEnable.get
+		// Forced skipping of method Windows.Devices.PointOfService.ClaimedBarcodeScanner.Closed.add
+		// Forced skipping of method Windows.Devices.PointOfService.ClaimedBarcodeScanner.Closed.remove
 		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Devices.PointOfService.ClaimedBarcodeScanner, global::Windows.Devices.PointOfService.BarcodeScannerDataReceivedEventArgs> DataReceived
@@ -280,6 +282,22 @@ namespace Windows.Devices.PointOfService
 			remove
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.PointOfService.ClaimedBarcodeScanner", "event EventHandler<ClaimedBarcodeScanner> ClaimedBarcodeScanner.TriggerReleased");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Devices.PointOfService.ClaimedBarcodeScanner, global::Windows.Devices.PointOfService.ClaimedBarcodeScannerClosedEventArgs> Closed
+		{
+			[global::Uno.NotImplemented]
+			add
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.PointOfService.ClaimedBarcodeScanner", "event TypedEventHandler<ClaimedBarcodeScanner, ClaimedBarcodeScannerClosedEventArgs> ClaimedBarcodeScanner.Closed");
+			}
+			[global::Uno.NotImplemented]
+			remove
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.PointOfService.ClaimedBarcodeScanner", "event TypedEventHandler<ClaimedBarcodeScanner, ClaimedBarcodeScannerClosedEventArgs> ClaimedBarcodeScanner.Closed");
 			}
 		}
 		#endif

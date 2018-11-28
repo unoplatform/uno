@@ -47,6 +47,39 @@ namespace Windows.Networking.NetworkOperators
 		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		Other,
 		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		CardGeneralFailure,
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		ConfirmationCodeMissing,
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		InvalidMatchingId,
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		NoEligibleProfileForThisDevice,
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		OperationAborted,
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		EidMismatch,
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		ProfileNotAvailableForNewBinding,
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		ProfileNotReleasedByOperator,
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		OperationProhibitedByProfileClass,
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		ProfileNotPresent,
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		NoCorrespondingRequest,
+		#endif
 	}
 	#endif
 }

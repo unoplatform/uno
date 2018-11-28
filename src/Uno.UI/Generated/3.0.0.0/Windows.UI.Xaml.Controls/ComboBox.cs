@@ -8,6 +8,20 @@ namespace Windows.UI.Xaml.Controls
 	public  partial class ComboBox 
 	{
 		// Skipping already declared property MaxDropDownHeight
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  bool IsEditable
+		{
+			get
+			{
+				return (bool)this.GetValue(IsEditableProperty);
+			}
+			set
+			{
+				this.SetValue(IsEditableProperty, value);
+			}
+		}
+		#endif
 		// Skipping already declared property IsDropDownOpen
 		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
@@ -16,16 +30,6 @@ namespace Windows.UI.Xaml.Controls
 			get
 			{
 				throw new global::System.NotImplementedException("The member bool ComboBox.IsSelectionBoxHighlighted is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  bool IsEditable
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool ComboBox.IsEditable is not implemented in Uno.");
 			}
 		}
 		#endif
@@ -50,8 +54,8 @@ namespace Windows.UI.Xaml.Controls
 		}
 		#endif
 		// Skipping already declared property TemplateSettings
-		// Skipping already declared property HeaderTemplate
 		// Skipping already declared property PlaceholderText
+		// Skipping already declared property HeaderTemplate
 		// Skipping already declared property Header
 		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
@@ -109,6 +113,48 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  global::Windows.UI.Xaml.Style TextBoxStyle
+		{
+			get
+			{
+				return (global::Windows.UI.Xaml.Style)this.GetValue(TextBoxStyleProperty);
+			}
+			set
+			{
+				this.SetValue(TextBoxStyleProperty, value);
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  string Text
+		{
+			get
+			{
+				return (string)this.GetValue(TextProperty);
+			}
+			set
+			{
+				this.SetValue(TextProperty, value);
+			}
+		}
+		#endif
+		#if __ANDROID__ || false || NET46 || __WASM__ || false
+		[global::Uno.NotImplemented]
+		public  object Description
+		{
+			get
+			{
+				return (object)this.GetValue(DescriptionProperty);
+			}
+			set
+			{
+				this.SetValue(DescriptionProperty, value);
+			}
+		}
+		#endif
 		// Skipping already declared property IsDropDownOpenProperty
 		// Skipping already declared property MaxDropDownHeightProperty
 		// Skipping already declared property HeaderProperty
@@ -146,6 +192,38 @@ namespace Windows.UI.Xaml.Controls
 			typeof(global::Windows.UI.Xaml.Controls.ComboBox), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.Brush)));
 		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public static global::Windows.UI.Xaml.DependencyProperty DescriptionProperty { get; } = 
+		Windows.UI.Xaml.DependencyProperty.Register(
+			"Description", typeof(object), 
+			typeof(global::Windows.UI.Xaml.Controls.ComboBox), 
+			new FrameworkPropertyMetadata(default(object)));
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public static global::Windows.UI.Xaml.DependencyProperty IsEditableProperty { get; } = 
+		Windows.UI.Xaml.DependencyProperty.Register(
+			"IsEditable", typeof(bool), 
+			typeof(global::Windows.UI.Xaml.Controls.ComboBox), 
+			new FrameworkPropertyMetadata(default(bool)));
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public static global::Windows.UI.Xaml.DependencyProperty TextBoxStyleProperty { get; } = 
+		Windows.UI.Xaml.DependencyProperty.Register(
+			"TextBoxStyle", typeof(global::Windows.UI.Xaml.Style), 
+			typeof(global::Windows.UI.Xaml.Controls.ComboBox), 
+			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Style)));
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public static global::Windows.UI.Xaml.DependencyProperty TextProperty { get; } = 
+		Windows.UI.Xaml.DependencyProperty.Register(
+			"Text", typeof(string), 
+			typeof(global::Windows.UI.Xaml.Controls.ComboBox), 
+			new FrameworkPropertyMetadata(default(string)));
+		#endif
 		// Skipping already declared method Windows.UI.Xaml.Controls.ComboBox.ComboBox()
 		// Forced skipping of method Windows.UI.Xaml.Controls.ComboBox.ComboBox()
 		// Forced skipping of method Windows.UI.Xaml.Controls.ComboBox.IsDropDownOpen.get
@@ -161,20 +239,6 @@ namespace Windows.UI.Xaml.Controls
 		// Forced skipping of method Windows.UI.Xaml.Controls.ComboBox.DropDownClosed.remove
 		// Forced skipping of method Windows.UI.Xaml.Controls.ComboBox.DropDownOpened.add
 		// Forced skipping of method Windows.UI.Xaml.Controls.ComboBox.DropDownOpened.remove
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		protected virtual void OnDropDownClosed( object e)
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.ComboBox", "void ComboBox.OnDropDownClosed(object e)");
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		protected virtual void OnDropDownOpened( object e)
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.ComboBox", "void ComboBox.OnDropDownOpened(object e)");
-		}
-		#endif
 		// Forced skipping of method Windows.UI.Xaml.Controls.ComboBox.Header.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.ComboBox.Header.set
 		// Forced skipping of method Windows.UI.Xaml.Controls.ComboBox.HeaderTemplate.get
@@ -189,6 +253,33 @@ namespace Windows.UI.Xaml.Controls
 		// Forced skipping of method Windows.UI.Xaml.Controls.ComboBox.SelectionChangedTrigger.set
 		// Forced skipping of method Windows.UI.Xaml.Controls.ComboBox.PlaceholderForeground.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.ComboBox.PlaceholderForeground.set
+		// Forced skipping of method Windows.UI.Xaml.Controls.ComboBox.IsEditable.set
+		// Forced skipping of method Windows.UI.Xaml.Controls.ComboBox.Text.get
+		// Forced skipping of method Windows.UI.Xaml.Controls.ComboBox.Text.set
+		// Forced skipping of method Windows.UI.Xaml.Controls.ComboBox.TextBoxStyle.get
+		// Forced skipping of method Windows.UI.Xaml.Controls.ComboBox.TextBoxStyle.set
+		// Forced skipping of method Windows.UI.Xaml.Controls.ComboBox.Description.get
+		// Forced skipping of method Windows.UI.Xaml.Controls.ComboBox.Description.set
+		// Forced skipping of method Windows.UI.Xaml.Controls.ComboBox.TextSubmitted.add
+		// Forced skipping of method Windows.UI.Xaml.Controls.ComboBox.TextSubmitted.remove
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		protected virtual void OnDropDownClosed( object e)
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.ComboBox", "void ComboBox.OnDropDownClosed(object e)");
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		protected virtual void OnDropDownOpened( object e)
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.ComboBox", "void ComboBox.OnDropDownOpened(object e)");
+		}
+		#endif
+		// Forced skipping of method Windows.UI.Xaml.Controls.ComboBox.IsEditableProperty.get
+		// Forced skipping of method Windows.UI.Xaml.Controls.ComboBox.TextProperty.get
+		// Forced skipping of method Windows.UI.Xaml.Controls.ComboBox.TextBoxStyleProperty.get
+		// Forced skipping of method Windows.UI.Xaml.Controls.ComboBox.DescriptionProperty.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.ComboBox.PlaceholderForegroundProperty.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.ComboBox.SelectionChangedTriggerProperty.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.ComboBox.LightDismissOverlayModeProperty.get
@@ -200,5 +291,21 @@ namespace Windows.UI.Xaml.Controls
 		// Forced skipping of method Windows.UI.Xaml.Controls.ComboBox.MaxDropDownHeightProperty.get
 		// Skipping already declared event Windows.UI.Xaml.Controls.ComboBox.DropDownClosed
 		// Skipping already declared event Windows.UI.Xaml.Controls.ComboBox.DropDownOpened
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Xaml.Controls.ComboBox, global::Windows.UI.Xaml.Controls.ComboBoxTextSubmittedEventArgs> TextSubmitted
+		{
+			[global::Uno.NotImplemented]
+			add
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.ComboBox", "event TypedEventHandler<ComboBox, ComboBoxTextSubmittedEventArgs> ComboBox.TextSubmitted");
+			}
+			[global::Uno.NotImplemented]
+			remove
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.ComboBox", "event TypedEventHandler<ComboBox, ComboBoxTextSubmittedEventArgs> ComboBox.TextSubmitted");
+			}
+		}
+		#endif
 	}
 }

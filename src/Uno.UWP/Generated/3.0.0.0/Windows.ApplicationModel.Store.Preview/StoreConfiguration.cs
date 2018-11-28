@@ -33,6 +33,41 @@ namespace Windows.ApplicationModel.Store.Preview
 		#endif
 		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
+		public static bool IsPinToDesktopSupported()
+		{
+			throw new global::System.NotImplementedException("The member bool StoreConfiguration.IsPinToDesktopSupported() is not implemented in Uno.");
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public static bool IsPinToTaskbarSupported()
+		{
+			throw new global::System.NotImplementedException("The member bool StoreConfiguration.IsPinToTaskbarSupported() is not implemented in Uno.");
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public static bool IsPinToStartSupported()
+		{
+			throw new global::System.NotImplementedException("The member bool StoreConfiguration.IsPinToStartSupported() is not implemented in Uno.");
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public static void PinToDesktop( string appPackageFamilyName)
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Store.Preview.StoreConfiguration", "void StoreConfiguration.PinToDesktop(string appPackageFamilyName)");
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public static void PinToDesktopForUser( global::Windows.System.User user,  string appPackageFamilyName)
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Store.Preview.StoreConfiguration", "void StoreConfiguration.PinToDesktopForUser(User user, string appPackageFamilyName)");
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
 		public static string GetStoreWebAccountId()
 		{
 			throw new global::System.NotImplementedException("The member string StoreConfiguration.GetStoreWebAccountId() is not implemented in Uno.");
