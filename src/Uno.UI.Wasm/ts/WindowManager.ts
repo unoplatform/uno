@@ -186,9 +186,9 @@
 			*
 			* You need to call addView to connect it to the DOM.
 			*/
-		public createContentFast(pParams: number): boolean {
+		public createContentNative(pParams: number): boolean {
 
-			var params = WindowManagerCreateContentParams.deserialize(pParams);
+			var params = WindowManagerCreateContentParams.unmarshal(pParams);
 
 			var def = <IContentDefinition> {
 				id: params.HtmlId,
@@ -249,8 +249,8 @@
 			*
 			* This is mostly for diagnostic purposes.
 			*/
-		public setNameFast(pParam: number): boolean {
-			let params = WindowManagerSetNameParams.deserialize(pParam);
+		public setNameNative(pParam: number): boolean {
+			let params = WindowManagerSetNameParams.unmarshal(pParam);
 			this.setNameInternal(params.HtmlId, params.Name);
 			return true;
 		}
@@ -286,9 +286,9 @@
 		/**
 			* Set an attribute for an element.
 			*/
-		public setAttributeFast(pParams: number): boolean {
+		public setAttributeNative(pParams: number): boolean {
 
-			let params = WindowManagerSetAttributeParams.deserialize(pParams);
+			let params = WindowManagerSetAttributeParams.unmarshal(pParams);
 
 			const htmlElement: HTMLElement | SVGElement = this.allActiveElementsById[params.HtmlId];
 			if (!htmlElement) {
@@ -335,9 +335,9 @@
 		/**
 			* Set a property for an element.
 			*/
-		public setPropertyFast(pParams:number): boolean {
+		public setPropertyNative(pParams:number): boolean {
 
-			let params = WindowManagerSetPropertyParams.deserialize(pParams);
+			let params = WindowManagerSetPropertyParams.unmarshal(pParams);
 
 			const htmlElement: HTMLElement | SVGElement = this.allActiveElementsById[params.HtmlId];
 			if (!htmlElement) {
@@ -394,9 +394,9 @@
 		* To remove a value, set it to empty string.
 		* @param styles A dictionary of styles to apply on html element.
 		*/
-		public setStyleFast(pParams:number): boolean {
+		public setStyleNative(pParams:number): boolean {
 
-			let params = WindowManagerSetStylesParams.deserialize(pParams);
+			let params = WindowManagerSetStylesParams.unmarshal(pParams);
 
 			const htmlElement: HTMLElement | SVGElement = this.allActiveElementsById[params.HtmlId];
 			if (!htmlElement) {
@@ -434,8 +434,8 @@
 			* To remove a value, set it to empty string.
 			* @param styles A dictionary of styles to apply on html element.
 			*/
-		public resetStyleFast(pParams: number): boolean {
-			let params = WindowManagerResetStyleParams.deserialize(pParams);
+		public resetStyleNative(pParams: number): boolean {
+			let params = WindowManagerResetStyleParams.unmarshal(pParams);
 			this.resetStyleInternal(params.HtmlId, params.Styles);
 			return true;
 		}
@@ -513,10 +513,10 @@
 			* @param eventName The name of the event
 			* @param onCapturePhase true means "on trickle down", false means "on bubble up". Default is false.
 			*/
-		public registerEventOnViewFast(
+		public registerEventOnViewNative(
 			pParams: number
 		): boolean {
-			let params = WindowManagerRegisterEventOnViewParams.deserialize(pParams);
+			let params = WindowManagerRegisterEventOnViewParams.unmarshal(pParams);
 
 			this.registerEventOnViewInternal(params.HtmlId, params.EventName, params.OnCapturePhase, params.EventFilterName, params.EventExtractorName);
 			return true;
@@ -687,8 +687,8 @@
 			*
 			* @param pParams Pointer to a WindowManagerAddViewParams native structure.
 			*/
-		public addViewFast(pParams: number): boolean {
-			let params = WindowManagerAddViewParams.deserialize(pParams);
+		public addViewNative(pParams: number): boolean {
+			let params = WindowManagerAddViewParams.unmarshal(pParams);
 
 			this.addViewInternal(
 				params.HtmlId,
@@ -744,8 +744,8 @@
 			*
 			* "Unloading" & "Unloaded" events will be raised if nescessary.
 			*/
-		public removeViewFast(pParams: number): boolean {
-			var params = WindowManagerRemoveViewParams.deserialize(pParams);
+		public removeViewNative(pParams: number): boolean {
+			var params = WindowManagerRemoveViewParams.unmarshal(pParams);
 			this.removeViewInternal(params.HtmlId, params.ChildView);
 			return true;
 		}
@@ -786,8 +786,8 @@
 			* The element won't be available anymore. Usually indicate the managed
 			* version has been scavenged by the GC.
 			*/
-		public destroyViewFast(pParams: number): boolean {
-			let params = WindowManagerDestroyViewParams.deserialize(pParams);
+		public destroyViewNative(pParams: number): boolean {
+			let params = WindowManagerDestroyViewParams.unmarshal(pParams);
 			this.destroyViewInternal(params.HtmlId);
 			return true;
 		}
@@ -814,14 +814,36 @@
 			return `${bounds.left};${bounds.top};${bounds.right-bounds.left};${bounds.bottom-bounds.top}`;
 		}
 
-		public getBBox(elementId: string): string {
+		public getBBox(elementId: number): string {
+			var bbox = this.getBBoxInternal(elementId);
+
+			return `${bbox.x};${bbox.y};${bbox.width};${bbox.height}`;
+		}
+
+		public getBBoxNative(pParams: number, pReturn: number): boolean {
+
+			let params = WindowManagerGetBBoxParams.unmarshal(pParams);
+
+			var bbox = this.getBBoxInternal(params.HtmlId);
+
+			var ret = new WindowManagerGetBBoxReturn();
+			ret.X = bbox.x;
+			ret.Y = bbox.y;
+			ret.Width = bbox.width;
+			ret.Height = bbox.height;
+
+			ret.marshal(pReturn);
+
+			return true;
+		}
+
+		private getBBoxInternal(elementId: number): any {
 			const htmlElement: HTMLElement | SVGElement = this.allActiveElementsById[elementId];
 			if (!htmlElement) {
 				throw `Element id ${elementId} not found.`;
 			}
 
-			var bbox = (<any>htmlElement).getBBox();
-			return `${bbox.x};${bbox.y};${bbox.width};${bbox.height}`;
+			return (<any>htmlElement).getBBox();
 		}
 
 		/**
@@ -843,9 +865,9 @@
 			* @param maxWidth string containing width in pixels. Empty string means infinite.
 			* @param maxHeight string containing height in pixels. Empty string means infinite.
 			*/
-		public measureViewFast(pParams: number, pReturn: number): boolean {
+		public measureViewNative(pParams: number, pReturn: number): boolean {
 
-			var params = WindowManagerMeasureViewParams.deserialize(pParams);
+			var params = WindowManagerMeasureViewParams.unmarshal(pParams);
 
 			var ret = this.measureViewInternal(params.HtmlId, params.AvailableWidth, params.AvailableHeight);
 
@@ -853,7 +875,7 @@
 			ret2.DesiredWidth = ret[0];
 			ret2.DesiredHeight = ret[1];
 
-			ret2.serialize(pReturn);
+			ret2.marshal(pReturn);
 
 			return true;
 		}
@@ -1033,15 +1055,31 @@
 			* Those html elements won't be available as XamlElement in managed code.
 			* WARNING: you should avoid mixing this and `addView` for the same element.
 			*/
-		public setHtmlContent(viewId: string, html: string): string {
+		public setHtmlContent(viewId: number, html: string): string {
+			this.setHtmlContentInternal(viewId, html);
+			return "ok";
+		}
+
+		/**
+			* Set the Html content for an element.
+			*
+			* Those html elements won't be available as XamlElement in managed code.
+			* WARNING: you should avoid mixing this and `addView` for the same element.
+			*/
+		public setHtmlContentNative(pParams: number): boolean {
+			let params = WindowManagerSetContentHtmlParams.unmarshal(pParams);
+
+			this.setHtmlContentInternal(params.HtmlId, params.Html);
+			return true;
+		}
+
+		private setHtmlContentInternal(viewId: number, html: string): void {
 			const element: HTMLElement | SVGElement = this.allActiveElementsById[viewId];
 			if (!element) {
 				throw `setHtmlContent: Element id ${viewId} not found.`;
 			}
 
 			element.innerHTML = html;
-
-			return "ok";
 		}
 
 		/**

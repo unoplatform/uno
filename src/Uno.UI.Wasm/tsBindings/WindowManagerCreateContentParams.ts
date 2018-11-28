@@ -11,7 +11,7 @@ class WindowManagerCreateContentParams
 	IsFocusable : boolean;
 	Classes_Length : number;
 	Classes : Array<string>;
-	public static deserialize(pData:number) : WindowManagerCreateContentParams
+	public static unmarshal(pData:number) : WindowManagerCreateContentParams
 	{
 		let ret = new WindowManagerCreateContentParams();
 		ret.HtmlId = Number((Module.getValue(pData + 0, "*")));

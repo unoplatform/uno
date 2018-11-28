@@ -6,7 +6,7 @@ class WindowManagerSetStylesParams
 	SetAsArranged : boolean;
 	Pairs_Length : number;
 	Pairs : Array<string>;
-	public static deserialize(pData:number) : WindowManagerSetStylesParams
+	public static unmarshal(pData:number) : WindowManagerSetStylesParams
 	{
 		let ret = new WindowManagerSetStylesParams();
 		ret.HtmlId = Number((Module.getValue(pData + 0, "*")));

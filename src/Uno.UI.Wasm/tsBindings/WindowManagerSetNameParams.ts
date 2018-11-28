@@ -4,7 +4,7 @@ class WindowManagerSetNameParams
 	/* Pack=4 */
 	HtmlId : number;
 	Name : string;
-	public static deserialize(pData:number) : WindowManagerSetNameParams
+	public static unmarshal(pData:number) : WindowManagerSetNameParams
 	{
 		let ret = new WindowManagerSetNameParams();
 		ret.HtmlId = Number((Module.getValue(pData + 0, "*")));

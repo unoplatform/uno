@@ -5,7 +5,7 @@ class WindowManagerResetStyleParams
 	HtmlId : number;
 	Styles_Length : number;
 	Styles : Array<string>;
-	public static deserialize(pData:number) : WindowManagerResetStyleParams
+	public static unmarshal(pData:number) : WindowManagerResetStyleParams
 	{
 		let ret = new WindowManagerResetStyleParams();
 		ret.HtmlId = Number((Module.getValue(pData + 0, "*")));

@@ -71,12 +71,12 @@ namespace Uno.UI.SourceGenerators.TSBindings
 
 					if (parametersType.Name.EndsWith("Params"))
 					{
-						GenerateSerializer(parametersType, sb, packValue);
+						GenerateUmarshaler(parametersType, sb, packValue);
 					}
 
 					if (parametersType.Name.EndsWith("Return"))
 					{
-						GenerateDeserializer(parametersType, sb, packValue);
+						GenerateMarshaler(parametersType, sb, packValue);
 					}
 				}
 
@@ -105,7 +105,7 @@ namespace Uno.UI.SourceGenerators.TSBindings
 						}
 						else
 						{
-							throw new InvalidOperationException($"The LayoutKind for {parametersType} must be LayoutKind.Explicit");
+							throw new InvalidOperationException($"The LayoutKind for {parametersType} must be LayoutKind.Sequential");
 						}
 					}
 				}
@@ -114,9 +114,9 @@ namespace Uno.UI.SourceGenerators.TSBindings
 			throw new InvalidOperationException($"Failed to get structure layout, unknown roslyn internal structure");
 		}
 
-		private void GenerateDeserializer(INamedTypeSymbol parametersType, IndentedStringBuilder sb, int packValue)
+		private void GenerateMarshaler(INamedTypeSymbol parametersType, IndentedStringBuilder sb, int packValue)
 		{
-			using (sb.BlockInvariant($"public serialize(pData:number)"))
+			using (sb.BlockInvariant($"public marshal(pData:number)"))
 			{
 				var fieldOffset = 0;
 
@@ -150,9 +150,9 @@ namespace Uno.UI.SourceGenerators.TSBindings
 			}
 		}
 
-		private void GenerateSerializer(INamedTypeSymbol parametersType, IndentedStringBuilder sb, int packValue)
+		private void GenerateUmarshaler(INamedTypeSymbol parametersType, IndentedStringBuilder sb, int packValue)
 		{
-			using (sb.BlockInvariant($"public static deserialize(pData:number) : {parametersType.Name}"))
+			using (sb.BlockInvariant($"public static unmarshal(pData:number) : {parametersType.Name}"))
 			{
 				sb.AppendLineInvariant($"let ret = new {parametersType.Name}();");
 

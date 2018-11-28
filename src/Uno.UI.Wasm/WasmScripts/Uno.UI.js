@@ -295,8 +295,8 @@ var Uno;
                 *
                 * You need to call addView to connect it to the DOM.
                 */
-            createContentFast(pParams) {
-                var params = WindowManagerCreateContentParams.deserialize(pParams);
+            createContentNative(pParams) {
+                var params = WindowManagerCreateContentParams.unmarshal(pParams);
                 var def = {
                     id: params.HtmlId,
                     handle: params.Handle,
@@ -349,8 +349,8 @@ var Uno;
                 *
                 * This is mostly for diagnostic purposes.
                 */
-            setNameFast(pParam) {
-                let params = WindowManagerSetNameParams.deserialize(pParam);
+            setNameNative(pParam) {
+                let params = WindowManagerSetNameParams.unmarshal(pParam);
                 this.setNameInternal(params.HtmlId, params.Name);
                 return true;
             }
@@ -379,8 +379,8 @@ var Uno;
             /**
                 * Set an attribute for an element.
                 */
-            setAttributeFast(pParams) {
-                let params = WindowManagerSetAttributeParams.deserialize(pParams);
+            setAttributeNative(pParams) {
+                let params = WindowManagerSetAttributeParams.unmarshal(pParams);
                 const htmlElement = this.allActiveElementsById[params.HtmlId];
                 if (!htmlElement) {
                     throw `Element id ${params.HtmlId} not found.`;
@@ -418,8 +418,8 @@ var Uno;
             /**
                 * Set a property for an element.
                 */
-            setPropertyFast(pParams) {
-                let params = WindowManagerSetPropertyParams.deserialize(pParams);
+            setPropertyNative(pParams) {
+                let params = WindowManagerSetPropertyParams.unmarshal(pParams);
                 const htmlElement = this.allActiveElementsById[params.HtmlId];
                 if (!htmlElement) {
                     throw `Element id ${params.HtmlId} not found.`;
@@ -466,8 +466,8 @@ var Uno;
             * To remove a value, set it to empty string.
             * @param styles A dictionary of styles to apply on html element.
             */
-            setStyleFast(pParams) {
-                let params = WindowManagerSetStylesParams.deserialize(pParams);
+            setStyleNative(pParams) {
+                let params = WindowManagerSetStylesParams.unmarshal(pParams);
                 const htmlElement = this.allActiveElementsById[params.HtmlId];
                 if (!htmlElement) {
                     throw `Element id ${params.HtmlId} not found.`;
@@ -498,8 +498,8 @@ var Uno;
                 * To remove a value, set it to empty string.
                 * @param styles A dictionary of styles to apply on html element.
                 */
-            resetStyleFast(pParams) {
-                let params = WindowManagerResetStyleParams.deserialize(pParams);
+            resetStyleNative(pParams) {
+                let params = WindowManagerResetStyleParams.unmarshal(pParams);
                 this.resetStyleInternal(params.HtmlId, params.Styles);
                 return true;
             }
@@ -561,8 +561,8 @@ var Uno;
                 * @param eventName The name of the event
                 * @param onCapturePhase true means "on trickle down", false means "on bubble up". Default is false.
                 */
-            registerEventOnViewFast(pParams) {
-                let params = WindowManagerRegisterEventOnViewParams.deserialize(pParams);
+            registerEventOnViewNative(pParams) {
+                let params = WindowManagerRegisterEventOnViewParams.unmarshal(pParams);
                 this.registerEventOnViewInternal(params.HtmlId, params.EventName, params.OnCapturePhase, params.EventFilterName, params.EventExtractorName);
                 return true;
             }
@@ -694,8 +694,8 @@ var Uno;
                 *
                 * @param pParams Pointer to a WindowManagerAddViewParams native structure.
                 */
-            addViewFast(pParams) {
-                let params = WindowManagerAddViewParams.deserialize(pParams);
+            addViewNative(pParams) {
+                let params = WindowManagerAddViewParams.unmarshal(pParams);
                 this.addViewInternal(params.HtmlId, params.ChildView, params.Index != -1 ? params.Index : null);
                 return true;
             }
@@ -738,8 +738,8 @@ var Uno;
                 *
                 * "Unloading" & "Unloaded" events will be raised if nescessary.
                 */
-            removeViewFast(pParams) {
-                var params = WindowManagerRemoveViewParams.deserialize(pParams);
+            removeViewNative(pParams) {
+                var params = WindowManagerRemoveViewParams.unmarshal(pParams);
                 this.removeViewInternal(params.HtmlId, params.ChildView);
                 return true;
             }
@@ -774,8 +774,8 @@ var Uno;
                 * The element won't be available anymore. Usually indicate the managed
                 * version has been scavenged by the GC.
                 */
-            destroyViewFast(pParams) {
-                let params = WindowManagerDestroyViewParams.deserialize(pParams);
+            destroyViewNative(pParams) {
+                let params = WindowManagerDestroyViewParams.unmarshal(pParams);
                 this.destroyViewInternal(params.HtmlId);
                 return true;
             }
@@ -798,12 +798,26 @@ var Uno;
                 return `${bounds.left};${bounds.top};${bounds.right - bounds.left};${bounds.bottom - bounds.top}`;
             }
             getBBox(elementId) {
+                var bbox = this.getBBoxInternal(elementId);
+                return `${bbox.x};${bbox.y};${bbox.width};${bbox.height}`;
+            }
+            getBBoxNative(pParams, pReturn) {
+                let params = WindowManagerGetBBoxParams.unmarshal(pParams);
+                var bbox = this.getBBoxInternal(params.HtmlId);
+                var ret = new WindowManagerGetBBoxReturn();
+                ret.X = bbox.x;
+                ret.Y = bbox.y;
+                ret.Width = bbox.width;
+                ret.Height = bbox.height;
+                ret.marshal(pReturn);
+                return true;
+            }
+            getBBoxInternal(elementId) {
                 const htmlElement = this.allActiveElementsById[elementId];
                 if (!htmlElement) {
                     throw `Element id ${elementId} not found.`;
                 }
-                var bbox = htmlElement.getBBox();
-                return `${bbox.x};${bbox.y};${bbox.width};${bbox.height}`;
+                return htmlElement.getBBox();
             }
             /**
                 * Use the Html engine to measure the element using specified constraints.
@@ -821,13 +835,13 @@ var Uno;
                 * @param maxWidth string containing width in pixels. Empty string means infinite.
                 * @param maxHeight string containing height in pixels. Empty string means infinite.
                 */
-            measureViewFast(pParams, pReturn) {
-                var params = WindowManagerMeasureViewParams.deserialize(pParams);
+            measureViewNative(pParams, pReturn) {
+                var params = WindowManagerMeasureViewParams.unmarshal(pParams);
                 var ret = this.measureViewInternal(params.HtmlId, params.AvailableWidth, params.AvailableHeight);
                 var ret2 = new WindowManagerMeasureViewReturn();
                 ret2.DesiredWidth = ret[0];
                 ret2.DesiredHeight = ret[1];
-                ret2.serialize(pReturn);
+                ret2.marshal(pReturn);
                 return true;
             }
             measureViewInternal(viewId, maxWidth, maxHeight) {
@@ -863,6 +877,7 @@ var Uno;
                     else {
                         const resultWidth = element.offsetWidth ? element.offsetWidth : element.clientWidth;
                         const resultHeight = element.offsetHeight ? element.offsetHeight : element.clientHeight;
+                        /* +0.5 is added to take rounding into account */
                         return [resultWidth + 0.5, resultHeight];
                     }
                 }
@@ -967,12 +982,26 @@ var Uno;
                 * WARNING: you should avoid mixing this and `addView` for the same element.
                 */
             setHtmlContent(viewId, html) {
+                this.setHtmlContentInternal(viewId, html);
+                return "ok";
+            }
+            /**
+                * Set the Html content for an element.
+                *
+                * Those html elements won't be available as XamlElement in managed code.
+                * WARNING: you should avoid mixing this and `addView` for the same element.
+                */
+            setHtmlContentNative(pParams) {
+                let params = WindowManagerSetContentHtmlParams.unmarshal(pParams);
+                this.setHtmlContentInternal(params.HtmlId, params.Html);
+                return true;
+            }
+            setHtmlContentInternal(viewId, html) {
                 const element = this.allActiveElementsById[viewId];
                 if (!element) {
                     throw `setHtmlContent: Element id ${viewId} not found.`;
                 }
                 element.innerHTML = html;
-                return "ok";
             }
             /**
                 * Remove the loading indicator.
@@ -1108,7 +1137,7 @@ var Uno;
 window.Uno = Uno;
 /* TSBindingsGenerator Generated code -- this code is regenerated on each build */
 class WindowManagerAddViewParams {
-    static deserialize(pData) {
+    static unmarshal(pData) {
         let ret = new WindowManagerAddViewParams();
         ret.HtmlId = Number((Module.getValue(pData + 0, "*")));
         ret.ChildView = Number((Module.getValue(pData + 4, "*")));
@@ -1118,7 +1147,7 @@ class WindowManagerAddViewParams {
 }
 /* TSBindingsGenerator Generated code -- this code is regenerated on each build */
 class WindowManagerCreateContentParams {
-    static deserialize(pData) {
+    static unmarshal(pData) {
         let ret = new WindowManagerCreateContentParams();
         ret.HtmlId = Number((Module.getValue(pData + 0, "*")));
         ret.TagName = String(Module.UTF8ToString(Module.getValue(pData + 4, "*")));
@@ -1140,15 +1169,32 @@ class WindowManagerCreateContentParams {
 }
 /* TSBindingsGenerator Generated code -- this code is regenerated on each build */
 class WindowManagerDestroyViewParams {
-    static deserialize(pData) {
+    static unmarshal(pData) {
         let ret = new WindowManagerDestroyViewParams();
         ret.HtmlId = Number((Module.getValue(pData + 0, "*")));
         return ret;
     }
 }
 /* TSBindingsGenerator Generated code -- this code is regenerated on each build */
+class WindowManagerGetBBoxParams {
+    static unmarshal(pData) {
+        let ret = new WindowManagerGetBBoxParams();
+        ret.HtmlId = Number((Module.getValue(pData + 0, "*")));
+        return ret;
+    }
+}
+/* TSBindingsGenerator Generated code -- this code is regenerated on each build */
+class WindowManagerGetBBoxReturn {
+    marshal(pData) {
+        Module.setValue(pData + 0, this.X, "double");
+        Module.setValue(pData + 8, this.Y, "double");
+        Module.setValue(pData + 16, this.Width, "double");
+        Module.setValue(pData + 24, this.Height, "double");
+    }
+}
+/* TSBindingsGenerator Generated code -- this code is regenerated on each build */
 class WindowManagerMeasureViewParams {
-    static deserialize(pData) {
+    static unmarshal(pData) {
         let ret = new WindowManagerMeasureViewParams();
         ret.HtmlId = Number((Module.getValue(pData + 0, "*")));
         ret.AvailableWidth = Number((Module.getValue(pData + 8, "double")));
@@ -1158,14 +1204,14 @@ class WindowManagerMeasureViewParams {
 }
 /* TSBindingsGenerator Generated code -- this code is regenerated on each build */
 class WindowManagerMeasureViewReturn {
-    serialize(pData) {
+    marshal(pData) {
         Module.setValue(pData + 0, this.DesiredWidth, "double");
         Module.setValue(pData + 8, this.DesiredHeight, "double");
     }
 }
 /* TSBindingsGenerator Generated code -- this code is regenerated on each build */
 class WindowManagerRegisterEventOnViewParams {
-    static deserialize(pData) {
+    static unmarshal(pData) {
         let ret = new WindowManagerRegisterEventOnViewParams();
         ret.HtmlId = Number((Module.getValue(pData + 0, "*")));
         ret.EventName = String(Module.UTF8ToString(Module.getValue(pData + 4, "*")));
@@ -1177,7 +1223,7 @@ class WindowManagerRegisterEventOnViewParams {
 }
 /* TSBindingsGenerator Generated code -- this code is regenerated on each build */
 class WindowManagerRemoveViewParams {
-    static deserialize(pData) {
+    static unmarshal(pData) {
         let ret = new WindowManagerRemoveViewParams();
         ret.HtmlId = Number((Module.getValue(pData + 0, "*")));
         ret.ChildView = Number((Module.getValue(pData + 4, "*")));
@@ -1186,7 +1232,7 @@ class WindowManagerRemoveViewParams {
 }
 /* TSBindingsGenerator Generated code -- this code is regenerated on each build */
 class WindowManagerResetStyleParams {
-    static deserialize(pData) {
+    static unmarshal(pData) {
         let ret = new WindowManagerResetStyleParams();
         ret.HtmlId = Number((Module.getValue(pData + 0, "*")));
         ret.Styles_Length = Number((Module.getValue(pData + 4, "i32")));
@@ -1202,7 +1248,7 @@ class WindowManagerResetStyleParams {
 }
 /* TSBindingsGenerator Generated code -- this code is regenerated on each build */
 class WindowManagerSetAttributeParams {
-    static deserialize(pData) {
+    static unmarshal(pData) {
         let ret = new WindowManagerSetAttributeParams();
         ret.HtmlId = Number((Module.getValue(pData + 0, "*")));
         ret.Pairs_Length = Number((Module.getValue(pData + 4, "i32")));
@@ -1217,8 +1263,17 @@ class WindowManagerSetAttributeParams {
     }
 }
 /* TSBindingsGenerator Generated code -- this code is regenerated on each build */
+class WindowManagerSetContentHtmlParams {
+    static unmarshal(pData) {
+        let ret = new WindowManagerSetContentHtmlParams();
+        ret.HtmlId = Number((Module.getValue(pData + 0, "*")));
+        ret.Html = String(Module.UTF8ToString(Module.getValue(pData + 4, "*")));
+        return ret;
+    }
+}
+/* TSBindingsGenerator Generated code -- this code is regenerated on each build */
 class WindowManagerSetNameParams {
-    static deserialize(pData) {
+    static unmarshal(pData) {
         let ret = new WindowManagerSetNameParams();
         ret.HtmlId = Number((Module.getValue(pData + 0, "*")));
         ret.Name = String(Module.UTF8ToString(Module.getValue(pData + 4, "*")));
@@ -1227,7 +1282,7 @@ class WindowManagerSetNameParams {
 }
 /* TSBindingsGenerator Generated code -- this code is regenerated on each build */
 class WindowManagerSetPropertyParams {
-    static deserialize(pData) {
+    static unmarshal(pData) {
         let ret = new WindowManagerSetPropertyParams();
         ret.HtmlId = Number((Module.getValue(pData + 0, "*")));
         ret.Pairs_Length = Number((Module.getValue(pData + 4, "i32")));
@@ -1243,7 +1298,7 @@ class WindowManagerSetPropertyParams {
 }
 /* TSBindingsGenerator Generated code -- this code is regenerated on each build */
 class WindowManagerSetStylesParams {
-    static deserialize(pData) {
+    static unmarshal(pData) {
         let ret = new WindowManagerSetStylesParams();
         ret.HtmlId = Number((Module.getValue(pData + 0, "*")));
         ret.SetAsArranged = Boolean((Module.getValue(pData + 4, "i32")));

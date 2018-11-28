@@ -14,6 +14,7 @@ namespace Uno.UI.Xaml
 	/// <summary>
 	/// An interop layer to invoke methods found in the WindowManager.ts file.
 	/// </summary>
+	/// <remarks>Slow methods are present for the WPF hosting mode, for which memory sharing is not available</remarks>
 	internal partial class WindowManagerInterop
 	{
 		private const UnmanagedType LPUTF8Str = (UnmanagedType)48;
@@ -119,7 +120,7 @@ namespace Uno.UI.Xaml
 					Classes = classes,
 				};
 
-				InvokeJS<WindowManagerCreateContentParams, bool>("Uno:createContentFast", parms);
+				InvokeJS<WindowManagerCreateContentParams, bool>("Uno:createContentNative", parms);
 			}
 		}
 
@@ -174,7 +175,7 @@ namespace Uno.UI.Xaml
 					AvailableHeight = availableSize.Height
 				};
 
-				var ret = InvokeJS<WindowManagerMeasureViewParams, WindowManagerMeasureViewReturn>("Uno:measureViewFast", parms);
+				var ret = InvokeJS<WindowManagerMeasureViewParams, WindowManagerMeasureViewReturn>("Uno:measureViewNative", parms);
 
 				return new Size(ret.DesiredWidth, ret.DesiredHeight);
 			}
@@ -195,6 +196,7 @@ namespace Uno.UI.Xaml
 			public double DesiredWidth;
 			public double DesiredHeight;
 		}
+
 
 		#endregion
 
@@ -228,7 +230,7 @@ namespace Uno.UI.Xaml
 					Pairs = pairs,
 				};
 
-				InvokeJS<WindowManagerSetStylesParams>("Uno:setStyleFast", parms);
+				InvokeJS<WindowManagerSetStylesParams>("Uno:setStyleNative", parms);
 			}
 		}
 
@@ -272,7 +274,7 @@ namespace Uno.UI.Xaml
 					Index = index ?? -1,
 				};
 
-				InvokeJS<WindowManagerAddViewParams>("Uno:addViewFast", parms);
+				InvokeJS<WindowManagerAddViewParams>("Uno:addViewNative", parms);
 			}
 		}
 
@@ -314,7 +316,7 @@ namespace Uno.UI.Xaml
 					Pairs = pairs,
 				};
 
-				InvokeJS<WindowManagerSetAttributeParams>("Uno:setAttributeFast", parms);
+				InvokeJS<WindowManagerSetAttributeParams>("Uno:setAttributeNative", parms);
 			}
 		}
 
@@ -348,7 +350,7 @@ namespace Uno.UI.Xaml
 					Name = name,
 				};
 
-				InvokeJS<WindowManagerSetNameParams>("Uno:setNameFast", parms);
+				InvokeJS<WindowManagerSetNameParams>("Uno:setNameNative", parms);
 			}
 		}
 
@@ -389,7 +391,7 @@ namespace Uno.UI.Xaml
 					Pairs = pairs,
 				};
 
-				InvokeJS<WindowManagerSetAttributeParams>("Uno:setPropertyFast", parms);
+				InvokeJS<WindowManagerSetAttributeParams>("Uno:setPropertyNative", parms);
 
 			}
 		}
@@ -422,7 +424,7 @@ namespace Uno.UI.Xaml
 					ChildView = childId
 				};
 
-				InvokeJS<WindowManagerRemoveViewParams>("Uno:removeViewFast", parms);
+				InvokeJS<WindowManagerRemoveViewParams>("Uno:removeViewNative", parms);
 			}
 		}
 
@@ -450,7 +452,7 @@ namespace Uno.UI.Xaml
 					HtmlId = htmlId
 				};
 
-				InvokeJS<WindowManagerDestroyViewParams>("Uno:destroyViewFast", parms);
+				InvokeJS<WindowManagerDestroyViewParams>("Uno:destroyViewNative", parms);
 			}
 		}
 
@@ -487,7 +489,7 @@ namespace Uno.UI.Xaml
 					Styles_Length = names.Length,
 				};
 
-				InvokeJS<WindowManagerResetStyleParams>("Uno:resetStyleFast", parms);
+				InvokeJS<WindowManagerResetStyleParams>("Uno:resetStyleNative", parms);
 
 			}
 		}
@@ -524,7 +526,7 @@ namespace Uno.UI.Xaml
 					EventExtractorName = eventExtractorName,
 				};
 
-				InvokeJS<WindowManagerRegisterEventOnViewParams>("Uno:registerEventOnViewFast", parms);
+				InvokeJS<WindowManagerRegisterEventOnViewParams>("Uno:registerEventOnViewNative", parms);
 			}
 		}
 
@@ -541,6 +543,80 @@ namespace Uno.UI.Xaml
 
 			public string EventExtractorName;
 		}
+		#endregion
+
+		#region GetBBox
+
+		internal static Rect GetBBox(IntPtr htmlId)
+		{
+			if (!WebAssemblyRuntime.IsWebAssembly)
+			{
+				var sizeString = WebAssemblyRuntime.InvokeJS("Uno.UI.WindowManager.current.getBBox(\"" + htmlId + "\");");
+				var sizeParts = sizeString.Split(';');
+				return new Rect(double.Parse(sizeParts[0]), double.Parse(sizeParts[1]), double.Parse(sizeParts[2]), double.Parse(sizeParts[3]));
+			}
+			else
+			{
+				var parms = new WindowManagerGetBBoxParams
+				{
+					HtmlId = htmlId
+				};
+
+				var ret = InvokeJS<WindowManagerGetBBoxParams, WindowManagerGetBBoxReturn>("Uno:getBBoxNative", parms);
+
+				return new Rect(ret.X, ret.Y, ret.Width, ret.Height);
+			}
+		}
+
+		[StructLayout(LayoutKind.Sequential, Pack = 4)]
+		private struct WindowManagerGetBBoxParams
+		{
+			public IntPtr HtmlId;
+		}
+
+
+		[StructLayout(LayoutKind.Sequential, Pack = 8)]
+		private struct WindowManagerGetBBoxReturn
+		{
+			public double X;
+			public double Y;
+			public double Width;
+			public double Height;
+		}
+
+		#endregion
+
+
+		#region SetContentHtml
+
+		internal static void SetContentHtml(IntPtr htmlId, string html)
+		{
+			if (!WebAssemblyRuntime.IsWebAssembly)
+			{
+				var escapedHtml = WebAssemblyRuntime.EscapeJs(html);
+
+				var command = "Uno.UI.WindowManager.current.setHtmlContent(\"" + htmlId + "\", \"" + escapedHtml + "\");";
+				WebAssemblyRuntime.InvokeJS(command);
+			}
+			else
+			{
+				var parms = new WindowManagerSetContentHtmlParams()
+				{
+					HtmlId = htmlId,
+					Html = html,
+				};
+
+				InvokeJS<WindowManagerSetContentHtmlParams>("Uno:setHtmlContentNative", parms);
+			}
+		}
+
+		[StructLayout(LayoutKind.Sequential, Pack = 4)]
+		private struct WindowManagerSetContentHtmlParams
+		{
+			public IntPtr HtmlId;
+			public string Html;
+		}
+
 		#endregion
 	}
 }

@@ -71,16 +71,14 @@ namespace Windows.UI.Xaml
 			return Uno.UI.Xaml.WindowManagerInterop.MeasureView(HtmlId, availableSize);
 		}
 
-		public Rect GetBBox()
+		internal Rect GetBBox()
 		{
 			if (!HtmlTagIsSvg)
 			{
 				throw new InvalidOperationException("GetBBox is available only for SVG elements.");
 			}
 
-			var sizeString = WebAssemblyRuntime.InvokeJS("Uno.UI.WindowManager.current.getBBox(\"" + HtmlId + "\");");
-			var sizeParts = sizeString.Split(';');
-			return new Rect(double.Parse(sizeParts[0]), double.Parse(sizeParts[1]), double.Parse(sizeParts[2]), double.Parse(sizeParts[3]));
+			return Uno.UI.Xaml.WindowManagerInterop.GetBBox(HtmlId);
 		}
 
 		private Rect GetBoundingClientRect()
@@ -226,10 +224,7 @@ namespace Windows.UI.Xaml
 
 		protected internal void SetHtmlContent(string html)
 		{
-			var escapedHtml = WebAssemblyRuntime.EscapeJs(html);
-
-			var command = "Uno.UI.WindowManager.current.setHtmlContent(\"" + HtmlId + "\", \"" + escapedHtml + "\");";
-			WebAssemblyRuntime.InvokeJS(command);
+			Uno.UI.Xaml.WindowManagerInterop.SetContentHtml(HtmlId, html);
 		}
 
 		protected internal void AddView(UIElement view)

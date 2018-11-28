@@ -5,7 +5,7 @@ class WindowManagerMeasureViewParams
 	HtmlId : number;
 	AvailableWidth : number;
 	AvailableHeight : number;
-	public static deserialize(pData:number) : WindowManagerMeasureViewParams
+	public static unmarshal(pData:number) : WindowManagerMeasureViewParams
 	{
 		let ret = new WindowManagerMeasureViewParams();
 		ret.HtmlId = Number((Module.getValue(pData + 0, "*")));

@@ -7,7 +7,7 @@ class WindowManagerRegisterEventOnViewParams
 	OnCapturePhase : boolean;
 	EventFilterName : string;
 	EventExtractorName : string;
-	public static deserialize(pData:number) : WindowManagerRegisterEventOnViewParams
+	public static unmarshal(pData:number) : WindowManagerRegisterEventOnViewParams
 	{
 		let ret = new WindowManagerRegisterEventOnViewParams();
 		ret.HtmlId = Number((Module.getValue(pData + 0, "*")));

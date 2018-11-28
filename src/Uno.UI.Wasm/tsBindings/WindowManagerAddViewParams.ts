@@ -5,7 +5,7 @@ class WindowManagerAddViewParams
 	HtmlId : number;
 	ChildView : number;
 	Index : number;
-	public static deserialize(pData:number) : WindowManagerAddViewParams
+	public static unmarshal(pData:number) : WindowManagerAddViewParams
 	{
 		let ret = new WindowManagerAddViewParams();
 		ret.HtmlId = Number((Module.getValue(pData + 0, "*")));

@@ -115,7 +115,7 @@ declare namespace Uno.UI {
             *
             * You need to call addView to connect it to the DOM.
             */
-        createContentFast(pParams: number): boolean;
+        createContentNative(pParams: number): boolean;
         private createContentInternal(contentDefinition);
         /**
             * Set a name for an element.
@@ -128,7 +128,7 @@ declare namespace Uno.UI {
             *
             * This is mostly for diagnostic purposes.
             */
-        setNameFast(pParam: number): boolean;
+        setNameNative(pParam: number): boolean;
         private setNameInternal(elementId, name);
         /**
             * Set an attribute for an element.
@@ -139,7 +139,7 @@ declare namespace Uno.UI {
         /**
             * Set an attribute for an element.
             */
-        setAttributeFast(pParams: number): boolean;
+        setAttributeNative(pParams: number): boolean;
         /**
             * Get an attribute for an element.
             */
@@ -153,7 +153,7 @@ declare namespace Uno.UI {
         /**
             * Set a property for an element.
             */
-        setPropertyFast(pParams: number): boolean;
+        setPropertyNative(pParams: number): boolean;
         /**
             * Get a property for an element.
             */
@@ -173,7 +173,7 @@ declare namespace Uno.UI {
         * To remove a value, set it to empty string.
         * @param styles A dictionary of styles to apply on html element.
         */
-        setStyleFast(pParams: number): boolean;
+        setStyleNative(pParams: number): boolean;
         /**
             * Set the CSS style of a html element.
             *
@@ -187,7 +187,7 @@ declare namespace Uno.UI {
             * To remove a value, set it to empty string.
             * @param styles A dictionary of styles to apply on html element.
             */
-        resetStyleFast(pParams: number): boolean;
+        resetStyleNative(pParams: number): boolean;
         private resetStyleInternal(elementId, names);
         /**
             * Load the specified URL into a new tab or window
@@ -222,7 +222,7 @@ declare namespace Uno.UI {
             * @param eventName The name of the event
             * @param onCapturePhase true means "on trickle down", false means "on bubble up". Default is false.
             */
-        registerEventOnViewFast(pParams: number): boolean;
+        registerEventOnViewNative(pParams: number): boolean;
         /**
             * Add an event handler to a html element.
             *
@@ -274,7 +274,7 @@ declare namespace Uno.UI {
             *
             * @param pParams Pointer to a WindowManagerAddViewParams native structure.
             */
-        addViewFast(pParams: number): boolean;
+        addViewNative(pParams: number): boolean;
         addViewInternal(parentId: number, childId: number, index?: number): void;
         /**
             * Remove a child from a parent element.
@@ -287,7 +287,7 @@ declare namespace Uno.UI {
             *
             * "Unloading" & "Unloaded" events will be raised if nescessary.
             */
-        removeViewFast(pParams: number): boolean;
+        removeViewNative(pParams: number): boolean;
         private removeViewInternal(parentId, childId);
         /**
             * Destroy a html element.
@@ -302,10 +302,12 @@ declare namespace Uno.UI {
             * The element won't be available anymore. Usually indicate the managed
             * version has been scavenged by the GC.
             */
-        destroyViewFast(pParams: number): boolean;
+        destroyViewNative(pParams: number): boolean;
         private destroyViewInternal(viewId);
         getBoundingClientRect(elementId: string): string;
-        getBBox(elementId: string): string;
+        getBBox(elementId: number): string;
+        getBBoxNative(pParams: number, pReturn: number): boolean;
+        private getBBoxInternal(elementId);
         /**
             * Use the Html engine to measure the element using specified constraints.
             *
@@ -319,7 +321,7 @@ declare namespace Uno.UI {
             * @param maxWidth string containing width in pixels. Empty string means infinite.
             * @param maxHeight string containing height in pixels. Empty string means infinite.
             */
-        measureViewFast(pParams: number, pReturn: number): boolean;
+        measureViewNative(pParams: number, pReturn: number): boolean;
         private measureViewInternal(viewId, maxWidth, maxHeight);
         setImageRawData(viewId: string, dataPtr: number, width: number, height: number): string;
         /**
@@ -338,7 +340,15 @@ declare namespace Uno.UI {
             * Those html elements won't be available as XamlElement in managed code.
             * WARNING: you should avoid mixing this and `addView` for the same element.
             */
-        setHtmlContent(viewId: string, html: string): string;
+        setHtmlContent(viewId: number, html: string): string;
+        /**
+            * Set the Html content for an element.
+            *
+            * Those html elements won't be available as XamlElement in managed code.
+            * WARNING: you should avoid mixing this and `addView` for the same element.
+            */
+        setHtmlContentNative(pParams: number): boolean;
+        private setHtmlContentInternal(viewId, html);
         /**
             * Remove the loading indicator.
             *
@@ -360,7 +370,7 @@ declare class WindowManagerAddViewParams {
     HtmlId: number;
     ChildView: number;
     Index: number;
-    static deserialize(pData: number): WindowManagerAddViewParams;
+    static unmarshal(pData: number): WindowManagerAddViewParams;
 }
 declare class WindowManagerCreateContentParams {
     HtmlId: number;
@@ -372,22 +382,33 @@ declare class WindowManagerCreateContentParams {
     IsFocusable: boolean;
     Classes_Length: number;
     Classes: Array<string>;
-    static deserialize(pData: number): WindowManagerCreateContentParams;
+    static unmarshal(pData: number): WindowManagerCreateContentParams;
 }
 declare class WindowManagerDestroyViewParams {
     HtmlId: number;
-    static deserialize(pData: number): WindowManagerDestroyViewParams;
+    static unmarshal(pData: number): WindowManagerDestroyViewParams;
+}
+declare class WindowManagerGetBBoxParams {
+    HtmlId: number;
+    static unmarshal(pData: number): WindowManagerGetBBoxParams;
+}
+declare class WindowManagerGetBBoxReturn {
+    X: number;
+    Y: number;
+    Width: number;
+    Height: number;
+    marshal(pData: number): void;
 }
 declare class WindowManagerMeasureViewParams {
     HtmlId: number;
     AvailableWidth: number;
     AvailableHeight: number;
-    static deserialize(pData: number): WindowManagerMeasureViewParams;
+    static unmarshal(pData: number): WindowManagerMeasureViewParams;
 }
 declare class WindowManagerMeasureViewReturn {
     DesiredWidth: number;
     DesiredHeight: number;
-    serialize(pData: number): void;
+    marshal(pData: number): void;
 }
 declare class WindowManagerRegisterEventOnViewParams {
     HtmlId: number;
@@ -395,42 +416,47 @@ declare class WindowManagerRegisterEventOnViewParams {
     OnCapturePhase: boolean;
     EventFilterName: string;
     EventExtractorName: string;
-    static deserialize(pData: number): WindowManagerRegisterEventOnViewParams;
+    static unmarshal(pData: number): WindowManagerRegisterEventOnViewParams;
 }
 declare class WindowManagerRemoveViewParams {
     HtmlId: number;
     ChildView: number;
-    static deserialize(pData: number): WindowManagerRemoveViewParams;
+    static unmarshal(pData: number): WindowManagerRemoveViewParams;
 }
 declare class WindowManagerResetStyleParams {
     HtmlId: number;
     Styles_Length: number;
     Styles: Array<string>;
-    static deserialize(pData: number): WindowManagerResetStyleParams;
+    static unmarshal(pData: number): WindowManagerResetStyleParams;
 }
 declare class WindowManagerSetAttributeParams {
     HtmlId: number;
     Pairs_Length: number;
     Pairs: Array<string>;
-    static deserialize(pData: number): WindowManagerSetAttributeParams;
+    static unmarshal(pData: number): WindowManagerSetAttributeParams;
+}
+declare class WindowManagerSetContentHtmlParams {
+    HtmlId: number;
+    Html: string;
+    static unmarshal(pData: number): WindowManagerSetContentHtmlParams;
 }
 declare class WindowManagerSetNameParams {
     HtmlId: number;
     Name: string;
-    static deserialize(pData: number): WindowManagerSetNameParams;
+    static unmarshal(pData: number): WindowManagerSetNameParams;
 }
 declare class WindowManagerSetPropertyParams {
     HtmlId: number;
     Pairs_Length: number;
     Pairs: Array<string>;
-    static deserialize(pData: number): WindowManagerSetPropertyParams;
+    static unmarshal(pData: number): WindowManagerSetPropertyParams;
 }
 declare class WindowManagerSetStylesParams {
     HtmlId: number;
     SetAsArranged: boolean;
     Pairs_Length: number;
     Pairs: Array<string>;
-    static deserialize(pData: number): WindowManagerSetStylesParams;
+    static unmarshal(pData: number): WindowManagerSetStylesParams;
 }
 declare module Uno.UI {
     interface IAppManifest {

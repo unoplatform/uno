@@ -5,7 +5,7 @@ class WindowManagerSetPropertyParams
 	HtmlId : number;
 	Pairs_Length : number;
 	Pairs : Array<string>;
-	public static deserialize(pData:number) : WindowManagerSetPropertyParams
+	public static unmarshal(pData:number) : WindowManagerSetPropertyParams
 	{
 		let ret = new WindowManagerSetPropertyParams();
 		ret.HtmlId = Number((Module.getValue(pData + 0, "*")));
