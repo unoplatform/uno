@@ -13,9 +13,10 @@ namespace Windows.ApplicationModel.DataTransfer
 		{
 			if (content?.Text == null)
 			{
-				var manager = (ClipboardManager)ContextHelper.Current.GetSystemService(Context.ClipboardService);
-
-				manager.Text = content.Text;
+				if (ContextHelper.Current.GetSystemService(Context.ClipboardService) is ClipboardManager manager)
+				{
+					manager.Text = content.Text;
+				}
 			}
 		}
 	}
