@@ -675,8 +675,8 @@
 			*
 			* @param index Position in children list. Appended at end if not specified.
 			*/
-		public addView(parentId: string, childId: string, index?: number): string {
-			this.addView(parentId, childId, index);
+		public addView(parentId: number, childId: number, index?: number): string {
+			this.addViewInternal(parentId, childId, index);
 			return "ok";
 		}
 

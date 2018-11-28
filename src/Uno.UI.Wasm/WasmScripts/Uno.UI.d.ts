@@ -266,7 +266,7 @@ declare namespace Uno.UI {
             *
             * @param index Position in children list. Appended at end if not specified.
             */
-        addView(parentId: string, childId: string, index?: number): string;
+        addView(parentId: number, childId: number, index?: number): string;
         /**
             * Set a view as a child of another one.
             *
