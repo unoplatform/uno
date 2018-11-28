@@ -203,7 +203,7 @@ namespace Uno.Foundation
 				command = commandBuilder.ToString();
 			}
 
-			return WebAssembly.Runtime.InvokeJS(command);
+			return InvokeJS(command);
 		}
 
 		[Pure]

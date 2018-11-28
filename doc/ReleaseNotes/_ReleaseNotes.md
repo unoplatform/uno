@@ -13,8 +13,7 @@
  * MediaPlayerElement [Android]Player status is now properly updated on media end
  * #388 Slider: NRE when vertical template is not defined
  * 138117 [Android] Removing a bookmarked/downloaded lesson can duplicate the assets of a different lesson.
-
-
+ * [Wasm] Fix VirtualizingPanelAdapter measure and arrange
 
 ## Release 1.42
 

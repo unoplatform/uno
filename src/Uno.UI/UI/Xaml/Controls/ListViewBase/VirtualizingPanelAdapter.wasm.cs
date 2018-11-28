@@ -63,7 +63,10 @@ namespace Windows.UI.Xaml.Controls
 		{
 			var id = GetItemId(index);
 
-			Console.WriteLine($"{GetMethodTag()} container={container} index={index}");
+			if (this.Log().IsEnabled(LogLevel.Debug))
+			{
+				this.Log().LogDebug($"{GetMethodTag()} container={container} index={index}");
+			}
 
 			var cache = _itemContainerCache.FindOrCreate(id, () => new Stack<FrameworkElement>());
 
@@ -108,8 +111,6 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		private string GetMethodTag([CallerMemberName] string caller = null)
-		{
-			return $"{nameof(VirtualizingPanelGenerator)}.{caller}()";
-		}
+			=> $"{nameof(VirtualizingPanelGenerator)}.{caller}()";
 	}
 }
