@@ -374,7 +374,11 @@ MVVMLight, Prism and ReactiveUI are supported, MvvmCross is coming.
 It's partially implemented but there are parts that are closed source from Microsoft. In the meantime, make sure your Windows head is using the latest Min SDK, at which point you'll be able to use the UWP designer.
 
 ## Does intellisense work in XAML editor?
-Yes, if you do not see it; make sure you are targetting the latest windows SDK version
+Yes, if you do not see it:
+- Make sure you are targetting the latest windows SDK version.
+- Choose "XAML Designer" as the default for opening your XAML files (right-click on your XAML file and then "Open With").
+- Relaunch your Visual Studio solution.
+- Select UWP on the top-left corner of your XAML file.
 
 ## `Program does not contain a static 'Main' method suitable for an entry point` when building the UWP project.
 
