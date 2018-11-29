@@ -435,6 +435,8 @@ The Uno.UI TextBlock supports the Text property as well as the
 
 For more information, see the [TextBlock](https://msdn.microsoft.com/en-us/library/windows/apps/windows.ui.xaml.controls.textblock.aspx) class.
 
+### Custom Fonts
+
 #### Custom Fonts on Android
 Fonts must be placed in the `Assets` folder of the head project, matching the path of the fonts in Windows, and marked as `AndroidAsset`.
 The format is the same as Windows, as follows:
@@ -443,6 +445,7 @@ The format is the same as Windows, as follows:
 <Setter Property="FontFamily" Value="/Assets/Fonts/Roboto-Regular.ttf#Roboto" />
 ```
    or
+   
 ```xml
 <Setter Property="FontFamily" Value="ms-appx:///Assets/Fonts/Roboto-Regular.ttf#Roboto" />
 ```
@@ -468,8 +471,49 @@ The format is the same as Windows, as follows:
 <Setter Property="FontFamily" Value="/Assets/Fonts/yourfont01.ttf#Roboto" />
 ```
     or
+
 ```xml
 <Setter Property="FontFamily" Value="ms-appx:///Assets/Fonts/yourfont01.ttf#Roboto" />
+```
+
+#### Custom Fonts Notes
+Please note that some custom fonts need the FontFamily and FontWeight properties to be set at the same time in order to work properly on TextBlocks, Runs and for styles Setters.
+If it's your case, here are some examples of code:
+
+```xml
+<FontFamily x:Key="FontFamilyLight">ms-appx:///Assets/Fonts/PierSans-Light.otf#Pier Sans Light</FontFamily>
+<FontFamily x:Key="FontFamilyBold">ms-appx:///Assets/Fonts/PierSans-Bold.otf#Pier Sans Bold</FontFamily>
+
+<Style x:Key="LightTextBlockStyle"
+	   TargetType="TextBlock">
+	<Setter Property="FontFamily"
+			Value="{StaticResource FontFamilyLight}" />
+	<Setter Property="FontWeight"
+			Value="Light" />
+	<Setter Property="FontSize"
+			Value="16" />
+</Style>
+
+<Style x:Key="BoldTextBlockStyle"
+	   TargetType="TextBlock">
+	<Setter Property="FontFamily"
+			Value="{StaticResource FontFamilyBold}" />
+	<Setter Property="FontWeight"
+			Value="Bold" />
+	<Setter Property="FontSize"
+			Value="24" />
+</Style>
+
+<TextBlock Text="TextBlock with Light FontFamily and FontWeight."
+		   FontFamily="{StaticResource FontFamilyLight}"
+		   FontWeight="Light" />
+
+<TextBlock Style="{StaticResource BoldTextBlockStyle}">
+	<Run Text="TextBlock with Runs" />
+	<Run Text="and  Light FontFamily and FontWeight for the second Run."
+		 FontWeight="Light"
+		 FontFamily="{StaticResource FontFamilyLight}" />
+</TextBlock>
 ```
 
 ### TextBox
