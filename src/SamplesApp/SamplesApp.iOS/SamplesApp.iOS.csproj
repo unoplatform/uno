@@ -107,7 +107,7 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Uno.SourceGenerationTasks">
-      <Version>1.29.0-dev.157</Version>
+      <Version>1.29.0-dev.161</Version>
       <NoWarn>NU1701</NoWarn>
     </PackageReference>
     <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="1.1.1" />

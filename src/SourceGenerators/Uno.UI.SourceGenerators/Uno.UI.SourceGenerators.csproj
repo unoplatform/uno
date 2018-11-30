@@ -1,173 +1,172 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-	<Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
-	<PropertyGroup>
-		<Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-		<Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-		<ProjectGuid>{68E667C4-AAED-4242-A47F-3D77C33C489E}</ProjectGuid>
-		<OutputType>Library</OutputType>
-		<AppDesignerFolder>Properties</AppDesignerFolder>
-		<RootNamespace>Uno.UI.SourceGenerators</RootNamespace>
-		<AssemblyName>Uno.UI.SourceGenerators</AssemblyName>
-		<TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
-		<FileAlignment>512</FileAlignment>
-	</PropertyGroup>
-	<PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-		<DebugSymbols>true</DebugSymbols>
-		<DebugType>pdbonly</DebugType>
-		<Optimize>false</Optimize>
-		<OutputPath>bin\Debug\</OutputPath>
-		<DefineConstants>DEBUG;TRACE</DefineConstants>
-		<ErrorReport>prompt</ErrorReport>
-		<WarningLevel>4</WarningLevel>
-	</PropertyGroup>
-	<PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-		<DebugType>pdbonly</DebugType>
-		<Optimize>true</Optimize>
-		<OutputPath>bin\Release\</OutputPath>
-		<DefineConstants>TRACE</DefineConstants>
-		<ErrorReport>prompt</ErrorReport>
-		<WarningLevel>4</WarningLevel>
-	</PropertyGroup>
-	<ItemGroup>
-		<Reference Include="System" />
-		<Reference Include="System.Core" />
-		<Reference Include="System.Drawing" />
-		<Reference Include="System.Xaml">
-			<Aliases>__ms</Aliases>
-		</Reference>
-		<Reference Include="System.Xml.Linq" />
-		<Reference Include="System.Data.DataSetExtensions" />
-		<Reference Include="Microsoft.CSharp" />
-		<Reference Include="System.Data" />
-		<Reference Include="System.Net.Http" />
-		<Reference Include="System.Xml" />
-	</ItemGroup>
-	<ItemGroup>
-		<PackageReference Include="Microsoft.CodeAnalysis.Common">
-			<Version>2.3.1</Version>
-			<ExcludeAssets>runtime</ExcludeAssets>
-		</PackageReference>
-		<PackageReference Include="Microsoft.CodeAnalysis.CSharp">
-			<Version>2.3.1</Version>
-			<ExcludeAssets>runtime</ExcludeAssets>
-		</PackageReference>
-		<PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces">
-			<Version>2.3.1</Version>
-			<ExcludeAssets>runtime</ExcludeAssets>
-		</PackageReference>
-		<PackageReference Include="Microsoft.CodeAnalysis.Workspaces.Common">
-			<Version>2.3.1</Version>
-			<ExcludeAssets>runtime</ExcludeAssets>
-		</PackageReference>
-
-		<PackageReference Include="Uno.Core">
-			<Version>1.25.0-dev.56</Version>
-		</PackageReference>
-		<PackageReference Include="Uno.SourceGeneration">
-			<Version>1.28.0-dev.145</Version>
-		</PackageReference>
-		<PackageReference Include="Uno.SourceGenerationTasks">
-			<Version>1.28.0-dev.145</Version>
-		</PackageReference>
-	</ItemGroup>
-	<ItemGroup>
-		<Compile Include="..\..\Uno.Foundation\Point.cs">
-			<Link>XamlGenerator\XamlPathParser\Point.cs</Link>
-		</Compile>
-		<Compile Include="..\..\Uno.Foundation\Size.cs">
-			<Link>XamlGenerator\XamlPathParser\Size.cs</Link>
-		</Compile>
-		<Compile Include="..\..\Uno.Foundation\SizeConverter.cs">
-			<Link>XamlGenerator\XamlPathParser\SizeConverter.cs</Link>
-		</Compile>
-		<Compile Include="..\..\Uno.UI\Media\PathMarkupParser.cs">
-			<Link>XamlGenerator\XamlPathParser\PathMarkupParser.cs</Link>
-		</Compile>
-		<Compile Include="..\..\Uno.UI\Media\StreamGeometryContext.cs">
-			<Link>XamlGenerator\XamlPathParser\StreamGeometryContext.cs</Link>
-		</Compile>
-		<Compile Include="..\..\Uno.UI\UI\Xaml\Media\FillRule.cs">
-			<Link>XamlGenerator\XamlPathParser\FillRule.cs</Link>
-		</Compile>
-		<Compile Include="..\..\Uno.UI\UI\Xaml\Media\SweepDirection.cs">
-			<Link>XamlGenerator\XamlPathParser\SweepDirection.cs</Link>
-		</Compile>
-		<Compile Include="..\..\Uno.UI\UI\Xaml\GridLength.cs">
-			<Link>Helpers\GridLength.cs</Link>
-		</Compile>
-		<Compile Include="..\..\Uno.UI\UI\Xaml\GridLengthHelper.cs">
-			<Link>Helpers\GridLengthHelper.cs</Link>
-		</Compile>
-		<Compile Include="..\..\Uno.UI\UI\Xaml\GridUnitType.cs">
-			<Link>Helpers\GridUnitType.cs</Link>
-		</Compile>
-		<Compile Include="BindableTypeProviders\BindableTypeProvidersGenerationTask.cs" />
-		<Compile Include="DependencyObject\DependencyObjectGenerator.cs" />
-		<Compile Include="DependencyObject\MethodCallFinder.cs" />
-		<Compile Include="Helpers\AnalyzerSuppressions.cs" />
-		<Compile Include="Helpers\HashBuilder.cs" />
-		<Compile Include="Helpers\PathHelper.cs" />
-		<Compile Include="Helpers\RoslynMetadataHelper.cs" />
-		<Compile Include="Helpers\SymbolExtensions.cs" />
-		<Compile Include="NativeCtor\NativeCtorsGenerator.cs" />
-		<Compile Include="Properties\AssemblyInfo.cs" />
-		<Compile Include="XamlGenerator\BackingFieldDefinition.cs" />
-		<Compile Include="XamlGenerator\NameScope.cs" />
-		<Compile Include="XamlGenerator\PlatformHelper.cs" />
-		<Compile Include="XamlGenerator\XamlPathParser\GeneratedStreamGeometryContext.cs" />
-		<Compile Include="XamlGenerator\XamlRedirection\XamlConfig.cs" />
-		<Compile Include="XamlGenerator\XamlRedirection\XamlXmlReaderSettings.cs" />
-		<Compile Include="XamlGenerator\XamlRedirection\XamlNodeType.cs" />
-		<Compile Include="XamlGenerator\XamlRedirection\XamlXmlReader.cs" />
-		<Compile Include="XamlGenerator\XamlRedirection\NamespaceDeclaration.cs" />
-		<Compile Include="XamlGenerator\Subclass.cs" />
-		<Compile Include="XamlGenerator\Utils\ColorCodeParser.cs" />
-		<Compile Include="XamlGenerator\XamlCodeGeneration.cs" />
-		<Compile Include="XamlGenerator\XamlCodeGenerator.cs" />
-		<Compile Include="XamlGenerator\XamlConstants.cs" />
-		<Compile Include="XamlGenerator\XamlFileDefinition.cs" />
-		<Compile Include="XamlGenerator\XamlFileGenerator.cs" />
-		<Compile Include="XamlGenerator\XamlFileParser.cs" />
-		<Compile Include="XamlGenerator\XamlGlobalStaticResourcesMap.cs" />
-		<Compile Include="XamlGenerator\XamlLazyApplyBlockIIndentedStringBuilder.cs" />
-		<Compile Include="XamlGenerator\XamlRedirection\XamlSchemaContext.cs" />
-		<Compile Include="XamlGenerator\XamlRedirection\XamlMember.cs" />
-		<Compile Include="XamlGenerator\XamlMemberDefinition.cs" />
-		<Compile Include="XamlGenerator\XamlObjectDefinition.cs" />
-		<Compile Include="XamlGenerator\XamlPathParser\Parsers.cs" />
-		<Compile Include="XamlGenerator\XamlRedirection\XamlType.cs" />
-	</ItemGroup>
-	<ItemGroup>
-		<None Include="Content\Uno.UI.SourceGenerators.props" />
-	</ItemGroup>
-	<ItemGroup>
-		<ProjectReference Include="..\System.Xaml\Uno.Xaml.csproj">
-			<Project>{1627740a-19d2-4d21-a0b2-66667038daf6}</Project>
-			<Name>Uno.Xaml</Name>
-			<Aliases>__uno</Aliases>
-		</ProjectReference>
-	</ItemGroup>
-	<Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-	<Target Name="_UnoToolkitOverrideNuget" AfterTargets="AfterBuild" DependsOnTargets="BuiltProjectOutputGroup" Condition="'$(UnoNugetOverrideVersion)'!=''">
-		<PropertyGroup>
-			<_OverrideTargetFramework>$(TargetFramework)</_OverrideTargetFramework>
-			<_TargetNugetFolder>$(USERPROFILE)\.nuget\packages\Uno.UI\$(UnoNugetOverrideVersion)\tools\$(_OverrideTargetFramework)</_TargetNugetFolder>
-		</PropertyGroup>
-		<ItemGroup>
-			<_OutputFiles Include="$(TargetDir)*.*" />
-		</ItemGroup>
-		<MakeDir Directories="$(_TargetNugetFolder)" />
-		<Message Importance="high" Text="OVERRIDING NUGET PACKAGE CACHE: $(_TargetNugetFolder)" />
-		<Copy SourceFiles="@(_OutputFiles)" DestinationFiles="@(_OutputFiles-&gt;'$(_TargetNugetFolder)\%(RecursiveDir)%(Filename)%(Extension)')" />
-		<Copy SourceFiles="@(_OutputFilesPDB)" DestinationFiles="@(_OutputFilesPDB-&gt;'$(_TargetNugetFolder)\%(RecursiveDir)%(Filename).pdb')" />
-	</Target>
-	<!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{68E667C4-AAED-4242-A47F-3D77C33C489E}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Uno.UI.SourceGenerators</RootNamespace>
+    <AssemblyName>Uno.UI.SourceGenerators</AssemblyName>
+    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Xaml">
+      <Aliases>__ms</Aliases>
+    </Reference>
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.CodeAnalysis.Common">
+      <Version>2.3.1</Version>
+      <ExcludeAssets>runtime</ExcludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp">
+      <Version>2.3.1</Version>
+      <ExcludeAssets>runtime</ExcludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces">
+      <Version>2.3.1</Version>
+      <ExcludeAssets>runtime</ExcludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.CodeAnalysis.Workspaces.Common">
+      <Version>2.3.1</Version>
+      <ExcludeAssets>runtime</ExcludeAssets>
+    </PackageReference>
+    <PackageReference Include="Uno.Core">
+      <Version>1.25.0-dev.56</Version>
+    </PackageReference>
+    <PackageReference Include="Uno.SourceGeneration">
+      <Version>1.29.0-dev.161</Version>
+    </PackageReference>
+    <PackageReference Include="Uno.SourceGenerationTasks">
+      <Version>1.29.0-dev.161</Version>
+    </PackageReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\..\Uno.Foundation\Point.cs">
+      <Link>XamlGenerator\XamlPathParser\Point.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Uno.Foundation\Size.cs">
+      <Link>XamlGenerator\XamlPathParser\Size.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Uno.Foundation\SizeConverter.cs">
+      <Link>XamlGenerator\XamlPathParser\SizeConverter.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Uno.UI\Media\PathMarkupParser.cs">
+      <Link>XamlGenerator\XamlPathParser\PathMarkupParser.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Uno.UI\Media\StreamGeometryContext.cs">
+      <Link>XamlGenerator\XamlPathParser\StreamGeometryContext.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Uno.UI\UI\Xaml\Media\FillRule.cs">
+      <Link>XamlGenerator\XamlPathParser\FillRule.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Uno.UI\UI\Xaml\Media\SweepDirection.cs">
+      <Link>XamlGenerator\XamlPathParser\SweepDirection.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Uno.UI\UI\Xaml\GridLength.cs">
+      <Link>Helpers\GridLength.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Uno.UI\UI\Xaml\GridLengthHelper.cs">
+      <Link>Helpers\GridLengthHelper.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Uno.UI\UI\Xaml\GridUnitType.cs">
+      <Link>Helpers\GridUnitType.cs</Link>
+    </Compile>
+    <Compile Include="BindableTypeProviders\BindableTypeProvidersGenerationTask.cs" />
+    <Compile Include="DependencyObject\DependencyObjectGenerator.cs" />
+    <Compile Include="DependencyObject\MethodCallFinder.cs" />
+    <Compile Include="Helpers\AnalyzerSuppressions.cs" />
+    <Compile Include="Helpers\HashBuilder.cs" />
+    <Compile Include="Helpers\PathHelper.cs" />
+    <Compile Include="Helpers\RoslynMetadataHelper.cs" />
+    <Compile Include="Helpers\SymbolExtensions.cs" />
+    <Compile Include="NativeCtor\NativeCtorsGenerator.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="XamlGenerator\BackingFieldDefinition.cs" />
+    <Compile Include="XamlGenerator\NameScope.cs" />
+    <Compile Include="XamlGenerator\PlatformHelper.cs" />
+    <Compile Include="XamlGenerator\XamlPathParser\GeneratedStreamGeometryContext.cs" />
+    <Compile Include="XamlGenerator\XamlRedirection\XamlConfig.cs" />
+    <Compile Include="XamlGenerator\XamlRedirection\XamlXmlReaderSettings.cs" />
+    <Compile Include="XamlGenerator\XamlRedirection\XamlNodeType.cs" />
+    <Compile Include="XamlGenerator\XamlRedirection\XamlXmlReader.cs" />
+    <Compile Include="XamlGenerator\XamlRedirection\NamespaceDeclaration.cs" />
+    <Compile Include="XamlGenerator\Subclass.cs" />
+    <Compile Include="XamlGenerator\Utils\ColorCodeParser.cs" />
+    <Compile Include="XamlGenerator\XamlCodeGeneration.cs" />
+    <Compile Include="XamlGenerator\XamlCodeGenerator.cs" />
+    <Compile Include="XamlGenerator\XamlConstants.cs" />
+    <Compile Include="XamlGenerator\XamlFileDefinition.cs" />
+    <Compile Include="XamlGenerator\XamlFileGenerator.cs" />
+    <Compile Include="XamlGenerator\XamlFileParser.cs" />
+    <Compile Include="XamlGenerator\XamlGlobalStaticResourcesMap.cs" />
+    <Compile Include="XamlGenerator\XamlLazyApplyBlockIIndentedStringBuilder.cs" />
+    <Compile Include="XamlGenerator\XamlRedirection\XamlSchemaContext.cs" />
+    <Compile Include="XamlGenerator\XamlRedirection\XamlMember.cs" />
+    <Compile Include="XamlGenerator\XamlMemberDefinition.cs" />
+    <Compile Include="XamlGenerator\XamlObjectDefinition.cs" />
+    <Compile Include="XamlGenerator\XamlPathParser\Parsers.cs" />
+    <Compile Include="XamlGenerator\XamlRedirection\XamlType.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Content\Uno.UI.SourceGenerators.props" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\System.Xaml\Uno.Xaml.csproj">
+      <Project>{1627740a-19d2-4d21-a0b2-66667038daf6}</Project>
+      <Name>Uno.Xaml</Name>
+      <Aliases>__uno</Aliases>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Target Name="_UnoToolkitOverrideNuget" AfterTargets="AfterBuild" DependsOnTargets="BuiltProjectOutputGroup" Condition="'$(UnoNugetOverrideVersion)'!=''">
+    <PropertyGroup>
+      <_OverrideTargetFramework>$(TargetFramework)</_OverrideTargetFramework>
+      <_TargetNugetFolder>$(USERPROFILE)\.nuget\packages\Uno.UI\$(UnoNugetOverrideVersion)\tools\$(_OverrideTargetFramework)</_TargetNugetFolder>
+    </PropertyGroup>
+    <ItemGroup>
+      <_OutputFiles Include="$(TargetDir)*.*" />
+    </ItemGroup>
+    <MakeDir Directories="$(_TargetNugetFolder)" />
+    <Message Importance="high" Text="OVERRIDING NUGET PACKAGE CACHE: $(_TargetNugetFolder)" />
+    <Copy SourceFiles="@(_OutputFiles)" DestinationFiles="@(_OutputFiles->'$(_TargetNugetFolder)\%(RecursiveDir)%(Filename)%(Extension)')" />
+    <Copy SourceFiles="@(_OutputFilesPDB)" DestinationFiles="@(_OutputFilesPDB->'$(_TargetNugetFolder)\%(RecursiveDir)%(Filename).pdb')" />
+  </Target>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
   </Target>
   <Target Name="AfterBuild">
   </Target>
   -->
-	<Import Project="..\..\Common.targets" />
+  <Import Project="..\..\Common.targets" />
 </Project>

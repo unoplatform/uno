@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="15.0">
+﻿<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="15.0">
 	<PropertyGroup>
 		<TargetFrameworks>xamarinmac20;MonoAndroid80;xamarinios10;net46;netstandard2.0</TargetFrameworks>
 		<TargetFrameworksCI>MonoAndroid71;MonoAndroid80;xamarinios10;net46;netstandard2.0;xamarinmac20</TargetFrameworksCI>
@@ -29,7 +29,11 @@
 
 	<Import Project="$(MSBuildSDKExtrasTargets)" Condition="Exists('$(MSBuildSDKExtrasTargets)')" />
 	<Import Project="..\Uno.CrossTargetting.props" />
-
+	
+	<ItemGroup>
+		<UpToDateCheckInput Include="**\*.cs" Exclude="bin\**\*.cs;obj\**\*.cs;" />
+	</ItemGroup>
+	
 	<ItemGroup>
 		<Compile Remove="Mixins\**\*.cs" />
 
@@ -147,7 +151,7 @@
 	<ItemGroup>
 		<PackageReference Include="MSBuild.Sdk.Extras" Version="1.6.55" PrivateAssets="All" />
 		<PackageReference Include="Uno.SourceGenerationTasks">
-			<Version>1.29.0-dev.157</Version> 
+			<Version>1.29.0-dev.161</Version> 
 		</PackageReference>
 		<PackageReference Include="Uno.Core">
 			<Version>1.26.0-dev.58</Version>
