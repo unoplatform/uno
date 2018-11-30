@@ -36,7 +36,7 @@
 		<PackageReference Include="Microsoft.TypeScript.Compiler" Version="2.8.3" />
 		<PackageReference Include="Microsoft.TypeScript.MSBuild" Version="2.8.3" />
 		<PackageReference Include="Uno.SourceGenerationTasks">
-			<Version>1.29.0-dev.178</Version>
+			<Version>1.29.0-dev.182</Version>
 		</PackageReference>
 	</ItemGroup>
 

@@ -151,7 +151,7 @@
 	<ItemGroup>
 		<PackageReference Include="MSBuild.Sdk.Extras" Version="1.6.55" PrivateAssets="All" />
 		<PackageReference Include="Uno.SourceGenerationTasks">
-			<Version>1.29.0-dev.178</Version> 
+			<Version>1.29.0-dev.182</Version> 
 		</PackageReference>
 		<PackageReference Include="Uno.Core">
 			<Version>1.26.0-dev.58</Version>
