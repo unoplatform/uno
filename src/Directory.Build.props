@@ -19,6 +19,8 @@
 
 	<Product>$(AssemblyName) ($(TargetFramework))</Product>
 	<DefaultLanguage>en-US</DefaultLanguage>
+
+	<UnoSourceGeneratorUseGenerationHost>true</UnoSourceGeneratorUseGenerationHost>
   </PropertyGroup>
 
   <PropertyGroup>
