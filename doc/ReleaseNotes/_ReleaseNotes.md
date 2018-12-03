@@ -14,6 +14,7 @@
                                        - TextColor property was added in order to change the ToggleSwitch label color.
                                        - ThumbTint property was added in order to change the Thumb color.
                                        - TrackTint property was added in order to change the Track color.
+* Samples apps now contain a Unit Tests page
 
 ### Breaking changes
 * Refactored ToggleSwitch Default Native XAML Styles. (cf. 'NativeDefaultToggleSwitch' styles in Generic.Native.xaml)
@@ -27,7 +28,6 @@
  * 138117 [Android] Removing a bookmarked/downloaded lesson can duplicate the assets of a different lesson.
  * [Wasm] Fix VirtualizingPanelAdapter measure and arrange
  * 137892 [Android] Fixed FontFamily, FontSize and FontWeight are not applied anymore on the TextBox's content.
-
 
 ## Release 1.42
 

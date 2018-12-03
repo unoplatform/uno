@@ -139,6 +139,14 @@ var MonoSupport;
      * unmarshaled invocation of javascript from .NET code.
      * */
     class jsCallDispatcher {
+        /**
+         * Registers a instance for a specified identier
+         * @param identifier the scope name
+         * @param instance the instance to use for the scope
+         */
+        static registerScope(identifier, instance) {
+            jsCallDispatcher.registrations.set(identifier, instance);
+        }
         static findJSFunction(identifier) {
             var parts = identifier.split(':');
             if (parts[0] === 'Uno') {
@@ -146,10 +154,17 @@ var MonoSupport;
                 return c[parts[1]].bind(Uno.UI.WindowManager.current);
             }
             else {
-                throw `Unknown scope ${parts[0]}`;
+                var instance = jsCallDispatcher.registrations.get(parts[0]);
+                if (instance) {
+                    return instance[parts[1]].bind(instance);
+                }
+                else {
+                    throw `Unknown scope ${parts[0]}`;
+                }
             }
         }
     }
+    jsCallDispatcher.registrations = new Map();
     MonoSupport.jsCallDispatcher = jsCallDispatcher;
 })(MonoSupport || (MonoSupport = {}));
 // Export the DotNet helper for WebAssembly.JSInterop.InvokeJSUnmarshalled

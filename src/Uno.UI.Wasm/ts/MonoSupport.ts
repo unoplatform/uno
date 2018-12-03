@@ -5,16 +5,34 @@
 	 * unmarshaled invocation of javascript from .NET code.
 	 * */
 	export class jsCallDispatcher {
+
+		static registrations: Map<string, object> = new Map<string, object>();
+
+		/**
+		 * Registers a instance for a specified identier
+		 * @param identifier the scope name
+		 * @param instance the instance to use for the scope
+		 */
+		public static registerScope(identifier: string, instance: any) {
+			jsCallDispatcher.registrations.set(identifier, instance);
+		}
+
 		public static findJSFunction(identifier: string): any {
 			var parts = identifier.split(':');
 			if (parts[0] === 'Uno') {
-
 				var c = <any>Uno.UI.WindowManager.current;
 
 				return c[parts[1]].bind(Uno.UI.WindowManager.current);
 			}
 			else {
-				throw `Unknown scope ${parts[0]}`;
+				var instance = jsCallDispatcher.registrations.get(parts[0]);
+
+				if (instance) {
+					return (<any>instance)[parts[1]].bind(instance);
+				}
+				else {
+					throw `Unknown scope ${parts[0]}`;
+				}
 			}
 		}
 	}
