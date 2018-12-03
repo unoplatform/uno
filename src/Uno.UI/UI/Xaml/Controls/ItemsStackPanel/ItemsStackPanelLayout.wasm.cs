@@ -13,9 +13,9 @@ namespace Windows.UI.Xaml.Controls
 			var item = GetFlatItemIndex(nextVisibleItem);
 			var view = Generator.DequeueViewForItem(item);
 
-			AddView(view, fillDirection, extentOffset, 0);
+			var rect = AddView(view, fillDirection, extentOffset, 0);
 
-			return new Line(new[] { view }, nextVisibleItem, nextVisibleItem, item);
+			return new Line(new[] {view}, new[] {rect}, nextVisibleItem, nextVisibleItem, item);
 		}
 
 		protected override int GetItemsPerLine() => 1;

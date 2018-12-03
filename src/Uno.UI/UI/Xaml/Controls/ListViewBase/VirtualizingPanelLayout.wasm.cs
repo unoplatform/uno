@@ -28,6 +28,8 @@ namespace Windows.UI.Xaml.Controls
 		private readonly Deque<Line> _materializedLines = new Deque<Line>();
 
 		private Size _availableSize;
+		private double _lastScrollOffset;
+		private Size _lastAvailableSize;
 
 		private double AvailableBreadth => ScrollOrientation == Orientation.Vertical ?
 			_availableSize.Width :
@@ -47,8 +49,6 @@ namespace Windows.UI.Xaml.Controls
 					ScrollViewer.HorizontalOffset;
 			}
 		}
-
-		private double _lastScrollOffset;
 
 		private Size ViewportSize { get; set; }
 
@@ -189,9 +189,27 @@ namespace Windows.UI.Xaml.Controls
 			ViewportSize = ScrollViewer?.ViewportMeasureSize ?? default;
 			if (this.Log().IsEnabled(LogLevel.Debug))
 			{
-				this.Log().LogDebug($"Calling {GetMethodTag()},availableSize={availableSize}, {GetDebugInfo()}");
+				this.Log().LogDebug($"Calling {GetMethodTag()}, availableSize={availableSize}, _availableSize={_lastAvailableSize} {GetDebugInfo()}");
 			}
 
+			if(_lastAvailableSize != availableSize)
+			{
+				// Drop the current cells for now, but we need to remeasure the cells instead.
+				ClearLines();
+			}
+			else
+			{
+				// Size has not changed, remeasure all items with their same sizes
+				foreach(var line in _materializedLines)
+				{
+					foreach (var view in line.ContainerViews)
+					{
+						view.Measure(view.DesiredSize);
+					}
+				}
+			}
+
+			_lastAvailableSize = availableSize;
 			_availableSize = availableSize;
 			UpdateLayout();
 
@@ -208,6 +226,21 @@ namespace Windows.UI.Xaml.Controls
 
 			_availableSize = finalSize;
 			UpdateLayout();
+
+			// This is a hack to propagate the "Arrange" phase to children following
+			// an .InvalidateArrange() (or .InvalidateMeasure, obviously)
+			foreach (var line in _materializedLines)
+			{
+				for (var i = 0; i < line.ContainerViews.Length; i++)
+				{
+					var view = line.ContainerViews[i];
+					var rect = line.Rects[i];
+
+					// IMPORTANT: THIS HACK WON'T ALLOW THE ITEM TO CHANGE ITS SIZE, BUT
+					// WILL FIX THE PROBLEM OF PROPAGATING CORRECTLY THE ARRANGE PHASE.
+					view.Arrange(rect);
+				}
+			}
 
 			return EstimatePanelSize();
 		}
@@ -241,22 +274,28 @@ namespace Windows.UI.Xaml.Controls
 
 			void FillBackward()
 			{
-				var nextItem = GetNextUnmaterializedItem(GeneratorDirection.Backward, GetFirstMaterializedIndexPath());
-				while (nextItem != null && GetItemsStart() > ExtendedViewportStart + extentAdjustment)
+				if (GetItemsStart() > ExtendedViewportStart + extentAdjustment)
 				{
-					// Fill gap at start with views
-					AddLine(GeneratorDirection.Backward, nextItem.Value);
-					nextItem = GetNextUnmaterializedItem(GeneratorDirection.Backward, GetFirstMaterializedIndexPath());
+					var nextItem = GetNextUnmaterializedItem(GeneratorDirection.Backward, GetFirstMaterializedIndexPath());
+					while (nextItem != null && GetItemsStart() > ExtendedViewportStart + extentAdjustment)
+					{
+						// Fill gap at start with views
+						AddLine(GeneratorDirection.Backward, nextItem.Value);
+						nextItem = GetNextUnmaterializedItem(GeneratorDirection.Backward, GetFirstMaterializedIndexPath());
+					}
 				}
 			}
 
 			void FillForward()
 			{
-				var nextItem = GetNextUnmaterializedItem(GeneratorDirection.Forward, GetLastMaterializedIndexPath());
-				while (nextItem != null && (GetItemsEnd() ?? 0) < ExtendedViewportEnd + extentAdjustment)
+				if ((GetItemsEnd() ?? 0) < ExtendedViewportEnd + extentAdjustment)
 				{
-					AddLine(GeneratorDirection.Forward, nextItem.Value);
-					nextItem = GetNextUnmaterializedItem(GeneratorDirection.Forward, GetLastMaterializedIndexPath());
+					var nextItem = GetNextUnmaterializedItem(GeneratorDirection.Forward, GetLastMaterializedIndexPath());
+					while (nextItem != null && (GetItemsEnd() ?? 0) < ExtendedViewportEnd + extentAdjustment)
+					{
+						AddLine(GeneratorDirection.Forward, nextItem.Value);
+						nextItem = GetNextUnmaterializedItem(GeneratorDirection.Forward, GetLastMaterializedIndexPath());
+					}
 				}
 			}
 		}
@@ -307,24 +346,31 @@ namespace Windows.UI.Xaml.Controls
 		{
 			var extent = EstimatePanelExtent();
 
-			if (ScrollOrientation == Orientation.Vertical)
-			{
-				return new Size(
-					AvailableBreadth,
+			var ret = ScrollOrientation == Orientation.Vertical
+				? new Size(
+					double.IsInfinity(AvailableBreadth) ? _materializedLines.Select(l => l.FirstView.ActualWidth).MaxOrDefault() : AvailableBreadth,
 					double.IsInfinity(_availableSize.Height) ? extent : Max(extent, _availableSize.Height)
-				);
-			}
-			else
-			{
-				return new Size(
+				)
+				: new Size(
 					double.IsInfinity(_availableSize.Width) ? extent : Max(extent, _availableSize.Width),
-					AvailableBreadth
+					double.IsInfinity(AvailableBreadth) ? _materializedLines.Select(l => l.FirstView.ActualHeight).MaxOrDefault() : AvailableBreadth
 				);
+
+			if (this.Log().IsEnabled(LogLevel.Debug))
+			{
+				this.Log().LogDebug($"{GetMethodTag()} => {extent} -> {ret} {ScrollOrientation} {_availableSize.Height} {double.IsInfinity(_availableSize.Height)}");
 			}
+
+			return ret;
 		}
 
 		private double EstimatePanelExtent()
 		{
+			if (this.Log().IsEnabled(LogLevel.Debug))
+			{
+				this.Log().LogDebug($"{GetMethodTag()} Begin");
+			}
+
 			// Estimate remaining extent based on current average line height and remaining unmaterialized items
 			var lastIndexPath = GetLastMaterializedIndexPath();
 			if (lastIndexPath == null)
@@ -352,13 +398,28 @@ namespace Windows.UI.Xaml.Controls
 
 		internal void Refresh()
 		{
+			if (this.Log().IsEnabled(LogLevel.Debug))
+			{
+				this.Log().LogDebug($"{GetMethodTag()}");
+			}
+
+			ClearLines();
+
+			UpdateCompleted();
+		}
+
+		private void ClearLines()
+		{
+			if (this.Log().IsEnabled(LogLevel.Debug))
+			{
+				this.Log().LogDebug($"{GetMethodTag()}");
+			}
+
 			foreach (var line in _materializedLines)
 			{
 				RecycleLine(line);
 			}
 			_materializedLines.Clear();
-
-			UpdateCompleted();
 		}
 
 		private void OnOrientationChanged(Orientation newValue)
@@ -411,7 +472,7 @@ namespace Windows.UI.Xaml.Controls
 
 		protected int GetFlatItemIndex(IndexPath indexPath) => ItemsControl.GetIndexFromIndexPath(indexPath);
 
-		protected void AddView(FrameworkElement view, GeneratorDirection fillDirection, double extentOffset, double breadthOffset)
+		protected Rect AddView(FrameworkElement view, GeneratorDirection fillDirection, double extentOffset, double breadthOffset)
 		{
 			if (view.Parent == null)
 			{
@@ -433,16 +494,26 @@ namespace Windows.UI.Xaml.Controls
 				new Point(breadthOffset, extentOffset + extentOffsetAdjustment) :
 				new Point(extentOffset + extentOffsetAdjustment, breadthOffset);
 
+			bool isInfiniteBreadth = double.IsInfinity(AvailableBreadth);
 			var adjustedDesiredSize = ScrollOrientation == Orientation.Vertical
-				? new Size(AvailableBreadth, view.DesiredSize.Height)
-				: new Size(view.DesiredSize.Width, AvailableBreadth);
+				? new Size(
+					isInfiniteBreadth ? view.DesiredSize.Width : AvailableBreadth,
+					view.DesiredSize.Height
+				)
+				: new Size(
+					view.DesiredSize.Width,
+					isInfiniteBreadth ? view.DesiredSize.Height : AvailableBreadth
+				);
 
 			var finalRect = new Rect(topLeft, adjustedDesiredSize);
 			if (this.Log().IsEnabled(LogLevel.Debug))
 			{
 				this.Log().LogDebug($"{GetMethodTag()} finalRect={finalRect} DC={view.DataContext}");
 			}
+
 			view.Arrange(finalRect);
+
+			return finalRect;
 		}
 
 		private Line GetFirstMaterializedLine() => _materializedLines.Count > 0 ? _materializedLines[0] : null;
@@ -522,6 +593,7 @@ namespace Windows.UI.Xaml.Controls
 		protected class Line
 		{
 			public FrameworkElement[] ContainerViews { get; }
+			public Rect[] Rects { get; }
 			public IndexPath FirstItem { get; }
 			public IndexPath LastItem { get; }
 			public int FirstItemFlat { get; }
@@ -529,19 +601,23 @@ namespace Windows.UI.Xaml.Controls
 			public FrameworkElement FirstView => ContainerViews[0];
 			public FrameworkElement LastView => ContainerViews[ContainerViews.Length - 1];
 
-			public Line(FrameworkElement[] containerViews, IndexPath firstItem, IndexPath lastItem, int firstItemFlat)
+			public Line(FrameworkElement[] containerViews, Rect[] rects, IndexPath firstItem, IndexPath lastItem, int firstItemFlat)
 			{
 				if (containerViews.Length == 0)
 				{
 					throw new InvalidOperationException("Line must contain at least one view");
 				}
 
+				if (containerViews.Length != rects.Length)
+				{
+					throw new InvalidOperationException("Must have same number of views and rect!");
+				}
 				ContainerViews = containerViews;
+				Rects = rects;
 				FirstItem = firstItem;
 				LastItem = lastItem;
 				FirstItemFlat = firstItemFlat;
 			}
-
 		}
 	}
 }
