@@ -19,7 +19,26 @@ namespace Windows.UI.Xaml.Controls
 
 		public Image() : base("img")
 		{
-			ImageOpened += (snd, evt) => InvalidateMeasure();
+			ImageOpened += OnImageOpened;
+			ImageFailed += OnImageFailed; ;
+		}
+
+		private void OnImageFailed(object sender, RoutedEventArgs e)
+		{
+			if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+			{
+				this.Log().Debug($"Image failed [{(Source as BitmapSource)?.WebUri}]");
+			}
+		}
+
+		private void OnImageOpened(object sender, RoutedEventArgs e)
+		{
+			if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+			{
+				this.Log().Debug($"Image opened [{(Source as BitmapSource)?.WebUri}]");
+			}
+
+			InvalidateMeasure();
 		}
 
 		/// <summary>
