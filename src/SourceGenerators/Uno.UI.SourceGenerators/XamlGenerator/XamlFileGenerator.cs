@@ -63,6 +63,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		private readonly bool _isUiAutomationMappingEnabled;
 		private readonly Dictionary<string, string[]> _uiAutomationMappings;
 		private readonly string _defaultLanguage;
+		private readonly bool _isDebug;
 		private readonly string _relativePath;
 
 		private List<INamedTypeSymbol> _xamlAppliedTypes = new List<INamedTypeSymbol>();
@@ -102,7 +103,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			bool isUiAutomationMappingEnabled,
 			Dictionary<string, string[]> uiAutomationMappings,
 			string defaultLanguage,
-			bool isWasm
+			bool isWasm,
+			bool isDebug
 		)
 		{
 			_fileDefinition = file;
@@ -118,6 +120,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			_isUiAutomationMappingEnabled = isUiAutomationMappingEnabled;
 			_uiAutomationMappings = uiAutomationMappings;
 			_defaultLanguage = defaultLanguage.HasValue() ? defaultLanguage : "en";
+			_isDebug = isDebug;
 
 			_findType = Funcs.Create<string, INamedTypeSymbol>(SourceFindType).AsLockedMemoized();
 			_findPropertyTypeByXamlMember = Funcs.Create<XamlMember, INamedTypeSymbol>(SourceFindPropertyType).AsLockedMemoized();
@@ -2430,7 +2433,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				}
 				else
 				{
-					return $"{GetCastString(targetPropertyType, null)}{GetGlobalStaticResource(resourcePath)}";
+					return $"({GetCastString(targetPropertyType, null)}{GetGlobalStaticResource(resourcePath)})";
 				}
 			}
 		}
@@ -3077,7 +3080,9 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			}
 			else
 			{
-				return $"global::Windows.UI.Xaml.Application.Current.Resources[\"{resourceName}\"]";
+				var validateString = _isDebug ? $" ?? throw new InvalidOperationException(\"The resource {resourceName} cannot be found\")" : "";
+
+				return $"(global::Windows.UI.Xaml.Application.Current.Resources[\"{resourceName}\"]{validateString})";
 			}
 		}
 
@@ -3660,7 +3665,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					// performed at runtime at a higher cost.
 					propertyName = RewriteAttachedPropertyPath(propertyName);
 
-					writer.AppendLineInvariant($"new Windows.UI.Xaml.Setter(new Windows.UI.Xaml.TargetPropertyPath({elementName}, \"{propertyName}\"), {value.Replace("{", "{{").Replace("}", "}}")})");
+					writer.AppendLineInvariant($"new global::Windows.UI.Xaml.Setter(new global::Windows.UI.Xaml.TargetPropertyPath(this.{elementName}, \"{propertyName}\"), {value.Replace("{", "{{").Replace("}", "}}")})");
 				}
 			}
 			else

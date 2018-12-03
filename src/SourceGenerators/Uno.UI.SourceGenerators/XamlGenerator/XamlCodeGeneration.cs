@@ -29,7 +29,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		private string[] _resourceFiles;
 		private Dictionary<string, string[]> _uiAutomationMappings;
 		private readonly ProjectInstance _projectInstance;
-
+		private readonly string _configuration;
+		private readonly bool _isDebug;
 		private readonly bool _outputSourceComments = true;
 
 		private static DateTime _buildTasksBuildDate = File.GetLastWriteTime(new Uri(typeof(XamlFileGenerator).Assembly.CodeBase).LocalPath);
@@ -52,6 +53,11 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			_medataHelper = new RoslynMetadataHelper("Debug", sourceCompilation, msbProject, roslynProject, null, _legacyTypes);
 			_assemblySearchPaths = new string[0];
 			_projectInstance = msbProject;
+
+			_configuration = msbProject.GetProperty("Configuration")?.EvaluatedValue
+				?? throw new InvalidOperationException("The configuration property must be provided");
+
+			_isDebug = string.Equals(_configuration, "Debug", StringComparison.OrdinalIgnoreCase);
 
 			var xamlPages = msbProject.GetItems("Page")
 				.Select(d => d.EvaluatedInclude);
@@ -162,7 +168,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 							isUiAutomationMappingEnabled: _isUiAutomationMappingEnabled,
 							uiAutomationMappings: _uiAutomationMappings,
 							defaultLanguage: _defaultLanguage,
-							isWasm: _isWasm
+							isWasm: _isWasm,
+							isDebug: _isDebug
 						)
 						.GenerateFile()
 					)
