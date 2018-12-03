@@ -3,10 +3,12 @@ declare class TSBindingsTests {
     When_IntPtr(pParams: number, pReturn: number): boolean;
     When_IntPtr_Zero(pParams: number, pReturn: number): boolean;
     When_SingleString(pParams: number, pReturn: number): boolean;
+    When_SingleUnicodeString(pParams: number, pReturn: number): boolean;
     When_NullString(pParams: number, pReturn: number): boolean;
     When_ArrayOfInt(pParams: number, pReturn: number): boolean;
     When_NullArrayOfInt(pParams: number, pReturn: number): boolean;
     When_ArrayOfStrings(pParams: number, pReturn: number): boolean;
+    When_ArrayOfUnicodeStrings(pParams: number, pReturn: number): boolean;
     When_NullArrayOfStrings(pParams: number, pReturn: number): boolean;
     When_ArrayOfNullStrings(pParams: number, pReturn: number): boolean;
 }

@@ -55,6 +55,19 @@ namespace SamplesApp.UnitTests.TSBindings
 		}
 
 		[TestMethod]
+		public void When_SingleUnicodeString()
+		{
+			var param = new When_SingleStringParams()
+			{
+				MyString = "This is 🤣 🎉"
+			};
+
+			var ret = TSInteropMarshaller.InvokeJS<When_SingleStringParams, GenericReturn>("TSBindingsUnitTests:When_SingleUnicodeString", param);
+
+			Assert.AreEqual(param.MyString, ret.Value);
+		}
+
+		[TestMethod]
 		public void When_NullString()
 		{
 			var param = new When_SingleStringParams()
@@ -107,6 +120,20 @@ namespace SamplesApp.UnitTests.TSBindings
 			var ret = TSInteropMarshaller.InvokeJS<When_ArrayOfStringsParams, GenericReturn>("TSBindingsUnitTests:When_ArrayOfStrings", param);
 
 			Assert.AreEqual("1;2;3;42", ret.Value);
+		}
+
+		[TestMethod]
+		public void When_ArrayOfUnicodeStrings()
+		{
+			var param = new When_ArrayOfStringsParams()
+			{
+				MyArray_Length = 1,
+				MyArray = new[] { "🎉🤣😊👆🎁" }
+			};
+
+			var ret = TSInteropMarshaller.InvokeJS<When_ArrayOfStringsParams, GenericReturn>("TSBindingsUnitTests:When_ArrayOfUnicodeStrings", param);
+
+			Assert.AreEqual(param.MyArray[0], ret.Value);
 		}
 
 		[TestMethod]

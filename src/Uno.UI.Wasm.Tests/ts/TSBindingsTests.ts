@@ -46,6 +46,18 @@ class TSBindingsTests {
 		return true;
 	}
 
+	public When_SingleUnicodeString(pParams: number, pReturn: number): boolean {
+
+		var params = When_SingleStringParams.unmarshal(pParams);
+
+		var ret = new GenericReturn();
+		ret.Value = params.MyString;
+
+		ret.marshal(pReturn);
+
+		return true;
+	}
+
 	public When_NullString(pParams: number, pReturn: number): boolean {
 
 		var params = When_SingleStringParams.unmarshal(pParams);
@@ -83,6 +95,18 @@ class TSBindingsTests {
 	}
 
 	public When_ArrayOfStrings(pParams: number, pReturn: number): boolean {
+
+		var params = When_ArrayOfStringsParams.unmarshal(pParams);
+
+		var ret = new GenericReturn();
+		ret.Value = params.MyArray.join(";");
+
+		ret.marshal(pReturn);
+
+		return true;
+	}
+
+	public When_ArrayOfUnicodeStrings(pParams: number, pReturn: number): boolean {
 
 		var params = When_ArrayOfStringsParams.unmarshal(pParams);
 
