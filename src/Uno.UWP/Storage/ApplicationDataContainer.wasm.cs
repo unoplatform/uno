@@ -32,7 +32,7 @@ namespace Windows.Storage
 			{
 				get
 				{
-					if(!_values.TryGetValue(key, out var value))
+					if(_values.TryGetValue(key, out var value))
 					{
 						return DataTypeSerializer.Deserialize(value);
 					}
@@ -92,6 +92,8 @@ namespace Windows.Storage
 			{
 				var folderPath = ApplicationData.Current.LocalFolder.Path;
 				var filePath = Path.Combine(folderPath, UWPFileName);
+
+				Directory.CreateDirectory(folderPath);
 
 				if (this.Log().IsEnabled(LogLevel.Debug))
 				{
