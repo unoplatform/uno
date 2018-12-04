@@ -9,6 +9,7 @@
 	<Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 		<StackPanel>
 			<!-- Initiali sample structure to be replaced by the sample control -->
+			<Button Content="Unit Tests" Click="OnUnitTests" />
 			<Button Content="Navigation View" Click="OnNavigationView" />
 		</StackPanel>
 	</Grid>

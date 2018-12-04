@@ -6,6 +6,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using Uno.Extensions;
 using Uno.Foundation;
+using Uno.Foundation.Interop;
 using Windows.Foundation;
 using Windows.UI.Xaml;
 
@@ -17,73 +18,6 @@ namespace Uno.UI.Xaml
 	/// <remarks>Slow methods are present for the WPF hosting mode, for which memory sharing is not available</remarks>
 	internal partial class WindowManagerInterop
 	{
-		private const UnmanagedType LPUTF8Str = (UnmanagedType)48;
-
-		/// <summary>
-		/// Prints the actual offsets of the structures present in <see cref="WindowManagerInterop"/> for debugging purposes.
-		/// </summary>
-		internal static void GenerateTSMarshallingLayouts()
-		{
-			Console.WriteLine("Generating layouts");
-
-			foreach (var p in typeof(WindowManagerInterop).GetNestedTypes(System.Reflection.BindingFlags.NonPublic).Where(t => t.IsValueType))
-			{
-				var sb = new StringBuilder();
-
-				Console.WriteLine($"class {p.Name}:");
-
-				foreach (var field in p.GetFields())
-				{
-					var fieldOffset = Marshal.OffsetOf(p, field.Name);
-					Console.WriteLine($"\t{field.Name} : {fieldOffset}");
-				}
-			}
-		}
-
-		private static void InvokeJS<TParam>(string methodName, TParam paramStruct)
-		{
-			var pParms = Marshal.AllocHGlobal(Marshal.SizeOf(typeof(TParam)));
-
-			try
-			{
-				Marshal.StructureToPtr(paramStruct, pParms, false);
-
-				var ret = WebAssemblyRuntime.InvokeJSUnmarshalled<IntPtr, bool>(methodName, pParms);
-			}
-			finally
-			{
-				Marshal.DestroyStructure(pParms, typeof(TParam));
-				Marshal.FreeHGlobal(pParms);
-			}
-		}
-
-		private static TRet InvokeJS<TParam, TRet>(string methodName, TParam paramStruct) where TRet:new()
-		{
-			var pParms = Marshal.AllocHGlobal(Marshal.SizeOf(typeof(TParam)));
-			var pReturnValue = Marshal.AllocHGlobal(Marshal.SizeOf(typeof(TRet)));
-
-			var returnValue = new TRet();
-
-			try
-			{
-				Marshal.StructureToPtr(paramStruct, pParms, false);
-				Marshal.StructureToPtr(returnValue, pReturnValue, false);
-
-				var ret = WebAssemblyRuntime.InvokeJSUnmarshalled<IntPtr, IntPtr, bool>(methodName, pParms, pReturnValue);
-
-				returnValue = (TRet)Marshal.PtrToStructure(pReturnValue, typeof(TRet));
-				return returnValue;
-			}
-			finally
-			{
-				Marshal.DestroyStructure(pParms, typeof(TParam));
-				Marshal.FreeHGlobal(pParms);
-
-				Marshal.DestroyStructure(pReturnValue, typeof(TRet));
-				Marshal.FreeHGlobal(pReturnValue);
-			}
-		}
-
 		#region CreateContent
 		internal static void CreateContent(IntPtr htmlId, string htmlTag, IntPtr handle, string fullName, bool htmlTagIsSvg, bool isFrameworkElement, bool isFocusable, string[] classes)
 		{
@@ -121,10 +55,11 @@ namespace Uno.UI.Xaml
 					Classes = classes,
 				};
 
-				InvokeJS<WindowManagerCreateContentParams, bool>("Uno:createContentNative", parms);
+				TSInteropMarshaller.InvokeJS<WindowManagerCreateContentParams, bool>("Uno:createContentNative", parms);
 			}
 		}
 
+		[TSInteropMessage]
 		[StructLayout(LayoutKind.Sequential, Pack = 4)]
 		private struct WindowManagerCreateContentParams
 		{
@@ -176,12 +111,13 @@ namespace Uno.UI.Xaml
 					AvailableHeight = availableSize.Height
 				};
 
-				var ret = InvokeJS<WindowManagerMeasureViewParams, WindowManagerMeasureViewReturn>("Uno:measureViewNative", parms);
+				var ret = TSInteropMarshaller.InvokeJS<WindowManagerMeasureViewParams, WindowManagerMeasureViewReturn>("Uno:measureViewNative", parms);
 
 				return new Size(ret.DesiredWidth, ret.DesiredHeight);
 			}
 		}
 
+		[TSInteropMessage]
 		[StructLayout(LayoutKind.Sequential, Pack = 8)]
 		private struct WindowManagerMeasureViewParams
 		{
@@ -191,6 +127,7 @@ namespace Uno.UI.Xaml
 			public double AvailableHeight;
 		}
 
+		[TSInteropMessage]
 		[StructLayout(LayoutKind.Sequential, Pack = 8)]
 		private struct WindowManagerMeasureViewReturn
 		{
@@ -231,10 +168,11 @@ namespace Uno.UI.Xaml
 					Pairs = pairs,
 				};
 
-				InvokeJS<WindowManagerSetStylesParams>("Uno:setStyleNative", parms);
+				TSInteropMarshaller.InvokeJS<WindowManagerSetStylesParams>("Uno:setStyleNative", parms);
 			}
 		}
 
+		[TSInteropMessage]
 		[StructLayout(LayoutKind.Sequential, Pack = 4)]
 		private struct WindowManagerSetStylesParams
 		{
@@ -275,10 +213,11 @@ namespace Uno.UI.Xaml
 					Index = index ?? -1,
 				};
 
-				InvokeJS<WindowManagerAddViewParams>("Uno:addViewNative", parms);
+				TSInteropMarshaller.InvokeJS<WindowManagerAddViewParams>("Uno:addViewNative", parms);
 			}
 		}
 
+		[TSInteropMessage]
 		[StructLayout(LayoutKind.Sequential, Pack = 4)]
 		private struct WindowManagerAddViewParams
 		{
@@ -317,11 +256,12 @@ namespace Uno.UI.Xaml
 					Pairs = pairs,
 				};
 
-				InvokeJS<WindowManagerSetAttributeParams>("Uno:setAttributeNative", parms);
+				TSInteropMarshaller.InvokeJS<WindowManagerSetAttributeParams>("Uno:setAttributeNative", parms);
 			}
 		}
 
 
+		[TSInteropMessage]
 		[StructLayout(LayoutKind.Sequential, Pack = 4)]
 		private struct WindowManagerSetAttributeParams
 		{
@@ -351,10 +291,11 @@ namespace Uno.UI.Xaml
 					Name = name,
 				};
 
-				InvokeJS<WindowManagerSetNameParams>("Uno:setNameNative", parms);
+				TSInteropMarshaller.InvokeJS<WindowManagerSetNameParams>("Uno:setNameNative", parms);
 			}
 		}
 
+		[TSInteropMessage]
 		[StructLayout(LayoutKind.Sequential, Pack = 4)]
 		private struct WindowManagerSetNameParams
 		{
@@ -392,11 +333,12 @@ namespace Uno.UI.Xaml
 					Pairs = pairs,
 				};
 
-				InvokeJS<WindowManagerSetAttributeParams>("Uno:setPropertyNative", parms);
+				TSInteropMarshaller.InvokeJS<WindowManagerSetAttributeParams>("Uno:setPropertyNative", parms);
 
 			}
 		}
 
+		[TSInteropMessage]
 		[StructLayout(LayoutKind.Sequential, Pack = 4)]
 		private struct WindowManagerSetPropertyParams
 		{
@@ -425,10 +367,11 @@ namespace Uno.UI.Xaml
 					ChildView = childId
 				};
 
-				InvokeJS<WindowManagerRemoveViewParams>("Uno:removeViewNative", parms);
+				TSInteropMarshaller.InvokeJS<WindowManagerRemoveViewParams>("Uno:removeViewNative", parms);
 			}
 		}
 
+		[TSInteropMessage]
 		[StructLayout(LayoutKind.Sequential, Pack = 4)]
 		private struct WindowManagerRemoveViewParams
 		{
@@ -453,10 +396,11 @@ namespace Uno.UI.Xaml
 					HtmlId = htmlId
 				};
 
-				InvokeJS<WindowManagerDestroyViewParams>("Uno:destroyViewNative", parms);
+				TSInteropMarshaller.InvokeJS<WindowManagerDestroyViewParams>("Uno:destroyViewNative", parms);
 			}
 		}
 
+		[TSInteropMessage]
 		[StructLayout(LayoutKind.Sequential, Pack = 4)]
 		private struct WindowManagerDestroyViewParams
 		{
@@ -490,11 +434,12 @@ namespace Uno.UI.Xaml
 					Styles_Length = names.Length,
 				};
 
-				InvokeJS<WindowManagerResetStyleParams>("Uno:resetStyleNative", parms);
+				TSInteropMarshaller.InvokeJS<WindowManagerResetStyleParams>("Uno:resetStyleNative", parms);
 
 			}
 		}
 
+		[TSInteropMessage]
 		[StructLayout(LayoutKind.Sequential, Pack = 4)]
 		private struct WindowManagerResetStyleParams
 		{
@@ -527,10 +472,11 @@ namespace Uno.UI.Xaml
 					EventExtractorName = eventExtractorName,
 				};
 
-				InvokeJS<WindowManagerRegisterEventOnViewParams>("Uno:registerEventOnViewNative", parms);
+				TSInteropMarshaller.InvokeJS<WindowManagerRegisterEventOnViewParams>("Uno:registerEventOnViewNative", parms);
 			}
 		}
 
+		[TSInteropMessage]
 		[StructLayout(LayoutKind.Sequential, Pack = 4)]
 		private struct WindowManagerRegisterEventOnViewParams
 		{
@@ -563,12 +509,13 @@ namespace Uno.UI.Xaml
 					HtmlId = htmlId
 				};
 
-				var ret = InvokeJS<WindowManagerGetBBoxParams, WindowManagerGetBBoxReturn>("Uno:getBBoxNative", parms);
+				var ret = TSInteropMarshaller.InvokeJS<WindowManagerGetBBoxParams, WindowManagerGetBBoxReturn>("Uno:getBBoxNative", parms);
 
 				return new Rect(ret.X, ret.Y, ret.Width, ret.Height);
 			}
 		}
 
+		[TSInteropMessage]
 		[StructLayout(LayoutKind.Sequential, Pack = 4)]
 		private struct WindowManagerGetBBoxParams
 		{
@@ -576,6 +523,7 @@ namespace Uno.UI.Xaml
 		}
 
 
+		[TSInteropMessage]
 		[StructLayout(LayoutKind.Sequential, Pack = 8)]
 		private struct WindowManagerGetBBoxReturn
 		{
@@ -607,10 +555,11 @@ namespace Uno.UI.Xaml
 					Html = html,
 				};
 
-				InvokeJS<WindowManagerSetContentHtmlParams>("Uno:setHtmlContentNative", parms);
+				TSInteropMarshaller.InvokeJS<WindowManagerSetContentHtmlParams>("Uno:setHtmlContentNative", parms);
 			}
 		}
 
+		[TSInteropMessage]
 		[StructLayout(LayoutKind.Sequential, Pack = 4)]
 		private struct WindowManagerSetContentHtmlParams
 		{

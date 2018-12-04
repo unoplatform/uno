@@ -1,0 +1,38 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project Sdk="MSBuild.Sdk.Extras/1.6.46">
+  <PropertyGroup>
+    <TargetFrameworks>netstandard2.0;xamarinios10;monoandroid80;xamarinmac20</TargetFrameworks>
+		
+    <!-- Ensures the .xr.xml files are generated in a proper layout folder -->
+    <GenerateLibraryLayout>true</GenerateLibraryLayout>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(TargetFramework)'=='netstandard2.0'">
+    <DefineConstants>$(DefineConstants);__WASM__</DefineConstants>
+  </PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="MSTest.TestFramework" Version="1.2.0" />
+		<PackageReference Include="Uno.SourceGenerationTasks">
+			<Version>1.29.0-dev.182</Version>
+			<NoWarn>NU1701</NoWarn>
+		</PackageReference>
+	</ItemGroup>
+
+	<ItemGroup>
+    <Page Include="**\*.xaml" Exclude="bin\**\*.xaml;obj\**\*.xaml" />
+    <UpToDateCheckInput Include="**\*.xaml" Exclude="bin\**\*.xaml;obj\**\*.xaml" />
+  </ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\Uno.Foundation\Uno.Foundation.csproj" />
+		<ProjectReference Include="..\Uno.UI\Uno.UI.csproj" />
+		<ProjectReference Include="..\Uno.UWP\Uno.csproj" />
+	</ItemGroup>
+
+	<PropertyGroup>
+		<UnoUIGeneratorsBinPath>..\SourceGenerators\Uno.UI.SourceGenerators\bin\$(Configuration)</UnoUIGeneratorsBinPath>
+	</PropertyGroup>
+
+	<Import Project="..\SourceGenerators\Uno.UI.SourceGenerators\Content\Uno.UI.SourceGenerators.props" />
+
+</Project>
