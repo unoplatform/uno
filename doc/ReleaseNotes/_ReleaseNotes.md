@@ -6,6 +6,12 @@
 * [Wasm] Improve general performance and memory pressure by removing Javascript interop evaluations.
 * Add support for Windows 10 SDK 17763 (1809)
 * Improve the Uno.UI solution memory consumption for Android targets
+* Add support for GridLength conversion from double 
+* Raise exceptions on missing styles in debug configuration
+* Add working ViewBox stub 
+* `Path.Data` property now invalidates measure and arrange
+* Wasm `Image` logs Opened and Failed events
+* Add UpToDateCheckInput to avoid VS invalid incremental rebuilds
 * 35178 Added recipe for copying text to clipboard
 * Added ToogleSwitch documentation in Uno/Doc/Controls.
 * Added new properties for ToggleSwitch Default Native Styles.
@@ -28,6 +34,11 @@
  * 138117 [Android] Removing a bookmarked/downloaded lesson can duplicate the assets of a different lesson.
  * [Wasm] Fix VirtualizingPanelAdapter measure and arrange
  * 137892 [Android] Fixed FontFamily, FontSize and FontWeight are not applied anymore on the TextBox's content.
+ * Don't fail on empty grid ArrangeOverride
+ * Don't generate the Bindable attribute if already present
+ * Adjust .NET template projects versions to 4.6.1
+ * Adjust Microsoft.CodeAnalysis versions to avoid restore conflicts
+ * Fix element name matching existing types fails to compile (e.g. ContentPresenter)
 
 ## Release 1.42
 

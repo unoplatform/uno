@@ -190,6 +190,11 @@ namespace Windows.UI.Xaml.Controls
 
 		protected override Size ArrangeOverride(Size finalSize)
 		{
+			if (this.Children.Count == 0)
+			{
+				return finalSize;
+			}
+
 			finalSize.Width -= GetHorizontalOffset();
 			finalSize.Height -= GetVerticalOffset();
 
