@@ -39,6 +39,7 @@
  * Adjust .NET template projects versions to 4.6.1
  * Adjust Microsoft.CodeAnalysis versions to avoid restore conflicts
  * Fix element name matching existing types fails to compile (e.g. ContentPresenter)
+ * 138735 [Android] Fixed broken DatePicker 
 
 ## Release 1.42
 
