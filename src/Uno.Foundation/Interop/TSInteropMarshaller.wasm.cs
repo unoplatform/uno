@@ -15,20 +15,21 @@ namespace Uno.Foundation.Interop
 		/// </summary>
 		internal static void GenerateTSMarshallingLayouts()
 		{
-			Console.WriteLine("Generating layouts");
-
-			//foreach (var p in typeof(WindowManagerInterop).GetNestedTypes(System.Reflection.BindingFlags.NonPublic).Where(t => t.IsValueType))
-			//{
-			//	var sb = new StringBuilder();
-
-			//	Console.WriteLine($"class {p.Name}:");
-
-			//	foreach (var field in p.GetFields())
-			//	{
-			//		var fieldOffset = Marshal.OffsetOf(p, field.Name);
-			//		Console.WriteLine($"\t{field.Name} : {fieldOffset}");
-			//	}
-			//}
+			// Uncomment this to troubshoot this field offsets.
+			//
+			// Console.WriteLine("Generating layouts");
+			// foreach (var p in typeof(WindowManagerInterop).GetNestedTypes(System.Reflection.BindingFlags.NonPublic).Where(t => t.IsValueType))
+			// {
+			// 		var sb = new StringBuilder();
+			   
+			// 		Console.WriteLine($"class {p.Name}:");
+			   
+			// 		foreach (var field in p.GetFields())
+			// 		{
+			// 			var fieldOffset = Marshal.OffsetOf(p, field.Name);
+			// 			Console.WriteLine($"\t{field.Name} : {fieldOffset}");
+			// 		}
+			// }
 		}
 
 		public static void InvokeJS<TParam>(string methodName, TParam paramStruct)

@@ -18,8 +18,6 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 
-// The User Control item template is documented at https://go.microsoft.com/fwlink/?LinkId=234236
-
 namespace Uno.UI.Samples.Tests
 {
 	public sealed partial class UnitTestsControl : UserControl
@@ -49,7 +47,8 @@ namespace Uno.UI.Samples.Tests
 		{
 			var t = Dispatcher.RunAsync(
 				Windows.UI.Core.CoreDispatcherPriority.Normal,
-				() => {
+				() =>
+				{
 					var testResult = new TextBlock()
 					{
 						Text = $"{testClass.Name} ({testClass.Assembly.GetName().Name})"
@@ -64,7 +63,8 @@ namespace Uno.UI.Samples.Tests
 		{
 			var t = Dispatcher.RunAsync(
 				Windows.UI.Core.CoreDispatcherPriority.Normal,
-				() => {
+				() =>
+				{
 					var testResult = new TextBlock()
 					{
 						Text = testName,
@@ -72,7 +72,7 @@ namespace Uno.UI.Samples.Tests
 						Foreground = new SolidColorBrush(failed ? Colors.Red : Colors.Green)
 					};
 
-					if(errorMessage.HasValue())
+					if (errorMessage.HasValue())
 					{
 						testResult.Text += ", " + errorMessage;
 					}
@@ -90,13 +90,13 @@ namespace Uno.UI.Samples.Tests
 
 			ReportMessage("Running tests...");
 
-			foreach(var type in testTypes.Where(t => t.type != null))
+			foreach (var type in testTypes.Where(t => t.type != null))
 			{
 				ReportTestClass(type.type.GetTypeInfo());
 
 				var instance = Activator.CreateInstance(type: type.type);
-				
-				foreach(var testMethod in type.tests)
+
+				foreach (var testMethod in type.tests)
 				{
 					string testName = testMethod.Name;
 
@@ -167,13 +167,13 @@ namespace Uno.UI.Samples.Tests
 					cleanup: GetMethodsWithAttribute(type, typeof(Microsoft.VisualStudio.TestTools.UnitTesting.TestCleanupAttribute)).FirstOrDefault()
 				);
 			}
-			catch(Exception)
+			catch (Exception)
 			{
 				return (null, null, null, null);
 			}
 		}
 
-		private static MethodInfo[] GetMethodsWithAttribute(Type type, Type attributeType) 
+		private static MethodInfo[] GetMethodsWithAttribute(Type type, Type attributeType)
 			=> (
 				from method in type.GetMethods()
 				where method.GetCustomAttribute(attributeType) != null
