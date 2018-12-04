@@ -4,22 +4,22 @@ ToggleSwitch represents a switch that can be toggled between two states.
 
 ## ToggleSwitch UWP Default Style
 
-Uno provide a full support of the ToggleSwitch UWP style.
+Uno provides a full support of the ToggleSwitch UWP style.
 The ToggleSwitch with the default style looks the same on all platforms, both statically and in motion.
 If you need to have a custom design, you can just update the ToggleSwitch UWP default style for your needs.
 
 ## ToggleSwitch Native Default Style
 
-With the 'NativeDefaultToggleSwitch' style on Android and iOS, however, the ToggleSwitch replicates the native toggle control of each platform.
+With the 'NativeDefaultToggleSwitch' style on Android and iOS, however, the ToggleSwitch uses the native toggle control of each platform.
 Of course you can still bind to its properties in XAML as you normally would. 
 This is another powerful option to have: for some apps it makes sense to look as 'native' as possible, for others its desirable to have a rich, customised UI.
 You may even want to mix and match different approaches for different screens in your app.
 
 ### Native Android ToggleSwitch
 
-Based on the SwitchCompat which is a version of the Switch widget which on devices back to API v7.
+The Native Style for ToggleSwitch on Android is based on SwitchCompat, a Material Design version of the Switch widget supported by API 7 and above.
 It does not make any attempt to use the platform provided widget on those devices which it is available normally.
-SwitchCompat inherits from Material Design and this unsure the same behavior on all system versions.
+This unsures the same behavior on all system versions.
 
 #### Platform support
 

@@ -37,7 +37,7 @@ namespace Uno.UI.Controls
 		#region TextColor DependencyProperty
 
 		/// <summary> 
-		/// The color used to change the text header foreground.
+		/// The color used to change the text label foreground.
 		/// </summary>
 		public Brush TextColor
 		{
