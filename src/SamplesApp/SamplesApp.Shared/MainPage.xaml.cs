@@ -32,5 +32,10 @@ namespace SamplesApp
 		{
 			Frame.Navigate(typeof(NavigationViewPage));
 		}
+
+		private void OnUnitTests(object sender, RoutedEventArgs e)
+		{
+			Frame.Navigate(typeof(Samples.UnitTests.UnitTestsPage));
+		}
 	}
 }

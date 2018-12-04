@@ -51,6 +51,13 @@ declare namespace MonoSupport {
      * unmarshaled invocation of javascript from .NET code.
      * */
     class jsCallDispatcher {
+        static registrations: Map<string, object>;
+        /**
+         * Registers a instance for a specified identier
+         * @param identifier the scope name
+         * @param instance the instance to use for the scope
+         */
+        static registerScope(identifier: string, instance: any): void;
         static findJSFunction(identifier: string): any;
     }
 }

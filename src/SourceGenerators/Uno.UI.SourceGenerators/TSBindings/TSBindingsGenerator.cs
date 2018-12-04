@@ -14,7 +14,6 @@ namespace Uno.UI.SourceGenerators.TSBindings
 	class TSBindingsGenerator : SourceGenerator
 	{
 		private string _bindingsPaths;
-		private INamedTypeSymbol _windowManagerSymbol;
 		private static ITypeSymbol _stringSymbol;
 		private static ITypeSymbol _intSymbol;
 		private static ITypeSymbol _floatSymbol;
@@ -25,6 +24,7 @@ namespace Uno.UI.SourceGenerators.TSBindings
 		private static ITypeSymbol _boolSymbol;
 		private static ITypeSymbol _longSymbol;
 		private INamedTypeSymbol _structLayoutSymbol;
+		private INamedTypeSymbol _interopMessageSymbol;
 
 		public override void Execute(SourceGeneratorContext context)
 		{
@@ -33,8 +33,6 @@ namespace Uno.UI.SourceGenerators.TSBindings
 
 			if(!string.IsNullOrEmpty(_bindingsPaths))
 			{
-				_windowManagerSymbol = context.Compilation.GetTypeByMetadataName("Uno.UI.Xaml.WindowManagerInterop");
-
 				_stringSymbol = context.Compilation.GetTypeByMetadataName("System.String");
 				_intSymbol = context.Compilation.GetTypeByMetadataName("System.Int32");
 				_floatSymbol = context.Compilation.GetTypeByMetadataName("System.Single");
@@ -45,42 +43,61 @@ namespace Uno.UI.SourceGenerators.TSBindings
 				_boolSymbol = context.Compilation.GetTypeByMetadataName("System.Boolean");
 				_longSymbol = context.Compilation.GetTypeByMetadataName("System.Int64");
 				_structLayoutSymbol = context.Compilation.GetTypeByMetadataName(typeof(System.Runtime.InteropServices.StructLayoutAttribute).FullName);
+				_interopMessageSymbol = context.Compilation.GetTypeByMetadataName("Uno.Foundation.Interop.TSInteropMessageAttribute");
 
-				GenerateTSMarshallingLayouts();
+				var modules = from ext in context.Compilation.ExternalReferences
+							  let sym = context.Compilation.GetAssemblyOrModuleSymbol(ext) as IAssemblySymbol
+							  where sym != null
+							  from module in sym.Modules
+							  select module;
+
+				modules = modules.Concat(context.Compilation.SourceModule);
+
+				GenerateTSMarshallingLayouts(modules);
 			}
 		}
 
-		internal void GenerateTSMarshallingLayouts()
+		internal void GenerateTSMarshallingLayouts(IEnumerable<IModuleSymbol> modules)
 		{
-			foreach (var parametersType in _windowManagerSymbol.GetTypeMembers().Where(t => t.IsValueType))
+			var messageTypes = from module in modules
+					from type in module.GlobalNamespace.GetNamespaceTypes()
+					where (
+						type.FindAttributeFlattened(_interopMessageSymbol) != null
+						&& type.TypeKind == TypeKind.Struct
+					)
+					select type;
+
+			messageTypes = messageTypes.ToArray();
+
+			foreach (var messageType in messageTypes)
 			{
-				var packValue = GetStructPack(parametersType);
+				var packValue = GetStructPack(messageType);
 
 				var sb = new IndentedStringBuilder();
 
 				sb.AppendLineInvariant($"/* {nameof(TSBindingsGenerator)} Generated code -- this code is regenerated on each build */");
 
-				using (sb.BlockInvariant($"class {parametersType.Name}"))
+				using (sb.BlockInvariant($"class {messageType.Name}"))
 				{
 					sb.AppendLineInvariant($"/* Pack={packValue} */");
 
-					foreach (var field in parametersType.GetFields())
+					foreach (var field in messageType.GetFields())
 					{
 						sb.AppendLineInvariant($"{field.Name} : {GetTSFieldType(field.Type)};");
 					}
 
-					if (parametersType.Name.EndsWith("Params"))
+					if (messageType.Name.EndsWith("Params"))
 					{
-						GenerateUmarshaler(parametersType, sb, packValue);
+						GenerateUmarshaler(messageType, sb, packValue);
 					}
 
-					if (parametersType.Name.EndsWith("Return"))
+					if (messageType.Name.EndsWith("Return"))
 					{
-						GenerateMarshaler(parametersType, sb, packValue);
+						GenerateMarshaler(messageType, sb, packValue);
 					}
 				}
 
-				var outputPath = Path.Combine(_bindingsPaths, $"{parametersType.Name}.ts");
+				var outputPath = Path.Combine(_bindingsPaths, $"{messageType.Name}.ts");
 
 				File.WriteAllText(outputPath, sb.ToString());
 			}
@@ -123,8 +140,7 @@ namespace Uno.UI.SourceGenerators.TSBindings
 				foreach (var field in parametersType.GetFields())
 				{
 					var fieldSize = GetNativeFieldSize(field);
-
-					var stringConv = field.Type == _stringSymbol ? "Module.UTF8ToString" : "";
+					bool isStringField = field.Type == _stringSymbol;
 
 					if (field.Type is IArrayTypeSymbol arraySymbol)
 					{
@@ -134,9 +150,25 @@ namespace Uno.UI.SourceGenerators.TSBindings
 					{
 						var value = $"this.{field.Name}";
 
-						sb.AppendLineInvariant(
-							$"Module.setValue(pData + {fieldOffset}, {value}, \"{GetEMField(field.Type)}\");"
-						);
+						if (isStringField)
+						{
+							using (sb.BlockInvariant(""))
+							{
+								sb.AppendLineInvariant($"var stringLength = lengthBytesUTF8({value});");
+								sb.AppendLineInvariant($"var pString = Module._malloc(stringLength + 1);");
+								sb.AppendLineInvariant($"stringToUTF8({value}, pString, stringLength + 1);");
+
+								sb.AppendLineInvariant(
+									$"Module.setValue(pData + {fieldOffset}, pString, \"*\");"
+								);
+							}
+						}
+						else
+						{
+							sb.AppendLineInvariant(
+								$"Module.setValue(pData + {fieldOffset}, {value}, \"{GetEMField(field.Type)}\");"
+							);
+						}
 					}
 
 					fieldOffset += fieldSize;
@@ -170,23 +202,64 @@ namespace Uno.UI.SourceGenerators.TSBindings
 
 						using (sb.BlockInvariant(""))
 						{
-							sb.AppendLineInvariant($"ret.{field.Name} = new Array<{GetTSFieldType(elementType)}>();");
 							sb.AppendLineInvariant($"var pArray = Module.getValue(pData + {fieldOffset}, \"*\");");
 
-							using (sb.BlockInvariant($"for(var i=0; i<ret.{field.Name}_Length; i++)"))
+							using (sb.BlockInvariant("if(pArray !== 0)"))
 							{
-								var stringConv = isElementString ? "MonoRuntime.conv_string" : "";
-								var getValue = $"{stringConv}(Module.getValue(pArray + i*{elementSize}, \"{GetEMField(field.Type)}\"))";
+								sb.AppendLineInvariant($"ret.{field.Name} = new Array<{GetTSFieldType(elementType)}>();");
 
-								sb.AppendLineInvariant($"ret.{field.Name}.push({elementTSType}({getValue}));");
+								using (sb.BlockInvariant($"for(var i=0; i<ret.{field.Name}_Length; i++)"))
+								{
+									sb.AppendLineInvariant($"var value = Module.getValue(pArray + i * {elementSize}, \"{GetEMField(field.Type)}\");");
+
+									if (isElementString)
+									{
+										using (sb.BlockInvariant("if(value !== 0)"))
+										{
+											sb.AppendLineInvariant($"ret.{field.Name}.push({elementTSType}(MonoRuntime.conv_string(value)));");
+										}
+										sb.AppendLineInvariant("else");
+										using (sb.BlockInvariant(""))
+										{
+											sb.AppendLineInvariant($"ret.{field.Name}.push(null);");
+										}
+									}
+									else
+									{
+										sb.AppendLineInvariant($"ret.{field.Name}.push({elementTSType}(value));");
+									}
+								}
+							}
+							sb.AppendLineInvariant("else");
+							using (sb.BlockInvariant(""))
+							{
+								sb.AppendLineInvariant($"ret.{field.Name} = null;");
 							}
 						}
 					}
 					else
 					{
-						var stringConv = field.Type == _stringSymbol ? "Module.UTF8ToString" : "";
+						using (sb.BlockInvariant(""))
+						{
+							if(field.Type == _stringSymbol)
+							{
+								sb.AppendLineInvariant($"var ptr = Module.getValue(pData + {fieldOffset}, \"{GetEMField(field.Type)}\");");
 
-						sb.AppendLineInvariant($"ret.{field.Name} = {GetTSType(field.Type)}({stringConv}(Module.getValue(pData + {fieldOffset}, \"{GetEMField(field.Type)}\")));");
+								using (sb.BlockInvariant("if(ptr !== 0)"))
+								{
+									sb.AppendLineInvariant($"ret.{field.Name} = {GetTSType(field.Type)}(Module.UTF8ToString(ptr));");
+								}
+								sb.AppendLineInvariant("else");
+								using (sb.BlockInvariant(""))
+								{
+									sb.AppendLineInvariant($"ret.{field.Name} = null;");
+								}
+							}
+							else
+							{
+								sb.AppendLineInvariant($"ret.{field.Name} = {GetTSType(field.Type)}(Module.getValue(pData + {fieldOffset}, \"{GetEMField(field.Type)}\"));");
+							}
+						}
 					}
 
 					fieldOffset += fieldSize;
