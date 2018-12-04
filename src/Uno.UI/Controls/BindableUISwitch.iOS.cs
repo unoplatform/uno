@@ -6,6 +6,7 @@ using Windows.UI.Xaml.Data;
 using Uno.UI.DataBinding;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Media;
+using Windows.UI;
 
 #if XAMARIN_IOS_UNIFIED
 using Foundation;
@@ -54,43 +55,109 @@ namespace Uno.UI.Views.Controls
 			InitializeBinder();
 		}
 
-		public Brush Foreground
+		#region ThumbTintColorBrush DependencyProperty
+
+		//The color used to tint the appearance of the thumb.
+		public Brush ThumbTintColorBrush
 		{
-			get { return (Brush)this.GetValue(ForegroundProperty); }
-			set { this.SetValue(ForegroundProperty, value); }
+			get { return (Brush)this.GetValue(ThumbTintColorBrushProperty); }
+			set { this.SetValue(ThumbTintColorBrushProperty, value); }
 		}
 
-		// Using a DependencyProperty as the backing store for Background.  This enables animation, styling, binding, etc...
-		public static readonly DependencyProperty ForegroundProperty =
-			DependencyProperty.Register("Foreground", typeof(Brush), typeof(BindableUISwitch), new PropertyMetadata(null, (s, e) => ((BindableUISwitch)s).OnForegroundChanged((Brush)e.NewValue)));
+		public static readonly DependencyProperty ThumbTintColorBrushProperty =
+			DependencyProperty.Register("ThumbTintColorBrush", typeof(Brush), typeof(BindableUISwitch), new PropertyMetadata(null, (s, e) => ((BindableUISwitch)s).OnThumbTintColorBrushChanged((Brush)e.NewValue)));
 
-		private void OnForegroundChanged(Brush newValue)
+		private void OnThumbTintColorBrushChanged(Brush newValue)
 		{
-			var asColorBrush = newValue as SolidColorBrush;
-			if (asColorBrush != null)
+			if (newValue is SolidColorBrush asColorBrush)
 			{
 				ThumbTintColor = asColorBrush.Color;
 			}
 		}
 
-		public Brush Background
+		#endregion
+
+		#region Foreground Alias Property
+
+		/// <summary>
+		/// An alias to the ThumbTintColorBrush property, in order to avoid binary breaking change.
+		/// </summary>
+		public Brush Foreground
 		{
-			get { return (Brush)this.GetValue(BackgroundProperty); }
-			set { this.SetValue(BackgroundProperty, value); }
+			get { return ThumbTintColorBrush; }
+			set
+			{
+				if (!Brush.Equals(value ?? null, ThumbTintColorBrush))
+				{
+					ThumbTintColorBrush = value;
+				}
+			}
 		}
 
-		// Using a DependencyProperty as the backing store for Background.  This enables animation, styling, binding, etc...
-		public static readonly DependencyProperty BackgroundProperty =
-			DependencyProperty.Register("Background", typeof(Brush), typeof(BindableUISwitch), new PropertyMetadata(null, (s, e) => ((BindableUISwitch)s).OnBackgroundChanged((Brush)e.NewValue)));
+		#endregion
 
-		private void OnBackgroundChanged(Brush newValue)
+		#region OnTintColorBrush DependencyProperty
+
+		//The color used to tint the appearance of the switch when it is turned on.
+		public Brush OnTintColorBrush
 		{
-			var asColorBrush = newValue as SolidColorBrush;
-			if (asColorBrush != null)
+			get { return (Brush)this.GetValue(OnTintColorBrushProperty); }
+			set { this.SetValue(OnTintColorBrushProperty, value); }
+		}
+
+		public static readonly DependencyProperty OnTintColorBrushProperty =
+			DependencyProperty.Register("OnTintColorBrush", typeof(Brush), typeof(BindableUISwitch), new PropertyMetadata(null, (s, e) => ((BindableUISwitch)s).OnOnTintColorBrushChanged((Brush)e.NewValue)));
+
+		private void OnOnTintColorBrushChanged(Brush newValue)
+		{
+			if (newValue is SolidColorBrush asColorBrush)
 			{
 				OnTintColor = asColorBrush.Color;
 			}
 		}
+
+		#endregion
+
+		#region Background Alias Property
+
+		/// <summary>
+		/// An alias to the ThumbTintColorBrush property, in order to avoid binary breaking change.
+		/// </summary>
+		public Brush Background
+		{
+			get { return OnTintColorBrush; }
+			set
+			{
+				if (!Brush.Equals(value ?? null, OnTintColorBrush))
+				{
+					OnTintColorBrush = value;
+				}
+			}
+		}
+
+		#endregion
+
+		#region TintColorBrush DependencyProperty
+
+		//The color used to tint the appearance of the switch when it is turned on.
+		public Brush TintColorBrush
+		{
+			get { return (Brush)this.GetValue(TintColorBrushProperty); }
+			set { this.SetValue(TintColorBrushProperty, value); }
+		}
+
+		public static readonly DependencyProperty TintColorBrushProperty =
+			DependencyProperty.Register("TintColorBrush", typeof(Brush), typeof(BindableUISwitch), new PropertyMetadata(null, (s, e) => ((BindableUISwitch)s).OnTintColorBrushChanged((Brush)e.NewValue)));
+
+		private void OnTintColorBrushChanged(Brush newValue)
+		{
+			if (newValue is SolidColorBrush asColorBrush)
+			{
+				TintColor = asColorBrush.Color;
+			}
+		}
+
+		#endregion
 
 		#region IsOn DependencyProperty
 
@@ -100,7 +167,6 @@ namespace Uno.UI.Views.Controls
 			set { SetValue(IsOnProperty, value); }
 		}
 
-		// Using a DependencyProperty as the backing store for IsOn.  This enables animation, styling, binding, etc...
 		public static readonly DependencyProperty IsOnProperty =
 			DependencyProperty.Register("IsOn", typeof(bool), typeof(BindableUISwitch), new PropertyMetadata(default(bool), (s, e) => ((BindableUISwitch)s)?.OnIsOnChanged(e)));
 
@@ -111,7 +177,6 @@ namespace Uno.UI.Views.Controls
 		}
 
 		#endregion
-
 	}
 }
 
