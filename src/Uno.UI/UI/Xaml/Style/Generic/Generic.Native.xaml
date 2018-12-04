@@ -1,4 +1,4 @@
-﻿			<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 					xmlns:win="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 					xmlns:not_android="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 					xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -13,12 +13,12 @@
 					xmlns:native_ios="using:UIKit"
 					xmlns:native_android="using:Android.Widget"
 					xmlns:toolkit="using:Uno.UI.Toolkit"
-					xmlns:maps="using:Windows.UI.Xaml.Controls.Maps" 
-					xmlns:mapsPresenter="using:Windows.UI.Xaml.Controls.Maps" 
+					xmlns:maps="using:Windows.UI.Xaml.Controls.Maps"
+					xmlns:mapsPresenter="using:Windows.UI.Xaml.Controls.Maps"
 					xmlns:not_wasm="http://uno.ui/not_wasm"
 					mc:Ignorable="d xamarin ios android not_wasm">
-	
-    <!-- Default native Button styles -->
+
+	<!-- Default native Button styles -->
 	<android:Style x:Key="NativeDefaultButton"
 				   TargetType="Button">
 		<Setter Property="Template">
@@ -26,67 +26,80 @@
 				<ControlTemplate TargetType="Button">
 					<BindableButtonEx Text="{TemplateBinding Content}"
 									  IsEnabled="{TemplateBinding IsEnabled}"
-									  Foreground="{TemplateBinding Foreground}" 
+									  Foreground="{TemplateBinding Foreground}"
 									  ForegroundColor="White"
 									  DisableWhenNoCommand="false" />
 				</ControlTemplate>
 			</Setter.Value>
 		</Setter>
 	</android:Style>
-    <android:Style x:Key="AndroidButtonStyle" BasedOn="{StaticResource NativeDefaultButton}" TargetType="Button" />
 
-    <ios:Style x:Key="NativeDefaultButton"
-			       TargetType="Button">
-		    <Setter Property="Template">
-			    <Setter.Value>
-				    <ControlTemplate TargetType="Button">
-					    <BindableUIButton Text="{TemplateBinding Content}"
-									      IsEnabled="{TemplateBinding IsEnabled}"
-									      Foreground="{TemplateBinding Foreground}" />
-				    </ControlTemplate>
-			    </Setter.Value>
-		    </Setter>
-    </ios:Style>
-    <ios:Style x:Key="iOSButtonStyle" BasedOn="{StaticResource NativeDefaultButton}" TargetType="Button" />
-    
-    <not_wasm:Style BasedOn="{StaticResource NativeDefaultButton}" TargetType="Button" />
+	<android:Style x:Key="AndroidButtonStyle"
+				   BasedOn="{StaticResource NativeDefaultButton}"
+				   TargetType="Button" />
 
-    <!-- Default native CheckBox styles -->
-    <android:Style x:Key="NativeDefaultCheckBox"
+	<ios:Style x:Key="NativeDefaultButton"
+			   TargetType="Button">
+		<Setter Property="Template">
+			<Setter.Value>
+				<ControlTemplate TargetType="Button">
+					<BindableUIButton Text="{TemplateBinding Content}"
+									  IsEnabled="{TemplateBinding IsEnabled}"
+									  Foreground="{TemplateBinding Foreground}" />
+				</ControlTemplate>
+			</Setter.Value>
+		</Setter>
+	</ios:Style>
+
+	<ios:Style x:Key="iOSButtonStyle"
+			   BasedOn="{StaticResource NativeDefaultButton}"
+			   TargetType="Button" />
+
+	<not_wasm:Style BasedOn="{StaticResource NativeDefaultButton}"
+					TargetType="Button" />
+
+	<!-- Default native CheckBox styles -->
+	<android:Style x:Key="NativeDefaultCheckBox"
 				   TargetType="CheckBox">
-        <Setter Property="Template">
-            <Setter.Value>
-                <ControlTemplate TargetType="CheckBox">
-                    <android:BindableCheckBox Text="{TemplateBinding Content}"
+		<Setter Property="Template">
+			<Setter.Value>
+				<ControlTemplate TargetType="CheckBox">
+					<android:BindableCheckBox Text="{TemplateBinding Content}"
 											  Checked="{TemplateBinding IsChecked}"
 											  Enabled="{TemplateBinding IsEnabled}" />
-                </ControlTemplate>
-            </Setter.Value>
-        </Setter>
-    </android:Style>
-    <android:Style x:Key="AndroidCheckBoxStyle" BasedOn="{StaticResource NativeDefaultCheckBox}" TargetType="Button" />
+				</ControlTemplate>
+			</Setter.Value>
+		</Setter>
+	</android:Style>
 
-    <ios:Style x:Key="NativeDefaultCheckBox" TargetType="CheckBox">
-        <Setter Property="Template">
-            <Setter.Value>
-                <ControlTemplate TargetType="CheckBox">
-                    <StackPanel Orientation="Horizontal">
-                        <ios:BindableUISwitch IsOn="{TemplateBinding IsChecked, Mode=TwoWay}"
-													Enabled="{TemplateBinding IsEnabled}"
-													Background="{TemplateBinding Background}"
-													Foreground="{TemplateBinding Foreground}" 
-													/>
-                        <ContentPresenter Content="{TemplateBinding Content}" 
-                                          ContentTemplate="{TemplateBinding ContentTemplate}" />
-                    </StackPanel>
-                </ControlTemplate>
-            </Setter.Value>
-        </Setter>
-    </ios:Style>
-    <not_wasm:Style BasedOn="{StaticResource NativeDefaultCheckBox}" TargetType="CheckBox" />
+	<android:Style x:Key="AndroidCheckBoxStyle"
+				   BasedOn="{StaticResource NativeDefaultCheckBox}"
+				   TargetType="Button" />
 
-    <!-- Default native RadioButton styles -->
-    <android:Style x:Key="AndroidRadioButtonStyle"
+	<ios:Style x:Key="NativeDefaultCheckBox"
+			   TargetType="CheckBox">
+		<Setter Property="Template">
+			<Setter.Value>
+				<ControlTemplate TargetType="CheckBox">
+					<StackPanel Orientation="Horizontal">
+						<BindableUISwitch IsOn="{TemplateBinding IsOn, Mode=TwoWay}"
+										  Enabled="{TemplateBinding IsEnabled}"
+										  TintColorBrush="{TemplateBinding BorderBrush}"
+										  OnTintColorBrush="{TemplateBinding Background}"
+										  ThumbTintColorBrush="{TemplateBinding Foreground}" />
+						<ContentPresenter Content="{TemplateBinding Content}"
+										  ContentTemplate="{TemplateBinding ContentTemplate}" />
+					</StackPanel>
+				</ControlTemplate>
+			</Setter.Value>
+		</Setter>
+	</ios:Style>
+
+	<not_wasm:Style BasedOn="{StaticResource NativeDefaultCheckBox}"
+					TargetType="CheckBox" />
+
+	<!-- Default native RadioButton styles -->
+	<android:Style x:Key="AndroidRadioButtonStyle"
 				   TargetType="RadioButton">
 		<Setter Property="Template">
 			<Setter.Value>
@@ -99,125 +112,131 @@
 		</Setter>
 	</android:Style>
 
-    <!-- Default native ToggleSwitch styles -->
-    <ios:Style x:Key="NativeDefaultToggleSwitch" TargetType="ToggleSwitch">
-        <Setter Property="Template">
-            <Setter.Value>
-                <ControlTemplate TargetType="ToggleSwitch">
-                    <StackPanel>
-                        <ContentPresenter Content="{TemplateBinding Content}" 
-                                          ContentTemplate="{TemplateBinding ContentTemplate}" 
-                                          ContentTemplateSelector="{TemplateBinding ContentTemplateSelector}"/>
-                        <ios:BindableUISwitch IsOn="{TemplateBinding IsOn, Mode=TwoWay}"
-                                              Enabled="{TemplateBinding IsEnabled}"
-                                              Background="{TemplateBinding Background}"
-                                              Foreground="{TemplateBinding Foreground}" />
-                    </StackPanel>
-                </ControlTemplate>
-            </Setter.Value>
-        </Setter>
-    </ios:Style>
-    
-    <android:Style x:Key="NativeDefaultToggleSwitch" TargetType="ToggleSwitch">
-        <Setter Property="Template">
-            <Setter.Value>
-                <ControlTemplate TargetType="RadioButton">
-                    <StackPanel>
-                        <ContentPresenter Content="{TemplateBinding Content}"
-                                          ContentTemplate="{TemplateBinding ContentTemplate}"
-                                          ContentTemplateSelector="{TemplateBinding ContentTemplateSelector}" />
-                        <BindableSwitch Checked="{TemplateBinding IsOn, Mode=TwoWay}"
-									    Enabled="{TemplateBinding IsEnabled}" />
-                    </StackPanel>
-                </ControlTemplate>
-            </Setter.Value>
-        </Setter>
-    </android:Style>
-    
-    <not_wasm:Style BasedOn="{StaticResource NativeDefaultToggleSwitch}" TargetType="ToggleSwitch" />
+	<!-- Default native ToggleSwitch styles -->
+	<ios:Style x:Key="NativeDefaultToggleSwitch"
+			   TargetType="ToggleSwitch">
+		<Setter Property="Template">
+			<Setter.Value>
+				<ControlTemplate TargetType="ToggleSwitch">
+					<BindableUISwitch IsOn="{TemplateBinding IsOn, Mode=TwoWay}"
+									  Enabled="{TemplateBinding IsEnabled}"
+									  TintColorBrush="{TemplateBinding BorderBrush}"
+									  OnTintColorBrush="{TemplateBinding Background}"
+									  ThumbTintColorBrush="{TemplateBinding Foreground}" />
+				</ControlTemplate>
+			</Setter.Value>
+		</Setter>
+	</ios:Style>
 
-    <!-- Default native Slider styles -->
-    <ios:Style x:Key="NativeDefaultSlider" TargetType="Slider">
-        <Setter Property="Template">
-            <Setter.Value>
-                <ControlTemplate TargetType="Slider">
-                    <!-- Value must be defined last, as UISlider's default MinValue is 0 and MaxValue is 1 -->
-                    <BindableUISlider MinValue="{TemplateBinding Minimum}" 
-                                      MaxValue="{TemplateBinding Maximum}"
-                                      Value="{TemplateBinding Value, Mode=TwoWay}"
-                                      />
-                </ControlTemplate>
-            </Setter.Value>
-        </Setter>
-    </ios:Style>
-    <android:Style x:Key="NativeDefaultSlider" TargetType="Slider">
-        <Setter Property="Template">
-            <Setter.Value>
-                <ControlTemplate TargetType="Slider">
-                    <!-- Value must be defined last, as UISlider's default MinValue is 0 and MaxValue is 1 -->
-                    <BindableSeekBar Maximum="{TemplateBinding Maximum}" 
-                                     Minimum="{TemplateBinding Minimum}"
-                                     Value="{TemplateBinding Value, Mode=TwoWay}"
-                                     />
-                </ControlTemplate>
-            </Setter.Value>
-        </Setter>
-    </android:Style>
-    <not_wasm:Style BasedOn="{StaticResource NativeDefaultSlider}" TargetType="Slider" />
+	<android:Style x:Key="NativeDefaultToggleSwitch"
+				   TargetType="ToggleSwitch">
+		<Setter Property="Template">
+			<Setter.Value>
+				<ControlTemplate TargetType="ToggleSwitch">
+					<BindableSwitchCompat Checked="{TemplateBinding IsOn, Mode=TwoWay}"
+										  Enabled="{TemplateBinding IsEnabled}"
+										  Text="{TemplateBinding Header}"
+										  TextColor="{TemplateBinding Foreground}"
+										  ThumbTint="{TemplateBinding BorderBrush}"
+										  TrackTint="{TemplateBinding Background}" />
+				</ControlTemplate>
+			</Setter.Value>
+		</Setter>
+	</android:Style>
 
-    <converters:UnoNativeDefaultProgressBarReverseBoolConverter x:Key="nativeDefaultProgressBarReverseBool" />
-    
-    <!-- Default native ProgressBar styles -->
-    <ios:Style x:Key="NativeDefaultProgressBar" TargetType="ProgressBar">
-        <Setter Property="Template">
-            <Setter.Value>
-                <ControlTemplate TargetType="ProgressBar">
-                    <Grid>
-                        <Grid.Resources>
-                        </Grid.Resources>
-                        <ProgressRing IsActive="{TemplateBinding IsIndeterminate}"
-                                  Foreground="{TemplateBinding Foreground}"
-                                  Hidden="{TemplateBinding IsIndeterminate, Converter={StaticResource nativeDefaultProgressBarReverseBool}}"/>
-                        <BindableUIProgressView IsActive="{TemplateBinding IsIndeterminate}"
-                                  Progress="{TemplateBinding ActualValue}"
-                                  Foreground="{TemplateBinding Foreground}"/>
-                    </Grid>
-                </ControlTemplate>
-            </Setter.Value>
-        </Setter>
-    </ios:Style>
-    <android:Style x:Key="NativeDefaultProgressBar" TargetType="ProgressBar">
-        <Setter Property="Template">
-            <Setter.Value>
-                <ControlTemplate TargetType="ProgressBar">
-                    <Grid>
-                        <BindableProgressBar
-                                  Indeterminate="{TemplateBinding IsIndeterminate}"
-                                  Progress="{TemplateBinding ActualValue}"
-                                  Max="{TemplateBinding Max}"
-                                  Foreground="{TemplateBinding Foreground}" />
-                    </Grid>
-                </ControlTemplate>
-            </Setter.Value>
-        </Setter>
-    </android:Style>
-    <not_wasm:Style BasedOn="{StaticResource NativeDefaultProgressBar}" TargetType="ProgressBar" />
+	<not_wasm:Style BasedOn="{StaticResource NativeDefaultToggleSwitch}"
+					TargetType="ToggleSwitch" />
 
-    <!-- Default native TextBox styles -->
-    <xamarin:Style x:Key="NativeDefaultTextBox"  TargetType="TextBox">
-        <Setter Property="Template">
-            <Setter.Value>
-                <ControlTemplate TargetType="TextBox">
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="Auto" />
-                        </Grid.ColumnDefinitions>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="*" />
-                        </Grid.RowDefinitions>
-                        <ContentPresenter x:Name="HeaderContentPresenter"
+	<!-- Default native Slider styles -->
+	<ios:Style x:Key="NativeDefaultSlider"
+			   TargetType="Slider">
+		<Setter Property="Template">
+			<Setter.Value>
+				<ControlTemplate TargetType="Slider">
+					<!-- Value must be defined last, as UISlider's default MinValue is 0 and MaxValue is 1 -->
+					<BindableUISlider MinValue="{TemplateBinding Minimum}"
+									  MaxValue="{TemplateBinding Maximum}"
+									  Value="{TemplateBinding Value, Mode=TwoWay}" />
+				</ControlTemplate>
+			</Setter.Value>
+		</Setter>
+	</ios:Style>
+
+	<android:Style x:Key="NativeDefaultSlider"
+				   TargetType="Slider">
+		<Setter Property="Template">
+			<Setter.Value>
+				<ControlTemplate TargetType="Slider">
+					<!-- Value must be defined last, as UISlider's default MinValue is 0 and MaxValue is 1 -->
+					<BindableSeekBar Maximum="{TemplateBinding Maximum}"
+									 Minimum="{TemplateBinding Minimum}"
+									 Value="{TemplateBinding Value, Mode=TwoWay}" />
+				</ControlTemplate>
+			</Setter.Value>
+		</Setter>
+	</android:Style>
+
+	<not_wasm:Style BasedOn="{StaticResource NativeDefaultSlider}"
+					TargetType="Slider" />
+
+	<converters:UnoNativeDefaultProgressBarReverseBoolConverter x:Key="nativeDefaultProgressBarReverseBool" />
+
+	<!-- Default native ProgressBar styles -->
+	<ios:Style x:Key="NativeDefaultProgressBar"
+			   TargetType="ProgressBar">
+		<Setter Property="Template">
+			<Setter.Value>
+				<ControlTemplate TargetType="ProgressBar">
+					<Grid>
+						<Grid.Resources>
+						</Grid.Resources>
+						<ProgressRing IsActive="{TemplateBinding IsIndeterminate}"
+									  Foreground="{TemplateBinding Foreground}"
+									  Hidden="{TemplateBinding IsIndeterminate, Converter={StaticResource nativeDefaultProgressBarReverseBool}}" />
+						<BindableUIProgressView IsActive="{TemplateBinding IsIndeterminate}"
+												Progress="{TemplateBinding ActualValue}"
+												Foreground="{TemplateBinding Foreground}" />
+					</Grid>
+				</ControlTemplate>
+			</Setter.Value>
+		</Setter>
+	</ios:Style>
+
+	<android:Style x:Key="NativeDefaultProgressBar"
+				   TargetType="ProgressBar">
+		<Setter Property="Template">
+			<Setter.Value>
+				<ControlTemplate TargetType="ProgressBar">
+					<Grid>
+						<BindableProgressBar Indeterminate="{TemplateBinding IsIndeterminate}"
+											 Progress="{TemplateBinding ActualValue}"
+											 Max="{TemplateBinding Max}"
+											 Foreground="{TemplateBinding Foreground}" />
+					</Grid>
+				</ControlTemplate>
+			</Setter.Value>
+		</Setter>
+	</android:Style>
+
+	<not_wasm:Style BasedOn="{StaticResource NativeDefaultProgressBar}"
+					TargetType="ProgressBar" />
+
+	<!-- Default native TextBox styles -->
+	<xamarin:Style x:Key="NativeDefaultTextBox"
+				   TargetType="TextBox">
+		<Setter Property="Template">
+			<Setter.Value>
+				<ControlTemplate TargetType="TextBox">
+					<Grid>
+						<Grid.ColumnDefinitions>
+							<ColumnDefinition Width="*" />
+							<ColumnDefinition Width="Auto" />
+						</Grid.ColumnDefinitions>
+						<Grid.RowDefinitions>
+							<RowDefinition Height="Auto" />
+							<RowDefinition Height="*" />
+						</Grid.RowDefinitions>
+						<ContentPresenter x:Name="HeaderContentPresenter"
 										  x:DeferLoadStrategy="Lazy"
 										  Visibility="Collapsed"
 										  Grid.Row="0"
@@ -227,55 +246,61 @@
 										  Content="{TemplateBinding Header}"
 										  ContentTemplate="{TemplateBinding HeaderTemplate}"
 										  FontWeight="Normal" />
-                        <ContentControl x:Name="ContentElement"
-									  Grid.Row="1" />
-                    </Grid>
-                </ControlTemplate>
-            </Setter.Value>
-        </Setter>
-    </xamarin:Style>
-    <not_wasm:Style BasedOn="{StaticResource NativeDefaultTextBox}" TargetType="TextBox" />
-    
-    <!-- Default native Pivot styles -->
-    <xamarin:Style x:Key="NativeDefaultPivot" TargetType="Pivot">
-        <Setter Property="Template">
-            <Setter.Value>
-                <ControlTemplate TargetType="Pivot">
+						<ContentControl x:Name="ContentElement"
+										Grid.Row="1" />
+					</Grid>
+				</ControlTemplate>
+			</Setter.Value>
+		</Setter>
+	</xamarin:Style>
+
+	<not_wasm:Style BasedOn="{StaticResource NativeDefaultTextBox}"
+					TargetType="TextBox" />
+
+	<!-- Default native Pivot styles -->
+	<xamarin:Style x:Key="NativeDefaultPivot"
+				   TargetType="Pivot">
+		<Setter Property="Template">
+			<Setter.Value>
+				<ControlTemplate TargetType="Pivot">
 					<NativePivotPresenter x:Name="NativePresenter" />
 				</ControlTemplate>
-            </Setter.Value>
-        </Setter>
-    </xamarin:Style>
+			</Setter.Value>
+		</Setter>
+	</xamarin:Style>
 
-    <!-- Default native Pivot styles -->
-    <ios:Style TargetType="NativePivotPresenter">
-        <Setter Property="Template">
-            <Setter.Value>
-                <ControlTemplate TargetType="Pivot">
-                    <Grid>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="1*" />
-                            <RowDefinition Height="Auto" />
-                        </Grid.RowDefinitions>
-                        <Grid x:Name="PART_Content" Grid.Row="0" />
-                        <UITabBar Grid.Row="1" />
-                    </Grid>
-                </ControlTemplate>
-            </Setter.Value>
-        </Setter>
-    </ios:Style>
+	<!-- Default native Pivot styles -->
+	<ios:Style TargetType="NativePivotPresenter">
+		<Setter Property="Template">
+			<Setter.Value>
+				<ControlTemplate TargetType="Pivot">
+					<Grid>
+						<Grid.RowDefinitions>
+							<RowDefinition Height="1*" />
+							<RowDefinition Height="Auto" />
+						</Grid.RowDefinitions>
+						<Grid x:Name="PART_Content"
+							  Grid.Row="0" />
+						<UITabBar Grid.Row="1" />
+					</Grid>
+				</ControlTemplate>
+			</Setter.Value>
+		</Setter>
+	</ios:Style>
 
 	<android:Style TargetType="NativePivotPresenter">
-        <Setter Property="Template">
-            <Setter.Value>
-                <ControlTemplate TargetType="Pivot">
-                    <ExtendedViewPager OffscreenPageLimit="1" SwipeEnabled="true" />
-                </ControlTemplate>
-            </Setter.Value>
-        </Setter>
-    </android:Style>
+		<Setter Property="Template">
+			<Setter.Value>
+				<ControlTemplate TargetType="Pivot">
+					<ExtendedViewPager OffscreenPageLimit="1"
+									   SwipeEnabled="true" />
+				</ControlTemplate>
+			</Setter.Value>
+		</Setter>
+	</android:Style>
 
-	<not_wasm:Style BasedOn="{StaticResource NativeDefaultPivot}" TargetType="Pivot" />
+	<not_wasm:Style BasedOn="{StaticResource NativeDefaultPivot}"
+					TargetType="Pivot" />
 
 	<ios:Style x:Key="NativeDefaultCommandBar"
 			   TargetType="CommandBar">
@@ -290,9 +315,9 @@
 		<Setter Property="Template">
 			<Setter.Value>
 				<ControlTemplate TargetType="CommandBar">
-					<!-- We use BorderBrush instead of Background to ensure that semi-transparent background of Grid and NativeCommandBarPresenter don't add up --> 
+					<!-- We use BorderBrush instead of Background to ensure that semi-transparent background of Grid and NativeCommandBarPresenter don't add up -->
 					<Border BorderBrush="{TemplateBinding Background}"
-						    BorderThickness="{TemplateBinding Padding}">						
+							BorderThickness="{TemplateBinding Padding}">
 						<!-- TODO: 1px line -->
 						<NativeCommandBarPresenter />
 					</Border>
@@ -319,12 +344,12 @@
 			</Setter.Value>
 		</Setter>
 	</android:Style>
-	
+
 	<not_wasm:Style TargetType="CommandBar"
-				   BasedOn="{StaticResource NativeDefaultCommandBar}" />
+					BasedOn="{StaticResource NativeDefaultCommandBar}" />
 
 	<ios:Style x:Key="NativeDefaultAppBarButton"
-				   TargetType="AppBarButton">
+			   TargetType="AppBarButton">
 		<Setter Property="Background"
 				Value="Transparent" />
 		<ios:Setter Property="Foreground"
@@ -340,32 +365,35 @@
 	</android:Style>
 
 	<not_wasm:Style TargetType="AppBarButton"
-				   BasedOn="{StaticResource NativeDefaultAppBarButton}" />
-	
+					BasedOn="{StaticResource NativeDefaultAppBarButton}" />
+
 	<!-- Default native Frame styles -->
-    <ios:Style x:Key="NativeDefaultFrame" TargetType="Frame">
-        <Setter Property="Template">
-            <Setter.Value>
-                <ControlTemplate TargetType="Frame">
-                    <NativeFramePresenter Background="{TemplateBinding Background}" />
-                </ControlTemplate>
-            </Setter.Value>
-        </Setter>
-    </ios:Style>
-		
-					
+	<ios:Style x:Key="NativeDefaultFrame"
+			   TargetType="Frame">
+		<Setter Property="Template">
+			<Setter.Value>
+				<ControlTemplate TargetType="Frame">
+					<NativeFramePresenter Background="{TemplateBinding Background}" />
+				</ControlTemplate>
+			</Setter.Value>
+		</Setter>
+	</ios:Style>
+
+
 	<!-- Default native Frame styles -->
-    <android:Style x:Key="NativeDefaultFrame" TargetType="Frame">
-        <Setter Property="Template">
-            <Setter.Value>
-                <ControlTemplate TargetType="Frame">
-                    <NativeFramePresenter Background="{TemplateBinding Background}"  />
-                </ControlTemplate>
-            </Setter.Value>
-        </Setter>
-    </android:Style>
-				
-    <not_wasm:Style BasedOn="{StaticResource NativeDefaultFrame}" TargetType="Frame" />
+	<android:Style x:Key="NativeDefaultFrame"
+				   TargetType="Frame">
+		<Setter Property="Template">
+			<Setter.Value>
+				<ControlTemplate TargetType="Frame">
+					<NativeFramePresenter Background="{TemplateBinding Background}" />
+				</ControlTemplate>
+			</Setter.Value>
+		</Setter>
+	</android:Style>
+
+	<not_wasm:Style BasedOn="{StaticResource NativeDefaultFrame}"
+					TargetType="Frame" />
 
 	<!--
 		Official recommendation: 
@@ -380,7 +408,7 @@
 		TODO: Calculate programmatically.
 	-->
 	<android:Double x:Key="NativeDefaultSplitViewOpenPaneLength">304</android:Double>
-				
+
 	<android:Style x:Key="LeftDrawerSplitViewStyle"
 				   TargetType="SplitView">
 		<Setter Property="OpenPaneLength"
@@ -420,5 +448,5 @@
 			</Setter.Value>
 		</Setter>
 	</android:Style>
-				
+
 </ResourceDictionary>

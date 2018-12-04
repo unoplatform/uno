@@ -7,8 +7,18 @@
 * Add support for Windows 10 SDK 17763 (1809)
 * Improve the Uno.UI solution memory consumption for Android targets
 * 35178 Added recipe for copying text to clipboard
+* Added ToogleSwitch documentation in Uno/Doc/Controls.
+* Added new properties for ToggleSwitch Default Native Styles.
+  [iOS] For BindableUISwitch : TintColorBrush property was added to be able to tint the outline of the switch when it is turned off.
+  [Android] For BindableSwitchCompat : - Text property was added in order to change the ToggleSwitch label.
+                                       - TextColor property was added in order to change the ToggleSwitch label color.
+                                       - ThumbTint property was added in order to change the Thumb color.
+                                       - TrackTint property was added in order to change the Track color.
 
 ### Breaking changes
+* Refactored ToggleSwitch Default Native XAML Styles. (cf. 'NativeDefaultToggleSwitch' styles in Generic.Native.xaml)
+  [iOS] For BindableUISwitch : Background property was changed for OnTintColorBrush and Foreground property for ThumbTintColorBrush.
+  [Android] BindableSwitch was renamed BindableSwitchCompat in order to avoid confusion with the Switch control.
 
 ### Bug fixes
  * MediaPlayerElement [iOS] Subtitles are not disable on initial launch anymore
