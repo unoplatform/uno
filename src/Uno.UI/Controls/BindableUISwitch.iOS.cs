@@ -57,7 +57,9 @@ namespace Uno.UI.Views.Controls
 
 		#region ThumbTintColorBrush DependencyProperty
 
-		//The color used to tint the appearance of the thumb.
+		/// <summary>
+		/// The color used to tint the appearance of the thumb.
+		/// </summary>
 		public Brush ThumbTintColorBrush
 		{
 			get { return (Brush)this.GetValue(ThumbTintColorBrushProperty); }
@@ -98,7 +100,9 @@ namespace Uno.UI.Views.Controls
 
 		#region OnTintColorBrush DependencyProperty
 
-		//The color used to tint the appearance of the switch when it is turned on.
+		/// <summary>
+		/// The color used to tint the appearance of the switch when it is turned on.
+		/// </summary>
 		public Brush OnTintColorBrush
 		{
 			get { return (Brush)this.GetValue(OnTintColorBrushProperty); }
@@ -139,7 +143,9 @@ namespace Uno.UI.Views.Controls
 
 		#region TintColorBrush DependencyProperty
 
-		//The color used to tint the appearance of the switch when it is turned on.
+		/// <summary>
+		/// The color used to tint the outline of the switch when it is turned off.
+		/// </summary>
 		public Brush TintColorBrush
 		{
 			get { return (Brush)this.GetValue(TintColorBrushProperty); }
