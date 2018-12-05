@@ -593,11 +593,9 @@ namespace Windows.UI.Xaml.Controls
 			int remainder = GetDisplayGroupCount(section) % itemsPerLine;
 			return remainder == 0 ? itemsPerLine : remainder;
 		}
-
+		
 		protected virtual void OnItemsSourceChanged(DependencyPropertyChangedEventArgs e)
 		{
-			Items?.Clear();
-
 			IsGrouping = (e.NewValue as ICollectionView)?.CollectionGroups != null;
 			SetNeedsUpdateItems();
 			ObserveCollectionChanged();
@@ -865,7 +863,7 @@ namespace Windows.UI.Xaml.Controls
 						PrepareContainerForIndex(container, index);
 						return container;
 					});
-
+				
 				var results = ItemsPanelRoot.Children.UpdateWithResults(containers.OfType<View>(), comparer: new ViewComparer());
 
 				foreach (var removed in results.Removed)
@@ -1041,9 +1039,16 @@ namespace Windows.UI.Xaml.Controls
 		{
 			var item = ItemFromIndex(index);
 
-			var container = IsItemItsOwnContainerOverride(item)
-				? item as DependencyObject
-				: GetContainerForItemOverride();
+			var container = default(DependencyObject);
+
+			if (IsItemItsOwnContainerOverride(item))
+			{
+				container = item as DependencyObject;
+			}
+			else
+			{
+				container = ItemsPanelRoot?.Children?.OfType<ContentPresenter>()?.FirstOrDefault(c => c.Content?.Equals(item) ?? false) ?? GetContainerForItemOverride();
+			}
 
 			container.SetValue(ItemsControlForItemContainerProperty, new WeakReference<ItemsControl>(this));
 
