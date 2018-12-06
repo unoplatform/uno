@@ -121,6 +121,6 @@
     <value>SamplesApp</value>
   </data>
   <data name="Given_ResourceLoader.When_SimpleString" xml:space="preserve">
-    <value>My Simple String (en)</value>
+    <value>My Simple String (en-US)</value>
   </data>
 </root>
