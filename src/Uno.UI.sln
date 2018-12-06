@@ -89,6 +89,9 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SamplesApp.Droid", "SamplesApp\SamplesApp.Droid\SamplesApp.Droid.csproj", "{3FDF0F2D-CC11-49BE-8634-F81638D595C6}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SamplesApp.iOS", "SamplesApp\SamplesApp.iOS\SamplesApp.iOS.csproj", "{B71AE380-558C-4D6C-81D8-9C043B50262C}"
+	ProjectSection(ProjectDependencies) = postProject
+		{946D318B-305A-4264-81A4-31698DCC22F7} = {946D318B-305A-4264-81A4-31698DCC22F7}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SamplesApp.UWP", "SamplesApp\SamplesApp.UWP\SamplesApp.UWP.csproj", "{6C25BEB3-E332-48D3-B4DE-20A0B71935CD}"
 EndProject
