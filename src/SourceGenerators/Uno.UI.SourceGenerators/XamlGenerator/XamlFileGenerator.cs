@@ -353,9 +353,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		{
 			writer.AppendLineInvariant($"global::Windows.UI.Xaml.GenericStyles.Initialize();");
 			writer.AppendLineInvariant($"global::Windows.UI.Xaml.ResourceDictionary.DefaultResolver = global::{_defaultNamespace}.GlobalStaticResources.FindResource;");
-			writer.AppendLineInvariant($"global::Windows.ApplicationModel.Resources.ResourceLoader.AddLookupAssembly(GetType().Assembly);");
-			writer.AppendLineInvariant($"global::Windows.ApplicationModel.Resources.ResourceLoader.AddLookupAssembly(typeof(Windows.UI.Xaml.GenericStyles).Assembly);");
-			writer.AppendLineInvariant($"global::Windows.ApplicationModel.Resources.ResourceLoader.DefaultLanguage = \"{_defaultLanguage}\";");
+			GenerateResourceLoader(writer);
 			writer.AppendLineInvariant($"global::{_defaultNamespace}.GlobalStaticResources.Initialize();");
 			writer.AppendLineInvariant($"global::Uno.UI.DataBinding.BindableMetadata.Provider = new global::{_defaultNamespace}.BindableMetadataProvider();");
 
@@ -365,6 +363,23 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 			BuildProperties(writer, topLevelControl, isInline: false, returnsContent: false);
 			writer.AppendLineInvariant(";");
+		}
+
+		private void GenerateResourceLoader(IndentedStringBuilder writer)
+		{
+			writer.AppendLineInvariant($"global::Windows.ApplicationModel.Resources.ResourceLoader.AddLookupAssembly(GetType().Assembly);");
+
+			foreach(var asmPath in _medataHelper.Compilation.ExternalReferences.Select(r => r.Display))
+			{
+				var asm = Mono.Cecil.AssemblyDefinition.ReadAssembly(asmPath);
+
+				if(asm.MainModule.HasResources && asm.MainModule.Resources.Any(r => r.Name.EndsWith("upri")))
+				{
+					writer.AppendLineInvariant($"global::Windows.ApplicationModel.Resources.ResourceLoader.AddLookupAssembly(global::System.Reflection.Assembly.Load(\"{asm.FullName}\"));");
+				}
+			}
+
+			writer.AppendLineInvariant($"global::Windows.ApplicationModel.Resources.ResourceLoader.DefaultLanguage = \"{_defaultLanguage}\";");
 		}
 
 		private void BuildGenericControlInitializerBody(IndentedStringBuilder writer, XamlObjectDefinition topLevelControl, bool isDirectUserControlChild)

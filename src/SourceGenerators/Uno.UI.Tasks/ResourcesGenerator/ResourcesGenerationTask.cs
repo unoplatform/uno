@@ -53,44 +53,7 @@ namespace Uno.UI.Tasks.ResourcesGenerator
 					// TODO: Add support for other resources file names
 					.Where(resource => resource.ItemSpec?.EndsWith("Resources.resw") ?? false)
 					// TODO: Merge duplicates (based on file name and qualifiers)
-					.Select(resource =>
-					{
-						this.Log().Info("Resources file found : {0}".InvariantCultureFormat(resource.ItemSpec));
-
-						var resourceCandidate = ResourceCandidate.Parse(resource.ItemSpec, resource.ItemSpec);
-
-						var language = resourceCandidate.GetQualifierValue("language");
-						if (language == null)
-						{
-							// TODO: Add support for resources without a language qualifier
-							this.Log().Info("No language found, resources ignored");
-							return null;
-						}
-
-						this.Log().Info("Language found : {0}".InvariantCultureFormat(language));
-
-						var resourceFile = resource.ItemSpec;
-						var sourceLastWriteTime = new FileInfo(resourceFile).LastWriteTimeUtc;
-						var resources = WindowsResourcesReader.Read(resourceFile);
-						var comment = CommentPattern.InvariantCultureFormat(this.GetType().Name, resourceFile);
-
-						this.Log().Info("{0} resources found".InvariantCultureFormat(resources.Count));
-
-						if (TargetPlatform == "android")
-						{
-							return GenerateAndroidResources(language, sourceLastWriteTime, resources, comment);
-						}
-						else if (TargetPlatform == "ios")
-						{
-							return GenerateiOSResources(language, sourceLastWriteTime, resources, comment);
-						}
-						else if (TargetPlatform == "wasm" || string.IsNullOrWhiteSpace(TargetPlatform))
-						{
-							return GenerateUnoPRIResources(language, sourceLastWriteTime, resources, comment);
-						}
-
-						return null;
-					})
+					.SelectMany(GetResourcesForItem)
 					.Trim()
 					.ToArray();
 
@@ -102,6 +65,41 @@ namespace Uno.UI.Tasks.ResourcesGenerator
 			}
 
 			return false;
+		}
+
+		private IEnumerable<ITaskItem> GetResourcesForItem(ITaskItem resource)
+		{
+			this.Log().Info("Resources file found : {0}".InvariantCultureFormat(resource.ItemSpec));
+
+			var resourceCandidate = ResourceCandidate.Parse(resource.ItemSpec, resource.ItemSpec);
+
+			var language = resourceCandidate.GetQualifierValue("language");
+			if (language == null)
+			{
+				// TODO: Add support for resources without a language qualifier
+				this.Log().Info("No language found, resources ignored");
+				yield break;
+			}
+
+			this.Log().Info("Language found : {0}".InvariantCultureFormat(language));
+
+			var resourceFile = resource.ItemSpec;
+			var sourceLastWriteTime = new FileInfo(resourceFile).LastWriteTimeUtc;
+			var resources = WindowsResourcesReader.Read(resourceFile);
+			var comment = CommentPattern.InvariantCultureFormat(this.GetType().Name, resourceFile);
+
+			this.Log().Info("{0} resources found".InvariantCultureFormat(resources.Count));
+
+			if (TargetPlatform == "android")
+			{
+				yield return GenerateAndroidResources(language, sourceLastWriteTime, resources, comment);
+			}
+			else if (TargetPlatform == "ios")
+			{
+				yield return GenerateiOSResources(language, sourceLastWriteTime, resources, comment);
+			}
+
+			yield return GenerateUnoPRIResources(language, sourceLastWriteTime, resources, comment);
 		}
 
 		private ITaskItem GenerateUnoPRIResources(string language, DateTime sourceLastWriteTime, Dictionary<string, string> resources, string comment)
@@ -129,6 +127,7 @@ namespace Uno.UI.Tasks.ResourcesGenerator
 				actualTargetPath,
 				new Dictionary<string, string>()
 				{
+					{ "UnoResourceTarget", "Uno" },
 					{ "LogicalName", logicalTargetPath.Replace(Path.DirectorySeparatorChar, '.') }
 				}
 			);
@@ -157,6 +156,7 @@ namespace Uno.UI.Tasks.ResourcesGenerator
 				actualTargetPath,
 				new Dictionary<string, string>()
 				{
+					{ "UnoResourceTarget", "iOS" },
 					{ "LogicalName", logicalTargetPath }
 				}
 			);
@@ -188,6 +188,7 @@ namespace Uno.UI.Tasks.ResourcesGenerator
 				actualTargetPath,
 				new Dictionary<string, string>()
 				{
+					{ "UnoResourceTarget", "Android" },
 					{ "LogicalName", logicalTargetPath }
 				}
 			);

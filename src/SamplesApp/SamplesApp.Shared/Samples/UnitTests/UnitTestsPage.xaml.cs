@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
@@ -25,6 +26,9 @@ namespace SamplesApp.Samples.UnitTests
         public UnitTestsPage()
         {
             this.InitializeComponent();
+
+			// Manually load the runtime tests assembly
+			Assembly.Load("Uno.UI.RuntimeTests");
         }
     }
 }

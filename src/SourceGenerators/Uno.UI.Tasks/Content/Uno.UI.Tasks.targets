@@ -33,9 +33,9 @@
 					  ItemName="GeneratedFiles" />
 	</ResourcesGenerationTask_v0>
 	<ItemGroup>
-	  <BundleResource Condition="'$(XamarinProjectType)'=='ios'" Include="@(GeneratedFiles)" />
-	  <AndroidResource Condition="'$(XamarinProjectType)'=='android'" Include="@(GeneratedFiles)" />
-	  <EmbeddedResource Condition="'$(XamarinProjectType)'=='wasm' or '$(XamarinProjectType)'==''" Include="@(GeneratedFiles)" />
+	  <BundleResource Condition="'%(GeneratedFiles.UnoResourceTarget)' =='iOS'" Include="@(GeneratedFiles)" />
+	  <AndroidResource Condition="'%(GeneratedFiles.UnoResourceTarget)' =='Android'" Include="@(GeneratedFiles)" />
+	  <EmbeddedResource Condition="'%(GeneratedFiles.UnoResourceTarget)' =='Uno'" Include="@(GeneratedFiles)" />
 	</ItemGroup>
 	<!-- Assets -->
 	<PropertyGroup>
