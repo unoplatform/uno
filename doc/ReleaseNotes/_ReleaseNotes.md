@@ -22,6 +22,7 @@
                                        - TrackTint property was added in order to change the Track color.
 * Samples apps now contain a Unit Tests page
 * Added missing resources for NavigationViewItem
+* All Nuget and VSIX artifacts are now Authenticode signed
 
 ### Breaking changes
 * Refactored ToggleSwitch Default Native XAML Styles. (cf. 'NativeDefaultToggleSwitch' styles in Generic.Native.xaml)
