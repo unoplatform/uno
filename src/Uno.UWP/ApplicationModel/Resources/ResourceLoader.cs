@@ -7,6 +7,7 @@ using System.Reflection;
 using System.Runtime.InteropServices;
 using Microsoft.Extensions.Logging;
 using Uno.Extensions;
+using Uno.Logging;
 using Uno.UI;
 using Windows.Foundation;
 using Windows.Foundation.Metadata;
@@ -15,17 +16,19 @@ namespace Windows.ApplicationModel.Resources
 {
 	public sealed partial class ResourceLoader
 	{
+		private static Lazy<ILogger> _log = new Lazy<ILogger>(() => typeof(ResourceLoader).Log());
+
 		private static Dictionary<string, Dictionary<string, string>> _resources = new Dictionary<string, Dictionary<string, string>>();
 
 		private static readonly ResourceLoader _loader = new ResourceLoader();
 
 		public ResourceLoader(string name) { }
 
-		public ResourceLoader() {
-
-			if (this.Log().IsEnabled(LogLevel.Debug))
+		public ResourceLoader()
+		{
+			if (_log.Value.IsEnabled(LogLevel.Debug))
 			{
-				this.Log().LogDebug($"Initializing ResourceLoader (CurrentUICulture: {CultureInfo.CurrentUICulture})");
+				_log.Value.LogDebug($"Initializing ResourceLoader (CurrentUICulture: {CultureInfo.CurrentUICulture})");
 			}
 		}
 
@@ -80,8 +83,10 @@ namespace Windows.ApplicationModel.Resources
 
 		private bool FindForCulture(string culture, string resource, out string resourceValue)
 		{
-			Console.WriteLine($"FindForCulture {culture}, {resource}");
-
+			if (_log.Value.IsEnabled(LogLevel.Debug))
+			{
+				_log.Value.Debug($"FindForCulture {culture}, {resource}");
+			}
 
 			if (_resources.TryGetValue(culture, out var values))
 			{
@@ -165,7 +170,11 @@ namespace Windows.ApplicationModel.Resources
 					var key = reader.ReadString();
 					var value = reader.ReadString();
 
-					Console.WriteLine($"[{name}, {culture}] Adding resource {key}={value}");
+					if (_log.Value.IsEnabled(LogLevel.Debug))
+					{
+						_log.Value.Debug($"[{name}, {culture}] Adding resource {key}={value}");
+					}
+
 					resources[key] = value;
 				}
 			}
