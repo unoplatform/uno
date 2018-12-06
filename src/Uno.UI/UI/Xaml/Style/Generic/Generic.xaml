@@ -9241,7 +9241,13 @@
     <RevealBackgroundBrush x:Key="SystemControlHighlightListLowRevealBackgroundBrush" TargetTheme="Dark" Color="{StaticResource SystemRevealListLowColor}" FallbackColor="{StaticResource SystemListLowColor}" />
     <RevealBackgroundBrush x:Key="SystemControlHighlightListMediumRevealBackgroundBrush" TargetTheme="Dark" Color="{StaticResource SystemRevealListMediumColor}" FallbackColor="{StaticResource SystemListMediumColor}" />
 	-->
-	
+
+	<win:RevealBorderBrush x:Key="SystemControlBackgroundTransparentRevealBorderBrush" TargetTheme="Dark" Color="Transparent" FallbackColor="Transparent" />
+	<xamarin:SolidColorBrush x:Key="SystemControlBackgroundTransparentRevealBorderBrush" Color="Transparent" />
+
+	<win:RevealBorderBrush x:Key="SystemControlHighlightAltTransparentRevealBorderBrush" TargetTheme="Dark" Color="Transparent" FallbackColor="Transparent" />
+	<xamarin:SolidColorBrush x:Key="SystemControlHighlightAltTransparentRevealBorderBrush" Color="Transparent" />
+
 	<SolidColorBrush x:Key="SystemControlTransparentRevealBackgroundBrush" Color="Transparent" />
     <SolidColorBrush x:Key="SystemControlHighlightListLowRevealBackgroundBrush" Color="{StaticResource SystemListLowColor}" />
     <SolidColorBrush x:Key="SystemControlHighlightListMediumRevealBackgroundBrush" Color="{StaticResource SystemListMediumColor}" />
@@ -9283,11 +9289,9 @@
     <StaticResource x:Key="NavigationViewItemBorderBrushSelected" ResourceKey="SystemControlBackgroundTransparentRevealBorderBrush" />
     <StaticResource x:Key="NavigationViewItemBorderBrushSelectedPointerOver" ResourceKey="SystemControlHighlightAltTransparentRevealBorderBrush" />
     <StaticResource x:Key="NavigationViewItemBorderBrushSelectedPressed" ResourceKey="SystemControlHighlightAltTransparentRevealBorderBrush" />
-	<StaticResource x:Key="NavigationViewItemBorderBrushSelectedDisabled"
-					ResourceKey="SystemControlTransparentBrush" />
+	<StaticResource x:Key="NavigationViewItemBorderBrushSelectedDisabled" ResourceKey="SystemControlTransparentBrush" />
 
-	<StaticResource x:Key="NavigationViewSelectionIndicatorForeground"
-					ResourceKey="SystemControlForegroundAccentBrush" />
+	<StaticResource x:Key="NavigationViewSelectionIndicatorForeground" ResourceKey="SystemControlForegroundAccentBrush" />
 
 	<Style x:Key="NavigationViewTitleHeaderContentControlTextStyle" TargetType="ContentControl">
         <Setter Property="FontWeight" Value="SemiLight" />
@@ -9629,10 +9633,9 @@
                             <VisualStateGroup x:Name="TitleBarVisibilityGroup">
                                 <VisualState x:Name="TitleBarVisible" />
                                 <VisualState x:Name="TitleBarCollapsed">
-                                    <VisualState.Setters>
-                                        
+									<VisualState.Setters>
 										<!--
-										This property does not exist in the original style
+										PaneButtonGrid does not exist in the original template style
 										<Setter Target="PaneButtonGrid.Margin" Value="0,32,0,0" />
 										-->
                                         <Setter Target="PaneContentGrid.Margin" Value="0,32,0,0" />
