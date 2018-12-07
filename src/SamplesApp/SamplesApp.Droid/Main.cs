@@ -25,6 +25,9 @@ namespace SamplesApp.Droid
 		public Application(IntPtr javaReference, JniHandleOwnership transfer)
 			: base(new App(), javaReference, transfer)
 		{
+			Android.App.Application.Context.Resources.GetIdentifier("String1", "string", Android.App.Application.Context.PackageName);
+
+
 			ConfigureUniversalImageLoader();
 		}
 

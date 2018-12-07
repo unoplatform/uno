@@ -1,0 +1,12 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<linker>
+  <assembly fullname="System">
+    <type fullname="System.Diagnostics.Debug">
+      <method name="WriteLine" />
+    </type>
+    <type fullname="System.Console">
+      <method name="WriteLine" />
+    </type>
+  </assembly>
+  <assembly fullname="Uno.UI.RuntimeTests" />
+</linker>

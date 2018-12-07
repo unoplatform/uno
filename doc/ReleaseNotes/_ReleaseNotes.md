@@ -23,6 +23,7 @@
 * Samples apps now contain a Unit Tests page
 * Added missing resources for NavigationViewItem
 * All Nuget and VSIX artifacts are now Authenticode signed
+* Resource strings are now loaded from `upri` files for faster resolution
 
 ### Breaking changes
 * Refactored ToggleSwitch Default Native XAML Styles. (cf. 'NativeDefaultToggleSwitch' styles in Generic.Native.xaml)

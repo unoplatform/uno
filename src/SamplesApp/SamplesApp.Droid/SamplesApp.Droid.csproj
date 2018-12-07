@@ -65,7 +65,7 @@
   <ItemGroup>
     <PackageReference Include="MSTest.TestFramework" Version="1.2.0" />
     <PackageReference Include="Uno.SourceGenerationTasks">
-      <Version>1.29.0-dev.182</Version>
+      <Version>1.29.0-dev.200</Version>
       <NoWarn>NU1701</NoWarn>
     </PackageReference>
     <PackageReference Include="Uno.Wasm.Bootstrap" Version="1.0.0-dev.112" />
@@ -78,11 +78,8 @@
     <ProjectReference Include="..\..\Uno.UWP\Uno.csproj" />
     <ProjectReference Include="..\..\Uno.UI.BindingHelper.Android\Uno.UI.BindingHelper.Android.csproj" />
   </ItemGroup>
-  <PropertyGroup>
-    <UnoUIGeneratorsBinPath>..\..\SourceGenerators\Uno.UI.SourceGenerators\bin\$(Configuration)</UnoUIGeneratorsBinPath>
-  </PropertyGroup>
-  <Import Project="..\..\SourceGenerators\Uno.UI.SourceGenerators\Content\Uno.UI.SourceGenerators.props" />
-  <ItemGroup>
+	<Import Project="..\..\SourceGenerators\sourcegenerators.local.props" />
+	<ItemGroup>
     <Compile Include="MainActivity.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Main.cs" />

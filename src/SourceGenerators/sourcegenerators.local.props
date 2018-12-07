@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project>
+  <!--
+  This file is meant to be used inside of Uno to reference the generators and tasks
+  -->
+  
+  <PropertyGroup>
+    <UnoUIGeneratorsBinPath>$(MSBuildThisFileDirectory)Uno.UI.SourceGenerators\bin\$(Configuration)</UnoUIGeneratorsBinPath>
+  </PropertyGroup>
+  <Import Project="$(MSBuildThisFileDirectory)\Uno.UI.SourceGenerators\Content\Uno.UI.SourceGenerators.props" />
+
+  <PropertyGroup>
+    <UnoUIMSBuildTasksPath>$(MSBuildThisFileDirectory)Uno.UI.Tasks\bin\$(Configuration)_Shadow</UnoUIMSBuildTasksPath>
+  </PropertyGroup>
+  <Import Project="$(MSBuildThisFileDirectory)\Uno.UI.Tasks\Content\Uno.UI.Tasks.targets" />
+
+</Project>
