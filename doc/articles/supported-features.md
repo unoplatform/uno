@@ -5,8 +5,7 @@
     - **Windows-first development**
     - **Faster compilation** for most of the developement cycle, including UI code. iOS and Android can only be used for platform specific features.
     - Ability to develop responsive layout in Windowed mode using Windows 10.
-    - Allows for **
-    edit and continue** support from VS2017
+    - Allows for **edit and continue** support from VS2017
     - Allows for **UI and Non-UI code edit and continue** support
 - Conditional platform features access
     - All XAML controls have **access to native properties** through conditional XAML
