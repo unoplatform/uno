@@ -546,19 +546,12 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		/// <summary>
-		/// Set appropriate visual state from MultiSelectStates group. (https://msdn.microsoft.com/en-us/library/windows/apps/mt299136.aspx?f=255&MSPPError=-2147217396)
+		/// Apply the multi-selection state to the provided item
 		/// </summary>
 		/// <param name="selectorItem"></param>
 		internal void ApplyMultiSelectState(SelectorItem selectorItem)
 		{
-			if (IsSelectionMultiple)
-			{
-				VisualStateManager.GoToState(selectorItem, "MultiSelectEnabled", useTransitions: true);
-			}
-			else
-			{
-				VisualStateManager.GoToState(selectorItem, "MultiSelectDisabled", useTransitions: true);
-			}
+			selectorItem.IsMultiselectEnabled = IsSelectionMultiple;
 		}
 
 		/// <summary>
