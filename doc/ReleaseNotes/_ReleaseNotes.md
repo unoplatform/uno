@@ -64,6 +64,7 @@
  * Fix invalid Border Content type for macOS
  * Don't fail iOS ListView if item Content is null 
  * [Wasm] Implement naive refresh for items manipulation in the ListViewBase
+ * 3326 [iOS][ItemsControl] ItemsControl in FlipView does not restore items properly
 
 ## Release 1.42
 
