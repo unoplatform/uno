@@ -32,18 +32,16 @@ namespace Windows.UI.Xaml.Controls
 
 		partial void OnSelectedIndexChangedPartial(int oldValue, int newValue, bool animateChange)
 		{
-			var pager = PagedView;
-			if (pager == null)
+			if (PagedView?.CurrentItem != newValue)
 			{
 				return;
 			}
-			if (newValue != pager.CurrentItem)
-			{
-				//Update PagedView state if necessary, to avoid an IllegalStateException
-				UpdateItemsIfNeeded();
 
-				pager.SetCurrentItem(newValue, smoothScroll: animateChange);
-			}
+			//Update PagedView state if necessary, to avoid an IllegalStateException
+			UpdateItemsIfNeeded();
+
+			PagedView.SetCurrentItem(newValue, smoothScroll: animateChange);
+			PagedView.Adapter.NotifyDataSetChanged();
 		}
 
 		private class FlipViewPageChangeListener : Android.Support.V4.View.ViewPager.SimpleOnPageChangeListener

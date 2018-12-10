@@ -43,6 +43,8 @@
  * Adjust Microsoft.CodeAnalysis versions to avoid restore conflicts
  * Fix element name matching existing types fails to compile (e.g. ContentPresenter)
  * 138735 [Android] Fixed broken DatePicker 
+ * Multi-selection Check Boxes in ListViewItems are appearing brielfly (https://github.com/nventive/Uno/issues/403)
+ * 140721 [Android] FlipView not visible when navigating back to page
 
 ## Release 1.42
 
