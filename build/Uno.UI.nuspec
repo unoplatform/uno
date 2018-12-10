@@ -169,8 +169,8 @@
 	<file src="..\src\SourceGenerators\Uno.UI.SourceGenerators\Bin\Release\Uno.Xaml.dll" target="tools" />
 	<file src="..\src\SourceGenerators\Uno.UI.SourceGenerators\Bin\Release\Uno.Xaml.pdb" target="tools" />
 	<file src="..\src\SourceGenerators\Uno.UI.SourceGenerators\Bin\Release\Uno.UI.SourceGenerators.pdb" target="tools" />
-	<file src="..\src\SourceGenerators\Uno.UI.SourceGenerators\Bin\Release\Mono.Cecil.*.dll" target="tools" />
-	<file src="..\src\SourceGenerators\Uno.UI.SourceGenerators\Bin\Release\Mono.Cecil.*.pdb" target="tools" />
+	<file src="..\src\SourceGenerators\Uno.UI.SourceGenerators\Bin\Release\Mono.Cecil*.dll" target="tools" />
+	<file src="..\src\SourceGenerators\Uno.UI.SourceGenerators\Bin\Release\Mono.Cecil*.pdb" target="tools" />
     
 	<file src="..\src\SourceGenerators\Uno.UI.Tasks\Bin\Release\*.dll" target="build\Uno.UI.Tasks" />
 	<file src="..\src\SourceGenerators\Uno.UI.Tasks\Bin\Release\*.pdb" target="build\Uno.UI.Tasks" />
