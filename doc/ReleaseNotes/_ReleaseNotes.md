@@ -45,6 +45,7 @@
  * 138735 [Android] Fixed broken DatePicker 
  * Multi-selection Check Boxes in ListViewItems are appearing brielfly (https://github.com/nventive/Uno/issues/403)
  * 140721 [Android] FlipView not visible when navigating back to page
+ * 138537 [iOS] App freezes after State selection causing infinite load on every subsequent launch
 
 ## Release 1.42
 
