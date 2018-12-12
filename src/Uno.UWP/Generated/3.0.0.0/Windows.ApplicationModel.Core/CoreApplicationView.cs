@@ -39,31 +39,11 @@ namespace Windows.ApplicationModel.Core
 		#endif
 		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
-		public  global::Windows.UI.Core.CoreDispatcher Dispatcher
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member CoreDispatcher CoreApplicationView.Dispatcher is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
 		public  bool IsComponent
 		{
 			get
 			{
 				throw new global::System.NotImplementedException("The member bool CoreApplicationView.IsComponent is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  global::Windows.ApplicationModel.Core.CoreApplicationViewTitleBar TitleBar
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member CoreApplicationViewTitleBar CoreApplicationView.TitleBar is not implemented in Uno.");
 			}
 		}
 		#endif
