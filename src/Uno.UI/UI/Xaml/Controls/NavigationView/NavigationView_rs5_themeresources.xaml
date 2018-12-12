@@ -14,7 +14,9 @@
     <x:Double x:Key="NavigationViewCompactPaneLength">40</x:Double>
     <x:Double x:Key="NavigationViewTopPaneHeight">40</x:Double>
 
-    <ResourceDictionary.ThemeDictionaries>
+    <!--
+	Uno TODO
+	<ResourceDictionary.ThemeDictionaries>
         <ResourceDictionary x:Key="Dark">
             <SolidColorBrush x:Key="NavigationViewExpandedPaneBackground" Color="{StaticResource SystemChromeMediumColor}" />
         </ResourceDictionary>
@@ -25,4 +27,7 @@
             <SolidColorBrush x:Key="NavigationViewExpandedPaneBackground" Color="{StaticResource SystemColorWindowColor}" />
         </ResourceDictionary>
     </ResourceDictionary.ThemeDictionaries>
+	-->
+	
+    <SolidColorBrush x:Key="NavigationViewExpandedPaneBackground" Color="{StaticResource SystemChromeMediumColor}" />
 </ResourceDictionary>
