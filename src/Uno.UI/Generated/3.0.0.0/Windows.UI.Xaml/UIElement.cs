@@ -401,16 +401,6 @@ namespace Windows.UI.Xaml
 		#endif
 		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
-		public  global::System.Collections.Generic.IList<global::Windows.UI.Xaml.Input.KeyboardAccelerator> KeyboardAccelerators
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member IList<KeyboardAccelerator> UIElement.KeyboardAccelerators is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
 		public  global::Windows.UI.Xaml.DependencyObject KeyboardAcceleratorPlacementTarget
 		{
 			get
