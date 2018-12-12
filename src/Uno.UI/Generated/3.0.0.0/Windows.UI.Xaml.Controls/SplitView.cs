@@ -88,37 +88,5 @@ namespace Windows.UI.Xaml.Controls
 		// Forced skipping of method Windows.UI.Xaml.Controls.SplitView.PaneBackgroundProperty.get
 		// Skipping already declared event Windows.UI.Xaml.Controls.SplitView.PaneClosed
 		// Skipping already declared event Windows.UI.Xaml.Controls.SplitView.PaneClosing
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Xaml.Controls.SplitView, object> PaneOpened
-		{
-			[global::Uno.NotImplemented]
-			add
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.SplitView", "event TypedEventHandler<SplitView, object> SplitView.PaneOpened");
-			}
-			[global::Uno.NotImplemented]
-			remove
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.SplitView", "event TypedEventHandler<SplitView, object> SplitView.PaneOpened");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Xaml.Controls.SplitView, object> PaneOpening
-		{
-			[global::Uno.NotImplemented]
-			add
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.SplitView", "event TypedEventHandler<SplitView, object> SplitView.PaneOpening");
-			}
-			[global::Uno.NotImplemented]
-			remove
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.SplitView", "event TypedEventHandler<SplitView, object> SplitView.PaneOpening");
-			}
-		}
-		#endif
 	}
 }
