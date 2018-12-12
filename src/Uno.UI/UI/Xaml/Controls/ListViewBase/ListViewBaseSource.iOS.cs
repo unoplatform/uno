@@ -769,6 +769,12 @@ namespace Windows.UI.Xaml.Controls
 				return null;
 			}
 
+			if(Content == null)
+			{
+				this.Log().Error("Empty ListViewBaseInternalContainer content.");
+				return null;
+			}
+
 			try
 			{
 				var size = layoutAttributes.Frame.Size;
