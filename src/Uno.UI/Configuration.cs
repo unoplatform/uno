@@ -119,5 +119,17 @@ namespace Uno.UI
 			"ms-appx:///Assets/Fonts/winjs-symbols.ttf#Symbols";
 #endif
 		}
+
+#if __WASM__
+		public static class Interop
+		{
+			/// <summary>
+			/// Used to control the behavior of the C#/Javascript interop. Setting this
+			/// flag to true forces the use of the Javascript eval mode, instead of binary interop.
+			/// This flag has no effect when running in hosted mode.
+			/// </summary>
+			public static bool ForceJavascriptInterop { get; set; } = false;
+		}
+#endif
 	}
 }
