@@ -46,7 +46,7 @@ namespace SamplesApp.Samples.NavigationViewSample
 					}
 					else if (e.Content is Item3Page)
 					{
-						nvSample.SelectedItem = getItemNamed("SamplePage2");
+						nvSample.SelectedItem = getItemNamed("SamplePage3");
 					}
 					else if (e.Content is SettingsPage)
 					{
@@ -77,7 +77,7 @@ namespace SamplesApp.Samples.NavigationViewSample
 			{
 				contentFrame.Navigate(typeof(SettingsPage));
 			}
-			else if(args.InvokedItem is NavigationViewItem item)
+			else if(args.InvokedItemContainer is NavigationViewItem item)
 			{
 				switch (item.Tag)
 				{
