@@ -18,10 +18,13 @@ namespace Uno.UI.Xaml
 	/// <remarks>Slow methods are present for the WPF hosting mode, for which memory sharing is not available</remarks>
 	internal partial class WindowManagerInterop
 	{
+		private static bool UseJavascriptEval =>
+			!WebAssemblyRuntime.IsWebAssembly || FeatureConfiguration.Interop.ForceJavascriptInterop;
+
 		#region CreateContent
 		internal static void CreateContent(IntPtr htmlId, string htmlTag, IntPtr handle, string fullName, bool htmlTagIsSvg, bool isFrameworkElement, bool isFocusable, string[] classes)
 		{
-			if (!WebAssemblyRuntime.IsWebAssembly)
+			if (UseJavascriptEval)
 			{
 				var isSvgStr = htmlTagIsSvg ? "true" : "false";
 				var isFrameworkElementStr = isFrameworkElement ? "true" : "false";
@@ -88,7 +91,7 @@ namespace Uno.UI.Xaml
 		#region MeasureView
 		internal static Size MeasureView(IntPtr htmlId, Size availableSize)
 		{
-			if (!WebAssemblyRuntime.IsWebAssembly)
+			if (UseJavascriptEval)
 			{
 				var w = double.IsInfinity(availableSize.Width) ? "null" : availableSize.Width.ToStringInvariant();
 				var h = double.IsInfinity(availableSize.Height) ? "null" : availableSize.Height.ToStringInvariant();
@@ -142,7 +145,7 @@ namespace Uno.UI.Xaml
 
 		internal static void SetStyles(IntPtr htmlId, (string name, string value)[] styles, bool setAsArranged = false)
 		{
-			if (!WebAssemblyRuntime.IsWebAssembly)
+			if (UseJavascriptEval)
 			{
 				var setAsArrangeString = setAsArranged ? "true" : "false";
 				var stylesStr = string.Join(", ", styles.Select(s => "\"" + s.name + "\": \"" + WebAssemblyRuntime.EscapeJs(s.value) + "\""));
@@ -191,7 +194,7 @@ namespace Uno.UI.Xaml
 
 		internal static void AddView(IntPtr htmlId, IntPtr child, int? index = null)
 		{
-			if (!WebAssemblyRuntime.IsWebAssembly)
+			if (UseJavascriptEval)
 			{
 				if (index != null)
 				{
@@ -232,7 +235,7 @@ namespace Uno.UI.Xaml
 
 		internal static void SetAttribute(IntPtr htmlId, (string name, string value)[] attributes)
 		{
-			if (!WebAssemblyRuntime.IsWebAssembly)
+			if (UseJavascriptEval)
 			{
 				var attributesStr = string.Join(", ", attributes.Select(s => "\"" + s.name + "\": \"" + WebAssemblyRuntime.EscapeJs(s.value) + "\""));
 				var command = "Uno.UI.WindowManager.current.setAttribute(\"" + htmlId + "\", {" + attributesStr + "});";
@@ -278,7 +281,7 @@ namespace Uno.UI.Xaml
 
 		internal static void SetName(IntPtr htmlId, string name)
 		{
-			if (!WebAssemblyRuntime.IsWebAssembly)
+			if (UseJavascriptEval)
 			{
 				var command = $"Uno.UI.WindowManager.current.setName(\"{htmlId}\", \"{name}\");";
 				WebAssemblyRuntime.InvokeJS(command);
@@ -309,7 +312,7 @@ namespace Uno.UI.Xaml
 
 		internal static void SetProperty(IntPtr htmlId, (string name, string value)[] properties)
 		{
-			if (!WebAssemblyRuntime.IsWebAssembly)
+			if (UseJavascriptEval)
 			{
 				var attributesStr = string.Join(", ", properties.Select(s => "\"" + s.name + "\": \"" + WebAssemblyRuntime.EscapeJs(s.value) + "\""));
 				var command = "Uno.UI.WindowManager.current.setProperty(\"" + htmlId + "\", {" + attributesStr + "});";
@@ -354,7 +357,7 @@ namespace Uno.UI.Xaml
 		#region RemoveView
 		internal static void RemoveView(IntPtr htmlId, IntPtr childId)
 		{
-			if (!WebAssemblyRuntime.IsWebAssembly)
+			if (UseJavascriptEval)
 			{
 				var command = "Uno.UI.WindowManager.current.removeView(\"" + htmlId + "\", \"" + childId + "\");";
 				WebAssemblyRuntime.InvokeJS(command);
@@ -384,7 +387,7 @@ namespace Uno.UI.Xaml
 		#region DestroyView
 		internal static void DestroyView(IntPtr htmlId)
 		{
-			if (!WebAssemblyRuntime.IsWebAssembly)
+			if (UseJavascriptEval)
 			{
 				var command = "Uno.UI.WindowManager.current.destroyView(\"" + htmlId + "\");";
 				WebAssemblyRuntime.InvokeJS(command);
@@ -411,7 +414,7 @@ namespace Uno.UI.Xaml
 		#region ResetStyle
 		internal static void ResetStyle(IntPtr htmlId, string[] names)
 		{
-			if (!WebAssemblyRuntime.IsWebAssembly)
+			if (UseJavascriptEval)
 			{
 				if (names.Length == 1)
 				{
@@ -454,7 +457,7 @@ namespace Uno.UI.Xaml
 		#region RegisterEventOnView
 		internal static void RegisterEventOnView(IntPtr htmlId, string eventName, bool onCapturePhase, string eventFilterName, string eventExtractorName)
 		{
-			if (!WebAssemblyRuntime.IsWebAssembly)
+			if (UseJavascriptEval)
 			{
 				var onCapturePhaseStr = onCapturePhase ? "true" : "false";
 				var cmd = $"Uno.UI.WindowManager.current.registerEventOnView(\"{htmlId}\", \"{eventName}\", {onCapturePhaseStr}, \"{eventFilterName}\", \"{eventExtractorName}\");";
@@ -496,7 +499,7 @@ namespace Uno.UI.Xaml
 
 		internal static Rect GetBBox(IntPtr htmlId)
 		{
-			if (!WebAssemblyRuntime.IsWebAssembly)
+			if (UseJavascriptEval)
 			{
 				var sizeString = WebAssemblyRuntime.InvokeJS("Uno.UI.WindowManager.current.getBBox(\"" + htmlId + "\");");
 				var sizeParts = sizeString.Split(';');
@@ -540,7 +543,7 @@ namespace Uno.UI.Xaml
 
 		internal static void SetContentHtml(IntPtr htmlId, string html)
 		{
-			if (!WebAssemblyRuntime.IsWebAssembly)
+			if (UseJavascriptEval)
 			{
 				var escapedHtml = WebAssemblyRuntime.EscapeJs(html);
 
