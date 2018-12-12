@@ -293,8 +293,10 @@ namespace Windows.UI.Xaml.Controls
 						switch (ImageControl.Stretch)
 						{
 							case Stretch.Uniform:
-								//If sourceSize is empty, aspect ratio is undefined so we return 0
-								desiredSize.Height = sourceSize == default(Size) ? 0 : (knownWidth / aspectRatio);
+								// If sourceSize is empty, aspect ratio is undefined so we return 0.
+								// Since apsect ratio can have a lot of decimal, iOS ceils Image size to 0.5 if it's not a precise size (like 111.111111111)
+								// so the desiredSize will never match the actual size causing an infinite measuring and can freeze the app
+								desiredSize.Height = sourceSize == default(Size) ? 0 : Math.Ceiling((knownWidth / aspectRatio) * 2) / 2;
 								break;
 							case Stretch.None:
 								desiredSize.Height = sourceSize.Height;
@@ -320,7 +322,9 @@ namespace Windows.UI.Xaml.Controls
 						{
 							case Stretch.Uniform:
 								//If sourceSize is empty, aspect ratio is undefined so we return 0
-								desiredSize.Width = sourceSize == default(Size) ? 0 : (knownHeight * aspectRatio);
+								// Since apsect ratio can have a lot of decimal, iOS ceils Image size to 0.5 if it's not a precise size (like 111.111111111)
+								// so the desiredSize will never match the actual size causing an infinite measuring and can freeze the app
+								desiredSize.Width = sourceSize == default(Size) ? 0 : Math.Ceiling(knownHeight * aspectRatio * 2) / 2;
 								break;
 							case Stretch.None:
 								desiredSize.Width = sourceSize.Width;
@@ -351,8 +355,10 @@ namespace Windows.UI.Xaml.Controls
 						case Stretch.Uniform:
 							var desiredSize = new Size();
 							var aspectRatio = sourceSize.Width / sourceSize.Height;
-							desiredSize.Width = Math.Min(knownWidth, knownHeight * aspectRatio);
-							desiredSize.Height = Math.Min(knownHeight, knownWidth / aspectRatio);
+							// Since apsect ratio can have a lot of decimal, iOS ceils Image size to 0.5 if it's not a precise size (like 111.111111111)
+							// so the desiredSize will never match the actual size causing an infinite measuring and can freeze the app
+							desiredSize.Width = Math.Min(knownWidth, Math.Ceiling(knownHeight * aspectRatio * 2) / 2);
+							desiredSize.Height = Math.Min(knownHeight, Math.Ceiling(knownWidth / aspectRatio * 2) / 2);
 
 							if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
 							{
