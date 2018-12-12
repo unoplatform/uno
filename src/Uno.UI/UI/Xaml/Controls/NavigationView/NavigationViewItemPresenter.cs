@@ -57,7 +57,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			return m_helper.GetSelectionIndicator();  
 		}
 
-		bool GoToElementStateCore(string state, bool useTransitions)
+		protected override bool GoToElementStateCore(string state, bool useTransitions)
 		{
 			// GoToElementStateCore: Update visualstate for itself.
 			// VisualStateManager::GoToState: update visualstate for it's first child.

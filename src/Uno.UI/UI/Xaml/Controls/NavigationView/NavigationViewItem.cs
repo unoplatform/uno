@@ -46,7 +46,7 @@ namespace Windows.UI.Xaml.Controls
 		internal bool IsContentChangeHandlingDelayedForTopNav() { return m_isContentChangeHandlingDelayedForTopNav; }
 		internal void ClearIsContentChangeHandlingDelayedForTopNavFlag() { m_isContentChangeHandlingDelayedForTopNav = false; }
 
-		void OnNavigationViewListPositionChanged()
+		protected override void OnNavigationViewListPositionChanged()
 		{
 			UpdateVisualStateNoTransition();
 		}
@@ -355,13 +355,13 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		// IUIElement / IUIElementOverridesHelper
-		AutomationPeer OnCreateAutomationPeer()
+		protected override AutomationPeer OnCreateAutomationPeer()
 		{
 			return new NavigationViewItemAutomationPeer(this);
 		}
 
 		// IContentControlOverrides / IContentControlOverridesHelper
-		void OnContentChanged(object oldContent, object newContent)
+		protected override void OnContentChanged(object oldContent, object newContent)
 		{
 			base.OnContentChanged(oldContent, newContent);
 			SuggestedToolTipChanged(newContent);
@@ -384,7 +384,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		void OnGotFocus(RoutedEventArgs e)
+		protected override void OnGotFocus(RoutedEventArgs e)
 		{
 			base.OnGotFocus(e);
 			var originalSource = e.OriginalSource as Control;
@@ -402,7 +402,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		void OnLostFocus(RoutedEventArgs e)
+		protected override void OnLostFocus(RoutedEventArgs e)
 		{
 			base.OnLostFocus(e);
 			if (m_hasKeyboardFocus)
