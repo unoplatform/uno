@@ -16,7 +16,9 @@ namespace Windows.UI.Xaml.Media
 
 		public override bool CanConvertFrom(ITypeDescriptorContext context, Type sourceType)
 		{
-			var canConvert = sourceType == typeof(string);
+			var canConvert =
+				sourceType == typeof(string)
+				|| sourceType == typeof(Color);
 
 			if (canConvert)
 			{
@@ -28,11 +30,13 @@ namespace Windows.UI.Xaml.Media
 
 		public override object ConvertFrom(ITypeDescriptorContext context, CultureInfo culture, object value)
 		{
-			var stringValue = value as string;
-
-			if (stringValue != null)
+			switch (value)
 			{
-				return SolidColorBrushHelper.FromARGB(stringValue);
+				case string color:
+					return SolidColorBrushHelper.FromARGB(color);
+
+				case Color color:
+					return new SolidColorBrush(color);
 			}
 
 			return base.ConvertFrom(context, culture, value);
