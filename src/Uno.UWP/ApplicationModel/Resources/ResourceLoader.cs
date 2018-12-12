@@ -18,8 +18,8 @@ namespace Windows.ApplicationModel.Resources
 	{
 		private static Lazy<ILogger> _log = new Lazy<ILogger>(() => typeof(ResourceLoader).Log());
 
-		private static Dictionary<string, Dictionary<string, string>> _resources = new Dictionary<string, Dictionary<string, string>>();
-
+		private static Dictionary<string, Dictionary<string, string>> _resources = new Dictionary<string, Dictionary<string, string>>(StringComparer.OrdinalIgnoreCase);
+		private static string _defaultLanguage;
 		private static readonly ResourceLoader _loader = new ResourceLoader();
 
 		public ResourceLoader(string name) { }
@@ -34,15 +34,7 @@ namespace Windows.ApplicationModel.Resources
 
 		public string GetString(string resource)
 		{
-			var culture = CultureInfo.CurrentUICulture.IetfLanguageTag;
-
-#if __WASM__
-			if (!culture.HasValue())
-			{
-				// This may happend in WASM (mono does not set it properly yet)
-				culture = DefaultLanguage;
-			}
-#endif
+			string culture = GetUICulture();
 
 			if (FindForCulture(culture, resource, out var value))
 			{
@@ -65,20 +57,14 @@ namespace Windows.ApplicationModel.Resources
 #endif
 		}
 
+		private static string GetUICulture()
+		{
+			return CultureInfo.CurrentUICulture.IetfLanguageTag;
+		}
+
 		private static string GetParentUICulture()
 		{
-#if __WASM__
-			var index = DefaultLanguage.IndexOf('-');
-
-			if(index != -1)
-			{
-				return DefaultLanguage.Substring(0, index);
-			}
-
-			return DefaultLanguage;
-#else
 			return CultureInfo.CurrentUICulture.Parent.IetfLanguageTag;
-#endif
 		}
 
 		private bool FindForCulture(string culture, string resource, out string resourceValue)
@@ -135,7 +121,22 @@ namespace Windows.ApplicationModel.Resources
 		/// <summary>
 		/// Provides the default culture if CurrentUICulture cannot provide it.
 		/// </summary>
-		public static string DefaultLanguage { get; set; }
+		public static string DefaultLanguage
+		{
+			get => _defaultLanguage;
+			set
+			{
+				_defaultLanguage = value;
+
+#if __WASM__
+				if (CultureInfo.CurrentUICulture.IetfLanguageTag.Length == 0)
+				{
+					CultureInfo.CurrentCulture = new CultureInfo(DefaultLanguage);
+					CultureInfo.CurrentUICulture = CultureInfo.CurrentCulture;
+				}
+#endif
+			}
+		}
 
 		internal static void ClearResources()
 		{
@@ -144,6 +145,9 @@ namespace Windows.ApplicationModel.Resources
 
 		internal static void ProcessResourceFile(string name, Stream input)
 		{
+			var currentCulture = CultureInfo.CurrentUICulture.IetfLanguageTag;
+			var parentCulture = GetParentUICulture();
+
 			using (var reader = new BinaryReader(input))
 			{
 				// "Magic" sequence to ensure we're reading a proper resource file
@@ -158,24 +162,39 @@ namespace Windows.ApplicationModel.Resources
 				}
 
 				var culture = reader.ReadString();
-				var resourceCount = reader.ReadInt32();
 
-				if (!_resources.TryGetValue(culture, out var resources))
+				if (
+					// Currently only load the resources for the current culture.
+					culture.Equals(currentCulture, StringComparison.OrdinalIgnoreCase)
+					|| culture.Equals(parentCulture, StringComparison.OrdinalIgnoreCase)
+				)
 				{
-					_resources[culture] = resources = new Dictionary<string, string>();
-				}
+					var resourceCount = reader.ReadInt32();
 
-				for (int i = 0; i < resourceCount; i++)
-				{
-					var key = reader.ReadString();
-					var value = reader.ReadString();
-
-					if (_log.Value.IsEnabled(LogLevel.Debug))
+					if (!_resources.TryGetValue(culture, out var resources))
 					{
-						_log.Value.Debug($"[{name}, {culture}] Adding resource {key}={value}");
+						_resources[culture] = resources = new Dictionary<string, string>();
 					}
 
-					resources[key] = value;
+					for (int i = 0; i < resourceCount; i++)
+					{
+						var key = reader.ReadString();
+						var value = reader.ReadString();
+
+						if (_log.Value.IsEnabled(LogLevel.Debug))
+						{
+							_log.Value.Debug($"[{name}, {culture}] Adding resource {key}={value}");
+						}
+
+						resources[key] = value;
+					}
+				}
+				else
+				{
+					if (_log.Value.IsEnabled(LogLevel.Debug))
+					{
+						_log.Value.LogDebug($"Skipping resource file {name} for {culture} (CurrentCulture {currentCulture}/{parentCulture})");
+					}
 				}
 			}
 		}
