@@ -119,7 +119,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			_globalStaticResourcesMap = globalStaticResourcesMap;
 			_isUiAutomationMappingEnabled = isUiAutomationMappingEnabled;
 			_uiAutomationMappings = uiAutomationMappings;
-			_defaultLanguage = defaultLanguage.HasValue() ? defaultLanguage : "en";
+			_defaultLanguage = defaultLanguage.HasValue() ? defaultLanguage : "en-US";
 			_isDebug = isDebug;
 
 			_findType = Funcs.Create<string, INamedTypeSymbol>(SourceFindType).AsLockedMemoized();
@@ -367,6 +367,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 		private void GenerateResourceLoader(IndentedStringBuilder writer)
 		{
+			writer.AppendLineInvariant($"global::Windows.ApplicationModel.Resources.ResourceLoader.DefaultLanguage = \"{_defaultLanguage}\";");
+
 			writer.AppendLineInvariant($"global::Windows.ApplicationModel.Resources.ResourceLoader.AddLookupAssembly(GetType().Assembly);");
 
 			foreach(var asmPath in _medataHelper.Compilation.ExternalReferences.Select(r => r.Display))
@@ -378,8 +380,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					writer.AppendLineInvariant($"global::Windows.ApplicationModel.Resources.ResourceLoader.AddLookupAssembly(global::System.Reflection.Assembly.Load(\"{asm.FullName}\"));");
 				}
 			}
-
-			writer.AppendLineInvariant($"global::Windows.ApplicationModel.Resources.ResourceLoader.DefaultLanguage = \"{_defaultLanguage}\";");
 		}
 
 		private void BuildGenericControlInitializerBody(IndentedStringBuilder writer, XamlObjectDefinition topLevelControl, bool isDirectUserControlChild)
@@ -2448,7 +2448,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				}
 				else
 				{
-					return $"({GetCastString(targetPropertyType, null)}{GetGlobalStaticResource(resourcePath)})";
+					return $"({GetCastString(targetPropertyType, null)}{GetGlobalStaticResource(resourcePath, targetPropertyType)})";
 				}
 			}
 		}
@@ -3040,7 +3040,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					{
 						return "{0}{1}".InvariantCultureFormat(
 							GetCastString(prependCastToType ? propertyType : null, null),
-							GetGlobalStaticResource(resourceName)
+							GetGlobalStaticResource(resourceName, propertyType)
 						);
 					}
 				}
@@ -3086,7 +3086,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			}
 		}
 
-		private string GetGlobalStaticResource(string resourceName)
+		private string GetGlobalStaticResource(string resourceName, INamedTypeSymbol targetType = null)
 		{
 			var resource = _globalStaticResourcesMap.FindResource(resourceName);
 			if (resource != null)
@@ -3096,8 +3096,18 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			else
 			{
 				var validateString = _isDebug ? $" ?? throw new InvalidOperationException(\"The resource {resourceName} cannot be found\")" : "";
+				var valueString = $"(global::Windows.UI.Xaml.Application.Current.Resources[\"{resourceName}\"]{validateString})";
 
-				return $"(global::Windows.UI.Xaml.Application.Current.Resources[\"{resourceName}\"]{validateString})";
+				if(targetType != null)
+				{
+					// We do not know the type of the source, and it must be converted first
+					return $"global::Windows.UI.Xaml.Markup.XamlBindingHelper.ConvertValue(typeof{GetCastString(targetType, null)}, {valueString})";
+				}
+				else
+				{
+
+					return valueString;
+				}
 			}
 		}
 
@@ -3290,8 +3300,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 			if (styleMember != null)
 			{
-				// Explicitly search for StaticResource, as the style could be set using a binding.
-				if (styleMember.Objects.Any(o => o.Type.Name == "StaticResource"))
+				// Explicitly search for StaticResource/ThemeResource, as the style could be set using a binding.
+				if (styleMember.Objects.Any(o => o.Type.Name == "StaticResource" || o.Type.Name == "ThemeResource"))
 				{
 					BuildComplexPropertyValue(writer, styleMember, "");
 					writer.AppendLineInvariant(0, closingPunctuation);
