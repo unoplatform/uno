@@ -119,11 +119,13 @@ namespace Uno.UI.Controls
 		public BindableSwitchCompat(Android.Content.Context context, IAttributeSet attrs)
 			: base(context, attrs)
 		{
+			InitializeBinder();
 		}
 
 		public BindableSwitchCompat(Android.Content.Context context, IAttributeSet attrs, int defStyle)
 			: base(context, attrs, defStyle)
 		{
+			InitializeBinder();
 		}
 	}
 }
