@@ -35,8 +35,10 @@ namespace WebAssembly
 	{
 		internal static class InternalCalls
 		{
+			// Matches this signature:
+			// https://github.com/mono/mono/blob/f24d652d567c4611f9b4e3095be4e2a1a2ab23a4/sdks/wasm/driver.c#L21
 			[MethodImpl(MethodImplOptions.InternalCall)]
-			public static extern TRes InvokeJSUnmarshalled<T0, T1, T2, TRes>(out string exception, string functionIdentifier, T0 arg0, T1 arg1, T2 arg2);
+			public static extern bool InvokeJSUnmarshalled(out string exception, string functionIdentifier, IntPtr arg0, IntPtr arg1, IntPtr arg2);
 		}
 	}
 }
@@ -67,9 +69,9 @@ namespace Uno.Foundation
 		/// Invoke a Javascript method using unmarshaled conversion.
 		/// </summary>
 		/// <param name="functionIdentifier">A function identifier name</param>
-		public static TRes InvokeJSUnmarshalled<T0, TRes>(string functionIdentifier, T0 arg0)
+		public static bool InvokeJSUnmarshalled(string functionIdentifier, IntPtr arg0)
 		{
-			var res = WebAssembly.JSInterop.InternalCalls.InvokeJSUnmarshalled<T0, object, object, TRes>(out var exception, functionIdentifier, arg0, null, null);
+			var res = WebAssembly.JSInterop.InternalCalls.InvokeJSUnmarshalled(out var exception, functionIdentifier, arg0, IntPtr.Zero, IntPtr.Zero);
 
 			if(exception != null)
 			{
@@ -83,9 +85,9 @@ namespace Uno.Foundation
 		/// Invoke a Javascript method using unmarshaled conversion.
 		/// </summary>
 		/// <param name="functionIdentifier">A function identifier name</param>
-		public static TRes InvokeJSUnmarshalled<T0, T1, TRes>(string functionIdentifier, T0 arg0, T1 arg1)
+		public static bool InvokeJSUnmarshalled(string functionIdentifier, IntPtr arg0, IntPtr arg1)
 		{
-			var res = WebAssembly.JSInterop.InternalCalls.InvokeJSUnmarshalled<T0, T1, object, TRes>(out var exception, functionIdentifier, arg0, arg1, null);
+			var res = WebAssembly.JSInterop.InternalCalls.InvokeJSUnmarshalled(out var exception, functionIdentifier, arg0, arg1, IntPtr.Zero);
 
 			if (exception != null)
 			{
@@ -99,9 +101,9 @@ namespace Uno.Foundation
 		/// Invoke a Javascript method using unmarshaled conversion.
 		/// </summary>
 		/// <param name="functionIdentifier">A function identifier name</param>
-		public static TRes InvokeJSUnmarshalled<T0, T1, T2, TRes>(string functionIdentifier, T0 arg0, T1 arg1, T2 arg2)
+		public static bool InvokeJSUnmarshalled(string functionIdentifier, IntPtr arg0, IntPtr arg1, IntPtr arg2)
 		{
-			var res = WebAssembly.JSInterop.InternalCalls.InvokeJSUnmarshalled<T0, T1, T2, TRes>(out var exception, functionIdentifier, arg0, arg1, arg2);
+			var res = WebAssembly.JSInterop.InternalCalls.InvokeJSUnmarshalled(out var exception, functionIdentifier, arg0, arg1, arg2);
 
 			if (exception != null)
 			{

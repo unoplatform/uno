@@ -40,7 +40,7 @@ namespace Uno.Foundation.Interop
 			{
 				Marshal.StructureToPtr(paramStruct, pParms, false);
 
-				var ret = WebAssemblyRuntime.InvokeJSUnmarshalled<IntPtr, bool>(methodName, pParms);
+				var ret = WebAssemblyRuntime.InvokeJSUnmarshalled(methodName, pParms);
 			}
 			finally
 			{
@@ -61,7 +61,7 @@ namespace Uno.Foundation.Interop
 				Marshal.StructureToPtr(paramStruct, pParms, false);
 				Marshal.StructureToPtr(returnValue, pReturnValue, false);
 
-				var ret = WebAssemblyRuntime.InvokeJSUnmarshalled<IntPtr, IntPtr, bool>(methodName, pParms, pReturnValue);
+				var ret = WebAssemblyRuntime.InvokeJSUnmarshalled(methodName, pParms, pReturnValue);
 
 				returnValue = (TRet)Marshal.PtrToStructure(pReturnValue, typeof(TRet));
 				return returnValue;
