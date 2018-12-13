@@ -424,7 +424,7 @@
 			* @param styles A dictionary of styles to apply on html element.
 			*/
 		public resetStyle(elementId: number, names: string[]): string {
-			this.resetStyleInternal(elementId, name);
+			this.resetStyleInternal(elementId, names);
 			return "ok";
 		}
 
