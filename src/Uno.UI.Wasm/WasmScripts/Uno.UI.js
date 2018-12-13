@@ -504,7 +504,7 @@ var Uno;
                 * @param styles A dictionary of styles to apply on html element.
                 */
             resetStyle(elementId, names) {
-                this.resetStyleInternal(elementId, name);
+                this.resetStyleInternal(elementId, names);
                 return "ok";
             }
             /**
