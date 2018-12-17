@@ -14,6 +14,8 @@ namespace Uno.UI.SourceGenerators.TSBindings
 	class TSBindingsGenerator : SourceGenerator
 	{
 		private string _bindingsPaths;
+		private string[] _sourceAssemblies;
+
 		private static INamedTypeSymbol _stringSymbol;
 		private static INamedTypeSymbol _intSymbol;
 		private static INamedTypeSymbol _floatSymbol;
@@ -24,13 +26,13 @@ namespace Uno.UI.SourceGenerators.TSBindings
 		private static INamedTypeSymbol _boolSymbol;
 		private static INamedTypeSymbol _longSymbol;
 		private static INamedTypeSymbol _structLayoutSymbol;
-		private static INamedTypeSymbol _marshalAsAttributeSymbol;
 		private static INamedTypeSymbol _interopMessageSymbol;
 
 		public override void Execute(SourceGeneratorContext context)
 		{
 			var project = context.GetProjectInstance();
 			_bindingsPaths = project.GetPropertyValue("TSBindingsPath")?.ToString();
+			_sourceAssemblies = project.GetItems("TSBindingAssemblySource").Select(s => s.EvaluatedInclude).ToArray();
 
 			if(!string.IsNullOrEmpty(_bindingsPaths))
 			{
@@ -44,12 +46,11 @@ namespace Uno.UI.SourceGenerators.TSBindings
 				_boolSymbol = context.Compilation.GetTypeByMetadataName("System.Boolean");
 				_longSymbol = context.Compilation.GetTypeByMetadataName("System.Int64");
 				_structLayoutSymbol = context.Compilation.GetTypeByMetadataName(typeof(System.Runtime.InteropServices.StructLayoutAttribute).FullName);
-				_marshalAsAttributeSymbol = context.Compilation.GetTypeByMetadataName(typeof(System.Runtime.InteropServices.MarshalAsAttribute).FullName);
 				_interopMessageSymbol = context.Compilation.GetTypeByMetadataName("Uno.Foundation.Interop.TSInteropMessageAttribute");
 
 				var modules = from ext in context.Compilation.ExternalReferences
 							  let sym = context.Compilation.GetAssemblyOrModuleSymbol(ext) as IAssemblySymbol
-							  where sym != null
+							  where _sourceAssemblies.Contains(sym.Name)
 							  from module in sym.Modules
 							  select module;
 
@@ -122,9 +123,9 @@ namespace Uno.UI.SourceGenerators.TSBindings
 		{
 			// https://github.com/dotnet/roslyn/blob/master/src/Compilers/Core/Portable/Symbols/TypeLayout.cs is not available.
 
-			if(parametersType.GetType().GetProperty("Layout", System.Reflection.BindingFlags.Instance|System.Reflection.BindingFlags.NonPublic) is PropertyInfo info)
+			if (parametersType.GetType().GetProperty("Layout", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic) is PropertyInfo info)
 			{
-				if(info.GetValue(parametersType) is object typeLayout)
+				if (info.GetValue(parametersType) is object typeLayout)
 				{
 					if (typeLayout.GetType().GetProperty("Kind", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic) is PropertyInfo layoutKingProperty)
 					{
@@ -146,6 +147,24 @@ namespace Uno.UI.SourceGenerators.TSBindings
 			throw new InvalidOperationException($"Failed to get structure layout, unknown roslyn internal structure");
 		}
 
+		private bool IsMarshalledExplicitly(IFieldSymbol fieldSymbol)
+		{
+			// https://github.com/dotnet/roslyn/blob/0610c79807fa59d0815f2b89e5283cf6d630b71e/src/Compilers/CSharp/Portable/Symbols/Metadata/PE/PEFieldSymbol.cs#L133 is not available.
+
+			if (fieldSymbol.GetType().GetProperty(
+				"IsMarshalledExplicitly",
+				System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic) is PropertyInfo info
+			)
+			{
+				if (info.GetValue(fieldSymbol) is bool isMarshalledExplicitly)
+				{
+					return isMarshalledExplicitly;
+				}
+			}
+
+			throw new InvalidOperationException($"Failed to IsMarshalledExplicitly, unknown roslyn internal structure");
+		}
+
 		private void GenerateMarshaler(INamedTypeSymbol parametersType, IndentedStringBuilder sb, int packValue)
 		{
 			using (sb.BlockInvariant($"public marshal(pData:number)"))
@@ -159,7 +178,6 @@ namespace Uno.UI.SourceGenerators.TSBindings
 
 					if (field.Type is IArrayTypeSymbol arraySymbol)
 					{
-						// This is required by the mono-wasm AOT engine for fields to be properly considered.
 						throw new NotSupportedException($"Return value array fields are not supported ({field})");
 					}
 					else
@@ -211,8 +229,9 @@ namespace Uno.UI.SourceGenerators.TSBindings
 
 					if (field.Type is IArrayTypeSymbol arraySymbol)
 					{
-						if(field.GetAllAttributes().Where(a => a.AttributeClass == _marshalAsAttributeSymbol).None())
+						if (!IsMarshalledExplicitly(field))
 						{
+							// This is required by the mono-wasm AOT engine for fields to be properly considered.
 							throw new InvalidOperationException($"The field {field} is an array but does not have a [MarshalAs(UnmanagedType.LPArray)] attribute");
 						}
 

@@ -59,7 +59,7 @@ namespace Uno.Foundation.Interop
 			{
 				if (_logger.Value.IsEnabled(LogLevel.Error))
 				{
-					_logger.Value.LogError($"Failed InvokeJS for {memberName}/{typeof(TParam)}: {e}");
+					_logger.Value.LogError($"Failed InvokeJS for {memberName}/{typeof(TParam)}: {e}"); 
 				}
 				throw;
 			}

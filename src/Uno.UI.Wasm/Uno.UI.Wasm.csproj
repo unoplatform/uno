@@ -13,6 +13,10 @@
 		<TSBindingsPath>$(MSBuildThisFileDirectory)tsBindings</TSBindingsPath>
 	</PropertyGroup>
 
+	<ItemGroup>
+		<TSBindingAssemblySource Include="Uno.UI" />
+	</ItemGroup>
+
 	<ItemGroup> 
 		<EmbeddedResource Include="WasmCSS\**\*.css" />
 		<EmbeddedResource Include="WasmScripts\**\*.js" />
