@@ -25,11 +25,25 @@
 * All Nuget and VSIX artifacts are now Authenticode signed
 * Resource strings are now loaded from `upri` files for faster resolution
 * Add `FeatureConfiguration.Interop.ForceJavascriptInterop` to enable JS Eval fallback in Wasm mode.
+* Add support for 1809 NavigationView
+* Add support for runtime conversion of global static resources unknown at compile time
+* Fixed fallback support for Style property set via ThemeResource
+* Add support for multiple resw folders with upri resource generation 
+* Add support for `ThicknessHelper`
+* ResourceLoader adjustments … 
+  * CurrentUICulture and CurrentCulture are set when setting ResourceLoader .DefaultCulture
+  * upri load now ignores resources not used by the current culture
+* Add BrushConverter support for Color input 
+* Add SplitView support for PaneOpened and PaneOpening
+* Add CoreApplication.GetCurrentView() Dispatcher and TitleBar stubs support 
+* Add support for IsItemItsOwnContainer iOS ListView 
+* Add missing Android Sample App symbols font
 
 ### Breaking changes
 * Refactored ToggleSwitch Default Native XAML Styles. (cf. 'NativeDefaultToggleSwitch' styles in Generic.Native.xaml)
   [iOS] For BindableUISwitch : Background property was changed for OnTintColorBrush and Foreground property for ThumbTintColorBrush.
   [Android] BindableSwitch was renamed BindableSwitchCompat in order to avoid confusion with the Switch control.
+* Remove invalid Windows.UI.Xaml.Input.VirtualKeyModifiers
 
 ### Bug fixes
  * MediaPlayerElement [iOS] Subtitles are not disable on initial launch anymore
@@ -47,6 +61,8 @@
  * Multi-selection Check Boxes in ListViewItems are appearing brielfly (https://github.com/nventive/Uno/issues/403)
  * 140721 [Android] FlipView not visible when navigating back to page
  * 138537 [iOS] App freezes after State selection causing infinite load on every subsequent launch
+ * Fix invalid Border Content type for macOS
+ * Don't fail iOS ListView if item Content is null 
 
 ## Release 1.42
 

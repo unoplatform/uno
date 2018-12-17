@@ -4,9 +4,16 @@ namespace Windows.ApplicationModel.Core
 {
 	public  partial class CoreApplication 
 	{
+		private static CoreApplicationView _currentView;
+
 		public static event global::System.EventHandler<object> Resuming;
 
 		public static event global::System.EventHandler<global::Windows.ApplicationModel.SuspendingEventArgs> Suspending;
+
+		static CoreApplication()
+		{
+			_currentView = new CoreApplicationView();
+		}
 
 		/// <summary>
 		/// Raises the <see cref="Resuming"/> event
@@ -19,5 +26,8 @@ namespace Windows.ApplicationModel.Core
 		/// </summary>
 		internal static void RaiseSuspending(SuspendingEventArgs args)
 			=> Suspending?.Invoke(null, args);
+
+		public static CoreApplicationView GetCurrentView()
+			=> _currentView;
 	}
 }

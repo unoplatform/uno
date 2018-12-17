@@ -19,7 +19,6 @@ using Windows.System;
 using Windows.UI.Xaml.Controls;
 using Uno.UI;
 using Uno;
-using VirtualKeyModifiers = Windows.UI.Xaml.Input.VirtualKeyModifiers;
 
 #if __IOS__
 using UIKit;
@@ -31,6 +30,7 @@ namespace Windows.UI.Xaml
 	{
 		private SerialDisposable _clipSubscription = new SerialDisposable();
 		private readonly List<Pointer> _pointCaptures = new List<Pointer>();
+		private readonly List<KeyboardAccelerator> _keyboardAccelerators = new List<KeyboardAccelerator>();
 
 		partial void InitializeCapture()
 		{
@@ -373,7 +373,7 @@ namespace Windows.UI.Xaml
 					(s, e) => (s as UIElement).OnVisibilityChanged((Visibility)e.OldValue, (Visibility)e.NewValue)
 				)
 			);
-#endregion
+		#endregion
 
 		internal bool IsRenderingSuspended { get; set; }
 
@@ -506,5 +506,8 @@ namespace Windows.UI.Xaml
 		}
 
 		internal virtual bool IsViewHit() => true;
+
+		[global::Uno.NotImplemented]
+		public IList<KeyboardAccelerator> KeyboardAccelerators => _keyboardAccelerators;
 	}
 }

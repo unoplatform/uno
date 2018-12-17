@@ -429,22 +429,25 @@ namespace Windows.UI.Xaml.Controls
 				);
 				var actualItem = unoCell.Content?.DataContext;
 
-				var areMatching = Object.Equals(expectedItem, actualItem);
-				if (
-					// This check is present for the support of explicit ListViewItem 
-					// through the Items property. The DataContext may be set to some
-					// user defined object.
-					XamlParent.ItemsSource != null
-
-					&& !areMatching
-				)
+				if (!XamlParent.IsItemItsOwnContainer(expectedItem))
 				{
-					// This is a failsafe for in-place collection changes which leave the list in an inconsistent state, for exact reasons known only to UICollectionView.
-					if (this.Log().IsEnabled(LogLevel.Warning))
+					var areMatching = Object.Equals(expectedItem, actualItem);
+					if (
+						// This check is present for the support of explicit ListViewItem 
+						// through the Items property. The DataContext may be set to some
+						// user defined object.
+						XamlParent.ItemsSource != null
+
+						&& !areMatching
+					)
 					{
-						(this).Log().Warn($"Cell had context {actualItem} instead of {expectedItem}, scheduling a refresh to ensure correct display of list. (IndexPath={tuple.Path}");
+						// This is a failsafe for in-place collection changes which leave the list in an inconsistent state, for exact reasons known only to UICollectionView.
+						if (this.Log().IsEnabled(LogLevel.Warning))
+						{
+							(this).Log().Warn($"Cell had context {actualItem} instead of {expectedItem}, scheduling a refresh to ensure correct display of list. (IndexPath={tuple.Path}");
+						}
+						DispatchReloadData();
 					}
-					DispatchReloadData();
 				}
 			}
 		}

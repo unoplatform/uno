@@ -313,49 +313,13 @@
 	<ItemGroup>
 		<Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
 	</ItemGroup>
-
-	<ItemGroup>
-		<None Update="C:\s\nv.github\uno-2\src\Uno.UI\UI\Xaml\Style\Generic\Generic.NavigationView.xaml">
-		  <Generator>MSBuild:Compile</Generator>
-		</None>
-		<None Update="Mixins\macOS\FrameworkElementMixins.tt">
-		  <Generator>TextTemplatingFileGenerator</Generator>
-		  <LastGenOutput>FrameworkElementMixins.g.cs</LastGenOutput>
-		</None>
-		<None Update="Mixins\macOS\VisualStatesMixins.tt">
-		  <Generator>TextTemplatingFileGenerator</Generator>
-		  <LastGenOutput>VisualStatesMixins.g.cs</LastGenOutput>
-		</None>
-		<None Update="Mixins\Wasm\VisualStatesMixins.tt">
-			<Generator>TextTemplatingFileGenerator</Generator>
-			<LastGenOutput>VisualStatesMixins.g.cs</LastGenOutput>
-		</None>
-		<None Update="UI\Xaml\IFrameworkElementImplementation.macOS.cs">
-		  <DesignTime>True</DesignTime>
-		  <AutoGen>True</AutoGen>
-		  <DependentUpon>IFrameworkElementImplementation.macOS.tt</DependentUpon>
-		</None>
-		<None Update="UI\Xaml\IFrameworkElementImplementation.macOS.tt">
-		  <Generator>TextTemplatingFileGenerator</Generator>
-		  <LastGenOutput>IFrameworkElementImplementation.macOS.cs</LastGenOutput>
-		</None>
-		<None Update="UI\Xaml\Style\Generic\Generic.NavigationView.xaml">
-		  <Generator>MSBuild:Compile</Generator>
-		</None>
-	</ItemGroup>
-
 	<ItemGroup>
 		<Folder Include="Mixins\Wasm\" />
 		<Folder Include="UI\Xaml\Maps\Presenters\" />
 	</ItemGroup>
 
 	<ItemGroup>
-		<PRIResource Include="Resources\Strings\**\*.resw" />
-	</ItemGroup>
-
-	<ItemGroup>
-	  <UpToDateCheckInput Remove="UI\Xaml\Controls\NavigationView\NavigationViewItemPresenter.cs" />
-	  <UpToDateCheckInput Remove="UI\Xaml\Controls\NavigationView\NavigationViewTemplateSettings.cs" />
+		<PRIResource Include="**\*.resw" />
 	</ItemGroup>
 
 	<Target Name="BuildManualDependencies" BeforeTargets="_UnoSourceGenerator" Condition="!Exists($(T4Bin))">

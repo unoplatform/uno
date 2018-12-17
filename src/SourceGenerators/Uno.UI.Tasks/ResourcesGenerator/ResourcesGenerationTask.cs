@@ -99,12 +99,37 @@ namespace Uno.UI.Tasks.ResourcesGenerator
 				yield return GenerateiOSResources(language, sourceLastWriteTime, resources, comment);
 			}
 
-			yield return GenerateUnoPRIResources(language, sourceLastWriteTime, resources, comment);
+			yield return GenerateUnoPRIResources(language, sourceLastWriteTime, resources, comment, resource);
 		}
 
-		private ITaskItem GenerateUnoPRIResources(string language, DateTime sourceLastWriteTime, Dictionary<string, string> resources, string comment)
+		private ITaskItem GenerateUnoPRIResources(string language, DateTime sourceLastWriteTime, Dictionary<string, string> resources, string comment, ITaskItem resource)
 		{
-			var logicalTargetPath = Path.Combine($"{language}", "resources.upri");
+			string buildBasePath()
+			{
+				if (Path.IsPathRooted(resource.ItemSpec))
+				{
+					string definingProjectDirectory = resource.GetMetadata("DefiningProjectDirectory");
+					if (resource.ItemSpec.StartsWith(definingProjectDirectory))
+					{
+						return resource.ItemSpec.Replace(definingProjectDirectory, "");
+					}
+					else if (resource.ItemSpec.StartsWith(TargetProjectDirectory))
+					{
+						return resource.ItemSpec.Replace(TargetProjectDirectory, "");
+					}
+					else
+					{
+						return language;
+					}
+				}
+				else
+				{
+					return Path.GetDirectoryName(resource.ItemSpec);
+				}
+			}
+
+
+			var logicalTargetPath = Path.Combine(buildBasePath(), "resources.upri");
 			var actualTargetPath = Path.Combine(OutputPath, logicalTargetPath);
 
 			Directory.CreateDirectory(Path.GetDirectoryName(actualTargetPath));

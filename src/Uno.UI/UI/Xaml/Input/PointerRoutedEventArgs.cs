@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using Uno;
+using Windows.System;
 
 namespace Windows.UI.Xaml.Input
 {

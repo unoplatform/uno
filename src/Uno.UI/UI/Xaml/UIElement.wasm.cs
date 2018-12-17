@@ -18,6 +18,7 @@ using System.Globalization;
 using Microsoft.Extensions.Logging;
 using Uno.Core.Comparison;
 using Windows.Devices.Input;
+using Windows.System;
 
 namespace Windows.UI.Xaml
 {

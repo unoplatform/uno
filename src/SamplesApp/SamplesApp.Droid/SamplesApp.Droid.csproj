@@ -78,13 +78,14 @@
     <ProjectReference Include="..\..\Uno.UWP\Uno.csproj" />
     <ProjectReference Include="..\..\Uno.UI.BindingHelper.Android\Uno.UI.BindingHelper.Android.csproj" />
   </ItemGroup>
-	<Import Project="..\..\SourceGenerators\sourcegenerators.local.props" />
-	<ItemGroup>
+  <Import Project="..\..\SourceGenerators\sourcegenerators.local.props" />
+  <ItemGroup>
     <Compile Include="MainActivity.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Main.cs" />
   </ItemGroup>
   <ItemGroup>
+    <AndroidAsset Include="Assets\Fonts\winjs-symbols.ttf" />
     <None Include="Resources\AboutResources.txt" />
     <None Include="Assets\AboutAssets.txt" />
   </ItemGroup>

@@ -32,7 +32,9 @@
 	<FontFamily x:Key="PivotHeaderItemFontFamily">XamlAutoFontFamily</FontFamily>
 	<FontFamily x:Key="PivotTitleFontFamily">XamlAutoFontFamily</FontFamily>
 	<FontFamily x:Key="SettingsFlyoutHeaderThemeFontFamily">XamlAutoFontFamily</FontFamily>
-	
+
+	<x:Boolean x:Key="UseSystemFocusVisuals">true</x:Boolean>
+
 	<!-- 
 	The defaults styles map to symbol codes from this open-source font
 	https://github.com/Microsoft/fonts/tree/master/Symbols
@@ -295,7 +297,7 @@
 	<Color x:Key="SystemChromeWhiteColor">#FFFFFFFF</Color>
 	<Color x:Key="SystemListLowColor">#19000000</Color>
 	<Color x:Key="SystemListMediumColor">#33000000</Color>
-	<SolidColorBrush x:Key="SystemControlTransparentBrush" Color="Transparent"/>
+    <SolidColorBrush x:Key="SystemControlTransparentBrush" Color="Transparent"/>
     <SolidColorBrush x:Key="SystemControlBackgroundAccentBrush" Color="{ThemeResource SystemAccentColor}"/>
     <SolidColorBrush x:Key="SystemControlBackgroundAltHighBrush" Color="{StaticResource SystemAltHighColor}"/>
     <SolidColorBrush x:Key="SystemControlBackgroundAltMediumHighBrush" Color="{StaticResource SystemAltMediumHighColor}"/>
@@ -382,7 +384,7 @@
     <SolidColorBrush x:Key="SystemControlPageTextChromeBlackMediumLowBrush" Color="{StaticResource SystemChromeBlackMediumLowColor}"/>
 	<SolidColorBrush x:Key="SystemControlBackgroundAltMediumBrush" Color="{StaticResource SystemAltMediumColor}" />
 
-	<!-- Legacy brushes -->
+    <!-- Legacy brushes -->
     <SolidColorBrush x:Key="AppBarBackgroundThemeBrush" Color="#FFF0F0F0" />
     <SolidColorBrush x:Key="AppBarBorderThemeBrush" Color="#FFF0F0F0" />
     <SolidColorBrush x:Key="AppBarItemBackgroundThemeBrush" Color="Transparent" />
@@ -417,17 +419,22 @@
     <SolidColorBrush x:Key="BackButtonPointerOverBackgroundThemeBrush" Color="#3D000000" />
     <SolidColorBrush x:Key="BackButtonPointerOverForegroundThemeBrush" Color="#FF000000" />
     <SolidColorBrush x:Key="BackButtonPressedForegroundThemeBrush" Color="#FFFFFFFF" />
-    <SolidColorBrush x:Key="ButtonBackgroundThemeBrush" Color="#B3B6B6B6" />
-    <SolidColorBrush x:Key="ButtonBorderThemeBrush" Color="#33000000" />
-    <SolidColorBrush x:Key="ButtonDisabledBackgroundThemeBrush" Color="#66CACACA" />
-    <SolidColorBrush x:Key="ButtonDisabledBorderThemeBrush" Color="#1A000000" />
-    <SolidColorBrush x:Key="ButtonDisabledForegroundThemeBrush" Color="#66000000" />
-    <SolidColorBrush x:Key="ButtonForegroundThemeBrush" Color="#FF000000" />
-    <SolidColorBrush x:Key="ButtonPointerOverBackgroundThemeBrush" Color="#D1CDCDCD" />
-    <SolidColorBrush x:Key="ButtonPointerOverForegroundThemeBrush" Color="#FF000000" />
-    <SolidColorBrush x:Key="ButtonPressedBackgroundThemeBrush" Color="#FF000000" />
-    <SolidColorBrush x:Key="ButtonPressedForegroundThemeBrush" Color="#FFFFFFFF" />
-    <SolidColorBrush x:Key="CheckBoxBackgroundThemeBrush" Color="#CCFFFFFF" />
+	
+    <!-- Resources for Windows.UI.Xaml.Controls.Button -->
+    <StaticResource x:Key="ButtonBackground" ResourceKey="SystemControlBackgroundBaseLowBrush" />
+    <StaticResource x:Key="ButtonBackgroundPointerOver" ResourceKey="SystemControlBackgroundBaseLowBrush" />
+    <StaticResource x:Key="ButtonBackgroundPressed" ResourceKey="SystemControlBackgroundBaseMediumLowBrush" />
+    <StaticResource x:Key="ButtonBackgroundDisabled" ResourceKey="SystemControlBackgroundBaseLowBrush" />
+    <StaticResource x:Key="ButtonForeground" ResourceKey="SystemControlForegroundBaseHighBrush" />
+    <StaticResource x:Key="ButtonForegroundPointerOver" ResourceKey="SystemControlHighlightBaseHighBrush" />
+    <StaticResource x:Key="ButtonForegroundPressed" ResourceKey="SystemControlHighlightBaseHighBrush" />
+    <StaticResource x:Key="ButtonForegroundDisabled" ResourceKey="SystemControlDisabledBaseMediumLowBrush" />
+    <StaticResource x:Key="ButtonBorderBrush" ResourceKey="SystemControlForegroundTransparentBrush" />
+    <StaticResource x:Key="ButtonBorderBrushPointerOver" ResourceKey="SystemControlHighlightBaseMediumLowBrush" />
+    <StaticResource x:Key="ButtonBorderBrushPressed" ResourceKey="SystemControlHighlightTransparentBrush" />
+    <StaticResource x:Key="ButtonBorderBrushDisabled" ResourceKey="SystemControlDisabledTransparentBrush" />
+
+	<SolidColorBrush x:Key="CheckBoxBackgroundThemeBrush" Color="#CCFFFFFF" />
     <SolidColorBrush x:Key="CheckBoxBorderThemeBrush" Color="#45000000" />
     <SolidColorBrush x:Key="CheckBoxContentDisabledForegroundThemeBrush" Color="#66000000" />
     <SolidColorBrush x:Key="CheckBoxContentForegroundThemeBrush" Color="#FF000000" />
@@ -754,7 +761,17 @@
     <SolidColorBrush x:Key="ThumbPressedBorderThemeBrush" Color="#ED555555"/>
     <SolidColorBrush x:Key="TimePickerForegroundThemeBrush" Color="#FF000000" />
     <SolidColorBrush x:Key="TimePickerHeaderForegroundThemeBrush" Color="#FF000000" />
-    <SolidColorBrush x:Key="ToggleButtonBackgroundThemeBrush" Color="Transparent" />
+	
+    <StaticResource x:Key="ToggleButtonBackgroundChecked" ResourceKey="SystemControlHighlightAccentBrush" />
+    <StaticResource x:Key="ToggleButtonBackgroundCheckedPointerOver" ResourceKey="SystemControlHighlightAccentBrush" />
+    <StaticResource x:Key="ToggleButtonBackgroundCheckedPressed" ResourceKey="SystemControlHighlightBaseMediumLowBrush" />
+    <StaticResource x:Key="ToggleButtonBackgroundCheckedDisabled" ResourceKey="SystemControlBackgroundBaseLowBrush" />
+    <StaticResource x:Key="ToggleButtonForegroundChecked" ResourceKey="SystemControlHighlightAltChromeWhiteBrush" />
+    <StaticResource x:Key="ToggleButtonForegroundCheckedPointerOver" ResourceKey="SystemControlHighlightAltChromeWhiteBrush" />
+    <StaticResource x:Key="ToggleButtonForegroundCheckedPressed" ResourceKey="SystemControlHighlightAltChromeWhiteBrush" />
+    <StaticResource x:Key="ToggleButtonForegroundCheckedDisabled" ResourceKey="SystemControlDisabledBaseMediumLowBrush" />
+
+	<SolidColorBrush x:Key="ToggleButtonBackgroundThemeBrush" Color="Transparent" />
     <SolidColorBrush x:Key="ToggleButtonBorderThemeBrush" Color="#FF000000" />
     <SolidColorBrush x:Key="ToggleButtonCheckedBackgroundThemeBrush" Color="#FF000000" />
     <SolidColorBrush x:Key="ToggleButtonCheckedBorderThemeBrush" Color="#FF000000" />
@@ -799,7 +816,8 @@
     <SolidColorBrush x:Key="ToolTipBorderThemeBrush" Color="#FF808080" />
     <SolidColorBrush x:Key="ToolTipForegroundThemeBrush" Color="#FF666666" />
 
-	<!--
+
+	    <!--
         Resources for:
                 
         Windows.UI.Xaml.Controls.TextBox
@@ -840,16 +858,27 @@
     <x:Double x:Key="AutoSuggestBoxIconFontSize">12</x:Double>
 	<x:Double x:Key="AutoSuggestListMaxHeight">374</x:Double>
 	<x:Double x:Key="AutoSuggestListBorderOpacity">0</x:Double>
+	
+	<!-- SplitView, NavigationView -->
+    <win:RevealBackgroundBrush x:Key="SystemControlBackgroundBaseLowRevealBackgroundBrush" TargetTheme="Light" Color="{StaticResource SystemRevealBaseLowColor}" FallbackColor="{StaticResource SystemBaseLowColor}" />
+    <xamarin:SolidColorBrush x:Key="SystemControlBackgroundBaseLowRevealBackgroundBrush" Color="{StaticResource SystemBaseLowColor}" />
 
-	<!--
-        Resources for:
-                
-        Windows.UI.Xaml.Controls.SplitView
-        Windows.UI.Xaml.Controls.NavigationView
-    -->
-	<x:Double x:Key="PaneToggleButtonHeight">44</x:Double>
-	<x:Double x:Key="PaneToggleButtonWidth">48</x:Double>
+	<win:RevealBackgroundBrush x:Key="SystemControlBackgroundBaseMediumLowRevealBaseLowBackgroundBrush" TargetTheme="Light" Color="{StaticResource SystemRevealBaseLowColor}" FallbackColor="{StaticResource SystemBaseMediumLowColor}" />
+	<xamarin:SolidColorBrush x:Key="SystemControlBackgroundBaseMediumLowRevealBaseLowBackgroundBrush" Color="{StaticResource SystemBaseMediumLowColor}" />
 
-	<Thickness x:Key="NavigationViewToggleBorderThickness">1</Thickness>
+	<win:RevealBorderBrush x:Key="SystemControlBackgroundTransparentRevealBorderBrush" TargetTheme="Light" Color="Transparent" FallbackColor="Transparent" />
+	<xamarin:SolidColorBrush x:Key="SystemControlBackgroundTransparentRevealBorderBrush" Color="Transparent" />
+
+	<win:RevealBorderBrush x:Key="SystemControlHighlightBaseMediumLowRevealBorderBrush" TargetTheme="Light" Color="{StaticResource SystemRevealBaseMediumLowColor}" FallbackColor="{StaticResource SystemBaseMediumLowColor}" />
+	<xamarin:SolidColorBrush x:Key="SystemControlHighlightBaseMediumLowRevealBorderBrush" Color="{StaticResource SystemBaseMediumLowColor}" />
+
+	<win:RevealBorderBrush x:Key="SystemControlHighlightTransparentRevealBorderBrush" TargetTheme="Light" Color="Transparent" FallbackColor="Transparent" />
+	<xamarin:SolidColorBrush x:Key="SystemControlHighlightTransparentRevealBorderBrush" Color="Transparent" />
+	
+	<win:RevealBorderBrush x:Key="SystemControlHighlightAltTransparentRevealBorderBrush" TargetTheme="Light" Color="Transparent" FallbackColor="Transparent" />
+	<xamarin:SolidColorBrush x:Key="SystemControlHighlightAltTransparentRevealBorderBrush" Color="Transparent" />
+
+	<win:RevealBackgroundBrush x:Key="SystemControlHighlightBaseMediumLowRevealAccentBackgroundBrush" TargetTheme="Light" Color="{ThemeResource SystemAccentColor}" FallbackColor="{StaticResource SystemBaseMediumLowColor}" />
+	<xamarin:SolidColorBrush x:Key="SystemControlHighlightBaseMediumLowRevealAccentBackgroundBrush" Color="{StaticResource SystemBaseMediumLowColor}" />
 
 </ResourceDictionary>

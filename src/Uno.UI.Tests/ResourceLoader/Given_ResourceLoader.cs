@@ -34,17 +34,22 @@ namespace Uno.UI.Tests.ResourceLoaderTests
 		[TestMethod]
 		public void When_ResourceFile_Neutral_Both()
 		{
-			Windows.ApplicationModel.Resources.ResourceLoader.DefaultLanguage = "en";
-			RegisterResourceFile("When_ResourceFile_Neutral_Both-en.upri");
-			RegisterResourceFile("When_ResourceFile_Neutral_Both-fr.upri");
+			void setResources(string language)
+			{
+				CultureInfo.CurrentUICulture = new CultureInfo(language);
+				Windows.ApplicationModel.Resources.ResourceLoader.ClearResources();
+				Windows.ApplicationModel.Resources.ResourceLoader.DefaultLanguage = language;
+				RegisterResourceFile("When_ResourceFile_Neutral_Both-en.upri");
+				RegisterResourceFile("When_ResourceFile_Neutral_Both-fr.upri");
+			}
 
-			CultureInfo.CurrentUICulture = new CultureInfo("fr");
+			setResources("fr");
 			Assert.AreEqual("App70-fr", Windows.ApplicationModel.Resources.ResourceLoader.GetForCurrentView().GetString("ApplicationName"));
 
-			CultureInfo.CurrentUICulture = new CultureInfo("fr-FR");
+			setResources("fr-FR");
 			Assert.AreEqual("App70-fr", Windows.ApplicationModel.Resources.ResourceLoader.GetForCurrentView().GetString("ApplicationName"));
 
-			CultureInfo.CurrentUICulture = new CultureInfo("en");
+			setResources("en");
 			Assert.AreEqual("App70-en", Windows.ApplicationModel.Resources.ResourceLoader.GetForCurrentView().GetString("ApplicationName"));
 		}
 
