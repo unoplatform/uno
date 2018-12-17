@@ -38,6 +38,7 @@
 * Add CoreApplication.GetCurrentView() Dispatcher and TitleBar stubs support 
 * Add support for IsItemItsOwnContainer iOS ListView 
 * Add missing Android Sample App symbols font
+* Raise Application.UnhandledException event on failed navigation
 
 ### Breaking changes
 * Refactored ToggleSwitch Default Native XAML Styles. (cf. 'NativeDefaultToggleSwitch' styles in Generic.Native.xaml)
