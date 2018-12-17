@@ -180,6 +180,8 @@ namespace SamplesApp.UnitTests.TSBindings
 	public struct When_ArrayOfIntParams
 	{
 		public int MyArray_Length;
+
+		[MarshalAs(UnmanagedType.LPArray)]
 		public int[] MyArray;
 	}
 

@@ -14,22 +14,25 @@ namespace Uno.UI.SourceGenerators.TSBindings
 	class TSBindingsGenerator : SourceGenerator
 	{
 		private string _bindingsPaths;
-		private static ITypeSymbol _stringSymbol;
-		private static ITypeSymbol _intSymbol;
-		private static ITypeSymbol _floatSymbol;
-		private static ITypeSymbol _doubleSymbol;
-		private static ITypeSymbol _byteSymbol;
-		private static ITypeSymbol _shortSymbol;
-		private static ITypeSymbol _intPtrSymbol;
-		private static ITypeSymbol _boolSymbol;
-		private static ITypeSymbol _longSymbol;
-		private INamedTypeSymbol _structLayoutSymbol;
-		private INamedTypeSymbol _interopMessageSymbol;
+		private string[] _sourceAssemblies;
+
+		private static INamedTypeSymbol _stringSymbol;
+		private static INamedTypeSymbol _intSymbol;
+		private static INamedTypeSymbol _floatSymbol;
+		private static INamedTypeSymbol _doubleSymbol;
+		private static INamedTypeSymbol _byteSymbol;
+		private static INamedTypeSymbol _shortSymbol;
+		private static INamedTypeSymbol _intPtrSymbol;
+		private static INamedTypeSymbol _boolSymbol;
+		private static INamedTypeSymbol _longSymbol;
+		private static INamedTypeSymbol _structLayoutSymbol;
+		private static INamedTypeSymbol _interopMessageSymbol;
 
 		public override void Execute(SourceGeneratorContext context)
 		{
 			var project = context.GetProjectInstance();
 			_bindingsPaths = project.GetPropertyValue("TSBindingsPath")?.ToString();
+			_sourceAssemblies = project.GetItems("TSBindingAssemblySource").Select(s => s.EvaluatedInclude).ToArray();
 
 			if(!string.IsNullOrEmpty(_bindingsPaths))
 			{
@@ -47,7 +50,7 @@ namespace Uno.UI.SourceGenerators.TSBindings
 
 				var modules = from ext in context.Compilation.ExternalReferences
 							  let sym = context.Compilation.GetAssemblyOrModuleSymbol(ext) as IAssemblySymbol
-							  where sym != null
+							  where _sourceAssemblies.Contains(sym.Name)
 							  from module in sym.Modules
 							  select module;
 
@@ -60,12 +63,12 @@ namespace Uno.UI.SourceGenerators.TSBindings
 		internal void GenerateTSMarshallingLayouts(IEnumerable<IModuleSymbol> modules)
 		{
 			var messageTypes = from module in modules
-					from type in module.GlobalNamespace.GetNamespaceTypes()
-					where (
-						type.FindAttributeFlattened(_interopMessageSymbol) != null
-						&& type.TypeKind == TypeKind.Struct
-					)
-					select type;
+							   from type in GetNamespaceTypes(module)
+							   where (
+								   type.FindAttributeFlattened(_interopMessageSymbol) != null
+								   && type.TypeKind == TypeKind.Struct
+							   )
+							   select type;
 
 			messageTypes = messageTypes.ToArray();
 
@@ -103,13 +106,26 @@ namespace Uno.UI.SourceGenerators.TSBindings
 			}
 		}
 
+		private static IEnumerable<INamedTypeSymbol> GetNamespaceTypes(IModuleSymbol module)
+		{
+			foreach(var type in module.GlobalNamespace.GetNamespaceTypes())
+			{
+				yield return type;
+
+				foreach(var inner in type.GetTypeMembers())
+				{
+					yield return inner;
+				}
+			}
+		}
+
 		private int GetStructPack(INamedTypeSymbol parametersType)
 		{
 			// https://github.com/dotnet/roslyn/blob/master/src/Compilers/Core/Portable/Symbols/TypeLayout.cs is not available.
 
-			if(parametersType.GetType().GetProperty("Layout", System.Reflection.BindingFlags.Instance|System.Reflection.BindingFlags.NonPublic) is PropertyInfo info)
+			if (parametersType.GetType().GetProperty("Layout", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic) is PropertyInfo info)
 			{
-				if(info.GetValue(parametersType) is object typeLayout)
+				if (info.GetValue(parametersType) is object typeLayout)
 				{
 					if (typeLayout.GetType().GetProperty("Kind", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic) is PropertyInfo layoutKingProperty)
 					{
@@ -129,6 +145,24 @@ namespace Uno.UI.SourceGenerators.TSBindings
 			}
 
 			throw new InvalidOperationException($"Failed to get structure layout, unknown roslyn internal structure");
+		}
+
+		private bool IsMarshalledExplicitly(IFieldSymbol fieldSymbol)
+		{
+			// https://github.com/dotnet/roslyn/blob/0610c79807fa59d0815f2b89e5283cf6d630b71e/src/Compilers/CSharp/Portable/Symbols/Metadata/PE/PEFieldSymbol.cs#L133 is not available.
+
+			if (fieldSymbol.GetType().GetProperty(
+				"IsMarshalledExplicitly",
+				System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic) is PropertyInfo info
+			)
+			{
+				if (info.GetValue(fieldSymbol) is bool isMarshalledExplicitly)
+				{
+					return isMarshalledExplicitly;
+				}
+			}
+
+			throw new InvalidOperationException($"Failed to IsMarshalledExplicitly, unknown roslyn internal structure");
 		}
 
 		private void GenerateMarshaler(INamedTypeSymbol parametersType, IndentedStringBuilder sb, int packValue)
@@ -195,6 +229,12 @@ namespace Uno.UI.SourceGenerators.TSBindings
 
 					if (field.Type is IArrayTypeSymbol arraySymbol)
 					{
+						if (!IsMarshalledExplicitly(field))
+						{
+							// This is required by the mono-wasm AOT engine for fields to be properly considered.
+							throw new InvalidOperationException($"The field {field} is an array but does not have a [MarshalAs(UnmanagedType.LPArray)] attribute");
+						}
+
 						var elementType = arraySymbol.ElementType;
 						var elementTSType = GetTSType(elementType);
 						var isElementString = elementType == _stringSymbol;

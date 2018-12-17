@@ -7,8 +7,14 @@ class WindowManagerRemoveViewParams
 	public static unmarshal(pData:number) : WindowManagerRemoveViewParams
 	{
 		let ret = new WindowManagerRemoveViewParams();
-		ret.HtmlId = Number((Module.getValue(pData + 0, "*")));
-		ret.ChildView = Number((Module.getValue(pData + 4, "*")));
+		
+		{
+			ret.HtmlId = Number(Module.getValue(pData + 0, "*"));
+		}
+		
+		{
+			ret.ChildView = Number(Module.getValue(pData + 4, "*"));
+		}
 		return ret;
 	}
 }

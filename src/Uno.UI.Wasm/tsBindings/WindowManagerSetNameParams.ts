@@ -7,8 +7,23 @@ class WindowManagerSetNameParams
 	public static unmarshal(pData:number) : WindowManagerSetNameParams
 	{
 		let ret = new WindowManagerSetNameParams();
-		ret.HtmlId = Number((Module.getValue(pData + 0, "*")));
-		ret.Name = String(Module.UTF8ToString(Module.getValue(pData + 4, "*")));
+		
+		{
+			ret.HtmlId = Number(Module.getValue(pData + 0, "*"));
+		}
+		
+		{
+			var ptr = Module.getValue(pData + 4, "*");
+			if(ptr !== 0)
+			{
+				ret.Name = String(Module.UTF8ToString(ptr));
+			}
+			else
+			
+			{
+				ret.Name = null;
+			}
+		}
 		return ret;
 	}
 }

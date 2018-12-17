@@ -1,13 +1,17 @@
-﻿using System;
+﻿using Microsoft.Extensions.Logging;
+using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System.Text;
+using Uno.Extensions;
 using Uno.Foundation;
 
 namespace Uno.Foundation.Interop
 {
-	public static class TSInteropMarshaller
+	public static class TSInteropMarshaller 
 	{
+		private static readonly Lazy<ILogger> _logger = new Lazy<ILogger>(() => typeof(TSInteropMarshaller).Log());
+
 		public const UnmanagedType LPUTF8Str = (UnmanagedType)48;
 
 		/// <summary>
@@ -32,8 +36,17 @@ namespace Uno.Foundation.Interop
 			// }
 		}
 
-		public static void InvokeJS<TParam>(string methodName, TParam paramStruct)
+		public static void InvokeJS<TParam>(
+			string methodName,
+			TParam paramStruct,
+			[System.Runtime.CompilerServices.CallerMemberName] string memberName = null
+		)
 		{
+			if (_logger.Value.IsEnabled(LogLevel.Debug))
+			{
+				_logger.Value.LogDebug($"InvokeJS for {memberName}/{typeof(TParam)}");
+			}
+			 
 			var pParms = Marshal.AllocHGlobal(Marshal.SizeOf(typeof(TParam)));
 
 			try
@@ -42,6 +55,14 @@ namespace Uno.Foundation.Interop
 
 				var ret = WebAssemblyRuntime.InvokeJSUnmarshalled(methodName, pParms);
 			}
+			catch(Exception e)
+			{
+				if (_logger.Value.IsEnabled(LogLevel.Error))
+				{
+					_logger.Value.LogError($"Failed InvokeJS for {memberName}/{typeof(TParam)}: {e}"); 
+				}
+				throw;
+			}
 			finally
 			{
 				Marshal.DestroyStructure(pParms, typeof(TParam));
@@ -49,8 +70,17 @@ namespace Uno.Foundation.Interop
 			}
 		}
 
-		public static TRet InvokeJS<TParam, TRet>(string methodName, TParam paramStruct) where TRet : new()
+		public static TRet InvokeJS<TParam, TRet>(
+			string methodName,
+			TParam paramStruct,
+			[System.Runtime.CompilerServices.CallerMemberName] string memberName = null
+		) where TRet : new()
 		{
+			if (_logger.Value.IsEnabled(LogLevel.Debug))
+			{
+				_logger.Value.LogDebug($"InvokeJS for {memberName}/{typeof(TParam)}/{typeof(TRet)}");
+			}
+
 			var pParms = Marshal.AllocHGlobal(Marshal.SizeOf(typeof(TParam)));
 			var pReturnValue = Marshal.AllocHGlobal(Marshal.SizeOf(typeof(TRet)));
 
@@ -65,6 +95,14 @@ namespace Uno.Foundation.Interop
 
 				returnValue = (TRet)Marshal.PtrToStructure(pReturnValue, typeof(TRet));
 				return returnValue;
+			}
+			catch (Exception e)
+			{
+				if (_logger.Value.IsEnabled(LogLevel.Error))
+				{
+					_logger.Value.LogDebug($"Failed InvokeJS for {memberName}/{typeof(TParam)}: {e}");
+				}
+				throw;
 			}
 			finally
 			{
