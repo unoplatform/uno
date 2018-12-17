@@ -4,15 +4,16 @@
 	</PropertyGroup>
 
 	<PropertyGroup>
+		<UnoSourceGeneratorUseGenerationHost>false</UnoSourceGeneratorUseGenerationHost>
 		<NoWarn>$(NoWarn);NU1701</NoWarn>
 		
 		<ProduceReferenceAssembly>false</ProduceReferenceAssembly>
 		<Deterministic>true</Deterministic>
-
+ 
 		<TSBindingsPath>$(MSBuildThisFileDirectory)tsBindings</TSBindingsPath>
 	</PropertyGroup>
 
-	<ItemGroup>
+	<ItemGroup> 
 		<EmbeddedResource Include="WasmCSS\**\*.css" />
 		<EmbeddedResource Include="WasmScripts\**\*.js" />
 

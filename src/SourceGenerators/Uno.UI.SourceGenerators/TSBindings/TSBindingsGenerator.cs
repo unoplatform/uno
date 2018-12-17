@@ -14,17 +14,18 @@ namespace Uno.UI.SourceGenerators.TSBindings
 	class TSBindingsGenerator : SourceGenerator
 	{
 		private string _bindingsPaths;
-		private static ITypeSymbol _stringSymbol;
-		private static ITypeSymbol _intSymbol;
-		private static ITypeSymbol _floatSymbol;
-		private static ITypeSymbol _doubleSymbol;
-		private static ITypeSymbol _byteSymbol;
-		private static ITypeSymbol _shortSymbol;
-		private static ITypeSymbol _intPtrSymbol;
-		private static ITypeSymbol _boolSymbol;
-		private static ITypeSymbol _longSymbol;
-		private INamedTypeSymbol _structLayoutSymbol;
-		private INamedTypeSymbol _interopMessageSymbol;
+		private static INamedTypeSymbol _stringSymbol;
+		private static INamedTypeSymbol _intSymbol;
+		private static INamedTypeSymbol _floatSymbol;
+		private static INamedTypeSymbol _doubleSymbol;
+		private static INamedTypeSymbol _byteSymbol;
+		private static INamedTypeSymbol _shortSymbol;
+		private static INamedTypeSymbol _intPtrSymbol;
+		private static INamedTypeSymbol _boolSymbol;
+		private static INamedTypeSymbol _longSymbol;
+		private static INamedTypeSymbol _structLayoutSymbol;
+		private static INamedTypeSymbol _marshalAsAttributeSymbol;
+		private static INamedTypeSymbol _interopMessageSymbol;
 
 		public override void Execute(SourceGeneratorContext context)
 		{
@@ -43,6 +44,7 @@ namespace Uno.UI.SourceGenerators.TSBindings
 				_boolSymbol = context.Compilation.GetTypeByMetadataName("System.Boolean");
 				_longSymbol = context.Compilation.GetTypeByMetadataName("System.Int64");
 				_structLayoutSymbol = context.Compilation.GetTypeByMetadataName(typeof(System.Runtime.InteropServices.StructLayoutAttribute).FullName);
+				_marshalAsAttributeSymbol = context.Compilation.GetTypeByMetadataName(typeof(System.Runtime.InteropServices.MarshalAsAttribute).FullName);
 				_interopMessageSymbol = context.Compilation.GetTypeByMetadataName("Uno.Foundation.Interop.TSInteropMessageAttribute");
 
 				var modules = from ext in context.Compilation.ExternalReferences
@@ -60,12 +62,12 @@ namespace Uno.UI.SourceGenerators.TSBindings
 		internal void GenerateTSMarshallingLayouts(IEnumerable<IModuleSymbol> modules)
 		{
 			var messageTypes = from module in modules
-					from type in module.GlobalNamespace.GetNamespaceTypes()
-					where (
-						type.FindAttributeFlattened(_interopMessageSymbol) != null
-						&& type.TypeKind == TypeKind.Struct
-					)
-					select type;
+							   from type in GetNamespaceTypes(module)
+							   where (
+								   type.FindAttributeFlattened(_interopMessageSymbol) != null
+								   && type.TypeKind == TypeKind.Struct
+							   )
+							   select type;
 
 			messageTypes = messageTypes.ToArray();
 
@@ -100,6 +102,19 @@ namespace Uno.UI.SourceGenerators.TSBindings
 				var outputPath = Path.Combine(_bindingsPaths, $"{messageType.Name}.ts");
 
 				File.WriteAllText(outputPath, sb.ToString());
+			}
+		}
+
+		private static IEnumerable<INamedTypeSymbol> GetNamespaceTypes(IModuleSymbol module)
+		{
+			foreach(var type in module.GlobalNamespace.GetNamespaceTypes())
+			{
+				yield return type;
+
+				foreach(var inner in type.GetTypeMembers())
+				{
+					yield return inner;
+				}
 			}
 		}
 
@@ -144,6 +159,7 @@ namespace Uno.UI.SourceGenerators.TSBindings
 
 					if (field.Type is IArrayTypeSymbol arraySymbol)
 					{
+						// This is required by the mono-wasm AOT engine for fields to be properly considered.
 						throw new NotSupportedException($"Return value array fields are not supported ({field})");
 					}
 					else
@@ -195,6 +211,11 @@ namespace Uno.UI.SourceGenerators.TSBindings
 
 					if (field.Type is IArrayTypeSymbol arraySymbol)
 					{
+						if(field.GetAllAttributes().Where(a => a.AttributeClass == _marshalAsAttributeSymbol).None())
+						{
+							throw new InvalidOperationException($"The field {field} is an array but does not have a [MarshalAs(UnmanagedType.LPArray)] attribute");
+						}
+
 						var elementType = arraySymbol.ElementType;
 						var elementTSType = GetTSType(elementType);
 						var isElementString = elementType == _stringSymbol;

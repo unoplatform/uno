@@ -8,9 +8,18 @@ class WindowManagerMeasureViewParams
 	public static unmarshal(pData:number) : WindowManagerMeasureViewParams
 	{
 		let ret = new WindowManagerMeasureViewParams();
-		ret.HtmlId = Number((Module.getValue(pData + 0, "*")));
-		ret.AvailableWidth = Number((Module.getValue(pData + 8, "double")));
-		ret.AvailableHeight = Number((Module.getValue(pData + 16, "double")));
+		
+		{
+			ret.HtmlId = Number(Module.getValue(pData + 0, "*"));
+		}
+		
+		{
+			ret.AvailableWidth = Number(Module.getValue(pData + 8, "double"));
+		}
+		
+		{
+			ret.AvailableHeight = Number(Module.getValue(pData + 16, "double"));
+		}
 		return ret;
 	}
 }

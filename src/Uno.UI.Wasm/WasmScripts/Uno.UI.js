@@ -1154,9 +1154,15 @@ window.Uno = Uno;
 class WindowManagerAddViewParams {
     static unmarshal(pData) {
         let ret = new WindowManagerAddViewParams();
-        ret.HtmlId = Number((Module.getValue(pData + 0, "*")));
-        ret.ChildView = Number((Module.getValue(pData + 4, "*")));
-        ret.Index = Number((Module.getValue(pData + 8, "i32")));
+        {
+            ret.HtmlId = Number(Module.getValue(pData + 0, "*"));
+        }
+        {
+            ret.ChildView = Number(Module.getValue(pData + 4, "*"));
+        }
+        {
+            ret.Index = Number(Module.getValue(pData + 8, "i32"));
+        }
         return ret;
     }
 }
@@ -1164,19 +1170,58 @@ class WindowManagerAddViewParams {
 class WindowManagerCreateContentParams {
     static unmarshal(pData) {
         let ret = new WindowManagerCreateContentParams();
-        ret.HtmlId = Number((Module.getValue(pData + 0, "*")));
-        ret.TagName = String(Module.UTF8ToString(Module.getValue(pData + 4, "*")));
-        ret.Handle = Number((Module.getValue(pData + 8, "*")));
-        ret.Type = String(Module.UTF8ToString(Module.getValue(pData + 12, "*")));
-        ret.IsSvg = Boolean((Module.getValue(pData + 16, "i32")));
-        ret.IsFrameworkElement = Boolean((Module.getValue(pData + 20, "i32")));
-        ret.IsFocusable = Boolean((Module.getValue(pData + 24, "i32")));
-        ret.Classes_Length = Number((Module.getValue(pData + 28, "i32")));
         {
-            ret.Classes = new Array();
+            ret.HtmlId = Number(Module.getValue(pData + 0, "*"));
+        }
+        {
+            var ptr = Module.getValue(pData + 4, "*");
+            if (ptr !== 0) {
+                ret.TagName = String(Module.UTF8ToString(ptr));
+            }
+            else {
+                ret.TagName = null;
+            }
+        }
+        {
+            ret.Handle = Number(Module.getValue(pData + 8, "*"));
+        }
+        {
+            var ptr = Module.getValue(pData + 12, "*");
+            if (ptr !== 0) {
+                ret.Type = String(Module.UTF8ToString(ptr));
+            }
+            else {
+                ret.Type = null;
+            }
+        }
+        {
+            ret.IsSvg = Boolean(Module.getValue(pData + 16, "i32"));
+        }
+        {
+            ret.IsFrameworkElement = Boolean(Module.getValue(pData + 20, "i32"));
+        }
+        {
+            ret.IsFocusable = Boolean(Module.getValue(pData + 24, "i32"));
+        }
+        {
+            ret.Classes_Length = Number(Module.getValue(pData + 28, "i32"));
+        }
+        {
             var pArray = Module.getValue(pData + 32, "*");
-            for (var i = 0; i < ret.Classes_Length; i++) {
-                ret.Classes.push(String(MonoRuntime.conv_string(Module.getValue(pArray + i * 4, "*"))));
+            if (pArray !== 0) {
+                ret.Classes = new Array();
+                for (var i = 0; i < ret.Classes_Length; i++) {
+                    var value = Module.getValue(pArray + i * 4, "*");
+                    if (value !== 0) {
+                        ret.Classes.push(String(MonoRuntime.conv_string(value)));
+                    }
+                    else {
+                        ret.Classes.push(null);
+                    }
+                }
+            }
+            else {
+                ret.Classes = null;
             }
         }
         return ret;
@@ -1186,7 +1231,9 @@ class WindowManagerCreateContentParams {
 class WindowManagerDestroyViewParams {
     static unmarshal(pData) {
         let ret = new WindowManagerDestroyViewParams();
-        ret.HtmlId = Number((Module.getValue(pData + 0, "*")));
+        {
+            ret.HtmlId = Number(Module.getValue(pData + 0, "*"));
+        }
         return ret;
     }
 }
@@ -1194,7 +1241,9 @@ class WindowManagerDestroyViewParams {
 class WindowManagerGetBBoxParams {
     static unmarshal(pData) {
         let ret = new WindowManagerGetBBoxParams();
-        ret.HtmlId = Number((Module.getValue(pData + 0, "*")));
+        {
+            ret.HtmlId = Number(Module.getValue(pData + 0, "*"));
+        }
         return ret;
     }
 }
@@ -1211,9 +1260,15 @@ class WindowManagerGetBBoxReturn {
 class WindowManagerMeasureViewParams {
     static unmarshal(pData) {
         let ret = new WindowManagerMeasureViewParams();
-        ret.HtmlId = Number((Module.getValue(pData + 0, "*")));
-        ret.AvailableWidth = Number((Module.getValue(pData + 8, "double")));
-        ret.AvailableHeight = Number((Module.getValue(pData + 16, "double")));
+        {
+            ret.HtmlId = Number(Module.getValue(pData + 0, "*"));
+        }
+        {
+            ret.AvailableWidth = Number(Module.getValue(pData + 8, "double"));
+        }
+        {
+            ret.AvailableHeight = Number(Module.getValue(pData + 16, "double"));
+        }
         return ret;
     }
 }
@@ -1228,11 +1283,39 @@ class WindowManagerMeasureViewReturn {
 class WindowManagerRegisterEventOnViewParams {
     static unmarshal(pData) {
         let ret = new WindowManagerRegisterEventOnViewParams();
-        ret.HtmlId = Number((Module.getValue(pData + 0, "*")));
-        ret.EventName = String(Module.UTF8ToString(Module.getValue(pData + 4, "*")));
-        ret.OnCapturePhase = Boolean((Module.getValue(pData + 8, "i32")));
-        ret.EventFilterName = String(Module.UTF8ToString(Module.getValue(pData + 12, "*")));
-        ret.EventExtractorName = String(Module.UTF8ToString(Module.getValue(pData + 16, "*")));
+        {
+            ret.HtmlId = Number(Module.getValue(pData + 0, "*"));
+        }
+        {
+            var ptr = Module.getValue(pData + 4, "*");
+            if (ptr !== 0) {
+                ret.EventName = String(Module.UTF8ToString(ptr));
+            }
+            else {
+                ret.EventName = null;
+            }
+        }
+        {
+            ret.OnCapturePhase = Boolean(Module.getValue(pData + 8, "i32"));
+        }
+        {
+            var ptr = Module.getValue(pData + 12, "*");
+            if (ptr !== 0) {
+                ret.EventFilterName = String(Module.UTF8ToString(ptr));
+            }
+            else {
+                ret.EventFilterName = null;
+            }
+        }
+        {
+            var ptr = Module.getValue(pData + 16, "*");
+            if (ptr !== 0) {
+                ret.EventExtractorName = String(Module.UTF8ToString(ptr));
+            }
+            else {
+                ret.EventExtractorName = null;
+            }
+        }
         return ret;
     }
 }
@@ -1240,8 +1323,12 @@ class WindowManagerRegisterEventOnViewParams {
 class WindowManagerRemoveViewParams {
     static unmarshal(pData) {
         let ret = new WindowManagerRemoveViewParams();
-        ret.HtmlId = Number((Module.getValue(pData + 0, "*")));
-        ret.ChildView = Number((Module.getValue(pData + 4, "*")));
+        {
+            ret.HtmlId = Number(Module.getValue(pData + 0, "*"));
+        }
+        {
+            ret.ChildView = Number(Module.getValue(pData + 4, "*"));
+        }
         return ret;
     }
 }
@@ -1249,13 +1336,28 @@ class WindowManagerRemoveViewParams {
 class WindowManagerResetStyleParams {
     static unmarshal(pData) {
         let ret = new WindowManagerResetStyleParams();
-        ret.HtmlId = Number((Module.getValue(pData + 0, "*")));
-        ret.Styles_Length = Number((Module.getValue(pData + 4, "i32")));
         {
-            ret.Styles = new Array();
+            ret.HtmlId = Number(Module.getValue(pData + 0, "*"));
+        }
+        {
+            ret.Styles_Length = Number(Module.getValue(pData + 4, "i32"));
+        }
+        {
             var pArray = Module.getValue(pData + 8, "*");
-            for (var i = 0; i < ret.Styles_Length; i++) {
-                ret.Styles.push(String(MonoRuntime.conv_string(Module.getValue(pArray + i * 4, "*"))));
+            if (pArray !== 0) {
+                ret.Styles = new Array();
+                for (var i = 0; i < ret.Styles_Length; i++) {
+                    var value = Module.getValue(pArray + i * 4, "*");
+                    if (value !== 0) {
+                        ret.Styles.push(String(MonoRuntime.conv_string(value)));
+                    }
+                    else {
+                        ret.Styles.push(null);
+                    }
+                }
+            }
+            else {
+                ret.Styles = null;
             }
         }
         return ret;
@@ -1265,13 +1367,28 @@ class WindowManagerResetStyleParams {
 class WindowManagerSetAttributeParams {
     static unmarshal(pData) {
         let ret = new WindowManagerSetAttributeParams();
-        ret.HtmlId = Number((Module.getValue(pData + 0, "*")));
-        ret.Pairs_Length = Number((Module.getValue(pData + 4, "i32")));
         {
-            ret.Pairs = new Array();
+            ret.HtmlId = Number(Module.getValue(pData + 0, "*"));
+        }
+        {
+            ret.Pairs_Length = Number(Module.getValue(pData + 4, "i32"));
+        }
+        {
             var pArray = Module.getValue(pData + 8, "*");
-            for (var i = 0; i < ret.Pairs_Length; i++) {
-                ret.Pairs.push(String(MonoRuntime.conv_string(Module.getValue(pArray + i * 4, "*"))));
+            if (pArray !== 0) {
+                ret.Pairs = new Array();
+                for (var i = 0; i < ret.Pairs_Length; i++) {
+                    var value = Module.getValue(pArray + i * 4, "*");
+                    if (value !== 0) {
+                        ret.Pairs.push(String(MonoRuntime.conv_string(value)));
+                    }
+                    else {
+                        ret.Pairs.push(null);
+                    }
+                }
+            }
+            else {
+                ret.Pairs = null;
             }
         }
         return ret;
@@ -1281,8 +1398,18 @@ class WindowManagerSetAttributeParams {
 class WindowManagerSetContentHtmlParams {
     static unmarshal(pData) {
         let ret = new WindowManagerSetContentHtmlParams();
-        ret.HtmlId = Number((Module.getValue(pData + 0, "*")));
-        ret.Html = String(Module.UTF8ToString(Module.getValue(pData + 4, "*")));
+        {
+            ret.HtmlId = Number(Module.getValue(pData + 0, "*"));
+        }
+        {
+            var ptr = Module.getValue(pData + 4, "*");
+            if (ptr !== 0) {
+                ret.Html = String(Module.UTF8ToString(ptr));
+            }
+            else {
+                ret.Html = null;
+            }
+        }
         return ret;
     }
 }
@@ -1290,8 +1417,18 @@ class WindowManagerSetContentHtmlParams {
 class WindowManagerSetNameParams {
     static unmarshal(pData) {
         let ret = new WindowManagerSetNameParams();
-        ret.HtmlId = Number((Module.getValue(pData + 0, "*")));
-        ret.Name = String(Module.UTF8ToString(Module.getValue(pData + 4, "*")));
+        {
+            ret.HtmlId = Number(Module.getValue(pData + 0, "*"));
+        }
+        {
+            var ptr = Module.getValue(pData + 4, "*");
+            if (ptr !== 0) {
+                ret.Name = String(Module.UTF8ToString(ptr));
+            }
+            else {
+                ret.Name = null;
+            }
+        }
         return ret;
     }
 }
@@ -1299,13 +1436,28 @@ class WindowManagerSetNameParams {
 class WindowManagerSetPropertyParams {
     static unmarshal(pData) {
         let ret = new WindowManagerSetPropertyParams();
-        ret.HtmlId = Number((Module.getValue(pData + 0, "*")));
-        ret.Pairs_Length = Number((Module.getValue(pData + 4, "i32")));
         {
-            ret.Pairs = new Array();
+            ret.HtmlId = Number(Module.getValue(pData + 0, "*"));
+        }
+        {
+            ret.Pairs_Length = Number(Module.getValue(pData + 4, "i32"));
+        }
+        {
             var pArray = Module.getValue(pData + 8, "*");
-            for (var i = 0; i < ret.Pairs_Length; i++) {
-                ret.Pairs.push(String(MonoRuntime.conv_string(Module.getValue(pArray + i * 4, "*"))));
+            if (pArray !== 0) {
+                ret.Pairs = new Array();
+                for (var i = 0; i < ret.Pairs_Length; i++) {
+                    var value = Module.getValue(pArray + i * 4, "*");
+                    if (value !== 0) {
+                        ret.Pairs.push(String(MonoRuntime.conv_string(value)));
+                    }
+                    else {
+                        ret.Pairs.push(null);
+                    }
+                }
+            }
+            else {
+                ret.Pairs = null;
             }
         }
         return ret;
@@ -1315,14 +1467,31 @@ class WindowManagerSetPropertyParams {
 class WindowManagerSetStylesParams {
     static unmarshal(pData) {
         let ret = new WindowManagerSetStylesParams();
-        ret.HtmlId = Number((Module.getValue(pData + 0, "*")));
-        ret.SetAsArranged = Boolean((Module.getValue(pData + 4, "i32")));
-        ret.Pairs_Length = Number((Module.getValue(pData + 8, "i32")));
         {
-            ret.Pairs = new Array();
+            ret.HtmlId = Number(Module.getValue(pData + 0, "*"));
+        }
+        {
+            ret.SetAsArranged = Boolean(Module.getValue(pData + 4, "i32"));
+        }
+        {
+            ret.Pairs_Length = Number(Module.getValue(pData + 8, "i32"));
+        }
+        {
             var pArray = Module.getValue(pData + 12, "*");
-            for (var i = 0; i < ret.Pairs_Length; i++) {
-                ret.Pairs.push(String(MonoRuntime.conv_string(Module.getValue(pArray + i * 4, "*"))));
+            if (pArray !== 0) {
+                ret.Pairs = new Array();
+                for (var i = 0; i < ret.Pairs_Length; i++) {
+                    var value = Module.getValue(pArray + i * 4, "*");
+                    if (value !== 0) {
+                        ret.Pairs.push(String(MonoRuntime.conv_string(value)));
+                    }
+                    else {
+                        ret.Pairs.push(null);
+                    }
+                }
+            }
+            else {
+                ret.Pairs = null;
             }
         }
         return ret;

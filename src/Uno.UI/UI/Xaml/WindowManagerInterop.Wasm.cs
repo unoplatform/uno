@@ -68,12 +68,12 @@ namespace Uno.UI.Xaml
 		{
 			public IntPtr HtmlId;
 
-			[MarshalAs(UnmanagedType.LPStr)]
+			[MarshalAs(TSInteropMarshaller.LPUTF8Str)]
 			public string TagName;
 
 			public IntPtr Handle;
 
-			[MarshalAs(UnmanagedType.LPStr)]
+			[MarshalAs(TSInteropMarshaller.LPUTF8Str)]
 			public string Type;
 
 			public bool IsSvg;
@@ -82,7 +82,7 @@ namespace Uno.UI.Xaml
 
 			public int Classes_Length;
 
-			[MarshalAs(UnmanagedType.LPArray, ArraySubType = UnmanagedType.LPStr)]
+			[MarshalAs(UnmanagedType.LPArray, ArraySubType = TSInteropMarshaller.LPUTF8Str)]
 			public string[] Classes;
 		}
 
@@ -185,6 +185,7 @@ namespace Uno.UI.Xaml
 
 			public int Pairs_Length;
 
+			[MarshalAs(UnmanagedType.LPArray, ArraySubType = UnmanagedType.LPStr)]
 			public string[] Pairs;
 		}
 
@@ -272,6 +273,7 @@ namespace Uno.UI.Xaml
 
 			public int Pairs_Length;
 
+			[MarshalAs(UnmanagedType.LPArray, ArraySubType = TSInteropMarshaller.LPUTF8Str)]
 			public string[] Pairs;
 		}
 
@@ -304,6 +306,7 @@ namespace Uno.UI.Xaml
 		{
 			public IntPtr HtmlId;
 
+			[MarshalAs(TSInteropMarshaller.LPUTF8Str)]
 			public string Name;
 		}
 		#endregion
@@ -349,6 +352,7 @@ namespace Uno.UI.Xaml
 
 			public int Pairs_Length;
 
+			[MarshalAs(UnmanagedType.LPArray, ArraySubType = TSInteropMarshaller.LPUTF8Str)]
 			public string[] Pairs;
 		}
 
@@ -450,6 +454,7 @@ namespace Uno.UI.Xaml
 
 			public int Styles_Length;
 
+			[MarshalAs(UnmanagedType.LPArray, ArraySubType = TSInteropMarshaller.LPUTF8Str)]
 			public string[] Styles;
 		}
 		#endregion
@@ -485,12 +490,15 @@ namespace Uno.UI.Xaml
 		{
 			public IntPtr HtmlId;
 
+			[MarshalAs(TSInteropMarshaller.LPUTF8Str)]
 			public string EventName;
 
 			public bool OnCapturePhase;
 
+			[MarshalAs(TSInteropMarshaller.LPUTF8Str)]
 			public string EventFilterName;
 
+			[MarshalAs(TSInteropMarshaller.LPUTF8Str)]
 			public string EventExtractorName;
 		}
 		#endregion
@@ -567,6 +575,8 @@ namespace Uno.UI.Xaml
 		private struct WindowManagerSetContentHtmlParams
 		{
 			public IntPtr HtmlId;
+
+			[MarshalAs(TSInteropMarshaller.LPUTF8Str)]
 			public string Html;
 		}
 
