@@ -63,6 +63,7 @@
  * 138537 [iOS] App freezes after State selection causing infinite load on every subsequent launch
  * Fix invalid Border Content type for macOS
  * Don't fail iOS ListView if item Content is null 
+ * [Wasm] Implement naive refresh for items manipulation in the ListViewBase
 
 ## Release 1.42
 

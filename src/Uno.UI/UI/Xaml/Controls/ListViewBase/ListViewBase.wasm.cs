@@ -25,15 +25,30 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		private void AddItems(int firstItem, int count, int section) => throw new NotImplementedException();
+		private void AddItems(int firstItem, int count, int section)
+		{
+			Refresh();
+		}
 
-		private void RemoveItems(int firstItem, int count, int section) => throw new NotImplementedException();
+		private void RemoveItems(int firstItem, int count, int section)
+		{
+			Refresh();
+		}
 
-		private void AddGroup(int groupIndexInView) => throw new NotImplementedException();
+		private void AddGroup(int groupIndexInView)
+		{
+			Refresh();
+		}
 
-		private void RemoveGroup(int groupIndexInView) => throw new NotImplementedException();
+		private void RemoveGroup(int groupIndexInView)
+		{
+			Refresh();
+		}
 
-		private void ReplaceGroup(int groupIndexInView) => throw new NotImplementedException();
+		private void ReplaceGroup(int groupIndexInView)
+		{
+			Refresh();
+		}
 
 		private ContentControl ContainerFromGroupIndex(int groupIndex) => throw new NotImplementedException();
 
