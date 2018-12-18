@@ -14,7 +14,7 @@ namespace Uno.UI.Tests.ItemsControlTests
 {
 	[TestClass]
 	public class Given_ItemsControl
-    {
+	{
 		[TestMethod]
 		public void When_EarlyItems()
 		{
@@ -95,10 +95,34 @@ namespace Uno.UI.Tests.ItemsControlTests
 			};
 
 			Assert.IsNull(SUT.ItemsPresenter);
-			
+
 			itemsPresenter.ForceLoaded();
 
 			Assert.IsNotNull(SUT.ItemsPresenter);
+		}
+
+		[TestMethod]
+		public void When_OnItemsSourceChanged()
+		{
+			var count = 0;
+			var panel = new StackPanel();
+
+			var SUT = new ItemsControl()
+			{
+				ItemsPanelRoot = panel,
+				InternalItemsPanelRoot = panel,
+				ItemTemplate = new DataTemplate(() =>
+				{
+					count++;
+					return new Border();
+				}),
+				ItemsSource = new[]
+				{
+					"Item1"
+				}
+			};
+			
+			Assert.AreEqual(1, count);
 		}
 	}
 
