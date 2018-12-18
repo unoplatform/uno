@@ -30,7 +30,7 @@
 * Fixed fallback support for Style property set via ThemeResource
 * Add support for multiple resw folders with upri resource generation 
 * Add support for `ThicknessHelper`
-* ResourceLoader adjustments … 
+* ResourceLoader adjustments â€¦ 
   * CurrentUICulture and CurrentCulture are set when setting ResourceLoader .DefaultCulture
   * upri load now ignores resources not used by the current culture
 * Add BrushConverter support for Color input 
@@ -39,6 +39,7 @@
 * Add support for IsItemItsOwnContainer iOS ListView 
 * Add missing Android Sample App symbols font
 * Raise Application.UnhandledException event on failed navigation
+* Adjusts the `Microsoft.NETCore.UniversalWindowsPlatform` version in the UWP head template to avoid assembly loading issues when using the Uno library template in the sample solution.
 
 ### Breaking changes
 * Refactored ToggleSwitch Default Native XAML Styles. (cf. 'NativeDefaultToggleSwitch' styles in Generic.Native.xaml)
