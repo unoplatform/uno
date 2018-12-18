@@ -285,13 +285,19 @@ namespace Windows.UI.Xaml.Controls
 			// The _decreaseRect's height/width is updated, which in turn pushes or pulls the Thumb to its correct position
 			if (Orientation == Orientation.Horizontal)
 			{
-				var maxWidth = ActualWidth - _horizontalThumb.ActualWidth;
-				_horizontalDecreaseRect.Width = (float)((Value - Minimum) / (Maximum - Minimum)) * maxWidth;
+                if (_horizontalThumb != null && _horizontalDecreaseRect != null)
+                {
+                    var maxWidth = ActualWidth - _horizontalThumb.ActualWidth;
+                    _horizontalDecreaseRect.Width = (float)((Value - Minimum) / (Maximum - Minimum)) * maxWidth;
+                }
 			}
 			else
 			{
-				var maxHeight = ActualHeight - _horizontalThumb.ActualHeight;
-				_verticalDecreaseRect.Height = (float)((Value - Minimum) / (Maximum - Minimum)) * maxHeight;
+                if (_verticalThumb != null && _verticalDecreaseRect != null)
+                {
+                    var maxHeight = ActualHeight - _verticalThumb.ActualHeight;
+                    _verticalDecreaseRect.Height = (float)((Value - Minimum) / (Maximum - Minimum)) * maxHeight;
+                }
 			}
 		}
 

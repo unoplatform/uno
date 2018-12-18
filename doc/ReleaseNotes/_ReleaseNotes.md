@@ -65,6 +65,7 @@
  * Don't fail iOS ListView if item Content is null 
  * [Wasm] Implement naive refresh for items manipulation in the ListViewBase
  * 3326 [iOS][ItemsControl] ItemsControl in FlipView does not restore items properly
+ * Fix NRE in Slider when no template is applied
 
 ## Release 1.42
 
