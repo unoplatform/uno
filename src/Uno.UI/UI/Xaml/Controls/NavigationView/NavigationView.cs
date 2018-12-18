@@ -3046,7 +3046,7 @@ namespace Windows.UI.Xaml.Controls
 						width += backButtonWidth;
 					}
 
-					if (!m_isClosedCompact && PaneTitle.Length > 0)
+					if (!m_isClosedCompact && PaneTitle?.Length > 0)
 					{
 						if (splitView.DisplayMode == SplitViewDisplayMode.Overlay && IsPaneOpen)
 						{
