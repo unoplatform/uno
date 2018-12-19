@@ -346,6 +346,11 @@ namespace Windows.UI.Xaml.Controls
 		/// </summary>
 		private void ReleasePages(IList<PageStackEntry> pageStackEntries)
 		{
+			foreach (var entry in pageStackEntries)
+			{
+				entry.Instance.Frame = null;
+			}
+
 			if (!FeatureConfiguration.Page.IsPoolingEnabled)
 			{
 				return;

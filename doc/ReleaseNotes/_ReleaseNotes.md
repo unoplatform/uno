@@ -66,6 +66,7 @@
  * [Wasm] Implement naive refresh for items manipulation in the ListViewBase
  * 3326 [iOS][ItemsControl] ItemsControl in FlipView does not restore items properly
  * Fix NRE in Slider when no template is applied
+ * Fix `Frame` does not unset `Page.Frame` when a page is removed
 
 ## Release 1.42
 
