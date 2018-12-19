@@ -63,7 +63,10 @@ namespace Windows.UI.Xaml
 						// traversal, to avoid paying the cost of overriden method interop
 						e.IsManagedLoaded = true;
 
-						e.PerformOnLoaded();
+						// Calling this method is acceptable as it is an abstract method that
+						// will never do interop with the java class. It is required to invoke
+						// Loaded/Unloaded actions.
+						e.OnNativeLoaded();
 					}
 				}
 			}
@@ -100,7 +103,10 @@ namespace Windows.UI.Xaml
 							// traversal, to avoid paying the cost of overriden method interop
 							e.IsManagedLoaded = false;
 
-							e.PerformOnUnloaded();
+							// Calling this method is acceptable as it is an abstract method that
+							// will never do interop with the java class. It is required to invoke
+							// Loaded/Unloaded actions.
+							e.OnNativeUnloaded();
 						}
 						else if (view is ViewGroup childViewGroup)
 						{
