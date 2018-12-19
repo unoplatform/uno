@@ -178,10 +178,9 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			{
 				return InnerGenerateFile();
 			}
-			catch (Exception)
+			catch (Exception e)
 			{
-				this.Log().Error("Processing failed for file {0}".InvariantCultureFormat(_fileDefinition.FilePath));
-				throw;
+				throw new Exception("Processing failed for file {0}".InvariantCultureFormat(_fileDefinition.FilePath), e);
 			}
 		}
 
