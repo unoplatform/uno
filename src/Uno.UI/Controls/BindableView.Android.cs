@@ -82,7 +82,7 @@ namespace Uno.UI.Controls
 		/// <summary>
 		/// Provides a shadowed list of views, used to limit the impact of the marshalling.
 		/// </summary>
-		IReadOnlyList<View> IShadowChildrenProvider.ChildrenShadow => _childrenShadow;
+		List<View> IShadowChildrenProvider.ChildrenShadow => _childrenShadow;
 
 		internal List<View>.Enumerator GetChildrenEnumerator() => _childrenShadow.GetEnumerator();
 
@@ -136,6 +136,15 @@ namespace Uno.UI.Controls
 		/// observer.</remarks>
 		public new virtual void RemoveView(View view)
 		{
+			if (FeatureConfiguration.FrameworkElement.AndroidUseManagedLoadedUnloaded)
+			{
+				if (view is FrameworkElement fe)
+				{
+					fe.IsManagedLoaded = false;
+					fe.PerformOnUnloaded();
+				}
+			}
+
 			_childrenShadow.Remove(view);
 			base.RemoveViewFast(view);
 
@@ -151,6 +160,15 @@ namespace Uno.UI.Controls
 		public new virtual void RemoveViewAt(int index)
 		{
 			var removedView = _childrenShadow[index];
+
+			if (FeatureConfiguration.FrameworkElement.AndroidUseManagedLoadedUnloaded)
+			{
+				if (removedView is FrameworkElement fe)
+				{
+					fe.IsManagedLoaded = false;
+					fe.PerformOnUnloaded();
+				}
+			}
 
 			_childrenShadow.RemoveAt(index);
 			base.RemoveViewAtFast(index);

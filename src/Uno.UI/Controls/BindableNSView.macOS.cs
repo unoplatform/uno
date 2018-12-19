@@ -21,7 +21,7 @@ namespace Uno.UI.Controls
 	{
 		private List<NSView> _shadowChildren = new List<NSView>();
 
-		IReadOnlyList<NSView> IShadowChildrenProvider.ChildrenShadow => _shadowChildren;
+		List<NSView> IShadowChildrenProvider.ChildrenShadow => _shadowChildren;
 
 		internal IReadOnlyList<NSView> ChildrenShadow => _shadowChildren;
 

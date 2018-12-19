@@ -32,6 +32,123 @@ namespace Windows.UI.Xaml
 
 		partial void Initialize();
 
+		protected override void OnNativeLoaded()
+		{
+			try
+			{
+				PerformOnLoaded();
+
+				base.OnNativeLoaded();
+			}
+			catch (Exception ex)
+			{
+				this.Log().Error("OnNativeLoaded failed in FrameworkElementMixins", ex);
+				Application.Current.RaiseRecoverableUnhandledException(ex);
+			}
+		}
+
+		private void PerformOnLoaded()
+		{
+			((IDependencyObjectStoreProvider)this).Store.Parent = base.Parent;
+			OnLoading();
+			OnLoaded();
+
+			if (FeatureConfiguration.FrameworkElement.AndroidUseManagedLoadedUnloaded)
+			{
+				foreach (var child in (this as IShadowChildrenProvider).ChildrenShadow)
+				{
+					if (child is FrameworkElement e)
+					{
+						// Mark this instance as managed loaded through managed children
+						// traversal, to avoid paying the cost of overriden method interop
+						e.IsManagedLoaded = true;
+
+						e.PerformOnLoaded();
+					}
+				}
+			}
+		}
+
+		protected override void OnNativeUnloaded()
+		{
+			try
+			{
+				PerformOnUnloaded();
+
+				base.OnNativeUnloaded();
+			}
+			catch (Exception ex)
+			{
+				this.Log().Error("OnNativeUnloaded failed in FrameworkElementMixins", ex);
+				Application.Current.RaiseRecoverableUnhandledException(ex);
+			}
+		}
+
+		internal void PerformOnUnloaded()
+		{
+			if (FeatureConfiguration.FrameworkElement.AndroidUseManagedLoadedUnloaded)
+			{
+				if (IsNativeLoaded)
+				{
+					OnUnloaded();
+
+					void ProcessView(View view)
+					{
+						if (view is FrameworkElement e)
+						{
+							// Mark this instance as managed loaded through managed children
+							// traversal, to avoid paying the cost of overriden method interop
+							e.IsManagedLoaded = false;
+
+							e.PerformOnUnloaded();
+						}
+						else if (view is ViewGroup childViewGroup)
+						{
+							// If the child is a non-UnoView group,
+							// search its children for uno viewgroups.
+							TraverseChildren(childViewGroup);
+						}
+					}
+
+					void TraverseChildren(ViewGroup viewGroup)
+					{
+						if (viewGroup is IShadowChildrenProvider shadowList)
+						{
+							// Allocation-less enumeration
+							foreach (var child in shadowList.ChildrenShadow)
+							{
+								ProcessView(child);
+							}
+						}
+						else
+						{
+							foreach (var child in viewGroup.GetChildren())
+							{
+								ProcessView(child);
+							}
+						}
+					}
+
+					TraverseChildren(this);
+				}
+			}
+			else
+			{
+				OnUnloaded();
+			}
+		}
+
+		/// <summary>
+		/// Notifies that this view has been removed from its parent. This method is only 
+		/// called when the parent is an UnoViewGroup.
+		/// </summary>
+		protected override void OnRemovedFromParent()
+		{
+			base.OnRemovedFromParent();
+
+			((IDependencyObjectStoreProvider)this).Store.Parent = null;
+		}
+
 		partial void OnLoadedPartial()
 		{
 			// see StretchAffectsMeasure for details.
