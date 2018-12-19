@@ -118,6 +118,10 @@ namespace Uno.UI
 #else
 			"ms-appx:///Assets/Fonts/winjs-symbols.ttf#Symbols";
 #endif
+			/// <summary>
+			/// Ignores text scale factor, resulting in a font size as dictated by the control.
+			/// </summary>
+			public static bool IgnoreTextScaleFactor { get; set; } = false;
 		}
 
 #if __WASM__
