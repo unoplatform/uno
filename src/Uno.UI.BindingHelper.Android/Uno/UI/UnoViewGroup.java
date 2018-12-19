@@ -21,6 +21,8 @@ public abstract class UnoViewGroup
     private boolean _childBlockedTouchEvent;
     private boolean _childIsUnoViewGroup;
 
+    private boolean _isManagedLoaded;
+
 	private boolean _isPointerCaptured;
 	private boolean _isPointInView;
 
@@ -537,7 +539,11 @@ public abstract class UnoViewGroup
     protected final void onAttachedToWindow()
     {
         super.onAttachedToWindow();
-        onNativeLoaded();
+
+		if(!_isManagedLoaded) {
+			onNativeLoaded();
+			_isManagedLoaded = true;
+		}
     }
 
     protected abstract void onNativeLoaded();
@@ -545,10 +551,31 @@ public abstract class UnoViewGroup
     protected final void onDetachedFromWindow()
     {
         super.onDetachedFromWindow();
-        onNativeUnloaded();
+
+		if(_isManagedLoaded) {
+			onNativeUnloaded();
+			_isManagedLoaded = false;
+		}
     }
 
     protected abstract void onNativeUnloaded();
+
+	/**
+	 * Marks this view as loaded from the managed side, so onAttachedToWindow can skip
+	 * calling onNativeLoaded.
+	 */
+	public final void setIsManagedLoaded(boolean value)
+    {
+        _isManagedLoaded = value;
+    }
+
+	/**
+	 * Gets if this view is loaded from the managed side.
+	 */
+    public final boolean getIsManagedLoaded()
+    {
+        return _isManagedLoaded;
+    }
 
     public final void setVisibility(int visibility)
     {

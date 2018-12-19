@@ -38,6 +38,8 @@
 * Add CoreApplication.GetCurrentView() Dispatcher and TitleBar stubs support 
 * Add support for IsItemItsOwnContainer iOS ListView 
 * Add missing Android Sample App symbols font
+* Improve UIElement inner Children enumeration performance and memory usage
+* Add `FeatureConfiguration.FrameworkElement.AndroidUseManagedLoadedUnloaded` to control the native or managed propagation performance of Loaded/Unloaded events through the visual tree
 * Raise Application.UnhandledException event on failed navigation
 * Adjusts the `Microsoft.NETCore.UniversalWindowsPlatform` version in the UWP head template to avoid assembly loading issues when using the Uno library template in the sample solution.
 * [Android] Add support for ListViewItem instances provided via the ItemsSource property
