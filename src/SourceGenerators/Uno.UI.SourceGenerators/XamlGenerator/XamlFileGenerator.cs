@@ -3124,7 +3124,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				if (hasCustomInitalizer)
 				{
 					var propertyType = FindType(xamlObjectDefinition.Type);
-					writer.AppendFormatInvariant(BuildLiteralValue(FindImplicitContentMember(xamlObjectDefinition), propertyType, owner));
+					writer.AppendLine(BuildLiteralValue(FindImplicitContentMember(xamlObjectDefinition), propertyType, owner));
 				}
 				else
 				{
