@@ -129,6 +129,9 @@
     <Compile Include="$(MSBuildThisFileDirectory)Samples\Windows.UI.Xaml.Controls\NavigationViewTests\SettingsPage.xaml.cs">
       <DependentUpon>SettingsPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Samples\Windows.UI.Xaml.Controls\Shapes\StretchPage.xaml.cs">
+      <DependentUpon>StretchPage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Samples\UnitTests\UnitTestsPage.xaml.cs">
       <DependentUpon>UnitTestsPage.xaml</DependentUpon>
     </Compile>
@@ -279,6 +282,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="$(MSBuildThisFileDirectory)Samples\Windows.UI.Xaml.Controls\NavigationViewTests\SettingsPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Samples\Windows.UI.Xaml.Controls\Shapes\StretchPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -20,10 +20,13 @@ namespace Windows.UI.Xaml.Shapes
 			return _ellipse;
 		}
 
-		protected override Size ArrangeOverride(Size finalSize)
+		protected override Size MeasureOverride(Size availableSize)
 		{
-			var cx = finalSize.Width / 2;
-			var cy = finalSize.Height / 2;
+			var width = double.IsNaN(Width) ? LimitWithUserSize(availableSize.Width, Width, 100.0d) : Width;
+			var height = double.IsNaN(Height) ? LimitWithUserSize(availableSize.Height, Height, 100.0d) : Height;
+
+			var cx = width / 2;
+			var cy = height / 2;
 
 			_ellipse.SetAttribute(
 				("cx", cx.ToStringInvariant()),
@@ -31,7 +34,7 @@ namespace Windows.UI.Xaml.Shapes
 				("rx", (cx - ActualStrokeThickness).ToStringInvariant()),
 				("ry", (cy - ActualStrokeThickness).ToStringInvariant()));
 
-			return base.ArrangeOverride(finalSize);
+			return base.MeasureOverride(availableSize);
 		}
 	}
 }
