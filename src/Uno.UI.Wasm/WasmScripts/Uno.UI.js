@@ -289,7 +289,7 @@ var Uno;
                     return new URLSearchParams(window.location.search).toString();
                 }
                 else {
-                    let queryIndex = document.location.search.indexOf('?');
+                    const queryIndex = document.location.search.indexOf('?');
                     if (queryIndex != -1) {
                         return document.location.search.substring(queryIndex + 1);
                     }
@@ -311,8 +311,8 @@ var Uno;
                 * You need to call addView to connect it to the DOM.
                 */
             createContentNative(pParams) {
-                var params = WindowManagerCreateContentParams.unmarshal(pParams);
-                var def = {
+                const params = WindowManagerCreateContentParams.unmarshal(pParams);
+                const def = {
                     id: params.HtmlId,
                     handle: params.Handle,
                     isFocusable: params.IsFocusable,
@@ -365,7 +365,7 @@ var Uno;
                 * This is mostly for diagnostic purposes.
                 */
             setNameNative(pParam) {
-                let params = WindowManagerSetNameParams.unmarshal(pParam);
+                const params = WindowManagerSetNameParams.unmarshal(pParam);
                 this.setNameInternal(params.HtmlId, params.Name);
                 return true;
             }
@@ -395,12 +395,12 @@ var Uno;
                 * Set an attribute for an element.
                 */
             setAttributeNative(pParams) {
-                let params = WindowManagerSetAttributeParams.unmarshal(pParams);
+                const params = WindowManagerSetAttributeParams.unmarshal(pParams);
                 const htmlElement = this.allActiveElementsById[params.HtmlId];
                 if (!htmlElement) {
                     throw `Element id ${params.HtmlId} not found.`;
                 }
-                for (var i = 0; i < params.Pairs_Length; i += 2) {
+                for (let i = 0; i < params.Pairs_Length; i += 2) {
                     htmlElement.setAttribute(params.Pairs[i], params.Pairs[i + 1]);
                 }
                 return true;
@@ -434,12 +434,12 @@ var Uno;
                 * Set a property for an element.
                 */
             setPropertyNative(pParams) {
-                let params = WindowManagerSetPropertyParams.unmarshal(pParams);
+                const params = WindowManagerSetPropertyParams.unmarshal(pParams);
                 const htmlElement = this.allActiveElementsById[params.HtmlId];
                 if (!htmlElement) {
                     throw `Element id ${params.HtmlId} not found.`;
                 }
-                for (var i = 0; i < params.Pairs_Length; i += 2) {
+                for (let i = 0; i < params.Pairs_Length; i += 2) {
                     htmlElement[params.Pairs[i]] = params.Pairs[i + 1];
                 }
                 return true;
@@ -482,14 +482,14 @@ var Uno;
             * @param styles A dictionary of styles to apply on html element.
             */
             setStyleNative(pParams) {
-                let params = WindowManagerSetStylesParams.unmarshal(pParams);
+                const params = WindowManagerSetStylesParams.unmarshal(pParams);
                 const htmlElement = this.allActiveElementsById[params.HtmlId];
                 if (!htmlElement) {
                     throw `Element id ${params.HtmlId} not found.`;
                 }
-                for (var i = 0; i < params.Pairs_Length; i += 2) {
-                    let key = params.Pairs[i];
-                    let value = params.Pairs[i + 1];
+                for (let i = 0; i < params.Pairs_Length; i += 2) {
+                    const key = params.Pairs[i];
+                    const value = params.Pairs[i + 1];
                     htmlElement.style.setProperty(key, value);
                 }
                 if (params.SetAsArranged) {
@@ -514,7 +514,7 @@ var Uno;
                 * @param styles A dictionary of styles to apply on html element.
                 */
             resetStyleNative(pParams) {
-                let params = WindowManagerResetStyleParams.unmarshal(pParams);
+                const params = WindowManagerResetStyleParams.unmarshal(pParams);
                 this.resetStyleInternal(params.HtmlId, params.Styles);
                 return true;
             }
@@ -577,7 +577,7 @@ var Uno;
                 * @param onCapturePhase true means "on trickle down", false means "on bubble up". Default is false.
                 */
             registerEventOnViewNative(pParams) {
-                let params = WindowManagerRegisterEventOnViewParams.unmarshal(pParams);
+                const params = WindowManagerRegisterEventOnViewParams.unmarshal(pParams);
                 this.registerEventOnViewInternal(params.HtmlId, params.EventName, params.OnCapturePhase, params.EventFilterName, params.EventExtractorName);
                 return true;
             }
@@ -710,7 +710,7 @@ var Uno;
                 * @param pParams Pointer to a WindowManagerAddViewParams native structure.
                 */
             addViewNative(pParams) {
-                let params = WindowManagerAddViewParams.unmarshal(pParams);
+                const params = WindowManagerAddViewParams.unmarshal(pParams);
                 this.addViewInternal(params.HtmlId, params.ChildView, params.Index != -1 ? params.Index : null);
                 return true;
             }
@@ -754,7 +754,7 @@ var Uno;
                 * "Unloading" & "Unloaded" events will be raised if nescessary.
                 */
             removeViewNative(pParams) {
-                var params = WindowManagerRemoveViewParams.unmarshal(pParams);
+                const params = WindowManagerRemoveViewParams.unmarshal(pParams);
                 this.removeViewInternal(params.HtmlId, params.ChildView);
                 return true;
             }
@@ -790,7 +790,7 @@ var Uno;
                 * version has been scavenged by the GC.
                 */
             destroyViewNative(pParams) {
-                let params = WindowManagerDestroyViewParams.unmarshal(pParams);
+                const params = WindowManagerDestroyViewParams.unmarshal(pParams);
                 this.destroyViewInternal(params.HtmlId);
                 return true;
             }
@@ -809,17 +809,17 @@ var Uno;
                 if (!htmlElement) {
                     throw `Element id ${elementId} not found.`;
                 }
-                var bounds = htmlElement.getBoundingClientRect();
+                const bounds = htmlElement.getBoundingClientRect();
                 return `${bounds.left};${bounds.top};${bounds.right - bounds.left};${bounds.bottom - bounds.top}`;
             }
             getBBox(elementId) {
-                var bbox = this.getBBoxInternal(elementId);
+                const bbox = this.getBBoxInternal(elementId);
                 return `${bbox.x};${bbox.y};${bbox.width};${bbox.height}`;
             }
             getBBoxNative(pParams, pReturn) {
-                let params = WindowManagerGetBBoxParams.unmarshal(pParams);
-                var bbox = this.getBBoxInternal(params.HtmlId);
-                var ret = new WindowManagerGetBBoxReturn();
+                const params = WindowManagerGetBBoxParams.unmarshal(pParams);
+                const bbox = this.getBBoxInternal(params.HtmlId);
+                const ret = new WindowManagerGetBBoxReturn();
                 ret.X = bbox.x;
                 ret.Y = bbox.y;
                 ret.Width = bbox.width;
@@ -841,7 +841,7 @@ var Uno;
                 * @param maxHeight string containing height in pixels. Empty string means infinite.
                 */
             measureView(viewId, maxWidth, maxHeight) {
-                var ret = this.measureViewInternal(Number(viewId), maxWidth ? Number(maxWidth) : NaN, maxHeight ? Number(maxHeight) : NaN);
+                const ret = this.measureViewInternal(Number(viewId), maxWidth ? Number(maxWidth) : NaN, maxHeight ? Number(maxHeight) : NaN);
                 return `${ret[0]};${ret[1]}`;
             }
             /**
@@ -851,9 +851,9 @@ var Uno;
                 * @param maxHeight string containing height in pixels. Empty string means infinite.
                 */
             measureViewNative(pParams, pReturn) {
-                var params = WindowManagerMeasureViewParams.unmarshal(pParams);
-                var ret = this.measureViewInternal(params.HtmlId, params.AvailableWidth, params.AvailableHeight);
-                var ret2 = new WindowManagerMeasureViewReturn();
+                const params = WindowManagerMeasureViewParams.unmarshal(pParams);
+                const ret = this.measureViewInternal(params.HtmlId, params.AvailableWidth, params.AvailableHeight);
+                const ret2 = new WindowManagerMeasureViewReturn();
                 ret2.DesiredWidth = ret[0];
                 ret2.DesiredHeight = ret[1];
                 ret2.marshal(pReturn);
@@ -911,13 +911,13 @@ var Uno;
                 }
                 if (element.tagName.toUpperCase() === "IMG") {
                     const imgElement = element;
-                    var rawCanvas = document.createElement("canvas");
+                    const rawCanvas = document.createElement("canvas");
                     rawCanvas.width = width;
                     rawCanvas.height = height;
-                    var ctx = rawCanvas.getContext("2d");
-                    var imgData = ctx.createImageData(width, height);
-                    var bufferSize = width * height * 4;
-                    for (var i = 0; i < bufferSize; i += 4) {
+                    const ctx = rawCanvas.getContext("2d");
+                    const imgData = ctx.createImageData(width, height);
+                    const bufferSize = width * height * 4;
+                    for (let i = 0; i < bufferSize; i += 4) {
                         imgData.data[i + 0] = Module.HEAPU8[dataPtr + i + 2];
                         imgData.data[i + 1] = Module.HEAPU8[dataPtr + i + 1];
                         imgData.data[i + 2] = Module.HEAPU8[dataPtr + i + 0];
@@ -946,8 +946,8 @@ var Uno;
                     img.src = url;
                     function buildMonochromeImage() {
                         // create a colored version of img
-                        var c = document.createElement('canvas');
-                        var ctx = c.getContext('2d');
+                        const c = document.createElement('canvas');
+                        const ctx = c.getContext('2d');
                         c.width = img.width;
                         c.height = img.height;
                         ctx.drawImage(img, 0, 0);
@@ -1007,7 +1007,7 @@ var Uno;
                 * WARNING: you should avoid mixing this and `addView` for the same element.
                 */
             setHtmlContentNative(pParams) {
-                let params = WindowManagerSetContentHtmlParams.unmarshal(pParams);
+                const params = WindowManagerSetContentHtmlParams.unmarshal(pParams);
                 this.setHtmlContentInternal(params.HtmlId, params.Html);
                 return true;
             }
@@ -1109,9 +1109,9 @@ var Uno;
                     const htmlIdStr = this.getMonoString(htmlId);
                     const eventNameStr = this.getMonoString(eventName);
                     const eventPayloadStr = this.getMonoString(eventPayload);
-                    var handledHandle = MonoRuntime.call_method(WindowManager.dispatchEventMethod, null, [htmlIdStr, eventNameStr, eventPayloadStr]);
-                    var handledStr = this.fromMonoString(handledHandle);
-                    var handled = handledStr == "True";
+                    const handledHandle = MonoRuntime.call_method(WindowManager.dispatchEventMethod, null, [htmlIdStr, eventNameStr, eventPayloadStr]);
+                    const handledStr = this.fromMonoString(handledHandle);
+                    const handled = handledStr == "True";
                     return handled;
                 }
             }

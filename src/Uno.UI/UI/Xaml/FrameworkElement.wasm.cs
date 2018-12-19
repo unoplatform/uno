@@ -150,7 +150,10 @@ namespace Windows.UI.Xaml
 				"Margin",
 				typeof(Thickness),
 				typeof(FrameworkElement),
-				new PropertyMetadata(Thickness.Empty, OnMeasurePropertyUpdated)
+				new FrameworkPropertyMetadata(
+					defaultValue: Thickness.Empty,
+					options: FrameworkPropertyMetadataOptions.AutoConvert | FrameworkPropertyMetadataOptions.AffectsMeasure
+				)
 		);
 
 		public virtual Thickness Margin
@@ -167,7 +170,10 @@ namespace Windows.UI.Xaml
 				"HorizontalAlignment",
 				typeof(HorizontalAlignment),
 				typeof(FrameworkElement),
-				new PropertyMetadata(HorizontalAlignment.Stretch, OnArrangePropertyUpdated)
+				new FrameworkPropertyMetadata(
+					defaultValue: HorizontalAlignment.Stretch,
+					options: FrameworkPropertyMetadataOptions.AutoConvert | FrameworkPropertyMetadataOptions.AffectsMeasure
+				)
 			);
 
 		public HorizontalAlignment HorizontalAlignment
@@ -184,7 +190,10 @@ namespace Windows.UI.Xaml
 				"VerticalAlignment",
 				typeof(VerticalAlignment),
 				typeof(FrameworkElement),
-				new PropertyMetadata(VerticalAlignment.Stretch, OnArrangePropertyUpdated)
+				new FrameworkPropertyMetadata(
+					defaultValue: VerticalAlignment.Stretch,
+					options: FrameworkPropertyMetadataOptions.AutoConvert | FrameworkPropertyMetadataOptions.AffectsMeasure
+				)
 			);
 
 		public VerticalAlignment VerticalAlignment
@@ -203,8 +212,7 @@ namespace Windows.UI.Xaml
 				typeof(FrameworkElement),
 				new FrameworkPropertyMetadata(
 					defaultValue: double.NaN,
-					propertyChangedCallback: OnMeasurePropertyUpdated,
-					options: FrameworkPropertyMetadataOptions.AutoConvert
+					options: FrameworkPropertyMetadataOptions.AutoConvert | FrameworkPropertyMetadataOptions.AffectsMeasure
 				)
 			);
 
@@ -224,8 +232,7 @@ namespace Windows.UI.Xaml
 				typeof(FrameworkElement),
 				new FrameworkPropertyMetadata(
 					defaultValue: double.NaN,
-					propertyChangedCallback: OnMeasurePropertyUpdated,
-					options: FrameworkPropertyMetadataOptions.AutoConvert
+					options: FrameworkPropertyMetadataOptions.AutoConvert | FrameworkPropertyMetadataOptions.AffectsMeasure
 				)
 			);
 
@@ -244,9 +251,8 @@ namespace Windows.UI.Xaml
 				typeof(double),
 				typeof(FrameworkElement),
 				new FrameworkPropertyMetadata(
-					defaultValue: 0.0,
-					propertyChangedCallback: OnMeasurePropertyUpdated,
-					options: FrameworkPropertyMetadataOptions.AutoConvert
+					defaultValue: 0.0d,
+					options: FrameworkPropertyMetadataOptions.AutoConvert | FrameworkPropertyMetadataOptions.AffectsMeasure
 				)
 			);
 
@@ -265,9 +271,8 @@ namespace Windows.UI.Xaml
 				typeof(double),
 				typeof(FrameworkElement),
 				new FrameworkPropertyMetadata(
-					defaultValue: 0.0,
-					propertyChangedCallback: OnMeasurePropertyUpdated,
-					options: FrameworkPropertyMetadataOptions.AutoConvert
+					defaultValue: 0.0d,
+					options: FrameworkPropertyMetadataOptions.AutoConvert | FrameworkPropertyMetadataOptions.AffectsMeasure
 				)
 			);
 
@@ -287,8 +292,7 @@ namespace Windows.UI.Xaml
 				typeof(FrameworkElement),
 				new FrameworkPropertyMetadata(
 					defaultValue: double.PositiveInfinity,
-					propertyChangedCallback: OnMeasurePropertyUpdated,
-					options: FrameworkPropertyMetadataOptions.AutoConvert
+					options: FrameworkPropertyMetadataOptions.AutoConvert | FrameworkPropertyMetadataOptions.AffectsMeasure
 				)
 			);
 
@@ -308,8 +312,7 @@ namespace Windows.UI.Xaml
 				typeof(FrameworkElement),
 				new FrameworkPropertyMetadata(
 					defaultValue: double.PositiveInfinity,
-					propertyChangedCallback: OnMeasurePropertyUpdated,
-					options: FrameworkPropertyMetadataOptions.AutoConvert
+					options: FrameworkPropertyMetadataOptions.AutoConvert | FrameworkPropertyMetadataOptions.AffectsMeasure
 				)
 			);
 
@@ -319,17 +322,5 @@ namespace Windows.UI.Xaml
 			set { this.SetValue(MaxHeightProperty, value); }
 		}
 		#endregion
-
-		private static void OnMeasurePropertyUpdated(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs args)
-		{
-			var element = dependencyObject as UIElement;
-			element?.InvalidateMeasure();
-		}
-
-		private static void OnArrangePropertyUpdated(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs args)
-		{
-			var element = dependencyObject as UIElement;
-			element?.InvalidateArrange();
-		}
 	}
 }
