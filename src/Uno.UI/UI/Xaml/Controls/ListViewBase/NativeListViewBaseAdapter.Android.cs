@@ -26,6 +26,7 @@ namespace Windows.UI.Xaml.Controls
 		private const int NoTemplateGroupHeaderType = -1;
 		private const int HeaderItemType = -2;
 		private const int FooterItemType = -3;
+		private const int IsOwnContainerType = -4;
 
 		private const int MaxRecycledViewsPerViewType = 10;
 
@@ -87,6 +88,10 @@ namespace Windows.UI.Xaml.Controls
 				container.ContentTemplate = dataTemplate;
 				container.Binding("Content", "");
 			}
+			else if(viewType == IsOwnContainerType)
+			{
+				holder.ItemView = parent?.GetContainerForIndex(index) as View;
+			}
 			else
 			{
 				parent.PrepareContainerForIndex(container, index);
@@ -125,7 +130,7 @@ namespace Windows.UI.Xaml.Controls
 
 		private ContentControl GenerateContainer(int viewType)
 		{
-			if (viewType == HeaderItemType || viewType == FooterItemType)
+			if (viewType == HeaderItemType || viewType == FooterItemType || viewType == IsOwnContainerType)
 			{
 				return ContentControl.CreateItemContainer();
 			}
@@ -159,7 +164,14 @@ namespace Windows.UI.Xaml.Controls
 			}
 			else
 			{
-				viewType = isGroupHeader ? NoTemplateGroupHeaderType : NoTemplateItemType;
+				if (XamlParent?.IsItemItsOwnContainer(item) ?? false)
+				{
+					viewType = IsOwnContainerType;
+				}
+				else
+				{
+					viewType = isGroupHeader ? NoTemplateGroupHeaderType : NoTemplateItemType;
+				}
 			}
 
 			if (isGroupHeader)
