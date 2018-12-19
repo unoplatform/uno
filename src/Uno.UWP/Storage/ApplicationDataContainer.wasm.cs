@@ -58,32 +58,42 @@ namespace Windows.Storage
 			{
 				var folderPath = ApplicationData.Current.LocalFolder.Path;
 				var filePath = Path.Combine(folderPath, UWPFileName);
-
-				if (File.Exists(filePath))
+				try
 				{
-					using (var reader = new BinaryReader(File.OpenRead(filePath)))
-					{
-						var count = reader.ReadInt32();
 
+					if (File.Exists(filePath))
+					{
+						using (var reader = new BinaryReader(File.OpenRead(filePath)))
+						{
+							var count = reader.ReadInt32();
+
+							if (this.Log().IsEnabled(LogLevel.Debug))
+							{
+								this.Log().Debug($"Reading {count} settings values");
+							}
+
+							for (int i = 0; i < count; i++)
+							{
+								var key = reader.ReadString();
+								var value = reader.ReadString();
+
+								_values[key] = value;
+							}
+						}
+					}
+					else
+					{
 						if (this.Log().IsEnabled(LogLevel.Debug))
 						{
-							this.Log().Debug($"Reading {count} settings values");
-						}
-
-						for (int i = 0; i < count; i++)
-						{
-							var key = reader.ReadString();
-							var value = reader.ReadString();
-
-							_values[key] = value;
+							this.Log().Debug($"File {filePath} does not exist, skipping reading settings");
 						}
 					}
 				}
-				else
+				catch (Exception e)
 				{
-					if (this.Log().IsEnabled(LogLevel.Debug))
+					if (this.Log().IsEnabled(LogLevel.Error))
 					{
-						this.Log().Debug($"File {filePath} does not exist, skipping reading settings");
+						this.Log().Error($"Failed to read settings from {filePath}", e);
 					}
 				}
 			}
@@ -93,21 +103,31 @@ namespace Windows.Storage
 				var folderPath = ApplicationData.Current.LocalFolder.Path;
 				var filePath = Path.Combine(folderPath, UWPFileName);
 
-				Directory.CreateDirectory(folderPath);
-
-				if (this.Log().IsEnabled(LogLevel.Debug))
+				try
 				{
-					this.Log().Debug($"Writing {_values.Count} settings to {filePath}");
-				}
+					Directory.CreateDirectory(folderPath);
 
-				using (var writer = new BinaryWriter(File.OpenWrite(filePath)))
-				{
-					writer.Write(_values.Count);
-
-					foreach(var pair in _values)
+					if (this.Log().IsEnabled(LogLevel.Debug))
 					{
-						writer.Write(pair.Key);
-						writer.Write(pair.Value ?? "");
+						this.Log().Debug($"Writing {_values.Count} settings to {filePath}");
+					}
+
+					using (var writer = new BinaryWriter(File.OpenWrite(filePath)))
+					{
+						writer.Write(_values.Count);
+
+						foreach (var pair in _values)
+						{
+							writer.Write(pair.Key);
+							writer.Write(pair.Value ?? "");
+						}
+					}
+				}
+				catch (Exception e)
+				{
+					if (this.Log().IsEnabled(LogLevel.Error))
+					{
+						this.Log().Error($"Failed to write settings to {filePath}", e);
 					}
 				}
 			}
