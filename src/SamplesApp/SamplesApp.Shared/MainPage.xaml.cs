@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using SampleControl.Presentation;
 using SamplesApp.Samples.NavigationViewSample;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
@@ -26,16 +27,8 @@ namespace SamplesApp
 		public MainPage()
 		{
 			this.InitializeComponent();
-		}
 
-		private void OnNavigationView(object sender, RoutedEventArgs e)
-		{
-			Frame.Navigate(typeof(NavigationViewPage));
-		}
-
-		private void OnUnitTests(object sender, RoutedEventArgs e)
-		{
-			Frame.Navigate(typeof(Samples.UnitTests.UnitTestsPage));
+			sampleControl.DataContext = new SampleChooserViewModel();
 		}
 	}
 }

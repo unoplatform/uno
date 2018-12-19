@@ -38,6 +38,8 @@
 * Add CoreApplication.GetCurrentView() Dispatcher and TitleBar stubs support 
 * Add support for IsItemItsOwnContainer iOS ListView 
 * Add missing Android Sample App symbols font
+* Add SampleControl for Samples app for easier browsing and UI Testing of samples
+* Import Border samples
 * Improve UIElement inner Children enumeration performance and memory usage
 * Add `FeatureConfiguration.FrameworkElement.AndroidUseManagedLoadedUnloaded` to control the native or managed propagation performance of Loaded/Unloaded events through the visual tree
 * Raise Application.UnhandledException event on failed navigation
@@ -72,6 +74,8 @@
  * 3326 [iOS][ItemsControl] ItemsControl in FlipView does not restore items properly
  * Fix NRE in Slider when no template is applied
  * Fix `Frame` does not unset `Page.Frame` when a page is removed
+ * Add Wasm PlatformNotSupportedException for System.IO after CoreFX merge in mono
+ * Border properties now invalidates measure and arrange on all platforms
 
 ## Release 1.42
 

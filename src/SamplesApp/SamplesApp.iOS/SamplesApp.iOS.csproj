@@ -18,7 +18,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\iPhoneSimulator\Debug</OutputPath>
-    <DefineConstants>DEBUG</DefineConstants>
+    <DefineConstants>DEBUG;XAMARIN;HAS_UNO</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <ConsolePause>false</ConsolePause>
@@ -43,7 +43,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\iPhone\Debug</OutputPath>
-    <DefineConstants>DEBUG</DefineConstants>
+    <DefineConstants>DEBUG;XAMARIN;HAS_UNO</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <ConsolePause>false</ConsolePause>
@@ -54,6 +54,7 @@
     <MtouchExtraArgs>--xml=./LinkerExclusions.xml --linkskip=$(AssemblyName) --setenv=MONO_GC_PARAMS=soft-heap-limit=512m,nursery-size=64m,evacuation-threshold=66,major=marksweep,concurrent-sweep</MtouchExtraArgs>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|iPhone' ">
+    <DefineConstants>XAMARIN;HAS_UNO</DefineConstants>
     <DebugType>none</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\iPhone\Release</OutputPath>
@@ -66,6 +67,7 @@
     <MtouchExtraArgs>--xml=./LinkerExclusions.xml --linkskip=$(AssemblyName) --setenv=MONO_GC_PARAMS=soft-heap-limit=512m,nursery-size=64m,evacuation-threshold=66,major=marksweep,concurrent-sweep</MtouchExtraArgs>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Ad-Hoc|iPhone' ">
+    <DefineConstants>XAMARIN;HAS_UNO</DefineConstants>
     <DebugType>none</DebugType>
     <Optimize>True</Optimize>
     <OutputPath>bin\iPhone\Ad-Hoc</OutputPath>
@@ -79,6 +81,7 @@
     <CodesignKey>iPhone Distribution</CodesignKey>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'AppStore|iPhone' ">
+    <DefineConstants>XAMARIN;HAS_UNO</DefineConstants>
     <DebugType>none</DebugType>
     <Optimize>True</Optimize>
     <OutputPath>bin\iPhone\AppStore</OutputPath>
@@ -111,6 +114,9 @@
     <Reference Include="System.Numerics.Vectors" />
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json">
+      <Version>12.0.1</Version>
+    </PackageReference>
     <PackageReference Include="Uno.SourceGenerationTasks">
       <Version>1.29.0-dev.200</Version>
       <NoWarn>NU1701</NoWarn>
@@ -121,18 +127,9 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Uno.UI.RuntimeTests\Uno.UI.RuntimeTests.csproj" />
-    <ProjectReference Include="..\..\Uno.Foundation\Uno.Foundation.csproj">
-      <Project>{528AE586-5DF3-4DAD-AA5C-F12F4D5E0605}</Project>
-      <Name>Uno.Foundation</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Uno.UI\Uno.UI.csproj">
-      <Project>{C6884723-81DB-43BD-924F-3FA367633E64}</Project>
-      <Name>Uno.UI</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Uno.UWP\Uno.csproj">
-      <Project>{58C0CBAB-2619-4F58-BC41-5C74DBE31261}</Project>
-      <Name>Uno</Name>
-    </ProjectReference>
+    <ProjectReference Include="..\..\Uno.Foundation\Uno.Foundation.csproj" />
+    <ProjectReference Include="..\..\Uno.UI\Uno.UI.csproj" />
+    <ProjectReference Include="..\..\Uno.UWP\Uno.csproj" />
   </ItemGroup>
   <Import Project="..\..\SourceGenerators\sourcegenerators.local.props" />
   <Import Project="..\SamplesApp.Shared\SamplesApp.Shared.projitems" Label="Shared" Condition="Exists('..\SamplesApp.Shared\SamplesApp.Shared.projitems')" />

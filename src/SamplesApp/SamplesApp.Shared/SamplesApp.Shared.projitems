@@ -21,19 +21,112 @@
     <Compile Include="$(MSBuildThisFileDirectory)MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="$(MSBuildThisFileDirectory)Samples\NavigationViewSample\Item1Page.xaml.cs">
+    <Compile Include="$(MSBuildThisFileDirectory)Samples\Windows.UI.Xaml.Controls\BorderTests\AutoBorderStretchwithbottommargin.xaml.cs">
+      <DependentUpon>AutoBorderStretchwithbottommargin.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Samples\Windows.UI.Xaml.Controls\BorderTests\AutoBorderStretchwithleftmargin.xaml.cs">
+      <DependentUpon>AutoBorderStretchwithleftmargin.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Samples\Windows.UI.Xaml.Controls\BorderTests\AutoBorderStretchwithrightmargin.xaml.cs">
+      <DependentUpon>AutoBorderStretchwithrightmargin.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Samples\Windows.UI.Xaml.Controls\BorderTests\AutoBorderStretchwithtopmargin.xaml.cs">
+      <DependentUpon>AutoBorderStretchwithtopmargin.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Samples\Windows.UI.Xaml.Controls\BorderTests\BorderBottomwithmargins.xaml.cs">
+      <DependentUpon>BorderBottomwithmargins.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Samples\Windows.UI.Xaml.Controls\BorderTests\BorderCenteredwithmargins.xaml.cs">
+      <DependentUpon>BorderCenteredwithmargins.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Samples\Windows.UI.Xaml.Controls\BorderTests\BorderLeftwithmargins.xaml.cs">
+      <DependentUpon>BorderLeftwithmargins.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Samples\Windows.UI.Xaml.Controls\BorderTests\BorderRightwithmargins.xaml.cs">
+      <DependentUpon>BorderRightwithmargins.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Samples\Windows.UI.Xaml.Controls\BorderTests\BorderTopwithmargins.xaml.cs">
+      <DependentUpon>BorderTopwithmargins.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Samples\Windows.UI.Xaml.Controls\BorderTests\Border_CornerRadius.xaml.cs">
+      <DependentUpon>Border_CornerRadius.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Samples\Windows.UI.Xaml.Controls\BorderTests\Border_CornerRadius_Alignments.xaml.cs">
+      <DependentUpon>Border_CornerRadius_Alignments.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Samples\Windows.UI.Xaml.Controls\BorderTests\Border_CornerRadius_Binding.xaml.cs">
+      <DependentUpon>Border_CornerRadius_Binding.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Samples\Windows.UI.Xaml.Controls\BorderTests\Border_CornerRadius_with_Opacity.xaml.cs">
+      <DependentUpon>Border_CornerRadius_with_Opacity.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Samples\Windows.UI.Xaml.Controls\BorderTests\Border_Simple.xaml.cs">
+      <DependentUpon>Border_Simple.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Samples\Windows.UI.Xaml.Controls\BorderTests\Border_Simple_No_Background.xaml.cs">
+      <DependentUpon>Border_Simple_No_Background.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Samples\Windows.UI.Xaml.Controls\BorderTests\Border_Simple_No_Background_With_Content_Border_With_Background.xaml.cs">
+      <DependentUpon>Border_Simple_No_Background_With_Content_Border_With_Background.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Samples\Windows.UI.Xaml.Controls\BorderTests\Border_Simple_No_Background_With_TextBox.xaml.cs">
+      <DependentUpon>Border_Simple_No_Background_With_TextBox.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Samples\Windows.UI.Xaml.Controls\BorderTests\Border_Simple_with_non_Uniform_Thickness.xaml.cs">
+      <DependentUpon>Border_Simple_with_non_Uniform_Thickness.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Samples\Windows.UI.Xaml.Controls\BorderTests\Border_Simple_with_Opacity.xaml.cs">
+      <DependentUpon>Border_Simple_with_Opacity.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Samples\Windows.UI.Xaml.Controls\BorderTests\Border_Simple_with_Uniform_Thickness.xaml.cs">
+      <DependentUpon>Border_Simple_with_Uniform_Thickness.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Samples\Windows.UI.Xaml.Controls\BorderTests\Circle.xaml.cs">
+      <DependentUpon>Circle.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Samples\Windows.UI.Xaml.Controls\BorderTests\NonUniformThicknessandRadius.xaml.cs">
+      <DependentUpon>NonUniformThicknessandRadius.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Samples\Windows.UI.Xaml.Controls\BorderTests\OnepxThicknessandRadius.xaml.cs">
+      <DependentUpon>OnepxThicknessandRadius.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Samples\Windows.UI.Xaml.Controls\BorderTests\OnepxThicknessandRadiusAndTextBlock.xaml.cs">
+      <DependentUpon>OnepxThicknessandRadiusAndTextBlock.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Samples\Windows.UI.Xaml.Controls\BorderTests\SimplewithNonUnifmormRadius.xaml.cs">
+      <DependentUpon>SimplewithNonUnifmormRadius.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Samples\Windows.UI.Xaml.Controls\BorderTests\Simple_with_Radius.xaml.cs">
+      <DependentUpon>Simple_with_Radius.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Samples\Windows.UI.Xaml.Controls\BorderTests\UniformThicknessandNonUniformRadius.xaml.cs">
+      <DependentUpon>UniformThicknessandNonUniformRadius.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Samples\Windows.UI.Xaml.Controls\BorderTests\Uniform_Thickness_and_Large_Radius.xaml.cs">
+      <DependentUpon>Uniform_Thickness_and_Large_Radius.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Samples\Windows.UI.Xaml.Controls\BorderTests\Uniform_Thickness_and_Small_Radius.xaml.cs">
+      <DependentUpon>Uniform_Thickness_and_Small_Radius.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Samples\Windows.UI.Xaml.Controls\BorderTests\ZeroThickness.xaml.cs">
+      <DependentUpon>ZeroThickness.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Samples\Windows.UI.Xaml.Controls\BorderTests\ZeroThicknessWithRadius.xaml.cs">
+      <DependentUpon>ZeroThicknessWithRadius.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Samples\Windows.UI.Xaml.Controls\NavigationViewTests\Item1Page.xaml.cs">
       <DependentUpon>Item1Page.xaml</DependentUpon>
     </Compile>
-    <Compile Include="$(MSBuildThisFileDirectory)Samples\NavigationViewSample\Item2Page.xaml.cs">
+    <Compile Include="$(MSBuildThisFileDirectory)Samples\Windows.UI.Xaml.Controls\NavigationViewTests\Item2Page.xaml.cs">
       <DependentUpon>Item2Page.xaml</DependentUpon>
     </Compile>
-    <Compile Include="$(MSBuildThisFileDirectory)Samples\NavigationViewSample\Item3Page.xaml.cs">
+    <Compile Include="$(MSBuildThisFileDirectory)Samples\Windows.UI.Xaml.Controls\NavigationViewTests\Item3Page.xaml.cs">
       <DependentUpon>Item3Page.xaml</DependentUpon>
     </Compile>
-    <Compile Include="$(MSBuildThisFileDirectory)Samples\NavigationViewSample\NavigationViewPage.xaml.cs">
-      <DependentUpon>NavigationViewPage.xaml</DependentUpon>
+    <Compile Include="$(MSBuildThisFileDirectory)Samples\Windows.UI.Xaml.Controls\NavigationViewTests\NavigationViewSample.xaml.cs">
+      <DependentUpon>NavigationViewSample.xaml</DependentUpon>
     </Compile>
-    <Compile Include="$(MSBuildThisFileDirectory)Samples\NavigationViewSample\SettingsPage.xaml.cs">
+    <Compile Include="$(MSBuildThisFileDirectory)Samples\Windows.UI.Xaml.Controls\NavigationViewTests\SettingsPage.xaml.cs">
       <DependentUpon>SettingsPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Samples\UnitTests\UnitTestsPage.xaml.cs">
@@ -45,23 +138,147 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="$(MSBuildThisFileDirectory)Samples\NavigationViewSample\Item1Page.xaml">
+    <Page Include="$(MSBuildThisFileDirectory)Samples\Windows.UI.Xaml.Controls\BorderTests\AutoBorderStretchwithbottommargin.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="$(MSBuildThisFileDirectory)Samples\NavigationViewSample\Item2Page.xaml">
+    <Page Include="$(MSBuildThisFileDirectory)Samples\Windows.UI.Xaml.Controls\BorderTests\AutoBorderStretchwithleftmargin.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="$(MSBuildThisFileDirectory)Samples\NavigationViewSample\Item3Page.xaml">
+    <Page Include="$(MSBuildThisFileDirectory)Samples\Windows.UI.Xaml.Controls\BorderTests\AutoBorderStretchwithrightmargin.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="$(MSBuildThisFileDirectory)Samples\NavigationViewSample\NavigationViewPage.xaml">
+    <Page Include="$(MSBuildThisFileDirectory)Samples\Windows.UI.Xaml.Controls\BorderTests\AutoBorderStretchwithtopmargin.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="$(MSBuildThisFileDirectory)Samples\NavigationViewSample\SettingsPage.xaml">
+    <Page Include="$(MSBuildThisFileDirectory)Samples\Windows.UI.Xaml.Controls\BorderTests\BorderBottomwithmargins.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Samples\Windows.UI.Xaml.Controls\BorderTests\BorderCenteredwithmargins.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Samples\Windows.UI.Xaml.Controls\BorderTests\BorderLeftwithmargins.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Samples\Windows.UI.Xaml.Controls\BorderTests\BorderRightwithmargins.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Samples\Windows.UI.Xaml.Controls\BorderTests\BorderTopwithmargins.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Samples\Windows.UI.Xaml.Controls\BorderTests\Border_CornerRadius.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Samples\Windows.UI.Xaml.Controls\BorderTests\Border_CornerRadius_Alignments.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Samples\Windows.UI.Xaml.Controls\BorderTests\Border_CornerRadius_Binding.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Samples\Windows.UI.Xaml.Controls\BorderTests\Border_CornerRadius_with_Opacity.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Samples\Windows.UI.Xaml.Controls\BorderTests\Border_Simple.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Samples\Windows.UI.Xaml.Controls\BorderTests\Border_Simple_No_Background.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Samples\Windows.UI.Xaml.Controls\BorderTests\Border_Simple_No_Background_With_Content_Border_With_Background.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Samples\Windows.UI.Xaml.Controls\BorderTests\Border_Simple_No_Background_With_TextBox.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Samples\Windows.UI.Xaml.Controls\BorderTests\Border_Simple_with_non_Uniform_Thickness.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Samples\Windows.UI.Xaml.Controls\BorderTests\Border_Simple_with_Opacity.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Samples\Windows.UI.Xaml.Controls\BorderTests\Border_Simple_with_Uniform_Thickness.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Samples\Windows.UI.Xaml.Controls\BorderTests\Circle.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Samples\Windows.UI.Xaml.Controls\BorderTests\NonUniformThicknessandRadius.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Samples\Windows.UI.Xaml.Controls\BorderTests\OnepxThicknessandRadius.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Samples\Windows.UI.Xaml.Controls\BorderTests\OnepxThicknessandRadiusAndTextBlock.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Samples\Windows.UI.Xaml.Controls\BorderTests\SimplewithNonUnifmormRadius.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Samples\Windows.UI.Xaml.Controls\BorderTests\Simple_with_Radius.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Samples\Windows.UI.Xaml.Controls\BorderTests\UniformThicknessandNonUniformRadius.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Samples\Windows.UI.Xaml.Controls\BorderTests\Uniform_Thickness_and_Large_Radius.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Samples\Windows.UI.Xaml.Controls\BorderTests\Uniform_Thickness_and_Small_Radius.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Samples\Windows.UI.Xaml.Controls\BorderTests\ZeroThickness.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Samples\Windows.UI.Xaml.Controls\BorderTests\ZeroThicknessWithRadius.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Samples\Windows.UI.Xaml.Controls\NavigationViewTests\Item1Page.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Samples\Windows.UI.Xaml.Controls\NavigationViewTests\Item2Page.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Samples\Windows.UI.Xaml.Controls\NavigationViewTests\Item3Page.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Samples\Windows.UI.Xaml.Controls\NavigationViewTests\NavigationViewSample.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Samples\Windows.UI.Xaml.Controls\NavigationViewTests\SettingsPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

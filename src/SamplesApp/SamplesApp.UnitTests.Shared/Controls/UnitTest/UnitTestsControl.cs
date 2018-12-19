@@ -84,60 +84,72 @@ namespace Uno.UI.Samples.Tests
 
 		private async Task RunTests(CancellationToken cts)
 		{
-			ReportMessage("Enumerating tests");
-
-			var testTypes = InitializeTests();
-
-			ReportMessage("Running tests...");
-
-			foreach (var type in testTypes.Where(t => t.type != null))
+			try
 			{
-				ReportTestClass(type.type.GetTypeInfo());
+				ReportMessage("Enumerating tests");
 
-				var instance = Activator.CreateInstance(type: type.type);
+				var testTypes = InitializeTests();
 
-				foreach (var testMethod in type.tests)
+				ReportMessage("Running tests...");
+
+				foreach (var type in testTypes.Where(t => t.type != null))
 				{
-					string testName = testMethod.Name;
+					ReportTestClass(type.type.GetTypeInfo());
+					ReportMessage($"Running {type.tests.Length}");
 
-					type.init?.Invoke(instance, new object[0]);
+					var instance = Activator.CreateInstance(type: type.type);
 
-					ReportMessage($"Running test {testName}");
-
-					try
+					foreach (var testMethod in type.tests)
 					{
-						var returnValue = testMethod.Invoke(instance, new object[0]);
+						string testName = testMethod.Name;
 
-						if (testMethod.ReturnType == typeof(Task))
+						ReportMessage($"Running test {testName}");
+
+						try
 						{
-							var task = (Task)returnValue;
-							await task;
-						}
+							type.init?.Invoke(instance, new object[0]);
 
-						ReportTestResult(testName, false);
-					}
-					catch (Exception e)
-					{
-						if (e is AggregateException agg)
+							var returnValue = testMethod.Invoke(instance, new object[0]);
+
+							if (testMethod.ReturnType == typeof(Task))
+							{
+								var task = (Task)returnValue;
+								await task;
+							}
+
+							ReportTestResult(testName, false);
+						}
+						catch (Exception e)
 						{
-							e = agg.InnerExceptions.FirstOrDefault();
-						}
+							if (e is AggregateException agg)
+							{
+								e = agg.InnerExceptions.FirstOrDefault();
+							}
 
-						if (e is TargetInvocationException tie)
+							if (e is TargetInvocationException tie)
+							{
+								e = tie.InnerException;
+							}
+
+							ReportTestResult(testName, true, e.Message);
+						}
+						try
 						{
-							e = tie.InnerException;
+							type.cleanup?.Invoke(instance, new object[0]);
 						}
-
-						ReportTestResult(testName, true, e.Message);
-					}
-					finally
-					{
-						type.cleanup?.Invoke(instance, new object[0]);
+						catch (Exception e)
+						{
+							ReportTestResult(testName + " Cleanup", true, e.Message);
+						}
 					}
 				}
-			}
 
-			ReportMessage("Tests finished running.");
+				ReportMessage("Tests finished running.");
+			}
+			catch(Exception e)
+			{
+				ReportMessage($"Tests runner failed {e}");
+			}
 		}
 
 		private IEnumerable<(Type type, MethodInfo[] tests, MethodInfo init, MethodInfo cleanup)> InitializeTests()
