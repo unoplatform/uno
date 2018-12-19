@@ -337,6 +337,12 @@ namespace Windows.UI.Xaml.Controls
 			catch (Exception exception)
 			{
 				NavigationFailed?.Invoke(this, new NavigationFailedEventArgs(entry.SourcePageType, exception));
+
+				if (NavigationFailed == null)
+				{
+					Application.Current.RaiseRecoverableUnhandledException(new InvalidOperationException("Navigation failed", exception));
+				}
+
 				return false;
 			}
 		}
