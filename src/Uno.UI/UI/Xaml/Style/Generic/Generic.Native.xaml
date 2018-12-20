@@ -115,14 +115,14 @@
 	<!-- Default native ToggleSwitch styles -->
 	<ios:Style x:Key="NativeDefaultToggleSwitch"
 			   TargetType="ToggleSwitch">
+		<!-- Ensures the UISwitch's shadow doesn't get clipped. -->
+		<Setter Property="ClipsToBounds"
+				Value="False" />
 		<Setter Property="Template">
 			<Setter.Value>
 				<ControlTemplate TargetType="ToggleSwitch">
 					<BindableUISwitch IsOn="{TemplateBinding IsOn, Mode=TwoWay}"
-									  Enabled="{TemplateBinding IsEnabled}"
-									  TintColorBrush="{TemplateBinding BorderBrush}"
-									  OnTintColorBrush="{TemplateBinding Background}"
-									  ThumbTintColorBrush="{TemplateBinding Foreground}" />
+									  Enabled="{TemplateBinding IsEnabled}" />
 				</ControlTemplate>
 			</Setter.Value>
 		</Setter>
@@ -135,10 +135,7 @@
 				<ControlTemplate TargetType="ToggleSwitch">
 					<BindableSwitchCompat Checked="{TemplateBinding IsOn, Mode=TwoWay}"
 										  Enabled="{TemplateBinding IsEnabled}"
-										  Text="{TemplateBinding Header}"
-										  TextColor="{TemplateBinding Foreground}"
-										  ThumbTint="{TemplateBinding BorderBrush}"
-										  TrackTint="{TemplateBinding Background}" />
+										  Text="{TemplateBinding Header}" />
 				</ControlTemplate>
 			</Setter.Value>
 		</Setter>
