@@ -77,6 +77,7 @@
  * Add Wasm PlatformNotSupportedException for System.IO after CoreFX merge in mono
  * Border properties now invalidates measure and arrange on all platforms
  * 141907 [Android] [iOS] The toggle switch is half missing.
+ * 142937 [Android] [iOS] Some Button ThemeBrushes are missing.
 
 ## Release 1.42
 
