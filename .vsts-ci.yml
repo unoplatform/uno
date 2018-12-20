@@ -59,6 +59,15 @@ phases:
       OverWrite: false
       flattenFolders: false
 
+  - task: CopyFiles@2
+    inputs:
+      SourceFolder: $(build.sourcesdirectory)\src\SamplesApp\SamplesApp.Wasm\bin\Release\netstandard2.0\dist
+      Contents: '**\*.*'
+      TargetFolder: $(build.artifactstagingdirectory)\sampleapp-wasm
+      CleanTargetFolder: false
+      OverWrite: false
+      flattenFolders: false
+
   - task: PowerShell@2
     displayName: Authenticode Sign Packages
     inputs:
@@ -68,7 +77,7 @@ phases:
       SignClientSecret: $(SignClientSecret)
       SignPackageName: "Uno Platform"
       SignPackageDescription: "The Uno Platform"
-      ArtifactDirectory: $(build.artifactstagingdirectory)
+      ArtifactDirectory: $(build.artifactstagingdirectory)\vslatest
     condition: and(succeeded(), not(eq(variables['build.reason'], 'PullRequest')), not(eq(variables['SignClientSecret'], '')), not(eq(variables['SignClientUser'], '')))
 
   - task: PublishBuildArtifacts@1
