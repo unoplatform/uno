@@ -46,6 +46,24 @@ This unsures the same behavior on all system versions.
 
 #### Native Android ToggleSwitch Style
 
+If you need the simple native style :
+
+```xml
+   	<android:Style x:Key="NativeDefaultToggleSwitch"
+				   TargetType="ToggleSwitch">
+		<Setter Property="Template">
+			<Setter.Value>
+				<ControlTemplate TargetType="ToggleSwitch">
+					<BindableSwitchCompat Checked="{TemplateBinding IsOn, Mode=TwoWay}"
+										  Enabled="{TemplateBinding IsEnabled}"
+										  Text="{TemplateBinding Header}" />
+				</ControlTemplate>
+			</Setter.Value>
+		</Setter>
+	</android:Style>
+```
+If you need the native style but you want to change the Text, ThumbTint and TrackTint colors :
+
 ```xml
    	<android:Style x:Key="NativeDefaultToggleSwitch"
 				   TargetType="ToggleSwitch">
@@ -82,9 +100,33 @@ Based on the UISwitch.
 
 #### Native iOS ToggleSwitch Style
 
+If you need the simple native style :
+
 ```xml
 	<ios:Style x:Key="NativeDefaultToggleSwitch"
 			   TargetType="ToggleSwitch">
+		<!-- Ensures the UISwitch's shadow doesn't get clipped. -->
+		<Setter Property="ClipsToBounds"
+				Value="False" />
+		<Setter Property="Template">
+			<Setter.Value>
+				<ControlTemplate TargetType="ToggleSwitch">
+					<BindableUISwitch IsOn="{TemplateBinding IsOn, Mode=TwoWay}"
+									  Enabled="{TemplateBinding IsEnabled}" />
+				</ControlTemplate>
+			</Setter.Value>
+		</Setter>
+	</ios:Style>
+```
+
+If you need the native style but you want to change the Tint, OnTinT and ThumbTint colors :
+
+```xml
+	<ios:Style x:Key="NativeDefaultToggleSwitch"
+			   TargetType="ToggleSwitch">
+		<!-- Ensures the UISwitch's shadow doesn't get clipped. -->
+		<Setter Property="ClipsToBounds"
+				Value="False" />
 		<Setter Property="Template">
 			<Setter.Value>
 				<ControlTemplate TargetType="ToggleSwitch">

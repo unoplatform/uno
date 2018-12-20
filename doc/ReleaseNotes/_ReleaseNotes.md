@@ -76,6 +76,7 @@
  * Fix `Frame` does not unset `Page.Frame` when a page is removed
  * Add Wasm PlatformNotSupportedException for System.IO after CoreFX merge in mono
  * Border properties now invalidates measure and arrange on all platforms
+ * 141907 [Android] [iOS] The toggle switch is half missing.
 
 ## Release 1.42
 
