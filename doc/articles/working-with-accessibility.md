@@ -42,7 +42,7 @@ You have the option to disable accessibility text scaling of iOS and Android dev
 Here's how to disable it
 ```csharp
 // App's constructor (App.xaml.cs) 
-FeatureConfiguration.Font.IgnoreTextScaleFactor= true; 
+Uno.UI.FeatureConfiguration.Font.IgnoreTextScaleFactor= true; 
 ```
 We highly recommend using this mode, as iOS still won't let you focus nested accessible elements even if you don't (see known issues).
 
