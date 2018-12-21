@@ -6,9 +6,9 @@
 * [Wasm] Improve general performance and memory pressure by removing Javascript interop evaluations.
 * Add support for Windows 10 SDK 17763 (1809)
 * Improve the Uno.UI solution memory consumption for Android targets
-* Add support for GridLength conversion from double 
+* Add support for GridLength conversion from double
 * Raise exceptions on missing styles in debug configuration
-* Add working ViewBox stub 
+* Add working ViewBox stub
 * `Path.Data` property now invalidates measure and arrange
 * Wasm `Image` logs Opened and Failed events
 * Add UpToDateCheckInput to avoid VS invalid incremental rebuilds
@@ -45,6 +45,7 @@
 * Raise Application.UnhandledException event on failed navigation
 * Adjusts the `Microsoft.NETCore.UniversalWindowsPlatform` version in the UWP head template to avoid assembly loading issues when using the Uno library template in the sample solution.
 * [Android] Add support for ListViewItem instances provided via the ItemsSource property
+* [Wasm] Code for `Path.Stretch` has been moved to `Shape` and works well now for all shapes.
 
 ### Breaking changes
 * Refactored ToggleSwitch Default Native XAML Styles. (cf. 'NativeDefaultToggleSwitch' styles in Generic.Native.xaml)
@@ -64,7 +65,7 @@
  * Adjust .NET template projects versions to 4.6.1
  * Adjust Microsoft.CodeAnalysis versions to avoid restore conflicts
  * Fix element name matching existing types fails to compile (e.g. ContentPresenter)
- * 138735 [Android] Fixed broken DatePicker 
+ * 138735 [Android] Fixed broken DatePicker
  * Multi-selection Check Boxes in ListViewItems are appearing brielfly (https://github.com/nventive/Uno/issues/403)
  * 140721 [Android] FlipView not visible when navigating back to page
  * 138537 [iOS] App freezes after State selection causing infinite load on every subsequent launch
@@ -155,5 +156,5 @@
  * 135202, 131884 [Android] Content occasionally fails to show because binding throws an exception
  * 135646 [Android] Binding MediaPlayerElement.Source causes video to go blank
  * 136093, 136172 [iOS] ComboBox does not display its Popup
- * 134819, 134828 [iOS] Ensures the back gesture is enabled and disabled properly when the CommandBar is visible, collapsed, visible with a navigation command and collapsed with a navigation command. 
+ * 134819, 134828 [iOS] Ensures the back gesture is enabled and disabled properly when the CommandBar is visible, collapsed, visible with a navigation command and collapsed with a navigation command.
  * 137081 Xaml generator doesn't support setting a style on the root control

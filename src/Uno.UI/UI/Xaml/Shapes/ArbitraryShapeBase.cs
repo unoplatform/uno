@@ -16,7 +16,7 @@ namespace Windows.UI.Xaml.Shapes
 		protected static double LimitWithUserSize(double availableSize, double userSize, double naNFallbackValue)
 		{
 			bool hasUserSize = userSize != 0 && !double.IsNaN(userSize) && !double.IsInfinity(userSize);
-			var hasAvailableSize = !double.IsNaN(availableSize);
+			var hasAvailableSize = !double.IsNaN(availableSize) && !double.IsInfinity(availableSize);
 
 			if (hasUserSize && hasAvailableSize)
 			{

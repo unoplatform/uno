@@ -74,8 +74,6 @@ namespace Windows.UI.Xaml
 				return;
 			}
 
-			var prevSize = _desiredSize;
-			
 			InvalidateArrange();
 
 			var desiredSize = MeasureCore(availableSize);
