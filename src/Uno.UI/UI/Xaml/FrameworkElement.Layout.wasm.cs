@@ -136,7 +136,7 @@ namespace Windows.UI.Xaml
 
 				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
 				{
-					this.Log().DebugFormat(
+					this.Log().Debug(
 						$"[{GetType()}/{Name}] ArrangeChild({Name}/{offset}/{Margin})"
 					);
 				}
@@ -170,7 +170,7 @@ namespace Windows.UI.Xaml
 			var newRect = new Rect(offset, RenderSize);
 			if (oldRect != newRect)
 			{
-				if(
+				if (
 					newRect.Width < 0
 					|| newRect.Height < 0
 					|| double.IsNaN(newRect.Width)
@@ -196,6 +196,10 @@ namespace Windows.UI.Xaml
 					("height", newRect.Height.ToString(CultureInfo.InvariantCulture) + "px"),
 					("clip", clip)
 				);
+			}
+			else
+			{
+				this.Log().DebugIfEnabled(() => $"{this}: ArrangeNative({offset}, {oldRenderSize}) -- SKIPPED");
 			}
 		}
 	}
