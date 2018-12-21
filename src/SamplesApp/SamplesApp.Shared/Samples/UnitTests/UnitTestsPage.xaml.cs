@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices.WindowsRuntime;
+using Uno.UI.Samples.Controls;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.UI.Xaml;
@@ -18,10 +19,8 @@ using Windows.UI.Xaml.Navigation;
 
 namespace SamplesApp.Samples.UnitTests
 {
-    /// <summary>
-    /// An empty page that can be used on its own or navigated to within a Frame.
-    /// </summary>
-    public sealed partial class UnitTestsPage : Page
+	[SampleControlInfo("Unit Tests", "Unit Tests Runner")]
+	public sealed partial class UnitTestsPage : Page
     {
         public UnitTestsPage()
         {

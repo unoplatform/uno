@@ -38,8 +38,13 @@
 * Add CoreApplication.GetCurrentView() Dispatcher and TitleBar stubs support 
 * Add support for IsItemItsOwnContainer iOS ListView 
 * Add missing Android Sample App symbols font
+* Add SampleControl for Samples app for easier browsing and UI Testing of samples
+* Import Border samples
+* Improve UIElement inner Children enumeration performance and memory usage
+* Add `FeatureConfiguration.FrameworkElement.AndroidUseManagedLoadedUnloaded` to control the native or managed propagation performance of Loaded/Unloaded events through the visual tree
 * Raise Application.UnhandledException event on failed navigation
 * Adjusts the `Microsoft.NETCore.UniversalWindowsPlatform` version in the UWP head template to avoid assembly loading issues when using the Uno library template in the sample solution.
+* [Android] Add support for ListViewItem instances provided via the ItemsSource property
 * Added support to disable accessibility feature of larger text on iOS and Android by adjusting the FeatureConfiguration.Font.IgnoreTextScaleFactor flag. Please note that Apple [recommends to keep text sizes dynamic](https://developer.apple.com/videos/play/wwdc2017/245) for a variety of reasons and to allow users to adjust their text size preferences.  
 
 ### Breaking changes
@@ -70,6 +75,10 @@
  * 3326 [iOS][ItemsControl] ItemsControl in FlipView does not restore items properly
  * Fix NRE in Slider when no template is applied
  * Fix `Frame` does not unset `Page.Frame` when a page is removed
+ * Add Wasm PlatformNotSupportedException for System.IO after CoreFX merge in mono
+ * Border properties now invalidates measure and arrange on all platforms
+ * 141907 [Android] [iOS] The toggle switch is half missing.
+ * 142937 [Android] [iOS] Some Button ThemeBrushes are missing.
 
 ## Release 1.42
 

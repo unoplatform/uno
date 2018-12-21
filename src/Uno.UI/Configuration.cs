@@ -38,6 +38,19 @@ namespace Uno.UI
 			/// is set to <see cref="false"/>.
 			/// </summary>
 			public static bool ClearPreviousOnStyleChange { get; set; } = true;
+
+#if __ANDROID__
+			/// <summary>
+			/// Controls the propagation of <see cref="FrameworkElement.Loaded"/> and
+			/// <see cref="FrameworkElement.AndroidUseManagedLoadedUnloaded"/> events through managed
+			/// or native visual tree traversal. 
+			/// </summary>
+			/// <remarks>
+			/// This setting impacts significatly the loading performance of controls on Android.
+			/// Setting it to <see cref="true"/> avoids the use of costly Java->C# interop.
+			/// </remarks>
+			public static bool AndroidUseManagedLoadedUnloaded { get; set; } = true;
+#endif
 		}
 
 		public static class Style

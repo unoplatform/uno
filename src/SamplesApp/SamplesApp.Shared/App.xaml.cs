@@ -130,6 +130,7 @@ namespace SamplesApp
 						// { "Windows.UI.Xaml.Controls", LogLevel.Debug },
 						//{ "Windows.UI.Xaml.Controls.Layouter", LogLevel.Debug },
 						//{ "Windows.UI.Xaml.Controls.Panel", LogLevel.Debug },
+						// { "Windows.Storage", LogLevel.Debug },
 						   
 						// Binding related messages
 						// { "Windows.UI.Xaml.Data", LogLevel.Debug },

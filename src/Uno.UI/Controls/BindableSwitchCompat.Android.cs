@@ -32,7 +32,7 @@ namespace Uno.UI.Controls
 
 			TextOn = "";
 			TextOff = "";
-		}
+        }
 
 		#region TextColor DependencyProperty
 
@@ -51,7 +51,7 @@ namespace Uno.UI.Controls
 		private void OnTextColorChanged(Brush newValue)
 		{
 			if (newValue is SolidColorBrush asColorBrush)
-				{
+			{
 				SetTextColor(asColorBrush.Color);
 			}
 		}
@@ -76,7 +76,7 @@ namespace Uno.UI.Controls
 		{
 			if (newValue is SolidColorBrush asColorBrush)
 			{
-				ThumbTintList = ColorStateList.ValueOf(asColorBrush.Color);
+				ThumbDrawable?.SetColorFilter(asColorBrush.Color, PorterDuff.Mode.SrcIn);
 			}
 		}
 
@@ -100,7 +100,7 @@ namespace Uno.UI.Controls
 		{
 			if (newValue is SolidColorBrush asColorBrush)
 			{
-				TrackTintList = ColorStateList.ValueOf(asColorBrush.Color);
+				TrackDrawable?.SetColorFilter(asColorBrush.Color, PorterDuff.Mode.SrcIn);
 			}
 		}
 

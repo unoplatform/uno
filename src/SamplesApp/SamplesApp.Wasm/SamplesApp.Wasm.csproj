@@ -4,12 +4,18 @@
     <OutputType>Exe</OutputType>
     <TargetFramework>netstandard2.0</TargetFramework>
     <WasmHead>true</WasmHead>
-    <DefineConstants>$(DefineConstants);__WASM__</DefineConstants>
-    <NoWarn>NU1701</NoWarn>
+    <DefineConstants>$(DefineConstants);__WASM__;HAS_UNO</DefineConstants>
+    <NoWarn>NU1701,CS1998</NoWarn>
+    <LangVersion>7.3</LangVersion>
 	</PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <WarningsAsErrors />
+  </PropertyGroup>
   <ItemGroup>
     <Content Include="..\SamplesApp.UWP\Assets\*.png" Link="Assets\%(FileName)%(Extension)" />
     <Content Include="Fonts\winjs-symbols.woff2" />
+    <Content Include="web.config" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="WasmCSS\Fonts.css" />
@@ -55,6 +61,10 @@
 	
 	<ItemGroup>
 		<UpToDateCheckInput Include="WasmCSS\**\*" />
+	</ItemGroup>
+	
+	<ItemGroup>
+	  <None Remove="web.config" />
 	</ItemGroup>
 
 	<Import Project="..\..\SourceGenerators\sourcegenerators.local.props" />

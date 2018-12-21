@@ -419,8 +419,18 @@
     <SolidColorBrush x:Key="BackButtonPointerOverBackgroundThemeBrush" Color="#3D000000" />
     <SolidColorBrush x:Key="BackButtonPointerOverForegroundThemeBrush" Color="#FF000000" />
     <SolidColorBrush x:Key="BackButtonPressedForegroundThemeBrush" Color="#FFFFFFFF" />
-	
-    <!-- Resources for Windows.UI.Xaml.Controls.Button -->
+	<SolidColorBrush x:Key="ButtonBackgroundThemeBrush" Color="#B3B6B6B6" />
+	<SolidColorBrush x:Key="ButtonBorderThemeBrush" Color="#33000000" />
+	<SolidColorBrush x:Key="ButtonDisabledBackgroundThemeBrush" Color="#66CACACA" />
+	<SolidColorBrush x:Key="ButtonDisabledBorderThemeBrush" Color="#1A000000" />
+	<SolidColorBrush x:Key="ButtonDisabledForegroundThemeBrush" Color="#66000000" />
+	<SolidColorBrush x:Key="ButtonForegroundThemeBrush" Color="#FF000000" />
+	<SolidColorBrush x:Key="ButtonPointerOverBackgroundThemeBrush" Color="#D1CDCDCD" />
+	<SolidColorBrush x:Key="ButtonPointerOverForegroundThemeBrush" Color="#FF000000" />
+	<SolidColorBrush x:Key="ButtonPressedBackgroundThemeBrush" Color="#FF000000" />
+	<SolidColorBrush x:Key="ButtonPressedForegroundThemeBrush" Color="#FFFFFFFF" />
+
+	<!-- Resources for Windows.UI.Xaml.Controls.Button -->
     <StaticResource x:Key="ButtonBackground" ResourceKey="SystemControlBackgroundBaseLowBrush" />
     <StaticResource x:Key="ButtonBackgroundPointerOver" ResourceKey="SystemControlBackgroundBaseLowBrush" />
     <StaticResource x:Key="ButtonBackgroundPressed" ResourceKey="SystemControlBackgroundBaseMediumLowBrush" />
