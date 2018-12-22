@@ -25,9 +25,12 @@ namespace Uno.UI.Helpers.WinUI
 {
 	internal class SharedHelpers
 	{
-		private static bool s_isOnXboxInitialized = false;
+#pragma warning disable CS0414 
+        private static bool s_isOnXboxInitialized = false;
 		private static bool s_isOnXbox = false;
-		private static bool s_isMouseModeEnabledInitialized = false;
+#pragma warning restore CS0414
+
+        private static bool s_isMouseModeEnabledInitialized = false;
 		private static bool s_isMouseModeEnabled = false;
 
 		public static bool IsSystemDll() => false;
@@ -425,6 +428,7 @@ namespace Uno.UI.Helpers.WinUI
 
 		public static bool IsOnXbox()
 		{
+#if HAS_UNO
 			if (!s_isOnXboxInitialized)
 			{
 				var deviceFamily = AnalyticsInfo.VersionInfo.DeviceFamily;
@@ -434,6 +438,9 @@ namespace Uno.UI.Helpers.WinUI
 				s_isOnXboxInitialized = true;
 			}
 			return s_isOnXbox;
+#else
+			return false;
+#endif
 		}
 
 		// Be careful to use this API.
