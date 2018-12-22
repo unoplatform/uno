@@ -129,11 +129,14 @@
     <Compile Include="$(MSBuildThisFileDirectory)Samples\Windows.UI.Xaml.Controls\NavigationViewTests\SettingsPage.xaml.cs">
       <DependentUpon>SettingsPage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="$(MSBuildThisFileDirectory)Samples\Windows.UI.Xaml.Controls\Shapes\StretchPage.xaml.cs">
-      <DependentUpon>StretchPage.xaml</DependentUpon>
-    </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Samples\UnitTests\UnitTestsPage.xaml.cs">
       <DependentUpon>UnitTestsPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Samples\Windows_UI_Xaml_Shapes\ShapeControlsPage.xaml.cs">
+      <DependentUpon>ShapeControlsPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Samples\Windows_UI_Xaml_Shapes\StretchPage.xaml.cs">
+      <DependentUpon>StretchPage.xaml</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>
@@ -285,11 +288,15 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="$(MSBuildThisFileDirectory)Samples\Windows.UI.Xaml.Controls\Shapes\StretchPage.xaml">
+    <Page Include="$(MSBuildThisFileDirectory)Samples\UnitTests\UnitTestsPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="$(MSBuildThisFileDirectory)Samples\UnitTests\UnitTestsPage.xaml">
+    <Page Include="$(MSBuildThisFileDirectory)Samples\Windows_UI_Xaml_Shapes\ShapeControlsPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Samples\Windows_UI_Xaml_Shapes\StretchPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
