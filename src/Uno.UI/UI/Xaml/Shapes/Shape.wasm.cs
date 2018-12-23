@@ -24,20 +24,6 @@ namespace Windows.UI.Xaml.Shapes
 			OnStretchUpdatedPartial();
 		}
 
-		partial void OnStretchUpdatedPartial()
-		{
-			if (Stretch == Stretch.None)
-			{
-				HorizontalAlignment = HorizontalAlignment.Left;
-				VerticalAlignment = VerticalAlignment.Top;
-			}
-			else
-			{
-				HorizontalAlignment = HorizontalAlignment.Stretch;
-				VerticalAlignment = VerticalAlignment.Stretch;
-			}
-		}
-
 		private void OnSvgChildrenChanged(object sender, NotifyCollectionChangedEventArgs e) 
 			=> OnChildrenChanged();
 
