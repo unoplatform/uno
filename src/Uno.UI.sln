@@ -120,6 +120,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Uno.UI.Wasm.Tests", "Uno.UI
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Uno.UI.RuntimeTests", "Uno.UI.RuntimeTests\Uno.UI.RuntimeTests.csproj", "{028F3EE0-D51B-469A-A72C-C272585DCD40}"
 EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "UITests.Shared", "SamplesApp\UITests.Shared\UITests.Shared.shproj", "{BEB0AB3A-16A7-49CF-AD5E-F4A53B985AFE}"
+EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		SamplesApp\SamplesApp.UnitTests.Shared\SamplesApp.UnitTests.Shared.projitems*{04b1b5eb-d42e-47de-ada0-eb863e5574fd}*SharedItemsImports = 13
@@ -136,11 +138,15 @@ Global
 		SamplesApp\SamplesApp.UnitTests.Shared\SamplesApp.UnitTests.Shared.projitems*{313fcf91-a6db-4585-a23e-49bbeef4784d}*SharedItemsImports = 4
 		SamplesApp\SamplesApp.Shared\SamplesApp.Shared.projitems*{3fdf0f2d-cc11-49be-8634-f81638d595c6}*SharedItemsImports = 4
 		SamplesApp\SamplesApp.UnitTests.Shared\SamplesApp.UnitTests.Shared.projitems*{3fdf0f2d-cc11-49be-8634-f81638d595c6}*SharedItemsImports = 4
+		SamplesApp\UITests.Shared\UITests.Shared.projitems*{3fdf0f2d-cc11-49be-8634-f81638d595c6}*SharedItemsImports = 4
 		SamplesApp\SamplesApp.Shared\SamplesApp.Shared.projitems*{6279c845-92f8-4333-ab99-3d213163593c}*SharedItemsImports = 13
 		SamplesApp\SamplesApp.Shared\SamplesApp.Shared.projitems*{6c25beb3-e332-48d3-b4de-20a0b71935cd}*SharedItemsImports = 4
 		SamplesApp\SamplesApp.UnitTests.Shared\SamplesApp.UnitTests.Shared.projitems*{6c25beb3-e332-48d3-b4de-20a0b71935cd}*SharedItemsImports = 4
+		SamplesApp\UITests.Shared\UITests.Shared.projitems*{6c25beb3-e332-48d3-b4de-20a0b71935cd}*SharedItemsImports = 4
 		SamplesApp\SamplesApp.Shared\SamplesApp.Shared.projitems*{b71ae380-558c-4d6c-81d8-9c043b50262c}*SharedItemsImports = 4
 		SamplesApp\SamplesApp.UnitTests.Shared\SamplesApp.UnitTests.Shared.projitems*{b71ae380-558c-4d6c-81d8-9c043b50262c}*SharedItemsImports = 4
+		SamplesApp\UITests.Shared\UITests.Shared.projitems*{b71ae380-558c-4d6c-81d8-9c043b50262c}*SharedItemsImports = 4
+		SamplesApp\UITests.Shared\UITests.Shared.projitems*{beb0ab3a-16a7-49cf-ad5e-f4a53b985afe}*SharedItemsImports = 13
 	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Ad-Hoc|Any CPU = Ad-Hoc|Any CPU
@@ -3920,6 +3926,7 @@ Global
 		{04B1B5EB-D42E-47DE-ADA0-EB863E5574FD} = {995C1054-AB61-42EE-9A17-C32155BD6D13}
 		{95F17106-3548-4CD5-B315-060C048903F5} = {416684CF-A4E3-4079-B380-3FF0B00E433C}
 		{028F3EE0-D51B-469A-A72C-C272585DCD40} = {416684CF-A4E3-4079-B380-3FF0B00E433C}
+		{BEB0AB3A-16A7-49CF-AD5E-F4A53B985AFE} = {995C1054-AB61-42EE-9A17-C32155BD6D13}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {9B2608F4-D82B-4B72-B399-33E822DF01D0}

@@ -13,14 +13,28 @@ using System.Runtime.InteropServices;
 
 namespace Windows.UI.Xaml.Controls
 {
+	public class HtmlImage : UIElement
+	{
+		public HtmlImage() : base("img")
+		{
+		}
+	}
+
 	partial class Image : FrameworkElement
 	{
 		private readonly SerialDisposable _sourceDisposable = new SerialDisposable();
 
-		public Image() : base("img")
+		private HtmlImage _htmlImage;
+		private Size _lastMeasuredSize;
+
+		public Image() : base("div")
 		{
+			_htmlImage = new HtmlImage();
+
 			ImageOpened += OnImageOpened;
-			ImageFailed += OnImageFailed; ;
+			ImageFailed += OnImageFailed;
+
+			AddChild(_htmlImage);
 		}
 
 		private void OnImageFailed(object sender, RoutedEventArgs e)
@@ -48,14 +62,14 @@ namespace Windows.UI.Xaml.Controls
 
 		public event RoutedEventHandler ImageOpened
 		{
-			add => RegisterEventHandler("load", value);
-			remove => UnregisterEventHandler("load", value);
+			add => _htmlImage.RegisterEventHandler("load", value);
+			remove => _htmlImage.UnregisterEventHandler("load", value);
 		}
 
 		public event RoutedEventHandler ImageFailed
 		{
-			add => RegisterEventHandler("error", value);
-			remove => UnregisterEventHandler("error", value);
+			add => _htmlImage.RegisterEventHandler("error", value);
+			remove => _htmlImage.UnregisterEventHandler("error", value);
 		}
 
 		#region Source DependencyProperty
@@ -87,7 +101,7 @@ namespace Windows.UI.Xaml.Controls
 					try
 					{
 						WebAssemblyRuntime.InvokeJS(
-							"Uno.UI.WindowManager.current.setImageRawData(\"" + HtmlId + "\", " + pinnedData + ", " + wb.PixelWidth + ", " + wb.PixelHeight + ");"
+							"Uno.UI.WindowManager.current.setImageRawData(\"" + _htmlImage.HtmlId + "\", " + pinnedData + ", " + wb.PixelWidth + ", " + wb.PixelHeight + ");"
 						);
 
 						InvalidateMeasure();
@@ -147,12 +161,12 @@ namespace Windows.UI.Xaml.Controls
 			if (MonochromeColor != null)
 			{
 				WebAssemblyRuntime.InvokeJS(
-					"Uno.UI.WindowManager.current.setImageAsMonochrome(\"" + HtmlId + "\", \"" + url + "\", \"" + MonochromeColor.Value.ToCssString() + "\");"
+					"Uno.UI.WindowManager.current.setImageAsMonochrome(\"" + _htmlImage.HtmlId + "\", \"" + url + "\", \"" + MonochromeColor.Value.ToCssString() + "\");"
 				);
 			}
 			else
 			{
-				SetAttribute("src", url);
+				_htmlImage.SetAttribute("src", url);
 			}
 		}
 
@@ -176,12 +190,94 @@ namespace Windows.UI.Xaml.Controls
 
 		protected override Size ArrangeOverride(Size finalSize)
 		{
-			return base.ArrangeOverride(finalSize);
+			(double x, double y, double? width, double? height) getHtmlImagePosition()
+			{
+				var sourceRect = new Windows.Foundation.Rect(Windows.Foundation.Point.Zero, _lastMeasuredSize);
+				var imageRect = new Windows.Foundation.Rect(Windows.Foundation.Point.Zero, finalSize);
+
+				this.MeasureSource(imageRect, ref sourceRect);
+				this.ArrangeSource(imageRect, ref sourceRect);
+
+				switch (Stretch)
+				{
+					case Stretch.Fill:
+					case Stretch.None:
+						return (sourceRect.X, sourceRect.Y, sourceRect.Width, sourceRect.Height);
+
+					case Stretch.Uniform:
+						if (finalSize.Width >= _lastMeasuredSize.Width)
+						{
+							// /---/-----\---\
+							// |   |     |   |
+							// |   |     |   |
+							// |   |     |   |
+							// |   |     |   |
+							// |   |     |   |
+							// \---\-----/---/
+
+							return (sourceRect.X, sourceRect.Y, null, sourceRect.Height);
+						}
+						else
+						{
+							return (sourceRect.X, sourceRect.Y, sourceRect.Width, null);
+						}
+
+					case Stretch.UniformToFill:
+						var adjustedSize = AdjustSize(finalSize, _lastMeasuredSize);
+
+						if (adjustedSize.Height <= finalSize.Height)
+						{
+							//
+							// /-------------\
+							// |             |
+							// /-------------\
+							// |             |
+							// |             |
+							// |             |
+							// |             |
+							// \-------------/
+							// |             |
+							// \-------------/
+							//
+
+							return (sourceRect.X, sourceRect.Y, null, finalSize.Height);
+						}
+						else
+						{
+							return (sourceRect.X, sourceRect.Y, finalSize.Width, null);
+						}
+
+					default:
+						throw new NotSupportedException();
+				}
+			}
+
+			var position = getHtmlImagePosition();
+
+			var finalWidth = position.width != null ? position.width.Value.ToString(CultureInfo.InvariantCulture) + "px" : "auto";
+			var finalHeight = position.height != null ? position.height.Value.ToString(CultureInfo.InvariantCulture) + "px" : "auto";
+
+			// Clip the image to the parent's arrange size.
+			var clip = "rect(0px, " + finalSize.Width + "px, " + finalSize.Height + "px, 0px)";
+
+			_htmlImage.SetStyleArranged(
+				("position", "absolute"),
+				("top", position.y.ToString(CultureInfo.InvariantCulture) + "px"),
+				("left", position.x.ToString(CultureInfo.InvariantCulture) + "px"),
+				("width", finalWidth),
+				("height", finalHeight),
+				("clip", clip)
+			);
+
+			Console.WriteLine($"Arrange Image {Name} _lastMeasuredSize:{_lastMeasuredSize} clip:{clip} position:{position} finalSize:{finalSize}");
+
+			// Image has no direct child that needs to be arranged explicitly
+			return finalSize;
 		}
 
 		protected override Size MeasureOverride(Size availableSize)
 		{
-			var measuredSize = MeasureView(availableSize);
+			_lastMeasuredSize = _htmlImage.MeasureView(new Size(double.PositiveInfinity, double.PositiveInfinity));
 			Size ret;
 
 			if (
@@ -189,12 +285,20 @@ namespace Windows.UI.Xaml.Controls
 				&& double.IsInfinity(availableSize.Height)
 			)
 			{
-				ret = measuredSize;
+				ret = _lastMeasuredSize;
 			}
 			else
 			{
-				ret = AdjustSize(availableSize, measuredSize);
+				ret = AdjustSize(availableSize, _lastMeasuredSize);
+
+				// Clamp the size to the available size (used for Strech.None)
+				ret = new Size(
+					double.IsInfinity(availableSize.Width) ? ret.Width : Math.Min(availableSize.Width, ret.Width),
+					double.IsInfinity(availableSize.Height) ? ret.Height : Math.Min(availableSize.Height, ret.Height)
+				);
 			}
+
+			Console.WriteLine($"Measure Image {Name} availableSize:{availableSize} measuredSize:{_lastMeasuredSize} ret:{ret}");
 
 			return ret;
 		}

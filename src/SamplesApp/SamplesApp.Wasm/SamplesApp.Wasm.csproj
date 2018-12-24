@@ -71,4 +71,5 @@
 
 	<Import Project="..\SamplesApp.Shared\SamplesApp.Shared.projitems" Label="Shared" Condition="Exists('..\SamplesApp.Shared\SamplesApp.Shared.projitems')" />
 	<Import Project="..\SamplesApp.UnitTests.Shared\SamplesApp.UnitTests.Shared.projitems" Label="Shared" />
+	<Import Project="..\UITests.Shared\UITests.Shared.projitems" Label="Shared" />
 </Project>
