@@ -257,8 +257,7 @@ namespace Windows.UI.Xaml.Controls
 			var finalWidth = position.width != null ? position.width.Value.ToString(CultureInfo.InvariantCulture) + "px" : "auto";
 			var finalHeight = position.height != null ? position.height.Value.ToString(CultureInfo.InvariantCulture) + "px" : "auto";
 
-			// Disable clipping for Scrollviewer (edge seems to disable scrolling if 
-			// the clipping is enabled to the size of the scrollviewer, even if overflow-y is auto)
+			// Clip the image to the parent's arrange size.
 			var clip = "rect(0px, " + finalSize.Width + "px, " + finalSize.Height + "px, 0px)";
 
 			_htmlImage.SetStyleArranged(

@@ -322,10 +322,6 @@
 		<PRIResource Include="**\*.resw" />
 	</ItemGroup>
 
-	<ItemGroup>
-	  <UpToDateCheckInput Remove="UI\Xaml\Controls\Image\ImageSizeHelper.cs" />
-	</ItemGroup>
-
 	<Target Name="BuildManualDependencies" BeforeTargets="_UnoSourceGenerator" Condition="!Exists($(T4Bin))">
 		<Message Text="Building Generators" Importance="high" />
 		<!-- This is required because the non-reference dependencies are not properly handled -->
