@@ -65,6 +65,7 @@
 - Reflection-less bindings (complex UI performance)
 - Binding Suspension and Restoration
 - Expando Binding
+- DynamicObject Binding
 - DataTemplate and ControlTemplate reuse, pooling and prefetching
 
 ### ListView
