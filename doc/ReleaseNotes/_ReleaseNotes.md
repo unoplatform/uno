@@ -80,6 +80,7 @@
  * Border properties now invalidates measure and arrange on all platforms
  * 141907 [Android] [iOS] The toggle switch is half missing.
  * 142937 [Android] [iOS] Some Button ThemeBrushes are missing.
+ * 143527 [Android] Fixed broken TimePicker Flyout on android devices. 
 
 ## Release 1.42
 
