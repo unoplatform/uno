@@ -1,11 +1,12 @@
 ﻿extern alias __ms;
 extern alias __uno;
 
+using System;
 using Uno.Extensions;
 
 namespace Uno.UI.SourceGenerators.XamlGenerator.XamlRedirection
 {
-	internal class XamlMember
+	internal class XamlMember : IEquatable<XamlMember>
 	{
 		private string _name;
 		private XamlType _declaringType;
@@ -49,5 +50,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator.XamlRedirection
 			=> _declaringType != null ? _isAttachable : XamlConfig.IsUnoXaml ? _unoMember.IsAttachable : _msMember.IsAttachable;
 
 		public override string ToString() => XamlConfig.IsUnoXaml ? _unoMember.ToString() : _msMember.ToString();
+
+		public bool Equals(XamlMember other) => XamlConfig.IsUnoXaml ? _unoMember.Equals(other._unoMember) : _msMember.Equals(other._msMember);
 	}
 }
