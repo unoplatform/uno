@@ -53,8 +53,13 @@ namespace Uno.UI.SourceGenerators.XamlGenerator.XamlRedirection
 
 		public bool Equals(XamlMember other)
 			=> _name.HasValue()
-			? (_name == other._name && _declaringType == other._declaringType && _isAttachable == other.IsAttachable)
-			: XamlConfig.IsUnoXaml ? _unoMember.Equals(other._unoMember) : _msMember.Equals(other._msMember);
+			? (
+				other != null
+				&& _name == other._name
+				&& _declaringType == other._declaringType
+				&& _isAttachable == other.IsAttachable
+			)
+			: XamlConfig.IsUnoXaml ? _unoMember.Equals(other?._unoMember) : _msMember.Equals(other?._msMember);
 
 		public override bool Equals(object other)
 			=> other is XamlMember otherMember ? Equals(otherMember) : false;

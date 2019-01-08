@@ -71,10 +71,10 @@
       <Version>1.25.0-dev.56</Version>
     </PackageReference>
     <PackageReference Include="Uno.SourceGeneration">
-      <Version>1.29.0-dev.200</Version>
+      <Version>1.29.0-dev.226</Version>
     </PackageReference>
     <PackageReference Include="Uno.SourceGenerationTasks">
-      <Version>1.29.0-dev.200</Version>
+      <Version>1.29.0-dev.226</Version>
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
@@ -122,6 +122,7 @@
     <Compile Include="XamlGenerator\BackingFieldDefinition.cs" />
     <Compile Include="XamlGenerator\NameScope.cs" />
     <Compile Include="XamlGenerator\PlatformHelper.cs" />
+    <Compile Include="XamlGenerator\XamlFileGenerator.Reflection.cs" />
     <Compile Include="XamlGenerator\XamlPathParser\GeneratedStreamGeometryContext.cs" />
     <Compile Include="XamlGenerator\XamlRedirection\XamlConfig.cs" />
     <Compile Include="XamlGenerator\XamlRedirection\XamlXmlReaderSettings.cs" />

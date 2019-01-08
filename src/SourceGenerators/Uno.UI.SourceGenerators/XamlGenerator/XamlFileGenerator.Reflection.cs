@@ -595,10 +595,15 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		{
 			switch (xamlObjectDefinition.Type.Name)
 			{
-				case "Double":
-				case "Int32":
+				case "Byte":
 				case "Int16":
+				case "Int32":
+				case "Int64":
+				case "UInt16":
+				case "UInt32":
+				case "UInt64":
 				case "Single":
+				case "Double":
 				case "Boolean":
 					return true;
 			}

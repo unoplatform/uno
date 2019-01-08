@@ -41,10 +41,10 @@ namespace Uno.UI.SourceGenerators.XamlGenerator.XamlRedirection
 		public override string ToString() => XamlConfig.IsUnoXaml ? _unoDeclaringType.ToString() : _msDeclaringType.ToString();
 
 		public bool Equals(XamlType other) => _isUnknown
-			? other._isUnknown
+			? false
 			: XamlConfig.IsUnoXaml
-				? _unoDeclaringType.Equals(other._unoDeclaringType)
-				: _msDeclaringType.Equals(other._msDeclaringType);
+				? _unoDeclaringType.Equals(other?._unoDeclaringType)
+				: _msDeclaringType.Equals(other?._msDeclaringType);
 
 		public override bool Equals(object other)
 			=> other is XamlType otherType ? Equals(otherType) : false;
