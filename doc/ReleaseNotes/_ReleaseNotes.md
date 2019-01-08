@@ -48,6 +48,7 @@
 * Added support to disable accessibility feature of larger text on iOS and Android by adjusting the FeatureConfiguration.Font.IgnoreTextScaleFactor flag. Please note that Apple [recommends to keep text sizes dynamic](https://developer.apple.com/videos/play/wwdc2017/245) for a variety of reasons and to allow users to adjust their text size preferences.  
 * [Wasm] Code for `Path.Stretch` has been moved to `Shape` and works well now for all shapes.
 * Add support for `DynamicObject` data binding, to enable support for `Elmish.Uno`.
+* Add support for VS2019 VSIX installation
 
 ### Breaking changes
 * Refactored ToggleSwitch Default Native XAML Styles. (cf. 'NativeDefaultToggleSwitch' styles in Generic.Native.xaml)
