@@ -28,15 +28,15 @@
 * Add support for 1809 NavigationView
 * Add support for runtime conversion of global static resources unknown at compile time
 * Fixed fallback support for Style property set via ThemeResource
-* Add support for multiple resw folders with upri resource generation 
+* Add support for multiple resw folders with upri resource generation
 * Add support for `ThicknessHelper`
-* ResourceLoader adjustments … 
+* ResourceLoader adjustments …
   * CurrentUICulture and CurrentCulture are set when setting ResourceLoader .DefaultCulture
   * upri load now ignores resources not used by the current culture
-* Add BrushConverter support for Color input 
+* Add BrushConverter support for Color input
 * Add SplitView support for PaneOpened and PaneOpening
-* Add CoreApplication.GetCurrentView() Dispatcher and TitleBar stubs support 
-* Add support for IsItemItsOwnContainer iOS ListView 
+* Add CoreApplication.GetCurrentView() Dispatcher and TitleBar stubs support
+* Add support for IsItemItsOwnContainer iOS ListView
 * Add missing Android Sample App symbols font
 * Add SampleControl for Samples app for easier browsing and UI Testing of samples
 * Import Border samples
@@ -45,7 +45,7 @@
 * Raise Application.UnhandledException event on failed navigation
 * Adjusts the `Microsoft.NETCore.UniversalWindowsPlatform` version in the UWP head template to avoid assembly loading issues when using the Uno library template in the sample solution.
 * [Android] Add support for ListViewItem instances provided via the ItemsSource property
-* Added support to disable accessibility feature of larger text on iOS and Android by adjusting the FeatureConfiguration.Font.IgnoreTextScaleFactor flag. Please note that Apple [recommends to keep text sizes dynamic](https://developer.apple.com/videos/play/wwdc2017/245) for a variety of reasons and to allow users to adjust their text size preferences.  
+* Added support to disable accessibility feature of larger text on iOS and Android by adjusting the FeatureConfiguration.Font.IgnoreTextScaleFactor flag. Please note that Apple [recommends to keep text sizes dynamic](https://developer.apple.com/videos/play/wwdc2017/245) for a variety of reasons and to allow users to adjust their text size preferences.
 * [Wasm] Code for `Path.Stretch` has been moved to `Shape` and works well now for all shapes.
 * Add support for `DynamicObject` data binding, to enable support for `Elmish.Uno`.
 * Add support for VS2019 VSIX installation
@@ -74,7 +74,7 @@
  * 140721 [Android] FlipView not visible when navigating back to page
  * 138537 [iOS] App freezes after State selection causing infinite load on every subsequent launch
  * Fix invalid Border Content type for macOS
- * Don't fail iOS ListView if item Content is null 
+ * Don't fail iOS ListView if item Content is null
  * [Wasm] Implement naive refresh for items manipulation in the ListViewBase
  * 3326 [iOS][ItemsControl] ItemsControl in FlipView does not restore items properly
  * Fix NRE in Slider when no template is applied
@@ -83,7 +83,9 @@
  * Border properties now invalidates measure and arrange on all platforms
  * 141907 [Android] [iOS] The toggle switch is half missing.
  * 142937 [Android] [iOS] Some Button ThemeBrushes are missing.
- * 143527 [Android] Fixed broken TimePicker Flyout on android devices. 
+ * 143527 [Android] Fixed broken TimePicker Flyout on android devices.
+ * 143596 [Wasm] Images stretching is incorrect
+ * 143595 [Wasm] Wasm ListView Resizing is not working - Limitation: items can't change its size yet, but it's now getting measured/arranged correctly.
 
 ## Release 1.42
 
