@@ -25,16 +25,26 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 {
 	internal partial class XamlFileGenerator
 	{
-		// Caches
 		private Func<string, INamedTypeSymbol> _findType;
+		private Func<XamlType, INamedTypeSymbol> _findTypeByXamlType;
 		private Func<string, string, INamedTypeSymbol> _findPropertyTypeByName;
 		private Func<XamlMember, INamedTypeSymbol> _findPropertyTypeByXamlMember;
 		private Func<XamlMember, IEventSymbol> _findEventType;
+		private Func<INamedTypeSymbol, Dictionary<string, IEventSymbol>> _getEventsForType;
 		private (string ns, string className) _className;
 		private bool _hasLiteralEventsRegistration = false;
 		private readonly static Func<INamedTypeSymbol, IPropertySymbol> _findContentProperty;
 		private readonly static Func<INamedTypeSymbol, string, bool> _isAttachedProperty;
 
+		private void InitCaches()
+		{
+			_findType = Funcs.Create<string, INamedTypeSymbol>(SourceFindType).AsLockedMemoized();
+			_findPropertyTypeByXamlMember = Funcs.Create<XamlMember, INamedTypeSymbol>(SourceFindPropertyType).AsLockedMemoized();
+			_findEventType = Funcs.Create<XamlMember, IEventSymbol>(SourceFindEventType).AsLockedMemoized();
+			_findPropertyTypeByName = Funcs.Create<string, string, INamedTypeSymbol>(SourceFindPropertyType).AsLockedMemoized();
+			_findTypeByXamlType = Funcs.Create<XamlType, INamedTypeSymbol>(SourceFindTypeByXamlType).AsLockedMemoized();
+			_getEventsForType = Funcs.Create<INamedTypeSymbol, Dictionary<string, IEventSymbol>>(SourceGetEventsForType).AsLockedMemoized();
+		}
 
 		/// <summary>
 		/// Gets the full target type, ensuring it is prefixed by "global::"
@@ -139,26 +149,21 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			return IsType(xamlType, XamlConstants.Types.Span);
 		}
 
-		private bool IsImplementingInterface(XamlType xamlType, string interfaceName)
+		private bool IsImplementingInterface(INamedTypeSymbol symbol, INamedTypeSymbol interfaceName)
 		{
-			return IsImplementingInterface(FindType(xamlType), interfaceName);
-		}
-
-		private bool IsImplementingInterface(INamedTypeSymbol symbol, string interfaceName)
-		{
-			Func<INamedTypeSymbol, string, bool> _isSameType =
-				(sym, name) => sym.ToDisplayString() == name || sym.OriginalDefinition.ToDisplayString() == name;
+			bool isSameType(INamedTypeSymbol source, INamedTypeSymbol iface) =>
+				source == iface || source.OriginalDefinition == iface;
 
 			if (symbol != null)
 			{
-				if (_isSameType(symbol, interfaceName))
+				if (isSameType(symbol, interfaceName))
 				{
 					return true;
 				}
 
 				do
 				{
-					if (symbol.Interfaces.Any(i => _isSameType(i, interfaceName)))
+					if (symbol.Interfaces.Any(i => isSameType(i, interfaceName)))
 					{
 						return true;
 					}
@@ -205,7 +210,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 		private bool IsFrameworkElement(XamlType xamlType)
 		{
-			return IsImplementingInterface(FindType(xamlType), XamlConstants.Types.IFrameworkElement);
+			return IsImplementingInterface(FindType(xamlType), _iFrameworkElementSymbol);
 		}
 
 		private bool IsAndroidView(XamlType xamlType)
@@ -370,78 +375,44 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		}
 
 		private IEventSymbol FindEventType(XamlMember xamlMember)
-		{
-			return _findEventType(xamlMember);
-		}
+			=> _findEventType(xamlMember);
 
 		private IEventSymbol SourceFindEventType(XamlMember xamlMember)
 		{
-			// Search for the type the clr namespaces registered with the xml namespace
-			if (xamlMember.DeclaringType != null)
+			var ownerType = FindType(xamlMember.DeclaringType);
+
+			if (ownerType != null)
 			{
-				var clrNamespaces = _knownNamespaces.UnoGetValueOrDefault(xamlMember.DeclaringType.PreferredXamlNamespace, new string[0]);
-
-				foreach (var clrNamespace in clrNamespaces)
+				if (ownerType.Kind == SymbolKind.ErrorType)
 				{
-					var propertyType = FindEventType(clrNamespace + "." + xamlMember.DeclaringType.Name, xamlMember.Name);
+					throw new InvalidOperationException($"Unable to resolve {ownerType} (SymbolKind is ErrorType)");
+				}
 
-					if (propertyType != null)
-					{
-						return propertyType;
-					}
+				if(GetEventsForType(ownerType).TryGetValue(xamlMember.Name, out var eventSymbol))
+				{ 
+					return eventSymbol;
 				}
 			}
 
-			var type = FindType(xamlMember.DeclaringType);
-
-			// If not, try to find the closest match using the name only.
-			return FindEventType(type.SelectOrDefault(t => t.ToDisplayString(), "$$unknown"), xamlMember.Name);
+			return null;
 		}
 
-		private IEventSymbol FindEventType(string ownerType, string eventName)
+		private Dictionary<string, IEventSymbol> GetEventsForType(INamedTypeSymbol symbol)
+			=> _getEventsForType(symbol);
+
+		private Dictionary<string, IEventSymbol> SourceGetEventsForType(INamedTypeSymbol symbol)
 		{
-			var type = FindType(ownerType);
+			var output = new Dictionary<string, IEventSymbol>();
 
-			if (type != null)
+			foreach(var evt in symbol.GetAllEvents())
 			{
-				do
+				if (!output.ContainsKey(evt.Name))
 				{
-					if (type.Kind == SymbolKind.ErrorType)
-					{
-						throw new InvalidOperationException($"Unable to resolve {type} (SymbolKind is ErrorType)");
-					}
-
-					var resolvedType = type;
-
-					var eventSymbol = resolvedType.GetAllEvents().FirstOrDefault(p => p.Name == eventName);
-
-					if (eventSymbol != null)
-					{
-						return eventSymbol;
-					}
-					else
-					{
-						var baseType = type.BaseType;
-
-						if (baseType == null)
-						{
-							baseType = FindType(type.BaseType.ToDisplayString());
-						}
-
-						type = baseType;
-
-						if (type == null || type.Name == "Object")
-						{
-							return null;
-						}
-					}
+					output.Add(evt.Name, evt);
 				}
-				while (true);
 			}
-			else
-			{
-				return null;
-			}
+
+			return output;
 		}
 
 		private bool IsAttachedProperty(XamlMemberDefinition member)
@@ -561,22 +532,20 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		/// Returns true if the type implements either ICollection, IList or one of their generics
 		/// </summary>
 		private bool IsCollectionOrListType(INamedTypeSymbol propertyType)
-		{
-			return IsImplementingInterface(propertyType, "System.Collections.ICollection") ||
-				IsImplementingInterface(propertyType, "System.Collections.Generic.ICollection<T>") ||
-				IsImplementingInterface(propertyType, "System.Collections.IList") ||
-				IsImplementingInterface(propertyType, "System.Collections.Generic.IList<T>");
-		}
+			=> IsImplementingInterface(propertyType, _iCollectionSymbol)
+			|| IsImplementingInterface(propertyType, _iCollectionOfTSymbol)
+			|| IsImplementingInterface(propertyType, _iListSymbol)
+			|| IsImplementingInterface(propertyType, _iListOfTSymbol);
 
 		/// <summary>
 		/// Returns true if the type exactly implements either ICollection, IList or one of their generics
 		/// </summary>
 		private bool IsExactlyCollectionOrListType(INamedTypeSymbol type)
 		{
-			return type.ToDisplayString() == "System.Collections.ICollection"
-				|| type.OriginalDefinition.ToDisplayString() == "System.Collections.ICollection<T>"
-				|| type.ToDisplayString() == "System.Collections.IList"
-				|| type.OriginalDefinition.ToDisplayString() == "System.Collections.Generic.IList<T>";
+			return type == _iCollectionSymbol
+				|| type.OriginalDefinition == _iCollectionOfTSymbol
+				|| type == _iListSymbol
+				|| type.OriginalDefinition == _iListOfTSymbol;
 		}
 
 		/// <summary>
@@ -595,8 +564,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				return false;
 			}
 
-			return IsImplementingInterface(type, "System.Collections.ICollection")
-				|| IsImplementingInterface(type, "System.Collections.Generic.ICollection<T>");
+			return IsImplementingInterface(type, _iCollectionSymbol)
+				|| IsImplementingInterface(type, _iCollectionOfTSymbol);
 		}
 
 		/// <summary>
@@ -643,11 +612,12 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		}
 
 		private INamedTypeSymbol FindType(string name)
-		{
-			return _findType(name);
-		}
+			=> _findType(name);
 
 		private INamedTypeSymbol FindType(XamlType type)
+			=> type != null ? _findTypeByXamlType(type) : null;
+
+		private INamedTypeSymbol SourceFindTypeByXamlType(XamlType type)
 		{
 			if (type != null)
 			{

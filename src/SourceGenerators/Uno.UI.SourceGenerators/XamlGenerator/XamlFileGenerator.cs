@@ -71,6 +71,13 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		private readonly INamedTypeSymbol _elementStubSymbol;
 		private readonly INamedTypeSymbol _contentPresenterSymbol;
 		private readonly INamedTypeSymbol _stringSymbol;
+		private readonly INamedTypeSymbol _iFrameworkElementSymbol;
+
+		private readonly INamedTypeSymbol _iCollectionSymbol;
+		private readonly INamedTypeSymbol _iCollectionOfTSymbol;
+		private readonly INamedTypeSymbol _iListSymbol;
+		private readonly INamedTypeSymbol _iListOfTSymbol;
+
 		private readonly bool _isWasm;
 
 		static XamlFileGenerator()
@@ -112,15 +119,17 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			_defaultLanguage = defaultLanguage.HasValue() ? defaultLanguage : "en-US";
 			_isDebug = isDebug;
 
-			_findType = Funcs.Create<string, INamedTypeSymbol>(SourceFindType).AsLockedMemoized();
-			_findPropertyTypeByXamlMember = Funcs.Create<XamlMember, INamedTypeSymbol>(SourceFindPropertyType).AsLockedMemoized();
-			_findEventType = Funcs.Create<XamlMember, IEventSymbol>(SourceFindEventType).AsLockedMemoized();
-			_findPropertyTypeByName = Funcs.Create<string, string, INamedTypeSymbol>(SourceFindPropertyType).AsLockedMemoized();
+			InitCaches();
 
 			_relativePath = PathHelper.GetRelativePath(_targetPath, _fileDefinition.FilePath);
 			_stringSymbol = GetType("System.String");
 			_elementStubSymbol = GetType(XamlConstants.Types.ElementStub);
 			_contentPresenterSymbol = GetType(XamlConstants.Types.ContentPresenter);
+			_iFrameworkElementSymbol = GetType(XamlConstants.Types.IFrameworkElement);
+			_iCollectionSymbol = GetType("System.Collections.ICollection");
+			_iCollectionOfTSymbol = GetType("System.Collections.Generic.ICollection`1");
+			_iListSymbol = GetType("System.Collections.IList");
+			_iListOfTSymbol = GetType("System.Collections.Generic.IList`1");
 
 			_isWasm = isWasm;
 		}
@@ -1711,7 +1720,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					{
 						// Look up any potential UI automation member mappings available for the current object definition
 						extractionTargetMembers = _uiAutomationMappings
-							?.FirstOrDefault(m => IsType(objectDefinition.Type, m.Key) || IsImplementingInterface(objectDefinition.Type, m.Key))
+							?.FirstOrDefault(m => IsType(objectDefinition.Type, m.Key) || IsImplementingInterface(FindType(objectDefinition.Type), FindType(m.Key)))
 							.Value
 							?.ToArray() ?? new string[0];
 					}
