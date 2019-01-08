@@ -10,6 +10,7 @@ using Windows.UI.Xaml.Media.Imaging;
 using Uno.Disposables;
 using Windows.Storage.Streams;
 using System.Runtime.InteropServices;
+using Microsoft.Extensions.Logging;
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -26,6 +27,8 @@ namespace Windows.UI.Xaml.Controls
 
 		private readonly HtmlImage _htmlImage;
 		private Size _lastMeasuredSize;
+
+		private static readonly Size _zeroSize = new Size(0d, 0d);
 
 		public Image()
 		{
@@ -52,7 +55,12 @@ namespace Windows.UI.Xaml.Controls
 				this.Log().Debug($"Image opened [{(Source as BitmapSource)?.WebUri}]");
 			}
 
-			InvalidateMeasure();
+			if (_lastMeasuredSize == _zeroSize)
+			{
+				// If the image size hasn't being calculated
+				// (sometimes the measure 
+				InvalidateMeasure();
+			}
 		}
 
 		/// <summary>
@@ -90,6 +98,8 @@ namespace Windows.UI.Xaml.Controls
 			UpdateHitTest();
 
 			var source = e.NewValue as ImageSource;
+
+			_lastMeasuredSize = _zeroSize;
 
 			if (source is WriteableBitmap wb)
 			{
@@ -211,7 +221,7 @@ namespace Windows.UI.Xaml.Controls
 				);
 			}
 
-			Console.WriteLine($"Measure {this} availableSize:{availableSize} measuredSize:{_lastMeasuredSize} ret:{ret}");
+			this.Log().LogTrace($"Measure {this} availableSize:{availableSize} measuredSize:{_lastMeasuredSize} ret:{ret}");
 
 			return ret;
 		}
@@ -297,7 +307,7 @@ namespace Windows.UI.Xaml.Controls
 				("clip", clip)
 			);
 
-			Console.WriteLine($"Arrange {this} _lastMeasuredSize:{_lastMeasuredSize} clip:{clip} position:{position} finalSize:{finalSize}");
+			this.Log().LogTrace($"Arrange {this} _lastMeasuredSize:{_lastMeasuredSize} clip:{clip} position:{position} finalSize:{finalSize}");
 
 			// Image has no direct child that needs to be arranged explicitly
 			return finalSize;
