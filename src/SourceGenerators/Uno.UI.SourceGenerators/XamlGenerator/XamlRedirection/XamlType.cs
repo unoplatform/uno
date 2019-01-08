@@ -41,5 +41,21 @@ namespace Uno.UI.SourceGenerators.XamlGenerator.XamlRedirection
 		public override string ToString() => XamlConfig.IsUnoXaml ? _unoDeclaringType.ToString() : _msDeclaringType.ToString();
 
 		public bool Equals(XamlType other) => XamlConfig.IsUnoXaml ? _unoDeclaringType.Equals(other._unoDeclaringType) : _msDeclaringType.Equals(other._msDeclaringType);
+
+		public override bool Equals(object other)
+		{
+			if (other is XamlType otherType)
+			{
+				return XamlConfig.IsUnoXaml
+				? _unoDeclaringType.Equals(otherType._unoDeclaringType)
+				: _msDeclaringType.Equals(otherType._msDeclaringType);
+			}
+
+			return false;
+		}
+
+		public override int GetHashCode()
+			=> XamlConfig.IsUnoXaml ? _unoDeclaringType.GetHashCode() : _msDeclaringType.GetHashCode();
+
 	}
 }
