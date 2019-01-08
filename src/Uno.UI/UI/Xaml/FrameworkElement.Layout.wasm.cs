@@ -4,6 +4,7 @@ using Uno.Diagnostics.Eventing;
 using Uno.Extensions;
 using Uno.Logging;
 using Windows.Foundation;
+using Microsoft.Extensions.Logging;
 using Uno.UI;
 using static System.Math;
 using static Uno.UI.LayoutHelper;
@@ -14,6 +15,7 @@ namespace Windows.UI.Xaml
 	{
 		private Size _unclippedDesiredSize;
 		private Point _visualOffset;
+
 		/// <summary>
 		/// The origin of the view's bounds relative to its parent.
 		/// </summary>
@@ -44,6 +46,11 @@ namespace Windows.UI.Xaml
 
 				var desiredSize = MeasureOverride(frameworkAvailableSize);
 
+				if (_log.IsEnabled(LogLevel.Trace))
+				{
+					_log.LogTrace($"{this}.MeasureOverride(availableSize={frameworkAvailableSize}): desiredSize={desiredSize}");
+				}
+
 				if(
 					double.IsNaN(desiredSize.Width)
 					|| double.IsNaN(desiredSize.Height)
@@ -51,7 +58,7 @@ namespace Windows.UI.Xaml
 					|| double.IsInfinity(desiredSize.Height)
 				)
 				{
-					throw new InvalidOperationException($"Invalid measured size {desiredSize}/{GetType()}/{Name}");
+					throw new InvalidOperationException($"{this}: Invalid measured size {desiredSize}. NaN or Infinity are invalid desired size.");
 				}
 
 				desiredSize = desiredSize.AtLeast(minSize);
@@ -66,10 +73,10 @@ namespace Windows.UI.Xaml
 
 				var retSize = clippedDesiredSize.AtLeast(new Size(0, 0));
 
-				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+				if (_log.IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
 				{
-					this.Log().DebugFormat(
-						$"[{GetType()}/{Name}] Measure({Name}/{availableSize}/{Margin}) = {retSize}"
+					_log.DebugFormat(
+						$"[{this}] Measure({Name}/{availableSize}/{Margin}) = {retSize}"
 					);
 				}
 
@@ -134,10 +141,10 @@ namespace Windows.UI.Xaml
 
 				ArrangeNative(offset, oldRenderSize);
 
-				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+				if (_log.IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
 				{
-					this.Log().Debug(
-						$"[{GetType()}/{Name}] ArrangeChild({Name}/{offset}/{Margin})"
+					_log.Debug(
+						$"[{this}] ArrangeChild(offset={offset}, margin={Margin}) [oldRenderSize={oldRenderSize}]"
 					);
 				}
 			}
@@ -179,7 +186,7 @@ namespace Windows.UI.Xaml
 					|| double.IsNaN(newRect.Y)
 				)
 				{
-					throw new InvalidOperationException($"Invalid frame size {newRect} for {HtmlId}/{GetType()}/{Name}");
+					throw new InvalidOperationException($"{this}: Invalid frame size {newRect}. No dimension should be NaN or negative value.");
 				}
 
 				// Disable clipping for Scrollviewer (edge seems to disable scrolling if 
@@ -199,7 +206,7 @@ namespace Windows.UI.Xaml
 			}
 			else
 			{
-				this.Log().DebugIfEnabled(() => $"{this}: ArrangeNative({offset}, {oldRenderSize}) -- SKIPPED");
+				_log.DebugIfEnabled(() => $"{this}: ArrangeNative({offset}, {oldRenderSize}) -- SKIPPED (no change)");
 			}
 		}
 	}

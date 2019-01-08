@@ -24,10 +24,10 @@ namespace Windows.UI.Xaml.Controls
 	{
 		private readonly SerialDisposable _sourceDisposable = new SerialDisposable();
 
-		private HtmlImage _htmlImage;
+		private readonly HtmlImage _htmlImage;
 		private Size _lastMeasuredSize;
 
-		public Image() : base("div")
+		public Image()
 		{
 			_htmlImage = new HtmlImage();
 
@@ -188,6 +188,34 @@ namespace Windows.UI.Xaml.Controls
 			InvalidateArrange();
 		}
 
+		protected override Size MeasureOverride(Size availableSize)
+		{
+			_lastMeasuredSize = _htmlImage.MeasureView(new Size(double.PositiveInfinity, double.PositiveInfinity));
+			Size ret;
+
+			if (
+				double.IsInfinity(availableSize.Width)
+				&& double.IsInfinity(availableSize.Height)
+			)
+			{
+				ret = _lastMeasuredSize;
+			}
+			else
+			{
+				ret = AdjustSize(availableSize, _lastMeasuredSize);
+
+				// Clamp the size to the available size (used for Strech.None)
+				ret = new Size(
+					double.IsInfinity(availableSize.Width) ? ret.Width : Math.Min(availableSize.Width, ret.Width),
+					double.IsInfinity(availableSize.Height) ? ret.Height : Math.Min(availableSize.Height, ret.Height)
+				);
+			}
+
+			Console.WriteLine($"Measure {this} availableSize:{availableSize} measuredSize:{_lastMeasuredSize} ret:{ret}");
+
+			return ret;
+		}
+
 		protected override Size ArrangeOverride(Size finalSize)
 		{
 			(double x, double y, double? width, double? height) getHtmlImagePosition()
@@ -269,38 +297,10 @@ namespace Windows.UI.Xaml.Controls
 				("clip", clip)
 			);
 
-			Console.WriteLine($"Arrange Image {Name} _lastMeasuredSize:{_lastMeasuredSize} clip:{clip} position:{position} finalSize:{finalSize}");
+			Console.WriteLine($"Arrange {this} _lastMeasuredSize:{_lastMeasuredSize} clip:{clip} position:{position} finalSize:{finalSize}");
 
 			// Image has no direct child that needs to be arranged explicitly
 			return finalSize;
-		}
-
-		protected override Size MeasureOverride(Size availableSize)
-		{
-			_lastMeasuredSize = _htmlImage.MeasureView(new Size(double.PositiveInfinity, double.PositiveInfinity));
-			Size ret;
-
-			if (
-				double.IsInfinity(availableSize.Width)
-				&& double.IsInfinity(availableSize.Height)
-			)
-			{
-				ret = _lastMeasuredSize;
-			}
-			else
-			{
-				ret = AdjustSize(availableSize, _lastMeasuredSize);
-
-				// Clamp the size to the available size (used for Strech.None)
-				ret = new Size(
-					double.IsInfinity(availableSize.Width) ? ret.Width : Math.Min(availableSize.Width, ret.Width),
-					double.IsInfinity(availableSize.Height) ? ret.Height : Math.Min(availableSize.Height, ret.Height)
-				);
-			}
-
-			Console.WriteLine($"Measure Image {Name} availableSize:{availableSize} measuredSize:{_lastMeasuredSize} ret:{ret}");
-
-			return ret;
 		}
 
 		internal override bool IsViewHit()

@@ -1,5 +1,8 @@
 ﻿using Windows.Foundation;
 using System;
+using Microsoft.Extensions.Logging;
+using Uno.Extensions;
+using Uno.Logging;
 
 namespace Windows.UI.Xaml
 {
@@ -53,6 +56,8 @@ namespace Windows.UI.Xaml
 		{
 			if (!(this is FrameworkElement))
 			{
+				this.Log().Warn($"{this} is not a FrameworkElement: Measure() is stopped here.");
+
 				return;
 			}
 
@@ -60,8 +65,12 @@ namespace Windows.UI.Xaml
 
 			if (Visibility == Visibility.Collapsed)
 			{
+				this.Log().LogTrace($"{this} Visibility is Collapsed.");
+
 				if (!isCloseToPreviousMeasure)
 				{
+					this.Log().LogTrace($"{this} is Collapsed and measure size similar to previous one: We're terminating the measure phase here.");
+
 					_isMeasureValid = false;
 					_previousAvailableSize = availableSize;
 				}
@@ -71,6 +80,8 @@ namespace Windows.UI.Xaml
 
 			if (_isMeasureValid && isCloseToPreviousMeasure)
 			{
+				this.Log().LogTrace($"{this} measure size similar to previous one: We're terminating the measure phase here.");
+
 				return;
 			}
 
