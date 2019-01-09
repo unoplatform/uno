@@ -49,6 +49,7 @@
 * [Wasm] Code for `Path.Stretch` has been moved to `Shape` and works well now for all shapes.
 * Add support for `DynamicObject` data binding, to enable support for `Elmish.Uno`.
 * Add support for VS2019 VSIX installation
+* Improved Xaml generation speed, and incremental build performance
 
 ### Breaking changes
 * Refactored ToggleSwitch Default Native XAML Styles. (cf. 'NativeDefaultToggleSwitch' styles in Generic.Native.xaml)
