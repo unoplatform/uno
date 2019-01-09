@@ -44,10 +44,7 @@ namespace Windows.UI.Xaml.Media
 		/// </summary>
 		internal View View
 		{
-			get
-			{
-				return _view;
-			}
+			get => _view;
 			set
 			{
 				var view = _view;
@@ -74,7 +71,7 @@ namespace Windows.UI.Xaml.Media
 		partial void OnDetachedFromViewPartial(View view);
 
 		/// <summary>
-		/// The <see cref="FrameworkElement.RenderTransformOrigin"/> of the targetted view.
+		/// The <see cref="FrameworkElement.RenderTransformOrigin"/> of the targeted view.
 		/// </summary>
 		internal virtual Foundation.Point Origin { get; set; }
 	}

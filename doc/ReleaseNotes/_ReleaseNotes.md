@@ -86,6 +86,8 @@
  * 143527 [Android] Fixed broken TimePicker Flyout on android devices.
  * 143596 [Wasm] Images stretching is incorrect
  * 143595 [Wasm] Wasm ListView Resizing is not working - Limitation: items can't change its size yet, but it's now getting measured/arranged correctly.
+ * 143527 [Android] Fixed broken TimePicker Flyout on android devices.
+ * 143598 [Wasm] Wasm Animation rotation center is incorrect
 
 ## Release 1.42
 
