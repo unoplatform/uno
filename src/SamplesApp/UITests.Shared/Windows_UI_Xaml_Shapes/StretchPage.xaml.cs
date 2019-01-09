@@ -1,7 +1,7 @@
 ﻿using Windows.UI.Xaml.Controls;
 using Uno.UI.Samples.Controls;
 
-namespace SamplesApp.Samples.Shapes
+namespace SamplesApp.Windows_UI_Xaml_Shapes
 {
 	[SampleControlInfo("Shapes", "Stretch Modes", description:"Test various stretch modes on various shapes (specially Paths) and some brushes.")]
 	public sealed partial class StretchPage : Page

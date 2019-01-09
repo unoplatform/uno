@@ -16,7 +16,7 @@ using Windows.UI.Xaml.Navigation;
 
 namespace Uno.UI.Samples.UITests.ImageTestsControl
 {
-	[SampleControlInfoAttribute("Image", "ImageUniformWithinScrollViewer")]
+	[SampleControlInfo("Image", "ImageUniformWithinScrollViewer")]
 	public sealed partial class ImageUniformWithinScrollViewer : UserControl
 	{
 		public ImageUniformWithinScrollViewer()

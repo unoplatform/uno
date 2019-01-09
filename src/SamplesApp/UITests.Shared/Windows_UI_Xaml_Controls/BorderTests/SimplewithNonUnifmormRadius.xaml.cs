@@ -24,7 +24,7 @@ using System.Globalization;
 
 namespace Uno.UI.Samples.UITests.BorderTestsControl
 {
-	[SampleControlInfoAttribute("Border", "SimplewithNonUnifmormRadius")]
+	[SampleControlInfo("Border", "SimplewithNonUnifmormRadius")]
 	public sealed partial class SimplewithNonUnifmormRadius : UserControl
 	{
 		public SimplewithNonUnifmormRadius()

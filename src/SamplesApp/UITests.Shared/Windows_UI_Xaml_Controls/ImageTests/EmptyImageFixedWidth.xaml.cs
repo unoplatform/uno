@@ -16,7 +16,7 @@ using Windows.UI.Xaml.Navigation;
 
 namespace Uno.UI.Samples.UITests.ImageTestsControl
 {
-	[SampleControlInfoAttribute("Image", "EmptyImageFixedWidth")]
+	[SampleControlInfo("Image", "EmptyImageFixedWidth")]
 	public sealed partial class EmptyImageFixedWidth : UserControl
 	{
 		public EmptyImageFixedWidth()

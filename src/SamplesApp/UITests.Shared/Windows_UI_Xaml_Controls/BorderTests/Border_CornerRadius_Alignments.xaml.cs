@@ -22,7 +22,7 @@ using System.Globalization;
 
 namespace Uno.UI.Samples.UITests.BorderTestsControl
 {
-    [SampleControlInfoAttribute("Border", "Border_CornerRadius_Alignments")]
+    [SampleControlInfo("Border", "Border_CornerRadius_Alignments")]
     public sealed partial class Border_CornerRadius_Alignments : Page
     {
         public Border_CornerRadius_Alignments()
