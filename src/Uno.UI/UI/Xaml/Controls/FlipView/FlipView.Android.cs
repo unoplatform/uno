@@ -13,7 +13,7 @@ namespace Windows.UI.Xaml.Controls
 	{
 		private NativePagedView PagedView { get { return InternalItemsPanelRoot as NativePagedView; } }
 
-		protected override void UpdateItems()
+		protected override bool UpdateItems()
 		{
 			if (PagedView != null && PagedView.Adapter == null)
 			{
@@ -26,8 +26,10 @@ namespace Windows.UI.Xaml.Controls
 				PagedView.CurrentItem = SelectedIndex;
 			}
 			PagedView?.Adapter.NotifyDataSetChanged();
-			base.UpdateItems();
+			var updatedItems = base.UpdateItems();
 			RequestLayout();
+
+			return updatedItems;
 		}
 
 		partial void OnSelectedIndexChangedPartial(int oldValue, int newValue, bool animateChange)
@@ -38,9 +40,13 @@ namespace Windows.UI.Xaml.Controls
 			}
 
 			//Update PagedView state if necessary, to avoid an IllegalStateException
-			UpdateItemsIfNeeded();
+			var collectionHasChanged = UpdateItemsIfNeeded();
 
-			PagedView.Adapter?.NotifyDataSetChanged();
+			if (collectionHasChanged)
+			{
+				PagedView.Adapter?.NotifyDataSetChanged();
+			}
+
 			PagedView.SetCurrentItem(newValue, smoothScroll: animateChange);
 		}
 

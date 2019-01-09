@@ -843,16 +843,18 @@ namespace Windows.UI.Xaml.Controls
 			RequestLayoutPartial();
 		}
 
-		public void UpdateItemsIfNeeded()
+		public bool UpdateItemsIfNeeded()
 		{
 			if (_needsUpdateItems)
 			{
 				_needsUpdateItems = false;
-				UpdateItems();
+				return UpdateItems();
 			}
+
+			return false;
 		}
 
-		protected virtual void UpdateItems()
+		protected virtual bool UpdateItems()
 		{
 			if (ItemsPanelRoot != null && ShouldItemsControlManageChildren)
 			{
@@ -877,7 +879,11 @@ namespace Windows.UI.Xaml.Controls
 						CleanUpContainer(removedObject);
 					}
 				}
+
+				return results.HasChanged();
 			}
+
+			return false;
 		}
 
 		protected virtual void ClearContainerForItemOverride(DependencyObject element, object item) { }
