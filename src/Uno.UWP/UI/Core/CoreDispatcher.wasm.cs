@@ -4,12 +4,18 @@ using System.ComponentModel;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Uno.Foundation;
+using Uno.Foundation.Interop;
 
 namespace Windows.UI.Core
 {
-    public sealed partial class CoreDispatcher
-    {
-		private Timer _timer;
+	public sealed partial class CoreDispatcher
+	{
+		/// <summary>
+		/// Method invoked from 
+		/// </summary>
+		private static void DispatcherCallback()
+			=> Main.DispatchItems();
 
 		/// <summary>
 		/// Provide a action that will delegate the dispach of CoreDispatcher work
@@ -19,10 +25,6 @@ namespace Windows.UI.Core
 
 		partial void Initialize()
 		{
-			if (DispatchOverride == null)
-			{
-				_timer = new Timer(_ => DispatchItems());
-			}
 		}
 
 		// Always reschedule, otherwise we may end up in live-lock.
@@ -36,7 +38,7 @@ namespace Windows.UI.Core
 		{
 			if (DispatchOverride == null)
 			{
-				_timer.Change(0, -1);
+				WebAssemblyRuntime.InvokeJSUnmarshalled("CoreDispatcher:WakeUp", IntPtr.Zero);
 			}
 			else
 			{
