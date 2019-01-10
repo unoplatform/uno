@@ -16,7 +16,7 @@ using Windows.UI.Xaml.Navigation;
 
 namespace Uno.UI.Samples.UITests.ImageBrushTestControl
 {
-	[SampleControlInfoAttribute("ImageBrushTestControl", "ImageBrushLocalAsset")]
+	[SampleControlInfo("ImageBrushTestControl", "ImageBrushLocalAsset")]
 	public sealed partial class ImageBrushLocalAsset : UserControl
 	{
 		public ImageBrushLocalAsset()

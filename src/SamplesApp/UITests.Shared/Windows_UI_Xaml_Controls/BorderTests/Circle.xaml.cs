@@ -22,7 +22,7 @@ using System.Globalization;
 
 namespace Uno.UI.Samples.UITests.BorderTestsControl
 {
-    [SampleControlInfoAttribute("Border", "Circle")]
+    [SampleControlInfo("Border", "Circle")]
     public sealed partial class Circle : Page
     {
         public Circle()

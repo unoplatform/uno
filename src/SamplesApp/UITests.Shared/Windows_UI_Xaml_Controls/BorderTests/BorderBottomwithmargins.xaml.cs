@@ -24,7 +24,7 @@ using System.Globalization;
 
 namespace Uno.UI.Samples.UITests.BorderTestsControl
 {
-	[SampleControlInfoAttribute("Border", "BorderBottomwithmargins")]
+	[SampleControlInfo("Border", "BorderBottomwithmargins")]
 	public sealed partial class BorderBottomwithmargins : UserControl
 	{
 		public BorderBottomwithmargins()

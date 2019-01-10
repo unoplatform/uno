@@ -24,7 +24,7 @@ using System.Globalization;
 
 namespace Uno.UI.Samples.UITests.BorderTestsControl
 {
-	[SampleControlInfoAttribute("Border", "Border_Simple_No_Background_With_TextBox")]
+	[SampleControlInfo("Border", "Border_Simple_No_Background_With_TextBox")]
 	public sealed partial class Border_Simple_No_Background_With_TextBox : UserControl
 	{
 		public Border_Simple_No_Background_With_TextBox()

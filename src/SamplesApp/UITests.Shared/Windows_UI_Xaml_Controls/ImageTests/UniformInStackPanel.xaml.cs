@@ -16,7 +16,7 @@ using Windows.UI.Xaml.Navigation;
 
 namespace Uno.UI.Samples.UITests.ImageTestsControl
 {
-	[SampleControlInfoAttribute("Image", "UniformInStackPanel")]
+	[SampleControlInfo("Image", "UniformInStackPanel")]
 	public sealed partial class UniformInStackPanel : UserControl
 	{
 		public UniformInStackPanel()

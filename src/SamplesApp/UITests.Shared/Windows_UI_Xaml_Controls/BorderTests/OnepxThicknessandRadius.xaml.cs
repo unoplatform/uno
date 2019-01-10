@@ -24,7 +24,7 @@ using System.Globalization;
 
 namespace Uno.UI.Samples.UITests.BorderTestsControl
 {
-	[SampleControlInfoAttribute("Border", "OnepxThicknessandRadius")]
+	[SampleControlInfo("Border", "OnepxThicknessandRadius")]
 	public sealed partial class OnepxThicknessandRadius : UserControl
 	{
 		public OnepxThicknessandRadius()
