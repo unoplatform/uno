@@ -9,6 +9,7 @@
     xmlns:android="http://uno.ui/android"
     xmlns:xamarin="http://uno.ui/xamarin"
     mc:Ignorable="ios android xamarin"
+	xmlns:System="using:System"
 	xmlns:f="using:Windows.Foundation">
  
 
@@ -44,7 +45,8 @@
 	<x:Double x:Key="Double-Resource-With-Dashes">42</x:Double>
 
 	<x:String x:Key="testTimeSpanString">00:00:42</x:String>
-
+	<System:String x:Key="shortDateFormatString">{0:d}</System:String>
+	
 	<x:DoubleAnimation x:Key="testDoubleAnination"
 					   Duration="{StaticResource testTimeSpanString}" />
 
