@@ -24,7 +24,7 @@ using System.Globalization;
 
 namespace Uno.UI.Samples.UITests.BorderTestsControl
 {
-	[SampleControlInfoAttribute("Border", "AutoBorderStretchwithtopmargin")]
+	[SampleControlInfo("Border", "AutoBorderStretchwithtopmargin")]
 	public sealed partial class AutoBorderStretchwithtopmargin : UserControl
 	{
 		public AutoBorderStretchwithtopmargin()

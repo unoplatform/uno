@@ -16,7 +16,7 @@ using Windows.UI.Xaml.Navigation;
 
 namespace Uno.UI.Samples.UITests.ImageBrushTestControl
 {
-	[SampleControlInfoAttribute("ImageBrushTestControl", "ImageBrushAlignmentXY2")]
+	[SampleControlInfo("ImageBrushTestControl", "ImageBrushAlignmentXY2")]
 	public sealed partial class ImageBrushAlignmentXY2 : UserControl
 	{
 		public ImageBrushAlignmentXY2()

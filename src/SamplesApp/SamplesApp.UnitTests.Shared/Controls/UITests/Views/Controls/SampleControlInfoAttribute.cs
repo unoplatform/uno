@@ -5,7 +5,7 @@ using System.Text;
 namespace Uno.UI.Samples.Controls
 {
 
-	[System.AttributeUsage(AttributeTargets.Class, Inherited = false, AllowMultiple = true)]
+	[AttributeUsage(AttributeTargets.Class, Inherited = false, AllowMultiple = true)]
 	public sealed class SampleControlInfoAttribute : Attribute
 	{
 		readonly string _controlName;

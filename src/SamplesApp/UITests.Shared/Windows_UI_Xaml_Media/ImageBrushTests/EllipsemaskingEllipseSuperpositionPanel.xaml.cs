@@ -16,7 +16,7 @@ using Windows.UI.Xaml.Navigation;
 
 namespace Uno.UI.Samples.UITests.ImageBrushTestControl
 {
-	[SampleControlInfoAttribute("ImageBrushTestControl", "EllipsemaskingEllipseSuperpositionPanel")]
+	[SampleControlInfo("ImageBrushTestControl", "EllipsemaskingEllipseSuperpositionPanel")]
 	public sealed partial class EllipsemaskingEllipseSuperpositionPanel : UserControl
 	{
 		public EllipsemaskingEllipseSuperpositionPanel()

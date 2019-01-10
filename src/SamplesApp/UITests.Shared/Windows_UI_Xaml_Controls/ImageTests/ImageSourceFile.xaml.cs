@@ -18,7 +18,7 @@ using Windows.UI.Xaml.Navigation;
 
 namespace Uno.UI.Samples.UITests.ImageTestsControl
 {
-	[SampleControlInfoAttribute("Image", "ImageSourceFile")]
+	[SampleControlInfo("Image", "ImageSourceFile")]
 	public sealed partial class ImageSourceFile : UserControl
 	{
 		public ImageSourceFile()

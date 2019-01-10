@@ -19,7 +19,7 @@ using Windows.UI.Xaml.Navigation;
 
 namespace Uno.UI.Samples.UITests.ImageBrushTestControl
 {
-	[SampleControlInfoAttribute("ImageBrushTestControl", "ImageBrush_StreamSource")]
+	[SampleControlInfo("ImageBrushTestControl", "ImageBrush_StreamSource")]
 	public sealed partial class ImageBrush_StreamSource : UserControl
 	{
 		private readonly ImageBrush_StreamSource_Data _context;

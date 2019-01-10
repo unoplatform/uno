@@ -21,7 +21,7 @@ namespace Uno.UI.Samples.Helper
 		{
 			element.Loaded += async delegate {
 
-				CancellationTokenSource cts = new CancellationTokenSource();
+				var cts = new CancellationTokenSource();
 
 				RoutedEventHandler unloadedHandler = null;
 				

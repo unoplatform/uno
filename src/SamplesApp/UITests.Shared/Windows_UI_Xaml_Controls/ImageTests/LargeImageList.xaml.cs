@@ -15,7 +15,7 @@ using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 namespace Uno.UI.Samples.UITests
 {
-	[SampleControlInfoAttribute("Image", "LargeImageList")]
+	[SampleControlInfo("Image", "LargeImageList")]
 	public sealed partial class LargeImageList : UserControl
 	{
 		public LargeImageList()
