@@ -1,7 +1,6 @@
 ﻿using Windows.UI.Xaml.Controls;
+using SamplesApp.Windows_UI_Xaml_Controls.ComboBox.Models;
 using Uno.UI.Samples.Controls;
-
-// The User Control item template is documented at http://go.microsoft.com/fwlink/?LinkId=234236
 
 namespace SamplesApp.Wasm.Windows_UI_Xaml_Controls.ComboBox
 {
