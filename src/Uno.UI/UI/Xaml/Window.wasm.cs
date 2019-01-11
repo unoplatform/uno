@@ -148,11 +148,26 @@ namespace Windows.UI.Xaml
 			_rootBorder.Child = _content = content;
 			if (content != null)
 			{
+				if (FeatureConfiguration.FrameworkElement.WasmUseManagedLoadedUnloaded && !_window.IsLoaded)
+				{
+					_window.ManagedOnLoading();
+				}
+
 				WebAssemblyRuntime.InvokeJS($"Uno.UI.WindowManager.current.setRootContent(\"{_window.HtmlId}\");");
+
+				if (FeatureConfiguration.FrameworkElement.WasmUseManagedLoadedUnloaded && !_window.IsLoaded)
+				{
+					_window.ManagedOnLoaded();
+				}
 			}
 			else
 			{
 				WebAssemblyRuntime.InvokeJS($"Uno.UI.WindowManager.current.setRootContent();");
+
+				if (FeatureConfiguration.FrameworkElement.WasmUseManagedLoadedUnloaded && _window.IsLoaded)
+				{
+					_window.ManagedOnUnloaded();
+				}
 			}
 		}
 

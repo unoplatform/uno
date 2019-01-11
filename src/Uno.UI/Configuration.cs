@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using Windows.UI.Xaml;
 using Windows.UI.Xaml.Automation;
 using Windows.UI.Xaml.Automation.Peers;
 using Windows.UI.Xaml.Controls;
@@ -41,15 +42,28 @@ namespace Uno.UI
 
 #if __ANDROID__
 			/// <summary>
-			/// Controls the propagation of <see cref="FrameworkElement.Loaded"/> and
-			/// <see cref="FrameworkElement.AndroidUseManagedLoadedUnloaded"/> events through managed
+			/// Controls the propagation of <see cref="Windows.UI.Xaml.FrameworkElement.Loaded"/> and
+			/// <see cref="Windows.UI.Xaml.FrameworkElement.Unloaded"/> events through managed
 			/// or native visual tree traversal. 
 			/// </summary>
 			/// <remarks>
-			/// This setting impacts significatly the loading performance of controls on Android.
+			/// This setting impacts significantly the loading performance of controls on Android.
 			/// Setting it to <see cref="true"/> avoids the use of costly Java->C# interop.
 			/// </remarks>
 			public static bool AndroidUseManagedLoadedUnloaded { get; set; } = true;
+#endif
+
+#if __WASM__
+			/// <summary>
+			/// Controls the propagation of <see cref="Windows.UI.Xaml.FrameworkElement.Loaded"/> and
+			/// <see cref="Windows.UI.Xaml.FrameworkElement.Unloaded"/> events through managed
+			/// or native visual tree traversal. 
+			/// </summary>
+			/// <remarks>
+			/// This setting impacts significantly the loading performance of controls on Web Assembly.
+			/// Setting it to <see cref="true"/> avoids the use of costly JavaScript->C# interop.
+			/// </remarks>
+			public static bool WasmUseManagedLoadedUnloaded { get; set; } = true;
 #endif
 		}
 

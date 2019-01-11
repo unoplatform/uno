@@ -45,8 +45,14 @@ var Windows;
                  * */
                 static WakeUp() {
                     if (CoreDispatcher._isIOS && CoreDispatcher._isFirstCall) {
+                        //
+                        // This is a workaround for the available call stack during the first 5 (?) seconds
+                        // of the startup of an application. See https://github.com/mono/mono/issues/12357 for
+                        // more details.
+                        //
                         CoreDispatcher._isFirstCall = false;
-                        window.setTimeout(() => this.WakeUp(), 2000);
+                        console.debug("Detected iOS, delaying first CoreDispatched dispatch for 5s (see https://github.com/mono/mono/issues/12357)");
+                        window.setTimeout(() => this.WakeUp(), 5000);
                     }
                     else {
                         window.setImmediate(() => CoreDispatcher._coreDispatcherCallback());
@@ -55,7 +61,7 @@ var Windows;
                 }
                 static initMethods() {
                     if (Uno.UI.WindowManager.isHosted) {
-                        console.debug("Hosted Mode: Skipping MonoRuntime initialization ");
+                        console.debug("Hosted Mode: Skipping CoreDispatcher initialization ");
                     }
                     else {
                         if (!CoreDispatcher._coreDispatcherCallback) {
@@ -250,19 +256,27 @@ var Uno;
             }
             /**
              * Defines if the WindowManager is running in hosted mode, and should skip the
-             * initialization of WebAssembly, use this mode in conjuction with the Uno.UI.WpfHost
+             * initialization of WebAssembly, use this mode in conjunction with the Uno.UI.WpfHost
              * to improve debuggability.
              */
             static get isHosted() {
                 return WindowManager._isHosted;
             }
             /**
+             * Defines if the WindowManager is responsible to raise the loading, loaded and unloaded events,
+             * or if they are raised directly by the managed code to reduce interop.
+             */
+            static get isLoadEventsEnabled() {
+                return WindowManager._isLoadEventsEnabled;
+            }
+            /**
                 * Initialize the WindowManager
                 * @param containerElementId The ID of the container element for the Xaml UI
                 * @param loadingElementId The ID of the loading element to remove once ready
                 */
-            static init(localStoragePath, isHosted, containerElementId = "uno-body", loadingElementId = "uno-loading") {
+            static init(localStoragePath, isHosted, isLoadEventsEnabled, containerElementId = "uno-body", loadingElementId = "uno-loading") {
                 WindowManager._isHosted = isHosted;
+                WindowManager._isLoadEventsEnabled = isLoadEventsEnabled;
                 Windows.UI.Core.CoreDispatcher.init();
                 WindowManager.setupStorage(localStoragePath);
                 this.current = new WindowManager(containerElementId, loadingElementId);
@@ -277,7 +291,7 @@ var Uno;
                 */
             static initNative(pParams) {
                 const params = WindowManagerInitParams.unmarshal(pParams);
-                WindowManager.init(params.LocalFolderPath, params.IsHostedMode);
+                WindowManager.init(params.LocalFolderPath, params.IsHostedMode, params.IsLoadEventsEnabled);
                 return true;
             }
             /**
@@ -749,7 +763,9 @@ var Uno;
                 if (this.rootContent) {
                     // Remove existing
                     this.containerElement.removeChild(this.rootContent);
-                    this.dispatchEvent(this.rootContent, "unloaded");
+                    if (WindowManager.isLoadEventsEnabled) {
+                        this.dispatchEvent(this.rootContent, "unloaded");
+                    }
                     this.rootContent.classList.remove(WindowManager.unoRootClassName);
                 }
                 if (!elementId) {
@@ -759,9 +775,13 @@ var Uno;
                 const newRootElement = this.allActiveElementsById[elementId];
                 newRootElement.classList.add(WindowManager.unoRootClassName);
                 this.rootContent = newRootElement;
-                this.dispatchEvent(this.rootContent, "loading");
+                if (WindowManager.isLoadEventsEnabled) {
+                    this.dispatchEvent(this.rootContent, "loading");
+                }
                 this.containerElement.appendChild(this.rootContent);
-                this.dispatchEvent(this.rootContent, "loaded");
+                if (WindowManager.isLoadEventsEnabled) {
+                    this.dispatchEvent(this.rootContent, "loaded");
+                }
                 newRootElement.classList.remove(WindowManager.unoUnarrangedClassName); // patch because root is not measured/arranged
                 this.resize();
                 return "ok";
@@ -769,7 +789,7 @@ var Uno;
             /**
                 * Set a view as a child of another one.
                 *
-                * "Loading" & "Loaded" events will be raised if nescessary.
+                * "Loading" & "Loaded" events will be raised if necessary.
                 *
                 * @param index Position in children list. Appended at end if not specified.
                 */
@@ -780,7 +800,7 @@ var Uno;
             /**
                 * Set a view as a child of another one.
                 *
-                * "Loading" & "Loaded" events will be raised if nescessary.
+                * "Loading" & "Loaded" events will be raised if necessary.
                 *
                 * @param pParams Pointer to a WindowManagerAddViewParams native structure.
                 */
@@ -798,10 +818,13 @@ var Uno;
                 if (!childElement) {
                     throw `addView: Child element id ${parentId} not found.`;
                 }
-                const alreadyLoaded = this.getIsConnectedToRootElement(childElement);
-                const isLoading = !alreadyLoaded && this.getIsConnectedToRootElement(parentElement);
-                if (isLoading) {
-                    this.dispatchEvent(childElement, "loading");
+                let shouldRaiseLoadEvents = false;
+                if (WindowManager.isLoadEventsEnabled) {
+                    const alreadyLoaded = this.getIsConnectedToRootElement(childElement);
+                    shouldRaiseLoadEvents = !alreadyLoaded && this.getIsConnectedToRootElement(parentElement);
+                    if (shouldRaiseLoadEvents) {
+                        this.dispatchEvent(childElement, "loading");
+                    }
                 }
                 if (index && index < parentElement.childElementCount) {
                     const insertBeforeElement = parentElement.children[index];
@@ -810,14 +833,14 @@ var Uno;
                 else {
                     parentElement.appendChild(childElement);
                 }
-                if (isLoading) {
+                if (shouldRaiseLoadEvents) {
                     this.dispatchEvent(childElement, "loaded");
                 }
             }
             /**
                 * Remove a child from a parent element.
                 *
-                * "Unloading" & "Unloaded" events will be raised if nescessary.
+                * "Unloading" & "Unloaded" events will be raised if necessary.
                 */
             removeView(parentId, childId) {
                 this.removeViewInternal(parentId, childId);
@@ -826,7 +849,7 @@ var Uno;
             /**
                 * Remove a child from a parent element.
                 *
-                * "Unloading" & "Unloaded" events will be raised if nescessary.
+                * "Unloading" & "Unloaded" events will be raised if necessary.
                 */
             removeViewNative(pParams) {
                 const params = WindowManagerRemoveViewParams.unmarshal(pParams);
@@ -842,9 +865,10 @@ var Uno;
                 if (!childElement) {
                     throw `removeView: Child element id ${parentId} not found.`;
                 }
-                const loaded = this.getIsConnectedToRootElement(childElement);
+                const shouldRaiseLoadEvents = WindowManager.isLoadEventsEnabled
+                    && this.getIsConnectedToRootElement(childElement);
                 parentElement.removeChild(childElement);
-                if (loaded) {
+                if (shouldRaiseLoadEvents) {
                     this.dispatchEvent(childElement, "unloaded");
                 }
             }
@@ -1175,6 +1199,7 @@ var Uno;
             }
         }
         WindowManager._isHosted = false;
+        WindowManager._isLoadEventsEnabled = false;
         WindowManager.unoRootClassName = "uno-root-element";
         WindowManager.unoUnarrangedClassName = "uno-unarranged";
         WindowManager._cctor = (() => {
@@ -1320,6 +1345,9 @@ class WindowManagerInitParams {
         }
         {
             ret.IsHostedMode = Boolean(Module.getValue(pData + 4, "i32"));
+        }
+        {
+            ret.IsLoadEventsEnabled = Boolean(Module.getValue(pData + 8, "i32"));
         }
         return ret;
     }

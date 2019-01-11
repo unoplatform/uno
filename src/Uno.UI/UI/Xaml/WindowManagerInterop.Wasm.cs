@@ -22,11 +22,11 @@ namespace Uno.UI.Xaml
 			!WebAssemblyRuntime.IsWebAssembly || FeatureConfiguration.Interop.ForceJavascriptInterop;
 
 		#region Init
-		internal static void Init(string localFolderPath, bool isHostedMode)
+		internal static void Init(string localFolderPath, bool isHostedMode, bool isLoadEventsEnabled)
 		{
 			if (UseJavascriptEval)
 			{
-				WebAssemblyRuntime.InvokeJS($"Uno.UI.WindowManager.init(\"{localFolderPath}\", {isHostedMode.ToString().ToLowerInvariant()});");
+				WebAssemblyRuntime.InvokeJS($"Uno.UI.WindowManager.init(\"{localFolderPath}\", {isHostedMode.ToString().ToLowerInvariant()}, {isLoadEventsEnabled.ToString().ToLowerInvariant()});");
 			}
 			else
 			{
@@ -34,6 +34,7 @@ namespace Uno.UI.Xaml
 				{
 					LocalFolderPath = localFolderPath,
 					IsHostedMode = isHostedMode,
+					IsLoadEventsEnabled = isLoadEventsEnabled
 				};
 
 				TSInteropMarshaller.InvokeJS<WindowManagerInitParams, bool>("UnoStatic:initNative", parms);
@@ -48,6 +49,8 @@ namespace Uno.UI.Xaml
 			public string LocalFolderPath;
 
 			public bool IsHostedMode;
+
+			public bool IsLoadEventsEnabled;
 		}
 
 		#endregion
