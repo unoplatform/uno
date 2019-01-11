@@ -3,6 +3,23 @@ declare namespace Uno.Utils {
         static setText(text: string): string;
     }
 }
+declare namespace Windows.UI.Core {
+    /**
+     * Support file for the Windows.UI.Core
+     * */
+    class CoreDispatcher {
+        static _coreDispatcherCallback: any;
+        static _isIOS: boolean;
+        static _isFirstCall: boolean;
+        static init(): void;
+        /**
+         * Enqueues a core dispatcher callback on the javascript's event loop
+         *
+         * */
+        static WakeUp(): boolean;
+        private static initMethods();
+    }
+}
 declare namespace Uno.UI {
     class HtmlDom {
         /**
@@ -51,7 +68,9 @@ declare namespace MonoSupport {
      * unmarshaled invocation of javascript from .NET code.
      * */
     class jsCallDispatcher {
-        static registrations: Map<string, object>;
+        static registrations: Map<string, any>;
+        static methodMap: Map<string, any>;
+        static _isUnoRegistered: boolean;
         /**
          * Registers a instance for a specified identier
          * @param identifier the scope name
@@ -59,6 +78,17 @@ declare namespace MonoSupport {
          */
         static registerScope(identifier: string, instance: any): void;
         static findJSFunction(identifier: string): any;
+        /**
+         * Parses the method identifier
+         * @param identifier
+         */
+        private static parseIdentifier(identifier);
+        /**
+         * Adds the a resolved method for a given identifier
+         * @param identifier the findJSFunction identifier
+         * @param boundMethod the method to call
+         */
+        private static cacheMethod(identifier, boundMethod);
     }
 }
 declare namespace Uno.UI {
@@ -75,16 +105,22 @@ declare namespace Uno.UI {
         static readonly isHosted: boolean;
         private static readonly unoRootClassName;
         private static readonly unoUnarrangedClassName;
+        private static _cctor;
         /**
             * Initialize the WindowManager
             * @param containerElementId The ID of the container element for the Xaml UI
             * @param loadingElementId The ID of the loading element to remove once ready
             */
         static init(localStoragePath: string, isHosted: boolean, containerElementId?: string, loadingElementId?: string): string;
+        /**
+            * Initialize the WindowManager
+            * @param containerElementId The ID of the container element for the Xaml UI
+            * @param loadingElementId The ID of the loading element to remove once ready
+            */
+        static initNative(pParams: number): boolean;
         private containerElement;
         private rootContent;
         private allActiveElementsById;
-        static assembly: UI.Interop.IMonoAssemblyHandle;
         private static resizeMethod;
         private static dispatchEventMethod;
         private constructor();
@@ -368,8 +404,6 @@ declare namespace Uno.UI {
         private removeLoading();
         private resize();
         private dispatchEvent(element, eventName, eventPayload?);
-        private getMonoString(str);
-        private fromMonoString(strHandle);
         private getIsConnectedToRootElement(element);
     }
 }
@@ -405,6 +439,11 @@ declare class WindowManagerGetBBoxReturn {
     Width: number;
     Height: number;
     marshal(pData: number): void;
+}
+declare class WindowManagerInitParams {
+    LocalFolderPath: string;
+    IsHostedMode: boolean;
+    static unmarshal(pData: number): WindowManagerInitParams;
 }
 declare class WindowManagerMeasureViewParams {
     HtmlId: number;

@@ -21,6 +21,37 @@ namespace Uno.UI.Xaml
 		private static bool UseJavascriptEval =>
 			!WebAssemblyRuntime.IsWebAssembly || FeatureConfiguration.Interop.ForceJavascriptInterop;
 
+		#region Init
+		internal static void Init(string localFolderPath, bool isHostedMode)
+		{
+			if (UseJavascriptEval)
+			{
+				WebAssemblyRuntime.InvokeJS($"Uno.UI.WindowManager.init(\"{localFolderPath}\", {isHostedMode.ToString().ToLowerInvariant()});");
+			}
+			else
+			{
+				var parms = new WindowManagerInitParams
+				{
+					LocalFolderPath = localFolderPath,
+					IsHostedMode = isHostedMode,
+				};
+
+				TSInteropMarshaller.InvokeJS<WindowManagerInitParams, bool>("UnoStatic:initNative", parms);
+			}
+		}
+
+		[TSInteropMessage]
+		[StructLayout(LayoutKind.Sequential, Pack = 4)]
+		private struct WindowManagerInitParams
+		{
+			[MarshalAs(TSInteropMarshaller.LPUTF8Str)]
+			public string LocalFolderPath;
+
+			public bool IsHostedMode;
+		}
+
+		#endregion
+
 		#region CreateContent
 		internal static void CreateContent(IntPtr htmlId, string htmlTag, IntPtr handle, string fullName, bool htmlTagIsSvg, bool isFrameworkElement, bool isFocusable, string[] classes)
 		{

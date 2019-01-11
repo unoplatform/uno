@@ -17,6 +17,11 @@
 		private static readonly unoRootClassName = "uno-root-element";
 		private static readonly unoUnarrangedClassName = "uno-unarranged";
 
+		private static _cctor = (() => {
+			WindowManager.initMethods();
+			HtmlDom.initPolyfills();
+		})();
+
 		/**
 			* Initialize the WindowManager
 			* @param containerElementId The ID of the container element for the Xaml UI
@@ -24,20 +29,31 @@
 			*/
 		public static init(localStoragePath: string, isHosted: boolean, containerElementId: string = "uno-body", loadingElementId: string = "uno-loading"): string {
 
-			if (WindowManager.assembly) {
-				throw "Already initialized";
-			}
-
 			WindowManager._isHosted = isHosted;
 
-			WindowManager.initMethods();
-			HtmlDom.initPolyfills();
+			Windows.UI.Core.CoreDispatcher.init();
+
 			WindowManager.setupStorage(localStoragePath);
 
 			this.current = new WindowManager(containerElementId, loadingElementId);
+			MonoSupport.jsCallDispatcher.registerScope("Uno", this.current);
 			this.current.init();
 
 			return "ok";
+		}
+
+		/**
+			* Initialize the WindowManager
+			* @param containerElementId The ID of the container element for the Xaml UI
+			* @param loadingElementId The ID of the loading element to remove once ready
+			*/
+		public static initNative(pParams: number): boolean {
+
+			const params = WindowManagerInitParams.unmarshal(pParams);
+
+			WindowManager.init(params.LocalFolderPath, params.IsHostedMode);
+
+			return true;
 		}
 
 		private containerElement: HTMLDivElement;
@@ -45,9 +61,8 @@
 
 		private allActiveElementsById: { [name: string]: HTMLElement | SVGElement } = {};
 
-		static assembly: UI.Interop.IMonoAssemblyHandle;
-		private static resizeMethod: UI.Interop.IMonoMethodHandle;
-		private static dispatchEventMethod: UI.Interop.IMonoMethodHandle;
+		private static resizeMethod: any;
+		private static dispatchEventMethod: any;
 
 		private constructor(private containerElementId: string, private loadingElementId: string) {
 			this.initDom();
@@ -1105,35 +1120,12 @@
 				console.debug("Hosted Mode: Skipping MonoRuntime initialization ");
 			}
 			else {
-				if (!WindowManager.assembly) {
-					WindowManager.assembly = MonoRuntime.assembly_load("Uno.UI");
-
-					if (!WindowManager.assembly) {
-						throw `Unable to find assembly Uno.UI`;
-					}
-				}
-
 				if (!WindowManager.resizeMethod) {
-					const type = MonoRuntime.find_class(WindowManager.assembly, "Windows.UI.Xaml", "Window");
-
-					if (!type) {
-						throw `Unable to find type Windows.UI.Xaml.Window`;
-					}
-
-					WindowManager.resizeMethod = MonoRuntime.find_method(type, "Resize", -1);
-
-					if (!WindowManager.resizeMethod) {
-						throw `Unable to find Windows.UI.Xaml.Window.Resize method`;
-					}
+					WindowManager.resizeMethod = (<any>Module).mono_bind_static_method("[Uno.UI] Windows.UI.Xaml.Window:Resize");
 				}
 
 				if (!WindowManager.dispatchEventMethod) {
-					const type = MonoRuntime.find_class(WindowManager.assembly, "Windows.UI.Xaml", "UIElement");
-					WindowManager.dispatchEventMethod = MonoRuntime.find_method(type, "DispatchEvent", -1);
-
-					if (!WindowManager.dispatchEventMethod) {
-						throw `Unable to find Windows.UI.Xaml.UIElement.DispatchEvent method`;
-					}
+					WindowManager.dispatchEventMethod = (<any>Module).mono_bind_static_method("[Uno.UI] Windows.UI.Xaml.UIElement:DispatchEvent");
 				}
 			}
 		}
@@ -1171,13 +1163,12 @@
 				UnoDispatch.resize(`${window.innerWidth};${window.innerHeight}`);
 			}
 			else {
-				const sizeStr = this.getMonoString(`${window.innerWidth};${window.innerHeight}`);
-				MonoRuntime.call_method(WindowManager.resizeMethod, null, [sizeStr]);
+				WindowManager.resizeMethod(window.innerWidth, window.innerHeight);
 			}
 		}
 
 		private dispatchEvent(element: HTMLElement | SVGElement, eventName: string, eventPayload: string = null): boolean {
-			const htmlId = element.getAttribute("XamlHandle");
+			const htmlId = Number(element.getAttribute("XamlHandle"));
 			
 			// console.debug(`${element.getAttribute("id")}: Raising event ${eventName}.`);
 
@@ -1189,27 +1180,12 @@
 				// Dispatch to the C# backed UnoDispatch class. Events propagated
 				// this way always succeed because synchronous calls are not possible
 				// between the host and the browser, unlike wasm.
-				UnoDispatch.dispatch(htmlId, eventName, eventPayload);
+				UnoDispatch.dispatch(String(htmlId), eventName, eventPayload);
 				return true;
 			}
 			else {
-				const htmlIdStr = this.getMonoString(htmlId);
-				const eventNameStr = this.getMonoString(eventName);
-				const eventPayloadStr = this.getMonoString(eventPayload);
-
-				const handledHandle = MonoRuntime.call_method(WindowManager.dispatchEventMethod, null, [htmlIdStr, eventNameStr, eventPayloadStr]);
-				const handledStr = this.fromMonoString(handledHandle);
-				const handled = handledStr == "True";
-				return handled;
+				return WindowManager.dispatchEventMethod(htmlId, eventName, eventPayload || "");
 			}
-		}
-
-		private getMonoString(str: string): Interop.IMonoStringHandle {
-			return str ? MonoRuntime.mono_string(str) : null;
-		}
-
-		private fromMonoString(strHandle: Interop.IMonoStringHandle): string {
-			return strHandle ? MonoRuntime.conv_string(strHandle) : "";
 		}
 
 		private getIsConnectedToRootElement(element: HTMLElement | SVGElement): boolean {

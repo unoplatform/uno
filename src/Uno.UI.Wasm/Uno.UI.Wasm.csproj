@@ -27,13 +27,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <UpToDateCheckInput Remove="ts\AppManifest.ts" />
-	  <UpToDateCheckInput Remove="ts\Interop\IAppManifest.ts" />
-	  <UpToDateCheckInput Remove="ts\Interop\IUnoDispatch.ts" />
-	  <UpToDateCheckInput Remove="ts\MonoSupport.ts" />
-	</ItemGroup>
-
-	<ItemGroup>
     <PackageReference Include="Uno.Core">
       <Version>1.26.0-dev.58</Version>
       <ExcludeAssets>Runtime</ExcludeAssets>

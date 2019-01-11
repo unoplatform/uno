@@ -50,6 +50,7 @@
 * Add support for `DynamicObject` data binding, to enable support for `Elmish.Uno`.
 * Add support for VS2019 VSIX installation
 * Improved Xaml generation speed, and incremental build performance
+* [Wasm] Fix `CoreDispatcher` `StackOverflowException` when running on low stack space environments (e.g. iOS)
 
 ### Breaking changes
 * Refactored ToggleSwitch Default Native XAML Styles. (cf. 'NativeDefaultToggleSwitch' styles in Generic.Native.xaml)
@@ -89,6 +90,7 @@
  * 143527 [Android] Fixed broken TimePicker Flyout on android devices.
  * 143598 [Wasm] Wasm Animation rotation center is incorrect
  * Fixes invalid parsing of custom types containing `{}` in their value (#455)
+ * Add workaround for iOS stackoverflow during initialization.
 
 ## Release 1.42
 

@@ -6,7 +6,9 @@
 	 * */
 	export class jsCallDispatcher {
 
-		static registrations: Map<string, object> = new Map<string, object>();
+		static registrations: Map<string, any> = new Map<string, any>();
+		static methodMap: Map<string, any> = new Map<string, any>();
+		static _isUnoRegistered : boolean;
 
 		/**
 		 * Registers a instance for a specified identier
@@ -18,22 +20,50 @@
 		}
 
 		public static findJSFunction(identifier: string): any {
-			var parts = identifier.split(':');
-			if (parts[0] === 'Uno') {
-				var c = <any>Uno.UI.WindowManager.current;
 
-				return c[parts[1]].bind(Uno.UI.WindowManager.current);
+			if (!jsCallDispatcher._isUnoRegistered) {
+				jsCallDispatcher.registerScope("UnoStatic", Uno.UI.WindowManager);
+				jsCallDispatcher._isUnoRegistered = true;
+			}
+
+			var knownMethod = jsCallDispatcher.methodMap.get(identifier);
+			if (knownMethod) {
+				return knownMethod;
+			}
+
+			const { ns, methodName } = jsCallDispatcher.parseIdentifier(identifier);
+
+			var instance = jsCallDispatcher.registrations.get(ns);
+
+			if (instance) {
+				var boundMethod = instance[methodName].bind(instance);
+
+				jsCallDispatcher.cacheMethod(identifier, boundMethod);
+				return boundMethod;
 			}
 			else {
-				var instance = jsCallDispatcher.registrations.get(parts[0]);
-
-				if (instance) {
-					return (<any>instance)[parts[1]].bind(instance);
-				}
-				else {
-					throw `Unknown scope ${parts[0]}`;
-				}
+				throw `Unknown scope ${ns}`;
 			}
+		}
+
+		/**
+		 * Parses the method identifier
+		 * @param identifier
+		 */
+		private static parseIdentifier(identifier: string) {
+			var parts = identifier.split(':');
+			const ns = parts[0];
+			const methodName = parts[1];
+			return { ns, methodName };
+		}
+
+		/**
+		 * Adds the a resolved method for a given identifier
+		 * @param identifier the findJSFunction identifier
+		 * @param boundMethod the method to call
+		 */
+		private static cacheMethod(identifier: string, boundMethod: any) {
+			jsCallDispatcher.methodMap.set(identifier, boundMethod);
 		}
 	}
 }

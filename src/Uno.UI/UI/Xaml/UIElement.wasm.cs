@@ -532,29 +532,21 @@ namespace Windows.UI.Xaml
 			return false;
 		}
 
-		private static readonly Func<string, IntPtr> _strToIntPtr =
-			Marshal.SizeOf<IntPtr>() == 4
-				? (s => (IntPtr)int.Parse(s))
-				: (Func<string, IntPtr>)(s => (IntPtr)long.Parse(s));
-
 		[Preserve]
-		public static string DispatchEvent(string htmlId, string eventName, string eventArgs)
+		public static bool DispatchEvent(int handle, string eventName, string eventArgs)
 		{
-			// parse htmlId to IntPtr
-			var handle = _strToIntPtr(htmlId);
-
-			// Dispatch to right object... if we can find it
-			var gcHandle = GCHandle.FromIntPtr(handle);
+			// Dispatch to right object, if we can find it
+			var gcHandle = GCHandle.FromIntPtr((IntPtr)handle);
 			if (gcHandle.IsAllocated && gcHandle.Target is UIElement element)
 			{
-				return element.InternalDispatchEvent(eventName, nativeEventPayload: eventArgs).ToString();
+				return element.InternalDispatchEvent(eventName, nativeEventPayload: eventArgs);
 			}
 			else
 			{
-				Console.Error.WriteLine($"No UIElement found for htmlId \"{htmlId}\" {gcHandle.IsAllocated}.");
+				Console.Error.WriteLine($"No UIElement found for htmlId \"{handle}\" {gcHandle.IsAllocated}.");
 			}
 
-			return false.ToString();
+			return false;
 		}
 
 		private Rect _arranged;

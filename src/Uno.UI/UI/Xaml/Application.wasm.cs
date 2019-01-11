@@ -11,18 +11,31 @@ using Uno.Foundation;
 using Uno.Extensions;
 using Uno.Logging;
 using System.Threading;
+using Uno.UI.Xaml;
 
 namespace Windows.UI.Xaml
 {
 	public partial class Application
 	{
+		private static bool _startInvoked = false;
+
 		public Application()
 		{
+			if (!_startInvoked)
+			{
+				throw new InvalidOperationException("The application must be started using Application.Start first, e.g. Windows.UI.Xaml.Application.Start(_ => new App());");
+			}
+
 			CoreDispatcher.Main.RunAsync(CoreDispatcherPriority.Normal, Initialize);
 		}
 
 		static partial void StartPartial(ApplicationInitializationCallback callback)
 		{
+			_startInvoked = true;
+
+			bool isHostedMode = !WebAssemblyRuntime.IsWebAssembly;
+			WindowManagerInterop.Init(Windows.Storage.ApplicationData.Current.LocalFolder.Path, isHostedMode);
+
 			SynchronizationContext.SetSynchronizationContext(
 				new CoreDispatcherSynchronizationContext(CoreDispatcher.Main, CoreDispatcherPriority.Normal)
 			);
