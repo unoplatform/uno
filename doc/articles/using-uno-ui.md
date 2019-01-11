@@ -298,11 +298,12 @@ Uno.UI supports the [authoring of styles](https://msdn.microsoft.com/en-us/libra
 
 Localization is done through the `resw` files in the current project. Resources are then used using `x:Uid`.
 
-The Uno Platform tooling currently requires that resource files are to be named `Resources.resw`.
-
 See [Localize strings in your UI](https://docs.microsoft.com/en-us/windows/uwp/app-resources/localize-strings-ui-manifest).
 
-Note that the default language can be defined using the `DefaultLanguage` property, using an IETF Language Tag (e.g. `en` or `fr-FR`).
+Resources may be placed in the default scope files `Resources.resw`, or in a custom named file. Custom named files content
+can by used with the `x:Uid="/myResources/MyResource"` format, see [how to factor strings into multiple resource files](https://docs.microsoft.com/en-us/windows/uwp/app-resources/localize-strings-ui-manifest#factoring-strings-into-multiple-resources-files)
+
+Note that the default language can be defined using the `DefaultLanguage` msbuild property, using an IETF Language Tag (e.g. `en` or `fr-FR`).
 
 ## Supported Uno.UI Controls
 

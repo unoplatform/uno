@@ -94,7 +94,7 @@
 ### Others
 
 - Native properties access from any XAML controls
-- Localization for any property via x:Uid, using resw files (Size localization)
+- Localization for any property via x:Uid, using scoped or unscoped resw files (Size localization)
 - FocusManager (advanced large forms navigation, dynamic UIs)
 - Advanced WebView support (scripting, scrolling, string, custom agent)
 - Automatic assets generation from UWP Assets

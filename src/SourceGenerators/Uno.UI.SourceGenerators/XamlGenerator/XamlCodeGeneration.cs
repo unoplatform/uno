@@ -307,6 +307,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 							.ToArray()
 						)
 						.Distinct()
+						.Select(k => k.Replace(".", "/"))
 						.ToArray();
 				}
 			}

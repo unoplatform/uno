@@ -2285,20 +2285,26 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		{
 			if (IsLocalizedString(propertyType, objectUid))
 			{
+				var uidParts = objectUid.Split(new[] { '/' }, StringSplitOptions.RemoveEmptyEntries);
+				var uidName = uidParts.Length == 2 ? uidParts[1] : uidParts[0];
+				var resourceFileName = uidParts.Length == 2 ? uidParts[0] : null;
+
 				//windows 10 localization concat the xUid Value with the member value (Text, Content, Header etc...)
-				var fullKey = objectUid + "." + memberName;
+				var fullKey = uidName + "/" + memberName;
 
 				if (owner != null && IsAttachedProperty(owner))
 				{
 					var declaringType = GetType(owner.Member.DeclaringType);
 					var ns = declaringType.ContainingNamespace.GetFullName();
 					var type = declaringType.Name;
-					fullKey = $"{objectUid}.[using:{ns}]{type}.{memberName}";
+					fullKey = $"{uidName}/[using:{ns}]{type}.{memberName}";
 				}
 
 				if (_resourceKeys.Any(k => k == fullKey))
 				{
-					return @"global::Windows.ApplicationModel.Resources.ResourceLoader.GetForCurrentView().GetString(""" + fullKey + @""")";
+					var resourceNameString = resourceFileName == null ? "" : $"\"{resourceFileName}\"";
+
+					return $"global::Windows.ApplicationModel.Resources.ResourceLoader.GetForCurrentView({resourceNameString}).GetString(\"{fullKey}\")";
 				}
 			}
 

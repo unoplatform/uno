@@ -8,7 +8,6 @@ using Windows.Storage;
 namespace Uno.UI.Samples.Tests.Windows_Storage
 {
 	[TestClass]
-	[Preserve(AllMembers = true)]
 	public class Given_ApplicationDataContainer
 	{
 		[TestCleanup]
