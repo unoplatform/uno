@@ -22,7 +22,7 @@ namespace Uno.UI.Services
 		{
 			return _resourceBundles
 				.Select(b => GetLocalizedStringOrDefault(id, b))
-				.FirstOrDefault() ?? "[" + id + "]";
+				.FirstOrDefault() ?? "";
 		}
 		
 		private string GetLocalizedStringOrDefault(string id, NSBundle bundle)

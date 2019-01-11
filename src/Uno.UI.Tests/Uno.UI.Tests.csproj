@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="15.0">
+﻿<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="15.0">
   <PropertyGroup>
     <TargetFrameworks>net46</TargetFrameworks>
     <IsPackable>false</IsPackable>
@@ -114,11 +114,14 @@
 
   <PropertyGroup>
     <UnoUIGeneratorsBinPath>..\SourceGenerators\Uno.UI.SourceGenerators\bin\$(Configuration)</UnoUIGeneratorsBinPath>
+		<UnoUIMSBuildTasksPath>$(MSBuildThisFileDirectory)..\SourceGenerators\Uno.UI.Tasks\bin\$(Configuration)_Shadow</UnoUIMSBuildTasksPath>
+		<UnoForceProcessPRIResource>true</UnoForceProcessPRIResource>
   </PropertyGroup>
   
   <Import Project="..\SourceGenerators\Uno.UI.SourceGenerators\Content\Uno.UI.SourceGenerators.props" />
+	<Import Project="..\SourceGenerators\Uno.UI.Tasks\Content\Uno.UI.Tasks.targets" Condition="'$(SkipUnoResourceGeneration)' == '' " />
 
-  <Target Name="BeforeBuildCleanup" BeforeTargets="XamlMarkupCompilePass1;_UnoSourceGenerator" />
+	<Target Name="BeforeBuildCleanup" BeforeTargets="XamlMarkupCompilePass1;_UnoSourceGenerator" />
   
   <Import Project="..\Common.targets" />
   
@@ -127,9 +130,7 @@
   </ItemGroup>
   
   <ItemGroup>
-    <EmbeddedResource Include="ResourceLoader\When_ResourceFile-en.upri" />
-    <EmbeddedResource Include="ResourceLoader\When_ResourceFile_Neutral_Both-en.upri" />
-    <EmbeddedResource Include="ResourceLoader\When_ResourceFile_Neutral_Both-fr.upri" />
+    <PRIResource Include="**\*.resw" />
   </ItemGroup>
 
   <ItemGroup>
@@ -139,6 +140,30 @@
 
   <ItemGroup>
     <Service Include="{82a7f48d-3b50-4b1e-b82e-3ada8210c358}" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="ResourceLoader\Strings\en\Resources.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resw</DependentUpon>
+    </Compile>
+    <Compile Update="ResourceLoader\Strings\fr\Resources.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resw</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="ResourceLoader\Strings\en\Resources.resw">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </None>
+    <None Update="ResourceLoader\Strings\fr\Resources.resw">
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <Generator>ResXFileCodeGenerator</Generator>
+    </None>
   </ItemGroup>
 
 </Project>

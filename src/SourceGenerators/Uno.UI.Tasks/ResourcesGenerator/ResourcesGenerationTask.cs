@@ -51,7 +51,7 @@ namespace Uno.UI.Tasks.ResourcesGenerator
 			{
 				GeneratedFiles = Resources
 					// TODO: Add support for other resources file names
-					.Where(resource => resource.ItemSpec?.EndsWith("Resources.resw") ?? false)
+					.Where(resource => resource.ItemSpec?.EndsWith("resw") ?? false)
 					// TODO: Merge duplicates (based on file name and qualifiers)
 					.SelectMany(GetResourcesForItem)
 					.Trim()
@@ -90,13 +90,16 @@ namespace Uno.UI.Tasks.ResourcesGenerator
 
 			this.Log().Info("{0} resources found".InvariantCultureFormat(resources.Count));
 
-			if (TargetPlatform == "android")
+			if (Path.GetFileNameWithoutExtension(resource.ItemSpec).Equals("Resources", StringComparison.OrdinalIgnoreCase))
 			{
-				yield return GenerateAndroidResources(language, sourceLastWriteTime, resources, comment);
-			}
-			else if (TargetPlatform == "ios")
-			{
-				yield return GenerateiOSResources(language, sourceLastWriteTime, resources, comment);
+				if (TargetPlatform == "android")
+				{
+					yield return GenerateAndroidResources(language, sourceLastWriteTime, resources, comment);
+				}
+				else if (TargetPlatform == "ios")
+				{
+					yield return GenerateiOSResources(language, sourceLastWriteTime, resources, comment);
+				}
 			}
 
 			yield return GenerateUnoPRIResources(language, sourceLastWriteTime, resources, comment, resource);
@@ -129,7 +132,8 @@ namespace Uno.UI.Tasks.ResourcesGenerator
 			}
 
 
-			var logicalTargetPath = Path.Combine(buildBasePath(), "resources.upri");
+			string resourceMapName = Path.GetFileNameWithoutExtension(resource.ItemSpec);
+			var logicalTargetPath = Path.Combine(buildBasePath(), resourceMapName + ".upri");
 			var actualTargetPath = Path.Combine(OutputPath, logicalTargetPath);
 
 			Directory.CreateDirectory(Path.GetDirectoryName(actualTargetPath));
@@ -140,7 +144,7 @@ namespace Uno.UI.Tasks.ResourcesGenerator
 			{
 				this.Log().Info("Writing resources to {0}".InvariantCultureFormat(actualTargetPath));
 
-				UnoPRIResourcesWriter.Write(language, resources, actualTargetPath, comment);
+				UnoPRIResourcesWriter.Write(resourceMapName, language, resources, actualTargetPath, comment);
 			}
 			else
 			{

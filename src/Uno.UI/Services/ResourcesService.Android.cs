@@ -22,7 +22,7 @@ namespace Uno.UI.Services
 				return _applicationContext.Resources.GetString(intId);
 			}
 
-			return "[" + id + "]";
+			return "";
 		}
 	}
 }

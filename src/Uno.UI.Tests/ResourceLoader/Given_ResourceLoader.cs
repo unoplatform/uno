@@ -20,15 +20,10 @@ namespace Uno.UI.Tests.ResourceLoaderTests
 		[TestMethod]
 		public void When_ResourceFile_Neutral()
 		{
-			var file = GetType().Assembly.GetManifestResourceNames().First(r => r.EndsWith("ResourceLoader.When_ResourceFile-en.upri", StringComparison.OrdinalIgnoreCase));
+			Windows.ApplicationModel.Resources.ResourceLoader.DefaultLanguage = "en";
+			Windows.ApplicationModel.Resources.ResourceLoader.AddLookupAssembly(GetType().Assembly);
 
-			using (var s = GetType().Assembly.GetManifestResourceStream(file))
-			{
-				Windows.ApplicationModel.Resources.ResourceLoader.DefaultLanguage = "en";
-				Windows.ApplicationModel.Resources.ResourceLoader.ProcessResourceFile(file, s);
-
-				Assert.AreEqual("App70", Windows.ApplicationModel.Resources.ResourceLoader.GetForCurrentView().GetString("ApplicationName"));
-			}
+			Assert.AreEqual("App70-en", Windows.ApplicationModel.Resources.ResourceLoader.GetForCurrentView().GetString("ApplicationName"));
 		}
 
 		[TestMethod]
@@ -39,8 +34,7 @@ namespace Uno.UI.Tests.ResourceLoaderTests
 				CultureInfo.CurrentUICulture = new CultureInfo(language);
 				Windows.ApplicationModel.Resources.ResourceLoader.ClearResources();
 				Windows.ApplicationModel.Resources.ResourceLoader.DefaultLanguage = language;
-				RegisterResourceFile("When_ResourceFile_Neutral_Both-en.upri");
-				RegisterResourceFile("When_ResourceFile_Neutral_Both-fr.upri");
+				Windows.ApplicationModel.Resources.ResourceLoader.AddLookupAssembly(GetType().Assembly);
 			}
 
 			setResources("fr");
@@ -51,16 +45,6 @@ namespace Uno.UI.Tests.ResourceLoaderTests
 
 			setResources("en");
 			Assert.AreEqual("App70-en", Windows.ApplicationModel.Resources.ResourceLoader.GetForCurrentView().GetString("ApplicationName"));
-		}
-
-		private void RegisterResourceFile(string Value)
-		{
-			var file = GetType().Assembly.GetManifestResourceNames().First(r => r.EndsWith(Value, StringComparison.OrdinalIgnoreCase));
-
-			using (var s = GetType().Assembly.GetManifestResourceStream(file))
-			{
-				Windows.ApplicationModel.Resources.ResourceLoader.ProcessResourceFile(file, s);
-			}
 		}
 	}
 }

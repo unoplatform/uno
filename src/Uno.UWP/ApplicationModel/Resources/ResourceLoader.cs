@@ -6,6 +6,7 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using Microsoft.Extensions.Logging;
+using Uno;
 using Uno.Extensions;
 using Uno.Logging;
 using Uno.UI;
@@ -16,13 +17,21 @@ namespace Windows.ApplicationModel.Resources
 {
 	public sealed partial class ResourceLoader
 	{
+		private const int UPRIVersion = 2;
+		private const string DefaultResourceLoaderName = "Resources";
 		private static Lazy<ILogger> _log = new Lazy<ILogger>(() => typeof(ResourceLoader).Log());
 
-		private static Dictionary<string, Dictionary<string, string>> _resources = new Dictionary<string, Dictionary<string, string>>(StringComparer.OrdinalIgnoreCase);
+		private static Dictionary<string, ResourceLoader> _loaders = new Dictionary<string, ResourceLoader>(StringComparer.OrdinalIgnoreCase);
 		private static string _defaultLanguage;
-		private static readonly ResourceLoader _loader = new ResourceLoader();
 
-		public ResourceLoader(string name) { }
+		private Dictionary<string, Dictionary<string, string>> _resources = new Dictionary<string, Dictionary<string, string>>(StringComparer.OrdinalIgnoreCase);
+
+		public ResourceLoader(string name)
+		{
+			LoaderName = name;
+		}
+
+		internal string LoaderName { get; }
 
 		public ResourceLoader()
 		{
@@ -53,7 +62,7 @@ namespace Windows.ApplicationModel.Resources
 
 			return GetStringInternal.Invoke(resource);
 #else
-			return "[" + resource + "]";
+			return string.Empty;
 #endif
 		}
 
@@ -71,7 +80,7 @@ namespace Windows.ApplicationModel.Resources
 		{
 			if (_log.Value.IsEnabled(LogLevel.Debug))
 			{
-				_log.Value.Debug($"FindForCulture {culture}, {resource}");
+				_log.Value.Debug($"[{LoaderName}] FindForCulture {culture}, {resource}");
 			}
 
 			if (_resources.TryGetValue(culture, out var values))
@@ -88,16 +97,18 @@ namespace Windows.ApplicationModel.Resources
 			return false;
 		}
 
+		[NotImplemented]
 		public string GetStringForUri(Uri uri) { throw new NotSupportedException(); }
 
-		public static ResourceLoader GetForCurrentView() => _loader;
+		public static ResourceLoader GetForCurrentView() => GetNamedResourceLoader(DefaultResourceLoaderName);
 
-		public static ResourceLoader GetForCurrentView(string name) => _loader;
+		public static ResourceLoader GetForCurrentView(string name) => GetNamedResourceLoader(name);
 
-		public static ResourceLoader GetForViewIndependentUse() => _loader;
+		public static ResourceLoader GetForViewIndependentUse() => GetNamedResourceLoader(DefaultResourceLoaderName);
 
-		public static ResourceLoader GetForViewIndependentUse(string name) => _loader;
+		public static ResourceLoader GetForViewIndependentUse(string name) => GetNamedResourceLoader(name);
 
+		[NotImplemented]
 		public static string GetStringForReference(Uri uri) { throw new NotSupportedException(); }
 
 		// TODO: Remove this property when getting rid of ResourceHelper
@@ -140,10 +151,10 @@ namespace Windows.ApplicationModel.Resources
 
 		internal static void ClearResources()
 		{
-			_resources.Clear();
+			_loaders.Clear();
 		}
 
-		internal static void ProcessResourceFile(string name, Stream input)
+		internal static void ProcessResourceFile(string fileName, Stream input)
 		{
 			var currentCulture = CultureInfo.CurrentUICulture.IetfLanguageTag;
 			var parentCulture = GetParentUICulture();
@@ -153,14 +164,16 @@ namespace Windows.ApplicationModel.Resources
 				// "Magic" sequence to ensure we're reading a proper resource file
 				if (!reader.ReadBytes(3).SequenceEqual(new byte[] { 0x75, 0x6E, 0x6F }))
 				{
-					throw new InvalidOperationException($"The file {name} is not a resource file");
+					throw new InvalidOperationException($"The file {fileName} is not a resource file");
 				}
 
-				if (reader.ReadInt32() != 1)
+				var version = reader.ReadInt32();
+				if (version != UPRIVersion)
 				{
-					throw new InvalidOperationException($"The resource file {name} has an invalid version");
+					throw new InvalidOperationException($"The resource file {fileName} has an invalid version (got {version}, expecting {UPRIVersion})");
 				}
 
+				var name = reader.ReadString();
 				var culture = reader.ReadString();
 
 				if (
@@ -169,11 +182,13 @@ namespace Windows.ApplicationModel.Resources
 					|| culture.Equals(parentCulture, StringComparison.OrdinalIgnoreCase)
 				)
 				{
+					var loader = GetNamedResourceLoader(name);
+
 					var resourceCount = reader.ReadInt32();
 
-					if (!_resources.TryGetValue(culture, out var resources))
+					if (!loader._resources.TryGetValue(culture, out var resources))
 					{
-						_resources[culture] = resources = new Dictionary<string, string>();
+						loader._resources[culture] = resources = new Dictionary<string, string>();
 					}
 
 					for (int i = 0; i < resourceCount; i++)
@@ -183,7 +198,7 @@ namespace Windows.ApplicationModel.Resources
 
 						if (_log.Value.IsEnabled(LogLevel.Debug))
 						{
-							_log.Value.Debug($"[{name}, {culture}] Adding resource {key}={value}");
+							_log.Value.Debug($"[{name}, {fileName}, {culture}] Adding resource {key}={value}");
 						}
 
 						resources[key] = value;
@@ -193,10 +208,13 @@ namespace Windows.ApplicationModel.Resources
 				{
 					if (_log.Value.IsEnabled(LogLevel.Debug))
 					{
-						_log.Value.LogDebug($"Skipping resource file {name} for {culture} (CurrentCulture {currentCulture}/{parentCulture})");
+						_log.Value.LogDebug($"Skipping resource file {fileName} for {culture} (CurrentCulture {currentCulture}/{parentCulture})");
 					}
 				}
 			}
 		}
+
+		private static ResourceLoader GetNamedResourceLoader(string name)
+			=> _loaders.FindOrCreate(name, () => new ResourceLoader(name));
 	}
 }

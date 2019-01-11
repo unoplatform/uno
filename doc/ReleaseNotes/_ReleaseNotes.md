@@ -51,6 +51,7 @@
 * Add support for VS2019 VSIX installation
 * Improved Xaml generation speed, and incremental build performance
 * [Wasm] Fix `CoreDispatcher` `StackOverflowException` when running on low stack space environments (e.g. iOS)
+* Add support for `ResourceLoader.GetForViewIndependentUse(string)` and named resource files
 
 ### Breaking changes
 * Refactored ToggleSwitch Default Native XAML Styles. (cf. 'NativeDefaultToggleSwitch' styles in Generic.Native.xaml)

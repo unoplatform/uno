@@ -120,7 +120,13 @@
   <data name="ApplicationName" xml:space="preserve">
     <value>SamplesApp</value>
   </data>
+  <data name="Given_ResourceLoader.When_NamedLoader" xml:space="preserve">
+    <value>This is en\Resources.resw</value>
+  </data>
   <data name="Given_ResourceLoader.When_SimpleString" xml:space="preserve">
     <value>My Simple String (en)</value>
+  </data>
+  <data name="Given_ResourceMap.When_MainMap" xml:space="preserve">
+    <value>MainMap (en)</value>
   </data>
 </root>
