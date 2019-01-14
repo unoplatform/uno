@@ -11,6 +11,7 @@ using Uno.Foundation;
 using Uno.Extensions;
 using Uno.Logging;
 using System.Threading;
+using Uno.UI;
 using Uno.UI.Xaml;
 
 namespace Windows.UI.Xaml
@@ -33,8 +34,10 @@ namespace Windows.UI.Xaml
 		{
 			_startInvoked = true;
 
-			bool isHostedMode = !WebAssemblyRuntime.IsWebAssembly;
-			WindowManagerInterop.Init(Windows.Storage.ApplicationData.Current.LocalFolder.Path, isHostedMode);
+			var localFolderPath = Windows.Storage.ApplicationData.Current.LocalFolder.Path;
+			var isHostedMode = !WebAssemblyRuntime.IsWebAssembly;
+			var isLoadEventsEnabled = !FeatureConfiguration.FrameworkElement.WasmUseManagedLoadedUnloaded;
+			WindowManagerInterop.Init(localFolderPath, isHostedMode, isLoadEventsEnabled);
 
 			SynchronizationContext.SetSynchronizationContext(
 				new CoreDispatcherSynchronizationContext(CoreDispatcher.Main, CoreDispatcherPriority.Normal)

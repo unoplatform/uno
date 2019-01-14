@@ -97,12 +97,18 @@ declare namespace Uno.UI {
         private loadingElementId;
         static current: WindowManager;
         private static _isHosted;
+        private static _isLoadEventsEnabled;
         /**
          * Defines if the WindowManager is running in hosted mode, and should skip the
-         * initialization of WebAssembly, use this mode in conjuction with the Uno.UI.WpfHost
+         * initialization of WebAssembly, use this mode in conjunction with the Uno.UI.WpfHost
          * to improve debuggability.
          */
         static readonly isHosted: boolean;
+        /**
+         * Defines if the WindowManager is responsible to raise the loading, loaded and unloaded events,
+         * or if they are raised directly by the managed code to reduce interop.
+         */
+        static readonly isLoadEventsEnabled: boolean;
         private static readonly unoRootClassName;
         private static readonly unoUnarrangedClassName;
         private static _cctor;
@@ -111,7 +117,7 @@ declare namespace Uno.UI {
             * @param containerElementId The ID of the container element for the Xaml UI
             * @param loadingElementId The ID of the loading element to remove once ready
             */
-        static init(localStoragePath: string, isHosted: boolean, containerElementId?: string, loadingElementId?: string): string;
+        static init(localStoragePath: string, isHosted: boolean, isLoadEventsEnabled: boolean, containerElementId?: string, loadingElementId?: string): string;
         /**
             * Initialize the WindowManager
             * @param containerElementId The ID of the container element for the Xaml UI
@@ -305,7 +311,7 @@ declare namespace Uno.UI {
         /**
             * Set a view as a child of another one.
             *
-            * "Loading" & "Loaded" events will be raised if nescessary.
+            * "Loading" & "Loaded" events will be raised if necessary.
             *
             * @param index Position in children list. Appended at end if not specified.
             */
@@ -313,7 +319,7 @@ declare namespace Uno.UI {
         /**
             * Set a view as a child of another one.
             *
-            * "Loading" & "Loaded" events will be raised if nescessary.
+            * "Loading" & "Loaded" events will be raised if necessary.
             *
             * @param pParams Pointer to a WindowManagerAddViewParams native structure.
             */
@@ -322,13 +328,13 @@ declare namespace Uno.UI {
         /**
             * Remove a child from a parent element.
             *
-            * "Unloading" & "Unloaded" events will be raised if nescessary.
+            * "Unloading" & "Unloaded" events will be raised if necessary.
             */
         removeView(parentId: number, childId: number): string;
         /**
             * Remove a child from a parent element.
             *
-            * "Unloading" & "Unloaded" events will be raised if nescessary.
+            * "Unloading" & "Unloaded" events will be raised if necessary.
             */
         removeViewNative(pParams: number): boolean;
         private removeViewInternal(parentId, childId);
@@ -443,6 +449,7 @@ declare class WindowManagerGetBBoxReturn {
 declare class WindowManagerInitParams {
     LocalFolderPath: string;
     IsHostedMode: boolean;
+    IsLoadEventsEnabled: boolean;
     static unmarshal(pData: number): WindowManagerInitParams;
 }
 declare class WindowManagerMeasureViewParams {

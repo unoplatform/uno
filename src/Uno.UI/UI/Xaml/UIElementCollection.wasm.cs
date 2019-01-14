@@ -53,7 +53,7 @@ namespace Windows.UI.Xaml.Controls
 
 		protected override void MoveCore(uint oldIndex, uint newIndex)
 		{
-			_view.MoveViewTo((int)oldIndex, (int)newIndex);
+			_view.MoveChildTo((int)oldIndex, (int)newIndex);
 		}
 
 		protected override View RemoveAtCore(int index)

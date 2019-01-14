@@ -13,6 +13,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\FrameworkElementTests\LoadEvents.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\BorderTests\AutoBorderStretchwithbottommargin.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -554,6 +558,9 @@
     <Compile Include="$(MSBuildThisFileDirectory)Helpers\ViewModelBase.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Windows_ApplicationModel_Resources_ResourceLoader\ResourceLoader_Simple.xaml.cs">
       <DependentUpon>ResourceLoader_Simple.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\FrameworkElementTests\LoadEvents.xaml.cs">
+      <DependentUpon>LoadEvents.xaml</DependentUpon>
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\BorderTests\AutoBorderStretchwithbottommargin.xaml.cs">
       <DependentUpon>AutoBorderStretchwithbottommargin.xaml</DependentUpon>

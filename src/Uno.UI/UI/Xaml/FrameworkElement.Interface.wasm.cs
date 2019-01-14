@@ -9,6 +9,7 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using Microsoft.Extensions.Logging;
 using Uno.Extensions;
+using Uno.UI;
 
 namespace Windows.UI.Xaml
 {
@@ -35,9 +36,12 @@ namespace Windows.UI.Xaml
 		{
 			Initialize();
 
-			Loading += OnLoading;
-			Loaded += OnLoaded;
-			Unloaded += OnUnloaded;
+			if (!FeatureConfiguration.FrameworkElement.WasmUseManagedLoadedUnloaded)
+			{
+				Loading += NativeOnLoading;
+				Loaded += NativeOnLoaded;
+				Unloaded += NativeOnUnloaded;
+			}
 
 			_log = this.Log();
 		}

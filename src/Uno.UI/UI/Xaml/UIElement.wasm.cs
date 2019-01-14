@@ -19,12 +19,19 @@ using Microsoft.Extensions.Logging;
 using Uno.Core.Comparison;
 using Windows.Devices.Input;
 using Windows.System;
+using Uno.UI;
 
 namespace Windows.UI.Xaml
 {
 	public partial class UIElement : DependencyObject
 	{
+		// Even if this a concept of FrameworkElement, the loaded state is handled by the UIElement in order to avoid
+		// to cast to FrameworkElement each time a child is added or removed.
+		internal bool IsLoaded;
+
 		private readonly GCHandle _gcHandle;
+		private readonly bool _isFrameworkElement;
+
 
 		internal interface IHandlableEventArgs
 		{
@@ -92,6 +99,7 @@ namespace Windows.UI.Xaml
 		public UIElement(string htmlTag = "div", bool isSvg = false)
 		{
 			_gcHandle = GCHandle.Alloc(this, GCHandleType.Weak);
+			_isFrameworkElement = this is FrameworkElement;
 			HtmlTag = htmlTag;
 			HtmlTagIsSvg = isSvg;
 
@@ -226,51 +234,6 @@ namespace Windows.UI.Xaml
 		protected internal void SetHtmlContent(string html)
 		{
 			Uno.UI.Xaml.WindowManagerInterop.SetContentHtml(HtmlId, html);
-		}
-
-		protected internal void AddView(UIElement view)
-		{
-			if (view == null)
-			{
-				return;
-			}
-
-			Uno.UI.Xaml.WindowManagerInterop.AddView(HtmlId, view.HtmlId);
-
-			InvalidateMeasure();
-		}
-
-		protected internal void AddView(UIElement view, int index)
-		{
-			if (view == null)
-			{
-				return;
-			}
-
-			Uno.UI.Xaml.WindowManagerInterop.AddView(HtmlId, view.HtmlId, index);
-
-			InvalidateMeasure();
-		}
-
-		protected internal void RemoveView(UIElement view)
-		{
-			if (view == null)
-			{
-				return;
-			}
-
-			Uno.UI.Xaml.WindowManagerInterop.RemoveView(HtmlId, view.HtmlId);
-
-			InvalidateMeasure();
-		}
-
-		internal void MoveViewTo(int oldIndex, int newIndex)
-		{
-			var view = _children[oldIndex];
-
-			Uno.UI.Xaml.WindowManagerInterop.AddView(HtmlId, view.HtmlId, newIndex);
-
-			InvalidateMeasure();
 		}
 
 		partial void EnsureClip(Rect rect)
@@ -474,12 +437,12 @@ namespace Windows.UI.Xaml
 			Func<string, EventArgs> payloadConverter = null,
 			Func<EventArgs, bool> eventFilterManaged = null)
 		{
-			if(!_eventHandlers.TryGetValue(eventName, out var registartion))
+			if(!_eventHandlers.TryGetValue(eventName, out var registration))
 			{
-				_eventHandlers[eventName] = registartion = new EventRegistration(this, eventName, onCapturePhase, eventFilter, eventExtractor, payloadConverter);
+				_eventHandlers[eventName] = registration = new EventRegistration(this, eventName, onCapturePhase, eventFilter, eventExtractor, payloadConverter);
 			}
 
-			registartion.Add(handler);
+			registration.Add(handler);
 		}
 
 		internal void RegisterEventHandlerEx(
@@ -492,26 +455,23 @@ namespace Windows.UI.Xaml
 			Func<string, EventArgs> payloadConverter = null,
 			Func<EventArgs, bool> eventFilterManaged = null)
 		{
-			if (!_eventHandlers.TryGetValue(eventName, out var registartion))
+			if (!_eventHandlers.TryGetValue(eventName, out var registration))
 			{
-				_eventHandlers[managedEventIdentifier] = registartion = new EventRegistration(this, eventName, onCapturePhase, eventFilter, eventExtractor, payloadConverter);
+				_eventHandlers[managedEventIdentifier] = registration = new EventRegistration(this, eventName, onCapturePhase, eventFilter, eventExtractor, payloadConverter);
 			}
 
-			registartion.Add(handler);
+			registration.Add(handler);
 		}
 
 		internal void UnregisterEventHandler(string eventName, Delegate handler)
 		{
-			if (_eventHandlers.TryGetValue(eventName, out var registartion))
+			if (_eventHandlers.TryGetValue(eventName, out var registration))
 			{
-				registartion.Remove(handler);
+				registration.Remove(handler);
 			}
-			else
+			else if (this.Log().IsEnabled(LogLevel.Debug))
 			{
-				if (this.Log().IsEnabled(LogLevel.Debug))
-				{
-					this.Log().Debug(message: $"No handler registered for event {eventName}.");
-				}
+				this.Log().Debug(message: $"No handler registered for event {eventName}.");
 			}
 		}
 
@@ -697,6 +657,10 @@ namespace Windows.UI.Xaml
 
 		internal virtual bool IsEnabledOverride() => true;
 
+		public UIElement FindFirstChild() => _children.FirstOrDefault();
+
+		public virtual IEnumerable<UIElement> GetChildren() => _children;
+
 		public void AddChild(UIElement child, int? index = null)
 		{
 			if (child == null)
@@ -706,49 +670,151 @@ namespace Windows.UI.Xaml
 
 			child.SetParent(this);
 
+			OnAddingChild(child);
+
 			_children.Add(child);
 
 			if (index.HasValue)
 			{
-				AddView(child, index.Value);
+				Uno.UI.Xaml.WindowManagerInterop.AddView(HtmlId, child.HtmlId, index);
 			}
 			else
 			{
-				AddView(child);
+				Uno.UI.Xaml.WindowManagerInterop.AddView(HtmlId, child.HtmlId);
 			}
+
+			OnChildAdded(child);
+
+			InvalidateMeasure();
 		}
 
 		public void ClearChildren()
 		{
-			foreach (var child  in _children)
+			foreach (var child in _children)
 			{
 				child.SetParent(null);
-				RemoveView(child);
+				Uno.UI.Xaml.WindowManagerInterop.RemoveView(HtmlId, child.HtmlId);
+
+				OnChildRemoved(child);
 			}
 
 			_children.Clear();
+			InvalidateMeasure();
 		}
 
 		public bool RemoveChild(UIElement child)
 		{
-			if (_children.Remove(child))
+			if (child != null && _children.Remove(child))
 			{
 				child.SetParent(null);
-				RemoveView(child);
+				Uno.UI.Xaml.WindowManagerInterop.RemoveView(HtmlId, child.HtmlId);
+
+				OnChildRemoved(child);
+
+				InvalidateMeasure();
+
 				return true;
 			}
 
 			return false;
 		}
 
-		public UIElement FindFirstChild()
+		internal void MoveChildTo(int oldIndex, int newIndex)
 		{
-			return _children.FirstOrDefault();
+			var view = _children[oldIndex];
+
+			_children.RemoveAt(oldIndex);
+			if (newIndex == _children.Count)
+			{
+				_children.Add(view);
+			}
+			else
+			{
+				_children.Insert(newIndex, view);
+			}
+
+			Uno.UI.Xaml.WindowManagerInterop.AddView(HtmlId, view.HtmlId, newIndex);
+
+			InvalidateMeasure();
 		}
 
-		public virtual IEnumerable<UIElement> GetChildren()
+		private void OnAddingChild(UIElement child)
 		{
-			return _children;
+			if (FeatureConfiguration.FrameworkElement.WasmUseManagedLoadedUnloaded
+				&& IsLoaded
+				&& child._isFrameworkElement)
+			{
+				if (child.IsLoaded)
+				{
+					this.Log().Error("Inconsistent state: child is already loaded");
+				}
+				else
+				{
+					child.ManagedOnLoading();
+				}
+			}
+		}
+
+		private void OnChildAdded(UIElement child)
+		{
+			if (FeatureConfiguration.FrameworkElement.WasmUseManagedLoadedUnloaded
+				&& IsLoaded
+				&& child._isFrameworkElement)
+			{
+				if (child.IsLoaded)
+				{
+					this.Log().Error("Inconsistent state: child is already loaded");
+				}
+				else
+				{
+					child.ManagedOnLoaded();
+				}
+			}
+		}
+
+		private void OnChildRemoved(UIElement child)
+		{
+			if (FeatureConfiguration.FrameworkElement.WasmUseManagedLoadedUnloaded
+				&& IsLoaded
+				&& child._isFrameworkElement)
+			{
+				if (child.IsLoaded)
+				{
+					child.ManagedOnUnloaded();
+				}
+				else
+				{
+					this.Log().Error("Inconsistent state: child is not loaded");
+				}
+			}
+		}
+
+		internal virtual void ManagedOnLoading()
+		{
+			foreach (var child in _children)
+			{
+				child.ManagedOnLoading();
+			}
+		}
+
+		internal virtual void ManagedOnLoaded()
+		{
+			IsLoaded = true;
+
+			foreach (var child in _children)
+			{
+				child.ManagedOnLoaded();
+			}
+		}
+
+		internal virtual void ManagedOnUnloaded()
+		{
+			IsLoaded = false;
+
+			foreach (var child in _children)
+			{
+				child.ManagedOnUnloaded();
+			}
 		}
 
 		[global::Uno.NotImplemented]
@@ -862,7 +928,7 @@ namespace Windows.UI.Xaml
 			return type;
 		}
 
-		#region HitTestVisibility
+#region HitTestVisibility
 
 		private enum HitTestVisibility
 		{
@@ -961,6 +1027,6 @@ namespace Windows.UI.Xaml
 			}
 		}
 
-		#endregion
+#endregion
 	}
 }

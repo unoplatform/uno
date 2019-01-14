@@ -4,6 +4,7 @@ class WindowManagerInitParams
 	/* Pack=4 */
 	LocalFolderPath : string;
 	IsHostedMode : boolean;
+	IsLoadEventsEnabled : boolean;
 	public static unmarshal(pData:number) : WindowManagerInitParams
 	{
 		let ret = new WindowManagerInitParams();
@@ -23,6 +24,10 @@ class WindowManagerInitParams
 		
 		{
 			ret.IsHostedMode = Boolean(Module.getValue(pData + 4, "i32"));
+		}
+		
+		{
+			ret.IsLoadEventsEnabled = Boolean(Module.getValue(pData + 8, "i32"));
 		}
 		return ret;
 	}
