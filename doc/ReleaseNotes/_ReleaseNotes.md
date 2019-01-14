@@ -93,6 +93,7 @@
  * 143598 [Wasm] Wasm Animation rotation center is incorrect
  * Fixes invalid parsing of custom types containing `{}` in their value (#455)
  * Add workaround for iOS stackoverflow during initialization.
+ * Improve the file locking issues of Uno.UI.Tasks MSBuild task
 
 ## Release 1.42
 
