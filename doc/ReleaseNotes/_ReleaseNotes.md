@@ -53,6 +53,8 @@
 * [Wasm] Fix `CoreDispatcher` `StackOverflowException` when running on low stack space environments (e.g. iOS)
 * Add support for `ResourceLoader.GetForViewIndependentUse(string)` and named resource files
 * [Wasm] Load events are now raised directly from managed code. You can restore the previous behavior (raised from native) by setting `FeatureConfiguration.FrameworkElement.WasmUseManagedLoadedUnloaded = false`.
+* Updated memory profiling documentation
+* Updated default app template iOS GC settings
 
 ### Breaking changes
 * Refactored ToggleSwitch Default Native XAML Styles. (cf. 'NativeDefaultToggleSwitch' styles in Generic.Native.xaml)
@@ -94,6 +96,7 @@
  * Fixes invalid parsing of custom types containing `{}` in their value (#455)
  * Add workaround for iOS stackoverflow during initialization.
  * Improve the file locking issues of Uno.UI.Tasks MSBuild task
+ * Fix `VisibleBoundsPadding` memory leak
 
 ## Release 1.42
 
