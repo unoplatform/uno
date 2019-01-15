@@ -668,6 +668,24 @@ namespace Windows.UI.Xaml
 				return;
 			}
 
+			var currentParent = child.GetParent() as UIElement;
+
+			// Remove child from current parent, if any
+			if (currentParent != this && currentParent != null)
+			{
+				// ---IMPORTANT---
+				// This behavior is different than UWP:
+				// On UWP the behavior would be to throw an "Element already has a logical parent" exception.
+
+				// It is done here to align Wasm with Android and iOS where the control is
+				// simply "moved" when attached to another parent.
+
+				// This could lead to "child kidnapping", like the one happening in ComboBox & ComboBoxItem
+
+				this.Log().Info($"{this}.AddChild({child}): Removing child {child} from its current parent {currentParent}.");
+				currentParent.RemoveChild(child);
+			}
+
 			child.SetParent(this);
 
 			OnAddingChild(child);
@@ -746,7 +764,7 @@ namespace Windows.UI.Xaml
 			{
 				if (child.IsLoaded)
 				{
-					this.Log().Error("Inconsistent state: child is already loaded");
+					this.Log().Error($"{this}: Inconsistent state: child {child} is already loaded (OnAddingChild)");
 				}
 				else
 				{
@@ -763,7 +781,7 @@ namespace Windows.UI.Xaml
 			{
 				if (child.IsLoaded)
 				{
-					this.Log().Error("Inconsistent state: child is already loaded");
+					this.Log().Error($"{this}: Inconsistent state: child {child} is already loaded (OnChildAdded)");
 				}
 				else
 				{
@@ -784,7 +802,7 @@ namespace Windows.UI.Xaml
 				}
 				else
 				{
-					this.Log().Error("Inconsistent state: child is not loaded");
+					this.Log().Error($"{this}: Inconsistent state: child {child} is not loaded (OnChildRemoved)");
 				}
 			}
 		}
