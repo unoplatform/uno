@@ -45,6 +45,9 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<EmbeddedResource Update="WasmScripts\*.js" />
+	</ItemGroup>
+	<ItemGroup>
 	  <Folder Include="tsBindings\" />
 	</ItemGroup>
 	
