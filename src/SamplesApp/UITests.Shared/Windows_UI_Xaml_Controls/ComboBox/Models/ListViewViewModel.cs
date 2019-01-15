@@ -18,6 +18,7 @@ using Uno.UI.Samples.UITests.Helpers;
 
 namespace SamplesApp.Windows_UI_Xaml_Controls.ComboBox.Models
 {
+	[Bindable]
 	public class ListViewViewModel : ViewModelBase
 	{
 		private static readonly object[] RandomValues = new object[] { null, new object(), 0, -1, 0, 0.5, 1, "", " ", "test", 'a', ' ', new string[] { "A", "B", "C" }, DateTime.Now };

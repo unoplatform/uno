@@ -8,6 +8,7 @@ using Windows.UI.Xaml;
 
 namespace SampleControl.Entities
 {
+	[Windows.UI.Xaml.Data.Bindable]
 	public class SampleChooserContent : INotifyPropertyChanged
 	{
 		public string ControlName { get; set; }

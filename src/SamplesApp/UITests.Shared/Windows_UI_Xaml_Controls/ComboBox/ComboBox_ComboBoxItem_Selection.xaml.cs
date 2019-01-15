@@ -45,7 +45,7 @@ namespace UITests.Shared.Windows_UI_Xaml_Controls.ComboBox
 				foreach (var o in element.GetParentHierarchy())
 				{
 					var e = o as FrameworkElement;
-					yield return $"{o.GetType().Name}{e?.Name}";
+					yield return $"{o.GetType().Name}[{e?.Name}]-{o}";
 					if( e is Windows.UI.Xaml.Controls.ComboBox)
 					{
 						yield break;

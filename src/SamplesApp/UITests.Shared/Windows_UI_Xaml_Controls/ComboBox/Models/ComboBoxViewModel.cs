@@ -1,9 +1,11 @@
 ﻿using System.Windows.Input;
 using Windows.UI.Core;
+using Windows.UI.Xaml.Data;
 using Uno.UI.Samples.UITests.Helpers;
 
 namespace SamplesApp.Wasm.Windows_UI_Xaml_Controls.ComboBox.Models
 {
+	[Bindable]
 	public class ComboBoxViewModel : ViewModelBase
 	{
 		private string _header;
