@@ -61,6 +61,13 @@ namespace Uno.UI.Samples.UITests.Helpers
 				var value = pi?.GetValue(this);
 				return value;
 			}
+			set
+			{
+				var type = GetType();
+				var pi = type.GetProperty(propertyName,
+					BindingFlags.Instance | BindingFlags.GetProperty | BindingFlags.Public);
+				pi?.SetValue(this, value);
+			}
 		}
 
 		[Windows.UI.Xaml.Data.Bindable]

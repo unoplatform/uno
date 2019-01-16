@@ -8,5 +8,6 @@ namespace SampleControl.Entities
 	{
 		public List<SampleChooserContent> SamplesContent { get; set; }
 		public string Category { get; set; }
+		public int Count => SamplesContent.Count;
 	}
 }
