@@ -1929,25 +1929,53 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 							}
 							else
 							{
+								IEventSymbol eventSymbol = null;
+
 								if (
 									!IsType(member.Member.DeclaringType, objectDefinition.Type)
 									|| IsAttachedProperty(member)
-									|| FindEventType(member.Member) != null
+									|| (eventSymbol = FindEventType(member.Member)) != null
 								)
 								{
 									if (FindPropertyType(member.Member) != null)
 									{
 										BuildSetAttachedProperty(writer, closureName, member, objectUid);
 									}
-									else if (FindEventType(member.Member) != null)
+									else if (eventSymbol != null)
 									{
 										// If a binding is inside a DataTemplate, the binding root in the case of an x:Bind is
 										// the DataContext, not the control's instance.
 										var isInsideDataTemplate = IsMemberInsideFrameworkTemplate(member.Owner);
 
+										void writeEvent(string ownerPrefix)
+										{
+											if (eventSymbol.Type is INamedTypeSymbol delegateSymbol)
+											{
+												var parms = delegateSymbol
+													.DelegateInvokeMethod
+													.Parameters
+													.Select(p => member.Value + "_" + p.Name)
+													.JoinBy(",");
+
+												var eventSource = ownerPrefix.HasValue() ? ownerPrefix : "this";
+
+												//
+												// Generate a weak delegate, so the owner is not being held onto by the delegate. We can
+												// use the WeakReferenceProvider to get a self reference to avoid adding the cost of the
+												// creation of a WeakReference.
+												//
+												writer.AppendLineInvariant($"var {member.Value}_That = ({eventSource} as global::Uno.UI.DataBinding.IWeakReferenceProvider).WeakReference;");
+												writer.AppendLineInvariant($"{closureName}.{member.Member.Name} += ({parms}) => ({member.Value}_That.Target as {_className.className}).{member.Value}({parms});");
+											}
+											else
+											{
+												GenerateError(writer, $"{eventSymbol.Type} is not a supported event");
+											}
+										}
+
 										if (!isInsideDataTemplate)
 										{
-											writer.AppendLineInvariant($"{closureName}.{member.Member.Name} += {member.Value};");
+											writeEvent("");
 										}
 										else if (_className.className != null)
 										{
@@ -1957,7 +1985,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 											{
 												using (writer.BlockInvariant($"if (global::Uno.UI.Xaml.XamlInfo.GetXamlInfo({closureName})?.Owner is {_className.className} owner)"))
 												{
-													writer.AppendLineInvariant($"{closureName}.{member.Member.Name} += owner.{member.Value};");
+													writeEvent("owner");
 												}
 											}
 											writer.AppendLineInvariant($");");
