@@ -99,6 +99,9 @@
  * Fix `VisibleBoundsPadding` memory leak
  * #87 / 124046 ComboBox incorrect behavior when using Items property
  * [Wasm] ComboBox wasn't working anymore since few versions
+ * Fix memory leak with defining event handlers in XAML documents
+ * Fix memory leak in `CommandBar`
+ * Fix memory leak when using `x:Name` in XAML documents
 
 ## Release 1.42
 
