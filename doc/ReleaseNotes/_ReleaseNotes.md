@@ -97,6 +97,8 @@
  * Add workaround for iOS stackoverflow during initialization.
  * Improve the file locking issues of Uno.UI.Tasks MSBuild task
  * Fix `VisibleBoundsPadding` memory leak
+ * #87 / 124046 ComboBox incorrect behavior when using Items property
+ * [Wasm] ComboBox wasn't working anymore since few versions
 
 ## Release 1.42
 
