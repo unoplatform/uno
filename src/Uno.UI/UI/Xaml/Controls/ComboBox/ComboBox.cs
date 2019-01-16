@@ -171,7 +171,8 @@ namespace Windows.UI.Xaml.Controls
 		{
 			if (_contentPresenter != null)
 			{
-				_contentPresenter.Content = SelectedItem;
+				var item = SelectedItem is ComboBoxItem cbi ? cbi.Content : SelectedItem;
+				_contentPresenter.Content = item;
 			}
 		}
 

@@ -12,18 +12,18 @@ using Windows.UI.Core;
 
 namespace Uno.UI.Samples.UITests.ImageTests.Models
 {
-    public class ImageWithLateSourceViewModel : ViewModelBase
-    {
+	public class ImageWithLateSourceViewModel : ViewModelBase
+	{
 		public ImageWithLateSourceViewModel(CoreDispatcher dispatcher) : base(dispatcher)
 		{
-			SetSource  = new DelegateCommand(async () => await OnSetSource(CancellationToken.None));
+			SetSource = CreateCommand(OnSetSource);
 		}
 
 		private string _sourceUri;
 
 		public string SourceUri
 		{
-			get { return _sourceUri; }
+			get => _sourceUri;
 			set
 			{
 				_sourceUri = value;
@@ -31,14 +31,14 @@ namespace Uno.UI.Samples.UITests.ImageTests.Models
 			}
 		}
 
-		private ICommand SetSource { get; }
+		public ICommand SetSource { get; }
 
-		private async Task OnSetSource(CancellationToken ct)
-        {
-            const string source = "http://lh5.ggpht.com/lxBMauupBiLIpgOgu5apeiX_YStXeHRLK1oneS4NfwwNt7fGDKMP0KpQIMwfjfL9GdHRVEavmg7gOrj5RYC4qwrjh3Y0jCWFDj83jzg";
-            this.Log().Warn("Setting image source to " + source);
+		private void OnSetSource()
+		{
+			const string source = "http://lh5.ggpht.com/lxBMauupBiLIpgOgu5apeiX_YStXeHRLK1oneS4NfwwNt7fGDKMP0KpQIMwfjfL9GdHRVEavmg7gOrj5RYC4qwrjh3Y0jCWFDj83jzg";
+			this.Log().Warn("Setting image source to " + source);
 
-            SourceUri = source;
-        }
-    }
+			SourceUri = source;
+		}
+	}
 }

@@ -52,6 +52,7 @@ namespace Windows.UI.Xaml.Controls
 			if (oldChild is IDependencyObjectStoreProvider provider)
 			{
 				provider.Store.ClearValue(provider.Store.DataContextProperty, DependencyPropertyValuePrecedences.Local);
+				provider.Store.ClearValue(provider.Store.TemplatedParentProperty, DependencyPropertyValuePrecedences.Local);
 			}
 
 			UpdateDataContext();
@@ -69,6 +70,7 @@ namespace Windows.UI.Xaml.Controls
 			if (Child is IDependencyObjectStoreProvider provider)
 			{
 				provider.Store.SetValue(provider.Store.DataContextProperty, this.DataContext, DependencyPropertyValuePrecedences.Local);
+				provider.Store.SetValue(provider.Store.TemplatedParentProperty, this.TemplatedParent, DependencyPropertyValuePrecedences.Local);
 			}
 		}
 	}

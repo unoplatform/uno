@@ -23,28 +23,14 @@ namespace Uno.UI.Samples.Controls
 			this._description = description;
         }
 		
-		public string ControlName
-		{
-			get { return _controlName; }
-		}
-		public string Category
-		{
-			get { return _category; }
-		}
+		public string ControlName => _controlName;
 
-		public Type ViewModelType
-		{
-			get { return _viewModelType; }
-		}
+		public string Category => _category;
 
-		public bool IgnoreInAutomatedTests
-		{
-			get { return _ignoreInAutomatedTests; }
-		}
+		public Type ViewModelType => _viewModelType;
 
-		public string Description
-		{
-			get { return _description; }
-		}
+		public bool IgnoreInAutomatedTests => _ignoreInAutomatedTests;
+
+		public string Description => _description;
 	}
 }
