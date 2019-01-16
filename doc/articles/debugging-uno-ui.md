@@ -14,7 +14,7 @@ Uno.UI supports [SourceLink](https://github.com/dotnet/sourcelink/) and it now p
 step into Uno.UI without downloading the repository.
 
 Make sure **Enable source link support** check box is checked in **Tools** / **Options**
-/ **Debugging** / **General** properties page. 
+/ **Debugging** / **General** properties page.
 
 ## Debugging Uno.UI
 
@@ -30,6 +30,11 @@ To ensure that the file you have in your cache a correct, either clear the cache
 product version should contain a git CommitID.
 
 Once Uno.UI built, open the files you want to debug inside the solution running the application you need to debug, and set breakpoints there.
+
+## Running the samples applications
+
+The Uno solution provides a set of sample applications that provide a way to test features, as
+well as provide a way to write UI Tests. See [this document](working-with-the-samples-apps.md) for more information.
 
 ## Building Uno.UI for macOS using Visual Studio for Mac
 
