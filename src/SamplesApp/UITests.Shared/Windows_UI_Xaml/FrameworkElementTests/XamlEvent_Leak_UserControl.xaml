@@ -10,6 +10,9 @@
     d:DesignWidth="400">
 
     <Grid>
-		<Button Content="Button With Handler" Click="Button_Click" />
+		<!-- A named button with an event must not leak -->
+		<Button x:Name="namedButton"
+				Content="Button With Handler"
+				Click="Button_Click" />
 	</Grid>
 </UserControl>
