@@ -49,21 +49,15 @@ namespace Windows.UI.Xaml.Controls
 			{
 				// When the timezone is east of GMT (negative offset) the UIDatePicker returns a Date that's [1 day]
 				// after the visible selection from the spinner.
-				// Also, when we change the month from summer to winter or vice-versa (when daylight saving changes),
-				// the day is off by ± 1h. For that we always add 12 hours to avoid changing day (because midnight -1h is actually the day before).
-				// Once we have a "rounded" datetime (around midday) we set the Date into the dependency property injecting
-				// the timezone from the date picker (which is the local timezone)
+				// In the particular case where a date outside the minYear or maxYear is selected, the picker will return the closest date to that boundary with the hours relative to the timezone offset
+				// example: 1/16/2019 5:00 AM for GMT -5 time zone
+				// Simply adding the hours offset to the selected date covers both the out of bounds selected date case and the regular selection
 				var dateTime = picker.Date.ToDateTime();
 				var offset = TimeSpan.FromSeconds(picker.TimeZone.GetSecondsFromGMT);
 				DateTime rounded;
-				if (offset.TotalSeconds < 0)
-				{
-					rounded = dateTime.AddHours(-12);
-				}
-				else
-				{
-					rounded = dateTime.AddHours(12);
-				}
+
+				rounded = dateTime.AddHours(offset.TotalHours);
+
 				var final = new DateTimeOffset(rounded.Date, offset);
 				Date = final;
 			};

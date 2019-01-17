@@ -102,6 +102,7 @@
  * Fix memory leak with defining event handlers in XAML documents
  * Fix memory leak in `CommandBar`
  * Fix memory leak when using `x:Name` in XAML documents
+ * 143170 [iOS] [WatermarkedDatePicker] When the Maxyear boundary is reached the first time, the calendar goes back two days instead of one
 
 ## Release 1.42
 
