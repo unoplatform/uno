@@ -191,7 +191,8 @@ namespace Windows.UI.Xaml.Controls
 				return DataTemplateHelper.ResolveTemplate(
 					groupStyle?.HeaderTemplate,
 					groupStyle?.HeaderTemplateSelector,
-					item
+					item,
+					parent
 				);
 			}
 			if (itemViewType == HeaderItemType)
@@ -205,7 +206,8 @@ namespace Windows.UI.Xaml.Controls
 			return DataTemplateHelper.ResolveTemplate(
 				 parent?.ItemTemplate,
 				 parent?.ItemTemplateSelector,
-				 item
+				 item,
+				 parent
 			 );
 		}
 

@@ -30,7 +30,8 @@ namespace Windows.UI.Xaml.Controls
 			return DataTemplateHelper.ResolveTemplate(
 				itemsControl.ItemTemplate,
 				itemsControl.ItemTemplateSelector,
-				item
+				item,
+				itemsControl
 			);
 		}
     }

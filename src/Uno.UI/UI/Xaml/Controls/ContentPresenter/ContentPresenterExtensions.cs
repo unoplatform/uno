@@ -11,7 +11,8 @@ namespace Windows.UI.Xaml.Controls
 			return DataTemplateHelper.ResolveTemplate(
 				contentPresenter?.ContentTemplate,
 				contentPresenter?.ContentTemplateSelector,
-				contentPresenter?.Content
+				contentPresenter?.Content,
+				contentPresenter
 			);
 		}
 	}
