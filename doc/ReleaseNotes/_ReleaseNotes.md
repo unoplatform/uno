@@ -55,6 +55,8 @@
 * [Wasm] Load events are now raised directly from managed code. You can restore the previous behavior (raised from native) by setting `FeatureConfiguration.FrameworkElement.WasmUseManagedLoadedUnloaded = false`.
 * Updated memory profiling documentation
 * Updated default app template iOS GC settings
+* Add support for WebAssembly Web Projects
+* Add support for WebAssembly debugging with Chrome
 
 ### Breaking changes
 * Refactored ToggleSwitch Default Native XAML Styles. (cf. 'NativeDefaultToggleSwitch' styles in Generic.Native.xaml)

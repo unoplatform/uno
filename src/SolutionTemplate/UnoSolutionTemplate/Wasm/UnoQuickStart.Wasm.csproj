@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk.Web">
 
 	<PropertyGroup>
 		<OutputType>Exe</OutputType>
@@ -10,8 +10,6 @@
 
 	<ItemGroup>
 		<Content Include="..\$ext_safeprojectname$.UWP\Assets\*.png" Link="Assets\%(FileName)%(Extension)" />
-		<Content Include="Fonts\winjs-symbols.woff2" />
-		<Content Include="web.config" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -37,7 +35,8 @@
 
 	<ItemGroup>
 		<PackageReference Include="Uno.UI" Version="1.42.0-dev.395" />
-		<PackageReference Include="Uno.Wasm.Bootstrap" Version="1.0.0-dev.112" />
+		<PackageReference Include="Uno.Wasm.Bootstrap" Version="1.0.0-dev.137" />
+		<DotNetCliToolReference Include="Uno.Wasm.Bootstrap.Cli" Version="1.0.0-dev.137" />
 	</ItemGroup>
 
 	<Import Project="..\$ext_safeprojectname$.Shared\$ext_safeprojectname$.Shared.projitems" Label="Shared" Condition="Exists('..\$ext_safeprojectname$.Shared\$ext_safeprojectname$.Shared.projitems')" />
