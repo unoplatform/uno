@@ -63,6 +63,8 @@
   [iOS] For BindableUISwitch : Background property was changed for OnTintColorBrush and Foreground property for ThumbTintColorBrush.
   [Android] BindableSwitch was renamed BindableSwitchCompat in order to avoid confusion with the Switch control.
 * Remove invalid Windows.UI.Xaml.Input.VirtualKeyModifiers
+* DataTemplateSelector implementations are now called using the 2 parameters overload first with a fallback to the 1 parameter overload on null returned value.
+  Old behavior could be restored using `FeatureConfiguration.DataTemplateSelector.UseLegacyTemplateSelectorOverload = true`.
 
 ### Bug fixes
  * MediaPlayerElement [iOS] Subtitles are not disable on initial launch anymore
@@ -105,6 +107,7 @@
  * Fix memory leak in `CommandBar`
  * Fix memory leak when using `x:Name` in XAML documents
  * 143170 [iOS] [WatermarkedDatePicker] When the Maxyear boundary is reached the first time, the calendar goes back two days instead of one
+ * #491 DataTemplateSelector.SelectTemplate is not called on iOS and Android. The behavior is now closer to UWP.
 
 ## Release 1.42
 
