@@ -1964,8 +1964,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 												// use the WeakReferenceProvider to get a self reference to avoid adding the cost of the
 												// creation of a WeakReference.
 												//
-												writer.AppendLineInvariant($"var {member.Value}_That = ({eventSource} as global::Uno.UI.DataBinding.IWeakReferenceProvider).WeakReference;");
-												writer.AppendLineInvariant($"{closureName}.{member.Member.Name} += ({parms}) => ({member.Value}_That.Target as {_className.className}).{member.Value}({parms});");
+												writer.AppendLineInvariant($"var {member.Member.Name}_{member.Value}_That = ({eventSource} as global::Uno.UI.DataBinding.IWeakReferenceProvider).WeakReference;");
+												writer.AppendLineInvariant($"{closureName}.{member.Member.Name} += ({parms}) => ({member.Member.Name}_{member.Value}_That.Target as {_className.className}).{member.Value}({parms});");
 											}
 											else
 											{
