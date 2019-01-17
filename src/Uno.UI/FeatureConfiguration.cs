@@ -8,13 +8,13 @@ using Windows.UI.Xaml.Controls;
 
 namespace Uno.UI
 {
-    public static class FeatureConfiguration
-    {
+	public static class FeatureConfiguration
+	{
 		public static class UIElement
 		{
 			/// <summary>
 			/// Enables the legacy clipping behavior which only applies binding to itself and 
-			/// its childen. Normal clipping only applies to a single UIElement considering its
+			/// its children. Normal clipping only applies to a single UIElement considering its
 			/// clipping parent, based on <see cref="Windows.UI.Xaml.UIElement.ClipChildrenToBounds"/>.
 			/// </summary>
 			public static bool UseLegacyClipping { get; set; } = true;
@@ -89,6 +89,16 @@ namespace Uno.UI
 			/// in the constructor of a control.
 			/// </summary>
 			public static bool UseLegacyLazyApplyTemplate { get; set; } = false;
+		}
+
+		public static class DataTemplateSelector
+		{
+			/// <summary>
+			/// When set the false (default value), a call to `SelectTemplateCore(object, DependencyObject)`
+			/// will be made as fallback when the `SelectTemplateCore(object)` returns null.
+			/// When set to true, only `SelectTemplateCore(object)` is called (Uno's legacy mode).
+			/// </summary>
+			public static bool UseLegacyTemplateSelectorOverload { get; set; } = false;
 		}
 
 		public static class ListViewBase

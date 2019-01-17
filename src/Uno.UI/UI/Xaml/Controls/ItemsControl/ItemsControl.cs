@@ -1218,7 +1218,7 @@ namespace Windows.UI.Xaml.Controls
 
 		internal DataTemplate ResolveItemTemplate(object item)
 		{
-			return DataTemplateHelper.ResolveTemplate(ItemTemplate, ItemTemplateSelector, item);
+			return DataTemplateHelper.ResolveTemplate(ItemTemplate, ItemTemplateSelector, item, this);
 		}
 	}
 }

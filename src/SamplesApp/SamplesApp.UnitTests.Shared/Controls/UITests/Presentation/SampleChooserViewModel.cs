@@ -44,7 +44,6 @@ namespace SampleControl.Presentation
 	{
 		private const int _numberOfRecentSamplesVisible = 10;
 		private List<SampleChooserCategory> _categories;
-		private readonly SerialDisposable _currentViewModel = new SerialDisposable();
 
 		private readonly Uno.Threading.AsyncLock _fileLock = new Uno.Threading.AsyncLock();
 #if !NETSTANDARD2_0
@@ -56,7 +55,7 @@ namespace SampleControl.Presentation
 		private const string SampleChooserLatestCategoryConstant = "Samples.LatestCategory";
 
 		private Section _lastSection = Section.Library;
-		private Stack<Section> _previousSections = new Stack<Section>();
+		private readonly Stack<Section> _previousSections = new Stack<Section>();
 
 		// A static instance used during UI Testing automation
 		public static SampleChooserViewModel Instance { get; private set; }

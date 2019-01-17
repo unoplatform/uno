@@ -539,7 +539,11 @@ namespace Windows.UI.Xaml.Controls
 			var groupStyle = Owner.GroupStyle;
 			if (IsMaterialized(section))
 			{
-				return DataTemplateHelper.ResolveTemplate(groupStyle?.HeaderTemplate, groupStyle?.HeaderTemplateSelector, Owner.XamlParent.GetGroupAtDisplaySection(section).Group);
+				return DataTemplateHelper.ResolveTemplate(
+					groupStyle?.HeaderTemplate,
+					groupStyle?.HeaderTemplateSelector,
+					Owner.XamlParent.GetGroupAtDisplaySection(section).Group,
+					Owner);
 			}
 			else
 			{

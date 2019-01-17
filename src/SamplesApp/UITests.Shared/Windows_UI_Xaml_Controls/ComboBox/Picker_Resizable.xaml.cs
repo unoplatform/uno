@@ -1,6 +1,6 @@
-using SamplesApp.Windows_UI_Xaml_Controls.ComboBox.Models;
 using Uno.UI.Samples.Controls;
 using Windows.UI.Xaml.Controls;
+using SamplesApp.Windows_UI_Xaml_Controls.Models;
 
 namespace SamplesApp.Wasm.Windows_UI_Xaml_Controls.ComboBox
 {

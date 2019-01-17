@@ -3,10 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 using System.Windows.Input;
-using Windows.ApplicationModel.Core;
 using Windows.UI;
 using Windows.UI.Core;
 using Windows.UI.Xaml.Controls;
@@ -16,7 +13,7 @@ using Uno.Extensions;
 using Uno.Logging;
 using Uno.UI.Samples.UITests.Helpers;
 
-namespace SamplesApp.Windows_UI_Xaml_Controls.ComboBox.Models
+namespace SamplesApp.Windows_UI_Xaml_Controls.Models
 {
 	[Bindable]
 	public class ListViewViewModel : ViewModelBase
