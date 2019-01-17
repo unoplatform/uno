@@ -20,7 +20,8 @@ Here's a list of live apps made with the Uno Platform for WebAssembly.
 * The [Uno.BikeSharing360 App](http://bikerider-wasm.platform.uno/), a Xamarin.Forms app running on top of Uno for WebAssembly ([Source](https://github.com/nventive/Uno.BikeSharing360_MobileApps))
 * The [Uno.WindowsStateTriggers App](http://winstatetriggers-wasm.platform.uno/), a demo of the [Morten's WindowsStateTriggers](https://github.com/dotMorten/WindowsStateTriggers) ([Source](https://github.com/nventive/Uno.WindowsStateTriggers))
 * The [SQLite + Entity Framework Core App](http://sqliteefcore-wasm.platform.uno), a demo of the combination of [Roslyn](https://github.com/dotnet/roslyn), [Entity Framework Core](https://docs.microsoft.com/en-us/ef/core/), [SQLite](https://github.com/nventive/Uno.SQLitePCLRaw.Wasm) and the Uno Platform to manipulate an in-browser database.
-* The [Uno.WebSockets App]((http://websockets-wasm.platform.uno), a demo of System.Net.WebSocket running from WebAssembly ([Source](https://github.com/nventive/Uno.Wasm.WebSockets))
+* The [Uno.WebSockets App](http://websockets-wasm.platform.uno), a demo of System.Net.WebSocket running from WebAssembly ([Source](https://github.com/nventive/Uno.Wasm.WebSockets))
+* A [mono-wasm AOT RayTracer](https://raytracer-mono-aot.platform.uno/)
 
 Let us know if you've made your app publicly available, we'll list it here!
 
