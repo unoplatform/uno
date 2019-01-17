@@ -1,4 +1,4 @@
-# Introducing Uno WebAssembly Projects and Debugging
+# Introducing Uno Platform WebAssembly Projects and C# Debugging
 
 The progress on the Uno Platform support for WebAssembly has been steady, along with the mono runtime making large improvements in the support for a debugging experience.
 
