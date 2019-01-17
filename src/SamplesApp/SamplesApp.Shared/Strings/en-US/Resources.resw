@@ -120,6 +120,9 @@
   <data name="ApplicationName" xml:space="preserve">
     <value>SamplesApp</value>
   </data>
+  <data name="Given_ResourceLoader.When_LocalizedResource" xml:space="preserve">
+    <value>Text in 'en-US'</value>
+  </data>
   <data name="Given_ResourceLoader.When_NamedLoader" xml:space="preserve">
     <value>This is en-US\Resources.resw</value>
   </data>

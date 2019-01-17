@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using Microsoft.Build.Framework;
@@ -193,8 +194,27 @@ namespace Uno.UI.Tasks.ResourcesGenerator
 
 		private ITaskItem GenerateAndroidResources(string language, DateTime sourceLastWriteTime, Dictionary<string, string> resources, string comment)
 		{
-			// Resources targetting the default application language must go in a directory called "Values" (no language extension).
-			var localizedDirectory = DefaultLanguage == language ? "values" : $"values-{language}";
+			string localizedDirectory;
+			if (language == DefaultLanguage)
+			{
+				// Resources targeting the default application language must go in a directory called "values" (no language extension).
+				localizedDirectory = "values";
+			}
+			else
+			{
+				// More info about localized resources file structure and codes on Android:
+				// https://developer.android.com/guide/topics/resources/providing-resources#AlternativeResources
+				var cultureWithRegion = new CultureInfo(language);
+				var languageOnly = cultureWithRegion;
+				while (languageOnly.Parent != CultureInfo.InvariantCulture)
+				{
+					languageOnly = languageOnly.Parent;
+				}
+
+				localizedDirectory = cultureWithRegion.LCID < 255
+					? $"values-b+{languageOnly.IetfLanguageTag}" // No Region info
+					: $"values-b+{languageOnly.IetfLanguageTag}+{cultureWithRegion.LCID}";
+			}
 
 			var logicalTargetPath = Path.Combine(localizedDirectory, "strings.xml"); // this path is required by Xamarin
 			var actualTargetPath = Path.Combine(OutputPath, logicalTargetPath);

@@ -1,7 +1,9 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Text;
+using System.Threading;
 using Windows.ApplicationModel.Resources;
 using Windows.ApplicationModel.Resources.Core;
 
@@ -10,6 +12,24 @@ namespace Uno.UI.RuntimeTests.Tests
 	[TestClass]
 	public class Given_ResourceLoader
 	{
+		[TestInitialize]
+		public void Init()
+		{
+			CultureInfo.CurrentUICulture = new CultureInfo("en-US");
+#if __XAMARIN__ || __WASM__
+			ResourceLoader.DefaultLanguage = "en-US";
+#endif
+		}
+
+		[TestCleanup]
+		public void Cleanup()
+		{
+			CultureInfo.CurrentUICulture = new CultureInfo("en-US");
+#if __XAMARIN__ || __WASM__
+			ResourceLoader.DefaultLanguage = "en-US";
+#endif
+		}
+
 		[TestMethod]
 		public void When_SimpleString()
 		{
@@ -65,6 +85,37 @@ namespace Uno.UI.RuntimeTests.Tests
 		{
 			var SUT = ResourceLoader.GetForViewIndependentUse("Test01");
 			Assert.AreEqual(@"", SUT.GetString("Given_ResourceLoader/INVALID_RESOURCE_NAME"));
+		}
+
+		[TestMethod]
+		public void When_LocalizedResource()
+		{
+			var SUT = ResourceLoader.GetForViewIndependentUse();
+			var languages = new[] {"fr-CA", "fr", "en-US", "en", "sr-Cyrl-BA"};
+
+			foreach (var language in languages)
+			{
+				CultureInfo.CurrentUICulture = new CultureInfo(language);
+				Assert.AreEqual($@"Text in '{language}'", SUT.GetString("Given_ResourceLoader/When_LocalizedResource"));
+			}
+		}
+
+		[TestMethod]
+		public void When_MissingLocalizedResource_FallbackOnParent()
+		{
+			var SUT = ResourceLoader.GetForViewIndependentUse();
+
+			CultureInfo.CurrentUICulture = new CultureInfo("fr-FR");
+			Assert.AreEqual(@"Text in 'fr'", SUT.GetString("Given_ResourceLoader/When_LocalizedResource"));
+		}
+
+		[TestMethod]
+		public void When_MissingLocalizedResource_FallbackOnDefault()
+		{
+			var SUT = ResourceLoader.GetForViewIndependentUse();
+
+			CultureInfo.CurrentUICulture = new CultureInfo("de-DE");
+			Assert.AreEqual(@"Text in 'en'", SUT.GetString("Given_ResourceLoader/When_LocalizedResource"));
 		}
 	}
 }

@@ -120,4 +120,7 @@
   <data name="ApplicationName" xml:space="preserve">
     <value>App70-en</value>
   </data>
+  <data name="Given_ResourceLoader.When_LocalizedResource" xml:space="preserve">
+    <value>Text in 'en'</value>
+  </data>
 </root>
