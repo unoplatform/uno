@@ -19,12 +19,17 @@ namespace Windows.ApplicationModel.Resources
 	{
 		private const int UPRIVersion = 2;
 		private const string DefaultResourceLoaderName = "Resources";
-		private static Lazy<ILogger> _log = new Lazy<ILogger>(() => typeof(ResourceLoader).Log());
+		private static readonly Lazy<ILogger> _log = new Lazy<ILogger>(() => typeof(ResourceLoader).Log());
 
-		private static Dictionary<string, ResourceLoader> _loaders = new Dictionary<string, ResourceLoader>(StringComparer.OrdinalIgnoreCase);
+		private static readonly List<Assembly> _lookupAssemblies = new List<Assembly>();
+		private static readonly Dictionary<string, ResourceLoader> _loaders = new Dictionary<string, ResourceLoader>(StringComparer.OrdinalIgnoreCase);
+		private static CultureInfo _loadersCulture;
+		private static string _loadersDefault;
+		private static string[] _loadersHierarchy;
+
 		private static string _defaultLanguage;
 
-		private Dictionary<string, Dictionary<string, string>> _resources = new Dictionary<string, Dictionary<string, string>>(StringComparer.OrdinalIgnoreCase);
+		private readonly Dictionary<string, Dictionary<string, string>> _resources = new Dictionary<string, Dictionary<string, string>>(StringComparer.OrdinalIgnoreCase);
 
 		public ResourceLoader(string name)
 		{
@@ -43,17 +48,19 @@ namespace Windows.ApplicationModel.Resources
 
 		public string GetString(string resource)
 		{
-			string culture = GetUICulture();
+			// First make sure that resource cache matches the current culture
+			var cultures = EnsureLoadersCultures();
 
-			if (FindForCulture(culture, resource, out var value))
+			// Walk the culture hierarchy and the default
+			foreach (var culture in cultures)
 			{
-				return value;
-			}
-			else if (FindForCulture(GetParentUICulture(), resource, out var parentValue))
-			{
-				return parentValue;
+				if (FindForCulture(culture, resource, out var value))
+				{
+					return value;
+				}
 			}
 
+			// Finally try to fallback on the native localization system
 #if !__WASM__ && !NET46
 			if (GetStringInternal == null)
 			{
@@ -66,16 +73,6 @@ namespace Windows.ApplicationModel.Resources
 #endif
 		}
 
-		private static string GetUICulture()
-		{
-			return CultureInfo.CurrentUICulture.IetfLanguageTag;
-		}
-
-		private static string GetParentUICulture()
-		{
-			return CultureInfo.CurrentUICulture.Parent.IetfLanguageTag;
-		}
-
 		private bool FindForCulture(string culture, string resource, out string resourceValue)
 		{
 			if (_log.Value.IsEnabled(LogLevel.Debug))
@@ -83,18 +80,16 @@ namespace Windows.ApplicationModel.Resources
 				_log.Value.Debug($"[{LoaderName}] FindForCulture {culture}, {resource}");
 			}
 
-			if (_resources.TryGetValue(culture, out var values))
+			if (_resources.TryGetValue(culture, out var values)
+				&& values.TryGetValue(resource, out resourceValue))
 			{
-				if (values.TryGetValue(resource, out var value))
-				{
-					resourceValue = value;
-					return true;
-				}
+				return true;
 			}
-
-			resourceValue = null;
-
-			return false;
+			else
+			{
+				resourceValue = null;
+				return false;
+			}
 		}
 
 		[NotImplemented]
@@ -115,21 +110,6 @@ namespace Windows.ApplicationModel.Resources
 		public static Func<string, string> GetStringInternal { get; set; }
 
 		/// <summary>
-		/// Registers an assembly for resources lookup
-		/// </summary>
-		/// <param name="assembly">The assembly containing upri resources</param>
-		public static void AddLookupAssembly(Assembly assembly)
-		{
-			foreach (var name in assembly.GetManifestResourceNames())
-			{
-				if (name.EndsWith(".upri"))
-				{
-					ProcessResourceFile(name, assembly.GetManifestResourceStream(name));
-				}
-			}
-		}
-
-		/// <summary>
 		/// Provides the default culture if CurrentUICulture cannot provide it.
 		/// </summary>
 		public static string DefaultLanguage
@@ -146,19 +126,107 @@ namespace Windows.ApplicationModel.Resources
 					CultureInfo.CurrentUICulture = CultureInfo.CurrentCulture;
 				}
 #endif
+
+				EnsureLoadersCultures();
 			}
 		}
 
-		internal static void ClearResources()
+		/// <summary>
+		/// Registers an assembly for resources lookup
+		/// </summary>
+		/// <param name="assembly">The assembly containing upri resources</param>
+		public static void AddLookupAssembly(Assembly assembly)
 		{
-			_loaders.Clear();
+			_lookupAssemblies.Add(assembly);
+
+			var current = CultureInfo.CurrentUICulture;
+			var defaultLanguage = DefaultLanguage;
+
+			if (current == _loadersCulture
+				&& defaultLanguage == _loadersDefault)
+			{
+				// The cache matches the current culture, we only have to load resources from the given assembly
+				ProcessAssembly(assembly, _loadersHierarchy);
+			}
+			else
+			{
+				// The current culture was altered, we have to rebuild the whole cache
+				ReloadResources(current, defaultLanguage);
+			}
 		}
 
-		internal static void ProcessResourceFile(string fileName, Stream input)
+		private static void ClearResources()
 		{
-			var currentCulture = CultureInfo.CurrentUICulture.IetfLanguageTag;
-			var parentCulture = GetParentUICulture();
+			// We clear each loader independently instead of clearing the '_loaders'
+			// so if a loader instance has been captured, it will  be updated
+			foreach (var loader in _loaders.Values)
+			{
+				loader._resources.Clear();
+			}
+		}
 
+		private static IEnumerable<string> GetCulturesHierarchy(CultureInfo culture)
+		{
+			while (culture != CultureInfo.InvariantCulture)
+			{
+				yield return culture.IetfLanguageTag.ToLowerInvariant();
+
+				culture = culture.Parent;
+			}
+
+			var defaultLanguage = DefaultLanguage.ToLowerInvariant();
+
+			yield return defaultLanguage;
+
+			var separatorIndex = defaultLanguage.Length;
+			while ((separatorIndex = defaultLanguage.LastIndexOf('-', separatorIndex - 1)) > 0)
+			{
+				yield return defaultLanguage.Substring(0, separatorIndex);
+			}
+		}
+
+		private static string[] EnsureLoadersCultures()
+		{
+			var current = CultureInfo.CurrentUICulture;
+			var defaultLanguage = DefaultLanguage;
+
+			if (current != _loadersCulture
+				|| defaultLanguage != _loadersDefault)
+			{
+				ReloadResources(current, defaultLanguage);
+			}
+
+			return _loadersHierarchy;
+		}
+
+		private static void ReloadResources(CultureInfo current, string defaultLanguage)
+		{
+			ClearResources();
+
+			var hierarchy = GetCulturesHierarchy(current).Distinct().ToArray();
+			foreach (var assembly in _lookupAssemblies)
+			{
+				ProcessAssembly(assembly, hierarchy);
+			}
+
+			_loadersCulture = current;
+			_loadersDefault = defaultLanguage;
+			_loadersHierarchy = hierarchy;
+		}
+
+		private static void ProcessAssembly(Assembly assembly, string[] currentCultures)
+		{
+			foreach (var name in assembly.GetManifestResourceNames())
+			{
+				if (name.EndsWith(".upri"))
+				{
+					ProcessResourceFile(name, assembly.GetManifestResourceStream(name), currentCultures);
+				}
+			}
+		}
+
+		private static void ProcessResourceFile(string fileName, Stream input, string[] currentCultures)
+		{
 			using (var reader = new BinaryReader(input))
 			{
 				// "Magic" sequence to ensure we're reading a proper resource file
@@ -174,24 +242,19 @@ namespace Windows.ApplicationModel.Resources
 				}
 
 				var name = reader.ReadString();
-				var culture = reader.ReadString();
+				var culture = reader.ReadString().ToLowerInvariant();
 
-				if (
-					// Currently only load the resources for the current culture.
-					culture.Equals(currentCulture, StringComparison.OrdinalIgnoreCase)
-					|| culture.Equals(parentCulture, StringComparison.OrdinalIgnoreCase)
-				)
+				// Currently only load the resources for the current culture.
+				if (currentCultures.Contains(culture))
 				{
 					var loader = GetNamedResourceLoader(name);
-
-					var resourceCount = reader.ReadInt32();
-
 					if (!loader._resources.TryGetValue(culture, out var resources))
 					{
 						loader._resources[culture] = resources = new Dictionary<string, string>();
 					}
 
-					for (int i = 0; i < resourceCount; i++)
+					var resourceCount = reader.ReadInt32();
+					for (var i = 0; i < resourceCount; i++)
 					{
 						var key = reader.ReadString();
 						var value = reader.ReadString();
@@ -208,7 +271,7 @@ namespace Windows.ApplicationModel.Resources
 				{
 					if (_log.Value.IsEnabled(LogLevel.Debug))
 					{
-						_log.Value.LogDebug($"Skipping resource file {fileName} for {culture} (CurrentCulture {currentCulture}/{parentCulture})");
+						_log.Value.LogDebug($"Skipping resource file {fileName} for {culture} (CurrentCulture {CultureInfo.CurrentUICulture.IetfLanguageTag})");
 					}
 				}
 			}

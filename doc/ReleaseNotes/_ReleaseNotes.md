@@ -108,6 +108,7 @@
  * Fix memory leak when using `x:Name` in XAML documents
  * 143170 [iOS] [WatermarkedDatePicker] When the Maxyear boundary is reached the first time, the calendar goes back two days instead of one
  * #491 DataTemplateSelector.SelectTemplate is not called on iOS and Android. The behavior is now closer to UWP.
+ * 144268 / #493 : Resources outside of 'en' folder not working
 
 ## Release 1.42
 

@@ -68,5 +68,14 @@ namespace Uno.UI.Tests.ResourceLoader.Strings.fr {
                 return ResourceManager.GetString("ApplicationName", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Text in &apos;fr&apos;.
+        /// </summary>
+        internal static string Given_ResourceLoader_When_LocalizedResource {
+            get {
+                return ResourceManager.GetString("Given_ResourceLoader.When_LocalizedResource", resourceCulture);
+            }
+        }
     }
 }
