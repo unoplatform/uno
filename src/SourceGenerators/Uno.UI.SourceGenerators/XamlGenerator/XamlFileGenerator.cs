@@ -485,7 +485,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				writer.AppendLineInvariant($"private global::Windows.UI.Xaml.Data.ElementNameSubject _{sanitizedFieldName}Subject = new global::Windows.UI.Xaml.Data.ElementNameSubject();");
 
 
-				using (writer.BlockInvariant($"private {GetGlobalizedTypeName(backingFieldDefinition.Type.ToString())} {sanitizedFieldName}"))
+				using (writer.BlockInvariant($"{FormatAccessibility(backingFieldDefinition.Accessibility)} {GetGlobalizedTypeName(backingFieldDefinition.Type.ToString())} {sanitizedFieldName}"))
 				{
 					using (writer.BlockInvariant("get"))
 					{
@@ -1861,7 +1861,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 								}
 
 								writer.AppendLineInvariant("this.{0} = {1};", value, closureName);
-								RegisterBackingField(type, value);
+								RegisterBackingField(type, value, FindObjectFieldAccessibility(objectDefinition));
 							}
 							else if (member.Member.Name == "Name"
 								&& member.Member.PreferredXamlNamespace == XamlConstants.XamlXmlNamespace)
@@ -1874,11 +1874,15 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 							}
 							else if (member.Member.Name == "DeferLoadStrategy")
 							{
-								writer.AppendLineInvariant("// DeferLoadStrategy {0}", member.Value, member.Value);
+								writer.AppendLineInvariant("// DeferLoadStrategy {0}", member.Value);
 							}
 							else if (member.Member.Name == "Uid")
 							{
 								uidMember = member;
+							}
+							else if (member.Member.Name == "FieldModifier")
+							{
+								writer.AppendLineInvariant("// FieldModifier {0}", member.Value);
 							}
 							else if (member.Member.Name == "Phase")
 							{
@@ -2134,9 +2138,9 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			_partials.Add(format.InvariantCultureFormat(values));
 		}
 
-		private void RegisterBackingField(string type, string name)
+		private void RegisterBackingField(string type, string name, Accessibility accessibility)
 		{
-			CurrentScope.BackingFields.Add(new BackingFieldDefinition(type, name));
+			CurrentScope.BackingFields.Add(new BackingFieldDefinition(type, name, accessibility));
 		}
 
 		private void RegisterChildSubclass(string name, XamlMemberDefinition owner, string returnType)
@@ -2389,7 +2393,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					}
 					else
 					{
-						return "new System.Uri(\"" + memberValue + "\")";
+						return "new System.Uri(\"" + memberValue + "\", global::System.UriKind.RelativeOrAbsolute)";
 					}
 
 				case "System.Type":
