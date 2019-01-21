@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Text;
+using Uno.Extensions;
+using Uno.Logging;
 using Uno.UI.DataBinding;
 using Windows.UI.Xaml.Markup;
 
@@ -25,7 +27,12 @@ namespace Windows.UI.Xaml
 
 		public void RegisterName(string name, object scopedElement)
 		{
-			_names.Add(name, WeakReferencePool.RentWeakReference(this, scopedElement));
+			if (_names.ContainsKey(name))
+			{
+				this.Log().Warn($"The name [{name}] already exists in the current XAML scope");
+			}
+
+			_names[name] = WeakReferencePool.RentWeakReference(this, scopedElement);
 		}
 
 		public void UnregisterName(string name)
