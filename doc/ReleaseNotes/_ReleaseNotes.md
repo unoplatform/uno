@@ -57,6 +57,8 @@
 * Updated default app template iOS GC settings
 * Add support for WebAssembly Web Projects
 * Add support for WebAssembly debugging with Chrome
+* Add support for XAML `x:FieldModifier`
+* Add Uno.UI linker definition files
 
 ### Breaking changes
 * Refactored ToggleSwitch Default Native XAML Styles. (cf. 'NativeDefaultToggleSwitch' styles in Generic.Native.xaml)
@@ -109,6 +111,7 @@
  * 143170 [iOS] [WatermarkedDatePicker] When the Maxyear boundary is reached the first time, the calendar goes back two days instead of one
  * #491 DataTemplateSelector.SelectTemplate is not called on iOS and Android. The behavior is now closer to UWP.
  * 144268 / #493 : Resources outside of 'en' folder not working
+ * Support for duplicate XAML `AutomationProperties.Name`
 
 ## Release 1.42
 

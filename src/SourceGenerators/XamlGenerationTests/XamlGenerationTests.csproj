@@ -80,6 +80,16 @@
 
 		
 	<ItemGroup>
+	  <None Update="ColorCodesTest - Copy.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </None>
+	  <None Update="FieldModifiers.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </None>
+	</ItemGroup>
+
+		
+	<ItemGroup>
 	  <Page Update="NonDPAssignableTest.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </Page>

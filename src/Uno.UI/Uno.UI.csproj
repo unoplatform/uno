@@ -323,8 +323,18 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <None Remove="LinkerDefinition.Wasm.xml" />
+	</ItemGroup>
+
+	<ItemGroup>
 	  <UpToDateCheckInput Remove="DataBinding\BindingPropertyHelper.MemberBinder.cs" />
 	  <UpToDateCheckInput Remove="FeatureConfiguration.cs" />
+	</ItemGroup>
+
+	<ItemGroup Condition="'$(TargetFramework)'=='netstandard2.0'">
+		<EmbeddedResource Include="LinkerDefinition.Wasm.xml">
+			<LogicalName>$(AssemblyName).xml</LogicalName>
+		</EmbeddedResource>
 	</ItemGroup>
 
 	<Target Name="BuildManualDependencies" BeforeTargets="_UnoSourceGenerator" Condition="!Exists($(T4Bin))">

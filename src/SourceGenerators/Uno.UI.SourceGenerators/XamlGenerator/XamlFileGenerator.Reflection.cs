@@ -251,6 +251,37 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			}
 		}
 
+		private Accessibility FindObjectFieldAccessibility(XamlObjectDefinition objectDefinition)
+		{
+			if (
+				FindMember(objectDefinition, "FieldModifier") is XamlMemberDefinition fieldModifierMember
+				&& Enum.TryParse<Accessibility>(fieldModifierMember.Value?.ToString(), true, out var modifierValue)
+			)
+			{
+				return modifierValue;
+			}
+
+			return Accessibility.Private;
+		}
+
+		private string FormatAccessibility(Accessibility accessibility)
+		{
+			switch (accessibility)
+			{
+				case Accessibility.Private:
+					return "private";
+
+				case Accessibility.Internal:
+					return "internal";
+
+				case Accessibility.Public:
+					return "public";
+
+				default:
+					throw new NotSupportedException($"Field modifier {accessibility} is not supported");
+			}
+		}
+
 		private INamedTypeSymbol GetPropertyType(XamlMember xamlMember)
 		{
 			var definition = FindPropertyType(xamlMember);

@@ -27,6 +27,16 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <None Remove="LinkerDefinition.xml" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <EmbeddedResource Include="LinkerDefinition.xml">
+	    <LogicalName>$(AssemblyName).xml</LogicalName>
+	  </EmbeddedResource>
+	</ItemGroup>
+
+	<ItemGroup>
     <PackageReference Include="Uno.Core">
       <Version>1.26.0-dev.58</Version>
       <ExcludeAssets>Runtime</ExcludeAssets>

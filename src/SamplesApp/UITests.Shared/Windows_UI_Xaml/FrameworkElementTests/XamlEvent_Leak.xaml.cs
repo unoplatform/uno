@@ -55,7 +55,7 @@ namespace UITests.Shared.Windows_UI_Xaml.FrameworkElementTests
 
 		private void HolderUpdate(int value)
 		{
-			Dispatcher.RunAsync(CoreDispatcherPriority.High,
+			var unused = Dispatcher.RunAsync(CoreDispatcherPriority.High,
 				() =>
 				{
 					_maxCounter = Math.Max(value, _maxCounter);
