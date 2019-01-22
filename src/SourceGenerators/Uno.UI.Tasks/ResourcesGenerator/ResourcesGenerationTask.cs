@@ -212,7 +212,7 @@ namespace Uno.UI.Tasks.ResourcesGenerator
 				}
 
 				localizedDirectory = cultureWithRegion.LCID < 255
-					? $"values-b+{languageOnly.IetfLanguageTag}" // No Region info
+					? $"values-{languageOnly.IetfLanguageTag}" // No Region info
 					: $"values-b+{languageOnly.IetfLanguageTag}+{cultureWithRegion.LCID}";
 			}
 
