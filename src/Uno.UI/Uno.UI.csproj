@@ -323,10 +323,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <None Remove="LinkerDefinition.Wasm.xml" />
-	</ItemGroup>
-
-	<ItemGroup>
 	  <UpToDateCheckInput Remove="DataBinding\BindingPropertyHelper.MemberBinder.cs" />
 	  <UpToDateCheckInput Remove="FeatureConfiguration.cs" />
 	</ItemGroup>
