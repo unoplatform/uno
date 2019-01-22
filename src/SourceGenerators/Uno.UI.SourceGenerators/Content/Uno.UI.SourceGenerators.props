@@ -8,8 +8,8 @@
 	<PropertyGroup>
 		<UnoUIGeneratorsBinPath Condition="'$(UnoUIGeneratorsBinPath)'==''">$(MSBuildThisFileDirectory)..\tools</UnoUIGeneratorsBinPath>
 
-		<XamarinProjectType Condition="'$(ProjectTypeGuids)'=='{FEACFBD2-3405-455C-9665-78FE426C6842};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}' or '$(TargetFrameworkIdentifier)'=='Xamarin.iOS'">ios</XamarinProjectType>
-		<XamarinProjectType Condition="'$(ProjectTypeGuids)'=='{EFBA0AD7-5A72-4C68-AF49-83D382785DCF};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}' or '$(TargetFrameworkIdentifier)'=='MonoAndroid'">android</XamarinProjectType>
+		<XamarinProjectType Condition="'$(ProjectTypeGuids)'=='{FEACFBD2-3405-455C-9665-78FE426C6842};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}' or $(IsXamarinIOS)">ios</XamarinProjectType>
+		<XamarinProjectType Condition="'$(ProjectTypeGuids)'=='{EFBA0AD7-5A72-4C68-AF49-83D382785DCF};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}' or $(IsMonoAndroid)">android</XamarinProjectType>
 		<XamarinProjectType Condition="'$(ProjectTypeGuids)'=='{A3F8F2AB-B479-4A4A-A458-A89E7DC349F1};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}' or '$(TargetFramework)'=='xamarinmac20'">macos</XamarinProjectType>
 		<XamarinProjectType Condition="'$(TargetFramework)'=='netstandard2.0'">wasm</XamarinProjectType>
 	</PropertyGroup>

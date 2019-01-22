@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
-	<UnoUIMSBuildTasksPath Condition="'$(UnoUIMSBuildTasksPath)'==''">$(MSBuildThisFileDirectory)..\Uno.UI.Tasks</UnoUIMSBuildTasksPath>
+	<UnoUIMSBuildTasksPath Condition="'$(UnoUIMSBuildTasksPath)'==''">..\Uno.UI.Tasks</UnoUIMSBuildTasksPath>
 	<UmbrellaMSBuildTasksImported>true</UmbrellaMSBuildTasksImported>
   </PropertyGroup>
 
@@ -9,218 +9,113 @@
 	<UnoSourceGeneratorBeforeTarget Condition="'$(XamarinProjectType)'=='android'" Include="UpdateAndroidAssets" />
   </ItemGroup>
 
-  <Target Name="ResourcesGeneration"
+  <UsingTask AssemblyFile="$(UnoUIMSBuildTasksPath)\Uno.UI.Tasks.v0.dll" TaskName="Uno.UI.Tasks.ResourcesGenerator.ResourcesGenerationTask_v0" />
+  <UsingTask AssemblyFile="$(UnoUIMSBuildTasksPath)\Uno.UI.Tasks.v0.dll" TaskName="Uno.UI.Tasks.Assets.RetargetAssets_v0" />
+
+  <Target Name="UnoResourcesGeneration"
 				  BeforeTargets="PrepareForBuild;_CheckForContent"
 				  DependsOnTargets="AssignLinkMetadata"
-				  Condition="'$(BuildingInsideUnoSourceGenerator)' == '' and ('$(XamarinProjectType)'!='' or '$(UnoForceProcessPRIResource)'!='')">
-	<!-- String resources -->
-	<PropertyGroup>
-	  <!-- LEGACY: Old projects define DefaultApplicationLanguage instead of DefaultLanguage -->
-	  <DefaultLanguage Condition="'$(DefaultLanguage)'=='' and '$(DefaultApplicationLanguage)'!=''">$(DefaultApplicationLanguage)</DefaultLanguage>
-	  <!-- Default to English if DefaultLanguage isn't set -->
-	  <DefaultLanguage Condition="'$(DefaultLanguage)'==''">en</DefaultLanguage>
-	  <XamarinProjectType Condition="'$(UnoForceProcessPRIResource)'!=''"></XamarinProjectType>
-	</PropertyGroup>
-    <ResourcesGenerationTask AssemblyPath="$(UnoUIMSBuildTasksPath)\Uno.UI.Tasks.v0.dll"
-                             Resources="@(PRIResource)"
-							 TargetProjectDirectory="$(ProjectDir)"
-							 TargetPlatform="$(XamarinProjectType)"
-							 IntermediateOutputPath="$(IntermediateOutputPath)"
-							 DefaultLanguage="$(DefaultLanguage)">
-	  <Output TaskParameter="GeneratedFiles"
-					  ItemName="GeneratedFiles" />
-	</ResourcesGenerationTask>
+				  Condition="'$(BuildingProject)' == 'true' and '$(BuildingInsideUnoSourceGenerator)' == '' and ('$(XamarinProjectType)'!='' or '$(UnoForceProcessPRIResource)'!='')">
+
+    <MSBuild Projects="$(MSBuildProjectFile)"
+             Targets="_InnerUnoResourcesGeneration_Resources"
+             BuildInParallel="true"
+             Properties="Configuration=$(Configuration);Platform=$(Platform);Dummy1=true">
+      <Output TaskParameter="TargetOutputs" ItemName="UnoResourceFiles" />
+    </MSBuild>
+    
 	<ItemGroup>
-	  <BundleResource Condition="'%(GeneratedFiles.UnoResourceTarget)' =='iOS'" Include="@(GeneratedFiles)" />
-	  <AndroidResource Condition="'%(GeneratedFiles.UnoResourceTarget)' =='Android'" Include="@(GeneratedFiles)" />
-	  <EmbeddedResource Condition="'%(GeneratedFiles.UnoResourceTarget)' =='Uno'" Include="@(GeneratedFiles)" />
+	  <BundleResource Condition="'%(UnoResourceFiles.UnoResourceTarget)' =='iOS'" Include="@(UnoResourceFiles)" />
+	  <AndroidResource Condition="'%(UnoResourceFiles.UnoResourceTarget)' =='Android'" Include="@(UnoResourceFiles)" />
+	  <EmbeddedResource Condition="'%(UnoResourceFiles.UnoResourceTarget)' =='Uno'" Include="@(UnoResourceFiles)" />
 	</ItemGroup>
-	<!-- Assets -->
+    
+    <MSBuild Projects="$(MSBuildProjectFile)"
+             Targets="_InnerUnoResourcesGeneration_Assets"
+             BuildInParallel="true"
+             Properties="Configuration=$(Configuration);Platform=$(Platform);Dummy2=true">
+      <Output TaskParameter="TargetOutputs" ItemName="UnoRetargetedAssetsOutput" />
+    </MSBuild>
+    
+    <ItemGroup>
+      <Content Condition="'%(UnoRetargetedAssetsOutput.OutputType)' =='Assets'" Remove="@(UnoRetargetedAssetsOutput)" />
+      <BundleResource Condition="'%(UnoRetargetedAssetsOutput.OutputType)' =='ios'" Include="@(UnoRetargetedAssetsOutput)" />
+      <AndroidResource Condition="'%(UnoRetargetedAssetsOutput.OutputType)' =='android'" Include="@(UnoRetargetedAssetsOutput)" />
+    </ItemGroup>
+
+  </Target>
+
+  <Target Name="_InnerUnoResourcesGeneration_Resources"
+		  DependsOnTargets="AssignLinkMetadata"
+          Outputs="@(UnoGeneratedFiles)">
+
+    <CheckForDevenv />
+
+    <!-- String resources -->
+    <PropertyGroup>
+      <!-- LEGACY: Old projects define DefaultApplicationLanguage instead of DefaultLanguage -->
+      <DefaultLanguage Condition="'$(DefaultLanguage)'=='' and '$(DefaultApplicationLanguage)'!=''">$(DefaultApplicationLanguage)</DefaultLanguage>
+      <!-- Default to English if DefaultLanguage isn't set -->
+      <DefaultLanguage Condition="'$(DefaultLanguage)'==''">en</DefaultLanguage>
+      <XamarinProjectType Condition="'$(UnoForceProcessPRIResource)'!=''"></XamarinProjectType>
+    </PropertyGroup>
+    <ResourcesGenerationTask_v0 Resources="@(PRIResource)"
+							   TargetProjectDirectory="$(ProjectDir)"
+							   TargetPlatform="$(XamarinProjectType)"
+							   IntermediateOutputPath="$(IntermediateOutputPath)"
+							   DefaultLanguage="$(DefaultLanguage)">
+      <Output TaskParameter="GeneratedFiles"
+					  ItemName="UnoGeneratedFiles" />
+    </ResourcesGenerationTask_v0>
+  </Target>
+  
+  <Target Name="_InnerUnoResourcesGeneration_Assets"
+		  DependsOnTargets="AssignLinkMetadata"
+          Outputs="@(UnoRetargetedAssets)">
+    
+    <CheckForDevenv />
+
+  <!-- Assets -->
 	<PropertyGroup>
 	  <UseHighDPIResources Condition="'$(UseHighDPIResources)'==''">True</UseHighDPIResources>
 	</PropertyGroup>
-	<RetargetAssets AssemblyPath="$(UnoUIMSBuildTasksPath)\Uno.UI.Tasks.v0.dll"
-                       UseHighDPIResources="$(UseHighDPIResources)"
-					   TargetPlatform="$(XamarinProjectType)"
-					   DefaultLanguage="$(DefaultLanguage)"
-					   ContentItems="@(Content)"
-					   Condition="'$(XamarinProjectType)'!=''">
+	<RetargetAssets_v0 UseHighDPIResources="$(UseHighDPIResources)"
+						TargetPlatform="$(XamarinProjectType)"
+						DefaultLanguage="$(DefaultLanguage)"
+						ContentItems="@(Content)"
+						Condition="'$(XamarinProjectType)'!=''">
 	  <Output TaskParameter="Assets"
-					  ItemName="Assets" />
+					  ItemName="UnoAssets" />
 	  <Output TaskParameter="RetargetedAssets"
-					  ItemName="RetargetedAssets" />
-	</RetargetAssets>
-	<ItemGroup>
-	  <Content Remove="@(Assets)" />
-	  <BundleResource Condition="'$(XamarinProjectType)'=='ios'" Include="@(RetargetedAssets)" />
-	  <AndroidResource Condition="'$(XamarinProjectType)'=='android'" Include="@(RetargetedAssets)" />
-	</ItemGroup>
+					  ItemName="UnoRetargetedAssets" />
+	</RetargetAssets_v0>
+
+    <ItemGroup>
+      <UnoRetargetedAssets Include="@(UnoAssets)">
+        <OutputType>Assets</OutputType>
+      </UnoRetargetedAssets>
+      <UnoRetargetedAssets Include="@(RetargetedAssets)">
+        <OutputType>$(XamarinProjectType)</OutputType>
+      </UnoRetargetedAssets>
+    </ItemGroup>
+   
   </Target>
 
-  <!--
-    Use inline tasks to create an in-memory assembly that will be able to execute
-    the target task without locking it. This issue generally only happens when being inside visual studio.
-
-  -->
-  <UsingTask
-      TaskName="ResourcesGenerationTask"
-      TaskFactory="CodeTaskFactory"
-      AssemblyFile="$(MSBuildToolsPath)\Microsoft.Build.Tasks.Core.dll">
-    <ParameterGroup>
-      <AssemblyPath ParameterType="System.String" Required="true" />
-      <TargetProjectDirectory ParameterType="System.String" Required="true" />
-      <TargetPlatform ParameterType="System.String" Required="false" />
-      <IntermediateOutputPath ParameterType="System.String" Required="true" />
-      <DefaultLanguage ParameterType="System.String" Required="true" />
-      <Resources ParameterType="Microsoft.Build.Framework.ITaskItem[]" Required="true" />
-      <GeneratedFiles ParameterType="Microsoft.Build.Framework.ITaskItem[]" Output="true"/>
-    </ParameterGroup>
-    <Task>
-      <Reference Include="System.Core" />
-      <Reference Include="Microsoft.CSharp" />
-      <Using Namespace="MyTasks" />
-      <Code Type="Class" Language="cs">
-        <![CDATA[ 
-        using System;  
-        using System.Reflection;
-        using Microsoft.Build.Framework;  
-        using Microsoft.Build.Utilities;
-
-        namespace MyTasks
-        {      
-            public class IsolatedResourcesGenerationTask : AppDomainIsolatedTask
-            {
-		        [Required]
-		        public string AssemblyPath { get; set; }
-
-		        [Required]
-		        public ITaskItem[] Resources { get; set; }
-
-		        public string TargetPlatform { get; set; }
-
-		        [Required]
-		        public string TargetProjectDirectory { get; set; }
-
-		        [Required]
-		        public string IntermediateOutputPath { get; set; }
-
-		        [Required]
-		        public string DefaultLanguage { get; set; }
-
-		        [Output]
-		        public ITaskItem[] GeneratedFiles { get; set; }
-
-                public override bool Execute()
-                { 
-                    var asm = Assembly.LoadFrom(AssemblyPath);
-                    var type = asm.GetType("Uno.UI.Tasks.ResourcesGenerator.ResourcesGenerationTask_v0");
-                    var instance = Activator.CreateInstance(type);
-
-                    SetPropertyValue(type, instance, "TargetProjectDirectory", TargetProjectDirectory);
-                    SetPropertyValue(type, instance, "TargetPlatform", TargetPlatform);
-                    SetPropertyValue(type, instance, "IntermediateOutputPath", IntermediateOutputPath);
-                    SetPropertyValue(type, instance, "DefaultLanguage", DefaultLanguage);
-                    SetPropertyValue(type, instance, "Resources", Resources);
-
-                    SetPropertyValue(type, instance, "BuildEngine", BuildEngine);
-                    type.GetMethod("Execute").Invoke(instance, null);
-
-                    GeneratedFiles = (ITaskItem[])type.GetProperty("GeneratedFiles").GetValue(instance);
-
-                    return true;  
-                }
-
-                private void SetPropertyValue(Type taskType, object instance, string name, object value)
-                {
-                    taskType.GetProperty(name).SetValue(instance, value);
-                }
-            }
-        } 
-         ]]>
-      </Code>
-    </Task>
-  </UsingTask>
-
-  <UsingTask
-      TaskName="RetargetAssets"
+    <UsingTask
+      TaskName="CheckForDevenv"
       TaskFactory="CodeTaskFactory"
       AssemblyFile="$(MSBuildToolsPath)\Microsoft.Build.Tasks.Core.dll" >
-    <ParameterGroup>
-      <AssemblyPath ParameterType="System.String" Required="true" />
-      <UseHighDPIResources ParameterType="System.Boolean" Required="true" />
-      <TargetPlatform ParameterType="System.String" Required="true" />
-      <DefaultLanguage ParameterType="System.String" Required="true" />
-      <ContentItems ParameterType="Microsoft.Build.Framework.ITaskItem[]" Required="true" />
-
-      <Assets ParameterType="Microsoft.Build.Framework.ITaskItem[]" Output="true"/>
-      <RetargetedAssets ParameterType="Microsoft.Build.Framework.ITaskItem[]" Output="true"/>
-    </ParameterGroup>
-    <Task>
-      <Reference Include="System.Core" />
-      <Reference Include="Microsoft.CSharp" />
-      <Using Namespace="MyTasks" />
-      <Code Type="Class" Language="cs">
-        <![CDATA[ 
-        using System;  
-        using System.Reflection;
-        using Microsoft.Build.Framework;  
-        using Microsoft.Build.Utilities;  
-
-        namespace MyTasks
-        {
-            public class IsolatedRetargetAssets : AppDomainIsolatedTask
-            {
-		        [Required]
-		        public string AssemblyPath { get; set; }
-
-                [Required]
-		        public bool UseHighDPIResources { get; set; }
-
-		        [Required]
-		        public string TargetPlatform { get; set; }
-
-		        [Required]
-		        public string DefaultLanguage { get; set; }
-
-		        [Required]
-		        public ITaskItem[] ContentItems { get; set; }
-
-		        [Output]
-		        public ITaskItem[] Assets { get; set; }
-
-		        [Output]
-		        public ITaskItem[] RetargetedAssets { get; set; }
-
-                public override bool Execute()
-                { 
-                    var asm = Assembly.LoadFrom(AssemblyPath);
-                    var type = asm.GetType("Uno.UI.Tasks.Assets.RetargetAssets_v0");
-                    var task = Activator.CreateInstance(type);
-
-                    SetPropertyValue(type, task, "UseHighDPIResources", UseHighDPIResources);
-                    SetPropertyValue(type, task, "TargetPlatform", TargetPlatform);
-                    SetPropertyValue(type, task, "DefaultLanguage", DefaultLanguage);
-                    SetPropertyValue(type, task, "ContentItems", ContentItems);
-
-                    SetPropertyValue(type, task, "BuildEngine", BuildEngine);
-                    type.GetMethod("Execute").Invoke(task, null);
-
-                    Assets = (ITaskItem[])type.GetProperty("Assets").GetValue(task);
-                    RetargetedAssets = (ITaskItem[])type.GetProperty("RetargetedAssets").GetValue(task);
-
-                    return true;  
-                }
-
-                private void SetPropertyValue(Type taskType, object instance, string name, object value)
-                {
-                    taskType.GetProperty(name).SetValue(instance, value);
-                }
-            }
-          } 
-         ]]>
-      </Code>
-    </Task>
-  </UsingTask>
-
+      <ParameterGroup />
+      <Task>
+        <Reference Include="System.Xml"/>
+        <Using Namespace="System"/>
+        <Using Namespace="System.IO"/>
+        <Code Type="Fragment" Language="cs">
+          <![CDATA[  
+            if (System.Diagnostics.Process.GetCurrentProcess().ProcessName.Equals("devenv", System.StringComparison.OrdinalIgnoreCase)) { throw new System.Exception(); }
+]]>
+        </Code>
+      </Task>
+    </UsingTask>
 
 </Project>

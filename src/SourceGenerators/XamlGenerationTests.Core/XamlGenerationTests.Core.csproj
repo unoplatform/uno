@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="15.0">
+﻿<Project Sdk="MSBuild.Sdk.Extras" ToolsVersion="15.0">
 	<PropertyGroup>
 		<TargetFrameworks>MonoAndroid80;xamarinios10</TargetFrameworks>
 		<TargetFrameworksCI>MonoAndroid71;MonoAndroid80;xamarinios10</TargetFrameworksCI>
@@ -21,8 +21,6 @@
 			<Version>1.26.0-dev.58</Version>
 		</PackageReference>
 	</ItemGroup>
-	
-	<Import Project="$(MSBuildSDKExtrasTargets)" Condition="Exists('$(MSBuildSDKExtrasTargets)')" />
 
 	<ItemGroup Condition=" '$(TargetFramework)' == 'MonoAndroid71'">
 		<PackageReference Include="Xamarin.Android.Support.v4">
@@ -50,7 +48,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="MSBuild.Sdk.Extras" Version="$(MSBuildSdkExtras_NugetVersion)" PrivateAssets="All" />
 		<PackageReference Include="xamarin.build.download" Version="0.4.9" />
 	</ItemGroup>
 
@@ -58,7 +55,7 @@
 		<UnoUIGeneratorsBinPath>..\Uno.UI.SourceGenerators\bin\$(Configuration)</UnoUIGeneratorsBinPath>
 	</PropertyGroup>
 	
-	<ItemGroup Condition="'$(TargetFrameworkIdentifier)'=='MonoAndroid' or '$(TargetFrameworkIdentifier)'=='Xamarin.iOS'">
+	<ItemGroup Condition="$(IsMonoAndroid) or $(IsXamarinIOS)">
 		<ProjectReference Include="..\..\Uno.UI.BindingHelper.Android\Uno.UI.BindingHelper.Android.csproj" />
 		<ProjectReference Include="..\..\Uno.UI\Uno.UI.csproj" />
 		<ProjectReference Include="..\..\Uno.UWP\Uno.csproj" />
@@ -66,7 +63,7 @@
 		<ProjectReference Include="..\..\Uno.UI.Toolkit\Uno.UI.Toolkit.csproj" />
 	</ItemGroup>
 	
-	<Import Project="..\Uno.UI.SourceGenerators\Content\Uno.UI.SourceGenerators.props" Condition="'$(TargetFrameworkIdentifier)'=='MonoAndroid' or '$(TargetFrameworkIdentifier)'=='Xamarin.iOS'" />
+	<Import Project="..\Uno.UI.SourceGenerators\Content\Uno.UI.SourceGenerators.props" Condition="$(IsMonoAndroid) or $(IsXamarinIOS)" />
 
 	<Import Project="..\..\Common.targets" />
 

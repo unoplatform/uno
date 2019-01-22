@@ -15,7 +15,7 @@
 		<ProjectReference Include="..\Uno.UI\Uno.UI.csproj" />
 		<ProjectReference Include="..\Uno.UWP\Uno.csproj" />
 		<ProjectReference Include="..\Uno.Foundation\Uno.Foundation.csproj" />
-		<ProjectReference Include="..\Uno.UI.BindingHelper.Android\Uno.UI.BindingHelper.Android.csproj" Condition="'$(TargetFrameworkIdentifier)'=='MonoAndroid'">
+		<ProjectReference Include="..\Uno.UI.BindingHelper.Android\Uno.UI.BindingHelper.Android.csproj" Condition="$(IsMonoAndroid)">
 			<TreatAsPackageReference>false</TreatAsPackageReference>
 		</ProjectReference>
 	</ItemGroup>

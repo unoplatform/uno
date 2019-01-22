@@ -32,12 +32,7 @@
 		</PackageReference>
 	</ItemGroup>
 	
-  <ItemGroup Condition=" '$(TargetFrameworkIdentifier)' == 'MonoAndroid' or '$(TargetFrameworkIdentifier)' == 'Xamarin.iOS' or '$(TargetFrameworkIdentifier)' == 'Xamarin.Mac' ">
-		<Reference Include="System.Numerics" />
-		<Reference Include="System.Numerics.Vectors" />
-	</ItemGroup>
-
-	<ItemGroup Condition=" '$(TargetFrameworkIdentifier)' == 'MonoAndroid' or '$(TargetFrameworkIdentifier)' == 'Xamarin.iOS' or '$(TargetFrameworkIdentifier)' == 'Xamarin.Mac' ">
+  <ItemGroup Condition=" $(IsMonoAndroid) or $(IsXamarinIOS) or $(IsXamarinMac) ">
 		<Reference Include="System.Numerics" />
 		<Reference Include="System.Numerics.Vectors" />
 	</ItemGroup>
@@ -91,7 +86,7 @@
 		<PackageReference Include="xamarin.build.download" Version="0.4.9" />
 	</ItemGroup>
 
-	<ItemGroup Condition="'$(TargetFrameworkIdentifier)'=='MonoAndroid' or '$(TargetFrameworkIdentifier)'=='Xamarin.iOS' or '$(TargetFrameworkIdentifier)'=='.NETStandard' or '$(TargetFrameworkIdentifier)' == 'Xamarin.Mac'">
+	<ItemGroup Condition="$(IsMonoAndroid) or $(IsXamarinIOS) or '$(TargetFrameworkIdentifier)'=='.NETStandard' or $(IsXamarinMac)">
 		<ProjectReference Include="..\Uno.UI\Uno.UI.csproj">
 			<Name>Uno.UI</Name>
 		</ProjectReference>
@@ -103,7 +98,7 @@
 		</ProjectReference>
 	</ItemGroup>
 
-	<ItemGroup Condition="'$(TargetFrameworkIdentifier)'=='MonoAndroid'">
+	<ItemGroup Condition="$(IsMonoAndroid)">
 		<ProjectReference Include="..\Uno.UI.BindingHelper.Android\Uno.UI.BindingHelper.Android.csproj">
 			<Project>{58332380-4302-4259-8f36-af572c53827f}</Project>
 			<Name>Uno.UI.BindingHelper.Android</Name>
@@ -117,7 +112,7 @@
 		<UnoUIGeneratorsBinPath>..\SourceGenerators\Uno.UI.SourceGenerators\bin\$(Configuration)</UnoUIGeneratorsBinPath>
 	</PropertyGroup>
 
-	<Import Project="..\SourceGenerators\Uno.UI.SourceGenerators\Content\Uno.UI.SourceGenerators.props" Condition="'$(TargetFrameworkIdentifier)'=='MonoAndroid' or '$(TargetFrameworkIdentifier)'=='Xamarin.iOS' or '$(TargetFrameworkIdentifier)' == 'Xamarin.Mac'" />
+	<Import Project="..\SourceGenerators\Uno.UI.SourceGenerators\Content\Uno.UI.SourceGenerators.props" Condition="$(IsMonoAndroid) or $(IsXamarinIOS) or $(IsXamarinMac)" />
 
 	<Import Project="..\Common.targets" />
 	

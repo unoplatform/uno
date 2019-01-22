@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="15.0">
+﻿<Project Sdk="MSBuild.Sdk.Extras" ToolsVersion="15.0">
 	<PropertyGroup>
 		<TargetFrameworks>xamarinmac20;net46;xamarinios10;MonoAndroid80;netstandard2.0</TargetFrameworks>
 		<TargetFrameworksCI>net46;MonoAndroid71;MonoAndroid80;xamarinios10;netstandard2.0;xamarinmac20</TargetFrameworksCI>
@@ -23,10 +23,6 @@
 	<ItemGroup>
 		<Compile Remove="Test\**\*.cs" />
 		<None Remove="Test\**\*.*" />
-	</ItemGroup>
-
-	<ItemGroup>
-		<PackageReference Include="MSBuild.Sdk.Extras" Version="$(MSBuildSdkExtras_NugetVersion)" PrivateAssets="All" />
 	</ItemGroup>
 
 	<Import Project="$(MSBuildSDKExtrasTargets)" Condition="Exists('$(MSBuildSDKExtrasTargets)')" />

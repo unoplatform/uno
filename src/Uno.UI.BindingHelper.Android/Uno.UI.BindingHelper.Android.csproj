@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="15.0">
+﻿<Project Sdk="MSBuild.Sdk.Extras" ToolsVersion="15.0">
 	<PropertyGroup>
 		<TargetFrameworks>MonoAndroid71;MonoAndroid80;net46;xamarinios10;netstandard2.0;xamarinmac20</TargetFrameworks>
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
@@ -15,7 +15,6 @@
 	</PropertyGroup>
 	
 	<ItemGroup>
-		<PackageReference Include="MSBuild.Sdk.Extras" Version="$(MSBuildSdkExtras_NugetVersion)" PrivateAssets="All" />
 		<PackageReference Include="Xamarin.Build.Download" Version="0.4.9" />
 	</ItemGroup>
 	<ItemGroup Condition=" '$(TargetFramework)' == 'MonoAndroid60' or '$(TargetFramework)' == 'MonoAndroid70'">
@@ -57,7 +56,6 @@
 		<TransformFile Include="Transforms\EnumMethods.xml" />
 	</ItemGroup>
 	
-	<Import Project="$(MSBuildSDKExtrasTargets)" Condition="Exists('$(MSBuildSDKExtrasTargets)')" />
 	<Import Project="..\Uno.CrossTargetting.props" />
 
 	<Target Name="_CompileUnoJavaCreateOutputs">
@@ -128,9 +126,9 @@
 	
 
 	<!-- This is to be removed when VS15.3 will be released. This is caused by conditional ProjectReference from Uno.UI -->
-	<ItemGroup Condition="'$(TargetFrameworkIdentifier)' != 'MonoAndroid'">
+	<ItemGroup Condition="$(IsMonoAndroid)">
 		<Compile Remove="**\*.cs" />
 	</ItemGroup>
-	<Target Name="GetBuiltProjectOutputRecursive" Condition=" '$(TargetFrameworkIdentifier)' != 'MonoAndroid' " />
+	<Target Name="GetBuiltProjectOutputRecursive" Condition="!$(IsMonoAndroid)" />
 
 </Project>

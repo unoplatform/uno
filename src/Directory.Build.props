@@ -23,18 +23,11 @@
 	<UnoSourceGeneratorUseGenerationHost>true</UnoSourceGeneratorUseGenerationHost>
   </PropertyGroup>
 
-  <Choose>
-    <When Condition="'$(VisualStudioVersion)'=='15.0'">
-      <PropertyGroup>
-        <MSBuildSdkExtras_NugetVersion>1.6.54</MSBuildSdkExtras_NugetVersion>
-      </PropertyGroup>
-    </When>
-    <Otherwise>
-      <PropertyGroup>
-        <MSBuildSdkExtras_NugetVersion>2.0.0-preview.14</MSBuildSdkExtras_NugetVersion>
-      </PropertyGroup>
-    </Otherwise>
-  </Choose>
+  <PropertyGroup>
+    <IsMonoAndroid>$(TargetFramework.ToLower().StartsWith('monoandroid'))</IsMonoAndroid>
+    <IsXamarinIOS>$(TargetFramework.ToLower().StartsWith('xamarinios'))</IsXamarinIOS>
+    <IsXamarinMac>$(TargetFramework.ToLower().StartsWith('xamarinmac'))</IsXamarinMac>
+  </PropertyGroup>
 
   <PropertyGroup>
 	<IsTestProject>$(MSBuildProjectName.Contains('Test'))</IsTestProject>

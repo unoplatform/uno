@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.27130.2036
+VisualStudioVersion = 15.0.28306.52
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Uno.UI", "Uno.UI", "{416684CF-A4E3-4079-B380-3FF0B00E433C}"
 EndProject
@@ -12,6 +12,12 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SolutionTemplate", "SolutionTemplate", "{FCBC6D7C-8F07-4C07-9802-0E2B5B72391D}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Analyzers", "Analyzers", "{EB8A2299-312B-495E-AFCC-D33D6ED2F8A8}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Uno.Xaml", "Uno.Xaml", "{02DF1FE3-A56C-4F96-95D8-42B55D2A8988}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SamplesApp", "SamplesApp", "{995C1054-AB61-42EE-9A17-C32155BD6D13}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "_Build", "_Build", "{1071515E-5F7A-4DE5-9F06-655BDCA5D6FD}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Uno.UI.Tests", "Uno.UI.Tests\Uno.UI.Tests.csproj", "{0F7A1F8F-CD69-4E8A-AEF4-C623A74E83FD}"
 	ProjectSection(ProjectDependencies) = postProject
@@ -58,15 +64,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Uno", "Uno.UWP\Uno.csproj",
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Uno.UI.Toolkit", "Uno.UI.Toolkit\Uno.UI.Toolkit.csproj", "{2EAF39E3-2AC9-457A-A5B2-47D6548799B3}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Uno.Xaml", "Uno.Xaml", "{02DF1FE3-A56C-4F96-95D8-42B55D2A8988}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Uno.Xaml", "SourceGenerators\System.Xaml\Uno.Xaml.csproj", "{6FFAC28C-ACED-4BA1-954D-7E720B035928}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Uno.Xaml.Tests", "SourceGenerators\System.Xaml.Tests\Uno.Xaml.Tests.csproj", "{7DDBD021-8FB5-4C99-95FD-2572ACDB7FAE}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "System.Xaml.Tests.MS", "SourceGenerators\System.Xaml.Tests.MS\System.Xaml.Tests.MS.csproj", "{BB9B2F12-1CDE-4A79-BB73-A0988D5A4B22}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SamplesApp", "SamplesApp", "{995C1054-AB61-42EE-9A17-C32155BD6D13}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Uno.UWPSyncGenerator", "Uno.UWPSyncGenerator\Uno.UWPSyncGenerator.csproj", "{0C86D13A-7213-4A53-AD54-F901200A085A}"
 EndProject
@@ -77,8 +79,6 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Uno.UI.Tests.Performance", "Uno.UI.Tests.Performance\Uno.UI.Tests.Performance.csproj", "{67812FCC-6606-4E00-823E-913B6851F9E7}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Uno.UI.Wasm", "Uno.UI.Wasm\Uno.UI.Wasm.csproj", "{10F0BC33-9AE4-4F5B-BC31-69364BDAF438}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "_Build", "_Build", "{1071515E-5F7A-4DE5-9F06-655BDCA5D6FD}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Uno.UI.Build", "..\build\Uno.UI.Build.csproj", "{30CFACE3-3A58-4FF2-B390-43CD825F8928}"
 EndProject
@@ -125,15 +125,6 @@ EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		SamplesApp\SamplesApp.UnitTests.Shared\SamplesApp.UnitTests.Shared.projitems*{04b1b5eb-d42e-47de-ada0-eb863e5574fd}*SharedItemsImports = 13
-		Uno.Foundation.Generated\Uno.Foundation.Generated.projitems*{0f7a1f8f-cd69-4e8a-aef4-c623a74e83fd}*SharedItemsImports = 4
-		Uno.Foundation.Shared\Uno.Foundation.Shared.projitems*{0f7a1f8f-cd69-4e8a-aef4-c623a74e83fd}*SharedItemsImports = 4
-		Uno.Generated\Uno.Generated.projitems*{0f7a1f8f-cd69-4e8a-aef4-c623a74e83fd}*SharedItemsImports = 4
-		Uno.Shared\Uno.Shared.projitems*{0f7a1f8f-cd69-4e8a-aef4-c623a74e83fd}*SharedItemsImports = 4
-		Uno.UI.Common\Uno.UI.Common.projitems*{0f7a1f8f-cd69-4e8a-aef4-c623a74e83fd}*SharedItemsImports = 4
-		Uno.UI.Shared.Xamarin\Uno.UI.Shared.Xamarin.projitems*{0f7a1f8f-cd69-4e8a-aef4-c623a74e83fd}*SharedItemsImports = 4
-		Uno.UI.Shared\Uno.UI.Shared.projitems*{0f7a1f8f-cd69-4e8a-aef4-c623a74e83fd}*SharedItemsImports = 4
-		Uno.UI.Tests.Shared\Uno.UI.Tests.Shared.projitems*{0f7a1f8f-cd69-4e8a-aef4-c623a74e83fd}*SharedItemsImports = 4
-		Uno.UWP\Uno.UWP.projitems*{0f7a1f8f-cd69-4e8a-aef4-c623a74e83fd}*SharedItemsImports = 4
 		SamplesApp\SamplesApp.Shared\SamplesApp.Shared.projitems*{313fcf91-a6db-4585-a23e-49bbeef4784d}*SharedItemsImports = 4
 		SamplesApp\SamplesApp.UnitTests.Shared\SamplesApp.UnitTests.Shared.projitems*{313fcf91-a6db-4585-a23e-49bbeef4784d}*SharedItemsImports = 4
 		SamplesApp\SamplesApp.Shared\SamplesApp.Shared.projitems*{3fdf0f2d-cc11-49be-8634-f81638d595c6}*SharedItemsImports = 4
