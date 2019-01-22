@@ -1,7 +1,7 @@
 ﻿namespace Uno.Foundation.Interop {
 	export class ManagedObject {
 		private static assembly: UI.Interop.IMonoAssemblyHandle;
-		private static dispatchMethod: any;
+		private static dispatchMethod: (handle: string, method: string, parameters: string) => number;
 
 		private static init() {
 			ManagedObject.dispatchMethod = (<any>Module).mono_bind_static_method("[Uno.Foundation] Uno.Foundation.Interop.JSObject:Dispatch");
