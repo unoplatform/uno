@@ -1804,17 +1804,17 @@
 	<xamarin:Style TargetType="GridViewItem"
 				   BasedOn="{StaticResource GridViewItemExpanded}" />
 
-	<!--Default style for TimePickerSelector - Xamarin-only control internal to TimePickerFlyout-->
+		<!--Default style for TimePickerSelector - Xamarin-only control internal to TimePickerFlyout-->
 	<xamarin:Style TargetType="TimePickerSelector">
 		<ios:Setter Property="Template">
 			<Setter.Value>
 				<ControlTemplate TargetType="TimePickerSelector">
-					<Border Background="White"
-							CornerRadius="10"
-							HorizontalAlignment="Center"
-							VerticalAlignment="Center">
+					<ContentControl HorizontalAlignment="Stretch"
+									VerticalAlignment="Stretch"
+									HorizontalContentAlignment="Stretch"
+									VerticalContentAlignment="Stretch">
 						<native_ios:UIDatePicker />
-					</Border>
+					</ContentControl>
 				</ControlTemplate>
 			</Setter.Value>
 		</ios:Setter>
@@ -1830,7 +1830,6 @@
 			</Setter.Value>
 		</android:Setter>
 	</xamarin:Style>
-
 
 	<xamarin:Style x:Key="TimePickerFlyoutButtonStyle"
 				   TargetType="Button">
@@ -1929,36 +1928,6 @@
 										  HorizontalContentAlignment="Stretch"
 										  VerticalContentAlignment="Stretch"
 										  AutomationProperties.AccessibilityView="Raw" />
-					</Grid>
-				</ControlTemplate>
-			</Setter.Value>
-		</Setter>
-	</xamarin:Style>
-
-	<!--Default style for TimePicker - Xamarin-only control internal to TimePickerFlyout-->
-	<xamarin:Style TargetType="TimePickerFlyoutPresenter">
-		<Setter Property="VerticalAlignment"
-				Value="Stretch" />
-		<Setter Property="HorizontalAlignment"
-				Value="Stretch" />
-		<Setter Property="HorizontalContentAlignment"
-				Value="Center" />
-		<Setter Property="VerticalContentAlignment"
-				Value="Center" />
-		<Setter Property="Template">
-			<Setter.Value>
-				<ControlTemplate TargetType="FlyoutPresenter">
-					<Grid>
-						<Border HorizontalAlignment="Stretch"
-								VerticalAlignment="Stretch"
-								IsHitTestVisible="False"
-								Opacity="0.5"
-								Background="Black" />
-						<ContentPresenter
-							ContentTemplate="{TemplateBinding ContentTemplate}"
-							ContentTemplateSelector="{TemplateBinding ContentTemplateSelector}"
-							Content="{TemplateBinding Content}" />
-
 					</Grid>
 				</ControlTemplate>
 			</Setter.Value>
@@ -2091,6 +2060,162 @@
 			</Setter.Value>
 		</Setter>
 	</xamarin:Style>
+
+	<!--Default style for TimePicker - Xamarin-only control internal to TimePickerFlyout-->
+	<android:Style TargetType="TimePickerFlyoutPresenter">
+		<Setter Property="VerticalAlignment"
+				Value="Stretch" />
+		<Setter Property="HorizontalAlignment"
+				Value="Stretch" />
+		<Setter Property="HorizontalContentAlignment"
+				Value="Center" />
+		<Setter Property="VerticalContentAlignment"
+				Value="Center" />
+		<Setter Property="Template">
+			<Setter.Value>
+				<ControlTemplate TargetType="FlyoutPresenter">
+					<Grid>
+						<Border HorizontalAlignment="Stretch"
+								VerticalAlignment="Stretch"
+								IsHitTestVisible="False"
+								Opacity="0.50"
+								Background="Black" />
+						<ContentPresenter Content="{TemplateBinding Content}" />
+
+					</Grid>
+				</ControlTemplate>
+			</Setter.Value>
+		</Setter>
+	</android:Style>
+
+	<SolidColorBrush x:Key="IOSTimePickerAcceptButtonForegroundBrush"
+					 Color="#055bb7" />
+	<SolidColorBrush x:Key="IOSTimePickerDismissButtonForegroundBrush"
+					 Color="#055bb7" />
+	<SolidColorBrush x:Key="IOSTimePickerHeaderBackgroundBrush"
+					 Color="#f8f8f8" />
+
+	<ios:Style x:Key="IOSTimePickerDoneCancelButtonStyle"
+			   TargetType="Button">
+		<Setter Property="Template">
+			<Setter.Value>
+				<ControlTemplate TargetType="Button">
+					<Grid x:Name="ButtonLayoutGrid">
+						<VisualStateManager.VisualStateGroups>
+							<VisualStateGroup x:Name="CommonStates">
+								<VisualState x:Name="Normal" />
+								<VisualState x:Name="PointerOver" />
+
+								<VisualState x:Name="Pressed">
+									<Storyboard>
+										<DoubleAnimation Storyboard.TargetName="ButtonText"
+														 Storyboard.TargetProperty="Opacity"
+														 To="0.7" />
+									</Storyboard>
+								</VisualState>
+								<VisualState x:Name="Disabled" />
+							</VisualStateGroup>
+						</VisualStateManager.VisualStateGroups>
+						<TextBlock x:Name="ButtonText"
+								   Margin="{TemplateBinding Padding}"
+								   Text="{TemplateBinding Content}"
+								   Foreground="{TemplateBinding Foreground}"
+								   VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+								   HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+								   FontStyle="{TemplateBinding FontStyle}"
+								   FontSize="{TemplateBinding FontSize}"
+								   FontFamily="{TemplateBinding FontFamily}" />
+					</Grid>
+				</ControlTemplate>
+			</Setter.Value>
+		</Setter>
+	</ios:Style>
+
+	<ios:Style TargetType="TimePickerFlyoutPresenter">
+		<Setter Property="Background"
+				Value="White" />
+		<Setter Property="VerticalAlignment"
+				Value="Stretch" />
+		<Setter Property="HorizontalAlignment"
+				Value="Stretch" />
+		<Setter Property="HorizontalContentAlignment"
+				Value="Stretch" />
+		<Setter Property="VerticalContentAlignment"
+				Value="Bottom" />
+		<Setter Property="BorderThickness"
+				Value="0" />
+		<Setter Property="IsTabStop"
+				Value="False" />
+		<Setter Property="AutomationProperties.AutomationId"
+				Value="TimePickerFlyoutPresenter" />
+		<Setter Property="Template">
+			<Setter.Value>
+				<ControlTemplate TargetType="TimePickerFlyoutPresenter">
+					<Grid>
+						<Border x:Name="FlyoutScrim"
+								Opacity="0.30"
+								Background="Black" />
+
+						<Grid x:Name="ContentPanel"
+							  Background="{TemplateBinding Background}"
+							  BorderBrush="{TemplateBinding BorderBrush}"
+							  BorderThickness="{TemplateBinding BorderThickness}"
+							  HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+							  VerticalAlignment="{TemplateBinding VerticalContentAlignment}">
+
+							<Grid.RowDefinitions>
+								<RowDefinition Height="Auto" />
+								<RowDefinition Height="Auto" />
+							</Grid.RowDefinitions>
+
+							<Grid Background="{StaticResource IOSTimePickerHeaderBackgroundBrush}">
+								<Grid.ColumnDefinitions>
+									<ColumnDefinition Width="Auto" />
+									<ColumnDefinition Width="*" />
+									<ColumnDefinition Width="Auto" />
+								</Grid.ColumnDefinitions>
+
+								<Button x:Name="DismissButton"
+										x:Uid="TimePickerDismissButton"
+										Style="{StaticResource IOSTimePickerDoneCancelButtonStyle}"
+										Foreground="{StaticResource IOSTimePickerDismissButtonForegroundBrush}"
+										Grid.Column="0"
+										Padding="15"
+										Content="Cancel"
+										FontSize="19"
+										HorizontalAlignment="Left" />
+
+								<Border x:Name="HeaderUntapableZone"
+										Background="Transparent"
+										Grid.Column="1"
+										BorderThickness="0" />
+
+								<Button x:Name="AcceptButton"
+										x:Uid="TimePickerAcceptButton"
+										Style="{StaticResource IOSTimePickerDoneCancelButtonStyle}"
+										Foreground="{StaticResource IOSTimePickerAcceptButtonForegroundBrush}"
+										Grid.Column="2"
+										FontWeight="Bold"
+										Padding="15"
+										Content="Done"
+										FontSize="19"
+										HorizontalAlignment="Right" />
+							</Grid>
+
+							<ContentPresenter Grid.Row="1"
+											  Content="{TemplateBinding Content}"
+											  Foreground="{TemplateBinding Foreground}"
+											  HorizontalContentAlignment="Stretch"
+											  VerticalContentAlignment="Stretch"
+											  HorizontalAlignment="Stretch"
+											  VerticalAlignment="Stretch" />
+						</Grid>
+					</Grid>
+
+				</ControlTemplate>
+			</Setter.Value>
+		</Setter>
+	</ios:Style>
 
 	<SolidColorBrush x:Key="SplitViewDismissBackgroundColor"
 					 Color="Black"
@@ -9262,3 +9387,4 @@
 	<SolidColorBrush x:Key="SystemControlHighlightListMediumRevealBackgroundBrush" Color="{StaticResource SystemListMediumColor}" />
 
 </ResourceDictionary>
+	
