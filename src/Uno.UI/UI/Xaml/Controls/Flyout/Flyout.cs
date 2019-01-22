@@ -20,11 +20,10 @@ namespace Windows.UI.Xaml.Controls
 {
 	[ContentProperty(Name = "Content")]
 	public partial class Flyout : FlyoutBase
-    {
-		private readonly FlyoutPresenter _presenter = new FlyoutPresenter();
-		internal protected Popup _popup;
-
+	{
 		private readonly SerialDisposable _sizeChangedDisposable = new SerialDisposable();
+		internal protected readonly FlyoutPresenter _presenter = new FlyoutPresenter();
+		internal protected Popup _popup;
 
 		public Style FlyoutPresenterStyle
 		{
@@ -34,12 +33,12 @@ namespace Windows.UI.Xaml.Controls
 
 		// Using a DependencyProperty as the backing store for FlyoutPresenterStyle.  This enables animation, styling, binding, etc...
 		public static readonly DependencyProperty FlyoutPresenterStyleProperty =
-			DependencyProperty.Register("FlyoutPresenterStyle", typeof(Style), typeof(Flyout), new PropertyMetadata((Style)null,OnFlyoutPresenterStyleChanged));
+			DependencyProperty.Register("FlyoutPresenterStyle", typeof(Style), typeof(Flyout), new PropertyMetadata((Style)null, OnFlyoutPresenterStyleChanged));
 
 		private static void OnFlyoutPresenterStyleChanged(object dependencyObject, DependencyPropertyChangedEventArgs args)
 		{
 			var flyout = dependencyObject as Flyout;
-            if (flyout._presenter != null)
+			if (flyout._presenter != null)
 			{
 				flyout._presenter.Style = (Style)args.NewValue;
 			}
@@ -53,7 +52,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		public static readonly DependencyProperty ContentProperty =
-			DependencyProperty.Register("Content", typeof(IUIElement), typeof(Flyout), new PropertyMetadata(default(IUIElement),OnContentChanged));
+			DependencyProperty.Register("Content", typeof(IUIElement), typeof(Flyout), new PropertyMetadata(default(IUIElement), OnContentChanged));
 
 		private static void OnContentChanged(object dependencyObject, DependencyPropertyChangedEventArgs args)
 		{
@@ -88,7 +87,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			var child = _popup.Child as FrameworkElement;
 
-			if(child != null)
+			if (child != null)
 			{
 				SizeChangedEventHandler handler = (_, __) => SetPopupPositionPartial(Target);
 
@@ -98,7 +97,7 @@ namespace Windows.UI.Xaml.Controls
 					.Create(() => child.SizeChanged -= handler);
 			}
 		}
-
+		
 		partial void InitializePartial();
 
 		private void OnPopupClosed(object sender, object e)
