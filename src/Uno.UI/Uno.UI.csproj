@@ -331,7 +331,7 @@
 		</EmbeddedResource>
 	</ItemGroup>
 
-	<Target Name="BuildManualDependencies" BeforeTargets="_UnoSourceGenerator" Condition="!Exists($(T4Bin))">
+	<Target Name="BuildManualDependencies" BeforeTargets="_UnoSourceGenerator;UnoResourcesGeneration" Condition="!Exists($(T4Bin))">
 		<Message Text="Building Generators" Importance="high" />
 		<!-- This is required because the non-reference dependencies are not properly handled -->
 		<MSBuild Properties="Configuration=$(Configuration);Platform=AnyCPU" Targets="Build" Projects="..\SourceGenerators\Uno.UI.SourceGenerators\Uno.UI.SourceGenerators.csproj" RebaseOutputs="false" />
