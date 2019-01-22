@@ -4,6 +4,11 @@
   <assembly fullname="Uno.UI">
     <type fullname="Windows.UI.Xaml.UIElement" />
     <type fullname="Windows.UI.Xaml.Window" />
+    <type fullname="Windows.UI.Xaml.Media.BrushConverter" />
+    <type fullname="Windows.UI.Xaml.Media.ImageSourceConverter" />
+    <type fullname="Windows.UI.Xaml.Media.CornerRadiusConverter" />
+    <type fullname="Uno.Media.GeometryConverter" />
+    <type fullname="Windows.UI.Xaml.ThicknessConverter" />
   </assembly>
   
   <assembly fullname="Uno">
@@ -12,6 +17,7 @@
   
   <assembly fullname="Uno.Foundation">
     <type fullname="Uno.Foundation.Interop.JSObject" />
+    <type fullname="Windows.Foundation.SizeConverter" />
   </assembly>
 
   <assembly fullname="System">
