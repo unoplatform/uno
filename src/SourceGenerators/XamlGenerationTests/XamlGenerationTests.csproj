@@ -57,7 +57,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="MSBuild.Sdk.Extras" Version="1.6.55" PrivateAssets="All" />
+		<PackageReference Include="MSBuild.Sdk.Extras" Version="$(MSBuildSdkExtras_NugetVersion)" PrivateAssets="All" />
 		<PackageReference Include="xamarin.build.download" Version="0.4.9" />
 	</ItemGroup>
 

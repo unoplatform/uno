@@ -15,7 +15,7 @@
 	</PropertyGroup>
 	
 	<ItemGroup>
-		<PackageReference Include="MSBuild.Sdk.Extras" Version="1.6.55" PrivateAssets="All" />
+		<PackageReference Include="MSBuild.Sdk.Extras" Version="$(MSBuildSdkExtras_NugetVersion)" PrivateAssets="All" />
 		<PackageReference Include="Xamarin.Build.Download" Version="0.4.9" />
 	</ItemGroup>
 	<ItemGroup Condition=" '$(TargetFramework)' == 'MonoAndroid60' or '$(TargetFramework)' == 'MonoAndroid70'">

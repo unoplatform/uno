@@ -23,6 +23,19 @@
 	<UnoSourceGeneratorUseGenerationHost>true</UnoSourceGeneratorUseGenerationHost>
   </PropertyGroup>
 
+  <Choose>
+    <When Condition="'$(VisualStudioVersion)'=='15.0'">
+      <PropertyGroup>
+        <MSBuildSdkExtras_NugetVersion>1.6.54</MSBuildSdkExtras_NugetVersion>
+      </PropertyGroup>
+    </When>
+    <Otherwise>
+      <PropertyGroup>
+        <MSBuildSdkExtras_NugetVersion>2.0.0-preview.14</MSBuildSdkExtras_NugetVersion>
+      </PropertyGroup>
+    </Otherwise>
+  </Choose>
+
   <PropertyGroup>
 	<IsTestProject>$(MSBuildProjectName.Contains('Test'))</IsTestProject>
 	<IsSampleProject>$(MSBuildProjectName.Contains('Sample'))</IsSampleProject>
@@ -39,7 +52,7 @@
   </PropertyGroup>
 
   <Choose>
-	<When Condition="'$(IsTestProject)' != 'true' and '$(SourceLinkEnabled)' != 'false' and '$(IsSampleProject)' != 'true'">
+	<When Condition="'$(Configuration)' != 'Debug' and '$(IsTestProject)' != 'true' and '$(SourceLinkEnabled)' != 'false' and '$(IsSampleProject)' != 'true'">
 	  <PropertyGroup>
 		<!-- Optional: Declare that the Repository URL can be published to NuSpec -->
 		<PublishRepositoryUrl>true</PublishRepositoryUrl>
