@@ -71,10 +71,10 @@
       <Version>1.25.0-dev.56</Version>
     </PackageReference>
     <PackageReference Include="Uno.SourceGeneration">
-      <Version>1.29.0-dev.226</Version>
+      <Version>1.29.0-dev.237</Version>
     </PackageReference>
     <PackageReference Include="Uno.SourceGenerationTasks">
-      <Version>1.29.0-dev.226</Version>
+      <Version>1.29.0-dev.237</Version>
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
