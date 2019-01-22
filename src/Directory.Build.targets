@@ -2,4 +2,8 @@
 	<Import Project="TargetFrameworkSelection.targets"/>
 	<Import Project="../build/GetMsBuildVersion.targets"/>
 
+  <Target Name="AndroidResourceGenWorkaround" BeforeTargets="Build" Condition="'$(AndroidUseIntermediateDesignerFile)'=='True'">
+    <WriteLinesToFile File="$(AndroidResgenFile)" Lines="// Empty Content from uno.ui Directory.Build.targets." />
+  </Target>
+
 </Project>
