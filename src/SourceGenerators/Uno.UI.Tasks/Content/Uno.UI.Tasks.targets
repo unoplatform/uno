@@ -112,8 +112,11 @@
         <Using Namespace="System.IO"/>
         <Code Type="Fragment" Language="cs">
           <![CDATA[  
-            if (System.Diagnostics.Process.GetCurrentProcess().ProcessName.Equals("devenv", System.StringComparison.OrdinalIgnoreCase)) { throw new System.Exception(); }
-]]>
+            if (System.Diagnostics.Process.GetCurrentProcess().ProcessName.Equals("devenv", System.StringComparison.OrdinalIgnoreCase))
+            {
+              Log.LogWarning("The Uno.UI.Tasks build task is running under devenv.exe you will have to restart Visual Studio to rebuild it.");
+            }
+          ]]>
         </Code>
       </Task>
     </UsingTask>
