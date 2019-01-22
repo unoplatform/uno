@@ -1,6 +1,5 @@
 {
   "msbuild-sdks": {
-    // "MSBuild.Sdk.Extras": "2.0.0-preview.14" // VS2019
-    "MSBuild.Sdk.Extras": "1.6.65 " // VS2017
+    "MSBuild.Sdk.Extras": "1.6.65 "
   }
 }
