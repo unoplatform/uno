@@ -710,6 +710,7 @@ namespace Windows.UI.Xaml.Controls
 						)
 							.DisposeWith(disposables);
 						bindableGroup.PropertyChanged += onPropertyChanged;
+						OnGroupPropertyChanged(group, insideLoop);
 
 						void onPropertyChanged(object sender, PropertyChangedEventArgs e)
 						{
