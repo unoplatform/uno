@@ -13,7 +13,8 @@
   <UsingTask AssemblyFile="$(UnoUIMSBuildTasksPath)\Uno.UI.Tasks.v0.dll" TaskName="Uno.UI.Tasks.Assets.RetargetAssets_v0" />
 
   <Target Name="UnoResourcesGeneration"
-				  BeforeTargets="PrepareForBuild;_CheckForContent"
+				  BeforeTargets="_CheckForContent"
+                  AfterTargets="ResolveReferences"
 				  DependsOnTargets="AssignLinkMetadata"
 				  Condition="'$(BuildingProject)' == 'true' and '$(BuildingInsideUnoSourceGenerator)' == '' and ('$(XamarinProjectType)'!='' or '$(UnoForceProcessPRIResource)'!='')">
 
