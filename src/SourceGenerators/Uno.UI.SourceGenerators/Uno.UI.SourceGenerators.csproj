@@ -44,7 +44,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Microsoft.CodeAnalysis">
+		<PackageReference Include="Microsoft.Build" Version="15.4.8" ExcludeAssets="runtime" />
+		<PackageReference Include="Microsoft.Build.Engine" Version="15.4.8" ExcludeAssets="runtime" />
+		<PackageReference Include="Microsoft.Build.Tasks.Core" Version="15.4.8" ExcludeAssets="runtime" />
+		<PackageReference Include="Microsoft.CodeAnalysis">
       <Version>2.3.1</Version>
       <ExcludeAssets>runtime</ExcludeAssets>
     </PackageReference>
@@ -71,9 +74,6 @@
       <Version>1.25.0-dev.56</Version>
     </PackageReference>
     <PackageReference Include="Uno.SourceGeneration">
-      <Version>1.29.0-dev.237</Version>
-    </PackageReference>
-    <PackageReference Include="Uno.SourceGenerationTasks">
       <Version>1.29.0-dev.237</Version>
     </PackageReference>
   </ItemGroup>
