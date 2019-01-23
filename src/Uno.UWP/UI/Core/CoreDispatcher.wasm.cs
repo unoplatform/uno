@@ -14,8 +14,11 @@ namespace Windows.UI.Core
 		/// <summary>
 		/// Method invoked from 
 		/// </summary>
-		private static void DispatcherCallback()
-			=> Main.DispatchItems();
+		private static int DispatcherCallback()
+		{
+			Main.DispatchItems();
+			return 0; // Required by bind_static_method (void is not supported)
+		}
 
 		/// <summary>
 		/// Provide a action that will delegate the dispach of CoreDispatcher work
