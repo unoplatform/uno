@@ -312,6 +312,9 @@ namespace Windows.UI.Xaml.Controls
 			var item = ItemFromIndex(clickedIndex);
 			if (IsItemClickEnabled)
 			{
+				// This is required for the NavigationView which references a non-public issue (#17546992 in NavigationViewList)
+				IsItemItsOwnContainerOverride(item);
+
 				ItemClickCommand.ExecuteIfPossible(item);
 				ItemClick?.Invoke(this, new ItemClickEventArgs { ClickedItem = item });
 			}
