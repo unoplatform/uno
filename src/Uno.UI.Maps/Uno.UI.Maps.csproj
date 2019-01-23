@@ -38,7 +38,6 @@
 		<PackageReference Include="Xamarin.Android.Support.v4" Version="26.1.0.1" PrivateAssets="none" />
 	</ItemGroup>
 
-	<Import Project="$(MSBuildSDKExtrasTargets)" Condition="Exists('$(MSBuildSDKExtrasTargets)')" />
 	<Import Project="..\Uno.CrossTargetting.props" />
 
 	<PropertyGroup>

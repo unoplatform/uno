@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="15.0">
+﻿<Project Sdk="MSBuild.Sdk.Extras" ToolsVersion="15.0">
 	<PropertyGroup>
 		<TargetFrameworks>xamarinmac20;MonoAndroid80;uap10.0;xamarinios10;netstandard2.0</TargetFrameworks>
 		<TargetFrameworksCI>MonoAndroid71;MonoAndroid80;uap10.0;xamarinios10;netstandard2.0;xamarinmac20</TargetFrameworksCI>
@@ -14,7 +14,6 @@
 		<Deterministic>true</Deterministic>
 	</PropertyGroup>
 
-	<Import Project="$(MSBuildSDKExtrasTargets)" Condition="Exists('$(MSBuildSDKExtrasTargets)')" />
 	<Import Project="..\Uno.CrossTargetting.props" />
 	<ItemGroup>
 	  <Compile Include="..\Uno.UI\Behaviors\VisibleBoundsPadding.cs" Link="VisibleBoundsPadding.cs" />
