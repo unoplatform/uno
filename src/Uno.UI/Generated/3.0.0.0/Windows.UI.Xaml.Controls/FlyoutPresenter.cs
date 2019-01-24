@@ -7,7 +7,7 @@ namespace Windows.UI.Xaml.Controls
 	#endif
 	public  partial class FlyoutPresenter : global::Windows.UI.Xaml.Controls.ContentControl
 	{
-		#if false || false || NET46 || __WASM__ || false
+		#if false || false || false || false || false
 		[global::Uno.NotImplemented]
 		public FlyoutPresenter() : base()
 		{

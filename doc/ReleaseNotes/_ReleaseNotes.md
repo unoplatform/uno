@@ -59,6 +59,8 @@
 * Add support for WebAssembly debugging with Chrome
 * Add support for XAML `x:FieldModifier`
 * Add Uno.UI linker definition files
+* Adjust FlyoutPresenter default template
+* Add support for Flyout anchor
 
 ### Breaking changes
 * Refactored ToggleSwitch Default Native XAML Styles. (cf. 'NativeDefaultToggleSwitch' styles in Generic.Native.xaml)
