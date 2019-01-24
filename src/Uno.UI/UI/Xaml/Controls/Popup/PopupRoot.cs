@@ -10,6 +10,12 @@ namespace Windows.UI.Xaml.Controls
 {
 	internal partial class PopupRoot : Panel
 	{
+		/// <summary>
+		/// This value is an arbitrary value for the placement of
+		/// a popup below its anchor.
+		/// </summary>
+		private const int PopupPlacementTargetMargin = 5;
+
 		public PopupRoot()
 		{
 			Background = new SolidColorBrush(Colors.Transparent);
@@ -43,10 +49,13 @@ namespace Windows.UI.Xaml.Controls
 			{
 				var desiredSize = child.DesiredSize;
 				var popup = GetPopup(child);
-				var popupLocation = popup.TransformToVisual(this) as TranslateTransform;
+				var popupLocation = popup.TransformToVisual(popup.Anchor ?? this) as TranslateTransform;
+
+				var anchorHeight = ((popup.Anchor as FrameworkElement)?.ActualHeight + PopupPlacementTargetMargin) ?? 0;
+
 				var location = new Point(
 					popupLocation.X + popup.HorizontalOffset,
-					popupLocation.Y + popup.VerticalOffset
+					popupLocation.Y + popup.VerticalOffset + anchorHeight
 				);
 
 				child.Arrange(new Rect(location, desiredSize));

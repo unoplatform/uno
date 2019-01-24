@@ -14,6 +14,8 @@ namespace Windows.UI.Xaml.Controls
 	{
 		private readonly SerialDisposable _closePopup = new SerialDisposable();
 
+		internal UIElement Anchor { get; set; }
+
 		protected override void OnChildChanged(FrameworkElement oldChild, FrameworkElement newChild)
 		{
 			base.OnChildChanged(oldChild, newChild);

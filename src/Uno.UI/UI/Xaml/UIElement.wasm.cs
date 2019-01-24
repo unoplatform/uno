@@ -639,14 +639,14 @@ namespace Windows.UI.Xaml
 			}
 			else
 			{
-				visual.GetBoundingClientRect();
+				otherBounds = visual.GetBoundingClientRect();
 			}
 
 			// TODO: UWP returns a MatrixTransform here. For now TransformToVisual doesn't support rotations, scalings, etc.
 			return new TranslateTransform
 			{
-				X = bounds.X - otherBounds.X,
-				Y = bounds.Y - otherBounds.Y
+				X = otherBounds.X - bounds.X,
+				Y = otherBounds.Y - bounds.Y
 			};
 		}
 
