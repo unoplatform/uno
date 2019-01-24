@@ -61,6 +61,8 @@
 * Add Uno.UI linker definition files
 * Adjust FlyoutPresenter default template
 * Add support for Flyout anchor
+* Improved XAML designer support
+* Improved DependencyObject performance under AOT (JS dynCalls for overrides/delegates inside of EH blocks)
 
 ### Breaking changes
 * Refactored ToggleSwitch Default Native XAML Styles. (cf. 'NativeDefaultToggleSwitch' styles in Generic.Native.xaml)
@@ -117,6 +119,7 @@
  * #491 DataTemplateSelector.SelectTemplate is not called on iOS and Android. The behavior is now closer to UWP.
  * 144268 / #493 : Resources outside of 'en' folder not working
  * Support for duplicate XAML `AutomationProperties.Name`
+ * `ListViewBase.SelectedItems` is updated on selection change in Single selection mode
 
 ## Release 1.42
 

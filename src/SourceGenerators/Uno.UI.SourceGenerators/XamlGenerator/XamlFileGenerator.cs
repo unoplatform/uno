@@ -921,7 +921,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				else
 				{
 					// If there is no method suffix, 
-					using (writer.BlockInvariant("public object FindResource(string name)"))
+					using (writer.BlockInvariant("public static object FindResource(string name)"))
 					{
 						BuildGetResources(writer, keyedResources);
 					}

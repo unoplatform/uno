@@ -1,4 +1,4 @@
-﻿#if !NET46 && !__MACOS__
+﻿#if !__MACOS__
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -50,7 +50,7 @@ namespace Windows.UI.Xaml.Controls
 		/// </summary>
 		private bool _isIncrementalLoadingInFlight;
 
-		protected ListViewBase()
+		protected internal ListViewBase()
 		{
 			Initialize();
 
@@ -174,6 +174,9 @@ namespace Windows.UI.Xaml.Controls
 			}
 			else
 			{
+				SelectedItems.Clear();
+				SelectedItems.Add(selectedItem);
+
 				base.OnSelectedItemChanged(oldSelectedItem, selectedItem);
 			}
 		}
@@ -312,6 +315,9 @@ namespace Windows.UI.Xaml.Controls
 			var item = ItemFromIndex(clickedIndex);
 			if (IsItemClickEnabled)
 			{
+				// This is required for the NavigationView which references a non-public issue (#17546992 in NavigationViewList)
+				IsItemItsOwnContainerOverride(item);
+
 				ItemClickCommand.ExecuteIfPossible(item);
 				ItemClick?.Invoke(this, new ItemClickEventArgs { ClickedItem = item });
 			}

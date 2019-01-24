@@ -16,7 +16,7 @@
 				  BeforeTargets="_CheckForContent"
                   AfterTargets="ResolveReferences"
 				  DependsOnTargets="AssignLinkMetadata"
-				  Condition="'$(BuildingProject)' == 'true' and '$(BuildingInsideUnoSourceGenerator)' == '' and ('$(XamarinProjectType)'!='' or '$(UnoForceProcessPRIResource)'!='')">
+				  Condition="'$(DesignTimeBuild)' != 'true' and '$(BuildingInsideUnoSourceGenerator)' == '' and ('$(XamarinProjectType)'!='' or '$(UnoForceProcessPRIResource)'!='')">
 
     <CheckForDevenv />
 
