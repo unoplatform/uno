@@ -70,7 +70,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 		#endif
-		#if false || false || NET46 || false || false
+		#if false || false || false || false || false
 		[global::Uno.NotImplemented]
 		public  global::System.Collections.Generic.IList<object> SelectedItems
 		{
@@ -523,7 +523,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 		#endif
-		#if false || false || NET46 || false || false
+		#if false || false || false || false || false
 		[global::Uno.NotImplemented]
 		public  event global::Windows.UI.Xaml.Controls.ItemClickEventHandler ItemClick
 		{
