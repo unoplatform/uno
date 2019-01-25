@@ -25,8 +25,8 @@ namespace Windows.UI.Xaml.Controls
 	{
 		private IDisposable _openPopupRegistration;
 
-        public event EventHandler<object> Closed;
-        public event EventHandler<object> Opened;
+		public event EventHandler<object> Closed;
+		public event EventHandler<object> Opened;
 
 		public PopupBase()
 		{
@@ -48,7 +48,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		partial void OnChildChangedPartial(View oldChild, View newChild)
-        {
+		{
 			if (oldChild is IDependencyObjectStoreProvider provider)
 			{
 				provider.Store.ClearValue(provider.Store.DataContextProperty, DependencyPropertyValuePrecedences.Local);
@@ -56,13 +56,21 @@ namespace Windows.UI.Xaml.Controls
 			}
 
 			UpdateDataContext();
+			UpdateTemplatedParent();
 		}
 
-		internal protected override void OnDataContextChanged(DependencyPropertyChangedEventArgs e)
+		protected internal override void OnDataContextChanged(DependencyPropertyChangedEventArgs e)
 		{
 			base.OnDataContextChanged(e);
 
 			UpdateDataContext();
+		}
+
+		protected internal override void OnTemplatedParentChanged(DependencyPropertyChangedEventArgs e)
+		{
+			base.OnTemplatedParentChanged(e);
+
+			UpdateTemplatedParent();
 		}
 
 		private void UpdateDataContext()
@@ -70,6 +78,13 @@ namespace Windows.UI.Xaml.Controls
 			if (Child is IDependencyObjectStoreProvider provider)
 			{
 				provider.Store.SetValue(provider.Store.DataContextProperty, this.DataContext, DependencyPropertyValuePrecedences.Local);
+			}
+		}
+
+		private void UpdateTemplatedParent()
+		{
+			if (Child is IDependencyObjectStoreProvider provider)
+			{
 				provider.Store.SetValue(provider.Store.TemplatedParentProperty, this.TemplatedParent, DependencyPropertyValuePrecedences.Local);
 			}
 		}
