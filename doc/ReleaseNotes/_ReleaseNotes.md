@@ -69,7 +69,7 @@
   [iOS] For BindableUISwitch : Background property was changed for OnTintColorBrush and Foreground property for ThumbTintColorBrush.
   [Android] BindableSwitch was renamed BindableSwitchCompat in order to avoid confusion with the Switch control.
 * Remove invalid Windows.UI.Xaml.Input.VirtualKeyModifiers
-* Time picker flyout default styles has been changed to include done and cancel buttons 
+* Time picker flyout default styles has been changed to include done and cancel buttons
 * DataTemplateSelector implementations are now called using the 2 parameters overload first with a fallback to the 1 parameter overload on null returned value.
   Old behavior could be restored using `FeatureConfiguration.DataTemplateSelector.UseLegacyTemplateSelectorOverload = true`.
 
@@ -120,6 +120,7 @@
  * 144268 / #493 : Resources outside of 'en' folder not working
  * Support for duplicate XAML `AutomationProperties.Name`
  * `ListViewBase.SelectedItems` is updated on selection change in Single selection mode
+ * #528 ComboBoxes are empty when no datacontext
 
 ## Release 1.42
 
