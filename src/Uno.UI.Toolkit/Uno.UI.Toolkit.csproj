@@ -106,6 +106,14 @@
 
 	<!-- Override existing target, this project cannot be published -->
 	<Target Name="Publish" />
+	
+	<ItemGroup>
+		<ProjectReference Include="..\Uno.MonoAnalyzers\Uno.MonoAnalyzers.csproj">
+			<ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+			<SkipGetTargetFrameworkProperties>true</SkipGetTargetFrameworkProperties>
+			<UndefineProperties>TargetFramework</UndefineProperties>
+		</ProjectReference>
+	</ItemGroup>
 
 	<PropertyGroup>
 		<UnoUIGeneratorsBinPath>..\SourceGenerators\Uno.UI.SourceGenerators\bin\$(Configuration)</UnoUIGeneratorsBinPath>

@@ -331,6 +331,10 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<Analyzer Include="..\Uno.MonoAnalyzers\bin\$(Configuration)\net461\Uno.MonoAnalyzers.dll" />
+	</ItemGroup>
+
+	<ItemGroup>
 		<ProjectReference Include="..\SourceGenerators\Uno.UI.SourceGenerators\Uno.UI.SourceGenerators.csproj">
 			<ReferenceOutputAssembly>false</ReferenceOutputAssembly>
 			<SkipGetTargetFrameworkProperties>true</SkipGetTargetFrameworkProperties>
@@ -346,9 +350,15 @@
 			<SkipGetTargetFrameworkProperties>true</SkipGetTargetFrameworkProperties>
 			<UndefineProperties>TargetFramework</UndefineProperties>
 		</ProjectReference>
+
+		<ProjectReference Include="..\Uno.MonoAnalyzers\Uno.MonoAnalyzers.csproj">
+			<ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+			<SkipGetTargetFrameworkProperties>true</SkipGetTargetFrameworkProperties>
+			<UndefineProperties>TargetFramework</UndefineProperties>
+		</ProjectReference>
 	</ItemGroup>
 
-	<Target Name="GetPackagingOutputs" Condition=" '$(TargetFramework)' == 'uap10.0' " />
+		<Target Name="GetPackagingOutputs" Condition=" '$(TargetFramework)' == 'uap10.0' " />
 
 	<Target Name="GetBuiltProjectOutputRecursive" Condition=" '$(TargetFramework)' == 'xamarinios10' " />
 	<Target Name="GetTargetPath" Condition=" '$(TargetFramework)' == 'xamarinios10' " />

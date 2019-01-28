@@ -36,7 +36,15 @@
 	<ItemGroup Condition="'$(TargetFrameworkIdentifier)'=='.NETStandard'">
 		<PackageReference Include="System.Runtime.InteropServices.WindowsRuntime" Version="4.3.0" />
 	</ItemGroup>
-	
+
+	<ItemGroup>
+		<ProjectReference Include="..\Uno.MonoAnalyzers\Uno.MonoAnalyzers.csproj">
+			<ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+			<SkipGetTargetFrameworkProperties>true</SkipGetTargetFrameworkProperties>
+			<UndefineProperties>TargetFramework</UndefineProperties>
+		</ProjectReference>
+	</ItemGroup>
+
 	<Import Project="..\Uno.CrossTargetting.props" />
 
 </Project>
