@@ -13,7 +13,7 @@ using Microsoft.CodeAnalysis.Diagnostics;
 namespace Uno.Analyzers
 {
 	[DiagnosticAnalyzer(LanguageNames.CSharp)]
-	public class UnoNotImplementedAnalyzer : DiagnosticAnalyzer
+	public class MonoNotSupportedAPIAnalyzer : DiagnosticAnalyzer
 	{
 		internal const string Title = "This API is not available in VS15.8 and ealier";
 		internal const string MessageFormat = "{0} is not available in VS15.8 and ealier";
@@ -25,7 +25,7 @@ namespace Uno.Analyzers
 			Title,
 			MessageFormat,
 			Category,
-			DiagnosticSeverity.Warning,
+			DiagnosticSeverity.Error,
 			isEnabledByDefault: true,
 			description: Description
 		);
@@ -46,22 +46,12 @@ namespace Uno.Analyzers
 			});
 		}
 
-		private static bool HasNotImplementedAttribute(INamedTypeSymbol notImplementedSymbol, ISymbol namedSymbol)
-		{
-			return namedSymbol.GetAttributes().Any(a => a.AttributeClass == notImplementedSymbol);
-		}
-
 		private void OnMemberAccessExpression(
 			SyntaxNodeAnalysisContext contextAnalysis,
 			INamedTypeSymbol stringSymbol,
 			INamedTypeSymbol charSymbol
 		)
 		{
-			if (IsBindableMetadata(contextAnalysis))
-			{
-				return;
-			}
-
 			var memberAccess = contextAnalysis.Node as MemberAccessExpressionSyntax;
 			var member = contextAnalysis.SemanticModel.GetSymbolInfo(memberAccess);
 
@@ -87,18 +77,6 @@ namespace Uno.Analyzers
 					contextAnalysis.ReportDiagnostic(diagnostic);
 				}
 			}
-		}
-
-		private static bool IsUnoSymbol(SymbolInfo member)
-		{
-			string name = member.Symbol?.ContainingAssembly?.Name ?? "";
-
-			return name.StartsWith("Uno", StringComparison.Ordinal) || name.Equals("TestProject", StringComparison.Ordinal);
-		}
-
-		private static bool IsBindableMetadata(SyntaxNodeAnalysisContext contextAnalysis)
-		{
-			return Path.GetFileName(contextAnalysis.Node?.GetLocation()?.SourceTree?.FilePath) == "BindableMetadata.g.cs";
 		}
 	}
 }
