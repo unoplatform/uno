@@ -198,7 +198,7 @@ namespace SampleControl.Presentation
 
 			public bool Matches(string path)
 			{
-				var pathMembers = path.Split('.');
+				var pathMembers = path.Split(new char[] { '.' });
 				return Matches(category: pathMembers.ElementAtOrDefault(0), sampleName: pathMembers.ElementAtOrDefault(1));
 			}
 

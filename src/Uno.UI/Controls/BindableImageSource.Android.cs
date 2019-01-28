@@ -165,7 +165,7 @@ namespace Uno.UI.Controls
 
 			if (newUri.Scheme == "resource")
 			{
-				Resource = GetResourceId(newUri.PathAndQuery.TrimStart('/'));
+				Resource = GetResourceId(newUri.PathAndQuery.TrimStart(new[] { '/' }));
 			}
 			else if (UriSource.StartsWith("res:///", StringComparison.OrdinalIgnoreCase))
 			{

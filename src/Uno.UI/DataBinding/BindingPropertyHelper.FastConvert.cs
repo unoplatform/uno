@@ -401,7 +401,7 @@ namespace Uno.UI.DataBinding
 			if (outputType == typeof(Windows.UI.Xaml.Media.Matrix))
 			{
 				var fields = input
-					.Split(',')
+					.Split(new[] { ',' })
 					?.Select(v => double.Parse(v, CultureInfo.InvariantCulture))
 					?.ToArray();
 
@@ -417,7 +417,7 @@ namespace Uno.UI.DataBinding
 			if (outputType == typeof(System.Drawing.PointF))
 			{
 				var fields = input
-					.Split(',')
+					.Split(new[] { ',' })
 					?.Select(v => float.Parse(v, CultureInfo.InvariantCulture))
 					?.ToArray();
 
@@ -442,7 +442,7 @@ namespace Uno.UI.DataBinding
 			if (outputType == typeof(Windows.Foundation.Point))
 			{
 				var fields = input
-					.Split(',')
+					.Split(new[] { ',' })
 					?.Select(v => double.Parse(v, CultureInfo.InvariantCulture))
 					?.ToArray();
 

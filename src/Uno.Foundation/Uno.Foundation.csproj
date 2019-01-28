@@ -24,6 +24,10 @@
       <ExcludeAssets>Runtime</ExcludeAssets>
     </PackageReference>
 	</ItemGroup>
+
+	<ItemGroup>
+		<Analyzer Include="..\Uno.MonoAnalyzers\bin\$(Configuration)\net461\Uno.MonoAnalyzers.dll" />
+	</ItemGroup>
 	
 	<ItemGroup>
 		<UpToDateCheckInput Include="**\*.cs" Exclude="bin\**\*.cs;obj\**\*.cs;" />

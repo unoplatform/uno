@@ -51,10 +51,9 @@ namespace Windows.Foundation
         public static implicit operator Point(string point)
         {
             var parts = point
-                .Split(',')
+                .Split(new[] { ',' })
                 .Select(value => double.Parse(value, CultureInfo.InvariantCulture))
                 .ToArray();
-
 
             return new Point(parts[0], parts[1]);
         }

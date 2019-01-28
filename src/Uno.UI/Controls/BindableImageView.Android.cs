@@ -237,7 +237,7 @@ namespace Uno.UI.Controls
                 || newUri.IsFile
                 || newUri.IsLocalResource())
 			{
-				SetImageResource(GetResourceId(newUri.PathAndQuery.TrimStart('/')));			
+				SetImageResource(GetResourceId(newUri.PathAndQuery.TrimStart(new[] { '/' })));			
 			}
 			else if (UriSource.StartsWith("res:///", StringComparison.OrdinalIgnoreCase))
 			{

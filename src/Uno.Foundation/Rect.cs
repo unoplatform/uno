@@ -45,7 +45,7 @@ namespace Windows.Foundation
 		public static implicit operator Rect(string text)
 		{
 			var parts = text
-				.Split(',')
+				.Split(new[] { ',' })
 				.Select(double.Parse)
 				.ToArray();
 

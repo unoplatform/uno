@@ -16,7 +16,7 @@ namespace Uno.UI
 			}
 
 			var bundleName = Path.GetFileName(uri.AbsolutePath);
-			var bundlePath = uri.PathAndQuery.TrimStart('/');
+			var bundlePath = uri.PathAndQuery.TrimStart(new[] { '/' });
 
 			var image = UIImage.FromFile(bundleName) ?? UIImage.FromFile(bundlePath); 
 			return image;
