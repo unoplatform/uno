@@ -1598,11 +1598,13 @@ namespace Windows.UI.Xaml.Controls
 
 			if(item != null)
 			{
-				if (selectedItems.Contains(item) && !selectorItem.IsSelected)
+				var isItemInSelection = selectedItems.Contains(item);
+
+				if (isItemInSelection && !selectorItem.IsSelected)
 				{
 					selectorItem.IsSelected = true;
 				}
-				else if (!selectedItems.Contains(item) && selectorItem.IsSelected)
+				else if (!isItemInSelection && selectorItem.IsSelected)
 				{
 					selectorItem.IsSelected = false;
 				}
