@@ -20,7 +20,7 @@
 		<PackageReference Include="Microsoft.TypeScript.MSBuild" Version="2.8.3" />
 		<PackageReference Include="MSTest.TestFramework" Version="1.2.0" />
 		<PackageReference Include="Uno.SourceGenerationTasks">
-			<Version>1.29.0-dev.237</Version>
+			<Version>1.29.0-dev.241</Version>
 			<NoWarn>NU1701</NoWarn>
 		</PackageReference>
 	</ItemGroup>
