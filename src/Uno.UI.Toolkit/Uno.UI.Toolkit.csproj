@@ -107,6 +107,10 @@
 	<!-- Override existing target, this project cannot be published -->
 	<Target Name="Publish" />
 
+	<ItemGroup>
+		<Analyzer Include="..\Uno.MonoAnalyzers\bin\$(Configuration)\net46\Uno.MonoAnalyzers.dll" />
+	</ItemGroup>
+
 	<PropertyGroup>
 		<UnoUIGeneratorsBinPath>..\SourceGenerators\Uno.UI.SourceGenerators\bin\$(Configuration)</UnoUIGeneratorsBinPath>
 	</PropertyGroup>

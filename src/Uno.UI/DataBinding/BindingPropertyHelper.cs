@@ -373,7 +373,7 @@ namespace Uno.UI.DataBinding
 			{
 				var parts = property
 					.Replace(":", ".") // ':' is sometimes used to separate namespace from type
-					.Split('.')
+					.Split(new[] { '.' })
 					.Reverse()
 					.Take(2) // type name + property name
 					.Reverse()

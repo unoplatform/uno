@@ -158,7 +158,7 @@ phases:
 
   - task: NuGetToolInstaller@0
     inputs:
-      versionSpec: 4.7.0
+      versionSpec: 4.9.1
       checkLatest: false
 
   - task: NuGetCommand@2

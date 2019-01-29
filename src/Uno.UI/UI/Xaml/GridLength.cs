@@ -77,7 +77,7 @@ namespace Windows.UI.Xaml
 
 		public static GridLength[] ParseGridLength(string s)
 		{
-			var parts = s.Split(',');
+			var parts = s.Split(new[] { ',' });
 
 			var result = new List<GridLength>(parts.Length);
 

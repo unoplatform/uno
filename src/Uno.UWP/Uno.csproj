@@ -68,6 +68,10 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<Analyzer Include="..\Uno.MonoAnalyzers\bin\$(Configuration)\net46\Uno.MonoAnalyzers.dll" />
+	</ItemGroup>
+
+	<ItemGroup>
 		<ProjectReference Include="..\Uno.Foundation\Uno.Foundation.csproj" />
 	</ItemGroup>
 	

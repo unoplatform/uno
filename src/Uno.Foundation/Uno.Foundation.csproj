@@ -24,6 +24,10 @@
       <ExcludeAssets>Runtime</ExcludeAssets>
     </PackageReference>
 	</ItemGroup>
+
+	<ItemGroup>
+		<Analyzer Include="..\Uno.MonoAnalyzers\bin\$(Configuration)\net46\Uno.MonoAnalyzers.dll" />
+	</ItemGroup>
 	
 	<ItemGroup>
 		<UpToDateCheckInput Include="**\*.cs" Exclude="bin\**\*.cs;obj\**\*.cs;" />
@@ -31,6 +35,15 @@
 
 	<ItemGroup Condition="'$(TargetFrameworkIdentifier)'=='.NETStandard'">
 		<PackageReference Include="System.Runtime.InteropServices.WindowsRuntime" Version="4.3.0" />
+	</ItemGroup>
+	
+	<ItemGroup>
+		<!-- Disable sub project loading during docs generation to avoid https://github.com/nventive/Uno.SourceGeneration/issues/2 -->
+		<ProjectReference Include="..\Uno.MonoAnalyzers\Uno.MonoAnalyzers.csproj" Condition="'$(DocsGeneration)'==''">
+			<ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+			<SkipGetTargetFrameworkProperties>true</SkipGetTargetFrameworkProperties>
+			<UndefineProperties>TargetFramework</UndefineProperties>
+		</ProjectReference>
 	</ItemGroup>
 	
 	<Import Project="..\Uno.CrossTargetting.props" />
