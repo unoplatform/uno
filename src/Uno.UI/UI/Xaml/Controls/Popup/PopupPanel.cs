@@ -54,10 +54,10 @@ namespace Windows.UI.Xaml.Controls
 				return finalSize;
 			}
 
-			var transform = Popup.TransformToVisual(this) as TranslateTransform;
+			var transform = Popup.TransformToVisual(this) as MatrixTransform;
 			var finalFrame = new Rect(
-				(float)transform.X + (float)Popup.HorizontalOffset,
-				(float)transform.Y + (float)Popup.VerticalOffset,
+				(float)transform.Matrix.OffsetX + (float)Popup.HorizontalOffset,
+				(float)transform.Matrix.OffsetY + (float)Popup.VerticalOffset,
 				_lastMeasuredSize.Width,
 				_lastMeasuredSize.Height);
 

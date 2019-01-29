@@ -23,10 +23,20 @@
     <UpToDateCheckInput Include="**\*.xaml" Exclude="bin\**\*.xaml;obj\**\*.xaml" />
   </ItemGroup>
 
-	<ItemGroup  Condition="$(IsMonoAndroid) or $(IsXamarinIOS) or '$(TargetFrameworkIdentifier)'=='.NETStandard' or $(IsXamarinMac)">
+	<ItemGroup Condition="$(IsMonoAndroid) or $(IsXamarinIOS) or '$(TargetFrameworkIdentifier)'=='.NETStandard' or $(IsXamarinMac)">
 		<ProjectReference Include="..\Uno.Foundation\Uno.Foundation.csproj" />
 		<ProjectReference Include="..\Uno.UI\Uno.UI.csproj" />
 		<ProjectReference Include="..\Uno.UWP\Uno.csproj" />
+	</ItemGroup>
+
+	<ItemGroup Condition="$(IsMonoAndroid) or $(IsXamarinIOS) or '$(TargetFramework)'=='xamarinmac20'">
+		<Reference Include="System.Numerics" />
+		<Reference Include="System.Numerics.Vectors" />
+		<Reference Include="System.json" />
+	</ItemGroup>
+
+	<ItemGroup Condition="'$(TargetFramework)'=='uap10.0'">
+		<PackageReference Include="System.Numerics.Vectors" Version="4.3.0" />
 	</ItemGroup>
 
 	<PropertyGroup>
