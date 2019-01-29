@@ -39,44 +39,108 @@ namespace Uno.Analyzers
 
 			context.RegisterCompilationStartAction(csa =>
 			{
-				var stringSymbol = csa.Compilation.GetTypeByMetadataName("System.String");
-				var charSymbol = csa.Compilation.GetTypeByMetadataName("System.Char");
+				var container = new Container(csa.Compilation, this);
 
-				csa.RegisterSyntaxNodeAction(c => OnMemberAccessExpression(c, stringSymbol, charSymbol), SyntaxKind.SimpleMemberAccessExpression);
+				csa.RegisterSyntaxNodeAction(c => container.OnMemberAccessExpression(c), SyntaxKind.SimpleMemberAccessExpression);
 			});
 		}
 
-		private void OnMemberAccessExpression(
-			SyntaxNodeAnalysisContext contextAnalysis,
-			INamedTypeSymbol stringSymbol,
-			INamedTypeSymbol charSymbol
-		)
+		public class Container
 		{
-			var memberAccess = contextAnalysis.Node as MemberAccessExpressionSyntax;
-			var member = contextAnalysis.SemanticModel.GetSymbolInfo(memberAccess);
+			private readonly MonoNotSupportedAPIAnalyzer _owner;
+			private readonly INamedTypeSymbol _stringSymbol;
+			private readonly INamedTypeSymbol _charSymbol;
+			private readonly ValidationEntry[] _validateMembers;
 
-			if (member.Symbol != null && member.Symbol.ContainingSymbol == stringSymbol)
+			class ValidationEntry
 			{
-				var validateMembers = new[] {
-					"Split",
-					"TrimStart",
-					"TrimEnd"
-				};
+				public string[] Methods;
+				public Func<IMethodSymbol, bool> Validation;
+			}
 
-				if(
-					validateMembers.Any(m => member.Symbol.Name == m)
-					&& member.Symbol is IMethodSymbol method
-					&& method.Parameters.FirstOrDefault()?.Type == charSymbol
-				)
+			public Container(Compilation compilation, MonoNotSupportedAPIAnalyzer owner)
+			{
+				_owner = owner;
+				_stringSymbol = compilation.GetTypeByMetadataName("System.String");
+				_charSymbol = compilation.GetTypeByMetadataName("System.Char");
+
+				_validateMembers = new [] {
+					new ValidationEntry{
+						Methods = new[] {
+							"Split",
+							"TrimStart",
+							"TrimEnd",
+							"IndexOf",
+							"IndexOfAny",
+							"Join",
+							"StartsWith",
+						},
+						Validation = new Func<IMethodSymbol, bool>(
+							m => m.Parameters.FirstOrDefault()?.Type == _charSymbol
+						)
+					},
+					new ValidationEntry{
+						Methods = new[] {
+							"Contains",
+						},
+						Validation = new Func<IMethodSymbol, bool>(
+							m => m.Parameters.ElementAtOrDefault(1) != null
+						)
+					},
+					new ValidationEntry{
+						Methods = new[] {
+							"Replace",
+						},
+						Validation = new Func<IMethodSymbol, bool>(
+							m => m.Parameters.Length > 2
+						)
+					},
+					new ValidationEntry{
+						Methods = new[] {
+							"Split",
+						},
+						Validation = new Func<IMethodSymbol, bool>(
+							m => m.Parameters.FirstOrDefault() == _stringSymbol
+						)
+					},
+					new ValidationEntry{
+						Methods = new[] {
+							"TrimWhitSpaceHelper",
+							"CreateFromChar",
+							"ArrayContains",
+						},
+						Validation = new Func<IMethodSymbol, bool>(
+							m => true
+						)
+					},
+				};
+			}
+
+			public void OnMemberAccessExpression(SyntaxNodeAnalysisContext contextAnalysis)
+			{
+				var memberAccess = contextAnalysis.Node as MemberAccessExpressionSyntax;
+				var member = contextAnalysis.SemanticModel.GetSymbolInfo(memberAccess);
+
+				if (member.Symbol != null && member.Symbol.ContainingSymbol == _stringSymbol)
 				{
-					var diagnostic = Diagnostic.Create(
-						SupportedDiagnostics.First(),
-						contextAnalysis.Node.GetLocation(),
-						member.Symbol.ToDisplayString()
-					);
-					contextAnalysis.ReportDiagnostic(diagnostic);
+					if (member.Symbol is IMethodSymbol method)
+					{
+						var memberToValidate = _validateMembers.FirstOrDefault(v => v.Methods.Any(m => member.Symbol.Name == m && v.Validation(method)));
+
+						if (memberToValidate != null)
+						{
+							var diagnostic = Diagnostic.Create(
+								_owner.SupportedDiagnostics.First(),
+								contextAnalysis.Node.GetLocation(),
+								member.Symbol.ToDisplayString()
+							);
+							contextAnalysis.ReportDiagnostic(diagnostic);
+						}
+					}
 				}
 			}
 		}
 	}
 }
+
+
