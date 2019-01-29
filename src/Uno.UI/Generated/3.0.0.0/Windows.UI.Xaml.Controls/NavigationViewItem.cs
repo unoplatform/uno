@@ -9,7 +9,10 @@ namespace Windows.UI.Xaml.Controls
 	{
 		// Skipping already declared property Icon
 		// Skipping already declared property CompactPaneLength
-
+		// Skipping already declared property SelectsOnInvoked
+		// Skipping already declared property CompactPaneLengthProperty
+		// Skipping already declared property IconProperty
+		// Skipping already declared property SelectsOnInvokedProperty
 		// Skipping already declared method Windows.UI.Xaml.Controls.NavigationViewItem.NavigationViewItem()
 		// Forced skipping of method Windows.UI.Xaml.Controls.NavigationViewItem.NavigationViewItem()
 		// Forced skipping of method Windows.UI.Xaml.Controls.NavigationViewItem.Icon.get

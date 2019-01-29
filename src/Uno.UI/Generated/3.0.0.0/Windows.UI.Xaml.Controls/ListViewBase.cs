@@ -70,16 +70,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 		#endif
-		#if false || false || false || false || false
-		[global::Uno.NotImplemented]
-		public  global::System.Collections.Generic.IList<object> SelectedItems
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member IList<object> ListViewBase.SelectedItems is not implemented in Uno.");
-			}
-		}
-		#endif
+		// Skipping already declared property SelectedItems
 		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  bool ShowsScrollingPlaceholders
@@ -523,22 +514,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 		#endif
-		#if false || false || false || false || false
-		[global::Uno.NotImplemented]
-		public  event global::Windows.UI.Xaml.Controls.ItemClickEventHandler ItemClick
-		{
-			[global::Uno.NotImplemented]
-			add
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.ListViewBase", "event ItemClickEventHandler ListViewBase.ItemClick");
-			}
-			[global::Uno.NotImplemented]
-			remove
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.ListViewBase", "event ItemClickEventHandler ListViewBase.ItemClick");
-			}
-		}
-		#endif
+		// Skipping already declared event Windows.UI.Xaml.Controls.ListViewBase.ItemClick
 		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Xaml.Controls.ListViewBase, global::Windows.UI.Xaml.Controls.ContainerContentChangingEventArgs> ContainerContentChanging

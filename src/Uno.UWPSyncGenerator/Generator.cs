@@ -24,6 +24,9 @@ namespace Uno.UWPSyncGenerator
 		private Compilation _iOSCompilation;
 		private Compilation _androidCompilation;
 		private Compilation _macCompilation;
+		private INamedTypeSymbol _iOSBaseSymbol;
+		private INamedTypeSymbol _androidBaseSymbol;
+		private INamedTypeSymbol _macOSBaseSymbol;
 		private Compilation _referenceCompilation;
 		private Compilation _net46Compilation;
 		private Compilation _wasmCompilation;
@@ -51,6 +54,10 @@ namespace Uno.UWPSyncGenerator
 			_net46Compilation = LoadProject($@"{basePath}\{baseName}.csproj", "net46");
 			_wasmCompilation = LoadProject($@"{basePath}\{baseName}.csproj", "netstandard2.0");
 			_macCompilation = LoadProject($@"{basePath}\{baseName}.csproj", "xamarinmac20");
+
+			_iOSBaseSymbol = _iOSCompilation.GetTypeByMetadataName("UIKit.UIView");
+			_androidBaseSymbol = _androidCompilation.GetTypeByMetadataName("Android.Views.View");
+			_macOSBaseSymbol = _macCompilation.GetTypeByMetadataName("AppKit.NSView");
 
 			_voidSymbol = _referenceCompilation.GetTypeByMetadataName("System.Void");
 			_dependencyPropertySymbol = _referenceCompilation.GetTypeByMetadataName("Windows.UI.Xaml.DependencyProperty");
@@ -1333,22 +1340,27 @@ namespace Uno.UWPSyncGenerator
 			return typeName;
 		}
 
-		private IEnumerable<ISymbol> GetNonGeneratedMembers(ITypeSymbol iosType, string name)
+		private IEnumerable<ISymbol> GetNonGeneratedMembers(ITypeSymbol symbol, string name)
 		{
-			var current = iosType
+			var current = symbol
 				?.GetMembers(name)
 				.Where(m => m.Locations.None(l => l.SourceTree?.FilePath?.Contains("\\Generated\\") ?? false)) ?? new ISymbol[0];
 
-			foreach (var symbol in current)
+			foreach (var memberSymbol in current)
 			{
-				yield return symbol;
+				yield return memberSymbol;
 			}
 
-			if (iosType?.BaseType != null)
+			if (
+				symbol?.BaseType != null
+				&& symbol.BaseType != _iOSBaseSymbol
+				&& symbol.BaseType != _androidBaseSymbol
+				&& symbol.BaseType != _macOSBaseSymbol
+			)
 			{
-				foreach (var symbol in GetNonGeneratedMembers(iosType.BaseType, name))
+				foreach (var memberSymbol in GetNonGeneratedMembers(symbol.BaseType, name))
 				{
-					yield return symbol;
+					yield return memberSymbol;
 				}
 			}
 		}

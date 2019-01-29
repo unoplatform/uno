@@ -399,6 +399,7 @@ namespace Windows.UI.Xaml
 			}
 		}
 		#endif
+		// Skipping already declared property KeyboardAccelerators
 		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.UI.Xaml.DependencyObject KeyboardAcceleratorPlacementTarget
@@ -539,7 +540,7 @@ namespace Windows.UI.Xaml
 			}
 		}
 		#endif
-		#if false || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  float Rotation
 		{
