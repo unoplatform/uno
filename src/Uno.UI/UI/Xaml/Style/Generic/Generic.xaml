@@ -1922,7 +1922,7 @@
 						<ContentPresenter x:Name="ContentPresenter"
 										  BorderBrush="{ThemeResource SystemControlForegroundBaseMediumLowBrush}"
 										  Background="{ThemeResource SystemControlBackgroundAltMediumLowBrush}"
-										  BorderThickness="2"
+										  BorderThickness="1"
 										  Content="{TemplateBinding Content}"
 										  Foreground="{TemplateBinding Foreground}"
 										  HorizontalContentAlignment="Stretch"
@@ -1937,13 +1937,9 @@
 	<!-- Default style for Windows.UI.Xaml.Controls.TimePicker -->
 	<!--https://msdn.microsoft.com/en-us/library/windows/apps/mt299156.aspx-->
 	<xamarin:Style TargetType="TimePicker">
-		<Setter Property="IsTabStop"
-				Value="False" />
-		<Setter Property="MinWidth"
-				Value="242" />
-		<Setter Property="MaxWidth"
-				Value="456" />
-		<Setter Property="FontFamily"
+        <Setter Property="IsTabStop"
+                Value="False" />
+        <Setter Property="FontFamily"
 				Value="{ThemeResource ContentControlThemeFontFamily}" />
 		<Setter Property="FontSize"
 				Value="{ThemeResource ControlContentThemeFontSize}" />
@@ -2010,10 +2006,13 @@
 								</Grid.ColumnDefinitions>
 
 								<Border x:Name="FirstPickerHost"
-										Grid.Column="0">
+										Grid.Column="0"
+                                        BorderThickness="0"
+                                        MinWidth="25">
 									<TextBlock x:Name="HourTextBlock"
+                                               Margin="2"
 											   TextAlignment="Center"
-											   Padding="0,3,0,5"
+											   Padding="2"
 											   FontFamily="{TemplateBinding FontFamily}"
 											   FontWeight="{TemplateBinding FontWeight}"
 											   FontSize="{TemplateBinding FontSize}"
@@ -2023,14 +2022,17 @@
 								<Rectangle x:Name="FirstColumnDivider"
 										   Fill="{ThemeResource SystemControlForegroundBaseLowBrush}"
 										   HorizontalAlignment="Center"
-										   Width="2"
+										   Width="1"
 										   Grid.Column="1" />
 
 								<Border x:Name="SecondPickerHost"
-										Grid.Column="2">
+										Grid.Column="2"
+                                        BorderThickness="0"
+                                        MinWidth="25">
 									<TextBlock x:Name="MinuteTextBlock"
 											   TextAlignment="Center"
-											   Padding="0,3,0,5"
+                                               Margin="2"
+											   Padding="2"
 											   FontFamily="{TemplateBinding FontFamily}"
 											   FontWeight="{TemplateBinding FontWeight}"
 											   FontSize="{TemplateBinding FontSize}"
@@ -2040,14 +2042,17 @@
 								<Rectangle x:Name="SecondColumnDivider"
 										   Fill="{ThemeResource SystemControlForegroundBaseLowBrush}"
 										   HorizontalAlignment="Center"
-										   Width="2"
+										   Width="1"
 										   Grid.Column="3" />
 
 								<Border x:Name="ThirdPickerHost"
+                                        MinWidth="25"
+                                        BorderThickness="0"
 										Grid.Column="4">
 									<TextBlock x:Name="PeriodTextBlock"
+                                               Margin="0,2"
 											   TextAlignment="Center"
-											   Padding="0,3,0,5"
+											   Padding="0,2"
 											   FontFamily="{TemplateBinding FontFamily}"
 											   FontWeight="{TemplateBinding FontWeight}"
 											   FontSize="{TemplateBinding FontSize}"
@@ -9387,3 +9392,4 @@
 	<SolidColorBrush x:Key="SystemControlHighlightListMediumRevealBackgroundBrush" Color="{StaticResource SystemListMediumColor}" />
 
 </ResourceDictionary>
+	

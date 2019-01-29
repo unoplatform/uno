@@ -1000,7 +1000,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\FlyoutTests\Flyout_Vanilla.xaml.cs">
       <DependentUpon>Flyout_Vanilla.xaml</DependentUpon>
     </Compile>
-
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\FontIcon\FontIconControlTest.xaml.cs">
       <DependentUpon>FontIconControlTest.xaml</DependentUpon>
     </Compile>
@@ -1069,6 +1068,7 @@
       <DependentUpon>Picker_Resizable.xaml</DependentUpon>
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ImageTests\Models\ImageWithLateSourceViewModel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\Models\TimePickerModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\TimePicker\Sample2.xaml.cs">
       <DependentUpon>Sample2.xaml</DependentUpon>
     </Compile>
