@@ -346,15 +346,15 @@
 			<SkipGetTargetFrameworkProperties>true</SkipGetTargetFrameworkProperties>
 			<UndefineProperties>TargetFramework</UndefineProperties>
 		</ProjectReference>
-		<!-- Disable sub project loading during docs generation to avoid https://github.com/nventive/Uno.SourceGeneration/issues/2 -->
-		<ProjectReference Include="..\Uno.MonoAnalyzers\Uno.MonoAnalyzers.csproj" Condition="'$(DocsGeneration)'==''">
-			<ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-			<SkipGetTargetFrameworkProperties>true</SkipGetTargetFrameworkProperties>
-			<UndefineProperties>TargetFramework</UndefineProperties>
-		</ProjectReference>
 	</ItemGroup>
+	
+	<Target Name="BuildManualDependencies" BeforeTargets="Build" Condition="!Exists($(T4Bin))">
+		<Message Text="Building manual dependencies" Importance="high" />
+		<!-- This is required because the non-reference dependencies are not properly handled by the documentation tooling -->
+		<MSBuild Properties="Configuration=$(Configuration);Platform=AnyCPU" Targets="Build" Projects="..\Uno.MonoAnalyzers\Uno.MonoAnalyzers.csproj" RebaseOutputs="false" />
+	</Target>
 
-		<Target Name="GetPackagingOutputs" Condition=" '$(TargetFramework)' == 'uap10.0' " />
+	<Target Name="GetPackagingOutputs" Condition=" '$(TargetFramework)' == 'uap10.0' " />
 
 	<Target Name="GetBuiltProjectOutputRecursive" Condition=" '$(TargetFramework)' == 'xamarinios10' " />
 	<Target Name="GetTargetPath" Condition=" '$(TargetFramework)' == 'xamarinios10' " />
