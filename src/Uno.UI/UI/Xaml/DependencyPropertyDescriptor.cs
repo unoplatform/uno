@@ -28,12 +28,12 @@ namespace Windows.UI.Xaml
 			{
 				// (Uno.UI.Tests.BinderTests:Attachable.MyValue)
 
-				var bindingParts = propertyPath.Trim(new[] { '(', ')' }).Split(':');
+				var bindingParts = propertyPath.Trim(new[] { '(', ')' }).Split(new[] { ':' });
 
 				if (bindingParts.Length == 2)
 				{
 					var ns = bindingParts[0];
-					var propertyParts = bindingParts[1].Split('.');
+					var propertyParts = bindingParts[1].Split(new[] { '.' });
 
 					if (propertyParts.Length == 2)
 					{
