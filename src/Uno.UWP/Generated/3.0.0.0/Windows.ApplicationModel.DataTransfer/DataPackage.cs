@@ -2,7 +2,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.ApplicationModel.DataTransfer
 {
-	#if __ANDROID__ || __IOS__ || NET46 || false || __MACOS__
+	#if false || false || false || false || false
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class DataPackage 
@@ -41,13 +41,7 @@ namespace Windows.ApplicationModel.DataTransfer
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || false || __MACOS__
-		[global::Uno.NotImplemented]
-		public DataPackage() 
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.DataTransfer.DataPackage", "DataPackage.DataPackage()");
-		}
-		#endif
+		// Skipping already declared method Windows.ApplicationModel.DataTransfer.DataPackage.DataPackage()
 		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DataPackage.DataPackage()
 		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]

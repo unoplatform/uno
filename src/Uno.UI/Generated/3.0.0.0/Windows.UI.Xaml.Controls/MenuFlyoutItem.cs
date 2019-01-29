@@ -87,7 +87,7 @@ namespace Windows.UI.Xaml.Controls
 		// Forced skipping of method Windows.UI.Xaml.Controls.MenuFlyoutItem.TextProperty.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.MenuFlyoutItem.CommandProperty.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.MenuFlyoutItem.CommandParameterProperty.get
-		#if false || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  event global::Windows.UI.Xaml.RoutedEventHandler Click
 		{
