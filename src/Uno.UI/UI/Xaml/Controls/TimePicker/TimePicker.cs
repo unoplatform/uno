@@ -42,7 +42,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			base.OnApplyTemplate();
 
-			_flyoutButton = this.GetTemplateChild(FlyoutButtonPartName) as Button;
+			_flyoutButton = GetTemplateChild(FlyoutButtonPartName) as Button;
 
 			var flyoutContent = _flyoutButton?.Content as IFrameworkElement;
 

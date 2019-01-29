@@ -1,21 +1,22 @@
 ﻿#if XAMARIN_ANDROID
-using Android.App;
 using System;
-using System.Collections.Generic;
-using System.Text;
+using Android.App;
+using Android.OS;
+using Uno.UI;
 using Windows.Globalization;
 using Windows.UI.Xaml.Controls.Primitives;
-using Uno.Extensions;
-using Uno.UI;
 
 namespace Windows.UI.Xaml.Controls
 {
-	public partial class TimePickerFlyout : FlyoutBase // TODO: Inherit from PickerFlyoutBase
+	public partial class TimePickerFlyout : FlyoutBase
 	{
 		private Dialog _dialog;
+		private TimeSpan _initialTime;
 
 		internal protected override void Open()
 		{
+			SaveInitialTime();
+
 			if (UseAlertDialogWorkAround())
 			{
 				ShowUsingAlertDialog();
@@ -26,32 +27,37 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		internal protected override void Close()
+		private void SaveInitialTime() => _initialTime = Time;
+
+		internal protected override void Close() { base.Close(); }
+
+		private void SaveTime(int hourOfDay, int minutes)
 		{
-			_dialog?.Dismiss();
+			if (Time.Hours != hourOfDay || Time.Minutes != minutes)
+			{
+				Time = new TimeSpan(Time.Days, hourOfDay, minutes, Time.Seconds, Time.Milliseconds);
+				SaveInitialTime();
+			}
 		}
 
 		private bool UseAlertDialogWorkAround()
 		{
-			// WARNING Adding any case that uses API lower than 6.0 will require the use of deprecated properties 
-			// on the TimePicker i.e. CurrentHour and CurrentMinute, server build rules may need to be modified or
-			// a #prama directive may be needed.
-
-			var ver = Android.OS.Build.VERSION.Release;
 			//On Samsung devices >= 6.0 the TimePickerDialog is not displayed properly in Landscape.
 			return Android.OS.Build.VERSION.Release.StartsWith("6.") && //Any 6.x.x version				
 				   Android.OS.Build.Manufacturer.IndexOf("samsung", StringComparison.OrdinalIgnoreCase) >= 0;
+			return Build.VERSION.Release.StartsWith("6.") && //Any 6.x.x version				
+				   Build.Manufacturer.Contains("samsung", StringComparison.OrdinalIgnoreCase);
 		}
 
 		private void ShowUsingTimePickerDialog()
 		{
 			_dialog = new TimePickerDialog(
-					ContextHelper.Current,
-					(sender, e) => Time = new TimeSpan(Time.Days, e.HourOfDay, e.Minute, Time.Seconds, Time.Milliseconds),
-					Time.Hours,
-					Time.Minutes,
-					ClockIdentifier == ClockIdentifiers.TwentyFourHour
-				);
+				      ContextHelper.Current,
+				      (sender, e) => SaveTime(e.HourOfDay, e.Minute),
+				      Time.Hours,
+				      Time.Minutes,
+				      ClockIdentifier == ClockIdentifiers.TwentyFourHour
+				      );
 
 			_dialog.DismissEvent += OnDismiss;
 			_dialog.Show();
@@ -61,25 +67,35 @@ namespace Windows.UI.Xaml.Controls
 		{
 			//On Samsung devices ?= 6.0 the TimepickerDialog is not displayed properly in Landscape.
 			//Instead using this work around seems to work.
-			var androidTimePicker = new Android.Widget.TimePicker(ContextHelper.Current);
+			var timePicker = new Android.Widget.TimePicker(ContextHelper.Current);
 
 			//Hour and Minute properties are not supported on Android before 6.0
-			androidTimePicker.Hour = Time.Hours;
-			androidTimePicker.Minute = Time.Minutes;
+			if (Build.VERSION.SdkInt >= BuildVersionCodes.M)
+			{
+				timePicker.Hour = Time.Hours;
+				timePicker.Minute = Time.Minutes;
+			}
+			else
+			{
+#pragma warning disable CS0618 // Type or member is obsolete
+				timePicker.CurrentHour = new Java.Lang.Integer(Time.Hours);
+				timePicker.CurrentMinute = new Java.Lang.Integer(Time.Minutes);
+#pragma warning restore CS0618 // Type or member is obsolete
+			}
 
-			androidTimePicker.SetIs24HourView(new Java.Lang.Boolean(ClockIdentifier == ClockIdentifiers.TwentyFourHour));
-
+			timePicker.SetIs24HourView(new Java.Lang.Boolean(ClockIdentifier == ClockIdentifiers.TwentyFourHour));
+		
 			_dialog = new AlertDialog.Builder(ContextHelper.Current)
 				.SetPositiveButton(
 					Android.Resource.String.Ok,
-					(sender, eventArgs) => 
-						Time = new TimeSpan(Time.Days, androidTimePicker.Hour, androidTimePicker.Minute, Time.Seconds, Time.Milliseconds)
+					(sender, eventArgs) =>
+						Time = new TimeSpan(Time.Days, timePicker.Hour, timePicker.Minute, Time.Seconds, Time.Milliseconds)
 				)
 				.SetNegativeButton(
 					Android.Resource.String.Cancel,
 					(sender, eventArgs) => { /*Nothing to do*/ }
 				)
-				.SetView(androidTimePicker)
+				.SetView(timePicker)
 				.Show();
 
 			_dialog.DismissEvent += OnDismiss;
@@ -89,6 +105,8 @@ namespace Windows.UI.Xaml.Controls
 		{
 			Hide(canCancel: false);
 		}
+
+		partial void OnTimeChangedPartialNative(TimeSpan oldTime, TimeSpan newTime){}
 	}
 }
 #endif

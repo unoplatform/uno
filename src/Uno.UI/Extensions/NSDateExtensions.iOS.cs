@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Windows.Globalization;
 
 namespace Uno.UI.Extensions
 {
@@ -31,6 +32,21 @@ namespace Uno.UI.Extensions
 		public static NSDate ToNSDate(this TimeSpan time)
 		{
 			return DateTime.Today.Add(time).ToNSDate();
+		}
+
+		public static TimeSpan ToTimeSpan(this NSDate date, nint secondsFromGMT)
+		{
+			var offset = TimeSpan.FromSeconds(secondsFromGMT);
+			return date.ToTimeSpan().Add(offset);
+		}
+
+		public static NSLocale ToNSLocale(this string clockIdentifier)
+		{
+			var localeID = clockIdentifier == ClockIdentifiers.TwelveHour
+							? "en"
+							: "fr";
+
+			return new NSLocale(localeID);
 		}
 	}
 }
