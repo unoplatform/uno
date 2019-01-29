@@ -2,7 +2,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.ApplicationModel.DataTransfer
 {
-	#if __ANDROID__ || __IOS__ || NET46 || false || __MACOS__
+	#if false || false || NET46 || false || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class Clipboard 

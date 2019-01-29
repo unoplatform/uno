@@ -9,6 +9,8 @@ namespace Windows.UI.Xaml.Controls
 	{
 		// Skipping already declared property InvokedItem
 		// Skipping already declared property IsSettingsInvoked
+		// Skipping already declared property InvokedItemContainer
+		// Skipping already declared property RecommendedNavigationTransitionInfo
 		// Skipping already declared method Windows.UI.Xaml.Controls.NavigationViewItemInvokedEventArgs.NavigationViewItemInvokedEventArgs()
 		// Forced skipping of method Windows.UI.Xaml.Controls.NavigationViewItemInvokedEventArgs.NavigationViewItemInvokedEventArgs()
 		// Forced skipping of method Windows.UI.Xaml.Controls.NavigationViewItemInvokedEventArgs.InvokedItem.get

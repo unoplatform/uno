@@ -88,5 +88,7 @@ namespace Windows.UI.Xaml.Controls
 		// Forced skipping of method Windows.UI.Xaml.Controls.SplitView.PaneBackgroundProperty.get
 		// Skipping already declared event Windows.UI.Xaml.Controls.SplitView.PaneClosed
 		// Skipping already declared event Windows.UI.Xaml.Controls.SplitView.PaneClosing
+		// Skipping already declared event Windows.UI.Xaml.Controls.SplitView.PaneOpened
+		// Skipping already declared event Windows.UI.Xaml.Controls.SplitView.PaneOpening
 	}
 }
