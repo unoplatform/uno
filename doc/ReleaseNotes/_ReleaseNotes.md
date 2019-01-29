@@ -122,6 +122,7 @@
  * `ListViewBase.SelectedItems` is updated on selection change in Single selection mode
  * #528 ComboBoxes are empty when no datacontext
  * Ensure that Uno.UI can be used with VS15.8 and earlier (prevent the use of VS15.9 and later String APIs)
+ * [Android] Listview Items stay visually in a pressed state,(can click multiple) when you click then scroll down, click another item, and scroll back up
 
 ## Release 1.42
 
