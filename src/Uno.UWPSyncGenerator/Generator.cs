@@ -105,7 +105,7 @@ namespace Uno.UWPSyncGenerator
 
 			var process = System.Diagnostics.Process.Start(pi);
 			process.WaitForExit();
-			var installPath = process.StandardOutput.ReadToEnd().TrimEnd("\r\n");
+			var installPath = process.StandardOutput.ReadToEnd().Split('\r').First();
 
 			Environment.SetEnvironmentVariable("VSINSTALLDIR", installPath);
 
@@ -1388,6 +1388,7 @@ namespace Uno.UWPSyncGenerator
 								// { "Configuration", "Debug" },
 								//{ "BuildingInsideVisualStudio", "true" },
 								{ "SkipUnoResourceGeneration", "true" }, // Required to avoid loading a non-existent task
+								{ "DocsGeneration", "true" }, // Detect that source generation is running
 								//{ "DesignTimeBuild", "true" },
 								//{ "UseHostCompilerIfAvailable", "false" },
 								//{ "UseSharedCompilation", "false" },
