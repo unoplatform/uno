@@ -72,14 +72,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\Uno.MonoAnalyzers\Uno.MonoAnalyzers.csproj">
-			<ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-			<SkipGetTargetFrameworkProperties>true</SkipGetTargetFrameworkProperties>
-			<UndefineProperties>TargetFramework</UndefineProperties>
-		</ProjectReference>
-	</ItemGroup>
-
-	<ItemGroup>
 		<ProjectReference Include="..\Uno.Foundation\Uno.Foundation.csproj" />
 	</ItemGroup>
 	
