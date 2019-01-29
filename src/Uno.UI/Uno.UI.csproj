@@ -212,10 +212,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<Analyzer Include="..\Uno.MonoAnalyzers\bin\$(Configuration)\net461\Uno.MonoAnalyzers.dll" />
-	</ItemGroup>
-
-	<ItemGroup>
 		<MixinInput Include=".\Mixins\Android\BaseActivity.Callbacks.tt" />
 		<MixinInput Include=".\Mixins\Android\FrameworkElementMixins.tt" />
 		<MixinInput Include=".\Mixins\Android\VisualStatesMixins.tt" />
