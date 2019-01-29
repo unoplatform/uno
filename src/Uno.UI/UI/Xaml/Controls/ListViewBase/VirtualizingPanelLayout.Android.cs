@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using Windows.Foundation;
@@ -1568,6 +1568,9 @@ namespace Windows.UI.Xaml.Controls
 			if (holder.IsDetached)
 			{
 				AttachView(view);
+
+				// Here we want to check if the attached view is part of the current selection or not and update it accordingly
+				UpdateSelection(view);
 			}
 		}
 
@@ -1580,6 +1583,31 @@ namespace Windows.UI.Xaml.Controls
 			if (!holder.IsDetached)
 			{
 				DetachView(view);
+			}
+		}
+
+		/// <summary>
+		/// Checks to see if the recently attached view is up to date with selection
+		/// </summary>
+		private void UpdateSelection(View view)
+		{
+			var selectorItem = view as SelectorItem;
+			
+			var item = XamlParent?.GetItemFromIndex(XamlParent?.IndexFromContainer(selectorItem) ?? -1);
+			var selectedItems = XamlParent?.SelectedItems;
+
+			if(item != null)
+			{
+				var isItemInSelection = selectedItems.Contains(item);
+
+				if (isItemInSelection && !selectorItem.IsSelected)
+				{
+					selectorItem.IsSelected = true;
+				}
+				else if (!isItemInSelection && selectorItem.IsSelected)
+				{
+					selectorItem.IsSelected = false;
+				}
 			}
 		}
 
