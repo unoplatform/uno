@@ -115,7 +115,7 @@ namespace Uno.UI.RuntimeTests.Tests
 			var SUT = ResourceLoader.GetForViewIndependentUse();
 
 			CultureInfo.CurrentUICulture = new CultureInfo("de-DE");
-			Assert.AreEqual(@"Text in 'en'", SUT.GetString("Given_ResourceLoader/When_LocalizedResource"));
+			Assert.AreEqual(@"Text in 'en-US'", SUT.GetString("Given_ResourceLoader/When_LocalizedResource"));
 		}
 	}
 }
