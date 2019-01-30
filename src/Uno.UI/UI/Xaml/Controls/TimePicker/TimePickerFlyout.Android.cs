@@ -1,5 +1,6 @@
 ﻿#if XAMARIN_ANDROID
 using System;
+using System.Linq;
 using Android.App;
 using Android.OS;
 using Uno.UI;
@@ -17,7 +18,9 @@ namespace Windows.UI.Xaml.Controls
 		{
 			SaveInitialTime();
 
-			if (UseAlertDialogWorkAround())
+			//On Samsung devices >= 6.0 the TimePickerDialog is not displayed properly in Landscape.
+			if (Build.VERSION.SdkInt == BuildVersionCodes.M &&
+			    Build.Manufacturer.ToLower().IndexOf("samsung") >= 0)
 			{
 				ShowUsingAlertDialog();
 			}
@@ -39,14 +42,7 @@ namespace Windows.UI.Xaml.Controls
 				SaveInitialTime();
 			}
 		}
-
-		private bool UseAlertDialogWorkAround()
-		{
-			//On Samsung devices >= 6.0 the TimePickerDialog is not displayed properly in Landscape.
-			return Build.VERSION.Release.StartsWith("6.") && //Any 6.x.x version				
-				   Build.Manufacturer.Contains("samsung", StringComparison.OrdinalIgnoreCase);
-		}
-
+		
 		private void ShowUsingTimePickerDialog()
 		{
 			_dialog = new TimePickerDialog(

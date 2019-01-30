@@ -7,11 +7,11 @@ using System;
 namespace SamplesApp.Windows_UI_Xaml_Controls.Models
 {
 	[Bindable]
-	public class TimePickerModel : ViewModelBase
+	public class TimePickerViewModel : ViewModelBase
 	{
-		private TimeSpan _time;
+		private TimeSpan _time = DateTime.Now.TimeOfDay;
 
-		public TimePickerModel(CoreDispatcher dispatcher) : base(dispatcher)
+		public TimePickerViewModel(CoreDispatcher dispatcher) : base(dispatcher)
 		{
 			SetToCurrentTime = CreateCommand(ExecuteSetToCurrentTime);
 		}
