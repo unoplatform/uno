@@ -35,7 +35,7 @@
                                 VerticalAlignment="Stretch"
                                 HorizontalAlignment="Center"
                                 MinuteIncrement="1"
-                                DataContext="{Binding Time, Mode=TwoWay}"
+                                Time="{Binding Time, Mode=TwoWay}"
                                 ClockIdentifier="12HourClock">
                     </TimePicker>
                 </Grid>

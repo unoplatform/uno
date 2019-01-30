@@ -26,7 +26,7 @@
                                 ios:FlyoutPlacement="Full"
                                 HorizontalAlignment="Center"
                                 VerticalAlignment="Top"
-                                DataContext="{Binding Time, Mode=TwoWay}"
+                                Time="{Binding Time, Mode=TwoWay}"
                                 MinuteIncrement="1"
                                 ClockIdentifier="24HourClock">
                     </TimePicker>

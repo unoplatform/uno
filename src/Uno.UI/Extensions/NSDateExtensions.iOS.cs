@@ -1,8 +1,5 @@
 ﻿using Foundation;
 using System;
-using System.Collections.Generic;
-using System.Text;
-using Windows.Globalization;
 
 namespace Uno.UI.Extensions
 {
@@ -34,19 +31,10 @@ namespace Uno.UI.Extensions
 			return DateTime.Today.Add(time).ToNSDate();
 		}
 
-		public static TimeSpan ToTimeSpan(this NSDate date, nint secondsFromGMT)
+		internal static TimeSpan ToTimeSpan(this NSDate date, nint offsetInSecondsFromGMT)
 		{
-			var offset = TimeSpan.FromSeconds(secondsFromGMT);
+			var offset = TimeSpan.FromSeconds(offsetInSecondsFromGMT);
 			return date.ToTimeSpan().Add(offset);
-		}
-
-		public static NSLocale ToNSLocale(this string clockIdentifier)
-		{
-			var localeID = clockIdentifier == ClockIdentifiers.TwelveHour
-							? "en"
-							: "fr";
-
-			return new NSLocale(localeID);
 		}
 	}
 }

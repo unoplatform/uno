@@ -7,6 +7,7 @@ using UIKit;
 using Uno.Extensions;
 using Uno.Logging;
 using Uno.UI.Extensions;
+using Windows.Globalization;
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -68,45 +69,44 @@ namespace Windows.UI.Xaml.Controls
 						SaveInitialTime();
 					}
 				}
-			}
 
-			_picker.EndEditing(false);
+				_picker.EndEditing(false);
+			}
 		}
 
 		public void Cancel()
 		{
-			_picker.SetDate(_initialTime, false);
-			_picker.EndEditing(false);
+			if (_picker != null)
+			{
+				_picker.SetDate(_initialTime, false);
+				_picker.EndEditing(false);
+			}
 		}
 
 		private void SetPickerClockIdentifier(string clockIdentifier)
 		{
-			if (_picker == null)
+			if (_picker != null)
 			{
-				return;
+				_picker.Locale = ToNSLocale(clockIdentifier);
 			}
-
-			_picker.Locale = clockIdentifier.ToNSLocale();
 		}
 		
 		private void SetPickerTime(TimeSpan time)
 		{
-			if (_picker == null)
+			if (_picker != null)
 			{
-				return;
+				// Because the UIDatePicker is set to use LocalTimeZone,
+				// we need to get the offset and apply it to the requested time.
+				var offset = TimeSpan.FromSeconds(_picker.TimeZone.GetSecondsFromGMT);
+
+				// Because the UIDatePicker applies the local timezone offset automatically when we set it,
+				// we need to compensate with a negated offset. This will show the time
+				// as if it was provided with no offset.
+				var timeWithOffset = time.Add(offset.Negate());
+				var nsDate = timeWithOffset.ToNSDate();
+
+				_picker.SetDate(nsDate, animated: false);
 			}
-
-			// Because the UIDatePicker is set to use LocalTimeZone,
-			// we need to get the offset and apply it to the requested time.
-			var offset = TimeSpan.FromSeconds(_picker.TimeZone.GetSecondsFromGMT);
-
-			// Because the UIDatePicker applies the local timezone offset automatically when we set it,
-			// we need to compensate with a negated offset. This will show the time
-			// as if it was provided with no offset.
-			var timeWithOffset = time.Add(offset.Negate());
-			var nsDate = timeWithOffset.ToNSDate();
-
-			_picker.SetDate(nsDate, animated: false);
 		}
 		
 		partial void OnClockIdentifierChangedPartialNative(string oldClockIdentifier, string newClockIdentifier)
@@ -117,6 +117,15 @@ namespace Windows.UI.Xaml.Controls
 		partial void OnTimeChangedPartialNative(TimeSpan oldTime, TimeSpan newTime)
 		{
 			SetPickerTime(newTime);
+		}
+		
+		private static NSLocale ToNSLocale(string clockIdentifier)
+		{
+			var localeID = clockIdentifier == ClockIdentifiers.TwelveHour
+							? "en"
+							: "fr";
+
+			return new NSLocale(localeID);
 		}
 	}
 }
