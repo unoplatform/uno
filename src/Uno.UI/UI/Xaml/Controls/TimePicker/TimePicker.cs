@@ -1,4 +1,4 @@
-﻿#if !NET46 && !NETSTANDARD2_0
+﻿#if !NET46 && !__WASM__
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -72,16 +72,19 @@ namespace Windows.UI.Xaml.Controls
 		{
 			if (_flyoutButton != null)
 			{
-#if __IOS__
+#if __IOS__ || __ANDROID__
 				_flyoutButton.Flyout = new TimePickerFlyout
 				{
+#if __IOS__
 					Placement = FlyoutPlacement,
+#endif
 					Time = this.Time,
 					ClockIdentifier = this.ClockIdentifier
 				};
-#endif
+
 				BindToFlyout(nameof(Time));
 				BindToFlyout(nameof(ClockIdentifier));
+#endif
 			}
 
 			UpdateDisplayedDate();

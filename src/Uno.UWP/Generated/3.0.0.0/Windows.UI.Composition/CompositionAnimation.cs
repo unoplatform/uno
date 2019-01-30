@@ -118,6 +118,13 @@ namespace Windows.UI.Composition
 		// Forced skipping of method Windows.UI.Composition.CompositionAnimation.Target.get
 		// Forced skipping of method Windows.UI.Composition.CompositionAnimation.Target.set
 		// Forced skipping of method Windows.UI.Composition.CompositionAnimation.InitialValueExpressions.get
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  void SetExpressionReferenceParameter( string parameterName,  global::Windows.UI.Composition.IAnimationObject source)
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.CompositionAnimation", "void CompositionAnimation.SetExpressionReferenceParameter(string parameterName, IAnimationObject source)");
+		}
+		#endif
 		// Processing: Windows.UI.Composition.ICompositionAnimationBase
 	}
 }

@@ -37,20 +37,6 @@ namespace Windows.UI.Composition.Interactions
 		#endif
 		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
-		public  float MaxScale
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member float InteractionTracker.MaxScale is not implemented in Uno.");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.Interactions.InteractionTracker", "float InteractionTracker.MaxScale");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
 		public  float MinScale
 		{
 			get
@@ -60,6 +46,34 @@ namespace Windows.UI.Composition.Interactions
 			set
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.Interactions.InteractionTracker", "float InteractionTracker.MinScale");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  global::System.Numerics.Vector3 MinPosition
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member Vector3 InteractionTracker.MinPosition is not implemented in Uno.");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.Interactions.InteractionTracker", "Vector3 InteractionTracker.MinPosition");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  float MaxScale
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member float InteractionTracker.MaxScale is not implemented in Uno.");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.Interactions.InteractionTracker", "float InteractionTracker.MaxScale");
 			}
 		}
 		#endif
@@ -79,15 +93,21 @@ namespace Windows.UI.Composition.Interactions
 		#endif
 		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
-		public  global::System.Numerics.Vector3 MinPosition
+		public  global::Windows.UI.Composition.Interactions.CompositionInteractionSourceCollection InteractionSources
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Vector3 InteractionTracker.MinPosition is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member CompositionInteractionSourceCollection InteractionTracker.InteractionSources is not implemented in Uno.");
 			}
-			set
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  bool IsPositionRoundingSuggested
+		{
+			get
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.Interactions.InteractionTracker", "Vector3 InteractionTracker.MinPosition");
+				throw new global::System.NotImplementedException("The member bool InteractionTracker.IsPositionRoundingSuggested is not implemented in Uno.");
 			}
 		}
 		#endif
@@ -133,16 +153,6 @@ namespace Windows.UI.Composition.Interactions
 		#endif
 		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
-		public  global::Windows.UI.Composition.Interactions.CompositionInteractionSourceCollection InteractionSources
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member CompositionInteractionSourceCollection InteractionTracker.InteractionSources is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
 		public  global::System.Numerics.Vector3 PositionVelocityInPixelsPerSecond
 		{
 			get
@@ -163,21 +173,21 @@ namespace Windows.UI.Composition.Interactions
 		#endif
 		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
-		public  bool IsPositionRoundingSuggested
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool InteractionTracker.IsPositionRoundingSuggested is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
 		public  float ScaleVelocityInPercentPerSecond
 		{
 			get
 			{
 				throw new global::System.NotImplementedException("The member float InteractionTracker.ScaleVelocityInPercentPerSecond is not implemented in Uno.");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  bool IsInertiaFromImpulse
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member bool InteractionTracker.IsInertiaFromImpulse is not implemented in Uno.");
 			}
 		}
 		#endif
@@ -307,6 +317,21 @@ namespace Windows.UI.Composition.Interactions
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.Interactions.InteractionTracker", "void InteractionTracker.ConfigureVector2PositionInertiaModifiers(IEnumerable<InteractionTrackerVector2InertiaModifier> modifiers)");
 		}
 		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  int TryUpdatePosition( global::System.Numerics.Vector3 value,  global::Windows.UI.Composition.Interactions.InteractionTrackerClampingOption option)
+		{
+			throw new global::System.NotImplementedException("The member int InteractionTracker.TryUpdatePosition(Vector3 value, InteractionTrackerClampingOption option) is not implemented in Uno.");
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  int TryUpdatePositionBy( global::System.Numerics.Vector3 amount,  global::Windows.UI.Composition.Interactions.InteractionTrackerClampingOption option)
+		{
+			throw new global::System.NotImplementedException("The member int InteractionTracker.TryUpdatePositionBy(Vector3 amount, InteractionTrackerClampingOption option) is not implemented in Uno.");
+		}
+		#endif
+		// Forced skipping of method Windows.UI.Composition.Interactions.InteractionTracker.IsInertiaFromImpulse.get
 		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Composition.Interactions.InteractionTracker Create( global::Windows.UI.Composition.Compositor compositor)

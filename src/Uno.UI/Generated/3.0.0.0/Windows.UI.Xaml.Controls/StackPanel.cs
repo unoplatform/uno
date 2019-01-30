@@ -29,6 +29,20 @@ namespace Windows.UI.Xaml.Controls
 		// Skipping already declared property Spacing
 		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
+		public  global::Windows.UI.Xaml.Controls.BackgroundSizing BackgroundSizing
+		{
+			get
+			{
+				return (global::Windows.UI.Xaml.Controls.BackgroundSizing)this.GetValue(BackgroundSizingProperty);
+			}
+			set
+			{
+				this.SetValue(BackgroundSizingProperty, value);
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
 		public  bool AreHorizontalSnapPointsRegular
 		{
 			get
@@ -61,12 +75,32 @@ namespace Windows.UI.Xaml.Controls
 		// Skipping already declared property CornerRadiusProperty
 		// Skipping already declared property PaddingProperty
 		// Skipping already declared property SpacingProperty
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public static global::Windows.UI.Xaml.DependencyProperty BackgroundSizingProperty { get; } = 
+		Windows.UI.Xaml.DependencyProperty.Register(
+			"BackgroundSizing", typeof(global::Windows.UI.Xaml.Controls.BackgroundSizing), 
+			typeof(global::Windows.UI.Xaml.Controls.StackPanel), 
+			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Controls.BackgroundSizing)));
+		#endif
 		// Skipping already declared method Windows.UI.Xaml.Controls.StackPanel.StackPanel()
 		// Forced skipping of method Windows.UI.Xaml.Controls.StackPanel.StackPanel()
 		// Forced skipping of method Windows.UI.Xaml.Controls.StackPanel.AreScrollSnapPointsRegular.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.StackPanel.AreScrollSnapPointsRegular.set
 		// Forced skipping of method Windows.UI.Xaml.Controls.StackPanel.Orientation.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.StackPanel.Orientation.set
+		// Forced skipping of method Windows.UI.Xaml.Controls.StackPanel.BorderBrush.get
+		// Forced skipping of method Windows.UI.Xaml.Controls.StackPanel.BorderBrush.set
+		// Forced skipping of method Windows.UI.Xaml.Controls.StackPanel.BorderThickness.get
+		// Forced skipping of method Windows.UI.Xaml.Controls.StackPanel.BorderThickness.set
+		// Forced skipping of method Windows.UI.Xaml.Controls.StackPanel.CornerRadius.get
+		// Forced skipping of method Windows.UI.Xaml.Controls.StackPanel.CornerRadius.set
+		// Forced skipping of method Windows.UI.Xaml.Controls.StackPanel.Padding.get
+		// Forced skipping of method Windows.UI.Xaml.Controls.StackPanel.Padding.set
+		// Forced skipping of method Windows.UI.Xaml.Controls.StackPanel.Spacing.get
+		// Forced skipping of method Windows.UI.Xaml.Controls.StackPanel.Spacing.set
+		// Forced skipping of method Windows.UI.Xaml.Controls.StackPanel.BackgroundSizing.get
+		// Forced skipping of method Windows.UI.Xaml.Controls.StackPanel.BackgroundSizing.set
 		// Forced skipping of method Windows.UI.Xaml.Controls.StackPanel.AreHorizontalSnapPointsRegular.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.StackPanel.AreVerticalSnapPointsRegular.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.StackPanel.HorizontalSnapPointsChanged.add
@@ -87,14 +121,6 @@ namespace Windows.UI.Xaml.Controls
 			throw new global::System.NotImplementedException("The member float StackPanel.GetRegularSnapPoints(Orientation orientation, SnapPointsAlignment alignment, out float offset) is not implemented in Uno.");
 		}
 		#endif
-		// Forced skipping of method Windows.UI.Xaml.Controls.StackPanel.BorderBrush.get
-		// Forced skipping of method Windows.UI.Xaml.Controls.StackPanel.BorderBrush.set
-		// Forced skipping of method Windows.UI.Xaml.Controls.StackPanel.BorderThickness.get
-		// Forced skipping of method Windows.UI.Xaml.Controls.StackPanel.BorderThickness.set
-		// Forced skipping of method Windows.UI.Xaml.Controls.StackPanel.CornerRadius.get
-		// Forced skipping of method Windows.UI.Xaml.Controls.StackPanel.CornerRadius.set
-		// Forced skipping of method Windows.UI.Xaml.Controls.StackPanel.Padding.get
-		// Forced skipping of method Windows.UI.Xaml.Controls.StackPanel.Padding.set
 		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  void GetInsertionIndexes( global::Windows.Foundation.Point position, out int first, out int second)
@@ -102,8 +128,7 @@ namespace Windows.UI.Xaml.Controls
 			throw new global::System.NotImplementedException("The member void StackPanel.GetInsertionIndexes(Point position, out int first, out int second) is not implemented in Uno.");
 		}
 		#endif
-		// Forced skipping of method Windows.UI.Xaml.Controls.StackPanel.Spacing.get
-		// Forced skipping of method Windows.UI.Xaml.Controls.StackPanel.Spacing.set
+		// Forced skipping of method Windows.UI.Xaml.Controls.StackPanel.BackgroundSizingProperty.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.StackPanel.SpacingProperty.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.StackPanel.BorderBrushProperty.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.StackPanel.BorderThicknessProperty.get

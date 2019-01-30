@@ -40,7 +40,7 @@ namespace Windows.UI.Xaml
 				Style.RegisterDefaultStyleForType(typeof(Controls.ToggleSwitch), Uno.UI.GlobalStaticResources.XamlDefaultToggleSwitch);
 				Style.RegisterDefaultStyleForType(typeof(Controls.Pivot), Uno.UI.GlobalStaticResources.XamlDefaultPivot);
 
-#if !NETSTANDARD2_0
+#if !__WASM__
 				Style.RegisterDefaultStyleForType(typeof(Controls.AppBar), Uno.UI.GlobalStaticResources.XamlCommandBar);
 #endif
 #endif

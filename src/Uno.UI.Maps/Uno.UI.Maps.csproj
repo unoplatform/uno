@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="15.0">
+<Project Sdk="MSBuild.Sdk.Extras" ToolsVersion="15.0">
   <PropertyGroup>
 		<TargetFrameworks>MonoAndroid80;xamarinios10</TargetFrameworks>
 		<TargetFrameworksCI>MonoAndroid80;xamarinios10</TargetFrameworksCI>
@@ -15,20 +15,20 @@
 		<ProjectReference Include="..\Uno.UI\Uno.UI.csproj" />
 		<ProjectReference Include="..\Uno.UWP\Uno.csproj" />
 		<ProjectReference Include="..\Uno.Foundation\Uno.Foundation.csproj" />
-		<ProjectReference Include="..\Uno.UI.BindingHelper.Android\Uno.UI.BindingHelper.Android.csproj" Condition="'$(TargetFrameworkIdentifier)'=='MonoAndroid'">
+		<ProjectReference Include="..\Uno.UI.BindingHelper.Android\Uno.UI.BindingHelper.Android.csproj" Condition="$(IsMonoAndroid)">
 			<TreatAsPackageReference>false</TreatAsPackageReference>
 		</ProjectReference>
 	</ItemGroup>
 
 	<ItemGroup>
 		<PackageReference Include="Uno.SourceGenerationTasks">
-			<Version>1.28.0-beta.153</Version>
+			<Version>1.29.0-beta.277</Version>
 		</PackageReference>
 		<PackageReference Include="Uno.Core">
-			<Version>1.25.0-beta.54</Version>
+			<Version>1.26.0-beta.69</Version>
 		</PackageReference>
 		<PackageReference Include="Uno.Core.Build">
-			<Version>1.25.0-beta.54</Version>
+			<Version>1.26.0-beta.69</Version>
 		</PackageReference>
 	</ItemGroup>
 
@@ -38,7 +38,6 @@
 		<PackageReference Include="Xamarin.Android.Support.v4" Version="26.1.0.1" PrivateAssets="none" />
 	</ItemGroup>
 
-	<Import Project="$(MSBuildSDKExtrasTargets)" Condition="Exists('$(MSBuildSDKExtrasTargets)')" />
 	<Import Project="..\Uno.CrossTargetting.props" />
 
 	<PropertyGroup>

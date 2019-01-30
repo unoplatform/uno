@@ -102,6 +102,8 @@ namespace Windows.Devices.PointOfService
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.PointOfService.ClaimedCashDrawer", "void ClaimedCashDrawer.Dispose()");
 		}
 		#endif
+		// Forced skipping of method Windows.Devices.PointOfService.ClaimedCashDrawer.Closed.add
+		// Forced skipping of method Windows.Devices.PointOfService.ClaimedCashDrawer.Closed.remove
 		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Devices.PointOfService.ClaimedCashDrawer, object> ReleaseDeviceRequested
@@ -115,6 +117,22 @@ namespace Windows.Devices.PointOfService
 			remove
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.PointOfService.ClaimedCashDrawer", "event TypedEventHandler<ClaimedCashDrawer, object> ClaimedCashDrawer.ReleaseDeviceRequested");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Devices.PointOfService.ClaimedCashDrawer, global::Windows.Devices.PointOfService.ClaimedCashDrawerClosedEventArgs> Closed
+		{
+			[global::Uno.NotImplemented]
+			add
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.PointOfService.ClaimedCashDrawer", "event TypedEventHandler<ClaimedCashDrawer, ClaimedCashDrawerClosedEventArgs> ClaimedCashDrawer.Closed");
+			}
+			[global::Uno.NotImplemented]
+			remove
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.PointOfService.ClaimedCashDrawer", "event TypedEventHandler<ClaimedCashDrawer, ClaimedCashDrawerClosedEventArgs> ClaimedCashDrawer.Closed");
 			}
 		}
 		#endif

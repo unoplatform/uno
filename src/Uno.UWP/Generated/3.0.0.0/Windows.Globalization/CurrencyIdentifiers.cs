@@ -9,11 +9,11 @@ namespace Windows.Globalization
 	{
 		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
-		public static string IDR
+		public static string HNL
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.IDR is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.HNL is not implemented in Uno.");
 			}
 		}
 		#endif
@@ -559,11 +559,11 @@ namespace Windows.Globalization
 		#endif
 		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
-		public static string HNL
+		public static string RON
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.HNL is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.RON is not implemented in Uno.");
 			}
 		}
 		#endif
@@ -599,11 +599,11 @@ namespace Windows.Globalization
 		#endif
 		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
-		public static string SAR
+		public static string IDR
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.SAR is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.IDR is not implemented in Uno.");
 			}
 		}
 		#endif
@@ -1149,16 +1149,6 @@ namespace Windows.Globalization
 		#endif
 		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
-		public static string RON
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.RON is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
 		public static string RSD
 		{
 			get
@@ -1184,6 +1174,16 @@ namespace Windows.Globalization
 			get
 			{
 				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.RWF is not implemented in Uno.");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public static string SAR
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.SAR is not implemented in Uno.");
 			}
 		}
 		#endif
@@ -1587,6 +1587,50 @@ namespace Windows.Globalization
 			}
 		}
 		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public static string SSP
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.SSP is not implemented in Uno.");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public static string STN
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.STN is not implemented in Uno.");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public static string VES
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.VES is not implemented in Uno.");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public static string MRU
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.MRU is not implemented in Uno.");
+			}
+		}
+		#endif
+		// Forced skipping of method Windows.Globalization.CurrencyIdentifiers.MRU.get
+		// Forced skipping of method Windows.Globalization.CurrencyIdentifiers.SSP.get
+		// Forced skipping of method Windows.Globalization.CurrencyIdentifiers.STN.get
+		// Forced skipping of method Windows.Globalization.CurrencyIdentifiers.VES.get
 		// Forced skipping of method Windows.Globalization.CurrencyIdentifiers.BYN.get
 		// Forced skipping of method Windows.Globalization.CurrencyIdentifiers.AED.get
 		// Forced skipping of method Windows.Globalization.CurrencyIdentifiers.AFN.get

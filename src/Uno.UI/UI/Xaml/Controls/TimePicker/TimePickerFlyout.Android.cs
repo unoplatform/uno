@@ -40,7 +40,7 @@ namespace Windows.UI.Xaml.Controls
 			var ver = Android.OS.Build.VERSION.Release;
 			//On Samsung devices >= 6.0 the TimePickerDialog is not displayed properly in Landscape.
 			return Android.OS.Build.VERSION.Release.StartsWith("6.") && //Any 6.x.x version				
-				   Android.OS.Build.Manufacturer.Contains("samsung", StringComparison.OrdinalIgnoreCase);
+				   Android.OS.Build.Manufacturer.IndexOf("samsung", StringComparison.OrdinalIgnoreCase) >= 0;
 		}
 
 		private void ShowUsingTimePickerDialog()

@@ -121,9 +121,10 @@ namespace Uno.UI.Controls
 			Native.BackIndicatorImage = backButtonIcon;
 			Native.BackIndicatorTransitionMaskImage = backButtonIcon;
 
-			Element.Presenter.Height = Native.Hidden
-				? 0
-				: Native.Frame.Size.Height;
+			if (Element.Presenter != null)
+			{
+				Element.Presenter.Height = Native.Hidden ? 0 : Native.Frame.Size.Height;
+			}
 		}
 	}
 }

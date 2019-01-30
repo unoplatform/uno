@@ -1,4 +1,4 @@
-﻿#if NET46 || NETSTANDARD2_0
+﻿#if NET46 || __WASM__
 #pragma warning disable CS0067
 #endif
 
@@ -19,7 +19,6 @@ using Windows.System;
 using Windows.UI.Xaml.Controls;
 using Uno.UI;
 using Uno;
-using VirtualKeyModifiers = Windows.UI.Xaml.Input.VirtualKeyModifiers;
 
 #if __IOS__
 using UIKit;
@@ -31,6 +30,7 @@ namespace Windows.UI.Xaml
 	{
 		private SerialDisposable _clipSubscription = new SerialDisposable();
 		private readonly List<Pointer> _pointCaptures = new List<Pointer>();
+		private readonly List<KeyboardAccelerator> _keyboardAccelerators = new List<KeyboardAccelerator>();
 
 		partial void InitializeCapture()
 		{
@@ -90,7 +90,7 @@ namespace Windows.UI.Xaml
 			add => RegisterEventHandler(
 				"pointerenter", 
 				value, 
-				eventExtractorScript: pointerEventExtractor, 
+				eventExtractor: HtmlEventExtractor.PointerEventExtractor, 
 				payloadConverter: PayloadToPointerArgs);
 			remove => UnregisterEventHandler("pointerenter", value);
 		}
@@ -111,7 +111,7 @@ namespace Windows.UI.Xaml
 			add => RegisterEventHandler(
 				"pointerleave", 
 				value, 
-				eventExtractorScript: pointerEventExtractor, 
+				eventExtractor: HtmlEventExtractor.PointerEventExtractor, 
 				payloadConverter: PayloadToPointerArgs);
 			remove => UnregisterEventHandler("pointerleave", value);
 		}
@@ -132,7 +132,7 @@ namespace Windows.UI.Xaml
 			add => RegisterEventHandler(
 				"pointermove", 
 				value, 
-				eventExtractorScript: pointerEventExtractor, 
+				eventExtractor: HtmlEventExtractor.PointerEventExtractor, 
 				payloadConverter: PayloadToPointerArgs);
 			remove => UnregisterEventHandler("pointermove", value);
 		}
@@ -153,8 +153,8 @@ namespace Windows.UI.Xaml
 			add => RegisterEventHandler(
 				"pointerdown", 
 				value, 
-				eventFilterScript: leftPointerEventFilter, 
-				eventExtractorScript: pointerEventExtractor, 
+				eventFilter:  HtmlEventFilter.LeftPointerEventFilter, 
+				eventExtractor: HtmlEventExtractor.PointerEventExtractor, 
 				payloadConverter: PayloadToPointerArgs);
 			remove => UnregisterEventHandler("pointerdown", value);
 		}
@@ -174,9 +174,9 @@ namespace Windows.UI.Xaml
 		{
 			add => RegisterEventHandler(
 				"pointerup", 
-				value, 
-				eventFilterScript: leftPointerEventFilter, 
-				eventExtractorScript: pointerEventExtractor, 
+				value,
+				eventFilter: HtmlEventFilter.LeftPointerEventFilter,
+				eventExtractor: HtmlEventExtractor.PointerEventExtractor,
 				payloadConverter: PayloadToPointerArgs);
 			remove => UnregisterEventHandler("pointerup", value);
 		}
@@ -197,8 +197,8 @@ namespace Windows.UI.Xaml
 			add => RegisterEventHandler(
 				"pointerup",
 				value,
-				eventFilterScript: leftPointerEventFilter,
-				eventExtractorScript: pointerEventExtractor,
+				eventFilter: HtmlEventFilter.LeftPointerEventFilter,
+				eventExtractor: HtmlEventExtractor.PointerEventExtractor,
 				payloadConverter: PayloadToTappedArgs);
 			remove => UnregisterEventHandler("pointerup", value);
 		}
@@ -212,7 +212,7 @@ namespace Windows.UI.Xaml
 			add => RegisterEventHandler(
 				"keydown",
 				value,
-				eventExtractorScript: "(evt instanceof KeyboardEvent) ? evt.key : \"0\"",
+				eventExtractor: HtmlEventExtractor.KeyboardEventExtractor,
 				payloadConverter: keyStr => new KeyRoutedEventArgs { Key = VirtualKeyHelper.FromKey(keyStr), OriginalSource = this});
 			remove => UnregisterEventHandler("keydown", value);
 		}
@@ -222,7 +222,7 @@ namespace Windows.UI.Xaml
 			add => RegisterEventHandler(
 				"keyup",
 				value,
-				eventExtractorScript: "(evt instanceof KeyboardEvent) ? evt.key : \"0\"",
+				eventExtractor: HtmlEventExtractor.KeyboardEventExtractor,
 				payloadConverter: keyStr => new KeyRoutedEventArgs {Key = VirtualKeyHelper.FromKey(keyStr), OriginalSource = this});
 			remove => UnregisterEventHandler("keyup", value);
 		}
@@ -373,7 +373,7 @@ namespace Windows.UI.Xaml
 					(s, e) => (s as UIElement).OnVisibilityChanged((Visibility)e.OldValue, (Visibility)e.NewValue)
 				)
 			);
-#endregion
+		#endregion
 
 		internal bool IsRenderingSuspended { get; set; }
 
@@ -506,5 +506,8 @@ namespace Windows.UI.Xaml
 		}
 
 		internal virtual bool IsViewHit() => true;
+
+		[global::Uno.NotImplemented]
+		public IList<KeyboardAccelerator> KeyboardAccelerators => _keyboardAccelerators;
 	}
 }

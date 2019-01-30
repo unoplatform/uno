@@ -17,6 +17,17 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  object Item
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member object TreeViewExpandingEventArgs.Item is not implemented in Uno.");
+			}
+		}
+		#endif
 		// Forced skipping of method Windows.UI.Xaml.Controls.TreeViewExpandingEventArgs.Node.get
+		// Forced skipping of method Windows.UI.Xaml.Controls.TreeViewExpandingEventArgs.Item.get
 	}
 }

@@ -1,4 +1,4 @@
-﻿#if NET46 || NETSTANDARD2_0 || __MACOS__
+﻿#if NET46 || __WASM__ || __MACOS__
 #pragma warning disable CS0067, CS649
 #endif
 
@@ -48,6 +48,12 @@ namespace Windows.UI.Xaml.Controls
 		{
 			_isPassword = false;
 			InitializeVisualStates();
+			this.RegisterParentChangedCallback(this, OnParentChanged);
+		}
+
+		private void OnParentChanged(object instance, object key, DependencyObjectParentChangedEventArgs args)
+		{
+			UpdateFontPartial(this);
 		}
 
 		protected TextBox(bool isPassword)
@@ -102,7 +108,7 @@ namespace Windows.UI.Xaml.Controls
 				scrollViewer.VerticalScrollMode = ScrollMode.Disabled;
 				scrollViewer.HorizontalScrollBarVisibility = ScrollBarVisibility.Disabled;
 				scrollViewer.VerticalScrollBarVisibility = ScrollBarVisibility.Disabled;
-#elif NETSTANDARD2_0
+#elif __WASM__
 				// We disable horizontal scrolling because the inner SingleLineTextBoxView provides its own horizontal scrolling
 				scrollViewer.HorizontalScrollMode = ScrollMode.Disabled;
 #endif

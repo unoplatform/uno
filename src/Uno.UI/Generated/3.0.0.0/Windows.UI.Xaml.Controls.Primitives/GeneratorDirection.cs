@@ -2,18 +2,14 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml.Controls.Primitives
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+	#if false || false || false || false || false
+	#if false || false || false || false || false
 	[global::Uno.NotImplemented]
 	#endif
 	public   enum GeneratorDirection 
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
-		Forward,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
-		Backward,
-		#endif
+		// Skipping already declared field Windows.UI.Xaml.Controls.Primitives.GeneratorDirection.Forward
+		// Skipping already declared field Windows.UI.Xaml.Controls.Primitives.GeneratorDirection.Backward
 	}
 	#endif
 }

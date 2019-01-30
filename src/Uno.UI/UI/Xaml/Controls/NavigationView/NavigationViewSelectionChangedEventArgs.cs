@@ -1,5 +1,10 @@
-#pragma warning disable 108 // new keyword hiding
-#pragma warning disable 114 // new keyword hiding
+// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License. See LICENSE in the project root for license information.
+
+//
+// This file is a C# translation of the NavigationViewSelectionChangedEventArgs.cpp file from WinUI controls.
+//
+
 namespace Windows.UI.Xaml.Controls
 {
 	public  partial class NavigationViewSelectionChangedEventArgs 
@@ -10,6 +15,16 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		public  object SelectedItem
+		{
+			get; internal set;
+		}
+
+		public global::Windows.UI.Xaml.Media.Animation.NavigationTransitionInfo RecommendedNavigationTransitionInfo
+		{
+			get; internal set;
+		}
+
+		public global::Windows.UI.Xaml.Controls.NavigationViewItemBase SelectedItemContainer
 		{
 			get; internal set;
 		}

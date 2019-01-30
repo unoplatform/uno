@@ -50,6 +50,13 @@ namespace Windows.Graphics.Capture
 		#endif
 		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
+		public static global::Windows.Graphics.Capture.Direct3D11CaptureFramePool CreateFreeThreaded( global::Windows.Graphics.DirectX.Direct3D11.IDirect3DDevice device,  global::Windows.Graphics.DirectX.DirectXPixelFormat pixelFormat,  int numberOfBuffers,  global::Windows.Graphics.SizeInt32 size)
+		{
+			throw new global::System.NotImplementedException("The member Direct3D11CaptureFramePool Direct3D11CaptureFramePool.CreateFreeThreaded(IDirect3DDevice device, DirectXPixelFormat pixelFormat, int numberOfBuffers, SizeInt32 size) is not implemented in Uno.");
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
 		public static global::Windows.Graphics.Capture.Direct3D11CaptureFramePool Create( global::Windows.Graphics.DirectX.Direct3D11.IDirect3DDevice device,  global::Windows.Graphics.DirectX.DirectXPixelFormat pixelFormat,  int numberOfBuffers,  global::Windows.Graphics.SizeInt32 size)
 		{
 			throw new global::System.NotImplementedException("The member Direct3D11CaptureFramePool Direct3D11CaptureFramePool.Create(IDirect3DDevice device, DirectXPixelFormat pixelFormat, int numberOfBuffers, SizeInt32 size) is not implemented in Uno.");

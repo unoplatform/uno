@@ -103,6 +103,34 @@ namespace Windows.UI.Xaml.Controls
 		#endif
 		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
+		public  object ItemsSource
+		{
+			get
+			{
+				return (object)this.GetValue(ItemsSourceProperty);
+			}
+			set
+			{
+				this.SetValue(ItemsSourceProperty, value);
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  bool HasUnrealizedChildren
+		{
+			get
+			{
+				return (bool)this.GetValue(HasUnrealizedChildrenProperty);
+			}
+			set
+			{
+				this.SetValue(HasUnrealizedChildrenProperty, value);
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty CollapsedGlyphProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
 			"CollapsedGlyph", typeof(string), 
@@ -159,6 +187,22 @@ namespace Windows.UI.Xaml.Controls
 		#endif
 		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
+		public static global::Windows.UI.Xaml.DependencyProperty HasUnrealizedChildrenProperty { get; } = 
+		Windows.UI.Xaml.DependencyProperty.Register(
+			"HasUnrealizedChildren", typeof(bool), 
+			typeof(global::Windows.UI.Xaml.Controls.TreeViewItem), 
+			new FrameworkPropertyMetadata(default(bool)));
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public static global::Windows.UI.Xaml.DependencyProperty ItemsSourceProperty { get; } = 
+		Windows.UI.Xaml.DependencyProperty.Register(
+			"ItemsSource", typeof(object), 
+			typeof(global::Windows.UI.Xaml.Controls.TreeViewItem), 
+			new FrameworkPropertyMetadata(default(object)));
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
 		public TreeViewItem() : base()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.TreeViewItem", "TreeViewItem.TreeViewItem()");
@@ -178,6 +222,12 @@ namespace Windows.UI.Xaml.Controls
 		// Forced skipping of method Windows.UI.Xaml.Controls.TreeViewItem.IsExpanded.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.TreeViewItem.IsExpanded.set
 		// Forced skipping of method Windows.UI.Xaml.Controls.TreeViewItem.TreeViewItemTemplateSettings.get
+		// Forced skipping of method Windows.UI.Xaml.Controls.TreeViewItem.HasUnrealizedChildren.get
+		// Forced skipping of method Windows.UI.Xaml.Controls.TreeViewItem.HasUnrealizedChildren.set
+		// Forced skipping of method Windows.UI.Xaml.Controls.TreeViewItem.ItemsSource.get
+		// Forced skipping of method Windows.UI.Xaml.Controls.TreeViewItem.ItemsSource.set
+		// Forced skipping of method Windows.UI.Xaml.Controls.TreeViewItem.HasUnrealizedChildrenProperty.get
+		// Forced skipping of method Windows.UI.Xaml.Controls.TreeViewItem.ItemsSourceProperty.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.TreeViewItem.GlyphOpacityProperty.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.TreeViewItem.GlyphBrushProperty.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.TreeViewItem.ExpandedGlyphProperty.get

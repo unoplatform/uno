@@ -9,7 +9,7 @@ uid: front-page
 <p>Build native apps for <strong>Mobile</strong> and <strong>Web</strong> using <strong>XAML</strong> and <strong>C#</strong>.</p>
 <span class="button white">
 
-[Get started](articles/intro.md)
+[Get started](articles/get-started.md)
 
 </span>
 </section>

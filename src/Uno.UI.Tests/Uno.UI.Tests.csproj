@@ -1,36 +1,37 @@
 <Project Sdk="Microsoft.NET.Sdk" ToolsVersion="15.0">
-  <PropertyGroup>
-    <TargetFrameworks>net46</TargetFrameworks>
-    <IsPackable>false</IsPackable>
-    <NoWarn>1998;4014;67</NoWarn>
-    <OutputPath>bin\$(Platform)\$(Configuration)</OutputPath>
+	<PropertyGroup>
+		<TargetFrameworks>net46</TargetFrameworks>
+		<IsPackable>false</IsPackable>
+		<NoWarn>1998;4014;67</NoWarn>
+		<OutputPath>bin\$(Platform)\$(Configuration)</OutputPath>
 		<LangVersion>7.2</LangVersion>
 		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
 	</PropertyGroup>
 
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <DefineConstants>TRACE;DEBUG;HAS_UMBRELLA_BINDING;IS_UNIT_TESTS;HAS_GEOCOORDINATE_WATCHER;HAS_GEOCOORDINATE;HAS_COMPILED_REGEX;HAS_ISTORAGEFILE;HAS_SEMAPHORE;HAS_FILE_IO;IS_UNO;HAS_CRIPPLEDREFLECTION;NET46</DefineConstants>
-    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <DefineConstants>TRACE;HAS_UMBRELLA_BINDING;IS_UNIT_TESTS;HAS_GEOCOORDINATE_WATCHER;HAS_GEOCOORDINATE;HAS_COMPILED_REGEX;HAS_ISTORAGEFILE;HAS_SEMAPHORE;HAS_FILE_IO;IS_UNO;HAS_CRIPPLEDREFLECTION</DefineConstants>
-  </PropertyGroup>
-  
-  <ItemGroup>
+	<PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+		<DebugSymbols>true</DebugSymbols>
+		<DebugType>full</DebugType>
+		<Optimize>false</Optimize>
+		<DefineConstants>TRACE;DEBUG;HAS_UMBRELLA_BINDING;IS_UNIT_TESTS;HAS_GEOCOORDINATE_WATCHER;HAS_GEOCOORDINATE;HAS_COMPILED_REGEX;HAS_ISTORAGEFILE;HAS_SEMAPHORE;HAS_FILE_IO;IS_UNO;HAS_CRIPPLEDREFLECTION;NET46</DefineConstants>
+		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+	</PropertyGroup>
+	<PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+		<DebugSymbols>true</DebugSymbols>
+		<DebugType>full</DebugType>
+		<Optimize>false</Optimize>
+		<DefineConstants>TRACE;HAS_UMBRELLA_BINDING;IS_UNIT_TESTS;HAS_GEOCOORDINATE_WATCHER;HAS_GEOCOORDINATE;HAS_COMPILED_REGEX;HAS_ISTORAGEFILE;HAS_SEMAPHORE;HAS_FILE_IO;IS_UNO;HAS_CRIPPLEDREFLECTION</DefineConstants>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Microsoft.CSharp" Version="4.5.0" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="1.1.1" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Console" Version="1.1.1" />
 		<PackageReference Include="MSTest.TestAdapter">
-      <Version>1.3.0-beta2</Version>
-    </PackageReference>
-    <PackageReference Include="MSTest.TestFramework">
-      <Version>1.3.0-beta2</Version>
-    </PackageReference>
+			<Version>1.3.0-beta2</Version>
+		</PackageReference>
+		<PackageReference Include="MSTest.TestFramework">
+			<Version>1.3.0-beta2</Version>
+		</PackageReference>
 
     <PackageReference Include="CommonServiceLocator">
       <Version>1.3</Version>
@@ -45,99 +46,137 @@
       <Version>1.3.1</Version>
     </PackageReference>
     <PackageReference Include="Uno.SourceGenerationTasks">
-      <Version>1.28.0-beta.153</Version>
+      <Version>1.29.0-beta.277</Version>
     </PackageReference>
     <PackageReference Include="Uno.Core">
-      <Version>1.25.0-beta.54</Version>
+      <Version>1.26.0-beta.69</Version>
     </PackageReference>
-  </ItemGroup>
-
-  <ItemGroup>
-    <Reference Include="PresentationCore" />
-    <Reference Include="PresentationFramework" />
-    <Reference Include="System" />
-    <Reference Include="System.Drawing" />
-    <Reference Include="System.Net.Http" />
-    <Reference Include="System.Numerics" />
-    <Reference Include="System.Numerics.Vectors" />
-    <Reference Include="System.Xaml" />
-    <Reference Include="System.Xml" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="WindowsBase" />
   </ItemGroup>
 
 	<ItemGroup>
-    <Compile Include="$(MSBuildThisFileDirectory)..\Uno.Net.Shared\Resources\**\*.cs">
-      <Link>Resources\%(RecursiveDir)%(FileName)%(Extension)</Link>
-    </Compile>
-    <EmbeddedResource Include="$(MSBuildThisFileDirectory)..\Uno.Net.Shared\Resources\**\*.resx">
-      <Link>Resources\%(RecursiveDir)%(FileName)%(Extension)</Link>
-    </EmbeddedResource>
-    <None Remove="ResourceLoader\When_ResourceFile-en.upri" />
-    <None Remove="ResourceLoader\When_ResourceFile_Neutral_Both-en.upri" />
-    <None Remove="ResourceLoader\When_ResourceFile_Neutral_Both-fr.upri" />
-    <None Remove="XamlReaderTests\When_AttachedProperty_Binding.xamltest" />
-    <None Remove="XamlReaderTests\When_AttachedProperty_Different_Target.xamltest" />
-    <None Remove="XamlReaderTests\When_AttachedProperty_Same_Target.xamltest" />
-    <None Remove="XamlReaderTests\When_BasicProperty.xamltest" />
-    <None Remove="XamlReaderTests\When_BasicRoot.xamltest" />
-    <None Remove="XamlReaderTests\When_Binding_Converter.xamltest" />
-    <None Remove="XamlReaderTests\When_Binding_ConverterParameter.xamltest" />
-    <None Remove="XamlReaderTests\When_Binding_TargetNull.xamltest" />
-    <None Remove="XamlReaderTests\When_Binding_TwoWay.xamltest" />
-    <None Remove="XamlReaderTests\When_Binding_TwoWay_UpdateSourceTrigger.xamltest" />
-    <None Remove="XamlReaderTests\When_ElementName.xamltest" />
-    <None Remove="XamlReaderTests\When_GridRowDefinitions.xamltest" />
-    <None Remove="XamlReaderTests\When_MultipleBindings.xamltest" />
-    <None Remove="XamlReaderTests\When_NonDependencyPropertyAssignable.xamltest" />
-    <None Remove="XamlReaderTests\When_NonDependencyProperty_Binding.xamltest" />
-    <None Remove="XamlReaderTests\When_StaticResource.xamltest" />
-    <None Remove="XamlReaderTests\When_StaticResource_Style_And_Binding.xamltest" />
-    <None Remove="XamlReaderTests\When_Style_FontWeight.xamltest" />
-    <None Remove="XamlReaderTests\When_TextBlock_Basic.xamltest" />
-    <None Remove="XamlReaderTests\When_TextBlock_FontFamily.xamltest" />
-    <None Remove="XamlReaderTests\When_TextBlock_ImplicitRun.xamltest" />
-    <None Remove="XamlReaderTests\When_TextBlock_NestedSpan.xamltest" />
-    <None Remove="XamlReaderTests\When_TypeConverters.xamltest" />
-    <None Remove="XamlReaderTests\When_UserControl_With_Content.xamltest" />
-    <None Remove="XamlReaderTests\When_UserControl_With_Grid.xamltest" />
-    <None Remove="XamlReaderTests\When_VisualStateGroup.xamltest" />
-    <None Remove="XamlReaderTests\When_VisualStateGroup_AttachedProperty.xamltest" />
-    <None Remove="XamlReaderTests\When_VisualStateGroup_AttachedProperty_Binding.xamltest" />
-    <None Remove="XamlReaderTests\When_VisualStateGroup_Propagation.xamltest" />
-    <None Remove="XamlReaderTests\When_XNull.xamltest" />
-    
-    <!-- This has to be after all the shared projects imports -->
-    <Page Remove="@(Page)" />
-  </ItemGroup>
+		<Reference Include="PresentationCore" />
+		<Reference Include="PresentationFramework" />
+		<Reference Include="System" />
+		<Reference Include="System.Drawing" />
+		<Reference Include="System.Net.Http" />
+		<Reference Include="System.Numerics" />
+		<Reference Include="System.Numerics.Vectors" />
+		<Reference Include="System.Xaml" />
+		<Reference Include="System.Xml" />
+		<Reference Include="System.Xml.Linq" />
+		<Reference Include="WindowsBase" />
+	</ItemGroup>
 
-  <PropertyGroup>
-    <UnoUIGeneratorsBinPath>..\SourceGenerators\Uno.UI.SourceGenerators\bin\$(Configuration)</UnoUIGeneratorsBinPath>
-  </PropertyGroup>
-  
-  <Import Project="..\SourceGenerators\Uno.UI.SourceGenerators\Content\Uno.UI.SourceGenerators.props" />
+	<ItemGroup>
+		<Compile Include="$(MSBuildThisFileDirectory)..\Uno.Net.Shared\Resources\**\*.cs">
+			<Link>Resources\%(RecursiveDir)%(FileName)%(Extension)</Link>
+		</Compile>
+		<EmbeddedResource Include="$(MSBuildThisFileDirectory)..\Uno.Net.Shared\Resources\**\*.resx">
+			<Link>Resources\%(RecursiveDir)%(FileName)%(Extension)</Link>
+		</EmbeddedResource>
+		<None Remove="ResourceLoader\When_ResourceFile-en.upri" />
+		<None Remove="ResourceLoader\When_ResourceFile_Neutral_Both-en.upri" />
+		<None Remove="ResourceLoader\When_ResourceFile_Neutral_Both-fr.upri" />
+		<None Remove="XamlReaderTests\When_AttachedProperty_Binding.xamltest" />
+		<None Remove="XamlReaderTests\When_AttachedProperty_Different_Target.xamltest" />
+		<None Remove="XamlReaderTests\When_AttachedProperty_Same_Target.xamltest" />
+		<None Remove="XamlReaderTests\When_BasicProperty.xamltest" />
+		<None Remove="XamlReaderTests\When_BasicRoot.xamltest" />
+		<None Remove="XamlReaderTests\When_Binding_Converter.xamltest" />
+		<None Remove="XamlReaderTests\When_Binding_ConverterParameter.xamltest" />
+		<None Remove="XamlReaderTests\When_Binding_TargetNull.xamltest" />
+		<None Remove="XamlReaderTests\When_Binding_TwoWay.xamltest" />
+		<None Remove="XamlReaderTests\When_Binding_TwoWay_UpdateSourceTrigger.xamltest" />
+		<None Remove="XamlReaderTests\When_ElementName.xamltest" />
+		<None Remove="XamlReaderTests\When_GridRowDefinitions.xamltest" />
+		<None Remove="XamlReaderTests\When_MultipleBindings.xamltest" />
+		<None Remove="XamlReaderTests\When_NonDependencyPropertyAssignable.xamltest" />
+		<None Remove="XamlReaderTests\When_NonDependencyProperty_Binding.xamltest" />
+		<None Remove="XamlReaderTests\When_StaticResource.xamltest" />
+		<None Remove="XamlReaderTests\When_StaticResource_Style_And_Binding.xamltest" />
+		<None Remove="XamlReaderTests\When_Style_FontWeight.xamltest" />
+		<None Remove="XamlReaderTests\When_TextBlock_Basic.xamltest" />
+		<None Remove="XamlReaderTests\When_TextBlock_FontFamily.xamltest" />
+		<None Remove="XamlReaderTests\When_TextBlock_ImplicitRun.xamltest" />
+		<None Remove="XamlReaderTests\When_TextBlock_NestedSpan.xamltest" />
+		<None Remove="XamlReaderTests\When_TypeConverters.xamltest" />
+		<None Remove="XamlReaderTests\When_UserControl_With_Content.xamltest" />
+		<None Remove="XamlReaderTests\When_UserControl_With_Grid.xamltest" />
+		<None Remove="XamlReaderTests\When_VisualStateGroup.xamltest" />
+		<None Remove="XamlReaderTests\When_VisualStateGroup_AttachedProperty.xamltest" />
+		<None Remove="XamlReaderTests\When_VisualStateGroup_AttachedProperty_Binding.xamltest" />
+		<None Remove="XamlReaderTests\When_VisualStateGroup_Propagation.xamltest" />
+		<None Remove="XamlReaderTests\When_XNull.xamltest" />
 
-  <Target Name="BeforeBuildCleanup" BeforeTargets="XamlMarkupCompilePass1;_UnoSourceGenerator" />
-  
-  <Import Project="..\Common.targets" />
-  
-  <ItemGroup>
-    <EmbeddedResource Include="XamlReaderTests\*.xamltest" />
-  </ItemGroup>
-  
-  <ItemGroup>
-    <EmbeddedResource Include="ResourceLoader\When_ResourceFile-en.upri" />
-    <EmbeddedResource Include="ResourceLoader\When_ResourceFile_Neutral_Both-en.upri" />
-    <EmbeddedResource Include="ResourceLoader\When_ResourceFile_Neutral_Both-fr.upri" />
-  </ItemGroup>
+		<!-- This has to be after all the shared projects imports -->
+		<Page Remove="@(Page)" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\SourceGenerators\System.Xaml\Uno.Xaml.csproj" />
-    <ProjectReference Include="..\Uno.UI\Uno.UI.csproj" />
-  </ItemGroup>
+	<PropertyGroup>
+		<UnoUIGeneratorsBinPath>..\SourceGenerators\Uno.UI.SourceGenerators\bin\$(Configuration)</UnoUIGeneratorsBinPath>
+		<UnoUIMSBuildTasksPath>$(MSBuildThisFileDirectory)..\SourceGenerators\Uno.UI.Tasks\bin\$(Configuration)_Shadow</UnoUIMSBuildTasksPath>
+		<UnoForceProcessPRIResource>true</UnoForceProcessPRIResource>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <Service Include="{82a7f48d-3b50-4b1e-b82e-3ada8210c358}" />
-  </ItemGroup>
+	<Import Project="..\SourceGenerators\Uno.UI.SourceGenerators\Content\Uno.UI.SourceGenerators.props" />
+	<Import Project="..\SourceGenerators\Uno.UI.Tasks\Content\Uno.UI.Tasks.targets" Condition="'$(SkipUnoResourceGeneration)' == '' " />
+
+	<Target Name="BeforeBuildCleanup" BeforeTargets="XamlMarkupCompilePass1;_UnoSourceGenerator" />
+
+	<Import Project="..\Common.targets" />
+
+	<ItemGroup>
+		<EmbeddedResource Include="XamlReaderTests\*.xamltest" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PRIResource Include="**\*.resw" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\SourceGenerators\System.Xaml\Uno.Xaml.csproj" />
+		<ProjectReference Include="..\Uno.UI\Uno.UI.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Service Include="{82a7f48d-3b50-4b1e-b82e-3ada8210c358}" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Compile Update="ResourceLoader\Strings\en\Resources.Designer.cs">
+			<DesignTime>True</DesignTime>
+			<AutoGen>True</AutoGen>
+			<DependentUpon>Resources.resw</DependentUpon>
+		</Compile>
+		<Compile Update="ResourceLoader\Strings\fr\Resources.Designer.cs">
+			<DesignTime>True</DesignTime>
+			<AutoGen>True</AutoGen>
+			<DependentUpon>Resources.resw</DependentUpon>
+		</Compile>
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\SourceGenerators\Uno.UI.SourceGenerators\Uno.UI.SourceGenerators.csproj">
+			<ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+			<SkipGetTargetFrameworkProperties>true</SkipGetTargetFrameworkProperties>
+			<UndefineProperties>TargetFramework</UndefineProperties>
+		</ProjectReference>
+		<ProjectReference Include="..\SourceGenerators\Uno.UI.Tasks\Uno.UI.Tasks.csproj">
+			<ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+			<SkipGetTargetFrameworkProperties>true</SkipGetTargetFrameworkProperties>
+			<UndefineProperties>TargetFramework</UndefineProperties>
+		</ProjectReference>
+	</ItemGroup>
+
+	<ItemGroup>
+		<None Update="ResourceLoader\Strings\en\Resources.resw">
+			<Generator>ResXFileCodeGenerator</Generator>
+			<LastGenOutput>Resources.Designer.cs</LastGenOutput>
+		</None>
+		<None Update="ResourceLoader\Strings\fr\Resources.resw">
+			<LastGenOutput>Resources.Designer.cs</LastGenOutput>
+			<Generator>ResXFileCodeGenerator</Generator>
+		</None>
+	</ItemGroup>
 
 </Project>

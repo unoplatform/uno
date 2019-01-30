@@ -45,14 +45,14 @@ namespace Windows.ApplicationModel.Resources.Core
 		{
 			var directoryNameWithoutQualifiers = Path
 				.GetDirectoryName(path)
-				.Split(Path.DirectorySeparatorChar)
+				.Split(new[] { Path.DirectorySeparatorChar })
 				.Where(x => ResourceQualifier.Parse(x) == null)
 				.ToArray()
 				.Apply(Path.Combine);
 
 			var fileNameWithoutQualifiers = Path
 				.GetFileName(path)
-				.Split('.')
+				.Split(new[] { '.' })
 				.Where(x => ResourceQualifier.Parse(x) == null)
 				.Apply(x => string.Join(".", x));
 

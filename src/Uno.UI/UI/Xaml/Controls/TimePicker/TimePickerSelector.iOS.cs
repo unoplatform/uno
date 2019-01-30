@@ -1,17 +1,20 @@
-﻿using Foundation;
+﻿#if XAMARIN_IOS
+
 using System;
 using System.Linq;
+using Foundation;
 using UIKit;
 using Uno.Extensions;
+using Uno.Logging;
 using Uno.UI.Extensions;
 using Windows.Globalization;
-using Uno.Logging;
 
 namespace Windows.UI.Xaml.Controls
 {
 	public partial class TimePickerSelector
 	{
 		private UIDatePicker _picker;
+		private NSDate _initialTime;
 
 		protected override void OnLoaded()
 		{
@@ -19,16 +22,11 @@ namespace Windows.UI.Xaml.Controls
 
 			_picker = this.FindSubviewsOfType<UIDatePicker>().FirstOrDefault();
 
-			var parent = _picker.FindFirstParent<FrameworkElement>();
-
 			if (_picker == null)
 			{
 				this.Log().DebugIfEnabled(() => $"No {nameof(UIDatePicker)} was found in the visual hierarchy.");
-
 				return;
 			}
-
-			_picker.Mode = UIDatePickerMode.Time;
 
 			// The time zone must be the same as DatePickerSelector
 			// otherwise, if a DatePicker and a TimePicker are present
@@ -36,10 +34,13 @@ namespace Windows.UI.Xaml.Controls
 			// and result in weird behaviors (like decrementing the year when a month changes).
 			_picker.TimeZone = NSTimeZone.LocalTimeZone;
 			_picker.Calendar = new NSCalendar(NSCalendarType.Gregorian);
+			_picker.Mode = UIDatePickerMode.Time;
 
-			SetTime(Time);
+			SetPickerTime(Time);
 
 			OnClockIdentifierChangedPartialNative(null, ClockIdentifier);
+
+			var parent = _picker.FindFirstParent<FrameworkElement>();
 
 			//Removing the date picker and adding it is what enables the lines to appear. Seems to be a side effect of adding it as a view. 
 			if (parent != null)
@@ -47,19 +48,36 @@ namespace Windows.UI.Xaml.Controls
 				parent.RemoveChild(_picker);
 				parent.AddSubview(_picker);
 			}
+
+			SaveInitialTime();
 		}
 
-		internal void UpdateTime()
+		protected void SaveInitialTime()
+		{
+			_initialTime = _picker.Date;
+		}
+
+		internal void SaveTime()
 		{
 			if (_picker == null)
 			{
 				return;
 			}
 
-			var offset = TimeSpan.FromSeconds(_picker.TimeZone.GetSecondsFromGMT);
-			var timeSpan = _picker.Date.ToTimeSpan().Add(offset);
+			var pickerDate = ToTimeSpan(_picker.Date);
 
-			Time = timeSpan;
+			if (Time != pickerDate)
+			{
+				Time = pickerDate;
+				SaveInitialTime();
+				_picker.EndEditing(false);
+			}
+		}
+
+		private TimeSpan ToTimeSpan(NSDate date)
+		{
+			var offset = TimeSpan.FromSeconds(_picker.TimeZone.GetSecondsFromGMT);
+			return date.ToTimeSpan().Add(offset);
 		}
 
 		protected override void OnUnloaded()
@@ -69,10 +87,10 @@ namespace Windows.UI.Xaml.Controls
 
 		partial void OnTimeChangedPartialNative(TimeSpan oldTime, TimeSpan newTime)
 		{
-			SetTime(newTime);
+			SetPickerTime(newTime);
 		}
 
-		private void SetTime(TimeSpan newTime)
+		private void SetPickerTime(TimeSpan newTime)
 		{
 			if (_picker == null)
 			{
@@ -87,7 +105,6 @@ namespace Windows.UI.Xaml.Controls
 			// we need to compensate with a negated offset. This will show the time
 			// as if it was provided with no offset.
 			var timeWithOffset = newTime.Add(offset.Negate());
-
 			var nsDate = timeWithOffset.ToNSDate();
 
 			_picker.SetDate(nsDate, animated: false);
@@ -100,11 +117,29 @@ namespace Windows.UI.Xaml.Controls
 				return;
 			}
 
-			var localeID = newClockIdentifier == ClockIdentifiers.TwelveHour 
-				? "en" 
+			var localeID = newClockIdentifier == ClockIdentifiers.TwelveHour
+				? "en"
 				: "fr";
 
 			_picker.Locale = new NSLocale(localeID);
 		}
+
+		public void Cancel()
+		{
+			ResetTime();
+			_picker.EndEditing(false);
+		}
+
+		public void ResetPickerTime()
+		{
+			_picker.SetDate(_initialTime, false);
+		}
+
+		public void ResetTime()
+		{
+		   ResetPickerTime();
+		   Time = ToTimeSpan(_initialTime);
+		}
 	}
 }
+#endif

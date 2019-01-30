@@ -7,6 +7,14 @@ namespace Windows.UI.Xaml.Input
 	#endif
 	public  partial class FocusManager 
 	{
+		// Forced skipping of method Windows.UI.Xaml.Input.FocusManager.GotFocus.add
+		// Forced skipping of method Windows.UI.Xaml.Input.FocusManager.GotFocus.remove
+		// Forced skipping of method Windows.UI.Xaml.Input.FocusManager.LostFocus.add
+		// Forced skipping of method Windows.UI.Xaml.Input.FocusManager.LostFocus.remove
+		// Forced skipping of method Windows.UI.Xaml.Input.FocusManager.GettingFocus.add
+		// Forced skipping of method Windows.UI.Xaml.Input.FocusManager.GettingFocus.remove
+		// Forced skipping of method Windows.UI.Xaml.Input.FocusManager.LosingFocus.add
+		// Forced skipping of method Windows.UI.Xaml.Input.FocusManager.LosingFocus.remove
 		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.UI.Xaml.Input.FocusMovementResult> TryFocusAsync( global::Windows.UI.Xaml.DependencyObject element,  global::Windows.UI.Xaml.FocusState value)
@@ -89,6 +97,70 @@ namespace Windows.UI.Xaml.Input
 		public static object GetFocusedElement()
 		{
 			throw new global::System.NotImplementedException("The member object FocusManager.GetFocusedElement() is not implemented in Uno.");
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public static event global::System.EventHandler<global::Windows.UI.Xaml.Input.GettingFocusEventArgs> GettingFocus
+		{
+			[global::Uno.NotImplemented]
+			add
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Input.FocusManager", "event EventHandler<GettingFocusEventArgs> FocusManager.GettingFocus");
+			}
+			[global::Uno.NotImplemented]
+			remove
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Input.FocusManager", "event EventHandler<GettingFocusEventArgs> FocusManager.GettingFocus");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public static event global::System.EventHandler<global::Windows.UI.Xaml.Input.FocusManagerGotFocusEventArgs> GotFocus
+		{
+			[global::Uno.NotImplemented]
+			add
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Input.FocusManager", "event EventHandler<FocusManagerGotFocusEventArgs> FocusManager.GotFocus");
+			}
+			[global::Uno.NotImplemented]
+			remove
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Input.FocusManager", "event EventHandler<FocusManagerGotFocusEventArgs> FocusManager.GotFocus");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public static event global::System.EventHandler<global::Windows.UI.Xaml.Input.LosingFocusEventArgs> LosingFocus
+		{
+			[global::Uno.NotImplemented]
+			add
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Input.FocusManager", "event EventHandler<LosingFocusEventArgs> FocusManager.LosingFocus");
+			}
+			[global::Uno.NotImplemented]
+			remove
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Input.FocusManager", "event EventHandler<LosingFocusEventArgs> FocusManager.LosingFocus");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public static event global::System.EventHandler<global::Windows.UI.Xaml.Input.FocusManagerLostFocusEventArgs> LostFocus
+		{
+			[global::Uno.NotImplemented]
+			add
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Input.FocusManager", "event EventHandler<FocusManagerLostFocusEventArgs> FocusManager.LostFocus");
+			}
+			[global::Uno.NotImplemented]
+			remove
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Input.FocusManager", "event EventHandler<FocusManagerLostFocusEventArgs> FocusManager.LostFocus");
+			}
 		}
 		#endif
 	}

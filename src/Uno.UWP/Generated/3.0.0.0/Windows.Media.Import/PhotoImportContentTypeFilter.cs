@@ -17,6 +17,9 @@ namespace Windows.Media.Import
 		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		ImagesAndVideos,
 		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		ImagesAndVideosFromCameraRoll,
+		#endif
 	}
 	#endif
 }

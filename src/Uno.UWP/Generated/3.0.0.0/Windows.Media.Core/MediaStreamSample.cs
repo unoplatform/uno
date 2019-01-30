@@ -103,6 +103,16 @@ namespace Windows.Media.Core
 			}
 		}
 		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  global::Windows.Graphics.DirectX.Direct3D11.IDirect3DSurface Direct3D11Surface
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member IDirect3DSurface MediaStreamSample.Direct3D11Surface is not implemented in Uno.");
+			}
+		}
+		#endif
 		// Forced skipping of method Windows.Media.Core.MediaStreamSample.Processed.add
 		// Forced skipping of method Windows.Media.Core.MediaStreamSample.Processed.remove
 		// Forced skipping of method Windows.Media.Core.MediaStreamSample.Buffer.get
@@ -117,6 +127,14 @@ namespace Windows.Media.Core
 		// Forced skipping of method Windows.Media.Core.MediaStreamSample.KeyFrame.get
 		// Forced skipping of method Windows.Media.Core.MediaStreamSample.Discontinuous.set
 		// Forced skipping of method Windows.Media.Core.MediaStreamSample.Discontinuous.get
+		// Forced skipping of method Windows.Media.Core.MediaStreamSample.Direct3D11Surface.get
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public static global::Windows.Media.Core.MediaStreamSample CreateFromDirect3D11Surface( global::Windows.Graphics.DirectX.Direct3D11.IDirect3DSurface surface,  global::System.TimeSpan timestamp)
+		{
+			throw new global::System.NotImplementedException("The member MediaStreamSample MediaStreamSample.CreateFromDirect3D11Surface(IDirect3DSurface surface, TimeSpan timestamp) is not implemented in Uno.");
+		}
+		#endif
 		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.Media.Core.MediaStreamSample CreateFromBuffer( global::Windows.Storage.Streams.IBuffer buffer,  global::System.TimeSpan timestamp)

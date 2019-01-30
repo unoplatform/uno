@@ -138,15 +138,9 @@ namespace Windows.Media.Playback
 
 				// Adapt pitch to prevent "metallic echo" when changing playback rate
 				_player.CurrentItem.AudioTimePitchAlgorithm = AVAudioTimePitchAlgorithm.TimeDomain;
-
-				// Disable subtitles if any
-				var mediaSelectionGroup = _player.CurrentItem.Asset.MediaSelectionGroupForMediaCharacteristic(AVMediaCharacteristic.Legible);
-				if (mediaSelectionGroup != null)
-				{
-					_player.CurrentItem.SelectMediaOption(null, mediaSelectionGroup);
-				}
 				
 				MediaOpened?.Invoke(this, null);
+
 			}
 			catch (Exception ex)
 			{
@@ -158,7 +152,7 @@ namespace Windows.Media.Playback
 		{
 			if (!uri.IsAbsoluteUri || uri.Scheme == "")
 			{
-				uri = new Uri(MsAppXScheme + ":///" + uri.OriginalString.TrimStart("/"));
+				uri = new Uri(MsAppXScheme + ":///" + uri.OriginalString.TrimStart(new char[] { '/' }));
 			}
 
 			var isResource = uri.Scheme.Equals(MsAppXScheme, StringComparison.OrdinalIgnoreCase)
@@ -166,7 +160,7 @@ namespace Windows.Media.Playback
 
 			if (isResource)
 			{
-				var file = uri.PathAndQuery.TrimStart('/');
+				var file = uri.PathAndQuery.TrimStart(new[] { '/' });
 				var fileName = Path.GetFileNameWithoutExtension(file);
 				var fileExtension = Path.GetExtension(file)?.Replace(".", "");
 				return NSBundle.MainBundle.GetUrlForResource(fileName, fileExtension);

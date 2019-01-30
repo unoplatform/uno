@@ -47,11 +47,11 @@
 	<DefineConstants>$(DefineConstants);__WASM__</DefineConstants>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(TargetFrameworkIdentifier)' == 'Xamarin.iOS'">
+  <PropertyGroup Condition="$(IsXamarinIOS)">
 	<DefineConstants>$(DefineConstants);IOS1_0;XAMARIN;XAMARIN_IOS;XAMARIN_IOS_UNIFIED</DefineConstants>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(TargetFrameworkIdentifier)' == 'MonoAndroid'">
+  <PropertyGroup Condition="$(IsMonoAndroid)">
 	<DefineConstants>$(DefineConstants);XAMARIN;XAMARIN_ANDROID</DefineConstants>
 	<AndroidUseIntermediateDesignerFile>True</AndroidUseIntermediateDesignerFile>
 	<AndroidResgenFile>obj\$(TargetFramework)\Resources\Resource.Designer.cs</AndroidResgenFile>
@@ -70,11 +70,10 @@
   </PropertyGroup>
 
   <ItemGroup>
-	<PackageReference Include="MSBuild.Sdk.Extras" Version="1.5.4" PrivateAssets="All" />
 	<PackageReference Include="xamarin.build.download" Version="0.4.9" />
   </ItemGroup>
 
-  <ItemGroup Condition=" '$(TargetFrameworkIdentifier)' == 'MonoAndroid' or  '$(TargetFrameworkIdentifier)' == 'Xamarin.iOS' ">
+  <ItemGroup Condition=" $(IsMonoAndroid) or $(IsXamarinIOS) ">
 	<!-- remove files included by msbuild extras -->
 	<Page Remove="@(Page)" />
 	<Page Include="**\*.xaml" Exclude="bin\**\*.xaml;obj\**\*.xaml" />

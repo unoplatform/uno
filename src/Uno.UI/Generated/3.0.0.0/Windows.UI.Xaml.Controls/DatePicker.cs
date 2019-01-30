@@ -7,6 +7,51 @@ namespace Windows.UI.Xaml.Controls
 	#endif
 	public  partial class DatePicker : global::Windows.UI.Xaml.Controls.Control
 	{
+		// Skipping already declared property YearVisible
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  string YearFormat
+		{
+			get
+			{
+				return (string)this.GetValue(YearFormatProperty);
+			}
+			set
+			{
+				this.SetValue(YearFormatProperty, value);
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  global::Windows.UI.Xaml.Controls.Orientation Orientation
+		{
+			get
+			{
+				return (global::Windows.UI.Xaml.Controls.Orientation)this.GetValue(OrientationProperty);
+			}
+			set
+			{
+				this.SetValue(OrientationProperty, value);
+			}
+		}
+		#endif
+		// Skipping already declared property MonthVisible
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  string MonthFormat
+		{
+			get
+			{
+				return (string)this.GetValue(MonthFormatProperty);
+			}
+			set
+			{
+				this.SetValue(MonthFormatProperty, value);
+			}
+		}
+		#endif
+		// Skipping already declared property MinYear
 		// Skipping already declared property MaxYear
 		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
@@ -19,20 +64,6 @@ namespace Windows.UI.Xaml.Controls
 			set
 			{
 				this.SetValue(HeaderTemplateProperty, value);
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  string MonthFormat
-		{
-			get
-			{
-				return (string)this.GetValue(MonthFormatProperty);
-			}
-			set
-			{
-				this.SetValue(MonthFormatProperty, value);
 			}
 		}
 		#endif
@@ -65,6 +96,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 		#endif
+		// Skipping already declared property Date
 		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  string CalendarIdentifier
@@ -79,38 +111,6 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 		#endif
-		// Skipping already declared property YearVisible
-		// Skipping already declared property Date
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  string YearFormat
-		{
-			get
-			{
-				return (string)this.GetValue(YearFormatProperty);
-			}
-			set
-			{
-				this.SetValue(YearFormatProperty, value);
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  global::Windows.UI.Xaml.Controls.Orientation Orientation
-		{
-			get
-			{
-				return (global::Windows.UI.Xaml.Controls.Orientation)this.GetValue(OrientationProperty);
-			}
-			set
-			{
-				this.SetValue(OrientationProperty, value);
-			}
-		}
-		#endif
-		// Skipping already declared property MonthVisible
-		// Skipping already declared property MinYear
 		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.UI.Xaml.Controls.LightDismissOverlayMode LightDismissOverlayMode
@@ -127,21 +127,18 @@ namespace Windows.UI.Xaml.Controls
 		#endif
 		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
-		public static global::Windows.UI.Xaml.DependencyProperty OrientationProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			"Orientation", typeof(global::Windows.UI.Xaml.Controls.Orientation), 
-			typeof(global::Windows.UI.Xaml.Controls.DatePicker), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Controls.Orientation)));
+		public  global::System.DateTimeOffset? SelectedDate
+		{
+			get
+			{
+				return (global::System.DateTimeOffset?)this.GetValue(SelectedDateProperty);
+			}
+			set
+			{
+				this.SetValue(SelectedDateProperty, value);
+			}
+		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public static global::Windows.UI.Xaml.DependencyProperty YearFormatProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			"YearFormat", typeof(string), 
-			typeof(global::Windows.UI.Xaml.Controls.DatePicker), 
-			new FrameworkPropertyMetadata(default(string)));
-		#endif
-		// Skipping already declared property YearVisibleProperty
 		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty CalendarIdentifierProperty { get; } = 
@@ -189,11 +186,36 @@ namespace Windows.UI.Xaml.Controls
 		// Skipping already declared property MonthVisibleProperty
 		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
+		public static global::Windows.UI.Xaml.DependencyProperty OrientationProperty { get; } = 
+		Windows.UI.Xaml.DependencyProperty.Register(
+			"Orientation", typeof(global::Windows.UI.Xaml.Controls.Orientation), 
+			typeof(global::Windows.UI.Xaml.Controls.DatePicker), 
+			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Controls.Orientation)));
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public static global::Windows.UI.Xaml.DependencyProperty YearFormatProperty { get; } = 
+		Windows.UI.Xaml.DependencyProperty.Register(
+			"YearFormat", typeof(string), 
+			typeof(global::Windows.UI.Xaml.Controls.DatePicker), 
+			new FrameworkPropertyMetadata(default(string)));
+		#endif
+		// Skipping already declared property YearVisibleProperty
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty LightDismissOverlayModeProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
 			"LightDismissOverlayMode", typeof(global::Windows.UI.Xaml.Controls.LightDismissOverlayMode), 
 			typeof(global::Windows.UI.Xaml.Controls.DatePicker), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Controls.LightDismissOverlayMode)));
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public static global::Windows.UI.Xaml.DependencyProperty SelectedDateProperty { get; } = 
+		Windows.UI.Xaml.DependencyProperty.Register(
+			"SelectedDate", typeof(global::System.DateTimeOffset?), 
+			typeof(global::Windows.UI.Xaml.Controls.DatePicker), 
+			new FrameworkPropertyMetadata(default(global::System.DateTimeOffset?)));
 		#endif
 		// Skipping already declared method Windows.UI.Xaml.Controls.DatePicker.DatePicker()
 		// Forced skipping of method Windows.UI.Xaml.Controls.DatePicker.DatePicker()
@@ -227,6 +249,11 @@ namespace Windows.UI.Xaml.Controls
 		// Forced skipping of method Windows.UI.Xaml.Controls.DatePicker.DateChanged.remove
 		// Forced skipping of method Windows.UI.Xaml.Controls.DatePicker.LightDismissOverlayMode.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.DatePicker.LightDismissOverlayMode.set
+		// Forced skipping of method Windows.UI.Xaml.Controls.DatePicker.SelectedDate.get
+		// Forced skipping of method Windows.UI.Xaml.Controls.DatePicker.SelectedDate.set
+		// Forced skipping of method Windows.UI.Xaml.Controls.DatePicker.SelectedDateChanged.add
+		// Forced skipping of method Windows.UI.Xaml.Controls.DatePicker.SelectedDateChanged.remove
+		// Forced skipping of method Windows.UI.Xaml.Controls.DatePicker.SelectedDateProperty.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.DatePicker.LightDismissOverlayModeProperty.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.DatePicker.HeaderProperty.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.DatePicker.HeaderTemplateProperty.get
@@ -242,5 +269,21 @@ namespace Windows.UI.Xaml.Controls
 		// Forced skipping of method Windows.UI.Xaml.Controls.DatePicker.MaxYearProperty.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.DatePicker.OrientationProperty.get
 		// Skipping already declared event Windows.UI.Xaml.Controls.DatePicker.DateChanged
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Xaml.Controls.DatePicker, global::Windows.UI.Xaml.Controls.DatePickerSelectedValueChangedEventArgs> SelectedDateChanged
+		{
+			[global::Uno.NotImplemented]
+			add
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.DatePicker", "event TypedEventHandler<DatePicker, DatePickerSelectedValueChangedEventArgs> DatePicker.SelectedDateChanged");
+			}
+			[global::Uno.NotImplemented]
+			remove
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.DatePicker", "event TypedEventHandler<DatePicker, DatePickerSelectedValueChangedEventArgs> DatePicker.SelectedDateChanged");
+			}
+		}
+		#endif
 	}
 }

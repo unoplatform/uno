@@ -38,52 +38,6 @@ namespace <#= mixin.NamespaceName #>
 	{
 		private readonly static IEventProvider _trace = Tracing.Get(FrameworkElement.TraceProvider.Id);
 
-#if <#= mixin.OverridesAttachedToWindow #>
-		protected override void OnNativeLoaded()
-		{
-			try
-			{
-				((IDependencyObjectStoreProvider)this).Store.Parent = base.Parent;
-				OnLoading();
-				OnLoaded();
-
-				base.OnNativeLoaded();
-			}
-			catch (Exception ex)
-			{
-				this.Log().Error("OnNativeLoaded failed in FrameworkElementMixins", ex);
-				Application.Current.RaiseRecoverableUnhandledException(ex);
-			}
-		}
-
-		protected override void OnNativeUnloaded()
-		{
-			try
-			{
-				OnUnloaded();
-
-				base.OnNativeUnloaded();
-			}
-			catch(Exception ex)
-			{
-				this.Log().Error("OnNativeUnloaded failed in FrameworkElementMixins", ex);
-				Application.Current.RaiseRecoverableUnhandledException(ex);
-			}
-		}
-			
-		/// <summary>
-		/// Notifies that this view has been removed from its parent. This method is only 
-		/// called when the parent is an UnoViewGroup.
-		/// </summary>
-		protected override void OnRemovedFromParent()
-            {
-			base.OnRemovedFromParent();
-
-                ((IDependencyObjectStoreProvider)this).Store.Parent = null;
-            }
-		
-#endif
-
 		public event DependencyPropertyChangedEventHandler IsEnabledChanged;
 
         public event TypedEventHandler<DependencyObject, object> Loading;

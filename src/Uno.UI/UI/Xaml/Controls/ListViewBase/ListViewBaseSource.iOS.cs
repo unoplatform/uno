@@ -525,21 +525,25 @@ namespace Windows.UI.Xaml.Controls
 		{
 			if (IsMaterialized(indexPath))
 			{
-				return Owner?.ResolveItemTemplate(Owner.XamlParent.GetDisplayItemFromIndexPath(indexPath.ToIndexPath()));
+				return Owner?.XamlParent?.ResolveItemTemplate(Owner.XamlParent.GetDisplayItemFromIndexPath(indexPath.ToIndexPath()));
 			}
 			else
 			{
 				// Ignore ItemTemplateSelector since we do not know what the item is
-				return Owner?.ItemTemplate;
+				return Owner?.XamlParent?.ItemTemplate;
 			}
 		}
 
 		private DataTemplate GetTemplateForGroupHeader(int section)
 		{
-				var groupStyle = Owner.GroupStyle;
+			var groupStyle = Owner.GroupStyle;
 			if (IsMaterialized(section))
 			{
-				return DataTemplateHelper.ResolveTemplate(groupStyle?.HeaderTemplate, groupStyle?.HeaderTemplateSelector, Owner.XamlParent.GetGroupAtDisplaySection(section).Group);
+				return DataTemplateHelper.ResolveTemplate(
+					groupStyle?.HeaderTemplate,
+					groupStyle?.HeaderTemplateSelector,
+					Owner.XamlParent.GetGroupAtDisplaySection(section).Group,
+					Owner);
 			}
 			else
 			{
@@ -665,7 +669,7 @@ namespace Windows.UI.Xaml.Controls
 		private Orientation ScrollOrientation => Owner.NativeLayout.ScrollOrientation;
 		private bool SupportsDynamicItemSizes => Owner.NativeLayout.SupportsDynamicItemSizes;
 		private ILayouter Layouter => Owner.NativeLayout.Layouter;
-		
+
 		protected override void Dispose(bool disposing)
 		{
 			if (!disposing)
@@ -766,6 +770,12 @@ namespace Windows.UI.Xaml.Controls
 				// method maps to another object. The repro steps are not clear, and it may be related to ListView/GridView
 				// data reload.
 				this.Log().Error("ApplyLayoutAttributes has been called with an invalid instance. See bug #XXX for more details.");
+				return null;
+			}
+
+			if(Content == null)
+			{
+				this.Log().Error("Empty ListViewBaseInternalContainer content.");
 				return null;
 			}
 

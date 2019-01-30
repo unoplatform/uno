@@ -79,6 +79,20 @@ namespace Windows.ApplicationModel
 			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> Package.SetInUseAsync(bool inUse) is not implemented in Uno.");
 		}
 		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  global::Windows.ApplicationModel.AppInstallerInfo GetAppInstallerInfo()
+		{
+			throw new global::System.NotImplementedException("The member AppInstallerInfo Package.GetAppInstallerInfo() is not implemented in Uno.");
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.PackageUpdateAvailabilityResult> CheckUpdateAvailabilityAsync()
+		{
+			throw new global::System.NotImplementedException("The member IAsyncOperation<PackageUpdateAvailabilityResult> Package.CheckUpdateAvailabilityAsync() is not implemented in Uno.");
+		}
+		#endif
 		// Forced skipping of method Windows.ApplicationModel.Package.Current.get
 	}
 }

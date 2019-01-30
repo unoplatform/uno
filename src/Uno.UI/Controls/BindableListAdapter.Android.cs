@@ -385,7 +385,8 @@ namespace Uno.UI.Controls
 							var template = DataTemplateHelper.ResolveTemplate(
 								this.ItemTemplate,
 								this.ItemTemplateSelector,
-								source
+								source,
+								null
 							);
 
 							var templateView = template?.LoadContentCached();
@@ -416,7 +417,8 @@ namespace Uno.UI.Controls
 			return DataTemplateHelper.ResolveTemplate(
 				ItemTemplate,
 				ItemTemplateSelector,
-				item
+				item,
+				null
 			);
 		}
 
@@ -560,7 +562,8 @@ namespace Uno.UI.Controls
 			var itemTemplate = DataTemplateHelper.ResolveTemplate(
 				this.ItemTemplate,
 				this.ItemTemplateSelector,
-				item
+				item,
+				null
 			);
 				
 			if (itemTemplate == null)
