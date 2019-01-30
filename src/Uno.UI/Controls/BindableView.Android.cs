@@ -7,7 +7,11 @@ using Uno.Presentation.Resources;
 using System.Runtime.CompilerServices;
 using Windows.UI.Xaml;
 using System.ComponentModel;
+using Windows.UI.Xaml.Media;
+using Android.Graphics;
+using Android.Views.Animations;
 using Uno.Disposables;
+using Uno.UI.Media;
 
 namespace Uno.UI.Controls
 {
@@ -20,7 +24,7 @@ namespace Uno.UI.Controls
 		DependencyObject,
 		IShadowChildrenProvider
 	{
-		private List<View> _childrenShadow = new List<View>();
+		private readonly List<View> _childrenShadow = new List<View>();
 
 		public event PropertyChangedEventHandler PropertyChanged;
 
@@ -201,6 +205,18 @@ namespace Uno.UI.Controls
 				_childrenShadow[i].BringToFront();
 			}
 		}
+
+		/// <summary>
+		/// Registers the native adapter which handles the RenderTransform on a child view
+		/// </summary>
+		internal void RegisterChildTransform(NativeRenderTransformAdapter transformation)
+			=> SetChildRenderTransform(transformation.Owner, transformation.Matrix);
+
+		/// <summary>
+		/// Removes the native adapter which handles the RenderTransform on a child view
+		/// </summary>
+		internal void UnregisterChildTransform(NativeRenderTransformAdapter transformation)
+			=> RemoveChildRenderTransform(transformation.Owner);
 
 		/// <summary>
 		/// Should not be used directly. Notifies that a view has been added to the ViewGroup using the native AddView methods.

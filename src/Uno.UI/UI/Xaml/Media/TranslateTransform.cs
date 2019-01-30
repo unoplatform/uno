@@ -13,37 +13,15 @@ namespace Windows.UI.Xaml.Media
 	/// </summary>
 	public partial class TranslateTransform : Transform
 	{
-		public double X
+		internal static Matrix3x2 GetMatrix(double x, double y)
 		{
-			get { return (double)this.GetValue(XProperty); }
-			set { this.SetValue(XProperty, value); }
+			return Matrix3x2.CreateTranslation((float)x, (float)y);
 		}
 
-		// Using a DependencyProperty as the backing store for X.  This enables animation, styling, binding, etc...
-		public static readonly DependencyProperty XProperty =
-			DependencyProperty.Register("X", typeof(double), typeof(TranslateTransform), new PropertyMetadata(0.0, OnXChanged));
-		private static void OnXChanged(object dependencyObject, DependencyPropertyChangedEventArgs args)
+		internal override Matrix3x2 ToMatrix(Point absoluteOrigin)
 		{
-			(dependencyObject as TranslateTransform)?.SetX(args);
+			return GetMatrix(X, Y);
 		}
-
-		partial void SetX(DependencyPropertyChangedEventArgs args);
-
-		public double Y
-		{
-			get { return (double)this.GetValue(YProperty); }
-			set { this.SetValue(YProperty, value); }
-		}
-
-		// Using a DependencyProperty as the backing store for X.  This enables animation, styling, binding, etc...
-		public static readonly DependencyProperty YProperty =
-			DependencyProperty.Register("Y", typeof(double), typeof(TranslateTransform), new PropertyMetadata(0.0, OnYChanged));
-		private static void OnYChanged(object dependencyObject, DependencyPropertyChangedEventArgs args)
-		{
-			(dependencyObject as TranslateTransform)?.SetY(args);
-		}
-
-		partial void SetY(DependencyPropertyChangedEventArgs args);
 
 		protected override bool TryTransformCore(Point inPoint, out Point outPoint)
 		{
@@ -52,8 +30,28 @@ namespace Windows.UI.Xaml.Media
 			return true;
 		}
 
-		protected override Rect TransformBoundsCore(Rect rect) 
-			=> rect.Transform(Matrix3x2.CreateTranslation((float)X, (float)Y));
+		protected override Rect TransformBoundsCore(Rect rect)
+		{
+			return rect.Transform(Matrix3x2.CreateTranslation((float)X, (float)Y));
+		}
+
+		public double X
+		{
+			get => (double)GetValue(XProperty);
+			set => SetValue(XProperty, value);
+		}
+
+		public static readonly DependencyProperty XProperty =
+			DependencyProperty.Register("X", typeof(double), typeof(TranslateTransform), new PropertyMetadata(0.0, Transform.NotifyChangedCallback));
+
+		public double Y
+		{
+			get => (double)GetValue(YProperty);
+			set => SetValue(YProperty, value);
+		}
+
+		public static readonly DependencyProperty YProperty =
+			DependencyProperty.Register("Y", typeof(double), typeof(TranslateTransform), new PropertyMetadata(0.0, Transform.NotifyChangedCallback));
 	}
 }
 

@@ -23,5 +23,11 @@ namespace Uno.UI
 		/// </summary>
 		public static double ToRadians(double angleDegree) 
 			=> (Math.PI / 180.0) * angleDegree;
+
+		/// <summary>
+		/// Converts an angle in radians into degrees
+		/// </summary>
+		public static double ToDegree(double angleRadian)
+			=> angleRadian / (Math.PI / 180.0);
 	}
 }
