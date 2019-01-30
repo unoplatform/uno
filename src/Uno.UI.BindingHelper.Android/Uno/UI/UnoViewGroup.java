@@ -2,11 +2,15 @@ package Uno.UI;
 
 import android.graphics.Matrix;
 import android.view.*;
+import android.view.animation.Transformation;
 import android.graphics.Rect;
 import android.util.Log;
 
 import java.lang.*;
 import java.lang.reflect.*;
+import java.util.Map;
+import java.util.HashMap;
+
 
 public abstract class UnoViewGroup
         extends android.view.ViewGroup
@@ -28,6 +32,7 @@ public abstract class UnoViewGroup
 
 	private int _currentPointerId = -1;
 
+	private Map<View, Matrix> _childrenTransformations = new HashMap<View, Matrix>();
 	private float _transformedTouchX;
 	private float _transformedTouchY;
 
@@ -682,12 +687,70 @@ public abstract class UnoViewGroup
     	point[0] -= view.getLeft();
     	point[1] -= view.getTop();
 
-    	if (!hasIdentityMatrix(view)) {
-    		Matrix inverse = new Matrix();
-    		if (getInvertedMatrix(view, inverse)) {
-    			inverse.mapPoints(point);
+		// Check the render transform applied by the parent UnoViewGroup
+		Matrix inverse = new Matrix();
+		if (viewParent instanceof UnoViewGroup) {
+			Matrix parentMatrix = ((UnoViewGroup) viewParent).getChildStaticMatrix(view);
+			if (!parentMatrix.isIdentity()) {
+				parentMatrix.invert(inverse);
+				inverse.mapPoints(point);
 			}
 		}
+
+		// Then apply the transform defined directly on this view
+		Matrix localMatrix = view.getMatrix();
+    	if (!localMatrix.isIdentity()) {
+			localMatrix.invert(inverse);
+			inverse.mapPoints(point);
+		}
+	}
+
+	private Matrix getChildStaticMatrix(View view) {
+		Matrix transform = _childrenTransformations.get(view);
+		if (transform == null) {
+			transform = new Matrix();
+		}
+
+		return transform;
+	}
+
+	/**
+	 * Sets the static transform matrix to apply to the given child view.
+	 * This will be used by the {@link #android.view.ViewGroup.getChildStaticTransformation()}
+	 *
+	 * @param child The view to which the matrix applies.
+	 * @param transform The transformation matrix to apply.
+	 */
+	protected void setChildRenderTransform(View child, Matrix transform) {
+		_childrenTransformations.put(child, transform);
+		if (_childrenTransformations.size() == 1) {
+			setStaticTransformationsEnabled(true);
+		}
+	}
+
+	/**
+	 * Removes the static transform matrix applied to the given child view.
+	 *
+	 * @param child The view to which the matrix applies.
+	 * @param transform The transformation matrix to apply.
+	 */
+	protected void removeChildRenderTransform(View child) {
+		_childrenTransformations.remove(child);
+		if (_childrenTransformations.size() == 0) {
+			setStaticTransformationsEnabled(false);
+		}
+	}
+
+	@Override
+    protected final boolean getChildStaticTransformation(View child, Transformation outTransform) {
+		Matrix renderTransform = _childrenTransformations.get(child);
+		if (renderTransform == null || renderTransform.isIdentity()) {
+			outTransform.clear();
+		} else {
+			outTransform.getMatrix().set(renderTransform);
+		}
+
+		return true;
 	}
 
 	/**
@@ -725,14 +788,6 @@ public abstract class UnoViewGroup
 			}
 			return point;
 		}
-	}
-
-	private static boolean hasIdentityMatrix(View view) {
-		return view.getMatrix().isIdentity();
-	}
-
-	private static boolean getInvertedMatrix(View view, Matrix outMatrix) {
-		return view.getMatrix().invert(outMatrix);
 	}
 
 	// Allows UI automation operations to look for a single 'Text' property for both ViewGroup and TextView elements.

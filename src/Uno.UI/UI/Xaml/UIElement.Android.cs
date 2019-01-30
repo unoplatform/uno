@@ -8,6 +8,7 @@ using Windows.UI.Xaml.Input;
 using Android.Support.V4.View;
 using Windows.UI.Xaml.Media;
 using Android.Views;
+using Uno.UI.Media;
 
 namespace Windows.UI.Xaml
 {
@@ -36,6 +37,19 @@ namespace Windows.UI.Xaml
 			}
 
 			ViewCompat.SetClipBounds(this, rect.LogicalToPhysicalPixels());
+		}
+
+		private bool _renderTransformRegisteredParentChanged;
+		private static void RenderTransformOnParentChanged(object dependencyObject, object _, DependencyObjectParentChangedEventArgs args)
+			=> ((UIElement)dependencyObject)._renderTransform?.UpdateParent(args.PreviousParent, args.NewParent);
+		partial void OnRenderTransformSet()
+		{
+			// On first Transform set, we register to the parent changed, so we can enable or disable the static transformations on it
+			if (!_renderTransformRegisteredParentChanged)
+			{
+				((IDependencyObjectStoreProvider)this).Store.RegisterSelfParentChangedCallback(RenderTransformOnParentChanged);
+				_renderTransformRegisteredParentChanged = true;
+			}
 		}
 
 		public GeneralTransform TransformToVisual(UIElement visual)
@@ -221,33 +235,6 @@ namespace Windows.UI.Xaml
 				currentViewLocation[0] - relativeToLocation[0],
 				currentViewLocation[1] - relativeToLocation[1]
 			);
-		}
-
-		static partial void OnRenderTransformChanged(object dependencyObject, DependencyPropertyChangedEventArgs args)
-		{
-			if (args.NewValue is Transform newTransform)
-			{
-				var view = (UIElement)dependencyObject;
-
-				newTransform.View = view;
-				newTransform.Origin = view.RenderTransformOrigin;
-			}
-
-			if (args.OldValue is Transform oldTransform)
-			{
-				oldTransform.View = null;
-			}
-		}
-
-		static partial void OnRenderTransformOriginChanged(object dependencyObject, DependencyPropertyChangedEventArgs args)
-		{
-			if (
-				dependencyObject is UIElement view
-				&& view.RenderTransform != null
-			)
-			{
-				view.RenderTransform.Origin = (Point)args.NewValue;
-			}
 		}
 
 		/// <summary>
