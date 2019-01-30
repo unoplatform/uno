@@ -9,33 +9,9 @@ namespace Windows.UI.Xaml.Automation
 	{
 		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
-		public static global::Windows.UI.Xaml.DependencyProperty ItemStatusProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty AcceleratorKeyProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.RegisterAttached(
-			"ItemStatus", typeof(string), 
-			typeof(global::Windows.UI.Xaml.Automation.AutomationProperties), 
-			new FrameworkPropertyMetadata(default(string)));
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public static global::Windows.UI.Xaml.DependencyProperty IsRequiredForFormProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.RegisterAttached(
-			"IsRequiredForForm", typeof(bool), 
-			typeof(global::Windows.UI.Xaml.Automation.AutomationProperties), 
-			new FrameworkPropertyMetadata(default(bool)));
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public static global::Windows.UI.Xaml.DependencyProperty HelpTextProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.RegisterAttached(
-			"HelpText", typeof(string), 
-			typeof(global::Windows.UI.Xaml.Automation.AutomationProperties), 
-			new FrameworkPropertyMetadata(default(string)));
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public static global::Windows.UI.Xaml.DependencyProperty AutomationIdProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.RegisterAttached(
-			"AutomationId", typeof(string), 
+			"AcceleratorKey", typeof(string), 
 			typeof(global::Windows.UI.Xaml.Automation.AutomationProperties), 
 			new FrameworkPropertyMetadata(default(string)));
 		#endif
@@ -49,9 +25,33 @@ namespace Windows.UI.Xaml.Automation
 		#endif
 		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
-		public static global::Windows.UI.Xaml.DependencyProperty AcceleratorKeyProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty AutomationIdProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.RegisterAttached(
-			"AcceleratorKey", typeof(string), 
+			"AutomationId", typeof(string), 
+			typeof(global::Windows.UI.Xaml.Automation.AutomationProperties), 
+			new FrameworkPropertyMetadata(default(string)));
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public static global::Windows.UI.Xaml.DependencyProperty HelpTextProperty { get; } = 
+		Windows.UI.Xaml.DependencyProperty.RegisterAttached(
+			"HelpText", typeof(string), 
+			typeof(global::Windows.UI.Xaml.Automation.AutomationProperties), 
+			new FrameworkPropertyMetadata(default(string)));
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public static global::Windows.UI.Xaml.DependencyProperty IsRequiredForFormProperty { get; } = 
+		Windows.UI.Xaml.DependencyProperty.RegisterAttached(
+			"IsRequiredForForm", typeof(bool), 
+			typeof(global::Windows.UI.Xaml.Automation.AutomationProperties), 
+			new FrameworkPropertyMetadata(default(bool)));
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public static global::Windows.UI.Xaml.DependencyProperty ItemStatusProperty { get; } = 
+		Windows.UI.Xaml.DependencyProperty.RegisterAttached(
+			"ItemStatus", typeof(string), 
 			typeof(global::Windows.UI.Xaml.Automation.AutomationProperties), 
 			new FrameworkPropertyMetadata(default(string)));
 		#endif
@@ -73,6 +73,7 @@ namespace Windows.UI.Xaml.Automation
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Automation.Peers.AutomationLiveSetting)));
 		#endif
 		// Skipping already declared property NameProperty
+		// Skipping already declared property AccessibilityViewProperty
 		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty ControlledPeersProperty { get; } = 
@@ -81,7 +82,6 @@ namespace Windows.UI.Xaml.Automation
 			typeof(global::Windows.UI.Xaml.Automation.AutomationProperties), 
 			new FrameworkPropertyMetadata(default(global::System.Collections.Generic.IList<global::Windows.UI.Xaml.UIElement>)));
 		#endif
-		// Skipping already declared property AccessibilityViewProperty
 		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty AnnotationsProperty { get; } = 
@@ -130,22 +130,22 @@ namespace Windows.UI.Xaml.Automation
 			typeof(global::Windows.UI.Xaml.Automation.AutomationProperties), 
 			new FrameworkPropertyMetadata(default(string)));
 		#endif
-		// Skipping already declared property LocalizedControlTypeProperty
+		// Skipping already declared property DescribedByProperty
 		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
-		public static global::Windows.UI.Xaml.DependencyProperty IsPeripheralProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty FlowsFromProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.RegisterAttached(
-			"IsPeripheral", typeof(bool), 
+			"FlowsFrom", typeof(global::System.Collections.Generic.IList<global::Windows.UI.Xaml.DependencyObject>), 
 			typeof(global::Windows.UI.Xaml.Automation.AutomationProperties), 
-			new FrameworkPropertyMetadata(default(bool)));
+			new FrameworkPropertyMetadata(default(global::System.Collections.Generic.IList<global::Windows.UI.Xaml.DependencyObject>)));
 		#endif
 		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
-		public static global::Windows.UI.Xaml.DependencyProperty IsDataValidForFormProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty FlowsToProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.RegisterAttached(
-			"IsDataValidForForm", typeof(bool), 
+			"FlowsTo", typeof(global::System.Collections.Generic.IList<global::Windows.UI.Xaml.DependencyObject>), 
 			typeof(global::Windows.UI.Xaml.Automation.AutomationProperties), 
-			new FrameworkPropertyMetadata(default(bool)));
+			new FrameworkPropertyMetadata(default(global::System.Collections.Generic.IList<global::Windows.UI.Xaml.DependencyObject>)));
 		#endif
 		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
@@ -157,21 +157,21 @@ namespace Windows.UI.Xaml.Automation
 		#endif
 		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
-		public static global::Windows.UI.Xaml.DependencyProperty FlowsToProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty IsDataValidForFormProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.RegisterAttached(
-			"FlowsTo", typeof(global::System.Collections.Generic.IList<global::Windows.UI.Xaml.DependencyObject>), 
+			"IsDataValidForForm", typeof(bool), 
 			typeof(global::Windows.UI.Xaml.Automation.AutomationProperties), 
-			new FrameworkPropertyMetadata(default(global::System.Collections.Generic.IList<global::Windows.UI.Xaml.DependencyObject>)));
+			new FrameworkPropertyMetadata(default(bool)));
 		#endif
-		// Skipping already declared property DescribedByProperty
 		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
-		public static global::Windows.UI.Xaml.DependencyProperty FlowsFromProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty IsPeripheralProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.RegisterAttached(
-			"FlowsFrom", typeof(global::System.Collections.Generic.IList<global::Windows.UI.Xaml.DependencyObject>), 
+			"IsPeripheral", typeof(bool), 
 			typeof(global::Windows.UI.Xaml.Automation.AutomationProperties), 
-			new FrameworkPropertyMetadata(default(global::System.Collections.Generic.IList<global::Windows.UI.Xaml.DependencyObject>)));
+			new FrameworkPropertyMetadata(default(bool)));
 		#endif
+		// Skipping already declared property LocalizedControlTypeProperty
 		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty CultureProperty { get; } = 
@@ -187,6 +187,29 @@ namespace Windows.UI.Xaml.Automation
 			"HeadingLevel", typeof(global::Windows.UI.Xaml.Automation.Peers.AutomationHeadingLevel), 
 			typeof(global::Windows.UI.Xaml.Automation.AutomationProperties), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Automation.Peers.AutomationHeadingLevel)));
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public static global::Windows.UI.Xaml.DependencyProperty IsDialogProperty { get; } = 
+		Windows.UI.Xaml.DependencyProperty.RegisterAttached(
+			"IsDialog", typeof(bool), 
+			typeof(global::Windows.UI.Xaml.Automation.AutomationProperties), 
+			new FrameworkPropertyMetadata(default(bool)));
+		#endif
+		// Forced skipping of method Windows.UI.Xaml.Automation.AutomationProperties.IsDialogProperty.get
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public static bool GetIsDialog( global::Windows.UI.Xaml.DependencyObject element)
+		{
+			return (bool)element.GetValue(IsDialogProperty);
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public static void SetIsDialog( global::Windows.UI.Xaml.DependencyObject element,  bool value)
+		{
+			element.SetValue(IsDialogProperty, value);
+		}
 		#endif
 		// Forced skipping of method Windows.UI.Xaml.Automation.AutomationProperties.HeadingLevelProperty.get
 		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__

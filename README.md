@@ -4,7 +4,7 @@
 
 # What is the Uno Platform
 
-The Uno Platform is an Universal Windows Platform Bridge to allow UWP based code to run on iOS, Android, and WebAssembly. It provides the full definitions of the UWP Spring Creators Update (17134), and the implementation of growing number parts of the UWP API, such as **Windows.UI.Xaml**, to enable applications to run on these platforms.
+The Uno Platform is an Universal Windows Platform Bridge to allow UWP based code to run on iOS, Android, and WebAssembly. It provides the full definitions of the UWP Windows 10 October 2018 Update (17763), and the implementation of growing number parts of the UWP API, such as **Windows.UI.Xaml**, to enable applications to run on these platforms.
 
 Use the UWP tooling from Windows in [Visual Studio](https://www.visualstudio.com/), such as [XAML Edit and Continue](https://blogs.msdn.microsoft.com/visualstudio/2016/04/06/ui-development-made-easier-with-xaml-edit-continue/) and [C# Edit and Continue](https://docs.microsoft.com/en-us/visualstudio/debugger/how-to-use-edit-and-continue-csharp), build your application as much as possible on Windows, then validate that your application runs on iOS, Android and WebAssembly.
 
@@ -20,6 +20,8 @@ Here's a list of live apps made with the Uno Platform for WebAssembly.
 * The [Uno.BikeSharing360 App](http://bikerider-wasm.platform.uno/), a Xamarin.Forms app running on top of Uno for WebAssembly ([Source](https://github.com/nventive/Uno.BikeSharing360_MobileApps))
 * The [Uno.WindowsStateTriggers App](http://winstatetriggers-wasm.platform.uno/), a demo of the [Morten's WindowsStateTriggers](https://github.com/dotMorten/WindowsStateTriggers) ([Source](https://github.com/nventive/Uno.WindowsStateTriggers))
 * The [SQLite + Entity Framework Core App](http://sqliteefcore-wasm.platform.uno), a demo of the combination of [Roslyn](https://github.com/dotnet/roslyn), [Entity Framework Core](https://docs.microsoft.com/en-us/ef/core/), [SQLite](https://github.com/nventive/Uno.SQLitePCLRaw.Wasm) and the Uno Platform to manipulate an in-browser database.
+* The [Uno.WebSockets App](http://websockets-wasm.platform.uno), a demo of System.Net.WebSocket running from WebAssembly ([Source](https://github.com/nventive/Uno.Wasm.WebSockets))
+* A [mono-wasm AOT RayTracer](https://raytracer-mono-aot.platform.uno/)
 
 Let us know if you've made your app publicly available, we'll list it here!
 

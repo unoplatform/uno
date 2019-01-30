@@ -9,160 +9,6 @@ namespace Windows.UI.Xaml.Controls
 	{
 		#if false || false || NET46 || false || false
 		[global::Uno.NotImplemented]
-		public  global::Windows.UI.Xaml.Media.FontFamily FontFamily
-		{
-			get
-			{
-				return (global::Windows.UI.Xaml.Media.FontFamily)this.GetValue(FontFamilyProperty);
-			}
-			set
-			{
-				this.SetValue(FontFamilyProperty, value);
-			}
-		}
-		#endif
-		#if false || false || NET46 || false || false
-		[global::Uno.NotImplemented]
-		public  double LineHeight
-		{
-			get
-			{
-				return (double)this.GetValue(LineHeightProperty);
-			}
-			set
-			{
-				this.SetValue(LineHeightProperty, value);
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  bool IsTextSelectionEnabled
-		{
-			get
-			{
-				return (bool)this.GetValue(IsTextSelectionEnabledProperty);
-			}
-			set
-			{
-				this.SetValue(IsTextSelectionEnabledProperty, value);
-			}
-		}
-		#endif
-		#if false || false || NET46 || false || false
-		[global::Uno.NotImplemented]
-		public  int CharacterSpacing
-		{
-			get
-			{
-				return (int)this.GetValue(CharacterSpacingProperty);
-			}
-			set
-			{
-				this.SetValue(CharacterSpacingProperty, value);
-			}
-		}
-		#endif
-		#if false || false || NET46 || false || false
-		[global::Uno.NotImplemented]
-		public  global::Windows.UI.Xaml.Thickness Padding
-		{
-			get
-			{
-				return (global::Windows.UI.Xaml.Thickness)this.GetValue(PaddingProperty);
-			}
-			set
-			{
-				this.SetValue(PaddingProperty, value);
-			}
-		}
-		#endif
-		#if false || false || NET46 || false || false
-		[global::Uno.NotImplemented]
-		public  global::Windows.UI.Xaml.Media.Brush Foreground
-		{
-			get
-			{
-				return (global::Windows.UI.Xaml.Media.Brush)this.GetValue(ForegroundProperty);
-			}
-			set
-			{
-				this.SetValue(ForegroundProperty, value);
-			}
-		}
-		#endif
-		#if false || false || NET46 || false || false
-		[global::Uno.NotImplemented]
-		public  global::Windows.UI.Text.FontWeight FontWeight
-		{
-			get
-			{
-				return (global::Windows.UI.Text.FontWeight)this.GetValue(FontWeightProperty);
-			}
-			set
-			{
-				this.SetValue(FontWeightProperty, value);
-			}
-		}
-		#endif
-		#if false || false || NET46 || false || false
-		[global::Uno.NotImplemented]
-		public  global::Windows.UI.Xaml.LineStackingStrategy LineStackingStrategy
-		{
-			get
-			{
-				return (global::Windows.UI.Xaml.LineStackingStrategy)this.GetValue(LineStackingStrategyProperty);
-			}
-			set
-			{
-				this.SetValue(LineStackingStrategyProperty, value);
-			}
-		}
-		#endif
-		#if false || false || NET46 || false || false
-		[global::Uno.NotImplemented]
-		public  global::Windows.UI.Text.FontStyle FontStyle
-		{
-			get
-			{
-				return (global::Windows.UI.Text.FontStyle)this.GetValue(FontStyleProperty);
-			}
-			set
-			{
-				this.SetValue(FontStyleProperty, value);
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  global::Windows.UI.Text.FontStretch FontStretch
-		{
-			get
-			{
-				return (global::Windows.UI.Text.FontStretch)this.GetValue(FontStretchProperty);
-			}
-			set
-			{
-				this.SetValue(FontStretchProperty, value);
-			}
-		}
-		#endif
-		#if false || false || NET46 || false || false
-		[global::Uno.NotImplemented]
-		public  double FontSize
-		{
-			get
-			{
-				return (double)this.GetValue(FontSizeProperty);
-			}
-			set
-			{
-				this.SetValue(FontSizeProperty, value);
-			}
-		}
-		#endif
-		#if false || false || NET46 || false || false
-		[global::Uno.NotImplemented]
 		public  global::Windows.UI.Xaml.TextWrapping TextWrapping
 		{
 			get
@@ -217,37 +63,160 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if false || false || NET46 || false || false
 		[global::Uno.NotImplemented]
-		public  double BaselineOffset
+		public  global::Windows.UI.Xaml.Thickness Padding
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double TextBlock.BaselineOffset is not implemented in Uno.");
+				return (global::Windows.UI.Xaml.Thickness)this.GetValue(PaddingProperty);
+			}
+			set
+			{
+				this.SetValue(PaddingProperty, value);
+			}
+		}
+		#endif
+		#if false || false || NET46 || false || false
+		[global::Uno.NotImplemented]
+		public  global::Windows.UI.Xaml.Media.Brush Foreground
+		{
+			get
+			{
+				return (global::Windows.UI.Xaml.Media.Brush)this.GetValue(ForegroundProperty);
+			}
+			set
+			{
+				this.SetValue(ForegroundProperty, value);
+			}
+		}
+		#endif
+		#if false || false || NET46 || false || false
+		[global::Uno.NotImplemented]
+		public  global::Windows.UI.Text.FontWeight FontWeight
+		{
+			get
+			{
+				return (global::Windows.UI.Text.FontWeight)this.GetValue(FontWeightProperty);
+			}
+			set
+			{
+				this.SetValue(FontWeightProperty, value);
+			}
+		}
+		#endif
+		#if false || false || NET46 || false || false
+		[global::Uno.NotImplemented]
+		public  global::Windows.UI.Text.FontStyle FontStyle
+		{
+			get
+			{
+				return (global::Windows.UI.Text.FontStyle)this.GetValue(FontStyleProperty);
+			}
+			set
+			{
+				this.SetValue(FontStyleProperty, value);
 			}
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
-		public  global::Windows.UI.Xaml.Documents.TextPointer ContentEnd
+		public  global::Windows.UI.Text.FontStretch FontStretch
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TextPointer TextBlock.ContentEnd is not implemented in Uno.");
+				return (global::Windows.UI.Text.FontStretch)this.GetValue(FontStretchProperty);
+			}
+			set
+			{
+				this.SetValue(FontStretchProperty, value);
+			}
+		}
+		#endif
+		#if false || false || NET46 || false || false
+		[global::Uno.NotImplemented]
+		public  double FontSize
+		{
+			get
+			{
+				return (double)this.GetValue(FontSizeProperty);
+			}
+			set
+			{
+				this.SetValue(FontSizeProperty, value);
+			}
+		}
+		#endif
+		#if false || false || NET46 || false || false
+		[global::Uno.NotImplemented]
+		public  global::Windows.UI.Xaml.Media.FontFamily FontFamily
+		{
+			get
+			{
+				return (global::Windows.UI.Xaml.Media.FontFamily)this.GetValue(FontFamilyProperty);
+			}
+			set
+			{
+				this.SetValue(FontFamilyProperty, value);
+			}
+		}
+		#endif
+		#if false || false || NET46 || false || false
+		[global::Uno.NotImplemented]
+		public  global::Windows.UI.Xaml.LineStackingStrategy LineStackingStrategy
+		{
+			get
+			{
+				return (global::Windows.UI.Xaml.LineStackingStrategy)this.GetValue(LineStackingStrategyProperty);
+			}
+			set
+			{
+				this.SetValue(LineStackingStrategyProperty, value);
+			}
+		}
+		#endif
+		#if false || false || NET46 || false || false
+		[global::Uno.NotImplemented]
+		public  double LineHeight
+		{
+			get
+			{
+				return (double)this.GetValue(LineHeightProperty);
+			}
+			set
+			{
+				this.SetValue(LineHeightProperty, value);
+			}
+		}
+		#endif
+		#if false || false || NET46 || false || false
+		[global::Uno.NotImplemented]
+		public  int CharacterSpacing
+		{
+			get
+			{
+				return (int)this.GetValue(CharacterSpacingProperty);
+			}
+			set
+			{
+				this.SetValue(CharacterSpacingProperty, value);
 			}
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
-		public  global::Windows.UI.Xaml.Documents.TextPointer ContentStart
+		public  bool IsTextSelectionEnabled
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TextPointer TextBlock.ContentStart is not implemented in Uno.");
+				return (bool)this.GetValue(IsTextSelectionEnabledProperty);
+			}
+			set
+			{
+				this.SetValue(IsTextSelectionEnabledProperty, value);
 			}
 		}
 		#endif
-		// Skipping already declared property Inlines
 		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  string SelectedText
@@ -280,18 +249,35 @@ namespace Windows.UI.Xaml.Controls
 		#endif
 		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
-		public  global::Windows.UI.Xaml.OpticalMarginAlignment OpticalMarginAlignment
+		public  double BaselineOffset
 		{
 			get
 			{
-				return (global::Windows.UI.Xaml.OpticalMarginAlignment)this.GetValue(OpticalMarginAlignmentProperty);
-			}
-			set
-			{
-				this.SetValue(OpticalMarginAlignmentProperty, value);
+				throw new global::System.NotImplementedException("The member double TextBlock.BaselineOffset is not implemented in Uno.");
 			}
 		}
 		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  global::Windows.UI.Xaml.Documents.TextPointer ContentEnd
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member TextPointer TextBlock.ContentEnd is not implemented in Uno.");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  global::Windows.UI.Xaml.Documents.TextPointer ContentStart
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member TextPointer TextBlock.ContentStart is not implemented in Uno.");
+			}
+		}
+		#endif
+		// Skipping already declared property Inlines
 		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.UI.Xaml.TextReadingOrder TextReadingOrder
@@ -331,6 +317,20 @@ namespace Windows.UI.Xaml.Controls
 			set
 			{
 				this.SetValue(SelectionHighlightColorProperty, value);
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  global::Windows.UI.Xaml.OpticalMarginAlignment OpticalMarginAlignment
+		{
+			get
+			{
+				return (global::Windows.UI.Xaml.OpticalMarginAlignment)this.GetValue(OpticalMarginAlignmentProperty);
+			}
+			set
+			{
+				this.SetValue(OpticalMarginAlignmentProperty, value);
 			}
 		}
 		#endif
@@ -411,6 +411,20 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  global::Windows.UI.Xaml.Controls.Primitives.FlyoutBase SelectionFlyout
+		{
+			get
+			{
+				return (global::Windows.UI.Xaml.Controls.Primitives.FlyoutBase)this.GetValue(SelectionFlyoutProperty);
+			}
+			set
+			{
+				this.SetValue(SelectionFlyoutProperty, value);
+			}
+		}
+		#endif
 		#if false || false || NET46 || false || false
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty CharacterSpacingProperty { get; } = 
@@ -458,6 +472,14 @@ namespace Windows.UI.Xaml.Controls
 			"FontWeight", typeof(global::Windows.UI.Text.FontWeight), 
 			typeof(global::Windows.UI.Xaml.Controls.TextBlock), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Text.FontWeight)));
+		#endif
+		#if false || false || NET46 || false || false
+		[global::Uno.NotImplemented]
+		public static global::Windows.UI.Xaml.DependencyProperty ForegroundProperty { get; } = 
+		Windows.UI.Xaml.DependencyProperty.Register(
+			"Foreground", typeof(global::Windows.UI.Xaml.Media.Brush), 
+			typeof(global::Windows.UI.Xaml.Controls.TextBlock), 
+			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.Brush)));
 		#endif
 		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
@@ -531,14 +553,6 @@ namespace Windows.UI.Xaml.Controls
 			typeof(global::Windows.UI.Xaml.Controls.TextBlock), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.TextWrapping)));
 		#endif
-		#if false || false || NET46 || false || false
-		[global::Uno.NotImplemented]
-		public static global::Windows.UI.Xaml.DependencyProperty ForegroundProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			"Foreground", typeof(global::Windows.UI.Xaml.Media.Brush), 
-			typeof(global::Windows.UI.Xaml.Controls.TextBlock), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.Brush)));
-		#endif
 		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty IsColorFontEnabledProperty { get; } = 
@@ -611,6 +625,14 @@ namespace Windows.UI.Xaml.Controls
 			"IsTextTrimmed", typeof(bool), 
 			typeof(global::Windows.UI.Xaml.Controls.TextBlock), 
 			new FrameworkPropertyMetadata(default(bool)));
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public static global::Windows.UI.Xaml.DependencyProperty SelectionFlyoutProperty { get; } = 
+		Windows.UI.Xaml.DependencyProperty.Register(
+			"SelectionFlyout", typeof(global::Windows.UI.Xaml.Controls.Primitives.FlyoutBase), 
+			typeof(global::Windows.UI.Xaml.Controls.TextBlock), 
+			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Controls.Primitives.FlyoutBase)));
 		#endif
 		// Skipping already declared method Windows.UI.Xaml.Controls.TextBlock.TextBlock()
 		// Forced skipping of method Windows.UI.Xaml.Controls.TextBlock.TextBlock()
@@ -705,6 +727,16 @@ namespace Windows.UI.Xaml.Controls
 		// Forced skipping of method Windows.UI.Xaml.Controls.TextBlock.TextHighlighters.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.TextBlock.IsTextTrimmedChanged.add
 		// Forced skipping of method Windows.UI.Xaml.Controls.TextBlock.IsTextTrimmedChanged.remove
+		// Forced skipping of method Windows.UI.Xaml.Controls.TextBlock.SelectionFlyout.get
+		// Forced skipping of method Windows.UI.Xaml.Controls.TextBlock.SelectionFlyout.set
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  void CopySelectionToClipboard()
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.TextBlock", "void TextBlock.CopySelectionToClipboard()");
+		}
+		#endif
+		// Forced skipping of method Windows.UI.Xaml.Controls.TextBlock.SelectionFlyoutProperty.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.TextBlock.IsTextTrimmedProperty.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.TextBlock.HorizontalTextAlignmentProperty.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.TextBlock.TextDecorationsProperty.get

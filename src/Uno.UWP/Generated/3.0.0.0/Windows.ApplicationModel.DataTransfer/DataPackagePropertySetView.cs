@@ -139,6 +139,16 @@ namespace Windows.ApplicationModel.DataTransfer
 		#endif
 		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
+		public  bool IsFromRoamingClipboard
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member bool DataPackagePropertySetView.IsFromRoamingClipboard is not implemented in Uno.");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
 		public  uint Size
 		{
 			get
@@ -153,11 +163,6 @@ namespace Windows.ApplicationModel.DataTransfer
 		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DataPackagePropertySetView.FileTypes.get
 		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DataPackagePropertySetView.ApplicationName.get
 		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DataPackagePropertySetView.ApplicationListingUri.get
-		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DataPackagePropertySetView.Lookup(string)
-		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DataPackagePropertySetView.Size.get
-		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DataPackagePropertySetView.HasKey(string)
-		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DataPackagePropertySetView.Split(out System.Collections.Generic.IReadOnlyDictionary<string, object>, out System.Collections.Generic.IReadOnlyDictionary<string, object>)
-		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DataPackagePropertySetView.First()
 		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DataPackagePropertySetView.PackageFamilyName.get
 		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DataPackagePropertySetView.ContentSourceWebLink.get
 		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DataPackagePropertySetView.ContentSourceApplicationLink.get
@@ -165,6 +170,12 @@ namespace Windows.ApplicationModel.DataTransfer
 		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DataPackagePropertySetView.LogoBackgroundColor.get
 		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DataPackagePropertySetView.EnterpriseId.get
 		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DataPackagePropertySetView.ContentSourceUserActivityJson.get
+		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DataPackagePropertySetView.IsFromRoamingClipboard.get
+		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DataPackagePropertySetView.Lookup(string)
+		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DataPackagePropertySetView.Size.get
+		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DataPackagePropertySetView.HasKey(string)
+		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DataPackagePropertySetView.Split(out System.Collections.Generic.IReadOnlyDictionary<string, object>, out System.Collections.Generic.IReadOnlyDictionary<string, object>)
+		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DataPackagePropertySetView.First()
 		// Processing: System.Collections.Generic.IReadOnlyDictionary<string, object>
 		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		// DeclaringType: System.Collections.Generic.IReadOnlyDictionary<string, object>

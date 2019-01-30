@@ -12,6 +12,7 @@ using Uno.UI.Extensions;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Text;
 using Uno.Logging;
+using Uno.UI;
 
 namespace Windows.UI
 {
@@ -54,6 +55,11 @@ namespace Windows.UI
 		{
 			//We need to scale the font size depending on the PreferredBody size. This is modified by accessibility settings.
 			//https://developer.xamarin.com/api/member/MonoTouch.UIKit.UIFont.GetPreferredFontForTextStyle/
+			if (FeatureConfiguration.Font.IgnoreTextScaleFactor)
+			{
+				return size;
+			}
+
 			return size * (basePreferredSize / DefaultUIFontPreferredBodyFontSize) ?? (float)1.0;
 		}
 
@@ -91,7 +97,7 @@ namespace Windows.UI
 			//In Windows we define FontFamily with the path to the font file followed by the font family name, separated by a #
 			if (fontPath.Contains("#"))
 			{
-				var pathParts = fontPath.Split('#');
+				var pathParts = fontPath.Split(new[] { '#' });
 				var file = pathParts[0];
 				var familyName = pathParts[1];
 
@@ -102,7 +108,7 @@ namespace Windows.UI
 				font = GetFontFromFile(size, fontPath);
 			}
 
-			if(font == null)
+			if (font == null)
 			{
 				font = GetDefaultFont(size, fontWeight, fontStyle);
 			}
@@ -135,7 +141,7 @@ namespace Windows.UI
 			}
 			else if (
 				fontWeight.Weight != FontWeights.SemiBold.Weight && // For some reason, when we load a Semibold font, we must keep the native Bold flag.
-				fontWeight.Weight < FontWeights.Bold.Weight && 
+				fontWeight.Weight < FontWeights.Bold.Weight &&
 				font.FontDescriptor.SymbolicTraits.HasFlag(UIFontDescriptorSymbolicTraits.Bold))
 			{
 				var descriptor = font.FontDescriptor.CreateWithTraits(font.FontDescriptor.SymbolicTraits & ~UIFontDescriptorSymbolicTraits.Bold);
@@ -229,7 +235,7 @@ namespace Windows.UI
 		{
 			//based on Fonts available @ http://iosfonts.com/
 			//for Windows parity feature, we will not support FontFamily="HelveticaNeue-Bold" (will ignore Bold and must be set by FontWeight property instead)
-			var rootFontFamilyName = fontFamilyName.Split('-').FirstOrDefault();
+			var rootFontFamilyName = fontFamilyName.Split(new[] { '-' }).FirstOrDefault();
 
 			if (rootFontFamilyName.HasValue())
 			{

@@ -12,18 +12,20 @@ namespace Uno.UI
 	/// </summary>
 	internal class KeyboardRectProvider : PopupWindow, ViewTreeObserver.IOnGlobalLayoutListener
 	{
-		private readonly Activity _activity;
-		private readonly Action<Rect> _onKeyboardRectChanged;
-		private readonly View _popupView;
+		public delegate void LayoutChangedListener(Rect keyboard, Rect navigation, Rect union);
 		
-		public KeyboardRectProvider(Activity activity, Action<Rect> onKeyboardRectChanged) : base(activity)
+		private readonly LayoutChangedListener _onLayoutChanged;
+		private readonly Activity _activity;
+		private readonly View _popupView;
+
+		public KeyboardRectProvider(Activity activity, LayoutChangedListener onLayoutChanged) : base(activity)
 		{
 			_activity = activity;
-			_onKeyboardRectChanged = onKeyboardRectChanged;
 			_popupView = new LinearLayout(_activity.BaseContext)
 			{
 				LayoutParameters = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MatchParent, ViewGroup.LayoutParams.MatchParent)
 			};
+			_onLayoutChanged = onLayoutChanged;
 
 			ContentView = _popupView;
 			SoftInputMode = SoftInput.AdjustResize | SoftInput.StateAlwaysVisible;
@@ -65,20 +67,28 @@ namespace Uno.UI
 		/// </summary>
 		void ViewTreeObserver.IOnGlobalLayoutListener.OnGlobalLayout()
 		{
-			var screenSize = new Point();
-			_activity.WindowManager.DefaultDisplay.GetSize(screenSize);
+			var realMetrics = Get<DisplayMetrics>(_activity.WindowManager.DefaultDisplay.GetRealMetrics);
+			var displayRect = Get<Rect>(_activity.WindowManager.DefaultDisplay.GetRectSize);
+			var usableRect = Get<Rect>(_popupView.GetWindowVisibleDisplayFrame);
 
-			var popupRect = new Rect();
-			_popupView.GetWindowVisibleDisplayFrame(popupRect);
+			// we assume that the keyboard and the navigation bar always occupy the bottom area, with the keyboard being above the navigation bar
+			// their placements can be calculated based on the follow observation:
+			// [size] realMetrics	: screen
+			// [rect] displayRect	: display area = screen - (bottom: nav_bar)
+			// [rect] usableRect	: usable area = screen - (top: status_bar) - (bottom: keyboard + nav_bar)
+			var navigationRect = new Rect(0, displayRect.Bottom, realMetrics.WidthPixels, realMetrics.HeightPixels);
+			var keyboardRect = new Rect(0, usableRect.Bottom, realMetrics.WidthPixels, navigationRect.Top);
+			var occupiedRect = new Rect(0, usableRect.Bottom, realMetrics.WidthPixels, realMetrics.HeightPixels);
 
-			var keyboardRect = new Rect(
-				0,
-				popupRect.Bottom,
-				screenSize.X,
-				screenSize.Y
-			);
+			_onLayoutChanged?.Invoke(keyboardRect, navigationRect, occupiedRect);
 
-			_onKeyboardRectChanged?.Invoke(keyboardRect);
+			T Get<T>(Action<T> getter) where T : new()
+			{
+				var result = new T();
+				getter(result);
+
+				return result;
+			}
 		}
 	}
 }

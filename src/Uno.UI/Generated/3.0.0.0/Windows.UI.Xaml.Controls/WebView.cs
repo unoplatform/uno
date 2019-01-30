@@ -129,21 +129,13 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 		#endif
-		#if false || false || NET46 || false || false
-		[global::Uno.NotImplemented]
-		public static global::Windows.UI.Xaml.DependencyProperty SourceProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			"Source", typeof(global::System.Uri), 
-			typeof(global::Windows.UI.Xaml.Controls.WebView), 
-			new FrameworkPropertyMetadata(default(global::System.Uri)));
-		#endif
 		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
-		public static global::Windows.UI.Xaml.DependencyProperty DataTransferPackageProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty AllowedScriptNotifyUrisProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"DataTransferPackage", typeof(global::Windows.ApplicationModel.DataTransfer.DataPackage), 
+			"AllowedScriptNotifyUris", typeof(global::System.Collections.Generic.IList<global::System.Uri>), 
 			typeof(global::Windows.UI.Xaml.Controls.WebView), 
-			new FrameworkPropertyMetadata(default(global::Windows.ApplicationModel.DataTransfer.DataPackage)));
+			new FrameworkPropertyMetadata(default(global::System.Collections.Generic.IList<global::System.Uri>)));
 		#endif
 		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
@@ -157,11 +149,27 @@ namespace Windows.UI.Xaml.Controls
 		#endif
 		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
-		public static global::Windows.UI.Xaml.DependencyProperty AllowedScriptNotifyUrisProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty DataTransferPackageProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"AllowedScriptNotifyUris", typeof(global::System.Collections.Generic.IList<global::System.Uri>), 
+			"DataTransferPackage", typeof(global::Windows.ApplicationModel.DataTransfer.DataPackage), 
 			typeof(global::Windows.UI.Xaml.Controls.WebView), 
-			new FrameworkPropertyMetadata(default(global::System.Collections.Generic.IList<global::System.Uri>)));
+			new FrameworkPropertyMetadata(default(global::Windows.ApplicationModel.DataTransfer.DataPackage)));
+		#endif
+		#if false || false || NET46 || false || false
+		[global::Uno.NotImplemented]
+		public static global::Windows.UI.Xaml.DependencyProperty SourceProperty { get; } = 
+		Windows.UI.Xaml.DependencyProperty.Register(
+			"Source", typeof(global::System.Uri), 
+			typeof(global::Windows.UI.Xaml.Controls.WebView), 
+			new FrameworkPropertyMetadata(default(global::System.Uri)));
+		#endif
+		#if false || false || NET46 || false || false
+		[global::Uno.NotImplemented]
+		public static global::Windows.UI.Xaml.DependencyProperty CanGoBackProperty { get; } = 
+		Windows.UI.Xaml.DependencyProperty.Register(
+			"CanGoBack", typeof(bool), 
+			typeof(global::Windows.UI.Xaml.Controls.WebView), 
+			new FrameworkPropertyMetadata(default(bool)));
 		#endif
 		#if false || false || NET46 || false || false
 		[global::Uno.NotImplemented]
@@ -186,14 +194,6 @@ namespace Windows.UI.Xaml.Controls
 			"DocumentTitle", typeof(string), 
 			typeof(global::Windows.UI.Xaml.Controls.WebView), 
 			new FrameworkPropertyMetadata(default(string)));
-		#endif
-		#if false || false || NET46 || false || false
-		[global::Uno.NotImplemented]
-		public static global::Windows.UI.Xaml.DependencyProperty CanGoBackProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			"CanGoBack", typeof(bool), 
-			typeof(global::Windows.UI.Xaml.Controls.WebView), 
-			new FrameworkPropertyMetadata(default(bool)));
 		#endif
 		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
@@ -401,6 +401,8 @@ namespace Windows.UI.Xaml.Controls
 		// Forced skipping of method Windows.UI.Xaml.Controls.WebView.XYFocusDown.set
 		// Forced skipping of method Windows.UI.Xaml.Controls.WebView.SeparateProcessLost.add
 		// Forced skipping of method Windows.UI.Xaml.Controls.WebView.SeparateProcessLost.remove
+		// Forced skipping of method Windows.UI.Xaml.Controls.WebView.WebResourceRequested.add
+		// Forced skipping of method Windows.UI.Xaml.Controls.WebView.WebResourceRequested.remove
 		// Forced skipping of method Windows.UI.Xaml.Controls.WebView.XYFocusLeftProperty.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.WebView.XYFocusRightProperty.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.WebView.XYFocusUpProperty.get
@@ -723,6 +725,22 @@ namespace Windows.UI.Xaml.Controls
 			remove
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.WebView", "event TypedEventHandler<WebView, WebViewSeparateProcessLostEventArgs> WebView.SeparateProcessLost");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Xaml.Controls.WebView, global::Windows.UI.Xaml.Controls.WebViewWebResourceRequestedEventArgs> WebResourceRequested
+		{
+			[global::Uno.NotImplemented]
+			add
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.WebView", "event TypedEventHandler<WebView, WebViewWebResourceRequestedEventArgs> WebView.WebResourceRequested");
+			}
+			[global::Uno.NotImplemented]
+			remove
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.WebView", "event TypedEventHandler<WebView, WebViewWebResourceRequestedEventArgs> WebView.WebResourceRequested");
 			}
 		}
 		#endif

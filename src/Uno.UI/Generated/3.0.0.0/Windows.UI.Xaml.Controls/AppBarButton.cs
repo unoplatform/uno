@@ -179,16 +179,16 @@ namespace Windows.UI.Xaml.Controls
 		// Forced skipping of method Windows.UI.Xaml.Controls.AppBarButton.Label.set
 		// Forced skipping of method Windows.UI.Xaml.Controls.AppBarButton.Icon.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.AppBarButton.Icon.set
-		// Forced skipping of method Windows.UI.Xaml.Controls.AppBarButton.IsCompact.get
-		// Forced skipping of method Windows.UI.Xaml.Controls.AppBarButton.IsCompact.set
 		// Forced skipping of method Windows.UI.Xaml.Controls.AppBarButton.LabelPosition.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.AppBarButton.LabelPosition.set
-		// Forced skipping of method Windows.UI.Xaml.Controls.AppBarButton.IsInOverflow.get
-		// Forced skipping of method Windows.UI.Xaml.Controls.AppBarButton.DynamicOverflowOrder.get
-		// Forced skipping of method Windows.UI.Xaml.Controls.AppBarButton.DynamicOverflowOrder.set
 		// Forced skipping of method Windows.UI.Xaml.Controls.AppBarButton.KeyboardAcceleratorTextOverride.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.AppBarButton.KeyboardAcceleratorTextOverride.set
 		// Forced skipping of method Windows.UI.Xaml.Controls.AppBarButton.TemplateSettings.get
+		// Forced skipping of method Windows.UI.Xaml.Controls.AppBarButton.IsCompact.get
+		// Forced skipping of method Windows.UI.Xaml.Controls.AppBarButton.IsCompact.set
+		// Forced skipping of method Windows.UI.Xaml.Controls.AppBarButton.IsInOverflow.get
+		// Forced skipping of method Windows.UI.Xaml.Controls.AppBarButton.DynamicOverflowOrder.get
+		// Forced skipping of method Windows.UI.Xaml.Controls.AppBarButton.DynamicOverflowOrder.set
 		// Forced skipping of method Windows.UI.Xaml.Controls.AppBarButton.KeyboardAcceleratorTextOverrideProperty.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.AppBarButton.LabelPositionProperty.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.AppBarButton.IsInOverflowProperty.get

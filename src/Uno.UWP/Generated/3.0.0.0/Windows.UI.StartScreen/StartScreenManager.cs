@@ -41,6 +41,20 @@ namespace Windows.UI.StartScreen
 		#endif
 		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
+		public  global::Windows.Foundation.IAsyncOperation<bool> ContainsSecondaryTileAsync( string tileId)
+		{
+			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> StartScreenManager.ContainsSecondaryTileAsync(string tileId) is not implemented in Uno.");
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  global::Windows.Foundation.IAsyncOperation<bool> TryRemoveSecondaryTileAsync( string tileId)
+		{
+			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> StartScreenManager.TryRemoveSecondaryTileAsync(string tileId) is not implemented in Uno.");
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
 		public static global::Windows.UI.StartScreen.StartScreenManager GetDefault()
 		{
 			throw new global::System.NotImplementedException("The member StartScreenManager StartScreenManager.GetDefault() is not implemented in Uno.");

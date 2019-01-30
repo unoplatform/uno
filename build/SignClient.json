@@ -1,0 +1,13 @@
+{
+  "SignClient": {
+	"AzureAd": {
+	"AADInstance": "https://login.microsoftonline.com/",
+	"ClientId": "8138ef14-0570-432c-8aad-9f73f05297d5",
+	"TenantId": "6d53ef61-b6d1-4150-ae0b-43b90e75e0cd"
+	},
+	"Service": {
+	  "Url": "https://nv-signservice.azurewebsites.net",
+	  "ResourceId": "https://SignService/715027a2-5a78-4271-9a16-f4502f1706fe"
+	}
+  }
+}

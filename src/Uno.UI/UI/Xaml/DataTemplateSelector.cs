@@ -1,4 +1,6 @@
-﻿namespace Windows.UI.Xaml.Controls
+﻿using System;
+
+namespace Windows.UI.Xaml.Controls
 {
 	public partial class DataTemplateSelector
 	{
@@ -13,12 +15,12 @@
 
 		public DataTemplate SelectTemplate (object item)
 		{
-			return SelectTemplateCore (item);
+			return SelectTemplateCore(item);
 		}
 
 		public DataTemplate SelectTemplate (object item, DependencyObject container)
 		{
-			return SelectTemplateCore (item, container);
+			return SelectTemplateCore(item, container);
 		}
 
 		protected virtual DataTemplate SelectTemplateCore (object item)

@@ -1,109 +1,106 @@
 <Project ToolsVersion="15.0">
 
-	<PropertyGroup>
-		<_HasWindowsXaml>false</_HasWindowsXaml>
-		<_HasWindowsXaml Condition="'$(TargetFramework)'=='uap10.0' or '$(TargetFrameworkIdentifier)'=='Xamarin.iOS' or '$(TargetFrameworkIdentifier)'=='MonoAndroid' or '$(TargetFramework)'=='xamarinmac20'">true</_HasWindowsXaml>
+  <PropertyGroup>
+    <_IsAndroid>false</_IsAndroid>
+    <_IsAndroid Condition="$(IsMonoAndroid)">true</_IsAndroid>
 
-		<_IsAndroid>false</_IsAndroid>
-		<_IsAndroid Condition="'$(TargetFrameworkIdentifier)'=='MonoAndroid'">true</_IsAndroid>
+    <_IsIOS>false</_IsIOS>
+    <_IsIOS Condition="$(IsXamarinIOS)">true</_IsIOS>
 
-		<_IsIOS>false</_IsIOS>
-		<_IsIOS Condition="'$(TargetFrameworkIdentifier)'=='Xamarin.iOS'">true</_IsIOS>
+    <_IsMacOS>false</_IsMacOS>
+    <_IsMacOS Condition="'$(TargetFramework)'=='xamarinmac20'">true</_IsMacOS>
 
-		<_IsMacOS>false</_IsMacOS>
-		<_IsMacOS Condition="'$(TargetFramework)'=='xamarinmac20'">true</_IsMacOS>
+    <_IsNet>false</_IsNet>
+    <_IsNet Condition="'$(TargetFramework)'=='net46'">true</_IsNet>
 
-		<_IsNet>false</_IsNet>
-		<_IsNet Condition="'$(TargetFramework)'=='net46'">true</_IsNet>
+    <_IsNetStd>false</_IsNetStd>
+    <_IsNetStd Condition="'$(TargetFramework)'=='netstandard2.0'">true</_IsNetStd>
 
-		<_IsNetStd>false</_IsNetStd>
-		<_IsNetStd Condition="'$(TargetFramework)'=='netstandard2.0'">true</_IsNetStd>
+    <_IsUWP>false</_IsUWP>
+    <_IsUWP Condition="'$(TargetFramework)'=='uap10.0'">true</_IsUWP>
+  </PropertyGroup>
 
-		<_IsUWP>false</_IsUWP>
-		<_IsUWP Condition="'$(TargetFramework)'=='uap10.0'">true</_IsUWP>
-	</PropertyGroup>
+  <PropertyGroup Condition="$(_IsIOS)">
+    <DefineConstants>$(DefineConstants);IOS1_0;XAMARIN;XAMARIN_IOS;XAMARIN_IOS_UNIFIED</DefineConstants>
+  </PropertyGroup>
 
-	<PropertyGroup Condition="$(_IsIOS)">
-		<DefineConstants>$(DefineConstants);IOS1_0;XAMARIN;XAMARIN_IOS;XAMARIN_IOS_UNIFIED</DefineConstants>
-	</PropertyGroup>
+  <PropertyGroup Condition="$(_IsMacOS)">
+    <DefineConstants>$(DefineConstants);XAMARIN</DefineConstants>
+  </PropertyGroup>
 
-	<PropertyGroup Condition="$(_IsMacOS)">
-		<DefineConstants>$(DefineConstants);XAMARIN</DefineConstants>
-	</PropertyGroup>
-	
-	<PropertyGroup Condition="$(_IsAndroid)">
-		<AndroidUseIntermediateDesignerFile>True</AndroidUseIntermediateDesignerFile>
-		<AndroidResgenFile>Resources\Resource.Designer.cs</AndroidResgenFile>
-		<DefineConstants>$(DefineConstants);__ANDROID__;XAMARIN;MONOANDROID5_0;XAMARIN_ANDROID</DefineConstants>
-	</PropertyGroup>	
+  <PropertyGroup Condition="$(_IsAndroid)">
+    <AndroidUseIntermediateDesignerFile>True</AndroidUseIntermediateDesignerFile>
+    <AndroidResgenFile>Resources\Resource.Designer.cs</AndroidResgenFile>
+    <DefineConstants>$(DefineConstants);__ANDROID__;XAMARIN;MONOANDROID5_0;XAMARIN_ANDROID</DefineConstants>
+  </PropertyGroup>
 
-	<ItemGroup>
-		<AndroidResource Include="Resources\**\*.xml" Condition="$(_IsAndroid)" />
+  <ItemGroup>
+    <AndroidResource Include="Resources\**\*.xml" Condition="$(_IsAndroid)" />
 
-		<None Include="**\*.netstd.cs" Exclude="bin\**\*.netstd.cs;obj\**\*.netstd.cs" />
-		<Compile Remove="**\*.netstd.cs" />
-		<Compile Include="**\*.netstd.cs"
-						 Exclude="bin\**\*.netstd.cs;obj\**\*.netstd.cs"
-						 Condition="'$(TargetFramework)'=='netstandard2.0'" />
-		
-		<None Include="**\*.wasm.cs" Exclude="bin\**\*.wasm.cs;obj\**\*.wasm.cs" />
-		<Compile Remove="**\*.wasm.cs" />
-		<Compile Include="**\*.wasm.cs"
-						 Exclude="bin\**\*.wasm.cs;obj\**\*.wasm.cs"
-						 Condition="'$(TargetFramework)'=='netstandard2.0'" />
+    <None Include="**\*.netstd.cs" Exclude="bin\**\*.netstd.cs;obj\**\*.netstd.cs" />
+    <Compile Remove="**\*.netstd.cs" />
+    <Compile Include="**\*.netstd.cs"
+                     Exclude="bin\**\*.netstd.cs;obj\**\*.netstd.cs"
+                     Condition="'$(TargetFramework)'=='netstandard2.0'" />
 
-		<None Include="**\*.iOS.cs" Exclude="bin\**\*.iOS.cs;obj\**\*.iOS.cs" />
-		<Compile Remove="**\*.iOS.cs" />
-		<Compile Include="**\*.iOS.cs" 
-						 Exclude="bin\**\*.iOS.cs;obj\**\*.iOS.cs"
-						 Condition="$(_IsIOS)" />
-	  
-		<None Include="**\*.macOS.cs" Exclude="bin\**\*.macOS.cs;obj\**\*.macOS.cs" />
-		<Compile Remove="**\*.macOS.cs" />
-		<Compile Include="**\*.macOS.cs" 
-						 Exclude="bin\**\*.macOS.cs;obj\**\*.macOS.cs"
-						 Condition="$(_IsMacOS)" />
-	  
-		<None Include="**\*.iOSmacOS.cs" Exclude="bin\**\*.iOSmacOS.cs;obj\**\*.iOSmacOS.cs" />
-		<Compile Remove="**\*.iOSmacOS.cs" />
-		<Compile Include="**\*.iOSmacOS.cs" 
-						 Exclude="bin\**\*.iOSmacOS.cs;obj\**\*.iOSmacOS.cs"
-						 Condition="$(_IsMacOS) or $(_IsIOS)" />
+    <None Include="**\*.wasm.cs" Exclude="bin\**\*.wasm.cs;obj\**\*.wasm.cs" />
+    <Compile Remove="**\*.wasm.cs" />
+    <Compile Include="**\*.wasm.cs"
+                     Exclude="bin\**\*.wasm.cs;obj\**\*.wasm.cs"
+                     Condition="'$(TargetFramework)'=='netstandard2.0'" />
 
-		<None Include="**\*.Android.cs" Exclude="bin\**\*.Android.cs;obj\**\*.Android.cs" />
-		<Compile Remove="**\*.Android.cs" />
-		<Compile Include="**\*.Android.cs"
-						 Exclude="bin\**\*.Android.cs;obj\**\*.Android.cs"
-						 Condition="$(_IsAndroid)" />
+    <None Include="**\*.iOS.cs" Exclude="bin\**\*.iOS.cs;obj\**\*.iOS.cs" />
+    <Compile Remove="**\*.iOS.cs" />
+    <Compile Include="**\*.iOS.cs"
+                     Exclude="bin\**\*.iOS.cs;obj\**\*.iOS.cs"
+                     Condition="$(_IsIOS)" />
 
-		<None Include="**\*.Xamarin.cs" Exclude="bin\**\*.Xamarin.cs;obj\**\*.Xamarin.cs" />
-		<Compile Remove="**\*.Xamarin.cs" />
-		<Compile Include="**\*.Xamarin.cs"
-						 Exclude="bin\**\*.Xamarin.cs;obj\**\*.Xamarin.cs"
-						 Condition="$(_IsAndroid) or $(_IsIOS)" />
+    <None Include="**\*.macOS.cs" Exclude="bin\**\*.macOS.cs;obj\**\*.macOS.cs" />
+    <Compile Remove="**\*.macOS.cs" />
+    <Compile Include="**\*.macOS.cs"
+                     Exclude="bin\**\*.macOS.cs;obj\**\*.macOS.cs"
+                     Condition="$(_IsMacOS)" />
 
-		<None Include="**\*.UWP.cs" Exclude="bin\**\*.UWP.cs;obj\**\*.UWP.cs" />
-		<Compile Remove="**\*.UWP.cs" />
-		<Compile Include="**\*.UWP.cs" 
-						 Exclude="bin\**\*.UWP.cs;obj\**\*.UWP.cs" 
-						 Condition="'$(TargetFramework)'=='uap10.0'" />
+    <None Include="**\*.iOSmacOS.cs" Exclude="bin\**\*.iOSmacOS.cs;obj\**\*.iOSmacOS.cs" />
+    <Compile Remove="**\*.iOSmacOS.cs" />
+    <Compile Include="**\*.iOSmacOS.cs"
+                     Exclude="bin\**\*.iOSmacOS.cs;obj\**\*.iOSmacOS.cs"
+                     Condition="$(_IsMacOS) or $(_IsIOS)" />
 
-		<None Include="**\*.WinRT.cs" Exclude="bin\**\*.WinRT.cs;obj\**\*.WinRT.cs" />
-		<Compile Remove="**\*.WinRT.cs" />
-		<Compile Include="**\*.WinRT.cs"
-						 Exclude="bin\**\*.WinRT.cs;obj\**\*.WinRT.cs"
-						 Condition="'$(TargetFramework)'=='uap10.0'" />
+    <None Include="**\*.Android.cs" Exclude="bin\**\*.Android.cs;obj\**\*.Android.cs" />
+    <Compile Remove="**\*.Android.cs" />
+    <Compile Include="**\*.Android.cs"
+                     Exclude="bin\**\*.Android.cs;obj\**\*.Android.cs"
+                     Condition="$(_IsAndroid)" />
 
-		<None Include="**\*.net.cs" Exclude="bin\**\*.WinRT.cs;obj\**\*.net.cs" />
-		<Compile Remove="**\*.net.cs" />
-		<Compile Include="**\*.net.cs"
-						 Exclude="bin\**\*.net.cs;obj\**\*.net.cs"
-						 Condition="'$(TargetFramework)'=='net46'" />
+    <None Include="**\*.Xamarin.cs" Exclude="bin\**\*.Xamarin.cs;obj\**\*.Xamarin.cs" />
+    <Compile Remove="**\*.Xamarin.cs" />
+    <Compile Include="**\*.Xamarin.cs"
+                     Exclude="bin\**\*.Xamarin.cs;obj\**\*.Xamarin.cs"
+                     Condition="$(_IsAndroid) or $(_IsIOS)" />
 
-		<Page Include="**\*.xaml" 
-					Exclude="bin/**/*.xaml;obj/**/*.xaml" 
-					Condition="$(_IsAndroid) or $(_IsIOS) or $(_IsUWP) or $(_IsNetStd) or $(_IsMacOS)" />
-		
-	</ItemGroup>
-	
+    <None Include="**\*.UWP.cs" Exclude="bin\**\*.UWP.cs;obj\**\*.UWP.cs" />
+    <Compile Remove="**\*.UWP.cs" />
+    <Compile Include="**\*.UWP.cs"
+                     Exclude="bin\**\*.UWP.cs;obj\**\*.UWP.cs"
+                     Condition="'$(TargetFramework)'=='uap10.0'" />
+
+    <None Include="**\*.WinRT.cs" Exclude="bin\**\*.WinRT.cs;obj\**\*.WinRT.cs" />
+    <Compile Remove="**\*.WinRT.cs" />
+    <Compile Include="**\*.WinRT.cs"
+                     Exclude="bin\**\*.WinRT.cs;obj\**\*.WinRT.cs"
+                     Condition="'$(TargetFramework)'=='uap10.0'" />
+
+    <None Include="**\*.net.cs" Exclude="bin\**\*.WinRT.cs;obj\**\*.net.cs" />
+    <Compile Remove="**\*.net.cs" />
+    <Compile Include="**\*.net.cs"
+                     Exclude="bin\**\*.net.cs;obj\**\*.net.cs"
+                     Condition="'$(TargetFramework)'=='net46'" />
+
+    <Page Include="**\*.xaml"
+                Exclude="bin/**/*.xaml;obj/**/*.xaml"
+                Condition="$(_IsAndroid) or $(_IsIOS) or $(_IsUWP) or $(_IsNetStd) or $(_IsMacOS)" />
+
+  </ItemGroup>
+
 </Project>

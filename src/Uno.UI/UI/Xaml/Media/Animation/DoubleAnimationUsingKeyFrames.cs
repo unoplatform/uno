@@ -341,7 +341,7 @@ namespace Windows.UI.Xaml.Media.Animation
 		partial void UseHardware();
 		partial void HoldValue();
 
-#if NET46 || NETSTANDARD2_0 || __MACOS__
+#if NET46 || __WASM__ || __MACOS__
 		private bool ReportEachFrame() => true;
 #endif
 	}

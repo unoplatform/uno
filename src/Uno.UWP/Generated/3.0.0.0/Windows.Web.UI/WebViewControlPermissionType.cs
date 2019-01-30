@@ -26,6 +26,9 @@ namespace Windows.Web.UI
 		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		Screen,
 		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		ImmersiveView,
+		#endif
 	}
 	#endif
 }

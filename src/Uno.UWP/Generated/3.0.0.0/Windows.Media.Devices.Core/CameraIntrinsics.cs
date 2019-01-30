@@ -77,6 +77,14 @@ namespace Windows.Media.Devices.Core
 			}
 		}
 		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public CameraIntrinsics( global::System.Numerics.Vector2 focalLength,  global::System.Numerics.Vector2 principalPoint,  global::System.Numerics.Vector3 radialDistortion,  global::System.Numerics.Vector2 tangentialDistortion,  uint imageWidth,  uint imageHeight) 
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Devices.Core.CameraIntrinsics", "CameraIntrinsics.CameraIntrinsics(Vector2 focalLength, Vector2 principalPoint, Vector3 radialDistortion, Vector2 tangentialDistortion, uint imageWidth, uint imageHeight)");
+		}
+		#endif
+		// Forced skipping of method Windows.Media.Devices.Core.CameraIntrinsics.CameraIntrinsics(System.Numerics.Vector2, System.Numerics.Vector2, System.Numerics.Vector3, System.Numerics.Vector2, uint, uint)
 		// Forced skipping of method Windows.Media.Devices.Core.CameraIntrinsics.FocalLength.get
 		// Forced skipping of method Windows.Media.Devices.Core.CameraIntrinsics.PrincipalPoint.get
 		// Forced skipping of method Windows.Media.Devices.Core.CameraIntrinsics.RadialDistortion.get

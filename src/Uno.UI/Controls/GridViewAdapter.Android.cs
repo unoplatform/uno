@@ -179,7 +179,8 @@ namespace Uno.UI.Controls
 					var template = Windows.UI.Xaml.DataTemplateHelper.ResolveTemplate(
 						this.ItemTemplate,
 						this.ItemTemplateSelector,
-						source
+						source,
+						null
 					);
 
 					view = template?.LoadContentCached();

@@ -81,20 +81,6 @@ namespace Windows.UI.Xaml.Documents
 		#endif
 		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
-		public  global::Windows.UI.Xaml.Input.XYFocusNavigationStrategy XYFocusDownNavigationStrategy
-		{
-			get
-			{
-				return (global::Windows.UI.Xaml.Input.XYFocusNavigationStrategy)this.GetValue(XYFocusDownNavigationStrategyProperty);
-			}
-			set
-			{
-				this.SetValue(XYFocusDownNavigationStrategyProperty, value);
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
 		public  global::Windows.UI.Xaml.Input.XYFocusNavigationStrategy XYFocusUpNavigationStrategy
 		{
 			get
@@ -137,25 +123,25 @@ namespace Windows.UI.Xaml.Documents
 		#endif
 		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
-		public  global::Windows.UI.Xaml.FocusState FocusState
+		public  global::Windows.UI.Xaml.Input.XYFocusNavigationStrategy XYFocusDownNavigationStrategy
 		{
 			get
 			{
-				return (global::Windows.UI.Xaml.FocusState)this.GetValue(FocusStateProperty);
+				return (global::Windows.UI.Xaml.Input.XYFocusNavigationStrategy)this.GetValue(XYFocusDownNavigationStrategyProperty);
+			}
+			set
+			{
+				this.SetValue(XYFocusDownNavigationStrategyProperty, value);
 			}
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
-		public  bool IsTabStop
+		public  global::Windows.UI.Xaml.FocusState FocusState
 		{
 			get
 			{
-				return (bool)this.GetValue(IsTabStopProperty);
-			}
-			set
-			{
-				this.SetValue(IsTabStopProperty, value);
+				return (global::Windows.UI.Xaml.FocusState)this.GetValue(FocusStateProperty);
 			}
 		}
 		#endif
@@ -173,8 +159,30 @@ namespace Windows.UI.Xaml.Documents
 			}
 		}
 		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  bool IsTabStop
+		{
+			get
+			{
+				return (bool)this.GetValue(IsTabStopProperty);
+			}
+			set
+			{
+				this.SetValue(IsTabStopProperty, value);
+			}
+		}
+		#endif
 		// Skipping already declared property NavigateUriProperty
 		// Skipping already declared property UnderlineStyleProperty
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public static global::Windows.UI.Xaml.DependencyProperty ElementSoundModeProperty { get; } = 
+		Windows.UI.Xaml.DependencyProperty.Register(
+			"ElementSoundMode", typeof(global::Windows.UI.Xaml.ElementSoundMode), 
+			typeof(global::Windows.UI.Xaml.Documents.Hyperlink), 
+			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.ElementSoundMode)));
+		#endif
 		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty XYFocusDownProperty { get; } = 
@@ -209,25 +217,17 @@ namespace Windows.UI.Xaml.Documents
 		#endif
 		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
-		public static global::Windows.UI.Xaml.DependencyProperty ElementSoundModeProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty FocusStateProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"ElementSoundMode", typeof(global::Windows.UI.Xaml.ElementSoundMode), 
+			"FocusState", typeof(global::Windows.UI.Xaml.FocusState), 
 			typeof(global::Windows.UI.Xaml.Documents.Hyperlink), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.ElementSoundMode)));
+			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.FocusState)));
 		#endif
 		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
-		public static global::Windows.UI.Xaml.DependencyProperty XYFocusUpNavigationStrategyProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty XYFocusDownNavigationStrategyProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"XYFocusUpNavigationStrategy", typeof(global::Windows.UI.Xaml.Input.XYFocusNavigationStrategy), 
-			typeof(global::Windows.UI.Xaml.Documents.Hyperlink), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Input.XYFocusNavigationStrategy)));
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public static global::Windows.UI.Xaml.DependencyProperty XYFocusRightNavigationStrategyProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			"XYFocusRightNavigationStrategy", typeof(global::Windows.UI.Xaml.Input.XYFocusNavigationStrategy), 
+			"XYFocusDownNavigationStrategy", typeof(global::Windows.UI.Xaml.Input.XYFocusNavigationStrategy), 
 			typeof(global::Windows.UI.Xaml.Documents.Hyperlink), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Input.XYFocusNavigationStrategy)));
 		#endif
@@ -241,19 +241,19 @@ namespace Windows.UI.Xaml.Documents
 		#endif
 		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
-		public static global::Windows.UI.Xaml.DependencyProperty XYFocusDownNavigationStrategyProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty XYFocusRightNavigationStrategyProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"XYFocusDownNavigationStrategy", typeof(global::Windows.UI.Xaml.Input.XYFocusNavigationStrategy), 
+			"XYFocusRightNavigationStrategy", typeof(global::Windows.UI.Xaml.Input.XYFocusNavigationStrategy), 
 			typeof(global::Windows.UI.Xaml.Documents.Hyperlink), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Input.XYFocusNavigationStrategy)));
 		#endif
 		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
-		public static global::Windows.UI.Xaml.DependencyProperty FocusStateProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty XYFocusUpNavigationStrategyProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"FocusState", typeof(global::Windows.UI.Xaml.FocusState), 
+			"XYFocusUpNavigationStrategy", typeof(global::Windows.UI.Xaml.Input.XYFocusNavigationStrategy), 
 			typeof(global::Windows.UI.Xaml.Documents.Hyperlink), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.FocusState)));
+			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Input.XYFocusNavigationStrategy)));
 		#endif
 		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]

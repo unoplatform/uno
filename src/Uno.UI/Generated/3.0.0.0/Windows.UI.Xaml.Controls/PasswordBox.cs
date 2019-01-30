@@ -37,8 +37,6 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 		#endif
-		// Skipping already declared property HeaderTemplate
-		// Skipping already declared property Header
 		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.UI.Xaml.Media.SolidColorBrush SelectionHighlightColor
@@ -68,6 +66,8 @@ namespace Windows.UI.Xaml.Controls
 		}
 		#endif
 		// Skipping already declared property PlaceholderText
+		// Skipping already declared property HeaderTemplate
+		// Skipping already declared property Header
 		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.UI.Xaml.TextReadingOrder TextReadingOrder
@@ -97,7 +97,44 @@ namespace Windows.UI.Xaml.Controls
 		}
 		#endif
 		// Skipping already declared property InputScope
-		// Skipping already declared property PasswordProperty
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  global::Windows.UI.Xaml.Controls.Primitives.FlyoutBase SelectionFlyout
+		{
+			get
+			{
+				return (global::Windows.UI.Xaml.Controls.Primitives.FlyoutBase)this.GetValue(SelectionFlyoutProperty);
+			}
+			set
+			{
+				this.SetValue(SelectionFlyoutProperty, value);
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  object Description
+		{
+			get
+			{
+				return (object)this.GetValue(DescriptionProperty);
+			}
+			set
+			{
+				this.SetValue(DescriptionProperty, value);
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  bool CanPasteClipboardContent
+		{
+			get
+			{
+				return (bool)this.GetValue(CanPasteClipboardContentProperty);
+			}
+		}
+		#endif
 		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty IsPasswordRevealButtonEnabledProperty { get; } = 
@@ -115,6 +152,7 @@ namespace Windows.UI.Xaml.Controls
 			typeof(global::Windows.UI.Xaml.Controls.PasswordBox), 
 			new FrameworkPropertyMetadata(default(string)));
 		#endif
+		// Skipping already declared property PasswordProperty
 		// Skipping already declared property HeaderProperty
 		// Skipping already declared property HeaderTemplateProperty
 		// Skipping already declared property PlaceholderTextProperty
@@ -134,6 +172,15 @@ namespace Windows.UI.Xaml.Controls
 			typeof(global::Windows.UI.Xaml.Controls.PasswordBox), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.SolidColorBrush)));
 		#endif
+		// Skipping already declared property InputScopeProperty
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public static global::Windows.UI.Xaml.DependencyProperty PasswordRevealModeProperty { get; } = 
+		Windows.UI.Xaml.DependencyProperty.Register(
+			"PasswordRevealMode", typeof(global::Windows.UI.Xaml.Controls.PasswordRevealMode), 
+			typeof(global::Windows.UI.Xaml.Controls.PasswordBox), 
+			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Controls.PasswordRevealMode)));
+		#endif
 		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty TextReadingOrderProperty { get; } = 
@@ -144,13 +191,28 @@ namespace Windows.UI.Xaml.Controls
 		#endif
 		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
-		public static global::Windows.UI.Xaml.DependencyProperty PasswordRevealModeProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty CanPasteClipboardContentProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"PasswordRevealMode", typeof(global::Windows.UI.Xaml.Controls.PasswordRevealMode), 
+			"CanPasteClipboardContent", typeof(bool), 
 			typeof(global::Windows.UI.Xaml.Controls.PasswordBox), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Controls.PasswordRevealMode)));
+			new FrameworkPropertyMetadata(default(bool)));
 		#endif
-		// Skipping already declared property InputScopeProperty
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public static global::Windows.UI.Xaml.DependencyProperty DescriptionProperty { get; } = 
+		Windows.UI.Xaml.DependencyProperty.Register(
+			"Description", typeof(object), 
+			typeof(global::Windows.UI.Xaml.Controls.PasswordBox), 
+			new FrameworkPropertyMetadata(default(object)));
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public static global::Windows.UI.Xaml.DependencyProperty SelectionFlyoutProperty { get; } = 
+		Windows.UI.Xaml.DependencyProperty.Register(
+			"SelectionFlyout", typeof(global::Windows.UI.Xaml.Controls.Primitives.FlyoutBase), 
+			typeof(global::Windows.UI.Xaml.Controls.PasswordBox), 
+			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Controls.Primitives.FlyoutBase)));
+		#endif
 		// Skipping already declared method Windows.UI.Xaml.Controls.PasswordBox.PasswordBox()
 		// Forced skipping of method Windows.UI.Xaml.Controls.PasswordBox.PasswordBox()
 		// Forced skipping of method Windows.UI.Xaml.Controls.PasswordBox.Password.get
@@ -192,6 +254,21 @@ namespace Windows.UI.Xaml.Controls
 		// Forced skipping of method Windows.UI.Xaml.Controls.PasswordBox.InputScope.set
 		// Forced skipping of method Windows.UI.Xaml.Controls.PasswordBox.PasswordChanging.add
 		// Forced skipping of method Windows.UI.Xaml.Controls.PasswordBox.PasswordChanging.remove
+		// Forced skipping of method Windows.UI.Xaml.Controls.PasswordBox.CanPasteClipboardContent.get
+		// Forced skipping of method Windows.UI.Xaml.Controls.PasswordBox.SelectionFlyout.get
+		// Forced skipping of method Windows.UI.Xaml.Controls.PasswordBox.SelectionFlyout.set
+		// Forced skipping of method Windows.UI.Xaml.Controls.PasswordBox.Description.get
+		// Forced skipping of method Windows.UI.Xaml.Controls.PasswordBox.Description.set
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  void PasteFromClipboard()
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.PasswordBox", "void PasswordBox.PasteFromClipboard()");
+		}
+		#endif
+		// Forced skipping of method Windows.UI.Xaml.Controls.PasswordBox.CanPasteClipboardContentProperty.get
+		// Forced skipping of method Windows.UI.Xaml.Controls.PasswordBox.SelectionFlyoutProperty.get
+		// Forced skipping of method Windows.UI.Xaml.Controls.PasswordBox.DescriptionProperty.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.PasswordBox.PasswordRevealModeProperty.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.PasswordBox.TextReadingOrderProperty.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.PasswordBox.InputScopeProperty.get

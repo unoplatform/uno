@@ -28,7 +28,7 @@ namespace Windows.Foundation
 			if (stringValue != null)
 			{
 				var values = stringValue
-					.Split(',')
+					.Split(new[] { ',' })
 					.Select(s => double.Parse(s, CultureInfo.InvariantCulture))
 					.ToArray();
 

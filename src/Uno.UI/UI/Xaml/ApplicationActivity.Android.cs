@@ -102,16 +102,18 @@ namespace Windows.UI.Xaml
 			Window.ClearFlags(WindowManagerFlags.Fullscreen);
 		}
 
-		private void OnKeyboardRectChanged(Rect keyboardRect)
+		private void OnLayoutChanged(Rect keyboard, Rect navigation, Rect union)
 		{
-			_inputPane.OccludedRect = ViewHelper.PhysicalToLogicalPixels(keyboardRect);
+			_inputPane.KeyboardRect = ViewHelper.PhysicalToLogicalPixels(keyboard);
+			_inputPane.NavigationBarRect = ViewHelper.PhysicalToLogicalPixels(navigation);
+			_inputPane.OccludedRect = ViewHelper.PhysicalToLogicalPixels(union);
 		}
 
 		protected override void OnCreate(Bundle bundle)
 		{
 			base.OnCreate(bundle);
 
-			_keyboardRectProvider = new KeyboardRectProvider(this, OnKeyboardRectChanged);
+			_keyboardRectProvider = new KeyboardRectProvider(this, OnLayoutChanged);
 			RaiseConfigurationChanges();
 		}
 

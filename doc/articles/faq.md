@@ -1,7 +1,7 @@
 About Uno platform
 
 ## What is the Uno Platform?
-The Uno Platform is a Universal Windows Platform Bridge to allow UWP based code to run on iOS, Android, and WebAssembly. It provides the full API definitions of the UWP Spring Creators Update (17134), and the implementation of parts of the UWP API, such as Windows.UI.Xaml, to enable applications to run on these platforms.
+The Uno Platform is a Universal Windows Platform Bridge to allow UWP based code to run on iOS, Android, and WebAssembly. It provides the full API definitions of the UWP Windows 10 October 2018 Update (17763), and the implementation of parts of the UWP API, such as Windows.UI.Xaml, to enable applications to run on these platforms.
 This allows the use the UWP tooling from Windows in Visual Studio, such as XAML Edit and Continue and C# Edit and Continue, to build an application as much as possible on Windows, then validate that the application runs on iOS, Android and WebAssembly.
 The XAML User Interface (UI) provides the ability to display the same XAML files on Windows, iOS, Android and WebAssembly platforms. Uno also provides support for the MVVM pattern on all platforms, with binding, styling, control and data-templating features.
 As the Uno Platform provides all of the APIs of the complete UWP platform, any UWP library can be compiled on top of Uno (e.g. XamlBehaviors), with the ability to determine which APIs are implemented or not via the IDE using C# Analyzers.
@@ -374,7 +374,11 @@ MVVMLight, Prism and ReactiveUI are supported, MvvmCross is coming.
 It's partially implemented but there are parts that are closed source from Microsoft. In the meantime, make sure your Windows head is using the latest Min SDK, at which point you'll be able to use the UWP designer.
 
 ## Does intellisense work in XAML editor?
-Yes, if you do not see it; make sure you are targetting the latest windows SDK version
+Yes, if you do not see it:
+- Make sure you are targetting the latest windows SDK version.
+- Choose "XAML Designer" as the default for opening your XAML files (right-click on your XAML file and then "Open With").
+- Relaunch your Visual Studio solution.
+- Select UWP on the top-left corner of your XAML file.
 
 ## `Program does not contain a static 'Main' method suitable for an entry point` when building the UWP project.
 

@@ -2,7 +2,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml.Controls
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+	#if false || false || false || false || false
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class Viewbox : global::Windows.UI.Xaml.FrameworkElement
@@ -35,20 +35,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  global::Windows.UI.Xaml.UIElement Child
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member UIElement Viewbox.Child is not implemented in Uno.");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.Viewbox", "UIElement Viewbox.Child");
-			}
-		}
-		#endif
+		// Skipping already declared property Child
 		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty StretchDirectionProperty { get; } = 
@@ -65,13 +52,7 @@ namespace Windows.UI.Xaml.Controls
 			typeof(global::Windows.UI.Xaml.Controls.Viewbox), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.Stretch)));
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public Viewbox() : base()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.Viewbox", "Viewbox.Viewbox()");
-		}
-		#endif
+		// Skipping already declared method Windows.UI.Xaml.Controls.Viewbox.Viewbox()
 		// Forced skipping of method Windows.UI.Xaml.Controls.Viewbox.Viewbox()
 		// Forced skipping of method Windows.UI.Xaml.Controls.Viewbox.Child.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.Viewbox.Child.set

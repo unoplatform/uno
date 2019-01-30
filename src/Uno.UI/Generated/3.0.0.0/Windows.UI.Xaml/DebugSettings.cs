@@ -12,6 +12,20 @@ namespace Windows.UI.Xaml
 		// Skipping already declared property EnableFrameRateCounter
 		// Skipping already declared property EnableRedrawRegions
 		// Skipping already declared property IsTextPerformanceVisualizationEnabled
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  bool FailFastOnErrors
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member bool DebugSettings.FailFastOnErrors is not implemented in Uno.");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.DebugSettings", "bool DebugSettings.FailFastOnErrors");
+			}
+		}
+		#endif
 		// Forced skipping of method Windows.UI.Xaml.DebugSettings.EnableFrameRateCounter.get
 		// Forced skipping of method Windows.UI.Xaml.DebugSettings.EnableFrameRateCounter.set
 		// Forced skipping of method Windows.UI.Xaml.DebugSettings.IsBindingTracingEnabled.get
@@ -24,6 +38,8 @@ namespace Windows.UI.Xaml
 		// Forced skipping of method Windows.UI.Xaml.DebugSettings.EnableRedrawRegions.set
 		// Forced skipping of method Windows.UI.Xaml.DebugSettings.IsTextPerformanceVisualizationEnabled.get
 		// Forced skipping of method Windows.UI.Xaml.DebugSettings.IsTextPerformanceVisualizationEnabled.set
+		// Forced skipping of method Windows.UI.Xaml.DebugSettings.FailFastOnErrors.get
+		// Forced skipping of method Windows.UI.Xaml.DebugSettings.FailFastOnErrors.set
 		// Skipping already declared event Windows.UI.Xaml.DebugSettings.BindingFailed
 	}
 }

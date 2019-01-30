@@ -41,7 +41,10 @@ namespace Windows.UI.Xaml.Media
 
 		internal override Matrix3x2 ToNativeTransform(Size size)
 		{
-			var centerPoint = new Vector2((float) CenterX, (float) CenterY);
+			var centerPoint = new Vector2(
+				(float)(Origin.X * size.Width + CenterX),
+				(float)(Origin.Y * size.Height + CenterY));
+
 			return Matrix3x2.CreateRotation((float) ToRadians(Angle), centerPoint);
 		}
 	}

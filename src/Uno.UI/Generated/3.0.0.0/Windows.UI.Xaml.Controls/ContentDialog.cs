@@ -9,6 +9,34 @@ namespace Windows.UI.Xaml.Controls
 	{
 		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
+		public  global::Windows.UI.Xaml.DataTemplate TitleTemplate
+		{
+			get
+			{
+				return (global::Windows.UI.Xaml.DataTemplate)this.GetValue(TitleTemplateProperty);
+			}
+			set
+			{
+				this.SetValue(TitleTemplateProperty, value);
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  object Title
+		{
+			get
+			{
+				return (object)this.GetValue(TitleProperty);
+			}
+			set
+			{
+				this.SetValue(TitleProperty, value);
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
 		public  string SecondaryButtonText
 		{
 			get
@@ -135,43 +163,15 @@ namespace Windows.UI.Xaml.Controls
 		#endif
 		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
-		public  global::Windows.UI.Xaml.DataTemplate TitleTemplate
+		public  global::Windows.UI.Xaml.Style SecondaryButtonStyle
 		{
 			get
 			{
-				return (global::Windows.UI.Xaml.DataTemplate)this.GetValue(TitleTemplateProperty);
+				return (global::Windows.UI.Xaml.Style)this.GetValue(SecondaryButtonStyleProperty);
 			}
 			set
 			{
-				this.SetValue(TitleTemplateProperty, value);
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  object Title
-		{
-			get
-			{
-				return (object)this.GetValue(TitleProperty);
-			}
-			set
-			{
-				this.SetValue(TitleProperty, value);
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  global::Windows.UI.Xaml.Style CloseButtonStyle
-		{
-			get
-			{
-				return (global::Windows.UI.Xaml.Style)this.GetValue(CloseButtonStyleProperty);
-			}
-			set
-			{
-				this.SetValue(CloseButtonStyleProperty, value);
+				this.SetValue(SecondaryButtonStyleProperty, value);
 			}
 		}
 		#endif
@@ -219,15 +219,15 @@ namespace Windows.UI.Xaml.Controls
 		#endif
 		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
-		public  global::Windows.UI.Xaml.Style SecondaryButtonStyle
+		public  global::Windows.UI.Xaml.Style CloseButtonStyle
 		{
 			get
 			{
-				return (global::Windows.UI.Xaml.Style)this.GetValue(SecondaryButtonStyleProperty);
+				return (global::Windows.UI.Xaml.Style)this.GetValue(CloseButtonStyleProperty);
 			}
 			set
 			{
-				this.SetValue(SecondaryButtonStyleProperty, value);
+				this.SetValue(CloseButtonStyleProperty, value);
 			}
 		}
 		#endif
@@ -293,6 +293,14 @@ namespace Windows.UI.Xaml.Controls
 		#endif
 		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
+		public static global::Windows.UI.Xaml.DependencyProperty PrimaryButtonCommandProperty { get; } = 
+		Windows.UI.Xaml.DependencyProperty.Register(
+			"PrimaryButtonCommand", typeof(global::System.Windows.Input.ICommand), 
+			typeof(global::Windows.UI.Xaml.Controls.ContentDialog), 
+			new FrameworkPropertyMetadata(default(global::System.Windows.Input.ICommand)));
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty PrimaryButtonTextProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
 			"PrimaryButtonText", typeof(string), 
@@ -338,14 +346,6 @@ namespace Windows.UI.Xaml.Controls
 			"TitleTemplate", typeof(global::Windows.UI.Xaml.DataTemplate), 
 			typeof(global::Windows.UI.Xaml.Controls.ContentDialog), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.DataTemplate)));
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public static global::Windows.UI.Xaml.DependencyProperty PrimaryButtonCommandProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			"PrimaryButtonCommand", typeof(global::System.Windows.Input.ICommand), 
-			typeof(global::Windows.UI.Xaml.Controls.ContentDialog), 
-			new FrameworkPropertyMetadata(default(global::System.Windows.Input.ICommand)));
 		#endif
 		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]

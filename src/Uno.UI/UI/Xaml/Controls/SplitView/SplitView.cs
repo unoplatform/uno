@@ -23,6 +23,8 @@ namespace Windows.UI.Xaml.Controls
 	{
 		public event TypedEventHandler<SplitView, object> PaneClosed;
 		public event TypedEventHandler<SplitView, SplitViewPaneClosingEventArgs> PaneClosing;
+		public event TypedEventHandler<SplitView, object> PaneOpened;
+		public event TypedEventHandler<SplitView, object> PaneOpening;
 
 		private CompositeDisposable _subscriptions;
 		private readonly SerialDisposable _runningSubscription = new SerialDisposable();
@@ -42,9 +44,9 @@ namespace Windows.UI.Xaml.Controls
 		}
 #endif
 
-        #region CompactPaneLength DependencyProperty
+		#region CompactPaneLength DependencyProperty
 
-        public double CompactPaneLength
+		public double CompactPaneLength
 		{
 			get { return (double)this.GetValue(CompactPaneLengthProperty); }
 			set { this.SetValue(CompactPaneLengthProperty, value); }
@@ -377,12 +379,20 @@ namespace Windows.UI.Xaml.Controls
 			{
 				PaneClosing?.Invoke(this, new SplitViewPaneClosingEventArgs());
 			}
+			else
+			{
+				PaneOpening?.Invoke(this, null);
+			}
 
 			VisualStateManager.GoToState(this, stateName, useTransitons);
 
 			if (!IsPaneOpen)
 			{
 				PaneClosed?.Invoke(this, null);
+			}
+			else
+			{
+				PaneOpened?.Invoke(this, null);
 			}
 		}
 

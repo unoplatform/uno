@@ -300,7 +300,10 @@ Localization is done through the `resw` files in the current project. Resources 
 
 See [Localize strings in your UI](https://docs.microsoft.com/en-us/windows/uwp/app-resources/localize-strings-ui-manifest).
 
-Note that the default language can be defined using the `DefaultLanguage` property, using an IETF Language Tag (e.g. `en` or `fr-FR`).
+Resources may be placed in the default scope files `Resources.resw`, or in a custom named file. Custom named files content
+can by used with the `x:Uid="/myResources/MyResource"` format, see [how to factor strings into multiple resource files](https://docs.microsoft.com/en-us/windows/uwp/app-resources/localize-strings-ui-manifest#factoring-strings-into-multiple-resources-files)
+
+Note that the default language can be defined using the `DefaultLanguage` msbuild property, using an IETF Language Tag (e.g. `en` or `fr-FR`).
 
 ## Supported Uno.UI Controls
 
@@ -435,6 +438,8 @@ The Uno.UI TextBlock supports the Text property as well as the
 
 For more information, see the [TextBlock](https://msdn.microsoft.com/en-us/library/windows/apps/windows.ui.xaml.controls.textblock.aspx) class.
 
+### Custom Fonts
+
 #### Custom Fonts on Android
 Fonts must be placed in the `Assets` folder of the head project, matching the path of the fonts in Windows, and marked as `AndroidAsset`.
 The format is the same as Windows, as follows:
@@ -443,6 +448,7 @@ The format is the same as Windows, as follows:
 <Setter Property="FontFamily" Value="/Assets/Fonts/Roboto-Regular.ttf#Roboto" />
 ```
    or
+   
 ```xml
 <Setter Property="FontFamily" Value="ms-appx:///Assets/Fonts/Roboto-Regular.ttf#Roboto" />
 ```
@@ -468,8 +474,49 @@ The format is the same as Windows, as follows:
 <Setter Property="FontFamily" Value="/Assets/Fonts/yourfont01.ttf#Roboto" />
 ```
     or
+
 ```xml
 <Setter Property="FontFamily" Value="ms-appx:///Assets/Fonts/yourfont01.ttf#Roboto" />
+```
+
+#### Custom Fonts Notes
+Please note that some custom fonts need the FontFamily and FontWeight properties to be set at the same time in order to work properly on TextBlocks, Runs and for styles Setters.
+If it's your case, here are some examples of code:
+
+```xml
+<FontFamily x:Key="FontFamilyLight">ms-appx:///Assets/Fonts/PierSans-Light.otf#Pier Sans Light</FontFamily>
+<FontFamily x:Key="FontFamilyBold">ms-appx:///Assets/Fonts/PierSans-Bold.otf#Pier Sans Bold</FontFamily>
+
+<Style x:Key="LightTextBlockStyle"
+	   TargetType="TextBlock">
+	<Setter Property="FontFamily"
+			Value="{StaticResource FontFamilyLight}" />
+	<Setter Property="FontWeight"
+			Value="Light" />
+	<Setter Property="FontSize"
+			Value="16" />
+</Style>
+
+<Style x:Key="BoldTextBlockStyle"
+	   TargetType="TextBlock">
+	<Setter Property="FontFamily"
+			Value="{StaticResource FontFamilyBold}" />
+	<Setter Property="FontWeight"
+			Value="Bold" />
+	<Setter Property="FontSize"
+			Value="24" />
+</Style>
+
+<TextBlock Text="TextBlock with Light FontFamily and FontWeight."
+		   FontFamily="{StaticResource FontFamilyLight}"
+		   FontWeight="Light" />
+
+<TextBlock Style="{StaticResource BoldTextBlockStyle}">
+	<Run Text="TextBlock with Runs" />
+	<Run Text="and  Light FontFamily and FontWeight for the second Run."
+		 FontWeight="Light"
+		 FontFamily="{StaticResource FontFamilyLight}" />
+</TextBlock>
 ```
 
 ### TextBox

@@ -22,6 +22,10 @@ namespace Windows.UI.ViewManagement
 	{
 		private IDisposable _padScrollContentPresenter;
 
+		public Rect KeyboardRect { get; internal set; }
+
+		public Rect NavigationBarRect { get; internal set; }
+
 		partial void TryShowPartial()
 		{
 			var activity = (ContextHelper.Current as Activity);

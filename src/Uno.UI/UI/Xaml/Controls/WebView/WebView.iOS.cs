@@ -188,16 +188,16 @@ namespace Windows.UI.Xaml.Controls
 						var cc = new[] { "" };
 						var bcc = new[] { "" };
 
-						var recipients = mailtoUri.AbsoluteUri.Split(':')[1].Split('?')[0].Split(',');
-						var parameters = mailtoUri.Query.Split('?');
+						var recipients = mailtoUri.AbsoluteUri.Split(new[] { ':' })[1].Split(new[] { '?' })[0].Split(new[] { ',' });
+						var parameters = mailtoUri.Query.Split(new[] { '?' });
 
 						parameters = parameters.Length > 1 ?
-										parameters[1].Split('&') :
+										parameters[1].Split(new[] { '&' }) :
 										new string[0];
 
 						foreach (string param in parameters)
 						{
-							var keyValue = param.Split('=');
+							var keyValue = param.Split(new[] { '=' });
 							var key = keyValue[0];
 							var value = keyValue[1];
 

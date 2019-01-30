@@ -67,7 +67,7 @@ namespace Windows.ApplicationModel.Resources.Core
 
 		private static bool IsLanguageTag(string str)
 		{
-			return LanguageTags.Contains(str);
+			return LanguageTags.Contains(str, StringComparer.InvariantCultureIgnoreCase);
 		}
 
 		#endregion

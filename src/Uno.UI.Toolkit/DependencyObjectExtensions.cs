@@ -10,7 +10,7 @@ namespace Uno.UI.Toolkit.Extensions
 {
 	internal static class DependencyObjectExtensions
 	{
-#if !XAMARIN && !NETSTANDARD2_0
+#if !XAMARIN && !__WASM__
 		internal static T FindFirstParent<T>(this DependencyObject obj) where T : DependencyObject
 		{
 			var parent = VisualTreeHelper.GetParent(obj);

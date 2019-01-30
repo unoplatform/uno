@@ -1,0 +1,19 @@
+﻿{
+	"compilerOptions": {
+			"module": "none",
+			"declaration": true,
+			"diagnostics": true,
+			"noImplicitAny": true,
+			"outFile": "WasmScripts/UnitTests.js",
+			//"inlineSourceMap": true,
+			"locale": "en-US",
+			"target": "es2015"
+	},
+  "include": [
+    "ts/**/*",
+    "tsBindings/**/*",
+    "../Uno.UI.Wasm/WasmScripts/Uno.UI.d.ts",
+    "../Uno.UI.Wasm/ts/types/**/*"
+  ]
+}
+

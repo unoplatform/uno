@@ -109,6 +109,20 @@ namespace Windows.ApplicationModel.UserActivities
 		#endif
 		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
+		public  bool IsRoamable
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member bool UserActivity.IsRoamable is not implemented in Uno.");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserActivities.UserActivity", "bool UserActivity.IsRoamable");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
 		public UserActivity( string activityId) 
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserActivities.UserActivity", "UserActivity.UserActivity(string activityId)");
@@ -149,6 +163,8 @@ namespace Windows.ApplicationModel.UserActivities
 			throw new global::System.NotImplementedException("The member string UserActivity.ToJson() is not implemented in Uno.");
 		}
 		#endif
+		// Forced skipping of method Windows.ApplicationModel.UserActivities.UserActivity.IsRoamable.get
+		// Forced skipping of method Windows.ApplicationModel.UserActivities.UserActivity.IsRoamable.set
 		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.ApplicationModel.UserActivities.UserActivity TryParseFromJson( string json)

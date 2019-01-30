@@ -87,6 +87,16 @@ namespace Windows.Networking.Connectivity
 			}
 		}
 		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  bool CanDelete
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member bool ConnectionProfile.CanDelete is not implemented in Uno.");
+			}
+		}
+		#endif
 		// Forced skipping of method Windows.Networking.Connectivity.ConnectionProfile.ProfileName.get
 		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
@@ -177,6 +187,14 @@ namespace Windows.Networking.Connectivity
 		public  global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IReadOnlyList<global::Windows.Networking.Connectivity.ProviderNetworkUsage>> GetProviderNetworkUsageAsync( global::System.DateTimeOffset startTime,  global::System.DateTimeOffset endTime,  global::Windows.Networking.Connectivity.NetworkUsageStates states)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<IReadOnlyList<ProviderNetworkUsage>> ConnectionProfile.GetProviderNetworkUsageAsync(DateTimeOffset startTime, DateTimeOffset endTime, NetworkUsageStates states) is not implemented in Uno.");
+		}
+		#endif
+		// Forced skipping of method Windows.Networking.Connectivity.ConnectionProfile.CanDelete.get
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  global::Windows.Foundation.IAsyncOperation<global::Windows.Networking.Connectivity.ConnectionProfileDeleteStatus> TryDeleteAsync()
+		{
+			throw new global::System.NotImplementedException("The member IAsyncOperation<ConnectionProfileDeleteStatus> ConnectionProfile.TryDeleteAsync() is not implemented in Uno.");
 		}
 		#endif
 	}

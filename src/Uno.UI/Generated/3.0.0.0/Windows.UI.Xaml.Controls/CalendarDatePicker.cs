@@ -9,6 +9,118 @@ namespace Windows.UI.Xaml.Controls
 	{
 		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
+		public  string PlaceholderText
+		{
+			get
+			{
+				return (string)this.GetValue(PlaceholderTextProperty);
+			}
+			set
+			{
+				this.SetValue(PlaceholderTextProperty, value);
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  global::System.DateTimeOffset MinDate
+		{
+			get
+			{
+				return (global::System.DateTimeOffset)this.GetValue(MinDateProperty);
+			}
+			set
+			{
+				this.SetValue(MinDateProperty, value);
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  global::System.DateTimeOffset MaxDate
+		{
+			get
+			{
+				return (global::System.DateTimeOffset)this.GetValue(MaxDateProperty);
+			}
+			set
+			{
+				this.SetValue(MaxDateProperty, value);
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  bool IsTodayHighlighted
+		{
+			get
+			{
+				return (bool)this.GetValue(IsTodayHighlightedProperty);
+			}
+			set
+			{
+				this.SetValue(IsTodayHighlightedProperty, value);
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  bool IsOutOfScopeEnabled
+		{
+			get
+			{
+				return (bool)this.GetValue(IsOutOfScopeEnabledProperty);
+			}
+			set
+			{
+				this.SetValue(IsOutOfScopeEnabledProperty, value);
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  bool IsGroupLabelVisible
+		{
+			get
+			{
+				return (bool)this.GetValue(IsGroupLabelVisibleProperty);
+			}
+			set
+			{
+				this.SetValue(IsGroupLabelVisibleProperty, value);
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  bool IsCalendarOpen
+		{
+			get
+			{
+				return (bool)this.GetValue(IsCalendarOpenProperty);
+			}
+			set
+			{
+				this.SetValue(IsCalendarOpenProperty, value);
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  global::Windows.UI.Xaml.DataTemplate HeaderTemplate
+		{
+			get
+			{
+				return (global::Windows.UI.Xaml.DataTemplate)this.GetValue(HeaderTemplateProperty);
+			}
+			set
+			{
+				this.SetValue(HeaderTemplateProperty, value);
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
 		public  object Header
 		{
 			get
@@ -93,20 +205,6 @@ namespace Windows.UI.Xaml.Controls
 		#endif
 		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
-		public  bool IsTodayHighlighted
-		{
-			get
-			{
-				return (bool)this.GetValue(IsTodayHighlightedProperty);
-			}
-			set
-			{
-				this.SetValue(IsTodayHighlightedProperty, value);
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
 		public  global::Windows.UI.Xaml.Style CalendarViewStyle
 		{
 			get
@@ -135,104 +233,6 @@ namespace Windows.UI.Xaml.Controls
 		#endif
 		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
-		public  string PlaceholderText
-		{
-			get
-			{
-				return (string)this.GetValue(PlaceholderTextProperty);
-			}
-			set
-			{
-				this.SetValue(PlaceholderTextProperty, value);
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  global::System.DateTimeOffset MaxDate
-		{
-			get
-			{
-				return (global::System.DateTimeOffset)this.GetValue(MaxDateProperty);
-			}
-			set
-			{
-				this.SetValue(MaxDateProperty, value);
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  global::System.DateTimeOffset MinDate
-		{
-			get
-			{
-				return (global::System.DateTimeOffset)this.GetValue(MinDateProperty);
-			}
-			set
-			{
-				this.SetValue(MinDateProperty, value);
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  bool IsOutOfScopeEnabled
-		{
-			get
-			{
-				return (bool)this.GetValue(IsOutOfScopeEnabledProperty);
-			}
-			set
-			{
-				this.SetValue(IsOutOfScopeEnabledProperty, value);
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  bool IsGroupLabelVisible
-		{
-			get
-			{
-				return (bool)this.GetValue(IsGroupLabelVisibleProperty);
-			}
-			set
-			{
-				this.SetValue(IsGroupLabelVisibleProperty, value);
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  bool IsCalendarOpen
-		{
-			get
-			{
-				return (bool)this.GetValue(IsCalendarOpenProperty);
-			}
-			set
-			{
-				this.SetValue(IsCalendarOpenProperty, value);
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  global::Windows.UI.Xaml.DataTemplate HeaderTemplate
-		{
-			get
-			{
-				return (global::Windows.UI.Xaml.DataTemplate)this.GetValue(HeaderTemplateProperty);
-			}
-			set
-			{
-				this.SetValue(HeaderTemplateProperty, value);
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
 		public  global::Windows.UI.Xaml.Controls.LightDismissOverlayMode LightDismissOverlayMode
 		{
 			get
@@ -247,27 +247,17 @@ namespace Windows.UI.Xaml.Controls
 		#endif
 		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
-		public static global::Windows.UI.Xaml.DependencyProperty MaxDateProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			"MaxDate", typeof(global::System.DateTimeOffset), 
-			typeof(global::Windows.UI.Xaml.Controls.CalendarDatePicker), 
-			new FrameworkPropertyMetadata(default(global::System.DateTimeOffset)));
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public static global::Windows.UI.Xaml.DependencyProperty MinDateProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			"MinDate", typeof(global::System.DateTimeOffset), 
-			typeof(global::Windows.UI.Xaml.Controls.CalendarDatePicker), 
-			new FrameworkPropertyMetadata(default(global::System.DateTimeOffset)));
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public static global::Windows.UI.Xaml.DependencyProperty PlaceholderTextProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			"PlaceholderText", typeof(string), 
-			typeof(global::Windows.UI.Xaml.Controls.CalendarDatePicker), 
-			new FrameworkPropertyMetadata(default(string)));
+		public  object Description
+		{
+			get
+			{
+				return (object)this.GetValue(DescriptionProperty);
+			}
+			set
+			{
+				this.SetValue(DescriptionProperty, value);
+			}
+		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
@@ -375,11 +365,43 @@ namespace Windows.UI.Xaml.Controls
 		#endif
 		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
+		public static global::Windows.UI.Xaml.DependencyProperty MaxDateProperty { get; } = 
+		Windows.UI.Xaml.DependencyProperty.Register(
+			"MaxDate", typeof(global::System.DateTimeOffset), 
+			typeof(global::Windows.UI.Xaml.Controls.CalendarDatePicker), 
+			new FrameworkPropertyMetadata(default(global::System.DateTimeOffset)));
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public static global::Windows.UI.Xaml.DependencyProperty MinDateProperty { get; } = 
+		Windows.UI.Xaml.DependencyProperty.Register(
+			"MinDate", typeof(global::System.DateTimeOffset), 
+			typeof(global::Windows.UI.Xaml.Controls.CalendarDatePicker), 
+			new FrameworkPropertyMetadata(default(global::System.DateTimeOffset)));
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public static global::Windows.UI.Xaml.DependencyProperty PlaceholderTextProperty { get; } = 
+		Windows.UI.Xaml.DependencyProperty.Register(
+			"PlaceholderText", typeof(string), 
+			typeof(global::Windows.UI.Xaml.Controls.CalendarDatePicker), 
+			new FrameworkPropertyMetadata(default(string)));
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty LightDismissOverlayModeProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
 			"LightDismissOverlayMode", typeof(global::Windows.UI.Xaml.Controls.LightDismissOverlayMode), 
 			typeof(global::Windows.UI.Xaml.Controls.CalendarDatePicker), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Controls.LightDismissOverlayMode)));
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public static global::Windows.UI.Xaml.DependencyProperty DescriptionProperty { get; } = 
+		Windows.UI.Xaml.DependencyProperty.Register(
+			"Description", typeof(object), 
+			typeof(global::Windows.UI.Xaml.Controls.CalendarDatePicker), 
+			new FrameworkPropertyMetadata(default(object)));
 		#endif
 		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
@@ -445,6 +467,9 @@ namespace Windows.UI.Xaml.Controls
 		#endif
 		// Forced skipping of method Windows.UI.Xaml.Controls.CalendarDatePicker.LightDismissOverlayMode.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.CalendarDatePicker.LightDismissOverlayMode.set
+		// Forced skipping of method Windows.UI.Xaml.Controls.CalendarDatePicker.Description.get
+		// Forced skipping of method Windows.UI.Xaml.Controls.CalendarDatePicker.Description.set
+		// Forced skipping of method Windows.UI.Xaml.Controls.CalendarDatePicker.DescriptionProperty.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.CalendarDatePicker.LightDismissOverlayModeProperty.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.CalendarDatePicker.DateProperty.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.CalendarDatePicker.IsCalendarOpenProperty.get

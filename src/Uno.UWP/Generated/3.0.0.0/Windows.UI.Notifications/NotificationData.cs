@@ -33,14 +33,6 @@ namespace Windows.UI.Notifications
 		#endif
 		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
-		public NotificationData() 
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Notifications.NotificationData", "NotificationData.NotificationData()");
-		}
-		#endif
-		// Forced skipping of method Windows.UI.Notifications.NotificationData.NotificationData()
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
 		public NotificationData( global::System.Collections.Generic.IEnumerable<global::System.Collections.Generic.KeyValuePair<string, string>> initialValues,  uint sequenceNumber) 
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Notifications.NotificationData", "NotificationData.NotificationData(IEnumerable<KeyValuePair<string, string>> initialValues, uint sequenceNumber)");
@@ -55,6 +47,14 @@ namespace Windows.UI.Notifications
 		}
 		#endif
 		// Forced skipping of method Windows.UI.Notifications.NotificationData.NotificationData(System.Collections.Generic.IEnumerable<System.Collections.Generic.KeyValuePair<string, string>>)
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public NotificationData() 
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Notifications.NotificationData", "NotificationData.NotificationData()");
+		}
+		#endif
+		// Forced skipping of method Windows.UI.Notifications.NotificationData.NotificationData()
 		// Forced skipping of method Windows.UI.Notifications.NotificationData.Values.get
 		// Forced skipping of method Windows.UI.Notifications.NotificationData.SequenceNumber.get
 		// Forced skipping of method Windows.UI.Notifications.NotificationData.SequenceNumber.set

@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="15.0">
+﻿<Project Sdk="MSBuild.Sdk.Extras" ToolsVersion="15.0">
 	<PropertyGroup>
 		<TargetFrameworks>xamarinmac20;MonoAndroid80;xamarinios10;net46;netstandard2.0</TargetFrameworks>
 		<TargetFrameworksCI>MonoAndroid71;MonoAndroid80;xamarinios10;net46;netstandard2.0;xamarinmac20</TargetFrameworksCI>
@@ -27,8 +27,16 @@
 		<UnoForceProcessPRIResource>true</UnoForceProcessPRIResource>
 	</PropertyGroup>
 
-	<Import Project="$(MSBuildSDKExtrasTargets)" Condition="Exists('$(MSBuildSDKExtrasTargets)')" />
 	<Import Project="..\Uno.CrossTargetting.props" />
+	
+	<ItemGroup>
+		<UpToDateCheckInput Include="**\*.cs" Exclude="bin\**\*.cs;obj\**\*.cs;" />
+	</ItemGroup>
+	
+	<ItemGroup>
+		<UpToDateCheckInput Include="**\*.xaml" Exclude="bin\**\*.xaml;obj\**\*.xaml;" />
+		<UpToDateCheckInput Include="**\*.cs" Exclude="bin\**\*.cs;obj\**\*.cs;" />
+	</ItemGroup>
 
 	<ItemGroup>
 		<Compile Remove="Mixins\**\*.cs" />
@@ -145,15 +153,14 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="MSBuild.Sdk.Extras" Version="1.6.55" PrivateAssets="All" />
 		<PackageReference Include="Uno.SourceGenerationTasks">
-			<Version>1.28.0-beta.153</Version> 
+			<Version>1.29.0-dev.241</Version> 
 		</PackageReference>
 		<PackageReference Include="Uno.Core">
-			<Version>1.25.0-beta.54</Version>
+			<Version>1.26.0-dev.58</Version>
 		</PackageReference>
 		<PackageReference Include="Uno.Core.Build">
-			<Version>1.25.0-beta.54</Version>
+			<Version>1.26.0-dev.58</Version>
 		</PackageReference>
 	</ItemGroup>
 
@@ -193,12 +200,12 @@
 			<TreatAsPackageReference>false</TreatAsPackageReference>
 		</ProjectReference>
 		<ProjectReference Include="..\SourceGenerators\System.Xaml\Uno.Xaml.csproj" />
-		 <ProjectReference Include="..\Uno.UI.BindingHelper.Android\Uno.UI.BindingHelper.Android.csproj" Condition="'$(TargetFrameworkIdentifier)'=='MonoAndroid'">
+		 <ProjectReference Include="..\Uno.UI.BindingHelper.Android\Uno.UI.BindingHelper.Android.csproj" Condition="$(IsMonoAndroid)">
 			<TreatAsPackageReference>false</TreatAsPackageReference>
 		</ProjectReference> 
 	</ItemGroup>
 
-	<ItemGroup Condition="'$(TargetFrameworkIdentifier)'=='MonoAndroid' or '$(TargetFrameworkIdentifier)'=='Xamarin.iOS' or '$(TargetFramework)'=='xamarinmac20'">
+	<ItemGroup Condition="$(IsMonoAndroid) or $(IsXamarinIOS) or '$(TargetFramework)'=='xamarinmac20'">
 		<Reference Include="System.Numerics" />
 		<Reference Include="System.Numerics.Vectors" />
 		<Reference Include="System.json" />
@@ -237,7 +244,7 @@
 	DispatchToInnerBuilds is used for direct builds, CoreCompile/_UnoSourceGenerator is for 
 	project dependency induced builds.
 	-->
-	<Target Name="GenerateMixins" Inputs="@(MixinInput)" Outputs="@(MixinOutput)" BeforeTargets="DispatchToInnerBuilds;Build;_UnoSourceGenerator" Condition="'$(DesignTimeBuild)' != 'true'" DependsOnTargets="BuildManualDependencies">
+	<Target Name="GenerateMixins" Inputs="@(MixinInput)" Outputs="@(MixinOutput)" BeforeTargets="DispatchToInnerBuilds;Build;_UnoSourceGenerator" Condition="'$(DesignTimeBuild)' != 'true'">
 
 		<ItemGroup>
 			<MixinDefinition Include="$(MSBuildThisFileFullPath)">
@@ -304,52 +311,43 @@
 	<ItemGroup>
 		<Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
 	</ItemGroup>
-
-	<ItemGroup>
-		<None Update="Mixins\macOS\FrameworkElementMixins.tt">
-		  <Generator>TextTemplatingFileGenerator</Generator>
-		  <LastGenOutput>FrameworkElementMixins.g.cs</LastGenOutput>
-		</None>
-		<None Update="Mixins\macOS\VisualStatesMixins.tt">
-		  <Generator>TextTemplatingFileGenerator</Generator>
-		  <LastGenOutput>VisualStatesMixins.g.cs</LastGenOutput>
-		</None>
-		<None Update="Mixins\Wasm\VisualStatesMixins.tt">
-			<Generator>TextTemplatingFileGenerator</Generator>
-			<LastGenOutput>VisualStatesMixins.g.cs</LastGenOutput>
-		</None>
-		<None Update="UI\Xaml\IFrameworkElementImplementation.macOS.cs">
-		  <DesignTime>True</DesignTime>
-		  <AutoGen>True</AutoGen>
-		  <DependentUpon>IFrameworkElementImplementation.macOS.tt</DependentUpon>
-		</None>
-		<None Update="UI\Xaml\IFrameworkElementImplementation.macOS.tt">
-		  <Generator>TextTemplatingFileGenerator</Generator>
-		  <LastGenOutput>IFrameworkElementImplementation.macOS.cs</LastGenOutput>
-		</None>
-	</ItemGroup>
-
 	<ItemGroup>
 		<Folder Include="Mixins\Wasm\" />
 		<Folder Include="UI\Xaml\Maps\Presenters\" />
 	</ItemGroup>
 
 	<ItemGroup>
-		<PRIResource Include="Resources\Strings\**\*.resw" />
+		<PRIResource Include="**\*.resw" />
+	</ItemGroup>
+
+	<ItemGroup Condition="'$(TargetFramework)'=='netstandard2.0'">
+		<EmbeddedResource Include="LinkerDefinition.Wasm.xml">
+			<LogicalName>$(AssemblyName).xml</LogicalName>
+		</EmbeddedResource>
 	</ItemGroup>
 
 	<ItemGroup>
-	  <None Remove="Extensions\UIImageExtensions.iOS.cs" />
+		<Analyzer Include="..\Uno.MonoAnalyzers\bin\$(Configuration)\net46\Uno.MonoAnalyzers.dll" />
 	</ItemGroup>
 
-	<Target Name="BuildManualDependencies" BeforeTargets="_UnoSourceGenerator" Condition="!Exists($(T4Bin))">
-		<Message Text="Building Generators" Importance="high" />
-		<!-- This is required because the non-reference dependencies are not properly handled -->
-		<MSBuild Properties="Configuration=$(Configuration);Platform=AnyCPU" Targets="Build" Projects="..\SourceGenerators\Uno.UI.SourceGenerators\Uno.UI.SourceGenerators.csproj" RebaseOutputs="false" />
-		<MSBuild Properties="Configuration=$(Configuration);Platform=AnyCPU" Targets="Build" Projects="..\SourceGenerators\Uno.UI.Tasks\Uno.UI.Tasks.csproj" RebaseOutputs="false" />
-		<MSBuild Properties="Configuration=$(Configuration);Platform=AnyCPU" Targets="Build" Projects="..\T4Generator\T4Generator.csproj" RebaseOutputs="false" />
-	</Target>
-
+	<ItemGroup>
+		<ProjectReference Include="..\SourceGenerators\Uno.UI.SourceGenerators\Uno.UI.SourceGenerators.csproj">
+			<ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+			<SkipGetTargetFrameworkProperties>true</SkipGetTargetFrameworkProperties>
+			<UndefineProperties>TargetFramework</UndefineProperties>
+		</ProjectReference>
+		<ProjectReference Include="..\SourceGenerators\Uno.UI.Tasks\Uno.UI.Tasks.csproj">
+			<ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+			<SkipGetTargetFrameworkProperties>true</SkipGetTargetFrameworkProperties>
+			<UndefineProperties>TargetFramework</UndefineProperties>
+		</ProjectReference>
+		<ProjectReference Include="..\T4Generator\T4Generator.csproj">
+			<ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+			<SkipGetTargetFrameworkProperties>true</SkipGetTargetFrameworkProperties>
+			<UndefineProperties>TargetFramework</UndefineProperties>
+		</ProjectReference>
+	</ItemGroup>
+	
 	<Target Name="GetPackagingOutputs" Condition=" '$(TargetFramework)' == 'uap10.0' " />
 
 	<Target Name="GetBuiltProjectOutputRecursive" Condition=" '$(TargetFramework)' == 'xamarinios10' " />

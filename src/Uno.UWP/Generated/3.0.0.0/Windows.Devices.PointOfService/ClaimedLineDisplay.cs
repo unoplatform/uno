@@ -234,6 +234,8 @@ namespace Windows.Devices.PointOfService
 			throw new global::System.NotImplementedException("The member IAsyncOperation<LineDisplayStoredBitmap> ClaimedLineDisplay.TryStoreStorageFileBitmapAsync(StorageFile bitmap, LineDisplayHorizontalAlignment horizontalAlignment, LineDisplayVerticalAlignment verticalAlignment, int widthInPixels) is not implemented in Uno.");
 		}
 		#endif
+		// Forced skipping of method Windows.Devices.PointOfService.ClaimedLineDisplay.Closed.add
+		// Forced skipping of method Windows.Devices.PointOfService.ClaimedLineDisplay.Closed.remove
 		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.PointOfService.ClaimedLineDisplay> FromIdAsync( string deviceId)
@@ -284,6 +286,22 @@ namespace Windows.Devices.PointOfService
 			remove
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.PointOfService.ClaimedLineDisplay", "event TypedEventHandler<ClaimedLineDisplay, LineDisplayStatusUpdatedEventArgs> ClaimedLineDisplay.StatusUpdated");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Devices.PointOfService.ClaimedLineDisplay, global::Windows.Devices.PointOfService.ClaimedLineDisplayClosedEventArgs> Closed
+		{
+			[global::Uno.NotImplemented]
+			add
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.PointOfService.ClaimedLineDisplay", "event TypedEventHandler<ClaimedLineDisplay, ClaimedLineDisplayClosedEventArgs> ClaimedLineDisplay.Closed");
+			}
+			[global::Uno.NotImplemented]
+			remove
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.PointOfService.ClaimedLineDisplay", "event TypedEventHandler<ClaimedLineDisplay, ClaimedLineDisplayClosedEventArgs> ClaimedLineDisplay.Closed");
 			}
 		}
 		#endif

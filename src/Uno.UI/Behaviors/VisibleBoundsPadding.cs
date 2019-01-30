@@ -115,7 +115,7 @@ namespace Uno.UI.Toolkit
 		public class VisibleBoundsDetails
 		{
 			private static ConditionalWeakTable<FrameworkElement, VisibleBoundsDetails> _instances = new ConditionalWeakTable<FrameworkElement, VisibleBoundsDetails>();
-			private FrameworkElement _owner;
+			private WeakReference _owner;
 			private TypedEventHandler<global::Windows.UI.ViewManagement.ApplicationView, object> _visibleBoundsChanged;
 			private PaddingMask _paddingMask;
 			private Thickness _originalPadding;
@@ -123,16 +123,18 @@ namespace Uno.UI.Toolkit
 
 			internal VisibleBoundsDetails(FrameworkElement owner)
 			{
-				_owner = owner;
+				_owner = new WeakReference(owner);
 
-				_originalPadding = (Thickness)(_owner.GetValue(GetPaddingProperty()) ?? new Thickness(0));
+				_originalPadding = (Thickness)(Owner.GetValue(GetPaddingProperty()) ?? new Thickness(0));
 
 				_visibleBoundsChanged = (s2, e2) => UpdatePadding();
 
-				_owner.LayoutUpdated += (s, e) => UpdatePadding();
-				_owner.Loaded += (s, e) => ApplicationView.GetForCurrentView().VisibleBoundsChanged += _visibleBoundsChanged;
-				_owner.Unloaded += (s, e) => ApplicationView.GetForCurrentView().VisibleBoundsChanged -= _visibleBoundsChanged;
+				Owner.LayoutUpdated += (s, e) => UpdatePadding();
+				Owner.Loaded += (s, e) => ApplicationView.GetForCurrentView().VisibleBoundsChanged += _visibleBoundsChanged;
+				Owner.Unloaded += (s, e) => ApplicationView.GetForCurrentView().VisibleBoundsChanged -= _visibleBoundsChanged;
 			}
+
+			private FrameworkElement Owner => _owner.Target as FrameworkElement;
 
 			private void UpdatePadding()
 			{
@@ -153,7 +155,7 @@ namespace Uno.UI.Toolkit
 					var scrollAncestor = GetScrollAncestor();
 
 					// If the owner view is scrollable, the visibility of interest is that of the scroll viewport.
-					var fixedControl = scrollAncestor ?? _owner;
+					var fixedControl = scrollAncestor ?? Owner;
 
 					var controlBounds = GetRelativeBounds(fixedControl, Window.Current.Content);
 
@@ -208,7 +210,7 @@ namespace Uno.UI.Toolkit
 				if (scrollableRoot != null)
 				{
 					// Get the spacing already provided by the alignment of the child relative to it ancestor at the root of the scrollable hierarchy.
-					var controlBounds = GetRelativeBounds(_owner, scrollableRoot);
+					var controlBounds = GetRelativeBounds(Owner, scrollableRoot);
 					var rootBounds = new Rect(0, 0, scrollableRoot.ActualWidth, scrollableRoot.ActualHeight);
 
 					// Adjust for existing spacing
@@ -255,13 +257,13 @@ namespace Uno.UI.Toolkit
 
 				if (property != null)
 				{
-					_owner.SetValue(property, padding);
+					Owner.SetValue(property, padding);
 				}
 			}
 
 			private DependencyProperty GetPaddingProperty()
 			{
-				switch (_owner)
+				switch (Owner)
 				{
 					case Grid g:
 						return Grid.PaddingProperty;
@@ -289,7 +291,7 @@ namespace Uno.UI.Toolkit
 
 			private DependencyProperty GetDefaultPaddingProperty()
 			{
-				var ownerType = _owner.GetType();
+				var ownerType = Owner.GetType();
 
 				if (!_paddingPropertyCache.TryGetValue(ownerType, out var property))
 				{
@@ -329,7 +331,7 @@ namespace Uno.UI.Toolkit
 
 			private ScrollViewer GetScrollAncestor()
 			{
-				return _owner.FindFirstParent<ScrollViewer>();
+				return Owner.FindFirstParent<ScrollViewer>();
 			}
 
 			private static Rect GetRelativeBounds(FrameworkElement boundsOf, UIElement relativeTo)

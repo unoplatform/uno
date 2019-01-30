@@ -394,89 +394,9 @@ namespace Windows.UI.Xaml
 
 			try
 			{
-				if (precedence == DependencyPropertyValuePrecedences.Coercion)
+				using (WritePropertyEventTrace(TraceProvider.SetValueStart, TraceProvider.SetValueStop, property, precedence))
 				{
-					throw new ArgumentException("SetValue must not be called with precedence DependencyPropertyValuePrecedences.Coercion, as it expects a non-coerced value to function properly.");
-				}
-
-				if (
-					IsCurrentlySettingProperty(property)
-					&& !ReferenceEquals(property, _dataContextProperty)
-				)
-				{
-					// This check is present to avoid having update loops in cases
-					// of multiple two-way bindings having ConvertBack implemented to invert its content.
-
-					if (property.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
-					{
-						property.Log().DebugFormat(
-							"Ignoring new property value [{1}] on [{0}] as it is already being updated."
-							, property.Name
-							, value
-						);
-					}
-
-					return;
-				}
-
-				var actualInstanceAlias = ActualInstance;
-
-				if (actualInstanceAlias != null)
-				{
-					PushCurrentlySettingProperty(property);
-
-					currentlySettingPropertyPushed = true;
-
-					using (WritePropertyEventTrace(TraceProvider.SetValueStart, TraceProvider.SetValueStop, property, precedence))
-					{
-						ApplyPrecedenceOverride(ref precedence);
-
-						if ((value == DependencyProperty.UnsetValue) && precedence == DependencyPropertyValuePrecedences.DefaultValue)
-						{
-							throw new InvalidOperationException("The default value must be a valid value");
-						}
-
-						ValidatePropertyOwner(property);
-
-						// Resolve the stack once for the instance, for performance.
-						propertyDetails = propertyDetails ?? _properties.GetPropertyDetails(property);
-
-						var previousValue = GetValue(propertyDetails);
-						var previousPrecedence = GetCurrentHighestValuePrecedence(propertyDetails);
-
-						// Set even if they are different to make sure the value is now set on the right precedence
-						SetValueInternal(value, precedence, propertyDetails);
-
-						ApplyCoercion(actualInstanceAlias, propertyDetails, previousValue, value);
-
-						// Value may or may not have changed based on the precedence
-						var newValue = GetValue(propertyDetails);
-						var newPrecedence = GetCurrentHighestValuePrecedence(propertyDetails);
-
-						if (property == _dataContextProperty)
-						{
-							OnDataContextChanged(value, newValue, precedence);
-						}
-
-						TryUpdateInheritedAttachedProperty(property, propertyDetails);
-
-						if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
-						{
-							var name = (_originalObjectRef.Target as IFrameworkElement)?.Name ?? _originalObjectRef.Target?.GetType().Name;
-							var hashCode = _originalObjectRef.Target?.GetHashCode();
-
-							this.Log().Debug(
-								$"SetValue on [{name}/{hashCode:X8}] for [{property.Name}] to [{newValue}] (req:{value} reqp:{precedence} p:{previousValue} pp:{previousPrecedence} np:{newPrecedence})"
-							);
-						}
-
-						RaiseCallbacks(actualInstanceAlias, propertyDetails, previousValue, previousPrecedence, newValue, newPrecedence);
-					}
-				}
-				else
-				{
-					// The store has lost its current instance, renove it from its parent.
-					Parent = null;
+					InnerSetValue(property, value, precedence, propertyDetails, ref currentlySettingPropertyPushed);
 				}
 			}
 			finally
@@ -485,6 +405,91 @@ namespace Windows.UI.Xaml
 				{
 					PopCurrentlySettingProperty(property);
 				}
+			}
+		}
+
+		private void InnerSetValue(DependencyProperty property, object value, DependencyPropertyValuePrecedences precedence, DependencyPropertyDetails propertyDetails, ref bool currentlySettingPropertyPushed)
+		{
+			if (precedence == DependencyPropertyValuePrecedences.Coercion)
+			{
+				throw new ArgumentException("SetValue must not be called with precedence DependencyPropertyValuePrecedences.Coercion, as it expects a non-coerced value to function properly.");
+			}
+
+			if (
+				IsCurrentlySettingProperty(property)
+				&& !ReferenceEquals(property, _dataContextProperty)
+			)
+			{
+				// This check is present to avoid having update loops in cases
+				// of multiple two-way bindings having ConvertBack implemented to invert its content.
+
+				if (property.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+				{
+					property.Log().DebugFormat(
+						"Ignoring new property value [{1}] on [{0}] as it is already being updated."
+						, property.Name
+						, value
+					);
+				}
+
+				return;
+			}
+
+			var actualInstanceAlias = ActualInstance;
+
+			if (actualInstanceAlias != null)
+			{
+				PushCurrentlySettingProperty(property);
+
+				currentlySettingPropertyPushed = true;
+
+				ApplyPrecedenceOverride(ref precedence);
+
+				if ((value == DependencyProperty.UnsetValue) && precedence == DependencyPropertyValuePrecedences.DefaultValue)
+				{
+					throw new InvalidOperationException("The default value must be a valid value");
+				}
+
+				ValidatePropertyOwner(property);
+
+				// Resolve the stack once for the instance, for performance.
+				propertyDetails = propertyDetails ?? _properties.GetPropertyDetails(property);
+
+				var previousValue = GetValue(propertyDetails);
+				var previousPrecedence = GetCurrentHighestValuePrecedence(propertyDetails);
+
+				// Set even if they are different to make sure the value is now set on the right precedence
+				SetValueInternal(value, precedence, propertyDetails);
+
+				ApplyCoercion(actualInstanceAlias, propertyDetails, previousValue, value);
+
+				// Value may or may not have changed based on the precedence
+				var newValue = GetValue(propertyDetails);
+				var newPrecedence = GetCurrentHighestValuePrecedence(propertyDetails);
+
+				if (property == _dataContextProperty)
+				{
+					OnDataContextChanged(value, newValue, precedence);
+				}
+
+				TryUpdateInheritedAttachedProperty(property, propertyDetails);
+
+				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+				{
+					var name = (_originalObjectRef.Target as IFrameworkElement)?.Name ?? _originalObjectRef.Target?.GetType().Name;
+					var hashCode = _originalObjectRef.Target?.GetHashCode();
+
+					this.Log().Debug(
+						$"SetValue on [{name}/{hashCode:X8}] for [{property.Name}] to [{newValue}] (req:{value} reqp:{precedence} p:{previousValue} pp:{previousPrecedence} np:{newPrecedence})"
+					);
+				}
+
+				RaiseCallbacks(actualInstanceAlias, propertyDetails, previousValue, previousPrecedence, newValue, newPrecedence);
+			}
+			else
+			{
+				// The store has lost its current instance, renove it from its parent.
+				Parent = null;
 			}
 		}
 

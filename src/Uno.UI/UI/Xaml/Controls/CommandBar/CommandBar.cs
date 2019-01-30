@@ -9,6 +9,7 @@ using Windows.UI.Xaml.Markup;
 using Windows.UI.Xaml.Controls.Primitives;
 using Uno.Logging;
 using Uno.UI.Controls;
+using Uno.Disposables;
 #if __IOS__
 using UIKit;
 #elif __ANDROID__
@@ -29,6 +30,8 @@ namespace Windows.UI.Xaml.Controls
 		private const string PrimaryItemsControl = "PrimaryItemsControl";
 		private const string SecondaryItemsControl = "SecondaryItemsControl";
 
+		private readonly SerialDisposable _eventSubscriptions = new SerialDisposable();
+
 		private Button _moreButton;
 		private Popup _overflowPopup;
 		private ItemsControl _primaryItemsControl;
@@ -40,6 +43,9 @@ namespace Windows.UI.Xaml.Controls
 			SecondaryCommands = new ObservableVector<ICommandBarElement>();
 
 			CommandBarTemplateSettings = new CommandBarTemplateSettings(this);
+
+			Loaded += (s, e) => RegisterEvents();
+			Unloaded += (s, e) => UnregisterEvents();
 		}
 
 #if __ANDROID__ || __IOS__
@@ -58,21 +64,7 @@ namespace Windows.UI.Xaml.Controls
 #if __ANDROID__ || __IOS__
 			Presenter = this.FindFirstChild<NativeCommandBarPresenter>();
 #endif
-			if (_moreButton != null)
-			{
-				_moreButton.Click += (s, e) =>
-				{
-					IsOpen = !IsOpen;
-				};
-			}
-
-			if (_overflowPopup != null)
-			{
-				_overflowPopup.Closed += (s, e) =>
-				{
-					IsOpen = false;
-				};
-			}
+			RegisterEvents();
 
 			PrimaryCommands.VectorChanged += (s, e) => UpdateCommands();
 			SecondaryCommands.VectorChanged += (s, e) => UpdateCommands();
@@ -101,6 +93,37 @@ namespace Windows.UI.Xaml.Controls
 			UpdateDisplayModeState();
 			UpdateButtonsIsCompact();
 		}
+
+		private void RegisterEvents()
+		{
+			UnregisterEvents();
+
+			var disposables = new CompositeDisposable();
+
+			if (_moreButton != null)
+			{
+				_moreButton.Click += OnMoreButtonClicked;
+
+				disposables.Add(() => _moreButton.Click -= OnMoreButtonClicked);
+			}
+
+			if (_overflowPopup != null)
+			{
+				_overflowPopup.Closed += OnOverflowPopupClosed;
+
+				disposables.Add(() => _overflowPopup.Closed -= OnOverflowPopupClosed);
+			}
+
+			_eventSubscriptions.Disposable = disposables;
+		}
+
+		private void UnregisterEvents() => _eventSubscriptions.Disposable = null;
+
+		private void OnOverflowPopupClosed(object sender, object e)
+			=> IsOpen = false;
+
+		private void OnMoreButtonClicked(object sender, RoutedEventArgs e)
+			=> IsOpen = !IsOpen;
 
 		private void UpdateButtonsIsCompact()
 		{

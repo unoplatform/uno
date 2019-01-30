@@ -14,24 +14,29 @@ namespace Windows.UI.Xaml.Media
 	{
 		partial void SetAngleX(DependencyPropertyChangedEventArgs args)
 		{
-			if (View != null)
-            {
-                View.PivotX = (float)(Origin.X * View.Width) + ViewHelper.LogicalToPhysicalPixels(CenterX);
-                View.PivotY = (float)(Origin.Y * View.Height) + ViewHelper.LogicalToPhysicalPixels(CenterY);
-                View.RotationX = (float)AngleX;
-			}
+			Update();
 		}
 
 		partial void SetAngleY(DependencyPropertyChangedEventArgs args)
 		{
+			Update();
+		}
+
+		protected override void Update()
+		{
+			base.Update();
+
 			if (View != null)
 			{
+				View.PivotX = (float)(Origin.X * View.Width) + ViewHelper.LogicalToPhysicalPixels(CenterX);
+				View.PivotY = (float)(Origin.Y * View.Height) + ViewHelper.LogicalToPhysicalPixels(CenterY);
 				View.RotationY = (float)AngleY;
+				View.RotationX = (float)AngleX;
 			}
 		}
 
 		/// <summary>
-		/// Apply Transform whem attached
+		/// Apply Transform when attached
 		/// </summary>
 		protected override void OnAttachedToView()
 		{
@@ -44,20 +49,20 @@ namespace Windows.UI.Xaml.Media
 			SetAngleY(this.CreateInitialChangedEventArgs(AngleYProperty));
 		}
 
-        internal override Android.Graphics.Matrix ToNativeTransform(Android.Graphics.Matrix targetMatrix = null, Size size = default(Size), bool isBrush = false)
-        {
-            if (targetMatrix == null)
-            {
-                targetMatrix = new Android.Graphics.Matrix();
-            }
+		internal override Android.Graphics.Matrix ToNativeTransform(Android.Graphics.Matrix targetMatrix = null, Size size = default(Size), bool isBrush = false)
+		{
+			if (targetMatrix == null)
+			{
+				targetMatrix = new Android.Graphics.Matrix();
+			}
 
 			var pivot = this.GetPivot(size, isBrush);
 
-            targetMatrix.PostSkew((float)AngleX, (float)AngleY, (float)pivot.X, (float)pivot.Y);
+			targetMatrix.PostSkew((float)AngleX, (float)AngleY, (float)pivot.X, (float)pivot.Y);
 
-            return targetMatrix;
-        }
-    }
+			return targetMatrix;
+		}
+	}
 }
 
 
