@@ -71,10 +71,10 @@
       <Version>0.10.1</Version>
     </PackageReference>
     <PackageReference Include="Uno.Core">
-      <Version>1.25.0-beta.54</Version>
+      <Version>1.26.0-beta.69</Version>
     </PackageReference>
     <PackageReference Include="Uno.SourceGeneration">
-      <Version>1.29.0-dev.241</Version>
+      <Version>1.29.0-beta.277</Version>
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
@@ -167,8 +167,8 @@
     </ItemGroup>
     <MakeDir Directories="$(_TargetNugetFolder)" />
     <Message Importance="high" Text="OVERRIDING NUGET PACKAGE CACHE: $(_TargetNugetFolder)" />
-    <Copy SourceFiles="@(_OutputFiles)" DestinationFiles="@(_OutputFiles->'$(_TargetNugetFolder)\%(RecursiveDir)%(Filename)%(Extension)')" />
-    <Copy SourceFiles="@(_OutputFilesPDB)" DestinationFiles="@(_OutputFilesPDB->'$(_TargetNugetFolder)\%(RecursiveDir)%(Filename).pdb')" />
+    <Copy SourceFiles="@(_OutputFiles)" DestinationFiles="@(_OutputFiles-&gt;'$(_TargetNugetFolder)\%(RecursiveDir)%(Filename)%(Extension)')" />
+    <Copy SourceFiles="@(_OutputFilesPDB)" DestinationFiles="@(_OutputFilesPDB-&gt;'$(_TargetNugetFolder)\%(RecursiveDir)%(Filename).pdb')" />
   </Target>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

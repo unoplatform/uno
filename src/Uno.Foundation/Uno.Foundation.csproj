@@ -1,4 +1,4 @@
-﻿<Project Sdk="MSBuild.Sdk.Extras" ToolsVersion="15.0">
+<Project Sdk="MSBuild.Sdk.Extras" ToolsVersion="15.0">
   <PropertyGroup>
     <TargetFrameworks>xamarinmac20;xamarinios10;MonoAndroid80;net46;netstandard2.0</TargetFrameworks>
 		<TargetFrameworksCI>MonoAndroid71;MonoAndroid80;xamarinios10;net46;netstandard2.0;xamarinmac20</TargetFrameworksCI>
@@ -16,11 +16,11 @@
 
 	<ItemGroup>
     <PackageReference Include="Uno.SourceGenerationTasks">
-      <Version>1.29.0-dev.241</Version>
+      <Version>1.29.0-beta.277</Version>
       <ExcludeAssets>Runtime</ExcludeAssets>
     </PackageReference>
     <PackageReference Include="Uno.Core">
-      <Version>1.26.0-dev.58</Version>
+      <Version>1.26.0-beta.69</Version>
       <ExcludeAssets>Runtime</ExcludeAssets>
     </PackageReference>
 	</ItemGroup>
