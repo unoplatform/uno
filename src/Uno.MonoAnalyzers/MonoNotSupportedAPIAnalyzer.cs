@@ -50,6 +50,7 @@ namespace Uno.Analyzers
 			private readonly MonoNotSupportedAPIAnalyzer _owner;
 			private readonly INamedTypeSymbol _stringSymbol;
 			private readonly INamedTypeSymbol _charSymbol;
+			private readonly INamedTypeSymbol _stringComparisonSymbol;
 			private readonly ValidationEntry[] _validateMembers;
 
 			class ValidationEntry
@@ -63,6 +64,7 @@ namespace Uno.Analyzers
 				_owner = owner;
 				_stringSymbol = compilation.GetTypeByMetadataName("System.String");
 				_charSymbol = compilation.GetTypeByMetadataName("System.Char");
+				_stringComparisonSymbol = compilation.GetTypeByMetadataName("System.StringComparison");
 
 				_validateMembers = new [] {
 					new ValidationEntry{
@@ -70,13 +72,20 @@ namespace Uno.Analyzers
 							"Split",
 							"TrimStart",
 							"TrimEnd",
-							"IndexOf",
 							"IndexOfAny",
 							"Join",
 							"StartsWith",
 						},
 						Validation = new Func<IMethodSymbol, bool>(
 							m => m.Parameters.FirstOrDefault()?.Type == _charSymbol
+						)
+					},
+					new ValidationEntry{
+						Methods = new[] {
+							"IndexOf",
+						},
+						Validation = new Func<IMethodSymbol, bool>(
+							m => m.Parameters.ElementAtOrDefault(1)?.Type == _stringComparisonSymbol
 						)
 					},
 					new ValidationEntry{
