@@ -115,11 +115,11 @@ namespace Windows.UI.Xaml.Controls
 
 						var windowRect = Xaml.Window.Current.Bounds;
 
-						var popupTransform = popup.TransformToVisual(Xaml.Window.Current.Content) as TranslateTransform;
-						var popupRect = new Rect(popupTransform.X, popupTransform.Y, popup.ActualWidth, popup.ActualHeight);
+						var popupTransform = (MatrixTransform)popup.TransformToVisual(Xaml.Window.Current.Content);
+						var popupRect = new Rect(popupTransform.Matrix.OffsetX, popupTransform.Matrix.OffsetY, popup.ActualWidth, popup.ActualHeight);
 
-						var backgroundTransform = background.TransformToVisual(Xaml.Window.Current.Content) as TranslateTransform;
-						var backgroundRect = new Rect(backgroundTransform.X, backgroundTransform.Y + background.ActualHeight, background.ActualWidth, background.ActualHeight);
+						var backgroundTransform = (MatrixTransform)background.TransformToVisual(Xaml.Window.Current.Content);
+						var backgroundRect = new Rect(backgroundTransform.Matrix.OffsetX, backgroundTransform.Matrix.OffsetY + background.ActualHeight, background.ActualWidth, background.ActualHeight);
 
 						// Because Popup.Child is not part of the visual tree until Popup.IsOpen,
 						// some descendent Controls may never have loaded and materialized their templates.

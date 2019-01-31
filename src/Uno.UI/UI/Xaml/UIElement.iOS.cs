@@ -230,8 +230,17 @@ namespace Windows.UI.Xaml
 			var unit = new CGRect(0, 0, 1, 1);
 			var transformed = visual.ConvertRectFromView(unit, this);
 
-			// TODO: UWP returns a MatrixTransform here. For now TransformToVisual doesn't support rotations, scalings, etc.
-			return new TranslateTransform { X = transformed.X, Y = transformed.Y };
+			return new MatrixTransform
+			{
+				Matrix = new Matrix(
+					m11: 1,
+					m12: 0,
+					m21: 0,
+					m22: 1,
+					offsetX: transformed.X,
+					offsetY: transformed.Y
+				)
+			};
 		}
 
 
