@@ -85,7 +85,8 @@ namespace Uno.Analyzers
 							"IndexOf",
 						},
 						Validation = new Func<IMethodSymbol, bool>(
-							m => m.Parameters.ElementAtOrDefault(1)?.Type == _stringComparisonSymbol
+							m => m.Parameters.ElementAtOrDefault(0)?.Type == _charSymbol &&
+							m.Parameters.ElementAtOrDefault(1)?.Type == _stringComparisonSymbol
 						)
 					},
 					new ValidationEntry{
