@@ -12,10 +12,14 @@
   <UsingTask AssemblyFile="$(UnoUIMSBuildTasksPath)\Uno.UI.Tasks.v0.dll" TaskName="Uno.UI.Tasks.ResourcesGenerator.ResourcesGenerationTask_v0" />
   <UsingTask AssemblyFile="$(UnoUIMSBuildTasksPath)\Uno.UI.Tasks.v0.dll" TaskName="Uno.UI.Tasks.Assets.RetargetAssets_v0" />
 
+  <!--
+  This task transforms all the Content files and PRIResources into resources files compatible for each platform.
+
+  Note: For iOS and Android, it must be run early in the build process, but no publicly stable target is available
+  to inject Uno properly. Failing to add this task early enough makes X.A and X.I miss the generated resource files.
+  -->
   <Target Name="UnoResourcesGeneration"
-				  BeforeTargets="_CheckForContent"
-                  AfterTargets="ResolveReferences"
-				  DependsOnTargets="AssignLinkMetadata"
+				  BeforeTargets="PrepareForBuild;_CheckForContent"
 				  Condition="'$(DesignTimeBuild)' != 'true' and '$(BuildingInsideUnoSourceGenerator)' == '' and ('$(XamarinProjectType)'!='' or '$(UnoForceProcessPRIResource)'!='')">
 
     <CheckForDevenv />
