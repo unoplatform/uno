@@ -179,7 +179,15 @@ namespace Windows.UI.Xaml.Controls
 				try
 				{
 					_modifyingSelectionInternally = true;
-					SelectedItems.Update(new[] { selectedItem });
+
+					if (selectedItem != null)
+					{
+						SelectedItems.Update(new[] { selectedItem });
+					}
+					else
+					{
+						SelectedItems.Clear();
+					}
 				}
 				finally
 				{

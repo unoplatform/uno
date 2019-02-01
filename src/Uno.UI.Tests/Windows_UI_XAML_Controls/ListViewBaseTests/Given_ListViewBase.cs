@@ -92,7 +92,8 @@ namespace Uno.UI.Tests.ListViewBaseTests
 
 			SUT.SetBinding(
 				Selector.SelectedItemProperty,
-				new Binding() {
+				new Binding()
+				{
 					Path = "SelectedItem",
 					Source = model,
 					Mode = BindingMode.TwoWay
@@ -105,7 +106,8 @@ namespace Uno.UI.Tests.ListViewBaseTests
 
 			var selectionChanged = 0;
 
-			SUT.SelectionChanged += (s, e) => {
+			SUT.SelectionChanged += (s, e) =>
+			{
 				selectionChanged++;
 				Assert.AreEqual(item, SUT.SelectedItem);
 
@@ -121,6 +123,35 @@ namespace Uno.UI.Tests.ListViewBaseTests
 			Assert.IsNotNull(SUT.SelectedItem);
 			Assert.AreEqual(1, selectionChanged);
 			Assert.AreEqual(1, SUT.SelectedItems.Count);
+		}
+
+		[TestMethod]
+		public void When_ResetItemsSource()
+		{
+			var style = new Style(typeof(Windows.UI.Xaml.Controls.ListViewBase))
+			{
+				Setters =  {
+					new Setter<ItemsControl>("Template", t =>
+						t.Template = Funcs.Create(() =>
+							new ItemsPresenter()
+						)
+					)
+				}
+			};
+
+			var panel = new StackPanel();
+
+			var SUT = new ListViewBase()
+			{
+				Style = style,
+				ItemsPanel = new ItemsPanelTemplate(() => panel),
+				SelectionMode = ListViewSelectionMode.Single,
+			};
+
+			SUT.ItemsSource = new int[] { 1, 2, 3 };
+			SUT.OnItemClicked(0);
+
+			SUT.ItemsSource = null;
 		}
 	}
 
