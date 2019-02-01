@@ -20,9 +20,9 @@ Resource.Designer.cs
 *.userprefs
 
 # Build results
-[Dd]ebug[-\w]*/
+[Dd]ebug/
 [Dd]ebugPublic/
-[Rr]elease[-\w]*/
+[Rr]elease/
 [Rr]eleases/
 [Xx]64/
 [Xx]86/
