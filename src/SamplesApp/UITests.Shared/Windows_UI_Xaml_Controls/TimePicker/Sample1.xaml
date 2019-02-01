@@ -15,10 +15,20 @@
         <controls:SampleControl.SampleContent>
             <DataTemplate>
                 <Grid Background="White">
-                    <TimePicker ios:FlyoutPlacement="Full"
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+                    	<Button Content="Set To Current Time"
+							Command="{Binding SetToCurrentTime}" Margin="10" HorizontalAlignment="Center" Visibility="Collapsed"/>
+                    <TimePicker Grid.Row="1"
+                                Margin="15,10"
+                                ios:FlyoutPlacement="Full"
                                 HorizontalAlignment="Center"
-                                MinuteIncrement="5"
-                                ClockIdentifier="12HourClock">
+                                VerticalAlignment="Top"
+                                Time="{Binding Time, Mode=TwoWay}"
+                                MinuteIncrement="1"
+                                ClockIdentifier="24HourClock">
                     </TimePicker>
                 </Grid>
             </DataTemplate>

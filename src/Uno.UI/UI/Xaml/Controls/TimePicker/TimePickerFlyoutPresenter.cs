@@ -7,11 +7,7 @@ namespace Windows.UI.Xaml.Controls
 {
 	public partial class TimePickerFlyoutPresenter : FlyoutPresenter
 	{
-		public TimePickerFlyoutPresenter()
-		{
-
-		}
+		public TimePickerFlyoutPresenter(){}
 	}
 }
-
 #endif
