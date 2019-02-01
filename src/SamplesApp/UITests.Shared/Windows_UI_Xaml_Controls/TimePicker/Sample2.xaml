@@ -22,11 +22,20 @@
         <controls:SampleControl.SampleContent>
             <DataTemplate>
                 <Grid Background="White">
-                    <TimePicker Style="{StaticResource FlatTimePickerStyle}"
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+                    <Button Content="Set To Current Time"
+                            Command="{Binding SetToCurrentTime}" Margin="10" HorizontalAlignment="Center" Visibility="Collapsed"/>
+                    <TimePicker Grid.Row="1"
+                                Margin="15,10"
+                                Style="{StaticResource FlatTimePickerStyle}"
                                 ios:FlyoutPlacement="Full"
                                 VerticalAlignment="Stretch"
                                 HorizontalAlignment="Center"
-                                MinuteIncrement="5"
+                                MinuteIncrement="1"
+                                Time="{Binding Time, Mode=TwoWay}"
                                 ClockIdentifier="12HourClock">
                     </TimePicker>
                 </Grid>

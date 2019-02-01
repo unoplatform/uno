@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using SamplesApp.Windows_UI_Xaml_Controls.Models;
 using Uno.UI.Samples.Controls;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
@@ -16,7 +17,7 @@ using Windows.UI.Xaml.Navigation;
 
 namespace SamplesApp.Samples.TimePicker
 {
-	[SampleControlInfo("Time Picker", "Sample1")]
+	[SampleControlInfo("Time Picker", "Sample1", typeof(TimePickerViewModel))]
 	public sealed partial class Sample1 : Page
 	{
 		public Sample1()

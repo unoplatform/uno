@@ -36,10 +36,6 @@ namespace Windows.UI.Xaml.Controls
 			_picker.Calendar = new NSCalendar(NSCalendarType.Gregorian);
 			_picker.Mode = UIDatePickerMode.Time;
 
-			SetPickerTime(Time);
-
-			OnClockIdentifierChangedPartialNative(null, ClockIdentifier);
-
 			var parent = _picker.FindFirstParent<FrameworkElement>();
 
 			//Removing the date picker and adding it is what enables the lines to appear. Seems to be a side effect of adding it as a view. 
@@ -48,97 +44,88 @@ namespace Windows.UI.Xaml.Controls
 				parent.RemoveChild(_picker);
 				parent.AddSubview(_picker);
 			}
-
-			SaveInitialTime();
 		}
 
-		protected void SaveInitialTime()
+		public void Initialize()
 		{
-			_initialTime = _picker.Date;
+			SaveInitialTime();
+			SetPickerClockIdentifier(ClockIdentifier);
+			SetPickerTime(Time);
 		}
+
+		private void SaveInitialTime() => _initialTime = _picker.Date;
 
 		internal void SaveTime()
 		{
-			if (_picker == null)
+			if (_picker != null)
 			{
-				return;
-			}
+				if (_picker.Date != _initialTime)
+				{
+					var time = _picker.Date.ToTimeSpan(_picker.TimeZone.GetSecondsFromGMT);
 
-			var pickerDate = ToTimeSpan(_picker.Date);
+					if (Time.Hours != time.Hours || Time.Minutes != time.Minutes)
+					{
+						Time = new TimeSpan(Time.Days, time.Hours, time.Minutes, Time.Seconds, Time.Milliseconds);
+						SaveInitialTime();
+					}
+				}
 
-			if (Time != pickerDate)
-			{
-				Time = pickerDate;
-				SaveInitialTime();
 				_picker.EndEditing(false);
 			}
 		}
 
-		private TimeSpan ToTimeSpan(NSDate date)
+		public void Cancel()
 		{
-			var offset = TimeSpan.FromSeconds(_picker.TimeZone.GetSecondsFromGMT);
-			return date.ToTimeSpan().Add(offset);
+			if (_picker != null)
+			{
+				_picker.SetDate(_initialTime, false);
+				_picker.EndEditing(false);
+			}
 		}
 
-		protected override void OnUnloaded()
+		private void SetPickerClockIdentifier(string clockIdentifier)
 		{
-			base.OnUnloaded();
+			if (_picker != null)
+			{
+				_picker.Locale = ToNSLocale(clockIdentifier);
+			}
+		}
+		
+		private void SetPickerTime(TimeSpan time)
+		{
+			if (_picker != null)
+			{
+				// Because the UIDatePicker is set to use LocalTimeZone,
+				// we need to get the offset and apply it to the requested time.
+				var offset = TimeSpan.FromSeconds(_picker.TimeZone.GetSecondsFromGMT);
+
+				// Because the UIDatePicker applies the local timezone offset automatically when we set it,
+				// we need to compensate with a negated offset. This will show the time
+				// as if it was provided with no offset.
+				var timeWithOffset = time.Add(offset.Negate());
+				var nsDate = timeWithOffset.ToNSDate();
+
+				_picker.SetDate(nsDate, animated: false);
+			}
+		}
+		
+		partial void OnClockIdentifierChangedPartialNative(string oldClockIdentifier, string newClockIdentifier)
+		{
+			SetPickerClockIdentifier(newClockIdentifier);
 		}
 
 		partial void OnTimeChangedPartialNative(TimeSpan oldTime, TimeSpan newTime)
 		{
 			SetPickerTime(newTime);
 		}
-
-		private void SetPickerTime(TimeSpan newTime)
+		
+		private static NSLocale ToNSLocale(string clockIdentifier)
 		{
-			if (_picker == null)
-			{
-				return;
-			}
+			var localeID = clockIdentifier == ClockIdentifiers.TwelveHour
+							? "en"
+							: "fr";
 
-			// Because the UIDatePicker is set to use LocalTimeZone,
-			// we need to get the offset and apply it to the requested time.
-			var offset = TimeSpan.FromSeconds(_picker.TimeZone.GetSecondsFromGMT);
-
-			// Because the UIDatePicker applies the local timezone offset automatically when we set it,
-			// we need to compensate with a negated offset. This will show the time
-			// as if it was provided with no offset.
-			var timeWithOffset = newTime.Add(offset.Negate());
-			var nsDate = timeWithOffset.ToNSDate();
-
-			_picker.SetDate(nsDate, animated: false);
-		}
-
-		partial void OnClockIdentifierChangedPartialNative(string oldClockIdentifier, string newClockIdentifier)
-		{
-			if (_picker == null)
-			{
-				return;
-			}
-
-			var localeID = newClockIdentifier == ClockIdentifiers.TwelveHour
-				? "en"
-				: "fr";
-
-			_picker.Locale = new NSLocale(localeID);
-		}
-
-		public void Cancel()
-		{
-			ResetTime();
-			_picker.EndEditing(false);
-		}
-
-		public void ResetPickerTime()
-		{
-			_picker.SetDate(_initialTime, false);
-		}
-
-		public void ResetTime()
-		{
-		   ResetPickerTime();
-		   Time = ToTimeSpan(_initialTime);
+			return new NSLocale(localeID);
 		}
 	}
 }

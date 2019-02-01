@@ -8,8 +8,5 @@ using Uno.UI;
 
 namespace Windows.UI.Xaml.Controls
 {
-	public partial class TimePickerFlyout : PickerFlyoutBase
-	{
-
-	}
+	public partial class TimePickerFlyout : PickerFlyoutBase{}
 }
