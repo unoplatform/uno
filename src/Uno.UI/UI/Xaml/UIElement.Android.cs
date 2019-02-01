@@ -62,9 +62,18 @@ namespace Windows.UI.Xaml
 			var x = thisRect[0] - otherRect[0];
 			var y = thisRect[1] - otherRect[1];
 
-			// TODO: UWP returns a MatrixTransform here. For now TransformToVisual doesn't support rotations, scalings, etc.
-			return new TranslateTransform { X = ViewHelper.PhysicalToLogicalPixels(x), Y = ViewHelper.PhysicalToLogicalPixels(y) };
-		}
+            return new MatrixTransform
+            {
+                Matrix = new Matrix(
+                    m11: 1,
+                    m12: 0,
+                    m21: 0,
+                    m22: 1,
+                    offsetX: ViewHelper.PhysicalToLogicalPixels(x),
+                    offsetY: ViewHelper.PhysicalToLogicalPixels(y)
+                )
+            };
+        }
 
 		#region DoubleTapped event
 		private void RegisterDoubleTapped(DoubleTappedEventHandler handler)

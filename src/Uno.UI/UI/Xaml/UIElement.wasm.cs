@@ -642,11 +642,16 @@ namespace Windows.UI.Xaml
 				otherBounds = visual.GetBoundingClientRect();
 			}
 
-			// TODO: UWP returns a MatrixTransform here. For now TransformToVisual doesn't support rotations, scalings, etc.
-			return new TranslateTransform
+			return new MatrixTransform
 			{
-				X = otherBounds.X - bounds.X,
-				Y = otherBounds.Y - bounds.Y
+				Matrix = new Matrix(
+					m11: 1,
+					m12: 0,
+					m21: 0,
+					m22: 1,
+					offsetX: bounds.X - otherBounds.X,
+					offsetY: bounds.Y - otherBounds.Y
+				)
 			};
 		}
 

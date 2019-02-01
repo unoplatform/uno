@@ -31,4 +31,17 @@
 		<Reference Remove="System.Xaml" />
 	</ItemGroup>
 
+	<ItemGroup>
+		<Analyzer Include="..\..\Uno.MonoAnalyzers\bin\$(Configuration)\net46\Uno.MonoAnalyzers.dll" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<!-- Disable sub project loading during docs generation to avoid https://github.com/nventive/Uno.SourceGeneration/issues/2 -->
+		<ProjectReference Include="..\..\Uno.MonoAnalyzers\Uno.MonoAnalyzers.csproj" Condition="'$(DocsGeneration)'==''">
+			<ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+			<SkipGetTargetFrameworkProperties>true</SkipGetTargetFrameworkProperties>
+			<UndefineProperties>TargetFramework</UndefineProperties>
+		</ProjectReference>
+	</ItemGroup>
+
 </Project>

@@ -29,6 +29,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\UIElementTests\TransformToVisual_Simple.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\BorderTests\AutoBorderStretchwithbottommargin.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -915,6 +919,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\FrameworkElementTests\XamlEvent_Leak_UserControl.xaml.cs">
       <DependentUpon>XamlEvent_Leak_UserControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\UIElementTests\TransformToVisual_Simple.xaml.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\BorderTests\AutoBorderStretchwithbottommargin.xaml.cs">
       <DependentUpon>AutoBorderStretchwithbottommargin.xaml</DependentUpon>
     </Compile>
@@ -1587,5 +1592,10 @@
   <ItemGroup>
     <PRIResource Include="$(MSBuildThisFileDirectory)UITestsStrings\en-US\NamedResources.resw" />
     <PRIResource Include="$(MSBuildThisFileDirectory)UITestsStrings\en-US\Resources.resw" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Update="C:\s\nv.github\uno\src\SamplesApp\UITests.Shared\Windows_UI_Xaml\UIElementTests\TransformToVisual_Simple.xaml.cs">
+      <DependentUpon>TransformToVisual_Simple.xaml</DependentUpon>
+    </Compile>
   </ItemGroup>
 </Project>

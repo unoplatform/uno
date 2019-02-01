@@ -81,7 +81,7 @@ namespace Uno.Xaml
 				return null;
 			ns = ns.Substring (pre.Length, idx - pre.Length);
 			string ac = "";
-			foreach (string nsp in ns.Split ('.'))
+			foreach (string nsp in ns.Split (new char[] { '.' }))
 				if (nsp.Length > 0)
 					ac += nsp [0];
 			return ac.Length > 0 ? ac.ToLower (CultureInfo.InvariantCulture) : null;
