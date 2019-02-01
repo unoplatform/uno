@@ -108,7 +108,7 @@
 	<Target Name="Publish" />
 
 	<ItemGroup>
-		<Analyzer Include="..\Uno.MonoAnalyzers\bin\$(Configuration)\net46\Uno.MonoAnalyzers.dll" />
+		<Analyzer Include="$(MSBuildThisFileDirectory)..\Uno.MonoAnalyzers\bin\$(Configuration)\net46\Uno.MonoAnalyzers.dll" />
 	</ItemGroup>
 
 	<PropertyGroup>
