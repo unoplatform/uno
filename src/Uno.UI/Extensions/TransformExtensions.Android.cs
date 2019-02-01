@@ -21,22 +21,6 @@ namespace Windows.UI.Xaml.Media
 			);
 		}
 
-		internal static Vector2 GetPivot(this Transform transform, Windows.Foundation.Size size, bool isBrush)
-		{
-			var center = transform.GetCenter() ?? Vector2.Zero;
-			var vectorSize = new Vector2((float)size.Width, (float)size.Height);
-			var vectorOrigin = new Vector2((float)transform.Origin.X, (float)transform.Origin.Y);
-
-			// When used as UIElement.RenderTransform, CenterX/Y are interpreted as absolute pixel values; when used as ImageBrush.RelativeTransform,
-			// they're interpreted as fractional values.
-			var centerOffset = isBrush ?
-				center * vectorSize :
-				ViewHelper.LogicalToPhysicalPixels(center);
-
-			var pivot = vectorOrigin * vectorSize + centerOffset;
-
-			return pivot;
-		}
 
 		internal static Vector2? GetCenter(this Transform transform)
 		{

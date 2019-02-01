@@ -68,35 +68,6 @@ namespace Windows.UI.Xaml
 			};
 		}
 
-		static partial void OnRenderTransformChanged(object dependencyObject, DependencyPropertyChangedEventArgs args)
-		{
-			var newValue = args.NewValue as Transform;
-			var oldValue = args.OldValue as Transform;
-
-			if (newValue != null)
-			{
-				var view = (UIElement)dependencyObject;
-
-				newValue.View = view;
-				newValue.Origin = view.RenderTransformOrigin;
-			}
-			if (oldValue != null)
-			{
-				oldValue.View = null;
-			}
-		}
-
-		static partial void OnRenderTransformOriginChanged(object dependencyObject, DependencyPropertyChangedEventArgs args)
-		{
-			var view = (UIElement)dependencyObject;
-			var point = (Point)args.NewValue;
-
-			if (view.RenderTransform != null)
-			{
-				view.RenderTransform.Origin = point;
-			}
-		}
-
 		partial void OnOpacityChanged(DependencyPropertyChangedEventArgs args)
 		{
 			// Don't update the internal value if the value is being animated.

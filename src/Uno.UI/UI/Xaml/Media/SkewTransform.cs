@@ -1,103 +1,65 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Numerics;
 using System.Text;
+using Windows.Foundation;
+using Uno.UI;
 
 namespace Windows.UI.Xaml.Media
 {
-    /// <summary>
-    /// ScaleTransform :  Based on the WinRT ScaleTransform
-    /// https://msdn.microsoft.com/en-us/library/system.windows.media.skewtransform(v=vs.110).aspx
-    /// </summary>
-    public partial class SkewTransform : Transform
-    {
-        public double CenterY
-        {
-            get { return (double)this.GetValue(CenterYProperty); }
-            set { this.SetValue(CenterYProperty, value); }
-        }
+	/// <summary>
+	/// ScaleTransform :  Based on the WinRT ScaleTransform
+	/// https://msdn.microsoft.com/en-us/library/system.windows.media.skewtransform(v=vs.110).aspx
+	/// </summary>
+	public partial class SkewTransform : Transform
+	{
+		internal static Matrix3x2 GetMatrix(double centerX, double centerY, double angleXDegree, double angleYDegree)
+		{
+			var angleX = (float) MathEx.ToRadians(angleXDegree);
+			var angleY = (float) MathEx.ToRadians(angleYDegree);
+			var centerPoint = new Vector2((float)centerX, (float)centerY);
 
-        // Using a DependencyProperty as the backing store for CenterY.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty CenterYProperty =
-            DependencyProperty.Register("CenterY", typeof(double), typeof(SkewTransform), new PropertyMetadata(0.0, OnCenterYChanged));
-        private static void OnCenterYChanged(object dependencyObject, DependencyPropertyChangedEventArgs args)
-        {
-            var self = dependencyObject as SkewTransform;
+			return Matrix3x2.CreateSkew(angleX, angleY, centerPoint);
+		}
 
-            if (self != null)
-            {
-                self.SetCenterY(args);
-            }
-        }
+		internal override Matrix3x2 ToMatrix(Point absoluteOrigin)
+			=> GetMatrix(absoluteOrigin.X + CenterX, absoluteOrigin.Y + CenterY, AngleX, AngleY);
 
-        partial void SetCenterY(DependencyPropertyChangedEventArgs args);
+		public double CenterY
+		{
+			get => (double)this.GetValue(CenterYProperty);
+			set => this.SetValue(CenterYProperty, value);
+		}
 
+		public static readonly DependencyProperty CenterYProperty =
+			DependencyProperty.Register("CenterY", typeof(double), typeof(SkewTransform), new PropertyMetadata(0.0, NotifyChangedCallback));
 
+		public double CenterX
+		{
+			get => (double)this.GetValue(CenterXProperty);
+			set => this.SetValue(CenterXProperty, value);
+		}
 
-        public double CenterX
-        {
-            get { return (double)this.GetValue(CenterXProperty); }
-            set { this.SetValue(CenterXProperty, value); }
-        }
+		public static readonly DependencyProperty CenterXProperty =
+			DependencyProperty.Register("CenterX", typeof(double), typeof(SkewTransform), new PropertyMetadata(0.0, NotifyChangedCallback));
 
-        // Using a DependencyProperty as the backing store for CenterX.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty CenterXProperty =
-            DependencyProperty.Register("CenterX", typeof(double), typeof(SkewTransform), new PropertyMetadata(0.0, OnCenterXChanged));
-        private static void OnCenterXChanged(object dependencyObject, DependencyPropertyChangedEventArgs args)
-        {
-            var self = dependencyObject as SkewTransform;
+		public double AngleX
+		{
+			get => (double)this.GetValue(AngleXProperty);
+			set => this.SetValue(AngleXProperty, value);
+		}
 
-            if (self != null)
-            {
-                self.SetCenterX(args);
-            }
-        }
-        partial void SetCenterX(DependencyPropertyChangedEventArgs args);
-
-        public double AngleX
-        {
-            get { return (double)this.GetValue(AngleXProperty); }
-            set { this.SetValue(AngleXProperty, value); }
-        }
-
-        // Using a DependencyProperty as the backing store for AngleX.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty AngleXProperty =
-            DependencyProperty.Register("AngleX", typeof(double), typeof(SkewTransform), new PropertyMetadata(0.0, OnAngleXChanged));
-        private static void OnAngleXChanged(object dependencyObject, DependencyPropertyChangedEventArgs args)
-        {
-            var self = dependencyObject as SkewTransform;
-
-            if (self != null)
-            {
-                self.SetAngleX(args);
-            }
-        }
-        partial void SetAngleX(DependencyPropertyChangedEventArgs args);
+		public static readonly DependencyProperty AngleXProperty =
+			DependencyProperty.Register("AngleX", typeof(double), typeof(SkewTransform), new PropertyMetadata(0.0, NotifyChangedCallback));
 
 
+		public double AngleY
+		{
+			get => (double)this.GetValue(AngleYProperty);
+			set => this.SetValue(AngleYProperty, value);
+		}
 
-
-        public double AngleY
-        {
-            get { return (double)this.GetValue(AngleYProperty); }
-            set { this.SetValue(AngleYProperty, value); }
-        }
-
-        // Using a DependencyProperty as the backing store for AngleY.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty AngleYProperty =
-            DependencyProperty.Register("AngleY", typeof(double), typeof(SkewTransform), new PropertyMetadata(0.0, OnAngleYChanged));
-        private static void OnAngleYChanged(object dependencyObject, DependencyPropertyChangedEventArgs args)
-        {
-            var self = dependencyObject as SkewTransform;
-
-            if (self != null)
-            {
-                self.SetAngleY(args);
-            }
-        }
-        partial void SetAngleY(DependencyPropertyChangedEventArgs args);
-    }
-
-
+		public static readonly DependencyProperty AngleYProperty =
+			DependencyProperty.Register("AngleY", typeof(double), typeof(SkewTransform), new PropertyMetadata(0.0, NotifyChangedCallback));
+	}
 }
-
-
