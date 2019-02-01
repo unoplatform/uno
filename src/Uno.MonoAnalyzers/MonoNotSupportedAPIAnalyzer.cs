@@ -72,6 +72,7 @@ namespace Uno.Analyzers
 							"Split",
 							"TrimStart",
 							"TrimEnd",
+							"Trim",
 							"IndexOfAny",
 							"Join",
 							"StartsWith",

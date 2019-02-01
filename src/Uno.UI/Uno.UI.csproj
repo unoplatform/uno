@@ -301,7 +301,7 @@
 	</ItemGroup>
 
 	<PropertyGroup> 
-		<UnoUIGeneratorsBinPath>..\SourceGenerators\Uno.UI.SourceGenerators\bin\$(Configuration)</UnoUIGeneratorsBinPath> 
+		<UnoUIGeneratorsBinPath>$(MSBuildThisFileDirectory)..\SourceGenerators\Uno.UI.SourceGenerators\bin\$(Configuration)</UnoUIGeneratorsBinPath> 
 		<UnoUIMSBuildTasksPath>$(MSBuildThisFileDirectory)..\SourceGenerators\Uno.UI.Tasks\bin\$(Configuration)_Shadow</UnoUIMSBuildTasksPath>
 	</PropertyGroup> 
 
@@ -327,7 +327,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<Analyzer Include="..\Uno.MonoAnalyzers\bin\$(Configuration)\net46\Uno.MonoAnalyzers.dll" />
+		<Analyzer Include="$(MSBuildThisFileDirectory)..\Uno.MonoAnalyzers\bin\$(Configuration)\net46\Uno.MonoAnalyzers.dll" />
 	</ItemGroup>
 
 	<ItemGroup>

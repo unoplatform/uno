@@ -126,6 +126,7 @@
  * [Android] Listview Items stay visually in a pressed state,(can click multiple) when you click then scroll down, click another item, and scroll back up
  * 144101 fixed `ListView` group headers messed up on item update
  * Transforms are now fully functionnal
+ * #527 Fix for `Selector.SelectionChanged` is raised twice on updated selection
 
 ## Release 1.42
 
