@@ -130,7 +130,7 @@ If you need the native style but you want to change the Tint, OnTinT and ThumbTi
 		<Setter Property="Template">
 			<Setter.Value>
 				<ControlTemplate TargetType="ToggleSwitch">
-					<BindableUISwitch IsOn="{TemplateBinding IsOn, Mode=TwoWay}"
+					<BindableUISwitch IsOn="{TemplateBinding IsChecked, Mode=TwoWay}"
 									  Enabled="{TemplateBinding IsEnabled}"
 									  TintColorBrush="{TemplateBinding BorderBrush}"
 									  OnTintColorBrush="{TemplateBinding Background}"

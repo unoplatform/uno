@@ -82,7 +82,7 @@
 			<Setter.Value>
 				<ControlTemplate TargetType="CheckBox">
 					<StackPanel Orientation="Horizontal">
-						<BindableUISwitch IsOn="{TemplateBinding IsOn, Mode=TwoWay}"
+						<BindableUISwitch IsOn="{TemplateBinding IsChecked, Mode=TwoWay}"
 										  Enabled="{TemplateBinding IsEnabled}"
 										  TintColorBrush="{TemplateBinding BorderBrush}"
 										  OnTintColorBrush="{TemplateBinding Background}"
