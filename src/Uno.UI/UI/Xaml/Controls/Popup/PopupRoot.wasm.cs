@@ -1,5 +1,4 @@
-﻿#if __WASM__
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -49,14 +48,29 @@ namespace Windows.UI.Xaml.Controls
 			{
 				var desiredSize = child.DesiredSize;
 				var popup = GetPopup(child);
-				var popupLocation = popup.TransformToVisual(popup.Anchor ?? this) as TranslateTransform;
+				var popupLocation = popup.TransformToVisual(popup.Anchor ?? this) as MatrixTransform;
 
-				var anchorHeight = ((popup.Anchor as FrameworkElement)?.ActualHeight + PopupPlacementTargetMargin) ?? 0;
+				Point getLocation()
+				{
+					if (popup.Anchor != null)
+					{
+						var anchorHeight = ((popup.Anchor as FrameworkElement)?.ActualHeight + PopupPlacementTargetMargin) ?? 0;
 
-				var location = new Point(
-					popupLocation.X + popup.HorizontalOffset,
-					popupLocation.Y + popup.VerticalOffset + anchorHeight
-				);
+						return new Point(
+							popup.HorizontalOffset - popupLocation.Matrix.OffsetX,
+							(popup.VerticalOffset + anchorHeight) - popupLocation.Matrix.OffsetY
+						);
+					}
+					else
+					{
+						return new Point(
+							popupLocation.Matrix.OffsetX - popup.HorizontalOffset,
+							popupLocation.Matrix.OffsetY - popup.VerticalOffset
+						);
+					}
+				}
+
+				var location = getLocation();
 
 				child.Arrange(new Rect(location, desiredSize));
 			}
@@ -64,7 +78,7 @@ namespace Windows.UI.Xaml.Controls
 			return finalSize;
 		}
 
-		#region Popup
+#region Popup
 
 		public static Popup GetPopup(DependencyObject obj)
 		{
@@ -79,7 +93,6 @@ namespace Windows.UI.Xaml.Controls
 		public static readonly DependencyProperty PopupProperty =
 			DependencyProperty.RegisterAttached("Popup", typeof(Popup), typeof(PopupRoot), new PropertyMetadata(null));
 
-		#endregion
+#endregion
 	}
 }
-#endif

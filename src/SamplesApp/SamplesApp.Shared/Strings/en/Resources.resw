@@ -132,4 +132,7 @@
   <data name="Given_ResourceMap.When_MainMap" xml:space="preserve">
     <value>MainMap (en)</value>
   </data>
+  <data name="Given_ResourceService.ValidResource" xml:space="preserve">
+    <value>ValidResource (en)</value>
+  </data>
 </root>
