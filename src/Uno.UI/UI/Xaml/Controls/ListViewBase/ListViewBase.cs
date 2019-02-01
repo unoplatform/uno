@@ -174,10 +174,25 @@ namespace Windows.UI.Xaml.Controls
 			}
 			else
 			{
-				SelectedItems.Clear();
-				SelectedItems.Add(selectedItem);
-
 				base.OnSelectedItemChanged(oldSelectedItem, selectedItem);
+
+				try
+				{
+					_modifyingSelectionInternally = true;
+
+					if (selectedItem != null)
+					{
+						SelectedItems.Update(new[] { selectedItem });
+					}
+					else
+					{
+						SelectedItems.Clear();
+					}
+				}
+				finally
+				{
+					_modifyingSelectionInternally = false;
+				}
 			}
 		}
 
