@@ -234,9 +234,9 @@ namespace Windows.UI.Xaml.Controls
 					if (IsPopupFullscreen) // Legacy
 					{
 						// Location
-						var popupOffset = popup.TransformToVisual(Xaml.Window.Current.Content) as TranslateTransform;
-						popup.HorizontalOffset = -popupOffset.X;
-						popup.VerticalOffset = -popupOffset.Y;
+						var popupOffset = (MatrixTransform)popup.TransformToVisual(Xaml.Window.Current.Content);
+						popup.HorizontalOffset = -popupOffset.Matrix.OffsetX;
+						popup.VerticalOffset = -popupOffset.Matrix.OffsetY;
 						// Size
 						var windowSize = Xaml.Window.Current.Bounds.Size;
 						popupChild.Width = windowSize.Width;
@@ -257,11 +257,11 @@ namespace Windows.UI.Xaml.Controls
 
 						var windowRect = Xaml.Window.Current.Bounds;
 
-						var popupTransform = popup.TransformToVisual(Xaml.Window.Current.Content) as TranslateTransform;
-						var popupRect = new Rect(popupTransform.X, popupTransform.Y, popup.ActualWidth, popup.ActualHeight);
+						var popupTransform = (MatrixTransform)popup.TransformToVisual(Xaml.Window.Current.Content);
+						var popupRect = new Rect(popupTransform.Matrix.OffsetX, popupTransform.Matrix.OffsetY, popup.ActualWidth, popup.ActualHeight);
 
-						var backgroundTransform = background.TransformToVisual(Xaml.Window.Current.Content) as TranslateTransform;
-						var backgroundRect = new Rect(backgroundTransform.X, backgroundTransform.Y, background.ActualWidth, background.ActualHeight);
+						var backgroundTransform = (MatrixTransform)background.TransformToVisual(Xaml.Window.Current.Content);
+						var backgroundRect = new Rect(backgroundTransform.Matrix.OffsetX, backgroundTransform.Matrix.OffsetY, background.ActualWidth, background.ActualHeight);
 
 						// Because Popup.Child is not part of the visual tree until Popup.IsOpen,
 						// some descendent Controls may never have loaded and materialized their templates.
