@@ -104,8 +104,8 @@ namespace Windows.UI.Xaml.Controls
 
 		private int GetItemId(int index)
 		{
-			var item = ItemsControl.GetItemFromIndex(index);
-			var template = ItemsControl.ResolveItemTemplate(item);
+			var item = ItemsControl?.GetItemFromIndex(index);
+			var template = ItemsControl?.ResolveItemTemplate(item);
 			var id = template?.GetHashCode() ?? NoTemplateItemId;
 			return id;
 		}
