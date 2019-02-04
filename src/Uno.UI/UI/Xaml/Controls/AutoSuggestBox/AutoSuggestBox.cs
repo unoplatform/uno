@@ -10,6 +10,7 @@ using Windows.Foundation.Collections;
 using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
+using System.Collections.Specialized;
 
 #if __IOS__
 using UIKit;
@@ -68,6 +69,32 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		private void OnItemsChanged(IObservableVector<object> sender, IVectorChangedEventArgs @event)
+		{
+			UpdateSuggestionList();
+		}
+
+		protected override void OnItemsSourceChanged(DependencyPropertyChangedEventArgs e)
+		{
+			base.OnItemsSourceChanged(e);
+
+			UpdateSuggestionList();
+		}
+
+		internal override void OnItemsSourceSingleCollectionChanged(object sender, NotifyCollectionChangedEventArgs args, int section)
+		{
+			base.OnItemsSourceSingleCollectionChanged(sender, args, section);
+
+			UpdateSuggestionList();
+		}
+
+		internal override void OnItemsSourceGroupsChanged(object sender, NotifyCollectionChangedEventArgs args)
+		{
+			base.OnItemsSourceGroupsChanged(sender, args);
+
+			UpdateSuggestionList();
+		}
+
+		private void UpdateSuggestionList()
 		{
 			if (_suggestionsList != null)
 			{
@@ -181,6 +208,39 @@ namespace Windows.UI.Xaml.Controls
 			{
 				_suggestionsList.ItemClick += OnSuggestionListItemClick;
 			}
+
+			if (_popup != null)
+			{
+				_popup.Closed += OnPopupClosed;
+			}
+		}
+
+		void UnregisterEvents()
+		{
+			if (_textBox != null)
+			{
+				_textBox.KeyDown -= OnTextBoxKeyDown;
+			}
+
+			if (_queryButton != null)
+			{
+				_queryButton.Click -= OnQueryButtonClick;
+			}
+
+			if (_suggestionsList != null)
+			{
+				_suggestionsList.ItemClick -= OnSuggestionListItemClick;
+			}
+
+			if (_popup != null)
+			{
+				_popup.Closed -= OnPopupClosed;
+			}
+		}
+
+		private void OnPopupClosed(object sender, object e)
+		{
+			IsSuggestionListOpen = false;
 		}
 
 		private void OnIsSuggestionListOpenChanged(DependencyPropertyChangedEventArgs e)
@@ -239,22 +299,5 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		void UnregisterEvents()
-		{
-			if (_textBox != null)
-			{
-				_textBox.KeyDown -= OnTextBoxKeyDown;
-			}
-
-			if (_queryButton != null)
-			{
-				_queryButton.Click -= OnQueryButtonClick;
-			}
-
-			if (_suggestionsList != null)
-			{
-				_suggestionsList.ItemClick -= OnSuggestionListItemClick;
-			}
-		}
 	}
 }
