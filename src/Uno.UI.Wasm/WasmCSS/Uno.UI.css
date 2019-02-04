@@ -1,59 +1,73 @@
 ﻿.uno-root-element {
-	top: 0;
-	left: 0;
-	right: 0;
-	bottom: 0;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
 }
 
 .uno-uielement {
-	overflow: hidden;
-	position: absolute;
-	display: inline;
-	outline: none;
-	pointer-events: auto;
+  overflow: hidden;
+  position: absolute;
+  display: inline;
+  outline: none;
+  pointer-events: auto;
+  /*
+    Those are required for measure/arrange to behave well:
+    margin & padding are calculated through Xaml elements.
+  */
+  /*
+    Those are required for measure/arrange to behave well:
+    margin & padding are calculated through Xaml elements.
+  */
+  margin: 0 !important;
+  padding: 0 !important;
+  line-height: normal !important;
+  -webkit-box-sizing: border-box !important;
+  -moz-box-sizing: border-box !important;
+  box-sizing: border-box !important;
 }
 
 .uno-frameworkelement.uno-unarranged {
-	-ms-opacity: 0;
-	opacity: 0;
+  -ms-opacity: 0;
+  opacity: 0;
 }
 
 .uno-textblock {
-	text-rendering: optimizeLegibility; /* iOS Safari */
-	-webkit-touch-callout: none; /* Safari */
-	-webkit-user-select: none; /* iOSSafari */
-	-khtml-user-select: none; /* Konqueror HTML */
-	-moz-user-select: none; /* Firefox */
-	-ms-user-select: none; /* Internet Explorer/Edge */
-	user-select: none; /* Non-prefixed version, currently supported by Chrome and Opera */
+  text-rendering: optimizeLegibility; /* iOS Safari */
+  -webkit-touch-callout: none; /* Safari */
+  -webkit-user-select: none; /* iOSSafari */
+  -khtml-user-select: none; /* Konqueror HTML */
+  -moz-user-select: none; /* Firefox */
+  -ms-user-select: none; /* Internet Explorer/Edge */
+  user-select: none; /* Non-prefixed version, currently supported by Chrome and Opera */
 }
 
 .uno-buttonbase {
-	cursor: pointer;
+  cursor: pointer;
 }
 
 .uno-textboxview {
-	outline: none;
-	border: none;
-	background-color: transparent;
+  outline: none;
+  border: none;
+  background-color: transparent;
 }
 
 .uno-textelement {
-	position: relative;
+  position: relative;
 }
 
 .uno-splash {
-	position: fixed;
-	top: 50%;
-	left: 50%;
-	transform: translate(-50%, -50%);
-	width: 620px;
-	height: 300px;
-	background-repeat: no-repeat;
-	background-position: center;
-	background-size: 620px 300px;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 620px;
+  height: 300px;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 620px 300px;
 }
 
 textarea {
-	resize: none;
+  resize: none;
 }

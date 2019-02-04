@@ -114,7 +114,7 @@
 		<BundleResource Include="Resources\Fonts\winjs-symbols.ttf" />
 	</ItemGroup>
 	<ItemGroup>
-		<PackageReference Include="Uno.UI" Version="1.42.0-dev.395" />
+		<PackageReference Include="Uno.UI" Version="1.43.0-dev.772" />
 	</ItemGroup>
 	<ItemGroup>
 		<ImageAsset Include="Media.xcassets\AppIcons.appiconset\Contents.json">

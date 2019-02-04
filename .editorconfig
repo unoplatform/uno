@@ -23,7 +23,12 @@ indent_size = 2
 [*.js]
 indent_style = space
 
-[*.yml]
+[*.css]
+indent_style = space
+tab_width = 2
+indent_size = 2
+
+[{*.yml, *.yaml}]
 indent_style = space
 
 [*.md]
