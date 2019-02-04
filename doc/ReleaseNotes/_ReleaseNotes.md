@@ -64,6 +64,7 @@
 * Improved XAML designer support
 * Improved DependencyObject performance under AOT (JS dynCalls for overrides/delegates inside of EH blocks)
 * Add support for MatrixTransform, UIElement.TransformToVisual now returns a MatrixTransform
+* Add support for `ViewBox`
 * Add support for `AutoSuggestBox.ItemsSource`
 
 ### Breaking changes

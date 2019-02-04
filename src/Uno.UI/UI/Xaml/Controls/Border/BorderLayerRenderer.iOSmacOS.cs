@@ -50,9 +50,9 @@ namespace Windows.UI.Xaml.Shapes
 			_Image backgroundImage
 		)
 		{
-			// Frame is captured to avoid calling twice calls below.
-			var frame = owner.Frame;
-			var area = new CGRect(0, 0, frame.Width, frame.Height);
+			// Bounds is captured to avoid calling twice calls below.
+			var bounds = owner.Bounds;
+			var area = new CGRect(0, 0, bounds.Width, bounds.Height);
 
 			var newState = new LayoutState(area, background, borderThickness, borderBrush, cornerRadius, backgroundImage);
 			var previousLayoutState = _currentState;
@@ -400,6 +400,8 @@ namespace Windows.UI.Xaml.Shapes
 			public readonly Thickness BorderThickness;
 			public readonly CornerRadius CornerRadius;
 			public readonly _Image BackgroundImage;
+
+			public Transform Transform { get; }
 
 			public LayoutState(CGRect area, Brush background, Thickness borderThickness, Brush borderBrush, CornerRadius cornerRadius, _Image backgroundImage)
 			{
