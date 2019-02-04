@@ -139,6 +139,7 @@
 - NavigationView
 - BitmapIcon
 - MediaPlayer
+- ViewBox
 
 ### Non-UI features
 
