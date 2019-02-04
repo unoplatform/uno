@@ -21,7 +21,7 @@
 		<EmbeddedResource Include="WasmCSS\**\*.css" />
 		<EmbeddedResource Include="WasmScripts\**\*.js" />
 
-		<UpToDateCheckInput Include="WasmCSS\**\*" />
+		<UpToDateCheckInput Include="WasmCSS\**\*.css" />
 		<UpToDateCheckInput Include="ts\**\*" />
 		<UpToDateCheckInput Include="tsBindings\**\*" />
 	</ItemGroup>
