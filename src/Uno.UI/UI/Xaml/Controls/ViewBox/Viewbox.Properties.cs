@@ -43,7 +43,7 @@ namespace Windows.UI.Xaml.Controls
 			propertyType: typeof(Stretch),
 			ownerType: typeof(Viewbox),
 			typeMetadata: new FrameworkPropertyMetadata(
-				defaultValue: Stretch.UniformToFill,
+				defaultValue: Stretch.Uniform,
 				options: FrameworkPropertyMetadataOptions.AffectsMeasure
 			)
 		);
