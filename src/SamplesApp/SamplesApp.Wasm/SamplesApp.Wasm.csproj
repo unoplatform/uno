@@ -18,8 +18,10 @@
 		<Content Update="web.config" />
 	</ItemGroup>
 	<ItemGroup>
-		<EmbeddedResource Include="WasmCSS\Fonts.css" />
+		<EmbeddedResource Include="WasmCSS\*.css" />
 		<EmbeddedResource Include="WasmScripts\*.js" />
+		<UpToDateCheckInput Include="WasmCSS\**\*" />
+		<UpToDateCheckInput Include="WasmScripts\**\*" />
 	</ItemGroup>
 	<ItemGroup>
 		<LinkerDescriptor Include="LinkerConfig.xml" />
@@ -47,7 +49,7 @@
 		<PackageReference Include="Microsoft.Extensions.Logging.Console" Version="1.1.1" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Filter" Version="1.1.1" />
 		<PackageReference Include="Uno.Wasm.MonoRuntime" Version="1.0.0-dev0000" />
-		<PackageReference Include="Uno.Wasm.Bootstrap" Version="1.0.0-dev.137" />
+		<PackageReference Include="Uno.Wasm.Bootstrap" Version="1.0.0-dev.166" />
 		<DotNetCliToolReference Include="Uno.Wasm.Bootstrap.Cli" Version="1.0.0-dev.137" />
 	</ItemGroup>
 	
@@ -63,8 +65,9 @@
 	<ItemGroup>
 		<UpToDateCheckInput Include="WasmCSS\**\*" />
 	</ItemGroup>
-	
+
 	<ItemGroup>
+		<None Remove="WasmScripts\AppManifest.js" />
 		<None Remove="web.config" />
 	</ItemGroup>
 
