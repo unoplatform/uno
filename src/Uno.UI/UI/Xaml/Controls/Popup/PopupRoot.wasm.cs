@@ -64,8 +64,8 @@ namespace Windows.UI.Xaml.Controls
 					else
 					{
 						return new Point(
-							popupLocation.Matrix.OffsetX - popup.HorizontalOffset,
-							popupLocation.Matrix.OffsetY - popup.VerticalOffset
+							popupLocation.Matrix.OffsetX + popup.HorizontalOffset,
+							popupLocation.Matrix.OffsetY + popup.VerticalOffset
 						);
 					}
 				}
