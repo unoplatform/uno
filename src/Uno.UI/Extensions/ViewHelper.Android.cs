@@ -168,6 +168,34 @@ namespace Uno.UI
 			return (int)((value * FontScale) + .5f);
 		}
 
+		/// <summary>
+		/// Gets the physical representation of the provided logical pixels, 
+		/// for the <see cref="View.PivotX"/> and <see cref="View.PivotY"/> of a View (cf. Remarks)
+		/// </summary>
+		/// <remarks>Compared to <see cref="LogicalToPhysicalPixels"/>, this won't apply any rounding and returns a float.</remarks>
+		/// <param name="value">The logical value</param>
+		/// <returns>The pixels value</returns>
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static float LogicalToPhysicalPivotPixels(double value)
+		{
+			if (double.IsNaN(value))
+			{
+				return 0;
+			}
+
+			if (double.IsPositiveInfinity(value))
+			{
+				return int.MaxValue;
+			}
+
+			if (double.IsNegativeInfinity(value))
+			{
+				return int.MinValue;
+			}
+
+			return (float)(value * Scale);
+		}
+
 
 		/// <summary>
 		/// Gets the physical representation of the provided logical pixels.
