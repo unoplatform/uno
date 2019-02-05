@@ -66,6 +66,7 @@
 * Add support for MatrixTransform, UIElement.TransformToVisual now returns a MatrixTransform
 * Add support for `ViewBox`
 * Add support for `AutoSuggestBox.ItemsSource`
+* Add support for `Selector.SelectedValuePath` (e.g. useful for ComboBox)
 
 ### Breaking changes
 * Refactored ToggleSwitch Default Native XAML Styles. (cf. 'NativeDefaultToggleSwitch' styles in Generic.Native.xaml)

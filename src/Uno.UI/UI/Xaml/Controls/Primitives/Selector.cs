@@ -11,6 +11,7 @@ using System.Diagnostics;
 using Uno.UI;
 using Uno.Disposables;
 using Windows.UI.Xaml.Data;
+using Uno.UI.DataBinding;
 
 namespace Windows.UI.Xaml.Controls.Primitives
 {
@@ -19,6 +20,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		public event SelectionChangedEventHandler SelectionChanged;
 
 		private readonly SerialDisposable _collectionViewSubscription = new SerialDisposable();
+		private BindingPath _path;
 
 		/// <summary>
 		/// This is always true for <see cref="FlipView"/> and <see cref="ComboBox"/>, and depends on the value of <see cref="ListViewBase.SelectionMode"/> for <see cref="ListViewBase"/>.
@@ -83,7 +85,35 @@ namespace Windows.UI.Xaml.Controls.Primitives
 				isSelectionUnset ? new object[] { } : new[] { selectedItem }
 			);
 			OnSelectedItemChangedPartial(oldSelectedItem, selectedItem);
+
+			UpdateSelectedValue();
 		}
+
+		private void UpdateSelectedValue()
+		{
+			if (SelectedValuePath.HasValue())
+			{
+				if(_path?.Path != SelectedValuePath)
+				{
+					_path = new Uno.UI.DataBinding.BindingPath(SelectedValuePath, null);
+				}
+			}
+			else
+			{
+				_path = null;
+			}
+
+			if (_path != null)
+			{
+				_path.DataContext = SelectedItem;
+				SelectedValue = _path.Value;
+			}
+			else
+			{
+				SelectedValue = SelectedItem;
+			}
+		}
+
 
 		partial void OnSelectedItemChangedPartial(object oldSelectedItem, object selectedItem);
 
@@ -121,6 +151,34 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 			SelectedIndexPath = GetIndexPathFromIndex(SelectedIndex);
 		}
+
+		public string SelectedValuePath
+		{
+			get => (string)this.GetValue(SelectedValuePathProperty);
+			set => SetValue(SelectedValuePathProperty, value);
+		}
+
+		public static global::Windows.UI.Xaml.DependencyProperty SelectedValuePathProperty { get; } =
+		Windows.UI.Xaml.DependencyProperty.Register(
+			name: nameof(SelectedValuePath),
+			propertyType: typeof(string),
+			ownerType: typeof(Selector),
+			typeMetadata: new FrameworkPropertyMetadata("", propertyChangedCallback: (s, e) => (s as Selector)?.UpdateSelectedValue())
+		);
+
+		public object SelectedValue
+		{
+			get => GetValue(SelectedValueProperty);
+			set => SetValue(SelectedValueProperty, value);
+		}
+
+		public static global::Windows.UI.Xaml.DependencyProperty SelectedValueProperty { get; } =
+		Windows.UI.Xaml.DependencyProperty.Register(
+			name: nameof(SelectedValue),
+			propertyType: typeof(object),
+			ownerType: typeof(Selector),
+			typeMetadata: new FrameworkPropertyMetadata(null)
+		);
 
 		/// <summary>
 		/// The selected index as an <see cref="IndexPath"/> of (group, group position), where group=0 if the source is ungrouped.
