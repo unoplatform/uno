@@ -63,25 +63,45 @@ namespace Windows.UI.Xaml.Controls
 		{
 			var id = GetItemId(index);
 
-			if (this.Log().IsEnabled(LogLevel.Debug))
+			if (!_owner.XamlParent.IsIndexItsOwnContainer(index))
 			{
-				this.Log().LogDebug($"{GetMethodTag()} container={container} index={index}");
-			}
+				if (this.Log().IsEnabled(LogLevel.Debug))
+				{
+					this.Log().LogDebug($"{GetMethodTag()} container={container} index={index}");
+				}
 
-			var cache = _itemContainerCache.FindOrCreate(id, () => new Stack<FrameworkElement>());
+				var cache = _itemContainerCache.FindOrCreate(id, () => new Stack<FrameworkElement>());
 
-			if (cache.Count < CacheLimit)
-			{
-				cache.Push(container);
+				if (cache.Count < CacheLimit)
+				{
+					cache.Push(container);
+				}
+				else
+				{
+					DiscardContainer(container);
+				}
 			}
 			else
 			{
-				// Cache is full, remove the view
-				var parent = (container.Parent) as Panel;
-				if (parent != null)
+				// Non-generated containers cannot be recycled as they
+				// are placed at specific positions.
+
+				if (this.Log().IsEnabled(LogLevel.Debug))
 				{
-					parent.Children.Remove(container);
+					this.Log().LogDebug($"{GetMethodTag()} itemIsItsOwnContainer container={container} index={index}");
 				}
+
+				DiscardContainer(container);
+			}
+		}
+
+		private static void DiscardContainer(FrameworkElement container)
+		{
+			// Cache is full, remove the view
+			var parent = (container.Parent) as Panel;
+			if (parent != null)
+			{
+				parent.Children.Remove(container);
 			}
 		}
 
