@@ -131,6 +131,7 @@
  * 144101 fixed `ListView` group headers messed up on item update
  * Transforms are now fully functionnal
  * #527 Fix for `Selector.SelectionChanged` is raised twice on updated selection
+ * [Wasm] Fixed ListView infinite loop when using custom containers
 
 ## Release 1.42
 
