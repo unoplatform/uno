@@ -135,4 +135,7 @@
   <data name="Given_ResourceService.ValidResource" xml:space="preserve">
     <value>ValidResource (en)</value>
   </data>
+  <data name="Given_ResourcesService.When_Get_ResourceFromResw" xml:space="preserve">
+    <value>Value for When_Get_ResourceFromResw</value>
+  </data>
 </root>
