@@ -1,8 +1,8 @@
-﻿using System.Windows.Input;
+﻿using System;
+using System.Windows.Input;
+using Uno.UI.Samples.UITests.Helpers;
 using Windows.UI.Core;
 using Windows.UI.Xaml.Data;
-using Uno.UI.Samples.UITests.Helpers;
-using System;
 
 namespace SamplesApp.Windows_UI_Xaml_Controls.Models
 {
@@ -30,7 +30,7 @@ namespace SamplesApp.Windows_UI_Xaml_Controls.Models
 
 		private void ExecuteSetToCurrentTime()
 		{
-			 Time = DateTime.UtcNow.TimeOfDay;
+			Time = DateTime.Now.TimeOfDay;
 		}
 	}
 }

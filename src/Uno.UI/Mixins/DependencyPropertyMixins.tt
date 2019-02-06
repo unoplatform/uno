@@ -89,6 +89,7 @@
 				.Property("ClockIdentifier", "string", "Windows.Globalization.ClockIdentifiers.TwelveHour")
 			.Class("TimePickerSelector")
 				.Property("Time", "TimeSpan", "DateTime.Now.TimeOfDay")
+				.Property("MinuteIncrement", "int", "1")
 				.Property("ClockIdentifier", "string", "Windows.Globalization.ClockIdentifiers.TwelveHour")
 			.Class("TimePicker")
 				.Property("Time", "TimeSpan", "DateTime.Now.TimeOfDay")
