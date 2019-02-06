@@ -10,36 +10,41 @@
       xmlns:native_android="using:Android.Widget"
       xmlns:controls="using:Uno.UI.Samples.Controls"
       mc:Ignorable="xamarin android ios native_ios native_android">
-    <Page.Resources>
-        <ResourceDictionary>
-            <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="Sample2_styles.xaml" />
-            </ResourceDictionary.MergedDictionaries>
-        </ResourceDictionary>
-    </Page.Resources>
+	<Page.Resources>
+		<ResourceDictionary>
+			<ResourceDictionary.MergedDictionaries>
+				<ResourceDictionary Source="Sample2_styles.xaml" />
+			</ResourceDictionary.MergedDictionaries>
+		</ResourceDictionary>
+	</Page.Resources>
 
-    <controls:SampleControl SampleDescription="Sample2">
-        <controls:SampleControl.SampleContent>
-            <DataTemplate>
-                <Grid Background="White">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="*" />
-                    </Grid.RowDefinitions>
-                    <Button Content="Set To Current Time"
-                            Command="{Binding SetToCurrentTime}" Margin="10" HorizontalAlignment="Center" Visibility="Collapsed"/>
-                    <TimePicker Grid.Row="1"
+	<controls:SampleControl SampleDescription="style:minimal flyout button - clock:12h - increment:5 - time:binding">
+		<controls:SampleControl.SampleContent>
+			<DataTemplate>
+				<Grid Background="White">
+					<Grid.RowDefinitions>
+						<RowDefinition Height="Auto" />
+						<RowDefinition Height="*" />
+					</Grid.RowDefinitions>
+
+					<Button Content="Set To Current Time"
+                            Margin="10" 
+                            HorizontalAlignment="Center" 
+                            Command="{Binding [SetToCurrentTime]}"
+                            Style="{StaticResource FlatButtonStyle}" />
+
+					<TimePicker Grid.Row="1"
                                 Margin="15,10"
                                 Style="{StaticResource FlatTimePickerStyle}"
                                 ios:FlyoutPlacement="Full"
                                 VerticalAlignment="Stretch"
                                 HorizontalAlignment="Center"
-                                MinuteIncrement="1"
-                                Time="{Binding Time, Mode=TwoWay}"
+                                MinuteIncrement="5"
+                                Time="{Binding [Time], Mode=TwoWay}"
                                 ClockIdentifier="12HourClock">
-                    </TimePicker>
-                </Grid>
-            </DataTemplate>
-        </controls:SampleControl.SampleContent>
-    </controls:SampleControl>
+					</TimePicker>
+				</Grid>
+			</DataTemplate>
+		</controls:SampleControl.SampleContent>
+	</controls:SampleControl>
 </Page>

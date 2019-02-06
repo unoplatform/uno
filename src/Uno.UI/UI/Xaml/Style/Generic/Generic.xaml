@@ -1937,13 +1937,9 @@
 	<!-- Default style for Windows.UI.Xaml.Controls.TimePicker -->
 	<!--https://msdn.microsoft.com/en-us/library/windows/apps/mt299156.aspx-->
 	<xamarin:Style TargetType="TimePicker">
-		<Setter Property="IsTabStop"
-				Value="False" />
-		<Setter Property="MinWidth"
-				Value="242" />
-		<Setter Property="MaxWidth"
-				Value="456" />
-		<Setter Property="FontFamily"
+        <Setter Property="IsTabStop"
+                Value="False" />
+        <Setter Property="FontFamily"
 				Value="{ThemeResource ContentControlThemeFontFamily}" />
 		<Setter Property="FontSize"
 				Value="{ThemeResource ControlContentThemeFontSize}" />
@@ -9387,3 +9383,4 @@
 	<SolidColorBrush x:Key="SystemControlHighlightListMediumRevealBackgroundBrush" Color="{StaticResource SystemListMediumColor}" />
 
 </ResourceDictionary>
+	

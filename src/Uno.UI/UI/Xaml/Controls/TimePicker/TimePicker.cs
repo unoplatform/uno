@@ -2,13 +2,13 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using System.Text;
 using Uno.Extensions;
 using Windows.Globalization;
-using Windows.UI.Xaml.Data;
-using System.Linq;
-using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Automation.Peers;
+using Windows.UI.Xaml.Controls.Primitives;
+using Windows.UI.Xaml.Data;
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -79,10 +79,12 @@ namespace Windows.UI.Xaml.Controls
 					Placement = FlyoutPlacement,
 #endif
 					Time = this.Time,
+					MinuteIncrement = this.MinuteIncrement,
 					ClockIdentifier = this.ClockIdentifier
 				};
 
 				BindToFlyout(nameof(Time));
+				BindToFlyout(nameof(MinuteIncrement));
 				BindToFlyout(nameof(ClockIdentifier));
 #endif
 			}
@@ -136,7 +138,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			this.Binding(propertyName, propertyName, _flyoutButton.Flyout, BindingMode.TwoWay);
 		}
-		
+
 		protected override AutomationPeer OnCreateAutomationPeer()
 		{
 			return new TimePickerAutomationPeer(this);

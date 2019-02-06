@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using Android.Views;
-using Android.Widget;
 using Uno.Extensions;
 using Uno.Logging;
 using Uno.UI;
@@ -24,10 +21,11 @@ namespace Windows.UI.Xaml.Controls
 
 			if (_picker != null)
 			{
-				//By settings DescendantFocusability to BlockDescendants it disables the possibility to use the keyboard to modify time which was causing issues in 4.4
-				_picker.DescendantFocusability = DescendantFocusability.BlockDescendants;
-				
+				//By settings DescendantFocusability to BlockDescendnts it disables the possibility to use the keyboard to modify time which was causing issues in 4.4
+				_picker.DescendantFocusability = Android.Views.DescendantFocusability.BlockDescendants;
+
 				this.Binding(nameof(Time), nameof(Time), Content, BindingMode.TwoWay);
+				this.Binding(nameof(MinuteIncrement), nameof(MinuteIncrement), Content, BindingMode.TwoWay);
 				this.Binding(nameof(ClockIdentifier), nameof(ClockIdentifier), Content, BindingMode.TwoWay);
 			}
 			else if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
@@ -35,7 +33,7 @@ namespace Windows.UI.Xaml.Controls
 				this.Log().Debug($"No native TimePicker was found in the visual hierarchy.");
 			}
 		}
-		
+
 		public void Initialize()
 		{
 			SaveInitialTime();
@@ -62,15 +60,17 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		private void SetPickerTime(TimeSpan time)
+		private void SetPickerTime(TimeSpan newTime)
 		{
 			if (_picker != null)
 			{
+				var time = newTime.RoundToNextMinuteInterval(MinuteIncrement);
+
 				_picker.SetHourCompat(time.Hours);
 				_picker.SetMinuteCompat(time.Minutes);
 			}
 		}
-		
+
 		partial void OnClockIdentifierChangedPartialNative(string oldClockIdentifier, string newClockIdentifier)
 		{
 			SetPickerClockIdentifier(newClockIdentifier);

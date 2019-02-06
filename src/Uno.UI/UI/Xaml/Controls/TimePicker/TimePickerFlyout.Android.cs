@@ -1,11 +1,12 @@
 ﻿#if XAMARIN_ANDROID
 using System;
-using System.Linq;
 using Android.App;
 using Android.OS;
 using Uno.UI;
+using Uno.UI.Extensions;
 using Windows.Globalization;
 using Windows.UI.Xaml.Controls.Primitives;
+using static Android.App.TimePickerDialog;
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -18,16 +19,15 @@ namespace Windows.UI.Xaml.Controls
 		{
 			SaveInitialTime();
 
-			//On Samsung devices >= 6.0 the TimePickerDialog is not displayed properly in Landscape.
-			if (Build.VERSION.SdkInt == BuildVersionCodes.M &&
-			    Build.Manufacturer.ToLower().IndexOf("samsung") >= 0)
-			{
-				ShowUsingAlertDialog();
-			}
-			else
-			{
-				ShowUsingTimePickerDialog();
-			}
+			//Minute increments are not supported with clock and Samsung devices running marshmallow (Android 6.0)
+			//show the clock as truncated in landscape. The spinner style is enforced in these two cases.
+
+			var isSamsungAndMarshmellow = Build.VERSION.SdkInt == BuildVersionCodes.M &&
+										  Build.Manufacturer.ToLower().IndexOf("samsung") >= 0;
+
+			var useSpinnerStyle = isSamsungAndMarshmellow || MinuteIncrement > 1;
+
+			ShowTimePicker(useSpinnerStyle);
 		}
 
 		private void SaveInitialTime() => _initialTime = Time;
@@ -42,57 +42,25 @@ namespace Windows.UI.Xaml.Controls
 				SaveInitialTime();
 			}
 		}
-		
-		private void ShowUsingTimePickerDialog()
+
+		private void ShowTimePicker(bool useSpinnerStyle)
 		{
-			_dialog = new TimePickerDialog(
-				      ContextHelper.Current,
-				      (sender, e) => SaveTime(e.HourOfDay, e.Minute),
-				      Time.Hours,
-				      Time.Minutes,
-				      ClockIdentifier == ClockIdentifiers.TwentyFourHour
-				      );
+			var time = Time.RoundToNextMinuteInterval(MinuteIncrement);
+			var listener = new OnSetTimeListener((view, hourOfDay, minute) => SaveTime(hourOfDay, minute * MinuteIncrement));
+			int timePickerStyleResId = useSpinnerStyle ? 3 : 0;
+
+			_dialog = new UnoTimePickerDialog(
+					ContextHelper.Current,
+					timePickerStyleResId,
+					listener,
+					time.Hours,
+					time.Minutes,
+					ClockIdentifier == ClockIdentifiers.TwentyFourHour,
+					MinuteIncrement
+				);
 
 			_dialog.DismissEvent += OnDismiss;
 			_dialog.Show();
-		}
-
-		private void ShowUsingAlertDialog()
-		{
-			//On Samsung devices ?= 6.0 the TimepickerDialog is not displayed properly in Landscape.
-			//Instead using this work around seems to work.
-			var timePicker = new Android.Widget.TimePicker(ContextHelper.Current);
-
-			//Hour and Minute properties are not supported on Android before 6.0
-			if (Build.VERSION.SdkInt >= BuildVersionCodes.M)
-			{
-				timePicker.Hour = Time.Hours;
-				timePicker.Minute = Time.Minutes;
-			}
-			else
-			{
-#pragma warning disable CS0618 // Type or member is obsolete
-				timePicker.CurrentHour = new Java.Lang.Integer(Time.Hours);
-				timePicker.CurrentMinute = new Java.Lang.Integer(Time.Minutes);
-#pragma warning restore CS0618 // Type or member is obsolete
-			}
-
-			timePicker.SetIs24HourView(new Java.Lang.Boolean(ClockIdentifier == ClockIdentifiers.TwentyFourHour));
-		
-			_dialog = new AlertDialog.Builder(ContextHelper.Current)
-				.SetPositiveButton(
-					Android.Resource.String.Ok,
-					(sender, eventArgs) =>
-						Time = new TimeSpan(Time.Days, timePicker.Hour, timePicker.Minute, Time.Seconds, Time.Milliseconds)
-				)
-				.SetNegativeButton(
-					Android.Resource.String.Cancel,
-					(sender, eventArgs) => { /*Nothing to do*/ }
-				)
-				.SetView(timePicker)
-				.Show();
-
-			_dialog.DismissEvent += OnDismiss;
 		}
 
 		private void OnDismiss(object sender, EventArgs e)
@@ -100,7 +68,19 @@ namespace Windows.UI.Xaml.Controls
 			Hide(canCancel: false);
 		}
 
-		partial void OnTimeChangedPartialNative(TimeSpan oldTime, TimeSpan newTime){}
+		partial void OnTimeChangedPartialNative(TimeSpan oldTime, TimeSpan newTime) { }
+
+		public class OnSetTimeListener : Java.Lang.Object, IOnTimeSetListener
+		{
+			private Action<Android.Widget.TimePicker, int, int> _action;
+
+			public OnSetTimeListener(Action<Android.Widget.TimePicker, int, int> action)
+			{
+				_action = action;
+			}
+
+			public void OnTimeSet(Android.Widget.TimePicker view, int hourOfDay, int minute) => _action(view, hourOfDay, minute);
+		}
 	}
 }
 #endif
