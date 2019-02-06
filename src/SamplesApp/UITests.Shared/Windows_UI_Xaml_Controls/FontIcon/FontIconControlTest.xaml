@@ -11,6 +11,13 @@
 			<DataTemplate>
 				<ScrollViewer>
 					<StackPanel>
+						<Grid
+						  Height="40"
+						  BorderThickness="1"
+						  BorderBrush="Red">
+
+							<FontIcon Glyph = "" />
+						</Grid>
 
 						<!-- Glyph -->
 						<TextBlock Text="Glyph Star" />
