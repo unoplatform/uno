@@ -36,5 +36,10 @@ namespace Windows.UI.Xaml.Input
 		public Pointer Pointer { get; internal set; }
 
 		partial void InitializePartial();
+
+		public override string ToString()
+		{
+			return $"PointerRoutedEventArgs({Pointer}@{_point})";
+		}
 	}
 }
