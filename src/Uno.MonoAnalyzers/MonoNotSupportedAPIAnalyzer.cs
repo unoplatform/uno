@@ -76,6 +76,7 @@ namespace Uno.Analyzers
 							"IndexOfAny",
 							"Join",
 							"StartsWith",
+							"Contains",
 						},
 						Validation = new Func<IMethodSymbol, bool>(
 							m => m.Parameters.FirstOrDefault()?.Type == _charSymbol
