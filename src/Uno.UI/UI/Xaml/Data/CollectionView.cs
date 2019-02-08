@@ -248,6 +248,10 @@ namespace Windows.UI.Xaml.Data
 			{
 				list.CopyTo(array, arrayIndex);
 			}
+			else if (_collection is ICollection collection)
+			{
+				collection.CopyTo(array, arrayIndex);
+			}
 
 			_collection?.ToObjectArray().CopyTo(array, arrayIndex);
 		}
