@@ -16,10 +16,25 @@ namespace Windows.UI.Xaml.Media.Animation
 		private readonly Dictionary<EventHandler, EventHandler> _cancelHandlers = new Dictionary<EventHandler, EventHandler>();
 
 		private readonly ValueAnimator _adaptee;
+		private readonly Action _prepareAnimation;
 
 		public NativeValueAnimatorAdapter(ValueAnimator adaptee)
+			: this(adaptee, null, null)
+		{
+		}
+
+		public NativeValueAnimatorAdapter(ValueAnimator adaptee, Action prepareAnimation, Action completeAnimation)
 		{
 			_adaptee = adaptee;
+
+			if (prepareAnimation != null && completeAnimation != null)
+			{
+				_prepareAnimation = prepareAnimation;
+				// We register the 'completeAnimation' callback as soon as possible ,
+				// so it will be the first callback and won't conflict with an other animator which would be
+				// started in other completion callbacks (e.g. RepeatMode.Forever)
+				_adaptee.AnimationEnd += (snd, args) => completeAnimation();
+			}
 		}
 
 		/// <inheritdoc />
@@ -177,7 +192,11 @@ namespace Windows.UI.Xaml.Media.Animation
 		public long Duration => _adaptee.Duration;
 
 		/// <inheritdoc />
-		public void Start() => _adaptee.Start();
+		public void Start()
+		{
+			_prepareAnimation?.Invoke();
+			_adaptee.Start();
+		}
 
 		/// <inheritdoc />
 		public void Pause()

@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Numerics;
 using System.Text;
+using Windows.Foundation;
 
 namespace Windows.UI.Xaml.Media
 {
@@ -10,90 +12,51 @@ namespace Windows.UI.Xaml.Media
 	/// </summary>
 	public partial class ScaleTransform : Transform
 	{
+		internal static Matrix3x2 GetMatrix(double centerX, double centerY, double scaleX, double scaleY)
+		{
+			var scales = new Vector2((float)scaleX, (float)scaleY);
+			var centerPoint = new Vector2((float)centerX, (float)centerY);
+
+			return Matrix3x2.CreateScale(scales, centerPoint);
+		}
+
+		internal override Matrix3x2 ToMatrix(Point absoluteOrigin)
+			=> GetMatrix(absoluteOrigin.X + CenterX, absoluteOrigin.Y + CenterY, ScaleX, ScaleY);
+
 		public double CenterY
 		{
-			get => (double) GetValue(CenterYProperty);
-			set => SetValue(CenterYProperty, value);
+			get => (double)this.GetValue(CenterYProperty);
+			set => this.SetValue(CenterYProperty, value);
 		}
 
-		// Using a DependencyProperty as the backing store for CenterY.  This enables animation, styling, binding, etc...
 		public static readonly DependencyProperty CenterYProperty =
-			DependencyProperty.Register("CenterY", typeof(double), typeof(ScaleTransform),
-				new PropertyMetadata(0.0, OnCenterYChanged));
-
-		private static void OnCenterYChanged(object dependencyObject, DependencyPropertyChangedEventArgs args)
-		{
-			if (dependencyObject is ScaleTransform self)
-			{
-				self.SetCenterY(args);
-			}
-		}
-
-		partial void SetCenterY(DependencyPropertyChangedEventArgs args);
+			DependencyProperty.Register("CenterY", typeof(double), typeof(ScaleTransform), new PropertyMetadata(0.0, NotifyChangedCallback));
 
 		public double CenterX
 		{
-			get => (double) GetValue(CenterXProperty);
-			set => SetValue(CenterXProperty, value);
+			get => (double)this.GetValue(CenterXProperty);
+			set => this.SetValue(CenterXProperty, value);
 		}
 
-		// Using a DependencyProperty as the backing store for CenterX.  This enables animation, styling, binding, etc...
 		public static readonly DependencyProperty CenterXProperty =
-			DependencyProperty.Register("CenterX", typeof(double), typeof(ScaleTransform),
-				new PropertyMetadata(0.0, OnCenterXChanged));
-
-		private static void OnCenterXChanged(object dependencyObject, DependencyPropertyChangedEventArgs args)
-		{
-			if (dependencyObject is ScaleTransform self)
-			{
-				self.SetCenterX(args);
-			}
-		}
-
-		partial void SetCenterX(DependencyPropertyChangedEventArgs args);
-
+			DependencyProperty.Register("CenterX", typeof(double), typeof(ScaleTransform), new PropertyMetadata(0.0, NotifyChangedCallback));
 
 		public double ScaleX
 		{
-			get => (double) GetValue(ScaleXProperty);
-			set => SetValue(ScaleXProperty, value);
+			get => (double)this.GetValue(ScaleXProperty);
+			set => this.SetValue(ScaleXProperty, value);
 		}
 
-		// Using a DependencyProperty as the backing store for ScaleX.  This enables animation, styling, binding, etc...
 		public static readonly DependencyProperty ScaleXProperty =
-			DependencyProperty.Register("ScaleX", typeof(double), typeof(ScaleTransform),
-				new PropertyMetadata(1.0, OnScaleXChanged));
-
-		private static void OnScaleXChanged(object dependencyObject, DependencyPropertyChangedEventArgs args)
-		{
-			if (dependencyObject is ScaleTransform self)
-			{
-				self.SetScaleX(args);
-			}
-		}
-
-		partial void SetScaleX(DependencyPropertyChangedEventArgs args);
+			DependencyProperty.Register("ScaleX", typeof(double), typeof(ScaleTransform), new PropertyMetadata(1.0, NotifyChangedCallback));
 
 		public double ScaleY
 		{
-			get => (double) GetValue(ScaleYProperty);
-			set => SetValue(ScaleYProperty, value);
+			get => (double)this.GetValue(ScaleYProperty);
+			set => this.SetValue(ScaleYProperty, value);
 		}
 
-		// Using a DependencyProperty as the backing store for ScaleY.  This enables animation, styling, binding, etc...
 		public static readonly DependencyProperty ScaleYProperty =
-			DependencyProperty.Register("ScaleY", typeof(double), typeof(ScaleTransform),
-				new PropertyMetadata(1.0, OnScaleYChanged));
-
-		private static void OnScaleYChanged(object dependencyObject, DependencyPropertyChangedEventArgs args)
-		{
-			if (dependencyObject is ScaleTransform self)
-			{
-				self.SetScaleY(args);
-			}
-		}
-
-		partial void SetScaleY(DependencyPropertyChangedEventArgs args);
+			DependencyProperty.Register("ScaleY", typeof(double), typeof(ScaleTransform), new PropertyMetadata(1.0, NotifyChangedCallback));
 	}
 }
-
