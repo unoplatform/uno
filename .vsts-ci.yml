@@ -162,7 +162,7 @@ jobs:
   - checkout: self
     clean: true
     
-  - task: GitVersion@3
+  - task: GitVersion@4
     # Ignore gitversion for forks, until this is fixed:
     # https://developercommunity.visualstudio.com/content/problem/284991/public-vsts-previouw-cant-set-build-number-of-pr-b.html
     condition: eq(variables['System.PullRequest.IsFork'], 'False')
