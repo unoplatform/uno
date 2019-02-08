@@ -132,6 +132,7 @@
  * Transforms are now fully functionnal
  * #527 Fix for `Selector.SelectionChanged` is raised twice on updated selection
  * [Wasm] Fixed ListView infinite loop when using custom containers
+ * [Wasm] Use Uno.UI Assembly for namespace type lookup in `XamlReader`
 
 ## Release 1.42
 
