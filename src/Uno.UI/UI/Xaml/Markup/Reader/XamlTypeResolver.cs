@@ -13,6 +13,8 @@ namespace Windows.UI.Xaml.Markup.Reader
 {
     internal class XamlTypeResolver
     {
+		private readonly static Assembly _frameworkElementAssembly = typeof(FrameworkElement).Assembly;
+
         private readonly Func<string, Type> _findType;
         private readonly Func<Type, string, bool> _isAttachedProperty;
         private readonly XamlFileDefinition FileDefinition;
@@ -20,7 +22,7 @@ namespace Windows.UI.Xaml.Markup.Reader
         private readonly Func<XamlMember, Type> _findPropertyTypeByXamlMember;
         private readonly Func<Type, PropertyInfo> _findContentProperty;
 
-        public static ImmutableDictionary<string, string[]> KnownNamespaces { get; } 
+		public static ImmutableDictionary<string, string[]> KnownNamespaces { get; } 
 			= new Dictionary<string, string[]>
 			{
 				{
@@ -321,7 +323,10 @@ namespace Windows.UI.Xaml.Markup.Reader
                 // Search first using the default namespace
                 foreach (var clrNamespace in clrNamespaces)
                 {
-                    var type = Type.GetType(clrNamespace + "." + name);
+					// This lookup is performed in the current assembly as it is the
+					// original behavior, and the Wasm AOT engine does not yet respect this
+					// behavior (because of Wasm missing stack walking feature)
+					var type = _frameworkElementAssembly.GetType(clrNamespace + "." + name);
 
                     if (type != null)
                     {
