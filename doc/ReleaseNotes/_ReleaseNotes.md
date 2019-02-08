@@ -68,6 +68,7 @@
 * Add support for `ViewBox`
 * Add support for `AutoSuggestBox.ItemsSource`
 * Add support for `Selector.SelectedValuePath` (e.g. useful for ComboBox)
+* Add support for JS unhandled exception logging for CoreDispatcher (support for Mixed mode troubleshooting)
 
 ### Breaking changes
 * Refactored ToggleSwitch Default Native XAML Styles. (cf. 'NativeDefaultToggleSwitch' styles in Generic.Native.xaml)
