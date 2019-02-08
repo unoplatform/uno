@@ -173,3 +173,4 @@ Here's the full change log:
 - Adjust the sequence of control template materialization [#192](https://github.com/nventive/Uno/pull/192)
 - Support for ListView.ScrollIntoView with leading alignment
 - Added support for ListView GroupStyle.HeaderTemplateSelector 
+- [IOS-ANDROID] Added support for time picker minute increment 

@@ -50,7 +50,16 @@ namespace Windows.UI.Xaml.Controls
 		{
 			SaveInitialTime();
 			SetPickerClockIdentifier(ClockIdentifier);
-			SetPickerTime(Time);
+			SetPickerMinuteIncrement(MinuteIncrement);
+			SetPickerTime(Time.RoundToNextMinuteInterval(MinuteIncrement));
+		}
+
+		private void SetPickerMinuteIncrement(int minuteIncrement)
+		{
+			if (_picker != null)
+			{
+				_picker.MinuteInterval = minuteIncrement;
+			}
 		}
 
 		private void SaveInitialTime() => _initialTime = _picker.Date;
@@ -90,7 +99,7 @@ namespace Windows.UI.Xaml.Controls
 				_picker.Locale = ToNSLocale(clockIdentifier);
 			}
 		}
-		
+
 		private void SetPickerTime(TimeSpan time)
 		{
 			if (_picker != null)
@@ -108,17 +117,22 @@ namespace Windows.UI.Xaml.Controls
 				_picker.SetDate(nsDate, animated: false);
 			}
 		}
-		
+
 		partial void OnClockIdentifierChangedPartialNative(string oldClockIdentifier, string newClockIdentifier)
 		{
 			SetPickerClockIdentifier(newClockIdentifier);
+		}
+
+		partial void OnMinuteIncrementChangedPartialNative(int oldMinuteIncrement, int newMinuteIncrement)
+		{
+			SetPickerMinuteIncrement(newMinuteIncrement);
 		}
 
 		partial void OnTimeChangedPartialNative(TimeSpan oldTime, TimeSpan newTime)
 		{
 			SetPickerTime(newTime);
 		}
-		
+
 		private static NSLocale ToNSLocale(string clockIdentifier)
 		{
 			var localeID = clockIdentifier == ClockIdentifiers.TwelveHour

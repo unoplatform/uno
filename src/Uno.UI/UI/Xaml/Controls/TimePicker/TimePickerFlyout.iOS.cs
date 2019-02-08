@@ -1,6 +1,4 @@
-﻿
-using System;
-using Uno.Disposables;
+﻿using Uno.Disposables;
 using Uno.UI.Common;
 using Uno.UI.DataBinding;
 using Windows.UI.Xaml.Data;
@@ -28,6 +26,7 @@ namespace Windows.UI.Xaml.Controls
 			Content = _timeSelector;
 
 			this.Binding(nameof(Time), nameof(Time), Content, BindingMode.TwoWay);
+			this.Binding(nameof(MinuteIncrement), nameof(MinuteIncrement), Content, BindingMode.TwoWay);
 			this.Binding(nameof(ClockIdentifier), nameof(ClockIdentifier), Content, BindingMode.TwoWay);
 		}
 
@@ -50,15 +49,16 @@ namespace Windows.UI.Xaml.Controls
 				_onUnloaded.Disposable = null;
 				_onLoad.Disposable = null;
 			}
-			
+
 			if (_timePickerPresenter != null)
 			{
 				_onLoad.Disposable = Disposable.Create(() => _timePickerPresenter.Loaded -= onLoad);
 				_onUnloaded.Disposable = Disposable.Create(() => _timePickerPresenter.Unloaded -= onUnload);
+
 				_timePickerPresenter.Loaded += onLoad;
 				_timePickerPresenter.Unloaded += onUnload;
 			}
-			
+
 			return _timePickerPresenter;
 		}
 

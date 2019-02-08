@@ -24,5 +24,25 @@ namespace Uno.UI.Extensions
 
 			return builder.ToString();
 		}
-    }
+
+		/// <summary>
+		/// Round timespan to next minute interval
+		/// </summary>
+		/// <param name="interval">minute interval</param>
+		/// <returns>Rounded timespan</returns>
+		internal static TimeSpan RoundToNextMinuteInterval(this TimeSpan time, int interval)
+		{
+			var hours = time.Hours;
+			var minutes = time.Minutes;
+			var mod = minutes % interval;
+
+			var roundedMinutes = mod == 0 ? minutes : minutes - mod + interval;
+			minutes = roundedMinutes == 0 ? 0 : roundedMinutes % 60;
+
+			var extraHour = roundedMinutes == 0 ? 0 : roundedMinutes / 60;
+			hours = extraHour + hours;
+
+			return new TimeSpan(hours, minutes, 0);
+		}
+	}
 }

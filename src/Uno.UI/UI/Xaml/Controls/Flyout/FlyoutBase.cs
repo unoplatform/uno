@@ -73,10 +73,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			Closed?.Invoke(this, EventArgs.Empty);
 		}
 
-		internal protected virtual void Close()
-		{
-			throw new NotImplementedException("This method has no base class implementation and must be overridden in a derived class.");
-		}
+		internal protected virtual void Close(){}
 
 		public void ShowAt(FrameworkElement placementTarget)
 		{
@@ -103,12 +100,11 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 		internal protected virtual void Open()
 		{
-			throw new NotImplementedException("This method has no base class implementation and must be overridden in a derived class.");
 		}
 
 		protected virtual Control CreatePresenter()
 		{
-			throw new NotImplementedException("This method has no base class implementation and must be overridden in a derived class.");
+			return null;
 		}
 	}
 }
