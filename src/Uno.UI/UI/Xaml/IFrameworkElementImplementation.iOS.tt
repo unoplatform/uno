@@ -115,24 +115,30 @@ namespace <#= mixin.NamespaceName #>
 		{
 			base.WillMoveToSuperview(newsuper);
 
-			if(BinderReferenceHolder.IsEnabled)
+			try
 			{
-				if(newsuper != null)
+				if(BinderReferenceHolder.IsEnabled)
 				{
-					BinderReferenceHolder.AddNativeReference(this, newsuper);
+					if(newsuper != null)
+					{
+						BinderReferenceHolder.AddNativeReference(this, newsuper);
+					}
+					else
+					{
+						BinderReferenceHolder.RemoveNativeReference(this, _superViewRef.GetTarget() as global::Foundation.NSObject);
+					}
 				}
-				else
-				{
-					BinderReferenceHolder.RemoveNativeReference(this, _superViewRef.GetTarget() as global::Foundation.NSObject);
-				}
+
+				_superViewRef = new WeakReference<UIView>(newsuper);
+
+				WillMoveToSuperviewPartial(newsuper);
+				SyncBinder(newsuper, Window);
+				((IDependencyObjectStoreProvider)this).Store.Parent = newsuper;
 			}
-
-			_superViewRef = new WeakReference<UIView>(newsuper);
-
-			WillMoveToSuperviewPartial(newsuper);
-			SyncBinder(newsuper, Window);
-			((IDependencyObjectStoreProvider)this).Store.Parent = newsuper;
-
+			catch(Exception e)
+			{
+				Application.Current.RaiseRecoverableUnhandledExceptionOrLog(e, this);
+			}
 		}
 
 		partial void WillMoveToSuperviewPartial(UIView newsuper);
