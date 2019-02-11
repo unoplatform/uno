@@ -135,6 +135,7 @@
  * [Wasm] Fixed ListView infinite loop when using custom containers
  * [Wasm] Use Uno.UI Assembly for namespace type lookup in `XamlReader`
  * [iOS] Add fail-safe on `FrameworkElement.WillMoveToSuperview` log to `Application.Current.UnhandledException`
+ * [Wasm] Fixed `System.UriConverter` is being linked out
 
 ## Release 1.42
 
