@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Text;
 using Windows.Foundation.Collections;
 
-namespace Windows.UI.Xaml
+namespace Windows.Foundation.Collections
 {
 	internal class ObservableVector<T> : IObservableVector<T>
 	{
