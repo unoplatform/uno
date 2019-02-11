@@ -56,6 +56,15 @@ var Windows;
                     }
                     else {
                         window.setImmediate(() => CoreDispatcher._coreDispatcherCallback());
+                        window.setImmediate(() => {
+                            try {
+                                CoreDispatcher._coreDispatcherCallback();
+                            }
+                            catch (e) {
+                                console.error(`Unhandled dispatcher exception: ${e} (${e.stack})`);
+                                throw e;
+                            }
+                        });
                     }
                     return true;
                 }
