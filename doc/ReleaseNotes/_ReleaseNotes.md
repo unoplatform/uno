@@ -134,6 +134,7 @@
  * #527 Fix for `Selector.SelectionChanged` is raised twice on updated selection
  * [Wasm] Fixed ListView infinite loop when using custom containers
  * [Wasm] Use Uno.UI Assembly for namespace type lookup in `XamlReader`
+ * [iOS] Add fail-safe on `FrameworkElement.WillMoveToSuperview` log to `Application.Current.UnhandledException`
 
 ## Release 1.42
 
