@@ -136,6 +136,7 @@
  * [Wasm] Use Uno.UI Assembly for namespace type lookup in `XamlReader`
  * [iOS] Add fail-safe on `FrameworkElement.WillMoveToSuperview` log to `Application.Current.UnhandledException`
  * [Wasm] Fixed `System.UriConverter` is being linked out
+ * 145075 [Android] [Wasm] Android and Wasm don't match all specific UWP behaviors for the Image control.
 
 ## Release 1.42
 
