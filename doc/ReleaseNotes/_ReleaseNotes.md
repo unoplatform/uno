@@ -127,6 +127,7 @@
  * 144101 fixed `ListView` group headers messed up on item update
  * Transforms are now fully functionnal
  * #527 Fix for `Selector.SelectionChanged` is raised twice on updated selection
+ * 146648 [Android] fixed ListView grouped items corruption on scroll
 
 ## Release 1.42
 
