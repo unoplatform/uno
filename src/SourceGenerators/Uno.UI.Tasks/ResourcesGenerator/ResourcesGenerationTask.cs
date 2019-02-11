@@ -95,7 +95,7 @@ namespace Uno.UI.Tasks.ResourcesGenerator
 			{
 				if (TargetPlatform == "android")
 				{
-					yield return GenerateAndroidResources(language, sourceLastWriteTime, resources, comment);
+					yield return GenerateAndroidResources(language, sourceLastWriteTime, resources, comment, resource);
 				}
 				else if (TargetPlatform == "ios")
 				{
@@ -133,7 +133,7 @@ namespace Uno.UI.Tasks.ResourcesGenerator
 			}
 
 
-			string resourceMapName = Path.GetFileNameWithoutExtension(resource.ItemSpec);
+			var resourceMapName = Path.GetFileNameWithoutExtension(resource.ItemSpec);
 			var logicalTargetPath = Path.Combine(buildBasePath(), resourceMapName + ".upri");
 			var actualTargetPath = Path.Combine(OutputPath, logicalTargetPath);
 
@@ -192,7 +192,7 @@ namespace Uno.UI.Tasks.ResourcesGenerator
 			);
 		}
 
-		private ITaskItem GenerateAndroidResources(string language, DateTime sourceLastWriteTime, Dictionary<string, string> resources, string comment)
+		private ITaskItem GenerateAndroidResources(string language, DateTime sourceLastWriteTime, Dictionary<string, string> resources, string comment, ITaskItem resource)
 		{
 			string localizedDirectory;
 			if (language == DefaultLanguage)
@@ -216,7 +216,9 @@ namespace Uno.UI.Tasks.ResourcesGenerator
 					: $"values-b+{languageOnly.IetfLanguageTag}+{cultureWithRegion.LCID}";
 			}
 
-			var logicalTargetPath = Path.Combine(localizedDirectory, "strings.xml"); // this path is required by Xamarin
+			// The file name have to be unique, otherwise it could be overwritten by a file with the same named defined directly in the application's head
+			var resourceMapName = Path.GetFileNameWithoutExtension(resource.ItemSpec)?.ToLowerInvariant();
+			var logicalTargetPath = Path.Combine(localizedDirectory, $"{resourceMapName}_resw-strings.xml");
 			var actualTargetPath = Path.Combine(OutputPath, logicalTargetPath);
 
 			var targetLastWriteTime = new FileInfo(actualTargetPath).LastWriteTimeUtc;
