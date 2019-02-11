@@ -1591,13 +1591,13 @@ namespace Windows.UI.Xaml.Controls
 		/// </summary>
 		private void UpdateSelection(View view)
 		{
-			var selectorItem = view as SelectorItem;
-			
-			var item = XamlParent?.GetItemFromIndex(XamlParent?.IndexFromContainer(selectorItem) ?? -1);
-			var selectedItems = XamlParent?.SelectedItems;
-
-			if(item != null)
+			// ensure the view is selectable, since headers are not.
+			if (view is SelectorItem selectorItem &&
+				XamlParent?.IndexFromContainer(selectorItem) is int index &&
+				index != -1 &&
+				XamlParent.GetItemFromIndex(index) is object item)
 			{
+				var selectedItems = XamlParent.SelectedItems;
 				var isItemInSelection = selectedItems.Contains(item);
 
 				if (isItemInSelection && !selectorItem.IsSelected)
