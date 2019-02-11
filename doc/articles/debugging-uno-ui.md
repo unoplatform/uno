@@ -2,7 +2,16 @@
 
 ## Building Uno.UI
 
-Using Visual Studio 2017 (15.5 or later):
+Prerequisites:
+- Visual Studio 2017 (15.8 or later) or 2019 (Preview 2 or later)
+    - `Mobile Development with .NET` (Xamarin) development
+    - `Visual Studio extensions development` (for the VSIX projects)
+    - `ASP.NET and Web Development`
+    - `.NET Core cross-platform development`
+    - `UWP Development`, install all recent UWP SDKs, starting from 10.0.14393 (or above or equal to `TargetPlatformVersion` line [in this file](/src/Uno.CrossTargetting.props))
+- Install all Android SDKs starting from 7.1 (or the Android versions [`TargetFrameworks` list used here](/src/Uno.UI.BindingHelper.Android/Uno.UI.BindingHelper.Android.csproj))
+
+Building Uno.UI:
 * Open the [Uno.UI.sln](/src/Uno.UI.sln)
 * Select the Uno.UI project
 * Build
