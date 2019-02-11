@@ -43,7 +43,7 @@ namespace Uno.Foundation.Interop
 		}
 
 		/// <summary>
-		/// Metadata about the marshalled object
+		/// Metadata about the marshaled object
 		/// </summary>
 		public IJSObjectMetadata Metadata => _metadata;
 

@@ -33,8 +33,11 @@ namespace Windows.UI.Xaml.Media
 			// The value is being animated by the platform itself.
 
 			if (snd is Transform transform
+#if !__WASM__ // On WASM currently we supports only CPU bound animations, so we have to let the transform be updated on each frame
 				&& args.NewPrecedence != DependencyPropertyValuePrecedences.Animations
-				&& !args.BypassesPropagation)
+				&& !args.BypassesPropagation
+#endif
+				)
 			{
 				transform.MatrixCore = transform.ToMatrix(new Point(0, 0));
 				transform.NotifyChanged();

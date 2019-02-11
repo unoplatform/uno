@@ -33,6 +33,26 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\ViusalStateTests\VisualState_AdaptiveTrigger_UsingOneStateOnly.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\ViusalStateTests\VisualState_DoubleAnimationUsingKeyFrames_RotateTransform.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\ViusalStateTests\VisualState_Setters.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\ViusalStateTests\VisualState_Setter_StaticResource.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\ViusalStateTests\VisualTransition_Execution_Order.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\AutoSuggestBoxTests\BasicAutoSuggestBox.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -789,6 +809,38 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Media_Animation\DoubleAnimationTestsControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Media_Animation\DoubleAnimationUsingKeyFrames_TranslateX.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Media_Animation\DoubleAnimation_BeginTime.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Media_Animation\DoubleAnimation_Opacity_TextBlock.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Media_Animation\DoubleAnimation_RenderTransformOrigin.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Media_Animation\DoubleAnimation_TranslateX.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Media_Animation\EasingDoubleKeyFrame_CompositeTransform.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Media_Animation\EasingDoubleKeyFrame_CompositeTransform_Container.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Shapes\PathTestsControl\AutoSizedPathCentered.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -952,6 +1004,21 @@
       <DependentUpon>XamlEvent_Leak_UserControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\UIElementTests\TransformToVisual_Simple.xaml.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\ViusalStateTests\VisualState_AdaptiveTrigger_UsingOneStateOnly.xaml.cs">
+      <DependentUpon>VisualState_AdaptiveTrigger_UsingOneStateOnly.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\ViusalStateTests\VisualState_DoubleAnimationUsingKeyFrames_RotateTransform.xaml.cs">
+      <DependentUpon>VisualState_DoubleAnimationUsingKeyFrames_RotateTransform.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\ViusalStateTests\VisualState_Setters.xaml.cs">
+      <DependentUpon>VisualState_Setters.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\ViusalStateTests\VisualState_Setter_StaticResource.xaml.cs">
+      <DependentUpon>VisualState_Setter_StaticResource.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\ViusalStateTests\VisualTransition_Execution_Order.xaml.cs">
+      <DependentUpon>VisualTransition_Execution_Order.xaml</DependentUpon>
+    </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\AutoSuggestBoxTests\BasicAutoSuggestBox.xaml.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\BorderTests\AutoBorderStretchwithbottommargin.xaml.cs">
       <DependentUpon>AutoBorderStretchwithbottommargin.xaml</DependentUpon>
@@ -1512,6 +1579,30 @@
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Media\Transform\TransformToVisual_Translate2d.xaml.cs">
       <DependentUpon>TransformToVisual_Translate2d.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Media_Animation\DoubleAnimationTestsControl.xaml.cs">
+      <DependentUpon>DoubleAnimationTestsControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Media_Animation\DoubleAnimationUsingKeyFrames_TranslateX.xaml.cs">
+      <DependentUpon>DoubleAnimationUsingKeyFrames_TranslateX.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Media_Animation\DoubleAnimation_BeginTime.xaml.cs">
+      <DependentUpon>DoubleAnimation_BeginTime.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Media_Animation\DoubleAnimation_Opacity_TextBlock.xaml.cs">
+      <DependentUpon>DoubleAnimation_Opacity_TextBlock.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Media_Animation\DoubleAnimation_RenderTransformOrigin.xaml.cs">
+      <DependentUpon>DoubleAnimation_RenderTransformOrigin.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Media_Animation\DoubleAnimation_TranslateX.xaml.cs">
+      <DependentUpon>DoubleAnimation_TranslateX.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Media_Animation\EasingDoubleKeyFrame_CompositeTransform.xaml.cs">
+      <DependentUpon>EasingDoubleKeyFrame_CompositeTransform.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Media_Animation\EasingDoubleKeyFrame_CompositeTransform_Container.xaml.cs">
+      <DependentUpon>EasingDoubleKeyFrame_CompositeTransform_Container.xaml</DependentUpon>
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Shapes\PathTestsControl\AutoSizedPathCentered.xaml.cs">
       <DependentUpon>AutoSizedPathCentered.xaml</DependentUpon>
