@@ -665,38 +665,19 @@ namespace Windows.UI.Xaml.Controls
 			return true;
 		}
 
-		public override bool OnTouchEvent(MotionEvent e)
-		{
-			var pointerRoutedEventArgs = new PointerRoutedEventArgs(new Point(e.GetX(), e.GetY()));
-
-			switch (e.Action)
-			{
-				case MotionEventActions.Down:
-					OnPointerPressed(pointerRoutedEventArgs);
-					break;
-				case MotionEventActions.Up:
-					OnPointerReleased(pointerRoutedEventArgs);
-					break;
-				case MotionEventActions.Cancel:
-					OnPointerCanceled(pointerRoutedEventArgs);
-					break;
-				default:
-					break; // TODO
-			}
-
-			return pointerRoutedEventArgs.Handled;
-		}
-
 		private int GetCharacterIndexAtPoint(Point point)
 		{
-			point.X -= LogicalToPhysicalPixels(Padding.Left);
-			point.Y -= LogicalToPhysicalPixels(Padding.Top);
+			point.X -= Padding.Left;
+			point.Y -= Padding.Top;
+
+			var physicalPoint = point.LogicalToPhysicalPixels();
+
 			var layout = _arrangeLayout.Layout;
 			var rect = new Android.Graphics.Rect(0, 0, layout.Width, layout.Height);
-			if (rect.Contains((int)point.X, (int)point.Y))
+			if (rect.Contains((int)physicalPoint.X, (int)physicalPoint.Y))
 			{
-				int line = layout.GetLineForVertical((int)point.Y);
-				int offset = layout.GetOffsetForHorizontal(line, (int)point.X);
+				int line = layout.GetLineForVertical((int)physicalPoint.Y);
+				int offset = layout.GetOffsetForHorizontal(line, (int)physicalPoint.X);
 
 				return offset;
 			}

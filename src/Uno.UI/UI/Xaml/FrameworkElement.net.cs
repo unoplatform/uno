@@ -27,6 +27,15 @@ namespace Windows.UI.Xaml
 
 			return child;
 		}
+
+		public View RemoveChild(View child)
+		{
+			_children.Remove(child);
+			child.SetParent(null);
+
+			return child;
+		}
+
 		public View FindFirstChild()
 		{
 			return _children.FirstOrDefault();

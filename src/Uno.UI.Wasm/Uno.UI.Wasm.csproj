@@ -1,5 +1,5 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="15.0">
-  <PropertyGroup>
+	<PropertyGroup>
 		<TargetFrameworks>netstandard2.0</TargetFrameworks>
 	</PropertyGroup>
 
@@ -27,20 +27,16 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <None Remove="LinkerDefinition.xml" />
-	</ItemGroup>
-
-	<ItemGroup>
 	  <EmbeddedResource Include="LinkerDefinition.xml">
-	    <LogicalName>$(AssemblyName).xml</LogicalName>
+		<LogicalName>$(AssemblyName).xml</LogicalName>
 	  </EmbeddedResource>
 	</ItemGroup>
 
 	<ItemGroup>
-    <PackageReference Include="Uno.Core">
-      <Version>1.26.0-dev.58</Version>
-      <ExcludeAssets>Runtime</ExcludeAssets>
-    </PackageReference>
+		<PackageReference Include="Uno.Core">
+		  <Version>1.26.0-dev.58</Version>
+		  <ExcludeAssets>Runtime</ExcludeAssets>
+		</PackageReference>
 		<PackageReference Include="Microsoft.TypeScript.Compiler" Version="2.8.3" />
 		<PackageReference Include="Microsoft.TypeScript.MSBuild" Version="2.8.3" />
 		<PackageReference Include="Uno.SourceGenerationTasks">
@@ -60,7 +56,7 @@
 	<ItemGroup>
 	  <Folder Include="tsBindings\" />
 	</ItemGroup>
-	
+
 	<Import Project="..\Uno.CrossTargetting.props" />
 
 	<PropertyGroup>

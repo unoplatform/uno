@@ -3,10 +3,11 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using Windows.Devices.Input;
+using Uno.UI.Xaml.Input;
 
 namespace Windows.UI.Xaml.Input
 {
-	public sealed partial class TappedRoutedEventArgs : RoutedEventArgs
+	public sealed partial class TappedRoutedEventArgs : RoutedEventArgs, ICancellableRoutedEventArgs
 	{
 		private readonly Point _position;
 

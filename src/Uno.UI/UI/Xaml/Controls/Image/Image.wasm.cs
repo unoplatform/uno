@@ -212,14 +212,14 @@ namespace Windows.UI.Xaml.Controls
 			}
 			else
 			{
-				ret = AdjustSize(availableSize, _lastMeasuredSize);
-
-				// Clamp the size to the available size (used for Strech.None)
-				ret = new Size(
-					double.IsInfinity(availableSize.Width) ? ret.Width : Math.Min(availableSize.Width, ret.Width),
-					double.IsInfinity(availableSize.Height) ? ret.Height : Math.Min(availableSize.Height, ret.Height)
-				);
+				ret = this.AdjustSize(availableSize, _lastMeasuredSize);
 			}
+
+			// Always making sure the ret size isn't bigger than the available size for an image with a fixed width or height
+			ret = new Size(
+				!Double.IsNaN(Width) && (ret.Width > availableSize.Width) ? availableSize.Width : ret.Width,
+				!Double.IsNaN(Width) &&  (ret.Height > availableSize.Height) ? availableSize.Height : ret.Height
+			);
 
 			this.Log().LogTrace($"Measure {this} availableSize:{availableSize} measuredSize:{_lastMeasuredSize} ret:{ret}");
 
@@ -261,7 +261,7 @@ namespace Windows.UI.Xaml.Controls
 						}
 
 					case Stretch.UniformToFill:
-						var adjustedSize = AdjustSize(finalSize, _lastMeasuredSize);
+						var adjustedSize = this.AdjustSize(finalSize, _lastMeasuredSize);
 
 						if (adjustedSize.Height <= finalSize.Height)
 						{
@@ -277,7 +277,7 @@ namespace Windows.UI.Xaml.Controls
 							// |             |
 							// \-------------/
 							//
-
+							
 							return (sourceRect.X, sourceRect.Y, null, finalSize.Height);
 						}
 						else
@@ -316,45 +316,6 @@ namespace Windows.UI.Xaml.Controls
 		internal override bool IsViewHit()
 		{
 			return Source != null || base.IsViewHit();
-		}
-
-		private (double x, double y) BuildScale(Size destinationSize, Size sourceSize)
-		{
-			if (Stretch != Stretch.None)
-			{
-				var scale = (
-					x: destinationSize.Width / sourceSize.Width,
-					y: destinationSize.Height / sourceSize.Height
-				);
-
-				switch (Stretch)
-				{
-					case Stretch.UniformToFill:
-						var max = Math.Max(scale.x, scale.y);
-						scale = (max, max);
-						break;
-
-					case Stretch.Uniform:
-						var min = Math.Min(scale.x, scale.y);
-						scale = (min, min);
-						break;
-				}
-
-				return (
-					double.IsNaN(scale.x) || double.IsInfinity(scale.x) ? 1 : scale.x
-					, double.IsNaN(scale.y) || double.IsInfinity(scale.y) ? 1 : scale.y
-				);
-			}
-			else
-			{
-				return (1, 1);
-			}
-		}
-
-		private Size AdjustSize(Size availableSize, Size measuredSize)
-		{
-			var scale = BuildScale(availableSize, measuredSize);
-			return new Size(measuredSize.Width * scale.x, measuredSize.Height * scale.y);
 		}
 	}
 }

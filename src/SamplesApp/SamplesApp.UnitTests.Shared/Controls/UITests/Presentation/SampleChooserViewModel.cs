@@ -589,7 +589,7 @@ namespace SampleControl.Presentation
 		{
 			try
 			{
-				return type.GetCustomAttributes().FirstOrDefault(a => a.GetType() == typeof(SampleControlInfoAttribute));
+				return type?.GetCustomAttributes().FirstOrDefault(a => a?.GetType() == typeof(SampleControlInfoAttribute));
 			}
 			catch (Exception)
 			{

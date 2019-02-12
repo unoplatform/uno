@@ -46,6 +46,8 @@ phases:
       testAssemblyVer2: |
         **\*test*.dll
         !**\obj\**
+        !**\*Wasm.Test*.dll
+        !**\*.RuntimeTests.dll
       vstestLocationMethod: version
       vsTestVersion: latest
       testSelector: testAssemblies

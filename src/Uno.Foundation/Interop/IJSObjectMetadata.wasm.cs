@@ -9,17 +9,17 @@ namespace Uno.Foundation.Interop
 	public interface IJSObjectMetadata
 	{
 		/// <summary>
-		/// Ceates a new JSObject instance
+		/// Creates a new JSObject instance
 		/// </summary>
 		long CreateNativeInstance(IntPtr managedHandle);
 
 		/// <summary>
-		/// Get the replacement javascript code needed to retreive an instance of a JSObject
+		/// Get the replacement javascript code needed to retrieve an instance of a JSObject
 		/// </summary>
 		string GetNativeInstance(IntPtr managedHandle, long jsHandle);
 
 		/// <summary>
-		/// Delete an insatnce of the JS Object
+		/// Delete an instance of the JS Object
 		/// </summary>
 		void DestroyNativeInstance(IntPtr managedHandle, long jsHandle);
 

@@ -1,23 +1,20 @@
-﻿using Windows.Foundation;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
-using System.Diagnostics.Contracts;
+using System.Globalization;
 using System.Linq;
 using System.Runtime.InteropServices;
-using System.Text;
 using System.Threading;
-using Windows.UI.Xaml.Controls;
+using Microsoft.Extensions.Logging;
+using Uno;
 using Uno.Extensions;
 using Uno.Foundation;
 using Uno.Logging;
-using Uno;
-using System.Globalization;
-using Microsoft.Extensions.Logging;
-using Uno.Core.Comparison;
+using Uno.UI.Xaml.Input;
 using Windows.Devices.Input;
+using Windows.Foundation;
+using Windows.UI.Xaml.Input;
+using Windows.UI.Xaml.Media;
 using Windows.System;
 using Uno.UI;
 
@@ -32,11 +29,6 @@ namespace Windows.UI.Xaml
 		private readonly GCHandle _gcHandle;
 		private readonly bool _isFrameworkElement;
 
-
-		internal interface IHandlableEventArgs
-		{
-			bool Handled { get; set; }
-		}
 
 		private static class ClassNames
 		{
@@ -257,12 +249,14 @@ namespace Windows.UI.Xaml
 
 		internal enum HtmlEventFilter
 		{
+			Default,
 			LeftPointerEventFilter,
 		}
 
 		internal enum HtmlEventExtractor
 		{
 			PointerEventExtractor, // See PayloadToPointerArgs
+			TappedEventExtractor,
 			KeyboardEventExtractor,
 		}
 
@@ -273,6 +267,7 @@ namespace Windows.UI.Xaml
 
 			private readonly UIElement _owner;
 			private readonly string _eventName;
+			private readonly bool _canBubbleNatively;
 			private readonly Func<string, EventArgs> _payloadConverter;
 			private readonly Func<EventArgs, bool> _eventFilterManaged;
 			private readonly Action _subscribeCommand;
@@ -286,6 +281,7 @@ namespace Windows.UI.Xaml
 				UIElement owner,
 				string eventName,
 				bool onCapturePhase = false,
+				bool canBubbleNatively = false,
 				HtmlEventFilter? eventFilter = null,
 				HtmlEventExtractor? eventExtractor = null,
 				Func<string, EventArgs> payloadConverter = null,
@@ -293,6 +289,7 @@ namespace Windows.UI.Xaml
 			{
 				_owner = owner;
 				_eventName = eventName;
+				_canBubbleNatively = canBubbleNatively;
 				_payloadConverter = payloadConverter;
 				_eventFilterManaged = eventFilterManaged ?? _emptyFilter;
 				if (noRegistrationEventNames.Contains(eventName))
@@ -345,7 +342,7 @@ namespace Windows.UI.Xaml
 			{
 				if (_invocationList.Count == 0)
 				{
-					// Nothing to do (should not occures once we can remove handler in HTML)
+					// Nothing to do (should not occur once we can remove handler in HTML)
 					return false;
 				}
 
@@ -364,44 +361,25 @@ namespace Windows.UI.Xaml
 						args = _payloadConverter(nativeEventPayload);
 					}
 
-					// We assume that all handlers are of the same type. So we peak the invocation list to check the type.
-					switch (_invocationList[0])
+					if (args is RoutedEventArgs routedArgs)
 					{
-						case EventHandler eh:
-							eventArgs = args ?? EventArgs.Empty;
-							if (_eventFilterManaged(eventArgs))
-							{
-								foreach (var handler in _invocationList)
-								{
-									((EventHandler) handler).Invoke(_owner, eventArgs);
-								}
-							}
-
-							return false;
-
-						case RoutedEventHandler reh:
-							var routedEventArgs = args as RoutedEventArgs ?? RoutedEventArgs.Empty;
-							if (_eventFilterManaged(routedEventArgs))
-							{
-								foreach (var handler in _invocationList)
-								{
-									((RoutedEventHandler) handler).Invoke(_owner, routedEventArgs);
-								}
-							}
-
-							return false;
-
-						default:
-							if (_eventFilterManaged(args))
-							{
-								foreach (var handler in _invocationList)
-								{
-									handler.DynamicInvoke(_owner, args);
-								}
-							}
-
-							return args is IHandlableEventArgs handelable && handelable.Handled;
+						routedArgs.CanBubbleNatively = _canBubbleNatively;
 					}
+
+					if (_eventFilterManaged(args))
+					{
+						foreach (var handler in _invocationList)
+						{
+							var result = handler.DynamicInvoke(_owner, args);
+
+							if (result is bool isHandedInManaged && isHandedInManaged)
+							{
+								return true; // will call ".preventDefault()" in JS to prevent native bubbling
+							}
+						}
+					}
+
+					return false; // let native bubbling in HTML
 				}
 				catch (Exception e)
 				{
@@ -426,30 +404,13 @@ namespace Windows.UI.Xaml
 			}
 		}
 
-		private readonly Dictionary<string, EventRegistration> _eventHandlers = new Dictionary<string, EventRegistration>();
+		private readonly Dictionary<string, EventRegistration> _eventHandlers = new Dictionary<string, EventRegistration>(StringComparer.InvariantCultureIgnoreCase);
 
 		internal void RegisterEventHandler(
 			string eventName,
 			Delegate handler,
 			bool onCapturePhase = false,
-			HtmlEventFilter? eventFilter = null,
-			HtmlEventExtractor? eventExtractor = null,
-			Func<string, EventArgs> payloadConverter = null,
-			Func<EventArgs, bool> eventFilterManaged = null)
-		{
-			if(!_eventHandlers.TryGetValue(eventName, out var registration))
-			{
-				_eventHandlers[eventName] = registration = new EventRegistration(this, eventName, onCapturePhase, eventFilter, eventExtractor, payloadConverter);
-			}
-
-			registration.Add(handler);
-		}
-
-		internal void RegisterEventHandlerEx(
-			string managedEventIdentifier,
-			string eventName,
-			Delegate handler,
-			bool onCapturePhase = false,
+			bool canBubbleNatively = false,
 			HtmlEventFilter? eventFilter = null,
 			HtmlEventExtractor? eventExtractor = null,
 			Func<string, EventArgs> payloadConverter = null,
@@ -457,7 +418,14 @@ namespace Windows.UI.Xaml
 		{
 			if (!_eventHandlers.TryGetValue(eventName, out var registration))
 			{
-				_eventHandlers[managedEventIdentifier] = registration = new EventRegistration(this, eventName, onCapturePhase, eventFilter, eventExtractor, payloadConverter);
+				_eventHandlers[eventName] = registration = new EventRegistration(
+					this,
+					eventName,
+					onCapturePhase,
+					canBubbleNatively,
+					eventFilter,
+					eventExtractor,
+					payloadConverter);
 			}
 
 			registration.Add(handler);
@@ -477,15 +445,21 @@ namespace Windows.UI.Xaml
 
 		internal bool InternalDispatchEvent(string eventName, EventArgs eventArgs = null, string nativeEventPayload = null)
 		{
+			var n = eventName;
 			try
 			{
-				if (_eventHandlers.TryGetValue(eventName, out var registration))
+				if (_eventHandlers.TryGetValue(n, out var registration))
 				{
 					return registration.Dispatch(eventArgs, nativeEventPayload);
 				}
+
+				var registered = string.Join(", ", _eventHandlers.Keys);
+
+				this.Log().Warn(message: $"{this}: No Handler for {n}. Registered: {registered}");
 			}
-			catch(Exception e)
+			catch (Exception e)
 			{
+				this.Log().Error(message: $"{this}/{eventName}/\"{nativeEventPayload}\": Error: {e}");
 				Application.Current.RaiseRecoverableUnhandledExceptionOrLog(e, this);
 			}
 
@@ -526,7 +500,7 @@ namespace Windows.UI.Xaml
 
 		partial void InitializeCapture();
 
-		internal bool IsPointerCaptured { get; set; }
+		internal bool IsPointerCaptured => _pointCaptures.Any();
 
 		public int MeasureCallCount { get; protected set; }
 		public int ArrangeCallCount { get; protected set; }
@@ -811,46 +785,89 @@ namespace Windows.UI.Xaml
 			}
 		}
 
-		[global::Uno.NotImplemented]
-		public static global::Windows.UI.Xaml.RoutedEvent DoubleTappedEvent { get; } = new RoutedEvent();
-
-		[global::Uno.NotImplemented]
-		public static global::Windows.UI.Xaml.RoutedEvent TappedEvent { get; } = new RoutedEvent();
-
-		[global::Uno.NotImplemented]
-		public void AddHandler(global::Windows.UI.Xaml.RoutedEvent routedEvent, object handler, bool handledEventsToo)
+		private static Dictionary<RoutedEvent, string> RoutedEventNames = new Dictionary<RoutedEvent, string>
 		{
-			if (routedEvent == UIElement.TappedEvent)
-			{
-				var h = (TappedEventHandler)handler;
-				var pointerHandler = new PointerEventHandler((snd, e) => h(snd, new TappedRoutedEventArgs(e.GetCurrentPoint())));
+			// Add more events
+			{ PointerPressedEvent, "pointerdown" },
+			{ PointerReleasedEvent, "pointerup" },
+			{ PointerMovedEvent, "pointermove" },
+			{ PointerEnteredEvent, "pointerenter" },
+			{ PointerExitedEvent, "pointerleave" },
+			{ KeyDownEvent, "keydown" },
+			{ KeyUpEvent, "keyup" },
+			{ GotFocusEvent, "focus" },
+			{ LostFocusEvent, "focusout" },
+			{ TappedEvent, "click" },
+			{ DoubleTappedEvent, "dblclick" }
+		};
 
-				this.PointerPressed += pointerHandler;
-			}
-			else if (routedEvent == UIElement.DoubleTappedEvent)
+		// We keep track of registered routed events to avoid registering the same one twice (mainly because RemoveHandler is not implemented)
+		private HashSet<RoutedEvent> _registeredRoutedEvents = new HashSet<RoutedEvent>();
+
+		partial void AddHandlerPartial(RoutedEvent routedEvent, object handler, bool handledEventsToo)
+		{
+			if (!_registeredRoutedEvents.Contains(routedEvent))
 			{
-				var h = (DoubleTappedEventHandler)handler;
-				var lastTapped = DateTimeOffset.MinValue.AddDays(2);
-				this.PointerPressed += (snd, e) =>
+				this.Log().DebugIfEnabled(() => $"Registering {routedEvent.Name} on {this}.");
+
+				_registeredRoutedEvents.Add(routedEvent);
+				if (RoutedEventNames.TryGetValue(routedEvent, out string eventName))
 				{
-					var now = DateTimeOffset.Now;
-					if (lastTapped.AddMilliseconds(250) < now)
+					HtmlEventFilter? eventFilter;
+					HtmlEventExtractor? eventExtractor;
+					Func<string, EventArgs> payloadConverter;
+
+					// TODO: How expensive is this?
+					switch (handler)
 					{
-						h(this, new DoubleTappedRoutedEventArgs(e.GetCurrentPoint()));
+						case PointerEventHandler pointer:
+							eventFilter = (routedEvent == PointerPressedEvent || routedEvent == PointerReleasedEvent)
+								? HtmlEventFilter.LeftPointerEventFilter
+								: (HtmlEventFilter?) null;
+							eventExtractor = HtmlEventExtractor.PointerEventExtractor;
+							payloadConverter = PayloadToPointerArgs;
+							break;
+						case TappedEventHandler tapped:
+							eventFilter = HtmlEventFilter.LeftPointerEventFilter;
+							eventExtractor = HtmlEventExtractor.TappedEventExtractor;
+							payloadConverter = PayloadToTappedArgs;
+							break;
+						case DoubleTappedEventHandler doubleTapped:
+							eventFilter = HtmlEventFilter.LeftPointerEventFilter;
+							eventExtractor = HtmlEventExtractor.TappedEventExtractor;
+							payloadConverter = PayloadToTappedArgs;
+							break;
+						case KeyEventHandler key:
+							eventFilter = null;
+							eventExtractor = HtmlEventExtractor.KeyboardEventExtractor;
+							payloadConverter = PayloadToKeyArgs;
+							break;
+						default:
+							eventFilter = null;
+							eventExtractor = null;
+							payloadConverter = null;
+							break;
 					}
-					else
+
+					bool RoutedEventHandler(object sender, RoutedEventArgs args)
 					{
-						lastTapped = now;
+						return RaiseEvent(routedEvent, args);
 					}
-				};
-			}
-			else
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.UIElement", "void UIElement.AddHandler(RoutedEvent routedEvent, object handler, bool handledEventsToo)");
+
+					RegisterEventHandler(
+						eventName,
+						handler: new RoutedEventHandlerWithHandled(RoutedEventHandler),
+						onCapturePhase: false,
+						canBubbleNatively: true,
+						eventFilter: eventFilter ?? HtmlEventFilter.Default,
+						eventExtractor: eventExtractor,
+						payloadConverter: payloadConverter
+					);
+				}
 			}
 		}
 
-		private EventArgs PayloadToPointerArgs(string payload)
+		private PointerRoutedEventArgs PayloadToPointerArgs(string payload)
 		{
 			var parts = payload?.Split(';');
 			if (parts?.Length != 7)
@@ -871,6 +888,7 @@ namespace Windows.UI.Xaml
 
 			var args = new PointerRoutedEventArgs(new Point(x, y))
 			{
+				OriginalSource = this,
 				KeyModifiers = keys,
 				Pointer = new Pointer(pointerId, type)
 			};
@@ -878,8 +896,7 @@ namespace Windows.UI.Xaml
 			return args;
 		}
 
-
-		private EventArgs PayloadToTappedArgs(string payload)
+		private TappedRoutedEventArgs PayloadToTappedArgs(string payload)
 		{
 			var parts = payload?.Split(';');
 			if (parts?.Length != 7)
@@ -896,10 +913,20 @@ namespace Windows.UI.Xaml
 
 			var args = new TappedRoutedEventArgs(new Point(x, y))
 			{
+				OriginalSource = this,
 				PointerDeviceType = type
 			};
 
 			return args;
+		}
+
+		private KeyRoutedEventArgs PayloadToKeyArgs(string payload)
+		{
+			return new KeyRoutedEventArgs
+			{
+				OriginalSource = this,
+				Key = System.VirtualKeyHelper.FromKey(payload),
+			};
 		}
 
 		private static PointerDeviceType ConvertPointerTypeString(string typeStr)

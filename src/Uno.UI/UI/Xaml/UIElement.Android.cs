@@ -1,14 +1,13 @@
 ﻿using Uno.UI;
 using Uno.UI.Controls;
+using Uno.UI.Xaml.Input;
 using System;
 using System.Collections.Generic;
-using System.Text;
+using System.Linq;
 using Windows.Foundation;
-using Windows.UI.Xaml.Input;
 using Android.Support.V4.View;
 using Windows.UI.Xaml.Media;
 using Android.Views;
-using Uno.UI.Media;
 
 namespace Windows.UI.Xaml
 {
@@ -76,116 +75,33 @@ namespace Windows.UI.Xaml
 			var x = thisRect[0] - otherRect[0];
 			var y = thisRect[1] - otherRect[1];
 
-            return new MatrixTransform
-            {
-                Matrix = new Matrix(
-                    m11: 1,
-                    m12: 0,
-                    m21: 0,
-                    m22: 1,
-                    offsetX: ViewHelper.PhysicalToLogicalPixels(x),
-                    offsetY: ViewHelper.PhysicalToLogicalPixels(y)
-                )
-            };
-        }
-
-		#region DoubleTapped event
-		private void RegisterDoubleTapped(DoubleTappedEventHandler handler)
-		{
-			_gestures.Value.RegisterDoubleTapped(handler);
+			return new MatrixTransform
+			{
+				Matrix = new Matrix(
+					m11: 1,
+					m12: 0,
+					m21: 0,
+					m22: 1,
+					offsetX: ViewHelper.PhysicalToLogicalPixels(x),
+					offsetY: ViewHelper.PhysicalToLogicalPixels(y)
+				)
+			};
 		}
 
-		private void UnregisterDoubleTapped(DoubleTappedEventHandler handler)
+		private bool HasHandler(RoutedEvent routedEvent)
 		{
-			_gestures.Value.UnregisterDoubleTapped(handler);
-		}
-		#endregion
-
-		#region PointerCanceled event
-		private void RegisterPointerCanceled(PointerEventHandler handler)
-		{
-			_gestures.Value.RegisterPointerCanceled(handler);
+			return _eventHandlerStore.TryGetValue(routedEvent, out var handlers) && handlers.Any();
 		}
 
-		private void UnregisterPointerCanceled(PointerEventHandler handler)
+		partial void AddHandlerPartial(RoutedEvent routedEvent, object handler, bool handledEventsToo)
 		{
-			_gestures.Value.UnregisterPointerCanceled(handler);
-		}
-		#endregion
-
-		#region PointerExited event
-		private void RegisterPointerExited(PointerEventHandler handler)
-		{
-			_gestures.Value.RegisterPointerExited(handler);
+			_gestures.Value.UpdateShouldHandle(routedEvent, HasHandler(routedEvent));
 		}
 
-		private void UnregisterPointerExited(PointerEventHandler handler)
+		partial void RemoveHandlerPartial(RoutedEvent routedEvent, object handler)
 		{
-			_gestures.Value.UnregisterPointerExited(handler);
+			_gestures.Value.UpdateShouldHandle(routedEvent, HasHandler(routedEvent));
 		}
-		#endregion
-
-		#region PointerEntered event
-		private void RegisterPointerEntered(PointerEventHandler handler)
-		{
-			_gestures.Value.RegisterPointerEntered(handler);
-		}
-
-		private void UnregisterPointerEntered(PointerEventHandler handler)
-		{
-			_gestures.Value.UnregisterPointerEntered(handler);
-		}
-		#endregion
-
-		#region PointerPressed event
-		private void RegisterPointerPressed(PointerEventHandler handler)
-		{
-			_gestures.Value.RegisterPointerPressed(handler);
-		}
-
-		private void UnregisterPointerPressed(PointerEventHandler handler)
-		{
-			_gestures.Value.UnregisterPointerPressed(handler);
-		}
-		#endregion
-
-		#region PointerReleased event
-		private void RegisterPointerReleased(PointerEventHandler handler)
-		{
-			_gestures.Value.RegisterPointerReleased(handler);
-		}
-
-		private void UnregisterPointerReleased(PointerEventHandler handler)
-		{
-			_gestures.Value.UnregisterPointerReleased(handler);
-		}
-		#endregion
-
-		#region PointerMoved event
-		private void RegisterPointerMoved(PointerEventHandler handler)
-		{
-			_gestures.Value.RegisterPointerMoved(handler);
-		}
-
-		private void UnregisterPointerMoved(PointerEventHandler handler)
-		{
-			_gestures.Value.UnregisterPointerMoved(handler);
-		}
-		#endregion
-
-		internal void RaiseTapped(TappedRoutedEventArgs args) => _gestures.Value.RaiseTapped(this, args);
-
-		#region Tapped event
-		private void RegisterTapped(TappedEventHandler handler)
-		{
-			_gestures.Value.RegisterTapped(handler);
-		}
-
-		private void UnregisterTapped(TappedEventHandler handler)
-		{
-			_gestures.Value.UnregisterTapped(handler);
-		}
-		#endregion
 
 		protected virtual void OnVisibilityChanged(Visibility oldValue, Visibility newValue)
 		{

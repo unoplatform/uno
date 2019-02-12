@@ -99,6 +99,14 @@ namespace Windows.UI.Xaml.Controls
 
 			var measuredSize = _layouter.Measure(availableSize);
 
+			if (
+				!double.IsInfinity(availableSize.Width)
+				&& !double.IsInfinity(availableSize.Height)
+				)
+			{
+				measuredSize = this.AdjustSize(availableSize, measuredSize);
+			}
+
 			measuredSize = measuredSize.LogicalToPhysicalPixels();
 
 			// Report our final dimensions.

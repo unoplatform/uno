@@ -5,11 +5,7 @@
 using Windows.Foundation;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
-using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Globalization;
-using System.Text;
 using Uno.Extensions;
 using Uno.Logging;
 using Uno.Disposables;
@@ -30,7 +26,7 @@ namespace Windows.UI.Xaml
 {
 	public partial class UIElement : DependencyObject
 	{
-		private SerialDisposable _clipSubscription = new SerialDisposable();
+		private readonly SerialDisposable _clipSubscription = new SerialDisposable();
 		private readonly List<Pointer> _pointCaptures = new List<Pointer>();
 		private readonly List<KeyboardAccelerator> _keyboardAccelerators = new List<KeyboardAccelerator>();
 
@@ -41,194 +37,9 @@ namespace Windows.UI.Xaml
 
 
 		/// <summary>
-		/// Deteremines if an <see cref="UIElement"/> clips its children to its bounds.
+		/// Determines if an <see cref="UIElement"/> clips its children to its bounds.
 		/// </summary>
 		internal bool ClipChildrenToBounds { get; set; } = true;
-
-		public event RoutedEventHandler LostFocus;
-		internal void RaiseLostFocus(RoutedEventArgs args) => LostFocus?.Invoke(this, args);
-
-		public event RoutedEventHandler GotFocus;
-		internal void RaiseGotFocus(RoutedEventArgs args) => GotFocus?.Invoke(this, args);
-
-		public event DoubleTappedEventHandler DoubleTapped
-#if XAMARIN
-		{
-			add { RegisterDoubleTapped(value); }
-			remove { UnregisterDoubleTapped(value); }
-		}
-#else
-		;
-#endif
-
-#pragma warning disable 67 // Unused member
-		public event PointerEventHandler PointerCanceled
-#if XAMARIN_ANDROID
-		{
-			add { RegisterPointerCanceled(value); }
-			remove { UnregisterPointerCanceled(value); }
-		}
-#else
-		;
-#endif
-#pragma warning restore 67 // Unused member
-
-#pragma warning disable 67 // Unused member
-		[NotImplemented]
-		public event global::Windows.UI.Xaml.Input.PointerEventHandler PointerCaptureLost;
-#pragma warning restore 67 // Unused member
-
-#pragma warning disable CS0067 // The event is never used
-		public event PointerEventHandler PointerEntered
-#pragma warning restore CS0067 // The event is never used
-
-#if XAMARIN_ANDROID
-		{
-			add { RegisterPointerEntered(value); }
-			remove { UnregisterPointerEntered(value); }
-		}
-#elif __WASM__
-		{
-			add => RegisterEventHandler(
-				"pointerenter", 
-				value, 
-				eventExtractor: HtmlEventExtractor.PointerEventExtractor, 
-				payloadConverter: PayloadToPointerArgs);
-			remove => UnregisterEventHandler("pointerenter", value);
-		}
-#else
-		;
-#endif
-
-#pragma warning disable CS0067 // The event is never used
-		public event PointerEventHandler PointerExited
-#pragma warning restore CS0067 // The event is never used
-#if XAMARIN_ANDROID
-		{
-			add { RegisterPointerExited(value); }
-			remove { UnregisterPointerExited(value); }
-		}
-#elif __WASM__
-		{
-			add => RegisterEventHandler(
-				"pointerleave", 
-				value, 
-				eventExtractor: HtmlEventExtractor.PointerEventExtractor, 
-				payloadConverter: PayloadToPointerArgs);
-			remove => UnregisterEventHandler("pointerleave", value);
-		}
-#else
-		;
-#endif
-
-#pragma warning disable CS0067 // The event is never used
-		public event PointerEventHandler PointerMoved
-#pragma warning restore CS0067 // The event is never used
-#if XAMARIN_ANDROID
-		{
-			add { RegisterPointerMoved(value); }
-			remove { UnregisterPointerMoved(value); }
-		}
-#elif __WASM__
-		{
-			add => RegisterEventHandler(
-				"pointermove", 
-				value, 
-				eventExtractor: HtmlEventExtractor.PointerEventExtractor, 
-				payloadConverter: PayloadToPointerArgs);
-			remove => UnregisterEventHandler("pointermove", value);
-		}
-#else
-		;
-#endif
-
-#pragma warning disable CS0067 // The event is never used
-		public event PointerEventHandler PointerPressed
-#pragma warning restore CS0067 // The event is never used
-#if XAMARIN_ANDROID
-		{
-			add { RegisterPointerPressed(value); }
-			remove { UnregisterPointerPressed(value); }
-		}
-#elif __WASM__
-		{
-			add => RegisterEventHandler(
-				"pointerdown", 
-				value, 
-				eventFilter:  HtmlEventFilter.LeftPointerEventFilter, 
-				eventExtractor: HtmlEventExtractor.PointerEventExtractor, 
-				payloadConverter: PayloadToPointerArgs);
-			remove => UnregisterEventHandler("pointerdown", value);
-		}
-#else
-		;
-#endif
-
-#pragma warning disable CS0067 // The event is never used
-		public event PointerEventHandler PointerReleased
-#pragma warning restore CS0067 // The event is never used
-#if XAMARIN_ANDROID
-		{
-			add { RegisterPointerReleased(value); }
-			remove { UnregisterPointerReleased(value); }
-		}
-#elif __WASM__
-		{
-			add => RegisterEventHandler(
-				"pointerup", 
-				value,
-				eventFilter: HtmlEventFilter.LeftPointerEventFilter,
-				eventExtractor: HtmlEventExtractor.PointerEventExtractor,
-				payloadConverter: PayloadToPointerArgs);
-			remove => UnregisterEventHandler("pointerup", value);
-		}
-#else
-		;
-#endif
-
-		//public event PointerEventHandler PointerWheelChanged;
-
-		public event TappedEventHandler Tapped
-#if XAMARIN
-		{
-			add { RegisterTapped(value); }
-			remove { UnregisterTapped(value); }
-		}
-#elif __WASM__
-		{
-			add => RegisterEventHandler(
-				"pointerup",
-				value,
-				eventFilter: HtmlEventFilter.LeftPointerEventFilter,
-				eventExtractor: HtmlEventExtractor.PointerEventExtractor,
-				payloadConverter: PayloadToTappedArgs);
-			remove => UnregisterEventHandler("pointerup", value);
-		}
-#else
-		;
-#endif
-
-#if __WASM__
-		public event KeyEventHandler KeyDown
-		{
-			add => RegisterEventHandler(
-				"keydown",
-				value,
-				eventExtractor: HtmlEventExtractor.KeyboardEventExtractor,
-				payloadConverter: keyStr => new KeyRoutedEventArgs { Key = VirtualKeyHelper.FromKey(keyStr), OriginalSource = this});
-			remove => UnregisterEventHandler("keydown", value);
-		}
-		
-		public event KeyEventHandler KeyUp
-		{
-			add => RegisterEventHandler(
-				"keyup",
-				value,
-				eventExtractor: HtmlEventExtractor.KeyboardEventExtractor,
-				payloadConverter: keyStr => new KeyRoutedEventArgs {Key = VirtualKeyHelper.FromKey(keyStr), OriginalSource = this});
-			remove => UnregisterEventHandler("keyup", value);
-		}
-#endif
 
 		protected internal bool IsPointerPressed { get; set; }
 
@@ -474,27 +285,43 @@ namespace Windows.UI.Xaml
 
 		public bool CapturePointer(Pointer value)
 		{
-			IsPointerCaptured = true;
-			_pointCaptures.Add(value);
+			if (_pointCaptures.Contains(value))
+			{
+				this.Log().Error($"{this}: Pointer {value} already captured.");
+			}
+			else
+			{
+				_pointCaptures.Add(value);
 #if __WASM__
-			CapturePointerNative(value);
+				CapturePointerNative(value);
 #endif
+			}
 			return true;
 		}
 
 		public void ReleasePointerCapture(Pointer value)
 		{
-			IsPointerCaptured = false;
-			_pointCaptures.Remove(value);
+			if(_pointCaptures.Contains(value))
+			{
+				_pointCaptures.Remove(value);
 
 #if __WASM__
-			ReleasePointerCaptureNative(value);
+				ReleasePointerCaptureNative(value);
 #endif
+			}
+			else
+			{
+				this.Log().Error($"{this}: Cannot release pointer {value}: not captured by this control.");
+			}
 		}
 
 		public void ReleasePointerCaptures()
 		{
-			IsPointerCaptured = false;
+			if (_pointCaptures.Count == 0)
+			{
+				this.Log().Warn($"{this}: no pointers to release.");
+				return;
+			}
 #if __WASM__
 			foreach (var pointer in _pointCaptures)
 			{
@@ -524,9 +351,9 @@ namespace Windows.UI.Xaml
 #if __IOS__ || __ANDROID__
 			Dispatcher.RunAsync(Core.CoreDispatcherPriority.Normal, () =>
 			{
-		// This currently doesn't support nested scrolling.
-		// This currently doesn't support BringIntoViewOptions.AnimationDesired.
-		var scrollContentPresenter = this.FindFirstParent<IScrollContentPresenter>();
+				// This currently doesn't support nested scrolling.
+				// This currently doesn't support BringIntoViewOptions.AnimationDesired.
+				var scrollContentPresenter = this.FindFirstParent<IScrollContentPresenter>();
 				scrollContentPresenter?.MakeVisible(this, options.TargetRect ?? Rect.Empty);
 			});
 #endif

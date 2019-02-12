@@ -10,7 +10,7 @@ namespace Windows.UI.Xaml.Input
 {
 	public partial class FocusManager
 	{
-		private static readonly EventHandler OnControlFocused = (control, args) =>
+		private static readonly RoutedEventHandler OnControlFocused = (control, args) =>
 		{
 			// Make sure that the managed UI knowns that the element was unfocused, no matter if the new focused element can be focused or not
 			(_focusedElement as Control)?.SetFocused(false);
@@ -18,7 +18,7 @@ namespace Windows.UI.Xaml.Input
 			// Then set the new control as focused
 			((Control) control).SetFocused(true);
 		};
-		private static readonly EventHandler OnElementFocused = (element, args) =>
+		private static readonly RoutedEventHandler OnElementFocused = (element, args) =>
 		{
 			// Make sure that the managed UI knowns that the element was unfocused, no matter if the new focused element can be focused or not
 			(_focusedElement as Control)?.SetFocused(false);
@@ -42,7 +42,7 @@ namespace Windows.UI.Xaml.Input
 				? OnControlFocused
 				: OnElementFocused;
 
-			element.RegisterEventHandler("focus", handler);
+			element.GotFocus += handler;
 		}
 
 		internal static bool Focus(UIElement element)

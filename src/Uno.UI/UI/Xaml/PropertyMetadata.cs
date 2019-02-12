@@ -77,10 +77,7 @@ namespace Windows.UI.Xaml
 
 		public object DefaultValue
 		{
-			get
-			{
-				return _defaultValue;
-			}
+			get => _defaultValue;
 			internal set
 			{
 				_defaultValue = value;
@@ -92,10 +89,7 @@ namespace Windows.UI.Xaml
 
 		internal CoerceValueCallback CoerceValueCallback
 		{
-			get
-			{
-				return _coerceValueCallback;
-			}
+			get => _coerceValueCallback;
 			set
 			{
 				_coerceValueCallback = value;

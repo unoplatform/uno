@@ -22,5 +22,6 @@
 
   <assembly fullname="System">
     <type fullname="System.ComponentModel.*Converter" />
+    <type fullname="System.*Converter" />
   </assembly>
 </linker>
