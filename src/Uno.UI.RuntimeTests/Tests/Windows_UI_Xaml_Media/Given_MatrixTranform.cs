@@ -134,13 +134,13 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media
 					Matrix = MatrixHelper.FromMatrix3x2(Matrix3x2.CreateRotation((float)Math.PI / 4))
 				};
 
-				var expected = new Rect(-4.24264097213745, 1.41421353816986, 7.77817463874817, 7.77817499637604);
+				var expected = new Rect(-4.242640495300293, 1.4142135381698608, 7.77817440032959, 7.7781739234924316);
 				var actual = SUT.TransformBounds(new Rect(1, 1, 5, 6));
 
-				Assert.AreEqual(expected.Y, actual.Y, 1e-10, $"{expected} != {actual}");
-				Assert.AreEqual(expected.X, actual.X, 1e-10, $"{expected} != {actual}");
-				Assert.AreEqual(expected.Width, actual.Width, 1e-10, $"{expected} != {actual}");
-				Assert.AreEqual(expected.Height, actual.Height, 1e-10, $"{expected} != {actual}");
+				Assert.AreEqual(expected.X, actual.X, 1e-5, $"X: {expected} != {actual}");
+				Assert.AreEqual(expected.Y, actual.Y, 1e-5, $"Y: {expected} != {actual}");
+				Assert.AreEqual(expected.Width, actual.Width, 1e-5, $"W: {expected} != {actual}");
+				Assert.AreEqual(expected.Height, actual.Height, 1e-5, $"H: {expected} != {actual}");
 			});
 		}
 	}

@@ -10,16 +10,68 @@ namespace Windows.Foundation
 	[DebuggerDisplay("[Rect {rect.X}-{rect.Y}-{rect.Width}-{rect.Height}]")]
 	public partial struct Rect
 	{
-		public Rect(Point point, Size size) : this(point.X, point.Y, size.Width, size.Height) { }
+		private const string _negativeErrorMessage = "Non-negative number required.";
 
-		public Rect(Point point1, Point point2) : this(point1.X, point1.Y, point2.X - point1.X, point2.Y - point1.Y) { }
+		public static Rect Empty { get; } = new Rect
+		{
+			X = double.PositiveInfinity,
+			Y = double.PositiveInfinity,
+			Width = double.NegativeInfinity,
+			Height = double.NegativeInfinity
+		};
+
+		public Rect(Point point, Size size) : this(point.X, point.Y, size.Width, size.Height) { }
 
 		public Rect(double x, double y, double width, double height)
 		{
+			if (width < 0)
+			{
+				throw new ArgumentOutOfRangeException(nameof(width), _negativeErrorMessage);
+			}
+			if (height < 0)
+			{
+				throw new ArgumentOutOfRangeException(nameof(width), _negativeErrorMessage);
+			}
+
 			X = x;
 			Y = y;
 			Width = width;
 			Height = height;
+		}
+
+		public Rect(Point point1, Point point2)
+		{
+			if (point1.X < point2.X) // This will return false is any is NaN, and as it's the common case, we keep it first
+			{
+				X = point1.X;
+				Width = point2.X - point1.X;
+			}
+			else if (double.IsNaN(point1.X) || double.IsNaN(point2.X))
+			{
+				X = double.NaN;
+				Width = double.NaN;
+			}
+			else
+			{
+				X = point2.X;
+				Width = point1.X - point2.X;
+			}
+
+			if (point1.Y < point2.Y) // This will return false is any is NaN, and as it's the common case, we keep it first
+			{
+				Y = point1.Y;
+				Height = point2.Y - point1.Y;
+			}
+			else if (double.IsNaN(point1.Y) || double.IsNaN(point2.Y))
+			{
+				Y = double.NaN;
+				Height = double.NaN;
+			}
+			else
+			{
+				Y = point2.Y;
+				Height = point1.Y - point2.Y;
+			}
 		}
 
 		public double X { get; set; }
@@ -32,15 +84,7 @@ namespace Windows.Foundation
 		public double Right => X + Width;
 		public double Bottom => Y + Height;
 
-		public bool IsEmpty => Empty.Equals(this);
-
-		public static Rect Empty => new Rect
-		(
-			Double.PositiveInfinity,
-			Double.PositiveInfinity,
-			Double.NegativeInfinity,
-			Double.NegativeInfinity
-		);
+		public bool IsEmpty => Empty.Equals(this);	
 
 		public static implicit operator Rect(string text)
 		{
@@ -69,10 +113,7 @@ namespace Windows.Foundation
 		/// <remarks>This property is not provided by UWP, hence it is marked internal.</remarks>
 		internal Size Size
 		{
-			get
-			{
-				return new Size(Width, Height);
-			}
+			get => new Size(Width, Height);
 			set
 			{
 				Width = value.Width;
@@ -86,10 +127,7 @@ namespace Windows.Foundation
 		/// <remarks>This property is not provided by UWP, hence it is marked internal.</remarks>
 		internal Point Location
 		{
-			get
-			{
-				return new Point(X, Y);
-			}
+			get => new Point(X, Y);
 			set
 			{
 				X = value.X;

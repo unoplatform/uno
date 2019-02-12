@@ -113,11 +113,7 @@ namespace Windows.UI.Xaml.Media
 			}
 			else
 			{
-				outPoint = new Point
-				(
-					(inPoint.X * matrix.M11) + (inPoint.Y * matrix.M21) + matrix.M31,
-					(inPoint.X * matrix.M12) + (inPoint.Y * matrix.M22) + matrix.M32
-				);
+				outPoint = matrix.Transform(inPoint);
 				return true;
 			}
 		}
@@ -125,7 +121,7 @@ namespace Windows.UI.Xaml.Media
 		/// <inheritdoc />
 		protected override Rect TransformBoundsCore(Rect rect)
 		{
-			return rect.Transform(MatrixCore);
+			return MatrixCore.Transform(rect);
 		}
 		#endregion
 	}
