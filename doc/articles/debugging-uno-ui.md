@@ -2,10 +2,27 @@
 
 ## Building Uno.UI
 
-Using Visual Studio 2017 (15.5 or later):
+Prerequisites:
+* Install Visual Studio 2017 (15.5 or later):
+  * Workloads 
+    * Universal Windows Platform development
+    * Mobile Development with .NET (Xamarin)
+    * .NET Desktop development
+  * Individual components
+    * .NET Framework 4.7.2 targeting pack
+    * Windows 10 SDK version 10.0.14393.0
+* Install Android Support Repository
+  * Within Visual Studio go to **Tools** -> **Android** -> **Android SDK Manager**
+  * Switch to **Tools** tab
+  * Under **Extras** node check **Android Support Repository**
+
+
+Using Visual Studio:
 * Open the [Uno.UI.sln](/src/Uno.UI.sln)
 * Select the Uno.UI project
 * Build
+
+In case build fails, make sure all NuGet packages have properly restored (right-click the solution in **Solution Explorer** and select **Restore NuGet Packages**. When finished, restart Visual Studio as it sometimes fails to pick up newly installed packages unless the solution is reloaded.
 
 Inside Visual Studio, the number of platforms is restricted to limit the compilation time.
 
