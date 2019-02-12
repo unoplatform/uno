@@ -31,7 +31,33 @@ namespace Windows.UI.Xaml.Controls
 		{
 		}
 
-		protected override void OnPointerPressed(PointerRoutedEventArgs args)
+		protected override void OnLoaded()
+		{
+			base.OnLoaded();
+
+			AddHandler(PointerPressedEvent, (PointerEventHandler) OnPointerPressed, true);
+			AddHandler(PointerExitedEvent, (PointerEventHandler) OnPointerExited, true);
+			AddHandler(PointerReleasedEvent, (PointerEventHandler) OnPointerReleased, true);
+			AddHandler(PointerCanceledEvent, (PointerEventHandler) OnPointerCanceled, true);
+			AddHandler(PointerEnteredEvent, (PointerEventHandler) OnPointerEntered, true);
+
+			OnLoadedPartial();
+		}
+
+		partial void OnLoadedPartial();
+
+		protected override void OnUnloaded()
+		{
+			base.OnUnloaded();
+
+			RemoveHandler(PointerPressedEvent, (PointerEventHandler) OnPointerPressed);
+			RemoveHandler(PointerExitedEvent, (PointerEventHandler) OnPointerExited);
+			RemoveHandler(PointerReleasedEvent, (PointerEventHandler) OnPointerReleased);
+			RemoveHandler(PointerCanceledEvent, (PointerEventHandler) OnPointerCanceled);
+			RemoveHandler(PointerEnteredEvent, (PointerEventHandler) OnPointerEntered);
+		}
+
+		private void OnPointerPressed(object sender, PointerRoutedEventArgs args)
 		{
 			base.OnPointerPressed(args);
 			IsPointerOver = true;
@@ -41,14 +67,14 @@ namespace Windows.UI.Xaml.Controls
 			UpdateCommonState();
 		}
 
-		protected override void OnPointerExited(PointerRoutedEventArgs args)
+		private void OnPointerExited(object sender, PointerRoutedEventArgs args)
 		{
 			base.OnPointerExited(args);
 			IsPointerOver = false;
 			UpdateCommonState();
 		}
 
-		protected override void OnPointerReleased(PointerRoutedEventArgs args)
+		private void OnPointerReleased(object sender, PointerRoutedEventArgs args)
 		{
 			base.OnPointerReleased(args);
 			IsPointerOver = false;
@@ -61,7 +87,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		protected override void OnPointerCanceled(PointerRoutedEventArgs args)
+		private void OnPointerCanceled(object sender, PointerRoutedEventArgs args)
 		{
 			base.OnPointerCanceled(args);
 			IsPointerOver = false;
@@ -69,7 +95,7 @@ namespace Windows.UI.Xaml.Controls
 			UpdateCommonState();
 		}
 
-		protected override void OnPointerEntered(PointerRoutedEventArgs args)
+		private void OnPointerEntered(object sender, PointerRoutedEventArgs args)
 		{
 			base.OnPointerEntered(args);
 			IsPointerOver = true;

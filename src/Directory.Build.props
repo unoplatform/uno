@@ -35,8 +35,8 @@
   </PropertyGroup>
 
   <PropertyGroup>
-	<!-- 
-		This works around the fact that AndroidResgenFile is 
+	<!--
+		This works around the fact that AndroidResgenFile is
 		automatically included as compiled file, even if AndroidUseIntermediateDesignerFile
 		is set to true.
 		-->

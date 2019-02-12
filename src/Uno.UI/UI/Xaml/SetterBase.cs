@@ -1,4 +1,6 @@
 ﻿using System.ComponentModel;
+using Uno.Extensions;
+using Uno.Logging;
 
 namespace Windows.UI.Xaml
 {
@@ -22,7 +24,7 @@ namespace Windows.UI.Xaml
 
 		partial void OnDataContextChangedPartial(DependencyPropertyChangedEventArgs e)
 		{
-			global::System.Console.WriteLine("SetterBase.DataContextChanged");
+			this.Log().Debug("SetterBase.DataContextChanged");
 		}
 	}
 }

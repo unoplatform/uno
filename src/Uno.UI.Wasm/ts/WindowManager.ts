@@ -133,10 +133,10 @@
 			FS.syncfs(
 				err => {
 					if (err) {
-						console.error(`Error synchronizing filsystem from IndexDB: ${err}`)
+						console.error(`Error synchronizing filsystem from IndexDB: ${err}`);
 					}
 				}
-			)
+			);
 		}
 
 		/**
@@ -187,7 +187,7 @@
 			else {
 				const queryIndex = document.location.search.indexOf('?');
 
-				if (queryIndex != -1) {
+				if (queryIndex !== -1) {
 					return document.location.search.substring(queryIndex + 1);
 				}
 
@@ -246,7 +246,7 @@
 			if (element.hasOwnProperty("tabindex")) {
 				(element as any)["tabindex"] = contentDefinition.isFocusable ? 0 : -1;
 			} else {
-				element.setAttribute("tabindex", contentDefinition.isFocusable ? '0' : '-1');
+				element.setAttribute("tabindex", contentDefinition.isFocusable ? "0" : "-1");
 			}
 
 			if (contentDefinition) {
@@ -519,7 +519,7 @@
 			* Add an event handler to a html element.
 			*
 			* @param eventName The name of the event
-			* @param onCapturePhase true means "on trickle down", false means "on bubble up". Default is false.
+			* @param onCapturePhase true means "on trickle down" (going down to target), false means "on bubble up" (bubbling back to ancestors). Default is false.
 			*/
 		public registerEventOnView(
 			elementId: number,
@@ -594,26 +594,17 @@
 		 * left pointer event filter to be used with registerEventOnView
 		 * @param evt
 		 */
-		private leftPointerEventFilter(evt: any): boolean {
-			return evt ? (!evt.button || evt.button == 0) : false;
+		private leftPointerEventFilter(evt: PointerEvent): boolean {
+			return evt ? evt.eventPhase === 2 || evt.eventPhase === 3 && (!evt.button || evt.button === 0) : false;
 		}
 
 		/**
-		 * pointer event extractor to be used with registerEventOnView
+		 * default event filter to be used with registerEventOnView to
+		 * use for most routed events
 		 * @param evt
 		 */
-		private pointerEventExtractor(evt: any): string {
-			return evt
-				? `${evt.pointerId};${evt.clientX};${evt.clientY};${(evt.ctrlKey ? "1" : "0")};${(evt.shiftKey ? "1" : "0")};${evt.button};${evt.pointerType}`
-				: "";
-		}
-
-		/**
-		 * keyboard event extractor to be used with registerEventOnView
-		 * @param evt
-		 */
-		private keyboardEventExtractor(evt: any): string {
-			return (evt instanceof KeyboardEvent) ? evt.key : "0";
+		private defaultEventFilter(evt: Event): boolean {
+			return evt ? evt.eventPhase === 2 || evt.eventPhase === 3 : false;
 		}
 
 		/**
@@ -624,8 +615,10 @@
 
 			if (eventFilterName) {
 				switch (eventFilterName) {
-					case "LeftPointerEventFilter":
-						return this.leftPointerEventFilter;
+				case "LeftPointerEventFilter":
+					return this.leftPointerEventFilter;
+				case "Default":
+					return this.defaultEventFilter;
 				}
 
 				throw `Event filter ${eventFilterName} is not supported`;
@@ -635,10 +628,38 @@
 		}
 
 		/**
+		 * pointer event extractor to be used with registerEventOnView
+		 * @param evt
+		 */
+		private pointerEventExtractor(evt: PointerEvent): string {
+			return evt
+				? `${evt.pointerId};${evt.clientX};${evt.clientY};${(evt.ctrlKey ? "1" : "0")};${(evt.shiftKey ? "1" : "0")};${evt.button};${evt.pointerType}`
+				: "";
+		}
+
+		/**
+		 * keyboard event extractor to be used with registerEventOnView
+		 * @param evt
+		 */
+		private keyboardEventExtractor(evt: Event): string {
+			return (evt instanceof KeyboardEvent) ? evt.key : "0";
+		}
+
+		/**
+		 * tapped (mouse clicked / double clicked) event extractor to be used with registerEventOnView
+		 * @param evt
+		 */
+		private tappedEventExtractor(evt: MouseEvent): string {
+			return evt
+				? `0;${evt.clientX};${evt.clientY};${(evt.ctrlKey ? "1" : "0")};${(evt.shiftKey ? "1" : "0")};${evt.button};mouse`
+				: "";
+		}
+
+		/**
 		 * Gets the event extractor function. See UIElement.HtmlEventExtractor
 		 * @param eventExtractorName an event extractor name.
 		 */
-		private getEventExtractor(eventExtractorName: string): any {
+		private getEventExtractor(eventExtractorName: string): (evt: Event) => string {
 
 			if (eventExtractorName) {
 				switch (eventExtractorName) {
@@ -647,6 +668,9 @@
 
 					case "KeyboardEventExtractor":
 						return this.keyboardEventExtractor;
+
+					case "TappedEventExtractor":
+						return this.tappedEventExtractor;
 				}
 
 				throw `Event filter ${eventExtractorName} is not supported`;
@@ -943,7 +967,7 @@
 				element.style.width = "";
 				element.style.height = "";
 
-				// This is required for an unconstrained measure (otherwise the parents size is taken into accound)
+				// This is required for an unconstrained measure (otherwise the parents size is taken into account)
 				element.style.position = "fixed";
 
 				element.style.maxWidth = Number.isFinite(maxWidth) ? `${maxWidth}px` : "";
@@ -1174,7 +1198,7 @@
 
 			// UWP Window's default background is white.
 			const body = document.getElementsByTagName("body")[0];
-			body.style.backgroundColor = '#fff';
+			body.style.backgroundColor = "#fff";
 		}
 
 		private resize() {
@@ -1218,9 +1242,9 @@
 		}
 	}
 
-	if (typeof define === 'function') {
+	if (typeof define === "function") {
 		define(
-			['AppManifest'],
+			["AppManifest"],
 			() => {
 				if (document.readyState === "loading") {
 					document.addEventListener("DOMContentLoaded", () => WindowManager.setupSplashScreen());

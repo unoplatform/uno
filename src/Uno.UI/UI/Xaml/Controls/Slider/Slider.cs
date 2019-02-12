@@ -57,6 +57,16 @@ namespace Windows.UI.Xaml.Controls
 			_horizontalThumb = GetTemplateChild("HorizontalThumb") as Thumb;
 			_verticalThumb = GetTemplateChild("VerticalThumb") as Thumb;
 
+			if (_horizontalThumb != null)
+			{
+				_horizontalThumb.ShouldCapturePointer = false;
+			}
+
+			if (_verticalThumb != null)
+			{
+				_verticalThumb.ShouldCapturePointer = false;
+			}
+
 			_verticalTemplate = GetTemplateChild("VerticalTemplate") as FrameworkElement;
 			_verticalTrackRect = GetTemplateChild("VerticalTrackRect") as Rectangle;
 			_verticalDecreaseRect = GetTemplateChild("VerticalDecreaseRect") as Rectangle;
@@ -73,8 +83,8 @@ namespace Windows.UI.Xaml.Controls
 
 			if (HasXamlTemplate)
 			{
-				SizeChanged += (s, e) => ApplyValueToSlide(Value);
-				ApplyValueToSlide(Value);
+				SizeChanged += (s, e) => ApplyValueToSlide();
+				ApplyValueToSlide();
 			}
 
 			UpdateCommonState(useTransitions: false);
@@ -159,7 +169,7 @@ namespace Windows.UI.Xaml.Controls
 
 		private void OnDragCompleted(object sender, DragCompletedEventArgs args)
 		{
-			ApplyValueToSlide(Value);
+			ApplyValueToSlide();
 
 			IsPointerPressed = false;
 			UpdateCommonState();
@@ -279,8 +289,7 @@ namespace Windows.UI.Xaml.Controls
 		/// <summary>
 		/// Take the given value and move the slider accordingly.
 		/// </summary>
-		/// <param name="value">New value of the property Value</param>
-		private void ApplyValueToSlide(double value)
+		private void ApplyValueToSlide()
 		{
 			// The _decreaseRect's height/width is updated, which in turn pushes or pulls the Thumb to its correct position
 			if (Orientation == Orientation.Horizontal)
@@ -321,7 +330,7 @@ namespace Windows.UI.Xaml.Controls
 
 			if (!_duringDrag && HasXamlTemplate)
 			{
-				ApplyValueToSlide(newValue);
+				ApplyValueToSlide();
 			}
 		}
 
@@ -376,7 +385,7 @@ namespace Windows.UI.Xaml.Controls
 			var container = sender as FrameworkElement;
 			var point = e.GetCurrentPoint(container).Position;
 
-			ApplyValueToSlide(Value);
+			ApplyValueToSlide();
 
 			Thumb?.CompleteDrag(point);
 
@@ -676,3 +685,4 @@ namespace Windows.UI.Xaml.Controls
 		#endregion
 	}
 }
+

@@ -30,7 +30,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="System.Numerics.Vectors" Version="4.5.0-preview1-26216-02" />
+		<PackageReference Include="System.Numerics.Vectors" Version="4.5.0" />
 		<PackageReference Include="Uno.SourceGenerationTasks">
 			<Version>1.29.0-dev.241</Version>
 		</PackageReference>

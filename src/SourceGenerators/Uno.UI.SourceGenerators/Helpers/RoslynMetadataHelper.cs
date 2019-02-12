@@ -1,15 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Text;
 using System.Threading.Tasks;
 using Uno.Extensions;
-using System.Diagnostics;
 using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.MSBuild;
 using System.Linq;
 using Microsoft.CodeAnalysis.FindSymbols;
-using System.Reflection;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.Build.Execution;

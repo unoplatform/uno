@@ -9,6 +9,12 @@ namespace Windows.UI.Xaml
 	/// <summary>
 	/// Defines the metadata to use for a dependency property for framework elements
 	/// </summary>
+	/// <remarks>
+	/// This class in not _UWP compatible_ and are used to make DependencyProperties with
+	/// special abilities (like _inheritable properties_).
+	/// It should be used only to create controls like those in UWP. You should not use
+	/// this class in application code or they won't compile and work properly on UWP.
+	/// </remarks>
 	public class FrameworkPropertyMetadata : PropertyMetadata
 	{
 		private bool _isDefaultUpdateSourceTriggerSet;
@@ -101,12 +107,11 @@ namespace Windows.UI.Xaml
 			}
 		}
 		
-		internal protected override void Merge(PropertyMetadata baseMetadata, DependencyProperty dp)
+		protected internal override void Merge(PropertyMetadata baseMetadata, DependencyProperty dp)
 		{
 			base.Merge(baseMetadata, dp);
 
-			var baseFrameworkMetadata = baseMetadata as FrameworkPropertyMetadata;
-			if (baseFrameworkMetadata != null)
+			if (baseMetadata is FrameworkPropertyMetadata baseFrameworkMetadata)
 			{
 				if (!_isDefaultUpdateSourceTriggerSet)
 				{

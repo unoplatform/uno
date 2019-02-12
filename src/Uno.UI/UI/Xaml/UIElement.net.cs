@@ -14,7 +14,7 @@ namespace Windows.UI.Xaml
 		public string Name { get; set; }
 
 		partial void InitializeCapture();
-
+		
 		internal bool IsPointerCaptured { get; set; }
 
 		public int MeasureCallCount { get; protected set; }
@@ -45,7 +45,5 @@ namespace Windows.UI.Xaml
 		protected virtual void OnVisibilityChanged(Visibility oldValue, Visibility newVisibility)
 		{
 		}
-
-		internal void RaiseTapped(TappedRoutedEventArgs args) => Tapped?.Invoke(this, args);
 	}
 }
