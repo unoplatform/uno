@@ -388,7 +388,7 @@ var Uno;
                 }
                 else {
                     const queryIndex = document.location.search.indexOf('?');
-                    if (queryIndex != -1) {
+                    if (queryIndex !== -1) {
                         return document.location.search.substring(queryIndex + 1);
                     }
                     return "";
@@ -438,7 +438,7 @@ var Uno;
                     element["tabindex"] = contentDefinition.isFocusable ? 0 : -1;
                 }
                 else {
-                    element.setAttribute("tabindex", contentDefinition.isFocusable ? '0' : '-1');
+                    element.setAttribute("tabindex", contentDefinition.isFocusable ? "0" : "-1");
                 }
                 if (contentDefinition) {
                     for (const className of contentDefinition.classes) {
@@ -662,7 +662,7 @@ var Uno;
                 * Add an event handler to a html element.
                 *
                 * @param eventName The name of the event
-                * @param onCapturePhase true means "on trickle down", false means "on bubble up". Default is false.
+                * @param onCapturePhase true means "on trickle down" (going down to target), false means "on bubble up" (bubbling back to ancestors). Default is false.
                 */
             registerEventOnView(elementId, eventName, onCapturePhase = false, eventFilterName, eventExtractorName) {
                 this.registerEventOnViewInternal(elementId, eventName, onCapturePhase, eventFilterName, eventExtractorName);
@@ -714,7 +714,31 @@ var Uno;
              * @param evt
              */
             leftPointerEventFilter(evt) {
-                return evt ? (!evt.button || evt.button == 0) : false;
+                return evt ? evt.eventPhase === 2 || evt.eventPhase === 3 && (!evt.button || evt.button === 0) : false;
+            }
+            /**
+             * default event filter to be used with registerEventOnView to
+             * use for most routed events
+             * @param evt
+             */
+            defaultEventFilter(evt) {
+                return evt ? evt.eventPhase === 2 || evt.eventPhase === 3 : false;
+            }
+            /**
+             * Gets the event filter function. See UIElement.HtmlEventFilter
+             * @param eventFilterName an event filter name.
+             */
+            getEventFilter(eventFilterName) {
+                if (eventFilterName) {
+                    switch (eventFilterName) {
+                        case "LeftPointerEventFilter":
+                            return this.leftPointerEventFilter;
+                        case "Default":
+                            return this.defaultEventFilter;
+                    }
+                    throw `Event filter ${eventFilterName} is not supported`;
+                }
+                return null;
             }
             /**
              * pointer event extractor to be used with registerEventOnView
@@ -733,18 +757,13 @@ var Uno;
                 return (evt instanceof KeyboardEvent) ? evt.key : "0";
             }
             /**
-             * Gets the event filter function. See UIElement.HtmlEventFilter
-             * @param eventFilterName an event filter name.
+             * tapped (mouse clicked / double clicked) event extractor to be used with registerEventOnView
+             * @param evt
              */
-            getEventFilter(eventFilterName) {
-                if (eventFilterName) {
-                    switch (eventFilterName) {
-                        case "LeftPointerEventFilter":
-                            return this.leftPointerEventFilter;
-                    }
-                    throw `Event filter ${eventFilterName} is not supported`;
-                }
-                return null;
+            tappedEventExtractor(evt) {
+                return evt
+                    ? `0;${evt.clientX};${evt.clientY};${(evt.ctrlKey ? "1" : "0")};${(evt.shiftKey ? "1" : "0")};${evt.button};mouse`
+                    : "";
             }
             /**
              * Gets the event extractor function. See UIElement.HtmlEventExtractor
@@ -757,6 +776,8 @@ var Uno;
                             return this.pointerEventExtractor;
                         case "KeyboardEventExtractor":
                             return this.keyboardEventExtractor;
+                        case "TappedEventExtractor":
+                            return this.tappedEventExtractor;
                     }
                     throw `Event filter ${eventExtractorName} is not supported`;
                 }
@@ -989,7 +1010,7 @@ var Uno;
                     }
                     element.style.width = "";
                     element.style.height = "";
-                    // This is required for an unconstrained measure (otherwise the parents size is taken into accound)
+                    // This is required for an unconstrained measure (otherwise the parents size is taken into account)
                     element.style.position = "fixed";
                     element.style.maxWidth = Number.isFinite(maxWidth) ? `${maxWidth}px` : "";
                     element.style.maxHeight = Number.isFinite(maxHeight) ? `${maxHeight}px` : "";
@@ -1172,7 +1193,7 @@ var Uno;
                 }
                 // UWP Window's default background is white.
                 const body = document.getElementsByTagName("body")[0];
-                body.style.backgroundColor = '#fff';
+                body.style.backgroundColor = "#fff";
             }
             resize() {
                 if (WindowManager.isHosted) {
@@ -1216,8 +1237,8 @@ var Uno;
             UI.HtmlDom.initPolyfills();
         })();
         UI.WindowManager = WindowManager;
-        if (typeof define === 'function') {
-            define(['AppManifest'], () => {
+        if (typeof define === "function") {
+            define(["AppManifest"], () => {
                 if (document.readyState === "loading") {
                     document.addEventListener("DOMContentLoaded", () => WindowManager.setupSplashScreen());
                 }

@@ -25,7 +25,6 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 		private class SerializationMethodsGenerator : SymbolVisitor
 		{
 			private readonly SourceGeneratorContext _context;
-			private readonly Compilation _comp;
 			private readonly INamedTypeSymbol _dependencyObjectSymbol;
 			private readonly INamedTypeSymbol _unoViewgroupSymbol;
 			private readonly INamedTypeSymbol _iosViewSymbol;
@@ -42,18 +41,18 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 			{
 				_context = context;
 
-				_comp = context.Compilation;
+				var comp = context.Compilation;
 
-				_dependencyObjectSymbol = context.Compilation.GetTypeByMetadataName(XamlConstants.Types.DependencyObject);
-				_unoViewgroupSymbol = context.Compilation.GetTypeByMetadataName("Uno.UI.UnoViewGroup");
-				_iosViewSymbol = context.Compilation.GetTypeByMetadataName("UIKit.UIView");
-				_macosViewSymbol = context.Compilation.GetTypeByMetadataName("AppKit.NSView");
-				_androidViewSymbol = context.Compilation.GetTypeByMetadataName("Android.Views.View");
-				_javaObjectSymbol = context.Compilation.GetTypeByMetadataName("Java.Lang.Object");
-				_androidActivitySymbol = context.Compilation.GetTypeByMetadataName("Android.App.Activity");
-				_androidFragmentSymbol = context.Compilation.GetTypeByMetadataName("Android.App.Fragment");
-				_bindableAttributeSymbol = context.Compilation.GetTypeByMetadataName("Windows.UI.Xaml.Data.BindableAttribute");
-				_iFrameworkElementSymbol = context.Compilation.GetTypeByMetadataName(XamlConstants.Types.IFrameworkElement);
+				_dependencyObjectSymbol = comp.GetTypeByMetadataName(XamlConstants.Types.DependencyObject);
+				_unoViewgroupSymbol = comp.GetTypeByMetadataName("Uno.UI.UnoViewGroup");
+				_iosViewSymbol = comp.GetTypeByMetadataName("UIKit.UIView");
+				_macosViewSymbol = comp.GetTypeByMetadataName("AppKit.NSView");
+				_androidViewSymbol = comp.GetTypeByMetadataName("Android.Views.View");
+				_javaObjectSymbol = comp.GetTypeByMetadataName("Java.Lang.Object");
+				_androidActivitySymbol = comp.GetTypeByMetadataName("Android.App.Activity");
+				_androidFragmentSymbol = comp.GetTypeByMetadataName("Android.App.Fragment");
+			    _bindableAttributeSymbol = comp.GetTypeByMetadataName("Windows.UI.Xaml.Data.BindableAttribute");
+				_iFrameworkElementSymbol = comp.GetTypeByMetadataName(XamlConstants.Types.IFrameworkElement);
 			}
 
 			public override void VisitNamedType(INamedTypeSymbol type)
@@ -362,7 +361,7 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 			{
 				builder.AppendLine($@"
 					// A list of actions to be executed on Load and Unload
-					private List<global::System.Tuple<Action,Action>> _loadActions = new List<global::System.Tuple<Action,Action>>();
+					private List<(Action loaded, Action unloaded)> _loadActions = new List<(Action loaded, Action unloaded)>(2);
 
 					/// <summary>
 					/// Registers actions to be executed when the control is Loaded and Unloaded.
@@ -373,9 +372,9 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 					/// <remarks>The loaded action may be executed immediately if the control is already loaded.</remarks>
 					public IDisposable RegisterLoadActions(Action loaded, Action unloaded)
 					{{
-						var tuple = Tuple.Create(loaded, unloaded);
+						var actions = (loaded, unloaded);
 
-						_loadActions.Add(tuple);
+						_loadActions.Add(actions);
 
 #if __ANDROID__
 						if(this.IsLoaded())
@@ -388,7 +387,7 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 							loaded();
 						}}
 
-						return Disposable.Create(() => _loadActions.Remove(tuple));
+						return Disposable.Create(() => _loadActions.Remove(actions));
 					}}
 				");
 			}
@@ -413,12 +412,12 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 
 							if(Window != null)
 							{{
-								_loadActions.ForEach(a => a.Item1());
+								_loadActions.ForEach(a => a.loaded());
 								OnAttachedToWindowPartial();
 							}}
 							else
 							{{
-								_loadActions.ForEach(a => a.Item2());
+								_loadActions.ForEach(a => a.unloaded());
 								OnDetachedFromWindowPartial();
 							}}
 						}}
@@ -460,12 +459,12 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 
 							if(Window != null)
 							{{
-								_loadActions.ForEach(a => a.Item1());
+								_loadActions.ForEach(a => a.loaded());
 								OnAttachedToWindowPartial();
 							}}
 							else
 							{{
-								_loadActions.ForEach(a => a.Item2());
+								_loadActions.ForEach(a => a.unloaded());
 								OnDetachedFromWindowPartial();
 							}}
 						}}
@@ -580,7 +579,6 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 			private void WriteDispose(INamedTypeSymbol typeSymbol, IndentedStringBuilder builder)
 			{
 				var hasDispose = typeSymbol.Is(_androidViewSymbol) || typeSymbol.Is(_iosViewSymbol);
-				var isViewGroup = typeSymbol.Is(_unoViewgroupSymbol);
 
 				if (hasDispose)
 				{

@@ -5,13 +5,13 @@ namespace UITests.Shared.Windows_UI_Xaml_Controls.Slider
 {
 	internal class SliderViewModel : ViewModelBase
 	{
-		private int _sliderValue;
+		private double _sliderValue;
 
 		public SliderViewModel(CoreDispatcher dispatcher) : base(dispatcher)
 		{
 		}
 
-		public int SliderValue
+		public double SliderValue
 		{
 			get => _sliderValue;
 			set

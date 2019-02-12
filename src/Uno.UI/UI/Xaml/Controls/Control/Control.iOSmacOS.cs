@@ -75,53 +75,6 @@ namespace Windows.UI.Xaml.Controls
 			AddSubview(child);
 		}
 
-#if __IOS__
-		internal override void OnPointerPressedInternal(object sender, PointerRoutedEventArgs args)
-		{
-			// Call virtual method first to give subclasses a chance to set handled to true
-			OnPointerPressed(args);
-			base.OnPointerPressedInternal(sender, args);
-		}
-
-		internal override void OnPointerReleasedInternal(object sender, PointerRoutedEventArgs args)
-		{
-			// Call virtual method first to give subclasses a chance to set handled to true
-			OnPointerReleased(args);
-			base.OnPointerReleasedInternal(sender, args);
-		}
-
-		internal override void OnPointerCaptureLostInternal(object sender, PointerRoutedEventArgs args)
-		{
-			// Call virtual method first to give subclasses a chance to set handled to true
-			OnPointerCaptureLost(args);
-			base.OnPointerCaptureLostInternal(sender, args);
-		}
-
-		internal override void OnPointerEnteredInternal(object sender, PointerRoutedEventArgs args)
-		{
-			OnPointerEntered(args);
-			base.OnPointerEnteredInternal(sender, args);
-		}
-
-		internal override void OnPointerExitedInternal(object sender, PointerRoutedEventArgs args)
-		{
-			OnPointerExited(args);
-			base.OnPointerExitedInternal(sender, args);
-		}
-
-		internal override void OnPointerMovedInternal(object sender, PointerRoutedEventArgs args)
-		{
-			OnPointerMoved(args);
-			base.OnPointerMovedInternal(sender, args);
-		}
-
-		internal override void OnPointerCanceledInternal(object sender, PointerRoutedEventArgs args)
-		{
-			OnPointerCanceled(args);
-			base.OnPointerCanceledInternal(sender, args);
-		}
-#endif
-
 		protected virtual bool RequestFocus(FocusState state)
 		{
 			FocusState = state;

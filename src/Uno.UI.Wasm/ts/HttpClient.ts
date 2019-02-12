@@ -53,7 +53,7 @@
 			return new Promise<string>(resolve => {
 				const reader = new FileReader();
 				reader.onloadend = () => {
-					const dataUrl: string = reader.result;
+					const dataUrl: string = reader.result as string;
 					const base64 = dataUrl.split(",", 2)[1];
 					resolve(base64);
 				};

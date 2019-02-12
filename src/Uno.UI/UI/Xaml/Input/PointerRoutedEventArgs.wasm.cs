@@ -1,21 +1,28 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Uno;
-using Windows.Foundation;
 using Windows.UI.Input;
-using Windows.UI.Xaml.Media;
 
 namespace Windows.UI.Xaml.Input
 {
-	public partial class PointerRoutedEventArgs : UIElement.IHandlableEventArgs
+	public partial class PointerRoutedEventArgs
 	{
 		public PointerPoint GetCurrentPoint(UIElement relativeTo)
 		{
+			if (relativeTo == null)
+			{
+				throw new ArgumentNullException(nameof(relativeTo));
+			}
+
+			// Get the point, relative to root element
 			var point = GetCurrentPoint();
-			var translation = relativeTo.TransformToVisual(null) as TranslateTransform;
-			var offset = new Point(point.X - translation.X, point.Y - translation.Y);
-			return new PointerPoint(offset);
+
+			// Extract transform matrix from the element
+			var transform = relativeTo.TransformToVisual(null).Inverse;
+
+			// Apply the transform matrix to the point
+			var transformPoint = transform.TransformPoint(point);
+
+			// that's it
+			return new PointerPoint(transformPoint);
 		}
 	}
 }

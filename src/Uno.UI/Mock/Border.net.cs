@@ -10,5 +10,15 @@ namespace Windows.UI.Xaml.Controls
 	{
 		public override IEnumerable<UIElement> GetChildren() 
 			=> Child is FrameworkElement fe ? new[] { fe } : Array.Empty<FrameworkElement>();
+
+		partial void OnChildChangedPartial(UIElement previousValue, UIElement newValue)
+		{
+			if (previousValue != null)
+			{
+				RemoveChild(previousValue);
+			}
+
+			AddChild(newValue);
+		}
 	}
 }

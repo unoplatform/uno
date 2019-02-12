@@ -15,6 +15,7 @@ namespace Windows.UI.Xaml.Input
 		internal PointerRoutedEventArgs(MotionEvent nativeEvent)
 		{
 			_nativeEvent = nativeEvent;
+			CanBubbleNatively = true;
 		}
 
 		public PointerPoint GetCurrentPoint(UIElement relativeTo)

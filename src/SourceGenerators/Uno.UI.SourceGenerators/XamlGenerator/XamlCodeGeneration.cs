@@ -14,7 +14,7 @@ using Uno.Logging;
 
 namespace Uno.UI.SourceGenerators.XamlGenerator
 {
-    internal class XamlCodeGeneration
+	internal class XamlCodeGeneration
 	{
 		private string[] _xamlSourceFiles;
 		private string _targetPath;

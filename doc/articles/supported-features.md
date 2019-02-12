@@ -1,6 +1,7 @@
 # Uno Features list
 
 ## Development flow
+
 - Uno's UWP Xaml
     - **Windows-first development**
     - **Faster compilation** for most of the developement cycle, including UI code. iOS and Android can only be used for platform specific features.
@@ -11,13 +12,14 @@
     - All XAML controls have **access to native properties** through conditional XAML
     - Ability to **add native controls in XAML**
 - Full UWP availability at compile time
-    - Allows for the **compilation of open-source libraries** that depend only on UWP and multi-targeted nuget packages
-        - **XamlBehaviors library** support
+  - Allows for the **compilation of open-source libraries** that depend only on UWP and multi-targeted nuget packages
+    - **XamlBehaviors library** support
 - MacOS Compilation
 
 ## Features list
 
 ### Animations
+
 - Animations on any DependencyProperty and AttachedProperty
 - Visual States (declared animations, advanced setters)
 - Visual States Groups (multi state controls)
@@ -27,18 +29,20 @@
 - Binding expressions to Attached property (Storyboard setters)
 
 ### Styling
+
 - Attached Property Style binding (advanced styling, control reuse)
 - Control templating (without the need of renderers) (controls reuse, white labeling)
 - TemplateBinding  (controls reuse)
 
 ### Data Binding
-* Value Precedence
-* Inheritance
-* Mode
-* Trigger
-* x:Bind *(without phases and expressions)*
-* Converters
-* Attached Properties binding
+
+- Value Precedence
+- Inheritance
+- Mode
+- Trigger
+- x:Bind *(without phases and expressions)*
+- Converters
+- Attached Properties binding
 
 ### Design fidelity
 - Text Inlines Binding
@@ -52,11 +56,13 @@
 - Merged Dictionary support
 
 ### Responsive design
+
 - Layout constraints [Min/Max][Width/Height]
 - Binding SourceTriggers (TextBox immediate vs. focus lost interactions)
 - DependencyProperty Inheritance (Color, text style Propagation)
 
 ### Runtime Performance
+
 - CoreDispatcher Priority support (Large UIs performance)
 - `x:DeferLoadStrategy=Lazy` support (responsive design performance)
 - Image explicit size support (performance)
@@ -69,6 +75,7 @@
 - DataTemplate and ControlTemplate reuse, pooling and prefetching
 
 ### ListView
+
 - `Selector`
 - Any `ItemsPanel` support
 - `ItemsStackPanel`
@@ -81,15 +88,17 @@
 - `ICollectionView` support with SelectedItem
 
 ### Command Bar
+
 - UWP Command bar support
 - Native Command bar support (Image, title, back, Opacity, ...)
 - Global back button support
 
 ### Media
-* `SolidColorBrush`
-* `ImageBrush`
-* `LinearGradientBrush`, with animations support.
-* Local assets support with automatic conversion from UWP conventions
+
+- `SolidColorBrush`
+- `ImageBrush`
+- `LinearGradientBrush`, with animations support.
+- Local assets support with automatic conversion from UWP conventions
 
 ### Others
 
@@ -104,9 +113,9 @@
 - Popups/Dialogs
 - Work with the usual Windows tooling
 - Animations
-- Easing functions
-- UWP Theme Transitions
-- Entrance animations
+  - Easing functions
+  - UWP Theme Transitions
+  - Entrance animations
 - XAML Behaviors
 - AttachedProperty Binding
 - AttachedProperty Styling
@@ -115,6 +124,7 @@
 - Support for StateTriggers
 - ProgressBar
 - Pointer Events
+- [Routed Events](routed-events.md)
 - GeneralTransform.TransformBounds
 - Window.Services.Store (Store ID and links)
 - Windows.ApplicationModel.Package (InstallDate)
@@ -130,7 +140,7 @@
 - Customizable Date and Time Pickers
 - Orientation Management
 - Accessibility (Font Scaling, screen readers)
-- Xamarin UITest support and full Dependency Property access
+- Xamarin UITest support and full _Dependency Property_ access
 - StatusBar Management (Occlusion, Color, events)
 - XAML Reader
 - Phased Binding (x:Phase)
@@ -146,7 +156,7 @@
 - Windows.UI.Storage (StorageFile, StorageFolder, Settings)
 - Windows.UI.Application
 - Windows.UI.CoreDispatcher
-    - UI Priority dispatch
+  - UI Priority dispatch
 - Windows.Graphics.Display.DisplayInformation orientation
 - Windows.Media.SpeechRecognition
 - Windows.Media.Capture.CameraCaptureUI
