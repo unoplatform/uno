@@ -282,10 +282,13 @@ namespace Windows.UI.Core
 					}
 				}
 			}
-			//else
-			//{
-			//	throw new InvalidOperationException("Dispatch queue is empty");
-			//}
+			else
+			{
+				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+				{
+					this.Log().Error("Dispatch queue is empty");
+				}
+			}
 		}
 
 		private CoreDispatcherSynchronizationContext GetSyncContext(CoreDispatcherPriority priority)

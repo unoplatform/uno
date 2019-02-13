@@ -14,7 +14,7 @@ namespace Windows.UI.Xaml
 #elif __ANDROID__
 	[Android.Runtime.Preserve(AllMembers = true)]
 #endif
-	internal abstract class ObservableVectorWrapper
+	internal class ObservableVectorWrapper
 	{
 		public event VectorChangedEventHandler<object> VectorChanged;
 

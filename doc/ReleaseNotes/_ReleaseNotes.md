@@ -137,6 +137,7 @@
  * [iOS] Add fail-safe on `FrameworkElement.WillMoveToSuperview` log to `Application.Current.UnhandledException`
  * [Wasm] Fixed `System.UriConverter` is being linked out
  * 145075 [Android] [Wasm] Android and Wasm don't match all specific UWP behaviors for the Image control.
+ * [Wasm] Don't fail if the dispatcher queue is empty
  * 146648 [Android] fixed ListView grouped items corruption on scroll
 
 ## Release 1.42
