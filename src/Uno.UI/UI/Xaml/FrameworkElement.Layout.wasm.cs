@@ -211,18 +211,9 @@ namespace Windows.UI.Xaml
 
 				// Disable clipping for Scrollviewer (edge seems to disable scrolling if 
 				// the clipping is enabled to the size of the scrollviewer, even if overflow-y is auto)
-				var clip = this is Controls.ScrollViewer 
-					? "" 
-					: "rect(0px," + newRect.Width.ToString(CultureInfo.InvariantCulture) + "px, " + newRect.Height.ToString(CultureInfo.InvariantCulture) + "0px)";
+				var clip = this is Controls.ScrollViewer ? (Rect?)null : new Rect(0, 0, newRect.Width, newRect.Height);
 
-				SetStyleArranged(
-					("position", "absolute"),
-					("top", newRect.Top.ToString(CultureInfo.InvariantCulture) + "px"),
-					("left", newRect.Left.ToString(CultureInfo.InvariantCulture) + "px"),
-					("width", newRect.Width.ToString(CultureInfo.InvariantCulture) + "px"),
-					("height", newRect.Height.ToString(CultureInfo.InvariantCulture) + "px"),
-					("clip", clip)
-				);
+				ArrangeElementNative(newRect, clip);
 			}
 			else
 			{

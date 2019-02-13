@@ -34,18 +34,14 @@ namespace Windows.UI.Xaml.Shapes
 		{
 			var measurements = GetMeasurements(finalSize);
 
-			var scaleX = measurements.scaleX.ToString(CultureInfo.InvariantCulture);
-			var scaleY = measurements.scaleY.ToString(CultureInfo.InvariantCulture);
-			var translateX = measurements.translateX.ToString(CultureInfo.InvariantCulture);
-			var translateY = measurements.translateY.ToString(CultureInfo.InvariantCulture);
-
-			var transform = $"scale({scaleX}, {scaleY}) translate({translateX}px, {translateY}px)";
+			var scaleX = measurements.scaleX;
+			var scaleY = measurements.scaleY;
+			var translateX = measurements.translateX;
+			var translateY = measurements.translateY;
 
 			foreach (FrameworkElement child in GetChildren())
 			{
-				child.SetStyleArranged(
-					("transform", transform)
-				);
+				child.SetNativeTransform(scaleX, scaleY, translateX, translateY);
 			}
 
 			return finalSize;

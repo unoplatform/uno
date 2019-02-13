@@ -292,22 +292,22 @@ namespace Windows.UI.Xaml.Controls
 
 			var position = getHtmlImagePosition();
 
-			var finalWidth = position.width != null ? position.width.Value.ToString(CultureInfo.InvariantCulture) + "px" : "auto";
-			var finalHeight = position.height != null ? position.height.Value.ToString(CultureInfo.InvariantCulture) + "px" : "auto";
-
 			// Clip the image to the parent's arrange size.
-			var clip = "rect(0px, " + finalSize.Width + "px, " + finalSize.Height + "px, 0px)";
+			var clipRect = new Rect(0, 0, finalSize.Width, finalSize.Height);
 
-			_htmlImage.SetStyleArranged(
-				("position", "absolute"),
-				("top", position.y.ToString(CultureInfo.InvariantCulture) + "px"),
-				("left", position.x.ToString(CultureInfo.InvariantCulture) + "px"),
-				("width", finalWidth),
-				("height", finalHeight),
-				("clip", clip)
+			var arrangeRect = new Rect(
+				position.x,
+				position.y,
+				position.width != null ? position.width.Value : double.NaN,
+				position.height != null ? position.height.Value : double.NaN
 			);
 
-			this.Log().LogTrace($"Arrange {this} _lastMeasuredSize:{_lastMeasuredSize} clip:{clip} position:{position} finalSize:{finalSize}");
+			_htmlImage.ArrangeElementNative(arrangeRect, clipRect);
+
+			if (this.Log().IsEnabled(LogLevel.Debug))
+			{
+				this.Log().LogDebug($"Arrange {this} _lastMeasuredSize:{_lastMeasuredSize} clip:{clipRect} position:{position} finalSize:{finalSize}");
+			}
 
 			// Image has no direct child that needs to be arranged explicitly
 			return finalSize;

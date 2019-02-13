@@ -142,6 +142,11 @@ namespace Windows.UI.Xaml
 			Uno.UI.Xaml.WindowManagerInterop.SetStyles(HtmlId, new[] { (name, value) });
 		}
 
+		protected internal void SetStyle(string name, double value)
+		{
+			Uno.UI.Xaml.WindowManagerInterop.SetStyleDouble(HtmlId, name, value);
+		}
+
 		protected internal void SetStyle(params (string name, string value)[] styles)
 		{
 			if (styles == null || styles.Length == 0)
@@ -156,20 +161,20 @@ namespace Windows.UI.Xaml
 		private long _arrangeCount = 0;
 #endif
 
-		protected internal void SetStyleArranged(params (string name, string value)[] styles)
+		protected internal void ArrangeElementNative(Rect rect, Rect? clipRect)
 		{
-			if (styles == null || styles.Length == 0)
-			{
-				return; // nothing to do
-			}
-
-			Uno.UI.Xaml.WindowManagerInterop.SetStyles(HtmlId, styles, true);
+			Uno.UI.Xaml.WindowManagerInterop.ArrangeElement(HtmlId, rect, clipRect);
 
 #if DEBUG
 			var count = Interlocked.Increment(ref _arrangeCount);
 
 			SetAttribute(("xamlArrangeCount", count.ToString()));
 #endif
+		}
+
+		protected internal void SetNativeTransform(double scaleX, double scaleY, double translateX, double translateY)
+		{
+			Uno.UI.Xaml.WindowManagerInterop.SetElementTransform(HtmlId, scaleX, scaleY, translateX, translateY);
 		}
 
 		protected internal void ResetStyle(params string[] names)
@@ -550,7 +555,7 @@ namespace Windows.UI.Xaml
 			}
 			else
 			{
-				SetStyle("opacity", opacity.ToStringInvariant());
+				SetStyle("opacity", opacity);
 			}
 		}
 
