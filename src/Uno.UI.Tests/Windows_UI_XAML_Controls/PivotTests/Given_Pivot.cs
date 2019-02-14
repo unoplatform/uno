@@ -23,7 +23,7 @@ namespace Uno.UI.Tests.PivotTests
 			grid.ForceLoaded();
 
 			SUT.Measure(default(Size));
-			SUT.Arrange(Rect.Empty);
+			SUT.Arrange(default(Rect));
 
 			Assert.AreEqual(default(Size), SUT.DesiredSize);
 			Assert.IsTrue(SUT.GetChildren().None());

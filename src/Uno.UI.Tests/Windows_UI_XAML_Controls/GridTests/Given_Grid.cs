@@ -27,7 +27,7 @@ namespace Uno.UI.Tests.GridTests
 
 			SUT.Measure(default(Windows.Foundation.Size));
 			var size = SUT.DesiredSize;
-			SUT.Arrange(Windows.Foundation.Rect.Empty);
+			SUT.Arrange(default(Windows.Foundation.Rect));
 
 			Assert.AreEqual(default(Windows.Foundation.Size), size);
 			Assert.IsTrue(SUT.GetChildren().None());
@@ -40,7 +40,7 @@ namespace Uno.UI.Tests.GridTests
 
 			SUT.Measure(new Windows.Foundation.Size(10, 10));
 			var size = SUT.DesiredSize;
-			SUT.Arrange(Windows.Foundation.Rect.Empty);
+			SUT.Arrange(default(Windows.Foundation.Rect));
 
 			Assert.AreEqual(size, default(Windows.Foundation.Size));
 			Assert.IsTrue(SUT.GetChildren().None());
