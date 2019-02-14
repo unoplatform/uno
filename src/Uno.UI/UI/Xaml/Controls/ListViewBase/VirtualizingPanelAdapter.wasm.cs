@@ -63,7 +63,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			var id = GetItemId(index);
 
-			if (!_owner.XamlParent.IsIndexItsOwnContainer(index))
+			if (!(_owner.XamlParent?.IsIndexItsOwnContainer(index) ?? false))
 			{
 				if (this.Log().IsEnabled(LogLevel.Debug))
 				{
