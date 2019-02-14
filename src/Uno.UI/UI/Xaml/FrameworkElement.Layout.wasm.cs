@@ -209,11 +209,23 @@ namespace Windows.UI.Xaml
 					throw new InvalidOperationException($"{this}: Invalid frame size {newRect}. No dimension should be NaN or negative value.");
 				}
 
-				// Disable clipping for Scrollviewer (edge seems to disable scrolling if 
-				// the clipping is enabled to the size of the scrollviewer, even if overflow-y is auto)
-				var clip = this is Controls.ScrollViewer ? (Rect?)null : new Rect(0, 0, newRect.Width, newRect.Height);
+				Rect? getClip()
+				{
+					// Disable clipping for Scrollviewer (edge seems to disable scrolling if 
+					// the clipping is enabled to the size of the scrollviewer, even if overflow-y is auto)
+					if(this is Controls.ScrollViewer)
+					{
+						return null;
+					}
+					else if(Clip != null)
+					{
+						return Clip.Rect;
+					}
 
-				ArrangeElementNative(newRect, clip);
+					return new Rect(0, 0, newRect.Width, newRect.Height);
+				}
+
+				ArrangeElementNative(newRect, getClip());
 			}
 			else
 			{
