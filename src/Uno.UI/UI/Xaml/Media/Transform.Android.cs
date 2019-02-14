@@ -1,5 +1,4 @@
-﻿using Android.Graphics;
-using System;
+﻿using System;
 using System.Numerics;
 using Windows.Foundation;
 
@@ -28,6 +27,8 @@ namespace Windows.UI.Xaml.Media
 				if (_isAnimating != value)
 				{
 					_isAnimating = value;
+
+					MatrixCore = ToMatrix(new Point(0, 0));
 					NotifyChanged();
 				}
 			}
