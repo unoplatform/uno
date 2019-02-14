@@ -533,10 +533,12 @@ declare class WindowManagerSetContentHtmlParams {
     static unmarshal(pData: number): WindowManagerSetContentHtmlParams;
 }
 declare class WindowManagerSetElementTransformParams {
-    ScaleX: number;
-    ScaleY: number;
-    TranslateX: number;
-    TranslateY: number;
+    M11: number;
+    M12: number;
+    M21: number;
+    M22: number;
+    M31: number;
+    M32: number;
     HtmlId: number;
     static unmarshal(pData: number): WindowManagerSetElementTransformParams;
 }

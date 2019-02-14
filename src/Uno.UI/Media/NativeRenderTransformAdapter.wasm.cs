@@ -32,10 +32,7 @@ namespace Uno.UI.Media
 			}
 			else
 			{
-				var matrix = Transform.MatrixCore;
-				FormattableString native = $"matrix({matrix.M11},{matrix.M12},{matrix.M21},{matrix.M22},{matrix.M31},{matrix.M32})";
-
-				Owner.SetStyle("transform", native.ToStringInvariant());
+				Owner.SetNativeTransform(Transform.MatrixCore);
 			}
 		}
 

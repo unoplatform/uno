@@ -676,7 +676,7 @@ var Uno;
                     throw `Element id ${params.HtmlId} not found.`;
                 }
                 var style = htmlElement.style;
-                style.transform = `scale(${params.ScaleX}, ${params.ScaleY}) translate(${params.TranslateX}px, ${params.TranslateY}px)`;
+                style.transform = `matrix(${params.M11},${params.M12},${params.M21},${params.M22},${params.M31},${params.M32})`;
                 htmlElement.classList.remove(WindowManager.unoUnarrangedClassName);
                 return true;
             }
@@ -1636,19 +1636,25 @@ class WindowManagerSetElementTransformParams {
     static unmarshal(pData) {
         let ret = new WindowManagerSetElementTransformParams();
         {
-            ret.ScaleX = Number(Module.getValue(pData + 0, "double"));
+            ret.M11 = Number(Module.getValue(pData + 0, "double"));
         }
         {
-            ret.ScaleY = Number(Module.getValue(pData + 8, "double"));
+            ret.M12 = Number(Module.getValue(pData + 8, "double"));
         }
         {
-            ret.TranslateX = Number(Module.getValue(pData + 16, "double"));
+            ret.M21 = Number(Module.getValue(pData + 16, "double"));
         }
         {
-            ret.TranslateY = Number(Module.getValue(pData + 24, "double"));
+            ret.M22 = Number(Module.getValue(pData + 24, "double"));
         }
         {
-            ret.HtmlId = Number(Module.getValue(pData + 32, "*"));
+            ret.M31 = Number(Module.getValue(pData + 32, "double"));
+        }
+        {
+            ret.M32 = Number(Module.getValue(pData + 40, "double"));
+        }
+        {
+            ret.HtmlId = Number(Module.getValue(pData + 48, "*"));
         }
         return ret;
     }

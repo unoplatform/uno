@@ -531,7 +531,7 @@
 		}
 
 		/**
-		* Arrange and clips a native elements 
+		* Sets the transform matrix of an element
 		*
 		*/
 		public setElementTransformNative(pParams: number): boolean {
@@ -545,7 +545,7 @@
 
 			var style = htmlElement.style;
 
-			style.transform = `scale(${params.ScaleX}, ${params.ScaleY}) translate(${params.TranslateX}px, ${params.TranslateY}px)`;
+			style.transform = `matrix(${params.M11},${params.M12},${params.M21},${params.M22},${params.M31},${params.M32})`;
 
 			htmlElement.classList.remove(WindowManager.unoUnarrangedClassName);
 

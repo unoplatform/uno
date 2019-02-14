@@ -17,6 +17,7 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.System;
 using Uno.UI;
+using System.Numerics;
 
 namespace Windows.UI.Xaml
 {
@@ -172,9 +173,9 @@ namespace Windows.UI.Xaml
 #endif
 		}
 
-		protected internal void SetNativeTransform(double scaleX, double scaleY, double translateX, double translateY)
+		protected internal void SetNativeTransform(Matrix3x2 matrix)
 		{
-			Uno.UI.Xaml.WindowManagerInterop.SetElementTransform(HtmlId, scaleX, scaleY, translateX, translateY);
+			Uno.UI.Xaml.WindowManagerInterop.SetElementTransform(HtmlId, matrix);
 		}
 
 		protected internal void ResetStyle(params string[] names)

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Numerics;
 using System.Runtime.InteropServices;
 using System.Text;
 using Uno.Extensions;
@@ -124,15 +125,15 @@ namespace Uno.UI.Xaml
 
 		#region SetElementTransform
 
-		internal static void SetElementTransform(IntPtr htmlId, double scaleX, double scaleY, double translateX, double translateY)
+		internal static void SetElementTransform(IntPtr htmlId, Matrix3x2 matrix)
 		{
 			if (UseJavascriptEval)
 			{
-				var transform = string.Format(CultureInfo.InvariantCulture, "scale({0}, {1}) translate({2}px, {3}px)", scaleX, scaleY, translateX, translateY);
+				FormattableString native = $"matrix({matrix.M11},{matrix.M12},{matrix.M21},{matrix.M22},{matrix.M31},{matrix.M32})";
 
 				SetStyles(
 					htmlId,
-					new[] { ("transform", transform) },
+					new[] { ("transform", native.ToStringInvariant()) },
 					true
 				);
 			}
@@ -141,10 +142,12 @@ namespace Uno.UI.Xaml
 				var parms = new WindowManagerSetElementTransformParams
 				{
 					HtmlId = htmlId,
-					ScaleX = scaleX,
-					ScaleY = scaleY,
-					TranslateX = translateX,
-					TranslateY = translateY,
+					M11 = matrix.M11,
+					M12 = matrix.M12,
+					M21 = matrix.M21,
+					M22 = matrix.M22,
+					M31 = matrix.M31,
+					M32 = matrix.M32,
 				};
 
 				TSInteropMarshaller.InvokeJS<WindowManagerSetElementTransformParams, bool>("Uno:setElementTransformNative", parms);
@@ -155,10 +158,12 @@ namespace Uno.UI.Xaml
 		[StructLayout(LayoutKind.Sequential, Pack = 8)]
 		private struct WindowManagerSetElementTransformParams
 		{
-			public double ScaleX;
-			public double ScaleY;
-			public double TranslateX;
-			public double TranslateY;
+			public double M11;
+			public double M12;
+			public double M21;
+			public double M22;
+			public double M31;
+			public double M32;
 
 			public IntPtr HtmlId;
 		}
@@ -655,7 +660,6 @@ namespace Uno.UI.Xaml
 		}
 
 		#endregion
-
 
 		#region SetContentHtml
 
