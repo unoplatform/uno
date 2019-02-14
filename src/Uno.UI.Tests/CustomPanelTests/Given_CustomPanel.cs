@@ -26,7 +26,7 @@ namespace Uno.UI.Tests.CustomPanelTests
 
 			SUT.Measure(default(Windows.Foundation.Size));
 			var size = SUT.DesiredSize;
-			SUT.Arrange(Windows.Foundation.Rect.Empty);
+			SUT.Arrange(default(Windows.Foundation.Rect));
 
 			Assert.AreEqual(default(Windows.Foundation.Size), size);
 			Assert.IsTrue(SUT.GetChildren().None());
