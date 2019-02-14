@@ -20,9 +20,6 @@
 	  <ProjectItem ReplaceParameters="true" TargetFileName="Program.cs">Program.cs</ProjectItem>
 	  <ProjectItem ReplaceParameters="true">LinkerConfig.xml</ProjectItem>
 	  <ProjectItem ReplaceParameters="true">web.config</ProjectItem>
-	  <Folder Name="Fonts" TargetFolderName="Fonts">
-		<ProjectItem ReplaceParameters="true" TargetFileName="winjs-symbols.woff2">winjs-symbols.woff2</ProjectItem>
-	  </Folder>
 	  <Folder Name="WasmCSS" TargetFolderName="WasmCSS">
 		<ProjectItem ReplaceParameters="true" TargetFileName="Fonts.css">Fonts.css</ProjectItem>
 	  </Folder>

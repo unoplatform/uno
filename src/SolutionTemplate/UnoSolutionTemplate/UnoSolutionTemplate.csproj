@@ -91,7 +91,6 @@
       <SubType>Designer</SubType>
     </None>
     <None Include="Wasm\Program.cs" />
-    <None Include="Wasm\Fonts\winjs-symbols.woff2" />
     <None Include="Droid\MainActivity.cs" />
     <None Include="Droid\Properties\AssemblyInfo.cs" />
     <None Include="Droid\Resources\Resource.Designer.cs" />

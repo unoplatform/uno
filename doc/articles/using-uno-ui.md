@@ -479,6 +479,21 @@ The format is the same as Windows, as follows:
 <Setter Property="FontFamily" Value="ms-appx:///Assets/Fonts/yourfont01.ttf#Roboto" />
 ```
 
+### Custom fonts on WebAssembly
+Adding a custom font is done through the use of WebFonts, using a data-URI:
+
+```css
+@font-face {
+  font-family: "Symbols";
+  /* winjs-symbols.woff2: https://github.com/Microsoft/fonts/tree/master/Symbols */
+  src: url(data:application/x-font-woff;charset=utf-8;base64,d09GMgABAAA...) format('woff');
+}
+```
+
+This type of declaration is required to avoid measuring errors if the font requested
+by a `TextBlock` or a `FontIcon` needs to be downloaded first. Specifying it using a
+data-URI ensures the font is readily available.
+
 #### Custom Fonts Notes
 Please note that some custom fonts need the FontFamily and FontWeight properties to be set at the same time in order to work properly on TextBlocks, Runs and for styles Setters.
 If it's your case, here are some examples of code:
