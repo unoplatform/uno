@@ -419,7 +419,7 @@
 		* To remove a value, set it to empty string.
 		* @param styles A dictionary of styles to apply on html element.
 		*/
-		public setStyleNative(pParams:number): boolean {
+		public setStyleNative(pParams: number): boolean {
 
 			const params = WindowManagerSetStylesParams.unmarshal(pParams);
 
@@ -428,16 +428,37 @@
 				throw `Element id ${params.HtmlId} not found.`;
 			}
 
-			for (let i = 0; i < params.Pairs_Length; i+=2) {
-				const key = params.Pairs[i];
-				const value = params.Pairs[i+1];
+			const elementStyle = htmlElement.style;
+			const pairs = params.Pairs;
 
-				htmlElement.style.setProperty(key, value);
+			for (let i = 0; i < params.Pairs_Length; i += 2) {
+				const key = pairs[i];
+				const value = pairs[i + 1];
+
+				elementStyle.setProperty(key, value);
 			}
 
 			if (params.SetAsArranged) {
 				htmlElement.classList.remove(WindowManager.unoUnarrangedClassName);
 			}
+
+			return true;
+		}
+
+		/**
+		* Set a single CSS style of a html element
+		*
+		*/
+		public setStyleDoubleNative(pParams: number): boolean {
+
+			const params = WindowManagerSetStyleDoubleParams.unmarshal(pParams);
+
+			const htmlElement: HTMLElement | SVGElement = this.allActiveElementsById[params.HtmlId];
+			if (!htmlElement) {
+				throw `Element id ${params.HtmlId} not found.`;
+			}
+
+			htmlElement.style.setProperty(params.Name, String(params.Value));
 
 			return true;
 		}
@@ -474,6 +495,61 @@
 			for(const name of names) {
 				htmlElement.style.setProperty(name, "");
 			}
+		}
+
+		/**
+		* Arrange and clips a native elements 
+		*
+		*/
+		public arrangeElementNative(pParams: number): boolean {
+
+			const params = WindowManagerArrangeElementParams.unmarshal(pParams);
+
+			const htmlElement: HTMLElement | SVGElement = this.allActiveElementsById[params.HtmlId];
+			if (!htmlElement) {
+				throw `Element id ${params.HtmlId} not found.`;
+			}
+
+			var style = htmlElement.style;
+
+			style.position = "absolute";
+			style.top = params.Top + "px";
+			style.left = params.Left + "px";
+			style.width = params.Width == NaN ? "auto" : params.Width + "px";
+			style.height = params.Height == NaN ? "auto" : params.Height + "px";
+
+			if (params.Clip) {
+				style.clip = `rect(${params.ClipTop}px, ${params.ClipRight}px, ${params.ClipBottom}px, ${params.ClipLeft}px)`;
+			} else {
+				style.clip = "";
+			}
+
+
+			htmlElement.classList.remove(WindowManager.unoUnarrangedClassName);
+
+			return true;
+		}
+
+		/**
+		* Sets the transform matrix of an element
+		*
+		*/
+		public setElementTransformNative(pParams: number): boolean {
+
+			const params = WindowManagerSetElementTransformParams.unmarshal(pParams);
+
+			const htmlElement: HTMLElement | SVGElement = this.allActiveElementsById[params.HtmlId];
+			if (!htmlElement) {
+				throw `Element id ${params.HtmlId} not found.`;
+			}
+
+			var style = htmlElement.style;
+
+			style.transform = `matrix(${params.M11},${params.M12},${params.M21},${params.M22},${params.M31},${params.M32})`;
+
+			htmlElement.classList.remove(WindowManager.unoUnarrangedClassName);
+
+			return true;
 		}
 
 		/**

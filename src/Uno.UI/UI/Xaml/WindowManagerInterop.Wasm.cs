@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Numerics;
 using System.Runtime.InteropServices;
 using System.Text;
 using Uno.Extensions;
@@ -122,6 +123,53 @@ namespace Uno.UI.Xaml
 
 		#endregion
 
+		#region SetElementTransform
+
+		internal static void SetElementTransform(IntPtr htmlId, Matrix3x2 matrix)
+		{
+			if (UseJavascriptEval)
+			{
+				FormattableString native = $"matrix({matrix.M11},{matrix.M12},{matrix.M21},{matrix.M22},{matrix.M31},{matrix.M32})";
+
+				SetStyles(
+					htmlId,
+					new[] { ("transform", native.ToStringInvariant()) },
+					true
+				);
+			}
+			else
+			{
+				var parms = new WindowManagerSetElementTransformParams
+				{
+					HtmlId = htmlId,
+					M11 = matrix.M11,
+					M12 = matrix.M12,
+					M21 = matrix.M21,
+					M22 = matrix.M22,
+					M31 = matrix.M31,
+					M32 = matrix.M32,
+				};
+
+				TSInteropMarshaller.InvokeJS<WindowManagerSetElementTransformParams, bool>("Uno:setElementTransformNative", parms);
+			}
+		}
+
+		[TSInteropMessage]
+		[StructLayout(LayoutKind.Sequential, Pack = 8)]
+		private struct WindowManagerSetElementTransformParams
+		{
+			public double M11;
+			public double M12;
+			public double M21;
+			public double M22;
+			public double M31;
+			public double M32;
+
+			public IntPtr HtmlId;
+		}
+
+		#endregion
+
 		#region MeasureView
 		internal static Size MeasureView(IntPtr htmlId, Size availableSize)
 		{
@@ -172,6 +220,39 @@ namespace Uno.UI.Xaml
 			public double DesiredHeight;
 		}
 
+
+		#endregion
+
+		#region SetStyleDouble
+		internal static void SetStyleDouble(IntPtr htmlId, string name, double value)
+		{
+			if (UseJavascriptEval)
+			{
+				SetStyles(htmlId, new[] { (name, value.ToString(CultureInfo.InvariantCulture)) });
+			}
+			else
+			{
+				var parms = new WindowManagerSetStyleDoubleParams
+				{
+					HtmlId = htmlId,
+					Name = name,
+					Value = value
+				};
+
+				TSInteropMarshaller.InvokeJS<WindowManagerSetStyleDoubleParams>("Uno:setStyleDoubleNative", parms);
+			}
+		}
+
+		[TSInteropMessage]
+		[StructLayout(LayoutKind.Sequential, Pack = 4)]
+		private struct WindowManagerSetStyleDoubleParams
+		{
+			public IntPtr HtmlId;
+
+			public string Name;
+
+			public double Value;
+		}
 
 		#endregion
 
@@ -580,7 +661,6 @@ namespace Uno.UI.Xaml
 
 		#endregion
 
-
 		#region SetContentHtml
 
 		internal static void SetContentHtml(IntPtr htmlId, string html)
@@ -613,6 +693,81 @@ namespace Uno.UI.Xaml
 			[MarshalAs(TSInteropMarshaller.LPUTF8Str)]
 			public string Html;
 		}
+
+		#endregion
+
+		#region ArrangeElement
+
+		internal static void ArrangeElement(IntPtr htmlId, Rect rect, Rect? clipRect)
+		{
+			if (UseJavascriptEval)
+			{
+				var clipRect2 = clipRect != null
+					? string.Format(
+						CultureInfo.InvariantCulture,
+						"rect({0}px,{1}px,{2}px,{3}px",
+						clipRect.Value.Top,
+						clipRect.Value.Right,
+						clipRect.Value.Bottom,
+						clipRect.Value.Left
+					)
+					: "";
+
+				SetStyles(
+					htmlId,
+					new[] {
+						("position", "absolute"),
+						("top", rect.Top.ToString(CultureInfo.InvariantCulture) + "px"),
+						("left", rect.Left.ToString(CultureInfo.InvariantCulture) + "px"),
+						("width", rect.Width.ToString(CultureInfo.InvariantCulture) + "px"),
+						("height", rect.Height.ToString(CultureInfo.InvariantCulture) + "px"),
+						("clip", clipRect2)
+					}
+					, true
+				);
+			}
+			else
+			{
+				var parms = new WindowManagerArrangeElementParams()
+				{
+					HtmlId = htmlId,
+					Top = rect.Top,
+					Left = rect.Left,
+					Width = rect.Width,
+					Height = rect.Height
+				};
+
+				if(clipRect != null)
+				{
+					parms.Clip = true;
+					parms.ClipTop = clipRect.Value.Top;
+					parms.ClipLeft = clipRect.Value.Left;
+					parms.ClipBottom = clipRect.Value.Bottom;
+					parms.ClipRight = clipRect.Value.Right;
+				}
+
+				TSInteropMarshaller.InvokeJS<WindowManagerArrangeElementParams>("Uno:arrangeElementNative", parms);
+			}
+		}
+
+		[TSInteropMessage]
+		[StructLayout(LayoutKind.Sequential, Pack = 4)]
+		private struct WindowManagerArrangeElementParams
+		{
+			public double Top;
+			public double Left;
+			public double Width;
+			public double Height;
+
+			public double ClipTop;
+			public double ClipLeft;
+			public double ClipBottom;
+			public double ClipRight;
+
+			public IntPtr HtmlId;
+			public bool Clip;
+		}
+
 
 		#endregion
 	}
