@@ -78,8 +78,14 @@ namespace Uno.UI
 			// [rect] displayRect	: display area = screen - (bottom: nav_bar)
 			// [rect] usableRect	: usable area = screen - (top: status_bar) - (bottom: keyboard + nav_bar)
 			var navigationRect = new Rect(0, displayRect.Bottom, realMetrics.WidthPixels, realMetrics.HeightPixels);
-			var keyboardRect = new Rect(0, usableRect.Bottom, realMetrics.WidthPixels, navigationRect.Top);
+			var keyboardRect = new Rect(0, usableRect.Bottom, realMetrics.WidthPixels, displayRect.Bottom);
 			var occupiedRect = new Rect(0, usableRect.Bottom, realMetrics.WidthPixels, realMetrics.HeightPixels);
+
+			// On dockable / undockable navigation bar devices, the keyboardRect can have a negative height. We need to avoid that behavior.
+			if(keyboardRect.Bottom < keyboardRect.Top)
+			{
+				keyboardRect.Bottom = keyboardRect.Top;
+			}
 
 			_onLayoutChanged?.Invoke(keyboardRect, navigationRect, occupiedRect);
 

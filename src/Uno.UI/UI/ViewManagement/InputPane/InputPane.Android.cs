@@ -22,6 +22,9 @@ namespace Windows.UI.ViewManagement
 	{
 		private IDisposable _padScrollContentPresenter;
 
+		// Android specific :
+		// Since Android has un-dockable navigation bar, some calculations can depends of the keyboard and/or navigation bar size.
+		// => OccludedRect = KeyboardRect + NavigationBarRect
 		public Rect KeyboardRect { get; internal set; }
 
 		public Rect NavigationBarRect { get; internal set; }

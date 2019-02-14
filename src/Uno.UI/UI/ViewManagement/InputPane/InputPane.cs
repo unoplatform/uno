@@ -84,7 +84,11 @@ namespace Windows.UI.ViewManagement
 
 		internal void OnOccludedRectChanged()
 		{
+#if __ANDROID__
+			var args = new InputPaneVisibilityEventArgs(KeyboardRect);
+#else
 			var args = new InputPaneVisibilityEventArgs(OccludedRect);
+#endif
 
 			if (Visible)
 			{
