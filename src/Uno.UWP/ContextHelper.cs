@@ -10,6 +10,8 @@ using Android.OS;
 using Android.Runtime;
 using Android.Views;
 using Android.Widget;
+using Uno.Extensions;
+using Uno.Logging;
 
 namespace Uno.UI
 {
@@ -26,10 +28,12 @@ namespace Uno.UI
 			{
 				if (_current == null)
 				{
-					throw new InvalidOperationException(
-						"ContextHelper.Current not defined. " +
-						"For compatibility with Uno, you should ensure your `MainActivity` " +
-						"is deriving from Windows.UI.Xaml.ApplicationActivity.");
+					typeof(ContextHelper)
+						.Log()
+						.Warn(
+							"ContextHelper.Current not defined. " +
+							"For compatibility with Uno, you should ensure your `MainActivity` " +
+							"is deriving from Windows.UI.Xaml.ApplicationActivity.");
 				}
 				return _current;
 			}
