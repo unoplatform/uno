@@ -237,7 +237,8 @@
 										<Button.Flyout>
 											<Flyout Placement="Bottom">
 												<Flyout.FlyoutPresenterStyle>
-													<Style TargetType="FlyoutPresenter">
+													<!-- Based on is required until https://github.com/nventive/Uno/issues/119 is fixed -->
+													<Style TargetType="FlyoutPresenter" BasedOn="{StaticResource DefaultFlyoutPresenter}">
 														<Setter Property="Padding" Value="0,8" />
 														<!-- Set negative top margin to make the flyout align exactly with the button -->
 														<Setter Property="Margin" Value="0,-4,0,0" />
