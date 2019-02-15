@@ -549,7 +549,7 @@ namespace Windows.UI.Xaml.Controls
 				throw new InvalidOperationException("The template part ScrollContentPresenter could not be found or is not a ScrollContentPresenter");
 			}
 
-			_sv.Content = Content as View;
+			ApplyScrollContentPresenterContent();
 
 			// Apply correct initial zoom settings
 			OnZoomModeChanged(ZoomMode);
@@ -571,14 +571,33 @@ namespace Windows.UI.Xaml.Controls
 				// for the lack of TemplatedParentScope support
 				ClearContentTemplatedParent(oldValue);
 
-				_sv.Content = Content as View;
-
-				// Propagate the ScrollViewer's own templated parent, instead of 
-				// the scrollviewer itself (through ScrollContentPreset
-				SynchronizeContentTemplatedParent(TemplatedParent);
+				ApplyScrollContentPresenterContent();
 			}
 
 			UpdateSizeChangedSubscription();
+		}
+
+		private void ApplyScrollContentPresenterContent()
+		{
+			// Stop the automatic propagation of the templated parent on the Content
+			// This prevents issues when the a ScrollViewer is hosted in a control template
+			// and its content is a ContentControl or ContentPresenter, which has a TemplateBinding
+			// on the Content property. This can make the Content added twice in the visual tree.
+			StopContentTemplatedParentPropagation();
+
+			_sv.Content = Content as View;
+
+			// Propagate the ScrollViewer's own templated parent, instead of 
+			// the scrollviewer itself (through ScrollContentPreset
+			SynchronizeContentTemplatedParent(TemplatedParent);
+		}
+
+		private void StopContentTemplatedParentPropagation()
+		{
+			if (Content is IDependencyObjectStoreProvider provider)
+			{
+				provider.Store.SetValue(provider.Store.TemplatedParentProperty, null, DependencyPropertyValuePrecedences.Local);
+			}
 		}
 
 		private void UpdateSizeChangedSubscription(bool isCleanupRequired = false)

@@ -24,7 +24,7 @@
 	<x:Double x:Key="FlyoutThemeTouchMinWidth">240</x:Double>
 
 	<!-- Default style for Windows.UI.Xaml.Controls.FlyoutPresenter -->
-	<Style TargetType="FlyoutPresenter">
+	<Style x:Key="DefaultFlyoutPresenter"  TargetType="FlyoutPresenter">
 		<Setter Property="HorizontalContentAlignment" Value="Stretch" />
 		<Setter Property="VerticalContentAlignment" Value="Stretch" />
 		<Setter Property="IsTabStop" Value="False" />
@@ -71,6 +71,8 @@
 			</Setter.Value>
 		</Setter>
 	</Style>
+
+	<Style TargetType="FlyoutPresenter" BasedOn="{StaticResource DefaultFlyoutPresenter}"/>
 
 
 </ResourceDictionary>
