@@ -48,6 +48,8 @@ namespace Windows.UI.Xaml.Shapes
 				("width", childRect.Width.ToStringInvariant()),
 				("height", childRect.Height.ToStringInvariant())
 			);
+
+			_rectangle.Clip = new RectangleGeometry() { Rect = new Rect(0, 0, finalSize.Width, finalSize.Height) };
 			
 			return finalSize;
 		}
