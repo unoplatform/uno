@@ -78,7 +78,7 @@ namespace Windows.UI.Xaml.Controls
 
 		int m_indexOfLastSelectedItemInTopNav = 0;
 		object m_lastSelectedItemPendingAnimationInTopNav;
-		List<int> m_itemsRemovedFromMenuFlyout;
+		List<int> m_itemsRemovedFromMenuFlyout = new List<int>();
 
 		//winrt::ListView::ItemClick_revoker m_leftNavListViewItemClickRevoker =;
 		//winrt::ListView::Loaded_revoker m_leftNavListViewLoadedRevoker =;
