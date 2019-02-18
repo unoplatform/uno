@@ -24,13 +24,17 @@ namespace Windows.Foundation
 
 		public Rect(double x, double y, double width, double height)
 		{
-			if (width < 0)
+			if (!Uno.FoundationFeatureConfiguration.Rect.AllowNegativeWidthHeight)
 			{
-				throw new ArgumentOutOfRangeException(nameof(width), _negativeErrorMessage);
-			}
-			if (height < 0)
-			{
-				throw new ArgumentOutOfRangeException(nameof(width), _negativeErrorMessage);
+				if (width < 0)
+				{
+					throw new ArgumentOutOfRangeException(nameof(width), _negativeErrorMessage);
+				}
+
+				if (height < 0)
+				{
+					throw new ArgumentOutOfRangeException(nameof(width), _negativeErrorMessage);
+				}
 			}
 
 			X = x;
