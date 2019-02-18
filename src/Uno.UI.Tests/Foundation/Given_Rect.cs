@@ -11,6 +11,32 @@ namespace Uno.UI.Tests.Foundation
 	[TestClass]
 	public class Given_Rect
 	{
+		[TestInitialize]
+		public void Init() => Uno.FoundationFeatureConfiguration.Rect.AllowNegativeWidthHeight = false;
+
+		[TestCleanup]
+		public void Cleanup() => Uno.FoundationFeatureConfiguration.Rect.RestoreDefaults();
+
+		[TestMethod]
+		public void When_Create_WithNegativeWidth_With_FeatureFlagEnabled()
+		{
+			Uno.FoundationFeatureConfiguration.Rect.AllowNegativeWidthHeight = true;
+
+			var sut = new Rect(0, 0, -42, 0);
+
+			Assert.AreEqual(-42, sut.Width);
+		}
+
+		[TestMethod]
+		public void When_Create_WithNegativeHeight_With_FeatureFlagEnabled()
+		{
+			Uno.FoundationFeatureConfiguration.Rect.AllowNegativeWidthHeight = true;
+
+			var sut = new Rect(0, 0, 0, -42);
+
+			Assert.AreEqual(-42, sut.Height);
+		}
+
 		[TestMethod]
 		[ExpectedException(typeof(ArgumentOutOfRangeException))]
 		public void When_Create_WithNegativeWidth()
