@@ -117,10 +117,7 @@ namespace Windows.UI.Xaml.Controls
 
 			Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
 			{
-				if (_downloadProgressIndicator != null)
-				{
-					_downloadProgressIndicator.Value = (double)args;
-				}
+				_downloadProgressIndicator.Maybe(p => p.Value = (double)args);
 			});
 		}
 
@@ -129,12 +126,12 @@ namespace Windows.UI.Xaml.Controls
 			Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
 			{
 				var duration = args as TimeSpan? ?? TimeSpan.Zero;
-				_progressSlider.Minimum = 0;
-				_progressSlider.Maximum = duration.TotalSeconds;
+				_progressSlider.Maybe(p => p.Minimum = 0);
+				_progressSlider.Maybe(p => p.Maximum = duration.TotalSeconds);
 
 				if (_mediaPlayer.PlaybackSession.PlaybackState != MediaPlaybackState.Playing && _mediaPlayer.PlaybackSession.PlaybackState != MediaPlaybackState.Paused)
 				{
-					_timeRemainingElement.Text = $"{duration.TotalHours:0}:{duration.Minutes:00}:{duration.Seconds:00}";
+					_timeRemainingElement.Maybe(p => p.Text = $"{duration.TotalHours:0}:{duration.Minutes:00}:{duration.Seconds:00}");
 				}
 			});
 		}
@@ -144,11 +141,11 @@ namespace Windows.UI.Xaml.Controls
 			Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
 			{
 				var elapsed = args as TimeSpan? ?? TimeSpan.Zero;
-				_timeElapsedElement.Text = $"{elapsed.TotalHours:0}:{elapsed.Minutes:00}:{elapsed.Seconds:00}";
-				_progressSlider.Value = elapsed.TotalSeconds;
+				_timeElapsedElement.Maybe(p => p.Text = $"{elapsed.TotalHours:0}:{elapsed.Minutes:00}:{elapsed.Seconds:00}");
+				_progressSlider.Maybe(p => p.Value = elapsed.TotalSeconds);
 
 				var remaining = _mediaPlayer.PlaybackSession.NaturalDuration - elapsed;
-				_timeRemainingElement.Text = $"{remaining.TotalHours:0}:{remaining.Minutes:00}:{remaining.Seconds:00}";
+				_timeRemainingElement.Maybe(p => p.Text = $"{remaining.TotalHours:0}:{remaining.Minutes:00}:{remaining.Seconds:00}");
 			});
 		}
 
