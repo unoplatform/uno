@@ -129,6 +129,10 @@
   <ItemGroup>
     <ProjectReference Include="..\..\Uno.UI.RuntimeTests\Uno.UI.RuntimeTests.csproj" />
     <ProjectReference Include="..\..\Uno.Foundation\Uno.Foundation.csproj" />
+    <ProjectReference Include="..\..\Uno.UI.Toolkit\Uno.UI.Toolkit.csproj">
+      <Project>{2eaf39e3-2ac9-457a-a5b2-47d6548799b3}</Project>
+      <Name>Uno.UI.Toolkit</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\Uno.UI\Uno.UI.csproj" />
     <ProjectReference Include="..\..\Uno.UWP\Uno.csproj" />
   </ItemGroup>
