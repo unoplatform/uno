@@ -390,13 +390,9 @@ namespace Windows.UI.Xaml.Controls
 				var d = new CompositeDisposable();
 
 				m_settingsItem = settingsItem;
-#if IS_UNO
-				settingsItem.PointerPressed += OnSettingsTapped;
-				d.Add(() => settingsItem.PointerPressed -= OnSettingsTapped);
-#else
+
 				settingsItem.Tapped += OnSettingsTapped;
 				d.Add(() => settingsItem.Tapped -= OnSettingsTapped);
-#endif
 
 				settingsItem.KeyDown += OnSettingsKeyDown;
 				d.Add(() => settingsItem.KeyDown -= OnSettingsKeyDown);
@@ -884,11 +880,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-#if IS_UNO
-		void OnSettingsTapped(object sender, PointerRoutedEventArgs args)
-#else
 		void OnSettingsTapped(object sender, TappedRoutedEventArgs args)
-#endif
 		{
 			OnSettingsInvoked();
 		}

@@ -666,7 +666,7 @@ var Uno;
                 return true;
             }
             /**
-            * Arrange and clips a native elements
+            * Sets the transform matrix of an element
             *
             */
             setElementTransformNative(pParams) {

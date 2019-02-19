@@ -249,7 +249,7 @@ declare namespace Uno.UI {
         */
         arrangeElementNative(pParams: number): boolean;
         /**
-        * Arrange and clips a native elements
+        * Sets the transform matrix of an element
         *
         */
         setElementTransformNative(pParams: number): boolean;
