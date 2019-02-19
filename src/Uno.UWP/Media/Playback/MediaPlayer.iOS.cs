@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using AVFoundation;
@@ -14,7 +15,7 @@ namespace Windows.Media.Playback
 {
 	public partial class MediaPlayer : NSObject
 	{
-		private AVPlayer _player;
+		private AVQueuePlayer _player;
 		private AVPlayerLayer _videoLayer;
 		private NSObject _periodicTimeObserverObject;
 		private NSObject _itemFailedToPlayToEndTimeNotification;
@@ -48,6 +49,7 @@ namespace Windows.Media.Playback
 					_player.CurrentItem?.RemoveObserver(this, new NSString("duration"), _player.Handle);
 					_player.RemoveObserver(this, new NSString("rate"), RateObservationContext.Handle);
 					_player.RemoveTimeObserver(_periodicTimeObserverObject);
+					_player.RemoveAllItems();
 				}
 				finally
 				{
@@ -66,7 +68,7 @@ namespace Windows.Media.Playback
 
 		private void InitializePlayer()
 		{
-			_player = new AVPlayer();
+			_player = new AVQueuePlayer();
 			_videoLayer = AVPlayerLayer.FromPlayer(_player);
 			_videoLayer.Frame = ((VideoSurface)RenderSurface).Frame;
 			_videoLayer.VideoGravity = AVLayerVideoGravity.ResizeAspect;
@@ -87,7 +89,7 @@ namespace Windows.Media.Playback
 
 			_itemFailedToPlayToEndTimeNotification = AVPlayerItem.Notifications.ObserveItemFailedToPlayToEndTime((sender, args) => OnMediaFailed(new Exception(args.Error.LocalizedDescription)));
 			_playbackStalledNotification = AVPlayerItem.Notifications.ObservePlaybackStalled((sender, args) => OnMediaFailed());
-			_didPlayToEndTimeNotification = AVPlayerItem.Notifications.ObserveDidPlayToEndTime((sender, args) => OnMediaEnded());
+			_didPlayToEndTimeNotification = AVPlayerItem.Notifications.ObserveDidPlayToEndTime((sender, args) => OnMediaEnded(sender, args));
 
 			_periodicTimeObserverObject = _player.AddPeriodicTimeObserver(new CMTime(1, 4), DispatchQueue.MainQueue, delegate
 			{
@@ -121,14 +123,26 @@ namespace Windows.Media.Playback
 
 				PlaybackSession.PlaybackState = MediaPlaybackState.Opening;
 
-				var nsAsset = AVAsset.FromUrl(DecodeUri(((MediaSource)Source).Uri));
-				var streamingItem = AVPlayerItem.FromAsset(nsAsset);
-
 				_player.CurrentItem?.RemoveObserver(this, new NSString("duration"), _player.Handle);
 				_player.CurrentItem?.RemoveObserver(this, new NSString("status"), _player.Handle);
 				_player.CurrentItem?.RemoveObserver(this, new NSString("loadedTimeRanges"), _player.Handle);
 
-				_player.ReplaceCurrentItemWithPlayerItem(streamingItem);
+				if (Source is MediaPlaybackList)
+				{
+					var items = ((MediaPlaybackList)Source).Items;
+					foreach (var item in items)
+					{
+						var asset = AVAsset.FromUrl(DecodeUri(item.Source.Uri));
+						_player.InsertItem(new AVPlayerItem(asset), null);
+					}
+				}
+				else
+				{
+					var nsAsset = AVAsset.FromUrl(DecodeUri(((MediaSource)Source).Uri));
+					var streamingItem = AVPlayerItem.FromAsset(nsAsset);
+
+					_player.ReplaceCurrentItemWithPlayerItem(streamingItem);
+				}
 
 				_player.CurrentItem.AddObserver(this, new NSString("duration"), NSKeyValueObservingOptions.Initial, _player.Handle);
 				_player.CurrentItem.AddObserver(this, new NSString("status"), NSKeyValueObservingOptions.New | NSKeyValueObservingOptions.Initial, _player.Handle);
@@ -201,9 +215,15 @@ namespace Windows.Media.Playback
 			}
 		}
 
-		private void OnMediaEnded()
+		private void OnMediaEnded(object sender, NSNotificationEventArgs args)
 		{
 			MediaEnded?.Invoke(this, null);
+
+			if (Source is MediaPlaybackList && (AVPlayerItem)args.Notification.Object != _player.Items.Last())
+			{
+				return;
+			}
+
 			PlaybackSession.PlaybackState = MediaPlaybackState.None;
 		}
 

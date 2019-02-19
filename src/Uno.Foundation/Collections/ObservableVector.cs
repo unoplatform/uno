@@ -6,7 +6,7 @@ using Windows.Foundation.Collections;
 
 namespace Windows.Foundation.Collections
 {
-	internal class ObservableVector<T> : IObservableVector<T>
+	public class ObservableVector<T> : IObservableVector<T>
 	{
 		private readonly List<T> _list = new List<T>();
 
