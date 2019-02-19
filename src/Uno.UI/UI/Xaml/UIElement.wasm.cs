@@ -264,6 +264,7 @@ namespace Windows.UI.Xaml
 			PointerEventExtractor, // See PayloadToPointerArgs
 			TappedEventExtractor,
 			KeyboardEventExtractor,
+			FocusEventExtractor,
 		}
 
 		private class EventRegistration
@@ -476,17 +477,28 @@ namespace Windows.UI.Xaml
 		public static bool DispatchEvent(int handle, string eventName, string eventArgs)
 		{
 			// Dispatch to right object, if we can find it
-			var gcHandle = GCHandle.FromIntPtr((IntPtr)handle);
-			if (gcHandle.IsAllocated && gcHandle.Target is UIElement element)
+			if (GetElementFromHandle(handle) is UIElement element)
 			{
 				return element.InternalDispatchEvent(eventName, nativeEventPayload: eventArgs);
 			}
 			else
 			{
-				Console.Error.WriteLine($"No UIElement found for htmlId \"{handle}\" {gcHandle.IsAllocated}.");
+				Console.Error.WriteLine($"No UIElement found for htmlId \"{handle}\"");
 			}
 
 			return false;
+		}
+
+		private static UIElement GetElementFromHandle(int handle)
+		{
+			var gcHandle = GCHandle.FromIntPtr((IntPtr)handle);
+
+			if(gcHandle.IsAllocated && gcHandle.Target is UIElement element)
+			{
+				return element;
+			}
+
+			return null;
 		}
 
 		private Rect _arranged;
@@ -791,21 +803,22 @@ namespace Windows.UI.Xaml
 			}
 		}
 
-		private static Dictionary<RoutedEvent, string> RoutedEventNames = new Dictionary<RoutedEvent, string>
-		{
-			// Add more events
-			{ PointerPressedEvent, "pointerdown" },
-			{ PointerReleasedEvent, "pointerup" },
-			{ PointerMovedEvent, "pointermove" },
-			{ PointerEnteredEvent, "pointerenter" },
-			{ PointerExitedEvent, "pointerleave" },
-			{ KeyDownEvent, "keydown" },
-			{ KeyUpEvent, "keyup" },
-			{ GotFocusEvent, "focus" },
-			{ LostFocusEvent, "focusout" },
-			{ TappedEvent, "click" },
-			{ DoubleTappedEvent, "dblclick" }
-		};
+		private static Dictionary<RoutedEvent, (string eventName, string domEventName)> RoutedEventNames
+			= new Dictionary<RoutedEvent, (string, string)>
+			{
+				// Add more events
+				{ PointerPressedEvent, (nameof(PointerPressedEvent), "pointerdown") },
+				{ PointerReleasedEvent, (nameof(PointerReleasedEvent), "pointerup") },
+				{ PointerMovedEvent, (nameof(PointerMovedEvent), "pointermove") },
+				{ PointerEnteredEvent, (nameof(PointerEnteredEvent), "pointerenter") },
+				{ PointerExitedEvent, (nameof(PointerExitedEvent), "pointerleave") },
+				{ KeyDownEvent, (nameof(KeyDownEvent), "keydown") },
+				{ KeyUpEvent, (nameof(KeyUpEvent), "keyup") },
+				{ GotFocusEvent, (nameof(GotFocusEvent), "focus") },
+				{ LostFocusEvent, (nameof(LostFocusEvent), "focusout") },
+				{ TappedEvent, (nameof(TappedEvent), "click") },
+				{ DoubleTappedEvent, (nameof(DoubleTappedEvent), "dblclick") }
+			};
 
 		// We keep track of registered routed events to avoid registering the same one twice (mainly because RemoveHandler is not implemented)
 		private HashSet<RoutedEvent> _registeredRoutedEvents = new HashSet<RoutedEvent>();
@@ -814,54 +827,69 @@ namespace Windows.UI.Xaml
 		{
 			if (!_registeredRoutedEvents.Contains(routedEvent))
 			{
-				this.Log().DebugIfEnabled(() => $"Registering {routedEvent.Name} on {this}.");
+				if (this.Log().IsEnabled(LogLevel.Debug))
+				{
+					this.Log().Debug($"Registering {routedEvent.Name} on {this}.");
+				}
 
 				_registeredRoutedEvents.Add(routedEvent);
-				if (RoutedEventNames.TryGetValue(routedEvent, out string eventName))
+				if (RoutedEventNames.TryGetValue(routedEvent, out var eventDescription))
 				{
 					HtmlEventFilter? eventFilter;
 					HtmlEventExtractor? eventExtractor;
 					Func<string, EventArgs> payloadConverter;
 
-					// TODO: How expensive is this?
-					switch (handler)
+					switch (eventDescription.eventName)
 					{
-						case PointerEventHandler pointer:
+						case nameof(PointerPressedEvent):
+						case nameof(PointerReleasedEvent):
+						case nameof(PointerMovedEvent):
+						case nameof(PointerEnteredEvent):
+						case nameof(PointerExitedEvent):
 							eventFilter = (routedEvent == PointerPressedEvent || routedEvent == PointerReleasedEvent)
 								? HtmlEventFilter.LeftPointerEventFilter
 								: (HtmlEventFilter?) null;
 							eventExtractor = HtmlEventExtractor.PointerEventExtractor;
 							payloadConverter = PayloadToPointerArgs;
 							break;
-						case TappedEventHandler tapped:
+
+						case nameof(TappedEvent):
 							eventFilter = HtmlEventFilter.LeftPointerEventFilter;
 							eventExtractor = HtmlEventExtractor.TappedEventExtractor;
 							payloadConverter = PayloadToTappedArgs;
 							break;
-						case DoubleTappedEventHandler doubleTapped:
+
+						case nameof(DoubleTappedEvent):
 							eventFilter = HtmlEventFilter.LeftPointerEventFilter;
 							eventExtractor = HtmlEventExtractor.TappedEventExtractor;
 							payloadConverter = PayloadToTappedArgs;
 							break;
-						case KeyEventHandler key:
+
+						case nameof(KeyDownEvent):
 							eventFilter = null;
 							eventExtractor = HtmlEventExtractor.KeyboardEventExtractor;
 							payloadConverter = PayloadToKeyArgs;
 							break;
+
+						case nameof(GotFocusEvent):
+						case nameof(LostFocusEvent):
+							eventFilter = null;
+							eventExtractor = HtmlEventExtractor.FocusEventExtractor;
+							payloadConverter = PayloadToFocusArgs;
+							break;
+
 						default:
 							eventFilter = null;
 							eventExtractor = null;
-							payloadConverter = null;
+							payloadConverter = s => new RoutedEventArgs { OriginalSource = this };
 							break;
 					}
 
 					bool RoutedEventHandler(object sender, RoutedEventArgs args)
-					{
-						return RaiseEvent(routedEvent, args);
-					}
+						=> RaiseEvent(routedEvent, args);
 
 					RegisterEventHandler(
-						eventName,
+						eventDescription.domEventName,
 						handler: new RoutedEventHandlerWithHandled(RoutedEventHandler),
 						onCapturePhase: false,
 						canBubbleNatively: true,
@@ -932,6 +960,25 @@ namespace Windows.UI.Xaml
 			{
 				OriginalSource = this,
 				Key = System.VirtualKeyHelper.FromKey(payload),
+			};
+		}
+
+		private RoutedEventArgs PayloadToFocusArgs(string payload)
+		{
+			if(int.TryParse(payload, out int xamlHandle))
+			{
+				if(GetElementFromHandle(xamlHandle) is UIElement element)
+				{
+					return new RoutedEventArgs
+					{
+						OriginalSource = element,
+					};
+				}
+			}
+
+			return new KeyRoutedEventArgs
+			{
+				OriginalSource = this,
 			};
 		}
 
