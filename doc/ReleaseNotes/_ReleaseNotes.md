@@ -179,6 +179,7 @@
  * #376 iOS project compilation fails: Can't resolve the reference 'System.Void Windows.UI.Xaml.Documents.BlockCollection::Add(Windows.UI.Xaml.Documents.Block)
  * 138099, 138463 [Android] fixed `ListView` scrolls up when tapping an item at the bottom of screen
  * 140548 [iOS] fixed `CommandBar` not rendering until reloaded
+ * [147530] Add a missing `global::` qualifier in the `BindableMetadataGenerator`
 
 ## Release 1.41
 
