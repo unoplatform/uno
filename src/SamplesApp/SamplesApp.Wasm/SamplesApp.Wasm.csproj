@@ -57,6 +57,7 @@
 	<ItemGroup>
 		<ProjectReference Include="..\..\Uno.Foundation\Uno.Foundation.csproj" />
 		<ProjectReference Include="..\..\Uno.UI.RuntimeTests\Uno.UI.RuntimeTests.csproj" />
+		<ProjectReference Include="..\..\Uno.UI.Toolkit\Uno.UI.Toolkit.csproj" />
 		<ProjectReference Include="..\..\Uno.UI.Wasm.Tests\Uno.UI.Wasm.Tests.csproj" />
 		<ProjectReference Include="..\..\Uno.UI\Uno.UI.csproj" />
 		<ProjectReference Include="..\..\Uno.UWP\Uno.csproj" />

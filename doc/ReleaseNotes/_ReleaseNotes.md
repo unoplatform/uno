@@ -143,6 +143,7 @@
  * [Wasm] Don't fail if the dispatcher queue is empty
  * 146648 [Android] fixed ListView grouped items corruption on scroll
  * [Wasm] Fix `ListView` recycling when the `XamlParent` is not available for `AutoSuggestBox`
+ * 147405 Fix NRE on some MediaTransportControl controls
 
 ## Release 1.42
 
