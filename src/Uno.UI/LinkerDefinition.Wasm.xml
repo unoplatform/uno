@@ -9,6 +9,7 @@
     <type fullname="Windows.UI.Xaml.Media.CornerRadiusConverter" />
     <type fullname="Uno.Media.GeometryConverter" />
     <type fullname="Windows.UI.Xaml.ThicknessConverter" />
+    <type fullname="Windows.UI.Xaml.ObservableVectorWrapper" />
   </assembly>
   
   <assembly fullname="Uno">
