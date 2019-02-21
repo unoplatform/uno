@@ -100,6 +100,15 @@ namespace Uno.Analyzers
 					},
 					new ValidationEntry{
 						Methods = new[] {
+							"TrimStart",
+							"TrimEnd",
+						},
+						Validation = new Func<IMethodSymbol, bool>(
+							m => m.Parameters.Length == 0
+						)
+					},
+					new ValidationEntry{
+						Methods = new[] {
 							"Replace",
 						},
 						Validation = new Func<IMethodSymbol, bool>(
