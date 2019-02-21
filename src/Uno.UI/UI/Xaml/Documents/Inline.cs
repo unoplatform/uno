@@ -19,7 +19,7 @@ namespace Windows.UI.Xaml.Documents
 
 		internal void InvalidateInlines()
 		{
-#if !NET46
+#if !NET461
 			switch (this.GetParent())
 			{
 				case Span span:

@@ -13,14 +13,14 @@ namespace Windows.UI.Xaml.Controls
 		// Skipping already declared method Windows.UI.Xaml.Controls.DataTemplateSelector.SelectTemplate(object)
 		// Skipping already declared method Windows.UI.Xaml.Controls.DataTemplateSelector.SelectTemplateCore(object, Windows.UI.Xaml.DependencyObject)
 		// Skipping already declared method Windows.UI.Xaml.Controls.DataTemplateSelector.SelectTemplateCore(object)
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.UI.Xaml.UIElement GetElement( global::Windows.UI.Xaml.ElementFactoryGetArgs args)
 		{
 			throw new global::System.NotImplementedException("The member UIElement DataTemplateSelector.GetElement(ElementFactoryGetArgs args) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  void RecycleElement( global::Windows.UI.Xaml.ElementFactoryRecycleArgs args)
 		{

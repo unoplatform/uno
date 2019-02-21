@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Input.Inking.Analysis
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class InkAnalysisParagraph : global::Windows.UI.Input.Inking.Analysis.IInkAnalysisNode
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Foundation.Rect BoundingRect
 		{
@@ -17,7 +17,7 @@ namespace Windows.UI.Input.Inking.Analysis
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::System.Collections.Generic.IReadOnlyList<global::Windows.UI.Input.Inking.Analysis.IInkAnalysisNode> Children
 		{
@@ -27,7 +27,7 @@ namespace Windows.UI.Input.Inking.Analysis
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  uint Id
 		{
@@ -37,7 +37,7 @@ namespace Windows.UI.Input.Inking.Analysis
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.UI.Input.Inking.Analysis.InkAnalysisNodeKind Kind
 		{
@@ -47,7 +47,7 @@ namespace Windows.UI.Input.Inking.Analysis
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.UI.Input.Inking.Analysis.IInkAnalysisNode Parent
 		{
@@ -57,7 +57,7 @@ namespace Windows.UI.Input.Inking.Analysis
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::System.Collections.Generic.IReadOnlyList<global::Windows.Foundation.Point> RotatedBoundingRect
 		{
@@ -67,7 +67,7 @@ namespace Windows.UI.Input.Inking.Analysis
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  string RecognizedText
 		{
@@ -84,7 +84,7 @@ namespace Windows.UI.Input.Inking.Analysis
 		// Forced skipping of method Windows.UI.Input.Inking.Analysis.InkAnalysisParagraph.RotatedBoundingRect.get
 		// Forced skipping of method Windows.UI.Input.Inking.Analysis.InkAnalysisParagraph.Children.get
 		// Forced skipping of method Windows.UI.Input.Inking.Analysis.InkAnalysisParagraph.Parent.get
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::System.Collections.Generic.IReadOnlyList<uint> GetStrokeIds()
 		{

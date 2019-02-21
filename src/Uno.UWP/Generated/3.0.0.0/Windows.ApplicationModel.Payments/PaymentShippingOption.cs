@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.ApplicationModel.Payments
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class PaymentShippingOption 
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  string Tag
 		{
@@ -21,7 +21,7 @@ namespace Windows.ApplicationModel.Payments
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  string Label
 		{
@@ -35,7 +35,7 @@ namespace Windows.ApplicationModel.Payments
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  bool IsSelected
 		{
@@ -49,7 +49,7 @@ namespace Windows.ApplicationModel.Payments
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.ApplicationModel.Payments.PaymentCurrencyAmount Amount
 		{
@@ -63,7 +63,7 @@ namespace Windows.ApplicationModel.Payments
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public PaymentShippingOption( string label,  global::Windows.ApplicationModel.Payments.PaymentCurrencyAmount amount) 
 		{
@@ -71,7 +71,7 @@ namespace Windows.ApplicationModel.Payments
 		}
 		#endif
 		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentShippingOption.PaymentShippingOption(string, Windows.ApplicationModel.Payments.PaymentCurrencyAmount)
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public PaymentShippingOption( string label,  global::Windows.ApplicationModel.Payments.PaymentCurrencyAmount amount,  bool selected) 
 		{
@@ -79,7 +79,7 @@ namespace Windows.ApplicationModel.Payments
 		}
 		#endif
 		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentShippingOption.PaymentShippingOption(string, Windows.ApplicationModel.Payments.PaymentCurrencyAmount, bool)
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public PaymentShippingOption( string label,  global::Windows.ApplicationModel.Payments.PaymentCurrencyAmount amount,  bool selected,  string tag) 
 		{

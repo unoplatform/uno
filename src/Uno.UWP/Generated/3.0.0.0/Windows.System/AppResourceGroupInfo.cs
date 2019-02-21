@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.System
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class AppResourceGroupInfo 
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::System.Guid InstanceId
 		{
@@ -17,7 +17,7 @@ namespace Windows.System
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  bool IsShared
 		{
@@ -29,49 +29,49 @@ namespace Windows.System
 		#endif
 		// Forced skipping of method Windows.System.AppResourceGroupInfo.InstanceId.get
 		// Forced skipping of method Windows.System.AppResourceGroupInfo.IsShared.get
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::System.Collections.Generic.IList<global::Windows.System.AppResourceGroupBackgroundTaskReport> GetBackgroundTaskReports()
 		{
 			throw new global::System.NotImplementedException("The member IList<AppResourceGroupBackgroundTaskReport> AppResourceGroupInfo.GetBackgroundTaskReports() is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.System.AppResourceGroupMemoryReport GetMemoryReport()
 		{
 			throw new global::System.NotImplementedException("The member AppResourceGroupMemoryReport AppResourceGroupInfo.GetMemoryReport() is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::System.Collections.Generic.IList<global::Windows.System.Diagnostics.ProcessDiagnosticInfo> GetProcessDiagnosticInfos()
 		{
 			throw new global::System.NotImplementedException("The member IList<ProcessDiagnosticInfo> AppResourceGroupInfo.GetProcessDiagnosticInfos() is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.System.AppResourceGroupStateReport GetStateReport()
 		{
 			throw new global::System.NotImplementedException("The member AppResourceGroupStateReport AppResourceGroupInfo.GetStateReport() is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Foundation.IAsyncOperation<global::Windows.System.AppExecutionStateChangeResult> StartSuspendAsync()
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<AppExecutionStateChangeResult> AppResourceGroupInfo.StartSuspendAsync() is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Foundation.IAsyncOperation<global::Windows.System.AppExecutionStateChangeResult> StartResumeAsync()
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<AppExecutionStateChangeResult> AppResourceGroupInfo.StartResumeAsync() is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Foundation.IAsyncOperation<global::Windows.System.AppExecutionStateChangeResult> StartTerminateAsync()
 		{

@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Graphics.Display
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class AdvancedColorInfo 
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Foundation.Point BluePrimary
 		{
@@ -17,7 +17,7 @@ namespace Windows.Graphics.Display
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Graphics.Display.AdvancedColorKind CurrentAdvancedColorKind
 		{
@@ -27,7 +27,7 @@ namespace Windows.Graphics.Display
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Foundation.Point GreenPrimary
 		{
@@ -37,7 +37,7 @@ namespace Windows.Graphics.Display
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  float MaxAverageFullFrameLuminanceInNits
 		{
@@ -47,7 +47,7 @@ namespace Windows.Graphics.Display
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  float MaxLuminanceInNits
 		{
@@ -57,7 +57,7 @@ namespace Windows.Graphics.Display
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  float MinLuminanceInNits
 		{
@@ -67,7 +67,7 @@ namespace Windows.Graphics.Display
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Foundation.Point RedPrimary
 		{
@@ -77,7 +77,7 @@ namespace Windows.Graphics.Display
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  float SdrWhiteLevelInNits
 		{
@@ -87,7 +87,7 @@ namespace Windows.Graphics.Display
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Foundation.Point WhitePoint
 		{
@@ -106,14 +106,14 @@ namespace Windows.Graphics.Display
 		// Forced skipping of method Windows.Graphics.Display.AdvancedColorInfo.MinLuminanceInNits.get
 		// Forced skipping of method Windows.Graphics.Display.AdvancedColorInfo.MaxAverageFullFrameLuminanceInNits.get
 		// Forced skipping of method Windows.Graphics.Display.AdvancedColorInfo.SdrWhiteLevelInNits.get
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  bool IsHdrMetadataFormatCurrentlySupported( global::Windows.Graphics.Display.HdrMetadataFormat format)
 		{
 			throw new global::System.NotImplementedException("The member bool AdvancedColorInfo.IsHdrMetadataFormatCurrentlySupported(HdrMetadataFormat format) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  bool IsAdvancedColorKindAvailable( global::Windows.Graphics.Display.AdvancedColorKind kind)
 		{

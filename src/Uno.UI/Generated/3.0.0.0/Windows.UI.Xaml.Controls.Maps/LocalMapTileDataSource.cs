@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml.Controls.Maps
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class LocalMapTileDataSource : global::Windows.UI.Xaml.Controls.Maps.MapTileDataSource
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  string UriFormatString
 		{
@@ -21,7 +21,7 @@ namespace Windows.UI.Xaml.Controls.Maps
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public LocalMapTileDataSource() : base()
 		{
@@ -29,7 +29,7 @@ namespace Windows.UI.Xaml.Controls.Maps
 		}
 		#endif
 		// Forced skipping of method Windows.UI.Xaml.Controls.Maps.LocalMapTileDataSource.LocalMapTileDataSource()
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public LocalMapTileDataSource( string uriFormatString) : base()
 		{
@@ -41,7 +41,7 @@ namespace Windows.UI.Xaml.Controls.Maps
 		// Forced skipping of method Windows.UI.Xaml.Controls.Maps.LocalMapTileDataSource.UriFormatString.set
 		// Forced skipping of method Windows.UI.Xaml.Controls.Maps.LocalMapTileDataSource.UriRequested.add
 		// Forced skipping of method Windows.UI.Xaml.Controls.Maps.LocalMapTileDataSource.UriRequested.remove
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Xaml.Controls.Maps.LocalMapTileDataSource, global::Windows.UI.Xaml.Controls.Maps.MapTileUriRequestedEventArgs> UriRequested
 		{

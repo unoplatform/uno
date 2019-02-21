@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.ApplicationModel.Activation
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class CommandLineActivationOperation 
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  int ExitCode
 		{
@@ -21,7 +21,7 @@ namespace Windows.ApplicationModel.Activation
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  string Arguments
 		{
@@ -31,7 +31,7 @@ namespace Windows.ApplicationModel.Activation
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  string CurrentDirectoryPath
 		{
@@ -45,7 +45,7 @@ namespace Windows.ApplicationModel.Activation
 		// Forced skipping of method Windows.ApplicationModel.Activation.CommandLineActivationOperation.CurrentDirectoryPath.get
 		// Forced skipping of method Windows.ApplicationModel.Activation.CommandLineActivationOperation.ExitCode.set
 		// Forced skipping of method Windows.ApplicationModel.Activation.CommandLineActivationOperation.ExitCode.get
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Foundation.Deferral GetDeferral()
 		{

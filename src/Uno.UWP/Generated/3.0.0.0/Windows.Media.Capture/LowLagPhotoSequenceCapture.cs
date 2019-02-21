@@ -2,26 +2,26 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Media.Capture
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class LowLagPhotoSequenceCapture 
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Foundation.IAsyncAction StartAsync()
 		{
 			throw new global::System.NotImplementedException("The member IAsyncAction LowLagPhotoSequenceCapture.StartAsync() is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Foundation.IAsyncAction StopAsync()
 		{
 			throw new global::System.NotImplementedException("The member IAsyncAction LowLagPhotoSequenceCapture.StopAsync() is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Foundation.IAsyncAction FinishAsync()
 		{
@@ -30,7 +30,7 @@ namespace Windows.Media.Capture
 		#endif
 		// Forced skipping of method Windows.Media.Capture.LowLagPhotoSequenceCapture.PhotoCaptured.add
 		// Forced skipping of method Windows.Media.Capture.LowLagPhotoSequenceCapture.PhotoCaptured.remove
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Media.Capture.LowLagPhotoSequenceCapture, global::Windows.Media.Capture.PhotoCapturedEventArgs> PhotoCaptured
 		{

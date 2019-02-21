@@ -12,7 +12,7 @@ namespace Windows.UI.Xaml
 		// Skipping already declared property CoreWindow
 		// Skipping already declared property Dispatcher
 		// Skipping already declared property Visible
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.UI.Composition.Compositor Compositor
 		{

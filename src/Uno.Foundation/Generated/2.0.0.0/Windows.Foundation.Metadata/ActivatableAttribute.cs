@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Foundation.Metadata
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class ActivatableAttribute : global::System.Attribute
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public ActivatableAttribute( uint version) : base()
 		{
@@ -15,7 +15,7 @@ namespace Windows.Foundation.Metadata
 		}
 		#endif
 		// Forced skipping of method Windows.Foundation.Metadata.ActivatableAttribute.ActivatableAttribute(uint)
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public ActivatableAttribute( uint version,  string type) : base()
 		{
@@ -23,7 +23,7 @@ namespace Windows.Foundation.Metadata
 		}
 		#endif
 		// Forced skipping of method Windows.Foundation.Metadata.ActivatableAttribute.ActivatableAttribute(uint, string)
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public ActivatableAttribute( uint version,  global::Windows.Foundation.Metadata.Platform platform) : base()
 		{
@@ -31,7 +31,7 @@ namespace Windows.Foundation.Metadata
 		}
 		#endif
 		// Forced skipping of method Windows.Foundation.Metadata.ActivatableAttribute.ActivatableAttribute(uint, Windows.Foundation.Metadata.Platform)
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public ActivatableAttribute( global::System.Type type,  uint version) : base()
 		{
@@ -39,7 +39,7 @@ namespace Windows.Foundation.Metadata
 		}
 		#endif
 		// Forced skipping of method Windows.Foundation.Metadata.ActivatableAttribute.ActivatableAttribute(System.Type, uint)
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public ActivatableAttribute( global::System.Type type,  uint version,  string contractName) : base()
 		{
@@ -47,7 +47,7 @@ namespace Windows.Foundation.Metadata
 		}
 		#endif
 		// Forced skipping of method Windows.Foundation.Metadata.ActivatableAttribute.ActivatableAttribute(System.Type, uint, string)
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public ActivatableAttribute( global::System.Type type,  uint version,  global::Windows.Foundation.Metadata.Platform platform) : base()
 		{

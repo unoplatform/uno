@@ -2,19 +2,19 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.ApplicationModel.Background
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class StorageLibraryContentChangedTrigger : global::Windows.ApplicationModel.Background.IBackgroundTrigger
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.ApplicationModel.Background.StorageLibraryContentChangedTrigger Create( global::Windows.Storage.StorageLibrary storageLibrary)
 		{
 			throw new global::System.NotImplementedException("The member StorageLibraryContentChangedTrigger StorageLibraryContentChangedTrigger.Create(StorageLibrary storageLibrary) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.ApplicationModel.Background.StorageLibraryContentChangedTrigger CreateFromLibraries( global::System.Collections.Generic.IEnumerable<global::Windows.Storage.StorageLibrary> storageLibraries)
 		{

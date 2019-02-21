@@ -2,7 +2,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Phone.UI.Input
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class HardwareButtons 
@@ -15,7 +15,7 @@ namespace Windows.Phone.UI.Input
 		// Forced skipping of method Windows.Phone.UI.Input.HardwareButtons.CameraPressed.remove
 		// Forced skipping of method Windows.Phone.UI.Input.HardwareButtons.CameraReleased.add
 		// Forced skipping of method Windows.Phone.UI.Input.HardwareButtons.CameraReleased.remove
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static event global::System.EventHandler<global::Windows.Phone.UI.Input.BackPressedEventArgs> BackPressed
 		{
@@ -31,7 +31,7 @@ namespace Windows.Phone.UI.Input
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static event global::System.EventHandler<global::Windows.Phone.UI.Input.CameraEventArgs> CameraHalfPressed
 		{
@@ -47,7 +47,7 @@ namespace Windows.Phone.UI.Input
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static event global::System.EventHandler<global::Windows.Phone.UI.Input.CameraEventArgs> CameraPressed
 		{
@@ -63,7 +63,7 @@ namespace Windows.Phone.UI.Input
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static event global::System.EventHandler<global::Windows.Phone.UI.Input.CameraEventArgs> CameraReleased
 		{

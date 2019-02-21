@@ -61,7 +61,7 @@ namespace Windows.ApplicationModel.Resources
 			}
 
 			// Finally try to fallback on the native localization system
-#if !__WASM__ && !NET46
+#if !__WASM__ && !NET461
 			if (GetStringInternal == null)
 			{
 				throw new InvalidOperationException($"ResourceLoader.GetStringInternal hasn't been set. Make sure ResourceHelper is initialized properly.");

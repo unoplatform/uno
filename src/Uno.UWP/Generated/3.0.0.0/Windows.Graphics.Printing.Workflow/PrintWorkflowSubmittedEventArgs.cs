@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Graphics.Printing.Workflow
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class PrintWorkflowSubmittedEventArgs 
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Graphics.Printing.Workflow.PrintWorkflowSubmittedOperation Operation
 		{
@@ -18,14 +18,14 @@ namespace Windows.Graphics.Printing.Workflow
 		}
 		#endif
 		// Forced skipping of method Windows.Graphics.Printing.Workflow.PrintWorkflowSubmittedEventArgs.Operation.get
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Graphics.Printing.Workflow.PrintWorkflowTarget GetTarget( global::Windows.Graphics.Printing.PrintTicket.WorkflowPrintTicket jobPrintTicket)
 		{
 			throw new global::System.NotImplementedException("The member PrintWorkflowTarget PrintWorkflowSubmittedEventArgs.GetTarget(WorkflowPrintTicket jobPrintTicket) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Foundation.Deferral GetDeferral()
 		{

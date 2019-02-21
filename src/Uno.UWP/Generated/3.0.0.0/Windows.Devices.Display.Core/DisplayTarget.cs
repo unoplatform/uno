@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Devices.Display.Core
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class DisplayTarget 
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Devices.Display.Core.DisplayAdapter Adapter
 		{
@@ -17,7 +17,7 @@ namespace Windows.Devices.Display.Core
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  uint AdapterRelativeId
 		{
@@ -27,7 +27,7 @@ namespace Windows.Devices.Display.Core
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  string DeviceInterfacePath
 		{
@@ -37,7 +37,7 @@ namespace Windows.Devices.Display.Core
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  bool IsConnected
 		{
@@ -47,7 +47,7 @@ namespace Windows.Devices.Display.Core
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  bool IsStale
 		{
@@ -57,7 +57,7 @@ namespace Windows.Devices.Display.Core
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  bool IsVirtualModeEnabled
 		{
@@ -67,7 +67,7 @@ namespace Windows.Devices.Display.Core
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  bool IsVirtualTopologyEnabled
 		{
@@ -77,7 +77,7 @@ namespace Windows.Devices.Display.Core
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Devices.Display.Core.DisplayTargetPersistence MonitorPersistence
 		{
@@ -87,7 +87,7 @@ namespace Windows.Devices.Display.Core
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::System.Collections.Generic.IReadOnlyDictionary<global::System.Guid, object> Properties
 		{
@@ -97,7 +97,7 @@ namespace Windows.Devices.Display.Core
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  string StableMonitorId
 		{
@@ -107,7 +107,7 @@ namespace Windows.Devices.Display.Core
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Devices.Display.DisplayMonitorUsageKind UsageKind
 		{
@@ -126,7 +126,7 @@ namespace Windows.Devices.Display.Core
 		// Forced skipping of method Windows.Devices.Display.Core.DisplayTarget.UsageKind.get
 		// Forced skipping of method Windows.Devices.Display.Core.DisplayTarget.MonitorPersistence.get
 		// Forced skipping of method Windows.Devices.Display.Core.DisplayTarget.StableMonitorId.get
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Devices.Display.DisplayMonitor TryGetMonitor()
 		{
@@ -135,14 +135,14 @@ namespace Windows.Devices.Display.Core
 		#endif
 		// Forced skipping of method Windows.Devices.Display.Core.DisplayTarget.Properties.get
 		// Forced skipping of method Windows.Devices.Display.Core.DisplayTarget.IsStale.get
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  bool IsSame( global::Windows.Devices.Display.Core.DisplayTarget otherTarget)
 		{
 			throw new global::System.NotImplementedException("The member bool DisplayTarget.IsSame(DisplayTarget otherTarget) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  bool IsEqual( global::Windows.Devices.Display.Core.DisplayTarget otherTarget)
 		{

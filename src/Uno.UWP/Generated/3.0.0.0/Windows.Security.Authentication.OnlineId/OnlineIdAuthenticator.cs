@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Security.Authentication.OnlineId
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class OnlineIdAuthenticator 
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::System.Guid ApplicationId
 		{
@@ -21,7 +21,7 @@ namespace Windows.Security.Authentication.OnlineId
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  string AuthenticatedSafeCustomerId
 		{
@@ -31,7 +31,7 @@ namespace Windows.Security.Authentication.OnlineId
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  bool CanSignOut
 		{
@@ -41,7 +41,7 @@ namespace Windows.Security.Authentication.OnlineId
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public OnlineIdAuthenticator() 
 		{
@@ -49,21 +49,21 @@ namespace Windows.Security.Authentication.OnlineId
 		}
 		#endif
 		// Forced skipping of method Windows.Security.Authentication.OnlineId.OnlineIdAuthenticator.OnlineIdAuthenticator()
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Security.Authentication.OnlineId.UserAuthenticationOperation AuthenticateUserAsync( global::Windows.Security.Authentication.OnlineId.OnlineIdServiceTicketRequest request)
 		{
 			throw new global::System.NotImplementedException("The member UserAuthenticationOperation OnlineIdAuthenticator.AuthenticateUserAsync(OnlineIdServiceTicketRequest request) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Security.Authentication.OnlineId.UserAuthenticationOperation AuthenticateUserAsync( global::System.Collections.Generic.IEnumerable<global::Windows.Security.Authentication.OnlineId.OnlineIdServiceTicketRequest> requests,  global::Windows.Security.Authentication.OnlineId.CredentialPromptType credentialPromptType)
 		{
 			throw new global::System.NotImplementedException("The member UserAuthenticationOperation OnlineIdAuthenticator.AuthenticateUserAsync(IEnumerable<OnlineIdServiceTicketRequest> requests, CredentialPromptType credentialPromptType) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Security.Authentication.OnlineId.SignOutUserOperation SignOutUserAsync()
 		{

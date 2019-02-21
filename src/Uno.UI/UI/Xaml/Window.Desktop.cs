@@ -1,4 +1,4 @@
-#if NET46
+#if NET461
 using System;
 using System.Linq;
 using System.Runtime.InteropServices;

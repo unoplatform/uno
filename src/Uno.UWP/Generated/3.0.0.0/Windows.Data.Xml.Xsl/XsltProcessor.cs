@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Data.Xml.Xsl
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class XsltProcessor 
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public XsltProcessor( global::Windows.Data.Xml.Dom.XmlDocument document) 
 		{
@@ -15,14 +15,14 @@ namespace Windows.Data.Xml.Xsl
 		}
 		#endif
 		// Forced skipping of method Windows.Data.Xml.Xsl.XsltProcessor.XsltProcessor(Windows.Data.Xml.Dom.XmlDocument)
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  string TransformToString( global::Windows.Data.Xml.Dom.IXmlNode inputNode)
 		{
 			throw new global::System.NotImplementedException("The member string XsltProcessor.TransformToString(IXmlNode inputNode) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Data.Xml.Dom.XmlDocument TransformToDocument( global::Windows.Data.Xml.Dom.IXmlNode inputNode)
 		{

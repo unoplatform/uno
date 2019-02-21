@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Web.Http.Filters
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class HttpBaseProtocolFilter : global::Windows.Web.Http.Filters.IHttpFilter,global::System.IDisposable
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  bool UseProxy
 		{
@@ -21,7 +21,7 @@ namespace Windows.Web.Http.Filters
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Security.Credentials.PasswordCredential ServerCredential
 		{
@@ -35,7 +35,7 @@ namespace Windows.Web.Http.Filters
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Security.Credentials.PasswordCredential ProxyCredential
 		{
@@ -49,7 +49,7 @@ namespace Windows.Web.Http.Filters
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  uint MaxConnectionsPerServer
 		{
@@ -63,7 +63,7 @@ namespace Windows.Web.Http.Filters
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Security.Cryptography.Certificates.Certificate ClientCertificate
 		{
@@ -77,7 +77,7 @@ namespace Windows.Web.Http.Filters
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  bool AutomaticDecompression
 		{
@@ -91,7 +91,7 @@ namespace Windows.Web.Http.Filters
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  bool AllowUI
 		{
@@ -105,7 +105,7 @@ namespace Windows.Web.Http.Filters
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  bool AllowAutoRedirect
 		{
@@ -119,7 +119,7 @@ namespace Windows.Web.Http.Filters
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Web.Http.HttpCookieManager CookieManager
 		{
@@ -129,7 +129,7 @@ namespace Windows.Web.Http.Filters
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::System.Collections.Generic.IList<global::Windows.Security.Cryptography.Certificates.ChainValidationResult> IgnorableServerCertificateErrors
 		{
@@ -139,7 +139,7 @@ namespace Windows.Web.Http.Filters
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Web.Http.Filters.HttpCacheControl CacheControl
 		{
@@ -149,7 +149,7 @@ namespace Windows.Web.Http.Filters
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Web.Http.HttpVersion MaxVersion
 		{
@@ -163,7 +163,7 @@ namespace Windows.Web.Http.Filters
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Web.Http.Filters.HttpCookieUsageBehavior CookieUsageBehavior
 		{
@@ -177,7 +177,7 @@ namespace Windows.Web.Http.Filters
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public HttpBaseProtocolFilter() 
 		{
@@ -204,14 +204,14 @@ namespace Windows.Web.Http.Filters
 		// Forced skipping of method Windows.Web.Http.Filters.HttpBaseProtocolFilter.ServerCredential.set
 		// Forced skipping of method Windows.Web.Http.Filters.HttpBaseProtocolFilter.UseProxy.get
 		// Forced skipping of method Windows.Web.Http.Filters.HttpBaseProtocolFilter.UseProxy.set
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Foundation.IAsyncOperationWithProgress<global::Windows.Web.Http.HttpResponseMessage, global::Windows.Web.Http.HttpProgress> SendRequestAsync( global::Windows.Web.Http.HttpRequestMessage request)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperationWithProgress<HttpResponseMessage, HttpProgress> HttpBaseProtocolFilter.SendRequestAsync(HttpRequestMessage request) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  void Dispose()
 		{
@@ -224,14 +224,14 @@ namespace Windows.Web.Http.Filters
 		// Forced skipping of method Windows.Web.Http.Filters.HttpBaseProtocolFilter.CookieUsageBehavior.set
 		// Forced skipping of method Windows.Web.Http.Filters.HttpBaseProtocolFilter.ServerCustomValidationRequested.add
 		// Forced skipping of method Windows.Web.Http.Filters.HttpBaseProtocolFilter.ServerCustomValidationRequested.remove
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  void ClearAuthenticationCache()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.Filters.HttpBaseProtocolFilter", "void HttpBaseProtocolFilter.ClearAuthenticationCache()");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Web.Http.Filters.HttpBaseProtocolFilter, global::Windows.Web.Http.Filters.HttpServerCustomValidationRequestedEventArgs> ServerCustomValidationRequested
 		{

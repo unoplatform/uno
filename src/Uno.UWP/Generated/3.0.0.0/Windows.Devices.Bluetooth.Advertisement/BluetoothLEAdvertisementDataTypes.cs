@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Devices.Bluetooth.Advertisement
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class BluetoothLEAdvertisementDataTypes 
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static byte AdvertisingInterval
 		{
@@ -17,7 +17,7 @@ namespace Windows.Devices.Bluetooth.Advertisement
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static byte Appearance
 		{
@@ -27,7 +27,7 @@ namespace Windows.Devices.Bluetooth.Advertisement
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static byte CompleteLocalName
 		{
@@ -37,7 +37,7 @@ namespace Windows.Devices.Bluetooth.Advertisement
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static byte CompleteService128BitUuids
 		{
@@ -47,7 +47,7 @@ namespace Windows.Devices.Bluetooth.Advertisement
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static byte CompleteService16BitUuids
 		{
@@ -57,7 +57,7 @@ namespace Windows.Devices.Bluetooth.Advertisement
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static byte CompleteService32BitUuids
 		{
@@ -67,7 +67,7 @@ namespace Windows.Devices.Bluetooth.Advertisement
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static byte Flags
 		{
@@ -77,7 +77,7 @@ namespace Windows.Devices.Bluetooth.Advertisement
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static byte IncompleteService128BitUuids
 		{
@@ -87,7 +87,7 @@ namespace Windows.Devices.Bluetooth.Advertisement
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static byte IncompleteService16BitUuids
 		{
@@ -97,7 +97,7 @@ namespace Windows.Devices.Bluetooth.Advertisement
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static byte IncompleteService32BitUuids
 		{
@@ -107,7 +107,7 @@ namespace Windows.Devices.Bluetooth.Advertisement
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static byte ManufacturerSpecificData
 		{
@@ -117,7 +117,7 @@ namespace Windows.Devices.Bluetooth.Advertisement
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static byte PublicTargetAddress
 		{
@@ -127,7 +127,7 @@ namespace Windows.Devices.Bluetooth.Advertisement
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static byte RandomTargetAddress
 		{
@@ -137,7 +137,7 @@ namespace Windows.Devices.Bluetooth.Advertisement
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static byte ServiceData128BitUuids
 		{
@@ -147,7 +147,7 @@ namespace Windows.Devices.Bluetooth.Advertisement
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static byte ServiceData16BitUuids
 		{
@@ -157,7 +157,7 @@ namespace Windows.Devices.Bluetooth.Advertisement
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static byte ServiceData32BitUuids
 		{
@@ -167,7 +167,7 @@ namespace Windows.Devices.Bluetooth.Advertisement
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static byte ServiceSolicitation128BitUuids
 		{
@@ -177,7 +177,7 @@ namespace Windows.Devices.Bluetooth.Advertisement
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static byte ServiceSolicitation16BitUuids
 		{
@@ -187,7 +187,7 @@ namespace Windows.Devices.Bluetooth.Advertisement
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static byte ServiceSolicitation32BitUuids
 		{
@@ -197,7 +197,7 @@ namespace Windows.Devices.Bluetooth.Advertisement
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static byte ShortenedLocalName
 		{
@@ -207,7 +207,7 @@ namespace Windows.Devices.Bluetooth.Advertisement
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static byte SlaveConnectionIntervalRange
 		{
@@ -217,7 +217,7 @@ namespace Windows.Devices.Bluetooth.Advertisement
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static byte TxPowerLevel
 		{

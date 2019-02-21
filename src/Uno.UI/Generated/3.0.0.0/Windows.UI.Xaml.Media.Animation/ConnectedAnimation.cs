@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml.Media.Animation
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class ConnectedAnimation 
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  bool IsScaleAnimationEnabled
 		{
@@ -21,7 +21,7 @@ namespace Windows.UI.Xaml.Media.Animation
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.UI.Xaml.Media.Animation.ConnectedAnimationConfiguration Configuration
 		{
@@ -37,14 +37,14 @@ namespace Windows.UI.Xaml.Media.Animation
 		#endif
 		// Forced skipping of method Windows.UI.Xaml.Media.Animation.ConnectedAnimation.Completed.add
 		// Forced skipping of method Windows.UI.Xaml.Media.Animation.ConnectedAnimation.Completed.remove
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  bool TryStart( global::Windows.UI.Xaml.UIElement destination)
 		{
 			throw new global::System.NotImplementedException("The member bool ConnectedAnimation.TryStart(UIElement destination) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  void Cancel()
 		{
@@ -53,14 +53,14 @@ namespace Windows.UI.Xaml.Media.Animation
 		#endif
 		// Forced skipping of method Windows.UI.Xaml.Media.Animation.ConnectedAnimation.IsScaleAnimationEnabled.get
 		// Forced skipping of method Windows.UI.Xaml.Media.Animation.ConnectedAnimation.IsScaleAnimationEnabled.set
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  bool TryStart( global::Windows.UI.Xaml.UIElement destination,  global::System.Collections.Generic.IEnumerable<global::Windows.UI.Xaml.UIElement> coordinatedElements)
 		{
 			throw new global::System.NotImplementedException("The member bool ConnectedAnimation.TryStart(UIElement destination, IEnumerable<UIElement> coordinatedElements) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  void SetAnimationComponent( global::Windows.UI.Xaml.Media.Animation.ConnectedAnimationComponent component,  global::Windows.UI.Composition.ICompositionAnimationBase animation)
 		{
@@ -69,7 +69,7 @@ namespace Windows.UI.Xaml.Media.Animation
 		#endif
 		// Forced skipping of method Windows.UI.Xaml.Media.Animation.ConnectedAnimation.Configuration.get
 		// Forced skipping of method Windows.UI.Xaml.Media.Animation.ConnectedAnimation.Configuration.set
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Xaml.Media.Animation.ConnectedAnimation, object> Completed
 		{

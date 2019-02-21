@@ -17,7 +17,7 @@ namespace Windows.UI.Xaml.Controls
 
 			_image = new Image {
 				Stretch = Media.Stretch.UniformToFill,
-#if !NET46
+#if !NET461
 				MonochromeColor = (Foreground as SolidColorBrush)?.Color
 #endif
 			};
@@ -47,7 +47,7 @@ namespace Windows.UI.Xaml.Controls
 
 		private void OnShowAsMonochromeChanged(bool value)
 		{
-#if !NET46
+#if !NET461
 				_image.MonochromeColor = value ? (Foreground as SolidColorBrush)?.Color : null;
 
 				if (!value)

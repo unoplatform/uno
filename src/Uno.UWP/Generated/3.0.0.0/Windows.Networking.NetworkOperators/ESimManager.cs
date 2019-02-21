@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Networking.NetworkOperators
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class ESimManager 
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.Networking.NetworkOperators.ESimServiceInfo ServiceInfo
 		{
@@ -18,7 +18,7 @@ namespace Windows.Networking.NetworkOperators
 		}
 		#endif
 		// Forced skipping of method Windows.Networking.NetworkOperators.ESimManager.ServiceInfo.get
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.Networking.NetworkOperators.ESimWatcher TryCreateESimWatcher()
 		{
@@ -27,7 +27,7 @@ namespace Windows.Networking.NetworkOperators
 		#endif
 		// Forced skipping of method Windows.Networking.NetworkOperators.ESimManager.ServiceInfoChanged.add
 		// Forced skipping of method Windows.Networking.NetworkOperators.ESimManager.ServiceInfoChanged.remove
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static event global::System.EventHandler<object> ServiceInfoChanged
 		{

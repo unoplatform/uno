@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Phone.Devices.Power
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class Battery 
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  int RemainingChargePercent
 		{
@@ -17,7 +17,7 @@ namespace Windows.Phone.Devices.Power
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::System.TimeSpan RemainingDischargeTime
 		{
@@ -31,14 +31,14 @@ namespace Windows.Phone.Devices.Power
 		// Forced skipping of method Windows.Phone.Devices.Power.Battery.RemainingDischargeTime.get
 		// Forced skipping of method Windows.Phone.Devices.Power.Battery.RemainingChargePercentChanged.add
 		// Forced skipping of method Windows.Phone.Devices.Power.Battery.RemainingChargePercentChanged.remove
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.Phone.Devices.Power.Battery GetDefault()
 		{
 			throw new global::System.NotImplementedException("The member Battery Battery.GetDefault() is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  event global::System.EventHandler<object> RemainingChargePercentChanged
 		{

@@ -8,7 +8,7 @@ namespace Windows.UI.Core
 	public  partial class CoreDispatcher : global::Windows.UI.Core.ICoreAcceleratorKeys
 	{
 		// Skipping already declared property HasThreadAccess
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.UI.Core.CoreDispatcherPriority CurrentPriority
 		{
@@ -23,7 +23,7 @@ namespace Windows.UI.Core
 		}
 		#endif
 		// Forced skipping of method Windows.UI.Core.CoreDispatcher.HasThreadAccess.get
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  void ProcessEvents( global::Windows.UI.Core.CoreProcessEventsOption options)
 		{
@@ -36,42 +36,42 @@ namespace Windows.UI.Core
 		// Forced skipping of method Windows.UI.Core.CoreDispatcher.AcceleratorKeyActivated.remove
 		// Forced skipping of method Windows.UI.Core.CoreDispatcher.CurrentPriority.get
 		// Forced skipping of method Windows.UI.Core.CoreDispatcher.CurrentPriority.set
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  bool ShouldYield()
 		{
 			throw new global::System.NotImplementedException("The member bool CoreDispatcher.ShouldYield() is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  bool ShouldYield( global::Windows.UI.Core.CoreDispatcherPriority priority)
 		{
 			throw new global::System.NotImplementedException("The member bool CoreDispatcher.ShouldYield(CoreDispatcherPriority priority) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  void StopProcessEvents()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Core.CoreDispatcher", "void CoreDispatcher.StopProcessEvents()");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Foundation.IAsyncOperation<bool> TryRunAsync( global::Windows.UI.Core.CoreDispatcherPriority priority,  global::Windows.UI.Core.DispatchedHandler agileCallback)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> CoreDispatcher.TryRunAsync(CoreDispatcherPriority priority, DispatchedHandler agileCallback) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Foundation.IAsyncOperation<bool> TryRunIdleAsync( global::Windows.UI.Core.IdleDispatchedHandler agileCallback)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> CoreDispatcher.TryRunIdleAsync(IdleDispatchedHandler agileCallback) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Core.CoreDispatcher, global::Windows.UI.Core.AcceleratorKeyEventArgs> AcceleratorKeyActivated
 		{

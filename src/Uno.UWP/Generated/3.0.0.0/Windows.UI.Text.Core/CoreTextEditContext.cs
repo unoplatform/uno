@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Text.Core
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class CoreTextEditContext 
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  string Name
 		{
@@ -21,7 +21,7 @@ namespace Windows.UI.Text.Core
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  bool IsReadOnly
 		{
@@ -35,7 +35,7 @@ namespace Windows.UI.Text.Core
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.UI.Text.Core.CoreTextInputScope InputScope
 		{
@@ -49,7 +49,7 @@ namespace Windows.UI.Text.Core
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.UI.Text.Core.CoreTextInputPaneDisplayPolicy InputPaneDisplayPolicy
 		{
@@ -89,35 +89,35 @@ namespace Windows.UI.Text.Core
 		// Forced skipping of method Windows.UI.Text.Core.CoreTextEditContext.CompositionCompleted.remove
 		// Forced skipping of method Windows.UI.Text.Core.CoreTextEditContext.FocusRemoved.add
 		// Forced skipping of method Windows.UI.Text.Core.CoreTextEditContext.FocusRemoved.remove
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  void NotifyFocusEnter()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Text.Core.CoreTextEditContext", "void CoreTextEditContext.NotifyFocusEnter()");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  void NotifyFocusLeave()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Text.Core.CoreTextEditContext", "void CoreTextEditContext.NotifyFocusLeave()");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  void NotifyTextChanged( global::Windows.UI.Text.Core.CoreTextRange modifiedRange,  int newLength,  global::Windows.UI.Text.Core.CoreTextRange newSelection)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Text.Core.CoreTextEditContext", "void CoreTextEditContext.NotifyTextChanged(CoreTextRange modifiedRange, int newLength, CoreTextRange newSelection)");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  void NotifySelectionChanged( global::Windows.UI.Text.Core.CoreTextRange selection)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Text.Core.CoreTextEditContext", "void CoreTextEditContext.NotifySelectionChanged(CoreTextRange selection)");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  void NotifyLayoutChanged()
 		{
@@ -126,7 +126,7 @@ namespace Windows.UI.Text.Core
 		#endif
 		// Forced skipping of method Windows.UI.Text.Core.CoreTextEditContext.NotifyFocusLeaveCompleted.add
 		// Forced skipping of method Windows.UI.Text.Core.CoreTextEditContext.NotifyFocusLeaveCompleted.remove
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Text.Core.CoreTextEditContext, global::Windows.UI.Text.Core.CoreTextCompositionCompletedEventArgs> CompositionCompleted
 		{
@@ -142,7 +142,7 @@ namespace Windows.UI.Text.Core
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Text.Core.CoreTextEditContext, global::Windows.UI.Text.Core.CoreTextCompositionStartedEventArgs> CompositionStarted
 		{
@@ -158,7 +158,7 @@ namespace Windows.UI.Text.Core
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Text.Core.CoreTextEditContext, object> FocusRemoved
 		{
@@ -174,7 +174,7 @@ namespace Windows.UI.Text.Core
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Text.Core.CoreTextEditContext, global::Windows.UI.Text.Core.CoreTextFormatUpdatingEventArgs> FormatUpdating
 		{
@@ -190,7 +190,7 @@ namespace Windows.UI.Text.Core
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Text.Core.CoreTextEditContext, global::Windows.UI.Text.Core.CoreTextLayoutRequestedEventArgs> LayoutRequested
 		{
@@ -206,7 +206,7 @@ namespace Windows.UI.Text.Core
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Text.Core.CoreTextEditContext, global::Windows.UI.Text.Core.CoreTextSelectionRequestedEventArgs> SelectionRequested
 		{
@@ -222,7 +222,7 @@ namespace Windows.UI.Text.Core
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Text.Core.CoreTextEditContext, global::Windows.UI.Text.Core.CoreTextSelectionUpdatingEventArgs> SelectionUpdating
 		{
@@ -238,7 +238,7 @@ namespace Windows.UI.Text.Core
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Text.Core.CoreTextEditContext, global::Windows.UI.Text.Core.CoreTextTextRequestedEventArgs> TextRequested
 		{
@@ -254,7 +254,7 @@ namespace Windows.UI.Text.Core
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Text.Core.CoreTextEditContext, global::Windows.UI.Text.Core.CoreTextTextUpdatingEventArgs> TextUpdating
 		{
@@ -270,7 +270,7 @@ namespace Windows.UI.Text.Core
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Text.Core.CoreTextEditContext, object> NotifyFocusLeaveCompleted
 		{

@@ -7,7 +7,7 @@ namespace Windows.UI.Popups
 	#endif
 	public  partial class PopupMenu 
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::System.Collections.Generic.IList<global::Windows.UI.Popups.IUICommand> Commands
 		{
@@ -20,7 +20,7 @@ namespace Windows.UI.Popups
 		// Skipping already declared method Windows.UI.Popups.PopupMenu.PopupMenu()
 		// Forced skipping of method Windows.UI.Popups.PopupMenu.PopupMenu()
 		// Forced skipping of method Windows.UI.Popups.PopupMenu.Commands.get
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Foundation.IAsyncOperation<global::Windows.UI.Popups.IUICommand> ShowAsync( global::Windows.Foundation.Point invocationPoint)
 		{

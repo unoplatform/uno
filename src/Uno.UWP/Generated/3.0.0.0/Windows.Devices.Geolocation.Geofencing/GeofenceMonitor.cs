@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Devices.Geolocation.Geofencing
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class GeofenceMonitor 
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::System.Collections.Generic.IList<global::Windows.Devices.Geolocation.Geofencing.Geofence> Geofences
 		{
@@ -17,7 +17,7 @@ namespace Windows.Devices.Geolocation.Geofencing
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Devices.Geolocation.Geoposition LastKnownGeoposition
 		{
@@ -27,7 +27,7 @@ namespace Windows.Devices.Geolocation.Geofencing
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Devices.Geolocation.Geofencing.GeofenceMonitorStatus Status
 		{
@@ -37,7 +37,7 @@ namespace Windows.Devices.Geolocation.Geofencing
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.Devices.Geolocation.Geofencing.GeofenceMonitor Current
 		{
@@ -52,7 +52,7 @@ namespace Windows.Devices.Geolocation.Geofencing
 		// Forced skipping of method Windows.Devices.Geolocation.Geofencing.GeofenceMonitor.LastKnownGeoposition.get
 		// Forced skipping of method Windows.Devices.Geolocation.Geofencing.GeofenceMonitor.GeofenceStateChanged.add
 		// Forced skipping of method Windows.Devices.Geolocation.Geofencing.GeofenceMonitor.GeofenceStateChanged.remove
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::System.Collections.Generic.IReadOnlyList<global::Windows.Devices.Geolocation.Geofencing.GeofenceStateChangeReport> ReadReports()
 		{
@@ -62,7 +62,7 @@ namespace Windows.Devices.Geolocation.Geofencing
 		// Forced skipping of method Windows.Devices.Geolocation.Geofencing.GeofenceMonitor.StatusChanged.add
 		// Forced skipping of method Windows.Devices.Geolocation.Geofencing.GeofenceMonitor.StatusChanged.remove
 		// Forced skipping of method Windows.Devices.Geolocation.Geofencing.GeofenceMonitor.Current.get
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Devices.Geolocation.Geofencing.GeofenceMonitor, object> GeofenceStateChanged
 		{
@@ -78,7 +78,7 @@ namespace Windows.Devices.Geolocation.Geofencing
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Devices.Geolocation.Geofencing.GeofenceMonitor, object> StatusChanged
 		{

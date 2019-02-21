@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.System.Diagnostics
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class DiagnosticInvoker 
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static bool IsSupported
 		{
@@ -17,28 +17,28 @@ namespace Windows.System.Diagnostics
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Foundation.IAsyncOperationWithProgress<global::Windows.System.Diagnostics.DiagnosticActionResult, global::Windows.System.Diagnostics.DiagnosticActionState> RunDiagnosticActionAsync( global::Windows.Data.Json.JsonObject context)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperationWithProgress<DiagnosticActionResult, DiagnosticActionState> DiagnosticInvoker.RunDiagnosticActionAsync(JsonObject context) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Foundation.IAsyncOperationWithProgress<global::Windows.System.Diagnostics.DiagnosticActionResult, global::Windows.System.Diagnostics.DiagnosticActionState> RunDiagnosticActionFromStringAsync( string context)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperationWithProgress<DiagnosticActionResult, DiagnosticActionState> DiagnosticInvoker.RunDiagnosticActionFromStringAsync(string context) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.System.Diagnostics.DiagnosticInvoker GetDefault()
 		{
 			throw new global::System.NotImplementedException("The member DiagnosticInvoker DiagnosticInvoker.GetDefault() is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.System.Diagnostics.DiagnosticInvoker GetForUser( global::Windows.System.User user)
 		{

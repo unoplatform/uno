@@ -2,7 +2,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.System.Diagnostics.DevicePortal
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class DevicePortalConnection 
@@ -11,49 +11,49 @@ namespace Windows.System.Diagnostics.DevicePortal
 		// Forced skipping of method Windows.System.Diagnostics.DevicePortal.DevicePortalConnection.Closed.remove
 		// Forced skipping of method Windows.System.Diagnostics.DevicePortal.DevicePortalConnection.RequestReceived.add
 		// Forced skipping of method Windows.System.Diagnostics.DevicePortal.DevicePortalConnection.RequestReceived.remove
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Networking.Sockets.ServerMessageWebSocket GetServerMessageWebSocketForRequest( global::Windows.Web.Http.HttpRequestMessage request)
 		{
 			throw new global::System.NotImplementedException("The member ServerMessageWebSocket DevicePortalConnection.GetServerMessageWebSocketForRequest(HttpRequestMessage request) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Networking.Sockets.ServerMessageWebSocket GetServerMessageWebSocketForRequest( global::Windows.Web.Http.HttpRequestMessage request,  global::Windows.Networking.Sockets.SocketMessageType messageType,  string protocol)
 		{
 			throw new global::System.NotImplementedException("The member ServerMessageWebSocket DevicePortalConnection.GetServerMessageWebSocketForRequest(HttpRequestMessage request, SocketMessageType messageType, string protocol) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Networking.Sockets.ServerMessageWebSocket GetServerMessageWebSocketForRequest( global::Windows.Web.Http.HttpRequestMessage request,  global::Windows.Networking.Sockets.SocketMessageType messageType,  string protocol,  uint outboundBufferSizeInBytes,  uint maxMessageSize,  global::Windows.Networking.Sockets.MessageWebSocketReceiveMode receiveMode)
 		{
 			throw new global::System.NotImplementedException("The member ServerMessageWebSocket DevicePortalConnection.GetServerMessageWebSocketForRequest(HttpRequestMessage request, SocketMessageType messageType, string protocol, uint outboundBufferSizeInBytes, uint maxMessageSize, MessageWebSocketReceiveMode receiveMode) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Networking.Sockets.ServerStreamWebSocket GetServerStreamWebSocketForRequest( global::Windows.Web.Http.HttpRequestMessage request)
 		{
 			throw new global::System.NotImplementedException("The member ServerStreamWebSocket DevicePortalConnection.GetServerStreamWebSocketForRequest(HttpRequestMessage request) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Networking.Sockets.ServerStreamWebSocket GetServerStreamWebSocketForRequest( global::Windows.Web.Http.HttpRequestMessage request,  string protocol,  uint outboundBufferSizeInBytes,  bool noDelay)
 		{
 			throw new global::System.NotImplementedException("The member ServerStreamWebSocket DevicePortalConnection.GetServerStreamWebSocketForRequest(HttpRequestMessage request, string protocol, uint outboundBufferSizeInBytes, bool noDelay) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.System.Diagnostics.DevicePortal.DevicePortalConnection GetForAppServiceConnection( global::Windows.ApplicationModel.AppService.AppServiceConnection appServiceConnection)
 		{
 			throw new global::System.NotImplementedException("The member DevicePortalConnection DevicePortalConnection.GetForAppServiceConnection(AppServiceConnection appServiceConnection) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.System.Diagnostics.DevicePortal.DevicePortalConnection, global::Windows.System.Diagnostics.DevicePortal.DevicePortalConnectionClosedEventArgs> Closed
 		{
@@ -69,7 +69,7 @@ namespace Windows.System.Diagnostics.DevicePortal
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.System.Diagnostics.DevicePortal.DevicePortalConnection, global::Windows.System.Diagnostics.DevicePortal.DevicePortalConnectionRequestReceivedEventArgs> RequestReceived
 		{

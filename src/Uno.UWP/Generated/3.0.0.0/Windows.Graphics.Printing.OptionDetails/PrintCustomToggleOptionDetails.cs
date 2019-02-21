@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Graphics.Printing.OptionDetails
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class PrintCustomToggleOptionDetails : global::Windows.Graphics.Printing.OptionDetails.IPrintOptionDetails,global::Windows.Graphics.Printing.OptionDetails.IPrintCustomOptionDetails
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  string DisplayName
 		{
@@ -21,7 +21,7 @@ namespace Windows.Graphics.Printing.OptionDetails
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  string WarningText
 		{
@@ -35,7 +35,7 @@ namespace Windows.Graphics.Printing.OptionDetails
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  string Description
 		{
@@ -49,7 +49,7 @@ namespace Windows.Graphics.Printing.OptionDetails
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Graphics.Printing.OptionDetails.PrintOptionStates State
 		{
@@ -63,7 +63,7 @@ namespace Windows.Graphics.Printing.OptionDetails
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  string ErrorText
 		{
@@ -77,7 +77,7 @@ namespace Windows.Graphics.Printing.OptionDetails
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  string OptionId
 		{
@@ -87,7 +87,7 @@ namespace Windows.Graphics.Printing.OptionDetails
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Graphics.Printing.OptionDetails.PrintOptionType OptionType
 		{
@@ -97,7 +97,7 @@ namespace Windows.Graphics.Printing.OptionDetails
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  object Value
 		{
@@ -114,7 +114,7 @@ namespace Windows.Graphics.Printing.OptionDetails
 		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintCustomToggleOptionDetails.State.set
 		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintCustomToggleOptionDetails.State.get
 		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintCustomToggleOptionDetails.Value.get
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  bool TrySetValue( object value)
 		{

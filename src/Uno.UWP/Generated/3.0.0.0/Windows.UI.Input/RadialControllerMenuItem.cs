@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Input
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class RadialControllerMenuItem 
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  object Tag
 		{
@@ -21,7 +21,7 @@ namespace Windows.UI.Input
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  string DisplayText
 		{
@@ -36,35 +36,35 @@ namespace Windows.UI.Input
 		// Forced skipping of method Windows.UI.Input.RadialControllerMenuItem.Tag.set
 		// Forced skipping of method Windows.UI.Input.RadialControllerMenuItem.Invoked.add
 		// Forced skipping of method Windows.UI.Input.RadialControllerMenuItem.Invoked.remove
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Input.RadialControllerMenuItem CreateFromFontGlyph( string displayText,  string glyph,  string fontFamily)
 		{
 			throw new global::System.NotImplementedException("The member RadialControllerMenuItem RadialControllerMenuItem.CreateFromFontGlyph(string displayText, string glyph, string fontFamily) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Input.RadialControllerMenuItem CreateFromFontGlyph( string displayText,  string glyph,  string fontFamily,  global::System.Uri fontUri)
 		{
 			throw new global::System.NotImplementedException("The member RadialControllerMenuItem RadialControllerMenuItem.CreateFromFontGlyph(string displayText, string glyph, string fontFamily, Uri fontUri) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Input.RadialControllerMenuItem CreateFromIcon( string displayText,  global::Windows.Storage.Streams.RandomAccessStreamReference icon)
 		{
 			throw new global::System.NotImplementedException("The member RadialControllerMenuItem RadialControllerMenuItem.CreateFromIcon(string displayText, RandomAccessStreamReference icon) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Input.RadialControllerMenuItem CreateFromKnownIcon( string displayText,  global::Windows.UI.Input.RadialControllerMenuKnownIcon value)
 		{
 			throw new global::System.NotImplementedException("The member RadialControllerMenuItem RadialControllerMenuItem.CreateFromKnownIcon(string displayText, RadialControllerMenuKnownIcon value) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Input.RadialControllerMenuItem, object> Invoked
 		{

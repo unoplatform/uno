@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Media.Devices
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class AudioDeviceModulesManager 
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public AudioDeviceModulesManager( string deviceId) 
 		{
@@ -17,21 +17,21 @@ namespace Windows.Media.Devices
 		// Forced skipping of method Windows.Media.Devices.AudioDeviceModulesManager.AudioDeviceModulesManager(string)
 		// Forced skipping of method Windows.Media.Devices.AudioDeviceModulesManager.ModuleNotificationReceived.add
 		// Forced skipping of method Windows.Media.Devices.AudioDeviceModulesManager.ModuleNotificationReceived.remove
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::System.Collections.Generic.IReadOnlyList<global::Windows.Media.Devices.AudioDeviceModule> FindAllById( string moduleId)
 		{
 			throw new global::System.NotImplementedException("The member IReadOnlyList<AudioDeviceModule> AudioDeviceModulesManager.FindAllById(string moduleId) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::System.Collections.Generic.IReadOnlyList<global::Windows.Media.Devices.AudioDeviceModule> FindAll()
 		{
 			throw new global::System.NotImplementedException("The member IReadOnlyList<AudioDeviceModule> AudioDeviceModulesManager.FindAll() is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Media.Devices.AudioDeviceModulesManager, global::Windows.Media.Devices.AudioDeviceModuleNotificationEventArgs> ModuleNotificationReceived
 		{

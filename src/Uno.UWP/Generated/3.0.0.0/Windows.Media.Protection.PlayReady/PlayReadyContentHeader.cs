@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Media.Protection.PlayReady
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class PlayReadyContentHeader 
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  string CustomAttributes
 		{
@@ -17,7 +17,7 @@ namespace Windows.Media.Protection.PlayReady
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Media.Protection.PlayReady.PlayReadyDecryptorSetup DecryptorSetup
 		{
@@ -27,7 +27,7 @@ namespace Windows.Media.Protection.PlayReady
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::System.Guid DomainServiceId
 		{
@@ -37,7 +37,7 @@ namespace Windows.Media.Protection.PlayReady
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Media.Protection.PlayReady.PlayReadyEncryptionAlgorithm EncryptionType
 		{
@@ -47,7 +47,7 @@ namespace Windows.Media.Protection.PlayReady
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Media.Protection.PlayReady.PlayReadyContentHeader HeaderWithEmbeddedUpdates
 		{
@@ -57,7 +57,7 @@ namespace Windows.Media.Protection.PlayReady
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::System.Guid KeyId
 		{
@@ -67,7 +67,7 @@ namespace Windows.Media.Protection.PlayReady
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  string KeyIdString
 		{
@@ -77,7 +77,7 @@ namespace Windows.Media.Protection.PlayReady
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::System.Uri LicenseAcquisitionUrl
 		{
@@ -87,7 +87,7 @@ namespace Windows.Media.Protection.PlayReady
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::System.Uri LicenseAcquisitionUserInterfaceUrl
 		{
@@ -97,7 +97,7 @@ namespace Windows.Media.Protection.PlayReady
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  string[] KeyIdStrings
 		{
@@ -107,7 +107,7 @@ namespace Windows.Media.Protection.PlayReady
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::System.Guid[] KeyIds
 		{
@@ -117,7 +117,7 @@ namespace Windows.Media.Protection.PlayReady
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public PlayReadyContentHeader( uint dwFlags,  global::System.Guid[] contentKeyIds,  string[] contentKeyIdStrings,  global::Windows.Media.Protection.PlayReady.PlayReadyEncryptionAlgorithm contentEncryptionAlgorithm,  global::System.Uri licenseAcquisitionUrl,  global::System.Uri licenseAcquisitionUserInterfaceUrl,  string customAttributes,  global::System.Guid domainServiceId) 
 		{
@@ -125,7 +125,7 @@ namespace Windows.Media.Protection.PlayReady
 		}
 		#endif
 		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyContentHeader.PlayReadyContentHeader(uint, System.Guid[], string[], Windows.Media.Protection.PlayReady.PlayReadyEncryptionAlgorithm, System.Uri, System.Uri, string, System.Guid)
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public PlayReadyContentHeader( byte[] headerBytes,  global::System.Uri licenseAcquisitionUrl,  global::System.Uri licenseAcquisitionUserInterfaceUrl,  string customAttributes,  global::System.Guid domainServiceId) 
 		{
@@ -133,7 +133,7 @@ namespace Windows.Media.Protection.PlayReady
 		}
 		#endif
 		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyContentHeader.PlayReadyContentHeader(byte[], System.Uri, System.Uri, string, System.Guid)
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public PlayReadyContentHeader( global::System.Guid contentKeyId,  string contentKeyIdString,  global::Windows.Media.Protection.PlayReady.PlayReadyEncryptionAlgorithm contentEncryptionAlgorithm,  global::System.Uri licenseAcquisitionUrl,  global::System.Uri licenseAcquisitionUserInterfaceUrl,  string customAttributes,  global::System.Guid domainServiceId) 
 		{
@@ -141,7 +141,7 @@ namespace Windows.Media.Protection.PlayReady
 		}
 		#endif
 		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyContentHeader.PlayReadyContentHeader(System.Guid, string, Windows.Media.Protection.PlayReady.PlayReadyEncryptionAlgorithm, System.Uri, System.Uri, string, System.Guid)
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public PlayReadyContentHeader( byte[] headerBytes) 
 		{
@@ -157,7 +157,7 @@ namespace Windows.Media.Protection.PlayReady
 		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyContentHeader.EncryptionType.get
 		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyContentHeader.CustomAttributes.get
 		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyContentHeader.DecryptorSetup.get
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  byte[] GetSerializedHeader()
 		{

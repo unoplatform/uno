@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Media.Capture.Frames
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class VideoMediaFrame 
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Media.Devices.Core.CameraIntrinsics CameraIntrinsics
 		{
@@ -17,7 +17,7 @@ namespace Windows.Media.Capture.Frames
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Media.Capture.Frames.DepthMediaFrame DepthMediaFrame
 		{
@@ -27,7 +27,7 @@ namespace Windows.Media.Capture.Frames
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Graphics.DirectX.Direct3D11.IDirect3DSurface Direct3DSurface
 		{
@@ -37,7 +37,7 @@ namespace Windows.Media.Capture.Frames
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Media.Capture.Frames.MediaFrameReference FrameReference
 		{
@@ -47,7 +47,7 @@ namespace Windows.Media.Capture.Frames
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Media.Capture.Frames.InfraredMediaFrame InfraredMediaFrame
 		{
@@ -57,7 +57,7 @@ namespace Windows.Media.Capture.Frames
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Graphics.Imaging.SoftwareBitmap SoftwareBitmap
 		{
@@ -67,7 +67,7 @@ namespace Windows.Media.Capture.Frames
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Media.Capture.Frames.VideoMediaFrameFormat VideoFormat
 		{
@@ -84,7 +84,7 @@ namespace Windows.Media.Capture.Frames
 		// Forced skipping of method Windows.Media.Capture.Frames.VideoMediaFrame.CameraIntrinsics.get
 		// Forced skipping of method Windows.Media.Capture.Frames.VideoMediaFrame.InfraredMediaFrame.get
 		// Forced skipping of method Windows.Media.Capture.Frames.VideoMediaFrame.DepthMediaFrame.get
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Media.VideoFrame GetVideoFrame()
 		{

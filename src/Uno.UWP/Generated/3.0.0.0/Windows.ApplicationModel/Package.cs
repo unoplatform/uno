@@ -44,49 +44,49 @@ namespace Windows.ApplicationModel
 		// Forced skipping of method Windows.ApplicationModel.Package.SignatureKind.get
 		// Forced skipping of method Windows.ApplicationModel.Package.IsOptional.get
 		// Skipping already declared method Windows.ApplicationModel.Package.VerifyContentIntegrityAsync()
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IList<global::Windows.ApplicationModel.PackageContentGroup>> GetContentGroupsAsync()
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<IList<PackageContentGroup>> Package.GetContentGroupsAsync() is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.PackageContentGroup> GetContentGroupAsync( string name)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<PackageContentGroup> Package.GetContentGroupAsync(string name) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IList<global::Windows.ApplicationModel.PackageContentGroup>> StageContentGroupsAsync( global::System.Collections.Generic.IEnumerable<string> names)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<IList<PackageContentGroup>> Package.StageContentGroupsAsync(IEnumerable<string> names) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IList<global::Windows.ApplicationModel.PackageContentGroup>> StageContentGroupsAsync( global::System.Collections.Generic.IEnumerable<string> names,  bool moveToHeadOfQueue)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<IList<PackageContentGroup>> Package.StageContentGroupsAsync(IEnumerable<string> names, bool moveToHeadOfQueue) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Foundation.IAsyncOperation<bool> SetInUseAsync( bool inUse)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> Package.SetInUseAsync(bool inUse) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.ApplicationModel.AppInstallerInfo GetAppInstallerInfo()
 		{
 			throw new global::System.NotImplementedException("The member AppInstallerInfo Package.GetAppInstallerInfo() is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.PackageUpdateAvailabilityResult> CheckUpdateAvailabilityAsync()
 		{

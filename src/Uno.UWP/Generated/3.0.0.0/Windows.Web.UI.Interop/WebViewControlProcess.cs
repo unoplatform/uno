@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Web.UI.Interop
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class WebViewControlProcess 
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  string EnterpriseId
 		{
@@ -17,7 +17,7 @@ namespace Windows.Web.UI.Interop
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  bool IsPrivateNetworkClientServerCapabilityEnabled
 		{
@@ -27,7 +27,7 @@ namespace Windows.Web.UI.Interop
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  uint ProcessId
 		{
@@ -37,7 +37,7 @@ namespace Windows.Web.UI.Interop
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public WebViewControlProcess( global::Windows.Web.UI.Interop.WebViewControlProcessOptions processOptions) 
 		{
@@ -45,7 +45,7 @@ namespace Windows.Web.UI.Interop
 		}
 		#endif
 		// Forced skipping of method Windows.Web.UI.Interop.WebViewControlProcess.WebViewControlProcess(Windows.Web.UI.Interop.WebViewControlProcessOptions)
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public WebViewControlProcess() 
 		{
@@ -56,21 +56,21 @@ namespace Windows.Web.UI.Interop
 		// Forced skipping of method Windows.Web.UI.Interop.WebViewControlProcess.ProcessId.get
 		// Forced skipping of method Windows.Web.UI.Interop.WebViewControlProcess.EnterpriseId.get
 		// Forced skipping of method Windows.Web.UI.Interop.WebViewControlProcess.IsPrivateNetworkClientServerCapabilityEnabled.get
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Foundation.IAsyncOperation<global::Windows.Web.UI.Interop.WebViewControl> CreateWebViewControlAsync( long hostWindowHandle,  global::Windows.Foundation.Rect bounds)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<WebViewControl> WebViewControlProcess.CreateWebViewControlAsync(long hostWindowHandle, Rect bounds) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::System.Collections.Generic.IReadOnlyList<global::Windows.Web.UI.Interop.WebViewControl> GetWebViewControls()
 		{
 			throw new global::System.NotImplementedException("The member IReadOnlyList<WebViewControl> WebViewControlProcess.GetWebViewControls() is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  void Terminate()
 		{
@@ -79,7 +79,7 @@ namespace Windows.Web.UI.Interop
 		#endif
 		// Forced skipping of method Windows.Web.UI.Interop.WebViewControlProcess.ProcessExited.add
 		// Forced skipping of method Windows.Web.UI.Interop.WebViewControlProcess.ProcessExited.remove
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Web.UI.Interop.WebViewControlProcess, object> ProcessExited
 		{

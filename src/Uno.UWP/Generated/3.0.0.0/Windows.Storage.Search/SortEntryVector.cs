@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Storage.Search
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class SortEntryVector : global::System.Collections.Generic.IList<global::Windows.Storage.Search.SortEntry>,global::System.Collections.Generic.IEnumerable<global::Windows.Storage.Search.SortEntry>
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  uint Size
 		{
@@ -31,7 +31,7 @@ namespace Windows.Storage.Search
 		// Forced skipping of method Windows.Storage.Search.SortEntryVector.ReplaceAll(Windows.Storage.Search.SortEntry[])
 		// Forced skipping of method Windows.Storage.Search.SortEntryVector.First()
 		// Processing: System.Collections.Generic.IList<Windows.Storage.Search.SortEntry>
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		// DeclaringType: System.Collections.Generic.IList<Windows.Storage.Search.SortEntry>
 		[global::Uno.NotImplemented]
 		public int IndexOf( global::Windows.Storage.Search.SortEntry item)
@@ -39,7 +39,7 @@ namespace Windows.Storage.Search
 			throw new global::System.NotSupportedException();
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		// DeclaringType: System.Collections.Generic.IList<Windows.Storage.Search.SortEntry>
 		[global::Uno.NotImplemented]
 		public void Insert( int index,  global::Windows.Storage.Search.SortEntry item)
@@ -47,7 +47,7 @@ namespace Windows.Storage.Search
 			throw new global::System.NotSupportedException();
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		// DeclaringType: System.Collections.Generic.IList<Windows.Storage.Search.SortEntry>
 		[global::Uno.NotImplemented]
 		public void RemoveAt( int index)
@@ -55,7 +55,7 @@ namespace Windows.Storage.Search
 			throw new global::System.NotSupportedException();
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public global::Windows.Storage.Search.SortEntry this[int index]
 		{
@@ -70,7 +70,7 @@ namespace Windows.Storage.Search
 		}
 		#endif
 		// Processing: System.Collections.Generic.ICollection<Windows.Storage.Search.SortEntry>
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		// DeclaringType: System.Collections.Generic.ICollection<Windows.Storage.Search.SortEntry>
 		[global::Uno.NotImplemented]
 		public void Add( global::Windows.Storage.Search.SortEntry item)
@@ -78,7 +78,7 @@ namespace Windows.Storage.Search
 			throw new global::System.NotSupportedException();
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		// DeclaringType: System.Collections.Generic.ICollection<Windows.Storage.Search.SortEntry>
 		[global::Uno.NotImplemented]
 		public void Clear()
@@ -86,7 +86,7 @@ namespace Windows.Storage.Search
 			throw new global::System.NotSupportedException();
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		// DeclaringType: System.Collections.Generic.ICollection<Windows.Storage.Search.SortEntry>
 		[global::Uno.NotImplemented]
 		public bool Contains( global::Windows.Storage.Search.SortEntry item)
@@ -94,7 +94,7 @@ namespace Windows.Storage.Search
 			throw new global::System.NotSupportedException();
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		// DeclaringType: System.Collections.Generic.ICollection<Windows.Storage.Search.SortEntry>
 		[global::Uno.NotImplemented]
 		public void CopyTo( global::Windows.Storage.Search.SortEntry[] array,  int arrayIndex)
@@ -102,7 +102,7 @@ namespace Windows.Storage.Search
 			throw new global::System.NotSupportedException();
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		// DeclaringType: System.Collections.Generic.ICollection<Windows.Storage.Search.SortEntry>
 		[global::Uno.NotImplemented]
 		public bool Remove( global::Windows.Storage.Search.SortEntry item)
@@ -110,7 +110,7 @@ namespace Windows.Storage.Search
 			throw new global::System.NotSupportedException();
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public int Count
 		{
@@ -124,7 +124,7 @@ namespace Windows.Storage.Search
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public bool IsReadOnly
 		{
@@ -139,7 +139,7 @@ namespace Windows.Storage.Search
 		}
 		#endif
 		// Processing: System.Collections.Generic.IEnumerable<Windows.Storage.Search.SortEntry>
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		// DeclaringType: System.Collections.Generic.IEnumerable<Windows.Storage.Search.SortEntry>
 		[global::Uno.NotImplemented]
 		public global::System.Collections.Generic.IEnumerator<global::Windows.Storage.Search.SortEntry> GetEnumerator()
@@ -148,7 +148,7 @@ namespace Windows.Storage.Search
 		}
 		#endif
 		// Processing: System.Collections.IEnumerable
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		// DeclaringType: System.Collections.IEnumerable
 		[global::Uno.NotImplemented]
 		 global::System.Collections.IEnumerator global::System.Collections.IEnumerable.GetEnumerator()

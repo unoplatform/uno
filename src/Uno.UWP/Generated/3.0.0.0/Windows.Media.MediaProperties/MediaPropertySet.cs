@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Media.MediaProperties
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class MediaPropertySet : global::System.Collections.Generic.IDictionary<global::System.Guid, object>,global::System.Collections.Generic.IEnumerable<global::System.Collections.Generic.KeyValuePair<global::System.Guid, object>>
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  uint Size
 		{
@@ -17,7 +17,7 @@ namespace Windows.Media.MediaProperties
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public MediaPropertySet() 
 		{
@@ -34,7 +34,7 @@ namespace Windows.Media.MediaProperties
 		// Forced skipping of method Windows.Media.MediaProperties.MediaPropertySet.Clear()
 		// Forced skipping of method Windows.Media.MediaProperties.MediaPropertySet.First()
 		// Processing: System.Collections.Generic.IDictionary<System.Guid, object>
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		// DeclaringType: System.Collections.Generic.IDictionary<System.Guid, object>
 		[global::Uno.NotImplemented]
 		public void Add( global::System.Guid key,  object value)
@@ -42,7 +42,7 @@ namespace Windows.Media.MediaProperties
 			throw new global::System.NotSupportedException();
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		// DeclaringType: System.Collections.Generic.IDictionary<System.Guid, object>
 		[global::Uno.NotImplemented]
 		public bool ContainsKey( global::System.Guid key)
@@ -50,7 +50,7 @@ namespace Windows.Media.MediaProperties
 			throw new global::System.NotSupportedException();
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		// DeclaringType: System.Collections.Generic.IDictionary<System.Guid, object>
 		[global::Uno.NotImplemented]
 		public bool Remove( global::System.Guid key)
@@ -58,7 +58,7 @@ namespace Windows.Media.MediaProperties
 			throw new global::System.NotSupportedException();
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		// DeclaringType: System.Collections.Generic.IDictionary<System.Guid, object>
 		[global::Uno.NotImplemented]
 		public bool TryGetValue( global::System.Guid key, out object value)
@@ -66,7 +66,7 @@ namespace Windows.Media.MediaProperties
 			throw new global::System.NotSupportedException();
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public object this[global::System.Guid key]
 		{
@@ -80,7 +80,7 @@ namespace Windows.Media.MediaProperties
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public global::System.Collections.Generic.ICollection<global::System.Guid> Keys
 		{
@@ -94,7 +94,7 @@ namespace Windows.Media.MediaProperties
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public global::System.Collections.Generic.ICollection<object> Values
 		{
@@ -109,7 +109,7 @@ namespace Windows.Media.MediaProperties
 		}
 		#endif
 		// Processing: System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<System.Guid, object>>
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		// DeclaringType: System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<System.Guid, object>>
 		[global::Uno.NotImplemented]
 		public void Add( global::System.Collections.Generic.KeyValuePair<global::System.Guid, object> item)
@@ -117,7 +117,7 @@ namespace Windows.Media.MediaProperties
 			throw new global::System.NotSupportedException();
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		// DeclaringType: System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<System.Guid, object>>
 		[global::Uno.NotImplemented]
 		public void Clear()
@@ -125,7 +125,7 @@ namespace Windows.Media.MediaProperties
 			throw new global::System.NotSupportedException();
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		// DeclaringType: System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<System.Guid, object>>
 		[global::Uno.NotImplemented]
 		public bool Contains( global::System.Collections.Generic.KeyValuePair<global::System.Guid, object> item)
@@ -133,7 +133,7 @@ namespace Windows.Media.MediaProperties
 			throw new global::System.NotSupportedException();
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		// DeclaringType: System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<System.Guid, object>>
 		[global::Uno.NotImplemented]
 		public void CopyTo( global::System.Collections.Generic.KeyValuePair<global::System.Guid, object>[] array,  int arrayIndex)
@@ -141,7 +141,7 @@ namespace Windows.Media.MediaProperties
 			throw new global::System.NotSupportedException();
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		// DeclaringType: System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<System.Guid, object>>
 		[global::Uno.NotImplemented]
 		public bool Remove( global::System.Collections.Generic.KeyValuePair<global::System.Guid, object> item)
@@ -149,7 +149,7 @@ namespace Windows.Media.MediaProperties
 			throw new global::System.NotSupportedException();
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public int Count
 		{
@@ -163,7 +163,7 @@ namespace Windows.Media.MediaProperties
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public bool IsReadOnly
 		{
@@ -178,7 +178,7 @@ namespace Windows.Media.MediaProperties
 		}
 		#endif
 		// Processing: System.Collections.Generic.IEnumerable<System.Collections.Generic.KeyValuePair<System.Guid, object>>
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		// DeclaringType: System.Collections.Generic.IEnumerable<System.Collections.Generic.KeyValuePair<System.Guid, object>>
 		[global::Uno.NotImplemented]
 		public global::System.Collections.Generic.IEnumerator<global::System.Collections.Generic.KeyValuePair<global::System.Guid, object>> GetEnumerator()
@@ -187,7 +187,7 @@ namespace Windows.Media.MediaProperties
 		}
 		#endif
 		// Processing: System.Collections.IEnumerable
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		// DeclaringType: System.Collections.IEnumerable
 		[global::Uno.NotImplemented]
 		 global::System.Collections.IEnumerator global::System.Collections.IEnumerable.GetEnumerator()

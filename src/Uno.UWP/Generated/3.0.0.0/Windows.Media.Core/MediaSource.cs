@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Media.Core
 {
-	#if false || false || NET46 || __WASM__ || __MACOS__
+	#if false || false || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class MediaSource : global::System.IDisposable,global::Windows.Media.Playback.IMediaPlaybackSource
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Foundation.Collections.ValueSet CustomProperties
 		{
@@ -17,7 +17,7 @@ namespace Windows.Media.Core
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::System.TimeSpan? Duration
 		{
@@ -27,7 +27,7 @@ namespace Windows.Media.Core
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Foundation.Collections.IObservableVector<global::Windows.Media.Core.TimedMetadataTrack> ExternalTimedMetadataTracks
 		{
@@ -37,7 +37,7 @@ namespace Windows.Media.Core
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Foundation.Collections.IObservableVector<global::Windows.Media.Core.TimedTextSource> ExternalTimedTextSources
 		{
@@ -47,7 +47,7 @@ namespace Windows.Media.Core
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  bool IsOpen
 		{
@@ -57,7 +57,7 @@ namespace Windows.Media.Core
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Media.Core.MediaSourceState State
 		{
@@ -67,7 +67,7 @@ namespace Windows.Media.Core
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Media.Streaming.Adaptive.AdaptiveMediaSource AdaptiveMediaSource
 		{
@@ -77,7 +77,7 @@ namespace Windows.Media.Core
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Media.Core.MediaStreamSource MediaStreamSource
 		{
@@ -87,7 +87,7 @@ namespace Windows.Media.Core
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Media.Core.MseStreamSource MseStreamSource
 		{
@@ -97,7 +97,7 @@ namespace Windows.Media.Core
 			}
 		}
 		#endif
-		#if false || false || NET46 || __WASM__ || __MACOS__
+		#if false || false || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::System.Uri Uri
 		{
@@ -107,7 +107,7 @@ namespace Windows.Media.Core
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Networking.BackgroundTransfer.DownloadOperation DownloadOperation
 		{
@@ -124,7 +124,7 @@ namespace Windows.Media.Core
 		// Forced skipping of method Windows.Media.Core.MediaSource.IsOpen.get
 		// Forced skipping of method Windows.Media.Core.MediaSource.ExternalTimedTextSources.get
 		// Forced skipping of method Windows.Media.Core.MediaSource.ExternalTimedMetadataTracks.get
-		#if false || false || NET46 || __WASM__ || __MACOS__
+		#if false || false || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  void Dispose()
 		{
@@ -134,7 +134,7 @@ namespace Windows.Media.Core
 		// Forced skipping of method Windows.Media.Core.MediaSource.StateChanged.add
 		// Forced skipping of method Windows.Media.Core.MediaSource.StateChanged.remove
 		// Forced skipping of method Windows.Media.Core.MediaSource.State.get
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  void Reset()
 		{
@@ -145,7 +145,7 @@ namespace Windows.Media.Core
 		// Forced skipping of method Windows.Media.Core.MediaSource.MediaStreamSource.get
 		// Forced skipping of method Windows.Media.Core.MediaSource.MseStreamSource.get
 		// Forced skipping of method Windows.Media.Core.MediaSource.Uri.get
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Foundation.IAsyncAction OpenAsync()
 		{
@@ -153,84 +153,84 @@ namespace Windows.Media.Core
 		}
 		#endif
 		// Forced skipping of method Windows.Media.Core.MediaSource.DownloadOperation.get
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.Media.Core.MediaSource CreateFromDownloadOperation( global::Windows.Networking.BackgroundTransfer.DownloadOperation downloadOperation)
 		{
 			throw new global::System.NotImplementedException("The member MediaSource MediaSource.CreateFromDownloadOperation(DownloadOperation downloadOperation) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.Media.Core.MediaSource CreateFromMediaFrameSource( global::Windows.Media.Capture.Frames.MediaFrameSource frameSource)
 		{
 			throw new global::System.NotImplementedException("The member MediaSource MediaSource.CreateFromMediaFrameSource(MediaFrameSource frameSource) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.Media.Core.MediaSource CreateFromMediaBinder( global::Windows.Media.Core.MediaBinder binder)
 		{
 			throw new global::System.NotImplementedException("The member MediaSource MediaSource.CreateFromMediaBinder(MediaBinder binder) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.Media.Core.MediaSource CreateFromAdaptiveMediaSource( global::Windows.Media.Streaming.Adaptive.AdaptiveMediaSource mediaSource)
 		{
 			throw new global::System.NotImplementedException("The member MediaSource MediaSource.CreateFromAdaptiveMediaSource(AdaptiveMediaSource mediaSource) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.Media.Core.MediaSource CreateFromMediaStreamSource( global::Windows.Media.Core.MediaStreamSource mediaSource)
 		{
 			throw new global::System.NotImplementedException("The member MediaSource MediaSource.CreateFromMediaStreamSource(MediaStreamSource mediaSource) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.Media.Core.MediaSource CreateFromMseStreamSource( global::Windows.Media.Core.MseStreamSource mediaSource)
 		{
 			throw new global::System.NotImplementedException("The member MediaSource MediaSource.CreateFromMseStreamSource(MseStreamSource mediaSource) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.Media.Core.MediaSource CreateFromIMediaSource( global::Windows.Media.Core.IMediaSource mediaSource)
 		{
 			throw new global::System.NotImplementedException("The member MediaSource MediaSource.CreateFromIMediaSource(IMediaSource mediaSource) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.Media.Core.MediaSource CreateFromStorageFile( global::Windows.Storage.IStorageFile file)
 		{
 			throw new global::System.NotImplementedException("The member MediaSource MediaSource.CreateFromStorageFile(IStorageFile file) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.Media.Core.MediaSource CreateFromStream( global::Windows.Storage.Streams.IRandomAccessStream stream,  string contentType)
 		{
 			throw new global::System.NotImplementedException("The member MediaSource MediaSource.CreateFromStream(IRandomAccessStream stream, string contentType) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.Media.Core.MediaSource CreateFromStreamReference( global::Windows.Storage.Streams.IRandomAccessStreamReference stream,  string contentType)
 		{
 			throw new global::System.NotImplementedException("The member MediaSource MediaSource.CreateFromStreamReference(IRandomAccessStreamReference stream, string contentType) is not implemented in Uno.");
 		}
 		#endif
-		#if false || false || NET46 || __WASM__ || __MACOS__
+		#if false || false || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.Media.Core.MediaSource CreateFromUri( global::System.Uri uri)
 		{
 			throw new global::System.NotImplementedException("The member MediaSource MediaSource.CreateFromUri(Uri uri) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Media.Core.MediaSource, global::Windows.Media.Core.MediaSourceOpenOperationCompletedEventArgs> OpenOperationCompleted
 		{
@@ -246,7 +246,7 @@ namespace Windows.Media.Core
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Media.Core.MediaSource, global::Windows.Media.Core.MediaSourceStateChangedEventArgs> StateChanged
 		{

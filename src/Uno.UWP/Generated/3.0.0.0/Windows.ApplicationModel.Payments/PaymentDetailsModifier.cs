@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.ApplicationModel.Payments
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class PaymentDetailsModifier 
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::System.Collections.Generic.IReadOnlyList<global::Windows.ApplicationModel.Payments.PaymentItem> AdditionalDisplayItems
 		{
@@ -17,7 +17,7 @@ namespace Windows.ApplicationModel.Payments
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  string JsonData
 		{
@@ -27,7 +27,7 @@ namespace Windows.ApplicationModel.Payments
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::System.Collections.Generic.IReadOnlyList<string> SupportedMethodIds
 		{
@@ -37,7 +37,7 @@ namespace Windows.ApplicationModel.Payments
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.ApplicationModel.Payments.PaymentItem Total
 		{
@@ -47,7 +47,7 @@ namespace Windows.ApplicationModel.Payments
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public PaymentDetailsModifier( global::System.Collections.Generic.IEnumerable<string> supportedMethodIds,  global::Windows.ApplicationModel.Payments.PaymentItem total) 
 		{
@@ -55,7 +55,7 @@ namespace Windows.ApplicationModel.Payments
 		}
 		#endif
 		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentDetailsModifier.PaymentDetailsModifier(System.Collections.Generic.IEnumerable<string>, Windows.ApplicationModel.Payments.PaymentItem)
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public PaymentDetailsModifier( global::System.Collections.Generic.IEnumerable<string> supportedMethodIds,  global::Windows.ApplicationModel.Payments.PaymentItem total,  global::System.Collections.Generic.IEnumerable<global::Windows.ApplicationModel.Payments.PaymentItem> additionalDisplayItems) 
 		{
@@ -63,7 +63,7 @@ namespace Windows.ApplicationModel.Payments
 		}
 		#endif
 		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentDetailsModifier.PaymentDetailsModifier(System.Collections.Generic.IEnumerable<string>, Windows.ApplicationModel.Payments.PaymentItem, System.Collections.Generic.IEnumerable<Windows.ApplicationModel.Payments.PaymentItem>)
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public PaymentDetailsModifier( global::System.Collections.Generic.IEnumerable<string> supportedMethodIds,  global::Windows.ApplicationModel.Payments.PaymentItem total,  global::System.Collections.Generic.IEnumerable<global::Windows.ApplicationModel.Payments.PaymentItem> additionalDisplayItems,  string jsonData) 
 		{

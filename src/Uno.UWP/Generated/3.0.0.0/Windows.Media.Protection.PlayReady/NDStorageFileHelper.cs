@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Media.Protection.PlayReady
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class NDStorageFileHelper : global::Windows.Media.Protection.PlayReady.INDStorageFileHelper
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public NDStorageFileHelper() 
 		{
@@ -15,7 +15,7 @@ namespace Windows.Media.Protection.PlayReady
 		}
 		#endif
 		// Forced skipping of method Windows.Media.Protection.PlayReady.NDStorageFileHelper.NDStorageFileHelper()
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::System.Collections.Generic.IList<string> GetFileURLs( global::Windows.Storage.IStorageFile file)
 		{

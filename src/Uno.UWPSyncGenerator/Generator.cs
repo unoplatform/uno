@@ -15,7 +15,7 @@ namespace Uno.UWPSyncGenerator
 {
 	abstract class Generator
 	{
-		private const string net46Define = "NET46";
+		private const string net46Define = "NET461";
 		private const string AndroidDefine = "__ANDROID__";
 		private const string iOSDefine = "__IOS__";
 		private const string WasmDefine = "__WASM__";

@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.ApplicationModel.Contacts
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class ContactField : global::Windows.ApplicationModel.Contacts.IContactField
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.ApplicationModel.Contacts.ContactFieldCategory Category
 		{
@@ -17,7 +17,7 @@ namespace Windows.ApplicationModel.Contacts
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  string Name
 		{
@@ -27,7 +27,7 @@ namespace Windows.ApplicationModel.Contacts
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.ApplicationModel.Contacts.ContactFieldType Type
 		{
@@ -37,7 +37,7 @@ namespace Windows.ApplicationModel.Contacts
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  string Value
 		{
@@ -47,7 +47,7 @@ namespace Windows.ApplicationModel.Contacts
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public ContactField( string value,  global::Windows.ApplicationModel.Contacts.ContactFieldType type) 
 		{
@@ -55,7 +55,7 @@ namespace Windows.ApplicationModel.Contacts
 		}
 		#endif
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactField.ContactField(string, Windows.ApplicationModel.Contacts.ContactFieldType)
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public ContactField( string value,  global::Windows.ApplicationModel.Contacts.ContactFieldType type,  global::Windows.ApplicationModel.Contacts.ContactFieldCategory category) 
 		{
@@ -63,7 +63,7 @@ namespace Windows.ApplicationModel.Contacts
 		}
 		#endif
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactField.ContactField(string, Windows.ApplicationModel.Contacts.ContactFieldType, Windows.ApplicationModel.Contacts.ContactFieldCategory)
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public ContactField( string name,  string value,  global::Windows.ApplicationModel.Contacts.ContactFieldType type,  global::Windows.ApplicationModel.Contacts.ContactFieldCategory category) 
 		{

@@ -28,7 +28,7 @@ using Uno.Xaml.Schema;
 
 namespace System.Windows.Markup
 {
-#if NET46
+#if NET461
 	[System.Runtime.CompilerServices.TypeForwardedFrom(Consts.AssemblyWindowsBase)]
 	public interface IComponentConnector
 	{

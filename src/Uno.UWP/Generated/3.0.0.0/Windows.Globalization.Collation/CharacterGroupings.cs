@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Globalization.Collation
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class CharacterGroupings : global::System.Collections.Generic.IReadOnlyList<global::Windows.Globalization.Collation.CharacterGrouping>,global::System.Collections.Generic.IEnumerable<global::Windows.Globalization.Collation.CharacterGrouping>
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  uint Size
 		{
@@ -17,7 +17,7 @@ namespace Windows.Globalization.Collation
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public CharacterGroupings( string language) 
 		{
@@ -25,7 +25,7 @@ namespace Windows.Globalization.Collation
 		}
 		#endif
 		// Forced skipping of method Windows.Globalization.Collation.CharacterGroupings.CharacterGroupings(string)
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public CharacterGroupings() 
 		{
@@ -33,7 +33,7 @@ namespace Windows.Globalization.Collation
 		}
 		#endif
 		// Forced skipping of method Windows.Globalization.Collation.CharacterGroupings.CharacterGroupings()
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  string Lookup( string text)
 		{
@@ -46,7 +46,7 @@ namespace Windows.Globalization.Collation
 		// Forced skipping of method Windows.Globalization.Collation.CharacterGroupings.GetMany(uint, Windows.Globalization.Collation.CharacterGrouping[])
 		// Forced skipping of method Windows.Globalization.Collation.CharacterGroupings.First()
 		// Processing: System.Collections.Generic.IReadOnlyList<Windows.Globalization.Collation.CharacterGrouping>
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public global::Windows.Globalization.Collation.CharacterGrouping this[int index]
 		{
@@ -61,7 +61,7 @@ namespace Windows.Globalization.Collation
 		}
 		#endif
 		// Processing: System.Collections.Generic.IEnumerable<Windows.Globalization.Collation.CharacterGrouping>
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		// DeclaringType: System.Collections.Generic.IEnumerable<Windows.Globalization.Collation.CharacterGrouping>
 		[global::Uno.NotImplemented]
 		public global::System.Collections.Generic.IEnumerator<global::Windows.Globalization.Collation.CharacterGrouping> GetEnumerator()
@@ -70,7 +70,7 @@ namespace Windows.Globalization.Collation
 		}
 		#endif
 		// Processing: System.Collections.IEnumerable
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		// DeclaringType: System.Collections.IEnumerable
 		[global::Uno.NotImplemented]
 		 global::System.Collections.IEnumerator global::System.Collections.IEnumerable.GetEnumerator()
@@ -79,7 +79,7 @@ namespace Windows.Globalization.Collation
 		}
 		#endif
 		// Processing: System.Collections.Generic.IReadOnlyCollection<Windows.Globalization.Collation.CharacterGrouping>
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public int Count
 		{

@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Devices.Bluetooth.Advertisement
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class BluetoothLEManufacturerData 
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Storage.Streams.IBuffer Data
 		{
@@ -21,7 +21,7 @@ namespace Windows.Devices.Bluetooth.Advertisement
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  ushort CompanyId
 		{
@@ -35,7 +35,7 @@ namespace Windows.Devices.Bluetooth.Advertisement
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public BluetoothLEManufacturerData() 
 		{
@@ -43,7 +43,7 @@ namespace Windows.Devices.Bluetooth.Advertisement
 		}
 		#endif
 		// Forced skipping of method Windows.Devices.Bluetooth.Advertisement.BluetoothLEManufacturerData.BluetoothLEManufacturerData()
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public BluetoothLEManufacturerData( ushort companyId,  global::Windows.Storage.Streams.IBuffer data) 
 		{

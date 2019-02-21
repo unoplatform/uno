@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Networking.Connectivity
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class ConnectionProfile 
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Networking.Connectivity.NetworkAdapter NetworkAdapter
 		{
@@ -17,7 +17,7 @@ namespace Windows.Networking.Connectivity
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Networking.Connectivity.NetworkSecuritySettings NetworkSecuritySettings
 		{
@@ -27,7 +27,7 @@ namespace Windows.Networking.Connectivity
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  string ProfileName
 		{
@@ -37,7 +37,7 @@ namespace Windows.Networking.Connectivity
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  bool IsWlanConnectionProfile
 		{
@@ -47,7 +47,7 @@ namespace Windows.Networking.Connectivity
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  bool IsWwanConnectionProfile
 		{
@@ -57,7 +57,7 @@ namespace Windows.Networking.Connectivity
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::System.Guid? ServiceProviderGuid
 		{
@@ -67,7 +67,7 @@ namespace Windows.Networking.Connectivity
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Networking.Connectivity.WlanConnectionProfileDetails WlanConnectionProfileDetails
 		{
@@ -77,7 +77,7 @@ namespace Windows.Networking.Connectivity
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Networking.Connectivity.WwanConnectionProfileDetails WwanConnectionProfileDetails
 		{
@@ -87,7 +87,7 @@ namespace Windows.Networking.Connectivity
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  bool CanDelete
 		{
@@ -98,28 +98,28 @@ namespace Windows.Networking.Connectivity
 		}
 		#endif
 		// Forced skipping of method Windows.Networking.Connectivity.ConnectionProfile.ProfileName.get
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Networking.Connectivity.NetworkConnectivityLevel GetNetworkConnectivityLevel()
 		{
 			throw new global::System.NotImplementedException("The member NetworkConnectivityLevel ConnectionProfile.GetNetworkConnectivityLevel() is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::System.Collections.Generic.IReadOnlyList<string> GetNetworkNames()
 		{
 			throw new global::System.NotImplementedException("The member IReadOnlyList<string> ConnectionProfile.GetNetworkNames() is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Networking.Connectivity.ConnectionCost GetConnectionCost()
 		{
 			throw new global::System.NotImplementedException("The member ConnectionCost ConnectionProfile.GetConnectionCost() is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Networking.Connectivity.DataPlanStatus GetDataPlanStatus()
 		{
@@ -127,14 +127,14 @@ namespace Windows.Networking.Connectivity
 		}
 		#endif
 		// Forced skipping of method Windows.Networking.Connectivity.ConnectionProfile.NetworkAdapter.get
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Networking.Connectivity.DataUsage GetLocalUsage( global::System.DateTimeOffset StartTime,  global::System.DateTimeOffset EndTime)
 		{
 			throw new global::System.NotImplementedException("The member DataUsage ConnectionProfile.GetLocalUsage(DateTimeOffset StartTime, DateTimeOffset EndTime) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Networking.Connectivity.DataUsage GetLocalUsage( global::System.DateTimeOffset StartTime,  global::System.DateTimeOffset EndTime,  global::Windows.Networking.Connectivity.RoamingStates States)
 		{
@@ -147,42 +147,42 @@ namespace Windows.Networking.Connectivity
 		// Forced skipping of method Windows.Networking.Connectivity.ConnectionProfile.WwanConnectionProfileDetails.get
 		// Forced skipping of method Windows.Networking.Connectivity.ConnectionProfile.WlanConnectionProfileDetails.get
 		// Forced skipping of method Windows.Networking.Connectivity.ConnectionProfile.ServiceProviderGuid.get
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  byte? GetSignalBars()
 		{
 			throw new global::System.NotImplementedException("The member byte? ConnectionProfile.GetSignalBars() is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Networking.Connectivity.DomainConnectivityLevel GetDomainConnectivityLevel()
 		{
 			throw new global::System.NotImplementedException("The member DomainConnectivityLevel ConnectionProfile.GetDomainConnectivityLevel() is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IReadOnlyList<global::Windows.Networking.Connectivity.NetworkUsage>> GetNetworkUsageAsync( global::System.DateTimeOffset startTime,  global::System.DateTimeOffset endTime,  global::Windows.Networking.Connectivity.DataUsageGranularity granularity,  global::Windows.Networking.Connectivity.NetworkUsageStates states)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<IReadOnlyList<NetworkUsage>> ConnectionProfile.GetNetworkUsageAsync(DateTimeOffset startTime, DateTimeOffset endTime, DataUsageGranularity granularity, NetworkUsageStates states) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IReadOnlyList<global::Windows.Networking.Connectivity.ConnectivityInterval>> GetConnectivityIntervalsAsync( global::System.DateTimeOffset startTime,  global::System.DateTimeOffset endTime,  global::Windows.Networking.Connectivity.NetworkUsageStates states)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<IReadOnlyList<ConnectivityInterval>> ConnectionProfile.GetConnectivityIntervalsAsync(DateTimeOffset startTime, DateTimeOffset endTime, NetworkUsageStates states) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IReadOnlyList<global::Windows.Networking.Connectivity.AttributedNetworkUsage>> GetAttributedNetworkUsageAsync( global::System.DateTimeOffset startTime,  global::System.DateTimeOffset endTime,  global::Windows.Networking.Connectivity.NetworkUsageStates states)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<IReadOnlyList<AttributedNetworkUsage>> ConnectionProfile.GetAttributedNetworkUsageAsync(DateTimeOffset startTime, DateTimeOffset endTime, NetworkUsageStates states) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IReadOnlyList<global::Windows.Networking.Connectivity.ProviderNetworkUsage>> GetProviderNetworkUsageAsync( global::System.DateTimeOffset startTime,  global::System.DateTimeOffset endTime,  global::Windows.Networking.Connectivity.NetworkUsageStates states)
 		{
@@ -190,7 +190,7 @@ namespace Windows.Networking.Connectivity
 		}
 		#endif
 		// Forced skipping of method Windows.Networking.Connectivity.ConnectionProfile.CanDelete.get
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Foundation.IAsyncOperation<global::Windows.Networking.Connectivity.ConnectionProfileDeleteStatus> TryDeleteAsync()
 		{

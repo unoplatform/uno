@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml.Controls.Maps
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || false
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || false
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class MapCamera : global::Windows.UI.Xaml.DependencyObject
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  double Roll
 		{
@@ -21,7 +21,7 @@ namespace Windows.UI.Xaml.Controls.Maps
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  double Pitch
 		{
@@ -35,7 +35,7 @@ namespace Windows.UI.Xaml.Controls.Maps
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Devices.Geolocation.Geopoint Location
 		{
@@ -49,7 +49,7 @@ namespace Windows.UI.Xaml.Controls.Maps
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  double Heading
 		{
@@ -63,7 +63,7 @@ namespace Windows.UI.Xaml.Controls.Maps
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  double FieldOfView
 		{
@@ -77,7 +77,7 @@ namespace Windows.UI.Xaml.Controls.Maps
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public MapCamera( global::Windows.Devices.Geolocation.Geopoint location) : base()
 		{
@@ -85,7 +85,7 @@ namespace Windows.UI.Xaml.Controls.Maps
 		}
 		#endif
 		// Forced skipping of method Windows.UI.Xaml.Controls.Maps.MapCamera.MapCamera(Windows.Devices.Geolocation.Geopoint)
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public MapCamera( global::Windows.Devices.Geolocation.Geopoint location,  double headingInDegrees) : base()
 		{
@@ -93,7 +93,7 @@ namespace Windows.UI.Xaml.Controls.Maps
 		}
 		#endif
 		// Forced skipping of method Windows.UI.Xaml.Controls.Maps.MapCamera.MapCamera(Windows.Devices.Geolocation.Geopoint, double)
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public MapCamera( global::Windows.Devices.Geolocation.Geopoint location,  double headingInDegrees,  double pitchInDegrees) : base()
 		{
@@ -101,7 +101,7 @@ namespace Windows.UI.Xaml.Controls.Maps
 		}
 		#endif
 		// Forced skipping of method Windows.UI.Xaml.Controls.Maps.MapCamera.MapCamera(Windows.Devices.Geolocation.Geopoint, double, double)
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public MapCamera( global::Windows.Devices.Geolocation.Geopoint location,  double headingInDegrees,  double pitchInDegrees,  double rollInDegrees,  double fieldOfViewInDegrees) : base()
 		{

@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Graphics.Printing.Workflow
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class PrintWorkflowForegroundSession 
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Graphics.Printing.Workflow.PrintWorkflowSessionStatus Status
 		{
@@ -22,14 +22,14 @@ namespace Windows.Graphics.Printing.Workflow
 		// Forced skipping of method Windows.Graphics.Printing.Workflow.PrintWorkflowForegroundSession.XpsDataAvailable.add
 		// Forced skipping of method Windows.Graphics.Printing.Workflow.PrintWorkflowForegroundSession.XpsDataAvailable.remove
 		// Forced skipping of method Windows.Graphics.Printing.Workflow.PrintWorkflowForegroundSession.Status.get
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  void Start()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Printing.Workflow.PrintWorkflowForegroundSession", "void PrintWorkflowForegroundSession.Start()");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Graphics.Printing.Workflow.PrintWorkflowForegroundSession, global::Windows.Graphics.Printing.Workflow.PrintWorkflowForegroundSetupRequestedEventArgs> SetupRequested
 		{
@@ -45,7 +45,7 @@ namespace Windows.Graphics.Printing.Workflow
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Graphics.Printing.Workflow.PrintWorkflowForegroundSession, global::Windows.Graphics.Printing.Workflow.PrintWorkflowXpsDataAvailableEventArgs> XpsDataAvailable
 		{

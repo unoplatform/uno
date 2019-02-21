@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Security.Cryptography.Core
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class SymmetricKeyAlgorithmProvider 
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  string AlgorithmName
 		{
@@ -17,7 +17,7 @@ namespace Windows.Security.Cryptography.Core
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  uint BlockLength
 		{
@@ -29,14 +29,14 @@ namespace Windows.Security.Cryptography.Core
 		#endif
 		// Forced skipping of method Windows.Security.Cryptography.Core.SymmetricKeyAlgorithmProvider.AlgorithmName.get
 		// Forced skipping of method Windows.Security.Cryptography.Core.SymmetricKeyAlgorithmProvider.BlockLength.get
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Security.Cryptography.Core.CryptographicKey CreateSymmetricKey( global::Windows.Storage.Streams.IBuffer keyMaterial)
 		{
 			throw new global::System.NotImplementedException("The member CryptographicKey SymmetricKeyAlgorithmProvider.CreateSymmetricKey(IBuffer keyMaterial) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.Security.Cryptography.Core.SymmetricKeyAlgorithmProvider OpenAlgorithm( string algorithm)
 		{

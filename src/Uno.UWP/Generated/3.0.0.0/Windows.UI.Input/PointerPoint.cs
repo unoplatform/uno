@@ -7,7 +7,7 @@ namespace Windows.UI.Input
 	#endif
 	public  partial class PointerPoint 
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  uint FrameId
 		{
@@ -17,7 +17,7 @@ namespace Windows.UI.Input
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || false || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || false || __MACOS__
 		[global::Uno.NotImplemented]
 		public  bool IsInContact
 		{
@@ -27,7 +27,7 @@ namespace Windows.UI.Input
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Devices.Input.PointerDevice PointerDevice
 		{
@@ -37,7 +37,7 @@ namespace Windows.UI.Input
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  uint PointerId
 		{
@@ -48,7 +48,7 @@ namespace Windows.UI.Input
 		}
 		#endif
 		// Skipping already declared property Position
-		#if __ANDROID__ || __IOS__ || NET46 || false || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || false || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.UI.Input.PointerPointProperties Properties
 		{
@@ -58,7 +58,7 @@ namespace Windows.UI.Input
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Foundation.Point RawPosition
 		{
@@ -68,7 +68,7 @@ namespace Windows.UI.Input
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  ulong Timestamp
 		{
@@ -86,28 +86,28 @@ namespace Windows.UI.Input
 		// Forced skipping of method Windows.UI.Input.PointerPoint.Timestamp.get
 		// Forced skipping of method Windows.UI.Input.PointerPoint.IsInContact.get
 		// Forced skipping of method Windows.UI.Input.PointerPoint.Properties.get
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Input.PointerPoint GetCurrentPoint( uint pointerId)
 		{
 			throw new global::System.NotImplementedException("The member PointerPoint PointerPoint.GetCurrentPoint(uint pointerId) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::System.Collections.Generic.IList<global::Windows.UI.Input.PointerPoint> GetIntermediatePoints( uint pointerId)
 		{
 			throw new global::System.NotImplementedException("The member IList<PointerPoint> PointerPoint.GetIntermediatePoints(uint pointerId) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Input.PointerPoint GetCurrentPoint( uint pointerId,  global::Windows.UI.Input.IPointerPointTransform transform)
 		{
 			throw new global::System.NotImplementedException("The member PointerPoint PointerPoint.GetCurrentPoint(uint pointerId, IPointerPointTransform transform) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::System.Collections.Generic.IList<global::Windows.UI.Input.PointerPoint> GetIntermediatePoints( uint pointerId,  global::Windows.UI.Input.IPointerPointTransform transform)
 		{

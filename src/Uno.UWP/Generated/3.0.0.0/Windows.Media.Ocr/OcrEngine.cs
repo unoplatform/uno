@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Media.Ocr
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class OcrEngine 
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Globalization.Language RecognizerLanguage
 		{
@@ -17,7 +17,7 @@ namespace Windows.Media.Ocr
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::System.Collections.Generic.IReadOnlyList<global::Windows.Globalization.Language> AvailableRecognizerLanguages
 		{
@@ -27,7 +27,7 @@ namespace Windows.Media.Ocr
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static uint MaxImageDimension
 		{
@@ -37,7 +37,7 @@ namespace Windows.Media.Ocr
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Foundation.IAsyncOperation<global::Windows.Media.Ocr.OcrResult> RecognizeAsync( global::Windows.Graphics.Imaging.SoftwareBitmap bitmap)
 		{
@@ -47,21 +47,21 @@ namespace Windows.Media.Ocr
 		// Forced skipping of method Windows.Media.Ocr.OcrEngine.RecognizerLanguage.get
 		// Forced skipping of method Windows.Media.Ocr.OcrEngine.MaxImageDimension.get
 		// Forced skipping of method Windows.Media.Ocr.OcrEngine.AvailableRecognizerLanguages.get
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static bool IsLanguageSupported( global::Windows.Globalization.Language language)
 		{
 			throw new global::System.NotImplementedException("The member bool OcrEngine.IsLanguageSupported(Language language) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.Media.Ocr.OcrEngine TryCreateFromLanguage( global::Windows.Globalization.Language language)
 		{
 			throw new global::System.NotImplementedException("The member OcrEngine OcrEngine.TryCreateFromLanguage(Language language) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.Media.Ocr.OcrEngine TryCreateFromUserProfileLanguages()
 		{

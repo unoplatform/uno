@@ -1,4 +1,4 @@
-#if NET46 || __MACOS__
+#if NET461 || __MACOS__
 #pragma warning disable CS0067
 #endif
 

@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml.Resources
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class CustomXamlResourceLoader 
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.Resources.CustomXamlResourceLoader Current
 		{
@@ -21,7 +21,7 @@ namespace Windows.UI.Xaml.Resources
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public CustomXamlResourceLoader() 
 		{
@@ -29,7 +29,7 @@ namespace Windows.UI.Xaml.Resources
 		}
 		#endif
 		// Forced skipping of method Windows.UI.Xaml.Resources.CustomXamlResourceLoader.CustomXamlResourceLoader()
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		protected virtual object GetResource( string resourceId,  string objectType,  string propertyName,  string propertyType)
 		{

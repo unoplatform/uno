@@ -7,7 +7,7 @@ namespace Windows.UI.Xaml.Automation.Peers
 	#endif
 	public  partial class SelectorAutomationPeer : global::Windows.UI.Xaml.Automation.Peers.ItemsControlAutomationPeer,global::Windows.UI.Xaml.Automation.Provider.ISelectionProvider
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  bool CanSelectMultiple
 		{
@@ -17,7 +17,7 @@ namespace Windows.UI.Xaml.Automation.Peers
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  bool IsSelectionRequired
 		{
@@ -27,7 +27,7 @@ namespace Windows.UI.Xaml.Automation.Peers
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public SelectorAutomationPeer( global::Windows.UI.Xaml.Controls.Primitives.Selector owner) : base(owner)
 		{
@@ -37,7 +37,7 @@ namespace Windows.UI.Xaml.Automation.Peers
 		// Forced skipping of method Windows.UI.Xaml.Automation.Peers.SelectorAutomationPeer.SelectorAutomationPeer(Windows.UI.Xaml.Controls.Primitives.Selector)
 		// Forced skipping of method Windows.UI.Xaml.Automation.Peers.SelectorAutomationPeer.CanSelectMultiple.get
 		// Forced skipping of method Windows.UI.Xaml.Automation.Peers.SelectorAutomationPeer.IsSelectionRequired.get
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.UI.Xaml.Automation.Provider.IRawElementProviderSimple[] GetSelection()
 		{

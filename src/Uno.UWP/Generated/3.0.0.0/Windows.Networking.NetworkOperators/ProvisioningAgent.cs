@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Networking.NetworkOperators
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class ProvisioningAgent 
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public ProvisioningAgent() 
 		{
@@ -15,21 +15,21 @@ namespace Windows.Networking.NetworkOperators
 		}
 		#endif
 		// Forced skipping of method Windows.Networking.NetworkOperators.ProvisioningAgent.ProvisioningAgent()
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Foundation.IAsyncOperation<global::Windows.Networking.NetworkOperators.ProvisionFromXmlDocumentResults> ProvisionFromXmlDocumentAsync( string provisioningXmlDocument)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<ProvisionFromXmlDocumentResults> ProvisioningAgent.ProvisionFromXmlDocumentAsync(string provisioningXmlDocument) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Networking.NetworkOperators.ProvisionedProfile GetProvisionedProfile( global::Windows.Networking.NetworkOperators.ProfileMediaType mediaType,  string profileName)
 		{
 			throw new global::System.NotImplementedException("The member ProvisionedProfile ProvisioningAgent.GetProvisionedProfile(ProfileMediaType mediaType, string profileName) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.Networking.NetworkOperators.ProvisioningAgent CreateFromNetworkAccountId( string networkAccountId)
 		{

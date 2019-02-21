@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Phone.System.Power
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class PowerManager 
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.Phone.System.Power.PowerSavingMode PowerSavingMode
 		{
@@ -17,7 +17,7 @@ namespace Windows.Phone.System.Power
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static bool PowerSavingModeEnabled
 		{
@@ -31,7 +31,7 @@ namespace Windows.Phone.System.Power
 		// Forced skipping of method Windows.Phone.System.Power.PowerManager.PowerSavingModeChanged.add
 		// Forced skipping of method Windows.Phone.System.Power.PowerManager.PowerSavingModeChanged.remove
 		// Forced skipping of method Windows.Phone.System.Power.PowerManager.PowerSavingModeEnabled.get
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static event global::System.EventHandler<object> PowerSavingModeChanged
 		{

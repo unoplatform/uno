@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml.Media.Imaging
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class SurfaceImageSource : global::Windows.UI.Xaml.Media.ImageSource
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public SurfaceImageSource( int pixelWidth,  int pixelHeight) 
 		{
@@ -15,7 +15,7 @@ namespace Windows.UI.Xaml.Media.Imaging
 		}
 		#endif
 		// Forced skipping of method Windows.UI.Xaml.Media.Imaging.SurfaceImageSource.SurfaceImageSource(int, int)
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public SurfaceImageSource( int pixelWidth,  int pixelHeight,  bool isOpaque) 
 		{

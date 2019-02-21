@@ -7,7 +7,7 @@ namespace Windows.UI.Xaml.Automation.Peers
 	#endif
 	public  partial class ListViewBaseHeaderItemAutomationPeer : global::Windows.UI.Xaml.Automation.Peers.FrameworkElementAutomationPeer
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		protected ListViewBaseHeaderItemAutomationPeer( global::Windows.UI.Xaml.Controls.ListViewBaseHeaderItem owner) : base(owner)
 		{

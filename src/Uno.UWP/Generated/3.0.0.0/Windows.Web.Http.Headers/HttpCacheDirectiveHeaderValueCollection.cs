@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Web.Http.Headers
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class HttpCacheDirectiveHeaderValueCollection : global::System.Collections.Generic.IList<global::Windows.Web.Http.Headers.HttpNameValueHeaderValue>,global::System.Collections.Generic.IEnumerable<global::Windows.Web.Http.Headers.HttpNameValueHeaderValue>,global::Windows.Foundation.IStringable
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  uint Size
 		{
@@ -17,7 +17,7 @@ namespace Windows.Web.Http.Headers
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::System.TimeSpan? SharedMaxAge
 		{
@@ -31,7 +31,7 @@ namespace Windows.Web.Http.Headers
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::System.TimeSpan? MinFresh
 		{
@@ -45,7 +45,7 @@ namespace Windows.Web.Http.Headers
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::System.TimeSpan? MaxStale
 		{
@@ -59,7 +59,7 @@ namespace Windows.Web.Http.Headers
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::System.TimeSpan? MaxAge
 		{
@@ -81,14 +81,14 @@ namespace Windows.Web.Http.Headers
 		// Forced skipping of method Windows.Web.Http.Headers.HttpCacheDirectiveHeaderValueCollection.MinFresh.set
 		// Forced skipping of method Windows.Web.Http.Headers.HttpCacheDirectiveHeaderValueCollection.SharedMaxAge.get
 		// Forced skipping of method Windows.Web.Http.Headers.HttpCacheDirectiveHeaderValueCollection.SharedMaxAge.set
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  void ParseAdd( string input)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.Headers.HttpCacheDirectiveHeaderValueCollection", "void HttpCacheDirectiveHeaderValueCollection.ParseAdd(string input)");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  bool TryParseAdd( string input)
 		{
@@ -108,7 +108,7 @@ namespace Windows.Web.Http.Headers
 		// Forced skipping of method Windows.Web.Http.Headers.HttpCacheDirectiveHeaderValueCollection.GetMany(uint, Windows.Web.Http.Headers.HttpNameValueHeaderValue[])
 		// Forced skipping of method Windows.Web.Http.Headers.HttpCacheDirectiveHeaderValueCollection.ReplaceAll(Windows.Web.Http.Headers.HttpNameValueHeaderValue[])
 		// Forced skipping of method Windows.Web.Http.Headers.HttpCacheDirectiveHeaderValueCollection.First()
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public override string ToString()
 		{
@@ -116,7 +116,7 @@ namespace Windows.Web.Http.Headers
 		}
 		#endif
 		// Processing: System.Collections.Generic.IList<Windows.Web.Http.Headers.HttpNameValueHeaderValue>
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		// DeclaringType: System.Collections.Generic.IList<Windows.Web.Http.Headers.HttpNameValueHeaderValue>
 		[global::Uno.NotImplemented]
 		public int IndexOf( global::Windows.Web.Http.Headers.HttpNameValueHeaderValue item)
@@ -124,7 +124,7 @@ namespace Windows.Web.Http.Headers
 			throw new global::System.NotSupportedException();
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		// DeclaringType: System.Collections.Generic.IList<Windows.Web.Http.Headers.HttpNameValueHeaderValue>
 		[global::Uno.NotImplemented]
 		public void Insert( int index,  global::Windows.Web.Http.Headers.HttpNameValueHeaderValue item)
@@ -132,7 +132,7 @@ namespace Windows.Web.Http.Headers
 			throw new global::System.NotSupportedException();
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		// DeclaringType: System.Collections.Generic.IList<Windows.Web.Http.Headers.HttpNameValueHeaderValue>
 		[global::Uno.NotImplemented]
 		public void RemoveAt( int index)
@@ -140,7 +140,7 @@ namespace Windows.Web.Http.Headers
 			throw new global::System.NotSupportedException();
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public global::Windows.Web.Http.Headers.HttpNameValueHeaderValue this[int index]
 		{
@@ -155,7 +155,7 @@ namespace Windows.Web.Http.Headers
 		}
 		#endif
 		// Processing: System.Collections.Generic.ICollection<Windows.Web.Http.Headers.HttpNameValueHeaderValue>
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		// DeclaringType: System.Collections.Generic.ICollection<Windows.Web.Http.Headers.HttpNameValueHeaderValue>
 		[global::Uno.NotImplemented]
 		public void Add( global::Windows.Web.Http.Headers.HttpNameValueHeaderValue item)
@@ -163,7 +163,7 @@ namespace Windows.Web.Http.Headers
 			throw new global::System.NotSupportedException();
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		// DeclaringType: System.Collections.Generic.ICollection<Windows.Web.Http.Headers.HttpNameValueHeaderValue>
 		[global::Uno.NotImplemented]
 		public void Clear()
@@ -171,7 +171,7 @@ namespace Windows.Web.Http.Headers
 			throw new global::System.NotSupportedException();
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		// DeclaringType: System.Collections.Generic.ICollection<Windows.Web.Http.Headers.HttpNameValueHeaderValue>
 		[global::Uno.NotImplemented]
 		public bool Contains( global::Windows.Web.Http.Headers.HttpNameValueHeaderValue item)
@@ -179,7 +179,7 @@ namespace Windows.Web.Http.Headers
 			throw new global::System.NotSupportedException();
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		// DeclaringType: System.Collections.Generic.ICollection<Windows.Web.Http.Headers.HttpNameValueHeaderValue>
 		[global::Uno.NotImplemented]
 		public void CopyTo( global::Windows.Web.Http.Headers.HttpNameValueHeaderValue[] array,  int arrayIndex)
@@ -187,7 +187,7 @@ namespace Windows.Web.Http.Headers
 			throw new global::System.NotSupportedException();
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		// DeclaringType: System.Collections.Generic.ICollection<Windows.Web.Http.Headers.HttpNameValueHeaderValue>
 		[global::Uno.NotImplemented]
 		public bool Remove( global::Windows.Web.Http.Headers.HttpNameValueHeaderValue item)
@@ -195,7 +195,7 @@ namespace Windows.Web.Http.Headers
 			throw new global::System.NotSupportedException();
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public int Count
 		{
@@ -209,7 +209,7 @@ namespace Windows.Web.Http.Headers
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public bool IsReadOnly
 		{
@@ -224,7 +224,7 @@ namespace Windows.Web.Http.Headers
 		}
 		#endif
 		// Processing: System.Collections.Generic.IEnumerable<Windows.Web.Http.Headers.HttpNameValueHeaderValue>
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		// DeclaringType: System.Collections.Generic.IEnumerable<Windows.Web.Http.Headers.HttpNameValueHeaderValue>
 		[global::Uno.NotImplemented]
 		public global::System.Collections.Generic.IEnumerator<global::Windows.Web.Http.Headers.HttpNameValueHeaderValue> GetEnumerator()
@@ -233,7 +233,7 @@ namespace Windows.Web.Http.Headers
 		}
 		#endif
 		// Processing: System.Collections.IEnumerable
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		// DeclaringType: System.Collections.IEnumerable
 		[global::Uno.NotImplemented]
 		 global::System.Collections.IEnumerator global::System.Collections.IEnumerable.GetEnumerator()

@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Devices.Enumeration.Pnp
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class PnpObjectWatcher 
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Devices.Enumeration.DeviceWatcherStatus Status
 		{
@@ -28,21 +28,21 @@ namespace Windows.Devices.Enumeration.Pnp
 		// Forced skipping of method Windows.Devices.Enumeration.Pnp.PnpObjectWatcher.Stopped.add
 		// Forced skipping of method Windows.Devices.Enumeration.Pnp.PnpObjectWatcher.Stopped.remove
 		// Forced skipping of method Windows.Devices.Enumeration.Pnp.PnpObjectWatcher.Status.get
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  void Start()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Enumeration.Pnp.PnpObjectWatcher", "void PnpObjectWatcher.Start()");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  void Stop()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Enumeration.Pnp.PnpObjectWatcher", "void PnpObjectWatcher.Stop()");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Devices.Enumeration.Pnp.PnpObjectWatcher, global::Windows.Devices.Enumeration.Pnp.PnpObject> Added
 		{
@@ -58,7 +58,7 @@ namespace Windows.Devices.Enumeration.Pnp
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Devices.Enumeration.Pnp.PnpObjectWatcher, object> EnumerationCompleted
 		{
@@ -74,7 +74,7 @@ namespace Windows.Devices.Enumeration.Pnp
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Devices.Enumeration.Pnp.PnpObjectWatcher, global::Windows.Devices.Enumeration.Pnp.PnpObjectUpdate> Removed
 		{
@@ -90,7 +90,7 @@ namespace Windows.Devices.Enumeration.Pnp
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Devices.Enumeration.Pnp.PnpObjectWatcher, object> Stopped
 		{
@@ -106,7 +106,7 @@ namespace Windows.Devices.Enumeration.Pnp
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Devices.Enumeration.Pnp.PnpObjectWatcher, global::Windows.Devices.Enumeration.Pnp.PnpObjectUpdate> Updated
 		{

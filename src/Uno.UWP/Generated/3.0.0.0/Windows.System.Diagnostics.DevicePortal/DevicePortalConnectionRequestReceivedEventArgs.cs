@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.System.Diagnostics.DevicePortal
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class DevicePortalConnectionRequestReceivedEventArgs 
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Web.Http.HttpRequestMessage RequestMessage
 		{
@@ -17,7 +17,7 @@ namespace Windows.System.Diagnostics.DevicePortal
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Web.Http.HttpResponseMessage ResponseMessage
 		{
@@ -27,7 +27,7 @@ namespace Windows.System.Diagnostics.DevicePortal
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  bool IsWebSocketUpgradeRequest
 		{
@@ -37,7 +37,7 @@ namespace Windows.System.Diagnostics.DevicePortal
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::System.Collections.Generic.IReadOnlyList<string> WebSocketProtocolsRequested
 		{
@@ -51,7 +51,7 @@ namespace Windows.System.Diagnostics.DevicePortal
 		// Forced skipping of method Windows.System.Diagnostics.DevicePortal.DevicePortalConnectionRequestReceivedEventArgs.ResponseMessage.get
 		// Forced skipping of method Windows.System.Diagnostics.DevicePortal.DevicePortalConnectionRequestReceivedEventArgs.IsWebSocketUpgradeRequest.get
 		// Forced skipping of method Windows.System.Diagnostics.DevicePortal.DevicePortalConnectionRequestReceivedEventArgs.WebSocketProtocolsRequested.get
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Foundation.Deferral GetDeferral()
 		{

@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.ApplicationModel.LockScreen
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class LockApplicationHost 
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  void RequestUnlock()
 		{
@@ -16,14 +16,14 @@ namespace Windows.ApplicationModel.LockScreen
 		#endif
 		// Forced skipping of method Windows.ApplicationModel.LockScreen.LockApplicationHost.Unlocking.add
 		// Forced skipping of method Windows.ApplicationModel.LockScreen.LockApplicationHost.Unlocking.remove
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.ApplicationModel.LockScreen.LockApplicationHost GetForCurrentView()
 		{
 			throw new global::System.NotImplementedException("The member LockApplicationHost LockApplicationHost.GetForCurrentView() is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.ApplicationModel.LockScreen.LockApplicationHost, global::Windows.ApplicationModel.LockScreen.LockScreenUnlockingEventArgs> Unlocking
 		{
