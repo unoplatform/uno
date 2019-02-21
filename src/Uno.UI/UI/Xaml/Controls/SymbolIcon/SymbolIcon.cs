@@ -30,8 +30,7 @@ namespace Windows.UI.Xaml.Controls
 			set => SetValue(SymbolProperty, value);
 		}
 
-		// Using a DependencyProperty as the backing store for Symbol.  This enables animation, styling, binding, etc...
-		public static readonly DependencyProperty SymbolProperty =
+		public static DependencyProperty SymbolProperty { get; } =
 			DependencyProperty.Register("Symbol", typeof(Symbol), typeof(SymbolIcon), new PropertyMetadata(Symbol.Home, OnSymbolChanged));
 
 		private static void OnSymbolChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs args)
