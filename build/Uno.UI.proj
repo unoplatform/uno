@@ -111,7 +111,7 @@
 	  <MSBuild Properties="Configuration=Release;VisualStudioVersion=15.0"
 				Projects="..\src\Uno.UWPSyncGenerator\Uno.UWPSyncGenerator.csproj"
 				Targets="Build" />
-		<Exec Command="..\src\Uno.UWPSyncGenerator\Bin\Release\net46\Uno.UWPSyncGenerator.exe &quot;doc&quot;" />
+		<Exec Command="..\src\Uno.UWPSyncGenerator\Bin\Release\net461\Uno.UWPSyncGenerator.exe &quot;doc&quot;" />
 		<Exec Command="$(NuGetPackageRoot)\docfx.console\2.36.0\tools\docfx.exe ..\doc\docfx.json -o $(OutputDir)\doc" />
 	</Target>
 

@@ -11,7 +11,7 @@
     <_IsMacOS Condition="'$(TargetFramework)'=='xamarinmac20'">true</_IsMacOS>
 
     <_IsNet>false</_IsNet>
-    <_IsNet Condition="'$(TargetFramework)'=='net46'">true</_IsNet>
+    <_IsNet Condition="'$(TargetFramework)'=='net461'">true</_IsNet>
 
     <_IsNetStd>false</_IsNetStd>
     <_IsNetStd Condition="'$(TargetFramework)'=='netstandard2.0'">true</_IsNetStd>
@@ -95,7 +95,7 @@
     <Compile Remove="**\*.net.cs" />
     <Compile Include="**\*.net.cs"
                      Exclude="bin\**\*.net.cs;obj\**\*.net.cs"
-                     Condition="'$(TargetFramework)'=='net46'" />
+                     Condition="'$(TargetFramework)'=='net461'" />
 
     <Page Include="**\*.xaml"
                 Exclude="bin/**/*.xaml;obj/**/*.xaml"

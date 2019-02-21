@@ -1,7 +1,7 @@
 ﻿<Project Sdk="MSBuild.Sdk.Extras" ToolsVersion="15.0">
 	<PropertyGroup>
-		<TargetFrameworks>xamarinmac20;MonoAndroid80;xamarinios10;net46;netstandard2.0</TargetFrameworks>
-		<TargetFrameworksCI>MonoAndroid71;MonoAndroid80;xamarinios10;net46;netstandard2.0;xamarinmac20</TargetFrameworksCI>
+		<TargetFrameworks>xamarinmac20;MonoAndroid80;xamarinios10;net461;netstandard2.0</TargetFrameworks>
+		<TargetFrameworksCI>MonoAndroid71;MonoAndroid80;xamarinios10;net461;netstandard2.0;xamarinmac20</TargetFrameworksCI>
 	</PropertyGroup>
 
 	<PropertyGroup>
@@ -81,7 +81,7 @@
 			<AutoGen>True</AutoGen>
 			<DependentUpon>VisualStatesMixins.tt</DependentUpon>
 		</Compile>
-		<Compile Include="Mixins\net46\VisualStatesMixins.g.cs">
+		<Compile Include="Mixins\net461\VisualStatesMixins.g.cs">
 			<DesignTime>True</DesignTime>
 			<AutoGen>True</AutoGen>
 			<DependentUpon>VisualStatesMixins.tt</DependentUpon>
@@ -94,7 +94,7 @@
 	</ItemGroup>
 
 	<Choose>
-		<When Condition="'$(TargetFramework)'=='net46'">
+		<When Condition="'$(TargetFramework)'=='net461'">
 			<ItemGroup>
 				<None Include="$(MSBuildThisFileDirectory)**/*.xaml" Exclude="bin/**/*.xaml;obj/**/*.xaml" />
 				<Page Remove="@(Page)" />
@@ -143,25 +143,15 @@
 			<Generator>TextTemplatingFileGenerator</Generator>
 			<LastGenOutput>VisualStatesMixins.g.cs</LastGenOutput>
 		</None>
-		<None Include="Mixins\net46\VisualStatesMixins.tt">
-			<Generator>TextTemplatingFileGenerator</Generator>
-			<LastGenOutput>VisualStatesMixins.g.cs</LastGenOutput>
-		</None>
 		<None Include="Resources\IResourceRegistry.cs" />
 		<None Include="Resources\ResourceRegistry.cs" />
 		<None Include="UI\Xaml\Controls\Panel\Panel.macOS.cs" />  
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Uno.SourceGenerationTasks">
-			<Version>1.29.0-dev.241</Version> 
-		</PackageReference>
-		<PackageReference Include="Uno.Core">
-			<Version>1.26.0-dev.58</Version>
-		</PackageReference>
-		<PackageReference Include="Uno.Core.Build">
-			<Version>1.26.0-dev.58</Version>
-		</PackageReference>
+		<PackageReference Include="Uno.SourceGenerationTasks" />
+		<PackageReference Include="Uno.Core" />
+		<PackageReference Include="Uno.Core.Build" />
 	</ItemGroup>
 
 	 <ItemGroup Condition=" '$(TargetFramework)' == 'MonoAndroid71'">
@@ -186,10 +176,10 @@
 		<PackageReference Include="Xamarin.Android.Support.v7.RecyclerView" Version="26.1.0.1">
 			<PrivateAssets>none</PrivateAssets>
 		</PackageReference>
-	</ItemGroup> 
+	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="xamarin.build.download" Version="0.4.9" />
+		<PackageReference Include="xamarin.build.download" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -224,7 +214,7 @@
 		<MixinInput Include=".\Mixins\macOS\FrameworkElementMixins.tt" />
 		<MixinInput Include=".\Mixins\macOS\VisualStatesMixins.tt" />
 		<MixinInput Include=".\Mixins\Wasm\VisualStatesMixins.tt" />
-		<MixinInput Include=".\Mixins\net46\VisualStatesMixins.tt" />
+		<MixinInput Include=".\Mixins\net461\VisualStatesMixins.tt" />
 		<MixinInput Include=".\UI\Xaml\IFrameworkElementImplementation.iOS.tt" />
 		<MixinInput Include=".\UI\Xaml\IFrameworkElementImplementation.macOS.tt" />
 
@@ -237,7 +227,7 @@
 		<MixinOutput Include=".\Mixins\macOS\FrameworkElementMixins.g.cs" />
 		<MixinOutput Include=".\Mixins\macOS\VisualStatesMixins.g.cs" />
 		<MixinOutput Include=".\Mixins\Wasm\VisualStatesMixins.g.cs" />
-		<MixinOutput Include=".\Mixins\net46\VisualStatesMixins.g.cs" />
+		<MixinOutput Include=".\Mixins\net461\VisualStatesMixins.g.cs" />
 	</ItemGroup>
 
 	<!--
@@ -275,7 +265,7 @@
 				<Properties>InputFile=.\Mixins\Wasm\VisualStatesMixins.tt;OutputPath=.\Mixins\Wasm;Configuration=$(Configuration);Platform=$(Platform)</Properties>
 			</MixinDefinition>
 			<MixinDefinition Include="$(MSBuildThisFileFullPath)">
-				<Properties>InputFile=.\Mixins\net46\VisualStatesMixins.tt;OutputPath=.\Mixins\net46;Configuration=$(Configuration);Platform=$(Platform)</Properties>
+				<Properties>InputFile=.\Mixins\net461\VisualStatesMixins.tt;OutputPath=.\Mixins\net461;Configuration=$(Configuration);Platform=$(Platform)</Properties>
 			</MixinDefinition>
 			<MixinDefinition Include="$(MSBuildThisFileFullPath)">
 				<Properties>InputFile=.\Mixins\DependencyPropertyMixins.tt;OutputPath=.\Mixins;Configuration=$(Configuration);Platform=$(Platform)</Properties>
@@ -292,7 +282,7 @@
 		<Exec Command="&quot;$(T4Bin)&quot; $(InputFile) $(OutputPath)" />
 	</Target>
 
-	<ItemGroup Condition="'$(TargetFramework)'=='net46'">
+	<ItemGroup Condition="'$(TargetFramework)'=='net461'">
 		<!-- Remove the reference added automatically by msbuild extras -->
 		<Reference Remove="PresentationFramework" />
 		<Reference Remove="PresentationCore" />
@@ -327,7 +317,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<Analyzer Include="$(MSBuildThisFileDirectory)..\Uno.MonoAnalyzers\bin\$(Configuration)\net46\Uno.MonoAnalyzers.dll" />
+		<Analyzer Include="$(MSBuildThisFileDirectory)..\Uno.MonoAnalyzers\bin\$(Configuration)\net461\Uno.MonoAnalyzers.dll" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -346,6 +336,12 @@
 			<SkipGetTargetFrameworkProperties>true</SkipGetTargetFrameworkProperties>
 			<UndefineProperties>TargetFramework</UndefineProperties>
 		</ProjectReference>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <None Update="Mixins\net461\VisualStatesMixins.tt">
+	    <Generator>TextTemplatingFileGenerator</Generator>
+	  </None>
 	</ItemGroup>
 	
 	<Target Name="GetPackagingOutputs" Condition=" '$(TargetFramework)' == 'uap10.0' " />

@@ -7,4 +7,14 @@
     <WriteLinesToFile File="$(AndroidResgenFile)" Lines="// Empty Content from uno.ui Directory.Build.targets." />
   </Target>
 
+  <ItemGroup>
+    <PackageReference Update="Uno.SourceGenerationTasks" Version="1.29.0-dev.custom-project-loader.263" />
+    <PackageReference Update="Uno.SourceGeneration" Version="1.29.0-dev.custom-project-loader.263" />
+    <PackageReference Update="Uno.Core" Version="1.26.0-dev.58" />
+    <PackageReference Update="Uno.Core.Build" Version="1.26.0-dev.58" />
+    <PackageReference Update="Uno.Wasm.Bootstrap" Version="1.0.0-dev.166" />
+    <PackageReference Update="xamarin.build.download" Version="0.4.9" />
+    <DotNetCliToolReference Update="Uno.Wasm.Bootstrap.Cli" Version="1.0.0-dev.166" />
+  </ItemGroup>
+
 </Project>

@@ -1,7 +1,7 @@
-﻿<Project Sdk="MSBuild.Sdk.Extras" ToolsVersion="15.0">
+﻿<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="15.0">
 	<PropertyGroup>
-		<TargetFrameworks>xamarinmac20;net46;xamarinios10;MonoAndroid80;netstandard2.0</TargetFrameworks>
-		<TargetFrameworksCI>net46;MonoAndroid71;MonoAndroid80;xamarinios10;netstandard2.0;xamarinmac20</TargetFrameworksCI>
+		<TargetFrameworks>netstandard2.0</TargetFrameworks>
+		<TargetFrameworksCI>netstandard2.0</TargetFrameworksCI>
 		<DisableBuildTargetFramework>true</DisableBuildTargetFramework>
 
 		<AndroidUseIntermediateDesignerFile>True</AndroidUseIntermediateDesignerFile>
@@ -27,12 +27,8 @@
 
 	<Import Project="$(MSBuildSDKExtrasTargets)" Condition="Exists('$(MSBuildSDKExtrasTargets)')" />
 
-	<ItemGroup Condition="'$(TargetFramework)'=='net46'">
-		<Reference Remove="System.Xaml" />
-	</ItemGroup>
-
 	<ItemGroup>
-		<Analyzer Include="$(MSBuildThisFileDirectory)..\..\Uno.MonoAnalyzers\bin\$(Configuration)\net46\Uno.MonoAnalyzers.dll" />
+		<Analyzer Include="$(MSBuildThisFileDirectory)..\..\Uno.MonoAnalyzers\bin\$(Configuration)\net461\Uno.MonoAnalyzers.dll" />
 	</ItemGroup>
 
 	<ItemGroup>

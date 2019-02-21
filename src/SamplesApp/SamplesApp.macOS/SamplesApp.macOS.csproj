@@ -68,10 +68,7 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="MSTest.TestFramework" Version="1.2.0" />
-    <PackageReference Include="Uno.SourceGenerationTasks">
-      <Version>1.29.0-dev.241</Version>
-      <NoWarn>NU1701</NoWarn>
-    </PackageReference>
+    <PackageReference Include="Uno.SourceGenerationTasks"/>
     <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="1.1.1" />
     <PackageReference Include="Microsoft.Extensions.Logging.Filter" Version="1.1.1" />
   </ItemGroup>

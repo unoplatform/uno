@@ -1,8 +1,8 @@
 ﻿<Project Sdk="MSBuild.Sdk.Extras" ToolsVersion="15.0">
   
   <PropertyGroup>
-    <TargetFrameworks>xamarinmac20;xamarinios10;MonoAndroid80;net46;netstandard2.0</TargetFrameworks>
-    <TargetFrameworksCI>MonoAndroid71;MonoAndroid80;xamarinios10;net46;netstandard2.0;xamarinmac20</TargetFrameworksCI>
+    <TargetFrameworks>xamarinmac20;xamarinios10;MonoAndroid80;net461;netstandard2.0</TargetFrameworks>
+    <TargetFrameworksCI>MonoAndroid71;MonoAndroid80;xamarinios10;net461;netstandard2.0;xamarinmac20</TargetFrameworksCI>
   </PropertyGroup>
 
   <PropertyGroup>
@@ -31,13 +31,8 @@
 
 	<ItemGroup>
 		<PackageReference Include="System.Numerics.Vectors" Version="4.5.0" />
-		<PackageReference Include="Uno.SourceGenerationTasks">
-			<Version>1.29.0-dev.241</Version>
-		</PackageReference>
-		<PackageReference Include="Uno.Core">
-			<Version>1.26.0-dev.58</Version>
-			<ExcludeAssets>Runtime</ExcludeAssets>
-		</PackageReference>
+		<PackageReference Include="Uno.SourceGenerationTasks" />
+		<PackageReference Include="Uno.Core" />
 	</ItemGroup>
 	
 	 <ItemGroup Condition=" '$(TargetFramework)' == 'MonoAndroid71'">
@@ -68,7 +63,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<Analyzer Include="$(MSBuildThisFileDirectory)..\Uno.MonoAnalyzers\bin\$(Configuration)\net46\Uno.MonoAnalyzers.dll" />
+		<Analyzer Include="$(MSBuildThisFileDirectory)..\Uno.MonoAnalyzers\bin\$(Configuration)\net461\Uno.MonoAnalyzers.dll" />
 	</ItemGroup>
 
 	<ItemGroup>

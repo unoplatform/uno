@@ -25,12 +25,12 @@
 
   <Target Name="SetNoWarn"
 				  BeforeTargets="Build"
-				  Condition=" '$(TargetFramework)' == 'net46' ">
+				  Condition=" '$(TargetFramework)' == 'net461' ">
 
 	<!--
 		This target is the equivalent to this property group, until this
 		is fixed: https://github.com/NuGet/Home/issues/6662
-		<PropertyGroup Condition=" '$(TargetFramework)' == 'net46' ">
+		<PropertyGroup Condition=" '$(TargetFramework)' == 'net461' ">
 			<NoWarn>$(NoWarn);67</NoWarn>
 		</PropertyGroup>
 		-->
@@ -70,7 +70,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-	<PackageReference Include="xamarin.build.download" Version="0.4.9" />
+	<PackageReference Include="xamarin.build.download" />
   </ItemGroup>
 
   <ItemGroup Condition=" $(IsMonoAndroid) or $(IsXamarinIOS) ">

@@ -13,13 +13,8 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Uno.SourceGenerationTasks">
-			<Version>1.29.0-dev.241</Version>
-			<ExcludeAssets>Runtime</ExcludeAssets>
-		</PackageReference>
-		<PackageReference Include="Uno.Core.Build">
-			<Version>1.26.0-dev.58</Version>
-		</PackageReference>
+		<PackageReference Include="Uno.SourceGenerationTasks"/>
+		<PackageReference Include="Uno.Core.Build"/>
 	</ItemGroup>
 
 	<ItemGroup Condition=" '$(TargetFramework)' == 'MonoAndroid71'">
@@ -55,21 +50,24 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="xamarin.build.download" Version="0.4.9" />
+		<PackageReference Include="xamarin.build.download" />
 	</ItemGroup>
 
 	<PropertyGroup>
 		<UnoUIGeneratorsBinPath>..\Uno.UI.SourceGenerators\bin\$(Configuration)</UnoUIGeneratorsBinPath>
 	</PropertyGroup>
+
+	<ItemGroup Condition="$(IsMonoAndroid)">
+		<ProjectReference Include="..\..\Uno.UI.BindingHelper.Android\Uno.UI.BindingHelper.Android.csproj" />
+	</ItemGroup>
 	
 	<ItemGroup Condition="$(IsMonoAndroid) or $(IsXamarinIOS)">
-		<ProjectReference Include="..\..\Uno.UI.BindingHelper.Android\Uno.UI.BindingHelper.Android.csproj" />
 		<ProjectReference Include="..\..\Uno.UI\Uno.UI.csproj" />
 		<ProjectReference Include="..\..\Uno.UWP\Uno.csproj" />
 		<ProjectReference Include="..\..\Uno.Foundation\Uno.Foundation.csproj" />
 	</ItemGroup>
 
-		
+
 	<ItemGroup>
 		<ProjectReference Include="..\..\Uno.UI.Toolkit\Uno.UI.Toolkit.csproj" />
 		<ProjectReference Include="..\XamlGenerationTests.Core\XamlGenerationTests.Core.csproj" />
