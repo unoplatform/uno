@@ -73,6 +73,9 @@
 * Time picker flyout default styles has been changed to include done and cancel buttons
 * DataTemplateSelector implementations are now called using the 2 parameters overload first with a fallback to the 1 parameter overload on null returned value.
   Old behavior could be restored using `FeatureConfiguration.DataTemplateSelector.UseLegacyTemplateSelectorOverload = true`.
+* Using "/n" directly in the XAML for a text/content property is not supported anymore in order to match the UWP behavior. 
+  You can use "&#x0a;" instead in the text/content properties or a carriage return where you need it in the localized resources.
+* The `ResourcesGeneration` msbuild target has been renamed to `UnoResourcesGeneration`
 
 ### Bug fixes
  * MediaPlayerElement [iOS] Subtitles are not disable on initial launch anymore
