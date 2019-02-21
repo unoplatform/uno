@@ -76,6 +76,7 @@
 * Using "/n" directly in the XAML for a text/content property is not supported anymore in order to match the UWP behavior. 
   You can use "&#x0a;" instead in the text/content properties or a carriage return where you need it in the localized resources.
 * The `ResourcesGeneration` msbuild target has been renamed to `UnoResourcesGeneration`
+  If your csproj is using this target explicily, change it to the new name.
 
 ### Bug fixes
  * MediaPlayerElement [iOS] Subtitles are not disable on initial launch anymore
