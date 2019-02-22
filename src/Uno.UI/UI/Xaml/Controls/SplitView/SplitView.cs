@@ -384,6 +384,9 @@ namespace Windows.UI.Xaml.Controls
 				PaneOpening?.Invoke(this, null);
 			}
 
+#if __IOS__
+			PatchInvalidFinalState(stateName);
+#endif
 			VisualStateManager.GoToState(this, stateName, useTransitons);
 
 			if (!IsPaneOpen)
