@@ -634,12 +634,12 @@ namespace Uno.Xaml
 
 				if(isFirstElementString)
 				{
-					value = value.TrimStart();
+					value = value.TrimStart(new char[0]);
 				}
 
 				if(r.NodeType == XmlNodeType.EndElement)
 				{
-					value = value.TrimEnd();
+					value = value.TrimEnd(new char[0]);
 				}
 			}
 
