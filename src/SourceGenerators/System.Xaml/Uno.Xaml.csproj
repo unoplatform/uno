@@ -1,7 +1,7 @@
-﻿<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="15.0">
+﻿<Project Sdk="MSBuild.Sdk.Extras" ToolsVersion="15.0">
 	<PropertyGroup>
-		<TargetFrameworks>netstandard2.0</TargetFrameworks>
-		<TargetFrameworksCI>netstandard2.0</TargetFrameworksCI>
+		<TargetFrameworks>xamarinmac20;net461;xamarinios10;MonoAndroid80;netstandard2.0</TargetFrameworks>
+		<TargetFrameworksCI>net461;MonoAndroid80;xamarinios10;netstandard2.0;xamarinmac20</TargetFrameworksCI>
 		<DisableBuildTargetFramework>true</DisableBuildTargetFramework>
 
 		<AndroidUseIntermediateDesignerFile>True</AndroidUseIntermediateDesignerFile>
@@ -23,6 +23,10 @@
 	<ItemGroup>
 		<Compile Remove="Test\**\*.cs" />
 		<None Remove="Test\**\*.*" />
+	</ItemGroup>
+
+	<ItemGroup Condition="'$(TargetFramework)'=='net461'">
+		<Reference Remove="System.Xaml" />
 	</ItemGroup>
 
 	<Import Project="$(MSBuildSDKExtrasTargets)" Condition="Exists('$(MSBuildSDKExtrasTargets)')" />
