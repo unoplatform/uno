@@ -2,7 +2,7 @@
   
   <PropertyGroup>
     <TargetFrameworks>xamarinmac20;xamarinios10;MonoAndroid80;net461;netstandard2.0</TargetFrameworks>
-    <TargetFrameworksCI>MonoAndroid71;MonoAndroid80;xamarinios10;net461;netstandard2.0;xamarinmac20</TargetFrameworksCI>
+    <TargetFrameworksCI>MonoAndroid80;xamarinios10;net461;netstandard2.0;xamarinmac20</TargetFrameworksCI>
   </PropertyGroup>
 
   <PropertyGroup>
@@ -33,17 +33,6 @@
 		<PackageReference Include="System.Numerics.Vectors" Version="4.5.0" />
 		<PackageReference Include="Uno.SourceGenerationTasks" />
 		<PackageReference Include="Uno.Core" />
-	</ItemGroup>
-	
-	 <ItemGroup Condition=" '$(TargetFramework)' == 'MonoAndroid71'">
-		<PackageReference Include="Xamarin.Android.Support.v4">
-			<Version>25.3.1</Version>
-			<PrivateAssets>none</PrivateAssets>
-		</PackageReference>
-		<PackageReference Include="Xamarin.Android.Support.v7.AppCompat">
-			<Version>25.3.1</Version>
-			<PrivateAssets>none</PrivateAssets>
-		</PackageReference>
 	</ItemGroup>
 	
 	<ItemGroup Condition=" '$(TargetFramework)' == 'MonoAndroid80'">

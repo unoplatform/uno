@@ -15,7 +15,6 @@
 
 	<dependencies>
 
-	  <!-- Android 7.1 -->
 	  <group targetFramework="net462">
 		<dependency id="Uno.UI" version="1.42.0-dev.395" />
 		<dependency id="cef.redist.x64" version="3.3396.1786" />
