@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using Windows.Foundation.Collections;
 
-namespace Windows.UI.Xaml
+namespace Windows.Foundation.Collections
 {
 #if __IOS__
 	[global::Foundation.Preserve(AllMembers = true)]

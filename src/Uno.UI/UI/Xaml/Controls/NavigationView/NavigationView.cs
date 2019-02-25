@@ -19,6 +19,7 @@ using Uno.UI.Helpers.WinUI;
 using Windows.ApplicationModel.Core;
 using Windows.ApplicationModel.Resources;
 using Windows.Foundation;
+using Windows.Foundation.Collections;
 using Windows.System;
 using Windows.UI.Composition;
 using Windows.UI.Core;

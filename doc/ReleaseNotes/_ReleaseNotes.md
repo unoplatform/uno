@@ -71,6 +71,7 @@
 * Add support for JS unhandled exception logging for CoreDispatcher (support for Mixed mode troubleshooting)
 * [WASM] Improve element arrange and transform performance
 * Restore original SymbolIcon.SymbolProperty as a C# property
+* Add support for `MediaPlaybackList`
 
 ### Breaking changes
 * Refactored ToggleSwitch Default Native XAML Styles. (cf. 'NativeDefaultToggleSwitch' styles in Generic.Native.xaml)

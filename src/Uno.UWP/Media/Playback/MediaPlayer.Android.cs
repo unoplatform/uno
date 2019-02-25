@@ -16,6 +16,7 @@ using Android.Graphics;
 using Android.Runtime;
 using Uno.Logging;
 using AndroidMediaPlayer = Android.Media.MediaPlayer;
+using System.Collections.Generic;
 
 namespace Windows.Media.Playback
 {
@@ -41,6 +42,8 @@ namespace Windows.Media.Playback
 		private IScheduledExecutorService _executorService = Executors.NewSingleThreadScheduledExecutor();
 		private IScheduledFuture _scheduledFuture;
 		private AudioPlayerBroadcastReceiver _noisyAudioStreamReceiver;
+		private List<Uri> _playlistItems;
+		private int _playlistIndex;
 
 		const string MsAppXScheme = "ms-appx";
 		const string MsAppDataScheme = "ms-appdata";
@@ -98,6 +101,7 @@ namespace Windows.Media.Playback
 			_player.SetOnPreparedListener(this);
 			_player.SetOnSeekCompleteListener(this);
 			_player.SetOnBufferingUpdateListener(this);
+			_player.SetOnCompletionListener(this);
 
 			PlaybackSession.PlaybackStateChanged -= OnStatusChanged;
 			PlaybackSession.PlaybackStateChanged += OnStatusChanged;
@@ -120,7 +124,23 @@ namespace Windows.Media.Playback
 				InitializePlayer();
 
 				PlaybackSession.PlaybackState = MediaPlaybackState.Opening;
-				SetVideoSource(((MediaSource)Source).Uri);
+
+				if (Source is MediaPlaybackList)
+				{
+					_playlistItems = new List<Uri>();
+
+					var playlist = Source as MediaPlaybackList;
+					foreach (var mediaItem in playlist.Items)
+					{
+						_playlistItems.Add(mediaItem.Source.Uri);
+					}
+				}
+
+				var uri = _playlistItems?.Count > 0
+					? _playlistItems[0]
+					: ((MediaSource)Source).Uri;
+
+				SetVideoSource(uri);
 
 				_player.PrepareAsync();
 
@@ -156,7 +176,7 @@ namespace Windows.Media.Playback
 				return;
 			}
 
-			_player.SetDataSource(Application.Context, Android.Net.Uri.Parse(uri.ToString()));
+			_player.SetDataSource(uri.ToString());
 		}
 
 		#endregion
@@ -263,6 +283,15 @@ namespace Windows.Media.Playback
 		{
 			MediaEnded?.Invoke(this, null);
 			PlaybackSession.PlaybackState = MediaPlaybackState.None;
+
+			// Play next item in playlist, if any
+			if (_playlistIndex < _playlistItems.Count - 1)
+			{
+				_player.Reset();
+				SetVideoSource(_playlistItems[++_playlistIndex]);
+				_player.Prepare();
+				_player.Start();
+			}
 		}
 
 		private void OnMediaFailed(global::System.Exception ex = null, string message = null)

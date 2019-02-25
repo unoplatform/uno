@@ -13,7 +13,7 @@ See [MediaPlayerElement](https://docs.microsoft.com/en-us/uwp/api/windows.ui.xam
 | MPEG-Dash	Support										| -     | -  		| 									|
 | Smooth Streaming Support								| -     | -  		| 									|
 
-_If you need to set source programmatically (ie, using `_mediaPlayerElement.Source = [source]`), please note that only source created with `MediaSource.CreateFromUri()` are currently supported_
+_If you need to set source programmatically (ie, using `_mediaPlayerElement.Source = [source]`), please note that only sources created with `MediaSource.CreateFromUri()` are currently supported_
 
 ## Features
 
@@ -41,9 +41,9 @@ _If you need to set source programmatically (ie, using `_mediaPlayerElement.Sour
 |						| Show buffering progress						  		| X     | X  		|												|
 |						| Zoom mode												| X     | X  		| 												|
 |						| Fullscreen mode								  		| X     | X  		|												|
+|						| Playlists support		  								| X     | X  		|												|
 |						| Change playback rate									| -     | -  		|												|
 |						| Player controls on locked screen support  			| -     | -  		|												|
-|						| Playlists support		  								| -     | -  		|												|
 |						| Subtitles	support			  							| -     | -  		|												|
 |						| Languages	support			  							| -     | -  		|												|
 
@@ -51,7 +51,7 @@ _If you need to set source programmatically (ie, using `_mediaPlayerElement.Sour
 
 ### iOS
 
-Add the folowwing to your info.plist
+Add the following to your info.plist
 
 ```xml
 <key>NSAppTransportSecurity</key>
@@ -83,6 +83,7 @@ Add the folowwing to your AndroidManifest.xml
 - Subtitles support
 - Languages support	
 - Display poster for audio media
+- Buffering of next playlist element when using MediaPlaybackList
 
 ## Known issues
 
