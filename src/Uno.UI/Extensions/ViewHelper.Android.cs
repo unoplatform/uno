@@ -68,6 +68,13 @@ namespace Uno.UI
 				// WARNING: The Density value is not completely based on the DPI of the device.
 				// On two 8" devices, the Density may not be consistent.
 				_cachedDensity = displayMetrics.Density;
+				if (FeatureConfiguration.Font.IgnoreTextScaleFactor)
+				{
+					// To disable text scaling, we put the Density value in ScaledDensity so that the ratio between them is 1.
+					// This ensures it's disabled for everything using ScaledDensity (e.g. TextBlock, TextBox, AppBarButton, etc.)
+					// https://developer.xamarin.com/api/property/Android.Util.DisplayMetrics.ScaledDensity/
+					displayMetrics.ScaledDensity = displayMetrics.Density;
+				}
 				_cachedScaledDensity = displayMetrics.ScaledDensity;
 				_cachedScaledXDpi = displayMetrics.Xdpi;
 			}
