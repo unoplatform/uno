@@ -18,6 +18,11 @@ namespace Windows.Graphics.Display
 			InitializeOrientation();
 		}
 
+		private void InitializeDisplayProperties()
+		{
+
+		}
+
 		private void InitializeOrientation()
 		{
 			_didChangeStatusBarOrientationObserver = NSNotificationCenter
