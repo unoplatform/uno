@@ -18,6 +18,6 @@ This can be changed using `Uno.UI.FeatureConfiguration.UIElement.UseUWPDefaultSt
 
 ##Disabling accessibility text scaling
 
-By default, Uno automatically enables accessibility text scaling on iOS and Android devices however to have more control an option has been added to disable text scaling on Text based controls. 
+By default, Uno automatically enables accessibility text scaling on iOS and Android devices however to have more control an option has been added to disable text scaling. 
 
 Use `Uno.UI.FeatureConfiguration.Font.IgnoreTextScaleFactor` to control this. 
