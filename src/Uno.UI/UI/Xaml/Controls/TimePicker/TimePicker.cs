@@ -30,7 +30,38 @@ namespace Windows.UI.Xaml.Controls
 
 		public TimePicker() { }
 
-		//Properties defined in DependencyPropertyMixins.tt
+		#region MinuteIncrement DependencyProperty
+
+		public int MinuteIncrement
+		{
+			get { return (int)this.GetValue(MinuteIncrementProperty); }
+			set { this.SetValue(MinuteIncrementProperty, value); }
+		}
+
+		public static readonly DependencyProperty MinuteIncrementProperty =
+			DependencyProperty.Register(
+				"MinuteIncrement",
+				typeof(int),
+				typeof(TimePicker),
+				new FrameworkPropertyMetadata(
+					defaultValue: 1,
+					options: FrameworkPropertyMetadataOptions.None,
+					propertyChangedCallback: (s, e) => ((TimePicker)s)?.OnMinuteIncrementChanged((int)e.OldValue, (int)e.NewValue),
+					coerceValueCallback: (s, e) =>
+					{
+						var value = (int)e;
+
+						if (value < 1)
+							return 1;
+
+						if (value > 30)
+							return 30;
+
+						return value;
+					})
+				);
+
+		#endregion
 
 		/// <summary>
 		/// Property that allows apps to specify any flyout placement 
@@ -106,6 +137,8 @@ namespace Windows.UI.Xaml.Controls
 
 			UpdateDisplayedDate();
 		}
+
+		partial void OnMinuteIncrementChanged(int oldTimeIncrement, int newTimeIncrement);
 
 		private void UpdateDisplayedDate()
 		{

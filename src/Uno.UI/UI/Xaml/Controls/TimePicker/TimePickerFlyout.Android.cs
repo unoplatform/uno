@@ -1,7 +1,6 @@
 ﻿#if XAMARIN_ANDROID
-using System;
-using Android.App;
 using Android.OS;
+using System;
 using Uno.UI;
 using Uno.UI.Extensions;
 using Windows.Globalization;
@@ -12,7 +11,7 @@ namespace Windows.UI.Xaml.Controls
 {
 	public partial class TimePickerFlyout : FlyoutBase
 	{
-		private Dialog _dialog;
+		private UnoTimePickerDialog _dialog;
 		private TimeSpan _initialTime;
 
 		internal protected override void Open()
@@ -25,28 +24,42 @@ namespace Windows.UI.Xaml.Controls
 			var isSamsungAndMarshmellow = Build.VERSION.SdkInt == BuildVersionCodes.M &&
 										  Build.Manufacturer.ToLower().IndexOf("samsung") >= 0;
 
-			var useSpinnerStyle = isSamsungAndMarshmellow || MinuteIncrement > 1;
+			var tryEnforceSpinnerStyle = isSamsungAndMarshmellow || MinuteIncrement > 1;
 
-			ShowTimePicker(useSpinnerStyle);
+			ShowTimePicker(tryEnforceSpinnerStyle);
 		}
 
 		private void SaveInitialTime() => _initialTime = Time;
 
 		internal protected override void Close() { base.Close(); }
 
-		private void SaveTime(int hourOfDay, int minutes)
+		private void SaveTime(TimeSpan time)
+		{
+			if (Time != time)
+			{
+				Time = time;
+				SaveInitialTime();
+			}
+		}
+
+		private void AdjustAndSaveTime(int hourOfDay, int minutes)
 		{
 			if (Time.Hours != hourOfDay || Time.Minutes != minutes)
 			{
-				Time = new TimeSpan(Time.Days, hourOfDay, minutes, Time.Seconds, Time.Milliseconds);
-				SaveInitialTime();
+				if (_dialog.IsInSpinnerMode)
+				{
+					minutes = minutes * MinuteIncrement;
+				}
+
+				var time = new TimeSpan(Time.Days, hourOfDay, minutes, Time.Seconds, Time.Milliseconds);
+				SaveTime(time.RoundToMinuteInterval(MinuteIncrement));
 			}
 		}
 
 		private void ShowTimePicker(bool useSpinnerStyle)
 		{
 			var time = Time.RoundToNextMinuteInterval(MinuteIncrement);
-			var listener = new OnSetTimeListener((view, hourOfDay, minute) => SaveTime(hourOfDay, minute * MinuteIncrement));
+			var listener = new OnSetTimeListener((view, hourOfDay, minute) => AdjustAndSaveTime(hourOfDay, minute));
 			int timePickerStyleResId = useSpinnerStyle ? 3 : 0;
 
 			_dialog = new UnoTimePickerDialog(
