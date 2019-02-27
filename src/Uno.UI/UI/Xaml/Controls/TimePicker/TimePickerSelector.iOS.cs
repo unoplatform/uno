@@ -1,8 +1,8 @@
 ﻿#if XAMARIN_IOS
 
+using Foundation;
 using System;
 using System.Linq;
-using Foundation;
 using UIKit;
 using Uno.Extensions;
 using Uno.Logging;
