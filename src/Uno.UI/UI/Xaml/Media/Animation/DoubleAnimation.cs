@@ -342,18 +342,24 @@ namespace Windows.UI.Xaml.Media.Animation
 
 			if (FillBehavior == FillBehavior.HoldEnd)//Two types of fill behaviors : HoldEnd - Keep displaying the last frame
 			{
-				// We set the final value using the "Local" precedence
-				PropertyInfo.SetLocalValue(ComputeToValue());
+				// Here we make sure that the final frame is applied properly (it may have been skipped by animator)
+				// Note: The value is applied using the "Animations" precedence, which means that the user won't be able to alter
+				//		 it from application code. Instead we should set the value using a lower precedence
+				//		 (possibly "Local" with PropertyInfo.SetLocalValue(ComputeToValue())) but we must keep the
+				//		 original "Local" value, so will be able to rollback the animation when
+				//		 going to another VisualState (if the storyboard ran in that context).
+				//		 In that case we should also do "ClearValue();" to remove the "Animations" value, even if using "HoldEnd"
+				//		 cf. https://github.com/nventive/Uno/issues/631
+				PropertyInfo.Value = ComputeToValue();
 
 				State = TimelineState.Filling;
 			}
 			else // Stop -Put back the inital state
 			{
+				ClearValue();
+
 				State = TimelineState.Stopped;
 			}
-
-			// Make sure to reset the value with the "Animations" precedence (no matter the fill behavior)
-			ClearValue();
 
 			OnCompleted();
 		}
