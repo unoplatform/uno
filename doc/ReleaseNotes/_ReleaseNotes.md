@@ -229,3 +229,6 @@
  * 136093, 136172 [iOS] ComboBox does not display its Popup
  * 134819, 134828 [iOS] Ensures the back gesture is enabled and disabled properly when the CommandBar is visible, collapsed, visible with a navigation command and collapsed with a navigation command.
  * 137081 Xaml generator doesn't support setting a style on the root control
+ * 148228 [Android] Right theme (clock or spinner) is selected for specific time increments 
+ * 148229 [Android] Right time is picked and rounded to nearest time increment in clock mode 
+ * 148241 [Android] won't open if `MinuteIncrement` is not set

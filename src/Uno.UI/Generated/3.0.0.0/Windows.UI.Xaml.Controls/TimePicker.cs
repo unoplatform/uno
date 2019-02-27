@@ -7,21 +7,6 @@ namespace Windows.UI.Xaml.Controls
 	#endif
 	public  partial class TimePicker : global::Windows.UI.Xaml.Controls.Control
 	{
-		// Skipping already declared property Time
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  int MinuteIncrement
-		{
-			get
-			{
-				return (int)this.GetValue(MinuteIncrementProperty);
-			}
-			set
-			{
-				this.SetValue(MinuteIncrementProperty, value);
-			}
-		}
-		#endif
 		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.UI.Xaml.DataTemplate HeaderTemplate
@@ -95,17 +80,10 @@ namespace Windows.UI.Xaml.Controls
 			"HeaderTemplate", typeof(global::Windows.UI.Xaml.DataTemplate), 
 			typeof(global::Windows.UI.Xaml.Controls.TimePicker), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.DataTemplate)));
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public static global::Windows.UI.Xaml.DependencyProperty MinuteIncrementProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			"MinuteIncrement", typeof(int), 
-			typeof(global::Windows.UI.Xaml.Controls.TimePicker), 
-			new FrameworkPropertyMetadata(default(int)));
-		#endif
+#endif
+
 		// Skipping already declared property TimeProperty
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty LightDismissOverlayModeProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
