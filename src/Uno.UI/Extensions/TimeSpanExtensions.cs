@@ -26,23 +26,51 @@ namespace Uno.UI.Extensions
 		}
 
 		/// <summary>
+		/// Round timespan to previous minute interval
+		/// </summary>
+		/// <param name="interval">minute interval</param>
+		/// <returns>Rounded timespan</returns>
+		internal static TimeSpan RoundToPreviousMinuteInterval(this TimeSpan time, int interval)
+		{
+			if (interval > 0 && time != TimeSpan.Zero)
+			{
+				var roundedMinutes = Math.Floor(time.TotalMinutes / interval) * interval;
+				return TimeSpan.FromMinutes(roundedMinutes);
+			}
+
+			return time;
+		}
+
+		/// <summary>
 		/// Round timespan to next minute interval
 		/// </summary>
 		/// <param name="interval">minute interval</param>
 		/// <returns>Rounded timespan</returns>
 		internal static TimeSpan RoundToNextMinuteInterval(this TimeSpan time, int interval)
 		{
-			var hours = time.Hours;
-			var minutes = time.Minutes;
-			var mod = minutes % interval;
+			if (interval > 0 && time != TimeSpan.Zero)
+			{
+				var roundedMinutes = Math.Ceiling(time.TotalMinutes / interval) * interval;
+				return TimeSpan.FromMinutes(roundedMinutes);
+			}
 
-			var roundedMinutes = mod == 0 ? minutes : minutes - mod + interval;
-			minutes = roundedMinutes == 0 ? 0 : roundedMinutes % 60;
+			return time;
+		}
 
-			var extraHour = roundedMinutes == 0 ? 0 : roundedMinutes / 60;
-			hours = extraHour + hours;
+		/// <summary>
+		/// Round timespan to minute interval
+		/// </summary>
+		/// <param name="interval">minute interval</param>
+		/// <returns>Rounded timespan</returns>
+		internal static TimeSpan RoundToMinuteInterval(this TimeSpan time, int interval)
+		{
+			if (interval > 0 && time != TimeSpan.Zero)
+			{
+				var roundedMinutes = Math.Round(time.TotalMinutes / interval) * interval;
+				return TimeSpan.FromMinutes(roundedMinutes);
+			}
 
-			return new TimeSpan(hours, minutes, 0);
+			return time;
 		}
 	}
 }
