@@ -72,6 +72,7 @@
 * [WASM] Improve element arrange and transform performance
 * Restore original SymbolIcon.SymbolProperty as a C# property
 * Add support for `MediaPlaybackList`
+* Update Uno.SourceGenerationTasks to improve build performance
 
 ### Breaking changes
 * Refactored ToggleSwitch Default Native XAML Styles. (cf. 'NativeDefaultToggleSwitch' styles in Generic.Native.xaml)
@@ -148,6 +149,7 @@
  * 146648 [Android] fixed ListView grouped items corruption on scroll
  * [Wasm] Fix `ListView` recycling when the `XamlParent` is not available for `AutoSuggestBox`
  * 147405 Fix NRE on some MediaTransportControl controls
+ * #139 Update Uno.SourceGenerationTasks to improve build performance
 
 ## Release 1.42
 
