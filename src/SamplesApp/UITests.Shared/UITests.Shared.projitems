@@ -1119,7 +1119,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\Slider\Slider_Styled.xaml.cs">
       <DependentUpon>Slider_Styled.xaml</DependentUpon>
     </Compile>
-    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\Models\TimePickerModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\TimePicker\Sample2.xaml.cs">
       <DependentUpon>Sample2.xaml</DependentUpon>
     </Compile>
@@ -1607,11 +1606,9 @@
     <PRIResource Include="$(MSBuildThisFileDirectory)UITestsStrings\en-US\Resources.resw" />
   </ItemGroup>
   <ItemGroup>
- 
     <Compile Update="C:\s\nv.github\uno-2\src\SamplesApp\UITests.Shared\Windows_UI_Xaml_Controls\ScrollViewerTests\Hosted_ScrollViewer.xaml.cs">
       <DependentUpon>Hosted_ScrollViewer.xaml</DependentUpon>
     </Compile>
-
     <Compile Update="C:\s\nv.github\uno\src\SamplesApp\UITests.Shared\Windows_UI_Xaml\UIElementTests\TransformToVisual_Simple.xaml.cs">
       <DependentUpon>TransformToVisual_Simple.xaml</DependentUpon>
     </Compile>
