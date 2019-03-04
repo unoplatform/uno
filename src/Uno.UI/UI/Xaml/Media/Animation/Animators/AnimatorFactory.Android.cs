@@ -3,7 +3,6 @@ using Android.Views;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using System.Text;
 using Windows.Foundation;
 using Uno.UI;
@@ -128,13 +127,13 @@ namespace Windows.UI.Xaml.Media.Animation
 			switch (transform)
 			{
 				case RotateTransform rotate:
-					rotate.View.PivotX = ViewHelper.LogicalToPhysicalPivotPixels(pivotX + rotate.CenterX);
-					rotate.View.PivotY = ViewHelper.LogicalToPhysicalPivotPixels(pivotY + rotate.CenterY);
+					rotate.View.PivotX = ViewHelper.LogicalToPhysicalPixels(pivotX + rotate.CenterX);
+					rotate.View.PivotY = ViewHelper.LogicalToPhysicalPixels(pivotY + rotate.CenterY);
 					break;
 
 				case ScaleTransform scale:
-					scale.View.PivotX = ViewHelper.LogicalToPhysicalPivotPixels(pivotX + scale.CenterX);
-					scale.View.PivotY = ViewHelper.LogicalToPhysicalPivotPixels(pivotY + scale.CenterY);
+					scale.View.PivotX = ViewHelper.LogicalToPhysicalPixels(pivotX + scale.CenterX);
+					scale.View.PivotY = ViewHelper.LogicalToPhysicalPixels(pivotY + scale.CenterY);
 					break;
 			}
 		}
@@ -145,13 +144,13 @@ namespace Windows.UI.Xaml.Media.Animation
 			{
 				var origin = elt.RenderTransformOrigin;
 
-				view.PivotX = ViewHelper.LogicalToPhysicalPivotPixels(elt.ActualWidth * origin.X + centerX);
-				view.PivotY = ViewHelper.LogicalToPhysicalPivotPixels(elt.ActualHeight * origin.Y + centerY);
+				view.PivotX = ViewHelper.LogicalToPhysicalPixels(elt.ActualWidth * origin.X + centerX);
+				view.PivotY = ViewHelper.LogicalToPhysicalPixels(elt.ActualHeight * origin.Y + centerY);
 			}
 			else
 			{
-				view.PivotX = ViewHelper.LogicalToPhysicalPivotPixels(centerX);
-				view.PivotY = ViewHelper.LogicalToPhysicalPivotPixels(centerY);
+				view.PivotX = ViewHelper.LogicalToPhysicalPixels(centerX);
+				view.PivotY = ViewHelper.LogicalToPhysicalPixels(centerY);
 			}
 		}
 

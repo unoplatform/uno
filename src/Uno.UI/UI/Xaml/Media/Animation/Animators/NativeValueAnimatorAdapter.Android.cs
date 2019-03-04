@@ -17,6 +17,7 @@ namespace Windows.UI.Xaml.Media.Animation
 
 		private readonly ValueAnimator _adaptee;
 		private readonly Action _prepareAnimation;
+		private readonly Action _completeAnimation;
 
 		public NativeValueAnimatorAdapter(ValueAnimator adaptee)
 			: this(adaptee, null, null)
@@ -26,15 +27,8 @@ namespace Windows.UI.Xaml.Media.Animation
 		public NativeValueAnimatorAdapter(ValueAnimator adaptee, Action prepareAnimation, Action completeAnimation)
 		{
 			_adaptee = adaptee;
-
-			if (prepareAnimation != null && completeAnimation != null)
-			{
-				_prepareAnimation = prepareAnimation;
-				// We register the 'completeAnimation' callback as soon as possible ,
-				// so it will be the first callback and won't conflict with an other animator which would be
-				// started in other completion callbacks (e.g. RepeatMode.Forever)
-				_adaptee.AnimationEnd += (snd, args) => completeAnimation();
-			}
+			_prepareAnimation = prepareAnimation;
+			_completeAnimation = completeAnimation;
 		}
 
 		/// <inheritdoc />
@@ -194,8 +188,19 @@ namespace Windows.UI.Xaml.Media.Animation
 		/// <inheritdoc />
 		public void Start()
 		{
-			_prepareAnimation?.Invoke();
+			if (_prepareAnimation != null && _completeAnimation != null)
+			{
+				_prepareAnimation?.Invoke();
+				_adaptee.AnimationEnd += End;
+			}
+
 			_adaptee.Start();
+
+			void End(object sender, EventArgs eventArgs)
+			{
+				_adaptee.AnimationEnd -= End;
+				_completeAnimation();
+			}
 		}
 
 		/// <inheritdoc />
