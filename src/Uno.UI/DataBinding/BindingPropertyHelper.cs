@@ -753,6 +753,9 @@ namespace Uno.UI.DataBinding
 				}
 			}
 
+			var propertyInfo = Uno.Funcs.CreateMemoized(() => GetPropertyInfo(type, property, allowPrivateMembers: false));
+			var propertyType = Uno.Funcs.CreateMemoized(() => GetPropertyOrDependencyPropertyType(type, property));
+
 			// Start by using the provider, to avoid reflection
 			if (BindableMetadataProvider != null)
 			{
@@ -796,14 +799,12 @@ namespace Uno.UI.DataBinding
 					return (instance, value) => DependencyObjectExtensions.SetValue((DependencyObject)instance, dp, convertSelector(() => dp.Type, value), precedence);
 				}
 
-				var propertyInfo = GetPropertyInfo(type, property, allowPrivateMembers: false);
-				if (propertyInfo != null)
+				if (propertyInfo() != null)
 				{
-					var setMethod = propertyInfo.GetSetMethod();
+					var setMethod = propertyInfo().GetSetMethod();
 
 					if (setMethod != null)
 					{
-						var propertyType = Uno.Funcs.CreateMemoized(() => GetPropertyOrDependencyPropertyType(type, property));
 						var handler = MethodInvokerBuilder(setMethod);
 
 						return (instance, value) => handler(instance, new object[] { convertSelector(propertyType, value) });

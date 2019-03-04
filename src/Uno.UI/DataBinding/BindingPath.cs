@@ -200,18 +200,6 @@ namespace Uno.UI.DataBinding
 		}
 
 		/// <summary>
-		/// Sets the value of the <see cref="DependencyPropertyValuePrecedences.Local"/>
-		/// </summary>
-		/// <param name="value">The value to set</param>
-		internal void SetLocalValue(object value)
-		{
-			if (!_disposed)
-			{
-				_value?.SetLocalValue(value);
-			}
-		}
-
-		/// <summary>
 		/// Clears the value of the current precendence.
 		/// </summary>
 		/// <remarks>After this call, the value returned 
@@ -219,9 +207,10 @@ namespace Uno.UI.DataBinding
 		///  precedence.</remarks>
 		public void ClearValue()
 		{
-			if (!_disposed)
+			if (!_disposed
+				&& _value != null)
 			{
-				_value?.ClearValue();
+				_value.ClearValue();
 			}
 		}
 
@@ -367,7 +356,6 @@ namespace Uno.UI.DataBinding
 			private ValueGetterHandler _precedenceSpecificGetter;
 			private ValueGetterHandler _substituteValueGetter;
 			private ValueSetterHandler _valueSetter;
-			private ValueSetterHandler _localValueSetter;
 			private ValueUnsetterHandler _valueUnsetter;
 
 			private Type _dataContextType;
@@ -425,28 +413,8 @@ namespace Uno.UI.DataBinding
 				}
 				set
 				{
-					SetValue(value);
+					SetSourceValue(value);
 				}
-			}
-
-			/// <summary>
-			/// Sets the value using the <see cref="_precedence"/>
-			/// </summary>
-			/// <param name="value">The value to set</param>
-			private void SetValue(object value)
-			{
-				BuildValueSetter();
-				SetSourceValue(_valueSetter, value);
-			}
-
-			/// <summary>
-			/// Sets the value using the <see cref="DependencyPropertyValuePrecedences.Local"/>
-			/// </summary>
-			/// <param name="value">The value to set</param>
-			public void SetLocalValue(object value)
-			{
-				BuildLocalValueSetter();
-				SetSourceValue(_localValueSetter, value);
 			}
 
 			public Type PropertyType
@@ -538,28 +506,16 @@ namespace Uno.UI.DataBinding
 			{
 				if (_valueSetter == null && _dataContextType != null)
 				{
-					if (_precedence == null)
-					{
-						BuildLocalValueSetter();
-						_valueSetter = _localValueSetter;
-					}
-					else
-					{
-						_valueSetter = BindingPropertyHelper.GetValueSetter(_dataContextType, PropertyName, convert: true, precedence: _precedence.Value);
-					}
+					_valueSetter = _precedence == null ?
+						BindingPropertyHelper.GetValueSetter(_dataContextType, PropertyName, convert: true) :
+						BindingPropertyHelper.GetValueSetter(_dataContextType, PropertyName, convert: true, precedence: _precedence.Value);
 				}
 			}
 
-			private void BuildLocalValueSetter()
+			private void SetSourceValue(object value)
 			{
-				if (_localValueSetter == null && _dataContextType != null)
-				{
-					_localValueSetter = BindingPropertyHelper.GetValueSetter(_dataContextType, PropertyName, convert: true);
-				}
-			}
+				BuildValueSetter();
 
-			private void SetSourceValue(ValueSetterHandler setter, object value)
-			{
 				// Capture the datacontext before the call to avoid a race condition with the GC.
 				var dataContext = DataContext;
 
@@ -567,7 +523,7 @@ namespace Uno.UI.DataBinding
 				{
 					try
 					{
-						setter(dataContext, value);
+						_valueSetter(dataContext, value);
 					}
 					catch (Exception exception)
 					{

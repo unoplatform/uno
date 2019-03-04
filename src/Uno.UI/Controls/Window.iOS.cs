@@ -124,7 +124,7 @@ namespace Uno.UI.Controls
 						// As soon as we are in a WebView the NeedsKeyboard will always returns false. So here we will complete
 						// edition as soon as the user touch anywhere on the screen. This is acceptable since there are dedicated
 						// buttons on the keyboard to focus the next/previous fields of a form.
-						previouslyFocusedView?.EndEditing(true);
+						previouslyFocusedView.EndEditing(true);
 					}
 					else if (previouslyFocusedView != null && IsFocusable(_focusedView))
 					{

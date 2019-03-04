@@ -342,18 +342,14 @@ namespace Windows.UI.Xaml.Media.Animation
 
 			if (FillBehavior == FillBehavior.HoldEnd)//Two types of fill behaviors : HoldEnd - Keep displaying the last frame
 			{
-				// We set the final value using the "Local" precedence
-				PropertyInfo.SetLocalValue(ComputeToValue());
-
+				HoldValue();
 				State = TimelineState.Filling;
 			}
-			else // Stop -Put back the inital state
+			else// HoldEnd -Put back the inital state
 			{
 				State = TimelineState.Stopped;
+				ClearValue();
 			}
-
-			// Make sure to reset the value with the "Animations" precedence (no matter the fill behavior)
-			ClearValue();
 
 			OnCompleted();
 		}
