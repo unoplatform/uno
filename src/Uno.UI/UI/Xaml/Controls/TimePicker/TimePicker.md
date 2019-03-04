@@ -6,6 +6,7 @@ TimePicker is use to select a specific time of the day in hour and minute (AM/PM
 
 Button showing time open the time picker popup. 
 Bind to the Time property of the control to set initial time.
+days, seconds and milliseconds of input timespan are ignored
 By default minute increment is set to 1
 if you assign a negative value or 0, it will use 1 minute increment
 if you assign a value over 30, it will use 30 minute increment

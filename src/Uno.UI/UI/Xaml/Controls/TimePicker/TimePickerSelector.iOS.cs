@@ -74,7 +74,7 @@ namespace Windows.UI.Xaml.Controls
 
 					if (Time.Hours != time.Hours || Time.Minutes != time.Minutes)
 					{
-						Time = new TimeSpan(Time.Days, time.Hours, time.Minutes, Time.Seconds, Time.Milliseconds);
+						Time = new TimeSpan(Time.Days, time.Hours, time.Minutes, 0, 0);
 						SaveInitialTime();
 					}
 				}
