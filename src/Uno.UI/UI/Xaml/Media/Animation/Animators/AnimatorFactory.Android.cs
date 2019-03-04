@@ -136,11 +136,6 @@ namespace Windows.UI.Xaml.Media.Animation
 					scale.View.PivotX = ViewHelper.LogicalToPhysicalPivotPixels(pivotX + scale.CenterX);
 					scale.View.PivotY = ViewHelper.LogicalToPhysicalPivotPixels(pivotY + scale.CenterY);
 					break;
-
-				case CompositeTransform composite:
-					composite.View.PivotX = ViewHelper.LogicalToPhysicalPivotPixels(pivotX + composite.CenterX);
-					composite.View.PivotY = ViewHelper.LogicalToPhysicalPivotPixels(pivotY + composite.CenterY);
-					break;
 			}
 		}
 
