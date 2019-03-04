@@ -284,7 +284,7 @@ namespace Windows.UI.Xaml
 			if (previousSize != newSize)
 			{
 				SizeChanged?.Invoke(this, new SizeChangedEventArgs(previousSize, newSize));
-				_renderTransform?.UpdateSize(newSize);
+				RenderTransform?.OnViewSizeChanged(previousSize, newSize);
 			}
 		}
 

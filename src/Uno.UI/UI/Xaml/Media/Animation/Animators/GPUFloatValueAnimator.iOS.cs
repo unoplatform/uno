@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Numerics;
 using System.Text;
-using Windows.Foundation;
 using Uno.UI.DataBinding;
 using UIKit;
 using CoreGraphics;
@@ -13,7 +11,6 @@ using Uno.Extensions;
 using Uno.Logging;
 using Windows.UI.Composition;
 using Uno.UI;
-using Uno.UI.Extensions;
 
 namespace Windows.UI.Xaml.Media.Animation
 {
@@ -67,33 +64,6 @@ namespace Windows.UI.Xaml.Media.Animation
 		private const string CompositeTransformSkewY = "CompositeTransform.SkewY";
 		private const string CompositeTransformSkewYWithNamespace = "Windows.UI.Xaml.Media:CompositeTransform.SkewY";
 		#endregion
-
-		internal static Point GetAnchorForAnimation(Transform transform, Point relativeOrigin, Size viewSize)
-		{
-			switch (transform)
-			{
-				case RotateTransform rotate:
-					return GetAnimationAnchor(relativeOrigin, viewSize, rotate.CenterX, rotate.CenterY);
-
-				case ScaleTransform scale:
-					return GetAnimationAnchor(relativeOrigin, viewSize, scale.CenterX, scale.CenterY);
-
-				case CompositeTransform composite:
-					return GetAnimationAnchor(relativeOrigin, viewSize, composite.CenterX, composite.CenterY);
-
-				default:
-					return relativeOrigin;
-			}
-		}
-
-		private static Point GetAnimationAnchor(Point origin, Size size, double centerX, double centerY)
-			=> new Point(
-				size.Width == 0
-					? origin.X
-					: centerX / size.Width + origin.X,
-				size.Height == 0
-					? origin.Y
-					: centerY / size.Height + origin.Y);
 
 		public GPUFloatValueAnimator(float from, float to, IEnumerable<IBindingItem> bindingPath)
 		{
@@ -277,18 +247,19 @@ namespace Windows.UI.Xaml.Media.Animation
 		private UnoCoreAnimation InitializeTranslateCoreAnimation(IBindingItem animatedItem)
 		{
 			var transform = animatedItem.DataContext as TranslateTransform;
+			UIView view = transform.View;
 
 			if (animatedItem.PropertyName.Equals("X")
 				|| animatedItem.PropertyName.Equals(TranslateTransformX)
 				|| animatedItem.PropertyName.Equals(TranslateTransformXWithNamespace))
 			{
-				return CreateCoreAnimation(transform, "transform.translation.x", value => new NSNumber(value));
+				return CreateCoreAnimation(view, "transform.translation.x", value => new NSNumber(value));
 			}
 			else if (animatedItem.PropertyName.Equals("Y")
 				|| animatedItem.PropertyName.Equals(TranslateTransformY)
 				|| animatedItem.PropertyName.Equals(TranslateTransformYWithNamespace))
 			{
-				return CreateCoreAnimation(transform, "transform.translation.y", value => new NSNumber(value));
+				return CreateCoreAnimation(view, "transform.translation.y", value => new NSNumber(value));
 			}
 			else
 			{
@@ -299,12 +270,13 @@ namespace Windows.UI.Xaml.Media.Animation
 		private UnoCoreAnimation InitializeRotateCoreAnimation(IBindingItem animatedItem)
 		{
 			var transform = animatedItem.DataContext as RotateTransform;
+			UIView view = transform.View;
 
 			if (animatedItem.PropertyName.Equals("Angle")
 				|| animatedItem.PropertyName.Equals(RotateTransformAngle)
 				|| animatedItem.PropertyName.Equals(RotateTransformAngleWithNamespace))
 			{
-				return CreateCoreAnimation(transform, "transform.rotation", value => new NSNumber(MathEx.ToRadians(value)));
+				return CreateCoreAnimation(view, "transform.rotation", value => new NSNumber(Transform.ToRadians(value)));
 			}
 			else
 			{
@@ -315,18 +287,19 @@ namespace Windows.UI.Xaml.Media.Animation
 		private UnoCoreAnimation InitializeScaleCoreAnimation(IBindingItem animatedItem)
 		{
 			var transform = animatedItem.DataContext as ScaleTransform;
+			UIView view = transform.View;
 
 			if (animatedItem.PropertyName.Equals("ScaleX")
 				|| animatedItem.PropertyName.Equals(ScaleTransformX)
 				|| animatedItem.PropertyName.Equals(ScaleTransformXWithNamespace))
 			{
-				return CreateCoreAnimation(transform, "transform.scale.x", value => new NSNumber(value));
+				return CreateCoreAnimation(view, "transform.scale.x", value => new NSNumber(value));
 			}
 			else if (animatedItem.PropertyName.Equals("ScaleY")
 				|| animatedItem.PropertyName.Equals(ScaleTransformY)
 				|| animatedItem.PropertyName.Equals(ScaleTransformYWithNamespace))
 			{
-				return CreateCoreAnimation(transform, "transform.scale.y", value => new NSNumber(value));
+				return CreateCoreAnimation(view, "transform.scale.y", value => new NSNumber(value));
 			}
 			else
 			{
@@ -361,65 +334,54 @@ namespace Windows.UI.Xaml.Media.Animation
 		private UnoCoreAnimation InitializeCompositeCoreAnimation(IBindingItem animatedItem)
 		{
 			var transform = animatedItem.DataContext as CompositeTransform;
+			UIView view = transform.View;
 
 			switch (animatedItem.PropertyName)
 			{
 				case CompositeTransformCenterX:
 				case CompositeTransformCenterXWithNamespace:
 				case "CenterX"://This animation is a Lie. transform.position.x doesn't exist, the real animator is the CPU bound one
-					return CreateCoreAnimation(transform, "transform.position.x", value => new NSNumber(value));
+					return CreateCoreAnimation(view, "transform.position.x", value => new NSNumber(value));
 				case CompositeTransformCenterY:
 				case CompositeTransformCenterYWithNamespace:
 				case "CenterY"://This animation is a Lie. transform.position.x doesn't exist, the real animator is the CPU bound one
-					return CreateCoreAnimation(transform, "transform.position.y", value => new NSNumber(value));
+					return CreateCoreAnimation(view, "transform.position.y", value => new NSNumber(value));
 				case CompositeTransformTranslateX:
 				case CompositeTransformTranslateXWithNamespace:
 				case "TranslateX":
-					return CreateCoreAnimation(transform, "transform.translation.x", value => new NSNumber(value));
+					return CreateCoreAnimation(view, "transform.translation.x", value => new NSNumber(value));
 				case CompositeTransformTranslateY:
 				case CompositeTransformTranslateYWithNamespace:
 				case "TranslateY":
-					return CreateCoreAnimation(transform, "transform.translation.y", value => new NSNumber(value));
+					return CreateCoreAnimation(view, "transform.translation.y", value => new NSNumber(value));
 				case CompositeTransformRotation:
 				case CompositeTransformRotationWithNamespace:
 				case "Rotation":
-					return CreateCoreAnimation(transform, "transform.rotation", value => new NSNumber(MathEx.ToRadians(value)));
+					return CreateCoreAnimation(view, "transform.rotation", value => new NSNumber(Transform.ToRadians(value)));
 				case CompositeTransformScaleX:
 				case CompositeTransformScaleXWithNamespace:
 				case "ScaleX":
-					return CreateCoreAnimation(transform, "transform.scale.x", value => new NSNumber(value));
+					return CreateCoreAnimation(view, "transform.scale.x", value => new NSNumber(value));
 				case CompositeTransformScaleY:
 				case CompositeTransformScaleYWithNamespace:
 				case "ScaleY":
-					return CreateCoreAnimation(transform, "transform.scale.y", value => new NSNumber(value));
+					return CreateCoreAnimation(view, "transform.scale.y", value => new NSNumber(value));
 
 				//Again, we need to review how we handle SkewTransforms
 				case CompositeTransformSkewX:
 				case CompositeTransformSkewXWithNamespace:
 				case "SkewX":
-					return CreateCoreAnimation(transform.View, "transform", value => ToCASkewTransform(value, 0));
+					return CreateCoreAnimation(view, "transform", value => ToCASkewTransform(value, 0));
 				case CompositeTransformSkewY:
 				case CompositeTransformSkewYWithNamespace:
 				case "SkewY":
-					return CreateCoreAnimation(transform.View, "transform", value => ToCASkewTransform(0, value));
+					return CreateCoreAnimation(view, "transform", value => ToCASkewTransform(0, value));
 				default:
 					throw new NotSupportedException(__notSupportedProperty);
 			}
 		}
 		#endregion
-
-		private UnoCoreAnimation CreateCoreAnimation(
-			Transform transform,
-			string property,
-			Func<float, NSValue> nsValueConversion)
-			=> CreateCoreAnimation(transform.View, property, nsValueConversion, transform.StartAnimation, transform.EndAnimation);
-		
-		private UnoCoreAnimation CreateCoreAnimation(
-			UIView view,
-			string property,
-			Func<float, NSValue> nsValueConversion,
-			Action prepareAnimation = null,
-			Action endAnimation = null)
+		private UnoCoreAnimation CreateCoreAnimation(UIView view, string property, Func<float, NSValue> nsValueConversion)
 		{
 			var timingFunction = _easingFunction == null ?
 				CAMediaTimingFunction.FromName(CAMediaTimingFunction.Linear) :
@@ -427,10 +389,7 @@ namespace Windows.UI.Xaml.Media.Animation
 
 			var isDiscrete = _easingFunction is DiscreteDoubleKeyFrame.DiscreteDoubleKeyFrameEasingFunction;
 
-			return prepareAnimation == null || endAnimation == null
-				? new UnoCoreAnimation(view.Layer, property, _from, _to, StartDelay, _duration, timingFunction, nsValueConversion, FinalizeAnimation, isDiscrete)
-				: new UnoCoreAnimation(view.Layer, property, _from, _to, StartDelay, _duration, timingFunction, nsValueConversion, FinalizeAnimation, isDiscrete, prepareAnimation, endAnimation);
-
+			return new UnoCoreAnimation(view.Layer, property, _from, _to, StartDelay, _duration, timingFunction, nsValueConversion, FinalizeAnimation, isDiscrete);
 		}
 
 		private NSValue ToCASkewTransform(float angleX, float angleY)

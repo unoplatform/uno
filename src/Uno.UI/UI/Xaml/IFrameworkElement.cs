@@ -38,14 +38,6 @@ using Font = AppKit.NSFont;
 using CoreGraphics;
 using _Size = Windows.Foundation.Size;
 using Point = Windows.Foundation.Point;
-#elif __WASM__
-using nint = System.Int32;
-using nfloat = System.Double;
-using Point = Windows.Foundation.Point;
-using CGSize = Windows.Foundation.Size;
-using _Size = Windows.Foundation.Size;
-using NMath = System.Math;
-using View = Windows.UI.Xaml.UIElement;
 #else
 using nint = System.Int32;
 using nfloat = System.Double;
@@ -100,7 +92,7 @@ namespace Windows.UI.Xaml
 
 		Transform RenderTransform { get; set; }
 
-#if XAMARIN || __WASM__
+#if XAMARIN
 		Point RenderTransformOrigin { get; set; }
 #endif
 		TransitionCollection Transitions { get; set; }

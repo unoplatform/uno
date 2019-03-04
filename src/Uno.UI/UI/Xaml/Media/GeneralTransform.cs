@@ -1,7 +1,6 @@
 ﻿using System;
-using System.Numerics;
 using Windows.Foundation;
-
+using Windows.Foundation.Metadata;
 
 namespace Windows.UI.Xaml.Media
 {
@@ -9,29 +8,37 @@ namespace Windows.UI.Xaml.Media
 	{
 		protected GeneralTransform() { }
 
-		public GeneralTransform Inverse => InverseCore;
+		public GeneralTransform Inverse { get; }
 
 		protected virtual GeneralTransform InverseCore { get; }
 
+		public Rect TransformBounds(Rect rect) => TransformBoundsCore(rect);
+
 		public Point TransformPoint(Point point)
 		{
-			TryTransform(point, out var transformed);
-			return transformed;
+			if (TryTransform(point, out var output))
+			{
+				return output;
+			}
+
+			throw new InvalidOperationException();
 		}
 
 		public bool TryTransform(Point inPoint, out Point outPoint)
-			=> TryTransformCore(inPoint, out outPoint);
+		{
+			return TryTransformCore(inPoint, out outPoint);
+		}
+
+		protected virtual Rect TransformBoundsCore(Rect rect)
+		{
+			// This should be implemented by derived transforms
+			throw new NotSupportedException();
+		}
 
 		protected virtual bool TryTransformCore(Point inPoint, out Point outPoint)
 		{
-			outPoint = inPoint;
-			return false;
+			// This should be implemented by derived transforms
+			throw new NotSupportedException();
 		}
-
-		public Rect TransformBounds(Rect rect)
-			=> TransformBoundsCore(rect);
-
-		protected virtual Rect TransformBoundsCore(Rect rect)
-			=> rect;
 	}
 }
