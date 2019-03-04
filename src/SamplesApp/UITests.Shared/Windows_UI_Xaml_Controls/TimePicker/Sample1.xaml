@@ -17,7 +17,6 @@
 				<Grid Background="White">
 					<TimePicker Grid.Row="1"
                                 Margin="15,10"
-                                ios:FlyoutPlacement="Full"
                                 HorizontalAlignment="Center"
                                 VerticalAlignment="Top"
                                 MinuteIncrement="1"

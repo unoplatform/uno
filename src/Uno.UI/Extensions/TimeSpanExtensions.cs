@@ -44,7 +44,7 @@ namespace Uno.UI.Extensions
 
 		/// <summary>
 		/// Round timespan to next minute interval
-		// input time seconds are ignored
+		/// input time seconds are ignored
 		/// </summary>
 		/// <param name="interval">minute interval</param>
 		/// <returns>Rounded timespan</returns>
