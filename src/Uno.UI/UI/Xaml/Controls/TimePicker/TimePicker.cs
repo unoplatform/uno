@@ -30,6 +30,32 @@ namespace Windows.UI.Xaml.Controls
 
 		public TimePicker() { }
 
+		#region Time DependencyProperty
+
+		public TimeSpan Time
+		{
+			get { return (TimeSpan)this.GetValue(TimeProperty); }
+			set { this.SetValue(TimeProperty, value); }
+		}
+
+		public static readonly DependencyProperty TimeProperty =
+			DependencyProperty.Register(
+				"Time",
+				typeof(TimeSpan),
+				typeof(TimePicker),
+				new FrameworkPropertyMetadata(
+					defaultValue: DateTime.Now.TimeOfDay,
+					options: FrameworkPropertyMetadataOptions.None,
+					propertyChangedCallback: (s, e) => ((TimePicker)s)?.OnTimeChangedPartial((TimeSpan)e.OldValue, (TimeSpan)e.NewValue),
+					coerceValueCallback: (s, e) =>
+					{
+						var ts = (TimeSpan)e;
+						return new TimeSpan(ts.Hours, ts.Minutes, 0);
+					})
+				);
+
+		#endregion
+
 		#region MinuteIncrement DependencyProperty
 
 		public int MinuteIncrement
@@ -123,7 +149,7 @@ namespace Windows.UI.Xaml.Controls
 			UpdateDisplayedDate();
 		}
 
-		partial void OnTimeChangedPartial(TimeSpan oldTime, TimeSpan newTime)
+		void OnTimeChangedPartial(TimeSpan oldTime, TimeSpan newTime)
 		{
 			UpdateDisplayedDate();
 		}
