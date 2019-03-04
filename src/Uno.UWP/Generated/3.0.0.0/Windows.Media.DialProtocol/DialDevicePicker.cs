@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Media.DialProtocol
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class DialDevicePicker 
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Devices.Enumeration.DevicePickerAppearance Appearance
 		{
@@ -17,7 +17,7 @@ namespace Windows.Media.DialProtocol
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Media.DialProtocol.DialDevicePickerFilter Filter
 		{
@@ -27,7 +27,7 @@ namespace Windows.Media.DialProtocol
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public DialDevicePicker() 
 		{
@@ -43,49 +43,49 @@ namespace Windows.Media.DialProtocol
 		// Forced skipping of method Windows.Media.DialProtocol.DialDevicePicker.DisconnectButtonClicked.remove
 		// Forced skipping of method Windows.Media.DialProtocol.DialDevicePicker.DialDevicePickerDismissed.add
 		// Forced skipping of method Windows.Media.DialProtocol.DialDevicePicker.DialDevicePickerDismissed.remove
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  void Show( global::Windows.Foundation.Rect selection)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.DialProtocol.DialDevicePicker", "void DialDevicePicker.Show(Rect selection)");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  void Show( global::Windows.Foundation.Rect selection,  global::Windows.UI.Popups.Placement preferredPlacement)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.DialProtocol.DialDevicePicker", "void DialDevicePicker.Show(Rect selection, Placement preferredPlacement)");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Foundation.IAsyncOperation<global::Windows.Media.DialProtocol.DialDevice> PickSingleDialDeviceAsync( global::Windows.Foundation.Rect selection)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<DialDevice> DialDevicePicker.PickSingleDialDeviceAsync(Rect selection) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Foundation.IAsyncOperation<global::Windows.Media.DialProtocol.DialDevice> PickSingleDialDeviceAsync( global::Windows.Foundation.Rect selection,  global::Windows.UI.Popups.Placement preferredPlacement)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<DialDevice> DialDevicePicker.PickSingleDialDeviceAsync(Rect selection, Placement preferredPlacement) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  void Hide()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.DialProtocol.DialDevicePicker", "void DialDevicePicker.Hide()");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  void SetDisplayStatus( global::Windows.Media.DialProtocol.DialDevice device,  global::Windows.Media.DialProtocol.DialDeviceDisplayStatus status)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.DialProtocol.DialDevicePicker", "void DialDevicePicker.SetDisplayStatus(DialDevice device, DialDeviceDisplayStatus status)");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Media.DialProtocol.DialDevicePicker, object> DialDevicePickerDismissed
 		{
@@ -101,7 +101,7 @@ namespace Windows.Media.DialProtocol
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Media.DialProtocol.DialDevicePicker, global::Windows.Media.DialProtocol.DialDeviceSelectedEventArgs> DialDeviceSelected
 		{
@@ -117,7 +117,7 @@ namespace Windows.Media.DialProtocol
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Media.DialProtocol.DialDevicePicker, global::Windows.Media.DialProtocol.DialDisconnectButtonClickedEventArgs> DisconnectButtonClicked
 		{

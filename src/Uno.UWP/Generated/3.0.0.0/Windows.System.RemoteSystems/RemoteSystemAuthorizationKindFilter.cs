@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.System.RemoteSystems
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class RemoteSystemAuthorizationKindFilter : global::Windows.System.RemoteSystems.IRemoteSystemFilter
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.System.RemoteSystems.RemoteSystemAuthorizationKind RemoteSystemAuthorizationKind
 		{
@@ -17,7 +17,7 @@ namespace Windows.System.RemoteSystems
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public RemoteSystemAuthorizationKindFilter( global::Windows.System.RemoteSystems.RemoteSystemAuthorizationKind remoteSystemAuthorizationKind) 
 		{

@@ -2,21 +2,21 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.ApplicationModel.UserActivities
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class UserActivityRequestManager 
 	{
 		// Forced skipping of method Windows.ApplicationModel.UserActivities.UserActivityRequestManager.UserActivityRequested.add
 		// Forced skipping of method Windows.ApplicationModel.UserActivities.UserActivityRequestManager.UserActivityRequested.remove
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.ApplicationModel.UserActivities.UserActivityRequestManager GetForCurrentView()
 		{
 			throw new global::System.NotImplementedException("The member UserActivityRequestManager UserActivityRequestManager.GetForCurrentView() is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.ApplicationModel.UserActivities.UserActivityRequestManager, global::Windows.ApplicationModel.UserActivities.UserActivityRequestedEventArgs> UserActivityRequested
 		{

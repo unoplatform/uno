@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Devices.Bluetooth.Rfcomm
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class RfcommServiceProvider 
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::System.Collections.Generic.IDictionary<uint, global::Windows.Storage.Streams.IBuffer> SdpRawAttributes
 		{
@@ -17,7 +17,7 @@ namespace Windows.Devices.Bluetooth.Rfcomm
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Devices.Bluetooth.Rfcomm.RfcommServiceId ServiceId
 		{
@@ -29,28 +29,28 @@ namespace Windows.Devices.Bluetooth.Rfcomm
 		#endif
 		// Forced skipping of method Windows.Devices.Bluetooth.Rfcomm.RfcommServiceProvider.ServiceId.get
 		// Forced skipping of method Windows.Devices.Bluetooth.Rfcomm.RfcommServiceProvider.SdpRawAttributes.get
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  void StartAdvertising( global::Windows.Networking.Sockets.StreamSocketListener listener)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Bluetooth.Rfcomm.RfcommServiceProvider", "void RfcommServiceProvider.StartAdvertising(StreamSocketListener listener)");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  void StopAdvertising()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Bluetooth.Rfcomm.RfcommServiceProvider", "void RfcommServiceProvider.StopAdvertising()");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  void StartAdvertising( global::Windows.Networking.Sockets.StreamSocketListener listener,  bool radioDiscoverable)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Bluetooth.Rfcomm.RfcommServiceProvider", "void RfcommServiceProvider.StartAdvertising(StreamSocketListener listener, bool radioDiscoverable)");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Bluetooth.Rfcomm.RfcommServiceProvider> CreateAsync( global::Windows.Devices.Bluetooth.Rfcomm.RfcommServiceId serviceId)
 		{

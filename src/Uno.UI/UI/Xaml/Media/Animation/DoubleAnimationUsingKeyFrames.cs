@@ -47,7 +47,7 @@ namespace Windows.UI.Xaml.Media.Animation
 				// This works because the template bindings are executed just after the constructor.
 				// WARNING: This does not allow us to bind DoubleKeyFrame.Value with ViewModel properties.
 				_wasBeginScheduled = true;
-#if !NET46
+#if !NET461
 #if __ANDROID__
 				Dispatcher.RunAnimation(() =>
 #else
@@ -63,7 +63,7 @@ namespace Windows.UI.Xaml.Media.Animation
 
 					//Start the animation
 					Play();
-#if !NET46
+#if !NET461
 				});
 #endif
 			}
@@ -341,7 +341,7 @@ namespace Windows.UI.Xaml.Media.Animation
 		partial void UseHardware();
 		partial void HoldValue();
 
-#if NET46 || __WASM__ || __MACOS__
+#if NET461 || __WASM__ || __MACOS__
 		private bool ReportEachFrame() => true;
 #endif
 	}

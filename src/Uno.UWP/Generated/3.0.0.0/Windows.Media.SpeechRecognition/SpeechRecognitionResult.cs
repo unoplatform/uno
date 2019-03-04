@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Media.SpeechRecognition
 {
-	#if false || false || NET46 || __WASM__ || __MACOS__
+	#if false || false || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class SpeechRecognitionResult 
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Media.SpeechRecognition.SpeechRecognitionConfidence Confidence
 		{
@@ -17,7 +17,7 @@ namespace Windows.Media.SpeechRecognition
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Media.SpeechRecognition.ISpeechRecognitionConstraint Constraint
 		{
@@ -27,7 +27,7 @@ namespace Windows.Media.SpeechRecognition
 			}
 		}
 		#endif
-		#if false || false || NET46 || __WASM__ || __MACOS__
+		#if false || false || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  double RawConfidence
 		{
@@ -37,7 +37,7 @@ namespace Windows.Media.SpeechRecognition
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::System.Collections.Generic.IReadOnlyList<string> RulePath
 		{
@@ -47,7 +47,7 @@ namespace Windows.Media.SpeechRecognition
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Media.SpeechRecognition.SpeechRecognitionSemanticInterpretation SemanticInterpretation
 		{
@@ -57,7 +57,7 @@ namespace Windows.Media.SpeechRecognition
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Media.SpeechRecognition.SpeechRecognitionResultStatus Status
 		{
@@ -67,7 +67,7 @@ namespace Windows.Media.SpeechRecognition
 			}
 		}
 		#endif
-		#if false || false || NET46 || __WASM__ || __MACOS__
+		#if false || false || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  string Text
 		{
@@ -77,7 +77,7 @@ namespace Windows.Media.SpeechRecognition
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::System.TimeSpan PhraseDuration
 		{
@@ -87,7 +87,7 @@ namespace Windows.Media.SpeechRecognition
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::System.DateTimeOffset PhraseStartTime
 		{
@@ -101,7 +101,7 @@ namespace Windows.Media.SpeechRecognition
 		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognitionResult.Text.get
 		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognitionResult.Confidence.get
 		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognitionResult.SemanticInterpretation.get
-		#if false || false || NET46 || __WASM__ || __MACOS__
+		#if false || false || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::System.Collections.Generic.IReadOnlyList<global::Windows.Media.SpeechRecognition.SpeechRecognitionResult> GetAlternates( uint maxAlternates)
 		{

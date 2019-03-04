@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Security.Credentials
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class WebAccount : global::Windows.Security.Credentials.IWebAccount
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Security.Credentials.WebAccountState State
 		{
@@ -17,7 +17,7 @@ namespace Windows.Security.Credentials
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  string UserName
 		{
@@ -27,7 +27,7 @@ namespace Windows.Security.Credentials
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Security.Credentials.WebAccountProvider WebAccountProvider
 		{
@@ -37,7 +37,7 @@ namespace Windows.Security.Credentials
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  string Id
 		{
@@ -47,7 +47,7 @@ namespace Windows.Security.Credentials
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::System.Collections.Generic.IReadOnlyDictionary<string, string> Properties
 		{
@@ -57,7 +57,7 @@ namespace Windows.Security.Credentials
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public WebAccount( global::Windows.Security.Credentials.WebAccountProvider webAccountProvider,  string userName,  global::Windows.Security.Credentials.WebAccountState state) 
 		{
@@ -70,21 +70,21 @@ namespace Windows.Security.Credentials
 		// Forced skipping of method Windows.Security.Credentials.WebAccount.State.get
 		// Forced skipping of method Windows.Security.Credentials.WebAccount.Id.get
 		// Forced skipping of method Windows.Security.Credentials.WebAccount.Properties.get
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.Streams.IRandomAccessStream> GetPictureAsync( global::Windows.Security.Credentials.WebAccountPictureSize desizedSize)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<IRandomAccessStream> WebAccount.GetPictureAsync(WebAccountPictureSize desizedSize) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Foundation.IAsyncAction SignOutAsync()
 		{
 			throw new global::System.NotImplementedException("The member IAsyncAction WebAccount.SignOutAsync() is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Foundation.IAsyncAction SignOutAsync( string clientId)
 		{

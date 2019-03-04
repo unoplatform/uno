@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Input.Spatial
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class SpatialInteractionController 
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  bool HasThumbstick
 		{
@@ -17,7 +17,7 @@ namespace Windows.UI.Input.Spatial
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  bool HasTouchpad
 		{
@@ -27,7 +27,7 @@ namespace Windows.UI.Input.Spatial
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  ushort ProductId
 		{
@@ -37,7 +37,7 @@ namespace Windows.UI.Input.Spatial
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Devices.Haptics.SimpleHapticsController SimpleHapticsController
 		{
@@ -47,7 +47,7 @@ namespace Windows.UI.Input.Spatial
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  ushort VendorId
 		{
@@ -57,7 +57,7 @@ namespace Windows.UI.Input.Spatial
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  ushort Version
 		{
@@ -73,14 +73,14 @@ namespace Windows.UI.Input.Spatial
 		// Forced skipping of method Windows.UI.Input.Spatial.SpatialInteractionController.VendorId.get
 		// Forced skipping of method Windows.UI.Input.Spatial.SpatialInteractionController.ProductId.get
 		// Forced skipping of method Windows.UI.Input.Spatial.SpatialInteractionController.Version.get
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.Streams.IRandomAccessStreamWithContentType> TryGetRenderableModelAsync()
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<IRandomAccessStreamWithContentType> SpatialInteractionController.TryGetRenderableModelAsync() is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Devices.Power.BatteryReport TryGetBatteryReport()
 		{

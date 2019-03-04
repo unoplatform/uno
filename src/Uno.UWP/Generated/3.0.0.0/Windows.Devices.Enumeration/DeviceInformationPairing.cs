@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Devices.Enumeration
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class DeviceInformationPairing 
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  bool CanPair
 		{
@@ -17,7 +17,7 @@ namespace Windows.Devices.Enumeration
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  bool IsPaired
 		{
@@ -27,7 +27,7 @@ namespace Windows.Devices.Enumeration
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Devices.Enumeration.DeviceInformationCustomPairing Custom
 		{
@@ -37,7 +37,7 @@ namespace Windows.Devices.Enumeration
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Devices.Enumeration.DevicePairingProtectionLevel ProtectionLevel
 		{
@@ -49,14 +49,14 @@ namespace Windows.Devices.Enumeration
 		#endif
 		// Forced skipping of method Windows.Devices.Enumeration.DeviceInformationPairing.IsPaired.get
 		// Forced skipping of method Windows.Devices.Enumeration.DeviceInformationPairing.CanPair.get
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Enumeration.DevicePairingResult> PairAsync()
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<DevicePairingResult> DeviceInformationPairing.PairAsync() is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Enumeration.DevicePairingResult> PairAsync( global::Windows.Devices.Enumeration.DevicePairingProtectionLevel minProtectionLevel)
 		{
@@ -65,28 +65,28 @@ namespace Windows.Devices.Enumeration
 		#endif
 		// Forced skipping of method Windows.Devices.Enumeration.DeviceInformationPairing.ProtectionLevel.get
 		// Forced skipping of method Windows.Devices.Enumeration.DeviceInformationPairing.Custom.get
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Enumeration.DevicePairingResult> PairAsync( global::Windows.Devices.Enumeration.DevicePairingProtectionLevel minProtectionLevel,  global::Windows.Devices.Enumeration.IDevicePairingSettings devicePairingSettings)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<DevicePairingResult> DeviceInformationPairing.PairAsync(DevicePairingProtectionLevel minProtectionLevel, IDevicePairingSettings devicePairingSettings) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Enumeration.DeviceUnpairingResult> UnpairAsync()
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<DeviceUnpairingResult> DeviceInformationPairing.UnpairAsync() is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static bool TryRegisterForAllInboundPairingRequestsWithProtectionLevel( global::Windows.Devices.Enumeration.DevicePairingKinds pairingKindsSupported,  global::Windows.Devices.Enumeration.DevicePairingProtectionLevel minProtectionLevel)
 		{
 			throw new global::System.NotImplementedException("The member bool DeviceInformationPairing.TryRegisterForAllInboundPairingRequestsWithProtectionLevel(DevicePairingKinds pairingKindsSupported, DevicePairingProtectionLevel minProtectionLevel) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static bool TryRegisterForAllInboundPairingRequests( global::Windows.Devices.Enumeration.DevicePairingKinds pairingKindsSupported)
 		{

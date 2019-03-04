@@ -14,7 +14,7 @@ using System.Threading;
 using Uno.Diagnostics.Eventing;
 using System.Collections;
 
-#if !NET46
+#if !NET461
 using Uno.UI.Controls;
 #endif
 

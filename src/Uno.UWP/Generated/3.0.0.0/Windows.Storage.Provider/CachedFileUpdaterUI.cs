@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Storage.Provider
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class CachedFileUpdaterUI 
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  string Title
 		{
@@ -21,7 +21,7 @@ namespace Windows.Storage.Provider
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Storage.Provider.UIStatus UIStatus
 		{
@@ -31,7 +31,7 @@ namespace Windows.Storage.Provider
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Storage.Provider.CachedFileTarget UpdateTarget
 		{
@@ -41,7 +41,7 @@ namespace Windows.Storage.Provider
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Storage.Provider.FileUpdateRequest UpdateRequest
 		{
@@ -60,14 +60,14 @@ namespace Windows.Storage.Provider
 		// Forced skipping of method Windows.Storage.Provider.CachedFileUpdaterUI.UIRequested.remove
 		// Forced skipping of method Windows.Storage.Provider.CachedFileUpdaterUI.UIStatus.get
 		// Forced skipping of method Windows.Storage.Provider.CachedFileUpdaterUI.UpdateRequest.get
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Storage.Provider.FileUpdateRequestDeferral GetDeferral()
 		{
 			throw new global::System.NotImplementedException("The member FileUpdateRequestDeferral CachedFileUpdaterUI.GetDeferral() is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Storage.Provider.CachedFileUpdaterUI, global::Windows.Storage.Provider.FileUpdateRequestedEventArgs> FileUpdateRequested
 		{
@@ -83,7 +83,7 @@ namespace Windows.Storage.Provider
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Storage.Provider.CachedFileUpdaterUI, object> UIRequested
 		{

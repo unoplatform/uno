@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Media.Core.Preview
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class SoundLevelBroker 
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.Media.SoundLevel SoundLevel
 		{
@@ -20,7 +20,7 @@ namespace Windows.Media.Core.Preview
 		// Forced skipping of method Windows.Media.Core.Preview.SoundLevelBroker.SoundLevel.get
 		// Forced skipping of method Windows.Media.Core.Preview.SoundLevelBroker.SoundLevelChanged.add
 		// Forced skipping of method Windows.Media.Core.Preview.SoundLevelBroker.SoundLevelChanged.remove
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static event global::System.EventHandler<object> SoundLevelChanged
 		{

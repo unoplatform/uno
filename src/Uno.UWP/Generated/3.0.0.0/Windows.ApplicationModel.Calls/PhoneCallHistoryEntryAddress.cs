@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.ApplicationModel.Calls
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class PhoneCallHistoryEntryAddress 
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.ApplicationModel.Calls.PhoneCallHistoryEntryRawAddressKind RawAddressKind
 		{
@@ -21,7 +21,7 @@ namespace Windows.ApplicationModel.Calls
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  string RawAddress
 		{
@@ -35,7 +35,7 @@ namespace Windows.ApplicationModel.Calls
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  string DisplayName
 		{
@@ -49,7 +49,7 @@ namespace Windows.ApplicationModel.Calls
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  string ContactId
 		{
@@ -63,7 +63,7 @@ namespace Windows.ApplicationModel.Calls
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public PhoneCallHistoryEntryAddress( string rawAddress,  global::Windows.ApplicationModel.Calls.PhoneCallHistoryEntryRawAddressKind rawAddressKind) 
 		{
@@ -71,7 +71,7 @@ namespace Windows.ApplicationModel.Calls
 		}
 		#endif
 		// Forced skipping of method Windows.ApplicationModel.Calls.PhoneCallHistoryEntryAddress.PhoneCallHistoryEntryAddress(string, Windows.ApplicationModel.Calls.PhoneCallHistoryEntryRawAddressKind)
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public PhoneCallHistoryEntryAddress() 
 		{

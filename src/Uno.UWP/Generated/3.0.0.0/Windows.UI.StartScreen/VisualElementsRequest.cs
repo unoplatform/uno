@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.StartScreen
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class VisualElementsRequest 
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::System.Collections.Generic.IReadOnlyList<global::Windows.UI.StartScreen.SecondaryTileVisualElements> AlternateVisualElements
 		{
@@ -17,7 +17,7 @@ namespace Windows.UI.StartScreen
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::System.DateTimeOffset Deadline
 		{
@@ -27,7 +27,7 @@ namespace Windows.UI.StartScreen
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.UI.StartScreen.SecondaryTileVisualElements VisualElements
 		{
@@ -40,7 +40,7 @@ namespace Windows.UI.StartScreen
 		// Forced skipping of method Windows.UI.StartScreen.VisualElementsRequest.VisualElements.get
 		// Forced skipping of method Windows.UI.StartScreen.VisualElementsRequest.AlternateVisualElements.get
 		// Forced skipping of method Windows.UI.StartScreen.VisualElementsRequest.Deadline.get
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.UI.StartScreen.VisualElementsRequestDeferral GetDeferral()
 		{

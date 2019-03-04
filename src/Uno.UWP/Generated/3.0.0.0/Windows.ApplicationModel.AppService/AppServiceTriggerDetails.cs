@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.ApplicationModel.AppService
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class AppServiceTriggerDetails 
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.ApplicationModel.AppService.AppServiceConnection AppServiceConnection
 		{
@@ -17,7 +17,7 @@ namespace Windows.ApplicationModel.AppService
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  string CallerPackageFamilyName
 		{
@@ -27,7 +27,7 @@ namespace Windows.ApplicationModel.AppService
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  string Name
 		{
@@ -37,7 +37,7 @@ namespace Windows.ApplicationModel.AppService
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  bool IsRemoteSystemConnection
 		{
@@ -51,7 +51,7 @@ namespace Windows.ApplicationModel.AppService
 		// Forced skipping of method Windows.ApplicationModel.AppService.AppServiceTriggerDetails.CallerPackageFamilyName.get
 		// Forced skipping of method Windows.ApplicationModel.AppService.AppServiceTriggerDetails.AppServiceConnection.get
 		// Forced skipping of method Windows.ApplicationModel.AppService.AppServiceTriggerDetails.IsRemoteSystemConnection.get
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Foundation.IAsyncOperation<bool> CheckCallerForCapabilityAsync( string capabilityName)
 		{

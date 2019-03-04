@@ -16,7 +16,7 @@ namespace Windows.UI.Xaml.Controls
 		// Skipping already declared property Content
 		// Skipping already declared property CompactPaneLength
 		// Skipping already declared property TemplateSettings
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.UI.Xaml.Controls.LightDismissOverlayMode LightDismissOverlayMode
 		{
@@ -39,7 +39,7 @@ namespace Windows.UI.Xaml.Controls
 		// Skipping already declared property PanePlacementProperty
 		// Skipping already declared property PaneProperty
 		// Skipping already declared property TemplateSettingsProperty
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty LightDismissOverlayModeProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(

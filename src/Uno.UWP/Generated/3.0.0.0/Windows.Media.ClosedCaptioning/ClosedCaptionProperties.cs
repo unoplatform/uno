@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Media.ClosedCaptioning
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class ClosedCaptionProperties 
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.Media.ClosedCaptioning.ClosedCaptionColor BackgroundColor
 		{
@@ -17,7 +17,7 @@ namespace Windows.Media.ClosedCaptioning
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.Media.ClosedCaptioning.ClosedCaptionOpacity BackgroundOpacity
 		{
@@ -27,7 +27,7 @@ namespace Windows.Media.ClosedCaptioning
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Color ComputedBackgroundColor
 		{
@@ -37,7 +37,7 @@ namespace Windows.Media.ClosedCaptioning
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Color ComputedFontColor
 		{
@@ -47,7 +47,7 @@ namespace Windows.Media.ClosedCaptioning
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Color ComputedRegionColor
 		{
@@ -57,7 +57,7 @@ namespace Windows.Media.ClosedCaptioning
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.Media.ClosedCaptioning.ClosedCaptionColor FontColor
 		{
@@ -67,7 +67,7 @@ namespace Windows.Media.ClosedCaptioning
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.Media.ClosedCaptioning.ClosedCaptionEdgeEffect FontEffect
 		{
@@ -77,7 +77,7 @@ namespace Windows.Media.ClosedCaptioning
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.Media.ClosedCaptioning.ClosedCaptionOpacity FontOpacity
 		{
@@ -87,7 +87,7 @@ namespace Windows.Media.ClosedCaptioning
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.Media.ClosedCaptioning.ClosedCaptionSize FontSize
 		{
@@ -97,7 +97,7 @@ namespace Windows.Media.ClosedCaptioning
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.Media.ClosedCaptioning.ClosedCaptionStyle FontStyle
 		{
@@ -107,7 +107,7 @@ namespace Windows.Media.ClosedCaptioning
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.Media.ClosedCaptioning.ClosedCaptionColor RegionColor
 		{
@@ -117,7 +117,7 @@ namespace Windows.Media.ClosedCaptioning
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.Media.ClosedCaptioning.ClosedCaptionOpacity RegionOpacity
 		{

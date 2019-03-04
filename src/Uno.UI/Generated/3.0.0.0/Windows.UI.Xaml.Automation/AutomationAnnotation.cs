@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml.Automation
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || false
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || false
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class AutomationAnnotation : global::Windows.UI.Xaml.DependencyObject
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.UI.Xaml.Automation.AnnotationType Type
 		{
@@ -21,7 +21,7 @@ namespace Windows.UI.Xaml.Automation
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.UI.Xaml.UIElement Element
 		{
@@ -35,7 +35,7 @@ namespace Windows.UI.Xaml.Automation
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty ElementProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
@@ -43,7 +43,7 @@ namespace Windows.UI.Xaml.Automation
 			typeof(global::Windows.UI.Xaml.Automation.AutomationAnnotation), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.UIElement)));
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty TypeProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
@@ -51,7 +51,7 @@ namespace Windows.UI.Xaml.Automation
 			typeof(global::Windows.UI.Xaml.Automation.AutomationAnnotation), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Automation.AnnotationType)));
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public AutomationAnnotation( global::Windows.UI.Xaml.Automation.AnnotationType type) : base()
 		{
@@ -59,7 +59,7 @@ namespace Windows.UI.Xaml.Automation
 		}
 		#endif
 		// Forced skipping of method Windows.UI.Xaml.Automation.AutomationAnnotation.AutomationAnnotation(Windows.UI.Xaml.Automation.AnnotationType)
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public AutomationAnnotation( global::Windows.UI.Xaml.Automation.AnnotationType type,  global::Windows.UI.Xaml.UIElement element) : base()
 		{

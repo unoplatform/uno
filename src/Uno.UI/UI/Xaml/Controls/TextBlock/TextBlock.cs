@@ -1,6 +1,6 @@
 ﻿#pragma warning disable CS0109
 
-#if !NET46
+#if !NET461
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;

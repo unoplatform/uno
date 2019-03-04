@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Media.Editing
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class MediaClip 
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  uint SelectedEmbeddedAudioTrackIndex
 		{
@@ -21,7 +21,7 @@ namespace Windows.Media.Editing
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::System.TimeSpan TrimTimeFromEnd
 		{
@@ -35,7 +35,7 @@ namespace Windows.Media.Editing
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  double Volume
 		{
@@ -49,7 +49,7 @@ namespace Windows.Media.Editing
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::System.TimeSpan TrimTimeFromStart
 		{
@@ -63,7 +63,7 @@ namespace Windows.Media.Editing
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::System.Collections.Generic.IReadOnlyList<global::Windows.Media.Editing.EmbeddedAudioTrack> EmbeddedAudioTracks
 		{
@@ -73,7 +73,7 @@ namespace Windows.Media.Editing
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::System.TimeSpan EndTimeInComposition
 		{
@@ -83,7 +83,7 @@ namespace Windows.Media.Editing
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::System.TimeSpan OriginalDuration
 		{
@@ -93,7 +93,7 @@ namespace Windows.Media.Editing
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::System.TimeSpan StartTimeInComposition
 		{
@@ -103,7 +103,7 @@ namespace Windows.Media.Editing
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::System.TimeSpan TrimmedDuration
 		{
@@ -113,7 +113,7 @@ namespace Windows.Media.Editing
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::System.Collections.Generic.IDictionary<string, string> UserData
 		{
@@ -123,7 +123,7 @@ namespace Windows.Media.Editing
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::System.Collections.Generic.IList<global::Windows.Media.Effects.IVideoEffectDefinition> VideoEffectDefinitions
 		{
@@ -133,7 +133,7 @@ namespace Windows.Media.Editing
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::System.Collections.Generic.IList<global::Windows.Media.Effects.IAudioEffectDefinition> AudioEffectDefinitions
 		{
@@ -150,7 +150,7 @@ namespace Windows.Media.Editing
 		// Forced skipping of method Windows.Media.Editing.MediaClip.OriginalDuration.get
 		// Forced skipping of method Windows.Media.Editing.MediaClip.TrimmedDuration.get
 		// Forced skipping of method Windows.Media.Editing.MediaClip.UserData.get
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Media.Editing.MediaClip Clone()
 		{
@@ -164,7 +164,7 @@ namespace Windows.Media.Editing
 		// Forced skipping of method Windows.Media.Editing.MediaClip.SelectedEmbeddedAudioTrackIndex.set
 		// Forced skipping of method Windows.Media.Editing.MediaClip.Volume.set
 		// Forced skipping of method Windows.Media.Editing.MediaClip.Volume.get
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Media.MediaProperties.VideoEncodingProperties GetVideoEncodingProperties()
 		{
@@ -173,28 +173,28 @@ namespace Windows.Media.Editing
 		#endif
 		// Forced skipping of method Windows.Media.Editing.MediaClip.AudioEffectDefinitions.get
 		// Forced skipping of method Windows.Media.Editing.MediaClip.VideoEffectDefinitions.get
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.Media.Editing.MediaClip CreateFromSurface( global::Windows.Graphics.DirectX.Direct3D11.IDirect3DSurface surface,  global::System.TimeSpan originalDuration)
 		{
 			throw new global::System.NotImplementedException("The member MediaClip MediaClip.CreateFromSurface(IDirect3DSurface surface, TimeSpan originalDuration) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.Media.Editing.MediaClip CreateFromColor( global::Windows.UI.Color color,  global::System.TimeSpan originalDuration)
 		{
 			throw new global::System.NotImplementedException("The member MediaClip MediaClip.CreateFromColor(Color color, TimeSpan originalDuration) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Media.Editing.MediaClip> CreateFromFileAsync( global::Windows.Storage.IStorageFile file)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<MediaClip> MediaClip.CreateFromFileAsync(IStorageFile file) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Media.Editing.MediaClip> CreateFromImageFileAsync( global::Windows.Storage.IStorageFile file,  global::System.TimeSpan originalDuration)
 		{

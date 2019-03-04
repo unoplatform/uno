@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Media.Capture.Frames
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class MediaFrameReader : global::System.IDisposable
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Media.Capture.Frames.MediaFrameReaderAcquisitionMode AcquisitionMode
 		{
@@ -23,28 +23,28 @@ namespace Windows.Media.Capture.Frames
 		#endif
 		// Forced skipping of method Windows.Media.Capture.Frames.MediaFrameReader.FrameArrived.add
 		// Forced skipping of method Windows.Media.Capture.Frames.MediaFrameReader.FrameArrived.remove
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Media.Capture.Frames.MediaFrameReference TryAcquireLatestFrame()
 		{
 			throw new global::System.NotImplementedException("The member MediaFrameReference MediaFrameReader.TryAcquireLatestFrame() is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Foundation.IAsyncOperation<global::Windows.Media.Capture.Frames.MediaFrameReaderStartStatus> StartAsync()
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<MediaFrameReaderStartStatus> MediaFrameReader.StartAsync() is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Foundation.IAsyncAction StopAsync()
 		{
 			throw new global::System.NotImplementedException("The member IAsyncAction MediaFrameReader.StopAsync() is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  void Dispose()
 		{
@@ -53,7 +53,7 @@ namespace Windows.Media.Capture.Frames
 		#endif
 		// Forced skipping of method Windows.Media.Capture.Frames.MediaFrameReader.AcquisitionMode.set
 		// Forced skipping of method Windows.Media.Capture.Frames.MediaFrameReader.AcquisitionMode.get
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Media.Capture.Frames.MediaFrameReader, global::Windows.Media.Capture.Frames.MediaFrameArrivedEventArgs> FrameArrived
 		{

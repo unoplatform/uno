@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Devices.Bluetooth
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class BluetoothLEAppearance 
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  ushort Category
 		{
@@ -17,7 +17,7 @@ namespace Windows.Devices.Bluetooth
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  ushort RawValue
 		{
@@ -27,7 +27,7 @@ namespace Windows.Devices.Bluetooth
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  ushort SubCategory
 		{
@@ -40,14 +40,14 @@ namespace Windows.Devices.Bluetooth
 		// Forced skipping of method Windows.Devices.Bluetooth.BluetoothLEAppearance.RawValue.get
 		// Forced skipping of method Windows.Devices.Bluetooth.BluetoothLEAppearance.Category.get
 		// Forced skipping of method Windows.Devices.Bluetooth.BluetoothLEAppearance.SubCategory.get
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.Devices.Bluetooth.BluetoothLEAppearance FromRawValue( ushort rawValue)
 		{
 			throw new global::System.NotImplementedException("The member BluetoothLEAppearance BluetoothLEAppearance.FromRawValue(ushort rawValue) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.Devices.Bluetooth.BluetoothLEAppearance FromParts( ushort appearanceCategory,  ushort appearanceSubCategory)
 		{

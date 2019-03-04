@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.System.RemoteSystems
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class RemoteSystemAppRegistration 
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::System.Collections.Generic.IDictionary<string, string> Attributes
 		{
@@ -17,7 +17,7 @@ namespace Windows.System.RemoteSystems
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.System.User User
 		{
@@ -29,21 +29,21 @@ namespace Windows.System.RemoteSystems
 		#endif
 		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemAppRegistration.User.get
 		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemAppRegistration.Attributes.get
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Foundation.IAsyncOperation<bool> SaveAsync()
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> RemoteSystemAppRegistration.SaveAsync() is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.System.RemoteSystems.RemoteSystemAppRegistration GetDefault()
 		{
 			throw new global::System.NotImplementedException("The member RemoteSystemAppRegistration RemoteSystemAppRegistration.GetDefault() is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.System.RemoteSystems.RemoteSystemAppRegistration GetForUser( global::Windows.System.User user)
 		{

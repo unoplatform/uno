@@ -34,7 +34,7 @@ namespace Windows.UI.Xaml
 		{
 			_watch.Start();
 
-#if !NET46
+#if !NET461
 			CoreDispatcher.Main.RunIdleAsync(Scavenger);
 #endif
 		}

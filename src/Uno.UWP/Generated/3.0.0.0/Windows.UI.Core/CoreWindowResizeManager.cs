@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Core
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class CoreWindowResizeManager 
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  bool ShouldWaitForLayoutCompletion
 		{
@@ -21,7 +21,7 @@ namespace Windows.UI.Core
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  void NotifyLayoutCompleted()
 		{
@@ -30,7 +30,7 @@ namespace Windows.UI.Core
 		#endif
 		// Forced skipping of method Windows.UI.Core.CoreWindowResizeManager.ShouldWaitForLayoutCompletion.set
 		// Forced skipping of method Windows.UI.Core.CoreWindowResizeManager.ShouldWaitForLayoutCompletion.get
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Core.CoreWindowResizeManager GetForCurrentView()
 		{

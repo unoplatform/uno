@@ -4,7 +4,7 @@ namespace Windows.Media.SpeechRecognition
 	{
 		public bool ShowConfirmation { get; set; }
 		
-#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+#if __ANDROID__ || __IOS__ || NET461 || __WASM__
 		[global::Uno.NotImplemented]
 #endif
 		public bool IsReadBackEnabled { get; set; }

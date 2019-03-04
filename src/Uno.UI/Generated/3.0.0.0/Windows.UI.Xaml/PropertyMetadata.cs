@@ -7,7 +7,7 @@ namespace Windows.UI.Xaml
 	#endif
 	public  partial class PropertyMetadata 
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.UI.Xaml.CreateDefaultValueCallback CreateDefaultValueCallback
 		{
@@ -24,28 +24,28 @@ namespace Windows.UI.Xaml
 		// Forced skipping of method Windows.UI.Xaml.PropertyMetadata.PropertyMetadata(object, Windows.UI.Xaml.PropertyChangedCallback)
 		// Forced skipping of method Windows.UI.Xaml.PropertyMetadata.DefaultValue.get
 		// Forced skipping of method Windows.UI.Xaml.PropertyMetadata.CreateDefaultValueCallback.get
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.PropertyMetadata Create( object defaultValue)
 		{
 			throw new global::System.NotImplementedException("The member PropertyMetadata PropertyMetadata.Create(object defaultValue) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.PropertyMetadata Create( object defaultValue,  global::Windows.UI.Xaml.PropertyChangedCallback propertyChangedCallback)
 		{
 			throw new global::System.NotImplementedException("The member PropertyMetadata PropertyMetadata.Create(object defaultValue, PropertyChangedCallback propertyChangedCallback) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.PropertyMetadata Create( global::Windows.UI.Xaml.CreateDefaultValueCallback createDefaultValueCallback)
 		{
 			throw new global::System.NotImplementedException("The member PropertyMetadata PropertyMetadata.Create(CreateDefaultValueCallback createDefaultValueCallback) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.PropertyMetadata Create( global::Windows.UI.Xaml.CreateDefaultValueCallback createDefaultValueCallback,  global::Windows.UI.Xaml.PropertyChangedCallback propertyChangedCallback)
 		{

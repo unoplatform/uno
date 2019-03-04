@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml.Media
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class RevealBrush : global::Windows.UI.Xaml.Media.XamlCompositionBrushBase
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.UI.Xaml.ApplicationTheme TargetTheme
 		{
@@ -21,7 +21,7 @@ namespace Windows.UI.Xaml.Media
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.UI.Color Color
 		{
@@ -35,7 +35,7 @@ namespace Windows.UI.Xaml.Media
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  bool AlwaysUseFallback
 		{
@@ -49,7 +49,7 @@ namespace Windows.UI.Xaml.Media
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty AlwaysUseFallbackProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
@@ -57,7 +57,7 @@ namespace Windows.UI.Xaml.Media
 			typeof(global::Windows.UI.Xaml.Media.RevealBrush), 
 			new FrameworkPropertyMetadata(default(bool)));
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty ColorProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
@@ -65,7 +65,7 @@ namespace Windows.UI.Xaml.Media
 			typeof(global::Windows.UI.Xaml.Media.RevealBrush), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Color)));
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty StateProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.RegisterAttached(
@@ -73,7 +73,7 @@ namespace Windows.UI.Xaml.Media
 			typeof(global::Windows.UI.Xaml.Media.RevealBrush), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.RevealBrushState)));
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty TargetThemeProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
@@ -81,7 +81,7 @@ namespace Windows.UI.Xaml.Media
 			typeof(global::Windows.UI.Xaml.Media.RevealBrush), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.ApplicationTheme)));
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		protected RevealBrush() : base()
 		{
@@ -99,14 +99,14 @@ namespace Windows.UI.Xaml.Media
 		// Forced skipping of method Windows.UI.Xaml.Media.RevealBrush.TargetThemeProperty.get
 		// Forced skipping of method Windows.UI.Xaml.Media.RevealBrush.AlwaysUseFallbackProperty.get
 		// Forced skipping of method Windows.UI.Xaml.Media.RevealBrush.StateProperty.get
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static void SetState( global::Windows.UI.Xaml.UIElement element,  global::Windows.UI.Xaml.Media.RevealBrushState value)
 		{
 			element.SetValue(StateProperty, value);
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.Media.RevealBrushState GetState( global::Windows.UI.Xaml.UIElement element)
 		{

@@ -7,7 +7,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 	#endif
 	public  partial class ToggleButton : global::Windows.UI.Xaml.Controls.Primitives.ButtonBase
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  bool IsThreeState
 		{
@@ -23,7 +23,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		#endif
 		// Skipping already declared property IsChecked
 		// Skipping already declared property IsCheckedProperty
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty IsThreeStateProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
@@ -47,7 +47,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		// Forced skipping of method Windows.UI.Xaml.Controls.Primitives.ToggleButton.IsCheckedProperty.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.Primitives.ToggleButton.IsThreeStateProperty.get
 		// Skipping already declared event Windows.UI.Xaml.Controls.Primitives.ToggleButton.Checked
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  event global::Windows.UI.Xaml.RoutedEventHandler Indeterminate
 		{

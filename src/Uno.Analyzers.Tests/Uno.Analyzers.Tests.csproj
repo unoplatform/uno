@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="15.0">
 	<PropertyGroup>
-		<TargetFramework>net46</TargetFramework>
+		<TargetFramework>net461</TargetFramework>
 		<IsPackable>false</IsPackable>
 		<NoWarn>1998</NoWarn>
 		<OutputPath>..\Build\Tests\bin\$(Configuration)_$(Platform)\</OutputPath>

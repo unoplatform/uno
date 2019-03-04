@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Graphics.Printing
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class PrintTaskRequest 
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::System.DateTimeOffset Deadline
 		{
@@ -18,14 +18,14 @@ namespace Windows.Graphics.Printing
 		}
 		#endif
 		// Forced skipping of method Windows.Graphics.Printing.PrintTaskRequest.Deadline.get
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Graphics.Printing.PrintTask CreatePrintTask( string title,  global::Windows.Graphics.Printing.PrintTaskSourceRequestedHandler handler)
 		{
 			throw new global::System.NotImplementedException("The member PrintTask PrintTaskRequest.CreatePrintTask(string title, PrintTaskSourceRequestedHandler handler) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Graphics.Printing.PrintTaskRequestedDeferral GetDeferral()
 		{

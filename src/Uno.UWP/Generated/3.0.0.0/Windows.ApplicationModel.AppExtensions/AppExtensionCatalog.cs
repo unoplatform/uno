@@ -2,19 +2,19 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.ApplicationModel.AppExtensions
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class AppExtensionCatalog 
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IReadOnlyList<global::Windows.ApplicationModel.AppExtensions.AppExtension>> FindAllAsync()
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<IReadOnlyList<AppExtension>> AppExtensionCatalog.FindAllAsync() is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Foundation.IAsyncOperation<bool> RequestRemovePackageAsync( string packageFullName)
 		{
@@ -31,14 +31,14 @@ namespace Windows.ApplicationModel.AppExtensions
 		// Forced skipping of method Windows.ApplicationModel.AppExtensions.AppExtensionCatalog.PackageUninstalling.remove
 		// Forced skipping of method Windows.ApplicationModel.AppExtensions.AppExtensionCatalog.PackageStatusChanged.add
 		// Forced skipping of method Windows.ApplicationModel.AppExtensions.AppExtensionCatalog.PackageStatusChanged.remove
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.ApplicationModel.AppExtensions.AppExtensionCatalog Open( string appExtensionName)
 		{
 			throw new global::System.NotImplementedException("The member AppExtensionCatalog AppExtensionCatalog.Open(string appExtensionName) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.ApplicationModel.AppExtensions.AppExtensionCatalog, global::Windows.ApplicationModel.AppExtensions.AppExtensionPackageInstalledEventArgs> PackageInstalled
 		{
@@ -54,7 +54,7 @@ namespace Windows.ApplicationModel.AppExtensions
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.ApplicationModel.AppExtensions.AppExtensionCatalog, global::Windows.ApplicationModel.AppExtensions.AppExtensionPackageStatusChangedEventArgs> PackageStatusChanged
 		{
@@ -70,7 +70,7 @@ namespace Windows.ApplicationModel.AppExtensions
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.ApplicationModel.AppExtensions.AppExtensionCatalog, global::Windows.ApplicationModel.AppExtensions.AppExtensionPackageUninstallingEventArgs> PackageUninstalling
 		{
@@ -86,7 +86,7 @@ namespace Windows.ApplicationModel.AppExtensions
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.ApplicationModel.AppExtensions.AppExtensionCatalog, global::Windows.ApplicationModel.AppExtensions.AppExtensionPackageUpdatedEventArgs> PackageUpdated
 		{
@@ -102,7 +102,7 @@ namespace Windows.ApplicationModel.AppExtensions
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.ApplicationModel.AppExtensions.AppExtensionCatalog, global::Windows.ApplicationModel.AppExtensions.AppExtensionPackageUpdatingEventArgs> PackageUpdating
 		{

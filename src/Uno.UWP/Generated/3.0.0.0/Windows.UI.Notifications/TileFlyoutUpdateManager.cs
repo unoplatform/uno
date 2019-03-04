@@ -2,33 +2,33 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Notifications
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class TileFlyoutUpdateManager 
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Notifications.TileFlyoutUpdater CreateTileFlyoutUpdaterForApplication()
 		{
 			throw new global::System.NotImplementedException("The member TileFlyoutUpdater TileFlyoutUpdateManager.CreateTileFlyoutUpdaterForApplication() is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Notifications.TileFlyoutUpdater CreateTileFlyoutUpdaterForApplication( string applicationId)
 		{
 			throw new global::System.NotImplementedException("The member TileFlyoutUpdater TileFlyoutUpdateManager.CreateTileFlyoutUpdaterForApplication(string applicationId) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Notifications.TileFlyoutUpdater CreateTileFlyoutUpdaterForSecondaryTile( string tileId)
 		{
 			throw new global::System.NotImplementedException("The member TileFlyoutUpdater TileFlyoutUpdateManager.CreateTileFlyoutUpdaterForSecondaryTile(string tileId) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.Data.Xml.Dom.XmlDocument GetTemplateContent( global::Windows.UI.Notifications.TileFlyoutTemplateType type)
 		{

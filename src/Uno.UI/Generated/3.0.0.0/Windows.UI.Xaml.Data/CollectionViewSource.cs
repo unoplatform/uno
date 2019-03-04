@@ -8,7 +8,7 @@ namespace Windows.UI.Xaml.Data
 	public  partial class CollectionViewSource : global::Windows.UI.Xaml.DependencyObject
 	{
 		// Skipping already declared property Source
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.UI.Xaml.PropertyPath ItemsPath
 		{
@@ -25,7 +25,7 @@ namespace Windows.UI.Xaml.Data
 		// Skipping already declared property IsSourceGrouped
 		// Skipping already declared property View
 		// Skipping already declared property IsSourceGroupedProperty
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty ItemsPathProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
@@ -34,7 +34,7 @@ namespace Windows.UI.Xaml.Data
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.PropertyPath)));
 		#endif
 		// Skipping already declared property SourceProperty
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty ViewProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(

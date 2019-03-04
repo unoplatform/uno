@@ -24,7 +24,7 @@ namespace Windows.UI.Xaml
 		{
 			if (Uno.UI.FeatureConfiguration.Style.UseUWPDefaultStyles)
 			{
-#if !NET46
+#if !NET461
 				Style.RegisterDefaultStyleForType(typeof(Controls.Button), Uno.UI.GlobalStaticResources.XamlDefaultButton);
 				Style.RegisterDefaultStyleForType(typeof(Controls.TextBox), Uno.UI.GlobalStaticResources.XamlDefaultTextBox);
 				Style.RegisterDefaultStyleForType(typeof(Controls.PasswordBox), Uno.UI.GlobalStaticResources.XamlDefaultPasswordBox);

@@ -9,7 +9,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 	{
 		// Skipping already declared property SelectedItem
 		// Skipping already declared property SelectedIndex
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  bool? IsSynchronizedWithCurrentItem
 		{
@@ -23,7 +23,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty IsSynchronizedWithCurrentItemProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
@@ -50,7 +50,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		// Forced skipping of method Windows.UI.Xaml.Controls.Primitives.Selector.SelectedValueProperty.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.Primitives.Selector.SelectedValuePathProperty.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.Primitives.Selector.IsSynchronizedWithCurrentItemProperty.get
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static bool GetIsSelectionActive( global::Windows.UI.Xaml.DependencyObject element)
 		{

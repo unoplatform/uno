@@ -7,7 +7,7 @@ namespace Windows.UI.Xaml.Media
 	#endif
 	public  partial class PointCollection : global::System.Collections.Generic.IList<global::Windows.Foundation.Point>,global::System.Collections.Generic.IEnumerable<global::Windows.Foundation.Point>
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  uint Size
 		{

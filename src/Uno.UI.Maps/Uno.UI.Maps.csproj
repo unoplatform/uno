@@ -21,15 +21,9 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Uno.SourceGenerationTasks">
-			<Version>1.29.0-dev.241</Version>
-		</PackageReference>
-		<PackageReference Include="Uno.Core">
-			<Version>1.26.0-dev.58</Version>
-		</PackageReference>
-		<PackageReference Include="Uno.Core.Build">
-			<Version>1.26.0-dev.58</Version>
-		</PackageReference>
+		<PackageReference Include="Uno.SourceGenerationTasks"/>
+		<PackageReference Include="Uno.Core"/>
+		<PackageReference Include="Uno.Core.Build"/>
 	</ItemGroup>
 
 	<ItemGroup Condition=" '$(TargetFramework)' == 'MonoAndroid80'">

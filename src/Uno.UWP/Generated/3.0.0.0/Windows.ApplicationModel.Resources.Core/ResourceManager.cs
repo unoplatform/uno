@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.ApplicationModel.Resources.Core
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class ResourceManager 
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::System.Collections.Generic.IReadOnlyDictionary<string, global::Windows.ApplicationModel.Resources.Core.ResourceMap> AllResourceMaps
 		{
@@ -17,7 +17,7 @@ namespace Windows.ApplicationModel.Resources.Core
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.ApplicationModel.Resources.Core.ResourceContext DefaultContext
 		{
@@ -27,7 +27,7 @@ namespace Windows.ApplicationModel.Resources.Core
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.ApplicationModel.Resources.Core.ResourceMap MainResourceMap
 		{
@@ -37,7 +37,7 @@ namespace Windows.ApplicationModel.Resources.Core
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.ApplicationModel.Resources.Core.ResourceManager Current
 		{
@@ -50,28 +50,28 @@ namespace Windows.ApplicationModel.Resources.Core
 		// Forced skipping of method Windows.ApplicationModel.Resources.Core.ResourceManager.MainResourceMap.get
 		// Forced skipping of method Windows.ApplicationModel.Resources.Core.ResourceManager.AllResourceMaps.get
 		// Forced skipping of method Windows.ApplicationModel.Resources.Core.ResourceManager.DefaultContext.get
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  void LoadPriFiles( global::System.Collections.Generic.IEnumerable<global::Windows.Storage.IStorageFile> files)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Resources.Core.ResourceManager", "void ResourceManager.LoadPriFiles(IEnumerable<IStorageFile> files)");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  void UnloadPriFiles( global::System.Collections.Generic.IEnumerable<global::Windows.Storage.IStorageFile> files)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Resources.Core.ResourceManager", "void ResourceManager.UnloadPriFiles(IEnumerable<IStorageFile> files)");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::System.Collections.Generic.IReadOnlyList<global::Windows.ApplicationModel.Resources.Core.NamedResource> GetAllNamedResourcesForPackage( string packageName,  global::Windows.ApplicationModel.Resources.Core.ResourceLayoutInfo resourceLayoutInfo)
 		{
 			throw new global::System.NotImplementedException("The member IReadOnlyList<NamedResource> ResourceManager.GetAllNamedResourcesForPackage(string packageName, ResourceLayoutInfo resourceLayoutInfo) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::System.Collections.Generic.IReadOnlyList<global::Windows.ApplicationModel.Resources.Core.ResourceMap> GetAllSubtreesForPackage( string packageName,  global::Windows.ApplicationModel.Resources.Core.ResourceLayoutInfo resourceLayoutInfo)
 		{
@@ -79,7 +79,7 @@ namespace Windows.ApplicationModel.Resources.Core
 		}
 		#endif
 		// Forced skipping of method Windows.ApplicationModel.Resources.Core.ResourceManager.Current.get
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static bool IsResourceReference( string resourceReference)
 		{

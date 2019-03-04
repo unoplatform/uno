@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Security.Cryptography.Core
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class KeyDerivationParameters 
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Storage.Streams.IBuffer KdfGenericBinary
 		{
@@ -21,7 +21,7 @@ namespace Windows.Security.Cryptography.Core
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  uint IterationCount
 		{
@@ -31,7 +31,7 @@ namespace Windows.Security.Cryptography.Core
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Security.Cryptography.Core.Capi1KdfTargetAlgorithm Capi1KdfTargetAlgorithm
 		{
@@ -50,28 +50,28 @@ namespace Windows.Security.Cryptography.Core
 		// Forced skipping of method Windows.Security.Cryptography.Core.KeyDerivationParameters.IterationCount.get
 		// Forced skipping of method Windows.Security.Cryptography.Core.KeyDerivationParameters.Capi1KdfTargetAlgorithm.get
 		// Forced skipping of method Windows.Security.Cryptography.Core.KeyDerivationParameters.Capi1KdfTargetAlgorithm.set
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.Security.Cryptography.Core.KeyDerivationParameters BuildForCapi1Kdf( global::Windows.Security.Cryptography.Core.Capi1KdfTargetAlgorithm capi1KdfTargetAlgorithm)
 		{
 			throw new global::System.NotImplementedException("The member KeyDerivationParameters KeyDerivationParameters.BuildForCapi1Kdf(Capi1KdfTargetAlgorithm capi1KdfTargetAlgorithm) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.Security.Cryptography.Core.KeyDerivationParameters BuildForPbkdf2( global::Windows.Storage.Streams.IBuffer pbkdf2Salt,  uint iterationCount)
 		{
 			throw new global::System.NotImplementedException("The member KeyDerivationParameters KeyDerivationParameters.BuildForPbkdf2(IBuffer pbkdf2Salt, uint iterationCount) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.Security.Cryptography.Core.KeyDerivationParameters BuildForSP800108( global::Windows.Storage.Streams.IBuffer label,  global::Windows.Storage.Streams.IBuffer context)
 		{
 			throw new global::System.NotImplementedException("The member KeyDerivationParameters KeyDerivationParameters.BuildForSP800108(IBuffer label, IBuffer context) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.Security.Cryptography.Core.KeyDerivationParameters BuildForSP80056a( global::Windows.Storage.Streams.IBuffer algorithmId,  global::Windows.Storage.Streams.IBuffer partyUInfo,  global::Windows.Storage.Streams.IBuffer partyVInfo,  global::Windows.Storage.Streams.IBuffer suppPubInfo,  global::Windows.Storage.Streams.IBuffer suppPrivInfo)
 		{

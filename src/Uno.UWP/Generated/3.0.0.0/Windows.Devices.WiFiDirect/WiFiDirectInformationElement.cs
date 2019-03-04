@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Devices.WiFiDirect
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class WiFiDirectInformationElement 
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Storage.Streams.IBuffer Value
 		{
@@ -21,7 +21,7 @@ namespace Windows.Devices.WiFiDirect
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  byte OuiType
 		{
@@ -35,7 +35,7 @@ namespace Windows.Devices.WiFiDirect
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Storage.Streams.IBuffer Oui
 		{
@@ -49,7 +49,7 @@ namespace Windows.Devices.WiFiDirect
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public WiFiDirectInformationElement() 
 		{
@@ -63,14 +63,14 @@ namespace Windows.Devices.WiFiDirect
 		// Forced skipping of method Windows.Devices.WiFiDirect.WiFiDirectInformationElement.OuiType.set
 		// Forced skipping of method Windows.Devices.WiFiDirect.WiFiDirectInformationElement.Value.get
 		// Forced skipping of method Windows.Devices.WiFiDirect.WiFiDirectInformationElement.Value.set
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::System.Collections.Generic.IList<global::Windows.Devices.WiFiDirect.WiFiDirectInformationElement> CreateFromBuffer( global::Windows.Storage.Streams.IBuffer buffer)
 		{
 			throw new global::System.NotImplementedException("The member IList<WiFiDirectInformationElement> WiFiDirectInformationElement.CreateFromBuffer(IBuffer buffer) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::System.Collections.Generic.IList<global::Windows.Devices.WiFiDirect.WiFiDirectInformationElement> CreateFromDeviceInformation( global::Windows.Devices.Enumeration.DeviceInformation deviceInformation)
 		{

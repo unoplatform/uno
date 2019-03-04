@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Devices.Perception.Provider
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class PerceptionVideoFrameAllocator : global::System.IDisposable
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public PerceptionVideoFrameAllocator( uint maxOutstandingFrameCountForWrite,  global::Windows.Graphics.Imaging.BitmapPixelFormat format,  global::Windows.Foundation.Size resolution,  global::Windows.Graphics.Imaging.BitmapAlphaMode alpha) 
 		{
@@ -15,21 +15,21 @@ namespace Windows.Devices.Perception.Provider
 		}
 		#endif
 		// Forced skipping of method Windows.Devices.Perception.Provider.PerceptionVideoFrameAllocator.PerceptionVideoFrameAllocator(uint, Windows.Graphics.Imaging.BitmapPixelFormat, Windows.Foundation.Size, Windows.Graphics.Imaging.BitmapAlphaMode)
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Devices.Perception.Provider.PerceptionFrame AllocateFrame()
 		{
 			throw new global::System.NotImplementedException("The member PerceptionFrame PerceptionVideoFrameAllocator.AllocateFrame() is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Devices.Perception.Provider.PerceptionFrame CopyFromVideoFrame( global::Windows.Media.VideoFrame frame)
 		{
 			throw new global::System.NotImplementedException("The member PerceptionFrame PerceptionVideoFrameAllocator.CopyFromVideoFrame(VideoFrame frame) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  void Dispose()
 		{

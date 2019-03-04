@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Storage.Pickers
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class FileExtensionVector : global::System.Collections.Generic.IList<string>,global::System.Collections.Generic.IEnumerable<string>
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  uint Size
 		{
@@ -31,7 +31,7 @@ namespace Windows.Storage.Pickers
 		// Forced skipping of method Windows.Storage.Pickers.FileExtensionVector.ReplaceAll(string[])
 		// Forced skipping of method Windows.Storage.Pickers.FileExtensionVector.First()
 		// Processing: System.Collections.Generic.IList<string>
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		// DeclaringType: System.Collections.Generic.IList<string>
 		[global::Uno.NotImplemented]
 		public int IndexOf( string item)
@@ -39,7 +39,7 @@ namespace Windows.Storage.Pickers
 			throw new global::System.NotSupportedException();
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		// DeclaringType: System.Collections.Generic.IList<string>
 		[global::Uno.NotImplemented]
 		public void Insert( int index,  string item)
@@ -47,7 +47,7 @@ namespace Windows.Storage.Pickers
 			throw new global::System.NotSupportedException();
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		// DeclaringType: System.Collections.Generic.IList<string>
 		[global::Uno.NotImplemented]
 		public void RemoveAt( int index)
@@ -55,7 +55,7 @@ namespace Windows.Storage.Pickers
 			throw new global::System.NotSupportedException();
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public string this[int index]
 		{
@@ -70,7 +70,7 @@ namespace Windows.Storage.Pickers
 		}
 		#endif
 		// Processing: System.Collections.Generic.ICollection<string>
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		// DeclaringType: System.Collections.Generic.ICollection<string>
 		[global::Uno.NotImplemented]
 		public void Add( string item)
@@ -78,7 +78,7 @@ namespace Windows.Storage.Pickers
 			throw new global::System.NotSupportedException();
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		// DeclaringType: System.Collections.Generic.ICollection<string>
 		[global::Uno.NotImplemented]
 		public void Clear()
@@ -86,7 +86,7 @@ namespace Windows.Storage.Pickers
 			throw new global::System.NotSupportedException();
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		// DeclaringType: System.Collections.Generic.ICollection<string>
 		[global::Uno.NotImplemented]
 		public bool Contains( string item)
@@ -94,7 +94,7 @@ namespace Windows.Storage.Pickers
 			throw new global::System.NotSupportedException();
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		// DeclaringType: System.Collections.Generic.ICollection<string>
 		[global::Uno.NotImplemented]
 		public void CopyTo( string[] array,  int arrayIndex)
@@ -102,7 +102,7 @@ namespace Windows.Storage.Pickers
 			throw new global::System.NotSupportedException();
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		// DeclaringType: System.Collections.Generic.ICollection<string>
 		[global::Uno.NotImplemented]
 		public bool Remove( string item)
@@ -110,7 +110,7 @@ namespace Windows.Storage.Pickers
 			throw new global::System.NotSupportedException();
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public int Count
 		{
@@ -124,7 +124,7 @@ namespace Windows.Storage.Pickers
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public bool IsReadOnly
 		{
@@ -139,7 +139,7 @@ namespace Windows.Storage.Pickers
 		}
 		#endif
 		// Processing: System.Collections.Generic.IEnumerable<string>
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		// DeclaringType: System.Collections.Generic.IEnumerable<string>
 		[global::Uno.NotImplemented]
 		public global::System.Collections.Generic.IEnumerator<string> GetEnumerator()
@@ -148,7 +148,7 @@ namespace Windows.Storage.Pickers
 		}
 		#endif
 		// Processing: System.Collections.IEnumerable
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		// DeclaringType: System.Collections.IEnumerable
 		[global::Uno.NotImplemented]
 		 global::System.Collections.IEnumerator global::System.Collections.IEnumerable.GetEnumerator()

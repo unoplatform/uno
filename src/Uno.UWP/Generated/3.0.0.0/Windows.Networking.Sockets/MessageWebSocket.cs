@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Networking.Sockets
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class MessageWebSocket : global::Windows.Networking.Sockets.IWebSocket,global::System.IDisposable
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Networking.Sockets.MessageWebSocketControl Control
 		{
@@ -17,7 +17,7 @@ namespace Windows.Networking.Sockets
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Networking.Sockets.MessageWebSocketInformation Information
 		{
@@ -27,7 +27,7 @@ namespace Windows.Networking.Sockets
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Storage.Streams.IOutputStream OutputStream
 		{
@@ -37,7 +37,7 @@ namespace Windows.Networking.Sockets
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public MessageWebSocket() 
 		{
@@ -50,14 +50,14 @@ namespace Windows.Networking.Sockets
 		// Forced skipping of method Windows.Networking.Sockets.MessageWebSocket.MessageReceived.add
 		// Forced skipping of method Windows.Networking.Sockets.MessageWebSocket.MessageReceived.remove
 		// Forced skipping of method Windows.Networking.Sockets.MessageWebSocket.OutputStream.get
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Foundation.IAsyncAction ConnectAsync( global::System.Uri uri)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncAction MessageWebSocket.ConnectAsync(Uri uri) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  void SetRequestHeader( string headerName,  string headerValue)
 		{
@@ -66,14 +66,14 @@ namespace Windows.Networking.Sockets
 		#endif
 		// Forced skipping of method Windows.Networking.Sockets.MessageWebSocket.Closed.add
 		// Forced skipping of method Windows.Networking.Sockets.MessageWebSocket.Closed.remove
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  void Close( ushort code,  string reason)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Sockets.MessageWebSocket", "void MessageWebSocket.Close(ushort code, string reason)");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  void Dispose()
 		{
@@ -82,21 +82,21 @@ namespace Windows.Networking.Sockets
 		#endif
 		// Forced skipping of method Windows.Networking.Sockets.MessageWebSocket.ServerCustomValidationRequested.add
 		// Forced skipping of method Windows.Networking.Sockets.MessageWebSocket.ServerCustomValidationRequested.remove
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Foundation.IAsyncOperationWithProgress<uint, uint> SendNonfinalFrameAsync( global::Windows.Storage.Streams.IBuffer data)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperationWithProgress<uint, uint> MessageWebSocket.SendNonfinalFrameAsync(IBuffer data) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Foundation.IAsyncOperationWithProgress<uint, uint> SendFinalFrameAsync( global::Windows.Storage.Streams.IBuffer data)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperationWithProgress<uint, uint> MessageWebSocket.SendFinalFrameAsync(IBuffer data) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Networking.Sockets.MessageWebSocket, global::Windows.Networking.Sockets.MessageWebSocketMessageReceivedEventArgs> MessageReceived
 		{
@@ -112,7 +112,7 @@ namespace Windows.Networking.Sockets
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Networking.Sockets.IWebSocket, global::Windows.Networking.Sockets.WebSocketClosedEventArgs> Closed
 		{
@@ -128,7 +128,7 @@ namespace Windows.Networking.Sockets
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Networking.Sockets.MessageWebSocket, global::Windows.Networking.Sockets.WebSocketServerCustomValidationRequestedEventArgs> ServerCustomValidationRequested
 		{

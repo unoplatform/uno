@@ -28,7 +28,7 @@ using Uno.Xaml;
 
 namespace Uno.Xaml.Permissions
 {
-#if NET46
+#if NET461
     [Serializable]
 	public sealed class XamlLoadPermission : CodeAccessPermission, IUnrestrictedPermission
 	{

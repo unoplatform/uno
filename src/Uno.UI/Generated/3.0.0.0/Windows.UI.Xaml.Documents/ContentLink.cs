@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml.Documents
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class ContentLink : global::Windows.UI.Xaml.Documents.Inline
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.UI.Xaml.Input.XYFocusNavigationStrategy XYFocusUpNavigationStrategy
 		{
@@ -21,7 +21,7 @@ namespace Windows.UI.Xaml.Documents
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.UI.Xaml.DependencyObject XYFocusUp
 		{
@@ -35,7 +35,7 @@ namespace Windows.UI.Xaml.Documents
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.UI.Xaml.Input.XYFocusNavigationStrategy XYFocusRightNavigationStrategy
 		{
@@ -49,7 +49,7 @@ namespace Windows.UI.Xaml.Documents
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.UI.Xaml.DependencyObject XYFocusRight
 		{
@@ -63,7 +63,7 @@ namespace Windows.UI.Xaml.Documents
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.UI.Xaml.Input.XYFocusNavigationStrategy XYFocusLeftNavigationStrategy
 		{
@@ -77,7 +77,7 @@ namespace Windows.UI.Xaml.Documents
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.UI.Xaml.DependencyObject XYFocusLeft
 		{
@@ -91,7 +91,7 @@ namespace Windows.UI.Xaml.Documents
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.UI.Xaml.Input.XYFocusNavigationStrategy XYFocusDownNavigationStrategy
 		{
@@ -105,7 +105,7 @@ namespace Windows.UI.Xaml.Documents
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.UI.Xaml.DependencyObject XYFocusDown
 		{
@@ -119,7 +119,7 @@ namespace Windows.UI.Xaml.Documents
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  int TabIndex
 		{
@@ -133,7 +133,7 @@ namespace Windows.UI.Xaml.Documents
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  bool IsTabStop
 		{
@@ -147,7 +147,7 @@ namespace Windows.UI.Xaml.Documents
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.UI.Text.ContentLinkInfo Info
 		{
@@ -161,7 +161,7 @@ namespace Windows.UI.Xaml.Documents
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.UI.Xaml.ElementSoundMode ElementSoundMode
 		{
@@ -175,7 +175,7 @@ namespace Windows.UI.Xaml.Documents
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.UI.Core.CoreCursorType Cursor
 		{
@@ -189,7 +189,7 @@ namespace Windows.UI.Xaml.Documents
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.UI.Xaml.Media.Brush Background
 		{
@@ -203,7 +203,7 @@ namespace Windows.UI.Xaml.Documents
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.UI.Xaml.FocusState FocusState
 		{
@@ -213,7 +213,7 @@ namespace Windows.UI.Xaml.Documents
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty BackgroundProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
@@ -221,7 +221,7 @@ namespace Windows.UI.Xaml.Documents
 			typeof(global::Windows.UI.Xaml.Documents.ContentLink), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.Brush)));
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty CursorProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
@@ -229,7 +229,7 @@ namespace Windows.UI.Xaml.Documents
 			typeof(global::Windows.UI.Xaml.Documents.ContentLink), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Core.CoreCursorType)));
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty ElementSoundModeProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
@@ -237,7 +237,7 @@ namespace Windows.UI.Xaml.Documents
 			typeof(global::Windows.UI.Xaml.Documents.ContentLink), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.ElementSoundMode)));
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty FocusStateProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
@@ -245,7 +245,7 @@ namespace Windows.UI.Xaml.Documents
 			typeof(global::Windows.UI.Xaml.Documents.ContentLink), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.FocusState)));
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty IsTabStopProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
@@ -253,7 +253,7 @@ namespace Windows.UI.Xaml.Documents
 			typeof(global::Windows.UI.Xaml.Documents.ContentLink), 
 			new FrameworkPropertyMetadata(default(bool)));
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty TabIndexProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
@@ -261,7 +261,7 @@ namespace Windows.UI.Xaml.Documents
 			typeof(global::Windows.UI.Xaml.Documents.ContentLink), 
 			new FrameworkPropertyMetadata(default(int)));
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty XYFocusDownNavigationStrategyProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
@@ -269,7 +269,7 @@ namespace Windows.UI.Xaml.Documents
 			typeof(global::Windows.UI.Xaml.Documents.ContentLink), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Input.XYFocusNavigationStrategy)));
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty XYFocusDownProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
@@ -277,7 +277,7 @@ namespace Windows.UI.Xaml.Documents
 			typeof(global::Windows.UI.Xaml.Documents.ContentLink), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.DependencyObject)));
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty XYFocusLeftNavigationStrategyProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
@@ -285,7 +285,7 @@ namespace Windows.UI.Xaml.Documents
 			typeof(global::Windows.UI.Xaml.Documents.ContentLink), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Input.XYFocusNavigationStrategy)));
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty XYFocusLeftProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
@@ -293,7 +293,7 @@ namespace Windows.UI.Xaml.Documents
 			typeof(global::Windows.UI.Xaml.Documents.ContentLink), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.DependencyObject)));
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty XYFocusRightNavigationStrategyProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
@@ -301,7 +301,7 @@ namespace Windows.UI.Xaml.Documents
 			typeof(global::Windows.UI.Xaml.Documents.ContentLink), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Input.XYFocusNavigationStrategy)));
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty XYFocusRightProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
@@ -309,7 +309,7 @@ namespace Windows.UI.Xaml.Documents
 			typeof(global::Windows.UI.Xaml.Documents.ContentLink), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.DependencyObject)));
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty XYFocusUpNavigationStrategyProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
@@ -317,7 +317,7 @@ namespace Windows.UI.Xaml.Documents
 			typeof(global::Windows.UI.Xaml.Documents.ContentLink), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Input.XYFocusNavigationStrategy)));
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty XYFocusUpProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
@@ -325,7 +325,7 @@ namespace Windows.UI.Xaml.Documents
 			typeof(global::Windows.UI.Xaml.Documents.ContentLink), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.DependencyObject)));
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public ContentLink() : base()
 		{
@@ -368,7 +368,7 @@ namespace Windows.UI.Xaml.Documents
 		// Forced skipping of method Windows.UI.Xaml.Documents.ContentLink.GotFocus.remove
 		// Forced skipping of method Windows.UI.Xaml.Documents.ContentLink.LostFocus.add
 		// Forced skipping of method Windows.UI.Xaml.Documents.ContentLink.LostFocus.remove
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  bool Focus( global::Windows.UI.Xaml.FocusState value)
 		{
@@ -389,7 +389,7 @@ namespace Windows.UI.Xaml.Documents
 		// Forced skipping of method Windows.UI.Xaml.Documents.ContentLink.XYFocusRightNavigationStrategyProperty.get
 		// Forced skipping of method Windows.UI.Xaml.Documents.ContentLink.IsTabStopProperty.get
 		// Forced skipping of method Windows.UI.Xaml.Documents.ContentLink.TabIndexProperty.get
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  event global::Windows.UI.Xaml.RoutedEventHandler GotFocus
 		{
@@ -405,7 +405,7 @@ namespace Windows.UI.Xaml.Documents
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Xaml.Documents.ContentLink, global::Windows.UI.Xaml.Documents.ContentLinkInvokedEventArgs> Invoked
 		{
@@ -421,7 +421,7 @@ namespace Windows.UI.Xaml.Documents
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  event global::Windows.UI.Xaml.RoutedEventHandler LostFocus
 		{

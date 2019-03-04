@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Graphics.Printing
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class PrintTask 
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Graphics.Printing.PrintTaskOptions Options
 		{
@@ -17,7 +17,7 @@ namespace Windows.Graphics.Printing
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.ApplicationModel.DataTransfer.DataPackagePropertySet Properties
 		{
@@ -27,7 +27,7 @@ namespace Windows.Graphics.Printing
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Graphics.Printing.IPrintDocumentSource Source
 		{
@@ -37,7 +37,7 @@ namespace Windows.Graphics.Printing
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  bool IsPreviewEnabled
 		{
@@ -51,7 +51,7 @@ namespace Windows.Graphics.Printing
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  bool IsPrinterTargetEnabled
 		{
@@ -65,7 +65,7 @@ namespace Windows.Graphics.Printing
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  bool Is3DManufacturingTargetEnabled
 		{
@@ -96,7 +96,7 @@ namespace Windows.Graphics.Printing
 		// Forced skipping of method Windows.Graphics.Printing.PrintTask.Is3DManufacturingTargetEnabled.get
 		// Forced skipping of method Windows.Graphics.Printing.PrintTask.IsPreviewEnabled.set
 		// Forced skipping of method Windows.Graphics.Printing.PrintTask.IsPreviewEnabled.get
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Graphics.Printing.PrintTask, global::Windows.Graphics.Printing.PrintTaskCompletedEventArgs> Completed
 		{
@@ -112,7 +112,7 @@ namespace Windows.Graphics.Printing
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Graphics.Printing.PrintTask, object> Previewing
 		{
@@ -128,7 +128,7 @@ namespace Windows.Graphics.Printing
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Graphics.Printing.PrintTask, global::Windows.Graphics.Printing.PrintTaskProgressingEventArgs> Progressing
 		{
@@ -144,7 +144,7 @@ namespace Windows.Graphics.Printing
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Graphics.Printing.PrintTask, object> Submitting
 		{

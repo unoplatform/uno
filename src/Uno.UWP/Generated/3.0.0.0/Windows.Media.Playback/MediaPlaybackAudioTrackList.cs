@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Media.Playback
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class MediaPlaybackAudioTrackList : global::System.Collections.Generic.IReadOnlyList<global::Windows.Media.Core.AudioTrack>,global::System.Collections.Generic.IEnumerable<global::Windows.Media.Core.AudioTrack>,global::Windows.Media.Core.ISingleSelectMediaTrackList
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  uint Size
 		{
@@ -17,7 +17,7 @@ namespace Windows.Media.Playback
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  int SelectedIndex
 		{
@@ -40,7 +40,7 @@ namespace Windows.Media.Playback
 		// Forced skipping of method Windows.Media.Playback.MediaPlaybackAudioTrackList.SelectedIndexChanged.remove
 		// Forced skipping of method Windows.Media.Playback.MediaPlaybackAudioTrackList.SelectedIndex.set
 		// Forced skipping of method Windows.Media.Playback.MediaPlaybackAudioTrackList.SelectedIndex.get
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Media.Core.ISingleSelectMediaTrackList, object> SelectedIndexChanged
 		{
@@ -57,7 +57,7 @@ namespace Windows.Media.Playback
 		}
 		#endif
 		// Processing: System.Collections.Generic.IReadOnlyList<Windows.Media.Core.AudioTrack>
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public global::Windows.Media.Core.AudioTrack this[int index]
 		{
@@ -72,7 +72,7 @@ namespace Windows.Media.Playback
 		}
 		#endif
 		// Processing: System.Collections.Generic.IEnumerable<Windows.Media.Core.AudioTrack>
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		// DeclaringType: System.Collections.Generic.IEnumerable<Windows.Media.Core.AudioTrack>
 		[global::Uno.NotImplemented]
 		public global::System.Collections.Generic.IEnumerator<global::Windows.Media.Core.AudioTrack> GetEnumerator()
@@ -81,7 +81,7 @@ namespace Windows.Media.Playback
 		}
 		#endif
 		// Processing: System.Collections.IEnumerable
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		// DeclaringType: System.Collections.IEnumerable
 		[global::Uno.NotImplemented]
 		 global::System.Collections.IEnumerator global::System.Collections.IEnumerable.GetEnumerator()
@@ -90,7 +90,7 @@ namespace Windows.Media.Playback
 		}
 		#endif
 		// Processing: System.Collections.Generic.IReadOnlyCollection<Windows.Media.Core.AudioTrack>
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public int Count
 		{

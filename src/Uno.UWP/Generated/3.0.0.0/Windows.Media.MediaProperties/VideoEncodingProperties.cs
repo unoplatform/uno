@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Media.MediaProperties
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class VideoEncodingProperties : global::Windows.Media.MediaProperties.IMediaEncodingProperties
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  string Subtype
 		{
@@ -21,7 +21,7 @@ namespace Windows.Media.MediaProperties
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  string Type
 		{
@@ -31,7 +31,7 @@ namespace Windows.Media.MediaProperties
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Media.MediaProperties.MediaPropertySet Properties
 		{
@@ -41,7 +41,7 @@ namespace Windows.Media.MediaProperties
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  uint Width
 		{
@@ -55,7 +55,7 @@ namespace Windows.Media.MediaProperties
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  uint Height
 		{
@@ -69,7 +69,7 @@ namespace Windows.Media.MediaProperties
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  uint Bitrate
 		{
@@ -83,7 +83,7 @@ namespace Windows.Media.MediaProperties
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Media.MediaProperties.MediaRatio PixelAspectRatio
 		{
@@ -93,7 +93,7 @@ namespace Windows.Media.MediaProperties
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Media.MediaProperties.MediaRatio FrameRate
 		{
@@ -103,7 +103,7 @@ namespace Windows.Media.MediaProperties
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  int ProfileId
 		{
@@ -117,7 +117,7 @@ namespace Windows.Media.MediaProperties
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Media.MediaProperties.StereoscopicVideoPackingMode StereoscopicVideoPackingMode
 		{
@@ -127,7 +127,7 @@ namespace Windows.Media.MediaProperties
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Media.MediaProperties.SphericalVideoFrameFormat SphericalVideoFrameFormat
 		{
@@ -137,7 +137,7 @@ namespace Windows.Media.MediaProperties
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public VideoEncodingProperties() 
 		{
@@ -157,14 +157,14 @@ namespace Windows.Media.MediaProperties
 		// Forced skipping of method Windows.Media.MediaProperties.VideoEncodingProperties.Type.get
 		// Forced skipping of method Windows.Media.MediaProperties.VideoEncodingProperties.Subtype.set
 		// Forced skipping of method Windows.Media.MediaProperties.VideoEncodingProperties.Subtype.get
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  void SetFormatUserData( byte[] value)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.MediaProperties.VideoEncodingProperties", "void VideoEncodingProperties.SetFormatUserData(byte[] value)");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  void GetFormatUserData(out byte[] value)
 		{
@@ -175,35 +175,35 @@ namespace Windows.Media.MediaProperties
 		// Forced skipping of method Windows.Media.MediaProperties.VideoEncodingProperties.ProfileId.get
 		// Forced skipping of method Windows.Media.MediaProperties.VideoEncodingProperties.StereoscopicVideoPackingMode.get
 		// Forced skipping of method Windows.Media.MediaProperties.VideoEncodingProperties.SphericalVideoFrameFormat.get
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Media.MediaProperties.VideoEncodingProperties Copy()
 		{
 			throw new global::System.NotImplementedException("The member VideoEncodingProperties VideoEncodingProperties.Copy() is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.Media.MediaProperties.VideoEncodingProperties CreateHevc()
 		{
 			throw new global::System.NotImplementedException("The member VideoEncodingProperties VideoEncodingProperties.CreateHevc() is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.Media.MediaProperties.VideoEncodingProperties CreateH264()
 		{
 			throw new global::System.NotImplementedException("The member VideoEncodingProperties VideoEncodingProperties.CreateH264() is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.Media.MediaProperties.VideoEncodingProperties CreateMpeg2()
 		{
 			throw new global::System.NotImplementedException("The member VideoEncodingProperties VideoEncodingProperties.CreateMpeg2() is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.Media.MediaProperties.VideoEncodingProperties CreateUncompressed( string subtype,  uint width,  uint height)
 		{

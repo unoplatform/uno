@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Devices.Printers.Extensions
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class Print3DWorkflow 
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  bool IsPrintReady
 		{
@@ -21,7 +21,7 @@ namespace Windows.Devices.Printers.Extensions
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  string DeviceID
 		{
@@ -32,7 +32,7 @@ namespace Windows.Devices.Printers.Extensions
 		}
 		#endif
 		// Forced skipping of method Windows.Devices.Printers.Extensions.Print3DWorkflow.DeviceID.get
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  object GetPrintModelPackage()
 		{
@@ -45,7 +45,7 @@ namespace Windows.Devices.Printers.Extensions
 		// Forced skipping of method Windows.Devices.Printers.Extensions.Print3DWorkflow.PrintRequested.remove
 		// Forced skipping of method Windows.Devices.Printers.Extensions.Print3DWorkflow.PrinterChanged.add
 		// Forced skipping of method Windows.Devices.Printers.Extensions.Print3DWorkflow.PrinterChanged.remove
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Devices.Printers.Extensions.Print3DWorkflow, global::Windows.Devices.Printers.Extensions.Print3DWorkflowPrintRequestedEventArgs> PrintRequested
 		{
@@ -61,7 +61,7 @@ namespace Windows.Devices.Printers.Extensions
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Devices.Printers.Extensions.Print3DWorkflow, global::Windows.Devices.Printers.Extensions.Print3DWorkflowPrinterChangedEventArgs> PrinterChanged
 		{

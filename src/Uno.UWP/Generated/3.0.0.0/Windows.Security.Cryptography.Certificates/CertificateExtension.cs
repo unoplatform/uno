@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Security.Cryptography.Certificates
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class CertificateExtension 
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  byte[] Value
 		{
@@ -21,7 +21,7 @@ namespace Windows.Security.Cryptography.Certificates
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  string ObjectId
 		{
@@ -35,7 +35,7 @@ namespace Windows.Security.Cryptography.Certificates
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  bool IsCritical
 		{
@@ -49,7 +49,7 @@ namespace Windows.Security.Cryptography.Certificates
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public CertificateExtension() 
 		{
@@ -61,7 +61,7 @@ namespace Windows.Security.Cryptography.Certificates
 		// Forced skipping of method Windows.Security.Cryptography.Certificates.CertificateExtension.ObjectId.set
 		// Forced skipping of method Windows.Security.Cryptography.Certificates.CertificateExtension.IsCritical.get
 		// Forced skipping of method Windows.Security.Cryptography.Certificates.CertificateExtension.IsCritical.set
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  void EncodeValue( string value)
 		{

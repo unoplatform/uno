@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml.Shapes
 {
-	#if __ANDROID__ || __IOS__ || NET46 || false || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || false || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class Polyline : global::Windows.UI.Xaml.Shapes.Shape
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.UI.Xaml.Media.PointCollection Points
 		{
@@ -21,7 +21,7 @@ namespace Windows.UI.Xaml.Shapes
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.UI.Xaml.Media.FillRule FillRule
 		{
@@ -35,7 +35,7 @@ namespace Windows.UI.Xaml.Shapes
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty FillRuleProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
@@ -43,7 +43,7 @@ namespace Windows.UI.Xaml.Shapes
 			typeof(global::Windows.UI.Xaml.Shapes.Polyline), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.FillRule)));
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty PointsProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
@@ -51,7 +51,7 @@ namespace Windows.UI.Xaml.Shapes
 			typeof(global::Windows.UI.Xaml.Shapes.Polyline), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.PointCollection)));
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || false || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || false || __MACOS__
 		[global::Uno.NotImplemented]
 		public Polyline() : base()
 		{

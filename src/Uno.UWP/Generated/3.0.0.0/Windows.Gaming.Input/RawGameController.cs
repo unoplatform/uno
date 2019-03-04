@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Gaming.Input
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class RawGameController : global::Windows.Gaming.Input.IGameController,global::Windows.Gaming.Input.IGameControllerBatteryInfo
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Gaming.Input.Headset Headset
 		{
@@ -17,7 +17,7 @@ namespace Windows.Gaming.Input
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  bool IsWireless
 		{
@@ -27,7 +27,7 @@ namespace Windows.Gaming.Input
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.System.User User
 		{
@@ -37,7 +37,7 @@ namespace Windows.Gaming.Input
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  int AxisCount
 		{
@@ -47,7 +47,7 @@ namespace Windows.Gaming.Input
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  int ButtonCount
 		{
@@ -57,7 +57,7 @@ namespace Windows.Gaming.Input
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::System.Collections.Generic.IReadOnlyList<global::Windows.Gaming.Input.ForceFeedback.ForceFeedbackMotor> ForceFeedbackMotors
 		{
@@ -67,7 +67,7 @@ namespace Windows.Gaming.Input
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  ushort HardwareProductId
 		{
@@ -77,7 +77,7 @@ namespace Windows.Gaming.Input
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  ushort HardwareVendorId
 		{
@@ -87,7 +87,7 @@ namespace Windows.Gaming.Input
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  int SwitchCount
 		{
@@ -97,7 +97,7 @@ namespace Windows.Gaming.Input
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  string DisplayName
 		{
@@ -107,7 +107,7 @@ namespace Windows.Gaming.Input
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  string NonRoamableId
 		{
@@ -117,7 +117,7 @@ namespace Windows.Gaming.Input
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::System.Collections.Generic.IReadOnlyList<global::Windows.Devices.Haptics.SimpleHapticsController> SimpleHapticsControllers
 		{
@@ -127,7 +127,7 @@ namespace Windows.Gaming.Input
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::System.Collections.Generic.IReadOnlyList<global::Windows.Gaming.Input.RawGameController> RawGameControllers
 		{
@@ -143,21 +143,21 @@ namespace Windows.Gaming.Input
 		// Forced skipping of method Windows.Gaming.Input.RawGameController.HardwareProductId.get
 		// Forced skipping of method Windows.Gaming.Input.RawGameController.HardwareVendorId.get
 		// Forced skipping of method Windows.Gaming.Input.RawGameController.SwitchCount.get
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Gaming.Input.GameControllerButtonLabel GetButtonLabel( int buttonIndex)
 		{
 			throw new global::System.NotImplementedException("The member GameControllerButtonLabel RawGameController.GetButtonLabel(int buttonIndex) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  ulong GetCurrentReading( bool[] buttonArray,  global::Windows.Gaming.Input.GameControllerSwitchPosition[] switchArray,  double[] axisArray)
 		{
 			throw new global::System.NotImplementedException("The member ulong RawGameController.GetCurrentReading(bool[] buttonArray, GameControllerSwitchPosition[] switchArray, double[] axisArray) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Gaming.Input.GameControllerSwitchKind GetSwitchKind( int switchIndex)
 		{
@@ -173,7 +173,7 @@ namespace Windows.Gaming.Input
 		// Forced skipping of method Windows.Gaming.Input.RawGameController.Headset.get
 		// Forced skipping of method Windows.Gaming.Input.RawGameController.IsWireless.get
 		// Forced skipping of method Windows.Gaming.Input.RawGameController.User.get
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Devices.Power.BatteryReport TryGetBatteryReport()
 		{
@@ -188,14 +188,14 @@ namespace Windows.Gaming.Input
 		// Forced skipping of method Windows.Gaming.Input.RawGameController.RawGameControllerRemoved.add
 		// Forced skipping of method Windows.Gaming.Input.RawGameController.RawGameControllerRemoved.remove
 		// Forced skipping of method Windows.Gaming.Input.RawGameController.RawGameControllers.get
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.Gaming.Input.RawGameController FromGameController( global::Windows.Gaming.Input.IGameController gameController)
 		{
 			throw new global::System.NotImplementedException("The member RawGameController RawGameController.FromGameController(IGameController gameController) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Gaming.Input.IGameController, global::Windows.Gaming.Input.Headset> HeadsetConnected
 		{
@@ -211,7 +211,7 @@ namespace Windows.Gaming.Input
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Gaming.Input.IGameController, global::Windows.Gaming.Input.Headset> HeadsetDisconnected
 		{
@@ -227,7 +227,7 @@ namespace Windows.Gaming.Input
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Gaming.Input.IGameController, global::Windows.System.UserChangedEventArgs> UserChanged
 		{
@@ -243,7 +243,7 @@ namespace Windows.Gaming.Input
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static event global::System.EventHandler<global::Windows.Gaming.Input.RawGameController> RawGameControllerAdded
 		{
@@ -259,7 +259,7 @@ namespace Windows.Gaming.Input
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static event global::System.EventHandler<global::Windows.Gaming.Input.RawGameController> RawGameControllerRemoved
 		{

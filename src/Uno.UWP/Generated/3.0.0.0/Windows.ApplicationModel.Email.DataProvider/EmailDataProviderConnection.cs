@@ -2,7 +2,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.ApplicationModel.Email.DataProvider
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class EmailDataProviderConnection 
@@ -37,14 +37,14 @@ namespace Windows.ApplicationModel.Email.DataProvider
 		// Forced skipping of method Windows.ApplicationModel.Email.DataProvider.EmailDataProviderConnection.ValidateCertificatesRequested.remove
 		// Forced skipping of method Windows.ApplicationModel.Email.DataProvider.EmailDataProviderConnection.ServerSearchReadBatchRequested.add
 		// Forced skipping of method Windows.ApplicationModel.Email.DataProvider.EmailDataProviderConnection.ServerSearchReadBatchRequested.remove
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  void Start()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Email.DataProvider.EmailDataProviderConnection", "void EmailDataProviderConnection.Start()");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.ApplicationModel.Email.DataProvider.EmailDataProviderConnection, global::Windows.ApplicationModel.Email.DataProvider.EmailMailboxCreateFolderRequestEventArgs> CreateFolderRequested
 		{
@@ -60,7 +60,7 @@ namespace Windows.ApplicationModel.Email.DataProvider
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.ApplicationModel.Email.DataProvider.EmailDataProviderConnection, global::Windows.ApplicationModel.Email.DataProvider.EmailMailboxDeleteFolderRequestEventArgs> DeleteFolderRequested
 		{
@@ -76,7 +76,7 @@ namespace Windows.ApplicationModel.Email.DataProvider
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.ApplicationModel.Email.DataProvider.EmailDataProviderConnection, global::Windows.ApplicationModel.Email.DataProvider.EmailMailboxDownloadAttachmentRequestEventArgs> DownloadAttachmentRequested
 		{
@@ -92,7 +92,7 @@ namespace Windows.ApplicationModel.Email.DataProvider
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.ApplicationModel.Email.DataProvider.EmailDataProviderConnection, global::Windows.ApplicationModel.Email.DataProvider.EmailMailboxDownloadMessageRequestEventArgs> DownloadMessageRequested
 		{
@@ -108,7 +108,7 @@ namespace Windows.ApplicationModel.Email.DataProvider
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.ApplicationModel.Email.DataProvider.EmailDataProviderConnection, global::Windows.ApplicationModel.Email.DataProvider.EmailMailboxEmptyFolderRequestEventArgs> EmptyFolderRequested
 		{
@@ -124,7 +124,7 @@ namespace Windows.ApplicationModel.Email.DataProvider
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.ApplicationModel.Email.DataProvider.EmailDataProviderConnection, global::Windows.ApplicationModel.Email.DataProvider.EmailMailboxForwardMeetingRequestEventArgs> ForwardMeetingRequested
 		{
@@ -140,7 +140,7 @@ namespace Windows.ApplicationModel.Email.DataProvider
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.ApplicationModel.Email.DataProvider.EmailDataProviderConnection, global::Windows.ApplicationModel.Email.DataProvider.EmailMailboxGetAutoReplySettingsRequestEventArgs> GetAutoReplySettingsRequested
 		{
@@ -156,7 +156,7 @@ namespace Windows.ApplicationModel.Email.DataProvider
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.ApplicationModel.Email.DataProvider.EmailDataProviderConnection, global::Windows.ApplicationModel.Email.DataProvider.EmailMailboxSyncManagerSyncRequestEventArgs> MailboxSyncRequested
 		{
@@ -172,7 +172,7 @@ namespace Windows.ApplicationModel.Email.DataProvider
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.ApplicationModel.Email.DataProvider.EmailDataProviderConnection, global::Windows.ApplicationModel.Email.DataProvider.EmailMailboxMoveFolderRequestEventArgs> MoveFolderRequested
 		{
@@ -188,7 +188,7 @@ namespace Windows.ApplicationModel.Email.DataProvider
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.ApplicationModel.Email.DataProvider.EmailDataProviderConnection, global::Windows.ApplicationModel.Email.DataProvider.EmailMailboxProposeNewTimeForMeetingRequestEventArgs> ProposeNewTimeForMeetingRequested
 		{
@@ -204,7 +204,7 @@ namespace Windows.ApplicationModel.Email.DataProvider
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.ApplicationModel.Email.DataProvider.EmailDataProviderConnection, global::Windows.ApplicationModel.Email.DataProvider.EmailMailboxResolveRecipientsRequestEventArgs> ResolveRecipientsRequested
 		{
@@ -220,7 +220,7 @@ namespace Windows.ApplicationModel.Email.DataProvider
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.ApplicationModel.Email.DataProvider.EmailDataProviderConnection, global::Windows.ApplicationModel.Email.DataProvider.EmailMailboxServerSearchReadBatchRequestEventArgs> ServerSearchReadBatchRequested
 		{
@@ -236,7 +236,7 @@ namespace Windows.ApplicationModel.Email.DataProvider
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.ApplicationModel.Email.DataProvider.EmailDataProviderConnection, global::Windows.ApplicationModel.Email.DataProvider.EmailMailboxSetAutoReplySettingsRequestEventArgs> SetAutoReplySettingsRequested
 		{
@@ -252,7 +252,7 @@ namespace Windows.ApplicationModel.Email.DataProvider
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.ApplicationModel.Email.DataProvider.EmailDataProviderConnection, global::Windows.ApplicationModel.Email.DataProvider.EmailMailboxUpdateMeetingResponseRequestEventArgs> UpdateMeetingResponseRequested
 		{
@@ -268,7 +268,7 @@ namespace Windows.ApplicationModel.Email.DataProvider
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.ApplicationModel.Email.DataProvider.EmailDataProviderConnection, global::Windows.ApplicationModel.Email.DataProvider.EmailMailboxValidateCertificatesRequestEventArgs> ValidateCertificatesRequested
 		{

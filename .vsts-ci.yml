@@ -1,6 +1,13 @@
-phases:
-- phase: VS_Latest
+jobs:
+- job: VS_Latest
+
+  pool:
+    name: Default
+    demands:
+    - VisualStudio_Version -equals 15.9.7
+
   variables:
+    NUGET_PACKAGES: $(Agent.WorkFolder)\.nuget
     CombinedConfiguration: Release|Any CPU
     CI_Build: true
 
@@ -8,7 +15,7 @@ phases:
   - checkout: self
     clean: true
     
-  - task: GitVersion@3
+  - task: GitVersion@4
     # Ignore gitversion for forks, until this is fixed:
     # https://developercommunity.visualstudio.com/content/problem/284991/public-vsts-previouw-cant-set-build-number-of-pr-b.html
     condition: eq(variables['System.PullRequest.IsFork'], 'False')
@@ -91,7 +98,7 @@ phases:
       ArtifactType: Container
 
 # Disabled until VS4Mac is updated to 7.7 or later.
-#- phase: macOS
+#- job: macOS
 #  variables:
 #    NUGET_PACKAGES: $(Agent.WorkFolder)\.nuget
 #    NUGET_HTTP_CACHE_PATH: $(Agent.WorkFolder)\.nuget-http-cache
@@ -140,7 +147,13 @@ phases:
 #      ArtifactName: uno-macos-artifacts
 #      ArtifactType: Container
 
-- phase: Documentation
+- job: Documentation
+
+  pool:
+    name: Default
+    demands:
+    - VisualStudio_Version -equals 15.9.7
+
   variables:
     NUGET_PACKAGES: $(Agent.WorkFolder)\.nuget
     NUGET_HTTP_CACHE_PATH: $(Agent.WorkFolder)\.nuget-http-cache
@@ -151,7 +164,7 @@ phases:
   - checkout: self
     clean: true
     
-  - task: GitVersion@3
+  - task: GitVersion@4
     # Ignore gitversion for forks, until this is fixed:
     # https://developercommunity.visualstudio.com/content/problem/284991/public-vsts-previouw-cant-set-build-number-of-pr-b.html
     condition: eq(variables['System.PullRequest.IsFork'], 'False')

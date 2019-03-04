@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Media.Protection.PlayReady
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class NDClient 
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public NDClient( global::Windows.Media.Protection.PlayReady.INDDownloadEngine downloadEngine,  global::Windows.Media.Protection.PlayReady.INDStreamParser streamParser,  global::Windows.Media.Protection.PlayReady.INDMessenger pMessenger) 
 		{
@@ -25,35 +25,35 @@ namespace Windows.Media.Protection.PlayReady
 		// Forced skipping of method Windows.Media.Protection.PlayReady.NDClient.ReRegistrationNeeded.remove
 		// Forced skipping of method Windows.Media.Protection.PlayReady.NDClient.ClosedCaptionDataReceived.add
 		// Forced skipping of method Windows.Media.Protection.PlayReady.NDClient.ClosedCaptionDataReceived.remove
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Foundation.IAsyncOperation<global::Windows.Media.Protection.PlayReady.INDStartResult> StartAsync( global::System.Uri contentUrl,  uint startAsyncOptions,  global::Windows.Media.Protection.PlayReady.INDCustomData registrationCustomData,  global::Windows.Media.Protection.PlayReady.INDLicenseFetchDescriptor licenseFetchDescriptor)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<INDStartResult> NDClient.StartAsync(Uri contentUrl, uint startAsyncOptions, INDCustomData registrationCustomData, INDLicenseFetchDescriptor licenseFetchDescriptor) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Foundation.IAsyncOperation<global::Windows.Media.Protection.PlayReady.INDLicenseFetchResult> LicenseFetchAsync( global::Windows.Media.Protection.PlayReady.INDLicenseFetchDescriptor licenseFetchDescriptor)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<INDLicenseFetchResult> NDClient.LicenseFetchAsync(INDLicenseFetchDescriptor licenseFetchDescriptor) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Foundation.IAsyncAction ReRegistrationAsync( global::Windows.Media.Protection.PlayReady.INDCustomData registrationCustomData)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncAction NDClient.ReRegistrationAsync(INDCustomData registrationCustomData) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  void Close()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Protection.PlayReady.NDClient", "void NDClient.Close()");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Media.Protection.PlayReady.NDClient, global::Windows.Media.Protection.PlayReady.INDClosedCaptionDataReceivedEventArgs> ClosedCaptionDataReceived
 		{
@@ -69,7 +69,7 @@ namespace Windows.Media.Protection.PlayReady
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Media.Protection.PlayReady.NDClient, global::Windows.Media.Protection.PlayReady.INDLicenseFetchCompletedEventArgs> LicenseFetchCompleted
 		{
@@ -85,7 +85,7 @@ namespace Windows.Media.Protection.PlayReady
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Media.Protection.PlayReady.NDClient, global::Windows.Media.Protection.PlayReady.INDProximityDetectionCompletedEventArgs> ProximityDetectionCompleted
 		{
@@ -101,7 +101,7 @@ namespace Windows.Media.Protection.PlayReady
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Media.Protection.PlayReady.NDClient, object> ReRegistrationNeeded
 		{
@@ -117,7 +117,7 @@ namespace Windows.Media.Protection.PlayReady
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Media.Protection.PlayReady.NDClient, global::Windows.Media.Protection.PlayReady.INDRegistrationCompletedEventArgs> RegistrationCompleted
 		{

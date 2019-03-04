@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Devices.SmartCards
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class SmartCardChallengeContext : global::System.IDisposable
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Storage.Streams.IBuffer Challenge
 		{
@@ -18,35 +18,35 @@ namespace Windows.Devices.SmartCards
 		}
 		#endif
 		// Forced skipping of method Windows.Devices.SmartCards.SmartCardChallengeContext.Challenge.get
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Foundation.IAsyncOperation<bool> VerifyResponseAsync( global::Windows.Storage.Streams.IBuffer response)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> SmartCardChallengeContext.VerifyResponseAsync(IBuffer response) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Foundation.IAsyncAction ProvisionAsync( global::Windows.Storage.Streams.IBuffer response,  bool formatCard)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncAction SmartCardChallengeContext.ProvisionAsync(IBuffer response, bool formatCard) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Foundation.IAsyncAction ProvisionAsync( global::Windows.Storage.Streams.IBuffer response,  bool formatCard,  global::System.Guid newCardId)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncAction SmartCardChallengeContext.ProvisionAsync(IBuffer response, bool formatCard, Guid newCardId) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Foundation.IAsyncAction ChangeAdministrativeKeyAsync( global::Windows.Storage.Streams.IBuffer response,  global::Windows.Storage.Streams.IBuffer newAdministrativeKey)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncAction SmartCardChallengeContext.ChangeAdministrativeKeyAsync(IBuffer response, IBuffer newAdministrativeKey) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  void Dispose()
 		{

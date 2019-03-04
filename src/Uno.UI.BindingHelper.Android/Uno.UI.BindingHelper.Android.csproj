@@ -1,6 +1,6 @@
 ﻿<Project Sdk="MSBuild.Sdk.Extras" ToolsVersion="15.0">
 	<PropertyGroup>
-		<TargetFrameworks>MonoAndroid71;MonoAndroid80;net46;xamarinios10;netstandard2.0;xamarinmac20</TargetFrameworks>
+		<TargetFrameworks>MonoAndroid80;net461;xamarinios10;netstandard2.0;xamarinmac20</TargetFrameworks>
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 		<NoWarn>1701;1702;1705;109</NoWarn>
 
@@ -10,29 +10,12 @@
 		<ProduceReferenceAssembly>false</ProduceReferenceAssembly>
 		<Deterministic>true</Deterministic>
 		
-		<IsBindingProject Condition="'$(TargetFramework)' == 'MonoAndroid71' or '$(TargetFramework)' == 'MonoAndroid80'">true</IsBindingProject>
+		<IsBindingProject Condition="'$(TargetFramework)' == 'MonoAndroid80'">true</IsBindingProject>
 		<_isWindows>$([MSBuild]::IsOsPlatform(Windows))</_isWindows>
 	</PropertyGroup>
 	
 	<ItemGroup>
 		<PackageReference Include="Xamarin.Build.Download" Version="0.4.9" />
-	</ItemGroup>
-	<ItemGroup Condition=" '$(TargetFramework)' == 'MonoAndroid60' or '$(TargetFramework)' == 'MonoAndroid70'">
-		<PackageReference Include="Xamarin.Android.Support.v4">
-			<Version>23.4.0.1</Version>
-		</PackageReference>
-		<PackageReference Include="Xamarin.Android.Support.v7.RecyclerView">
-			<Version>23.4.0.1</Version>
-		</PackageReference>
-	</ItemGroup>
-
-	<ItemGroup Condition=" '$(TargetFramework)' == 'MonoAndroid71'">
-		<PackageReference Include="Xamarin.Android.Support.v4">
-			<Version>25.3.1</Version>
-		</PackageReference>
-		<PackageReference Include="Xamarin.Android.Support.v7.RecyclerView">
-			<Version>25.3.1</Version>
-		</PackageReference>
 	</ItemGroup>
 
 	<ItemGroup Condition=" '$(TargetFramework)' == 'MonoAndroid80'">

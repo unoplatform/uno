@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Graphics.Printing.OptionDetails
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class PrintCustomItemListOptionDetails : global::Windows.Graphics.Printing.OptionDetails.IPrintOptionDetails,global::Windows.Graphics.Printing.OptionDetails.IPrintCustomOptionDetails,global::Windows.Graphics.Printing.OptionDetails.IPrintItemListOptionDetails
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  string WarningText
 		{
@@ -21,7 +21,7 @@ namespace Windows.Graphics.Printing.OptionDetails
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  string Description
 		{
@@ -35,7 +35,7 @@ namespace Windows.Graphics.Printing.OptionDetails
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  string DisplayName
 		{
@@ -49,7 +49,7 @@ namespace Windows.Graphics.Printing.OptionDetails
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::System.Collections.Generic.IReadOnlyList<object> Items
 		{
@@ -59,7 +59,7 @@ namespace Windows.Graphics.Printing.OptionDetails
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Graphics.Printing.OptionDetails.PrintOptionStates State
 		{
@@ -73,7 +73,7 @@ namespace Windows.Graphics.Printing.OptionDetails
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  string ErrorText
 		{
@@ -87,7 +87,7 @@ namespace Windows.Graphics.Printing.OptionDetails
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  string OptionId
 		{
@@ -97,7 +97,7 @@ namespace Windows.Graphics.Printing.OptionDetails
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Graphics.Printing.OptionDetails.PrintOptionType OptionType
 		{
@@ -107,7 +107,7 @@ namespace Windows.Graphics.Printing.OptionDetails
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  object Value
 		{
@@ -124,7 +124,7 @@ namespace Windows.Graphics.Printing.OptionDetails
 		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintCustomItemListOptionDetails.State.set
 		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintCustomItemListOptionDetails.State.get
 		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintCustomItemListOptionDetails.Value.get
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  bool TrySetValue( object value)
 		{
@@ -134,14 +134,14 @@ namespace Windows.Graphics.Printing.OptionDetails
 		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintCustomItemListOptionDetails.DisplayName.set
 		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintCustomItemListOptionDetails.DisplayName.get
 		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintCustomItemListOptionDetails.Items.get
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  void AddItem( string itemId,  string displayName)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Printing.OptionDetails.PrintCustomItemListOptionDetails", "void PrintCustomItemListOptionDetails.AddItem(string itemId, string displayName)");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  void AddItem( string itemId,  string displayName,  string description,  global::Windows.Storage.Streams.IRandomAccessStreamWithContentType icon)
 		{

@@ -1,4 +1,4 @@
-﻿#if NET46
+﻿#if NET461
 #pragma warning disable CS0067 
 #endif
 
@@ -44,7 +44,7 @@ namespace Windows.UI.Xaml.Controls
 
 		static ScrollViewer()
 		{
-#if !NET46
+#if !NET461
 			HorizontalContentAlignmentProperty.OverrideMetadata(
 				typeof(ScrollViewer),
 				new FrameworkPropertyMetadata(HorizontalAlignment.Stretch)
@@ -523,7 +523,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-#if !NET46
+#if !NET461
 		/// <summary>
 		/// Sets the content of the ScrollViewer
 		/// </summary>

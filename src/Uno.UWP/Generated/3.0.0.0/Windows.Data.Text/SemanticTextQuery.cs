@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Data.Text
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class SemanticTextQuery 
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public SemanticTextQuery( string aqsFilter) 
 		{
@@ -15,7 +15,7 @@ namespace Windows.Data.Text
 		}
 		#endif
 		// Forced skipping of method Windows.Data.Text.SemanticTextQuery.SemanticTextQuery(string)
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public SemanticTextQuery( string aqsFilter,  string filterLanguage) 
 		{
@@ -23,14 +23,14 @@ namespace Windows.Data.Text
 		}
 		#endif
 		// Forced skipping of method Windows.Data.Text.SemanticTextQuery.SemanticTextQuery(string, string)
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::System.Collections.Generic.IReadOnlyList<global::Windows.Data.Text.TextSegment> Find( string content)
 		{
 			throw new global::System.NotImplementedException("The member IReadOnlyList<TextSegment> SemanticTextQuery.Find(string content) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::System.Collections.Generic.IReadOnlyList<global::Windows.Data.Text.TextSegment> FindInProperty( string propertyContent,  string propertyName)
 		{

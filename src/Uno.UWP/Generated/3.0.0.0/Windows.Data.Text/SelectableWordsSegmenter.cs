@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Data.Text
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class SelectableWordsSegmenter 
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  string ResolvedLanguage
 		{
@@ -17,7 +17,7 @@ namespace Windows.Data.Text
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public SelectableWordsSegmenter( string language) 
 		{
@@ -26,21 +26,21 @@ namespace Windows.Data.Text
 		#endif
 		// Forced skipping of method Windows.Data.Text.SelectableWordsSegmenter.SelectableWordsSegmenter(string)
 		// Forced skipping of method Windows.Data.Text.SelectableWordsSegmenter.ResolvedLanguage.get
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Data.Text.SelectableWordSegment GetTokenAt( string text,  uint startIndex)
 		{
 			throw new global::System.NotImplementedException("The member SelectableWordSegment SelectableWordsSegmenter.GetTokenAt(string text, uint startIndex) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::System.Collections.Generic.IReadOnlyList<global::Windows.Data.Text.SelectableWordSegment> GetTokens( string text)
 		{
 			throw new global::System.NotImplementedException("The member IReadOnlyList<SelectableWordSegment> SelectableWordsSegmenter.GetTokens(string text) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  void Tokenize( string text,  uint startIndex,  global::Windows.Data.Text.SelectableWordSegmentsTokenizingHandler handler)
 		{

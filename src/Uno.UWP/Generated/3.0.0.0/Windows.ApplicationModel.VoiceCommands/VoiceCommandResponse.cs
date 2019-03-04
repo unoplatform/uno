@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.ApplicationModel.VoiceCommands
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class VoiceCommandResponse 
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.ApplicationModel.VoiceCommands.VoiceCommandUserMessage RepeatMessage
 		{
@@ -21,7 +21,7 @@ namespace Windows.ApplicationModel.VoiceCommands
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.ApplicationModel.VoiceCommands.VoiceCommandUserMessage Message
 		{
@@ -35,7 +35,7 @@ namespace Windows.ApplicationModel.VoiceCommands
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  string AppLaunchArgument
 		{
@@ -49,7 +49,7 @@ namespace Windows.ApplicationModel.VoiceCommands
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::System.Collections.Generic.IList<global::Windows.ApplicationModel.VoiceCommands.VoiceCommandContentTile> VoiceCommandContentTiles
 		{
@@ -59,7 +59,7 @@ namespace Windows.ApplicationModel.VoiceCommands
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static uint MaxSupportedVoiceCommandContentTiles
 		{
@@ -77,28 +77,28 @@ namespace Windows.ApplicationModel.VoiceCommands
 		// Forced skipping of method Windows.ApplicationModel.VoiceCommands.VoiceCommandResponse.AppLaunchArgument.set
 		// Forced skipping of method Windows.ApplicationModel.VoiceCommands.VoiceCommandResponse.VoiceCommandContentTiles.get
 		// Forced skipping of method Windows.ApplicationModel.VoiceCommands.VoiceCommandResponse.MaxSupportedVoiceCommandContentTiles.get
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.ApplicationModel.VoiceCommands.VoiceCommandResponse CreateResponse( global::Windows.ApplicationModel.VoiceCommands.VoiceCommandUserMessage userMessage)
 		{
 			throw new global::System.NotImplementedException("The member VoiceCommandResponse VoiceCommandResponse.CreateResponse(VoiceCommandUserMessage userMessage) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.ApplicationModel.VoiceCommands.VoiceCommandResponse CreateResponse( global::Windows.ApplicationModel.VoiceCommands.VoiceCommandUserMessage message,  global::System.Collections.Generic.IEnumerable<global::Windows.ApplicationModel.VoiceCommands.VoiceCommandContentTile> contentTiles)
 		{
 			throw new global::System.NotImplementedException("The member VoiceCommandResponse VoiceCommandResponse.CreateResponse(VoiceCommandUserMessage message, IEnumerable<VoiceCommandContentTile> contentTiles) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.ApplicationModel.VoiceCommands.VoiceCommandResponse CreateResponseForPrompt( global::Windows.ApplicationModel.VoiceCommands.VoiceCommandUserMessage message,  global::Windows.ApplicationModel.VoiceCommands.VoiceCommandUserMessage repeatMessage)
 		{
 			throw new global::System.NotImplementedException("The member VoiceCommandResponse VoiceCommandResponse.CreateResponseForPrompt(VoiceCommandUserMessage message, VoiceCommandUserMessage repeatMessage) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.ApplicationModel.VoiceCommands.VoiceCommandResponse CreateResponseForPrompt( global::Windows.ApplicationModel.VoiceCommands.VoiceCommandUserMessage message,  global::Windows.ApplicationModel.VoiceCommands.VoiceCommandUserMessage repeatMessage,  global::System.Collections.Generic.IEnumerable<global::Windows.ApplicationModel.VoiceCommands.VoiceCommandContentTile> contentTiles)
 		{

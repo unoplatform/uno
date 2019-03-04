@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Web.UI.Interop
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class WebViewControl : global::Windows.Web.UI.IWebViewControl,global::Windows.Web.UI.IWebViewControl2
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  double Scale
 		{
@@ -21,7 +21,7 @@ namespace Windows.Web.UI.Interop
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  bool IsVisible
 		{
@@ -35,7 +35,7 @@ namespace Windows.Web.UI.Interop
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Foundation.Rect Bounds
 		{
@@ -49,7 +49,7 @@ namespace Windows.Web.UI.Interop
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Web.UI.Interop.WebViewControlProcess Process
 		{
@@ -59,7 +59,7 @@ namespace Windows.Web.UI.Interop
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::System.Uri Source
 		{
@@ -73,7 +73,7 @@ namespace Windows.Web.UI.Interop
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.UI.Color DefaultBackgroundColor
 		{
@@ -87,7 +87,7 @@ namespace Windows.Web.UI.Interop
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  bool CanGoBack
 		{
@@ -97,7 +97,7 @@ namespace Windows.Web.UI.Interop
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  bool CanGoForward
 		{
@@ -107,7 +107,7 @@ namespace Windows.Web.UI.Interop
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  bool ContainsFullScreenElement
 		{
@@ -117,7 +117,7 @@ namespace Windows.Web.UI.Interop
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::System.Collections.Generic.IReadOnlyList<global::Windows.Web.UI.WebViewControlDeferredPermissionRequest> DeferredPermissionRequests
 		{
@@ -127,7 +127,7 @@ namespace Windows.Web.UI.Interop
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  string DocumentTitle
 		{
@@ -137,7 +137,7 @@ namespace Windows.Web.UI.Interop
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Web.UI.WebViewControlSettings Settings
 		{
@@ -157,91 +157,91 @@ namespace Windows.Web.UI.Interop
 		// Forced skipping of method Windows.Web.UI.Interop.WebViewControl.ContainsFullScreenElement.get
 		// Forced skipping of method Windows.Web.UI.Interop.WebViewControl.Settings.get
 		// Forced skipping of method Windows.Web.UI.Interop.WebViewControl.DeferredPermissionRequests.get
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  void GoForward()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.UI.Interop.WebViewControl", "void WebViewControl.GoForward()");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  void GoBack()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.UI.Interop.WebViewControl", "void WebViewControl.GoBack()");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  void Refresh()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.UI.Interop.WebViewControl", "void WebViewControl.Refresh()");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  void Stop()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.UI.Interop.WebViewControl", "void WebViewControl.Stop()");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  void Navigate( global::System.Uri source)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.UI.Interop.WebViewControl", "void WebViewControl.Navigate(Uri source)");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  void NavigateToString( string text)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.UI.Interop.WebViewControl", "void WebViewControl.NavigateToString(string text)");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  void NavigateToLocalStreamUri( global::System.Uri source,  global::Windows.Web.IUriToStreamResolver streamResolver)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.UI.Interop.WebViewControl", "void WebViewControl.NavigateToLocalStreamUri(Uri source, IUriToStreamResolver streamResolver)");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  void NavigateWithHttpRequestMessage( global::Windows.Web.Http.HttpRequestMessage requestMessage)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.UI.Interop.WebViewControl", "void WebViewControl.NavigateWithHttpRequestMessage(HttpRequestMessage requestMessage)");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Foundation.IAsyncOperation<string> InvokeScriptAsync( string scriptName,  global::System.Collections.Generic.IEnumerable<string> arguments)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<string> WebViewControl.InvokeScriptAsync(string scriptName, IEnumerable<string> arguments) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Foundation.IAsyncAction CapturePreviewToStreamAsync( global::Windows.Storage.Streams.IRandomAccessStream stream)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncAction WebViewControl.CapturePreviewToStreamAsync(IRandomAccessStream stream) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.DataTransfer.DataPackage> CaptureSelectedContentToDataPackageAsync()
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<DataPackage> WebViewControl.CaptureSelectedContentToDataPackageAsync() is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::System.Uri BuildLocalStreamUri( string contentIdentifier,  string relativePath)
 		{
 			throw new global::System.NotImplementedException("The member Uri WebViewControl.BuildLocalStreamUri(string contentIdentifier, string relativePath) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  void GetDeferredPermissionRequestById( uint id, out global::Windows.Web.UI.WebViewControlDeferredPermissionRequest result)
 		{
@@ -289,14 +289,14 @@ namespace Windows.Web.UI.Interop
 		// Forced skipping of method Windows.Web.UI.Interop.WebViewControl.Bounds.get
 		// Forced skipping of method Windows.Web.UI.Interop.WebViewControl.IsVisible.set
 		// Forced skipping of method Windows.Web.UI.Interop.WebViewControl.IsVisible.get
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  void Close()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.UI.Interop.WebViewControl", "void WebViewControl.Close()");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  void MoveFocus( global::Windows.Web.UI.Interop.WebViewControlMoveFocusReason reason)
 		{
@@ -307,7 +307,7 @@ namespace Windows.Web.UI.Interop
 		// Forced skipping of method Windows.Web.UI.Interop.WebViewControl.MoveFocusRequested.remove
 		// Forced skipping of method Windows.Web.UI.Interop.WebViewControl.AcceleratorKeyPressed.add
 		// Forced skipping of method Windows.Web.UI.Interop.WebViewControl.AcceleratorKeyPressed.remove
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  void AddInitializeScript( string script)
 		{
@@ -318,7 +318,7 @@ namespace Windows.Web.UI.Interop
 		// Forced skipping of method Windows.Web.UI.Interop.WebViewControl.GotFocus.remove
 		// Forced skipping of method Windows.Web.UI.Interop.WebViewControl.LostFocus.add
 		// Forced skipping of method Windows.Web.UI.Interop.WebViewControl.LostFocus.remove
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Web.UI.IWebViewControl, object> ContainsFullScreenElementChanged
 		{
@@ -334,7 +334,7 @@ namespace Windows.Web.UI.Interop
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Web.UI.IWebViewControl, global::Windows.Web.UI.WebViewControlContentLoadingEventArgs> ContentLoading
 		{
@@ -350,7 +350,7 @@ namespace Windows.Web.UI.Interop
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Web.UI.IWebViewControl, global::Windows.Web.UI.WebViewControlDOMContentLoadedEventArgs> DOMContentLoaded
 		{
@@ -366,7 +366,7 @@ namespace Windows.Web.UI.Interop
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Web.UI.IWebViewControl, global::Windows.Web.UI.WebViewControlContentLoadingEventArgs> FrameContentLoading
 		{
@@ -382,7 +382,7 @@ namespace Windows.Web.UI.Interop
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Web.UI.IWebViewControl, global::Windows.Web.UI.WebViewControlDOMContentLoadedEventArgs> FrameDOMContentLoaded
 		{
@@ -398,7 +398,7 @@ namespace Windows.Web.UI.Interop
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Web.UI.IWebViewControl, global::Windows.Web.UI.WebViewControlNavigationCompletedEventArgs> FrameNavigationCompleted
 		{
@@ -414,7 +414,7 @@ namespace Windows.Web.UI.Interop
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Web.UI.IWebViewControl, global::Windows.Web.UI.WebViewControlNavigationStartingEventArgs> FrameNavigationStarting
 		{
@@ -430,7 +430,7 @@ namespace Windows.Web.UI.Interop
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Web.UI.IWebViewControl, global::Windows.Web.UI.WebViewControlLongRunningScriptDetectedEventArgs> LongRunningScriptDetected
 		{
@@ -446,7 +446,7 @@ namespace Windows.Web.UI.Interop
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Web.UI.IWebViewControl, global::Windows.Web.UI.WebViewControlNavigationCompletedEventArgs> NavigationCompleted
 		{
@@ -462,7 +462,7 @@ namespace Windows.Web.UI.Interop
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Web.UI.IWebViewControl, global::Windows.Web.UI.WebViewControlNavigationStartingEventArgs> NavigationStarting
 		{
@@ -478,7 +478,7 @@ namespace Windows.Web.UI.Interop
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Web.UI.IWebViewControl, global::Windows.Web.UI.WebViewControlNewWindowRequestedEventArgs> NewWindowRequested
 		{
@@ -494,7 +494,7 @@ namespace Windows.Web.UI.Interop
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Web.UI.IWebViewControl, global::Windows.Web.UI.WebViewControlPermissionRequestedEventArgs> PermissionRequested
 		{
@@ -510,7 +510,7 @@ namespace Windows.Web.UI.Interop
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Web.UI.IWebViewControl, global::Windows.Web.UI.WebViewControlScriptNotifyEventArgs> ScriptNotify
 		{
@@ -526,7 +526,7 @@ namespace Windows.Web.UI.Interop
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Web.UI.IWebViewControl, object> UnsafeContentWarningDisplaying
 		{
@@ -542,7 +542,7 @@ namespace Windows.Web.UI.Interop
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Web.UI.IWebViewControl, global::Windows.Web.UI.WebViewControlUnsupportedUriSchemeIdentifiedEventArgs> UnsupportedUriSchemeIdentified
 		{
@@ -558,7 +558,7 @@ namespace Windows.Web.UI.Interop
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Web.UI.IWebViewControl, global::Windows.Web.UI.WebViewControlUnviewableContentIdentifiedEventArgs> UnviewableContentIdentified
 		{
@@ -574,7 +574,7 @@ namespace Windows.Web.UI.Interop
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Web.UI.IWebViewControl, global::Windows.Web.UI.WebViewControlWebResourceRequestedEventArgs> WebResourceRequested
 		{
@@ -590,7 +590,7 @@ namespace Windows.Web.UI.Interop
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Web.UI.Interop.WebViewControl, global::Windows.Web.UI.Interop.WebViewControlAcceleratorKeyPressedEventArgs> AcceleratorKeyPressed
 		{
@@ -606,7 +606,7 @@ namespace Windows.Web.UI.Interop
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Web.UI.Interop.WebViewControl, global::Windows.Web.UI.Interop.WebViewControlMoveFocusRequestedEventArgs> MoveFocusRequested
 		{
@@ -622,7 +622,7 @@ namespace Windows.Web.UI.Interop
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Web.UI.Interop.WebViewControl, object> GotFocus
 		{
@@ -638,7 +638,7 @@ namespace Windows.Web.UI.Interop
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Web.UI.Interop.WebViewControl, object> LostFocus
 		{

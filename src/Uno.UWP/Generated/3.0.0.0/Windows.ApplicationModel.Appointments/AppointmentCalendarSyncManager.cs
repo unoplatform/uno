@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.ApplicationModel.Appointments
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class AppointmentCalendarSyncManager 
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.ApplicationModel.Appointments.AppointmentCalendarSyncStatus Status
 		{
@@ -21,7 +21,7 @@ namespace Windows.ApplicationModel.Appointments
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::System.DateTimeOffset LastSuccessfulSyncTime
 		{
@@ -35,7 +35,7 @@ namespace Windows.ApplicationModel.Appointments
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::System.DateTimeOffset LastAttemptedSyncTime
 		{
@@ -52,7 +52,7 @@ namespace Windows.ApplicationModel.Appointments
 		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentCalendarSyncManager.Status.get
 		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentCalendarSyncManager.LastSuccessfulSyncTime.get
 		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentCalendarSyncManager.LastAttemptedSyncTime.get
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Foundation.IAsyncOperation<bool> SyncAsync()
 		{
@@ -64,7 +64,7 @@ namespace Windows.ApplicationModel.Appointments
 		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentCalendarSyncManager.Status.set
 		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentCalendarSyncManager.LastSuccessfulSyncTime.set
 		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentCalendarSyncManager.LastAttemptedSyncTime.set
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.ApplicationModel.Appointments.AppointmentCalendarSyncManager, object> SyncStatusChanged
 		{

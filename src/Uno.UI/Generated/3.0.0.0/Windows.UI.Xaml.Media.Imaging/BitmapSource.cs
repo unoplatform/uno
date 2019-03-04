@@ -15,14 +15,14 @@ namespace Windows.UI.Xaml.Media.Imaging
 		// Forced skipping of method Windows.UI.Xaml.Media.Imaging.BitmapSource.BitmapSource()
 		// Forced skipping of method Windows.UI.Xaml.Media.Imaging.BitmapSource.PixelWidth.get
 		// Forced skipping of method Windows.UI.Xaml.Media.Imaging.BitmapSource.PixelHeight.get
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  void SetSource( global::Windows.Storage.Streams.IRandomAccessStream streamSource)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Media.Imaging.BitmapSource", "void BitmapSource.SetSource(IRandomAccessStream streamSource)");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Foundation.IAsyncAction SetSourceAsync( global::Windows.Storage.Streams.IRandomAccessStream streamSource)
 		{

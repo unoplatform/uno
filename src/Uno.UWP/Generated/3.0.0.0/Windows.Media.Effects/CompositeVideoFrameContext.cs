@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Media.Effects
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class CompositeVideoFrameContext 
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Media.VideoFrame BackgroundFrame
 		{
@@ -17,7 +17,7 @@ namespace Windows.Media.Effects
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Media.VideoFrame OutputFrame
 		{
@@ -27,7 +27,7 @@ namespace Windows.Media.Effects
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::System.Collections.Generic.IReadOnlyList<global::Windows.Graphics.DirectX.Direct3D11.IDirect3DSurface> SurfacesToOverlay
 		{
@@ -40,7 +40,7 @@ namespace Windows.Media.Effects
 		// Forced skipping of method Windows.Media.Effects.CompositeVideoFrameContext.SurfacesToOverlay.get
 		// Forced skipping of method Windows.Media.Effects.CompositeVideoFrameContext.BackgroundFrame.get
 		// Forced skipping of method Windows.Media.Effects.CompositeVideoFrameContext.OutputFrame.get
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Media.Editing.MediaOverlay GetOverlayForSurface( global::Windows.Graphics.DirectX.Direct3D11.IDirect3DSurface surfaceToOverlay)
 		{

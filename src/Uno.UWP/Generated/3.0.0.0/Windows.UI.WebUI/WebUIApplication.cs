@@ -2,7 +2,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.WebUI
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class WebUIApplication 
@@ -11,14 +11,14 @@ namespace Windows.UI.WebUI
 		// Forced skipping of method Windows.UI.WebUI.WebUIApplication.NewWebUIViewCreated.remove
 		// Forced skipping of method Windows.UI.WebUI.WebUIApplication.BackgroundActivated.add
 		// Forced skipping of method Windows.UI.WebUI.WebUIApplication.BackgroundActivated.remove
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.Core.AppRestartFailureReason> RequestRestartAsync( string launchArguments)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<AppRestartFailureReason> WebUIApplication.RequestRestartAsync(string launchArguments) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.Core.AppRestartFailureReason> RequestRestartForUserAsync( global::Windows.System.User user,  string launchArguments)
 		{
@@ -29,7 +29,7 @@ namespace Windows.UI.WebUI
 		// Forced skipping of method Windows.UI.WebUI.WebUIApplication.LeavingBackground.remove
 		// Forced skipping of method Windows.UI.WebUI.WebUIApplication.EnteredBackground.add
 		// Forced skipping of method Windows.UI.WebUI.WebUIApplication.EnteredBackground.remove
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static void EnablePrelaunch( bool value)
 		{
@@ -44,7 +44,7 @@ namespace Windows.UI.WebUI
 		// Forced skipping of method Windows.UI.WebUI.WebUIApplication.Resuming.remove
 		// Forced skipping of method Windows.UI.WebUI.WebUIApplication.Navigated.add
 		// Forced skipping of method Windows.UI.WebUI.WebUIApplication.Navigated.remove
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static event global::Windows.UI.WebUI.BackgroundActivatedEventHandler BackgroundActivated
 		{
@@ -60,7 +60,7 @@ namespace Windows.UI.WebUI
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static event global::System.EventHandler<global::Windows.UI.WebUI.NewWebUIViewCreatedEventArgs> NewWebUIViewCreated
 		{
@@ -76,7 +76,7 @@ namespace Windows.UI.WebUI
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static event global::Windows.UI.WebUI.EnteredBackgroundEventHandler EnteredBackground
 		{
@@ -92,7 +92,7 @@ namespace Windows.UI.WebUI
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static event global::Windows.UI.WebUI.LeavingBackgroundEventHandler LeavingBackground
 		{
@@ -108,7 +108,7 @@ namespace Windows.UI.WebUI
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static event global::Windows.UI.WebUI.ActivatedEventHandler Activated
 		{
@@ -124,7 +124,7 @@ namespace Windows.UI.WebUI
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static event global::Windows.UI.WebUI.NavigatedEventHandler Navigated
 		{
@@ -140,7 +140,7 @@ namespace Windows.UI.WebUI
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static event global::Windows.UI.WebUI.ResumingEventHandler Resuming
 		{
@@ -156,7 +156,7 @@ namespace Windows.UI.WebUI
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static event global::Windows.UI.WebUI.SuspendingEventHandler Suspending
 		{

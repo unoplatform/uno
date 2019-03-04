@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Perception.Spatial
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class SpatialLocatorAttachedFrameOfReference 
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::System.Numerics.Vector3 RelativePosition
 		{
@@ -21,7 +21,7 @@ namespace Windows.Perception.Spatial
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::System.Numerics.Quaternion RelativeOrientation
 		{
@@ -39,21 +39,21 @@ namespace Windows.Perception.Spatial
 		// Forced skipping of method Windows.Perception.Spatial.SpatialLocatorAttachedFrameOfReference.RelativePosition.set
 		// Forced skipping of method Windows.Perception.Spatial.SpatialLocatorAttachedFrameOfReference.RelativeOrientation.get
 		// Forced skipping of method Windows.Perception.Spatial.SpatialLocatorAttachedFrameOfReference.RelativeOrientation.set
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  void AdjustHeading( double headingOffsetInRadians)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Perception.Spatial.SpatialLocatorAttachedFrameOfReference", "void SpatialLocatorAttachedFrameOfReference.AdjustHeading(double headingOffsetInRadians)");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Perception.Spatial.SpatialCoordinateSystem GetStationaryCoordinateSystemAtTimestamp( global::Windows.Perception.PerceptionTimestamp timestamp)
 		{
 			throw new global::System.NotImplementedException("The member SpatialCoordinateSystem SpatialLocatorAttachedFrameOfReference.GetStationaryCoordinateSystemAtTimestamp(PerceptionTimestamp timestamp) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  double? TryGetRelativeHeadingAtTimestamp( global::Windows.Perception.PerceptionTimestamp timestamp)
 		{

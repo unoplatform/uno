@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Graphics.Printing.PrintTicket
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class PrintTicketFeature 
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  string DisplayName
 		{
@@ -17,7 +17,7 @@ namespace Windows.Graphics.Printing.PrintTicket
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  string Name
 		{
@@ -27,7 +27,7 @@ namespace Windows.Graphics.Printing.PrintTicket
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::System.Collections.Generic.IReadOnlyList<global::Windows.Graphics.Printing.PrintTicket.PrintTicketOption> Options
 		{
@@ -37,7 +37,7 @@ namespace Windows.Graphics.Printing.PrintTicket
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Graphics.Printing.PrintTicket.PrintTicketFeatureSelectionType SelectionType
 		{
@@ -47,7 +47,7 @@ namespace Windows.Graphics.Printing.PrintTicket
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  string XmlNamespace
 		{
@@ -57,7 +57,7 @@ namespace Windows.Graphics.Printing.PrintTicket
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Data.Xml.Dom.IXmlNode XmlNode
 		{
@@ -71,7 +71,7 @@ namespace Windows.Graphics.Printing.PrintTicket
 		// Forced skipping of method Windows.Graphics.Printing.PrintTicket.PrintTicketFeature.XmlNamespace.get
 		// Forced skipping of method Windows.Graphics.Printing.PrintTicket.PrintTicketFeature.XmlNode.get
 		// Forced skipping of method Windows.Graphics.Printing.PrintTicket.PrintTicketFeature.DisplayName.get
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Graphics.Printing.PrintTicket.PrintTicketOption GetOption( string name,  string xmlNamespace)
 		{
@@ -79,14 +79,14 @@ namespace Windows.Graphics.Printing.PrintTicket
 		}
 		#endif
 		// Forced skipping of method Windows.Graphics.Printing.PrintTicket.PrintTicketFeature.Options.get
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Graphics.Printing.PrintTicket.PrintTicketOption GetSelectedOption()
 		{
 			throw new global::System.NotImplementedException("The member PrintTicketOption PrintTicketFeature.GetSelectedOption() is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  void SetSelectedOption( global::Windows.Graphics.Printing.PrintTicket.PrintTicketOption value)
 		{

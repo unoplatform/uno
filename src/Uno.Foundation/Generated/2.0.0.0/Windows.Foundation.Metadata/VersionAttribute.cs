@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Foundation.Metadata
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class VersionAttribute : global::System.Attribute
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public VersionAttribute( uint version) : base()
 		{
@@ -15,7 +15,7 @@ namespace Windows.Foundation.Metadata
 		}
 		#endif
 		// Forced skipping of method Windows.Foundation.Metadata.VersionAttribute.VersionAttribute(uint)
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public VersionAttribute( uint version,  global::Windows.Foundation.Metadata.Platform platform) : base()
 		{

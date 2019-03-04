@@ -148,7 +148,7 @@ namespace Windows.UI.Xaml
 		/// </summary>
 		public static void Initialize(IFrameworkElement e)
 		{
-#if NET46
+#if NET461
 			// These properties have moved to dependency properties
 			// on Uno.UI, tests still depend on it.
 			e.HorizontalAlignment = HorizontalAlignment.Stretch;

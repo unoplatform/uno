@@ -821,6 +821,22 @@ var Uno;
                     : "";
             }
             /**
+             * tapped (mouse clicked / double clicked) event extractor to be used with registerEventOnView
+             * @param evt
+             */
+            focusEventExtractor(evt) {
+                if (evt) {
+                    const targetElement = evt.target;
+                    if (targetElement) {
+                        const targetXamlHandle = targetElement.getAttribute("XamlHandle");
+                        if (targetXamlHandle) {
+                            return `${targetXamlHandle}`;
+                        }
+                    }
+                }
+                return "";
+            }
+            /**
              * Gets the event extractor function. See UIElement.HtmlEventExtractor
              * @param eventExtractorName an event extractor name.
              */
@@ -833,6 +849,8 @@ var Uno;
                             return this.keyboardEventExtractor;
                         case "TappedEventExtractor":
                             return this.tappedEventExtractor;
+                        case "FocusEventExtractor":
+                            return this.focusEventExtractor;
                     }
                     throw `Event filter ${eventExtractorName} is not supported`;
                 }

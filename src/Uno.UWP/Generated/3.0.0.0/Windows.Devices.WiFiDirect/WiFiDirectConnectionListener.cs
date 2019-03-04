@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Devices.WiFiDirect
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class WiFiDirectConnectionListener 
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public WiFiDirectConnectionListener() 
 		{
@@ -17,7 +17,7 @@ namespace Windows.Devices.WiFiDirect
 		// Forced skipping of method Windows.Devices.WiFiDirect.WiFiDirectConnectionListener.WiFiDirectConnectionListener()
 		// Forced skipping of method Windows.Devices.WiFiDirect.WiFiDirectConnectionListener.ConnectionRequested.add
 		// Forced skipping of method Windows.Devices.WiFiDirect.WiFiDirectConnectionListener.ConnectionRequested.remove
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Devices.WiFiDirect.WiFiDirectConnectionListener, global::Windows.Devices.WiFiDirect.WiFiDirectConnectionRequestedEventArgs> ConnectionRequested
 		{

@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Graphics.Capture
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class Direct3D11CaptureFrame : global::System.IDisposable
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Graphics.SizeInt32 ContentSize
 		{
@@ -17,7 +17,7 @@ namespace Windows.Graphics.Capture
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Graphics.DirectX.Direct3D11.IDirect3DSurface Surface
 		{
@@ -27,7 +27,7 @@ namespace Windows.Graphics.Capture
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::System.TimeSpan SystemRelativeTime
 		{
@@ -40,7 +40,7 @@ namespace Windows.Graphics.Capture
 		// Forced skipping of method Windows.Graphics.Capture.Direct3D11CaptureFrame.Surface.get
 		// Forced skipping of method Windows.Graphics.Capture.Direct3D11CaptureFrame.SystemRelativeTime.get
 		// Forced skipping of method Windows.Graphics.Capture.Direct3D11CaptureFrame.ContentSize.get
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  void Dispose()
 		{

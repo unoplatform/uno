@@ -2,7 +2,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Devices.Input.Preview
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class GazeInputSourcePreview 
@@ -13,21 +13,21 @@ namespace Windows.Devices.Input.Preview
 		// Forced skipping of method Windows.Devices.Input.Preview.GazeInputSourcePreview.GazeEntered.remove
 		// Forced skipping of method Windows.Devices.Input.Preview.GazeInputSourcePreview.GazeExited.add
 		// Forced skipping of method Windows.Devices.Input.Preview.GazeInputSourcePreview.GazeExited.remove
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.Devices.Input.Preview.GazeInputSourcePreview GetForCurrentView()
 		{
 			throw new global::System.NotImplementedException("The member GazeInputSourcePreview GazeInputSourcePreview.GetForCurrentView() is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.Devices.Input.Preview.GazeDeviceWatcherPreview CreateWatcher()
 		{
 			throw new global::System.NotImplementedException("The member GazeDeviceWatcherPreview GazeInputSourcePreview.CreateWatcher() is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Devices.Input.Preview.GazeInputSourcePreview, global::Windows.Devices.Input.Preview.GazeEnteredPreviewEventArgs> GazeEntered
 		{
@@ -43,7 +43,7 @@ namespace Windows.Devices.Input.Preview
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Devices.Input.Preview.GazeInputSourcePreview, global::Windows.Devices.Input.Preview.GazeExitedPreviewEventArgs> GazeExited
 		{
@@ -59,7 +59,7 @@ namespace Windows.Devices.Input.Preview
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Devices.Input.Preview.GazeInputSourcePreview, global::Windows.Devices.Input.Preview.GazeMovedPreviewEventArgs> GazeMoved
 		{

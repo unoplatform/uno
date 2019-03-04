@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Gaming.Input
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class UINavigationController : global::Windows.Gaming.Input.IGameController,global::Windows.Gaming.Input.IGameControllerBatteryInfo
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Gaming.Input.Headset Headset
 		{
@@ -17,7 +17,7 @@ namespace Windows.Gaming.Input
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  bool IsWireless
 		{
@@ -27,7 +27,7 @@ namespace Windows.Gaming.Input
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.System.User User
 		{
@@ -37,7 +37,7 @@ namespace Windows.Gaming.Input
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::System.Collections.Generic.IReadOnlyList<global::Windows.Gaming.Input.UINavigationController> UINavigationControllers
 		{
@@ -47,21 +47,21 @@ namespace Windows.Gaming.Input
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Gaming.Input.UINavigationReading GetCurrentReading()
 		{
 			throw new global::System.NotImplementedException("The member UINavigationReading UINavigationController.GetCurrentReading() is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Gaming.Input.GameControllerButtonLabel GetOptionalButtonLabel( global::Windows.Gaming.Input.OptionalUINavigationButtons button)
 		{
 			throw new global::System.NotImplementedException("The member GameControllerButtonLabel UINavigationController.GetOptionalButtonLabel(OptionalUINavigationButtons button) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Gaming.Input.GameControllerButtonLabel GetRequiredButtonLabel( global::Windows.Gaming.Input.RequiredUINavigationButtons button)
 		{
@@ -77,14 +77,14 @@ namespace Windows.Gaming.Input
 		// Forced skipping of method Windows.Gaming.Input.UINavigationController.Headset.get
 		// Forced skipping of method Windows.Gaming.Input.UINavigationController.IsWireless.get
 		// Forced skipping of method Windows.Gaming.Input.UINavigationController.User.get
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Devices.Power.BatteryReport TryGetBatteryReport()
 		{
 			throw new global::System.NotImplementedException("The member BatteryReport UINavigationController.TryGetBatteryReport() is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.Gaming.Input.UINavigationController FromGameController( global::Windows.Gaming.Input.IGameController gameController)
 		{
@@ -96,7 +96,7 @@ namespace Windows.Gaming.Input
 		// Forced skipping of method Windows.Gaming.Input.UINavigationController.UINavigationControllerRemoved.add
 		// Forced skipping of method Windows.Gaming.Input.UINavigationController.UINavigationControllerRemoved.remove
 		// Forced skipping of method Windows.Gaming.Input.UINavigationController.UINavigationControllers.get
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Gaming.Input.IGameController, global::Windows.Gaming.Input.Headset> HeadsetConnected
 		{
@@ -112,7 +112,7 @@ namespace Windows.Gaming.Input
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Gaming.Input.IGameController, global::Windows.Gaming.Input.Headset> HeadsetDisconnected
 		{
@@ -128,7 +128,7 @@ namespace Windows.Gaming.Input
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Gaming.Input.IGameController, global::Windows.System.UserChangedEventArgs> UserChanged
 		{
@@ -144,7 +144,7 @@ namespace Windows.Gaming.Input
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static event global::System.EventHandler<global::Windows.Gaming.Input.UINavigationController> UINavigationControllerAdded
 		{
@@ -160,7 +160,7 @@ namespace Windows.Gaming.Input
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static event global::System.EventHandler<global::Windows.Gaming.Input.UINavigationController> UINavigationControllerRemoved
 		{

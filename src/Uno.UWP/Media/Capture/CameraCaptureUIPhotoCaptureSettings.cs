@@ -4,7 +4,7 @@ namespace Windows.Media.Capture
 {
 	public  partial class CameraCaptureUIPhotoCaptureSettings 
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__
 		[global::Uno.NotImplemented]
 		#endif
 		public  CameraCaptureUIMaxPhotoResolution MaxResolution
@@ -20,12 +20,12 @@ namespace Windows.Media.Capture
 			}
 		}
 
-		#if __ANDROID__ || NET46 || __WASM__
+		#if __ANDROID__ || NET461 || __WASM__
 		[global::Uno.NotImplemented]
 		#endif
 		public CameraCaptureUIPhotoFormat Format { get; set; } = CameraCaptureUIPhotoFormat.Jpeg;
 
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__
 		[global::Uno.NotImplemented]
 		#endif
 		public  global::Windows.Foundation.Size CroppedSizeInPixels
@@ -41,7 +41,7 @@ namespace Windows.Media.Capture
 			}
 		}
 
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__
 		[global::Uno.NotImplemented]
 		#endif
 		public  global::Windows.Foundation.Size CroppedAspectRatio
@@ -57,7 +57,7 @@ namespace Windows.Media.Capture
 			}
 		}
 
-		#if __ANDROID__ || NET46 || __WASM__
+		#if __ANDROID__ || NET461 || __WASM__
 		[global::Uno.NotImplemented]
 		#endif
 		public bool AllowCropping { get; set; } = true;

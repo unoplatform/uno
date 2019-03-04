@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Storage.Streams
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class DataWriterStoreOperation : global::Windows.Foundation.IAsyncOperation<uint>,global::Windows.Foundation.IAsyncInfo
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::System.Exception ErrorCode
 		{
@@ -17,7 +17,7 @@ namespace Windows.Storage.Streams
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  uint Id
 		{
@@ -27,7 +27,7 @@ namespace Windows.Storage.Streams
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Foundation.AsyncStatus Status
 		{
@@ -37,7 +37,7 @@ namespace Windows.Storage.Streams
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Foundation.AsyncOperationCompletedHandler<uint> Completed
 		{
@@ -53,7 +53,7 @@ namespace Windows.Storage.Streams
 		#endif
 		// Forced skipping of method Windows.Storage.Streams.DataWriterStoreOperation.Completed.set
 		// Forced skipping of method Windows.Storage.Streams.DataWriterStoreOperation.Completed.get
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  uint GetResults()
 		{
@@ -63,14 +63,14 @@ namespace Windows.Storage.Streams
 		// Forced skipping of method Windows.Storage.Streams.DataWriterStoreOperation.Id.get
 		// Forced skipping of method Windows.Storage.Streams.DataWriterStoreOperation.Status.get
 		// Forced skipping of method Windows.Storage.Streams.DataWriterStoreOperation.ErrorCode.get
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  void Cancel()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Streams.DataWriterStoreOperation", "void DataWriterStoreOperation.Cancel()");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  void Close()
 		{

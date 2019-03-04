@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Graphics.Holographic
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class HolographicSpace 
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Graphics.Holographic.HolographicAdapterId PrimaryAdapterId
 		{
@@ -17,7 +17,7 @@ namespace Windows.Graphics.Holographic
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Graphics.Holographic.HolographicSpaceUserPresence UserPresence
 		{
@@ -27,7 +27,7 @@ namespace Windows.Graphics.Holographic
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static bool IsAvailable
 		{
@@ -37,7 +37,7 @@ namespace Windows.Graphics.Holographic
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static bool IsSupported
 		{
@@ -47,7 +47,7 @@ namespace Windows.Graphics.Holographic
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static bool IsConfigured
 		{
@@ -58,7 +58,7 @@ namespace Windows.Graphics.Holographic
 		}
 		#endif
 		// Forced skipping of method Windows.Graphics.Holographic.HolographicSpace.PrimaryAdapterId.get
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  void SetDirect3D11Device( global::Windows.Graphics.DirectX.Direct3D11.IDirect3DDevice value)
 		{
@@ -69,7 +69,7 @@ namespace Windows.Graphics.Holographic
 		// Forced skipping of method Windows.Graphics.Holographic.HolographicSpace.CameraAdded.remove
 		// Forced skipping of method Windows.Graphics.Holographic.HolographicSpace.CameraRemoved.add
 		// Forced skipping of method Windows.Graphics.Holographic.HolographicSpace.CameraRemoved.remove
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Graphics.Holographic.HolographicFrame CreateNextFrame()
 		{
@@ -79,21 +79,21 @@ namespace Windows.Graphics.Holographic
 		// Forced skipping of method Windows.Graphics.Holographic.HolographicSpace.UserPresence.get
 		// Forced skipping of method Windows.Graphics.Holographic.HolographicSpace.UserPresenceChanged.add
 		// Forced skipping of method Windows.Graphics.Holographic.HolographicSpace.UserPresenceChanged.remove
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  void WaitForNextFrameReady()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Holographic.HolographicSpace", "void HolographicSpace.WaitForNextFrameReady()");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  void WaitForNextFrameReadyWithHeadStart( global::System.TimeSpan requestedHeadStartDuration)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Holographic.HolographicSpace", "void HolographicSpace.WaitForNextFrameReadyWithHeadStart(TimeSpan requestedHeadStartDuration)");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Graphics.Holographic.HolographicFramePresentationMonitor CreateFramePresentationMonitor( uint maxQueuedReports)
 		{
@@ -105,14 +105,14 @@ namespace Windows.Graphics.Holographic
 		// Forced skipping of method Windows.Graphics.Holographic.HolographicSpace.IsAvailable.get
 		// Forced skipping of method Windows.Graphics.Holographic.HolographicSpace.IsAvailableChanged.add
 		// Forced skipping of method Windows.Graphics.Holographic.HolographicSpace.IsAvailableChanged.remove
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.Graphics.Holographic.HolographicSpace CreateForCoreWindow( global::Windows.UI.Core.CoreWindow window)
 		{
 			throw new global::System.NotImplementedException("The member HolographicSpace HolographicSpace.CreateForCoreWindow(CoreWindow window) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Graphics.Holographic.HolographicSpace, global::Windows.Graphics.Holographic.HolographicSpaceCameraAddedEventArgs> CameraAdded
 		{
@@ -128,7 +128,7 @@ namespace Windows.Graphics.Holographic
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Graphics.Holographic.HolographicSpace, global::Windows.Graphics.Holographic.HolographicSpaceCameraRemovedEventArgs> CameraRemoved
 		{
@@ -144,7 +144,7 @@ namespace Windows.Graphics.Holographic
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Graphics.Holographic.HolographicSpace, object> UserPresenceChanged
 		{
@@ -160,7 +160,7 @@ namespace Windows.Graphics.Holographic
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static event global::System.EventHandler<object> IsAvailableChanged
 		{

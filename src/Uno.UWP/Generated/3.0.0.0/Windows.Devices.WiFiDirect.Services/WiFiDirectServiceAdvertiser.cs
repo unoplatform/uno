@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Devices.WiFiDirect.Services
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class WiFiDirectServiceAdvertiser 
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Devices.WiFiDirect.Services.WiFiDirectServiceStatus ServiceStatus
 		{
@@ -21,7 +21,7 @@ namespace Windows.Devices.WiFiDirect.Services
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Storage.Streams.IBuffer ServiceInfo
 		{
@@ -35,7 +35,7 @@ namespace Windows.Devices.WiFiDirect.Services
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  bool PreferGroupOwnerMode
 		{
@@ -49,7 +49,7 @@ namespace Windows.Devices.WiFiDirect.Services
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Storage.Streams.IBuffer DeferredSessionInfo
 		{
@@ -63,7 +63,7 @@ namespace Windows.Devices.WiFiDirect.Services
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  uint CustomServiceStatusCode
 		{
@@ -77,7 +77,7 @@ namespace Windows.Devices.WiFiDirect.Services
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  bool AutoAcceptSession
 		{
@@ -91,7 +91,7 @@ namespace Windows.Devices.WiFiDirect.Services
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Devices.WiFiDirect.Services.WiFiDirectServiceError ServiceError
 		{
@@ -101,7 +101,7 @@ namespace Windows.Devices.WiFiDirect.Services
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::System.Collections.Generic.IList<global::Windows.Devices.WiFiDirect.Services.WiFiDirectServiceConfigurationMethod> PreferredConfigurationMethods
 		{
@@ -111,7 +111,7 @@ namespace Windows.Devices.WiFiDirect.Services
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  string ServiceName
 		{
@@ -121,7 +121,7 @@ namespace Windows.Devices.WiFiDirect.Services
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::System.Collections.Generic.IList<string> ServiceNamePrefixes
 		{
@@ -131,7 +131,7 @@ namespace Windows.Devices.WiFiDirect.Services
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Devices.WiFiDirect.Services.WiFiDirectServiceAdvertisementStatus AdvertisementStatus
 		{
@@ -141,7 +141,7 @@ namespace Windows.Devices.WiFiDirect.Services
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public WiFiDirectServiceAdvertiser( string serviceName) 
 		{
@@ -172,35 +172,35 @@ namespace Windows.Devices.WiFiDirect.Services
 		// Forced skipping of method Windows.Devices.WiFiDirect.Services.WiFiDirectServiceAdvertiser.AutoAcceptSessionConnected.remove
 		// Forced skipping of method Windows.Devices.WiFiDirect.Services.WiFiDirectServiceAdvertiser.AdvertisementStatusChanged.add
 		// Forced skipping of method Windows.Devices.WiFiDirect.Services.WiFiDirectServiceAdvertiser.AdvertisementStatusChanged.remove
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.WiFiDirect.Services.WiFiDirectServiceSession> ConnectAsync( global::Windows.Devices.Enumeration.DeviceInformation deviceInfo)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<WiFiDirectServiceSession> WiFiDirectServiceAdvertiser.ConnectAsync(DeviceInformation deviceInfo) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.WiFiDirect.Services.WiFiDirectServiceSession> ConnectAsync( global::Windows.Devices.Enumeration.DeviceInformation deviceInfo,  string pin)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<WiFiDirectServiceSession> WiFiDirectServiceAdvertiser.ConnectAsync(DeviceInformation deviceInfo, string pin) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  void Start()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.WiFiDirect.Services.WiFiDirectServiceAdvertiser", "void WiFiDirectServiceAdvertiser.Start()");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  void Stop()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.WiFiDirect.Services.WiFiDirectServiceAdvertiser", "void WiFiDirectServiceAdvertiser.Stop()");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Devices.WiFiDirect.Services.WiFiDirectServiceAdvertiser, object> AdvertisementStatusChanged
 		{
@@ -216,7 +216,7 @@ namespace Windows.Devices.WiFiDirect.Services
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Devices.WiFiDirect.Services.WiFiDirectServiceAdvertiser, global::Windows.Devices.WiFiDirect.Services.WiFiDirectServiceAutoAcceptSessionConnectedEventArgs> AutoAcceptSessionConnected
 		{
@@ -232,7 +232,7 @@ namespace Windows.Devices.WiFiDirect.Services
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Devices.WiFiDirect.Services.WiFiDirectServiceAdvertiser, global::Windows.Devices.WiFiDirect.Services.WiFiDirectServiceSessionRequestedEventArgs> SessionRequested
 		{

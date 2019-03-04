@@ -25,12 +25,12 @@
 
   <Target Name="SetNoWarn"
 				  BeforeTargets="Build"
-				  Condition=" '$(TargetFramework)' == 'net46' ">
+				  Condition=" '$(TargetFramework)' == 'net461' ">
 
 	<!--
 		This target is the equivalent to this property group, until this
 		is fixed: https://github.com/NuGet/Home/issues/6662
-		<PropertyGroup Condition=" '$(TargetFramework)' == 'net46' ">
+		<PropertyGroup Condition=" '$(TargetFramework)' == 'net461' ">
 			<NoWarn>$(NoWarn);67</NoWarn>
 		</PropertyGroup>
 		-->
@@ -61,8 +61,8 @@
   </PropertyGroup>
 
   <PropertyGroup Condition=" '$(TargetFramework)' == 'uap10.0' ">
-	<TargetPlatformVersion>10.0.14393.0</TargetPlatformVersion>
-	<TargetPlatformMinVersion>10.0.14393.0</TargetPlatformMinVersion>
+	<TargetPlatformVersion>10.0.17763.0</TargetPlatformVersion>
+	<TargetPlatformMinVersion>10.0.17763.0</TargetPlatformMinVersion>
 	<DefineConstants>$(DefineConstants);NETFX_CORE</DefineConstants>
 
 	<!-- Ensures the .xr.xml files are generated in a proper layout folder -->
@@ -70,7 +70,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-	<PackageReference Include="xamarin.build.download" Version="0.4.9" />
+	<PackageReference Include="xamarin.build.download" />
   </ItemGroup>
 
   <ItemGroup Condition=" $(IsMonoAndroid) or $(IsXamarinIOS) ">

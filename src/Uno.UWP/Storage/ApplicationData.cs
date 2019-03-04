@@ -1,4 +1,4 @@
-#if !NET46
+#if !NET461
 #pragma warning disable 108 // new keyword hiding
 #pragma warning disable 114 // new keyword hiding
 #pragma warning disable 67 // new keyword hiding

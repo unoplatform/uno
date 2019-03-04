@@ -2,7 +2,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Devices.Input.Preview
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class GazeDeviceWatcherPreview 
@@ -15,21 +15,21 @@ namespace Windows.Devices.Input.Preview
 		// Forced skipping of method Windows.Devices.Input.Preview.GazeDeviceWatcherPreview.Updated.remove
 		// Forced skipping of method Windows.Devices.Input.Preview.GazeDeviceWatcherPreview.EnumerationCompleted.add
 		// Forced skipping of method Windows.Devices.Input.Preview.GazeDeviceWatcherPreview.EnumerationCompleted.remove
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  void Start()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Input.Preview.GazeDeviceWatcherPreview", "void GazeDeviceWatcherPreview.Start()");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  void Stop()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Input.Preview.GazeDeviceWatcherPreview", "void GazeDeviceWatcherPreview.Stop()");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Devices.Input.Preview.GazeDeviceWatcherPreview, global::Windows.Devices.Input.Preview.GazeDeviceWatcherAddedPreviewEventArgs> Added
 		{
@@ -45,7 +45,7 @@ namespace Windows.Devices.Input.Preview
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Devices.Input.Preview.GazeDeviceWatcherPreview, object> EnumerationCompleted
 		{
@@ -61,7 +61,7 @@ namespace Windows.Devices.Input.Preview
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Devices.Input.Preview.GazeDeviceWatcherPreview, global::Windows.Devices.Input.Preview.GazeDeviceWatcherRemovedPreviewEventArgs> Removed
 		{
@@ -77,7 +77,7 @@ namespace Windows.Devices.Input.Preview
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Devices.Input.Preview.GazeDeviceWatcherPreview, global::Windows.Devices.Input.Preview.GazeDeviceWatcherUpdatedPreviewEventArgs> Updated
 		{

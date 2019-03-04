@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Media.Devices
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class LowLagPhotoSequenceControl 
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Media.MediaProperties.MediaThumbnailFormat ThumbnailFormat
 		{
@@ -21,7 +21,7 @@ namespace Windows.Media.Devices
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  bool ThumbnailEnabled
 		{
@@ -35,7 +35,7 @@ namespace Windows.Media.Devices
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  float PhotosPerSecondLimit
 		{
@@ -49,7 +49,7 @@ namespace Windows.Media.Devices
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  uint PastPhotoLimit
 		{
@@ -63,7 +63,7 @@ namespace Windows.Media.Devices
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  uint DesiredThumbnailSize
 		{
@@ -77,7 +77,7 @@ namespace Windows.Media.Devices
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  uint HardwareAcceleratedThumbnailSupported
 		{
@@ -87,7 +87,7 @@ namespace Windows.Media.Devices
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  uint MaxPastPhotos
 		{
@@ -97,7 +97,7 @@ namespace Windows.Media.Devices
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  float MaxPhotosPerSecond
 		{
@@ -107,7 +107,7 @@ namespace Windows.Media.Devices
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  bool Supported
 		{
@@ -124,14 +124,14 @@ namespace Windows.Media.Devices
 		// Forced skipping of method Windows.Media.Devices.LowLagPhotoSequenceControl.PastPhotoLimit.set
 		// Forced skipping of method Windows.Media.Devices.LowLagPhotoSequenceControl.PhotosPerSecondLimit.get
 		// Forced skipping of method Windows.Media.Devices.LowLagPhotoSequenceControl.PhotosPerSecondLimit.set
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Media.MediaProperties.MediaRatio GetHighestConcurrentFrameRate( global::Windows.Media.MediaProperties.IMediaEncodingProperties captureProperties)
 		{
 			throw new global::System.NotImplementedException("The member MediaRatio LowLagPhotoSequenceControl.GetHighestConcurrentFrameRate(IMediaEncodingProperties captureProperties) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Media.MediaProperties.MediaRatio GetCurrentFrameRate()
 		{

@@ -30,7 +30,7 @@ using ViewGroup = AppKit.NSView;
 using Color = AppKit.NSColor;
 using Font = AppKit.NSFont;
 using AppKit;
-#elif __WASM__ || NET46
+#elif __WASM__ || NET461
 using View = Windows.UI.Xaml.UIElement;
 #endif
 
