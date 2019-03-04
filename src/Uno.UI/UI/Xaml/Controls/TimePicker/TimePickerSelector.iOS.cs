@@ -48,10 +48,10 @@ namespace Windows.UI.Xaml.Controls
 
 		public void Initialize()
 		{
-			SaveInitialTime();
 			SetPickerClockIdentifier(ClockIdentifier);
 			SetPickerMinuteIncrement(MinuteIncrement);
 			SetPickerTime(Time.RoundToNextMinuteInterval(MinuteIncrement));
+			SaveInitialTime();
 		}
 
 		private void SetPickerMinuteIncrement(int minuteIncrement)

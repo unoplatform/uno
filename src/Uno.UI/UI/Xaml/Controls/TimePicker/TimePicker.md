@@ -36,7 +36,8 @@ In case clock mode still appear for some reason picked value will be rounded to 
 
 #### iOS
 Native time picker is wrapped in the flyout.
-Timepicker flyout appear at bottom of the screen.
+Set 'ios:FlyoutPlacement' property to change flyout docking placement
+Default 'ios:FlyoutPlacement' is 'Full' and will dock of the flyout at the bottom of the screen
 You can change the flyout button by copying and modifying TimePickerFlyoutButtonStyle.
 You can change the flyout button by copying and modifying TimePickerFlyoutPresenterStyle.
 

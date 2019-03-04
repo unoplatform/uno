@@ -50,7 +50,7 @@ namespace Windows.UI.Xaml.Controls
 					coerceValueCallback: (s, e) =>
 					{
 						var ts = (TimeSpan)e;
-						return new TimeSpan(ts.Hours, ts.Minutes, 0);
+						return new TimeSpan(ts.Days, ts.Hours, ts.Minutes, 0);
 					})
 				);
 
@@ -89,11 +89,22 @@ namespace Windows.UI.Xaml.Controls
 
 		#endregion
 
-		/// <summary>
-		/// Property that allows apps to specify any flyout placement 
-		/// (especially FlyoutPlacementMode.Full, which is commonly used on iPhone)
-		/// </summary>
-		public FlyoutPlacementMode FlyoutPlacement { get; set; }
+		#region FlyoutPlacement DependencyProperty
+
+		public FlyoutPlacementMode FlyoutPlacement
+		{
+			get { return (FlyoutPlacementMode)this.GetValue(FlyoutPlacementProperty); }
+			set { this.SetValue(FlyoutPlacementProperty, value); }
+		}
+
+		public static readonly DependencyProperty FlyoutPlacementProperty =
+			DependencyProperty.Register(
+				"FlyoutPlacement",
+				typeof(FlyoutPlacementMode),
+				typeof(TimePicker),
+				new FrameworkPropertyMetadata(FlyoutPlacementMode.Full));
+
+		#endregion
 
 		protected override void OnApplyTemplate()
 		{
@@ -204,6 +215,4 @@ namespace Windows.UI.Xaml.Controls
 		}
 	}
 }
-
-
 #endif

@@ -1949,7 +1949,10 @@
 				Value="Left" />
 		<Setter Property="VerticalAlignment"
 				Value="Center" />
-		<Setter Property="Template">
+        <!-- Uno specific property use only in ios, set placement to "Full" to dock of the flyout at the bottom of the screen -->
+        <ios:Setter Property="FlyoutPlacement"
+				Value="Full" />
+        <Setter Property="Template">
 			<Setter.Value>
 				<ControlTemplate TargetType="TimePicker">
 					<StackPanel x:Name="LayoutRoot"
