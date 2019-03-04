@@ -152,11 +152,6 @@ namespace Windows.UI.Composition
 
 			_onAnimationStarted = (s, e) =>
 			{
-				// This will disable the transform while the native animation handles it
-				// It must be the first thing we do when the animation starts
-				// (However we have to wait for the first frame in order to not remove the transform while waiting for the BeginTime)
-				_prepare?.Invoke();
-
 				var anim = s as CAAnimation;
 
 				if (anim == null)
@@ -215,6 +210,7 @@ namespace Windows.UI.Composition
 
 			_animation.AnimationStarted += _onAnimationStarted;
 
+			_prepare?.Invoke();
 			layer.AddAnimation(_animation, _key);
 		}
 
