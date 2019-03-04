@@ -4,8 +4,8 @@ using System.Text;
 
 namespace Uno.UI.Extensions
 {
-    public static class TimeSpanExtensions
-    {
+	public static class TimeSpanExtensions
+	{
 		public static string ToXamlString(this TimeSpan timeSpan, IFormatProvider provider)
 		{
 			var builder = new StringBuilder();
@@ -27,6 +27,7 @@ namespace Uno.UI.Extensions
 
 		/// <summary>
 		/// Round timespan to previous minute interval
+		/// input time seconds are ignored
 		/// </summary>
 		/// <param name="interval">minute interval</param>
 		/// <returns>Rounded timespan</returns>
@@ -34,7 +35,7 @@ namespace Uno.UI.Extensions
 		{
 			if (interval > 0 && time != TimeSpan.Zero)
 			{
-				var roundedMinutes = Math.Floor(time.TotalMinutes / interval) * interval;
+				var roundedMinutes = Math.Floor(Math.Truncate(time.TotalMinutes) / interval) * interval;
 				return TimeSpan.FromMinutes(roundedMinutes);
 			}
 
@@ -43,6 +44,7 @@ namespace Uno.UI.Extensions
 
 		/// <summary>
 		/// Round timespan to next minute interval
+		/// input time seconds are ignored
 		/// </summary>
 		/// <param name="interval">minute interval</param>
 		/// <returns>Rounded timespan</returns>
@@ -50,7 +52,7 @@ namespace Uno.UI.Extensions
 		{
 			if (interval > 0 && time != TimeSpan.Zero)
 			{
-				var roundedMinutes = Math.Ceiling(time.TotalMinutes / interval) * interval;
+				var roundedMinutes = Math.Ceiling(Math.Truncate(time.TotalMinutes) / interval) * interval;
 				return TimeSpan.FromMinutes(roundedMinutes);
 			}
 
@@ -59,6 +61,7 @@ namespace Uno.UI.Extensions
 
 		/// <summary>
 		/// Round timespan to minute interval
+		/// input time seconds are ignored
 		/// </summary>
 		/// <param name="interval">minute interval</param>
 		/// <returns>Rounded timespan</returns>
@@ -66,7 +69,7 @@ namespace Uno.UI.Extensions
 		{
 			if (interval > 0 && time != TimeSpan.Zero)
 			{
-				var roundedMinutes = Math.Round(time.TotalMinutes / interval) * interval;
+				var roundedMinutes = Math.Round(Math.Truncate(time.TotalMinutes) / interval) * interval;
 				return TimeSpan.FromMinutes(roundedMinutes);
 			}
 

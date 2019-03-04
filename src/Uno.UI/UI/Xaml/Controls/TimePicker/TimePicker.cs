@@ -30,6 +30,32 @@ namespace Windows.UI.Xaml.Controls
 
 		public TimePicker() { }
 
+		#region Time DependencyProperty
+
+		public TimeSpan Time
+		{
+			get { return (TimeSpan)this.GetValue(TimeProperty); }
+			set { this.SetValue(TimeProperty, value); }
+		}
+
+		public static readonly DependencyProperty TimeProperty =
+			DependencyProperty.Register(
+				"Time",
+				typeof(TimeSpan),
+				typeof(TimePicker),
+				new FrameworkPropertyMetadata(
+					defaultValue: DateTime.Now.TimeOfDay,
+					options: FrameworkPropertyMetadataOptions.None,
+					propertyChangedCallback: (s, e) => ((TimePicker)s)?.OnTimeChangedPartial((TimeSpan)e.OldValue, (TimeSpan)e.NewValue),
+					coerceValueCallback: (s, e) =>
+					{
+						var ts = (TimeSpan)e;
+						return new TimeSpan(ts.Days, ts.Hours, ts.Minutes, 0);
+					})
+				);
+
+		#endregion
+
 		#region MinuteIncrement DependencyProperty
 
 		public int MinuteIncrement
@@ -63,11 +89,22 @@ namespace Windows.UI.Xaml.Controls
 
 		#endregion
 
-		/// <summary>
-		/// Property that allows apps to specify any flyout placement 
-		/// (especially FlyoutPlacementMode.Full, which is commonly used on iPhone)
-		/// </summary>
-		public FlyoutPlacementMode FlyoutPlacement { get; set; }
+		#region FlyoutPlacement DependencyProperty
+
+		public FlyoutPlacementMode FlyoutPlacement
+		{
+			get { return (FlyoutPlacementMode)this.GetValue(FlyoutPlacementProperty); }
+			set { this.SetValue(FlyoutPlacementProperty, value); }
+		}
+
+		public static readonly DependencyProperty FlyoutPlacementProperty =
+			DependencyProperty.Register(
+				"FlyoutPlacement",
+				typeof(FlyoutPlacementMode),
+				typeof(TimePicker),
+				new FrameworkPropertyMetadata(FlyoutPlacementMode.Full));
+
+		#endregion
 
 		protected override void OnApplyTemplate()
 		{
@@ -123,7 +160,7 @@ namespace Windows.UI.Xaml.Controls
 			UpdateDisplayedDate();
 		}
 
-		partial void OnTimeChangedPartial(TimeSpan oldTime, TimeSpan newTime)
+		void OnTimeChangedPartial(TimeSpan oldTime, TimeSpan newTime)
 		{
 			UpdateDisplayedDate();
 		}
@@ -178,6 +215,4 @@ namespace Windows.UI.Xaml.Controls
 		}
 	}
 }
-
-
 #endif

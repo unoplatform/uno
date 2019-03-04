@@ -239,3 +239,5 @@
  * 148228 [Android] Right theme (clock or spinner) is selected for specific time increments 
  * 148229 [Android] Right time is picked and rounded to nearest time increment in clock mode 
  * 148241 [Android] won't open if `MinuteIncrement` is not set
+ * 148582 Time picker initial time when using time increment is using initial time seconds when rounding.. it should ignore seconds.. 
+ * 148285 [iOS] TimePicker is clipped off screen when ios:FlyoutPlacement isnt set
