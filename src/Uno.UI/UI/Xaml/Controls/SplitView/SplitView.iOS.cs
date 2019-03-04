@@ -17,7 +17,7 @@ namespace Windows.UI.Xaml.Controls
 				This seems to be related to the fact that  animations of SplitView are altering the Grid.Column and the Visibility 
 				of some controls.
 				Usually it will become fully visible/hidden when a rendering cycle occurs, but this causes
-				a delay for the users which seems awkward.
+				a delay for the users which seems aukward.
 				The patch here only ensure to invalidate the view to force a layouting cycle.
 			
 		*/
