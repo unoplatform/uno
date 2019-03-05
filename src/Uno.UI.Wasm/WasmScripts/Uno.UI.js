@@ -1317,6 +1317,7 @@ var Uno;
                     }
                     unoBody.style.cursor = cssCursor;
                 }
+                return "ok";
             }
         }
         WindowManager._isHosted = false;

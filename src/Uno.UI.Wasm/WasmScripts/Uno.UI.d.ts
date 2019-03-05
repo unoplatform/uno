@@ -443,7 +443,7 @@ declare namespace Uno.UI {
         private resize();
         private dispatchEvent(element, eventName, eventPayload?);
         private getIsConnectedToRootElement(element);
-        setCursor(cssCursor: string): void;
+        setCursor(cssCursor: string): string;
     }
 }
 declare class WindowManagerAddViewParams {
