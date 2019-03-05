@@ -821,6 +821,22 @@ var Uno;
                     : "";
             }
             /**
+             * tapped (mouse clicked / double clicked) event extractor to be used with registerEventOnView
+             * @param evt
+             */
+            focusEventExtractor(evt) {
+                if (evt) {
+                    const targetElement = evt.target;
+                    if (targetElement) {
+                        const targetXamlHandle = targetElement.getAttribute("XamlHandle");
+                        if (targetXamlHandle) {
+                            return `${targetXamlHandle}`;
+                        }
+                    }
+                }
+                return "";
+            }
+            /**
              * Gets the event extractor function. See UIElement.HtmlEventExtractor
              * @param eventExtractorName an event extractor name.
              */
@@ -833,6 +849,8 @@ var Uno;
                             return this.keyboardEventExtractor;
                         case "TappedEventExtractor":
                             return this.tappedEventExtractor;
+                        case "FocusEventExtractor":
+                            return this.focusEventExtractor;
                     }
                     throw `Event filter ${eventExtractorName} is not supported`;
                 }
@@ -1281,6 +1299,24 @@ var Uno;
                     return false;
                 }
                 return rootElement === element || rootElement.contains(element);
+            }
+            setCursor(cssCursor) {
+                const unoBody = document.getElementById(this.containerElementId);
+                if (unoBody) {
+                    //always cleanup
+                    if (this.cursorStyleElement != undefined) {
+                        this.cursorStyleElement.remove();
+                        this.cursorStyleElement = undefined;
+                    }
+                    //only add custom overriding style if not auto 
+                    if (cssCursor != "auto") {
+                        // this part is only to override default css:  .uno-buttonbase {cursor: pointer;}
+                        this.cursorStyleElement = document.createElement("style");
+                        this.cursorStyleElement.innerHTML = ".uno-buttonbase { cursor: " + cssCursor + "; }";
+                        document.body.appendChild(this.cursorStyleElement);
+                    }
+                    unoBody.style.cursor = cssCursor;
+                }
             }
         }
         WindowManager._isHosted = false;

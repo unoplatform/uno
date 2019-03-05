@@ -126,6 +126,7 @@ declare namespace Uno.UI {
         static initNative(pParams: number): boolean;
         private containerElement;
         private rootContent;
+        private cursorStyleElement;
         private allActiveElementsById;
         private static resizeMethod;
         private static dispatchEventMethod;
@@ -326,6 +327,11 @@ declare namespace Uno.UI {
          */
         private tappedEventExtractor(evt);
         /**
+         * tapped (mouse clicked / double clicked) event extractor to be used with registerEventOnView
+         * @param evt
+         */
+        private focusEventExtractor(evt);
+        /**
          * Gets the event extractor function. See UIElement.HtmlEventExtractor
          * @param eventExtractorName an event extractor name.
          */
@@ -437,6 +443,7 @@ declare namespace Uno.UI {
         private resize();
         private dispatchEvent(element, eventName, eventPayload?);
         private getIsConnectedToRootElement(element);
+        setCursor(cssCursor: string): void;
     }
 }
 declare class WindowManagerAddViewParams {
