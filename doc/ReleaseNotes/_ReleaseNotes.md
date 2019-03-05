@@ -77,6 +77,7 @@
     - Move to net461 for test projects so the the Uno.Xaml project can be referenced properly
     - Use the latest MSBuild.Sdk.Extras for actual parallel cross-targeted builds
     - Move the nuget package versions to the Directory.Build.targets file so it's easier to change all versions at once.
+* Improve XAML generation error messages for unknown symbols
 
 ### Breaking changes
 * Refactored ToggleSwitch Default Native XAML Styles. (cf. 'NativeDefaultToggleSwitch' styles in Generic.Native.xaml)
