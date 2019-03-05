@@ -13,6 +13,7 @@ using System.Collections.Specialized;
 using System.Linq;
 using System.Numerics;
 using Uno.Disposables;
+using Uno.Collections;
 using Uno.Extensions;
 using Uno.Logging;
 using Uno.UI.Helpers.WinUI;
@@ -30,6 +31,7 @@ using Windows.UI.Xaml.Hosting;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Animation;
+using Uno.Extensions.Specialized;
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -1503,7 +1505,7 @@ namespace Windows.UI.Xaml.Controls
 					break;
 				case NavigationViewVisualStateDisplayMode.Minimal:
 					visualStateName = visualStateNameMinimal;
-					splitViewDisplayMode = SplitViewDisplayMode.CompactOverlay;
+					splitViewDisplayMode = SplitViewDisplayMode.Overlay;
 					break;
 				case NavigationViewVisualStateDisplayMode.Compact:
 					visualStateName = "Compact";
