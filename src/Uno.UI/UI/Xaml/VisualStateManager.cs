@@ -112,6 +112,19 @@ namespace Windows.UI.Xaml
 				return false;
 			}
 
+			if(templateRoot is FrameworkElement fe)
+			{
+				if(fe.GoToElementState(stateName, useTransitions))
+				{
+					if (typeof(VisualStateManager).Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+					{
+						typeof(VisualStateManager).Log().DebugFormat($"GoToElementStateCore({stateName}) override on [{control}]");
+					}
+
+					return true;
+				}
+			}
+
 			var groups = GetVisualStateGroups(templateRoot);
 
 			if (groups == null)

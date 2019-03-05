@@ -621,13 +621,6 @@ namespace Windows.UI.Xaml
 		// Skipping already declared method Windows.UI.Xaml.FrameworkElement.MeasureOverride(Windows.Foundation.Size)
 		// Skipping already declared method Windows.UI.Xaml.FrameworkElement.ArrangeOverride(Windows.Foundation.Size)
 		// Skipping already declared method Windows.UI.Xaml.FrameworkElement.OnApplyTemplate()
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		protected virtual bool GoToElementStateCore( string stateName,  bool useTransitions)
-		{
-			throw new global::System.NotImplementedException("The member bool FrameworkElement.GoToElementStateCore(string stateName, bool useTransitions) is not implemented in Uno.");
-		}
-		#endif
 		// Forced skipping of method Windows.UI.Xaml.FrameworkElement.ActualThemeProperty.get
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
