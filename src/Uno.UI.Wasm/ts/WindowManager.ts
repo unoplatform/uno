@@ -1669,7 +1669,7 @@
 			return rootElement === element || rootElement.contains(element);
 		}
 
-		public setCursor( cssCursor: string) {
+		public setCursor(cssCursor: string): string {
 			const unoBody = document.getElementById(this.containerElementId);
 
 			if (unoBody) {
@@ -1692,6 +1692,7 @@
 
 				unoBody.style.cursor = cssCursor;
 			}
+			return "ok";
 		}
 	}
 
