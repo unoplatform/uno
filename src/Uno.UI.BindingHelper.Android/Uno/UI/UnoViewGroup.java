@@ -11,7 +11,6 @@ import java.lang.reflect.*;
 import java.util.Map;
 import java.util.HashMap;
 
-
 public abstract class UnoViewGroup
         extends android.view.ViewGroup
 		implements UnoViewParent{
@@ -20,7 +19,7 @@ public abstract class UnoViewGroup
 	private boolean _isEnabled;
     private boolean _isHitTestVisible;
     private UnoGestureDetector _gestureDetector;
-    
+
     private boolean _childHandledTouchEvent;
     private boolean _childBlockedTouchEvent;
     private boolean _childIsUnoViewGroup;
@@ -298,7 +297,24 @@ public abstract class UnoViewGroup
         super.setAlpha(opacity);
     }
 
-    public boolean dispatchTouchEvent(MotionEvent e)
+	/*
+	// To trace the 'dispatchTouchEvent', uncomment this and then uncomment logs in the method itself
+	private static String _indent = "";
+	public boolean dispatchTouchEvent(MotionEvent e)
+	{
+		String originalIndent = _indent;
+		Log.i("", _indent + "    + " + this.toString());
+		_indent += "    | ";
+
+		boolean dispatched = dispatchTouchEventCore(e);
+
+		_indent = originalIndent;
+
+		return dispatched;
+	}
+
+	public boolean dispatchTouchEventCore(MotionEvent e)*/
+	public boolean dispatchTouchEvent(MotionEvent e)
     {
         // The purpose of dispatchTouchEvent is to find the target (view) of a touch event. 
         // When the user touches the screen, dispatchTouchEvent is called on the top-most view, and recursively passed down to all children.
@@ -330,7 +346,7 @@ public abstract class UnoViewGroup
         // - Parent is native ->
         //	   - return true if isHandlingTouchEvent 
         //       (because native views can't read _childBlockedTouchEvent and _childHandledTouchEvent, and will assume true to mean the event was handled)
-        
+
         // Reset possibly invalid states (set by children in previous calls)
         _childIsUnoViewGroup = false;
         _childBlockedTouchEvent = false;
@@ -357,10 +373,72 @@ public abstract class UnoViewGroup
         // even if the point is outside the view bounds.
         _isPointInView = isLocalTouchPointInView(_transformedTouchX, _transformedTouchY); // takes clipping into account
 
-		// Always dispatch the touch events, otherwise system controls may not behave
-		// properly, such as not displaying "material design" animation cues (e.g. the
-		// growing circles in buttons when keeping pressed (RippleEffect)).
-		boolean superDispatchTouchEvent = super.dispatchTouchEvent(e);
+		//Log.i("", _indent + "MotionEvent: " + e.toString());
+		//Log.i("", _indent + "_isPointInView: " + _isPointInView);
+
+		// Note: Always dispatch the touch events, otherwise system controls may not behave
+		//		 properly, such as not displaying "material design" animation cues
+		//		 (e.g. the growing circles in buttons when keeping pressed (RippleEffect)).
+
+		boolean superDispatchTouchEvent = false;
+		if (_childrenTransformations.size() == 0
+			|| e.getAction() == MotionEvent.ACTION_CANCEL) {
+			// We don't have any child which has s static transform, or the event is a "cancel" (cf. https://android.googlesource.com/platform/frameworks/base/+/0e71b4f19ba602c8c646744e690ab01c69808b42/core/java/android/view/ViewGroup.java#3013)
+			// propagate the event through the 'super' logic
+
+			superDispatchTouchEvent = super.dispatchTouchEvent(e);
+		} else {
+
+			// As super ViewGroup won't apply the "StaticTransform" on the event (cf. https://android.googlesource.com/platform/frameworks/base/+/0e71b4f19ba602c8c646744e690ab01c69808b42/core/java/android/view/ViewGroup.java#2992)
+			// when it determines if the `MotionEvent` is "in the view" of the child (https://android.googlesource.com/platform/frameworks/base/+/0e71b4f19ba602c8c646744e690ab01c69808b42/core/java/android/view/ViewGroup.java#2975)
+			// the event will be filtered out and won't be propagated properly to all children (https://android.googlesource.com/platform/frameworks/base/+/0e71b4f19ba602c8c646744e690ab01c69808b42/core/java/android/view/ViewGroup.java#2665)
+			// As a result a UIElement which has a `RenderTransform` won't be able to handle tap properly.
+			// To workaround this, if we have some child transformation, we propagate the event by ourseleves.
+			// Doing this we bypass a lot of logic done by the super ViewGroup, (https://android.googlesource.com/platform/frameworks/base/+/0e71b4f19ba602c8c646744e690ab01c69808b42/core/java/android/view/ViewGroup.java#2557)
+			// especially optimization of the TouchTarget resolving / tracking. (https://android.googlesource.com/platform/frameworks/base/+/0e71b4f19ba602c8c646744e690ab01c69808b42/core/java/android/view/ViewGroup.java#2654)
+			// We assume that events that are wronlgy dispatched to children are going to be filteerd by children themselves
+			// and thios support is sufficent enough for our current cases.
+			// Note: this is not fully complient with the UWP contract (cf. https://github.com/nventive/Uno/issues/649)
+
+			Matrix inverse = new Matrix();
+
+			for (int i = 0; i < getChildCount(); i++) {
+				View child = getChildAt(i);
+
+				final Matrix transform = _childrenTransformations.get(child);
+				final float offsetX = getScrollX() - child.getLeft();
+				final float offsetY = getScrollY() - child.getTop();
+
+				if (transform == null || transform.isIdentity()) {
+					// No meaningfull transformation on this child, instead of cloning the MetionEvent,
+					// we only offset the current one, propagate it to the child and then offset it back to its original values.
+
+					e.offsetLocation(offsetX, offsetY);
+
+					superDispatchTouchEvent = child.dispatchTouchEvent(e);
+
+					e.offsetLocation(-offsetX, -offsetY);
+				} else {
+					// We have a valid static trasnform on this child, we have to transform the MotionEvent
+					// into the child coordinates.
+
+					final MotionEvent transformedEvent = MotionEvent.obtain(e);
+
+					transformedEvent.offsetLocation(offsetX, offsetY);
+					transform.invert(inverse);
+					transformedEvent.transform(inverse);
+
+					superDispatchTouchEvent = child.dispatchTouchEvent(transformedEvent);
+
+					transformedEvent.recycle();
+				}
+
+				// Stop at the first child which is able to handle the event
+				if (superDispatchTouchEvent) {
+					break;
+				}
+			}
+		}
 
 		final boolean didPointerExit = wasPointInView &&
 				!_isPointInView &&
@@ -387,16 +465,15 @@ public abstract class UnoViewGroup
         boolean isHandlingTouchEvent = _childHandledTouchEvent ||
 				((isBlockingTouchEvent || didPointerExit) && tryHandleTouchEvent(e, _isPointInView, wasPointInView, isCurrentPointer));
 
-        // Log.i(this.toString(), "MotionEvent: " + e.toString());
-        // Log.i(this.toString(), "superDispatchTouchEvent: " + superDispatchTouchEvent);
-        // Log.i(this.toString(), "_childBlockedTouchEvent: " + _childBlockedTouchEvent);
-        // Log.i(this.toString(), "_childHandledTouchEvent: " + _childHandledTouchEvent);
-        // Log.i(this.toString(), "isBlockingTouchEvent: " + isBlockingTouchEvent);
-        // Log.i(this.toString(), "isHandlingTouchEvent: " + isHandlingTouchEvent);
+		//Log.i("", _indent + "superDispatchTouchEvent: " + superDispatchTouchEvent);
+        //Log.i("", _indent + "_childBlockedTouchEvent: " + _childBlockedTouchEvent);
+        //Log.i("", _indent + "_childHandledTouchEvent: " + _childHandledTouchEvent);
+        //Log.i("", _indent + "isBlockingTouchEvent: " + isBlockingTouchEvent);
+        //Log.i("", _indent + "isHandlingTouchEvent: " + isHandlingTouchEvent);
 
 		UnoViewParent parentUnoViewGroup = getParentUnoViewGroup();
         boolean parentIsUnoViewGroup = parentUnoViewGroup != null;
-        // Log.i(this.toString(), "parentIsUnoViewGroup: " + parentIsUnoViewGroup);
+        // Log.i("", _indent + "parentIsUnoViewGroup: " + parentIsUnoViewGroup);
 
         if (parentIsUnoViewGroup)
         {
@@ -405,7 +482,7 @@ public abstract class UnoViewGroup
 
         if (!_isPointInView && !_isPointerCaptured)
         {		
-            // Log.i(this.toString(), "!isPointInView: " + !isPointInView);
+            // Log.i("", _indent + "!isPointInView: " + !isPointInView);
             return false;
         }
 
@@ -637,9 +714,10 @@ public abstract class UnoViewGroup
 	 * @return True if the point is within the view's bounds, false otherwise.
 	 */
     public boolean isLocalTouchPointInView(float x, float y) {
-		return x >= 0 && x < getWidth() && y >= 0 && y < getHeight() &&
-				isWithinClipBounds(x, y) &&
-				getIsParentPointInView(getParent()); // Ensures parent clipping (if any) is taken into account.
+		return x >= 0 && x < getWidth()
+			&& y >= 0 && y < getHeight()
+			&& isWithinClipBounds(x, y)
+			&& getIsParentPointInView(getParent()); // Ensures parent clipping (if any) is taken into account.
 	}
 
 	private boolean isWithinClipBounds(float x, float y) {
@@ -651,11 +729,12 @@ public abstract class UnoViewGroup
 	}
 
 	private static boolean getIsParentPointInView(ViewParent vp) {
-    	if (vp instanceof UnoViewGroup) {
-    		return ((UnoViewGroup) vp).getIsPointInView();
+		if (vp instanceof UnoViewGroup) {
+			return ((UnoViewGroup) vp).getIsPointInView();
 		}
+
 		if (vp instanceof View) {
-    		return getIsParentPointInView(vp.getParent());
+			return getIsParentPointInView(vp.getParent());
 		}
 
 		// Reached Window
@@ -678,14 +757,14 @@ public abstract class UnoViewGroup
 	 */
 	private static void calculateTransformedPoint(View view, float[] point) {
 		ViewParent viewParent = view.getParent();
-    	if (viewParent instanceof View) {
+		if (viewParent instanceof View) {
 			final View parent = (View) viewParent;
-    		point[0] += parent.getScrollX();
-    		point[1] += parent.getScrollY();
+			point[0] += parent.getScrollX();
+			point[1] += parent.getScrollY();
 		}
 
-    	point[0] -= view.getLeft();
-    	point[1] -= view.getTop();
+		point[0] -= view.getLeft();
+		point[1] -= view.getTop();
 
 		// Check the render transform applied by the parent UnoViewGroup
 		Matrix inverse = new Matrix();
@@ -759,6 +838,7 @@ public abstract class UnoViewGroup
 	 * very top of the tree.
 	 */
 	private static float[] getTransformedTouchCoordinate(ViewParent view, MotionEvent e) {
+		// First try to get the transformed touches from the parent if it's a UIElement (UnoViewGroup)
 		if (view instanceof UnoViewGroup) {
 			// Just use cached value
 			float[] point = new float[2];
@@ -767,27 +847,28 @@ public abstract class UnoViewGroup
 			return point;
 		}
 
-		// Non-UIElement view
+		// Non-UIElement view, walk the tree up to the next UIElement
+		// (and adjust coordinate for each layer to include its location, i.e. Top, Left, etc.)
 		final ViewParent parent = view.getParent();
 		if (parent instanceof View) {
 			// Not at root, walk upward
 			float[] coords = getTransformedTouchCoordinate(parent, e);
 			calculateTransformedPoint((View) view, coords);
 			return coords;
-		} else {
-			// Reached the top of the tree
-			float[] point = new float[2];
-			point[0] = e.getRawX();
-			point[1] = e.getRawY();
-			if (view instanceof View) {
-				// Call getLocationOnScreen() to get window offsets which may be non-zero, eg in the case of a popup
-				int[] screenLocation = new int[2];
-				((View) view).getLocationOnScreen(screenLocation);
-				point[0] -= screenLocation[0];
-				point[1] -= screenLocation[1];
-			}
-			return point;
 		}
+
+		// We reached the top of the tree
+		float[] point = new float[2];
+		point[0] = e.getRawX();
+		point[1] = e.getRawY();
+		if (view instanceof View) {
+			// Call getLocationOnScreen() to get window offsets which may be non-zero, eg in the case of a popup
+			int[] screenLocation = new int[2];
+			((View) view).getLocationOnScreen(screenLocation);
+			point[0] -= screenLocation[0];
+			point[1] -= screenLocation[1];
+		}
+		return point;
 	}
 
 	// Allows UI automation operations to look for a single 'Text' property for both ViewGroup and TextView elements.

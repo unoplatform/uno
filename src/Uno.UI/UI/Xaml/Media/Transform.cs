@@ -54,6 +54,7 @@ namespace Windows.UI.Xaml.Media
 		/// <summary>
 		/// The matrix used by this transformation
 		/// </summary>
+		/// <remarks>This matrix does not include any center point</remarks>
 		internal Matrix3x2 MatrixCore { get; private set; } = Matrix3x2.Identity;
 
 		/// <summary>
