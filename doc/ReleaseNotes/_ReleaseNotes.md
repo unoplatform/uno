@@ -210,6 +210,7 @@
  * 138099, 138463 [Android] fixed `ListView` scrolls up when tapping an item at the bottom of screen
  * 140548 [iOS] fixed `CommandBar` not rendering until reloaded
  * [147530] Add a missing `global::` qualifier in the `BindableMetadataGenerator`
+ * [WASM] Add workaround for mono linker issue in AOT mode in `ObservableVectorWrapper`
 
 ## Release 1.41
 
