@@ -81,7 +81,8 @@
 * Adjust `SystemChromeMediumHighColor` to use the Light theme
 * Add support for `FrameworkElement.GoToStateCore`
 * Adjust `ListView` measure/arrange for dynamic content
-* Add some missing default UWP styles ()
+* Add some missing default UWP styles
+* The `FrameworkElement.IsLoaded` property is now public
 * Improve XAML generation error messages for unknown symbols
 
 ### Breaking changes
