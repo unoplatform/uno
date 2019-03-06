@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Devices.Display.Core
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class DisplayWireFormat 
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  int BitsPerChannel
 		{
@@ -17,7 +17,7 @@ namespace Windows.Devices.Display.Core
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Devices.Display.Core.DisplayWireFormatColorSpace ColorSpace
 		{
@@ -27,7 +27,7 @@ namespace Windows.Devices.Display.Core
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Devices.Display.Core.DisplayWireFormatEotf Eotf
 		{
@@ -37,7 +37,7 @@ namespace Windows.Devices.Display.Core
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Devices.Display.Core.DisplayWireFormatHdrMetadata HdrMetadata
 		{
@@ -47,7 +47,7 @@ namespace Windows.Devices.Display.Core
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Devices.Display.Core.DisplayWireFormatPixelEncoding PixelEncoding
 		{
@@ -57,7 +57,7 @@ namespace Windows.Devices.Display.Core
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::System.Collections.Generic.IReadOnlyDictionary<global::System.Guid, object> Properties
 		{
@@ -67,7 +67,7 @@ namespace Windows.Devices.Display.Core
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public DisplayWireFormat( global::Windows.Devices.Display.Core.DisplayWireFormatPixelEncoding pixelEncoding,  int bitsPerChannel,  global::Windows.Devices.Display.Core.DisplayWireFormatColorSpace colorSpace,  global::Windows.Devices.Display.Core.DisplayWireFormatEotf eotf,  global::Windows.Devices.Display.Core.DisplayWireFormatHdrMetadata hdrMetadata) 
 		{
@@ -81,7 +81,7 @@ namespace Windows.Devices.Display.Core
 		// Forced skipping of method Windows.Devices.Display.Core.DisplayWireFormat.Eotf.get
 		// Forced skipping of method Windows.Devices.Display.Core.DisplayWireFormat.HdrMetadata.get
 		// Forced skipping of method Windows.Devices.Display.Core.DisplayWireFormat.Properties.get
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.Devices.Display.Core.DisplayWireFormat CreateWithProperties( global::System.Collections.Generic.IEnumerable<global::System.Collections.Generic.KeyValuePair<global::System.Guid, object>> extraProperties,  global::Windows.Devices.Display.Core.DisplayWireFormatPixelEncoding pixelEncoding,  int bitsPerChannel,  global::Windows.Devices.Display.Core.DisplayWireFormatColorSpace colorSpace,  global::Windows.Devices.Display.Core.DisplayWireFormatEotf eotf,  global::Windows.Devices.Display.Core.DisplayWireFormatHdrMetadata hdrMetadata)
 		{

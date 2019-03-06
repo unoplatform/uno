@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Devices.Bluetooth.Rfcomm
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class RfcommServiceId 
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::System.Guid Uuid
 		{
@@ -17,7 +17,7 @@ namespace Windows.Devices.Bluetooth.Rfcomm
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.Devices.Bluetooth.Rfcomm.RfcommServiceId GenericFileTransfer
 		{
@@ -27,7 +27,7 @@ namespace Windows.Devices.Bluetooth.Rfcomm
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.Devices.Bluetooth.Rfcomm.RfcommServiceId ObexFileTransfer
 		{
@@ -37,7 +37,7 @@ namespace Windows.Devices.Bluetooth.Rfcomm
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.Devices.Bluetooth.Rfcomm.RfcommServiceId ObexObjectPush
 		{
@@ -47,7 +47,7 @@ namespace Windows.Devices.Bluetooth.Rfcomm
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.Devices.Bluetooth.Rfcomm.RfcommServiceId PhoneBookAccessPce
 		{
@@ -57,7 +57,7 @@ namespace Windows.Devices.Bluetooth.Rfcomm
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.Devices.Bluetooth.Rfcomm.RfcommServiceId PhoneBookAccessPse
 		{
@@ -67,7 +67,7 @@ namespace Windows.Devices.Bluetooth.Rfcomm
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.Devices.Bluetooth.Rfcomm.RfcommServiceId SerialPort
 		{
@@ -78,28 +78,28 @@ namespace Windows.Devices.Bluetooth.Rfcomm
 		}
 		#endif
 		// Forced skipping of method Windows.Devices.Bluetooth.Rfcomm.RfcommServiceId.Uuid.get
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  uint AsShortId()
 		{
 			throw new global::System.NotImplementedException("The member uint RfcommServiceId.AsShortId() is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  string AsString()
 		{
 			throw new global::System.NotImplementedException("The member string RfcommServiceId.AsString() is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.Devices.Bluetooth.Rfcomm.RfcommServiceId FromUuid( global::System.Guid uuid)
 		{
 			throw new global::System.NotImplementedException("The member RfcommServiceId RfcommServiceId.FromUuid(Guid uuid) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.Devices.Bluetooth.Rfcomm.RfcommServiceId FromShortId( uint shortId)
 		{

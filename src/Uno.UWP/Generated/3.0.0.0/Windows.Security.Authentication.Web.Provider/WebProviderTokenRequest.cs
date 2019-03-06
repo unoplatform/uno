@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Security.Authentication.Web.Provider
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class WebProviderTokenRequest 
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::System.Uri ApplicationCallbackUri
 		{
@@ -17,7 +17,7 @@ namespace Windows.Security.Authentication.Web.Provider
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Security.Authentication.Web.Core.WebTokenRequest ClientRequest
 		{
@@ -27,7 +27,7 @@ namespace Windows.Security.Authentication.Web.Provider
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Security.Authentication.Web.Provider.WebAccountSelectionOptions WebAccountSelectionOptions
 		{
@@ -37,7 +37,7 @@ namespace Windows.Security.Authentication.Web.Provider
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::System.Collections.Generic.IReadOnlyList<global::Windows.Security.Credentials.WebAccount> WebAccounts
 		{
@@ -47,7 +47,7 @@ namespace Windows.Security.Authentication.Web.Provider
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  string ApplicationPackageFamilyName
 		{
@@ -57,7 +57,7 @@ namespace Windows.Security.Authentication.Web.Provider
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  string ApplicationProcessName
 		{
@@ -71,14 +71,14 @@ namespace Windows.Security.Authentication.Web.Provider
 		// Forced skipping of method Windows.Security.Authentication.Web.Provider.WebProviderTokenRequest.WebAccounts.get
 		// Forced skipping of method Windows.Security.Authentication.Web.Provider.WebProviderTokenRequest.WebAccountSelectionOptions.get
 		// Forced skipping of method Windows.Security.Authentication.Web.Provider.WebProviderTokenRequest.ApplicationCallbackUri.get
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Foundation.IAsyncOperation<global::Windows.Security.Cryptography.Core.CryptographicKey> GetApplicationTokenBindingKeyAsync( global::Windows.Security.Authentication.Web.TokenBindingKeyType keyType,  global::System.Uri target)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<CryptographicKey> WebProviderTokenRequest.GetApplicationTokenBindingKeyAsync(TokenBindingKeyType keyType, Uri target) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.Streams.IBuffer> GetApplicationTokenBindingKeyIdAsync( global::Windows.Security.Authentication.Web.TokenBindingKeyType keyType,  global::System.Uri target)
 		{
@@ -87,7 +87,7 @@ namespace Windows.Security.Authentication.Web.Provider
 		#endif
 		// Forced skipping of method Windows.Security.Authentication.Web.Provider.WebProviderTokenRequest.ApplicationPackageFamilyName.get
 		// Forced skipping of method Windows.Security.Authentication.Web.Provider.WebProviderTokenRequest.ApplicationProcessName.get
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Foundation.IAsyncOperation<bool> CheckApplicationForCapabilityAsync( string capabilityName)
 		{

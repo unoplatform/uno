@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.System.UserProfile
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class FirstSignInSettings : global::System.Collections.Generic.IReadOnlyDictionary<string, object>,global::System.Collections.Generic.IEnumerable<global::System.Collections.Generic.KeyValuePair<string, object>>
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  uint Size
 		{
@@ -22,7 +22,7 @@ namespace Windows.System.UserProfile
 		// Forced skipping of method Windows.System.UserProfile.FirstSignInSettings.HasKey(string)
 		// Forced skipping of method Windows.System.UserProfile.FirstSignInSettings.Split(out System.Collections.Generic.IReadOnlyDictionary<string, object>, out System.Collections.Generic.IReadOnlyDictionary<string, object>)
 		// Forced skipping of method Windows.System.UserProfile.FirstSignInSettings.First()
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.System.UserProfile.FirstSignInSettings GetDefault()
 		{
@@ -30,7 +30,7 @@ namespace Windows.System.UserProfile
 		}
 		#endif
 		// Processing: System.Collections.Generic.IReadOnlyDictionary<string, object>
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		// DeclaringType: System.Collections.Generic.IReadOnlyDictionary<string, object>
 		[global::Uno.NotImplemented]
 		public bool ContainsKey( string key)
@@ -38,7 +38,7 @@ namespace Windows.System.UserProfile
 			throw new global::System.NotSupportedException();
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		// DeclaringType: System.Collections.Generic.IReadOnlyDictionary<string, object>
 		[global::Uno.NotImplemented]
 		public bool TryGetValue( string key, out object value)
@@ -46,7 +46,7 @@ namespace Windows.System.UserProfile
 			throw new global::System.NotSupportedException();
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public object this[string key]
 		{
@@ -60,7 +60,7 @@ namespace Windows.System.UserProfile
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public global::System.Collections.Generic.IEnumerable<string> Keys
 		{
@@ -74,7 +74,7 @@ namespace Windows.System.UserProfile
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public global::System.Collections.Generic.IEnumerable<object> Values
 		{
@@ -89,7 +89,7 @@ namespace Windows.System.UserProfile
 		}
 		#endif
 		// Processing: System.Collections.Generic.IEnumerable<System.Collections.Generic.KeyValuePair<string, object>>
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		// DeclaringType: System.Collections.Generic.IEnumerable<System.Collections.Generic.KeyValuePair<string, object>>
 		[global::Uno.NotImplemented]
 		public global::System.Collections.Generic.IEnumerator<global::System.Collections.Generic.KeyValuePair<string, object>> GetEnumerator()
@@ -98,7 +98,7 @@ namespace Windows.System.UserProfile
 		}
 		#endif
 		// Processing: System.Collections.IEnumerable
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		// DeclaringType: System.Collections.IEnumerable
 		[global::Uno.NotImplemented]
 		 global::System.Collections.IEnumerator global::System.Collections.IEnumerable.GetEnumerator()
@@ -107,7 +107,7 @@ namespace Windows.System.UserProfile
 		}
 		#endif
 		// Processing: System.Collections.Generic.IReadOnlyCollection<System.Collections.Generic.KeyValuePair<string, object>>
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public int Count
 		{

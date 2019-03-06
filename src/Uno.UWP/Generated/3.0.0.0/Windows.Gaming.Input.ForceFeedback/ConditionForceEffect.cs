@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Gaming.Input.ForceFeedback
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class ConditionForceEffect : global::Windows.Gaming.Input.ForceFeedback.IForceFeedbackEffect
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Gaming.Input.ForceFeedback.ConditionForceEffectKind Kind
 		{
@@ -17,7 +17,7 @@ namespace Windows.Gaming.Input.ForceFeedback
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  double Gain
 		{
@@ -31,7 +31,7 @@ namespace Windows.Gaming.Input.ForceFeedback
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Gaming.Input.ForceFeedback.ForceFeedbackEffectState State
 		{
@@ -41,7 +41,7 @@ namespace Windows.Gaming.Input.ForceFeedback
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public ConditionForceEffect( global::Windows.Gaming.Input.ForceFeedback.ConditionForceEffectKind effectKind) 
 		{
@@ -52,14 +52,14 @@ namespace Windows.Gaming.Input.ForceFeedback
 		// Forced skipping of method Windows.Gaming.Input.ForceFeedback.ConditionForceEffect.Gain.get
 		// Forced skipping of method Windows.Gaming.Input.ForceFeedback.ConditionForceEffect.Gain.set
 		// Forced skipping of method Windows.Gaming.Input.ForceFeedback.ConditionForceEffect.State.get
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  void Start()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Gaming.Input.ForceFeedback.ConditionForceEffect", "void ConditionForceEffect.Start()");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  void Stop()
 		{
@@ -67,7 +67,7 @@ namespace Windows.Gaming.Input.ForceFeedback
 		}
 		#endif
 		// Forced skipping of method Windows.Gaming.Input.ForceFeedback.ConditionForceEffect.Kind.get
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  void SetParameters( global::System.Numerics.Vector3 direction,  float positiveCoefficient,  float negativeCoefficient,  float maxPositiveMagnitude,  float maxNegativeMagnitude,  float deadZone,  float bias)
 		{

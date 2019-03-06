@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Gaming.Input.ForceFeedback
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class PeriodicForceEffect : global::Windows.Gaming.Input.ForceFeedback.IForceFeedbackEffect
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  double Gain
 		{
@@ -21,7 +21,7 @@ namespace Windows.Gaming.Input.ForceFeedback
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Gaming.Input.ForceFeedback.ForceFeedbackEffectState State
 		{
@@ -31,7 +31,7 @@ namespace Windows.Gaming.Input.ForceFeedback
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Gaming.Input.ForceFeedback.PeriodicForceEffectKind Kind
 		{
@@ -41,7 +41,7 @@ namespace Windows.Gaming.Input.ForceFeedback
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public PeriodicForceEffect( global::Windows.Gaming.Input.ForceFeedback.PeriodicForceEffectKind effectKind) 
 		{
@@ -52,14 +52,14 @@ namespace Windows.Gaming.Input.ForceFeedback
 		// Forced skipping of method Windows.Gaming.Input.ForceFeedback.PeriodicForceEffect.Gain.get
 		// Forced skipping of method Windows.Gaming.Input.ForceFeedback.PeriodicForceEffect.Gain.set
 		// Forced skipping of method Windows.Gaming.Input.ForceFeedback.PeriodicForceEffect.State.get
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  void Start()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Gaming.Input.ForceFeedback.PeriodicForceEffect", "void PeriodicForceEffect.Start()");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  void Stop()
 		{
@@ -67,14 +67,14 @@ namespace Windows.Gaming.Input.ForceFeedback
 		}
 		#endif
 		// Forced skipping of method Windows.Gaming.Input.ForceFeedback.PeriodicForceEffect.Kind.get
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  void SetParameters( global::System.Numerics.Vector3 vector,  float frequency,  float phase,  float bias,  global::System.TimeSpan duration)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Gaming.Input.ForceFeedback.PeriodicForceEffect", "void PeriodicForceEffect.SetParameters(Vector3 vector, float frequency, float phase, float bias, TimeSpan duration)");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  void SetParametersWithEnvelope( global::System.Numerics.Vector3 vector,  float frequency,  float phase,  float bias,  float attackGain,  float sustainGain,  float releaseGain,  global::System.TimeSpan startDelay,  global::System.TimeSpan attackDuration,  global::System.TimeSpan sustainDuration,  global::System.TimeSpan releaseDuration,  uint repeatCount)
 		{

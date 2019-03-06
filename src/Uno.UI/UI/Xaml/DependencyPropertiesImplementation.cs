@@ -24,7 +24,7 @@ using View = UIKit.UIView;
 #elif XAMARIN_ANDROID
 using Color = Android.Resource.Color;
 using View = Android.Views.View;
-#elif NET46
+#elif NET461
 using Color = System.Object;
 using View = Windows.UI.Xaml.FrameworkElement;
 #endif  

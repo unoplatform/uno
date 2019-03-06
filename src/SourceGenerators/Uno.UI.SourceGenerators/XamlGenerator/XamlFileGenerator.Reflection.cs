@@ -344,10 +344,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			{
 				do
 				{
-					if (type.Kind == SymbolKind.ErrorType)
-					{
-						throw new InvalidOperationException($"Unable to resolve {type} (SymbolKind is ErrorType) {type}");
-					}
+					ThrowOnErrorSymbol(type);
 
 					var resolvedType = type;
 
@@ -414,13 +411,10 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 			if (ownerType != null)
 			{
-				if (ownerType.Kind == SymbolKind.ErrorType)
-				{
-					throw new InvalidOperationException($"Unable to resolve {ownerType} (SymbolKind is ErrorType)");
-				}
+				ThrowOnErrorSymbol(ownerType);
 
-				if(GetEventsForType(ownerType).TryGetValue(xamlMember.Name, out var eventSymbol))
-				{ 
+				if (GetEventsForType(ownerType).TryGetValue(xamlMember.Name, out var eventSymbol))
+				{
 					return eventSymbol;
 				}
 			}
@@ -645,6 +639,19 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		private bool HasInitializer(XamlObjectDefinition objectDefinition)
 		{
 			return objectDefinition.Members.Any(m => m.Member.Name == "_Initialization");
+		}
+
+		private static void ThrowOnErrorSymbol(ISymbol symbol)
+		{
+			if (symbol is IErrorTypeSymbol errorTypeSymbol)
+			{
+				var candidates = string.Join(";", errorTypeSymbol.CandidateSymbols);
+				var location = symbol.Locations.FirstOrDefault()?.ToString() ?? "Unknown";
+
+				throw new InvalidOperationException(
+					$"Unable to resolve {symbol} (Reason: {errorTypeSymbol.CandidateReason}, Location:{location}, Candidates: {candidates})"
+				);
+			}
 		}
 
 		private INamedTypeSymbol FindType(string name)

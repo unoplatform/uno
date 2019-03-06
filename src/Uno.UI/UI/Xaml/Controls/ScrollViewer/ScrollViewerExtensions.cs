@@ -14,7 +14,7 @@ namespace Windows.UI.Xaml.Controls
 		private static ScrollViewer Padding(this ScrollViewer sv, Thickness padding)
 		{
 
-#if !NET46
+#if !NET461
 			sv.Padding = padding;
 #endif
 

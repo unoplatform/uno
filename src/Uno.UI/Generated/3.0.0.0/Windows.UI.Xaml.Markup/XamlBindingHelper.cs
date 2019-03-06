@@ -7,7 +7,7 @@ namespace Windows.UI.Xaml.Markup
 	#endif
 	public  partial class XamlBindingHelper 
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty DataTemplateComponentProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.RegisterAttached(
@@ -16,14 +16,14 @@ namespace Windows.UI.Xaml.Markup
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Markup.IDataTemplateComponent)));
 		#endif
 		// Forced skipping of method Windows.UI.Xaml.Markup.XamlBindingHelper.DataTemplateComponentProperty.get
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.Markup.IDataTemplateComponent GetDataTemplateComponent( global::Windows.UI.Xaml.DependencyObject element)
 		{
 			return (global::Windows.UI.Xaml.Markup.IDataTemplateComponent)element.GetValue(DataTemplateComponentProperty);
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static void SetDataTemplateComponent( global::Windows.UI.Xaml.DependencyObject element,  global::Windows.UI.Xaml.Markup.IDataTemplateComponent value)
 		{

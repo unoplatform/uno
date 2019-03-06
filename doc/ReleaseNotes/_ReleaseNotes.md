@@ -72,6 +72,12 @@
 * [WASM] Improve element arrange and transform performance
 * Restore original SymbolIcon.SymbolProperty as a C# property
 * Add support for `MediaPlaybackList`
+* Update Uno.SourceGenerationTasks to improve build performance
+    - Move to the latest Uno.SourceGenerationTasks to improve project parsing performance, and allows for the removal of unused targets caused by nventive/Uno.SourceGeneration#2. Uno.Xaml and Uno.UI.BindingHelpers now only build the required targets.
+    - Move to net461 for test projects so the the Uno.Xaml project can be referenced properly
+    - Use the latest MSBuild.Sdk.Extras for actual parallel cross-targeted builds
+    - Move the nuget package versions to the Directory.Build.targets file so it's easier to change all versions at once.
+* Improve XAML generation error messages for unknown symbols
 
 ### Breaking changes
 * Refactored ToggleSwitch Default Native XAML Styles. (cf. 'NativeDefaultToggleSwitch' styles in Generic.Native.xaml)
@@ -148,6 +154,8 @@
  * 146648 [Android] fixed ListView grouped items corruption on scroll
  * [Wasm] Fix `ListView` recycling when the `XamlParent` is not available for `AutoSuggestBox`
  * 147405 Fix NRE on some MediaTransportControl controls
+ * #139 Update Uno.SourceGenerationTasks to improve build performance
+ * Update `Uno.UI.Toolkit` base UWP sdk to 17763
 
 ## Release 1.42
 
@@ -229,3 +237,8 @@
  * 136093, 136172 [iOS] ComboBox does not display its Popup
  * 134819, 134828 [iOS] Ensures the back gesture is enabled and disabled properly when the CommandBar is visible, collapsed, visible with a navigation command and collapsed with a navigation command.
  * 137081 Xaml generator doesn't support setting a style on the root control
+ * 148228 [Android] Right theme (clock or spinner) is selected for specific time increments 
+ * 148229 [Android] Right time is picked and rounded to nearest time increment in clock mode 
+ * 148241 [Android] won't open if `MinuteIncrement` is not set
+ * 148582 Time picker initial time when using time increment is using initial time seconds when rounding.. it should ignore seconds.. 
+ * 148285 [iOS] TimePicker is clipped off screen when ios:FlyoutPlacement isnt set

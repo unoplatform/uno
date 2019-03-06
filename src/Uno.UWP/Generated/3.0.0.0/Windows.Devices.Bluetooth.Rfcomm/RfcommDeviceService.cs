@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Devices.Bluetooth.Rfcomm
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class RfcommDeviceService : global::System.IDisposable
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Networking.HostName ConnectionHostName
 		{
@@ -17,7 +17,7 @@ namespace Windows.Devices.Bluetooth.Rfcomm
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  string ConnectionServiceName
 		{
@@ -27,7 +27,7 @@ namespace Windows.Devices.Bluetooth.Rfcomm
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Networking.Sockets.SocketProtectionLevel MaxProtectionLevel
 		{
@@ -37,7 +37,7 @@ namespace Windows.Devices.Bluetooth.Rfcomm
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Networking.Sockets.SocketProtectionLevel ProtectionLevel
 		{
@@ -47,7 +47,7 @@ namespace Windows.Devices.Bluetooth.Rfcomm
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Devices.Bluetooth.Rfcomm.RfcommServiceId ServiceId
 		{
@@ -57,7 +57,7 @@ namespace Windows.Devices.Bluetooth.Rfcomm
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Devices.Bluetooth.BluetoothDevice Device
 		{
@@ -67,7 +67,7 @@ namespace Windows.Devices.Bluetooth.Rfcomm
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Devices.Enumeration.DeviceAccessInformation DeviceAccessInformation
 		{
@@ -82,14 +82,14 @@ namespace Windows.Devices.Bluetooth.Rfcomm
 		// Forced skipping of method Windows.Devices.Bluetooth.Rfcomm.RfcommDeviceService.ServiceId.get
 		// Forced skipping of method Windows.Devices.Bluetooth.Rfcomm.RfcommDeviceService.ProtectionLevel.get
 		// Forced skipping of method Windows.Devices.Bluetooth.Rfcomm.RfcommDeviceService.MaxProtectionLevel.get
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IReadOnlyDictionary<uint, global::Windows.Storage.Streams.IBuffer>> GetSdpRawAttributesAsync()
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<IReadOnlyDictionary<uint, IBuffer>> RfcommDeviceService.GetSdpRawAttributesAsync() is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IReadOnlyDictionary<uint, global::Windows.Storage.Streams.IBuffer>> GetSdpRawAttributesAsync( global::Windows.Devices.Bluetooth.BluetoothCacheMode cacheMode)
 		{
@@ -97,7 +97,7 @@ namespace Windows.Devices.Bluetooth.Rfcomm
 		}
 		#endif
 		// Forced skipping of method Windows.Devices.Bluetooth.Rfcomm.RfcommDeviceService.Device.get
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  void Dispose()
 		{
@@ -105,49 +105,49 @@ namespace Windows.Devices.Bluetooth.Rfcomm
 		}
 		#endif
 		// Forced skipping of method Windows.Devices.Bluetooth.Rfcomm.RfcommDeviceService.DeviceAccessInformation.get
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Enumeration.DeviceAccessStatus> RequestAccessAsync()
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<DeviceAccessStatus> RfcommDeviceService.RequestAccessAsync() is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static string GetDeviceSelectorForBluetoothDevice( global::Windows.Devices.Bluetooth.BluetoothDevice bluetoothDevice)
 		{
 			throw new global::System.NotImplementedException("The member string RfcommDeviceService.GetDeviceSelectorForBluetoothDevice(BluetoothDevice bluetoothDevice) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static string GetDeviceSelectorForBluetoothDevice( global::Windows.Devices.Bluetooth.BluetoothDevice bluetoothDevice,  global::Windows.Devices.Bluetooth.BluetoothCacheMode cacheMode)
 		{
 			throw new global::System.NotImplementedException("The member string RfcommDeviceService.GetDeviceSelectorForBluetoothDevice(BluetoothDevice bluetoothDevice, BluetoothCacheMode cacheMode) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static string GetDeviceSelectorForBluetoothDeviceAndServiceId( global::Windows.Devices.Bluetooth.BluetoothDevice bluetoothDevice,  global::Windows.Devices.Bluetooth.Rfcomm.RfcommServiceId serviceId)
 		{
 			throw new global::System.NotImplementedException("The member string RfcommDeviceService.GetDeviceSelectorForBluetoothDeviceAndServiceId(BluetoothDevice bluetoothDevice, RfcommServiceId serviceId) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static string GetDeviceSelectorForBluetoothDeviceAndServiceId( global::Windows.Devices.Bluetooth.BluetoothDevice bluetoothDevice,  global::Windows.Devices.Bluetooth.Rfcomm.RfcommServiceId serviceId,  global::Windows.Devices.Bluetooth.BluetoothCacheMode cacheMode)
 		{
 			throw new global::System.NotImplementedException("The member string RfcommDeviceService.GetDeviceSelectorForBluetoothDeviceAndServiceId(BluetoothDevice bluetoothDevice, RfcommServiceId serviceId, BluetoothCacheMode cacheMode) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Bluetooth.Rfcomm.RfcommDeviceService> FromIdAsync( string deviceId)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<RfcommDeviceService> RfcommDeviceService.FromIdAsync(string deviceId) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static string GetDeviceSelector( global::Windows.Devices.Bluetooth.Rfcomm.RfcommServiceId serviceId)
 		{

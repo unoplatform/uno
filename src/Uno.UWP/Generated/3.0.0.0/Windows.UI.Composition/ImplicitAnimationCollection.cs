@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Composition
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class ImplicitAnimationCollection : global::Windows.UI.Composition.CompositionObject,global::System.Collections.Generic.IEnumerable<global::System.Collections.Generic.KeyValuePair<string, global::Windows.UI.Composition.ICompositionAnimationBase>>,global::System.Collections.Generic.IDictionary<string, global::Windows.UI.Composition.ICompositionAnimationBase>
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  uint Size
 		{
@@ -26,7 +26,7 @@ namespace Windows.UI.Composition
 		// Forced skipping of method Windows.UI.Composition.ImplicitAnimationCollection.Clear()
 		// Forced skipping of method Windows.UI.Composition.ImplicitAnimationCollection.First()
 		// Processing: System.Collections.Generic.IEnumerable<System.Collections.Generic.KeyValuePair<string, Windows.UI.Composition.ICompositionAnimationBase>>
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		// DeclaringType: System.Collections.Generic.IEnumerable<System.Collections.Generic.KeyValuePair<string, Windows.UI.Composition.ICompositionAnimationBase>>
 		[global::Uno.NotImplemented]
 		public global::System.Collections.Generic.IEnumerator<global::System.Collections.Generic.KeyValuePair<string, global::Windows.UI.Composition.ICompositionAnimationBase>> GetEnumerator()
@@ -35,7 +35,7 @@ namespace Windows.UI.Composition
 		}
 		#endif
 		// Processing: System.Collections.IEnumerable
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		// DeclaringType: System.Collections.IEnumerable
 		[global::Uno.NotImplemented]
 		 global::System.Collections.IEnumerator global::System.Collections.IEnumerable.GetEnumerator()
@@ -44,7 +44,7 @@ namespace Windows.UI.Composition
 		}
 		#endif
 		// Processing: System.Collections.Generic.IDictionary<string, Windows.UI.Composition.ICompositionAnimationBase>
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		// DeclaringType: System.Collections.Generic.IDictionary<string, Windows.UI.Composition.ICompositionAnimationBase>
 		[global::Uno.NotImplemented]
 		public void Add( string key,  global::Windows.UI.Composition.ICompositionAnimationBase value)
@@ -52,7 +52,7 @@ namespace Windows.UI.Composition
 			throw new global::System.NotSupportedException();
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		// DeclaringType: System.Collections.Generic.IDictionary<string, Windows.UI.Composition.ICompositionAnimationBase>
 		[global::Uno.NotImplemented]
 		public bool ContainsKey( string key)
@@ -60,7 +60,7 @@ namespace Windows.UI.Composition
 			throw new global::System.NotSupportedException();
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		// DeclaringType: System.Collections.Generic.IDictionary<string, Windows.UI.Composition.ICompositionAnimationBase>
 		[global::Uno.NotImplemented]
 		public bool Remove( string key)
@@ -68,7 +68,7 @@ namespace Windows.UI.Composition
 			throw new global::System.NotSupportedException();
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		// DeclaringType: System.Collections.Generic.IDictionary<string, Windows.UI.Composition.ICompositionAnimationBase>
 		[global::Uno.NotImplemented]
 		public bool TryGetValue( string key, out global::Windows.UI.Composition.ICompositionAnimationBase value)
@@ -76,7 +76,7 @@ namespace Windows.UI.Composition
 			throw new global::System.NotSupportedException();
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public global::Windows.UI.Composition.ICompositionAnimationBase this[string key]
 		{
@@ -90,7 +90,7 @@ namespace Windows.UI.Composition
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public global::System.Collections.Generic.ICollection<string> Keys
 		{
@@ -104,7 +104,7 @@ namespace Windows.UI.Composition
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public global::System.Collections.Generic.ICollection<global::Windows.UI.Composition.ICompositionAnimationBase> Values
 		{
@@ -119,7 +119,7 @@ namespace Windows.UI.Composition
 		}
 		#endif
 		// Processing: System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<string, Windows.UI.Composition.ICompositionAnimationBase>>
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		// DeclaringType: System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<string, Windows.UI.Composition.ICompositionAnimationBase>>
 		[global::Uno.NotImplemented]
 		public void Add( global::System.Collections.Generic.KeyValuePair<string, global::Windows.UI.Composition.ICompositionAnimationBase> item)
@@ -127,7 +127,7 @@ namespace Windows.UI.Composition
 			throw new global::System.NotSupportedException();
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		// DeclaringType: System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<string, Windows.UI.Composition.ICompositionAnimationBase>>
 		[global::Uno.NotImplemented]
 		public void Clear()
@@ -135,7 +135,7 @@ namespace Windows.UI.Composition
 			throw new global::System.NotSupportedException();
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		// DeclaringType: System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<string, Windows.UI.Composition.ICompositionAnimationBase>>
 		[global::Uno.NotImplemented]
 		public bool Contains( global::System.Collections.Generic.KeyValuePair<string, global::Windows.UI.Composition.ICompositionAnimationBase> item)
@@ -143,7 +143,7 @@ namespace Windows.UI.Composition
 			throw new global::System.NotSupportedException();
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		// DeclaringType: System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<string, Windows.UI.Composition.ICompositionAnimationBase>>
 		[global::Uno.NotImplemented]
 		public void CopyTo( global::System.Collections.Generic.KeyValuePair<string, global::Windows.UI.Composition.ICompositionAnimationBase>[] array,  int arrayIndex)
@@ -151,7 +151,7 @@ namespace Windows.UI.Composition
 			throw new global::System.NotSupportedException();
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		// DeclaringType: System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<string, Windows.UI.Composition.ICompositionAnimationBase>>
 		[global::Uno.NotImplemented]
 		public bool Remove( global::System.Collections.Generic.KeyValuePair<string, global::Windows.UI.Composition.ICompositionAnimationBase> item)
@@ -159,7 +159,7 @@ namespace Windows.UI.Composition
 			throw new global::System.NotSupportedException();
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public int Count
 		{
@@ -173,7 +173,7 @@ namespace Windows.UI.Composition
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public bool IsReadOnly
 		{

@@ -2,7 +2,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Input.Spatial
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class SpatialInteractionManager 
@@ -19,21 +19,21 @@ namespace Windows.UI.Input.Spatial
 		// Forced skipping of method Windows.UI.Input.Spatial.SpatialInteractionManager.SourceReleased.remove
 		// Forced skipping of method Windows.UI.Input.Spatial.SpatialInteractionManager.InteractionDetected.add
 		// Forced skipping of method Windows.UI.Input.Spatial.SpatialInteractionManager.InteractionDetected.remove
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::System.Collections.Generic.IReadOnlyList<global::Windows.UI.Input.Spatial.SpatialInteractionSourceState> GetDetectedSourcesAtTimestamp( global::Windows.Perception.PerceptionTimestamp timeStamp)
 		{
 			throw new global::System.NotImplementedException("The member IReadOnlyList<SpatialInteractionSourceState> SpatialInteractionManager.GetDetectedSourcesAtTimestamp(PerceptionTimestamp timeStamp) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Input.Spatial.SpatialInteractionManager GetForCurrentView()
 		{
 			throw new global::System.NotImplementedException("The member SpatialInteractionManager SpatialInteractionManager.GetForCurrentView() is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Input.Spatial.SpatialInteractionManager, global::Windows.UI.Input.Spatial.SpatialInteractionDetectedEventArgs> InteractionDetected
 		{
@@ -49,7 +49,7 @@ namespace Windows.UI.Input.Spatial
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Input.Spatial.SpatialInteractionManager, global::Windows.UI.Input.Spatial.SpatialInteractionSourceEventArgs> SourceDetected
 		{
@@ -65,7 +65,7 @@ namespace Windows.UI.Input.Spatial
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Input.Spatial.SpatialInteractionManager, global::Windows.UI.Input.Spatial.SpatialInteractionSourceEventArgs> SourceLost
 		{
@@ -81,7 +81,7 @@ namespace Windows.UI.Input.Spatial
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Input.Spatial.SpatialInteractionManager, global::Windows.UI.Input.Spatial.SpatialInteractionSourceEventArgs> SourcePressed
 		{
@@ -97,7 +97,7 @@ namespace Windows.UI.Input.Spatial
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Input.Spatial.SpatialInteractionManager, global::Windows.UI.Input.Spatial.SpatialInteractionSourceEventArgs> SourceReleased
 		{
@@ -113,7 +113,7 @@ namespace Windows.UI.Input.Spatial
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Input.Spatial.SpatialInteractionManager, global::Windows.UI.Input.Spatial.SpatialInteractionSourceEventArgs> SourceUpdated
 		{

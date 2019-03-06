@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Input.Spatial
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class SpatialInteractionSourceProperties 
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  double SourceLossRisk
 		{
@@ -17,7 +17,7 @@ namespace Windows.UI.Input.Spatial
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::System.Numerics.Vector3? TryGetSourceLossMitigationDirection( global::Windows.Perception.Spatial.SpatialCoordinateSystem coordinateSystem)
 		{
@@ -25,7 +25,7 @@ namespace Windows.UI.Input.Spatial
 		}
 		#endif
 		// Forced skipping of method Windows.UI.Input.Spatial.SpatialInteractionSourceProperties.SourceLossRisk.get
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.UI.Input.Spatial.SpatialInteractionSourceLocation TryGetLocation( global::Windows.Perception.Spatial.SpatialCoordinateSystem coordinateSystem)
 		{

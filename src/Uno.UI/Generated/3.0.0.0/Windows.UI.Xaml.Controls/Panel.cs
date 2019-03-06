@@ -11,7 +11,7 @@ namespace Windows.UI.Xaml.Controls
 		// Skipping already declared property Background
 		// Skipping already declared property Children
 		// Skipping already declared property IsItemsHost
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.UI.Xaml.BrushTransition BackgroundTransition
 		{

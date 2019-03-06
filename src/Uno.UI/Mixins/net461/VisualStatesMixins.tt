@@ -1,6 +1,6 @@
 ﻿<#@template language="C#"#>
 <#@output extension="g.cs" #>
-#if NET46
+#if NET461
 <# 	
 	AddClass("Windows.UI.Xaml.Controls", "TextBox", hasCommonStates: true);
 	AddClass("Windows.UI.Xaml.Controls", "Button", hasCommonStates: true, hasCommonPressedState: true);

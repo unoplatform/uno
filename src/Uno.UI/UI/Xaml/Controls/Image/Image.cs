@@ -1,4 +1,4 @@
-﻿#if !NET46 && !__WASM__
+﻿#if !NET461 && !__WASM__
 using Uno.Extensions;
 using Uno.Diagnostics.Eventing;
 using Windows.UI.Xaml.Automation.Peers;

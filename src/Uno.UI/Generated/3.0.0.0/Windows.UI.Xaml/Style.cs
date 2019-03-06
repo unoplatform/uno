@@ -9,7 +9,7 @@ namespace Windows.UI.Xaml
 	{
 		// Skipping already declared property TargetType
 		// Skipping already declared property BasedOn
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  bool IsSealed
 		{
@@ -30,7 +30,7 @@ namespace Windows.UI.Xaml
 		// Forced skipping of method Windows.UI.Xaml.Style.TargetType.set
 		// Forced skipping of method Windows.UI.Xaml.Style.BasedOn.get
 		// Forced skipping of method Windows.UI.Xaml.Style.BasedOn.set
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  void Seal()
 		{

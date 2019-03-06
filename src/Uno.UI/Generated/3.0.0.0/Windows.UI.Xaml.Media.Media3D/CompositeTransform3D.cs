@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml.Media.Media3D
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class CompositeTransform3D : global::Windows.UI.Xaml.Media.Media3D.Transform3D
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  double TranslateZ
 		{
@@ -21,7 +21,7 @@ namespace Windows.UI.Xaml.Media.Media3D
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  double TranslateY
 		{
@@ -35,7 +35,7 @@ namespace Windows.UI.Xaml.Media.Media3D
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  double TranslateX
 		{
@@ -49,7 +49,7 @@ namespace Windows.UI.Xaml.Media.Media3D
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  double ScaleZ
 		{
@@ -63,7 +63,7 @@ namespace Windows.UI.Xaml.Media.Media3D
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  double ScaleY
 		{
@@ -77,7 +77,7 @@ namespace Windows.UI.Xaml.Media.Media3D
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  double ScaleX
 		{
@@ -91,7 +91,7 @@ namespace Windows.UI.Xaml.Media.Media3D
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  double RotationZ
 		{
@@ -105,7 +105,7 @@ namespace Windows.UI.Xaml.Media.Media3D
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  double RotationY
 		{
@@ -119,7 +119,7 @@ namespace Windows.UI.Xaml.Media.Media3D
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  double RotationX
 		{
@@ -133,7 +133,7 @@ namespace Windows.UI.Xaml.Media.Media3D
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  double CenterZ
 		{
@@ -147,7 +147,7 @@ namespace Windows.UI.Xaml.Media.Media3D
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  double CenterY
 		{
@@ -161,7 +161,7 @@ namespace Windows.UI.Xaml.Media.Media3D
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  double CenterX
 		{
@@ -175,7 +175,7 @@ namespace Windows.UI.Xaml.Media.Media3D
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty CenterXProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
@@ -183,7 +183,7 @@ namespace Windows.UI.Xaml.Media.Media3D
 			typeof(global::Windows.UI.Xaml.Media.Media3D.CompositeTransform3D), 
 			new FrameworkPropertyMetadata(default(double)));
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty CenterYProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
@@ -191,7 +191,7 @@ namespace Windows.UI.Xaml.Media.Media3D
 			typeof(global::Windows.UI.Xaml.Media.Media3D.CompositeTransform3D), 
 			new FrameworkPropertyMetadata(default(double)));
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty CenterZProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
@@ -199,7 +199,7 @@ namespace Windows.UI.Xaml.Media.Media3D
 			typeof(global::Windows.UI.Xaml.Media.Media3D.CompositeTransform3D), 
 			new FrameworkPropertyMetadata(default(double)));
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty RotationXProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
@@ -207,7 +207,7 @@ namespace Windows.UI.Xaml.Media.Media3D
 			typeof(global::Windows.UI.Xaml.Media.Media3D.CompositeTransform3D), 
 			new FrameworkPropertyMetadata(default(double)));
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty RotationYProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
@@ -215,7 +215,7 @@ namespace Windows.UI.Xaml.Media.Media3D
 			typeof(global::Windows.UI.Xaml.Media.Media3D.CompositeTransform3D), 
 			new FrameworkPropertyMetadata(default(double)));
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty RotationZProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
@@ -223,7 +223,7 @@ namespace Windows.UI.Xaml.Media.Media3D
 			typeof(global::Windows.UI.Xaml.Media.Media3D.CompositeTransform3D), 
 			new FrameworkPropertyMetadata(default(double)));
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty ScaleXProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
@@ -231,7 +231,7 @@ namespace Windows.UI.Xaml.Media.Media3D
 			typeof(global::Windows.UI.Xaml.Media.Media3D.CompositeTransform3D), 
 			new FrameworkPropertyMetadata(default(double)));
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty ScaleYProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
@@ -239,7 +239,7 @@ namespace Windows.UI.Xaml.Media.Media3D
 			typeof(global::Windows.UI.Xaml.Media.Media3D.CompositeTransform3D), 
 			new FrameworkPropertyMetadata(default(double)));
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty ScaleZProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
@@ -247,7 +247,7 @@ namespace Windows.UI.Xaml.Media.Media3D
 			typeof(global::Windows.UI.Xaml.Media.Media3D.CompositeTransform3D), 
 			new FrameworkPropertyMetadata(default(double)));
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty TranslateXProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
@@ -255,7 +255,7 @@ namespace Windows.UI.Xaml.Media.Media3D
 			typeof(global::Windows.UI.Xaml.Media.Media3D.CompositeTransform3D), 
 			new FrameworkPropertyMetadata(default(double)));
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty TranslateYProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
@@ -263,7 +263,7 @@ namespace Windows.UI.Xaml.Media.Media3D
 			typeof(global::Windows.UI.Xaml.Media.Media3D.CompositeTransform3D), 
 			new FrameworkPropertyMetadata(default(double)));
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty TranslateZProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
@@ -271,7 +271,7 @@ namespace Windows.UI.Xaml.Media.Media3D
 			typeof(global::Windows.UI.Xaml.Media.Media3D.CompositeTransform3D), 
 			new FrameworkPropertyMetadata(default(double)));
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public CompositeTransform3D() : base()
 		{

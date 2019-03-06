@@ -34,7 +34,6 @@
 
 	<CallTarget Targets="BuildNuGetPackage" Condition="'$(Configuration)'=='Release'" />
 	<CallTarget Targets="PublishVisx" Condition="'$(Configuration)'=='Release' and $(_isWindows)" />
-	<CallTarget Targets="GenerateAPIDiff" Condition="'$(Configuration)'=='Release' and $(_isWindows)" />
   </Target>
 
   <Target Name="UpdateFileVersions">
@@ -111,27 +110,9 @@
 	  <MSBuild Properties="Configuration=Release;VisualStudioVersion=15.0"
 				Projects="..\src\Uno.UWPSyncGenerator\Uno.UWPSyncGenerator.csproj"
 				Targets="Build" />
-		<Exec Command="..\src\Uno.UWPSyncGenerator\Bin\Release\net46\Uno.UWPSyncGenerator.exe &quot;doc&quot;" />
+		<Exec Command="..\src\Uno.UWPSyncGenerator\Bin\Release\net461\Uno.UWPSyncGenerator.exe &quot;doc&quot;" />
 		<Exec Command="$(NuGetPackageRoot)\docfx.console\2.36.0\tools\docfx.exe ..\doc\docfx.json -o $(OutputDir)\doc" />
 	</Target>
-
-  <Target Name="GenerateAPIDiff">
-	<PropertyGroup>
-	  <WindowsDefinition>C:\Program Files (x86)\Windows Kits\10\References\Windows.Foundation.UniversalApiContract\2.0.0.0\Windows.Foundation.UniversalApiContract.winmd</WindowsDefinition>
-	  <iOS_UnoUIDefinition>..\src\Uno.UI\bin\release\xamarinios10\Uno.UI.dll</iOS_UnoUIDefinition>
-	  <Android_UnoUIDefinition>..\src\Uno.UI\bin\release\Monoandroid80\Uno.UI.dll</Android_UnoUIDefinition>
-	  <Wasm_UnoUIDefinition>..\src\Uno.UI\bin\release\netstandard2.0\Uno.UI.dll</Wasm_UnoUIDefinition>
-	</PropertyGroup>
-
-	<Exec Command="..\src\Uno.UI.AssemblyComparer\Bin\Release\Uno.UI.AssemblyComparer.exe &quot;$(iOS_UnoUIDefinition)&quot; &quot;$(WindowsDefinition)&quot; &quot;output.txt&quot;" />
-	<Exec Command="copy .\output.txt &quot;$(OutputDir)\iOS_API_Diff.txt&quot;" />
-
-	<Exec Command="..\src\Uno.UI.AssemblyComparer\Bin\Release\Uno.UI.AssemblyComparer.exe &quot;$(Android_UnoUIDefinition)&quot; &quot;$(WindowsDefinition)&quot; &quot;output.txt&quot;" />
-	<Exec Command="copy .\output.txt &quot;$(OutputDir)\Android_API_Diff.txt&quot;" />
-
-	<Exec Command="..\src\Uno.UI.AssemblyComparer\Bin\Release\Uno.UI.AssemblyComparer.exe &quot;$(Wasm_UnoUIDefinition)&quot; &quot;$(WindowsDefinition)&quot; &quot;output.txt&quot;" />
-	<Exec Command="copy .\output.txt &quot;$(OutputDir)\Wasm_API_Diff.txt&quot;" />
-  </Target>
 
   <Target Name="PublishVisx">
 	<Copy SourceFiles="..\src\SolutionTemplate\UnoSolutionTemplate.VISX\bin\Release\UnoSolutionTemplate.vsix"

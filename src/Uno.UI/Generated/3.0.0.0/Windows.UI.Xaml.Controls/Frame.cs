@@ -15,7 +15,7 @@ namespace Windows.UI.Xaml.Controls
 		// Skipping already declared property CurrentSourcePageType
 		// Skipping already declared property BackStack
 		// Skipping already declared property ForwardStack
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  bool IsNavigationStackEnabled
 		{
@@ -37,7 +37,7 @@ namespace Windows.UI.Xaml.Controls
 		// Skipping already declared property SourcePageTypeProperty
 		// Skipping already declared property BackStackProperty
 		// Skipping already declared property ForwardStackProperty
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty IsNavigationStackEnabledProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
@@ -72,7 +72,7 @@ namespace Windows.UI.Xaml.Controls
 		// Forced skipping of method Windows.UI.Xaml.Controls.Frame.ForwardStack.get
 		// Skipping already declared method Windows.UI.Xaml.Controls.Frame.Navigate(System.Type, object, Windows.UI.Xaml.Media.Animation.NavigationTransitionInfo)
 		// Skipping already declared method Windows.UI.Xaml.Controls.Frame.GoBack(Windows.UI.Xaml.Media.Animation.NavigationTransitionInfo)
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  void SetNavigationState( string navigationState,  bool suppressNavigate)
 		{
@@ -81,7 +81,7 @@ namespace Windows.UI.Xaml.Controls
 		#endif
 		// Forced skipping of method Windows.UI.Xaml.Controls.Frame.IsNavigationStackEnabled.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.Frame.IsNavigationStackEnabled.set
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  bool NavigateToType( global::System.Type sourcePageType,  object parameter,  global::Windows.UI.Xaml.Navigation.FrameNavigationOptions navigationOptions)
 		{

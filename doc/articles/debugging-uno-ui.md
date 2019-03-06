@@ -25,6 +25,12 @@ step into Uno.UI without downloading the repository.
 Make sure **Enable source link support** check box is checked in **Tools** / **Options**
 / **Debugging** / **General** properties page.
 
+## Updating the Nuget packages used by the Uno.UI solution
+The versions used are centralized in the [Directory.Build.targets](src/Directory.Build.targets) file, and all the
+locations where `<PackageReference />` are used.
+
+When updating the versions of nuget packages, make sure to update the [Uno.UI.nuspec](build/Uno.UI.nuspec) file.
+
 ## Debugging Uno.UI
 
 To debug Uno.UI inside of an existing project, the simplest way (until Microsoft provides a better way to avoid overriding the global cache) is to :

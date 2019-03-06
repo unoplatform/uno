@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Security.Authentication.OnlineId
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class SignOutUserOperation : global::Windows.Foundation.IAsyncAction,global::Windows.Foundation.IAsyncInfo
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::System.Exception ErrorCode
 		{
@@ -17,7 +17,7 @@ namespace Windows.Security.Authentication.OnlineId
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  uint Id
 		{
@@ -27,7 +27,7 @@ namespace Windows.Security.Authentication.OnlineId
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Foundation.AsyncStatus Status
 		{
@@ -37,7 +37,7 @@ namespace Windows.Security.Authentication.OnlineId
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Foundation.AsyncActionCompletedHandler Completed
 		{
@@ -53,7 +53,7 @@ namespace Windows.Security.Authentication.OnlineId
 		#endif
 		// Forced skipping of method Windows.Security.Authentication.OnlineId.SignOutUserOperation.Completed.set
 		// Forced skipping of method Windows.Security.Authentication.OnlineId.SignOutUserOperation.Completed.get
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  void GetResults()
 		{
@@ -63,14 +63,14 @@ namespace Windows.Security.Authentication.OnlineId
 		// Forced skipping of method Windows.Security.Authentication.OnlineId.SignOutUserOperation.Id.get
 		// Forced skipping of method Windows.Security.Authentication.OnlineId.SignOutUserOperation.Status.get
 		// Forced skipping of method Windows.Security.Authentication.OnlineId.SignOutUserOperation.ErrorCode.get
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  void Cancel()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Authentication.OnlineId.SignOutUserOperation", "void SignOutUserOperation.Cancel()");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  void Close()
 		{

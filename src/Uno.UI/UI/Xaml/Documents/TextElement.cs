@@ -1,4 +1,4 @@
-﻿#if NET46
+﻿#if NET461
 #pragma warning disable CS0067
 #endif
 

@@ -787,7 +787,7 @@ namespace Uno.Xaml
 			return a != null && a.Usable;
 		}
 
-#if NET46
+#if NET461
 		static XamlValueConverter<ValueSerializer> string_value_serializer;
 #endif
 
@@ -801,7 +801,7 @@ namespace Uno.Xaml
 			if (provider == null)
 				return null;
 
-#if NET46
+#if NET461
             var a = provider.GetCustomAttribute<ValueSerializerAttribute> (true);
 			if (a != null)
 				return new XamlValueConverter<ValueSerializer> (a.ValueSerializerType ?? Type.GetType (a.ValueSerializerTypeName), targetType);

@@ -9,7 +9,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 	{
 		// Skipping already declared property CommandParameter
 		// Skipping already declared property Command
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.UI.Xaml.Controls.ClickMode ClickMode
 		{
@@ -24,7 +24,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		}
 		#endif
 		// Skipping already declared property IsPointerOver
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  bool IsPressed
 		{
@@ -34,7 +34,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty ClickModeProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
@@ -44,7 +44,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		#endif
 		// Skipping already declared property CommandParameterProperty
 		// Skipping already declared property CommandProperty
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty IsPointerOverProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
@@ -52,7 +52,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			typeof(global::Windows.UI.Xaml.Controls.Primitives.ButtonBase), 
 			new FrameworkPropertyMetadata(default(bool)));
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty IsPressedProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(

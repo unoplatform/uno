@@ -1139,7 +1139,7 @@ namespace Windows.UI.Xaml.Controls
 
 		internal IEnumerable<DependencyObject> MaterializedContainers =>
 			GetItemsPanelChildren()
-#if !NET46 // TODO
+#if !NET461 // TODO
 				.Prepend(_containerBeingPrepared) // we put it first, because it's the most likely to be requested
 #endif
 				.Trim()

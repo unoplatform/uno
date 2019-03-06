@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml.Controls
 {
-	#if false || false || NET46 || __WASM__ || false
+	#if false || false || NET461 || __WASM__ || false
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class GridViewHeaderItem : global::Windows.UI.Xaml.Controls.ListViewBaseHeaderItem
 	{
-		#if false || false || NET46 || __WASM__ || false
+		#if false || false || NET461 || __WASM__ || false
 		[global::Uno.NotImplemented]
 		public GridViewHeaderItem() 
 		{

@@ -13,10 +13,10 @@ namespace Uno.UWPSyncGenerator
 		Android = 1,
 		iOS = 2,
 		MacOS = 4,
-		Net46 = 8,
+		Net461 = 8,
 		WASM = 16,
 		UAP = 32,
-		Uno = Android | iOS | MacOS | Net46 | WASM,
+		Uno = Android | iOS | MacOS | Net461 | WASM,
 		Main = Android | iOS | WASM | MacOS,
 		Mobile = Android | iOS,
 		Xamarin = Android | iOS | MacOS

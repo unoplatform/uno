@@ -149,10 +149,6 @@ namespace Windows.UI.Xaml
 		/// <returns></returns>
 		public static double GetFontRatio()
 		{
-			if (FeatureConfiguration.Font.IgnoreTextScaleFactor)
-			{
-				return 1.0;
-			}
 			return ViewHelper.FontScale / ViewHelper.Scale;	
 		}
 	}

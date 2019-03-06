@@ -15,7 +15,7 @@ namespace Uno.UWPSyncGenerator
 {
 	abstract class Generator
 	{
-		private const string net46Define = "NET46";
+		private const string net461Define = "NET461";
 		private const string AndroidDefine = "__ANDROID__";
 		private const string iOSDefine = "__IOS__";
 		private const string WasmDefine = "__WASM__";
@@ -28,7 +28,7 @@ namespace Uno.UWPSyncGenerator
 		private INamedTypeSymbol _androidBaseSymbol;
 		private INamedTypeSymbol _macOSBaseSymbol;
 		private Compilation _referenceCompilation;
-		private Compilation _net46Compilation;
+		private Compilation _net461Compilation;
 		private Compilation _wasmCompilation;
 
 		private ISymbol _voidSymbol;
@@ -51,7 +51,7 @@ namespace Uno.UWPSyncGenerator
 			_referenceCompilation = LoadProject(@"..\..\..\..\Uno.UWPSyncGenerator.Reference\Uno.UWPSyncGenerator.Reference.csproj");
 			_iOSCompilation = LoadProject($@"{basePath}\{baseName}.csproj", "xamarinios10");
 			_androidCompilation = LoadProject($@"{basePath}\{baseName}.csproj", "MonoAndroid80");
-			_net46Compilation = LoadProject($@"{basePath}\{baseName}.csproj", "net46");
+			_net461Compilation = LoadProject($@"{basePath}\{baseName}.csproj", "net461");
 			_wasmCompilation = LoadProject($@"{basePath}\{baseName}.csproj", "netstandard2.0");
 			_macCompilation = LoadProject($@"{basePath}\{baseName}.csproj", "xamarinmac20");
 
@@ -139,7 +139,7 @@ namespace Uno.UWPSyncGenerator
 		{
 			public T AndroidSymbol;
 			public T IOSSymbol;
-			public T net46ymbol;
+			public T net461ymbol;
 			public T MacOSSymbol;
 			public T WasmSymbol;
 			public T UAPSymbol;
@@ -159,7 +159,7 @@ namespace Uno.UWPSyncGenerator
 			{
 				this.AndroidSymbol = androidType;
 				this.IOSSymbol = iOSType;
-				this.net46ymbol = unitTestType;
+				this.net461ymbol = unitTestType;
 				this.WasmSymbol = wasmType;
 				this.MacOSSymbol = macOSType;
 				this.UAPSymbol = uapType;
@@ -172,9 +172,9 @@ namespace Uno.UWPSyncGenerator
 				{
 					_implementedFor |= ImplementedFor.iOS;
 				}
-				if (IsImplemented(net46ymbol))
+				if (IsImplemented(net461ymbol))
 				{
-					_implementedFor |= ImplementedFor.Net46;
+					_implementedFor |= ImplementedFor.Net461;
 				}
 				if (IsImplemented(MacOSSymbol))
 				{
@@ -189,7 +189,7 @@ namespace Uno.UWPSyncGenerator
 			public bool HasUndefined =>
 				AndroidSymbol == null
 				|| IOSSymbol == null
-				|| net46ymbol == null
+				|| net461ymbol == null
 				|| WasmSymbol == null
 				|| MacOSSymbol == null;
 
@@ -199,7 +199,7 @@ namespace Uno.UWPSyncGenerator
 				var defines = new[] {
 					IsNotDefinedByUno(AndroidSymbol) ? AndroidDefine : "false",
 					IsNotDefinedByUno(IOSSymbol) ? iOSDefine : "false",
-					IsNotDefinedByUno(net46ymbol) ? net46Define : "false",
+					IsNotDefinedByUno(net461ymbol) ? net461Define : "false",
 					IsNotDefinedByUno(WasmSymbol) ? WasmDefine : "false",
 					MacOSSymbol == null ? MacDefine : "false",
 				};
@@ -251,7 +251,7 @@ namespace Uno.UWPSyncGenerator
 				  _androidCompilation.GetTypeByMetadataName(name),
 				  _iOSCompilation.GetTypeByMetadataName(name),
 				  _macCompilation?.GetTypeByMetadataName(name),
-				  _net46Compilation.GetTypeByMetadataName(name),
+				  _net461Compilation.GetTypeByMetadataName(name),
 				  _wasmCompilation.GetTypeByMetadataName(name),
 				  uapType
 			  );
@@ -262,7 +262,7 @@ namespace Uno.UWPSyncGenerator
 				filter(GetNonGeneratedMembers(types.AndroidSymbol, name)),
 				filter(GetNonGeneratedMembers(types.IOSSymbol, name)),
 				filter(GetNonGeneratedMembers(types.MacOSSymbol, name)),
-				filter(GetNonGeneratedMembers(types.net46ymbol, name)),
+				filter(GetNonGeneratedMembers(types.net461ymbol, name)),
 				filter(GetNonGeneratedMembers(types.WasmSymbol, name)),
 				uapType: uapSymbol
 			);
@@ -272,7 +272,7 @@ namespace Uno.UWPSyncGenerator
 				FindMatchingMethod(types.AndroidSymbol, method),
 				FindMatchingMethod(types.IOSSymbol, method),
 				FindMatchingMethod(types.MacOSSymbol, method),
-				FindMatchingMethod(types.net46ymbol, method),
+				FindMatchingMethod(types.net461ymbol, method),
 				FindMatchingMethod(types.WasmSymbol, method),
 				uapType: method
 			);
@@ -282,7 +282,7 @@ namespace Uno.UWPSyncGenerator
 				GetMatchingPropertyMember(types.AndroidSymbol, property),
 				GetMatchingPropertyMember(types.IOSSymbol, property),
 				GetMatchingPropertyMember(types.MacOSSymbol, property),
-				GetMatchingPropertyMember(types.net46ymbol, property),
+				GetMatchingPropertyMember(types.net461ymbol, property),
 				GetMatchingPropertyMember(types.WasmSymbol, property),
 				uapType: property
 			);

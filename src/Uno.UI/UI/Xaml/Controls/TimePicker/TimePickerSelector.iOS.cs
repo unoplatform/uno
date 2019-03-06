@@ -1,8 +1,8 @@
 ﻿#if XAMARIN_IOS
 
+using Foundation;
 using System;
 using System.Linq;
-using Foundation;
 using UIKit;
 using Uno.Extensions;
 using Uno.Logging;
@@ -48,10 +48,10 @@ namespace Windows.UI.Xaml.Controls
 
 		public void Initialize()
 		{
-			SaveInitialTime();
 			SetPickerClockIdentifier(ClockIdentifier);
 			SetPickerMinuteIncrement(MinuteIncrement);
 			SetPickerTime(Time.RoundToNextMinuteInterval(MinuteIncrement));
+			SaveInitialTime();
 		}
 
 		private void SetPickerMinuteIncrement(int minuteIncrement)
@@ -74,7 +74,7 @@ namespace Windows.UI.Xaml.Controls
 
 					if (Time.Hours != time.Hours || Time.Minutes != time.Minutes)
 					{
-						Time = new TimeSpan(Time.Days, time.Hours, time.Minutes, Time.Seconds, Time.Milliseconds);
+						Time = new TimeSpan(Time.Days, time.Hours, time.Minutes, 0, 0);
 						SaveInitialTime();
 					}
 				}

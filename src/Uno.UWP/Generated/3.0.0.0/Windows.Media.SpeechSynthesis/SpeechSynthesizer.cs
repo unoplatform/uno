@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Media.SpeechSynthesis
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class SpeechSynthesizer : global::System.IDisposable
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Media.SpeechSynthesis.VoiceInformation Voice
 		{
@@ -21,7 +21,7 @@ namespace Windows.Media.SpeechSynthesis
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Media.SpeechSynthesis.SpeechSynthesizerOptions Options
 		{
@@ -31,7 +31,7 @@ namespace Windows.Media.SpeechSynthesis
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::System.Collections.Generic.IReadOnlyList<global::Windows.Media.SpeechSynthesis.VoiceInformation> AllVoices
 		{
@@ -41,7 +41,7 @@ namespace Windows.Media.SpeechSynthesis
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.Media.SpeechSynthesis.VoiceInformation DefaultVoice
 		{
@@ -51,7 +51,7 @@ namespace Windows.Media.SpeechSynthesis
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public SpeechSynthesizer() 
 		{
@@ -59,14 +59,14 @@ namespace Windows.Media.SpeechSynthesis
 		}
 		#endif
 		// Forced skipping of method Windows.Media.SpeechSynthesis.SpeechSynthesizer.SpeechSynthesizer()
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Foundation.IAsyncOperation<global::Windows.Media.SpeechSynthesis.SpeechSynthesisStream> SynthesizeTextToStreamAsync( string text)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<SpeechSynthesisStream> SpeechSynthesizer.SynthesizeTextToStreamAsync(string text) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Foundation.IAsyncOperation<global::Windows.Media.SpeechSynthesis.SpeechSynthesisStream> SynthesizeSsmlToStreamAsync( string Ssml)
 		{
@@ -75,7 +75,7 @@ namespace Windows.Media.SpeechSynthesis
 		#endif
 		// Forced skipping of method Windows.Media.SpeechSynthesis.SpeechSynthesizer.Voice.set
 		// Forced skipping of method Windows.Media.SpeechSynthesis.SpeechSynthesizer.Voice.get
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  void Dispose()
 		{
@@ -83,7 +83,7 @@ namespace Windows.Media.SpeechSynthesis
 		}
 		#endif
 		// Forced skipping of method Windows.Media.SpeechSynthesis.SpeechSynthesizer.Options.get
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.Foundation.IAsyncOperation<bool> TrySetDefaultVoiceAsync( global::Windows.Media.SpeechSynthesis.VoiceInformation voice)
 		{

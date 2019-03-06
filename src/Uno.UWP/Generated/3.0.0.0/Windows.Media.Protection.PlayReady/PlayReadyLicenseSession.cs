@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Media.Protection.PlayReady
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class PlayReadyLicenseSession : global::Windows.Media.Protection.PlayReady.IPlayReadyLicenseSession,global::Windows.Media.Protection.PlayReady.IPlayReadyLicenseSession2
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public PlayReadyLicenseSession( global::Windows.Foundation.Collections.IPropertySet configuration) 
 		{
@@ -15,21 +15,21 @@ namespace Windows.Media.Protection.PlayReady
 		}
 		#endif
 		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyLicenseSession.PlayReadyLicenseSession(Windows.Foundation.Collections.IPropertySet)
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Media.Protection.PlayReady.IPlayReadyLicenseAcquisitionServiceRequest CreateLAServiceRequest()
 		{
 			throw new global::System.NotImplementedException("The member IPlayReadyLicenseAcquisitionServiceRequest PlayReadyLicenseSession.CreateLAServiceRequest() is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  void ConfigureMediaProtectionManager( global::Windows.Media.Protection.MediaProtectionManager mpm)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Protection.PlayReady.PlayReadyLicenseSession", "void PlayReadyLicenseSession.ConfigureMediaProtectionManager(MediaProtectionManager mpm)");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Media.Protection.PlayReady.PlayReadyLicenseIterable CreateLicenseIterable( global::Windows.Media.Protection.PlayReady.PlayReadyContentHeader contentHeader,  bool fullyEvaluated)
 		{

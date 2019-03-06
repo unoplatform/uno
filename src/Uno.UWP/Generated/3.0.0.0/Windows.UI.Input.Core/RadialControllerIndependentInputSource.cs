@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Input.Core
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class RadialControllerIndependentInputSource 
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.UI.Input.RadialController Controller
 		{
@@ -17,7 +17,7 @@ namespace Windows.UI.Input.Core
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.UI.Core.CoreDispatcher Dispatcher
 		{
@@ -27,7 +27,7 @@ namespace Windows.UI.Input.Core
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.System.DispatcherQueue DispatcherQueue
 		{
@@ -40,7 +40,7 @@ namespace Windows.UI.Input.Core
 		// Forced skipping of method Windows.UI.Input.Core.RadialControllerIndependentInputSource.Controller.get
 		// Forced skipping of method Windows.UI.Input.Core.RadialControllerIndependentInputSource.Dispatcher.get
 		// Forced skipping of method Windows.UI.Input.Core.RadialControllerIndependentInputSource.DispatcherQueue.get
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Input.Core.RadialControllerIndependentInputSource CreateForView( global::Windows.ApplicationModel.Core.CoreApplicationView view)
 		{

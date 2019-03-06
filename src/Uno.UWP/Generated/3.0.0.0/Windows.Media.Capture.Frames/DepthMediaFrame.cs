@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Media.Capture.Frames
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class DepthMediaFrame 
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Media.Capture.Frames.DepthMediaFrameFormat DepthFormat
 		{
@@ -17,7 +17,7 @@ namespace Windows.Media.Capture.Frames
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Media.Capture.Frames.MediaFrameReference FrameReference
 		{
@@ -27,7 +27,7 @@ namespace Windows.Media.Capture.Frames
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Media.Capture.Frames.VideoMediaFrame VideoMediaFrame
 		{
@@ -37,7 +37,7 @@ namespace Windows.Media.Capture.Frames
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  uint MaxReliableDepth
 		{
@@ -47,7 +47,7 @@ namespace Windows.Media.Capture.Frames
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  uint MinReliableDepth
 		{
@@ -60,7 +60,7 @@ namespace Windows.Media.Capture.Frames
 		// Forced skipping of method Windows.Media.Capture.Frames.DepthMediaFrame.FrameReference.get
 		// Forced skipping of method Windows.Media.Capture.Frames.DepthMediaFrame.VideoMediaFrame.get
 		// Forced skipping of method Windows.Media.Capture.Frames.DepthMediaFrame.DepthFormat.get
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Media.Devices.Core.DepthCorrelatedCoordinateMapper TryCreateCoordinateMapper( global::Windows.Media.Devices.Core.CameraIntrinsics cameraIntrinsics,  global::Windows.Perception.Spatial.SpatialCoordinateSystem coordinateSystem)
 		{

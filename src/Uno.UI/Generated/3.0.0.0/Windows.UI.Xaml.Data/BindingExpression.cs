@@ -7,7 +7,7 @@ namespace Windows.UI.Xaml.Data
 	#endif
 	public  partial class BindingExpression : global::Windows.UI.Xaml.Data.BindingExpressionBase
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  object DataItem
 		{
@@ -20,7 +20,7 @@ namespace Windows.UI.Xaml.Data
 		// Skipping already declared property ParentBinding
 		// Forced skipping of method Windows.UI.Xaml.Data.BindingExpression.DataItem.get
 		// Forced skipping of method Windows.UI.Xaml.Data.BindingExpression.ParentBinding.get
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  void UpdateSource()
 		{

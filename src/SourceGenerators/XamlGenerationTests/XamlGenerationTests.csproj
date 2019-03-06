@@ -1,7 +1,7 @@
 ﻿<Project Sdk="MSBuild.Sdk.Extras" ToolsVersion="15.0">
 	<PropertyGroup>
 		<TargetFrameworks>MonoAndroid80;xamarinios10</TargetFrameworks>
-		<TargetFrameworksCI>MonoAndroid71;MonoAndroid80;xamarinios10</TargetFrameworksCI>
+		<TargetFrameworksCI>MonoAndroid80;xamarinios10</TargetFrameworksCI>
 	</PropertyGroup>
 
 	<PropertyGroup>
@@ -13,25 +13,8 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Uno.SourceGenerationTasks">
-			<Version>1.29.0-dev.241</Version>
-			<ExcludeAssets>Runtime</ExcludeAssets>
-		</PackageReference>
-		<PackageReference Include="Uno.Core.Build">
-			<Version>1.26.0-dev.58</Version>
-		</PackageReference>
-	</ItemGroup>
-
-	<ItemGroup Condition=" '$(TargetFramework)' == 'MonoAndroid71'">
-		<PackageReference Include="Xamarin.Android.Support.v4">
-			<Version>25.3.1</Version>
-		</PackageReference>
-		<PackageReference Include="Xamarin.Android.Support.v7.AppCompat">
-			<Version>25.3.1</Version>
-		</PackageReference>
-		<PackageReference Include="Xamarin.Android.Support.v7.RecyclerView">
-			<Version>25.3.1</Version>
-		</PackageReference>
+		<PackageReference Include="Uno.SourceGenerationTasks"/>
+		<PackageReference Include="Uno.Core.Build"/>
 	</ItemGroup>
 	
 	<ItemGroup Condition=" '$(TargetFramework)' == 'MonoAndroid80'">
@@ -55,21 +38,24 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="xamarin.build.download" Version="0.4.9" />
+		<PackageReference Include="xamarin.build.download" />
 	</ItemGroup>
 
 	<PropertyGroup>
 		<UnoUIGeneratorsBinPath>..\Uno.UI.SourceGenerators\bin\$(Configuration)</UnoUIGeneratorsBinPath>
 	</PropertyGroup>
+
+	<ItemGroup Condition="$(IsMonoAndroid)">
+		<ProjectReference Include="..\..\Uno.UI.BindingHelper.Android\Uno.UI.BindingHelper.Android.csproj" />
+	</ItemGroup>
 	
 	<ItemGroup Condition="$(IsMonoAndroid) or $(IsXamarinIOS)">
-		<ProjectReference Include="..\..\Uno.UI.BindingHelper.Android\Uno.UI.BindingHelper.Android.csproj" />
 		<ProjectReference Include="..\..\Uno.UI\Uno.UI.csproj" />
 		<ProjectReference Include="..\..\Uno.UWP\Uno.csproj" />
 		<ProjectReference Include="..\..\Uno.Foundation\Uno.Foundation.csproj" />
 	</ItemGroup>
 
-		
+
 	<ItemGroup>
 		<ProjectReference Include="..\..\Uno.UI.Toolkit\Uno.UI.Toolkit.csproj" />
 		<ProjectReference Include="..\XamlGenerationTests.Core\XamlGenerationTests.Core.csproj" />

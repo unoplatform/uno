@@ -7,7 +7,7 @@ namespace Windows.UI.Xaml.Controls
 	#endif
 	public  partial class MenuFlyout 
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.UI.Xaml.Style MenuFlyoutPresenterStyle
 		{
@@ -22,7 +22,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 		#endif
 		// Skipping already declared property Items
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty MenuFlyoutPresenterStyleProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
@@ -35,7 +35,7 @@ namespace Windows.UI.Xaml.Controls
 		// Forced skipping of method Windows.UI.Xaml.Controls.MenuFlyout.Items.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.MenuFlyout.MenuFlyoutPresenterStyle.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.MenuFlyout.MenuFlyoutPresenterStyle.set
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  void ShowAt( global::Windows.UI.Xaml.UIElement targetElement,  global::Windows.Foundation.Point point)
 		{

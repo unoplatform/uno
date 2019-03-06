@@ -17,7 +17,7 @@ namespace Windows.UI.Xaml.Documents
 
 		private protected override void OnCollectionChanged()
 		{
-#if !NET46
+#if !NET461
 			switch (this.GetParent())
 			{
 				case TextBlock textBlock:

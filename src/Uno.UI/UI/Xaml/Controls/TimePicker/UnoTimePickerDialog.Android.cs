@@ -1,21 +1,23 @@
 ﻿#if XAMARIN_ANDROID
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using Android.App;
 using Android.Content;
 using Android.Views;
 using Android.Widget;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Windows.UI.Xaml.Controls
 {
 	public class UnoTimePickerDialog : TimePickerDialog
 	{
-		private View _picker;
+		private Android.Widget.TimePicker _picker;
 		private int _minuteIncrement = 1;
 		private int _hourOfDay;
 		private int _minute;
 		private bool _is24HourView;
+
+		public bool IsInSpinnerMode { get; private set; }
 
 		public UnoTimePickerDialog(Context context, IOnTimeSetListener listener, int hourOfDay, int minute, bool is24HourView, int minuteIncrement) : base(context, listener, hourOfDay, minute, is24HourView)
 		{
@@ -56,7 +58,7 @@ namespace Windows.UI.Xaml.Controls
 
 		public override void SetView(View view)
 		{
-			_picker = view;
+			_picker = (Android.Widget.TimePicker)view;
 			base.SetView(_picker);
 		}
 
@@ -74,6 +76,8 @@ namespace Windows.UI.Xaml.Controls
 
 			if (minutePicker != null)
 			{
+				IsInSpinnerMode = true;
+
 				var values = new List<int>();
 
 				for (int i = 0; i < 60; i += _minuteIncrement)
@@ -85,6 +89,10 @@ namespace Windows.UI.Xaml.Controls
 				minutePicker.MinValue = 0;
 				minutePicker.MaxValue = values.Count - 1;
 				minutePicker.SetDisplayedValues(values.Select(num => num.ToString("00")).ToArray());
+			}
+			else
+			{
+				IsInSpinnerMode = false;
 			}
 		}
 

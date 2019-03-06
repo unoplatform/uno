@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml.Controls
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class HubSectionCollection : global::System.Collections.Generic.IList<global::Windows.UI.Xaml.Controls.HubSection>,global::System.Collections.Generic.IEnumerable<global::Windows.UI.Xaml.Controls.HubSection>
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  uint Size
 		{
@@ -31,7 +31,7 @@ namespace Windows.UI.Xaml.Controls
 		// Forced skipping of method Windows.UI.Xaml.Controls.HubSectionCollection.ReplaceAll(Windows.UI.Xaml.Controls.HubSection[])
 		// Forced skipping of method Windows.UI.Xaml.Controls.HubSectionCollection.First()
 		// Processing: System.Collections.Generic.IList<Windows.UI.Xaml.Controls.HubSection>
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		// DeclaringType: System.Collections.Generic.IList<Windows.UI.Xaml.Controls.HubSection>
 		[global::Uno.NotImplemented]
 		public int IndexOf( global::Windows.UI.Xaml.Controls.HubSection item)
@@ -39,7 +39,7 @@ namespace Windows.UI.Xaml.Controls
 			throw new global::System.NotSupportedException();
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		// DeclaringType: System.Collections.Generic.IList<Windows.UI.Xaml.Controls.HubSection>
 		[global::Uno.NotImplemented]
 		public void Insert( int index,  global::Windows.UI.Xaml.Controls.HubSection item)
@@ -47,7 +47,7 @@ namespace Windows.UI.Xaml.Controls
 			throw new global::System.NotSupportedException();
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		// DeclaringType: System.Collections.Generic.IList<Windows.UI.Xaml.Controls.HubSection>
 		[global::Uno.NotImplemented]
 		public void RemoveAt( int index)
@@ -55,7 +55,7 @@ namespace Windows.UI.Xaml.Controls
 			throw new global::System.NotSupportedException();
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public global::Windows.UI.Xaml.Controls.HubSection this[int index]
 		{
@@ -70,7 +70,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 		#endif
 		// Processing: System.Collections.Generic.ICollection<Windows.UI.Xaml.Controls.HubSection>
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		// DeclaringType: System.Collections.Generic.ICollection<Windows.UI.Xaml.Controls.HubSection>
 		[global::Uno.NotImplemented]
 		public void Add( global::Windows.UI.Xaml.Controls.HubSection item)
@@ -78,7 +78,7 @@ namespace Windows.UI.Xaml.Controls
 			throw new global::System.NotSupportedException();
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		// DeclaringType: System.Collections.Generic.ICollection<Windows.UI.Xaml.Controls.HubSection>
 		[global::Uno.NotImplemented]
 		public void Clear()
@@ -86,7 +86,7 @@ namespace Windows.UI.Xaml.Controls
 			throw new global::System.NotSupportedException();
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		// DeclaringType: System.Collections.Generic.ICollection<Windows.UI.Xaml.Controls.HubSection>
 		[global::Uno.NotImplemented]
 		public bool Contains( global::Windows.UI.Xaml.Controls.HubSection item)
@@ -94,7 +94,7 @@ namespace Windows.UI.Xaml.Controls
 			throw new global::System.NotSupportedException();
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		// DeclaringType: System.Collections.Generic.ICollection<Windows.UI.Xaml.Controls.HubSection>
 		[global::Uno.NotImplemented]
 		public void CopyTo( global::Windows.UI.Xaml.Controls.HubSection[] array,  int arrayIndex)
@@ -102,7 +102,7 @@ namespace Windows.UI.Xaml.Controls
 			throw new global::System.NotSupportedException();
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		// DeclaringType: System.Collections.Generic.ICollection<Windows.UI.Xaml.Controls.HubSection>
 		[global::Uno.NotImplemented]
 		public bool Remove( global::Windows.UI.Xaml.Controls.HubSection item)
@@ -110,7 +110,7 @@ namespace Windows.UI.Xaml.Controls
 			throw new global::System.NotSupportedException();
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public int Count
 		{
@@ -124,7 +124,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public bool IsReadOnly
 		{
@@ -139,7 +139,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 		#endif
 		// Processing: System.Collections.Generic.IEnumerable<Windows.UI.Xaml.Controls.HubSection>
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		// DeclaringType: System.Collections.Generic.IEnumerable<Windows.UI.Xaml.Controls.HubSection>
 		[global::Uno.NotImplemented]
 		public global::System.Collections.Generic.IEnumerator<global::Windows.UI.Xaml.Controls.HubSection> GetEnumerator()
@@ -148,7 +148,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 		#endif
 		// Processing: System.Collections.IEnumerable
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		// DeclaringType: System.Collections.IEnumerable
 		[global::Uno.NotImplemented]
 		 global::System.Collections.IEnumerator global::System.Collections.IEnumerable.GetEnumerator()

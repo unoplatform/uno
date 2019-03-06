@@ -1,4 +1,4 @@
-﻿#if NET46 || __WASM__ || __MACOS__
+﻿#if NET461 || __WASM__ || __MACOS__
 #pragma warning disable CS0067, CS649
 #endif
 
@@ -91,7 +91,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			base.OnApplyTemplate();
 
-#if !NET46
+#if !NET461
 			// Ensures we don't keep a reference to a textBoxView that exists in a previous template
 			_textBoxView = null;
 #endif
@@ -119,7 +119,7 @@ namespace Windows.UI.Xaml.Controls
 				_deleteButton = new WeakReference<Button>(button);
 			}
 
-#if !NET46
+#if !NET461
 			UpdateTextBoxView();
 #endif
 			InitializeProperties();
