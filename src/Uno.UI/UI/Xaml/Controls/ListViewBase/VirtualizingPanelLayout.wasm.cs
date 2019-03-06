@@ -204,7 +204,28 @@ namespace Windows.UI.Xaml.Controls
 				{
 					foreach (var view in line.ContainerViews)
 					{
-						view.Measure(view.DesiredSize);
+						//
+						// Remeasure the item will the full available width, to determine if it has changed.
+						// If it has, rebuild everything. This will have to be adjusted for performance.
+						//
+						var slotSize = ScrollOrientation == Orientation.Vertical ?
+							new Size(AvailableBreadth, double.PositiveInfinity) :
+							new Size(double.PositiveInfinity, AvailableBreadth);
+
+						var prevSize = view.DesiredSize;
+						view.Measure(slotSize);
+
+						if (this.Log().IsEnabled(LogLevel.Debug))
+						{
+							this.Log().LogDebug($"{GetMethodTag()} item remeasured prevSize:{prevSize} view.DesiredSize:{view.DesiredSize}");
+						}
+
+						if(prevSize != view.DesiredSize)
+						{
+							// Drop the current cells for now, but we need to remeasure the cells instead.
+							ClearLines();
+							break;
+						}
 					}
 				}
 			}
@@ -235,6 +256,17 @@ namespace Windows.UI.Xaml.Controls
 				{
 					var view = line.ContainerViews[i];
 					var rect = line.Rects[i];
+
+					// Adjust the provided rect to use the current available breath
+					// as the current list may have changed size.
+					if(Orientation == Orientation.Horizontal)
+					{
+						rect.Height = AvailableBreadth;
+					}
+					else
+					{
+						rect.Width = AvailableBreadth;
+					}
 
 					// IMPORTANT: THIS HACK WON'T ALLOW THE ITEM TO CHANGE ITS SIZE, BUT
 					// WILL FIX THE PROBLEM OF PROPAGATING CORRECTLY THE ARRANGE PHASE.
@@ -358,7 +390,7 @@ namespace Windows.UI.Xaml.Controls
 
 			if (this.Log().IsEnabled(LogLevel.Debug))
 			{
-				this.Log().LogDebug($"{GetMethodTag()} => {extent} -> {ret} {ScrollOrientation} {_availableSize.Height} {double.IsInfinity(_availableSize.Height)}");
+				this.Log().LogDebug($"{GetMethodTag()} => {extent} -> {ret} {ScrollOrientation} {_availableSize.Height} {double.IsInfinity(_availableSize.Height)} AvailableBreadth:{AvailableBreadth}");
 			}
 
 			return ret;
@@ -508,7 +540,7 @@ namespace Windows.UI.Xaml.Controls
 			var finalRect = new Rect(topLeft, adjustedDesiredSize);
 			if (this.Log().IsEnabled(LogLevel.Debug))
 			{
-				this.Log().LogDebug($"{GetMethodTag()} finalRect={finalRect} DC={view.DataContext}");
+				this.Log().LogDebug($"{GetMethodTag()} finalRect={finalRect} AvailableBreadth={AvailableBreadth} adjustedDesiredSize={adjustedDesiredSize} DC={view.DataContext}");
 			}
 
 			view.Arrange(finalRect);

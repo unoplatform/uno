@@ -207,7 +207,7 @@ namespace Windows.UI.Xaml.Controls
 
 		void UpdateVisualStateForIconAndContent(bool showIcon, bool showContent)
 		{
-			var stateName = showIcon ? (showContent ? "IconOnLeft": "IconOnly") : "ContentOnly"; 
+			var stateName = showIcon ? (showContent ? "IconOnLeft": "IconOnly") : "ContentOnly";
 			VisualStateManager.GoToState(this, stateName, false /*useTransitions*/);
 		}
 
@@ -233,11 +233,13 @@ namespace Windows.UI.Xaml.Controls
 			}
 			else if (position == NavigationViewListPosition.TopPrimary)
 			{
+#if !IS_UNO
 				if (SharedHelpers.IsRS4OrHigher() && Application.Current.FocusVisualKind == FocusVisualKind.Reveal)
 				{
 					stateName = NavigationViewItemHelper.c_OnTopNavigationPrimaryReveal;
 				}
 				else
+#endif
 				{
 					stateName = NavigationViewItemHelper.c_OnTopNavigationPrimary;
 				}

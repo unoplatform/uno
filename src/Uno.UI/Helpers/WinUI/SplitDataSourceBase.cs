@@ -76,7 +76,7 @@ namespace Uno.UI.Helpers.WinUI
 		{
 			global::System.Diagnostics.Debug.Assert(index >= 0 && index < RawDataSize());
 
-			if (m_flags[index].Equals(newVectorID))
+			if (!m_flags[index].Equals(newVectorID))
 			{
 				// remove from the old vector
 				var splitVector = GetVectorForItem(index);

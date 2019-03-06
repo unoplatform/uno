@@ -12,22 +12,6 @@
   <PropertyGroup>
     <IsUnoUIProject>false</IsUnoUIProject>
     <IsUnoUIProject Condition="'$(AssemblyName)'=='Uno' or '$(AssemblyName)'=='Uno.UI' or '$(AssemblyName)'=='Uno.Foundation'">true</IsUnoUIProject>
-    <!--
-    	This property controls the platform built by Visual Studio.
-		
-      	Available build targets:
-								uap10.0 (Windows)
-								xamarinios10 (iOS)
-								MonoAndroid80 (Android 8.0)
-								netstandard2.0 (WebAssembly)
-								net46 (Tests)
-			
-     	Note that if the BuildTargetFramework is not part of a project's 
-     	TargetFrameworksDefault list, all target frameworks will be built.
-			
-    	To build multiple targets, separate them with ; (e.g. uap10.0;net46)
-    -->
-    <BuildTargetFramework>MonoAndroid80</BuildTargetFramework>
 
     <!-- 
     This property allows the override of the nuget local cache.
