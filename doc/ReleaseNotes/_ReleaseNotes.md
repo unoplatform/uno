@@ -77,6 +77,11 @@
     - Move to net461 for test projects so the the Uno.Xaml project can be referenced properly
     - Use the latest MSBuild.Sdk.Extras for actual parallel cross-targeted builds
     - Move the nuget package versions to the Directory.Build.targets file so it's easier to change all versions at once.
+* Add support for NavigationView Top Navigation
+* Adjust `SystemChromeMediumHighColor` to use the Light theme
+* Add support for `FrameworkElement.GoToStateCore`
+* Adjust `ListView` measure/arrange for dynamic content
+* Add some missing default UWP styles ()
 * Improve XAML generation error messages for unknown symbols
 
 ### Breaking changes
