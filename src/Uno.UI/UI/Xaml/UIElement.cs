@@ -19,8 +19,6 @@ using Windows.System;
 using Windows.UI.Xaml.Controls;
 using Uno.UI;
 using Uno;
-using Uno.UI.Controls;
-using Uno.UI.Media;
 
 #if __IOS__
 using UIKit;
@@ -234,7 +232,7 @@ namespace Windows.UI.Xaml
 
 		protected internal bool IsPointerOver { get; set; }
 
-		#region Clip DependencyProperty
+#region Clip DependencyProperty
 
 		public RectangleGeometry Clip
 		{
@@ -267,73 +265,48 @@ namespace Windows.UI.Xaml
 			);
 		}
 
-		#endregion
+#endregion
 
-		#region RenderTransform Dependency Property
+#region RenderTransform Dependency Property
 
 		/// <summary>
 		/// This is a Transformation for a UIElement.  It binds the Render Transform to the View
 		/// </summary>
 		public Transform RenderTransform
 		{
-			get => (Transform)this.GetValue(RenderTransformProperty);
-			set => this.SetValue(RenderTransformProperty, value);
+			get { return (Transform)this.GetValue(RenderTransformProperty); }
+			set { this.SetValue(RenderTransformProperty, value); }
 		}
 
-		/// <summary>
-		/// Backing dependency property for <see cref="RenderTransform"/>
-		/// </summary>
+		// Using a DependencyProperty as the backing store for RenderTransform.  This enables animation, styling, binding, etc...
 		public static readonly DependencyProperty RenderTransformProperty =
 			DependencyProperty.Register("RenderTransform", typeof(Transform), typeof(UIElement), new PropertyMetadata(null, (s, e) => OnRenderTransformChanged(s, e)));
 
-		private static void OnRenderTransformChanged(object dependencyObject, DependencyPropertyChangedEventArgs args)
-		{
-			var view = (UIElement)dependencyObject;
+		static partial void OnRenderTransformChanged(object dependencyObject, DependencyPropertyChangedEventArgs args);
 
-			view._renderTransform?.Dispose();
+#endregion
 
-			if (args.NewValue is Transform transform)
-			{
-				view._renderTransform = new NativeRenderTransformAdapter(view, transform, view.RenderTransformOrigin);
-				view.OnRenderTransformSet();
-			}
-			else
-			{
-				// Sanity
-				view._renderTransform = null;
-			}
-		}
-
-		internal NativeRenderTransformAdapter _renderTransform;
-
-		partial void OnRenderTransformSet();
-		#endregion
-
-		#region RenderTransformOrigin Dependency Property
+#region RenderTransformOrigin Dependency Property
 
 		/// <summary>
 		/// This is a Transformation for a UIElement.  It binds the Render Transform to the View
 		/// </summary>
 		public Point RenderTransformOrigin
 		{
-			get => (Point)this.GetValue(RenderTransformOriginProperty);
-			set => this.SetValue(RenderTransformOriginProperty, value);
+			get { return (Point)this.GetValue(RenderTransformOriginProperty); }
+			set { this.SetValue(RenderTransformOriginProperty, value); }
 		}
 
 		// Using a DependencyProperty as the backing store for RenderTransformOrigin.  This enables animation, styling, binding, etc...
 		public static readonly DependencyProperty RenderTransformOriginProperty =
 			DependencyProperty.Register("RenderTransformOrigin", typeof(Point), typeof(UIElement), new PropertyMetadata(default(Point), (s, e) => OnRenderTransformOriginChanged(s, e)));
 
-		private static void OnRenderTransformOriginChanged(object dependencyObject, DependencyPropertyChangedEventArgs args)
-		{
-			var view = (UIElement)dependencyObject;
-			var point = (Point)args.NewValue;
 
-			view._renderTransform?.UpdateOrigin(point);
-		}
-		#endregion
+		static partial void OnRenderTransformOriginChanged(object dependencyObject, DependencyPropertyChangedEventArgs args);
 
-		#region IsHitTestVisible Dependency Property
+#endregion
+
+#region IsHitTestVisible Dependency Property
 
 		public bool IsHitTestVisible
 		{
@@ -360,7 +333,7 @@ namespace Windows.UI.Xaml
 
 #endregion
 
-		#region Opacity Dependency Property
+#region Opacity Dependency Property
 
 		public double Opacity
 		{
@@ -373,9 +346,9 @@ namespace Windows.UI.Xaml
 
 		partial void OnOpacityChanged(DependencyPropertyChangedEventArgs args);
 
-		#endregion
+#endregion
 
-		#region Visibility Dependency Property
+#region Visibility Dependency Property
 
 		/// <summary>
 		/// Sets the visibility of the current view
@@ -470,7 +443,7 @@ namespace Windows.UI.Xaml
 		{
 			InvalidateMeasure();
 		}
-		#endif
+#endif
 
 		public bool CapturePointer(Pointer value)
 		{

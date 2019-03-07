@@ -157,7 +157,6 @@ namespace Windows.UI.Xaml
 		internal void RaiseSizeChanged(SizeChangedEventArgs args)
 		{
 			SizeChanged?.Invoke(this, args);
-			_renderTransform?.UpdateSize(args.NewSize);
 		}
 
 		static partial void OnGenericPropertyUpdatedPartial(object dependencyObject, DependencyPropertyChangedEventArgs args);

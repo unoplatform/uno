@@ -1,21 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Numerics;
-using System.Runtime.CompilerServices;
 using System.Text;
 using Windows.Foundation;
-using Uno.Extensions;
-
-#if __ANDROID__
-using _View = Android.Views.View;
-#elif __IOS__
-using _View = UIKit.UIView;
+#if XAMARIN_ANDROID
+using Android.Views;
+#elif XAMARIN_IOS_UNIFIED
+using View = UIKit.UIView;
 #elif __MACOS__
-using _View = AppKit.NSView;
+using View = AppKit.NSView;
 #elif __WASM__
-using _View = Windows.UI.Xaml.UIElement;
+using View = Windows.UI.Xaml.UIElement;
 #else
-using _View = System.Object;
+using View = System.Object;
 #endif
 
 namespace Windows.UI.Xaml.Media
@@ -27,106 +23,57 @@ namespace Windows.UI.Xaml.Media
 	/// </summary>
 	public abstract partial class Transform : GeneralTransform
 	{
-		protected static PropertyChangedCallback NotifyChangedCallback { get; } = (snd, args) =>
+		internal virtual void OnViewSizeChanged(Size oldSize, Size newSize)
 		{
-			// Don't update the internal value if the value is being animated.
-			// The value is being animated by the platform itself.
+			Update();
+		}
 
-			if (snd is Transform transform
-#if __ANDROID__ || __IOS__ || __MACOS__ // On WASM currently we supports only CPU bound animations, so we have to let the transform be updated on each frame
-				&& !transform.IsAnimating
+#if !__WASM__
+		protected virtual void Update()
+		{
+			UpdatePartial();
+		}
 #endif
-				)
-			{
-				transform.MatrixCore = transform.ToMatrix(new Point(0, 0));
-				transform.NotifyChanged();
-			}
-		};
+
+		partial void UpdatePartial();
+
+		View _view;
 
 		/// <summary>
-		/// Notifies that a value of this transform changed (usually this means that the <see cref="Matrix"/> has been updated).
+		/// Transforms are attached to a View
 		/// </summary>
-		internal event EventHandler Changed;
-
-		protected void NotifyChanged()
-			=> Changed?.Invoke(this, EventArgs.Empty);
-
-		/// <summary>
-		/// The matrix used by this transformation
-		/// </summary>
-		internal Matrix3x2 MatrixCore { get; private set; } = Matrix3x2.Identity;
-
-		/// <summary>
-		/// Converts the transform to a standard transform matrix
-		/// </summary>
-		/// <param name="relativeOrigin">The origin of the transform relative to the <paramref name="viewSize"/>.</param>
-		/// <param name="viewSize">The size of the view to transform, in virtual pixels</param>
-		/// <returns>An affine matrix of the transformation</returns>
-		internal Matrix3x2 ToMatrix(Point relativeOrigin, Size viewSize)
-			=> ToMatrix(new Point(relativeOrigin.X * viewSize.Width, relativeOrigin.Y * viewSize.Height));
-
-		/// <summary>
-		/// Converts the transform to a standard transform matrix
-		/// </summary>
-		/// <param name="absoluteOrigin">The absolute origin of the transform, in virtual pixels.</param>
-		/// <returns>An affine matrix of the transformation</returns>
-		internal abstract Matrix3x2 ToMatrix(Point absoluteOrigin);
-
-		// Currently we support only one view par transform.
-		// But we can declare a Transform as a static resource and use it on multiple views.
-		// Note: This is now used only for animations
-		internal _View View { get; set; }
-
-		#region GeneralTransform overrides
-		/// <inheritdoc />
-		protected override GeneralTransform InverseCore
+		internal View View
 		{
-			get
+			get => _view;
+			set
 			{
-				var matrix = MatrixCore;
-				if (matrix.IsIdentity)
+				var view = _view;
+				_view = value;
+				if (value != null)
 				{
-					return this;
+					OnAttachedToView();
+					OnAttachedToViewPartial(_view);
 				}
 				else
 				{
-					// The Inverse transform is not expected to reflect future changes on this transform
-					// It means that it's  acceptable to capture the current 'Matrix'
-					Matrix3x2.Invert(matrix, out var inverse);
-					return new MatrixTransform
-					{
-						Matrix = new Matrix(inverse)
-					};
+					OnDetachedFromViewPartial(view);
 				}
 			}
 		}
 
-		/// <inheritdoc />
-		protected override bool TryTransformCore(Point inPoint, out Point outPoint)
+		protected virtual void OnAttachedToView()
 		{
-			var matrix = MatrixCore;
-			if (matrix.IsIdentity)
-			{
-				outPoint = inPoint;
-				return false;
-			}
-			else
-			{
-				outPoint = new Point
-				(
-					(inPoint.X * matrix.M11) + (inPoint.Y * matrix.M21) + matrix.M31,
-					(inPoint.X * matrix.M12) + (inPoint.Y * matrix.M22) + matrix.M32
-				);
-				return true;
-			}
+
 		}
 
-		/// <inheritdoc />
-		protected override Rect TransformBoundsCore(Rect rect)
-		{
-			return rect.Transform(MatrixCore);
-		}
-		#endregion
+		partial void OnAttachedToViewPartial(View view);
+
+		partial void OnDetachedFromViewPartial(View view);
+
+		/// <summary>
+		/// The <see cref="FrameworkElement.RenderTransformOrigin"/> of the targeted view.
+		/// </summary>
+		internal virtual Foundation.Point Origin { get; set; }
 	}
 }
 

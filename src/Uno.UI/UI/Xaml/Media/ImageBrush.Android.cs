@@ -227,7 +227,7 @@ namespace Windows.UI.Xaml.Media
 
 			matrix.SetRectToRect(sourceRect.ToRectF(), destinationRect.ToRectF(), Android.Graphics.Matrix.ScaleToFit.Fill);
 
-			RelativeTransform?.ToNative(matrix, new Size(drawRect.Width, drawRect.Height), isBrush: true);
+			RelativeTransform?.ToNativeTransform(matrix, new Size(drawRect.Width, drawRect.Height), isBrush: true);
 			return matrix;
 		}
 

@@ -2,9 +2,8 @@
 using System.Collections.Generic;
 using System.Text;
 using Windows.Foundation;
-using global::System.Numerics;
+using System.Numerics;
 using Uno.Extensions;
-using Uno.UI;
 
 namespace Windows.UI.Xaml.Media
 {
@@ -14,44 +13,82 @@ namespace Windows.UI.Xaml.Media
 	/// </summary>
 	public sealed partial class RotateTransform : Transform
 	{
-		internal static Matrix3x2 GetMatrix(double centerX, double centerY, double angleDegree)
+		internal override Point Origin
 		{
-			var angle = (float) MathEx.ToRadians(angleDegree);
-			var centerPoint = new Vector2((float)centerX, (float)centerY);
-
-			return Matrix3x2.CreateRotation(angle, centerPoint);
+			get => base.Origin;
+			set
+			{
+				if(Origin != value)
+				{ 
+					OnOriginChanged(value);
+					base.Origin = value;
+				}
+			}
 		}
 
-		internal override Matrix3x2 ToMatrix(Point absoluteOrigin)
-			=> GetMatrix(absoluteOrigin.X + CenterX, absoluteOrigin.Y + CenterY, Angle);
-
+		partial void OnOriginChanged(Point origin);
 
 		public double CenterY
 		{
-			get => (double)this.GetValue(CenterYProperty);
-			set => this.SetValue(CenterYProperty, value);
+			get => (double)GetValue(CenterYProperty);
+			set => SetValue(CenterYProperty, value);
 		}
 
+		// Using a DependencyProperty as the backing store for CenterY.  This enables animation, styling, binding, etc...
 		public static readonly DependencyProperty CenterYProperty =
-			DependencyProperty.Register("CenterY", typeof(double), typeof(RotateTransform), new PropertyMetadata(0.0, NotifyChangedCallback));
+			DependencyProperty.Register("CenterY", typeof(double), typeof(RotateTransform), new PropertyMetadata(0.0, OnCenterYChanged));
+
+		private static void OnCenterYChanged(object dependencyObject, DependencyPropertyChangedEventArgs args)
+		{
+			if (dependencyObject is RotateTransform self)
+			{
+				self.SetCenterY(args);
+			}
+		}
+
+		partial void SetCenterY(DependencyPropertyChangedEventArgs args);
 
 		public double CenterX
 		{
-			get => (double)this.GetValue(CenterXProperty);
-			set => this.SetValue(CenterXProperty, value);
+			get => (double)GetValue(CenterXProperty);
+			set => SetValue(CenterXProperty, value);
 		}
 
+		// Using a DependencyProperty as the backing store for CenterX.  This enables animation, styling, binding, etc...
 		public static readonly DependencyProperty CenterXProperty =
-			DependencyProperty.Register("CenterX", typeof(double), typeof(RotateTransform), new PropertyMetadata(0.0, NotifyChangedCallback));
+			DependencyProperty.Register("CenterX", typeof(double), typeof(RotateTransform), new PropertyMetadata(0.0, OnCenterXChanged));
+		private static void OnCenterXChanged(object dependencyObject, DependencyPropertyChangedEventArgs args)
+		{
+			if (dependencyObject is RotateTransform self)
+			{
+				self.SetCenterX(args);
+			}
+		}
+
+		partial void SetCenterX(DependencyPropertyChangedEventArgs args);
 
 		public double Angle
 		{
-			get => (double)this.GetValue(AngleProperty);
-			set => this.SetValue(AngleProperty, value);
+			get => (double)GetValue(AngleProperty);
+			set => SetValue(AngleProperty, value);
 		}
 
+		// Using a DependencyProperty as the backing store for Angle.  This enables animation, styling, binding, etc...
 		public static readonly DependencyProperty AngleProperty =
-			DependencyProperty.Register("Angle", typeof(double), typeof(RotateTransform), new PropertyMetadata(0.0, NotifyChangedCallback));
+			DependencyProperty.Register("Angle", typeof(double), typeof(RotateTransform), new PropertyMetadata(0.0, OnAngleChanged));
+
+		private static void OnAngleChanged(object dependencyObject, DependencyPropertyChangedEventArgs args)
+		{
+			if (dependencyObject is RotateTransform self)
+			{
+				self.SetAngle(args);
+			}
+		}
+
+		partial void SetAngle(DependencyPropertyChangedEventArgs args);
+
+		protected override Rect TransformBoundsCore(Rect rect) 
+			=> rect.Transform(Matrix3x2.CreateRotation((float)Angle, new Vector2((float)CenterX, (float)CenterY)));
 	}
 }
 
