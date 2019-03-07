@@ -402,7 +402,7 @@ public abstract class UnoViewGroup
 
 			Matrix inverse = new Matrix();
 
-			for (int i = 0; i < getChildCount(); i++) {
+			for (int i = getChildCount() - 1; i >= 0; i--) { // Inverse enumeration in order to prioritize controls that are on top
 				View child = getChildAt(i);
 
 				final Matrix transform = _childrenTransformations.get(child);
