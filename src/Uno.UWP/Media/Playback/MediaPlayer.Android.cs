@@ -262,6 +262,7 @@ namespace Windows.Media.Playback
 		public void OnCompletion(AndroidMediaPlayer mp)
 		{
 			MediaEnded?.Invoke(this, null);
+			PlaybackSession.PlaybackState = MediaPlaybackState.None;
 		}
 
 		private void OnMediaFailed(global::System.Exception ex = null, string message = null)
@@ -341,12 +342,18 @@ namespace Windows.Media.Playback
 
 					var width = parent.Width;
 					var height = parent.Height;
-					var parentRatio = (double)width / height;
+					var parentRatio = (double)width / global::System.Math.Max(1, height);
 
 					var videoWidth = _player.VideoWidth;
 					var videoHeight = _player.VideoHeight;
-					var ratio = (double)_player.VideoWidth / _player.VideoHeight;
+					
+					if (videoWidth == 0 || videoHeight == 0)
+					{
+						return;
+					}
 
+					var ratio = (double)_player.VideoWidth / global::System.Math.Max(1, _player.VideoHeight);
+					
 					_currentStretch = stretch;
 
 					switch (stretch)

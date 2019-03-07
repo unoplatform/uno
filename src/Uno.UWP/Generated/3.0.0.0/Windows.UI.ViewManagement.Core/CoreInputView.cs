@@ -43,6 +43,27 @@ namespace Windows.UI.ViewManagement.Core
 		#endif
 		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
+		public  bool TryShow()
+		{
+			throw new global::System.NotImplementedException("The member bool CoreInputView.TryShow() is not implemented in Uno.");
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  bool TryShow( global::Windows.UI.ViewManagement.Core.CoreInputViewKind type)
+		{
+			throw new global::System.NotImplementedException("The member bool CoreInputView.TryShow(CoreInputViewKind type) is not implemented in Uno.");
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  bool TryHide()
+		{
+			throw new global::System.NotImplementedException("The member bool CoreInputView.TryHide() is not implemented in Uno.");
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
 		public static global::Windows.UI.ViewManagement.Core.CoreInputView GetForCurrentView()
 		{
 			throw new global::System.NotImplementedException("The member CoreInputView CoreInputView.GetForCurrentView() is not implemented in Uno.");

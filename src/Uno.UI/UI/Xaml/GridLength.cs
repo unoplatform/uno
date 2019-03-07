@@ -21,19 +21,13 @@ namespace Windows.UI.Xaml
 
         public double Value { get; private set; }
 
-        public static implicit operator GridLength(string value)
-        {
-            var result = GridLength.ParseGridLength(value);
+		public static implicit operator GridLength(string value)
+			=> FromString(value);
 
-            if (result.Length == 0)
-            {
-                throw new InvalidOperationException("Cannot create GridLength from invalid string [{0}]".InvariantCultureFormat(value));
-            }
+		public static implicit operator GridLength(double value)
+			=> new GridLength(value);
 
-            return result[0];
-        }
-
-        public GridLength(double pixels) : this(pixels, GridUnitType.Pixel)
+		public GridLength(double pixels) : this(pixels, GridUnitType.Pixel)
         {
         }
 
@@ -42,20 +36,48 @@ namespace Windows.UI.Xaml
 			Value = value;
 			GridUnitType = gridUnitType;
 		}
-		
-		private static readonly Regex GridLengthParsingRegex =
-			new Regex(
-				@"^(?:(?<stars>\d*(?:.\d*))\*)|(?<abs>\d+(?:[.\d$]*))|(?<auto>Auto)|(?<star>\*)$",
-#if (NETFX_CORE || XAMARIN) || (SILVERLIGHT && !WINDOWS_PHONE)
-				RegexOptions.IgnoreCase | RegexOptions.CultureInvariant | RegexOptions.Singleline);
-#else
-				RegexOptions.IgnoreCase | RegexOptions.CultureInvariant | RegexOptions.Singleline | RegexOptions.Compiled);
-#endif
 
+		public static GridLength FromString(string s)
+		{
+			var trimmed = s.Trim();
+
+			if (trimmed == "*")
+			{
+				return new GridLength(1, GridUnitType.Star);
+			}
+			else if (trimmed.Equals("auto", StringComparison.OrdinalIgnoreCase))
+			{
+				return new GridLength(0, GridUnitType.Auto);
+			}
+			else if (trimmed.EndsWith("*"))
+			{
+				var stringValue = trimmed.Substring(0, trimmed.Length - 1);
+
+				if (double.TryParse(stringValue, NumberStyles.Any & ~NumberStyles.AllowThousands, CultureInfo.InvariantCulture, out var value))
+				{
+					return new GridLength(value, GridUnitType.Star);
+				}
+				else
+				{
+					throw new InvalidOperationException($"The value [{trimmed}] is not a valid GridLength");
+				}
+			}
+			else
+			{
+				if (double.TryParse(trimmed, NumberStyles.Any & ~NumberStyles.AllowThousands, CultureInfo.InvariantCulture, out var value))
+				{
+					return new GridLength(value, GridUnitType.Pixel);
+				}
+				else
+				{
+					throw new InvalidOperationException($"The value [{trimmed}] is not a valid GridLength");
+				}
+			}
+		}
 
 		public static GridLength[] ParseGridLength(string s)
 		{
-			var parts = s.Split(',');
+			var parts = s.Split(new[] { ',' });
 
 			var result = new List<GridLength>(parts.Length);
 
@@ -67,46 +89,7 @@ namespace Windows.UI.Xaml
 					continue;
 				}
 
-				var match = GridLengthParsingRegex.Match(part);
-				if (!match.Success)
-				{
-					throw new InvalidOperationException("Invalid value '" + part + "', unable to parse.");
-				}
-
-				var autoGroup = match.Groups["auto"];
-				if (autoGroup.Success)
-				{
-					result.Add(new GridLength(0, GridUnitType.Auto));
-					continue;
-				}
-
-				var starsGroup = match.Groups["stars"];
-				if (starsGroup.Success)
-				{
-					var value =
-						!string.IsNullOrWhiteSpace(starsGroup.Value)
-							? double.Parse(starsGroup.Value, CultureInfo.InvariantCulture)
-							: 1;
-					result.Add(new GridLength(value, GridUnitType.Star));
-					continue;
-				}
-
-				var starGroup = match.Groups["star"];
-				if (starGroup.Success)
-				{
-					result.Add(new GridLength(1, GridUnitType.Star));
-					continue;
-				}
-
-				var absGroup = match.Groups["abs"];
-				if (absGroup.Success)
-				{
-					var value = double.Parse(absGroup.Value, CultureInfo.InvariantCulture);
-					result.Add(new GridLength(value, GridUnitType.Pixel));
-					continue;
-				}
-
-				throw new Exception("Unknown parsing error");
+				result.Add(FromString(part));
 			}
 
 			return result.ToArray();

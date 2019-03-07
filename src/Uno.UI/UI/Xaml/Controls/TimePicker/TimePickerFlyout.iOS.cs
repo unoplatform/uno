@@ -1,80 +1,127 @@
 ﻿#if XAMARIN_IOS
-using System;
-using System.Collections.Generic;
-using System.Text;
+
+using Uno.Disposables;
 using Uno.UI.Common;
-using Windows.UI.Xaml.Controls.Primitives;
+using Uno.UI.DataBinding;
 using Windows.UI.Xaml.Data;
 
 namespace Windows.UI.Xaml.Controls
 {
-	//TODO: should inherit from PickerFlyoutBase
 	public partial class TimePickerFlyout : Flyout
 	{
-		private bool _hasAcceptButton = false;
+		private readonly SerialDisposable _onLoad = new SerialDisposable();
+		private readonly SerialDisposable _onUnloaded = new SerialDisposable();
+		internal protected TimePickerSelector _timeSelector;
+		internal protected TimePickerFlyoutPresenter _timePickerPresenter;
+		internal protected FrameworkElement _headerUntapZone;
 
 		public TimePickerFlyout()
 		{
-			InitializeContent();
-		}
-
-		private void InitializeContent()
-		{
-			Content = new TimePickerSelector();
-			BindToContent(nameof(Time));
-			BindToContent(nameof(ClockIdentifier));
-
-			AttachAcceptCommand((TimePickerSelector)Content);
-
-			this.Closed += (_, __) =>
+			_timeSelector = new TimePickerSelector()
 			{
-				// If no accept button is explicitly part of the template, then update the set Time on light dismiss
-				if (!_hasAcceptButton)
-				{
-					(Content as TimePickerSelector)?.UpdateTime();
-				}
+				BorderThickness = Thickness.Empty,
+				HorizontalAlignment = HorizontalAlignment.Stretch,
+				HorizontalContentAlignment = HorizontalAlignment.Stretch
 			};
-		}
 
+			Content = _timeSelector;
+
+			this.Binding(nameof(Time), nameof(Time), Content, BindingMode.TwoWay);
+			this.Binding(nameof(MinuteIncrement), nameof(MinuteIncrement), Content, BindingMode.TwoWay);
+			this.Binding(nameof(ClockIdentifier), nameof(ClockIdentifier), Content, BindingMode.TwoWay);
+		}
+		
 		protected override Control CreatePresenter()
 		{
-			var presenter = new TimePickerFlyoutPresenter()
+			_timePickerPresenter = new TimePickerFlyoutPresenter() { Content = Content };
+
+			void onLoad(object sender, RoutedEventArgs e)
 			{
-				Style = FlyoutPresenterStyle,
-				Content = Content
-			};
+				_headerUntapZone = _timePickerPresenter?.FindName("HeaderUntapableZone") as FrameworkElement;
 
-			AttachAcceptCommand(presenter);
+				AttachAcceptCommand(_timePickerPresenter);
+				AttachDismissCommand(_timePickerPresenter);
 
-			return presenter;
+				_onLoad.Disposable = null;
+			}
+
+			void onUnload(object sender, RoutedEventArgs e)
+			{
+				_onUnloaded.Disposable = null;
+				_onLoad.Disposable = null;
+			}
+
+			if (_timePickerPresenter != null)
+			{
+				_onLoad.Disposable = Disposable.Create(() => _timePickerPresenter.Loaded -= onLoad);
+				_onUnloaded.Disposable = Disposable.Create(() => _timePickerPresenter.Unloaded -= onUnload);
+
+				_timePickerPresenter.Loaded += onLoad;
+				_timePickerPresenter.Unloaded += onUnload;
+			}
+
+			return _timePickerPresenter;
 		}
 
-		/// <summary>
-		/// Propagate 2-way binding to property on TimePickerSelector of the same name
-		/// </summary>
-		/// <param name="propertyName"></param>
-		private void BindToContent(string propertyName)
+		private void OnTap(object sender, Input.PointerRoutedEventArgs e) => e.Handled = true;
+
+		protected internal override void Open()
 		{
-			this.Binding(propertyName, propertyName, Content, BindingMode.TwoWay);
+			_timeSelector.Initialize();
+
+			//Gobbling pressed tap on the flyout header background so that it doesn't close the flyout popup. 
+			if (_headerUntapZone != null)
+			{
+				_headerUntapZone.PointerPressed += OnTap;
+			}
+
+			base.Open();
 		}
 
-		private void AttachAcceptCommand(IFrameworkElement rootControl)
+		protected internal override void Close()
 		{
-			var acceptButton = rootControl.FindName("AcceptButton") as Button;
-			if (acceptButton != null && acceptButton.Command == null)
+			if (_headerUntapZone != null)
 			{
-				acceptButton.Command = new DelegateCommand(Accept);
-				_hasAcceptButton = true;
+				_headerUntapZone.PointerPressed -= OnTap;
+			}
+
+			_timeSelector.Cancel();
+
+			base.Close();
+		}
+
+		private void AttachAcceptCommand(IFrameworkElement control)
+		{
+			var b = control.FindName("AcceptButton") as Button;
+
+			if (b != null && b.Command == null)
+			{
+				var wr = WeakReferencePool.RentWeakReference(this, this);
+				b.Command = new DelegateCommand(() => (wr.Target as TimePickerFlyout)?.Accept());
+			}
+		}
+
+		private void AttachDismissCommand(IFrameworkElement control)
+		{
+			var b = control.FindName("DismissButton") as Button;
+
+			if (b != null && b.Command == null)
+			{
+				var wr = WeakReferencePool.RentWeakReference(this, this);
+				b.Command = new DelegateCommand(() => (wr.Target as TimePickerFlyout)?.Dismiss());
 			}
 		}
 
 		private void Accept()
 		{
-			// Update the bound Time when the flyout is dismissed, as on Windows.
-			(Content as TimePickerSelector)?.UpdateTime();
-            Hide();
+			_timeSelector.SaveTime();
+			Hide(false);
+		}
+
+		private void Dismiss()
+		{
+			Hide(false);
 		}
 	}
 }
-
 #endif

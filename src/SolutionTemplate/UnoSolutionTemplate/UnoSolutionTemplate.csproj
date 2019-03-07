@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
-    <MinimumVisualStudioVersion>15.0</MinimumVisualStudioVersion>
+    <MinimumVisualStudioVersion>16.0</MinimumVisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
     <FileUpgradeFlags>
     </FileUpgradeFlags>
@@ -23,6 +23,7 @@
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
@@ -34,7 +35,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>UnoSolutionTemplate</RootNamespace>
     <AssemblyName>UnoSolutionTemplate</AssemblyName>
-    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <GeneratePkgDefFile>false</GeneratePkgDefFile>
     <IncludeAssemblyInVSIXContainer>false</IncludeAssemblyInVSIXContainer>
@@ -75,79 +76,85 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <None Include="UnoQuickStart.Droid\Assets\Fonts\winjs-symbols.ttf">
+    <None Include="Droid\Assets\Fonts\winjs-symbols.ttf">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="UnoQuickStart.iOS\Resources\Fonts\winjs-symbols.ttf">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="UnoQuickStart.Shared\Strings\en\Resources.resw">
+    <None Include="iOS\LaunchScreen.storyboard">
       <SubType>Designer</SubType>
     </None>
-    <None Include="UnoQuickStart.Wasm\Program.cs" />
-    <None Include="UnoQuickStart.Wasm\Fonts\winjs-symbols.woff2" />
-    <None Include="UnoQuickStart.Droid\MainActivity.cs" />
-    <None Include="UnoQuickStart.Droid\Properties\AssemblyInfo.cs" />
-    <None Include="UnoQuickStart.Droid\Resources\Resource.Designer.cs" />
-    <None Include="UnoQuickStart.Droid\Main.cs" />
-    <None Include="UnoQuickStart.iOS\Main.cs" />
-    <None Include="UnoQuickStart.iOS\Properties\AssemblyInfo.cs" />
-    <None Include="UnoQuickStart.Shared\App.xaml.cs" />
-    <None Include="UnoQuickStart.Shared\MainPage.xaml.cs" />
-    <None Include="UnoQuickStart.UWP\Properties\AssemblyInfo.cs" />
+    <None Include="iOS\Media.xcassets\AppIcons.appiconset\Contents.json" />
+    <None Include="iOS\Media.xcassets\LaunchImages.launchimage\Contents.json" />
+    <None Include="iOS\Resources\Fonts\winjs-symbols.ttf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Shared\Strings\en\Resources.resw">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Wasm\Program.cs" />
+    <None Include="Wasm\Fonts\winjs-symbols.woff2" />
+    <None Include="Droid\MainActivity.cs" />
+    <None Include="Droid\Properties\AssemblyInfo.cs" />
+    <None Include="Droid\Resources\Resource.Designer.cs" />
+    <None Include="Droid\Main.cs" />
+    <None Include="iOS\Main.cs" />
+    <None Include="iOS\Properties\AssemblyInfo.cs" />
+    <None Include="Shared\App.xaml.cs" />
+    <None Include="Shared\MainPage.xaml.cs" />
+    <None Include="UWP\Properties\AssemblyInfo.cs" />
+    <None Include="Wasm\web.config" />
   </ItemGroup>
   <ItemGroup>
     <VSTemplate Include="UnoApp.vstemplate">
       <SubType>Designer</SubType>
+      <OutputSubPath>Uno Platform</OutputSubPath>
     </VSTemplate>
-    <None Include="UnoQuickStart.Droid\Android.vstemplate" />
-    <None Include="UnoQuickStart.Droid\Assets\AboutAssets.txt" />
-    <None Include="UnoQuickStart.Droid\Resources\AboutResources.txt" />
-    <None Include="UnoQuickStart.Droid\Resources\drawable\Icon.png" />
-    <None Include="UnoQuickStart.iOS\Entitlements.plist" />
-    <None Include="UnoQuickStart.iOS\Info.plist">
+    <None Include="Droid\Android.vstemplate" />
+    <None Include="Droid\Assets\AboutAssets.txt" />
+    <None Include="Droid\Resources\AboutResources.txt" />
+    <None Include="Droid\Resources\drawable\Icon.png" />
+    <None Include="iOS\Entitlements.plist" />
+    <None Include="iOS\Info.plist">
       <SubType>Designer</SubType>
     </None>
-    <None Include="UnoQuickStart.iOS\iOS.vstemplate" />
-    <None Include="UnoQuickStart.iOS\Resources\Default-568h%402x.png" />
-    <None Include="UnoQuickStart.iOS\UnoQuickStart.iOS.csproj">
+    <None Include="iOS\iOS.vstemplate" />
+    <None Include="iOS\Resources\Default-568h%402x.png" />
+    <None Include="iOS\UnoQuickStart.iOS.csproj">
       <SubType>Designer</SubType>
     </None>
-    <None Include="UnoQuickStart.Shared\Shared.vstemplate" />
-    <None Include="UnoQuickStart.Shared\Assets\LockScreenLogo.scale-200.png" />
-    <None Include="UnoQuickStart.Shared\Assets\SplashScreen.scale-200.png" />
-    <None Include="UnoQuickStart.Shared\Assets\Square150x150Logo.scale-200.png" />
-    <None Include="UnoQuickStart.Shared\Assets\Square44x44Logo.scale-200.png" />
-    <None Include="UnoQuickStart.Shared\Assets\Square44x44Logo.targetsize-24_altform-unplated.png" />
-    <None Include="UnoQuickStart.Shared\Assets\StoreLogo.png" />
-    <None Include="UnoQuickStart.Shared\Assets\Wide310x150Logo.scale-200.png" />
-    <None Include="UnoQuickStart.UWP\Properties\Default.rd.xml" />
-    <None Include="UnoQuickStart.UWP\UnoQuickStart.Uwp.csproj">
+    <None Include="Shared\Shared.vstemplate" />
+    <None Include="Shared\Assets\LockScreenLogo.scale-200.png" />
+    <None Include="Shared\Assets\SplashScreen.scale-200.png" />
+    <None Include="Shared\Assets\Square150x150Logo.scale-200.png" />
+    <None Include="Shared\Assets\Square44x44Logo.scale-200.png" />
+    <None Include="Shared\Assets\Square44x44Logo.targetsize-24_altform-unplated.png" />
+    <None Include="Shared\Assets\StoreLogo.png" />
+    <None Include="Shared\Assets\Wide310x150Logo.scale-200.png" />
+    <None Include="UWP\Properties\Default.rd.xml" />
+    <None Include="UWP\UnoQuickStart.Uwp.csproj">
       <SubType>Designer</SubType>
     </None>
-    <None Include="UnoQuickStart.UWP\Uwp.vstemplate">
+    <None Include="UWP\Uwp.vstemplate">
       <SubType>Designer</SubType>
     </None>
-    <None Include="UnoQuickStart.Droid\Resources\values\Styles.xml" />
-    <None Include="UnoQuickStart.Droid\Resources\values\Strings.xml" />
-    <None Include="UnoQuickStart.Droid\Properties\AndroidManifest.xml" />
-    <None Include="UnoQuickStart.Droid\UnoQuickStart.Droid.csproj">
+    <None Include="Droid\Resources\values\Styles.xml" />
+    <None Include="Droid\Resources\values\Strings.xml" />
+    <None Include="Droid\Properties\AndroidManifest.xml" />
+    <None Include="Droid\UnoQuickStart.Droid.csproj">
       <SubType>Designer</SubType>
     </None>
   </ItemGroup>
   <ItemGroup>
-    <None Include="UnoQuickStart.iOS\Resources\LaunchScreen.xib" />
-    <None Include="UnoQuickStart.Shared\UnoQuickStart.Shared.projitems" />
-    <None Include="UnoQuickStart.Shared\UnoQuickStart.Shared.shproj" />
-    <None Include="UnoQuickStart.UWP\Package.appxmanifest" />
-    <None Include="UnoQuickStart.UWP\UnoQuickStart.Uwp_TemporaryKey.pfx" />
+    <None Include="Shared\UnoQuickStart.Shared.projitems" />
+    <None Include="Shared\UnoQuickStart.Shared.shproj" />
+    <None Include="UWP\Package.appxmanifest" />
+    <None Include="UWP\UnoQuickStart.Uwp_TemporaryKey.pfx" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="UnoQuickStart.Shared\App.xaml">
+    <None Include="Shared\App.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </None>
-    <None Include="UnoQuickStart.Shared\MainPage.xaml">
+    <None Include="Shared\MainPage.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </None>
@@ -165,13 +172,22 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="UnoQuickStart.Wasm\LinkerConfig.xml" />
-    <Content Include="UnoQuickStart.Wasm\WasmCSS\Fonts.css" />
-    <Content Include="UnoQuickStart.Wasm\WasmScripts\AppManifest.js" />
+    <Content Include="iOS\Media.xcassets\AppIcons.appiconset\ios-marketing-1024x1024%401x.png" />
+    <Content Include="iOS\Media.xcassets\AppIcons.appiconset\iPad-76x76%402x.png" />
+    <Content Include="iOS\Media.xcassets\AppIcons.appiconset\iPad-84x84%402x.png" />
+    <Content Include="iOS\Media.xcassets\AppIcons.appiconset\iPhone-20x20%402x.png" />
+    <Content Include="iOS\Media.xcassets\AppIcons.appiconset\iPhone-20x20%403x.png" />
+    <Content Include="iOS\Media.xcassets\AppIcons.appiconset\iPhone-40x40%403x.png" />
+    <Content Include="iOS\Media.xcassets\AppIcons.appiconset\iPhone-60x60%402x.png" />
+    <Content Include="iOS\Resources\SplashScreen%402x.png" />
+    <Content Include="iOS\Resources\SplashScreen%403x.png" />
+    <Content Include="Wasm\LinkerConfig.xml" />
+    <Content Include="Wasm\WasmCSS\Fonts.css" />
+    <Content Include="Wasm\WasmScripts\AppManifest.js" />
     <Content Include="__PreviewImage.png" />
     <Content Include="__TemplateIcon.png" />
-    <None Include="UnoQuickStart.Wasm\Wasm.vstemplate" />
-    <Content Include="UnoQuickStart.Wasm\UnoQuickStart.Wasm.csproj" />
+    <None Include="Wasm\Wasm.vstemplate" />
+    <Content Include="Wasm\UnoQuickStart.Wasm.csproj" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

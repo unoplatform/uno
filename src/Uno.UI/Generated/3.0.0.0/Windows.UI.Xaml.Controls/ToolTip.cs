@@ -89,6 +89,20 @@ namespace Windows.UI.Xaml.Controls
 		#endif
 		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
+		public  global::Windows.Foundation.Rect? PlacementRect
+		{
+			get
+			{
+				return (global::Windows.Foundation.Rect?)this.GetValue(PlacementRectProperty);
+			}
+			set
+			{
+				this.SetValue(PlacementRectProperty, value);
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty HorizontalOffsetProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
 			"HorizontalOffset", typeof(double), 
@@ -129,6 +143,14 @@ namespace Windows.UI.Xaml.Controls
 		#endif
 		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
+		public static global::Windows.UI.Xaml.DependencyProperty PlacementRectProperty { get; } = 
+		Windows.UI.Xaml.DependencyProperty.Register(
+			"PlacementRect", typeof(global::Windows.Foundation.Rect?), 
+			typeof(global::Windows.UI.Xaml.Controls.ToolTip), 
+			new FrameworkPropertyMetadata(default(global::Windows.Foundation.Rect?)));
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
 		public ToolTip() : base()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.ToolTip", "ToolTip.ToolTip()");
@@ -150,6 +172,9 @@ namespace Windows.UI.Xaml.Controls
 		// Forced skipping of method Windows.UI.Xaml.Controls.ToolTip.Closed.remove
 		// Forced skipping of method Windows.UI.Xaml.Controls.ToolTip.Opened.add
 		// Forced skipping of method Windows.UI.Xaml.Controls.ToolTip.Opened.remove
+		// Forced skipping of method Windows.UI.Xaml.Controls.ToolTip.PlacementRect.get
+		// Forced skipping of method Windows.UI.Xaml.Controls.ToolTip.PlacementRect.set
+		// Forced skipping of method Windows.UI.Xaml.Controls.ToolTip.PlacementRectProperty.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.ToolTip.HorizontalOffsetProperty.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.ToolTip.IsOpenProperty.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.ToolTip.PlacementProperty.get

@@ -9,15 +9,267 @@ namespace Windows.UI.Xaml.Controls
 	{
 		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
-		public  global::Windows.UI.Xaml.Controls.CalendarViewDisplayMode DisplayMode
+		public  global::Windows.UI.Xaml.HorizontalAlignment HorizontalFirstOfMonthLabelAlignment
 		{
 			get
 			{
-				return (global::Windows.UI.Xaml.Controls.CalendarViewDisplayMode)this.GetValue(DisplayModeProperty);
+				return (global::Windows.UI.Xaml.HorizontalAlignment)this.GetValue(HorizontalFirstOfMonthLabelAlignmentProperty);
 			}
 			set
 			{
-				this.SetValue(DisplayModeProperty, value);
+				this.SetValue(HorizontalFirstOfMonthLabelAlignmentProperty, value);
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  global::Windows.UI.Xaml.HorizontalAlignment HorizontalDayItemAlignment
+		{
+			get
+			{
+				return (global::Windows.UI.Xaml.HorizontalAlignment)this.GetValue(HorizontalDayItemAlignmentProperty);
+			}
+			set
+			{
+				this.SetValue(HorizontalDayItemAlignmentProperty, value);
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  global::Windows.UI.Xaml.Media.Brush FocusBorderBrush
+		{
+			get
+			{
+				return (global::Windows.UI.Xaml.Media.Brush)this.GetValue(FocusBorderBrushProperty);
+			}
+			set
+			{
+				this.SetValue(FocusBorderBrushProperty, value);
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  global::Windows.UI.Text.FontWeight FirstOfYearDecadeLabelFontWeight
+		{
+			get
+			{
+				return (global::Windows.UI.Text.FontWeight)this.GetValue(FirstOfYearDecadeLabelFontWeightProperty);
+			}
+			set
+			{
+				this.SetValue(FirstOfYearDecadeLabelFontWeightProperty, value);
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  global::Windows.UI.Text.FontStyle FirstOfYearDecadeLabelFontStyle
+		{
+			get
+			{
+				return (global::Windows.UI.Text.FontStyle)this.GetValue(FirstOfYearDecadeLabelFontStyleProperty);
+			}
+			set
+			{
+				this.SetValue(FirstOfYearDecadeLabelFontStyleProperty, value);
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  global::Windows.UI.Xaml.Media.FontFamily MonthYearItemFontFamily
+		{
+			get
+			{
+				return (global::Windows.UI.Xaml.Media.FontFamily)this.GetValue(MonthYearItemFontFamilyProperty);
+			}
+			set
+			{
+				this.SetValue(MonthYearItemFontFamilyProperty, value);
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  global::Windows.UI.Xaml.Media.FontFamily FirstOfYearDecadeLabelFontFamily
+		{
+			get
+			{
+				return (global::Windows.UI.Xaml.Media.FontFamily)this.GetValue(FirstOfYearDecadeLabelFontFamilyProperty);
+			}
+			set
+			{
+				this.SetValue(FirstOfYearDecadeLabelFontFamilyProperty, value);
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  global::Windows.UI.Text.FontWeight FirstOfMonthLabelFontWeight
+		{
+			get
+			{
+				return (global::Windows.UI.Text.FontWeight)this.GetValue(FirstOfMonthLabelFontWeightProperty);
+			}
+			set
+			{
+				this.SetValue(FirstOfMonthLabelFontWeightProperty, value);
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  global::Windows.UI.Text.FontStyle FirstOfMonthLabelFontStyle
+		{
+			get
+			{
+				return (global::Windows.UI.Text.FontStyle)this.GetValue(FirstOfMonthLabelFontStyleProperty);
+			}
+			set
+			{
+				this.SetValue(FirstOfMonthLabelFontStyleProperty, value);
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  double FirstOfMonthLabelFontSize
+		{
+			get
+			{
+				return (double)this.GetValue(FirstOfMonthLabelFontSizeProperty);
+			}
+			set
+			{
+				this.SetValue(FirstOfMonthLabelFontSizeProperty, value);
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  global::Windows.UI.Xaml.Media.FontFamily FirstOfMonthLabelFontFamily
+		{
+			get
+			{
+				return (global::Windows.UI.Xaml.Media.FontFamily)this.GetValue(FirstOfMonthLabelFontFamilyProperty);
+			}
+			set
+			{
+				this.SetValue(FirstOfMonthLabelFontFamilyProperty, value);
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  global::Windows.Globalization.DayOfWeek FirstDayOfWeek
+		{
+			get
+			{
+				return (global::Windows.Globalization.DayOfWeek)this.GetValue(FirstDayOfWeekProperty);
+			}
+			set
+			{
+				this.SetValue(FirstDayOfWeekProperty, value);
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  global::Windows.UI.Xaml.Media.Brush BlackoutForeground
+		{
+			get
+			{
+				return (global::Windows.UI.Xaml.Media.Brush)this.GetValue(BlackoutForegroundProperty);
+			}
+			set
+			{
+				this.SetValue(BlackoutForegroundProperty, value);
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  string DayOfWeekFormat
+		{
+			get
+			{
+				return (string)this.GetValue(DayOfWeekFormatProperty);
+			}
+			set
+			{
+				this.SetValue(DayOfWeekFormatProperty, value);
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  global::Windows.UI.Text.FontWeight DayItemFontWeight
+		{
+			get
+			{
+				return (global::Windows.UI.Text.FontWeight)this.GetValue(DayItemFontWeightProperty);
+			}
+			set
+			{
+				this.SetValue(DayItemFontWeightProperty, value);
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  global::Windows.UI.Text.FontStyle DayItemFontStyle
+		{
+			get
+			{
+				return (global::Windows.UI.Text.FontStyle)this.GetValue(DayItemFontStyleProperty);
+			}
+			set
+			{
+				this.SetValue(DayItemFontStyleProperty, value);
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  double DayItemFontSize
+		{
+			get
+			{
+				return (double)this.GetValue(DayItemFontSizeProperty);
+			}
+			set
+			{
+				this.SetValue(DayItemFontSizeProperty, value);
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  global::Windows.UI.Xaml.Media.FontFamily DayItemFontFamily
+		{
+			get
+			{
+				return (global::Windows.UI.Xaml.Media.FontFamily)this.GetValue(DayItemFontFamilyProperty);
+			}
+			set
+			{
+				this.SetValue(DayItemFontFamilyProperty, value);
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  global::Windows.UI.Xaml.Media.Brush SelectedPressedBorderBrush
+		{
+			get
+			{
+				return (global::Windows.UI.Xaml.Media.Brush)this.GetValue(SelectedPressedBorderBrushProperty);
+			}
+			set
+			{
+				this.SetValue(SelectedPressedBorderBrushProperty, value);
 			}
 		}
 		#endif
@@ -93,281 +345,15 @@ namespace Windows.UI.Xaml.Controls
 		#endif
 		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
-		public  global::Windows.UI.Xaml.Media.Brush BlackoutForeground
+		public  global::Windows.UI.Xaml.Controls.CalendarViewDisplayMode DisplayMode
 		{
 			get
 			{
-				return (global::Windows.UI.Xaml.Media.Brush)this.GetValue(BlackoutForegroundProperty);
+				return (global::Windows.UI.Xaml.Controls.CalendarViewDisplayMode)this.GetValue(DisplayModeProperty);
 			}
 			set
 			{
-				this.SetValue(BlackoutForegroundProperty, value);
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  string DayOfWeekFormat
-		{
-			get
-			{
-				return (string)this.GetValue(DayOfWeekFormatProperty);
-			}
-			set
-			{
-				this.SetValue(DayOfWeekFormatProperty, value);
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  global::Windows.UI.Text.FontWeight DayItemFontWeight
-		{
-			get
-			{
-				return (global::Windows.UI.Text.FontWeight)this.GetValue(DayItemFontWeightProperty);
-			}
-			set
-			{
-				this.SetValue(DayItemFontWeightProperty, value);
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  double FirstOfMonthLabelFontSize
-		{
-			get
-			{
-				return (double)this.GetValue(FirstOfMonthLabelFontSizeProperty);
-			}
-			set
-			{
-				this.SetValue(FirstOfMonthLabelFontSizeProperty, value);
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  double DayItemFontSize
-		{
-			get
-			{
-				return (double)this.GetValue(DayItemFontSizeProperty);
-			}
-			set
-			{
-				this.SetValue(DayItemFontSizeProperty, value);
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  global::Windows.UI.Xaml.Media.FontFamily DayItemFontFamily
-		{
-			get
-			{
-				return (global::Windows.UI.Xaml.Media.FontFamily)this.GetValue(DayItemFontFamilyProperty);
-			}
-			set
-			{
-				this.SetValue(DayItemFontFamilyProperty, value);
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  global::Windows.UI.Xaml.Style CalendarViewDayItemStyle
-		{
-			get
-			{
-				return (global::Windows.UI.Xaml.Style)this.GetValue(CalendarViewDayItemStyleProperty);
-			}
-			set
-			{
-				this.SetValue(CalendarViewDayItemStyleProperty, value);
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  global::Windows.UI.Xaml.Media.FontFamily FirstOfYearDecadeLabelFontFamily
-		{
-			get
-			{
-				return (global::Windows.UI.Xaml.Media.FontFamily)this.GetValue(FirstOfYearDecadeLabelFontFamilyProperty);
-			}
-			set
-			{
-				this.SetValue(FirstOfYearDecadeLabelFontFamilyProperty, value);
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  global::Windows.UI.Text.FontWeight FirstOfMonthLabelFontWeight
-		{
-			get
-			{
-				return (global::Windows.UI.Text.FontWeight)this.GetValue(FirstOfMonthLabelFontWeightProperty);
-			}
-			set
-			{
-				this.SetValue(FirstOfMonthLabelFontWeightProperty, value);
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  global::Windows.UI.Text.FontStyle FirstOfMonthLabelFontStyle
-		{
-			get
-			{
-				return (global::Windows.UI.Text.FontStyle)this.GetValue(FirstOfMonthLabelFontStyleProperty);
-			}
-			set
-			{
-				this.SetValue(FirstOfMonthLabelFontStyleProperty, value);
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  global::Windows.UI.Text.FontStyle DayItemFontStyle
-		{
-			get
-			{
-				return (global::Windows.UI.Text.FontStyle)this.GetValue(DayItemFontStyleProperty);
-			}
-			set
-			{
-				this.SetValue(DayItemFontStyleProperty, value);
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  global::Windows.UI.Xaml.Media.FontFamily FirstOfMonthLabelFontFamily
-		{
-			get
-			{
-				return (global::Windows.UI.Xaml.Media.FontFamily)this.GetValue(FirstOfMonthLabelFontFamilyProperty);
-			}
-			set
-			{
-				this.SetValue(FirstOfMonthLabelFontFamilyProperty, value);
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  global::Windows.Globalization.DayOfWeek FirstDayOfWeek
-		{
-			get
-			{
-				return (global::Windows.Globalization.DayOfWeek)this.GetValue(FirstDayOfWeekProperty);
-			}
-			set
-			{
-				this.SetValue(FirstDayOfWeekProperty, value);
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  global::Windows.UI.Xaml.Media.FontFamily MonthYearItemFontFamily
-		{
-			get
-			{
-				return (global::Windows.UI.Xaml.Media.FontFamily)this.GetValue(MonthYearItemFontFamilyProperty);
-			}
-			set
-			{
-				this.SetValue(MonthYearItemFontFamilyProperty, value);
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  global::Windows.UI.Xaml.HorizontalAlignment HorizontalFirstOfMonthLabelAlignment
-		{
-			get
-			{
-				return (global::Windows.UI.Xaml.HorizontalAlignment)this.GetValue(HorizontalFirstOfMonthLabelAlignmentProperty);
-			}
-			set
-			{
-				this.SetValue(HorizontalFirstOfMonthLabelAlignmentProperty, value);
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  global::Windows.UI.Xaml.HorizontalAlignment HorizontalDayItemAlignment
-		{
-			get
-			{
-				return (global::Windows.UI.Xaml.HorizontalAlignment)this.GetValue(HorizontalDayItemAlignmentProperty);
-			}
-			set
-			{
-				this.SetValue(HorizontalDayItemAlignmentProperty, value);
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  global::Windows.UI.Xaml.Media.Brush FocusBorderBrush
-		{
-			get
-			{
-				return (global::Windows.UI.Xaml.Media.Brush)this.GetValue(FocusBorderBrushProperty);
-			}
-			set
-			{
-				this.SetValue(FocusBorderBrushProperty, value);
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  global::Windows.UI.Text.FontWeight FirstOfYearDecadeLabelFontWeight
-		{
-			get
-			{
-				return (global::Windows.UI.Text.FontWeight)this.GetValue(FirstOfYearDecadeLabelFontWeightProperty);
-			}
-			set
-			{
-				this.SetValue(FirstOfYearDecadeLabelFontWeightProperty, value);
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  global::Windows.UI.Text.FontStyle FirstOfYearDecadeLabelFontStyle
-		{
-			get
-			{
-				return (global::Windows.UI.Text.FontStyle)this.GetValue(FirstOfYearDecadeLabelFontStyleProperty);
-			}
-			set
-			{
-				this.SetValue(FirstOfYearDecadeLabelFontStyleProperty, value);
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  double FirstOfYearDecadeLabelFontSize
-		{
-			get
-			{
-				return (double)this.GetValue(FirstOfYearDecadeLabelFontSizeProperty);
-			}
-			set
-			{
-				this.SetValue(FirstOfYearDecadeLabelFontSizeProperty, value);
+				this.SetValue(DisplayModeProperty, value);
 			}
 		}
 		#endif
@@ -387,29 +373,43 @@ namespace Windows.UI.Xaml.Controls
 		#endif
 		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
-		public  global::System.DateTimeOffset MinDate
+		public  global::Windows.UI.Xaml.Media.Brush PressedBorderBrush
 		{
 			get
 			{
-				return (global::System.DateTimeOffset)this.GetValue(MinDateProperty);
+				return (global::Windows.UI.Xaml.Media.Brush)this.GetValue(PressedBorderBrushProperty);
 			}
 			set
 			{
-				this.SetValue(MinDateProperty, value);
+				this.SetValue(PressedBorderBrushProperty, value);
 			}
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
-		public  global::System.DateTimeOffset MaxDate
+		public  global::Windows.UI.Xaml.VerticalAlignment VerticalDayItemAlignment
 		{
 			get
 			{
-				return (global::System.DateTimeOffset)this.GetValue(MaxDateProperty);
+				return (global::Windows.UI.Xaml.VerticalAlignment)this.GetValue(VerticalDayItemAlignmentProperty);
 			}
 			set
 			{
-				this.SetValue(MaxDateProperty, value);
+				this.SetValue(VerticalDayItemAlignmentProperty, value);
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  global::Windows.UI.Xaml.Media.Brush TodayForeground
+		{
+			get
+			{
+				return (global::Windows.UI.Xaml.Media.Brush)this.GetValue(TodayForegroundProperty);
+			}
+			set
+			{
+				this.SetValue(TodayForegroundProperty, value);
 			}
 		}
 		#endif
@@ -429,29 +429,85 @@ namespace Windows.UI.Xaml.Controls
 		#endif
 		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
-		public  bool IsOutOfScopeEnabled
+		public  global::Windows.UI.Xaml.Controls.CalendarViewSelectionMode SelectionMode
 		{
 			get
 			{
-				return (bool)this.GetValue(IsOutOfScopeEnabledProperty);
+				return (global::Windows.UI.Xaml.Controls.CalendarViewSelectionMode)this.GetValue(SelectionModeProperty);
 			}
 			set
 			{
-				this.SetValue(IsOutOfScopeEnabledProperty, value);
+				this.SetValue(SelectionModeProperty, value);
 			}
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
-		public  bool IsGroupLabelVisible
+		public  global::Windows.UI.Xaml.Style CalendarViewDayItemStyle
 		{
 			get
 			{
-				return (bool)this.GetValue(IsGroupLabelVisibleProperty);
+				return (global::Windows.UI.Xaml.Style)this.GetValue(CalendarViewDayItemStyleProperty);
 			}
 			set
 			{
-				this.SetValue(IsGroupLabelVisibleProperty, value);
+				this.SetValue(CalendarViewDayItemStyleProperty, value);
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  global::Windows.UI.Xaml.Media.Brush SelectedHoverBorderBrush
+		{
+			get
+			{
+				return (global::Windows.UI.Xaml.Media.Brush)this.GetValue(SelectedHoverBorderBrushProperty);
+			}
+			set
+			{
+				this.SetValue(SelectedHoverBorderBrushProperty, value);
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  global::Windows.UI.Xaml.Media.Brush SelectedForeground
+		{
+			get
+			{
+				return (global::Windows.UI.Xaml.Media.Brush)this.GetValue(SelectedForegroundProperty);
+			}
+			set
+			{
+				this.SetValue(SelectedForegroundProperty, value);
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  global::Windows.UI.Xaml.Media.Brush SelectedBorderBrush
+		{
+			get
+			{
+				return (global::Windows.UI.Xaml.Media.Brush)this.GetValue(SelectedBorderBrushProperty);
+			}
+			set
+			{
+				this.SetValue(SelectedBorderBrushProperty, value);
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  global::Windows.UI.Xaml.Media.Brush PressedForeground
+		{
+			get
+			{
+				return (global::Windows.UI.Xaml.Media.Brush)this.GetValue(PressedForegroundProperty);
+			}
+			set
+			{
+				this.SetValue(PressedForegroundProperty, value);
 			}
 		}
 		#endif
@@ -555,113 +611,43 @@ namespace Windows.UI.Xaml.Controls
 		#endif
 		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
-		public  global::Windows.UI.Xaml.Media.Brush SelectedForeground
+		public  double FirstOfYearDecadeLabelFontSize
 		{
 			get
 			{
-				return (global::Windows.UI.Xaml.Media.Brush)this.GetValue(SelectedForegroundProperty);
+				return (double)this.GetValue(FirstOfYearDecadeLabelFontSizeProperty);
 			}
 			set
 			{
-				this.SetValue(SelectedForegroundProperty, value);
+				this.SetValue(FirstOfYearDecadeLabelFontSizeProperty, value);
 			}
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
-		public  global::Windows.UI.Xaml.Media.Brush SelectedHoverBorderBrush
+		public  global::System.DateTimeOffset MinDate
 		{
 			get
 			{
-				return (global::Windows.UI.Xaml.Media.Brush)this.GetValue(SelectedHoverBorderBrushProperty);
+				return (global::System.DateTimeOffset)this.GetValue(MinDateProperty);
 			}
 			set
 			{
-				this.SetValue(SelectedHoverBorderBrushProperty, value);
+				this.SetValue(MinDateProperty, value);
 			}
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
-		public  global::Windows.UI.Xaml.Media.Brush SelectedBorderBrush
+		public  global::System.DateTimeOffset MaxDate
 		{
 			get
 			{
-				return (global::Windows.UI.Xaml.Media.Brush)this.GetValue(SelectedBorderBrushProperty);
+				return (global::System.DateTimeOffset)this.GetValue(MaxDateProperty);
 			}
 			set
 			{
-				this.SetValue(SelectedBorderBrushProperty, value);
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  global::Windows.UI.Xaml.Media.Brush PressedForeground
-		{
-			get
-			{
-				return (global::Windows.UI.Xaml.Media.Brush)this.GetValue(PressedForegroundProperty);
-			}
-			set
-			{
-				this.SetValue(PressedForegroundProperty, value);
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  global::Windows.UI.Xaml.Media.Brush SelectedPressedBorderBrush
-		{
-			get
-			{
-				return (global::Windows.UI.Xaml.Media.Brush)this.GetValue(SelectedPressedBorderBrushProperty);
-			}
-			set
-			{
-				this.SetValue(SelectedPressedBorderBrushProperty, value);
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  global::Windows.UI.Xaml.Media.Brush PressedBorderBrush
-		{
-			get
-			{
-				return (global::Windows.UI.Xaml.Media.Brush)this.GetValue(PressedBorderBrushProperty);
-			}
-			set
-			{
-				this.SetValue(PressedBorderBrushProperty, value);
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  global::Windows.UI.Xaml.VerticalAlignment VerticalDayItemAlignment
-		{
-			get
-			{
-				return (global::Windows.UI.Xaml.VerticalAlignment)this.GetValue(VerticalDayItemAlignmentProperty);
-			}
-			set
-			{
-				this.SetValue(VerticalDayItemAlignmentProperty, value);
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  global::Windows.UI.Xaml.Media.Brush TodayForeground
-		{
-			get
-			{
-				return (global::Windows.UI.Xaml.Media.Brush)this.GetValue(TodayForegroundProperty);
-			}
-			set
-			{
-				this.SetValue(TodayForegroundProperty, value);
+				this.SetValue(MaxDateProperty, value);
 			}
 		}
 		#endif
@@ -681,15 +667,29 @@ namespace Windows.UI.Xaml.Controls
 		#endif
 		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
-		public  global::Windows.UI.Xaml.Controls.CalendarViewSelectionMode SelectionMode
+		public  bool IsOutOfScopeEnabled
 		{
 			get
 			{
-				return (global::Windows.UI.Xaml.Controls.CalendarViewSelectionMode)this.GetValue(SelectionModeProperty);
+				return (bool)this.GetValue(IsOutOfScopeEnabledProperty);
 			}
 			set
 			{
-				this.SetValue(SelectionModeProperty, value);
+				this.SetValue(IsOutOfScopeEnabledProperty, value);
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  bool IsGroupLabelVisible
+		{
+			get
+			{
+				return (bool)this.GetValue(IsGroupLabelVisibleProperty);
+			}
+			set
+			{
+				this.SetValue(IsGroupLabelVisibleProperty, value);
 			}
 		}
 		#endif

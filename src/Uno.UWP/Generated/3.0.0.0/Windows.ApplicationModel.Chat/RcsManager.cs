@@ -7,6 +7,8 @@ namespace Windows.ApplicationModel.Chat
 	#endif
 	public  partial class RcsManager 
 	{
+		// Forced skipping of method Windows.ApplicationModel.Chat.RcsManager.TransportListChanged.add
+		// Forced skipping of method Windows.ApplicationModel.Chat.RcsManager.TransportListChanged.remove
 		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.ApplicationModel.Chat.RcsEndUserMessageManager GetEndUserMessageManager()
@@ -33,6 +35,22 @@ namespace Windows.ApplicationModel.Chat
 		public static global::Windows.Foundation.IAsyncAction LeaveConversationAsync( global::Windows.ApplicationModel.Chat.ChatConversation conversation)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncAction RcsManager.LeaveConversationAsync(ChatConversation conversation) is not implemented in Uno.");
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public static event global::System.EventHandler<object> TransportListChanged
+		{
+			[global::Uno.NotImplemented]
+			add
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Chat.RcsManager", "event EventHandler<object> RcsManager.TransportListChanged");
+			}
+			[global::Uno.NotImplemented]
+			remove
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Chat.RcsManager", "event EventHandler<object> RcsManager.TransportListChanged");
+			}
 		}
 		#endif
 	}

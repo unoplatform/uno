@@ -9,36 +9,6 @@ namespace Windows.UI.Xaml.Automation
 	{
 		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
-		public static global::Windows.UI.Xaml.Automation.AutomationProperty AcceleratorKeyProperty
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member AutomationProperty AutomationElementIdentifiers.AcceleratorKeyProperty is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public static global::Windows.UI.Xaml.Automation.AutomationProperty AccessKeyProperty
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member AutomationProperty AutomationElementIdentifiers.AccessKeyProperty is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public static global::Windows.UI.Xaml.Automation.AutomationProperty AutomationIdProperty
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member AutomationProperty AutomationElementIdentifiers.AutomationIdProperty is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.Automation.AutomationProperty BoundingRectangleProperty
 		{
 			get
@@ -49,41 +19,21 @@ namespace Windows.UI.Xaml.Automation
 		#endif
 		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
-		public static global::Windows.UI.Xaml.Automation.AutomationProperty ClassNameProperty
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member AutomationProperty AutomationElementIdentifiers.ClassNameProperty is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public static global::Windows.UI.Xaml.Automation.AutomationProperty ClickablePointProperty
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member AutomationProperty AutomationElementIdentifiers.ClickablePointProperty is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public static global::Windows.UI.Xaml.Automation.AutomationProperty ControlTypeProperty
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member AutomationProperty AutomationElementIdentifiers.ControlTypeProperty is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.Automation.AutomationProperty HasKeyboardFocusProperty
 		{
 			get
 			{
 				throw new global::System.NotImplementedException("The member AutomationProperty AutomationElementIdentifiers.HasKeyboardFocusProperty is not implemented in Uno.");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public static global::Windows.UI.Xaml.Automation.AutomationProperty HelpTextProperty
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member AutomationProperty AutomationElementIdentifiers.HelpTextProperty is not implemented in Uno.");
 			}
 		}
 		#endif
@@ -219,6 +169,36 @@ namespace Windows.UI.Xaml.Automation
 		#endif
 		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
+		public static global::Windows.UI.Xaml.Automation.AutomationProperty AcceleratorKeyProperty
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member AutomationProperty AutomationElementIdentifiers.AcceleratorKeyProperty is not implemented in Uno.");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public static global::Windows.UI.Xaml.Automation.AutomationProperty AccessKeyProperty
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member AutomationProperty AutomationElementIdentifiers.AccessKeyProperty is not implemented in Uno.");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public static global::Windows.UI.Xaml.Automation.AutomationProperty AutomationIdProperty
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member AutomationProperty AutomationElementIdentifiers.AutomationIdProperty is not implemented in Uno.");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.Automation.AutomationProperty OrientationProperty
 		{
 			get
@@ -229,11 +209,31 @@ namespace Windows.UI.Xaml.Automation
 		#endif
 		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
-		public static global::Windows.UI.Xaml.Automation.AutomationProperty HelpTextProperty
+		public static global::Windows.UI.Xaml.Automation.AutomationProperty ClassNameProperty
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AutomationProperty AutomationElementIdentifiers.HelpTextProperty is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member AutomationProperty AutomationElementIdentifiers.ClassNameProperty is not implemented in Uno.");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public static global::Windows.UI.Xaml.Automation.AutomationProperty ClickablePointProperty
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member AutomationProperty AutomationElementIdentifiers.ClickablePointProperty is not implemented in Uno.");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public static global::Windows.UI.Xaml.Automation.AutomationProperty ControlTypeProperty
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member AutomationProperty AutomationElementIdentifiers.ControlTypeProperty is not implemented in Uno.");
 			}
 		}
 		#endif
@@ -244,16 +244,6 @@ namespace Windows.UI.Xaml.Automation
 			get
 			{
 				throw new global::System.NotImplementedException("The member AutomationProperty AutomationElementIdentifiers.ControlledPeersProperty is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public static global::Windows.UI.Xaml.Automation.AutomationProperty PositionInSetProperty
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member AutomationProperty AutomationElementIdentifiers.PositionInSetProperty is not implemented in Uno.");
 			}
 		}
 		#endif
@@ -279,21 +269,21 @@ namespace Windows.UI.Xaml.Automation
 		#endif
 		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
-		public static global::Windows.UI.Xaml.Automation.AutomationProperty SizeOfSetProperty
+		public static global::Windows.UI.Xaml.Automation.AutomationProperty PositionInSetProperty
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AutomationProperty AutomationElementIdentifiers.SizeOfSetProperty is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member AutomationProperty AutomationElementIdentifiers.PositionInSetProperty is not implemented in Uno.");
 			}
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
-		public static global::Windows.UI.Xaml.Automation.AutomationProperty LocalizedLandmarkTypeProperty
+		public static global::Windows.UI.Xaml.Automation.AutomationProperty SizeOfSetProperty
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AutomationProperty AutomationElementIdentifiers.LocalizedLandmarkTypeProperty is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member AutomationProperty AutomationElementIdentifiers.SizeOfSetProperty is not implemented in Uno.");
 			}
 		}
 		#endif
@@ -309,21 +299,11 @@ namespace Windows.UI.Xaml.Automation
 		#endif
 		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
-		public static global::Windows.UI.Xaml.Automation.AutomationProperty IsPeripheralProperty
+		public static global::Windows.UI.Xaml.Automation.AutomationProperty LocalizedLandmarkTypeProperty
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AutomationProperty AutomationElementIdentifiers.IsPeripheralProperty is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public static global::Windows.UI.Xaml.Automation.AutomationProperty FlowsFromProperty
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member AutomationProperty AutomationElementIdentifiers.FlowsFromProperty is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member AutomationProperty AutomationElementIdentifiers.LocalizedLandmarkTypeProperty is not implemented in Uno.");
 			}
 		}
 		#endif
@@ -334,6 +314,16 @@ namespace Windows.UI.Xaml.Automation
 			get
 			{
 				throw new global::System.NotImplementedException("The member AutomationProperty AutomationElementIdentifiers.DescribedByProperty is not implemented in Uno.");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public static global::Windows.UI.Xaml.Automation.AutomationProperty FlowsFromProperty
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member AutomationProperty AutomationElementIdentifiers.FlowsFromProperty is not implemented in Uno.");
 			}
 		}
 		#endif
@@ -369,6 +359,16 @@ namespace Windows.UI.Xaml.Automation
 		#endif
 		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
+		public static global::Windows.UI.Xaml.Automation.AutomationProperty IsPeripheralProperty
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member AutomationProperty AutomationElementIdentifiers.IsPeripheralProperty is not implemented in Uno.");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.Automation.AutomationProperty CultureProperty
 		{
 			get
@@ -387,6 +387,17 @@ namespace Windows.UI.Xaml.Automation
 			}
 		}
 		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public static global::Windows.UI.Xaml.Automation.AutomationProperty IsDialogProperty
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member AutomationProperty AutomationElementIdentifiers.IsDialogProperty is not implemented in Uno.");
+			}
+		}
+		#endif
+		// Forced skipping of method Windows.UI.Xaml.Automation.AutomationElementIdentifiers.IsDialogProperty.get
 		// Forced skipping of method Windows.UI.Xaml.Automation.AutomationElementIdentifiers.HeadingLevelProperty.get
 		// Forced skipping of method Windows.UI.Xaml.Automation.AutomationElementIdentifiers.CultureProperty.get
 		// Forced skipping of method Windows.UI.Xaml.Automation.AutomationElementIdentifiers.IsPeripheralProperty.get

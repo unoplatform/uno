@@ -7,14 +7,14 @@ namespace Windows.UI.Xaml.Data
 	#endif
 	public  partial class Binding : global::Windows.UI.Xaml.Data.BindingBase
 	{
+		// Skipping already declared property Source
+		// Skipping already declared property RelativeSource
+		// Skipping already declared property Path
 		// Skipping already declared property Mode
 		// Skipping already declared property ElementName
 		// Skipping already declared property ConverterParameter
 		// Skipping already declared property ConverterLanguage
 		// Skipping already declared property Converter
-		// Skipping already declared property Source
-		// Skipping already declared property RelativeSource
-		// Skipping already declared property Path
 		// Skipping already declared property UpdateSourceTrigger
 		// Skipping already declared property TargetNullValue
 		// Skipping already declared property FallbackValue

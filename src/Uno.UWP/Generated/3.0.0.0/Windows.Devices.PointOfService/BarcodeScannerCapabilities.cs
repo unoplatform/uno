@@ -57,10 +57,21 @@ namespace Windows.Devices.PointOfService
 			}
 		}
 		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  bool IsVideoPreviewSupported
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member bool BarcodeScannerCapabilities.IsVideoPreviewSupported is not implemented in Uno.");
+			}
+		}
+		#endif
 		// Forced skipping of method Windows.Devices.PointOfService.BarcodeScannerCapabilities.PowerReportingType.get
 		// Forced skipping of method Windows.Devices.PointOfService.BarcodeScannerCapabilities.IsStatisticsReportingSupported.get
 		// Forced skipping of method Windows.Devices.PointOfService.BarcodeScannerCapabilities.IsStatisticsUpdatingSupported.get
 		// Forced skipping of method Windows.Devices.PointOfService.BarcodeScannerCapabilities.IsImagePreviewSupported.get
 		// Forced skipping of method Windows.Devices.PointOfService.BarcodeScannerCapabilities.IsSoftwareTriggerSupported.get
+		// Forced skipping of method Windows.Devices.PointOfService.BarcodeScannerCapabilities.IsVideoPreviewSupported.get
 	}
 }

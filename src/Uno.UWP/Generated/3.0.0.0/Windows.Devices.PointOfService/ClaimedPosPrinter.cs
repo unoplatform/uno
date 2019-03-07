@@ -165,6 +165,8 @@ namespace Windows.Devices.PointOfService
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.PointOfService.ClaimedPosPrinter", "void ClaimedPosPrinter.Dispose()");
 		}
 		#endif
+		// Forced skipping of method Windows.Devices.PointOfService.ClaimedPosPrinter.Closed.add
+		// Forced skipping of method Windows.Devices.PointOfService.ClaimedPosPrinter.Closed.remove
 		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Devices.PointOfService.ClaimedPosPrinter, global::Windows.Devices.PointOfService.PosPrinterReleaseDeviceRequestedEventArgs> ReleaseDeviceRequested
@@ -178,6 +180,22 @@ namespace Windows.Devices.PointOfService
 			remove
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.PointOfService.ClaimedPosPrinter", "event TypedEventHandler<ClaimedPosPrinter, PosPrinterReleaseDeviceRequestedEventArgs> ClaimedPosPrinter.ReleaseDeviceRequested");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Devices.PointOfService.ClaimedPosPrinter, global::Windows.Devices.PointOfService.ClaimedPosPrinterClosedEventArgs> Closed
+		{
+			[global::Uno.NotImplemented]
+			add
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.PointOfService.ClaimedPosPrinter", "event TypedEventHandler<ClaimedPosPrinter, ClaimedPosPrinterClosedEventArgs> ClaimedPosPrinter.Closed");
+			}
+			[global::Uno.NotImplemented]
+			remove
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.PointOfService.ClaimedPosPrinter", "event TypedEventHandler<ClaimedPosPrinter, ClaimedPosPrinterClosedEventArgs> ClaimedPosPrinter.Closed");
 			}
 		}
 		#endif

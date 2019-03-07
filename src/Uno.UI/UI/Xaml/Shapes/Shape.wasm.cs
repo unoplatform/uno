@@ -20,6 +20,8 @@ namespace Windows.UI.Xaml.Shapes
 		protected Shape() : base("svg", isSvg: true)
 		{
 			_svgChildren = new UIElementCollection(this);
+
+			OnStretchUpdatedPartial();
 		}
 
 		private void OnSvgChildrenChanged(object sender, NotifyCollectionChangedEventArgs e) 
@@ -87,13 +89,22 @@ namespace Windows.UI.Xaml.Shapes
 					svgElement.ResetStyle("stroke");
 					break;
 			}
+
+			OnStrokeThicknessUpdatedPartial();
 		}
 
 		partial void OnStrokeThicknessUpdatedPartial()
 		{
 			var svgElement = GetMainSvgElement();
 
-			svgElement.SetStyle("stroke-width", $"{StrokeThickness}px");
+			if (Stroke == null)
+			{
+				svgElement.ResetStyle("stroke-width");
+			}
+			else
+			{
+				svgElement.SetStyle("stroke-width", $"{StrokeThickness}px");
+			}
 		}
 	}
 }

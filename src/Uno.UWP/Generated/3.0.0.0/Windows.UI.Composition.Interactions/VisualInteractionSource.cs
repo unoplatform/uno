@@ -9,6 +9,20 @@ namespace Windows.UI.Composition.Interactions
 	{
 		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
+		public  global::Windows.UI.Composition.Interactions.InteractionSourceMode ScaleSourceMode
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member InteractionSourceMode VisualInteractionSource.ScaleSourceMode is not implemented in Uno.");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.Interactions.VisualInteractionSource", "InteractionSourceMode VisualInteractionSource.ScaleSourceMode");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
 		public  global::Windows.UI.Composition.Interactions.InteractionChainingMode ScaleChainingMode
 		{
 			get
@@ -121,20 +135,6 @@ namespace Windows.UI.Composition.Interactions
 		#endif
 		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
-		public  global::Windows.UI.Composition.Interactions.InteractionSourceMode ScaleSourceMode
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member InteractionSourceMode VisualInteractionSource.ScaleSourceMode is not implemented in Uno.");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.Interactions.VisualInteractionSource", "InteractionSourceMode VisualInteractionSource.ScaleSourceMode");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
 		public  global::Windows.UI.Composition.Visual Source
 		{
 			get
@@ -200,6 +200,16 @@ namespace Windows.UI.Composition.Interactions
 			get
 			{
 				throw new global::System.NotImplementedException("The member float VisualInteractionSource.ScaleVelocity is not implemented in Uno.");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  global::Windows.UI.Composition.Interactions.InteractionSourceConfiguration PointerWheelConfig
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member InteractionSourceConfiguration VisualInteractionSource.PointerWheelConfig is not implemented in Uno.");
 			}
 		}
 		#endif
@@ -270,6 +280,7 @@ namespace Windows.UI.Composition.Interactions
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.Interactions.VisualInteractionSource", "void VisualInteractionSource.ConfigureDeltaScaleModifiers(IEnumerable<CompositionConditionalValue> conditionalValues)");
 		}
 		#endif
+		// Forced skipping of method Windows.UI.Composition.Interactions.VisualInteractionSource.PointerWheelConfig.get
 		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Composition.Interactions.VisualInteractionSource Create( global::Windows.UI.Composition.Visual source)

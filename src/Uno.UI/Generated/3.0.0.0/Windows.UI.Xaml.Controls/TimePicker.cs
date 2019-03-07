@@ -7,21 +7,6 @@ namespace Windows.UI.Xaml.Controls
 	#endif
 	public  partial class TimePicker : global::Windows.UI.Xaml.Controls.Control
 	{
-		// Skipping already declared property Time
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  int MinuteIncrement
-		{
-			get
-			{
-				return (int)this.GetValue(MinuteIncrementProperty);
-			}
-			set
-			{
-				this.SetValue(MinuteIncrementProperty, value);
-			}
-		}
-		#endif
 		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.UI.Xaml.DataTemplate HeaderTemplate
@@ -65,6 +50,20 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  global::System.TimeSpan? SelectedTime
+		{
+			get
+			{
+				return (global::System.TimeSpan?)this.GetValue(SelectedTimeProperty);
+			}
+			set
+			{
+				this.SetValue(SelectedTimeProperty, value);
+			}
+		}
+		#endif
 		// Skipping already declared property ClockIdentifierProperty
 		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
@@ -81,23 +80,24 @@ namespace Windows.UI.Xaml.Controls
 			"HeaderTemplate", typeof(global::Windows.UI.Xaml.DataTemplate), 
 			typeof(global::Windows.UI.Xaml.Controls.TimePicker), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.DataTemplate)));
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public static global::Windows.UI.Xaml.DependencyProperty MinuteIncrementProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			"MinuteIncrement", typeof(int), 
-			typeof(global::Windows.UI.Xaml.Controls.TimePicker), 
-			new FrameworkPropertyMetadata(default(int)));
-		#endif
+#endif
+
 		// Skipping already declared property TimeProperty
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty LightDismissOverlayModeProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
 			"LightDismissOverlayMode", typeof(global::Windows.UI.Xaml.Controls.LightDismissOverlayMode), 
 			typeof(global::Windows.UI.Xaml.Controls.TimePicker), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Controls.LightDismissOverlayMode)));
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public static global::Windows.UI.Xaml.DependencyProperty SelectedTimeProperty { get; } = 
+		Windows.UI.Xaml.DependencyProperty.Register(
+			"SelectedTime", typeof(global::System.TimeSpan?), 
+			typeof(global::Windows.UI.Xaml.Controls.TimePicker), 
+			new FrameworkPropertyMetadata(default(global::System.TimeSpan?)));
 		#endif
 		// Skipping already declared method Windows.UI.Xaml.Controls.TimePicker.TimePicker()
 		// Forced skipping of method Windows.UI.Xaml.Controls.TimePicker.TimePicker()
@@ -115,6 +115,11 @@ namespace Windows.UI.Xaml.Controls
 		// Forced skipping of method Windows.UI.Xaml.Controls.TimePicker.TimeChanged.remove
 		// Forced skipping of method Windows.UI.Xaml.Controls.TimePicker.LightDismissOverlayMode.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.TimePicker.LightDismissOverlayMode.set
+		// Forced skipping of method Windows.UI.Xaml.Controls.TimePicker.SelectedTime.get
+		// Forced skipping of method Windows.UI.Xaml.Controls.TimePicker.SelectedTime.set
+		// Forced skipping of method Windows.UI.Xaml.Controls.TimePicker.SelectedTimeChanged.add
+		// Forced skipping of method Windows.UI.Xaml.Controls.TimePicker.SelectedTimeChanged.remove
+		// Forced skipping of method Windows.UI.Xaml.Controls.TimePicker.SelectedTimeProperty.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.TimePicker.LightDismissOverlayModeProperty.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.TimePicker.HeaderProperty.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.TimePicker.HeaderTemplateProperty.get
@@ -134,6 +139,22 @@ namespace Windows.UI.Xaml.Controls
 			remove
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.TimePicker", "event EventHandler<TimePickerValueChangedEventArgs> TimePicker.TimeChanged");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Xaml.Controls.TimePicker, global::Windows.UI.Xaml.Controls.TimePickerSelectedValueChangedEventArgs> SelectedTimeChanged
+		{
+			[global::Uno.NotImplemented]
+			add
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.TimePicker", "event TypedEventHandler<TimePicker, TimePickerSelectedValueChangedEventArgs> TimePicker.SelectedTimeChanged");
+			}
+			[global::Uno.NotImplemented]
+			remove
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.TimePicker", "event TypedEventHandler<TimePicker, TimePickerSelectedValueChangedEventArgs> TimePicker.SelectedTimeChanged");
 			}
 		}
 		#endif

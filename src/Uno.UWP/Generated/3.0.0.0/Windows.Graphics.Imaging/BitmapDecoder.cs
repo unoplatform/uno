@@ -197,6 +197,26 @@ namespace Windows.Graphics.Imaging
 			}
 		}
 		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public static global::System.Guid HeifDecoderId
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member Guid BitmapDecoder.HeifDecoderId is not implemented in Uno.");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public static global::System.Guid WebpDecoderId
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member Guid BitmapDecoder.WebpDecoderId is not implemented in Uno.");
+			}
+		}
+		#endif
 		// Forced skipping of method Windows.Graphics.Imaging.BitmapDecoder.BitmapContainerProperties.get
 		// Forced skipping of method Windows.Graphics.Imaging.BitmapDecoder.DecoderInformation.get
 		// Forced skipping of method Windows.Graphics.Imaging.BitmapDecoder.FrameCount.get
@@ -265,6 +285,8 @@ namespace Windows.Graphics.Imaging
 			throw new global::System.NotImplementedException("The member IAsyncOperation<SoftwareBitmap> BitmapDecoder.GetSoftwareBitmapAsync(BitmapPixelFormat pixelFormat, BitmapAlphaMode alphaMode, BitmapTransform transform, ExifOrientationMode exifOrientationMode, ColorManagementMode colorManagementMode) is not implemented in Uno.");
 		}
 		#endif
+		// Forced skipping of method Windows.Graphics.Imaging.BitmapDecoder.HeifDecoderId.get
+		// Forced skipping of method Windows.Graphics.Imaging.BitmapDecoder.WebpDecoderId.get
 		// Forced skipping of method Windows.Graphics.Imaging.BitmapDecoder.BmpDecoderId.get
 		// Forced skipping of method Windows.Graphics.Imaging.BitmapDecoder.JpegDecoderId.get
 		// Forced skipping of method Windows.Graphics.Imaging.BitmapDecoder.PngDecoderId.get

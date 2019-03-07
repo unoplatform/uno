@@ -18,6 +18,13 @@ namespace Windows.UI.Xaml.Shapes
 			bool hasUserSize = userSize != 0 && !double.IsNaN(userSize) && !double.IsInfinity(userSize);
 			var hasAvailableSize = !double.IsNaN(availableSize);
 
+#if __WASM__
+			// The measuring algorithms for shapes in Wasm and iOS/Android/macOS are not using the
+			// infinity the same way.
+			// Those implementation will need to be merged.
+			hasAvailableSize &= !double.IsInfinity(availableSize);
+#endif
+
 			if (hasUserSize && hasAvailableSize)
 			{
 				return Math.Min(userSize, availableSize);

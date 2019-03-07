@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using Windows.Foundation;
-using global::System.Numerics;
+using System.Numerics;
 using Uno.Extensions;
 
 namespace Windows.UI.Xaml.Media
@@ -11,11 +11,11 @@ namespace Windows.UI.Xaml.Media
 	/// RotateTransform :  Based on the WinRT Rotate transform
 	/// https://msdn.microsoft.com/en-us/library/system.windows.media.rotatetransform(v=vs.110).aspx
 	/// </summary>
-	public partial class RotateTransform : Transform
+	public sealed partial class RotateTransform : Transform
 	{
 		internal override Point Origin
 		{
-			get { return base.Origin; }
+			get => base.Origin;
 			set
 			{
 				if(Origin != value)
@@ -30,8 +30,8 @@ namespace Windows.UI.Xaml.Media
 
 		public double CenterY
 		{
-			get { return (double)this.GetValue(CenterYProperty); }
-			set { this.SetValue(CenterYProperty, value); }
+			get => (double)GetValue(CenterYProperty);
+			set => SetValue(CenterYProperty, value);
 		}
 
 		// Using a DependencyProperty as the backing store for CenterY.  This enables animation, styling, binding, etc...
@@ -40,9 +40,7 @@ namespace Windows.UI.Xaml.Media
 
 		private static void OnCenterYChanged(object dependencyObject, DependencyPropertyChangedEventArgs args)
 		{
-			var self = dependencyObject as RotateTransform;
-
-			if (self != null)
+			if (dependencyObject is RotateTransform self)
 			{
 				self.SetCenterY(args);
 			}
@@ -52,8 +50,8 @@ namespace Windows.UI.Xaml.Media
 
 		public double CenterX
 		{
-			get { return (double)this.GetValue(CenterXProperty); }
-			set { this.SetValue(CenterXProperty, value); }
+			get => (double)GetValue(CenterXProperty);
+			set => SetValue(CenterXProperty, value);
 		}
 
 		// Using a DependencyProperty as the backing store for CenterX.  This enables animation, styling, binding, etc...
@@ -61,9 +59,7 @@ namespace Windows.UI.Xaml.Media
 			DependencyProperty.Register("CenterX", typeof(double), typeof(RotateTransform), new PropertyMetadata(0.0, OnCenterXChanged));
 		private static void OnCenterXChanged(object dependencyObject, DependencyPropertyChangedEventArgs args)
 		{
-			var self = dependencyObject as RotateTransform;
-
-			if (self != null)
+			if (dependencyObject is RotateTransform self)
 			{
 				self.SetCenterX(args);
 			}
@@ -73,8 +69,8 @@ namespace Windows.UI.Xaml.Media
 
 		public double Angle
 		{
-			get { return (double)this.GetValue(AngleProperty); }
-			set { this.SetValue(AngleProperty, value); }
+			get => (double)GetValue(AngleProperty);
+			set => SetValue(AngleProperty, value);
 		}
 
 		// Using a DependencyProperty as the backing store for Angle.  This enables animation, styling, binding, etc...
@@ -83,9 +79,7 @@ namespace Windows.UI.Xaml.Media
 
 		private static void OnAngleChanged(object dependencyObject, DependencyPropertyChangedEventArgs args)
 		{
-			var self = dependencyObject as RotateTransform;
-
-			if (self != null)
+			if (dependencyObject is RotateTransform self)
 			{
 				self.SetAngle(args);
 			}

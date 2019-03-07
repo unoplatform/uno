@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="15.0">
+<Project Sdk="MSBuild.Sdk.Extras" ToolsVersion="15.0">
 	<PropertyGroup>
 		<TargetFrameworks>xamarinmac20;MonoAndroid80;uap10.0;xamarinios10;netstandard2.0</TargetFrameworks>
 		<TargetFrameworksCI>MonoAndroid71;MonoAndroid80;uap10.0;xamarinios10;netstandard2.0;xamarinmac20</TargetFrameworksCI>
@@ -14,7 +14,6 @@
 		<Deterministic>true</Deterministic>
 	</PropertyGroup>
 
-	<Import Project="$(MSBuildSDKExtrasTargets)" Condition="Exists('$(MSBuildSDKExtrasTargets)')" />
 	<Import Project="..\Uno.CrossTargetting.props" />
 	<ItemGroup>
 	  <Compile Include="..\Uno.UI\Behaviors\VisibleBoundsPadding.cs" Link="VisibleBoundsPadding.cs" />
@@ -22,22 +21,17 @@
 
   <ItemGroup>
     <PackageReference Include="Uno.SourceGenerationTasks">
-      <Version>1.28.0</Version>
+      <Version>1.29.0-beta.277</Version>
     </PackageReference>
     <PackageReference Include="Uno.Core">
-      <Version>1.25.0</Version>
+      <Version>1.26.0-beta.69</Version>
     </PackageReference>
 		<PackageReference Include="Uno.Core.Build">
-			<Version>1.25.0</Version>
+			<Version>1.26.0-beta.69</Version>
 		</PackageReference>
 	</ItemGroup>
 	
-  <ItemGroup Condition=" '$(TargetFrameworkIdentifier)' == 'MonoAndroid' or '$(TargetFrameworkIdentifier)' == 'Xamarin.iOS' or '$(TargetFrameworkIdentifier)' == 'Xamarin.Mac' ">
-		<Reference Include="System.Numerics" />
-		<Reference Include="System.Numerics.Vectors" />
-	</ItemGroup>
-
-	<ItemGroup Condition=" '$(TargetFrameworkIdentifier)' == 'MonoAndroid' or '$(TargetFrameworkIdentifier)' == 'Xamarin.iOS' or '$(TargetFrameworkIdentifier)' == 'Xamarin.Mac' ">
+  <ItemGroup Condition=" $(IsMonoAndroid) or $(IsXamarinIOS) or $(IsXamarinMac) ">
 		<Reference Include="System.Numerics" />
 		<Reference Include="System.Numerics.Vectors" />
 	</ItemGroup>
@@ -91,7 +85,7 @@
 		<PackageReference Include="xamarin.build.download" Version="0.4.9" />
 	</ItemGroup>
 
-	<ItemGroup Condition="'$(TargetFrameworkIdentifier)'=='MonoAndroid' or '$(TargetFrameworkIdentifier)'=='Xamarin.iOS' or '$(TargetFrameworkIdentifier)'=='.NETStandard' or '$(TargetFrameworkIdentifier)' == 'Xamarin.Mac'">
+	<ItemGroup Condition="$(IsMonoAndroid) or $(IsXamarinIOS) or '$(TargetFrameworkIdentifier)'=='.NETStandard' or $(IsXamarinMac)">
 		<ProjectReference Include="..\Uno.UI\Uno.UI.csproj">
 			<Name>Uno.UI</Name>
 		</ProjectReference>
@@ -103,7 +97,7 @@
 		</ProjectReference>
 	</ItemGroup>
 
-	<ItemGroup Condition="'$(TargetFrameworkIdentifier)'=='MonoAndroid'">
+	<ItemGroup Condition="$(IsMonoAndroid)">
 		<ProjectReference Include="..\Uno.UI.BindingHelper.Android\Uno.UI.BindingHelper.Android.csproj">
 			<Project>{58332380-4302-4259-8f36-af572c53827f}</Project>
 			<Name>Uno.UI.BindingHelper.Android</Name>
@@ -113,11 +107,15 @@
 	<!-- Override existing target, this project cannot be published -->
 	<Target Name="Publish" />
 
+	<ItemGroup>
+		<Analyzer Include="$(MSBuildThisFileDirectory)..\Uno.MonoAnalyzers\bin\$(Configuration)\net46\Uno.MonoAnalyzers.dll" />
+	</ItemGroup>
+
 	<PropertyGroup>
 		<UnoUIGeneratorsBinPath>..\SourceGenerators\Uno.UI.SourceGenerators\bin\$(Configuration)</UnoUIGeneratorsBinPath>
 	</PropertyGroup>
 
-	<Import Project="..\SourceGenerators\Uno.UI.SourceGenerators\Content\Uno.UI.SourceGenerators.props" Condition="'$(TargetFrameworkIdentifier)'=='MonoAndroid' or '$(TargetFrameworkIdentifier)'=='Xamarin.iOS' or '$(TargetFrameworkIdentifier)' == 'Xamarin.Mac'" />
+	<Import Project="..\SourceGenerators\Uno.UI.SourceGenerators\Content\Uno.UI.SourceGenerators.props" Condition="$(IsMonoAndroid) or $(IsXamarinIOS) or $(IsXamarinMac)" />
 
 	<Import Project="..\Common.targets" />
 	

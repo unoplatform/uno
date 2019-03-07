@@ -59,6 +59,27 @@ namespace Windows.UI.Shell
 		#endif
 		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
+		public  global::Windows.Foundation.IAsyncOperation<bool> IsSecondaryTilePinnedAsync( string tileId)
+		{
+			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> TaskbarManager.IsSecondaryTilePinnedAsync(string tileId) is not implemented in Uno.");
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  global::Windows.Foundation.IAsyncOperation<bool> RequestPinSecondaryTileAsync( global::Windows.UI.StartScreen.SecondaryTile secondaryTile)
+		{
+			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> TaskbarManager.RequestPinSecondaryTileAsync(SecondaryTile secondaryTile) is not implemented in Uno.");
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  global::Windows.Foundation.IAsyncOperation<bool> TryUnpinSecondaryTileAsync( string tileId)
+		{
+			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> TaskbarManager.TryUnpinSecondaryTileAsync(string tileId) is not implemented in Uno.");
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Shell.TaskbarManager GetDefault()
 		{
 			throw new global::System.NotImplementedException("The member TaskbarManager TaskbarManager.GetDefault() is not implemented in Uno.");

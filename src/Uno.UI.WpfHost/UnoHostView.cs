@@ -214,14 +214,16 @@ namespace Uno.UI.WpfHost
 		{
 		}
 
-		public void Resize(string size)
+		public void Resize(string newSize)
 		{
 			var d = Windows.UI.Core.CoreDispatcher.Main.RunAsync(
 				Windows.UI.Core.CoreDispatcherPriority.Normal,
 				() =>
 				{
+					var sizeParts = newSize.Split(';');
+
 					// Console.WriteLine($"Resize {size}");
-					Windows.UI.Xaml.Window.Resize(size);
+					Windows.UI.Xaml.Window.Resize(double.Parse(sizeParts[0]), double.Parse(sizeParts[1]));
 				});
 		}
 
@@ -231,9 +233,18 @@ namespace Uno.UI.WpfHost
 				Windows.UI.Core.CoreDispatcherPriority.Normal,
 				() =>
 				{
-					// Console.WriteLine($"Dispatch {htmlIdStr} {eventNameStr} {eventPayloadStr}");
-					Windows.UI.Xaml.UIElement.DispatchEvent(htmlIdStr, eventNameStr, eventPayloadStr);
+                    // parse htmlId to IntPtr
+                    if (int.TryParse(htmlIdStr, out var handle))
+                    {
+                        // Console.WriteLine($"Dispatch {htmlIdStr} {eventNameStr} {eventPayloadStr}");
+                        Windows.UI.Xaml.UIElement.DispatchEvent(handle, eventNameStr, eventPayloadStr);
+                    }
+                    else
+                    {
+                        Console.WriteLine("Failed to parse htmlIdStr");
+                    }
 				});
 		}
+
 	}
 }

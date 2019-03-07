@@ -69,16 +69,6 @@ namespace Windows.UI.Xaml.Automation.Peers
 		#endif
 		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
-		public  bool CanRotate
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool MapControlAutomationPeer.CanRotate is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
 		public  bool CanMove
 		{
 			get
@@ -99,11 +89,11 @@ namespace Windows.UI.Xaml.Automation.Peers
 		#endif
 		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
-		public  double ZoomLevel
+		public  bool CanRotate
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double MapControlAutomationPeer.ZoomLevel is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool MapControlAutomationPeer.CanRotate is not implemented in Uno.");
 			}
 		}
 		#endif
@@ -134,6 +124,16 @@ namespace Windows.UI.Xaml.Automation.Peers
 			get
 			{
 				throw new global::System.NotImplementedException("The member double MapControlAutomationPeer.MinZoom is not implemented in Uno.");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  double ZoomLevel
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member double MapControlAutomationPeer.ZoomLevel is not implemented in Uno.");
 			}
 		}
 		#endif

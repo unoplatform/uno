@@ -5,47 +5,15 @@ namespace Windows.UI.Xaml.Controls
 	#if false || false || false || false || false
 	[global::Uno.NotImplemented]
 	#endif
-	public  partial class ScrollViewer : global::Windows.UI.Xaml.Controls.ContentControl
+	public  partial class ScrollViewer : global::Windows.UI.Xaml.Controls.ContentControl,global::Windows.UI.Xaml.Controls.IScrollAnchorProvider
 	{
 		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
-		public  bool IsZoomInertiaEnabled
+		public  global::Windows.UI.Xaml.UIElement CurrentAnchor
 		{
 			get
 			{
-				return (bool)this.GetValue(IsZoomInertiaEnabledProperty);
-			}
-			set
-			{
-				this.SetValue(IsZoomInertiaEnabledProperty, value);
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  bool IsZoomChainingEnabled
-		{
-			get
-			{
-				return (bool)this.GetValue(IsZoomChainingEnabledProperty);
-			}
-			set
-			{
-				this.SetValue(IsZoomChainingEnabledProperty, value);
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  bool IsVerticalScrollChainingEnabled
-		{
-			get
-			{
-				return (bool)this.GetValue(IsVerticalScrollChainingEnabledProperty);
-			}
-			set
-			{
-				this.SetValue(IsVerticalScrollChainingEnabledProperty, value);
+				throw new global::System.NotImplementedException("The member UIElement ScrollViewer.CurrentAnchor is not implemented in Uno.");
 			}
 		}
 		#endif
@@ -77,9 +45,6 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 		#endif
-		// Skipping already declared property BringIntoViewOnFocusChange
-		// Skipping already declared property HorizontalScrollBarVisibility
-		// Skipping already declared property HorizontalSnapPointsAlignment
 		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  bool IsHorizontalScrollChainingEnabled
@@ -123,7 +88,54 @@ namespace Windows.UI.Xaml.Controls
 		}
 		#endif
 		// Skipping already declared property HorizontalSnapPointsType
+		// Skipping already declared property HorizontalSnapPointsAlignment
 		// Skipping already declared property HorizontalScrollMode
+		// Skipping already declared property HorizontalScrollBarVisibility
+		// Skipping already declared property MinZoomFactor
+		// Skipping already declared property MaxZoomFactor
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  bool IsZoomInertiaEnabled
+		{
+			get
+			{
+				return (bool)this.GetValue(IsZoomInertiaEnabledProperty);
+			}
+			set
+			{
+				this.SetValue(IsZoomInertiaEnabledProperty, value);
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  bool IsZoomChainingEnabled
+		{
+			get
+			{
+				return (bool)this.GetValue(IsZoomChainingEnabledProperty);
+			}
+			set
+			{
+				this.SetValue(IsZoomChainingEnabledProperty, value);
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  bool IsVerticalScrollChainingEnabled
+		{
+			get
+			{
+				return (bool)this.GetValue(IsVerticalScrollChainingEnabledProperty);
+			}
+			set
+			{
+				this.SetValue(IsVerticalScrollChainingEnabledProperty, value);
+			}
+		}
+		#endif
+		// Skipping already declared property BringIntoViewOnFocusChange
 		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.UI.Xaml.Controls.SnapPointsType ZoomSnapPointsType
@@ -142,32 +154,7 @@ namespace Windows.UI.Xaml.Controls
 		// Skipping already declared property VerticalSnapPointsType
 		// Skipping already declared property VerticalSnapPointsAlignment
 		// Skipping already declared property VerticalScrollMode
-		// Skipping already declared property MinZoomFactor
-		// Skipping already declared property MaxZoomFactor
 		// Skipping already declared property VerticalScrollBarVisibility
-		#if false || false || NET46 || false || false
-		[global::Uno.NotImplemented]
-		public  double HorizontalOffset
-		{
-			get
-			{
-				return (double)this.GetValue(HorizontalOffsetProperty);
-			}
-		}
-		#endif
-		// Skipping already declared property ExtentHeight
-		// Skipping already declared property ScrollableHeight
-		// Skipping already declared property ScrollableWidth
-		#if false || false || NET46 || false || false
-		[global::Uno.NotImplemented]
-		public  double VerticalOffset
-		{
-			get
-			{
-				return (double)this.GetValue(VerticalOffsetProperty);
-			}
-		}
-		#endif
 		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.UI.Xaml.Visibility ComputedHorizontalScrollBarVisibility
@@ -188,6 +175,30 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 		#endif
+		// Skipping already declared property ExtentHeight
+		// Skipping already declared property ExtentWidth
+		#if false || false || NET46 || false || false
+		[global::Uno.NotImplemented]
+		public  double HorizontalOffset
+		{
+			get
+			{
+				return (double)this.GetValue(HorizontalOffsetProperty);
+			}
+		}
+		#endif
+		// Skipping already declared property ScrollableWidth
+		#if false || false || NET46 || false || false
+		[global::Uno.NotImplemented]
+		public  double VerticalOffset
+		{
+			get
+			{
+				return (double)this.GetValue(VerticalOffsetProperty);
+			}
+		}
+		#endif
+		// Skipping already declared property ViewportHeight
 		// Skipping already declared property ViewportWidth
 		// Skipping already declared property ZoomFactor
 		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
@@ -200,8 +211,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 		#endif
-		// Skipping already declared property ViewportHeight
-		// Skipping already declared property ExtentWidth
+		// Skipping already declared property ScrollableHeight
 		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.UI.Xaml.UIElement TopLeftHeader
@@ -244,17 +254,70 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 		#endif
-		#if false || false || NET46 || false || false
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
-		public static global::Windows.UI.Xaml.DependencyProperty VerticalOffsetProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			"VerticalOffset", typeof(double), 
-			typeof(global::Windows.UI.Xaml.Controls.ScrollViewer), 
-			new FrameworkPropertyMetadata(default(double)));
+		public  double VerticalAnchorRatio
+		{
+			get
+			{
+				return (double)this.GetValue(VerticalAnchorRatioProperty);
+			}
+			set
+			{
+				this.SetValue(VerticalAnchorRatioProperty, value);
+			}
+		}
 		#endif
-		// Skipping already declared property VerticalScrollBarVisibilityProperty
-		// Skipping already declared property VerticalScrollModeProperty
-		// Skipping already declared property VerticalSnapPointsAlignmentProperty
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  bool ReduceViewportForCoreInputViewOcclusions
+		{
+			get
+			{
+				return (bool)this.GetValue(ReduceViewportForCoreInputViewOcclusionsProperty);
+			}
+			set
+			{
+				this.SetValue(ReduceViewportForCoreInputViewOcclusionsProperty, value);
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  double HorizontalAnchorRatio
+		{
+			get
+			{
+				return (double)this.GetValue(HorizontalAnchorRatioProperty);
+			}
+			set
+			{
+				this.SetValue(HorizontalAnchorRatioProperty, value);
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  bool CanContentRenderOutsideBounds
+		{
+			get
+			{
+				return (bool)this.GetValue(CanContentRenderOutsideBoundsProperty);
+			}
+			set
+			{
+				this.SetValue(CanContentRenderOutsideBoundsProperty, value);
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public static global::Windows.UI.Xaml.DependencyProperty IsScrollInertiaEnabledProperty { get; } = 
+		Windows.UI.Xaml.DependencyProperty.RegisterAttached(
+			"IsScrollInertiaEnabled", typeof(bool), 
+			typeof(global::Windows.UI.Xaml.Controls.ScrollViewer), 
+			new FrameworkPropertyMetadata(default(bool)));
+		#endif
 		// Skipping already declared property VerticalSnapPointsTypeProperty
 		// Skipping already declared property ViewportHeightProperty
 		// Skipping already declared property ViewportWidthProperty
@@ -267,14 +330,6 @@ namespace Windows.UI.Xaml.Controls
 			"ZoomSnapPoints", typeof(global::System.Collections.Generic.IList<float>), 
 			typeof(global::Windows.UI.Xaml.Controls.ScrollViewer), 
 			new FrameworkPropertyMetadata(default(global::System.Collections.Generic.IList<float>)));
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public static global::Windows.UI.Xaml.DependencyProperty ZoomSnapPointsTypeProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			"ZoomSnapPointsType", typeof(global::Windows.UI.Xaml.Controls.SnapPointsType), 
-			typeof(global::Windows.UI.Xaml.Controls.ScrollViewer), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Controls.SnapPointsType)));
 		#endif
 		// Skipping already declared property BringIntoViewOnFocusChangeProperty
 		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
@@ -333,11 +388,11 @@ namespace Windows.UI.Xaml.Controls
 		#endif
 		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
-		public static global::Windows.UI.Xaml.DependencyProperty IsScrollInertiaEnabledProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.RegisterAttached(
-			"IsScrollInertiaEnabled", typeof(bool), 
+		public static global::Windows.UI.Xaml.DependencyProperty ZoomSnapPointsTypeProperty { get; } = 
+		Windows.UI.Xaml.DependencyProperty.Register(
+			"ZoomSnapPointsType", typeof(global::Windows.UI.Xaml.Controls.SnapPointsType), 
 			typeof(global::Windows.UI.Xaml.Controls.ScrollViewer), 
-			new FrameworkPropertyMetadata(default(bool)));
+			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Controls.SnapPointsType)));
 		#endif
 		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
@@ -375,6 +430,17 @@ namespace Windows.UI.Xaml.Controls
 		// Skipping already declared property MinZoomFactorProperty
 		// Skipping already declared property ScrollableHeightProperty
 		// Skipping already declared property ScrollableWidthProperty
+		#if false || false || NET46 || false || false
+		[global::Uno.NotImplemented]
+		public static global::Windows.UI.Xaml.DependencyProperty VerticalOffsetProperty { get; } = 
+		Windows.UI.Xaml.DependencyProperty.Register(
+			"VerticalOffset", typeof(double), 
+			typeof(global::Windows.UI.Xaml.Controls.ScrollViewer), 
+			new FrameworkPropertyMetadata(default(double)));
+		#endif
+		// Skipping already declared property VerticalScrollBarVisibilityProperty
+		// Skipping already declared property VerticalScrollModeProperty
+		// Skipping already declared property VerticalSnapPointsAlignmentProperty
 		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty LeftHeaderProperty { get; } = 
@@ -398,6 +464,38 @@ namespace Windows.UI.Xaml.Controls
 			"TopLeftHeader", typeof(global::Windows.UI.Xaml.UIElement), 
 			typeof(global::Windows.UI.Xaml.Controls.ScrollViewer), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.UIElement)));
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public static global::Windows.UI.Xaml.DependencyProperty HorizontalAnchorRatioProperty { get; } = 
+		Windows.UI.Xaml.DependencyProperty.Register(
+			"HorizontalAnchorRatio", typeof(double), 
+			typeof(global::Windows.UI.Xaml.Controls.ScrollViewer), 
+			new FrameworkPropertyMetadata(default(double)));
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public static global::Windows.UI.Xaml.DependencyProperty ReduceViewportForCoreInputViewOcclusionsProperty { get; } = 
+		Windows.UI.Xaml.DependencyProperty.Register(
+			"ReduceViewportForCoreInputViewOcclusions", typeof(bool), 
+			typeof(global::Windows.UI.Xaml.Controls.ScrollViewer), 
+			new FrameworkPropertyMetadata(default(bool)));
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public static global::Windows.UI.Xaml.DependencyProperty VerticalAnchorRatioProperty { get; } = 
+		Windows.UI.Xaml.DependencyProperty.Register(
+			"VerticalAnchorRatio", typeof(double), 
+			typeof(global::Windows.UI.Xaml.Controls.ScrollViewer), 
+			new FrameworkPropertyMetadata(default(double)));
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public static global::Windows.UI.Xaml.DependencyProperty CanContentRenderOutsideBoundsProperty { get; } = 
+		Windows.UI.Xaml.DependencyProperty.RegisterAttached(
+			"CanContentRenderOutsideBounds", typeof(bool), 
+			typeof(global::Windows.UI.Xaml.Controls.ScrollViewer), 
+			new FrameworkPropertyMetadata(default(bool)));
 		#endif
 		// Skipping already declared method Windows.UI.Xaml.Controls.ScrollViewer.ScrollViewer()
 		// Forced skipping of method Windows.UI.Xaml.Controls.ScrollViewer.ScrollViewer()
@@ -511,6 +609,49 @@ namespace Windows.UI.Xaml.Controls
 		// Forced skipping of method Windows.UI.Xaml.Controls.ScrollViewer.DirectManipulationStarted.remove
 		// Forced skipping of method Windows.UI.Xaml.Controls.ScrollViewer.DirectManipulationCompleted.add
 		// Forced skipping of method Windows.UI.Xaml.Controls.ScrollViewer.DirectManipulationCompleted.remove
+		// Forced skipping of method Windows.UI.Xaml.Controls.ScrollViewer.ReduceViewportForCoreInputViewOcclusions.get
+		// Forced skipping of method Windows.UI.Xaml.Controls.ScrollViewer.ReduceViewportForCoreInputViewOcclusions.set
+		// Forced skipping of method Windows.UI.Xaml.Controls.ScrollViewer.HorizontalAnchorRatio.get
+		// Forced skipping of method Windows.UI.Xaml.Controls.ScrollViewer.HorizontalAnchorRatio.set
+		// Forced skipping of method Windows.UI.Xaml.Controls.ScrollViewer.VerticalAnchorRatio.get
+		// Forced skipping of method Windows.UI.Xaml.Controls.ScrollViewer.VerticalAnchorRatio.set
+		// Forced skipping of method Windows.UI.Xaml.Controls.ScrollViewer.CanContentRenderOutsideBounds.get
+		// Forced skipping of method Windows.UI.Xaml.Controls.ScrollViewer.CanContentRenderOutsideBounds.set
+		// Forced skipping of method Windows.UI.Xaml.Controls.ScrollViewer.AnchorRequested.add
+		// Forced skipping of method Windows.UI.Xaml.Controls.ScrollViewer.AnchorRequested.remove
+		// Forced skipping of method Windows.UI.Xaml.Controls.ScrollViewer.CurrentAnchor.get
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  void RegisterAnchorCandidate( global::Windows.UI.Xaml.UIElement element)
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.ScrollViewer", "void ScrollViewer.RegisterAnchorCandidate(UIElement element)");
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  void UnregisterAnchorCandidate( global::Windows.UI.Xaml.UIElement element)
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.ScrollViewer", "void ScrollViewer.UnregisterAnchorCandidate(UIElement element)");
+		}
+		#endif
+		// Forced skipping of method Windows.UI.Xaml.Controls.ScrollViewer.ReduceViewportForCoreInputViewOcclusionsProperty.get
+		// Forced skipping of method Windows.UI.Xaml.Controls.ScrollViewer.HorizontalAnchorRatioProperty.get
+		// Forced skipping of method Windows.UI.Xaml.Controls.ScrollViewer.VerticalAnchorRatioProperty.get
+		// Forced skipping of method Windows.UI.Xaml.Controls.ScrollViewer.CanContentRenderOutsideBoundsProperty.get
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public static bool GetCanContentRenderOutsideBounds( global::Windows.UI.Xaml.DependencyObject element)
+		{
+			return (bool)element.GetValue(CanContentRenderOutsideBoundsProperty);
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public static void SetCanContentRenderOutsideBounds( global::Windows.UI.Xaml.DependencyObject element,  bool canContentRenderOutsideBounds)
+		{
+			element.SetValue(CanContentRenderOutsideBoundsProperty, canContentRenderOutsideBounds);
+		}
+		#endif
 		// Forced skipping of method Windows.UI.Xaml.Controls.ScrollViewer.TopLeftHeaderProperty.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.ScrollViewer.LeftHeaderProperty.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.ScrollViewer.TopHeaderProperty.get
@@ -744,5 +885,22 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Xaml.Controls.ScrollViewer, global::Windows.UI.Xaml.Controls.AnchorRequestedEventArgs> AnchorRequested
+		{
+			[global::Uno.NotImplemented]
+			add
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.ScrollViewer", "event TypedEventHandler<ScrollViewer, AnchorRequestedEventArgs> ScrollViewer.AnchorRequested");
+			}
+			[global::Uno.NotImplemented]
+			remove
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.ScrollViewer", "event TypedEventHandler<ScrollViewer, AnchorRequestedEventArgs> ScrollViewer.AnchorRequested");
+			}
+		}
+		#endif
+		// Processing: Windows.UI.Xaml.Controls.IScrollAnchorProvider
 	}
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using Microsoft.Build.Framework;
@@ -64,14 +65,22 @@ namespace Uno.UI.Tasks.Assets
 			RetargetedAssets = Assets
 				.Select(asset =>
 				{
-					if (!asset.MetadataNames.Contains("Link"))
+					if (
+						!asset.MetadataNames.Contains("Link")
+						&& !asset.MetadataNames.Contains("DefiningProjectDirectory")
+					)
 					{
-						this.Log().Info($"Skipping '{asset.ItemSpec}' because 'Link' metadata is not set.");
+						this.Log().Info($"Skipping '{asset.ItemSpec}' because 'Link' or 'DefiningProjectDirectory' metadata is not set.");
 						return null;
 					}
 
 					var fullPath = asset.GetMetadata("FullPath");
 					var relativePath = asset.GetMetadata("Link");
+
+					if (string.IsNullOrEmpty(relativePath))
+					{
+						relativePath = fullPath.Replace(asset.GetMetadata("DefiningProjectDirectory"), "");
+					}
 
 					var resourceCandidate = ResourceCandidate.Parse(fullPath, relativePath);
 

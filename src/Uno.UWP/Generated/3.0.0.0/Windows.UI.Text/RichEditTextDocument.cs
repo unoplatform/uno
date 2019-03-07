@@ -87,6 +87,17 @@ namespace Windows.UI.Text
 			}
 		}
 		#endif
+		// Forced skipping of method Windows.UI.Text.RichEditTextDocument.AlignmentIncludesTrailingWhitespace.get
+		// Forced skipping of method Windows.UI.Text.RichEditTextDocument.AlignmentIncludesTrailingWhitespace.set
+		// Forced skipping of method Windows.UI.Text.RichEditTextDocument.IgnoreTrailingCharacterSpacing.get
+		// Forced skipping of method Windows.UI.Text.RichEditTextDocument.IgnoreTrailingCharacterSpacing.set
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  void ClearUndoRedoHistory()
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Text.RichEditTextDocument", "void RichEditTextDocument.ClearUndoRedoHistory()");
+		}
+		#endif
 		// Forced skipping of method Windows.UI.Text.RichEditTextDocument.CaretType.get
 		// Forced skipping of method Windows.UI.Text.RichEditTextDocument.CaretType.set
 		// Forced skipping of method Windows.UI.Text.RichEditTextDocument.DefaultTabStop.get
@@ -234,10 +245,6 @@ namespace Windows.UI.Text
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Text.RichEditTextDocument", "void RichEditTextDocument.Undo()");
 		}
 		#endif
-		// Forced skipping of method Windows.UI.Text.RichEditTextDocument.AlignmentIncludesTrailingWhitespace.get
-		// Forced skipping of method Windows.UI.Text.RichEditTextDocument.AlignmentIncludesTrailingWhitespace.set
-		// Forced skipping of method Windows.UI.Text.RichEditTextDocument.IgnoreTrailingCharacterSpacing.get
-		// Forced skipping of method Windows.UI.Text.RichEditTextDocument.IgnoreTrailingCharacterSpacing.set
 		// Processing: Windows.UI.Text.ITextDocument
 	}
 }

@@ -1,7 +1,5 @@
 ﻿using Foundation;
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Uno.UI.Extensions
 {
@@ -31,6 +29,12 @@ namespace Uno.UI.Extensions
 		public static NSDate ToNSDate(this TimeSpan time)
 		{
 			return DateTime.Today.Add(time).ToNSDate();
+		}
+
+		internal static TimeSpan ToTimeSpan(this NSDate date, nint offsetInSecondsFromGMT)
+		{
+			var offset = TimeSpan.FromSeconds(offsetInSecondsFromGMT);
+			return date.ToTimeSpan().Add(offset);
 		}
 	}
 }

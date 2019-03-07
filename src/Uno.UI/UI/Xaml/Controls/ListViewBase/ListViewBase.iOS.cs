@@ -34,7 +34,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		partial void OnApplyTemplatePartial()
+		private void InitializeNativePanel()
 		{
 			var source = new ListViewBaseSource(NativePanel);
 			NativePanel.Source = source;

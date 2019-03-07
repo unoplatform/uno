@@ -143,6 +143,20 @@ namespace Windows.UI.Composition
 			}
 		}
 		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  global::Windows.UI.Composition.CompositionMappingMode MappingMode
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member CompositionMappingMode CompositionGradientBrush.MappingMode is not implemented in Uno.");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.CompositionGradientBrush", "CompositionMappingMode CompositionGradientBrush.MappingMode");
+			}
+		}
+		#endif
 		// Forced skipping of method Windows.UI.Composition.CompositionGradientBrush.AnchorPoint.get
 		// Forced skipping of method Windows.UI.Composition.CompositionGradientBrush.AnchorPoint.set
 		// Forced skipping of method Windows.UI.Composition.CompositionGradientBrush.CenterPoint.get
@@ -162,5 +176,7 @@ namespace Windows.UI.Composition
 		// Forced skipping of method Windows.UI.Composition.CompositionGradientBrush.Scale.set
 		// Forced skipping of method Windows.UI.Composition.CompositionGradientBrush.TransformMatrix.get
 		// Forced skipping of method Windows.UI.Composition.CompositionGradientBrush.TransformMatrix.set
+		// Forced skipping of method Windows.UI.Composition.CompositionGradientBrush.MappingMode.get
+		// Forced skipping of method Windows.UI.Composition.CompositionGradientBrush.MappingMode.set
 	}
 }

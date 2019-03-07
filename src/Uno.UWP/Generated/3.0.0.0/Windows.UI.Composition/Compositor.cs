@@ -452,6 +452,41 @@ namespace Windows.UI.Composition
 			throw new global::System.NotImplementedException("The member IAsyncAction Compositor.RequestCommitAsync() is not implemented in Uno.");
 		}
 		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  global::Windows.UI.Composition.CompositionGeometricClip CreateGeometricClip()
+		{
+			throw new global::System.NotImplementedException("The member CompositionGeometricClip Compositor.CreateGeometricClip() is not implemented in Uno.");
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  global::Windows.UI.Composition.CompositionGeometricClip CreateGeometricClip( global::Windows.UI.Composition.CompositionGeometry geometry)
+		{
+			throw new global::System.NotImplementedException("The member CompositionGeometricClip Compositor.CreateGeometricClip(CompositionGeometry geometry) is not implemented in Uno.");
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  global::Windows.UI.Composition.RedirectVisual CreateRedirectVisual()
+		{
+			throw new global::System.NotImplementedException("The member RedirectVisual Compositor.CreateRedirectVisual() is not implemented in Uno.");
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  global::Windows.UI.Composition.RedirectVisual CreateRedirectVisual( global::Windows.UI.Composition.Visual source)
+		{
+			throw new global::System.NotImplementedException("The member RedirectVisual Compositor.CreateRedirectVisual(Visual source) is not implemented in Uno.");
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  global::Windows.UI.Composition.BooleanKeyFrameAnimation CreateBooleanKeyFrameAnimation()
+		{
+			throw new global::System.NotImplementedException("The member BooleanKeyFrameAnimation Compositor.CreateBooleanKeyFrameAnimation() is not implemented in Uno.");
+		}
+		#endif
 		// Forced skipping of method Windows.UI.Composition.Compositor.MaxGlobalPlaybackRate.get
 		// Forced skipping of method Windows.UI.Composition.Compositor.MinGlobalPlaybackRate.get
 		// Processing: System.IDisposable

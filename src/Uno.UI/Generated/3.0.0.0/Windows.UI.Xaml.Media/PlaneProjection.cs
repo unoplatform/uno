@@ -9,90 +9,6 @@ namespace Windows.UI.Xaml.Media
 	{
 		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
-		public  double GlobalOffsetZ
-		{
-			get
-			{
-				return (double)this.GetValue(GlobalOffsetZProperty);
-			}
-			set
-			{
-				this.SetValue(GlobalOffsetZProperty, value);
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  double GlobalOffsetY
-		{
-			get
-			{
-				return (double)this.GetValue(GlobalOffsetYProperty);
-			}
-			set
-			{
-				this.SetValue(GlobalOffsetYProperty, value);
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  double GlobalOffsetX
-		{
-			get
-			{
-				return (double)this.GetValue(GlobalOffsetXProperty);
-			}
-			set
-			{
-				this.SetValue(GlobalOffsetXProperty, value);
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  double CenterOfRotationZ
-		{
-			get
-			{
-				return (double)this.GetValue(CenterOfRotationZProperty);
-			}
-			set
-			{
-				this.SetValue(CenterOfRotationZProperty, value);
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  double CenterOfRotationY
-		{
-			get
-			{
-				return (double)this.GetValue(CenterOfRotationYProperty);
-			}
-			set
-			{
-				this.SetValue(CenterOfRotationYProperty, value);
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  double CenterOfRotationX
-		{
-			get
-			{
-				return (double)this.GetValue(CenterOfRotationXProperty);
-			}
-			set
-			{
-				this.SetValue(CenterOfRotationXProperty, value);
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
 		public  double RotationZ
 		{
 			get
@@ -172,6 +88,90 @@ namespace Windows.UI.Xaml.Media
 			set
 			{
 				this.SetValue(LocalOffsetXProperty, value);
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  double GlobalOffsetZ
+		{
+			get
+			{
+				return (double)this.GetValue(GlobalOffsetZProperty);
+			}
+			set
+			{
+				this.SetValue(GlobalOffsetZProperty, value);
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  double GlobalOffsetY
+		{
+			get
+			{
+				return (double)this.GetValue(GlobalOffsetYProperty);
+			}
+			set
+			{
+				this.SetValue(GlobalOffsetYProperty, value);
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  double GlobalOffsetX
+		{
+			get
+			{
+				return (double)this.GetValue(GlobalOffsetXProperty);
+			}
+			set
+			{
+				this.SetValue(GlobalOffsetXProperty, value);
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  double CenterOfRotationZ
+		{
+			get
+			{
+				return (double)this.GetValue(CenterOfRotationZProperty);
+			}
+			set
+			{
+				this.SetValue(CenterOfRotationZProperty, value);
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  double CenterOfRotationY
+		{
+			get
+			{
+				return (double)this.GetValue(CenterOfRotationYProperty);
+			}
+			set
+			{
+				this.SetValue(CenterOfRotationYProperty, value);
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  double CenterOfRotationX
+		{
+			get
+			{
+				return (double)this.GetValue(CenterOfRotationXProperty);
+			}
+			set
+			{
+				this.SetValue(CenterOfRotationXProperty, value);
 			}
 		}
 		#endif

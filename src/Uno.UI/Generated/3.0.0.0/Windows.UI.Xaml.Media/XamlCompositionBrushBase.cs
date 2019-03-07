@@ -53,6 +53,8 @@ namespace Windows.UI.Xaml.Media
 		// Forced skipping of method Windows.UI.Xaml.Media.XamlCompositionBrushBase.XamlCompositionBrushBase()
 		// Forced skipping of method Windows.UI.Xaml.Media.XamlCompositionBrushBase.FallbackColor.get
 		// Forced skipping of method Windows.UI.Xaml.Media.XamlCompositionBrushBase.FallbackColor.set
+		// Forced skipping of method Windows.UI.Xaml.Media.XamlCompositionBrushBase.CompositionBrush.get
+		// Forced skipping of method Windows.UI.Xaml.Media.XamlCompositionBrushBase.CompositionBrush.set
 		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		protected virtual void OnConnected()
@@ -67,8 +69,6 @@ namespace Windows.UI.Xaml.Media
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Media.XamlCompositionBrushBase", "void XamlCompositionBrushBase.OnDisconnected()");
 		}
 		#endif
-		// Forced skipping of method Windows.UI.Xaml.Media.XamlCompositionBrushBase.CompositionBrush.get
-		// Forced skipping of method Windows.UI.Xaml.Media.XamlCompositionBrushBase.CompositionBrush.set
 		// Forced skipping of method Windows.UI.Xaml.Media.XamlCompositionBrushBase.FallbackColorProperty.get
 	}
 }

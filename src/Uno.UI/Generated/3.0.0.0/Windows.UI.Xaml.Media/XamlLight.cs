@@ -23,6 +23,8 @@ namespace Windows.UI.Xaml.Media
 		#endif
 		// Skipping already declared method Windows.UI.Xaml.Media.XamlLight.XamlLight()
 		// Forced skipping of method Windows.UI.Xaml.Media.XamlLight.XamlLight()
+		// Forced skipping of method Windows.UI.Xaml.Media.XamlLight.CompositionLight.get
+		// Forced skipping of method Windows.UI.Xaml.Media.XamlLight.CompositionLight.set
 		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		protected virtual string GetId()
@@ -44,8 +46,6 @@ namespace Windows.UI.Xaml.Media
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Media.XamlLight", "void XamlLight.OnDisconnected(UIElement oldElement)");
 		}
 		#endif
-		// Forced skipping of method Windows.UI.Xaml.Media.XamlLight.CompositionLight.get
-		// Forced skipping of method Windows.UI.Xaml.Media.XamlLight.CompositionLight.set
 		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static void AddTargetElement( string lightId,  global::Windows.UI.Xaml.UIElement element)

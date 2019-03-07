@@ -5,7 +5,7 @@ namespace Windows.UI.Xaml.Automation.Peers
 	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
-	public  partial class PivotAutomationPeer : global::Windows.UI.Xaml.Automation.Peers.ItemsControlAutomationPeer,global::Windows.UI.Xaml.Automation.Provider.IScrollProvider,global::Windows.UI.Xaml.Automation.Provider.ISelectionProvider
+	public  partial class PivotAutomationPeer : global::Windows.UI.Xaml.Automation.Peers.ItemsControlAutomationPeer,global::Windows.UI.Xaml.Automation.Provider.ISelectionProvider,global::Windows.UI.Xaml.Automation.Provider.IScrollProvider
 	{
 		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
@@ -95,6 +95,15 @@ namespace Windows.UI.Xaml.Automation.Peers
 		}
 		#endif
 		// Forced skipping of method Windows.UI.Xaml.Automation.Peers.PivotAutomationPeer.PivotAutomationPeer(Windows.UI.Xaml.Controls.Pivot)
+		// Forced skipping of method Windows.UI.Xaml.Automation.Peers.PivotAutomationPeer.CanSelectMultiple.get
+		// Forced skipping of method Windows.UI.Xaml.Automation.Peers.PivotAutomationPeer.IsSelectionRequired.get
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  global::Windows.UI.Xaml.Automation.Provider.IRawElementProviderSimple[] GetSelection()
+		{
+			throw new global::System.NotImplementedException("The member IRawElementProviderSimple[] PivotAutomationPeer.GetSelection() is not implemented in Uno.");
+		}
+		#endif
 		// Forced skipping of method Windows.UI.Xaml.Automation.Peers.PivotAutomationPeer.HorizontallyScrollable.get
 		// Forced skipping of method Windows.UI.Xaml.Automation.Peers.PivotAutomationPeer.HorizontalScrollPercent.get
 		// Forced skipping of method Windows.UI.Xaml.Automation.Peers.PivotAutomationPeer.HorizontalViewSize.get
@@ -115,16 +124,7 @@ namespace Windows.UI.Xaml.Automation.Peers
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Automation.Peers.PivotAutomationPeer", "void PivotAutomationPeer.SetScrollPercent(double horizontalPercent, double verticalPercent)");
 		}
 		#endif
-		// Forced skipping of method Windows.UI.Xaml.Automation.Peers.PivotAutomationPeer.CanSelectMultiple.get
-		// Forced skipping of method Windows.UI.Xaml.Automation.Peers.PivotAutomationPeer.IsSelectionRequired.get
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  global::Windows.UI.Xaml.Automation.Provider.IRawElementProviderSimple[] GetSelection()
-		{
-			throw new global::System.NotImplementedException("The member IRawElementProviderSimple[] PivotAutomationPeer.GetSelection() is not implemented in Uno.");
-		}
-		#endif
-		// Processing: Windows.UI.Xaml.Automation.Provider.IScrollProvider
 		// Processing: Windows.UI.Xaml.Automation.Provider.ISelectionProvider
+		// Processing: Windows.UI.Xaml.Automation.Provider.IScrollProvider
 	}
 }

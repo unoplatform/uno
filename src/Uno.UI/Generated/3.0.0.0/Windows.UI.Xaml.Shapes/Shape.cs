@@ -7,24 +7,6 @@ namespace Windows.UI.Xaml.Shapes
 	#endif
 	public  partial class Shape : global::Windows.UI.Xaml.FrameworkElement
 	{
-		// Skipping already declared property StrokeDashArray
-		// Skipping already declared property Stroke
-		// Skipping already declared property Stretch
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  global::Windows.UI.Xaml.Media.PenLineCap StrokeDashCap
-		{
-			get
-			{
-				return (global::Windows.UI.Xaml.Media.PenLineCap)this.GetValue(StrokeDashCapProperty);
-			}
-			set
-			{
-				this.SetValue(StrokeDashCapProperty, value);
-			}
-		}
-		#endif
-		// Skipping already declared property Fill
 		// Skipping already declared property StrokeThickness
 		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
@@ -96,6 +78,24 @@ namespace Windows.UI.Xaml.Shapes
 			}
 		}
 		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  global::Windows.UI.Xaml.Media.PenLineCap StrokeDashCap
+		{
+			get
+			{
+				return (global::Windows.UI.Xaml.Media.PenLineCap)this.GetValue(StrokeDashCapProperty);
+			}
+			set
+			{
+				this.SetValue(StrokeDashCapProperty, value);
+			}
+		}
+		#endif
+		// Skipping already declared property StrokeDashArray
+		// Skipping already declared property Stroke
+		// Skipping already declared property Stretch
+		// Skipping already declared property Fill
 		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.UI.Xaml.Media.Transform GeometryTransform

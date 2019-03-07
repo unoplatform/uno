@@ -87,7 +87,7 @@ namespace Windows.UI
 			//In Windows we define FontFamily with the path to the font file followed by the font family name, separated by a #
 			if (fontPath.Contains("#"))
 			{
-				var pathParts = fontPath.Split('#');
+				var pathParts = fontPath.Split(new[] { '#' });
 				var file = pathParts[0];
 				var familyName = pathParts[1];
 
@@ -230,7 +230,7 @@ namespace Windows.UI
 		{
 			//based on Fonts available @ http://iosfonts.com/
 			//for Windows parity feature, we will not support FontFamily="HelveticaNeue-Bold" (will ignore Bold and must be set by FontWeight property instead)
-			var rootFontFamilyName = fontFamilyName.Split('-').FirstOrDefault();
+			var rootFontFamilyName = fontFamilyName.Split(new[] { '-' }).FirstOrDefault();
 
 			if (rootFontFamilyName.HasValue())
 			{

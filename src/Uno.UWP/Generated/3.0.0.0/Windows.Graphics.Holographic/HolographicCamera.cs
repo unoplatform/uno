@@ -125,6 +125,30 @@ namespace Windows.Graphics.Holographic
 			}
 		}
 		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  bool IsHardwareContentProtectionEnabled
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member bool HolographicCamera.IsHardwareContentProtectionEnabled is not implemented in Uno.");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Holographic.HolographicCamera", "bool HolographicCamera.IsHardwareContentProtectionEnabled");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  bool IsHardwareContentProtectionSupported
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member bool HolographicCamera.IsHardwareContentProtectionSupported is not implemented in Uno.");
+			}
+		}
+		#endif
 		// Forced skipping of method Windows.Graphics.Holographic.HolographicCamera.RenderTargetSize.get
 		// Forced skipping of method Windows.Graphics.Holographic.HolographicCamera.ViewportScaleFactor.get
 		// Forced skipping of method Windows.Graphics.Holographic.HolographicCamera.ViewportScaleFactor.set
@@ -152,5 +176,8 @@ namespace Windows.Graphics.Holographic
 		// Forced skipping of method Windows.Graphics.Holographic.HolographicCamera.MaxQuadLayerCount.get
 		// Forced skipping of method Windows.Graphics.Holographic.HolographicCamera.QuadLayers.get
 		// Forced skipping of method Windows.Graphics.Holographic.HolographicCamera.CanOverrideViewport.get
+		// Forced skipping of method Windows.Graphics.Holographic.HolographicCamera.IsHardwareContentProtectionSupported.get
+		// Forced skipping of method Windows.Graphics.Holographic.HolographicCamera.IsHardwareContentProtectionEnabled.get
+		// Forced skipping of method Windows.Graphics.Holographic.HolographicCamera.IsHardwareContentProtectionEnabled.set
 	}
 }

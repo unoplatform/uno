@@ -7,6 +7,24 @@ namespace Windows.UI.Xaml.Controls
 	#endif
 	public  partial class ContentPresenter : global::Windows.UI.Xaml.FrameworkElement
 	{
+		// Skipping already declared property Foreground
+		// Skipping already declared property FontWeight
+		// Skipping already declared property FontStyle
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  global::Windows.UI.Text.FontStretch FontStretch
+		{
+			get
+			{
+				return (global::Windows.UI.Text.FontStretch)this.GetValue(FontStretchProperty);
+			}
+			set
+			{
+				this.SetValue(FontStretchProperty, value);
+			}
+		}
+		#endif
+		// Skipping already declared property FontSize
 		// Skipping already declared property FontFamily
 		// Skipping already declared property ContentTransitions
 		// Skipping already declared property ContentTemplateSelector
@@ -26,38 +44,6 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 		#endif
-		// Skipping already declared property Foreground
-		// Skipping already declared property FontWeight
-		// Skipping already declared property FontStyle
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  global::Windows.UI.Text.FontStretch FontStretch
-		{
-			get
-			{
-				return (global::Windows.UI.Text.FontStretch)this.GetValue(FontStretchProperty);
-			}
-			set
-			{
-				this.SetValue(FontStretchProperty, value);
-			}
-		}
-		#endif
-		// Skipping already declared property FontSize
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  global::Windows.UI.Xaml.OpticalMarginAlignment OpticalMarginAlignment
-		{
-			get
-			{
-				return (global::Windows.UI.Xaml.OpticalMarginAlignment)this.GetValue(OpticalMarginAlignmentProperty);
-			}
-			set
-			{
-				this.SetValue(OpticalMarginAlignmentProperty, value);
-			}
-		}
-		#endif
 		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.UI.Xaml.TextLineBounds TextLineBounds
@@ -69,6 +55,20 @@ namespace Windows.UI.Xaml.Controls
 			set
 			{
 				this.SetValue(TextLineBoundsProperty, value);
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  global::Windows.UI.Xaml.OpticalMarginAlignment OpticalMarginAlignment
+		{
+			get
+			{
+				return (global::Windows.UI.Xaml.OpticalMarginAlignment)this.GetValue(OpticalMarginAlignmentProperty);
+			}
+			set
+			{
+				this.SetValue(OpticalMarginAlignmentProperty, value);
 			}
 		}
 		#endif
@@ -86,11 +86,6 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 		#endif
-		// Skipping already declared property CornerRadius
-		// Skipping already declared property BorderThickness
-		// Skipping already declared property BorderBrush
-		// Skipping already declared property Background
-		// Skipping already declared property HorizontalContentAlignment
 		// Skipping already declared property VerticalContentAlignment
 		// Skipping already declared property TextWrapping
 		// Skipping already declared property Padding
@@ -123,23 +118,39 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 		#endif
-		// Skipping already declared property ForegroundProperty
-		// Skipping already declared property FontWeightProperty
-		// Skipping already declared property FontStyleProperty
+		// Skipping already declared property HorizontalContentAlignment
+		// Skipping already declared property CornerRadius
+		// Skipping already declared property BorderThickness
+		// Skipping already declared property BorderBrush
+		// Skipping already declared property Background
 		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
-		public static global::Windows.UI.Xaml.DependencyProperty FontStretchProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			"FontStretch", typeof(global::Windows.UI.Text.FontStretch), 
-			typeof(global::Windows.UI.Xaml.Controls.ContentPresenter), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Text.FontStretch)));
+		public  global::Windows.UI.Xaml.BrushTransition BackgroundTransition
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member BrushTransition ContentPresenter.BackgroundTransition is not implemented in Uno.");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.ContentPresenter", "BrushTransition ContentPresenter.BackgroundTransition");
+			}
+		}
 		#endif
-		// Skipping already declared property FontSizeProperty
-		// Skipping already declared property FontFamilyProperty
-		// Skipping already declared property ContentProperty
-		// Skipping already declared property ContentTransitionsProperty
-		// Skipping already declared property ContentTemplateSelectorProperty
-		// Skipping already declared property ContentTemplateProperty
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  global::Windows.UI.Xaml.Controls.BackgroundSizing BackgroundSizing
+		{
+			get
+			{
+				return (global::Windows.UI.Xaml.Controls.BackgroundSizing)this.GetValue(BackgroundSizingProperty);
+			}
+			set
+			{
+				this.SetValue(BackgroundSizingProperty, value);
+			}
+		}
+		#endif
 		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty CharacterSpacingProperty { get; } = 
@@ -148,6 +159,23 @@ namespace Windows.UI.Xaml.Controls
 			typeof(global::Windows.UI.Xaml.Controls.ContentPresenter), 
 			new FrameworkPropertyMetadata(default(int)));
 		#endif
+		// Skipping already declared property ContentProperty
+		// Skipping already declared property ContentTemplateProperty
+		// Skipping already declared property ContentTemplateSelectorProperty
+		// Skipping already declared property ContentTransitionsProperty
+		// Skipping already declared property FontFamilyProperty
+		// Skipping already declared property FontSizeProperty
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public static global::Windows.UI.Xaml.DependencyProperty FontStretchProperty { get; } = 
+		Windows.UI.Xaml.DependencyProperty.Register(
+			"FontStretch", typeof(global::Windows.UI.Text.FontStretch), 
+			typeof(global::Windows.UI.Xaml.Controls.ContentPresenter), 
+			new FrameworkPropertyMetadata(default(global::Windows.UI.Text.FontStretch)));
+		#endif
+		// Skipping already declared property FontStyleProperty
+		// Skipping already declared property FontWeightProperty
+		// Skipping already declared property ForegroundProperty
 		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty OpticalMarginAlignmentProperty { get; } = 
@@ -172,18 +200,11 @@ namespace Windows.UI.Xaml.Controls
 			typeof(global::Windows.UI.Xaml.Controls.ContentPresenter), 
 			new FrameworkPropertyMetadata(default(bool)));
 		#endif
-		// Skipping already declared property VerticalContentAlignmentProperty
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public static global::Windows.UI.Xaml.DependencyProperty LineStackingStrategyProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			"LineStackingStrategy", typeof(global::Windows.UI.Xaml.LineStackingStrategy), 
-			typeof(global::Windows.UI.Xaml.Controls.ContentPresenter), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.LineStackingStrategy)));
-		#endif
-		// Skipping already declared property TextWrappingProperty
-		// Skipping already declared property PaddingProperty
-		// Skipping already declared property MaxLinesProperty
+		// Skipping already declared property BackgroundProperty
+		// Skipping already declared property BorderBrushProperty
+		// Skipping already declared property BorderThicknessProperty
+		// Skipping already declared property CornerRadiusProperty
+		// Skipping already declared property HorizontalContentAlignmentProperty
 		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty LineHeightProperty { get; } = 
@@ -192,11 +213,26 @@ namespace Windows.UI.Xaml.Controls
 			typeof(global::Windows.UI.Xaml.Controls.ContentPresenter), 
 			new FrameworkPropertyMetadata(default(double)));
 		#endif
-		// Skipping already declared property HorizontalContentAlignmentProperty
-		// Skipping already declared property CornerRadiusProperty
-		// Skipping already declared property BorderThicknessProperty
-		// Skipping already declared property BorderBrushProperty
-		// Skipping already declared property BackgroundProperty
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public static global::Windows.UI.Xaml.DependencyProperty LineStackingStrategyProperty { get; } = 
+		Windows.UI.Xaml.DependencyProperty.Register(
+			"LineStackingStrategy", typeof(global::Windows.UI.Xaml.LineStackingStrategy), 
+			typeof(global::Windows.UI.Xaml.Controls.ContentPresenter), 
+			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.LineStackingStrategy)));
+		#endif
+		// Skipping already declared property MaxLinesProperty
+		// Skipping already declared property PaddingProperty
+		// Skipping already declared property TextWrappingProperty
+		// Skipping already declared property VerticalContentAlignmentProperty
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public static global::Windows.UI.Xaml.DependencyProperty BackgroundSizingProperty { get; } = 
+		Windows.UI.Xaml.DependencyProperty.Register(
+			"BackgroundSizing", typeof(global::Windows.UI.Xaml.Controls.BackgroundSizing), 
+			typeof(global::Windows.UI.Xaml.Controls.ContentPresenter), 
+			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Controls.BackgroundSizing)));
+		#endif
 		// Skipping already declared method Windows.UI.Xaml.Controls.ContentPresenter.ContentPresenter()
 		// Forced skipping of method Windows.UI.Xaml.Controls.ContentPresenter.ContentPresenter()
 		// Forced skipping of method Windows.UI.Xaml.Controls.ContentPresenter.Content.get
@@ -221,8 +257,6 @@ namespace Windows.UI.Xaml.Controls
 		// Forced skipping of method Windows.UI.Xaml.Controls.ContentPresenter.CharacterSpacing.set
 		// Forced skipping of method Windows.UI.Xaml.Controls.ContentPresenter.Foreground.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.ContentPresenter.Foreground.set
-		// Skipping already declared method Windows.UI.Xaml.Controls.ContentPresenter.OnContentTemplateChanged(Windows.UI.Xaml.DataTemplate, Windows.UI.Xaml.DataTemplate)
-		// Skipping already declared method Windows.UI.Xaml.Controls.ContentPresenter.OnContentTemplateSelectorChanged(Windows.UI.Xaml.Controls.DataTemplateSelector, Windows.UI.Xaml.Controls.DataTemplateSelector)
 		// Forced skipping of method Windows.UI.Xaml.Controls.ContentPresenter.OpticalMarginAlignment.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.ContentPresenter.OpticalMarginAlignment.set
 		// Forced skipping of method Windows.UI.Xaml.Controls.ContentPresenter.TextLineBounds.get
@@ -251,6 +285,13 @@ namespace Windows.UI.Xaml.Controls
 		// Forced skipping of method Windows.UI.Xaml.Controls.ContentPresenter.HorizontalContentAlignment.set
 		// Forced skipping of method Windows.UI.Xaml.Controls.ContentPresenter.VerticalContentAlignment.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.ContentPresenter.VerticalContentAlignment.set
+		// Forced skipping of method Windows.UI.Xaml.Controls.ContentPresenter.BackgroundTransition.get
+		// Forced skipping of method Windows.UI.Xaml.Controls.ContentPresenter.BackgroundTransition.set
+		// Forced skipping of method Windows.UI.Xaml.Controls.ContentPresenter.BackgroundSizing.get
+		// Forced skipping of method Windows.UI.Xaml.Controls.ContentPresenter.BackgroundSizing.set
+		// Skipping already declared method Windows.UI.Xaml.Controls.ContentPresenter.OnContentTemplateChanged(Windows.UI.Xaml.DataTemplate, Windows.UI.Xaml.DataTemplate)
+		// Skipping already declared method Windows.UI.Xaml.Controls.ContentPresenter.OnContentTemplateSelectorChanged(Windows.UI.Xaml.Controls.DataTemplateSelector, Windows.UI.Xaml.Controls.DataTemplateSelector)
+		// Forced skipping of method Windows.UI.Xaml.Controls.ContentPresenter.BackgroundSizingProperty.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.ContentPresenter.TextWrappingProperty.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.ContentPresenter.MaxLinesProperty.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.ContentPresenter.LineStackingStrategyProperty.get

@@ -8,6 +8,6 @@
 			 d:DesignHeight="300"
 			 d:DesignWidth="400">
 	<Grid>
-		<Button Click="Button_Click" />
+		<Button Click="Button_Click" Loaded="OnLoadUnload" Unloaded="OnLoadUnload" />
 	</Grid>
 </UserControl>

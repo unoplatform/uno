@@ -210,7 +210,8 @@ namespace Uno.UI.Controls.Legacy
 			return DataTemplateHelper.ResolveTemplate(
 				ItemTemplate,
 				ItemTemplateSelector,
-				item
+				item,
+				null
 			);
 		}
 

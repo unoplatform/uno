@@ -81,6 +81,13 @@ namespace Windows.Devices.Enumeration
 		#endif
 		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
+		public static bool TryRegisterForAllInboundPairingRequestsWithProtectionLevel( global::Windows.Devices.Enumeration.DevicePairingKinds pairingKindsSupported,  global::Windows.Devices.Enumeration.DevicePairingProtectionLevel minProtectionLevel)
+		{
+			throw new global::System.NotImplementedException("The member bool DeviceInformationPairing.TryRegisterForAllInboundPairingRequestsWithProtectionLevel(DevicePairingKinds pairingKindsSupported, DevicePairingProtectionLevel minProtectionLevel) is not implemented in Uno.");
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
 		public static bool TryRegisterForAllInboundPairingRequests( global::Windows.Devices.Enumeration.DevicePairingKinds pairingKindsSupported)
 		{
 			throw new global::System.NotImplementedException("The member bool DeviceInformationPairing.TryRegisterForAllInboundPairingRequests(DevicePairingKinds pairingKindsSupported) is not implemented in Uno.");

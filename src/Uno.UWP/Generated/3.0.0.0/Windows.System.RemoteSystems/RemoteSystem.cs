@@ -97,6 +97,16 @@ namespace Windows.System.RemoteSystems
 			}
 		}
 		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  global::System.Collections.Generic.IReadOnlyList<global::Windows.System.RemoteSystems.RemoteSystemApp> Apps
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member IReadOnlyList<RemoteSystemApp> RemoteSystem.Apps is not implemented in Uno.");
+			}
+		}
+		#endif
 		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystem.DisplayName.get
 		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystem.Id.get
 		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystem.Kind.get
@@ -113,6 +123,7 @@ namespace Windows.System.RemoteSystems
 		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystem.ManufacturerDisplayName.get
 		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystem.ModelDisplayName.get
 		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystem.Platform.get
+		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystem.Apps.get
 		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static bool IsAuthorizationKindEnabled( global::Windows.System.RemoteSystems.RemoteSystemAuthorizationKind kind)

@@ -17,6 +17,9 @@ namespace Windows.Graphics.Display.Core
 		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		Eotf2084,
 		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		DolbyVisionLowLatency,
+		#endif
 	}
 	#endif
 }

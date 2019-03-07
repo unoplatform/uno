@@ -79,20 +79,6 @@ namespace Windows.UI.Composition
 		#endif
 		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
-		public  global::System.Numerics.Vector2 AnchorPoint
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member Vector2 CompositionSurfaceBrush.AnchorPoint is not implemented in Uno.");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.CompositionSurfaceBrush", "Vector2 CompositionSurfaceBrush.AnchorPoint");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
 		public  global::System.Numerics.Matrix3x2 TransformMatrix
 		{
 			get
@@ -172,6 +158,20 @@ namespace Windows.UI.Composition
 			set
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.CompositionSurfaceBrush", "Vector2 CompositionSurfaceBrush.CenterPoint");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  global::System.Numerics.Vector2 AnchorPoint
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member Vector2 CompositionSurfaceBrush.AnchorPoint is not implemented in Uno.");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.CompositionSurfaceBrush", "Vector2 CompositionSurfaceBrush.AnchorPoint");
 			}
 		}
 		#endif

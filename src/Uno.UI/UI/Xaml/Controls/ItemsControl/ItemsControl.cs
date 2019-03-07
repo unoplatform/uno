@@ -133,7 +133,7 @@ namespace Windows.UI.Xaml.Controls
 		/// <summary>
 		/// True if ItemsControl should manage the children of ItemsPanel, false if this is handled by an inheriting class.
 		/// </summary>
-		private bool ShouldItemsControlManageChildren { get { return ItemsPanelRoot == InternalItemsPanelRoot; } }
+		private protected virtual bool ShouldItemsControlManageChildren { get { return ItemsPanelRoot == InternalItemsPanelRoot; } }
 
 		#region ItemsPanel DependencyProperty
 
@@ -596,7 +596,9 @@ namespace Windows.UI.Xaml.Controls
 
 		protected virtual void OnItemsSourceChanged(DependencyPropertyChangedEventArgs e)
 		{
-			Items?.Clear();
+			// Following line is commented out, since updating Items will trigger a call to SetNeedsUpdateItems() and causes unexpected results
+			// There is no effect to comment out this line, as 1) there is no sync up between Items and ItemsSource and 2) GetItems() will give precedence to ItemsSource
+			// Items?.Clear();
 
 			IsGrouping = (e.NewValue as ICollectionView)?.CollectionGroups != null;
 			SetNeedsUpdateItems();
@@ -708,6 +710,7 @@ namespace Windows.UI.Xaml.Controls
 						)
 							.DisposeWith(disposables);
 						bindableGroup.PropertyChanged += onPropertyChanged;
+						OnGroupPropertyChanged(group, insideLoop);
 
 						void onPropertyChanged(object sender, PropertyChangedEventArgs e)
 						{
@@ -841,16 +844,18 @@ namespace Windows.UI.Xaml.Controls
 			RequestLayoutPartial();
 		}
 
-		public void UpdateItemsIfNeeded()
+		public bool UpdateItemsIfNeeded()
 		{
 			if (_needsUpdateItems)
 			{
 				_needsUpdateItems = false;
-				UpdateItems();
+				return UpdateItems();
 			}
+
+			return false;
 		}
 
-		protected virtual void UpdateItems()
+		protected virtual bool UpdateItems()
 		{
 			if (ItemsPanelRoot != null && ShouldItemsControlManageChildren)
 			{
@@ -875,7 +880,11 @@ namespace Windows.UI.Xaml.Controls
 						CleanUpContainer(removedObject);
 					}
 				}
+
+				return results.HasChanged();
 			}
+
+			return false;
 		}
 
 		protected virtual void ClearContainerForItemOverride(DependencyObject element, object item) { }
@@ -1145,13 +1154,16 @@ namespace Windows.UI.Xaml.Controls
 		{
 			if (!IsGrouping)
 			{
-				return GetItems()?.ElementAtOrDefault(indexPath.Row);
+				return GetItemFromIndex(indexPath.Row);
 			}
 
 			return GetGroupAtDisplaySection(indexPath.Section)?.GroupItems?[indexPath.Row];
 		}
 
-		private object GetItemFromIndex(int index)
+		/// <summary>
+		/// Return the item in the source collection at a given item index.
+		/// </summary>
+		internal object GetItemFromIndex(int index)
 		{
 			var items = GetItems();
 			if (items is IList<object> list)
@@ -1203,6 +1215,11 @@ namespace Windows.UI.Xaml.Controls
 				_itemsPresenter = itemsPresenter;
 				_itemsPresenter?.SetItemsPanel(InternalItemsPanelRoot);
 			}
+		}
+
+		internal DataTemplate ResolveItemTemplate(object item)
+		{
+			return DataTemplateHelper.ResolveTemplate(ItemTemplate, ItemTemplateSelector, item, this);
 		}
 	}
 }

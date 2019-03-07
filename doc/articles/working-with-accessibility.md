@@ -37,6 +37,16 @@ FeatureConfiguration.AutomationPeer.UseSimpleAccessibility = true;
 
 We highly recommend using this mode, as iOS still won't let you focus nested accessible elements even if you don't (see known issues).
 
+##Disabling accessibility text scaling
+
+You have the option to disable accessibility text scaling of iOS and Android devices but Apple [recommends to keep text sizes dynamic](https://developer.apple.com/videos/play/wwdc2017/245) 
+
+Here's how to disable it
+```csharp
+// App's constructor (App.xaml.cs) 
+Uno.UI.FeatureConfiguration.Font.IgnoreTextScaleFactor= true; 
+```
+
 ## Known issues
 
 - `Hyperlink` in `TextBlock` is not supported.

@@ -77,7 +77,7 @@ namespace Windows.UI
 			byte a, r, b, g;
 			a = r = g = b = new byte();
 
-			colorCode = colorCode.TrimStart('#');
+			colorCode = colorCode.TrimStart(new char[] { '#' });
 
 			if (colorCode.Length == 3)
 			{

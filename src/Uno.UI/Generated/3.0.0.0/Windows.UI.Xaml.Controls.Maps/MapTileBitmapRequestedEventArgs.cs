@@ -49,6 +49,16 @@ namespace Windows.UI.Xaml.Controls.Maps
 		#endif
 		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
+		public  int FrameIndex
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member int MapTileBitmapRequestedEventArgs.FrameIndex is not implemented in Uno.");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
 		public MapTileBitmapRequestedEventArgs() 
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.Maps.MapTileBitmapRequestedEventArgs", "MapTileBitmapRequestedEventArgs.MapTileBitmapRequestedEventArgs()");
@@ -59,5 +69,6 @@ namespace Windows.UI.Xaml.Controls.Maps
 		// Forced skipping of method Windows.UI.Xaml.Controls.Maps.MapTileBitmapRequestedEventArgs.Y.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.Maps.MapTileBitmapRequestedEventArgs.ZoomLevel.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.Maps.MapTileBitmapRequestedEventArgs.Request.get
+		// Forced skipping of method Windows.UI.Xaml.Controls.Maps.MapTileBitmapRequestedEventArgs.FrameIndex.get
 	}
 }

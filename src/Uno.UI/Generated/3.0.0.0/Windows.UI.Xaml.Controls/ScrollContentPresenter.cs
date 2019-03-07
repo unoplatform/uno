@@ -109,6 +109,50 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  bool SizesContentToTemplatedParent
+		{
+			get
+			{
+				return (bool)this.GetValue(SizesContentToTemplatedParentProperty);
+			}
+			set
+			{
+				this.SetValue(SizesContentToTemplatedParentProperty, value);
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  bool CanContentRenderOutsideBounds
+		{
+			get
+			{
+				return (bool)this.GetValue(CanContentRenderOutsideBoundsProperty);
+			}
+			set
+			{
+				this.SetValue(CanContentRenderOutsideBoundsProperty, value);
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public static global::Windows.UI.Xaml.DependencyProperty CanContentRenderOutsideBoundsProperty { get; } = 
+		Windows.UI.Xaml.DependencyProperty.Register(
+			"CanContentRenderOutsideBounds", typeof(bool), 
+			typeof(global::Windows.UI.Xaml.Controls.ScrollContentPresenter), 
+			new FrameworkPropertyMetadata(default(bool)));
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public static global::Windows.UI.Xaml.DependencyProperty SizesContentToTemplatedParentProperty { get; } = 
+		Windows.UI.Xaml.DependencyProperty.Register(
+			"SizesContentToTemplatedParent", typeof(bool), 
+			typeof(global::Windows.UI.Xaml.Controls.ScrollContentPresenter), 
+			new FrameworkPropertyMetadata(default(bool)));
+		#endif
 		// Skipping already declared method Windows.UI.Xaml.Controls.ScrollContentPresenter.ScrollContentPresenter()
 		// Forced skipping of method Windows.UI.Xaml.Controls.ScrollContentPresenter.ScrollContentPresenter()
 		// Forced skipping of method Windows.UI.Xaml.Controls.ScrollContentPresenter.CanVerticallyScroll.get
@@ -228,5 +272,11 @@ namespace Windows.UI.Xaml.Controls
 			throw new global::System.NotImplementedException("The member Rect ScrollContentPresenter.MakeVisible(UIElement visual, Rect rectangle) is not implemented in Uno.");
 		}
 		#endif
+		// Forced skipping of method Windows.UI.Xaml.Controls.ScrollContentPresenter.CanContentRenderOutsideBounds.get
+		// Forced skipping of method Windows.UI.Xaml.Controls.ScrollContentPresenter.CanContentRenderOutsideBounds.set
+		// Forced skipping of method Windows.UI.Xaml.Controls.ScrollContentPresenter.SizesContentToTemplatedParent.get
+		// Forced skipping of method Windows.UI.Xaml.Controls.ScrollContentPresenter.SizesContentToTemplatedParent.set
+		// Forced skipping of method Windows.UI.Xaml.Controls.ScrollContentPresenter.CanContentRenderOutsideBoundsProperty.get
+		// Forced skipping of method Windows.UI.Xaml.Controls.ScrollContentPresenter.SizesContentToTemplatedParentProperty.get
 	}
 }

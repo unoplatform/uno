@@ -57,6 +57,16 @@ namespace Windows.ApplicationModel.Store.Preview.InstallControl
 		#endif
 		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
+		public  bool CanInstallForAllUsers
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member bool AppInstallManager.CanInstallForAllUsers is not implemented in Uno.");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
 		public AppInstallManager() 
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallManager", "AppInstallManager.AppInstallManager()");
@@ -332,6 +342,7 @@ namespace Windows.ApplicationModel.Store.Preview.InstallControl
 			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> AppInstallManager.GetIsPackageIdentityAllowedToInstallForUserAsync(User user, string correlationVector, string packageIdentityName, string publisherCertificateName) is not implemented in Uno.");
 		}
 		#endif
+		// Forced skipping of method Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallManager.CanInstallForAllUsers.get
 		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallManager, global::Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallManagerItemEventArgs> ItemCompleted

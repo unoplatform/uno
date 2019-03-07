@@ -263,11 +263,12 @@ namespace Windows.UI.Xaml
 						t.Template = Funcs.Create(() =>
 							{
 								var nativeToggleButton =
-									new BindableSwitch()
+									new BindableSwitchCompat()
 									.Binding("Checked", new TemplateBinding("IsOn") { Mode = BindingMode.TwoWay })
 									.Binding("Enabled", new Data.TemplateBinding("IsEnabled"))
+									.Binding("Text", new Data.TemplateBinding("Header"))
 									;
-
+							
 								return nativeToggleButton;
 							}
 						)

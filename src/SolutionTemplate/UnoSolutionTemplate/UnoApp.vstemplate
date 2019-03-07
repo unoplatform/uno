@@ -13,14 +13,15 @@
 	<CreateInPlace>true</CreateInPlace>
 	<Icon>__TemplateIcon.png</Icon>
 	<PreviewImage>__PreviewImage.png</PreviewImage>
+	<NumberOfParentCategoriesToRollUp>2</NumberOfParentCategoriesToRollUp>
   </TemplateData>
   <TemplateContent>
 	<ProjectCollection>
-	  <ProjectTemplateLink ProjectName="$projectname$.Shared" CopyParameters="true">UnoQuickStart.Shared\Shared.vstemplate</ProjectTemplateLink>
-	  <ProjectTemplateLink ProjectName="$projectname$.Droid" CopyParameters="true">UnoQuickStart.Droid\Android.vstemplate</ProjectTemplateLink>
-	  <ProjectTemplateLink ProjectName="$projectname$.iOS" CopyParameters="true">UnoQuickStart.iOS\iOS.vstemplate</ProjectTemplateLink>
-	  <ProjectTemplateLink ProjectName="$projectname$.UWP" CopyParameters="true">UnoQuickStart.UWP\UWP.vstemplate</ProjectTemplateLink>
-	  <ProjectTemplateLink ProjectName="$projectname$.Wasm" CopyParameters="true">UnoQuickStart.Wasm\Wasm.vstemplate</ProjectTemplateLink>
+	  <ProjectTemplateLink ProjectName="$projectname$.Shared" CopyParameters="true">Shared\Shared.vstemplate</ProjectTemplateLink>
+	  <ProjectTemplateLink ProjectName="$projectname$.Droid" CopyParameters="true">Droid\Android.vstemplate</ProjectTemplateLink>
+	  <ProjectTemplateLink ProjectName="$projectname$.iOS" CopyParameters="true">iOS\iOS.vstemplate</ProjectTemplateLink>
+	  <ProjectTemplateLink ProjectName="$projectname$.UWP" CopyParameters="true">UWP\UWP.vstemplate</ProjectTemplateLink>
+	  <ProjectTemplateLink ProjectName="$projectname$.Wasm" CopyParameters="true">Wasm\Wasm.vstemplate</ProjectTemplateLink>
 	</ProjectCollection>
   </TemplateContent>
   <WizardExtension>

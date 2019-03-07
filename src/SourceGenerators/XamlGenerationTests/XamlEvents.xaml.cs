@@ -14,5 +14,10 @@ namespace XamlGenerationTests.Shared
 		{
 
 		}
+
+		private void OnLoadUnload(object sender, object e)
+		{
+
+		}
 	}
 }

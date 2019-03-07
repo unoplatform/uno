@@ -10,6 +10,7 @@ namespace Windows.UI.Xaml.Controls
 		// Skipping already declared property ItemsSource
 		// Skipping already declared property ItemsPanel
 		// Skipping already declared property ItemTemplateSelector
+		// Skipping already declared property ItemTemplate
 		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.UI.Xaml.Media.Animation.TransitionCollection ItemContainerTransitions
@@ -24,8 +25,8 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 		#endif
+		// Skipping already declared property ItemContainerStyleSelector
 		// Skipping already declared property ItemContainerStyle
-		// Skipping already declared property ItemTemplate
 		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.UI.Xaml.Controls.GroupStyleSelector GroupStyleSelector
@@ -40,8 +41,9 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 		#endif
-		// Skipping already declared property ItemContainerStyleSelector
 		// Skipping already declared property DisplayMemberPath
+		// Skipping already declared property GroupStyle
+		// Skipping already declared property IsGrouping
 		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.UI.Xaml.Controls.ItemContainerGenerator ItemContainerGenerator
@@ -52,9 +54,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 		#endif
-		// Skipping already declared property GroupStyle
 		// Skipping already declared property Items
-		// Skipping already declared property IsGrouping
 		// Skipping already declared property ItemsPanelRoot
 		// Skipping already declared property DisplayMemberPathProperty
 		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
@@ -104,6 +104,14 @@ namespace Windows.UI.Xaml.Controls
 		// Forced skipping of method Windows.UI.Xaml.Controls.ItemsControl.GroupStyleSelector.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.ItemsControl.GroupStyleSelector.set
 		// Forced skipping of method Windows.UI.Xaml.Controls.ItemsControl.IsGrouping.get
+		// Forced skipping of method Windows.UI.Xaml.Controls.ItemsControl.ItemsPanelRoot.get
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  global::Windows.UI.Xaml.DependencyObject GroupHeaderContainerFromItemContainer( global::Windows.UI.Xaml.DependencyObject itemContainer)
+		{
+			throw new global::System.NotImplementedException("The member DependencyObject ItemsControl.GroupHeaderContainerFromItemContainer(DependencyObject itemContainer) is not implemented in Uno.");
+		}
+		#endif
 		// Skipping already declared method Windows.UI.Xaml.Controls.ItemsControl.IsItemItsOwnContainerOverride(object)
 		// Skipping already declared method Windows.UI.Xaml.Controls.ItemsControl.GetContainerForItemOverride()
 		// Skipping already declared method Windows.UI.Xaml.Controls.ItemsControl.ClearContainerForItemOverride(Windows.UI.Xaml.DependencyObject, object)
@@ -120,18 +128,10 @@ namespace Windows.UI.Xaml.Controls
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.ItemsControl", "void ItemsControl.OnGroupStyleSelectorChanged(GroupStyleSelector oldGroupStyleSelector, GroupStyleSelector newGroupStyleSelector)");
 		}
 		#endif
-		// Forced skipping of method Windows.UI.Xaml.Controls.ItemsControl.ItemsPanelRoot.get
 		// Skipping already declared method Windows.UI.Xaml.Controls.ItemsControl.ItemFromContainer(Windows.UI.Xaml.DependencyObject)
 		// Skipping already declared method Windows.UI.Xaml.Controls.ItemsControl.ContainerFromItem(object)
 		// Skipping already declared method Windows.UI.Xaml.Controls.ItemsControl.IndexFromContainer(Windows.UI.Xaml.DependencyObject)
 		// Skipping already declared method Windows.UI.Xaml.Controls.ItemsControl.ContainerFromIndex(int)
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  global::Windows.UI.Xaml.DependencyObject GroupHeaderContainerFromItemContainer( global::Windows.UI.Xaml.DependencyObject itemContainer)
-		{
-			throw new global::System.NotImplementedException("The member DependencyObject ItemsControl.GroupHeaderContainerFromItemContainer(DependencyObject itemContainer) is not implemented in Uno.");
-		}
-		#endif
 		// Forced skipping of method Windows.UI.Xaml.Controls.ItemsControl.ItemsSourceProperty.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.ItemsControl.ItemTemplateProperty.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.ItemsControl.ItemTemplateSelectorProperty.get

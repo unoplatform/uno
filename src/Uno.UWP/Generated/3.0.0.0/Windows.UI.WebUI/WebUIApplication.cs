@@ -7,6 +7,10 @@ namespace Windows.UI.WebUI
 	#endif
 	public  partial class WebUIApplication 
 	{
+		// Forced skipping of method Windows.UI.WebUI.WebUIApplication.NewWebUIViewCreated.add
+		// Forced skipping of method Windows.UI.WebUI.WebUIApplication.NewWebUIViewCreated.remove
+		// Forced skipping of method Windows.UI.WebUI.WebUIApplication.BackgroundActivated.add
+		// Forced skipping of method Windows.UI.WebUI.WebUIApplication.BackgroundActivated.remove
 		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.Core.AppRestartFailureReason> RequestRestartAsync( string launchArguments)
@@ -40,6 +44,38 @@ namespace Windows.UI.WebUI
 		// Forced skipping of method Windows.UI.WebUI.WebUIApplication.Resuming.remove
 		// Forced skipping of method Windows.UI.WebUI.WebUIApplication.Navigated.add
 		// Forced skipping of method Windows.UI.WebUI.WebUIApplication.Navigated.remove
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public static event global::Windows.UI.WebUI.BackgroundActivatedEventHandler BackgroundActivated
+		{
+			[global::Uno.NotImplemented]
+			add
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.WebUI.WebUIApplication", "event BackgroundActivatedEventHandler WebUIApplication.BackgroundActivated");
+			}
+			[global::Uno.NotImplemented]
+			remove
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.WebUI.WebUIApplication", "event BackgroundActivatedEventHandler WebUIApplication.BackgroundActivated");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public static event global::System.EventHandler<global::Windows.UI.WebUI.NewWebUIViewCreatedEventArgs> NewWebUIViewCreated
+		{
+			[global::Uno.NotImplemented]
+			add
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.WebUI.WebUIApplication", "event EventHandler<NewWebUIViewCreatedEventArgs> WebUIApplication.NewWebUIViewCreated");
+			}
+			[global::Uno.NotImplemented]
+			remove
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.WebUI.WebUIApplication", "event EventHandler<NewWebUIViewCreatedEventArgs> WebUIApplication.NewWebUIViewCreated");
+			}
+		}
+		#endif
 		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static event global::Windows.UI.WebUI.EnteredBackgroundEventHandler EnteredBackground
