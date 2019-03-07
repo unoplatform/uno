@@ -1,4 +1,13 @@
-﻿.uno-root-element {
+﻿html,
+body {
+  /**
+    Disable root scrolling (bouncing effect on touch devices)
+  */
+  position: fixed;
+  overflow: hidden;
+}
+
+.uno-root-element {
   top: 0;
   left: 0;
   right: 0;
