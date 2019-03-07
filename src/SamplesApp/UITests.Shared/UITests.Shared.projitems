@@ -9,6 +9,10 @@
     <Import_RootNamespace>UITests.Shared</Import_RootNamespace>
   </PropertyGroup>
   <ItemGroup>
+    <Page Include="$(MSBuildThisFileDirectory)Lottie\SampleLottieAnimation.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="$(MSBuildThisFileDirectory)Windows_ApplicationModel_Resources_ResourceLoader\ResourceLoader_Simple.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -1096,6 +1100,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="$(MSBuildThisFileDirectory)Helpers\ViewModelBase.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Lottie\SampleLottieAnimation.xaml.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Windows_ApplicationModel_Resources_ResourceLoader\ResourceLoader_Simple.xaml.cs">
       <DependentUpon>ResourceLoader_Simple.xaml</DependentUpon>
     </Compile>
@@ -1910,6 +1915,7 @@
     <Content Include="$(MSBuildThisFileDirectory)Assets\test_image_250_250.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\test_image_300_200.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\test_image_836_1252.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Lottie\4770-lady-and-dove.json" />
   </ItemGroup>
   <ItemGroup>
     <PRIResource Include="$(MSBuildThisFileDirectory)UITestsStrings\en-US\NamedResources.resw" />
@@ -1918,6 +1924,9 @@
   <ItemGroup>
     <Compile Update="C:\src\Uno2\src\SamplesApp\UITests.Shared\Windows_UI_Xaml_Controls\Slider\Slider_Transformed.xaml.cs">
       <DependentUpon>Slider_Transformed.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="C:\src\Uno\src\SamplesApp\UITests.Shared\Lottie\SampleLottieAnimation.xaml.cs">
+      <DependentUpon>SampleLottieAnimation.xaml</DependentUpon>
     </Compile>
     <Compile Update="C:\s\nv.github\uno-2\src\SamplesApp\UITests.Shared\Windows_UI_Xaml\UIElementTests\Arrange_Performance01.xaml.cs">
       <DependentUpon>Arrange_Performance01.xaml</DependentUpon>

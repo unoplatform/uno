@@ -5,4 +5,8 @@
     xmlns:local="using:SamplesApp"
     RequestedTheme="Light">
 
+	<Application.Resources>
+		<XamlControlsResources xmlns="using:Microsoft.UI.Xaml.Controls"/>
+	</Application.Resources>
+
 </Application>
