@@ -13,7 +13,7 @@
 	<ItemGroup>
 		<PackageReference Include="MSTest.TestFramework" Version="1.2.0" />
 		<PackageReference Include="Uno.SourceGenerationTasks">
-			<Version>1.29.0-beta.277</Version>
+			<Version>1.29.0</Version>
 			<NoWarn>NU1701</NoWarn>
 		</PackageReference>
 	</ItemGroup>

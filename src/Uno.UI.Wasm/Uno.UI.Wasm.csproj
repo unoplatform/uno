@@ -38,13 +38,13 @@
 
 	<ItemGroup>
     <PackageReference Include="Uno.Core">
-      <Version>1.26.0-beta.69</Version>
+      <Version>1.26.0</Version>
       <ExcludeAssets>Runtime</ExcludeAssets>
     </PackageReference>
 		<PackageReference Include="Microsoft.TypeScript.Compiler" Version="2.8.3" />
 		<PackageReference Include="Microsoft.TypeScript.MSBuild" Version="2.8.3" />
 		<PackageReference Include="Uno.SourceGenerationTasks">
-			<Version>1.29.0-beta.277</Version>
+			<Version>1.29.0</Version>
 		</PackageReference>
 	</ItemGroup>
 
