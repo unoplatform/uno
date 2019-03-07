@@ -24,6 +24,9 @@ namespace Uno.UWPSyncGenerator
 		private Compilation _iOSCompilation;
 		private Compilation _androidCompilation;
 		private Compilation _macCompilation;
+		private INamedTypeSymbol _iOSBaseSymbol;
+		private INamedTypeSymbol _androidBaseSymbol;
+		private INamedTypeSymbol _macOSBaseSymbol;
 		private Compilation _referenceCompilation;
 		private Compilation _net46Compilation;
 		private Compilation _wasmCompilation;
@@ -43,12 +46,18 @@ namespace Uno.UWPSyncGenerator
 			Directory.SetCurrentDirectory(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location));
 			InitializeRoslyn();
 
+			Console.WriteLine($"Generating for {baseName} {sourceAssembly}");
+
 			_referenceCompilation = LoadProject(@"..\..\..\..\Uno.UWPSyncGenerator.Reference\Uno.UWPSyncGenerator.Reference.csproj");
 			_iOSCompilation = LoadProject($@"{basePath}\{baseName}.csproj", "xamarinios10");
 			_androidCompilation = LoadProject($@"{basePath}\{baseName}.csproj", "MonoAndroid80");
 			_net46Compilation = LoadProject($@"{basePath}\{baseName}.csproj", "net46");
 			_wasmCompilation = LoadProject($@"{basePath}\{baseName}.csproj", "netstandard2.0");
 			_macCompilation = LoadProject($@"{basePath}\{baseName}.csproj", "xamarinmac20");
+
+			_iOSBaseSymbol = _iOSCompilation.GetTypeByMetadataName("UIKit.UIView");
+			_androidBaseSymbol = _androidCompilation.GetTypeByMetadataName("Android.Views.View");
+			_macOSBaseSymbol = _macCompilation.GetTypeByMetadataName("AppKit.NSView");
 
 			_voidSymbol = _referenceCompilation.GetTypeByMetadataName("System.Void");
 			_dependencyPropertySymbol = _referenceCompilation.GetTypeByMetadataName("Windows.UI.Xaml.DependencyProperty");
@@ -103,7 +112,7 @@ namespace Uno.UWPSyncGenerator
 
 			var process = System.Diagnostics.Process.Start(pi);
 			process.WaitForExit();
-			var installPath = process.StandardOutput.ReadToEnd().TrimEnd("\r\n");
+			var installPath = process.StandardOutput.ReadToEnd().Split('\r').First();
 
 			Environment.SetEnvironmentVariable("VSINSTALLDIR", installPath);
 
@@ -699,6 +708,11 @@ namespace Uno.UWPSyncGenerator
 		{
 			foreach (var eventMember in type.GetMembers().OfType<IEventSymbol>())
 			{
+				if(!IsNotUWPMapping(type, eventMember))
+				{
+					return;
+				}
+
 				var allMembers = GetAllMatchingEvents(types, eventMember);
 
 				if (allMembers.HasUndefined)
@@ -936,6 +950,27 @@ namespace Uno.UWPSyncGenerator
 		private static string GetParameterRefKind(IParameterSymbol p)
 			=> p.RefKind != RefKind.None ? p.RefKind.ToString().ToLowerInvariant() : "";
 
+		private bool IsNotUWPMapping(INamedTypeSymbol type, IEventSymbol eventMember)
+		{
+			foreach (var iface in type.Interfaces.SelectMany(GetAllInterfaces))
+			{
+				var uwpIface = GetUWPIFace(iface);
+
+				if (uwpIface != null)
+				{
+					if (
+							uwpIface == "Windows.UI.Xaml.Input.ICommand"
+							&& eventMember.Name == "CanExecuteChanged"
+						)
+					{
+						return false;
+					}
+				}
+			}
+
+			return true;
+		}
+
 		private bool IsNotUWPMapping(INamedTypeSymbol type, IMethodSymbol method)
 		{
 			foreach (var iface in type.Interfaces.SelectMany(GetAllInterfaces))
@@ -972,7 +1007,17 @@ namespace Uno.UWPSyncGenerator
 					{
 						var type2 = _referenceCompilation.GetTypeByMetadataName(uwpIface);
 
-						var t3 = type2.Construct(iface.TypeArguments.ToArray());
+						INamedTypeSymbol build()
+						{
+							if (iface.TypeArguments.Length != 0)
+							{
+								return type2.Construct(iface.TypeArguments.ToArray());
+							}
+
+							return type2;
+						}
+
+						var t3 = build();
 
 						var q = from sourceMethod in t3.GetMembers().OfType<IMethodSymbol>()
 								where sourceMethod.Name == method.Name
@@ -1295,22 +1340,27 @@ namespace Uno.UWPSyncGenerator
 			return typeName;
 		}
 
-		private IEnumerable<ISymbol> GetNonGeneratedMembers(ITypeSymbol iosType, string name)
+		private IEnumerable<ISymbol> GetNonGeneratedMembers(ITypeSymbol symbol, string name)
 		{
-			var current = iosType
+			var current = symbol
 				?.GetMembers(name)
 				.Where(m => m.Locations.None(l => l.SourceTree?.FilePath?.Contains("\\Generated\\") ?? false)) ?? new ISymbol[0];
 
-			foreach (var symbol in current)
+			foreach (var memberSymbol in current)
 			{
-				yield return symbol;
+				yield return memberSymbol;
 			}
 
-			if (iosType?.BaseType != null)
+			if (
+				symbol?.BaseType != null
+				&& symbol.BaseType != _iOSBaseSymbol
+				&& symbol.BaseType != _androidBaseSymbol
+				&& symbol.BaseType != _macOSBaseSymbol
+			)
 			{
-				foreach (var symbol in GetNonGeneratedMembers(iosType.BaseType, name))
+				foreach (var memberSymbol in GetNonGeneratedMembers(symbol.BaseType, name))
 				{
-					yield return symbol;
+					yield return memberSymbol;
 				}
 			}
 		}
@@ -1350,6 +1400,7 @@ namespace Uno.UWPSyncGenerator
 								// { "Configuration", "Debug" },
 								//{ "BuildingInsideVisualStudio", "true" },
 								{ "SkipUnoResourceGeneration", "true" }, // Required to avoid loading a non-existent task
+								{ "DocsGeneration", "true" }, // Detect that source generation is running
 								//{ "DesignTimeBuild", "true" },
 								//{ "UseHostCompilerIfAvailable", "false" },
 								//{ "UseSharedCompilation", "false" },

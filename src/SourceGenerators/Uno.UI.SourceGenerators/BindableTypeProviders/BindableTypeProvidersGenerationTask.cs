@@ -358,7 +358,7 @@ namespace Uno.UI.SourceGenerators.BindableTypeProviders
 				using (writer.BlockInvariant("internal static global::Uno.UI.DataBinding.IBindableType Build(global::Uno.UI.DataBinding.BindableType parent)"))
 				{
 					writer.AppendLineInvariant(
-						@"var bindableType = parent ?? new global::Uno.UI.DataBinding.BindableType({0}, typeof(global::{1}));",
+						@"var bindableType = parent ?? new global::Uno.UI.DataBinding.BindableType({0}, typeof({1}));",
 						flattenedProperties
 							.Where(p => !IsStringIndexer(p) && HasPublicGetter(p))
 							.Count()
@@ -370,7 +370,7 @@ namespace Uno.UI.SourceGenerators.BindableTypeProviders
 					{
 						var baseTypeMapped = _typeMap.UnoGetValueOrDefault(baseType);
 
-						writer.AppendLineInvariant(@"MetadataBuilder_{0:000}.Build(bindableType); // {1}", baseTypeMapped.Index, baseType.GetFullName());
+						writer.AppendLineInvariant(@"MetadataBuilder_{0:000}.Build(bindableType); // {1}", baseTypeMapped.Index, ExpandType(baseType));
 					}
 
 					var ctor = ownerType.GetMethods().FirstOrDefault(m => m.MethodKind == MethodKind.Constructor && !m.Parameters.Any() && m.IsLocallyPublic(_currentModule));
@@ -469,7 +469,7 @@ namespace Uno.UI.SourceGenerators.BindableTypeProviders
 							var getter = $"{XamlConstants.Types.DependencyObjectExtensions}.GetValue(instance, {ownerTypeName}.{propertyName}Property, precedence)";
 							var setter = $"{XamlConstants.Types.DependencyObjectExtensions}.SetValue(instance, {ownerTypeName}.{propertyName}Property, value, precedence)";
 
-							var propertyType = SanitizeTypeName(getMethod.ReturnType.ToString());
+							var propertyType = GetGlobalQualifier(getMethod.ReturnType) + SanitizeTypeName(getMethod.ReturnType.ToString());
 
 							writer.AppendLineInvariant($@"bindableType.AddProperty(""{propertyName}"", typeof({propertyType}),  Get{propertyName}, Set{propertyName});");
 
@@ -495,7 +495,7 @@ namespace Uno.UI.SourceGenerators.BindableTypeProviders
 			}
 			else
 			{
-				return ownerType.GetFullName();
+				return GetGlobalQualifier(ownerType) + ownerType.GetFullName();
 			}
 		}
 

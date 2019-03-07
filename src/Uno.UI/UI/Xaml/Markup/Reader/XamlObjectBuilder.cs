@@ -145,7 +145,7 @@ namespace Windows.UI.Xaml.Markup.Reader
 							// if there is no ":" this means that the type is using the default
 							// namespace, so try to resolve the best way we can.
 
-							var parts = match.Value.Trim(new[] { '(', ')' }).Split('.');
+							var parts = match.Value.Trim(new[] { '(', ')' }).Split(new[] { '.' });
 
 							if (parts.Length == 2)
 							{

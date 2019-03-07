@@ -41,9 +41,32 @@ namespace Windows.Web.UI
 			}
 		}
 		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  global::Windows.Web.UI.IWebViewControl NewWindow
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member IWebViewControl WebViewControlNewWindowRequestedEventArgs.NewWindow is not implemented in Uno.");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.UI.WebViewControlNewWindowRequestedEventArgs", "IWebViewControl WebViewControlNewWindowRequestedEventArgs.NewWindow");
+			}
+		}
+		#endif
 		// Forced skipping of method Windows.Web.UI.WebViewControlNewWindowRequestedEventArgs.Uri.get
 		// Forced skipping of method Windows.Web.UI.WebViewControlNewWindowRequestedEventArgs.Referrer.get
 		// Forced skipping of method Windows.Web.UI.WebViewControlNewWindowRequestedEventArgs.Handled.get
 		// Forced skipping of method Windows.Web.UI.WebViewControlNewWindowRequestedEventArgs.Handled.set
+		// Forced skipping of method Windows.Web.UI.WebViewControlNewWindowRequestedEventArgs.NewWindow.get
+		// Forced skipping of method Windows.Web.UI.WebViewControlNewWindowRequestedEventArgs.NewWindow.set
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  global::Windows.Foundation.Deferral GetDeferral()
+		{
+			throw new global::System.NotImplementedException("The member Deferral WebViewControlNewWindowRequestedEventArgs.GetDeferral() is not implemented in Uno.");
+		}
+		#endif
 	}
 }

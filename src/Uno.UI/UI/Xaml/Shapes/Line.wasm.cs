@@ -40,10 +40,5 @@ namespace Windows.UI.Xaml.Shapes
 		{
 			_line.SetAttribute("y2", newValue.ToStringInvariant());
 		}
-
-		protected override Size MeasureOverride(Size availableSize)
-		{
-			return new Size(Math.Abs(X2 - X1), Math.Abs(Y2 - Y1));
-		}
 	}
 }

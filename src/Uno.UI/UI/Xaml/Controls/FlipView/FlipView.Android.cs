@@ -13,7 +13,7 @@ namespace Windows.UI.Xaml.Controls
 	{
 		private NativePagedView PagedView { get { return InternalItemsPanelRoot as NativePagedView; } }
 
-		protected override void UpdateItems()
+		protected override bool UpdateItems()
 		{
 			if (PagedView != null && PagedView.Adapter == null)
 			{
@@ -26,24 +26,28 @@ namespace Windows.UI.Xaml.Controls
 				PagedView.CurrentItem = SelectedIndex;
 			}
 			PagedView?.Adapter.NotifyDataSetChanged();
-			base.UpdateItems();
+			var updatedItems = base.UpdateItems();
 			RequestLayout();
+
+			return updatedItems;
 		}
 
 		partial void OnSelectedIndexChangedPartial(int oldValue, int newValue, bool animateChange)
 		{
-			var pager = PagedView;
-			if (pager == null)
+			if (PagedView == null || PagedView.CurrentItem == newValue)
 			{
 				return;
 			}
-			if (newValue != pager.CurrentItem)
-			{
-				//Update PagedView state if necessary, to avoid an IllegalStateException
-				UpdateItemsIfNeeded();
 
-				pager.SetCurrentItem(newValue, smoothScroll: animateChange);
+			//Update PagedView state if necessary, to avoid an IllegalStateException
+			var collectionHasChanged = UpdateItemsIfNeeded();
+
+			if (collectionHasChanged)
+			{
+				PagedView.Adapter?.NotifyDataSetChanged();
 			}
+
+			PagedView.SetCurrentItem(newValue, smoothScroll: animateChange);
 		}
 
 		private class FlipViewPageChangeListener : Android.Support.V4.View.ViewPager.SimpleOnPageChangeListener

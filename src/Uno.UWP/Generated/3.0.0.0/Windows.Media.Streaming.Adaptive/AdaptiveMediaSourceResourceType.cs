@@ -23,6 +23,9 @@ namespace Windows.Media.Streaming.Adaptive
 		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		InitializationVector,
 		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		MediaSegmentIndex,
+		#endif
 	}
 	#endif
 }

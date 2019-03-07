@@ -1,11 +1,12 @@
 ﻿extern alias __ms;
 extern alias __uno;
 
+using System;
 using System.Collections.Generic;
 
 namespace Uno.UI.SourceGenerators.XamlGenerator.XamlRedirection
 {
-	internal class XamlType
+	internal class XamlType : IEquatable<XamlType>
 	{
 		private string unknownTypeNamespace;
 		private string unknownTypeName;
@@ -38,5 +39,22 @@ namespace Uno.UI.SourceGenerators.XamlGenerator.XamlRedirection
 			=> _isUnknown ? unknownTypeNamespace : XamlConfig.IsUnoXaml ? _unoDeclaringType.PreferredXamlNamespace : _msDeclaringType.PreferredXamlNamespace;
 
 		public override string ToString() => XamlConfig.IsUnoXaml ? _unoDeclaringType.ToString() : _msDeclaringType.ToString();
+
+		public bool Equals(XamlType other) => _isUnknown
+			? false
+			: XamlConfig.IsUnoXaml
+				? _unoDeclaringType.Equals(other?._unoDeclaringType)
+				: _msDeclaringType.Equals(other?._msDeclaringType);
+
+		public override bool Equals(object other)
+			=> other is XamlType otherType ? Equals(otherType) : false;
+
+		public override int GetHashCode()
+			=> _isUnknown
+			? unknownTypeName.GetHashCode()
+			: XamlConfig.IsUnoXaml
+				? _unoDeclaringType.GetHashCode()
+				: _msDeclaringType.GetHashCode();
+
 	}
 }

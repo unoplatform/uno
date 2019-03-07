@@ -13,28 +13,31 @@ namespace Windows.UI.Xaml.Media
 	/// </summary>
 	public partial class ScaleTransform
 	{
-
-
 		partial void SetScaleX(DependencyPropertyChangedEventArgs args)
 		{
+			Update();
+		}
+
+		partial void SetScaleY(DependencyPropertyChangedEventArgs args)
+		{
+			Update();
+		}
+
+		protected override void Update()
+		{
+			base.Update();
+
 			if (View != null)
 			{
 				View.PivotX = (float)(Origin.X * View.Width) + ViewHelper.LogicalToPhysicalPixels(CenterX);
 				View.PivotY = (float)(Origin.Y * View.Height) + ViewHelper.LogicalToPhysicalPixels(CenterY);
 				View.ScaleX = (float)ScaleX;
-			}
-		}
-
-		partial void SetScaleY(DependencyPropertyChangedEventArgs args)
-		{
-			if (View != null)
-			{
 				View.ScaleY = (float)ScaleY;
 			}
 		}
 
 		/// <summary>
-		/// Apply Transform whem attached
+		/// Apply Transform when attached
 		/// </summary>
 		protected override void OnAttachedToView()
 		{
@@ -62,8 +65,6 @@ namespace Windows.UI.Xaml.Media
 		}
 
 	}
-
-
 }
 
 

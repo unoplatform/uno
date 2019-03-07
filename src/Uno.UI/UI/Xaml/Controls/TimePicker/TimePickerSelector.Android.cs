@@ -1,73 +1,87 @@
-﻿using System;
-using System.Collections.Generic;
-using Uno.Disposables;
-using System.Text;
-using Android.Widget;
-using Uno.UI;
+﻿#if XAMARIN_ANDROID
+
+using System;
 using Uno.Extensions;
-using Windows.Globalization;
 using Uno.Logging;
+using Uno.UI;
 using Uno.UI.Extensions;
+using Windows.Globalization;
+using Windows.UI.Xaml.Data;
 
 namespace Windows.UI.Xaml.Controls
 {
-    public partial class TimePickerSelector : ContentControl
-    {
-        private Android.Widget.TimePicker _nativePicker;
+	public partial class TimePickerSelector : ContentControl
+	{
+		private Android.Widget.TimePicker _picker;
+		private TimeSpan _initialTime;
 
-        protected override void OnLoaded()
-        {
-            base.OnLoaded();
+		protected override void OnLoaded()
+		{
+			base.OnLoaded();
 
-            _nativePicker = this.FindFirstChild<Android.Widget.TimePicker>();
+			_picker = this.FindFirstChild<Android.Widget.TimePicker>();
 
-            if (_nativePicker != null)
-            {
-                //By settings DescendantFocusability to BlockDescendants it disables the possibility to use the keyboard to modify time which was causing issues in 4.4
-                _nativePicker.DescendantFocusability = Android.Views.DescendantFocusability.BlockDescendants;
-                SetTimeOnNativePicker(Time);
-                OnClockIdentifierChangedPartialNative(null, ClockIdentifier);
-            }
-            else if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
-            {
-                this.Log().Debug($"No native TimePicker was found in the visual hierarchy.");
-            }
-        }
+			if (_picker != null)
+			{
+				//By settings DescendantFocusability to BlockDescendnts it disables the possibility to use the keyboard to modify time which was causing issues in 4.4
+				_picker.DescendantFocusability = Android.Views.DescendantFocusability.BlockDescendants;
 
-        protected override void OnUnloaded()
-        {
-            base.OnUnloaded();
-        }
+				this.Binding(nameof(Time), nameof(Time), Content, BindingMode.TwoWay);
+				this.Binding(nameof(MinuteIncrement), nameof(MinuteIncrement), Content, BindingMode.TwoWay);
+				this.Binding(nameof(ClockIdentifier), nameof(ClockIdentifier), Content, BindingMode.TwoWay);
+			}
+			else if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+			{
+				this.Log().Debug($"No native TimePicker was found in the visual hierarchy.");
+			}
+		}
 
-        partial void OnTimeChangedPartialNative(TimeSpan oldTime, TimeSpan newTime)
-        {
-            SetTimeOnNativePicker(newTime);
-        }
+		public void Initialize()
+		{
+			SaveInitialTime();
+			SetPickerTime(Time);
+			SetPickerClockIdentifier(ClockIdentifier);
+		}
 
-        private void SetTimeOnNativePicker(TimeSpan newTime)
-        {
-            if (_nativePicker != null)
-            {
-                _nativePicker.SetHourCompat(newTime.Hours);
-                _nativePicker.SetMinuteCompat(newTime.Minutes);
-            }
-        }
+		private void SaveInitialTime() => _initialTime = Time;
 
-        internal void UpdateTime()
-        {
-            if (_nativePicker != null)
-            {
-                var newTime = new TimeSpan(_nativePicker.GetHourCompat(), _nativePicker.GetMinuteCompat(), seconds: 0);
-                Time = newTime;
-            }
-        }
+		internal void SaveTime()
+		{
+			if (_picker != null)
+			{
+				Time = new TimeSpan(_picker.GetHourCompat(), _picker.GetMinuteCompat(), seconds: 0);
+				SaveInitialTime();
+			}
+		}
 
-        partial void OnClockIdentifierChangedPartialNative(string oldClockIdentifier, string newClockIdentifier)
-        {
-            if (_nativePicker != null)
-            {
-                _nativePicker.SetIs24HourView(Java.Lang.Boolean.ValueOf(newClockIdentifier != ClockIdentifiers.TwelveHour));
-            }
-        }
+		private void SetPickerClockIdentifier(string clockIdentifier)
+		{
+			if (_picker != null)
+			{
+				_picker.SetIs24HourView(Java.Lang.Boolean.ValueOf(clockIdentifier != ClockIdentifiers.TwelveHour));
+			}
+		}
+
+		private void SetPickerTime(TimeSpan newTime)
+		{
+			if (_picker != null)
+			{
+				var time = newTime.RoundToNextMinuteInterval(MinuteIncrement);
+
+				_picker.SetHourCompat(time.Hours);
+				_picker.SetMinuteCompat(time.Minutes);
+			}
+		}
+
+		partial void OnClockIdentifierChangedPartialNative(string oldClockIdentifier, string newClockIdentifier)
+		{
+			SetPickerClockIdentifier(newClockIdentifier);
+		}
+
+		partial void OnTimeChangedPartialNative(TimeSpan oldTime, TimeSpan newTime)
+		{
+			SetPickerTime(newTime);
+		}
 	}
 }
+#endif

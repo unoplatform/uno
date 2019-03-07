@@ -14,6 +14,9 @@ namespace Windows.Networking.BackgroundTransfer
 		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		High,
 		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		Low,
+		#endif
 	}
 	#endif
 }

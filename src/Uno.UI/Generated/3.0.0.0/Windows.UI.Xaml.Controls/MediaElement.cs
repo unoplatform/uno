@@ -9,127 +9,15 @@ namespace Windows.UI.Xaml.Controls
 	{
 		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
-		public  bool AutoPlay
+		public  double Volume
 		{
 			get
 			{
-				return (bool)this.GetValue(AutoPlayProperty);
+				return (double)this.GetValue(VolumeProperty);
 			}
 			set
 			{
-				this.SetValue(AutoPlayProperty, value);
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  int? AudioStreamIndex
-		{
-			get
-			{
-				return (int?)this.GetValue(AudioStreamIndexProperty);
-			}
-			set
-			{
-				this.SetValue(AudioStreamIndexProperty, value);
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  bool IsMuted
-		{
-			get
-			{
-				return (bool)this.GetValue(IsMutedProperty);
-			}
-			set
-			{
-				this.SetValue(IsMutedProperty, value);
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  double DefaultPlaybackRate
-		{
-			get
-			{
-				return (double)this.GetValue(DefaultPlaybackRateProperty);
-			}
-			set
-			{
-				this.SetValue(DefaultPlaybackRateProperty, value);
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  global::Windows.UI.Xaml.Media.AudioDeviceType AudioDeviceType
-		{
-			get
-			{
-				return (global::Windows.UI.Xaml.Media.AudioDeviceType)this.GetValue(AudioDeviceTypeProperty);
-			}
-			set
-			{
-				this.SetValue(AudioDeviceTypeProperty, value);
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  global::Windows.UI.Xaml.Media.AudioCategory AudioCategory
-		{
-			get
-			{
-				return (global::Windows.UI.Xaml.Media.AudioCategory)this.GetValue(AudioCategoryProperty);
-			}
-			set
-			{
-				this.SetValue(AudioCategoryProperty, value);
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  global::Windows.UI.Xaml.Media.Stereo3DVideoPackingMode Stereo3DVideoPackingMode
-		{
-			get
-			{
-				return (global::Windows.UI.Xaml.Media.Stereo3DVideoPackingMode)this.GetValue(Stereo3DVideoPackingModeProperty);
-			}
-			set
-			{
-				this.SetValue(Stereo3DVideoPackingModeProperty, value);
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  double Balance
-		{
-			get
-			{
-				return (double)this.GetValue(BalanceProperty);
-			}
-			set
-			{
-				this.SetValue(BalanceProperty, value);
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  bool RealTimePlayback
-		{
-			get
-			{
-				return (bool)this.GetValue(RealTimePlaybackProperty);
-			}
-			set
-			{
-				this.SetValue(RealTimePlaybackProperty, value);
+				this.SetValue(VolumeProperty, value);
 			}
 		}
 		#endif
@@ -149,15 +37,15 @@ namespace Windows.UI.Xaml.Controls
 		#endif
 		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
-		public  bool IsLooping
+		public  global::Windows.UI.Xaml.Media.Stereo3DVideoPackingMode Stereo3DVideoPackingMode
 		{
 			get
 			{
-				return (bool)this.GetValue(IsLoopingProperty);
+				return (global::Windows.UI.Xaml.Media.Stereo3DVideoPackingMode)this.GetValue(Stereo3DVideoPackingModeProperty);
 			}
 			set
 			{
-				this.SetValue(IsLoopingProperty, value);
+				this.SetValue(Stereo3DVideoPackingModeProperty, value);
 			}
 		}
 		#endif
@@ -177,15 +65,15 @@ namespace Windows.UI.Xaml.Controls
 		#endif
 		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
-		public  double Volume
+		public  bool RealTimePlayback
 		{
 			get
 			{
-				return (double)this.GetValue(VolumeProperty);
+				return (bool)this.GetValue(RealTimePlaybackProperty);
 			}
 			set
 			{
-				this.SetValue(VolumeProperty, value);
+				this.SetValue(RealTimePlaybackProperty, value);
 			}
 		}
 		#endif
@@ -242,6 +130,118 @@ namespace Windows.UI.Xaml.Controls
 			set
 			{
 				this.SetValue(PlaybackRateProperty, value);
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  bool AutoPlay
+		{
+			get
+			{
+				return (bool)this.GetValue(AutoPlayProperty);
+			}
+			set
+			{
+				this.SetValue(AutoPlayProperty, value);
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  int? AudioStreamIndex
+		{
+			get
+			{
+				return (int?)this.GetValue(AudioStreamIndexProperty);
+			}
+			set
+			{
+				this.SetValue(AudioStreamIndexProperty, value);
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  bool IsMuted
+		{
+			get
+			{
+				return (bool)this.GetValue(IsMutedProperty);
+			}
+			set
+			{
+				this.SetValue(IsMutedProperty, value);
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  global::Windows.UI.Xaml.Media.AudioDeviceType AudioDeviceType
+		{
+			get
+			{
+				return (global::Windows.UI.Xaml.Media.AudioDeviceType)this.GetValue(AudioDeviceTypeProperty);
+			}
+			set
+			{
+				this.SetValue(AudioDeviceTypeProperty, value);
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  global::Windows.UI.Xaml.Media.AudioCategory AudioCategory
+		{
+			get
+			{
+				return (global::Windows.UI.Xaml.Media.AudioCategory)this.GetValue(AudioCategoryProperty);
+			}
+			set
+			{
+				this.SetValue(AudioCategoryProperty, value);
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  double DefaultPlaybackRate
+		{
+			get
+			{
+				return (double)this.GetValue(DefaultPlaybackRateProperty);
+			}
+			set
+			{
+				this.SetValue(DefaultPlaybackRateProperty, value);
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  bool IsLooping
+		{
+			get
+			{
+				return (bool)this.GetValue(IsLoopingProperty);
+			}
+			set
+			{
+				this.SetValue(IsLoopingProperty, value);
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  double Balance
+		{
+			get
+			{
+				return (double)this.GetValue(BalanceProperty);
+			}
+			set
+			{
+				this.SetValue(BalanceProperty, value);
 			}
 		}
 		#endif
@@ -487,67 +487,11 @@ namespace Windows.UI.Xaml.Controls
 		#endif
 		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
-		public static global::Windows.UI.Xaml.DependencyProperty NaturalVideoHeightProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty DownloadProgressOffsetProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"NaturalVideoHeight", typeof(int), 
-			typeof(global::Windows.UI.Xaml.Controls.MediaElement), 
-			new FrameworkPropertyMetadata(default(int)));
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public static global::Windows.UI.Xaml.DependencyProperty NaturalVideoWidthProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			"NaturalVideoWidth", typeof(int), 
-			typeof(global::Windows.UI.Xaml.Controls.MediaElement), 
-			new FrameworkPropertyMetadata(default(int)));
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public static global::Windows.UI.Xaml.DependencyProperty PlayToSourceProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			"PlayToSource", typeof(global::Windows.Media.PlayTo.PlayToSource), 
-			typeof(global::Windows.UI.Xaml.Controls.MediaElement), 
-			new FrameworkPropertyMetadata(default(global::Windows.Media.PlayTo.PlayToSource)));
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public static global::Windows.UI.Xaml.DependencyProperty PlaybackRateProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			"PlaybackRate", typeof(double), 
+			"DownloadProgressOffset", typeof(double), 
 			typeof(global::Windows.UI.Xaml.Controls.MediaElement), 
 			new FrameworkPropertyMetadata(default(double)));
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public static global::Windows.UI.Xaml.DependencyProperty PositionProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			"Position", typeof(global::System.TimeSpan), 
-			typeof(global::Windows.UI.Xaml.Controls.MediaElement), 
-			new FrameworkPropertyMetadata(default(global::System.TimeSpan)));
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public static global::Windows.UI.Xaml.DependencyProperty PosterSourceProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			"PosterSource", typeof(global::Windows.UI.Xaml.Media.ImageSource), 
-			typeof(global::Windows.UI.Xaml.Controls.MediaElement), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.ImageSource)));
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public static global::Windows.UI.Xaml.DependencyProperty ProtectionManagerProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			"ProtectionManager", typeof(global::Windows.Media.Protection.MediaProtectionManager), 
-			typeof(global::Windows.UI.Xaml.Controls.MediaElement), 
-			new FrameworkPropertyMetadata(default(global::Windows.Media.Protection.MediaProtectionManager)));
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public static global::Windows.UI.Xaml.DependencyProperty RealTimePlaybackProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			"RealTimePlayback", typeof(bool), 
-			typeof(global::Windows.UI.Xaml.Controls.MediaElement), 
-			new FrameworkPropertyMetadata(default(bool)));
 		#endif
 		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
@@ -572,14 +516,6 @@ namespace Windows.UI.Xaml.Controls
 			"Stereo3DVideoRenderMode", typeof(global::Windows.UI.Xaml.Media.Stereo3DVideoRenderMode), 
 			typeof(global::Windows.UI.Xaml.Controls.MediaElement), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.Stereo3DVideoRenderMode)));
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public static global::Windows.UI.Xaml.DependencyProperty VolumeProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			"Volume", typeof(double), 
-			typeof(global::Windows.UI.Xaml.Controls.MediaElement), 
-			new FrameworkPropertyMetadata(default(double)));
 		#endif
 		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
@@ -695,9 +631,9 @@ namespace Windows.UI.Xaml.Controls
 		#endif
 		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
-		public static global::Windows.UI.Xaml.DependencyProperty DownloadProgressOffsetProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty VolumeProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"DownloadProgressOffset", typeof(double), 
+			"Volume", typeof(double), 
 			typeof(global::Windows.UI.Xaml.Controls.MediaElement), 
 			new FrameworkPropertyMetadata(default(double)));
 		#endif
@@ -751,9 +687,65 @@ namespace Windows.UI.Xaml.Controls
 		#endif
 		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
-		public static global::Windows.UI.Xaml.DependencyProperty AreTransportControlsEnabledProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty NaturalVideoHeightProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"AreTransportControlsEnabled", typeof(bool), 
+			"NaturalVideoHeight", typeof(int), 
+			typeof(global::Windows.UI.Xaml.Controls.MediaElement), 
+			new FrameworkPropertyMetadata(default(int)));
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public static global::Windows.UI.Xaml.DependencyProperty NaturalVideoWidthProperty { get; } = 
+		Windows.UI.Xaml.DependencyProperty.Register(
+			"NaturalVideoWidth", typeof(int), 
+			typeof(global::Windows.UI.Xaml.Controls.MediaElement), 
+			new FrameworkPropertyMetadata(default(int)));
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public static global::Windows.UI.Xaml.DependencyProperty PlayToSourceProperty { get; } = 
+		Windows.UI.Xaml.DependencyProperty.Register(
+			"PlayToSource", typeof(global::Windows.Media.PlayTo.PlayToSource), 
+			typeof(global::Windows.UI.Xaml.Controls.MediaElement), 
+			new FrameworkPropertyMetadata(default(global::Windows.Media.PlayTo.PlayToSource)));
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public static global::Windows.UI.Xaml.DependencyProperty PlaybackRateProperty { get; } = 
+		Windows.UI.Xaml.DependencyProperty.Register(
+			"PlaybackRate", typeof(double), 
+			typeof(global::Windows.UI.Xaml.Controls.MediaElement), 
+			new FrameworkPropertyMetadata(default(double)));
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public static global::Windows.UI.Xaml.DependencyProperty PositionProperty { get; } = 
+		Windows.UI.Xaml.DependencyProperty.Register(
+			"Position", typeof(global::System.TimeSpan), 
+			typeof(global::Windows.UI.Xaml.Controls.MediaElement), 
+			new FrameworkPropertyMetadata(default(global::System.TimeSpan)));
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public static global::Windows.UI.Xaml.DependencyProperty PosterSourceProperty { get; } = 
+		Windows.UI.Xaml.DependencyProperty.Register(
+			"PosterSource", typeof(global::Windows.UI.Xaml.Media.ImageSource), 
+			typeof(global::Windows.UI.Xaml.Controls.MediaElement), 
+			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.ImageSource)));
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public static global::Windows.UI.Xaml.DependencyProperty ProtectionManagerProperty { get; } = 
+		Windows.UI.Xaml.DependencyProperty.Register(
+			"ProtectionManager", typeof(global::Windows.Media.Protection.MediaProtectionManager), 
+			typeof(global::Windows.UI.Xaml.Controls.MediaElement), 
+			new FrameworkPropertyMetadata(default(global::Windows.Media.Protection.MediaProtectionManager)));
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public static global::Windows.UI.Xaml.DependencyProperty RealTimePlaybackProperty { get; } = 
+		Windows.UI.Xaml.DependencyProperty.Register(
+			"RealTimePlayback", typeof(bool), 
 			typeof(global::Windows.UI.Xaml.Controls.MediaElement), 
 			new FrameworkPropertyMetadata(default(bool)));
 		#endif
@@ -780,6 +772,14 @@ namespace Windows.UI.Xaml.Controls
 			"Stretch", typeof(global::Windows.UI.Xaml.Media.Stretch), 
 			typeof(global::Windows.UI.Xaml.Controls.MediaElement), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.Stretch)));
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public static global::Windows.UI.Xaml.DependencyProperty AreTransportControlsEnabledProperty { get; } = 
+		Windows.UI.Xaml.DependencyProperty.Register(
+			"AreTransportControlsEnabled", typeof(bool), 
+			typeof(global::Windows.UI.Xaml.Controls.MediaElement), 
+			new FrameworkPropertyMetadata(default(bool)));
 		#endif
 		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]

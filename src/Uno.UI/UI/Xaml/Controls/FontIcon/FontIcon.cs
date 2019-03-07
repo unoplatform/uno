@@ -121,7 +121,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		public static readonly DependencyProperty FontSizeProperty =
-			DependencyProperty.Register("FontSize", typeof(double), typeof(FontIcon), new PropertyMetadata(11.0,
+			DependencyProperty.Register("FontSize", typeof(double), typeof(FontIcon), new PropertyMetadata(15.0,
 				(s, e) => ((FontIcon)s).OnFontSizeChanged((double)e.NewValue)));
 
 		private void OnFontSizeChanged(double newValue)

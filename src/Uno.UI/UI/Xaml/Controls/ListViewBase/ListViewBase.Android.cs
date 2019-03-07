@@ -21,7 +21,7 @@ namespace Windows.UI.Xaml.Controls
 		private readonly SerialDisposable _collectionChangedSubscription = new SerialDisposable();
 		private readonly SerialDisposable _headerFooterSubscription = new SerialDisposable();
 
-		partial void OnApplyTemplatePartial()
+		private void InitializeNativePanel()
 		{
 			var adapter = new NativeListViewBaseAdapter();
 			adapter.Owner = NativePanel;
@@ -178,6 +178,14 @@ namespace Windows.UI.Xaml.Controls
 		partial void OnDataContextChangedPartial()
 		{
 			(NativePanel?.NativeLayout as VirtualizingPanelLayout)?.UpdateHeaderAndFooter();
+		}
+
+		partial void ApplyMultiSelectStateToCachedItems()
+		{
+			foreach (var item in (NativePanel?.CachedItemViews).Safe())
+			{
+				ApplyMultiSelectState(item);
+			}
 		}
 
 		internal override object GetElementFromDisplayPosition(int displayPosition)

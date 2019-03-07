@@ -337,6 +337,12 @@ namespace Windows.UI.Xaml.Controls
 			catch (Exception exception)
 			{
 				NavigationFailed?.Invoke(this, new NavigationFailedEventArgs(entry.SourcePageType, exception));
+
+				if (NavigationFailed == null)
+				{
+					Application.Current.RaiseRecoverableUnhandledException(new InvalidOperationException("Navigation failed", exception));
+				}
+
 				return false;
 			}
 		}
@@ -346,6 +352,11 @@ namespace Windows.UI.Xaml.Controls
 		/// </summary>
 		private void ReleasePages(IList<PageStackEntry> pageStackEntries)
 		{
+			foreach (var entry in pageStackEntries)
+			{
+				entry.Instance.Frame = null;
+			}
+
 			if (!FeatureConfiguration.Page.IsPoolingEnabled)
 			{
 				return;

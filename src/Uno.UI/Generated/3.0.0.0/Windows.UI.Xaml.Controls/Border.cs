@@ -14,12 +14,48 @@ namespace Windows.UI.Xaml.Controls
 		// Skipping already declared property BorderThickness
 		// Skipping already declared property BorderBrush
 		// Skipping already declared property Background
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  global::Windows.UI.Xaml.BrushTransition BackgroundTransition
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member BrushTransition Border.BackgroundTransition is not implemented in Uno.");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.Border", "BrushTransition Border.BackgroundTransition");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  global::Windows.UI.Xaml.Controls.BackgroundSizing BackgroundSizing
+		{
+			get
+			{
+				return (global::Windows.UI.Xaml.Controls.BackgroundSizing)this.GetValue(BackgroundSizingProperty);
+			}
+			set
+			{
+				this.SetValue(BackgroundSizingProperty, value);
+			}
+		}
+		#endif
 		// Skipping already declared property BackgroundProperty
 		// Skipping already declared property BorderBrushProperty
 		// Skipping already declared property BorderThicknessProperty
 		// Skipping already declared property ChildTransitionsProperty
 		// Skipping already declared property CornerRadiusProperty
 		// Skipping already declared property PaddingProperty
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public static global::Windows.UI.Xaml.DependencyProperty BackgroundSizingProperty { get; } = 
+		Windows.UI.Xaml.DependencyProperty.Register(
+			"BackgroundSizing", typeof(global::Windows.UI.Xaml.Controls.BackgroundSizing), 
+			typeof(global::Windows.UI.Xaml.Controls.Border), 
+			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Controls.BackgroundSizing)));
+		#endif
 		// Skipping already declared method Windows.UI.Xaml.Controls.Border.Border()
 		// Forced skipping of method Windows.UI.Xaml.Controls.Border.Border()
 		// Forced skipping of method Windows.UI.Xaml.Controls.Border.BorderBrush.get
@@ -36,6 +72,11 @@ namespace Windows.UI.Xaml.Controls
 		// Forced skipping of method Windows.UI.Xaml.Controls.Border.Child.set
 		// Forced skipping of method Windows.UI.Xaml.Controls.Border.ChildTransitions.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.Border.ChildTransitions.set
+		// Forced skipping of method Windows.UI.Xaml.Controls.Border.BackgroundSizing.get
+		// Forced skipping of method Windows.UI.Xaml.Controls.Border.BackgroundSizing.set
+		// Forced skipping of method Windows.UI.Xaml.Controls.Border.BackgroundTransition.get
+		// Forced skipping of method Windows.UI.Xaml.Controls.Border.BackgroundTransition.set
+		// Forced skipping of method Windows.UI.Xaml.Controls.Border.BackgroundSizingProperty.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.Border.BorderBrushProperty.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.Border.BorderThicknessProperty.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.Border.BackgroundProperty.get

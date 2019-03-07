@@ -7,20 +7,51 @@ namespace Windows.UI.Xaml
 	#endif
 	public  partial class FrameworkElement 
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if false || false || NET46 || false || false
 		[global::Uno.NotImplemented]
-		public  global::Windows.UI.Xaml.FlowDirection FlowDirection
+		public  double Width
 		{
 			get
 			{
-				return (global::Windows.UI.Xaml.FlowDirection)this.GetValue(FlowDirectionProperty);
+				return (double)this.GetValue(WidthProperty);
 			}
 			set
 			{
-				this.SetValue(FlowDirectionProperty, value);
+				this.SetValue(WidthProperty, value);
 			}
 		}
 		#endif
+		#if false || false || NET46 || false || false
+		[global::Uno.NotImplemented]
+		public  global::Windows.UI.Xaml.VerticalAlignment VerticalAlignment
+		{
+			get
+			{
+				return (global::Windows.UI.Xaml.VerticalAlignment)this.GetValue(VerticalAlignmentProperty);
+			}
+			set
+			{
+				this.SetValue(VerticalAlignmentProperty, value);
+			}
+		}
+		#endif
+		#if false || false || NET46 || __WASM__ || false
+		[global::Uno.NotImplemented]
+		public  object Tag
+		{
+			get
+			{
+				return (object)this.GetValue(TagProperty);
+			}
+			set
+			{
+				this.SetValue(TagProperty, value);
+			}
+		}
+		#endif
+		// Skipping already declared property Style
+		// Skipping already declared property Resources
+		// Skipping already declared property Name
 		#if false || false || NET46 || false || false
 		[global::Uno.NotImplemented]
 		public  double MinWidth
@@ -105,7 +136,6 @@ namespace Windows.UI.Xaml
 			}
 		}
 		#endif
-		// Skipping already declared property Name
 		#if false || false || NET46 || false || false
 		[global::Uno.NotImplemented]
 		public  global::Windows.UI.Xaml.HorizontalAlignment HorizontalAlignment
@@ -134,47 +164,17 @@ namespace Windows.UI.Xaml
 			}
 		}
 		#endif
-		// Skipping already declared property Resources
-		#if false || false || NET46 || false || false
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
-		public  double Width
+		public  global::Windows.UI.Xaml.FlowDirection FlowDirection
 		{
 			get
 			{
-				return (double)this.GetValue(WidthProperty);
+				return (global::Windows.UI.Xaml.FlowDirection)this.GetValue(FlowDirectionProperty);
 			}
 			set
 			{
-				this.SetValue(WidthProperty, value);
-			}
-		}
-		#endif
-		#if false || false || NET46 || __WASM__ || false
-		[global::Uno.NotImplemented]
-		public  object Tag
-		{
-			get
-			{
-				return (object)this.GetValue(TagProperty);
-			}
-			set
-			{
-				this.SetValue(TagProperty, value);
-			}
-		}
-		#endif
-		// Skipping already declared property Style
-		#if false || false || NET46 || false || false
-		[global::Uno.NotImplemented]
-		public  global::Windows.UI.Xaml.VerticalAlignment VerticalAlignment
-		{
-			get
-			{
-				return (global::Windows.UI.Xaml.VerticalAlignment)this.GetValue(VerticalAlignmentProperty);
-			}
-			set
-			{
-				this.SetValue(VerticalAlignmentProperty, value);
+				this.SetValue(FlowDirectionProperty, value);
 			}
 		}
 		#endif
@@ -198,7 +198,6 @@ namespace Windows.UI.Xaml
 			}
 		}
 		#endif
-		// Skipping already declared property Parent
 		#if false || false || NET46 || false || false
 		[global::Uno.NotImplemented]
 		public  global::System.Uri BaseUri
@@ -209,6 +208,7 @@ namespace Windows.UI.Xaml
 			}
 		}
 		#endif
+		// Skipping already declared property Parent
 		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.UI.Xaml.TriggerCollection Triggers
@@ -341,6 +341,7 @@ namespace Windows.UI.Xaml
 			}
 		}
 		#endif
+		// Skipping already declared property IsLoaded
 		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty ActualHeightProperty { get; } = 
@@ -388,6 +389,14 @@ namespace Windows.UI.Xaml
 			"Language", typeof(string), 
 			typeof(global::Windows.UI.Xaml.FrameworkElement), 
 			new FrameworkPropertyMetadata(default(string)));
+		#endif
+		#if false || false || NET46 || false || false
+		[global::Uno.NotImplemented]
+		public static global::Windows.UI.Xaml.DependencyProperty MarginProperty { get; } = 
+		Windows.UI.Xaml.DependencyProperty.Register(
+			"Margin", typeof(global::Windows.UI.Xaml.Thickness), 
+			typeof(global::Windows.UI.Xaml.FrameworkElement), 
+			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Thickness)));
 		#endif
 		#if false || false || NET46 || false || false
 		[global::Uno.NotImplemented]
@@ -454,14 +463,6 @@ namespace Windows.UI.Xaml
 			typeof(global::Windows.UI.Xaml.FrameworkElement), 
 			new FrameworkPropertyMetadata(default(double)));
 		#endif
-		#if false || false || NET46 || false || false
-		[global::Uno.NotImplemented]
-		public static global::Windows.UI.Xaml.DependencyProperty MarginProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			"Margin", typeof(global::Windows.UI.Xaml.Thickness), 
-			typeof(global::Windows.UI.Xaml.FrameworkElement), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Thickness)));
-		#endif
 		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty RequestedThemeProperty { get; } = 
@@ -475,6 +476,14 @@ namespace Windows.UI.Xaml
 		public static global::Windows.UI.Xaml.DependencyProperty AllowFocusOnInteractionProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
 			"AllowFocusOnInteraction", typeof(bool), 
+			typeof(global::Windows.UI.Xaml.FrameworkElement), 
+			new FrameworkPropertyMetadata(default(bool)));
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public static global::Windows.UI.Xaml.DependencyProperty AllowFocusWhenDisabledProperty { get; } = 
+		Windows.UI.Xaml.DependencyProperty.Register(
+			"AllowFocusWhenDisabled", typeof(bool), 
 			typeof(global::Windows.UI.Xaml.FrameworkElement), 
 			new FrameworkPropertyMetadata(default(bool)));
 		#endif
@@ -517,14 +526,6 @@ namespace Windows.UI.Xaml
 			"FocusVisualSecondaryThickness", typeof(global::Windows.UI.Xaml.Thickness), 
 			typeof(global::Windows.UI.Xaml.FrameworkElement), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Thickness)));
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public static global::Windows.UI.Xaml.DependencyProperty AllowFocusWhenDisabledProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			"AllowFocusWhenDisabled", typeof(bool), 
-			typeof(global::Windows.UI.Xaml.FrameworkElement), 
-			new FrameworkPropertyMetadata(default(bool)));
 		#endif
 		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
@@ -583,21 +584,11 @@ namespace Windows.UI.Xaml
 		// Forced skipping of method Windows.UI.Xaml.FrameworkElement.LayoutUpdated.remove
 		// Skipping already declared method Windows.UI.Xaml.FrameworkElement.FindName(string)
 		// Skipping already declared method Windows.UI.Xaml.FrameworkElement.SetBinding(Windows.UI.Xaml.DependencyProperty, Windows.UI.Xaml.Data.BindingBase)
-		// Skipping already declared method Windows.UI.Xaml.FrameworkElement.MeasureOverride(Windows.Foundation.Size)
-		// Skipping already declared method Windows.UI.Xaml.FrameworkElement.ArrangeOverride(Windows.Foundation.Size)
-		// Skipping already declared method Windows.UI.Xaml.FrameworkElement.OnApplyTemplate()
 		// Forced skipping of method Windows.UI.Xaml.FrameworkElement.RequestedTheme.get
 		// Forced skipping of method Windows.UI.Xaml.FrameworkElement.RequestedTheme.set
 		// Forced skipping of method Windows.UI.Xaml.FrameworkElement.DataContextChanged.add
 		// Forced skipping of method Windows.UI.Xaml.FrameworkElement.DataContextChanged.remove
 		// Skipping already declared method Windows.UI.Xaml.FrameworkElement.GetBindingExpression(Windows.UI.Xaml.DependencyProperty)
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		protected virtual bool GoToElementStateCore( string stateName,  bool useTransitions)
-		{
-			throw new global::System.NotImplementedException("The member bool FrameworkElement.GoToElementStateCore(string stateName, bool useTransitions) is not implemented in Uno.");
-		}
-		#endif
 		// Forced skipping of method Windows.UI.Xaml.FrameworkElement.Loading.add
 		// Forced skipping of method Windows.UI.Xaml.FrameworkElement.Loading.remove
 		// Forced skipping of method Windows.UI.Xaml.FrameworkElement.AllowFocusOnInteraction.get
@@ -617,6 +608,26 @@ namespace Windows.UI.Xaml
 		// Forced skipping of method Windows.UI.Xaml.FrameworkElement.ActualTheme.get
 		// Forced skipping of method Windows.UI.Xaml.FrameworkElement.ActualThemeChanged.add
 		// Forced skipping of method Windows.UI.Xaml.FrameworkElement.ActualThemeChanged.remove
+		// Forced skipping of method Windows.UI.Xaml.FrameworkElement.IsLoaded.get
+		// Forced skipping of method Windows.UI.Xaml.FrameworkElement.EffectiveViewportChanged.add
+		// Forced skipping of method Windows.UI.Xaml.FrameworkElement.EffectiveViewportChanged.remove
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		protected  void InvalidateViewport()
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.FrameworkElement", "void FrameworkElement.InvalidateViewport()");
+		}
+		#endif
+		// Skipping already declared method Windows.UI.Xaml.FrameworkElement.MeasureOverride(Windows.Foundation.Size)
+		// Skipping already declared method Windows.UI.Xaml.FrameworkElement.ArrangeOverride(Windows.Foundation.Size)
+		// Skipping already declared method Windows.UI.Xaml.FrameworkElement.OnApplyTemplate()
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		protected virtual bool GoToElementStateCore( string stateName,  bool useTransitions)
+		{
+			throw new global::System.NotImplementedException("The member bool FrameworkElement.GoToElementStateCore(string stateName, bool useTransitions) is not implemented in Uno.");
+		}
+		#endif
 		// Forced skipping of method Windows.UI.Xaml.FrameworkElement.ActualThemeProperty.get
 		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
@@ -744,6 +755,22 @@ namespace Windows.UI.Xaml
 			remove
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.FrameworkElement", "event TypedEventHandler<FrameworkElement, object> FrameworkElement.ActualThemeChanged");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Xaml.FrameworkElement, global::Windows.UI.Xaml.EffectiveViewportChangedEventArgs> EffectiveViewportChanged
+		{
+			[global::Uno.NotImplemented]
+			add
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.FrameworkElement", "event TypedEventHandler<FrameworkElement, EffectiveViewportChangedEventArgs> FrameworkElement.EffectiveViewportChanged");
+			}
+			[global::Uno.NotImplemented]
+			remove
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.FrameworkElement", "event TypedEventHandler<FrameworkElement, EffectiveViewportChangedEventArgs> FrameworkElement.EffectiveViewportChanged");
 			}
 		}
 		#endif

@@ -19,6 +19,14 @@
 
 	<Product>$(AssemblyName) ($(TargetFramework))</Product>
 	<DefaultLanguage>en-US</DefaultLanguage>
+
+	<UnoSourceGeneratorUseGenerationHost>true</UnoSourceGeneratorUseGenerationHost>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <IsMonoAndroid>$(TargetFramework.ToLower().StartsWith('monoandroid'))</IsMonoAndroid>
+    <IsXamarinIOS>$(TargetFramework.ToLower().StartsWith('xamarinios'))</IsXamarinIOS>
+    <IsXamarinMac>$(TargetFramework.ToLower().StartsWith('xamarinmac'))</IsXamarinMac>
   </PropertyGroup>
 
   <PropertyGroup>
@@ -37,7 +45,7 @@
   </PropertyGroup>
 
   <Choose>
-	<When Condition="'$(IsTestProject)' != 'true' and '$(SourceLinkEnabled)' != 'false' and '$(IsSampleProject)' != 'true'">
+	<When Condition="'$(Configuration)' != 'Debug' and '$(IsTestProject)' != 'true' and '$(SourceLinkEnabled)' != 'false' and '$(IsSampleProject)' != 'true'">
 	  <PropertyGroup>
 		<!-- Optional: Declare that the Repository URL can be published to NuSpec -->
 		<PublishRepositoryUrl>true</PublishRepositoryUrl>

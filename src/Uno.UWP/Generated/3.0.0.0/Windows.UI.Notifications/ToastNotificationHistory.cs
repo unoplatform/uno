@@ -9,6 +9,20 @@ namespace Windows.UI.Notifications
 	{
 		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
+		public  global::System.Collections.Generic.IReadOnlyList<global::Windows.UI.Notifications.ToastNotification> GetHistory()
+		{
+			throw new global::System.NotImplementedException("The member IReadOnlyList<ToastNotification> ToastNotificationHistory.GetHistory() is not implemented in Uno.");
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  global::System.Collections.Generic.IReadOnlyList<global::Windows.UI.Notifications.ToastNotification> GetHistory( string applicationId)
+		{
+			throw new global::System.NotImplementedException("The member IReadOnlyList<ToastNotification> ToastNotificationHistory.GetHistory(string applicationId) is not implemented in Uno.");
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
 		public  void RemoveGroup( string group)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Notifications.ToastNotificationHistory", "void ToastNotificationHistory.RemoveGroup(string group)");
@@ -54,20 +68,6 @@ namespace Windows.UI.Notifications
 		public  void Clear( string applicationId)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Notifications.ToastNotificationHistory", "void ToastNotificationHistory.Clear(string applicationId)");
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  global::System.Collections.Generic.IReadOnlyList<global::Windows.UI.Notifications.ToastNotification> GetHistory()
-		{
-			throw new global::System.NotImplementedException("The member IReadOnlyList<ToastNotification> ToastNotificationHistory.GetHistory() is not implemented in Uno.");
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  global::System.Collections.Generic.IReadOnlyList<global::Windows.UI.Notifications.ToastNotification> GetHistory( string applicationId)
-		{
-			throw new global::System.NotImplementedException("The member IReadOnlyList<ToastNotification> ToastNotificationHistory.GetHistory(string applicationId) is not implemented in Uno.");
 		}
 		#endif
 	}

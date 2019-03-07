@@ -34,6 +34,7 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 			private readonly INamedTypeSymbol _javaObjectSymbol;
 			private readonly INamedTypeSymbol _androidActivitySymbol;
 			private readonly INamedTypeSymbol _androidFragmentSymbol;
+			private readonly INamedTypeSymbol _bindableAttributeSymbol;
 			private readonly INamedTypeSymbol _iFrameworkElementSymbol;
 
 
@@ -51,6 +52,7 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 				_javaObjectSymbol = context.Compilation.GetTypeByMetadataName("Java.Lang.Object");
 				_androidActivitySymbol = context.Compilation.GetTypeByMetadataName("Android.App.Activity");
 				_androidFragmentSymbol = context.Compilation.GetTypeByMetadataName("Android.App.Fragment");
+				_bindableAttributeSymbol = context.Compilation.GetTypeByMetadataName("Windows.UI.Xaml.Data.BindableAttribute");
 				_iFrameworkElementSymbol = context.Compilation.GetTypeByMetadataName(XamlConstants.Types.IFrameworkElement);
 			}
 
@@ -114,7 +116,10 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 
 					using (builder.BlockInvariant($"namespace {typeSymbol.ContainingNamespace}"))
 					{
-						builder.AppendLineInvariant(@"[Windows.UI.Xaml.Data.Bindable]");
+						if (typeSymbol.FindAttribute(_bindableAttributeSymbol) == null)
+						{
+							builder.AppendLineInvariant(@"[global::Windows.UI.Xaml.Data.Bindable]");
+						}
 
 						using (GenerateNestingContainers(builder, typeSymbol))
 						{

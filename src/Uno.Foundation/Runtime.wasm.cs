@@ -10,13 +10,14 @@ using System.Text;
 using Uno.Diagnostics.Eventing;
 using Microsoft.Extensions.Logging;
 using Uno.Logging;
+using System.Runtime.CompilerServices;
 
 namespace WebAssembly
 {
 	[Obfuscation(Feature = "renaming", Exclude = true)]
 	internal sealed class Runtime
 	{
-		[System.Runtime.CompilerServices.MethodImplAttribute(System.Runtime.CompilerServices.MethodImplOptions.InternalCall)]
+		[MethodImpl(MethodImplOptions.InternalCall)]
 		private static extern string InvokeJS(string str, out int exceptional_result);
 
 		internal static string InvokeJS(string str)
@@ -29,12 +30,29 @@ namespace WebAssembly
 			return r;
 		}
 	}
+
+	namespace JSInterop
+	{
+		internal static class InternalCalls
+		{
+			// Matches this signature:
+			// https://github.com/mono/mono/blob/f24d652d567c4611f9b4e3095be4e2a1a2ab23a4/sdks/wasm/driver.c#L21
+			[MethodImpl(MethodImplOptions.InternalCall)]
+			public static extern bool InvokeJSUnmarshalled(out string exception, string functionIdentifier, IntPtr arg0, IntPtr arg1, IntPtr arg2);
+		}
+	}
 }
 
 namespace Uno.Foundation
 {
 	public static class WebAssemblyRuntime
 	{
+		private static readonly Lazy<ILogger> _logger = new Lazy<ILogger>(() => typeof(WebAssemblyRuntime).Log());
+
+		public static bool IsWebAssembly { get; }
+			= RuntimeInformation.IsOSPlatform(OSPlatform.Create("WEBASSEMBLY"));
+
+
 		[Preserve]
 		public static class TraceProvider
 		{
@@ -48,6 +66,54 @@ namespace Uno.Foundation
 		private readonly static IEventProvider _trace = Tracing.Get(TraceProvider.Id);
 
 		/// <summary>
+		/// Invoke a Javascript method using unmarshaled conversion.
+		/// </summary>
+		/// <param name="functionIdentifier">A function identifier name</param>
+		public static bool InvokeJSUnmarshalled(string functionIdentifier, IntPtr arg0)
+		{
+			var res = WebAssembly.JSInterop.InternalCalls.InvokeJSUnmarshalled(out var exception, functionIdentifier, arg0, IntPtr.Zero, IntPtr.Zero);
+
+			if(exception != null)
+			{
+				throw new Exception(exception);
+			}
+
+			return res;
+		}
+
+		/// <summary>
+		/// Invoke a Javascript method using unmarshaled conversion.
+		/// </summary>
+		/// <param name="functionIdentifier">A function identifier name</param>
+		public static bool InvokeJSUnmarshalled(string functionIdentifier, IntPtr arg0, IntPtr arg1)
+		{
+			var res = WebAssembly.JSInterop.InternalCalls.InvokeJSUnmarshalled(out var exception, functionIdentifier, arg0, arg1, IntPtr.Zero);
+
+			if (exception != null)
+			{
+				throw new Exception(exception);
+			}
+
+			return res;
+		}
+
+		/// <summary>
+		/// Invoke a Javascript method using unmarshaled conversion.
+		/// </summary>
+		/// <param name="functionIdentifier">A function identifier name</param>
+		public static bool InvokeJSUnmarshalled(string functionIdentifier, IntPtr arg0, IntPtr arg1, IntPtr arg2)
+		{
+			var res = WebAssembly.JSInterop.InternalCalls.InvokeJSUnmarshalled(out var exception, functionIdentifier, arg0, arg1, arg2);
+
+			if (exception != null)
+			{
+				throw new Exception(exception);
+			}
+
+			return res;
+		}
+
+		/// <summary>
 		/// Provides an override for javascript invokes.
 		/// </summary>
 		public static Func<string, string> InvokeJSOverride;
@@ -58,9 +124,9 @@ namespace Uno.Foundation
 			{
 				try
 				{
-					if (typeof(WebAssemblyRuntime).Log().IsEnabled(LogLevel.Debug))
+					if (_logger.Value.IsEnabled(LogLevel.Debug))
 					{
-						typeof(WebAssemblyRuntime).Log().Debug("InvokeJS:" + str);
+						_logger.Value.Debug("InvokeJS:" + str);
 					}
 
 					string result;
@@ -139,7 +205,7 @@ namespace Uno.Foundation
 				command = commandBuilder.ToString();
 			}
 
-			return WebAssembly.Runtime.InvokeJS(command);
+			return InvokeJS(command);
 		}
 
 		[Pure]

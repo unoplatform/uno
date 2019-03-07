@@ -47,7 +47,7 @@ namespace Windows.ApplicationModel.Resources.Core
 
 		private static void ValidateResourceName(ResourceCandidate resourceCandidate)
 		{
-			var resourceName = Path.GetFileName(resourceCandidate.LogicalPath).Split('.')[0];
+			var resourceName = Path.GetFileName(resourceCandidate.LogicalPath).Split(new char[] { '.' })[0];
 			
 			if (string.IsNullOrWhiteSpace(resourceName) || !ValidResourceName.IsMatch(resourceName))
 			{

@@ -98,13 +98,11 @@ namespace Windows.UI.Xaml.Controls
 		partial void OnBorderThicknessChangedPartial(Thickness oldValue, Thickness newValue)
 		{
 			UpdateBorderLayer();
-			base.SetNeedsLayout();
 		}
 
         partial void OnPaddingChangedPartial(Thickness oldValue, Thickness newValue)
 		{
 			UpdateBorderLayer();
-			base.SetNeedsLayout();
 		}
 
         partial void OnChildChangedPartial(UIView previousValue, UIView newValue)
@@ -122,7 +120,6 @@ namespace Windows.UI.Xaml.Controls
         partial void OnCornerRadiusUpdatedPartial(CornerRadius oldValue, CornerRadius newValue)
 		{
 			UpdateBorderLayer();
-			base.SetNeedsLayout();
 		}
 	}
 }

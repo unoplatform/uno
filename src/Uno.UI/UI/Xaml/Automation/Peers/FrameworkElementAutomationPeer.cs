@@ -39,7 +39,28 @@ namespace Windows.UI.Xaml.Automation.Peers
 			Owner = owner;
 		}
 
-		public static AutomationPeer CreatePeerForElement(IFrameworkElement element) // TODO: UIElement
+
+		public static global::Windows.UI.Xaml.Automation.Peers.AutomationPeer FromElement(global::Windows.UI.Xaml.UIElement element)
+		{
+			if(element is IFrameworkElement fe)
+			{
+				return FromIFrameworkElement(fe);
+			}
+
+			return null;
+		}
+
+		public static global::Windows.UI.Xaml.Automation.Peers.AutomationPeer CreatePeerForElement(global::Windows.UI.Xaml.UIElement element)
+		{
+			if (element is IFrameworkElement fe)
+			{
+				return CreatePeerForIFrameworkElement(fe);
+			}
+
+			return null;
+		}
+
+		public static AutomationPeer CreatePeerForIFrameworkElement(IFrameworkElement element)
 		{
 			if (element == null)
 			{
@@ -49,7 +70,7 @@ namespace Windows.UI.Xaml.Automation.Peers
 			return element.GetAutomationPeer();
 		}
 
-		public static AutomationPeer FromElement(IFrameworkElement element) // TODO: UIElement
+		public static AutomationPeer FromIFrameworkElement(IFrameworkElement element)
 		{
 			if (element == null)
 			{
@@ -125,7 +146,7 @@ namespace Windows.UI.Xaml.Automation.Peers
 						AutomationProperties.SetAccessibilityView(child, AccessibilityView.Raw);
 						return child;
 					})
-					.Select(FromElement)
+					.Select(FromIFrameworkElement)
 					.Where(automationPeer => automationPeer != null)
 					.Select(automationPeer => automationPeer.GetName())
 					.Where(childName => !string.IsNullOrEmpty(childName))

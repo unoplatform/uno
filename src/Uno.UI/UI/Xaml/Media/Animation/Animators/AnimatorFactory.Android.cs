@@ -35,7 +35,7 @@ namespace Windows.UI.Xaml.Media.Animation
 
 			var info = timeline.PropertyInfo.GetPathItems().Last();
 			var target = info.DataContext;
-			var property = info.PropertyName.Split('.').Last().Replace("(", "").Replace(")", "");
+			var property = info.PropertyName.Split(new[] { '.' }).Last().Replace("(", "").Replace(")", "");
 
 			if (target is View view)
 			{

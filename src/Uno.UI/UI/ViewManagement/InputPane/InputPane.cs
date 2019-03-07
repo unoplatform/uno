@@ -35,7 +35,11 @@ namespace Windows.UI.ViewManagement
 
 		public bool Visible
 		{
+#if __ANDROID__
+			get => KeyboardRect.Height > 0;
+#else
 			get => OccludedRect.Height > 0;
+#endif
 			set
 			{
 				if (value)

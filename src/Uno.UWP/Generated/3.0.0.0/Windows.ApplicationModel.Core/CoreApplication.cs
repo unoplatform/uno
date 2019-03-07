@@ -128,13 +128,7 @@ namespace Windows.ApplicationModel.Core
 		// Forced skipping of method Windows.ApplicationModel.Core.CoreApplication.Resuming.add
 		// Forced skipping of method Windows.ApplicationModel.Core.CoreApplication.Resuming.remove
 		// Forced skipping of method Windows.ApplicationModel.Core.CoreApplication.Properties.get
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public static global::Windows.ApplicationModel.Core.CoreApplicationView GetCurrentView()
-		{
-			throw new global::System.NotImplementedException("The member CoreApplicationView CoreApplication.GetCurrentView() is not implemented in Uno.");
-		}
-		#endif
+		// Skipping already declared method Windows.ApplicationModel.Core.CoreApplication.GetCurrentView()
 		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static void Run( global::Windows.ApplicationModel.Core.IFrameworkViewSource viewSource)

@@ -153,6 +153,12 @@ namespace Windows.UI.Xaml.Controls
 		// Forced skipping of method Windows.UI.Xaml.Controls.ItemsPresenter.HeaderTransitions.set
 		// Forced skipping of method Windows.UI.Xaml.Controls.ItemsPresenter.Padding.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.ItemsPresenter.Padding.set
+		// Forced skipping of method Windows.UI.Xaml.Controls.ItemsPresenter.Footer.get
+		// Forced skipping of method Windows.UI.Xaml.Controls.ItemsPresenter.Footer.set
+		// Forced skipping of method Windows.UI.Xaml.Controls.ItemsPresenter.FooterTemplate.get
+		// Forced skipping of method Windows.UI.Xaml.Controls.ItemsPresenter.FooterTemplate.set
+		// Forced skipping of method Windows.UI.Xaml.Controls.ItemsPresenter.FooterTransitions.get
+		// Forced skipping of method Windows.UI.Xaml.Controls.ItemsPresenter.FooterTransitions.set
 		// Forced skipping of method Windows.UI.Xaml.Controls.ItemsPresenter.AreHorizontalSnapPointsRegular.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.ItemsPresenter.AreVerticalSnapPointsRegular.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.ItemsPresenter.HorizontalSnapPointsChanged.add
@@ -161,12 +167,6 @@ namespace Windows.UI.Xaml.Controls
 		// Forced skipping of method Windows.UI.Xaml.Controls.ItemsPresenter.VerticalSnapPointsChanged.remove
 		// Skipping already declared method Windows.UI.Xaml.Controls.ItemsPresenter.GetIrregularSnapPoints(Windows.UI.Xaml.Controls.Orientation, Windows.UI.Xaml.Controls.Primitives.SnapPointsAlignment)
 		// Skipping already declared method Windows.UI.Xaml.Controls.ItemsPresenter.GetRegularSnapPoints(Windows.UI.Xaml.Controls.Orientation, Windows.UI.Xaml.Controls.Primitives.SnapPointsAlignment, out float)
-		// Forced skipping of method Windows.UI.Xaml.Controls.ItemsPresenter.Footer.get
-		// Forced skipping of method Windows.UI.Xaml.Controls.ItemsPresenter.Footer.set
-		// Forced skipping of method Windows.UI.Xaml.Controls.ItemsPresenter.FooterTemplate.get
-		// Forced skipping of method Windows.UI.Xaml.Controls.ItemsPresenter.FooterTemplate.set
-		// Forced skipping of method Windows.UI.Xaml.Controls.ItemsPresenter.FooterTransitions.get
-		// Forced skipping of method Windows.UI.Xaml.Controls.ItemsPresenter.FooterTransitions.set
 		// Forced skipping of method Windows.UI.Xaml.Controls.ItemsPresenter.FooterProperty.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.ItemsPresenter.FooterTemplateProperty.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.ItemsPresenter.FooterTransitionsProperty.get

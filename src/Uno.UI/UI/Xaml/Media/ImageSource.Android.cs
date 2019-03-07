@@ -110,7 +110,7 @@ namespace Windows.UI.Xaml.Media
 
 		partial void InitFromResource(Uri uri)
 		{
-			ResourceString = uri.PathAndQuery.TrimStart('/');
+			ResourceString = uri.PathAndQuery.TrimStart(new[] { '/' });
 			ResourceId = FindResourceId(ResourceString);
 		}
 

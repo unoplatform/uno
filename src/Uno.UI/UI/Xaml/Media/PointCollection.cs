@@ -32,9 +32,11 @@ namespace Windows.UI.Xaml.Media
 			set => _coords[i] = value;
 		}
 
+		private static readonly char[] pointsParsingSeparators = new char[] { ',', ' ' };
+
 		public static implicit operator PointCollection(string s)
 		{
-			var fields = s.Split(',', ' ');
+			var fields = s.Split(pointsParsingSeparators, options: StringSplitOptions.RemoveEmptyEntries);
 
 			//Do we have the correct number of coordinate values (an even number, so that each X has a Y)?
 			if (fields.Length % 2 != 0)

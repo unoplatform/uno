@@ -27,7 +27,18 @@ namespace Windows.Perception
 			}
 		}
 		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  global::System.TimeSpan SystemRelativeTargetTime
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member TimeSpan PerceptionTimestamp.SystemRelativeTargetTime is not implemented in Uno.");
+			}
+		}
+		#endif
 		// Forced skipping of method Windows.Perception.PerceptionTimestamp.TargetTime.get
 		// Forced skipping of method Windows.Perception.PerceptionTimestamp.PredictionAmount.get
+		// Forced skipping of method Windows.Perception.PerceptionTimestamp.SystemRelativeTargetTime.get
 	}
 }

@@ -67,6 +67,16 @@ namespace Windows.UI.Xaml
 		// Forced skipping of method Windows.UI.Xaml.Application.Resuming.add
 		// Forced skipping of method Windows.UI.Xaml.Application.Resuming.remove
 		// Skipping already declared method Windows.UI.Xaml.Application.Exit()
+		// Forced skipping of method Windows.UI.Xaml.Application.FocusVisualKind.get
+		// Forced skipping of method Windows.UI.Xaml.Application.FocusVisualKind.set
+		// Forced skipping of method Windows.UI.Xaml.Application.RequiresPointerMode.get
+		// Forced skipping of method Windows.UI.Xaml.Application.RequiresPointerMode.set
+		// Forced skipping of method Windows.UI.Xaml.Application.LeavingBackground.add
+		// Forced skipping of method Windows.UI.Xaml.Application.LeavingBackground.remove
+		// Forced skipping of method Windows.UI.Xaml.Application.EnteredBackground.add
+		// Forced skipping of method Windows.UI.Xaml.Application.EnteredBackground.remove
+		// Forced skipping of method Windows.UI.Xaml.Application.HighContrastAdjustment.get
+		// Forced skipping of method Windows.UI.Xaml.Application.HighContrastAdjustment.set
 		// Skipping already declared method Windows.UI.Xaml.Application.OnActivated(Windows.ApplicationModel.Activation.IActivatedEventArgs)
 		// Skipping already declared method Windows.UI.Xaml.Application.OnLaunched(Windows.ApplicationModel.Activation.LaunchActivatedEventArgs)
 		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
@@ -118,14 +128,6 @@ namespace Windows.UI.Xaml
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Application", "void Application.OnWindowCreated(WindowCreatedEventArgs args)");
 		}
 		#endif
-		// Forced skipping of method Windows.UI.Xaml.Application.FocusVisualKind.get
-		// Forced skipping of method Windows.UI.Xaml.Application.FocusVisualKind.set
-		// Forced skipping of method Windows.UI.Xaml.Application.RequiresPointerMode.get
-		// Forced skipping of method Windows.UI.Xaml.Application.RequiresPointerMode.set
-		// Forced skipping of method Windows.UI.Xaml.Application.LeavingBackground.add
-		// Forced skipping of method Windows.UI.Xaml.Application.LeavingBackground.remove
-		// Forced skipping of method Windows.UI.Xaml.Application.EnteredBackground.add
-		// Forced skipping of method Windows.UI.Xaml.Application.EnteredBackground.remove
 		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		protected virtual void OnBackgroundActivated( global::Windows.ApplicationModel.Activation.BackgroundActivatedEventArgs args)
@@ -133,8 +135,6 @@ namespace Windows.UI.Xaml
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Application", "void Application.OnBackgroundActivated(BackgroundActivatedEventArgs args)");
 		}
 		#endif
-		// Forced skipping of method Windows.UI.Xaml.Application.HighContrastAdjustment.get
-		// Forced skipping of method Windows.UI.Xaml.Application.HighContrastAdjustment.set
 		// Forced skipping of method Windows.UI.Xaml.Application.Current.get
 		// Skipping already declared method Windows.UI.Xaml.Application.Start(Windows.UI.Xaml.ApplicationInitializationCallback)
 		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__

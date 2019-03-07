@@ -23,8 +23,8 @@ namespace Windows.UI.Xaml.Controls
 			{
 				var windowRect = Windows.UI.Xaml.Window.Current.Bounds;
 
-				var targetTransform = target.TransformToVisual(this) as TranslateTransform;
-				var targetRect = new Rect(targetTransform.X, targetTransform.Y, target.ActualWidth, target.ActualHeight);
+				var targetTransform = (MatrixTransform)target.TransformToVisual(this);
+				var targetRect = new Rect(targetTransform.Matrix.OffsetX, targetTransform.Matrix.OffsetY, target.ActualWidth, target.ActualHeight);
 
 				child.Measure(windowRect.Size);
 				var childRect = new Rect(new Point(), child.DesiredSize);

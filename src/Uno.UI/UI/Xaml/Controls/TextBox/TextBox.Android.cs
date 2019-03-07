@@ -59,6 +59,13 @@ namespace Windows.UI.Xaml.Controls
 			{
 				_textBoxView.OnFocusChangeListener = null;
 			}
+
+			// We always force lose the focus when unloading the control.
+			// This is required as the FocusChangedListener may not be called
+			// when the unloaded propagation is done on the .NET side (see
+			// FeatureConfiguration.FrameworkElement.AndroidUseManagedLoadedUnloaded for
+			// more details.
+			ProcessFocusChanged(false);
 		}
 
 		protected override void OnLoaded()
@@ -422,54 +429,59 @@ namespace Windows.UI.Xaml.Controls
 			//When a TextBox loses focus, we want to dismiss the keyboard if no other view requiring it is focused
 			if (v == _textBoxView)
 			{
-				_keyboardDisposable.Disposable = CoreDispatcher.Main
-					//The delay is required because the OnFocusChange method is called when the focus is being changed, not when it has changed.
-					//If the focus is moved from one TextBox to another, the CurrentFocus will be null, meaning we would hide the keyboard when we shouldn't.
-					.RunAsync(
+				ProcessFocusChanged(hasFocus);
+			}
+		}
+
+		private void ProcessFocusChanged(bool hasFocus)
+		{
+			_keyboardDisposable.Disposable = CoreDispatcher.Main
+				//The delay is required because the OnFocusChange method is called when the focus is being changed, not when it has changed.
+				//If the focus is moved from one TextBox to another, the CurrentFocus will be null, meaning we would hide the keyboard when we shouldn't.
+				.RunAsync(
 					CoreDispatcherPriority.Normal,
-						async () =>
+					async () =>
+					{
+						await Task.Delay(TimeSpan.FromMilliseconds(_keyboardAccessDelay));
+
+						var activity = ContextHelper.Current as Activity;
+						//In Android, the focus can be transferred to some controls not requiring the keyboard
+						var needsKeyboard = activity?.CurrentFocus != null &&
+						activity?.CurrentFocus is TextBoxView &&
+							// Don't show keyboard if programmatically focussed and PreventKeyboardDisplayOnProgrammaticFocus is true
+							!(FocusState == FocusState.Programmatic && PreventKeyboardDisplayOnProgrammaticFocus);
+
+						var inputManager = activity?.GetSystemService(Android.Content.Context.InputMethodService) as Android.Views.InputMethods.InputMethodManager;
+
+						//When a TextBox gains focus, we want to show the keyboard
+						if (hasFocus && needsKeyboard)
 						{
-							await Task.Delay(TimeSpan.FromMilliseconds(_keyboardAccessDelay));
+							inputManager?.ShowSoftInput(_textBoxView, Android.Views.InputMethods.ShowFlags.Forced);
+							inputManager?.ToggleSoftInput(Android.Views.InputMethods.ShowFlags.Forced, Android.Views.InputMethods.HideSoftInputFlags.ImplicitOnly);
+						}
 
-							var activity = ContextHelper.Current as Activity;
-							//In Android, the focus can be transferred to some controls not requiring the keyboard
-							var needsKeyboard = activity?.CurrentFocus != null &&
-							activity?.CurrentFocus is TextBoxView &&
-								// Don't show keyboard if programmatically focussed and PreventKeyboardDisplayOnProgrammaticFocus is true
-								!(FocusState == FocusState.Programmatic && PreventKeyboardDisplayOnProgrammaticFocus);
+						//When a TextBox loses focus, we want to dismiss the keyboard if no other view requiring it is focused
+						if (!hasFocus && !needsKeyboard)
+						{
+							// Hide they keyboard for the activity's current focus instead of the view
+							// because it may have already been assigned to another focused control
+							inputManager?.HideSoftInputFromWindow(activity?.CurrentFocus?.WindowToken, Android.Views.InputMethods.HideSoftInputFlags.None);
+						}
 
-							var inputManager = activity?.GetSystemService(Android.Content.Context.InputMethodService) as Android.Views.InputMethods.InputMethodManager;
-
-							//When a TextBox gains focus, we want to show the keyboard
-							if (hasFocus && needsKeyboard)
+						if (hasFocus)
+						{
+							if (FocusState == FocusState.Unfocused)
 							{
-								inputManager?.ShowSoftInput(v, Android.Views.InputMethods.ShowFlags.Forced);
-								inputManager?.ToggleSoftInput(Android.Views.InputMethods.ShowFlags.Forced, Android.Views.InputMethods.HideSoftInputFlags.ImplicitOnly);
-							}
-
-							//When a TextBox loses focus, we want to dismiss the keyboard if no other view requiring it is focused
-							if (!hasFocus && !needsKeyboard)
-							{
-								// Hide they keyboard for the activity's current focus instead of the view
-								// because it may have already been assigned to another focused control
-								inputManager?.HideSoftInputFromWindow(activity?.CurrentFocus?.WindowToken, Android.Views.InputMethods.HideSoftInputFlags.None);
-							}
-
-							if (hasFocus)
-							{
-								if (FocusState == FocusState.Unfocused)
-								{
-									// Using FocusState.Pointer by default until need to distinguish between Pointer, Programmatic and Keyboard.
-									Focus(FocusState.Pointer);
-								}
-							}
-							else
-							{
-								Unfocus();
+								// Using FocusState.Pointer by default until need to distinguish between Pointer, Programmatic and Keyboard.
+								Focus(FocusState.Pointer);
 							}
 						}
-					);
-			}
+						else
+						{
+							Unfocus();
+						}
+					}
+				);
 		}
 
 		partial void OnTextAlignmentChangedPartial(DependencyPropertyChangedEventArgs e)

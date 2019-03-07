@@ -2,7 +2,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.ApplicationModel.Core
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+	#if false || false || false || false || false
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class CoreApplicationView 
@@ -37,16 +37,7 @@ namespace Windows.ApplicationModel.Core
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  global::Windows.UI.Core.CoreDispatcher Dispatcher
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member CoreDispatcher CoreApplicationView.Dispatcher is not implemented in Uno.");
-			}
-		}
-		#endif
+		// Skipping already declared property Dispatcher
 		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  bool IsComponent
@@ -57,16 +48,7 @@ namespace Windows.ApplicationModel.Core
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  global::Windows.ApplicationModel.Core.CoreApplicationViewTitleBar TitleBar
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member CoreApplicationViewTitleBar CoreApplicationView.TitleBar is not implemented in Uno.");
-			}
-		}
-		#endif
+		// Skipping already declared property TitleBar
 		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Foundation.Collections.IPropertySet Properties

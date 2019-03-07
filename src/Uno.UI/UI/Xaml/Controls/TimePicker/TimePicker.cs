@@ -1,14 +1,14 @@
-﻿#if !NET46 && !NETSTANDARD2_0
+﻿#if !NET46 && !__WASM__
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using System.Text;
 using Uno.Extensions;
 using Windows.Globalization;
-using Windows.UI.Xaml.Data;
-using System.Linq;
-using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Automation.Peers;
+using Windows.UI.Xaml.Controls.Primitives;
+using Windows.UI.Xaml.Data;
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -30,7 +30,38 @@ namespace Windows.UI.Xaml.Controls
 
 		public TimePicker() { }
 
-		//Properties defined in DependencyPropertyMixins.tt
+		#region MinuteIncrement DependencyProperty
+
+		public int MinuteIncrement
+		{
+			get { return (int)this.GetValue(MinuteIncrementProperty); }
+			set { this.SetValue(MinuteIncrementProperty, value); }
+		}
+
+		public static readonly DependencyProperty MinuteIncrementProperty =
+			DependencyProperty.Register(
+				"MinuteIncrement",
+				typeof(int),
+				typeof(TimePicker),
+				new FrameworkPropertyMetadata(
+					defaultValue: 1,
+					options: FrameworkPropertyMetadataOptions.None,
+					propertyChangedCallback: (s, e) => ((TimePicker)s)?.OnMinuteIncrementChanged((int)e.OldValue, (int)e.NewValue),
+					coerceValueCallback: (s, e) =>
+					{
+						var value = (int)e;
+
+						if (value < 1)
+							return 1;
+
+						if (value > 30)
+							return 30;
+
+						return value;
+					})
+				);
+
+		#endregion
 
 		/// <summary>
 		/// Property that allows apps to specify any flyout placement 
@@ -72,16 +103,21 @@ namespace Windows.UI.Xaml.Controls
 		{
 			if (_flyoutButton != null)
 			{
-#if __IOS__
+#if __IOS__ || __ANDROID__
 				_flyoutButton.Flyout = new TimePickerFlyout
 				{
+#if __IOS__
 					Placement = FlyoutPlacement,
+#endif
 					Time = this.Time,
+					MinuteIncrement = this.MinuteIncrement,
 					ClockIdentifier = this.ClockIdentifier
 				};
-#endif
+
 				BindToFlyout(nameof(Time));
+				BindToFlyout(nameof(MinuteIncrement));
 				BindToFlyout(nameof(ClockIdentifier));
+#endif
 			}
 
 			UpdateDisplayedDate();
@@ -101,6 +137,8 @@ namespace Windows.UI.Xaml.Controls
 
 			UpdateDisplayedDate();
 		}
+
+		partial void OnMinuteIncrementChanged(int oldTimeIncrement, int newTimeIncrement);
 
 		private void UpdateDisplayedDate()
 		{
@@ -133,7 +171,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			this.Binding(propertyName, propertyName, _flyoutButton.Flyout, BindingMode.TwoWay);
 		}
-		
+
 		protected override AutomationPeer OnCreateAutomationPeer()
 		{
 			return new TimePickerAutomationPeer(this);

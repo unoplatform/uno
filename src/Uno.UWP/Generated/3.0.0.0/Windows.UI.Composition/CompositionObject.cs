@@ -5,7 +5,7 @@ namespace Windows.UI.Composition
 	#if false || false || false || false || false
 	[global::Uno.NotImplemented]
 	#endif
-	public  partial class CompositionObject : global::System.IDisposable
+	public  partial class CompositionObject : global::System.IDisposable,global::Windows.UI.Composition.IAnimationObject
 	{
 		// Skipping already declared property Compositor
 		// Skipping already declared property Dispatcher
@@ -95,6 +95,28 @@ namespace Windows.UI.Composition
 			throw new global::System.NotImplementedException("The member AnimationController CompositionObject.TryGetAnimationController(string propertyName) is not implemented in Uno.");
 		}
 		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  void PopulatePropertyInfo( string propertyName,  global::Windows.UI.Composition.AnimationPropertyInfo propertyInfo)
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.CompositionObject", "void CompositionObject.PopulatePropertyInfo(string propertyName, AnimationPropertyInfo propertyInfo)");
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public static void StartAnimationWithIAnimationObject( global::Windows.UI.Composition.IAnimationObject target,  string propertyName,  global::Windows.UI.Composition.CompositionAnimation animation)
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.CompositionObject", "void CompositionObject.StartAnimationWithIAnimationObject(IAnimationObject target, string propertyName, CompositionAnimation animation)");
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public static void StartAnimationGroupWithIAnimationObject( global::Windows.UI.Composition.IAnimationObject target,  global::Windows.UI.Composition.ICompositionAnimationBase animation)
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.CompositionObject", "void CompositionObject.StartAnimationGroupWithIAnimationObject(IAnimationObject target, ICompositionAnimationBase animation)");
+		}
+		#endif
 		// Processing: System.IDisposable
+		// Processing: Windows.UI.Composition.IAnimationObject
 	}
 }

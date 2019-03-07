@@ -13,6 +13,8 @@ using Uno.UI.DataBinding;
 using Windows.UI.Xaml.Controls.Primitives;
 using Windows.Foundation;
 using Uno;
+using Uno.Extensions;
+using Microsoft.Extensions.Logging;
 
 #if XAMARIN_ANDROID
 using View = Android.Views.View;
@@ -36,6 +38,9 @@ namespace Windows.UI.Xaml.Controls
 		public event EventHandler<ScrollViewerViewChangedEventArgs> ViewChanged;
 
 		private readonly SerialDisposable _sizeChangedSubscription = new SerialDisposable();
+
+		internal Foundation.Size ViewportMeasureSize { get; private set; }
+		internal Foundation.Size ViewportArrangeSize { get; private set; }
 
 		static ScrollViewer()
 		{
@@ -477,12 +482,21 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
+		protected override Foundation.Size MeasureOverride(Foundation.Size availableSize)
+		{
+			ViewportMeasureSize = availableSize;
+
+			return base.MeasureOverride(availableSize);
+		}
+
 #pragma warning disable 649 // unused member for Unit tests
 		private IScrollContentPresenter _sv;
 #pragma warning restore 649 // unused member for Unit tests
 
 		protected override Foundation.Size ArrangeOverride(Foundation.Size finalSize)
 		{
+			ViewportArrangeSize = finalSize;
+
 			var size = base.ArrangeOverride(finalSize);
 
 			UpdateDimensionProperties();
@@ -502,6 +516,11 @@ namespace Windows.UI.Xaml.Controls
 
 			ScrollableHeight = Math.Max(ExtentHeight - ViewportHeight, 0);
 			ScrollableWidth = Math.Max(ExtentWidth - ViewportWidth, 0);
+
+			if (this.Log().IsEnabled(LogLevel.Debug))
+			{
+				this.Log().LogDebug($"ScrollViewer setting ViewportHeight={ViewportHeight}, ViewportWidth={ViewportWidth}");
+			}
 		}
 
 #if !NET46
@@ -511,7 +530,7 @@ namespace Windows.UI.Xaml.Controls
 		/// <param name="view"></param>
 		/// <remarks>Used in the context of member initialization</remarks>
 		public
-#if !NETSTANDARD2_0 && !__MACOS__
+#if !__WASM__ && !__MACOS__
 			new 
 #endif
 			void Add(View view)
@@ -530,7 +549,7 @@ namespace Windows.UI.Xaml.Controls
 				throw new InvalidOperationException("The template part ScrollContentPresenter could not be found or is not a ScrollContentPresenter");
 			}
 
-			_sv.Content = Content as View;
+			ApplyScrollContentPresenterContent();
 
 			// Apply correct initial zoom settings
 			OnZoomModeChanged(ZoomMode);
@@ -552,14 +571,33 @@ namespace Windows.UI.Xaml.Controls
 				// for the lack of TemplatedParentScope support
 				ClearContentTemplatedParent(oldValue);
 
-				_sv.Content = Content as View;
-
-				// Propagate the ScrollViewer's own templated parent, instead of 
-				// the scrollviewer itself (through ScrollContentPreset
-				SynchronizeContentTemplatedParent(TemplatedParent);
+				ApplyScrollContentPresenterContent();
 			}
 
 			UpdateSizeChangedSubscription();
+		}
+
+		private void ApplyScrollContentPresenterContent()
+		{
+			// Stop the automatic propagation of the templated parent on the Content
+			// This prevents issues when the a ScrollViewer is hosted in a control template
+			// and its content is a ContentControl or ContentPresenter, which has a TemplateBinding
+			// on the Content property. This can make the Content added twice in the visual tree.
+			StopContentTemplatedParentPropagation();
+
+			_sv.Content = Content as View;
+
+			// Propagate the ScrollViewer's own templated parent, instead of 
+			// the scrollviewer itself (through ScrollContentPreset
+			SynchronizeContentTemplatedParent(TemplatedParent);
+		}
+
+		private void StopContentTemplatedParentPropagation()
+		{
+			if (Content is IDependencyObjectStoreProvider provider)
+			{
+				provider.Store.SetValue(provider.Store.TemplatedParentProperty, null, DependencyPropertyValuePrecedences.Local);
+			}
 		}
 
 		private void UpdateSizeChangedSubscription(bool isCleanupRequired = false)

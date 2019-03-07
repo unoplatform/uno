@@ -107,6 +107,16 @@ namespace Windows.Graphics.Display.Core
 			}
 		}
 		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  bool IsDolbyVisionLowLatencySupported
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member bool HdmiDisplayMode.IsDolbyVisionLowLatencySupported is not implemented in Uno.");
+			}
+		}
+		#endif
 		// Forced skipping of method Windows.Graphics.Display.Core.HdmiDisplayMode.ResolutionWidthInRawPixels.get
 		// Forced skipping of method Windows.Graphics.Display.Core.HdmiDisplayMode.ResolutionHeightInRawPixels.get
 		// Forced skipping of method Windows.Graphics.Display.Core.HdmiDisplayMode.RefreshRate.get
@@ -124,5 +134,6 @@ namespace Windows.Graphics.Display.Core
 		// Forced skipping of method Windows.Graphics.Display.Core.HdmiDisplayMode.IsSdrLuminanceSupported.get
 		// Forced skipping of method Windows.Graphics.Display.Core.HdmiDisplayMode.IsSmpte2084Supported.get
 		// Forced skipping of method Windows.Graphics.Display.Core.HdmiDisplayMode.Is2086MetadataSupported.get
+		// Forced skipping of method Windows.Graphics.Display.Core.HdmiDisplayMode.IsDolbyVisionLowLatencySupported.get
 	}
 }

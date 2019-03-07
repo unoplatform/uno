@@ -141,12 +141,12 @@ namespace Uno.Xaml
 				// Remove wrapping single quotes.
 				if (stringValue.StartsWith("'") && stringValue.EndsWith("'"))
 				{
-					return stringValue.Trim('\'');
+					return stringValue.Trim(new[] { '\'' });
 				}
 				// Remove wrapping double quotes.
 				else if (stringValue.StartsWith("\"") && stringValue.EndsWith("\""))
 				{
-					return stringValue.Trim('\"');
+					return stringValue.Trim(new[] { '\"' });
 				}
 			}
 

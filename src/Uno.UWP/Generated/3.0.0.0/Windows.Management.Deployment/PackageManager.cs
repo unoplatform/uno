@@ -390,5 +390,12 @@ namespace Windows.Management.Deployment
 			throw new global::System.NotImplementedException("The member IAsyncOperationWithProgress<DeploymentResult, DeploymentProgress> PackageManager.RequestAddPackageAsync(Uri packageUri, IEnumerable<Uri> dependencyPackageUris, DeploymentOptions deploymentOptions, PackageVolume targetVolume, IEnumerable<string> optionalPackageFamilyNames, IEnumerable<Uri> relatedPackageUris, IEnumerable<Uri> packageUrisToInstall) is not implemented in Uno.");
 		}
 		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  global::Windows.Foundation.IAsyncOperationWithProgress<global::Windows.Management.Deployment.DeploymentResult, global::Windows.Management.Deployment.DeploymentProgress> DeprovisionPackageForAllUsersAsync( string packageFamilyName)
+		{
+			throw new global::System.NotImplementedException("The member IAsyncOperationWithProgress<DeploymentResult, DeploymentProgress> PackageManager.DeprovisionPackageForAllUsersAsync(string packageFamilyName) is not implemented in Uno.");
+		}
+		#endif
 	}
 }

@@ -20,9 +20,9 @@
 		<dependency id="Xamarin.Android.Support.v4" version="25.3.1" />
 		<dependency id="Xamarin.Android.Support.v7.AppCompat" version="25.3.1" />
 		<dependency id="Xamarin.Android.Support.v7.RecyclerView" version="25.3.1" />
-		<dependency id="Uno.SourceGenerationTasks" version="1.28.0" />
-		<dependency id="Uno.Core" version="1.25.0" />
-		<dependency id="Uno.Core.Build" version="1.25.0" />
+		<dependency id="Uno.SourceGenerationTasks" version="1.29.0" />
+		<dependency id="Uno.Core" version="1.26.0" />
+		<dependency id="Uno.Core.Build" version="1.26.0" />
 	  </group>
 
 	  <!-- Android 8.0 -->
@@ -30,23 +30,23 @@
 		<dependency id="Xamarin.Android.Support.v4" version="26.1.0.1" />
 		<dependency id="Xamarin.Android.Support.v7.AppCompat" version="26.1.0.1" />
 		<dependency id="Xamarin.Android.Support.v7.RecyclerView" version="26.1.0.1" />
-		<dependency id="Uno.SourceGenerationTasks" version="1.28.0" />
-		<dependency id="Uno.Core" version="1.25.0" />
-		<dependency id="Uno.Core.Build" version="1.25.0" />
+		<dependency id="Uno.SourceGenerationTasks" version="1.29.0" />
+		<dependency id="Uno.Core" version="1.26.0" />
+		<dependency id="Uno.Core.Build" version="1.26.0" />
 	  </group>
 
 	  <!-- iOS -->
 	  <group targetFramework="xamarinios10">
-		<dependency id="Uno.SourceGenerationTasks" version="1.28.0" />
-		<dependency id="Uno.Core" version="1.25.0" />
-		<dependency id="Uno.Core.Build" version="1.25.0" />
+		<dependency id="Uno.SourceGenerationTasks" version="1.29.0" />
+		<dependency id="Uno.Core" version="1.26.0" />
+		<dependency id="Uno.Core.Build" version="1.26.0" />
 	  </group>
 
 	  <!-- .NET Standard 2.0 -->
 	  <group targetFramework="netstandard2.0">
-		<dependency id="Uno.SourceGenerationTasks" version="1.28.0" />
-		<dependency id="Uno.Core" version="1.25.0" />
-		<dependency id="Uno.Core.Build" version="1.25.0" />
+		<dependency id="Uno.SourceGenerationTasks" version="1.29.0" />
+		<dependency id="Uno.Core" version="1.26.0" />
+		<dependency id="Uno.Core.Build" version="1.26.0" />
 		<dependency id="System.Numerics.Vectors" version="4.5.0-preview1-26216-02" />
 		<dependency id="System.Runtime.InteropServices.WindowsRuntime" version="4.3.0" />
 	  </group>
@@ -169,6 +169,9 @@
 	<file src="..\src\SourceGenerators\Uno.UI.SourceGenerators\Bin\Release\Uno.Xaml.dll" target="tools" />
 	<file src="..\src\SourceGenerators\Uno.UI.SourceGenerators\Bin\Release\Uno.Xaml.pdb" target="tools" />
 	<file src="..\src\SourceGenerators\Uno.UI.SourceGenerators\Bin\Release\Uno.UI.SourceGenerators.pdb" target="tools" />
+	<file src="..\src\SourceGenerators\Uno.UI.SourceGenerators\Bin\Release\Mono.Cecil*.dll" target="tools" />
+	<file src="..\src\SourceGenerators\Uno.UI.SourceGenerators\Bin\Release\Mono.Cecil*.pdb" target="tools" />
+    
 	<file src="..\src\SourceGenerators\Uno.UI.Tasks\Bin\Release\*.dll" target="build\Uno.UI.Tasks" />
 	<file src="..\src\SourceGenerators\Uno.UI.Tasks\Bin\Release\*.pdb" target="build\Uno.UI.Tasks" />
 

@@ -9,6 +9,20 @@ namespace Windows.UI.Xaml.Controls.Primitives
 	{
 		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
+		public  object ScrollOwner
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member object CarouselPanel.ScrollOwner is not implemented in Uno.");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.Primitives.CarouselPanel", "object CarouselPanel.ScrollOwner");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
 		public  bool CanVerticallyScroll
 		{
 			get
@@ -32,20 +46,6 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			set
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.Primitives.CarouselPanel", "bool CarouselPanel.CanHorizontallyScroll");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  object ScrollOwner
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member object CarouselPanel.ScrollOwner is not implemented in Uno.");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.Primitives.CarouselPanel", "object CarouselPanel.ScrollOwner");
 			}
 		}
 		#endif

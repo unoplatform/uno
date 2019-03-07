@@ -1,5 +1,4 @@
-﻿#if XAMARIN
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -15,4 +14,3 @@ namespace Windows.UI.Xaml.Controls
 		protected override bool CanCreateTemplateWithoutParent { get; } = true;
 	}
 }
-#endif

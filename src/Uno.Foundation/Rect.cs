@@ -45,7 +45,7 @@ namespace Windows.Foundation
 		public static implicit operator Rect(string text)
 		{
 			var parts = text
-				.Split(',')
+				.Split(new[] { ',' })
 				.Select(double.Parse)
 				.ToArray();
 
@@ -147,6 +147,21 @@ namespace Windows.Foundation
 			{
 				this = Empty;
 			}
+		}
+
+		/// <summary>
+		/// Finds the union of the rectangle represented by the current Windows.Foundation.Rect
+		/// and the rectangle represented by the specified Windows.Foundation.Rect, and stores
+		/// the result as the current Windows.Foundation.Rect.
+		/// </summary>
+		/// <param name="rect">The rectangle to union with the current rectangle.</param>
+		public void Union(Rect rect)
+		{
+			var left = Math.Min(Left, rect.Left);
+			var right = Math.Max(left + Width, rect.Right);
+			var top = Math.Min(Top, rect.Top);
+			var bottom = Math.Max(top + Height, rect.Bottom);
+			this = new Rect(left, top, right - left, bottom - top);
 		}
 
 		public bool Equals(Rect value) 

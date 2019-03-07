@@ -38,10 +38,6 @@ namespace Windows.UI.Xaml
 		public void Init()
 		{
 			Dispatcher = CoreDispatcher.Main;
-
-			bool isHostedMode = !RuntimeInformation.IsOSPlatform(OSPlatform.Create("WEBASSEMBLY"));
-
-			WebAssemblyRuntime.InvokeJS($"Uno.UI.WindowManager.init(\"{Windows.Storage.ApplicationData.Current.LocalFolder.Path}\", {isHostedMode.ToString().ToLowerInvariant()});");
 			CoreWindow = new CoreWindow();
 		}
 
@@ -90,7 +86,7 @@ namespace Windows.UI.Xaml
 		}
 
 		[Preserve]
-		public static void Resize(string newSize)
+		public static void Resize(double width, double height)
 		{
 			var window = Current?._window;
 			if (window == null)
@@ -99,10 +95,7 @@ namespace Windows.UI.Xaml
 				return; // nothing to measure
 			}
 
-			var sizeParts = newSize.Split(';');
-			var size = new Size(double.Parse(sizeParts[0]), double.Parse(sizeParts[1]));
-
-			Current.OnNativeSizeChanged(size);
+			Current.OnNativeSizeChanged(new Size(width, height));
 		}
 
 		private void OnNativeSizeChanged(Size size)
@@ -155,11 +148,26 @@ namespace Windows.UI.Xaml
 			_rootBorder.Child = _content = content;
 			if (content != null)
 			{
+				if (FeatureConfiguration.FrameworkElement.WasmUseManagedLoadedUnloaded && !_window.IsLoaded)
+				{
+					_window.ManagedOnLoading();
+				}
+
 				WebAssemblyRuntime.InvokeJS($"Uno.UI.WindowManager.current.setRootContent(\"{_window.HtmlId}\");");
+
+				if (FeatureConfiguration.FrameworkElement.WasmUseManagedLoadedUnloaded && !_window.IsLoaded)
+				{
+					_window.ManagedOnLoaded();
+				}
 			}
 			else
 			{
 				WebAssemblyRuntime.InvokeJS($"Uno.UI.WindowManager.current.setRootContent();");
+
+				if (FeatureConfiguration.FrameworkElement.WasmUseManagedLoadedUnloaded && _window.IsLoaded)
+				{
+					_window.ManagedOnUnloaded();
+				}
 			}
 		}
 
