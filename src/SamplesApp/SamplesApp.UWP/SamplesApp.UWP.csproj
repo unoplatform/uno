@@ -98,7 +98,7 @@
       <Version>12.0.1</Version>
     </PackageReference>
     <PackageReference Include="Uno.Core">
-      <Version>1.26.0-dev.58</Version>
+      <Version>1.27.0-dev.68</Version>
     </PackageReference>
   </ItemGroup>
   <ItemGroup>

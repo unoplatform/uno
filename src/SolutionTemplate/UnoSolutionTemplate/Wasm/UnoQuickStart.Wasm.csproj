@@ -34,8 +34,8 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Uno.UI" Version="1.43.0-dev.772" />
-		<PackageReference Include="Uno.Wasm.Bootstrap" Version="1.0.0-dev.166" />
+		<PackageReference Include="Uno.UI" Version="1.43.0-dev.965" />
+		<PackageReference Include="Uno.Wasm.Bootstrap" Version="1.0.0-dev.214" />
 		<DotNetCliToolReference Include="Uno.Wasm.Bootstrap.Cli" Version="1.0.0-dev.166" />
 	</ItemGroup>
 
