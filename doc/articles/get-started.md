@@ -12,7 +12,7 @@ To easily create an multi-platform application:
 * Install the [Uno Solution Template Visual Studio Extension](https://marketplace.visualstudio.com/items?itemName=nventivecorp.uno-platform-addin)
 * Create a new C# solution using the **Cross-Platform Library (Uno Platform)** template, from Visual Studio's **Start Page** :
 
-![](assets/quick-start/vsix-new-project.png)
+![new project](Assets/quick-start/vsix-new-project.png)
 * Update to the latest nuget package named `Uno.UI`, make sure to check the `pre-release` box.
 * To debug the iOS head, select the `Debug|iPhoneSimulator` configuration
 * To debug the Android head, select the `Debug|AnyCPU` configuration
@@ -21,7 +21,12 @@ To easily create an multi-platform application:
 
 ## Using the WebAssembly C# Debugger
 1. Make your project the startup project (right-click **set as startup** in Solution Explorer)
-2. In the debugging toolbar:
+1. Make sure you have the following line in your project file:
+   ```xml
+   <MonoRuntimeDebuggerEnabled Condition="'$(Configuration)'=='Debug'">true</MonoRuntimeDebuggerEnabled>
+   ```
+   This will ensure that the debugging symbols are generated and loaded by mono
+1. In the debugging toolbar:
 * Select **IIS Express** as the debugging target
 * Select **Chrome** as the Web Browser
 * Make sure script debugging is disabled<br/>
