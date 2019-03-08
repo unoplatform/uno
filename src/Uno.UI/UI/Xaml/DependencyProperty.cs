@@ -508,5 +508,10 @@ namespace Windows.UI.Xaml
 
 			return output.ToArray();
 		}
+
+		internal static DependencyProperty Register(string v, Type type1, Type type2, PropertyMetadata propertyMetadata, object updateSourceOnChanged)
+		{
+			throw new NotImplementedException();
+		}
 	}
 }

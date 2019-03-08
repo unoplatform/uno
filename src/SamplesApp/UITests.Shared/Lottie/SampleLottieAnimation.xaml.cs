@@ -17,6 +17,12 @@ namespace UITests.Shared.Lottie
 				.Cast<Stretch>()
 				.Select(x => x.ToString());
 			stretch.SelectedIndex = 3;
+
+			play1.Tapped += (snd, evt) => player.PlayAsync(0, 1, false);
+			playloop.Tapped += (snd, evt) => player.PlayAsync(0, 1, true);
+			stop.Tapped += (snd, evt) => player.Stop();
+			pause.Tapped += (snd, evt) => player.Pause();
+			resume.Tapped += (snd, evt) => player.Resume();
 		}
 	}
 }

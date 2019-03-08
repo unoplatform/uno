@@ -22,6 +22,13 @@
 		</Border>
 
 		<StackPanel VerticalAlignment="Bottom" HorizontalAlignment="Stretch">
+			<uno:StarStackPanel Orientation="Horizontal" Sizes="Auto">
+				<Button x:Name="play1">Play 1</Button>
+				<Button x:Name="playloop">Play Looped</Button>
+				<Button x:Name="stop">Stop</Button>
+				<Button x:Name="pause">Pause</Button>
+				<Button x:Name="resume">Resume</Button>
+			</uno:StarStackPanel>
 			<uno:StarStackPanel Orientation="Horizontal" Sizes="Auto,*">
 				<TextBlock>PlayRate: </TextBlock>
 				<Slider x:Name="rate" Value="1.0" Minimum="0.25" Maximum="5.0" StepFrequency="0.25" TickFrequency="0.5" />
