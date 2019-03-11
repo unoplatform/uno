@@ -2,12 +2,9 @@ jobs:
 - job: VS_Latest
 
   pool:
-    name: Default
-    demands:
-    - VisualStudio_Version -equals 15.9.7
+    vmImage: 'vs2017-win2016'
 
   variables:
-    NUGET_PACKAGES: $(Agent.WorkFolder)\.nuget
     CombinedConfiguration: Release|Any CPU
     CI_Build: true
 
@@ -150,13 +147,9 @@ jobs:
 - job: Documentation
 
   pool:
-    name: Default
-    demands:
-    - VisualStudio_Version -equals 15.9.7
+    vmImage: 'vs2017-win2016'
 
   variables:
-    NUGET_PACKAGES: $(Agent.WorkFolder)\.nuget
-    NUGET_HTTP_CACHE_PATH: $(Agent.WorkFolder)\.nuget-http-cache
     CombinedConfiguration: Release|Any CPU
     CI_Build: true
 
