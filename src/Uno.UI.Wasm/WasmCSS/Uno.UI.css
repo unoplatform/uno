@@ -1,10 +1,12 @@
 ﻿html,
 body {
-  /**
-    Disable root scrolling (bouncing effect on touch devices)
-  */
-  position: fixed;
-  overflow: hidden;
+    /**
+      Disable root scrolling (bouncing effect on touch devices)
+    */
+    position: fixed;
+    height: 100%;
+    width: 100%;
+    overflow: hidden;
 }
 
 .uno-root-element {
@@ -63,6 +65,10 @@ body {
 
 .uno-textelement {
   position: relative;
+}
+
+.uno-scrollcontentpresenter {
+    -webkit-overflow-scrolling: touch;
 }
 
 .uno-splash {
