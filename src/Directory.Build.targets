@@ -1,19 +1,19 @@
 <Project ToolsVersion="15.0">
-	<Import Project="../build/GetMsBuildVersion.targets"/>
+	<Import Project="../build/GetMsBuildVersion.targets" />
 
   <Target Name="AndroidResourceGenWorkaround" BeforeTargets="Build" Condition="'$(AndroidUseIntermediateDesignerFile)'=='True' and $(IsMonoAndroid)">
-    <MakeDir Directories="obj\$(TargetFramework)\Resources"/>
+    <MakeDir Directories="obj\$(TargetFramework)\Resources" />
     <WriteLinesToFile File="$(AndroidResgenFile)" Lines="// Empty Content from uno.ui Directory.Build.targets." />
   </Target>
 
   <ItemGroup>
-    <PackageReference Update="Uno.SourceGenerationTasks" Version="1.30.0-dev.268" />
-    <PackageReference Update="Uno.SourceGeneration" Version="1.30.0-dev.268" />
-    <PackageReference Update="Uno.Core" Version="1.26.0-dev.58" />
-    <PackageReference Update="Uno.Core.Build" Version="1.26.0-dev.58" />
-    <PackageReference Update="Uno.Wasm.Bootstrap" Version="1.0.0-dev.166" />
+    <PackageReference Update="Uno.SourceGenerationTasks" Version="1.30.0-dev.275" />
+    <PackageReference Update="Uno.SourceGeneration" Version="1.30.0-dev.275" />
+    <PackageReference Update="Uno.Core" Version="1.27.0-dev.68" />
+    <PackageReference Update="Uno.Core.Build" Version="1.27.0-dev.68" />
+    <PackageReference Update="Uno.Wasm.Bootstrap" Version="1.0.0-dev.217" />
     <PackageReference Update="xamarin.build.download" Version="0.4.9" />
-    <DotNetCliToolReference Update="Uno.Wasm.Bootstrap.Cli" Version="1.0.0-dev.166" />
+    <DotNetCliToolReference Update="Uno.Wasm.Bootstrap.Cli" Version="1.0.0-dev.217" />
   </ItemGroup>
 
 </Project>
