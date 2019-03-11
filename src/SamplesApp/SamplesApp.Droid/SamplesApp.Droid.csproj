@@ -67,8 +67,8 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="MSTest.TestFramework" Version="1.2.0" />
-    <PackageReference Include="Uno.SourceGenerationTasks"/>
-    <PackageReference Include="Uno.Wasm.Bootstrap" Version="1.0.0-dev.166" />
+    <PackageReference Include="Uno.SourceGenerationTasks" />
+    <PackageReference Include="Uno.Wasm.Bootstrap" Version="1.0.0-dev.217" />
     <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="1.1.1" />
     <PackageReference Include="Microsoft.Extensions.Logging.Filter" Version="1.1.1" />
   </ItemGroup>
