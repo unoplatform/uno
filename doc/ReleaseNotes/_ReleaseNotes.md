@@ -84,6 +84,7 @@
 * Add some missing default UWP styles
 * The `FrameworkElement.IsLoaded` property is now public
 * Improve XAML generation error messages for unknown symbols
+* Added default console logging for all platforms
 
 ### Breaking changes
 * Refactored ToggleSwitch Default Native XAML Styles. (cf. 'NativeDefaultToggleSwitch' styles in Generic.Native.xaml)
@@ -165,6 +166,7 @@
  * [Wasm] Fixes items measured after being removed from their parent appear in the visual tree, on top of every other items.
  * [Wasm] Fixes lements may not be removed form the global active DOM elements tracking map
  * [Wasm] Disable the root element scrolling (bounce) on touch devices
+ * Fixed invalid iOS assets folder. `ImageAsset` nodes must not be `<Visible>false</Visible>` to be copied to the generated project.
 
 ## Release 1.42
 

@@ -82,8 +82,12 @@
     <None Include="iOS\LaunchScreen.storyboard">
       <SubType>Designer</SubType>
     </None>
-    <None Include="iOS\Media.xcassets\AppIcons.appiconset\Contents.json" />
-    <None Include="iOS\Media.xcassets\LaunchImages.launchimage\Contents.json" />
+    <Content Include="iOS\Media.xcassets\AppIcons.appiconset\Contents.json">
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="iOS\Media.xcassets\LaunchImages.launchimage\Contents.json">
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
     <None Include="iOS\Resources\Fonts\winjs-symbols.ttf">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
@@ -116,7 +120,7 @@
       <SubType>Designer</SubType>
     </None>
     <None Include="iOS\iOS.vstemplate" />
-    <None Include="iOS\Resources\Default-568h%402x.png" />
+    <Content Include="iOS\Resources\Default-568h%402x.png" />
     <None Include="iOS\UnoQuickStart.iOS.csproj">
       <SubType>Designer</SubType>
     </None>
@@ -171,13 +175,27 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="iOS\Media.xcassets\AppIcons.appiconset\ios-marketing-1024x1024%401x.png" />
-    <Content Include="iOS\Media.xcassets\AppIcons.appiconset\iPad-76x76%402x.png" />
-    <Content Include="iOS\Media.xcassets\AppIcons.appiconset\iPad-84x84%402x.png" />
-    <Content Include="iOS\Media.xcassets\AppIcons.appiconset\iPhone-20x20%402x.png" />
-    <Content Include="iOS\Media.xcassets\AppIcons.appiconset\iPhone-20x20%403x.png" />
-    <Content Include="iOS\Media.xcassets\AppIcons.appiconset\iPhone-40x40%403x.png" />
-    <Content Include="iOS\Media.xcassets\AppIcons.appiconset\iPhone-60x60%402x.png" />
+    <Content Include="iOS\Media.xcassets\AppIcons.appiconset\ios-marketing-1024x1024%401x.png">
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="iOS\Media.xcassets\AppIcons.appiconset\iPad-76x76%402x.png">
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="iOS\Media.xcassets\AppIcons.appiconset\iPad-84x84%402x.png">
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="iOS\Media.xcassets\AppIcons.appiconset\iPhone-20x20%402x.png">
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="iOS\Media.xcassets\AppIcons.appiconset\iPhone-20x20%403x.png">
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="iOS\Media.xcassets\AppIcons.appiconset\iPhone-40x40%403x.png">
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="iOS\Media.xcassets\AppIcons.appiconset\iPhone-60x60%402x.png">
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
     <Content Include="iOS\Resources\SplashScreen%402x.png" />
     <Content Include="iOS\Resources\SplashScreen%403x.png" />
     <Content Include="Wasm\LinkerConfig.xml" />
