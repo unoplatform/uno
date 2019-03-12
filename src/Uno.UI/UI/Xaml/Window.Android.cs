@@ -22,6 +22,7 @@ namespace Windows.UI.Xaml
 		{
 			Dispatcher = CoreDispatcher.Main;
 			CoreWindow = new CoreWindow();
+			InitializeCommon();
 		}
 
 		internal int SystemUiVisibility { get; set; }

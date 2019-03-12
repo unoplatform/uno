@@ -85,6 +85,9 @@
 * The `FrameworkElement.IsLoaded` property is now public
 * Improve XAML generation error messages for unknown symbols
 * Added default console logging for all platforms
+* Add support for `Application.OnWindowCreated`
+* Added non-throwing stubs for `AutomationProperty`
+* Add missing system resources
 
 ### Breaking changes
 * Refactored ToggleSwitch Default Native XAML Styles. (cf. 'NativeDefaultToggleSwitch' styles in Generic.Native.xaml)
@@ -98,6 +101,7 @@
   You can use "&#x0a;" instead in the text/content properties or a carriage return where you need it in the localized resources.
 * The `ResourcesGeneration` msbuild target has been renamed to `UnoResourcesGeneration`
   If your csproj is using this target explicily, change it to the new name.
+* Make `UIElement.IsPointerPressed` and `IsPointerOver` internal
 
 ### Bug fixes
  * MediaPlayerElement [iOS] Subtitles are not disable on initial launch anymore
