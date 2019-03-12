@@ -41,9 +41,9 @@ namespace Windows.UI.Xaml
 		/// </summary>
 		internal bool ClipChildrenToBounds { get; set; } = true;
 
-		protected internal bool IsPointerPressed { get; set; }
+		internal bool IsPointerPressed { get; set; }
 
-		protected internal bool IsPointerOver { get; set; }
+		internal bool IsPointerOver { get; set; }
 
 		#region Clip DependencyProperty
 
