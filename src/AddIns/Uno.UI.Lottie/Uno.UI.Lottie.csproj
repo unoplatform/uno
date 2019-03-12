@@ -1,8 +1,9 @@
-﻿<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="15.0">
+﻿<Project Sdk="MSBuild.Sdk.Extras" ToolsVersion="15.0">
 
 	<PropertyGroup>
-		<TargetFrameworks>net461;netstandard2.0</TargetFrameworks>
+		<TargetFrameworks>xamarinmac20;MonoAndroid80;xamarinios10;net461;netstandard2.0</TargetFrameworks>
 
+		<NoWarn>$(NoWarn);NU1701</NoWarn>
 		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
 		<Deterministic>true</Deterministic>
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
@@ -14,8 +15,6 @@
 		<UpToDateCheckInput Include="ts\**\*" />
 	</ItemGroup>
 
-	<Import Project="..\..\Uno.CrossTargetting.props" />
-
 	<ItemGroup>
 	  <UpToDateCheckInput Remove="ts\lottie-web.d.ts" />
 	  <UpToDateCheckInput Remove="ts\Uno.UI.Lottie.ts" />
@@ -24,8 +23,11 @@
 	<ItemGroup>
 		<PackageReference Include="Microsoft.TypeScript.Compiler" Version="2.8.3" />
 		<PackageReference Include="Microsoft.TypeScript.MSBuild" Version="2.8.3" />
-		<PackageReference Include="Uno.SourceGenerationTasks" Version="1.30.0-dev.268" />
+		<PackageReference Include="Uno.SourceGenerationTasks" Version="1.30.0-dev.273" />
 	</ItemGroup>
+
+	<Import Project="..\..\Common.targets" />
+	<Import Project="..\..\Uno.CrossTargetting.props" />
 
 	<ItemGroup>
 	  <ProjectReference Include="..\..\Uno.UI\Uno.UI.csproj" />
