@@ -20,6 +20,11 @@ namespace Windows.UI.Xaml
 		public event WindowSizeChangedEventHandler SizeChanged;
 		public event WindowVisibilityChangedEventHandler VisibilityChanged;
 
+		private void InitializeCommon()
+		{
+			Application.Current.RaiseWindowCreated(this);
+		}
+
 		public UIElement Content
 		{
 			get { return InternalGetContent(); }

@@ -51,10 +51,11 @@ namespace Windows.UI.Xaml
 		{
 			using (WritePhaseEventTrace(TraceProvider.LauchedStart, TraceProvider.LauchedStop))
 			{
+				Current = this;
+
 				// Force init
 				Window.Current.ToString();
 
-				Current = this;
 				Windows.UI.Xaml.GenericStyles.Initialize();
 
 				var arguments = WebAssemblyRuntime.InvokeJS("Uno.UI.WindowManager.findLaunchArguments()");

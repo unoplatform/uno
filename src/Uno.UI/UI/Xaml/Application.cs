@@ -95,5 +95,14 @@ namespace Windows.UI.Xaml
 		}
 
 		partial void OnSuspendingPartial();
+
+		protected virtual void OnWindowCreated(global::Windows.UI.Xaml.WindowCreatedEventArgs args)
+		{
+		}
+
+		internal void RaiseWindowCreated(Window window)
+		{
+			OnWindowCreated(new WindowCreatedEventArgs(window));
+		}
 	}
 }
