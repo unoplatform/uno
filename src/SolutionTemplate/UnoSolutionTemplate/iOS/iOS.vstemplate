@@ -26,18 +26,17 @@
 	  </Folder>
 	  <Folder Name="Media.xcassets" TargetFolderName="Media.xcassets">
 		<Folder Name="AppIcons.appiconset" TargetFolderName="AppIcons.appiconset">
-		  <ProjectItem ReplaceParameters="false" TargetFileName="Contents.json">Contents.json</ProjectItem>
-
-		  <ProjectItem ReplaceParameters="false" TargetFileName="ios-marketing-1024x1024@1x.png">ios-marketing-1024x1024@1x.png</ProjectItem>
-		  <ProjectItem ReplaceParameters="false" TargetFileName="iPad-76x76@2x.png">iPad-76x76@2x.png</ProjectItem>
-		  <ProjectItem ReplaceParameters="false" TargetFileName="iPad-84x84@2x.png">iPad-84x84@2x.png</ProjectItem>
-		  <ProjectItem ReplaceParameters="false" TargetFileName="iPhone-20x20@2x.png">iPhone-20x20@2x.png</ProjectItem>
-		  <ProjectItem ReplaceParameters="false" TargetFileName="iPhone-20x20@3x.png">iPhone-20x20@3x.png</ProjectItem>
-		  <ProjectItem ReplaceParameters="false" TargetFileName="iPhone-40x40@3x.png">iPhone-40x40@3x.png</ProjectItem>
-		  <ProjectItem ReplaceParameters="false" TargetFileName="iPhone-60x60@2x.png">iPhone-60x60@2x.png</ProjectItem>
+		  <ProjectItem ReplaceParameters="false" ItemType="ImageAsset" TargetFileName="Contents.json">Contents.json</ProjectItem>
+		  <ProjectItem ReplaceParameters="false" ItemType="ImageAsset" TargetFileName="ios-marketing-1024x1024@1x.png">ios-marketing-1024x1024@1x.png</ProjectItem>
+		  <ProjectItem ReplaceParameters="false" ItemType="ImageAsset" TargetFileName="iPad-76x76@2x.png">iPad-76x76@2x.png</ProjectItem>
+		  <ProjectItem ReplaceParameters="false" ItemType="ImageAsset" TargetFileName="iPad-84x84@2x.png">iPad-84x84@2x.png</ProjectItem>
+		  <ProjectItem ReplaceParameters="false" ItemType="ImageAsset" TargetFileName="iPhone-20x20@2x.png">iPhone-20x20@2x.png</ProjectItem>
+		  <ProjectItem ReplaceParameters="false" ItemType="ImageAsset" TargetFileName="iPhone-20x20@3x.png">iPhone-20x20@3x.png</ProjectItem>
+		  <ProjectItem ReplaceParameters="false" ItemType="ImageAsset" TargetFileName="iPhone-40x40@3x.png">iPhone-40x40@3x.png</ProjectItem>
+		  <ProjectItem ReplaceParameters="false" ItemType="ImageAsset" TargetFileName="iPhone-60x60@2x.png">iPhone-60x60@2x.png</ProjectItem>
 		</Folder>
 		<Folder Name="LaunchImages.launchimage" TargetFolderName="LaunchImages.launchimage">
-		  <ProjectItem ReplaceParameters="false" TargetFileName="Contents.json">Contents.json</ProjectItem>
+		  <ProjectItem ReplaceParameters="false" ItemType="ImageAsset" TargetFileName="Contents.json">Contents.json</ProjectItem>
 		</Folder>
 	  </Folder>
 	  <Folder Name="Resources" TargetFolderName="Resources">

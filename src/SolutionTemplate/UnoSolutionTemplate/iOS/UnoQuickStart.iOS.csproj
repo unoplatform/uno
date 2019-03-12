@@ -103,6 +103,7 @@
 		<Content Include="Entitlements.plist" />
 		<BundleResource Include="Resources\SplashScreen%402x.png" />
 		<BundleResource Include="Resources\SplashScreen%403x.png" />
+		<BundleResource Include="Resources\Default-568h%402x.png" />
 	</ItemGroup>
 	<ItemGroup>
 		<Reference Include="System" />
@@ -118,32 +119,28 @@
 	</ItemGroup>
 	<ItemGroup>
 		<ImageAsset Include="Media.xcassets\AppIcons.appiconset\Contents.json">
-			<Visible>false</Visible>
 		</ImageAsset>
 		<ImageAsset Include="Media.xcassets\AppIcons.appiconset\ios-marketing-1024x1024@1x.png">
-			<Visible>false</Visible>
 		</ImageAsset>
 		<ImageAsset Include="Media.xcassets\AppIcons.appiconset\iPad-76x76@2x.png">
-			<Visible>false</Visible>
 		</ImageAsset>
 		<ImageAsset Include="Media.xcassets\AppIcons.appiconset\iPad-84x84@2x.png">
-			<Visible>false</Visible>
 		</ImageAsset>
 		<ImageAsset Include="Media.xcassets\AppIcons.appiconset\iPhone-20x20@2x.png">
-			<Visible>false</Visible>
 		</ImageAsset>
 		<ImageAsset Include="Media.xcassets\AppIcons.appiconset\iPhone-20x20@3x.png">
-			<Visible>false</Visible>
 		</ImageAsset>
 		<ImageAsset Include="Media.xcassets\AppIcons.appiconset\iPhone-40x40@3x.png">
-			<Visible>false</Visible>
 		</ImageAsset>
 		<ImageAsset Include="Media.xcassets\AppIcons.appiconset\iPhone-60x60@2x.png">
-			<Visible>false</Visible>
 		</ImageAsset>
 		<ImageAsset Include="Media.xcassets\LaunchImages.launchimage\Contents.json">
-			<Visible>false</Visible>
 		</ImageAsset>
+	</ItemGroup>
+	<ItemGroup>
+		<Folder Include="Media" Visible="false" />
+		<Folder Include="Media\AppIcons" Visible="false" />
+		<Folder Include="Media\LaunchImages" Visible="false" />
 	</ItemGroup>
 	<Import Project="..\$ext_safeprojectname$.Shared\$ext_safeprojectname$.Shared.projitems" Label="Shared" Condition="Exists('..\$ext_safeprojectname$.Shared\$ext_safeprojectname$.Shared.projitems')" />
 	<Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />
