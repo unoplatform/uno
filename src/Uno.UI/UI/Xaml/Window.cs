@@ -7,6 +7,7 @@ using Uno.Extensions;
 using Windows.Foundation;
 using Windows.Foundation.Metadata;
 using Windows.UI.Core;
+using Uno.Logging;
 
 namespace Windows.UI.Xaml
 {
@@ -22,7 +23,17 @@ namespace Windows.UI.Xaml
 
 		private void InitializeCommon()
 		{
-			Application.Current.RaiseWindowCreated(this);
+			if (Application.Current != null)
+			{
+				Application.Current.RaiseWindowCreated(this);
+			}
+			else
+			{
+				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Warning))
+				{
+					this.Log().Warn("Unable to raise WindowCreatedEvent, there is no active Application");
+				}
+			}
 		}
 
 		public UIElement Content
