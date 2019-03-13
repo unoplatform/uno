@@ -29,19 +29,10 @@
 		<Reference Remove="System.Xaml" />
 	</ItemGroup>
 
+	<ItemGroup>
+		<PackageReference Include="Uno.MonoAnalyzers" />
+	</ItemGroup>
+
 	<Import Project="$(MSBuildSDKExtrasTargets)" Condition="Exists('$(MSBuildSDKExtrasTargets)')" />
-
-	<ItemGroup>
-		<Analyzer Include="$(MSBuildThisFileDirectory)..\..\Uno.MonoAnalyzers\bin\$(Configuration)\net461\Uno.MonoAnalyzers.dll" />
-	</ItemGroup>
-
-	<ItemGroup>
-		<!-- Disable sub project loading during docs generation to avoid https://github.com/nventive/Uno.SourceGeneration/issues/2 -->
-		<ProjectReference Include="..\..\Uno.MonoAnalyzers\Uno.MonoAnalyzers.csproj" Condition="'$(DocsGeneration)'==''">
-			<ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-			<SkipGetTargetFrameworkProperties>true</SkipGetTargetFrameworkProperties>
-			<UndefineProperties>TargetFramework</UndefineProperties>
-		</ProjectReference>
-	</ItemGroup>
 
 </Project>
