@@ -62,6 +62,7 @@
 
 	<ItemGroup>
 		<PackageReference Include="xamarin.build.download" />
+		<PackageReference Include="Uno.MonoAnalyzers" />
 	</ItemGroup>
 
 	<ItemGroup Condition="$(IsMonoAndroid) or $(IsXamarinIOS) or '$(TargetFrameworkIdentifier)'=='.NETStandard' or $(IsXamarinMac)">
@@ -85,10 +86,6 @@
 
 	<!-- Override existing target, this project cannot be published -->
 	<Target Name="Publish" />
-
-	<ItemGroup>
-		<Analyzer Include="$(MSBuildThisFileDirectory)..\Uno.MonoAnalyzers\bin\$(Configuration)\net461\Uno.MonoAnalyzers.dll" />
-	</ItemGroup>
 
 	<PropertyGroup>
 		<UnoUIGeneratorsBinPath>..\SourceGenerators\Uno.UI.SourceGenerators\bin\$(Configuration)</UnoUIGeneratorsBinPath>
