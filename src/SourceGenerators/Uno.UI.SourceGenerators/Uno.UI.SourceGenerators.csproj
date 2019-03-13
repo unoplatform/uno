@@ -20,6 +20,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <LangVersion>latest</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -44,10 +45,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-		<PackageReference Include="Microsoft.Build" Version="15.4.8" ExcludeAssets="runtime" />
-		<PackageReference Include="Microsoft.Build.Engine" Version="15.4.8" ExcludeAssets="runtime" />
-		<PackageReference Include="Microsoft.Build.Tasks.Core" Version="15.4.8" ExcludeAssets="runtime" />
-		<PackageReference Include="Microsoft.CodeAnalysis">
+    <PackageReference Include="Microsoft.Build" Version="15.4.8" ExcludeAssets="runtime" />
+    <PackageReference Include="Microsoft.Build.Engine" Version="15.4.8" ExcludeAssets="runtime" />
+    <PackageReference Include="Microsoft.Build.Tasks.Core" Version="15.4.8" ExcludeAssets="runtime" />
+    <PackageReference Include="Microsoft.CodeAnalysis">
       <Version>2.3.1</Version>
       <ExcludeAssets>runtime</ExcludeAssets>
     </PackageReference>
@@ -70,8 +71,8 @@
     <PackageReference Include="Mono.Cecil">
       <Version>0.10.1</Version>
     </PackageReference>
-    <PackageReference Include="Uno.Core"/>
-    <PackageReference Include="Uno.SourceGeneration"/>
+    <PackageReference Include="Uno.Core" />
+    <PackageReference Include="Uno.SourceGeneration" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="..\..\Uno.Foundation\Point.cs">
