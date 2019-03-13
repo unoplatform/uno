@@ -81,7 +81,7 @@ namespace Uno.Roslyn
 
 		private Dictionary<string, INamedTypeSymbol> BuildLegacyTypes(Dictionary<string, string> legacyTypes)
 			=> legacyTypes
-			?.Select(t => (t.Key, Metadata: Compilation.GetTypeByMetadataName(t.Value)))
+			?.Select(t => (Key: t.Key, Metadata: Compilation.GetTypeByMetadataName(t.Value)))
 			?.ToDictionary(t => t.Key, t => t.Metadata)
 			?? new Dictionary<string, INamedTypeSymbol>();
 
