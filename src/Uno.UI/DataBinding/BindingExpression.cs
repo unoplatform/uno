@@ -26,8 +26,6 @@ namespace Windows.UI.Xaml.Data
 {
 	public partial class BindingExpression : IDisposable, IValueChangedListener
 	{
-		public Binding ParentBinding { get; private set; }
-
 		private readonly Type _boundPropertyType;
 		private readonly ManagedWeakReference _view;
 		private readonly Type _targetOwnerType;
@@ -40,27 +38,21 @@ namespace Windows.UI.Xaml.Data
 		private ManagedWeakReference _explicitSourceStore;
 		private readonly bool _isCompiledSource;
 		private readonly bool _isElementNameSource;
+		private bool _isBindingSuspended;
+		private ValueGetterHandler _valueGetter;
 		private ValueSetterHandler _valueSetter;
-		private bool _bindingSuspended;
+
+		public Binding ParentBinding { get; }
 
 		internal DependencyPropertyDetails TargetPropertyDetails { get; }
 
 		private object ExplicitSource
 		{
-			get
-			{
-				return _explicitSourceStore?.Target;
-			}
-			set
-			{
-				_explicitSourceStore = WeakReferencePool.RentWeakReference(this, value);
-			}
+			get => _explicitSourceStore?.Target;
+			set => _explicitSourceStore = WeakReferencePool.RentWeakReference(this, value);
 		}
 
-		public string TargetName
-		{
-			get { return TargetPropertyDetails.Property.Name; }
-		}
+		public string TargetName => TargetPropertyDetails.Property.Name;
 
 		public object DataContext
 		{
@@ -88,15 +80,24 @@ namespace Windows.UI.Xaml.Data
 		/// <summary>
 		/// Sends the current binding target value to the binding source property in TwoWay bindings.
 		/// </summary>
-		/// <param name="value"></param>
+		public void UpdateSource()
+		{
+			if (TryGetTargetValue(out var value))
+			{
+				UpdateSource(value);
+			}
+		}
+
+		/// <summary>
+		/// Sends the current binding target value to the binding source property in TwoWay bindings.
+		/// </summary>
+		/// <param name="value">The expected current value of the target</param>
 		public void UpdateSource(object value)
 		{
-			var finalValue = value;
-
 			// Convert if necessary
 			if (ParentBinding.Converter != null)
 			{
-				finalValue = ParentBinding.Converter.ConvertBack(
+				value = ParentBinding.Converter.ConvertBack(
 					value,
 					_bindingPath.ValueType,
 					ParentBinding.ConverterParameter,
@@ -104,7 +105,7 @@ namespace Windows.UI.Xaml.Data
 				);
 			}
 
-			_bindingPath.Value = finalValue;
+			_bindingPath.Value = value;
 		}
 
 		/// <summary>
@@ -121,7 +122,7 @@ namespace Windows.UI.Xaml.Data
 			try
 			{
 				if (ParentBinding.Mode == BindingMode.TwoWay
-				&& ResolveUpdateSourceTrigger() == UpdateSourceTrigger.PropertyChanged)
+					&& ResolveUpdateSourceTrigger() == UpdateSourceTrigger.PropertyChanged)
 				{
 					UpdateSource(value);
 				}
@@ -132,15 +133,14 @@ namespace Windows.UI.Xaml.Data
 			}
 		}
 
-
 		/// <summary>
 		/// Suspends the processing of the binding until <see cref="ResumeBinding"/> is called.
 		/// </summary>
 		internal void SuspendBinding()
 		{
-			if (!_bindingSuspended)
+			if (!_isBindingSuspended)
 			{
-				_bindingSuspended = true;
+				_isBindingSuspended = true;
 				_subscription.Dispose();
 			}
 		}
@@ -150,9 +150,9 @@ namespace Windows.UI.Xaml.Data
 		/// </summary>
 		internal void ResumeBinding()
 		{
-			if (_bindingSuspended)
+			if (_isBindingSuspended)
 			{
-				_bindingSuspended = false;
+				_isBindingSuspended = false;
 				ApplyBinding();
 			}
 		}
@@ -296,7 +296,7 @@ namespace Windows.UI.Xaml.Data
 			ApplyFallbackValue();
 			ApplyExplicitSource();
 			ApplyElementName();
-		}
+		}		
 
 		private void TryGetSource(Binding binding)
 		{
@@ -326,9 +326,27 @@ namespace Windows.UI.Xaml.Data
 			}
 		}
 
+		private bool TryGetTargetValue(out object value)
+		{
+			var viewTarget = _view.Target;
+
+			if (viewTarget != null)
+			{
+				value = GetValueGetter()(viewTarget);
+				return true;
+			}
+			else
+			{
+				Dispose(); // Self dispose if view is no more available
+
+				value = default(object);
+				return false;
+			}
+		}
+
 		private void SetTargetValue(object value)
 		{
-			object viewTarget = _view.Target;
+			var viewTarget = _view.Target;
 
 			if (viewTarget != null)
 			{
@@ -338,6 +356,16 @@ namespace Windows.UI.Xaml.Data
 			{
 				Dispose(); // Self dispose if view is no more available
 			}
+		}
+
+		private ValueGetterHandler GetValueGetter()
+		{
+			if (_valueGetter == null)
+			{
+				_valueGetter = BindingPropertyHelper.GetValueGetter(_targetOwnerType, TargetPropertyDetails.Property.Name);
+			}
+
+			return _valueGetter;
 		}
 
 		private ValueSetterHandler GetValueSetter()
