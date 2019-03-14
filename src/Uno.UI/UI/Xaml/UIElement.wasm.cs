@@ -869,6 +869,7 @@ namespace Windows.UI.Xaml
 							break;
 
 						case nameof(KeyDownEvent):
+						case nameof(KeyUpEvent):
 							eventFilter = null;
 							eventExtractor = HtmlEventExtractor.KeyboardEventExtractor;
 							payloadConverter = PayloadToKeyArgs;

@@ -31,6 +31,9 @@
 * Add support for x:Name late binding support to adds proper support for CollectionViewSource in Resources (#696)
 * `PointerRelease` events are now marked as handled by the `TextBox`
 * `KeyDown` events that are changing the cursor position (left/right/top/bottom/home/end) are now marked as handled by the `TextBox`
+* `RoutedEventArgs.IsGenerated` returns `false` as generating events with Uno is not yet supported
+* `AutomationPeer.ListenerExists` returns `false` as we cannot generating events with Uno is not yet supported
+* `KeyUp` event properly sends `KeyEventArgs` to the controls
 
 ### Breaking changes
 * Make `UIElement.IsPointerPressed` and `IsPointerOver` internal
