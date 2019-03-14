@@ -29,6 +29,8 @@
 * Add missing system resources
 * Add support for x:Bind in StaticResources (#696)
 * Add support for x:Name late binding support to adds proper support for CollectionViewSource in Resources (#696)
+* `PointerRelease` events are now marked as handled by the `TextBox`
+* `KeyDown` events that are changing the cursor position (left/right/top/bottom/home/end) are now marked as handled by the `TextBox`
 
 ### Breaking changes
 * Make `UIElement.IsPointerPressed` and `IsPointerOver` internal
