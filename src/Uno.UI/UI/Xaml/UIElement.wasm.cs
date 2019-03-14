@@ -671,7 +671,10 @@ namespace Windows.UI.Xaml
 
 			OnChildAdded(child);
 
-			InvalidateMeasure();
+			child.InvalidateMeasure();
+
+			// Arrange is required to unset the uno-unarranged CSS class
+			child.InvalidateArrange();
 		}
 
 		public void ClearChildren()

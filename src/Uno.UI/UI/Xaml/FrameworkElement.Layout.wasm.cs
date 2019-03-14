@@ -192,45 +192,38 @@ namespace Windows.UI.Xaml
 		{
 			var oldOffset = _visualOffset;
 			_visualOffset = offset;
-			
-			var oldRect = new Rect(oldOffset, oldRenderSize); 
+
 			var newRect = new Rect(offset, RenderSize);
-			if (oldRect != newRect)
+
+			if (
+				newRect.Width < 0
+				|| newRect.Height < 0
+				|| double.IsNaN(newRect.Width)
+				|| double.IsNaN(newRect.Height)
+				|| double.IsNaN(newRect.X)
+				|| double.IsNaN(newRect.Y)
+			)
 			{
-				if (
-					newRect.Width < 0
-					|| newRect.Height < 0
-					|| double.IsNaN(newRect.Width)
-					|| double.IsNaN(newRect.Height)
-					|| double.IsNaN(newRect.X)
-					|| double.IsNaN(newRect.Y)
-				)
+				throw new InvalidOperationException($"{this}: Invalid frame size {newRect}. No dimension should be NaN or negative value.");
+			}
+
+			Rect? getClip()
+			{
+				// Disable clipping for Scrollviewer (edge seems to disable scrolling if 
+				// the clipping is enabled to the size of the scrollviewer, even if overflow-y is auto)
+				if (this is Controls.ScrollViewer)
 				{
-					throw new InvalidOperationException($"{this}: Invalid frame size {newRect}. No dimension should be NaN or negative value.");
+					return null;
+				}
+				else if (Clip != null)
+				{
+					return Clip.Rect;
 				}
 
-				Rect? getClip()
-				{
-					// Disable clipping for Scrollviewer (edge seems to disable scrolling if 
-					// the clipping is enabled to the size of the scrollviewer, even if overflow-y is auto)
-					if(this is Controls.ScrollViewer)
-					{
-						return null;
-					}
-					else if(Clip != null)
-					{
-						return Clip.Rect;
-					}
-
-					return new Rect(0, 0, newRect.Width, newRect.Height);
-				}
-
-				ArrangeElementNative(newRect, getClip());
+				return new Rect(0, 0, newRect.Width, newRect.Height);
 			}
-			else
-			{
-				_log.DebugIfEnabled(() => $"{this}: ArrangeNative({offset}, {oldRenderSize}) -- SKIPPED (no change)");
-			}
+
+			ArrangeElementNative(newRect, getClip());
 		}
 	}
 }

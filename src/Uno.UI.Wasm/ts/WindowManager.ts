@@ -1309,10 +1309,10 @@
 		private resize() {
 
 			if (WindowManager.isHosted) {
-				UnoDispatch.resize(`${window.innerWidth};${window.innerHeight}`);
+				UnoDispatch.resize(`${document.documentElement.clientWidth};${document.documentElement.clientHeight}`);
 			}
 			else {
-				WindowManager.resizeMethod(window.innerWidth, window.innerHeight);
+				WindowManager.resizeMethod(document.documentElement.clientWidth, document.documentElement.clientHeight);
 			}
 		}
 

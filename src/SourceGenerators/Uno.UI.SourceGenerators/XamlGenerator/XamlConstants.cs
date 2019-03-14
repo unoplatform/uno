@@ -28,15 +28,15 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 			public static readonly string[] PresentationNamespaces =
 			{
-				RootUINamespace,
-				BaseXamlNamespace,
 				Controls,
 				Primitives,
-				Data,
-				Documents,
 				Shapes,
 				Media,
 				MediaAnimation,
+				RootUINamespace,
+				BaseXamlNamespace,
+				Data,
+				Documents,
 				"System",
 			};
 
