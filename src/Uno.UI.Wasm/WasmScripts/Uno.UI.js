@@ -971,6 +971,9 @@ var Uno;
                 const shouldRaiseLoadEvents = WindowManager.isLoadEventsEnabled
                     && this.getIsConnectedToRootElement(childElement);
                 parentElement.removeChild(childElement);
+                // Mark the element as unarranged, so if it gets measured while being
+                // disconnected from the root element, it won't be visible.
+                childElement.classList.add(WindowManager.unoUnarrangedClassName);
                 if (shouldRaiseLoadEvents) {
                     this.dispatchEvent(childElement, "unloaded");
                 }
@@ -1003,8 +1006,8 @@ var Uno;
                 }
                 if (element.parentElement) {
                     element.parentElement.removeChild(element);
-                    delete this.allActiveElementsById[viewId];
                 }
+                delete this.allActiveElementsById[viewId];
             }
             getBoundingClientRect(elementId) {
                 const htmlElement = this.allActiveElementsById[elementId];
