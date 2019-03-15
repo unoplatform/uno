@@ -7,7 +7,7 @@
 			"outFile": "WasmScripts/Uno.UI.js",
 			//"inlineSourceMap": true,
 			"locale": "en-US",
-			"target": "es2015"
+			"target": "es6"
 	},
   "include": [
     "ts/**/*",

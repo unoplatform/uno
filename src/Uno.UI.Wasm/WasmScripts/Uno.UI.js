@@ -34,9 +34,10 @@ var Windows;
              * Support file for the Windows.UI.Core
              * */
             class CoreDispatcher {
-                static init() {
+                static init(isReady) {
                     MonoSupport.jsCallDispatcher.registerScope("CoreDispatcher", Windows.UI.Core.CoreDispatcher);
                     CoreDispatcher.initMethods();
+                    CoreDispatcher._isReady = isReady;
                     CoreDispatcher._isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
                 }
                 /**
@@ -44,6 +45,24 @@ var Windows;
                  *
                  * */
                 static WakeUp() {
+                    // Is there a Ready promise ?
+                    if (CoreDispatcher._isReady) {
+                        // Are we already waiting for a Ready promise ?
+                        if (!CoreDispatcher._isWaitingReady) {
+                            CoreDispatcher._isReady
+                                .then(() => {
+                                CoreDispatcher.InnerWakeUp();
+                                CoreDispatcher._isReady = null;
+                            });
+                            CoreDispatcher._isWaitingReady = true;
+                        }
+                    }
+                    else {
+                        CoreDispatcher.InnerWakeUp();
+                    }
+                    return true;
+                }
+                static InnerWakeUp() {
                     if (CoreDispatcher._isIOS && CoreDispatcher._isFirstCall) {
                         //
                         // This is a workaround for the available call stack during the first 5 (?) seconds
@@ -55,7 +74,6 @@ var Windows;
                         window.setTimeout(() => this.WakeUp(), 5000);
                     }
                     else {
-                        window.setImmediate(() => CoreDispatcher._coreDispatcherCallback());
                         window.setImmediate(() => {
                             try {
                                 CoreDispatcher._coreDispatcherCallback();
@@ -66,7 +84,6 @@ var Windows;
                             }
                         });
                     }
-                    return true;
                 }
                 static initMethods() {
                     if (Uno.UI.WindowManager.isHosted) {
@@ -286,12 +303,65 @@ var Uno;
             static init(localStoragePath, isHosted, isLoadEventsEnabled, containerElementId = "uno-body", loadingElementId = "uno-loading") {
                 WindowManager._isHosted = isHosted;
                 WindowManager._isLoadEventsEnabled = isLoadEventsEnabled;
-                Windows.UI.Core.CoreDispatcher.init();
+                Windows.UI.Core.CoreDispatcher.init(WindowManager.buildReadyPromise());
                 WindowManager.setupStorage(localStoragePath);
                 this.current = new WindowManager(containerElementId, loadingElementId);
                 MonoSupport.jsCallDispatcher.registerScope("Uno", this.current);
                 this.current.init();
                 return "ok";
+            }
+            /**
+             * Builds a promise that will signal the ability for the dispatcher
+             * to initiate work.
+             * */
+            static buildReadyPromise() {
+                return new Promise(resolve => {
+                    Promise.all([WindowManager.buildSplashScreen()]).then(() => resolve(true));
+                });
+            }
+            /**
+             * Build the splashscreen image eagerly
+             * */
+            static buildSplashScreen() {
+                return new Promise(resolve => {
+                    const img = new Image();
+                    let loaded = false;
+                    let loadingDone = () => {
+                        if (!loaded) {
+                            loaded = true;
+                            if (img.width !== 0 && img.height !== 0) {
+                                // Materialize the image content so it shows immediately
+                                // even if the dispatcher is blocked thereafter by all
+                                // the Uno initialization work. The resulting canvas is not used.
+                                //
+                                // If the image fails to load, setup the splashScreen anyways with the
+                                // proper sample.
+                                let canvas = document.createElement('canvas');
+                                canvas.width = img.width;
+                                canvas.height = img.height;
+                                let ctx = canvas.getContext("2d");
+                                ctx.drawImage(img, 0, 0);
+                            }
+                            if (document.readyState === "loading") {
+                                document.addEventListener("DOMContentLoaded", () => {
+                                    WindowManager.setupSplashScreen(img);
+                                    resolve(true);
+                                });
+                            }
+                            else {
+                                WindowManager.setupSplashScreen(img);
+                                resolve(true);
+                            }
+                        }
+                    };
+                    // Preload the splash screen so the image element
+                    // created later on 
+                    img.onload = loadingDone;
+                    img.onerror = loadingDone;
+                    img.src = String(UnoAppManifest.splashScreenImage);
+                    // If there's no response, skip the loading
+                    setTimeout(loadingDone, 2000);
+                });
             }
             /**
                 * Initialize the WindowManager
@@ -355,7 +425,7 @@ var Uno;
                 * Creates the UWP-compatible splash screen
                 *
                 */
-            static setupSplashScreen() {
+            static setupSplashScreen(splashImage) {
                 if (UnoAppManifest && UnoAppManifest.splashScreenImage) {
                     const loading = document.getElementById("loading");
                     if (loading) {
@@ -369,11 +439,9 @@ var Uno;
                             const body = document.getElementsByTagName("body")[0];
                             body.style.backgroundColor = UnoAppManifest.splashScreenColor;
                         }
-                        const unoLoadingSplash = document.createElement("div");
-                        unoLoadingSplash.id = "uno-loading-splash";
-                        unoLoadingSplash.classList.add("uno-splash");
-                        unoLoadingSplash.style.backgroundImage = `url('${UnoAppManifest.splashScreenImage}')`;
-                        unoLoading.appendChild(unoLoadingSplash);
+                        splashImage.id = "uno-loading-splash";
+                        splashImage.classList.add("uno-splash");
+                        unoLoading.appendChild(splashImage);
                         unoBody.appendChild(unoLoading);
                     }
                 }
@@ -971,6 +1039,9 @@ var Uno;
                 const shouldRaiseLoadEvents = WindowManager.isLoadEventsEnabled
                     && this.getIsConnectedToRootElement(childElement);
                 parentElement.removeChild(childElement);
+                // Mark the element as unarranged, so if it gets measured while being
+                // disconnected from the root element, it won't be visible.
+                childElement.classList.add(WindowManager.unoUnarrangedClassName);
                 if (shouldRaiseLoadEvents) {
                     this.dispatchEvent(childElement, "unloaded");
                 }
@@ -1003,8 +1074,8 @@ var Uno;
                 }
                 if (element.parentElement) {
                     element.parentElement.removeChild(element);
-                    delete this.allActiveElementsById[viewId];
                 }
+                delete this.allActiveElementsById[viewId];
             }
             getBoundingClientRect(elementId) {
                 const htmlElement = this.allActiveElementsById[elementId];
@@ -1312,12 +1383,6 @@ var Uno;
         UI.WindowManager = WindowManager;
         if (typeof define === "function") {
             define(["AppManifest"], () => {
-                if (document.readyState === "loading") {
-                    document.addEventListener("DOMContentLoaded", () => WindowManager.setupSplashScreen());
-                }
-                else {
-                    WindowManager.setupSplashScreen();
-                }
             });
         }
         else {
