@@ -516,6 +516,13 @@ var Uno;
                 // Add the html element to list of elements
                 this.allActiveElementsById[contentDefinition.id] = element;
             }
+            getView(elementHandle) {
+                const element = this.allActiveElementsById[elementHandle];
+                if (!element) {
+                    throw `Element id ${elementHandle} not found.`;
+                }
+                return element;
+            }
             /**
                 * Set a name for an element.
                 *
@@ -536,20 +543,13 @@ var Uno;
                 return true;
             }
             setNameInternal(elementId, name) {
-                const htmlElement = this.allActiveElementsById[elementId];
-                if (!htmlElement) {
-                    throw `Element id ${elementId} not found.`;
-                }
-                htmlElement.setAttribute("XamlName", name);
+                this.getView(elementId).setAttribute("XamlName", name);
             }
             /**
                 * Set an attribute for an element.
                 */
             setAttribute(elementId, attributes) {
-                const htmlElement = this.allActiveElementsById[elementId];
-                if (!htmlElement) {
-                    throw `Element id ${elementId} not found.`;
-                }
+                const htmlElement = this.getView(elementId);
                 for (const name in attributes) {
                     if (attributes.hasOwnProperty(name)) {
                         htmlElement.setAttribute(name, attributes[name]);
@@ -562,10 +562,7 @@ var Uno;
                 */
             setAttributeNative(pParams) {
                 const params = WindowManagerSetAttributeParams.unmarshal(pParams);
-                const htmlElement = this.allActiveElementsById[params.HtmlId];
-                if (!htmlElement) {
-                    throw `Element id ${params.HtmlId} not found.`;
-                }
+                const htmlElement = this.getView(params.HtmlId);
                 for (let i = 0; i < params.Pairs_Length; i += 2) {
                     htmlElement.setAttribute(params.Pairs[i], params.Pairs[i + 1]);
                 }
@@ -575,20 +572,13 @@ var Uno;
                 * Get an attribute for an element.
                 */
             getAttribute(elementId, name) {
-                const htmlElement = this.allActiveElementsById[elementId];
-                if (!htmlElement) {
-                    throw `Element id ${elementId} not found.`;
-                }
-                return htmlElement.getAttribute(name);
+                return this.getView(elementId).getAttribute(name);
             }
             /**
                 * Set a property for an element.
                 */
             setProperty(elementId, properties) {
-                const htmlElement = this.allActiveElementsById[elementId];
-                if (!htmlElement) {
-                    throw `Element id ${elementId} not found.`;
-                }
+                const htmlElement = this.getView(elementId);
                 for (const name in properties) {
                     if (properties.hasOwnProperty(name)) {
                         htmlElement[name] = properties[name];
@@ -601,10 +591,7 @@ var Uno;
                 */
             setPropertyNative(pParams) {
                 const params = WindowManagerSetPropertyParams.unmarshal(pParams);
-                const htmlElement = this.allActiveElementsById[params.HtmlId];
-                if (!htmlElement) {
-                    throw `Element id ${params.HtmlId} not found.`;
-                }
+                const htmlElement = this.getView(params.HtmlId);
                 for (let i = 0; i < params.Pairs_Length; i += 2) {
                     htmlElement[params.Pairs[i]] = params.Pairs[i + 1];
                 }
@@ -614,10 +601,7 @@ var Uno;
                 * Get a property for an element.
                 */
             getProperty(elementId, name) {
-                const htmlElement = this.allActiveElementsById[elementId];
-                if (!htmlElement) {
-                    throw `Element id ${elementId} not found.`;
-                }
+                const htmlElement = this.getView(elementId);
                 return htmlElement[name] || "";
             }
             /**
@@ -627,10 +611,7 @@ var Uno;
                 * @param styles A dictionary of styles to apply on html element.
                 */
             setStyle(elementId, styles, setAsArranged = false) {
-                const htmlElement = this.allActiveElementsById[elementId];
-                if (!htmlElement) {
-                    throw `Element id ${elementId} not found.`;
-                }
+                const htmlElement = this.getView(elementId);
                 for (const style in styles) {
                     if (styles.hasOwnProperty(style)) {
                         htmlElement.style.setProperty(style, styles[style]);
@@ -649,10 +630,7 @@ var Uno;
             */
             setStyleNative(pParams) {
                 const params = WindowManagerSetStylesParams.unmarshal(pParams);
-                const htmlElement = this.allActiveElementsById[params.HtmlId];
-                if (!htmlElement) {
-                    throw `Element id ${params.HtmlId} not found.`;
-                }
+                const htmlElement = this.getView(params.HtmlId);
                 const elementStyle = htmlElement.style;
                 const pairs = params.Pairs;
                 for (let i = 0; i < params.Pairs_Length; i += 2) {
@@ -671,10 +649,7 @@ var Uno;
             */
             setStyleDoubleNative(pParams) {
                 const params = WindowManagerSetStyleDoubleParams.unmarshal(pParams);
-                const htmlElement = this.allActiveElementsById[params.HtmlId];
-                if (!htmlElement) {
-                    throw `Element id ${params.HtmlId} not found.`;
-                }
+                const htmlElement = this.getView(params.HtmlId);
                 htmlElement.style.setProperty(params.Name, String(params.Value));
                 return true;
             }
@@ -700,10 +675,7 @@ var Uno;
                 return true;
             }
             resetStyleInternal(elementId, names) {
-                const htmlElement = this.allActiveElementsById[elementId];
-                if (!htmlElement) {
-                    throw `Element id ${elementId} not found.`;
-                }
+                const htmlElement = this.getView(elementId);
                 for (const name of names) {
                     htmlElement.style.setProperty(name, "");
                 }
@@ -714,10 +686,7 @@ var Uno;
             */
             arrangeElementNative(pParams) {
                 const params = WindowManagerArrangeElementParams.unmarshal(pParams);
-                const htmlElement = this.allActiveElementsById[params.HtmlId];
-                if (!htmlElement) {
-                    throw `Element id ${params.HtmlId} not found.`;
-                }
+                const htmlElement = this.getView(params.HtmlId);
                 var style = htmlElement.style;
                 style.position = "absolute";
                 style.top = params.Top + "px";
@@ -739,10 +708,7 @@ var Uno;
             */
             setElementTransformNative(pParams) {
                 const params = WindowManagerSetElementTransformParams.unmarshal(pParams);
-                const htmlElement = this.allActiveElementsById[params.HtmlId];
-                if (!htmlElement) {
-                    throw `Element id ${params.HtmlId} not found.`;
-                }
+                const htmlElement = this.getView(params.HtmlId);
                 var style = htmlElement.style;
                 style.transform = `matrix(${params.M11},${params.M12},${params.M21},${params.M22},${params.M31},${params.M32})`;
                 htmlElement.classList.remove(WindowManager.unoUnarrangedClassName);
@@ -809,10 +775,7 @@ var Uno;
                 * @param onCapturePhase true means "on trickle down", false means "on bubble up". Default is false.
                 */
             registerEventOnViewInternal(elementId, eventName, onCapturePhase = false, eventFilterName, eventExtractorName) {
-                const htmlElement = this.allActiveElementsById[elementId];
-                if (!htmlElement) {
-                    throw `Element id ${elementId} not found.`;
-                }
+                const htmlElement = this.getView(elementId);
                 const eventFilter = this.getEventFilter(eventFilterName);
                 const eventExtractor = this.getEventExtractor(eventExtractorName);
                 const eventHandler = (event) => {
@@ -928,7 +891,7 @@ var Uno;
                 * Set or replace the root content element.
                 */
             setRootContent(elementId) {
-                if (this.rootContent && this.rootContent.id === elementId) {
+                if (this.rootContent && Number(this.rootContent.id) === elementId) {
                     return null; // nothing to do
                 }
                 if (this.rootContent) {
@@ -943,7 +906,7 @@ var Uno;
                     return null;
                 }
                 // set new root
-                const newRootElement = this.allActiveElementsById[elementId];
+                const newRootElement = this.getView(elementId);
                 newRootElement.classList.add(WindowManager.unoRootClassName);
                 this.rootContent = newRootElement;
                 if (WindowManager.isLoadEventsEnabled) {
@@ -981,14 +944,8 @@ var Uno;
                 return true;
             }
             addViewInternal(parentId, childId, index) {
-                const parentElement = this.allActiveElementsById[parentId];
-                if (!parentElement) {
-                    throw `addView: Parent element id ${parentId} not found.`;
-                }
-                const childElement = this.allActiveElementsById[childId];
-                if (!childElement) {
-                    throw `addView: Child element id ${parentId} not found.`;
-                }
+                const parentElement = this.getView(parentId);
+                const childElement = this.getView(childId);
                 let shouldRaiseLoadEvents = false;
                 if (WindowManager.isLoadEventsEnabled) {
                     const alreadyLoaded = this.getIsConnectedToRootElement(childElement);
@@ -1028,14 +985,8 @@ var Uno;
                 return true;
             }
             removeViewInternal(parentId, childId) {
-                const parentElement = this.allActiveElementsById[parentId];
-                if (!parentElement) {
-                    throw `removeView: Parent element id ${parentId} not found.`;
-                }
-                const childElement = this.allActiveElementsById[childId];
-                if (!childElement) {
-                    throw `removeView: Child element id ${parentId} not found.`;
-                }
+                const parentElement = this.getView(parentId);
+                const childElement = this.getView(childId);
                 const shouldRaiseLoadEvents = WindowManager.isLoadEventsEnabled
                     && this.getIsConnectedToRootElement(childElement);
                 parentElement.removeChild(childElement);
@@ -1052,8 +1003,8 @@ var Uno;
                 * The element won't be available anymore. Usually indicate the managed
                 * version has been scavenged by the GC.
                 */
-            destroyView(viewId) {
-                this.destroyViewInternal(viewId);
+            destroyView(elementId) {
+                this.destroyViewInternal(elementId);
                 return "ok";
             }
             /**
@@ -1078,11 +1029,7 @@ var Uno;
                 delete this.allActiveElementsById[viewId];
             }
             getBoundingClientRect(elementId) {
-                const htmlElement = this.allActiveElementsById[elementId];
-                if (!htmlElement) {
-                    throw `Element id ${elementId} not found.`;
-                }
-                const bounds = htmlElement.getBoundingClientRect();
+                const bounds = this.getView(elementId).getBoundingClientRect();
                 return `${bounds.left};${bounds.top};${bounds.right - bounds.left};${bounds.bottom - bounds.top}`;
             }
             getBBox(elementId) {
@@ -1101,11 +1048,7 @@ var Uno;
                 return true;
             }
             getBBoxInternal(elementId) {
-                const htmlElement = this.allActiveElementsById[elementId];
-                if (!htmlElement) {
-                    throw `Element id ${elementId} not found.`;
-                }
-                return htmlElement.getBBox();
+                return this.getView(elementId).getBBox();
             }
             /**
                 * Use the Html engine to measure the element using specified constraints.
@@ -1133,10 +1076,7 @@ var Uno;
                 return true;
             }
             measureViewInternal(viewId, maxWidth, maxHeight) {
-                const element = this.allActiveElementsById[viewId];
-                if (!element) {
-                    throw `measureView: Element id ${viewId} not found.`;
-                }
+                const element = this.getView(viewId);
                 const previousWidth = element.style.width;
                 const previousHeight = element.style.height;
                 const previousPosition = element.style.position;
@@ -1178,10 +1118,7 @@ var Uno;
                 }
             }
             setImageRawData(viewId, dataPtr, width, height) {
-                const element = this.allActiveElementsById[viewId];
-                if (!element) {
-                    throw `setImageRawData: Element id ${viewId} not found.`;
-                }
+                const element = this.getView(viewId);
                 if (element.tagName.toUpperCase() === "IMG") {
                     const imgElement = element;
                     const rawCanvas = document.createElement("canvas");
@@ -1208,10 +1145,7 @@ var Uno;
              * @param color the color to apply to the monochrome pixels
              */
             setImageAsMonochrome(viewId, url, color) {
-                const element = this.allActiveElementsById[viewId];
-                if (!element) {
-                    throw `setImageAsMonochrome: Element id ${viewId} not found.`;
-                }
+                const element = this.getView(viewId);
                 if (element.tagName.toUpperCase() === "IMG") {
                     const imgElement = element;
                     var img = new Image();
@@ -1237,26 +1171,15 @@ var Uno;
                 }
             }
             setPointerCapture(viewId, pointerId) {
-                const element = this.allActiveElementsById[viewId];
-                if (!element) {
-                    throw `setPointerCapture: Element id ${viewId} not found.`;
-                }
-                element.setPointerCapture(pointerId);
+                this.getView(viewId).setPointerCapture(pointerId);
                 return "ok";
             }
             releasePointerCapture(viewId, pointerId) {
-                const element = this.allActiveElementsById[viewId];
-                if (!element) {
-                    throw `releasePointerCapture: Element id ${viewId} not found.`;
-                }
-                element.releasePointerCapture(pointerId);
+                this.getView(viewId).releasePointerCapture(pointerId);
                 return "ok";
             }
             focusView(elementId) {
-                const htmlElement = this.allActiveElementsById[elementId];
-                if (!htmlElement) {
-                    throw `Element id ${elementId} not found.`;
-                }
+                const htmlElement = this.getView(elementId);
                 if (!(htmlElement instanceof HTMLElement)) {
                     throw `Element id ${elementId} is not focusable.`;
                 }
@@ -1285,11 +1208,7 @@ var Uno;
                 return true;
             }
             setHtmlContentInternal(viewId, html) {
-                const element = this.allActiveElementsById[viewId];
-                if (!element) {
-                    throw `setHtmlContent: Element id ${viewId} not found.`;
-                }
-                element.innerHTML = html;
+                this.getView(viewId).innerHTML = html;
             }
             /**
                 * Remove the loading indicator.

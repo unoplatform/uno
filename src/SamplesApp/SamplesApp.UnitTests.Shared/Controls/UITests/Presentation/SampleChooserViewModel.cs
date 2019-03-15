@@ -458,7 +458,7 @@ namespace SampleControl.Presentation
 
 			var contains = categories
 				.SelectMany(cat => cat.SamplesContent)
-				.Where(content => !starts.Contains(content) && content.ControlName.Contains(search, StringComparison.OrdinalIgnoreCase));
+				.Where(content => !starts.Contains(content) && content.ControlName.Contains(search));
 
 			// Order the results by showing the "start with" results
 			// followed by results that "contain" the search term

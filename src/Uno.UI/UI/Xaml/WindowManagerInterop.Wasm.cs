@@ -178,7 +178,7 @@ namespace Uno.UI.Xaml
 				var w = double.IsInfinity(availableSize.Width) ? "null" : availableSize.Width.ToStringInvariant();
 				var h = double.IsInfinity(availableSize.Height) ? "null" : availableSize.Height.ToStringInvariant();
 
-				var command = "Uno.UI.WindowManager.current.measureView(\"" + htmlId + "\", \"" + w + "\", \"" + h + "\");";
+				var command = "Uno.UI.WindowManager.current.measureView(" + htmlId + ", \"" + w + "\", \"" + h + "\");";
 				var result = WebAssemblyRuntime.InvokeJS(command);
 
 				var parts = result.Split(';');
@@ -314,12 +314,12 @@ namespace Uno.UI.Xaml
 			{
 				if (index != null)
 				{
-					var command = "Uno.UI.WindowManager.current.addView(\"" + htmlId + "\", \"" + child + "\", " + index.Value + ");";
+					var command = "Uno.UI.WindowManager.current.addView(" + htmlId + ", " + child + ", " + index.Value + ");";
 					WebAssemblyRuntime.InvokeJS(command);
 				}
 				else
 				{
-					var command = "Uno.UI.WindowManager.current.addView(\"" + htmlId + "\", \"" + child + "\");";
+					var command = "Uno.UI.WindowManager.current.addView(" + htmlId + ", " + child + ");";
 					WebAssemblyRuntime.InvokeJS(command);
 				}
 			}
@@ -478,7 +478,7 @@ namespace Uno.UI.Xaml
 		{
 			if (UseJavascriptEval)
 			{
-				var command = "Uno.UI.WindowManager.current.removeView(\"" + htmlId + "\", \"" + childId + "\");";
+				var command = "Uno.UI.WindowManager.current.removeView(" + htmlId + ", " + childId + ");";
 				WebAssemblyRuntime.InvokeJS(command);
 			}
 			else
@@ -508,7 +508,7 @@ namespace Uno.UI.Xaml
 		{
 			if (UseJavascriptEval)
 			{
-				var command = "Uno.UI.WindowManager.current.destroyView(\"" + htmlId + "\");";
+				var command = "Uno.UI.WindowManager.current.destroyView(" + htmlId + ");";
 				WebAssemblyRuntime.InvokeJS(command);
 			}
 			else
@@ -624,7 +624,7 @@ namespace Uno.UI.Xaml
 		{
 			if (UseJavascriptEval)
 			{
-				var sizeString = WebAssemblyRuntime.InvokeJS("Uno.UI.WindowManager.current.getBBox(\"" + htmlId + "\");");
+				var sizeString = WebAssemblyRuntime.InvokeJS("Uno.UI.WindowManager.current.getBBox(" + htmlId + ");");
 				var sizeParts = sizeString.Split(';');
 				return new Rect(double.Parse(sizeParts[0]), double.Parse(sizeParts[1]), double.Parse(sizeParts[2]), double.Parse(sizeParts[3]));
 			}
@@ -669,7 +669,7 @@ namespace Uno.UI.Xaml
 			{
 				var escapedHtml = WebAssemblyRuntime.EscapeJs(html);
 
-				var command = "Uno.UI.WindowManager.current.setHtmlContent(\"" + htmlId + "\", \"" + escapedHtml + "\");";
+				var command = "Uno.UI.WindowManager.current.setHtmlContent(" + htmlId + ", \"" + escapedHtml + "\");";
 				WebAssemblyRuntime.InvokeJS(command);
 			}
 			else
