@@ -41,7 +41,7 @@
 			WindowManager._isHosted = isHosted;
 			WindowManager._isLoadEventsEnabled = isLoadEventsEnabled;
 
-			Windows.UI.Core.CoreDispatcher.init();
+			Windows.UI.Core.CoreDispatcher.init(WindowManager.buildReadyPromise());
 
 			WindowManager.setupStorage(localStoragePath);
 
@@ -50,6 +50,66 @@
 			this.current.init();
 
 			return "ok";
+		}
+
+		/**
+		 * Builds a promise that will signal the ability for the dispatcher
+		 * to initiate work.
+		 * */
+		private static buildReadyPromise(): Promise<boolean>  {
+			return new Promise<boolean>(resolve => {
+				Promise.all(
+					[WindowManager.buildSplashScreen()]
+				).then(() => resolve(true))
+			});
+		}
+
+		/**
+		 * Build the splashscreen image eagerly
+		 * */
+		private static buildSplashScreen(): Promise<boolean> {
+			return new Promise<boolean>(resolve => {
+				const img = new Image();
+				let loaded = false;
+
+				let loadingDone = () => {
+					if (!loaded) {
+						loaded = true;
+						if (img.width !== 0 && img.height !== 0) {
+							// Materialize the image content so it shows immediately
+							// even if the dispatcher is blocked thereafter by all
+							// the Uno initialization work. The resulting canvas is not used.
+							//
+							// If the image fails to load, setup the splashScreen anyways with the
+							// proper sample.
+							let canvas = document.createElement('canvas');
+							canvas.width = img.width;
+							canvas.height = img.height;
+							let ctx = canvas.getContext("2d");
+							ctx.drawImage(img, 0, 0);
+						}
+
+						if (document.readyState === "loading") {
+							document.addEventListener("DOMContentLoaded", () => {
+								WindowManager.setupSplashScreen(img);
+								resolve(true);
+							});
+						} else {
+							WindowManager.setupSplashScreen(img);
+							resolve(true);
+						}
+					}
+				};
+
+				// Preload the splash screen so the image element
+				// created later on 
+				img.onload = loadingDone;
+				img.onerror = loadingDone;
+				img.src = String(UnoAppManifest.splashScreenImage);
+
+				// If there's no response, skip the loading
+				setTimeout(loadingDone, 2000);
+			});
 		}
 
 		/**
@@ -143,7 +203,7 @@
 			* Creates the UWP-compatible splash screen
 			* 
 			*/
-		static setupSplashScreen(): void {
+		static setupSplashScreen(splashImage:HTMLImageElement): void {
 
 			if (UnoAppManifest && UnoAppManifest.splashScreenImage) {
 
@@ -164,12 +224,10 @@
 						body.style.backgroundColor = UnoAppManifest.splashScreenColor;
 					}
 
-					const unoLoadingSplash = document.createElement("div");
-					unoLoadingSplash.id = "uno-loading-splash";
-					unoLoadingSplash.classList.add("uno-splash");
-					unoLoadingSplash.style.backgroundImage = `url('${UnoAppManifest.splashScreenImage}')`;
+					splashImage.id = "uno-loading-splash";
+					splashImage.classList.add("uno-splash");
 
-					unoLoading.appendChild(unoLoadingSplash);
+					unoLoading.appendChild(splashImage);
 
 					unoBody.appendChild(unoLoading);
 				}
@@ -1351,11 +1409,6 @@
 		define(
 			["AppManifest"],
 			() => {
-				if (document.readyState === "loading") {
-					document.addEventListener("DOMContentLoaded", () => WindowManager.setupSplashScreen());
-				} else {
-					WindowManager.setupSplashScreen();
-				}
 			}
 		);
 	}
