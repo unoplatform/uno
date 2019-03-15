@@ -34,8 +34,8 @@
 
 	<ItemGroup>
 		<PackageReference Include="Uno.Core" />
-		<PackageReference Include="Microsoft.TypeScript.Compiler" Version="3.1.5" />
-		<PackageReference Include="Microsoft.TypeScript.MSBuild" Version="3.1.3" />
+		<PackageReference Include="Microsoft.TypeScript.Compiler" />
+		<PackageReference Include="Microsoft.TypeScript.MSBuild" />
 		<PackageReference Include="Uno.SourceGenerationTasks" />
 	</ItemGroup>
 

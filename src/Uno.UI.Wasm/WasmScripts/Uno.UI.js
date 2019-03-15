@@ -328,6 +328,7 @@ var Uno;
                     let loaded = false;
                     let loadingDone = () => {
                         if (!loaded) {
+                            loaded = true;
                             if (img.width !== 0 && img.height !== 0) {
                                 // Materialize the image content so it shows immediately
                                 // even if the dispatcher is blocked thereafter by all
@@ -358,8 +359,8 @@ var Uno;
                     img.onload = loadingDone;
                     img.onerror = loadingDone;
                     img.src = String(UnoAppManifest.splashScreenImage);
-                    // If there's no response, skip the 
-                    setTimeout(loadingDone, 2);
+                    // If there's no response, skip the loading
+                    setTimeout(loadingDone, 2000);
                 });
             }
             /**

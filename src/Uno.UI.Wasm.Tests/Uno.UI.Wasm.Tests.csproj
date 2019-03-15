@@ -16,8 +16,8 @@
   </ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Microsoft.TypeScript.Compiler" Version="2.8.3" />
-		<PackageReference Include="Microsoft.TypeScript.MSBuild" Version="2.8.3" />
+		<PackageReference Include="Microsoft.TypeScript.Compiler" />
+		<PackageReference Include="Microsoft.TypeScript.MSBuild" />
 		<PackageReference Include="MSTest.TestFramework" Version="1.2.0" />
 		<PackageReference Include="Uno.SourceGenerationTasks"/>
 	</ItemGroup>
