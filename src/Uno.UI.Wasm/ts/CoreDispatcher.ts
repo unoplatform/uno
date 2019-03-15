@@ -55,9 +55,7 @@
 				console.debug("Detected iOS, delaying first CoreDispatched dispatch for 5s (see https://github.com/mono/mono/issues/12357)");
 				window.setTimeout(() => this.WakeUp(), 5000);
 			} else {
-				(<any>window).setImmediate(() => CoreDispatcher._coreDispatcherCallback());
-
-				window.setImmediate(() => {
+				(<any>window).setImmediate(() => {
 					try {
 						CoreDispatcher._coreDispatcherCallback();
 					}
