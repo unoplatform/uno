@@ -49,7 +49,15 @@ var Uno;
                 });
                 return "ok";
             }
+            static getAnimationState(elementId) {
+                const animation = this._runningAnimations[elementId].animation;
+                const state = `${animation.animationData.w}|${animation.animationData.h}|${animation.isPaused}`;
+                return state;
+            }
             static needNewPlayerAnimation(current, newProperties) {
+                if (current.jsonPath != newProperties.jsonPath) {
+                    return true;
+                }
                 if (newProperties.stretch != current.stretch) {
                     return true;
                 }
@@ -78,10 +86,27 @@ var Uno;
                 }
                 const config = this.getPlayerConfig(properties);
                 const animation = this._player.loadAnimation(config);
-                return this._runningAnimations[properties.elementId] = {
+                const runningAnimation = {
                     animation: animation,
                     properties: properties
                 };
+                this._runningAnimations[properties.elementId] = runningAnimation;
+                animation.addEventListener("complete", (e) => {
+                    Lottie.raiseState(animation);
+                });
+                if (animation.isLoaded) {
+                    Lottie.raiseState(animation);
+                }
+                else {
+                    animation.addEventListener("data_ready", (e) => {
+                        Lottie.raiseState(animation);
+                    });
+                }
+                return runningAnimation;
+            }
+            static raiseState(animation) {
+                const element = animation.wrapper;
+                element.dispatchEvent(new Event("lottie_state"));
             }
             static getPlayerConfig(properties) {
                 let scaleMode = "none";
@@ -96,6 +121,7 @@ var Uno;
                         scaleMode = "noScale";
                         break;
                 }
+                const containerElement = Uno.UI.WindowManager.current.getView(properties.elementId);
                 // https://github.com/airbnb/lottie-web/wiki/loadAnimation-options
                 const playerConfig = {
                     path: properties.jsonPath,
@@ -103,7 +129,7 @@ var Uno;
                     autoplay: properties.autoplay,
                     name: properties.elementId,
                     renderer: "svg",
-                    container: document.getElementById(properties.elementId),
+                    container: containerElement,
                     rendererSettings: {
                         // https://github.com/airbnb/lottie-web/wiki/Renderer-Settings
                         preserveAspectRatio: scaleMode

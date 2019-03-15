@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Threading;
 using Uno.Foundation;
+using Windows.Foundation;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media;
@@ -12,16 +13,31 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 	{
 		private AnimatedVisualPlayer _player;
 		private bool _isPlaying;
+		private Size _compositionSize = new Size(0, 0);
 
-		void IAnimatedVisualSource.Update(AnimatedVisualPlayer player)
+		private void Update()
 		{
+			if (_player != null)
+			{
+				Update(_player);
+			}
+		}
+
+		public void Update(AnimatedVisualPlayer player)
+		{
+			if(player != _player)
+			{
+				player.RegisterEventHandler("lottie_state", (EventHandler)OnStateChanged);
+			}
+
 			_player = player;
+
 			var js = new[]
 			{
 				"Uno.UI.Lottie.setAnimationProperties({",
-				"elementId:\"",
+				"elementId:",
 				player.HtmlId.ToString(),
-				"\", jsonPath:\"",
+				", jsonPath:\"",
 				UriSource?.PathAndQuery ?? "",
 				"\", autoplay:",
 				player.AutoPlay ? "true" : "false",
@@ -33,6 +49,17 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 			};
 			WebAssemblyRuntime.InvokeJS(string.Concat(js));
 			_isPlaying = player.AutoPlay;
+		}
+
+		private void OnStateChanged(object sender, EventArgs e)
+		{
+			var r = WebAssemblyRuntime.InvokeJS("Uno.UI.Lottie.getAnimationState(" + _player.HtmlId + ");");
+
+			var parts = r.Split('|');
+			var w = double.Parse(parts[0]);
+			var h = double.Parse(parts[1]);
+
+			_compositionSize = new Size(w, h);
 		}
 
 		void IAnimatedVisualSource.Play(bool looped)
@@ -82,7 +109,7 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 				"\");"
 			};
 			WebAssemblyRuntime.InvokeJS(string.Concat(js));
-			_isPlaying = false;
+			_isPlaying = true;
 		}
 
 		void IAnimatedVisualSource.Load()
@@ -94,7 +121,7 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 
 			var js = new[]
 			{
-					"Uno.UI.Lottie.play(\"",
+					"Uno.UI.Lottie.resume(\"",
 					_player.HtmlId.ToString(),
 					"\");"
 				};
@@ -110,11 +137,34 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 
 			var js = new[]
 			{
-					"Uno.UI.Lottie.stop(\"",
+					"Uno.UI.Lottie.pause(\"",
 					_player.HtmlId.ToString(),
 					"\");"
 				};
 			WebAssemblyRuntime.InvokeJS(string.Concat(js));
+		}
+
+		Size IAnimatedVisualSource.Measure(Size availableSize)
+		{
+			var availableWidth = availableSize.Width;
+			var availableHeight = availableSize.Height;
+			if (double.IsInfinity(availableWidth))
+			{
+				if(double.IsInfinity(availableHeight))
+				{
+					return _compositionSize;
+				}
+
+				return new Size(availableHeight * _compositionSize.Width / _compositionSize.Height, availableHeight);
+			}
+
+			if (double.IsInfinity(availableHeight))
+			{
+				return new Size(availableWidth, availableWidth * _compositionSize.Height / _compositionSize.Width);
+
+			}
+
+			return availableSize;
 		}
 	}
 }

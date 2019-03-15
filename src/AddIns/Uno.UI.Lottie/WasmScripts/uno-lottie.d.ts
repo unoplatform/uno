@@ -20,10 +20,12 @@ declare namespace Uno.UI {
         static kill(elementId: string): string;
         static pause(elementId: string): string;
         static resume(elementId: string): string;
-        private static needNewPlayerAnimation(current, newProperties);
-        private static updateProperties(runningAnimation, newProperties);
-        private static createAnimation(properties);
-        private static getPlayerConfig(properties);
-        private static withPlayer(action);
+        static getAnimationState(elementId: string): string;
+        private static needNewPlayerAnimation;
+        private static updateProperties;
+        private static createAnimation;
+        private static raiseState;
+        private static getPlayerConfig;
+        private static withPlayer;
     }
 }

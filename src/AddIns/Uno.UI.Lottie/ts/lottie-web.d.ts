@@ -37,6 +37,34 @@
 		playDirection: number;
 		playSpeed: number;
 		totalFrames: number;
+		animationData: AnimationData;
+		wrapper: HTMLElement;
+	}
+
+	export interface AnimationData {
+		// In Point of the Time Ruler. Sets the initial Frame of the animation.
+		ip: number;
+
+		// Out Point of the Time Ruler. Sets the final Frame of the animation
+		op: number;
+
+		// Frame Rate
+		fr: number;
+
+		// Composition Width
+		w: number;
+
+		// Composition Height
+		h: number;
+
+		// Composition has 3-D layers
+		ddd: boolean;
+
+		// Name
+		nm: string;
+
+		// Version
+		v: string;
 	}
 
 	export interface AnimationConfig {

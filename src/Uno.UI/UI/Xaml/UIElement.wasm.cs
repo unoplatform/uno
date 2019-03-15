@@ -413,6 +413,11 @@ namespace Windows.UI.Xaml
 
 		private readonly Dictionary<string, EventRegistration> _eventHandlers = new Dictionary<string, EventRegistration>(StringComparer.InvariantCultureIgnoreCase);
 
+		public void RegisterEventHandler(string eventName, Delegate handler)
+		{
+			RegisterEventHandler(eventName, handler, false);
+		}
+
 		internal void RegisterEventHandler(
 			string eventName,
 			Delegate handler,
@@ -438,7 +443,7 @@ namespace Windows.UI.Xaml
 			registration.Add(handler);
 		}
 
-		internal void UnregisterEventHandler(string eventName, Delegate handler)
+		public void UnregisterEventHandler(string eventName, Delegate handler)
 		{
 			if (_eventHandlers.TryGetValue(eventName, out var registration))
 			{

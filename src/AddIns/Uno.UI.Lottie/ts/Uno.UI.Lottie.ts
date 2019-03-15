@@ -79,7 +79,19 @@ namespace Uno.UI {
 			return "ok";
 		}
 
+		public static getAnimationState(elementId: string): string {
+			const animation = this._runningAnimations[elementId].animation;
+
+			const state = `${animation.animationData.w}|${animation.animationData.h}|${animation.isPaused}`;
+
+			return state;
+		}
+
 		private static needNewPlayerAnimation(current: LottieAnimationProperties, newProperties: LottieAnimationProperties): boolean {
+
+			if (current.jsonPath != newProperties.jsonPath) {
+				return true;
+			}
 
 			if (newProperties.stretch != current.stretch) {
 				return true;
@@ -119,10 +131,32 @@ namespace Uno.UI {
 			const config = this.getPlayerConfig(properties);
 			const animation = this._player.loadAnimation(config);
 
-			return this._runningAnimations[properties.elementId] = {
+			const runningAnimation = {
 				animation: animation,
 				properties: properties
 			};
+
+			this._runningAnimations[properties.elementId] = runningAnimation;
+
+			(animation as any).addEventListener("complete", (e: any) => {
+				Lottie.raiseState(animation);
+			});
+
+			if (animation.isLoaded) {
+				Lottie.raiseState(animation);
+			} else {
+				(animation as any).addEventListener("data_ready", (e: any) => {
+					Lottie.raiseState(animation);
+				});
+			}
+
+			return runningAnimation;
+		}
+
+		private static raiseState(animation: Lottie.AnimationItem) {
+			const element = animation.wrapper;
+
+			element.dispatchEvent(new Event("lottie_state"));
 		}
 
 		private static getPlayerConfig(properties: LottieAnimationProperties): Lottie.AnimationConfig {
@@ -139,6 +173,8 @@ namespace Uno.UI {
 					break;
 			}
 
+			const containerElement = (Uno.UI as any).WindowManager.current.getView(properties.elementId);
+
 			// https://github.com/airbnb/lottie-web/wiki/loadAnimation-options
 			const playerConfig = {
 				path: properties.jsonPath,
@@ -146,7 +182,7 @@ namespace Uno.UI {
 				autoplay: properties.autoplay,
 				name: properties.elementId,
 				renderer: "svg", // https://github.com/airbnb/lottie-web/wiki/Features
-				container: document.getElementById(properties.elementId),
+				container: containerElement,
 				rendererSettings: {
 					// https://github.com/airbnb/lottie-web/wiki/Renderer-Settings
 					preserveAspectRatio: scaleMode

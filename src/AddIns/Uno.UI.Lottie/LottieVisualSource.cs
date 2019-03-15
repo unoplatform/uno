@@ -1,5 +1,6 @@
 ﻿using System;
 using Uno;
+using Windows.Foundation;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 
@@ -8,7 +9,7 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 	public partial class LottieVisualSource : DependencyObject, IAnimatedVisualSource
 	{
 		public static readonly DependencyProperty UriSourceProperty = DependencyProperty.Register(
-			"UriSource", typeof(Uri), typeof(LottieVisualSource), new PropertyMetadata(default(Uri)));
+			"UriSource", typeof(Uri), typeof(LottieVisualSource), new PropertyMetadata(default(Uri), OnUriSourceChanged));
 
 		public Uri UriSource
 		{
@@ -32,7 +33,19 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 			throw new NotImplementedException();
 		}
 
-#if !__WASM__
+
+		private static void OnUriSourceChanged(DependencyObject sender, DependencyPropertyChangedEventArgs args)
+		{
+			(sender as LottieVisualSource)?.Update();
+		}
+
+
+#if !(__WASM__ || __ANDROID__)
+
+		private void Update()
+		{
+		}
+
 		public void Update(AnimatedVisualPlayer player)
 		{
 			throw new NotImplementedException();
@@ -64,6 +77,11 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 		}
 
 		public void Unload()
+		{
+			throw new NotImplementedException();
+		}
+
+		public Size Measure(Size availableSize)
 		{
 			throw new NotImplementedException();
 		}

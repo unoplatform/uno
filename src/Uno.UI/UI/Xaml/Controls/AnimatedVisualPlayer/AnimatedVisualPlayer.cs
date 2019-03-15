@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Uno;
+using Windows.Foundation;
 using Windows.UI.Xaml.Markup;
 using Windows.UI.Xaml.Media;
 
@@ -11,6 +12,9 @@ namespace Windows.UI.Xaml.Controls
 	{
 		public static readonly DependencyProperty AutoPlayProperty = DependencyProperty.Register(
 			"AutoPlay", typeof(bool), typeof(AnimatedVisualPlayer), new PropertyMetadata(true, UpdateSourceOnChanged));
+
+		public static readonly DependencyProperty IsPlayingProperty = DependencyProperty.Register(
+			"IsPlaying", typeof(bool), typeof(AnimatedVisualPlayer), new PropertyMetadata(false, UpdateSourceOnChanged));
 
 		public static readonly DependencyProperty PlaybackRateProperty = DependencyProperty.Register(
 			"PlaybackRate", typeof(double), typeof(AnimatedVisualPlayer), new PropertyMetadata(1.0, UpdateSourceOnChanged));
@@ -25,6 +29,12 @@ namespace Windows.UI.Xaml.Controls
 			"Stretch", typeof(Stretch), typeof(AnimatedVisualPlayer), new PropertyMetadata(Stretch.Uniform, UpdateSourceOnChanged));
 
 		public bool AutoPlay
+		{
+			get => (bool)GetValue(AutoPlayProperty);
+			set => SetValue(AutoPlayProperty, value);
+		}
+
+		public bool IsPlaying
 		{
 			get => (bool)GetValue(AutoPlayProperty);
 			set => SetValue(AutoPlayProperty, value);
@@ -57,7 +67,11 @@ namespace Windows.UI.Xaml.Controls
 		private static void UpdateSourceOnChanged(DependencyObject source, DependencyPropertyChangedEventArgs args)
 		{
 			var player = (source as AnimatedVisualPlayer);
-			player?.Source?.Update(player);
+
+			if (player.IsLoaded)
+			{
+				player?.Source?.Update(player);
+			}
 		}
 
 		public void Pause()
@@ -88,6 +102,7 @@ namespace Windows.UI.Xaml.Controls
 
 		protected override void OnLoaded()
 		{
+			Source?.Update(this);
 			Source?.Load();
 
 			base.OnLoaded();
@@ -99,5 +114,11 @@ namespace Windows.UI.Xaml.Controls
 
 			base.OnUnloaded();
 		}
-	}
+
+		protected override Size MeasureOverride(Size availableSize)
+		{
+			return Source == null
+				? base.MeasureOverride(availableSize)
+				: Source.Measure(availableSize);
+		}}
 }

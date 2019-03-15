@@ -10,35 +10,34 @@
 	mc:Ignorable="d"
 	Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
-	<Grid>
-		<Border Width="200" Height="300" BorderThickness="4" BorderBrush="DarkBlue" CornerRadius="12">
-			<winui:AnimatedVisualPlayer
-				x:Name="player"
-				AutoPlay="True"
-				PlaybackRate="{Binding Value, ElementName=rate}"
-				Stretch="{Binding SelectedValue, ElementName=stretch}">
-				<lottie:LottieVisualSource UriSource="ms-appx:///Lottie/4770-lady-and-dove.json" />
-			</winui:AnimatedVisualPlayer>
-		</Border>
+	<uno:StarStackPanel Sizes="*,Auto">
 
-		<StackPanel VerticalAlignment="Bottom" HorizontalAlignment="Stretch">
-			<uno:StarStackPanel Orientation="Horizontal" Sizes="Auto">
-				<Button x:Name="play1">Play 1</Button>
-				<Button x:Name="playloop">Play Looped</Button>
-				<Button x:Name="stop">Stop</Button>
-				<Button x:Name="pause">Pause</Button>
-				<Button x:Name="resume">Resume</Button>
-			</uno:StarStackPanel>
-			<uno:StarStackPanel Orientation="Horizontal" Sizes="Auto,*">
-				<TextBlock>PlayRate: </TextBlock>
-				<Slider x:Name="rate" Value="1.0" Minimum="0.25" Maximum="5.0" StepFrequency="0.25" TickFrequency="0.5" />
-			</uno:StarStackPanel>
-			<uno:StarStackPanel Orientation="Horizontal" Sizes="Auto,*,Auto">
-				<TextBlock>Stretch Mode: </TextBlock>
-				<ComboBox x:Name="stretch" />
-				<TextBlock>Animation CC lottiefiles/northsea <Hyperlink NavigateUri="https://lottiefiles.com/northsea">https://lottiefiles.com/northsea</Hyperlink></TextBlock>
-			</uno:StarStackPanel>
-		</StackPanel>
+		<winui:AnimatedVisualPlayer
+			x:Name="player"
+			AutoPlay="{Binding IsChecked, ElementName=autoplay}"
+			PlaybackRate="{Binding Value, ElementName=rate}"
+			Stretch="{Binding SelectedValue, ElementName=stretch}">
 
-	</Grid>
+			<lottie:LottieVisualSource
+				UriSource="{Binding SelectedItem, ElementName=file}" />
+		</winui:AnimatedVisualPlayer>
+
+		<uno:StarStackPanel Orientation="Horizontal" Sizes="Auto">
+			<Button x:Name="play1">Play 1</Button>
+			<Button x:Name="playloop">Play Looped</Button>
+			<Button x:Name="stop">Stop</Button>
+			<Button x:Name="pause">Pause</Button>
+			<Button x:Name="resume">Resume</Button>
+			<ToggleButton x:Name="autoplay">AutoPlay</ToggleButton>
+			<CheckBox IsChecked="{Binding IsPlaying, ElementName=player}" IsEnabled="False">Playing</CheckBox>
+		</uno:StarStackPanel>
+		<uno:StarStackPanel Orientation="Horizontal" Sizes="Auto,*">
+			<TextBlock>PlayRate: </TextBlock>
+			<Slider x:Name="rate" Value="1.0" Minimum="0.25" Maximum="5.0" StepFrequency="0.25" TickFrequency="0.5" />
+		</uno:StarStackPanel>
+		<uno:StarStackPanel Orientation="Horizontal" Sizes="Auto,Auto" HorizontalAlignment="Center">
+			<ComboBox x:Name="stretch" />
+			<ComboBox x:Name="file" />
+		</uno:StarStackPanel>
+	</uno:StarStackPanel>
 </Page>

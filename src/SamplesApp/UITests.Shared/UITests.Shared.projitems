@@ -1916,6 +1916,15 @@
     <Content Include="$(MSBuildThisFileDirectory)Assets\test_image_300_200.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\test_image_836_1252.png" />
     <Content Include="$(MSBuildThisFileDirectory)Lottie\4770-lady-and-dove.json" />
+    <Content Include="$(MSBuildThisFileDirectory)Lottie\4930-checkbox-animation.json" />
+    <Content Include="$(MSBuildThisFileDirectory)Lottie\images\img_0.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Lottie\images\img_1.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Lottie\images\img_2.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Lottie\images\img_3.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Lottie\images\img_4.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Lottie\images\img_5.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Lottie\lottie-logo.json" />
+    <Content Include="$(MSBuildThisFileDirectory)Lottie\uno.json" />
   </ItemGroup>
   <ItemGroup>
     <PRIResource Include="$(MSBuildThisFileDirectory)UITestsStrings\en-US\NamedResources.resw" />

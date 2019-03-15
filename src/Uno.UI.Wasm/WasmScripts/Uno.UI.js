@@ -1018,15 +1018,12 @@ var Uno;
                 this.destroyViewInternal(params.HtmlId);
                 return true;
             }
-            destroyViewInternal(viewId) {
-                const element = this.allActiveElementsById[viewId];
-                if (!element) {
-                    throw `destroyView: Element id ${viewId} not found.`;
+            destroyViewInternal(elementId) {
+                const htmlElement = this.getView(elementId);
+                if (htmlElement.parentElement) {
+                    htmlElement.parentElement.removeChild(htmlElement);
                 }
-                if (element.parentElement) {
-                    element.parentElement.removeChild(element);
-                }
-                delete this.allActiveElementsById[viewId];
+                delete this.allActiveElementsById[elementId];
             }
             getBoundingClientRect(elementId) {
                 const bounds = this.getView(elementId).getBoundingClientRect();

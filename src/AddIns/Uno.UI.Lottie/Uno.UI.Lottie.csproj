@@ -23,6 +23,7 @@
 	<ItemGroup>
 		<PackageReference Include="Microsoft.TypeScript.Compiler" Version="2.8.3" />
 		<PackageReference Include="Microsoft.TypeScript.MSBuild" Version="2.8.3" />
+		<PackageReference Include="Uno.MonoAnalyzers" Version="1.0.0-dev.2" />
 		<PackageReference Include="Uno.SourceGenerationTasks" Version="1.30.0-dev.273" />
 	</ItemGroup>
 
@@ -33,8 +34,17 @@
 	  <ProjectReference Include="..\..\Uno.UI\Uno.UI.csproj" />
 	</ItemGroup>
 
+	<ItemGroup Condition="'$(TargetFramework)' == 'MonoAndroid80'">
+		<PackageReference Include="Com.Airbnb.Android.Lottie" Version="2.5.2.1" PrivateAssets="none" />
+	</ItemGroup>
+
+	<ItemGroup Condition="'$(TargetFramework)' == 'xamarinios10'">
+		<PackageReference Include="Com.Airbnb.iOS.Lottie" Version="2.5.2" PrivateAssets="none" />
+	</ItemGroup>
+
 	<PropertyGroup>
 		<UnoUIGeneratorsBinPath>..\..\SourceGenerators\Uno.UI.SourceGenerators\bin\$(Configuration)</UnoUIGeneratorsBinPath>
+		<Version>1.44.0-dev.977</Version>
 	</PropertyGroup>
 
 	<Import Project="..\..\SourceGenerators\Uno.UI.SourceGenerators\Content\Uno.UI.SourceGenerators.props" />
