@@ -178,6 +178,7 @@ declare namespace Uno.UI {
             */
         createContentNative(pParams: number): boolean;
         private createContentInternal;
+        getView(elementHandle: number): HTMLElement | SVGElement;
         /**
             * Set a name for an element.
             *
@@ -194,7 +195,7 @@ declare namespace Uno.UI {
         /**
             * Set an attribute for an element.
             */
-        setAttribute(elementId: string, attributes: {
+        setAttribute(elementId: number, attributes: {
             [name: string]: string;
         }): string;
         /**
@@ -204,11 +205,11 @@ declare namespace Uno.UI {
         /**
             * Get an attribute for an element.
             */
-        getAttribute(elementId: string, name: string): any;
+        getAttribute(elementId: number, name: string): any;
         /**
             * Set a property for an element.
             */
-        setProperty(elementId: string, properties: {
+        setProperty(elementId: number, properties: {
             [name: string]: string;
         }): string;
         /**
@@ -218,14 +219,14 @@ declare namespace Uno.UI {
         /**
             * Get a property for an element.
             */
-        getProperty(elementId: string, name: string): any;
+        getProperty(elementId: number, name: string): any;
         /**
             * Set the CSS style of a html element.
             *
             * To remove a value, set it to empty string.
             * @param styles A dictionary of styles to apply on html element.
             */
-        setStyle(elementId: string, styles: {
+        setStyle(elementId: number, styles: {
             [name: string]: string;
         }, setAsArranged?: boolean): string;
         /**
@@ -350,7 +351,7 @@ declare namespace Uno.UI {
         /**
             * Set or replace the root content element.
             */
-        setRootContent(elementId?: string): string;
+        setRootContent(elementId?: number): string;
         /**
             * Set a view as a child of another one.
             *
@@ -387,7 +388,7 @@ declare namespace Uno.UI {
             * The element won't be available anymore. Usually indicate the managed
             * version has been scavenged by the GC.
             */
-        destroyView(viewId: number): string;
+        destroyView(elementId: number): string;
         /**
             * Destroy a html element.
             *
@@ -396,7 +397,7 @@ declare namespace Uno.UI {
             */
         destroyViewNative(pParams: number): boolean;
         private destroyViewInternal;
-        getBoundingClientRect(elementId: string): string;
+        getBoundingClientRect(elementId: number): string;
         getBBox(elementId: number): string;
         getBBoxNative(pParams: number, pReturn: number): boolean;
         private getBBoxInternal;
@@ -415,17 +416,17 @@ declare namespace Uno.UI {
             */
         measureViewNative(pParams: number, pReturn: number): boolean;
         private measureViewInternal;
-        setImageRawData(viewId: string, dataPtr: number, width: number, height: number): string;
+        setImageRawData(viewId: number, dataPtr: number, width: number, height: number): string;
         /**
          * Sets the provided image with a mono-chrome version of the provided url.
          * @param viewId the image to manipulate
          * @param url the source image
          * @param color the color to apply to the monochrome pixels
          */
-        setImageAsMonochrome(viewId: string, url: string, color: string): string;
-        setPointerCapture(viewId: string, pointerId: number): string;
-        releasePointerCapture(viewId: string, pointerId: number): string;
-        focusView(elementId: string): string;
+        setImageAsMonochrome(viewId: number, url: string, color: string): string;
+        setPointerCapture(viewId: number, pointerId: number): string;
+        releasePointerCapture(viewId: number, pointerId: number): string;
+        focusView(elementId: number): string;
         /**
             * Set the Html content for an element.
             *
