@@ -115,20 +115,15 @@ namespace Windows.UI.Xaml.Media.Animation
 							};
 
 							RenderingLoopFloatAnimator.prototype.SetStartFrameDelay = function(delay) {
-								if (this._frameRequestId) {
-									window.cancelAnimationFrame(this._frameRequestId);
-								}
+								this.unscheduleFrame();
 
 								if (this._isEnabled) {
-									var that = this;
-									this._delayRequestId = setTimeout(function() { that.onFrame(); }, delay);
+									this.scheduleDelayedFrame(delay);
 								}
 							};
 
 							RenderingLoopFloatAnimator.prototype.SetAnimationFramesInterval = function() {
-								if (this._delayRequestId) {
-									clearTimeout(this._delayRequestId);
-								}
+								this.unscheduleFrame();
 								
 								if (this._isEnabled) {
 									this.onFrame();
@@ -141,26 +136,50 @@ namespace Windows.UI.Xaml.Media.Animation
 								}
 
 								this._isEnabled = true;
-								var that = this;
-								this._frameRequestId = window.requestAnimationFrame(function(timestamp) { that.onFrame(timestamp); });
+								this.scheduleAnimationFrame();
 							};
 
 							RenderingLoopFloatAnimator.prototype.DisableFrameReporting = function() {
 								this._isEnabled = false;
-								if (this._delayRequestId) {
-									clearTimeout(this._delayRequestId);
-								}
-								if (this._frameRequestId) {
-									window.cancelAnimationFrame(this._frameRequestId);
-								}
+								this.unscheduleFrame();
 							};
 
 							RenderingLoopFloatAnimator.prototype.onFrame = function(timestamp) {
 								Uno.Foundation.Interop.ManagedObject.dispatch(this.__managedHandle, ""OnFrame"");
-								if (this._isEnabled) {
-									var that = this;
-									this._frameRequestId = window.requestAnimationFrame(function(timestamp) { that.onFrame(timestamp); });
+
+								// Schedule a new frame only if still enabled and no frame was scheduled by the managed OnFrame
+								if (this._isEnabled && this._frameRequestId == null && this._delayRequestId == null) {
+									this.scheduleAnimationFrame();
 								}
+							};
+
+							RenderingLoopFloatAnimator.prototype.unscheduleFrame = function(timestamp) {
+								if (this._delayRequestId != null) {
+									clearTimeout(this._delayRequestId);
+									this._delayRequestId = null;
+								}
+								if (this._frameRequestId != null) {
+									window.cancelAnimationFrame(this._frameRequestId);
+									this._frameRequestId = null;
+								}
+							};
+
+							RenderingLoopFloatAnimator.prototype.scheduleDelayedFrame = function(delay) {
+									var that = this;
+									this._delayRequestId = setTimeout(function() {
+										that._delayRequestId = null;
+										that.onFrame();
+									},
+									delay);
+							};
+
+
+							RenderingLoopFloatAnimator.prototype.scheduleAnimationFrame = function() {
+									var that = this;
+									this._frameRequestId = window.requestAnimationFrame(function(ts) {
+										that._frameRequestId = null;
+										that.onFrame(ts);
+									});
 							};
 
 							return RenderingLoopFloatAnimator;
