@@ -27,7 +27,7 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 		{
 			if(player != _player)
 			{
-				player.RegisterEventHandler("lottie_state", (EventHandler)OnStateChanged);
+				player.RegisterHtmlEventHandler("lottie_state", (EventHandler)OnStateChanged);
 			}
 
 			_player = player;
