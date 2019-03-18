@@ -125,6 +125,15 @@ namespace Windows.UI.Xaml.Controls
 					ItemsControl = itemsControl;
 				}
 			}
+
+			if(
+				ItemsControl == null
+				&& OwnerPanel.TemplatedParent is ItemsControl popupItemsControl
+			)
+			{
+				// This case is for an ItemsPresenter hosted in a Popup
+				ItemsControl = popupItemsControl;
+			}
 		}
 
 		private void OnUnloaded(object sender, RoutedEventArgs e)
