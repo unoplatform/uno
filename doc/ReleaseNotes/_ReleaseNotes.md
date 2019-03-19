@@ -36,6 +36,7 @@
 * `KeyUp` event properly sends `KeyEventArgs` to the controls
 * Add ItemsSource CollectionViewSource update support (#697)
 * Add support for the `CollectionViewSource.ItemsPath` property
+* Fixed support for dots in resource names (#700)
 
 ### Breaking changes
 * Make `UIElement.IsPointerPressed` and `IsPointerOver` internal
