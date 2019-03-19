@@ -41,8 +41,10 @@ namespace Windows.UI.Xaml.Controls
 	public partial class ItemsControl : Control, IItemsControl
 	{
 		private ItemsPresenter _itemsPresenter;
-		private SerialDisposable _notifyCollectionChanged = new SerialDisposable();
+
+		private readonly SerialDisposable _notifyCollectionChanged = new SerialDisposable();
 		private readonly SerialDisposable _notifyCollectionGroupsChanged = new SerialDisposable();
+		private readonly SerialDisposable _cvsViewChanged = new SerialDisposable();
 
 		private bool _isReady; // Template applied
 		private bool _needsUpdateItems;
@@ -603,6 +605,22 @@ namespace Windows.UI.Xaml.Controls
 			IsGrouping = (e.NewValue as ICollectionView)?.CollectionGroups != null;
 			SetNeedsUpdateItems();
 			ObserveCollectionChanged();
+			TryObserveCollectionViewSource(e.NewValue);
+		}
+
+		private void TryObserveCollectionViewSource(object newValue)
+		{
+			if(newValue is CollectionViewSource cvs)
+			{
+				_cvsViewChanged.Disposable = null;
+				_cvsViewChanged.Disposable = cvs.RegisterDisposablePropertyChangedCallback(
+					CollectionViewSource.ViewProperty,
+					(s, e) => {
+						ObserveCollectionChanged();
+						SetNeedsUpdateItems();
+					}
+				);
+			}
 		}
 
 		internal int GetGroupCount(int groupIndex) => IsGrouping ? GetGroupAt(groupIndex).GroupItems.Count : 0;
