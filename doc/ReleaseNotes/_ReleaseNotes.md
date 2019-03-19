@@ -58,6 +58,7 @@
  * Fixed invalid iOS assets folder. `ImageAsset` nodes must not be `<Visible>false</Visible>` to be copied to the generated project.
  * Make CollectionViewSource.View a proper DependencyProperty (#697)
 
+ * Fixed support for string support for `Path.Data` (#698)
 
 ## Release 1.43.1
 
