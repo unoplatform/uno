@@ -671,9 +671,6 @@
 				var handled = this.dispatchEvent(htmlElement, eventName, eventPayload);
 				if (handled) {
 					event.stopPropagation();
-					if (event instanceof KeyboardEvent) {
-						event.preventDefault();
-					}
 				}
 			};
 

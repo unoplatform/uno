@@ -16,7 +16,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.CollectionViewTests
 		public void When_CopyTo()
 		{
 			var originalList = new List<object> { 1, 2, 3 };
-			var SUT = new CollectionView(originalList, false);
+			var SUT = new CollectionView(originalList, false, null);
 
 			var array = new object[3];
 			(SUT as ICollection<object>).CopyTo(array, 0);
@@ -28,7 +28,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.CollectionViewTests
 		public void When_CopyTo_With_Index()
 		{
 			var originalList = new List<object> { 1, 2, 3 };
-			var SUT = new CollectionView(originalList, false);
+			var SUT = new CollectionView(originalList, false, null);
 
 			var array = new object[4];
 			array[0] = 42;
@@ -42,7 +42,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.CollectionViewTests
 		public void When_Array_CopyTo()
 		{
 			var originalList = new object[] { 1, 2, 3 };
-			var SUT = new CollectionView(originalList, false);
+			var SUT = new CollectionView(originalList, false, null);
 
 			var array = new object[3];
 			(SUT as ICollection<object>).CopyTo(array, 0);
@@ -54,7 +54,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.CollectionViewTests
 		public void When_Array_CopyTo_With_Index()
 		{
 			var originalList = new object[]{ 1, 2, 3 };
-			var SUT = new CollectionView(originalList, false);
+			var SUT = new CollectionView(originalList, false, null);
 
 			var array = new object[4];
 			array[0] = 42;

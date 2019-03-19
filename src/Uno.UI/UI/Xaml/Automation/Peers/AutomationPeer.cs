@@ -6,6 +6,12 @@ namespace Windows.UI.Xaml.Automation.Peers
 {
 	public partial class AutomationPeer : DependencyObject
 	{
+		[global::Uno.NotImplemented]
+		public static bool ListenerExists(global::Windows.UI.Xaml.Automation.Peers.AutomationEvents eventId)
+		{
+			return false;
+		}
+
 		#region Public
 
 		public bool IsContentElement()

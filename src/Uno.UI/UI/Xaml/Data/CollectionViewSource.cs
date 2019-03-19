@@ -22,9 +22,7 @@ namespace Windows.UI.Xaml.Data
 
 		// Using a DependencyProperty as the backing store for IsSourceGrouped.  This enables animation, styling, binding, etc...
 		public static readonly DependencyProperty IsSourceGroupedProperty =
-			DependencyProperty.Register("IsSourceGrouped", typeof(bool), typeof(CollectionViewSource), new PropertyMetadata(false, (o, e) => ((CollectionViewSource)o).UpdateView()));
-
-
+			DependencyProperty.Register(nameof(IsSourceGrouped), typeof(bool), typeof(CollectionViewSource), new PropertyMetadata(false, (o, e) => ((CollectionViewSource)o).UpdateView()));
 
 		public object Source
 		{
@@ -34,13 +32,13 @@ namespace Windows.UI.Xaml.Data
 
 		// Using a DependencyProperty as the backing store for Source.  This enables animation, styling, binding, etc...
 		public static readonly DependencyProperty SourceProperty =
-			DependencyProperty.Register("Source", typeof(object), typeof(CollectionViewSource), new PropertyMetadata(null, (o, e) => ((CollectionViewSource)o).UpdateView()));
+			DependencyProperty.Register(nameof(Source), typeof(object), typeof(CollectionViewSource), new PropertyMetadata(null, (o, e) => ((CollectionViewSource)o).UpdateView()));
 
 		private void UpdateView()
 		{
             if (Source is IEnumerable enumerable)
             {
-                View = new CollectionView(enumerable, IsSourceGrouped);
+                View = new CollectionView(enumerable, IsSourceGrouped, ItemsPath);
             }
             else
             {
@@ -50,6 +48,32 @@ namespace Windows.UI.Xaml.Data
 
 		#endregion
 
-		public ICollectionView View { get; private set; }
+		public static DependencyProperty ViewProperty { get; } =
+			Windows.UI.Xaml.DependencyProperty.Register(
+				name: nameof(View),
+				propertyType: typeof(ICollectionView),
+				ownerType: typeof(CollectionViewSource),
+				typeMetadata: new FrameworkPropertyMetadata(null)
+			);
+
+		public ICollectionView View
+		{
+			get => (ICollectionView)GetValue(ViewProperty);
+			private set => SetValue(ViewProperty, value);
+		}
+
+		public global::Windows.UI.Xaml.PropertyPath ItemsPath
+		{
+			get => (PropertyPath)this.GetValue(ItemsPathProperty);
+			set => this.SetValue(ItemsPathProperty, value);
+		}
+
+		public static DependencyProperty ItemsPathProperty { get; } =
+			DependencyProperty.Register(
+				name: nameof(ItemsPath),
+				propertyType: typeof(PropertyPath),
+				ownerType: typeof(CollectionViewSource),
+				typeMetadata: new PropertyMetadata(null, (o, e) => ((CollectionViewSource)o).UpdateView())
+			);
 	}
 }

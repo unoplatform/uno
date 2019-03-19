@@ -670,7 +670,7 @@ namespace Windows.UI.Xaml
 			}
 		}
 		#endif
-		#if false || false || NET461 || false || false
+		#if false || false || false || false || false
 		[global::Uno.NotImplemented]
 		public  event global::Windows.UI.Xaml.RoutedEventHandler Loaded
 		{
@@ -702,7 +702,7 @@ namespace Windows.UI.Xaml
 			}
 		}
 		#endif
-		#if false || false || NET461 || false || false
+		#if false || false || false || false || false
 		[global::Uno.NotImplemented]
 		public  event global::Windows.UI.Xaml.RoutedEventHandler Unloaded
 		{
@@ -719,7 +719,7 @@ namespace Windows.UI.Xaml
 		}
 		#endif
 		// Skipping already declared event Windows.UI.Xaml.FrameworkElement.DataContextChanged
-		#if false || false || NET461 || false || false
+		#if false || false || false || false || false
 		[global::Uno.NotImplemented]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Xaml.FrameworkElement, object> Loading
 		{

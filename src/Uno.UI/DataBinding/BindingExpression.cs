@@ -279,7 +279,7 @@ namespace Windows.UI.Xaml.Data
 			);
 			_boundPropertyType = targetPropertyDetails.Property.Type;
 
-			ExplicitSource = binding.Source;
+			TryGetSource(binding);
 
 			if (ParentBinding.CompiledSource != null)
 			{
@@ -296,6 +296,34 @@ namespace Windows.UI.Xaml.Data
 			ApplyFallbackValue();
 			ApplyExplicitSource();
 			ApplyElementName();
+		}
+
+		private void TryGetSource(Binding binding)
+		{
+			if (binding.Source is ElementNameSubject sourceSubject)
+			{
+				void applySource()
+				{
+					ExplicitSource = sourceSubject.ElementInstance;
+					ApplyExplicitSource();
+				}
+
+				// The element name instance may already have been
+				// set, in relation to the declaration order in the xaml file.
+				if (sourceSubject.ElementInstance == null)
+				{
+					sourceSubject
+						.ElementInstanceChanged += (s, elementNameInstance) => applySource();
+				}
+				else
+				{
+					applySource();
+				}
+			}
+			else
+			{
+				ExplicitSource = binding.Source;
+			}
 		}
 
 		private void SetTargetValue(object value)
