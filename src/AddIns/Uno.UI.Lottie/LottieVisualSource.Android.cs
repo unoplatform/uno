@@ -83,6 +83,11 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 			_isPlaying = true;
 		}
 
+		public void SetProgress(double progress)
+		{
+			// TODO
+		}
+
 		public void Load()
 		{
 			if (_isPlaying)

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Threading;
 using Uno.Foundation;
 using Windows.Foundation;
@@ -37,13 +38,13 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 				"Uno.UI.Lottie.setAnimationProperties({",
 				"elementId:",
 				player.HtmlId.ToString(),
-				", jsonPath:\"",
+				",jsonPath:\"",
 				UriSource?.PathAndQuery ?? "",
-				"\", autoplay:",
+				"\",autoplay:",
 				player.AutoPlay ? "true" : "false",
-				", stretch:\"",
+				",stretch:\"",
 				player.Stretch.ToString(),
-				"\", rate:",
+				"\",rate:",
 				player.PlaybackRate.ToString(),
 				"});"
 			};
@@ -66,9 +67,9 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 		{
 			var js = new[]
 			{
-				"Uno.UI.Lottie.play(\"",
+				"Uno.UI.Lottie.play(",
 				_player.HtmlId.ToString(),
-				"\",",
+				",",
 				looped ? "true" : "false",
 				");"
 			};
@@ -80,9 +81,9 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 		{
 			var js = new[]
 			{
-				"Uno.UI.Lottie.stop(\"",
+				"Uno.UI.Lottie.stop(",
 				_player.HtmlId.ToString(),
-				"\");"
+				");"
 			};
 			WebAssemblyRuntime.InvokeJS(string.Concat(js));
 			_isPlaying = false;
@@ -92,9 +93,9 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 		{
 			var js = new[]
 			{
-				"Uno.UI.Lottie.pause(\"",
+				"Uno.UI.Lottie.pause(",
 				_player.HtmlId.ToString(),
-				"\");"
+				");"
 			};
 			WebAssemblyRuntime.InvokeJS(string.Concat(js));
 			_isPlaying = false;
@@ -104,9 +105,23 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 		{
 			var js = new[]
 			{
-				"Uno.UI.Lottie.resume(\"",
+				"Uno.UI.Lottie.resume(",
 				_player.HtmlId.ToString(),
-				"\");"
+				");"
+			};
+			WebAssemblyRuntime.InvokeJS(string.Concat(js));
+			_isPlaying = true;
+		}
+
+		public void SetProgress(double progress)
+		{
+			var js = new[]
+			{
+				"Uno.UI.Lottie.setProgress(",
+				_player.HtmlId.ToString(),
+				",",
+				progress.ToString(CultureInfo.InvariantCulture),
+				");"
 			};
 			WebAssemblyRuntime.InvokeJS(string.Concat(js));
 			_isPlaying = true;
@@ -121,9 +136,9 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 
 			var js = new[]
 			{
-					"Uno.UI.Lottie.resume(\"",
+					"Uno.UI.Lottie.resume(",
 					_player.HtmlId.ToString(),
-					"\");"
+					");"
 				};
 			WebAssemblyRuntime.InvokeJS(string.Concat(js));
 		}
@@ -137,9 +152,9 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 
 			var js = new[]
 			{
-					"Uno.UI.Lottie.pause(\"",
+					"Uno.UI.Lottie.pause(",
 					_player.HtmlId.ToString(),
-					"\");"
+					");"
 				};
 			WebAssemblyRuntime.InvokeJS(string.Concat(js));
 		}

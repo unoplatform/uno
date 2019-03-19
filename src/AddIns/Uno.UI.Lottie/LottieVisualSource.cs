@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using Uno;
 using Windows.Foundation;
 using Windows.UI.Xaml;
@@ -39,6 +40,11 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 			(sender as LottieVisualSource)?.Update();
 		}
 
+		public async Task SetSourceAsync(Uri sourceUri)
+		{
+			UriSource = sourceUri;
+		}
+
 
 #if !(__WASM__ || __ANDROID__)
 
@@ -67,6 +73,11 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 		}
 
 		public void Resume()
+		{
+			throw new NotImplementedException();
+		}
+
+		public void SetProgress(double progress)
 		{
 			throw new NotImplementedException();
 		}

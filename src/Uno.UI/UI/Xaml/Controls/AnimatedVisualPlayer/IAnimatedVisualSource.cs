@@ -12,6 +12,8 @@ namespace Windows.UI.Xaml.Controls
 		void Pause();
 		void Resume();
 
+		void SetProgress(double progress);
+
 		Size Measure(Size availableSize);
 	}
 }

@@ -10,7 +10,7 @@
 	<projectUrl>https://github.com/nventive/Uno</projectUrl>
 	<iconUrl>https://nv-assets.azurewebsites.net/logos/uno.png</iconUrl>
 	<description>A WPF host for the WebAssembly build on Uno.UI</description>
-	<copyright>Copyright (C) 2015-2018 nventive inc. - all rights reserved</copyright>
+	<copyright>Copyright (C) 2015-2019 nventive inc. - all rights reserved</copyright>
 	<repository type="git" url="https://github.com/nventive/Uno.git" />
 
 	<dependencies>
