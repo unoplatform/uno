@@ -89,10 +89,9 @@ namespace Windows.UI.Xaml.Controls
 			Source?.Resume();
 		}
 
-		[NotImplemented]
 		public void SetProgress(double progress)
 		{
-			throw new NotSupportedException();
+			Source?.SetProgress(progress);
 		}
 
 		public void Stop()

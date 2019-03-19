@@ -24,6 +24,9 @@
 		// first param is a single array or multiple arrays of two values each(fromFrame,toFrame), second param is a boolean for forcing the new segment right away
 		playSegments(segments: number[] | number[][], forceFlag: boolean): void;
 
+		// inFrames: If true, returns duration in frames, if false, in seconds.
+		getDuration(inFrames: boolean): number;
+
 		// To destroy and release resources.
 		destroy(): void;
 

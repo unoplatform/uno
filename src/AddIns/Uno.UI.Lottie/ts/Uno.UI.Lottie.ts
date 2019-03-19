@@ -2,7 +2,7 @@
 
 namespace Uno.UI {
 	export interface LottieAnimationProperties {
-		elementId: string;
+		elementId: number;
 		jsonPath: string;
 		autoplay: boolean;
 		stretch: string;
@@ -16,7 +16,7 @@ namespace Uno.UI {
 
 	export class Lottie {
 		private static _player: LottiePlayer;
-		private static _runningAnimations: { [id: string]: RunningLottieAnimation } = {};
+		private static _runningAnimations: { [id: number]: RunningLottieAnimation } = {};
 
 		public static setAnimationProperties(newProperties: LottieAnimationProperties): string {
 			const elementId = newProperties.elementId;
@@ -36,7 +36,7 @@ namespace Uno.UI {
 			return "ok";
 		}
 
-		public static stop(elementId: string): string {
+		public static stop(elementId: number): string {
 			this.withPlayer(p => {
 				this._runningAnimations[elementId].animation.stop();
 			});
@@ -44,7 +44,7 @@ namespace Uno.UI {
 			return "ok";
 		}
 
-		public static play(elementId: string, looped: boolean): string {
+		public static play(elementId: number, looped: boolean): string {
 			this.withPlayer(p => {
 				const a = this._runningAnimations[elementId].animation;
 				a.loop = looped;
@@ -54,7 +54,7 @@ namespace Uno.UI {
 			return "ok";
 		}
 
-		public static kill(elementId: string): string {
+		public static kill(elementId: number): string {
 			this.withPlayer(p => {
 				this._runningAnimations[elementId].animation.destroy();
 				delete this._runningAnimations[elementId];
@@ -63,7 +63,7 @@ namespace Uno.UI {
 			return "ok";
 		}
 
-		public static pause(elementId: string): string {
+		public static pause(elementId: number): string {
 			this.withPlayer(p => {
 				this._runningAnimations[elementId].animation.pause();
 			});
@@ -71,7 +71,7 @@ namespace Uno.UI {
 			return "ok";
 		}
 
-		public static resume(elementId: string): string {
+		public static resume(elementId: number): string {
 			this.withPlayer(p => {
 				this._runningAnimations[elementId].animation.play();
 			});
@@ -79,7 +79,18 @@ namespace Uno.UI {
 			return "ok";
 		}
 
-		public static getAnimationState(elementId: string): string {
+		public static setProgress(elementId: number, progress: number): string {
+			this.withPlayer(p => {
+				const animation = this._runningAnimations[elementId].animation;
+				const frames = animation.getDuration(true);
+				const frame = frames * progress;
+				animation.goToAndStop(frame, true);
+			});
+
+			return "ok";
+		}
+
+		public static getAnimationState(elementId: number): string {
 			const animation = this._runningAnimations[elementId].animation;
 
 			const state = `${animation.animationData.w}|${animation.animationData.h}|${animation.isPaused}`;
@@ -180,7 +191,7 @@ namespace Uno.UI {
 				path: properties.jsonPath,
 				loop: true,
 				autoplay: properties.autoplay,
-				name: properties.elementId,
+				name: `Lottin-${properties.elementId}`,
 				renderer: "svg", // https://github.com/airbnb/lottie-web/wiki/Features
 				container: containerElement,
 				rendererSettings: {

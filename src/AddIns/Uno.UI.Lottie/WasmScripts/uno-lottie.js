@@ -49,6 +49,15 @@ var Uno;
                 });
                 return "ok";
             }
+            static setProgress(elementId, progress) {
+                this.withPlayer(p => {
+                    const animation = this._runningAnimations[elementId].animation;
+                    const frames = animation.getDuration(true);
+                    const frame = frames * progress;
+                    animation.goToAndStop(frame, true);
+                });
+                return "ok";
+            }
             static getAnimationState(elementId) {
                 const animation = this._runningAnimations[elementId].animation;
                 const state = `${animation.animationData.w}|${animation.animationData.h}|${animation.isPaused}`;
@@ -127,7 +136,7 @@ var Uno;
                     path: properties.jsonPath,
                     loop: true,
                     autoplay: properties.autoplay,
-                    name: properties.elementId,
+                    name: `Lottin-${properties.elementId}`,
                     renderer: "svg",
                     container: containerElement,
                     rendererSettings: {
