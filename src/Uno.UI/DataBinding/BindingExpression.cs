@@ -73,6 +73,49 @@ namespace Windows.UI.Xaml.Data
 				}
 			}
 		}
+		
+		internal BindingExpression(
+			ManagedWeakReference viewReference,
+			DependencyPropertyDetails targetPropertyDetails,
+			Binding binding
+		)
+		{
+			ParentBinding = binding;
+
+			// As bindings are only glue between layers, they must not prevent collection neither of View nor Binding Source
+			// Keep only a weak reference on View in order break the circular reference between Source.ValueChanged event and SetValue on View
+			// especially when Binding source is a StaticRessource which is never collected !
+			// Note: Bindings should still be disposed in order to also remove reference on the Source.
+			_view = viewReference;
+
+			_targetOwnerType = targetPropertyDetails.Property.OwnerType;
+			TargetPropertyDetails = targetPropertyDetails;
+			_bindingPath = new BindingPath(
+				path: ParentBinding.Path,
+				fallbackValue: ParentBinding.FallbackValue,
+				precedence: null,
+				allowPrivateMembers: ParentBinding.CompiledSource != null
+			);
+			_boundPropertyType = targetPropertyDetails.Property.Type;
+
+			TryGetSource(binding);
+
+			if (ParentBinding.CompiledSource != null)
+			{
+				_isCompiledSource = true;
+				ExplicitSource = ParentBinding.CompiledSource;
+			}
+
+			if (ParentBinding.ElementName != null)
+			{
+				_isElementNameSource = true;
+			}
+
+
+			ApplyFallbackValue();
+			ApplyExplicitSource();
+			ApplyElementName();
+		}
 
 		private ManagedWeakReference GetWeakDataContext()
 			=> _isElementNameSource || _explicitSourceStore.IsAlive ? _explicitSourceStore : _dataContext;
@@ -254,49 +297,6 @@ namespace Windows.UI.Xaml.Data
 				ApplyBinding();
 			}
 		}
-
-		internal BindingExpression(
-			ManagedWeakReference viewReference,
-			DependencyPropertyDetails targetPropertyDetails,
-			Binding binding
-		)
-		{
-			ParentBinding = binding;
-
-			// As bindings are only glue between layers, they must not prevent collection neither of View nor Binding Source
-			// Keep only a weak reference on View in order break the circular reference between Source.ValueChanged event and SetValue on View
-			// especially when Binding source is a StaticRessource which is never collected !
-			// Note: Bindings should still be disposed in order to also remove reference on the Source.
-			_view = viewReference;
-
-			_targetOwnerType = targetPropertyDetails.Property.OwnerType;
-			TargetPropertyDetails = targetPropertyDetails;
-			_bindingPath = new BindingPath(
-				path: ParentBinding.Path,
-				fallbackValue: ParentBinding.FallbackValue,
-				precedence: null,
-				allowPrivateMembers: ParentBinding.CompiledSource != null
-			);
-			_boundPropertyType = targetPropertyDetails.Property.Type;
-
-			TryGetSource(binding);
-
-			if (ParentBinding.CompiledSource != null)
-			{
-				_isCompiledSource = true;
-				ExplicitSource = ParentBinding.CompiledSource;
-			}
-
-			if (ParentBinding.ElementName != null)
-			{
-				_isElementNameSource = true;
-			}
-
-
-			ApplyFallbackValue();
-			ApplyExplicitSource();
-			ApplyElementName();
-		}		
 
 		private void TryGetSource(Binding binding)
 		{
