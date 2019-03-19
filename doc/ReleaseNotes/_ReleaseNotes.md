@@ -38,9 +38,11 @@
 * Add support for the `CollectionViewSource.ItemsPath` property
 * Fixed support for dots in resource names (#700)
 * Add support for `BindingExpression.UpdateSource()`
+* Updated Android version to target Android 9.0
 
 ### Breaking changes
 * Make `UIElement.IsPointerPressed` and `IsPointerOver` internal
+* You will not be able to build projects targeting Android 8.0 locally anymore. Change your Android target to Android 9.0 or replace MonoAndroid90 by MonoAndroid80 in the TargetFrameworks of your projects files.
 
 ### Bug fixes
  * Transforms are now fully functionnal
