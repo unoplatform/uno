@@ -674,6 +674,67 @@ namespace Uno.UI.Tests.BinderTests
 			Assert.AreEqual("Alice", sut.Text);
 		}
 
+		[TestMethod]
+		public void When_Source_Complex()
+		{
+			var SUT = new Windows.UI.Xaml.Controls.Grid();
+			var subject = new ElementNameSubject();
+
+			SUT.SetBinding(
+				Windows.UI.Xaml.Controls.Grid.TagProperty,
+				new Binding()
+				{
+					Path = "MyProperty",
+					Source = new { MyProperty = 42 }
+				}
+			);
+
+			Assert.AreEqual(42, SUT.Tag);
+		}
+
+		[TestMethod]
+		public void When_Subject_Source_Complex()
+		{
+			var SUT = new Windows.UI.Xaml.Controls.Grid();
+			var subject = new ElementNameSubject();
+
+			SUT.SetBinding(
+				Windows.UI.Xaml.Controls.Grid.TagProperty,
+				new Binding()
+				{
+					Path = "MyProperty",
+					Source = subject
+				}
+			);
+
+			Assert.IsNull(SUT.Tag);
+
+			subject.ElementInstance = new { MyProperty = 42 };
+
+			Assert.AreEqual(42, SUT.Tag);
+		}
+
+		[TestMethod]
+		public void When_Subject_Source()
+		{
+			var SUT = new Windows.UI.Xaml.Controls.Grid();
+			var subject = new ElementNameSubject();
+
+			SUT.SetBinding(
+				Windows.UI.Xaml.Controls.Grid.TagProperty,
+				new Binding()
+				{
+					Source = subject
+				}
+			);
+
+			Assert.IsNull(SUT.Tag);
+
+			subject.ElementInstance = 42;
+
+			Assert.AreEqual(42, SUT.Tag);
+		}
+
 		public partial class BaseTarget : DependencyObject
 		{
 			private List<object> _dataContextChangedList = new List<object>();

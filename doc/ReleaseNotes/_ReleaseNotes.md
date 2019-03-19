@@ -27,6 +27,8 @@
 * Add support for `Application.OnWindowCreated`
 * Added non-throwing stubs for `AutomationProperty`
 * Add missing system resources
+* Add support for x:Bind in StaticResources (#696)
+* Add support for x:Name late binding support to adds proper support for CollectionViewSource in Resources (#696)
 
 ### Breaking changes
 * Make `UIElement.IsPointerPressed` and `IsPointerOver` internal

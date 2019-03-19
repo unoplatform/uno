@@ -836,6 +836,18 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				BuildChild(writer, null, namedResource.Value);
 				writer.AppendLineInvariant(0, ";", namedResource.Value.Type);
 			}
+
+			if (namedResources.Any())
+			{
+				using (writer.BlockInvariant("Loading += (s, e) =>"))
+				{
+					foreach (var namedResource in namedResources)
+					{
+						writer.AppendFormatInvariant($"{namedResource.Key}.ApplyCompiledBindings();");
+					}
+				}
+				writer.AppendLineInvariant(0, ";");
+			}
 		}
 
 		private bool IsSingleTimeInitializable(XamlType type)
@@ -2667,7 +2679,9 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					}
 					else if (_namedResources.ContainsKey(resourceName))
 					{
-						return resourceName;
+						// Skip the literal value, use the elementNameSubject instead
+						// so the source can be updated when the subject is set.
+						return "_" + resourceName + "Subject";
 					}
 					else
 					{
