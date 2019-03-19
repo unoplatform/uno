@@ -511,7 +511,17 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			}
 		}
 
-		private static string SanitizeResourceName(string name) => name.Replace("-", "_");
+		private static readonly char[] ResourceInvalidCharacters = new[] { '.', '-' };
+
+		private static string SanitizeResourceName(string name)
+		{
+			foreach (var c in ResourceInvalidCharacters)
+			{
+				name = name.Replace(c, '_');
+			}
+
+			return name;
+		}
 
 		private void BuildChildSubclasses(IIndentedStringBuilder writer, bool isTopLevel = false)
 		{

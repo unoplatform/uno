@@ -37,10 +37,15 @@
         <Setter Property="Background" Value="Blue" />
     </Style>
 
-    <Style x:Key="Resource-with-dashes"  TargetType="Grid"
+	<Style x:Key="Resource-with-dashes"  TargetType="Grid"
 		   BasedOn="{StaticResource baseGridStyle}">
-        <Setter Property="Background" Value="Blue" />
-    </Style>
+		<Setter Property="Background" Value="Blue" />
+	</Style>
+
+	<Style x:Key="Resource.with.dots"  TargetType="Grid"
+		   BasedOn="{StaticResource baseGridStyle}">
+		<Setter Property="Background" Value="Blue" />
+	</Style>
 	
 	<x:Double x:Key="Double-Resource-With-Dashes">42</x:Double>
 
