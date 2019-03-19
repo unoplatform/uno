@@ -34,6 +34,8 @@
 * `RoutedEventArgs.IsGenerated` returns `false` as generating events with Uno is not yet supported
 * `AutomationPeer.ListenerExists` returns `false` as we cannot generating events with Uno is not yet supported
 * `KeyUp` event properly sends `KeyEventArgs` to the controls
+* Add ItemsSource CollectionViewSource update support (#697)
+* Add support for the `CollectionViewSource.ItemsPath` property
 
 ### Breaking changes
 * Make `UIElement.IsPointerPressed` and `IsPointerOver` internal
@@ -54,6 +56,7 @@
  * [Wasm] Fixes lements may not be removed form the global active DOM elements tracking map
  * [Wasm] Disable the root element scrolling (bounce) on touch devices
  * Fixed invalid iOS assets folder. `ImageAsset` nodes must not be `<Visible>false</Visible>` to be copied to the generated project.
+ * Make CollectionViewSource.View a proper DependencyProperty (#697)
 
 
 ## Release 1.43.1
