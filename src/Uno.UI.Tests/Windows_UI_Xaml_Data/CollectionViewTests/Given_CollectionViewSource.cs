@@ -52,5 +52,72 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.CollectionViewTests
 			Assert.AreEqual(1, SUT.View.Count);
 			Assert.AreEqual(1, viewChanged);
 		}
+
+		[TestMethod]
+		public void When_Valid_ItemsPath()
+		{
+			var SUT = new CollectionViewSource() { IsSourceGrouped = true };
+			SUT.ItemsPath = "MyItems";
+
+			int viewChanged = 0;
+			SUT.RegisterPropertyChangedCallback(CollectionViewSource.ViewProperty, (s, e) => viewChanged++);
+
+			Assert.IsNull(SUT.View);
+
+			var items = new[] {
+				new {
+					Key = 42,
+					MyItems = new [] {
+						21,
+						21
+					}
+				}
+			};
+
+			SUT.Source = items;
+
+			Assert.IsNotNull(SUT.View);
+			Assert.AreEqual(2, SUT.View.Count);
+			Assert.AreEqual(1, viewChanged);
+
+			Assert.AreEqual(1, SUT.View.CollectionGroups.Count);
+
+			var firstGroup = SUT.View.CollectionGroups.First() as ICollectionViewGroup;
+			Assert.AreEqual(items.First(), firstGroup.Group);
+			Assert.AreEqual(2, firstGroup.GroupItems.Count);
+		}
+
+		[TestMethod]
+		public void When_Invalid_ItemsPath()
+		{
+			var SUT = new CollectionViewSource() { IsSourceGrouped = true };
+			SUT.ItemsPath = "Invalid";
+
+			int viewChanged = 0;
+			SUT.RegisterPropertyChangedCallback(CollectionViewSource.ViewProperty, (s, e) => viewChanged++);
+
+			Assert.IsNull(SUT.View);
+
+			var items = new[] {
+				new {
+					Key = 42,
+					MyItems = new [] {
+						21,
+						21
+					}
+				}
+			};
+
+			SUT.Source = items;
+
+			Assert.IsNotNull(SUT.View);
+			Assert.AreEqual(0, SUT.View.Count);
+			Assert.AreEqual(1, viewChanged);
+
+			Assert.AreEqual(1, SUT.View.CollectionGroups.Count);
+
+			var firstGroup = SUT.View.CollectionGroups.First() as ICollectionViewGroup;
+			Assert.AreEqual(0, firstGroup.GroupItems.Count);
+		}
 	}
 }
