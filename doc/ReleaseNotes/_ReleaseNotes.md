@@ -37,6 +37,7 @@
 * Add ItemsSource CollectionViewSource update support (#697)
 * Add support for the `CollectionViewSource.ItemsPath` property
 * Fixed support for dots in resource names (#700)
+* Add support for `BindingExpression.UpdateSource()`
 
 ### Breaking changes
 * Make `UIElement.IsPointerPressed` and `IsPointerOver` internal
