@@ -1,5 +1,4 @@
 ﻿namespace Windows.UI.Core {
-
 	/**
 	 * Support file for the Windows.UI.Core 
 	 * */
@@ -7,10 +6,13 @@
 		static _coreDispatcherCallback: any;
 		static _isIOS: boolean;
 		static _isFirstCall: boolean = true;
+		static _isReady: Promise<boolean>;
+		static _isWaitingReady: boolean;
 
-		public static init() {
+		public static init(isReady : Promise<boolean>) {
 			MonoSupport.jsCallDispatcher.registerScope("CoreDispatcher", Windows.UI.Core.CoreDispatcher);
 			CoreDispatcher.initMethods();
+			CoreDispatcher._isReady = isReady;
 
 			CoreDispatcher._isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !(<any>window).MSStream;
 		}
@@ -20,6 +22,28 @@
 		 *
 		 * */
 		public static WakeUp(): boolean {
+
+			// Is there a Ready promise ?
+			if (CoreDispatcher._isReady) {
+
+				// Are we already waiting for a Ready promise ?
+				if (!CoreDispatcher._isWaitingReady) {
+					CoreDispatcher._isReady
+						.then(() => {
+							CoreDispatcher.InnerWakeUp();
+							CoreDispatcher._isReady = null;
+						});
+					CoreDispatcher._isWaitingReady = true;
+				}
+			}
+			else {
+				CoreDispatcher.InnerWakeUp();
+			}
+
+			return true;
+		}
+
+		private static InnerWakeUp() {
 
 			if (CoreDispatcher._isIOS && CoreDispatcher._isFirstCall) {
 				//
@@ -31,9 +55,7 @@
 				console.debug("Detected iOS, delaying first CoreDispatched dispatch for 5s (see https://github.com/mono/mono/issues/12357)");
 				window.setTimeout(() => this.WakeUp(), 5000);
 			} else {
-				(<any>window).setImmediate(() => CoreDispatcher._coreDispatcherCallback());
-
-				window.setImmediate(() => {
+				(<any>window).setImmediate(() => {
 					try {
 						CoreDispatcher._coreDispatcherCallback();
 					}
@@ -43,11 +65,7 @@
 					}
 				});
 			}
-
-
-			return true;
 		}
-
 
 		private static initMethods() {
 			if (Uno.UI.WindowManager.isHosted) {

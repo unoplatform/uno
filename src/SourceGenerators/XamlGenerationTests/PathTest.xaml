@@ -8,7 +8,14 @@
 			 d:DesignHeight="300"
 			 d:DesignWidth="400">
 
+	<UserControl.Resources>
+		<x:String x:Key="myPath">M 10,100.5 C 10,300 300,-200 300,100 Z</x:String>
+	</UserControl.Resources>
+
 	<Grid>
+		<Path Stroke="Black"
+			  Fill="Gray"
+			  Data="{StaticResource myPath}" />
 		<Path Stroke="Black"
 			  Fill="Gray"
 			  Data="M 10,100.5 C 10,300 300,-200 300,100 Z" />

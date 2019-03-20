@@ -511,7 +511,17 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			}
 		}
 
-		private static string SanitizeResourceName(string name) => name.Replace("-", "_");
+		private static readonly char[] ResourceInvalidCharacters = new[] { '.', '-' };
+
+		private static string SanitizeResourceName(string name)
+		{
+			foreach (var c in ResourceInvalidCharacters)
+			{
+				name = name.Replace(c, '_');
+			}
+
+			return name;
+		}
 
 		private void BuildChildSubclasses(IIndentedStringBuilder writer, bool isTopLevel = false)
 		{
@@ -835,6 +845,18 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 				BuildChild(writer, null, namedResource.Value);
 				writer.AppendLineInvariant(0, ";", namedResource.Value.Type);
+			}
+
+			if (namedResources.Any())
+			{
+				using (writer.BlockInvariant("Loading += (s, e) =>"))
+				{
+					foreach (var namedResource in namedResources)
+					{
+						writer.AppendFormatInvariant($"{namedResource.Key}.ApplyCompiledBindings();");
+					}
+				}
+				writer.AppendLineInvariant(0, ";");
 			}
 		}
 
@@ -2667,7 +2689,9 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					}
 					else if (_namedResources.ContainsKey(resourceName))
 					{
-						return resourceName;
+						// Skip the literal value, use the elementNameSubject instead
+						// so the source can be updated when the subject is set.
+						return "_" + resourceName + "Subject";
 					}
 					else
 					{

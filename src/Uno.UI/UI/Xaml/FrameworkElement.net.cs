@@ -80,6 +80,7 @@ namespace Windows.UI.Xaml
 		public void ForceLoaded()
 		{
 			IsLoaded = true;
+			OnLoading();
 			OnLoaded();
 		}
 
