@@ -3,6 +3,7 @@ using Android.App;
 using Android.Util;
 using Android.Views;
 using Uno.UI;
+using Uno.UI.Controls;
 using Windows.Foundation;
 using Windows.UI.Core;
 using Windows.UI.ViewManagement;
@@ -26,8 +27,6 @@ namespace Windows.UI.Xaml
 		}
 
 		internal int SystemUiVisibility { get; set; }
-
-		private bool IsNavigationBarVisible => (SystemUiVisibility & (int)SystemUiFlags.HideNavigation) == 0;
 
 		private void InternalSetContent(UIElement value)
 		{
@@ -84,14 +83,14 @@ namespace Windows.UI.Xaml
 
 			var newBounds = ViewHelper.PhysicalToLogicalPixels(new Rect(0, 0, fullScreenMetrics.WidthPixels, fullScreenMetrics.HeightPixels));
 
-			var statusBarHeight = GetLogicalStatusBarHeight();
-			var navigationBarHeight = GetLogicalNavigationBarHeight();
+			var statusBarHeightExcluded = GetLogicalStatusBarHeightExcluded();
+			var navigationBarHeightExcluded = GetLogicalNavigationBarHeightExcluded();
 
 			var newVisibleBounds = new Rect(
 				x: newBounds.X,
-				y: newBounds.Y + statusBarHeight,
+				y: newBounds.Y + statusBarHeightExcluded,
 				width: newBounds.Width,
-				height: newBounds.Height - statusBarHeight - navigationBarHeight
+				height: newBounds.Height - statusBarHeightExcluded - navigationBarHeightExcluded
 			);
 
 			ApplicationView.GetForCurrentView()?.SetVisibleBounds(newVisibleBounds);
@@ -108,7 +107,7 @@ namespace Windows.UI.Xaml
 			}
 		}
 
-		private double GetLogicalStatusBarHeight()
+		private double GetLogicalStatusBarHeightExcluded()
 		{
 			var logicalStatusBarHeight = 0d;
 			var activity = ContextHelper.Current as Activity;
@@ -116,9 +115,11 @@ namespace Windows.UI.Xaml
 			var isStatusBarVisible = ((int)decorView.SystemUiVisibility & (int)SystemUiFlags.Fullscreen) == 0;
 
 			var isStatusBarTranslucent =
-				((int)activity.Window.Attributes.Flags & (int)WindowManagerFlags.TranslucentStatus) != 0
-				|| ((int)activity.Window.Attributes.Flags & (int)WindowManagerFlags.LayoutNoLimits) != 0;
+				activity.Window.Attributes.Flags.HasFlag(WindowManagerFlags.TranslucentStatus)
+				|| activity.Window.Attributes.Flags.HasFlag(WindowManagerFlags.LayoutNoLimits);
 
+			// The real metrics excluded the StatusBar only if it is plain.
+			// We want to substract it if it is translucent. Otherwise, it will be like we substract it twice.
 			if (isStatusBarVisible && isStatusBarTranslucent)
 			{
 				int resourceId = Android.Content.Res.Resources.System.GetIdentifier("status_bar_height", "dimen", "android");
@@ -131,33 +132,13 @@ namespace Windows.UI.Xaml
 			return logicalStatusBarHeight;
 		}
 
-		private double GetLogicalNavigationBarHeight()
+		private double GetLogicalNavigationBarHeightExcluded()
 		{
-			var logicalNavigationBarHeight = 0d;
-			var metrics = new DisplayMetrics();
-			var defaultDisplay = (ContextHelper.Current as Activity)?.WindowManager?.DefaultDisplay;
-
-			var activity = ContextHelper.Current as Activity;
-			var decorView = activity.Window.DecorView;
-
-			var isNavigationBarTranslucent =
-				((int)activity.Window.Attributes.Flags & (int)WindowManagerFlags.TranslucentNavigation) != 0
-				|| ((int)activity.Window.Attributes.Flags & (int)WindowManagerFlags.LayoutNoLimits) != 0;
-
-			if (defaultDisplay != null && IsNavigationBarVisible && isNavigationBarTranslucent)
-			{
-				defaultDisplay.GetMetrics(metrics);
-				var usableHeight = metrics.HeightPixels;
-
-				defaultDisplay.GetRealMetrics(metrics);
-				var realHeight = metrics.HeightPixels;
-
-				logicalNavigationBarHeight = realHeight > usableHeight
-					? ViewHelper.PhysicalToLogicalPixels(realHeight - usableHeight)
-					: 0;
-			}
-
-			return logicalNavigationBarHeight;
+			// The real metrics excluded the NavigationBar only if it is plain.
+			// We want to substract it if it is translucent. Otherwise, it will be like we substract it twice.
+			return NavigationBarHelper.IsNavigationBarVisible && NavigationBarHelper.IsNavigationBarTranslucent
+				? NavigationBarHelper.LogicalNavigationBarHeight
+				: 0;
 		}
 
 		internal void DisplayFullscreen(UIElement element)

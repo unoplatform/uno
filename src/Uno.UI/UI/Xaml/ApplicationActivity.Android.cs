@@ -1,22 +1,16 @@
 ﻿#if XAMARIN_ANDROID
-using Android.App;
-using Android.Content.PM;
-using Android.Views;
 using System;
-using System.Collections.Generic;
-using System.Text;
-using Android.Content.Res;
-using Windows.UI.Xaml.Media;
-using Uno.Extensions;
-using Uno.UI;
-using Android.Views.InputMethods;
+using Android.App;
 using Android.Content;
-using Android.OS;
-using Android.Widget;
-using Android.Graphics.Drawables;
+using Android.Content.PM;
+using Android.Content.Res;
 using Android.Graphics;
-using Android.Util;
+using Android.OS;
+using Android.Views;
+using Android.Views.InputMethods;
+using Uno.UI;
 using Windows.UI.ViewManagement;
+using Windows.UI.Xaml.Media;
 
 namespace Windows.UI.Xaml
 {
@@ -102,11 +96,12 @@ namespace Windows.UI.Xaml
 			Window.ClearFlags(WindowManagerFlags.Fullscreen);
 		}
 
-		private void OnLayoutChanged(Rect keyboard, Rect navigation, Rect union)
+		private void OnLayoutChanged(Rect occludedRect)
 		{
-			_inputPane.KeyboardRect = ViewHelper.PhysicalToLogicalPixels(keyboard);
-			_inputPane.NavigationBarRect = ViewHelper.PhysicalToLogicalPixels(navigation);
-			_inputPane.OccludedRect = ViewHelper.PhysicalToLogicalPixels(union);
+			if(_inputPane.OccludedRect != occludedRect)
+			{
+				_inputPane.OccludedRect = ViewHelper.PhysicalToLogicalPixels(occludedRect);
+			}
 		}
 
 		protected override void OnCreate(Bundle bundle)

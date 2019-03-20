@@ -2,18 +2,20 @@
 using Android.App;
 using Android.Graphics;
 using Android.Graphics.Drawables;
+using Android.Runtime;
 using Android.Util;
 using Android.Views;
 using Android.Widget;
+using Uno.UI.Controls;
 
 namespace Uno.UI
 {
 	/// <summary>
 	/// A <see cref="PopupWindow"/> that provides the size and location of the keyboard by being resized using <see cref="SoftInput.AdjustResize"/>.
 	/// </summary>
-	internal class KeyboardRectProvider : PopupWindow, ViewTreeObserver.IOnGlobalLayoutListener
+	internal class KeyboardRectProvider : PopupWindow, ViewTreeObserver.IOnGlobalLayoutListener, View.IOnSystemUiVisibilityChangeListener
 	{
-		public delegate void LayoutChangedListener(Rect keyboard, Rect navigation, Rect union);
+		public delegate void LayoutChangedListener(Rect union);
 		
 		private readonly LayoutChangedListener _onLayoutChanged;
 		private readonly Activity _activity;
@@ -33,7 +35,7 @@ namespace Uno.UI
 			InputMethodMode = InputMethod.Needed;
 			Width = 0;
 			Height = ViewGroup.LayoutParams.MatchParent;
-			SetBackgroundDrawable(new ColorDrawable(Android.Graphics.Color.Transparent));
+			SetBackgroundDrawable(new ColorDrawable(Color.Transparent));
 		}
 
 		/// <summary>
@@ -46,6 +48,7 @@ namespace Uno.UI
 			{
 				ShowAtLocation(view, GravityFlags.NoGravity, 0, 0);
 				_popupView.ViewTreeObserver.AddOnGlobalLayoutListener(this);
+				_popupView.SetOnSystemUiVisibilityChangeListener(this);
 			}
 		}
 
@@ -68,20 +71,35 @@ namespace Uno.UI
 		/// </summary>
 		void ViewTreeObserver.IOnGlobalLayoutListener.OnGlobalLayout()
 		{
+			MeasureRect();
+		}
+
+		public void OnSystemUiVisibilityChange([GeneratedEnum] StatusBarVisibility visibility)
+		{
+			var isVisibleNavigationBar = ((int)visibility & (int)SystemUiFlags.HideNavigation) == 0;
+			MeasureRect(isVisibleNavigationBar);
+		}
+
+		private void MeasureRect(bool? isVisibleNavigationBar = null)
+		{
+			// It is possible to get the usable rect in order to find the free usable space. Since it is also possible to hide / show navigation
+			// on some devices, we need to manually remove it if needed
+			// Their placements can be calculated based on the follow observation:
+			// [size] realMetrics	: screen
+			// [rect] usableRect	: usable area = screen - (top: status_bar) - (bottom: keyboard + nav_bar)
 			var realMetrics = Get<DisplayMetrics>(_activity.WindowManager.DefaultDisplay.GetRealMetrics);
-			var displayRect = Get<Rect>(_activity.WindowManager.DefaultDisplay.GetRectSize);
 			var usableRect = Get<Rect>(_popupView.GetWindowVisibleDisplayFrame);
 
-			// we assume that the keyboard and the navigation bar always occupy the bottom area, with the keyboard being above the navigation bar
-			// their placements can be calculated based on the follow observation:
-			// [size] realMetrics	: screen
-			// [rect] displayRect	: display area = screen - (bottom: nav_bar)
-			// [rect] usableRect	: usable area = screen - (top: status_bar) - (bottom: keyboard + nav_bar)
-			var navigationRect = new Rect(0, displayRect.Bottom, realMetrics.WidthPixels, realMetrics.HeightPixels);
-			var keyboardRect = new Rect(0, usableRect.Bottom, realMetrics.WidthPixels, navigationRect.Top);
-			var occupiedRect = new Rect(0, usableRect.Bottom, realMetrics.WidthPixels, realMetrics.HeightPixels);
+			var isNavigationBarUnconsidered = NavigationBarHelper.PhysicalNavigationBarHeight == (realMetrics.HeightPixels - usableRect.Bottom);
+			var isNavigationBarVisible = isVisibleNavigationBar ?? NavigationBarHelper.IsNavigationBarVisible;
 
-			_onLayoutChanged?.Invoke(keyboardRect, navigationRect, occupiedRect);
+			var topOccludedRect = isNavigationBarUnconsidered && !isNavigationBarVisible
+				? realMetrics.HeightPixels
+				: usableRect.Bottom;
+
+			var occupiedRect = new Rect(0, topOccludedRect, realMetrics.WidthPixels, realMetrics.HeightPixels);
+
+			_onLayoutChanged?.Invoke(occupiedRect);
 
 			T Get<T>(Action<T> getter) where T : new()
 			{
