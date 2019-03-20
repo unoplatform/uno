@@ -970,7 +970,7 @@ var Uno;
                 }
                 const shouldRaiseLoadEvents = WindowManager.isLoadEventsEnabled
                     && this.getIsConnectedToRootElement(childElement);
-                parentElement.removeChild(childElement);             
+                parentElement.removeChild(childElement);
                 if (shouldRaiseLoadEvents) {
                     this.dispatchEvent(childElement, "unloaded");
                 }
