@@ -11,6 +11,11 @@ namespace Windows.ApplicationModel.DataTransfer
 #if !(NET461 || __MACOS__)
 		public void SetText(string text)
 		{
+			if (text == null)
+			{
+				throw new ArgumentNullException("Text can't be null");
+			}
+
 			this.Text = text;
 		}
 #endif
