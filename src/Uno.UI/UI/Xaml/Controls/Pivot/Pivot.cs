@@ -55,11 +55,14 @@ namespace Windows.UI.Xaml.Controls
 
 		private void UnregisterHeaderEvents()
 		{
-			foreach (var item in _staticHeader.Children)
+			if (_staticHeader != null)
 			{
-				if (item is PivotHeaderItem pivotHeaderItem)
+				foreach (var item in _staticHeader.Children)
 				{
-					pivotHeaderItem.PointerPressed -= OnItemPointerPressed;
+					if (item is PivotHeaderItem pivotHeaderItem)
+					{
+						pivotHeaderItem.PointerPressed -= OnItemPointerPressed;
+					}
 				}
 			}
 		}
@@ -68,11 +71,14 @@ namespace Windows.UI.Xaml.Controls
 		{
 			UnregisterHeaderEvents();
 
-			foreach (var item in _staticHeader.Children)
+			if (_staticHeader != null)
 			{
-				if (item is PivotHeaderItem pivotHeaderItem)
+				foreach (var item in _staticHeader.Children)
 				{
-					pivotHeaderItem.PointerPressed += OnItemPointerPressed;
+					if (item is PivotHeaderItem pivotHeaderItem)
+					{
+						pivotHeaderItem.PointerPressed += OnItemPointerPressed;
+					}
 				}
 			}
 		}
