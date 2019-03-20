@@ -20,12 +20,6 @@ namespace Windows.UI.Xaml.Data
 		// Skipping already declared property ParentBinding
 		// Forced skipping of method Windows.UI.Xaml.Data.BindingExpression.DataItem.get
 		// Forced skipping of method Windows.UI.Xaml.Data.BindingExpression.ParentBinding.get
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  void UpdateSource()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Data.BindingExpression", "void BindingExpression.UpdateSource()");
-		}
-		#endif
+		// Skipping already declared property UpdateSource()
 	}
 }

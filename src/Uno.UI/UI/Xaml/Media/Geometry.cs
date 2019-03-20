@@ -30,6 +30,11 @@ namespace Windows.UI.Xaml.Media
 			InitializeBinder();
 		}
 
+		public static implicit operator Geometry(string path)
+		{
+			return Parsers.ParseGeometry(path, CultureInfo.InvariantCulture);
+		}
+
 		#region Transform
 
 		public Transform Transform

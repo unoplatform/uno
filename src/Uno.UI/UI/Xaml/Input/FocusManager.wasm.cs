@@ -52,7 +52,7 @@ namespace Windows.UI.Xaml.Input
 				return false;
 			}
 
-			var command = $"Uno.UI.WindowManager.current.focusView(\"{element.HtmlId}\");";
+			var command = $"Uno.UI.WindowManager.current.focusView({element.HtmlId});";
 			WebAssemblyRuntime.InvokeJS(command);
 
 			return true;

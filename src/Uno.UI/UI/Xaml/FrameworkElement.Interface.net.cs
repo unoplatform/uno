@@ -34,15 +34,24 @@ namespace Windows.UI.Xaml
 			Initialize();
 		}
 
+		protected virtual void OnLoading()
+		{
+			Loading?.Invoke(this, null);
+		}
+
 		protected virtual void OnLoaded()
 		{
-
+			Loaded?.Invoke(this, RoutedEventArgs.Empty);
 		}
 
 		protected virtual void OnUnloaded()
 		{
-
+			Unloaded?.Invoke(this, RoutedEventArgs.Empty);
 		}
+
+		public event RoutedEventHandler Loaded;
+		public event RoutedEventHandler Unloaded;
+		public event TypedEventHandler<FrameworkElement, object> Loading;
 
 		public TransitionCollection Transitions { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
