@@ -1,7 +1,7 @@
 ﻿<Project Sdk="MSBuild.Sdk.Extras" ToolsVersion="15.0">
   <PropertyGroup>
-		<TargetFrameworks>MonoAndroid80;xamarinios10</TargetFrameworks>
-		<TargetFrameworksCI>MonoAndroid80;xamarinios10</TargetFrameworksCI>
+		<TargetFrameworks>MonoAndroid90;xamarinios10</TargetFrameworks>
+		<TargetFrameworksCI>MonoAndroid80;MonoAndroid90;xamarinios10</TargetFrameworksCI>
 	</PropertyGroup>
 
 	<PropertyGroup>
@@ -27,6 +27,12 @@
 	</ItemGroup>
 
 	<ItemGroup Condition=" '$(TargetFramework)' == 'MonoAndroid80'">
+		<PackageReference Include="Xamarin.GooglePlayServices.Location" Version="60.1142.0" />
+		<PackageReference Include="Xamarin.GooglePlayServices.Maps" Version="60.1142.0" />
+		<PackageReference Include="Xamarin.Android.Support.v4" Version="26.1.0.1" PrivateAssets="none" />
+	</ItemGroup>
+
+	<ItemGroup Condition=" '$(TargetFramework)' == 'MonoAndroid90'">
 		<PackageReference Include="Xamarin.GooglePlayServices.Location" Version="60.1142.0" />
 		<PackageReference Include="Xamarin.GooglePlayServices.Maps" Version="60.1142.0" />
 		<PackageReference Include="Xamarin.Android.Support.v4" Version="26.1.0.1" PrivateAssets="none" />
