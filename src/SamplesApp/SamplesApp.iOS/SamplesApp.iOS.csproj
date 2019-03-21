@@ -118,20 +118,36 @@
     <PackageReference Include="Newtonsoft.Json">
       <Version>12.0.1</Version>
     </PackageReference>
-    <PackageReference Include="Uno.SourceGenerationTasks"/>
+    <PackageReference Include="Uno.SourceGenerationTasks" />
     <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="1.1.1" />
     <PackageReference Include="Microsoft.Extensions.Logging.Filter" Version="1.1.1" />
     <PackageReference Include="MSTest.TestFramework" Version="1.2.0" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Uno.UI.RuntimeTests\Uno.UI.RuntimeTests.csproj" />
-    <ProjectReference Include="..\..\Uno.Foundation\Uno.Foundation.csproj" />
+    <ProjectReference Include="..\..\AddIns\Uno.UI.Lottie\Uno.UI.Lottie.csproj">
+      <Project>{f9277925-fc11-4a97-8ca1-b4a33e726f55}</Project>
+      <Name>Uno.UI.Lottie</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Uno.UI.RuntimeTests\Uno.UI.RuntimeTests.csproj">
+      <Project>{028F3EE0-D51B-469A-A72C-C272585DCD40}</Project>
+      <Name>Uno.UI.RuntimeTests</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Uno.Foundation\Uno.Foundation.csproj">
+      <Project>{528AE586-5DF3-4DAD-AA5C-F12F4D5E0605}</Project>
+      <Name>Uno.Foundation</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\Uno.UI.Toolkit\Uno.UI.Toolkit.csproj">
       <Project>{2eaf39e3-2ac9-457a-a5b2-47d6548799b3}</Project>
       <Name>Uno.UI.Toolkit</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Uno.UI\Uno.UI.csproj" />
-    <ProjectReference Include="..\..\Uno.UWP\Uno.csproj" />
+    <ProjectReference Include="..\..\Uno.UI\Uno.UI.csproj">
+      <Project>{C6884723-81DB-43BD-924F-3FA367633E64}</Project>
+      <Name>Uno.UI</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Uno.UWP\Uno.csproj">
+      <Project>{58C0CBAB-2619-4F58-BC41-5C74DBE31261}</Project>
+      <Name>Uno</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="..\..\SourceGenerators\sourcegenerators.local.props" />
   <Import Project="..\SamplesApp.Shared\SamplesApp.Shared.projitems" Label="Shared" Condition="Exists('..\SamplesApp.Shared\SamplesApp.Shared.projitems')" />

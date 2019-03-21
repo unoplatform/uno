@@ -110,7 +110,7 @@ namespace SamplesApp.Windows_UI_Xaml_Controls.Models
 
 		private void ExecuteOnUpdateWithNewInput()
 		{
-			SampleItemsGenerated = NewInput.Split(',').ToList();
+			SampleItemsGenerated = NewInput.Split(new char[] {','}).ToList();
 		}
 
 		private void ExecuteDoSomething()

@@ -73,6 +73,10 @@
     <PackageReference Include="Microsoft.Extensions.Logging.Filter" Version="1.1.1" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\AddIns\Uno.UI.Lottie\Uno.UI.Lottie.csproj">
+      <Project>{f9277925-fc11-4a97-8ca1-b4a33e726f55}</Project>
+      <Name>Uno.UI.Lottie</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\Uno.Foundation\Uno.Foundation.csproj" />
     <ProjectReference Include="..\..\Uno.UI.RuntimeTests\Uno.UI.RuntimeTests.csproj">
       <Project>{028f3ee0-d51b-469a-a72c-c272585dcd40}</Project>

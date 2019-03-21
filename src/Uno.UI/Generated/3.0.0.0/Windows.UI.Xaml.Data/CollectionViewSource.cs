@@ -7,41 +7,6 @@ namespace Windows.UI.Xaml.Data
 	#endif
 	public  partial class CollectionViewSource : global::Windows.UI.Xaml.DependencyObject
 	{
-		// Skipping already declared property Source
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  global::Windows.UI.Xaml.PropertyPath ItemsPath
-		{
-			get
-			{
-				return (global::Windows.UI.Xaml.PropertyPath)this.GetValue(ItemsPathProperty);
-			}
-			set
-			{
-				this.SetValue(ItemsPathProperty, value);
-			}
-		}
-		#endif
-		// Skipping already declared property IsSourceGrouped
-		// Skipping already declared property View
-		// Skipping already declared property IsSourceGroupedProperty
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public static global::Windows.UI.Xaml.DependencyProperty ItemsPathProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			"ItemsPath", typeof(global::Windows.UI.Xaml.PropertyPath), 
-			typeof(global::Windows.UI.Xaml.Data.CollectionViewSource), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.PropertyPath)));
-		#endif
-		// Skipping already declared property SourceProperty
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public static global::Windows.UI.Xaml.DependencyProperty ViewProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			"View", typeof(global::Windows.UI.Xaml.Data.ICollectionView), 
-			typeof(global::Windows.UI.Xaml.Data.CollectionViewSource), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Data.ICollectionView)));
-		#endif
 		// Skipping already declared method Windows.UI.Xaml.Data.CollectionViewSource.CollectionViewSource()
 		// Forced skipping of method Windows.UI.Xaml.Data.CollectionViewSource.CollectionViewSource()
 		// Forced skipping of method Windows.UI.Xaml.Data.CollectionViewSource.Source.get

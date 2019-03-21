@@ -6,6 +6,10 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+	  <Content Include="..\src\global.json" Link="global.json" />
+	</ItemGroup>
+
+	<ItemGroup>
 	  <None Include="Uno.UI.proj" />
 	</ItemGroup>
 	

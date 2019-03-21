@@ -1,3 +1,6 @@
+using System;
+using Uno.UI.Controls;
+
 namespace Windows.UI.ViewManagement
 {
 	public partial class InputPaneVisibilityEventArgs

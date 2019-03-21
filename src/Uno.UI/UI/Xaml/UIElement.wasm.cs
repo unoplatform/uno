@@ -57,13 +57,13 @@ namespace Windows.UI.Xaml
 
 		private void CapturePointerNative(Pointer pointer)
 		{
-			var command = "Uno.UI.WindowManager.current.setPointerCapture(\"" + HtmlId + "\", " + pointer.PointerId + ");";
+			var command = "Uno.UI.WindowManager.current.setPointerCapture(" + HtmlId + ", " + pointer.PointerId + ");";
 			WebAssemblyRuntime.InvokeJS(command);
 		}
 
 		private void ReleasePointerCaptureNative(Pointer pointer)
 		{
-			var command = "Uno.UI.WindowManager.current.releasePointerCapture(\"" + HtmlId + "\", " + pointer.PointerId + ");";
+			var command = "Uno.UI.WindowManager.current.releasePointerCapture(" + HtmlId + ", " + pointer.PointerId + ");";
 			WebAssemblyRuntime.InvokeJS(command);
 		}
 
@@ -84,7 +84,7 @@ namespace Windows.UI.Xaml
 
 		private Rect GetBoundingClientRect()
 		{
-			var sizeString = WebAssemblyRuntime.InvokeJS("Uno.UI.WindowManager.current.getBoundingClientRect(\"" + HtmlId + "\");");
+			var sizeString = WebAssemblyRuntime.InvokeJS("Uno.UI.WindowManager.current.getBoundingClientRect(" + HtmlId + ");");
 			var sizeParts = sizeString.Split(';');
 			return new Rect(double.Parse(sizeParts[0]), double.Parse(sizeParts[1]), double.Parse(sizeParts[2]), double.Parse(sizeParts[3]));
 		}
@@ -206,7 +206,7 @@ namespace Windows.UI.Xaml
 
 		protected internal string GetAttribute(string name)
 		{
-			var command = "Uno.UI.WindowManager.current.getAttribute(\"" + HtmlId + "\", \"" + name + "\");";
+			var command = "Uno.UI.WindowManager.current.getAttribute(" + HtmlId + ", \"" + name + "\");";
 			return WebAssemblyRuntime.InvokeJS(command);
 		}
 
@@ -225,7 +225,7 @@ namespace Windows.UI.Xaml
 
 		protected internal string GetProperty(string name)
 		{
-			var command = "Uno.UI.WindowManager.current.getProperty(\"" + HtmlId + "\", \"" + name + "\");";
+			var command = "Uno.UI.WindowManager.current.getProperty(" + HtmlId + ", \"" + name + "\");";
 			return WebAssemblyRuntime.InvokeJS(command);
 		}
 
@@ -869,6 +869,7 @@ namespace Windows.UI.Xaml
 							break;
 
 						case nameof(KeyDownEvent):
+						case nameof(KeyUpEvent):
 							eventFilter = null;
 							eventExtractor = HtmlEventExtractor.KeyboardEventExtractor;
 							payloadConverter = PayloadToKeyArgs;

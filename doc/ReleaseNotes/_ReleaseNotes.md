@@ -27,6 +27,17 @@
 * Add support for `Application.OnWindowCreated`
 * Added non-throwing stubs for `AutomationProperty`
 * Add missing system resources
+* Add support for x:Bind in StaticResources (#696)
+* Add support for x:Name late binding support to adds proper support for CollectionViewSource in Resources (#696)
+* `PointerRelease` events are now marked as handled by the `TextBox`
+* `KeyDown` events that are changing the cursor position (left/right/top/bottom/home/end) are now marked as handled by the `TextBox`
+* `RoutedEventArgs.IsGenerated` returns `false` as generating events with Uno is not yet supported
+* `AutomationPeer.ListenerExists` returns `false` as we cannot generating events with Uno is not yet supported
+* `KeyUp` event properly sends `KeyEventArgs` to the controls
+* Add ItemsSource CollectionViewSource update support (#697)
+* Add support for the `CollectionViewSource.ItemsPath` property
+* Fixed support for dots in resource names (#700)
+* Add support for `BindingExpression.UpdateSource()`
 
 ### Breaking changes
 * Make `UIElement.IsPointerPressed` and `IsPointerOver` internal
@@ -47,8 +58,10 @@
  * [Wasm] Fixes lements may not be removed form the global active DOM elements tracking map
  * [Wasm] Disable the root element scrolling (bounce) on touch devices
  * Fixed invalid iOS assets folder. `ImageAsset` nodes must not be `<Visible>false</Visible>` to be copied to the generated project.
+ * Make CollectionViewSource.View a proper DependencyProperty (#697)
+ * Fixed support for string support for `Path.Data` (#698)
+ * 150018 Fix nullref in `Pivot` when using native style
  * 149312 [Android] Added `FeatureConfiguration.NativeListViewBase.RemoveItemAnimator` to remove the ItemAnimator that crashes when under stress
-
 
 ## Release 1.43.1
 

@@ -8,6 +8,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Windows.Input;
+using Windows.System;
 using Uno.Extensions;
 using Uno.UI.Common;
 using Windows.UI.Text;
@@ -518,6 +519,34 @@ namespace Windows.UI.Xaml.Controls
 #endif
 		}
 
+		/// <inheritdoc />
+		protected override void OnPointerReleased(PointerRoutedEventArgs args)
+		{
+			base.OnPointerReleased(args);
+
+			args.Handled = true;
+		}
+
+		/// <inheritdoc />
+		protected override void OnKeyDown(KeyRoutedEventArgs args)
+		{
+			base.OnKeyDown(args);
+
+			// Note: On windows only keys that are "moving the cursor" are handled
+			//		 AND ** only KeyDown ** is handled (not KeyUp)
+			switch (args.Key)
+			{
+				case VirtualKey.Left:
+				case VirtualKey.Right:
+				case VirtualKey.Up:
+				case VirtualKey.Down:
+				case VirtualKey.Home:
+				case VirtualKey.End:
+					args.Handled = true;
+					break;
+			}
+		}
+
 		private void UpdateCommonStates()
 		{
 			var commonState = "Normal";
@@ -540,10 +569,12 @@ namespace Windows.UI.Xaml.Controls
 		private void UpdateButtonStates()
 		{
 			if (Text.HasValue() 
-			&& FocusState != FocusState.Unfocused 
-			&& !IsReadOnly
-			&& !AcceptsReturn
-			&& TextWrapping == TextWrapping.NoWrap)
+				&& FocusState != FocusState.Unfocused 
+				&& !IsReadOnly
+				&& !AcceptsReturn
+				&& TextWrapping == TextWrapping.NoWrap
+				// TODO (https://github.com/nventive/Uno/issues/683): && ActualWidth >= TDB / Note: We also have to invoke this method on SizeChanged
+			)
 			{
 				VisualStateManager.GoToState(this, ButtonVisibleStateName, true);
 			}

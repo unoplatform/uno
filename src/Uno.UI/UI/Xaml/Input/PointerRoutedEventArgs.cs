@@ -30,6 +30,8 @@ namespace Windows.UI.Xaml.Input
 			throw new NotImplementedException();
 		}
 
+		public bool IsGenerated { get; } = false; // Generated events are not supported by UNO
+
 		public bool Handled { get; set; }
 
 		public VirtualKeyModifiers KeyModifiers { get; internal set; }
