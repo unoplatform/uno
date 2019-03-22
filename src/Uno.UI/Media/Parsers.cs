@@ -1,15 +1,14 @@
 ﻿using Windows.UI.Xaml.Media;
-using System;
 
 namespace Uno.Media
 {
 	static class Parsers
 	{
-		internal static Geometry ParseGeometry(string pathString, IFormatProvider formatProvider)
+		internal static Geometry ParseGeometry(string pathString)
 		{
-			FillRule fillRule = FillRule.EvenOdd;
+			var fillRule = FillRule.EvenOdd;
 			var streamGeometry = new StreamGeometry();
-			using (StreamGeometryContext context = streamGeometry.Open())
+			using (var context = streamGeometry.Open())
 			{
 				var parser = new PathMarkupParser(context);
 				parser.Parse(pathString, ref fillRule);

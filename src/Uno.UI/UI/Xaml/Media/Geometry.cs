@@ -1,5 +1,4 @@
 ﻿using System.Drawing;
-using System.Globalization;
 using Windows.UI.Xaml;
 using System;
 using System.ComponentModel;
@@ -30,9 +29,13 @@ namespace Windows.UI.Xaml.Media
 			InitializeBinder();
 		}
 
-		public static implicit operator Geometry(string path)
+		public static implicit operator Geometry(string data)
 		{
-			return Parsers.ParseGeometry(path, CultureInfo.InvariantCulture);
+#if __WASM__
+			return new GeometryData(data);
+#else
+			return Parsers.ParseGeometry(data);
+#endif
 		}
 
 		#region Transform
