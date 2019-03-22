@@ -21,7 +21,7 @@ namespace Uno.Media
 		{
 			if (value is string pathString)
 			{
-				return Parsers.ParseGeometry(pathString, CultureInfo.InvariantCulture);
+				return Parsers.ParseGeometry(pathString);
 			}
 
 			return base.ConvertFrom(context, culture, value);
