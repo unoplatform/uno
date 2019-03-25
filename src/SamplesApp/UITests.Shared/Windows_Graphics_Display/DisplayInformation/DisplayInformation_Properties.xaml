@@ -16,12 +16,12 @@
         <ListView  x:Name="PropertyListView" Grid.Row="1">
             <ListView.ItemTemplate>
                 <DataTemplate>
-                    <Grid>
+                    <Grid Padding="4">
                         <Grid.RowDefinitions>
                             <RowDefinition />
                             <RowDefinition />
                         </Grid.RowDefinitions>
-                        <TextBlock Text="{Binding Name}" />
+                        <TextBlock Text="{Binding Name}" FontWeight="Bold" />
                         <TextBlock Text="{Binding Value}" Grid.Row="1" />
                     </Grid>
                 </DataTemplate>

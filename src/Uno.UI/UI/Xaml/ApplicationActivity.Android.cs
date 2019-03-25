@@ -3,6 +3,11 @@ using System;
 using Android.App;
 using Android.Content;
 using Android.Content.PM;
+using Android.Views;
+using System;
+using System.Collections.Generic;
+using System.Text;
+using Windows.Graphics.Display;
 using Android.Content.Res;
 using Android.Graphics;
 using Android.OS;
@@ -162,13 +167,14 @@ namespace Windows.UI.Xaml
 		{
 			base.OnConfigurationChanged(newConfig);
 
-			RaiseConfigurationChanges();
+			RaiseConfigurationChanges(newConfig);
 		}
 
-		private static void RaiseConfigurationChanges()
+		private static void RaiseConfigurationChanges(Configuration newConfig)
 		{
 			Xaml.Window.Current?.RaiseNativeSizeChanged();
 			ViewHelper.RefreshFontScale();
+			DisplayInformation.GetForCurrentView().HandleConfigurationChange(newConfig);
 		}
 
 		public override void OnBackPressed()
