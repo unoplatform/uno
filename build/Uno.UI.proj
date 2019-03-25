@@ -152,6 +152,11 @@
     <Exec Command="$(NuGetBin) pack Uno.UI.Lottie.nuspec -Verbosity Detailed -Version &quot;$(GITVERSION_FullSemVer)&quot;" />
   </Target>
 
+  <Target Name="ValidatePackage" AfterTargets="Build">
+    <Exec Command="dotnet tool install --global Uno.PackageDiff --version 1.0.0-dev.6" IgnoreExitCode="true" />
+    <Exec Command="generatepkgdiff --base=Uno.UI --other=Uno.UI.$(GITVERSION_FullSemVer).nupkg --diffignore=PackageDiffIgnore.xml --outfile=$(OutputDir)\diff.md" />
+  </Target>
+
   <Import Project="GetMsBuildVersion.targets" />
 
 </Project>
