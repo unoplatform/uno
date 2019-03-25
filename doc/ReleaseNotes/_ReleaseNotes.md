@@ -44,6 +44,11 @@
 ### Breaking changes
 * Make `UIElement.IsPointerPressed` and `IsPointerOver` internal
 * You will not be able to build projects targeting Android 8.0 locally anymore. Change your Android target to Android 9.0 or replace MonoAndroid90 by MonoAndroid80 in the TargetFrameworks of your projects files.
+* 1.43.1 breaking changes rollback to 1.42.0:
+    - `ObservableVector<T>` is now internal again
+    - `TimePicker.Time` and `TimePicker.MinuteIncrement` are now back for `netstandard2.0`
+    - `MediaPlaybackItem.Source` is back as a readonly property
+    - `MediaPlaybackList.Items` is back to an `IObservableVector`
 
 ### Bug fixes
  * Transforms are now fully functionnal
