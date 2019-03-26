@@ -44,20 +44,55 @@ namespace Windows.Graphics.Display
 			}
 		}
 
-		internal void HandleConfigurationChange(Android.Content.Res.Configuration configuration)
+		/// <summary>
+		/// Sets the NativeOrientation property
+		/// </summary>
+		/// <param name="windowManager">Window manager</param>
+		/// <remarks>
+		/// Based on responses in
+		/// <see cref="https://stackoverflow.com/questions/4553650/how-to-check-device-natural-default-orientation-on-android-i-e-get-landscape">this SO question</see>
+		/// </remarks>
+		private void SetNativeOrientation(IWindowManager windowManager)
+		{
+			var orientation = ContextHelper.Current.Resources.Configuration.Orientation;
+			if (orientation == Android.Content.Res.Orientation.Undefined)
+			{
+				NativeOrientation = DisplayOrientations.None;
+				return;
+			}
+
+			var isLandscape = false;
+			var rotation = windowManager.DefaultDisplay.Rotation;			
+
+			switch (rotation)
+			{
+				case SurfaceOrientation.Rotation0:
+				case SurfaceOrientation.Rotation180:
+					isLandscape = orientation == Android.Content.Res.Orientation.Landscape;
+					break;
+				default:
+					isLandscape = orientation == Android.Content.Res.Orientation.Portrait;
+					break;
+			}
+			NativeOrientation = isLandscape ? DisplayOrientations.Landscape : DisplayOrientations.Portrait;
+		}
+
+
+		internal void HandleConfigurationChange()
 		{
 
 		}
 
 		private DisplayOrientations GetDisplayOrientation(IWindowManager windowManager)
 		{
-			bool flipped = false;
-			if (windowManager.DefaultDisplay.Rotation == SurfaceOrientation.Rotation180 ||
-				windowManager.DefaultDisplay.Rotation == SurfaceOrientation.Rotation270)
-			{
-				flipped = true;
-			}
-			
+			throw new NotImplementedException();
+			//bool flipped = false;
+			//if (windowManager.DefaultDisplay.Rotation == SurfaceOrientation.Rotation180 ||
+			//	windowManager.DefaultDisplay.Rotation == SurfaceOrientation.Rotation270)
+			//{
+			//	flipped = true;
+			//}
+
 		}
 	}
 }

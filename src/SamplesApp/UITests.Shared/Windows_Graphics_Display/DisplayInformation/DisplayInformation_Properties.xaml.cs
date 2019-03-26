@@ -17,8 +17,6 @@ namespace UITests.Shared.Windows_Graphics_Display.DisplayInformation
 			RefreshDisplayInformation();
 		}
 
-		
-
 		public class PropertyInformation
 		{
 			public string Name { get; set; }
@@ -38,7 +36,7 @@ namespace UITests.Shared.Windows_Graphics_Display.DisplayInformation
 			var type = info.GetType();
 			var typeInfo = type.GetTypeInfo();
 			var propertyInfos = typeInfo.GetProperties();
-			var properties = propertyInfos.Select(p => new PropertyInformation() { Name = p.Name, Value = SafeGetValue(p, info) });
+			var properties = propertyInfos.Select(p => new PropertyInformation() { Name = p.Name, Value = SafeGetValue(p, info) }).ToArray();
 			PropertyListView.ItemsSource = properties;
 		}
 

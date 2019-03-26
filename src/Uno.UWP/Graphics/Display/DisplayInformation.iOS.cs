@@ -20,7 +20,42 @@ namespace Windows.Graphics.Display
 
 		private void InitializeDisplayProperties()
 		{
+			LogicalDpi = (float)(UIScreen.MainScreen.Scale * 100);
+			SetRawScreenProperties();
+			SetNativeOrientation();
+		}
 
+		/// <summary>
+		/// Sets ScreenHeightInRawPixels, ScreenWidthInRawPixels and RawPixelsPerViewPixel
+		/// </summary>
+		private void SetRawScreenProperties()
+		{
+			var screenBound = UIScreen.MainScreen.Bounds;
+			var screenSize = screenBound.Size;
+			ScreenHeightInRawPixels = (uint)screenSize.Height;
+			ScreenWidthInRawPixels = (uint)screenSize.Width;
+			RawPixelsPerViewPixel = UIScreen.MainScreen.NativeScale;
+		}
+
+		/// <summary>
+		/// Sets the NativeOrientation property 
+		/// to appropriate value based on user interface idiom
+		/// </summary>
+		private void SetNativeOrientation()
+		{
+			switch (UIDevice.CurrentDevice.UserInterfaceIdiom)
+			{
+				case UIUserInterfaceIdiom.Phone:
+					NativeOrientation = DisplayOrientations.Portrait;
+					break;
+				case UIUserInterfaceIdiom.TV:
+					NativeOrientation = DisplayOrientations.Landscape;
+					break;
+				default:
+					//in case of Pad, CarPlay and Unidentified there is no "native" orientation
+					NativeOrientation = DisplayOrientations.None;
+					break;
+			}
 		}
 
 		private void InitializeOrientation()
@@ -28,8 +63,9 @@ namespace Windows.Graphics.Display
 			_didChangeStatusBarOrientationObserver = NSNotificationCenter
 				.DefaultCenter
 				.AddObserver(
-					UIApplication.DidChangeStatusBarOrientationNotification, 
-					n => {
+					UIApplication.DidChangeStatusBarOrientationNotification,
+					n =>
+					{
 						UpdateCurrentOrientation();
 						OrientationChanged?.Invoke(this, CurrentOrientation);
 					}
@@ -60,10 +96,10 @@ namespace Windows.Graphics.Display
 				case UIInterfaceOrientation.PortraitUpsideDown:
 					CurrentOrientation = DisplayOrientations.PortraitFlipped;
 					break;
-			}
-
-			NativeOrientation = CurrentOrientation;
+			}			
 		}
+
+		
 
 		public static UIInterfaceOrientationMask[] PreferredOrientations =
 		{
