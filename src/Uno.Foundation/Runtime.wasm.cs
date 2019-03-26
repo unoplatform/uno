@@ -61,6 +61,8 @@ namespace Uno.Foundation
 			public const int InvokeStart = 1;
 			public const int InvokeEnd = 2;
 			public const int InvokeException = 3;
+			public const int UnmarshalledInvokedStart = 4;
+			public const int UnmarshalledInvokedEnd = 5;
 		}
 
 		private readonly static IEventProvider _trace = Tracing.Get(TraceProvider.Id);
@@ -71,10 +73,33 @@ namespace Uno.Foundation
 		/// <param name="functionIdentifier">A function identifier name</param>
 		public static bool InvokeJSUnmarshalled(string functionIdentifier, IntPtr arg0)
 		{
+			if (_trace.IsEnabled)
+			{
+				using (WritePropertyEventTrace(TraceProvider.UnmarshalledInvokedStart, TraceProvider.UnmarshalledInvokedEnd, functionIdentifier))
+				{
+					return InnerInvokeJSUnmarshalled(functionIdentifier, arg0);
+				}
+			}
+			else
+			{
+				return InnerInvokeJSUnmarshalled(functionIdentifier, arg0);
+			}
+		}
+
+		private static bool InnerInvokeJSUnmarshalled(string functionIdentifier, IntPtr arg0)
+		{
 			var res = WebAssembly.JSInterop.InternalCalls.InvokeJSUnmarshalled(out var exception, functionIdentifier, arg0, IntPtr.Zero, IntPtr.Zero);
 
-			if(exception != null)
+			if (exception != null)
 			{
+				if (_trace.IsEnabled)
+				{
+					_trace.WriteEvent(
+						TraceProvider.InvokeException,
+						new object[] { functionIdentifier, exception.ToString() }
+					);
+				}
+
 				throw new Exception(exception);
 			}
 
@@ -87,10 +112,33 @@ namespace Uno.Foundation
 		/// <param name="functionIdentifier">A function identifier name</param>
 		public static bool InvokeJSUnmarshalled(string functionIdentifier, IntPtr arg0, IntPtr arg1)
 		{
+			if (_trace.IsEnabled)
+			{
+				using (WritePropertyEventTrace(TraceProvider.UnmarshalledInvokedStart, TraceProvider.UnmarshalledInvokedEnd, functionIdentifier))
+				{
+					return InnerInvokeJSUnmarshalled(functionIdentifier, arg0, arg1);
+				}
+			}
+			else
+			{
+				return InnerInvokeJSUnmarshalled(functionIdentifier, arg0, arg1);
+			}
+		}
+
+		private static bool InnerInvokeJSUnmarshalled(string functionIdentifier, IntPtr arg0, IntPtr arg1)
+		{
 			var res = WebAssembly.JSInterop.InternalCalls.InvokeJSUnmarshalled(out var exception, functionIdentifier, arg0, arg1, IntPtr.Zero);
 
 			if (exception != null)
 			{
+				if (_trace.IsEnabled)
+				{
+					_trace.WriteEvent(
+						TraceProvider.InvokeException,
+						new object[] { functionIdentifier, exception.ToString() }
+					);
+				}
+
 				throw new Exception(exception);
 			}
 
@@ -103,10 +151,33 @@ namespace Uno.Foundation
 		/// <param name="functionIdentifier">A function identifier name</param>
 		public static bool InvokeJSUnmarshalled(string functionIdentifier, IntPtr arg0, IntPtr arg1, IntPtr arg2)
 		{
+			if (_trace.IsEnabled)
+			{
+				using (WritePropertyEventTrace(TraceProvider.UnmarshalledInvokedStart, TraceProvider.UnmarshalledInvokedEnd, functionIdentifier))
+				{
+					return InnerInvokeJSUnmarshalled(functionIdentifier, arg0, arg1, arg2);
+				}
+			}
+			else
+			{
+				return InnerInvokeJSUnmarshalled(functionIdentifier, arg0, arg1, arg2);
+			}
+		}
+
+		private static bool InnerInvokeJSUnmarshalled(string functionIdentifier, IntPtr arg0, IntPtr arg1, IntPtr arg2)
+		{
 			var res = WebAssembly.JSInterop.InternalCalls.InvokeJSUnmarshalled(out var exception, functionIdentifier, arg0, arg1, arg2);
 
 			if (exception != null)
 			{
+				if (_trace.IsEnabled)
+				{
+					_trace.WriteEvent(
+						TraceProvider.InvokeException,
+						new object[] { functionIdentifier, exception.ToString() }
+					);
+				}
+
 				throw new Exception(exception);
 			}
 
@@ -120,46 +191,58 @@ namespace Uno.Foundation
 
 		public static string InvokeJS(string str)
 		{
-			using (WritePropertyEventTrace(TraceProvider.InvokeStart, TraceProvider.InvokeEnd, str))
+			try
 			{
-				try
+				if (_trace.IsEnabled)
 				{
-					if (_logger.Value.IsEnabled(LogLevel.Debug))
+					using (WritePropertyEventTrace(TraceProvider.InvokeStart, TraceProvider.InvokeEnd, str))
 					{
-						_logger.Value.Debug("InvokeJS:" + str);
+						return InnerInvokeJS(str);
 					}
-
-					string result;
-
-					if (InvokeJSOverride == null)
-					{
-						result = WebAssembly.Runtime.InvokeJS(str);
-					}
-					else
-					{
-						result = InvokeJSOverride(str);
-					}
-
-					if(result == null)
-					{
-						throw new InvalidOperationException("The invoked Javascript method did not return a value (" + str + ")");
-					}
-
-					return result;
 				}
-				catch(Exception e)
+				else
 				{
-					if (_trace.IsEnabled)
-					{
-						_trace.WriteEvent(
-							TraceProvider.InvokeException,
-							new object[] { str, e.ToString() }
-						);
-					}
-
-					throw;
+					return InnerInvokeJS(str);
 				}
 			}
+			catch (Exception e)
+			{
+				if (_trace.IsEnabled)
+				{
+					_trace.WriteEvent(
+						TraceProvider.InvokeException,
+						new object[] { str, e.ToString() }
+					);
+				}
+
+				throw;
+			}
+		}
+
+		private static string InnerInvokeJS(String str)
+		{
+			if (_logger.Value.IsEnabled(LogLevel.Debug))
+			{
+				_logger.Value.Debug("InvokeJS:" + str);
+			}
+
+			string result;
+
+			if (InvokeJSOverride == null)
+			{
+				result = WebAssembly.Runtime.InvokeJS(str);
+			}
+			else
+			{
+				result = InvokeJSOverride(str);
+			}
+
+			if (result == null)
+			{
+				throw new InvalidOperationException("The invoked Javascript method did not return a value (" + str + ")");
+			}
+
+			return result;
 		}
 
 		public static object GetObjectFromGcHandle(string intPtr)
