@@ -5,7 +5,7 @@ namespace Windows.Media.Playback
 {
 	public partial class MediaPlaybackItem : IMediaPlaybackSource
 	{
-		public MediaSource Source;
+		public MediaSource Source { get; }
 
 		public MediaPlaybackItem(MediaSource source)
 		{
