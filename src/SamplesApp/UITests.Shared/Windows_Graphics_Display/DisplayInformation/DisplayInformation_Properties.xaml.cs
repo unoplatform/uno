@@ -3,8 +3,7 @@ using Uno.UI.Samples.Controls;
 using System.Reflection;
 using System;
 using System.Linq;
-
-// The User Control item template is documented at https://go.microsoft.com/fwlink/?LinkId=234236
+using DisplayInfo = Windows.Graphics.Display.DisplayInformation;
 
 namespace UITests.Shared.Windows_Graphics_Display.DisplayInformation
 {
@@ -19,6 +18,12 @@ namespace UITests.Shared.Windows_Graphics_Display.DisplayInformation
 
 		public class PropertyInformation
 		{
+			public PropertyInformation( string name, string value)
+			{
+				Name = name;
+				Value = value;
+			}
+
 			public string Name { get; set; }
             
 			public string Value { get; set; }
@@ -32,19 +37,29 @@ namespace UITests.Shared.Windows_Graphics_Display.DisplayInformation
 
 		private void RefreshDisplayInformation()
 		{
-			var info = Windows.Graphics.Display.DisplayInformation.GetForCurrentView();
-			var type = info.GetType();
-			var typeInfo = type.GetTypeInfo();
-			var propertyInfos = typeInfo.GetProperties();
-			var properties = propertyInfos.Select(p => new PropertyInformation() { Name = p.Name, Value = SafeGetValue(p, info) }).ToArray();
+			var info = DisplayInfo.GetForCurrentView();
+			var properties = new PropertyInformation[]
+			{
+				new PropertyInformation(nameof(DisplayInfo.AutoRotationPreferences), SafeGetValue(()=>DisplayInfo.AutoRotationPreferences)),
+				new PropertyInformation(nameof(info.CurrentOrientation), SafeGetValue(()=>info.CurrentOrientation)),
+				new PropertyInformation(nameof(info.NativeOrientation), SafeGetValue(()=>info.NativeOrientation)),
+				new PropertyInformation(nameof(info.ScreenHeightInRawPixels), SafeGetValue(()=>info.ScreenHeightInRawPixels)),
+				new PropertyInformation(nameof(info.ScreenWidthInRawPixels), SafeGetValue(()=>info.ScreenWidthInRawPixels)),
+				new PropertyInformation(nameof(info.LogicalDpi), SafeGetValue(()=>info.LogicalDpi)),
+				new PropertyInformation(nameof(info.DiagonalSizeInInches), SafeGetValue(()=>info.DiagonalSizeInInches)),
+				new PropertyInformation(nameof(info.RawPixelsPerViewPixel), SafeGetValue(()=>info.RawPixelsPerViewPixel)),
+				new PropertyInformation(nameof(info.RawDpiX), SafeGetValue(()=>info.RawDpiX)),
+				new PropertyInformation(nameof(info.RawDpiY), SafeGetValue(()=>info.RawDpiY)),
+				new PropertyInformation(nameof(info.ResolutionScale), SafeGetValue(()=>info.ResolutionScale)),
+			};
 			PropertyListView.ItemsSource = properties;
 		}
 
-		private string SafeGetValue(PropertyInfo propertyInfo, Windows.Graphics.Display.DisplayInformation info)
+		private string SafeGetValue<T>(Func<T> getter)
 		{
 			try
 			{
-				return Convert.ToString(propertyInfo.GetValue(info));
+				return Convert.ToString(getter());
 			}
 			catch
 			{

@@ -33,6 +33,8 @@ namespace Windows.Graphics.Display
 			double y = Math.Pow(ScreenHeightInRawPixels / displayMetrics.Ydpi, 2);
 			double screenInches = Math.Sqrt(x + y);
 			DiagonalSizeInInches = screenInches;
+
+			ResolutionScale = (ResolutionScale)(int)LogicalDpi;
 		}
 
 		static partial void SetOrientationPartial(DisplayOrientations orientations)

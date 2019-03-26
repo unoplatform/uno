@@ -16,13 +16,14 @@ namespace Windows.Graphics.Display
 		partial void Initialize()
 		{
 			InitializeOrientation();
+			InitializeDisplayProperties();
 		}
 
 		private void InitializeDisplayProperties()
 		{
 			LogicalDpi = (float)(UIScreen.MainScreen.Scale * 100);
 			SetRawScreenProperties();
-			SetNativeOrientation();
+			ResolutionScale = (ResolutionScale)(int)LogicalDpi;
 		}
 
 		/// <summary>
@@ -72,6 +73,7 @@ namespace Windows.Graphics.Display
 				);
 
 			UpdateCurrentOrientation();
+			SetNativeOrientation();
 		}
 
 		private void UpdateCurrentOrientation()
