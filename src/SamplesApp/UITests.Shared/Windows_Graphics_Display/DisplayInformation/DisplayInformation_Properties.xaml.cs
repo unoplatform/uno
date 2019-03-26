@@ -7,7 +7,7 @@ using DisplayInfo = Windows.Graphics.Display.DisplayInformation;
 
 namespace UITests.Shared.Windows_Graphics_Display.DisplayInformation
 {
-	[SampleControlInfo("DisplayInformation", "DisplayInformation_Properties")]
+	[SampleControlInfo("DisplayInformation", "DisplayInformation_Properties", description: "Shows the values from DisplayInformation class properties. N/A for not implemented.")]
 	public sealed partial class DisplayInformation_Properties : UserControl
 	{
 		public DisplayInformation_Properties()
@@ -59,11 +59,16 @@ namespace UITests.Shared.Windows_Graphics_Display.DisplayInformation
 		{
 			try
 			{
-				return Convert.ToString(getter());
+				var value = getter();
+				if ( value == null)
+				{
+					return "(null)"
+				}
+				return Convert.ToString(value);
 			}
-			catch
+			catch (NotImplementedException ex)
 			{
-				return "N/A";
+				return "(Not implemented)";
 			}
 		}
 	}
