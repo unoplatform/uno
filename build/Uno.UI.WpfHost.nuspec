@@ -16,7 +16,7 @@
 	<dependencies>
 
 	  <group targetFramework="net462">
-		<dependency id="Uno.UI" version="1.44.0-dev.991" />
+		<dependency id="Uno.UI" version="1.43.1" />
 		<dependency id="cef.redist.x64" version="3.3396.1786" />
 		<dependency id="cef.redist.x86" version="3.3396.1786" />
 		<dependency id="CefSharp.Common" version="67.0.0" />
