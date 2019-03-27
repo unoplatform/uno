@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<DiffIgnore>
+  <IgnoreSets>
+    <IgnoreSet baseVersion="1.43.1">
+      <Methods>
+        <Member fullName="System.Void Windows.UI.Xaml.WindowCreatedEventArgs..ctor()"
+                reason="Parameter-less ctor does not exist in UWP" />
+        
+        <Member fullName="System.Void Windows.UI.Xaml.RoutedEvent..ctor()"
+                reason="Parameter-less ctor does not exist in UWP" />
+
+        <Member fullName="System.Boolean Windows.UI.Xaml.Controls.TextBlock.OnTouchEvent(Android.Views.MotionEvent e)"
+                reason="Removed as Routed Events implement it properly" />
+        <Member fullName="System.Boolean Windows.UI.Xaml.Controls.Primitives.Thumb.DispatchTouchEvent(Android.Views.MotionEvent e)"
+                reason="Removed as Routed Events implement it properly" />
+
+        <Member fullName="Windows.Foundation.Rect Windows.UI.ViewManagement.InputPane.get_KeyboardRect()"
+                reason="Unused Uno specific property" />
+        <Member fullName="Windows.Foundation.Rect Windows.UI.ViewManagement.InputPane.get_NavigationBarRect()"
+                reason="Unused Uno specific property" />
+
+        <Member fullName="System.Void Uno.UI.IFragmentTracker.PushCreated(Android.App.Fragment fragment)"
+                reason="Removed unused type" />
+        <Member fullName="System.Void Uno.UI.IFragmentTracker.PushStart(Android.App.Fragment fragment)"
+                reason="Removed unused type" />
+        <Member fullName="System.Void Uno.UI.IFragmentTracker.PushPause(Android.App.Fragment fragment)"
+                reason="Removed unused type" />
+        <Member fullName="System.Void Uno.UI.IFragmentTracker.PushResume(Android.App.Fragment fragment)" 
+                reason="Removed unused type"/>
+        <Member fullName="System.Void Uno.UI.IFragmentTracker.PushViewCreated(Android.App.Fragment fragment)"
+                reason="Removed unused type" />
+        <Member fullName="System.Void Uno.UI.IFragmentTracker.PushStop(Android.App.Fragment fragment)"
+                reason="Removed unused type" />
+        <Member fullName="System.Void Uno.UI.IFragmentTracker.PushDestroyed(Android.App.Fragment fragment)"
+                reason="Removed unused type" />
+        <Member fullName="Uno.UI.BaseFragment Uno.UI.Extensions.FragmentManagerExtensions.GetCurrentFragment(Android.App.FragmentManager fragmentManager)"
+                reason="Removed unused type" />
+
+        <Member fullName="System.Void Windows.UI.Xaml.Controls.Canvas.add_PointerPressed(Windows.UI.Xaml.Input.PointerEventHandler value)"
+                reason="Removed as Routed Events implement it properly" />
+        <Member fullName="System.Void Windows.UI.Xaml.Controls.Canvas.remove_PointerPressed(Windows.UI.Xaml.Input.PointerEventHandler value)" 
+                reason="Removed as Routed Events implement it properly"/>
+        <Member fullName="System.Void Windows.UI.Xaml.Controls.Canvas.TouchesBegan(Foundation.NSSet touches, UIKit.UIEvent evt)"
+                reason="Removed as Routed Events implement it properly" />
+        <Member fullName="System.Void Windows.UI.Xaml.Controls.TextBlock.TouchesBegan(Foundation.NSSet touches, UIKit.UIEvent evt)"
+                reason="Removed as Routed Events implement it properly" />
+        <Member fullName="System.Void Windows.UI.Xaml.Controls.TextBlock.TouchesEnded(Foundation.NSSet touches, UIKit.UIEvent evt)" 
+                reason="Removed as Routed Events implement it properly"/>
+        <Member fullName="System.Void Windows.UI.Xaml.Controls.TextBlock.TouchesCancelled(Foundation.NSSet touches, UIKit.UIEvent evt)" 
+                reason="Removed as Routed Events implement it properly"/>
+        <Member fullName="System.Void Windows.UI.Xaml.Controls.TextBox.add_KeyUp(Windows.UI.Xaml.Input.KeyEventHandler value)"
+                reason="Removed as Routed Events implement it properly" />
+        <Member fullName="System.Void Windows.UI.Xaml.Controls.TextBox.remove_KeyUp(Windows.UI.Xaml.Input.KeyEventHandler value)"
+                reason="Removed as Routed Events implement it properly" />
+        <Member fullName="System.Void Windows.UI.Xaml.Controls.TextBox.add_KeyDown(Windows.UI.Xaml.Input.KeyEventHandler value)" 
+                reason="Removed as Routed Events implement it properly"/>
+        <Member fullName="System.Void Windows.UI.Xaml.Controls.TextBox.remove_KeyDown(Windows.UI.Xaml.Input.KeyEventHandler value)"
+                reason="Removed as Routed Events implement it properly" />
+        <Member fullName="System.Void Windows.UI.Xaml.Controls.Primitives.Thumb.TouchesEnded(Foundation.NSSet touches, UIKit.UIEvent evt)"
+                reason="Removed as Routed Events implement it properly" />
+        <Member fullName="System.Void Windows.UI.Xaml.Controls.Primitives.Thumb.TouchesBegan(Foundation.NSSet touches, UIKit.UIEvent evt)"
+                reason="Removed as Routed Events implement it properly" />
+        <Member fullName="System.Void Windows.UI.Xaml.Controls.Primitives.Thumb.TouchesMoved(Foundation.NSSet touches, UIKit.UIEvent evt)" 
+                reason="Removed as Routed Events implement it properly"/>  
+        
+      </Methods>
+      
+      <Events>
+        <Member fullName="Windows.UI.Xaml.Input.PointerEventHandler Windows.UI.Xaml.Controls.Canvas::PointerPressed"
+                reason="Removed as Routed Events implement it properly" />
+        <Member fullName="Windows.UI.Xaml.Input.KeyEventHandler Windows.UI.Xaml.Controls.TextBox::KeyUp"
+                reason="Removed as Routed Events implement it properly" />
+        <Member fullName="Windows.UI.Xaml.Input.KeyEventHandler Windows.UI.Xaml.Controls.TextBox::KeyDown"
+                reason="Removed as Routed Events implement it properly" />
+      </Events>
+
+      <Fields>
+        <Member fullName="Windows.UI.Xaml.RoutedEventArgs Windows.UI.Xaml.RoutedEventArgs::Empty"
+                reason="Type was incorrectly changed in 1.43.1" />
+        <Member fullName="Windows.UI.Xaml.DependencyProperty Windows.UI.Xaml.Controls.SymbolIcon::SymbolProperty"
+                reason="Type was incorrectly changed in 1.43.1" />
+        <Member fullName="Windows.UI.Xaml.DependencyProperty Windows.UI.Xaml.Controls.TimePicker::TimeProperty"
+                reason="Type was incorrectly marked as a field in 1.43.1" />
+      </Fields>
+
+      <Properties>
+        <Member fullName="Windows.Foundation.Rect Windows.UI.ViewManagement.InputPane::KeyboardRect()"
+                reason="Unused Uno specific property" />
+        <Member fullName="Windows.Foundation.Rect Windows.UI.ViewManagement.InputPane::NavigationBarRect()"
+                reason="Unused Uno specific property" />
+      </Properties>
+    </IgnoreSet>
+  </IgnoreSets>
+</DiffIgnore>

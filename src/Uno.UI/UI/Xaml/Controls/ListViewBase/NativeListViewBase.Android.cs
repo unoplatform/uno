@@ -55,6 +55,11 @@ namespace Windows.UI.Xaml.Controls
 			VerticalScrollBarEnabled = true;
 			HorizontalScrollBarEnabled = true;
 
+			if (FeatureConfiguration.NativeListViewBase.RemoveItemAnimator)
+			{
+				SetItemAnimator(null);
+			}
+
 			ViewCache = new BufferViewCache(this);
 			SetViewCacheExtension(ViewCache);
 

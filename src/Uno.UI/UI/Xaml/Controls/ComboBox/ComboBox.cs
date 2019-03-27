@@ -234,7 +234,7 @@ namespace Windows.UI.Xaml.Controls
 					control.ApplyTemplate();
 				}
 
-				if (_popup is Popup popup)
+				if (_popup is PopupBase popup)
 				{
 					if (IsPopupFullscreen) // Legacy
 					{
