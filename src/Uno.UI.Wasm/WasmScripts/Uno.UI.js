@@ -1071,9 +1071,8 @@ var Uno;
             }
             measureViewInternal(viewId, maxWidth, maxHeight) {
                 const element = this.getView(viewId);
-                const previousWidth = element.style.width;
-                const previousHeight = element.style.height;
-                const previousPosition = element.style.position;
+                const elementStyle = element.style;
+                const originalStyleCssText = elementStyle.cssText;
                 try {
                     if (!element.isConnected) {
                         // If the element is not connected to the DOM, we need it
@@ -1086,29 +1085,37 @@ var Uno;
                         }
                         this.containerElement.appendChild(unconnectedRoot);
                     }
-                    element.style.width = "";
-                    element.style.height = "";
+                    var updatedStyles = {};
+                    for (var i = 0; i < elementStyle.length; i++) {
+                        const key = elementStyle[i];
+                        updatedStyles[key] = elementStyle.getPropertyValue(key);
+                    }
+                    updatedStyles.width = "";
+                    updatedStyles.height = "";
                     // This is required for an unconstrained measure (otherwise the parents size is taken into account)
-                    element.style.position = "fixed";
-                    element.style.maxWidth = Number.isFinite(maxWidth) ? `${maxWidth}px` : "";
-                    element.style.maxHeight = Number.isFinite(maxHeight) ? `${maxHeight}px` : "";
-                    if (element.tagName.toUpperCase() === "IMG") {
+                    updatedStyles.position = "fixed";
+                    updatedStyles.maxWidth = Number.isFinite(maxWidth) ? maxWidth + "px" : "";
+                    updatedStyles.maxHeight = Number.isFinite(maxHeight) ? maxHeight + "px" : "";
+                    var updatedStyleString = "";
+                    for (var key in updatedStyles) {
+                        updatedStyleString += key + ": " + updatedStyles[key] + "; ";
+                    }
+                    elementStyle.cssText = updatedStyleString;
+                    if (element instanceof HTMLImageElement) {
                         const imgElement = element;
                         return [imgElement.naturalWidth, imgElement.naturalHeight];
                     }
                     else {
-                        const resultWidth = element.offsetWidth ? element.offsetWidth : element.clientWidth;
-                        const resultHeight = element.offsetHeight ? element.offsetHeight : element.clientHeight;
+                        const offsetWidth = element.offsetWidth;
+                        const offsetHeight = element.offsetHeight;
+                        const resultWidth = offsetWidth ? offsetWidth : element.clientWidth;
+                        const resultHeight = offsetHeight ? offsetHeight : element.clientHeight;
                         /* +0.5 is added to take rounding into account */
                         return [resultWidth + 0.5, resultHeight];
                     }
                 }
                 finally {
-                    element.style.width = previousWidth;
-                    element.style.height = previousHeight;
-                    element.style.position = previousPosition;
-                    element.style.maxWidth = "";
-                    element.style.maxHeight = "";
+                    elementStyle.cssText = originalStyleCssText;
                 }
             }
             setImageRawData(viewId, dataPtr, width, height) {
