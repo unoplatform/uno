@@ -12,7 +12,7 @@
 		<BuildForLiveUnitTesting>false</BuildForLiveUnitTesting>
 		<NoWarn>$(NoWarn);NU1701</NoWarn>
 		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-		
+
 		<ProduceReferenceAssembly>false</ProduceReferenceAssembly>
 		<Deterministic>true</Deterministic>
 
@@ -154,7 +154,7 @@
 		<PackageReference Include="Uno.Core.Build" />
 		<PackageReference Include="Uno.MonoAnalyzers" />
 	</ItemGroup>
-
+	
 	<ItemGroup Condition=" '$(TargetFramework)' == 'MonoAndroid80'">
 		<PackageReference Include="Xamarin.Android.Support.v4" Version="26.1.0.1">
 			<PrivateAssets>none</PrivateAssets>
@@ -200,6 +200,11 @@
 		<Reference Include="System.Numerics" />
 		<Reference Include="System.Numerics.Vectors" />
 		<Reference Include="System.json" />
+		<Reference Include="System.Memory" />
+	</ItemGroup>
+	
+	<ItemGroup Condition="'$(TargetFramework)'=='netstandard2.0' or '$(TargetFramework)'=='net461'">
+		<PackageReference Include="System.Memory" />
 	</ItemGroup>
 
 	<ItemGroup>

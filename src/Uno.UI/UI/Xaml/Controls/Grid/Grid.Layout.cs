@@ -8,6 +8,8 @@ using Uno;
 using Uno.UI;
 using Windows.Foundation;
 using Uno.UI.Extensions;
+using System.Runtime.InteropServices;
+using Uno.Disposables;
 
 #if XAMARIN_ANDROID
 using View = Android.Views.View;
@@ -36,7 +38,7 @@ namespace Windows.UI.Xaml.Controls
 		private static readonly GridSize[] __singleStarSize = { GridSize.Star() };
 		private static readonly GridSize[] __singleAutoSize = { GridSize.Auto };
 
-		private List<Column> GetColumns(bool considerStarAsAuto)
+		private Memory<Column> GetColumns(bool considerStarAsAuto)
 		{
 			if (ColumnDefinitions.InnerList.Count == 0)
 			{
@@ -44,12 +46,12 @@ namespace Windows.UI.Xaml.Controls
 					__singleStarSize :
 					__singleAutoSize;
 
-				return sizes.SelectToList(size => CreateInternalColumn(considerStarAsAuto, size));
+				return sizes.SelectToMemory(size => CreateInternalColumn(considerStarAsAuto, size));
 			}
 			else
 			{
 				return ColumnDefinitions.InnerList
-					.SelectToList(cd => CreateInternalColumn(considerStarAsAuto, GridSize.FromGridLength(cd.Width)));
+					.SelectToMemory(cd => CreateInternalColumn(considerStarAsAuto, GridSize.FromGridLength(cd.Width)));
 			}
 		}
 
@@ -63,7 +65,7 @@ namespace Windows.UI.Xaml.Controls
 			return new Column(size);
 		}
 
-		private List<Row> GetRows(bool considerStarAsAuto)
+		private Memory<Row> GetRows(bool considerStarAsAuto)
 		{
 			if (RowDefinitions.InnerList.Count == 0)
 			{
@@ -71,12 +73,12 @@ namespace Windows.UI.Xaml.Controls
 					__singleStarSize :
 					__singleAutoSize;
 
-				return sizes.SelectToList(s => CreateInternalRow(considerStarAsAuto, s));
+				return sizes.SelectToMemory(s => CreateInternalRow(considerStarAsAuto, s));
 			}
 			else
 			{
 				return RowDefinitions.InnerList
-					.SelectToList(rd => CreateInternalRow(considerStarAsAuto, GridSize.FromGridLength(rd.Height)));
+					.SelectToMemory(rd => CreateInternalRow(considerStarAsAuto, GridSize.FromGridLength(rd.Height)));
 			}
 		}
 
@@ -90,11 +92,11 @@ namespace Windows.UI.Xaml.Controls
 			return new Row(size);
 		}
 
-		private double GetTotalStarSizedWidth(List<Column> columns)
+		private double GetTotalStarSizedWidth(Span<Column> columns)
 		{
 			double sum = 0;
 
-			for (int i = 0; i < columns.Count; i++)
+			for (int i = 0; i < columns.Length; i++)
 			{
 				var size = columns[i].Width.StarSize;
 
@@ -110,11 +112,11 @@ namespace Windows.UI.Xaml.Controls
 			// return columns.Sum(c => c.Width.StarSize.GetValueOrDefault());
 		}
 
-		private double GetTotalStarSizedHeight(List<Row> rows)
+		private double GetTotalStarSizedHeight(Span<Row> rows)
 		{
 			double sum = 0;
 
-			for (int i = 0; i < rows.Count; i++)
+			for (int i = 0; i < rows.Length; i++)
 			{
 				var size = rows[i].Height.StarSize;
 
@@ -143,11 +145,10 @@ namespace Windows.UI.Xaml.Controls
 			var considerStarColumnsAsAuto = ConsiderStarColumnsAsAuto(availableSize.Width);
 			var considerStarRowsAsAuto = ConsiderStarRowsAsAuto(availableSize.Height);
 
-			var columns = GetColumns(considerStarColumnsAsAuto);
-			var definedColumns = GetColumns(false);
-
-			var rows = GetRows(considerStarRowsAsAuto);
-			var definedRows = GetRows(false);
+			var columns = GetColumns(considerStarColumnsAsAuto).Span;
+			var definedColumns = GetColumns(false).Span;
+			var rows = GetRows(considerStarRowsAsAuto).Span;
+			var definedRows = GetRows(false).Span;
 
 			Size size;
 			if (!TryMeasureUsingFastPath(availableSize, columns, definedColumns, rows, definedRows, out size))
@@ -155,32 +156,35 @@ namespace Windows.UI.Xaml.Controls
 				var measureChild = GetMemoizedMeasureChild();
 				var positions = GetPositions();
 
-				// Columns
-				double maxMeasuredHeight; //ignored here
-				var calculatedPixelColumns = CalculateColumns(
-					availableSize,
-					positions,
-					measureChild,
-					columns,
-					definedColumns,
-					true,
-					out maxMeasuredHeight
-				);
+				using (positions.Subscription)
+				{
+					// Columns
+					double maxMeasuredHeight; //ignored here
+					var calculatedPixelColumns = CalculateColumns(
+						availableSize,
+						positions.Views.Span,
+						measureChild,
+						columns,
+						definedColumns,
+						true,
+						out maxMeasuredHeight
+					);
 
-				// Rows (we need to fully calculate the rows to allow text wrapping)
-				double maxMeasuredWidth; //ignored here
-				var calculatedPixelRows = CalculateRows(
-					availableSize,
-					positions,
-					measureChild,
-					calculatedPixelColumns,
-					rows,
-					definedRows,
-					true,
-					out maxMeasuredWidth
-				);
+					// Rows (we need to fully calculate the rows to allow text wrapping)
+					double maxMeasuredWidth; //ignored here
+					var calculatedPixelRows = CalculateRows(
+						availableSize,
+						positions.Views.Span,
+						measureChild,
+						calculatedPixelColumns.Span,
+						rows,
+						definedRows,
+						true,
+						out maxMeasuredWidth
+					);
 
-				size = new Size(calculatedPixelColumns.Select(cs => cs.MinValue).Sum(), calculatedPixelRows.Select(cs => cs.MinValue).Sum());
+					size = new Size(calculatedPixelColumns.Span.Sum(cs => cs.MinValue), calculatedPixelRows.Span.Sum(cs => cs.MinValue));
+				}
 			}
 			size.Width += GetHorizontalOffset();
 			size.Height += GetVerticalOffset();
@@ -200,56 +204,58 @@ namespace Windows.UI.Xaml.Controls
 
 			var positions = GetPositions();
 
-			var availableSize = finalSize;
-
-			var considerStarColumnsAsAuto = ConsiderStarColumnsAsAuto(availableSize.Width);
-			var considerStarRowsAsAuto = ConsiderStarRowsAsAuto(availableSize.Height);
-
-			var columns = GetColumns(considerStarColumnsAsAuto);
-			var definedColumns = GetColumns(false);
-
-			var rows = GetRows(considerStarRowsAsAuto);
-			var definedRows = GetRows(false);
-
-			if (!TryArrangeUsingFastPath(availableSize, columns, definedColumns, rows, definedRows, positions))
+			using (positions.Subscription)
 			{
-				var measureChild = GetMemoizedMeasureChild();
+				var availableSize = finalSize;
 
-				// Columns
-				double maxMeasuredHeight; //ignored here
-				var calculatedPixelColumns = CalculateColumns(
-					availableSize,
-					positions,
-					measureChild,
-					columns,
-					definedColumns,
-					false,
-					out maxMeasuredHeight
-				);
+				var considerStarColumnsAsAuto = ConsiderStarColumnsAsAuto(availableSize.Width);
+				var considerStarRowsAsAuto = ConsiderStarRowsAsAuto(availableSize.Height);
 
-				// Rows
-				double maxMeasuredWidth; //ignored here
-				var calculatedPixelRows = CalculateRows(
-					availableSize,
-					positions,
-					measureChild,
-					calculatedPixelColumns,
-					rows,
-					definedRows,
-					false,
-					out maxMeasuredWidth
-				);
+				var columns = GetColumns(considerStarColumnsAsAuto).Span;
+				var definedColumns = GetColumns(false).Span;
+				var rows = GetRows(considerStarRowsAsAuto).Span;
+				var definedRows = GetRows(false).Span;
 
-				LayoutChildren(calculatedPixelColumns, calculatedPixelRows, positions);
+				if (!TryArrangeUsingFastPath(availableSize, columns, definedColumns, rows, definedRows, positions.Views.Span))
+				{
+					var measureChild = GetMemoizedMeasureChild();
+
+					// Columns
+					double maxMeasuredHeight; //ignored here
+					var calculatedPixelColumns = CalculateColumns(
+						availableSize,
+						positions.Views.Span,
+						measureChild,
+						columns,
+						definedColumns,
+						false,
+						out maxMeasuredHeight
+					);
+
+					// Rows
+					double maxMeasuredWidth; //ignored here
+					var calculatedPixelRows = CalculateRows(
+						availableSize,
+						positions.Views.Span,
+						measureChild,
+						calculatedPixelColumns.Span,
+						rows,
+						definedRows,
+						false,
+						out maxMeasuredWidth
+					);
+
+					LayoutChildren(calculatedPixelColumns.Span, calculatedPixelRows.Span, positions.Views.Span);
+				}
+
+				finalSize.Width += GetHorizontalOffset();
+				finalSize.Height += GetVerticalOffset();
+
+				return finalSize;
 			}
-
-			finalSize.Width += GetHorizontalOffset();
-			finalSize.Height += GetVerticalOffset();
-
-			return finalSize;
 		}
 
-		private void LayoutChildren(List<DoubleRange> calculatedPixelColumns, List<DoubleRange> calculatedPixelRows, List<ViewPosition> positions)
+		private void LayoutChildren(Span<DoubleRange> calculatedPixelColumns, Span<DoubleRange> calculatedPixelRows, Span<ViewPosition> positions)
 		{
 			var childrenToPositionsMap = positions.ToDictionary(pair => pair.Key, pair => pair.Value);
 
@@ -258,21 +264,28 @@ namespace Windows.UI.Xaml.Controls
 			foreach (var child in Children)
 			{
 				var gridPosition = childrenToPositionsMap[child];
-				var x = offset.X + calculatedPixelColumns.Take(gridPosition.Column).Select(cs => cs.MinValue).Sum();
-				var y = offset.Y + calculatedPixelRows.Take(gridPosition.Row).Select(cs => cs.MinValue).Sum();
-				var width = GetSpanSum(gridPosition.Column, gridPosition.ColumnSpan, calculatedPixelColumns.SelectToList(cs => cs.MinValue));
-				var height = GetSpanSum(gridPosition.Row, gridPosition.RowSpan, calculatedPixelRows.SelectToList(cs => cs.MinValue));
+				var x = offset.X + calculatedPixelColumns.Slice(0, gridPosition.Column).Sum(cs => cs.MinValue);
+				var y = offset.Y + calculatedPixelRows.Slice(0, gridPosition.Row).Sum(cs => cs.MinValue);
+
+				Span<double> calculatedPixelColumnsMinValue = stackalloc double[calculatedPixelColumns.Length];
+				calculatedPixelColumns.SelectToSpan(calculatedPixelColumnsMinValue, cs => cs.MinValue);
+
+				Span<double> calculatedPixelRowsMinValue = stackalloc double[calculatedPixelRows.Length];
+				calculatedPixelRows.SelectToSpan(calculatedPixelRowsMinValue, cs => cs.MinValue);
+
+				var width = GetSpanSum(gridPosition.Column, gridPosition.ColumnSpan, calculatedPixelColumnsMinValue);
+				var height = GetSpanSum(gridPosition.Row, gridPosition.RowSpan, calculatedPixelRowsMinValue);
 				var childFrame = new Rect(x, y, width, height);
 				ArrangeElement(child, childFrame);
 			}
 		}
 
-		private List<DoubleRange> CalculateColumns(
+		private Memory<DoubleRange> CalculateColumns(
 			Size availableSize,
-			List<ViewPosition> positions,
+			Span<ViewPosition> positions,
 			Func<View, Size, Size> measureChild,
-			List<Column> columns,
-			List<Column> definedColumns,
+			Span<Column> columns,
+			Span<Column> definedColumns,
 			bool isMeasuring,
 			out double maxHeightMeasured
 		)
@@ -297,26 +310,24 @@ namespace Windows.UI.Xaml.Controls
 				maxHeightMeasured = minHeight;
 			}
 
-			var calculatedPixelColumns = columns
-						 .SelectToList(c => c.Width.IsPixelSize ? c.Width.PixelSize.GetValueOrDefault() : 0);
+			var calculatedPixelColumns = new Memory<double>(new double[columns.Length]);
+			columns.SelectToSpan(calculatedPixelColumns.Span, c => c.Width.IsPixelSize ? c.Width.PixelSize.GetValueOrDefault() : 0);
 
-			var allWidths = columns.SelectToList(c => c.Width);
-			var definedWidths = definedColumns.SelectToList(c => c.Width);
+			var allWidths = columns.SelectToMemory(c => c.Width);
+			var definedWidths = definedColumns.SelectToMemory(c => c.Width);
 
 			var pixelSizeChildrenX = positions
-				.WhereToList(pair => IsPixelSize(pair.Value.Column, pair.Value.ColumnSpan, allWidths));
+				.WhereToMemory(pair => IsPixelSize(pair.Value.Column, pair.Value.ColumnSpan, allWidths.Span));
 
 			var autoSizeChildrenX = positions
-				.Where(pair => HasAutoSize(pair.Value.Column, pair.Value.ColumnSpan, allWidths))
+				.ToArray()
+				.Where(pair => HasAutoSize(pair.Value.Column, pair.Value.ColumnSpan, allWidths.Span))
 				//We need to Order By StarSizeComparer to have the stars after the Auto before ordering the Autosizecount
-				.OrderBy(pair => StarSizeComparer(pair.Value.Column, pair.Value.ColumnSpan, definedWidths))
-				.ThenBy(pair => AutoSizeCount(pair.Value.Column, pair.Value.ColumnSpan, allWidths))
+				.OrderBy(pair => StarSizeComparer(pair.Value.Column, pair.Value.ColumnSpan, definedWidths.Span))
+				.ThenBy(pair => AutoSizeCount(pair.Value.Column, pair.Value.ColumnSpan, allWidths.Span))
 				.ToList();
 
-			var starSizeChildren = positions
-				.Except(pixelSizeChildrenX)
-				.Except(autoSizeChildrenX)
-				.ToList();
+			var starSizeChildren = FindStarSizeChildren(positions, pixelSizeChildrenX, autoSizeChildrenX);
 
 			var availaibleWidth = availableSize.Width;
 
@@ -326,17 +337,18 @@ namespace Windows.UI.Xaml.Controls
 				availaibleWidth = MinWidth - GetHorizontalOffset();
 			}
 
-			double remainingSpace(int current) => availaibleWidth - calculatedPixelColumns
-				.Where((_, i) => i != current)
+			double remainingSpace(int current, Span<double> pixelColumns) => availaibleWidth - pixelColumns
+				.WhereToMemory((_, i) => i != current)
+				.Span
 				.Sum();
 
 			// Pixel size: We only measure these children to set their desired size. 
 			// It is not actually required for the columns calculation (because it's constant).
 			if (isMeasuring)
 			{
-				foreach (var pixelChild in pixelSizeChildrenX)
+				foreach (var pixelChild in pixelSizeChildrenX.Span)
 				{
-					var size = measureChild(pixelChild.Key, new Size(GetPixelSize(pixelChild.Value.Column, pixelChild.Value.ColumnSpan, allWidths), availableSize.Height));
+					var size = measureChild(pixelChild.Key, new Size(GetPixelSize(pixelChild.Value.Column, pixelChild.Value.ColumnSpan, allWidths.Span), availableSize.Height));
 					maxHeightMeasured = Math.Max(maxHeightMeasured, size.Height);
 				}
 			}
@@ -347,90 +359,88 @@ namespace Windows.UI.Xaml.Controls
 			{
 				var gridPosition = autoChild.Value;
 
-				var childAvailableWidth = availaibleWidth - calculatedPixelColumns
-					.Except(
-						calculatedPixelColumns
-							.Skip(gridPosition.Column)
-							.Take(gridPosition.ColumnSpan)
-					)
-					.Sum();
+				var childAvailableWidth = availaibleWidth - GetAvailableSizeForPosition(calculatedPixelColumns, gridPosition);
 
 				var childSize = isMeasuring ?
 					measureChild(autoChild.Key, new Size(childAvailableWidth, availableSize.Height)) :
 					GetElementDesiredSize(autoChild.Key);
 				maxHeightMeasured = Math.Max(maxHeightMeasured, childSize.Height);
 
-				var columnSizes = GetSizes(autoChild.Value.Column, autoChild.Value.ColumnSpan, columns.SelectToList(c => c.Width));
-				var autoColumns = columnSizes.WhereToList(pair => pair.Value.IsAuto);
-				var pixelColumns = columnSizes.WhereToList(pair => pair.Value.IsPixelSize);
+				Span<GridSizeEntry> columnSizes = stackalloc GridSizeEntry[columns.Length];
+				GetSizes(autoChild.Value.Column, autoChild.Value.ColumnSpan, columns, columnSizes);
 
-				var pixelSize = pixelColumns.Sum(pair => pair.Value.PixelSize.GetValueOrDefault());
+				var autoColumns = columnSizes.WhereToMemory(pair => pair.Value.IsAuto);
+				var pixelColumns = columnSizes.WhereToMemory(pair => pair.Value.IsPixelSize);
 
-				if (autoColumns.Count == 1)
+				var pixelSize = pixelColumns.Span.Sum(pair => pair.Value.PixelSize.GetValueOrDefault());
+
+				if (autoColumns.Length == 1)
 				{
 					// The child has only one auto column in its ColumnSpan
-					var currentSize = autoColumns.Sum(pair => calculatedPixelColumns[pair.Key]);
+					var currentSize = autoColumns.Span.Sum(pair => calculatedPixelColumns.Span[pair.Key]);
 					if (childSize.Width - pixelSize > currentSize)
 					{
 
-						var index = autoColumns.First().Key;
-						calculatedPixelColumns[index] = Math.Max(0, Math.Min(remainingSpace(index), Math.Max(
+						var index = autoColumns.Span[0].Key;
+						calculatedPixelColumns.Span[index] = Math.Max(0, Math.Min(remainingSpace(index, calculatedPixelColumns.Span), Math.Max(
 							childSize.Width - pixelSize,
-							calculatedPixelColumns[index] - pixelSize
+							calculatedPixelColumns.Span[index] - pixelSize
 						)));
 					}
 				}
 				else
 				{
 					// The child has a ColumnSpan with multiple auto columns
-					var currentSize = autoColumns.Sum(pair => calculatedPixelColumns[pair.Key]);
+					var currentSize = autoColumns.Span.Sum(pair => calculatedPixelColumns.Span[pair.Key]);
 					if (childSize.Width - pixelSize > currentSize)
 					{
 						// Make the first column bigger
-						var index = autoColumns.First().Key;
-						var otherColumnsSum = autoColumns.Skip(1).Sum(pair => calculatedPixelColumns[pair.Key]);
-						calculatedPixelColumns[index] = Math.Max(0, Math.Min(remainingSpace(index), Math.Max(
+						var index = autoColumns.Span[0].Key;
+						var otherColumnsSum = autoColumns.Span.Slice(1).Sum(pair => calculatedPixelColumns.Span[pair.Key]);
+						calculatedPixelColumns.Span[index] = Math.Max(0, Math.Min(remainingSpace(index, calculatedPixelColumns.Span), Math.Max(
 							childSize.Width - pixelSize - otherColumnsSum,
-							calculatedPixelColumns[index] - pixelSize - otherColumnsSum
+							calculatedPixelColumns.Span[index] - pixelSize - otherColumnsSum
 						)));
 					}
 				}
 			}
 
 			// Star size: We always measure to set the desired size, but measuring would only be required for the columns calculation when the Star doesn't mean remaining space.
-			var usedWidth = calculatedPixelColumns.Sum();
+			var usedWidth = calculatedPixelColumns.Span.Sum();
 			double remainingWidth = Math.Max(0, availaibleWidth - usedWidth);
 			var totalStarSizedWidth = GetTotalStarSizedWidth(columns);
 			var defaultStarWidth = remainingWidth / totalStarSizedWidth;
+
 			var starCalculatedPixelColumns = columns
-				.SelectToList((c, i) =>
-					c.Width.IsStarSize ?
+				.SelectToMemory(
+					(c, i) => c.Width.IsStarSize ?
 						c.Width.StarSize.GetValueOrDefault() * defaultStarWidth :
-						calculatedPixelColumns[i]);
+						calculatedPixelColumns.Span[i]
+				);
 
 			if (isMeasuring)
 			{
 				var maxStarWidth = 0.0;
 
-				foreach (var starChild in starSizeChildren)
+				foreach (var starChild in starSizeChildren.Span)
 				{
-					var size = measureChild(starChild.Key, new Size(GetSpanSum(starChild.Value.Column, starChild.Value.ColumnSpan, starCalculatedPixelColumns), availableSize.Height));
+					var size = measureChild(starChild.Key, new Size(GetSpanSum(starChild.Value.Column, starChild.Value.ColumnSpan, starCalculatedPixelColumns.Span), availableSize.Height));
 					maxHeightMeasured = Math.Max(maxHeightMeasured, size.Height);
 
 					var starWidth = size.Width;
-					var sizes = allWidths.ToRangeList(starChild.Value.Column, starChild.Value.ColumnSpan);
+					var sizes = allWidths.Span.Range(starChild.Value.Column, starChild.Value.ColumnSpan);
 
-					for (int i = 0; i < sizes.Count; i++)
+					for (int i = 0; i < sizes.Length; i++)
 					{
 						var columnSize = sizes[i];
 
 						if (!columnSize.IsStarSize)
 						{
-							starWidth -= calculatedPixelColumns[i];
+							starWidth -= calculatedPixelColumns.Span[i];
 						}
 					}
 
-					var stars = sizes.Where(s => s.IsStarSize).Select(s => s.StarSize ?? 0).Sum();
+					var stars = sizes.WhereToMemory(s => s.IsStarSize, s => s.StarSize ?? 0).Span.Sum();
 
 					maxStarWidth = Math.Max(maxStarWidth, starWidth / stars);
 				}
@@ -438,36 +448,51 @@ namespace Windows.UI.Xaml.Controls
 				maxStarWidth = Math.Min(defaultStarWidth, maxStarWidth);
 
 				return columns
-					.SelectToList((c, i) =>
+					.SelectToMemory((c, i) =>
 						c.Width.IsStarSize ?
-							new DoubleRange(c.Width.StarSize.GetValueOrDefault() * maxStarWidth, starCalculatedPixelColumns[i]) :
-							new DoubleRange(calculatedPixelColumns[i]));
+							new DoubleRange(c.Width.StarSize.GetValueOrDefault() * maxStarWidth, starCalculatedPixelColumns.Span[i]) :
+							new DoubleRange(calculatedPixelColumns.Span[i]));
 			}
 			else
 			{
-				return starCalculatedPixelColumns.SelectToList(c => new DoubleRange(c));
+				return starCalculatedPixelColumns.Span.SelectToMemory(c => new DoubleRange(c));
 			}
 		}
 
-		private class ViewPosition
+		private readonly struct GridSizeEntry
 		{
-			public ViewPosition(View key, GridPosition value)
+			public readonly int Key;
+			public readonly GridSize Value;
+
+			public GridSizeEntry(int i, GridSize column)
 			{
-				Key = key;
+				Key = i;
+				Value = column;
+			}
+		}
+
+		private readonly struct ViewPosition
+		{
+			private readonly GCHandle _key;
+
+			public ViewPosition(GCHandle key, GridPosition value)
+			{
+				_key = key;
 				Value = value;
 			}
 
-			public readonly View Key;
+			public View Key => (View)_key.Target;
+
 			public readonly GridPosition Value;
 		}
 
-		private List<DoubleRange> CalculateRows(
+		private Memory<DoubleRange> CalculateRows(
 			Size availableSize,
-			List<ViewPosition> positions,
+			Span<ViewPosition> positions,
 			Func<View, Size, Size> measureChild,
-			List<DoubleRange> calculatedColumns,
-			List<Row> rows,
-			List<Row> definedRows,
+			Span<DoubleRange> calculatedColumns,
+			Span<Row> rows,
+			Span<Row> definedRows,
 			bool isMeasuring,
 			out double maxMeasuredWidth
 		)
@@ -492,26 +517,23 @@ namespace Windows.UI.Xaml.Controls
 				maxMeasuredWidth = minWidth;
 			}
 
-			var calculatedPixelRows = rows
-						 .SelectToList(c => c.Height.IsPixelSize ? c.Height.PixelSize.GetValueOrDefault() : 0);
+			var calculatedPixelRows = rows.SelectToMemory(c => c.Height.IsPixelSize ? c.Height.PixelSize.GetValueOrDefault() : 0);
 
-			var allHeights = rows.SelectToList(c => c.Height);
-			var definedHeights = definedRows.SelectToList(c => c.Height);
+			var allHeights = rows.SelectToMemory(c => c.Height);
+			var definedHeights = definedRows.SelectToMemory(c => c.Height);
 
 			var pixelSizeChildrenY = positions
-				.WhereToList(pair => IsPixelSize(pair.Value.Row, pair.Value.RowSpan, allHeights));
+				.WhereToMemory(pair => IsPixelSize(pair.Value.Row, pair.Value.RowSpan, allHeights.Span));
 
 			var autoSizeChildrenY = positions
-				.Where(pair => HasAutoSize(pair.Value.Row, pair.Value.RowSpan, allHeights))
+				.ToArray()
+				.Where(pair => HasAutoSize(pair.Value.Row, pair.Value.RowSpan, allHeights.Span))
 				//We need to Order By StarSizeComparer to have the stars after the Auto before ordering the Autosizecount
-				.OrderBy(pair => StarSizeComparer(pair.Value.Row, pair.Value.RowSpan, definedHeights))
-				.ThenBy(pair => AutoSizeCount(pair.Value.Row, pair.Value.RowSpan, allHeights))
+				.OrderBy(pair => StarSizeComparer(pair.Value.Row, pair.Value.RowSpan, definedHeights.Span))
+				.ThenBy(pair => AutoSizeCount(pair.Value.Row, pair.Value.RowSpan, allHeights.Span))
 				.ToList();
 
-			var starSizeChildren = positions
-				.Except(pixelSizeChildrenY)
-				.Except(autoSizeChildrenY)
-				.ToList();
+			var starSizeChildren = FindStarSizeChildren(positions, pixelSizeChildrenY, autoSizeChildrenY);
 
 			var availaibleHeight = availableSize.Height;
 
@@ -521,17 +543,18 @@ namespace Windows.UI.Xaml.Controls
 				availaibleHeight = MinHeight - GetVerticalOffset();
 			}
 
-			Func<int, double> remainingSpace = (current) => availaibleHeight - calculatedPixelRows
-				.Where((_, i) => i != current)
+			double remainingSpace(int current, Span<double> pixelRows) => availaibleHeight - pixelRows
+				.WhereToMemory((_, i) => i != current)
+				.Span
 				.Sum();
 
 			if (isMeasuring)
 			{
-				foreach (var pixelChild in pixelSizeChildrenY)
+				foreach (var pixelChild in pixelSizeChildrenY.Span)
 				{
 					var size = measureChild(pixelChild.Key, new Size(
-						GetSpanSum(pixelChild.Value.Column, pixelChild.Value.ColumnSpan, calculatedColumns.SelectToList(cs => cs.MaxValue)),
-						GetPixelSize(pixelChild.Value.Row, pixelChild.Value.RowSpan, allHeights)
+						GetSpanSum(pixelChild.Value.Column, pixelChild.Value.ColumnSpan, calculatedColumns.SelectToMemory(cs => cs.MaxValue).Span),
+						GetPixelSize(pixelChild.Value.Row, pixelChild.Value.RowSpan, allHeights.Span)
 					));
 					maxMeasuredWidth = Math.Max(maxMeasuredWidth, size.Width);
 				}
@@ -540,98 +563,97 @@ namespace Windows.UI.Xaml.Controls
 			foreach (var autoChild in autoSizeChildrenY)
 			{
 				var gridPosition = autoChild.Value;
-				var width = GetSpanSum(gridPosition.Column, gridPosition.ColumnSpan, calculatedColumns.SelectToList(cs => cs.MaxValue));
+				var width = GetSpanSum(gridPosition.Column, gridPosition.ColumnSpan, calculatedColumns.SelectToMemory(cs => cs.MaxValue).Span);
 
-				var childAvailableHeight = availaibleHeight - calculatedPixelRows
-					.Except(
-						calculatedPixelRows
-							.Skip(gridPosition.Row)
-							.Take(gridPosition.RowSpan)
-					)
-					.Sum();
+				var childAvailableHeight = availaibleHeight - GetAvailableSizeForPosition(calculatedPixelRows, gridPosition);
 
 				var childSize = isMeasuring ?
 					measureChild(autoChild.Key, new Size(width, childAvailableHeight)) :
 					GetElementDesiredSize(autoChild.Key);
 				maxMeasuredWidth = Math.Max(maxMeasuredWidth, childSize.Width);
 
-				var rowSizes = GetSizes(autoChild.Value.Row, autoChild.Value.RowSpan, rows.SelectToList(c => c.Height));
-				var autoRows = rowSizes.WhereToList(pair => pair.Value.IsAuto);
-				var pixelRows = rowSizes.WhereToList(pair => pair.Value.IsPixelSize);
+				Span<GridSizeEntry> rowSizes = stackalloc GridSizeEntry[rows.Length];
+				GetSizes(autoChild.Value.Row, autoChild.Value.RowSpan, rows, rowSizes);
+
+				Span<GridSizeEntry> autoRowsTemp = stackalloc GridSizeEntry[rowSizes.Length];
+				var autoRows = rowSizes.WhereToSpan(autoRowsTemp, pair => pair.Value.IsAuto);
+
+				Span<GridSizeEntry> pixelRowsTemp = stackalloc GridSizeEntry[rowSizes.Length];
+				var pixelRows = rowSizes.WhereToSpan(pixelRowsTemp, pair => pair.Value.IsPixelSize);
 
 				var pixelSize = pixelRows.Sum(pair => pair.Value.PixelSize.GetValueOrDefault());
 
-				if (autoRows.Count == 1)
+				if (autoRows.Length == 1)
 				{
-					var currentSize = autoRows.Sum(pair => calculatedPixelRows[pair.Key]);
+					var currentSize = autoRows.Sum(pair => calculatedPixelRows.Span[pair.Key]);
 					if (childSize.Height - pixelSize > currentSize)
 					{
 
 						// The child has only one auto row in is RowSpan
-						var index = autoRows.First().Key;
-						var remainingSpaceForIndex = remainingSpace(index);
+						var index = autoRows[0].Key;
+						var remainingSpaceForIndex = remainingSpace(index, calculatedPixelRows.Span);
 						var childSizeWithActualHeight = childSize.Height - pixelSize;
-						var existingHeightAdjusted = calculatedPixelRows[index] - pixelSize;
+						var existingHeightAdjusted = calculatedPixelRows.Span[index] - pixelSize;
 						var size1 = Math.Max(childSizeWithActualHeight, existingHeightAdjusted);
 						var size2 = Math.Min(remainingSpaceForIndex, size1);
 						var size3 = Math.Max(0, size2);
 
-						calculatedPixelRows[index] = size3;
+						calculatedPixelRows.Span[index] = size3;
 					}
 				}
 				else
 				{
 					// The child has a RowSpan with multiple auto rows
-					var currentSize = autoRows.Sum(pair => calculatedPixelRows[pair.Key]);
+					var currentSize = autoRows.Sum(pair => calculatedPixelRows.Span[pair.Key]);
 					if (childSize.Height - pixelSize > currentSize)
 					{
 						// Make the first row bigger
-						var index = autoRows.First().Key;
-						var otherRowsSum = autoRows.Skip(1).Sum(pair => calculatedPixelRows[pair.Key]);
-						calculatedPixelRows[index] = Math.Max(0, Math.Min(remainingSpace(index), Math.Max(
+						var index = autoRows[0].Key;
+						var otherRowsSum = autoRows.Slice(1).Sum(pair => calculatedPixelRows.Span[pair.Key]);
+						calculatedPixelRows.Span[index] = Math.Max(0, Math.Min(remainingSpace(index, calculatedPixelRows.Span), Math.Max(
 							childSize.Height - pixelSize - otherRowsSum,
-							calculatedPixelRows[index] - pixelSize - otherRowsSum
+							calculatedPixelRows.Span[index] - pixelSize - otherRowsSum
 						)));
 					}
 				}
 			}
 
-			var usedHeight = calculatedPixelRows.Sum();
+			var usedHeight = calculatedPixelRows.Span.Sum();
 			double remainingHeight = Math.Max(0, availaibleHeight - usedHeight);
 			var totalStarSizedHeight = GetTotalStarSizedHeight(rows);
 			var defaultStarHeight = remainingHeight / totalStarSizedHeight;
 			var starCalculatedPixelRows = rows
-				.SelectToList((r, i) =>
+				.SelectToMemory((r, i) =>
 					r.Height.IsStarSize ?
 						r.Height.StarSize.GetValueOrDefault() * defaultStarHeight :
-						calculatedPixelRows[i]);
+						calculatedPixelRows.Span[i]);
 
 			if (isMeasuring)
 			{
 				var maxStarHeight = 0.0;
 
-				foreach (var starChild in starSizeChildren)
+				foreach (var starChild in starSizeChildren.Span)
 				{
 					var size = measureChild(starChild.Key, new Size(
-						GetSpanSum(starChild.Value.Column, starChild.Value.ColumnSpan, calculatedColumns.SelectToList(cs => cs.MaxValue)),
-						GetSpanSum(starChild.Value.Row, starChild.Value.RowSpan, starCalculatedPixelRows)
+						GetSpanSum(starChild.Value.Column, starChild.Value.ColumnSpan, calculatedColumns.SelectToMemory(cs => cs.MaxValue).Span),
+						GetSpanSum(starChild.Value.Row, starChild.Value.RowSpan, starCalculatedPixelRows.Span)
 					));
 					maxMeasuredWidth = Math.Max(maxMeasuredWidth, size.Width);
 
 					var starHeight = size.Height;
-					var sizes = allHeights.ToRangeList(starChild.Value.Row, starChild.Value.RowSpan);
+					var sizes = allHeights.Span.Slice(starChild.Value.Row, starChild.Value.RowSpan);
 
-					for (int i = 0; i < sizes.Count; i++)
+					for (int i = 0; i < sizes.Length; i++)
 					{
 						var rowSize = sizes[i];
 
 						if (!rowSize.IsStarSize)
 						{
-							starHeight -= calculatedPixelRows[i];
+							starHeight -= calculatedPixelRows.Span[i];
 						}
 					}
 
-					var stars = sizes.Where(s => s.IsStarSize).Select(s => s.StarSize ?? 0).Sum();
+					var stars = sizes.WhereToMemory(s => s.IsStarSize, s => s.StarSize ?? 0).Span.Sum();
 
 					maxStarHeight = Math.Max(maxStarHeight, starHeight / stars);
 				}
@@ -639,15 +661,54 @@ namespace Windows.UI.Xaml.Controls
 				maxStarHeight = Math.Min(defaultStarHeight, maxStarHeight);
 
 				return rows
-					.SelectToList((r, i) =>
+					.SelectToMemory((r, i) =>
 						r.Height.IsStarSize ?
-							new DoubleRange(r.Height.StarSize.GetValueOrDefault() * maxStarHeight, starCalculatedPixelRows[i]) :
-							new DoubleRange(calculatedPixelRows[i]));
+							new DoubleRange(r.Height.StarSize.GetValueOrDefault() * maxStarHeight, starCalculatedPixelRows.Span[i]) :
+							new DoubleRange(calculatedPixelRows.Span[i]));
 			}
 			else
 			{
-				return starCalculatedPixelRows.SelectToList(r => new DoubleRange(r));
+				return starCalculatedPixelRows.Span.SelectToMemory(r => new DoubleRange(r));
 			}
+		}
+
+		private static double GetAvailableSizeForPosition(Memory<double> calculatedPixel, GridPosition gridPosition)
+		{
+			var slice = calculatedPixel.Span.Range(gridPosition.Row, gridPosition.RowSpan);
+			double result = 0;
+
+			for (int i = 0; i < calculatedPixel.Span.Length; i++)
+			{
+				var value = calculatedPixel.Span[i];
+
+				if (!slice.Contains(item => item == value))
+				{
+					result += value;
+				}
+			}
+
+			return result;
+		}
+
+		private static Memory<ViewPosition> FindStarSizeChildren(Span<ViewPosition> positions, Memory<ViewPosition> pixelSizeChildren, List<ViewPosition> autoSizeChildren)
+		{
+			var res = new Memory<ViewPosition>(new ViewPosition[positions.Length]);
+			int count = 0;
+
+			for (int i = 0; i < positions.Length; i++)
+			{
+				var item = positions[i];
+
+				if (
+					!pixelSizeChildren.Span.Contains(c => c.Key == item.Key)
+					&& !autoSizeChildren.Any(c => c.Key == item.Key)
+				)
+				{
+					res.Span[count++] = item;
+				}
+			}
+
+			return res.Slice(0, count);
 		}
 
 		// Star sizes revert to auto in the cases where the star sized items are not allowed to stretch.
@@ -676,17 +737,14 @@ namespace Windows.UI.Xaml.Controls
 			return !hasFixedWidth && !((isStretch || hasMinWidth) && !isInsideInfinity);
 		}
 
-		private static List<(int Key, GridSize Value)> GetSizes(int index, int span, List<GridSize> sizes)
+		private static void GetSizes(int index, int span, Span<Column> sizes, Span<GridSizeEntry> result)
 		{
-			int bound = Math.Min(index + span, sizes.Count);
-			var output = new List<(int, GridSize)>(span);
+			int bound = Math.Min(index + span, sizes.Length);
 
-			for (int i = index; i < bound; i++)
+			for (int i = index, j = 0; i < bound; i++, j++)
 			{
-				output.Add((i, sizes[i]));
+				result[j] = new GridSizeEntry(i, sizes[i].Width);
 			}
-
-			return output;
 
 			// LINQ Query for reference, rewritten to avoid the LINQ cost
 			// return sizes
@@ -695,9 +753,25 @@ namespace Windows.UI.Xaml.Controls
 			//	.Take(span);
 		}
 
-		private static bool HasAutoSize(int index, int span, List<GridSize> sizes)
+		private static void GetSizes(int index, int span, Span<Row> sizes, Span<GridSizeEntry> result)
 		{
-			var cached = sizes.ToRangeList(index, span);
+			int bound = Math.Min(index + span, sizes.Length);
+
+			for (int i = index, j = 0; i < bound; i++, j++)
+			{
+				result[j] = new GridSizeEntry(i, sizes[i].Height);
+			}
+
+			// LINQ Query for reference, rewritten to avoid the LINQ cost
+			// return sizes
+			//	.Select((s, i) => new KeyValuePair<int, Size>(i, s))
+			//	.Skip(index)
+			//	.Take(span);
+		}
+
+		private static bool HasAutoSize(int index, int span, Span<GridSize> sizes)
+		{
+			var cached = sizes.Range(index, span);
 
 			// The code of this method is the LINQ unrolled version of the following method,
 			// to avoid memory allocations:
@@ -728,22 +802,22 @@ namespace Windows.UI.Xaml.Controls
 			return hasAuto && !hasStarSize;
 		}
 
-		private static int AutoSizeCount(int index, int span, List<GridSize> sizes)
+		private static int AutoSizeCount(int index, int span, Span<GridSize> sizes)
 		{
-			return sizes.ToRangeList(index, span).Count(s => s.IsAuto);
+			return sizes.Slice(index, span).Count(s => s.IsAuto);
 		}
 
 		/// <summary>
 		/// Contains Star returns 1, Doesnt contain star 0
 		/// </summary>
-		private static int StarSizeComparer(int index, int span, List<GridSize> sizes)
+		private static int StarSizeComparer(int index, int span, Span<GridSize> sizes)
 		{
-			return Math.Min(1, sizes.ToRangeList(index, span).Count(s => s.IsStarSize));
+			return Math.Min(1, sizes.Slice(index, span).Count(s => s.IsStarSize));
 		}
 
-		private static bool IsPixelSize(int index, int span, List<GridSize> sizes)
+		private static bool IsPixelSize(int index, int span, Span<GridSize> sizes)
 		{
-			int bound = Math.Min(index + span, sizes.Count);
+			int bound = Math.Min(index + span, sizes.Length);
 
 			for (int i = index; i < bound; i++)
 			{
@@ -759,15 +833,18 @@ namespace Windows.UI.Xaml.Controls
 			// return sizes.Skip(index).Take(span).All(s => s.IsPixelSize);
 		}
 
-		private static double GetPixelSize(int index, int span, List<GridSize> sizes)
+		private static double GetPixelSize(int index, int span, Span<GridSize> sizes)
 		{
-			return GetSpanSum(index, span, sizes.SelectToList(s => s.PixelSize ?? 0));
+			Span<double> doubleSizes = stackalloc double[sizes.Length];
+			sizes.SelectToSpan(doubleSizes, s => s.PixelSize != null ? s.PixelSize.Value : 0.0);
+
+			return GetSpanSum(index, span, doubleSizes);
 		}
 
-		private static double GetSpanSum(int index, int span, List<double> sizes)
+		private static double GetSpanSum(int index, int span, Span<double> sizes)
 		{
 			double sum = 0;
-			int bound = Math.Min(index + span, sizes.Count);
+			int bound = Math.Min(index + span, sizes.Length);
 
 			for (int i = index; i < bound; i++)
 			{
@@ -825,15 +902,30 @@ namespace Windows.UI.Xaml.Controls
 			return MeasureElement;
 		}
 
-		private List<ViewPosition> GetPositions()
-			=> Children
-				.SelectToList(c =>
-					new ViewPosition(c, new GridPosition(Grid.GetColumn(c), Grid.GetRow(c), Grid.GetColumnSpan(c), Grid.GetRowSpan(c)))
-				);
-
-		private struct Column
+		private (IDisposable Subscription, Memory<ViewPosition> Views) GetPositions()
 		{
-			public GridSize Width { get; private set; }
+			var refs = Children.SelectToArray(c => (View: c, Handle: GCHandle.Alloc(c, GCHandleType.Normal)));
+
+			return (
+				Disposable.Create(() => refs.ForEach(c => c.Handle.Free())),
+				refs
+					.SelectToMemory(c =>
+						new ViewPosition(
+							c.Handle,
+							new GridPosition(
+								Grid.GetColumn(c.View),
+								Grid.GetRow(c.View),
+								Grid.GetColumnSpan(c.View),
+								Grid.GetRowSpan(c.View)
+							)
+						)
+					)
+			);
+		}
+
+		readonly struct Column
+		{
+			public GridSize Width { get; }
 			public Column(GridSize width)
 			{
 				Width = width;
@@ -842,9 +934,9 @@ namespace Windows.UI.Xaml.Controls
 			public static Column Auto { get; } = new Column(GridSize.Auto);
 		}
 
-		private struct Row
+		readonly struct Row
 		{
-			public GridSize Height { get; private set; }
+			public readonly GridSize Height;
 			public Row(GridSize height)
 			{
 				Height = height;
@@ -853,23 +945,17 @@ namespace Windows.UI.Xaml.Controls
 			public static Row Auto { get; } = new Row(GridSize.Auto);
 		}
 
-		private struct GridSize
+		private readonly struct GridSize
 		{
-			public static GridSize Auto { get { return new GridSize() { PixelSize = double.NaN }; } }
-			public static GridSize Star(double coeficient = 1f)
-			{
-				return new GridSize()
-				{
-					StarSize = coeficient
-				};
-			}
-			public static GridSize Pixel(double coeficient)
-			{
-				return new GridSize()
-				{
-					PixelSize = coeficient
-				};
-			}
+			private readonly bool _hasPixelSize;
+			private readonly double _pixelSize;
+
+			private readonly bool _hasStarSize;
+			private readonly double _starSize;
+
+			public static GridSize Auto => new GridSize(pixelSize: double.NaN);
+			public static GridSize Star(double coeficient = 1f) => new GridSize(starSize: coeficient);
+			public static GridSize Pixel(double coeficient) => new GridSize(pixelSize: coeficient);
 
 			public static GridSize FromGridLength(GridLength gridLength)
 			{
@@ -885,15 +971,40 @@ namespace Windows.UI.Xaml.Controls
 				}
 			}
 
-			public double? PixelSize;
-			public double? StarSize;
+			public GridSize(double? pixelSize = null, double? starSize = null)
+			{
+				if (pixelSize != null)
+				{
+					_hasPixelSize = true;
+					_pixelSize = pixelSize.Value;
+				}
+				else
+				{
+					_hasPixelSize = false;
+					_pixelSize = double.NaN;
+				}
 
-			public bool IsAuto { get { return double.IsNaN(PixelSize.GetValueOrDefault()); } }
-			public bool IsStarSize { get { return StarSize.HasValue; } }
-			public bool IsPixelSize { get { return !IsAuto && !IsStarSize; } }
+				if (starSize != null)
+				{
+					_hasStarSize = true;
+					_starSize = starSize.Value;
+				}
+				else
+				{
+					_hasStarSize = false;
+					_starSize = double.NaN;
+				}
+			}
+
+			public double? PixelSize => _hasPixelSize ? (double?)_pixelSize : null;
+			public double? StarSize => _hasStarSize ? (double?)_starSize : null;
+
+			public bool IsAuto => _hasPixelSize && double.IsNaN(_pixelSize);
+			public bool IsStarSize => _hasStarSize;
+			public bool IsPixelSize => !IsAuto && !IsStarSize;
 		}
 
-		private struct DoubleRange
+		private readonly struct DoubleRange
 		{
 			public DoubleRange(double fixedValue) :
 				this(fixedValue, fixedValue)
@@ -906,12 +1017,12 @@ namespace Windows.UI.Xaml.Controls
 				MaxValue = maxValue;
 			}
 
-			public double MinValue { get; private set; }
-			public double MaxValue { get; private set; }
+			public double MinValue { get; }
+			public double MaxValue { get; }
 		}
 	}
 
-	class GridPosition
+	struct GridPosition
 	{
 		public int Column { get; set; }
 		public int Row { get; set; }
@@ -937,5 +1048,247 @@ namespace Windows.UI.Xaml.Controls
 		{
 			return "Column={0}, Row={1}, ColumnSpan={2}, RowSpan={3}".InvariantCultureFormat(Column, Row, ColumnSpan, RowSpan);
 		}
+	}
+
+
+	public static class Extensions
+	{
+		public static void SelectToSpan<TIn, TOut>(
+			this List<TIn> list,
+			Span<TOut> span,
+			Func<TIn, TOut> selector
+		)
+		{
+			for (int i = 0; i < list.Count; i++)
+			{
+				span[i] = selector(list[i]);
+			}
+		}
+
+		public static void SelectToSpan<TIn, TOut>(
+			this Span<TIn> list,
+			Span<TOut> span,
+			Func<TIn, TOut> selector
+		)
+		{
+			for (int i = 0; i < list.Length; i++)
+			{
+				span[i] = selector(list[i]);
+			}
+		}
+
+		public static void SelectToSpan<TIn, TOut>(
+			this Span<TIn> list,
+			Span<TOut> span,
+			Func<TIn, int, TOut> selector
+		)
+		{
+			for (int i = 0; i < list.Length; i++)
+			{
+				span[i] = selector(list[i], i);
+			}
+		}
+
+		public static void SelectToSpan<TIn, TOut>(
+			this TIn[] list,
+			ref Span<TOut> span,
+			Func<TIn, TOut> selector
+		)
+		{
+			for (int i = 0; i < list.Length; i++)
+			{
+				span[i] = selector(list[i]);
+			}
+		}
+
+		public static Memory<TOut> SelectToMemory<TIn, TOut>(
+			this Span<TIn> list,
+			Func<TIn, TOut> selector
+		)
+		{
+			var output = new Memory<TOut>(new TOut[list.Length]);
+			for (int i = 0; i < list.Length; i++)
+			{
+				output.Span[i] = selector(list[i]);
+			}
+
+			return output;
+		}
+
+		public static Memory<TOut> SelectToMemory<TIn, TOut>(
+			this Span<TIn> list,
+			Func<TIn, int, TOut> selector
+		)
+		{
+			var output = new Memory<TOut>(new TOut[list.Length]);
+			for (int i = 0; i < list.Length; i++)
+			{
+				output.Span[i] = selector(list[i], i);
+			}
+
+			return output;
+		}
+
+		public static Memory<TOut> SelectToMemory<TIn, TOut>(
+			this IList<TIn> list,
+			Func<TIn, TOut> selector
+		)
+		{
+			var output = new Memory<TOut>(new TOut[list.Count]);
+			for (int i = 0; i < list.Count; i++)
+			{
+				output.Span[i] = selector(list[i]);
+			}
+
+			return output;
+		}
+
+		public static Memory<TValue> WhereToMemory<TValue>(
+			this Span<TValue> list,
+			Func<TValue, bool> filter
+		)
+		{
+			var output = new Memory<TValue>(new TValue[list.Length]);
+			int valuesCount = 0;
+			for (int i = 0; i < list.Length; i++)
+			{
+				var value = list[i];
+
+				if (filter(value))
+				{
+					output.Span[valuesCount++] = value;
+				}
+			}
+
+			return output.Slice(0, valuesCount);
+		}
+
+		public static Memory<TValue> WhereToMemory<TValue>(
+			this Span<TValue> list,
+			Func<TValue, int, bool> filter
+		)
+		{
+			var output = new Memory<TValue>(new TValue[list.Length]);
+			int values = 0;
+			for (int i = 0; i < list.Length; i++)
+			{
+				var value = list[i];
+
+				if (filter(value, i))
+				{
+					output.Span[values++] = value;
+				}
+			}
+
+			return output.Slice(0, values);
+		}
+
+		public static Memory<TResult> WhereToMemory<TValue, TResult>(
+			this Span<TValue> list,
+			Func<TValue, bool> filter,
+			Func<TValue, TResult> selector
+		)
+		{
+			var output = new Memory<TResult>(new TResult[list.Length]);
+			int values = 0;
+			for (int i = 0; i < list.Length; i++)
+			{
+				var value = list[i];
+
+				if (filter(value))
+				{
+					output.Span[values++] = selector(value);
+				}
+			}
+
+			return output.Slice(0, values);
+		}
+
+		public static Span<TValue> WhereToSpan<TValue>(
+			this Span<TValue> list,
+			Span<TValue> target,
+			Func<TValue, bool> filter
+		)
+		{
+			int values = 0;
+			for (int i = 0; i < list.Length; i++)
+			{
+				var value = list[i];
+
+				if (filter(value))
+				{
+					target[values++] = value;
+				}
+			}
+
+			return target.Slice(0, values);
+		}
+
+		public static int Count<T>(this Span<T> span, Func<T, bool> predicate)
+		{
+			int result = 0;
+			foreach (var value in span)
+			{
+				if (predicate(value))
+				{
+					result++;
+				}
+			}
+
+			return result;
+		}
+
+		public static bool Contains<T>(this Span<T> span, Func<T, bool> predicate)
+		{
+			foreach (var value in span)
+			{
+				if (predicate(value))
+				{
+					return true;
+				}
+			}
+
+			return false;
+		}
+
+		public static Dictionary<TKey, TValue> ToDictionary<TIn, TKey, TValue>(this Span<TIn> span, Func<TIn, TKey> keySelector, Func<TIn, TValue> valueSelector)
+		{
+			var result = new Dictionary<TKey, TValue>(span.Length);
+			foreach (var item in span)
+			{
+				result.Add(keySelector(item), valueSelector(item));
+			}
+			return result;
+		}
+
+		public static double Sum(this Span<double> span)
+		{
+			double result = 0;
+
+			foreach (var value in span)
+			{
+				result += value;
+			}
+
+			return result;
+		}
+
+		public static double Sum<TIn>(this Span<TIn> span, Func<TIn, double> selector)
+		{
+			double result = 0;
+
+			foreach (var value in span)
+			{
+				result += selector(value);
+			}
+
+			return result;
+		}
+
+		public static Span<TValue> Range<TValue>(this Span<TValue> span, int start, int range)
+			=> span.Slice(
+				start: Math.Min(span.Length, start),
+				length: Math.Min(range, span.Length - start)
+			);
 	}
 }
