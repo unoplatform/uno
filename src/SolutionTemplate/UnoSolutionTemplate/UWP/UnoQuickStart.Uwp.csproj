@@ -12,7 +12,7 @@
 		</PackageReference>
 		<PackageReference Include="Microsoft.Extensions.Logging.Console" Version="1.1.1" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Filter" Version="1.1.1" />
-    <PackageReference Include="Uno.Core" Version="1.27.0-dev.68" />
+    <PackageReference Include="Uno.Core" Version="1.27.0-beta.83" />
 	</ItemGroup>
 	<PropertyGroup>
 		<Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>

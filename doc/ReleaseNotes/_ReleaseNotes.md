@@ -3,6 +3,14 @@
 ## Next version
 
 ### Features
+
+### Breaking Changes
+
+### Bug fixes
+
+## Release 1.44.0
+
+### Features
 * Add support for `ICollectionView.CopyTo`
 * Add support for `ViewBox`
 * Add support for `AutoSuggestBox.ItemsSource`
