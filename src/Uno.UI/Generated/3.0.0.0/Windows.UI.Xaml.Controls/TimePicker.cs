@@ -7,6 +7,34 @@ namespace Windows.UI.Xaml.Controls
 	#endif
 	public  partial class TimePicker : global::Windows.UI.Xaml.Controls.Control
 	{
+		#if false || false || NET461 || __WASM__ || false
+		[global::Uno.NotImplemented]
+		public  global::System.TimeSpan Time
+		{
+			get
+			{
+				return (global::System.TimeSpan)this.GetValue(TimeProperty);
+			}
+			set
+			{
+				this.SetValue(TimeProperty, value);
+			}
+		}
+		#endif
+		#if false || false || NET461 || __WASM__ || false
+		[global::Uno.NotImplemented]
+		public  int MinuteIncrement
+		{
+			get
+			{
+				return (int)this.GetValue(MinuteIncrementProperty);
+			}
+			set
+			{
+				this.SetValue(MinuteIncrementProperty, value);
+			}
+		}
+		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.UI.Xaml.DataTemplate HeaderTemplate
@@ -80,10 +108,24 @@ namespace Windows.UI.Xaml.Controls
 			"HeaderTemplate", typeof(global::Windows.UI.Xaml.DataTemplate), 
 			typeof(global::Windows.UI.Xaml.Controls.TimePicker), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.DataTemplate)));
-#endif
-
-		// Skipping already declared property TimeProperty
-#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		#endif
+		#if false || false || NET461 || __WASM__ || false
+		[global::Uno.NotImplemented]
+		public static global::Windows.UI.Xaml.DependencyProperty MinuteIncrementProperty { get; } = 
+		Windows.UI.Xaml.DependencyProperty.Register(
+			"MinuteIncrement", typeof(int), 
+			typeof(global::Windows.UI.Xaml.Controls.TimePicker), 
+			new FrameworkPropertyMetadata(default(int)));
+		#endif
+		#if false || false || NET461 || __WASM__ || false
+		[global::Uno.NotImplemented]
+		public static global::Windows.UI.Xaml.DependencyProperty TimeProperty { get; } = 
+		Windows.UI.Xaml.DependencyProperty.Register(
+			"Time", typeof(global::System.TimeSpan), 
+			typeof(global::Windows.UI.Xaml.Controls.TimePicker), 
+			new FrameworkPropertyMetadata(default(global::System.TimeSpan)));
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty LightDismissOverlayModeProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(

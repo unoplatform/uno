@@ -22,7 +22,7 @@
 				  BeforeTargets="PrepareForBuild;_CheckForContent"
 				  Condition="'$(DesignTimeBuild)' != 'true' and '$(BuildingInsideUnoSourceGenerator)' == '' and ('$(XamarinProjectType)'!='' or '$(UnoForceProcessPRIResource)'!='')">
 
-    <CheckForDevenv />
+    <CheckForDevenv Condition="'$(SolutionFileName)'=='Uno.UI.sln'" />
 
     <!-- String resources -->
     <PropertyGroup>

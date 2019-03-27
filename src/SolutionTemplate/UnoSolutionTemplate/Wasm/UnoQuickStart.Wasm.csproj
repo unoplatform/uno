@@ -31,6 +31,7 @@
 		<Compile Remove="Program.cs" />
 		<Compile Include="Program.cs" />
 		<Content Include="LinkerConfig.xml" />
+		<Content Include="wwwroot/web.config" />
 	</ItemGroup>
 
 	<ItemGroup>

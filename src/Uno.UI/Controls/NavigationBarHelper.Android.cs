@@ -8,7 +8,7 @@ using Window = Windows.UI.Xaml.Window;
 
 namespace Uno.UI.Controls
 {
-	internal static class NavigationBarHelper
+	public static class NavigationBarHelper
 	{
 		public static bool IsNavigationBarTranslucent
 		{

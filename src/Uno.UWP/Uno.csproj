@@ -1,8 +1,8 @@
 ﻿<Project Sdk="MSBuild.Sdk.Extras" ToolsVersion="15.0">
   
   <PropertyGroup>
-    <TargetFrameworks>xamarinmac20;xamarinios10;MonoAndroid80;net461;netstandard2.0</TargetFrameworks>
-    <TargetFrameworksCI>MonoAndroid80;xamarinios10;net461;netstandard2.0;xamarinmac20</TargetFrameworksCI>
+    <TargetFrameworks>xamarinmac20;xamarinios10;MonoAndroid90;net461;netstandard2.0</TargetFrameworks>
+    <TargetFrameworksCI>MonoAndroid80;MonoAndroid90;xamarinios10;net461;netstandard2.0;xamarinmac20</TargetFrameworksCI>
   </PropertyGroup>
 
   <PropertyGroup>
@@ -37,6 +37,17 @@
 	</ItemGroup>
 	
 	<ItemGroup Condition=" '$(TargetFramework)' == 'MonoAndroid80'">
+		<PackageReference Include="Xamarin.Android.Support.v4">
+			<Version>26.1.0.1</Version>
+			<PrivateAssets>none</PrivateAssets>
+		</PackageReference>
+		<PackageReference Include="Xamarin.Android.Support.v7.AppCompat">
+			<Version>26.1.0.1</Version>
+			<PrivateAssets>none</PrivateAssets>
+		</PackageReference>
+	</ItemGroup>
+
+	<ItemGroup Condition=" '$(TargetFramework)' == 'MonoAndroid90'">
 		<PackageReference Include="Xamarin.Android.Support.v4">
 			<Version>26.1.0.1</Version>
 			<PrivateAssets>none</PrivateAssets>
