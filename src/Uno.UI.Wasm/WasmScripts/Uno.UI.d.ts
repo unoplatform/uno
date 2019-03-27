@@ -72,7 +72,9 @@ declare namespace MonoSupport {
      * */
     class jsCallDispatcher {
         static registrations: Map<string, any>;
-        static methodMap: Map<string, any>;
+        static methodMap: {
+            [id: number]: any;
+        };
         static _isUnoRegistered: boolean;
         /**
          * Registers a instance for a specified identier
@@ -81,6 +83,13 @@ declare namespace MonoSupport {
          */
         static registerScope(identifier: string, instance: any): void;
         static findJSFunction(identifier: string): any;
+        /**
+         * Internal dispatcher for methods invoked through TSInteropMarshaller
+         * @param id The method ID obtained when invoking WebAssemblyRuntime.InvokeJSUnmarshalled with a method name
+         * @param pParams The parameters structure ID
+         * @param pRet The pointer to the return value structure
+         */
+        private static dispatch;
         /**
          * Parses the method identifier
          * @param identifier

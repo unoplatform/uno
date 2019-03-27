@@ -225,24 +225,34 @@ var MonoSupport;
             jsCallDispatcher.registrations.set(identifier, instance);
         }
         static findJSFunction(identifier) {
-            if (!jsCallDispatcher._isUnoRegistered) {
-                jsCallDispatcher.registerScope("UnoStatic", Uno.UI.WindowManager);
-                jsCallDispatcher._isUnoRegistered = true;
-            }
-            var knownMethod = jsCallDispatcher.methodMap.get(identifier);
-            if (knownMethod) {
-                return knownMethod;
-            }
-            const { ns, methodName } = jsCallDispatcher.parseIdentifier(identifier);
-            var instance = jsCallDispatcher.registrations.get(ns);
-            if (instance) {
-                var boundMethod = instance[methodName].bind(instance);
-                jsCallDispatcher.cacheMethod(identifier, boundMethod);
-                return boundMethod;
+            if (!identifier) {
+                return jsCallDispatcher.dispatch;
             }
             else {
-                throw `Unknown scope ${ns}`;
+                if (!jsCallDispatcher._isUnoRegistered) {
+                    jsCallDispatcher.registerScope("UnoStatic", Uno.UI.WindowManager);
+                    jsCallDispatcher._isUnoRegistered = true;
+                }
+                const { ns, methodName } = jsCallDispatcher.parseIdentifier(identifier);
+                var instance = jsCallDispatcher.registrations.get(ns);
+                if (instance) {
+                    var boundMethod = instance[methodName].bind(instance);
+                    var methodId = jsCallDispatcher.cacheMethod(boundMethod);
+                    return () => methodId;
+                }
+                else {
+                    throw `Unknown scope ${ns}`;
+                }
             }
+        }
+        /**
+         * Internal dispatcher for methods invoked through TSInteropMarshaller
+         * @param id The method ID obtained when invoking WebAssemblyRuntime.InvokeJSUnmarshalled with a method name
+         * @param pParams The parameters structure ID
+         * @param pRet The pointer to the return value structure
+         */
+        static dispatch(id, pParams, pRet) {
+            return jsCallDispatcher.methodMap[id](pParams, pRet);
         }
         /**
          * Parses the method identifier
@@ -259,12 +269,14 @@ var MonoSupport;
          * @param identifier the findJSFunction identifier
          * @param boundMethod the method to call
          */
-        static cacheMethod(identifier, boundMethod) {
-            jsCallDispatcher.methodMap.set(identifier, boundMethod);
+        static cacheMethod(boundMethod) {
+            var methodId = Object.keys(jsCallDispatcher.methodMap).length;
+            jsCallDispatcher.methodMap[methodId] = boundMethod;
+            return methodId;
         }
     }
     jsCallDispatcher.registrations = new Map();
-    jsCallDispatcher.methodMap = new Map();
+    jsCallDispatcher.methodMap = {};
     MonoSupport.jsCallDispatcher = jsCallDispatcher;
 })(MonoSupport || (MonoSupport = {}));
 // Export the DotNet helper for WebAssembly.JSInterop.InvokeJSUnmarshalled

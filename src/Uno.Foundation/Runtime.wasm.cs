@@ -38,7 +38,7 @@ namespace WebAssembly
 			// Matches this signature:
 			// https://github.com/mono/mono/blob/f24d652d567c4611f9b4e3095be4e2a1a2ab23a4/sdks/wasm/driver.c#L21
 			[MethodImpl(MethodImplOptions.InternalCall)]
-			public static extern bool InvokeJSUnmarshalled(out string exception, string functionIdentifier, IntPtr arg0, IntPtr arg1, IntPtr arg2);
+			public static extern IntPtr InvokeJSUnmarshalled(out string exception, string functionIdentifier, IntPtr arg0, IntPtr arg1, IntPtr arg2);
 		}
 	}
 }
@@ -47,6 +47,8 @@ namespace Uno.Foundation
 {
 	public static class WebAssemblyRuntime
 	{
+		private static Dictionary<string, IntPtr> MethodMap = new Dictionary<string, IntPtr>();
+
 		private static readonly Lazy<ILogger> _logger = new Lazy<ILogger>(() => typeof(WebAssemblyRuntime).Log());
 
 		public static bool IsWebAssembly { get; }
@@ -66,6 +68,17 @@ namespace Uno.Foundation
 		}
 
 		private readonly static IEventProvider _trace = Tracing.Get(TraceProvider.Id);
+
+		private static IntPtr GetMethodId(string methodName)
+		{
+			if (!MethodMap.TryGetValue(methodName, out var methodId))
+			{
+				MethodMap[methodName] = methodId = WebAssembly.JSInterop.InternalCalls.InvokeJSUnmarshalled(out var e, methodName, IntPtr.Zero, IntPtr.Zero, IntPtr.Zero);
+			}
+
+			return methodId;
+		}
+
 
 		/// <summary>
 		/// Invoke a Javascript method using unmarshaled conversion.
@@ -88,7 +101,9 @@ namespace Uno.Foundation
 
 		private static bool InnerInvokeJSUnmarshalled(string functionIdentifier, IntPtr arg0)
 		{
-			var res = WebAssembly.JSInterop.InternalCalls.InvokeJSUnmarshalled(out var exception, functionIdentifier, arg0, IntPtr.Zero, IntPtr.Zero);
+			var methodId = GetMethodId(functionIdentifier);
+
+			var res = WebAssembly.JSInterop.InternalCalls.InvokeJSUnmarshalled(out var exception, null, methodId, arg0, IntPtr.Zero);
 
 			if (exception != null)
 			{
@@ -103,7 +118,7 @@ namespace Uno.Foundation
 				throw new Exception(exception);
 			}
 
-			return res;
+			return res != IntPtr.Zero;
 		}
 
 		/// <summary>
@@ -127,7 +142,9 @@ namespace Uno.Foundation
 
 		private static bool InnerInvokeJSUnmarshalled(string functionIdentifier, IntPtr arg0, IntPtr arg1)
 		{
-			var res = WebAssembly.JSInterop.InternalCalls.InvokeJSUnmarshalled(out var exception, functionIdentifier, arg0, arg1, IntPtr.Zero);
+			var methodId = GetMethodId(functionIdentifier);
+
+			var res = WebAssembly.JSInterop.InternalCalls.InvokeJSUnmarshalled(out var exception, null, methodId, arg0, arg1);
 
 			if (exception != null)
 			{
@@ -142,46 +159,7 @@ namespace Uno.Foundation
 				throw new Exception(exception);
 			}
 
-			return res;
-		}
-
-		/// <summary>
-		/// Invoke a Javascript method using unmarshaled conversion.
-		/// </summary>
-		/// <param name="functionIdentifier">A function identifier name</param>
-		public static bool InvokeJSUnmarshalled(string functionIdentifier, IntPtr arg0, IntPtr arg1, IntPtr arg2)
-		{
-			if (_trace.IsEnabled)
-			{
-				using (WritePropertyEventTrace(TraceProvider.UnmarshalledInvokedStart, TraceProvider.UnmarshalledInvokedEnd, functionIdentifier))
-				{
-					return InnerInvokeJSUnmarshalled(functionIdentifier, arg0, arg1, arg2);
-				}
-			}
-			else
-			{
-				return InnerInvokeJSUnmarshalled(functionIdentifier, arg0, arg1, arg2);
-			}
-		}
-
-		private static bool InnerInvokeJSUnmarshalled(string functionIdentifier, IntPtr arg0, IntPtr arg1, IntPtr arg2)
-		{
-			var res = WebAssembly.JSInterop.InternalCalls.InvokeJSUnmarshalled(out var exception, functionIdentifier, arg0, arg1, arg2);
-
-			if (exception != null)
-			{
-				if (_trace.IsEnabled)
-				{
-					_trace.WriteEvent(
-						TraceProvider.InvokeException,
-						new object[] { functionIdentifier, exception.ToString() }
-					);
-				}
-
-				throw new Exception(exception);
-			}
-
-			return res;
+			return res != IntPtr.Zero;
 		}
 
 		/// <summary>
