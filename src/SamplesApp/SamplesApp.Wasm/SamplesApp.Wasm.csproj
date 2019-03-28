@@ -42,9 +42,11 @@
 		<PackageReference Include="Microsoft.TypeScript.Compiler" />
 		<PackageReference Include="Microsoft.TypeScript.MSBuild" />
 		<PackageReference Include="MSTest.TestFramework" Version="1.2.0" />
+		<PackageReference Include="System.Management" Version="4.6.0-preview3.19128.7" />
 		<PackageReference Include="Uno.SourceGenerationTasks" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Console" Version="1.1.1" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Filter" Version="1.1.1" />
+		<PackageReference Include="BenchmarkDotNet" Version="0.11.4-develop" />
 		<PackageReference Include="Uno.Wasm.Bootstrap" Version="1.0.0-dev.217" />
 		<DotNetCliToolReference Include="Uno.Wasm.Bootstrap.Cli" Version="1.0.0-dev.217" />
 	</ItemGroup>
@@ -73,4 +75,5 @@
 	<Import Project="..\SamplesApp.Shared\SamplesApp.Shared.projitems" Label="Shared" Condition="Exists('..\SamplesApp.Shared\SamplesApp.Shared.projitems')" />
 	<Import Project="..\SamplesApp.UnitTests.Shared\SamplesApp.UnitTests.Shared.projitems" Label="Shared" />
 	<Import Project="..\UITests.Shared\UITests.Shared.projitems" Label="Shared" />
+	<Import Project="..\Benchmarks.Shared\Benchmarks.Shared.projitems" Label="Shared" />
 </Project>

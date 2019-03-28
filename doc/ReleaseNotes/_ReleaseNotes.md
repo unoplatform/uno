@@ -48,6 +48,7 @@
 * Add support for `BindingExpression.UpdateSource()`
 * Updated Android version to target Android 9.0
 * The CI validates for API breaking changes
+* Added samples application BenchmarkDotNet support.
 
 ### Breaking changes
 * Make `UIElement.IsPointerPressed` and `IsPointerOver` internal
