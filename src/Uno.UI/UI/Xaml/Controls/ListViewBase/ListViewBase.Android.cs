@@ -13,6 +13,7 @@ using System;
 using Android.Support.V7.Widget;
 using Windows.UI.Xaml.Data;
 using Windows.UI.Core;
+using Android.Views;
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -303,6 +304,13 @@ namespace Windows.UI.Xaml.Controls
 				var displayPosition = ConvertIndexToDisplayPosition(index);
 				NativePanel?.ScrollIntoView(displayPosition, alignment);
 			});
+		}
+
+		public override bool DispatchTouchEvent(MotionEvent e)
+		{
+			NativePanel?.TrackMotionDirections(e);
+
+			return base.DispatchTouchEvent(e);
 		}
 
 		protected internal override IEnumerable<DependencyObject> GetItemsPanelChildren()

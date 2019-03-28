@@ -136,6 +136,7 @@
 * Improved XAML designer support
 * Improved DependencyObject performance under AOT (JS dynCalls for overrides/delegates inside of EH blocks)
 * Add support for MatrixTransform, UIElement.TransformToVisual now returns a MatrixTransform
+* 140564 [Android] Added workaround for inverted ListView fling issue on Android P
 
 ### Breaking changes
 * Refactored ToggleSwitch Default Native XAML Styles. (cf. 'NativeDefaultToggleSwitch' styles in Generic.Native.xaml)
