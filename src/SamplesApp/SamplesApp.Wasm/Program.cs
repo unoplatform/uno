@@ -11,5 +11,5 @@ namespace SamplesApp.Wasm
 		{
 			Windows.UI.Xaml.Application.Start(_ => _app = new App());
 		}
-	}
+	} 
 }

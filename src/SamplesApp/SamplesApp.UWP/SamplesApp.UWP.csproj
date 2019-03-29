@@ -100,6 +100,7 @@
       <Version>2.1.190218001-prerelease</Version>
     </PackageReference>
     <PackageReference Include="MSTest.TestFramework" Version="1.2.0" />
+    <PackageReference Include="BenchmarkDotNet" Version="0.11.4-develop" />
     <PackageReference Include="Newtonsoft.Json">
       <Version>12.0.1</Version>
     </PackageReference>
@@ -135,6 +136,7 @@
   <Import Project="..\SamplesApp.Shared\SamplesApp.Shared.projitems" Label="Shared" Condition="Exists('..\SamplesApp.Shared\SamplesApp.Shared.projitems')" />
   <Import Project="..\SamplesApp.UnitTests.Shared\SamplesApp.UnitTests.Shared.projitems" Label="Shared" />
   <Import Project="..\UITests.Shared\UITests.Shared.projitems" Label="Shared" />
+  <Import Project="..\Benchmarks.Shared\Benchmarks.Shared.projitems" Label="Shared" />
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">
     <VisualStudioVersion>14.0</VisualStudioVersion>
   </PropertyGroup>
