@@ -28,9 +28,7 @@ jobs:
     inputs:
       command: restore
       solution: src/Uno.UI.sln
-      nugetConfigPath: src/nuget.config
-      includeNuGetOrg: true
-      disableParallelProcessing: true
+      nugetConfigPath: src/nuget.ci.config
       verbosityRestore: Normal
 
   - task: MSBuild@1
@@ -174,9 +172,7 @@ jobs:
     inputs:
       command: restore
       solution: src/Uno.UI.sln
-      nugetConfigPath: src/nuget.config
-      includeNuGetOrg: true
-      disableParallelProcessing: true
+      nugetConfigPath: src/nuget.ci.config
       verbosityRestore: Normal
 
   - task: MSBuild@1
