@@ -5,6 +5,7 @@ using System.Text;
 using System.Collections.ObjectModel;
 using Uno.UI;
 using Windows.Foundation;
+using Uno.Collections;
 
 #if XAMARIN_ANDROID
 using View = Android.Views.View;

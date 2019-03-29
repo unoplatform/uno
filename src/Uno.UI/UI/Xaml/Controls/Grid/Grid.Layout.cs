@@ -10,6 +10,7 @@ using Windows.Foundation;
 using Uno.UI.Extensions;
 using System.Runtime.InteropServices;
 using Uno.Disposables;
+using Uno.Collections;
 
 #if XAMARIN_ANDROID
 using View = Android.Views.View;
@@ -428,7 +429,7 @@ namespace Windows.UI.Xaml.Controls
 					maxHeightMeasured = Math.Max(maxHeightMeasured, size.Height);
 
 					var starWidth = size.Width;
-					var sizes = allWidths.Span.Range(starChild.Value.Column, starChild.Value.ColumnSpan);
+					var sizes = allWidths.Span.SliceClamped(starChild.Value.Column, starChild.Value.ColumnSpan);
 
 					for (int i = 0; i < sizes.Length; i++)
 					{
@@ -674,14 +675,14 @@ namespace Windows.UI.Xaml.Controls
 
 		private static double GetAvailableSizeForPosition(Memory<double> calculatedPixel, GridPosition gridPosition)
 		{
-			var slice = calculatedPixel.Span.Range(gridPosition.Row, gridPosition.RowSpan);
+			var slice = calculatedPixel.Span.SliceClamped(gridPosition.Row, gridPosition.RowSpan);
 			double result = 0;
 
 			for (int i = 0; i < calculatedPixel.Span.Length; i++)
 			{
 				var value = calculatedPixel.Span[i];
 
-				if (!slice.Contains(item => item == value))
+				if (!slice.Any(item => item == value))
 				{
 					result += value;
 				}
@@ -700,7 +701,7 @@ namespace Windows.UI.Xaml.Controls
 				var item = positions[i];
 
 				if (
-					!pixelSizeChildren.Span.Contains(c => c.Key == item.Key)
+					!pixelSizeChildren.Span.Any(c => c.Key == item.Key)
 					&& !autoSizeChildren.Any(c => c.Key == item.Key)
 				)
 				{
@@ -771,7 +772,7 @@ namespace Windows.UI.Xaml.Controls
 
 		private static bool HasAutoSize(int index, int span, Span<GridSize> sizes)
 		{
-			var cached = sizes.Range(index, span);
+			var cached = sizes.SliceClamped(index, span);
 
 			// The code of this method is the LINQ unrolled version of the following method,
 			// to avoid memory allocations:
@@ -1048,247 +1049,5 @@ namespace Windows.UI.Xaml.Controls
 		{
 			return "Column={0}, Row={1}, ColumnSpan={2}, RowSpan={3}".InvariantCultureFormat(Column, Row, ColumnSpan, RowSpan);
 		}
-	}
-
-
-	public static class Extensions
-	{
-		public static void SelectToSpan<TIn, TOut>(
-			this List<TIn> list,
-			Span<TOut> span,
-			Func<TIn, TOut> selector
-		)
-		{
-			for (int i = 0; i < list.Count; i++)
-			{
-				span[i] = selector(list[i]);
-			}
-		}
-
-		public static void SelectToSpan<TIn, TOut>(
-			this Span<TIn> list,
-			Span<TOut> span,
-			Func<TIn, TOut> selector
-		)
-		{
-			for (int i = 0; i < list.Length; i++)
-			{
-				span[i] = selector(list[i]);
-			}
-		}
-
-		public static void SelectToSpan<TIn, TOut>(
-			this Span<TIn> list,
-			Span<TOut> span,
-			Func<TIn, int, TOut> selector
-		)
-		{
-			for (int i = 0; i < list.Length; i++)
-			{
-				span[i] = selector(list[i], i);
-			}
-		}
-
-		public static void SelectToSpan<TIn, TOut>(
-			this TIn[] list,
-			ref Span<TOut> span,
-			Func<TIn, TOut> selector
-		)
-		{
-			for (int i = 0; i < list.Length; i++)
-			{
-				span[i] = selector(list[i]);
-			}
-		}
-
-		public static Memory<TOut> SelectToMemory<TIn, TOut>(
-			this Span<TIn> list,
-			Func<TIn, TOut> selector
-		)
-		{
-			var output = new Memory<TOut>(new TOut[list.Length]);
-			for (int i = 0; i < list.Length; i++)
-			{
-				output.Span[i] = selector(list[i]);
-			}
-
-			return output;
-		}
-
-		public static Memory<TOut> SelectToMemory<TIn, TOut>(
-			this Span<TIn> list,
-			Func<TIn, int, TOut> selector
-		)
-		{
-			var output = new Memory<TOut>(new TOut[list.Length]);
-			for (int i = 0; i < list.Length; i++)
-			{
-				output.Span[i] = selector(list[i], i);
-			}
-
-			return output;
-		}
-
-		public static Memory<TOut> SelectToMemory<TIn, TOut>(
-			this IList<TIn> list,
-			Func<TIn, TOut> selector
-		)
-		{
-			var output = new Memory<TOut>(new TOut[list.Count]);
-			for (int i = 0; i < list.Count; i++)
-			{
-				output.Span[i] = selector(list[i]);
-			}
-
-			return output;
-		}
-
-		public static Memory<TValue> WhereToMemory<TValue>(
-			this Span<TValue> list,
-			Func<TValue, bool> filter
-		)
-		{
-			var output = new Memory<TValue>(new TValue[list.Length]);
-			int valuesCount = 0;
-			for (int i = 0; i < list.Length; i++)
-			{
-				var value = list[i];
-
-				if (filter(value))
-				{
-					output.Span[valuesCount++] = value;
-				}
-			}
-
-			return output.Slice(0, valuesCount);
-		}
-
-		public static Memory<TValue> WhereToMemory<TValue>(
-			this Span<TValue> list,
-			Func<TValue, int, bool> filter
-		)
-		{
-			var output = new Memory<TValue>(new TValue[list.Length]);
-			int values = 0;
-			for (int i = 0; i < list.Length; i++)
-			{
-				var value = list[i];
-
-				if (filter(value, i))
-				{
-					output.Span[values++] = value;
-				}
-			}
-
-			return output.Slice(0, values);
-		}
-
-		public static Memory<TResult> WhereToMemory<TValue, TResult>(
-			this Span<TValue> list,
-			Func<TValue, bool> filter,
-			Func<TValue, TResult> selector
-		)
-		{
-			var output = new Memory<TResult>(new TResult[list.Length]);
-			int values = 0;
-			for (int i = 0; i < list.Length; i++)
-			{
-				var value = list[i];
-
-				if (filter(value))
-				{
-					output.Span[values++] = selector(value);
-				}
-			}
-
-			return output.Slice(0, values);
-		}
-
-		public static Span<TValue> WhereToSpan<TValue>(
-			this Span<TValue> list,
-			Span<TValue> target,
-			Func<TValue, bool> filter
-		)
-		{
-			int values = 0;
-			for (int i = 0; i < list.Length; i++)
-			{
-				var value = list[i];
-
-				if (filter(value))
-				{
-					target[values++] = value;
-				}
-			}
-
-			return target.Slice(0, values);
-		}
-
-		public static int Count<T>(this Span<T> span, Func<T, bool> predicate)
-		{
-			int result = 0;
-			foreach (var value in span)
-			{
-				if (predicate(value))
-				{
-					result++;
-				}
-			}
-
-			return result;
-		}
-
-		public static bool Contains<T>(this Span<T> span, Func<T, bool> predicate)
-		{
-			foreach (var value in span)
-			{
-				if (predicate(value))
-				{
-					return true;
-				}
-			}
-
-			return false;
-		}
-
-		public static Dictionary<TKey, TValue> ToDictionary<TIn, TKey, TValue>(this Span<TIn> span, Func<TIn, TKey> keySelector, Func<TIn, TValue> valueSelector)
-		{
-			var result = new Dictionary<TKey, TValue>(span.Length);
-			foreach (var item in span)
-			{
-				result.Add(keySelector(item), valueSelector(item));
-			}
-			return result;
-		}
-
-		public static double Sum(this Span<double> span)
-		{
-			double result = 0;
-
-			foreach (var value in span)
-			{
-				result += value;
-			}
-
-			return result;
-		}
-
-		public static double Sum<TIn>(this Span<TIn> span, Func<TIn, double> selector)
-		{
-			double result = 0;
-
-			foreach (var value in span)
-			{
-				result += selector(value);
-			}
-
-			return result;
-		}
-
-		public static Span<TValue> Range<TValue>(this Span<TValue> span, int start, int range)
-			=> span.Slice(
-				start: Math.Min(span.Length, start),
-				length: Math.Min(range, span.Length - start)
-			);
 	}
 }
