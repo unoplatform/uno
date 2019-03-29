@@ -122,7 +122,7 @@
 
     <MSBuild Properties="Configuration=Release;VisualStudioVersion=15.0;CopyDSYM=False;InformationalVersion=$(GITVERSION_InformationalVersion);CI_Build=true;_IsCIBuild=true"
              Projects="..\src\Uno.UI.sln"
-             Targets="Restore;Build"
+             Targets="Build"
              RebaseOutputs="false"
              BuildInParallel="true" />
 
@@ -132,7 +132,7 @@
 
     <MSBuild Properties="Configuration=Release;VisualStudioVersion=15.0;CopyDSYM=False;InformationalVersion=$(GITVERSION_InformationalVersion);CI_Build=true;_IsCIBuild=true"
              Projects="..\src\Uno.UI-vs4mac.sln"
-             Targets="Restore;Build"
+             Targets="Build"
              RebaseOutputs="false"
              BuildInParallel="true" />
 
