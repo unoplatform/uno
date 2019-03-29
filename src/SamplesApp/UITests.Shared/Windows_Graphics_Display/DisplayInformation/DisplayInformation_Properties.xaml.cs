@@ -62,7 +62,7 @@ namespace UITests.Shared.Windows_Graphics_Display.DisplayInformation
 				var value = getter();
 				if ( value == null)
 				{
-					return "(null)"
+					return "(null)";
 				}
 				return Convert.ToString(value);
 			}
