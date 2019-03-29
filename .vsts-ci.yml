@@ -24,13 +24,6 @@ jobs:
       versionSpec: 4.9.1
       checkLatest: false
 
-  - task: NuGetCommand@2
-    inputs:
-      command: restore
-      solution: src/Uno.UI.sln
-      nugetConfigPath: src/nuget.ci.config
-      verbosityRestore: Normal
-
   - task: MSBuild@1
     inputs:
       solution: Build/Uno.UI.proj
@@ -167,13 +160,6 @@ jobs:
     inputs:
       versionSpec: 4.9.1
       checkLatest: false
-
-  - task: NuGetCommand@2
-    inputs:
-      command: restore
-      solution: src/Uno.UI.sln
-      nugetConfigPath: src/nuget.ci.config
-      verbosityRestore: Normal
 
   - task: MSBuild@1
     inputs:
