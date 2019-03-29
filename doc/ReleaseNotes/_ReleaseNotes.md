@@ -3,6 +3,7 @@
 ## Next version
 
 ### Features
+* Updated `CheckBox` glyph to match UWP style on all platforms
 
 ### Breaking Changes
 
