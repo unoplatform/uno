@@ -3,6 +3,10 @@
 ## Next version
 
 ### Features
+* Performance improvements
+	- Use `Span<T>` for Grid layout
+	- Optimize Wasm text measuring
+	- Performance improvements in `TSInteropMarshaller.InvokeJS`
 
 ### Breaking Changes
 * The `WebAssemblyRuntime.InvokeJSUnmarshalled` method with three parameters has been removed.
