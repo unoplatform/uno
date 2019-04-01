@@ -3,8 +3,13 @@
 ## Next version
 
 ### Features
+* Performance improvements
+	- Use `Span<T>` for Grid layout
+	- Optimize Wasm text measuring
+	- Performance improvements in `TSInteropMarshaller.InvokeJS`
 
 ### Breaking Changes
+* The `WebAssemblyRuntime.InvokeJSUnmarshalled` method with three parameters has been removed.
 
 ### Bug fixes
 * The `HAS_UNO` define is now not defined in `uap10.0.x` target frameworks.

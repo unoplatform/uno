@@ -74,7 +74,7 @@ namespace Uno.Foundation.Interop
 			string methodName,
 			TParam paramStruct,
 			[System.Runtime.CompilerServices.CallerMemberName] string memberName = null
-		) where TRet : new()
+		)
 		{
 			if (_logger.Value.IsEnabled(LogLevel.Debug))
 			{
@@ -84,7 +84,7 @@ namespace Uno.Foundation.Interop
 			var pParms = Marshal.AllocHGlobal(Marshal.SizeOf(typeof(TParam)));
 			var pReturnValue = Marshal.AllocHGlobal(Marshal.SizeOf(typeof(TRet)));
 
-			var returnValue = new TRet();
+			TRet returnValue = default;
 
 			try
 			{

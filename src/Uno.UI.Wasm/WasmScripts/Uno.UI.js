@@ -225,24 +225,34 @@ var MonoSupport;
             jsCallDispatcher.registrations.set(identifier, instance);
         }
         static findJSFunction(identifier) {
-            if (!jsCallDispatcher._isUnoRegistered) {
-                jsCallDispatcher.registerScope("UnoStatic", Uno.UI.WindowManager);
-                jsCallDispatcher._isUnoRegistered = true;
-            }
-            var knownMethod = jsCallDispatcher.methodMap.get(identifier);
-            if (knownMethod) {
-                return knownMethod;
-            }
-            const { ns, methodName } = jsCallDispatcher.parseIdentifier(identifier);
-            var instance = jsCallDispatcher.registrations.get(ns);
-            if (instance) {
-                var boundMethod = instance[methodName].bind(instance);
-                jsCallDispatcher.cacheMethod(identifier, boundMethod);
-                return boundMethod;
+            if (!identifier) {
+                return jsCallDispatcher.dispatch;
             }
             else {
-                throw `Unknown scope ${ns}`;
+                if (!jsCallDispatcher._isUnoRegistered) {
+                    jsCallDispatcher.registerScope("UnoStatic", Uno.UI.WindowManager);
+                    jsCallDispatcher._isUnoRegistered = true;
+                }
+                const { ns, methodName } = jsCallDispatcher.parseIdentifier(identifier);
+                var instance = jsCallDispatcher.registrations.get(ns);
+                if (instance) {
+                    var boundMethod = instance[methodName].bind(instance);
+                    var methodId = jsCallDispatcher.cacheMethod(boundMethod);
+                    return () => methodId;
+                }
+                else {
+                    throw `Unknown scope ${ns}`;
+                }
             }
+        }
+        /**
+         * Internal dispatcher for methods invoked through TSInteropMarshaller
+         * @param id The method ID obtained when invoking WebAssemblyRuntime.InvokeJSUnmarshalled with a method name
+         * @param pParams The parameters structure ID
+         * @param pRet The pointer to the return value structure
+         */
+        static dispatch(id, pParams, pRet) {
+            return jsCallDispatcher.methodMap[id](pParams, pRet);
         }
         /**
          * Parses the method identifier
@@ -259,12 +269,14 @@ var MonoSupport;
          * @param identifier the findJSFunction identifier
          * @param boundMethod the method to call
          */
-        static cacheMethod(identifier, boundMethod) {
-            jsCallDispatcher.methodMap.set(identifier, boundMethod);
+        static cacheMethod(boundMethod) {
+            var methodId = Object.keys(jsCallDispatcher.methodMap).length;
+            jsCallDispatcher.methodMap[methodId] = boundMethod;
+            return methodId;
         }
     }
     jsCallDispatcher.registrations = new Map();
-    jsCallDispatcher.methodMap = new Map();
+    jsCallDispatcher.methodMap = {};
     MonoSupport.jsCallDispatcher = jsCallDispatcher;
 })(MonoSupport || (MonoSupport = {}));
 // Export the DotNet helper for WebAssembly.JSInterop.InvokeJSUnmarshalled
@@ -1071,9 +1083,8 @@ var Uno;
             }
             measureViewInternal(viewId, maxWidth, maxHeight) {
                 const element = this.getView(viewId);
-                const previousWidth = element.style.width;
-                const previousHeight = element.style.height;
-                const previousPosition = element.style.position;
+                const elementStyle = element.style;
+                const originalStyleCssText = elementStyle.cssText;
                 try {
                     if (!element.isConnected) {
                         // If the element is not connected to the DOM, we need it
@@ -1086,29 +1097,37 @@ var Uno;
                         }
                         this.containerElement.appendChild(unconnectedRoot);
                     }
-                    element.style.width = "";
-                    element.style.height = "";
+                    var updatedStyles = {};
+                    for (var i = 0; i < elementStyle.length; i++) {
+                        const key = elementStyle[i];
+                        updatedStyles[key] = elementStyle.getPropertyValue(key);
+                    }
+                    updatedStyles.width = "";
+                    updatedStyles.height = "";
                     // This is required for an unconstrained measure (otherwise the parents size is taken into account)
-                    element.style.position = "fixed";
-                    element.style.maxWidth = Number.isFinite(maxWidth) ? `${maxWidth}px` : "";
-                    element.style.maxHeight = Number.isFinite(maxHeight) ? `${maxHeight}px` : "";
-                    if (element.tagName.toUpperCase() === "IMG") {
+                    updatedStyles.position = "fixed";
+                    updatedStyles.maxWidth = Number.isFinite(maxWidth) ? maxWidth + "px" : "";
+                    updatedStyles.maxHeight = Number.isFinite(maxHeight) ? maxHeight + "px" : "";
+                    var updatedStyleString = "";
+                    for (var key in updatedStyles) {
+                        updatedStyleString += key + ": " + updatedStyles[key] + "; ";
+                    }
+                    elementStyle.cssText = updatedStyleString;
+                    if (element instanceof HTMLImageElement) {
                         const imgElement = element;
                         return [imgElement.naturalWidth, imgElement.naturalHeight];
                     }
                     else {
-                        const resultWidth = element.offsetWidth ? element.offsetWidth : element.clientWidth;
-                        const resultHeight = element.offsetHeight ? element.offsetHeight : element.clientHeight;
+                        const offsetWidth = element.offsetWidth;
+                        const offsetHeight = element.offsetHeight;
+                        const resultWidth = offsetWidth ? offsetWidth : element.clientWidth;
+                        const resultHeight = offsetHeight ? offsetHeight : element.clientHeight;
                         /* +0.5 is added to take rounding into account */
                         return [resultWidth + 0.5, resultHeight];
                     }
                 }
                 finally {
-                    element.style.width = previousWidth;
-                    element.style.height = previousHeight;
-                    element.style.position = previousPosition;
-                    element.style.maxWidth = "";
-                    element.style.maxHeight = "";
+                    elementStyle.cssText = originalStyleCssText;
                 }
             }
             setImageRawData(viewId, dataPtr, width, height) {
