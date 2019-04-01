@@ -1560,7 +1560,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		/// <summary>
-		/// Attach view to window if it has been detached.
+		/// Attach view to window if it has been detached. https://developer.android.com/reference/android/view/ViewGroup.html#attachViewToParent(android.view.View,%20int,%20android.view.ViewGroup.LayoutParams)
 		/// </summary>
 		internal void TryAttachView(View view)
 		{
@@ -1568,9 +1568,6 @@ namespace Windows.UI.Xaml.Controls
 			if (holder.IsDetached)
 			{
 				AttachView(view);
-
-				// Here we want to check if the attached view is part of the current selection or not and update it accordingly
-				UpdateSelection(view);
 			}
 		}
 
@@ -1587,9 +1584,9 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		/// <summary>
-		/// Checks to see if the recently attached view is up to date with selection
+		/// Set up-to-date selection state on item view.
 		/// </summary>
-		private void UpdateSelection(View view)
+		internal void UpdateSelection(View view)
 		{
 			// ensure the view is selectable, since headers are not.
 			if (view is SelectorItem selectorItem &&
@@ -1600,14 +1597,7 @@ namespace Windows.UI.Xaml.Controls
 				var selectedItems = XamlParent.SelectedItems;
 				var isItemInSelection = selectedItems.Contains(item);
 
-				if (isItemInSelection && !selectorItem.IsSelected)
-				{
-					selectorItem.IsSelected = true;
-				}
-				else if (!isItemInSelection && selectorItem.IsSelected)
-				{
-					selectorItem.IsSelected = false;
-				}
+				selectorItem.IsSelected = isItemInSelection;
 			}
 		}
 
