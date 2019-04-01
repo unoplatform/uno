@@ -7,6 +7,7 @@
 ### Breaking Changes
 
 ### Bug fixes
+* The `HAS_UNO` define is now not defined in `uap10.0.x` target frameworks.
 
 ## Release 1.44.0
 
