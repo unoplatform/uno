@@ -51,6 +51,7 @@
 * Updated Android version to target Android 9.0
 * The CI validates for API breaking changes
 * Added samples application BenchmarkDotNet support.
+* `MediaTransportControls` buttons now use Tapped event instead of Click
 
 ### Breaking changes
 * Make `UIElement.IsPointerPressed` and `IsPointerOver` internal
