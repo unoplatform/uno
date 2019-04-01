@@ -18,7 +18,7 @@ namespace Uno.UI.Samples.Presentation.SamplePages
 			Flip = CreateCommand(OnFlip);
 		}
 
-		private void OnFlip(object obj) => IsOn = !IsOn;
+		private void OnFlip() => IsOn = !IsOn;
 
 		public bool IsOn
 		{
