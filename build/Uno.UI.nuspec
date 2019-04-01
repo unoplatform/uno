@@ -184,6 +184,7 @@
     <file src="..\src\SourceGenerators\Uno.UI.Tasks\Content\Uno.UI.Tasks.targets" target="build\MonoAndroid" />
     <file src="..\src\SourceGenerators\Uno.UI.Tasks\Content\Uno.UI.Tasks.targets" target="build\xamarinios10" />
     <file src="..\src\SourceGenerators\Uno.UI.Tasks\Content\Uno.UI.Tasks.targets" target="build\netstandard2.0" />
+    <file src="_._" target="build\uap10.0" />
 
     <file src="..\src\SourceGenerators\Uno.UI.SourceGenerators\Content\Uno.UI.SourceGenerators.props" target="build" />
   </files>
