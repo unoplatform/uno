@@ -8,6 +8,7 @@
 
 ### Bug fixes
 * The `HAS_UNO` define is now not defined in `uap10.0.x` target frameworks.
+* The `XamlReader` fails when a property has no getter
 
 ## Release 1.44.0
 
