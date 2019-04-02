@@ -81,6 +81,9 @@
  * 149312 [Android] Added `FeatureConfiguration.NativeListViewBase.RemoveItemAnimator` to remove the ItemAnimator that crashes when under stress
  * 150156 Fix `ComboBox` not working when using `Popover`.
  * `Click` and `Tapped` events were not working property for `ButtonBase` on Android and iOS.
+ * 150233 [Android] fixed status-bar, keyboard, nav-bar layout on android
+	- `LayoutProvider` exposes the `Rect`s of status-bar, keyboard, navigation-bar, and an `LayoutChanged` event to monitor the changes.
+
 
 ## Release 1.43.1
 
