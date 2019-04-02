@@ -1,5 +1,5 @@
 <Project ToolsVersion="15.0">
-	<Import Project="TargetFrameworkSelection.targets"/>
+	<Import Project="TargetFrameworkSelection.targets" />
 	<Import Project="../build/GetMsBuildVersion.targets" />
 
   <Target Name="AndroidResourceGenWorkaround" BeforeTargets="Build" Condition="'$(AndroidUseIntermediateDesignerFile)'=='True' and $(IsMonoAndroid)">
@@ -8,14 +8,15 @@
   </Target>
 
   <ItemGroup>
-    <PackageReference Update="Uno.SourceGenerationTasks" Version="1.30.0-dev.277" />
-    <PackageReference Update="Uno.SourceGeneration" Version="1.30.0-dev.277" />
-    <PackageReference Update="Uno.Core" Version="1.27.0-dev.68" />
-    <PackageReference Update="Uno.Core.Build" Version="1.27.0-dev.68" />
-    <PackageReference Update="Uno.Wasm.Bootstrap" Version="1.0.0-dev.217" />
+    <PackageReference Update="Uno.SourceGenerationTasks" Version="1.31.0-dev.285" />
+    <PackageReference Update="Uno.SourceGeneration" Version="1.31.0-dev.285" />
+    <PackageReference Update="Uno.Core" Version="1.28.0-dev.86" />
+    <PackageReference Update="Uno.Core.Build" Version="1.28.0-dev.86" />
+    <PackageReference Update="Uno.Wasm.Bootstrap" Version="1.0.0-dev.244" />
     <PackageReference Update="xamarin.build.download" Version="0.4.11" />
-    <PackageReference Update="Uno.MonoAnalyzers" Version="1.0.0-dev.2" PrivateAssets="all" />
-    <DotNetCliToolReference Update="Uno.Wasm.Bootstrap.Cli" Version="1.0.0-dev.217" />
+    <PackageReference Update="Uno.MonoAnalyzers" Version="1.0.0-dev.4" PrivateAssets="all" />
+    <PackageReference Update="System.Memory" Version="4.5.2" />
+    <DotNetCliToolReference Update="Uno.Wasm.Bootstrap.Cli" Version="1.0.0-dev.244" />
     <PackageReference Update="Microsoft.TypeScript.Compiler" Version="3.1.5" />
     <PackageReference Update="Microsoft.TypeScript.MSBuild" Version="3.1.5" />
   </ItemGroup>

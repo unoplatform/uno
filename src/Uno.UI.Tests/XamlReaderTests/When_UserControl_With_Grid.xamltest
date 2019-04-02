@@ -1,8 +1,0 @@
-﻿<UserControl xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-      x:Name="testPage">
-  <Grid>
-    <Border Background="Red" />
-    <Border Background="Blue" />
-  </Grid>
-</UserControl>

@@ -63,6 +63,8 @@
         <Member fullName="System.Void Windows.UI.Xaml.Controls.Primitives.Thumb.TouchesMoved(Foundation.NSSet touches, UIKit.UIEvent evt)" 
                 reason="Removed as Routed Events implement it properly"/>  
         
+        <Member fullName="System.Boolean Uno.Foundation.WebAssemblyRuntime.InvokeJSUnmarshalled(System.String functionIdentifier, System.IntPtr arg0, System.IntPtr arg1, System.IntPtr arg2)" 
+                reason="Removed to improve the C#/JS call performance"/>  
       </Methods>
       
       <Events>

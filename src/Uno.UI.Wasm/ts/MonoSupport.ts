@@ -7,7 +7,7 @@
 	export class jsCallDispatcher {
 
 		static registrations: Map<string, any> = new Map<string, any>();
-		static methodMap: Map<string, any> = new Map<string, any>();
+		static methodMap: { [id: number]: any } = {};
 		static _isUnoRegistered : boolean;
 
 		/**
@@ -21,29 +21,40 @@
 
 		public static findJSFunction(identifier: string): any {
 
-			if (!jsCallDispatcher._isUnoRegistered) {
-				jsCallDispatcher.registerScope("UnoStatic", Uno.UI.WindowManager);
-				jsCallDispatcher._isUnoRegistered = true;
-			}
-
-			var knownMethod = jsCallDispatcher.methodMap.get(identifier);
-			if (knownMethod) {
-				return knownMethod;
-			}
-
-			const { ns, methodName } = jsCallDispatcher.parseIdentifier(identifier);
-
-			var instance = jsCallDispatcher.registrations.get(ns);
-
-			if (instance) {
-				var boundMethod = instance[methodName].bind(instance);
-
-				jsCallDispatcher.cacheMethod(identifier, boundMethod);
-				return boundMethod;
+			if (!identifier) {
+				return jsCallDispatcher.dispatch;
 			}
 			else {
-				throw `Unknown scope ${ns}`;
+				if (!jsCallDispatcher._isUnoRegistered) {
+					jsCallDispatcher.registerScope("UnoStatic", Uno.UI.WindowManager);
+					jsCallDispatcher._isUnoRegistered = true;
+				}
+
+				const { ns, methodName } = jsCallDispatcher.parseIdentifier(identifier);
+
+				var instance = jsCallDispatcher.registrations.get(ns);
+
+				if (instance) {
+					var boundMethod = instance[methodName].bind(instance);
+
+					var methodId = jsCallDispatcher.cacheMethod(boundMethod);
+
+					return () => methodId;
+				}
+				else {
+					throw `Unknown scope ${ns}`;
+				}
 			}
+		}
+
+		/**
+		 * Internal dispatcher for methods invoked through TSInteropMarshaller
+		 * @param id The method ID obtained when invoking WebAssemblyRuntime.InvokeJSUnmarshalled with a method name
+		 * @param pParams The parameters structure ID
+		 * @param pRet The pointer to the return value structure
+		 */
+		private static dispatch(id: number, pParams: any, pRet: any) {
+			return jsCallDispatcher.methodMap[id](pParams, pRet);
 		}
 
 		/**
@@ -62,8 +73,10 @@
 		 * @param identifier the findJSFunction identifier
 		 * @param boundMethod the method to call
 		 */
-		private static cacheMethod(identifier: string, boundMethod: any) {
-			jsCallDispatcher.methodMap.set(identifier, boundMethod);
+		private static cacheMethod(boundMethod: any): number {
+			var methodId = Object.keys(jsCallDispatcher.methodMap).length;
+			jsCallDispatcher.methodMap[methodId] = boundMethod;
+			return methodId;
 		}
 	}
 }

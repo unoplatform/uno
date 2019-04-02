@@ -392,14 +392,27 @@ namespace Windows.UI.Xaml
 			// to avoid two-way bindings to do a ping-pong.
 			var currentlySettingPropertyPushed = false;
 
+#if !HAS_EXPENSIVE_TRYFINALLY
+			// The try/finally incurs a very large performance hit in mono-wasm, and SetValue is in a very hot execution path.
+			// See https://github.com/mono/mono/issues/13653 for more details.
 			try
+#endif
 			{
-				using (WritePropertyEventTrace(TraceProvider.SetValueStart, TraceProvider.SetValueStop, property, precedence))
+				if (_trace.IsEnabled)
+				{
+					using (WritePropertyEventTrace(TraceProvider.SetValueStart, TraceProvider.SetValueStop, property, precedence))
+					{
+						InnerSetValue(property, value, precedence, propertyDetails, ref currentlySettingPropertyPushed);
+					}
+				}
+				else
 				{
 					InnerSetValue(property, value, precedence, propertyDetails, ref currentlySettingPropertyPushed);
 				}
 			}
+#if !HAS_EXPENSIVE_TRYFINALLY
 			finally
+#endif
 			{
 				if (currentlySettingPropertyPushed)
 				{
@@ -951,13 +964,19 @@ namespace Windows.UI.Xaml
 
 				if (parentProvider != null)
 				{
+#if !HAS_EXPENSIVE_TRYFINALLY
+					// The try/finally incurs a very large performance hit in mono-wasm, and SetValue is in a very hot execution path.
+					// See https://github.com/mono/mono/issues/13653 for more details.
 					try
+#endif
 					{
 						_registeringInheritedProperties = true;
 
 						_inheritedProperties.Disposable = RegisterInheritedProperties(parentProvider);
 					}
+#if !HAS_EXPENSIVE_TRYFINALLY
 					finally
+#endif
 					{
 						_registeringInheritedProperties = false;
 					}
@@ -994,7 +1013,11 @@ namespace Windows.UI.Xaml
 			// Register for unset values
 			disposable.Add(() =>
 			{
+#if !HAS_EXPENSIVE_TRYFINALLY
+				// The try/finally incurs a very large performance hit in mono-wasm, and SetValue is in a very hot execution path.
+				// See https://github.com/mono/mono/issues/13653 for more details.
 				try
+#endif
 				{
 					_unregisteringInheritedProperties = true;
 
@@ -1011,7 +1034,9 @@ namespace Windows.UI.Xaml
 						SetValue(_templatedParentProperty, DependencyProperty.UnsetValue, DependencyPropertyValuePrecedences.Inheritance);
 					}
 				}
+#if !HAS_EXPENSIVE_TRYFINALLY
 				finally
+#endif
 				{
 					_unregisteringInheritedProperties = false;
 				}

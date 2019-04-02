@@ -415,7 +415,7 @@ namespace Windows.UI.Xaml.Controls
 					continue;
 				}
 
-				var isAnimating = unoCell.Layer.AnimationKeys?.Any() ?? false;
+				var isAnimating = unoCell./* cache */Layer.AnimationKeys?.Any() ?? false;
 				if (isAnimating)
 				{
 					// Don't bother checking for consistency while items are animating
