@@ -18,7 +18,8 @@ namespace Windows.UI.Xaml
 	public class ApplicationActivity : Controls.NativePage
 	{
 		private InputPane _inputPane;
-		private KeyboardRectProvider _keyboardRectProvider;
+		private LayoutProvider _layoutProvider;
+
 
 		public ApplicationActivity(IntPtr ptr, Android.Runtime.JniHandleOwnership owner) : base(ptr, owner)
 		{
@@ -96,19 +97,18 @@ namespace Windows.UI.Xaml
 			Window.ClearFlags(WindowManagerFlags.Fullscreen);
 		}
 
-		private void OnLayoutChanged(Rect occludedRect)
+		private void OnLayoutChanged(Rect statusBar, Rect keyboard, Rect navigationBar)
 		{
-			if(_inputPane.OccludedRect != occludedRect)
-			{
-				_inputPane.OccludedRect = ViewHelper.PhysicalToLogicalPixels(occludedRect);
-			}
+			Xaml.Window.Current?.RaiseNativeSizeChanged();
+			_inputPane.OccludedRect = ViewHelper.PhysicalToLogicalPixels(keyboard);
 		}
 
 		protected override void OnCreate(Bundle bundle)
 		{
 			base.OnCreate(bundle);
 
-			_keyboardRectProvider = new KeyboardRectProvider(this, OnLayoutChanged);
+			_layoutProvider = new LayoutProvider(this);
+			_layoutProvider.LayoutChanged += OnLayoutChanged;
 			RaiseConfigurationChanges();
 		}
 
@@ -118,14 +118,14 @@ namespace Windows.UI.Xaml
 			{
 				if (view.IsAttachedToWindow)
 				{
-					_keyboardRectProvider.Start(view);
+					_layoutProvider.Start(view);
 				}
 				else
 				{
 					EventHandler<View.ViewAttachedToWindowEventArgs> handler = null;
 					handler = (s, e) =>
 					{
-						_keyboardRectProvider.Start(view);
+						_layoutProvider.Start(view);
 						view.ViewAttachedToWindow -= handler;
 					};
 					view.ViewAttachedToWindow += handler;
@@ -155,7 +155,7 @@ namespace Windows.UI.Xaml
 		{
 			base.OnDestroy();
 
-			_keyboardRectProvider.Stop();
+			_layoutProvider.Stop();
 		}
 
 		public override void OnConfigurationChanged(Configuration newConfig)
