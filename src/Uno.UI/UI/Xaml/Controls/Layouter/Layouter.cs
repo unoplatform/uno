@@ -106,9 +106,13 @@ namespace Windows.UI.Xaml.Controls
 		/// <summary>
 		/// Places the children of the panel using a specific size, in logical pixels.
 		/// </summary>
-		/// <param name="finalSize">The final panel size</param>
 		public void Arrange(Rect finalRect)
 		{
+			if (_element is UIElement ui)
+			{
+				ui.LayoutSlot = finalRect;
+			}
+
 			IDisposable traceActivity = null;
 			if (_trace.IsEnabled)
 			{
