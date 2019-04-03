@@ -195,6 +195,16 @@ namespace Windows.UI.Xaml.Controls
 
 		internal Size MeasureOverride(Size availableSize)
 		{
+			if (ItemsControl == null)
+			{
+				if (this.Log().IsEnabled(LogLevel.Debug))
+				{
+					this.Log().LogDebug("Measured without an ItemsControl: simply return size(0,0) for now...");
+				}
+
+				return new Size(0, 0);
+			}
+
 			ViewportSize = ScrollViewer?.ViewportMeasureSize ?? default;
 			if (this.Log().IsEnabled(LogLevel.Debug))
 			{
@@ -248,6 +258,16 @@ namespace Windows.UI.Xaml.Controls
 
 		internal Size ArrangeOverride(Size finalSize)
 		{
+			if (ItemsControl == null)
+			{
+				if (this.Log().IsEnabled(LogLevel.Debug))
+				{
+					this.Log().LogDebug("Measured without an ItemsControl: simply return size(0,0) for now...");
+				}
+
+				return new Size(0, 0);
+			}
+
 			ViewportSize = ScrollViewer?.ViewportArrangeSize ?? default;
 			if (this.Log().IsEnabled(LogLevel.Debug))
 			{
