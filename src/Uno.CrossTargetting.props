@@ -44,7 +44,7 @@
 
 
   <PropertyGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
-	<DefineConstants>$(DefineConstants);__WASM__</DefineConstants>
+	<DefineConstants>$(DefineConstants);__WASM__;HAS_EXPENSIVE_TRYFINALLY</DefineConstants>
   </PropertyGroup>
 
   <PropertyGroup Condition="$(IsXamarinIOS)">

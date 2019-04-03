@@ -109,7 +109,7 @@ namespace Windows.UI.Xaml.Controls
 			UpdateHyperlinks();
 
 			OnInlinesChangedPartial();
-			this.InvalidateMeasure();
+			InvalidateTextBlock();
 		}
 
 		partial void OnInlinesChangedPartial();
@@ -139,7 +139,7 @@ namespace Windows.UI.Xaml.Controls
 		private void OnFontStyleChanged()
 		{
 			OnFontStyleChangedPartial();
-			this.InvalidateMeasure();
+			InvalidateTextBlock();
 		}
 
 		partial void OnFontStyleChangedPartial();
@@ -168,7 +168,7 @@ namespace Windows.UI.Xaml.Controls
 		private void OnTextWrappingChanged()
 		{
 			OnTextWrappingChangedPartial();
-			this.InvalidateMeasure();
+			InvalidateTextBlock();
 		}
 
 		partial void OnTextWrappingChangedPartial();
@@ -198,7 +198,7 @@ namespace Windows.UI.Xaml.Controls
 		private void OnFontWeightChanged()
 		{
 			OnFontWeightChangedPartial();
-			this.InvalidateMeasure();
+			InvalidateTextBlock();
 		}
 
 		partial void OnFontWeightChangedPartial();
@@ -241,7 +241,7 @@ namespace Windows.UI.Xaml.Controls
 			UpdateInlines(newValue);
 
 			OnTextChangedPartial();
-			this.InvalidateMeasure();
+			InvalidateTextBlock();
 		}
 
 		partial void OnTextChangedPartial();
@@ -276,7 +276,7 @@ namespace Windows.UI.Xaml.Controls
 		private void OnFontFamilyChanged()
 		{
 			OnFontFamilyChangedPartial();
-			this.InvalidateMeasure();
+			InvalidateTextBlock();
 		}
 
 		partial void OnFontFamilyChangedPartial();
@@ -306,7 +306,7 @@ namespace Windows.UI.Xaml.Controls
 		private void OnFontSizeChanged()
 		{
 			OnFontSizeChangedPartial();
-			this.InvalidateMeasure();
+			InvalidateTextBlock();
 		}
 
 		partial void OnFontSizeChangedPartial();
@@ -335,7 +335,7 @@ namespace Windows.UI.Xaml.Controls
 		private void OnMaxLinesChanged()
 		{
 			OnMaxLinesChangedPartial();
-			this.InvalidateMeasure();
+			InvalidateTextBlock();
 		}
 
 		partial void OnMaxLinesChangedPartial();
@@ -364,7 +364,7 @@ namespace Windows.UI.Xaml.Controls
 		private void OnTextTrimmingChanged()
 		{
 			OnTextTrimmingChangedPartial();
-			this.InvalidateMeasure();
+			InvalidateTextBlock();
 		}
 
 		partial void OnTextTrimmingChangedPartial();
@@ -406,7 +406,7 @@ namespace Windows.UI.Xaml.Controls
 		private void OnForegroundChanged()
 		{
 			OnForegroundChangedPartial();
-			this.InvalidateMeasure();
+			InvalidateTextBlock();
 		}
 
 		partial void OnForegroundChangedPartial();
@@ -435,7 +435,7 @@ namespace Windows.UI.Xaml.Controls
 		private void OnTextAlignmentChanged()
 		{
 			OnTextAlignmentChangedPartial();
-			this.InvalidateMeasure();
+			InvalidateTextBlock();
 		}
 
 		partial void OnTextAlignmentChangedPartial();
@@ -458,7 +458,7 @@ namespace Windows.UI.Xaml.Controls
 		private void OnLineHeightChanged()
 		{
 			OnLineHeightChangedPartial();
-			this.InvalidateMeasure();
+			InvalidateTextBlock();
 		}
 
 		partial void OnLineHeightChangedPartial();
@@ -481,7 +481,7 @@ namespace Windows.UI.Xaml.Controls
 		private void OnLineStackingStrategyChanged()
 		{
 			OnLineStackingStrategyChangedPartial();
-			this.InvalidateMeasure();
+			InvalidateTextBlock();
 		}
 
 		partial void OnLineStackingStrategyChangedPartial();
@@ -507,7 +507,7 @@ namespace Windows.UI.Xaml.Controls
 		private void OnPaddingChanged()
 		{
 			OnPaddingChangedPartial();
-			this.InvalidateMeasure();
+			InvalidateTextBlock();
 		}
 
 		partial void OnPaddingChangedPartial();
@@ -537,7 +537,7 @@ namespace Windows.UI.Xaml.Controls
 		private void OnCharacterSpacingChanged()
 		{
 			OnCharacterSpacingChangedPartial();
-			this.InvalidateMeasure();
+			InvalidateTextBlock();
 		}
 
 		partial void OnCharacterSpacingChangedPartial();
@@ -567,7 +567,7 @@ namespace Windows.UI.Xaml.Controls
 		private void OnTextDecorationsChanged()
 		{
 			OnTextDecorationsChangedPartial();
-			this.InvalidateMeasure();
+			InvalidateTextBlock();
 		}
 
 		partial void OnTextDecorationsChangedPartial();
@@ -711,6 +711,14 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		#endregion
+
+		private void InvalidateTextBlock()
+		{
+			InvalidateTextBlockPartial();
+			this.InvalidateMeasure();
+		}
+
+		partial void InvalidateTextBlockPartial();
 
 		protected override AutomationPeer OnCreateAutomationPeer()
 		{

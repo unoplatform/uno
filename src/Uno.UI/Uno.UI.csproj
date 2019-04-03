@@ -12,7 +12,7 @@
 		<BuildForLiveUnitTesting>false</BuildForLiveUnitTesting>
 		<NoWarn>$(NoWarn);NU1701</NoWarn>
 		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-		
+
 		<ProduceReferenceAssembly>false</ProduceReferenceAssembly>
 		<Deterministic>true</Deterministic>
 
@@ -153,8 +153,9 @@
 		<PackageReference Include="Uno.Core" />
 		<PackageReference Include="Uno.Core.Build" />
 		<PackageReference Include="Uno.MonoAnalyzers" />
+		<PackageReference Include="System.Memory" />
 	</ItemGroup>
-
+	
 	<ItemGroup Condition=" '$(TargetFramework)' == 'MonoAndroid80'">
 		<PackageReference Include="Xamarin.Android.Support.v4" Version="26.1.0.1">
 			<PrivateAssets>none</PrivateAssets>
@@ -191,15 +192,16 @@
 			<TreatAsPackageReference>false</TreatAsPackageReference>
 		</ProjectReference>
 		<ProjectReference Include="..\SourceGenerators\System.Xaml\Uno.Xaml.csproj" />
-		 <ProjectReference Include="..\Uno.UI.BindingHelper.Android\Uno.UI.BindingHelper.Android.csproj" Condition="$(IsMonoAndroid)">
+		 <ProjectReference Include="..\Uno.UI.BindingHelper.Android\Uno.UI.BindingHelper.Android.csproj" Condition="'$(TargetFramework)' == 'MonoAndroid80' or '$(TargetFramework)' == 'MonoAndroid90'">
 			<TreatAsPackageReference>false</TreatAsPackageReference>
 		</ProjectReference> 
 	</ItemGroup>
 
-	<ItemGroup Condition="$(IsMonoAndroid) or $(IsXamarinIOS) or '$(TargetFramework)'=='xamarinmac20'">
+	<ItemGroup Condition="$(IsMonoAndroid) or $(IsXamarinIOS) or $(IsXamarinMac)">
 		<Reference Include="System.Numerics" />
 		<Reference Include="System.Numerics.Vectors" />
 		<Reference Include="System.json" />
+		<Reference Include="System.Memory" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -317,7 +319,7 @@
 		</EmbeddedResource>
 	</ItemGroup>
 
-	<ItemGroup>
+	<ItemGroup Condition="'$(DocsGeneration)'==''">
 		<ProjectReference Include="..\SourceGenerators\Uno.UI.SourceGenerators\Uno.UI.SourceGenerators.csproj">
 			<ReferenceOutputAssembly>false</ReferenceOutputAssembly>
 			<SkipGetTargetFrameworkProperties>true</SkipGetTargetFrameworkProperties>
@@ -348,5 +350,17 @@
 	<Target Name="GetNativeManifest" Condition=" '$(TargetFramework)' == 'xamarinios10' " />
 
 	<Target Name="GetBuiltProjectOutputRecursive" Condition=" '$(TargetFramework)' == 'xamarinios10' " />
-
+	
+	<Target
+    Name="VS16_RemoveSystemMemory"
+    BeforeTargets="FindReferenceAssembliesForReferences"
+    Condition="'$(MSBuildVersion)' &gt;= '16.0' and ($(IsMonoAndroid) or $(IsXamarinIOS) or $(IsXamarinMac))">
+		<ItemGroup>
+			<_ReferencePathToRemove
+        Include="@(ReferencePath)"
+        Condition="'%(ReferencePath.NuGetPackageId)'=='System.Memory'" />
+			<ReferencePath Remove="@(_ReferencePathToRemove)" />
+		</ItemGroup>
+	</Target>
+	
 </Project>
