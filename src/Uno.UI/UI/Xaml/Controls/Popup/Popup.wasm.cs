@@ -1,11 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Uno.Extensions;
-using System.Linq;
-using System.Drawing;
+﻿using Uno.Extensions;
 using Uno.Disposables;
-using Windows.UI.Xaml.Media;
 using Uno.Logging;
 
 namespace Windows.UI.Xaml.Controls

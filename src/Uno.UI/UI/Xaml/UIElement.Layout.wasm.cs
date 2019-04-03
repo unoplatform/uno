@@ -115,7 +115,7 @@ namespace Windows.UI.Xaml
 		public Size RenderSize
 		{
 			get => Visibility == Visibility.Collapsed ? new Size() : _size;
-			set
+			internal set
 			{
 				var previousSize = _size;
 				_size = value;

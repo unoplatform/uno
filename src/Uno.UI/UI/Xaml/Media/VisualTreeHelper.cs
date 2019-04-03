@@ -96,7 +96,7 @@ namespace Windows.UI.Xaml.Media
 #endif
 		}
 
-		public static IReadOnlyList<IPopup> GetOpenPopups(Window window)
+		internal static IReadOnlyList<IPopup> GetOpenPopups(Window window)
 		{
 			return _openPopups
 				.Select(WeakReferenceExtensions.GetTarget)
