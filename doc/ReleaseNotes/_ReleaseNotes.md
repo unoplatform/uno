@@ -80,6 +80,7 @@
  * 150018 Fix nullref in `Pivot` when using native style
  * 149312 [Android] Added `FeatureConfiguration.NativeListViewBase.RemoveItemAnimator` to remove the ItemAnimator that crashes when under stress
  * 150156 Fix `ComboBox` not working when using `Popover`.
+ * `Click` and `Tapped` events were not working property for `ButtonBase` on Android and iOS.
 
 ## Release 1.43.1
 
