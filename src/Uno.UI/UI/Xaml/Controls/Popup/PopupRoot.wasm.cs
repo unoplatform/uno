@@ -19,7 +19,6 @@ namespace Windows.UI.Xaml.Controls
 		{
 			Background = new SolidColorBrush(Colors.Transparent);
 			UpdateIsHitTestVisible();
-			PointerReleased += PopupRoot_PointerReleased;
 		}
 
 		protected override void OnChildrenChanged()
@@ -28,19 +27,42 @@ namespace Windows.UI.Xaml.Controls
 			UpdateIsHitTestVisible();
 		}
 
-		// This is a workaround because PopupRoot otherwise blocks touches.
+		private bool _pointerHandlerRegistered = false;
+
 		private void UpdateIsHitTestVisible()
 		{
-			IsHitTestVisible = Children.Any();
+			var anyChildren = Children.Any();
+			IsHitTestVisible = anyChildren;
+			if (anyChildren)
+			{
+				if (!_pointerHandlerRegistered)
+				{
+					PointerReleased += PopupRoot_PointerReleased;
+					_pointerHandlerRegistered = true;
+				}
+			}
+			else
+			{
+				if (_pointerHandlerRegistered)
+				{
+					PointerReleased -= PopupRoot_PointerReleased;
+					_pointerHandlerRegistered = false;
+				}
+			}
 		}
 
 		private void PopupRoot_PointerReleased(object sender, Input.PointerRoutedEventArgs e)
 		{
-			Children.Select(GetPopup)
-				.Where(p => p.IsLightDismissEnabled)
-				.ToList()
-				.ForEach(p => p.IsOpen = false);
+			var lastDismissablePopup = Children.Select(GetPopup)
+				.LastOrDefault(p => p.IsLightDismissEnabled);
+
+			if(lastDismissablePopup != null)
+			{
+				lastDismissablePopup.IsOpen = false;
+			}
 		}
+
+		private static MatrixTransform _identityTransform = new MatrixTransform();
 
 		protected override Size ArrangeOverride(Size finalSize)
 		{
@@ -48,26 +70,24 @@ namespace Windows.UI.Xaml.Controls
 			{
 				var desiredSize = child.DesiredSize;
 				var popup = GetPopup(child);
-				var popupLocation = popup.TransformToVisual(popup.Anchor ?? this) as MatrixTransform;
+				var locationTransform = popup.TransformToVisual(popup.Anchor ?? this) ?? _identityTransform;
 
 				Point getLocation()
 				{
+					Point l;
+
 					if (popup.Anchor != null)
 					{
 						var anchorHeight = ((popup.Anchor as FrameworkElement)?.ActualHeight + PopupPlacementTargetMargin) ?? 0;
 
-						return new Point(
-							popup.HorizontalOffset - popupLocation.Matrix.OffsetX,
-							(popup.VerticalOffset + anchorHeight) - popupLocation.Matrix.OffsetY
-						);
+						l = new Point(popup.HorizontalOffset, popup.VerticalOffset + anchorHeight);
 					}
 					else
 					{
-						return new Point(
-							popupLocation.Matrix.OffsetX + popup.HorizontalOffset,
-							popupLocation.Matrix.OffsetY + popup.VerticalOffset
-						);
+						l = new Point(popup.HorizontalOffset, popup.VerticalOffset);
 					}
+
+					return locationTransform.TryTransform(l, out var transformedLocation) ? transformedLocation : l;
 				}
 
 				var location = getLocation();

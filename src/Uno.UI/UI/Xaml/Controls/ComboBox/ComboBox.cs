@@ -15,6 +15,7 @@ using Windows.UI.Xaml.Controls.Primitives;
 using Windows.Foundation;
 using Uno.UI;
 using System.Linq;
+using Windows.UI.ViewManagement;
 #if __IOS__
 using UIKit;
 #elif __MACOS__
@@ -194,7 +195,7 @@ namespace Windows.UI.Xaml.Controls
 
 		partial void OnIsDropDownOpenChangedPartial(bool oldIsDropDownOpen, bool newIsDropDownOpen)
 		{
-			LayoutPopup();
+			var (_, popupChild) = LayoutPopup();
 
 			if (_popup != null)
 			{
@@ -204,13 +205,26 @@ namespace Windows.UI.Xaml.Controls
 			if (newIsDropDownOpen)
 			{
 				DropDownOpened?.Invoke(this, newIsDropDownOpen);
+				if (popupChild != null)
+				{
+					popupChild.SizeChanged += PopupChildChanged;
+				}
 			}
 			else
 			{
+				if (popupChild != null)
+				{
+					popupChild.SizeChanged -= PopupChildChanged;
+				}
 				DropDownClosed?.Invoke(this, newIsDropDownOpen);
 			}
 
 			UpdateDropDownState();
+
+			void PopupChildChanged(object snd, SizeChangedEventArgs evt)
+			{
+				LayoutPopup();
+			}
 		}
 
 		protected override void OnPointerReleased(PointerRoutedEventArgs e)
@@ -222,7 +236,7 @@ namespace Windows.UI.Xaml.Controls
 		// The standard popup layouter works like on Windows, and doesn't stretch to take the full size of the screen.
 		public bool IsPopupFullscreen { get; set; } = false;
 
-		private void LayoutPopup()
+		private (PopupBase popup, FrameworkElement popupChild) LayoutPopup()
 		{
 			if (IsDropDownOpen && _popup.Child is FrameworkElement popupChild)
 			{
@@ -246,10 +260,8 @@ namespace Windows.UI.Xaml.Controls
 						var windowSize = Xaml.Window.Current.Bounds.Size;
 						popupChild.Width = windowSize.Width;
 						popupChild.Height = windowSize.Height;
-						return;
 					}
-
-					if (_background is FrameworkElement background)
+					else if (_background is FrameworkElement background)
 					{
 						// Reset popup offsets (Windows seems to do that)
 						popup.VerticalOffset = 0;
@@ -261,12 +273,17 @@ namespace Windows.UI.Xaml.Controls
 						popupChild.MaxHeight = MaxDropDownHeight;
 
 						var windowRect = Xaml.Window.Current.Bounds;
+						var visibleBounds = ApplicationView.GetForCurrentView().VisibleBounds;
 
-						var popupTransform = (MatrixTransform)popup.TransformToVisual(Xaml.Window.Current.Content);
-						var popupRect = new Rect(popupTransform.Matrix.OffsetX, popupTransform.Matrix.OffsetY, popup.ActualWidth, popup.ActualHeight);
+						// Set the popup child as max 60% of the height of the visual height
+						// (UWP is doing something similar)
+						popupChild.MaxHeight = Math.Min(MaxDropDownHeight, visibleBounds.Height * 0.6);
 
-						var backgroundTransform = (MatrixTransform)background.TransformToVisual(Xaml.Window.Current.Content);
-						var backgroundRect = new Rect(backgroundTransform.Matrix.OffsetX, backgroundTransform.Matrix.OffsetY, background.ActualWidth, background.ActualHeight);
+						var popupTransform = popup.TransformToVisual(Xaml.Window.Current.Content);
+						var popupRect = popupTransform.TransformBounds(visibleBounds);
+
+						var backgroundTransform = background.TransformToVisual(Xaml.Window.Current.Content);
+						var backgroundRect = backgroundTransform.TransformBounds(LayoutInformation.GetLayoutSlot(background));
 
 						// Because Popup.Child is not part of the visual tree until Popup.IsOpen,
 						// some descendent Controls may never have loaded and materialized their templates.
@@ -276,40 +293,43 @@ namespace Windows.UI.Xaml.Controls
 							control.ApplyTemplate();
 						}
 
-						popupChild.Measure(windowRect.Size);
+						popupChild.Measure(visibleBounds.Size);
 						var popupChildRect = new Rect(new Point(), popupChild.DesiredSize);
 
 						// Align left of popup with left of background 
 						popupChildRect.X = backgroundRect.Left;
-						if (popupChildRect.Right > windowRect.Right) // popup overflows at right
+						if (popupChildRect.Right > visibleBounds.Right) // popup overflows at right
 						{
 							// Align right of popup with right of background
 							popupChildRect.X = backgroundRect.Right - popupChildRect.Width;
 						}
-						if (popupChildRect.Left < windowRect.Left) // popup overflows at left
+						if (popupChildRect.Left < visibleBounds.Left) // popup overflows at left
 						{
 							// Align center of popup with center of window
-							popupChildRect.X = (windowRect.Width - popupChildRect.Width) / 2.0;
+							popupChildRect.X = (visibleBounds.Width - popupChildRect.Width) / 2.0;
 						}
 
 						// Align top of popup with top of background
 						popupChildRect.Y = backgroundRect.Top;
-						if (popupChildRect.Bottom > windowRect.Bottom) // popup overflows at bottom
+						if (popupChildRect.Bottom > visibleBounds.Bottom) // popup overflows at bottom
 						{
 							// Align bottom of popup with bottom of background
 							popupChildRect.Y = backgroundRect.Bottom - popupChildRect.Height;
 						}
-						if (popupChildRect.Top < windowRect.Top) // popup overflows at top
+						if (popupChildRect.Top < visibleBounds.Top) // popup overflows at top
 						{
 							// Align center of popup with center of window
-							popupChildRect.Y = (windowRect.Height - popupChildRect.Height) / 2.0;
+							popupChildRect.Y = (visibleBounds.Height - popupChildRect.Height) / 2.0;
 						}
 
 						popup.HorizontalOffset = popupChildRect.X - popupRect.X;
 						popup.VerticalOffset = popupChildRect.Y - popupRect.Y;
 					}
+					return (popup, popupChild);
 				}
+				return (null, popupChild);
 			}
+			return (null, null);
 		}
 
 		private void UpdateDropDownState()
