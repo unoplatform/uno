@@ -66,11 +66,15 @@ namespace Windows.UI.Xaml.Controls
 
 		protected override Size ArrangeOverride(Size finalSize)
 		{
+			// TODO: ensure popup/flyout stays in visible area
+			// TODO: honnor flyout's placement property
+			// TODO: use "visibleBounds" for measure & placement
+
 			foreach (var child in Children)
 			{
 				var desiredSize = child.DesiredSize;
 				var popup = GetPopup(child);
-				var locationTransform = popup.TransformToVisual(popup.Anchor ?? this) ?? _identityTransform;
+				var locationTransform = (popup.Anchor ?? this).TransformToVisual(popup) ?? _identityTransform;
 
 				Point getLocation()
 				{
@@ -87,12 +91,15 @@ namespace Windows.UI.Xaml.Controls
 						l = new Point(popup.HorizontalOffset, popup.VerticalOffset);
 					}
 
-					return locationTransform.TryTransform(l, out var transformedLocation) ? transformedLocation : l;
+					var point = locationTransform.TryTransform(l, out var transformedLocation) ? transformedLocation : l;
+
+					return point;
 				}
 
 				var location = getLocation();
 
-				child.Arrange(new Rect(location, desiredSize));
+				var rect = new Rect(location, desiredSize);
+				child.Arrange(rect);
 			}
 
 			return finalSize;

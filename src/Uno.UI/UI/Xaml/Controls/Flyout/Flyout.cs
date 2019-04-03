@@ -22,8 +22,8 @@ namespace Windows.UI.Xaml.Controls
 	public partial class Flyout : FlyoutBase
 	{
 		private readonly SerialDisposable _sizeChangedDisposable = new SerialDisposable();
-		internal protected readonly FlyoutPresenter _presenter = new FlyoutPresenter();
-		internal protected Popup _popup;
+		protected internal readonly FlyoutPresenter _presenter = new FlyoutPresenter();
+		protected internal Popup _popup;
 
 		public Style FlyoutPresenterStyle
 		{
@@ -97,7 +97,7 @@ namespace Windows.UI.Xaml.Controls
 					.Create(() => child.SizeChanged -= handler);
 			}
 		}
-		
+
 		partial void InitializePartial();
 
 		private void OnPopupClosed(object sender, object e)
