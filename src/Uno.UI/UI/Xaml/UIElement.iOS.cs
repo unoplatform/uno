@@ -427,7 +427,8 @@ namespace Windows.UI.Xaml
 
 					var args = new PointerRoutedEventArgs(touches, evt)
 					{
-						CanBubbleNatively = true
+						CanBubbleNatively = true,
+						OriginalSource = this
 					};
 
 					pointerEventIsHandledInManaged = RaiseEvent(PointerEnteredEvent, args);
@@ -455,7 +456,8 @@ namespace Windows.UI.Xaml
 			{
 				var args = new PointerRoutedEventArgs(touches, evt)
 				{
-					CanBubbleNatively = true
+					CanBubbleNatively = true,
+					OriginalSource = this
 				};
 				var isHandledInManaged = RaiseEvent(PointerCanceledEvent, args);
 
@@ -485,7 +487,8 @@ namespace Windows.UI.Xaml
 				// Call entered/exited one last time
 				var args = new PointerRoutedEventArgs(touches, evt)
 				{
-					CanBubbleNatively = true
+					CanBubbleNatively = true,
+					OriginalSource = this
 				};
 
 				var pointerEventIsHandledInManaged = false;
@@ -538,7 +541,8 @@ namespace Windows.UI.Xaml
 
 				var args = new PointerRoutedEventArgs(touches, evt)
 				{
-					CanBubbleNatively = true
+					CanBubbleNatively = true,
+					OriginalSource = this
 				};
 
 				if (IsPointerCaptured || IsPointerOver)
