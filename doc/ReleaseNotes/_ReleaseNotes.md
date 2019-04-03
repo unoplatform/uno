@@ -7,6 +7,8 @@
 	- Use `Span<T>` for Grid layout
 	- Optimize Wasm text measuring
 	- Performance improvements in `TSInteropMarshaller.InvokeJS`
+* [Wasm] Improve TextBlock measure performance
+* [Wasm] Improve PivotItem template pooling
 
 ### Breaking Changes
 * The `WebAssemblyRuntime.InvokeJSUnmarshalled` method with three parameters has been removed.

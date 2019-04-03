@@ -153,6 +153,7 @@
 		<PackageReference Include="Uno.Core" />
 		<PackageReference Include="Uno.Core.Build" />
 		<PackageReference Include="Uno.MonoAnalyzers" />
+		<PackageReference Include="System.Memory" />
 	</ItemGroup>
 	
 	<ItemGroup Condition=" '$(TargetFramework)' == 'MonoAndroid80'">
@@ -202,24 +203,6 @@
 		<Reference Include="System.json" />
 		<Reference Include="System.Memory" />
 	</ItemGroup>
-
-	<Choose>
-		<When Condition="'$(MSBuildVersion)' &lt; '16.0'">
-			<ItemGroup>
-				<!-- Support for VS15.9 and below, where Xamarin mscorlib does not have support for Span<T> -->
-				<PackageReference Include="System.Memory" />
-			</ItemGroup>
-		</When>
-		<When Condition="'$(MSBuildVersion)'&gt;='16.0'">
-			<!-- In VS 16.0 and later Xamarin mscorlib has support for Span<T> and conflicts with the System.Memory package -->
-			<ItemGroup Condition="$(IsMonoAndroid) or $(IsXamarinIOS) or $(IsXamarinMac)">
-				<Reference Include="System.Memory" />
-			</ItemGroup>
-			<ItemGroup Condition="'$(TargetFramework)'=='netstandard2.0' or '$(TargetFramework)'=='net461'">
-				<PackageReference Include="System.Memory" />
-			</ItemGroup>
-		</When>
-	</Choose>
 
 	<ItemGroup>
 		<MixinInput Include=".\Mixins\Android\BaseActivity.Callbacks.tt" />
@@ -367,5 +350,17 @@
 	<Target Name="GetNativeManifest" Condition=" '$(TargetFramework)' == 'xamarinios10' " />
 
 	<Target Name="GetBuiltProjectOutputRecursive" Condition=" '$(TargetFramework)' == 'xamarinios10' " />
-
+	
+	<Target
+    Name="VS16_RemoveSystemMemory"
+    BeforeTargets="FindReferenceAssembliesForReferences"
+    Condition="'$(MSBuildVersion)' &gt;= '16.0' and ($(IsMonoAndroid) or $(IsXamarinIOS) or $(IsXamarinMac))">
+		<ItemGroup>
+			<_ReferencePathToRemove
+        Include="@(ReferencePath)"
+        Condition="'%(ReferencePath.NuGetPackageId)'=='System.Memory'" />
+			<ReferencePath Remove="@(_ReferencePathToRemove)" />
+		</ItemGroup>
+	</Target>
+	
 </Project>
