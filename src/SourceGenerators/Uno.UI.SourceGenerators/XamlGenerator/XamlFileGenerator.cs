@@ -3502,6 +3502,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					case XamlConstants.Types.FontWeight:
 					case XamlConstants.Types.GridLength:
 					case XamlConstants.Types.CornerRadius:
+					case XamlConstants.Types.Brush:
 					case "UIKit.UIColor":
 					case "Windows.UI.Color":
 					case "Color":
