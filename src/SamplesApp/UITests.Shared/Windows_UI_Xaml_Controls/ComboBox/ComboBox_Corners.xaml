@@ -37,6 +37,14 @@
 						VerticalAlignment="Bottom"
 						HorizontalAlignment="Right"  />
 
+					<ComboBox ItemsSource="{Binding VariableLengthItems}"
+						VerticalAlignment="Center"
+						HorizontalAlignment="Left" />
+
+					<ComboBox ItemsSource="{Binding VariableLengthItems}"
+						VerticalAlignment="Center"
+						HorizontalAlignment="Right" />
+
 				</Grid>
 
 			</DataTemplate>

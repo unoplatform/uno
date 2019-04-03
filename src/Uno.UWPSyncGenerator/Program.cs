@@ -19,7 +19,7 @@ namespace Uno.UWPSyncGenerator
 		{
 			if (args.Length == 0)
 			{
-				Console.WriteLine("No mode selected.");
+				Console.WriteLine("No mode selected. Supported modes: doc, sync & all.");
 				return;
 			}
 
