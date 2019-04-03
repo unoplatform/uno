@@ -115,7 +115,7 @@
 			</Button.Flyout>
 		  </Button>
 
-		  <Button Content="Show Flyout With Offset"
+		  <Button Content="Show Flyout W/offset"
 				  Margin="100"
 				  Height="50"
 				  Width="150">
