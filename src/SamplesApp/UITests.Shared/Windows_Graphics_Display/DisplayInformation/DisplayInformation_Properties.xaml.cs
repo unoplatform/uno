@@ -66,9 +66,13 @@ namespace UITests.Shared.Windows_Graphics_Display.DisplayInformation
 				}
 				return Convert.ToString(value);
 			}
-			catch (NotImplementedException ex)
+			catch (NotImplementedException)
 			{
 				return "(Not implemented)";
+			}
+			catch (NotSupportedException)
+			{
+				return "(Not supported)";
 			}
 		}
 	}

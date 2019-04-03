@@ -12,24 +12,39 @@ namespace Windows.Graphics.Display
 	public sealed partial class DisplayInformation
 	{
 		private object _didChangeStatusBarOrientationObserver;
+		
+		public static UIInterfaceOrientationMask[] PreferredOrientations =
+		{
+			UIInterfaceOrientationMask.Portrait,
+			UIInterfaceOrientationMask.LandscapeRight,
+			UIInterfaceOrientationMask.LandscapeLeft,
+			UIInterfaceOrientationMask.PortraitUpsideDown
+		};
 
 		partial void Initialize()
 		{
-			InitializeOrientation();
-			InitializeDisplayProperties();
+			InitializeOrientation();			
+			UpdateProperties();
 		}
 
-		private void InitializeDisplayProperties()
+		private void UpdateProperties()
+		{
+			UpdateLogicalProperties();
+			UpdateRawProperties();
+			UpdateNativeOrientation();
+			UpdateCurrentOrientation();
+		}
+
+		private void UpdateLogicalProperties()
 		{
 			LogicalDpi = (float)(UIScreen.MainScreen.Scale * 100);
-			SetRawScreenProperties();
 			ResolutionScale = (ResolutionScale)(int)LogicalDpi;
 		}
 
 		/// <summary>
 		/// Sets ScreenHeightInRawPixels, ScreenWidthInRawPixels and RawPixelsPerViewPixel
 		/// </summary>
-		private void SetRawScreenProperties()
+		private void UpdateRawProperties()
 		{
 			var screenBound = UIScreen.MainScreen.Bounds;
 			var screenSize = screenBound.Size;
@@ -42,7 +57,7 @@ namespace Windows.Graphics.Display
 		/// Sets the NativeOrientation property 
 		/// to appropriate value based on user interface idiom
 		/// </summary>
-		private void SetNativeOrientation()
+		private void UpdateNativeOrientation()
 		{
 			switch (UIDevice.CurrentDevice.UserInterfaceIdiom)
 			{
@@ -70,10 +85,7 @@ namespace Windows.Graphics.Display
 						UpdateCurrentOrientation();
 						OrientationChanged?.Invoke(this, CurrentOrientation);
 					}
-				);
-
-			UpdateCurrentOrientation();
-			SetNativeOrientation();
+				);			
 		}
 
 		private void UpdateCurrentOrientation()
@@ -100,16 +112,6 @@ namespace Windows.Graphics.Display
 					break;
 			}			
 		}
-
-		
-
-		public static UIInterfaceOrientationMask[] PreferredOrientations =
-		{
-			UIInterfaceOrientationMask.Portrait,
-			UIInterfaceOrientationMask.LandscapeRight,
-			UIInterfaceOrientationMask.LandscapeLeft,
-			UIInterfaceOrientationMask.PortraitUpsideDown
-		};
 
 		static partial void SetOrientationPartial(DisplayOrientations orientations)
 		{
@@ -138,7 +140,6 @@ namespace Windows.Graphics.Display
 			//Forces the rotation if the physical device is being held in an orientation that has now become supported
 			UIViewController.AttemptRotationToDeviceOrientation();
 		}
-
 	}
 }
 #endif

@@ -1,7 +1,5 @@
 #if __ANDROID__
 using System;
-using System.Collections.Generic;
-using System.Text;
 using Android.App;
 using Android.Content;
 using Android.Util;
@@ -13,30 +11,6 @@ namespace Windows.Graphics.Display
 {
 	public sealed partial class DisplayInformation
 	{
-		partial void Initialize()
-		{
-			InitializeDisplayProperties();
-		}
-
-		private void InitializeDisplayProperties()
-		{
-			var displayMetrics = new DisplayMetrics();
-			var windowManager = ContextHelper.Current.GetSystemService(Context.WindowService).JavaCast<IWindowManager>();
-			windowManager.DefaultDisplay.GetRealMetrics(displayMetrics);
-			LogicalDpi = displayMetrics.Density * 100;
-			RawDpiX = displayMetrics.Xdpi;
-			RawDpiY = displayMetrics.Ydpi;
-			ScreenWidthInRawPixels = (uint)displayMetrics.WidthPixels;
-			ScreenHeightInRawPixels = (uint)displayMetrics.HeightPixels;
-
-			double x = Math.Pow(ScreenWidthInRawPixels / displayMetrics.Xdpi, 2);
-			double y = Math.Pow(ScreenHeightInRawPixels / displayMetrics.Ydpi, 2);
-			double screenInches = Math.Sqrt(x + y);
-			DiagonalSizeInInches = screenInches;
-
-			ResolutionScale = (ResolutionScale)(int)LogicalDpi;
-		}
-
 		static partial void SetOrientationPartial(DisplayOrientations orientations)
 		{
 			var currentActivity = ContextHelper.Current as Activity;
@@ -44,6 +18,40 @@ namespace Windows.Graphics.Display
 			{
 				currentActivity.RequestedOrientation = orientations.ToScreenOrientation();
 			}
+		}
+
+		partial void Initialize() => UpdateProperties();
+
+		private void UpdateProperties()
+		{
+			var realDisplayMetrics = new DisplayMetrics();
+			var windowManager = ContextHelper.Current.GetSystemService(Context.WindowService).JavaCast<IWindowManager>();
+			windowManager.DefaultDisplay.GetRealMetrics(realDisplayMetrics);
+
+			UpdateLogicalProperties(realDisplayMetrics);
+			UpdateRawProperties(realDisplayMetrics);
+			UpdateNativeOrientation(windowManager);
+			UpdateCurrentOrientation(windowManager);
+		}
+
+		private void UpdateLogicalProperties(DisplayMetrics realDisplayMetrics)
+		{
+			LogicalDpi = realDisplayMetrics.Density * 100;
+			ResolutionScale = (ResolutionScale)(int)LogicalDpi;
+		}
+
+		private void UpdateRawProperties(DisplayMetrics realDisplayMetrics)
+		{
+			RawDpiX = realDisplayMetrics.Xdpi;
+			RawDpiY = realDisplayMetrics.Ydpi;
+			ScreenWidthInRawPixels = (uint)realDisplayMetrics.WidthPixels;
+			ScreenHeightInRawPixels = (uint)realDisplayMetrics.HeightPixels;
+			RawPixelsPerViewPixel = 1.0f * (int)realDisplayMetrics.DensityDpi / (int)DisplayMetricsDensity.Default;
+
+			var x = Math.Pow(ScreenWidthInRawPixels / realDisplayMetrics.Xdpi, 2);
+			var y = Math.Pow(ScreenHeightInRawPixels / realDisplayMetrics.Ydpi, 2);
+			var screenInches = Math.Sqrt(x + y);
+			DiagonalSizeInInches = screenInches;
 		}
 
 		/// <summary>
@@ -54,7 +62,7 @@ namespace Windows.Graphics.Display
 		/// Based on responses in
 		/// <see cref="https://stackoverflow.com/questions/4553650/how-to-check-device-natural-default-orientation-on-android-i-e-get-landscape">this SO question</see>
 		/// </remarks>
-		private void SetNativeOrientation(IWindowManager windowManager)
+		private void UpdateNativeOrientation(IWindowManager windowManager)
 		{
 			var orientation = ContextHelper.Current.Resources.Configuration.Orientation;
 			if (orientation == Android.Content.Res.Orientation.Undefined)
@@ -63,9 +71,8 @@ namespace Windows.Graphics.Display
 				return;
 			}
 
-			var isLandscape = false;
-			var rotation = windowManager.DefaultDisplay.Rotation;			
-
+			var rotation = windowManager.DefaultDisplay.Rotation;
+			bool isLandscape;
 			switch (rotation)
 			{
 				case SurfaceOrientation.Rotation0:
@@ -79,22 +86,98 @@ namespace Windows.Graphics.Display
 			NativeOrientation = isLandscape ? DisplayOrientations.Landscape : DisplayOrientations.Portrait;
 		}
 
+		/// <summary>
+		/// Sets the CurrentOrientation property
+		/// </summary>
+		/// <param name="windowManager">Window manager</param>
+		/// <remarks>
+		/// Again quite complicated to do on Android, based on accepted solution at
+		/// <see cref="https://stackoverflow.com/questions/10380989/how-do-i-get-the-current-orientation-activityinfo-screen-orientation-of-an-a">this SO question</see>
+		/// </remarks>
+		private void UpdateCurrentOrientation(IWindowManager windowManager)
+		{
+			var rotation = windowManager.DefaultDisplay.Rotation;
+			var displayMetrics = new DisplayMetrics();
+			windowManager.DefaultDisplay.GetMetrics(displayMetrics);
+
+			int width = displayMetrics.WidthPixels;
+			int height = displayMetrics.HeightPixels;
+
+			if ( width == height)
+			{
+				//square device, can't tell orientation
+				CurrentOrientation = DisplayOrientations.None;
+				return;
+			}
+			
+			var portraitOrientation0Or180 =
+				(rotation == SurfaceOrientation.Rotation0 ||
+				rotation == SurfaceOrientation.Rotation180)
+				&& height > width;
+			var portraitOrientation90Or270 =
+				(rotation == SurfaceOrientation.Rotation90 ||
+				rotation == SurfaceOrientation.Rotation270)
+				&& width > height;
+
+			// if the device's natural orientation is portrait:
+			if (
+				portraitOrientation0Or180 ||
+				portraitOrientation90Or270 )
+			{
+				switch (rotation)
+				{
+					case SurfaceOrientation.Rotation0:
+						CurrentOrientation = DisplayOrientations.Portrait;
+						break;
+					case SurfaceOrientation.Rotation90:
+						CurrentOrientation = DisplayOrientations.Landscape;
+						break;
+					case SurfaceOrientation.Rotation180:
+						CurrentOrientation = DisplayOrientations.PortraitFlipped;
+						break;
+					case SurfaceOrientation.Rotation270:
+						CurrentOrientation = DisplayOrientations.LandscapeFlipped;
+						break;
+					default:
+						//invalid rotation
+						CurrentOrientation = DisplayOrientations.None;
+						break;
+				}
+			}			
+			else 
+			{
+				//device is landscape
+				switch (rotation)
+				{
+					case SurfaceOrientation.Rotation0:
+						CurrentOrientation = DisplayOrientations.Landscape;
+						break;
+					case SurfaceOrientation.Rotation90:
+						CurrentOrientation = DisplayOrientations.Portrait;
+						break;
+					case SurfaceOrientation.Rotation180:
+						CurrentOrientation = DisplayOrientations.LandscapeFlipped;
+						break;
+					case SurfaceOrientation.Rotation270:
+						CurrentOrientation = DisplayOrientations.PortraitFlipped;
+						break;
+					default:
+						//invalid rotation
+						CurrentOrientation = DisplayOrientations.None;
+						break;
+				}
+			}
+		}
+
 
 		internal void HandleConfigurationChange()
 		{
-
-		}
-
-		private DisplayOrientations GetDisplayOrientation(IWindowManager windowManager)
-		{
-			throw new NotImplementedException();
-			//bool flipped = false;
-			//if (windowManager.DefaultDisplay.Rotation == SurfaceOrientation.Rotation180 ||
-			//	windowManager.DefaultDisplay.Rotation == SurfaceOrientation.Rotation270)
-			//{
-			//	flipped = true;
-			//}
-
+			var previousOrientation = CurrentOrientation;
+			Initialize();			
+			if ( previousOrientation != CurrentOrientation)
+			{
+				OrientationChanged?.Invoke(this, CurrentOrientation);
+			}
 		}
 	}
 }

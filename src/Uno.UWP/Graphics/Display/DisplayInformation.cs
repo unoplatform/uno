@@ -12,6 +12,7 @@ namespace Windows.Graphics.Display
     public sealed partial class DisplayInformation
     {
 		private static DisplayOrientations _autoRotationPreferences;
+
 		private static DisplayInformation _instance;
 
 		private DisplayInformation()
