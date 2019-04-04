@@ -1,13 +1,13 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-	<PropertyGroup>
-		<TargetFramework>net462</TargetFramework>
-		<UpdateAssemblyInfo>false</UpdateAssemblyInfo>
-	</PropertyGroup>
+  <PropertyGroup>
+    <TargetFramework>net462</TargetFramework>
+    <UpdateAssemblyInfo>false</UpdateAssemblyInfo>
+  </PropertyGroup>
 
-	<ItemGroup>
-	  <Content Include="..\src\global.json" Link="global.json" />
-	</ItemGroup>
+  <ItemGroup>
+    <Content Include="..\src\global.json" Link="global.json" />
+  </ItemGroup>
 
 	<ItemGroup>
 	  <None Include="Uno.UI.proj" />
