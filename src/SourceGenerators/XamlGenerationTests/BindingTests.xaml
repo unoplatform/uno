@@ -20,8 +20,15 @@
 		<Grid.Resources>
 			<local:ObjectConverter x:Key="nullableToBool" />
 			<x:Int32 x:Key="defaultInt32Value">42</x:Int32>
+			<Style x:Key="testAttached" TargetType="Grid">
+				<Setter Property="local:BindingPropertyNonDependencyObject.MyAttached">
+					<Setter.Value>
+						<local:BindingPropertyNonDependencyObject MyBinding="{Binding RelativeSource={RelativeSource Self}, Path=Top}" />
+					</Setter.Value>
+				</Setter>
+			</Style>
 		</Grid.Resources>
-
+ 
 		<TextBlock Text="Test localization"
 				   x:Uid="TestText"
 				   uloc:Localize="Text" />
@@ -82,7 +89,5 @@
 		<xamarin:TextBlock Text="{Binding Path=OneTimeTest.(xamlExpanded:Grid.Row), Mode=OneTime}" />
 
 		<ContentControl Visibility="{Binding TargetNullValue=Collapsed, FallbackValue=Collapsed}" IsEnabled="{Binding TargetNullValue=True, FallbackValue=False}" />
-		
 	</Grid>
 </UserControl>
-   

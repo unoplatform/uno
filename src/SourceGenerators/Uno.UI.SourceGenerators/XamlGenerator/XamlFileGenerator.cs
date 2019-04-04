@@ -78,6 +78,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		private readonly INamedTypeSymbol _iListSymbol;
 		private readonly INamedTypeSymbol _iListOfTSymbol;
 		private readonly INamedTypeSymbol _iDictionaryOfTKeySymbol;
+		private readonly INamedTypeSymbol _dataBindingSymbol;
 
 		private readonly bool _isWasm;
 
@@ -132,6 +133,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			_iListSymbol = GetType("System.Collections.IList");
 			_iListOfTSymbol = GetType("System.Collections.Generic.IList`1");
 			_iDictionaryOfTKeySymbol = GetType("System.Collections.Generic.IDictionary`2");
+			_dataBindingSymbol = GetType("Windows.UI.Xaml.Data.Binding");
 
 			_isWasm = isWasm;
 		}
@@ -2246,12 +2248,17 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			if (bindingOptions != null)
 			{
 				var isAttachedProperty = IsDependencyProperty(member.Member);
+				var isBindingType = FindPropertyType(member.Member) == _dataBindingSymbol;
 
 				if (isAttachedProperty)
 				{
 					var propertyOwner = GetType(member.Member.DeclaringType);
 
 					writer.AppendLine(formatLine($"SetBinding({GetGlobalizedTypeName(propertyOwner.ToDisplayString())}.{member.Member.Name}Property, new {XamlConstants.Types.Binding}{{ {bindingOptions} }})"));
+				}
+				else if (isBindingType)
+				{
+					writer.AppendLine(formatLine($"{member.Member.Name} = new {XamlConstants.Types.Binding}{{ {bindingOptions} }}"));
 				}
 				else
 				{
@@ -2737,7 +2744,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				{
 					var resourceName = bindingType.Members.First().Value.ToString();
 
-					return "new RelativeSource(RelativeSourceMode.TemplatedParent)";
+					return $"new RelativeSource(RelativeSourceMode.{resourceName})";
 				}
 
 				return "Unsupported";
