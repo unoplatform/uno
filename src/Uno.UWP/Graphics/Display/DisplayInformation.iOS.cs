@@ -12,7 +12,7 @@ namespace Windows.Graphics.Display
 	public sealed partial class DisplayInformation
 	{
 		private object _didChangeStatusBarOrientationObserver;
-		
+
 		public static UIInterfaceOrientationMask[] PreferredOrientations =
 		{
 			UIInterfaceOrientationMask.Portrait,
@@ -23,7 +23,7 @@ namespace Windows.Graphics.Display
 
 		partial void Initialize()
 		{
-			InitializeOrientation();			
+			InitializeOrientation();
 			UpdateProperties();
 		}
 
@@ -46,10 +46,10 @@ namespace Windows.Graphics.Display
 		/// </summary>
 		private void UpdateRawProperties()
 		{
-			var screenBound = UIScreen.MainScreen.Bounds;
-			var screenSize = screenBound.Size;
-			ScreenHeightInRawPixels = (uint)screenSize.Height;
-			ScreenWidthInRawPixels = (uint)screenSize.Width;
+			var screenSize = UIScreen.MainScreen.Bounds.Size;
+			var scale = UIScreen.MainScreen.NativeScale;
+			ScreenHeightInRawPixels = (uint)(screenSize.Height * scale);
+			ScreenWidthInRawPixels = (uint)(screenSize.Width * scale);
 			RawPixelsPerViewPixel = UIScreen.MainScreen.NativeScale;
 		}
 
@@ -85,7 +85,7 @@ namespace Windows.Graphics.Display
 						UpdateCurrentOrientation();
 						OrientationChanged?.Invoke(this, CurrentOrientation);
 					}
-				);			
+				);
 		}
 
 		private void UpdateCurrentOrientation()
@@ -110,7 +110,7 @@ namespace Windows.Graphics.Display
 				case UIInterfaceOrientation.PortraitUpsideDown:
 					CurrentOrientation = DisplayOrientations.PortraitFlipped;
 					break;
-			}			
+			}
 		}
 
 		static partial void SetOrientationPartial(DisplayOrientations orientations)
