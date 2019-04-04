@@ -1,12 +1,16 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using Android.App;
 using Android.Graphics;
 using Android.Graphics.Drawables;
 using Android.Util;
 using Android.Views;
 using Android.Widget;
+using Uno.Extensions;
+using Uno.Logging;
 using Windows.Foundation;
 using Rect = Android.Graphics.Rect;
 
@@ -73,14 +77,49 @@ namespace Uno.UI
 
 			LayoutChanged?.Invoke(StatusBarRect, KeyboardRect, NavigationBarRect);
 
-			T Get<T>(Action<T> getter) where T : new()
+			if (FeatureConfiguration.LayoutProvider.DebugLayout)
 			{
-				var result = new T();
-				getter(result);
+				var decorView = _activity.Window.DecorView;
+				var flags = _activity.Window.Attributes.Flags;
 
-				return result;
+				var isStatusBarVisible = ((int)decorView.SystemUiVisibility & (int)SystemUiFlags.Fullscreen) == 0;
+				var hasTranslucentStatus = flags.HasFlag(WindowManagerFlags.TranslucentStatus);
+				var hasTranslucentNavigation = flags.HasFlag(WindowManagerFlags.TranslucentNavigation);
+				var hasLayoutNoLimits = flags.HasFlag(WindowManagerFlags.LayoutNoLimits);
+
+				var props = string.Join(", ", new Dictionary<string, string>
+				{
+					// measured values
+					[nameof(realMetrics)] = Jsonify(realMetrics),
+					[nameof(adjustNothingFrame)] = Jsonify(adjustNothingFrame),
+					[nameof(adjustResizeFrame)] = Jsonify(adjustResizeFrame),
+					// computed values
+					[nameof(StatusBarRect)] = Jsonify(StatusBarRect),
+					[nameof(KeyboardRect)] = Jsonify(KeyboardRect),
+					[nameof(NavigationBarRect)] = Jsonify(NavigationBarRect),
+					// for debugging
+					[nameof(isStatusBarVisible)] = Jsonify(isStatusBarVisible),
+					[nameof(flags)] = Jsonify(flags),
+					[nameof(hasTranslucentStatus)] = Jsonify(hasTranslucentStatus),
+					[nameof(hasTranslucentNavigation)] = Jsonify(hasTranslucentNavigation),
+					[nameof(hasLayoutNoLimits)] = Jsonify(hasLayoutNoLimits),
+				}.Select(x => string.Concat(Regex.Replace(x.Key, @"^\w", c => c.Value.ToLower()), ": ", x.Value)));
+				this.Log().Debug($@"Android layout has been updated: {{ {props} }} // you can use ""utils\script\layout visualizer.linq"" to visualize this in LinqPad");
 			}
 		}
+
+		// helper methods
+		private T Get<T>(Action<T> getter) where T : new()
+		{
+			var result = new T();
+			getter(result);
+
+			return result;
+		}
+		private string Jsonify(DisplayMetrics x) => $"{{ width: {x.WidthPixels}, height: {x.HeightPixels} }}";
+		private string Jsonify(Rect x) => $"{{ left: {x.Left}, top: {x.Top}, right: {x.Right}, bottom: {x.Bottom} }}";
+		private string Jsonify(bool x) => x.ToString().ToLower();
+		private string Jsonify(Enum x) => $"\"{x}\"";
 
 
 		private class GlobalLayoutProvider : PopupWindow, ViewTreeObserver.IOnGlobalLayoutListener

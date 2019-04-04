@@ -183,5 +183,20 @@ namespace Uno.UI
 			public static bool ForceJavascriptInterop { get; set; } = false;
 		}
 #endif
+
+#if __ANDROID__
+		public static class LayoutProvider
+		{
+			/// <summary>
+			/// Allows <see cref="Uno.UI.LayoutProvider"/> to log the updated layout.
+			/// </summary>
+			/// <remarks>
+			/// The log message will start with "Android layout has been updated: " followed by a json object containing
+			/// the values and the intermediate values used to calculate the layout, and the results. This can be used to
+			/// diagnostic layout issue relating to status bar, keyboard and navigation bar.
+			/// </remarks>
+			public static bool DebugLayout { get; set; } = false;
+		}
+#endif
 	}
 }
