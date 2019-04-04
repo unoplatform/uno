@@ -10,6 +10,11 @@
 * [Wasm] Improve TextBlock measure performance
 * [Wasm] Improve PivotItem template pooling
 * 150233 [Android] fixed status-bar, keyboard, nav-bar layout on android
+* Add support for Brush implicit conversion (Fixes #730)
+* Add `XamlReader` support for top level `ResourceDictionary` (#640)
+* Add support for IDictionary objects in XAM (#729)
+* Add support for Binding typed property (#731)
+* Add support for `RelativeSource.Self` bindings
 
 ### Breaking Changes
 * The `WebAssemblyRuntime.InvokeJSUnmarshalled` method with three parameters has been removed.
