@@ -134,15 +134,16 @@ namespace Windows.UI.Xaml
 
 		private double GetLogicalNavigationBarHeightExcluded()
 		{
+			var activity = ContextHelper.Current as Activity;
+			var isStatusBarTranslucent =
+				activity.Window.Attributes.Flags.HasFlag(WindowManagerFlags.TranslucentNavigation)
+				|| activity.Window.Attributes.Flags.HasFlag(WindowManagerFlags.LayoutNoLimits);
+
 			// The real metrics excluded the NavigationBar only if it is plain.
 			// We want to substract it if it is translucent. Otherwise, it will be like we substract it twice.
-			return ContextHelper.Current is Activity activity && ShouldBeExcluded()
-				? ViewHelper.PhysicalToLogicalPixels(LayoutProvider.Instance.NavigationBarLayout.Height())
+			return isStatusBarTranslucent
+				? ViewHelper.PhysicalToLogicalPixels(ApplicationActivity.Instance.LayoutProvider.NavigationBarRect.Height())
 				: 0;
-
-			bool ShouldBeExcluded() => false
-				|| activity.Window.Attributes.Flags.HasFlag(WindowManagerFlags.TranslucentNavigation)
-				|| activity.Window.Attributes.Flags.HasFlag(WindowManagerFlags.LayoutNoLimits);
 		}
 
 		internal void DisplayFullscreen(UIElement element)

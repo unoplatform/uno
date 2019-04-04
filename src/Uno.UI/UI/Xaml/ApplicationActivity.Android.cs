@@ -17,8 +17,14 @@ namespace Windows.UI.Xaml
 	[Activity(ConfigurationChanges = ConfigChanges.Orientation | ConfigChanges.ScreenSize, WindowSoftInputMode = SoftInput.AdjustPan | SoftInput.StateHidden)]
 	public class ApplicationActivity : Controls.NativePage
 	{
+
+		/// The windows model implies only one managed activity.
+		/// </summary>
+		internal static ApplicationActivity Instance { get; private set; }
+
+		internal LayoutProvider LayoutProvider { get; private set; }
+
 		private InputPane _inputPane;
-		private LayoutProvider _layoutProvider;
 
 
 		public ApplicationActivity(IntPtr ptr, Android.Runtime.JniHandleOwnership owner) : base(ptr, owner)
@@ -56,12 +62,7 @@ namespace Windows.UI.Xaml
 				// using either SoftInput.AdjustResize or SoftInput.AdjustPan.
 				args.EnsuredFocusedElementInView = true;
 			}
-		}
-
-		/// <summary>
-		/// The windows model implies only one managed activity.
-		/// </summary>
-		internal static ApplicationActivity Instance { get; private set; }
+		} 
 
 		protected override void InitializeComponent()
 		{
@@ -107,8 +108,8 @@ namespace Windows.UI.Xaml
 		{
 			base.OnCreate(bundle);
 
-			_layoutProvider = new LayoutProvider(this);
-			_layoutProvider.LayoutChanged += OnLayoutChanged;
+			LayoutProvider = new LayoutProvider(this);
+			LayoutProvider.LayoutChanged += OnLayoutChanged;
 			RaiseConfigurationChanges();
 		}
 
@@ -118,14 +119,14 @@ namespace Windows.UI.Xaml
 			{
 				if (view.IsAttachedToWindow)
 				{
-					_layoutProvider.Start(view);
+					LayoutProvider.Start(view);
 				}
 				else
 				{
 					EventHandler<View.ViewAttachedToWindowEventArgs> handler = null;
 					handler = (s, e) =>
 					{
-						_layoutProvider.Start(view);
+						LayoutProvider.Start(view);
 						view.ViewAttachedToWindow -= handler;
 					};
 					view.ViewAttachedToWindow += handler;
@@ -155,7 +156,7 @@ namespace Windows.UI.Xaml
 		{
 			base.OnDestroy();
 
-			_layoutProvider.Stop();
+			LayoutProvider.Stop();
 		}
 
 		public override void OnConfigurationChanged(Configuration newConfig)
