@@ -28,18 +28,6 @@
 	<ItemGroup>
 		<UpToDateCheckInput Include="**\*.cs" Exclude="bin\**\*.cs;obj\**\*.cs;" />
 	</ItemGroup>
-	
-	<ItemGroup>
-	  <None Remove="Graphics\Display\DisplayOrientationsExtensions.iOS.cs" />
-	</ItemGroup>
-	
-	<ItemGroup>
-	  <UpToDateCheckInput Remove="Graphics\Display\DisplayOrientationsExtensions.iOS.cs" />
-	</ItemGroup>
-	
-	<ItemGroup>
-	  <Compile Include="Graphics\Display\DisplayOrientationsExtensions.iOS.cs" />
-	</ItemGroup>
 
 	<ItemGroup>
 		<PackageReference Include="System.Numerics.Vectors" Version="4.5.0" />
