@@ -10,10 +10,23 @@ See [MediaPlayerElement](https://docs.microsoft.com/en-us/uwp/api/windows.ui.xam
 | Local/Remote MPEG4 Support							| X     | X  		|									|
 | HLSv3	Support											| X     | X  		| 									|
 | HLSv4	Support											| X     | X  		|									|
+| 3GP Support											| X     | X  		| 3GP with AMR Narrow Band (SAMR) audio codec does not work on iOS (See notes) |
+| FLV Support											| -     | X  		|									|
+| MOV Support											| X     | -  		|									|
+| MKV Support											| -     | X  		|									|
+| AVI Support											| -     | X  		| 									|
+| OGG Support											| -     | -  		|									|
 | MPEG-Dash	Support										| -     | -  		| 									|
 | Smooth Streaming Support								| -     | -  		| 									|
 
+<<<<<<< HEAD
 _If you need to set source programmatically (ie, using `_mediaPlayerElement.Source = [source]`), please note that only sources created with `MediaSource.CreateFromUri()` are currently supported_
+=======
+#### Notes
+
+* UNO MediaPlayerElement relies on AVPlayer for iOS and AndroidMediaPlayer for Android. Please refer to those native players documentation for more information about supported audio and video formats
+* If you need to set source programmatically (ie, using `_mediaPlayerElement.Source = [source]`), please note that only source created with `MediaSource.CreateFromUri()` are currently supported
+>>>>>>> Add more sample for different file formats
 
 ## Features
 
