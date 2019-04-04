@@ -26,6 +26,8 @@ namespace Windows.UI.Xaml.Controls.Primitives
 	{
 		private readonly SerialDisposable _clickSubscription = new SerialDisposable();
 
+		private bool _nativeMode;
+
 		protected override void OnLoaded()
 		{
 			base.OnLoaded();
@@ -33,6 +35,8 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			RegisterEvents();
 
 			OnCanExecuteChanged();
+
+			Tapped += HandleTapped;
 		}
 
 		protected override void OnUnloaded()
@@ -40,6 +44,13 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			base.OnUnloaded();
 
 			_clickSubscription.Disposable = null;
+
+			Tapped -= HandleTapped;
+		}
+
+		private void HandleTapped(object sender, TappedRoutedEventArgs e)
+		{
+			e.Handled = true;
 		}
 
 		partial void RegisterEvents()
@@ -60,20 +71,17 @@ namespace Windows.UI.Xaml.Controls.Primitives
 					this.Log().Debug("ControlTemplateRoot is a UIControl, hooking on to AllTouchEvents and TouchUpInside");
 				}
 
-				CompositeDisposable subscriptions = new CompositeDisposable();
-				_clickSubscription.Disposable = subscriptions;
-
-				EventHandler pressHandler = (e, s) =>
+				void pressHandler(object e, EventArgs s)
 				{
 					if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
 					{
 						this.Log().Debug("AllTouchEvents, trigger OnPointerPressed");
 					}
 
-					OnPointerPressed(new PointerRoutedEventArgs());
-				};
+					OnPointerPressed(new PointerRoutedEventArgs { OriginalSource = this });
+				}
 
-				EventHandler clickHandler = (e, s) =>
+				void clickHandler(object e, EventArgs s)
 				{
 					if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
 					{
@@ -81,22 +89,44 @@ namespace Windows.UI.Xaml.Controls.Primitives
 					}
 
 					OnClick();
-				};
 
-				uiControl.AllTouchEvents += pressHandler;
-				uiControl.TouchUpInside += clickHandler;
-				subscriptions.Add(() =>
-				{
-					uiControl.AllTouchEvents -= pressHandler;
-					uiControl.TouchUpInside -= clickHandler;
-				});
+					RaiseEvent(TappedEvent, new TappedRoutedEventArgs { OriginalSource = this });
+				}
 
 				//
 				// Bind the enabled handler
 				// 
-				var enabledHandler = (DependencyPropertyChangedEventHandler)((e, s) => uiControl.Enabled = IsEnabled);
+				void enabledHandler(object e, DependencyPropertyChangedEventArgs s)
+				{
+					uiControl.Enabled = IsEnabled;
+				}
+
+				uiControl.AllTouchEvents += pressHandler;
+				uiControl.TouchUpInside += clickHandler;
 				IsEnabledChanged += enabledHandler;
-				subscriptions.Add(() => IsEnabledChanged -= enabledHandler);
+
+				_nativeMode = true;
+
+				void unregister()
+				{
+					uiControl.AllTouchEvents -= pressHandler;
+					uiControl.TouchUpInside -= clickHandler;
+					IsEnabledChanged -= enabledHandler;
+				}
+
+				_clickSubscription.Disposable = Disposable.Create(unregister);
+			}
+			else
+			{
+				_nativeMode = false;
+			}
+		}
+
+		protected override void OnTapped(TappedRoutedEventArgs e)
+		{
+			if (!_nativeMode)
+			{
+				OnClick();
 			}
 		}
 

@@ -9,7 +9,7 @@ insert_final_newline = true
 [{*.xaml, *.xml, *.targets, *.props}]
 indent_style = tab
 
-[{*.cs, *.tt}]
+[{*.cs, *.tt, *.java}]
 indent_style = tab
 
 [{*.ts, *.json}]
@@ -98,7 +98,7 @@ csharp_space_after_keywords_in_control_flow_statements = true
 # http://kent-boogaart.com/blog/editorconfig-reference-for-c-developers#csharp_space_after_semicolon_in_for_statement
 csharp_space_after_semicolon_in_for_statement = true
 
-# http://kent-boogaart.com/blog/editorconfig-reference-for-c-developers#csharp_space_around_binary_operators 
+# http://kent-boogaart.com/blog/editorconfig-reference-for-c-developers#csharp_space_around_binary_operators
 csharp_space_around_binary_operators = before_and_after
 
 # http://kent-boogaart.com/blog/editorconfig-reference-for-c-developers#csharp_space_around_declaration_statements

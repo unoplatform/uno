@@ -3,7 +3,8 @@
 ## Next version
 
 ### Features
-* Add support for the following `DisplayInformation` properties:        
+* Add support for the following `DisplayInformation` properties on iOS and Android:   
+    - CurrentOrientation
     - LogicalDpi
     - NativeOrientation
     - RawDpiX
@@ -15,10 +16,20 @@
     - ScreenHeightInRawPixels
     - ScreenWidthInRawPixels
     - AutoRotationPreferences
+* Performance improvements
+	- Use `Span<T>` for Grid layout
+	- Optimize Wasm text measuring
+	- Performance improvements in `TSInteropMarshaller.InvokeJS`
+* [Wasm] Improve TextBlock measure performance
+* [Wasm] Improve PivotItem template pooling
 
 ### Breaking Changes
+* The `WebAssemblyRuntime.InvokeJSUnmarshalled` method with three parameters has been removed.
 
 ### Bug fixes
+* The `HAS_UNO` define is now not defined in `uap10.0.x` target frameworks.
+* The `XamlReader` fails when a property has no getter
+* `Click` and `Tapped` events were not working property for `ButtonBase` on Android and iOS.
 
 ## Release 1.44.0
 
@@ -61,6 +72,7 @@
 * Updated Android version to target Android 9.0
 * The CI validates for API breaking changes
 * Added samples application BenchmarkDotNet support.
+* `MediaTransportControls` buttons now use Tapped event instead of Click
 
 ### Breaking changes
 * Make `UIElement.IsPointerPressed` and `IsPointerOver` internal

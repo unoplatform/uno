@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using Microsoft.Practices.ServiceLocation;
 
-namespace Uno.UI.Tests.XamlReaderTests
+namespace Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests
 {
 	public class Context
 	{

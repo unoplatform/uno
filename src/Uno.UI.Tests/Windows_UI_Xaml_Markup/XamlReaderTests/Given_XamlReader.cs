@@ -18,7 +18,7 @@ using FluentAssertions;
 using Windows.UI.Xaml.Controls.Primitives;
 using Microsoft.Extensions.Logging;
 
-namespace Uno.UI.Tests.XamlReaderTests
+namespace Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests
 {
 	[TestClass]
 	public class Given_XamlReader : Context
@@ -693,11 +693,20 @@ namespace Uno.UI.Tests.XamlReaderTests
 			Assert.AreEqual(new Uri("https://platform.uno/"), root.UriProperty);
 		}
 
+		[TestMethod]
+		public void When_SetLessProperty()
+		{
+			var s = GetContent(nameof(When_SetLessProperty));
+			var r = Windows.UI.Xaml.Markup.XamlReader.Load(s) as UserControl;
+
+			var root = (SetLessPropertyControl)r.Content;
+		}
+
 		private string GetContent(string testName)
 		{
 			var assembly = this.GetType().Assembly;
 			var name = $"{GetType().Namespace}.{testName}.xamltest";
-			// "Uno.UI.Tests.XamlReaderTests.BasicReader.xamltest"
+			// "Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests.BasicReader.xamltest"
 			using (var stream = assembly.GetManifestResourceStream(name))
 			{
 				return stream.ReadToEnd();

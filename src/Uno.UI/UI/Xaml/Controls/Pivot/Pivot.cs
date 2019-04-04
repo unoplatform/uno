@@ -22,6 +22,7 @@ namespace Windows.UI.Xaml.Controls
 		private PivotHeaderPanel _header;
 		private RectangleGeometry _headerClipperGeometry;
 		private ContentControl _headerClipper;
+		private DataTemplate _pivotItemTemplate;
 		private bool _isTemplateApplied;
 
 		private bool _isUWPTemplate;
@@ -35,6 +36,7 @@ namespace Windows.UI.Xaml.Controls
 			_header = this.GetTemplateChild("Header") as PivotHeaderPanel;
 			_headerClipperGeometry = this.GetTemplateChild("HeaderClipperGeometry") as RectangleGeometry;
 			_headerClipper = this.GetTemplateChild("HeaderClipper") as ContentControl;
+			_pivotItemTemplate = new DataTemplate(() => new PivotItem());
 
 			_isUWPTemplate = _staticHeader != null;
 
@@ -105,7 +107,7 @@ namespace Windows.UI.Xaml.Controls
 			=> _isUWPTemplate ? item is PivotItem : base.IsItemItsOwnContainerOverride(item);
 
 		protected override DependencyObject GetContainerForItemOverride()
-			=> _isUWPTemplate ? new PivotItem() : GetContainerForItemOverride();
+			=> _isUWPTemplate ? (DependencyObject)_pivotItemTemplate.LoadContentCached() : base.GetContainerForItemOverride();
 
 		private void OnItemsVectorChanged(IObservableVector<object> sender, IVectorChangedEventArgs @event)
 		{

@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 
-namespace Uno.UI.Tests.XamlReaderTests
+namespace Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests
 {
 	public class TypeConvertersControl : FrameworkElement
 	{

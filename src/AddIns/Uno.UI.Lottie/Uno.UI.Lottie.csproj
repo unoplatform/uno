@@ -10,20 +10,15 @@
 
 	<ItemGroup>
 		<EmbeddedResource Include="WasmScripts\**\*.js" />
-
+		<UpToDateCheckInput Remove="WasmScripts\uno-lottie.js" />
 		<UpToDateCheckInput Include="ts\**\*" />
-	</ItemGroup>
-
-	<ItemGroup>
-	  <UpToDateCheckInput Remove="ts\lottie-web.d.ts" />
-	  <UpToDateCheckInput Remove="ts\Uno.UI.Lottie.ts" />
 	</ItemGroup>
 
 	<ItemGroup>
 		<PackageReference Include="Microsoft.TypeScript.Compiler" Version="2.8.3" />
 		<PackageReference Include="Microsoft.TypeScript.MSBuild" Version="2.8.3" />
-		<PackageReference Include="Uno.MonoAnalyzers" Version="1.0.0-dev.2" />
-		<PackageReference Include="Uno.SourceGenerationTasks" Version="1.30.0-dev.273" />
+		<PackageReference Include="Uno.MonoAnalyzers" Version="1.0.0-dev.4" />
+		<PackageReference Include="Uno.SourceGenerationTasks" Version="1.31.0-dev.285" />
 	</ItemGroup>
 
 	<Import Project="..\..\Common.targets" />
@@ -64,8 +59,8 @@
 
 		<Message Importance="high" Text="OVERRIDING NUGET PACKAGE CACHE: $(_TargetNugetFolder)" />
 
-		<Copy SourceFiles="@(_OutputFiles)" DestinationFiles="@(_OutputFiles->'$(_TargetNugetFolder)\%(RecursiveDir)%(Filename)%(Extension)')" />
-		<Copy SourceFiles="@(_OutputFilesPDB)" DestinationFiles="@(_OutputFilesPDB->'$(_TargetNugetFolder)\%(RecursiveDir)%(Filename).pdb')" />
+		<Copy SourceFiles="@(_OutputFiles)" DestinationFiles="@(_OutputFiles-&gt;'$(_TargetNugetFolder)\%(RecursiveDir)%(Filename)%(Extension)')" />
+		<Copy SourceFiles="@(_OutputFilesPDB)" DestinationFiles="@(_OutputFilesPDB-&gt;'$(_TargetNugetFolder)\%(RecursiveDir)%(Filename).pdb')" />
 	</Target>
 
 
