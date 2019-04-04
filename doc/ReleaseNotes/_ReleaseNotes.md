@@ -10,7 +10,6 @@
 * [Wasm] Improve TextBlock measure performance
 * [Wasm] Improve PivotItem template pooling
 * 150233 [Android] fixed status-bar, keyboard, nav-bar layout on android
-	- `LayoutProvider` exposes the `Rect`s of status-bar, keyboard, navigation-bar, and an `LayoutChanged` event to monitor the changes.
 
 ### Breaking Changes
 * The `WebAssemblyRuntime.InvokeJSUnmarshalled` method with three parameters has been removed.

@@ -12,22 +12,20 @@ using Rect = Android.Graphics.Rect;
 
 namespace Uno.UI
 {
-	public class LayoutProvider
+	internal class LayoutProvider
 	{
 		public delegate void LayoutChangedListener(Rect statusBar, Rect keyboard, Rect navigationBar);
 
-		public static LayoutProvider Instance { get; private set; }
-
 		public event LayoutChangedListener LayoutChanged;
 
-		public Rect StatusBarLayout { get; private set; } = new Rect(0, 0, 0, 0);
-		public Rect KeyboardLayout { get; private set; } = new Rect(0, 0, 0, 0);
-		public Rect NavigationBarLayout { get; private set; } = new Rect(0, 0, 0, 0);
+		public Rect StatusBarRect { get; private set; } = new Rect(0, 0, 0, 0);
+		public Rect KeyboardRect { get; private set; } = new Rect(0, 0, 0, 0);
+		public Rect NavigationBarRect { get; private set; } = new Rect(0, 0, 0, 0);
 
 		private readonly Activity _activity;
 		private readonly GlobalLayoutProvider _adjustNothingLayoutProvider, _adjustResizeLayoutProvider;
 
-		internal LayoutProvider(Activity activity)
+		public LayoutProvider(Activity activity)
 		{
 			this._activity = activity;
 
@@ -41,8 +39,6 @@ namespace Uno.UI
 				SoftInputMode = SoftInput.AdjustResize | SoftInput.StateUnchanged,
 				InputMethodMode = InputMethod.Needed,
 			};
-
-			Instance = this;
 		}
 
 		// lifecycle management
@@ -71,11 +67,11 @@ namespace Uno.UI
 			var adjustNothingFrame = Get<Rect>(_adjustNothingLayoutProvider.ContentView.GetWindowVisibleDisplayFrame);
 			var adjustResizeFrame = Get<Rect>(_adjustResizeLayoutProvider.ContentView.GetWindowVisibleDisplayFrame);
 
-			StatusBarLayout = new Rect(0, 0, realMetrics.WidthPixels, adjustNothingFrame.Top);
-			KeyboardLayout = new Rect(0, adjustResizeFrame.Bottom, realMetrics.WidthPixels, adjustNothingFrame.Bottom);
-			NavigationBarLayout = new Rect(0, adjustNothingFrame.Bottom, realMetrics.WidthPixels, realMetrics.HeightPixels);
+			StatusBarRect = new Rect(0, 0, realMetrics.WidthPixels, adjustNothingFrame.Top);
+			KeyboardRect = new Rect(0, adjustResizeFrame.Bottom, realMetrics.WidthPixels, adjustNothingFrame.Bottom);
+			NavigationBarRect = new Rect(0, adjustNothingFrame.Bottom, realMetrics.WidthPixels, realMetrics.HeightPixels);
 
-			LayoutChanged?.Invoke(StatusBarLayout, KeyboardLayout, NavigationBarLayout);
+			LayoutChanged?.Invoke(StatusBarRect, KeyboardRect, NavigationBarRect);
 
 			T Get<T>(Action<T> getter) where T : new()
 			{
