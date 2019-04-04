@@ -33,7 +33,11 @@ namespace Windows.UI.Xaml.Controls
 
 		// Using a DependencyProperty as the backing store for FlyoutPresenterStyle.  This enables animation, styling, binding, etc...
 		public static readonly DependencyProperty FlyoutPresenterStyleProperty =
-			DependencyProperty.Register("FlyoutPresenterStyle", typeof(Style), typeof(Flyout), new PropertyMetadata((Style)null, OnFlyoutPresenterStyleChanged));
+			DependencyProperty.Register(
+				"FlyoutPresenterStyle",
+				typeof(Style),
+				typeof(Flyout),
+				new FrameworkPropertyMetadata(default(Style), FrameworkPropertyMetadataOptions.AffectsMeasure, OnFlyoutPresenterStyleChanged));
 
 		private static void OnFlyoutPresenterStyleChanged(object dependencyObject, DependencyPropertyChangedEventArgs args)
 		{
@@ -52,7 +56,11 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		public static readonly DependencyProperty ContentProperty =
-			DependencyProperty.Register("Content", typeof(IUIElement), typeof(Flyout), new PropertyMetadata(default(IUIElement), OnContentChanged));
+			DependencyProperty.Register(
+				"Content",
+				typeof(IUIElement),
+				typeof(Flyout),
+				new FrameworkPropertyMetadata(default(IUIElement), FrameworkPropertyMetadataOptions.AffectsMeasure, OnContentChanged));
 
 		private static void OnContentChanged(object dependencyObject, DependencyPropertyChangedEventArgs args)
 		{
@@ -85,9 +93,7 @@ namespace Windows.UI.Xaml.Controls
 
 		private void OnPopupOpened(object sender, object e)
 		{
-			var child = _popup.Child as FrameworkElement;
-
-			if (child != null)
+			if (_popup.Child is FrameworkElement child)
 			{
 				SizeChangedEventHandler handler = (_, __) => SetPopupPositionPartial(Target);
 

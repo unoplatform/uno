@@ -28,6 +28,13 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 		#region Placement
 
+		/// <summary>
+		/// Preferred placement of the flyout.
+		/// </summary>
+		/// <remarks>
+		/// If there's not enough place, the following logic will be used:
+		/// https://docs.microsoft.com/en-us/previous-versions/windows/apps/dn308515(v=win.10)#placing-a-flyout
+		/// </remarks>
 		public FlyoutPlacementMode Placement
 		{
 			get { return (FlyoutPlacementMode)GetValue(PlacementProperty); }

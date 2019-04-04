@@ -1,6 +1,7 @@
 ﻿using Uno.Extensions;
 using Uno.Disposables;
 using Uno.Logging;
+using Windows.UI.Xaml.Controls.Primitives;
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -8,6 +9,7 @@ namespace Windows.UI.Xaml.Controls
 	{
 		private readonly SerialDisposable _closePopup = new SerialDisposable();
 
+		internal FlyoutPlacementMode AnchorPlacement { get; set; } = FlyoutPlacementMode.Bottom;
 		internal UIElement Anchor { get; set; }
 
 		protected override void OnChildChanged(FrameworkElement oldChild, FrameworkElement newChild)
