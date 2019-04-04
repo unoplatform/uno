@@ -77,6 +77,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		private readonly INamedTypeSymbol _iCollectionOfTSymbol;
 		private readonly INamedTypeSymbol _iListSymbol;
 		private readonly INamedTypeSymbol _iListOfTSymbol;
+		private readonly INamedTypeSymbol _iDictionaryOfTKeySymbol;
 
 		private readonly bool _isWasm;
 
@@ -130,6 +131,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			_iCollectionOfTSymbol = GetType("System.Collections.Generic.ICollection`1");
 			_iListSymbol = GetType("System.Collections.IList");
 			_iListOfTSymbol = GetType("System.Collections.Generic.IList`1");
+			_iDictionaryOfTKeySymbol = GetType("System.Collections.Generic.IDictionary`2");
 
 			_isWasm = isWasm;
 		}
@@ -1375,10 +1377,39 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						}
 						else if (IsInitializableCollection(topLevelControl))
 						{
-							foreach (var child in implicitContentChild.Objects)
+							var elementType = FindType(topLevelControl.Type);
+
+							if (elementType != null)
 							{
-								BuildChild(writer, implicitContentChild, child);
-								writer.AppendLineInvariant(",");
+								if (IsDictionary(elementType))
+								{
+									foreach (var child in implicitContentChild.Objects)
+									{
+										if (GetMember(child, "Key") is var keyDefinition)
+										{
+											using (writer.BlockInvariant(""))
+											{
+												writer.AppendLineInvariant($"\"{keyDefinition.Value}\"");
+												writer.AppendLineInvariant(",");
+												BuildChild(writer, implicitContentChild, child);
+											}
+										}
+										else
+										{
+											GenerateError(writer, "Unable to find the x:Key property");
+										}
+
+										writer.AppendLineInvariant(",");
+									}
+								}
+								else
+								{
+									foreach (var child in implicitContentChild.Objects)
+									{
+										BuildChild(writer, implicitContentChild, child);
+										writer.AppendLineInvariant($", /* IsInitializableCollection {elementType} */");
+									}
+								}
 							}
 						}
 						else

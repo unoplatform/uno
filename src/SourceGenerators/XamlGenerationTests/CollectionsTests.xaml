@@ -16,11 +16,25 @@
     d:DesignHeight="300"
     d:DesignWidth="400">
 
-	<!-- Assign a collection in the ConetntProperty of the control + set a property on the collection and add an item -->
-	<local:CollectionsTest_Control>
-		<local:CollectionsTest_Collection
-			MyProperty="421">
-			<local:CollectionsTest_Item />
-		</local:CollectionsTest_Collection>
-	</local:CollectionsTest_Control>
+	<Grid>
+		<!-- Assign a collection in the ConetntProperty of the control + set a property on the collection and add an item -->
+		<local:CollectionsTest_Control>
+			<local:CollectionsTest_Collection
+				MyProperty="421">
+				<local:CollectionsTest_Item />
+			</local:CollectionsTest_Collection>
+		</local:CollectionsTest_Control>
+
+		<Grid>
+			<Grid.Tag>
+				<ResourceDictionary>
+					<DataTemplate x:Key="Rectangle" x:DataType="local:Rectangle">
+						<Grid>
+							<Border Background="Black"/>
+						</Grid>
+					</DataTemplate>
+				</ResourceDictionary>
+			</Grid.Tag>
+		</Grid>
+	</Grid>
 </UserControl>
