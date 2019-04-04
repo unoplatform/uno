@@ -9,9 +9,11 @@
 	- Performance improvements in `TSInteropMarshaller.InvokeJS`
 * [Wasm] Improve TextBlock measure performance
 * [Wasm] Improve PivotItem template pooling
+* 150233 [Android] fixed status-bar, keyboard, nav-bar layout on android
 
 ### Breaking Changes
 * The `WebAssemblyRuntime.InvokeJSUnmarshalled` method with three parameters has been removed.
+* `NavigationBarHelper` has been removed.
 
 ### Bug fixes
 * The `HAS_UNO` define is now not defined in `uap10.0.x` target frameworks.
