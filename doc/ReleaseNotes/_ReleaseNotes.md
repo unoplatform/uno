@@ -83,7 +83,7 @@
  * `Click` and `Tapped` events were not working property for `ButtonBase` on Android and iOS.
  * 150233 [Android] fixed status-bar, keyboard, nav-bar layout on android
 	- `LayoutProvider` exposes the `Rect`s of status-bar, keyboard, navigation-bar, and an `LayoutChanged` event to monitor the changes.
-
+ * 150143 [Android] Toggling `TextBox.IsReadOnly` from true to false no longer breaks the cursor
 
 ## Release 1.43.1
 
