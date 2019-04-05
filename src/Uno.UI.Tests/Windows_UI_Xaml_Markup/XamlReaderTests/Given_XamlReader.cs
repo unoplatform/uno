@@ -702,6 +702,18 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests
 			var root = (SetLessPropertyControl)r.Content;
 		}
 
+		[TestMethod]
+		public void When_TopLevel_ResourceDictionary()
+		{
+			var s = GetContent(nameof(When_TopLevel_ResourceDictionary));
+			var r = Windows.UI.Xaml.Markup.XamlReader.Load(s) as ResourceDictionary;
+
+			Assert.IsTrue(r.ContainsKey("DefaultColumnStyle"));
+			var style = r["DefaultColumnStyle"] as Style;
+			Assert.IsNotNull(style);
+			Assert.AreEqual(typeof(TextBlock), style.TargetType);
+		}
+
 		private string GetContent(string testName)
 		{
 			var assembly = this.GetType().Assembly;

@@ -160,7 +160,7 @@ namespace Windows.UI.Xaml
 
 			_thisWeakRef = Uno.UI.DataBinding.WeakReferencePool.RentWeakReference(this, this);
 
-			_properties = new DependencyPropertyDetailsCollection(_originalObjectType, dataContextProperty, templatedParentProperty);
+			_properties = new DependencyPropertyDetailsCollection(_originalObjectType, _originalObjectRef, dataContextProperty, templatedParentProperty);
 			_dataContextPropertyDetails = _properties.DataContextPropertyDetails;
 			_templatedParentPropertyDetails = _properties.TemplatedParentPropertyDetails;
 
