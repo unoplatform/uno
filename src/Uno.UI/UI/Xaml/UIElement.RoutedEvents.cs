@@ -338,7 +338,7 @@ namespace Windows.UI.Xaml
 			if (anyLocalHandlers)
 			{
 				// [4] Invoke local handlers
-				foreach (var handler in handlers)
+				foreach (var handler in handlers.ToArray())
 				{
 					if (!IsHandled(args) || handler.HandledEventsToo)
 					{
