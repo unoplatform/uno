@@ -49,6 +49,7 @@
 * Updated Android version to target Android 9.0
 * The CI validates for API breaking changes
 * `MediaTransportControls` buttons now use Tapped event instead of Click
+* Fixed Pointer capture issues on sliders on iOS
 
 ### Breaking changes
 * Make `UIElement.IsPointerPressed` and `IsPointerOver` internal
