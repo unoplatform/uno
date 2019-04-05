@@ -50,6 +50,14 @@ namespace Windows.UI.Xaml.Controls
 		/// Header and/or footer's content and/or template have changed, they need to be updated.
 		/// </summary>
 		private bool _needsHeaderAndFooterUpdate;
+		/// <summary>
+		/// The items collection has been modified and the subsequent relayout is pending.
+		/// </summary>
+		/// <remarks>
+		/// Much of the time this is handled automatically by RecyclerView, but there are edge cases (modifications while list was unloaded,
+		/// or when no ItemAnimator is set) that need special attention.
+		/// </remarks>
+		private bool _needsUpdateAfterCollectionChange;
 
 		internal int Extent => ScrollOrientation == Orientation.Vertical ? Height : Width;
 		internal int Breadth => ScrollOrientation == Orientation.Vertical ? Width : Height;
@@ -528,11 +536,17 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		/// <summary>
-		/// Informs the layout that a INotifyCollectionChanged information has added/removed groups in the source.
+		/// Informs the layout that a INotifyCollectionChanged operation has occurred.
 		/// </summary>
-		internal void NotifyGroupOperation(ListViewBase.GroupOperation pendingOperation)
+		/// <param name="groupOperation">The details of a group operation, if it was a group operation, else null.</param>
+		internal void NotifyCollectionChange(ListViewBase.GroupOperation? groupOperation)
 		{
-			_pendingGroupOperations.Enqueue(pendingOperation);
+			if (groupOperation.HasValue)
+			{
+				_pendingGroupOperations.Enqueue(groupOperation.Value);
+			}
+
+			_needsUpdateAfterCollectionChange = true;
 		}
 
 		/// <summary>
@@ -733,7 +747,6 @@ namespace Windows.UI.Xaml.Controls
 		protected Size AddViewAtOffset(View child, GeneratorDirection direction, int extentOffset, int breadthOffset, int availableBreadth, ViewType viewType = ViewType.Item)
 		{
 			AddView(child, direction, viewType);
-
 
 			Size slotSize;
 			var logicalAvailableBreadth = ViewHelper.PhysicalToLogicalPixels(availableBreadth);
@@ -961,18 +974,26 @@ namespace Windows.UI.Xaml.Controls
 			}
 
 			var needsScrapOnMeasure = isMeasure && availableExtent > 0 && availableBreadth > 0 && ChildCount > 0;
+			var updatedAfterCollectionChange = false;
 			if (needsScrapOnMeasure)
 			{
 				// Always rebuild the layout on measure, because child dimensions may have changed
 				ScrapLayout(recycler, availableBreadth);
 			}
-			else if (willRunAnimations)
+			else if (willRunAnimations || _needsUpdateAfterCollectionChange)
 			{
 				// An INotifyCollectionChanged operation is triggering an animated update of the list.
 				ScrapLayout(recycler, availableBreadth);
 				// We actually need to update the buffer in this particular case to refresh the next item displayed.
 				// Since we don't scrap all views as forbidden below, we should be able to do that without weird behavior
 				UpdateBuffers(recycler);
+				if (!isMeasure)
+				{
+					// After a collection change we need to ensure that ScrapLayout() is called on the layout pass, because clearOldPositions()
+					// is only called after OnMeasure() (hence measure receives stale positions)
+					_needsUpdateAfterCollectionChange = false;
+					updatedAfterCollectionChange = true;
+				}
 			}
 
 			FillLayout(direction, 0, availableExtent, availableBreadth, recycler, state);
