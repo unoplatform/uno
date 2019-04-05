@@ -292,6 +292,9 @@ namespace Windows.UI.Xaml
 			else
 			{
 				_pointCaptures.Add(value);
+#if  __IOS__
+				IsPointerCaptured = true;
+#endif
 #if __WASM__
 				CapturePointerNative(value);
 #endif
@@ -304,7 +307,9 @@ namespace Windows.UI.Xaml
 			if(_pointCaptures.Contains(value))
 			{
 				_pointCaptures.Remove(value);
-
+#if __IOS__ 
+				IsPointerCaptured = false;
+#endif
 #if __WASM__
 				ReleasePointerCaptureNative(value);
 #endif
