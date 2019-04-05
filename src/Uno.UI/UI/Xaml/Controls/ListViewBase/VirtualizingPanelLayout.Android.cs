@@ -984,9 +984,7 @@ namespace Windows.UI.Xaml.Controls
 			{
 				// An INotifyCollectionChanged operation is triggering an animated update of the list.
 				ScrapLayout(recycler, availableBreadth);
-				// We actually need to update the buffer in this particular case to refresh the next item displayed.
-				// Since we don't scrap all views as forbidden below, we should be able to do that without weird behavior
-				UpdateBuffers(recycler);
+
 				if (!isMeasure)
 				{
 					// After a collection change we need to ensure that ScrapLayout() is called on the layout pass, because clearOldPositions()
