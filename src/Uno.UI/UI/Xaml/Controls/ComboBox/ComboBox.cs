@@ -279,11 +279,8 @@ namespace Windows.UI.Xaml.Controls
 						// (UWP is doing something similar)
 						popupChild.MaxHeight = Math.Min(MaxDropDownHeight, visibleBounds.Height * 0.6);
 
-						var popupTransform = popup.TransformToVisual(Xaml.Window.Current.Content);
-						var popupRect = popupTransform.TransformBounds(visibleBounds);
-
-						var backgroundTransform = background.TransformToVisual(Xaml.Window.Current.Content);
-						var backgroundRect = backgroundTransform.TransformBounds(LayoutInformation.GetLayoutSlot(background));
+						var popupRect = popup.GetAbsoluteBoundsRect();
+						var backgroundRect = background.GetAbsoluteBoundsRect();
 
 						// Because Popup.Child is not part of the visual tree until Popup.IsOpen,
 						// some descendent Controls may never have loaded and materialized their templates.

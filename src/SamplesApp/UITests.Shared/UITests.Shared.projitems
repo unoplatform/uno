@@ -297,6 +297,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\Flyout\Flyout_Transforms_On_Target.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\Flyout\Flyout_Vanilla.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -1429,6 +1433,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ComboBox\ComboBox_MaxDropdownHeight.xaml.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ComboBox\ComboBox_Transforms.xaml.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ComboBox\ComboBox_Virtualizing.xaml.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\Flyout\Flyout_Transforms_On_Target.xaml.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\Flyout\Flyout_Vanilla.xaml.cs">
       <DependentUpon>Flyout_Vanilla.xaml</DependentUpon>
     </Compile>
@@ -2252,6 +2257,9 @@
     </Compile>
     <Compile Update="C:\src\Uno2\src\SamplesApp\UITests.Shared\Windows_UI_Xaml_Controls\Flyout\Flyout_Target.xaml.cs">
       <DependentUpon>Flyout_Target.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="C:\src\Uno2\src\SamplesApp\UITests.Shared\Windows_UI_Xaml_Controls\Flyout\Flyout_Transforms_On_Target.xaml.cs">
+      <DependentUpon>Flyout_Transforms_On_Target.xaml</DependentUpon>
     </Compile>
     <Compile Update="C:\src\Uno2\src\SamplesApp\UITests.Shared\Windows_UI_Xaml_Controls\Flyout\MenuFlyout_Simple.xaml.cs">
       <DependentUpon>MenuFlyout_Simple.xaml</DependentUpon>
