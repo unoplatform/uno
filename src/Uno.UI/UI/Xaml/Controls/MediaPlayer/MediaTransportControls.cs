@@ -174,8 +174,8 @@ namespace Windows.UI.Xaml.Controls
 			{
 				_fullWindowButton.SetBinding(Button.VisibilityProperty, new Binding { Path = "IsFullWindowButtonVisible", Source = this, Mode = BindingMode.OneWay, FallbackValue = Visibility.Collapsed, Converter = trueToVisible });
 				_fullWindowButton.SetBinding(Button.IsEnabledProperty, new Binding { Path = "IsFullWindowEnabled", Source = this, Mode = BindingMode.OneWay, FallbackValue = true });
-				_fullWindowButton.Tapped -= FullWindowButtonClick;
-				_fullWindowButton.Tapped += FullWindowButtonClick;
+				_fullWindowButton.Tapped -= FullWindowButtonTapped;
+				_fullWindowButton.Tapped += FullWindowButtonTapped;
 			}
 
 			_castButton = this.GetTemplateChild(CastButtonName) as Button;
@@ -186,8 +186,8 @@ namespace Windows.UI.Xaml.Controls
 			{
 				_zoomButton?.SetBinding(Button.VisibilityProperty, new Binding { Path = "IsZoomButtonVisible", Source = this, Mode = BindingMode.OneWay, FallbackValue = Visibility.Collapsed, Converter = trueToVisible });
 				_zoomButton?.SetBinding(Button.IsEnabledProperty, new Binding { Path = "IsZoomEnabled", Source = this, Mode = BindingMode.OneWay, FallbackValue = true });
-				_zoomButton.Tapped -= ZoomButtonClick;
-				_zoomButton.Tapped += ZoomButtonClick;
+				_zoomButton.Tapped -= ZoomButtonTapped;
+				_zoomButton.Tapped += ZoomButtonTapped;
 			}
 
 			_playbackRateButton = this.GetTemplateChild(PlaybackRateButtonName) as Button;
@@ -251,7 +251,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		private void FullWindowButtonClick(object sender, RoutedEventArgs e)
+		private void FullWindowButtonTapped(object sender, RoutedEventArgs e)
 		{
 			_mpe.IsFullWindow = !_mpe.IsFullWindow;
 			UpdateFullscreenButtonStyle();
@@ -269,7 +269,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		private void ZoomButtonClick(object sender, RoutedEventArgs e)
+		private void ZoomButtonTapped(object sender, RoutedEventArgs e)
 		{
 			if (_mpe.Stretch == Stretch.Uniform)
 			{

@@ -572,6 +572,12 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			|| IsImplementingInterface(propertyType, _iListOfTSymbol);
 
 		/// <summary>
+		/// Returns true if the type implements <see cref="IDictionary{TKey, TValue}"/>
+		/// </summary>
+		private bool IsDictionary(INamedTypeSymbol propertyType)
+			=> IsImplementingInterface(propertyType, _iDictionaryOfTKeySymbol);
+
+		/// <summary>
 		/// Returns true if the type exactly implements either ICollection, IList or one of their generics
 		/// </summary>
 		private bool IsExactlyCollectionOrListType(INamedTypeSymbol type)

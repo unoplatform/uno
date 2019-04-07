@@ -21,6 +21,11 @@ namespace Windows.UI.Xaml.Media
 			return SolidColorBrushHelper.FromARGB(color.A, color.R, color.G, color.B);
 		}
 
+		public static implicit operator Brush(string colorCode)
+		{
+			return SolidColorBrushHelper.Parse(colorCode);
+		}
+
 		#region Opacity Dependency Property
 
 		public double Opacity

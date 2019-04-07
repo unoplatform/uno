@@ -8,13 +8,24 @@
 	- Use `Span<T>` for Grid layout
 	- Optimize Wasm text measuring
 	- Performance improvements in `TSInteropMarshaller.InvokeJS`
+* [Wasm] Improve TextBlock measure performance
+* [Wasm] Improve PivotItem template pooling
+* 150233 [Android] fixed status-bar, keyboard, nav-bar layout on android
+* Add support for Brush implicit conversion (Fixes #730)
+* Add `XamlReader` support for top level `ResourceDictionary` (#640)
+* Add support for IDictionary objects in XAM (#729)
+* Add support for Binding typed property (#731)
+* Add support for `RelativeSource.Self` bindings
 
 ### Breaking Changes
 * The `WebAssemblyRuntime.InvokeJSUnmarshalled` method with three parameters has been removed.
+* `NavigationBarHelper` has been removed.
 
 ### Bug fixes
 * The `HAS_UNO` define is now not defined in `uap10.0.x` target frameworks.
 * The `XamlReader` fails when a property has no getter
+* `Click` and `Tapped` events were not working property for `ButtonBase` on Android and iOS.
+* 150143 [Android] Toggling `TextBox.IsReadOnly` from true to false no longer breaks the cursor
 
 ## Release 1.44.0
 
@@ -58,6 +69,7 @@
 * The CI validates for API breaking changes
 * Added samples application BenchmarkDotNet support.
 * `MediaTransportControls` buttons now use Tapped event instead of Click
+* Fixed Pointer capture issues on sliders on iOS
 
 ### Breaking changes
 * Make `UIElement.IsPointerPressed` and `IsPointerOver` internal

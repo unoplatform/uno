@@ -33,7 +33,7 @@ namespace Windows.UI.Xaml
 
 		private static Dictionary<UIView, CALayer> _debugLayers;
 
-		internal bool IsPointerCaptured { get; set; }
+		internal bool IsPointerCaptured => _pointCaptures.Any();
 
 		public UIElement()
 		{
@@ -427,7 +427,8 @@ namespace Windows.UI.Xaml
 
 					var args = new PointerRoutedEventArgs(touches, evt)
 					{
-						CanBubbleNatively = true
+						CanBubbleNatively = true,
+						OriginalSource = this
 					};
 
 					pointerEventIsHandledInManaged = RaiseEvent(PointerEnteredEvent, args);
@@ -455,7 +456,8 @@ namespace Windows.UI.Xaml
 			{
 				var args = new PointerRoutedEventArgs(touches, evt)
 				{
-					CanBubbleNatively = true
+					CanBubbleNatively = true,
+					OriginalSource = this
 				};
 				var isHandledInManaged = RaiseEvent(PointerCanceledEvent, args);
 
@@ -467,7 +469,7 @@ namespace Windows.UI.Xaml
 
 				IsPointerPressed = false;
 				IsPointerOver = false;
-				IsPointerCaptured = false;
+				_pointCaptures.Clear();
 			}
 			catch (Exception e)
 			{
@@ -485,7 +487,8 @@ namespace Windows.UI.Xaml
 				// Call entered/exited one last time
 				var args = new PointerRoutedEventArgs(touches, evt)
 				{
-					CanBubbleNatively = true
+					CanBubbleNatively = true,
+					OriginalSource = this
 				};
 
 				var pointerEventIsHandledInManaged = false;
@@ -519,7 +522,7 @@ namespace Windows.UI.Xaml
 
 				IsPointerPressed = false;
 				IsPointerOver = false;
-				IsPointerCaptured = false;
+				_pointCaptures.Clear();
 			}
 			catch (Exception e)
 			{
@@ -538,7 +541,8 @@ namespace Windows.UI.Xaml
 
 				var args = new PointerRoutedEventArgs(touches, evt)
 				{
-					CanBubbleNatively = true
+					CanBubbleNatively = true,
+					OriginalSource = this
 				};
 
 				if (IsPointerCaptured || IsPointerOver)
