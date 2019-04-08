@@ -24,6 +24,7 @@
 * The `HAS_UNO` define is now not defined in `uap10.0.x` target frameworks.
 * The `XamlReader` fails when a property has no getter
 * `Click` and `Tapped` events were not working property for `ButtonBase` on Android and iOS.
+* 146790 [Android] AndroidUseManagedLoadedUnloaded causes partial item shuffling in ListView
 * 150143 [Android] Toggling `TextBox.IsReadOnly` from true to false no longer breaks the cursor
 * `WasmHttpHandler` was broken because of a change in the internal Mono implementation.
 * 140946 [Android] Upon modifying a list, incorrect/duplicated items appear
