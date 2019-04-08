@@ -25,6 +25,7 @@
 * The `XamlReader` fails when a property has no getter
 * `Click` and `Tapped` events were not working property for `ButtonBase` on Android and iOS.
 * 150143 [Android] Toggling `TextBox.IsReadOnly` from true to false no longer breaks the cursor
+* `WasmHttpHandler` was broken because of a change in the internal Mono implementation.
 
 ## Release 1.44.0
 
