@@ -1003,10 +1003,16 @@ namespace Windows.UI.Xaml.Controls
 
 			UpdateScrollPositionForPaddingChanges(recycler, state);
 
-			if (!needsScrapOnMeasure && !willRunAnimations)
+			if (updatedAfterCollectionChange)
+			{
+				// If layouting in response to a collection change, the views in the cache have out-of-date positions, so clear the cache.
+				ViewCache?.EmptyAndRemove();
+			}
+			else if (!needsScrapOnMeasure && !willRunAnimations && !_needsUpdateAfterCollectionChange)
 			{
 				// Don't modify buffer on the same cycle as scrapping all views, because buffer is liable to 'suck up' scrapped views 
 				// leading to weird behaviour
+				// And don't populate buffer after a collection change until visible layout has been rebuilt with up-to-date positions
 				AssertValidState();
 				UpdateBuffers(recycler);
 				AssertValidState();
