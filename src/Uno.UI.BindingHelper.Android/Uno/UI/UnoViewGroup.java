@@ -25,6 +25,7 @@ public abstract class UnoViewGroup
     private boolean _childIsUnoViewGroup;
 
     private boolean _isManagedLoaded;
+    private boolean _needsLayoutOnAttachedToWindow;
 
 	private boolean _isPointerCaptured;
 	private boolean _isPointInView;
@@ -271,6 +272,13 @@ public abstract class UnoViewGroup
     {
         if(nativeRequestLayout())
         {
+            if (getIsManagedLoaded() && !getIsNativeLoaded()) {
+                // If we're here, managed load is enabled (AndroidUseManagedLoadedUnloaded = true) and requestLayout() has been called from OnLoaded
+				// prior to dispatchAttachedToWindow() being called. This can cause the request to fall through the cracks, because mAttachInfo
+				// isn't set yet. (See ViewRootImpl.requestLayoutDuringLayout()). If we're in a layout pass already, we have to ensure that requestLayout()
+				// is called again once the view is fully natively initialized.
+                _needsLayoutOnAttachedToWindow = true;
+            }
             super.requestLayout();
         }
     }
@@ -627,6 +635,11 @@ public abstract class UnoViewGroup
 			onNativeLoaded();
 			_isManagedLoaded = true;
 		}
+		else if (_needsLayoutOnAttachedToWindow && isInLayout()) {
+		    requestLayout();
+        }
+
+        _needsLayoutOnAttachedToWindow = false;
     }
 
     protected abstract void onNativeLoaded();
