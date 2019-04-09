@@ -26,6 +26,7 @@
 * `Click` and `Tapped` events were not working property for `ButtonBase` on Android and iOS.
 * 150143 [Android] Toggling `TextBox.IsReadOnly` from true to false no longer breaks the cursor
 * `WasmHttpHandler` was broken because of a change in the internal Mono implementation.
+* 140946 [Android] Upon modifying a list, incorrect/duplicated items appear
 
 ## Release 1.44.0
 
