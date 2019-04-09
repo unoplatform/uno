@@ -28,6 +28,7 @@
 * 150143 [Android] Toggling `TextBox.IsReadOnly` from true to false no longer breaks the cursor
 * `WasmHttpHandler` was broken because of a change in the internal Mono implementation.
 * 140946 [Android] Upon modifying a list, incorrect/duplicated items appear
+* 150469 [iOS] Virtualized ListView items don't always trigger their multi-select VisualStates
 
 ## Release 1.44.0
 

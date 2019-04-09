@@ -572,7 +572,7 @@ namespace Windows.UI.Xaml.Controls
 		/// <param name="selectorItem"></param>
 		internal void ApplyMultiSelectState(SelectorItem selectorItem)
 		{
-			selectorItem.IsMultiselectEnabled = IsSelectionMultiple;
+			selectorItem.ApplyMultiSelectState(IsSelectionMultiple);
 		}
 
 		/// <summary>
