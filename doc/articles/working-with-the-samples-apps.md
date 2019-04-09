@@ -42,3 +42,12 @@ To create a Non-UI Test:
 - An optional ViewModel type may be provided as an attribute so the browser automatically sets an instance as the DataContext of the sample
 
 > More information about the GivenWhenThen pattern: <https://martinfowler.com/bliki/GivenWhenThen.html>
+
+# Creating performance benchmarks
+
+Performance is measured using BenchmarkDotNet, in the suite located in the `SamplesApp.Benchmarks` shared project.
+
+A few points to consider when adding tests:
+- Make a folder using the namespace separated by `_`
+- Don't make classes that contain a very important number of benchmarks. Those tests are run synchronously under
+WebAssembly, and this will allow for progress reporting to be visible.

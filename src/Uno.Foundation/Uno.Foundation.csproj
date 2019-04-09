@@ -19,6 +19,14 @@
     <PackageReference Include="Uno.Core" />
 		<PackageReference Include="Uno.MonoAnalyzers" />
 	</ItemGroup>
+
+	<ItemGroup Condition="$(_IsAndroid) or $(_IsIOS) or $(_IsMacOS)">
+		<Reference Include="System.Memory" />
+	</ItemGroup>
+
+	<ItemGroup Condition="$(_IsNetStd) or $(_IsNet)">
+		<PackageReference Include="System.Memory" />
+	</ItemGroup>
 	
 	<ItemGroup>
 		<UpToDateCheckInput Include="**\*.cs" Exclude="bin\**\*.cs;obj\**\*.cs;" />

@@ -5,6 +5,7 @@ using System.Text;
 using System.Collections.ObjectModel;
 using Uno.UI;
 using Windows.Foundation;
+using Uno.Collections;
 
 #if XAMARIN_ANDROID
 using View = Android.Views.View;
@@ -42,10 +43,10 @@ namespace Windows.UI.Xaml.Controls
 		/// </summary>
 		/// <param name="size">The measured size if a fast path was used, [0,0] otherwise</param>
 		/// <returns>True if a fast path was used, false otherwise</returns>
-		private bool TryMeasureUsingFastPath(Size availableSize, List<Column> columns, List<Column> definedColumns, List<Row> rows, List<Row> definedRows, out Size size)
+		private bool TryMeasureUsingFastPath(Size availableSize, Span<Column> columns, Span<Column> definedColumns, Span<Row> rows, Span<Row> definedRows, out Size size)
 		{
-			var columnCount = columns.Count;
-			var rowCount = rows.Count;
+			var columnCount = columns.Length;
+			var rowCount = rows.Length;
 
 			if (columnCount == 1 && rowCount == 1)
 			{
@@ -73,7 +74,7 @@ namespace Windows.UI.Xaml.Controls
 		/// <summary>
 		/// Measure the grid knowing it has only one column (1xN grid)
 		/// </summary>
-		private Size MeasureVerticalGrid(Size availableSize, Column column, List<Row> rows, List<Row> definedRows)
+		private Size MeasureVerticalGrid(Size availableSize, Column column, Span<Row> rows, Span<Row> definedRows)
 		{
 			var size = default(Size);
 			if (column.Width.IsPixelSize)
@@ -84,39 +85,43 @@ namespace Windows.UI.Xaml.Controls
 			}
 
 			var positions = GetPositions();
-			var measureChild = GetDirectMeasureChild();
 
-			// One simulated column
-			var columns = new List<DoubleRange>(1) { new DoubleRange(availableSize.Width) };
-
-			double maxMeasuredWidth;
-			var measuredRows = CalculateRows(availableSize, positions, measureChild, columns, rows, definedRows, true, out maxMeasuredWidth);
-
-			size = new Size(
-				Math.Max(size.Width, maxMeasuredWidth),
-				measuredRows.Sum(r => r.MinValue)
-			);
-
-			//If MinWidth property is set on the Grid we need to take it into account in order to match UWP behavior
-			var minWidth = size.Width;
-
-			if (MinWidth != 0 && MinWidth > size.Width)
+			using (positions.Subscription)
 			{
-				minWidth = MinWidth - GetHorizontalOffset();
+				var measureChild = GetDirectMeasureChild();
+
+				// One simulated column
+				Span<DoubleRange> columns = stackalloc DoubleRange[] { new DoubleRange(availableSize.Width) };
+
+				double maxMeasuredWidth;
+				var measuredRows = CalculateRows(availableSize, positions.Views.Span, measureChild, columns, rows, definedRows, true, out maxMeasuredWidth);
+
+				size = new Size(
+					Math.Max(size.Width, maxMeasuredWidth),
+					measuredRows.Span.Sum(r => r.MinValue)
+				);
+
+				//If MinWidth property is set on the Grid we need to take it into account in order to match UWP behavior
+				var minWidth = size.Width;
+
+				if (MinWidth != 0 && MinWidth > size.Width)
+				{
+					minWidth = MinWidth - GetHorizontalOffset();
+				}
+
+				size = new Size(
+					Math.Min(availableSize.Width, minWidth),
+					Math.Min(availableSize.Height, size.Height)
+				);
+
+				return size;
 			}
-
-			size = new Size(
-				Math.Min(availableSize.Width, minWidth),
-				Math.Min(availableSize.Height, size.Height)
-			);
-
-			return size;
 		}
 
 		/// <summary>
 		/// Measure the grid knowing it has only one row (Nx1 grid)
 		/// </summary>
-		private Size MeasureHorizontalGrid(Size availableSize, List<Column> columns, List<Column> definedColumns, Row row)
+		private Size MeasureHorizontalGrid(Size availableSize, Span<Column> columns, Span<Column> definedColumns, Row row)
 		{
 			var size = default(Size);
 			if (row.Height.IsPixelSize)
@@ -127,30 +132,33 @@ namespace Windows.UI.Xaml.Controls
 			}
 
 			var positions = GetPositions();
-			var measureChild = GetDirectMeasureChild();
-
-			double maxHeightMeasured;
-			var measuredColumns = CalculateColumns(availableSize, positions, measureChild, columns, definedColumns, true, out maxHeightMeasured);
-
-			size = new Size(
-				measuredColumns.Sum(r => r.MinValue),
-				Math.Max(size.Height, maxHeightMeasured)
-			);
-
-			//If MinHeight property is set on the Grid we need to take it into account in order to match UWP behavior
-			var minHeight = size.Height;
-
-			if (MinHeight != 0 && MinHeight > size.Height)
+			using (positions.Subscription)
 			{
-				minHeight = MinHeight - GetVerticalOffset();
+				var measureChild = GetDirectMeasureChild();
+
+				double maxHeightMeasured;
+				var measuredColumns = CalculateColumns(availableSize, positions.Views.Span, measureChild, columns, definedColumns, true, out maxHeightMeasured);
+
+				size = new Size(
+					measuredColumns.Span.Sum(r => r.MinValue),
+					Math.Max(size.Height, maxHeightMeasured)
+				);
+
+				//If MinHeight property is set on the Grid we need to take it into account in order to match UWP behavior
+				var minHeight = size.Height;
+
+				if (MinHeight != 0 && MinHeight > size.Height)
+				{
+					minHeight = MinHeight - GetVerticalOffset();
+				}
+
+				size = new Size(
+					Math.Min(availableSize.Width, size.Width),
+					Math.Min(availableSize.Height, minHeight)
+				);
+
+				return size;
 			}
-
-			size = new Size(
-				Math.Min(availableSize.Width, size.Width),
-				Math.Min(availableSize.Height, minHeight)
-			);
-
-			return size;
 		}
 
 		/// <summary>
@@ -187,10 +195,10 @@ namespace Windows.UI.Xaml.Controls
 			return size;
 		}
 
-		private bool TryArrangeUsingFastPath(Size finalSize, List<Column> columns, List<Column> definedColumns, List<Row> rows, List<Row> definedRows, List<ViewPosition> positions)
+		private bool TryArrangeUsingFastPath(Size finalSize, Span<Column> columns, Span<Column> definedColumns, Span<Row> rows, Span<Row> definedRows, Span<ViewPosition> positions)
 		{
-			var columnCount = columns.Count;
-			var rowCount = rows.Count;
+			var columnCount = columns.Length;
+			var rowCount = rows.Length;
 			if (columnCount == 1 && rowCount == 1)
 			{
 				// 1x1
@@ -216,7 +224,7 @@ namespace Windows.UI.Xaml.Controls
 		/// <summary>
 		/// Arranges the children knowing the grid is 1xN
 		/// </summary>
-		private void ArrangeVerticalGrid(Size finalSize, Column column, List<Row> rows, List<Row> definedRows, List<ViewPosition> positions)
+		private void ArrangeVerticalGrid(Size finalSize, Column column, Span<Row> rows, Span<Row> definedRows, Span<ViewPosition> positions)
 		{
 			if (column.Width.IsPixelSize)
 			{
@@ -226,28 +234,21 @@ namespace Windows.UI.Xaml.Controls
 			var measureChild = GetDirectMeasureChild();
 
 			// One simulated column
-			var columns = new List<DoubleRange>(1) { new DoubleRange(finalSize.Width) };
+			Span<DoubleRange> columns = stackalloc DoubleRange[] { new DoubleRange(finalSize.Width) };
 
 			double maxWidthMeasured;
 			var calculatedRows = CalculateRows(finalSize, positions, measureChild, columns, rows, definedRows, false, out maxWidthMeasured);
 
-			List<DoubleRange> calculatedColumns;
-			if (column.Width.IsAuto)
-			{
-				calculatedColumns = new List<DoubleRange>(1) { new DoubleRange(maxWidthMeasured) };
-			}
-			else
-			{
-				calculatedColumns = new List<DoubleRange>(1) { new DoubleRange(finalSize.Width) };
-			}
+			Span<DoubleRange> calculatedColumns
+				= stackalloc DoubleRange[] { column.Width.IsAuto ? new DoubleRange(maxWidthMeasured) : new DoubleRange(finalSize.Width) };
 
-			LayoutChildren(calculatedColumns, calculatedRows, positions);
+			LayoutChildren(calculatedColumns, calculatedRows.Span, positions);
 		}
 
 		/// <summary>
 		/// Arranges the children knowing the grid is Nx1
 		/// </summary>
-		private void ArrangeHorizontalGrid(Size finalSize, List<Column> columns, List<Column> definedColumns, Row row, List<ViewPosition> positions)
+		private void ArrangeHorizontalGrid(Size finalSize, Span<Column> columns, Span<Column> definedColumns, Row row, Span<ViewPosition> positions)
 		{
 			if (row.Height.IsPixelSize)
 			{
@@ -259,17 +260,11 @@ namespace Windows.UI.Xaml.Controls
 			double maxHeightMeasured;
 			var calculatedColumns = CalculateColumns(finalSize, positions, measureChild, columns, definedColumns, false, out maxHeightMeasured);
 
-			List<DoubleRange> calculatedRows;
-			if (row.Height.IsAuto)
-			{
-				calculatedRows = new List<DoubleRange>(1) { new DoubleRange(maxHeightMeasured) };
-			}
-			else
-			{
-				calculatedRows = new List<DoubleRange>(1) { new DoubleRange(finalSize.Height) };
-			}
+			Span<DoubleRange> calculatedRows = stackalloc DoubleRange[] {
+				new DoubleRange(row.Height.IsAuto ? maxHeightMeasured : finalSize.Height)
+			};
 
-			LayoutChildren(calculatedColumns, calculatedRows, positions);
+			LayoutChildren(calculatedColumns.Span, calculatedRows, positions);
 		}
 
 		/// <summary>

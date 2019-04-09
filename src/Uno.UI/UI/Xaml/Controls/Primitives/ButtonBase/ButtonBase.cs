@@ -156,22 +156,6 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			{
 				this.Log().Error("Failed to execute command", e);
 			}
-			
-			if (args != null)
-			{
-				args.Handled = true;
-			}
-
-			// This is a naive implementation that doesn't consider ClickMode or the distance traveled between press and release.
-			// Will be implemented properly when pointer logic is moved to UIElement.
-			// It is important that Tapped is raised after Click.
-			var tappedRoutedEventArgs = new TappedRoutedEventArgs
-			{
-				OriginalSource = args?.OriginalSource,
-				CanBubbleNatively = false
-			};
-
-			RaiseEvent(TappedEvent, tappedRoutedEventArgs);
 		}
 
 		protected override void OnPointerPressed(PointerRoutedEventArgs args)
@@ -180,8 +164,6 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 			IsPointerOver = true;
 			IsPointerPressed = true;
-
-			args.Handled = true;
 
 #if !__WASM__
 			// TODO: Remove when Focus is implemented properly.

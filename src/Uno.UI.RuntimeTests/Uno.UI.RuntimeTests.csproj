@@ -12,7 +12,7 @@
 
 	<ItemGroup>
 		<PackageReference Include="MSTest.TestFramework" Version="1.2.0" />
-		<PackageReference Include="Uno.SourceGenerationTasks"/>
+		<PackageReference Include="Uno.SourceGenerationTasks" />
 	</ItemGroup>
 
 	<ItemGroup>

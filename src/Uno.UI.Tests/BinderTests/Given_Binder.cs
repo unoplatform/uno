@@ -770,6 +770,23 @@ namespace Uno.UI.Tests.BinderTests
 			Assert.AreEqual(-42, target.MyProperty);
 		}
 
+		[TestMethod]
+		public void When_SelfRelativeSource()
+		{
+			var SUT = new SelfBindingTest();
+
+			Assert.AreEqual(-1, SUT.Property1);
+			Assert.AreEqual(-2, SUT.Property2);
+
+			SUT.SetBinding(SelfBindingTest.Property2Property, new Binding { Path = "Property1", RelativeSource = new RelativeSource(RelativeSourceMode.Self) });
+
+			Assert.AreEqual(-1, SUT.Property1);
+			Assert.AreEqual(-1, SUT.Property2);
+
+			SUT.Property1 = 42;
+			Assert.AreEqual(42, SUT.Property2);
+		}
+
 		public partial class BaseTarget : DependencyObject
 		{
 			private List<object> _dataContextChangedList = new List<object>();
@@ -1025,6 +1042,27 @@ namespace Uno.UI.Tests.BinderTests
 
 			private int MyProperty { get; set; }
 		}
+	}
+
+	public partial class SelfBindingTest : DependencyObject
+	{
+		public int Property1
+		{
+			get { return (int)GetValue(Property1Property); }
+			set { SetValue(Property1Property, value); }
+		}
+
+		public static readonly DependencyProperty Property1Property =
+			DependencyProperty.Register("Property1", typeof(int), typeof(SelfBindingTest), new PropertyMetadata(-1));
+
+		public int Property2
+		{
+			get { return (int)GetValue(Property2Property); }
+			set { SetValue(Property2Property, value); }
+		}
+
+		public static readonly DependencyProperty Property2Property =
+			DependencyProperty.Register("Property2", typeof(int), typeof(SelfBindingTest), new PropertyMetadata(-2));
 	}
 
 	public partial class MyObjectTest : DependencyObject

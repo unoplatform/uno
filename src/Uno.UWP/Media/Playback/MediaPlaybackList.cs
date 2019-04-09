@@ -5,7 +5,7 @@ namespace Windows.Media.Playback
 {
 	public partial class MediaPlaybackList : IMediaPlaybackList, IMediaPlaybackSource
 	{
-		public ObservableVector<MediaPlaybackItem> Items { get; set; } = new ObservableVector<MediaPlaybackItem>();
+		public IObservableVector<MediaPlaybackItem> Items { get; } = new ObservableVector<MediaPlaybackItem>();
 	}
 }
 #endif

@@ -43,6 +43,7 @@
 - x:Bind *(without phases and expressions)*
 - Converters
 - Attached Properties binding
+- RelativeSource.Self
 
 ### Design fidelity
 - Text Inlines Binding

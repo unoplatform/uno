@@ -126,6 +126,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "AddIns", "AddIns", "{E872CD
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Uno.UI.Lottie", "AddIns\Uno.UI.Lottie\Uno.UI.Lottie.csproj", "{F9277925-FC11-4A97-8CA1-B4A33E726F55}"
 EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "SamplesApp.Benchmarks", "SamplesApp\Benchmarks.Shared\SamplesApp.Benchmarks.shproj", "{F4581F51-40D6-4035-8A1D-65CC6917D0A9}"
+EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		SamplesApp\SamplesApp.UnitTests.Shared\SamplesApp.UnitTests.Shared.projitems*{04b1b5eb-d42e-47de-ada0-eb863e5574fd}*SharedItemsImports = 13
@@ -135,6 +137,7 @@ Global
 		SamplesApp\SamplesApp.UnitTests.Shared\SamplesApp.UnitTests.Shared.projitems*{3fdf0f2d-cc11-49be-8634-f81638d595c6}*SharedItemsImports = 4
 		SamplesApp\UITests.Shared\UITests.Shared.projitems*{3fdf0f2d-cc11-49be-8634-f81638d595c6}*SharedItemsImports = 4
 		SamplesApp\SamplesApp.Shared\SamplesApp.Shared.projitems*{6279c845-92f8-4333-ab99-3d213163593c}*SharedItemsImports = 13
+		SamplesApp\Benchmarks.Shared\Benchmarks.Shared.projitems*{6c25beb3-e332-48d3-b4de-20a0b71935cd}*SharedItemsImports = 4
 		SamplesApp\SamplesApp.Shared\SamplesApp.Shared.projitems*{6c25beb3-e332-48d3-b4de-20a0b71935cd}*SharedItemsImports = 4
 		SamplesApp\SamplesApp.UnitTests.Shared\SamplesApp.UnitTests.Shared.projitems*{6c25beb3-e332-48d3-b4de-20a0b71935cd}*SharedItemsImports = 4
 		SamplesApp\UITests.Shared\UITests.Shared.projitems*{6c25beb3-e332-48d3-b4de-20a0b71935cd}*SharedItemsImports = 4
@@ -142,6 +145,7 @@ Global
 		SamplesApp\SamplesApp.UnitTests.Shared\SamplesApp.UnitTests.Shared.projitems*{b71ae380-558c-4d6c-81d8-9c043b50262c}*SharedItemsImports = 4
 		SamplesApp\UITests.Shared\UITests.Shared.projitems*{b71ae380-558c-4d6c-81d8-9c043b50262c}*SharedItemsImports = 4
 		SamplesApp\UITests.Shared\UITests.Shared.projitems*{beb0ab3a-16a7-49cf-ad5e-f4a53b985afe}*SharedItemsImports = 13
+		SamplesApp\Benchmarks.Shared\Benchmarks.Shared.projitems*{f4581f51-40d6-4035-8a1d-65cc6917d0a9}*SharedItemsImports = 13
 	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Ad-Hoc|Any CPU = Ad-Hoc|Any CPU
@@ -226,7 +230,9 @@ Global
 		{0F7A1F8F-CD69-4E8A-AEF4-C623A74E83FD}.Debug|iPhoneSimulator.ActiveCfg = Debug|Any CPU
 		{0F7A1F8F-CD69-4E8A-AEF4-C623A74E83FD}.Debug|iPhoneSimulator.Build.0 = Debug|Any CPU
 		{0F7A1F8F-CD69-4E8A-AEF4-C623A74E83FD}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{0F7A1F8F-CD69-4E8A-AEF4-C623A74E83FD}.Debug|x64.Build.0 = Debug|Any CPU
 		{0F7A1F8F-CD69-4E8A-AEF4-C623A74E83FD}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{0F7A1F8F-CD69-4E8A-AEF4-C623A74E83FD}.Debug|x86.Build.0 = Debug|Any CPU
 		{0F7A1F8F-CD69-4E8A-AEF4-C623A74E83FD}.Release_Android|Any CPU.ActiveCfg = Release|Any CPU
 		{0F7A1F8F-CD69-4E8A-AEF4-C623A74E83FD}.Release_Android|ARM.ActiveCfg = Release|Any CPU
 		{0F7A1F8F-CD69-4E8A-AEF4-C623A74E83FD}.Release_Android|iPhone.ActiveCfg = Release|Any CPU
@@ -2920,6 +2926,7 @@ Global
 		{B71AE380-558C-4D6C-81D8-9C043B50262C}.AppStore|x64.ActiveCfg = AppStore|iPhone
 		{B71AE380-558C-4D6C-81D8-9C043B50262C}.AppStore|x86.ActiveCfg = AppStore|iPhone
 		{B71AE380-558C-4D6C-81D8-9C043B50262C}.Debug|Any CPU.ActiveCfg = Debug|iPhone
+		{B71AE380-558C-4D6C-81D8-9C043B50262C}.Debug|Any CPU.Build.0 = Debug|iPhone
 		{B71AE380-558C-4D6C-81D8-9C043B50262C}.Debug|ARM.ActiveCfg = Debug|iPhone
 		{B71AE380-558C-4D6C-81D8-9C043B50262C}.Debug|iPhone.ActiveCfg = Debug|iPhone
 		{B71AE380-558C-4D6C-81D8-9C043B50262C}.Debug|iPhone.Build.0 = Debug|iPhone
@@ -3524,6 +3531,7 @@ Global
 		{313FCF91-A6DB-4585-A23E-49BBEEF4784D}.AppStore|x86.ActiveCfg = Release|iPhoneSimulator
 		{313FCF91-A6DB-4585-A23E-49BBEEF4784D}.AppStore|x86.Build.0 = Release|iPhoneSimulator
 		{313FCF91-A6DB-4585-A23E-49BBEEF4784D}.Debug|Any CPU.ActiveCfg = Debug|iPhoneSimulator
+		{313FCF91-A6DB-4585-A23E-49BBEEF4784D}.Debug|Any CPU.Build.0 = Debug|iPhoneSimulator
 		{313FCF91-A6DB-4585-A23E-49BBEEF4784D}.Debug|ARM.ActiveCfg = Debug|iPhoneSimulator
 		{313FCF91-A6DB-4585-A23E-49BBEEF4784D}.Debug|iPhone.ActiveCfg = Debug|iPhoneSimulator
 		{313FCF91-A6DB-4585-A23E-49BBEEF4784D}.Debug|iPhoneSimulator.ActiveCfg = Debug|iPhoneSimulator
@@ -4019,6 +4027,7 @@ Global
 		{028F3EE0-D51B-469A-A72C-C272585DCD40} = {416684CF-A4E3-4079-B380-3FF0B00E433C}
 		{BEB0AB3A-16A7-49CF-AD5E-F4A53B985AFE} = {995C1054-AB61-42EE-9A17-C32155BD6D13}
 		{F9277925-FC11-4A97-8CA1-B4A33E726F55} = {E872CD33-A455-4DC4-8A87-5FEEC1C39A44}
+		{F4581F51-40D6-4035-8A1D-65CC6917D0A9} = {995C1054-AB61-42EE-9A17-C32155BD6D13}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {9B2608F4-D82B-4B72-B399-33E822DF01D0}

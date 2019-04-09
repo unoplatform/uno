@@ -635,7 +635,6 @@ namespace Windows.UI.Xaml.Controls
 	/// <summary>
 	/// A hidden root item that allows the reuse of ContentControl features.
 	/// </summary>
-	[global::Foundation.Register]
 	internal class ListViewBaseInternalContainer : UICollectionViewCell
 	{
 		/// <summary>
@@ -646,6 +645,11 @@ namespace Windows.UI.Xaml.Controls
 		/// objects that may have been collected in the managed world.
 		/// </remarks>
 		public ListViewBaseInternalContainer(IntPtr handle) : base(handle) { }
+
+		public ListViewBaseInternalContainer()
+		{
+
+		}
 
 		private CGSize _lastUsedSize;
 		private CGSize? _measuredContentSize;
@@ -697,7 +701,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			get
 			{
-				return ContentView.Subviews.FirstOrDefault() as ContentControl;
+				return /* Cache the content ?*/ContentView.Subviews.FirstOrDefault() as ContentControl;
 			}
 			set
 			{

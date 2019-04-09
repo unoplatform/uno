@@ -72,40 +72,6 @@
 		<EmbeddedResource Include="$(MSBuildThisFileDirectory)..\Uno.Net.Shared\Resources\**\*.resx">
 			<Link>Resources\%(RecursiveDir)%(FileName)%(Extension)</Link>
 		</EmbeddedResource>
-		<None Remove="ResourceLoader\When_ResourceFile-en.upri" />
-		<None Remove="ResourceLoader\When_ResourceFile_Neutral_Both-en.upri" />
-		<None Remove="ResourceLoader\When_ResourceFile_Neutral_Both-fr.upri" />
-		<None Remove="Windows_UI_Xaml_Data\xBindTests\Given_StaticResource_Control.xaml" />
-		<None Remove="XamlReaderTests\When_AttachedProperty_Binding.xamltest" />
-		<None Remove="XamlReaderTests\When_AttachedProperty_Different_Target.xamltest" />
-		<None Remove="XamlReaderTests\When_AttachedProperty_Same_Target.xamltest" />
-		<None Remove="XamlReaderTests\When_BasicProperty.xamltest" />
-		<None Remove="XamlReaderTests\When_BasicRoot.xamltest" />
-		<None Remove="XamlReaderTests\When_Binding_Converter.xamltest" />
-		<None Remove="XamlReaderTests\When_Binding_ConverterParameter.xamltest" />
-		<None Remove="XamlReaderTests\When_Binding_TargetNull.xamltest" />
-		<None Remove="XamlReaderTests\When_Binding_TwoWay.xamltest" />
-		<None Remove="XamlReaderTests\When_Binding_TwoWay_UpdateSourceTrigger.xamltest" />
-		<None Remove="XamlReaderTests\When_ElementName.xamltest" />
-		<None Remove="XamlReaderTests\When_GridRowDefinitions.xamltest" />
-		<None Remove="XamlReaderTests\When_MultipleBindings.xamltest" />
-		<None Remove="XamlReaderTests\When_NonDependencyPropertyAssignable.xamltest" />
-		<None Remove="XamlReaderTests\When_NonDependencyProperty_Binding.xamltest" />
-		<None Remove="XamlReaderTests\When_StaticResource.xamltest" />
-		<None Remove="XamlReaderTests\When_StaticResource_Style_And_Binding.xamltest" />
-		<None Remove="XamlReaderTests\When_Style_FontWeight.xamltest" />
-		<None Remove="XamlReaderTests\When_TextBlock_Basic.xamltest" />
-		<None Remove="XamlReaderTests\When_TextBlock_FontFamily.xamltest" />
-		<None Remove="XamlReaderTests\When_TextBlock_ImplicitRun.xamltest" />
-		<None Remove="XamlReaderTests\When_TextBlock_NestedSpan.xamltest" />
-		<None Remove="XamlReaderTests\When_TypeConverters.xamltest" />
-		<None Remove="XamlReaderTests\When_UserControl_With_Content.xamltest" />
-		<None Remove="XamlReaderTests\When_UserControl_With_Grid.xamltest" />
-		<None Remove="XamlReaderTests\When_VisualStateGroup.xamltest" />
-		<None Remove="XamlReaderTests\When_VisualStateGroup_AttachedProperty.xamltest" />
-		<None Remove="XamlReaderTests\When_VisualStateGroup_AttachedProperty_Binding.xamltest" />
-		<None Remove="XamlReaderTests\When_VisualStateGroup_Propagation.xamltest" />
-		<None Remove="XamlReaderTests\When_XNull.xamltest" />
 
 		<!-- This has to be after all the shared projects imports -->
 		<Page Remove="@(Page)" />
@@ -125,17 +91,11 @@
 	<Import Project="..\Common.targets" />
 
 	<ItemGroup>
-		<EmbeddedResource Include="XamlReaderTests\*.xamltest" />
+		<EmbeddedResource Include="Windows_UI_Xaml_Markup\XamlReaderTests\*.xamltest" />
 	</ItemGroup>
 
 	<ItemGroup>
 		<PRIResource Include="**\*.resw" />
-	</ItemGroup>
-
-	<ItemGroup>
-		<None Include="Windows_UI_Xaml_Data\xBindTests\Given_StaticResource_Control.xaml">
-		  <Generator>MSBuild:Compile</Generator>
-		</None>
 	</ItemGroup>
 	<ItemGroup Condition="'$(BuildingInsideUnoSourceGenerator)'!=''">
 		<Page Include="Windows_UI_Xaml_Data\xBindTests\Given_StaticResource_Control.xaml" />
