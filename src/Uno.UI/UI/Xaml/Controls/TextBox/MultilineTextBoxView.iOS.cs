@@ -19,7 +19,7 @@ namespace Windows.UI.Xaml.Controls
 	{
 		private MultilineTextBoxDelegate _delegate;
 		private readonly WeakReference<TextBox> _textBox;
-		private readonly WeakReference<Uno.UI.Controls.Window> _window;
+		private WeakReference<Uno.UI.Controls.Window> _window;
 
 		CGPoint IUIScrollView.UpperScrollLimit { get { return (CGPoint)(ContentSize - Frame.Size); } }
 
@@ -37,7 +37,7 @@ namespace Windows.UI.Xaml.Controls
 			BackgroundColor = UIColor.Clear;
 			TextContainer.LineFragmentPadding = 0;
 		}
-		
+
 		public override string Text
 		{
 			get
@@ -71,6 +71,13 @@ namespace Windows.UI.Xaml.Controls
 		internal void ScrollToCursor()
 		{
 			var window = _window.GetTarget();
+
+			if (window == null)
+			{
+				// TextBox may not yet have been attached to window when it was templated
+				window = _textBox.GetTarget().FindFirstParent<Uno.UI.Controls.Window>();
+				_window = new WeakReference<Uno.UI.Controls.Window>(window);
+			}
 
 			if (this.IsFirstResponder)
 			{
