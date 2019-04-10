@@ -282,11 +282,17 @@ namespace Windows.UI.Xaml
 
 				handlers.Remove(handlerInfo =>
 				{
-					if (handlerInfo.HandledEventsToo)
+					var shouldRemove = (handlerInfo.Handler as Delegate) == (handler as Delegate);
+
+					if (!shouldRemove)
 					{
-						mustUpdateSubscribedToHandledEventsToo = true;
+						return false;
 					}
-					return handlerInfo.Handler == handler;
+
+					mustUpdateSubscribedToHandledEventsToo =
+						mustUpdateSubscribedToHandledEventsToo || handlerInfo.HandledEventsToo;
+
+					return true;
 				});
 
 				if (mustUpdateSubscribedToHandledEventsToo)
