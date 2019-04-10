@@ -15,6 +15,7 @@
 * Add support for IDictionary objects in XAM (#729)
 * Add support for Binding typed property (#731)
 * Add support for `RelativeSource.Self` bindings
+* 149377 Improve performance of `TimePicker` and `DatePicker` on iOS.
 
 ### Breaking Changes
 * The `WebAssemblyRuntime.InvokeJSUnmarshalled` method with three parameters has been removed.

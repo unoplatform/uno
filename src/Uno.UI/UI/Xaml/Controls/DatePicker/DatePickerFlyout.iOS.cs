@@ -11,18 +11,36 @@ namespace Windows.UI.Xaml.Controls
 	//TODO: should inherit from PickerFlyoutBase (Task 17592)
 	public partial class DatePickerFlyout : Flyout
 	{
+		private bool _isInitialized;
+
 		public DatePickerFlyout()
 		{
-			InitializeContent();
+			Opening += DatePickerFlyout_Opening;
+			Closed += DatePickerFlyout_Closed;
 		}
 
+		/// <summary>
+		/// This method sets the Content property of the Flyout.
+		/// </summary>
+		/// <remarks>
+		/// Note that for performance reasons, we don't call it in the contructor. Instead, we wait for the popup to be opening.
+		/// The native UIDatePicker contained in the DatePickerSelector is known for being slow in general (https://bugzilla.xamarin.com/show_bug.cgi?id=49469).
+		/// Using this strategy means that a page containing a DatePicker will no longer be slowed down by this initialization during the page creation.
+		/// Instead, you'll see the delay when opening the DatePickerFlyout for the first time.
+		/// This is most notable on pages containing multiple DatePicker controls.
+		/// </remarks>
 		private void InitializeContent()
 		{
+			if (_isInitialized)
+			{
+				return;
+			}
+
+			_isInitialized = true;
+
 			Content = new DatePickerSelector();
 			BindToContent("MinYear");
 			BindToContent("MaxYear");
-			Opening += DatePickerFlyout_Opening;
-			Closed += DatePickerFlyout_Closed;
 
 			//TODO: support Day/Month/YearVisible (Task 17591)
 
@@ -31,6 +49,8 @@ namespace Windows.UI.Xaml.Controls
 
 		private void DatePickerFlyout_Opening(object sender, EventArgs e)
 		{
+			InitializeContent();
+
 			// The date coerced by UIDatePicker doesn't propagate back to DatePickerSelector (#137137)
 			// When the user selected an invalid date, a `ValueChanged` will be raised after coercion to propagate the coerced date.
 			// However, when the `Date` is set below, there no `ValueChanged` to propagate the coerced date.
