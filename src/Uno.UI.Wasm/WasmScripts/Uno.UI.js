@@ -34,9 +34,10 @@ var Windows;
              * Support file for the Windows.UI.Core
              * */
             class CoreDispatcher {
-                static init() {
+                static init(isReady) {
                     MonoSupport.jsCallDispatcher.registerScope("CoreDispatcher", Windows.UI.Core.CoreDispatcher);
                     CoreDispatcher.initMethods();
+                    CoreDispatcher._isReady = isReady;
                     CoreDispatcher._isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
                 }
                 /**
@@ -44,6 +45,24 @@ var Windows;
                  *
                  * */
                 static WakeUp() {
+                    // Is there a Ready promise ?
+                    if (CoreDispatcher._isReady) {
+                        // Are we already waiting for a Ready promise ?
+                        if (!CoreDispatcher._isWaitingReady) {
+                            CoreDispatcher._isReady
+                                .then(() => {
+                                CoreDispatcher.InnerWakeUp();
+                                CoreDispatcher._isReady = null;
+                            });
+                            CoreDispatcher._isWaitingReady = true;
+                        }
+                    }
+                    else {
+                        CoreDispatcher.InnerWakeUp();
+                    }
+                    return true;
+                }
+                static InnerWakeUp() {
                     if (CoreDispatcher._isIOS && CoreDispatcher._isFirstCall) {
                         //
                         // This is a workaround for the available call stack during the first 5 (?) seconds
@@ -55,7 +74,6 @@ var Windows;
                         window.setTimeout(() => this.WakeUp(), 5000);
                     }
                     else {
-                        window.setImmediate(() => CoreDispatcher._coreDispatcherCallback());
                         window.setImmediate(() => {
                             try {
                                 CoreDispatcher._coreDispatcherCallback();
@@ -66,7 +84,6 @@ var Windows;
                             }
                         });
                     }
-                    return true;
                 }
                 static initMethods() {
                     if (Uno.UI.WindowManager.isHosted) {
@@ -208,24 +225,34 @@ var MonoSupport;
             jsCallDispatcher.registrations.set(identifier, instance);
         }
         static findJSFunction(identifier) {
-            if (!jsCallDispatcher._isUnoRegistered) {
-                jsCallDispatcher.registerScope("UnoStatic", Uno.UI.WindowManager);
-                jsCallDispatcher._isUnoRegistered = true;
-            }
-            var knownMethod = jsCallDispatcher.methodMap.get(identifier);
-            if (knownMethod) {
-                return knownMethod;
-            }
-            const { ns, methodName } = jsCallDispatcher.parseIdentifier(identifier);
-            var instance = jsCallDispatcher.registrations.get(ns);
-            if (instance) {
-                var boundMethod = instance[methodName].bind(instance);
-                jsCallDispatcher.cacheMethod(identifier, boundMethod);
-                return boundMethod;
+            if (!identifier) {
+                return jsCallDispatcher.dispatch;
             }
             else {
-                throw `Unknown scope ${ns}`;
+                if (!jsCallDispatcher._isUnoRegistered) {
+                    jsCallDispatcher.registerScope("UnoStatic", Uno.UI.WindowManager);
+                    jsCallDispatcher._isUnoRegistered = true;
+                }
+                const { ns, methodName } = jsCallDispatcher.parseIdentifier(identifier);
+                var instance = jsCallDispatcher.registrations.get(ns);
+                if (instance) {
+                    var boundMethod = instance[methodName].bind(instance);
+                    var methodId = jsCallDispatcher.cacheMethod(boundMethod);
+                    return () => methodId;
+                }
+                else {
+                    throw `Unknown scope ${ns}`;
+                }
             }
+        }
+        /**
+         * Internal dispatcher for methods invoked through TSInteropMarshaller
+         * @param id The method ID obtained when invoking WebAssemblyRuntime.InvokeJSUnmarshalled with a method name
+         * @param pParams The parameters structure ID
+         * @param pRet The pointer to the return value structure
+         */
+        static dispatch(id, pParams, pRet) {
+            return jsCallDispatcher.methodMap[id](pParams, pRet);
         }
         /**
          * Parses the method identifier
@@ -242,12 +269,14 @@ var MonoSupport;
          * @param identifier the findJSFunction identifier
          * @param boundMethod the method to call
          */
-        static cacheMethod(identifier, boundMethod) {
-            jsCallDispatcher.methodMap.set(identifier, boundMethod);
+        static cacheMethod(boundMethod) {
+            var methodId = Object.keys(jsCallDispatcher.methodMap).length;
+            jsCallDispatcher.methodMap[methodId] = boundMethod;
+            return methodId;
         }
     }
     jsCallDispatcher.registrations = new Map();
-    jsCallDispatcher.methodMap = new Map();
+    jsCallDispatcher.methodMap = {};
     MonoSupport.jsCallDispatcher = jsCallDispatcher;
 })(MonoSupport || (MonoSupport = {}));
 // Export the DotNet helper for WebAssembly.JSInterop.InvokeJSUnmarshalled
@@ -286,12 +315,65 @@ var Uno;
             static init(localStoragePath, isHosted, isLoadEventsEnabled, containerElementId = "uno-body", loadingElementId = "uno-loading") {
                 WindowManager._isHosted = isHosted;
                 WindowManager._isLoadEventsEnabled = isLoadEventsEnabled;
-                Windows.UI.Core.CoreDispatcher.init();
+                Windows.UI.Core.CoreDispatcher.init(WindowManager.buildReadyPromise());
                 WindowManager.setupStorage(localStoragePath);
                 this.current = new WindowManager(containerElementId, loadingElementId);
                 MonoSupport.jsCallDispatcher.registerScope("Uno", this.current);
                 this.current.init();
                 return "ok";
+            }
+            /**
+             * Builds a promise that will signal the ability for the dispatcher
+             * to initiate work.
+             * */
+            static buildReadyPromise() {
+                return new Promise(resolve => {
+                    Promise.all([WindowManager.buildSplashScreen()]).then(() => resolve(true));
+                });
+            }
+            /**
+             * Build the splashscreen image eagerly
+             * */
+            static buildSplashScreen() {
+                return new Promise(resolve => {
+                    const img = new Image();
+                    let loaded = false;
+                    let loadingDone = () => {
+                        if (!loaded) {
+                            loaded = true;
+                            if (img.width !== 0 && img.height !== 0) {
+                                // Materialize the image content so it shows immediately
+                                // even if the dispatcher is blocked thereafter by all
+                                // the Uno initialization work. The resulting canvas is not used.
+                                //
+                                // If the image fails to load, setup the splashScreen anyways with the
+                                // proper sample.
+                                let canvas = document.createElement('canvas');
+                                canvas.width = img.width;
+                                canvas.height = img.height;
+                                let ctx = canvas.getContext("2d");
+                                ctx.drawImage(img, 0, 0);
+                            }
+                            if (document.readyState === "loading") {
+                                document.addEventListener("DOMContentLoaded", () => {
+                                    WindowManager.setupSplashScreen(img);
+                                    resolve(true);
+                                });
+                            }
+                            else {
+                                WindowManager.setupSplashScreen(img);
+                                resolve(true);
+                            }
+                        }
+                    };
+                    // Preload the splash screen so the image element
+                    // created later on 
+                    img.onload = loadingDone;
+                    img.onerror = loadingDone;
+                    img.src = String(UnoAppManifest.splashScreenImage);
+                    // If there's no response, skip the loading
+                    setTimeout(loadingDone, 2000);
+                });
             }
             /**
                 * Initialize the WindowManager
@@ -355,7 +437,7 @@ var Uno;
                 * Creates the UWP-compatible splash screen
                 *
                 */
-            static setupSplashScreen() {
+            static setupSplashScreen(splashImage) {
                 if (UnoAppManifest && UnoAppManifest.splashScreenImage) {
                     const loading = document.getElementById("loading");
                     if (loading) {
@@ -369,11 +451,9 @@ var Uno;
                             const body = document.getElementsByTagName("body")[0];
                             body.style.backgroundColor = UnoAppManifest.splashScreenColor;
                         }
-                        const unoLoadingSplash = document.createElement("div");
-                        unoLoadingSplash.id = "uno-loading-splash";
-                        unoLoadingSplash.classList.add("uno-splash");
-                        unoLoadingSplash.style.backgroundImage = `url('${UnoAppManifest.splashScreenImage}')`;
-                        unoLoading.appendChild(unoLoadingSplash);
+                        splashImage.id = "uno-loading-splash";
+                        splashImage.classList.add("uno-splash");
+                        unoLoading.appendChild(splashImage);
                         unoBody.appendChild(unoLoading);
                     }
                 }
@@ -448,6 +528,13 @@ var Uno;
                 // Add the html element to list of elements
                 this.allActiveElementsById[contentDefinition.id] = element;
             }
+            getView(elementHandle) {
+                const element = this.allActiveElementsById[elementHandle];
+                if (!element) {
+                    throw `Element id ${elementHandle} not found.`;
+                }
+                return element;
+            }
             /**
                 * Set a name for an element.
                 *
@@ -468,20 +555,13 @@ var Uno;
                 return true;
             }
             setNameInternal(elementId, name) {
-                const htmlElement = this.allActiveElementsById[elementId];
-                if (!htmlElement) {
-                    throw `Element id ${elementId} not found.`;
-                }
-                htmlElement.setAttribute("XamlName", name);
+                this.getView(elementId).setAttribute("XamlName", name);
             }
             /**
                 * Set an attribute for an element.
                 */
             setAttribute(elementId, attributes) {
-                const htmlElement = this.allActiveElementsById[elementId];
-                if (!htmlElement) {
-                    throw `Element id ${elementId} not found.`;
-                }
+                const htmlElement = this.getView(elementId);
                 for (const name in attributes) {
                     if (attributes.hasOwnProperty(name)) {
                         htmlElement.setAttribute(name, attributes[name]);
@@ -494,10 +574,7 @@ var Uno;
                 */
             setAttributeNative(pParams) {
                 const params = WindowManagerSetAttributeParams.unmarshal(pParams);
-                const htmlElement = this.allActiveElementsById[params.HtmlId];
-                if (!htmlElement) {
-                    throw `Element id ${params.HtmlId} not found.`;
-                }
+                const htmlElement = this.getView(params.HtmlId);
                 for (let i = 0; i < params.Pairs_Length; i += 2) {
                     htmlElement.setAttribute(params.Pairs[i], params.Pairs[i + 1]);
                 }
@@ -507,20 +584,13 @@ var Uno;
                 * Get an attribute for an element.
                 */
             getAttribute(elementId, name) {
-                const htmlElement = this.allActiveElementsById[elementId];
-                if (!htmlElement) {
-                    throw `Element id ${elementId} not found.`;
-                }
-                return htmlElement.getAttribute(name);
+                return this.getView(elementId).getAttribute(name);
             }
             /**
                 * Set a property for an element.
                 */
             setProperty(elementId, properties) {
-                const htmlElement = this.allActiveElementsById[elementId];
-                if (!htmlElement) {
-                    throw `Element id ${elementId} not found.`;
-                }
+                const htmlElement = this.getView(elementId);
                 for (const name in properties) {
                     if (properties.hasOwnProperty(name)) {
                         htmlElement[name] = properties[name];
@@ -533,10 +603,7 @@ var Uno;
                 */
             setPropertyNative(pParams) {
                 const params = WindowManagerSetPropertyParams.unmarshal(pParams);
-                const htmlElement = this.allActiveElementsById[params.HtmlId];
-                if (!htmlElement) {
-                    throw `Element id ${params.HtmlId} not found.`;
-                }
+                const htmlElement = this.getView(params.HtmlId);
                 for (let i = 0; i < params.Pairs_Length; i += 2) {
                     htmlElement[params.Pairs[i]] = params.Pairs[i + 1];
                 }
@@ -546,10 +613,7 @@ var Uno;
                 * Get a property for an element.
                 */
             getProperty(elementId, name) {
-                const htmlElement = this.allActiveElementsById[elementId];
-                if (!htmlElement) {
-                    throw `Element id ${elementId} not found.`;
-                }
+                const htmlElement = this.getView(elementId);
                 return htmlElement[name] || "";
             }
             /**
@@ -559,10 +623,7 @@ var Uno;
                 * @param styles A dictionary of styles to apply on html element.
                 */
             setStyle(elementId, styles, setAsArranged = false) {
-                const htmlElement = this.allActiveElementsById[elementId];
-                if (!htmlElement) {
-                    throw `Element id ${elementId} not found.`;
-                }
+                const htmlElement = this.getView(elementId);
                 for (const style in styles) {
                     if (styles.hasOwnProperty(style)) {
                         htmlElement.style.setProperty(style, styles[style]);
@@ -581,10 +642,7 @@ var Uno;
             */
             setStyleNative(pParams) {
                 const params = WindowManagerSetStylesParams.unmarshal(pParams);
-                const htmlElement = this.allActiveElementsById[params.HtmlId];
-                if (!htmlElement) {
-                    throw `Element id ${params.HtmlId} not found.`;
-                }
+                const htmlElement = this.getView(params.HtmlId);
                 const elementStyle = htmlElement.style;
                 const pairs = params.Pairs;
                 for (let i = 0; i < params.Pairs_Length; i += 2) {
@@ -603,10 +661,7 @@ var Uno;
             */
             setStyleDoubleNative(pParams) {
                 const params = WindowManagerSetStyleDoubleParams.unmarshal(pParams);
-                const htmlElement = this.allActiveElementsById[params.HtmlId];
-                if (!htmlElement) {
-                    throw `Element id ${params.HtmlId} not found.`;
-                }
+                const htmlElement = this.getView(params.HtmlId);
                 htmlElement.style.setProperty(params.Name, String(params.Value));
                 return true;
             }
@@ -632,10 +687,7 @@ var Uno;
                 return true;
             }
             resetStyleInternal(elementId, names) {
-                const htmlElement = this.allActiveElementsById[elementId];
-                if (!htmlElement) {
-                    throw `Element id ${elementId} not found.`;
-                }
+                const htmlElement = this.getView(elementId);
                 for (const name of names) {
                     htmlElement.style.setProperty(name, "");
                 }
@@ -646,10 +698,7 @@ var Uno;
             */
             arrangeElementNative(pParams) {
                 const params = WindowManagerArrangeElementParams.unmarshal(pParams);
-                const htmlElement = this.allActiveElementsById[params.HtmlId];
-                if (!htmlElement) {
-                    throw `Element id ${params.HtmlId} not found.`;
-                }
+                const htmlElement = this.getView(params.HtmlId);
                 var style = htmlElement.style;
                 style.position = "absolute";
                 style.top = params.Top + "px";
@@ -671,10 +720,7 @@ var Uno;
             */
             setElementTransformNative(pParams) {
                 const params = WindowManagerSetElementTransformParams.unmarshal(pParams);
-                const htmlElement = this.allActiveElementsById[params.HtmlId];
-                if (!htmlElement) {
-                    throw `Element id ${params.HtmlId} not found.`;
-                }
+                const htmlElement = this.getView(params.HtmlId);
                 var style = htmlElement.style;
                 style.transform = `matrix(${params.M11},${params.M12},${params.M21},${params.M22},${params.M31},${params.M32})`;
                 htmlElement.classList.remove(WindowManager.unoUnarrangedClassName);
@@ -741,10 +787,7 @@ var Uno;
                 * @param onCapturePhase true means "on trickle down", false means "on bubble up". Default is false.
                 */
             registerEventOnViewInternal(elementId, eventName, onCapturePhase = false, eventFilterName, eventExtractorName) {
-                const htmlElement = this.allActiveElementsById[elementId];
-                if (!htmlElement) {
-                    throw `Element id ${elementId} not found.`;
-                }
+                const htmlElement = this.getView(elementId);
                 const eventFilter = this.getEventFilter(eventFilterName);
                 const eventExtractor = this.getEventExtractor(eventExtractorName);
                 const eventHandler = (event) => {
@@ -757,9 +800,6 @@ var Uno;
                     var handled = this.dispatchEvent(htmlElement, eventName, eventPayload);
                     if (handled) {
                         event.stopPropagation();
-                        if (event instanceof KeyboardEvent) {
-                            event.preventDefault();
-                        }
                     }
                 };
                 htmlElement.addEventListener(eventName, eventHandler, onCapturePhase);
@@ -860,7 +900,7 @@ var Uno;
                 * Set or replace the root content element.
                 */
             setRootContent(elementId) {
-                if (this.rootContent && this.rootContent.id === elementId) {
+                if (this.rootContent && Number(this.rootContent.id) === elementId) {
                     return null; // nothing to do
                 }
                 if (this.rootContent) {
@@ -875,7 +915,7 @@ var Uno;
                     return null;
                 }
                 // set new root
-                const newRootElement = this.allActiveElementsById[elementId];
+                const newRootElement = this.getView(elementId);
                 newRootElement.classList.add(WindowManager.unoRootClassName);
                 this.rootContent = newRootElement;
                 if (WindowManager.isLoadEventsEnabled) {
@@ -913,14 +953,8 @@ var Uno;
                 return true;
             }
             addViewInternal(parentId, childId, index) {
-                const parentElement = this.allActiveElementsById[parentId];
-                if (!parentElement) {
-                    throw `addView: Parent element id ${parentId} not found.`;
-                }
-                const childElement = this.allActiveElementsById[childId];
-                if (!childElement) {
-                    throw `addView: Child element id ${parentId} not found.`;
-                }
+                const parentElement = this.getView(parentId);
+                const childElement = this.getView(childId);
                 let shouldRaiseLoadEvents = false;
                 if (WindowManager.isLoadEventsEnabled) {
                     const alreadyLoaded = this.getIsConnectedToRootElement(childElement);
@@ -960,17 +994,14 @@ var Uno;
                 return true;
             }
             removeViewInternal(parentId, childId) {
-                const parentElement = this.allActiveElementsById[parentId];
-                if (!parentElement) {
-                    throw `removeView: Parent element id ${parentId} not found.`;
-                }
-                const childElement = this.allActiveElementsById[childId];
-                if (!childElement) {
-                    throw `removeView: Child element id ${parentId} not found.`;
-                }
+                const parentElement = this.getView(parentId);
+                const childElement = this.getView(childId);
                 const shouldRaiseLoadEvents = WindowManager.isLoadEventsEnabled
                     && this.getIsConnectedToRootElement(childElement);
                 parentElement.removeChild(childElement);
+                // Mark the element as unarranged, so if it gets measured while being
+                // disconnected from the root element, it won't be visible.
+                childElement.classList.add(WindowManager.unoUnarrangedClassName);
                 if (shouldRaiseLoadEvents) {
                     this.dispatchEvent(childElement, "unloaded");
                 }
@@ -981,8 +1012,8 @@ var Uno;
                 * The element won't be available anymore. Usually indicate the managed
                 * version has been scavenged by the GC.
                 */
-            destroyView(viewId) {
-                this.destroyViewInternal(viewId);
+            destroyView(elementId) {
+                this.destroyViewInternal(elementId);
                 return "ok";
             }
             /**
@@ -996,22 +1027,15 @@ var Uno;
                 this.destroyViewInternal(params.HtmlId);
                 return true;
             }
-            destroyViewInternal(viewId) {
-                const element = this.allActiveElementsById[viewId];
-                if (!element) {
-                    throw `destroyView: Element id ${viewId} not found.`;
+            destroyViewInternal(elementId) {
+                const htmlElement = this.getView(elementId);
+                if (htmlElement.parentElement) {
+                    htmlElement.parentElement.removeChild(htmlElement);
                 }
-                if (element.parentElement) {
-                    element.parentElement.removeChild(element);
-                    delete this.allActiveElementsById[viewId];
-                }
+                delete this.allActiveElementsById[elementId];
             }
             getBoundingClientRect(elementId) {
-                const htmlElement = this.allActiveElementsById[elementId];
-                if (!htmlElement) {
-                    throw `Element id ${elementId} not found.`;
-                }
-                const bounds = htmlElement.getBoundingClientRect();
+                const bounds = this.getView(elementId).getBoundingClientRect();
                 return `${bounds.left};${bounds.top};${bounds.right - bounds.left};${bounds.bottom - bounds.top}`;
             }
             getBBox(elementId) {
@@ -1030,11 +1054,7 @@ var Uno;
                 return true;
             }
             getBBoxInternal(elementId) {
-                const htmlElement = this.allActiveElementsById[elementId];
-                if (!htmlElement) {
-                    throw `Element id ${elementId} not found.`;
-                }
-                return htmlElement.getBBox();
+                return this.getView(elementId).getBBox();
             }
             /**
                 * Use the Html engine to measure the element using specified constraints.
@@ -1062,13 +1082,9 @@ var Uno;
                 return true;
             }
             measureViewInternal(viewId, maxWidth, maxHeight) {
-                const element = this.allActiveElementsById[viewId];
-                if (!element) {
-                    throw `measureView: Element id ${viewId} not found.`;
-                }
-                const previousWidth = element.style.width;
-                const previousHeight = element.style.height;
-                const previousPosition = element.style.position;
+                const element = this.getView(viewId);
+                const elementStyle = element.style;
+                const originalStyleCssText = elementStyle.cssText;
                 try {
                     if (!element.isConnected) {
                         // If the element is not connected to the DOM, we need it
@@ -1081,36 +1097,41 @@ var Uno;
                         }
                         this.containerElement.appendChild(unconnectedRoot);
                     }
-                    element.style.width = "";
-                    element.style.height = "";
+                    var updatedStyles = {};
+                    for (var i = 0; i < elementStyle.length; i++) {
+                        const key = elementStyle[i];
+                        updatedStyles[key] = elementStyle.getPropertyValue(key);
+                    }
+                    updatedStyles.width = "";
+                    updatedStyles.height = "";
                     // This is required for an unconstrained measure (otherwise the parents size is taken into account)
-                    element.style.position = "fixed";
-                    element.style.maxWidth = Number.isFinite(maxWidth) ? `${maxWidth}px` : "";
-                    element.style.maxHeight = Number.isFinite(maxHeight) ? `${maxHeight}px` : "";
-                    if (element.tagName.toUpperCase() === "IMG") {
+                    updatedStyles.position = "fixed";
+                    updatedStyles.maxWidth = Number.isFinite(maxWidth) ? maxWidth + "px" : "";
+                    updatedStyles.maxHeight = Number.isFinite(maxHeight) ? maxHeight + "px" : "";
+                    var updatedStyleString = "";
+                    for (var key in updatedStyles) {
+                        updatedStyleString += key + ": " + updatedStyles[key] + "; ";
+                    }
+                    elementStyle.cssText = updatedStyleString;
+                    if (element instanceof HTMLImageElement) {
                         const imgElement = element;
                         return [imgElement.naturalWidth, imgElement.naturalHeight];
                     }
                     else {
-                        const resultWidth = element.offsetWidth ? element.offsetWidth : element.clientWidth;
-                        const resultHeight = element.offsetHeight ? element.offsetHeight : element.clientHeight;
+                        const offsetWidth = element.offsetWidth;
+                        const offsetHeight = element.offsetHeight;
+                        const resultWidth = offsetWidth ? offsetWidth : element.clientWidth;
+                        const resultHeight = offsetHeight ? offsetHeight : element.clientHeight;
                         /* +0.5 is added to take rounding into account */
                         return [resultWidth + 0.5, resultHeight];
                     }
                 }
                 finally {
-                    element.style.width = previousWidth;
-                    element.style.height = previousHeight;
-                    element.style.position = previousPosition;
-                    element.style.maxWidth = "";
-                    element.style.maxHeight = "";
+                    elementStyle.cssText = originalStyleCssText;
                 }
             }
             setImageRawData(viewId, dataPtr, width, height) {
-                const element = this.allActiveElementsById[viewId];
-                if (!element) {
-                    throw `setImageRawData: Element id ${viewId} not found.`;
-                }
+                const element = this.getView(viewId);
                 if (element.tagName.toUpperCase() === "IMG") {
                     const imgElement = element;
                     const rawCanvas = document.createElement("canvas");
@@ -1137,10 +1158,7 @@ var Uno;
              * @param color the color to apply to the monochrome pixels
              */
             setImageAsMonochrome(viewId, url, color) {
-                const element = this.allActiveElementsById[viewId];
-                if (!element) {
-                    throw `setImageAsMonochrome: Element id ${viewId} not found.`;
-                }
+                const element = this.getView(viewId);
                 if (element.tagName.toUpperCase() === "IMG") {
                     const imgElement = element;
                     var img = new Image();
@@ -1166,26 +1184,15 @@ var Uno;
                 }
             }
             setPointerCapture(viewId, pointerId) {
-                const element = this.allActiveElementsById[viewId];
-                if (!element) {
-                    throw `setPointerCapture: Element id ${viewId} not found.`;
-                }
-                element.setPointerCapture(pointerId);
+                this.getView(viewId).setPointerCapture(pointerId);
                 return "ok";
             }
             releasePointerCapture(viewId, pointerId) {
-                const element = this.allActiveElementsById[viewId];
-                if (!element) {
-                    throw `releasePointerCapture: Element id ${viewId} not found.`;
-                }
-                element.releasePointerCapture(pointerId);
+                this.getView(viewId).releasePointerCapture(pointerId);
                 return "ok";
             }
             focusView(elementId) {
-                const htmlElement = this.allActiveElementsById[elementId];
-                if (!htmlElement) {
-                    throw `Element id ${elementId} not found.`;
-                }
+                const htmlElement = this.getView(elementId);
                 if (!(htmlElement instanceof HTMLElement)) {
                     throw `Element id ${elementId} is not focusable.`;
                 }
@@ -1214,11 +1221,7 @@ var Uno;
                 return true;
             }
             setHtmlContentInternal(viewId, html) {
-                const element = this.allActiveElementsById[viewId];
-                if (!element) {
-                    throw `setHtmlContent: Element id ${viewId} not found.`;
-                }
-                element.innerHTML = html;
+                this.getView(viewId).innerHTML = html;
             }
             /**
                 * Remove the loading indicator.
@@ -1270,10 +1273,10 @@ var Uno;
             }
             resize() {
                 if (WindowManager.isHosted) {
-                    UnoDispatch.resize(`${window.innerWidth};${window.innerHeight}`);
+                    UnoDispatch.resize(`${document.documentElement.clientWidth};${document.documentElement.clientHeight}`);
                 }
                 else {
-                    WindowManager.resizeMethod(window.innerWidth, window.innerHeight);
+                    WindowManager.resizeMethod(document.documentElement.clientWidth, document.documentElement.clientHeight);
                 }
             }
             dispatchEvent(element, eventName, eventPayload = null) {
@@ -1331,12 +1334,6 @@ var Uno;
         UI.WindowManager = WindowManager;
         if (typeof define === "function") {
             define(["AppManifest"], () => {
-                if (document.readyState === "loading") {
-                    document.addEventListener("DOMContentLoaded", () => WindowManager.setupSplashScreen());
-                }
-                else {
-                    WindowManager.setupSplashScreen();
-                }
             });
         }
         else {

@@ -4,21 +4,31 @@ using System.ComponentModel;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Text;
+using System.Threading;
 using System.Windows.Input;
+using Uno.Disposables;
 using Windows.UI.Core;
 
 namespace Uno.UI.Samples.UITests.Helpers
 {
 	[Windows.UI.Xaml.Data.Bindable]
-	public class ViewModelBase : INotifyPropertyChanged
+	public class ViewModelBase : INotifyPropertyChanged, IDisposable
 	{
 		public CoreDispatcher Dispatcher { get; }
 
 		public event PropertyChangedEventHandler PropertyChanged;
 
+		protected readonly CompositeDisposable Disposables = new CompositeDisposable();
+		protected readonly CancellationToken CT;
+
 		public ViewModelBase(CoreDispatcher dispatcher)
 		{
 			Dispatcher = dispatcher;
+
+			var cts = new CancellationTokenSource();
+			CT = cts.Token;
+
+			Disposables.Add(Disposable.Create(() => cts.Cancel()));
 		}
 
 		protected void RaisePropertyChanged([CallerMemberName] string propertyName = "")
@@ -39,14 +49,19 @@ namespace Uno.UI.Samples.UITests.Helpers
 			}
 		}
 
-		protected static Command CreateCommand(Action<object> action)
+		protected static Command CreateCommand<T>(Action<T> action)
 		{
-			return new Command(action);
+			return new Command(x => action((T)x));
 		}
 
 		protected static Command CreateCommand(Action action)
 		{
 			return new Command(_ => action());
+		}
+
+		public void Dispose()
+		{
+			Disposables.Dispose();
 		}
 
 		public object this[string propertyName]

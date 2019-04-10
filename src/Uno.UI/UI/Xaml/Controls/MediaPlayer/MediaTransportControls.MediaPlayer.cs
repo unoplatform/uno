@@ -39,13 +39,13 @@ namespace Windows.UI.Xaml.Controls
 			_mediaPlayer.PlaybackSession.NaturalDurationChanged += OnNaturalDurationChanged;
 			_mediaPlayer.PlaybackSession.PositionChanged += OnPositionChanged;
 
-			_playPauseButton.Maybe(p => p.Click += PlayPause);
-			_playPauseButtonOnLeft.Maybe(p => p.Click += PlayPause);
-			_audioMuteButton.Maybe(p => p.Click += ToggleMute);
+			_playPauseButton.Maybe(p => p.Tapped += PlayPause);
+			_playPauseButtonOnLeft.Maybe(p => p.Tapped += PlayPause);
+			_audioMuteButton.Maybe(p => p.Tapped += ToggleMute);
 			_volumeSlider.Maybe(p => p.ValueChanged += OnVolumeChanged);
-			_stopButton.Maybe(p => p.Click += Stop);
-			_skipForwardButton.Maybe(p => p.Click += SkipForward);
-			_skipBackwardButton.Maybe(p => p.Click += SkipBackward);
+			_stopButton.Maybe(p => p.Tapped += Stop);
+			_skipForwardButton.Maybe(p => p.Tapped += SkipForward);
+			_skipBackwardButton.Maybe(p => p.Tapped += SkipBackward);
 
 			_subscriptions.Disposable = AttachThumbEventHandlers(_progressSlider);
 		}
@@ -74,13 +74,13 @@ namespace Windows.UI.Xaml.Controls
 					_mediaPlayer.PlaybackSession.PositionChanged -= OnPositionChanged;
 				}
 
-				_playPauseButton.Maybe(p => p.Click -= PlayPause);
-				_playPauseButtonOnLeft.Maybe(p => p.Click -= PlayPause);
-				_audioMuteButton.Maybe(p => p.Click -= ToggleMute);
+				_playPauseButton.Maybe(p => p.Tapped -= PlayPause);
+				_playPauseButtonOnLeft.Maybe(p => p.Tapped -= PlayPause);
+				_audioMuteButton.Maybe(p => p.Tapped -= ToggleMute);
 				_volumeSlider.Maybe(p => p.ValueChanged -= OnVolumeChanged);
-				_stopButton.Maybe(p => p.Click -= Stop);
-				_skipForwardButton.Maybe(p => p.Click -= SkipForward);
-				_skipBackwardButton.Maybe(p => p.Click -= SkipBackward);
+				_stopButton.Maybe(p => p.Tapped -= Stop);
+				_skipForwardButton.Maybe(p => p.Tapped -= SkipForward);
+				_skipBackwardButton.Maybe(p => p.Tapped -= SkipBackward);
 			}
 			catch (Exception ex)
 			{

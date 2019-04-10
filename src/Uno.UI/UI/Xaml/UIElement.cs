@@ -41,9 +41,9 @@ namespace Windows.UI.Xaml
 		/// </summary>
 		internal bool ClipChildrenToBounds { get; set; } = true;
 
-		protected internal bool IsPointerPressed { get; set; }
+		internal bool IsPointerPressed { get; set; }
 
-		protected internal bool IsPointerOver { get; set; }
+		internal bool IsPointerOver { get; set; }
 
 		#region Clip DependencyProperty
 
@@ -304,7 +304,6 @@ namespace Windows.UI.Xaml
 			if(_pointCaptures.Contains(value))
 			{
 				_pointCaptures.Remove(value);
-
 #if __WASM__
 				ReleasePointerCaptureNative(value);
 #endif

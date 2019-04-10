@@ -420,6 +420,10 @@ namespace Windows.UI.Xaml
 		/// </summary>
 		internal int[] DataTemplateRenderPhases { get; set; }
 
+		internal bool GoToElementState(string stateName, bool useTransitions) => GoToElementStateCore(stateName, useTransitions);
+
+		protected virtual bool GoToElementStateCore(string stateName, bool useTransitions) => false;
+
 #if XAMARIN
 		private static FrameworkElement FindPhaseEnabledRoot(ContentControl content)
 		{

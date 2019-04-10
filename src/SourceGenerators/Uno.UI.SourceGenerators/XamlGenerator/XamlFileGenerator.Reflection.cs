@@ -33,6 +33,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		private Func<INamedTypeSymbol, Dictionary<string, IEventSymbol>> _getEventsForType;
 		private (string ns, string className) _className;
 		private bool _hasLiteralEventsRegistration = false;
+		private string[] _clrNamespaces;
 		private readonly static Func<INamedTypeSymbol, IPropertySymbol> _findContentProperty;
 		private readonly static Func<INamedTypeSymbol, string, bool> _isAttachedProperty;
 
@@ -44,6 +45,14 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			_findPropertyTypeByName = Funcs.Create<string, string, INamedTypeSymbol>(SourceFindPropertyType).AsLockedMemoized();
 			_findTypeByXamlType = Funcs.Create<XamlType, INamedTypeSymbol>(SourceFindTypeByXamlType).AsLockedMemoized();
 			_getEventsForType = Funcs.Create<INamedTypeSymbol, Dictionary<string, IEventSymbol>>(SourceGetEventsForType).AsLockedMemoized();
+
+			var defaultXmlNamespace = _fileDefinition
+				.Namespaces
+				.Where(n => n.Prefix.None())
+				.FirstOrDefault()
+				.SelectOrDefault(n => n.Namespace);
+
+			_clrNamespaces = _knownNamespaces.UnoGetValueOrDefault(defaultXmlNamespace, new string[0]);
 		}
 
 		/// <summary>
@@ -563,6 +572,12 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			|| IsImplementingInterface(propertyType, _iListOfTSymbol);
 
 		/// <summary>
+		/// Returns true if the type implements <see cref="IDictionary{TKey, TValue}"/>
+		/// </summary>
+		private bool IsDictionary(INamedTypeSymbol propertyType)
+			=> IsImplementingInterface(propertyType, _iDictionaryOfTKeySymbol);
+
+		/// <summary>
 		/// Returns true if the type exactly implements either ICollection, IList or one of their generics
 		/// </summary>
 		private bool IsExactlyCollectionOrListType(INamedTypeSymbol type)
@@ -737,16 +752,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			}
 			else
 			{
-				var defaultXmlNamespace = _fileDefinition
-						.Namespaces
-						.Where(n => n.Prefix.None())
-						.FirstOrDefault()
-						.SelectOrDefault(n => n.Namespace);
-
-				var clrNamespaces = _knownNamespaces.UnoGetValueOrDefault(defaultXmlNamespace, new string[0]);
-
 				// Search first using the default namespace
-				foreach (var clrNamespace in clrNamespaces)
+				foreach (var clrNamespace in _clrNamespaces)
 				{
 					var type = _medataHelper.FindTypeByFullName(clrNamespace + "." + name) as INamedTypeSymbol;
 

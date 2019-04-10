@@ -16,6 +16,7 @@ namespace Windows.UI.Xaml
 
 		public Window()
 		{
+			InitializeCommon();
 		}
 
 		private void InternalSetContent(UIElement value)

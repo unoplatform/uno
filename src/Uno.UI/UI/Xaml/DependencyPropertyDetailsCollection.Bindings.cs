@@ -147,10 +147,13 @@ namespace Windows.UI.Xaml
 
 		private void ApplyBinding(BindingExpression binding, object dataContext)
 		{
-			var isTemplateBinding = object.Equals(binding.ParentBinding.RelativeSource, RelativeSource.TemplatedParent);
-			if (isTemplateBinding)
+			if (Equals(binding.ParentBinding.RelativeSource, RelativeSource.TemplatedParent))
 			{
 				binding.DataContext = dataContext;
+			}
+			else if (Equals(binding.ParentBinding.RelativeSource, RelativeSource.Self))
+			{
+				binding.DataContext = _ownerReference.Target;
 			}
 			else
 			{

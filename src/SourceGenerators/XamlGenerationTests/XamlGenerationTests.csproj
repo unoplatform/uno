@@ -1,7 +1,7 @@
 ﻿<Project Sdk="MSBuild.Sdk.Extras" ToolsVersion="15.0">
 	<PropertyGroup>
-		<TargetFrameworks>MonoAndroid80;xamarinios10</TargetFrameworks>
-		<TargetFrameworksCI>MonoAndroid80;xamarinios10</TargetFrameworksCI>
+		<TargetFrameworks>MonoAndroid90;xamarinios10;netstandard2.0</TargetFrameworks>
+		<TargetFrameworksCI>MonoAndroid80;MonoAndroid90;xamarinios10</TargetFrameworksCI>
 	</PropertyGroup>
 
 	<PropertyGroup>
@@ -17,7 +17,23 @@
 		<PackageReference Include="Uno.Core.Build"/>
 	</ItemGroup>
 	
+	<PropertyGroup Condition="'$(TargetFramework)'=='netstandard2.0'">
+		<DefineConstants>$(DefineConstants);__WASM__</DefineConstants>
+	</PropertyGroup>
+
 	<ItemGroup Condition=" '$(TargetFramework)' == 'MonoAndroid80'">
+		<PackageReference Include="Xamarin.Android.Support.v4">
+			<Version>26.1.0.1</Version>
+		</PackageReference>
+		<PackageReference Include="Xamarin.Android.Support.v7.AppCompat">
+			<Version>26.1.0.1</Version>
+		</PackageReference>
+		<PackageReference Include="Xamarin.Android.Support.v7.RecyclerView">
+			<Version>26.1.0.1</Version>
+		</PackageReference>
+	</ItemGroup>
+
+	<ItemGroup Condition=" '$(TargetFramework)' == 'MonoAndroid90'">
 		<PackageReference Include="Xamarin.Android.Support.v4">
 			<Version>26.1.0.1</Version>
 		</PackageReference>
@@ -49,7 +65,7 @@
 		<ProjectReference Include="..\..\Uno.UI.BindingHelper.Android\Uno.UI.BindingHelper.Android.csproj" />
 	</ItemGroup>
 	
-	<ItemGroup Condition="$(IsMonoAndroid) or $(IsXamarinIOS)">
+	<ItemGroup Condition="$(IsMonoAndroid) or $(IsXamarinIOS) or '$(TargetFramework)'=='netstandard2.0'">
 		<ProjectReference Include="..\..\Uno.UI\Uno.UI.csproj" />
 		<ProjectReference Include="..\..\Uno.UWP\Uno.csproj" />
 		<ProjectReference Include="..\..\Uno.Foundation\Uno.Foundation.csproj" />
@@ -78,8 +94,9 @@
 	  </Page>
 	</ItemGroup>
 	
-	<Import Project="..\Uno.UI.SourceGenerators\Content\Uno.UI.SourceGenerators.props" Condition="$(IsMonoAndroid) or $(IsXamarinIOS)" />
+	<Import Project="..\Uno.UI.SourceGenerators\Content\Uno.UI.SourceGenerators.props" Condition="$(IsMonoAndroid) or $(IsXamarinIOS) or '$(TargetFramework)'=='netstandard2.0'" />
 
 	<Import Project="..\..\Common.targets" />
 
 </Project>
+ 

@@ -308,6 +308,11 @@ namespace Windows.UI.Xaml.Controls
 					inputType |= InputTypes.TextFlagMultiLine;
 				}
 
+				if (IsReadOnly)
+				{
+					inputType = InputTypes.Null;
+				}
+
 				_textBoxView.InputType = inputType;
 			}
 		}
@@ -398,7 +403,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			if (_textBoxView != null)
 			{
-				_textBoxView.InputType = InputTypes.Null;
+				UpdateInputScope(InputScope);
 			}
 		}
 

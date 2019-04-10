@@ -124,6 +124,33 @@ namespace Uno.UI.Tests.ItemsControlTests
 			
 			Assert.AreEqual(1, count);
 		}
+
+		[TestMethod]
+		public void When_CollectionViewSource()
+		{
+			var count = 0;
+			var panel = new StackPanel();
+
+			var cvs = new CollectionViewSource();
+
+			var SUT = new ItemsControl()
+			{
+				ItemsPanelRoot = panel,
+				InternalItemsPanelRoot = panel,
+				ItemTemplate = new DataTemplate(() =>
+				{
+					count++;
+					return new Border();
+				}),
+				ItemsSource = cvs
+			};
+			
+			Assert.AreEqual(0, count);
+
+			cvs.Source = new [] { 42 };
+
+			Assert.AreEqual(1, count);
+		}
 	}
 
 	public class MyItemsControl : ItemsControl

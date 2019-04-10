@@ -13,6 +13,7 @@ using System;
 using Android.Support.V7.Widget;
 using Windows.UI.Xaml.Data;
 using Windows.UI.Core;
+using Android.Views;
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -33,6 +34,7 @@ namespace Windows.UI.Xaml.Controls
 			var unoIndex = IndexPath.FromRowSection(firstItem, section);
 			var recyclerViewIndex = GetDisplayIndexFromIndexPath(unoIndex);
 			NativePanel?.CurrentAdapter?.NotifyItemRangeInserted(recyclerViewIndex, count);
+			NativePanel?.NativeLayout?.NotifyCollectionChange(groupOperation: null);
 		}
 
 		private void RemoveItems(int firstItem, int count, int section)
@@ -40,6 +42,7 @@ namespace Windows.UI.Xaml.Controls
 			var unoIndex = IndexPath.FromRowSection(firstItem, section);
 			var recyclerViewIndex = GetDisplayIndexFromIndexPath(unoIndex);
 			NativePanel?.CurrentAdapter?.NotifyItemRangeRemoved(recyclerViewIndex, count);
+			NativePanel?.NativeLayout?.NotifyCollectionChange(groupOperation: null);
 		}
 
 		partial void NativeReplaceItems(int firstItem, int count, int section)
@@ -47,6 +50,7 @@ namespace Windows.UI.Xaml.Controls
 			var unoIndex = IndexPath.FromRowSection(firstItem, section);
 			var recyclerViewIndex = GetDisplayIndexFromIndexPath(unoIndex);
 			NativePanel?.CurrentAdapter?.NotifyItemRangeChanged(recyclerViewIndex, count);
+			NativePanel?.NativeLayout?.NotifyCollectionChange(groupOperation: null);
 		}
 
 		partial void AddGroupItems(int groupIndex)
@@ -61,6 +65,7 @@ namespace Windows.UI.Xaml.Controls
 			if (count > 0)
 			{
 				adapter.NotifyItemRangeInserted(GetDisplayIndexFromIndexPath(IndexPath.FromRowSection(0, groupIndex)), count);
+				NativePanel?.NativeLayout?.NotifyCollectionChange(groupOperation: null);
 			}
 		}
 
@@ -75,6 +80,7 @@ namespace Windows.UI.Xaml.Controls
 			if (count > 0)
 			{
 				adapter.NotifyItemRangeRemoved(GetDisplayIndexFromIndexPath(IndexPath.FromRowSection(0, groupIndex)), count);
+				NativePanel?.NativeLayout?.NotifyCollectionChange(groupOperation: null);
 			}
 		}
 
@@ -87,19 +93,20 @@ namespace Windows.UI.Xaml.Controls
 		{
 			NativePanel?.CurrentAdapter?.NotifyItemInserted(GetGroupHeaderDisplayIndex(groupIndexInView));
 
-			NativePanel?.NativeLayout?.NotifyGroupOperation(new GroupOperation { GroupIndex = groupIndexInView, Type = GroupOperationType.Add });
+			NativePanel?.NativeLayout?.NotifyCollectionChange(new GroupOperation { GroupIndex = groupIndexInView, Type = GroupOperationType.Add });
 		}
 
 		private void RemoveGroup(int groupIndexInView)
 		{
 			NativePanel?.CurrentAdapter?.NotifyItemRemoved(GetGroupHeaderDisplayIndex(groupIndexInView));
 
-			NativePanel?.NativeLayout?.NotifyGroupOperation(new GroupOperation { GroupIndex = groupIndexInView, Type = GroupOperationType.Remove });
+			NativePanel?.NativeLayout?.NotifyCollectionChange(new GroupOperation { GroupIndex = groupIndexInView, Type = GroupOperationType.Remove });
 		}
 
 		private void ReplaceGroup(int groupIndexInView)
 		{
 			NativePanel?.CurrentAdapter?.NotifyItemChanged(GetGroupHeaderDisplayIndex(groupIndexInView));
+			NativePanel?.NativeLayout?.NotifyCollectionChange(groupOperation: null);
 		}
 
 		private void Refresh()
@@ -303,6 +310,13 @@ namespace Windows.UI.Xaml.Controls
 				var displayPosition = ConvertIndexToDisplayPosition(index);
 				NativePanel?.ScrollIntoView(displayPosition, alignment);
 			});
+		}
+
+		public override bool DispatchTouchEvent(MotionEvent e)
+		{
+			NativePanel?.TrackMotionDirections(e);
+
+			return base.DispatchTouchEvent(e);
 		}
 
 		protected internal override IEnumerable<DependencyObject> GetItemsPanelChildren()

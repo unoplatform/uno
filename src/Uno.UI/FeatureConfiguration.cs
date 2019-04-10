@@ -111,6 +111,17 @@ namespace Uno.UI
 			public static double? DefaultCacheLength = 1.0;
 		}
 
+#if __ANDROID__
+		public static class NativeListViewBase
+		{
+			/// <summary>
+			/// Sets this value to remove item animation for <see cref="UnoRecyclerView"/>. This prevents <see cref="UnoRecyclerView"/>
+			/// from crashing when pressured: Tmp detached view should be removed from RecyclerView before it can be recycled
+			/// </summary>
+			public static bool RemoveItemAnimator = true;
+		}
+#endif
+
 		public static class Page
 		{
 			/// <summary>

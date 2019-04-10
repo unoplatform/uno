@@ -368,7 +368,7 @@ namespace Windows.UI.Xaml.Markup.Reader
                 var property = type.GetProperties().FirstOrDefault(p => p.Name == name);
                 var setMethod = type.GetMethods().FirstOrDefault(p => p.Name == "Set" + name);
 
-                if (property != null && property.GetMethod.IsStatic)
+                if (property?.GetMethod?.IsStatic ?? false)
                 {
                     return true;
                 }

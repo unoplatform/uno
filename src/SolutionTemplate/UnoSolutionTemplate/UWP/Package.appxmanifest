@@ -30,7 +30,7 @@
   <Applications>
     <Application Id="App"
       Executable="$ext_safeprojectname$.exe"
-      EntryPoint="UnoQuickStart.App">
+      EntryPoint="$ext_safeprojectname$.App">
       <uap:VisualElements
         DisplayName="$ext_safeprojectname$"
         Square150x150Logo="Assets\Square150x150Logo.png"
@@ -46,3 +46,4 @@
   <Capabilities>
     <Capability Name="internetClient" />
   </Capabilities>
+</Package>

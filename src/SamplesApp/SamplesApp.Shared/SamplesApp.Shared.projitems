@@ -21,12 +21,17 @@
     <Compile Include="$(MSBuildThisFileDirectory)MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Samples\UnitTests\HttpUnitTests.xaml.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Samples\UnitTests\UnitTestsPage.xaml.cs">
       <DependentUpon>UnitTestsPage.xaml</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>
     <Page Include="$(MSBuildThisFileDirectory)MainPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Samples\UnitTests\HttpUnitTests.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -52,5 +57,10 @@
     <PRIResource Include="$(MSBuildThisFileDirectory)Strings\en\Test01.resw" />
     <PRIResource Include="$(MSBuildThisFileDirectory)Strings\fr\Resources.resw" />
     <PRIResource Include="$(MSBuildThisFileDirectory)Strings\sr-Cyrl-BA\Resources.resw" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Update="C:\src\Uno\src\SamplesApp\SamplesApp.Shared\Samples\UnitTests\HttpUnitTests.xaml.cs">
+      <DependentUpon>HttpUnitTests.xaml</DependentUpon>
+    </Compile>
   </ItemGroup>
 </Project>

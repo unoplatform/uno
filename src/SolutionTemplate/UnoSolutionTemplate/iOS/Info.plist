@@ -3,7 +3,7 @@
 <plist version="1.0">
   <dict>
 	<key>CFBundleDisplayName</key>
-	<string>UnoQuickStart.iOS</string>
+	<string>$ext_safeprojectname$</string>
 	<key>CFBundleIdentifier</key>
 	<string>com.companyname.$ext_safeprojectname$</string>
 	<key>CFBundleShortVersionString</key>

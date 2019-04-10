@@ -160,7 +160,7 @@ namespace Windows.UI.Xaml
 
 			_thisWeakRef = Uno.UI.DataBinding.WeakReferencePool.RentWeakReference(this, this);
 
-			_properties = new DependencyPropertyDetailsCollection(_originalObjectType, dataContextProperty, templatedParentProperty);
+			_properties = new DependencyPropertyDetailsCollection(_originalObjectType, _originalObjectRef, dataContextProperty, templatedParentProperty);
 			_dataContextPropertyDetails = _properties.DataContextPropertyDetails;
 			_templatedParentPropertyDetails = _properties.TemplatedParentPropertyDetails;
 
@@ -392,14 +392,27 @@ namespace Windows.UI.Xaml
 			// to avoid two-way bindings to do a ping-pong.
 			var currentlySettingPropertyPushed = false;
 
+#if !HAS_EXPENSIVE_TRYFINALLY
+			// The try/finally incurs a very large performance hit in mono-wasm, and SetValue is in a very hot execution path.
+			// See https://github.com/mono/mono/issues/13653 for more details.
 			try
+#endif
 			{
-				using (WritePropertyEventTrace(TraceProvider.SetValueStart, TraceProvider.SetValueStop, property, precedence))
+				if (_trace.IsEnabled)
+				{
+					using (WritePropertyEventTrace(TraceProvider.SetValueStart, TraceProvider.SetValueStop, property, precedence))
+					{
+						InnerSetValue(property, value, precedence, propertyDetails, ref currentlySettingPropertyPushed);
+					}
+				}
+				else
 				{
 					InnerSetValue(property, value, precedence, propertyDetails, ref currentlySettingPropertyPushed);
 				}
 			}
+#if !HAS_EXPENSIVE_TRYFINALLY
 			finally
+#endif
 			{
 				if (currentlySettingPropertyPushed)
 				{
@@ -919,8 +932,9 @@ namespace Windows.UI.Xaml
 				_inheritedForwardedProperties[parentProperty] = sourceInstance;
 
 				// If not, propagate the DP down to the child listeners, if any.
-				foreach (var child in _childrenStores)
+				for (var storeIndex = 0; storeIndex < _childrenStores.Count; storeIndex++)
 				{
+					var child = _childrenStores[storeIndex];
 					child.OnParentPropertyChangedCallback(sourceInstance, parentProperty, args);
 				}
 			}
@@ -951,13 +965,19 @@ namespace Windows.UI.Xaml
 
 				if (parentProvider != null)
 				{
+#if !HAS_EXPENSIVE_TRYFINALLY
+					// The try/finally incurs a very large performance hit in mono-wasm, and SetValue is in a very hot execution path.
+					// See https://github.com/mono/mono/issues/13653 for more details.
 					try
+#endif
 					{
 						_registeringInheritedProperties = true;
 
 						_inheritedProperties.Disposable = RegisterInheritedProperties(parentProvider);
 					}
+#if !HAS_EXPENSIVE_TRYFINALLY
 					finally
+#endif
 					{
 						_registeringInheritedProperties = false;
 					}
@@ -994,7 +1014,11 @@ namespace Windows.UI.Xaml
 			// Register for unset values
 			disposable.Add(() =>
 			{
+#if !HAS_EXPENSIVE_TRYFINALLY
+				// The try/finally incurs a very large performance hit in mono-wasm, and SetValue is in a very hot execution path.
+				// See https://github.com/mono/mono/issues/13653 for more details.
 				try
+#endif
 				{
 					_unregisteringInheritedProperties = true;
 
@@ -1011,7 +1035,9 @@ namespace Windows.UI.Xaml
 						SetValue(_templatedParentProperty, DependencyProperty.UnsetValue, DependencyPropertyValuePrecedences.Inheritance);
 					}
 				}
+#if !HAS_EXPENSIVE_TRYFINALLY
 				finally
+#endif
 				{
 					_unregisteringInheritedProperties = false;
 				}
@@ -1065,8 +1091,9 @@ namespace Windows.UI.Xaml
 
 		private void InvokeCompiledBindingsCallbacks()
 		{
-			foreach (var callback in _compiledBindingsCallbacks.Data)
+			for (var compiledBindingsCBIndex = 0; compiledBindingsCBIndex < _compiledBindingsCallbacks.Data.Length; compiledBindingsCBIndex++)
 			{
+				var callback = _compiledBindingsCallbacks.Data[compiledBindingsCBIndex];
 				callback.Invoke();
 			}
 		}
@@ -1084,8 +1111,10 @@ namespace Windows.UI.Xaml
 
 			void Propagate(DependencyObjectStore store)
 			{
-				foreach (var prop in props)
+				for (var propertyIndex = 0; propertyIndex < props.Length; propertyIndex++)
 				{
+					var prop = props[propertyIndex];
+
 					store.OnParentPropertyChangedCallback(instanceRef, prop, new DependencyPropertyChangedEventArgs(
 						prop,
 						null,
@@ -1102,8 +1131,9 @@ namespace Windows.UI.Xaml
 			}
 			else
 			{
-				foreach (var child in _childrenStores)
+				for (var childStoreIndex = 0; childStoreIndex < _childrenStores.Count; childStoreIndex++)
 				{
+					var child = _childrenStores[childStoreIndex];
 					Propagate(child);
 				}
 			}
@@ -1407,8 +1437,9 @@ namespace Windows.UI.Xaml
 				// Raise the property change for generic handlers for inheritance
 				if (frameworkPropertyMetadata.Options.HasInherits())
 				{
-					foreach (var store in _childrenStores)
+					for (var storeIndex = 0; storeIndex < _childrenStores.Count; storeIndex++)
 					{
+						var store = _childrenStores[storeIndex];
 						store.OnParentPropertyChangedCallback(instanceRef, property, eventArgs);
 					}
 				}
@@ -1435,8 +1466,9 @@ namespace Windows.UI.Xaml
 			OnDependencyPropertyChanged(propertyDetails, eventArgs);
 
 			// Raise the property change for generic handlers
-			foreach (var callback in _genericCallbacks.Data)
+			for (var callbackIndex = 0; callbackIndex < _genericCallbacks.Data.Length; callbackIndex++)
 			{
+				var callback = _genericCallbacks.Data[callbackIndex];
 				callback.Invoke(instanceRef, property, eventArgs);
 			}
 		}
@@ -1516,8 +1548,9 @@ namespace Windows.UI.Xaml
 
 				var args = new DependencyObjectParentChangedEventArgs(previousParent, value);
 
-				foreach (var handler in _parentChangedCallbacks.Data)
+				for (var parentCallbackIndex = 0; parentCallbackIndex < _parentChangedCallbacks.Data.Length; parentCallbackIndex++)
 				{
+					var handler = _parentChangedCallbacks.Data[parentCallbackIndex];
 					handler.Invoke(actualInstanceAlias, null, args);
 				}
 			}

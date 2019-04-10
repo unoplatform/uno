@@ -41,7 +41,7 @@
 			WindowManager._isHosted = isHosted;
 			WindowManager._isLoadEventsEnabled = isLoadEventsEnabled;
 
-			Windows.UI.Core.CoreDispatcher.init();
+			Windows.UI.Core.CoreDispatcher.init(WindowManager.buildReadyPromise());
 
 			WindowManager.setupStorage(localStoragePath);
 
@@ -50,6 +50,66 @@
 			this.current.init();
 
 			return "ok";
+		}
+
+		/**
+		 * Builds a promise that will signal the ability for the dispatcher
+		 * to initiate work.
+		 * */
+		private static buildReadyPromise(): Promise<boolean>  {
+			return new Promise<boolean>(resolve => {
+				Promise.all(
+					[WindowManager.buildSplashScreen()]
+				).then(() => resolve(true))
+			});
+		}
+
+		/**
+		 * Build the splashscreen image eagerly
+		 * */
+		private static buildSplashScreen(): Promise<boolean> {
+			return new Promise<boolean>(resolve => {
+				const img = new Image();
+				let loaded = false;
+
+				let loadingDone = () => {
+					if (!loaded) {
+						loaded = true;
+						if (img.width !== 0 && img.height !== 0) {
+							// Materialize the image content so it shows immediately
+							// even if the dispatcher is blocked thereafter by all
+							// the Uno initialization work. The resulting canvas is not used.
+							//
+							// If the image fails to load, setup the splashScreen anyways with the
+							// proper sample.
+							let canvas = document.createElement('canvas');
+							canvas.width = img.width;
+							canvas.height = img.height;
+							let ctx = canvas.getContext("2d");
+							ctx.drawImage(img, 0, 0);
+						}
+
+						if (document.readyState === "loading") {
+							document.addEventListener("DOMContentLoaded", () => {
+								WindowManager.setupSplashScreen(img);
+								resolve(true);
+							});
+						} else {
+							WindowManager.setupSplashScreen(img);
+							resolve(true);
+						}
+					}
+				};
+
+				// Preload the splash screen so the image element
+				// created later on 
+				img.onload = loadingDone;
+				img.onerror = loadingDone;
+				img.src = String(UnoAppManifest.splashScreenImage);
+
+				// If there's no response, skip the loading
+				setTimeout(loadingDone, 2000);
+			});
 		}
 
 		/**
@@ -71,7 +131,8 @@
 
 		private cursorStyleElement: HTMLElement;
 
-		private allActiveElementsById: { [name: string]: HTMLElement | SVGElement } = {};
+		private allActiveElementsById: { [id: number]: HTMLElement | SVGElement } = {};
+
 
 		private static resizeMethod: any;
 		private static dispatchEventMethod: any;
@@ -145,7 +206,7 @@
 			* Creates the UWP-compatible splash screen
 			* 
 			*/
-		static setupSplashScreen(): void {
+		static setupSplashScreen(splashImage:HTMLImageElement): void {
 
 			if (UnoAppManifest && UnoAppManifest.splashScreenImage) {
 
@@ -166,12 +227,10 @@
 						body.style.backgroundColor = UnoAppManifest.splashScreenColor;
 					}
 
-					const unoLoadingSplash = document.createElement("div");
-					unoLoadingSplash.id = "uno-loading-splash";
-					unoLoadingSplash.classList.add("uno-splash");
-					unoLoadingSplash.style.backgroundImage = `url('${UnoAppManifest.splashScreenImage}')`;
+					splashImage.id = "uno-loading-splash";
+					splashImage.classList.add("uno-splash");
 
-					unoLoading.appendChild(unoLoadingSplash);
+					unoLoading.appendChild(splashImage);
 
 					unoBody.appendChild(unoLoading);
 				}
@@ -261,6 +320,14 @@
 			this.allActiveElementsById[contentDefinition.id] = element;
 		}
 
+		public getView(elementHandle: number): HTMLElement | SVGElement {
+			const element = this.allActiveElementsById[elementHandle];
+			if (!element) {
+				throw `Element id ${elementHandle} not found.`;
+			}
+			return element;
+		}
+
 		/**
 			* Set a name for an element.
 			*
@@ -283,23 +350,14 @@
 		}
 
 		private setNameInternal(elementId: number, name: string): void {
-			const htmlElement: HTMLElement | SVGElement = this.allActiveElementsById[elementId];
-			if (!htmlElement) {
-				throw `Element id ${elementId} not found.`;
-			}
-
-			htmlElement.setAttribute("XamlName", name);
+			this.getView(elementId).setAttribute("XamlName", name);
 		}
 
 		/**
 			* Set an attribute for an element.
 			*/
-		public setAttribute(elementId: string, attributes: { [name: string]: string }): string {
-			const htmlElement: HTMLElement | SVGElement = this.allActiveElementsById[elementId];
-			if (!htmlElement) {
-				throw `Element id ${elementId} not found.`;
-			}
-
+		public setAttribute(elementId: number, attributes: { [name: string]: string }): string {
+			const htmlElement = this.getView(elementId);
 
 			for (const name in attributes) {
 				if (attributes.hasOwnProperty(name)) {
@@ -316,11 +374,7 @@
 		public setAttributeNative(pParams: number): boolean {
 
 			const params = WindowManagerSetAttributeParams.unmarshal(pParams);
-
-			const htmlElement: HTMLElement | SVGElement = this.allActiveElementsById[params.HtmlId];
-			if (!htmlElement) {
-				throw `Element id ${params.HtmlId} not found.`;
-			}
+			const htmlElement = this.getView(params.HtmlId);
 
 			for (let i = 0; i < params.Pairs_Length; i += 2) {
 				htmlElement.setAttribute(params.Pairs[i], params.Pairs[i + 1]);
@@ -332,23 +386,16 @@
 		/**
 			* Get an attribute for an element.
 			*/
-		public getAttribute(elementId: string, name: string): any {
-			const htmlElement: HTMLElement | SVGElement = this.allActiveElementsById[elementId];
-			if (!htmlElement) {
-				throw `Element id ${elementId} not found.`;
-			}
+		public getAttribute(elementId: number, name: string): any {
 
-			return htmlElement.getAttribute(name);
+			return this.getView(elementId).getAttribute(name);
 		}
 
 		/**
 			* Set a property for an element.
 			*/
-		public setProperty(elementId: string, properties: { [name: string]: string }): string {
-			const htmlElement: HTMLElement | SVGElement = this.allActiveElementsById[elementId];
-			if (!htmlElement) {
-				throw `Element id ${elementId} not found.`;
-			}
+		public setProperty(elementId: number, properties: { [name: string]: string }): string {
+			const htmlElement = this.getView(elementId);
 
 			for (const name in properties) {
 				if (properties.hasOwnProperty(name)) {
@@ -365,11 +412,7 @@
 		public setPropertyNative(pParams:number): boolean {
 
 			const params = WindowManagerSetPropertyParams.unmarshal(pParams);
-
-			const htmlElement: HTMLElement | SVGElement = this.allActiveElementsById[params.HtmlId];
-			if (!htmlElement) {
-				throw `Element id ${params.HtmlId} not found.`;
-			}
+			const htmlElement = this.getView(params.HtmlId);
 
 			for (let i = 0; i < params.Pairs_Length; i += 2) {
 				(htmlElement as any)[params.Pairs[i]] = params.Pairs[i + 1];
@@ -381,11 +424,8 @@
 		/**
 			* Get a property for an element.
 			*/
-		public getProperty(elementId: string, name: string): any {
-			const htmlElement: HTMLElement | SVGElement = this.allActiveElementsById[elementId];
-			if (!htmlElement) {
-				throw `Element id ${elementId} not found.`;
-			}
+		public getProperty(elementId: number, name: string): any {
+			const htmlElement = this.getView(elementId);
 
 			return (htmlElement as any)[name] || "";
 		}
@@ -396,11 +436,8 @@
 			* To remove a value, set it to empty string.
 			* @param styles A dictionary of styles to apply on html element.
 			*/
-		public setStyle(elementId: string, styles: { [name: string]: string }, setAsArranged: boolean = false): string {
-			const htmlElement: HTMLElement | SVGElement = this.allActiveElementsById[elementId];
-			if (!htmlElement) {
-				throw `Element id ${elementId} not found.`;
-			}
+		public setStyle(elementId: number, styles: { [name: string]: string }, setAsArranged: boolean = false): string {
+			const htmlElement = this.getView(elementId);
 
 			for (const style in styles) {
 				if (styles.hasOwnProperty(style)) {
@@ -424,11 +461,7 @@
 		public setStyleNative(pParams: number): boolean {
 
 			const params = WindowManagerSetStylesParams.unmarshal(pParams);
-
-			const htmlElement: HTMLElement | SVGElement = this.allActiveElementsById[params.HtmlId];
-			if (!htmlElement) {
-				throw `Element id ${params.HtmlId} not found.`;
-			}
+			const htmlElement = this.getView(params.HtmlId);
 
 			const elementStyle = htmlElement.style;
 			const pairs = params.Pairs;
@@ -454,11 +487,7 @@
 		public setStyleDoubleNative(pParams: number): boolean {
 
 			const params = WindowManagerSetStyleDoubleParams.unmarshal(pParams);
-
-			const htmlElement: HTMLElement | SVGElement = this.allActiveElementsById[params.HtmlId];
-			if (!htmlElement) {
-				throw `Element id ${params.HtmlId} not found.`;
-			}
+			const htmlElement = this.getView(params.HtmlId);
 
 			htmlElement.style.setProperty(params.Name, String(params.Value));
 
@@ -489,10 +518,7 @@
 		}
 
 		private resetStyleInternal(elementId: number, names: string[]): void {
-			const htmlElement: HTMLElement | SVGElement = this.allActiveElementsById[elementId];
-			if (!htmlElement) {
-				throw `Element id ${elementId} not found.`;
-			}
+			const htmlElement = this.getView(elementId);
 
 			for(const name of names) {
 				htmlElement.style.setProperty(name, "");
@@ -506,11 +532,7 @@
 		public arrangeElementNative(pParams: number): boolean {
 
 			const params = WindowManagerArrangeElementParams.unmarshal(pParams);
-
-			const htmlElement: HTMLElement | SVGElement = this.allActiveElementsById[params.HtmlId];
-			if (!htmlElement) {
-				throw `Element id ${params.HtmlId} not found.`;
-			}
+			const htmlElement = this.getView(params.HtmlId);
 
 			var style = htmlElement.style;
 
@@ -539,11 +561,7 @@
 		public setElementTransformNative(pParams: number): boolean {
 
 			const params = WindowManagerSetElementTransformParams.unmarshal(pParams);
-
-			const htmlElement: HTMLElement | SVGElement = this.allActiveElementsById[params.HtmlId];
-			if (!htmlElement) {
-				throw `Element id ${params.HtmlId} not found.`;
-			}
+			const htmlElement = this.getView(params.HtmlId);
 
 			var style = htmlElement.style;
 
@@ -638,10 +656,7 @@
 			eventFilterName?: string,
 			eventExtractorName?: string
 		): void {
-			const htmlElement: HTMLElement | SVGElement = this.allActiveElementsById[elementId];
-			if (!htmlElement) {
-				throw `Element id ${elementId} not found.`;
-			}
+			const htmlElement = this.getView(elementId);
 
 			const eventFilter = this.getEventFilter(eventFilterName);
 			const eventExtractor = this.getEventExtractor(eventExtractorName);
@@ -659,9 +674,6 @@
 				var handled = this.dispatchEvent(htmlElement, eventName, eventPayload);
 				if (handled) {
 					event.stopPropagation();
-					if (event instanceof KeyboardEvent) {
-						event.preventDefault();
-					}
 				}
 			};
 
@@ -784,8 +796,8 @@
 		/**
 			* Set or replace the root content element.
 			*/
-		public setRootContent(elementId?: string): string {
-			if (this.rootContent && this.rootContent.id === elementId) {
+		public setRootContent(elementId?: number): string {
+			if (this.rootContent && Number(this.rootContent.id) === elementId) {
 				return null; // nothing to do
 			}
 
@@ -804,7 +816,7 @@
 			}
 
 			// set new root
-			const newRootElement = this.allActiveElementsById[elementId] as HTMLElement;
+			const newRootElement = this.getView(elementId) as HTMLElement;
 			newRootElement.classList.add(WindowManager.unoRootClassName);
 
 			this.rootContent = newRootElement;
@@ -857,14 +869,8 @@
 		}
 
 		public addViewInternal(parentId: number, childId: number, index?: number): void {
-			const parentElement: HTMLElement | SVGElement = this.allActiveElementsById[parentId];
-			if (!parentElement) {
-				throw `addView: Parent element id ${parentId} not found.`;
-			}
-			const childElement: HTMLElement | SVGElement = this.allActiveElementsById[childId];
-			if (!childElement) {
-				throw `addView: Child element id ${parentId} not found.`;
-			}
+			const parentElement = this.getView(parentId);
+			const childElement = this.getView(childId);
 
 			let shouldRaiseLoadEvents = false;
 			if (WindowManager.isLoadEventsEnabled) {
@@ -911,19 +917,17 @@
 		}
 
 		private removeViewInternal(parentId: number, childId: number): void {
-			const parentElement: HTMLElement | SVGElement = this.allActiveElementsById[parentId];
-			if (!parentElement) {
-				throw `removeView: Parent element id ${parentId} not found.`;
-			}
-			const childElement: HTMLElement | SVGElement = this.allActiveElementsById[childId];
-			if (!childElement) {
-				throw `removeView: Child element id ${parentId} not found.`;
-			}
+			const parentElement = this.getView(parentId);
+			const childElement = this.getView(childId);
 
 			const shouldRaiseLoadEvents = WindowManager.isLoadEventsEnabled
 				&& this.getIsConnectedToRootElement(childElement);
 
 			parentElement.removeChild(childElement);
+
+			// Mark the element as unarranged, so if it gets measured while being
+			// disconnected from the root element, it won't be visible.
+			childElement.classList.add(WindowManager.unoUnarrangedClassName);
 
 			if (shouldRaiseLoadEvents) {
 				this.dispatchEvent(childElement, "unloaded");
@@ -936,8 +940,8 @@
 			* The element won't be available anymore. Usually indicate the managed
 			* version has been scavenged by the GC.
 			*/
-		public destroyView(viewId: number): string {
-			this.destroyViewInternal(viewId);
+		public destroyView(elementId: number): string {
+			this.destroyViewInternal(elementId);
 			return "ok";
 		}
 
@@ -953,25 +957,19 @@
 			return true;
 		}
 
-		private destroyViewInternal(viewId: number): void {
-			const element: HTMLElement | SVGElement = this.allActiveElementsById[viewId];
-			if (!element) {
-				throw `destroyView: Element id ${viewId} not found.`;
+		private destroyViewInternal(elementId: number): void {
+			const htmlElement = this.getView(elementId);
+
+			if (htmlElement.parentElement) {
+				htmlElement.parentElement.removeChild(htmlElement);
 			}
 
-			if (element.parentElement) {
-				element.parentElement.removeChild(element);
-				delete this.allActiveElementsById[viewId];
-			}
+			delete this.allActiveElementsById[elementId];
 		}
 
-		public getBoundingClientRect(elementId: string): string {
-			const htmlElement: HTMLElement | SVGElement = this.allActiveElementsById[elementId];
-			if (!htmlElement) {
-				throw `Element id ${elementId} not found.`;
-			}
+		public getBoundingClientRect(elementId: number): string {
 
-			const bounds = (<any>htmlElement).getBoundingClientRect();
+			const bounds = (<any>this.getView(elementId)).getBoundingClientRect();
 			return `${bounds.left};${bounds.top};${bounds.right-bounds.left};${bounds.bottom-bounds.top}`;
 		}
 
@@ -999,12 +997,7 @@
 		}
 
 		private getBBoxInternal(elementId: number): any {
-			const htmlElement: HTMLElement | SVGElement = this.allActiveElementsById[elementId];
-			if (!htmlElement) {
-				throw `Element id ${elementId} not found.`;
-			}
-
-			return (<any>htmlElement).getBBox();
+			return (<any>this.getView(elementId)).getBBox();
 		}
 
 		/**
@@ -1042,14 +1035,10 @@
 		}
 
 		private measureViewInternal(viewId: number, maxWidth: number, maxHeight: number): [number, number] {
-			const element = this.allActiveElementsById[viewId] as HTMLElement;
-			if (!element) {
-				throw `measureView: Element id ${viewId} not found.`;
-			}
+			const element = this.getView(viewId) as HTMLElement;
 
-			const previousWidth = element.style.width;
-			const previousHeight = element.style.height;
-			const previousPosition = element.style.position;
+			const elementStyle = element.style;
+			const originalStyleCssText = elementStyle.cssText;
 
 			try {
 				if (!element.isConnected) {
@@ -1066,41 +1055,51 @@
 					this.containerElement.appendChild(unconnectedRoot);
 				}
 
-				element.style.width = "";
-				element.style.height = "";
+				var updatedStyles = <any>{};
+
+				for (var i = 0; i < elementStyle.length; i++) {
+					const key = elementStyle[i];
+					updatedStyles[key] = elementStyle.getPropertyValue(key);
+				}
+
+				updatedStyles.width = "";
+				updatedStyles.height = "";
 
 				// This is required for an unconstrained measure (otherwise the parents size is taken into account)
-				element.style.position = "fixed";
+				updatedStyles.position = "fixed";
+				updatedStyles.maxWidth = Number.isFinite(maxWidth) ? maxWidth + "px" : "";
+				updatedStyles.maxHeight = Number.isFinite(maxHeight) ? maxHeight + "px" : "";
 
-				element.style.maxWidth = Number.isFinite(maxWidth) ? `${maxWidth}px` : "";
-				element.style.maxHeight = Number.isFinite(maxHeight) ? `${maxHeight}px` : "";
+				var updatedStyleString = "";
 
-				if (element.tagName.toUpperCase() === "IMG") {
+				for (var key in updatedStyles) {
+					updatedStyleString += key + ": " + updatedStyles[key] + "; ";
+				}
+
+				elementStyle.cssText = updatedStyleString;
+
+				if (element instanceof HTMLImageElement) {
 					const imgElement = element as HTMLImageElement;
 					return [imgElement.naturalWidth, imgElement.naturalHeight];
 				}
 				else {
-					const resultWidth = element.offsetWidth ? element.offsetWidth : element.clientWidth;
-					const resultHeight = element.offsetHeight ? element.offsetHeight : element.clientHeight;
+					const offsetWidth = element.offsetWidth;
+					const offsetHeight = element.offsetHeight;
+
+					const resultWidth = offsetWidth ? offsetWidth : element.clientWidth;
+					const resultHeight = offsetHeight ? offsetHeight : element.clientHeight;
 
 					/* +0.5 is added to take rounding into account */
 					return [resultWidth + 0.5, resultHeight];
 				}
-			} finally {
-				element.style.width = previousWidth;
-				element.style.height = previousHeight;
-				element.style.position = previousPosition;
-
-				element.style.maxWidth = "";
-				element.style.maxHeight = "";
+			}
+			finally {
+				elementStyle.cssText = originalStyleCssText;
 			}
 		}
 
-		public setImageRawData(viewId: string, dataPtr: number, width: number, height: number): string {
-			const element = this.allActiveElementsById[viewId] as HTMLElement;
-			if (!element) {
-				throw `setImageRawData: Element id ${viewId} not found.`;
-			}
+		public setImageRawData(viewId: number, dataPtr: number, width: number, height: number): string {
+			const element = this.getView(viewId);
 
 			if (element.tagName.toUpperCase() === "IMG") {
 				const imgElement = element as HTMLImageElement;
@@ -1135,11 +1134,8 @@
 		 * @param url the source image
 		 * @param color the color to apply to the monochrome pixels
 		 */
-		public setImageAsMonochrome(viewId: string, url: string, color: string): string {
-			const element = this.allActiveElementsById[viewId] as HTMLElement;
-			if (!element) {
-				throw `setImageAsMonochrome: Element id ${viewId} not found.`;
-			}
+		public setImageAsMonochrome(viewId: number, url: string, color: string): string {
+			const element = this.getView(viewId);
 
 			if (element.tagName.toUpperCase() === "IMG") {
 
@@ -1173,33 +1169,20 @@
 			}
 		}
 
-		public setPointerCapture(viewId: string, pointerId: number): string {
-			const element = this.allActiveElementsById[viewId] as HTMLElement;
-			if (!element) {
-				throw `setPointerCapture: Element id ${viewId} not found.`;
-			}
-
-			element.setPointerCapture(pointerId);
+		public setPointerCapture(viewId: number, pointerId: number): string {
+			this.getView(viewId).setPointerCapture(pointerId);
 
 			return "ok";
 		}
 
-		public releasePointerCapture(viewId: string, pointerId: number): string {
-			const element = this.allActiveElementsById[viewId] as HTMLElement;
-			if (!element) {
-				throw `releasePointerCapture: Element id ${viewId} not found.`;
-			}
-
-			element.releasePointerCapture(pointerId);
+		public releasePointerCapture(viewId: number, pointerId: number): string {
+			this.getView(viewId).releasePointerCapture(pointerId);
 
 			return "ok";
 		}
 
-		public focusView(elementId: string): string {
-			const htmlElement: HTMLElement | SVGElement = this.allActiveElementsById[elementId];
-			if (!htmlElement) {
-				throw `Element id ${elementId} not found.`;
-			}
+		public focusView(elementId: number): string {
+			const htmlElement = this.getView(elementId);
 
 			if (!(htmlElement instanceof HTMLElement)) {
 				throw `Element id ${elementId} is not focusable.`;
@@ -1235,12 +1218,8 @@
 		}
 
 		private setHtmlContentInternal(viewId: number, html: string): void {
-			const element: HTMLElement | SVGElement = this.allActiveElementsById[viewId];
-			if (!element) {
-				throw `setHtmlContent: Element id ${viewId} not found.`;
-			}
 
-			element.innerHTML = html;
+			this.getView(viewId).innerHTML = html;
 		}
 
 		/**
@@ -1306,10 +1285,10 @@
 		private resize() {
 
 			if (WindowManager.isHosted) {
-				UnoDispatch.resize(`${window.innerWidth};${window.innerHeight}`);
+				UnoDispatch.resize(`${document.documentElement.clientWidth};${document.documentElement.clientHeight}`);
 			}
 			else {
-				WindowManager.resizeMethod(window.innerWidth, window.innerHeight);
+				WindowManager.resizeMethod(document.documentElement.clientWidth, document.documentElement.clientHeight);
 			}
 		}
 
@@ -1374,11 +1353,6 @@
 		define(
 			["AppManifest"],
 			() => {
-				if (document.readyState === "loading") {
-					document.addEventListener("DOMContentLoaded", () => WindowManager.setupSplashScreen());
-				} else {
-					WindowManager.setupSplashScreen();
-				}
 			}
 		);
 	}

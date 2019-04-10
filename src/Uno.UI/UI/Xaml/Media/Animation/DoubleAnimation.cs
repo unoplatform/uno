@@ -37,7 +37,7 @@ namespace Windows.UI.Xaml.Media.Animation
 
 		public double? By
 		{
-			get => (double?) GetValue(ByProperty);
+			get => (double?)GetValue(ByProperty);
 			set => SetValue(ByProperty, value);
 		}
 
@@ -46,7 +46,7 @@ namespace Windows.UI.Xaml.Media.Animation
 
 		public double? From
 		{
-			get => (double?) GetValue(FromProperty);
+			get => (double?)GetValue(FromProperty);
 			set => SetValue(FromProperty, value);
 		}
 
@@ -55,7 +55,7 @@ namespace Windows.UI.Xaml.Media.Animation
 
 		public double? To
 		{
-			get => (double?) GetValue(ToProperty);
+			get => (double?)GetValue(ToProperty);
 			set => SetValue(ToProperty, value);
 		}
 
@@ -64,7 +64,7 @@ namespace Windows.UI.Xaml.Media.Animation
 
 		public bool EnableDependentAnimation
 		{
-			get => (bool) GetValue(EnableDependentAnimationProperty);
+			get => (bool)GetValue(EnableDependentAnimationProperty);
 			set => SetValue(EnableDependentAnimationProperty, value);
 		}
 
@@ -73,7 +73,7 @@ namespace Windows.UI.Xaml.Media.Animation
 
 		public IEasingFunction EasingFunction
 		{
-			get => (IEasingFunction) GetValue(EasingFunctionProperty);
+			get => (IEasingFunction)GetValue(EasingFunctionProperty);
 			set => SetValue(EasingFunctionProperty, value);
 		}
 
@@ -342,7 +342,8 @@ namespace Windows.UI.Xaml.Media.Animation
 
 			if (FillBehavior == FillBehavior.HoldEnd)//Two types of fill behaviors : HoldEnd - Keep displaying the last frame
 			{
-				// Here we make sure that the final frame is applied properly (it may have been skipped by animator)
+#if __IOS__
+				// iOS: Here we make sure that the final frame is applied properly (it may have been skipped by animator)
 				// Note: The value is applied using the "Animations" precedence, which means that the user won't be able to alter
 				//		 it from application code. Instead we should set the value using a lower precedence
 				//		 (possibly "Local" with PropertyInfo.SetLocalValue(ComputeToValue())) but we must keep the
@@ -351,14 +352,15 @@ namespace Windows.UI.Xaml.Media.Animation
 				//		 In that case we should also do "ClearValue();" to remove the "Animations" value, even if using "HoldEnd"
 				//		 cf. https://github.com/nventive/Uno/issues/631
 				PropertyInfo.Value = ComputeToValue();
+#endif
 
 				State = TimelineState.Filling;
 			}
-			else // Stop -Put back the inital state
+			else // Stop -Put back the initial state
 			{
-				ClearValue();
-
 				State = TimelineState.Stopped;
+
+				ClearValue();
 			}
 
 			OnCompleted();

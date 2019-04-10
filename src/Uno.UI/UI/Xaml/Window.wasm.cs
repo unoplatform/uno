@@ -33,9 +33,11 @@ namespace Windows.UI.Xaml
 		public Window()
 		{
 			Init();
+
+			InitializeCommon();
 		}
 
-		public void Init()
+		private void Init()
 		{
 			Dispatcher = CoreDispatcher.Main;
 			CoreWindow = new CoreWindow();
@@ -153,7 +155,7 @@ namespace Windows.UI.Xaml
 					_window.ManagedOnLoading();
 				}
 
-				WebAssemblyRuntime.InvokeJS($"Uno.UI.WindowManager.current.setRootContent(\"{_window.HtmlId}\");");
+				WebAssemblyRuntime.InvokeJS($"Uno.UI.WindowManager.current.setRootContent({_window.HtmlId});");
 
 				if (FeatureConfiguration.FrameworkElement.WasmUseManagedLoadedUnloaded && !_window.IsLoaded)
 				{
