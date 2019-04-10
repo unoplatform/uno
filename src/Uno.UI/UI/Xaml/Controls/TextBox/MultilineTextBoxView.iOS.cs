@@ -15,11 +15,13 @@ using Uno.UI.Controls;
 
 namespace Windows.UI.Xaml.Controls
 {
-	public partial class MultilineTextBoxView : UITextView, ITextBoxView, DependencyObject, IFontScalable
+	public partial class MultilineTextBoxView : UITextView, ITextBoxView, DependencyObject, IFontScalable, IUIScrollView
 	{
 		private MultilineTextBoxDelegate _delegate;
 		private readonly WeakReference<TextBox> _textBox;
 		private readonly WeakReference<Uno.UI.Controls.Window> _window;
+
+		CGPoint IUIScrollView.UpperScrollLimit { get { return (CGPoint)(ContentSize - Frame.Size); } }
 
 		public MultilineTextBoxView(TextBox textBox)
 		{
