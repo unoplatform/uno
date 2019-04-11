@@ -16,6 +16,7 @@
 * Add support for Binding typed property (#731)
 * Add support for `RelativeSource.Self` bindings
 * 149377 Improve performance of `TimePicker` and `DatePicker` on iOS.
+* 145203 [iOS] Support ScrollViewer.ChangeView() inside TextBox
 
 ### Breaking Changes
 * The `WebAssemblyRuntime.InvokeJSUnmarshalled` method with three parameters has been removed.
