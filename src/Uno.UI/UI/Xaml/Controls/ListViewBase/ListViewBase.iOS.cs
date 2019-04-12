@@ -20,6 +20,12 @@ namespace Windows.UI.Xaml.Controls
 	{
 		private readonly SerialDisposable _callbackSubscriptions = new SerialDisposable();
 
+		/// <summary>
+		/// This Uno-only flag sets whether the native list animates collection changes (insertions, deletions, etc). The default is true.
+		/// </summary>
+		[Uno.UnoOnly]
+		public bool UseCollectionAnimations { get; set; } = true;
+
 		private bool _animateScrollIntoView;
 		public bool AnimateScrollIntoView
 		{

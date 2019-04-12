@@ -17,6 +17,7 @@
 * Add support for `RelativeSource.Self` bindings
 * 149377 Improve performance of `TimePicker` and `DatePicker` on iOS.
 * 145203 [iOS] Support ScrollViewer.ChangeView() inside TextBox
+* 150793 [iOS] Add ListView.UseCollectionAnimations flag to allow disabling native insert/delete animations
 
 ### Breaking Changes
 * The `WebAssemblyRuntime.InvokeJSUnmarshalled` method with three parameters has been removed.
