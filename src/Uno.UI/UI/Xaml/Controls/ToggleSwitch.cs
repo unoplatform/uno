@@ -59,7 +59,6 @@ namespace Windows.UI.Xaml.Controls
 
 		private void OnPointerPressed(object sender, PointerRoutedEventArgs args)
 		{
-			base.OnPointerPressed(args);
 			IsPointerOver = true;
 			IsPointerPressed = true;
 			args.Handled = true;
@@ -69,14 +68,12 @@ namespace Windows.UI.Xaml.Controls
 
 		private void OnPointerExited(object sender, PointerRoutedEventArgs args)
 		{
-			base.OnPointerExited(args);
 			IsPointerOver = false;
 			UpdateCommonState();
 		}
 
 		private void OnPointerReleased(object sender, PointerRoutedEventArgs args)
 		{
-			base.OnPointerReleased(args);
 			IsPointerOver = false;
 			IsPointerPressed = false;
 			UpdateCommonState();
@@ -89,7 +86,6 @@ namespace Windows.UI.Xaml.Controls
 
 		private void OnPointerCanceled(object sender, PointerRoutedEventArgs args)
 		{
-			base.OnPointerCanceled(args);
 			IsPointerOver = false;
 			IsPointerPressed = false;
 			UpdateCommonState();
@@ -97,9 +93,13 @@ namespace Windows.UI.Xaml.Controls
 
 		private void OnPointerEntered(object sender, PointerRoutedEventArgs args)
 		{
-			base.OnPointerEntered(args);
 			IsPointerOver = true;
 			UpdateCommonState();
+		}
+
+		protected virtual void OnToggled()
+		{
+			Toggled?.Invoke(this, new RoutedEventArgs());
 		}
 
 		public global::Windows.UI.Xaml.Controls.Primitives.ToggleSwitchTemplateSettings TemplateSettings { get; } = new ToggleSwitchTemplateSettings();
@@ -208,7 +208,7 @@ namespace Windows.UI.Xaml.Controls
 		private void OnIsOnChanged(DependencyPropertyChangedEventArgs e)
 		{
 			// On windows the event is raised first, then the ui is updated
-			Toggled?.Invoke(this, new RoutedEventArgs());
+			OnToggled();
 			UpdateSwitchKnobPosition(0);
 			UpdateToggleState();
 			UpdateContentState();
