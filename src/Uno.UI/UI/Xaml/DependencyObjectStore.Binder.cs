@@ -55,7 +55,11 @@ namespace Windows.UI.Xaml
 		/// </param>
 		public void SetTemplatedParent(FrameworkElement templatedParent)
 		{
+#if !HAS_EXPENSIVE_TRYFINALLY
+			// The try/finally incurs a very large performance hit in mono-wasm, and SetValue is in a very hot execution path.
+			// See https://github.com/mono/mono/issues/13653 for more details.
 			try
+#endif
 			{
 				if (_isApplyingTemplateBindings || _bindingsSuspended)
 				{
@@ -83,7 +87,9 @@ namespace Windows.UI.Xaml
 
 				ApplyChildrenBindable(templatedParent, isTemplatedParent: true);
 			}
+#if !HAS_EXPENSIVE_TRYFINALLY
 			finally
+#endif
 			{
 				_isApplyingTemplateBindings = false;
 			}
@@ -253,7 +259,11 @@ namespace Windows.UI.Xaml
 			}
 			else
 			{
+#if !HAS_EXPENSIVE_TRYFINALLY
+				// The try/finally incurs a very large performance hit in mono-wasm, and SetValue is in a very hot execution path.
+				// See https://github.com/mono/mono/issues/13653 for more details.
 				try
+#endif
 				{
 					if (_isApplyingDataContextBindings || _bindingsSuspended)
 					{
@@ -273,7 +283,9 @@ namespace Windows.UI.Xaml
 						ApplyChildrenBindable(actualDataContext, isTemplatedParent: false);
 					}
 				}
+#if !HAS_EXPENSIVE_TRYFINALLY
 				finally
+#endif
 				{
 					_isApplyingDataContextBindings = false;
 				}

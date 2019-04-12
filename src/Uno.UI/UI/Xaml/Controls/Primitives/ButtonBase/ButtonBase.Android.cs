@@ -1,18 +1,9 @@
-﻿using Android.App;
-using Android.Graphics;
-using Android.Util;
-using Android.Views;
-using Uno;
-using Uno.Client;
+﻿using Android.Views;
+using Uno.Disposables;
 using Uno.Extensions;
 using Uno.Logging;
 using Uno.UI;
 using Windows.UI.Xaml.Input;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using Uno.Disposables;
-using System.Text;
 
 namespace Windows.UI.Xaml.Controls.Primitives
 {
@@ -31,6 +22,8 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			RegisterEvents();
 
 			OnCanExecuteChanged();
+
+			Tapped += HandleTapped;
 		}
 
 		protected override void OnUnloaded()
@@ -38,8 +31,14 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			base.OnUnloaded();
 			_isEnabledSubscription.Disposable = null;
 			_touchSubscription.Disposable = null;
+
+			Tapped -= HandleTapped;
 		}
 
+		private void HandleTapped(object sender, TappedRoutedEventArgs e)
+		{
+			e.Handled = true;
+		}
 
 		partial void OnIsEnabledChangedPartial(bool oldValue, bool newValue)
 		{
@@ -66,7 +65,13 @@ namespace Windows.UI.Xaml.Controls.Primitives
 							this.Log().Debug("TouchUpInside, executing command");
 						}
 
+						OnPointerPressed(new PointerRoutedEventArgs { OriginalSource = this });
+
 						OnClick();
+
+						var args = new TappedRoutedEventArgs { OriginalSource = this };
+
+						RaiseEvent(TappedEvent, args);
 					});
 
 				_isEnabledSubscription.Disposable =

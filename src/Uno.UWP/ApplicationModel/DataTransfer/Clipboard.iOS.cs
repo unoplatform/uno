@@ -7,10 +7,8 @@ namespace Windows.ApplicationModel.DataTransfer
 	{
 		public static void SetContent(DataPackage content)
 		{
-			if (content.Text != null)
-			{
-				UIPasteboard.General.String = content.Text;
-			}
+			//Setting to null doesn't reset the clipboard like for Android
+			UIPasteboard.General.String = content?.Text ?? string.Empty;			
 		}
 	}
 }

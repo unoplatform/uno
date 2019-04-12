@@ -43,13 +43,6 @@ namespace Windows.UI.Xaml.Controls
 		// Forced skipping of method Windows.UI.Xaml.Controls.ToggleSwitch.Toggled.remove
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
-		protected virtual void OnToggled()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.ToggleSwitch", "void ToggleSwitch.OnToggled()");
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
 		protected virtual void OnOnContentChanged( object oldContent,  object newContent)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.ToggleSwitch", "void ToggleSwitch.OnOnContentChanged(object oldContent, object newContent)");

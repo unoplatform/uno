@@ -1,5 +1,4 @@
 ﻿using System.Drawing;
-using System.Globalization;
 using Windows.UI.Xaml;
 using System;
 using System.ComponentModel;
@@ -28,6 +27,15 @@ namespace Windows.UI.Xaml.Media
 		public Geometry()
 		{
 			InitializeBinder();
+		}
+
+		public static implicit operator Geometry(string data)
+		{
+#if __WASM__
+			return new GeometryData(data);
+#else
+			return Parsers.ParseGeometry(data);
+#endif
 		}
 
 		#region Transform

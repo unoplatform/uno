@@ -25,6 +25,7 @@ public abstract class UnoViewGroup
     private boolean _childIsUnoViewGroup;
 
     private boolean _isManagedLoaded;
+    private boolean _needsLayoutOnAttachedToWindow;
 
 	private boolean _isPointerCaptured;
 	private boolean _isPointInView;
@@ -271,6 +272,13 @@ public abstract class UnoViewGroup
     {
         if(nativeRequestLayout())
         {
+            if (getIsManagedLoaded() && !getIsNativeLoaded()) {
+                // If we're here, managed load is enabled (AndroidUseManagedLoadedUnloaded = true) and requestLayout() has been called from OnLoaded
+				// prior to dispatchAttachedToWindow() being called. This can cause the request to fall through the cracks, because mAttachInfo
+				// isn't set yet. (See ViewRootImpl.requestLayoutDuringLayout()). If we're in a layout pass already, we have to ensure that requestLayout()
+				// is called again once the view is fully natively initialized.
+                _needsLayoutOnAttachedToWindow = true;
+            }
             super.requestLayout();
         }
     }
@@ -381,10 +389,8 @@ public abstract class UnoViewGroup
 		//		 (e.g. the growing circles in buttons when keeping pressed (RippleEffect)).
 
 		boolean superDispatchTouchEvent = false;
-		if (_childrenTransformations.size() == 0
-			|| e.getAction() == MotionEvent.ACTION_CANCEL) {
-			// We don't have any child which has s static transform, or the event is a "cancel" (cf. https://android.googlesource.com/platform/frameworks/base/+/0e71b4f19ba602c8c646744e690ab01c69808b42/core/java/android/view/ViewGroup.java#3013)
-			// propagate the event through the 'super' logic
+		if (_childrenTransformations.size() == 0) {
+			// We don't have any child which has a static transform, so propagate the event through the 'super' logic
 
 			superDispatchTouchEvent = super.dispatchTouchEvent(e);
 		} else {
@@ -400,6 +406,9 @@ public abstract class UnoViewGroup
 			// and thios support is sufficent enough for our current cases.
 			// Note: this is not fully complient with the UWP contract (cf. https://github.com/nventive/Uno/issues/649)
 
+			// Note: If this logic is called once, it has to be called for all MotionEvents in the same touch cycle, including Cancel, because if
+			// ViewGroup.dispatchTouchEvent() isn't called for Down then all subsequent events won't be handled correctly
+			// (because mFirstTouchTarget won't be set)
 			Matrix inverse = new Matrix();
 
 			for (int i = getChildCount() - 1; i >= 0; i--) { // Inverse enumeration in order to prioritize controls that are on top
@@ -626,6 +635,11 @@ public abstract class UnoViewGroup
 			onNativeLoaded();
 			_isManagedLoaded = true;
 		}
+		else if (_needsLayoutOnAttachedToWindow && isInLayout()) {
+		    requestLayout();
+        }
+
+        _needsLayoutOnAttachedToWindow = false;
     }
 
     protected abstract void onNativeLoaded();

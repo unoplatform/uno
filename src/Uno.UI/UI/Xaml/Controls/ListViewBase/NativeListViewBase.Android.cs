@@ -16,6 +16,10 @@ namespace Windows.UI.Xaml.Controls
 		/// </summary>
 		private bool _isInAnimatedScroll;
 
+		bool _shouldRecalibrateFlingVelocity;
+		float? _previousX, _previousY;
+		float? _deltaX, _deltaY;
+
 		internal BufferViewCache ViewCache { get; }
 
 		internal IEnumerable<SelectorItem> CachedItemViews => ViewCache.CachedItemViews;
@@ -44,11 +48,17 @@ namespace Windows.UI.Xaml.Controls
 				}
 			}
 		}
+
 		public NativeListViewBase() : base(ContextHelper.Current)
 		{
 			InitializeScrollbars();
 			VerticalScrollBarEnabled = true;
 			HorizontalScrollBarEnabled = true;
+
+			if (FeatureConfiguration.NativeListViewBase.RemoveItemAnimator)
+			{
+				SetItemAnimator(null);
+			}
 
 			ViewCache = new BufferViewCache(this);
 			SetViewCacheExtension(ViewCache);
@@ -56,6 +66,8 @@ namespace Windows.UI.Xaml.Controls
 			InitializeSnapHelper();
 
 			MotionEventSplittingEnabled = false;
+
+			_shouldRecalibrateFlingVelocity = (int)Android.OS.Build.VERSION.SdkInt >= 28; // Android.OS.BuildVersionCodes.P
 		}
 
 		partial void InitializeSnapHelper();
@@ -313,6 +325,69 @@ namespace Windows.UI.Xaml.Controls
 			}
 
 			return this.IsHeightConstrainedSimple() ?? (base.Parent as ILayoutConstraints)?.IsHeightConstrained(this) ?? false;
+		}
+
+		public override bool Fling(int velocityX, int velocityY)
+		{
+			if (_shouldRecalibrateFlingVelocity)
+			{
+				// Workaround for inverted ListView receiving fling velocity in the opposite direction
+				// See: https://issuetracker.google.com/u/1/issues/112385925
+				velocityX = Recalibrate(velocityX, _deltaX);
+				velocityY = Recalibrate(velocityY, _deltaY);
+			}
+
+			return base.Fling(velocityX, velocityY);
+
+			int Recalibrate(int value, float? hint)
+			{
+				// note: the opposite sign should be used to recalibrate the velocity
+				return hint.HasValue && hint != 0
+					? Math.Abs(value) * -Math.Sign(hint.Value)
+					: value;
+			}
+		}
+
+		internal void TrackMotionDirections(MotionEvent e)
+		{
+			if (!_shouldRecalibrateFlingVelocity)
+			{
+				return;
+			}
+
+			switch (e.Action)
+			{
+				case MotionEventActions.Down:
+					_deltaX = _deltaY = null;
+					SaveCurrentCoordinates();
+					break;
+
+				case MotionEventActions.Move:
+					ComputeMotionDirections();
+					SaveCurrentCoordinates();
+					break;
+
+				case MotionEventActions.Up:
+					// Note that ACTION_UP and ACTION_POINTER_UP always report the last known position
+					// of the pointers that went up. -- VelocityTracker.cpp
+					// Ignoring this one, since trying to compute directions here will always return 0s.
+					break;
+
+				case MotionEventActions.Cancel:
+					_deltaX = _deltaY = null;
+					break;
+			}
+
+			void SaveCurrentCoordinates()
+			{
+				_previousX = e.GetX();
+				_previousY = e.GetY();
+			}
+			void ComputeMotionDirections()
+			{
+				_deltaX = e.GetX() - (e.HistorySize > 0 ? e.GetHistoricalX(e.HistorySize - 1) : _previousX);
+				_deltaY = e.GetY() - (e.HistorySize > 0 ? e.GetHistoricalY(e.HistorySize - 1) : _previousY);
+			}
 		}
 	}
 }

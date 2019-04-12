@@ -674,6 +674,119 @@ namespace Uno.UI.Tests.BinderTests
 			Assert.AreEqual("Alice", sut.Text);
 		}
 
+		[TestMethod]
+		public void When_Source_Complex()
+		{
+			var SUT = new Windows.UI.Xaml.Controls.Grid();
+			var subject = new ElementNameSubject();
+
+			SUT.SetBinding(
+				Windows.UI.Xaml.Controls.Grid.TagProperty,
+				new Binding()
+				{
+					Path = "MyProperty",
+					Source = new { MyProperty = 42 }
+				}
+			);
+
+			Assert.AreEqual(42, SUT.Tag);
+		}
+
+		[TestMethod]
+		public void When_Subject_Source_Complex()
+		{
+			var SUT = new Windows.UI.Xaml.Controls.Grid();
+			var subject = new ElementNameSubject();
+
+			SUT.SetBinding(
+				Windows.UI.Xaml.Controls.Grid.TagProperty,
+				new Binding()
+				{
+					Path = "MyProperty",
+					Source = subject
+				}
+			);
+
+			Assert.IsNull(SUT.Tag);
+
+			subject.ElementInstance = new { MyProperty = 42 };
+
+			Assert.AreEqual(42, SUT.Tag);
+		}
+
+		[TestMethod]
+		public void When_Subject_Source()
+		{
+			var SUT = new Windows.UI.Xaml.Controls.Grid();
+			var subject = new ElementNameSubject();
+
+			SUT.SetBinding(
+				Windows.UI.Xaml.Controls.Grid.TagProperty,
+				new Binding()
+				{
+					Source = subject
+				}
+			);
+
+			Assert.IsNull(SUT.Tag);
+
+			subject.ElementInstance = 42;
+
+			Assert.AreEqual(42, SUT.Tag);
+		}
+
+		[TestMethod]
+		public void When_ExplicitUpdateSourceTrigger()
+		{
+			var source = new MyBindingSource {IntValue = 42};
+			var target = new MyControl();
+			target.SetBinding(MyControl.MyPropertyProperty, new Binding {Source = source, Path = nameof(MyBindingSource.IntValue), Mode = BindingMode.TwoWay, UpdateSourceTrigger = UpdateSourceTrigger.Explicit});
+
+			Assert.AreEqual(42, source.IntValue);
+			Assert.AreEqual(42, target.MyProperty);
+
+			target.MyProperty = -42;
+
+			Assert.AreEqual(42, source.IntValue);
+			Assert.AreEqual(-42, target.MyProperty);
+		}
+
+		[TestMethod]
+		public void When_ExplicitUpdateSourceTrigger_UpdateSource()
+		{
+			var source = new MyBindingSource {IntValue = 42};
+			var target = new MyControl();
+			target.SetBinding(MyControl.MyPropertyProperty, new Binding { Source = source, Path = nameof(MyBindingSource.IntValue), Mode = BindingMode.TwoWay, UpdateSourceTrigger = UpdateSourceTrigger.Explicit });
+
+			var sut = target.GetBindingExpression(MyControl.MyPropertyProperty);
+
+			Assert.AreEqual(42, source.IntValue);
+			Assert.AreEqual(42, target.MyProperty);
+
+			target.MyProperty = -42;
+			sut.UpdateSource();
+
+			Assert.AreEqual(-42, source.IntValue);
+			Assert.AreEqual(-42, target.MyProperty);
+		}
+
+		[TestMethod]
+		public void When_SelfRelativeSource()
+		{
+			var SUT = new SelfBindingTest();
+
+			Assert.AreEqual(-1, SUT.Property1);
+			Assert.AreEqual(-2, SUT.Property2);
+
+			SUT.SetBinding(SelfBindingTest.Property2Property, new Binding { Path = "Property1", RelativeSource = new RelativeSource(RelativeSourceMode.Self) });
+
+			Assert.AreEqual(-1, SUT.Property1);
+			Assert.AreEqual(-1, SUT.Property2);
+
+			SUT.Property1 = 42;
+			Assert.AreEqual(42, SUT.Property2);
+		}
+
 		public partial class BaseTarget : DependencyObject
 		{
 			private List<object> _dataContextChangedList = new List<object>();
@@ -803,6 +916,26 @@ namespace Uno.UI.Tests.BinderTests
 			public int objectSetCount { get; set; }
 		}
 
+		public class MyBindingSource : INotifyPropertyChanged
+		{
+			private int _intValue;
+
+			public int IntValue
+			{
+				get => _intValue;
+				set
+				{
+					_intValue = value;
+					OnPropertyChanged();
+				}
+			}
+
+			public event PropertyChangedEventHandler PropertyChanged;
+
+			protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+				=> PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+		}
+
 		public class MySource : INotifyPropertyChanged
 		{
 			private MySource2 _child;
@@ -909,6 +1042,27 @@ namespace Uno.UI.Tests.BinderTests
 
 			private int MyProperty { get; set; }
 		}
+	}
+
+	public partial class SelfBindingTest : DependencyObject
+	{
+		public int Property1
+		{
+			get { return (int)GetValue(Property1Property); }
+			set { SetValue(Property1Property, value); }
+		}
+
+		public static readonly DependencyProperty Property1Property =
+			DependencyProperty.Register("Property1", typeof(int), typeof(SelfBindingTest), new PropertyMetadata(-1));
+
+		public int Property2
+		{
+			get { return (int)GetValue(Property2Property); }
+			set { SetValue(Property2Property, value); }
+		}
+
+		public static readonly DependencyProperty Property2Property =
+			DependencyProperty.Register("Property2", typeof(int), typeof(SelfBindingTest), new PropertyMetadata(-2));
 	}
 
 	public partial class MyObjectTest : DependencyObject

@@ -1,13 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
-using System.Threading;
-using Uno.UI.Samples.UITests.Helpers;
+﻿using System.Windows.Input;
 using Windows.UI.Core;
-using System.Windows.Input;
+using Uno.UI.Samples.UITests.Helpers;
 
-namespace Uno.UI.Samples.Presentation.SamplePages
+namespace SamplesApp.Windows_UI_Xaml_Controls.ToggleSwitchControl.Models
 {
 	public class ToggleSwitchViewModel : ViewModelBase
 	{
@@ -18,7 +13,7 @@ namespace Uno.UI.Samples.Presentation.SamplePages
 			Flip = CreateCommand(OnFlip);
 		}
 
-		private void OnFlip(object obj) => IsOn = !IsOn;
+		private void OnFlip() => IsOn = !IsOn;
 
 		public bool IsOn
 		{

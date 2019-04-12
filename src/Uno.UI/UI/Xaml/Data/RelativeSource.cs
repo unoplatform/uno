@@ -23,6 +23,11 @@
 		/// </summary>
 		public static readonly RelativeSource TemplatedParent = new RelativeSource(RelativeSourceMode.TemplatedParent);
 
+		/// <summary>
+		/// Represents a TemplatedParent Self.
+		/// </summary>
+		internal static readonly RelativeSource Self = new RelativeSource(RelativeSourceMode.Self);
+
 		public override int GetHashCode()
 		{
 			return Mode.GetHashCode();

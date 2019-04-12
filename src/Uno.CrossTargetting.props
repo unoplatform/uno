@@ -16,7 +16,7 @@
 	<Copyright>nventive</Copyright>
 	<Author>nventive</Author>
 
-	<LangVersion>7.2</LangVersion>
+	<LangVersion>7.3</LangVersion>
 	<WarningsAsErrors>all</WarningsAsErrors>
 
   </PropertyGroup>
@@ -44,7 +44,7 @@
 
 
   <PropertyGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
-	<DefineConstants>$(DefineConstants);__WASM__</DefineConstants>
+	<DefineConstants>$(DefineConstants);__WASM__;HAS_EXPENSIVE_TRYFINALLY</DefineConstants>
   </PropertyGroup>
 
   <PropertyGroup Condition="$(IsXamarinIOS)">

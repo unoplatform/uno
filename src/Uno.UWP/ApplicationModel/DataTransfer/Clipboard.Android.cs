@@ -11,12 +11,9 @@ namespace Windows.ApplicationModel.DataTransfer
 	{
 		public static void SetContent(DataPackage content)
 		{
-			if (content?.Text == null)
+			if (ContextHelper.Current.GetSystemService(Context.ClipboardService) is ClipboardManager manager)
 			{
-				if (ContextHelper.Current.GetSystemService(Context.ClipboardService) is ClipboardManager manager)
-				{
-					manager.Text = content.Text;
-				}
+				manager.Text = content?.Text;
 			}
 		}
 	}

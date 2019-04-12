@@ -14,7 +14,14 @@
 	<AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
 	<GenerateBindingRedirectsOutputType>true</GenerateBindingRedirectsOutputType>
 
-	<!-- Version management is now done through NuGet, this avoids issues related version mismatch -->
+    <!-- Enables hard links for obj -> bin files (symlinks generally don't work there -->
+    <CreateHardLinksForCopyFilesToOutputDirectoryIfPossible>true</CreateHardLinksForCopyFilesToOutputDirectoryIfPossible>
+
+    <CreateHardLinksForCopyLocalIfPossible>true</CreateHardLinksForCopyLocalIfPossible>
+    <CreateHardLinksForAdditionalFilesIfPossible>true</CreateHardLinksForAdditionalFilesIfPossible>
+    <CreateHardLinksForPublishFilesIfPossible>true</CreateHardLinksForPublishFilesIfPossible>
+
+    <!-- Version management is now done through NuGet, this avoids issues related version mismatch -->
 	<Version>255.255.255.255</Version>
 
 	<Product>$(AssemblyName) ($(TargetFramework))</Product>

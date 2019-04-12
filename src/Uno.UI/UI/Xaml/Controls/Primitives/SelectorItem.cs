@@ -76,10 +76,6 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 		private bool _isPressed;
 
-		// The default state of this variable must follow the default state of the
-		// associated UI elements in the generic template.
-		private bool _isMultiSelectedEnabled;
-
 		internal bool IsPressed
 		{
 			get { return _isPressed; }
@@ -93,22 +89,26 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			}
 		}
 
-
 		/// <summary>
 		/// Set appropriate visual state from MultiSelectStates group. (https://msdn.microsoft.com/en-us/library/windows/apps/mt299136.aspx?f=255&MSPPError=-2147217396)
 		/// </summary>
-		internal bool IsMultiselectEnabled
+		internal void ApplyMultiSelectState(bool isSelectionMultiple)
 		{
-			get { return _isMultiSelectedEnabled; }
-			set {
+			if (isSelectionMultiple)
+			{
+				// We can safely always go to multiselect state
+				VisualStateManager.GoToState(this, "MultiSelectEnabled", useTransitions: true);
+			}
+			else
+			{
+				// Retrieve the current state (which 'lives' on the SelectorItem's template root, and may change if it is retemplated)
+				var currentState = VisualStateManager.GetCurrentState(this, "MultiSelectStates")?.Name;
 
-				if (_isMultiSelectedEnabled != value)
+				if (currentState == "MultiSelectEnabled")
 				{
 					// The MultiSelectDisabled state goes through VisibleRect then collapsed, which means Disabled state can't be
 					// invoked if the state is already disabled without having the selected check box appearing briefly. (Issue #403)
-					VisualStateManager.GoToState(this, value ? "MultiSelectEnabled" : "MultiSelectDisabled", useTransitions: true);
-
-					_isMultiSelectedEnabled = value;
+					VisualStateManager.GoToState(this, "MultiSelectDisabled", useTransitions: true);
 				}
 			}
 		}

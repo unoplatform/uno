@@ -13,7 +13,7 @@ namespace Uno.Media
 			{
 				return true;
 			}
-			
+
 			return base.CanConvertFrom(context, sourceType);
 		}
 
@@ -21,7 +21,7 @@ namespace Uno.Media
 		{
 			if (value is string pathString)
 			{
-				return Parsers.ParseGeometry(pathString, CultureInfo.InvariantCulture);
+				return (Geometry)pathString;
 			}
 
 			return base.ConvertFrom(context, culture, value);

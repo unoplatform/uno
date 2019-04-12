@@ -59,6 +59,16 @@ namespace Uno.UI
 			}
 		}
 
+		/// <summary>
+		/// The maximum logical pixel value which can be converted to physical pixels without overflow.
+		/// </summary>
+		private static double MaxLogicalValue { get; }
+
+		/// <summary>
+		/// The minimum logical pixel value which can be converted to physical pixels without underflow.
+		/// </summary>
+		private static double MinLogicalValue { get; }
+
 		public static string Architecture { get; }
 
 		static ViewHelper()
@@ -77,6 +87,9 @@ namespace Uno.UI
 				}
 				_cachedScaledDensity = displayMetrics.ScaledDensity;
 				_cachedScaledXDpi = displayMetrics.Xdpi;
+
+				MaxLogicalValue = (int.MaxValue - 1) / _cachedDensity;
+				MinLogicalValue = (int.MinValue + 1) / _cachedDensity;
 			}
 
 			if (typeof(ViewHelper).Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
@@ -217,12 +230,12 @@ namespace Uno.UI
 				return 0;
 			}
 
-			if (double.IsPositiveInfinity(value))
+			if (double.IsPositiveInfinity(value) || value > MaxLogicalValue)
 			{
 				return int.MaxValue;
 			}
 
-			if (double.IsNegativeInfinity(value))
+			if (double.IsNegativeInfinity(value) || value < MinLogicalValue)
 			{
 				return int.MinValue;
 			}

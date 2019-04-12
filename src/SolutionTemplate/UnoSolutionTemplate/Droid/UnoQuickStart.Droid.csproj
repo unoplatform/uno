@@ -16,7 +16,7 @@
 		<AndroidResgenFile>Resources\Resource.Designer.cs</AndroidResgenFile>
 		<GenerateSerializationAssemblies>Off</GenerateSerializationAssemblies>
 		<AndroidUseLatestPlatformSdk>False</AndroidUseLatestPlatformSdk>
-		<TargetFrameworkVersion>v8.0</TargetFrameworkVersion>
+		<TargetFrameworkVersion>v9.0</TargetFrameworkVersion>
 		<AndroidManifest>Properties\AndroidManifest.xml</AndroidManifest>
 		<AndroidUseIntermediateDesignerFile>True</AndroidUseIntermediateDesignerFile>
 		<ResourcesDirectory>..\$ext_safeprojectname$.Shared\Strings</ResourcesDirectory>
@@ -59,7 +59,7 @@
 		<Reference Include="System.Xml" />
 	</ItemGroup>
 	<ItemGroup>
-		<PackageReference Include="Uno.UI" Version="1.43.0-dev.965" />
+		<PackageReference Include="Uno.UI" Version="1.45.0-dev.1112" />
 		<PackageReference Include="Uno.UniversalImageLoader" Version="1.9.32" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Console" Version="1.1.1" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Filter" Version="1.1.1" />

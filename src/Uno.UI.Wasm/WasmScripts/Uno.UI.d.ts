@@ -11,13 +11,16 @@ declare namespace Windows.UI.Core {
         static _coreDispatcherCallback: any;
         static _isIOS: boolean;
         static _isFirstCall: boolean;
-        static init(): void;
+        static _isReady: Promise<boolean>;
+        static _isWaitingReady: boolean;
+        static init(isReady: Promise<boolean>): void;
         /**
          * Enqueues a core dispatcher callback on the javascript's event loop
          *
          * */
         static WakeUp(): boolean;
-        private static initMethods();
+        private static InnerWakeUp;
+        private static initMethods;
     }
 }
 declare namespace Uno.UI {
@@ -26,7 +29,7 @@ declare namespace Uno.UI {
          * Initialize various polyfills used by Uno
          */
         static initPolyfills(): void;
-        private static isConnectedPolyfill();
+        private static isConnectedPolyfill;
     }
 }
 declare namespace Uno.Http {
@@ -41,13 +44,13 @@ declare namespace Uno.Http {
     }
     class HttpClient {
         static send(config: IHttpClientConfig): Promise<void>;
-        private static blobFromBase64(base64, contentType);
-        private static base64FromBlob(blob);
-        private static dispatchResponse(requestId, status, headers, payload);
-        private static dispatchError(requestId, error);
+        private static blobFromBase64;
+        private static base64FromBlob;
+        private static dispatchResponse;
+        private static dispatchError;
         private static dispatchResponseMethod;
         private static dispatchErrorMethod;
-        private static initMethods();
+        private static initMethods;
     }
 }
 declare module Uno.UI {
@@ -69,7 +72,9 @@ declare namespace MonoSupport {
      * */
     class jsCallDispatcher {
         static registrations: Map<string, any>;
-        static methodMap: Map<string, any>;
+        static methodMap: {
+            [id: number]: any;
+        };
         static _isUnoRegistered: boolean;
         /**
          * Registers a instance for a specified identier
@@ -79,16 +84,23 @@ declare namespace MonoSupport {
         static registerScope(identifier: string, instance: any): void;
         static findJSFunction(identifier: string): any;
         /**
+         * Internal dispatcher for methods invoked through TSInteropMarshaller
+         * @param id The method ID obtained when invoking WebAssemblyRuntime.InvokeJSUnmarshalled with a method name
+         * @param pParams The parameters structure ID
+         * @param pRet The pointer to the return value structure
+         */
+        private static dispatch;
+        /**
          * Parses the method identifier
          * @param identifier
          */
-        private static parseIdentifier(identifier);
+        private static parseIdentifier;
         /**
          * Adds the a resolved method for a given identifier
          * @param identifier the findJSFunction identifier
          * @param boundMethod the method to call
          */
-        private static cacheMethod(identifier, boundMethod);
+        private static cacheMethod;
     }
 }
 declare namespace Uno.UI {
@@ -119,6 +131,15 @@ declare namespace Uno.UI {
             */
         static init(localStoragePath: string, isHosted: boolean, isLoadEventsEnabled: boolean, containerElementId?: string, loadingElementId?: string): string;
         /**
+         * Builds a promise that will signal the ability for the dispatcher
+         * to initiate work.
+         * */
+        private static buildReadyPromise;
+        /**
+         * Build the splashscreen image eagerly
+         * */
+        private static buildSplashScreen;
+        /**
             * Initialize the WindowManager
             * @param containerElementId The ID of the container element for the Xaml UI
             * @param loadingElementId The ID of the loading element to remove once ready
@@ -147,7 +168,7 @@ declare namespace Uno.UI {
             * Creates the UWP-compatible splash screen
             *
             */
-        static setupSplashScreen(): void;
+        static setupSplashScreen(splashImage: HTMLImageElement): void;
         /**
             * Reads the window's search parameters
             *
@@ -165,7 +186,8 @@ declare namespace Uno.UI {
             * You need to call addView to connect it to the DOM.
             */
         createContentNative(pParams: number): boolean;
-        private createContentInternal(contentDefinition);
+        private createContentInternal;
+        getView(elementHandle: number): HTMLElement | SVGElement;
         /**
             * Set a name for an element.
             *
@@ -178,11 +200,11 @@ declare namespace Uno.UI {
             * This is mostly for diagnostic purposes.
             */
         setNameNative(pParam: number): boolean;
-        private setNameInternal(elementId, name);
+        private setNameInternal;
         /**
             * Set an attribute for an element.
             */
-        setAttribute(elementId: string, attributes: {
+        setAttribute(elementId: number, attributes: {
             [name: string]: string;
         }): string;
         /**
@@ -192,11 +214,11 @@ declare namespace Uno.UI {
         /**
             * Get an attribute for an element.
             */
-        getAttribute(elementId: string, name: string): any;
+        getAttribute(elementId: number, name: string): any;
         /**
             * Set a property for an element.
             */
-        setProperty(elementId: string, properties: {
+        setProperty(elementId: number, properties: {
             [name: string]: string;
         }): string;
         /**
@@ -206,14 +228,14 @@ declare namespace Uno.UI {
         /**
             * Get a property for an element.
             */
-        getProperty(elementId: string, name: string): any;
+        getProperty(elementId: number, name: string): any;
         /**
             * Set the CSS style of a html element.
             *
             * To remove a value, set it to empty string.
             * @param styles A dictionary of styles to apply on html element.
             */
-        setStyle(elementId: string, styles: {
+        setStyle(elementId: number, styles: {
             [name: string]: string;
         }, setAsArranged?: boolean): string;
         /**
@@ -242,7 +264,7 @@ declare namespace Uno.UI {
             * @param styles A dictionary of styles to apply on html element.
             */
         resetStyleNative(pParams: number): boolean;
-        private resetStyleInternal(elementId, names);
+        private resetStyleInternal;
         /**
         * Arrange and clips a native elements
         *
@@ -293,52 +315,52 @@ declare namespace Uno.UI {
             * @param eventName The name of the event
             * @param onCapturePhase true means "on trickle down", false means "on bubble up". Default is false.
             */
-        private registerEventOnViewInternal(elementId, eventName, onCapturePhase?, eventFilterName?, eventExtractorName?);
+        private registerEventOnViewInternal;
         /**
          * left pointer event filter to be used with registerEventOnView
          * @param evt
          */
-        private leftPointerEventFilter(evt);
+        private leftPointerEventFilter;
         /**
          * default event filter to be used with registerEventOnView to
          * use for most routed events
          * @param evt
          */
-        private defaultEventFilter(evt);
+        private defaultEventFilter;
         /**
          * Gets the event filter function. See UIElement.HtmlEventFilter
          * @param eventFilterName an event filter name.
          */
-        private getEventFilter(eventFilterName);
+        private getEventFilter;
         /**
          * pointer event extractor to be used with registerEventOnView
          * @param evt
          */
-        private pointerEventExtractor(evt);
+        private pointerEventExtractor;
         /**
          * keyboard event extractor to be used with registerEventOnView
          * @param evt
          */
-        private keyboardEventExtractor(evt);
+        private keyboardEventExtractor;
         /**
          * tapped (mouse clicked / double clicked) event extractor to be used with registerEventOnView
          * @param evt
          */
-        private tappedEventExtractor(evt);
+        private tappedEventExtractor;
         /**
          * tapped (mouse clicked / double clicked) event extractor to be used with registerEventOnView
          * @param evt
          */
-        private focusEventExtractor(evt);
+        private focusEventExtractor;
         /**
          * Gets the event extractor function. See UIElement.HtmlEventExtractor
          * @param eventExtractorName an event extractor name.
          */
-        private getEventExtractor(eventExtractorName);
+        private getEventExtractor;
         /**
             * Set or replace the root content element.
             */
-        setRootContent(elementId?: string): string;
+        setRootContent(elementId?: number): string;
         /**
             * Set a view as a child of another one.
             *
@@ -368,14 +390,14 @@ declare namespace Uno.UI {
             * "Unloading" & "Unloaded" events will be raised if necessary.
             */
         removeViewNative(pParams: number): boolean;
-        private removeViewInternal(parentId, childId);
+        private removeViewInternal;
         /**
             * Destroy a html element.
             *
             * The element won't be available anymore. Usually indicate the managed
             * version has been scavenged by the GC.
             */
-        destroyView(viewId: number): string;
+        destroyView(elementId: number): string;
         /**
             * Destroy a html element.
             *
@@ -383,11 +405,11 @@ declare namespace Uno.UI {
             * version has been scavenged by the GC.
             */
         destroyViewNative(pParams: number): boolean;
-        private destroyViewInternal(viewId);
-        getBoundingClientRect(elementId: string): string;
+        private destroyViewInternal;
+        getBoundingClientRect(elementId: number): string;
         getBBox(elementId: number): string;
         getBBoxNative(pParams: number, pReturn: number): boolean;
-        private getBBoxInternal(elementId);
+        private getBBoxInternal;
         /**
             * Use the Html engine to measure the element using specified constraints.
             *
@@ -402,18 +424,18 @@ declare namespace Uno.UI {
             * @param maxHeight string containing height in pixels. Empty string means infinite.
             */
         measureViewNative(pParams: number, pReturn: number): boolean;
-        private measureViewInternal(viewId, maxWidth, maxHeight);
-        setImageRawData(viewId: string, dataPtr: number, width: number, height: number): string;
+        private measureViewInternal;
+        setImageRawData(viewId: number, dataPtr: number, width: number, height: number): string;
         /**
          * Sets the provided image with a mono-chrome version of the provided url.
          * @param viewId the image to manipulate
          * @param url the source image
          * @param color the color to apply to the monochrome pixels
          */
-        setImageAsMonochrome(viewId: string, url: string, color: string): string;
-        setPointerCapture(viewId: string, pointerId: number): string;
-        releasePointerCapture(viewId: string, pointerId: number): string;
-        focusView(elementId: string): string;
+        setImageAsMonochrome(viewId: number, url: string, color: string): string;
+        setPointerCapture(viewId: number, pointerId: number): string;
+        releasePointerCapture(viewId: number, pointerId: number): string;
+        focusView(elementId: number): string;
         /**
             * Set the Html content for an element.
             *
@@ -428,20 +450,20 @@ declare namespace Uno.UI {
             * WARNING: you should avoid mixing this and `addView` for the same element.
             */
         setHtmlContentNative(pParams: number): boolean;
-        private setHtmlContentInternal(viewId, html);
+        private setHtmlContentInternal;
         /**
             * Remove the loading indicator.
             *
             * In a future version it will also handle the splashscreen.
             */
         activate(): string;
-        private init();
-        private static initMethods();
-        private initDom();
-        private removeLoading();
-        private resize();
-        private dispatchEvent(element, eventName, eventPayload?);
-        private getIsConnectedToRootElement(element);
+        private init;
+        private static initMethods;
+        private initDom;
+        private removeLoading;
+        private resize;
+        private dispatchEvent;
+        private getIsConnectedToRootElement;
     }
 }
 declare class WindowManagerAddViewParams {
@@ -620,14 +642,14 @@ declare namespace Uno.Foundation.Interop {
     class ManagedObject {
         private static assembly;
         private static dispatchMethod;
-        private static init();
+        private static init;
         static dispatch(handle: string, method: string, parameters: string): void;
     }
 }
 declare namespace Uno.UI.Interop {
     class Runtime {
         static readonly engine: any;
-        private static init();
+        private static init;
     }
 }
 declare namespace Uno.UI.Interop {

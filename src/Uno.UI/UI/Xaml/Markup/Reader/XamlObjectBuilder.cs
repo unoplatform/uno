@@ -75,6 +75,25 @@ namespace Windows.UI.Xaml.Markup.Reader
 
 				return Activator.CreateInstance(type, builder);
 			}
+			else if (type.Is<ResourceDictionary>())
+			{
+				var contentOwner = control.Members.FirstOrDefault(m => m.Member.Name == "_UnknownContent");
+
+				var rd = Activator.CreateInstance(type) as ResourceDictionary;
+				foreach (var xamlObjectDefinition in contentOwner.Objects)
+				{
+					var key = xamlObjectDefinition.Members.FirstOrDefault(m => m.Member.Name == "Key")?.Value;
+
+					var instance = LoadObject(xamlObjectDefinition);
+
+					if (key != null)
+					{
+						rd.Add(key, instance);
+					}
+				}
+
+				return rd;
+			}
 			else
 			{
 				var instance = Activator.CreateInstance(type);
@@ -90,8 +109,9 @@ namespace Windows.UI.Xaml.Markup.Reader
 								_styleTargetTypeStack.Push(targetType);
 
 								return Uno.Disposables.Disposable.Create(
-									() => {
-										if(_styleTargetTypeStack.Pop() != targetType)
+									() =>
+									{
+										if (_styleTargetTypeStack.Pop() != targetType)
 										{
 											throw new InvalidOperationException("StyleTargetType is out of synchronization");
 										}

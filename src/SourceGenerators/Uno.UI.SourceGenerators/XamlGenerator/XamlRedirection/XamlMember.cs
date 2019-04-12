@@ -41,7 +41,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator.XamlRedirection
 			=> _declaringType != null ? _declaringType : XamlConfig.IsUnoXaml ? XamlType.FromType(_unoMember.DeclaringType) : XamlType.FromType(_msMember.DeclaringType);
 
 		public XamlType Type
-			=> XamlConfig.IsUnoXaml ? XamlType.FromType(_unoMember.Type) : XamlType.FromType(_msMember.Type);
+			=> XamlConfig.IsUnoXaml ? XamlType.FromType(_unoMember?.Type) : XamlType.FromType(_msMember?.Type);
 
 		public string PreferredXamlNamespace 
 			=> XamlConfig.IsUnoXaml ? _unoMember.PreferredXamlNamespace : _msMember.PreferredXamlNamespace;

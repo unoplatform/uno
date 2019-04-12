@@ -282,11 +282,17 @@ namespace Windows.UI.Xaml
 
 				handlers.Remove(handlerInfo =>
 				{
-					if (handlerInfo.HandledEventsToo)
+					var shouldRemove = (handlerInfo.Handler as Delegate) == (handler as Delegate);
+
+					if (!shouldRemove)
 					{
-						mustUpdateSubscribedToHandledEventsToo = true;
+						return false;
 					}
-					return handlerInfo.Handler == handler;
+
+					mustUpdateSubscribedToHandledEventsToo =
+						mustUpdateSubscribedToHandledEventsToo || handlerInfo.HandledEventsToo;
+
+					return true;
 				});
 
 				if (mustUpdateSubscribedToHandledEventsToo)
@@ -392,8 +398,13 @@ namespace Windows.UI.Xaml
 			}
 
 			// [13] Raise on parent
-			return parent.RaiseEvent(routedEvent, args);
+			return RaiseOnParent(routedEvent, args, parent);
 		}
+
+		// This method is a workaround for https://github.com/mono/mono/issues/12981
+		// It can be inlined in RaiseEvent when fixed.
+		private static bool RaiseOnParent(RoutedEvent routedEvent, RoutedEventArgs args, UIElement parent)
+			=> parent.RaiseEvent(routedEvent, args);
 
 		private static bool IsHandled(RoutedEventArgs args)
 		{
