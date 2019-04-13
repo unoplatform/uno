@@ -25,15 +25,48 @@ namespace Windows.UI.Xaml.Controls
 		/// </summary>
 		internal static bool UseContentInsetAdjustmentBehavior => UIDevice.CurrentDevice.CheckSystemVersion(11, 0);
 
+		/// <summary>
+		/// The <see cref="UIScrollView"/> which will actually scroll. Mostly this will be identical to <see cref="_sv"/>, but if we're inside a
+		/// multi-line TextBox we set it to <see cref="MultilineTextBoxView"/>.
+		/// </summary>
+		private IUIScrollView _scrollableContainer;
+
+		partial void OnApplyTemplatePartial()
+		{
+			SetScrollableContainer();
+		}
+
+		protected override void OnLoaded()
+		{
+			SetScrollableContainer();
+			base.OnLoaded();
+		}
+
+		private void SetScrollableContainer()
+		{
+			if (this.FindFirstParent<TextBox>() != null)
+			{
+				var multiline = this.FindFirstChild<MultilineTextBoxView>();
+				if (multiline != null)
+				{
+					_scrollableContainer = multiline;
+				}
+				else
+				{
+					_scrollableContainer = _sv;
+				}
+			}
+		}
+
 		partial void ChangeViewScroll(double? horizontalOffset, double? verticalOffset, bool disableAnimation)
 		{
-			if (_sv != null)
+			if (_scrollableContainer != null)
 			{
 				// iOS doesn't limit the offset to the scrollable bounds by itself
 				var newOffset = new CGPoint(horizontalOffset ?? HorizontalOffset, verticalOffset ?? VerticalOffset)
-					.Clamp(CGPoint.Empty, _sv.UpperScrollLimit);
+					.Clamp(CGPoint.Empty, _scrollableContainer.UpperScrollLimit);
 
-				_sv.SetContentOffset(newOffset, !disableAnimation);
+				_scrollableContainer.SetContentOffset(newOffset, !disableAnimation);
 			}
 		}
 
@@ -56,7 +89,7 @@ namespace Windows.UI.Xaml.Controls
 
 		partial void ChangeViewZoom(float zoomFactor, bool disableAnimation)
 		{
-			_sv?.SetZoomScale(zoomFactor, animated: !disableAnimation);
+			_scrollableContainer?.SetZoomScale(zoomFactor, animated: !disableAnimation);
 		}
 
 		private void UpdateZoomedContentAlignment()

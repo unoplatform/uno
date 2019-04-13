@@ -334,6 +334,10 @@ h3 {
 
         .headerbox {
             margin-bottom: 30px;
+
+            @media (min-width: 992px) {
+                width: 49%;
+            }
         }
 
         .headerbox-inner {

@@ -572,7 +572,7 @@ namespace Windows.UI.Xaml.Controls
 		/// <param name="selectorItem"></param>
 		internal void ApplyMultiSelectState(SelectorItem selectorItem)
 		{
-			selectorItem.IsMultiselectEnabled = IsSelectionMultiple;
+			selectorItem.ApplyMultiSelectState(IsSelectionMultiple);
 		}
 
 		/// <summary>
@@ -602,7 +602,8 @@ namespace Windows.UI.Xaml.Controls
 				}
 				else
 				{
-					// On Android, we call the native replace-equivalent to make sure that views awaiting recycling are correctly marked as needing rebinding.
+					// On Android, if we can't find a materialized view to rebind, we call the native replace-equivalent to make sure that
+					// views awaiting recycling are correctly marked as needing rebinding.
 					NativeReplaceItems(i, 1, section);
 				}
 			}

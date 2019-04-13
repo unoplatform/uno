@@ -81,13 +81,7 @@ namespace Uno.UI.Wasm
 
 				foreach (var header in headers)
 				{
-					var isContent = GetHeaderIsContent(header.Key);
-
-					if (isContent)
-					{
-						responseMessage.Content.Headers.TryAddWithoutValidation(header.Key, header);
-					}
-					else
+					if (!responseMessage.Content.Headers.TryAddWithoutValidation(header.Key, header))
 					{
 						responseMessage.Headers.TryAddWithoutValidation(header.Key, header);
 					}
@@ -100,29 +94,6 @@ namespace Uno.UI.Wasm
 				Console.Error.WriteLine(ex);
 				throw;
 			}
-		}
-
-		private static MethodInfo _getKnownHeaderKindMethodInfo;
-
-		private static bool GetHeaderIsContent(string headerName)
-		{
-			MethodInfo GetMethod()
-			{
-				// Hack for a method to know if the header is content or response.
-				// This method is internal in Mono.
-				var assembly = typeof(HttpHeaders).Assembly;
-				var type = assembly.GetType(typeof(HttpHeaders).FullName);
-				var method = type.GetMethod("GetKnownHeaderKind", BindingFlags.Static | BindingFlags.NonPublic);
-				return method;
-			}
-
-			if (_getKnownHeaderKindMethodInfo == null)
-			{
-				_getKnownHeaderKindMethodInfo = GetMethod();
-			}
-
-			var headerKind = (int) _getKnownHeaderKindMethodInfo.Invoke(null, new object[] {headerName});
-			return headerKind == 1 << 2;
 		}
 
 		[Preserve]

@@ -27,6 +27,8 @@ namespace Windows.UI.Xaml.Controls
 		private TextBlock _periodTextBlock;
 		private Grid _flyoutButtonContentGrid;
 		private ColumnDefinition _thirdTextBlockColumn;
+		private bool _isLoaded;
+		private bool _isViewReady;
 
 		public TimePicker() { }
 
@@ -127,17 +129,29 @@ namespace Windows.UI.Xaml.Controls
 				_thirdTextBlockColumn = columns.ElementAt(periodColumnPosition);
 			}
 
+			_isViewReady = true;
+
 			SetupFlyoutButton();
 		}
 
 		protected override void OnLoaded()
 		{
 			base.OnLoaded();
+
+			_isLoaded = true;
+
 			SetupFlyoutButton();
 		}
 
 		private void SetupFlyoutButton()
 		{
+			if (!_isViewReady || !_isLoaded)
+			{
+				return;
+			}
+
+			UpdateDisplayedDate();
+
 			if (_flyoutButton != null)
 			{
 #if __IOS__ || __ANDROID__
@@ -156,8 +170,6 @@ namespace Windows.UI.Xaml.Controls
 				BindToFlyout(nameof(ClockIdentifier));
 #endif
 			}
-
-			UpdateDisplayedDate();
 		}
 
 		void OnTimeChangedPartial(TimeSpan oldTime, TimeSpan newTime)

@@ -27,10 +27,10 @@ namespace Windows.UI.Xaml
 		}
 
 		#region VisualStateGroups Attached Property
-		public static IList<VisualStateGroup> GetVisualStateGroups(IFrameworkElement obj) 
+		public static IList<VisualStateGroup> GetVisualStateGroups(IFrameworkElement obj)
 			=> (IList<VisualStateGroup>)obj.GetValue(VisualStateGroupsProperty);
 
-		public static IList<VisualStateGroup> GetVisualStateGroups(FrameworkElement obj) 
+		public static IList<VisualStateGroup> GetVisualStateGroups(FrameworkElement obj)
 			=> (IList<VisualStateGroup>)obj.GetValue(VisualStateGroupsProperty);
 
 		public static void SetVisualStateGroups(IFrameworkElement obj, IList<VisualStateGroup> value)
@@ -41,8 +41,8 @@ namespace Windows.UI.Xaml
 		// Using a DependencyProperty as the backing store for VisualStateGroups.  This enables animation, styling, binding, etc...
 		public static readonly DependencyProperty VisualStateGroupsProperty =
 			DependencyProperty.RegisterAttached(
-				"VisualStateGroups", 
-				typeof(IList<VisualStateGroup>), 
+				"VisualStateGroups",
+				typeof(IList<VisualStateGroup>),
 				typeof(VisualStateManager),
 				new FrameworkPropertyMetadata(
 					defaultValue: null,
@@ -53,7 +53,7 @@ namespace Windows.UI.Xaml
 
 		private static void OnVisualStateGroupsChanged(object sender, DependencyPropertyChangedEventArgs args)
 		{
-			if(sender is IFrameworkElement fe)
+			if (sender is IFrameworkElement fe)
 			{
 				if (args.OldValue is IList<VisualStateGroup> oldGroups)
 				{
@@ -112,9 +112,9 @@ namespace Windows.UI.Xaml
 				return false;
 			}
 
-			if(templateRoot is FrameworkElement fe)
+			if (templateRoot is FrameworkElement fe)
 			{
-				if(fe.GoToElementState(stateName, useTransitions))
+				if (fe.GoToElementState(stateName, useTransitions))
 				{
 					if (typeof(VisualStateManager).Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
 					{
@@ -167,11 +167,11 @@ namespace Windows.UI.Xaml
 
 		private static (VisualStateGroup, VisualState) GetValidGroupAndState(string stateName, IList<VisualStateGroup> groups)
 		{
-			foreach(var group in groups)
+			foreach (var group in groups)
 			{
-				foreach(var state in group.States)
+				foreach (var state in group.States)
 				{
-					if(state.Name?.Equals(stateName) ?? false)
+					if (state.Name?.Equals(stateName) ?? false)
 					{
 						return (group, state);
 					}
@@ -250,6 +250,21 @@ namespace Windows.UI.Xaml
 			}
 
 			stateGroup.RaiseCurrentStateChanged(oldState, newState);
+		}
+
+		internal static VisualState GetCurrentState(Control control, string groupName)
+		{
+			var templateRoot = control.GetTemplateRoot();
+			if (templateRoot == null)
+			{
+				return null;
+			}
+
+			var group = GetVisualStateGroups(templateRoot)?
+				.Where(g => g.Name == groupName)
+				.FirstOrDefault();
+
+			return group?.CurrentState;
 		}
 	}
 }

@@ -14,9 +14,31 @@ namespace Windows.UI.Xaml.Controls
 		internal protected TimePickerSelector _timeSelector;
 		internal protected TimePickerFlyoutPresenter _timePickerPresenter;
 		internal protected FrameworkElement _headerUntapZone;
+		private bool _isInitialized;
 
 		public TimePickerFlyout()
 		{
+		}
+
+		/// <summary>
+		/// This method sets the Content property of the Flyout.
+		/// </summary>
+		/// <remarks>
+		/// Note that for performance reasons, we don't call it in the contructor. Instead, we wait for the popup to be opening.
+		/// The native UIDatePicker contained in the TimePickerSelector is known for being slow in general (https://bugzilla.xamarin.com/show_bug.cgi?id=49469).
+		/// Using this strategy means that a page containing a TimePicker will no longer be slowed down by this initialization during the page creation.
+		/// Instead, you'll see the delay when opening the TimePickerFlyout for the first time.
+		/// This is most notable on pages containing multiple TimePicker controls.
+		/// </remarks>
+		private void InitializeContent()
+		{
+			if (_isInitialized)
+			{
+				return;
+			}
+
+			_isInitialized = true;
+
 			_timeSelector = new TimePickerSelector()
 			{
 				BorderThickness = Thickness.Empty,
@@ -30,7 +52,7 @@ namespace Windows.UI.Xaml.Controls
 			this.Binding(nameof(MinuteIncrement), nameof(MinuteIncrement), Content, BindingMode.TwoWay);
 			this.Binding(nameof(ClockIdentifier), nameof(ClockIdentifier), Content, BindingMode.TwoWay);
 		}
-		
+
 		protected override Control CreatePresenter()
 		{
 			_timePickerPresenter = new TimePickerFlyoutPresenter() { Content = Content };
@@ -67,6 +89,8 @@ namespace Windows.UI.Xaml.Controls
 
 		protected internal override void Open()
 		{
+			InitializeContent();
+
 			_timeSelector.Initialize();
 
 			//Gobbling pressed tap on the flyout header background so that it doesn't close the flyout popup. 

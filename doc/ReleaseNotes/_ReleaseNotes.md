@@ -16,6 +16,9 @@
 * Add support for IDictionary objects in XAM (#729)
 * Add support for Binding typed property (#731)
 * Add support for `RelativeSource.Self` bindings
+* 149377 Improve performance of `TimePicker` and `DatePicker` on iOS.
+* 145203 [iOS] Support ScrollViewer.ChangeView() inside TextBox
+* 150793 [iOS] Add ListView.UseCollectionAnimations flag to allow disabling native insert/delete animations
 
 ### Breaking Changes
 * The `WebAssemblyRuntime.InvokeJSUnmarshalled` method with three parameters has been removed.
@@ -25,7 +28,14 @@
 * The `HAS_UNO` define is now not defined in `uap10.0.x` target frameworks.
 * The `XamlReader` fails when a property has no getter
 * `Click` and `Tapped` events were not working property for `ButtonBase` on Android and iOS.
+* 146790 [Android] AndroidUseManagedLoadedUnloaded causes partial item shuffling in ListView
 * 150143 [Android] Toggling `TextBox.IsReadOnly` from true to false no longer breaks the cursor
+* `WasmHttpHandler` was broken because of a change in the internal Mono implementation.
+* 140946 [Android] Upon modifying a list, incorrect/duplicated items appear
+* 150489 [Android] PointerCanceled not called on scrolling for views with a RenderTransform set
+* 150469 [iOS] Virtualized ListView items don't always trigger their multi-select VisualStates
+* 1580172 ToggleSwitch wasn't working after an unload/reload: caused by routedevent's unregistration not working.
+* 145203 [Android] Fix overflow on LogicalToPhysicalPixels(double.MaxValue), allowing ScrollViewer.ChangeView(double.MaxValue,...) to work
 
 ## Release 1.44.0
 

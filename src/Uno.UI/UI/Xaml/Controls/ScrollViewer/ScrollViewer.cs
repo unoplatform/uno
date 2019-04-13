@@ -551,10 +551,10 @@ namespace Windows.UI.Xaml.Controls
 
 			ApplyScrollContentPresenterContent();
 
+			OnApplyTemplatePartial();
+
 			// Apply correct initial zoom settings
 			OnZoomModeChanged(ZoomMode);
-
-			OnApplyTemplatePartial();
 
 			OnBringIntoViewOnFocusChangeChangedPartial(BringIntoViewOnFocusChange);
 		}
