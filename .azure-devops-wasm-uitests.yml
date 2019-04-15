@@ -1,0 +1,54 @@
+parameters:
+  pool: ''
+
+jobs:
+- job: Wasm_UITests
+  container: nv-bionic-wasm
+
+  pool:
+    vmImage: 'ubuntu-16.04'
+
+  variables:
+    NUGET_PACKAGES: $(build.sourcesdirectory)/.nuget
+
+  steps:
+  - checkout: self
+    clean: true
+
+  # nventive/wasm-build:1.1-bionic already has sdk-1.38.28-64bit activated
+  # - bash: |
+  #     sudo chmod -R 777 /emsdk
+  #     cd /emsdk
+  #     sudo ./emsdk activate sdk-1.38.28-64bit
+  # 
+  #   displayName: 'Setup Emscripten'
+
+  - bash: |
+      source /emsdk/emsdk_env.sh
+      msbuild /r /p:Configuration=Release /t:restore src/SamplesApp/SamplesApp.Wasm/SamplesApp.Wasm.csproj
+      msbuild /p:Configuration=Release /p:TargetFramework=netstandard2.0 src/SamplesApp/SamplesApp.Wasm/SamplesApp.Wasm.csproj /p:UnoSourceGeneratorUseGenerationHost=true /p:UnoSourceGeneratorUseGenerationController=false
+
+  - bash: |
+      cd $(build.sourcesdirectory)/src/SamplesApp/SamplesApp.Wasm/bin/Release/netstandard2.0/dist
+      python server.py &
+      cd $(build.sourcesdirectory)/src/SamplesApp/SamplesApp.Wasm.UITests
+      npm install
+      node app
+
+  - task: CopyFiles@2
+    displayName: 'Publish Wasm Tests results'
+    inputs:
+      SourceFolder: $(build.sourcesdirectory)/src/SamplesApp/SamplesApp.Wasm.UITests/out
+      Contents: '**/*.*'
+      TargetFolder: $(build.artifactstagingdirectory)/screenshots
+      CleanTargetFolder: false
+      OverWrite: false
+      flattenFolders: false
+
+  - task: PublishBuildArtifacts@1
+    # https://developercommunity.visualstudio.com/content/problem/284991/public-vsts-previouw-cant-set-build-number-of-pr-b.html
+    condition: eq(variables['System.PullRequest.IsFork'], 'False')
+    inputs:
+      PathtoPublish: $(build.artifactstagingdirectory)
+      ArtifactName: wasm-uitests
+      ArtifactType: Container

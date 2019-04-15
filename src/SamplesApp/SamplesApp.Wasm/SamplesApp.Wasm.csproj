@@ -68,6 +68,11 @@
 
 	<ItemGroup>
 		<None Remove="WasmScripts\AppManifest.js" />
+		<None Remove="WasmScripts\TestRunner.js" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <UpToDateCheckInput Remove="WasmScripts\TestRunner.js" />
 	</ItemGroup>
 
 	<Import Project="..\..\SourceGenerators\sourcegenerators.local.props" />
