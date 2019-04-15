@@ -26,3 +26,5 @@
   href: SpeechRecognition.md
 - name: Media Player
   href: MediaPlayerElement.md
+- name: Build Tools Telemetry
+  href: uno-toolchain-telemetry.md
