@@ -35,6 +35,7 @@
 * 150469 [iOS] Virtualized ListView items don't always trigger their multi-select VisualStates
 * 1580172 ToggleSwitch wasn't working after an unload/reload: caused by routedevent's unregistration not working.
 * 145203 [Android] Fix overflow on LogicalToPhysicalPixels(double.MaxValue), allowing ScrollViewer.ChangeView(double.MaxValue,...) to work
+* 150679 [iOS] Fix path issue with Media Player not being able to play local files.
 
 ## Release 1.44.0
 
