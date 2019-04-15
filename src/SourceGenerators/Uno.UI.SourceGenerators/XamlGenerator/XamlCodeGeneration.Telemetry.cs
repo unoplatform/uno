@@ -41,51 +41,84 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			}
 		}
 
+		private bool IsTelemetryEnabled => _telemetry?.Enabled ?? false;
+
 		private void TrackGenerationDone(TimeSpan elapsed)
 		{
-			if (_telemetry.Enabled)
+			if (IsTelemetryEnabled)
 			{
-				_telemetry.TrackEvent(
-					"generate-xaml-done",
-					null,
-					new[] { ("Duration", elapsed.TotalSeconds) }
-				);
+				try
+				{
+					_telemetry.TrackEvent(
+						"generate-xaml-done",
+						null,
+						new[] { ("Duration", elapsed.TotalSeconds) }
+					);
+				}
+				catch (Exception e)
+				{
+					if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+					{
+						this.Log().Debug($"Telemetry failure: {e}");
+					}
+				}
 			}
 		}
 
-		private void TrackGenerationFailed(Exception e, TimeSpan elapsed)
+		private void TrackGenerationFailed(Exception exception, TimeSpan elapsed)
 		{
-			if (_telemetry.Enabled)
+			if (IsTelemetryEnabled)
 			{
-				_telemetry.TrackEvent(
-					"generate-xaml-failed",
-					new[] { ("ExceptionType", e.GetType().ToString()) },
-					new[] { ("Duration", elapsed.TotalSeconds) }
-				);
+				try
+				{
+					_telemetry.TrackEvent(
+						"generate-xaml-failed",
+						new[] { ("ExceptionType", exception.GetType().ToString()) },
+						new[] { ("Duration", elapsed.TotalSeconds) }
+					);
+				}
+				catch (Exception telemetryException)
+				{
+					if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+					{
+						this.Log().Debug($"Telemetry failure: {telemetryException}");
+					}
+				}
 			}
 		}
 
 		private void TrackStartGeneration(XamlFileDefinition[] files)
 		{
-			if (_telemetry.Enabled)
+			if (IsTelemetryEnabled)
 			{
-				// Determine if the Uno.UI solution is built
-				var isBuildingUno = _projectInstance.GetProperty("SolutionName")?.EvaluatedValue == "Uno.UI";
+				try
+				{
 
-				_telemetry.TrackEvent(
-					"generate-xaml",
-					new[] {
+					// Determine if the Uno.UI solution is built
+					var isBuildingUno = _projectInstance.GetProperty("MSBuildProjectName")?.EvaluatedValue == "Uno.UI";
+
+					_telemetry.TrackEvent(
+						"generate-xaml",
+						new[] {
 							("UnoXaml", XamlRedirection.XamlConfig.IsUnoXaml.ToString()),
 							("IsWasm", _isWasm.ToString()),
 							("IsDebug", _isDebug.ToString()),
 							("TargetFramework", _projectInstance.GetProperty("TargetFramework")?.EvaluatedValue.ToString()),
-							("IsBuildingUno", isBuildingUno.ToString()),
+							("IsBuildingUnoSolution", isBuildingUno.ToString()),
 							("IsUiAutomationMappingEnabled", _isUiAutomationMappingEnabled.ToString()),
-							("DefaultLanguage", _defaultLanguage),
+							("DefaultLanguage", _defaultLanguage ?? "Unknown"),
 							("IsRunningCI", IsRunningCI.ToString()),
-					},
-					new[] { ("FileCount", (double)files.Length) }
-				);
+						},
+						new[] { ("FileCount", (double)files.Length) }
+					);
+				}
+				catch (Exception telemetryException)
+				{
+					if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+					{
+						this.Log().Debug($"Telemetry failure: {telemetryException}");
+					}
+				}
 			}
 		}
 	}

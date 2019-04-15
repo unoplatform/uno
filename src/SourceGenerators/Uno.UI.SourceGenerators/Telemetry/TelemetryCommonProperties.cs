@@ -19,6 +19,7 @@ using System.Diagnostics;
 using System.Reflection;
 using Uno.UI.SourceGenerators.Helpers;
 using System.Security.Cryptography;
+using System.Net.NetworkInformation;
 
 namespace Uno.UI.SourceGenerators.Telemetry
 {
@@ -31,14 +32,16 @@ namespace Uno.UI.SourceGenerators.Telemetry
 		}
 
 		private Func<string> _getCurrentDirectory;
-		private const string OSVersion = "OS Version";
-		private const string OSPlatform = "OS Platform";
-		private const string OutputRedirected = "Output Redirected";
-		private const string RuntimeId = "Runtime Id";
-		private const string ProductVersion = "Product Version";
-		private const string TelemetryProfile = "Telemetry Profile";
-		private const string CurrentPathHash = "Current Path Hash";
-		private const string KernelVersion = "Kernel Version";
+
+		public const string OSVersion = "OS Version";
+		public const string OSPlatform = "OS Platform";
+		public const string OutputRedirected = "Output Redirected";
+		public const string RuntimeId = "Runtime Id";
+		public const string MachineId = "Machine ID";
+		public const string ProductVersion = "Product Version";
+		public const string TelemetryProfile = "Telemetry Profile";
+		public const string CurrentPathHash = "Current Path Hash";
+		public const string KernelVersion = "Kernel Version";
 
 		private const string TelemetryProfileEnvironmentVariable = "DOTNET_CLI_TELEMETRY_PROFILE";
 
@@ -50,9 +53,31 @@ namespace Uno.UI.SourceGenerators.Telemetry
 				{RuntimeId, RuntimeEnvironment.GetRuntimeIdentifier()},
 				{ProductVersion, GetProductVersion()},
 				{TelemetryProfile, Environment.GetEnvironmentVariable(TelemetryProfileEnvironmentVariable)},
+				{MachineId, GetMachineId()},
 				{CurrentPathHash, HashBuilder.Build(_getCurrentDirectory(), SHA256.Create())},
 				{KernelVersion, GetKernelVersion()},
 			};
+
+		private string GetMachineId()
+		{
+			try
+			{
+				var macAddr =
+				(
+					from nic in NetworkInterface.GetAllNetworkInterfaces()
+					where nic.OperationalStatus == OperationalStatus.Up
+					select nic.GetPhysicalAddress().ToString()
+				).FirstOrDefault();
+
+				return HashBuilder.Build(macAddr, SHA256.Create());
+			}
+			catch(Exception e)
+			{
+				Debug.Fail($"Failed to get Mac address: {e}");
+
+				return Guid.NewGuid().ToString();
+			}
+		}
 
 		private string GetProductVersion()
 		{

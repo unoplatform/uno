@@ -73,7 +73,7 @@ namespace Uno.UI.SourceGenerators.Telemetry
 			string eventName,
 			(string key, string value)[] properties,
 			(string key, double value)[] measurements)
-			=> TrackEvent(eventName, properties.ToDictionary(p => p.key, p => p.value), measurements.ToDictionary(p => p.key, p => p.value));
+			=> TrackEvent(eventName, properties?.ToDictionary(p => p.key, p => p.value), measurements?.ToDictionary(p => p.key, p => p.value));
 
 		public void TrackEvent(string eventName, IDictionary<string, string> properties,
 			IDictionary<string, double> measurements)
@@ -116,13 +116,14 @@ namespace Uno.UI.SourceGenerators.Telemetry
 				persistenceChannel.SendingInterval = TimeSpan.FromMilliseconds(1);
 				TelemetryConfiguration.Active.TelemetryChannel = persistenceChannel;
 
-				_client = new TelemetryClient();
-				_client.InstrumentationKey = InstrumentationKey;
-				_client.Context.Session.Id = CurrentSessionId;
-				_client.Context.Device.OperatingSystem = RuntimeEnvironment.OperatingSystem;
-
 				_commonProperties = new TelemetryCommonProperties().GetTelemetryCommonProperties();
 				_commonMeasurements = new Dictionary<string, double>();
+
+				_client = new TelemetryClient();
+				_client.InstrumentationKey = InstrumentationKey;
+				_client.Context.User.Id = _commonProperties[TelemetryCommonProperties.MachineId];
+				_client.Context.Session.Id = CurrentSessionId;
+				_client.Context.Device.OperatingSystem = RuntimeEnvironment.OperatingSystem;
 			}
 			catch (Exception e)
 			{
@@ -144,8 +145,8 @@ namespace Uno.UI.SourceGenerators.Telemetry
 
 			try
 			{
-				Dictionary<string, string> eventProperties = GetEventProperties(properties);
-				Dictionary<string, double> eventMeasurements = GetEventMeasures(measurements);
+				var eventProperties = GetEventProperties(properties);
+				var eventMeasurements = GetEventMeasures(measurements);
 
 				_client.TrackEvent(PrependProducerNamespace(eventName), eventProperties, eventMeasurements);
 			}
@@ -162,10 +163,10 @@ namespace Uno.UI.SourceGenerators.Telemetry
 
 		private Dictionary<string, double> GetEventMeasures(IDictionary<string, double> measurements)
 		{
-			Dictionary<string, double> eventMeasurements = new Dictionary<string, double>(_commonMeasurements);
+			var eventMeasurements = new Dictionary<string, double>(_commonMeasurements);
 			if (measurements != null)
 			{
-				foreach (KeyValuePair<string, double> measurement in measurements)
+				foreach (var measurement in measurements)
 				{
 					eventMeasurements[measurement.Key] = measurement.Value;
 				}
@@ -178,7 +179,7 @@ namespace Uno.UI.SourceGenerators.Telemetry
 			if (properties != null)
 			{
 				var eventProperties = new Dictionary<string, string>(_commonProperties);
-				foreach (KeyValuePair<string, string> property in properties)
+				foreach (var property in properties)
 				{
 					eventProperties[property.Key] = property.Value;
 				}
