@@ -123,7 +123,7 @@
 	</Target>
 
 	<Target Name="BuildCI">
-		<Exec Command="npm i" WorkingDirectory="..\SamplesApp\SamplesApp.Wasm.UITests" />
+		<Exec Command="npm i" WorkingDirectory="..\src\SamplesApp\SamplesApp.Wasm.UITests" />
 
 		<MSBuild Properties="Configuration=Release;VisualStudioVersion=15.0;CopyDSYM=False;InformationalVersion=$(GITVERSION_InformationalVersion);CI_Build=true;_IsCIBuild=true"
              Projects="..\src\Uno.UI.sln"
