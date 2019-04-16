@@ -25,6 +25,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Core\SystemNavigationManagerTests\HardwareBackButton.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\FrameworkElementTests\LoadEvents.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -1248,6 +1252,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI.Xaml_Automation\AutomationProperties_Name.xaml.cs">
       <DependentUpon>AutomationProperties_Name.xaml</DependentUpon>
     </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Core\SystemNavigationManagerTests\HardwareBackButton.xaml.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\FrameworkElementTests\LoadEvents.xaml.cs">
       <DependentUpon>LoadEvents.xaml</DependentUpon>
     </Compile>
@@ -2123,6 +2128,9 @@
     <PRIResource Include="$(MSBuildThisFileDirectory)UITestsStrings\en-US\Resources.resw" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Update="C:\Src\GitHub\nventive\Uno\src\SamplesApp\UITests.Shared\Windows_UI_Core\SystemNavigationManagerTests\HardwareBackButton.xaml.cs">
+      <DependentUpon>HardwareBackButton.xaml</DependentUpon>
+    </Compile>
     <Compile Update="C:\src\Uno2\src\SamplesApp\UITests.Shared\Wasm\Wasm_CustomEvent.xaml.cs">
       <DependentUpon>Wasm_CustomEvent.xaml</DependentUpon>
     </Compile>
