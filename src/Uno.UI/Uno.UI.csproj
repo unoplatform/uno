@@ -338,6 +338,10 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <UpToDateCheckInput Remove="UI\Xaml\HtmlCustomEventArgs.cs" />
+	</ItemGroup>
+
+	<ItemGroup>
 	  <None Update="Mixins\net461\VisualStatesMixins.tt">
 	    <Generator>TextTemplatingFileGenerator</Generator>
 	  </None>

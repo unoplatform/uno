@@ -763,6 +763,21 @@
 			return "";
 		}
 
+		private customEventDetailExtractor(evt: CustomEvent): string {
+			if (evt) {
+				const detail = evt.detail;
+				if (detail) {
+					return JSON.stringify(detail);
+				}
+			}
+
+			return "";
+		}
+
+		private customEventDetailStringExtractor(evt: CustomEvent): string {
+			return evt ? `${evt.detail}` : "";
+		}
+
 		/**
 		 * Gets the event extractor function. See UIElement.HtmlEventExtractor
 		 * @param eventExtractorName an event extractor name.
@@ -782,6 +797,12 @@
 
 					case "FocusEventExtractor":
 						return this.focusEventExtractor;
+
+					case "CustomEventDetailJsonExtractor":
+						return this.customEventDetailExtractor;
+
+					case "CustomEventDetailStringExtractor":
+						return this.customEventDetailStringExtractor;
 				}
 
 				throw `Event filter ${eventExtractorName} is not supported`;
