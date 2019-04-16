@@ -352,6 +352,8 @@ declare namespace Uno.UI {
          * @param evt
          */
         private focusEventExtractor;
+        private customEventDetailExtractor;
+        private customEventDetailStringExtractor;
         /**
          * Gets the event extractor function. See UIElement.HtmlEventExtractor
          * @param eventExtractorName an event extractor name.

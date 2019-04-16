@@ -7,6 +7,7 @@ using Windows.Foundation;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media;
+using Uno.Extensions;
 
 namespace Microsoft.Toolkit.Uwp.UI.Lottie
 {

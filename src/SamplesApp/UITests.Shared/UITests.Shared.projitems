@@ -13,6 +13,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Wasm\Wasm_CustomEvent.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="$(MSBuildThisFileDirectory)Windows_ApplicationModel_Resources_ResourceLoader\ResourceLoader_Simple.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -1237,6 +1241,7 @@
   <ItemGroup>
     <Compile Include="$(MSBuildThisFileDirectory)Helpers\ViewModelBase.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Lottie\SampleLottieAnimation.xaml.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Wasm\Wasm_CustomEvent.xaml.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Windows_ApplicationModel_Resources_ResourceLoader\ResourceLoader_Simple.xaml.cs">
       <DependentUpon>ResourceLoader_Simple.xaml</DependentUpon>
     </Compile>
@@ -2118,6 +2123,9 @@
     <PRIResource Include="$(MSBuildThisFileDirectory)UITestsStrings\en-US\Resources.resw" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Update="C:\src\Uno2\src\SamplesApp\UITests.Shared\Wasm\Wasm_CustomEvent.xaml.cs">
+      <DependentUpon>Wasm_CustomEvent.xaml</DependentUpon>
+    </Compile>
     <Compile Update="C:\src\Uno2\src\SamplesApp\UITests.Shared\Windows_UI_Xaml_Controls\Button\AppBarButtonTest.xaml.cs">
       <DependentUpon>AppBarButtonTest.xaml</DependentUpon>
     </Compile>
