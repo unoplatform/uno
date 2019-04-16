@@ -103,26 +103,14 @@ namespace Windows.Graphics.Display
 			int width = displayMetrics.WidthPixels;
 			int height = displayMetrics.HeightPixels;
 
-			if ( width == height)
+			if (width == height)
 			{
 				//square device, can't tell orientation
 				CurrentOrientation = DisplayOrientations.None;
 				return;
 			}
-			
-			var portraitOrientation0Or180 =
-				(rotation == SurfaceOrientation.Rotation0 ||
-				rotation == SurfaceOrientation.Rotation180)
-				&& height > width;
-			var portraitOrientation90Or270 =
-				(rotation == SurfaceOrientation.Rotation90 ||
-				rotation == SurfaceOrientation.Rotation270)
-				&& width > height;
 
-			// if the device's natural orientation is portrait:
-			if (
-				portraitOrientation0Or180 ||
-				portraitOrientation90Or270 )
+			if (NativeOrientation == DisplayOrientations.Portrait)
 			{
 				switch (rotation)
 				{
@@ -143,10 +131,10 @@ namespace Windows.Graphics.Display
 						CurrentOrientation = DisplayOrientations.None;
 						break;
 				}
-			}			
-			else 
+			}
+			else if (NativeOrientation == DisplayOrientations.Landscape)
 			{
-				//device is landscape
+				//device is landscape or square
 				switch (rotation)
 				{
 					case SurfaceOrientation.Rotation0:
@@ -166,6 +154,11 @@ namespace Windows.Graphics.Display
 						CurrentOrientation = DisplayOrientations.None;
 						break;
 				}
+			}
+			else
+			{
+				//fallback
+				CurrentOrientation = DisplayOrientations.None;
 			}
 		}
 
@@ -173,8 +166,8 @@ namespace Windows.Graphics.Display
 		internal void HandleConfigurationChange()
 		{
 			var previousOrientation = CurrentOrientation;
-			Initialize();			
-			if ( previousOrientation != CurrentOrientation)
+			Initialize();
+			if (previousOrientation != CurrentOrientation)
 			{
 				OrientationChanged?.Invoke(this, CurrentOrientation);
 			}
