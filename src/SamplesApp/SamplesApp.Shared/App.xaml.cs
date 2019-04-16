@@ -3,12 +3,14 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using System.Threading;
 using Microsoft.Extensions.Logging;
 using Uno.Extensions;
 using Windows.ApplicationModel;
 using Windows.ApplicationModel.Activation;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using Windows.UI.Core;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
@@ -143,5 +145,68 @@ namespace SamplesApp
 				.AddConsole(LogLevel.Debug);
 		}
 
+
+#pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
+		private static HashSet<int> _isTestDone = new HashSet<int>();
+		private static int _testIdCounter = 0;
+
+		public static string GetAllTests()
+			=> SampleControl.Presentation.SampleChooserViewModel.Instance.GetAllSamplesNames();
+
+		public static string RunTest(string metadataName)
+		{
+			try
+			{
+				Console.WriteLine($"Initiate Running Test {metadataName}");
+
+				var testId = Interlocked.Increment(ref _testIdCounter);
+
+				Windows.UI.Xaml.Window.Current.Dispatcher.RunAsync(
+					CoreDispatcherPriority.Normal,
+					async () =>
+					{
+						try
+						{
+#if __IOS__ || __ANDROID__
+							var statusBar = Windows.UI.ViewManagement.StatusBar.GetForCurrentView();
+							if (statusBar != null)
+							{
+								Windows.UI.Xaml.Window.Current.Dispatcher.RunAsync(
+									Windows.UI.Core.CoreDispatcherPriority.Normal,
+									async () => await statusBar.HideAsync()
+								);
+							}
+#endif
+
+							await SampleControl.Presentation.SampleChooserViewModel.Instance.SetSelectedSample(CancellationToken.None, metadataName);
+
+							lock (_isTestDone)
+							{
+								_isTestDone.Add(testId);
+							}
+						}
+						catch (Exception e)
+						{
+							Console.WriteLine($"Failed to run test {metadataName}, {e}");
+						}
+					}
+				);
+
+				return testId.ToString();
+			}
+			catch (Exception e)
+			{
+				Console.WriteLine($"Failed Running Test {metadataName}, {e}");
+				return "";
+			}
+		}
+
+		public static bool IsTestDone(string testId)
+		{
+			lock (_isTestDone)
+			{
+				return _isTestDone.Contains(int.Parse(testId));
+			}
+		}
 	}
 }
