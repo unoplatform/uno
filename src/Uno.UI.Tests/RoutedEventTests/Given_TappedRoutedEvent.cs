@@ -58,6 +58,30 @@ namespace Uno.UI.Tests.RoutedEventTests
 		}
 
 		[TestMethod]
+		public void When_SubscribingUsingAddHandler_And_Unregister()
+		{
+			var events = new List<(object sender, TappedRoutedEventArgs args)>();
+
+			var root = new Border();
+
+			void OnTapped(object snd, TappedRoutedEventArgs evt) => events.Add((snd, evt));
+
+			root.AddHandler(UIElement.TappedEvent, (TappedEventHandler)OnTapped, false);
+
+			var evt1 = new TappedRoutedEventArgs();
+			root.RaiseEvent(UIElement.TappedEvent, evt1).Should().BeTrue();
+
+			events.Should().HaveCount(1)
+				.And.ContainSingle(x => x.sender == root && x.args == evt1);
+
+			root.RemoveHandler(UIElement.TappedEvent, (TappedEventHandler)OnTapped);
+
+			var evt2 = new TappedRoutedEventArgs();
+			root.RaiseEvent(UIElement.TappedEvent, evt2).Should().BeTrue();
+			events.Should().HaveCount(1);
+		}
+
+		[TestMethod]
 		public void When_SubscribingUsingAddHandler_And_BubblingInManagedCode()
 		{
 			var events = new List<(object sender, TappedRoutedEventArgs args)>();

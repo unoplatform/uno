@@ -33,7 +33,7 @@ namespace Windows.UI.Xaml
 
 		private static Dictionary<UIView, CALayer> _debugLayers;
 
-		internal bool IsPointerCaptured { get; set; }
+		internal bool IsPointerCaptured => _pointCaptures.Any();
 
 		public UIElement()
 		{
@@ -469,7 +469,7 @@ namespace Windows.UI.Xaml
 
 				IsPointerPressed = false;
 				IsPointerOver = false;
-				IsPointerCaptured = false;
+				_pointCaptures.Clear();
 			}
 			catch (Exception e)
 			{
@@ -522,7 +522,7 @@ namespace Windows.UI.Xaml
 
 				IsPointerPressed = false;
 				IsPointerOver = false;
-				IsPointerCaptured = false;
+				_pointCaptures.Clear();
 			}
 			catch (Exception e)
 			{

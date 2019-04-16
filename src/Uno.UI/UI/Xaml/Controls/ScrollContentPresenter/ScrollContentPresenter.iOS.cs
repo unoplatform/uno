@@ -30,7 +30,7 @@ namespace Windows.UI.Xaml.Controls
 		private bool _isInAnimatedScroll;
 
 		internal CGPoint UpperScrollLimit { get { return (CGPoint)(ContentSize - Frame.Size); } }
-		CGPoint IScrollContentPresenter.UpperScrollLimit { get { return UpperScrollLimit; } }
+		CGPoint IUIScrollView.UpperScrollLimit { get { return UpperScrollLimit; } }
 
 		public ScrollContentPresenter()
 		{

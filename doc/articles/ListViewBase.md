@@ -163,3 +163,7 @@ ScrollViewer + ScrollContentPresenter.
 | ItemsStackPanelLayout(ItemsWrapGridLayout) | RecyclerView.LayoutManager | UIKit.UICollectionViewLayout | Tells NativeListViewBase how to lay out its items. Bridge for ItemsStackPanel(ItemsWrapGrid). |
 | NativeListViewBaseAdapter(Android), ListViewBaseSource(iOS) | RecyclerView.Adapter | UIKit.UICollectionViewSource | Handles creation and reuse of item views. No direct UWP equivalent. |
 | ScrollingViewCache | RecyclerView.ViewCacheExtension | - | Additional virtualization handling on Android which optimizes scroll performance. |
+
+### Other differences from UWP
+ 
+ * The ListView doesn't use XAML animations (AddDeleteThemeTransition, etc) for collection modifications, instead it uses the animations provided by the native collection class. On iOS, these can be disabled by setting the `ListViewBase.UseCollectionAnimations` flag to `false`.
