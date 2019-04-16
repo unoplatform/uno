@@ -1,206 +1,207 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>net462</TargetFramework>
-    <UpdateAssemblyInfo>false</UpdateAssemblyInfo>
-  </PropertyGroup>
+	<PropertyGroup>
+		<TargetFramework>net462</TargetFramework>
+		<UpdateAssemblyInfo>false</UpdateAssemblyInfo>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <Content Include="..\src\global.json" Link="global.json" />
-  </ItemGroup>
+	<ItemGroup>
+		<Content Include="..\src\global.json" Link="global.json" />
+	</ItemGroup>
 
-  <PropertyGroup Condition="'$(BuildingInsideVisualStudio)'==''">
-    <AppVersion>$(GITVERSION_FullSemVer)</AppVersion>
+	<PropertyGroup Condition="'$(BuildingInsideVisualStudio)'==''">
+		<AppVersion>$(GITVERSION_FullSemVer)</AppVersion>
 
-    <NuGetBin>.\nuget\NuGet.exe</NuGetBin>
-    <OutputDir>$(BUILD_ARTIFACTSTAGINGDIRECTORY)</OutputDir>
-    <Configuration>$(CombinedConfiguration.Split('|')[0])</Configuration>
-    <Platform>$(CombinedConfiguration.Split('|')[1])</Platform>
-    <AppEnvironment Condition="'$(CombinedConfiguration)' != '' and $(CombinedConfiguration.Split('|').Length) > 2">$(CombinedConfiguration.Split('|')[2])</AppEnvironment>
+		<NuGetBin>.\nuget\NuGet.exe</NuGetBin>
+		<OutputDir>$(BUILD_ARTIFACTSTAGINGDIRECTORY)</OutputDir>
+		<Configuration>$(CombinedConfiguration.Split('|')[0])</Configuration>
+		<Platform>$(CombinedConfiguration.Split('|')[1])</Platform>
+		<AppEnvironment Condition="'$(CombinedConfiguration)' != '' and $(CombinedConfiguration.Split('|').Length) > 2">$(CombinedConfiguration.Split('|')[2])</AppEnvironment>
 
-    <UpdateAssemblyInfo>false</UpdateAssemblyInfo>
-    <_isWindows>$([MSBuild]::IsOsPlatform(Windows))</_isWindows>
-  </PropertyGroup>
+		<UpdateAssemblyInfo>false</UpdateAssemblyInfo>
+		<_isWindows>$([MSBuild]::IsOsPlatform(Windows))</_isWindows>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <None Include="..\src\Directory.Build.targets" Link="Directory.Build.targets" />
-  </ItemGroup>
+	<ItemGroup>
+		<None Include="..\src\Directory.Build.targets" Link="Directory.Build.targets" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <PackageReference Include="docfx.console" Version="2.36.0" />
-    <PackageReference Include="Microsoft.VisualStudio.TextTemplating.15.0">
-      <Version>15.8.28010</Version>
-    </PackageReference>
-    <PackageReference Include="Microsoft.VisualStudio.TextTemplating.VSHost.14.0">
-      <Version>14.3.25407</Version>
-    </PackageReference>
-    <PackageReference Include="MSBuildTasks">
-      <Version>1.5.0.235</Version>
-    </PackageReference>
-    <PackageReference Include="NUnit.Runners">
-      <Version>2.6.4</Version>
-    </PackageReference>
-  </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="docfx.console" Version="2.36.0" />
+		<PackageReference Include="Microsoft.VisualStudio.TextTemplating.15.0">
+			<Version>15.8.28010</Version>
+		</PackageReference>
+		<PackageReference Include="Microsoft.VisualStudio.TextTemplating.VSHost.14.0">
+			<Version>14.3.25407</Version>
+		</PackageReference>
+		<PackageReference Include="MSBuildTasks">
+			<Version>1.5.0.235</Version>
+		</PackageReference>
+		<PackageReference Include="NUnit.Runners">
+			<Version>2.6.4</Version>
+		</PackageReference>
+	</ItemGroup>
 
-  <ItemGroup Condition="$([MSBuild]::IsOsPlatform(Windows))">
-    <PackageReference Include="GitVersionTask">
-      <Version>4.0.0</Version>
-    </PackageReference>
-  </ItemGroup>
+	<ItemGroup Condition="$([MSBuild]::IsOsPlatform(Windows))">
+		<PackageReference Include="GitVersionTask">
+			<Version>4.0.0</Version>
+		</PackageReference>
+	</ItemGroup>
 
-  <Target Name="UnoVSBuild" AfterTargets="Build" Condition="'$(BuildingInsideVisualStudio)'!=''">
-    <Warning Text="Building this project under Visual Studio has no effect." />
-  </Target>
+	<Target Name="UnoVSBuild" AfterTargets="Build" Condition="'$(BuildingInsideVisualStudio)'!=''">
+		<Warning Text="Building this project under Visual Studio has no effect." />
+	</Target>
 
-  <Target Name="UnoBuild" AfterTargets="Build" Condition="'$(BuildingInsideVisualStudio)'==''">
+	<Target Name="UnoBuild" AfterTargets="Build" Condition="'$(BuildingInsideVisualStudio)'==''">
 
-    <Message Text="Building for $(Configuration) and $(Platform) BuildReason:$(BUILD_REASON) Version:$(GitVersion_FullSemVer)" />
+		<Message Text="Building for $(Configuration) and $(Platform) BuildReason:$(BUILD_REASON) Version:$(GitVersion_FullSemVer)" />
 
-    <!-- 
+		<!-- 
     Use NuGet 4.3.0 or later for the restore 
     CI_Build environment is required for the restore to pickup the TargetFrameworksCI property in projects.
     -->
-    <Exec Command="set NUGET_RESTORE_MSBUILD_ARGS=/p:CI_Build=true &amp; nuget\nuget.exe restore -Verbosity detailed ..\src\Uno.UI.sln"
+		<Exec Command="set NUGET_RESTORE_MSBUILD_ARGS=/p:CI_Build=true &amp; nuget\nuget.exe restore -Verbosity detailed ..\src\Uno.UI.sln"
       Condition="'$(AppEnvironment)'=='' and $(_isWindows) " />
 
-    <CallTarget Targets="GetVersion;UpdateFileVersions;UpdateTasksSHA" Condition="$(_isWindows)" />
+		<CallTarget Targets="GetVersion;UpdateFileVersions;UpdateTasksSHA" Condition="$(_isWindows)" />
 
-    <CallTarget Targets="BuildCI" Condition="'$(Configuration)'=='Release' and $(_isWindows)" />
-    <CallTarget Targets="BuildCImacOS" Condition="'$(Configuration)'=='Release' and !$(_isWindows)" />
+		<CallTarget Targets="BuildCI" Condition="'$(Configuration)'=='Release' and $(_isWindows)" />
+		<CallTarget Targets="BuildCImacOS" Condition="'$(Configuration)'=='Release' and !$(_isWindows)" />
 
-    <CallTarget Targets="BuildNuGetPackage" Condition="'$(Configuration)'=='Release'" />
-    <CallTarget Targets="PublishVisx" Condition="'$(Configuration)'=='Release' and $(_isWindows)" />
-  </Target>
+		<CallTarget Targets="BuildNuGetPackage" Condition="'$(Configuration)'=='Release'" />
+		<CallTarget Targets="PublishVisx" Condition="'$(Configuration)'=='Release' and $(_isWindows)" />
+	</Target>
 
-  <Target Name="UpdateFileVersions">
+	<Target Name="UpdateFileVersions">
 
-    <XmlUpdate
+		<XmlUpdate
       XmlFileName="..\src\SolutionTemplate\UnoSolutionTemplate.VISX\source.extension.vsixmanifest"
       XPath="/x:PackageManifest/x:Metadata/x:Identity/@Version"
       Value="$(GITVERSION_MajorMinorPatch).$(GITVERSION_CommitsSinceVersionSource)"
       Namespace="http://schemas.microsoft.com/developer/vsx-schema/2011"
       Prefix="x"/>
 
-    <XmlUpdate
+		<XmlUpdate
       XmlFileName="..\src\SolutionTemplate\UnoSolutionTemplate\Droid\UnoQuickStart.Droid.csproj"
       XPath="//x:PackageReference[@Include='Uno.UI']/@Version"
       Value="$(GitVersion_FullSemVer)"
       Namespace="http://schemas.microsoft.com/developer/msbuild/2003"
       Prefix="x"/>
 
-    <XmlUpdate
+		<XmlUpdate
       XmlFileName="..\src\SolutionTemplate\UnoSolutionTemplate\iOS\UnoQuickStart.iOS.csproj"
       XPath="//x:PackageReference[@Include='Uno.UI']/@Version"
       Value="$(GitVersion_FullSemVer)"
       Namespace="http://schemas.microsoft.com/developer/msbuild/2003"
       Prefix="x"/>
 
-    <XmlUpdate
+		<XmlUpdate
       XmlFileName="..\src\SolutionTemplate\UnoSolutionTemplate\Wasm\UnoQuickStart.Wasm.csproj"
       XPath="//PackageReference[@Include='Uno.UI']/@Version"
       Value="$(GitVersion_FullSemVer)" />
 
-    <XmlUpdate
+		<XmlUpdate
       XmlFileName="..\src\SolutionTemplate\UnoLibraryTemplate\CrossTargetedLibrary.csproj"
       XPath="//PackageReference[@Include='Uno.UI']/@Version"
       Value="$(GitVersion_FullSemVer)" />
 
-  </Target>
+	</Target>
 
-  <Target Name="UpdateTasksSHA">
+	<Target Name="UpdateTasksSHA">
 
-    <ItemGroup>
-      <_Sha1Replace Include="..\src\SourceGenerators\Uno.UI.Tasks\Uno.UI.Tasks.csproj" />
-      <_Sha1Replace Include="..\src\SourceGenerators\Uno.UI.Tasks\Assets\RetargetAssets.cs" />
-      <_Sha1Replace Include="..\src\SourceGenerators\Uno.UI.Tasks\Content\Uno.UI.Tasks.targets" />
-      <_Sha1Replace Include="..\src\SourceGenerators\Uno.UI.Tasks\ResourcesGenerator\ResourcesGenerationTask.cs" />
-    </ItemGroup>
+		<ItemGroup>
+			<_Sha1Replace Include="..\src\SourceGenerators\Uno.UI.Tasks\Uno.UI.Tasks.csproj" />
+			<_Sha1Replace Include="..\src\SourceGenerators\Uno.UI.Tasks\Assets\RetargetAssets.cs" />
+			<_Sha1Replace Include="..\src\SourceGenerators\Uno.UI.Tasks\Content\Uno.UI.Tasks.targets" />
+			<_Sha1Replace Include="..\src\SourceGenerators\Uno.UI.Tasks\ResourcesGenerator\ResourcesGenerationTask.cs" />
+		</ItemGroup>
 
-    <FileUpdate Files="@(_Sha1Replace)"
+		<FileUpdate Files="@(_Sha1Replace)"
          Regex="v0"
          ReplacementText="v$(GitVersion_Sha)" />
 
-  </Target>
+	</Target>
 
-  <Target Name="BuildCI">
+	<Target Name="BuildCI">
+		<Exec Command="npm i" WorkingDirectory="..\SamplesApp\SamplesApp.Wasm.UITests" />
 
-    <MSBuild Properties="Configuration=Release;VisualStudioVersion=15.0;CopyDSYM=False;InformationalVersion=$(GITVERSION_InformationalVersion);CI_Build=true;_IsCIBuild=true"
+		<MSBuild Properties="Configuration=Release;VisualStudioVersion=15.0;CopyDSYM=False;InformationalVersion=$(GITVERSION_InformationalVersion);CI_Build=true;_IsCIBuild=true"
              Projects="..\src\Uno.UI.sln"
              Targets="Build"
              RebaseOutputs="false"
              BuildInParallel="true" />
 
-  </Target>
+	</Target>
 
-  <Target Name="BuildCImacOS">
+	<Target Name="BuildCImacOS">
 
-    <MSBuild Properties="Configuration=Release;VisualStudioVersion=15.0;CopyDSYM=False;InformationalVersion=$(GITVERSION_InformationalVersion);CI_Build=true;_IsCIBuild=true"
+		<MSBuild Properties="Configuration=Release;VisualStudioVersion=15.0;CopyDSYM=False;InformationalVersion=$(GITVERSION_InformationalVersion);CI_Build=true;_IsCIBuild=true"
              Projects="..\src\Uno.UI-vs4mac.sln"
              Targets="Build"
              RebaseOutputs="false"
              BuildInParallel="true" />
 
-  </Target>
+	</Target>
 
-  <Target Name="GenerateDoc">
+	<Target Name="GenerateDoc">
 
-    <!-- Restore the nuget packages for the whole solution -->
-    <MSBuild Properties="Configuration=Release;VisualStudioVersion=15.0;CopyDSYM=False;InformationalVersion=$(GITVERSION_InformationalVersion);CI_Build=true;_IsCIBuild=true"
+		<!-- Restore the nuget packages for the whole solution -->
+		<MSBuild Properties="Configuration=Release;VisualStudioVersion=15.0;CopyDSYM=False;InformationalVersion=$(GITVERSION_InformationalVersion);CI_Build=true;_IsCIBuild=true"
              Projects="..\src\Uno.UI.sln"
              Targets="Restore"
              RebaseOutputs="false"
              BuildInParallel="true" />
 
-    <MSBuild Properties="Configuration=Release;VisualStudioVersion=15.0"
+		<MSBuild Properties="Configuration=Release;VisualStudioVersion=15.0"
 				Projects="..\src\Uno.UWPSyncGenerator\Uno.UWPSyncGenerator.csproj"
 				Targets="Restore;Build" />
-    <Exec Command="..\src\Uno.UWPSyncGenerator\Bin\Release\net461\Uno.UWPSyncGenerator.exe &quot;doc&quot;" />
-    <Exec Command="$(NuGetPackageRoot)\docfx.console\2.36.0\tools\docfx.exe ..\doc\docfx.json -o $(OutputDir)\doc" />
-  </Target>
+		<Exec Command="..\src\Uno.UWPSyncGenerator\Bin\Release\net461\Uno.UWPSyncGenerator.exe &quot;doc&quot;" />
+		<Exec Command="$(NuGetPackageRoot)\docfx.console\2.36.0\tools\docfx.exe ..\doc\docfx.json -o $(OutputDir)\doc" />
+	</Target>
 
-  <Target Name="PublishVisx">
-    <Copy SourceFiles="..\src\SolutionTemplate\UnoSolutionTemplate.VISX\bin\Release\UnoSolutionTemplate.vsix"
+	<Target Name="PublishVisx">
+		<Copy SourceFiles="..\src\SolutionTemplate\UnoSolutionTemplate.VISX\bin\Release\UnoSolutionTemplate.vsix"
           DestinationFiles="$(OutputDir)\UnoPlatform-$(GITVERSION_FullSemVer).vsix" />
-  </Target>
+	</Target>
 
-  <Target Name="BuildNuGetPackage" DependsOnTargets="_FillMsBuildVersion">
+	<Target Name="BuildNuGetPackage" DependsOnTargets="_FillMsBuildVersion">
 
-    <PropertyGroup>
-      <NugetNamespace>http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd</NugetNamespace>
-    </PropertyGroup>
+		<PropertyGroup>
+			<NugetNamespace>http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd</NugetNamespace>
+		</PropertyGroup>
 
-    <XmlUpdate
+		<XmlUpdate
       XmlFileName=".\Uno.UI.nuspec"
       XPath="/x:package/x:metadata/x:dependencies/x:dependency/@version"
       Value="$(GITVERSION_FullSemVer)"
       Namespace="$(NugetNamespace)"
       Prefix="x"/>
 
-    <XmlUpdate
+		<XmlUpdate
       XmlFileName=".\Uno.UI.WpfHost.nuspec"
       XPath="/x:package/x:metadata/x:dependencies//x:dependency[@id='Uno.UI']/@version"
       Value="$(GITVERSION_FullSemVer)"
       Namespace="$(NugetNamespace)"
       Prefix="x"/>
 
-    <XmlUpdate
+		<XmlUpdate
       XmlFileName=".\Uno.UI.Lottie.nuspec"
       XPath="/x:package/x:metadata/x:dependencies//x:dependency[@id='Uno.UI']/@version"
       Value="$(GITVERSION_FullSemVer)"
       Namespace="$(NugetNamespace)"
       Prefix="x"/>
 
-    <!-- Create the packages -->
-    <Exec Command="$(NuGetBin) pack Uno.UI.nuspec -Verbosity Detailed -Version &quot;$(GITVERSION_FullSemVer)&quot;" />
-    <Exec Command="$(NuGetBin) pack Uno.UI.WpfHost.nuspec -Verbosity Detailed -Version &quot;$(GITVERSION_FullSemVer)&quot;" />
-    <Exec Command="$(NuGetBin) pack Uno.UI.Lottie.nuspec -Verbosity Detailed -Version &quot;$(GITVERSION_FullSemVer)&quot;" />
-  </Target>
+		<!-- Create the packages -->
+		<Exec Command="$(NuGetBin) pack Uno.UI.nuspec -Verbosity Detailed -Version &quot;$(GITVERSION_FullSemVer)&quot;" />
+		<Exec Command="$(NuGetBin) pack Uno.UI.WpfHost.nuspec -Verbosity Detailed -Version &quot;$(GITVERSION_FullSemVer)&quot;" />
+		<Exec Command="$(NuGetBin) pack Uno.UI.Lottie.nuspec -Verbosity Detailed -Version &quot;$(GITVERSION_FullSemVer)&quot;" />
+	</Target>
 
-  <Target Name="ValidatePackage" AfterTargets="UnoBuild" Condition="'$(BuildingInsideVisualStudio)'==''">
-    <Exec Command="dotnet tool install --global Uno.PackageDiff --version 1.0.0-dev.6" IgnoreExitCode="true" />
-    <Exec Command="generatepkgdiff --base=Uno.UI --other=Uno.UI.$(GITVERSION_FullSemVer).nupkg --diffignore=PackageDiffIgnore.xml --outfile=$(OutputDir)\ApiDiff.$(GITVERSION_FullSemVer).md" />
-  </Target>
+	<Target Name="ValidatePackage" AfterTargets="UnoBuild" Condition="'$(BuildingInsideVisualStudio)'==''">
+		<Exec Command="dotnet tool install --global Uno.PackageDiff --version 1.0.0-dev.6" IgnoreExitCode="true" />
+		<Exec Command="generatepkgdiff --base=Uno.UI --other=Uno.UI.$(GITVERSION_FullSemVer).nupkg --diffignore=PackageDiffIgnore.xml --outfile=$(OutputDir)\ApiDiff.$(GITVERSION_FullSemVer).md" />
+	</Target>
 
-  <Import Project="GetMsBuildVersion.targets" />
+	<Import Project="GetMsBuildVersion.targets" />
 
 </Project>
