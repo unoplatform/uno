@@ -437,7 +437,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\TimePicker\Sample2_styles.xaml">
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\TimePicker\Sample2_Styles.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -1456,7 +1456,7 @@
       <DependentUpon>MediaPlayerElement_Minimal.xaml</DependentUpon>
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\Models\ChatBoxViewModel.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\MediaPlayerElement\MediaPlayerElement_mkv_Extension.xaml.cs">
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\MediaPlayerElement\MediaPlayerElement_Mkv_Extension.xaml.cs">
       <DependentUpon>MediaPlayerElement_Mkv_Extension.xaml</DependentUpon>
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\MediaPlayerElement\MediaPlayerElement_Mov_Extension.xaml.cs">

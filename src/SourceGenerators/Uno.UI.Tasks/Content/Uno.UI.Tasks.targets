@@ -20,6 +20,7 @@
   -->
   <Target Name="UnoResourcesGeneration"
 				  BeforeTargets="PrepareForBuild;_CheckForContent"
+                  DependsOnTargets="ResolveProjectReferences"
 				  Condition="'$(DesignTimeBuild)' != 'true' and '$(BuildingInsideUnoSourceGenerator)' == '' and ('$(XamarinProjectType)'!='' or '$(UnoForceProcessPRIResource)'!='')">
 
     <CheckForDevenv Condition="'$(SolutionFileName)'=='Uno.UI.sln'" />

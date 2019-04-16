@@ -20,6 +20,7 @@
 * 150793 [iOS] Add ListView.UseCollectionAnimations flag to allow disabling native insert/delete animations
 * [Wasm] Add support of hardware/browser back button in `SystemNavigationManager.BackRequested`
 * [Wasm] Added support for custom DOM events
+* WebAssembly UI tests are now integrated in the CI
 
 ### Breaking Changes
 * The `WebAssemblyRuntime.InvokeJSUnmarshalled` method with three parameters has been removed.

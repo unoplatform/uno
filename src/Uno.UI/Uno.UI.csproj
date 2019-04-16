@@ -86,7 +86,7 @@
 			<AutoGen>True</AutoGen>
 			<DependentUpon>VisualStatesMixins.tt</DependentUpon>
 		</Compile>
-		<Compile Include="Mixins\wasm\VisualStatesMixins.g.cs">
+		<Compile Include="Mixins\Wasm\VisualStatesMixins.g.cs">
 			<DesignTime>True</DesignTime>
 			<AutoGen>True</AutoGen>
 			<DependentUpon>VisualStatesMixins.tt</DependentUpon>
