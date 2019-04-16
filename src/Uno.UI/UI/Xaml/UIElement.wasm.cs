@@ -265,6 +265,8 @@ namespace Windows.UI.Xaml
 			TappedEventExtractor,
 			KeyboardEventExtractor,
 			FocusEventExtractor,
+			CustomEventDetailStringExtractor, // For use with CustomEvent("name", {detail:{string detail here}})
+			CustomEventDetailJsonExtractor, // For use with CustomEvent("name", {detail:{detail here}}) - will be JSON.stringify
 		}
 
 		private class EventRegistration

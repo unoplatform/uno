@@ -18,12 +18,12 @@ namespace Uno.UI.SourceGenerators.Helpers
 		public static string BuildIDFromSymbol(ITypeSymbol typeSymbol)
 			=> typeSymbol.GetFullName() + "_" + Build(typeSymbol.MetadataName + typeSymbol.ContainingAssembly.MetadataName);
 
-		public static string Build(string input)
+		public static string Build(string input, HashAlgorithm algoritm = null)
 		{
-			using (var md5Hash = MD5.Create())
+			using (algoritm = algoritm ?? MD5.Create())
 			{
 				// Convert the input string to a byte array and compute the hash.
-				var data = md5Hash.ComputeHash(Encoding.UTF8.GetBytes(input));
+				var data = algoritm.ComputeHash(Encoding.UTF8.GetBytes(input));
 
 				// Create a new Stringbuilder to collect the bytes
 				// and create a string.

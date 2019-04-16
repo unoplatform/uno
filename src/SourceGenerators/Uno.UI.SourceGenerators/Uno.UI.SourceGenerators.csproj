@@ -45,6 +45,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="Microsoft.ApplicationInsights" Version="2.0.0" />
     <PackageReference Include="Microsoft.Build" Version="15.4.8" ExcludeAssets="runtime" />
     <PackageReference Include="Microsoft.Build.Engine" Version="15.4.8" ExcludeAssets="runtime" />
     <PackageReference Include="Microsoft.Build.Tasks.Core" Version="15.4.8" ExcludeAssets="runtime" />
@@ -67,6 +68,9 @@
     <PackageReference Include="Microsoft.CodeAnalysis.Workspaces.Common">
       <Version>2.3.1</Version>
       <ExcludeAssets>runtime</ExcludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.DotNet.PlatformAbstractions">
+      <Version>2.1.0</Version>
     </PackageReference>
     <PackageReference Include="Mono.Cecil">
       <Version>0.10.1</Version>
@@ -115,10 +119,24 @@
     <Compile Include="Helpers\SymbolExtensions.cs" />
     <Compile Include="NativeCtor\NativeCtorsGenerator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Telemetry\PersistenceChannel\BaseStorageService.cs" />
+    <Compile Include="Telemetry\PersistenceChannel\FixedSizeQueue.cs" />
+    <Compile Include="Telemetry\PersistenceChannel\FlushManager.cs" />
+    <Compile Include="Telemetry\PersistenceChannel\PersistenceChannel.cs" />
+    <Compile Include="Telemetry\PersistenceChannel\PersistenceChannelDebugLog.cs" />
+    <Compile Include="Telemetry\PersistenceChannel\PersistenceTransmitter.cs" />
+    <Compile Include="Telemetry\PersistenceChannel\Sender.cs" />
+    <Compile Include="Telemetry\PersistenceChannel\SnapshottingCollection.cs" />
+    <Compile Include="Telemetry\PersistenceChannel\SnapshottingDictionary.cs" />
+    <Compile Include="Telemetry\PersistenceChannel\StorageService.cs" />
+    <Compile Include="Telemetry\PersistenceChannel\StorageTransmission.cs" />
+    <Compile Include="Telemetry\TelemetryClient.cs" />
+    <Compile Include="Telemetry\TelemetryCommonProperties.cs" />
     <Compile Include="TSBindings\TSBindingsGenerator.cs" />
     <Compile Include="XamlGenerator\BackingFieldDefinition.cs" />
     <Compile Include="XamlGenerator\NameScope.cs" />
     <Compile Include="XamlGenerator\PlatformHelper.cs" />
+    <Compile Include="XamlGenerator\XamlCodeGeneration.Telemetry.cs" />
     <Compile Include="XamlGenerator\XamlFileGenerator.Reflection.cs" />
     <Compile Include="XamlGenerator\XamlPathParser\GeneratedStreamGeometryContext.cs" />
     <Compile Include="XamlGenerator\XamlRedirection\XamlConfig.cs" />

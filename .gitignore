@@ -245,3 +245,4 @@ msbuild.binlog
 *.diagsession
 
 /src/SourceGenerators/System.Xaml/obj-net_4_x-win32
+/src/SamplesApp/SamplesApp.Wasm.UITests/out

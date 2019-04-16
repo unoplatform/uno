@@ -86,7 +86,7 @@
 			<AutoGen>True</AutoGen>
 			<DependentUpon>VisualStatesMixins.tt</DependentUpon>
 		</Compile>
-		<Compile Include="Mixins\wasm\VisualStatesMixins.g.cs">
+		<Compile Include="Mixins\Wasm\VisualStatesMixins.g.cs">
 			<DesignTime>True</DesignTime>
 			<AutoGen>True</AutoGen>
 			<DependentUpon>VisualStatesMixins.tt</DependentUpon>
@@ -335,6 +335,10 @@
 			<SkipGetTargetFrameworkProperties>true</SkipGetTargetFrameworkProperties>
 			<UndefineProperties>TargetFramework</UndefineProperties>
 		</ProjectReference>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <UpToDateCheckInput Remove="UI\Xaml\HtmlCustomEventArgs.cs" />
 	</ItemGroup>
 
 	<ItemGroup>

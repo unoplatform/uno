@@ -1,4 +1,11 @@
+resources:
+  containers:
+  - container: nv-bionic-wasm
+    image: nventive/wasm-build:1.1-bionic
+
 jobs:
+- template: .azure-devops-wasm-uitests.yml
+
 - job: VS_Latest
 
   pool:
@@ -23,6 +30,9 @@ jobs:
     inputs:
       versionSpec: 4.9.1
       checkLatest: false
+
+  # Required for the Wasm uitests project
+  - task: NodeTool@0
 
   - task: MSBuild@1
     inputs:
