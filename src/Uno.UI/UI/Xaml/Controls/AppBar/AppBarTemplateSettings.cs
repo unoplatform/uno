@@ -14,10 +14,10 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		// TODO: Implement
 		public Rect ClipRect => new Rect(0, 0, double.PositiveInfinity, double.PositiveInfinity); // No clipping
 		public Thickness CompactRootMargin => new Thickness(0);
-		public double CompactVerticalDelta => 0;
+		public double CompactVerticalDelta => -16;
 		public Thickness HiddenRootMargin => new Thickness(0);
-		public double HiddenVerticalDelta => 0;
+		public double HiddenVerticalDelta => -56;
 		public Thickness MinimalRootMargin => new Thickness(0);
-		public double MinimalVerticalDelta => 0;
+		public double MinimalVerticalDelta => -32;
 	}
 }

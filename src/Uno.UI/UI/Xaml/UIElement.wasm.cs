@@ -242,12 +242,15 @@ namespace Windows.UI.Xaml
 				return;
 			}
 
+			var width = double.IsInfinity(rect.Width) ? 100000.0f : rect.Width;
+			var height = double.IsInfinity(rect.Height) ? 100000.0f : rect.Height;
+
 			SetStyle(
 				"clip",
 				"rect("
 				+ Math.Floor(rect.Y) + "px,"
-				+ Math.Ceiling(rect.X + rect.Width) + "px,"
-				+ Math.Ceiling(rect.Y + rect.Height) + "px,"
+				+ Math.Ceiling(rect.X + width) + "px,"
+				+ Math.Ceiling(rect.Y + height) + "px,"
 				+ Math.Floor(rect.X) + "px"
 				+ ")"
 			);
