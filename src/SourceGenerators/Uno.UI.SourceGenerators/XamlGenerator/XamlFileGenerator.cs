@@ -363,6 +363,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			writer.AppendLineInvariant($"global::Windows.UI.Xaml.Media.ImageSource.Drawables = typeof(global::{_defaultNamespace}.Resource.Drawable);");
 			writer.AppendLineInvariant($"#endif");
 
+			RegisterResources(topLevelControl);
 			BuildProperties(writer, topLevelControl, isInline: false, returnsContent: false);
 			writer.AppendLineInvariant(";");
 		}
@@ -396,6 +397,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			writer.AppendLineInvariant("var nameScope = new global::Windows.UI.Xaml.NameScope();");
 			writer.AppendLineInvariant("NameScope.SetNameScope(this, nameScope);");
 
+			RegisterResources(topLevelControl);
 			var hasContent = BuildProperties(writer, topLevelControl, isInline: false, returnsContent: isDirectUserControlChild);
 
 			writer.AppendLineInvariant(";");
@@ -1276,8 +1278,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				if (topLevelControl.Members.Any())
 				{
 					var setterPrefix = string.IsNullOrWhiteSpace(closureName) ? string.Empty : closureName + ".";
-
-					RegisterResources(topLevelControl);
 
 					var implicitContentChild = FindImplicitContentMember(topLevelControl);
 
@@ -2788,6 +2788,10 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			{
 				return $"global::{resource.Namespace}.GlobalStaticResources.{SanitizeResourceName(resourceName)}";
 			}
+			else if (_staticResources.ContainsKey(resourceName))
+			{
+				return $"{GetCastString(targetType, _staticResources[resourceName])}StaticResources.{SanitizeResourceName(resourceName)}";
+			}
 			else
 			{
 				var validateString = _isDebug ? $" ?? throw new InvalidOperationException(\"The resource {resourceName} cannot be found\")" : "";
@@ -3150,6 +3154,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 				using (var innerWriter = CreateApplyBlock(writer, null, out var closureName))
 				{
+					RegisterResources(xamlObjectDefinition);
 					BuildLiteralProperties(innerWriter, xamlObjectDefinition, closureName);
 					BuildProperties(innerWriter, xamlObjectDefinition, closureName: closureName);
 				}
@@ -3237,6 +3242,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					{
 						using (writer.BlockInvariant("new {0}{1}", GetGlobalizedTypeName(fullTypeName), GenerateConstructorParameters(xamlObjectDefinition.Type)))
 						{
+							RegisterResources(xamlObjectDefinition);
 							BuildLiteralProperties(writer, xamlObjectDefinition);
 							BuildProperties(writer, xamlObjectDefinition);
 						}
