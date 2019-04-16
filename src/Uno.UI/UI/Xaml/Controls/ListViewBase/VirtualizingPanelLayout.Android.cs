@@ -50,6 +50,14 @@ namespace Windows.UI.Xaml.Controls
 		/// Header and/or footer's content and/or template have changed, they need to be updated.
 		/// </summary>
 		private bool _needsHeaderAndFooterUpdate;
+		/// <summary>
+		/// The items collection has been modified and the subsequent relayout is pending.
+		/// </summary>
+		/// <remarks>
+		/// Much of the time this is handled automatically by RecyclerView, but there are edge cases (modifications while list was unloaded,
+		/// or when no ItemAnimator is set) that need special attention.
+		/// </remarks>
+		private bool _needsUpdateAfterCollectionChange;
 
 		internal int Extent => ScrollOrientation == Orientation.Vertical ? Height : Width;
 		internal int Breadth => ScrollOrientation == Orientation.Vertical ? Width : Height;
@@ -528,11 +536,17 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		/// <summary>
-		/// Informs the layout that a INotifyCollectionChanged information has added/removed groups in the source.
+		/// Informs the layout that a INotifyCollectionChanged operation has occurred.
 		/// </summary>
-		internal void NotifyGroupOperation(ListViewBase.GroupOperation pendingOperation)
+		/// <param name="groupOperation">The details of a group operation, if it was a group operation, else null.</param>
+		internal void NotifyCollectionChange(ListViewBase.GroupOperation? groupOperation)
 		{
-			_pendingGroupOperations.Enqueue(pendingOperation);
+			if (groupOperation.HasValue)
+			{
+				_pendingGroupOperations.Enqueue(groupOperation.Value);
+			}
+
+			_needsUpdateAfterCollectionChange = true;
 		}
 
 		/// <summary>
@@ -733,7 +747,6 @@ namespace Windows.UI.Xaml.Controls
 		protected Size AddViewAtOffset(View child, GeneratorDirection direction, int extentOffset, int breadthOffset, int availableBreadth, ViewType viewType = ViewType.Item)
 		{
 			AddView(child, direction, viewType);
-
 
 			Size slotSize;
 			var logicalAvailableBreadth = ViewHelper.PhysicalToLogicalPixels(availableBreadth);
@@ -961,18 +974,24 @@ namespace Windows.UI.Xaml.Controls
 			}
 
 			var needsScrapOnMeasure = isMeasure && availableExtent > 0 && availableBreadth > 0 && ChildCount > 0;
+			var updatedAfterCollectionChange = false;
 			if (needsScrapOnMeasure)
 			{
 				// Always rebuild the layout on measure, because child dimensions may have changed
 				ScrapLayout(recycler, availableBreadth);
 			}
-			else if (willRunAnimations)
+			else if (willRunAnimations || _needsUpdateAfterCollectionChange)
 			{
 				// An INotifyCollectionChanged operation is triggering an animated update of the list.
 				ScrapLayout(recycler, availableBreadth);
-				// We actually need to update the buffer in this particular case to refresh the next item displayed.
-				// Since we don't scrap all views as forbidden below, we should be able to do that without weird behavior
-				UpdateBuffers(recycler);
+
+				if (!isMeasure)
+				{
+					// After a collection change we need to ensure that ScrapLayout() is called on the layout pass, because clearOldPositions()
+					// is only called after OnMeasure() (hence measure receives stale positions)
+					_needsUpdateAfterCollectionChange = false;
+					updatedAfterCollectionChange = true;
+				}
 			}
 
 			FillLayout(direction, 0, availableExtent, availableBreadth, recycler, state);
@@ -984,10 +1003,16 @@ namespace Windows.UI.Xaml.Controls
 
 			UpdateScrollPositionForPaddingChanges(recycler, state);
 
-			if (!needsScrapOnMeasure && !willRunAnimations)
+			if (updatedAfterCollectionChange)
+			{
+				// If layouting in response to a collection change, the views in the cache have out-of-date positions, so clear the cache.
+				ViewCache?.EmptyAndRemove();
+			}
+			else if (!needsScrapOnMeasure && !willRunAnimations && !_needsUpdateAfterCollectionChange)
 			{
 				// Don't modify buffer on the same cycle as scrapping all views, because buffer is liable to 'suck up' scrapped views 
 				// leading to weird behaviour
+				// And don't populate buffer after a collection change until visible layout has been rebuilt with up-to-date positions
 				AssertValidState();
 				UpdateBuffers(recycler);
 				AssertValidState();
@@ -1560,7 +1585,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		/// <summary>
-		/// Attach view to window if it has been detached.
+		/// Attach view to window if it has been detached. https://developer.android.com/reference/android/view/ViewGroup.html#attachViewToParent(android.view.View,%20int,%20android.view.ViewGroup.LayoutParams)
 		/// </summary>
 		internal void TryAttachView(View view)
 		{
@@ -1568,9 +1593,6 @@ namespace Windows.UI.Xaml.Controls
 			if (holder.IsDetached)
 			{
 				AttachView(view);
-
-				// Here we want to check if the attached view is part of the current selection or not and update it accordingly
-				UpdateSelection(view);
 			}
 		}
 
@@ -1587,9 +1609,9 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		/// <summary>
-		/// Checks to see if the recently attached view is up to date with selection
+		/// Set up-to-date selection state on item view.
 		/// </summary>
-		private void UpdateSelection(View view)
+		internal void UpdateSelection(View view)
 		{
 			// ensure the view is selectable, since headers are not.
 			if (view is SelectorItem selectorItem &&
@@ -1600,14 +1622,7 @@ namespace Windows.UI.Xaml.Controls
 				var selectedItems = XamlParent.SelectedItems;
 				var isItemInSelection = selectedItems.Contains(item);
 
-				if (isItemInSelection && !selectorItem.IsSelected)
-				{
-					selectorItem.IsSelected = true;
-				}
-				else if (!isItemInSelection && selectorItem.IsSelected)
-				{
-					selectorItem.IsSelected = false;
-				}
+				selectorItem.IsSelected = isItemInSelection;
 			}
 		}
 

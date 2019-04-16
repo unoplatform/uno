@@ -42,5 +42,12 @@
 	<array>
 		<string>Fonts/winjs-symbols.ttf</string>
 	</array>
+	<key>NSAppTransportSecurity</key>
+	<dict>
+		<key>NSAllowsArbitraryLoads</key>
+		<true/>
+		<key>NSExceptionMinimumTLSVersion</key>
+		<string>TLSv1.2</string>
+	</dict>
 </dict>
 </plist>

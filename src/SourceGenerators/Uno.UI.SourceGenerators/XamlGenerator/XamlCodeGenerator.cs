@@ -2,6 +2,7 @@
 using System.IO;
 using System.Text;
 using Uno.SourceGeneration;
+using Uno.UI.SourceGenerators.Telemetry;
 
 namespace Uno.UI.SourceGenerators.XamlGenerator
 {
@@ -25,7 +26,5 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				}
 			}
 		}
-
-
 	}
 }

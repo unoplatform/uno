@@ -105,6 +105,7 @@ namespace Windows.UI.Xaml.Controls
 				if (record.Value.ItemViewType == type)
 				{
 					Layout.TryAttachView(record.Value.View);
+					Layout.UpdateSelection(record.Value.View);
 					return record.Value.View;
 				}
 				else
@@ -127,6 +128,7 @@ namespace Windows.UI.Xaml.Controls
 			if (view != null)
 			{
 				Layout.TryAttachView(view);
+				Layout.UpdateSelection(view);
 			}
 
 			return view;

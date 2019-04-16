@@ -924,5 +924,41 @@ namespace Uno.UI.Tests.GridTests
 			Assert.AreEqual(measuredSize, new Windows.Foundation.Size(80, 80));
 			Assert.AreEqual(6, SUT.GetChildren().Count());
 		}
+
+		[TestMethod]
+		public void When_RowSpan_Out_Of_Range()
+		{
+			var SUT = new Grid();
+
+			SUT.RowDefinitions.Add(new RowDefinition { Height = "*" });
+			SUT.RowDefinitions.Add(new RowDefinition { Height = "*" });
+
+			SUT.AddChild(new View { RequestedDesiredSize = new Windows.Foundation.Size(100, 100) });
+			SUT.AddChild(new View { RequestedDesiredSize = new Windows.Foundation.Size(100, 100) })
+				.GridPosition(1, 0)
+				.GridRowSpan(3);
+
+			SUT.Measure(new Windows.Foundation.Size(100, 1000));
+			var measuredSize = SUT.DesiredSize;
+			SUT.Arrange(new Windows.Foundation.Rect(0, 0, 100, 1000));
+		}
+
+		[TestMethod]
+		public void When_ColumnSpan_Out_Of_Range()
+		{
+			var SUT = new Grid();
+
+			SUT.ColumnDefinitions.Add(new ColumnDefinition { Width = "*" });
+			SUT.ColumnDefinitions.Add(new ColumnDefinition { Width = "*" });
+
+			SUT.AddChild(new View { RequestedDesiredSize = new Windows.Foundation.Size(100, 100) });
+			SUT.AddChild(new View { RequestedDesiredSize = new Windows.Foundation.Size(100, 100) })
+				.GridPosition(0, 1)
+				.GridColumnSpan(3);
+
+			SUT.Measure(new Windows.Foundation.Size(1000, 100));
+			var measuredSize = SUT.DesiredSize;
+			SUT.Arrange(new Windows.Foundation.Rect(0, 0, 1000, 100));
+		}
 	}
 }

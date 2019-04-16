@@ -97,16 +97,6 @@
 	<ItemGroup>
 		<PRIResource Include="**\*.resw" />
 	</ItemGroup>
-
-	<ItemGroup>
-	  <None Remove="Windows_UI_Xaml_Markup\XamlReaderTests\When_SetLessProperty.xamltest" />
-	</ItemGroup>
-
-	<ItemGroup>
-		<None Include="Windows_UI_Xaml_Data\xBindTests\Given_StaticResource_Control.xaml">
-		  <Generator>MSBuild:Compile</Generator>
-		</None>
-	</ItemGroup>
 	<ItemGroup Condition="'$(BuildingInsideUnoSourceGenerator)'!=''">
 		<Page Include="Windows_UI_Xaml_Data\xBindTests\Given_StaticResource_Control.xaml" />
 	</ItemGroup>

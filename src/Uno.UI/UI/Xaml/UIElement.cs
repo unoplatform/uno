@@ -304,7 +304,6 @@ namespace Windows.UI.Xaml
 			if(_pointCaptures.Contains(value))
 			{
 				_pointCaptures.Remove(value);
-
 #if __WASM__
 				ReleasePointerCaptureNative(value);
 #endif

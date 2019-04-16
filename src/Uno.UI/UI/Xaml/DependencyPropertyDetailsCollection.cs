@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using Uno.UI.DataBinding;
 using Windows.UI.Xaml.Data;
 
 namespace Windows.UI.Xaml
@@ -11,6 +12,8 @@ namespace Windows.UI.Xaml
     partial class DependencyPropertyDetailsCollection
     {
 		private readonly Type _ownerType;
+		private readonly ManagedWeakReference _ownerReference;
+
 		public DependencyPropertyDetails DataContextPropertyDetails { get; }
 		public DependencyPropertyDetails TemplatedParentPropertyDetails { get; }
 
@@ -22,9 +25,10 @@ namespace Windows.UI.Xaml
 		/// Creates an instance using the specified DependencyObject <see cref="Type"/>
 		/// </summary>
 		/// <param name="ownerType">The owner type</param>
-		public DependencyPropertyDetailsCollection(Type ownerType, DependencyProperty dataContextProperty, DependencyProperty templatedParentProperty)
+		public DependencyPropertyDetailsCollection(Type ownerType, ManagedWeakReference ownerReference, DependencyProperty dataContextProperty, DependencyProperty templatedParentProperty)
 		{
 			_ownerType = ownerType;
+			_ownerReference = ownerReference;
 
 			var propertiesForType = DependencyProperty.GetPropertiesForType(ownerType);
 

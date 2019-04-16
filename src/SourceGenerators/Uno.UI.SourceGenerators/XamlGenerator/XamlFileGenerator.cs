@@ -77,6 +77,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		private readonly INamedTypeSymbol _iCollectionOfTSymbol;
 		private readonly INamedTypeSymbol _iListSymbol;
 		private readonly INamedTypeSymbol _iListOfTSymbol;
+		private readonly INamedTypeSymbol _iDictionaryOfTKeySymbol;
+		private readonly INamedTypeSymbol _dataBindingSymbol;
 
 		private readonly bool _isWasm;
 
@@ -130,6 +132,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			_iCollectionOfTSymbol = GetType("System.Collections.Generic.ICollection`1");
 			_iListSymbol = GetType("System.Collections.IList");
 			_iListOfTSymbol = GetType("System.Collections.Generic.IList`1");
+			_iDictionaryOfTKeySymbol = GetType("System.Collections.Generic.IDictionary`2");
+			_dataBindingSymbol = GetType("Windows.UI.Xaml.Data.Binding");
 
 			_isWasm = isWasm;
 		}
@@ -1375,10 +1379,39 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						}
 						else if (IsInitializableCollection(topLevelControl))
 						{
-							foreach (var child in implicitContentChild.Objects)
+							var elementType = FindType(topLevelControl.Type);
+
+							if (elementType != null)
 							{
-								BuildChild(writer, implicitContentChild, child);
-								writer.AppendLineInvariant(",");
+								if (IsDictionary(elementType))
+								{
+									foreach (var child in implicitContentChild.Objects)
+									{
+										if (GetMember(child, "Key") is var keyDefinition)
+										{
+											using (writer.BlockInvariant(""))
+											{
+												writer.AppendLineInvariant($"\"{keyDefinition.Value}\"");
+												writer.AppendLineInvariant(",");
+												BuildChild(writer, implicitContentChild, child);
+											}
+										}
+										else
+										{
+											GenerateError(writer, "Unable to find the x:Key property");
+										}
+
+										writer.AppendLineInvariant(",");
+									}
+								}
+								else
+								{
+									foreach (var child in implicitContentChild.Objects)
+									{
+										BuildChild(writer, implicitContentChild, child);
+										writer.AppendLineInvariant($", /* IsInitializableCollection {elementType} */");
+									}
+								}
 							}
 						}
 						else
@@ -2215,12 +2248,17 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			if (bindingOptions != null)
 			{
 				var isAttachedProperty = IsDependencyProperty(member.Member);
+				var isBindingType = FindPropertyType(member.Member) == _dataBindingSymbol;
 
 				if (isAttachedProperty)
 				{
 					var propertyOwner = GetType(member.Member.DeclaringType);
 
 					writer.AppendLine(formatLine($"SetBinding({GetGlobalizedTypeName(propertyOwner.ToDisplayString())}.{member.Member.Name}Property, new {XamlConstants.Types.Binding}{{ {bindingOptions} }})"));
+				}
+				else if (isBindingType)
+				{
+					writer.AppendLine(formatLine($"{member.Member.Name} = new {XamlConstants.Types.Binding}{{ {bindingOptions} }}"));
 				}
 				else
 				{
@@ -2706,7 +2744,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				{
 					var resourceName = bindingType.Members.First().Value.ToString();
 
-					return "new RelativeSource(RelativeSourceMode.TemplatedParent)";
+					return $"new RelativeSource(RelativeSourceMode.{resourceName})";
 				}
 
 				return "Unsupported";
@@ -3502,6 +3540,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					case XamlConstants.Types.FontWeight:
 					case XamlConstants.Types.GridLength:
 					case XamlConstants.Types.CornerRadius:
+					case XamlConstants.Types.Brush:
 					case "UIKit.UIColor":
 					case "Windows.UI.Color":
 					case "Color":

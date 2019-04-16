@@ -758,6 +758,15 @@ namespace SampleControl.Presentation
 			return section;
 		}
 
+		public string GetAllSamplesNames()
+		{
+			var q = from category in _categories
+					from test in category.SamplesContent
+					select test.ControlType.FullName;
+
+			return string.Join(";", q);
+		}
+
 		public async Task SetSelectedSample(CancellationToken ct, string metadataName)
 		{
 			Console.WriteLine($"Searching sample {metadataName}");
