@@ -7,7 +7,7 @@ const fs = require('fs');
 (async () => {
 	console.log(`Init puppeteer`);
 	const browser = await puppeteer.launch({
-		"headless": false,
+		"headless": true,
 		args: ['--no-sandbox', '--disable-setuid-sandbox'],
 		"defaultViewport": { "width": 1280, "height": 1024 }
 	});
