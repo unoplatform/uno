@@ -40,6 +40,7 @@
 * 145203 [Android] Fix overflow on LogicalToPhysicalPixels(double.MaxValue), allowing ScrollViewer.ChangeView(double.MaxValue,...) to work
 * 150679 [iOS] Fix path issue with Media Player not being able to play local files.
 * Adjust support for `StaticResource.ResourceKey`
+* 151081 [Android] Fix Keyboard not always dismissed when unfocusing a TextBox
 
 ## Release 1.44.0
 

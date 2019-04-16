@@ -457,7 +457,11 @@ namespace Windows.UI.Xaml.Controls
 						{
 							// Hide they keyboard for the activity's current focus instead of the view
 							// because it may have already been assigned to another focused control
-							inputManager?.HideSoftInputFromWindow(activity?.CurrentFocus?.WindowToken, Android.Views.InputMethods.HideSoftInputFlags.None);
+
+							//Seems like CurrentFocus can be null if the previously focused element is not part of the view anymore,
+							//resulting in the keyboard not being closed.
+							//We still try to get the Window token from it and it and if we fail, we get it from the TextBox we're currently unfocusing. 
+							inputManager?.HideSoftInputFromWindow(activity?.CurrentFocus?.WindowToken ?? ((View)this).WindowToken, Android.Views.InputMethods.HideSoftInputFlags.None);
 						}
 
 						if (hasFocus)
