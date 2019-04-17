@@ -11,10 +11,11 @@ using Microsoft.CodeAnalysis;
 using Uno.Extensions;
 using Microsoft.Build.Execution;
 using Uno.Logging;
+using Uno.UI.SourceGenerators.Telemetry;
 
 namespace Uno.UI.SourceGenerators.XamlGenerator
 {
-	internal class XamlCodeGeneration
+	internal partial class XamlCodeGeneration
 	{
 		private string[] _xamlSourceFiles;
 		private string _targetPath;
@@ -44,6 +45,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 		public XamlCodeGeneration(Compilation sourceCompilation, ProjectInstance msbProject, Project roslynProject)
 		{
+			InitTelemetry(msbProject);
+
 			_legacyTypes = msbProject
 				.GetItems("LegacyTypes")
 				.Select(i => i.EvaluatedInclude)
@@ -87,7 +90,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				.Select(i => i.EvaluatedInclude)
 				.ToArray();
 
-			if(bool.TryParse(msbProject.GetProperty("UseUnoXamlParser")?.EvaluatedValue, out var useUnoXamlParser) && useUnoXamlParser)
+			if (bool.TryParse(msbProject.GetProperty("UseUnoXamlParser")?.EvaluatedValue, out var useUnoXamlParser) && useUnoXamlParser)
 			{
 				XamlRedirection.XamlConfig.IsUnoXaml = useUnoXamlParser || XamlRedirection.XamlConfig.IsMono;
 			}
@@ -134,21 +137,28 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			_isWasm = msbProject.GetProperty("DefineConstants").EvaluatedValue?.Contains("__WASM__") ?? false;
 		}
 
+
 		public KeyValuePair<string, string>[] Generate()
 		{
-			this.Log().InfoFormat("Xaml Source Generation is using the {0} Xaml Parser", XamlRedirection.XamlConfig.IsUnoXaml ? "Uno.UI" : "System");
+			var stopwatch = Stopwatch.StartNew();
 
-			var lastBinaryUpdateTime = _forceGeneration ? DateTime.MaxValue : GetLastBinaryUpdateTime();
+			try
+			{
+				this.Log().InfoFormat("Xaml Source Generation is using the {0} Xaml Parser", XamlRedirection.XamlConfig.IsUnoXaml ? "Uno.UI" : "System");
 
-			var resourceKeys = GetResourceKeys();
-			var files = new XamlFileParser(_excludeXamlNamespaces, _includeXamlNamespaces).ParseFiles(_xamlSourceFiles);
+				var lastBinaryUpdateTime = _forceGeneration ? DateTime.MaxValue : GetLastBinaryUpdateTime();
 
-			var globalStaticResourcesMap = BuildAssemblyGlobalStaticResourcesMap(files);
+				var resourceKeys = GetResourceKeys();
+				var files = new XamlFileParser(_excludeXamlNamespaces, _includeXamlNamespaces).ParseFiles(_xamlSourceFiles);
 
-			var filesQuery = files
-				.ToArray();
+				TrackStartGeneration(files);
 
-			var outputFiles = filesQuery
+				var globalStaticResourcesMap = BuildAssemblyGlobalStaticResourcesMap(files);
+
+				var filesQuery = files
+					.ToArray();
+
+				var outputFiles = filesQuery
 #if !DEBUG
 				.AsParallel()
 #endif
@@ -173,13 +183,26 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						)
 						.GenerateFile()
 					)
-				)
-				.ToList();
+					)
+					.ToList();
 
 
-			outputFiles.Add(new KeyValuePair<string, string>("GlobalStaticResources", GenerateGlobalResources(files)));
+				outputFiles.Add(new KeyValuePair<string, string>("GlobalStaticResources", GenerateGlobalResources(files)));
 
-			return outputFiles.ToArray();
+				TrackGenerationDone(stopwatch.Elapsed);
+
+				return outputFiles.ToArray();
+			}
+			catch (Exception e)
+			{
+				TrackGenerationFailed(e, stopwatch.Elapsed);
+
+				throw;
+			}
+			finally
+			{
+				_telemetry.Flush();
+			}
 		}
 
 		private XamlGlobalStaticResourcesMap BuildAssemblyGlobalStaticResourcesMap(XamlFileDefinition[] files)
