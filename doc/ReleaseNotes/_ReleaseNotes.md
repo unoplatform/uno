@@ -3,6 +3,19 @@
 ## Next version
 
 ### Features
+* Add support for the following `DisplayInformation` properties on iOS and Android:   
+    - CurrentOrientation
+    - LogicalDpi
+    - NativeOrientation
+    - RawDpiX
+    - RawDpiY
+    - ResolutionScale
+    - StereoEnabled
+    - RawPixelsPerViewPixel
+    - DiagonalSizeInInches
+    - ScreenHeightInRawPixels
+    - ScreenWidthInRawPixels
+    - AutoRotationPreferences
 * Performance improvements
 	- Use `Span<T>` for Grid layout
 	- Optimize Wasm text measuring

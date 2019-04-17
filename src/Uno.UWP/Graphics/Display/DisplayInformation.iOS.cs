@@ -13,9 +13,65 @@ namespace Windows.Graphics.Display
 	{
 		private object _didChangeStatusBarOrientationObserver;
 
+		public static UIInterfaceOrientationMask[] PreferredOrientations =
+		{
+			UIInterfaceOrientationMask.Portrait,
+			UIInterfaceOrientationMask.LandscapeRight,
+			UIInterfaceOrientationMask.LandscapeLeft,
+			UIInterfaceOrientationMask.PortraitUpsideDown
+		};
+
 		partial void Initialize()
 		{
 			InitializeOrientation();
+			UpdateProperties();
+		}
+
+		private void UpdateProperties()
+		{
+			UpdateLogicalProperties();
+			UpdateRawProperties();
+			UpdateNativeOrientation();
+			UpdateCurrentOrientation();
+		}
+
+		private void UpdateLogicalProperties()
+		{
+			LogicalDpi = (float)(UIScreen.MainScreen.Scale * 100);
+			ResolutionScale = (ResolutionScale)(int)LogicalDpi;
+		}
+
+		/// <summary>
+		/// Sets ScreenHeightInRawPixels, ScreenWidthInRawPixels and RawPixelsPerViewPixel
+		/// </summary>
+		private void UpdateRawProperties()
+		{
+			var screenSize = UIScreen.MainScreen.Bounds.Size;
+			var scale = UIScreen.MainScreen.NativeScale;
+			ScreenHeightInRawPixels = (uint)(screenSize.Height * scale);
+			ScreenWidthInRawPixels = (uint)(screenSize.Width * scale);
+			RawPixelsPerViewPixel = UIScreen.MainScreen.NativeScale;
+		}
+
+		/// <summary>
+		/// Sets the NativeOrientation property 
+		/// to appropriate value based on user interface idiom
+		/// </summary>
+		private void UpdateNativeOrientation()
+		{
+			switch (UIDevice.CurrentDevice.UserInterfaceIdiom)
+			{
+				case UIUserInterfaceIdiom.Phone:
+					NativeOrientation = DisplayOrientations.Portrait;
+					break;
+				case UIUserInterfaceIdiom.TV:
+					NativeOrientation = DisplayOrientations.Landscape;
+					break;
+				default:
+					//in case of Pad, CarPlay and Unidentified there is no "native" orientation
+					NativeOrientation = DisplayOrientations.None;
+					break;
+			}
 		}
 
 		private void InitializeOrientation()
@@ -23,14 +79,13 @@ namespace Windows.Graphics.Display
 			_didChangeStatusBarOrientationObserver = NSNotificationCenter
 				.DefaultCenter
 				.AddObserver(
-					UIApplication.DidChangeStatusBarOrientationNotification, 
-					n => {
+					UIApplication.DidChangeStatusBarOrientationNotification,
+					n =>
+					{
 						UpdateCurrentOrientation();
 						OrientationChanged?.Invoke(this, CurrentOrientation);
 					}
 				);
-
-			UpdateCurrentOrientation();
 		}
 
 		private void UpdateCurrentOrientation()
@@ -56,17 +111,7 @@ namespace Windows.Graphics.Display
 					CurrentOrientation = DisplayOrientations.PortraitFlipped;
 					break;
 			}
-
-			NativeOrientation = CurrentOrientation;
 		}
-
-		public static UIInterfaceOrientationMask[] PreferredOrientations =
-		{
-			UIInterfaceOrientationMask.Portrait,
-			UIInterfaceOrientationMask.LandscapeRight,
-			UIInterfaceOrientationMask.LandscapeLeft,
-			UIInterfaceOrientationMask.PortraitUpsideDown
-		};
 
 		static partial void SetOrientationPartial(DisplayOrientations orientations)
 		{
@@ -95,7 +140,6 @@ namespace Windows.Graphics.Display
 			//Forces the rotation if the physical device is being held in an orientation that has now become supported
 			UIViewController.AttemptRotationToDeviceOrientation();
 		}
-
 	}
 }
 #endif
