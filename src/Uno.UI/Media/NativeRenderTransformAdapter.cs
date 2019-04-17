@@ -38,9 +38,6 @@ namespace Uno.UI.Media
 			// This is used only by animations
 			transform.View = owner;
 
-			// Apply the transform as soon as its been declared
-			Update();
-
 			// Partial constructor
 			Initialized();
 
