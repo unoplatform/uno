@@ -649,6 +649,14 @@ namespace SampleControl.Presentation
 			await UpdateFavorites(ct);
 		}
 
+		private async Task ReloadCurrentTest(CancellationToken ct)
+		{
+			if (CurrentSelectedSample != null)
+			{
+				ContentPhone = await UpdateContent(ct, CurrentSelectedSample);
+			}
+		}
+
 		private async Task UpdateFavoriteForSample(CancellationToken ct, SampleChooserContent sample, bool isFavorite)
 		{
 			// Have to update favorite on UI thread for the INotifyPropertyChanged in SampleChooserControl
@@ -698,9 +706,7 @@ namespace SampleControl.Presentation
 			{
 				var vm = Activator.CreateInstance(newContent.ViewModelType, fe.Dispatcher);
 				fe.DataContext = vm;
-
 			}
-
 
 			var controlContainsSampleControl = (control as UserControl)?.Content is Uno.UI.Samples.Controls.SampleControl;
 			if (!controlContainsSampleControl)

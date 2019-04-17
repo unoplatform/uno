@@ -434,6 +434,7 @@
 						<ColumnDefinition Width="*" />
 						<ColumnDefinition Width="Auto" />
 						<ColumnDefinition Width="Auto" />
+						<ColumnDefinition Width="Auto" />
 					</Grid.ColumnDefinitions>
 
 					<!-- Back Button -->
@@ -452,9 +453,20 @@
 							   VerticalAlignment="Center"
 							   Grid.Column="1" />
 
+					<!-- Reload Button -->
+					<Button Style="{StaticResource IconButtonStyle}"
+					        Grid.Column="2"
+					        Command="{Binding ReloadCurrentTestCommand}"
+					        CommandParameter="{Binding CurrentSelectedSample}">
+						<u:PathControl Style="{StaticResource Icon_Reload}"
+						               VerticalContentAlignment="Center"
+						               HorizontalContentAlignment="Center"
+						               Margin="0,4,10,0" />
+					</Button>
+
 					<!-- Favorite Button -->
 					<Button Style="{StaticResource IconButtonStyle}"
-							Grid.Column="2"
+							Grid.Column="3"
 							Command="{Binding ToggleFavoriteCommand}"
 							CommandParameter="{Binding CurrentSelectedSample}">
 						<u:PathControl Style="{Binding CurrentSelectedSample.IsFavorite, Converter={StaticResource FavoritesPathConverter}, TargetNullValue={StaticResource Icon_Favorite_Empty}, FallbackValue={StaticResource Icon_Favorite_Empty}}"
@@ -466,7 +478,7 @@
 					<!-- Log Dump Button -->
 					<Button Style="{StaticResource IconButtonStyle}"
 							VerticalAlignment="Center"
-							Grid.Column="3"
+							Grid.Column="4"
 							Command="{Binding LogViewDumpCommand}"
 							Visibility="{Binding IsDebug, Converter={StaticResource TrueToVisible}}">
 						<u:PathControl Style="{StaticResource Icon_LogDump}"
