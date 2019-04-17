@@ -3,6 +3,7 @@
 ## Next version
 
 ### Features
+* Add support for `ChatMessageManager.ShowComposeSmsMessageAsync` (and `ChatMessage` `Body` and `Recipients` properties) on iOS and Android
 * Add support for the following `DisplayInformation` properties on iOS and Android:   
     - CurrentOrientation
     - LogicalDpi
