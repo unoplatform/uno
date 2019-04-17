@@ -31,6 +31,7 @@
 * 149377 Improve performance of `TimePicker` and `DatePicker` on iOS.
 * 145203 [iOS] Support ScrollViewer.ChangeView() inside TextBox
 * 150793 [iOS] Add ListView.UseCollectionAnimations flag to allow disabling native insert/delete animations
+* 150882 [iOS] Fix visual glitch when setting new RenderTransform on a view
 * [Wasm] Add support of hardware/browser back button in `SystemNavigationManager.BackRequested`
 * [Wasm] Added support for custom DOM events
 * WebAssembly UI tests are now integrated in the CI
