@@ -27,6 +27,8 @@
 		<!-- Android -->
 		<ExcludeXamlNamespaces Condition="'$(XamarinProjectType)'=='android'" Include="ios" />
 		<ExcludeXamlNamespaces Condition="'$(XamarinProjectType)'=='android'" Include="not_android" />
+		<!--WASM-->
+		<ExcludeXamlNamespaces Condition="'$(XamarinProjectType)'=='wasm'" Include="not_wasm" />
 
 		<!-- 
 			Those namespaces are to be *included* from the code generation,

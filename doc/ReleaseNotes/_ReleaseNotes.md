@@ -56,6 +56,7 @@
 * 150679 [iOS] Fix path issue with Media Player not being able to play local files.
 * Adjust support for `StaticResource.ResourceKey`
 * 151081 [Android] Fix Keyboard not always dismissed when unfocusing a TextBox
+* [WASM] Support `not_wasm` prefix properly. (#784)
 
 ## Release 1.44.0
 
