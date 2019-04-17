@@ -642,7 +642,7 @@ namespace Windows.UI.Xaml.Controls
 					maxMeasuredWidth = Math.Max(maxMeasuredWidth, size.Width);
 
 					var starHeight = size.Height;
-					var sizes = allHeights.Span.Slice(starChild.Value.Row, starChild.Value.RowSpan);
+					var sizes = allHeights.Span.SliceClamped(starChild.Value.Row, starChild.Value.RowSpan);
 
 					for (int i = 0; i < sizes.Length; i++)
 					{

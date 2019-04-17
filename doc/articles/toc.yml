@@ -26,3 +26,7 @@
   href: SpeechRecognition.md
 - name: Media Player
   href: MediaPlayerElement.md
+- name: Build Tools Telemetry
+  href: uno-toolchain-telemetry.md
+- name: Html Custom Events (Wasm)
+  href: wasm-custom-events.md

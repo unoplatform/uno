@@ -43,6 +43,19 @@ To create a Non-UI Test:
 
 > More information about the GivenWhenThen pattern: <https://martinfowler.com/bliki/GivenWhenThen.html>
 
+# Running the WebAssembly UI Tests Snapshots
+The WebAssembly head has the ability to be run through puppeteer, and displays all tests in sequence. Puppeteer runs a headless version of Chromium, suited for running tests in a CI environment.
+
+To run the tests:
+- Build the `SamplesApp.Wasm.UITests.njsproj` project
+- Press `F5`, node will start and run the tests sequentially
+- The screen shots are placed in a folder named `out`
+
+Note that the same operation is run during the CI, in a specific job running under Linux. The screen shots are located in an build artifact.
+
+## Troubleshooting the tests
+It is possible to enable the chromium head using the configuration parameters in the [app.ts](src/SamplesApp/SamplesApp.Wasm.UITests/app.ts) file.
+
 # Creating performance benchmarks
 
 Performance is measured using BenchmarkDotNet, in the suite located in the `SamplesApp.Benchmarks` shared project.

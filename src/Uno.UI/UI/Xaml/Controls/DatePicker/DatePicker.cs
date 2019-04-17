@@ -131,6 +131,8 @@ namespace Windows.UI.Xaml.Controls
 		private TextBlock _dayTextBlock;
 		private TextBlock _monthTextBlock;
 		private TextBlock _yearTextBlock;
+		private bool _isLoaded;
+		private bool _isViewReady;
 
 		protected override void OnApplyTemplate()
 		{
@@ -150,8 +152,11 @@ namespace Windows.UI.Xaml.Controls
 					InitializeTextBlocks(flyoutContent);
 					UpdateDisplayedDate();
 				}
-				SetupFlyoutButton();
 			}
+
+			_isViewReady = true;
+
+			SetupFlyoutButton();
 
 			OnApplyTemplatePartial();
 
@@ -167,6 +172,9 @@ namespace Windows.UI.Xaml.Controls
 		protected override void OnLoaded()
 		{
 			base.OnLoaded();
+
+			_isLoaded = true;
+
 			var flyoutContent = _flyoutButton?.Content as IFrameworkElement;
 
 			if (flyoutContent != null)
@@ -177,21 +185,29 @@ namespace Windows.UI.Xaml.Controls
 
 		private void SetupFlyoutButton()
 		{
-#if __IOS__ || __ANDROID__
-			_flyoutButton.Flyout = new DatePickerFlyout()
+			if (!_isViewReady || !_isLoaded)
 			{
-#if __IOS__
-                Placement = FlyoutPlacement,
-#endif
-				Date = Date,
-				MinYear = MinYear,
-				MaxYear = MaxYear
-			};
+				return;
+			}
 
-			BindToFlyout("Date");
-			BindToFlyout("MinYear");
-			BindToFlyout("MaxYear");
+			if (_flyoutButton != null)
+			{
+#if __IOS__ || __ANDROID__
+				_flyoutButton.Flyout = new DatePickerFlyout()
+				{
+#if __IOS__
+					Placement = FlyoutPlacement,
 #endif
+					Date = Date,
+					MinYear = MinYear,
+					MaxYear = MaxYear
+				};
+
+				BindToFlyout("Date");
+				BindToFlyout("MinYear");
+				BindToFlyout("MaxYear");
+#endif
+			}
 		}
 
 		private void BindToFlyout(string propertyName)

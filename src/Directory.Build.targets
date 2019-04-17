@@ -12,7 +12,7 @@
     <PackageReference Update="Uno.SourceGeneration" Version="1.31.0-dev.285" />
     <PackageReference Update="Uno.Core" Version="1.28.0-dev.86" />
     <PackageReference Update="Uno.Core.Build" Version="1.28.0-dev.86" />
-    <PackageReference Update="Uno.Wasm.Bootstrap" Version="1.0.0-dev.244" />
+    <PackageReference Update="Uno.Wasm.Bootstrap" Version="1.0.0-dev.260" />
     <PackageReference Update="xamarin.build.download" Version="0.4.11" />
     <PackageReference Update="Uno.MonoAnalyzers" Version="1.0.0-dev.4" PrivateAssets="all" />
     <PackageReference Update="System.Memory" Version="4.5.2" />

@@ -15,6 +15,12 @@
 * Add support for IDictionary objects in XAM (#729)
 * Add support for Binding typed property (#731)
 * Add support for `RelativeSource.Self` bindings
+* 149377 Improve performance of `TimePicker` and `DatePicker` on iOS.
+* 145203 [iOS] Support ScrollViewer.ChangeView() inside TextBox
+* 150793 [iOS] Add ListView.UseCollectionAnimations flag to allow disabling native insert/delete animations
+* [Wasm] Add support of hardware/browser back button in `SystemNavigationManager.BackRequested`
+* [Wasm] Added support for custom DOM events
+* WebAssembly UI tests are now integrated in the CI
 
 ### Breaking Changes
 * The `WebAssemblyRuntime.InvokeJSUnmarshalled` method with three parameters has been removed.
@@ -28,7 +34,13 @@
 * 150143 [Android] Toggling `TextBox.IsReadOnly` from true to false no longer breaks the cursor
 * `WasmHttpHandler` was broken because of a change in the internal Mono implementation.
 * 140946 [Android] Upon modifying a list, incorrect/duplicated items appear
+* 150489 [Android] PointerCanceled not called on scrolling for views with a RenderTransform set
 * 150469 [iOS] Virtualized ListView items don't always trigger their multi-select VisualStates
+* 1580172 ToggleSwitch wasn't working after an unload/reload: caused by routedevent's unregistration not working.
+* 145203 [Android] Fix overflow on LogicalToPhysicalPixels(double.MaxValue), allowing ScrollViewer.ChangeView(double.MaxValue,...) to work
+* 150679 [iOS] Fix path issue with Media Player not being able to play local files.
+* Adjust support for `StaticResource.ResourceKey`
+* 151081 [Android] Fix Keyboard not always dismissed when unfocusing a TextBox
 
 ## Release 1.44.0
 
@@ -179,7 +191,7 @@
 * Time picker flyout default styles has been changed to include done and cancel buttons
 * DataTemplateSelector implementations are now called using the 2 parameters overload first with a fallback to the 1 parameter overload on null returned value.
   Old behavior could be restored using `FeatureConfiguration.DataTemplateSelector.UseLegacyTemplateSelectorOverload = true`.
-* Using "/n" directly in the XAML for a text/content property is not supported anymore in order to match the UWP behavior. 
+* Using "/n" directly in the XAML for a text/content property is not supported anymore in order to match the UWP behavior.
   You can use "&#x0a;" instead in the text/content properties or a carriage return where you need it in the localized resources.
 * The `ResourcesGeneration` msbuild target has been renamed to `UnoResourcesGeneration`
   If your csproj is using this target explicily, change it to the new name.
@@ -319,10 +331,10 @@
  * 136093, 136172 [iOS] ComboBox does not display its Popup
  * 134819, 134828 [iOS] Ensures the back gesture is enabled and disabled properly when the CommandBar is visible, collapsed, visible with a navigation command and collapsed with a navigation command.
  * 137081 Xaml generator doesn't support setting a style on the root control
- * 148228 [Android] Right theme (clock or spinner) is selected for specific time increments 
- * 148229 [Android] Right time is picked and rounded to nearest time increment in clock mode 
+ * 148228 [Android] Right theme (clock or spinner) is selected for specific time increments
+ * 148229 [Android] Right time is picked and rounded to nearest time increment in clock mode
  * 148241 [Android] won't open if `MinuteIncrement` is not set
- * 148582 Time picker initial time when using time increment is using initial time seconds when rounding.. it should ignore seconds.. 
+ * 148582 Time picker initial time when using time increment is using initial time seconds when rounding.. it should ignore seconds..
  * 148285 [iOS] TimePicker is clipped off screen when ios:FlyoutPlacement isnt set
 
 ## Release 1.40
@@ -352,7 +364,7 @@ Here are some highlights of this release:
 - Added support for `AutomationPeer`
 - Android status bar height is now included in `Window.Bounds`
 - Add support for `Underline` in `HyperLinkButton`
-- Add support for TextBlock.TextDecorations 
+- Add support for TextBlock.TextDecorations
 - TextBlock base class is now `FrameworkElement` on iOS, instead of `UILabel`
 - Auto generated list of views implemented in Uno in the documentation
 - Add support for string to `Type` conversion in XAML generator and binding engine
@@ -376,21 +388,21 @@ Here's the full change log:
     - TextBox InputScope fixes
     - Improved ListViewBase stability
     - SimpleOrientationSensor fixes
-    - PathMarkupParser: Add support for whitespace following FillRule command 
+    - PathMarkupParser: Add support for whitespace following FillRule command
     - Fix DependencyObjectStore.PopCurrentlySettingProperty
     - Raised navigation completed after setting CanGoBack/Forward
     - Fix layouting that sometimes misapplies margin
-    - Selector: Coerce SelectedItem to ensure its value is always valid 
-    - Remove legacy panel default constructor restriction 
+    - Selector: Coerce SelectedItem to ensure its value is always valid
+    - Remove legacy panel default constructor restriction
     - Wasm image support improvements
-    - Add support for forward slash in image source 
+    - Add support for forward slash in image source
     - Add support for CollectionViewSource set directly on ItemsControl.ItemSource
-    - Fix Pane template binding for SplitView 
-    - Add support for Object as DependencyProperty owner 
-    - Add Wasm support for UIElement.Tapped 
+    - Fix Pane template binding for SplitView
+    - Add support for Object as DependencyProperty owner
+    - Add Wasm support for UIElement.Tapped
     - Fix iOS UnregisterDoubleTapped stack overflow
 - Compatibility and stability fixes [#43](https://github.com/nventive/Uno/pull/43)
-    - Adjust WASM thickness support for children arrange 
+    - Adjust WASM thickness support for children arrange
     - Fix support for inline text content using ContentProperty
     - Fix memory leaks in ScrollViewer
     - Adjust for missing styles in UWP Styles FeatureConfiguration
@@ -488,9 +500,9 @@ Here's the full change log:
     - Adjust `MessageDialog` behavior for android
     - `ContentControl` Data Context is now properly unset
     - Add `EmailNameOrAddress` InputScope for `TextBox`
-    - Fixed duplicated resw entry support 
+    - Fixed duplicated resw entry support
     - Fixed `ComboBox` popup touch issue
-    - Add support for TextBlock.TextDecorations 
+    - Add support for TextBlock.TextDecorations
     - TextBlock base class from UILabel to FrameworkElement
 - Auto-generate list of views implemented in Uno [#152](https://github.com/nventive/Uno/pull/152)
 - Add support for string to `Type` conversion in Xaml generator and Binding engine. [#159](https://github.com/nventive/Uno/pull/159)
@@ -499,5 +511,5 @@ Here's the full change log:
 - Added support for XAML inline collections declaration [#184](https://github.com/nventive/Uno/pull/184)
 - Adjust the sequence of control template materialization [#192](https://github.com/nventive/Uno/pull/192)
 - Support for ListView.ScrollIntoView with leading alignment
-- Added support for ListView GroupStyle.HeaderTemplateSelector 
-- [IOS-ANDROID] Added support for time picker minute increment 
+- Added support for ListView GroupStyle.HeaderTemplateSelector
+- [IOS-ANDROID] Added support for time picker minute increment

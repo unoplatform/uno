@@ -353,6 +353,8 @@ declare namespace Uno.UI {
          * @param evt
          */
         private focusEventExtractor;
+        private customEventDetailExtractor;
+        private customEventDetailStringExtractor;
         /**
          * Gets the event extractor function. See UIElement.HtmlEventExtractor
          * @param eventExtractorName an event extractor name.
@@ -664,3 +666,14 @@ declare const MonoRuntime: Uno.UI.Interop.IMonoRuntime;
 declare const WebAssemblyApp: Uno.UI.Interop.IWebAssemblyApp;
 declare const UnoAppManifest: Uno.UI.IAppManifest;
 declare const UnoDispatch: Uno.UI.Interop.IUnoDispatch;
+declare namespace Windows.UI.Core {
+    class SystemNavigationManager {
+        private static _current;
+        static readonly current: SystemNavigationManager;
+        private _isEnabled;
+        constructor();
+        enable(): void;
+        disable(): void;
+        private clearStack;
+    }
+}

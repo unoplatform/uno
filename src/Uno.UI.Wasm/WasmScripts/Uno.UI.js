@@ -876,6 +876,18 @@ var Uno;
                 }
                 return "";
             }
+            customEventDetailExtractor(evt) {
+                if (evt) {
+                    const detail = evt.detail;
+                    if (detail) {
+                        return JSON.stringify(detail);
+                    }
+                }
+                return "";
+            }
+            customEventDetailStringExtractor(evt) {
+                return evt ? `${evt.detail}` : "";
+            }
             /**
              * Gets the event extractor function. See UIElement.HtmlEventExtractor
              * @param eventExtractorName an event extractor name.
@@ -891,6 +903,10 @@ var Uno;
                             return this.tappedEventExtractor;
                         case "FocusEventExtractor":
                             return this.focusEventExtractor;
+                        case "CustomEventDetailJsonExtractor":
+                            return this.customEventDetailExtractor;
+                        case "CustomEventDetailStringExtractor":
+                            return this.customEventDetailStringExtractor;
                     }
                     throw `Event filter ${eventExtractorName} is not supported`;
                 }
@@ -1849,3 +1865,63 @@ var Uno;
     })(UI = Uno.UI || (Uno.UI = {}));
 })(Uno || (Uno = {}));
 // ReSharper disable InconsistentNaming
+var Windows;
+(function (Windows) {
+    var UI;
+    (function (UI) {
+        var Core;
+        (function (Core) {
+            class SystemNavigationManager {
+                constructor() {
+                    var that = this;
+                    var dispatchBackRequest = Module.mono_bind_static_method("[Uno] Windows.UI.Core.SystemNavigationManager:DispatchBackRequest");
+                    window.history.replaceState(0, document.title, null);
+                    window.addEventListener("popstate", function (evt) {
+                        if (that._isEnabled) {
+                            if (evt.state === 0) {
+                                // Push something in the stack only if we know that we reached the first page.
+                                // There is no way to track our location in the stack, so we use indexes (in the 'state').
+                                window.history.pushState(1, document.title, null);
+                            }
+                            dispatchBackRequest();
+                        }
+                        else if (evt.state === 1) {
+                            // The manager is disabled, but the user requested to navigate forward to our dummy entry,
+                            // but we prefer to keep this dummy entry in teh forward stack (is more prompt to be cleared by the browser,
+                            // and as it's less commonly used it should be less annoying for the user)
+                            window.history.back();
+                        }
+                    });
+                }
+                static get current() {
+                    if (!this._current) {
+                        this._current = new SystemNavigationManager();
+                    }
+                    return this._current;
+                }
+                enable() {
+                    // Clear the back stack, so the only items will be ours (and we won't have any remaining forward item)
+                    this.clearStack();
+                    window.history.pushState(1, document.title, null);
+                    // Then set the enabled flag so the handler will begin its work
+                    this._isEnabled = true;
+                }
+                disable() {
+                    // Disable the handler, then clear the history
+                    // Note: As a side effect, the forward button will be enabled :(
+                    this._isEnabled = false;
+                    this.clearStack();
+                }
+                clearStack() {
+                    // There is no way to determine our position in the stack, so we only navigate back if we determine that
+                    // we are currently on our dummy target page.
+                    if (window.history.state === 1) {
+                        window.history.back();
+                    }
+                    window.history.replaceState(0, document.title, null);
+                }
+            }
+            Core.SystemNavigationManager = SystemNavigationManager;
+        })(Core = UI.Core || (UI.Core = {}));
+    })(UI = Windows.UI || (Windows.UI = {}));
+})(Windows || (Windows = {}));
