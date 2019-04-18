@@ -35,6 +35,7 @@
 * 150469 [iOS] Virtualized ListView items don't always trigger their multi-select VisualStates
 * 1580172 ToggleSwitch wasn't working after an unload/reload: caused by routedevent's unregistration not working.
 * 145203 [Android] Fix overflow on LogicalToPhysicalPixels(double.MaxValue), allowing ScrollViewer.ChangeView(double.MaxValue,...) to work
+* 151282 [iOS] Fixed Slider not responding on second navigation, fixed RemoveHandler for RoutedEvents removing all instances of handler 
 
 ## Release 1.44.0
 
