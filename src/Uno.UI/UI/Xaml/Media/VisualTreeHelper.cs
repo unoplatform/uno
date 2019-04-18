@@ -24,8 +24,8 @@ using _View = System.Object;
 
 namespace Windows.UI.Xaml.Media
 {
-    public partial class VisualTreeHelper
-    {
+	public partial class VisualTreeHelper
+	{
 		private static List<WeakReference<IPopup>> _openPopups = new List<WeakReference<IPopup>>();
 
 		internal static IDisposable RegisterOpenPopup(IPopup popup)
@@ -96,11 +96,11 @@ namespace Windows.UI.Xaml.Media
 #endif
 		}
 
-		internal static IReadOnlyList<IPopup> GetOpenPopups(Window window)
+		public static IReadOnlyList<Popup> GetOpenPopups(Window window)
 		{
 			return _openPopups
 				.Select(WeakReferenceExtensions.GetTarget)
-				.Trim()
+				.OfType<Popup>()
 				.ToList()
 				.AsReadOnly();
 		}
