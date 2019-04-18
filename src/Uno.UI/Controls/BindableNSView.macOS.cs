@@ -69,6 +69,8 @@ namespace Uno.UI.Controls
 			Initialize();
 		}
 
+		public override bool IsFlipped => true;
+
 		private void Initialize()
 		{
 			InitializeBinder();

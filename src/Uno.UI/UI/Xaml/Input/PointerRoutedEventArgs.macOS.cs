@@ -25,11 +25,10 @@ namespace Windows.UI.Xaml.Input
 		{
 #if __IOS__
 			var point = (_nativeTouches.AnyObject as NSTouch).LocationInView(relativeTo);
-
-			return new PointerPoint(point);
 #elif __MACOS__
-			throw new NotImplementedException();
+			var point = relativeTo.ConvertPointFromView(_nativeEvent.LocationInWindow, null);
 #endif
+			return new PointerPoint(point);
 		}
 	}
 }

@@ -2,18 +2,48 @@
 using System.Collections.Generic;
 using System.Text;
 using CoreGraphics;
-using UIKit;
 using Uno.Extensions;
 using Windows.Foundation;
 using Windows.UI.Xaml;
+
+#if __IOS__
+using UIKit;
+using _View = UIKit.UIView;
+using _Event = UIKit.UIEvent;
+using _Touch = UIKit.UITouch;
+using _Application = UIKit.UIApplication;
+using _Window = UIKit.UIWindow;
+using _ScrollView = UIKit.UIScrollView;
+#elif __MACOS__
+using AppKit;
+using _View = AppKit.NSView;
+using _Event = AppKit.NSEvent;
+using _Touch = AppKit.NSTouch;
+using _Application = AppKit.NSApplication;
+using _Window = AppKit.NSWindow;
+using _ScrollView = AppKit.NSScrollView;
+#endif
 
 namespace Uno.UI.Extensions
 {
 	public static class UIEventExtensions
 	{
-		public static bool IsTouchInView(this UIEvent evt, UIView view)
+		public static bool IsTouchInView(this _Event evt, _View view)
 		{
-			var touch = evt?.AllTouches?.AnyObject as UITouch;
+#if __MACOS__
+			var screenLocation = _Application.SharedApplication.KeyWindow.ContentView.ConvertPointFromView(evt.LocationInWindow, null);
+
+			var window = _Application.SharedApplication.KeyWindow;
+			var bounds = GetBounds(window, view);
+
+			// screenLocation.Y = window.Frame.Height - screenLocation.Y;
+
+			return screenLocation.X >= bounds.X
+				&& screenLocation.Y >= bounds.Y
+				&& screenLocation.X < bounds.Right
+				&& screenLocation.Y < bounds.Bottom;
+#else
+			var touch = evt?.AllTouches?.AnyObject as _Touch;
 
 			if (touch == null)
 			{
@@ -21,7 +51,7 @@ namespace Uno.UI.Extensions
 			}
 			else
 			{
-				var window = UIApplication.SharedApplication.KeyWindow;
+				var window = _Application.SharedApplication.KeyWindow;
 				var screenLocation = touch.LocationInView(window);
 
 				var bounds = GetBounds(window, view);
@@ -31,18 +61,19 @@ namespace Uno.UI.Extensions
 					&& screenLocation.X < bounds.Right
 					&& screenLocation.Y < bounds.Bottom;
 			}
+#endif
 		}
 
 		/// <summary>
 		/// Determines the bounds of the provided view, including the <see cref="UIElement.Clip"/>, using the window coordinate system.
 		/// </summary>
-		private static CGRect GetBounds(UIWindow window, UIView view)
+		private static CGRect GetBounds(_Window window, _View view)
 		{
 			CGRect? finalRect = null;
 
 			while (view != null)
 			{
-				if (view is UIScrollView)
+				if (view is _ScrollView)
 				{
 					// We don't support ScrollViewer clipping, because detecting 
 					// the scrolling position and adjusting it makes it for unreliable 
@@ -51,8 +82,11 @@ namespace Uno.UI.Extensions
 				}
 				else
 				{
+#if __MACOS__
+					var viewOnScreen = view.ConvertRectToView(view.Bounds, window.ContentView);
+#else
 					var viewOnScreen = view.ConvertRectToView(view.Bounds, window);
-
+#endif
 					var element = view as FrameworkElement;
 
 					if (element?.Clip != null)

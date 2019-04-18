@@ -6,6 +6,15 @@
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	mc:Ignorable="d">
-
-	<controls:SampleChooserControl x:Name="sampleControl" />
+	
+	<Grid Padding="12">
+	 	<controls:SampleChooserControl x:Name="sampleControl" Visibility="Collapsed" />
+		<StackPanel>
+			<TextBlock Text="test test" FontSize="64" />
+			<Button Content="My Button" FontSize="64" />
+			<Slider />
+			<CheckBox Content="My Check"/>
+			<ToggleButton Content="My Toggle"/>
+		</StackPanel>
+	</Grid>
 </Page>
