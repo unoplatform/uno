@@ -198,9 +198,9 @@ namespace Windows.UI.Xaml
 			{
 				this.Log().Debug($"Creating popup");
 			}
-			
-			var popupChild = popup.Child;
-			_popupRoot.Children.Add(popupChild);
+
+			var popupPanel = popup.PopupPanel;
+			_popupRoot.Children.Add(popupPanel);
 
 			return new CompositeDisposable(
 				Disposable.Create(() => {
@@ -210,7 +210,7 @@ namespace Windows.UI.Xaml
 						this.Log().Debug($"Closing popup");
 					}
 
-					_popupRoot.Children.Remove(popupChild);
+					_popupRoot.Children.Remove(popupPanel);
 				}),
 				VisualTreeHelper.RegisterOpenPopup(popup)
 			);

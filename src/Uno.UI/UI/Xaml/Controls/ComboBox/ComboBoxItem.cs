@@ -17,7 +17,7 @@ namespace Windows.UI.Xaml.Controls
 			var popup = GetPopupControl();
 			if (popup != _popup)
 			{
-				if(_popup != null)
+				if (_popup != null)
 				{
 					_popup.Opened -= OnPopupOpened;
 				}
