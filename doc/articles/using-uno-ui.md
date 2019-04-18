@@ -294,6 +294,13 @@ Uno.UI also generates a nested class named StaticResources in all non-ResourceDi
 
 Uno.UI supports the [authoring of styles](https://msdn.microsoft.com/en-us/library/windows/apps/windows.ui.xaml.style.aspx).
 
+Usually 2 styles are packaged for each control in Uno
+* NativeDefault<Control> which is customized to match the UI guidelines of the target platform
+* XamlDefault<Crontrol> which is the default style of controls on Windows
+
+On WASM, the NativeDefault<Control> styles are only aliases over the XamlDefault<Control> so you can reference them even 
+if currently there is no native styles per browser.
+
 ## Localization
 
 Localization is done through the `resw` files in the current project. Resources are then used using `x:Uid`.
