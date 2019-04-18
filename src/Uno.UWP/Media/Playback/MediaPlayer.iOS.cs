@@ -182,7 +182,7 @@ namespace Windows.Media.Playback
 
 			if (uri.IsFile)
 			{
-				return new NSUrl(uri.PathAndQuery);
+				return NSUrl.CreateFileUrl(uri.PathAndQuery, relativeToUrl: null);
 			}
 			
 			return new NSUrl(uri.ToString());

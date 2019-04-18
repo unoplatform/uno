@@ -5,7 +5,7 @@ using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
 
-#if !NETFX_CORE && !__ANDROID__ && !__IOS__ && !__WASM__
+#if !NETFX_CORE && !__ANDROID__ && !__IOS__ && !__WASM__ && !__MACOS__
 using System.Windows;
 using System.Windows.Controls;
 #else
@@ -13,13 +13,15 @@ using Windows.Foundation;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 #endif
-#if __ANDROID__ || __IOS__ || __WASM__
+#if __ANDROID__ || __IOS__ || __WASM__ || __MACOS__
 using DependencyObject = System.Object;
 #endif
 #if __ANDROID__
 using UIElement = Android.Views.View;
 #elif __IOS__
 using UIElement = UIKit.UIView;
+#elif __MACOS__
+using UIElement = AppKit.NSView;
 #endif
 
 namespace Uno.UI.Samples.Controls
@@ -45,7 +47,7 @@ namespace Uno.UI.Samples.Controls
 			double starTotal = 0;
 
 			var children = Children
-#if !NETFX_CORE && !__ANDROID__ && !__IOS__ // Useless operator (==overhead on UI thread) for Jupiter platform
+#if !NETFX_CORE && !__ANDROID__ && !__IOS__ && !__MACOS__ // Useless operator (==overhead on UI thread) for Jupiter platform
 				.Cast<UIElement>()
 #endif
 				.OrderBy(GetPriority)
@@ -129,7 +131,7 @@ namespace Uno.UI.Samples.Controls
 				availableSize.Width = Math.Max(sizeHint.Value, 0);
 			}
 
-#if __ANDROID__ || __IOS__
+#if __ANDROID__ || __IOS__ || __MACOS__
 			var desiredSize = MeasureElement(child, availableSize);
 #else
 			child.Measure(availableSize);
@@ -159,7 +161,7 @@ namespace Uno.UI.Samples.Controls
 				availableSize.Width = Math.Max(availableSize.Width - totalSize.Width, 0);
 			}
 
-#if __ANDROID__ || __IOS__
+#if __ANDROID__ || __IOS__ || __MACOS__
 			var desiredSize = MeasureElement(child, availableSize);
 #else
 			child.Measure(availableSize);
@@ -197,7 +199,7 @@ namespace Uno.UI.Samples.Controls
 				availableSize.Width *= portion;
 			}
 
-#if __ANDROID__ || __IOS__
+#if __ANDROID__ || __IOS__ || __MACOS__
 			var desiredSize = MeasureElement(child, availableSize);
 #else
 			child.Measure(availableSize);
@@ -319,7 +321,7 @@ namespace Uno.UI.Samples.Controls
 
 		private void ComputeChildAutoSize(UIElement child, Orientation orientation, ref Size finalSize, ref double totalLength, ref Size size)
 		{
-#if __ANDROID__ || __IOS__
+#if __ANDROID__ || __IOS__ || __MACOS__
 			var desiredSize = GetElementDesiredSize(child);
 #else
 			var desiredSize = child.DesiredSize;
@@ -396,7 +398,7 @@ namespace Uno.UI.Samples.Controls
 				totalLength += size.Width;
 			}
 
-#if __ANDROID__ || __IOS__
+#if __ANDROID__ || __IOS__ || __MACOS__
 			ArrangeElement(record.Child, rect);
 #else
 			record.Child.Arrange(rect);
@@ -436,7 +438,7 @@ namespace Uno.UI.Samples.Controls
 
 			panel.InvalidateMeasure();
 
-#if !__ANDROID__ && !__IOS__
+#if !__ANDROID__ && !__IOS__ && !__MACOS__
 			panel.InvalidateArrange();
 #endif
 		}

@@ -21,15 +21,14 @@
 		<ExcludeXamlNamespaces Include="win"/>
 		<!-- iOS -->
 		<ExcludeXamlNamespaces Condition="'$(XamarinProjectType)'=='ios'" Include="android" />
-		<ExcludeXamlNamespaces Condition="'$(XamarinProjectType)'=='ios'" Include="not_macos" />
 		<ExcludeXamlNamespaces Condition="'$(XamarinProjectType)'=='ios'" Include="not_ios" />
 		<!-- macOS -->
-		<ExcludeXamlNamespaces Condition="'$(XamarinProjectType)'=='macos'" Include="macos" />
-		<ExcludeXamlNamespaces Condition="'$(XamarinProjectType)'=='macos'" Include="not_ios" />
+		<ExcludeXamlNamespaces Condition="'$(XamarinProjectType)'=='macos'" Include="not_macos" />
 		<!-- Android -->
 		<ExcludeXamlNamespaces Condition="'$(XamarinProjectType)'=='android'" Include="ios" />
 		<ExcludeXamlNamespaces Condition="'$(XamarinProjectType)'=='android'" Include="not_android" />
-		<ExcludeXamlNamespaces Condition="'$(XamarinProjectType)'=='android'" Include="not_macos" />
+		<!--WASM-->
+		<ExcludeXamlNamespaces Condition="'$(XamarinProjectType)'=='wasm'" Include="not_wasm" />
 
 		<!-- 
 			Those namespaces are to be *included* from the code generation,

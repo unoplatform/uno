@@ -30,7 +30,12 @@ namespace Uno.UI.Media
 		internal Android.Graphics.Matrix Matrix { get; } = new Android.Graphics.Matrix();
 
 		partial void Initialized()
-			=> UpdateParent(null, Owner.Parent);
+		{
+			// Apply the transform as soon as its been declared
+			Update();
+
+			UpdateParent(null, Owner.Parent);
+		}
 
 		public void UpdateParent(object oldParent, object newParent)
 		{
@@ -102,6 +107,6 @@ namespace Uno.UI.Media
 			(Owner.Parent as BindableView)?.UnregisterChildTransform(this);
 
 			Owner.Invalidate();
-		} 
+		}
 	}
 }
