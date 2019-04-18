@@ -30,7 +30,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Uno.UI.BindingHelper.Androi
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Uno.UI.AssemblyComparer", "Uno.UI.AssemblyComparer\Uno.UI.AssemblyComparer.csproj", "{2B899715-3B2E-4178-ACB5-70AB4B26EEDF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Uno.UI.SourceGenerators", "SourceGenerators\Uno.UI.SourceGenerators\Uno.UI.SourceGenerators.csproj", "{68E667C4-AAED-4242-A47F-3D77C33C489E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Uno.UI.SourceGenerators", "SourceGenerators\Uno.UI.SourceGenerators\Uno.UI.SourceGenerators.csproj", "{68E667C4-AAED-4242-A47F-3D77C33C489E}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Uno.UI.Tasks", "SourceGenerators\Uno.UI.Tasks\Uno.UI.Tasks.csproj", "{946D318B-305A-4264-81A4-31698DCC22F7}"
 EndProject
@@ -2985,6 +2985,7 @@ Global
 		{B71AE380-558C-4D6C-81D8-9C043B50262C}.Release_UWP|x86.ActiveCfg = AppStore|iPhone
 		{B71AE380-558C-4D6C-81D8-9C043B50262C}.Release_UWP|x86.Build.0 = AppStore|iPhone
 		{B71AE380-558C-4D6C-81D8-9C043B50262C}.Release|Any CPU.ActiveCfg = Release|iPhone
+		{B71AE380-558C-4D6C-81D8-9C043B50262C}.Release|Any CPU.Build.0 = Release|iPhone
 		{B71AE380-558C-4D6C-81D8-9C043B50262C}.Release|ARM.ActiveCfg = Release|iPhone
 		{B71AE380-558C-4D6C-81D8-9C043B50262C}.Release|iPhone.ActiveCfg = Release|iPhone
 		{B71AE380-558C-4D6C-81D8-9C043B50262C}.Release|iPhone.Build.0 = Release|iPhone
@@ -3113,6 +3114,7 @@ Global
 		{6C25BEB3-E332-48D3-B4DE-20A0B71935CD}.Release_UWP|x86.Build.0 = Release|x86
 		{6C25BEB3-E332-48D3-B4DE-20A0B71935CD}.Release_UWP|x86.Deploy.0 = Release|x86
 		{6C25BEB3-E332-48D3-B4DE-20A0B71935CD}.Release|Any CPU.ActiveCfg = Release|x86
+		{6C25BEB3-E332-48D3-B4DE-20A0B71935CD}.Release|Any CPU.Build.0 = Release|x86
 		{6C25BEB3-E332-48D3-B4DE-20A0B71935CD}.Release|ARM.ActiveCfg = Release|ARM
 		{6C25BEB3-E332-48D3-B4DE-20A0B71935CD}.Release|ARM.Build.0 = Release|ARM
 		{6C25BEB3-E332-48D3-B4DE-20A0B71935CD}.Release|ARM.Deploy.0 = Release|ARM
@@ -3589,6 +3591,7 @@ Global
 		{313FCF91-A6DB-4585-A23E-49BBEEF4784D}.Release_UWP|x86.ActiveCfg = Release|iPhoneSimulator
 		{313FCF91-A6DB-4585-A23E-49BBEEF4784D}.Release_UWP|x86.Build.0 = Release|iPhoneSimulator
 		{313FCF91-A6DB-4585-A23E-49BBEEF4784D}.Release|Any CPU.ActiveCfg = Release|iPhoneSimulator
+		{313FCF91-A6DB-4585-A23E-49BBEEF4784D}.Release|Any CPU.Build.0 = Release|iPhoneSimulator
 		{313FCF91-A6DB-4585-A23E-49BBEEF4784D}.Release|ARM.ActiveCfg = Release|iPhoneSimulator
 		{313FCF91-A6DB-4585-A23E-49BBEEF4784D}.Release|iPhone.ActiveCfg = Release|iPhoneSimulator
 		{313FCF91-A6DB-4585-A23E-49BBEEF4784D}.Release|iPhoneSimulator.ActiveCfg = Release|iPhoneSimulator

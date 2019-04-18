@@ -35,6 +35,7 @@
 * [Wasm] Add support of hardware/browser back button in `SystemNavigationManager.BackRequested`
 * [Wasm] Added support for custom DOM events
 * WebAssembly UI tests are now integrated in the CI
+* Enable support for macOS head development
 
 ### Breaking Changes
 * The `WebAssemblyRuntime.InvokeJSUnmarshalled` method with three parameters has been removed.
