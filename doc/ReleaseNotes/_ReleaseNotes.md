@@ -36,6 +36,7 @@
 * [Wasm] Added support for custom DOM events
 * WebAssembly UI tests are now integrated in the CI
 * Enable support for macOS head development
+* [Wasm] Add NativeXXX styles (which are aliases to the XamlXXX styles)
 
 ### Breaking Changes
 * The `WebAssemblyRuntime.InvokeJSUnmarshalled` method with three parameters has been removed.
