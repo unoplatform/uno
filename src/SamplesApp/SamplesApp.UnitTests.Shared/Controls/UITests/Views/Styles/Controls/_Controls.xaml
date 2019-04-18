@@ -5,13 +5,13 @@
 	<!-- Please keep this list ordered alphabetically -->
 
 	<ResourceDictionary.MergedDictionaries>
-		<ResourceDictionary Source="Button.xaml" />
-		<ResourceDictionary Source="ToggleButton.xaml" />
+		<ResourceDictionary Source="Button.xaml" />		
 		<ResourceDictionary Source="ListView.xaml" />
 		<ResourceDictionary Source="ListViewItem.xaml" />
 		<ResourceDictionary Source="Path.xaml" />
 		<ResourceDictionary Source="RadioButton.xaml" />
 		<ResourceDictionary Source="TextBlock.xaml" />
 		<ResourceDictionary Source="TextBox.xaml" />
+		<ResourceDictionary Source="ToggleButton.xaml" />
 	</ResourceDictionary.MergedDictionaries>
 </ResourceDictionary>

@@ -11,7 +11,7 @@
 	},
   "include": [
     "ts/**/*",
-    "tsBindings/**/*",
+    "tsbindings/**/*",
     "../Uno.UI.Wasm/WasmScripts/Uno.UI.d.ts",
     "../Uno.UI.Wasm/ts/types/**/*"
   ]

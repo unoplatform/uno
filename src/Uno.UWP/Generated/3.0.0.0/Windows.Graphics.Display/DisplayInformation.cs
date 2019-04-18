@@ -8,97 +8,16 @@ namespace Windows.Graphics.Display
 	public  partial class DisplayInformation 
 	{
 		// Skipping already declared property CurrentOrientation
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  float LogicalDpi
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member float DisplayInformation.LogicalDpi is not implemented in Uno.");
-			}
-		}
-		#endif
+		// Skipping already declared property LogicalDpi
 		// Skipping already declared property NativeOrientation
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  float RawDpiX
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member float DisplayInformation.RawDpiX is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  float RawDpiY
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member float DisplayInformation.RawDpiY is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  global::Windows.Graphics.Display.ResolutionScale ResolutionScale
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member ResolutionScale DisplayInformation.ResolutionScale is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  bool StereoEnabled
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool DisplayInformation.StereoEnabled is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  double RawPixelsPerViewPixel
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member double DisplayInformation.RawPixelsPerViewPixel is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  double? DiagonalSizeInInches
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member double? DisplayInformation.DiagonalSizeInInches is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  uint ScreenHeightInRawPixels
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member uint DisplayInformation.ScreenHeightInRawPixels is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  uint ScreenWidthInRawPixels
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member uint DisplayInformation.ScreenWidthInRawPixels is not implemented in Uno.");
-			}
-		}
-		#endif
+		// Skipping already declared property RawDpiX
+		// Skipping already declared property RawDpiY
+		// Skipping already declared property ResolutionScale
+		// Skipping already declared property StereoEnabled
+		// Skipping already declared property RawPixelsPerViewPixel
+		// Skipping already declared property DiagonalSizeInInches
+		// Skipping already declared property ScreenHeightInRawPixels
+		// Skipping already declared property ScreenWidthInRawPixels
 		// Skipping already declared property AutoRotationPreferences
 		// Forced skipping of method Windows.Graphics.Display.DisplayInformation.CurrentOrientation.get
 		// Forced skipping of method Windows.Graphics.Display.DisplayInformation.NativeOrientation.get

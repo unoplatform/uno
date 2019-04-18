@@ -14,6 +14,7 @@
   
   <assembly fullname="Uno">
     <type fullname="Windows.UI.Core.CoreDispatcher" />
+    <type fullname="Windows.UI.Core.SystemNavigationManager" />
   </assembly>
   
   <assembly fullname="Uno.Foundation">

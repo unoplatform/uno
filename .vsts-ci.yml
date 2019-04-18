@@ -1,4 +1,12 @@
+resources:
+  containers:
+  - container: nv-bionic-wasm
+    image: nventive/wasm-build:1.1-bionic
+
 jobs:
+- template: .azure-devops-wasm-uitests.yml
+- template: .azure-devops-macos.yml
+
 - job: VS_Latest
 
   pool:
@@ -23,6 +31,9 @@ jobs:
     inputs:
       versionSpec: 4.9.1
       checkLatest: false
+
+  # Required for the Wasm uitests project
+  - task: NodeTool@0
 
   - task: MSBuild@1
     inputs:
@@ -85,56 +96,6 @@ jobs:
       PathtoPublish: $(build.artifactstagingdirectory)
       ArtifactName: NugetPackages
       ArtifactType: Container
-
-# Disabled until VS4Mac is updated to 7.7 or later.
-#- job: macOS
-#  variables:
-#    NUGET_PACKAGES: $(Agent.WorkFolder)\.nuget
-#    NUGET_HTTP_CACHE_PATH: $(Agent.WorkFolder)\.nuget-http-cache
-#    CombinedConfiguration: Release|Any CPU
-#    CI_Build: true
-#    SourceLinkEnabled: false
-#
-#  queue:
-#    name: Hosted macOS
-#
-#  steps:
-#  - checkout: self
-#    clean: true
-#
-#  - task: NuGetToolInstaller@0
-#    inputs:
-#      versionSpec: 4.7.0
-#      checkLatest: false
-#
-#  - task: NuGetCommand@2
-#    inputs:
-#      command: restore
-#      solution: src/Uno.UI-vs4mac.sln
-#      selectOrConfig: select
-#      includeNuGetOrg: true
-#      verbosityRestore: Normal
-#
-#  - task: MSBuild@1
-#    inputs:
-#      solution: Build/Uno.UI.proj
-#      msbuildLocationMethod: version
-#      msbuildVersion: latest
-#      msbuildArchitecture: x86
-#      msbuildArguments: /r /p:CheckExclusions=True "/p:CombinedConfiguration=$(CombinedConfiguration)" /detailedsummary /bl:$(build.artifactstagingdirectory)/build-macos.binlog
-#      clean: false
-#      maximumCpuCount: true
-#      restoreNugetPackages: false
-#      logProjectEvents: false
-#      createLogFile: false
-#
-#  - task: PublishBuildArtifacts@1
-#    # https://developercommunity.visualstudio.com/content/problem/284991/public-vsts-previouw-cant-set-build-number-of-pr-b.html
-#    condition: eq(variables['System.PullRequest.IsFork'], 'False')
-#    inputs:
-#      PathtoPublish: $(build.artifactstagingdirectory)
-#      ArtifactName: uno-macos-artifacts
-#      ArtifactType: Container
 
 - job: Documentation
 
