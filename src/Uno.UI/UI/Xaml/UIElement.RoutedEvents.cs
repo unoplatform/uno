@@ -280,20 +280,15 @@ namespace Windows.UI.Xaml
 			{
 				var mustUpdateSubscribedToHandledEventsToo = false;
 
-				handlers.Remove(handlerInfo =>
+				var matchingHandler = handlers
+					.FirstOrDefault(handlerInfo => (handlerInfo.Handler as Delegate).Equals(handler as Delegate));
+
+				mustUpdateSubscribedToHandledEventsToo = mustUpdateSubscribedToHandledEventsToo || matchingHandler.HandledEventsToo;
+
+				if (!matchingHandler.Equals(default(RoutedEventHandlerInfo)))
 				{
-					var shouldRemove = (handlerInfo.Handler as Delegate) == (handler as Delegate);
-
-					if (!shouldRemove)
-					{
-						return false;
-					}
-
-					mustUpdateSubscribedToHandledEventsToo =
-						mustUpdateSubscribedToHandledEventsToo || handlerInfo.HandledEventsToo;
-
-					return true;
-				});
+					handlers.Remove(matchingHandler);
+				}
 
 				if (mustUpdateSubscribedToHandledEventsToo)
 				{
