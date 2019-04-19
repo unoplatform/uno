@@ -7,7 +7,7 @@ using Uno.Logging;
 
 namespace Windows.UI.Xaml.Media.Animation
 {
-    public static partial class TimelineExtensions
+	public static partial class TimelineExtensions
 	{
 		internal static void SetValueBypassPropagation(this Timeline timeline, object value)
 		{
@@ -18,11 +18,14 @@ namespace Windows.UI.Xaml.Media.Animation
 
 			var animatedItem = timeline.PropertyInfo.GetPathItems().Last();
 
-			using (
+			var dc = animatedItem.DataContext;
+			using (dc != null ?
 				DependencyObjectStore.BypassPropagation(
-					(DependencyObject)animatedItem.DataContext,
-					DependencyProperty.GetProperty(animatedItem.DataContext.GetType(), animatedItem.PropertyName)
-				)
+					(DependencyObject)dc,
+					DependencyProperty.GetProperty(dc.GetType(), animatedItem.PropertyName)
+				) :
+				// DC may have been collected since it's weakly held
+				null
 			)
 			{
 				timeline.PropertyInfo.Value = value;
