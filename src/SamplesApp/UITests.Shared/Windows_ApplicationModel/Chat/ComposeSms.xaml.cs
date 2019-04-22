@@ -55,18 +55,18 @@ namespace UITests.Shared.Windows_ApplicationModel.Chat
 
 		public event PropertyChangedEventHandler PropertyChanged;
 
-		public void AddNumber_Click(object sender, EventArgs e)
+		public void AddNumber_Click(object sender, RoutedEventArgs e)
 		{
 			PhoneNumbers.Add(PhoneNumber);
 			PhoneNumber = "";
 		}
 
-		public void ClearNumbers_Click(object sender, EventArgs e)
+		public void ClearNumbers_Click(object sender, RoutedEventArgs e)
 		{
 			PhoneNumbers.Clear();
 		}
 
-		public async void Compose_Click(object sender, EventArgs e)
+		public async void Compose_Click(object sender, RoutedEventArgs e)
 		{
 			var chatMessage = new ChatMessage()
 			{
