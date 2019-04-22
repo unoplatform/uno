@@ -427,6 +427,9 @@ namespace Windows.UI.Xaml.Controls
 
 		private void ProcessFocusChanged(bool hasFocus)
 		{
+			//We get the view token early to avoid nullvalues when the view has already been detached
+			var viewWindowToken = _textBoxView.WindowToken;
+
 			_keyboardDisposable.Disposable = CoreDispatcher.Main
 				//The delay is required because the OnFocusChange method is called when the focus is being changed, not when it has changed.
 				//If the focus is moved from one TextBox to another, the CurrentFocus will be null, meaning we would hide the keyboard when we shouldn't.
@@ -448,8 +451,7 @@ namespace Windows.UI.Xaml.Controls
 						//When a TextBox gains focus, we want to show the keyboard
 						if (hasFocus && needsKeyboard)
 						{
-							inputManager?.ShowSoftInput(_textBoxView, Android.Views.InputMethods.ShowFlags.Forced);
-							inputManager?.ToggleSoftInput(Android.Views.InputMethods.ShowFlags.Forced, Android.Views.InputMethods.HideSoftInputFlags.ImplicitOnly);
+							inputManager?.ShowSoftInput(_textBoxView, Android.Views.InputMethods.ShowFlags.Implicit);
 						}
 
 						//When a TextBox loses focus, we want to dismiss the keyboard if no other view requiring it is focused
@@ -460,8 +462,8 @@ namespace Windows.UI.Xaml.Controls
 
 							//Seems like CurrentFocus can be null if the previously focused element is not part of the view anymore,
 							//resulting in the keyboard not being closed.
-							//We still try to get the Window token from it and it and if we fail, we get it from the TextBox we're currently unfocusing. 
-							inputManager?.HideSoftInputFromWindow(activity?.CurrentFocus?.WindowToken ?? ((View)this).WindowToken, Android.Views.InputMethods.HideSoftInputFlags.None);
+							//We still try to get the Window token from it and if we fail, we get it from the TextBox we're currently unfocusing.
+							inputManager?.HideSoftInputFromWindow(activity?.CurrentFocus?.WindowToken ?? viewWindowToken, Android.Views.InputMethods.HideSoftInputFlags.None);
 						}
 
 						if (hasFocus)
