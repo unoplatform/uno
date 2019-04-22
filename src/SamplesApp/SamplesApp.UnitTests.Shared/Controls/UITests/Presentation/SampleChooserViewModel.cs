@@ -255,6 +255,7 @@ namespace SampleControl.Presentation
 #endif
 					var testQuery = from category in _categories
 									from sample in category.SamplesContent
+									where !sample.IgnoreInAutomatedTests
 										// where sample.ControlName.Equals("GridViewVerticalGrouped")
 									select new SampleInfo
 									{
@@ -532,8 +533,8 @@ namespace SampleControl.Presentation
 			var query = from assembly in GetAllAssembies()
 						from type in FindDefinedAssemblies(assembly)
 						let sampleAttribute = FindSampleAttribute(type)
-						where sampleAttribute != null && !(sampleAttribute as SampleControlInfoAttribute).IgnoreInAutomatedTests
-						select new System.Tuple<TypeInfo, SampleControlInfoAttribute>(type, sampleAttribute as SampleControlInfoAttribute);
+						where sampleAttribute != null
+						select (type, attribute: sampleAttribute);
 
 			query = query.ToArray();
 
@@ -543,19 +544,20 @@ namespace SampleControl.Presentation
 			{
 				var sampleControl = new SampleChooserContent()
 				{
-					ControlName = control.Item2.ControlName,
-					ViewModelType = control.Item2.ViewModelType,
-					Description = control.Item2.Description,
-					ControlType = control.Item1.AsType(),
+					ControlName = control.attribute.ControlName,
+					ViewModelType = control.attribute.ViewModelType,
+					Description = control.attribute.Description,
+					ControlType = control.type.AsType(),
+					IgnoreInAutomatedTests = control.attribute.IgnoreInAutomatedTests
 				};
 
-				if (categories.TrueForAll(s => s.Category != control.Item2.Category))
+				if (categories.TrueForAll(s => s.Category != control.attribute.Category))
 				{
-					categories.Add(new SampleChooserCategory() { Category = control.Item2.Category, SamplesContent = new List<SampleChooserContent>() { sampleControl } });
+					categories.Add(new SampleChooserCategory() { Category = control.attribute.Category, SamplesContent = new List<SampleChooserContent>() { sampleControl } });
 				}
 				else
 				{
-					categories.Where(t => t.Category == control.Item2.Category).First().SamplesContent.Add(sampleControl);
+					categories.Where(t => t.Category == control.attribute.Category).First().SamplesContent.Add(sampleControl);
 				}
 			}
 
@@ -585,11 +587,13 @@ namespace SampleControl.Presentation
 			}
 		}
 
-		private static Attribute FindSampleAttribute(TypeInfo type)
+		private static SampleControlInfoAttribute FindSampleAttribute(TypeInfo type)
 		{
 			try
 			{
-				return type?.GetCustomAttributes().FirstOrDefault(a => a?.GetType() == typeof(SampleControlInfoAttribute));
+				return type?.GetCustomAttributes()
+					.OfType<SampleControlInfoAttribute>()
+					.FirstOrDefault();
 			}
 			catch (Exception)
 			{
@@ -768,6 +772,7 @@ namespace SampleControl.Presentation
 		{
 			var q = from category in _categories
 					from test in category.SamplesContent
+					where !test.IgnoreInAutomatedTests
 					select test.ControlType.FullName;
 
 			return string.Join(";", q);

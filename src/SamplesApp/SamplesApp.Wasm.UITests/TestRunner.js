@@ -28,8 +28,10 @@ class TestRunner {
             // Ask for the list of available tests in the running application
             const allTestsData = yield this.getAllTests(this._page);
             console.log(`Running ${allTestsData.length}`);
+            let i = 0;
             for (let testName of allTestsData) {
-                console.log(`Running ${testName}`);
+                i += 1;
+                console.log(`Running ${i}/${allTestsData.length}: ${testName}`);
                 // Start the test run
                 var testRunId = yield this._page.evaluate(`SampleRunner.runTest(\'${testName}\')`);
                 if (debug) {
