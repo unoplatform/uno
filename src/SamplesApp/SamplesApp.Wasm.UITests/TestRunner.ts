@@ -34,6 +34,7 @@ export class TestRunner {
 		for (let testName of allTestsData) {
 			i += 1;
 
+			console.log("---")
 			console.log(`Running ${i}/${allTestsData.length}: ${testName}`);
 			// Start the test run
 			var testRunId = await this._page.evaluate(`SampleRunner.runTest(\'${testName}\')`);
