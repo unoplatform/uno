@@ -26,17 +26,15 @@ namespace Windows.ApplicationModel.Chat
 
 			messageController.Body = message.Body;
 			messageController.Recipients = message?.Recipients?.ToArray() ?? new string[] { };
-
-			var tcs = new TaskCompletionSource<bool>();
+			
 			messageController.Finished += (sender, e) =>
 			{
-				messageController.DismissViewController(true, null);
-				tcs.SetResult(e.Result == MessageComposeResult.Sent);
+				messageController.DismissViewController(true, null);				
 			};
 
 			controller.PresentViewController(messageController, true, null);
 
-			return tcs.Task.AsAsyncAction();
+			return Task.FromResult(true).AsAsyncAction();
 		}
 	}
 }
