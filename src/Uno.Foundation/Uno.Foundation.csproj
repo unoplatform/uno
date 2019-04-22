@@ -36,10 +36,6 @@
 		<PackageReference Include="System.Runtime.InteropServices.WindowsRuntime" Version="4.3.0" />
 	</ItemGroup>
 
-	<ItemGroup>
-	  <UpToDateCheckInput Remove="Collections\NonNullList.cs" />
-	</ItemGroup>
-	
 	<Import Project="..\Uno.CrossTargetting.props" />
 
 </Project>
