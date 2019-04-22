@@ -70,14 +70,6 @@ namespace Windows.UI.Xaml.Controls
 					return pnl.Popup;
 				}
 
-#if __WASM__
-				var popup = PopupRoot.GetPopup(parent);
-				if (popup != null)
-				{
-					return popup;
-				}
-#endif
-
 				parent = GetParent(parent);
 			}
 

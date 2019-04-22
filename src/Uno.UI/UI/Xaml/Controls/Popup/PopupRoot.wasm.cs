@@ -46,12 +46,15 @@ namespace Windows.UI.Xaml.Controls
 
 		private void PopupRoot_PointerReleased(object sender, Input.PointerRoutedEventArgs e)
 		{
-			var lastDismissablePopup = Children.Select(GetPopup)
-				.LastOrDefault(p => p.IsLightDismissEnabled);
+			var x = Children.ToArray().FirstOrDefault();
 
-			if(lastDismissablePopup != null)
+			var lastDismissablePopupPanel = Children
+				.OfType<PopupPanel>()
+				.LastOrDefault(p => p.Popup.IsLightDismissEnabled);
+
+			if(lastDismissablePopupPanel != null)
 			{
-				lastDismissablePopup.IsOpen = false;
+				lastDismissablePopupPanel.Popup.IsOpen = false;
 			}
 		}
 
@@ -77,22 +80,5 @@ namespace Windows.UI.Xaml.Controls
 
 			return finalSize;
 		}
-
-		#region Popup
-
-		public static Popup GetPopup(DependencyObject obj)
-		{
-			return (Popup)obj.GetValue(PopupProperty);
-		}
-
-		public static void SetPopup(DependencyObject obj, Popup value)
-		{
-			obj.SetValue(PopupProperty, value);
-		}
-
-		public static readonly DependencyProperty PopupProperty =
-			DependencyProperty.RegisterAttached("Popup", typeof(Popup), typeof(PopupRoot), new PropertyMetadata(null));
-
-		#endregion
 	}
 }
