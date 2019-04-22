@@ -6,7 +6,7 @@ using Uno.UI.Samples.Controls;
 
 namespace UITests.Shared.Windows_UI_Xaml_Controls.ComboBox
 {
-	[SampleControlInfo("ComboBox", "ComboBox_Virtualizing")]
+	[SampleControlInfo("ComboBox", "ComboBox_Virtualizing", ignoreInAutomatedTests: true)]
 	public sealed partial class ComboBox_Virtualizing : Page
 	{
 		public ComboBox_Virtualizing()
