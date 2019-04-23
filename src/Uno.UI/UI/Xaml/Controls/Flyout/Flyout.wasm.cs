@@ -1,17 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Uno.Extensions;
-using Uno.Logging;
-using Uno.UI.Extensions;
-using Uno.Disposables;
-using Uno.UI.DataBinding;
-using Uno.UI;
-
-namespace Windows.UI.Xaml.Controls
+﻿namespace Windows.UI.Xaml.Controls
 {
 	public partial class Flyout
 	{
+		partial void InitializePartial()
+		{
+			_popup.PopupPanel = new FlyoutPopupPanel(this)
+			{
+				Visibility = Visibility.Collapsed,
+				Background = SolidColorBrushHelper.Transparent,
+			};
+		}
+
 		partial void SetPopupPositionPartial(UIElement placementTarget)
 		{
 			_popup.Anchor = placementTarget;

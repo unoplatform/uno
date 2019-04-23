@@ -17,7 +17,7 @@ namespace Windows.UI.Xaml.Controls
 			var popup = GetPopupControl();
 			if (popup != _popup)
 			{
-				if(_popup != null)
+				if (_popup != null)
 				{
 					_popup.Opened -= OnPopupOpened;
 				}
@@ -69,14 +69,6 @@ namespace Windows.UI.Xaml.Controls
 				{
 					return pnl.Popup;
 				}
-
-#if __WASM__
-				var popup = PopupRoot.GetPopup(parent);
-				if (popup != null)
-				{
-					return popup;
-				}
-#endif
 
 				parent = GetParent(parent);
 			}

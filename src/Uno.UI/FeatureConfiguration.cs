@@ -23,6 +23,15 @@ namespace Uno.UI
 			/// Enable the visualization of clipping bounds (intended for diagnostic purposes).
 			/// </summary>
 			public static bool ShowClippingBounds { get; set; } = false;
+
+#if __WASM__
+			/// <summary>
+			/// Enable the assignation of a "XamlName" attribute on DOM elements created
+			/// from the XAML visual tree. This enables tools such as Puppeteer to select elements
+			/// in the DOM for automation purposes.
+			/// </summary>
+			public static bool AssignDOMXamlName { get; set; } = false;
+#endif
 		}
 
 		public static class FrameworkElement

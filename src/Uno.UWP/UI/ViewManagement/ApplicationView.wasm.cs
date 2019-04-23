@@ -1,9 +1,27 @@
-﻿using Uno.Foundation;
+﻿using Uno.Extensions;
+using Uno.Foundation;
+using Uno.Logging;
+using Windows.Foundation;
 
 namespace Windows.UI.ViewManagement
 {
 	partial class ApplicationView
 	{
+		internal void SetVisibleBounds(Rect newVisibleBounds)
+		{
+			if (newVisibleBounds != VisibleBounds)
+			{
+				VisibleBounds = newVisibleBounds;
+
+				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+				{
+					this.Log().Debug($"Updated visible bounds {VisibleBounds}");
+				}
+
+				VisibleBoundsChanged?.Invoke(this, null);
+			}
+		}
+
 		public string Title
 		{
 			get

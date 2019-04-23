@@ -4,7 +4,7 @@
 
 ### Features
 * Add support for `CurrentInputMethodLanguageTag` and `TrySetInputMethodLanguageTag` on Android, iOS and WASM
-* Add support for the following `DisplayInformation` properties on iOS and Android:   
+* Add support for the following `DisplayInformation` properties on iOS and Android:
     - CurrentOrientation
     - LogicalDpi
     - NativeOrientation
@@ -61,6 +61,7 @@
 * [WASM] Support `not_wasm` prefix properly. (#784)
 * 151282 [iOS] Fixed Slider not responding on second navigation, fixed RemoveHandler for RoutedEvents removing all instances of handler 
 * 151497 [iOS/Android] Fixed Slider not responding, by ^ RemoveHandler fix for RoutedEvents 
+* 151674 [iOS] Add ability to replay a finished video from media player
 * 151524 [Android] Cleaned up Textbox for android to remove keyboard showing/dismissal inconsistencies
 
 ## Release 1.44.0
@@ -270,6 +271,7 @@
  * 144101 fixed `ListView` group headers messed up on item update
  * #527 Fix for `Selector.SelectionChanged` is raised twice on updated selection
  * [iOS] Add fail-safe on `FrameworkElement.WillMoveToSuperview` log to `Application.Current.UnhandledException`
+ * Flyout were not presented correctly on Wasm
 
 ## Release 1.42
 
