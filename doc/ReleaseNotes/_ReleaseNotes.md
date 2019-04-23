@@ -3,7 +3,7 @@
 ## Next version
 
 ### Features
-* Add support for the following `DisplayInformation` properties on iOS and Android:   
+* Add support for the following `DisplayInformation` properties on iOS and Android:
     - CurrentOrientation
     - LogicalDpi
     - NativeOrientation
@@ -269,6 +269,7 @@
  * 144101 fixed `ListView` group headers messed up on item update
  * #527 Fix for `Selector.SelectionChanged` is raised twice on updated selection
  * [iOS] Add fail-safe on `FrameworkElement.WillMoveToSuperview` log to `Application.Current.UnhandledException`
+ * Flyout were not presented correctly on Wasm
 
 ## Release 1.42
 
