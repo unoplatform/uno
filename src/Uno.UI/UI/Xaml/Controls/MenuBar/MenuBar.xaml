@@ -28,4 +28,16 @@
 		</Setter>
 	</Style>
 
+	<macos:Style x:Key="NativeMenuBar" TargetType="MenuBar">
+		<Setter Property="Template">
+			<Setter.Value>
+				<ControlTemplate TargetType="local:MenuBar">
+					<NativeMenuBarPresenter />
+				</ControlTemplate>
+			</Setter.Value>
+		</Setter>
+	</macos:Style>
+
+	<macos:Style TargetType="MenuBar" BasedOn="{StaticResource NativeMenuBar}"/>
+
 </ResourceDictionary>
