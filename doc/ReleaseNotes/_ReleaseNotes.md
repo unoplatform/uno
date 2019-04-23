@@ -3,6 +3,7 @@
 ## Next version
 
 ### Features
+* Add support for `CurrentInputMethodLanguageTag` and `TrySetInputMethodLanguageTag` on Android, iOS and WASM
 * Add support for the following `DisplayInformation` properties on iOS and Android:   
     - CurrentOrientation
     - LogicalDpi

@@ -7,7 +7,7 @@ namespace Windows.Globalization
 {
 	public partial class Language
 	{
-        public static string CurrentInputMethodLanguageTag { get; private set; }
+		public static string CurrentInputMethodLanguageTag { get; private set; } = "";
 
         public static bool TrySetInputMethodLanguageTag(string languageTag)
 		{			
