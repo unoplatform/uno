@@ -2,41 +2,14 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Globalization
 {
-	#if false || false || NET461 || __WASM__ || __MACOS__
+	#if false || false || false || false || false
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class Language 
 	{
-		#if false || false || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  string DisplayName
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string Language.DisplayName is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if false || false || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  string LanguageTag
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string Language.LanguageTag is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if false || false || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  string NativeName
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string Language.NativeName is not implemented in Uno.");
-			}
-		}
-		#endif
+		// Skipping already declared property DisplayName
+		// Skipping already declared property LanguageTag
+		// Skipping already declared property NativeName
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  string Script
@@ -57,7 +30,7 @@ namespace Windows.Globalization
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		#if false || false || NET461 || false || __MACOS__
 		[global::Uno.NotImplemented]
 		public static string CurrentInputMethodLanguageTag
 		{
@@ -67,13 +40,7 @@ namespace Windows.Globalization
 			}
 		}
 		#endif
-		#if false || false || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public Language( string languageTag) 
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Globalization.Language", "Language.Language(string languageTag)");
-		}
-		#endif
+		// Skipping already declared method Windows.Globalization.Language.Language(string)
 		// Forced skipping of method Windows.Globalization.Language.Language(string)
 		// Forced skipping of method Windows.Globalization.Language.LanguageTag.get
 		// Forced skipping of method Windows.Globalization.Language.DisplayName.get
@@ -87,7 +54,7 @@ namespace Windows.Globalization
 		}
 		#endif
 		// Forced skipping of method Windows.Globalization.Language.LayoutDirection.get
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		#if false || false || NET461 || false || __MACOS__
 		[global::Uno.NotImplemented]
 		public static bool TrySetInputMethodLanguageTag( string languageTag)
 		{
