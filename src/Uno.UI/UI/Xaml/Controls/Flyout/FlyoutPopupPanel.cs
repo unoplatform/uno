@@ -10,7 +10,7 @@ using Windows.UI.Xaml.Media;
 
 namespace Windows.UI.Xaml.Controls
 {
-	internal partial class FlyoutPopupPanel : PopupPanel
+	internal partial class FlyoutBasePopupPanel : PopupPanel
 	{
 		/// <summary>
 		/// This value is an arbitrary value for the placement of
@@ -18,9 +18,9 @@ namespace Windows.UI.Xaml.Controls
 		/// </summary>
 		private const int PopupPlacementTargetMargin = 5;
 
-		private readonly Flyout _flyout;
+		private readonly FlyoutBase _flyout;
 
-		public FlyoutPopupPanel(Flyout flyout) : base(flyout._popup)
+		public FlyoutBasePopupPanel(FlyoutBase flyout) : base(flyout._popup)
 		{
 			_flyout = flyout;
 		}

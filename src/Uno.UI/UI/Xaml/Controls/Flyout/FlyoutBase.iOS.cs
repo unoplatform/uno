@@ -5,13 +5,13 @@ using CoreGraphics;
 using UIKit;
 using Uno.UI;
 
-namespace Windows.UI.Xaml.Controls
+namespace Windows.UI.Xaml.Controls.Primitives
 { 
-	public partial class Flyout
+	public partial class FlyoutBase
     {
 		partial void InitializePartial()
 		{
-			_popup.PopupPanel = new FlyoutPopupPanel(this)
+			_popup.PopupPanel = new FlyoutBasePopupPanel(this)
 			{
 				Visibility = Visibility.Collapsed,
 				Background = SolidColorBrushHelper.Transparent,
