@@ -438,7 +438,7 @@ namespace <#= mixin.NamespaceName #>
 
 
 				CoreAnimation.CATransform3D? oldTransform = null;
-				if (!Layer.Transform.IsIdentity) 
+				if (Layer != null && !Layer.Transform.IsIdentity) 
 				{
 					// If NSView.Transform is not identity, then modifying the frame will give undefined behavior. (https://developer.apple.com/library/ios/documentation/UIKit/Reference/NSView_Class/#//apple_ref/occ/instp/NSView/transform)
 					// We reapply the transform based on the new size straight after.
