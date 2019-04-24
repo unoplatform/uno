@@ -12,7 +12,7 @@ using _View = AppKit.NSView;
 
 namespace Uno.UI.Extensions
 {
-	public static class _ViewPositioningExtensions
+	public static class UIViewPositioningExtensions
 	{
 		public static T IncrementX<T>(this T thisView, float delta) where T : _View
 		{

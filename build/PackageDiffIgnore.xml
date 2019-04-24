@@ -65,6 +65,10 @@
         
         <Member fullName="System.Boolean Uno.Foundation.WebAssemblyRuntime.InvokeJSUnmarshalled(System.String functionIdentifier, System.IntPtr arg0, System.IntPtr arg1, System.IntPtr arg2)" 
                 reason="Removed to improve the C#/JS call performance"/>
+
+        <Member fullName="System.Void Windows.UI.Xaml.Shapes.Rectangle.LayoutSubviews()" 
+                reason="Removed to use ArrangeOverride for macOS compatibility"/>
+        
       </Methods>
       
       <Events>
@@ -90,6 +94,8 @@
                 reason="Unused Uno specific property" />
         <Member fullName="Windows.Foundation.Rect Windows.UI.ViewManagement.InputPane::NavigationBarRect()"
                 reason="Unused Uno specific property" />
+        <Member fullName="System.Collections.Generic.IList`1&lt;Windows.UI.Xaml.Controls.MenuFlyoutItem&gt; Windows.UI.Xaml.Controls.MenuFlyout::Items()"
+                reason="Changed because of invalid property type" />
       </Properties>
     </IgnoreSet>
     
