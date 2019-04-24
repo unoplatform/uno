@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Automation.Peers;
+using Windows.UI.Xaml.Controls.Primitives;
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -109,6 +110,22 @@ namespace Windows.UI.Xaml.Controls
 				(s, e) => ((DatePicker)s).OnMinYearChangedPartial()));
 
 		partial void OnMinYearChangedPartial();
+		#endregion
+
+		#region FlyoutPlacement DependencyProperty
+		public FlyoutPlacementMode FlyoutPlacement
+		{
+			get { return (FlyoutPlacementMode)this.GetValue(FlyoutPlacementProperty); }
+			set { this.SetValue(FlyoutPlacementProperty, value); }
+		}
+
+		public static readonly DependencyProperty FlyoutPlacementProperty =
+			DependencyProperty.Register(
+				"FlyoutPlacement",
+				typeof(FlyoutPlacementMode),
+				typeof(DatePicker),
+				new FrameworkPropertyMetadata(FlyoutPlacementMode.Full));
+
 		#endregion
 
 #if XAMARIN
