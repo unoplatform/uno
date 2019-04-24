@@ -1113,8 +1113,8 @@ var Uno;
                         }
                         this.containerElement.appendChild(unconnectedRoot);
                     }
-                    var updatedStyles = {};
-                    for (var i = 0; i < elementStyle.length; i++) {
+                    let updatedStyles = {};
+                    for (let i = 0; i < elementStyle.length; i++) {
                         const key = elementStyle[i];
                         updatedStyles[key] = elementStyle.getPropertyValue(key);
                     }
@@ -1122,12 +1122,14 @@ var Uno;
                     updatedStyles.height = "";
                     // This is required for an unconstrained measure (otherwise the parents size is taken into account)
                     updatedStyles.position = "fixed";
-                    updatedStyles.maxWidth = Number.isFinite(maxWidth) ? maxWidth + "px" : "";
-                    updatedStyles.maxHeight = Number.isFinite(maxHeight) ? maxHeight + "px" : "";
-                    var updatedStyleString = "";
-                    for (var key in updatedStyles) {
+                    updatedStyles["max-width"] = Number.isFinite(maxWidth) ? maxWidth + "px" : "";
+                    updatedStyles["max-height"] = Number.isFinite(maxHeight) ? maxHeight + "px" : "";
+                    let updatedStyleString = "";
+                    for (let key in updatedStyles) {
                         updatedStyleString += key + ": " + updatedStyles[key] + "; ";
                     }
+                    // We use a string to prevent the browser to update the element between
+                    // each style assignation. This way, the browser will update the element only once.
                     elementStyle.cssText = updatedStyleString;
                     if (element instanceof HTMLImageElement) {
                         const imgElement = element;
@@ -1138,7 +1140,7 @@ var Uno;
                         const offsetHeight = element.offsetHeight;
                         const resultWidth = offsetWidth ? offsetWidth : element.clientWidth;
                         const resultHeight = offsetHeight ? offsetHeight : element.clientHeight;
-                        /* +0.5 is added to take rounding into account */
+                        // +0.5 is added to take rounding into account
                         return [resultWidth + 0.5, resultHeight];
                     }
                 }

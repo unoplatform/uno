@@ -1073,9 +1073,9 @@
 					this.containerElement.appendChild(unconnectedRoot);
 				}
 
-				var updatedStyles = <any>{};
+				let updatedStyles = <any>{};
 
-				for (var i = 0; i < elementStyle.length; i++) {
+				for (let i = 0; i < elementStyle.length; i++) {
 					const key = elementStyle[i];
 					updatedStyles[key] = elementStyle.getPropertyValue(key);
 				}
@@ -1085,15 +1085,17 @@
 
 				// This is required for an unconstrained measure (otherwise the parents size is taken into account)
 				updatedStyles.position = "fixed";
-				updatedStyles.maxWidth = Number.isFinite(maxWidth) ? maxWidth + "px" : "";
-				updatedStyles.maxHeight = Number.isFinite(maxHeight) ? maxHeight + "px" : "";
+				updatedStyles["max-width"] = Number.isFinite(maxWidth) ? maxWidth + "px" : "";
+				updatedStyles["max-height"] = Number.isFinite(maxHeight) ? maxHeight + "px" : "";
 
-				var updatedStyleString = "";
+				let updatedStyleString = "";
 
-				for (var key in updatedStyles) {
+				for (let key in updatedStyles) {
 					updatedStyleString += key + ": " + updatedStyles[key] + "; ";
 				}
 
+				// We use a string to prevent the browser to update the element between
+				// each style assignation. This way, the browser will update the element only once.
 				elementStyle.cssText = updatedStyleString;
 
 				if (element instanceof HTMLImageElement) {
@@ -1107,7 +1109,7 @@
 					const resultWidth = offsetWidth ? offsetWidth : element.clientWidth;
 					const resultHeight = offsetHeight ? offsetHeight : element.clientHeight;
 
-					/* +0.5 is added to take rounding into account */
+					// +0.5 is added to take rounding into account
 					return [resultWidth + 0.5, resultHeight];
 				}
 			}
