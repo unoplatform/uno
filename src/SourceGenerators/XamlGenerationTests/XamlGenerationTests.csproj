@@ -13,8 +13,8 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Uno.SourceGenerationTasks"/>
-		<PackageReference Include="Uno.Core.Build"/>
+		<PackageReference Include="Uno.SourceGenerationTasks" />
+		<PackageReference Include="Uno.Core.Build" />
 	</ItemGroup>
 	
 	<PropertyGroup Condition="'$(TargetFramework)'=='netstandard2.0'">
@@ -51,6 +51,7 @@
 
 	<ItemGroup>
 	  <None Remove="NonDPAssignableTest.xaml" />
+	  <None Remove="xNameResources.xaml" />
 	</ItemGroup>
 
 	<ItemGroup>
