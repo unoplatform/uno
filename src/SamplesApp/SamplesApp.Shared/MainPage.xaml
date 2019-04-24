@@ -9,12 +9,5 @@
 	
 	<Grid Padding="12">
 	 	<controls:SampleChooserControl x:Name="sampleControl" Visibility="Collapsed" />
-		<StackPanel>
-			<TextBlock Text="test test" FontSize="64" />
-			<Button Content="My Button" FontSize="64" />
-			<Slider />
-			<CheckBox Content="My Check"/>
-			<ToggleButton Content="My Toggle"/>
-		</StackPanel>
 	</Grid>
 </Page>

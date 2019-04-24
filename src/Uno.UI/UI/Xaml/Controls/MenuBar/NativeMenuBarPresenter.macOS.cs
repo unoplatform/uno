@@ -41,11 +41,6 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		private void OnItemActivated(object sender, EventArgs e)
-		{
-			Console.WriteLine("Activated");
-		}
-
 		private void AddSubMenus(NSMenuItem platformItem, MenuBarItem item)
 		{
 			platformItem.Submenu = new NSMenu(item.Title) { AutoEnablesItems = false };

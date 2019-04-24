@@ -221,8 +221,6 @@ namespace Windows.UI.Xaml.Controls
 		// Menu Flyout actions
 		private void ShowMenuFlyout()
 		{
-			Console.WriteLine("ShowMenuFlyout()");
-
 			if (m_button != null)
 			{
 				var width = m_button.ActualWidth;
@@ -240,9 +238,7 @@ namespace Windows.UI.Xaml.Controls
 				}
 				else
 				{
-					Console.WriteLine("-> m_flyout.ShowAt()");
 					m_flyout.ShowAt(m_button, new Point(0, height));
-					Console.WriteLine("<- m_flyout.ShowAt()");
 				}
 
 				if (m_flyout?.m_presenter != null)

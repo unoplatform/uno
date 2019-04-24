@@ -36,8 +36,6 @@ namespace Uno.UI.Extensions
 			var window = _Application.SharedApplication.KeyWindow;
 			var bounds = GetBounds(window, view);
 
-			// screenLocation.Y = window.Frame.Height - screenLocation.Y;
-
 			return screenLocation.X >= bounds.X
 				&& screenLocation.Y >= bounds.Y
 				&& screenLocation.X < bounds.Right
