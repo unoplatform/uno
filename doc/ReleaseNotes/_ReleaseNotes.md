@@ -3,6 +3,7 @@
 ## Next version
 
 ### Features
+* Added sample for DatePicker
 * Add support for the following `DisplayInformation` properties on iOS and Android:
     - CurrentOrientation
     - LogicalDpi
@@ -43,6 +44,7 @@
 * `NavigationBarHelper` has been removed.
 
 ### Bug fixes
+* DatePicker FlyoutPlacement now set to Full by default
 * The `HAS_UNO` define is now not defined in `uap10.0.x` target frameworks.
 * The `XamlReader` fails when a property has no getter
 * `Click` and `Tapped` events were not working property for `ButtonBase` on Android and iOS.
