@@ -69,6 +69,10 @@ namespace Uno.UI.Controls
 			Initialize();
 		}
 
+		/// <remarks>
+		/// This is required to ensure that the coordinate system matches UWP, where the origin is at the top left.
+		/// See https://developer.apple.com/documentation/appkit/nsview/1483532-isflipped for more details.
+		/// </remarks>
 		public override bool IsFlipped => true;
 
 		private void Initialize()
