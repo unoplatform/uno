@@ -215,11 +215,6 @@ namespace Uno.Foundation
 				result = InvokeJSOverride(str);
 			}
 
-			if (result == null)
-			{
-				throw new InvalidOperationException("The invoked Javascript method did not return a value (" + str + ")");
-			}
-
 			return result;
 		}
 

@@ -20,6 +20,10 @@ const fs = require('fs');
         "defaultViewport": { "width": 1280, "height": 1024 }
     });
     const page = yield browser.newPage();
+    page.on('console', msg => {
+        console.log('BROWSER LOG:', msg.text());
+    });
+    page.on('requestfailed', err => console.error('BROWSER-REQUEST-FAILED:', err));
     yield page.goto("http://localhost:8000/");
     var runner = new TestRunner_1.TestRunner(page);
     yield runner.runTests();

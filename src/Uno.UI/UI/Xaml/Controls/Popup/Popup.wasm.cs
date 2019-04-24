@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Uno.Extensions;
-using System.Linq;
-using System.Drawing;
+﻿using Uno.Extensions;
 using Uno.Disposables;
-using Windows.UI.Xaml.Media;
 using Uno.Logging;
+using Windows.UI.Xaml.Controls.Primitives;
+using System;
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -16,14 +12,17 @@ namespace Windows.UI.Xaml.Controls
 
 		internal UIElement Anchor { get; set; }
 
+		public Popup()
+		{
+			PopupPanel = new PopupPanel(this);
+		}
+
 		protected override void OnChildChanged(FrameworkElement oldChild, FrameworkElement newChild)
 		{
 			base.OnChildChanged(oldChild, newChild);
 
-			if (newChild != null)
-			{
-				PopupRoot.SetPopup(newChild, this);
-			}
+			PopupPanel.Children.Remove(oldChild);
+			PopupPanel.Children.Add(newChild);
 		}
 
 		protected override void OnIsOpenChanged(bool oldIsOpen, bool newIsOpen)
@@ -38,11 +37,47 @@ namespace Windows.UI.Xaml.Controls
 			if (newIsOpen)
 			{
 				_closePopup.Disposable = Window.Current.OpenPopup(this);
+				PopupPanel.Visibility = Visibility.Visible;
 			}
 			else
 			{
 				_closePopup.Disposable = null;
+				PopupPanel.Visibility = Visibility.Collapsed;
 			}
 		}
+
+		partial void OnPopupPanelChanged(DependencyPropertyChangedEventArgs e)
+		{
+			var previousPanel = e.OldValue as PopupPanel;
+			var newPanel = e.NewValue as PopupPanel;
+
+			previousPanel?.Children.Clear();
+
+			if (PopupPanel != null)
+			{
+				if (Child != null)
+				{
+					PopupPanel.Children.Add(Child);
+				}
+			}
+
+			if (previousPanel != null)
+			{
+				previousPanel.PointerPressed -= Panel_PointerPressed;
+			}
+			if (newPanel != null)
+			{
+				newPanel.PointerPressed += Panel_PointerPressed;
+			}
+		}
+
+		private void Panel_PointerPressed(object sender, Input.PointerRoutedEventArgs e)
+		{
+			if (IsLightDismissEnabled)
+			{
+				IsOpen = false;
+			}
+		}
+
 	}
 }

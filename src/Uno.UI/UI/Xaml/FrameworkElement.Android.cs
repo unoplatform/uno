@@ -200,7 +200,7 @@ namespace Windows.UI.Xaml
 				);
 			}
 
-			var measuredSize = _layouter.Measure(availableSize);
+			var measuredSizelogical = _layouter.Measure(availableSize);
 
 			if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
 			{
@@ -208,14 +208,14 @@ namespace Windows.UI.Xaml
 					"[{0}/{1}] OnMeasure1({2}, {3}) (parent: {4}/{5})",
 					GetType(),
 					Name,
-					measuredSize.Width,
-					measuredSize.Height,
+					measuredSizelogical.Width,
+					measuredSizelogical.Height,
 					ViewHelper.MeasureSpecGetSize(widthMeasureSpec),
 					ViewHelper.MeasureSpecGetSize(heightMeasureSpec)
 				);
 			}
 
-			measuredSize = measuredSize.LogicalToPhysicalPixels();
+			var measuredSize = measuredSizelogical.LogicalToPhysicalPixels();
 
 			if (StretchAffectsMeasure)
 			{

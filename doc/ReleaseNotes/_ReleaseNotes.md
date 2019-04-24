@@ -36,6 +36,8 @@
 * [Wasm] Add support of hardware/browser back button in `SystemNavigationManager.BackRequested`
 * [Wasm] Added support for custom DOM events
 * WebAssembly UI tests are now integrated in the CI
+* Enable support for macOS head development
+* [Wasm] Add NativeXXX styles (which are aliases to the XamlXXX styles)
 
 ### Breaking Changes
 * The `WebAssemblyRuntime.InvokeJSUnmarshalled` method with three parameters has been removed.
@@ -56,6 +58,11 @@
 * 150679 [iOS] Fix path issue with Media Player not being able to play local files.
 * Adjust support for `StaticResource.ResourceKey`
 * 151081 [Android] Fix Keyboard not always dismissed when unfocusing a TextBox
+* [WASM] Support `not_wasm` prefix properly. (#784)
+* 151282 [iOS] Fixed Slider not responding on second navigation, fixed RemoveHandler for RoutedEvents removing all instances of handler 
+* 151497 [iOS/Android] Fixed Slider not responding, by ^ RemoveHandler fix for RoutedEvents 
+* 151674 [iOS] Add ability to replay a finished video from media player
+* 151524 [Android] Cleaned up Textbox for android to remove keyboard showing/dismissal inconsistencies
 
 ## Release 1.44.0
 
@@ -264,6 +271,7 @@
  * 144101 fixed `ListView` group headers messed up on item update
  * #527 Fix for `Selector.SelectionChanged` is raised twice on updated selection
  * [iOS] Add fail-safe on `FrameworkElement.WillMoveToSuperview` log to `Application.Current.UnhandledException`
+ * Flyout were not presented correctly on Wasm
 
 ## Release 1.42
 

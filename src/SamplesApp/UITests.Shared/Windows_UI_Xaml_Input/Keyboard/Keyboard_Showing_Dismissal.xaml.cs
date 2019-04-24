@@ -1,10 +1,9 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using Uno.UI.Samples.Controls;
-
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.UI.Xaml;
@@ -15,12 +14,14 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 
-namespace Uno.UI.Samples.Content.UITests.Flyout
+// The User Control item template is documented at https://go.microsoft.com/fwlink/?LinkId=234236
+
+namespace UITests.Shared.Windows_UI_Xaml_Input.Keyboard
 {
-	[SampleControlInfoAttribute("Flyout", "Flyout_Simple")]
-	public sealed partial class Flyout_Simple : UserControl
+	[SampleControlInfo("Keyboard", "Keyboard_Showing_Dismissal")]
+	public sealed partial class Keyboard_Showing_Dismissal : UserControl
 	{
-		public Flyout_Simple()
+		public Keyboard_Showing_Dismissal()
 		{
 			this.InitializeComponent();
 		}

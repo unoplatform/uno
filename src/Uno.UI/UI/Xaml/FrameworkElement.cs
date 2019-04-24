@@ -50,7 +50,7 @@ namespace Windows.UI.Xaml
 #endif
 
 		private bool _constraintsChanged;
-		
+
 		/// <remarks>
 		/// Both flags are present to avoid recursion (setting a style causes the root template
 		/// element to apply force the parent to apply its style, reverting the change that

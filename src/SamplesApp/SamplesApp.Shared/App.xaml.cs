@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading;
+using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Uno.Extensions;
 using Windows.ApplicationModel;
@@ -48,10 +50,10 @@ namespace SamplesApp
 		protected override void OnLaunched(LaunchActivatedEventArgs e)
 		{
 #if DEBUG
-            if (System.Diagnostics.Debugger.IsAttached)
-            {
-               // this.DebugSettings.EnableFrameRateCounter = true;
-            }
+			if (System.Diagnostics.Debugger.IsAttached)
+			{
+			   // this.DebugSettings.EnableFrameRateCounter = true;
+			}
 #endif
 			Frame rootFrame = Windows.UI.Xaml.Window.Current.Content as Frame;
 
@@ -147,7 +149,7 @@ namespace SamplesApp
 
 
 #pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
-		private static HashSet<int> _isTestDone = new HashSet<int>();
+		private static ImmutableHashSet<int> _doneTests = ImmutableHashSet<int>.Empty;
 		private static int _testIdCounter = 0;
 
 		public static string GetAllTests()
@@ -178,12 +180,17 @@ namespace SamplesApp
 							}
 #endif
 
-							await SampleControl.Presentation.SampleChooserViewModel.Instance.SetSelectedSample(CancellationToken.None, metadataName);
+							var t =  SampleControl.Presentation.SampleChooserViewModel.Instance.SetSelectedSample(CancellationToken.None, metadataName);
+							var timeout = Task.Delay(30000);
 
-							lock (_isTestDone)
+							await Task.WhenAny(t, timeout);
+
+							if(!(t.IsCompleted && !t.IsFaulted))
 							{
-								_isTestDone.Add(testId);
+								throw new TimeoutException();
 							}
+
+							ImmutableInterlocked.Update(ref _doneTests, lst => lst.Add(testId));
 						}
 						catch (Exception e)
 						{
@@ -201,12 +208,6 @@ namespace SamplesApp
 			}
 		}
 
-		public static bool IsTestDone(string testId)
-		{
-			lock (_isTestDone)
-			{
-				return _isTestDone.Contains(int.Parse(testId));
-			}
-		}
+		public static bool IsTestDone(string testId) => int.TryParse(testId, out var id) ? _doneTests.Contains(id) : false;
 	}
 }
