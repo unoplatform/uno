@@ -859,6 +859,15 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				{
 					foreach (var namedResource in namedResources)
 					{
+						if (namedResource.Value.Type.Name == "Style")
+						{
+							// Styles are handled differently for now, and there's no variable generated
+							// for those entries. Skip the ApplyCompiledBindings for those. See
+							// ImportResourceDictionary handling of x:Name for more details.
+							continue;
+						}
+
+
 						writer.AppendFormatInvariant($"{namedResource.Key}.ApplyCompiledBindings();");
 					}
 				}
