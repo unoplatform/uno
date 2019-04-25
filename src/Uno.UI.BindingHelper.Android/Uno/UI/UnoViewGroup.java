@@ -424,6 +424,11 @@ public abstract class UnoViewGroup
 			for (int i = getChildCount() - 1; i >= 0; i--) { // Inverse enumeration in order to prioritize controls that are on top
 				View child = getChildAt(i);
 
+				if (child.getVisibility() != View.VISIBLE)
+				{
+					continue;
+				}
+
 				final Matrix transform = _childrenTransformations.get(child);
 				final float offsetX = getScrollX() - child.getLeft();
 				final float offsetY = getScrollY() - child.getTop();

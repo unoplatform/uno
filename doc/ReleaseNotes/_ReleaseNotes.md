@@ -69,6 +69,7 @@
 * 151655 [TimePicker][iOS] First time you open time picker it initializes the existing value to current time
 * 151656 [TimePicker][iOS] Time picker always shows +1 minute than selected value
 * 151657 [DatePicker][iOS] Date picker flyout displays 1 day earlier than selected value
+* 151430 [Android] Prevent touch event being dispatched to invisible view
 
 ## Release 1.44.0
 
