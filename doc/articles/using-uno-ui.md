@@ -573,5 +573,9 @@ As of iOS 9, the system does not allow iPad applications to dictate their orient
 <true/>
 ```
 
+#### Controlling the Keyboard on iOS
+
+If a view needs to keep the keyboard opened when tapping on it, use the `Uno.UI.Controls.Window.SetNeedsKeyboard` method.
+
 ## Creating/Using Android Activities
 At the root of every Android Uno app lies a `BaseActivity` class that extends from `Android.Support.V7.App.AppCompatActivity` which is part of the [Android v7 AppCompat Support Library](https://developer.android.com/topic/libraries/support-library/features.html#v7-appcompat). If you ever need to create a new Activity within your app or within Uno you must be sure to extend `BaseActivity` and, if you need to apply a Theme to the activity, ensure that the Theme you set is a `Theme.AppCompat` theme (or descendant).
