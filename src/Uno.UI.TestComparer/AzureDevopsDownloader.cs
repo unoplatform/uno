@@ -27,7 +27,7 @@ namespace Uno.UI.TestComparer
 			_collectionUri = collectionUri;
 		}
 
-		public async Task DownloadArtifacts(string basePath, string project, string definitionName, string artifactName, string branchName, string buildId)
+		public async Task DownloadArtifacts(string basePath, string project, string definitionName, string artifactName, string branchName, int buildId, int runLimit)
 		{
 			Directory.CreateDirectory(basePath);
 
@@ -39,9 +39,9 @@ namespace Uno.UI.TestComparer
 			var definitions = await client.GetDefinitionsAsync(project, name: definitionName);
 
 			Console.WriteLine("Getting builds");
-			var builds = await client.GetBuildsAsync(project, definitions: new[] { definitions.First().Id }, branchName: branchName, top: 2, queryOrder: BuildQueryOrder.FinishTimeDescending, statusFilter: BuildStatus.Completed);
+			var builds = await client.GetBuildsAsync(project, definitions: new[] { definitions.First().Id }, branchName: branchName, top: runLimit, queryOrder: BuildQueryOrder.FinishTimeDescending, statusFilter: BuildStatus.Completed);
 
-			var currentBuild = await client.GetBuildAsync(project, int.Parse(buildId));
+			var currentBuild = await client.GetBuildAsync(project, buildId);
 
 			foreach (var build in builds.Concat(new[] { currentBuild }))
 			{
