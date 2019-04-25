@@ -63,6 +63,7 @@
 * 151674 [iOS] Add ability to replay a finished video from media player
 * 151524 [Android] Cleaned up Textbox for android to remove keyboard showing/dismissal inconsistencies
 * Fix invalid code generation for `x:Name` entries on `Style` in resources
+* [Wasm] Fix incorrect `TextBlock` measure with constrains
 
 ## Release 1.44.0
 
