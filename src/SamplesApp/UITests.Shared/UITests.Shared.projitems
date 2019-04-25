@@ -25,6 +25,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_Storage\StorageFolderTests\Persistence.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="$(MSBuildThisFileDirectory)Windows_UI.Xaml_Automation\AutomationProperties_Name.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -1540,6 +1544,9 @@
     <Compile Include="$(MSBuildThisFileDirectory)Windows_Graphics_Display\DisplayInformation\DisplayInformation_Properties.xaml.cs">
       <DependentUpon>DisplayInformation_Properties.xaml</DependentUpon>
     </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_Storage\StorageFolderTests\Persistence.xaml.cs">
+      <DependentUpon>Persistence.xaml</DependentUpon>
+    </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI.Xaml_Automation\AutomationProperties_Name.xaml.cs">
       <DependentUpon>AutomationProperties_Name.xaml</DependentUpon>
     </Compile>
@@ -2492,6 +2499,9 @@
     <PRIResource Include="$(MSBuildThisFileDirectory)UITestsStrings\en-US\Resources.resw" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Update="C:\Src\GitHub\nventive\Uno\src\SamplesApp\UITests.Shared\Windows_Storage\StorageFolderTests\Persistence.xaml.cs">
+      <DependentUpon>Persistence.xaml</DependentUpon>
+    </Compile>
     <Compile Update="C:\Src\GitHub\nventive\Uno\src\SamplesApp\UITests.Shared\Windows_UI_Core\SystemNavigationManagerTests\HardwareBackButton.xaml.cs">
       <DependentUpon>HardwareBackButton.xaml</DependentUpon>
     </Compile>

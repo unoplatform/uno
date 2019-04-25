@@ -4,7 +4,7 @@ using System.IO;
 
 namespace Windows.Storage
 {
-	public  partial class ApplicationData 
+	partial class ApplicationData 
 	{
 		private static string GetLocalCacheFolder() 
 			=> Android.App.Application.Context.CacheDir.AbsolutePath;
@@ -14,6 +14,12 @@ namespace Windows.Storage
 
 		private static string GetLocalFolder() 
 			=> Android.App.Application.Context.FilesDir.AbsolutePath;
+
+		private static string GetRoamingFolder()
+			=> Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+
+		private static string GetSharedLocalFolder()
+			=> Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
 	}
 }
 #endif

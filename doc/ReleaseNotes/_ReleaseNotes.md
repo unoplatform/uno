@@ -37,6 +37,7 @@
 * WebAssembly UI tests are now integrated in the CI
 * Enable support for macOS head development
 * [Wasm] Add NativeXXX styles (which are aliases to the XamlXXX styles)
+* [Wasm] Enable persistence for all ApplicationData folders
 
 ### Breaking Changes
 * The `WebAssemblyRuntime.InvokeJSUnmarshalled` method with three parameters has been removed.

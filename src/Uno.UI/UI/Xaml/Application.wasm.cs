@@ -34,10 +34,10 @@ namespace Windows.UI.Xaml
 		{
 			_startInvoked = true;
 
-			var localFolderPath = Windows.Storage.ApplicationData.Current.LocalFolder.Path;
 			var isHostedMode = !WebAssemblyRuntime.IsWebAssembly;
 			var isLoadEventsEnabled = !FeatureConfiguration.FrameworkElement.WasmUseManagedLoadedUnloaded;
-			WindowManagerInterop.Init(localFolderPath, isHostedMode, isLoadEventsEnabled);
+			WindowManagerInterop.Init(isHostedMode, isLoadEventsEnabled);
+			Windows.Storage.ApplicationData.Init();
 
 			SynchronizationContext.SetSynchronizationContext(
 				new CoreDispatcherSynchronizationContext(CoreDispatcher.Main, CoreDispatcherPriority.Normal)
