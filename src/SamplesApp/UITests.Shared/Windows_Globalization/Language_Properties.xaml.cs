@@ -18,7 +18,7 @@ using Windows.UI.Xaml.Navigation;
 
 namespace UITests.Shared.Windows_Globalization
 {
-	[SampleControlInfo("Windows_Globalization", "Language", description: "Properties of the Windows.Globalization.Language class")]
+	[SampleControlInfo("Windows.Globalization", "Language", description: "Properties of the Windows.Globalization.Language class")]
 	public sealed partial class Language_Properties : UserControl
 	{
 

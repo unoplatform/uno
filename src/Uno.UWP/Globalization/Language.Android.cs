@@ -12,9 +12,9 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				var inputMethodManager = ContextHelper.Current.GetSystemService(Context.InputMethodService).JavaCast<InputMethodManager>();
-				var currentInputMethod = inputMethodManager.CurrentInputMethodSubtype;
-				return currentInputMethod.LanguageTag;
+				var inputMethodManager = ContextHelper.Current?.GetSystemService(Context.InputMethodService).JavaCast<InputMethodManager>();
+				var currentInputMethod = inputMethodManager?.CurrentInputMethodSubtype;
+				return currentInputMethod?.LanguageTag ?? "";
 			}
 		}
 
