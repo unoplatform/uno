@@ -53,6 +53,12 @@ To run the tests:
 
 Note that the same operation is run during the CI, in a specific job running under Linux. The screen shots are located in an build artifact.
 
+## Validating the WebAssembly UI Tests results
+
+In the CI build, an artifact named `wasm-uitests` is generated and contains an HTML file that shows all the differences
+for screenshots taken for the past builds. Download this artifact and open the html file to determine if any screenshots
+have changed.
+
 ## Troubleshooting the tests
 It is possible to enable the chromium head using the configuration parameters in the [app.ts](src/SamplesApp/SamplesApp.Wasm.UITests/app.ts) file.
 

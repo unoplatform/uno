@@ -15,14 +15,6 @@ jobs:
   - checkout: self
     clean: true
 
-  # nventive/wasm-build:1.1-bionic already has sdk-1.38.28-64bit activated
-  # - bash: |
-  #     sudo chmod -R 777 /emsdk
-  #     cd /emsdk
-  #     sudo ./emsdk activate sdk-1.38.28-64bit
-  # 
-  #   displayName: 'Setup Emscripten'
-
   - bash: |
       source /emsdk/emsdk_env.sh
       msbuild /r /p:Configuration=Release /t:restore src/SamplesApp/SamplesApp.Wasm/SamplesApp.Wasm.csproj
@@ -83,8 +75,10 @@ jobs:
       logProjectEvents: false
       createLogFile: false
 
-  - bash: |
-      src/Uno.UI.TestComparer/bin/Release/net461/Uno.UI.TestComparer.exe "azdo" "$(UITestsCompare_PAT)" "$(build.artifactstagingdirectory)" "$(Build.SourceBranch)" "$SYSTEM_PULLREQUEST_TARGETBRANCH" "wasm-uitests" "$(Build.DefinitionName)" "$(System.TeamProject)" "$(System.TeamFoundationCollectionUri)" "$(Build.BuildId)" "10"
+  - script: |
+      src\Uno.UI.TestComparer\bin\Release\net461\Uno.UI.TestComparer.exe "azdo" "$(UITestsCompare_PAT)" "$(build.artifactstagingdirectory)" "%SYSTEM_PULLREQUEST_TARGETBRANCH%" "wasm-uitests" "$(Build.DefinitionName)" "$(System.TeamProject)" "$(System.TeamFoundationCollectionUri)" "$(Build.BuildId)" "10"
+
+    displayName: 'Compare UI Tests screenshots'
 
   - task: PublishBuildArtifacts@1
     inputs:
