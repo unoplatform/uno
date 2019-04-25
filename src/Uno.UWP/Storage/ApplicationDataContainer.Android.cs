@@ -15,7 +15,7 @@ namespace Windows.Storage
 {
 	public partial class ApplicationDataContainer
 	{
-		partial void InitializePartial()
+		partial void InitializePartial(ApplicationData owner)
 		{
 			Values = new SharedPreferencesPropertySet();
 		}

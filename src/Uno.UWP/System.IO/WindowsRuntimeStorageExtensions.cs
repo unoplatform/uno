@@ -40,7 +40,7 @@ namespace System.IO
 					break;
 
 				case CreationCollisionOption.OpenIfExists:
-					mode = FileMode.Open;
+					mode = FileMode.OpenOrCreate;
 					access = FileAccess.Write;
 					break;
 
@@ -52,7 +52,7 @@ namespace System.IO
 					throw new NotSupportedException($"The {creationCollisionOption} CreationCollisionOption is not supported");
 			}
 
-
+			Directory.CreateDirectory(rootDirectory.Path);
 			return File.Open(Path.Combine(rootDirectory.Path, relativePath), mode, access);
 		}
 	}

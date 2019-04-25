@@ -5,7 +5,7 @@ using System.IO;
 
 namespace Windows.Storage
 {
-	public  partial class ApplicationData 
+	partial class ApplicationData 
 	{
 		private static string GetLocalCacheFolder()
 		{
@@ -33,6 +33,13 @@ namespace Windows.Storage
 			Directory.CreateDirectory(folder);
 			return folder;
 		}
+
+		private static string GetRoamingFolder()
+			=> Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+
+		private static string GetSharedLocalFolder()
+			=> Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
+
 	}
 }
 #endif

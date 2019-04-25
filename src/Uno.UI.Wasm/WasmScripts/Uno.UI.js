@@ -231,6 +231,7 @@ var MonoSupport;
             else {
                 if (!jsCallDispatcher._isUnoRegistered) {
                     jsCallDispatcher.registerScope("UnoStatic", Uno.UI.WindowManager);
+                    jsCallDispatcher.registerScope("UnoStatic_Windows_Storage_StorageFolder", Windows.Storage.StorageFolder);
                     jsCallDispatcher._isUnoRegistered = true;
                 }
                 const { ns, methodName } = jsCallDispatcher.parseIdentifier(identifier);
@@ -312,11 +313,10 @@ var Uno;
                 * @param containerElementId The ID of the container element for the Xaml UI
                 * @param loadingElementId The ID of the loading element to remove once ready
                 */
-            static init(localStoragePath, isHosted, isLoadEventsEnabled, containerElementId = "uno-body", loadingElementId = "uno-loading") {
+            static init(isHosted, isLoadEventsEnabled, containerElementId = "uno-body", loadingElementId = "uno-loading") {
                 WindowManager._isHosted = isHosted;
                 WindowManager._isLoadEventsEnabled = isLoadEventsEnabled;
                 Windows.UI.Core.CoreDispatcher.init(WindowManager.buildReadyPromise());
-                WindowManager.setupStorage(localStoragePath);
                 this.current = new WindowManager(containerElementId, loadingElementId);
                 MonoSupport.jsCallDispatcher.registerScope("Uno", this.current);
                 this.current.init();
@@ -382,56 +382,8 @@ var Uno;
                 */
             static initNative(pParams) {
                 const params = WindowManagerInitParams.unmarshal(pParams);
-                WindowManager.init(params.LocalFolderPath, params.IsHostedMode, params.IsLoadEventsEnabled);
+                WindowManager.init(params.IsHostedMode, params.IsLoadEventsEnabled);
                 return true;
-            }
-            /**
-             * Setup the storage persistence
-             *
-             * */
-            static setupStorage(localStoragePath) {
-                if (WindowManager.isHosted) {
-                    console.debug("Hosted Mode: skipping IndexDB initialization");
-                }
-                else {
-                    if (WindowManager.isIndexDBAvailable()) {
-                        FS.mkdir(localStoragePath);
-                        FS.mount(IDBFS, {}, localStoragePath);
-                        FS.syncfs(true, err => {
-                            if (err) {
-                                console.error(`Error synchronizing filsystem from IndexDB: ${err}`);
-                            }
-                        });
-                        window.addEventListener("beforeunload", () => WindowManager.synchronizeFileSystem());
-                        setInterval(() => WindowManager.synchronizeFileSystem(), 10000);
-                    }
-                    else {
-                        console.warn("IndexedDB is not available (private mode?), changed will not be persisted.");
-                    }
-                }
-            }
-            /**
-             * Determine if IndexDB is available, some browsers and modes disable it.
-             * */
-            static isIndexDBAvailable() {
-                try {
-                    // IndexedDB may not be available in private mode
-                    window.indexedDB;
-                    return true;
-                }
-                catch (err) {
-                    return false;
-                }
-            }
-            /**
-             * Synchronize the IDBFS memory cache back to IndexDB
-             * */
-            static synchronizeFileSystem() {
-                FS.syncfs(err => {
-                    if (err) {
-                        console.error(`Error synchronizing filsystem from IndexDB: ${err}`);
-                    }
-                });
             }
             /**
                 * Creates the UWP-compatible splash screen
@@ -1343,6 +1295,34 @@ var Uno;
 // Ensure the "Uno" namespace is availablle globally
 window.Uno = Uno;
 /* TSBindingsGenerator Generated code -- this code is regenerated on each build */
+class StorageFolderMakePersistentParams {
+    static unmarshal(pData) {
+        let ret = new StorageFolderMakePersistentParams();
+        {
+            ret.Paths_Length = Number(Module.getValue(pData + 0, "i32"));
+        }
+        {
+            var pArray = Module.getValue(pData + 4, "*");
+            if (pArray !== 0) {
+                ret.Paths = new Array();
+                for (var i = 0; i < ret.Paths_Length; i++) {
+                    var value = Module.getValue(pArray + i * 4, "*");
+                    if (value !== 0) {
+                        ret.Paths.push(String(MonoRuntime.conv_string(value)));
+                    }
+                    else {
+                        ret.Paths.push(null);
+                    }
+                }
+            }
+            else {
+                ret.Paths = null;
+            }
+        }
+        return ret;
+    }
+}
+/* TSBindingsGenerator Generated code -- this code is regenerated on each build */
 class WindowManagerAddViewParams {
     static unmarshal(pData) {
         let ret = new WindowManagerAddViewParams();
@@ -1490,19 +1470,10 @@ class WindowManagerInitParams {
     static unmarshal(pData) {
         let ret = new WindowManagerInitParams();
         {
-            var ptr = Module.getValue(pData + 0, "*");
-            if (ptr !== 0) {
-                ret.LocalFolderPath = String(Module.UTF8ToString(ptr));
-            }
-            else {
-                ret.LocalFolderPath = null;
-            }
+            ret.IsHostedMode = Boolean(Module.getValue(pData + 0, "i32"));
         }
         {
-            ret.IsHostedMode = Boolean(Module.getValue(pData + 4, "i32"));
-        }
-        {
-            ret.IsLoadEventsEnabled = Boolean(Module.getValue(pData + 8, "i32"));
+            ret.IsLoadEventsEnabled = Boolean(Module.getValue(pData + 4, "i32"));
         }
         return ret;
     }
@@ -1848,6 +1819,77 @@ var Uno;
     })(UI = Uno.UI || (Uno.UI = {}));
 })(Uno || (Uno = {}));
 // ReSharper disable InconsistentNaming
+var Windows;
+(function (Windows) {
+    var Storage;
+    (function (Storage) {
+        class StorageFolder {
+            /**
+             * Determine if IndexDB is available, some browsers and modes disable it.
+             * */
+            static isIndexDBAvailable() {
+                try {
+                    // IndexedDB may not be available in private mode
+                    window.indexedDB;
+                    return true;
+                }
+                catch (err) {
+                    return false;
+                }
+            }
+            /**
+             * Setup the storage persistence of a given set of paths.
+             * */
+            static makePersistent(pParams) {
+                const params = StorageFolderMakePersistentParams.unmarshal(pParams);
+                for (var i = 0; i < params.Paths.length; i++) {
+                    this.setupStorage(params.Paths[i]);
+                }
+            }
+            /**
+             * Setup the storage persistence of a given path.
+             * */
+            static setupStorage(path) {
+                if (Uno.UI.WindowManager.isHosted) {
+                    console.debug("Hosted Mode: skipping IndexDB initialization");
+                    return;
+                }
+                if (!this.isIndexDBAvailable()) {
+                    console.warn("IndexedDB is not available (private mode or uri starts with file:// ?), changes will not be persisted.");
+                    return;
+                }
+                console.debug("Making persistent: " + path);
+                FS.mkdir(path);
+                FS.mount(IDBFS, {}, path);
+                // Request an initial sync to populate the file system
+                const that = this;
+                FS.syncfs(true, err => {
+                    if (err) {
+                        console.error(`Error synchronizing filsystem from IndexDB: ${err}`);
+                    }
+                });
+                // Ensure to sync pseudo file system on unload (and periodically for safety)
+                if (!this._isInit) {
+                    window.addEventListener("beforeunload", this.synchronizeFileSystem);
+                    setInterval(this.synchronizeFileSystem, 10000);
+                    this._isInit = true;
+                }
+            }
+            /**
+             * Synchronize the IDBFS memory cache back to IndexDB
+             * */
+            static synchronizeFileSystem() {
+                FS.syncfs(err => {
+                    if (err) {
+                        console.error(`Error synchronizing filsystem from IndexDB: ${err}`);
+                    }
+                });
+            }
+        }
+        StorageFolder._isInit = false;
+        Storage.StorageFolder = StorageFolder;
+    })(Storage = Windows.Storage || (Windows.Storage = {}));
+})(Windows || (Windows = {}));
 var Windows;
 (function (Windows) {
     var UI;
