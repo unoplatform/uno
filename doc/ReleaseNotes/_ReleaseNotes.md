@@ -65,6 +65,9 @@
 * Fix invalid code generation for `x:Name` entries on `Style` in resources
 * [Wasm] Fix incorrect `TextBlock` measure with constrains
 * 151676 [iOS] The keyboard is closing when tap on the webview or toolbar
+* 151655 [TimePicker][iOS] First time you open time picker it initializes the existing value to current time
+* 151656 [TimePicker][iOS] Time picker always shows +1 minute than selected value
+* 151657 [DatePicker][iOS] Date picker flyout displays 1 day earlier than selected value
 
 ## Release 1.44.0
 
