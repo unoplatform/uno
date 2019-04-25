@@ -203,9 +203,9 @@ namespace Windows.UI.Xaml.Controls
 					MaxYear = MaxYear
 				};
 
-				BindToFlyout("Date");
-				BindToFlyout("MinYear");
-				BindToFlyout("MaxYear");
+				BindToFlyout(nameof(Date));
+				BindToFlyout(nameof(MinYear));
+				BindToFlyout(nameof(MaxYear));
 #endif
 			}
 		}
