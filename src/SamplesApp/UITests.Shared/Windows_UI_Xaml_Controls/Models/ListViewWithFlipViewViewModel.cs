@@ -8,13 +8,11 @@ namespace SamplesApp.Windows_UI_Xaml_Controls.Models
 {
 	public class ListViewWithFlipViewViewModel : ViewModelBase
 	{
+		private FlipViewItems[] SampleItems { get; }
+
 		public ListViewWithFlipViewViewModel(CoreDispatcher dispatcher) : base(dispatcher)
 		{
-			//Build(b => b
-			//	.Properties(pb => pb
-			//		.Attach("SampleItems", GetSampleItems)
-			//	)
-			//);
+			SampleItems = GetSampleItems();
 		}
 
 		private class FlipViewItems

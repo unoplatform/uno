@@ -15,29 +15,61 @@ namespace SamplesApp.Windows_UI_Xaml_Controls.Models
 	public class ListViewGroupedViewModel : ViewModelBase
 	{
 		Random _rnd = null;
+		private bool _areStickyHeadersEnabled;
+		private double _variableWidth;
+
+		public IEnumerable<IGrouping<string, string>> GroupedSampleItems { get; }
+		public IEnumerable<object> GroupedSampleItemsAsSource { get; }
+		public IEnumerable<IGrouping<int, int>> GroupedNumericItems { get; }
+		public IEnumerable<object> GroupedNumericItemsAsSource { get; }
+		public string[] UngroupedSampleItems { get; }
+		public bool AreStickyHeadersEnabled
+		{
+			get => _areStickyHeadersEnabled;
+			set
+			{
+				_areStickyHeadersEnabled = value;
+				RaisePropertyChanged();
+			}
+		}
+
+		public IEnumerable<object> GroupedTownsAsSource { get; }
+		public IEnumerable<object> EmptyGroupsAsSource { get; }
+		public IEnumerable<object> EmptyAsSource { get; }
+
+		public double VariableWidth
+		{
+			get => _variableWidth;
+			set
+			{
+				_variableWidth = value;
+				RaisePropertyChanged();
+			}
+		}
+
 		public ListViewGroupedViewModel(CoreDispatcher dispatcher) : base(dispatcher)
 		{
 			_rnd = new Random();
-			//Build(b => b
-			//	.Properties(pb => pb
-			//		.Attach("GroupedSampleItems", () => GetGroupedSampleItems())
-			//		.Attach("GroupedSampleItemsAsSource", async ct => await GetAsCollectionViewSource(ct, GetGroupedSampleItems()))
-			//		.Attach("GroupedNumericItems", () => GetGroupedNumericItems())
-			//		.Attach("GroupedNumericItemsAsSource", async ct => await GetAsCollectionViewSource(ct, GetGroupedNumericItems()))
-			//		.Attach("ChangingGroupedSampleItems", () => GetChangingGroupedSampleItems())
-			//		.Attach("ChangingGroupedSampleItemsAsSource",
-			//			() => GetChangingGroupedSampleItems()
-			//					.SelectMany(s =>
-			//						GetAsCollectionViewSource(CancellationToken.None, s).ToObservable()
-			//					)
-			//		)
-			//		.Attach("UngroupedSampleItems", () => _sampleItems)
-			//		.Attach("ChangingIntArray", () => GetChangingIntArray())
-			//		.Attach("AreStickyHeadersEnabled", () => true)
-			//		.Attach("GroupedTownsAsSource", async ct => await GetAsCollectionViewSource(ct, GetTownsGroupedAlphabetically()))
-			//		.Attach("EmptyGroupsAsSource", async ct => await GetAsCollectionViewSource(ct, GetAllEmptyGroups()))
-			//		.Attach("EmptyAsSource", async ct => await GetAsCollectionViewSource(ct, Enumerable.Empty<IGrouping<string, string>>()))
-			//		.Attach("VariableWidth", () => 500d)
+
+			GroupedSampleItems = GetGroupedSampleItems();
+			GroupedSampleItemsAsSource = ListViewViewModel.GetAsCollectionViewSource(GetGroupedSampleItems());
+			GroupedNumericItems = GetGroupedNumericItems();
+			GroupedNumericItemsAsSource = ListViewViewModel.GetAsCollectionViewSource(GetGroupedNumericItems());
+			//TODO: Restore dynamic samples based on IObservable
+			//.Attach("ChangingGroupedSampleItems", () => GetChangingGroupedSampleItems())
+			//.Attach("ChangingGroupedSampleItemsAsSource",
+			//	() => GetChangingGroupedSampleItems()
+			//			.SelectMany(s =>
+			//				GetAsCollectionViewSource(CancellationToken.None, s).ToObservable()
+			//			)
+			//)
+			UngroupedSampleItems = _sampleItems;
+			//.Attach("ChangingIntArray", () => GetChangingIntArray())
+			AreStickyHeadersEnabled = true;
+			GroupedTownsAsSource = ListViewViewModel.GetAsCollectionViewSource(GetTownsGroupedAlphabetically());
+			EmptyGroupsAsSource = ListViewViewModel.GetAsCollectionViewSource(GetAllEmptyGroups());
+			EmptyAsSource = ListViewViewModel.GetAsCollectionViewSource(Enumerable.Empty<IGrouping<string, string>>());
+			VariableWidth = 500d;
 			//	)
 			//);
 		}
@@ -51,27 +83,6 @@ namespace SamplesApp.Windows_UI_Xaml_Controls.Models
 			return _sampleItems
 				.GroupBy(s => s[0].ToString().ToUpperInvariant())
 				.Concat(new EmptyGroup<string, string>("This header should not appear if GroupStyle.HidesEmptyGroups is true)"));
-		}
-
-		internal static async Task<IEnumerable<object>> GetAsCollectionViewSource<T1, T2>(CancellationToken ct, IEnumerable<IGrouping<T1, T2>> groups)
-		{
-			ICollectionView source = null;
-
-#if XAMARIN
-			var dispatcher = CoreDispatcher.Main;
-#else
-			var dispatcher = CoreApplication.MainView.Dispatcher;
-#endif
-			// Have to create CollectionViewSource on UI thread
-			await dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
-			{
-				source = new CollectionViewSource()
-				{
-					Source = groups,
-					IsSourceGrouped = true
-				}.View;
-			}).AsTask(ct);
-			return source;
 		}
 
 		private IEnumerable<IGrouping<int, int>> GetGroupedNumericItems()
