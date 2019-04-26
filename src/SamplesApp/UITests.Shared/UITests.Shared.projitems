@@ -1293,6 +1293,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Media\Transform\Animated_View_With_Transformed_Ancestor.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Media\Transform\Basics.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -1330,6 +1334,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Media\Transform\Polygon_With_RotateTransform.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Media\Transform\ProgressRing_With_Transformed_Ancestor.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -2293,6 +2301,10 @@
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\NavigationViewTests\SettingsPage.xaml.cs">
       <DependentUpon>SettingsPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Media\Transform\AnimatedContentControl.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Media\Transform\Animated_View_With_Transformed_Ancestor.xaml.cs">
+      <DependentUpon>Animated_View_With_Transformed_Ancestor.xaml</DependentUpon>
+    </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Media\Transform\Basics.xaml.cs">
       <DependentUpon>Basics.xaml</DependentUpon>
     </Compile>
@@ -2322,6 +2334,9 @@
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Media\Transform\Polygon_With_RotateTransform.xaml.cs">
       <DependentUpon>Polygon_With_RotateTransform.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Media\Transform\ProgressRing_With_Transformed_Ancestor.xaml.cs">
+      <DependentUpon>ProgressRing_With_Transformed_Ancestor.xaml</DependentUpon>
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Media\Transform\Rectangle_With_RotateTransform.xaml.cs">
       <DependentUpon>Rectangle_With_RotateTransform.xaml</DependentUpon>
