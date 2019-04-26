@@ -16,6 +16,8 @@ public abstract class UnoViewGroup
 	extends android.view.ViewGroup
 	implements UnoViewParent{
 
+	private static final String LOGTAG = "UnoViewGroup";
+
 	private boolean _inLocalAddView, _inLocalRemoveView;
 	private boolean _isEnabled;
 	private boolean _isHitTestVisible;
@@ -48,7 +50,7 @@ public abstract class UnoViewGroup
 			buildSetFrameReflection();
 		}
 		catch(Exception e) {
-			Log.e("UnoViewGroup", "Failed to initialize NativeSetFrame method. " + e.toString());
+			Log.e(LOGTAG, "Failed to initialize NativeSetFrame method. " + e.toString());
 		}
 	}
 
@@ -69,10 +71,10 @@ public abstract class UnoViewGroup
 		// This block is commented for easier logging.
 		//
 		// if(_setFrameMethod != null) {
-		// 	Log.i("UnoViewGroup", "Found android.view.View.setFrame(), arrange fast-path is ENABLED.");
+		// 	Log.i(LOGTAG, "Found android.view.View.setFrame(), arrange fast-path is ENABLED.");
 		// }
 		// else {
-		// 	Log.i("UnoViewGroup", "Unable to find android.view.View.setFrame(), arrange fast-path is DISABLED.");
+		// 	Log.i(LOGTAG, "Unable to find android.view.View.setFrame(), arrange fast-path is DISABLED.");
 		// }
 	}
 
@@ -320,7 +322,7 @@ public abstract class UnoViewGroup
 	public boolean dispatchTouchEvent(MotionEvent e)
 	{
 		String originalIndent = _indent;
-		Log.i("", _indent + "    + " + this.toString());
+		Log.i(LOGTAG, _indent + "    + " + this.toString());
 		_indent += "    | ";
 
 		boolean dispatched = dispatchTouchEventCore(e);
@@ -371,8 +373,9 @@ public abstract class UnoViewGroup
 
 		if (!_isHitTestVisible || !_isEnabled)
 		{
-			// Log.i(this.toString(), "!_isHitTestVisible: " + !_isHitTestVisible);
-			// Log.i(this.toString(), "!_isEnabled: " + !_isEnabled);
+			// Log.i(LOGTAG, _indent + "!_isHitTestVisible: " + !_isHitTestVisible);
+			// Log.i(LOGTAG, _indent + "!_isEnabled: " + !_isEnabled);
+
 			// ignore all touches
 			setIsPointerCaptured(false);
 			return false;
@@ -390,8 +393,8 @@ public abstract class UnoViewGroup
 		// even if the point is outside the view bounds.
 		_isPointInView = isLocalTouchPointInView(_transformedTouchX, _transformedTouchY); // takes clipping into account
 
-		//Log.i("", _indent + "MotionEvent: " + e.toString());
-		//Log.i("", _indent + "_isPointInView: " + _isPointInView);
+		//Log.i(LOGTAG, _indent + "MotionEvent: " + e.toString());
+		//Log.i(LOGTAG, _indent + "_isPointInView: " + _isPointInView);
 
 		// Note: Always dispatch the touch events, otherwise system controls may not behave
 		//		 properly, such as not displaying "material design" animation cues
@@ -428,12 +431,17 @@ public abstract class UnoViewGroup
 			for (int i = getChildCount() - 1; i >= 0; i--) { // Inverse enumeration in order to prioritize controls that are on top
 				View child = getChildAt(i);
 
+				if (child.getVisibility() != View.VISIBLE)
+				{
+					continue;
+				}
+
 				final Matrix transform = _childrenTransformations.get(child);
 				final float offsetX = getScrollX() - child.getLeft();
 				final float offsetY = getScrollY() - child.getTop();
 
 				if (transform == null || transform.isIdentity()) {
-					// No meaningfull transformation on this child, instead of cloning the MetionEvent,
+					// No meaningful transformation on this child, instead of cloning the MotionEvent,
 					// we only offset the current one, propagate it to the child and then offset it back to its original values.
 
 					e.offsetLocation(offsetX, offsetY);
@@ -442,7 +450,7 @@ public abstract class UnoViewGroup
 
 					e.offsetLocation(-offsetX, -offsetY);
 				} else {
-					// We have a valid static trasnform on this child, we have to transform the MotionEvent
+					// We have a valid static transform on this child, we have to transform the MotionEvent
 					// into the child coordinates.
 
 					final MotionEvent transformedEvent = MotionEvent.obtain(e);
@@ -471,7 +479,7 @@ public abstract class UnoViewGroup
 
 		if (!_childIsUnoViewGroup) // child is native
 		{
-			// Log.i(this.toString(), "!_childIsUnoViewGroup: " + !_childIsUnoViewGroup);
+			// Log.i(LOGTAG, _indent + "!_childIsUnoViewGroup: " + !_childIsUnoViewGroup);
 			_childBlockedTouchEvent = _childHandledTouchEvent = superDispatchTouchEvent;
 		}
 
@@ -488,15 +496,15 @@ public abstract class UnoViewGroup
 		boolean isHandlingTouchEvent = _childHandledTouchEvent ||
 			((isBlockingTouchEvent || didPointerExit) && tryHandleTouchEvent(e, _isPointInView, wasPointInView, isCurrentPointer));
 
-		//Log.i("", _indent + "superDispatchTouchEvent: " + superDispatchTouchEvent);
-		//Log.i("", _indent + "_childBlockedTouchEvent: " + _childBlockedTouchEvent);
-		//Log.i("", _indent + "_childHandledTouchEvent: " + _childHandledTouchEvent);
-		//Log.i("", _indent + "isBlockingTouchEvent: " + isBlockingTouchEvent);
-		//Log.i("", _indent + "isHandlingTouchEvent: " + isHandlingTouchEvent);
+		//Log.i(LOGTAG, _indent + "superDispatchTouchEvent: " + superDispatchTouchEvent);
+		//Log.i(LOGTAG, _indent + "_childBlockedTouchEvent: " + _childBlockedTouchEvent);
+		//Log.i(LOGTAG, _indent + "_childHandledTouchEvent: " + _childHandledTouchEvent);
+		//Log.i(LOGTAG, _indent + "isBlockingTouchEvent: " + isBlockingTouchEvent);
+		//Log.i(LOGTAG, _indent + "isHandlingTouchEvent: " + isHandlingTouchEvent);
 
 		UnoViewParent parentUnoViewGroup = getParentUnoViewGroup();
 		boolean parentIsUnoViewGroup = parentUnoViewGroup != null;
-		// Log.i("", _indent + "parentIsUnoViewGroup: " + parentIsUnoViewGroup);
+		// Log.i(LOGTAG, _indent + "parentIsUnoViewGroup: " + parentIsUnoViewGroup);
 
 		if (parentIsUnoViewGroup)
 		{
@@ -505,7 +513,7 @@ public abstract class UnoViewGroup
 
 		if (!_isPointInView && !_isPointerCaptured)
 		{
-			// Log.i("", _indent + "!isPointInView: " + !isPointInView);
+			// Log.i(LOGTAG, _indent + "!_isPointInView: " + !_isPointInView);
 			return false;
 		}
 
