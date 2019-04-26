@@ -275,6 +275,8 @@ namespace Umbrella.UI.TestComparer
             sb.AppendLine("</body></html>");
 
             File.WriteAllText(resultsFilePath, sb.ToString());
+
+			Console.WriteLine($"{platform}: {unchanged} samples unchanged, {allFiles.Length} files total.");
         }
 
         private static void WriteImage(string diffPath, byte[] diff, BitmapFrame frameInfo)
