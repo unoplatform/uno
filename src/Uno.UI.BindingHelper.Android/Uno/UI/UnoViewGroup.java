@@ -434,7 +434,7 @@ public abstract class UnoViewGroup
 				final float offsetY = getScrollY() - child.getTop();
 
 				if (transform == null || transform.isIdentity()) {
-					// No meaningful transformation on this child, instead of cloning the MetionEvent,
+					// No meaningful transformation on this child, instead of cloning the MotionEvent,
 					// we only offset the current one, propagate it to the child and then offset it back to its original values.
 
 					e.offsetLocation(offsetX, offsetY);
