@@ -65,7 +65,12 @@ namespace Uno.UI.TestComparer
 				{
 					if (Path.GetDirectoryName(file) != fullPath)
 					{
-						File.Move(file, Path.Combine(fullPath, Path.GetFileName(file)));
+						var destFileName = Path.Combine(fullPath, Path.GetFileName(file));
+
+						if (!File.Exists(destFileName))
+						{
+							File.Move(file, destFileName);
+						}
 					}
 				}
 			}
