@@ -1,5 +1,6 @@
 package Uno.UI;
 
+import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.view.*;
 import android.view.animation.Transformation;
@@ -39,6 +40,8 @@ public abstract class UnoViewGroup
 	private Map<View, Matrix> _childrenTransformations = new HashMap<View, Matrix>();
 	private float _transformedTouchX;
 	private float _transformedTouchY;
+
+	private boolean _isAnimating;
 
 	private static Method _setFrameMethod;
 
@@ -239,6 +242,10 @@ public abstract class UnoViewGroup
 		if(_textBlockLayout != null) {
 			canvas.translate(_leftTextBlockPadding, _topTextBlockPadding);
 			_textBlockLayout.draw(canvas);
+		}
+
+		if (getIsAnimating()) {
+			invalidateTransformedHierarchy();
 		}
 	}
 
@@ -884,6 +891,44 @@ public abstract class UnoViewGroup
 		return false;
 	}
 
+	public boolean getHasNonIdentityStaticTransformation() {
+		if (!(getParent() instanceof UnoViewGroup)) {
+			return false;
+		}
+
+		Matrix renderTransform = ((UnoViewGroup)getParent())._childrenTransformations.get(this);
+		return  renderTransform != null && !renderTransform.isIdentity();
+	}
+
+	/**
+	 * Invalidates all ancestor views that have a RenderTransform applied. This is necessary when animating because the hardware-accelerated
+	 * 'damage' calculation for redrawing during an animation doesn't seem to take getChildStaticTransformation() into account, causing the
+	 * transformed position not to be updated.
+	 */
+	public void invalidateTransformedHierarchy() {
+		View view = this;
+
+		while (view != null) {
+			boolean hasTransform = view instanceof UnoViewGroup && ((UnoViewGroup)view).getHasNonIdentityStaticTransformation();
+
+			ViewParent parent = view.getParent();
+			if (parent instanceof View) {
+				view = (View)parent;
+
+				if (hasTransform) {
+					// Invalidate parent of transformed view to ensure that transformed view's current location will be damaged. (Due to
+					// clipping limitations it won't be outside the parent.)
+					view.invalidate();
+					// Invalidate animating view to ensure onDraw() is called again
+					this.invalidate();
+				}
+			}
+			else {
+				view = null;
+			}
+		}
+	}
+
 	/**
 	 * Get touch coordinate transformed to a view's local space. If view is a UnoViewGroup, use already-calculated value;
 	 * interpolate offsets for any non-UnoViewGroups in the visual hierarchy, and use the raw absolute position at the
@@ -931,6 +976,14 @@ public abstract class UnoViewGroup
 
 	boolean getIsPointInView() {
 		return _isPointInView;
+	}
+
+	public boolean getIsAnimating() {
+		return _isAnimating;
+	}
+
+	public void setIsAnimating(boolean isAnimating) {
+		_isAnimating = isAnimating;
 	}
 
 	/**

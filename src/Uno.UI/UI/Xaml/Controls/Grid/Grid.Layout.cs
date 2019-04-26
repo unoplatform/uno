@@ -265,8 +265,8 @@ namespace Windows.UI.Xaml.Controls
 			foreach (var child in Children)
 			{
 				var gridPosition = childrenToPositionsMap[child];
-				var x = offset.X + calculatedPixelColumns.Slice(0, gridPosition.Column).Sum(cs => cs.MinValue);
-				var y = offset.Y + calculatedPixelRows.Slice(0, gridPosition.Row).Sum(cs => cs.MinValue);
+				var x = offset.X + calculatedPixelColumns.SliceClamped(0, gridPosition.Column).Sum(cs => cs.MinValue);
+				var y = offset.Y + calculatedPixelRows.SliceClamped(0, gridPosition.Row).Sum(cs => cs.MinValue);
 
 				Span<double> calculatedPixelColumnsMinValue = stackalloc double[calculatedPixelColumns.Length];
 				calculatedPixelColumns.SelectToSpan(calculatedPixelColumnsMinValue, cs => cs.MinValue);
@@ -805,7 +805,7 @@ namespace Windows.UI.Xaml.Controls
 
 		private static int AutoSizeCount(int index, int span, Span<GridSize> sizes)
 		{
-			return sizes.Slice(index, span).Count(s => s.IsAuto);
+			return sizes.SliceClamped(index, span).Count(s => s.IsAuto);
 		}
 
 		/// <summary>
@@ -813,7 +813,7 @@ namespace Windows.UI.Xaml.Controls
 		/// </summary>
 		private static int StarSizeComparer(int index, int span, Span<GridSize> sizes)
 		{
-			return Math.Min(1, sizes.Slice(index, span).Count(s => s.IsStarSize));
+			return Math.Min(1, sizes.SliceClamped(index, span).Count(s => s.IsStarSize));
 		}
 
 		private static bool IsPixelSize(int index, int span, Span<GridSize> sizes)

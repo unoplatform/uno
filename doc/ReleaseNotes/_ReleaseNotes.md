@@ -38,6 +38,7 @@
 * Enable support for macOS head development
 * [Wasm] Add NativeXXX styles (which are aliases to the XamlXXX styles)
 * [Wasm] Enable persistence for all ApplicationData folders
+* [Wasm] Add Samples App UI Screenshots diffing tool with previous builds
 
 ### Breaking Changes
 * The `WebAssemblyRuntime.InvokeJSUnmarshalled` method with three parameters has been removed.
@@ -70,6 +71,8 @@
 * 151656 [TimePicker][iOS] Time picker always shows +1 minute than selected value
 * 151657 [DatePicker][iOS] Date picker flyout displays 1 day earlier than selected value
 * 151430 [Android] Prevent touch event being dispatched to invisible view
+* Fixed overflow errors in Grid.Row/Column and Grid.RowSpan may fail in the Grid layouter.
+* 151547 Fix animation not applied correctly within transformed hierarchy
 
 ## Release 1.44.0
 

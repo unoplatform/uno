@@ -100,6 +100,11 @@ namespace Uno.UI.Media
 					Owner.Invalidate();
 				}
 			}
+
+			if (Owner is UnoViewGroup uvg)
+			{
+				uvg.IsAnimating = Transform.IsAnimating; 
+			}
 		}
 
 		partial void Cleanup()
