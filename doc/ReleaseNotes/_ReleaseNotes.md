@@ -71,6 +71,7 @@
 * 151656 [TimePicker][iOS] Time picker always shows +1 minute than selected value
 * 151657 [DatePicker][iOS] Date picker flyout displays 1 day earlier than selected value
 * 151547 Fix animation not applied correctly within transformed hierarchy
+* Fixed overflow errors in Grid.Row/Column and Grid.RowSpan may fail in the Grid layouter.
 
 ## Release 1.44.0
 
