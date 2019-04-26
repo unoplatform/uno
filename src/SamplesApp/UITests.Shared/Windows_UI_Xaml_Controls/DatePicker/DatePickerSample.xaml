@@ -18,8 +18,7 @@
 					<DatePicker Grid.Row="1"
 								Margin="15,10"
 								HorizontalAlignment="Center"
-								VerticalAlignment="Top"
-								FlyoutPlacement="Full">
+								VerticalAlignment="Top">
 					</DatePicker>
 				</Grid>
 			</DataTemplate>

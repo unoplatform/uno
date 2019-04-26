@@ -4,11 +4,9 @@
 
 DatePicker is use to select a specific date.
 
-*Button showing time open the time picker popup. 
-Bind to the Date property of the control to set initial time.
-*By default minute increment is set to 1
-*Cancel button cancel the new time selection. You can also click outside the time picker to do the same.
-*Done/OK button save the new selected time. 
+*Button showing date open the date picker popup. 
+*Bind to the Date property of the control to set initial time.
+*Done/OK button save the new selected date. 
 
 ### Device-specific implementation quirks
 

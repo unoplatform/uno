@@ -9,7 +9,7 @@ namespace SamplesApp.Windows_UI_Xaml_Controls.Models
 	[Bindable]
 	public class DatePickerViewModel : ViewModelBase
 	{
-		private DateTime _Date = DateTime.Now.Date;
+		private DateTime _date = DateTime.Now.Date;
 
 		public DatePickerViewModel(CoreDispatcher dispatcher) : base(dispatcher)
 		{
@@ -18,10 +18,10 @@ namespace SamplesApp.Windows_UI_Xaml_Controls.Models
 
 		public DateTime Date
 		{
-			get => _Date;
+			get => _date;
 			set
 			{
-				_Date = value;
+				_date = value;
 				RaisePropertyChanged("Date");
 			}
 		}

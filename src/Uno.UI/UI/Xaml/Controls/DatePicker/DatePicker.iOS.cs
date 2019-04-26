@@ -14,5 +14,11 @@ namespace Windows.UI.Xaml.Controls
 	public partial class DatePicker
 	{
 		public DatePicker() { }
+
+		/// <summary>
+		/// iOS-specific property that allows apps to specify any flyout placement 
+		/// (especially FlyoutPlacementMode.Full, which is commonly used on iPhone)
+		/// </summary>
+		public FlyoutPlacementMode FlyoutPlacement { get; set; }
 	}
 }
