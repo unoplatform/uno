@@ -926,6 +926,44 @@ namespace Uno.UI.Tests.GridTests
 		}
 
 		[TestMethod]
+		public void When_Row_Out_Of_Range()
+		{
+			var SUT = new Grid();
+
+			SUT.RowDefinitions.Add(new RowDefinition { Height = "5" });
+			SUT.RowDefinitions.Add(new RowDefinition { Height = "5" });
+			SUT.ColumnDefinitions.Add(new ColumnDefinition { Width = "5" });
+			SUT.ColumnDefinitions.Add(new ColumnDefinition { Width = "5" });
+
+			SUT.AddChild(new View { RequestedDesiredSize = new Windows.Foundation.Size(100, 100) });
+			SUT.AddChild(new View { RequestedDesiredSize = new Windows.Foundation.Size(100, 100) })
+				.GridRow(3);
+
+			SUT.Measure(new Windows.Foundation.Size(100, 1000));
+			var measuredSize = SUT.DesiredSize;
+			SUT.Arrange(new Windows.Foundation.Rect(0, 0, 100, 1000));
+		}
+
+		[TestMethod]
+		public void When_Column_Out_Of_Range()
+		{
+			var SUT = new Grid();
+
+			SUT.RowDefinitions.Add(new RowDefinition { Height = "5" });
+			SUT.RowDefinitions.Add(new RowDefinition { Height = "5" });
+			SUT.ColumnDefinitions.Add(new ColumnDefinition { Width = "5" });
+			SUT.ColumnDefinitions.Add(new ColumnDefinition { Width = "5" });
+
+			SUT.AddChild(new View { RequestedDesiredSize = new Windows.Foundation.Size(100, 100) });
+			SUT.AddChild(new View { RequestedDesiredSize = new Windows.Foundation.Size(100, 100) })
+				.GridColumn(3);
+
+			SUT.Measure(new Windows.Foundation.Size(100, 1000));
+			var measuredSize = SUT.DesiredSize;
+			SUT.Arrange(new Windows.Foundation.Rect(0, 0, 100, 1000));
+		}
+
+		[TestMethod]
 		public void When_RowSpan_Out_Of_Range()
 		{
 			var SUT = new Grid();
@@ -950,6 +988,24 @@ namespace Uno.UI.Tests.GridTests
 
 			SUT.ColumnDefinitions.Add(new ColumnDefinition { Width = "*" });
 			SUT.ColumnDefinitions.Add(new ColumnDefinition { Width = "*" });
+
+			SUT.AddChild(new View { RequestedDesiredSize = new Windows.Foundation.Size(100, 100) });
+			SUT.AddChild(new View { RequestedDesiredSize = new Windows.Foundation.Size(100, 100) })
+				.GridPosition(0, 1)
+				.GridColumnSpan(3);
+
+			SUT.Measure(new Windows.Foundation.Size(1000, 100));
+			var measuredSize = SUT.DesiredSize;
+			SUT.Arrange(new Windows.Foundation.Rect(0, 0, 1000, 100));
+		}
+
+		[TestMethod]
+		public void When_ColumnSpan_With_AutoColumn_Out_Of_Range()
+		{
+			var SUT = new Grid();
+
+			SUT.ColumnDefinitions.Add(new ColumnDefinition { Width = "*" });
+			SUT.ColumnDefinitions.Add(new ColumnDefinition { Width = "auto" });
 
 			SUT.AddChild(new View { RequestedDesiredSize = new Windows.Foundation.Size(100, 100) });
 			SUT.AddChild(new View { RequestedDesiredSize = new Windows.Foundation.Size(100, 100) })
