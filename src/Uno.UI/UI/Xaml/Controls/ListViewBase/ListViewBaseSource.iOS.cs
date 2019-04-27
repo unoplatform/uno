@@ -226,7 +226,9 @@ namespace Windows.UI.Xaml.Controls
 						}
 
 						FrameworkElement.InitializePhaseBinding(selectorItem);
-					}
+                        //Fix ListViewItem cannot find parent in iOS mode
+                        selectorItem.SetParent(Owner?.XamlParent);
+                    }
 					else if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
 					{
 						this.Log().Debug($"Reusing view at indexPath={indexPath}, previously bound to {selectorItem.DataContext}.");
