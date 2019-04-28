@@ -18,6 +18,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)ListViewBindingPage.xaml.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
@@ -27,6 +28,10 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Page Include="$(MSBuildThisFileDirectory)ListViewBindingPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="$(MSBuildThisFileDirectory)MainPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -61,6 +66,9 @@
   <ItemGroup>
     <Compile Update="C:\src\Uno\src\SamplesApp\SamplesApp.Shared\Samples\UnitTests\HttpUnitTests.xaml.cs">
       <DependentUpon>HttpUnitTests.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="C:\Users\w4384\source\repos\Uno\src\SamplesApp\SamplesApp.Shared\ListViewBindingPage.xaml.cs">
+      <DependentUpon>ListViewBindingPage.xaml</DependentUpon>
     </Compile>
   </ItemGroup>
 </Project>
