@@ -2,7 +2,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.ApplicationModel.Chat
 {
-	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+	#if false || false || false || false || false
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class ChatMessage : global::Windows.ApplicationModel.Chat.IChatItem
@@ -87,20 +87,7 @@ namespace Windows.ApplicationModel.Chat
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  string Body
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string ChatMessage.Body is not implemented in Uno.");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Chat.ChatMessage", "string ChatMessage.Body");
-			}
-		}
-		#endif
+		// Skipping already declared property Body
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  string Subject
@@ -167,16 +154,7 @@ namespace Windows.ApplicationModel.Chat
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  global::System.Collections.Generic.IList<string> Recipients
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member IList<string> ChatMessage.Recipients is not implemented in Uno.");
-			}
-		}
-		#endif
+		// Skipping already declared property Recipients
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  string TransportFriendlyName
@@ -377,13 +355,7 @@ namespace Windows.ApplicationModel.Chat
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public ChatMessage() 
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Chat.ChatMessage", "ChatMessage.ChatMessage()");
-		}
-		#endif
+		// Skipping already declared method Windows.ApplicationModel.Chat.ChatMessage.ChatMessage()
 		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessage.ChatMessage()
 		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessage.Attachments.get
 		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessage.Body.get
