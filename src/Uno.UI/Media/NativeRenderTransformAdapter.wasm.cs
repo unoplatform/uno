@@ -10,6 +10,9 @@ namespace Uno.UI.Media
 	{
 		partial void Initialized()
 		{
+			// Apply the transform as soon as its been declared
+			Update();
+
 			// On WASM Transform are applied by default on the center on the view
 			// so make sure to reset it when the transform is attached to the view
 			Apply(isSizeChanged: false, isOriginChanged: true);
