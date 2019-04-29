@@ -22,6 +22,9 @@ namespace Uno.UI.Tests.Windows_UI_XAML_Controls.SelectorTests
 
 			SUT.SelectedIndex = 1;
 			Assert.AreEqual(2, SUT.SelectedValue);
+
+			SUT.SelectedIndex = -1;
+			Assert.AreEqual(null, SUT.SelectedValue);
 		}
 
 		[TestMethod]
@@ -36,6 +39,9 @@ namespace Uno.UI.Tests.Windows_UI_XAML_Controls.SelectorTests
 
 			SUT.SelectedIndex = 1;
 			Assert.AreEqual("2", SUT.SelectedValue);
+
+			SUT.SelectedIndex = -1;
+			Assert.AreEqual(null, SUT.SelectedValue);
 		}
 
 		[TestMethod]
@@ -67,8 +73,8 @@ namespace Uno.UI.Tests.Windows_UI_XAML_Controls.SelectorTests
 			SUT.SelectedIndex = 0;
 			Assert.AreEqual(items[0], SUT.SelectedValue);
 
-			SUT.SelectedValuePath = "Item42";
-			Assert.IsNull(SUT.SelectedValue);
+			//SUT.SelectedValuePath = "Item42";
+			//Assert.IsNull(SUT.SelectedValue);
 
 			SUT.SelectedValuePath = "Item2";
 			Assert.AreEqual(1, SUT.SelectedValue);
@@ -88,6 +94,7 @@ namespace Uno.UI.Tests.Windows_UI_XAML_Controls.SelectorTests
 			Assert.AreEqual(items[0], SUT.SelectedValue);
 
 			SUT.SelectedValuePath = "Item2";
+			SUT.SelectedIndex = 0;
 			Assert.AreEqual(1, SUT.SelectedValue);
 		}
 
@@ -109,6 +116,31 @@ namespace Uno.UI.Tests.Windows_UI_XAML_Controls.SelectorTests
 
 			SUT.SelectedIndex = 1;
 			Assert.AreEqual("22", SUT.SelectedValue);
+
+			SUT.SelectedIndex = -1;
+			Assert.AreEqual(null, SUT.SelectedValue);
+		}
+
+		[TestMethod]
+		public void When_SelectedValue_Is_Set()
+		{
+			var SUT = new Selector();
+
+			SUT.ItemsSource = new[] {
+				"item 0",
+				"item 1",
+				"item 2",
+				"item 3",
+				"item 4"
+			};
+
+			Assert.AreEqual(-1, SUT.SelectedIndex);
+
+			SUT.SelectedValue = "item 3";
+			Assert.AreEqual(3, SUT.SelectedIndex);
+
+			SUT.SelectedValue = null;
+			Assert.AreEqual(-1, SUT.SelectedIndex);
 		}
 	}
 }

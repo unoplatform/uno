@@ -293,6 +293,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ComboBox\ComboBox_SelectedIndex.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\CommandBar\BackGesture\BackGesture_Chooser.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -1708,6 +1712,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\Button\Radio_Button.xaml.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\Button\Simple_Button.xaml.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\Button\Simple_Button_With_CanExecute_Changing.xaml.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ComboBox\ComboBox_SelectedIndex.xaml.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\CommandBar\BackGesture\BackGesture_Chooser.xaml.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\CommandBar\BackGesture\BackGesture_Collapsed.xaml.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\CommandBar\BackGesture\BackGesture_CollapsedNavigationCommand.xaml.cs" />
@@ -2649,6 +2654,9 @@
     </Compile>
     <Compile Update="C:\src\Uno\src\SamplesApp\UITests.Shared\Lottie\SampleLottieAnimation.xaml.cs">
       <DependentUpon>SampleLottieAnimation.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="C:\src\Uno\src\SamplesApp\UITests.Shared\Windows_UI_Xaml_Controls\ComboBox\ComboBox_SelectedIndex.xaml.cs">
+      <DependentUpon>ComboBox_SelectedIndex.xaml</DependentUpon>
     </Compile>
     <Compile Update="C:\src\Uno\src\SamplesApp\UITests.Shared\Windows_UI_Xaml_Controls\TextBlockControl\Attributed_text_FontSize_Changing.xaml.cs">
       <DependentUpon>Attributed_text_FontSize_Changing.xaml</DependentUpon>

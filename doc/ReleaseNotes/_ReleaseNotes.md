@@ -74,6 +74,7 @@
 * 151430 [Android] Prevent touch event being dispatched to invisible view
 * Fixed overflow errors in Grid.Row/Column and Grid.RowSpan may fail in the Grid layouter.
 * 151547 Fix animation not applied correctly within transformed hierarchy
+* Setting the `.SelectedValue` on a `Selector` now update the selection and the index
 
 ## Release 1.44.0
 
