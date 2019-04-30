@@ -35,7 +35,7 @@ namespace Uno.UI.TestComparer
 
 			var client = await connection.GetClientAsync<BuildHttpClient>();
 
-			Console.WriteLine("Getting definitions");
+			Console.WriteLine($"Getting definitions ({basePath}, {project}, {definitionName}, {artifactName}, {branchName}, {buildId}, {runLimit})");
 			var definitions = await client.GetDefinitionsAsync(project, name: definitionName);
 
 			Console.WriteLine("Getting builds");

@@ -76,7 +76,7 @@ jobs:
       createLogFile: false
 
   - script: |
-      src\Uno.UI.TestComparer\bin\Release\net461\Uno.UI.TestComparer.exe "azdo" "$(UITestsCompare_PAT)" "$(build.artifactstagingdirectory)" "$(SYSTEM_PULLREQUEST_TARGETBRANCH)" "wasm-uitests" "$(Build.DefinitionName)" "$(System.TeamProject)" "$(System.TeamFoundationCollectionUri)" "$(Build.BuildId)" "2"
+      src\Uno.UI.TestComparer\bin\Release\net461\Uno.UI.TestComparer.exe "azdo" "$(UITestsCompare_PAT)" "$(build.artifactstagingdirectory)" "$(SYSTEM_PULLREQUEST_TARGETBRANCH)" "wasm-uitests" "$(Build.DefinitionName)" "$(System.TeamProject)" "$(System.TeamFoundationCollectionUri)" "$(Build.BuildId)" "3"
       
     env:
       SYSTEM_PULLREQUEST_TARGETBRANCH: $(System.PullRequest.TargetBranch)
