@@ -109,7 +109,7 @@ namespace SamplesApp.Windows_UI_Xaml_Controls.Models
 		/// <returns></returns>
 		private IObservable<IEnumerable<IGrouping<string, string>>> GetChangingGroupedSampleItems()
 		{
-			return null;
+			throw new NotImplementedException();
 
 			//return Observable.Interval(TimeSpan.FromSeconds(3), Schedulers.Default)
 			//	.Select((i) =>
@@ -128,7 +128,7 @@ namespace SamplesApp.Windows_UI_Xaml_Controls.Models
 
 		private IObservable<long[]> GetChangingIntArray()
 		{
-			return null;
+			throw new NotImplementedException();
 
 			//var baseArray = new[] { 1, 2, 3, 4 };
 			//return Observable.Interval(TimeSpan.FromSeconds(1), Schedulers.Default)
@@ -137,22 +137,16 @@ namespace SamplesApp.Windows_UI_Xaml_Controls.Models
 
 		private static IEnumerable<IGrouping<string, string>> GetTownsGroupedAlphabetically()
 		{
-			var grouped = SampleTowns.GroupBy(s => s[0].ToString());
-			var keys = grouped.Select(g => g.Key).ToList();
-
-			foreach (var letter in _alphabet)
-			{
-				if (!keys.Contains(letter))
-				{
-					grouped = grouped.Concat(new EmptyGroup<string, string>(letter));
-				}
-			}
-
-			//Empty groups at start of list
-			grouped = grouped.Concat(new EmptyGroup<string, string>("1"));
-			grouped = grouped.Concat(new EmptyGroup<string, string>("2"));
-
-			return grouped.OrderBy(g => g.Key).ToList();
+			return Enumerable.Range(1, 2)
+				.Select(x => new EmptyGroup<string, string>(x.ToString()))
+				.Concat(
+					// left join
+					from letter in _alphabet
+					join g in SampleTowns.GroupBy(x => x.Substring(0, 1))
+						on letter equals g.Key into groupedTowns
+					select groupedTowns.FirstOrDefault() ?? new EmptyGroup<string, string>(letter)
+				)
+				.ToList();
 		}
 
 		private static IEnumerable<IGrouping<string, string>> GetAllEmptyGroups()
