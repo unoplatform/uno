@@ -41,7 +41,7 @@ h3 {
     margin-top: 120px;
     margin-right: 0;
 
-    @media only screen and (max-width: 768px) {
+    @media only screen and (max-width: 767px) {
         margin-top: 180px !important;
     }
 }
@@ -77,7 +77,7 @@ h3 {
 }
 
 .sidenav {
-    @media only screen and (max-width: 768px) {
+    @media only screen and (max-width: 767px) {
         position: fixed;
         top: 116px;
         width: 100%;
@@ -92,14 +92,14 @@ h3 {
         background: none;
         padding: 0;
         margin: 0;
-        margin-top: 28px;
 
-        &:hover {
+        &:hover,
+        &:focus {
             background: none;
         }
 
         .icon-bar {
-            background: #fff;
+            background: $dgray;
             width: 20px;
         }
 
@@ -112,14 +112,32 @@ h3 {
                 background: $purple;
             }
         }
+        @media (max-width: 767px) {
+            margin-top: 12px;
+        }
+    }
+
+    @media (max-width: 767px) {
+        display: inline-block;
+        vertical-align: middle;
+        width: 100%;
+        line-height: auto;
     }
 }
 
 .navbar:first-child {
     padding: 0 25px;
-    height: 75px;
-    background: $dgray;
+    min-height: 75px;
+    line-height: 75px;
+    vertical-align: middle;
+    background: #ffffff;
     position: fixed;
+    @media screen and(min-width: 768px) {
+        line-height: auto;
+        display: flex;
+        align-items: center;
+        height: 75px;
+    }
     top: 0;
     width: 100%;
     border: none;
@@ -127,7 +145,12 @@ h3 {
 
     #logo {
         width: 43px;
-        margin-top: 16px;
+        margin-top: 0;
+        vertical-align: middle;
+    }
+
+    .navbar-brand {
+        height: auto;
     }
 }
 
@@ -139,23 +162,25 @@ h3 {
 }
 
 #navbar {
-    float: right;
-    padding: 15px 0;
     margin: 0;
+    margin-left: auto;
+    padding: 15px 0;
 
     .level1 {
         li {
             padding: 0;
+            display: inline-block;
+            float: none;
         }
 
         a {
             padding: 0 16px;
-            font-weight: 700;
+            font-weight: 600;
             height: 43px;
             line-height: 43px;
             font-size: 14px;
             text-transform: uppercase;
-            color: #fff;
+            color: #3a3a3a;
             border-bottom: 2px solid transparent;
             transition: color 0.2s ease-in-out,
                 background-color 0.2s ease-in-out, border-color 0.2s ease-in-out;
@@ -194,14 +219,22 @@ h3 {
             transition-property: color, background-color, border-color;
             transition-timing-function: ease-in-out, ease-in-out, ease-in-out;
             width: auto;
+
+            @media (max-width: 990px) {
+                display: none;
+            }
         }
+    }
+
+    @media screen and (min-width: 768px) {
+        display: inline-flex;
     }
 
     @media (max-width: 767px) {
         position: fixed;
         top: 75px;
         left: 0;
-        background: $dgray;
+        background: #ffffff;
         width: 100%;
         margin: 0;
         border: none;
@@ -215,6 +248,7 @@ h3 {
             padding-bottom: 10px;
 
             li {
+                display: block;
                 padding: 0;
             }
 
@@ -231,7 +265,12 @@ h3 {
 
                 &:hover {
                     background: $purple;
+                    color: #fff;
                 }
+            }
+
+            a[title='Get Started'] {
+                display: none;
             }
         }
     }
@@ -256,8 +295,23 @@ h3 {
         background: none;
         transition: background-color 0.2s ease-in-out;
 
+        #navbar .level1 li a:not([title='Get Started']) {
+            color: #ffffff;
+        }
+
+        .navbar-toggle .icon-bar {
+            background: #ffffff;
+        }
+
         &.scrolled {
-            background: #111;
+            background: #ffffff;
+            #navbar .level1 li a:not([title='Get Started']) {
+                color: $dgray;
+            }
+
+            .navbar-toggle .icon-bar {
+                background: $dgray;
+            }
         }
     }
 
@@ -375,7 +429,7 @@ h3 {
         .headerbox {
             margin-bottom: 30px;
 
-            @media (min-width: 992px) {
+            @media (min-width: 768px) {
                 width: 49%;
             }
         }
