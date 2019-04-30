@@ -3,11 +3,21 @@
 $blue: #159bff;
 $purple: #7a67f8;
 $turquoise: #66e4a8;
-$dgray: #242424;
+$dgray: #242424; 
 
 body {
     font-family: 'Open Sans', sans-serif;
     color: $dgray;
+}
+
+.row {
+    &:before {
+        content: none;
+    }
+
+    &:after {
+        content: '';
+    }
 }
 
 a {

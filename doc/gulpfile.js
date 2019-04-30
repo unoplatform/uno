@@ -1,11 +1,10 @@
 var gulp = require('gulp'),
 	autoprefixer = require('gulp-autoprefixer'),
-	livereload = require('gulp-livereload'),
 	notify = require('gulp-notify'),
 	sass = require('gulp-sass'),
 	gulpif = require('gulp-if'),
 	sassLint = require('gulp-sass-lint'),
-	serve = require('gulp-serve'),
+	browserSync = require('browser-sync').create(),
 	sourcemaps = require('gulp-sourcemaps'),
 	exec = require('child_process').exec;
 
@@ -34,17 +33,16 @@ gulp.task('styles', function () {
 		.pipe(autoprefixer({ browsers: ['last 2 versions', '> 5%'] }))
 		.pipe(gulpif(debug, sourcemaps.write()))
 		.pipe(gulp.dest(assets + '/styles'))
-		.pipe(livereload())
 		.pipe(notify({ message: 'CSS complete' }));
 });
 
 gulp.task('watch', function () {
-	livereload.listen();
 
 	gulp.watch(
 		[assets + '/styles/scss/**/*.scss', assets + '/styles/scss/**/*.sass'],
 		['styles', 'build']
 	).on('change', function (event) {
+		browserSync.reload();
 		console.log(
 			'File ' +
 			event.path +
@@ -64,7 +62,14 @@ gulp.task('debug', function () {
 	gulp.start('styles');
 });
 
-gulp.task('serve', serve('_site'));
+gulp.task('serve', function() {
+	browserSync.init({
+			server: {
+					baseDir: "./_site"
+			},
+			// host: " 172.20.8.240" replace by your current ip to test on another device.
+	});
+});
 
 gulp.task('build', function (cb) {
 	exec('docfx build', function (err, stdout, stderr) {
