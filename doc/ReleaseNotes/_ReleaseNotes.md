@@ -75,6 +75,7 @@
 * Fixed overflow errors in Grid.Row/Column and Grid.RowSpan may fail in the Grid layouter.
 * 151547 Fix animation not applied correctly within transformed hierarchy
 * Setting the `.SelectedValue` on a `Selector` now update the selection and the index
+* [WASM] Fix ListView contents not remeasuring when ItemsSource changes.
 
 ## Release 1.44.0
 
