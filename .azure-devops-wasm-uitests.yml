@@ -47,42 +47,43 @@ jobs:
       ArtifactName: wasm-uitests
       ArtifactType: Container
 
-# - job: Wasm_UITests_Compare
-#   dependsOn: Wasm_UITests
-# 
-#   pool:
-#     vmImage: 'vs2017-win2016'
-# 
-#   steps:
-#   - checkout: self
-#     clean: true
-# 
-#   - task: NuGetToolInstaller@0
-#     inputs:
-#       versionSpec: 4.9.1
-#       checkLatest: false
-# 
-#   - task: MSBuild@1
-#     inputs:
-#       solution: src/Uno.UI.TestComparer/Uno.UI.TestComparer.csproj
-#       msbuildLocationMethod: version
-#       msbuildVersion: latest
-#       msbuildArchitecture: x86
-#       msbuildArguments: /r "/p:Configuration=Release"
-#       clean: false
-#       maximumCpuCount: true
-#       restoreNugetPackages: false
-#       logProjectEvents: false
-#       createLogFile: false
-# 
-#   - script: |
-#       src\Uno.UI.TestComparer\bin\Release\net461\Uno.UI.TestComparer.exe "azdo" "$(UITestsCompare_PAT)" "$(build.artifactstagingdirectory)" "%SYSTEM_PULLREQUEST_TARGETBRANCH%" "wasm-uitests" "$(Build.DefinitionName)" "$(System.TeamProject)" "$(System.TeamFoundationCollectionUri)" "$(Build.BuildId)" "10"
-# 
-#     displayName: 'Compare UI Tests screenshots'
-# 
-#   - task: PublishBuildArtifacts@1
-#     inputs:
-#       PathtoPublish: $(build.artifactstagingdirectory)
-#       ArtifactName: wasm-uitests
-#       ArtifactType: Container
-# 
+- job: Wasm_UITests_Compare
+  dependsOn: Wasm_UITests
+
+  pool:
+    vmImage: 'vs2017-win2016'
+
+  steps:
+  - checkout: self
+    clean: true
+
+  - task: NuGetToolInstaller@0
+    inputs:
+      versionSpec: 4.9.1
+      checkLatest: false
+
+  - task: MSBuild@1
+    inputs:
+      solution: src/Uno.UI.TestComparer/Uno.UI.TestComparer.csproj
+      msbuildLocationMethod: version
+      msbuildVersion: latest
+      msbuildArchitecture: x86
+      msbuildArguments: /r "/p:Configuration=Release"
+      clean: false
+      maximumCpuCount: true
+      restoreNugetPackages: false
+      logProjectEvents: false
+      createLogFile: false
+
+  - script: |
+      src\Uno.UI.TestComparer\bin\Release\net461\Uno.UI.TestComparer.exe "azdo" "$(UITestsCompare_PAT)" "$(build.artifactstagingdirectory)" "$(SYSTEM_PULLREQUEST_TARGETBRANCH)" "wasm-uitests" "$(Build.DefinitionName)" "$(System.TeamProject)" "$(System.TeamFoundationCollectionUri)" "$(Build.BuildId)" "2"
+      
+    env:
+      SYSTEM_PULLREQUEST_TARGETBRANCH: $(System.PullRequest.TargetBranch)
+    displayName: 'Compare UI Tests screenshots'
+
+  - task: PublishBuildArtifacts@1
+    inputs:
+      PathtoPublish: $(build.artifactstagingdirectory)
+      ArtifactName: wasm-uitests-compare-results
+      ArtifactType: Container
