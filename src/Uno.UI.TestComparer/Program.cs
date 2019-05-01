@@ -36,16 +36,17 @@ namespace Umbrella.UI.TestComparer
 			{
 				var pat = args[1];
 				var basePath = args[2];
-				var targetBranch = !string.IsNullOrEmpty(args[3]) ? args[3] : "refs/heads/master";		// System.PullRequest.TargetBranch	
-				var artifactName = args[4]; 
-				var definitionName = args[5];	// Build.DefinitionName
-				var projectName = args[6];      // System.TeamProject
-				var serverUri = args[7];        // System.TeamFoundationCollectionUri
-				var currentBuild = int.Parse(args[8]);     // Build.BuildId
-				var runLimit = int.Parse(args[9]);
+				var sourceBranch = args[3];      // Build.SourceBranchName	
+				var targetBranch = !string.IsNullOrEmpty(args[4]) && args[4] != "$GIT_TARGETBRANCH" ? args[4] : sourceBranch;      // System.PullRequest.TargetBranch	
+				var artifactName = args[5]; 
+				var definitionName = args[6];	// Build.DefinitionName
+				var projectName = args[7];      // System.TeamProject
+				var serverUri = args[8];        // System.TeamFoundationCollectionUri
+				var currentBuild = int.Parse(args[9]);     // Build.BuildId
+				var runLimit = int.Parse(args[10]);
 
 				var downloader = new AzureDevopsDownloader(pat, serverUri);
-				downloader.DownloadArtifacts(Path.Combine(basePath, "wasm"), projectName, definitionName, artifactName, targetBranch, currentBuild, runLimit).Wait();
+				downloader.DownloadArtifacts(Path.Combine(basePath, "wasm"), projectName, definitionName, artifactName, sourceBranch, targetBranch, currentBuild, runLimit).Wait();
 
 				ProcessFiles(args, basePath, "wasm");
 			}
