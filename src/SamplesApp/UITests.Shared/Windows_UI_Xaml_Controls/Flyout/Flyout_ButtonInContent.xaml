@@ -29,6 +29,10 @@
 							<Rectangle Fill="Black" Height="4" />
 
 							<ToggleButton Content="Toggle Here" />
+							<TextBlock>
+								Clicking here should
+								not close the flyout
+							</TextBlock>
 						</StackPanel>
 					</Flyout>
 				</Button.Flyout>
