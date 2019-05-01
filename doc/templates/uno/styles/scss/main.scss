@@ -1,19 +1,30 @@
-@import url(https://fonts.googleapis.com/css?family=Open+Sans:500,600,700,800,400italic,700italic,400);
+@import url('https://fonts.googleapis.com/css?family=Open+Sans:500,600,700,800,400italic,700italic,400');
 
 $blue: #159bff;
 $purple: #7a67f8;
 $turquoise: #66e4a8;
-$dgray: #242424;
+$dgray: #242424; 
 
 body {
     font-family: 'Open Sans', sans-serif;
     color: $dgray;
 }
 
+.row {
+    &:before {
+        content: none;
+    }
+
+    &:after {
+        content: '';
+    }
+}
+
 a {
     color: $blue;
 
-    &:hover, &:active {
+    &:hover,
+    &:active {
         color: $dgray;
     }
 }
@@ -40,7 +51,7 @@ h3 {
     margin-top: 120px;
     margin-right: 0;
 
-    @media only screen and (max-width: 768px) {
+    @media only screen and (max-width: 767px) {
         margin-top: 180px !important;
     }
 }
@@ -55,26 +66,28 @@ h3 {
     .nav > li.active > a {
         color: $purple;
 
-        &:hover { color: #000; }
+        &:hover {
+            color: #000;
+        }
     }
 
     .toc {
-
         @media only screen and (max-width: 768px) {
             margin-left: 0;
 
             ul {
                 margin: 0;
 
-                li a { margin: 0; }
+                li a {
+                    margin: 0;
+                }
             }
         }
     }
 }
 
 .sidenav {
-
-    @media only screen and (max-width: 768px) {
+    @media only screen and (max-width: 767px) {
         position: fixed;
         top: 116px;
         width: 100%;
@@ -83,42 +96,58 @@ h3 {
 }
 
 .navbar-header {
-
     .navbar-toggle {
         border: none;
         height: 18px;
         background: none;
         padding: 0;
         margin: 0;
-        margin-top: 28px;
 
-        &:hover {
+        &:hover,
+        &:focus {
             background: none;
         }
 
         .icon-bar {
-            background: #fff;
+            background: $dgray;
             width: 20px;
         }
 
-        .icon-bar+.icon-bar {
+        .icon-bar + .icon-bar {
             margin-top: 3px;
         }
 
-        &[aria-expanded="true"] {
-
+        &[aria-expanded='true'] {
             .icon-bar {
                 background: $purple;
             }
         }
+        @media (max-width: 767px) {
+            margin-top: 12px;
+        }
+    }
+
+    @media (max-width: 767px) {
+        display: inline-block;
+        vertical-align: middle;
+        width: 100%;
+        line-height: auto;
     }
 }
 
 .navbar:first-child {
     padding: 0 25px;
-    height: 75px;
-    background: $dgray;
+    min-height: 75px;
+    line-height: 75px;
+    vertical-align: middle;
+    background: #ffffff;
     position: fixed;
+    @media screen and(min-width: 768px) {
+        line-height: auto;
+        display: flex;
+        align-items: center;
+        height: 75px;
+    }
     top: 0;
     width: 100%;
     border: none;
@@ -126,7 +155,12 @@ h3 {
 
     #logo {
         width: 43px;
-        margin-top: 16px;
+        margin-top: 0;
+        vertical-align: middle;
+    }
+
+    .navbar-brand {
+        height: auto;
     }
 }
 
@@ -138,37 +172,79 @@ h3 {
 }
 
 #navbar {
-    float: right;
+    margin: 0;
+    margin-left: auto;
     padding: 15px 0;
 
     .level1 {
-
         li {
-            padding: 0 15px;
+            padding: 0;
+            display: inline-block;
+            float: none;
         }
 
         a {
+            padding: 0 16px;
+            font-weight: 600;
             height: 43px;
             line-height: 43px;
-            font-size: 15px;
+            font-size: 14px;
             text-transform: uppercase;
-            color: #fff;
-            padding: 0;
+            color: #3a3a3a;
             border-bottom: 2px solid transparent;
-            transition: color .2s ease-in-out,background-color .2s ease-in-out,border-color .2s ease-in-out;
+            transition: color 0.2s ease-in-out,
+                background-color 0.2s ease-in-out, border-color 0.2s ease-in-out;
         }
 
-        a:hover, .active a, [title="Docs"] {
+        a:hover,
+        .active a {
             background: none;
             border-color: $purple;
         }
+
+        a[title='Get Started'] {
+            background-color: rgb(122, 103, 248);
+            border: 0;
+            border-radius: 8px;
+            box-sizing: content-box;
+            color: rgb(255, 255, 255);
+            cursor: pointer;
+            display: inline-block;
+            font-family: 'Open Sans', sans-serif;
+            font-size: 18px;
+            font-weight: 700;
+            height: 27px;
+            letter-spacing: 0.3px;
+            line-height: 27px;
+            margin-bottom: 0px;
+            margin-left: 44px;
+            padding-bottom: 8px;
+            padding-left: 32px;
+            padding-right: 32px;
+            padding-top: 8px;
+            text-align: center;
+            text-transform: none;
+            transition-delay: 0s, 0s, 0s;
+            transition-duration: 0.2s, 0.2s, 0.2s;
+            transition-property: color, background-color, border-color;
+            transition-timing-function: ease-in-out, ease-in-out, ease-in-out;
+            width: auto;
+
+            @media (max-width: 990px) {
+                display: none;
+            }
+        }
+    }
+
+    @media screen and (min-width: 768px) {
+        display: inline-flex;
     }
 
     @media (max-width: 767px) {
         position: fixed;
         top: 75px;
         left: 0;
-        background: $dgray;
+        background: #ffffff;
         width: 100%;
         margin: 0;
         border: none;
@@ -181,7 +257,10 @@ h3 {
             margin: 0;
             padding-bottom: 10px;
 
-            li { padding: 0; }
+            li {
+                display: block;
+                padding: 0;
+            }
 
             a {
                 display: block;
@@ -196,30 +275,53 @@ h3 {
 
                 &:hover {
                     background: $purple;
+                    color: #fff;
                 }
+            }
+
+            a[title='Get Started'] {
+                display: none;
             }
         }
     }
 }
 
 .front-page {
-
-    article section { margin-left: auto; }
+    article section {
+        margin-left: auto;
+    }
 
     p {
         margin: 20px auto;
     }
 
-    .subnav, .sideaffix, .footer {
+    .subnav,
+    .sideaffix,
+    .footer {
         display: none;
     }
 
     .navbar:first-child {
         background: none;
-        transition: background-color .2s ease-in-out;
+        transition: background-color 0.2s ease-in-out;
+
+        #navbar .level1 li a:not([title='Get Started']) {
+            color: #ffffff;
+        }
+
+        .navbar-toggle .icon-bar {
+            background: #ffffff;
+        }
 
         &.scrolled {
-            background: #111;
+            background: #ffffff;
+            #navbar .level1 li a:not([title='Get Started']) {
+                color: $dgray;
+            }
+
+            .navbar-toggle .icon-bar {
+                background: $dgray;
+            }
         }
     }
 
@@ -229,9 +331,9 @@ h3 {
         overflow: hidden;
 
         .article {
-            margin: 0!important;
+            margin: 0 !important;
 
-            & > [class*="col"] {
+            & > [class*='col'] {
                 width: auto;
                 padding: 0;
                 float: none;
@@ -249,7 +351,8 @@ h3 {
             font-weight: bold;
             box-shadow: 0 2px 4px 0 rgba(31, 31, 31, 0.25);
             border-radius: 20px;
-            transition: color .2s ease-in-out,background-color .2s ease-in-out;
+            transition: color 0.2s ease-in-out,
+                background-color 0.2s ease-in-out;
         }
 
         &.white a {
@@ -279,12 +382,13 @@ h3 {
         text-align: center;
         font-size: 18px;
         position: relative;
-        
+
         & > * {
             position: relative;
         }
-        
-        &:before, &:after {
+
+        &:before,
+        &:after {
             content: '';
             position: absolute;
             top: 0;
@@ -296,7 +400,7 @@ h3 {
             left: 0;
             background: url('../images/uno-bg-left.png') no-repeat left bottom;
         }
-        
+
         &:after {
             right: 0;
             background: url('../images/uno-bg-right.png') no-repeat right top;
@@ -335,7 +439,7 @@ h3 {
         .headerbox {
             margin-bottom: 30px;
 
-            @media (min-width: 992px) {
+            @media (min-width: 768px) {
                 width: 49%;
             }
         }
@@ -352,7 +456,7 @@ h3 {
             font-size: 30px;
             font-weight: 800;
             text-transform: uppercase;
-            
+
             .anchorjs-link {
                 display: none;
             }
