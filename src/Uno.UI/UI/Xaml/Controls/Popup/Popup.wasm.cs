@@ -61,23 +61,36 @@ namespace Windows.UI.Xaml.Controls
 				}
 			}
 
+			bool pressed = false;
+
 			if (previousPanel != null)
 			{
-				previousPanel.PointerPressed -= Panel_PointerPressed;
+				previousPanel.PointerPressed -= pointerPressed;
+				previousPanel.PointerReleased -= pointerReleased;
 			}
 			if (newPanel != null)
 			{
-				newPanel.PointerPressed += Panel_PointerPressed;
+				newPanel.PointerPressed += pointerPressed;
+				newPanel.PointerReleased += pointerReleased;
 			}
-		}
 
-		private void Panel_PointerPressed(object sender, Input.PointerRoutedEventArgs e)
-		{
-			if (IsLightDismissEnabled)
+			void pointerPressed(object sender, Input.PointerRoutedEventArgs args)
 			{
-				IsOpen = false;
+				// Both pressed & released must reach
+				// the popup to close it.
+				// (and, obviously, the popup must be light dismiss!)
+				pressed = IsLightDismissEnabled;
+			}
+
+			void pointerReleased(object sender, Input.PointerRoutedEventArgs args)
+			{
+				if (pressed && IsLightDismissEnabled)
+				{
+					// Received the completed sequence
+					// pressed + released: we can close.
+					IsOpen = false;
+				}
 			}
 		}
-
 	}
 }
