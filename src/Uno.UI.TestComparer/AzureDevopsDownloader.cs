@@ -27,7 +27,7 @@ namespace Uno.UI.TestComparer
 			_collectionUri = collectionUri;
 		}
 
-		public async Task DownloadArtifacts(string basePath, string project, string definitionName, string artifactName, string sourceBranch, string branchName, int buildId, int runLimit)
+		public async Task DownloadArtifacts(string basePath, string project, string definitionName, string artifactName, string sourceBranch, string targetBranchName, int buildId, int runLimit)
 		{
 			Directory.CreateDirectory(basePath);
 
@@ -35,15 +35,20 @@ namespace Uno.UI.TestComparer
 
 			var client = await connection.GetClientAsync<BuildHttpClient>();
 
-			Console.WriteLine($"Getting definitions ({basePath}, {project}, {definitionName}, {artifactName}, {sourceBranch}, {branchName}, {buildId}, {runLimit})");
+			if (!targetBranchName.StartsWith("refs/heads/"))
+			{
+				targetBranchName = "refs/heads/" + targetBranchName;
+			}
+
+			Console.WriteLine($"Getting definitions ({basePath}, {project}, {definitionName}, {artifactName}, {sourceBranch}, {targetBranchName}, {buildId}, {runLimit})");
 			var definitions = await client.GetDefinitionsAsync(project, name: definitionName);
 
 			Console.WriteLine("Getting builds");
-			var builds = await client.GetBuildsAsync(project, definitions: new[] { definitions.First().Id }, branchName: branchName, top: runLimit, queryOrder: BuildQueryOrder.FinishTimeDescending, statusFilter: BuildStatus.Completed);
+			var builds = await client.GetBuildsAsync(project, definitions: new[] { definitions.First().Id }, branchName: targetBranchName, top: runLimit, queryOrder: BuildQueryOrder.FinishTimeDescending, statusFilter: BuildStatus.Completed);
 
 			var currentBuild = await client.GetBuildAsync(project, buildId);
 
-			foreach (var build in builds.Concat(new[] { currentBuild }))
+			foreach (var build in builds.Concat(new[] { currentBuild }).Distinct(new BuildComparer()))
 			{
 				var tempFile = Path.GetTempFileName();
 
@@ -75,5 +80,12 @@ namespace Uno.UI.TestComparer
 				}
 			}
 		}
+
+		private class BuildComparer : IEqualityComparer<Build>
+		{
+			public bool Equals(Build x, Build y) => x.Id == y.Id;
+			public int GetHashCode(Build obj) => obj.Id.GetHashCode();
+		}
+
 	}
 }

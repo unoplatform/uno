@@ -37,7 +37,7 @@ namespace Umbrella.UI.TestComparer
 				var pat = args[1];
 				var basePath = args[2];
 				var sourceBranch = args[3];      // Build.SourceBranchName	
-				var targetBranch = !string.IsNullOrEmpty(args[4]) && args[4] != "$GIT_TARGETBRANCH" ? args[4] : sourceBranch;      // System.PullRequest.TargetBranch	
+				var targetBranch = !string.IsNullOrEmpty(args[4]) && args[4] != "$(System.PullRequest.TargetBranch)" ? args[4] : sourceBranch;      // System.PullRequest.TargetBranch	
 				var artifactName = args[5]; 
 				var definitionName = args[6];	// Build.DefinitionName
 				var projectName = args[7];      // System.TeamProject
