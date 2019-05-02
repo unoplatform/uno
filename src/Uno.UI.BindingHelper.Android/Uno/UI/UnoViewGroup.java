@@ -244,7 +244,7 @@ public abstract class UnoViewGroup
 			_textBlockLayout.draw(canvas);
 		}
 
-		if (getIsAnimInProg()) {
+		if (getIsAnimationInProgress()) {
 			invalidateTransformedHierarchy();
 		}
 	}
