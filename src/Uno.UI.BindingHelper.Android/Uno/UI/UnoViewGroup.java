@@ -244,7 +244,7 @@ public abstract class UnoViewGroup
 			_textBlockLayout.draw(canvas);
 		}
 
-		if (getIsAnimating()) {
+		if (getIsAnimationInProgress()) {
 			invalidateTransformedHierarchy();
 		}
 	}
@@ -983,11 +983,11 @@ public abstract class UnoViewGroup
 		return _isPointInView;
 	}
 
-	public boolean getIsAnimating() {
+	public boolean getIsAnimationInProgress() {
 		return _isAnimating;
 	}
 
-	public void setIsAnimating(boolean isAnimating) {
+	public void setIsAnimationInProgress(boolean isAnimating) {
 		_isAnimating = isAnimating;
 	}
 
