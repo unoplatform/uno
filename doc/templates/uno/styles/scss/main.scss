@@ -193,8 +193,14 @@ h3 {
             color: #3a3a3a;
             border-bottom: 2px solid transparent;
             transition: color 0.2s ease-in-out,
-                background-color 0.2s ease-in-out, border-color 0.2s ease-in-out;
+            background-color 0.2s ease-in-out, border-color 0.2s ease-in-out;
+
+            @media (min-width: 768px) and (max-width: 820px) {
+                font-size: 12px;
+            }
         }
+
+        
 
         a:hover,
         .active a {
@@ -230,7 +236,7 @@ h3 {
             transition-timing-function: ease-in-out, ease-in-out, ease-in-out;
             width: auto;
 
-            @media (max-width: 990px) {
+            @media (max-width: 1010px) {
                 display: none;
             }
         }

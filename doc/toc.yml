@@ -4,6 +4,8 @@
   href: https://platform.uno/how-it-works/
 - name: Code Samples
   href: https://platform.uno/code-samples/
+- name: Docs
+  href: https://platform.uno/docs/
 - name: Support
   href: https://platform.uno/support/
 - name: Blog
@@ -12,4 +14,3 @@
   href: https://platform.uno/contact/
 - name: Get Started
   href: https://platform.uno/docs/articles/get-started.html
-  class: btn
