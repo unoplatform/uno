@@ -401,6 +401,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ListView\ListView_ElementBinding.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ListView\ListView_OwnContainer_Virtualized.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -1762,6 +1766,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ImageTests\Image_Stretch_Full_Wider.xaml.cs">
       <DependentUpon>Image_Stretch_Full_Wider.xaml</DependentUpon>
     </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ListView\ListView_ElementBinding.xaml.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ListView\ListView_TransformsOnList.xaml.cs">
       <DependentUpon>ListView_TransformsOnList.xaml</DependentUpon>
     </Compile>
@@ -2873,6 +2878,12 @@
     </Compile>
     <Compile Update="C:\s\nv.github\uno\src\SamplesApp\UITests.Shared\Windows_UI_Xaml_Controls\CommandBar\CommandBar_With_Long_Sentences.xaml.cs">
       <DependentUpon>CommandBar_With_Long_Sentences.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="C:\work\project\Uno\src\SamplesApp\UITests.Shared\Windows_UI_Xaml_Controls\ListView\ListView_ElementBinding - 复制.xaml.cs">
+      <DependentUpon>ListView_ElementBinding - 复制.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="C:\work\project\Uno\src\SamplesApp\UITests.Shared\Windows_UI_Xaml_Controls\ListView\ListView_ElementBinding.xaml.cs">
+      <DependentUpon>ListView_ElementBinding.xaml</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>
