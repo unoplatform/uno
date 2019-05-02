@@ -4,22 +4,19 @@ uid: front-page
 
 
 <section class="intro">
-<h1>UNO PLATFORM DOCUMENTATION</h1>
-<p><em>#uwpeverywhere</em></p>
+<h1>Uno Platform Documentation</h1>
 <p>Build native apps for <strong>Mobile</strong> and <strong>Web</strong> using <strong>XAML</strong> and <strong>C#</strong>.</p>
-<span class="button white">
 
-[Get started](articles/get-started.md)
-
-</span>
 </section>
 
-<section class="container">
+<section class="headerboxes">
 
-<div class="headerboxes row">
+<div class="container">
+<div class="row">
 
 <div class="col-md-6 col-xs-12 headerbox">
 <div class="headerbox-inner clearfix">
+<img src="images/uno.png" alt="uno logo" class="icon" />
 <h2>What is the Uno Platform</h2>
 <p>Uno is a free UWP Bridge for iOS, Android and WebAssembly.</p>
 <span class="button turquoise">
@@ -27,12 +24,13 @@ uid: front-page
 [Learn more](articles/intro.md)
 
 </span>
-<img src="images/uno.png" alt="uno logo" class="icon" />
+
 </div>       
 </div>
 
 <div class="col-md-6 col-xs-12 headerbox">
 <div class="headerbox-inner clearfix">
+<img src="images/features.png" alt="features" class="icon" />
 <h2>Supported features</h2>
 <p>A list of supported Uno Platform features.</p>
 <span class="button turquoise">
@@ -40,12 +38,15 @@ uid: front-page
 [Learn more](articles/supported-features.md)
 
 </span>
-<img src="images/features.png" alt="features" class="icon" />
+
 </div>       
-</div>       
+</div> 
+
+<div class="clearfix"></div>
 
 <div class="col-md-6 col-xs-12 headerbox">
 <div class="headerbox-inner clearfix">
+<img src="images/keyboard.png" alt="keyboard" class="icon" />
 <h2>Using Uno.UI</h2>
 <p>An introduction to developing with the Uno Platform.</p>
 <span class="button turquoise">
@@ -53,12 +54,13 @@ uid: front-page
 [Learn more](articles/using-uno-ui.md)
 
 </span>
-<img src="images/keyboard.png" alt="keyboard" class="icon" />
+
 </div>       
 </div>       
 
 <div class="col-md-6 col-xs-12 headerbox">
 <div class="headerbox-inner clearfix">
+<img src="images/bug.png" alt="bug" class="icon" />
 <h2>Debugging Uno.UI</h2>
 <p>How to contribute to the Uno Platform.</p>
 <span class="button turquoise">
@@ -66,8 +68,9 @@ uid: front-page
 [Learn more](articles/debugging-uno-ui.md)
 
 </span>
-<img src="images/bug.png" alt="bug" class="icon" />
+
 </div>       
+</div>
 </div>       
 
 </div>

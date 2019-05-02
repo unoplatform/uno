@@ -30,21 +30,21 @@ a {
 }
 
 h1 {
-    font-size: 36px;
-    font-weight: 800;
-    text-transform: uppercase;
+    font-size: 44px;
+    font-weight: 600;
+    text-transform: none;
 }
 
 h2 {
-    font-size: 30px;
-    font-weight: 800;
-    text-transform: uppercase;
+    font-size: 36px;
+    font-weight: 600;
+    text-transform: none;
 }
 
 h3 {
-    font-size: 24px;
-    font-weight: 800;
-    text-transform: uppercase;
+    font-size: 30px;
+    font-weight: 600;
+    text-transform: none;
 }
 
 .body-content .article {
@@ -142,16 +142,18 @@ h3 {
     vertical-align: middle;
     background: #ffffff;
     position: fixed;
+    border-bottom: 1px solid #f4f2f3;
+    top: 0;
+    width: 100%;
+    z-index: 9999;
+
     @media screen and(min-width: 768px) {
         line-height: auto;
         display: flex;
         align-items: center;
         height: 75px;
     }
-    top: 0;
-    width: 100%;
-    border: none;
-    z-index: 9999;
+    
 
     #logo {
         width: 43px;
@@ -193,8 +195,14 @@ h3 {
             color: #3a3a3a;
             border-bottom: 2px solid transparent;
             transition: color 0.2s ease-in-out,
-                background-color 0.2s ease-in-out, border-color 0.2s ease-in-out;
+            background-color 0.2s ease-in-out, border-color 0.2s ease-in-out;
+
+            @media (min-width: 768px) and (max-width: 820px) {
+                font-size: 12px;
+            }
         }
+
+        
 
         a:hover,
         .active a {
@@ -230,8 +238,12 @@ h3 {
             transition-timing-function: ease-in-out, ease-in-out, ease-in-out;
             width: auto;
 
-            @media (max-width: 990px) {
+            @media (max-width: 1010px) {
                 display: none;
+            }
+
+            &:hover {
+                background: darken($purple, 5);
             }
         }
     }
@@ -301,29 +313,6 @@ h3 {
         display: none;
     }
 
-    .navbar:first-child {
-        background: none;
-        transition: background-color 0.2s ease-in-out;
-
-        #navbar .level1 li a:not([title='Get Started']) {
-            color: #ffffff;
-        }
-
-        .navbar-toggle .icon-bar {
-            background: #ffffff;
-        }
-
-        &.scrolled {
-            background: #ffffff;
-            #navbar .level1 li a:not([title='Get Started']) {
-                color: $dgray;
-            }
-
-            .navbar-toggle .icon-bar {
-                background: $dgray;
-            }
-        }
-    }
 
     .body-content {
         width: 100%;
@@ -342,7 +331,7 @@ h3 {
     }
 
     .button {
-        display: inline-block;
+        display: inline-block; 
 
         a {
             display: inline-block;
@@ -350,13 +339,13 @@ h3 {
             font-size: 20px;
             font-weight: bold;
             box-shadow: 0 2px 4px 0 rgba(31, 31, 31, 0.25);
-            border-radius: 20px;
+            border-radius: 8px;
             transition: color 0.2s ease-in-out,
-                background-color 0.2s ease-in-out;
+            background-color 0.2s ease-in-out;
         }
 
         &.white a {
-            background: #fff;
+            background: #fff; 
             color: $dgray;
 
             &:hover {
@@ -366,63 +355,45 @@ h3 {
         }
 
         &.turquoise a {
-            background: $turquoise;
+            background: $purple;
             color: #fff;
 
             &:hover {
-                background: $blue;
+                background: darken($purple, 5);
             }
         }
     }
 
     .intro {
-        padding: 190px 15px 210px;
-        background: #111;
-        color: #fff;
+        padding: 100px 15px 60px;
+        @media screen and (min-width: 768px){
+            padding: 200px 15px 120px;
+        }
         text-align: center;
         font-size: 18px;
         position: relative;
 
-        & > * {
-            position: relative;
-        }
-
-        &:before,
-        &:after {
-            content: '';
-            position: absolute;
-            top: 0;
-            bottom: 0;
-            width: 50%;
-        }
-
-        &:before {
-            left: 0;
-            background: url('../images/uno-bg-left.png') no-repeat left bottom;
-        }
-
-        &:after {
-            right: 0;
-            background: url('../images/uno-bg-right.png') no-repeat right top;
-        }
-
         h1 {
-            font-size: 35px;
-            text-transform: uppercase;
-            font-weight: bold;
-            width: 360px;
+            font-size: 36px;
+            @media screen and (min-width: 768px) {
+                font-size: 44px;
+            }
+            
+            text-transform: none; 
+            font-weight: 600;
+            width: auto;
             max-width: 100%;
             margin: 0 auto;
-            letter-spacing: 2.2px;
+            letter-spacing: normal;
         }
 
         p {
-            width: 246px;
+            width: 100%;
+            font-size: 22px;
         }
 
         strong {
-            color: $blue;
-            font-weight: normal;
+            font-weight: bold;
         }
 
         .button a {
@@ -433,29 +404,27 @@ h3 {
     .headerboxes {
         display: flex;
         flex-wrap: wrap;
-        margin-top: -120px;
-        padding-bottom: 45px;
+        padding: 40px 15px;
+        @media screen and (min-width: 768px){
+            padding: 80px 15px; 
+        }
+        
+        background-color: #f4f2f3; 
 
         .headerbox {
-            margin-bottom: 30px;
+            margin: 40px auto; 
 
-            @media (min-width: 768px) {
-                width: 49%;
-            }
         }
 
         .headerbox-inner {
-            background: #fff;
-            border-radius: 22px;
-            box-shadow: 0 2px 13px 0 rgba(31, 31, 31, 0.25);
-            padding: 35px;
+            padding: 0;
             height: 100%;
         }
 
         h2 {
             font-size: 30px;
-            font-weight: 800;
-            text-transform: uppercase;
+            font-weight: 600;
+            text-transform: none;
 
             .anchorjs-link {
                 display: none;
@@ -468,8 +437,7 @@ h3 {
         }
 
         .icon {
-            float: right;
-            margin: 10px 0 0 10px;
+            margin: 0;
         }
     }
 }
