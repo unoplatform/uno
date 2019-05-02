@@ -11,6 +11,5 @@
 - name: Contact
   href: https://platform.uno/contact/
 - name: Get Started
-  href: /
-  homepage: /articles/get-started.html
+  href: https://platform.uno/docs/articles/get-started.html
   class: btn
