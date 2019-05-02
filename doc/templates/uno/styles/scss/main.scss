@@ -312,7 +312,9 @@ h3 {
         transition: background-color 0.2s ease-in-out;
 
         #navbar .level1 li a:not([title='Get Started']) {
-            color: #ffffff;
+            @media(min-width: 768px) {
+                color: #ffffff;
+            }
         }
 
         .navbar-toggle .icon-bar {
