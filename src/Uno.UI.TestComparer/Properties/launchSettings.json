@@ -1,8 +1,0 @@
-{
-  "profiles": {
-    "Uno.UI.TestComparer": {
-      "commandName": "Project",
-      "commandLineArgs": "azdo \"C:\\temp\\wasm-ui-tests\" \"2a3sh2x6nkjymsn3votjrayqgpdoc5gdq5bajz2pt6t7fybxxjza\""
-    }
-  }
-}
