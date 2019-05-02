@@ -107,7 +107,7 @@ namespace Uno.UI.Media
 
 			if (Owner is UnoViewGroup uvg)
 			{
-				uvg.IsAnimating = Transform.IsAnimating;
+				uvg.IsAnimationInProgress = Transform.IsAnimating;
 			}
 		}
 
