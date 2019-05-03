@@ -467,6 +467,8 @@ namespace Windows.UI.Xaml.Controls
 			ClearLines();
 
 			UpdateCompleted();
+
+			OwnerPanel?.InvalidateMeasure();
 		}
 
 		private void ClearLines()

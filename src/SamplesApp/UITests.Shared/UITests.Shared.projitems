@@ -17,6 +17,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_ApplicationModel\Chat\ComposeSms.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="$(MSBuildThisFileDirectory)Windows_ApplicationModel_Resources_ResourceLoader\ResourceLoader_Simple.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -26,6 +30,14 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="$(MSBuildThisFileDirectory)Windows_Graphics_Display\DisplayInformation\DisplayInformation_Properties.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_Security_Credentials\PasswordVaultTests\CredentialsPersistence.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_Storage\StorageFolderTests\Persistence.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -289,6 +301,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ComboBox\ComboBox_SelectedIndex.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\CommandBar\BackGesture\BackGesture_Chooser.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -401,11 +417,55 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ListView\HorizontalListViewGrouped.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ListView\ListViewEmptyGroups.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ListView\ListViewGrouped.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ListView\ListViewGroupedChanging.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ListView\ListViewGroupedEmpty.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ListView\ListViewGroupedEmptyHeader.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ListView\ListViewGroupedLarge.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ListView\ListViewGroupedVariableHeightComplexTemplate.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ListView\ListViewGrouped_ItemContainerStyleSelector.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ListView\ListView_ItemTemplateSelector_And_ItemContainerStyleSelector.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ListView\ListView_OwnContainer_Virtualized.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ListView\ListView_TransformsOnList.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ListView\ListView_WithFlipView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -518,6 +578,198 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\Slider\Slider_Transformed.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\TextBlockControl\Attributed_text_FontSize_Changing.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\TextBlockControl\Attributed_text_Simple.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\TextBlockControl\Attributed_text_Simple_databound.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\TextBlockControl\Attributed_text_Supserscript.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\TextBlockControl\Progressing_TextBlock.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\TextBlockControl\Progressing_TextBlock_with_inline_margin.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\TextBlockControl\Progressing_TextBlock_with_margin.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\TextBlockControl\SimpleText_MaxLines_One.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\TextBlockControl\SimpleText_MaxLines_Two.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\TextBlockControl\SimpleText_MaxLines_Two_with_Different_Fonts.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\TextBlockControl\SimpleText_MaxLines_Two_With_Wrap.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\TextBlockControl\SimpleText_MaxLines_Two_With_Wrap_And_Trim.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\TextBlockControl\SimpleText_MaxWidth_NaN.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\TextBlockControl\SimpleText_MaxWidth_Wrap.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\TextBlockControl\Simple_Contrained_Horizontal_Center_Wrap.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\TextBlockControl\Simple_Contrained_Horizontal_Center_Wrap2.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\TextBlockControl\Simple_Text.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\TextBlockControl\Simple_Text_Font_Weight_Bold.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\TextBlockControl\TextBlockMultilineInStarStackPanel.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\TextBlockControl\TextBlockSimpleContrainedHorizontalCenterWrap2.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\TextBlockControl\TextBlockTimespan.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\TextBlockControl\Textblocktimespancustomformat.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\TextBlockControl\TextBlock_CharacterSpacing.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\TextBlockControl\TextBlock_ConstrainedByContainer.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\TextBlockControl\TextBlock_FixedWidth_With_DataBound_Run.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\TextBlockControl\TextBlock_FontWeight.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\TextBlockControl\TextBlock_Hyperlink.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\TextBlockControl\TextBlock_Hyperlink_Touch.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\TextBlockControl\TextBlock_Inlines_TemplatedParent.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\TextBlockControl\TextBlock_LineHeight_Inlines.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\TextBlockControl\TextBlock_LineHeight_Multiline.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\TextBlockControl\TextBlock_LineHeight_TextAlignment.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\TextBlockControl\TextBlock_LineHeight_TextTrimming.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\TextBlockControl\TextBlock_Multiline_In_StarStackPanel.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\TextBlockControl\TextBlock_Nested_Measure_With_Outer_Alignments.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\TextBlockControl\TextBlock_Padding.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\TextBlockControl\TextBlock_Progressing_Trim.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\TextBlockControl\TextBlock_Run_Inheritance.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\TextBlockControl\TextBlock_Span.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\TextBlockControl\TextBlock_Special_Character.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\TextBlockControl\TextBlock_Style_Inheritance.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\TextBlockControl\TextBlock_TextAlignment.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\TextBlockControl\TextBlock_TextTrimming_VerticalAlignment_Stretch.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\TextBlockControl\TextBlock_UpdatePerformance.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\TextBlockControl\TextBoxSizeChanging.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\TextBlockControl\TextBoxSizeChangingInlines.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\TextBlockControl\TextBox_Size_Changing.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\TextBlockControl\TextBox_Size_Changing_Inlines.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -1101,6 +1353,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Media\Transform\Animated_View_With_Transformed_Ancestor.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Media\Transform\Basics.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -1138,6 +1394,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Media\Transform\Polygon_With_RotateTransform.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Media\Transform\ProgressRing_With_Transformed_Ancestor.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -1346,12 +1606,19 @@
     <Compile Include="$(MSBuildThisFileDirectory)Helpers\ViewModelBase.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Lottie\SampleLottieAnimation.xaml.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Wasm\Wasm_CustomEvent.xaml.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_ApplicationModel\Chat\ComposeSms.xaml.cs">
+      <DependentUpon>ResourceLoader_Simple.xaml</DependentUpon>
+    </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_ApplicationModel_Resources_ResourceLoader\ResourceLoader_Simple.xaml.cs">
       <DependentUpon>ResourceLoader_Simple.xaml</DependentUpon>
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_Globalization\Language_Properties.xaml.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Windows_Graphics_Display\DisplayInformation\DisplayInformation_Properties.xaml.cs">
       <DependentUpon>DisplayInformation_Properties.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_Security_Credentials\PasswordVaultTests\CredentialsPersistence.xaml.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_Storage\StorageFolderTests\Persistence.xaml.cs">
+      <DependentUpon>Persistence.xaml</DependentUpon>
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI.Xaml_Automation\AutomationProperties_Name.xaml.cs">
       <DependentUpon>AutomationProperties_Name.xaml</DependentUpon>
@@ -1499,6 +1766,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\Button\Radio_Button.xaml.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\Button\Simple_Button.xaml.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\Button\Simple_Button_With_CanExecute_Changing.xaml.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ComboBox\ComboBox_SelectedIndex.xaml.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\CommandBar\BackGesture\BackGesture_Chooser.xaml.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\CommandBar\BackGesture\BackGesture_Collapsed.xaml.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\CommandBar\BackGesture\BackGesture_CollapsedNavigationCommand.xaml.cs" />
@@ -1560,9 +1828,43 @@
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ImageTests\Image_Stretch_Full_Wider.xaml.cs">
       <DependentUpon>Image_Stretch_Full_Wider.xaml</DependentUpon>
     </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ListView\HorizontalListViewGrouped.xaml.cs">
+      <DependentUpon>HorizontalListViewGrouped.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ListView\ListViewEmptyGroups.xaml.cs">
+      <DependentUpon>ListViewEmptyGroups.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ListView\ListViewGrouped.xaml.cs">
+      <DependentUpon>ListViewGrouped.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ListView\ListViewGroupedChanging.xaml.cs">
+      <DependentUpon>ListViewGroupedChanging.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ListView\ListViewGroupedEmpty.xaml.cs">
+      <DependentUpon>ListViewGroupedEmpty.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ListView\ListViewGroupedEmptyHeader.xaml.cs">
+      <DependentUpon>ListViewGroupedEmptyHeader.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ListView\ListViewGroupedLarge.xaml.cs">
+      <DependentUpon>ListViewGroupedLarge.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ListView\ListViewGroupedVariableHeightComplexTemplate.xaml.cs">
+      <DependentUpon>ListViewGroupedVariableHeightComplexTemplate.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ListView\ListViewGrouped_ItemContainerStyleSelector.xaml.cs">
+      <DependentUpon>ListViewGrouped_ItemContainerStyleSelector.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ListView\ListView_ItemTemplateSelector_And_ItemContainerStyleSelector.xaml.cs">
+      <DependentUpon>ListView_ItemTemplateSelector_And_ItemContainerStyleSelector.xaml</DependentUpon>
+    </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ListView\ListView_TransformsOnList.xaml.cs">
       <DependentUpon>ListView_TransformsOnList.xaml</DependentUpon>
     </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ListView\ListView_WithFlipView.xaml.cs">
+      <DependentUpon>ListView_WithFlipView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ListView\RandomDataTemplateSelector.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\MediaPlayerElement\MediaPlayerElement_3gp_Extension.xaml.cs">
       <DependentUpon>MediaPlayerElement_3gp_Extension.xaml</DependentUpon>
     </Compile>
@@ -1592,6 +1894,7 @@
       <DependentUpon>MediaPlayerElement_Original.xaml</DependentUpon>
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\Models\DateTimePickerViewModel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\Models\ListViewWithFlipViewViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\Models\StringKeyTemplateSelector.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ComboBox\ComboBox_ComboBoxItem_Selection.xaml.cs">
       <DependentUpon>ComboBox_ComboBoxItem_Selection.xaml</DependentUpon>
@@ -1654,6 +1957,7 @@
       <DependentUpon>Picker_Resizable.xaml</DependentUpon>
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ImageTests\Models\ImageWithLateSourceViewModel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\Models\TextBlockViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\Models\TimePickerViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\NavigationViewTests\NavigationView_TopNavigation.xaml.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\Popup\Popup_LightDismiss.xaml.cs" />
@@ -1684,6 +1988,54 @@
       <DependentUpon>Slider_Styled.xaml</DependentUpon>
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\Slider\Slider_Transformed.xaml.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\TextBlockControl\Attributed_text_FontSize_Changing.xaml.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\TextBlockControl\Attributed_text_Simple.xaml.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\TextBlockControl\Attributed_text_Simple_databound.xaml.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\TextBlockControl\Attributed_text_Supserscript.xaml.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\TextBlockControl\Progressing_TextBlock.xaml.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\TextBlockControl\Progressing_TextBlock_with_inline_margin.xaml.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\TextBlockControl\Progressing_TextBlock_with_margin.xaml.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\TextBlockControl\SimpleText_MaxLines_One.xaml.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\TextBlockControl\SimpleText_MaxLines_Two.xaml.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\TextBlockControl\SimpleText_MaxLines_Two_with_Different_Fonts.xaml.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\TextBlockControl\SimpleText_MaxLines_Two_With_Wrap.xaml.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\TextBlockControl\SimpleText_MaxLines_Two_With_Wrap_And_Trim.xaml.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\TextBlockControl\SimpleText_MaxWidth_NaN.xaml.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\TextBlockControl\SimpleText_MaxWidth_Wrap.xaml.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\TextBlockControl\Simple_Contrained_Horizontal_Center_Wrap.xaml.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\TextBlockControl\Simple_Contrained_Horizontal_Center_Wrap2.xaml.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\TextBlockControl\Simple_Text.xaml.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\TextBlockControl\Simple_Text_Font_Weight_Bold.xaml.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\TextBlockControl\TextBlockMultilineInStarStackPanel.xaml.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\TextBlockControl\TextBlockSimpleContrainedHorizontalCenterWrap2.xaml.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\TextBlockControl\TextBlockTimespan.xaml.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\TextBlockControl\Textblocktimespancustomformat.xaml.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\TextBlockControl\TextBlock_CharacterSpacing.xaml.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\TextBlockControl\TextBlock_ConstrainedByContainer.xaml.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\TextBlockControl\TextBlock_FixedWidth_With_DataBound_Run.xaml.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\TextBlockControl\TextBlock_FontWeight.xaml.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\TextBlockControl\TextBlock_Hyperlink.xaml.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\TextBlockControl\TextBlock_Hyperlink_Touch.xaml.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\TextBlockControl\TextBlock_Inlines_TemplatedParent.xaml.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\TextBlockControl\TextBlock_LineHeight_Inlines.xaml.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\TextBlockControl\TextBlock_LineHeight_Multiline.xaml.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\TextBlockControl\TextBlock_LineHeight_TextAlignment.xaml.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\TextBlockControl\TextBlock_LineHeight_TextTrimming.xaml.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\TextBlockControl\TextBlock_Multiline_In_StarStackPanel.xaml.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\TextBlockControl\TextBlock_Nested_Measure_With_Outer_Alignments.xaml.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\TextBlockControl\TextBlock_Padding.xaml.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\TextBlockControl\TextBlock_Progressing_Trim.xaml.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\TextBlockControl\TextBlock_Run_Inheritance.xaml.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\TextBlockControl\TextBlock_Span.xaml.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\TextBlockControl\TextBlock_Special_Character.xaml.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\TextBlockControl\TextBlock_Style_Inheritance.xaml.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\TextBlockControl\TextBlock_TextAlignment.xaml.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\TextBlockControl\TextBlock_TextTrimming_VerticalAlignment_Stretch.xaml.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\TextBlockControl\TextBlock_UpdatePerformance.xaml.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\TextBlockControl\TextBoxSizeChanging.xaml.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\TextBlockControl\TextBoxSizeChangingInlines.xaml.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\TextBlockControl\TextBox_Size_Changing.xaml.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\TextBlockControl\TextBox_Size_Changing_Inlines.xaml.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\TextBox\TextBox_IsReadOnly.xaml.cs">
       <DependentUpon>TextBox_IsReadOnly.xaml</DependentUpon>
     </Compile>
@@ -2050,6 +2402,10 @@
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\NavigationViewTests\SettingsPage.xaml.cs">
       <DependentUpon>SettingsPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Media\Transform\AnimatedContentControl.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Media\Transform\Animated_View_With_Transformed_Ancestor.xaml.cs">
+      <DependentUpon>Animated_View_With_Transformed_Ancestor.xaml</DependentUpon>
+    </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Media\Transform\Basics.xaml.cs">
       <DependentUpon>Basics.xaml</DependentUpon>
     </Compile>
@@ -2079,6 +2435,9 @@
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Media\Transform\Polygon_With_RotateTransform.xaml.cs">
       <DependentUpon>Polygon_With_RotateTransform.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Media\Transform\ProgressRing_With_Transformed_Ancestor.xaml.cs">
+      <DependentUpon>ProgressRing_With_Transformed_Ancestor.xaml</DependentUpon>
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Media\Transform\Rectangle_With_RotateTransform.xaml.cs">
       <DependentUpon>Rectangle_With_RotateTransform.xaml</DependentUpon>
@@ -2256,6 +2615,12 @@
     <PRIResource Include="$(MSBuildThisFileDirectory)UITestsStrings\en-US\Resources.resw" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Update="C:\Src\GitHub\nventive\Uno\src\SamplesApp\UITests.Shared\Windows_Security_Credentials\PasswordVaultTests\CredentialsPersistence.xaml.cs">
+      <DependentUpon>CredentialsPersistence.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="C:\Src\GitHub\nventive\Uno\src\SamplesApp\UITests.Shared\Windows_Storage\StorageFolderTests\Persistence.xaml.cs">
+      <DependentUpon>Persistence.xaml</DependentUpon>
+    </Compile>
     <Compile Update="C:\Src\GitHub\nventive\Uno\src\SamplesApp\UITests.Shared\Windows_UI_Core\SystemNavigationManagerTests\HardwareBackButton.xaml.cs">
       <DependentUpon>HardwareBackButton.xaml</DependentUpon>
     </Compile>
@@ -2381,6 +2746,153 @@
     </Compile>
     <Compile Update="C:\src\Uno\src\SamplesApp\UITests.Shared\Lottie\SampleLottieAnimation.xaml.cs">
       <DependentUpon>SampleLottieAnimation.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="C:\src\Uno\src\SamplesApp\UITests.Shared\Windows_UI_Xaml_Controls\ComboBox\ComboBox_SelectedIndex.xaml.cs">
+      <DependentUpon>ComboBox_SelectedIndex.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="C:\src\Uno\src\SamplesApp\UITests.Shared\Windows_UI_Xaml_Controls\TextBlockControl\Attributed_text_FontSize_Changing.xaml.cs">
+      <DependentUpon>Attributed_text_FontSize_Changing.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="C:\src\Uno\src\SamplesApp\UITests.Shared\Windows_UI_Xaml_Controls\TextBlockControl\Attributed_text_Simple.xaml.cs">
+      <DependentUpon>Attributed_text_Simple.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="C:\src\Uno\src\SamplesApp\UITests.Shared\Windows_UI_Xaml_Controls\TextBlockControl\Attributed_text_Simple_databound.xaml.cs">
+      <DependentUpon>Attributed_text_Simple_databound.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="C:\src\Uno\src\SamplesApp\UITests.Shared\Windows_UI_Xaml_Controls\TextBlockControl\Attributed_text_Supserscript.xaml.cs">
+      <DependentUpon>Attributed_text_Supserscript.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="C:\src\Uno\src\SamplesApp\UITests.Shared\Windows_UI_Xaml_Controls\TextBlockControl\Progressing_TextBlock.xaml.cs">
+      <DependentUpon>Progressing_TextBlock.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="C:\src\Uno\src\SamplesApp\UITests.Shared\Windows_UI_Xaml_Controls\TextBlockControl\Progressing_TextBlock_with_inline_margin.xaml.cs">
+      <DependentUpon>Progressing_TextBlock_with_inline_margin.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="C:\src\Uno\src\SamplesApp\UITests.Shared\Windows_UI_Xaml_Controls\TextBlockControl\Progressing_TextBlock_with_margin.xaml.cs">
+      <DependentUpon>Progressing_TextBlock_with_margin.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="C:\src\Uno\src\SamplesApp\UITests.Shared\Windows_UI_Xaml_Controls\TextBlockControl\SimpleText_MaxLines_One.xaml.cs">
+      <DependentUpon>SimpleText_MaxLines_One.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="C:\src\Uno\src\SamplesApp\UITests.Shared\Windows_UI_Xaml_Controls\TextBlockControl\SimpleText_MaxLines_Two.xaml.cs">
+      <DependentUpon>SimpleText_MaxLines_Two.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="C:\src\Uno\src\SamplesApp\UITests.Shared\Windows_UI_Xaml_Controls\TextBlockControl\SimpleText_MaxLines_Two_with_Different_Fonts.xaml.cs">
+      <DependentUpon>SimpleText_MaxLines_Two_with_Different_Fonts.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="C:\src\Uno\src\SamplesApp\UITests.Shared\Windows_UI_Xaml_Controls\TextBlockControl\SimpleText_MaxLines_Two_With_Wrap.xaml.cs">
+      <DependentUpon>SimpleText_MaxLines_Two_With_Wrap.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="C:\src\Uno\src\SamplesApp\UITests.Shared\Windows_UI_Xaml_Controls\TextBlockControl\SimpleText_MaxLines_Two_With_Wrap_And_Trim.xaml.cs">
+      <DependentUpon>SimpleText_MaxLines_Two_With_Wrap_And_Trim.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="C:\src\Uno\src\SamplesApp\UITests.Shared\Windows_UI_Xaml_Controls\TextBlockControl\SimpleText_MaxWidth_NaN.xaml.cs">
+      <DependentUpon>SimpleText_MaxWidth_NaN.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="C:\src\Uno\src\SamplesApp\UITests.Shared\Windows_UI_Xaml_Controls\TextBlockControl\SimpleText_MaxWidth_Wrap.xaml.cs">
+      <DependentUpon>SimpleText_MaxWidth_Wrap.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="C:\src\Uno\src\SamplesApp\UITests.Shared\Windows_UI_Xaml_Controls\TextBlockControl\Simple_Contrained_Horizontal_Center_Wrap.xaml.cs">
+      <DependentUpon>Simple_Contrained_Horizontal_Center_Wrap.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="C:\src\Uno\src\SamplesApp\UITests.Shared\Windows_UI_Xaml_Controls\TextBlockControl\Simple_Contrained_Horizontal_Center_Wrap2.xaml.cs">
+      <DependentUpon>Simple_Contrained_Horizontal_Center_Wrap2.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="C:\src\Uno\src\SamplesApp\UITests.Shared\Windows_UI_Xaml_Controls\TextBlockControl\Simple_Text.xaml.cs">
+      <DependentUpon>Simple_Text.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="C:\src\Uno\src\SamplesApp\UITests.Shared\Windows_UI_Xaml_Controls\TextBlockControl\Simple_Text_Font_Weight_Bold.xaml.cs">
+      <DependentUpon>Simple_Text_Font_Weight_Bold.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="C:\src\Uno\src\SamplesApp\UITests.Shared\Windows_UI_Xaml_Controls\TextBlockControl\TextBlockMultilineInStarStackPanel.xaml.cs">
+      <DependentUpon>TextBlockMultilineInStarStackPanel.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="C:\src\Uno\src\SamplesApp\UITests.Shared\Windows_UI_Xaml_Controls\TextBlockControl\TextBlockSimpleContrainedHorizontalCenterWrap2.xaml.cs">
+      <DependentUpon>TextBlockSimpleContrainedHorizontalCenterWrap2.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="C:\src\Uno\src\SamplesApp\UITests.Shared\Windows_UI_Xaml_Controls\TextBlockControl\TextBlockTimespan.xaml.cs">
+      <DependentUpon>TextBlockTimespan.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="C:\src\Uno\src\SamplesApp\UITests.Shared\Windows_UI_Xaml_Controls\TextBlockControl\Textblocktimespancustomformat.xaml.cs">
+      <DependentUpon>Textblocktimespancustomformat.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="C:\src\Uno\src\SamplesApp\UITests.Shared\Windows_UI_Xaml_Controls\TextBlockControl\TextBlock_CharacterSpacing.xaml.cs">
+      <DependentUpon>TextBlock_CharacterSpacing.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="C:\src\Uno\src\SamplesApp\UITests.Shared\Windows_UI_Xaml_Controls\TextBlockControl\TextBlock_ConstrainedByContainer.xaml.cs">
+      <DependentUpon>TextBlock_ConstrainedByContainer.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="C:\src\Uno\src\SamplesApp\UITests.Shared\Windows_UI_Xaml_Controls\TextBlockControl\TextBlock_FixedWidth_With_DataBound_Run.xaml.cs">
+      <DependentUpon>TextBlock_FixedWidth_With_DataBound_Run.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="C:\src\Uno\src\SamplesApp\UITests.Shared\Windows_UI_Xaml_Controls\TextBlockControl\TextBlock_FontWeight.xaml.cs">
+      <DependentUpon>TextBlock_FontWeight.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="C:\src\Uno\src\SamplesApp\UITests.Shared\Windows_UI_Xaml_Controls\TextBlockControl\TextBlock_Hyperlink.xaml.cs">
+      <DependentUpon>TextBlock_Hyperlink.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="C:\src\Uno\src\SamplesApp\UITests.Shared\Windows_UI_Xaml_Controls\TextBlockControl\TextBlock_Hyperlink_Touch.xaml.cs">
+      <DependentUpon>TextBlock_Hyperlink_Touch.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="C:\src\Uno\src\SamplesApp\UITests.Shared\Windows_UI_Xaml_Controls\TextBlockControl\TextBlock_Inlines_TemplatedParent.xaml.cs">
+      <DependentUpon>TextBlock_Inlines_TemplatedParent.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="C:\src\Uno\src\SamplesApp\UITests.Shared\Windows_UI_Xaml_Controls\TextBlockControl\TextBlock_LineHeight_Inlines.xaml.cs">
+      <DependentUpon>TextBlock_LineHeight_Inlines.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="C:\src\Uno\src\SamplesApp\UITests.Shared\Windows_UI_Xaml_Controls\TextBlockControl\TextBlock_LineHeight_Multiline.xaml.cs">
+      <DependentUpon>TextBlock_LineHeight_Multiline.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="C:\src\Uno\src\SamplesApp\UITests.Shared\Windows_UI_Xaml_Controls\TextBlockControl\TextBlock_LineHeight_TextAlignment.xaml.cs">
+      <DependentUpon>TextBlock_LineHeight_TextAlignment.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="C:\src\Uno\src\SamplesApp\UITests.Shared\Windows_UI_Xaml_Controls\TextBlockControl\TextBlock_LineHeight_TextTrimming.xaml.cs">
+      <DependentUpon>TextBlock_LineHeight_TextTrimming.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="C:\src\Uno\src\SamplesApp\UITests.Shared\Windows_UI_Xaml_Controls\TextBlockControl\TextBlock_Multiline_In_StarStackPanel.xaml.cs">
+      <DependentUpon>TextBlock_Multiline_In_StarStackPanel.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="C:\src\Uno\src\SamplesApp\UITests.Shared\Windows_UI_Xaml_Controls\TextBlockControl\TextBlock_Nested_Measure_With_Outer_Alignments.xaml.cs">
+      <DependentUpon>TextBlock_Nested_Measure_With_Outer_Alignments.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="C:\src\Uno\src\SamplesApp\UITests.Shared\Windows_UI_Xaml_Controls\TextBlockControl\TextBlock_Padding.xaml.cs">
+      <DependentUpon>TextBlock_Padding.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="C:\src\Uno\src\SamplesApp\UITests.Shared\Windows_UI_Xaml_Controls\TextBlockControl\TextBlock_Progressing_Trim.xaml.cs">
+      <DependentUpon>TextBlock_Progressing_Trim.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="C:\src\Uno\src\SamplesApp\UITests.Shared\Windows_UI_Xaml_Controls\TextBlockControl\TextBlock_Run_Inheritance.xaml.cs">
+      <DependentUpon>TextBlock_Run_Inheritance.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="C:\src\Uno\src\SamplesApp\UITests.Shared\Windows_UI_Xaml_Controls\TextBlockControl\TextBlock_Span.xaml.cs">
+      <DependentUpon>TextBlock_Span.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="C:\src\Uno\src\SamplesApp\UITests.Shared\Windows_UI_Xaml_Controls\TextBlockControl\TextBlock_Special_Character.xaml.cs">
+      <DependentUpon>TextBlock_Special_Character.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="C:\src\Uno\src\SamplesApp\UITests.Shared\Windows_UI_Xaml_Controls\TextBlockControl\TextBlock_Style_Inheritance.xaml.cs">
+      <DependentUpon>TextBlock_Style_Inheritance.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="C:\src\Uno\src\SamplesApp\UITests.Shared\Windows_UI_Xaml_Controls\TextBlockControl\TextBlock_TextAlignment.xaml.cs">
+      <DependentUpon>TextBlock_TextAlignment.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="C:\src\Uno\src\SamplesApp\UITests.Shared\Windows_UI_Xaml_Controls\TextBlockControl\TextBlock_TextTrimming_VerticalAlignment_Stretch.xaml.cs">
+      <DependentUpon>TextBlock_TextTrimming_VerticalAlignment_Stretch.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="C:\src\Uno\src\SamplesApp\UITests.Shared\Windows_UI_Xaml_Controls\TextBlockControl\TextBlock_UpdatePerformance.xaml.cs">
+      <DependentUpon>TextBlock_UpdatePerformance.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="C:\src\Uno\src\SamplesApp\UITests.Shared\Windows_UI_Xaml_Controls\TextBlockControl\TextBoxSizeChanging.xaml.cs">
+      <DependentUpon>TextBoxSizeChanging.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="C:\src\Uno\src\SamplesApp\UITests.Shared\Windows_UI_Xaml_Controls\TextBlockControl\TextBoxSizeChangingInlines.xaml.cs">
+      <DependentUpon>TextBoxSizeChangingInlines.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="C:\src\Uno\src\SamplesApp\UITests.Shared\Windows_UI_Xaml_Controls\TextBlockControl\TextBox_Size_Changing.xaml.cs">
+      <DependentUpon>TextBox_Size_Changing.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="C:\src\Uno\src\SamplesApp\UITests.Shared\Windows_UI_Xaml_Controls\TextBlockControl\TextBox_Size_Changing_Inlines.xaml.cs">
+      <DependentUpon>TextBox_Size_Changing_Inlines.xaml</DependentUpon>
     </Compile>
     <Compile Update="C:\s\nv.github\uno-2\src\SamplesApp\UITests.Shared\Windows_UI_Xaml\UIElementTests\Arrange_Performance01.xaml.cs">
       <DependentUpon>Arrange_Performance01.xaml</DependentUpon>

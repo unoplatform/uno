@@ -4,7 +4,8 @@
 
 ### Features
 * Add support for `CurrentInputMethodLanguageTag` and `TrySetInputMethodLanguageTag` on Android, iOS and WASM
-* Add support for the following `DisplayInformation` properties on iOS and Android:
+* Add support for `ChatMessageManager.ShowComposeSmsMessageAsync` (and `ChatMessage` `Body` and `Recipients` properties) on iOS and Android
+* Add support for the following `DisplayInformation` properties on iOS and Android:   
     - CurrentOrientation
     - LogicalDpi
     - NativeOrientation
@@ -38,6 +39,9 @@
 * WebAssembly UI tests are now integrated in the CI
 * Enable support for macOS head development
 * [Wasm] Add NativeXXX styles (which are aliases to the XamlXXX styles)
+* [Wasm] Enable persistence for all ApplicationData folders
+* [Wasm] Add Samples App UI Screenshots diffing tool with previous builds
+* Add `PasswordVault` on supported platfrosm
 
 ### Breaking Changes
 * The `WebAssemblyRuntime.InvokeJSUnmarshalled` method with three parameters has been removed.
@@ -64,6 +68,16 @@
 * 151674 [iOS] Add ability to replay a finished video from media player
 * 151524 [Android] Cleaned up Textbox for android to remove keyboard showing/dismissal inconsistencies
 * Fix invalid code generation for `x:Name` entries on `Style` in resources
+* [Wasm] Fix incorrect `TextBlock` measure with constrains
+* 151676 [iOS] The keyboard is closing when tap on the webview or toolbar
+* 151655 [TimePicker][iOS] First time you open time picker it initializes the existing value to current time
+* 151656 [TimePicker][iOS] Time picker always shows +1 minute than selected value
+* 151657 [DatePicker][iOS] Date picker flyout displays 1 day earlier than selected value
+* 151430 [Android] Prevent touch event being dispatched to invisible view
+* Fixed overflow errors in Grid.Row/Column and Grid.RowSpan may fail in the Grid layouter.
+* 151547 Fix animation not applied correctly within transformed hierarchy
+* Setting the `.SelectedValue` on a `Selector` now update the selection and the index
+* [WASM] Fix ListView contents not remeasuring when ItemsSource changes.
 
 ## Release 1.44.0
 

@@ -6,88 +6,86 @@ using System;
 
 namespace Windows.Storage
 {
-	public  partial class ApplicationData 
+	public sealed partial class ApplicationData 
 	{
-		private readonly static ApplicationData _instance ;
-
-		static ApplicationData()
-		{
-			_instance = new ApplicationData();
-			_instance.Initialize();
-		}
+		public static ApplicationData Current { get; } = new ApplicationData();
 
 		private ApplicationData()
 		{
+			LocalSettings = new ApplicationDataContainer(this, "Local", ApplicationDataLocality.Local);
+			RoamingSettings = new ApplicationDataContainer(this, "Roaming", ApplicationDataLocality.Roaming);
+
+			PartialCtor();
 		}
 
-		private void Initialize()
-		{
-			LocalFolder = new StorageFolder(GetLocalFolder());
-			RoamingFolder = new StorageFolder(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData));
-			LocalSettings = new ApplicationDataContainer("Local", ApplicationDataLocality.Local);
-			RoamingSettings = new ApplicationDataContainer("Roaming", ApplicationDataLocality.Roaming);
-		}
+		partial void PartialCtor();
 
-		public global::Windows.Storage.StorageFolder LocalFolder { get; private set; }
+		public StorageFolder LocalFolder { get; } = new StorageFolder(GetLocalFolder());
 
-		public global::Windows.Storage.ApplicationDataContainer LocalSettings { get; private set; }
+		public StorageFolder RoamingFolder { get; } = new StorageFolder(GetRoamingFolder());
 
-		public global::Windows.Storage.StorageFolder RoamingFolder { get; private set; }
+		public StorageFolder SharedLocalFolder { get; } = new StorageFolder(".shared", GetSharedLocalFolder());
 
-		public global::Windows.Storage.ApplicationDataContainer RoamingSettings { get; private set; }
+		public StorageFolder LocalCacheFolder { get; } = new StorageFolder(GetLocalCacheFolder());
+
+		public StorageFolder TemporaryFolder { get; } = new StorageFolder(GetTemporaryFolder());
+
+		public ApplicationDataContainer LocalSettings { get; }
+
+		public ApplicationDataContainer RoamingSettings { get; }
+
 
 		[Uno.NotImplemented]
 		public ulong RoamingStorageQuota => 0;
 		
-		public  global::Windows.Storage.StorageFolder TemporaryFolder 
-			=> new StorageFolder(GetTemporaryFolder());
 
 		[Uno.NotImplemented]
 		public uint Version => 0;
-		
-		public  global::Windows.Storage.StorageFolder LocalCacheFolder => new StorageFolder(GetLocalCacheFolder());
 
-		public  global::Windows.Storage.StorageFolder SharedLocalFolder 
-			=> new StorageFolder(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), ".shared");
-
-		public static global::Windows.Storage.ApplicationData Current => _instance;
-		
-		public  global::Windows.Foundation.IAsyncAction SetVersionAsync( uint desiredVersion,  global::Windows.Storage.ApplicationDataSetVersionHandler handler)
+		[Uno.NotImplemented]
+		public Foundation.IAsyncAction SetVersionAsync( uint desiredVersion,  ApplicationDataSetVersionHandler handler)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncAction ApplicationData.SetVersionAsync(uint desiredVersion, ApplicationDataSetVersionHandler handler) is not implemented in Uno.");
-		}
-		
-		public  global::Windows.Foundation.IAsyncAction ClearAsync()
-		{
-			throw new global::System.NotImplementedException("The member IAsyncAction ApplicationData.ClearAsync() is not implemented in Uno.");
-		}
-		
-		public  global::Windows.Foundation.IAsyncAction ClearAsync( global::Windows.Storage.ApplicationDataLocality locality)
-		{
-			throw new global::System.NotImplementedException("The member IAsyncAction ApplicationData.ClearAsync(ApplicationDataLocality locality) is not implemented in Uno.");
-		}
-		
-		public  void SignalDataChanged()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.ApplicationData", "void ApplicationData.SignalDataChanged()");
-		}
-		
-		public  global::Windows.Storage.StorageFolder GetPublisherCacheFolder( string folderName)
-		{
-			throw new global::System.NotImplementedException("The member StorageFolder ApplicationData.GetPublisherCacheFolder(string folderName) is not implemented in Uno.");
-		}
-		
-		public  global::Windows.Foundation.IAsyncAction ClearPublisherCacheFolderAsync( string folderName)
-		{
-			throw new global::System.NotImplementedException("The member IAsyncAction ApplicationData.ClearPublisherCacheFolderAsync(string folderName) is not implemented in Uno.");
-		}
-		
-		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.ApplicationData> GetForUserAsync( global::Windows.System.User user)
-		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<ApplicationData> ApplicationData.GetForUserAsync(User user) is not implemented in Uno.");
+			throw new NotImplementedException("The member IAsyncAction ApplicationData.SetVersionAsync(uint desiredVersion, ApplicationDataSetVersionHandler handler) is not implemented in Uno.");
 		}
 
-		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Storage.ApplicationData, object> DataChanged;
+		[Uno.NotImplemented]
+		public Foundation.IAsyncAction ClearAsync()
+		{
+			throw new NotImplementedException("The member IAsyncAction ApplicationData.ClearAsync() is not implemented in Uno.");
+		}
+
+		[Uno.NotImplemented]
+		public Foundation.IAsyncAction ClearAsync( ApplicationDataLocality locality)
+		{
+			throw new NotImplementedException("The member IAsyncAction ApplicationData.ClearAsync(ApplicationDataLocality locality) is not implemented in Uno.");
+		}
+
+		[Uno.NotImplemented]
+		public void SignalDataChanged()
+		{
+			Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.ApplicationData", "void ApplicationData.SignalDataChanged()");
+		}
+
+		[Uno.NotImplemented]
+		public  StorageFolder GetPublisherCacheFolder( string folderName)
+		{
+			throw new NotImplementedException("The member StorageFolder ApplicationData.GetPublisherCacheFolder(string folderName) is not implemented in Uno.");
+		}
+
+		[Uno.NotImplemented]
+		public Foundation.IAsyncAction ClearPublisherCacheFolderAsync( string folderName)
+		{
+			throw new NotImplementedException("The member IAsyncAction ApplicationData.ClearPublisherCacheFolderAsync(string folderName) is not implemented in Uno.");
+		}
+
+		[Uno.NotImplemented]
+		public static Foundation.IAsyncOperation<ApplicationData> GetForUserAsync( System.User user)
+		{
+			throw new NotImplementedException("The member IAsyncOperation<ApplicationData> ApplicationData.GetForUserAsync(User user) is not implemented in Uno.");
+		}
+
+		[Uno.NotImplemented]
+		public event Foundation.TypedEventHandler<ApplicationData, object> DataChanged;
 	}
 }
 #endif

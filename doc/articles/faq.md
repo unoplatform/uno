@@ -355,7 +355,11 @@ This is part of the [Uno.SourceGeneration package](https://github.com/nventive/U
 
 ## How to persist data  with wasm? 
 
-For now, persistence is not yet configured, it's using the in-memory filesystem of emscripten, so this has to be worked on. For now, you can use standard File IO, but it won't persist yet
+For now, persistence is enable only for `ApplicationData.LocalFolder`, `ApplicationData.RoamingFolder` and `ApplicationData.SharedLocalFolder` folders. 
+You can write files in those folders using both `StorageFile` and `File.IO`. 
+Files that are located in other directories are going to use the in-memory filesystem of emscripten and won't be persisted.
+
+As `ApplicationData.LocalSettings` and `ApplicationData.RoamingSettings` are persisted in their respective folder, they are also persisted.
 
 ## Any pull to refresh on listview?
 
