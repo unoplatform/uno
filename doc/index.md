@@ -5,7 +5,7 @@ uid: front-page
 
 <section class="intro">
 <h1>Uno Platform Documentation</h1>
-<p>Build native apps for <strong>Mobile</strong> and <strong>Web</strong> using <strong>XAML</strong> and <strong>C#</strong>.</p>
+<p>Build Mobile, Desktop and WebAssembly apps with C# and XAML.</p>
 
 </section>
 
