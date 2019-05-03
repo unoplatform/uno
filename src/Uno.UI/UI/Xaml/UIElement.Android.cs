@@ -88,6 +88,13 @@ namespace Windows.UI.Xaml
 			};
 		}
 
+		protected override void ClearCaptures()
+		{
+			_pointCaptures.Clear();
+		}
+
+		protected override bool IsPointerCaptured => _pointCaptures.Any();
+
 		private bool HasHandler(RoutedEvent routedEvent)
 		{
 			return _eventHandlerStore.TryGetValue(routedEvent, out var handlers) && handlers.Any();

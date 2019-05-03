@@ -30,7 +30,6 @@ public abstract class UnoViewGroup
 	private boolean _isManagedLoaded;
 	private boolean _needsLayoutOnAttachedToWindow;
 
-	private boolean _isPointerCaptured;
 	private boolean _isPointInView;
 
 	private boolean _shouldBlockRequestFocus;
@@ -377,7 +376,7 @@ public abstract class UnoViewGroup
 			// Log.i(LOGTAG, _indent + "!_isEnabled: " + !_isEnabled);
 
 			// ignore all touches
-			setIsPointerCaptured(false);
+			clearCaptures();
 			return false;
 		}
 
@@ -511,7 +510,7 @@ public abstract class UnoViewGroup
 			parentUnoViewGroup.setChildIsUnoViewGroup(true);
 		}
 
-		if (!_isPointInView && !_isPointerCaptured)
+		if (!_isPointInView && !getIsPointerCaptured())
 		{
 			// Log.i(LOGTAG, _indent + "!_isPointInView: " + !_isPointInView);
 			return false;
@@ -580,22 +579,21 @@ public abstract class UnoViewGroup
 
 	private boolean tryHandleTouchEvent(MotionEvent e, boolean isPointInView, boolean wasPointInView, boolean isCurrentPointer)
 	{
-		return _gestureDetector != null && _gestureDetector.onTouchEvent(e, isPointInView, wasPointInView, _isPointerCaptured, isCurrentPointer);
+		return _gestureDetector != null && _gestureDetector.onTouchEvent(e, isPointInView, wasPointInView, getIsPointerCaptured(), isCurrentPointer);
 	}
 
 	private void tryClearCapture(MotionEvent e) {
 		int action = e.getAction();
 		if (action == MotionEvent.ACTION_UP || action == MotionEvent.ACTION_POINTER_UP || action == MotionEvent.ACTION_CANCEL) {
-			setIsPointerCaptured(false);
+			clearCaptures();
 		}
 	}
 
-	public final boolean getIsPointerCaptured() {
-		return _isPointerCaptured;
+	protected void clearCaptures(){
 	}
 
-	public final void setIsPointerCaptured(boolean value) {
-		_isPointerCaptured = value;
+	protected boolean getIsPointerCaptured() {
+		return false;
 	}
 
 	private UnoViewParent getParentUnoViewGroup()
