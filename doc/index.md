@@ -65,7 +65,7 @@ uid: front-page
 <p>How to contribute to the Uno Platform.</p>
 <span class="button turquoise">
 
-[Learn more](articles/debugging-uno-ui.md)
+[Learn more](articles/uno-development/debugging-uno-ui.md)
 
 </span>
 
