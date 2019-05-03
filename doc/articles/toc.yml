@@ -24,38 +24,38 @@
       href: uno-toolchain-telemetry.md
     - name: Migrate existing code
       href: howto-migrate-existing-code.md
-    - name: Individual features and controls
-      items: 
-      - name: Accessibility
-        href: features/working-with-accessibility.md
-      - name: Assets
-        href: features/working-with-assets.md
-      - name: Animations
-        href: features/working-with-animations.md
-      - name: Routed Events
-        href: features/routed-events.md
-      - name: Shapes & Brushes
-        href: features/shapes-and-brushes.md
-      - name: Speech Recognition
-        href: features/SpeechRecognition.md
-      - name: CommandBar
-        href: controls\working-with-commandbar.md
-      - name: ListView and GridView
-        href: controls\ListViewBase.md
-      - name: MapControl
-        href: controls\map-control-support.md
-      - name: MediaPlayerElement
-        href: controls\MediaPlayerElement.md
-      - name: Pivot
-        href: controls\Pivot.md
-      - name: ToggleSwitch
-        href: controls\ToggleSwitch.md
-    - name: Advanced
-      items:
-        - name: (Wasm) Handling custom HTML events
-          href: wasm-custom-events.md
-        - name: Using Uno Platform Controls in Xamarin.Forms
-          href: howto-use-uno-in-xamarin-forms.md
+- name: Using Uno - features and controls
+  items: 
+  - name: Accessibility
+    href: features/working-with-accessibility.md
+  - name: Assets
+    href: features/working-with-assets.md
+  - name: Animations
+    href: features/working-with-animations.md
+  - name: Routed Events
+    href: features/routed-events.md
+  - name: Shapes & Brushes
+    href: features/shapes-and-brushes.md
+  - name: Speech Recognition
+    href: features/SpeechRecognition.md
+  - name: CommandBar
+    href: controls\working-with-commandbar.md
+  - name: ListView and GridView
+    href: controls\ListViewBase.md
+  - name: MapControl
+    href: controls\map-control-support.md
+  - name: MediaPlayerElement
+    href: controls\MediaPlayerElement.md
+  - name: Pivot
+    href: controls\Pivot.md
+  - name: ToggleSwitch
+    href: controls\ToggleSwitch.md
+- name: Using Uno - advanced topics
+  items:
+    - name: (Wasm) Handling custom HTML events
+      href: wasm-custom-events.md
+    - name: Using Uno Platform Controls in Xamarin.Forms
+      href: howto-use-uno-in-xamarin-forms.md
 - name: Contributing to Uno
   items:
     - name: Building and debugging Uno.UI
