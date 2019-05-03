@@ -295,6 +295,8 @@ namespace Windows.UI.Xaml
 				_pointCaptures.Add(value);
 #if __WASM__
 				CapturePointerNative(value);
+#elif __ANDROID__
+				IsPointerCaptured = true;
 #endif
 			}
 			return true;
@@ -307,6 +309,8 @@ namespace Windows.UI.Xaml
 				_pointCaptures.Remove(value);
 #if __WASM__
 				ReleasePointerCaptureNative(value);
+#elif __ANDROID__
+				IsPointerCaptured = false;
 #endif
 			}
 			else
@@ -327,6 +331,8 @@ namespace Windows.UI.Xaml
 			{
 				ReleasePointerCaptureNative(pointer);
 			}
+#elif __ANDROID__
+				IsPointerCaptured = false;
 #endif
 			_pointCaptures.Clear();
 		}
