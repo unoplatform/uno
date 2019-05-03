@@ -5,7 +5,7 @@ uid: front-page
 
 <section class="intro">
 <h1>Uno Platform Documentation</h1>
-<p>Build native apps for <strong>Mobile</strong> and <strong>Web</strong> using <strong>XAML</strong> and <strong>C#</strong>.</p>
+<p>Build Mobile, Desktop and WebAssembly apps with C# and XAML.</p>
 
 </section>
 
@@ -65,7 +65,7 @@ uid: front-page
 <p>How to contribute to the Uno Platform.</p>
 <span class="button turquoise">
 
-[Learn more](articles/debugging-uno-ui.md)
+[Learn more](articles/uno-development/debugging-uno-ui.md)
 
 </span>
 
