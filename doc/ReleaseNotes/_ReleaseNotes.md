@@ -40,6 +40,7 @@
 * [Wasm] Add NativeXXX styles (which are aliases to the XamlXXX styles)
 * [Wasm] Enable persistence for all ApplicationData folders
 * [Wasm] Add Samples App UI Screenshots diffing tool with previous builds
+* 152504 [Android] Pointer captures weren't informing gestures of capture, fixes Slider capture issue
 
 ### Breaking Changes
 * The `WebAssemblyRuntime.InvokeJSUnmarshalled` method with three parameters has been removed.
