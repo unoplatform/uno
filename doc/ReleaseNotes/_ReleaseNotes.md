@@ -4,7 +4,7 @@
 
 ### Features
 * Add support for `ChatMessageManager.ShowComposeSmsMessageAsync` (and `ChatMessage` `Body` and `Recipients` properties) on iOS and Android
-* Add support for the following `DisplayInformation` properties on iOS and Android:   
+* Add support for the following `DisplayInformation` properties on iOS and Android:
     - CurrentOrientation
     - LogicalDpi
     - NativeOrientation
@@ -40,6 +40,7 @@
 * [Wasm] Add NativeXXX styles (which are aliases to the XamlXXX styles)
 * [Wasm] Enable persistence for all ApplicationData folders
 * [Wasm] Add Samples App UI Screenshots diffing tool with previous builds
+* Add `PasswordVault` on supported platfrosm
 * 152504 [Android] Pointer captures weren't informing gestures of capture, fixes Slider capture issue
 
 ### Breaking Changes
@@ -62,8 +63,8 @@
 * Adjust support for `StaticResource.ResourceKey`
 * 151081 [Android] Fix Keyboard not always dismissed when unfocusing a TextBox
 * [WASM] Support `not_wasm` prefix properly. (#784)
-* 151282 [iOS] Fixed Slider not responding on second navigation, fixed RemoveHandler for RoutedEvents removing all instances of handler 
-* 151497 [iOS/Android] Fixed Slider not responding, by ^ RemoveHandler fix for RoutedEvents 
+* 151282 [iOS] Fixed Slider not responding on second navigation, fixed RemoveHandler for RoutedEvents removing all instances of handler
+* 151497 [iOS/Android] Fixed Slider not responding, by ^ RemoveHandler fix for RoutedEvents
 * 151674 [iOS] Add ability to replay a finished video from media player
 * 151524 [Android] Cleaned up Textbox for android to remove keyboard showing/dismissal inconsistencies
 * Fix invalid code generation for `x:Name` entries on `Style` in resources
@@ -77,6 +78,7 @@
 * 151547 Fix animation not applied correctly within transformed hierarchy
 * Setting the `.SelectedValue` on a `Selector` now update the selection and the index
 * [WASM] Fix ListView contents not remeasuring when ItemsSource changes.
+* [WASM] Dismissable popup & flyout is closing when tapping on content.
 
 ## Release 1.44.0
 

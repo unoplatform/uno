@@ -244,7 +244,7 @@ public abstract class UnoViewGroup
 			_textBlockLayout.draw(canvas);
 		}
 
-		if (getIsAnimating()) {
+		if (getIsAnimationInProgress()) {
 			invalidateTransformedHierarchy();
 		}
 	}
@@ -905,8 +905,10 @@ public abstract class UnoViewGroup
 	 * 'damage' calculation for redrawing during an animation doesn't seem to take getChildStaticTransformation() into account, causing the
 	 * transformed position not to be updated.
 	 */
-	public void invalidateTransformedHierarchy() {
+	public boolean invalidateTransformedHierarchy() {
 		View view = this;
+
+		boolean didFindTransform = false;
 
 		while (view != null) {
 			boolean hasTransform = view instanceof UnoViewGroup && ((UnoViewGroup)view).getHasNonIdentityStaticTransformation();
@@ -921,12 +923,15 @@ public abstract class UnoViewGroup
 					view.invalidate();
 					// Invalidate animating view to ensure onDraw() is called again
 					this.invalidate();
+					didFindTransform = true;
 				}
 			}
 			else {
 				view = null;
 			}
 		}
+
+		return didFindTransform;
 	}
 
 	/**
@@ -978,11 +983,11 @@ public abstract class UnoViewGroup
 		return _isPointInView;
 	}
 
-	public boolean getIsAnimating() {
+	public boolean getIsAnimationInProgress() {
 		return _isAnimating;
 	}
 
-	public void setIsAnimating(boolean isAnimating) {
+	public void setIsAnimationInProgress(boolean isAnimating) {
 		_isAnimating = isAnimating;
 	}
 

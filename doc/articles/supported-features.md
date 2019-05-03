@@ -50,7 +50,7 @@
 - Text Independent trimming and wrapping
 - Text Character Spacing
 - Text Spans (Bold, Italic, Underline)
-- [Path & Shapes support](shapes-and-brushes.md)
+- [Path & Shapes support](features/shapes-and-brushes.md)
 - Updateable Shapes support
 - Image Brush support in shapes
 - `FontIcon` suport
@@ -125,7 +125,7 @@
 - Support for StateTriggers
 - ProgressBar
 - Pointer Events
-- [Routed Events](routed-events.md)
+- [Routed Events](features/routed-events.md)
 - GeneralTransform.TransformBounds
 - Window.Services.Store (Store ID and links)
 - Windows.ApplicationModel.Package (InstallDate)
