@@ -51,7 +51,7 @@ namespace Windows.UI.Xaml.Media.Animation
 				{
 					if (view is UnoViewGroup uvg)
 					{
-						uvg.IsAnimating = true;
+						uvg.IsAnimationInProgress = true;
 					}
 				}
 
@@ -59,7 +59,7 @@ namespace Windows.UI.Xaml.Media.Animation
 				{
 					if (view is UnoViewGroup uvg)
 					{
-						uvg.IsAnimating = false;
+						uvg.IsAnimationInProgress = false;
 					}
 				}
 			}

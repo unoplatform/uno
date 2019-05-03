@@ -76,12 +76,15 @@ jobs:
       createLogFile: false
 
   - script: |
-      src\Uno.UI.TestComparer\bin\Release\net461\Uno.UI.TestComparer.exe "azdo" "$(UITestsCompare_PAT)" "$(build.artifactstagingdirectory)" "%SYSTEM_PULLREQUEST_TARGETBRANCH%" "wasm-uitests" "$(Build.DefinitionName)" "$(System.TeamProject)" "$(System.TeamFoundationCollectionUri)" "$(Build.BuildId)" "10"
-
+      src\Uno.UI.TestComparer\bin\Release\net461\Uno.UI.TestComparer.exe "azdo" "$(UITestsCompare_PAT)" "$(build.artifactstagingdirectory)" "%GIT_SOURCEBRANCH%" "%GIT_TARGETBRANCH%" "wasm-uitests" "$(Build.DefinitionName)" "$(System.TeamProject)" "$(System.TeamFoundationCollectionUri)" "$(Build.BuildId)" "3"
+      
+    env:
+      GIT_TARGETBRANCH: "$(System.PullRequest.TargetBranch)"
+      GIT_SOURCEBRANCH: "$(Build.SourceBranch)"
     displayName: 'Compare UI Tests screenshots'
 
   - task: PublishBuildArtifacts@1
     inputs:
       PathtoPublish: $(build.artifactstagingdirectory)
-      ArtifactName: wasm-uitests
+      ArtifactName: wasm-uitests-compare-results
       ArtifactType: Container

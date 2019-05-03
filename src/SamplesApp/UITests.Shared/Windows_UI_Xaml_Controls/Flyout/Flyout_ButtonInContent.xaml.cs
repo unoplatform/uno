@@ -1,0 +1,20 @@
+﻿using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
+using Uno.UI.Samples.Controls;
+
+namespace UITests.Shared.Windows_UI_Xaml_Controls.Flyout
+{
+	[SampleControlInfo("Flyout", "Flyout_ButtonInContent")]
+	public sealed partial class Flyout_ButtonInContent : Page
+	{
+		public Flyout_ButtonInContent()
+		{
+			this.InitializeComponent();
+		}
+
+		private void Button_Click(object sender, RoutedEventArgs e)
+		{
+			output.Text += "Button clicked\n";
+		}
+	}
+}
