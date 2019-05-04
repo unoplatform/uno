@@ -3,13 +3,20 @@
 ## Prerequisites
 * [**Visual Studio 2017 15.5 or later**](https://visualstudio.microsoft.com/), with:
     * **Universal Windows Platform component** installed
+
     ![visual-studio-installer-uwp](Assets/quick-start/vs-install-uwp.png)
+
 	* **Xamarin component** installed
+
     ![visual-studio-installer-xamarin](Assets/quick-start/vs-install-xamarin.png)
+
+    *
         * the iOS Remote Simulator installed (for iOS development)
 	    * A working Mac with Visual Studio for Mac, XCode 8.2 or later installed (for iOS development)
 	    * Google's Android x86 emulators or a physical Android device (for Android development)
+
     * **ASP.NET/web component** installed, along with .NET Core 2.2 (for WASM development)
+
     ![visual-studio-installer-web](Assets/quick-start/vs-install-web.png)
 
 ## Create an application from the solution template
