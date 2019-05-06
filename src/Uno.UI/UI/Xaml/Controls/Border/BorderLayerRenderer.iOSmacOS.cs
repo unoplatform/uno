@@ -261,8 +261,8 @@ namespace Windows.UI.Xaml.Shapes
 						{
 							l.LineWidth = (nfloat)borderThickness.Top;
 							var lineWidthAdjust = (nfloat)(borderThickness.Top / 2);
-							path.MoveToPoint(area.X, area.Y + lineWidthAdjust);
-							path.AddLineToPoint(area.X + area.Width, area.Y + lineWidthAdjust);
+							path.MoveToPoint(area.X + (nfloat)borderThickness.Left, area.Y + lineWidthAdjust);
+							path.AddLineToPoint(area.X + area.Width - (nfloat)borderThickness.Right, area.Y + lineWidthAdjust);
 							path.CloseSubpath();
 						});
 					}
@@ -273,8 +273,8 @@ namespace Windows.UI.Xaml.Shapes
 						{
 							l.LineWidth = (nfloat)borderThickness.Bottom;
 							var lineWidthAdjust = borderThickness.Bottom / 2;
-							path.MoveToPoint(area.X, (nfloat)(area.Y + area.Height - lineWidthAdjust));
-							path.AddLineToPoint(area.X + area.Width, (nfloat)(area.Y + area.Height - lineWidthAdjust));
+							path.MoveToPoint(area.X + (nfloat)borderThickness.Left, (nfloat)(area.Y + area.Height - lineWidthAdjust));
+							path.AddLineToPoint(area.X + area.Width - (nfloat)borderThickness.Right, (nfloat)(area.Y + area.Height - lineWidthAdjust));
 							path.CloseSubpath();
 						});
 					}
