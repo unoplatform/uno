@@ -80,6 +80,7 @@
 * Setting the `.SelectedValue` on a `Selector` now update the selection and the index
 * [WASM] Fix ListView contents not remeasuring when ItemsSource changes.
 * [WASM] Dismissable popup & flyout is closing when tapping on content.
+* 145374 [Android] fixed android keyboard stays open on AppBarButton click
 
 ## Release 1.44.0
 
