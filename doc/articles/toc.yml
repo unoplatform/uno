@@ -54,6 +54,9 @@
     href: controls\Pivot.md
   - name: ToggleSwitch
     href: controls\ToggleSwitch.md
+- name: Using Uno - implemented views
+  href: implemented/toc.yml
+  topicHref: implemented-views.md
 - name: Using Uno - advanced topics
   items:
     - name: (Wasm) Handling custom HTML events
