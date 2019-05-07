@@ -179,22 +179,17 @@ namespace Uno.UWPSyncGenerator
 						continue;
 					}
 
-					if (showLinks)
+					using (_sb.Table(group.Key.ToDisplayString(), ""))
 					{
-						using (_sb.Table(group.Key.ToDisplayString(), "", ""))
-						{
-							foreach (var type in group.Where(appendCondition).OrderBy(ps => ps.UAPSymbol.Name))
-							{
-								_sb.AppendRow(type.UAPSymbol.Name, MarkdownStringBuilder.Hyperlink("properties, methods, events", $"{GetImplementedMembersFilename(type.UAPSymbol)}"), MarkdownStringBuilder.Hyperlink("uwp doc", @"https://docs.microsoft.com/en-us/uwp/api/" + type.UAPSymbol.ToDisplayString().ToLowerInvariant()));
-							}
-						}
-					}
-					else
-					{
-						using (_sb.Table(group.Key.ToDisplayString(), "", ""))
-						{
-							_sb.AppendCells(group.Where(appendCondition).Select(ps => ps.UAPSymbol.Name).OrderBy(n => n).ToList());
-						}
+						var cells = group
+							.Where(appendCondition)
+							.OrderBy(ps => ps.UAPSymbol.Name)
+							.Select(ps => showLinks ?
+								MarkdownStringBuilder.Hyperlink(ps.UAPSymbol.Name, GetImplementedMembersFilename(ps.UAPSymbol)) :
+								ps.UAPSymbol.Name
+							)
+							.ToList();
+						_sb.AppendCells(cells);
 					}
 				};
 			}
