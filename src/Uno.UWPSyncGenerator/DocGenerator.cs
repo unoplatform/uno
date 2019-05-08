@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
 using Uno.Extensions;
+using static Uno.UWPSyncGenerator.MarkdownStringBuilder;
 
 namespace Uno.UWPSyncGenerator
 {
@@ -42,7 +43,7 @@ namespace Uno.UWPSyncGenerator
 
 				_sb.AppendLine("This document has been automatically generated based on whether the type (member, etc) is present in authored code and, if so, whether it is marked with the `[NotImplemented]` attribute. ");
 
-				_sb.AppendParagraph($"If you notice incorrect or incomplete information here, please open an {MarkdownStringBuilder.Hyperlink("issue", "https://github.com/nventive/Uno/issues")}.");
+				_sb.AppendParagraph($"If you notice incorrect or incomplete information here, please open an {Hyperlink("issue", "https://github.com/nventive/Uno/issues")}.");
 
 				using (_sb.Section("Implemented - all platforms (iOS, Android, WebAssembly, MacOS)"))
 				{
@@ -67,7 +68,7 @@ namespace Uno.UWPSyncGenerator
 				}
 				using (_sb.Section("Not yet implemented"))
 				{
-					_sb.AppendParagraph($"If there's a specific control you'd like to see implemented, {MarkdownStringBuilder.Hyperlink("create an issue!", "https://github.com/nventive/Uno/issues")}");
+					_sb.AppendParagraph($"If there's a specific control you'd like to see implemented, {Hyperlink("create an issue!", "https://github.com/nventive/Uno/issues")}");
 
 					AppendTypes(ps => ps.ImplementedForMain == ImplementedFor.None, false);
 				}
@@ -111,12 +112,12 @@ namespace Uno.UWPSyncGenerator
 						{
 							_sb.AppendParagraph($"*Implemented for:* {ToDisplayString(view.ImplementedForMain)}");
 
-							_sb.AppendParagraph($"This document lists all properties, methods, and events of {formattedViewName} that are currently implemented in Uno. See the {MarkdownStringBuilder.Hyperlink("UWP documentation", @"https://docs.microsoft.com/en-us/uwp/api/" + view.UAPSymbol.ToDisplayString().ToLowerInvariant())} for help using {formattedViewName}. ");
+							_sb.AppendParagraph($"This document lists all properties, methods, and events of {formattedViewName} that are currently implemented in Uno. See the {Hyperlink("UWP documentation", @"https://docs.microsoft.com/en-us/uwp/api/" + view.UAPSymbol.ToDisplayString().ToLowerInvariant())} for help using {formattedViewName}. ");
 
 							var customDocLink = GetCustomDocLink(viewName);
 							if (customDocLink != null)
 							{
-								_sb.AppendParagraph($"{formattedViewName} has Uno-specific documentation {MarkdownStringBuilder.Hyperlink("here", customDocLink)}.");
+								_sb.AppendParagraph($"{formattedViewName} has Uno-specific documentation {Hyperlink("here", customDocLink)}.");
 							}
 
 							var properties = view.UAPSymbol.GetMembers().OfType<IPropertySymbol>().Select(p => GetAllMatchingPropertyMember(view, p)).ToArray();
@@ -209,7 +210,7 @@ namespace Uno.UWPSyncGenerator
 							.Where(appendCondition)
 							.OrderBy(ps => ps.UAPSymbol.Name)
 							.Select(ps => showLinks ?
-								MarkdownStringBuilder.Hyperlink(ps.UAPSymbol.Name, GetImplementedMembersFilename(ps.UAPSymbol)) :
+								Hyperlink(ps.UAPSymbol.Name, GetImplementedMembersFilename(ps.UAPSymbol)) :
 								ps.UAPSymbol.Name
 							)
 							.ToList();
@@ -257,7 +258,7 @@ namespace Uno.UWPSyncGenerator
 			if (uniqueBaseTypes.Length == 1)
 			{
 				var tuple = uniqueBaseTypes.Single();
-				return MarkdownStringBuilder.Hyperlink(tuple.Item1, GetLinkTarget(tuple));
+				return Hyperlink(tuple.Item1, GetLinkTarget(tuple));
 			}
 			else
 			{
@@ -266,7 +267,7 @@ namespace Uno.UWPSyncGenerator
 				{
 					var link = GetLinkTarget(tuple);
 					var name = link != null ?
-						MarkdownStringBuilder.Hyperlink(tuple.Item1, link) :
+						Hyperlink(tuple.Item1, link) :
 						tuple.Item1;
 					var matchingPlatforms = AllSymbols()
 						.Where(s => s.Symbol != null)
