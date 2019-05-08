@@ -39,9 +39,9 @@ namespace Uno.UWPSyncGenerator
 
 			using (_sb.Section("List of views implemented in Uno"))
 			{
-				_sb.AppendParagraph("All views in the UWP API are listed here according to whether they have been implemented for Uno. The implementation status of properties, methods, and events for individual view types is listed under each type.");
+				_sb.AppendParagraph("The Uno.UI assembly includes all types and members from the UWP API (as of the Windows 10 October 2018 Update (17763)). Only some of these are actually implemented. The remainder are marked with the `[NotImplemented]` attribute and will throw an exception at runtime if used.");
 
-				_sb.AppendLine("This document has been automatically generated based on whether the type (member, etc) is present in authored code and, if so, whether it is marked with the `[NotImplemented]` attribute. ");
+				_sb.AppendParagraph("This page lists controls that are currently implemented in Uno. Navigate to individual control entries to see which properties, methods, and events are implemented for a given control.");
 
 				_sb.AppendParagraph($"If you notice incorrect or incomplete information here, please open an {Hyperlink("issue", "https://github.com/nventive/Uno/issues")}.");
 
