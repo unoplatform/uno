@@ -264,6 +264,8 @@ namespace Uno.UI.Controls
 
 		private void Native_MenuItemClick(object sender, Toolbar.MenuItemClickEventArgs e)
 		{
+			ClearCurrentFocus();
+
 			var hashCode = e.Item.ItemId;
 			var appBarButton = Element.PrimaryCommands
 				.Concat(Element.SecondaryCommands)
@@ -275,6 +277,8 @@ namespace Uno.UI.Controls
 
 		private void Native_NavigationClick(object sender, Toolbar.NavigationClickEventArgs e)
 		{
+			ClearCurrentFocus();
+
 			var navigationCommand = Element.GetValue(NavigationCommandProperty) as AppBarButton;
 			if (navigationCommand != null)
 			{
@@ -283,6 +287,14 @@ namespace Uno.UI.Controls
 			else
 			{
 				SystemNavigationManager.GetForCurrentView().RequestBack();
+			}
+		}
+
+		private void ClearCurrentFocus()
+		{
+			if ((ContextHelper.Current as Activity)?.CurrentFocus is View focused)
+			{
+				focused.ClearFocus();
 			}
 		}
 	}
