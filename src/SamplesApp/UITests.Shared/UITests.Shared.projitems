@@ -2997,9 +2997,6 @@
     <Compile Update="C:\s\nv.github\uno\src\SamplesApp\UITests.Shared\Windows_UI_Xaml_Controls\CommandBar\CommandBar_With_Long_Sentences.xaml.cs">
       <DependentUpon>CommandBar_With_Long_Sentences.xaml</DependentUpon>
     </Compile>
-    <Compile Update="C:\work\project\Uno\src\SamplesApp\UITests.Shared\Windows_UI_Xaml_Controls\ListView\ListView_ElementBinding - 复制.xaml.cs">
-      <DependentUpon>ListView_ElementBinding - 复制.xaml</DependentUpon>
-    </Compile>
     <Compile Update="C:\work\project\Uno\src\SamplesApp\UITests.Shared\Windows_UI_Xaml_Controls\ListView\ListView_ElementBinding.xaml.cs">
       <DependentUpon>ListView_ElementBinding.xaml</DependentUpon>
     </Compile>
