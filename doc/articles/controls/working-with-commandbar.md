@@ -830,7 +830,7 @@ You can show an image under a `CommandBar` by making its background transparent 
 </Grid>
 ```
 
-![](Assets\CommandBar\ios\transparent.png)
+![](Assets/CommandBar/ios/transparent.png)
 
 ## What size should my AppBarButton icons be?
 

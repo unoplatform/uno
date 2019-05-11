@@ -47,6 +47,7 @@ namespace Windows.UI.Xaml.Controls
 				if (isActive.Value)
 				{
 					progressRing.Visibility = Visibility.Visible;
+					progressRing.Invalidate();
 				}
 				else
 				{
@@ -63,7 +64,12 @@ namespace Windows.UI.Xaml.Controls
 			}
 
 			// This is required for progress ring to visually update when inside transformed ancestor on hardware-accelerated devices
-			((this as View).Parent as UnoViewGroup).InvalidateTransformedHierarchy();
+			var didInvalidate = ((this as View).Parent as UnoViewGroup).InvalidateTransformedHierarchy();
+			if (didInvalidate)
+			{
+				// Invalidate self to ensure OnDraw() is called as long as transform is applied
+				Invalidate();
+			}
 		}
 	}
 }

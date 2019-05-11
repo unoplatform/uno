@@ -448,12 +448,12 @@ namespace Windows.UI.Xaml.Controls
 
 					if (physicalBorderThickness.Top != 0)
 					{
-						var adjustY = physicalBorderThickness.Top / 2;
+						var adjustY = (float)physicalBorderThickness.Top / 2;						
 
 						using (var line = new Path())
-						{
-							line.MoveTo(0, (float)adjustY);
-							line.LineTo(viewSize.Width, (float)adjustY);
+						{						
+							line.MoveTo((float)physicalBorderThickness.Left, (float)adjustY); 
+							line.LineTo(viewSize.Width - (float)physicalBorderThickness.Right, (float)adjustY); 
 							line.Close();
 
 							var lineDrawable = new PaintDrawable();
@@ -493,11 +493,11 @@ namespace Windows.UI.Xaml.Controls
 					if (physicalBorderThickness.Bottom != 0)
 					{
 						var adjustY = physicalBorderThickness.Bottom / 2;
-
+						
 						using (var line = new Path())
 						{
-							line.MoveTo(0, (float)(viewSize.Height - adjustY));
-							line.LineTo(viewSize.Width, (float)(viewSize.Height - adjustY));
+							line.MoveTo((float)physicalBorderThickness.Left, (float)(viewSize.Height - adjustY));
+							line.LineTo(viewSize.Width - (float)physicalBorderThickness.Right, (float)(viewSize.Height - adjustY));
 							line.Close();
 
 							var lineDrawable = new PaintDrawable();
