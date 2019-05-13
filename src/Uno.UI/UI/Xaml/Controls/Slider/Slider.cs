@@ -138,9 +138,6 @@ namespace Windows.UI.Xaml.Controls
 				_verticalThumb.DragCompleted += OnDragCompleted;
 			}
 
-			// Add the gesture recognizer necessary for touch event captures on iOS
-			RegisterNativeHandlers();
-
 			return Disposable.Create(() =>
 			{
 				// Dispose of the thumbs event listeners
@@ -157,15 +154,8 @@ namespace Windows.UI.Xaml.Controls
 					_verticalThumb.DragDelta -= OnDragDelta;
 					_verticalThumb.DragCompleted -= OnDragCompleted;
 				}
-
-				// Get rid of the iOS gesture recognizer
-				UnregisterNativeHandlers();
 			});
 		}
-
-		partial void RegisterNativeHandlers();
-
-		partial void UnregisterNativeHandlers();
 
 		private void OnDragCompleted(object sender, DragCompletedEventArgs args)
 		{
