@@ -41,7 +41,6 @@
 * [Wasm] Enable persistence for all ApplicationData folders
 * [Wasm] Add Samples App UI Screenshots diffing tool with previous builds
 * Add `PasswordVault` on supported platfrosm
-* 152504 [Android] Pointer captures weren't informing gestures of capture, fixes Slider capture issue
 * [Android] Updated support libraries to 28.0.0.1 for Android 9
 
 ### Breaking Changes
@@ -82,6 +81,8 @@
 * [WASM] Fix ListView contents not remeasuring when ItemsSource changes.
 * [WASM] Dismissable popup & flyout is closing when tapping on content.
 * 145374 [Android] fixed android keyboard stays open on AppBarButton click
+* 152504 [Android] Pointer captures weren't informing gestures of capture, fixes Slider capture issue
+* 148896 [iOS] TextBlock CarriageReturns would continue past maxlines property 
 
 ## Release 1.44.0
 
