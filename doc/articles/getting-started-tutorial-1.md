@@ -5,7 +5,7 @@ description: How to get started developing Cross Platform apps with Uno
 
 # Create a Single Page App with Uno
 
-[Download Sample](https://github.com/nventive/Uno.QuickStart)
+[Download Sample](https://github.com/nventive/Uno.GettingStarted)
 
 In this tutorial you will learn how to:
 
