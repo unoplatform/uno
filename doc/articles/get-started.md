@@ -43,6 +43,10 @@ If XAML Intellisense isn't working on a freshly-created project, try the followi
 3. Close and reopen Visual Studio.
 4. Reopen XAML documents.
 
+### Creating an app with Uno - tutorial
+
+See the [Creating an App tutorial](getting-started-tutorial-1.md) for a step-by-step guide to creating a working app with Uno.
+
 ## Next steps
 
 * The Uno Platform promotes a 'UWP-first' development approach. Microsoft's [documentation](https://docs.microsoft.com/en-us/windows/uwp/develop/) on the UWP framework is an essential resource.

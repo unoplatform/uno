@@ -1,5 +1,5 @@
 ---
-title: Quickstart - Creating a Single Page App with Uno
+title: Tutorial - Creating a Single Page App with Uno
 description: How to get started developing Cross Platform apps with Uno
 ---
 
@@ -7,13 +7,13 @@ description: How to get started developing Cross Platform apps with Uno
 
 [Download Sample](https://github.com/nventive/Uno.QuickStart)
 
-In this quickstart you will learn how to:
+In this tutorial you will learn how to:
 
 - Add the Uno Project Templates to Visual Studio
 - Create a new Project with Uno
 - Learn basics on Model Binding
 
-The quickstart walks through creating cross platform application with Uno, which enables you to see a single Issue entry.
+The tutorial walks through creating a cross platform application with Uno, which enables you to see a single Issue entry.
 
 ### Prerequisites
 
@@ -58,7 +58,7 @@ For more information about these prerequisites, see [Installing Xamarin](https:/
     ![](Assets/tutorial01/newproject3.PNG)
 
     > [!IMPORTANT]
-    > The C# and XAML snippets in this quickstart requires that the solution is named **BugTracker**. Using a different name will result in build errors when you copy code from this quickstart into the solution.
+    > The C# and XAML snippets in this tutorial requires that the solution is named **BugTracker**. Using a different name will result in build errors when you copy code from this tutorial into the solution.
 
 1. Right click on the Solution and select `Manage NuGet Packages for Solution` from the context menu.
 
@@ -399,17 +399,14 @@ For more information about these prerequisites, see [Installing Xamarin](https:/
 
 1. Build and run the project on each platform.
 
-    You will notice as you make changes to the effort slider the Radial Gauge both moves and updates the color of the Trail. As you make changes to the Issue type you will also see the indicator in the upper left hand corner changing colors as well.
+    You will notice as you make changes to the Issue type, you will see the indicator in the upper left hand corner changing colors as well.
 
 ## Next steps
 
-In this quickstart, you have learned how to:
+In this tutorial, you have learned how to:
 
 - Add the Uno Project Templates to Visual Studio
 - Create a new Project with Uno
 - Learn basics on Model Binding
 
-To see how we can create a list of pages, navigate between them passing parameters, and store our issues continue to the next quickstart.
-
-> [!div class="nextstepaction"]
-> [Next](quickstart-navigation.md)
+Coming soon: see how we can create a list of pages, navigate between them passing parameters, and store our issues.
