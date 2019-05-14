@@ -6,7 +6,7 @@ This allows the use the UWP tooling from Windows in Visual Studio, such as XAML 
 The XAML User Interface (UI) provides the ability to display the same XAML files on Windows, iOS, Android and WebAssembly platforms. Uno also provides support for the MVVM pattern on all platforms, with binding, styling, control and data-templating features.
 As the Uno Platform provides all of the APIs of the complete UWP platform, any UWP library can be compiled on top of Uno (e.g. XamlBehaviors), with the ability to determine which APIs are implemented or not via the IDE using C# Analyzers.
 
-## What does UNO Platform do?
+## What does Uno Platform do?
 
 **For users**, it can provide can provide a consistent experience across platforms, particularly between mobile and desktop browsers.
 
@@ -14,7 +14,7 @@ As the Uno Platform provides all of the APIs of the complete UWP platform, any U
 
 **For designers**, XAML can provide a shared way to use pixel-perfect designs and use rich UI interactions.
 
-## Why Uno ?
+## Why Uno?
 Developing for Windows (phone, desktop, tablet, XBox), iOS (tablet and phone), Android (tablet and phone) and the Web via WebAssembly at once can be a complex process, especially when it comes to the user interface. Each platform has its own ways of defining dynamic layouts, with some being more efficient, some more verbose, some more elegant, and some more performant than others.
 Yet, being able to master all these frameworks at once is a particularly difficult task, because of the amount of platform-specific knowledge required to master each platform. Most of the time it boils down to different teams developing the same application multiple times, with each requiring a full development cycle.
 With Xamarin, C# comes to all these platforms; however, it only provides transparent translations of the UI frameworks available for iOS and Android. Most non-UI code can be shared, but when it comes to the UI, almost nothing can be shared.
@@ -22,10 +22,10 @@ To avoid having to learn the UI-layout techniques and approaches for each platfo
 Uno.UI provides the ability for developers to reuse known layout and coding techniques on all platforms, resulting in a gain of overall productivity when creating UI-rich applications.
 
 
-## Who makes UNO platform?
+## Who makes Uno Platform?
 Uno Platform was created by Team nventive over the past 4 years.
 
-## What makes UNO Platform unique?
+## What makes Uno Platform unique?
 The Uno Platform is the only implementation of the UWP API that runs across iOS, Android and WebAssembly. 
 
 ## Is Uno Platform open source?
@@ -102,7 +102,7 @@ Yes, those are called Templated Controls in the UWP dialect, because they inheri
 Yes, use the [VisibleBoundsPadding](https://github.com/nventive/Uno/blob/master/src/Uno.UI.Toolkit/VisibleBoundsPadding.md)
 behavior to manage the _notch_ correctly.
 
-## What features will UNO Platform support?
+## What features will Uno Platform support?
 
 The end goal is to implement most features of the UWP API, but the [road map article](roadmap.md) details what is upcoming.
 
@@ -317,7 +317,7 @@ It's an existing issue, caused by Roslyn. You must add all your TargetFrameworks
 
 That's exactly right, see [this](https://github.com/nventive/Uno/blob/a69879a3154f61b2d493be433aa08bc3b8aa1b06/src/Uno.UI/UI/Xaml/Style/Generic/Generic.xaml#L2843) for the XAML-UWP button, and [this](https://github.com/nventive/Uno/blob/a69879a3154f61b2d493be433aa08bc3b8aa1b06/src/Uno.UI/UI/Xaml/Style/Generic/Generic.Native.xaml#L20) for the iOS native button When complete XAML is used for rendering, it's not so much a conversion but more of  a vector rendering. For instance, Uno.UI.iOS uses CGLayer for rendering content it's different because Uno.UI integrates within the layouting system of the platform, which allows for mixed rendering. Uno.UI supports webviews, whereas Flutter does not. Flutter also has to render everything, including what the platform provides by default, such as the Magnifier in the TextBox for accessibility (this is not yet supported either).
 
-## Can I have a screen, use a Map and put markers, using UNO, for Android, and Windows 10?
+## Can I have a screen, use a Map and put markers, using Uno, for Android, and Windows 10?
 > And can I access the camera, take a picture and Post to a REST WebAPI? can I access Photos / files in phone?
 	
 For now, we have internal code to do all of that, but in the meantime, you have to do this by hand on each. Parts of https://docs.microsoft.com/en-us/xamarin/essentials/ allows to do it.
