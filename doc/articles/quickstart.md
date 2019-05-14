@@ -37,25 +37,25 @@ For more information about these prerequisites, see [Installing Xamarin](https:/
 
 1. Launch Visual Studio 2019, then click `Continue without code`. Click `Extensions` -> `Manage Extensions` from the Menu Bar.
 
-    ![](../images/manage-extensions.png)
+    ![](Assets/tutorial01/manage-extensions.png)
 
 1. In the Extension Manager expand the Online node and search for `Uno`. Download the `Uno Platform Solution Templates` extension and restart Visual Studio.
 
-    ![](../images/uno-extensions.PNG)
+    ![](Assets/tutorial01/uno-extensions.PNG)
 
 ## Getting Started
 
 1. Open Visual Studio 2019 and click on `Create new project`. 
 
-    ![](../images/newproject1.PNG)
+    ![](Assets/tutorial01/newproject1.PNG)
 
 1. Search for the `Uno` templates, select the `Cross-Platform App (Uno Platform)` then click `Next`.
 
-    ![](../images/newproject2.PNG)
+    ![](Assets/tutorial01/newproject2.PNG)
 
 1. In the `Configure your new project` window, set the `Project name` to `BugTracker`, choose where you would like to save your project and click the `Create` button.
 
-    ![](../images/newproject3.PNG)
+    ![](Assets/tutorial01/newproject3.PNG)
 
     > [!IMPORTANT]
     > The C# and XAML snippets in this quickstart requires that the solution is named **BugTracker**. Using a different name will result in build errors when you copy code from this quickstart into the solution.
@@ -70,7 +70,7 @@ For more information about these prerequisites, see [Installing Xamarin](https:/
 
 1. Add a Models folder in the Shared Project.
 
-    ![](../images/create-models-folder.png)
+    ![](Assets/tutorial01/create-models-folder.png)
 
 1. Add a new class and then paste in the following code:
 
