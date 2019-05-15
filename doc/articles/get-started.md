@@ -21,7 +21,7 @@
 
 ## Create an application from the solution template
 
-To easily create an multi-platform application:
+To easily create a multi-platform application:
 * Install the [Uno Solution Template Visual Studio Extension](https://marketplace.visualstudio.com/items?itemName=nventivecorp.uno-platform-addin)
 * Create a new C# solution using the **Cross-Platform App (Uno Platform)** template, from Visual Studio's **Start Page**:
 
@@ -50,6 +50,8 @@ See the [Creating an App tutorial](getting-started-tutorial-1.md) for a step-by-
 ![tutorial-screenshot](Assets/quick-start/tutorial-screenshot.png)
 
 ## Next steps
+
+* For code samples, check out the [Uno Gallery and Playground](https://github.com/nventive/Uno.Playground) repository.
 
 * The Uno Platform promotes a 'UWP-first' development approach. Microsoft's [documentation](https://docs.microsoft.com/en-us/windows/uwp/develop/) on the UWP framework is an essential resource.
 
