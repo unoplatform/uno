@@ -1941,11 +1941,17 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 							{
 								writer.AppendLineInvariant("// Key {0}", member.Value, member.Value);
 							}
-							else if (member.Member.Name == "DeferLoadStrategy")
-							{
-								writer.AppendLineInvariant("// DeferLoadStrategy {0}", member.Value);
-							}
-							else if (member.Member.Name == "Uid")
+                            else if (member.Member.Name == "DeferLoadStrategy"
+                                && member.Member.PreferredXamlNamespace == XamlConstants.XamlXmlNamespace)
+                            {
+                                writer.AppendLineInvariant("// DeferLoadStrategy {0}", member.Value);
+                            }
+                            else if (member.Member.Name == "Load"
+                                && member.Member.PreferredXamlNamespace == XamlConstants.XamlXmlNamespace)
+                            {
+                                writer.AppendLineInvariant("// Load {0}", member.Value);
+                            }
+                            else if (member.Member.Name == "Uid")
 							{
 								uidMember = member;
 							}
@@ -3393,10 +3399,11 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 		private IDisposable TryGenerateDeferedLoadStrategy(IIndentedStringBuilder writer, INamedTypeSymbol targetType, XamlObjectDefinition definition)
 		{
-			var strategy = FindMember(definition, "DeferLoadStrategy");
+            var strategy = FindMember(definition, "DeferLoadStrategy");
+            var loadElement = FindMember(definition, "Load");
 
-
-			if (!_isWasm && strategy?.Value?.ToString() == "Lazy")
+            if (strategy?.Value?.ToString().ToLowerInvariant() == "lazy"
+				|| loadElement?.Value?.ToString().ToLowerInvariant() == "false")
 			{
 				var visibilityMember = FindMember(definition, "Visibility");
 				var dataContextMember = FindMember(definition, "DataContext");
