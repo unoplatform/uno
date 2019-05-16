@@ -83,6 +83,7 @@
 * 145374 [Android] fixed android keyboard stays open on AppBarButton click
 * 152504 [Android] Pointer captures weren't informing gestures of capture, fixes Slider capture issue
 * 148896 [iOS] TextBlock CarriageReturns would continue past maxlines property 
+* [iOS] The `PointerReleased` event is not raised, so controls stay in pressed state.
 
 ## Release 1.44.0
 
