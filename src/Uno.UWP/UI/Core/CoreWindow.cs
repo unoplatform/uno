@@ -6,9 +6,17 @@ using Windows.Foundation.Metadata;
 
 namespace Windows.UI.Core
 {
-	public partial class CoreWindow 
+	public partial class CoreWindow
 	{
-		public global::Windows.UI.Core.CoreDispatcher Dispatcher
+		public CoreDispatcher Dispatcher
 			=> CoreDispatcher.Main;
+
+		[Uno.NotImplemented]
+		public CoreVirtualKeyStates GetAsyncKeyState(System.VirtualKey virtualKey)
+			=> CoreVirtualKeyStates.None;
+
+		[Uno.NotImplemented]
+		public CoreVirtualKeyStates GetKeyState(System.VirtualKey virtualKey)
+			=> CoreVirtualKeyStates.None;
 	}
 }
