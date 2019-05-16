@@ -104,6 +104,19 @@
                 reason="Removed to improve the C#/JS call performance"/>
       </Methods>
       
-    </IgnoreSet>  
+    </IgnoreSet>
+
+	<IgnoreSet baseVersion="1.44.1">
+	  <Types>
+		<Member fullName="Windows.UI.Xaml.UIElementExtensions"
+                reason="Moved to Uno.Extensions"/>
+	  </Types>
+
+	  <Methods>
+		<Member fullName="System.Boolean Uno.Foundation.WebAssemblyRuntime.InvokeJSUnmarshalled(System.String functionIdentifier, System.IntPtr arg0, System.IntPtr arg1, System.IntPtr arg2)"
+                reason="Removed to improve the C#/JS call performance"/>
+	  </Methods>
+
+	</IgnoreSet>
   </IgnoreSets>
 </DiffIgnore>

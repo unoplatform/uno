@@ -40,7 +40,7 @@ namespace Windows.UI.Xaml.Controls
 			CanWrap && CanTrim ||
 			CanWrap && MaxLines != 0;
 
-		private bool CanWrap => TextWrapping != TextWrapping.NoWrap && MaxLines != 1;
+		private bool CanWrap => TextWrapping != TextWrapping.NoWrap;
 
 		private bool CanTrim => TextTrimming != TextTrimming.None;
 
