@@ -302,6 +302,43 @@ namespace Uno.UI.Xaml
 
 		#endregion
 
+		#region SetClasses
+
+		internal static void SetClasses(IntPtr htmlId, string[] cssClasses, int index)
+		{
+			if (UseJavascriptEval)
+			{
+				var classes = string.Join(", ", cssClasses.Select(s => "\"" + s + "\""));
+				var command = "Uno.UI.WindowManager.current.setClasses(" + htmlId + ", [" + classes + "], " + index + ");";
+				WebAssemblyRuntime.InvokeJS(command);
+			}
+			else
+			{
+				var parms = new WindowManagerSetClassesParams
+				{
+					HtmlId = htmlId, CssClasses = cssClasses, CssClasses_Length = cssClasses.Length, Index = index
+				};
+
+				TSInteropMarshaller.InvokeJS<WindowManagerSetClassesParams>("Uno:setClassesNative", parms);
+			}
+		}
+
+		[TSInteropMessage]
+		[StructLayout(LayoutKind.Sequential, Pack = 4)]
+		private struct WindowManagerSetClassesParams
+		{
+			public IntPtr HtmlId;
+
+			public int CssClasses_Length;
+
+			[MarshalAs(UnmanagedType.LPArray, ArraySubType = UnmanagedType.LPStr)]
+			public string[] CssClasses;
+
+			public int Index;
+		}
+
+		#endregion
+
 		#region AddView
 
 		internal static void AddView(IntPtr htmlId, IntPtr child, int? index = null)

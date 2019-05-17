@@ -460,6 +460,28 @@
 		}
 
 		/**
+		 * Set CSS classes on an element
+		 */
+		public setClasses(elementId: number, cssClassesList: string[], classIndex: number): string {
+			const htmlElement = this.getView(elementId);
+
+			for (let i = 0; i < cssClassesList.length; i++) {
+				if (i === classIndex) {
+					htmlElement.classList.add(cssClassesList[i]);
+				} else {
+					htmlElement.classList.remove(cssClassesList[i]);
+				}
+			}
+			return "ok";
+		}
+
+		public setClassesNative(pParams: number): boolean {
+			const params = WindowManagerSetClassesParams.unmarshal(pParams);
+			this.setClasses(params.HtmlId, params.CssClasses, params.Index);
+			return true;
+		}
+
+		/**
 		* Arrange and clips a native elements 
 		*
 		*/
