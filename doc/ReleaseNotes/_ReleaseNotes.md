@@ -44,6 +44,7 @@
 * [Android] Updated support libraries to 28.0.0.1 for Android 9
 * Add support for `x:Load`
 * [Wasm] Restore support for `x:Load` and `x:DeferLoadStrategy`
+* [Wasm] Scrolling bar visibility modes are now supported on most browsers
 
 ### Breaking Changes
 * The `WebAssemblyRuntime.InvokeJSUnmarshalled` method with three parameters has been removed.
@@ -84,7 +85,7 @@
 * [WASM] Dismissable popup & flyout is closing when tapping on content.
 * 145374 [Android] fixed android keyboard stays open on AppBarButton click
 * 152504 [Android] Pointer captures weren't informing gestures of capture, fixes Slider capture issue
-* 148896 [iOS] TextBlock CarriageReturns would continue past maxlines property 
+* 148896 [iOS] TextBlock CarriageReturns would continue past maxlines property
 * [iOS] The `PointerReleased` event is not raised, so controls stay in pressed state.
 * 153594 [Android] EdgeEffect not showing up on listView that contain Headers and Footers
 
