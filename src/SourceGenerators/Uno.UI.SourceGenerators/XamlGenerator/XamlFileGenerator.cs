@@ -2076,7 +2076,10 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 									}
 									else
 									{
-										GenerateError(writer, "Property {0} is not available on {1}, value is {2}", member.Member.Name, member.Member.DeclaringType?.Name, member.Value);
+										GenerateError(
+											writer,
+											$"Property {member.Member.PreferredXamlNamespace}:{member.Member} is not available on {member.Member.DeclaringType?.Name}, value is {member.Value}"
+										);
 									}
 								}
 							}
