@@ -1,12 +1,12 @@
 ﻿html,
 body {
-    /**
+  /**
       Disable root scrolling (bouncing effect on touch devices)
     */
-    position: fixed;
-    height: 100%;
-    width: 100%;
-    overflow: hidden;
+  position: fixed;
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
 }
 
 .uno-root-element {
@@ -68,8 +68,58 @@ body {
 }
 
 .uno-scrollcontentpresenter {
-    -webkit-overflow-scrolling: touch;
+  -webkit-overflow-scrolling: touch;
 }
+
+  .uno-scrollcontentpresenter.scrollmode-x-disabled {
+    overflow-x: hidden !important; /* disabled here override display mode */
+  }
+
+  .uno-scrollcontentpresenter.scrollmode-y-disabled {
+    overflow-y: hidden !important; /* disabled here override display mode */
+  }
+
+  .uno-scrollcontentpresenter.scroll-x-auto {
+    overflow-x: auto;
+  }
+
+  .uno-scrollcontentpresenter.scroll-y-auto {
+    overflow-y: auto;
+  }
+
+  .uno-scrollcontentpresenter.scroll-x-disabled {
+    overflow-x: hidden;
+  }
+
+  .uno-scrollcontentpresenter.scroll-x-hidden {
+    overflow-x: auto;
+    scrollbar-height: none;
+  }
+
+    .uno-scrollcontentpresenter.scroll-x-hidden::-webkit-scrollbar {
+      height: 0;
+    }
+
+  .uno-scrollcontentpresenter.scroll-y-disabled {
+    overflow-y: hidden;
+  }
+
+  .uno-scrollcontentpresenter.scroll-y-hidden {
+    overflow-y: auto;
+    scrollbar-width: none;
+  }
+
+    .uno-scrollcontentpresenter.scroll-y-hidden::-webkit-scrollbar {
+      width: 0;
+    }
+
+  .uno-scrollcontentpresenter.scroll-x-visible {
+    overflow-x: scroll;
+  }
+
+  .uno-scrollcontentpresenter.scroll-y-visible {
+    overflow-y: scroll;
+  }
 
 .uno-splash {
   position: fixed;
