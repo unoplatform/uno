@@ -12,6 +12,8 @@
   items:
     - name: Getting started
       href: get-started.md
+    - name: Creating an app - Tutorial
+      href: getting-started-tutorial-1.md
     - name: Developing with Uno.UI
       href: using-uno-ui.md
     - name: Feature flags
