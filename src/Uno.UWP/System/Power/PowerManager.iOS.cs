@@ -1,7 +1,5 @@
 ﻿#if __IOS__
 using System;
-using System.Collections.Generic;
-using System.Text;
 using UwpBatteryStatus = Windows.System.Power.BatteryStatus;
 using UwpEnergySaverStatus = Windows.System.Power.EnergySaverStatus;
 using UwpPowerSupplyStatus = Windows.System.Power.PowerSupplyStatus;
@@ -169,7 +167,7 @@ namespace Windows.System.Power
 			if (_isSimulator) return 100;
 			if (_device.BatteryLevel < 0.0f) return 0;
 
-			return (int)(_device.BatteryLevel * 100f);
+			return (int)Math.Round(_device.BatteryLevel * 100f);
 		}
 
 		private static void TryAddNotificationSubscription(NSString notificationIdentifier, ref NSObject subscriptionToken, Action<NSNotification> handler)
