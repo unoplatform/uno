@@ -17,7 +17,7 @@ The tutorial walks through creating a cross platform application with Uno, which
 
 ### Prerequisites
 
-- Visual Studio 2019 (latest release), with the **Mobile development with .NET** workload installed.
+- Visual Studio 2019 (latest release), with the **Universal Windows Platform**, **Mobile development with .NET**, and **ASP**.**NET and web** workloads installed.
 - Knowledge of C#.
 - (optional) A paired Mac to build the iOS project.
 
@@ -25,13 +25,7 @@ For more information about these prerequisites, see [Installing Xamarin](https:/
 
 ##### On Windows
 
-- Running WASM Project using Python
-  - The Linux Subsystem to run the native Python tools
-  - Or the Python tools for windows
-- Running WASM Project using Node
-  - Node tools (https://nodejs.org/en/)
-  - http-server package (https://www.npmjs.com/package/http-server)
-    - `npm install npm install http-server -g`
+To run the WebAssembly (Wasm) head, select **IIS Express** and press **Ctrl+F5** or choose 'Start without debugging' from the menu. Note that **F5** will *not* work because Visual Studio debugging isn't supported. See [here](debugging-wasm.md) for debugging instructions through Chrome.
 
 ## Installing the App Templates with Visual Studio 2019
 
