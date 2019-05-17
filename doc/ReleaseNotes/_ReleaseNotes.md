@@ -84,6 +84,7 @@
 * 152504 [Android] Pointer captures weren't informing gestures of capture, fixes Slider capture issue
 * 148896 [iOS] TextBlock CarriageReturns would continue past maxlines property 
 * [iOS] The `PointerReleased` event is not raised, so controls stay in pressed state.
+* 153594 [Android] EdgeEffect not showing up on listView that contain Headers and Footers
 
 ## Release 1.44.0
 
