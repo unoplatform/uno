@@ -12,10 +12,6 @@ namespace Windows.System.Power
 	{
 		private const string DeviceModelSimulator = "iPhone Simulator";
 
-		private static EventHandler<object> _remainingChargePercentChanged;
-		private static EventHandler<object> _energySaverStatusChanged;
-		private static EventHandler<object> _batteryStatusChanged;
-		private static EventHandler<object> _powerSupplyStatusChanged;
 
 		private static NSObject _batteryLevelChangeSubscription;
 		private static NSObject _batteryStateChangeSubscription;
@@ -30,112 +26,76 @@ namespace Windows.System.Power
 			_isSimulator = _device.Model == DeviceModelSimulator;
 			_device.BatteryMonitoringEnabled = !_isSimulator;
 		}
-
-		public static event EventHandler<object> RemainingChargePercentChanged
+			   
+		private static void StartEnergySaverStatusMonitoring()
 		{
-			add
+			if (_isSimulator) return;
+			TryAddNotificationSubscription(
+				NSProcessInfo.PowerStateDidChangeNotification,
+				ref _powerStateChangeSubscription,
+				PowerStateChangeHandler);
+		}
+
+		private static void EndEnergySaverStatusMonitoring() =>
+			TryRemoveNotificationSubscription(ref _powerStateChangeSubscription);
+
+		private static void StartRemainingChargePercentMonitoring()
+		{
+			if (_isSimulator) return;
+			TryAddNotificationSubscription(
+				UIDevice.BatteryLevelDidChangeNotification,
+				ref _batteryLevelChangeSubscription,
+				BatteryLevelChangeHandler);
+		}
+
+		private static void EndRemainingChargePercentMonitoring() =>
+			TryRemoveNotificationSubscription(ref _batteryLevelChangeSubscription);
+
+		private static void StartPowerSupplyStatusMonitoring() =>
+			StartIosBatteryStateMonitoring();
+
+		private static void EndPowerSupplyStatusMonitoring() =>
+			EndIosBatteryStateMonitoring();
+
+		private static void StartBatteryStatusMonitoring() =>
+			StartIosBatteryStateMonitoring();
+
+		private static void EndBatteryStatusMonitoring() =>
+			EndIosBatteryStateMonitoring();
+
+		private static void StartIosBatteryStateMonitoring()
+		{
+			if (!_isSimulator) return;
+			if (_batteryStatusChanged == null &&
+				_powerSupplyStatusChanged == null)
 			{
-				if (!_isSimulator)
-				{
-					TryAddNotificationSubscription(
-						UIDevice.BatteryLevelDidChangeNotification,
-						ref _batteryLevelChangeSubscription,
-						BatteryLevelChangeHandler);
-				}
-				_remainingChargePercentChanged += value;
-			}
-			remove
-			{
-				_remainingChargePercentChanged -= value;
-				if (_remainingChargePercentChanged == null)
-				{
-					TryRemoveNotificationSubscription(ref _batteryLevelChangeSubscription);
-				}
+				TryAddNotificationSubscription(
+				UIDevice.BatteryStateDidChangeNotification,
+				ref _batteryStateChangeSubscription,
+				BatteryStateChangeHandler);
 			}
 		}
 
-		public static event EventHandler<object> EnergySaverStatusChanged
+		private static void EndIosBatteryStateMonitoring()
 		{
-			add
+			if (_batteryStatusChanged == null &&
+				_powerSupplyStatusChanged == null)
 			{
-				if (!_isSimulator)
-				{
-					TryAddNotificationSubscription(
-						NSProcessInfo.PowerStateDidChangeNotification,
-						ref _powerStateChangeSubscription,
-						PowerStateChangeHandler);
-				}
-				_energySaverStatusChanged += value;
-			}
-			remove
-			{
-				_energySaverStatusChanged -= value;
-				if (_energySaverStatusChanged == null)
-				{
-					TryRemoveNotificationSubscription(ref _powerStateChangeSubscription);
-				}
-			}
-		}
-
-		public static event EventHandler<object> BatteryStatusChanged
-		{
-			add
-			{
-				if (!_isSimulator)
-				{
-					TryAddNotificationSubscription(
-						UIDevice.BatteryStateDidChangeNotification,
-						ref _batteryStateChangeSubscription,
-						BatteryStateChangeHandler);
-				}
-				_batteryStatusChanged += value;
-			}
-			remove
-			{
-				_batteryStatusChanged -= value;
-				if (_batteryStatusChanged == null &&
-					_powerSupplyStatusChanged == null)
-				{
-					TryRemoveNotificationSubscription(ref _batteryStateChangeSubscription);
-				}
-			}
-		}
-
-		public static event EventHandler<object> PowerSupplyStatusChanged
-		{
-			add
-			{
-				if (!_isSimulator)
-				{
-					TryAddNotificationSubscription(
-						UIDevice.BatteryStateDidChangeNotification,
-						ref _batteryStateChangeSubscription,
-						BatteryStateChangeHandler);
-				}
-				_powerSupplyStatusChanged += value;
-			}
-			remove
-			{
-				_powerSupplyStatusChanged -= value;
-				if (_batteryStatusChanged == null &&
-					_powerSupplyStatusChanged == null)
-				{
-					TryRemoveNotificationSubscription(ref _batteryStateChangeSubscription);
-				}
+				TryRemoveNotificationSubscription(ref _batteryStateChangeSubscription);
 			}
 		}
 
 		private static void BatteryLevelChangeHandler(NSNotification obj) =>
-			_remainingChargePercentChanged?.Invoke(null, null);
+			RaiseRemainingChargePercentChanged();
 
 		private static void BatteryStateChangeHandler(NSNotification obj)
 		{
-			_batteryStatusChanged?.Invoke(null, null);
-			_powerSupplyStatusChanged?.Invoke(null, null);
+			RaiseBatteryStatusChanged();
+			RaisePowerSupplyStatusChanged();
 		}
 
 		private static void PowerStateChangeHandler(NSNotification obj) =>
-			_energySaverStatusChanged?.Invoke(null, null);
+			RaiseEnergySaverStatusChanged();
 
 		private static UwpBatteryStatus GetBatteryStatus()
 		{
