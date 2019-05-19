@@ -21,6 +21,12 @@ namespace Windows.System
 		{
 			try
 			{
+#if __MOBILE__
+				if ( await HandleSpecialUriAsync(uri))
+				{
+					return;
+				}
+#endif
 #if __IOS__
 				return UIKit.UIApplication.SharedApplication.OpenUrl(new global::Foundation.NSUrl(uri.OriginalString));
 #elif __ANDROID__
