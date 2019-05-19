@@ -47,6 +47,7 @@ namespace Windows.UI.Xaml.Controls
 				if (isActive.Value)
 				{
 					progressRing.Visibility = Visibility.Visible;
+					progressRing.Invalidate();
 				}
 				else
 				{

@@ -460,9 +460,26 @@ namespace Windows.UI.Xaml
 					CanBubbleNatively = true,
 					OriginalSource = this
 				};
-				var isHandledInManaged = RaiseEvent(PointerCanceledEvent, args);
 
-				if (!isHandledInManaged)
+				// As soon as a gesture is recognized by a 'GestureRecognizer' (cf. Tap and DoubleTap events)
+				// the touches are "cancelled" and this method is invoked. So until we remove the GestureRecognizers
+				// for those events, we handle the "Cancelled" similarly as the "Ended" and we raise the "Release".
+				var pointerEventIsHandledInManaged = false;
+				if (IsPointerCaptured || evt.IsTouchInView(this))
+				{
+					pointerEventIsHandledInManaged = RaiseEvent(PointerReleasedEvent, args);
+
+					if (IsPointerCaptured)
+					{
+						pointerEventIsHandledInManaged |= RaiseEvent(PointerCaptureLostEvent, args);
+					}
+				}
+				else
+				{
+					pointerEventIsHandledInManaged |= RaiseEvent(PointerCanceledEvent, args);
+				}
+
+				if (!pointerEventIsHandledInManaged)
 				{
 					// Bubble up the event natively
 					base.TouchesCancelled(touches, evt);

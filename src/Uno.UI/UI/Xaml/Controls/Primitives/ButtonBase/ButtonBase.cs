@@ -180,6 +180,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			if (IsPointerOver)
 			{
 				OnClick(args); // TODO: Consider ClickMode and mouse pointer button
+				args.Handled = true;
 			}
 
 			IsPointerOver = false;
