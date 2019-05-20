@@ -21,7 +21,7 @@
 
 ## Create an application from the solution template
 
-To easily create an multi-platform application:
+To easily create a multi-platform application:
 * Install the [Uno Solution Template Visual Studio Extension](https://marketplace.visualstudio.com/items?itemName=nventivecorp.uno-platform-addin)
 * Create a new C# solution using the **Cross-Platform App (Uno Platform)** template, from Visual Studio's **Start Page**:
 
@@ -51,11 +51,13 @@ See the [Creating an App tutorial](getting-started-tutorial-1.md) for a step-by-
 
 ## Next steps
 
+* For code samples, check out the [Uno Gallery and Playground](https://github.com/nventive/Uno.Playground) repository.
+
 * The Uno Platform promotes a 'UWP-first' development approach. Microsoft's [documentation](https://docs.microsoft.com/en-us/windows/uwp/develop/) on the UWP framework is an essential resource.
 
 * For Uno-specific information, consult the docs here, including a list of [supported features](supported-features.md) and [general development tips](using-uno-ui.md).
 
-* If you're not sure how to do something with Uno, and you think others could benefit from the knowledge, you can post the question on [StackOverflow](https://stackoverflow.com/questions/ask?tags=uno-platform) using the 'uno-platform' tag. Remember to check if an answer [already exists](https://stackoverflow.com/questions/tagged/uno-platform) and follow StackOverflow's [question guidelines](https://stackoverflow.com/help/how-to-ask). 
+* If you're not sure how to do something with Uno, and you think others could benefit from the knowledge, you can post the question on [StackOverflow](https://stackoverflow.com/questions/ask?tags=uno-platform) using the 'uno-platform' tag. Remember to check if the question [already exists](https://stackoverflow.com/questions/tagged/uno-platform) and follow StackOverflow's [question guidelines](https://stackoverflow.com/help/how-to-ask). You'll also need to sign up to StackOverflow if you're not already.
 
 * If you think you've encountered a bug (eg, something works on UWP but not on another platform), [create an issue on GitHub](https://github.com/nventive/Uno/issues) if there's no existing issue. We hate bugs, but we love bug reports!
 
