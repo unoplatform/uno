@@ -581,6 +581,9 @@ namespace Windows.UI.Xaml.Controls
 			var remainingLines = remainingItems / leadingLine.NumberOfViews;
 			var remainingItemExtent = remainingLines * leadingLine.Extent;
 
+			int headerExtent = HeaderViewCount > 0 ? GetChildExtentWithMargins(GetChildAt(GetHeaderViewIndex())) : 0;
+			int footerExtent = FooterViewCount > 0 ? GetChildExtentWithMargins(GetChildAt(GetFooterViewIndex())) : 0;
+
 			int remainingGroupExtent = 0;
 			if (XamlParent.NumberOfDisplayGroups > 0 && RelativeGroupHeaderPlacement == RelativeHeaderPlacement.Inline)
 			{
@@ -589,7 +592,7 @@ namespace Windows.UI.Xaml.Controls
 				remainingGroupExtent = remainingGroups * lastGroup.HeaderExtent;
 			}
 
-			var range = ContentOffset + remainingItemExtent + remainingGroupExtent +
+			var range = ContentOffset + remainingItemExtent + remainingGroupExtent + headerExtent + footerExtent +
 				//TODO: An inline group header might actually be the view at the bottom of the viewport, we should take this into account
 				GetChildEndWithMargin(base.GetChildAt(FirstItemView + ItemViewCount - 1));
 			Debug.Assert(range > 0, "Must report a non-negative scroll range.");
