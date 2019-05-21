@@ -7,6 +7,13 @@ namespace Windows.System.Power
 {
 	public partial class PowerManager
 	{
+		private static object _syncLock = new object();
+
+		private static PowerSupplyStatus? _lastPowerSupplyStatus;
+		private static int? _lastRemainingChargePercent;
+		private static EnergySaverStatus? _lastEnergySaverStatus;
+		private static BatteryStatus? _lastBatteryStatus;
+
 		private static EventHandler<object> _powerSupplyStatusChanged;
 		private static EventHandler<object> _energySaverStatusChanged;
 		private static EventHandler<object> _remainingChargePercentChanged;
@@ -24,18 +31,24 @@ namespace Windows.System.Power
 		{
 			add
 			{
-				if (_powerSupplyStatusChanged == null)
+				lock (_syncLock)
 				{
-					StartPowerSupplyStatusMonitoring();
+					if (_powerSupplyStatusChanged == null)
+					{
+						StartPowerSupplyStatusMonitoring();
+					}
+					_powerSupplyStatusChanged += value;
 				}
-				_powerSupplyStatusChanged += value;
 			}
 			remove
 			{
-				_powerSupplyStatusChanged -= value;
-				if (_powerSupplyStatusChanged == null)
+				lock (_syncLock)
 				{
-					EndPowerSupplyStatusMonitoring();
+					_powerSupplyStatusChanged -= value;
+					if (_powerSupplyStatusChanged == null)
+					{
+						EndPowerSupplyStatusMonitoring();
+					}
 				}
 			}
 		}
@@ -44,18 +57,25 @@ namespace Windows.System.Power
 		{
 			add
 			{
-				if (_energySaverStatusChanged == null)
+				lock (_syncLock)
 				{
-					StartEnergySaverStatusMonitoring();
+					if (_energySaverStatusChanged == null)
+					{
+						StartEnergySaverStatusMonitoring();
+					}
+
+					_energySaverStatusChanged += value;
 				}
-				_energySaverStatusChanged += value;
 			}
 			remove
 			{
-				_energySaverStatusChanged -= value;
-				if (_energySaverStatusChanged == null)
+				lock (_syncLock)
 				{
-					EndEnergySaverStatusMonitoring();
+					_energySaverStatusChanged -= value;
+					if (_energySaverStatusChanged == null)
+					{
+						EndEnergySaverStatusMonitoring();
+					}
 				}
 			}
 		}
@@ -64,18 +84,25 @@ namespace Windows.System.Power
 		{
 			add
 			{
-				if (_remainingChargePercentChanged == null)
+				lock (_syncLock)
 				{
-					StartRemainingChargePercentMonitoring();
+					if (_remainingChargePercentChanged == null)
+					{
+						StartRemainingChargePercentMonitoring();
+					}
+
+					_remainingChargePercentChanged += value;
 				}
-				_remainingChargePercentChanged += value;
 			}
 			remove
 			{
-				_remainingChargePercentChanged -= value;
-				if (_remainingChargePercentChanged == null)
+				lock (_syncLock)
 				{
-					EndRemainingChargePercentMonitoring();
+					_remainingChargePercentChanged -= value;
+					if (_remainingChargePercentChanged == null)
+					{
+						EndRemainingChargePercentMonitoring();
+					}
 				}
 			}
 		}
@@ -84,29 +111,68 @@ namespace Windows.System.Power
 		{
 			add
 			{
-				if (_batteryStatusChanged == null)
+				lock (_syncLock)
 				{
-					StartBatteryStatusMonitoring();
+					if (_batteryStatusChanged == null)
+					{
+						StartBatteryStatusMonitoring();
+					}
+
+					_batteryStatusChanged += value;
 				}
-				_batteryStatusChanged += value;
 			}
 			remove
 			{
-				_batteryStatusChanged -= value;
-				if (_batteryStatusChanged == null)
+				lock (_syncLock)
 				{
-					EndBatteryStatusMonitoring();
+					_batteryStatusChanged -= value;
+					if (_batteryStatusChanged == null)
+					{
+						EndBatteryStatusMonitoring();
+					}
 				}
 			}
 		}
 
-		internal static void RaiseRemainingChargePercentChanged() => _remainingChargePercentChanged?.Invoke(null, null);
+		internal static void RaiseRemainingChargePercentChanged()
+		{
+			var currentValue = RemainingChargePercent;
+			if (_lastRemainingChargePercent != currentValue)
+			{
+				_lastRemainingChargePercent = currentValue;
+				_remainingChargePercentChanged?.Invoke(null, null);
+			}
+		}
 
-		internal static void RaiseBatteryStatusChanged() => _batteryStatusChanged?.Invoke(null, null);
+		internal static void RaiseBatteryStatusChanged()
+		{
+			var currentValue = BatteryStatus;
+			if (_lastBatteryStatus != currentValue)
+			{
+				_lastBatteryStatus = currentValue;
+				_batteryStatusChanged?.Invoke(null, null);
+			}
+		}
 
-		internal static void RaisePowerSupplyStatusChanged() => _powerSupplyStatusChanged?.Invoke(null, null);
+		internal static void RaisePowerSupplyStatusChanged()
+		{
+			var currentValue = PowerSupplyStatus;
+			if (_lastPowerSupplyStatus != currentValue)
+			{
+				_lastPowerSupplyStatus = currentValue;
+				_powerSupplyStatusChanged?.Invoke(null, null);
+			}
+		}
 
-		internal static void RaiseEnergySaverStatusChanged() => _energySaverStatusChanged?.Invoke(null, null);
+		internal static void RaiseEnergySaverStatusChanged()
+		{
+			var currentValue = EnergySaverStatus;
+			if (_lastEnergySaverStatus != currentValue)
+			{
+				_lastEnergySaverStatus = currentValue;
+				_energySaverStatusChanged?.Invoke(null, null);
+			}
+		}
 	}
 }
 #endif
