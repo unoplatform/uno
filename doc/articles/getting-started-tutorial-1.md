@@ -1,6 +1,6 @@
 # Create a Single Page App with Uno
 
-[Download Sample](https://github.com/nventive/Uno.GettingStarted)
+[Download the complete sample](https://github.com/nventive/Uno.GettingStartedTutorial)
 
 In this tutorial you will learn how to:
 
