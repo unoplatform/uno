@@ -3,9 +3,12 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using System.Threading.Tasks;
 using Uno.UI.Samples.Controls;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using Windows.UI.Core;
+using Windows.UI.Popups;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
@@ -34,24 +37,31 @@ namespace UITests.Shared.Windows_System_Power
 			PowerSupplyStatusOuptut.Text = UwpPowerManager.PowerSupplyStatus.ToString();
 		}
 
-		private void UwpPowerManager_PowerSupplyStatusChanged(object sender, object e)
+		private async void UwpPowerManager_PowerSupplyStatusChanged(object sender, object e)
 		{
-			PowerSupplyStatusOuptut.Text = UwpPowerManager.PowerSupplyStatus.ToString();
+			await ExecuteOnUiThreadAsync(() =>
+				PowerSupplyStatusOuptut.Text = UwpPowerManager.PowerSupplyStatus.ToString());
 		}
 
-		private void UwpPowerManager_RemainingChargePercentChanged(object sender, object e)
+		private async void UwpPowerManager_RemainingChargePercentChanged(object sender, object e)
 		{
-			RemainingChargePercentOutput.Text = UwpPowerManager.RemainingChargePercent.ToString();
+			await ExecuteOnUiThreadAsync(() =>
+				RemainingChargePercentOutput.Text = UwpPowerManager.RemainingChargePercent.ToString());
 		}
 
-		private void UwpPowerManager_EnergySaverStatusChanged(object sender, object e)
+		private async void UwpPowerManager_EnergySaverStatusChanged(object sender, object e)
 		{
-			EnergySaverStatusOuptut.Text = UwpPowerManager.EnergySaverStatus.ToString();
+			await ExecuteOnUiThreadAsync(() =>
+				EnergySaverStatusOuptut.Text = UwpPowerManager.EnergySaverStatus.ToString());
 		}
 
-		private void UwpPowerManager_BatteryStatusChanged(object sender, object e)
+		private async void UwpPowerManager_BatteryStatusChanged(object sender, object e)
 		{
-			BatteryStatusOutput.Text = UwpPowerManager.BatteryStatus.ToString();
+			await ExecuteOnUiThreadAsync(async () =>
+				BatteryStatusOutput.Text = UwpPowerManager.BatteryStatus.ToString());
 		}
+
+		private async Task ExecuteOnUiThreadAsync(Action action) =>
+			await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => action());
 	}
 }
