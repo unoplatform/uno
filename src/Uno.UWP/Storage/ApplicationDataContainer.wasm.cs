@@ -13,18 +13,45 @@ namespace Windows.Storage
 {
 	public partial class ApplicationDataContainer
 	{
-		partial void InitializePartial()
+		partial void InitializePartial(ApplicationData owner)
 		{
-			Values = new FilePropertySet();
+			Values = new FilePropertySet(owner, Locality);
 		}
 
 		private class FilePropertySet : IPropertySet
 		{
 			private const string UWPFileName = ".UWPAppSettings";
-			private Dictionary<string, string> _values = new Dictionary<string, string>();
+			private readonly Dictionary<string, string> _values = new Dictionary<string, string>();
+			private readonly string _folderPath;
+			private readonly string _filePath;
 
-			public FilePropertySet()
+			public FilePropertySet(ApplicationData owner, ApplicationDataLocality locality)
 			{
+				StorageFolder folder;
+				switch (locality)
+				{
+					case ApplicationDataLocality.Local:
+						folder = owner.LocalFolder;
+						break;
+
+					case ApplicationDataLocality.Roaming:
+						folder = owner.RoamingFolder;
+						break;
+					case ApplicationDataLocality.LocalCache:
+						folder = owner.LocalCacheFolder;
+						break;
+
+					case ApplicationDataLocality.Temporary:
+						folder = owner.TemporaryFolder;
+						break;
+
+					default:
+						throw new ArgumentOutOfRangeException(nameof(locality));
+				}
+
+				_folderPath = folder.Path;
+				_filePath = Path.Combine(folder.Path, UWPFileName);
+
 				ReadFromFile();
 			}
 
@@ -56,14 +83,12 @@ namespace Windows.Storage
 
 			private void ReadFromFile()
 			{
-				var folderPath = ApplicationData.Current.LocalFolder.Path;
-				var filePath = Path.Combine(folderPath, UWPFileName);
 				try
 				{
 
-					if (File.Exists(filePath))
+					if (File.Exists(_filePath))
 					{
-						using (var reader = new BinaryReader(File.OpenRead(filePath)))
+						using (var reader = new BinaryReader(File.OpenRead(_filePath)))
 						{
 							var count = reader.ReadInt32();
 
@@ -85,7 +110,7 @@ namespace Windows.Storage
 					{
 						if (this.Log().IsEnabled(LogLevel.Debug))
 						{
-							this.Log().Debug($"File {filePath} does not exist, skipping reading settings");
+							this.Log().Debug($"File {_filePath} does not exist, skipping reading settings");
 						}
 					}
 				}
@@ -93,26 +118,23 @@ namespace Windows.Storage
 				{
 					if (this.Log().IsEnabled(LogLevel.Error))
 					{
-						this.Log().Error($"Failed to read settings from {filePath}", e);
+						this.Log().Error($"Failed to read settings from {_filePath}", e);
 					}
 				}
 			}
 
 			private void WriteToFile()
 			{
-				var folderPath = ApplicationData.Current.LocalFolder.Path;
-				var filePath = Path.Combine(folderPath, UWPFileName);
-
 				try
 				{
-					Directory.CreateDirectory(folderPath);
+					Directory.CreateDirectory(_folderPath);
 
 					if (this.Log().IsEnabled(LogLevel.Debug))
 					{
-						this.Log().Debug($"Writing {_values.Count} settings to {filePath}");
+						this.Log().Debug($"Writing {_values.Count} settings to {_filePath}");
 					}
 
-					using (var writer = new BinaryWriter(File.OpenWrite(filePath)))
+					using (var writer = new BinaryWriter(File.OpenWrite(_filePath)))
 					{
 						writer.Write(_values.Count);
 
@@ -127,7 +149,7 @@ namespace Windows.Storage
 				{
 					if (this.Log().IsEnabled(LogLevel.Error))
 					{
-						this.Log().Error($"Failed to write settings to {filePath}", e);
+						this.Log().Error($"Failed to write settings to {_filePath}", e);
 					}
 				}
 			}

@@ -160,7 +160,7 @@ namespace SamplesApp.Windows_UI_Xaml_Controls.Models
 			);
 		}
 
-		private static IEnumerable<object> GetAsCollectionViewSource<T1, T2>(IEnumerable<IGrouping<T1, T2>> groups)
+		internal static IEnumerable<object> GetAsCollectionViewSource<T1, T2>(IEnumerable<IGrouping<T1, T2>> groups)
 		{
 			var source = new CollectionViewSource()
 			{

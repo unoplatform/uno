@@ -653,11 +653,27 @@ namespace SampleControl.Presentation
 			await UpdateFavorites(ct);
 		}
 
+		private async Task LoadPreviousTest(CancellationToken ct)
+		{
+			if (PreviousSample != null)
+			{
+				ContentPhone = await UpdateContent(ct, PreviousSample);
+			}
+		}
+
 		private async Task ReloadCurrentTest(CancellationToken ct)
 		{
 			if (CurrentSelectedSample != null)
 			{
 				ContentPhone = await UpdateContent(ct, CurrentSelectedSample);
+			}
+		}
+
+		private async Task LoadNextTest(CancellationToken ct)
+		{
+			if (NextSample != null)
+			{
+				ContentPhone = await UpdateContent(ct, NextSample);
 			}
 		}
 
@@ -710,6 +726,17 @@ namespace SampleControl.Presentation
 			{
 				var vm = Activator.CreateInstance(newContent.ViewModelType, fe.Dispatcher);
 				fe.DataContext = vm;
+
+				if(vm is IDisposable disposable)
+				{
+					void Dispose(object snd, RoutedEventArgs e)
+					{
+						fe.Unloaded -= Dispose;
+						disposable.Dispose();
+					}
+
+					fe.Unloaded += Dispose;
+				}
 			}
 
 			var controlContainsSampleControl = (control as UserControl)?.Content is Uno.UI.Samples.Controls.SampleControl;
@@ -724,13 +751,15 @@ namespace SampleControl.Presentation
 
 			var recents = await GetRecentSamples(ct);
 
-			// Get the selected categroy, else if null find it using the SampleContent passed in
+			// Get the selected category, else if null find it using the SampleContent passed in
 			var selectedCategory = SelectedCategory ?? await GetCategory(newContent);
 
 			if (selectedCategory != null)
 			{
 				await Set(SampleChooserLatestCategoryConstant, selectedCategory.Category);
 			}
+
+			CurrentSelectedSample = newContent;
 
 			//RETURN IF THE CONTENT IS ALREADY IN THE LIST
 			if (recents.Contains(newContent))

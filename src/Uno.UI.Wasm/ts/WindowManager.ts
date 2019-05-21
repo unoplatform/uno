@@ -36,14 +36,12 @@
 			* @param containerElementId The ID of the container element for the Xaml UI
 			* @param loadingElementId The ID of the loading element to remove once ready
 			*/
-		public static init(localStoragePath: string, isHosted: boolean, isLoadEventsEnabled: boolean, containerElementId: string = "uno-body", loadingElementId: string = "uno-loading"): string {
+		public static init(isHosted: boolean, isLoadEventsEnabled: boolean, containerElementId: string = "uno-body", loadingElementId: string = "uno-loading"): string {
 
 			WindowManager._isHosted = isHosted;
 			WindowManager._isLoadEventsEnabled = isLoadEventsEnabled;
 
 			Windows.UI.Core.CoreDispatcher.init(WindowManager.buildReadyPromise());
-
-			WindowManager.setupStorage(localStoragePath);
 
 			this.current = new WindowManager(containerElementId, loadingElementId);
 			MonoSupport.jsCallDispatcher.registerScope("Uno", this.current);
@@ -121,7 +119,7 @@
 
 			const params = WindowManagerInitParams.unmarshal(pParams);
 
-			WindowManager.init(params.LocalFolderPath, params.IsHostedMode, params.IsLoadEventsEnabled);
+			WindowManager.init(params.IsHostedMode, params.IsLoadEventsEnabled);
 
 			return true;
 		}
@@ -136,67 +134,6 @@
 
 		private constructor(private containerElementId: string, private loadingElementId: string) {
 			this.initDom();
-		}
-
-		/**
-		 * Setup the storage persistence
-		 *
-		 * */
-		static setupStorage(localStoragePath: string): void {
-			if (WindowManager.isHosted) {
-				console.debug("Hosted Mode: skipping IndexDB initialization");
-			}
-			else {
-				if (WindowManager.isIndexDBAvailable()) {
-
-					FS.mkdir(localStoragePath);
-					FS.mount(IDBFS, {}, localStoragePath);
-
-					FS.syncfs(true,
-						err => {
-							if (err) {
-								console.error(`Error synchronizing filsystem from IndexDB: ${err}`);
-							}
-						}
-					);
-
-					window.addEventListener(
-						"beforeunload",
-						() => WindowManager.synchronizeFileSystem()
-					);
-
-					setInterval(() => WindowManager.synchronizeFileSystem(), 10000);
-				}
-				else {
-					console.warn("IndexedDB is not available (private mode?), changed will not be persisted.");
-				}
-			}
-		}
-
-		/**
-		 * Determine if IndexDB is available, some browsers and modes disable it.
-		 * */
-		static isIndexDBAvailable(): boolean {
-			try {
-				// IndexedDB may not be available in private mode
-				window.indexedDB;
-				return true;
-			} catch (err) {
-				return false;
-			}
-		}
-
-		/**
-		 * Synchronize the IDBFS memory cache back to IndexDB
-		 * */
-		static synchronizeFileSystem(): void {
-			FS.syncfs(
-				err => {
-					if (err) {
-						console.error(`Error synchronizing filsystem from IndexDB: ${err}`);
-					}
-				}
-			);
 		}
 
 		/**
@@ -520,6 +457,28 @@
 			for(const name of names) {
 				htmlElement.style.setProperty(name, "");
 			}
+		}
+
+		/**
+		 * Set CSS classes on an element
+		 */
+		public setClasses(elementId: number, cssClassesList: string[], classIndex: number): string {
+			const htmlElement = this.getView(elementId);
+
+			for (let i = 0; i < cssClassesList.length; i++) {
+				if (i === classIndex) {
+					htmlElement.classList.add(cssClassesList[i]);
+				} else {
+					htmlElement.classList.remove(cssClassesList[i]);
+				}
+			}
+			return "ok";
+		}
+
+		public setClassesNative(pParams: number): boolean {
+			const params = WindowManagerSetClassesParams.unmarshal(pParams);
+			this.setClasses(params.HtmlId, params.CssClasses, params.Index);
+			return true;
 		}
 
 		/**
@@ -1073,9 +1032,9 @@
 					this.containerElement.appendChild(unconnectedRoot);
 				}
 
-				var updatedStyles = <any>{};
+				let updatedStyles = <any>{};
 
-				for (var i = 0; i < elementStyle.length; i++) {
+				for (let i = 0; i < elementStyle.length; i++) {
 					const key = elementStyle[i];
 					updatedStyles[key] = elementStyle.getPropertyValue(key);
 				}
@@ -1085,15 +1044,17 @@
 
 				// This is required for an unconstrained measure (otherwise the parents size is taken into account)
 				updatedStyles.position = "fixed";
-				updatedStyles.maxWidth = Number.isFinite(maxWidth) ? maxWidth + "px" : "";
-				updatedStyles.maxHeight = Number.isFinite(maxHeight) ? maxHeight + "px" : "";
+				updatedStyles["max-width"] = Number.isFinite(maxWidth) ? maxWidth + "px" : "";
+				updatedStyles["max-height"] = Number.isFinite(maxHeight) ? maxHeight + "px" : "";
 
-				var updatedStyleString = "";
+				let updatedStyleString = "";
 
-				for (var key in updatedStyles) {
+				for (let key in updatedStyles) {
 					updatedStyleString += key + ": " + updatedStyles[key] + "; ";
 				}
 
+				// We use a string to prevent the browser to update the element between
+				// each style assignation. This way, the browser will update the element only once.
 				elementStyle.cssText = updatedStyleString;
 
 				if (element instanceof HTMLImageElement) {
@@ -1107,7 +1068,7 @@
 					const resultWidth = offsetWidth ? offsetWidth : element.clientWidth;
 					const resultHeight = offsetHeight ? offsetHeight : element.clientHeight;
 
-					/* +0.5 is added to take rounding into account */
+					// +0.5 is added to take rounding into account
 					return [resultWidth + 0.5, resultHeight];
 				}
 			}

@@ -51,11 +51,9 @@ namespace Windows.UI.Xaml.Controls
 				{
 					_scrollableContainer = multiline;
 				}
-				else
-				{
-					_scrollableContainer = _sv;
-				}
 			}
+
+			_scrollableContainer = _scrollableContainer ?? _sv;
 		}
 
 		partial void ChangeViewScroll(double? horizontalOffset, double? verticalOffset, bool disableAnimation)

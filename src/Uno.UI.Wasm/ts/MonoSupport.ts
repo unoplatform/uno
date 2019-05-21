@@ -27,6 +27,7 @@
 			else {
 				if (!jsCallDispatcher._isUnoRegistered) {
 					jsCallDispatcher.registerScope("UnoStatic", Uno.UI.WindowManager);
+					jsCallDispatcher.registerScope("UnoStatic_Windows_Storage_StorageFolder", Windows.Storage.StorageFolder);
 					jsCallDispatcher._isUnoRegistered = true;
 				}
 

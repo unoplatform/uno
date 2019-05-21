@@ -5,7 +5,7 @@
     
     		Instructions:
 			1) Copy this file and remove the ".sample" name
-			2) Adjust the BuildTargetFramework property below, there can only be one.
+			2) Uncomment and adjust the UnoNugetOverrideVersion property below
 			3) Make sure to do a Rebuild, so that nuget restores the proper packages for the new target
 	-->
 

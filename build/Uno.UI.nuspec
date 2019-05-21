@@ -27,9 +27,9 @@
 
       <!-- Android 9.0 -->
       <group targetFramework="MonoAndroid90">
-        <dependency id="Xamarin.Android.Support.v4" version="26.1.0.1" />
-        <dependency id="Xamarin.Android.Support.v7.AppCompat" version="26.1.0.1" />
-        <dependency id="Xamarin.Android.Support.v7.RecyclerView" version="26.1.0.1" />
+        <dependency id="Xamarin.Android.Support.v4" version="28.0.0.1" />
+        <dependency id="Xamarin.Android.Support.v7.AppCompat" version="28.0.0.1" />
+        <dependency id="Xamarin.Android.Support.v7.RecyclerView" version="28.0.0.1" />
         <dependency id="Uno.SourceGenerationTasks" version="1.31.0-dev.285" />
         <dependency id="Uno.Core" version="1.28.0-dev.86" />
         <dependency id="Uno.Core.Build" version="1.28.0-dev.86" />
