@@ -10,7 +10,7 @@ namespace Windows.System.Power
 {
 	public partial class PowerManager
 	{
-		private const string DeviceModelSimulator = "iPhone Simulator";
+		private const string DeviceModelSimulator = "Simulator";
 
 
 		private static NSObject _batteryLevelChangeSubscription;
@@ -23,7 +23,10 @@ namespace Windows.System.Power
 		static PowerManager()
 		{
 			_device = UIDevice.CurrentDevice;
-			_isSimulator = _device.Model == DeviceModelSimulator;
+			_isSimulator = _device.Model?
+				               .Contains(
+					               DeviceModelSimulator,
+					               StringComparison.InvariantCultureIgnoreCase) == true;
 			_device.BatteryMonitoringEnabled = !_isSimulator;
 		}
 			   
@@ -65,7 +68,7 @@ namespace Windows.System.Power
 
 		private static void StartIosBatteryStateMonitoring()
 		{
-			if (!_isSimulator) return;
+			if (_isSimulator) return;
 			if (_batteryStatusChanged == null &&
 				_powerSupplyStatusChanged == null)
 			{
