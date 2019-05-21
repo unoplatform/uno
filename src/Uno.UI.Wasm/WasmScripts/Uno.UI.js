@@ -645,6 +645,26 @@ var Uno;
                 }
             }
             /**
+             * Set CSS classes on an element
+             */
+            setClasses(elementId, cssClassesList, classIndex) {
+                const htmlElement = this.getView(elementId);
+                for (let i = 0; i < cssClassesList.length; i++) {
+                    if (i === classIndex) {
+                        htmlElement.classList.add(cssClassesList[i]);
+                    }
+                    else {
+                        htmlElement.classList.remove(cssClassesList[i]);
+                    }
+                }
+                return "ok";
+            }
+            setClassesNative(pParams) {
+                const params = WindowManagerSetClassesParams.unmarshal(pParams);
+                this.setClasses(params.HtmlId, params.CssClasses, params.Index);
+                return true;
+            }
+            /**
             * Arrange and clips a native elements
             *
             */
@@ -1612,6 +1632,40 @@ class WindowManagerSetAttributeParams {
             else {
                 ret.Pairs = null;
             }
+        }
+        return ret;
+    }
+}
+/* TSBindingsGenerator Generated code -- this code is regenerated on each build */
+class WindowManagerSetClassesParams {
+    static unmarshal(pData) {
+        let ret = new WindowManagerSetClassesParams();
+        {
+            ret.HtmlId = Number(Module.getValue(pData + 0, "*"));
+        }
+        {
+            ret.CssClasses_Length = Number(Module.getValue(pData + 4, "i32"));
+        }
+        {
+            var pArray = Module.getValue(pData + 8, "*");
+            if (pArray !== 0) {
+                ret.CssClasses = new Array();
+                for (var i = 0; i < ret.CssClasses_Length; i++) {
+                    var value = Module.getValue(pArray + i * 4, "*");
+                    if (value !== 0) {
+                        ret.CssClasses.push(String(MonoRuntime.conv_string(value)));
+                    }
+                    else {
+                        ret.CssClasses.push(null);
+                    }
+                }
+            }
+            else {
+                ret.CssClasses = null;
+            }
+        }
+        {
+            ret.Index = Number(Module.getValue(pData + 12, "i32"));
         }
         return ret;
     }

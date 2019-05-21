@@ -53,7 +53,54 @@
 		<Setter Property="Template">
 			<Setter.Value>
 				<ControlTemplate TargetType="u:PathControl">
-					<Path Data="M 12.007 8.01 L 12.007 8.488 L 12 8.488 C 12 10.974 9.985 12.988 7.5 12.988 C 5.015 12.988 3 10.974 3 8.488 C 3 6.17 4.759 4.284 7.012 4.037 L 7.012 6.549 L 11.519 3.775 L 7.012 1 L 7.012 3.013 C 4.203 3.26 2 5.615 2 8.488 C 2 11.526 4.462 13.988 7.5 13.988 C 10.509 13.988 12.95 11.571 12.996 8.572 L 13 8.572 L 13 8.01 L 12.007 8.01 Z"
+					<!-- Source: http://materialdesignicons.com/ (refresh) -->
+					<Path Data="M17.65,6.35C16.2,4.9 14.21,4 12,4A8,8 0 0,0 4,12A8,8 0 0,0 12,20C15.73,20 18.84,17.45 19.73,14H17.65C16.83,16.33 14.61,18 12,18A6,6 0 0,1 6,12A6,6 0 0,1 12,6C13.66,6 15.14,6.69 16.22,7.78L13,11H20V4L17.65,6.35Z"
+					      Fill="{TemplateBinding Foreground}"
+					      VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+					      HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+					      Stretch="{TemplateBinding Stretch}" />
+				</ControlTemplate>
+			</Setter.Value>
+		</Setter>
+	</Style>
+
+	<Style x:Key="Icon_Previous"
+	       TargetType="u:PathControl"
+	       BasedOn="{StaticResource DefaultPathControlStyle}">
+		<Setter Property="Foreground"
+		        Value="{StaticResource Color06Brush}" />
+		<Setter Property="Height"
+		        Value="16" />
+		<Setter Property="VerticalAlignment"
+		        Value="Center" />
+		<Setter Property="Template">
+			<Setter.Value>
+				<ControlTemplate TargetType="u:PathControl">
+					<!-- Source: http://materialdesignicons.com/ (chevron-left) -->
+					<Path Data="M15.41,16.58L10.83,12L15.41,7.41L14,6L8,12L14,18L15.41,16.58Z"
+					      Fill="{TemplateBinding Foreground}"
+					      VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+					      HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+					      Stretch="{TemplateBinding Stretch}" />
+				</ControlTemplate>
+			</Setter.Value>
+		</Setter>
+	</Style>
+
+	<Style x:Key="Icon_Next"
+	       TargetType="u:PathControl"
+	       BasedOn="{StaticResource DefaultPathControlStyle}">
+		<Setter Property="Foreground"
+		        Value="{StaticResource Color06Brush}" />
+		<Setter Property="Height"
+		        Value="16" />
+		<Setter Property="VerticalAlignment"
+		        Value="Center" />
+		<Setter Property="Template">
+			<Setter.Value>
+				<ControlTemplate TargetType="u:PathControl">
+					<!-- Source: http://materialdesignicons.com/ (chevron-right) -->
+					<Path Data="M8.59,16.58L13.17,12L8.59,7.41L10,6L16,12L10,18L8.59,16.58Z"
 					      Fill="{TemplateBinding Foreground}"
 					      VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
 					      HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"

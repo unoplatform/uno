@@ -158,6 +158,17 @@ namespace Windows.UI.Xaml
 			Uno.UI.Xaml.WindowManagerInterop.SetStyles(HtmlId, styles);
 		}
 
+		/// <summary>
+		/// Set a specified CSS class to an element from a set of possible values.
+		/// All other possible values will be removed from the element.
+		/// </summary>
+		/// <param name="cssClasses">All possible class values</param>
+		/// <param name="index">The index of the value to set (-1: unset)</param>
+		protected internal void SetClasses(string[] cssClasses, int index = -1)
+		{
+			Uno.UI.Xaml.WindowManagerInterop.SetClasses(HtmlId, cssClasses, index);
+		}
+
 #if DEBUG
 		private long _arrangeCount = 0;
 #endif

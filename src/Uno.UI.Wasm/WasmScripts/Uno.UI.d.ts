@@ -253,6 +253,11 @@ declare namespace Uno.UI {
         resetStyleNative(pParams: number): boolean;
         private resetStyleInternal;
         /**
+         * Set CSS classes on an element
+         */
+        setClasses(elementId: number, cssClassesList: string[], classIndex: number): string;
+        setClassesNative(pParams: number): boolean;
+        /**
         * Arrange and clips a native elements
         *
         */
@@ -546,6 +551,13 @@ declare class WindowManagerSetAttributeParams {
     Pairs_Length: number;
     Pairs: Array<string>;
     static unmarshal(pData: number): WindowManagerSetAttributeParams;
+}
+declare class WindowManagerSetClassesParams {
+    HtmlId: number;
+    CssClasses_Length: number;
+    CssClasses: Array<string>;
+    Index: number;
+    static unmarshal(pData: number): WindowManagerSetClassesParams;
 }
 declare class WindowManagerSetContentHtmlParams {
     HtmlId: number;
