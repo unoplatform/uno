@@ -51,6 +51,7 @@
 * `NavigationBarHelper` has been removed.
 
 ### Bug fixes
+* DatePicker FlyoutPlacement now set to Full by default
 * Semi-transparent borders no longer overlap at the corners on Android
 * The `HAS_UNO` define is now not defined in `uap10.0.x` target frameworks.
 * The `XamlReader` fails when a property has no getter

@@ -23,6 +23,8 @@
 				</ControlTemplate>
 			</Setter.Value>
 		</ios:Setter>
+        <ios:Setter Property="FlyoutPlacement"
+				Value="Full" />		
 	</xamarin:Style>
 
 </ResourceDictionary>
