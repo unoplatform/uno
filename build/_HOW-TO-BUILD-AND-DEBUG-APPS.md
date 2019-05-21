@@ -7,7 +7,7 @@ on a real application.
 To do this, you need to recompile your app using a _debug_ version of Uno­
 (or a _Release_ version if you prefer).
 
-> Instead of tweating your app solution to reference the your custom Uno
+> Instead of tweaking your app solution to reference the your custom Uno
 > output (because there's many steps to follow and you will have to avoid commiting this
 > to source control), we found a simpler way: override the nuget output folder.
 
