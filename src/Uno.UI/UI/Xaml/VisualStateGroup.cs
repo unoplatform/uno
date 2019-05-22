@@ -242,7 +242,7 @@ namespace Windows.UI.Xaml
 			}
 
 			this.CurrentState = state;
-			if (this.CurrentState != null)
+			if (this.CurrentState != null && element != null)
 			{
 				foreach (var setter in this.CurrentState.Setters.OfType<Setter>())
 				{
@@ -296,14 +296,17 @@ namespace Windows.UI.Xaml
 		internal void RefreshStateTriggers()
 		{
 			var activeVisualState = GetActiveTrigger();
+
 			var oldState = CurrentState;
 
-			if (this.GetParent() is IFrameworkElement parent)
-			{
-				// The parent may be null when the VisualStateGroup is being built.
+			var parent = this.GetParent() as IFrameworkElement;
 
-				GoToState(parent, activeVisualState, CurrentState, false, () => RaiseCurrentStateChanged(oldState, activeVisualState));
+			void OnStateChanged()
+			{
+				RaiseCurrentStateChanged(oldState, activeVisualState);
 			}
+
+			GoToState(parent, activeVisualState, CurrentState, false, OnStateChanged);
 		}
 
 		private void OnParentChanged(object instance, object key, DependencyObjectParentChangedEventArgs args)

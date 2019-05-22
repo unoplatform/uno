@@ -13,7 +13,9 @@ namespace UITests.Shared.Windows_UI_Xaml.ViusalStateTests
 
 			void OnSizeChanged(object snd, SizeChangedEventArgs evt)
 			{
-				txt.Text += $"Control Size: {evt?.NewSize.Width}, Window Size:{Window.Current.Bounds.Width}\n";
+				var w = global::Windows.UI.Xaml.Window.Current.Bounds.Width;
+
+				txt.Text += $"Control Size: {evt?.NewSize.Width}, Window Size:{w}\n";
 			}
 
 			SizeChanged += OnSizeChanged;
