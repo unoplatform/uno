@@ -1,6 +1,15 @@
 # Release notes
 
 ## Next version
+* Add support for the following `Windows.System.Power.PowerManager` APIs on iOS and Android:
+    - BatteryStatus
+    - EnergySaverStatus
+    - PowerSupplyStatus
+    - RemainingChargePercent
+    - PowerSupplyStatusChanged
+    - EnergySaverStatusChanged
+    - RemainingChargePercentChanged
+    - BatteryStatusChanged
 
 ### Features
 * Add support for `ChatMessageManager.ShowComposeSmsMessageAsync` (and `ChatMessage` `Body` and `Recipients` properties) on iOS and Android
