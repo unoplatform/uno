@@ -119,14 +119,23 @@ namespace Windows.UI.Xaml.Media.Animation
 
 		private void Play()
 		{
-			if (this.Children != null)
+			if (Children != null && Children.Count > 0)
 			{
-				foreach (ITimeline child in this.Children)
+				foreach (ITimeline child in Children)
 				{
 					_runningChildren++;
 					child.Completed += Child_Completed;
 					child.Begin();
 				}
+			}
+			else
+			{
+				Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+				{
+					// No children, so we complete immediately
+					State = TimelineState.Stopped;
+					OnCompleted();
+				});
 			}
 		}
 
