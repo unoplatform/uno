@@ -89,6 +89,7 @@
 * 148896 [iOS] TextBlock CarriageReturns would continue past maxlines property
 * [iOS] The `PointerReleased` event is not raised, so controls stay in pressed state.
 * 153594 [Android] EdgeEffect not showing up on listView that contain Headers and Footers
+* #881 [iOS] Support explicitly-defined ListViewItems in ListView.
 
 ## Release 1.44.0
 
