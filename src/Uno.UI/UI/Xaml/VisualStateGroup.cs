@@ -263,6 +263,11 @@ namespace Windows.UI.Xaml
 
 		private VisualTransition FindTransition(string oldStateName, string newStateName)
 		{
+			if (oldStateName.IsNullOrEmpty() || newStateName.IsNullOrEmpty())
+			{
+				return null;
+			}
+
 			var perfectMatch = Transitions.FirstOrDefault(vt =>
 				string.Equals(vt.From, oldStateName) &&
 				string.Equals(vt.To, newStateName));
@@ -297,10 +302,7 @@ namespace Windows.UI.Xaml
 			{
 				// The parent may be null when the VisualStateGroup is being built.
 
-				if (CurrentState != null || activeVisualState != null)
-				{
-					GoToState(parent, activeVisualState, CurrentState, false, () => RaiseCurrentStateChanged(oldState, activeVisualState));
-				}
+				GoToState(parent, activeVisualState, CurrentState, false, () => RaiseCurrentStateChanged(oldState, activeVisualState));
 			}
 		}
 
