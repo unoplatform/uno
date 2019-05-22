@@ -23,12 +23,23 @@ namespace Windows.UI.Xaml
 
 		protected void SetActive(bool isActive)
 		{
+			if (InternalIsActive == isActive)
+			{
+				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+				{
+					this.Log().DebugFormat($"StateTrigger [{GetType().Name}] (owner={Owner?.Owner?.Name ?? "<null>"}/{Owner?.Name ?? "<null>"}) isActive:{isActive} [DUPLICATED: IGNORED]");
+				}
+
+				return; // nothing to do
+			}
+
 			if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
 			{
-				this.Log().DebugFormat($"State [{GetType().Name}] isActive:{isActive}");
+				this.Log().DebugFormat($"StateTrigger [{GetType().Name}] (owner={Owner?.Owner?.Name ?? "<null>"}/{Owner?.Name ?? "<null>"}) isActive:{isActive}");
 			}
 
 			InternalIsActive = isActive;
+
 			Owner?.Owner?.RefreshStateTriggers();
 		}
 
