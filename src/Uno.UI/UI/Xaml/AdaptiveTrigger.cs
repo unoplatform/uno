@@ -27,7 +27,7 @@ namespace Windows.UI.Xaml
 			var mw = MinWindowWidth;
 			var mh = MinWindowHeight;
 
-			var isActive = (w > mw) && (h > mh);
+			var isActive = (w >= mw) && (h >= mh);
 
 			SetActive(isActive);
 		}
