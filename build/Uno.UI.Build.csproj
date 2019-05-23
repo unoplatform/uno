@@ -29,7 +29,7 @@
 	<ItemGroup>
 		<PackageReference Include="docfx.console" Version="2.36.0" />
 		<PackageReference Include="Microsoft.VisualStudio.TextTemplating.15.0">
-			<Version>15.8.28010</Version>
+			<Version>16.0.28727</Version>
 		</PackageReference>
 		<PackageReference Include="Microsoft.VisualStudio.TextTemplating.VSHost.14.0">
 			<Version>14.3.25407</Version>
