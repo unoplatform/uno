@@ -54,6 +54,7 @@
 * Add support for `x:Load`
 * [Wasm] Restore support for `x:Load` and `x:DeferLoadStrategy`
 * [Wasm] Scrolling bar visibility modes are now supported on most browsers
+* Fix invalid cast exception when using `x:Load` or `x:DeferLoadStrategy`
 
 ### Breaking Changes
 * The `WebAssemblyRuntime.InvokeJSUnmarshalled` method with three parameters has been removed.
