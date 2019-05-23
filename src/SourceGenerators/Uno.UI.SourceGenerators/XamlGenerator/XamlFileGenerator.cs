@@ -3242,7 +3242,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					// performed at runtime at a higher cost.
 					propertyName = RewriteAttachedPropertyPath(propertyName);
 
-					writer.AppendLineInvariant($"new global::Windows.UI.Xaml.Setter(new global::Windows.UI.Xaml.TargetPropertyPath(this.{elementName}, \"{propertyName}\"), {value.Replace("{", "{{").Replace("}", "}}")})");
+					writer.AppendLineInvariant($"new global::Windows.UI.Xaml.Setter(new global::Windows.UI.Xaml.TargetPropertyPath(this._{elementName}Subject, \"{propertyName}\"), {value.Replace("{", "{{").Replace("}", "}}")})");
 				}
 			}
 			else

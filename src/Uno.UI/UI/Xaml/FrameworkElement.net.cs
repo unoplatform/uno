@@ -28,6 +28,14 @@ namespace Windows.UI.Xaml
 			return child;
 		}
 
+		public View AddChild(View child, int index)
+		{
+			_children.Insert(index, child);
+			child.SetParent(this);
+
+			return child;
+		}
+
 		public View RemoveChild(View child)
 		{
 			_children.Remove(child);
