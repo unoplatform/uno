@@ -2691,8 +2691,4 @@
     <PRIResource Include="$(MSBuildThisFileDirectory)UITestsStrings\en-US\NamedResources.resw" />
     <PRIResource Include="$(MSBuildThisFileDirectory)UITestsStrings\en-US\Resources.resw" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="$(MSBuildThisFileDirectory)Windows_System\Power\" />
-    <Folder Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ChatBox\" />
-  </ItemGroup>
 </Project>
