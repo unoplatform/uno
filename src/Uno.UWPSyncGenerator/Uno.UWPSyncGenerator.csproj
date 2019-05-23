@@ -22,7 +22,7 @@
 		</PackageReference>
 		<PackageReference Include="Microsoft.Build.Tasks.Core">
 			<ExcludeAssets>runtime</ExcludeAssets>
-			<Version>15.8.166</Version>
+			<Version>16.0.461</Version>
 		</PackageReference>
 		<PackageReference Include="Microsoft.Build.Utilities.Core">
 			<ExcludeAssets>runtime</ExcludeAssets>
