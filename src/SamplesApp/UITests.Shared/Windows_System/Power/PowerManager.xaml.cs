@@ -18,9 +18,9 @@ using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 using UwpPowerManager = Windows.System.Power.PowerManager;
 
-namespace UITests.Shared.Windows_System_Power
+namespace UITests.Shared.Windows_System.Power
 {
-	[SampleControlInfoAttribute("Windows.System.Power", "PowerManager",
+	[SampleControlInfoAttribute("Windows.System", "Power.PowerManager",
 		description: "Shows properties of Power manager and handles its events")]
 	public sealed partial class PowerManager : UserControl
 	{
