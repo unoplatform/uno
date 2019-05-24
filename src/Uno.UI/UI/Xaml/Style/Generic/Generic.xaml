@@ -2889,9 +2889,7 @@
 						</Grid.ColumnDefinitions>
 
 						<!--Content Area-->
-						<!-- Wasm: Workaround to make SplitView work (only supports Inline mode). -->
 						<Grid x:Name="ContentRoot"
-							  wasm:Grid.Column="1"
 							  Grid.ColumnSpan="2">
 							<Border Child="{TemplateBinding Content}" />
 							<win:Rectangle x:Name="LightDismissLayer"
