@@ -2,6 +2,7 @@ assembly-versioning-scheme: MajorMinorPatch
 mode: ContinuousDeployment
 next-version: 1.45.1
 continuous-delivery-fallback-tag: ""
+commit-message-incrementing: Disabled
 branches:
   master:
     increment: none
