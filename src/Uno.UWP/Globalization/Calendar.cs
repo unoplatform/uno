@@ -162,6 +162,9 @@ namespace Windows.Globalization
 
 		public IReadOnlyList<string> Languages => _languages;
 
+		[NotImplemented] public string ResolvedLanguage => throw new global::System.NotImplementedException("The member string Calendar.ResolvedLanguage is not implemented in Uno.");
+
+
 		public string GetCalendarSystem()
 			=> GetCalendarSystem(_calendar);
 
@@ -241,8 +244,15 @@ namespace Windows.Globalization
 					case 1 when _clock == ClockIdentifiers.TwelveHour && _time.Hour < 12:
 						break;
 
-					case 2 when _clock == ClockIdentifiers.TwelveHour:
+					case 1 when _clock == ClockIdentifiers.TwelveHour:
 						AddHours(-12);
+						break;
+
+					case 2 when _clock == ClockIdentifiers.TwentyFourHour && _time.Hour < 12:
+						AddHours(12);
+						break;
+
+					case 2 when _clock == ClockIdentifiers.TwentyFourHour:
 						break;
 
 					default:
@@ -313,32 +323,34 @@ namespace Windows.Globalization
 		#endregion
 
 		#region Read _calendar properties !! not implemenated !!
-		[NotImplemented] public int FirstSecondInThisMinute => throw new global::System.NotImplementedException("The member int Calendar.FirstSecondInThisMinute is not implemented in Uno.");
-		[NotImplemented] public int FirstYearInThisEra => throw new global::System.NotImplementedException("The member int Calendar.FirstYearInThisEra is not implemented in Uno.");
 		[NotImplemented] public bool IsDaylightSavingTime => throw new global::System.NotImplementedException("The member bool Calendar.IsDaylightSavingTime is not implemented in Uno.");
-		[NotImplemented] public int LastDayInThisMonth => throw new global::System.NotImplementedException("The member int Calendar.LastDayInThisMonth is not implemented in Uno.");
-		[NotImplemented] public int LastEra => throw new global::System.NotImplementedException("The member int Calendar.LastEra is not implemented in Uno.");
-		[NotImplemented] public int LastHourInThisPeriod => throw new global::System.NotImplementedException("The member int Calendar.LastHourInThisPeriod is not implemented in Uno.");
-		[NotImplemented] public int LastMinuteInThisHour => throw new global::System.NotImplementedException("The member int Calendar.LastMinuteInThisHour is not implemented in Uno.");
-		public int LastMonthInThisYear => _calendar.GetMonthsInYear(Year);
-		[NotImplemented] public int LastSecondInThisMinute => throw new global::System.NotImplementedException("The member int Calendar.LastSecondInThisMinute is not implemented in Uno.");
-		[NotImplemented] public int LastYearInThisEra => throw new global::System.NotImplementedException("The member int Calendar.LastYearInThisEra is not implemented in Uno.");
-		[NotImplemented] public int FirstDayInThisMonth => throw new global::System.NotImplementedException("The member int Calendar.FirstDayInThisMonth is not implemented in Uno.");
-		[NotImplemented] public int LastPeriodInThisDay => throw new global::System.NotImplementedException("The member int Calendar.LastPeriodInThisDay is not implemented in Uno.");
-		[NotImplemented] public int NumberOfDaysInThisMonth => throw new global::System.NotImplementedException("The member int Calendar.NumberOfDaysInThisMonth is not implemented in Uno.");
-		[NotImplemented] public int FirstEra => throw new global::System.NotImplementedException("The member int Calendar.FirstEra is not implemented in Uno.");
-		[NotImplemented] public int NumberOfEras => throw new global::System.NotImplementedException("The member int Calendar.NumberOfEras is not implemented in Uno.");
-		[NotImplemented] public int NumberOfHoursInThisPeriod => throw new global::System.NotImplementedException("The member int Calendar.NumberOfHoursInThisPeriod is not implemented in Uno.");
-		[NotImplemented] public int NumberOfMinutesInThisHour => throw new global::System.NotImplementedException("The member int Calendar.NumberOfMinutesInThisHour is not implemented in Uno.");
-		[NotImplemented] public int FirstHourInThisPeriod => throw new global::System.NotImplementedException("The member int Calendar.FirstHourInThisPeriod is not implemented in Uno.");
-		[NotImplemented] public int NumberOfMonthsInThisYear => throw new global::System.NotImplementedException("The member int Calendar.NumberOfMonthsInThisYear is not implemented in Uno.");
-		[NotImplemented] public int NumberOfPeriodsInThisDay => throw new global::System.NotImplementedException("The member int Calendar.NumberOfPeriodsInThisDay is not implemented in Uno.");
-		[NotImplemented] public int NumberOfSecondsInThisMinute => throw new global::System.NotImplementedException("The member int Calendar.NumberOfSecondsInThisMinute is not implemented in Uno.");
+
+		public int NumberOfEras => _calendar.Eras.Length;
 		[NotImplemented] public int NumberOfYearsInThisEra => throw new global::System.NotImplementedException("The member int Calendar.NumberOfYearsInThisEra is not implemented in Uno.");
-		[NotImplemented] public int FirstMinuteInThisHour => throw new global::System.NotImplementedException("The member int Calendar.FirstMinuteInThisHour is not implemented in Uno.");
-		[NotImplemented] public string ResolvedLanguage => throw new global::System.NotImplementedException("The member string Calendar.ResolvedLanguage is not implemented in Uno.");
-		[NotImplemented] public int FirstMonthInThisYear => throw new global::System.NotImplementedException("The member int Calendar.FirstMonthInThisYear is not implemented in Uno.");
-		[NotImplemented] public int FirstPeriodInThisDay => throw new global::System.NotImplementedException("The member int Calendar.FirstPeriodInThisDay is not implemented in Uno.");
+		public int NumberOfMonthsInThisYear => _calendar.GetMonthsInYear(Year, Era);
+		public int NumberOfDaysInThisMonth => _calendar.GetDaysInMonth(Year, Month, Era);
+		public int NumberOfPeriodsInThisDay => _clock == ClockIdentifiers.TwentyFourHour ? 1 : 2;
+		public int NumberOfHoursInThisPeriod => _clock == ClockIdentifiers.TwentyFourHour ? 24 : 12;
+		public int NumberOfMinutesInThisHour => 60;
+		public int NumberOfSecondsInThisMinute => 60;
+
+		public int FirstEra => _calendar.Eras.First();
+		[NotImplemented] public int FirstYearInThisEra => throw new global::System.NotImplementedException("The member int Calendar.FirstYearInThisEra is not implemented in Uno.");
+		public int FirstMonthInThisYear => 1;
+		public int FirstDayInThisMonth => 1;
+		public int FirstPeriodInThisDay => 1;
+		public int FirstHourInThisPeriod => _clock == ClockIdentifiers.TwentyFourHour ? 0 : 12;
+		public int FirstMinuteInThisHour => 0;
+		public int FirstSecondInThisMinute => 0;
+
+		public int LastEra => _calendar.Eras.Last();
+		[NotImplemented] public int LastYearInThisEra => throw new global::System.NotImplementedException("The member int Calendar.LastYearInThisEra is not implemented in Uno.");
+		public int LastMonthInThisYear => _calendar.GetMonthsInYear(Year);
+		public int LastDayInThisMonth => _calendar.GetDaysInMonth(Year, Month, Era);
+		public int LastPeriodInThisDay => _clock == ClockIdentifiers.TwentyFourHour ? 1 : 2;
+		public int LastHourInThisPeriod => _clock == ClockIdentifiers.TwentyFourHour ? 23 : 11;
+		public int LastMinuteInThisHour => 59;
+		public int LastSecondInThisMinute => 59;
 		#endregion
 
 		#region String formating (***AsString()) !! not implemenated !!
