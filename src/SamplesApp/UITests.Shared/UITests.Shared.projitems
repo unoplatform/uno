@@ -69,6 +69,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\MarkupExtensionTests\MarkupExtension.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\UIElementTests\Arrange_Performance01.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -98,6 +102,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\VisualStateTests\VisualTransition_Execution_Order.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\xBindTests\xBind.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -1704,6 +1712,14 @@
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\VisualStateTests\VisualTransition_Execution_Order.xaml.cs">
       <DependentUpon>VisualTransition_Execution_Order.xaml</DependentUpon>
     </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\xBindTests\xBind.xaml.cs">
+      <DependentUpon>xBind.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\xBindTests\XBindviewModel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\MarkupExtensionTests\MarkupExtension.xaml.cs">
+      <DependentUpon>MarkupExtension.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\MarkupExtensionTests\Simple.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\AutoSuggestBoxTests\BasicAutoSuggestBox.xaml.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\BorderTests\AutoBorderStretchwithbottommargin.xaml.cs">
       <DependentUpon>AutoBorderStretchwithbottommargin.xaml</DependentUpon>
