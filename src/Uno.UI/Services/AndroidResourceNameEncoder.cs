@@ -8,9 +8,10 @@ namespace Uno.UI
 {
     internal static class AndroidResourceNameEncoder
     {
+		private const string NumberPrefix = "__";
 		// These characters are not supported on Android, but they're used by the attached property localization syntax.
 		// Example: "MyUid.[using:Windows.UI.Xaml.Automation]AutomationProperties.Name"
-		private static char[] UnsupportedCharacters = new char[] { '[', ']', ':' };
+		private static char[] UnsupportedCharacters = new char[] { '[', ']', ':', '-' };
 
 		/// <summary>
 		/// Encode a resource name to remove characters that are not supported on Android.
@@ -27,6 +28,12 @@ namespace Uno.UI
 				{
 					key = key.Replace(unsupportedCharacter, '_');
 				}
+			}
+
+			//Checks if the keys are starting by a number because they are invalid in C#
+			if (int.TryParse(key.Substring(0,1), out var number))
+			{
+				key = $"{NumberPrefix}{key}";
 			}
 
 			return key;

@@ -55,6 +55,7 @@
 * [Wasm] Restore support for `x:Load` and `x:DeferLoadStrategy`
 * [Wasm] Scrolling bar visibility modes are now supported on most browsers
 * Fix invalid cast exception when using `x:Load` or `x:DeferLoadStrategy`
+* Add `Windows.Globalization.Calendar`
 
 ### Breaking Changes
 * The `WebAssemblyRuntime.InvokeJSUnmarshalled` method with three parameters has been removed.
@@ -99,6 +100,8 @@
 * 148896 [iOS] TextBlock CarriageReturns would continue past maxlines property
 * 153594 [Android] EdgeEffect not showing up on listView that contain Headers and Footers
 * #881 [iOS] Support explicitly-defined ListViewItems in ListView.
+* #902 [Android] Resource generation now correctly escapes names starting with numbers and names containing a '-' character
+* 154390 Storyboard `Completed` callback were not properly called when there's not children.
 
 ## Release 1.44.0
 
