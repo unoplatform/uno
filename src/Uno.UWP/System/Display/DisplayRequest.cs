@@ -31,7 +31,9 @@ namespace Windows.System.Display
 			lock (_syncLock)
 			{
 				if (_instanceRequestCount == 0)
+				{
 					throw new InvalidOperationException("No active display request to release");
+				}
 				_instanceRequestCount--;
 				_globalRequestCount--;
 				if ( _globalRequestCount == 0)
