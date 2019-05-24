@@ -14,7 +14,7 @@ namespace Windows.UI.Xaml
 	[ContentProperty(Name = "Storyboard")]
 	public sealed partial class VisualState : DependencyObject
 	{
-        public VisualState()
+		public VisualState()
 		{
 			InitializeBinder();
 			IsAutoPropertyInheritanceEnabled = false;
@@ -137,5 +137,7 @@ namespace Windows.UI.Xaml
 		{
 			Owner?.RefreshStateTriggers();
 		}
+
+		public override string ToString() => Name ?? $"<unnamed state {GetHashCode()}>";
 	}
 }

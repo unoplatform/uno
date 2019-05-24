@@ -55,6 +55,7 @@
 * [Wasm] Restore support for `x:Load` and `x:DeferLoadStrategy`
 * [Wasm] Scrolling bar visibility modes are now supported on most browsers
 * Add `Windows.Globalization.Calendar`
+* Using _State Triggers_ in `VisualStateManager` now follows correct precedence as documented by Microsoft
 
 ### Breaking Changes
 * The `WebAssemblyRuntime.InvokeJSUnmarshalled` method with three parameters has been removed.

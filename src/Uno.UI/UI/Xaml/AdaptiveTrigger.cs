@@ -27,9 +27,18 @@ namespace Windows.UI.Xaml
 			var mw = MinWindowWidth;
 			var mh = MinWindowHeight;
 
-			var isActive = (w >= mw) && (h >= mh);
-
-			SetActive(isActive);
+			if (mw >= 0 && w >= mw)
+			{
+				SetActivePrecedence(StateTriggerPrecedence.MinWidthTrigger);
+			}
+			else if (mh >= 0 && h > mh)
+			{
+				SetActivePrecedence(StateTriggerPrecedence.MinHeightTrigger);
+			}
+			else
+			{
+				SetActivePrecedence(StateTriggerPrecedence.Inactive);
+			}
 		}
 
 		#region MinWindowHeight DependencyProperty
