@@ -6,7 +6,8 @@ using Uno.UI.Samples.Controls;
 
 namespace Uno.UI.Samples.Content.UITests.Animations
 {
-	[SampleControlInfoAttribute("Visual states", "AdaptiveTrigger_PanelOrientation")]
+	[SampleControlInfo("Visual states", "VisualState_AdaptiveTrigger_UsingOneStateOnly",
+		description: "VisualState using only one AdaptiveTrigger. Go from Portrait to Landscape to test")]
 	public sealed partial class VisualState_AdaptiveTrigger_UsingOneStateOnly : UserControl
 	{
 		public VisualState_AdaptiveTrigger_UsingOneStateOnly()

@@ -59,7 +59,7 @@ namespace Windows.UI.Xaml
 				{
 					foreach (VisualStateGroup group in oldGroups)
 					{
-						group.SetParent(fe);
+						group.SetParent(null);
 					}
 				}
 
