@@ -52,31 +52,40 @@ namespace Uno.UI.TestComparer
 			{
 				var tempFile = Path.GetTempFileName();
 
-				Console.WriteLine($"Getting artifact for build {build.Id}");
-				using (var stream = await client.GetArtifactContentZipAsync(project, build.Id, artifactName))
+				var artifacts = await client.GetArtifactsAsync(project, build.Id);
+
+				if (artifacts.Any(a => a.Name == artifactName))
 				{
-					using (var f = File.OpenWrite(tempFile))
+					Console.WriteLine($"Getting artifact for build {build.Id}");
+					using (var stream = await client.GetArtifactContentZipAsync(project, build.Id, artifactName))
 					{
-						await stream.CopyToAsync(f);
-					}
-				}
-
-				var fullPath = Path.Combine(basePath, $"{build.LastChangedDate:yyyyMMdd-hhmmss}-{build.Id}");
-
-				Console.WriteLine($"Extracting artifact for build {build.Id}");
-				ZipFile.ExtractToDirectory(tempFile, fullPath);
-
-				foreach (var file in Directory.EnumerateFiles(fullPath, "*.*", SearchOption.AllDirectories))
-				{
-					if (Path.GetDirectoryName(file) != fullPath)
-					{
-						var destFileName = Path.Combine(fullPath, Path.GetFileName(file));
-
-						if (!File.Exists(destFileName))
+						using (var f = File.OpenWrite(tempFile))
 						{
-							File.Move(file, destFileName);
+							await stream.CopyToAsync(f);
 						}
 					}
+
+					var fullPath = Path.Combine(basePath, $"{build.LastChangedDate:yyyyMMdd-hhmmss}-{build.Id}");
+
+					Console.WriteLine($"Extracting artifact for build {build.Id}");
+					ZipFile.ExtractToDirectory(tempFile, fullPath);
+
+					foreach (var file in Directory.EnumerateFiles(fullPath, "*.*", SearchOption.AllDirectories))
+					{
+						if (Path.GetDirectoryName(file) != fullPath)
+						{
+							var destFileName = Path.Combine(fullPath, Path.GetFileName(file));
+
+							if (!File.Exists(destFileName))
+							{
+								File.Move(file, destFileName);
+							}
+						}
+					}
+				}
+				else
+				{
+					Console.WriteLine($"Skipping download artifact for build {build.Id} (The artifact {artifactName} cannot be found)");
 				}
 			}
 		}
