@@ -3,33 +3,40 @@ mode: ContinuousDeployment
 next-version: 1.45.1
 continuous-delivery-fallback-tag: ""
 commit-message-incrementing: Disabled
+
 branches:
   master:
     increment: none
     tag: dev
     regex: master
+    prevent-increment-of-merged-branch-version: true
   beta:
     regex: beta
     tag: beta
     increment: none
     source-branches: ['master']
+    prevent-increment-of-merged-branch-version: true
   stable:
     regex: stable
     tag: 
     increment: none
     source-branches: ['master']
+    prevent-increment-of-merged-branch-version: true
   dev:
     regex: dev/.*?/(.*?)
     tag: dev.{BranchName}
     source-branches: ['master']
+    prevent-increment-of-merged-branch-version: true
   projects:
     tag: proj-{BranchName}
     regex: projects/(.*?)
     source-branches: ['master']
+    prevent-increment-of-merged-branch-version: true
   feature:
     tag: feature.{BranchName}
     regex: feature/(.*?)
     source-branches: ['master']
+    prevent-increment-of-merged-branch-version: true
 
 ignore:
   sha: []
