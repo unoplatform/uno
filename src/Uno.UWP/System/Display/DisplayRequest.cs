@@ -36,7 +36,7 @@ namespace Windows.System.Display
 				}
 				_instanceRequestCount--;
 				_globalRequestCount--;
-				if ( _globalRequestCount == 0)
+				if (_globalRequestCount == 0)
 				{
 					//last global active request, deactivate
 					DeactivateScreenLock();
