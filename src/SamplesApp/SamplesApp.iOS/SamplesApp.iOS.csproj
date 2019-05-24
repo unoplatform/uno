@@ -132,6 +132,10 @@
       <Project>{f9277925-fc11-4a97-8ca1-b4a33e726f55}</Project>
       <Name>Uno.UI.Lottie</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\Uno.UI.Maps\Uno.UI.Maps.csproj">
+      <Project>{f25ccf70-5a21-4245-ae4e-342bc55f9e86}</Project>
+      <Name>Uno.UI.Maps</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\Uno.UI.RuntimeTests\Uno.UI.RuntimeTests.csproj">
       <Project>{028F3EE0-D51B-469A-A72C-C272585DCD40}</Project>
       <Name>Uno.UI.RuntimeTests</Name>

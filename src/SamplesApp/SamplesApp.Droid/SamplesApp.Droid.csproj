@@ -81,6 +81,10 @@
       <Project>{528AE586-5DF3-4DAD-AA5C-F12F4D5E0605}</Project>
       <Name>Uno.Foundation</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\Uno.UI.Maps\Uno.UI.Maps.csproj">
+      <Project>{f25ccf70-5a21-4245-ae4e-342bc55f9e86}</Project>
+      <Name>Uno.UI.Maps</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\Uno.UI.RuntimeTests\Uno.UI.RuntimeTests.csproj">
       <Project>{028f3ee0-d51b-469a-a72c-c272585dcd40}</Project>
       <Name>Uno.UI.RuntimeTests</Name>
@@ -120,7 +124,9 @@
     <AndroidResource Include="Resources\drawable\Icon.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Properties\AndroidManifest.xml" />
+    <None Include="Properties\AndroidManifest.xml">
+      <SubType>Designer</SubType>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\values\Styles.xml" />
