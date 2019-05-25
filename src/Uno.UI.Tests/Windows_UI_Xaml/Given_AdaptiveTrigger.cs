@@ -67,7 +67,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 		{
 			Window.Current.SetWindowSize(new Size(100, 100));
 
-			var sut = new AdaptiveTrigger(); // should always be active
+			var sut = new AdaptiveTrigger {MinWindowWidth = 0};
 
 			var state = new VisualState { Name = "activeState" };
 			state.StateTriggers.Add(sut);

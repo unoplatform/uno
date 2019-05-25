@@ -52,11 +52,15 @@ namespace Uno.UI.Tests.Windows_UI_Xaml.VisualStateManagerTests
 
 			trigger2.Set();
 			dispatcher.ProcessEvents(CoreProcessEventsOption.ProcessAllIfPresent);
+			control.Tag.Should().Be(1);
+
+			trigger1.Unset();
+			dispatcher.ProcessEvents(CoreProcessEventsOption.ProcessAllIfPresent);
 			control.Tag.Should().Be(2);
 
 			trigger2.Unset();
 			dispatcher.ProcessEvents(CoreProcessEventsOption.ProcessAllIfPresent);
-			control.Tag.Should().Be(1);
+			control.Tag.Should().Be(null);
 		}
 
 		[TestMethod]
@@ -111,7 +115,16 @@ namespace Uno.UI.Tests.Windows_UI_Xaml.VisualStateManagerTests
 			trigger2.Set();
 			dispatcher.ProcessEvents(CoreProcessEventsOption.ProcessAllIfPresent);
 
-			completed1Count.Should().Be(0);
+			// Seems weird, but that's normal, it's following documented
+			// precedence. "state2" will be set only after "trigger1" will
+			// be unset.
+			completed1Count.Should().Be(1);
+			completed2Count.Should().Be(0);
+
+			trigger1.Unset();
+			dispatcher.ProcessEvents(CoreProcessEventsOption.ProcessAllIfPresent);
+
+			completed1Count.Should().Be(1);
 			completed2Count.Should().Be(1);
 
 			trigger2.Unset();
