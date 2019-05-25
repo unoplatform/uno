@@ -5,6 +5,7 @@ using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Input;
 using Uno.Disposables;
 using Windows.UI.Core;
@@ -89,6 +90,8 @@ namespace Uno.UI.Samples.UITests.Helpers
 		public class Command : ICommand
 		{
 			private readonly Action<object> _action;
+			private readonly Func<object, Task> _actionTask;
+			private readonly Func<object, bool> _canExecute;
 			private bool _manualCanExecute = true;
 
 			public bool ManualCanExecute
@@ -101,34 +104,56 @@ namespace Uno.UI.Samples.UITests.Helpers
 				}
 			}
 
-			private bool _isExecuting = false;
+			private object _isExecuting = null;
+			private static object _isExecutingNull = new object(); // this represent a null parameter when something is executing
 
-			public Command(Action<object> action)
+			public Command(Action<object> action, Func<object, bool> canExecute = null)
 			{
-				_action = action;
+				_action = action ?? throw new ArgumentNullException(nameof(action));
+				_canExecute = canExecute;
+			}
+
+			public Command(Func<object, Task> actionTask, Func<object, bool> canExecute = null)
+			{
+				_actionTask = actionTask ?? throw new ArgumentNullException(nameof(actionTask));
+				_canExecute = canExecute;
 			}
 
 			public bool CanExecute(object parameter)
 			{
-				return !_isExecuting && _manualCanExecute;
+				var canExecuteParameter = parameter ?? _isExecutingNull;
+
+				return (_isExecuting != canExecuteParameter)
+					&& (_canExecute?.Invoke(parameter) ?? true)
+					&& _manualCanExecute;
 			}
 
-			public void Execute(object parameter)
+			public async void Execute(object parameter)
 			{
-				if (_isExecuting)
+				var isExecutingParameter = parameter ?? _isExecutingNull;
+
+				if (_isExecuting == isExecutingParameter)
 				{
+					// This parameter is executing
 					return;
 				}
 
 				try
 				{
-					_isExecuting = true;
+					_isExecuting = isExecutingParameter;
 					CanExecuteChanged?.Invoke(this, EventArgs.Empty);
-					_action(parameter);
+					if (_action != null)
+					{
+						_action(parameter);
+					}
+					else
+					{
+						await _actionTask(parameter);
+					}
 				}
 				finally
 				{
-					_isExecuting = false;
+					_isExecuting = null;
 					CanExecuteChanged?.Invoke(this, EventArgs.Empty);
 				}
 			}

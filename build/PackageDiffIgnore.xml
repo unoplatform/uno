@@ -64,7 +64,7 @@
                 reason="Removed as Routed Events implement it properly"/>  
         
         <Member fullName="System.Boolean Uno.Foundation.WebAssemblyRuntime.InvokeJSUnmarshalled(System.String functionIdentifier, System.IntPtr arg0, System.IntPtr arg1, System.IntPtr arg2)" 
-                reason="Removed to improve the C#/JS call performance"/>  
+                reason="Removed to improve the C#/JS call performance"/>
       </Methods>
       
       <Events>
@@ -91,6 +91,43 @@
         <Member fullName="Windows.Foundation.Rect Windows.UI.ViewManagement.InputPane::NavigationBarRect()"
                 reason="Unused Uno specific property" />
       </Properties>
+    </IgnoreSet>
+    
+    <IgnoreSet baseVersion="1.44.0">
+      <Types>
+        <Member fullName="Windows.UI.Xaml.UIElementExtensions"
+                reason="Moved to Uno.Extensions"/>
+      </Types>
+
+      <Methods>
+        <Member fullName="System.Boolean Uno.Foundation.WebAssemblyRuntime.InvokeJSUnmarshalled(System.String functionIdentifier, System.IntPtr arg0, System.IntPtr arg1, System.IntPtr arg2)"
+                reason="Removed to improve the C#/JS call performance"/>
+      </Methods>
+      
+    </IgnoreSet>
+
+    <IgnoreSet baseVersion="1.44.1">
+      <Types>
+        <Member fullName="Windows.UI.Xaml.UIElementExtensions"
+                reason="Moved to Uno.Extensions"/>
+      </Types>
+
+      <Methods>
+        <Member fullName="System.Boolean Uno.Foundation.WebAssemblyRuntime.InvokeJSUnmarshalled(System.String functionIdentifier, System.IntPtr arg0, System.IntPtr arg1, System.IntPtr arg2)"
+                reason="Removed to improve the C#/JS call performance"/>
+
+        <Member fullName="Windows.UI.Color Windows.UI.Xaml.Controls.ScrollViewer.get_BackgroundColor()"
+                reason="This was a legacy mock done during initial Wasm POC, never implemented, never used." />
+
+        <Member fullName="System.Void Windows.UI.Xaml.Controls.ScrollViewer.set_BackgroundColor(Windows.UI.Color value)"
+                reason="This was a legacy mock done during initial Wasm POC, never implemented, never used." />
+      </Methods>
+
+      <Properties>
+        <Member fullName="Windows.UI.Color Windows.UI.Xaml.Controls.ScrollViewer::BackgroundColor()"
+                reason="This was a legacy mock done during initial Wasm POC, never implemented, never used." />
+      </Properties>
+
     </IgnoreSet>
   </IgnoreSets>
 </DiffIgnore>

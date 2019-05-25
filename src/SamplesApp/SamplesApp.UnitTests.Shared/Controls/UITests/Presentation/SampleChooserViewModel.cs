@@ -255,6 +255,7 @@ namespace SampleControl.Presentation
 #endif
 					var testQuery = from category in _categories
 									from sample in category.SamplesContent
+									where !sample.IgnoreInAutomatedTests
 										// where sample.ControlName.Equals("GridViewVerticalGrouped")
 									select new SampleInfo
 									{
@@ -532,8 +533,8 @@ namespace SampleControl.Presentation
 			var query = from assembly in GetAllAssembies()
 						from type in FindDefinedAssemblies(assembly)
 						let sampleAttribute = FindSampleAttribute(type)
-						where sampleAttribute != null && !(sampleAttribute as SampleControlInfoAttribute).IgnoreInAutomatedTests
-						select new System.Tuple<TypeInfo, SampleControlInfoAttribute>(type, sampleAttribute as SampleControlInfoAttribute);
+						where sampleAttribute != null
+						select (type, attribute: sampleAttribute);
 
 			query = query.ToArray();
 
@@ -543,19 +544,20 @@ namespace SampleControl.Presentation
 			{
 				var sampleControl = new SampleChooserContent()
 				{
-					ControlName = control.Item2.ControlName,
-					ViewModelType = control.Item2.ViewModelType,
-					Description = control.Item2.Description,
-					ControlType = control.Item1.AsType(),
+					ControlName = control.attribute.ControlName,
+					ViewModelType = control.attribute.ViewModelType,
+					Description = control.attribute.Description,
+					ControlType = control.type.AsType(),
+					IgnoreInAutomatedTests = control.attribute.IgnoreInAutomatedTests
 				};
 
-				if (categories.TrueForAll(s => s.Category != control.Item2.Category))
+				if (categories.TrueForAll(s => s.Category != control.attribute.Category))
 				{
-					categories.Add(new SampleChooserCategory() { Category = control.Item2.Category, SamplesContent = new List<SampleChooserContent>() { sampleControl } });
+					categories.Add(new SampleChooserCategory() { Category = control.attribute.Category, SamplesContent = new List<SampleChooserContent>() { sampleControl } });
 				}
 				else
 				{
-					categories.Where(t => t.Category == control.Item2.Category).First().SamplesContent.Add(sampleControl);
+					categories.Where(t => t.Category == control.attribute.Category).First().SamplesContent.Add(sampleControl);
 				}
 			}
 
@@ -585,11 +587,13 @@ namespace SampleControl.Presentation
 			}
 		}
 
-		private static Attribute FindSampleAttribute(TypeInfo type)
+		private static SampleControlInfoAttribute FindSampleAttribute(TypeInfo type)
 		{
 			try
 			{
-				return type?.GetCustomAttributes().FirstOrDefault(a => a?.GetType() == typeof(SampleControlInfoAttribute));
+				return type?.GetCustomAttributes()
+					.OfType<SampleControlInfoAttribute>()
+					.FirstOrDefault();
 			}
 			catch (Exception)
 			{
@@ -649,6 +653,30 @@ namespace SampleControl.Presentation
 			await UpdateFavorites(ct);
 		}
 
+		private async Task LoadPreviousTest(CancellationToken ct)
+		{
+			if (PreviousSample != null)
+			{
+				ContentPhone = await UpdateContent(ct, PreviousSample);
+			}
+		}
+
+		private async Task ReloadCurrentTest(CancellationToken ct)
+		{
+			if (CurrentSelectedSample != null)
+			{
+				ContentPhone = await UpdateContent(ct, CurrentSelectedSample);
+			}
+		}
+
+		private async Task LoadNextTest(CancellationToken ct)
+		{
+			if (NextSample != null)
+			{
+				ContentPhone = await UpdateContent(ct, NextSample);
+			}
+		}
+
 		private async Task UpdateFavoriteForSample(CancellationToken ct, SampleChooserContent sample, bool isFavorite)
 		{
 			// Have to update favorite on UI thread for the INotifyPropertyChanged in SampleChooserControl
@@ -699,8 +727,17 @@ namespace SampleControl.Presentation
 				var vm = Activator.CreateInstance(newContent.ViewModelType, fe.Dispatcher);
 				fe.DataContext = vm;
 
-			}
+				if(vm is IDisposable disposable)
+				{
+					void Dispose(object snd, RoutedEventArgs e)
+					{
+						fe.Unloaded -= Dispose;
+						disposable.Dispose();
+					}
 
+					fe.Unloaded += Dispose;
+				}
+			}
 
 			var controlContainsSampleControl = (control as UserControl)?.Content is Uno.UI.Samples.Controls.SampleControl;
 			if (!controlContainsSampleControl)
@@ -714,13 +751,15 @@ namespace SampleControl.Presentation
 
 			var recents = await GetRecentSamples(ct);
 
-			// Get the selected categroy, else if null find it using the SampleContent passed in
+			// Get the selected category, else if null find it using the SampleContent passed in
 			var selectedCategory = SelectedCategory ?? await GetCategory(newContent);
 
 			if (selectedCategory != null)
 			{
 				await Set(SampleChooserLatestCategoryConstant, selectedCategory.Category);
 			}
+
+			CurrentSelectedSample = newContent;
 
 			//RETURN IF THE CONTENT IS ALREADY IN THE LIST
 			if (recents.Contains(newContent))
@@ -762,6 +801,7 @@ namespace SampleControl.Presentation
 		{
 			var q = from category in _categories
 					from test in category.SamplesContent
+					where !test.IgnoreInAutomatedTests
 					select test.ControlType.FullName;
 
 			return string.Join(";", q);

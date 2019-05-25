@@ -158,6 +158,17 @@ namespace Windows.UI.Xaml
 			Uno.UI.Xaml.WindowManagerInterop.SetStyles(HtmlId, styles);
 		}
 
+		/// <summary>
+		/// Set a specified CSS class to an element from a set of possible values.
+		/// All other possible values will be removed from the element.
+		/// </summary>
+		/// <param name="cssClasses">All possible class values</param>
+		/// <param name="index">The index of the value to set (-1: unset)</param>
+		protected internal void SetClasses(string[] cssClasses, int index = -1)
+		{
+			Uno.UI.Xaml.WindowManagerInterop.SetClasses(HtmlId, cssClasses, index);
+		}
+
 #if DEBUG
 		private long _arrangeCount = 0;
 #endif
@@ -242,12 +253,15 @@ namespace Windows.UI.Xaml
 				return;
 			}
 
+			var width = double.IsInfinity(rect.Width) ? 100000.0f : rect.Width;
+			var height = double.IsInfinity(rect.Height) ? 100000.0f : rect.Height;
+
 			SetStyle(
 				"clip",
 				"rect("
 				+ Math.Floor(rect.Y) + "px,"
-				+ Math.Ceiling(rect.X + rect.Width) + "px,"
-				+ Math.Ceiling(rect.Y + rect.Height) + "px,"
+				+ Math.Ceiling(rect.X + width) + "px,"
+				+ Math.Ceiling(rect.Y + height) + "px,"
 				+ Math.Floor(rect.X) + "px"
 				+ ")"
 			);
@@ -514,7 +528,10 @@ namespace Windows.UI.Xaml
 			{
 				_name = value;
 
-				Uno.UI.Xaml.WindowManagerInterop.SetName(HtmlId, _name);
+				if (FeatureConfiguration.UIElement.AssignDOMXamlName)
+				{
+					Uno.UI.Xaml.WindowManagerInterop.SetName(HtmlId, _name);
+				}
 			}
 		}
 

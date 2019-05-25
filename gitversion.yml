@@ -25,6 +25,10 @@ branches:
     tag: proj-{BranchName}
     regex: projects/(.*?)
     source-branches: ['master']
+  feature:
+    tag: feature.{BranchName}
+    regex: feature/(.*?)
+    source-branches: ['master']
 
 ignore:
   sha: []

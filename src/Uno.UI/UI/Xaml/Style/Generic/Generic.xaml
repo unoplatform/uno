@@ -2889,9 +2889,7 @@
 						</Grid.ColumnDefinitions>
 
 						<!--Content Area-->
-						<!-- Wasm: Workaround to make SplitView work (only supports Inline mode). -->
 						<Grid x:Name="ContentRoot"
-							  wasm:Grid.Column="1"
 							  Grid.ColumnSpan="2">
 							<Border Child="{TemplateBinding Content}" />
 							<win:Rectangle x:Name="LightDismissLayer"
@@ -3307,35 +3305,16 @@
 		</Setter>
 	</xamarin:Style>
 
-	<wasm:Style TargetType="Button"
-				BasedOn="{StaticResource XamlDefaultButton}" />
-
 	<wasm:Style TargetType="ToggleButton"
 				BasedOn="{StaticResource XamlDefaultToggleButton}" />
-
-	<wasm:Style TargetType="CheckBox"
-				BasedOn="{StaticResource XamlDefaultCheckBox}" />
-
-	<wasm:Style TargetType="Slider"
-				BasedOn="{StaticResource XamlDefaultSlider}" />
 
 	<wasm:Style TargetType="RadioButton"
 				BasedOn="{StaticResource XamlDefaultRadioButton}" />
 
-	<wasm:Style TargetType="Frame"
-				BasedOn="{StaticResource XamlDefaultFrame}" />
-
 	<wasm:Style TargetType="TextBox"
 				BasedOn="{StaticResource XamlDefaultTextBox}" />
-
 	<wasm:Style TargetType="PasswordBox"
 				BasedOn="{StaticResource XamlDefaultPasswordBox}" />
-
-	<wasm:Style TargetType="ProgressBar"
-				BasedOn="{StaticResource XamlDefaultProgressBar}" />
-
-	<wasm:Style TargetType="ToggleSwitch"
-				BasedOn="{StaticResource XamlDefaultToggleSwitch}" />
 
 	<!-- Default style for Windows.UI.Xaml.Controls.CheckBox -->
 	<xamarin:Style x:Key="XamlDefaultCheckBox"
@@ -4822,7 +4801,7 @@
 	</xamarin:Style>
 
 	<!-- Default style for Windows.UI.Xaml.Controls.CommandBar -->
-	<not_wasm:Style x:Key="XamlCommandBar"
+	<xamarin:Style x:Key="XamlCommandBar"
 					TargetType="CommandBar">
 		<Setter Property="Background"
 				Value="{ThemeResource SystemControlBackgroundChromeMediumBrush}" />
@@ -6080,7 +6059,7 @@
 				</ControlTemplate>
 			</Setter.Value>
 		</Setter>
-	</not_wasm:Style>
+	</xamarin:Style>
 
 	<!-- Ellipsis button style for use in Windows.UI.Xaml.Controls.AppBar and Windows.UI.Xaml.Controls.CommandBar -->
 	<xamarin:Style x:Key="EllipsisButton"

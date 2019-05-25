@@ -14,6 +14,7 @@ using Uno.UI;
 using Windows.Foundation;
 using Windows.Foundation.Metadata;
 using Windows.UI.Core;
+using Windows.UI.ViewManagement;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Media;
@@ -103,6 +104,9 @@ namespace Windows.UI.Xaml
 		private void OnNativeSizeChanged(Size size)
 		{
 			var newBounds = new Rect(0, 0, size.Width, size.Height);
+
+			// TODO: support for "viewport-fix" on devices with a notch.
+			ApplicationView.GetForCurrentView()?.SetVisibleBounds(newBounds);
 
 			if (newBounds != Bounds)
 			{
@@ -194,9 +198,9 @@ namespace Windows.UI.Xaml
 			{
 				this.Log().Debug($"Creating popup");
 			}
-			
-			var popupChild = popup.Child;
-			_popupRoot.Children.Add(popupChild);
+
+			var popupPanel = popup.PopupPanel;
+			_popupRoot.Children.Add(popupPanel);
 
 			return new CompositeDisposable(
 				Disposable.Create(() => {
@@ -206,7 +210,7 @@ namespace Windows.UI.Xaml
 						this.Log().Debug($"Closing popup");
 					}
 
-					_popupRoot.Children.Remove(popupChild);
+					_popupRoot.Children.Remove(popupPanel);
 				}),
 				VisualTreeHelper.RegisterOpenPopup(popup)
 			);

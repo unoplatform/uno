@@ -1,10 +1,22 @@
-# Release notes
+﻿# Release notes
 
 ## Next version
+* Add support for the following `Windows.System.Power.PowerManager` APIs on iOS and Android:
+    - BatteryStatus
+    - EnergySaverStatus
+    - PowerSupplyStatus
+    - RemainingChargePercent
+    - PowerSupplyStatusChanged
+    - EnergySaverStatusChanged
+    - RemainingChargePercentChanged
+    - BatteryStatusChanged
 
 ### Features
 * Updated `CheckBox` glyph to match UWP style on all platforms
 * Add support for the following `DisplayInformation` properties on iOS and Android:   
+* Add support for `CurrentInputMethodLanguageTag` and `TrySetInputMethodLanguageTag` on Android, iOS and WASM
+* Add support for `ChatMessageManager.ShowComposeSmsMessageAsync` (and `ChatMessage` `Body` and `Recipients` properties) on iOS and Android
+* Add support for the following `DisplayInformation` properties on iOS and Android:
     - CurrentOrientation
     - LogicalDpi
     - NativeOrientation
@@ -36,12 +48,26 @@
 * [Wasm] Add support of hardware/browser back button in `SystemNavigationManager.BackRequested`
 * [Wasm] Added support for custom DOM events
 * WebAssembly UI tests are now integrated in the CI
+* Enable support for macOS head development
+* [Wasm] Add NativeXXX styles (which are aliases to the XamlXXX styles)
+* [Wasm] Enable persistence for all ApplicationData folders
+* [Wasm] Add Samples App UI Screenshots diffing tool with previous builds
+* Add `PasswordVault` on supported platfrosm
+* [Android] Updated support libraries to 28.0.0.1 for Android 9
+* Add support for `x:Load`
+* [Wasm] Restore support for `x:Load` and `x:DeferLoadStrategy`
+* [Wasm] Scrolling bar visibility modes are now supported on most browsers
+* Add `Windows.Globalization.Calendar`
+* [Wasm] Support of overlay mode of the pane
+* Using _State Triggers_ in `VisualStateManager` now follows correct precedence as documented by Microsoft
 
 ### Breaking Changes
 * The `WebAssemblyRuntime.InvokeJSUnmarshalled` method with three parameters has been removed.
 * `NavigationBarHelper` has been removed.
 
 ### Bug fixes
+* DatePicker FlyoutPlacement now set to Full by default
+* Semi-transparent borders no longer overlap at the corners on Android
 * The `HAS_UNO` define is now not defined in `uap10.0.x` target frameworks.
 * The `XamlReader` fails when a property has no getter
 * `Click` and `Tapped` events were not working property for `ButtonBase` on Android and iOS.
@@ -56,6 +82,30 @@
 * 150679 [iOS] Fix path issue with Media Player not being able to play local files.
 * Adjust support for `StaticResource.ResourceKey`
 * 151081 [Android] Fix Keyboard not always dismissed when unfocusing a TextBox
+* [WASM] Support `not_wasm` prefix properly. (#784)
+* 151282 [iOS] Fixed Slider not responding on second navigation, fixed RemoveHandler for RoutedEvents removing all instances of handler
+* 151497 [iOS/Android] Fixed Slider not responding, by ^ RemoveHandler fix for RoutedEvents
+* 151674 [iOS] Add ability to replay a finished video from media player
+* 151524 [Android] Cleaned up Textbox for android to remove keyboard showing/dismissal inconsistencies
+* Fix invalid code generation for `x:Name` entries on `Style` in resources
+* [Wasm] Fix incorrect `TextBlock` measure with constrains
+* 151676 [iOS] The keyboard is closing when tap on the webview or toolbar
+* 151655 [TimePicker][iOS] First time you open time picker it initializes the existing value to current time
+* 151656 [TimePicker][iOS] Time picker always shows +1 minute than selected value
+* 151657 [DatePicker][iOS] Date picker flyout displays 1 day earlier than selected value
+* 151430 [Android] Prevent touch event being dispatched to invisible view
+* Fixed overflow errors in Grid.Row/Column and Grid.RowSpan may fail in the Grid layouter.
+* 151547 Fix animation not applied correctly within transformed hierarchy
+* Setting the `.SelectedValue` on a `Selector` now update the selection and the index
+* [WASM] Fix ListView contents not remeasuring when ItemsSource changes.
+* [WASM] Dismissable popup & flyout is closing when tapping on content.
+* 145374 [Android] fixed android keyboard stays open on AppBarButton click
+* 152504 [Android] Pointer captures weren't informing gestures of capture, fixes Slider capture issue
+* 148896 [iOS] TextBlock CarriageReturns would continue past maxlines property
+* 153594 [Android] EdgeEffect not showing up on listView that contain Headers and Footers
+* #881 [iOS] Support explicitly-defined ListViewItems in ListView.
+* #902 [Android] Resource generation now correctly escapes names starting with numbers and names containing a '-' character
+* 154390 Storyboard `Completed` callback were not properly called when there's not children.
 
 ## Release 1.44.0
 
@@ -264,6 +314,7 @@
  * 144101 fixed `ListView` group headers messed up on item update
  * #527 Fix for `Selector.SelectionChanged` is raised twice on updated selection
  * [iOS] Add fail-safe on `FrameworkElement.WillMoveToSuperview` log to `Application.Current.UnhandledException`
+ * Flyout were not presented correctly on Wasm
 
 ## Release 1.42
 

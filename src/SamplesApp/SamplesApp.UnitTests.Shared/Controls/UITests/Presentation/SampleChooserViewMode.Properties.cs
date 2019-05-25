@@ -21,6 +21,7 @@ using Windows.UI.Xaml;
 using System.IO;
 using Uno.Disposables;
 using System.ComponentModel;
+using Uno.UI.Common;
 
 #if XAMARIN || NETSTANDARD2_0
 using Windows.UI.Xaml.Controls;
@@ -58,6 +59,8 @@ namespace SampleControl.Presentation
 		private SampleChooserCategory _selectedCategory;
 		private IEnumerable<SampleChooserContent> _recentSamples;
 		private SampleChooserContent _currentSelectedSample;
+		private SampleChooserContent _previousSample;
+		private SampleChooserContent _nextSample;
 		private SampleChooserContent _selectedLibrarySample;
 		private SampleChooserContent _selectedRecentSample;
 		private SampleChooserContent _selectedFavoriteSample;
@@ -246,6 +249,40 @@ namespace SampleControl.Presentation
 			{
 				_currentSelectedSample = value;
 				RaisePropertyChanged();
+				(ReloadCurrentTestCommand as DelegateCommand).CanExecuteEnabled = true;
+
+				var currentTextIndex = SelectedCategory?.SamplesContent.IndexOf(value);
+				// Set Previous
+				PreviousSample = currentTextIndex == null || currentTextIndex < 1
+					? null
+					: SelectedCategory.SamplesContent[(int)currentTextIndex - 1];
+
+				// Set Next
+				NextSample = currentTextIndex == null || currentTextIndex < 0 || currentTextIndex == SelectedCategory.SamplesContent.Count - 1
+					? null
+					: SelectedCategory.SamplesContent[(int)currentTextIndex + 1];
+			}
+		}
+
+		public SampleChooserContent PreviousSample
+		{
+			get => _previousSample;
+			set
+			{
+				_previousSample = value;
+				RaisePropertyChanged();
+				(LoadPreviousTestCommand as DelegateCommand).CanExecuteEnabled = value != null;
+			}
+		}
+
+		public SampleChooserContent NextSample
+		{
+			get => _nextSample;
+			set
+			{
+				_nextSample = value;
+				RaisePropertyChanged();
+				(LoadNextTestCommand as DelegateCommand).CanExecuteEnabled = value != null;
 			}
 		}
 

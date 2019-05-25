@@ -215,7 +215,10 @@ namespace Windows.UI.Xaml.Controls
 				{
 					var selectorItem = cell.Content as SelectorItem;
 
-					if (selectorItem == null)
+					if (selectorItem == null ||
+						// If it's not a generated container then it must be an item that returned true for IsItemItsOwnContainerOverride (eg an
+						// explicitly-defined ListViewItem), and shouldn't be recycled for a different item.
+						!selectorItem.IsGeneratedContainer)
 					{
 						cell.Owner = Owner;
 						selectorItem = Owner?.XamlParent?.GetContainerForIndex(index) as SelectorItem;

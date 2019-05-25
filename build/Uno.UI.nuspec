@@ -27,9 +27,9 @@
 
       <!-- Android 9.0 -->
       <group targetFramework="MonoAndroid90">
-        <dependency id="Xamarin.Android.Support.v4" version="26.1.0.1" />
-        <dependency id="Xamarin.Android.Support.v7.AppCompat" version="26.1.0.1" />
-        <dependency id="Xamarin.Android.Support.v7.RecyclerView" version="26.1.0.1" />
+        <dependency id="Xamarin.Android.Support.v4" version="28.0.0.1" />
+        <dependency id="Xamarin.Android.Support.v7.AppCompat" version="28.0.0.1" />
+        <dependency id="Xamarin.Android.Support.v7.RecyclerView" version="28.0.0.1" />
         <dependency id="Uno.SourceGenerationTasks" version="1.31.0-dev.285" />
         <dependency id="Uno.Core" version="1.28.0-dev.86" />
         <dependency id="Uno.Core.Build" version="1.28.0-dev.86" />
@@ -37,6 +37,13 @@
 
       <!-- iOS -->
       <group targetFramework="xamarinios10">
+        <dependency id="Uno.SourceGenerationTasks" version="1.31.0-dev.285" />
+        <dependency id="Uno.Core" version="1.28.0-dev.86" />
+        <dependency id="Uno.Core.Build" version="1.28.0-dev.86" />
+      </group>
+
+      <!-- iOS -->
+      <group targetFramework="xamarinmac20">
         <dependency id="Uno.SourceGenerationTasks" version="1.31.0-dev.285" />
         <dependency id="Uno.Core" version="1.28.0-dev.86" />
         <dependency id="Uno.Core.Build" version="1.28.0-dev.86" />
@@ -57,9 +64,14 @@
       <frameworkAssembly assemblyName="System.Numerics" targetFramework="MonoAndroid" />
       <frameworkAssembly assemblyName="System.Numerics.Vectors" targetFramework="MonoAndroid" />
       <frameworkAssembly assemblyName="System.Memory" targetFramework="MonoAndroid" />
+      
       <frameworkAssembly assemblyName="System.Numerics" targetFramework="xamarinios10" />
       <frameworkAssembly assemblyName="System.Numerics.Vectors" targetFramework="xamarinios10" />
       <frameworkAssembly assemblyName="System.Memory" targetFramework="xamarinios10" />
+      
+      <frameworkAssembly assemblyName="System.Numerics" targetFramework="xamarinmac20" />
+      <frameworkAssembly assemblyName="System.Numerics.Vectors" targetFramework="xamarinmac20" />
+      <frameworkAssembly assemblyName="System.Memory" targetFramework="xamarinmac20" />
     </frameworkAssemblies>
 
     <references>
@@ -75,6 +87,15 @@
 
       <!-- iOS -->
       <group targetFramework="xamarinios10">
+        <reference file="Uno.Xaml.dll" />
+        <reference file="Uno.UI.dll" />
+        <reference file="Uno.Foundation.dll" />
+        <reference file="Uno.dll" />
+        <reference file="Uno.UI.Toolkit.dll" />
+      </group>
+
+      <!-- iOS -->
+      <group targetFramework="xamarinmac20">
         <reference file="Uno.Xaml.dll" />
         <reference file="Uno.UI.dll" />
         <reference file="Uno.Foundation.dll" />
@@ -139,8 +160,7 @@
     <file src="..\src\Uno.UI\Bin\Release\monoandroid90\Uno.Xaml.pdb" target="lib\MonoAndroid90" />
     <file src="..\src\Uno.UI\Bin\Release\monoandroid90\*.xml" target="lib\MonoAndroid90" />
 
-
-    <!-- iOS Unified -->
+    <!-- iOS -->
     <file src="..\src\Uno.UI\Bin\Release\xamarinios10\Uno.dll" target="lib\xamarinios10" />
     <file src="..\src\Uno.UI\Bin\Release\xamarinios10\Uno.pdb" target="lib\xamarinios10" />
     <file src="..\src\Uno.UI\Bin\Release\xamarinios10\Uno.Foundation.dll" target="lib\xamarinios10" />
@@ -150,6 +170,17 @@
     <file src="..\src\Uno.UI\Bin\Release\xamarinios10\Uno.Xaml.dll" target="lib\xamarinios10" />
     <file src="..\src\Uno.UI\Bin\Release\xamarinios10\Uno.Xaml.pdb" target="lib\xamarinios10" />
     <file src="..\src\Uno.UI\bin\Release\xamarinios10\*.xml" target="lib\xamarinios10" />
+
+    <!-- macOS -->
+    <file src="..\src\Uno.UI\Bin\Release\xamarinmac20\Uno.dll" target="lib\xamarinmac20" />
+    <file src="..\src\Uno.UI\Bin\Release\xamarinmac20\Uno.pdb" target="lib\xamarinmac20" />
+    <file src="..\src\Uno.UI\Bin\Release\xamarinmac20\Uno.Foundation.dll" target="lib\xamarinmac20" />
+    <file src="..\src\Uno.UI\Bin\Release\xamarinmac20\Uno.Foundation.pdb" target="lib\xamarinmac20" />
+    <file src="..\src\Uno.UI\Bin\Release\xamarinmac20\Uno.UI.dll" target="lib\xamarinmac20" />
+    <file src="..\src\Uno.UI\Bin\Release\xamarinmac20\Uno.UI.pdb" target="lib\xamarinmac20" />
+    <file src="..\src\Uno.UI\Bin\Release\xamarinmac20\Uno.Xaml.dll" target="lib\xamarinmac20" />
+    <file src="..\src\Uno.UI\Bin\Release\xamarinmac20\Uno.Xaml.pdb" target="lib\xamarinmac20" />
+    <file src="..\src\Uno.UI\bin\Release\xamarinmac20\*.xml" target="lib\xamarinmac20" />
 
     <!-- .NET Standard 2.0 -->
     <file src="..\src\Uno.UI\Bin\Release\netstandard2.0\Uno.dll" target="lib\netstandard2.0" />
@@ -182,9 +213,11 @@
 
     <file src="Uno.UI.targets" target="build\MonoAndroid" />
     <file src="Uno.UI.targets" target="build\xamarinios10" />
+    <file src="Uno.UI.targets" target="build\xamarinmac20" />
     <file src="Uno.UI.targets" target="build\netstandard2.0" />
     <file src="..\src\SourceGenerators\Uno.UI.Tasks\Content\Uno.UI.Tasks.targets" target="build\MonoAndroid" />
     <file src="..\src\SourceGenerators\Uno.UI.Tasks\Content\Uno.UI.Tasks.targets" target="build\xamarinios10" />
+    <file src="..\src\SourceGenerators\Uno.UI.Tasks\Content\Uno.UI.Tasks.targets" target="build\xamarinmac20" />
     <file src="..\src\SourceGenerators\Uno.UI.Tasks\Content\Uno.UI.Tasks.targets" target="build\netstandard2.0" />
     <file src="_._" target="build\uap10.0" />
 

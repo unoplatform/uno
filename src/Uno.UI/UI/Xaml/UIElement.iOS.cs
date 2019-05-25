@@ -14,6 +14,7 @@ using Windows.Devices.Input;
 using Windows.Foundation;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
+using UIViewExtensions = UIKit.UIViewExtensions;
 
 namespace Windows.UI.Xaml
 {

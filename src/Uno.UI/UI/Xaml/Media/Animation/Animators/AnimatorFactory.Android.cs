@@ -44,7 +44,23 @@ namespace Windows.UI.Xaml.Media.Animation
 				switch (property)
 				{
 					case nameof(FrameworkElement.Opacity):
-						return new NativeValueAnimatorAdapter(GetRelativeAnimator(view, "alpha", startingValue, targetValue));
+						return new NativeValueAnimatorAdapter(GetRelativeAnimator(view, "alpha", startingValue, targetValue), SetIsAnimating, UnsetIsAnimating);
+				}
+
+				void SetIsAnimating()
+				{
+					if (view is UnoViewGroup uvg)
+					{
+						uvg.IsAnimationInProgress = true;
+					}
+				}
+
+				void UnsetIsAnimating()
+				{
+					if (view is UnoViewGroup uvg)
+					{
+						uvg.IsAnimationInProgress = false;
+					}
 				}
 			}
 

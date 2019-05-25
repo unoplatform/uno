@@ -13,6 +13,7 @@ using Windows.UI.Xaml.Media.Animation;
 using Windows.UI.Xaml.Markup;
 using Uno.UI;
 using Windows.Foundation.Collections;
+using Microsoft.Extensions.Logging;
 
 #if XAMARIN_IOS
 using UIKit;
@@ -242,7 +243,7 @@ namespace Windows.UI.Xaml
 			}
 
 			this.CurrentState = state;
-			if (this.CurrentState != null)
+			if (this.CurrentState != null && element != null)
 			{
 				foreach (var setter in this.CurrentState.Setters.OfType<Setter>())
 				{
@@ -263,6 +264,11 @@ namespace Windows.UI.Xaml
 
 		private VisualTransition FindTransition(string oldStateName, string newStateName)
 		{
+			if (oldStateName.IsNullOrEmpty() || newStateName.IsNullOrEmpty())
+			{
+				return null;
+			}
+
 			var perfectMatch = Transitions.FirstOrDefault(vt =>
 				string.Equals(vt.From, oldStateName) &&
 				string.Equals(vt.To, newStateName));
@@ -291,17 +297,22 @@ namespace Windows.UI.Xaml
 		internal void RefreshStateTriggers()
 		{
 			var activeVisualState = GetActiveTrigger();
+
 			var oldState = CurrentState;
 
-			if (this.GetParent() is IFrameworkElement parent)
+			if (this.Log().IsEnabled(LogLevel.Debug))
 			{
-				// The parent may be null when the VisualStateGroup is being built.
-
-				if (CurrentState != null || activeVisualState != null)
-				{
-					GoToState(parent, activeVisualState, CurrentState, false, () => RaiseCurrentStateChanged(oldState, activeVisualState));
-				}
+				this.Log().Debug($"[{this}].RefreshStateTriggers() activeState={activeVisualState}, oldState={oldState}");
 			}
+
+			var parent = this.GetParent() as IFrameworkElement;
+
+			void OnStateChanged()
+			{
+				RaiseCurrentStateChanged(oldState, activeVisualState);
+			}
+
+			GoToState(parent, activeVisualState, CurrentState, false, OnStateChanged);
 		}
 
 		private void OnParentChanged(object instance, object key, DependencyObjectParentChangedEventArgs args)
@@ -314,18 +325,62 @@ namespace Windows.UI.Xaml
 		/// </remarks>
 		private VisualState GetActiveTrigger()
 		{
-			for (int index = States.Count - 1; index >= 0; index--)
+			// As documented there:
+			// https://docs.microsoft.com/en-us/uwp/api/windows.ui.xaml.visualstategroup#remarks
+			// We're using a priority-based mechanism
+
+			// When using StateTriggers to control visual states, the trigger engine uses the following precedence
+			// rules to score triggers and determine which trigger, and the corresponding VisualState, will be active:
+			//
+			// 1. Custom trigger that derives from StateTriggerBase
+			// 2. AdaptiveTrigger activated due to MinWindowWidth
+			// 3. AdaptiveTrigger activated due to MinWindowHeight
+			//
+			// If there are multiple active triggers at a time that have a conflict in scoring(i.e.two active custom
+			// triggers), then the first one declared in the markup file takes precedence.
+
+			var winningPrecedence2 = default(VisualState);
+			var winningPrecedence3 = default(VisualState);
+
+			for (var stateIndex = 0; stateIndex < States.Count; stateIndex++)
 			{
-				foreach (var trigger in States[index].StateTriggers)
+				var state = States[stateIndex];
+				for (var triggerIndex = 0; triggerIndex < state.StateTriggers.Count; triggerIndex++)
 				{
-					if (trigger.InternalIsActive)
+					var trigger = state.StateTriggers[triggerIndex];
+
+					if (trigger.CurrentPrecedence == StateTriggerPrecedence.CustomTrigger)
 					{
-						return trigger.Owner;
+						return state; // we have a winner!
 					}
+					if (trigger.CurrentPrecedence == StateTriggerPrecedence.MinWidthTrigger && winningPrecedence2 == null)
+					{
+						winningPrecedence2 = state;
+						if (winningPrecedence3 != null)
+						{
+							break;
+						}
+					}
+					else if (trigger.CurrentPrecedence == StateTriggerPrecedence.MinHeightTrigger && winningPrecedence3 == null)
+					{
+						winningPrecedence3 = state;
+						if (winningPrecedence2 != null)
+						{
+							break;
+						}
+					}
+				}
+
+				if (winningPrecedence2 != null && winningPrecedence3 != null)
+				{
+					break;
 				}
 			}
 
-			return null;
+			var winnerState = winningPrecedence2 ?? winningPrecedence3;
+			return winnerState;
 		}
+
+		public override string ToString() => Name ?? $"<unnamed group {GetHashCode()}>";
 	}
 }

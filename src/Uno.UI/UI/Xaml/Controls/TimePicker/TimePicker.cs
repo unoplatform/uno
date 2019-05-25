@@ -210,6 +210,13 @@ namespace Windows.UI.Xaml.Controls
 			{
 				_thirdTextBlockColumn.Width = isTwelveHour ? "*" : "0";
 			}
+
+#if __IOS__
+			if (_flyoutButton?.Flyout is TimePickerFlyout timePickerFlyout)
+			{
+				timePickerFlyout.Time = Time;
+			}
+#endif
 		}
 
 		/// <summary>

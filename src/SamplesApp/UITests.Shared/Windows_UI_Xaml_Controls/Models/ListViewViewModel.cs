@@ -160,7 +160,7 @@ namespace SamplesApp.Windows_UI_Xaml_Controls.Models
 			);
 		}
 
-		private static IEnumerable<object> GetAsCollectionViewSource<T1, T2>(IEnumerable<IGrouping<T1, T2>> groups)
+		internal static IEnumerable<object> GetAsCollectionViewSource<T1, T2>(IEnumerable<IGrouping<T1, T2>> groups)
 		{
 			var source = new CollectionViewSource()
 			{
@@ -191,6 +191,56 @@ namespace SamplesApp.Windows_UI_Xaml_Controls.Models
 			"Now get you to my lady's chamber, and tell her, let her paint an inch thick, to this favour she must come;",
 			"make her laugh at that.",
 			"Prithee, Horatio, tell me one thing.",
+			"Stockholm",
+			"Gothenburg",
+			"Malmö",
+			"Uppsala",
+			"Västerås",
+			"Örebro",
+			"Linköping",
+			"Helsingborg",
+			"Jönköping",
+			"Norrköping",
+			"Lund",
+			"Umeå",
+			"Gävle",
+			"Borås",
+			"Södertälje",
+			"Eskilstuna",
+			"Halmstad",
+			"Växjö",
+			"Karlstad",
+			"Paris",
+			"Marseille",
+			"Lyon",
+			"Toulouse",
+			"Nice",
+			"Nantes",
+			"Montpellier",
+			"Strasbourg",
+			"Bordeaux",
+			"Lille",
+			"Rennes",
+			"Reims",
+			"Le Havre",
+			"Saint-Étienne",
+			"Toulon",
+			"Grenoble",
+			"Dijon",
+			"Angers",
+			"Nîmes",
+			"Villeurbanne",
+			"Saint-Denis",
+			"Le Mans",
+			"Aix-en-Provence",
+			"Clermont-Ferrand",
+			"Brest",
+			"Tours",
+			"Limoges",
+			"Amiens",
+			"Annecy",
+			"Perpignan",
+			"This is a very large item. No, seriously, it's very very very very very very very very very very very very very very very very very very very very very very very very very very very very very very very very very very very very very very very very very very very very very very very very very very very very very very very very very very very very very very very very very very very very very very very very very very very very large!!!"
 		};
 
 		public string[] VariableLengthItemsLong { get; }

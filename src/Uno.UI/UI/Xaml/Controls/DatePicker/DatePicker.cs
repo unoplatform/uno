@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Automation.Peers;
+using Windows.UI.Xaml.Controls.Primitives;
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -203,9 +204,9 @@ namespace Windows.UI.Xaml.Controls
 					MaxYear = MaxYear
 				};
 
-				BindToFlyout("Date");
-				BindToFlyout("MinYear");
-				BindToFlyout("MaxYear");
+				BindToFlyout(nameof(Date));
+				BindToFlyout(nameof(MinYear));
+				BindToFlyout(nameof(MaxYear));
 #endif
 			}
 		}

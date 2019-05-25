@@ -13,6 +13,7 @@ using System.Text;
 using System.Drawing;
 using Uno.UI;
 using Microsoft.Extensions.Logging;
+using static Uno.UI.MathEx;
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -39,6 +40,13 @@ namespace Windows.UI.Xaml.Controls
 		{
 			var physicalHorizontalOffset = ViewHelper.LogicalToPhysicalPixels(horizontalOffset ?? HorizontalOffset);
 			var physicalVerticalOffset = ViewHelper.LogicalToPhysicalPixels(verticalOffset ?? VerticalOffset);
+
+			const int maxScroll = int.MaxValue / 2;
+			const int minScroll = -maxScroll;
+
+			// Clamp values (again) to avoid overflow in UnoTwoDScrollView.java
+			physicalHorizontalOffset = Clamp(physicalHorizontalOffset, minScroll, maxScroll);
+			physicalVerticalOffset = Clamp(physicalVerticalOffset, minScroll, maxScroll);
 
 			if (disableAnimation)
 			{

@@ -129,7 +129,7 @@ declare namespace Uno.UI {
             * @param containerElementId The ID of the container element for the Xaml UI
             * @param loadingElementId The ID of the loading element to remove once ready
             */
-        static init(localStoragePath: string, isHosted: boolean, isLoadEventsEnabled: boolean, containerElementId?: string, loadingElementId?: string): string;
+        static init(isHosted: boolean, isLoadEventsEnabled: boolean, containerElementId?: string, loadingElementId?: string): string;
         /**
          * Builds a promise that will signal the ability for the dispatcher
          * to initiate work.
@@ -151,19 +151,6 @@ declare namespace Uno.UI {
         private static resizeMethod;
         private static dispatchEventMethod;
         private constructor();
-        /**
-         * Setup the storage persistence
-         *
-         * */
-        static setupStorage(localStoragePath: string): void;
-        /**
-         * Determine if IndexDB is available, some browsers and modes disable it.
-         * */
-        static isIndexDBAvailable(): boolean;
-        /**
-         * Synchronize the IDBFS memory cache back to IndexDB
-         * */
-        static synchronizeFileSystem(): void;
         /**
             * Creates the UWP-compatible splash screen
             *
@@ -265,6 +252,11 @@ declare namespace Uno.UI {
             */
         resetStyleNative(pParams: number): boolean;
         private resetStyleInternal;
+        /**
+         * Set CSS classes on an element
+         */
+        setClasses(elementId: number, cssClassesList: string[], classIndex: number): string;
+        setClassesNative(pParams: number): boolean;
         /**
         * Arrange and clips a native elements
         *
@@ -468,6 +460,11 @@ declare namespace Uno.UI {
         private getIsConnectedToRootElement;
     }
 }
+declare class StorageFolderMakePersistentParams {
+    Paths_Length: number;
+    Paths: Array<string>;
+    static unmarshal(pData: number): StorageFolderMakePersistentParams;
+}
 declare class WindowManagerAddViewParams {
     HtmlId: number;
     ChildView: number;
@@ -515,7 +512,6 @@ declare class WindowManagerGetBBoxReturn {
     marshal(pData: number): void;
 }
 declare class WindowManagerInitParams {
-    LocalFolderPath: string;
     IsHostedMode: boolean;
     IsLoadEventsEnabled: boolean;
     static unmarshal(pData: number): WindowManagerInitParams;
@@ -555,6 +551,13 @@ declare class WindowManagerSetAttributeParams {
     Pairs_Length: number;
     Pairs: Array<string>;
     static unmarshal(pData: number): WindowManagerSetAttributeParams;
+}
+declare class WindowManagerSetClassesParams {
+    HtmlId: number;
+    CssClasses_Length: number;
+    CssClasses: Array<string>;
+    Index: number;
+    static unmarshal(pData: number): WindowManagerSetClassesParams;
 }
 declare class WindowManagerSetContentHtmlParams {
     HtmlId: number;
@@ -662,6 +665,27 @@ declare const MonoRuntime: Uno.UI.Interop.IMonoRuntime;
 declare const WebAssemblyApp: Uno.UI.Interop.IWebAssemblyApp;
 declare const UnoAppManifest: Uno.UI.IAppManifest;
 declare const UnoDispatch: Uno.UI.Interop.IUnoDispatch;
+declare namespace Windows.Storage {
+    class StorageFolder {
+        private static _isInit;
+        /**
+         * Determine if IndexDB is available, some browsers and modes disable it.
+         * */
+        static isIndexDBAvailable(): boolean;
+        /**
+         * Setup the storage persistence of a given set of paths.
+         * */
+        private static makePersistent;
+        /**
+         * Setup the storage persistence of a given path.
+         * */
+        static setupStorage(path: string): void;
+        /**
+         * Synchronize the IDBFS memory cache back to IndexDB
+         * */
+        private static synchronizeFileSystem;
+    }
+}
 declare namespace Windows.UI.Core {
     class SystemNavigationManager {
         private static _current;

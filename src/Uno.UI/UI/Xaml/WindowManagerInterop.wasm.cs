@@ -23,17 +23,16 @@ namespace Uno.UI.Xaml
 			!WebAssemblyRuntime.IsWebAssembly || FeatureConfiguration.Interop.ForceJavascriptInterop;
 
 		#region Init
-		internal static void Init(string localFolderPath, bool isHostedMode, bool isLoadEventsEnabled)
+		internal static void Init(bool isHostedMode, bool isLoadEventsEnabled)
 		{
 			if (UseJavascriptEval)
 			{
-				WebAssemblyRuntime.InvokeJS($"Uno.UI.WindowManager.init(\"{localFolderPath}\", {isHostedMode.ToString().ToLowerInvariant()}, {isLoadEventsEnabled.ToString().ToLowerInvariant()});");
+				WebAssemblyRuntime.InvokeJS($"Uno.UI.WindowManager.init({isHostedMode.ToString().ToLowerInvariant()}, {isLoadEventsEnabled.ToString().ToLowerInvariant()});");
 			}
 			else
 			{
 				var parms = new WindowManagerInitParams
 				{
-					LocalFolderPath = localFolderPath,
 					IsHostedMode = isHostedMode,
 					IsLoadEventsEnabled = isLoadEventsEnabled
 				};
@@ -46,9 +45,6 @@ namespace Uno.UI.Xaml
 		[StructLayout(LayoutKind.Sequential, Pack = 4)]
 		private struct WindowManagerInitParams
 		{
-			[MarshalAs(TSInteropMarshaller.LPUTF8Str)]
-			public string LocalFolderPath;
-
 			public bool IsHostedMode;
 
 			public bool IsLoadEventsEnabled;
@@ -302,6 +298,43 @@ namespace Uno.UI.Xaml
 
 			[MarshalAs(UnmanagedType.LPArray, ArraySubType = UnmanagedType.LPStr)]
 			public string[] Pairs;
+		}
+
+		#endregion
+
+		#region SetClasses
+
+		internal static void SetClasses(IntPtr htmlId, string[] cssClasses, int index)
+		{
+			if (UseJavascriptEval)
+			{
+				var classes = string.Join(", ", cssClasses.Select(s => "\"" + s + "\""));
+				var command = "Uno.UI.WindowManager.current.setClasses(" + htmlId + ", [" + classes + "], " + index + ");";
+				WebAssemblyRuntime.InvokeJS(command);
+			}
+			else
+			{
+				var parms = new WindowManagerSetClassesParams
+				{
+					HtmlId = htmlId, CssClasses = cssClasses, CssClasses_Length = cssClasses.Length, Index = index
+				};
+
+				TSInteropMarshaller.InvokeJS<WindowManagerSetClassesParams>("Uno:setClassesNative", parms);
+			}
+		}
+
+		[TSInteropMessage]
+		[StructLayout(LayoutKind.Sequential, Pack = 4)]
+		private struct WindowManagerSetClassesParams
+		{
+			public IntPtr HtmlId;
+
+			public int CssClasses_Length;
+
+			[MarshalAs(UnmanagedType.LPArray, ArraySubType = UnmanagedType.LPStr)]
+			public string[] CssClasses;
+
+			public int Index;
 		}
 
 		#endregion
