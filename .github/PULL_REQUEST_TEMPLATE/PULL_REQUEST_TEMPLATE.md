@@ -34,7 +34,7 @@ Please check if your PR fulfills the following requirements:
 - [ ] Updated the [Release Notes](https://github.com/nventive/Uno/tree/master/doc/ReleaseNotes)
 - [ ] Associated with an issue (GitHub or internal)
 
-<!-- If this PR contains a breaking change, please describe the impact and migration path for existing applications below. 
+<!-- If this PR contains a breaking change, please describe the impact and migration path for existing applications below.
      Please note that breaking changes are likely to be rejected -->
 
 
