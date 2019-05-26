@@ -113,5 +113,21 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		{
 			return null;
 		}
+
+		public static FlyoutBase GetAttachedFlyout(FrameworkElement element)
+		{
+			return (FlyoutBase)element.GetValue(AttachedFlyoutProperty);
+		}
+
+		public static void SetAttachedFlyout(FrameworkElement element, FlyoutBase value)
+		{
+			element.SetValue(AttachedFlyoutProperty, value);
+		}
+
+		public static void ShowAttachedFlyout(FrameworkElement flyoutOwner)
+		{
+			var flyout = GetAttachedFlyout(flyoutOwner);
+			flyout?.ShowAt(flyoutOwner);
+		}
 	}
 }

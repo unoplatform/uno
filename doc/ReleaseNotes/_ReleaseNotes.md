@@ -58,6 +58,7 @@
 * Add `Windows.Globalization.Calendar`
 * [Wasm] Support of overlay mode of the pane
 * Using _State Triggers_ in `VisualStateManager` now follows correct precedence as documented by Microsoft
+* Add support for `FlyoutBase.AttachedFlyout` and `FlyoutBase.ShowAttachedFlyout()`
 
 ### Breaking Changes
 * The `WebAssemblyRuntime.InvokeJSUnmarshalled` method with three parameters has been removed.
