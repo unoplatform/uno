@@ -105,6 +105,7 @@
 * #881 [iOS] Support explicitly-defined ListViewItems in ListView.
 * #902 [Android] Resource generation now correctly escapes names starting with numbers and names containing a '-' character
 * 154390 Storyboard `Completed` callback were not properly called when there's not children.
+* [iOS] Fix bug where Popup can be hidden if created during initial app launch.
 
 ## Release 1.44.0
 
