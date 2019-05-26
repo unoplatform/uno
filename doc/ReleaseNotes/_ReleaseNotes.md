@@ -1,6 +1,7 @@
 ﻿# Release notes
 
 ## Next version
+* `LinearGradientBrush.EndPoint` now defaults to (1,1) to match UWP
 * Add support for the following `Windows.System.Power.PowerManager` APIs on iOS and Android:
     - BatteryStatus
     - EnergySaverStatus
