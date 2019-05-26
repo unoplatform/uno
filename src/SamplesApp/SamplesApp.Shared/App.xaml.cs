@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
@@ -49,6 +50,8 @@ namespace SamplesApp
 		/// <param name="e">Details about the launch request and process.</param>
 		protected override void OnLaunched(LaunchActivatedEventArgs e)
 		{
+			var sw = Stopwatch.StartNew();
+			var n = CoreDispatcher.Main.RunAsync(CoreDispatcherPriority.Idle, () => Console.WriteLine("Done loading " + sw.Elapsed));
 #if DEBUG
 			if (System.Diagnostics.Debugger.IsAttached)
 			{
@@ -128,7 +131,7 @@ namespace SamplesApp
 						//{ "Windows.UI.Xaml.VisualStateGroup", LogLevel.Debug },
 						//{ "Windows.UI.Xaml.StateTriggerBase", LogLevel.Debug },
 						// { "Windows.UI.Xaml.UIElement", LogLevel.Debug },
-						// { "Windows.UI.Xaml.Setter", LogLevel.Debug },
+						// { "Windows.UI.Xaml.Controls.TextBlock", LogLevel.Debug },
 						   
 						// Layouter specific messages
 						// { "Windows.UI.Xaml.Controls", LogLevel.Debug },
