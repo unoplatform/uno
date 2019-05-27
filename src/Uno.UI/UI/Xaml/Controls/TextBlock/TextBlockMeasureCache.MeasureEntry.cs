@@ -6,8 +6,11 @@ using System;
 
 namespace Windows.UI.Xaml.Controls
 {
-	public partial class TextBlockMeasureCache
+	internal partial class TextBlockMeasureCache
 	{
+		/// <summary>
+		/// A set of TextBlock measures for a set of text characteristics
+		/// </summary>
 		class MeasureEntry
 		{
 			private Dictionary<CachedSize, MeasureSizeEntry> _sizes

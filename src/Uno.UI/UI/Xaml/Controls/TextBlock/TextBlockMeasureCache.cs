@@ -13,19 +13,31 @@ using System.Diagnostics;
 
 namespace Windows.UI.Xaml.Controls
 {
-	public partial class TextBlockMeasureCache
+	/// <summary>
+	/// A TextBlock measure cache for non-formatted text.
+	/// </summary>
+	internal partial class TextBlockMeasureCache
 	{
 		internal static int MaxMeasureKeyEntries { get; set; } = 500;
 		internal static int MaxMeasureSizeKeyEntries { get; set; } = 50;
-
-		public static bool IsEnabled { get; set; } = true;
 
 		private static Stopwatch _timer = Stopwatch.StartNew();
 
 		private Dictionary<MeasureKey, MeasureEntry> _entries = new Dictionary<MeasureKey, MeasureEntry>(new MeasureKey.Comparer());
 		private LinkedList<MeasureKey> _queue = new LinkedList<MeasureKey>();
 
+		/// <summary>
+		/// Deterimes if the cache is enabled.
+		/// </summary>
+		public static bool IsEnabled { get; set; } = true;
 
+		/// <summary>
+		/// Finds a cached measure for the provided <see cref="TextBlock"/> characteristics
+		/// given an <paramref name="availableSize"/>.
+		/// </summary>
+		/// <param name="source">The source</param>
+		/// <param name="availableSize">The available size to query</param>
+		/// <returns>An optional <see cref="Size"/> if found.</returns>
 		public Size? FindMeasuredSize(TextBlock source, Size availableSize)
 		{
 			var key = new MeasureKey(source);
@@ -47,6 +59,13 @@ namespace Windows.UI.Xaml.Controls
 			return null;
 		}
 
+		/// <summary>
+		/// Cache a <paramref name="measuredSize"/> for an <paramref name="availableSize"/>, given
+		/// the <paramref name="source"/> charateristics.
+		/// </summary>
+		/// <param name="source"></param>
+		/// <param name="availableSize"></param>
+		/// <param name="measuredSize"></param>
 		public void CacheMeasure(TextBlock source, Size availableSize, Size measuredSize)
 		{
 			var key = new MeasureKey(source);

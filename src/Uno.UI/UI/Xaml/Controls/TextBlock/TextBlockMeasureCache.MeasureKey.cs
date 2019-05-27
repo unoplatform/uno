@@ -5,8 +5,11 @@ using Uno.Extensions;
 
 namespace Windows.UI.Xaml.Controls
 {
-	public partial class TextBlockMeasureCache
+	internal partial class TextBlockMeasureCache
 	{
+		/// <summary>
+		/// Defines text characteristics
+		/// </summary>
 		class MeasureKey
 		{
 			public class Comparer : IEqualityComparer<MeasureKey>

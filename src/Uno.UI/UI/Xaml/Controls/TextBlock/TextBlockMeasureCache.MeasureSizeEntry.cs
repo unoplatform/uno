@@ -4,8 +4,11 @@ using Windows.Foundation;
 
 namespace Windows.UI.Xaml.Controls
 {
-	public partial class TextBlockMeasureCache
+	internal partial class TextBlockMeasureCache
 	{
+		/// <summary>
+		/// Result of a single measure
+		/// </summary>
 		class MeasureSizeEntry
 		{
 			public MeasureSizeEntry(Size measuredSize, global::System.Collections.Generic.LinkedListNode<Uno.CachedTuple<double, double>> node)
