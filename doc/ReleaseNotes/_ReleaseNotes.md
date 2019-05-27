@@ -1,6 +1,7 @@
 ﻿# Release notes
 
 ## Next version
+* Add support for `Windows.System.Display.DisplayRequest` API on iOS and Android
 * Add support for the following `Windows.System.Power.PowerManager` APIs on iOS and Android:
     - BatteryStatus
     - EnergySaverStatus
