@@ -9,36 +9,28 @@ using Windows.UI.Xaml.Media;
 using Microsoft.Extensions.Logging;
 using Uno.Extensions;
 using Uno;
+using System.Diagnostics;
 
 namespace Windows.UI.Xaml.Controls
 {
 	public partial class TextBlockMeasureCache
 	{
+		internal static int MaxMeasureKeyEntries { get; set; } = 500;
+		internal static int MaxMeasureSizeKeyEntries { get; set; } = 50;
+
+		public static bool IsEnabled { get; set; } = true;
+
+		private static Stopwatch _timer = Stopwatch.StartNew();
+
 		private Dictionary<MeasureKey, MeasureEntry> _entries = new Dictionary<MeasureKey, MeasureEntry>(new MeasureKey.Comparer());
+		private LinkedList<MeasureKey> _queue = new LinkedList<MeasureKey>();
 
-		public void CacheMeasure(TextBlock source, Size availableSize, Size measuredSize)
-		{
-			var key = new MeasureKey(source);
-
-			if (!_entries.TryGetValue(key, out var entry))
-			{
-				_entries[key] = entry = new MeasureEntry();
-			}
-
-			if (this.Log().IsEnabled(LogLevel.Debug))
-			{
-				// {0} is used to avoid parsing errors caused by formatting a "{}" in the text
-				this.Log().LogDebug("{0}", $"TextMeasure-new [{source.Text} / {source.TextWrapping} / {source.MaxLines}]: {availableSize} -> {measuredSize}");
-			}
-
-			entry.CacheMeasure(availableSize, measuredSize);
-		}
 
 		public Size? FindMeasuredSize(TextBlock source, Size availableSize)
 		{
 			var key = new MeasureKey(source);
 
-			if (_entries.TryGetValue(key, out var entry))
+			if (IsEnabled && _entries.TryGetValue(key, out var entry))
 			{
 				var measuredSize = entry.FindMeasuredSize(key, availableSize);
 
@@ -55,122 +47,41 @@ namespace Windows.UI.Xaml.Controls
 			return null;
 		}
 
-		class MeasureEntry
+		public void CacheMeasure(TextBlock source, Size availableSize, Size measuredSize)
 		{
-			public Dictionary<CachedTuple<double, double>, MeasureSizeEntry> _sizes
-				= new Dictionary<CachedTuple<double, double>, MeasureSizeEntry>();
+			var key = new MeasureKey(source);
 
-			public Size? FindMeasuredSize(MeasureKey key, Size availableSize)
+			if (!_entries.TryGetValue(key, out var entry))
 			{
-				if(_sizes.TryGetValue(CachedTuple.Create(availableSize.Width, availableSize.Height), out var sizeEntry))
+				Scavenge();
+				var node = _queue.AddLast(key);
+				_entries[key] = entry = new MeasureEntry(node);
+			}
+			else
+			{
+				if (_queue.Count != 0 && _queue.Last.Value != key)
 				{
-					return sizeEntry.MeasuredSize;
+					_queue.Remove(entry.ListNode);
+					_queue.AddLast(entry.ListNode);
 				}
-				else
-				{
-					if(key.TextWrapping == TextWrapping.NoWrap)
-					{
-						// No wrap, assume any width below the asked available size
-						// is valid.
-						foreach(var keySize in _sizes)
-						{
-							if(keySize.Value.MeasuredSize.Width <= availableSize.Width)
-							{
-								return keySize.Value.MeasuredSize;
-							}
-						}
-					}
-					else
-					{
-						foreach (var keySize in _sizes)
-						{
-							// If text wraps and the available width is the same, any height below the
-							// available size is valid.
-							if (
-								keySize.Key.Item1 == availableSize.Width
-								&& keySize.Value.MeasuredSize.Height <= availableSize.Height
-							)
-							{
-								return keySize.Value.MeasuredSize;
-							}
-						}
-					}
-				}
-				return null;
 			}
 
-			internal void CacheMeasure(Size desiredSize, Size measuredSize)
+			if (this.Log().IsEnabled(LogLevel.Debug))
 			{
-				_sizes[CachedTuple.Create(desiredSize.Width, desiredSize.Height)] = new MeasureSizeEntry(measuredSize);
+				// {0} is used to avoid parsing errors caused by formatting a "{}" in the text
+				this.Log().LogDebug("{0}", $"TextMeasure-new [{source.Text} / {source.TextWrapping} / {source.MaxLines}]: {availableSize} -> {measuredSize}");
 			}
+
+			entry.CacheMeasure(availableSize, measuredSize);
 		}
 
-		class MeasureSizeEntry
+		private void Scavenge()
 		{
-			public MeasureSizeEntry(Size measuredSize) => MeasuredSize = measuredSize;
-
-			public Size MeasuredSize { get; }
-		}
-
-		class MeasureKey
-		{
-			public class Comparer : IEqualityComparer<MeasureKey>
+			if (_queue.Count >= MaxMeasureKeyEntries)
 			{
-				public bool Equals(MeasureKey x, MeasureKey y) =>
-					x.Text == y.Text
-					&& x.FontSize == y.FontSize
-					&& x.FontFamily == y.FontFamily
-					&& x.FontStyle == y.FontStyle
-					&& x.TextWrapping == y.TextWrapping
-					&& x.FontWeight == y.FontWeight
-					&& x.MaxLines == y.MaxLines
-					&& x.TextTrimming == y.TextTrimming
-					&& x.TextAlignment == y.TextAlignment
-					&& x.LineHeight == y.LineHeight
-					&& x.LineStackingStrategy == y.LineStackingStrategy
-					&& x.CharacterSpacing == y.CharacterSpacing;
-
-				public int GetHashCode(MeasureKey obj)
-					=> obj._hashCode;
+				_entries.Remove(_queue.First.Value);
+				_queue.RemoveFirst();
 			}
-
-			private readonly int _hashCode;
-
-			public MeasureKey(
-				TextBlock source
-			)
-			{
-				FontStyle = source.FontStyle;
-				TextWrapping = source.TextWrapping;
-				FontWeight = source.FontWeight;
-				Text = source.Text;
-				FontFamily = source.FontFamily;
-				FontSize = source.FontSize;
-				MaxLines = source.MaxLines;
-				TextTrimming = source.TextTrimming;
-				TextAlignment = source.TextAlignment;
-				LineHeight = source.LineHeight;
-				LineStackingStrategy = source.LineStackingStrategy;
-				CharacterSpacing = source.CharacterSpacing;
-
-				_hashCode = Text?.GetHashCode() ?? 0
-					^ FontFamily.GetHashCode()
-					^ FontSize.GetHashCode();
-			}
-
-			public FontStyle FontStyle { get; }
-			public TextWrapping TextWrapping { get; }
-			public FontWeight FontWeight { get; }
-			public string Text { get; }
-			public FontFamily FontFamily { get; }
-			public double FontSize { get; }
-			public int MaxLines { get; }
-			public TextTrimming TextTrimming { get; }
-			public TextAlignment TextAlignment { get; }
-			public double LineHeight { get; }
-			public LineStackingStrategy LineStackingStrategy { get; }
-			public int CharacterSpacing { get; }
 		}
-
 	}
 }

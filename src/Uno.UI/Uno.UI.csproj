@@ -339,6 +339,9 @@
 
 	<ItemGroup>
 	  <UpToDateCheckInput Remove="UI\Xaml\Controls\TextBlock\TextBlockMeasureCache.cs" />
+	  <UpToDateCheckInput Remove="UI\Xaml\Controls\TextBlock\TextBlockMeasureCache.MeasureEntry.cs" />
+	  <UpToDateCheckInput Remove="UI\Xaml\Controls\TextBlock\TextBlockMeasureCache.MeasureKey.cs" />
+	  <UpToDateCheckInput Remove="UI\Xaml\Controls\TextBlock\TextBlockMeasureCache.MeasureSizeEntry.cs" />
 	</ItemGroup>
 
 	<ItemGroup>
