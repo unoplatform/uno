@@ -107,7 +107,7 @@
 * 152504 [Android] Pointer captures weren't informing gestures of capture, fixes Slider capture issue
 * 148896 [iOS] TextBlock CarriageReturns would continue past maxlines property
 * 153594 [Android] EdgeEffect not showing up on listView that contain Headers and Footers
-* #881 [iOS] Support explicitly-defined ListViewItems in ListView.
+* #881 [iOS] [Android] Support explicitly-defined ListViewItems in ListView.
 * #902 [Android] Resource generation now correctly escapes names starting with numbers and names containing a '-' character
 * 154390 Storyboard `Completed` callback were not properly called when there's not children.
 * [iOS] Fix bug where Popup can be hidden if created during initial app launch.
