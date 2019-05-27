@@ -62,6 +62,7 @@
 * Using _State Triggers_ in `VisualStateManager` now follows correct precedence as documented by Microsoft
 * Add support for `FlyoutBase.AttachedFlyout` and `FlyoutBase.ShowAttachedFlyout()`
 * `x:Bind` now supports binding to fields
+* `Grid` positions (`Row`, `RowSpan`, `Column` & `ColumnSpan`) are now behaving like UWP when the result overflows grid rows/columns definition
 
 ### Breaking Changes
 * The `WebAssemblyRuntime.InvokeJSUnmarshalled` method with three parameters has been removed.
