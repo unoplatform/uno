@@ -7,6 +7,8 @@ using Uno.Logging;
 using Uno.UI.DataBinding;
 using Windows.Foundation;
 using Windows.Foundation.Metadata;
+using Windows.UI.Xaml.Data;
+
 namespace Windows.UI.Xaml
 {
 	public delegate object SetterValueProviderHandler();
@@ -137,7 +139,20 @@ namespace Windows.UI.Xaml
 		private void BuildBindingPath(DependencyPropertyValuePrecedences precedence)
 		{
 			_bindingPath = new BindingPath(path: Target.Path, fallbackValue: null, precedence: precedence, allowPrivateMembers: false);
-			_bindingPath.DataContext = Target.Target;
+
+			if (Target.Target is ElementNameSubject subject)
+			{
+				if (subject.ActualElementInstance is ElementStub stub)
+				{
+					stub.Materialize();
+				}
+
+				_bindingPath.DataContext = subject.ElementInstance;
+			}
+			else
+			{
+				_bindingPath.DataContext = Target.Target;
+			}
 		}
 
 		internal void ClearValue()

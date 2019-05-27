@@ -55,6 +55,7 @@
 * Add support for `x:Load`
 * [Wasm] Restore support for `x:Load` and `x:DeferLoadStrategy`
 * [Wasm] Scrolling bar visibility modes are now supported on most browsers
+* Fix invalid cast exception when using `x:Load` or `x:DeferLoadStrategy`
 * Add `Windows.Globalization.Calendar`
 * [Wasm] Support of overlay mode of the pane
 * Using _State Triggers_ in `VisualStateManager` now follows correct precedence as documented by Microsoft
