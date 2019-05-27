@@ -155,7 +155,7 @@ namespace Windows.UI.Xaml.Controls
 			if (!TryMeasureUsingFastPath(availableSize, columns, definedColumns, rows, definedRows, out size))
 			{
 				var measureChild = GetMemoizedMeasureChild();
-				var positions = GetPositions();
+				var positions = GetPositions(columns.Length, rows.Length);
 
 				using (positions.Subscription)
 				{
@@ -203,19 +203,20 @@ namespace Windows.UI.Xaml.Controls
 			finalSize.Width -= GetHorizontalOffset();
 			finalSize.Height -= GetVerticalOffset();
 
-			var positions = GetPositions();
+			var availableSize = finalSize;
+
+			var considerStarColumnsAsAuto = ConsiderStarColumnsAsAuto(availableSize.Width);
+			var considerStarRowsAsAuto = ConsiderStarRowsAsAuto(availableSize.Height);
+
+			var columns = GetColumns(considerStarColumnsAsAuto).Span;
+			var definedColumns = GetColumns(false).Span;
+			var rows = GetRows(considerStarRowsAsAuto).Span;
+			var definedRows = GetRows(false).Span;
+
+			var positions = GetPositions(columns.Length, rows.Length);
 
 			using (positions.Subscription)
 			{
-				var availableSize = finalSize;
-
-				var considerStarColumnsAsAuto = ConsiderStarColumnsAsAuto(availableSize.Width);
-				var considerStarRowsAsAuto = ConsiderStarRowsAsAuto(availableSize.Height);
-
-				var columns = GetColumns(considerStarColumnsAsAuto).Span;
-				var definedColumns = GetColumns(false).Span;
-				var rows = GetRows(considerStarRowsAsAuto).Span;
-				var definedRows = GetRows(false).Span;
 
 				if (!TryArrangeUsingFastPath(availableSize, columns, definedColumns, rows, definedRows, positions.Views.Span))
 				{
@@ -903,7 +904,7 @@ namespace Windows.UI.Xaml.Controls
 			return MeasureElement;
 		}
 
-		private (IDisposable Subscription, Memory<ViewPosition> Views) GetPositions()
+		private (IDisposable Subscription, Memory<ViewPosition> Views) GetPositions(int numberOfColumns, int numberOfRows)
 		{
 			var refs = Children.SelectToArray(c => (View: c, Handle: GCHandle.Alloc(c, GCHandleType.Normal)));
 
@@ -911,17 +912,81 @@ namespace Windows.UI.Xaml.Controls
 				Disposable.Create(() => refs.ForEach(c => c.Handle.Free())),
 				refs
 					.SelectToMemory(c =>
-						new ViewPosition(
-							c.Handle,
-							new GridPosition(
-								Grid.GetColumn(c.View),
-								Grid.GetRow(c.View),
-								Grid.GetColumnSpan(c.View),
-								Grid.GetRowSpan(c.View)
-							)
-						)
-					)
+					{
+						return MapViewToGridPosition(c);
+					})
 			);
+
+			ViewPosition MapViewToGridPosition((View View, GCHandle Handle) c)
+			{
+				var column = Grid.GetColumn(c.View);
+				var columnSpan = Grid.GetColumnSpan(c.View);
+
+				if (column < 0)
+				{
+					column = 0;
+				}
+				else if (column == 0)
+				{
+					// Ok: nothing to check
+				}
+				else if (column >= numberOfColumns)
+				{
+					column = numberOfColumns - 1;
+				}
+
+				if (columnSpan < 1)
+				{
+					columnSpan = 1;
+				}
+				else if (columnSpan == 1)
+				{
+					// Ok: nothing to check
+				}
+				else if (column + columnSpan > numberOfColumns)
+				{
+					columnSpan = numberOfColumns - column;
+				}
+
+				var row = Grid.GetRow(c.View);
+				var rowSpan = Grid.GetRowSpan(c.View);
+
+				if (row < 0)
+				{
+					row = 0;
+				}
+				else if (row == 0)
+				{
+					// Ok: nothing to check
+				}
+				if (row >= numberOfRows)
+				{
+					row = numberOfRows - 1;
+				}
+
+				if (rowSpan < 1)
+				{
+					rowSpan = 1;
+				}
+				else if (rowSpan == 1)
+				{
+					// Ok: nothing to check
+				}
+				else if (row + rowSpan > numberOfRows)
+				{
+					rowSpan = numberOfRows - row;
+				}
+
+				return new ViewPosition(
+					c.Handle,
+					new GridPosition(
+						column,
+						row,
+						columnSpan,
+						rowSpan
+					)
+				);
+			}
 		}
 
 		readonly struct Column
@@ -1023,26 +1088,21 @@ namespace Windows.UI.Xaml.Controls
 		}
 	}
 
-	struct GridPosition
+	internal struct GridPosition
 	{
-		public int Column { get; set; }
-		public int Row { get; set; }
+		public int Column { get; }
+		public int Row { get; }
 
-		public int ColumnSpan { get; set; }
-		public int RowSpan { get; set; }
+		public int ColumnSpan { get; }
+		public int RowSpan { get; }
 
-		public GridPosition(int column = 0, int row = 0, int columnSpan = 1, int rowSpan = 1)
+		internal GridPosition(int column, int row, int columnSpan, int rowSpan)
 		{
 			Column = column;
 			Row = row;
 
 			ColumnSpan = columnSpan;
 			RowSpan = rowSpan;
-
-			if (ColumnSpan < 1 || RowSpan < 1)
-			{
-				throw new IndexOutOfRangeException("ColumnSpan and RowSpan should be greater than 0.");
-			}
 		}
 
 		public override string ToString()
