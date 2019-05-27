@@ -353,6 +353,31 @@ namespace Uno.UI.DataBinding
 			return null;
 		}
 
+		private static FieldInfo GetFieldInfo(Type type, string name, bool allowPrivateMembers)
+		{
+			do
+			{
+				var info = type.GetField(
+					name,
+					BindingFlags.Instance
+					| BindingFlags.Static
+					| BindingFlags.Public
+					| (allowPrivateMembers ? BindingFlags.NonPublic : BindingFlags.Default)
+					| BindingFlags.DeclaredOnly
+				);
+
+				if (info != null)
+				{
+					return info;
+				}
+
+				type = type.BaseType;
+			}
+			while (type != null);
+
+			return null;
+		}
+
 		/// <summary>
 		/// Determines if the property is referencing a C# indexer.
 		/// </summary>
@@ -589,6 +614,16 @@ namespace Uno.UI.DataBinding
 					var handler = MethodInvokerBuilder(getMethod);
 
 					return instance => handler(instance, new object[0]);
+				}
+
+				// Look for a field (permitted for x:Bind only)
+				if (allowPrivateMembers)
+				{
+					var fieldInfo = GetFieldInfo(type, property, true);
+					if (fieldInfo != null)
+					{
+						return instance => fieldInfo.GetValue(instance);
+					}
 				}
 
 				// Look for an attached property
