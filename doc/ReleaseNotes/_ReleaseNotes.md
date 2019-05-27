@@ -63,6 +63,7 @@
 ### Breaking Changes
 * The `WebAssemblyRuntime.InvokeJSUnmarshalled` method with three parameters has been removed.
 * `NavigationBarHelper` has been removed.
+* Localized Text, Content etc is now applied even if the Text (etc) property isn't set in Xaml. Nested implicit content (eg `<Button><Border>...`) will be overridden by localized values if available.
 
 ### Bug fixes
 * DatePicker FlyoutPlacement now set to Full by default
@@ -106,6 +107,7 @@
 * #902 [Android] Resource generation now correctly escapes names starting with numbers and names containing a '-' character
 * 154390 Storyboard `Completed` callback were not properly called when there's not children.
 * [iOS] Fix bug where Popup can be hidden if created during initial app launch.
+* #921 Ensure localization works even if the property isn't defined in XAML
 
 ## Release 1.44.0
 

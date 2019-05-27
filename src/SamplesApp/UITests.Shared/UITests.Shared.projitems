@@ -73,6 +73,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\Localization\Localization_Implicit.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\MarkupExtensionTests\MarkupExtension.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -1706,6 +1710,10 @@
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\FrameworkElementTests\XamlEvent_Leak_UserControl.xaml.cs">
       <DependentUpon>XamlEvent_Leak_UserControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\Localization\CustomTextControl.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\Localization\Localization_Implicit.xaml.cs">
+      <DependentUpon>Localization_Implicit.xaml</DependentUpon>
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\UIElementTests\Arrange_Performance01.xaml.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\UIElementTests\TransformToVisual_Simple.xaml.cs" />
