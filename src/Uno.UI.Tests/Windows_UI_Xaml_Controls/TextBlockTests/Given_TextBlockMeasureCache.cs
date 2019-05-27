@@ -171,5 +171,33 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Controls.TextBlockTests
 				SUT.FindMeasuredSize(tb1, new Size(11, 11))
 			);
 		}
+
+		[TestMethod]
+		public void When_SmallerAvailableSize()
+		{
+			var SUT = new TextBlockMeasureCache();
+
+			var tb = new TextBlock() { Text = "42" };
+
+			Assert.AreEqual(TextWrapping.NoWrap, tb.TextWrapping);
+
+			SUT.CacheMeasure(tb, new Size(0, 0), new Size(0, 0));
+
+			Assert.IsNull(
+				SUT.FindMeasuredSize(tb, new Size(50, 50))
+			);
+
+			SUT.CacheMeasure(tb, new Size(100, 100), new Size(50, 10));
+
+			Assert.AreEqual(
+				new Size(50, 10),
+				SUT.FindMeasuredSize(tb, new Size(100, 100)).Value
+			);
+
+			Assert.AreEqual(
+				new Size(0, 0),
+				SUT.FindMeasuredSize(tb, new Size(0, 0)).Value
+			);
+		}
 	}
 }

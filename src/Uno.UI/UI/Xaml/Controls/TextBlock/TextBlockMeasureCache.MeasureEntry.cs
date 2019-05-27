@@ -29,11 +29,12 @@ namespace Windows.UI.Xaml.Controls
 				{
 					if(key.TextWrapping == TextWrapping.NoWrap)
 					{
-						// No wrap, assume any width below the asked available size
-						// is valid.
+						// No wrap, assume any measured width below the asked available size
+						// is valid, if the available size is greater.
 						foreach(var keySize in _sizes)
 						{
-							if(keySize.Value.MeasuredSize.Width <= availableSize.Width)
+							if(keySize.Key.Item1 >= availableSize.Width &&
+								keySize.Value.MeasuredSize.Width <= availableSize.Width)
 							{
 								MoveToLast(keySize.Key, keySize.Value);
 								return keySize.Value.MeasuredSize;
