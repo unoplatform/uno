@@ -642,6 +642,84 @@ namespace Uno.UI.Tests.BinderTests
 		}
 
 		[TestMethod]
+		public void When_Public_Field_And_xBind()
+		{
+			var source = new PublicField(42);
+			var SUT = new Windows.UI.Xaml.Controls.Grid();
+
+			SUT.SetBinding(
+				Windows.UI.Xaml.Controls.Grid.TagProperty,
+				new Binding()
+				{
+					Path = "MyField",
+					CompiledSource = source
+				}
+			);
+
+			SUT.ApplyCompiledBindings();
+
+			Assert.AreEqual(42, SUT.Tag);
+		}
+
+		[TestMethod]
+		public void When_Private_Field_And_xBind()
+		{
+			var source = new PrivateField(42);
+			var SUT = new Windows.UI.Xaml.Controls.Grid();
+
+			SUT.SetBinding(
+				Windows.UI.Xaml.Controls.Grid.TagProperty,
+				new Binding()
+				{
+					Path = "MyField",
+					CompiledSource = source
+				}
+			);
+
+			SUT.ApplyCompiledBindings();
+
+			Assert.AreEqual(42, SUT.Tag);
+		}
+
+		[TestMethod]
+		public void When_Public_Field_And_Binding()
+		{
+			var source = new PublicField(42);
+			var SUT = new Windows.UI.Xaml.Controls.Grid();
+
+			SUT.SetBinding(
+				Windows.UI.Xaml.Controls.Grid.TagProperty,
+				new Binding()
+				{
+					Path = "MyField"
+				}
+			);
+
+			SUT.DataContext = source;
+
+			Assert.IsNull(SUT.Tag);
+		}
+
+		[TestMethod]
+		public void When_Private_Field_And_Binding()
+		{
+			var source = new PrivateField(42);
+			var SUT = new Windows.UI.Xaml.Controls.Grid();
+
+			SUT.SetBinding(
+				Windows.UI.Xaml.Controls.Grid.TagProperty,
+				new Binding()
+				{
+					Path = "MyField"
+				}
+			);
+
+			SUT.DataContext = source;
+
+			Assert.IsNull(SUT.Tag);
+		}
+
+		[TestMethod]
 		//TODO: Amend this test when Uno correctly supports reentrantly modifying DPs.
 		public void When_Reentrant_Set()
 		{
@@ -1041,6 +1119,26 @@ namespace Uno.UI.Tests.BinderTests
 			}
 
 			private int MyProperty { get; set; }
+		}
+
+		public class PublicField
+		{
+			public int MyField;
+
+			public PublicField(int value)
+			{
+				MyField = value;
+			}
+		}
+
+		public class PrivateField
+		{
+			private int MyField;
+
+			public PrivateField(int value)
+			{
+				MyField = value;
+			}
 		}
 	}
 
