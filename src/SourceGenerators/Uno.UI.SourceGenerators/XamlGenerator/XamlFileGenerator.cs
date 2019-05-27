@@ -71,6 +71,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		private readonly INamedTypeSymbol _elementStubSymbol;
 		private readonly INamedTypeSymbol _contentPresenterSymbol;
 		private readonly INamedTypeSymbol _stringSymbol;
+		private readonly INamedTypeSymbol _objectSymbol;
 		private readonly INamedTypeSymbol _iFrameworkElementSymbol;
 
 		private readonly INamedTypeSymbol _iCollectionSymbol;
@@ -125,6 +126,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 			_relativePath = PathHelper.GetRelativePath(_targetPath, _fileDefinition.FilePath);
 			_stringSymbol = GetType("System.String");
+			_objectSymbol = GetType("System.Object");
 			_elementStubSymbol = GetType(XamlConstants.Types.ElementStub);
 			_contentPresenterSymbol = GetType(XamlConstants.Types.ContentPresenter);
 			_iFrameworkElementSymbol = GetType(XamlConstants.Types.IFrameworkElement);
@@ -3078,10 +3080,10 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			return objectUid.HasValue() && IsLocalizablePropertyType(propertyType);
 		}
 
-		private static bool IsLocalizablePropertyType(INamedTypeSymbol propertyType)
+		private bool IsLocalizablePropertyType(INamedTypeSymbol propertyType)
 		{
-			return propertyType?.ToDisplayString() == "string"
-				|| propertyType?.ToDisplayString() == "object";
+			return Equals(propertyType, _stringSymbol)
+				|| Equals(propertyType, _objectSymbol);
 		}
 
 		private string GetObjectUid(XamlObjectDefinition objectDefinition)
