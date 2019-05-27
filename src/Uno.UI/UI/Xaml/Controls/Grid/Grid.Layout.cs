@@ -922,26 +922,26 @@ namespace Windows.UI.Xaml.Controls
 				var column = Grid.GetColumn(c.View);
 				var columnSpan = Grid.GetColumnSpan(c.View);
 
-				if (column < 0)
-				{
-					column = 0;
-				}
-				else if (column == 0)
+				if (column == 0)
 				{
 					// Ok: nothing to check
+				}
+				else if (column < 0)
+				{
+					column = 0;
 				}
 				else if (column >= numberOfColumns)
 				{
 					column = numberOfColumns - 1;
 				}
 
-				if (columnSpan < 1)
-				{
-					columnSpan = 1;
-				}
-				else if (columnSpan == 1)
+				if (columnSpan == 1)
 				{
 					// Ok: nothing to check
+				}
+				else if (columnSpan < 1)
+				{
+					columnSpan = 1;
 				}
 				else if (column + columnSpan > numberOfColumns)
 				{
@@ -951,26 +951,26 @@ namespace Windows.UI.Xaml.Controls
 				var row = Grid.GetRow(c.View);
 				var rowSpan = Grid.GetRowSpan(c.View);
 
-				if (row < 0)
-				{
-					row = 0;
-				}
-				else if (row == 0)
+				if (row == 0)
 				{
 					// Ok: nothing to check
 				}
-				if (row >= numberOfRows)
+				else if (row < 0)
+				{
+					row = 0;
+				}
+				else if (row >= numberOfRows)
 				{
 					row = numberOfRows - 1;
 				}
 
-				if (rowSpan < 1)
-				{
-					rowSpan = 1;
-				}
-				else if (rowSpan == 1)
+				if (rowSpan == 1)
 				{
 					// Ok: nothing to check
+				}
+				else if (rowSpan < 1)
+				{
+					rowSpan = 1;
 				}
 				else if (row + rowSpan > numberOfRows)
 				{
