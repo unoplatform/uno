@@ -1187,6 +1187,11 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			}
 		}
 
+		private void GenerateError(IIndentedStringBuilder writer, string message)
+		{
+			GenerateError(writer, message.Replace("{", "{{").Replace("}", "}}"), new object[0]);
+		}
+
 		private void GenerateError(IIndentedStringBuilder writer, string message, params object[] options)
 		{
 			if (ShouldWriteErrorOnInvalidXaml)
