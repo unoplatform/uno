@@ -77,5 +77,54 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 
 			group.CurrentState.Should().Be(state);
 		}
+
+		[TestMethod]
+		public void When_SingleWithTwoConstraints_FailingWidth()
+		{
+			Window.Current.SetWindowSize(new Size(100, 100));
+
+			var sut = new AdaptiveTrigger { MinWindowWidth = 101, MinWindowHeight = 42};
+
+			var state = new VisualState { Name = "activeState" };
+			state.StateTriggers.Add(sut);
+
+			var group = new VisualStateGroup();
+			group.States.Add(state);
+
+			group.CurrentState.Should().Be(null);
+		}
+
+		[TestMethod]
+		public void When_SingleWithTwoConstraints_FailingHeight()
+		{
+			Window.Current.SetWindowSize(new Size(100, 100));
+
+			var sut = new AdaptiveTrigger { MinWindowWidth = 42, MinWindowHeight = 101 };
+
+			var state = new VisualState { Name = "activeState" };
+			state.StateTriggers.Add(sut);
+
+			var group = new VisualStateGroup();
+			group.States.Add(state);
+
+			group.CurrentState.Should().Be(null);
+		}
+
+		[TestMethod]
+		public void When_SingleNoConstraints()
+		{
+			Window.Current.SetWindowSize(new Size(100, 100));
+
+			var sut = new AdaptiveTrigger { MinWindowWidth = 0, MinWindowHeight = 0};
+
+			var state = new VisualState { Name = "activeState" };
+			state.StateTriggers.Add(sut);
+
+			var group = new VisualStateGroup();
+			group.States.Add(state);
+
+			group.CurrentState.Should().Be(state);
+		}
+
 	}
 }
