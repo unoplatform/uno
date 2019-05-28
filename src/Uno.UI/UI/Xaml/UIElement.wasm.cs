@@ -16,6 +16,7 @@ using Windows.Foundation;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.System;
+using Uno.Collections;
 using Uno.UI;
 using System.Numerics;
 
@@ -519,7 +520,7 @@ namespace Windows.UI.Xaml
 
 		private Rect _arranged;
 		private string _name;
-		internal List<UIElement> _children = new List<UIElement>();
+		internal IList<UIElement> _children = new MaterializableList<UIElement>();
 
 		public string Name
 		{
