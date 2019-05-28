@@ -116,6 +116,7 @@
 * [iOS] Fix bug where Popup can be hidden if created during initial app launch.
 * #921 Ensure localization works even if the property isn't defined in XAML
 * [WASM] Using x:Load was causing _Collection was modified_ exception.
+* Fix support for localized attached properties.
 
 ## Release 1.44.0
 

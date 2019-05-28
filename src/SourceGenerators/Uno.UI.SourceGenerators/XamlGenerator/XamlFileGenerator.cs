@@ -2600,7 +2600,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 			throw new Exception("Unable to convert {0} for {1} with type {2}".InvariantCultureFormat(memberValue, memberName, propertyType));
 		}
-
+		
 		private string BuildLocalizedResourceValue(XamlMemberDefinition owner, string memberName, string objectUid)
 		{
 			var uidParts = objectUid.Split(new[] { '/' }, StringSplitOptions.RemoveEmptyEntries);
@@ -2613,9 +2613,10 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			if (owner != null && IsAttachedProperty(owner))
 			{
 				var declaringType = GetType(owner.Member.DeclaringType);
-				var ns = declaringType.ContainingNamespace.GetFullName();
+				var nsRaw = declaringType.ContainingNamespace.GetFullName();
+				var ns = nsRaw.Replace(".", "/");
 				var type = declaringType.Name;
-				fullKey = $"{uidName}/[using:{ns}]{type}.{memberName}";
+				fullKey = $"{uidName}/[using:{ns}]{type}/{memberName}";
 			}
 
 			if (_resourceKeys.Any(k => k == fullKey))
