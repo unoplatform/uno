@@ -69,7 +69,7 @@
   <ItemGroup>
     <PackageReference Include="MSTest.TestFramework" Version="1.2.0" />
     <PackageReference Include="Newtonsoft.Json">
-      <Version>12.0.1</Version>
+      <Version>12.0.2</Version>
     </PackageReference>
     <PackageReference Include="Uno.SourceGenerationTasks" />
     <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="1.1.1" />
