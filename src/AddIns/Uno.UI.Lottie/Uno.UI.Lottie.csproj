@@ -29,11 +29,11 @@
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(TargetFramework)' == 'MonoAndroid80'">
-		<PackageReference Include="Com.Airbnb.Android.Lottie" Version="2.5.2.1" PrivateAssets="none" />
+		<PackageReference Include="Com.Airbnb.Android.Lottie" Version="2.7.1" PrivateAssets="none" />
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(TargetFramework)' == 'MonoAndroid90'">
-		<PackageReference Include="Com.Airbnb.Android.Lottie" Version="2.5.2.1" PrivateAssets="none" />
+		<PackageReference Include="Com.Airbnb.Android.Lottie" Version="2.7.1" PrivateAssets="none" />
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(TargetFramework)' == 'xamarinios10'">
