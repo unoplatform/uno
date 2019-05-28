@@ -12,19 +12,19 @@ The tutorial walks through creating a cross platform application with Uno, which
 
 ### Prerequisites
 
-- Visual Studio 2019 (latest release), with the **Universal Windows Platform**, **Mobile development with .NET**, and **ASP**.**NET and web** workloads installed.
-- Knowledge of C#.
+- **Visual Studio 2019 (latest release)**, with the **Universal Windows Platform**, **Mobile development with .NET**, and **ASP**.**NET and web** workloads installed. **Visual Studio 2017 15.5 or later** is also supported, a few of the steps might be slightly different.
+- Knowledge of C#. 
 - (optional) A paired Mac to build the iOS project.
 
-For more information about these prerequisites, see [Installing Xamarin](https://docs.microsoft.com/en-us/xamarin/get-started/installation/index.md). For information about connecting Visual Studio 2019 to a Mac build host, see [Pair to Mac for Xamarin.iOS development](https://docs.microsoft.com/en-us/xamarin/ios/get-started/installation/windows/connecting-to-mac/).
+For more information about these prerequisites, see [Installing Xamarin](https://docs.microsoft.com/en-us/xamarin/get-started/installation/index.md). For information about connecting Visual Studio to a Mac build host, see [Pair to Mac for Xamarin.iOS development](https://docs.microsoft.com/en-us/xamarin/ios/get-started/installation/windows/connecting-to-mac/).
 
 ##### On Windows
 
 To run the WebAssembly (Wasm) head, select **IIS Express** and press **Ctrl+F5** or choose 'Start without debugging' from the menu. Note that **F5** will *not* work because Visual Studio debugging isn't supported. See [here](debugging-wasm.md) for debugging instructions through Chrome.
 
-## Installing the App Templates with Visual Studio 2019
+## Installing the App Templates with Visual Studio
 
-1. Launch Visual Studio 2019, then click `Continue without code`. Click `Extensions` -> `Manage Extensions` from the Menu Bar.
+1. Launch Visual Studio, then click `Continue without code`. Click `Extensions` -> `Manage Extensions` from the Menu Bar.
 
     ![](Assets/tutorial01/manage-extensions.png)
 
@@ -34,7 +34,7 @@ To run the WebAssembly (Wasm) head, select **IIS Express** and press **Ctrl+F5**
 
 ## Getting Started
 
-1. Open Visual Studio 2019 and click on `Create new project`. 
+1. Open Visual Studio and click on `Create new project`. 
 
     ![](Assets/tutorial01/newproject1.PNG)
 
