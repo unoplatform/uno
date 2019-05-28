@@ -7,14 +7,33 @@ namespace UITests.Shared.Windows_UI_Xaml_Controls.GridTestsControl
 {
 	public class GridTestsViewModel : ViewModelBase
 	{
+		private long _gridColumnAlternating;
+		private object _gridWidthAlternatingNull;
+
 		public GridTestsViewModel(CoreDispatcher dispatcher) : base(dispatcher)
 		{
 			ObserveGridColumnAlternating();
 		}
 
-		public long GridColumnAlternating { get; set; }
+		public long GridColumnAlternating
+		{
+			get => _gridColumnAlternating;
+			set
+			{
+				_gridColumnAlternating = value;
+				RaisePropertyChanged();
+			}
+		}
 
-		public object GridWidthAlternatingNull { get; set; }
+		public object GridWidthAlternatingNull
+		{
+			get => _gridWidthAlternatingNull;
+			set
+			{
+				_gridWidthAlternatingNull = value;
+				RaisePropertyChanged();
+			}
+		}
 
 		private async void ObserveGridColumnAlternating()
 		{
