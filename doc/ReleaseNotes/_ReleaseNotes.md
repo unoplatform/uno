@@ -13,6 +13,8 @@
     - BatteryStatusChanged
 
 ### Features
+* Updated `CheckBox` glyph to match UWP style on all platforms
+* Add support for the following `DisplayInformation` properties on iOS and Android:   
 * Add support for `CurrentInputMethodLanguageTag` and `TrySetInputMethodLanguageTag` on Android, iOS and WASM
 * Add support for `ChatMessageManager.ShowComposeSmsMessageAsync` (and `ChatMessage` `Body` and `Recipients` properties) on iOS and Android
 * Add support for the following `DisplayInformation` properties on iOS and Android:
