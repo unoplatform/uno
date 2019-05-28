@@ -139,6 +139,14 @@ namespace Uno.UI
 			public static bool IsPoolingEnabled { get; set; } = false;
 		}
 
+		public static class TextBlock
+		{
+			/// <summary>
+			/// Determines if the measure cache is enabled. (WASM only)
+			/// </summary>
+			public static bool IsMeasureCacheEnabled { get; set; } = true;
+		}
+
 		public static class AutomationPeer
 		{
 			/// <summary>

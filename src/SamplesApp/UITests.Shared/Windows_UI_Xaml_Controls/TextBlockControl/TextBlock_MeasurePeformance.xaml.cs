@@ -25,10 +25,16 @@ namespace UITests.Shared.Windows_UI_Xaml_Controls.TextBlockControl
 		public TextBlock_MeasurePeformance()
 		{
 			this.InitializeComponent();
+
+			Bench_TextMeasure_SameText(null, null);
 		}
 
-		private void Bench_TextMeasure_SameText()
+		private void Bench_TextMeasure_SameText(object sender, object parms)
 		{
+#if __WASM__
+			Uno.UI.FeatureConfiguration.TextBlock.IsMeasureCacheEnabled = measureCacheEnabled.IsChecked.Value;
+#endif
+
 			var sw = Stopwatch.StartNew();
 
 			for (int i = 0; i < 300; i++)
@@ -37,7 +43,7 @@ namespace UITests.Shared.Windows_UI_Xaml_Controls.TextBlockControl
 				tb.Measure(new Size(100, 100));
 			}
 
-			result1.Text = sw.Elapsed;
+			result1.Text = "Bench_TextMeasure_SameText:" + sw.Elapsed;
 		}
 	}
 }

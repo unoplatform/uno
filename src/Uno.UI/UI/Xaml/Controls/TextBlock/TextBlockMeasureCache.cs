@@ -10,6 +10,7 @@ using Microsoft.Extensions.Logging;
 using Uno.Extensions;
 using Uno;
 using System.Diagnostics;
+using Uno.UI;
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -27,11 +28,6 @@ namespace Windows.UI.Xaml.Controls
 		private LinkedList<MeasureKey> _queue = new LinkedList<MeasureKey>();
 
 		/// <summary>
-		/// Deterimes if the cache is enabled.
-		/// </summary>
-		public static bool IsEnabled { get; set; } = true;
-
-		/// <summary>
 		/// Finds a cached measure for the provided <see cref="TextBlock"/> characteristics
 		/// given an <paramref name="availableSize"/>.
 		/// </summary>
@@ -42,7 +38,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			var key = new MeasureKey(source);
 
-			if (IsEnabled && _entries.TryGetValue(key, out var entry))
+			if (FeatureConfiguration.TextBlock.IsMeasureCacheEnabled && _entries.TryGetValue(key, out var entry))
 			{
 				var measuredSize = entry.FindMeasuredSize(key, availableSize);
 
