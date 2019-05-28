@@ -42,7 +42,7 @@
 			<ExcludeAssets>runtime</ExcludeAssets>
 		</PackageReference>
 		<PackageReference Include="Microsoft.CodeAnalysis.Workspaces.Common">
-			<Version>2.3.1</Version>
+			<Version>3.1.0</Version>
 			<ExcludeAssets>runtime</ExcludeAssets>
 		</PackageReference>
 		<PackageReference Include="Microsoft.DotNet.PlatformAbstractions">
