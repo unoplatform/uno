@@ -3085,9 +3085,6 @@
     <Compile Update="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\GridTestsControl\Simpletwocolumnsplitgrid.xaml.cs">
       <DependentUpon>Simpletwocolumnsplitgrid.xaml</DependentUpon>
     </Compile>
-    <Compile Update="C:\s\nv.github\Uno\src\SamplesApp\UITests.Shared\Windows_UI_Xaml_Controls\TextBlockControl\TextBlock_MeasurePeformance.xaml.cs">
-      <DependentUpon>TextBlock_MeasurePeformance.xaml</DependentUpon>
-    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Content Include="$(MSBuildThisFileDirectory)Assets\cart.png" />
