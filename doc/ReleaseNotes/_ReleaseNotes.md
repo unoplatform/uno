@@ -112,6 +112,7 @@
 * 154390 Storyboard `Completed` callback were not properly called when there's not children.
 * [iOS] Fix bug where Popup can be hidden if created during initial app launch.
 * #921 Ensure localization works even if the property isn't defined in XAML
+* [WASM] Using x:Load was causing _Collection was modified_ exception.
 
 ## Release 1.44.0
 
