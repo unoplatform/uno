@@ -337,19 +337,6 @@
 		</ProjectReference>
 	</ItemGroup>
 
-	<ItemGroup>
-	  <UpToDateCheckInput Remove="UI\Xaml\Controls\TextBlock\TextBlockMeasureCache.cs" />
-	  <UpToDateCheckInput Remove="UI\Xaml\Controls\TextBlock\TextBlockMeasureCache.MeasureEntry.cs" />
-	  <UpToDateCheckInput Remove="UI\Xaml\Controls\TextBlock\TextBlockMeasureCache.MeasureKey.cs" />
-	  <UpToDateCheckInput Remove="UI\Xaml\Controls\TextBlock\TextBlockMeasureCache.MeasureSizeEntry.cs" />
-	</ItemGroup>
-
-	<ItemGroup>
-		<None Update="Mixins\net461\VisualStatesMixins.tt">
-			<Generator>TextTemplatingFileGenerator</Generator>
-		</None>
-	</ItemGroup>
-
 	<Target Name="GetPackagingOutputs" Condition=" '$(TargetFramework)' == 'uap10.0' " />
 
 	<Target Name="GetBuiltProjectOutputRecursive" Condition=" '$(TargetFramework)' == 'xamarinios10' " />
