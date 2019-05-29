@@ -48,7 +48,7 @@ namespace Windows.UI.Xaml.Media
 			"EndPoint",
 			typeof(Point),
 			typeof(LinearGradientBrush),
-			new PropertyMetadata(default(Point))
+			new PropertyMetadata(new Point(1,1))
 		);
 
 	}

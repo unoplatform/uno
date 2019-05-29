@@ -18,7 +18,7 @@ using Windows.UI.Xaml.Navigation;
 
 namespace UITests.Shared.Windows_UI_Xaml_Controls.BorderTests
 {
-	[SampleControlInfo("Border", "Corner_Overlap")]
+	[SampleControlInfo("Border", "Border_Corner_Overlap")]
 	public sealed partial class Border_CornerOverlap : UserControl
 	{
 		public Border_CornerOverlap()

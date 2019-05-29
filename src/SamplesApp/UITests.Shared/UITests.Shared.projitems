@@ -1975,7 +1975,9 @@
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\BorderTests\BorderTopwithmargins.xaml.cs">
       <DependentUpon>BorderTopwithmargins.xaml</DependentUpon>
     </Compile>
-    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\BorderTests\Border_CornerOverlap.xaml.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\BorderTests\Border_CornerOverlap.xaml.cs">
+      <DependentUpon>Border_CornerOverlap.xaml</DependentUpon>
+    </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\BorderTests\Border_CornerRadius.xaml.cs">
       <DependentUpon>Border_CornerRadius.xaml</DependentUpon>
     </Compile>
