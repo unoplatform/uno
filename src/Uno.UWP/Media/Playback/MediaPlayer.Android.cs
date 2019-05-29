@@ -285,7 +285,7 @@ namespace Windows.Media.Playback
 			PlaybackSession.PlaybackState = MediaPlaybackState.None;
 
 			// Play next item in playlist, if any
-			if (_playlistIndex < _playlistItems.Count - 1)
+			if (_playlistItems != null && _playlistIndex < _playlistItems.Count - 1)
 			{
 				_player.Reset();
 				SetVideoSource(_playlistItems[++_playlistIndex]);
