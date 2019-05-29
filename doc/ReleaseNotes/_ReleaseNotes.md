@@ -118,6 +118,7 @@
 * [WASM] Using x:Load was causing _Collection was modified_ exception.
 * Fix support for localized attached properties.
 * Fix a potential crash during code generated from XAML, content were not properly escaped.
+* #977 Fix exception when setting MediaPlayerElement.Stretch in XAML.
 
 ## Release 1.44.0
 
