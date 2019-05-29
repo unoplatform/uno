@@ -86,6 +86,9 @@
 	  <None Update="FieldModifiers.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </None>
+	  <None Update="Localization_Implicit.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </None>
 	</ItemGroup>
 
 		

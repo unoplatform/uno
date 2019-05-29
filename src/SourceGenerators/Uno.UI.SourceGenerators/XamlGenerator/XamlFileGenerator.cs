@@ -71,6 +71,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		private readonly INamedTypeSymbol _elementStubSymbol;
 		private readonly INamedTypeSymbol _contentPresenterSymbol;
 		private readonly INamedTypeSymbol _stringSymbol;
+		private readonly INamedTypeSymbol _objectSymbol;
 		private readonly INamedTypeSymbol _iFrameworkElementSymbol;
 
 		private readonly INamedTypeSymbol _iCollectionSymbol;
@@ -125,6 +126,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 			_relativePath = PathHelper.GetRelativePath(_targetPath, _fileDefinition.FilePath);
 			_stringSymbol = GetType("System.String");
+			_objectSymbol = GetType("System.Object");
 			_elementStubSymbol = GetType(XamlConstants.Types.ElementStub);
 			_contentPresenterSymbol = GetType(XamlConstants.Types.ContentPresenter);
 			_iFrameworkElementSymbol = GetType(XamlConstants.Types.IFrameworkElement);
@@ -374,7 +376,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 			writer.AppendLineInvariant($"global::Windows.ApplicationModel.Resources.ResourceLoader.AddLookupAssembly(GetType().Assembly);");
 
-			foreach(var reference in _medataHelper.Compilation.ExternalReferences)
+			foreach (var reference in _medataHelper.Compilation.ExternalReferences)
 			{
 				if (!File.Exists(reference.Display))
 				{
@@ -383,7 +385,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 				var asm = Mono.Cecil.AssemblyDefinition.ReadAssembly(reference.Display);
 
-				if(asm.MainModule.HasResources && asm.MainModule.Resources.Any(r => r.Name.EndsWith("upri")))
+				if (asm.MainModule.HasResources && asm.MainModule.Resources.Any(r => r.Name.EndsWith("upri")))
 				{
 					writer.AppendLineInvariant($"global::Windows.ApplicationModel.Resources.ResourceLoader.AddLookupAssembly(global::System.Reflection.Assembly.Load(\"{asm.FullName}\"));");
 				}
@@ -1185,6 +1187,11 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			}
 		}
 
+		private void GenerateError(IIndentedStringBuilder writer, string message)
+		{
+			GenerateError(writer, message.Replace("{", "{{").Replace("}", "}}"), new object[0]);
+		}
+
 		private void GenerateError(IIndentedStringBuilder writer, string message, params object[] options)
 		{
 			if (ShouldWriteErrorOnInvalidXaml)
@@ -1294,7 +1301,13 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					{
 						if (IsTextBlock(topLevelControl.Type))
 						{
-							if (implicitContentChild.Objects.Count != 0)
+							var objectUid = GetObjectUid(topLevelControl);
+							var isLocalized = objectUid != null &&
+								BuildLocalizedResourceValue(null, "Text", objectUid) != null;
+
+							if (implicitContentChild.Objects.Count != 0 &&
+								// A localized value is available. Ignore this implicit content as localized resources take precedence over XAML.
+								!isLocalized)
 							{
 								using (writer.BlockInvariant("{0}Inlines = ", setterPrefix))
 								{
@@ -1515,7 +1528,14 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 									}
 									else
 									{
-										if (implicitContentChild.Objects.Any())
+										var objectUid = GetObjectUid(topLevelControl);
+										var isLocalized = objectUid != null &&
+											IsLocalizablePropertyType(contentProperty.Type as INamedTypeSymbol) &&
+											BuildLocalizedResourceValue(null, contentProperty.Name, objectUid) != null;
+
+										if (implicitContentChild.Objects.Any() &&
+											// A localized value is available. Ignore this implicit content as localized resources take precedence over XAML.
+											!isLocalized)
 										{
 											writer.AppendLineInvariant(setterPrefix + contentProperty.Name + " = ");
 
@@ -1941,17 +1961,17 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 							{
 								writer.AppendLineInvariant("// Key {0}", member.Value, member.Value);
 							}
-                            else if (member.Member.Name == "DeferLoadStrategy"
-                                && member.Member.PreferredXamlNamespace == XamlConstants.XamlXmlNamespace)
-                            {
-                                writer.AppendLineInvariant("// DeferLoadStrategy {0}", member.Value);
-                            }
-                            else if (member.Member.Name == "Load"
-                                && member.Member.PreferredXamlNamespace == XamlConstants.XamlXmlNamespace)
-                            {
-                                writer.AppendLineInvariant("// Load {0}", member.Value);
-                            }
-                            else if (member.Member.Name == "Uid")
+							else if (member.Member.Name == "DeferLoadStrategy"
+								&& member.Member.PreferredXamlNamespace == XamlConstants.XamlXmlNamespace)
+							{
+								writer.AppendLineInvariant("// DeferLoadStrategy {0}", member.Value);
+							}
+							else if (member.Member.Name == "Load"
+								&& member.Member.PreferredXamlNamespace == XamlConstants.XamlXmlNamespace)
+							{
+								writer.AppendLineInvariant("// Load {0}", member.Value);
+							}
+							else if (member.Member.Name == "Uid")
 							{
 								uidMember = member;
 							}
@@ -2102,6 +2122,28 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						}
 
 						BuildUiAutomationId(writer, closureName, uiAutomationId, objectDefinition);
+					}
+				}
+			}
+		}
+
+		/// <summary>
+		/// Build localized properties which have not been set in the xaml.
+		/// </summary>
+		private void BuildLocalizedProperties(IIndentedStringBuilder writer, XamlObjectDefinition objectDefinition)
+		{
+			var objectUid = GetObjectUid(objectDefinition);
+
+			if (objectUid != null)
+			{
+				var candidateProperties = FindLocalizableProperties(objectDefinition.Type)
+					.Except(objectDefinition.Members.Select(m => m.Member.Name));
+				foreach (var prop in candidateProperties)
+				{
+					var localizedValue = BuildLocalizedResourceValue(null, prop, objectUid);
+					if (localizedValue != null)
+					{
+						writer.AppendLineInvariant("{0} = {1},", prop, localizedValue);
 					}
 				}
 			}
@@ -2400,26 +2442,11 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		{
 			if (IsLocalizedString(propertyType, objectUid))
 			{
-				var uidParts = objectUid.Split(new[] { '/' }, StringSplitOptions.RemoveEmptyEntries);
-				var uidName = uidParts.Length == 2 ? uidParts[1] : uidParts[0];
-				var resourceFileName = uidParts.Length == 2 ? uidParts[0] : null;
+				var resourceValue = BuildLocalizedResourceValue(owner, memberName, objectUid);
 
-				//windows 10 localization concat the xUid Value with the member value (Text, Content, Header etc...)
-				var fullKey = uidName + "/" + memberName;
-
-				if (owner != null && IsAttachedProperty(owner))
+				if (resourceValue != null)
 				{
-					var declaringType = GetType(owner.Member.DeclaringType);
-					var ns = declaringType.ContainingNamespace.GetFullName();
-					var type = declaringType.Name;
-					fullKey = $"{uidName}/[using:{ns}]{type}.{memberName}";
-				}
-
-				if (_resourceKeys.Any(k => k == fullKey))
-				{
-					var resourceNameString = resourceFileName == null ? "" : $"\"{resourceFileName}\"";
-
-					return $"global::Windows.ApplicationModel.Resources.ResourceLoader.GetForCurrentView({resourceNameString}).GetString(\"{fullKey}\")";
+					return resourceValue;
 				}
 			}
 
@@ -2577,6 +2604,34 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			}
 
 			throw new Exception("Unable to convert {0} for {1} with type {2}".InvariantCultureFormat(memberValue, memberName, propertyType));
+		}
+		
+		private string BuildLocalizedResourceValue(XamlMemberDefinition owner, string memberName, string objectUid)
+		{
+			var uidParts = objectUid.Split(new[] { '/' }, StringSplitOptions.RemoveEmptyEntries);
+			var uidName = uidParts.Length == 2 ? uidParts[1] : uidParts[0];
+			var resourceFileName = uidParts.Length == 2 ? uidParts[0] : null;
+
+			//windows 10 localization concat the xUid Value with the member value (Text, Content, Header etc...)
+			var fullKey = uidName + "/" + memberName;
+
+			if (owner != null && IsAttachedProperty(owner))
+			{
+				var declaringType = GetType(owner.Member.DeclaringType);
+				var nsRaw = declaringType.ContainingNamespace.GetFullName();
+				var ns = nsRaw.Replace(".", "/");
+				var type = declaringType.Name;
+				fullKey = $"{uidName}/[using:{ns}]{type}/{memberName}";
+			}
+
+			if (_resourceKeys.Any(k => k == fullKey))
+			{
+				var resourceNameString = resourceFileName == null ? "" : $"\"{resourceFileName}\"";
+
+				return $"global::Windows.ApplicationModel.Resources.ResourceLoader.GetForCurrentView({resourceNameString}).GetString(\"{fullKey}\")";
+			}
+
+			return null;
 		}
 
 		private string ParseCacheMode(string memberValue)
@@ -2815,7 +2870,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				var validateString = _isDebug ? $" ?? throw new InvalidOperationException(\"The resource {resourceName} cannot be found\")" : "";
 				var valueString = $"(global::Windows.UI.Xaml.Application.Current.Resources[\"{resourceName}\"]{validateString})";
 
-				if(targetType != null)
+				if (targetType != null)
 				{
 					// We do not know the type of the source, and it must be converted first
 					return $"global::Windows.UI.Xaml.Markup.XamlBindingHelper.ConvertValue(typeof{GetCastString(targetType, null)}, {valueString})";
@@ -3028,9 +3083,13 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 		private bool IsLocalizedString(INamedTypeSymbol propertyType, string objectUid)
 		{
-			return objectUid.HasValue()
-				&& (propertyType.ToDisplayString() == "string"
-				|| propertyType.ToDisplayString() == "object");
+			return objectUid.HasValue() && IsLocalizablePropertyType(propertyType);
+		}
+
+		private bool IsLocalizablePropertyType(INamedTypeSymbol propertyType)
+		{
+			return Equals(propertyType, _stringSymbol)
+				|| Equals(propertyType, _objectSymbol);
 		}
 
 		private string GetObjectUid(XamlObjectDefinition objectDefinition)
@@ -3242,7 +3301,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					// performed at runtime at a higher cost.
 					propertyName = RewriteAttachedPropertyPath(propertyName);
 
-					writer.AppendLineInvariant($"new global::Windows.UI.Xaml.Setter(new global::Windows.UI.Xaml.TargetPropertyPath(this.{elementName}, \"{propertyName}\"), {value.Replace("{", "{{").Replace("}", "}}")})");
+					writer.AppendLineInvariant($"new global::Windows.UI.Xaml.Setter(new global::Windows.UI.Xaml.TargetPropertyPath(this._{elementName}Subject, \"{propertyName}\"), {value.Replace("{", "{{").Replace("}", "}}")})");
 				}
 			}
 			else
@@ -3263,6 +3322,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 							RegisterResources(xamlObjectDefinition);
 							BuildLiteralProperties(writer, xamlObjectDefinition);
 							BuildProperties(writer, xamlObjectDefinition);
+							BuildLocalizedProperties(writer, xamlObjectDefinition);
 						}
 
 						BuildExtendedProperties(writer, xamlObjectDefinition);
@@ -3402,10 +3462,10 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 		private IDisposable TryGenerateDeferedLoadStrategy(IIndentedStringBuilder writer, INamedTypeSymbol targetType, XamlObjectDefinition definition)
 		{
-            var strategy = FindMember(definition, "DeferLoadStrategy");
-            var loadElement = FindMember(definition, "Load");
+			var strategy = FindMember(definition, "DeferLoadStrategy");
+			var loadElement = FindMember(definition, "Load");
 
-            if (strategy?.Value?.ToString().ToLowerInvariant() == "lazy"
+			if (strategy?.Value?.ToString().ToLowerInvariant() == "lazy"
 				|| loadElement?.Value?.ToString().ToLowerInvariant() == "false")
 			{
 				var visibilityMember = FindMember(definition, "Visibility");

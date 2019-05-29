@@ -2,6 +2,7 @@
 
 ## Next version
 * `LinearGradientBrush.EndPoint` now defaults to (1,1) to match UWP
+* Add support for `Windows.System.Display.DisplayRequest` API on iOS and Android
 * Add support for the following `Windows.System.Power.PowerManager` APIs on iOS and Android:
     - BatteryStatus
     - EnergySaverStatus
@@ -13,6 +14,8 @@
     - BatteryStatusChanged
 
 ### Features
+* Updated `CheckBox` glyph to match UWP style on all platforms
+* Add support for the following `DisplayInformation` properties on iOS and Android:
 * Add support for `CurrentInputMethodLanguageTag` and `TrySetInputMethodLanguageTag` on Android, iOS and WASM
 * Add support for `ChatMessageManager.ShowComposeSmsMessageAsync` (and `ChatMessage` `Body` and `Recipients` properties) on iOS and Android
 * Add support for the following `DisplayInformation` properties on iOS and Android:
@@ -56,13 +59,19 @@
 * Add support for `x:Load`
 * [Wasm] Restore support for `x:Load` and `x:DeferLoadStrategy`
 * [Wasm] Scrolling bar visibility modes are now supported on most browsers
+* Fix invalid cast exception when using `x:Load` or `x:DeferLoadStrategy`
 * Add `Windows.Globalization.Calendar`
 * [Wasm] Support of overlay mode of the pane
 * Using _State Triggers_ in `VisualStateManager` now follows correct precedence as documented by Microsoft
+* Add support for `FlyoutBase.AttachedFlyout` and `FlyoutBase.ShowAttachedFlyout()`
+* `x:Bind` now supports binding to fields
+* `Grid` positions (`Row`, `RowSpan`, `Column` & `ColumnSpan`) are now behaving like UWP when the result overflows grid rows/columns definition
+* [Wasm] Improve TextBlock measure performance
 
 ### Breaking Changes
 * The `WebAssemblyRuntime.InvokeJSUnmarshalled` method with three parameters has been removed.
 * `NavigationBarHelper` has been removed.
+* Localized Text, Content etc is now applied even if the Text (etc) property isn't set in Xaml. Nested implicit content (eg `<Button><Border>...`) will be overridden by localized values if available.
 
 ### Bug fixes
 * DatePicker FlyoutPlacement now set to Full by default
@@ -102,9 +111,14 @@
 * 152504 [Android] Pointer captures weren't informing gestures of capture, fixes Slider capture issue
 * 148896 [iOS] TextBlock CarriageReturns would continue past maxlines property
 * 153594 [Android] EdgeEffect not showing up on listView that contain Headers and Footers
-* #881 [iOS] Support explicitly-defined ListViewItems in ListView.
+* #881 [iOS] [Android] Support explicitly-defined ListViewItems in ListView.
 * #902 [Android] Resource generation now correctly escapes names starting with numbers and names containing a '-' character
 * 154390 Storyboard `Completed` callback were not properly called when there's not children.
+* [iOS] Fix bug where Popup can be hidden if created during initial app launch.
+* #921 Ensure localization works even if the property isn't defined in XAML
+* [WASM] Using x:Load was causing _Collection was modified_ exception.
+* Fix support for localized attached properties.
+* Fix a potential crash during code generated from XAML, content were not properly escaped.
 
 ## Release 1.44.0
 

@@ -501,6 +501,15 @@ namespace Windows.UI.Xaml.Controls
 				return;
 			}
 
+			var isGenerated = (viewRecord.View as ContentControl)?.IsGeneratedContainer ?? false;
+			if (!isGenerated)
+			{
+				// If it's not a generated container then it must be an item that returned true for IsItemItsOwnContainerOverride (eg an
+				// explicitly-defined ListViewItem), and shouldn't be recycled for a different item.
+				Layout.RemoveView(viewRecord.View);
+				return;
+			}
+
 			NotifyViewRecycled(viewRecord.ViewHolder);
 
 			// Send to intermediate cache
