@@ -5,12 +5,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using AudioToolbox;
+using UIKit;
 
 namespace Windows.Phone.Devices.Notification
 {
 	public partial class VibrationDevice
 	{
-		private const int PeekSoundId = 1519;
+		private const int PopSoundId = 1520;
 		private static VibrationDevice _instance = null;
 
 		private VibrationDevice()
@@ -21,15 +22,16 @@ namespace Windows.Phone.Devices.Notification
 			_instance ?? (_instance = new VibrationDevice());
 
 		/// <summary>
-		/// iOS vibration support is quite limited, so duration is not taken into account
+		/// iOS vibration support is quite limited,
+		/// we can produce only very short vibration and one second vibration
 		/// </summary>
 		/// <param name="duration"></param>
-		public void Vibrate(TimeSpan duration)
+		public async void Vibrate(TimeSpan duration)
 		{
-			if (duration.TotalMilliseconds < 500)
+			if (duration.TotalMilliseconds < 200)
 			{
-				var peek = new SystemSound(PeekSoundId);
-				peek.PlaySystemSound();
+				var pop = new SystemSound(PopSoundId);
+				pop.PlaySystemSound();
 			}
 			else
 			{
