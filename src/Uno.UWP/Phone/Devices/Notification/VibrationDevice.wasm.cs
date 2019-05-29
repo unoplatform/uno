@@ -7,24 +7,36 @@ namespace Windows.Phone.Devices.Notification
 {
 	public partial class VibrationDevice
 	{
+		private const string JsType = "Windows.Phone.Devices.Notification.VibrationDevice";
 		private static VibrationDevice _instance = null;
 
 		private VibrationDevice()
 		{
 		}
 
-		public static VibrationDevice GetDefault() =>
-			_instance ?? (_instance = new VibrationDevice());
+		public static VibrationDevice GetDefault()
+		{
+			if (_instance == null)
+			{
+				var command = $"{JsType}.initialize()";
+				var initialized = Uno.Foundation.WebAssemblyRuntime.InvokeJS(command);
+				if (initialized.Equals("true", StringComparison.InvariantCultureIgnoreCase))
+				{
+					 _instance = new VibrationDevice();
+				}
+			}
+			return _instance;
+		}
 
 		public void Vibrate(TimeSpan duration) =>
 			WasmVibrate(duration);
-		
+
 		public void Cancel() =>
 			WasmVibrate(TimeSpan.Zero);
 
 		private void WasmVibrate(TimeSpan duration)
 		{
-			var command = $"Windows.Phone.Devices.Notification.VibrationDevice.vibrate(\"{(long)duration.TotalMilliseconds}\");";
+			var command = $"{JsType}.vibrate(\"{(long)duration.TotalMilliseconds}\");";
 			Uno.Foundation.WebAssemblyRuntime.InvokeJS(command);
 		}
 	}
