@@ -12,24 +12,29 @@ namespace Windows.Phone.Devices.Notification
 	public partial class VibrationDevice
 	{
 		private const string Permission = "android.permission.VIBRATE";
-
+		
 		private readonly Vibrator _vibrator;
+
+		private static VibrationDevice _instance;
 
 		private VibrationDevice(Vibrator vibrator) =>
 			_vibrator = vibrator;
 
 		public static VibrationDevice GetDefault()
 		{
-			if (ContextCompat.CheckSelfPermission(Application.Context, Permission) == Android.Content.PM.Permission.Denied)
+			if (_instance == null)
 			{
-				throw new InvalidOperationException($"You need to declare {Permission} in AndroidManifest.xml");
+				if (ContextCompat.CheckSelfPermission(Application.Context, Permission) == Android.Content.PM.Permission.Denied)
+				{
+					throw new InvalidOperationException($"You need to declare {Permission} in AndroidManifest.xml");
+				}
+				var vibrator = Application.Context.GetSystemService(Context.VibratorService) as Vibrator;
+				if (vibrator != null && vibrator.HasVibrator)
+				{
+					_instance = new VibrationDevice(vibrator);
+				}				
 			}
-			var vibrator = Application.Context.GetSystemService(Context.VibratorService) as Vibrator;
-			if (vibrator != null && vibrator.HasVibrator)
-			{
-				return new VibrationDevice(vibrator);
-			}
-			return null;
+			return _instance;
 		}
 
 		public void Vibrate(TimeSpan duration)

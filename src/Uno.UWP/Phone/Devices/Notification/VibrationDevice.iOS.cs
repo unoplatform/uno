@@ -10,13 +10,15 @@ namespace Windows.Phone.Devices.Notification
 {
 	public partial class VibrationDevice
 	{
+		private static VibrationDevice _instance = null;
+
 		private VibrationDevice()
 		{
 		}
 
 		public static VibrationDevice GetDefault()
 		{
-			return new VibrationDevice();	
+			return _instance ?? (_instance = new VibrationDevice());
 		}
 
 		/// <summary>
@@ -25,8 +27,7 @@ namespace Windows.Phone.Devices.Notification
 		/// <param name="duration"></param>
 		public void Vibrate(TimeSpan duration)
 		{
-			var pop = new SystemSound(1520);
-			pop.PlaySystemSound();
+			SystemSound.Vibrate.PlaySystemSound();
 		}		
 	}
 }
