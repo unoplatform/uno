@@ -290,7 +290,7 @@
 		/**
 			* Set an attribute for an element.
 			*/
-		public setAttribute(elementId: number, attributes: { [name: string]: string }): string {
+		public setAttributes(elementId: number, attributes: { [name: string]: string }): string {
 			const htmlElement = this.getView(elementId);
 
 			for (const name in attributes) {
@@ -305,14 +305,26 @@
 		/**
 			* Set an attribute for an element.
 			*/
-		public setAttributeNative(pParams: number): boolean {
+		public setAttributesNative(pParams: number): boolean {
 
-			const params = WindowManagerSetAttributeParams.unmarshal(pParams);
+			const params = WindowManagerSetAttributesParams.unmarshal(pParams);
 			const htmlElement = this.getView(params.HtmlId);
 
 			for (let i = 0; i < params.Pairs_Length; i += 2) {
 				htmlElement.setAttribute(params.Pairs[i], params.Pairs[i + 1]);
 			}
+
+			return true;
+		}
+
+		/**
+			* Set an attribute for an element.
+			*/
+		public setAttributeNative(pParams: number): boolean {
+
+			const params = WindowManagerSetAttributeParams.unmarshal(pParams);
+			const htmlElement = this.getView(params.HtmlId);
+			htmlElement.setAttribute(params.Name, params.Value);
 
 			return true;
 		}

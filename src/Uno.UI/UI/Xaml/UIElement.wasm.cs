@@ -203,7 +203,7 @@ namespace Windows.UI.Xaml
 
 		protected internal void SetAttribute(string name, string value)
 		{
-			Uno.UI.Xaml.WindowManagerInterop.SetAttribute(HtmlId, new[] { (name, value) });
+			Uno.UI.Xaml.WindowManagerInterop.SetAttribute(HtmlId, name, value);
 		}
 
 		protected internal void SetAttribute(params (string name, string value)[] attributes)
@@ -213,7 +213,7 @@ namespace Windows.UI.Xaml
 				return; // nothing to do
 			}
 
-			Uno.UI.Xaml.WindowManagerInterop.SetAttribute(HtmlId, attributes);
+			Uno.UI.Xaml.WindowManagerInterop.SetAttributes(HtmlId, attributes);
 		}
 
 		protected internal string GetAttribute(string name)
