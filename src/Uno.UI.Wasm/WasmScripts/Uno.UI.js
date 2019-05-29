@@ -2013,6 +2013,13 @@ var Windows;
             var Notification;
             (function (Notification) {
                 class VibrationDevice {
+                    static initialize() {
+                        navigator.vibrate = navigator.vibrate || navigator.webkitVibrate || navigator.mozVibrate || navigator.msVibrate;
+                        if (navigator.vibrate) {
+                            return true;
+                        }
+                        return false;
+                    }
                     static vibrate(duration) {
                         return window.navigator.vibrate(duration);
                     }
