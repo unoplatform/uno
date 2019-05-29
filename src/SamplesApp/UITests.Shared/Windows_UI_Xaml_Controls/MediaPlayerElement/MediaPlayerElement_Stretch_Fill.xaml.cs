@@ -16,12 +16,12 @@ using Windows.UI.Xaml.Navigation;
 
 // The User Control item template is documented at https://go.microsoft.com/fwlink/?LinkId=234236
 
-namespace UITests.Shared.Windows_UI_Xaml_Controls.BorderTests
+namespace UITests.Shared.Windows_UI_Xaml_Controls.MediaPlayerElement
 {
-	[SampleControlInfo("Border", "Border_Corner_Overlap")]
-	public sealed partial class Border_CornerOverlap : UserControl
+	[SampleControlInfo("MediaPlayerElement", "MediaPlayerElement_Stretch_Fill", description: "Big Buck Bunny sample, Stretch=Fill")]
+	public sealed partial class MediaPlayerElement_Stretch_Fill : UserControl
 	{
-		public Border_CornerOverlap()
+		public MediaPlayerElement_Stretch_Fill()
 		{
 			this.InitializeComponent();
 		}

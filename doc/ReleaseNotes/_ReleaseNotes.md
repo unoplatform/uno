@@ -2,6 +2,7 @@
 
 ## Next version
 * Add support for `Windows.Phone.Devices.Notification.VibrationDevice` API on iOS, Android and WASM
+* `LinearGradientBrush.EndPoint` now defaults to (1,1) to match UWP
 * Add support for `Windows.System.Display.DisplayRequest` API on iOS and Android
 * Add support for the following `Windows.System.Power.PowerManager` APIs on iOS and Android:
     - BatteryStatus
@@ -67,6 +68,7 @@
 * `x:Bind` now supports binding to fields
 * `Grid` positions (`Row`, `RowSpan`, `Column` & `ColumnSpan`) are now behaving like UWP when the result overflows grid rows/columns definition
 * [Wasm] Improve TextBlock measure performance
+* [Wasm] Improve Html SetAttribute performance
 
 ### Breaking Changes
 * The `WebAssemblyRuntime.InvokeJSUnmarshalled` method with three parameters has been removed.
@@ -119,6 +121,8 @@
 * [WASM] Using x:Load was causing _Collection was modified_ exception.
 * Fix support for localized attached properties.
 * Fix a potential crash during code generated from XAML, content were not properly escaped.
+* #977 Fix exception when setting MediaPlayerElement.Stretch in XAML.
+* [Android] Fix MediaPlayerElement.Stretch not applied
 
 ## Release 1.44.0
 

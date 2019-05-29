@@ -55,7 +55,7 @@
 	
 	<Import Project="..\Uno.CrossTargetting.props" />
 
-	<Target Name="_CompileUnoJavaCreateOutputs">
+	<Target Name="_CompileUnoJavaCreateOutputs" BeforeTargets="Build">
 		<!-- 
 		Create the EmbeddedJar itemgroup here so the Xamarin tooling picks it up, 
 		but in the obj folder so we dont have rebuild and git ignore issues.

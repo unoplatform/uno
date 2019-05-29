@@ -326,6 +326,7 @@ namespace Windows.UI.Xaml.Controls
 			if (MediaPlayer == null)
 			{
 				MediaPlayer = new Windows.Media.Playback.MediaPlayer();
+				_mediaPlayerPresenter?.ApplyStretch();
 			}
 
 			if (!IsLoaded && MediaPlayer.PlaybackSession.PlaybackState == MediaPlaybackState.None)
