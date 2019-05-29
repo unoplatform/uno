@@ -1,10 +1,7 @@
-﻿#if __IOS__
+﻿#if __WASM__
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
-using AudioToolbox;
 
 namespace Windows.Phone.Devices.Notification
 {
@@ -19,12 +16,17 @@ namespace Windows.Phone.Devices.Notification
 		public static VibrationDevice GetDefault() =>
 			_instance ?? (_instance = new VibrationDevice());
 
-		/// <summary>
-		/// iOS vibration support is quite limited, so duration is not taken into account
-		/// </summary>
-		/// <param name="duration"></param>
 		public void Vibrate(TimeSpan duration) =>
-			SystemSound.Vibrate.PlaySystemSound();
+			WasmVibrate(duration);
+		
+		public void Cancel() =>
+			WasmVibrate(TimeSpan.Zero);
+
+		private void WasmVibrate(TimeSpan duration)
+		{
+			var command = $"Windows.Phone.Devices.Notification.VibrationDevice.vibrate(\"{(long)duration.TotalMilliseconds}\");";
+			Uno.Foundation.WebAssemblyRuntime.InvokeJS(command);
+		}
 	}
 }
 #endif
