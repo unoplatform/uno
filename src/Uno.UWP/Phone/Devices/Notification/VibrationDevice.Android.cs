@@ -26,7 +26,7 @@ namespace Windows.Phone.Devices.Notification
 			{
 				if (ContextCompat.CheckSelfPermission(Application.Context, Permission) == Android.Content.PM.Permission.Denied)
 				{
-					throw new InvalidOperationException($"You need to declare {Permission} in AndroidManifest.xml");
+					throw new InvalidOperationException($"{Permission} needs to be declared in AndroidManifest.xml");
 				}
 				var vibrator = Application.Context.GetSystemService(Context.VibratorService) as Vibrator;
 				if (vibrator != null && vibrator.HasVibrator)
