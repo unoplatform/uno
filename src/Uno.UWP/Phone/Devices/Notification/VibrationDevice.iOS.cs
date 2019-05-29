@@ -10,6 +10,7 @@ namespace Windows.Phone.Devices.Notification
 {
 	public partial class VibrationDevice
 	{
+		private const int PeekSoundId = 1519;
 		private static VibrationDevice _instance = null;
 
 		private VibrationDevice()
@@ -23,8 +24,18 @@ namespace Windows.Phone.Devices.Notification
 		/// iOS vibration support is quite limited, so duration is not taken into account
 		/// </summary>
 		/// <param name="duration"></param>
-		public void Vibrate(TimeSpan duration) =>
-			SystemSound.Vibrate.PlaySystemSound();
+		public void Vibrate(TimeSpan duration)
+		{
+			if (duration.TotalMilliseconds < 500)
+			{
+				var peek = new SystemSound(PeekSoundId);
+				peek.PlaySystemSound();
+			}
+			else
+			{
+				SystemSound.Vibrate.PlaySystemSound();
+			}
+		}
 	}
 }
 #endif
