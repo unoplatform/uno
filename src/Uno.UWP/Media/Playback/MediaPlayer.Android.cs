@@ -266,7 +266,7 @@ namespace Windows.Media.Playback
 
 			_isPlayerPrepared = true;
 		}
-		
+
 		public bool OnError(AndroidMediaPlayer mp, MediaError what, int extra)
 		{
 			if (PlaybackSession.PlaybackState != MediaPlaybackState.None)
@@ -285,7 +285,7 @@ namespace Windows.Media.Playback
 			PlaybackSession.PlaybackState = MediaPlaybackState.None;
 
 			// Play next item in playlist, if any
-			if (_playlistIndex < _playlistItems.Count - 1)
+			if (_playlistItems != null && _playlistIndex < _playlistItems.Count - 1)
 			{
 				_player.Reset();
 				SetVideoSource(_playlistItems[++_playlistIndex]);
@@ -361,6 +361,8 @@ namespace Windows.Media.Playback
 
 		internal void UpdateVideoStretch(VideoStretch stretch)
 		{
+			_currentStretch = stretch;
+
 			if (_player != null && RenderSurface is SurfaceView surface && !_isUpdatingStretch)
 			{
 				try
@@ -375,15 +377,13 @@ namespace Windows.Media.Playback
 
 					var videoWidth = _player.VideoWidth;
 					var videoHeight = _player.VideoHeight;
-					
+
 					if (videoWidth == 0 || videoHeight == 0)
 					{
 						return;
 					}
 
 					var ratio = (double)_player.VideoWidth / global::System.Math.Max(1, _player.VideoHeight);
-					
-					_currentStretch = stretch;
 
 					switch (stretch)
 					{
@@ -443,7 +443,7 @@ namespace Windows.Media.Playback
 			UniformToFill
 		}
 
-#region ISurfaceHolderCallback implementation
+		#region ISurfaceHolderCallback implementation
 
 		public void SurfaceChanged(ISurfaceHolder holder, [GeneratedEnum] Format format, int width, int height)
 		{
@@ -465,40 +465,40 @@ namespace Windows.Media.Playback
 			_hasValidHolder = false;
 		}
 
-#endregion
+		#endregion
 
-#region AndroidMediaPlayer.IOnSeekCompleteListener implementation
+		#region AndroidMediaPlayer.IOnSeekCompleteListener implementation
 
 		public void OnSeekComplete(AndroidMediaPlayer mp)
 		{
 			SeekCompleted?.Invoke(this, null);
 		}
 
-#endregion
+		#endregion
 
-#region AndroidMediaPlayer.IOnBufferingUpdateListener implementation
+		#region AndroidMediaPlayer.IOnBufferingUpdateListener implementation
 
 		public void OnBufferingUpdate(AndroidMediaPlayer mp, int percent)
 		{
 			PlaybackSession.BufferingProgress = percent;
 		}
 
-#endregion
+		#endregion
 
-#region View.IOnLayoutChangeListener
+		#region View.IOnLayoutChangeListener
 
 		public void OnLayoutChange(View v, int left, int top, int right, int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom)
 		{
 			UpdateVideoStretch(_currentStretch);
 		}
 
-#endregion
+		#endregion
 
-#region AndroidMediaPlayer.IOnVideoSizeChangedListener
+		#region AndroidMediaPlayer.IOnVideoSizeChangedListener
 
 		public void OnVideoSizeChanged(AndroidMediaPlayer mp, int width, int height)
 		{
-			
+
 		}
 
 		#endregion

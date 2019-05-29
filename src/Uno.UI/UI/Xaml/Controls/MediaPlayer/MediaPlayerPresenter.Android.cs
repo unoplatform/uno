@@ -15,7 +15,17 @@ namespace Windows.UI.Xaml.Controls
 
 		private void OnStretchChanged(Stretch newValue, Stretch oldValue)
 		{
-			switch (newValue)
+			ApplyStretch();
+		}
+
+		internal void ApplyStretch()
+		{
+			if (MediaPlayer == null)
+			{
+				return;
+			}
+
+			switch (Stretch)
 			{
 				case Stretch.Uniform:
 					MediaPlayer.UpdateVideoStretch(Windows.Media.Playback.MediaPlayer.VideoStretch.Uniform);
@@ -34,7 +44,7 @@ namespace Windows.UI.Xaml.Controls
 					break;
 
 				default:
-					throw new NotSupportedException($"Strech mode {newValue} is not supported");
+					throw new NotSupportedException($"Stretch mode {Stretch} is not supported");
 			}
 		}
 	}
