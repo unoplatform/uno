@@ -2014,9 +2014,7 @@ var Windows;
             (function (Notification) {
                 class VibrationDevice {
                     static vibrate(duration) {
-                        console.info("vibraaaating");
-                        return true;
-                        //return window.navigator.vibrate(duration);
+                        return window.navigator.vibrate(duration);
                     }
                 }
                 Notification.VibrationDevice = VibrationDevice;
