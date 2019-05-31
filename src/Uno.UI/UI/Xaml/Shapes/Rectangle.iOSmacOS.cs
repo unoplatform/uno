@@ -7,22 +7,21 @@ using System.Linq;
 using Uno.Disposables;
 using Uno.UI.Extensions;
 using Uno.UI;
+using Foundation;
+using Windows.Foundation;
 
 #if XAMARIN_IOS_UNIFIED
-using Foundation;
 using UIKit;
 using CoreAnimation;
 using CoreGraphics;
-#elif XAMARIN_IOS
-using MonoTouch.Foundation;
-using MonoTouch.UIKit;
-using MonoTouch.CoreGraphics;
-using MonoTouch.CoreAnimation;
-using CGRect = System.Drawing.RectangleF;
-using nfloat = System.Single;
-using CGPoint = System.Drawing.PointF;
-using nint = System.Int32;
-using CGSize = System.Drawing.SizeF;
+using _Color = UIKit.UIColor;
+using _BezierPath = UIKit.UIBezierPath;
+#elif __MACOS__
+using AppKit;
+using CoreAnimation;
+using CoreGraphics;
+using _Color = AppKit.NSColor;
+using _BezierPath = AppKit.NSBezierPath;
 #endif
 
 namespace Windows.UI.Xaml.Shapes
@@ -38,8 +37,14 @@ namespace Windows.UI.Xaml.Shapes
 		{
 			//Set default stretch value
 			this.Stretch = Stretch.Fill;
+
+#if __IOS__
 			// Background color is black by default, if and only if overriding Draw(CGRect rect).
 			base.BackgroundColor = SolidColorBrushHelper.Transparent.Color;
+#else
+			base.WantsLayer = true;
+			base.Layer.BackgroundColor = SolidColorBrushHelper.Transparent.Color;
+#endif
 
 			if (FeatureConfiguration.UIElement.UseLegacyClipping)
 			{
@@ -48,7 +53,7 @@ namespace Windows.UI.Xaml.Shapes
 
 			Layer.AddSublayer(_rectangleLayer);
 
-			_rectangleLayer.FillColor = UIColor.Clear.CGColor;
+			_rectangleLayer.FillColor = _Color.Clear.CGColor;
 		}
 
 		protected override void OnBackgroundChanged(DependencyPropertyChangedEventArgs e)
@@ -57,10 +62,8 @@ namespace Windows.UI.Xaml.Shapes
 			// because we're overriding draw.
 		}
 
-		public override void LayoutSubviews()
+		protected override Foundation.Size ArrangeOverride(Foundation.Size finalSize)
 		{
-			base.LayoutSubviews();
-
 			var area = Bounds;
 
 			switch (Stretch)
@@ -88,17 +91,23 @@ namespace Windows.UI.Xaml.Shapes
 
 			if (Math.Max(RadiusX, RadiusY) > 0)
 			{
-				_rectangleLayer.Path = UIBezierPath.FromRoundedRect(area, UIRectCorner.AllCorners, new CGSize(RadiusX, RadiusY)).CGPath;
+#if __IOS__
+				_rectangleLayer.Path = _BezierPath.FromRoundedRect(area, UIRectCorner.AllCorners, new CGSize(RadiusX, RadiusY)).CGPath;
+#else
+				_rectangleLayer.Path = _BezierPath.FromRoundedRect(area, (nfloat)RadiusX, (nfloat)RadiusY).ToCGPath();
+#endif
 			}
 			else
 			{
-				_rectangleLayer.Path = UIBezierPath.FromRect(area).CGPath;
+				_rectangleLayer.Path = _BezierPath.FromRect(area).ToCGPath();
 			}
 
 			if (_gradientLayer != null)
 			{
 				_gradientLayer.Frame = _rectangleLayer.Path.BoundingBox;
 			}
+
+			return base.ArrangeOverride(finalSize);
 		}
 
 		protected override void OnStrokeUpdated(Brush newValue)
@@ -110,7 +119,7 @@ namespace Windows.UI.Xaml.Shapes
 			_strokeSubscription.Disposable =
 				Brush.AssignAndObserveBrush(brush, c => _rectangleLayer.StrokeColor = c);
 
-			SetNeedsDisplay();
+			this.SetNeedsDisplay();
 		}
 
 		protected override void OnFillChanged(Brush newValue)
@@ -123,7 +132,7 @@ namespace Windows.UI.Xaml.Shapes
 				_gradientLayer = null;
 			}
 
-			_rectangleLayer.FillColor = UIColor.Clear.CGColor;
+			_rectangleLayer.FillColor = _Color.Clear.CGColor;
 
 			var scbFill = newValue as SolidColorBrush;
 			var lgbFill = newValue as LinearGradientBrush;
@@ -138,7 +147,7 @@ namespace Windows.UI.Xaml.Shapes
 				Layer.InsertSublayer(_gradientLayer, 0); // We want the _gradientLayer to be below the _rectangleLayer (which contains the stroke)
 			}
 
-			SetNeedsLayout();
+			InvalidateMeasure();
 		}
 
 		protected override void OnStrokeThicknessUpdated(double newValue)
@@ -153,7 +162,7 @@ namespace Windows.UI.Xaml.Shapes
 
 			_rectangleLayer.LineWidth = (float)newValue;
 
-			SetNeedsLayout();
+			InvalidateMeasure();
 		}
 
 		protected override void OnStrokeDashArrayUpdated(DoubleCollection newValue)
@@ -162,24 +171,24 @@ namespace Windows.UI.Xaml.Shapes
 
 			_rectangleLayer.LineDashPattern = newValue.Safe().Select(d => new NSNumber(d)).ToArray();
 
-			SetNeedsDisplay();
+			this.SetNeedsDisplay();
 		}
 
 		protected override void OnStretchUpdated(Stretch newValue)
 		{
 			base.OnStretchUpdated(newValue);
 
-			SetNeedsLayout();
+			InvalidateMeasure();
 		}
 
 		partial void OnRadiusXChangedPartial()
 		{
-			SetNeedsLayout();
+			InvalidateMeasure();
 		}
 
 		partial void OnRadiusYChangedPartial()
 		{
-			SetNeedsLayout();
+			InvalidateMeasure();
 		}
 	}
 }

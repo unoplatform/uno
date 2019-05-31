@@ -38,16 +38,6 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  global::Windows.UI.Xaml.Controls.Primitives.MenuFlyoutItemTemplateSettings TemplateSettings
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member MenuFlyoutItemTemplateSettings MenuFlyoutItem.TemplateSettings is not implemented in Uno.");
-			}
-		}
-		#endif
 		// Skipping already declared property CommandParameterProperty
 		// Skipping already declared property CommandProperty
 		// Skipping already declared property TextProperty
@@ -87,21 +77,6 @@ namespace Windows.UI.Xaml.Controls
 		// Forced skipping of method Windows.UI.Xaml.Controls.MenuFlyoutItem.TextProperty.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.MenuFlyoutItem.CommandProperty.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.MenuFlyoutItem.CommandParameterProperty.get
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  event global::Windows.UI.Xaml.RoutedEventHandler Click
-		{
-			[global::Uno.NotImplemented]
-			add
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.MenuFlyoutItem", "event RoutedEventHandler MenuFlyoutItem.Click");
-			}
-			[global::Uno.NotImplemented]
-			remove
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.MenuFlyoutItem", "event RoutedEventHandler MenuFlyoutItem.Click");
-			}
-		}
-		#endif
+
 	}
 }

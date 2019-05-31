@@ -28,7 +28,7 @@ namespace Windows.UI.Xaml.Controls
 				del: null,
 				cancelTitle: LocalizedCancelString,
 				destroy: null,
-				other: availableItems.Select(item => item.Text).ToArray()
+				other: availableItems.OfType<MenuFlyoutItem>().Select(item => item.Text).ToArray()
 			);
 #pragma warning restore CS0618 // Type or member is obsolete
 
@@ -36,7 +36,7 @@ namespace Windows.UI.Xaml.Controls
 
 			EventHandler<UIButtonEventArgs> handler =
 				(_, args) => {
-					var item = availableItems.ElementAtOrDefault((int)args.ButtonIndex);
+					var item = availableItems.OfType<MenuFlyoutItem>().ElementAtOrDefault((int)args.ButtonIndex);
 
 					if (item != null)
 					{

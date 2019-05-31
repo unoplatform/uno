@@ -589,5 +589,14 @@ namespace AppKit
 			}
 			return ShowDescendants(root, viewOfInterest: view);
 		}
+
+		public static void SetNeedsDisplay(this _View view)
+		{
+#if __IOS__
+			view.SetNeedsDisplay();
+#elif __MACOS__
+			view.NeedsDisplay = true;
+#endif
+		} 
 	}
 }

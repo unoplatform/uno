@@ -380,7 +380,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			{
 				if (!File.Exists(reference.Display))
 				{
-					throw new InvalidOperationException($"The reference {reference} could not be found in {reference.Display}");
+					throw new InvalidOperationException($"The reference {reference.Display} could not be found in {reference.Display}");
 				}
 
 				var asm = Mono.Cecil.AssemblyDefinition.ReadAssembly(reference.Display);

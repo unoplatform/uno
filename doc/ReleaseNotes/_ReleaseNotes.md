@@ -68,6 +68,9 @@
 * `Grid` positions (`Row`, `RowSpan`, `Column` & `ColumnSpan`) are now behaving like UWP when the result overflows grid rows/columns definition
 * [Wasm] Improve TextBlock measure performance
 * [Wasm] Improve Html SetAttribute performance
+* MenuBar
+    - Import of MenuBar code, not functional yet as MenuItemFlyout (Issue #801)
+    - Basic support for macOS native system menus
 
 ### Breaking Changes
 * The `WebAssemblyRuntime.InvokeJSUnmarshalled` method with three parameters has been removed.

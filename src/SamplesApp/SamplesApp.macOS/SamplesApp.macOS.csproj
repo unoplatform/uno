@@ -65,10 +65,12 @@
     <Reference Include="Xamarin.Mac" />
     <Reference Include="System.Numerics" />
     <Reference Include="System.Numerics.Vectors" />
+    <Reference Include="System.Memory" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="MSTest.TestFramework" Version="1.2.0" />
-    <PackageReference Include="Newtonsoft.Json">
+    <PackageReference Include="Uno.Core" Version="1.28.0-dev.86" />
+		<PackageReference Include="Newtonsoft.Json">
       <Version>12.0.1</Version>
     </PackageReference>
     <PackageReference Include="Uno.SourceGenerationTasks" />
@@ -83,10 +85,6 @@
     <ProjectReference Include="..\..\Uno.Foundation\Uno.Foundation.csproj">
       <Project>{528AE586-5DF3-4DAD-AA5C-F12F4D5E0605}</Project>
       <Name>Uno.Foundation</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Uno.UI.RuntimeTests\Uno.UI.RuntimeTests.csproj">
-      <Project>{028f3ee0-d51b-469a-a72c-c272585dcd40}</Project>
-      <Name>Uno.UI.RuntimeTests</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Uno.UI.Toolkit\Uno.UI.Toolkit.csproj">
       <Project>{2eaf39e3-2ac9-457a-a5b2-47d6548799b3}</Project>
@@ -130,4 +128,32 @@
     <Compile Include="AppDelegate.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Mac\Xamarin.Mac.CSharp.targets" />
+	
+		<Target Name="VS16Mac_RemoveSystemMemory"
+					BeforeTargets="ResolveAssemblyReferences">
+		<!--
+				VS4Mac seems to process System.Memory differently, and removes
+				the System.Memory local reference if the package is transitively referenced.
+				We remove the Reference added by the nuget targets so that ResolveAssemblyReferences
+				is properly adding the local System.Memory to the Reference item group.
+		-->
+		<ItemGroup>
+			<_ReferenceToRemove
+        Include="@(Reference)"
+        Condition="'%(Reference.Identity)'=='System.Memory'" />
+			<Reference Remove="@(_ReferenceToRemove)" />
+			<Reference Include="System.Memory"/>
+		</ItemGroup>
+	</Target>
+
+	<Target
+    Name="VS16_RemoveSystemMemory"
+    BeforeTargets="FindReferenceAssembliesForReferences">
+		<ItemGroup>
+			<_ReferencePathToRemove
+        Include="@(ReferencePath)"
+        Condition="'%(ReferencePath.NuGetPackageId)'=='System.Memory'" />
+			<ReferencePath Remove="@(_ReferencePathToRemove)" />
+		</ItemGroup>
+	</Target>
 </Project>

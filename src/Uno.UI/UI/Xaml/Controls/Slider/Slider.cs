@@ -328,10 +328,13 @@ namespace Windows.UI.Xaml.Controls
 		{
 			if (_sliderContainer != null && IsTrackerEnabled)
 			{
+				_sliderContainerSubscription.Disposable = null;
+
 				_sliderContainer.PointerPressed += OnSliderContainerPressed;
 				_sliderContainer.PointerMoved += OnSliderContainerMoved;
 				_sliderContainer.PointerReleased += OnSliderContainerReleased;
 				_sliderContainer.PointerCanceled += OnSliderContainerCanceled;
+
 				_sliderContainerSubscription.Disposable = Disposable.Create(() =>
 				{
 					_sliderContainer.PointerPressed -= OnSliderContainerPressed;
