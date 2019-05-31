@@ -8,7 +8,7 @@ namespace Uno.UI.Samples.Content.UITests.Slider
     {
 		double OverallPerformance = 0.0;
 
-        public DoubleSlider_EncoreStyle()
+        public Slider_EncoreStyle()
         {
 			this.OverallPerformance = 5.0;
 
