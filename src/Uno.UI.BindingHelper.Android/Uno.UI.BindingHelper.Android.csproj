@@ -55,7 +55,9 @@
 	
 	<Import Project="..\Uno.CrossTargetting.props" />
 
-	<Target Name="_CompileUnoJavaCreateOutputs" BeforeTargets="Build">
+	<Target Name="_CompileUnoJavaCreateOutputs"
+					BeforeTargets="Build"
+					AfterTargets="Restore">
 		<!-- 
 		Create the EmbeddedJar itemgroup here so the Xamarin tooling picks it up, 
 		but in the obj folder so we dont have rebuild and git ignore issues.
@@ -74,7 +76,22 @@
 		<Delete Files="@(_JavaFilesToDelete)" />
 	</Target>
 
-	<Target Name="_CompileUnoJava" Condition="'$(DesignTimeBuild)' != 'true'" BeforeTargets="ExportJarToXml;GenerateBindings;_GetLibraryImports;ExportJarToXml" Inputs="@(_JavaFile)" Outputs="@(EmbeddedJar)" DependsOnTargets="_CompileUnoJavaCreateOutputs;@(XamarinBuildRestoreResources);_FillMsBuildVersion">
+	<ItemGroup>
+		<_CompileUnoJavaBeforeTargets Include="ExportJarToXml"/>
+		<_CompileUnoJavaBeforeTargets Include="GenerateBindings"/>
+		<_CompileUnoJavaBeforeTargets Include="_GetLibraryImports"/>
+		<_CompileUnoJavaBeforeTargets Include="ExportJarToXml"/>
+
+		<_CompileUnoJavaAfterTargets Include="_ExtractLibraryProjectImports"/> <!-- This target generates the \lp\**\classes.jar -->
+	</ItemGroup>
+
+	<Target Name="_CompileUnoJava"
+					Condition="'$(DesignTimeBuild)' != 'true'"
+					BeforeTargets="@(_CompileUnoJavaBeforeTargets)"
+					AfterTargets="@(_CompileUnoJavaAfterTargets)"
+					Inputs="@(_JavaFile)"
+					Outputs="@(EmbeddedJar)"
+					DependsOnTargets="_CompileUnoJavaCreateOutputs;@(XamarinBuildRestoreResources);_FillMsBuildVersion">
 	
 		<ItemGroup>
 			<_AndroidJar Include="%ProgramFiles(x86)%\Reference Assemblies\Microsoft\Framework\MonoAndroid\$(TargetFrameworkVersion)\mono.android.jar" />
