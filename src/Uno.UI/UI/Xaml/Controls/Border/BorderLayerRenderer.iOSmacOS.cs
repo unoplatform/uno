@@ -2,7 +2,6 @@
 using CoreGraphics;
 using System;
 using System.Collections.Generic;
-using System.Drawing;
 using Uno.Disposables;
 using System.Text;
 using Uno;

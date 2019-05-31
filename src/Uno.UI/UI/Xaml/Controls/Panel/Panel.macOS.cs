@@ -1,5 +1,4 @@
 using System;
-using System.Drawing;
 using Windows.UI.Xaml;
 using Uno.Extensions;
 using Uno.Logging;
