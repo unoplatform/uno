@@ -94,12 +94,12 @@ namespace Windows.UI.Xaml.Shapes
 #if __IOS__
 				_rectangleLayer.Path = _BezierPath.FromRoundedRect(area, UIRectCorner.AllCorners, new CGSize(RadiusX, RadiusY)).CGPath;
 #else
-				_rectangleLayer.Path = Convert(_BezierPath.FromRoundedRect(area, (nfloat)RadiusX, (nfloat)RadiusY));
+				_rectangleLayer.Path = _BezierPath.FromRoundedRect(area, (nfloat)RadiusX, (nfloat)RadiusY).ToCGPath();
 #endif
 			}
 			else
 			{
-				_rectangleLayer.Path = Convert(_BezierPath.FromRect(area));;
+				_rectangleLayer.Path = _BezierPath.FromRect(area).ToCGPath();
 			}
 
 			if (_gradientLayer != null)
@@ -108,59 +108,6 @@ namespace Windows.UI.Xaml.Shapes
 			}
 
 			return base.ArrangeOverride(finalSize);
-		}
-
-		private CGPath Convert(_BezierPath nSBezierPath)
-		{
-#if __IOS__
-			return nSBezierPath.CGPath;
-#elif __MACOS__
-
-			// Then draw the path elements.
-			var numElements = nSBezierPath.ElementCount;
-
-			if (numElements > 0)
-			{
-				var path = new CGPath();
-				CGPoint[] points = new CGPoint[3];
-				bool didClosePath = true;
-
-				for (var i = 0; i < numElements; i++)
-				{ 
-					switch (nSBezierPath.ElementAt(i, out points))
-					{
-						case NSBezierPathElement.MoveTo:
-							path.MoveToPoint(points[0].X, points[0].Y);
-							break;
-
-						case NSBezierPathElement.LineTo:
-							path.AddLineToPoint(points[0].X, points[0].Y);
-							didClosePath = false;
-							break;
-
-						case NSBezierPathElement.CurveTo:
-							path.AddCurveToPoint(points[0].X, points[0].Y,
-												points[1].X, points[1].Y,
-												points[2].X, points[2].Y);
-							didClosePath = false;
-							break;
-
-						case NSBezierPathElement.ClosePath:
-							path.CloseSubpath();
-							didClosePath = true;
-							break;
-					}
-				}
-
-				// Be sure the path is closed or Quartz may not do valid hit detection.
-				if (!didClosePath)
-					path.CloseSubpath();
-
-				return path;
-			}
-
-			return new CGPath();
-#endif
 		}
 
 		protected override void OnStrokeUpdated(Brush newValue)

@@ -62,6 +62,7 @@ namespace Windows.UI.Xaml
 				this.Layer.Mask = null;
 				return;
 			}
+			this.WantsLayer = true;
 			this.Layer.Mask = new CAShapeLayer
 			{
 				Path = CGPath.FromRect(ToCGRect(rect))
