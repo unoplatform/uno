@@ -3831,7 +3831,7 @@
 
 	<!-- Default style for Windows.UI.Xaml.Controls.Slider -->
 	<xamarin:Style TargetType="Thumb"
-				   x:Key="SliderThumbStyle">
+				   x:Key="EncoreSliderThumbStyle">
 		<Setter Property="BorderThickness"
 				Value="0" />
 		<Setter Property="Background"
@@ -4093,6 +4093,130 @@
 									   Grid.Column="0"
 									   Grid.ColumnSpan="3"
 									   AutomationProperties.AccessibilityView="Raw" />
+							</Grid>
+						</Grid>
+					</Grid>
+				</ControlTemplate>
+			</Setter.Value>
+		</Setter>
+	</xamarin:Style>
+
+	<xamarin:Style x:Key="SliderThumbStyle"
+		   TargetType="Thumb">
+
+		<Setter Property="Padding"
+				Value="0" />
+
+		<Setter Property="Template">
+			<Setter.Value>
+				<ControlTemplate TargetType="Thumb">
+					<Grid>
+
+						<Border Background="{StaticResource Color05Brush}"
+								Height="20"
+								Width="20"
+								CornerRadius="10"
+								VerticalAlignment="Center"
+								HorizontalAlignment="Center"
+								Margin="0.5,0.75,0,0"/>
+
+						<Border Background="{StaticResource Color06Brush}"
+								BorderBrush="{StaticResource Color05Brush}"
+								BorderThickness="1"
+								Height="20"
+								Width="20"
+								CornerRadius="10"
+								VerticalAlignment="Center"
+								HorizontalAlignment="Left" />
+
+					</Grid>
+				</ControlTemplate>
+			</Setter.Value>
+		</Setter>
+	</xamarin:Style>
+
+	<xamarin:Style x:Key="EncoreSliderStyle"
+				   TargetType="Slider">
+		
+		<Setter Property="Template">
+			<Setter.Value>
+				<ControlTemplate TargetType="Slider">
+					<Grid>
+						<Grid.RowDefinitions>
+							<RowDefinition Height="Auto" />
+							<RowDefinition Height="*" />
+						</Grid.RowDefinitions>
+
+						<Grid x:Name="SliderContainer"
+							  Background="#ffffff"
+							  Control.IsTemplateFocusTarget="True"
+							  Grid.Row="1">
+
+							<Grid x:Name="HorizontalTemplate" 
+								  Height="40"
+								  Background="Transparent">
+
+								<Grid.ColumnDefinitions>
+									<ColumnDefinition Width="Auto" />
+									<ColumnDefinition Width="Auto" />
+									<ColumnDefinition Width="*" />
+								</Grid.ColumnDefinitions>
+
+								<Grid x:Name="HorizontalTrackRect"
+									  Background="#808080"
+									  VerticalAlignment="Center"
+									  CornerRadius="0,2,2,0"
+									  Height="4"
+									  Grid.ColumnSpan="3" />
+
+								<Border CornerRadius="2,0,0,2"
+										VerticalAlignment="Center"
+										Grid.Column="0">
+									<Rectangle x:Name="HorizontalDecreaseRect"
+											   Fill="#0000ff"
+											   VerticalAlignment="Center"
+											   Height="4"/>
+								</Border>
+
+								<Thumb x:Name="HorizontalThumb"
+								       Style="{StaticResource EncoreSliderThumbStyle}"
+								       DataContext="{TemplateBinding Value}"
+								       Grid.Column="1"
+								       AutomationProperties.AccessibilityView="Raw" />
+							</Grid>
+
+							<Grid x:Name="VerticalTemplate"
+								  MinHeight="44"
+								  Visibility="Collapsed">
+
+								<Grid.ColumnDefinitions>
+									<ColumnDefinition Width="Auto" />
+									<ColumnDefinition Width="Auto" />
+									<ColumnDefinition Width="*" />
+								</Grid.ColumnDefinitions>
+
+								<Grid.RowDefinitions>
+									<RowDefinition Height="18" />
+									<RowDefinition Height="Auto" />
+									<RowDefinition Height="18" />
+								</Grid.RowDefinitions>
+
+								<Rectangle x:Name="VerticalTrackRect"
+										   Grid.ColumnSpan="3"
+										   Fill="#00ff00"
+										   Height="3"
+										   Grid.Row="1" />
+
+								<Rectangle x:Name="VerticalDecreaseRect"
+										   Fill="#ff0000"
+										   Grid.Row="1" />
+
+								<Thumb x:Name="VerticalThumb"
+									   Grid.Column="1"
+									   DataContext="{TemplateBinding Value}"
+									   Grid.Row="0"
+									   Grid.RowSpan="3"
+									   Style="{StaticResource EncoreSliderThumbStyle}" />
 							</Grid>
 						</Grid>
 					</Grid>
