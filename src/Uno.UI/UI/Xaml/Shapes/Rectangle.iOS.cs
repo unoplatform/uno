@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Text;
 using Windows.UI.Xaml.Media;
 using Uno.Extensions;
@@ -75,13 +74,13 @@ namespace Windows.UI.Xaml.Shapes
 					break;
 				case Stretch.Uniform:
 					area = (area.Height > area.Width)
-						? (new RectangleF((float)area.X, (float)area.Y, (float)area.Width, (float)area.Width))
-						: (new RectangleF((float)area.X, (float)area.Y, (float)area.Height, (float)area.Height));
+						? (new global::System.Drawing.RectangleF((float)area.X, (float)area.Y, (float)area.Width, (float)area.Width))
+						: (new global::System.Drawing.RectangleF((float)area.X, (float)area.Y, (float)area.Height, (float)area.Height));
 					break;
 				case Stretch.UniformToFill:
 					area = (area.Height > area.Width)
-						? (new RectangleF((float)area.X, (float)area.Y, (float)area.Height, (float)area.Height))
-						: (new RectangleF((float)area.X, (float)area.Y, (float)area.Width, (float)area.Width));
+						? (new global::System.Drawing.RectangleF((float)area.X, (float)area.Y, (float)area.Height, (float)area.Height))
+						: (new global::System.Drawing.RectangleF((float)area.X, (float)area.Y, (float)area.Width, (float)area.Width));
 					break;
 			}
 
