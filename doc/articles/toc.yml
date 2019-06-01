@@ -42,6 +42,8 @@
     href: features/shapes-and-brushes.md
   - name: Speech Recognition
     href: features/SpeechRecognition.md
+  - name: PowerManager
+    href: features/windows-system-power.md
   - name: CommandBar
     href: controls\working-with-commandbar.md
   - name: ListView and GridView
