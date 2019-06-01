@@ -112,7 +112,8 @@ namespace Uno.UWPSyncGenerator
 						{
 							_sb.AppendParagraph($"*Implemented for:* {ToDisplayString(view.ImplementedForMain)}");
 
-							_sb.AppendParagraph($"This document lists all properties, methods, and events of {formattedViewName} that are currently implemented in Uno. See the {Hyperlink("UWP documentation", @"https://docs.microsoft.com/en-us/uwp/api/" + view.UAPSymbol.ToDisplayString().ToLowerInvariant())} for help using {formattedViewName}. ");
+							var baseDocLinkUrl = @"https://docs.microsoft.com/en-us/uwp/api/" + view.UAPSymbol.ToDisplayString().ToLowerInvariant();
+							_sb.AppendParagraph($"This document lists all properties, methods, and events of {formattedViewName} that are currently implemented in Uno. See the {Hyperlink("UWP documentation", baseDocLinkUrl)} for help using {formattedViewName}. ");
 
 							var customDocLink = GetCustomDocLink(viewName);
 							if (customDocLink != null)
@@ -148,12 +149,13 @@ namespace Uno.UWPSyncGenerator
 								{
 									return;
 								}
-								using (_sb.Section($"Implemented {memberType} "))
+								using (_sb.Table($"Implemented {memberType} ", ""))
 								{
 									foreach (var member in implemented)
 									{
+										var linkUrl = $"{baseDocLinkUrl}.{member.UAPSymbol.Name.ToLowerInvariant()}";
 										var implementedQualifier = member.ImplementedForMain != ImplementedFor.Main ? $" *({ToDisplayString(member.ImplementedForMain)})* " : "";
-										_sb.AppendParagraph($"`{member.UAPSymbol.ToDisplayString(DisplayFormat)}`{implementedQualifier}; ");
+										_sb.AppendRow(Hyperlink(member.UAPSymbol.ToDisplayString(DisplayFormat), linkUrl), implementedQualifier);
 									}
 									_sb.AppendParagraph();
 								}
@@ -166,12 +168,13 @@ namespace Uno.UWPSyncGenerator
 								{
 									return;
 								}
-								using (_sb.Section($"Not implemented {memberType}"))
+								using (_sb.Table($"Not implemented {memberType}", ""))
 								{
 									foreach (var member in notImplemented)
 									{
+										var linkUrl = $"{baseDocLinkUrl}.{member.UAPSymbol.Name.ToLowerInvariant()}";
 										var notImplementedQualifier = member.ImplementedForMain != ImplementedFor.None ? $" *({ToDisplayString(member.ImplementedForMain ^ ImplementedFor.Main)})* " : "";
-										_sb.AppendParagraph($"`{member.UAPSymbol.ToDisplayString(DisplayFormat)}`{notImplementedQualifier}; ");
+										_sb.AppendRow(Hyperlink(member.UAPSymbol.ToDisplayString(DisplayFormat), linkUrl), notImplementedQualifier);
 									}
 									_sb.AppendParagraph();
 								}
