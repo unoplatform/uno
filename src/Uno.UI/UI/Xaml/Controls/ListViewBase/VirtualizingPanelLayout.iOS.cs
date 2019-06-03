@@ -179,7 +179,7 @@ namespace Windows.UI.Xaml.Controls
 					if (SupportsDynamicItemSizes && HasDynamicElementSizes && areItems)
 					{
 						//Propagate layout changes for materialized items that may have a different size to the non-databound template.
-						UpdateLayoutAttributesForItem(layoutAttributes);
+						UpdateLayoutAttributesForItem(layoutAttributes, shouldRecurse: false);
 					}
 
 					if (rect.Contains(frame) ||
@@ -1078,7 +1078,7 @@ namespace Windows.UI.Xaml.Controls
 
 			if (SupportsDynamicItemSizes && layoutAttributes.RepresentedElementKind == null)
 			{
-				UpdateLayoutAttributesForItem(layoutAttributes);
+				UpdateLayoutAttributesForItem(layoutAttributes, shouldRecurse: true);
 			}
 
 			// If this pushes content size bigger than viewport, and we 'left money on the table' when we requested desired size, send up a layout request
@@ -1173,7 +1173,7 @@ namespace Windows.UI.Xaml.Controls
 			_sectionEnd[groupHeaderLayout.IndexPath.Section] += extentDifference;
 		}
 
-		protected virtual void UpdateLayoutAttributesForItem(UICollectionViewLayoutAttributes layoutAttributes)
+		protected virtual void UpdateLayoutAttributesForItem(UICollectionViewLayoutAttributes layoutAttributes, bool shouldRecurse)
 		{
 			throw new NotSupportedException($"This should be overridden by types which set {nameof(SupportsDynamicItemSizes)} to true.");
 		}
