@@ -224,7 +224,7 @@ namespace Windows.UI.Xaml.Controls
 			// Removed definitions
 			var definitionSet = new HashSet<T>(definitions, ReferenceEqualityComparer<T>.Default);
 
-			foreach (var existing in subcriptions)
+			foreach (var existing in subcriptions.ToArray())
 			{
 				if (!definitionSet.Contains(existing.Key))
 				{
@@ -237,7 +237,7 @@ namespace Windows.UI.Xaml.Controls
 
 		private static void DisposeDefinitionsSubscriptions<T>(Dictionary<T, IDisposable> subcriptions)
 		{
-			foreach (var pair in subcriptions)
+			foreach (var pair in subcriptions.ToArray())
 			{
 				pair.Value.Dispose();
 			}
