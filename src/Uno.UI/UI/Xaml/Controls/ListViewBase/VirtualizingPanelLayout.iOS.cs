@@ -64,7 +64,13 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		#region Members
+		/// <summary>
+		/// All cached item <see cref="UICollectionViewLayoutAttributes"/>s, grouped by collection group.
+		/// </summary>
 		private readonly Dictionary<int, LayoutInfoDictionary> _itemLayoutInfos = new Dictionary<int, LayoutInfoDictionary>();
+		/// <summary>
+		/// All cached <see cref="UICollectionViewLayoutAttributes"/> for supplementary elements (Header, Footer, group headers), grouped by element type.
+		/// </summary>
 		private readonly Dictionary<string, LayoutInfoDictionary> _supplementaryLayoutInfos = new Dictionary<string, LayoutInfoDictionary>();
 		/// <summary>
 		/// The last element in the list. This is set when the layout is created (and will point to the databound size and position of 
@@ -72,6 +78,9 @@ namespace Windows.UI.Xaml.Controls
 		/// </summary>
 		private UICollectionViewLayoutAttributes _lastElement;
 
+		/// <summary>
+		/// Locations of group header frames if they were to appear inline with items (ie not 'sticky').
+		/// </summary>
 		private readonly Dictionary<int, CGRect> _inlineHeaderFrames = new Dictionary<int, CGRect>();
 		protected readonly Dictionary<int, nfloat> _sectionEnd = new Dictionary<int, nfloat>();
 
@@ -79,7 +88,13 @@ namespace Windows.UI.Xaml.Controls
 		private Dictionary<CachedTuple<int, int>, NSIndexPath> _indexPaths = new Dictionary<CachedTuple<int, int>, NSIndexPath>(CachedTuple<int, int>.Comparer);
 		private Dictionary<CachedTuple<int, int>, UICollectionViewLayoutAttributes> _layoutAttributesForIndexPaths = new Dictionary<CachedTuple<int, int>, UICollectionViewLayoutAttributes>(CachedTuple<int, int>.Comparer);
 		private DirtyState _dirtyState;
+		/// <summary>
+		/// The most recently returned desired size.
+		/// </summary>
 		private CGSize _lastReportedSize;
+		/// <summary>
+		/// The most recent available size given by measure.
+		/// </summary>
 		private CGSize _lastAvailableSize;
 		private bool _invalidatingHeadersOnBoundsChange;
 		private bool _invalidatingOnCollectionChanged;
@@ -354,6 +369,14 @@ namespace Windows.UI.Xaml.Controls
 			return PrepareLayout(false, size);
 		}
 
+		/// <summary>
+		/// Prepare layout if necessary and return its size.
+		/// </summary>
+		/// <param name="createLayoutInfo">Should we create <see cref="UICollectionViewLayoutAttributes"/>?</param>
+		/// <param name="size">The available size</param>
+		/// <returns>The total collection size</returns>
+		/// <remarks>This is called by overidden methods which need to know the total dimensions of the panel content. If a full relayout is required,
+		/// it calls <see cref="PrepareLayoutInternal(bool, bool, CGSize)"/>; otherwise it returns a cached value.</remarks>
 		private CGSize PrepareLayout(bool createLayoutInfo, CGSize? size = null)
 		{
 			using (
@@ -384,7 +407,7 @@ namespace Windows.UI.Xaml.Controls
 						_lastElement = null;
 					}
 					_lastReportedSize = PrepareLayoutInternal(createLayoutInfo, _dirtyState == DirtyState.CollectionChanged, availableSize);
-					
+
 					if (_dirtyState == DirtyState.NeedsRelayout && GetExtent(_lastReportedSize) < GetExtent(_lastAvailableSize))
 					{
 						SetHasUnusedSpace();
@@ -436,7 +459,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		/// <summary>
-		/// Determine the layout for all elements (items, header, footer, and group headers).
+		/// Recalculate the layout for all elements (items, header, footer, and group headers).
 		/// </summary>
 		/// <param name="createLayoutInfo">Should we create <see cref="UICollectionViewLayoutAttributes"/>?</param>
 		/// <param name="isCollectionChanged">Is this a partial layout in response to an INotifyCollectionChanged operation</param>
@@ -791,6 +814,9 @@ namespace Windows.UI.Xaml.Controls
 			return value;
 		}
 
+		/// <summary>
+		/// Apply 'stickiness' to group header positions.
+		/// </summary>
 		private void UpdateHeaderPositions()
 		{
 			// Get coordinate index to modify
@@ -1022,6 +1048,9 @@ namespace Windows.UI.Xaml.Controls
 			InvalidateLayout();
 		}
 
+		/// <summary>
+		/// Update cached layout attributes for an element after the materialized, databound element has been measured.
+		/// </summary>
 		public void UpdateLayoutAttributesForElement(UICollectionViewLayoutAttributes layoutAttributes)
 		{
 			//Update frame of target layoutAttributes
