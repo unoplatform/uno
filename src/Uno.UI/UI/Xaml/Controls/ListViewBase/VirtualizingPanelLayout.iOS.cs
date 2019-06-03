@@ -588,7 +588,10 @@ namespace Windows.UI.Xaml.Controls
 				}
 
 				//Ensure container for group exists even if group contains no items, to simplify subsequent logic
-				_itemLayoutInfos[section] = new Dictionary<NSIndexPath, UICollectionViewLayoutAttributes>();
+				if (createLayoutInfo)
+				{
+					_itemLayoutInfos[section] = new Dictionary<NSIndexPath, UICollectionViewLayoutAttributes>(); 
+				}
 				//b. Layout items in group
 				var itemsBreadth = LayoutItemsInGroup(section, availableGroupBreadth, ref frame, createLayoutInfo, oldItemSizes);
 				var groupBreadth = itemsBreadth;
