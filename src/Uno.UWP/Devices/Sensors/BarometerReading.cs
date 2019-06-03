@@ -5,9 +5,12 @@ namespace Windows.Devices.Sensors
 {
 	public partial class BarometerReading
 	{
-		internal BarometerReading()
+		internal BarometerReading(
+			double stationPressureInHectopascals,
+			DateTimeOffset timestamp )
 		{
-
+			StationPressureInHectopascals = stationPressureInHectopascals;
+			Timestamp = timestamp;
 		}
 
 		public double StationPressureInHectopascals { get; }

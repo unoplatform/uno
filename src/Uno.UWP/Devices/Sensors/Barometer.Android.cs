@@ -10,7 +10,7 @@ namespace Windows.Devices.Sensors
 {
 	public partial class Barometer
 	{
-		private readonly Sensor _sensor;
+		private readonly Sensor _sensor;		
 
 		private Barometer(Sensor barometerSensor)
 		{
@@ -19,13 +19,18 @@ namespace Windows.Devices.Sensors
 
 		private static Barometer TryCreateInstance()
 		{
-			var sensorManager = Application.Context.GetSystemService(Context.SensorService) as SensorManager;
+			var sensorManager = Application.Context.GetSystemService(Context.SensorService) as SensorManager;					
 			var sensor = sensorManager.GetDefaultSensor(Android.Hardware.SensorType.Pressure);
 			if (sensor != null)
 			{
 				return new Barometer(sensor);
 			}
 			return null;
+		}
+
+		private void StartReading()
+		{
+
 		}
 	}
 }

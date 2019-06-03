@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using CoreMotion;
+using Foundation;
 
 namespace Windows.Devices.Sensors
 {
@@ -24,18 +25,28 @@ namespace Windows.Devices.Sensors
 			return null;
 		}
 
+		private void StartReading()
+		{
+			_altimeter.StartRelativeAltitudeUpdates(new NSOperationQueue(), RelativeAltitudeUpdateReceived);
+		}
 
-	public event TypedEventHandler<Barometer, BarometerReadingChangedEventArgs> ReadingChanged
-	{
-		add
+		private void StopReading()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Sensors.Barometer", "event TypedEventHandler<Barometer, BarometerReadingChangedEventArgs> Barometer.ReadingChanged");
+			_altimeter.StopRelativeAltitudeUpdates();
 		}
-		remove
+
+		private void RelativeAltitudeUpdateReceived(CMAltitudeData data, NSError error)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Sensors.Barometer", "event TypedEventHandler<Barometer, BarometerReadingChangedEventArgs> Barometer.ReadingChanged");
+			var barometerReading = new BarometerReading(
+				KPaToHPa(data.Pressure.DoubleValue),
+				DateTimeOffset.UtcNow
+				);
+			_readingChanged?.Invoke(
+				this,
+				new BarometerReadingChangedEventArgs(barometerReading));
 		}
+
+		private double KPaToHPa(double pressureInKPa) => pressureInKPa * 10;
 	}
-}
 }
 #endif
