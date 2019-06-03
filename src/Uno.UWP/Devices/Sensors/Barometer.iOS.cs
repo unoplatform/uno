@@ -15,19 +15,27 @@ namespace Windows.Devices.Sensors
 			_altimeter = altimeter;
 		}
 
-		public static Barometer GetDefault()
+		private static Barometer TryCreateInstance()
 		{
-			if (_instance == null && !_initializationAttempted)
+			if (CMAltimeter.IsRelativeAltitudeAvailable)
 			{
-				if (CMAltimeter.IsRelativeAltitudeAvailable)
-				{
-					_instance = new Barometer(new CMAltimeter());
-				}
-				_initializationAttempted = true;
+				return new Barometer(new CMAltimeter());
 			}
-			return _instance;
+			return null;
 		}
 
+
+	public event TypedEventHandler<Barometer, BarometerReadingChangedEventArgs> ReadingChanged
+	{
+		add
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Sensors.Barometer", "event TypedEventHandler<Barometer, BarometerReadingChangedEventArgs> Barometer.ReadingChanged");
+		}
+		remove
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Sensors.Barometer", "event TypedEventHandler<Barometer, BarometerReadingChangedEventArgs> Barometer.ReadingChanged");
+		}
 	}
+}
 }
 #endif

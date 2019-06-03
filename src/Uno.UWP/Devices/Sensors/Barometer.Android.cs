@@ -17,19 +17,15 @@ namespace Windows.Devices.Sensors
 			_sensor = barometerSensor;
 		}
 
-		public static Barometer GetDefault()
+		private static Barometer TryCreateInstance()
 		{
-			if (_instance == null && !_initializationAttempted)
+			var sensorManager = Application.Context.GetSystemService(Context.SensorService) as SensorManager;
+			var sensor = sensorManager.GetDefaultSensor(Android.Hardware.SensorType.Pressure);
+			if (sensor != null)
 			{
-				var sensorManager = Application.Context.GetSystemService(Context.SensorService) as SensorManager;
-				var sensor = sensorManager.GetDefaultSensor(Android.Hardware.SensorType.Pressure);
-				if (sensor != null)
-				{
-					_instance = new Barometer(sensor);
-				}
-				_initializationAttempted = true;
+				return new Barometer(sensor);
 			}
-			return _instance;
+			return null;
 		}
 	}
 }
