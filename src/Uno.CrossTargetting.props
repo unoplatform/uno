@@ -80,7 +80,7 @@
   </ItemGroup>
 
   <ItemGroup Condition=" '$(TargetFramework)' == 'uap10.0' ">
-	<PackageReference Include="Microsoft.NETCore.UniversalWindowsPlatform " Version="5.4.2" />
+	<PackageReference Include="Microsoft.NETCore.UniversalWindowsPlatform " Version="6.2.8" />
   </ItemGroup>
 
   <Target Name="GetBuiltProjectOutputRecursive" Condition=" '$(TargetFramework)' == 'xamarinios10' " />
