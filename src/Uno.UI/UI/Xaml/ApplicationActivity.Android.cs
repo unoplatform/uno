@@ -12,6 +12,7 @@ using Android.Views.InputMethods;
 using Uno.UI;
 using Windows.UI.ViewManagement;
 using Windows.UI.Xaml.Media;
+using Windows.Devices.Sensors;
 
 namespace Windows.UI.Xaml
 {
@@ -26,7 +27,6 @@ namespace Windows.UI.Xaml
 		internal LayoutProvider LayoutProvider { get; private set; }
 
 		private InputPane _inputPane;
-
 
 		public ApplicationActivity(IntPtr ptr, Android.Runtime.JniHandleOwnership owner) : base(ptr, owner)
 		{
@@ -53,6 +53,12 @@ namespace Windows.UI.Xaml
 			// Cannot call this in ctor: see
 			// https://stackoverflow.com/questions/10593022/monodroid-error-when-calling-constructor-of-custom-view-twodscrollview#10603714
 			RaiseConfigurationChanges();
+			Devices.Sensors.SimpleOrientationSensor.GetDefault().OrientationChanged += OnSensorOrientationChanged;
+		}
+
+		private void OnSensorOrientationChanged(SimpleOrientationSensor sender, SimpleOrientationSensorOrientationChangedEventArgs args)
+		{
+			RaiseConfigurationChanges();
 		}
 
 		private void OnInputPaneVisibilityChanged(InputPane sender, InputPaneVisibilityEventArgs args)
@@ -63,7 +69,7 @@ namespace Windows.UI.Xaml
 				// using either SoftInput.AdjustResize or SoftInput.AdjustPan.
 				args.EnsuredFocusedElementInView = true;
 			}
-		} 
+		}
 
 		protected override void InitializeComponent()
 		{
@@ -111,7 +117,22 @@ namespace Windows.UI.Xaml
 
 			LayoutProvider = new LayoutProvider(this);
 			LayoutProvider.LayoutChanged += OnLayoutChanged;
+			LayoutProvider.InsetsChanged += OnInsetsChanged;
+
+			// We need to start listening insets as soon as we can since it is raised only once the DecorView is set
+			LayoutProvider.StartListenInsets();
+
 			RaiseConfigurationChanges();
+		}
+
+		private void OnInsetsChanged(Thickness insets)
+		{
+			if (Xaml.Window.Current != null)
+			{
+				//Set insets before raising the size changed event
+				Xaml.Window.Current.Insets = insets;
+				Xaml.Window.Current.RaiseNativeSizeChanged();
+			}
 		}
 
 		public override void SetContentView(View view)

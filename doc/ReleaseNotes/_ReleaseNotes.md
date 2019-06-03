@@ -71,6 +71,7 @@
 * MenuBar
     - Import of MenuBar code, not functional yet as MenuItemFlyout (Issue #801)
     - Basic support for macOS native system menus
+* 132984 [Android] Notch support on Android
 
 ### Breaking Changes
 * The `WebAssemblyRuntime.InvokeJSUnmarshalled` method with three parameters has been removed.

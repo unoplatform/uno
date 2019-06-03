@@ -9,6 +9,7 @@ import android.util.Log;
 
 import java.lang.*;
 import java.lang.reflect.*;
+import java.util.ArrayList;
 import java.util.Map;
 import java.util.HashMap;
 
@@ -43,6 +44,7 @@ public abstract class UnoViewGroup
 	private boolean _isAnimating;
 
 	private static Method _setFrameMethod;
+	private ArrayList<UnoViewGroup> _childrenNeedingForceLayout = new ArrayList<UnoViewGroup>();
 
 	static {
 		try {
@@ -143,11 +145,21 @@ public abstract class UnoViewGroup
 
 	protected abstract void onLayoutCore(boolean changed, int left, int top, int right, int bottom);
 
+	private boolean _isInOnLayoutCore;
+
 	protected final void onLayout(boolean changed, int left, int top, int right, int bottom)
 	{
 		if(!_unoLayoutOverride)
 		{
+			_isInOnLayoutCore = true;
+			_childrenNeedingForceLayout.clear();
 			onLayoutCore(changed, left, top, right, bottom);
+
+			for (int i = 0 ; i < _childrenNeedingForceLayout.size() ; i++) {
+				_childrenNeedingForceLayout.get(i).forceLayout();
+			}
+			_childrenNeedingForceLayout.clear();
+			_isInOnLayoutCore = false;
 		}
 	}
 
@@ -290,7 +302,20 @@ public abstract class UnoViewGroup
 				_needsLayoutOnAttachedToWindow = true;
 			}
 			super.requestLayout();
+
+			// If we request to layout during the layout core pass, we need to force the view
+			// to redraw by asking its parent to request a new layout for this view
+			if(_isInOnLayoutCore){
+				if(getParent() instanceof UnoViewGroup){
+					UnoViewGroup unoViewGroupParent = (UnoViewGroup) getParent();
+					unoViewGroupParent.setChildNeedsForceLayout(this);
+				}
+			}
 		}
+	}
+
+	private void setChildNeedsForceLayout(UnoViewGroup child){
+		_childrenNeedingForceLayout.add(child);
 	}
 
 	public final void invalidate()
