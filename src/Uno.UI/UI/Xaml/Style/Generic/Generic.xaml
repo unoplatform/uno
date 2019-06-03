@@ -751,6 +751,7 @@
 									Margin="0,-1,0,-1"
 									HorizontalAlignment="Stretch">
 								<ScrollViewer x:Name="ScrollViewer"
+											  xamarin:Style="{StaticResource ListViewBaseScrollViewerStyle}"
 											  Foreground="{ThemeResource SystemControlForegroundBaseHighBrush}"
 											  win:MinWidth="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=TemplateSettings.DropDownContentMinWidth}"
 											  VerticalSnapPointsType="OptionalSingle"
