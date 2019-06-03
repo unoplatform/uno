@@ -208,6 +208,11 @@ namespace Windows.UI.Xaml.Controls
 			if (newIsDropDownOpen)
 			{
 				DropDownOpened?.Invoke(this, newIsDropDownOpen);
+
+				if (SelectedItem != null)
+				{
+					ScrollIntoView(SelectedItem);
+				}
 			}
 			else
 			{
