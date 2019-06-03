@@ -766,9 +766,16 @@ namespace Windows.UI.Xaml.Controls
 
 			size = ApplyChildStretch(size, slotSize, viewType);
 
-			UnoViewGroup.StartLayoutingFromMeasure();
+			if (!child.IsInLayout)
+			{
+				UnoViewGroup.StartLayoutingFromMeasure();
+			}
 			LayoutChild(child, direction, extentOffset, breadthOffset, size);
-			UnoViewGroup.EndLayoutingFromMeasure();
+
+			if (!child.IsInLayout)
+			{
+				UnoViewGroup.EndLayoutingFromMeasure();
+			}
 
 			return size;
 		}

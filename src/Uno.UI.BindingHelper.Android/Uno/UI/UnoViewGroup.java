@@ -18,7 +18,7 @@ public abstract class UnoViewGroup
 	implements UnoViewParent{
 
 	private static final String LOGTAG = "UnoViewGroup";
-	private static boolean isLayoutingFromMeasure = false;
+	private static boolean _isLayoutingFromMeasure = false;
 	private static ArrayList<UnoViewGroup> callToRequestLayout = new ArrayList<UnoViewGroup>();
 
 	private boolean _inLocalAddView, _inLocalRemoveView;
@@ -293,7 +293,7 @@ public abstract class UnoViewGroup
 				_needsLayoutOnAttachedToWindow = true;
 			}
 
-			if(isLayoutingFromMeasure){
+			if(_isLayoutingFromMeasure){
 				callToRequestLayout.add(this);
 				return;
 			}
@@ -601,14 +601,24 @@ public abstract class UnoViewGroup
 	protected void clearCaptures(){
 	}
 
+	/**
+	 * Call this method if a view is to be laid out outside of a framework layout pass, to ensure that requestLayout() requests are captured
+	 * and propagated later. (Equivalent of ViewRootImpl.requestLayoutDuringLayout())
+	 */
 	public static void startLayoutingFromMeasure() {
-		isLayoutingFromMeasure = true;
+		_isLayoutingFromMeasure = true;
 	}
 
+	/**
+	 * This should always be called immediately after {{@link #startLayoutingFromMeasure()}} has been called.
+	 */
 	public static void endLayoutingFromMeasure() {
-			isLayoutingFromMeasure = false;
+			_isLayoutingFromMeasure = false;
 	}
 
+	/**
+	 * This should be called subsequently to {{@link #endLayoutingFromMeasure()}}, typically during a true layout pass, to flush any captured layout requests.
+	 */
 	public static void measureBeforeLayout() {
 		try {
 			for (int i = 0; i < callToRequestLayout.size(); i++) {
