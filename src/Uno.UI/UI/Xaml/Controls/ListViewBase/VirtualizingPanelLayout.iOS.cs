@@ -47,6 +47,22 @@ namespace Windows.UI.Xaml.Controls
 			NeedsHeaderRelayout
 		}
 
+		private enum UnusedSpaceState
+		{
+			/// <summary>
+			/// Initial state
+			/// </summary>
+			Unset,
+			/// <summary>
+			/// The panel left some available extent unused on a previous measure pass, and hasn't attempted to use it.
+			/// </summary>
+			HasUnusedSpace,
+			/// <summary>
+			/// The panel has called a relayout to try to claim unused space that was available on a previous measure.
+			/// </summary>
+			ConsumeUnusedSpacePending
+		}
+
 		#region Members
 		private readonly Dictionary<int, LayoutInfoDictionary> _itemLayoutInfos = new Dictionary<int, LayoutInfoDictionary>();
 		private readonly Dictionary<string, LayoutInfoDictionary> _supplementaryLayoutInfos = new Dictionary<string, LayoutInfoDictionary>();
@@ -67,6 +83,7 @@ namespace Windows.UI.Xaml.Controls
 		private CGSize _lastAvailableSize;
 		private bool _invalidatingHeadersOnBoundsChange;
 		private bool _invalidatingOnCollectionChanged;
+		private UnusedSpaceState _unusedSpaceState;
 		private readonly Queue<CollectionChangedOperation> _pendingCollectionChanges = new Queue<CollectionChangedOperation>();
 		/// <summary>
 		/// Updates being applied in response to in-place collection modifications.
@@ -333,6 +350,7 @@ namespace Windows.UI.Xaml.Controls
 
 		public CGSize SizeThatFits(CGSize size)
 		{
+			TrySetHasConsumedUnusedSpace();
 			return PrepareLayout(false, size);
 		}
 
@@ -366,6 +384,11 @@ namespace Windows.UI.Xaml.Controls
 						_lastElement = null;
 					}
 					_lastReportedSize = PrepareLayoutInternal(createLayoutInfo, _dirtyState == DirtyState.CollectionChanged, availableSize);
+					
+					if (_dirtyState == DirtyState.NeedsRelayout && GetExtent(_lastReportedSize) < GetExtent(_lastAvailableSize))
+					{
+						SetHasUnusedSpace();
+					}
 
 					if (createLayoutInfo)
 					{
@@ -870,7 +893,7 @@ namespace Windows.UI.Xaml.Controls
 			if (AreStickyGroupHeadersEnabled)
 			{
 				_invalidatingHeadersOnBoundsChange = true;
-				InvalidateLayout(); 
+				InvalidateLayout();
 			}
 		}
 
@@ -924,7 +947,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			if (_dirtyState == DirtyState.NeedsRelayout && this.Log().IsEnabled(LogLevel.Warning))
 			{
-				this.Log().Warn("Trying to refreshing layout when a full recreate is required - this will cause unexpected behaviour.");
+				this.Log().Warn("Trying to refresh layout when a full recreate is required - this will cause unexpected behaviour.");
 			}
 
 			//Calling base avoids setting the _dirtyState, avoiding internal layout recalculations.
@@ -1064,15 +1087,43 @@ namespace Windows.UI.Xaml.Controls
 
 		private void CheckDesiredSizeChanged()
 		{
-			var available = GetExtent(_lastAvailableSize);
-			var lastRequested = GetExtent(_lastReportedSize);
-			if (lastRequested < available && DynamicContentExtent > lastRequested)
+			var lastReported = GetExtent(_lastReportedSize);
+			if (DidLeaveUnusedSpace() && DynamicContentExtent > lastReported)
 			{
+				SetWillConsumeUnusedSpace();
+
 				SetExtent(ref _lastReportedSize, DynamicContentExtent);
+
 				var nativePanel = CollectionView as NativeListViewBase;
 				nativePanel.SetNeedsLayout();
 				// NativeListViewBase swallows layout requests by design
 				nativePanel.SetSuperviewNeedsLayout();
+			}
+		}
+
+		/// <summary>
+		/// A previous measure pass left unused space, which hasn't been consumed yet.
+		/// </summary>
+		private bool DidLeaveUnusedSpace() => _unusedSpaceState != UnusedSpaceState.Unset;
+
+		/// <summary>
+		/// The panel is returning a smaller desired extent than the available size (ie the current items at their currently-known dimensions don't fill the entire available size).
+		/// </summary>
+		private void SetHasUnusedSpace() => _unusedSpaceState = UnusedSpaceState.HasUnusedSpace;
+
+		/// <summary>
+		/// An update to the dynamic (ie databound) size of an item is attempting to consume unused space. The result will transpire on a subsequent measure pass.
+		/// </summary>
+		private void SetWillConsumeUnusedSpace() => _unusedSpaceState = UnusedSpaceState.ConsumeUnusedSpacePending;
+
+		/// <summary>
+		/// Called on measure pass to indicate that a request to consume unused space has been processed.
+		/// </summary>
+		private void TrySetHasConsumedUnusedSpace()
+		{
+			if (_unusedSpaceState == UnusedSpaceState.ConsumeUnusedSpacePending)
+			{
+				_unusedSpaceState = UnusedSpaceState.Unset;
 			}
 		}
 
@@ -1521,5 +1572,11 @@ namespace Windows.UI.Xaml.Controls
 		{
 			return _inlineHeaderFrames[section];
 		}
+
+#if DEBUG
+		UICollectionViewLayoutAttributes[] AllItemLayoutAttributes => _itemLayoutInfos?.SelectMany(kvp => kvp.Value.Values).ToArray();
+
+		CGRect[] AllItemFrames => AllItemLayoutAttributes?.Select(l => l.Frame).ToArray();
+#endif
 	}
 }
