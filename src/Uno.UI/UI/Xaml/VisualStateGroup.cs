@@ -238,6 +238,19 @@ namespace Windows.UI.Xaml
 
 				foreach (var setter in this.CurrentState.Setters.OfType<Setter>())
 				{
+					if (element != null && (state?.Setters.OfType<Setter>().Any(o => o.HasSameTarget(setter, DependencyPropertyValuePrecedences.Animations, element)) ?? false))
+					{
+						// PERF: We clear the value of the current setter only if there isn't any setter in the target state
+						// which changes the same target property.
+
+						if (this.Log().IsEnabled(LogLevel.Debug))
+						{
+							this.Log().Debug($"Ignoring reset of setter of '{setter.Target?.Path}' as it will be updated again by '{state.Name}'");
+						}
+
+						continue;
+					}
+
 					setter.ClearValue();
 				}
 			}
@@ -294,30 +307,32 @@ namespace Windows.UI.Xaml
 			return toMatch;
 		}
 
-		internal void RefreshStateTriggers()
+		internal void RefreshStateTriggers(bool force = false)
 		{
-			var activeVisualState = GetActiveTrigger();
-
+			var newState = GetActiveTrigger();
 			var oldState = CurrentState;
+			if (!force && newState == oldState)
+			{
+				return;
+			}
 
 			if (this.Log().IsEnabled(LogLevel.Debug))
 			{
-				this.Log().Debug($"[{this}].RefreshStateTriggers() activeState={activeVisualState}, oldState={oldState}");
+				this.Log().Debug($"[{this}].RefreshStateTriggers() activeState={newState}, oldState={oldState}");
 			}
-
-			var parent = this.GetParent() as IFrameworkElement;
 
 			void OnStateChanged()
 			{
-				RaiseCurrentStateChanged(oldState, activeVisualState);
+				RaiseCurrentStateChanged(oldState, newState);
 			}
 
-			GoToState(parent, activeVisualState, CurrentState, false, OnStateChanged);
+			var parent = this.GetParent() as IFrameworkElement;
+			GoToState(parent, newState, CurrentState, false, OnStateChanged);
 		}
 
 		private void OnParentChanged(object instance, object key, DependencyObjectParentChangedEventArgs args)
 		{
-			RefreshStateTriggers();
+			RefreshStateTriggers(force: true);
 		}
 
 		/// <remarks>
