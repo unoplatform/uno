@@ -159,8 +159,6 @@ namespace <#= mixin.NamespaceName #>
 
 		public event RoutedEventHandler Unloaded;
 
-		public event EventHandler<object> LayoutUpdated;
-
 		public event SizeChangedEventHandler SizeChanged;
 		
 #if <#= mixin.DefineLayoutSubviews #> || <#= mixin.DefineSetNeedsLayout #>
@@ -204,14 +202,6 @@ namespace <#= mixin.NamespaceName #>
 			if (actualSuperview != null)
 			{
 				actualSuperview.SetNeedsLayout();
-			}
-		}
-
-
-		public virtual void OnLayoutUpdated ()
-		{
-			if (LayoutUpdated != null) {
-				LayoutUpdated (this, EventArgs.Empty);
 			}
 		}
 
@@ -491,6 +481,16 @@ namespace <#= mixin.NamespaceName #>
 		public Rect AppliedFrame { get; private set; }
 
 #if !<#= mixin.IsFrameworkElement #>
+
+		public event EventHandler<object> LayoutUpdated;
+
+		public virtual void OnLayoutUpdated ()
+		{
+			if (LayoutUpdated != null) {
+				LayoutUpdated (this, EventArgs.Empty);
+			}
+		}
+
 		// This is also defined in UIElement for actual UIElement hierarchy
 		internal bool IsRenderingSuspended { get; set; }
 

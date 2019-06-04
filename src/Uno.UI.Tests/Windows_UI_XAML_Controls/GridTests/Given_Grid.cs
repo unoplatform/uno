@@ -1004,27 +1004,19 @@ namespace Uno.UI.Tests.GridTests
 		{
 			var SUT = new Grid();
 
-			SUT.ColumnDefinitions.Add(new ColumnDefinition { Width = "*" });
-			SUT.ColumnDefinitions.Add(new ColumnDefinition { Width = "auto" });
-
-			SUT.AddChild(new View { RequestedDesiredSize = new Windows.Foundation.Size(100, 100) });
-			SUT.AddChild(new View { RequestedDesiredSize = new Windows.Foundation.Size(100, 100) })
-				.GridPosition(0, 1)
-				.GridColumnSpan(3);
-
-			SUT.Measure(new Windows.Foundation.Size(1000, 100));
-			var measuredSize = SUT.DesiredSize;
-			SUT.Arrange(new Windows.Foundation.Rect(0, 0, 1000, 100));
+			SUT.ColumnDefinitions.Clear();
+			SUT.ColumnDefinitions.Add(new ColumnDefinition() { Width = GridLength.Auto });
+			SUT.ColumnDefinitions.Clear();
 		}
 
 		[TestMethod]
 		public void When_Clear_ColumnDefinitions()
 		{
 			var SUT = new Grid();
-			SUT.ForceLoaded();
 
-			SUT.ColumnDefinitions.Add(new ColumnDefinition() { Width = GridLength.Auto });
 			SUT.ColumnDefinitions.Clear();
+			SUT.ColumnDefinitions.Add(new ColumnDefinition() { Width = GridLength.Auto });
+			SUT.ColumnDefinitions.Clear(); //Throws System.InvalidOperationException: Collection was modified; enumeration operation may not execute.
 		}
 
 		[TestMethod]

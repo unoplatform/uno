@@ -122,9 +122,12 @@
 
         <Member fullName="System.Void Windows.UI.Xaml.Controls.ScrollViewer.set_BackgroundColor(Windows.UI.Color value)"
                 reason="This was a legacy mock done during initial Wasm POC, never implemented, never used." />
-        
+
         <Member fullName="System.Void Windows.UI.Xaml.Shapes.Rectangle.LayoutSubviews()"
                 reason="Removed to use ArrangeOverride for macOS compatibility"/>
+        
+        <Member fullName="System.Void Windows.UI.Xaml.FrameworkElement.OnLayoutUpdated()"
+                reason="Invalid method visibility"/>
 
       </Methods>
 

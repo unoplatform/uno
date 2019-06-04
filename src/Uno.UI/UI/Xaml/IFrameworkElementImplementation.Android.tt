@@ -47,8 +47,6 @@ namespace <#= mixin.NamespaceName #>
 
 		public event RoutedEventHandler Unloaded;
 
-		public event EventHandler<object> LayoutUpdated;
-
 		public event SizeChangedEventHandler SizeChanged;
 
 		public IFrameworkElement FindName(string name)
@@ -92,6 +90,16 @@ namespace <#= mixin.NamespaceName #>
 
 		// This is also defined in UIElement for actual UIElement hierarchy
 		internal bool IsRenderingSuspended { get; set; }
+
+		public event EventHandler<object> LayoutUpdated;
+
+		protected virtual void OnLayoutUpdated()
+		{
+			if (LayoutUpdated != null)
+			{
+				LayoutUpdated(this, RoutedEventArgs.Empty);
+			}
+		}
 #endif
 
 		internal void SuspendRendering()
@@ -830,14 +838,6 @@ namespace <#= mixin.NamespaceName #>
 		}
 
 		partial void OnUnloadedPartial();
-
-		protected virtual void OnLayoutUpdated()
-		{
-			if (LayoutUpdated != null)
-			{
-				LayoutUpdated(this, RoutedEventArgs.Empty);
-			}
-		}
 
 		private static void OnGenericPropertyUpdated(object dependencyObject, DependencyPropertyChangedEventArgs args)
 		{
