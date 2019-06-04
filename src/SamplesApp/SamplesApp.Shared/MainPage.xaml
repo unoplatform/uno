@@ -7,7 +7,5 @@
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	mc:Ignorable="d">
 	
-	<Grid Padding="12">
-	 	<controls:SampleChooserControl x:Name="sampleControl" Visibility="Collapsed" />
-	</Grid>
+	<controls:SampleChooserControl x:Name="sampleControl" />
 </Page>
