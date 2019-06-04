@@ -1016,5 +1016,25 @@ namespace Uno.UI.Tests.GridTests
 			var measuredSize = SUT.DesiredSize;
 			SUT.Arrange(new Windows.Foundation.Rect(0, 0, 1000, 100));
 		}
+
+		[TestMethod]
+		public void When_Clear_ColumnDefinitions()
+		{
+			var SUT = new Grid();
+			SUT.ForceLoaded();
+
+			SUT.ColumnDefinitions.Add(new ColumnDefinition() { Width = GridLength.Auto });
+			SUT.ColumnDefinitions.Clear();
+		}
+
+		[TestMethod]
+		public void When_Clear_RowDefinitions()
+		{
+			var SUT = new Grid();
+			SUT.ForceLoaded();
+
+			SUT.RowDefinitions.Add(new RowDefinition() { Height = GridLength.Auto });
+			SUT.RowDefinitions.Clear();
+		}
 	}
 }
