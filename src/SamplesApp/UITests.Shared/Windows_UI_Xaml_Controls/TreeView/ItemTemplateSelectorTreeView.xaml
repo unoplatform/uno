@@ -1,0 +1,40 @@
+﻿<Page
+    x:Class="UITests.Shared.Windows_UI_Xaml_Controls.TreeView.ItemTemplateSelectorTreeView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:UITests.Shared.Windows_UI_Xaml_Controls.TreeView"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	xmlns:models="using:UITests.Shared.Windows_UI_Xaml_Controls.TreeView.Models"
+	xmlns:controls="using:Microsoft.UI.Xaml.Controls"
+	mc:Ignorable="d"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+
+	<Page.Resources>
+		<DataTemplate x:Key="ParentTemplate" x:DataType="models:Item">
+			<controls:TreeViewItem AutomationProperties.Name="{x:Bind Name}"
+            ItemsSource="{x:Bind Children}" IsExpanded="True">
+				<StackPanel Orientation="Horizontal">
+					<TextBlock Margin="0,0,10,0"/>
+					<TextBlock Text="{x:Bind Name}" />
+				</StackPanel>
+			</controls:TreeViewItem>
+		</DataTemplate>
+
+		<DataTemplate x:Key="ChildTemplate" x:DataType="models:Item">
+			<controls:TreeViewItem AutomationProperties.Name="{x:Bind Name}">
+				<StackPanel Orientation="Horizontal">
+					<TextBlock Margin="0,0,10,0"/>
+					<TextBlock Text="{x:Bind Name}"/>
+				</StackPanel>
+			</controls:TreeViewItem>
+		</DataTemplate>
+
+		<local:ItemTypeTemplateSelector x:Key="ItemTemplateSelector" ParentTemplate="{StaticResource ParentTemplate}" ChildTemplate="{StaticResource ChildTemplate}" />
+	</Page.Resources>
+
+
+	<TreeView ItemsSource="{Binding Items}" ItemTemplateSelector="{StaticResource ItemTemplateSelector}">
+	</TreeView>
+
+</Page>
