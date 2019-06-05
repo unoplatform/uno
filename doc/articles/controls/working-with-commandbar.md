@@ -394,10 +394,7 @@ Gets or sets the text description displayed on the app bar button.
 
 Unlike on **UWP**, the `Label` will not be displayed below the `Icon`.
 
-It is only displayed on **Android** in two cases:
-
-* When long-pressing the button (via a tooltip)
-* When the `AppBarButton` is displayed from the overflow (when part of `SecondaryCommands`)
+It is only displayed on **Android** when the `AppBarButton` is displayed from the overflow (when part of `SecondaryCommands`)
 
 It is highly recommended to set and localize `Label` on all `AppBarButton`s, if only for accessibility.
 
@@ -697,20 +694,6 @@ To disable the back swipe/gesture on **iOS**, you must remove the `CommandBar` o
 </CommandBar>
 ```
 
-## Why does a black circle appears when I long-press on my AppBarButton on Android?
-
-This is an empty tooltip. You can set and localize its value using the `Label` property of `AppBarButton`:
-
-```xml
-<CommandBar>
-    <AppBarButton Label="Search">
-        <AppBarButton.Icon>
-            <BitmapIcon UriSource="ms-appx:///Assets/Icons/search.png" />
-        </AppBarButton.Icon>
-    </AppBarButton>
-</CommandBar>
-```
-
 ## Why doesn't Flyout work on my AppBarButton?
 
 `AppBarButton` doesn't currently support `Flyout` when using `CommandBar` in native mode. You can use `MenuFlyout` instead.
@@ -866,22 +849,22 @@ If the issue still occurs, make sure that both pages have a `CommandBar`. If you
 # Known issues
 
 ## iOS
-
-Can’t have multiple CommandBars in the same page (e.g., Master/Details, bottom CommandBar).
-Can’t change the title of the back button if the previous page doesn’t have a CommandBar.
-You must set the `CommandBar` `Padding` to `StatusBarThickness` in Native mode for iOS and Android (Please refer to the Padding section).
-You must define the title of the back button of the current page’s CommandBar in the CommandBar of the previous page.
-Can’t have a smooth transition between pages with different CommandBar backgrounds.
-Can’t have a smooth transition between pages with and without a CommandBar.
-Can’t change the position and size of the CommandBar (always top-aligned, horizontally-stretched, height of 44).
-Can’t remove the 1px underline/shadow without making the CommandBar’s background transparent.
-Can’t change the height of the CommandBar.
-Can’t Can’t use the back gesture on pages without a CommandBar.
-Can’t disable the back gesture without using workarounds (fake back buttons).
-Can’t change the Visibility of a CommandBar.
-Can’t change the Opacity of a CommandBar.
-Can’t superpose views over a CommandBar.
-Can’t animate/translate the CommandBar (i.e., when hiding/showing it based on scroll offset).
-Can’t put your CommandBar inside a ScrollViewer and make it scroll.
-Can’t put your CommandBar inside templates (i.e., AVP).
-Can’t cancel a back navigation using BackRequestedEventArgs.Handled.
+  
+- Can’t have multiple CommandBars in the same page (e.g., Master/Details, bottom CommandBar).
+- Can’t change the title of the back button if the previous page doesn’t have a CommandBar.
+- You must set the `CommandBar` `Padding` to `StatusBarThickness` in Native mode for iOS and Android (Please refer to the Padding section).
+- You must define the title of the back button of the current page’s CommandBar in the CommandBar of the previous page.
+- Can’t have a smooth transition between pages with different CommandBar backgrounds.
+- Can’t have a smooth transition between pages with and without a CommandBar.
+- Can’t change the position and size of the CommandBar (always top-aligned, horizontally-stretched, height of 44).
+- Can’t remove the 1px underline/shadow without making the CommandBar’s background transparent.
+- Can’t change the height of the CommandBar.
+- Can’t Can’t use the back gesture on pages without a CommandBar.
+- Can’t disable the back gesture without using workarounds (fake back buttons).
+- Can’t change the Visibility of a CommandBar.
+- Can’t change the Opacity of a CommandBar.
+- Can’t superpose views over a CommandBar.
+- Can’t animate/translate the CommandBar (i.e., when hiding/showing it based on scroll offset).
+- Can’t put your CommandBar inside a ScrollViewer and make it scroll.
+- Can’t put your CommandBar inside templates (i.e., AVP).
+- Can’t cancel a back navigation using BackRequestedEventArgs.Handled.
