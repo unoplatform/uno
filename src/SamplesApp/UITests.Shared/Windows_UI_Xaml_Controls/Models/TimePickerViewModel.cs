@@ -13,7 +13,6 @@ namespace SamplesApp.Windows_UI_Xaml_Controls.Models
 
 		public TimePickerViewModel(CoreDispatcher dispatcher) : base(dispatcher)
 		{
-			SetToCurrentTime = CreateCommand(ExecuteSetToCurrentTime);
 		}
 
 		public TimeSpan Time
@@ -26,11 +25,6 @@ namespace SamplesApp.Windows_UI_Xaml_Controls.Models
 			}
 		}
 
-		public ICommand SetToCurrentTime { get; }
-
-		private void ExecuteSetToCurrentTime()
-		{
-			Time = DateTime.Now.TimeOfDay;
-		}
+		public ICommand SetToCurrentTime => GetOrCreateCommand(() => Time = DateTime.Now.TimeOfDay);
 	}
 }

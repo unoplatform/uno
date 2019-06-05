@@ -7,11 +7,10 @@ using Windows.ApplicationModel.DataTransfer;
 namespace UITests.Shared.Windows_UI_Xaml_Input.Models
 {
 	[Bindable]
-    public class CopyToClipboardViewModel : ViewModelBase
+	public class CopyToClipboardViewModel : ViewModelBase
 	{
 		public CopyToClipboardViewModel(CoreDispatcher dispatcher) : base(dispatcher)
 		{
-			Copy = CreateCommand(ExecuteCopy);
 		}
 
 		private string _text;
@@ -25,7 +24,7 @@ namespace UITests.Shared.Windows_UI_Xaml_Input.Models
 			}
 		}
 
-		public ICommand Copy { get; }
+		public ICommand Copy => GetOrCreateCommand(ExecuteCopy);
 
 		private void ExecuteCopy()
 		{
