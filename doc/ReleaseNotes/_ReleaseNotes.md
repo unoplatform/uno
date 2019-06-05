@@ -72,11 +72,14 @@
     - Import of MenuBar code, not functional yet as MenuItemFlyout (Issue #801)
     - Basic support for macOS native system menus
 * Ensure FrameworkElement.LayoutUpdated is invoked on all elements being arranged
+* Fix Grid.ColumnDefinitions.Clear exception (#1006)
+* 155086 [Android] Fixed `AppBarButton.Label` taking precedence over `AppBarButton.Content` when used as `PrimaryCommands`.
 
 ### Breaking Changes
 * The `WebAssemblyRuntime.InvokeJSUnmarshalled` method with three parameters has been removed.
 * `NavigationBarHelper` has been removed.
 * Localized Text, Content etc is now applied even if the Text (etc) property isn't set in Xaml. Nested implicit content (eg `<Button><Border>...`) will be overridden by localized values if available.
+* [Android] Unless nested under `SecondaryCommands`, the `AppBarButton.Label` property will no longer be used for the title of menu item, instead use the `AppBarButton.Content` property. For `SecondaryCommands`, keep using `AppBarButton.Label`.
 
 ### Bug fixes
 * DatePicker FlyoutPlacement now set to Full by default
