@@ -127,6 +127,7 @@
 * [Android] Fix MediaPlayerElement.Stretch not applied
 * Fix Grid.ColumnDefinitions.Clear exception (#1006)
 * [Wasm] Align Window.SizeChanged and ApplicationView.VisibleBoundsChanged ordering with UWP (#1015)
+* Add VS2019 Solution Filters for known developer tasks
 
 ## Release 1.44.0
 
