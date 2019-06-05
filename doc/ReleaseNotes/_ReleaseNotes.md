@@ -127,6 +127,7 @@
 * [Android] Fix MediaPlayerElement.Stretch not applied
 * Fix Grid.ColumnDefinitions.Clear exception (#1006)
 * [Wasm] Align Window.SizeChanged and ApplicationView.VisibleBoundsChanged ordering with UWP (#1015)
+* #154969 [iOS] MediaPlayer ApplyStretch breaking mediaplayer- fixed
 
 ## Release 1.44.0
 
