@@ -17,12 +17,12 @@ namespace Windows.UI.Xaml.Controls
 		
 		private void OnStretchChanged(Stretch newValue, Stretch oldValue)
 		{
-			ApplyStretch();
+			ApplyStretch(newValue);
 		}
 
-		internal void ApplyStretch()
+		internal void ApplyStretch(Stretch stretchValue = null)
 		{
-			switch (Stretch)
+			switch (stretchValue?? Stretch)
 			{
 				case Stretch.Uniform:
 					MediaPlayer.UpdateVideoGravity(AVLayerVideoGravity.ResizeAspect);
@@ -38,7 +38,7 @@ namespace Windows.UI.Xaml.Controls
 					break;
 
 				default:
-					throw new NotSupportedException($"Stretch mode {Stretch} is not supported");
+					throw new NotSupportedException($"Stretch mode {stretchValue?? Stretch} is not supported");
 			}
 		}
 	}
