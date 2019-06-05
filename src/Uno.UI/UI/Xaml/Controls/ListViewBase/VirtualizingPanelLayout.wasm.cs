@@ -29,7 +29,6 @@ namespace Windows.UI.Xaml.Controls
 
 		private Size _availableSize;
 		private double _lastScrollOffset;
-		private Size _lastAvailableSize;
 
 		private double AvailableBreadth => ScrollOrientation == Orientation.Vertical ?
 			_availableSize.Width :
@@ -126,7 +125,7 @@ namespace Windows.UI.Xaml.Controls
 				}
 			}
 
-			if(
+			if (
 				ItemsControl == null
 				&& OwnerPanel.TemplatedParent is ItemsControl popupItemsControl
 			)
@@ -158,18 +157,18 @@ namespace Windows.UI.Xaml.Controls
 			var unappliedDelta = Abs(delta);
 			var fillDirection = sign > 0 ? GeneratorDirection.Forward : GeneratorDirection.Backward;
 
-				while (unappliedDelta > 0)
+			while (unappliedDelta > 0)
+			{
+				// Apply scroll in bite-sized increments. This is crucial for good performance, since the delta may be in the 100s or 1000s of pixels, and we want to recycle unseen views at the same rate that we dequeue newly-visible views.
+				var scrollIncrement = GetScrollConsumptionIncrement(fillDirection);
+				if (scrollIncrement == 0)
 				{
-					// Apply scroll in bite-sized increments. This is crucial for good performance, since the delta may be in the 100s or 1000s of pixels, and we want to recycle unseen views at the same rate that we dequeue newly-visible views.
-					var scrollIncrement = GetScrollConsumptionIncrement(fillDirection);
-					if (scrollIncrement == 0)
-					{
-						break;
-					}
-					unappliedDelta -= scrollIncrement;
-					unappliedDelta = Max(0, unappliedDelta);
-					UpdateLayout(extentAdjustment: sign * -unappliedDelta);
+					break;
 				}
+				unappliedDelta -= scrollIncrement;
+				unappliedDelta = Max(0, unappliedDelta);
+				UpdateLayout(extentAdjustment: sign * -unappliedDelta);
+			}
 			UpdateCompleted();
 
 			_lastScrollOffset = ScrollOffset;
@@ -208,48 +207,9 @@ namespace Windows.UI.Xaml.Controls
 			ViewportSize = ScrollViewer?.ViewportMeasureSize ?? default;
 			if (this.Log().IsEnabled(LogLevel.Debug))
 			{
-				this.Log().LogDebug($"Calling {GetMethodTag()}, availableSize={availableSize}, _availableSize={_lastAvailableSize} {GetDebugInfo()}");
+				this.Log().LogDebug($"Calling {GetMethodTag()}, availableSize={availableSize}, _availableSize={_availableSize} {GetDebugInfo()}");
 			}
 
-			if(_lastAvailableSize != availableSize)
-			{
-				// Drop the current cells for now, but we need to remeasure the cells instead.
-				ClearLines();
-			}
-			else
-			{
-				// Size has not changed, remeasure all items with their same sizes
-				foreach(var line in _materializedLines)
-				{
-					foreach (var view in line.ContainerViews)
-					{
-						//
-						// Remeasure the item will the full available width, to determine if it has changed.
-						// If it has, rebuild everything. This will have to be adjusted for performance.
-						//
-						var slotSize = ScrollOrientation == Orientation.Vertical ?
-							new Size(AvailableBreadth, double.PositiveInfinity) :
-							new Size(double.PositiveInfinity, AvailableBreadth);
-
-						var prevSize = view.DesiredSize;
-						view.Measure(slotSize);
-
-						if (this.Log().IsEnabled(LogLevel.Debug))
-						{
-							this.Log().LogDebug($"{GetMethodTag()} item remeasured prevSize:{prevSize} view.DesiredSize:{view.DesiredSize}");
-						}
-
-						if(prevSize != view.DesiredSize)
-						{
-							// Drop the current cells for now, but we need to remeasure the cells instead.
-							ClearLines();
-							break;
-						}
-					}
-				}
-			}
-
-			_lastAvailableSize = availableSize;
 			_availableSize = availableSize;
 			UpdateLayout();
 
@@ -276,32 +236,6 @@ namespace Windows.UI.Xaml.Controls
 
 			_availableSize = finalSize;
 			UpdateLayout();
-
-			// This is a hack to propagate the "Arrange" phase to children following
-			// an .InvalidateArrange() (or .InvalidateMeasure, obviously)
-			foreach (var line in _materializedLines)
-			{
-				for (var i = 0; i < line.ContainerViews.Length; i++)
-				{
-					var view = line.ContainerViews[i];
-					var rect = line.Rects[i];
-
-					// Adjust the provided rect to use the current available breath
-					// as the current list may have changed size.
-					if(Orientation == Orientation.Horizontal)
-					{
-						rect.Height = AvailableBreadth;
-					}
-					else
-					{
-						rect.Width = AvailableBreadth;
-					}
-
-					// IMPORTANT: THIS HACK WON'T ALLOW THE ITEM TO CHANGE ITS SIZE, BUT
-					// WILL FIX THE PROBLEM OF PROPAGATING CORRECTLY THE ARRANGE PHASE.
-					view.Arrange(rect);
-				}
-			}
 
 			return EstimatePanelSize();
 		}
@@ -535,7 +469,7 @@ namespace Windows.UI.Xaml.Controls
 
 		protected int GetFlatItemIndex(IndexPath indexPath) => ItemsControl.GetIndexFromIndexPath(indexPath);
 
-		protected Rect AddView(FrameworkElement view, GeneratorDirection fillDirection, double extentOffset, double breadthOffset)
+		protected void AddView(FrameworkElement view, GeneratorDirection fillDirection, double extentOffset, double breadthOffset)
 		{
 			if (view.Parent == null)
 			{
@@ -575,8 +509,6 @@ namespace Windows.UI.Xaml.Controls
 			}
 
 			view.Arrange(finalRect);
-
-			return finalRect;
 		}
 
 		private Line GetFirstMaterializedLine() => _materializedLines.Count > 0 ? _materializedLines[0] : null;
@@ -656,7 +588,6 @@ namespace Windows.UI.Xaml.Controls
 		protected class Line
 		{
 			public FrameworkElement[] ContainerViews { get; }
-			public Rect[] Rects { get; }
 			public IndexPath FirstItem { get; }
 			public IndexPath LastItem { get; }
 			public int FirstItemFlat { get; }
@@ -664,23 +595,19 @@ namespace Windows.UI.Xaml.Controls
 			public FrameworkElement FirstView => ContainerViews[0];
 			public FrameworkElement LastView => ContainerViews[ContainerViews.Length - 1];
 
-			public Line(FrameworkElement[] containerViews, Rect[] rects, IndexPath firstItem, IndexPath lastItem, int firstItemFlat)
+			public Line(FrameworkElement[] containerViews, IndexPath firstItem, IndexPath lastItem, int firstItemFlat)
 			{
 				if (containerViews.Length == 0)
 				{
 					throw new InvalidOperationException("Line must contain at least one view");
 				}
 
-				if (containerViews.Length != rects.Length)
-				{
-					throw new InvalidOperationException("Must have same number of views and rect!");
-				}
 				ContainerViews = containerViews;
-				Rects = rects;
 				FirstItem = firstItem;
 				LastItem = lastItem;
 				FirstItemFlat = firstItemFlat;
 			}
+
 		}
 	}
 }
