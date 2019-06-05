@@ -125,8 +125,51 @@
 
         <Member fullName="System.Void Windows.UI.Xaml.Shapes.Rectangle.LayoutSubviews()"
                 reason="Removed to use ArrangeOverride for macOS compatibility"/>
+
+        <Member fullName="System.Void Windows.UI.Xaml.Shapes.Rectangle.LayoutSubviews()"
+                reason="Removed to use ArrangeOverride for macOS compatibility"/>
+
+        <Member fullName="System.Void Windows.UI.Xaml.StateTriggerBase.SetActive(System.Boolean isActive)"
+                reason="Aligned visiblity with UWP" />
+        <Member fullName="System.Void Windows.UI.Xaml.UIElement.set_RenderSize(Windows.Foundation.Size value)"
+                reason="Aligned visiblity with UWP" />
+
+        <Member fullName="System.Void Uno.UI.UnoViewGroup.set_IsPointerCaptured(System.Boolean value)"
+                reason="Aligned visiblity with UWP" />
         
         <Member fullName="System.Void Windows.UI.Xaml.FrameworkElement.OnLayoutUpdated()"
+                reason="Invalid method visibility"/>
+        <Member fullName="System.Void Windows.UI.Xaml.StateTriggerBase.SetActive(System.Boolean isActive)"
+                reason="Invalid method visibility"/>
+        <Member fullName="System.Void Windows.UI.Xaml.Controls.Image.OnLayoutUpdated()"
+                reason="Invalid method visibility"/>
+        <Member fullName="System.Void Windows.UI.Xaml.Controls.ProgressRing.OnLayoutUpdated()"
+                reason="Invalid method visibility"/>
+        <Member fullName="System.Void Windows.UI.Xaml.Controls.ScrollContentPresenter.OnLayoutUpdated()"
+                reason="Invalid method visibility"/>
+        <Member fullName="System.Void Windows.UI.Xaml.Controls.NativeListViewBase.OnLayoutUpdated()"
+                reason="Invalid method visibility"/>
+        <Member fullName="System.Void Windows.UI.Xaml.Controls.NativePagedView.OnLayoutUpdated()"
+                reason="Invalid method visibility"/>
+        <Member fullName="System.Void Windows.UI.Xaml.Controls.TextBoxView.OnLayoutUpdated()"
+                reason="Invalid method visibility"/>
+        <Member fullName="System.Void Uno.UI.Controls.Legacy.GridView.OnLayoutUpdated()"
+                reason="Invalid method visibility"/>
+        <Member fullName="System.Void Uno.UI.Controls.Legacy.HorizontalGridView.OnLayoutUpdated()"
+                reason="Invalid method visibility"/>
+        <Member fullName="System.Void Uno.UI.Controls.Legacy.HorizontalListView.OnLayoutUpdated()"
+                reason="Invalid method visibility"/>
+        <Member fullName="System.Void Uno.UI.Controls.Legacy.ListView.OnLayoutUpdated()"
+                reason="Invalid method visibility"/>
+        <Member fullName="System.Void Windows.UI.Xaml.Shapes.ArbitraryShapeBase.OnLayoutUpdated()"
+                reason="Invalid method visibility"/>
+        <Member fullName="System.Void Windows.UI.Xaml.Controls.Picker.OnLayoutUpdated()"
+                reason="Invalid method visibility"/>
+        <Member fullName="System.Void Windows.UI.Xaml.Controls.MultilineTextBoxView.OnLayoutUpdated()"
+                reason="Invalid method visibility"/>
+        <Member fullName="System.Void Windows.UI.Xaml.Controls.SinglelineTextBoxView.OnLayoutUpdated()"
+                reason="Invalid method visibility"/>
+        <Member fullName="System.Void Uno.UI.Controls.Legacy.ListViewBase.OnLayoutUpdated()"
                 reason="Invalid method visibility"/>
 
       </Methods>
