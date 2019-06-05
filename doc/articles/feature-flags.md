@@ -16,7 +16,7 @@ By default, Uno favors the default UWP XAML styles over the native styles for Bu
 
 This can be changed using `Uno.UI.FeatureConfiguration.UIElement.UseUWPDefaultStyles`.
 
-##Disabling accessibility text scaling
+## Disabling accessibility text scaling
 
 By default, Uno automatically enables accessibility text scaling on iOS and Android devices however to have more control an option has been added to disable text scaling. 
 
