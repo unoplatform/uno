@@ -55,7 +55,7 @@ namespace Windows.UI.Xaml.Controls
 			DependencyProperty.Register(
 				"Items",
 				typeof(IList<MenuFlyoutItemBase>),
-				typeof(MenuFlyoutItem),
+				typeof(MenuFlyout),
 				new PropertyMetadata(defaultValue: null)
 			);
 
