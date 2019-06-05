@@ -71,7 +71,6 @@
 * MenuBar
     - Import of MenuBar code, not functional yet as MenuItemFlyout (Issue #801)
     - Basic support for macOS native system menus
-* Fix Grid.ColumnDefinitions.Clear exception (#1006)
 
 ### Breaking Changes
 * The `WebAssemblyRuntime.InvokeJSUnmarshalled` method with three parameters has been removed.
@@ -126,6 +125,8 @@
 * Fix a potential crash during code generated from XAML, content were not properly escaped.
 * #977 Fix exception when setting MediaPlayerElement.Stretch in XAML.
 * [Android] Fix MediaPlayerElement.Stretch not applied
+* Fix Grid.ColumnDefinitions.Clear exception (#1006)
+* [Wasm] Align Window.SizeChanged and ApplicationView.VisibleBoundsChanged ordering with UWP (#1015)
 
 ## Release 1.44.0
 
