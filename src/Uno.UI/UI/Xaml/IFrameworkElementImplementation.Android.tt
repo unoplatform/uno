@@ -93,7 +93,7 @@ namespace <#= mixin.NamespaceName #>
 
 		public event EventHandler<object> LayoutUpdated;
 
-		protected virtual void OnLayoutUpdated()
+		internal virtual void OnLayoutUpdated()
 		{
 			if (LayoutUpdated != null)
 			{

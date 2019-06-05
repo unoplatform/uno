@@ -484,7 +484,7 @@ namespace <#= mixin.NamespaceName #>
 
 		public event EventHandler<object> LayoutUpdated;
 
-		public virtual void OnLayoutUpdated ()
+		internal virtual void OnLayoutUpdated ()
 		{
 			if (LayoutUpdated != null) {
 				LayoutUpdated (this, EventArgs.Empty);
