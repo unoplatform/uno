@@ -1,46 +1,46 @@
 #pragma warning disable 108 // new keyword hiding
 #pragma warning disable 114 // new keyword hiding
+using System;
+using System.Collections.Generic;
+using Windows.Foundation.Metadata;
+using Windows.ApplicationModel.DataTransfer;
+
 namespace Windows.UI.Xaml.Controls
 {
-	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-	[global::Uno.NotImplemented]
-	#endif
+
+	[Uno.NotImplemented]
 	public  partial class TreeViewDragItemsStartingEventArgs 
 	{
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
+
+		[Uno.NotImplemented]
 		public  bool Cancel
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool TreeViewDragItemsStartingEventArgs.Cancel is not implemented in Uno.");
+				throw new NotImplementedException("The member bool TreeViewDragItemsStartingEventArgs.Cancel is not implemented in Uno.");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.TreeViewDragItemsStartingEventArgs", "bool TreeViewDragItemsStartingEventArgs.Cancel");
+				ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.TreeViewDragItemsStartingEventArgs", "bool TreeViewDragItemsStartingEventArgs.Cancel");
 			}
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  global::Windows.ApplicationModel.DataTransfer.DataPackage Data
+
+		[Uno.NotImplemented]
+		public DataPackage Data
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DataPackage TreeViewDragItemsStartingEventArgs.Data is not implemented in Uno.");
+				throw new NotImplementedException("The member DataPackage TreeViewDragItemsStartingEventArgs.Data is not implemented in Uno.");
 			}
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  global::System.Collections.Generic.IList<object> Items
+		[Uno.NotImplemented]
+		public IList<object> Items
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<object> TreeViewDragItemsStartingEventArgs.Items is not implemented in Uno.");
+				throw new NotImplementedException("The member IList<object> TreeViewDragItemsStartingEventArgs.Items is not implemented in Uno.");
 			}
 		}
-		#endif
 		// Forced skipping of method Windows.UI.Xaml.Controls.TreeViewDragItemsStartingEventArgs.Cancel.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.TreeViewDragItemsStartingEventArgs.Cancel.set
 		// Forced skipping of method Windows.UI.Xaml.Controls.TreeViewDragItemsStartingEventArgs.Data.get

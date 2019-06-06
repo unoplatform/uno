@@ -1,84 +1,76 @@
 #pragma warning disable 108 // new keyword hiding
 #pragma warning disable 114 // new keyword hiding
+using System;
+
 namespace Windows.UI.Xaml.Controls
 {
-	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || false
-	[global::Uno.NotImplemented]
-	#endif
-	public  partial class TreeViewItemTemplateSettings : global::Windows.UI.Xaml.DependencyObject
+	[Uno.NotImplemented]
+	public partial class TreeViewItemTemplateSettings : DependencyObject
 	{
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  global::Windows.UI.Xaml.Visibility CollapsedGlyphVisibility
+		[Uno.NotImplemented]
+		public Visibility CollapsedGlyphVisibility
 		{
 			get
 			{
-				return (global::Windows.UI.Xaml.Visibility)this.GetValue(CollapsedGlyphVisibilityProperty);
+				return (Visibility)this.GetValue(CollapsedGlyphVisibilityProperty);
 			}
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  int DragItemsCount
+
+		[Uno.NotImplemented]
+		public int DragItemsCount
 		{
 			get
 			{
 				return (int)this.GetValue(DragItemsCountProperty);
 			}
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  global::Windows.UI.Xaml.Visibility ExpandedGlyphVisibility
+
+		[Uno.NotImplemented]
+		public Visibility ExpandedGlyphVisibility
 		{
 			get
 			{
-				return (global::Windows.UI.Xaml.Visibility)this.GetValue(ExpandedGlyphVisibilityProperty);
+				return (Visibility)this.GetValue(ExpandedGlyphVisibilityProperty);
 			}
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  global::Windows.UI.Xaml.Thickness Indentation
+
+		[Uno.NotImplemented]
+		public Thickness Indentation
 		{
 			get
 			{
-				return (global::Windows.UI.Xaml.Thickness)this.GetValue(IndentationProperty);
+				return (Thickness)this.GetValue(IndentationProperty);
 			}
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public static global::Windows.UI.Xaml.DependencyProperty CollapsedGlyphVisibilityProperty { get; } = 
+
+		[Uno.NotImplemented]
+		public static DependencyProperty CollapsedGlyphVisibilityProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
 			"CollapsedGlyphVisibility", typeof(global::Windows.UI.Xaml.Visibility), 
 			typeof(global::Windows.UI.Xaml.Controls.TreeViewItemTemplateSettings), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Visibility)));
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public static global::Windows.UI.Xaml.DependencyProperty DragItemsCountProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
+
+		[Uno.NotImplemented]
+		public static DependencyProperty DragItemsCountProperty { get; } =
+		DependencyProperty.Register(
 			"DragItemsCount", typeof(int), 
-			typeof(global::Windows.UI.Xaml.Controls.TreeViewItemTemplateSettings), 
+			typeof(TreeViewItemTemplateSettings), 
 			new FrameworkPropertyMetadata(default(int)));
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public static global::Windows.UI.Xaml.DependencyProperty ExpandedGlyphVisibilityProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			"ExpandedGlyphVisibility", typeof(global::Windows.UI.Xaml.Visibility), 
-			typeof(global::Windows.UI.Xaml.Controls.TreeViewItemTemplateSettings), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Visibility)));
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public static global::Windows.UI.Xaml.DependencyProperty IndentationProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			"Indentation", typeof(global::Windows.UI.Xaml.Thickness), 
-			typeof(global::Windows.UI.Xaml.Controls.TreeViewItemTemplateSettings), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Thickness)));
-		#endif
+
+		[Uno.NotImplemented]
+		public static DependencyProperty ExpandedGlyphVisibilityProperty { get; } =
+		DependencyProperty.Register(
+			"ExpandedGlyphVisibility", typeof(Visibility), 
+			typeof(TreeViewItemTemplateSettings), 
+			new FrameworkPropertyMetadata(default(Visibility)));
+
+		[Uno.NotImplemented]
+		public static DependencyProperty IndentationProperty { get; } =
+		DependencyProperty.Register(
+			"Indentation", typeof(Thickness), 
+			typeof(TreeViewItemTemplateSettings), 
+			new FrameworkPropertyMetadata(default(Thickness)));
+
 		// Skipping already declared method Windows.UI.Xaml.Controls.TreeViewItemTemplateSettings.TreeViewItemTemplateSettings()
 		// Forced skipping of method Windows.UI.Xaml.Controls.TreeViewItemTemplateSettings.TreeViewItemTemplateSettings()
 		// Forced skipping of method Windows.UI.Xaml.Controls.TreeViewItemTemplateSettings.ExpandedGlyphVisibility.get
