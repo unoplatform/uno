@@ -9,6 +9,7 @@ using Uno.UI;
 using Windows.Foundation;
 using Windows.UI.Xaml.Controls.Primitives;
 using static System.Math;
+using static Windows.UI.Xaml.Controls.Primitives.GeneratorDirection;
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -29,6 +30,15 @@ namespace Windows.UI.Xaml.Controls
 
 		private Size _availableSize;
 		private double _lastScrollOffset;
+
+		/// <summary>
+		/// The previous item to the old first visible item, used when a lightweight layout rebuild is called.
+		/// </summary>
+		private IndexPath? _dynamicSeedIndex;
+		/// <summary>
+		/// Start position of the old first group, used when a lightweight layout rebuild is called.
+		/// </summary>
+		private double? _dynamicSeedStart;
 
 		private double AvailableBreadth => ScrollOrientation == Orientation.Vertical ?
 			_availableSize.Width :
@@ -211,6 +221,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 
 			_availableSize = availableSize;
+			ScrapLayout();
 			UpdateLayout();
 
 			return EstimatePanelSize();
@@ -256,7 +267,11 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		private void UpdateCompleted() => Generator.UpdateVisibilities();
+		private void UpdateCompleted()
+		{
+			Generator.ClearScrappedViews();
+			Generator.UpdateVisibilities();
+		}
 
 		/// <summary>
 		/// Fill in extended viewport with views.
@@ -264,8 +279,14 @@ namespace Windows.UI.Xaml.Controls
 		/// <param name="extentAdjustment">Adjustment to apply when calculating fillable area.</param>
 		private void FillLayout(double extentAdjustment)
 		{
-			FillBackward();
+			if (!_dynamicSeedStart.HasValue) // Don't fill backward if we're doing a light rebuild (since we are starting from nearest previously-visible item)
+			{
+				FillBackward();
+			}
 			FillForward();
+
+			_dynamicSeedIndex = null;
+			_dynamicSeedStart = null;
 
 			void FillBackward()
 			{
@@ -285,7 +306,7 @@ namespace Windows.UI.Xaml.Controls
 			{
 				if ((GetItemsEnd() ?? 0) < ExtendedViewportEnd + extentAdjustment)
 				{
-					var nextItem = GetNextUnmaterializedItem(GeneratorDirection.Forward, GetLastMaterializedIndexPath());
+					var nextItem = GetNextUnmaterializedItem(GeneratorDirection.Forward, _dynamicSeedIndex ?? GetLastMaterializedIndexPath());
 					while (nextItem != null && (GetItemsEnd() ?? 0) < ExtendedViewportEnd + extentAdjustment)
 					{
 						AddLine(GeneratorDirection.Forward, nextItem.Value);
@@ -334,6 +355,18 @@ namespace Windows.UI.Xaml.Controls
 			for (int i = 0; i < firstMaterializedLine.ContainerViews.Length; i++)
 			{
 				Generator.RecycleViewForItem(firstMaterializedLine.ContainerViews[i], firstMaterializedLine.FirstItemFlat + i);
+			}
+		}
+
+		/// <summary>
+		/// Send views in line to temporary scrap.
+		/// </summary>
+		/// <param name="firstMaterializedLine"></param>
+		private void ScrapLine(Line firstMaterializedLine)
+		{
+			for (int i = 0; i < firstMaterializedLine.ContainerViews.Length; i++)
+			{
+				Generator.ScrapViewForItem(firstMaterializedLine.ContainerViews[i], firstMaterializedLine.FirstItemFlat + i);
 			}
 		}
 
@@ -419,12 +452,49 @@ namespace Windows.UI.Xaml.Controls
 			_materializedLines.Clear();
 		}
 
+		/// <summary>
+		/// Sends all views to temporary scrap, in preparation for a lightweight layout rebuild.
+		/// </summary>
+		private void ScrapLayout()
+		{
+
+			var firstVisibleItem = GetFirstMaterializedIndexPath();
+
+			_dynamicSeedIndex = GetDynamicSeedIndex(firstVisibleItem);
+			_dynamicSeedStart = GetContentStart();
+
+			if (this.Log().IsEnabled(LogLevel.Debug))
+			{
+				this.Log().LogDebug($"{GetMethodTag()} seed index={_dynamicSeedIndex} seed start={_dynamicSeedStart}");
+			}
+
+			foreach (var line in _materializedLines)
+			{
+				ScrapLine(line);
+			}
+			_materializedLines.Clear();
+		}
+
+		/// <summary>
+		/// Get 'seed' index for recreating the visual state of the list after <see cref="ScrapLayout()"/>;
+		/// </summary>
+		protected virtual IndexPath? GetDynamicSeedIndex(IndexPath? firstVisibleItem)
+		{
+
+			var lastItem = XamlParent.GetLastItem();
+			if (lastItem == null ||
+				(firstVisibleItem != null && firstVisibleItem.Value > lastItem.Value)
+			)
+			{
+				// None of the previously-visible indices are now present in the updated items source
+				return null;
+			}
+			return GetNextUnmaterializedItem(Backward, firstVisibleItem);
+		}
+
 		private void OnOrientationChanged(Orientation newValue)
 		{
 			Refresh();
-
-			//TODO: preserve scroll position
-			OwnerPanel.InvalidateMeasure();
 		}
 
 		private IndexPath GetFirstVisibleIndexPath()
@@ -538,7 +608,8 @@ namespace Windows.UI.Xaml.Controls
 				return GetEnd(lastView);
 			}
 
-			return null;
+			// This will be null except immediately after ScrapLayout(), when it will be the previous start of materialized items
+			return _dynamicSeedStart;
 		}
 
 		private double GetContentStart() => GetItemsStart() ?? 0;
