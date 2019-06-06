@@ -9,6 +9,7 @@ import android.util.Log;
 
 import java.lang.*;
 import java.lang.reflect.*;
+import java.util.ArrayList;
 import java.util.Map;
 import java.util.HashMap;
 
@@ -17,6 +18,8 @@ public abstract class UnoViewGroup
 	implements UnoViewParent{
 
 	private static final String LOGTAG = "UnoViewGroup";
+	private static boolean _isLayoutingFromMeasure = false;
+	private static ArrayList<UnoViewGroup> callToRequestLayout = new ArrayList<UnoViewGroup>();
 
 	private boolean _inLocalAddView, _inLocalRemoveView;
 	private boolean _isEnabled;
@@ -289,6 +292,12 @@ public abstract class UnoViewGroup
 				// is called again once the view is fully natively initialized.
 				_needsLayoutOnAttachedToWindow = true;
 			}
+
+			if(_isLayoutingFromMeasure){
+				callToRequestLayout.add(this);
+				return;
+			}
+
 			super.requestLayout();
 		}
 	}
@@ -590,6 +599,38 @@ public abstract class UnoViewGroup
 	}
 
 	protected void clearCaptures(){
+	}
+
+	/**
+	 * Call this method if a view is to be laid out outside of a framework layout pass, to ensure that requestLayout() requests are captured
+	 * and propagated later. (Equivalent of ViewRootImpl.requestLayoutDuringLayout())
+	 */
+	public static void startLayoutingFromMeasure() {
+		_isLayoutingFromMeasure = true;
+	}
+
+	/**
+	 * This should always be called immediately after {{@link #startLayoutingFromMeasure()}} has been called.
+	 */
+	public static void endLayoutingFromMeasure() {
+			_isLayoutingFromMeasure = false;
+	}
+
+	/**
+	 * This should be called subsequently to {{@link #endLayoutingFromMeasure()}}, typically during a true layout pass, to flush any captured layout requests.
+	 */
+	public static void measureBeforeLayout() {
+		try {
+			for (int i = 0; i < callToRequestLayout.size(); i++) {
+				UnoViewGroup view = callToRequestLayout.get(i);
+				if (view.isAttachedToWindow()) {
+					view.requestLayout();
+				}
+			}
+		}
+		finally {
+			callToRequestLayout.clear();
+		}
 	}
 
 	protected boolean getIsPointerCaptured() {
