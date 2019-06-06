@@ -40,7 +40,8 @@
 		<Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Auto" />
 		<Setter Property="ScrollViewer.VerticalScrollMode" Value="Auto" />
 		<Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Auto" />
-		<win:Setter Property="ScrollViewer.ZoomMode" Value="Disabled" />
+		<!--ZoomMode attached property is currently not supported-->
+		<!--<win:Setter Property="ScrollViewer.ZoomMode" Value="Disabled" />-->
 		<Setter Property="Template">
 			<Setter.Value>
 				<ControlTemplate TargetType="FlyoutPresenter">
