@@ -165,7 +165,7 @@ namespace Windows.UI.Xaml.Controls
 			var delta = ScrollOffset - _lastScrollOffset;
 			var sign = Sign(delta);
 			var unappliedDelta = Abs(delta);
-			var fillDirection = sign > 0 ? GeneratorDirection.Forward : GeneratorDirection.Backward;
+			var fillDirection = sign > 0 ? Forward : Backward;
 
 			while (unappliedDelta > 0)
 			{
@@ -189,7 +189,7 @@ namespace Windows.UI.Xaml.Controls
 		/// </summary>
 		private double GetScrollConsumptionIncrement(GeneratorDirection fillDirection)
 		{
-			var incrementView = fillDirection == GeneratorDirection.Forward ?
+			var incrementView = fillDirection == Forward ?
 				GetFirstMaterializedLine()?.FirstView :
 				GetLastMaterializedLine()?.LastView;
 
@@ -292,12 +292,12 @@ namespace Windows.UI.Xaml.Controls
 			{
 				if (GetItemsStart() > ExtendedViewportStart + extentAdjustment)
 				{
-					var nextItem = GetNextUnmaterializedItem(GeneratorDirection.Backward, GetFirstMaterializedIndexPath());
+					var nextItem = GetNextUnmaterializedItem(Backward, GetFirstMaterializedIndexPath());
 					while (nextItem != null && GetItemsStart() > ExtendedViewportStart + extentAdjustment)
 					{
 						// Fill gap at start with views
-						AddLine(GeneratorDirection.Backward, nextItem.Value);
-						nextItem = GetNextUnmaterializedItem(GeneratorDirection.Backward, GetFirstMaterializedIndexPath());
+						AddLine(Backward, nextItem.Value);
+						nextItem = GetNextUnmaterializedItem(Backward, GetFirstMaterializedIndexPath());
 					}
 				}
 			}
@@ -306,11 +306,11 @@ namespace Windows.UI.Xaml.Controls
 			{
 				if ((GetItemsEnd() ?? 0) < ExtendedViewportEnd + extentAdjustment)
 				{
-					var nextItem = GetNextUnmaterializedItem(GeneratorDirection.Forward, _dynamicSeedIndex ?? GetLastMaterializedIndexPath());
+					var nextItem = GetNextUnmaterializedItem(Forward, _dynamicSeedIndex ?? GetLastMaterializedIndexPath());
 					while (nextItem != null && (GetItemsEnd() ?? 0) < ExtendedViewportEnd + extentAdjustment)
 					{
-						AddLine(GeneratorDirection.Forward, nextItem.Value);
-						nextItem = GetNextUnmaterializedItem(GeneratorDirection.Forward, GetLastMaterializedIndexPath());
+						AddLine(Forward, nextItem.Value);
+						nextItem = GetNextUnmaterializedItem(Forward, GetLastMaterializedIndexPath());
 					}
 				}
 			}
@@ -516,11 +516,11 @@ namespace Windows.UI.Xaml.Controls
 
 		private void AddLine(GeneratorDirection fillDirection, IndexPath nextVisibleItem)
 		{
-			var extentOffset = fillDirection == GeneratorDirection.Backward ? GetContentStart() : GetContentEnd();
+			var extentOffset = fillDirection == Backward ? GetContentStart() : GetContentEnd();
 
 			var line = CreateLine(fillDirection, extentOffset, AvailableBreadth, nextVisibleItem);
 
-			if (fillDirection == GeneratorDirection.Backward)
+			if (fillDirection == Backward)
 			{
 				_materializedLines.AddToFront(line);
 			}
@@ -553,7 +553,7 @@ namespace Windows.UI.Xaml.Controls
 
 			view.Measure(slotSize);
 
-			var extentOffsetAdjustment = fillDirection == GeneratorDirection.Forward ?
+			var extentOffsetAdjustment = fillDirection == Forward ?
 				0 :
 				-GetExtent(view.DesiredSize);
 
