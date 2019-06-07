@@ -507,8 +507,8 @@
 			style.position = "absolute";
 			style.top = params.Top + "px";
 			style.left = params.Left + "px";
-			style.width = params.Width == NaN ? "auto" : params.Width + "px";
-			style.height = params.Height == NaN ? "auto" : params.Height + "px";
+			style.width = params.Width === NaN ? "auto" : params.Width + "px";
+			style.height = params.Height === NaN ? "auto" : params.Height + "px";
 
 			if (params.Clip) {
 				style.clip = `rect(${params.ClipTop}px, ${params.ClipRight}px, ${params.ClipBottom}px, ${params.ClipLeft}px)`;
@@ -1031,11 +1031,16 @@
 			return true;
 		}
 
+		private static MAX_WIDTH = `${Number.MAX_SAFE_INTEGER}vw`;
+		private static MAX_HEIGHT = `${Number.MAX_SAFE_INTEGER}vh`;
+
 		private measureViewInternal(viewId: number, maxWidth: number, maxHeight: number): [number, number] {
 			const element = this.getView(viewId) as HTMLElement;
 
 			const elementStyle = element.style;
 			const originalStyleCssText = elementStyle.cssText;
+			let parentElement: HTMLElement = null;
+			let parentElementWidthHeight: { width: string, height: string } = null;
 
 			try {
 				if (!element.isConnected) {
@@ -1052,6 +1057,23 @@
 					this.containerElement.appendChild(unconnectedRoot);
 				}
 
+				// As per W3C css-transform spec:
+				// https://www.w3.org/TR/css-transforms-1/#propdef-transform
+				//
+				// > For elements whose layout is governed by the CSS box model, any value other than none
+				// > for the transform property also causes the element to establish a containing block for
+				// > all descendants.Its padding box will be used to layout for all of its
+				// > absolute - position descendants, fixed - position descendants, and descendant fixed
+				// > background attachments.
+				//
+				// We use this feature to allow an measure of text without being influenced by the bounds
+				// of the viewport. We just need to temporary set both the parent width & height to a very big value.
+
+				parentElement = element.parentElement;
+				parentElementWidthHeight = { width: parentElement.style.width, height: parentElement.style.height };
+				parentElement.style.width = WindowManager.MAX_WIDTH;
+				parentElement.style.height = WindowManager.MAX_HEIGHT;
+
 				const updatedStyles = <any>{};
 
 				for (let i = 0; i < elementStyle.length; i++) {
@@ -1059,19 +1081,25 @@
 					updatedStyles[key] = elementStyle.getPropertyValue(key);
 				}
 
-				updatedStyles.width = "";
-				updatedStyles.height = "";
+				if (updatedStyles.hasOwnProperty("width")) {
+					delete updatedStyles.width;
+				}
+				if (updatedStyles.hasOwnProperty("height")) {
+					delete updatedStyles.height;
+				}
 
 				// This is required for an unconstrained measure (otherwise the parents size is taken into account)
 				updatedStyles.position = "fixed";
-				updatedStyles["max-width"] = Number.isFinite(maxWidth) ? maxWidth + "px" : "";
-				updatedStyles["max-height"] = Number.isFinite(maxHeight) ? maxHeight + "px" : "";
+				updatedStyles["max-width"] = Number.isFinite(maxWidth) ? maxWidth + "px" : "none";
+				updatedStyles["max-height"] = Number.isFinite(maxHeight) ? maxHeight + "px" : "none";
 
 				let updatedStyleString = "";
 
 				for (let key in updatedStyles) {
+					if (updatedStyles.hasOwnProperty(key)) {
 						updatedStyleString += key + ": " + updatedStyles[key] + "; ";
 					}
+				}
 
 				// We use a string to prevent the browser to update the element between
 				// each style assignation. This way, the browser will update the element only once.
@@ -1094,6 +1122,11 @@
 			}
 			finally {
 				elementStyle.cssText = originalStyleCssText;
+
+				if (parentElement && parentElementWidthHeight) {
+					parentElement.style.width = parentElementWidthHeight.width;
+					parentElement.style.height = parentElementWidthHeight.height;
+				}
 			}
 		}
 
