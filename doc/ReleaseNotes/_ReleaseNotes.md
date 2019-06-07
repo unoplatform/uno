@@ -125,10 +125,12 @@
 * Fix a potential crash during code generated from XAML, content were not properly escaped.
 * #977 Fix exception when setting MediaPlayerElement.Stretch in XAML.
 * [Android] Fix MediaPlayerElement.Stretch not applied
+* [Android] Fix for ListView elements measuring/layouting bug
 * Fix Grid.ColumnDefinitions.Clear exception (#1006)
 * [Wasm] Align Window.SizeChanged and ApplicationView.VisibleBoundsChanged ordering with UWP (#1015)
 * Add VS2019 Solution Filters for known developer tasks
 * #154969 [iOS] MediaPlayer ApplyStretch breaking mediaplayer- fixed
+* 154815 [WASM] ItemClick event could be raised for wrong item
 
 ## Release 1.44.0
 
