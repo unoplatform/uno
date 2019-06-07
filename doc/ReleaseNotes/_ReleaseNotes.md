@@ -132,6 +132,7 @@
 * Add VS2019 Solution Filters for known developer tasks
 * #154969 [iOS] MediaPlayer ApplyStretch breaking mediaplayer- fixed
 * 154815 [WASM] ItemClick event could be raised for wrong item
+* 155256 Fixed xaml generated enum value not being globalized
 
 ## Release 1.44.0
 
