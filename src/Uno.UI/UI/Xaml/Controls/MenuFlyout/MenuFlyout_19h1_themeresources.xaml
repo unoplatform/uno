@@ -44,7 +44,7 @@
                             VerticalScrollBarVisibility="{TemplateBinding ScrollViewer.VerticalScrollBarVisibility}"
                             IsHorizontalRailEnabled="{TemplateBinding ScrollViewer.IsHorizontalRailEnabled}"
                             IsVerticalRailEnabled="{TemplateBinding ScrollViewer.IsVerticalRailEnabled}"
-                            ZoomMode="{TemplateBinding ScrollViewer.ZoomMode}"
+                            ZoomMode="Disabled"
                             AutomationProperties.AccessibilityView="Raw">
                             <ItemsPresenter Margin="{ThemeResource MenuFlyoutScrollerMargin}" />
                         </ScrollViewer>

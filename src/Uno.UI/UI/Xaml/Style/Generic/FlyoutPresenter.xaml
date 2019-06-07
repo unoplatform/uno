@@ -40,8 +40,7 @@
 		<Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Auto" />
 		<Setter Property="ScrollViewer.VerticalScrollMode" Value="Auto" />
 		<Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Auto" />
-		<!--ZoomMode attached property is currently not supported-->
-		<!--<win:Setter Property="ScrollViewer.ZoomMode" Value="Disabled" />-->
+		<win:Setter Property="ScrollViewer.ZoomMode" Value="Disabled" />
 		<Setter Property="Template">
 			<Setter.Value>
 				<ControlTemplate TargetType="FlyoutPresenter">
@@ -53,7 +52,8 @@
                         CornerRadius="{TemplateBinding CornerRadius}"
                         Padding="{ThemeResource FlyoutBorderThemePadding}">
 						<ScrollViewer x:Name="ScrollViewer"
-                            ZoomMode="{TemplateBinding ScrollViewer.ZoomMode}"
+                            xamarin:ZoomMode="Disabled"
+                            win:ZoomMode="{TemplateBinding ScrollViewer.ZoomMode}"
                             HorizontalScrollMode="{TemplateBinding ScrollViewer.HorizontalScrollMode}"
                             HorizontalScrollBarVisibility="{TemplateBinding ScrollViewer.HorizontalScrollBarVisibility}"
                             VerticalScrollMode="{TemplateBinding ScrollViewer.VerticalScrollMode}"
