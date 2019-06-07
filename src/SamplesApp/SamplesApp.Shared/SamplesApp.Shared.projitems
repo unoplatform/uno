@@ -62,4 +62,7 @@
       <DependentUpon>HttpUnitTests.xaml</DependentUpon>
     </Compile>
   </ItemGroup>
+  <ItemGroup>
+    <Folder Include="$(MSBuildThisFileDirectory)Samples\WinUI\" />
+  </ItemGroup>
 </Project>
