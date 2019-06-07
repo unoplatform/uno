@@ -133,6 +133,7 @@
 * #154969 [iOS] MediaPlayer ApplyStretch breaking mediaplayer- fixed
 * 154815 [WASM] ItemClick event could be raised for wrong item
 * 155256 Fixed xaml generated enum value not being globalized
+* 155161 [Android] fixed keyboard flicker when backing from a page with CommandBar
 
 ## Release 1.44.0
 
