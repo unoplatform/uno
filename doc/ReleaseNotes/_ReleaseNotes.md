@@ -80,6 +80,7 @@
 	- [iOS] Add support of `INotifyCollectionChanged` in the `Picker`
 	- [iOS] Remove the arbitrary `null` item added at the top of the `Picker`
 	- [iOS] Fix infinite layouting cycle in the iOS picker (Removed workaround which is no longer necessary as the given method is invoked properly on each measure/arrange phases)
+* [Wasm] Refactored the way the text is measured in Wasm. Wasn't working well when a parent with a RenderTransform.
 
 ### Breaking Changes
 * The `WebAssemblyRuntime.InvokeJSUnmarshalled` method with three parameters has been removed.
