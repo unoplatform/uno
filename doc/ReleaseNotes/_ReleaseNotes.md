@@ -74,6 +74,12 @@
 * Ensure FrameworkElement.LayoutUpdated is invoked on all elements being arranged
 * Fix Grid.ColumnDefinitions.Clear exception (#1006)
 * 155086 [Android] Fixed `AppBarButton.Label` taking precedence over `AppBarButton.Content` when used as `PrimaryCommands`.
+* ComboBox
+	- Remove dependency to a "Background" template part which is unnecessary and not required on UWP
+	- Make sure that the `PopupPanel` hides itself if collapsed (special cases as it's at the top of the `Window`)
+	- [iOS] Add support of `INotifyCollectionChanged` in the `Picker`
+	- [iOS] Remove the arbitrary `null` item added at the top of the `Picker`
+	- [iOS] Fix infinite layouting cycle in the iOS picker (Removed workaround which is no longer necessary as the given method is invoked properly on each measure/arrange phases)
 
 ### Breaking Changes
 * The `WebAssemblyRuntime.InvokeJSUnmarshalled` method with three parameters has been removed.

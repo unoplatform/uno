@@ -9,6 +9,7 @@ using Uno.UI.Extensions;
 using Uno.Extensions;
 using UIKit;
 using System.Collections;
+using System.Collections.Specialized;
 using System.Windows.Input;
 using CoreGraphics;
 using Uno.Extensions.Specialized;
@@ -44,44 +45,50 @@ namespace Windows.UI.Xaml.Controls
 				size = base.SizeThatFits(size);
 			}
 
-			if (this.Frame.Size != size)
-			{
-				this.SetDimensions(size.Width, size.Height);
-				
-				// forces PickerModel.GetComponentWidth to get called, 
-				// which then receives the new dimensions (which might differ from the default value of 320)
-				this.SetNeedsLayout(); 
-			}
 
 			return size;
 		}
-
-
 
 		public object[] Items { get; private set; } = new object[] { null }; // ensure there's always a null present to allow deselection
 		
 		partial void OnItemsSourceChangedPartialNative(object oldItemsSource, object newItemsSource)
 		{
-			var items = (newItemsSource as IEnumerable)?.ToObjectArray() ?? new object[0];
-			Items = new[] { (object)null }.Concat(items).ToArray(); // ensure there's always a null present to allow deselection
+			if (oldItemsSource is INotifyCollectionChanged oldObservableCollection)
+			{
+				oldObservableCollection.CollectionChanged -= OnItemSourceChanged;
+			}
 
-			ReloadAllComponents();
-			ClearSelection();
+			if (newItemsSource is INotifyCollectionChanged newObservableCollection)
+			{
+				newObservableCollection.CollectionChanged += OnItemSourceChanged;
+			}
+
+			OnItemSourceChanged(newItemsSource, null);
 		}
 
-		private void ClearSelection()
+		private void OnItemSourceChanged(object collection, NotifyCollectionChangedEventArgs _)
 		{
-			this.SelectedItem = null;
+			Items = (collection as IEnumerable)?.ToObjectArray() ?? new object[0];
+			ReloadAllComponents();
+
+			if (!Items.Contains(SelectedItem))
+			{
+				SelectedItem = Items.FirstOrDefault();
+			}
 		}
 
 		partial void OnSelectedItemChangedPartial(object oldSelectedItem, object newSelectedItem)
 		{
-			var row = Items.Safe().IndexOf(newSelectedItem);
+			var row = Items?.IndexOf(newSelectedItem) ?? -1;
 			if (row == -1) // item not found
 			{
-				ClearSelection();
-				return;
-			}			
+				var firstItem = Items?.FirstOrDefault();
+				if (firstItem != newSelectedItem) // We compare to 'newSelectedItem' so we allow them to be both 'null'
+				{
+					SelectedItem = firstItem;
+					return;
+				}
+			}
 
 			Select(row, component: 0, animated: true);
 

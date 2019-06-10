@@ -35,6 +35,14 @@ namespace Windows.UI.Xaml.Controls
 
 		protected override Size MeasureOverride(Size availableSize)
 		{
+			// Usually this check is acheived by the parent, but as this Panel
+			// is injected at the root (it's a subView of the Window), we make sure
+			// to enforce it here.
+			if (Visibility == Visibility.Collapsed)
+			{
+				availableSize = new Size(); // 0,0
+			}
+
 			var child = this.GetChildren().FirstOrDefault();
 			if (child != null)
 			{
@@ -48,6 +56,16 @@ namespace Windows.UI.Xaml.Controls
 
 		protected override Size ArrangeOverride(Size finalSize)
 		{
+			var size = _lastMeasuredSize;
+			
+			// Usually this check is acheived by the parent, but as this Panel
+			// is injected at the root (it's a subView of the Window), we make sure
+			// to enforce it here.
+			if (Visibility == Visibility.Collapsed)
+			{
+				size = finalSize = new Size();
+			}
+
 			var child = this.GetChildren().FirstOrDefault();
 			if (child == null)
 			{
@@ -58,8 +76,8 @@ namespace Windows.UI.Xaml.Controls
 			var finalFrame = new Rect(
 				(float)transform.Matrix.OffsetX + (float)Popup.HorizontalOffset,
 				(float)transform.Matrix.OffsetY + (float)Popup.VerticalOffset,
-				_lastMeasuredSize.Width,
-				_lastMeasuredSize.Height);
+				size.Width,
+				size.Height);
 
 			ArrangeElement(child, finalFrame);
 
