@@ -26,10 +26,23 @@ namespace Windows.UI.Xaml.Controls
 			this.InitializeBinder();
 
 			AutoresizingMask = UIViewAutoresizing.None;
+			SetupSelectionIndicator();
 
 			OnDisplayMemberPathChangedPartial(string.Empty, this.DisplayMemberPath);
 
 			this.Model = new PickerModel(this);
+		}
+
+		private void SetupSelectionIndicator()
+		{
+			// The "selection indicator" refers the the thin lines above and below the selected item in the spinner.
+
+			// Setting this flag should be enough but it isn't.
+			ShowSelectionIndicator = true;
+
+			// Selecting the first item strangely fixes the selection not showing otherwise.
+			// See this for more info: https://stackoverflow.com/questions/39564660/uipickerview-selection-indicator-not-visible-in-ios10
+			Select(row: 0, component: 0, animated: false);
 		}
 
 		public override CGSize SizeThatFits(CGSize size)
