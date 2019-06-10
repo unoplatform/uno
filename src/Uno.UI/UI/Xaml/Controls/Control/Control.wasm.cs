@@ -78,18 +78,24 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		internal void SetFocused(bool isFocused)
+		internal bool SetFocused(bool isFocused)
 		{
 			if (isFocused)
 			{
 				if (IsFocusable)
 				{
 					FocusState = _pendingFocusRequestState ?? FocusState.Pointer;
+					return true;
+				}
+				else
+				{
+					return false;
 				}
 			}
 			else
 			{
 				Unfocus();
+				return true;
 			}
 		}
 	}

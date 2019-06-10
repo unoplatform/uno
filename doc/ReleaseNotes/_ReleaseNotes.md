@@ -137,6 +137,7 @@
 * 154815 [WASM] ItemClick event could be raised for wrong item
 * 155256 Fixed xaml generated enum value not being globalized
 * 155161 [Android] fixed keyboard flicker when backing from a page with CommandBar
+* Fix the processing of the GotFocus event FocusManager (#973)
 
 ## Release 1.44.0
 
