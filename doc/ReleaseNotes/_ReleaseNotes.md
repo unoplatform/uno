@@ -145,6 +145,7 @@
 * 155256 Fixed xaml generated enum value not being globalized
 * 155161 [Android] fixed keyboard flicker when backing from a page with CommandBar
 * Fix the processing of the GotFocus event FocusManager (#973)
+* 116098 [iOS] The time/day pickers are missing diving lines on devices running firmware 11 and up.
 
 ## Release 1.44.0
 
