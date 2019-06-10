@@ -42,5 +42,41 @@ namespace Windows.UI.Xaml.Controls
 		{
 			return new ColumnDefinition { Width = GridLength.ParseGridLength(value).First() };
 		}
+		
+		public double MinWidth
+		{
+			get
+			{
+				return (double)this.GetValue(MinWidthProperty);
+			}
+			set
+			{
+				this.SetValue(MinWidthProperty, value);
+			}
+		}
+
+		public double MaxWidth
+		{
+			get
+			{
+				return (double)this.GetValue(MaxWidthProperty);
+			}
+			set
+			{
+				this.SetValue(MaxWidthProperty, value);
+			}
+		}
+
+		public static DependencyProperty MinWidthProperty { get; } =
+		DependencyProperty.Register(
+			"MinWidth", typeof(double),
+			typeof(ColumnDefinition),
+			new FrameworkPropertyMetadata(default(double)));
+
+		public static DependencyProperty MaxWidthProperty { get; } =
+		DependencyProperty.Register(
+			"MaxWidth", typeof(double),
+			typeof(ColumnDefinition),
+			new FrameworkPropertyMetadata(double.PositiveInfinity));
 	}
 }
