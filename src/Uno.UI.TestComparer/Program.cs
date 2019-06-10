@@ -11,8 +11,8 @@ using Uno.UI.TestComparer;
 
 namespace Umbrella.UI.TestComparer
 {
-    class Program
-    {
+	class Program
+	{
 		static void Main(string[] args)
 		{
 			if (args[0] == "appcenter")
@@ -94,297 +94,302 @@ namespace Umbrella.UI.TestComparer
 					file.Write("</body></html>");
 				}
 			}
-        }
+		}
 
-        private static void ProcessFiles(string[] args, string basePath, string platform)
-        {
-            string path = Path.Combine(basePath, platform);
-            var resultsId = $"{DateTime.Now:yyyyMMdd-hhmmss}";
-            string diffPath = Path.Combine(basePath, $"Results-{platform}-{resultsId}");
-            string resultsFilePath = Path.Combine(basePath, $"Results-{platform}-{resultsId}.html");
+		private static void ProcessFiles(string[] args, string basePath, string platform)
+		{
+			string path = Path.Combine(basePath, platform);
+			var resultsId = $"{DateTime.Now:yyyyMMdd-hhmmss}";
+			string diffPath = Path.Combine(basePath, $"Results-{platform}-{resultsId}");
+			string resultsFilePath = Path.Combine(basePath, $"Results-{platform}-{resultsId}.html");
 
-            Directory.CreateDirectory(path);
-            Directory.CreateDirectory(diffPath);
+			Directory.CreateDirectory(path);
+			Directory.CreateDirectory(diffPath);
 
-            var q1 = from directory in Directory.EnumerateDirectories(path)
-                     let info = new DirectoryInfo(directory)
-                     orderby info.CreationTime descending
-                     select directory;
+			var q1 = from directory in Directory.EnumerateDirectories(path)
+					 let info = new DirectoryInfo(directory)
+					 orderby info.CreationTime descending
+					 select directory;
 
-            q1 = q1.ToArray();
+			q1 = q1.ToArray();
 
-            var orderedDirectories = from directory in q1
-                                     orderby directory
-                                     select directory;
+			var orderedDirectories = from directory in q1
+									 orderby directory
+									 select directory;
 
-            var q = from directory in orderedDirectories.Select((v, i) => new { Index = i, Path = v })
-                    let files = from sample in EnumerateFiles(Path.Combine(directory.Path, ""), "*.png").AsParallel()
-                                select new { File = sample, Id = BuildSha1(sample) }
-                    select new
-                    {
-                        Path = directory.Path,
-                        Index = directory.Index,
-                        Files = files.ToArray(),
-                    };
+			var q = from directory in orderedDirectories.Select((v, i) => new { Index = i, Path = v })
+					let files = from sample in EnumerateFiles(Path.Combine(directory.Path, ""), "*.png").AsParallel()
+								select new { File = sample, Id = BuildSha1(sample) }
+					select new
+					{
+						Path = directory.Path,
+						Index = directory.Index,
+						Files = files.ToArray(),
+					};
 
-            var allFolders = LogForeach(q, i => Console.WriteLine($"Processed {i.Path}")).ToArray();
+			var allFolders = LogForeach(q, i => Console.WriteLine($"Processed {i.Path}")).ToArray();
 
-            var allFiles = allFolders
-                .SelectMany(folder => folder
-                    .Files.Select(file => Path.GetFileName(file.File))
-                )
-                .Distinct()
-                .ToArray();
+			var allFiles = allFolders
+				.SelectMany(folder => folder
+					.Files.Select(file => Path.GetFileName(file.File))
+				)
+				.Distinct()
+				.ToArray();
 
-            var sb = new StringBuilder();
+			var sb = new StringBuilder();
 
-            sb.AppendLine("<html><body>");
+			sb.AppendLine("<html><body>");
 
-            sb.AppendLine("<p>How to read this table:</p>");
-            sb.AppendLine("<ul>");
-            sb.AppendLine("<li>This tool compares the binary content of successive runs screenshots of the same test output</li>");
-            sb.AppendLine("<li>Each line represents a test result screen shot.</li>");
-            sb.AppendLine("<li>Each cell number represent an unique image ID.</li>");
-            sb.AppendLine("<li>A red cell means the image has changed from the previous run (not that the results are incorrect).</li>");
-            sb.AppendLine("<li>Subtle changes can be visualized using a XOR filtering between images</li>");
-            sb.AppendLine("</ul>");
+			sb.AppendLine("<p>How to read this table:</p>");
+			sb.AppendLine("<ul>");
+			sb.AppendLine("<li>This tool compares the binary content of successive runs screenshots of the same test output</li>");
+			sb.AppendLine("<li>Each line represents a test result screen shot.</li>");
+			sb.AppendLine("<li>Each cell number represent an unique image ID.</li>");
+			sb.AppendLine("<li>A red cell means the image has changed from the previous run (not that the results are incorrect).</li>");
+			sb.AppendLine("<li>Subtle changes can be visualized using a XOR filtering between images</li>");
+			sb.AppendLine("</ul>");
 
-            sb.AppendLine("<ul>");
-            foreach (var folder in allFolders)
-            {
-                sb.AppendLine($"<li>{folder.Index}: {folder.Path}</li>");
-            }
-            sb.AppendLine("</ul>");
+			sb.AppendLine("<ul>");
+			foreach (var folder in allFolders)
+			{
+				sb.AppendLine($"<li>{folder.Index}: {folder.Path}</li>");
+			}
+			sb.AppendLine("</ul>");
 
-            sb.AppendLine("<table>");
+			sb.AppendLine("<table>");
 
-            sb.AppendLine("<tr><td/>");
-            foreach (var folder in allFolders)
-            {
-                sb.AppendLine($"<td>{folder.Index}</td>");
-            }
-            sb.AppendLine("</tr>");
+			sb.AppendLine("<tr><td/>");
+			foreach (var folder in allFolders)
+			{
+				sb.AppendLine($"<td>{folder.Index}</td>");
+			}
+			sb.AppendLine("</tr>");
 
-            int unchanged = 0;
-            foreach (var testFile in allFiles)
-            {
-                var testFileIncrements = from folder in allFolders
-                                         orderby folder.Index ascending
-                                         select new
-                                         {
-                                             Folder = folder.Path,
-                                             FolderIndex = folder.Index,
-                                             Files = new[] {
-                                                new { FileInfo = folder.Files.FirstOrDefault(f => Path.GetFileName(f.File) == testFile) }
-                                             }
-                                         };
+			var changedList = new List<string>();
+			foreach (var testFile in allFiles)
+			{
+				var testFileIncrements = from folder in allFolders
+										 orderby folder.Index ascending
+										 select new
+										 {
+											 Folder = folder.Path,
+											 FolderIndex = folder.Index,
+											 Files = new[] {
+												new { FileInfo = folder.Files.FirstOrDefault(f => Path.GetFileName(f.File) == testFile) }
+											 }
+										 };
 
-                var increments =
-                    (
-                        from platformIndex in Enumerable.Range(0, 1)
-                        select testFileIncrements
-                            .Aggregate(
-                                new[] { new { FolderIndex = -1, Path = "", IdSha = "", Id = -1, CompareeId = -1 } },
-                                (a, f) =>
-                                {
-                                    var platformFiles = f.Files[platformIndex];
+				var increments =
+					(
+						from platformIndex in Enumerable.Range(0, 1)
+						select testFileIncrements
+							.Aggregate(
+								new[] { new { FolderIndex = -1, Path = "", IdSha = "", Id = -1, CompareeId = -1 } },
+								(a, f) =>
+								{
+									var platformFiles = f.Files[platformIndex];
 
-                                    if (platformFiles?.FileInfo == null)
-                                    {
-                                        return a;
-                                    }
+									if (platformFiles?.FileInfo == null)
+									{
+										return a;
+									}
 
-                                    var otherMatch = a.Reverse().Where(i => i.IdSha != null).FirstOrDefault();
-                                    if (platformFiles.FileInfo?.Id.sha != otherMatch?.IdSha)
-                                    {
-                                        return a
-                                            .Concat(new[] { new { FolderIndex = f.FolderIndex, Path = platformFiles.FileInfo.File, IdSha = platformFiles.FileInfo?.Id.sha, Id = platformFiles.FileInfo?.Id.index ?? -1, CompareeId = otherMatch.Id } })
-                                            .ToArray();
-                                    }
-                                    else
-                                    {
-                                        return a
-                                            .Concat(new[] { new { FolderIndex = f.FolderIndex, Path = platformFiles.FileInfo.File, IdSha = (string)null, Id = platformFiles.FileInfo.Id.index, CompareeId = -1 } })
-                                            .ToArray();
-                                    }
-                                }
-                            )
-                    ).ToArray();
+									var otherMatch = a.Reverse().Where(i => i.IdSha != null).FirstOrDefault();
+									if (platformFiles.FileInfo?.Id.sha != otherMatch?.IdSha)
+									{
+										return a
+											.Concat(new[] { new { FolderIndex = f.FolderIndex, Path = platformFiles.FileInfo.File, IdSha = platformFiles.FileInfo?.Id.sha, Id = platformFiles.FileInfo?.Id.index ?? -1, CompareeId = otherMatch.Id } })
+											.ToArray();
+									}
+									else
+									{
+										return a
+											.Concat(new[] { new { FolderIndex = f.FolderIndex, Path = platformFiles.FileInfo.File, IdSha = (string)null, Id = platformFiles.FileInfo.Id.index, CompareeId = -1 } })
+											.ToArray();
+									}
+								}
+							)
+					).ToArray();
 
-                var hasChanges = increments.Any(i => i.Where(v => v.IdSha != null).Count() - 1 > 1);
+				var hasChanges = increments.Any(i => i.Where(v => v.IdSha != null).Count() - 1 > 1);
 
-                if (hasChanges)
-                {
-                    sb.AppendLine($"<tr rowspan=\"3\"><td>{testFile}</td></tr>");
+				if (hasChanges)
+				{
+					sb.AppendLine($"<tr rowspan=\"3\"><td>{testFile}</td></tr>");
 
-                    for (int platformIndex = 0; platformIndex < 1; platformIndex++)
-                    {
-                        sb.AppendLine("<tr>");
-                        sb.AppendLine($"<td></td>");
+					for (int platformIndex = 0; platformIndex < 1; platformIndex++)
+					{
+						sb.AppendLine("<tr>");
+						sb.AppendLine($"<td></td>");
 
-                        if (increments[platformIndex].Count() > 1)
-                        {
-                            var firstFolder = increments[platformIndex].Where(i => i.FolderIndex != -1).Min(i => i.FolderIndex);
+						if (increments[platformIndex].Count() > 1)
+						{
+							var firstFolder = increments[platformIndex].Where(i => i.FolderIndex != -1).Min(i => i.FolderIndex);
 
-                            for (int folderIndex = 0; folderIndex < allFolders.Length; folderIndex++)
-                            {
-                                var folderInfo = increments[platformIndex].FirstOrDefault(inc => inc.FolderIndex == folderIndex);
+							for (int folderIndex = 0; folderIndex < allFolders.Length; folderIndex++)
+							{
+								var folderInfo = increments[platformIndex].FirstOrDefault(inc => inc.FolderIndex == folderIndex);
 
-                                var hasChanged = folderIndex != firstFolder && folderInfo?.IdSha != null;
-                                var color = folderInfo == null ? "#555" : hasChanged ? "#f00" : "#0f0";
+								var hasChanged = folderIndex != firstFolder && folderInfo?.IdSha != null;
+								var color = folderInfo == null ? "#555" : hasChanged ? "#f00" : "#0f0";
 
-                                sb.AppendLine($"<td bgcolor=\"{color}\" width=20 height=20>");
-                                if (folderInfo != null)
-                                {
-                                    var relativePath = folderInfo.Path.Replace(basePath, "").Replace("\\", "/").TrimStart('/');
-                                    sb.AppendLine($"<a href=\"{relativePath}\">{folderInfo.Id}</a><!--{folderInfo.IdSha}-->");
+								sb.AppendLine($"<td bgcolor=\"{color}\" width=20 height=20>");
+								if (folderInfo != null)
+								{
+									var relativePath = folderInfo.Path.Replace(basePath, "").Replace("\\", "/").TrimStart('/');
+									sb.AppendLine($"<a href=\"{relativePath}\">{folderInfo.Id}</a><!--{folderInfo.IdSha}-->");
 
-                                    var previousFolderInfo = increments[platformIndex].FirstOrDefault(inc => inc.FolderIndex == folderIndex - 1);
-                                    if (hasChanged && previousFolderInfo != null)
-                                    {
-                                        var currentImage = DecodeImage(folderInfo.Path);
-                                        var previousImage = DecodeImage(previousFolderInfo.Path);
+									var previousFolderInfo = increments[platformIndex].FirstOrDefault(inc => inc.FolderIndex == folderIndex - 1);
+									if (hasChanged && previousFolderInfo != null)
+									{
+										var currentImage = DecodeImage(folderInfo.Path);
+										var previousImage = DecodeImage(previousFolderInfo.Path);
 
-                                        var diff = DiffImages(currentImage.pixels, previousImage.pixels);
+										var diff = DiffImages(currentImage.pixels, previousImage.pixels);
 
-                                        var diffFilePath = Path.Combine(diffPath, $"{folderInfo.Id}-{folderInfo.CompareeId}.png");
-                                        WriteImage(diffFilePath, diff, currentImage.frame);
+										var diffFilePath = Path.Combine(diffPath, $"{folderInfo.Id}-{folderInfo.CompareeId}.png");
+										WriteImage(diffFilePath, diff, currentImage.frame);
 
-                                        var diffRelativePath = diffFilePath.Replace(basePath, "").Replace("\\", "/").TrimStart('/');
-                                        sb.AppendLine($"<a href=\"{diffRelativePath}\">D</a>");
-                                    }
-                                    else
-                                    {
-                                        sb.AppendLine($"D");
-                                    }
-                                }
-                                sb.AppendLine("</td>");
-                            }
-                        }
+										var diffRelativePath = diffFilePath.Replace(basePath, "").Replace("\\", "/").TrimStart('/');
+										sb.AppendLine($"<a href=\"{diffRelativePath}\">D</a>");
+									}
+									else
+									{
+										sb.AppendLine($"D");
+									}
+								}
+								sb.AppendLine("</td>");
+							}
+						}
 
-                        sb.AppendLine("</tr>");
-                    }
-                }
-                else
-                {
-                    unchanged++;
-                }
-            }
+						sb.AppendLine("</tr>");
+					}
 
-            sb.AppendLine("</table>");
-            sb.AppendLine($"{unchanged} samples unchanged, {allFiles.Length} files total.");
-            sb.AppendLine("</body></html>");
+					changedList.Add(testFile);
+				}
+			}
 
-            File.WriteAllText(resultsFilePath, sb.ToString());
+			var unchanged = allFiles.Length - changedList.Count;
 
-			Console.WriteLine($"{platform}: {unchanged} samples unchanged, {allFiles.Length} files total.");
-        }
+			sb.AppendLine("</table>");
+			sb.AppendLine($"{unchanged} samples unchanged, {allFiles.Length} files total.");
+			sb.AppendLine("</body></html>");
 
-        private static void WriteImage(string diffPath, byte[] diff, BitmapFrame frameInfo)
-        {
-            using (var stream = new FileStream(diffPath, FileMode.Create))
-            {
-                var encoder = new PngBitmapEncoder();
+			File.WriteAllText(resultsFilePath, sb.ToString());
 
-                encoder.Interlace = PngInterlaceOption.On;
+			Console.WriteLine($"{platform}: {unchanged} samples unchanged, {allFiles.Length} files total. Changed files:");
 
-                var frame = BitmapSource.Create(
-                    pixelWidth: (int)frameInfo.Width,
-                    pixelHeight: (int)frameInfo.Height,
-                    dpiX: frameInfo.DpiX,
-                    dpiY: frameInfo.DpiY,
-                    pixelFormat: frameInfo.Format,
-                    palette: frameInfo.Palette,
-                    pixels: diff,
-                    stride: (int)(frameInfo.Width * 4)
-                );
+			foreach (var changedFile in changedList)
+			{
+				Console.WriteLine($"\t- {changedFile}");
+			}
+		}
 
-                encoder.Frames.Add(BitmapFrame.Create(frame));
-                encoder.Save(stream);
-            }
-        }
+		private static void WriteImage(string diffPath, byte[] diff, BitmapFrame frameInfo)
+		{
+			using (var stream = new FileStream(diffPath, FileMode.Create))
+			{
+				var encoder = new PngBitmapEncoder();
 
-        private static byte[] DiffImages(byte[] currentImage, byte[] previousImage)
-        {
-            var result = new byte[currentImage.Length];
+				encoder.Interlace = PngInterlaceOption.On;
 
-            for (int i = 0; i < result.Length; i++)
-            {
-                result[i] = (byte)(currentImage[i] ^ previousImage[i]);
-            }
+				var frame = BitmapSource.Create(
+					pixelWidth: (int)frameInfo.Width,
+					pixelHeight: (int)frameInfo.Height,
+					dpiX: frameInfo.DpiX,
+					dpiY: frameInfo.DpiY,
+					pixelFormat: frameInfo.Format,
+					palette: frameInfo.Palette,
+					pixels: diff,
+					stride: (int)(frameInfo.Width * 4)
+				);
 
-            return result;
-        }
+				encoder.Frames.Add(BitmapFrame.Create(frame));
+				encoder.Save(stream);
+			}
+		}
 
-        private static (BitmapFrame frame, byte[] pixels) DecodeImage(string path1)
-        {
-            Stream imageStreamSource = new FileStream(path1, FileMode.Open, FileAccess.Read, FileShare.Read);
-            var decoder = new PngBitmapDecoder(imageStreamSource, BitmapCreateOptions.PreservePixelFormat, BitmapCacheOption.Default);
+		private static byte[] DiffImages(byte[] currentImage, byte[] previousImage)
+		{
+			var result = new byte[currentImage.Length];
 
-            byte[] image = new byte[(int)(decoder.Frames[0].Width * decoder.Frames[0].Height * 4)];
-            decoder.Frames[0].CopyPixels(image, (int)(decoder.Frames[0].Width * 4), 0);
+			for (int i = 0; i < result.Length; i++)
+			{
+				result[i] = (byte)(currentImage[i] ^ previousImage[i]);
+			}
 
-            return (decoder.Frames[0], image);
-        }
+			return result;
+		}
 
-        private static IEnumerable<string> EnumerateFiles(string path, string pattern)
-        {
-            if (Directory.Exists(path))
-            {
-                return Directory.EnumerateFiles(path, pattern, SearchOption.AllDirectories);
-            }
-            else
-            {
-                return new string[0];
-            }
-        }
+		private static (BitmapFrame frame, byte[] pixels) DecodeImage(string path1)
+		{
+			Stream imageStreamSource = new FileStream(path1, FileMode.Open, FileAccess.Read, FileShare.Read);
+			var decoder = new PngBitmapDecoder(imageStreamSource, BitmapCreateOptions.PreservePixelFormat, BitmapCacheOption.Default);
 
-        private static IEnumerable<T> LogForeach<T>(IEnumerable<T> q, Action<T> action)
-        {
-            foreach (var item in q)
-            {
-                action(item);
-                yield return item;
-            }
-        }
+			byte[] image = new byte[(int)(decoder.Frames[0].Width * decoder.Frames[0].Height * 4)];
+			decoder.Frames[0].CopyPixels(image, (int)(decoder.Frames[0].Width * 4), 0);
 
-        static Dictionary<string, int> _fileHashesTable = new Dictionary<string, int>();
+			return (decoder.Frames[0], image);
+		}
 
-        private static (string sha, int index) BuildSha1(string sample)
-        {
-            // return "000";
+		private static IEnumerable<string> EnumerateFiles(string path, string pattern)
+		{
+			if (Directory.Exists(path))
+			{
+				return Directory.EnumerateFiles(path, pattern, SearchOption.AllDirectories);
+			}
+			else
+			{
+				return new string[0];
+			}
+		}
 
-            using (var sha1 = SHA1.Create())
-            {
-                using (var file = File.OpenRead(sample))
-                {
-                    var data = sha1.ComputeHash(file);
+		private static IEnumerable<T> LogForeach<T>(IEnumerable<T> q, Action<T> action)
+		{
+			foreach (var item in q)
+			{
+				action(item);
+				yield return item;
+			}
+		}
 
-                    // Create a new Stringbuilder to collect the bytes
-                    // and create a string.
-                    var sBuilder = new StringBuilder();
+		static Dictionary<string, int> _fileHashesTable = new Dictionary<string, int>();
 
-                    // Loop through each byte of the hashed data 
-                    // and format each one as a hexadecimal string.
-                    for (int i = 0; i < data.Length; i++)
-                    {
-                        sBuilder.Append(data[i].ToString("x2", CultureInfo.InvariantCulture));
-                    }
+		private static (string sha, int index) BuildSha1(string sample)
+		{
+			// return "000";
 
-                    var sha = sBuilder.ToString();
+			using (var sha1 = SHA1.Create())
+			{
+				using (var file = File.OpenRead(sample))
+				{
+					var data = sha1.ComputeHash(file);
 
-                    lock (_fileHashesTable)
-                    {
-                        if (!_fileHashesTable.TryGetValue(sha, out var index))
-                        {
-                            index = _fileHashesTable.Count;
-                            _fileHashesTable[sha] = index;
-                        }
+					// Create a new Stringbuilder to collect the bytes
+					// and create a string.
+					var sBuilder = new StringBuilder();
 
-                        return (sha, index);
-                    }
-                }
-            }
-        }
-    }
+					// Loop through each byte of the hashed data 
+					// and format each one as a hexadecimal string.
+					for (int i = 0; i < data.Length; i++)
+					{
+						sBuilder.Append(data[i].ToString("x2", CultureInfo.InvariantCulture));
+					}
+
+					var sha = sBuilder.ToString();
+
+					lock (_fileHashesTable)
+					{
+						if (!_fileHashesTable.TryGetValue(sha, out var index))
+						{
+							index = _fileHashesTable.Count;
+							_fileHashesTable[sha] = index;
+						}
+
+						return (sha, index);
+					}
+				}
+			}
+		}
+	}
 }
