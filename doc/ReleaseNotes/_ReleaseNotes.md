@@ -147,6 +147,7 @@
 * 155161 [Android] fixed keyboard flicker when backing from a page with CommandBar
 * Fix the processing of the GotFocus event FocusManager (#973)
 * 116098 [iOS] The time/day pickers are missing diving lines on devices running firmware 11 and up.
+* [iOS] Fix invalid DataContext propagation when estimating ListView item size (#1051)
 
 ## Release 1.44.0
 
