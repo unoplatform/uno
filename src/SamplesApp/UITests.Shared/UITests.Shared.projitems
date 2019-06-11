@@ -753,6 +753,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\Pivot\PivotSimpleTest.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\Popup\Popup_LightDismiss.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -2355,6 +2359,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\Models\TextBlockViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\Models\TimePickerViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\NavigationViewTests\NavigationView_TopNavigation.xaml.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\Pivot\PivotSimpleTest.xaml.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\Popup\Popup_LightDismiss.xaml.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\Popup\Popup_Simple.xaml.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\Popup\MessageDialog.xaml.cs" />
@@ -3138,6 +3143,9 @@
     </Compile>
     <Compile Update="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\GridTestsControl\Simpletwocolumnsplitgrid.xaml.cs">
       <DependentUpon>Simpletwocolumnsplitgrid.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="C:\Src\GitHub\nventive\Uno\src\SamplesApp\UITests.Shared\Windows_UI_Xaml_Controls\Pivot\PivotSimpleTest.xaml.cs">
+      <DependentUpon>PivotSimpleTest.xaml</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>
