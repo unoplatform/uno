@@ -154,6 +154,7 @@
 * RadioButton was not applying Checked state correctly with non-standard visual state grouping in style
 * [Android] Fix several bugs preventing AutoSuggestBox from working on Android. (#1012)
 * #1062 TextBlock measure caching can wrongly hit
+* 153974 [Android] fixed button flyout placement
 
 ## Release 1.44.0
 
