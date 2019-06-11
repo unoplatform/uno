@@ -178,7 +178,7 @@ namespace Windows.UI.Xaml
 			}
 		}
 		#endif
-		#if false || false || NET461 || false || false
+		#if false || false || false || false || false
 		[global::Uno.NotImplemented]
 		public  double ActualHeight
 		{
@@ -188,7 +188,7 @@ namespace Windows.UI.Xaml
 			}
 		}
 		#endif
-		#if false || false || NET461 || false || false
+		#if false || false || false || false || false
 		[global::Uno.NotImplemented]
 		public  double ActualWidth
 		{
