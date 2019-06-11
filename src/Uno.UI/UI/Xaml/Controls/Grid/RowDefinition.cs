@@ -45,32 +45,20 @@ namespace Windows.UI.Xaml.Controls
 
 		public double MinHeight
 		{
-			get
-			{
-				return (double)this.GetValue(MinHeightProperty);
-			}
-			set
-			{
-				this.SetValue(MinHeightProperty, value);
-			}
+			get => (double)this.GetValue(MinHeightProperty);
+			set => this.SetValue(MinHeightProperty, value);
 		}
 
 		public double MaxHeight
 		{
-			get
-			{
-				return (double)this.GetValue(MaxHeightProperty);
-			}
-			set
-			{
-				this.SetValue(MaxHeightProperty, value);
-			}
+			get => (double)this.GetValue(MaxHeightProperty);
+			set => this.SetValue(MaxHeightProperty, value);
 		}
 		public static DependencyProperty MinHeightProperty { get; } =
 		DependencyProperty.Register(
 			"MinHeight", typeof(double),
 			typeof(ColumnDefinition),
-			new FrameworkPropertyMetadata(default(double)));
+			new FrameworkPropertyMetadata(0d));
 
 		public static DependencyProperty MaxHeightProperty { get; } =
 		DependencyProperty.Register(

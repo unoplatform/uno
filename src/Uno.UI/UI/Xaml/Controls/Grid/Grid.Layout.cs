@@ -426,6 +426,7 @@ namespace Windows.UI.Xaml.Controls
 			var totalStarSizedWidth = initialTotalStarSizedWidth;
 			var unitStarWidth = remainingWidth / totalStarSizedWidth;
 
+			// We want to run at least one iteration. We don't expect more iterations than the number of star children (but allow margin for programmer error).
 			var maxTries = starSizeChildren.Span.Length * 2 + 1;
 			var previousRemainingWidth = remainingWidth;
 
@@ -732,6 +733,7 @@ namespace Windows.UI.Xaml.Controls
 			var totalStarSizedHeight = initialTotalStarSizedHeight;
 			var unitStarHeight = remainingHeight / totalStarSizedHeight;
 
+			// We want to run at least one iteration. We don't expect more iterations than the number of star children (but allow margin for programmer error).
 			var maxTries = starSizeChildren.Span.Length * 2 + 1;
 			var previousRemainingHeight = remainingHeight;
 
