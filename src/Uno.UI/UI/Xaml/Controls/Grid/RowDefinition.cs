@@ -57,13 +57,13 @@ namespace Windows.UI.Xaml.Controls
 		public static DependencyProperty MinHeightProperty { get; } =
 		DependencyProperty.Register(
 			"MinHeight", typeof(double),
-			typeof(ColumnDefinition),
+			typeof(RowDefinition),
 			new FrameworkPropertyMetadata(0d));
 
 		public static DependencyProperty MaxHeightProperty { get; } =
 		DependencyProperty.Register(
 			"MaxHeight", typeof(double),
-			typeof(ColumnDefinition),
+			typeof(RowDefinition),
 			new FrameworkPropertyMetadata(double.PositiveInfinity));
 
 	}
