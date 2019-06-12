@@ -150,6 +150,7 @@
 * Fix the processing of the GotFocus event FocusManager (#973)
 * 116098 [iOS] The time/day pickers are missing diving lines on devices running firmware 11 and up.
 * [iOS] Fix invalid DataContext propagation when estimating ListView item size (#1051)
+* RadioButton was not applying Checked state correctly with non-standard visual state grouping in style
 
 ## Release 1.44.0
 
