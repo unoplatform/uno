@@ -23,7 +23,7 @@ First, it's built entirely using standard C++ 11 and C++/CX, with [a calculation
 
 ![Calculator](Assets/20190612-Calculator-02.png)
 
-Second, the calculator contains features such as: Standard mode, Scientific mode,  Programmer mode with Multiple bases conversion, with shifting operations, interactive bit field view, Dates calculator, A large set of converters (currency, volume, length, temperature, angles, ...), infinite precision arithmetic operations, an expression view with parenthesis support, an history view with selectable items, an editable memory view, responsive design for windowed and orientation aware devices, with buttons and history dynamic visibility, localization for 65 languages, narrator/voice over support, clipboard support, etc...
+Second, the calculator contains features such as: Standard mode, Scientific mode, a Programmer mode with multiple bases conversion, shifting operations, and an interactive bit field view, Dates calculator, a large set of converters (currency, volume, length, temperature, angles, ...), infinite precision arithmetic operations, an expression view with parenthesis support, a history view with selectable items, and an editable memory view. It also boasts responsive design for windowed and orientation-aware devices, with buttons and history dynamic visibility, localization for 65 languages, narrator/voice-over accessibility support, clipboard support, etc...
 
 ![Calculator](Assets/20190612-Calculator-03.png)
 
