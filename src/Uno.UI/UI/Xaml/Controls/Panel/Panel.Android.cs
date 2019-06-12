@@ -13,7 +13,6 @@ using Windows.UI.Xaml.Data;
 using System.Runtime.CompilerServices;
 using Android.Graphics;
 using Android.Graphics.Drawables;
-using System.Drawing;
 using Uno.UI;
 using Windows.UI.Xaml.Media;
 
