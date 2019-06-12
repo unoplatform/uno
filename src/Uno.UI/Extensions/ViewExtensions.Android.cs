@@ -51,10 +51,10 @@ namespace Uno.UI
 		/// <typeparam name="T"></typeparam>
 		/// <param name="view"></param>
 		/// <returns>First parent of the view of specified T type.</returns>
-		public static T FindFirstParent<T>(this IViewParent view)
+		public static T FindFirstParent<T>(this View childView)
 			where T : class
 		{
-			view = view?.Parent;
+			var view = childView?.Parent;
 
 			while (view != null)
 			{
@@ -305,6 +305,24 @@ namespace Uno.UI
 
 			return (T)view.EnumerateAllChildren(childSelector, maxDepth).FirstOrDefault();
 		}
+
+		/// <summary>
+		/// Add view to parent.
+		/// </summary>
+		/// <param name="parent">Parent view</param>
+		/// <param name="child">Child view to add</param>
+		public static void AddChild(this ViewGroup parent, View child)
+		{
+			// Remove from existing parent (for compatibility with other platforms).
+			(child.Parent as ViewGroup)?.RemoveView(child);
+
+			parent.AddView(child);
+		}
+
+		/// <summary>
+		/// Get the parent view in the visual tree. This may differ from the logical <see cref="FrameworkElement.Parent"/>.
+		/// </summary>
+		public static ViewGroup GetVisualTreeParent(this View child) => child?.Parent as ViewGroup;
 
 		/// <summary>
 		/// Removes a child view from the specified view, and disposes it if the specified view is the owner.
