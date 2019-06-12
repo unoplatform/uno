@@ -35,25 +35,33 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Controls.TextBlockTests
 		{
 			var SUT = new TextBlockMeasureCache();
 
-			var tb = new TextBlock() { Text = "42" };
+			var tb = new TextBlock { Text = "42" }; // Used as key, never measured
 
 			Assert.AreEqual(TextWrapping.NoWrap, tb.TextWrapping);
 
+			SUT.CacheMeasure(tb, new Size(5, 25), new Size(5, 25));
+			SUT.CacheMeasure(tb, new Size(12, 20), new Size(12, 15));
 			SUT.CacheMeasure(tb, new Size(100, 100), new Size(20, 10));
 
-			Assert.AreEqual(
-				new Size(20, 10),
-				SUT.FindMeasuredSize(tb, new Size(100, 100)).Value
-			);
+			var size20x10 = new Size(20, 10);
 
-			Assert.AreEqual(
-				new Size(20, 10),
-				SUT.FindMeasuredSize(tb, new Size(50, 100)).Value
-			);
+			var resultFor100x100 = SUT.FindMeasuredSize(tb, new Size(100, 100));
+			Assert.AreEqual(size20x10, resultFor100x100);
 
-			Assert.IsNull(
-				SUT.FindMeasuredSize(tb, new Size(10, 100))
-			);
+			var resultFor50x100 = SUT.FindMeasuredSize(tb, new Size(50, 100));
+			Assert.AreEqual(size20x10, resultFor50x100);
+
+			var resultFor20x10 = SUT.FindMeasuredSize(tb, size20x10);
+			Assert.AreEqual(size20x10, resultFor20x10);
+
+			var resultFor10x100 = SUT.FindMeasuredSize(tb, new Size(10, 100));
+			Assert.AreEqual(size20x10, resultFor10x100);
+
+			var resultFor5x20 = SUT.FindMeasuredSize(tb, new Size(5, 20));
+			Assert.AreEqual(new Size(5, 25), resultFor5x20);
+
+			var resultFor5x35 = SUT.FindMeasuredSize(tb, new Size(5, 35));
+			Assert.AreEqual(resultFor10x100, resultFor5x35);
 		}
 
 		[TestMethod]
@@ -61,30 +69,31 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Controls.TextBlockTests
 		{
 			var SUT = new TextBlockMeasureCache();
 
-			var tb = new TextBlock() { Text = "42", TextWrapping = TextWrapping.Wrap };
+			var tb = new TextBlock { Text = "42", TextWrapping = TextWrapping.Wrap }; // Used as key, never measured
 
-			SUT.CacheMeasure(tb, new Size(50, 100), new Size(50, 70));
-
-			Assert.AreEqual(
-				new Size(50, 70),
-				SUT.FindMeasuredSize(tb, new Size(50, 100)).Value
-			);
+			SUT.CacheMeasure(tb, new Size(200, 100), new Size(125, 25));
+			SUT.CacheMeasure(tb, new Size(100, 100), new Size(100, 50));
+			SUT.CacheMeasure(tb, new Size(75, 100), new Size(75, 100));
+			SUT.CacheMeasure(tb, new Size(50, 100), new Size(50, 100));
 
 			Assert.AreEqual(
-				new Size(50, 70),
-				SUT.FindMeasuredSize(tb, new Size(50, 70)).Value
+				new Size(125, 25),
+				SUT.FindMeasuredSize(tb, new Size(125, 100))
 			);
 
-			Assert.IsNull(
-				SUT.FindMeasuredSize(tb, new Size(50, 69))
+			Assert.AreEqual(
+				new Size(50, 100),
+				SUT.FindMeasuredSize(tb, new Size(50, 70))
 			);
 
-			Assert.IsNull(
-				SUT.FindMeasuredSize(tb, new Size(49, 100))
+			Assert.AreEqual(
+				null,
+				SUT.FindMeasuredSize(tb, new Size(52, 70))
 			);
 
-			Assert.IsNull(
-				SUT.FindMeasuredSize(tb, new Size(50.1, 100))
+			Assert.AreEqual(
+				null,
+				SUT.FindMeasuredSize(tb, new Size(500, 500))
 			);
 		}
 
@@ -96,35 +105,35 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Controls.TextBlockTests
 			TextBlockMeasureCache.MaxMeasureKeyEntries = 2;
 			TextBlockMeasureCache.MaxMeasureSizeKeyEntries = 2;
 
-			var tb = new TextBlock() { Text = "42", TextWrapping = TextWrapping.Wrap };
+			var tb = new TextBlock { Text = "42", TextWrapping = TextWrapping.Wrap }; // Used as key, never measured
 
-			SUT.CacheMeasure(tb, new Size(11, 11), new Size(1, 1));
+			SUT.CacheMeasure(tb, new Size(11, 11), new Size(11, 11));
 			Assert.AreEqual(
-				new Size(1, 1),
-				SUT.FindMeasuredSize(tb, new Size(11, 11)).Value
+				new Size(11, 11),
+				SUT.FindMeasuredSize(tb, new Size(11, 11))
 			);
 
-			SUT.CacheMeasure(tb, new Size(22, 22), new Size(2, 2));
+			SUT.CacheMeasure(tb, new Size(22, 22), new Size(22, 22));
 			Assert.AreEqual(
-				new Size(1, 1),
-				SUT.FindMeasuredSize(tb, new Size(11, 11)).Value
+				new Size(11, 11),
+				SUT.FindMeasuredSize(tb, new Size(11, 11))
 			);
 			Assert.AreEqual(
-				new Size(2, 2),
-				SUT.FindMeasuredSize(tb, new Size(22, 22)).Value
+				new Size(22, 22),
+				SUT.FindMeasuredSize(tb, new Size(22, 22))
 			);
 
-			SUT.CacheMeasure(tb, new Size(33, 33), new Size(3, 3));
+			SUT.CacheMeasure(tb, new Size(33, 33), new Size(33, 33));
 			Assert.IsNull(
 				SUT.FindMeasuredSize(tb, new Size(11, 11))
 			);
 			Assert.AreEqual(
-				new Size(2, 2),
-				SUT.FindMeasuredSize(tb, new Size(22, 22)).Value
+				new Size(22, 22),
+				SUT.FindMeasuredSize(tb, new Size(22, 22))
 			);
 			Assert.AreEqual(
-				new Size(3, 3),
-				SUT.FindMeasuredSize(tb, new Size(33, 33)).Value
+				new Size(33, 33),
+				SUT.FindMeasuredSize(tb, new Size(33, 33))
 			);
 		}
 
@@ -136,36 +145,36 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Controls.TextBlockTests
 			TextBlockMeasureCache.MaxMeasureKeyEntries = 2;
 			TextBlockMeasureCache.MaxMeasureSizeKeyEntries = 2;
 
-			var tb1 = new TextBlock() { Text = "42", TextWrapping = TextWrapping.Wrap };
+			var tb1 = new TextBlock { Text = "42", TextWrapping = TextWrapping.Wrap }; // Used as key, never measured
 
 			SUT.CacheMeasure(tb1, new Size(11, 11), new Size(1, 1));
 			Assert.AreEqual(
 				new Size(1, 1),
-				SUT.FindMeasuredSize(tb1, new Size(11, 11)).Value
+				SUT.FindMeasuredSize(tb1, new Size(11, 11))
 			);
 
-			var tb2 = new TextBlock() { Text = "43", TextWrapping = TextWrapping.Wrap };
+			var tb2 = new TextBlock { Text = "43", TextWrapping = TextWrapping.Wrap }; // Used as key, never measured
 
 			SUT.CacheMeasure(tb2, new Size(11, 11), new Size(1, 1));
 			Assert.AreEqual(
 				new Size(1, 1),
-				SUT.FindMeasuredSize(tb2, new Size(11, 11)).Value
+				SUT.FindMeasuredSize(tb2, new Size(11, 11))
 			);
 			Assert.AreEqual(
 				new Size(1, 1),
-				SUT.FindMeasuredSize(tb1, new Size(11, 11)).Value
+				SUT.FindMeasuredSize(tb1, new Size(11, 11))
 			);
 
-			var tb3 = new TextBlock() { Text = "44", TextWrapping = TextWrapping.Wrap };
+			var tb3 = new TextBlock { Text = "44", TextWrapping = TextWrapping.Wrap }; // Used as key, never measured
 
 			SUT.CacheMeasure(tb3, new Size(11, 11), new Size(1, 1));
 			Assert.AreEqual(
 				new Size(1, 1),
-				SUT.FindMeasuredSize(tb3, new Size(11, 11)).Value
+				SUT.FindMeasuredSize(tb3, new Size(11, 11))
 			);
 			Assert.AreEqual(
 				new Size(1, 1),
-				SUT.FindMeasuredSize(tb2, new Size(11, 11)).Value
+				SUT.FindMeasuredSize(tb2, new Size(11, 11))
 			);
 			Assert.IsNull(
 				SUT.FindMeasuredSize(tb1, new Size(11, 11))
@@ -176,8 +185,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Controls.TextBlockTests
 		public void When_SmallerAvailableSize()
 		{
 			var SUT = new TextBlockMeasureCache();
-
-			var tb = new TextBlock() { Text = "42" };
+			var tb = new TextBlock { Text = "42" }; // Used as key, never measured
 
 			Assert.AreEqual(TextWrapping.NoWrap, tb.TextWrapping);
 

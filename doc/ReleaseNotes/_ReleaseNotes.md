@@ -153,6 +153,7 @@
 * [iOS] Fix invalid DataContext propagation when estimating ListView item size (#1051)
 * RadioButton was not applying Checked state correctly with non-standard visual state grouping in style
 * [Android] Fix several bugs preventing AutoSuggestBox from working on Android. (#1012)
+* #1062 TextBlock measure caching can wrongly hit
 
 ## Release 1.44.0
 

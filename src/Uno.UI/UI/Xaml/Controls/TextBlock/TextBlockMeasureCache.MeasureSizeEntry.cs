@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
-using Uno;
 using Windows.Foundation;
+using Uno;
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -17,7 +17,11 @@ namespace Windows.UI.Xaml.Controls
 				ListNode = node;
 			}
 
+			/// <summary>
+			/// Computed Size
+			/// </summary>
 			public Size MeasuredSize { get; }
+
 			public LinkedListNode<CachedTuple<double, double>> ListNode { get; }
 		}
 	}
