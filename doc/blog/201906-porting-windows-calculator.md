@@ -4,7 +4,7 @@ A few months ago, Microsoft [open sourced the Windows Calculator](https://blogs.
 
 We decided to [port it to C# and the Uno Platform](https://github.com/nventive/calculator), so that iOS and Android users could use it, but also use it from the Web using Web Assembly. Why – well that’s what we at Uno Platform do 😊.
 
-You can use it today on :
+You can use it today on:
 - [Apple App Store](https://bit.ly/calc-ios)
 - [Android Play Store](https://play.google.com/store/apps/details?id=uno.platform.calculator)
 - WebAssembly: https://calculator.platform.uno
