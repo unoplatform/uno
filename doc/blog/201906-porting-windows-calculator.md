@@ -14,7 +14,7 @@ You can use it today on:
 ## Anatomy of the Windows Calculator
 
 The Windows Calculator is an interesting and not-so-simple piece of software. The simple
-initial UI you get displayed upon launch can be deceiving. Of course, that is a good UX 
+initial UI you see upon launch can be deceiving. Of course, that is a good UX 
 choice Microsoft made as most uses of the calculator are rather simple ones. However, the
 calculator is complex both in the way it was coded over the years, as well as the advanced
 functions it has.
@@ -35,11 +35,11 @@ In the following part we will dissect the challenges we needed to solve in order
 
 ### Challenge #1: Adjusing the C++ of the Calculation Engine
 
-The main reason for keeping C++ code as-is is the use of pointers and low-level memory techniques that do not map easily to C#, but also the fact that the Calculation Engine does not use any UI directly. The code is nicely exposed using the `CalculatorManager` class, an `IResourceProvider`  callback interface and `ICalcDisplay` UI updates callbacks interface.
+The main reason for keeping C++ code as-is is the use of pointers and low-level memory techniques that do not map easily to C#, but also the fact that the Calculation Engine does not use any UI directly. The code is encapsulated using the `CalculatorManager` class, an `IResourceProvider`  callback interface and `ICalcDisplay` UI updates callbacks interface.
 
 Most of this part of the code did not need to be updated, except for the use of the C99 **[flexible array member feature](https://en.wikipedia.org/wiki/Flexible_array_member)**. This feature is not supported in C++ (for good reasons), but Microsoft engineers added an exclusion for that feature. Clang however does not have that and the code that relied on it needed some adjustments to use normal arrays.
 
-Build scripts are used for [iOS](https://github.com/nventive/calculator/blob/uno/src/CalcManager/build_ios.sh) and [WebAssembly](https://github.com/nventive/calculator/blob/uno/src/CalcManager/build.sh) to generate their native payloads, where as Windows and Android use their own VisualStudio projects for integration.
+Build scripts are used for [iOS](https://github.com/nventive/calculator/blob/uno/src/CalcManager/build_ios.sh) and [WebAssembly](https://github.com/nventive/calculator/blob/uno/src/CalcManager/build.sh) to generate their native payloads, whereas Windows and Android use their own `C++` Visual Studio projects for integration.
 
 Android's NDK also has its surprises, where the handling of exceptions is not enabled by default for NDKs below r19 for ARM32 ABIs. The calculation engine relies on the use of exceptions to handle cases such as divisions by zero, making the app crash in such conditions. Adding the `-lunwind` library to the linker solved that issue.
 
@@ -54,7 +54,7 @@ There are multiple subtleties for building and using native code:
 
 The rest of the application is using Microsoft's C++/CX to use WinRT APIs and particularly WinUI APIs. This makes for a very C#-like code, that can be converted to C# using a set of regular expressions that convert `::` to `.`, or `dynamic_cast<FrameworkElement>(fe)` to `((FrameworkElement)fe)`, and the rest of the WinRT API calls just match directly, as Uno provides the full APIs signatures of WinRT.
 
-That conversion converts C++/CX code to roughly 80% of C#-compatible code, with some manual adjustments to get fully functional C#. For instance, C++ iterators need to be converted to `foreach` loops, or string to numbers conversions using .NET built-in conversions.
+That conversion converts roughly 80% of C++/CX code to C#-compatible code, with some manual adjustments to get fully functional C#. For instance, C++ iterators need to be converted to `foreach` loops, or string to numbers conversions using .NET built-in conversions.
 
 Some other parts of the code could not be converted as-is, particularly those that are relying on Win32 APIs, such as current culture properties like currency or calendar features. Those needed to be converted to use .NET's own APIs as much as possible.
 
@@ -68,7 +68,7 @@ The only thing needed was to adjust to Uno's differences, such as the missing su
 
 The Uno Platform supports the use of resw files, which means that those files are the exact same files that the original calculator uses. 
 
-Note that the resources use the [attached property syntax](https://github.com/microsoft/calculator/blob/06c0dd9bd0f5971db9b17a782e1386037da38026/src/Calculator/Resources/de-DE/Resources.resw#L460) for narrator and tooltip support, such as :
+Note that the resources use the [attached property syntax](https://github.com/microsoft/calculator/blob/06c0dd9bd0f5971db9b17a782e1386037da38026/src/Calculator/Resources/de-DE/Resources.resw#L460) for narrator and tooltip support, such as:
 
 ```xml
   <data name="MemoryPivotItem.[using:Windows.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve">
@@ -81,7 +81,7 @@ making for a clutter free localized XAML.
 
 ![Calculator](Assets/20190612-Calculator-06.png)
 
-Image assets are also supported directly by the Uno Platform, though some of the original assets cannot be used directly as they use the semantic features such as high contrast that are not yet supported by Uno. Those have been excluded for the moment.
+Image assets are also supported directly by the Uno Platform, though some of the original assets cannot be used directly as they use semantic features such as high contrast that are not yet supported by Uno. Those have been excluded for the time being.
 
 ## Connecting the C++ and C# together
 
@@ -89,11 +89,11 @@ This part is the heart of the porting effort that makes use of [P/Invoke](https:
 
 ### Challenge #6: Mono for WebAssembly Dynamic and Static Linking support
 
-To be able to invoke WebAssembly code directly from C# using P/Invoke, [mono had to be updated](https://github.com/mono/mono/pull/14259) to support it. Two modes are available, one for interpreter-based builds and another for AOT based builds.
+To be able to invoke WebAssembly code directly from C# using P/Invoke, [Mono had to be updated](https://github.com/mono/mono/pull/14259) to support it. Two modes are available, one for interpreter-based builds and another for AOT-based builds.
 
-The interpreter based mode uses [emscripten's dynamic linking feature](https://github.com/emscripten-core/emscripten/wiki/Linking#overview-of-dynamic-linking), and is required to be ble to build a Wasm application under windows without having to rely on emscripten's tooling. This ensures that the development loop is as efficient as possible, though at the expense of runtime performance.
+The interpreter-based mode uses [emscripten's dynamic linking feature](https://github.com/emscripten-core/emscripten/wiki/Linking#overview-of-dynamic-linking), and is required to be ble to build a Wasm application under windows without having to rely on emscripten's tooling. This ensures that the development loop is as efficient as possible, though at the expense of runtime performance.
 
-The AOT based mode uses emscripten's and [mono's static linking feature](https://github.com/mono/mono/pull/14253), where mono generates a set of "known p/invoke" methods into LLRM bitcode modules. This mode is the most efficient, but also the slowest to generate. It's generally best to use it in release CI builds.
+The AOT-based mode uses emscripten's and [Mono's static linking feature](https://github.com/mono/mono/pull/14253), where Mono generates a set of "known p/invoke" methods into LLRM bitcode modules. This mode is the most efficient, but also the slowest to generate. It's generally best to use it in release CI builds.
 
 ### Challenge #7: The C adaptation layer
 P/Invoke is only able to call C functions, exposed here through the `extern "C" { }` cdecl calling convention. This means that to be able to invoke the C++ part of the Calculation Engine, a [C to C++ translation layer](https://github.com/nventive/calculator/blob/uno/src/CalcManager/CCalcManager.h) needed to be created. It exposes a set of methods that can [create C++ instances](https://github.com/nventive/calculator/blob/2657413f889ba26f2e3d78e82d384794fdad3aec/src/CalcManager/CCalcManager.h#L86) and returns opaque identifiers that are [passed thereafter explicitly](https://github.com/nventive/calculator/blob/2657413f889ba26f2e3d78e82d384794fdad3aec/src/CalcManager/CCalcManager.h#L87) to C++ class instance methods.
@@ -108,19 +108,19 @@ While this works well for JIT-compatible platforms (Android and Windows) through
 
 For iOS, [`UnmanagedFuntionPointer`](https://github.com/nventive/calculator/blob/2657413f889ba26f2e3d78e82d384794fdad3aec/src/Calculator.Shared/CalcManager/CalculatorManager.Interop.cs#L128) needs to be added to that the callback pointer is generated at compile time. 
 
-Mono-wasm does not yet support this feature, and [there's a need to rely](https://github.com/nventive/calculator/blob/2657413f889ba26f2e3d78e82d384794fdad3aec/src/Calculator.Wasm/WasmScripts/CalcManager.js#L18) on the [emscripten reserved function pointers](https://emscripten.org/docs/porting/connecting_cpp_and_javascript/Interacting-with-code.html#calling-javascript-functions-as-function-pointers-from-c) and `addFunction` helper function to get WebAssembly invocable callbacks to C#. Each Javascript registered function then calls back to C# using mono's binding helper.
+Mono-wasm does not yet support this feature, and [there's a need to rely](https://github.com/nventive/calculator/blob/2657413f889ba26f2e3d78e82d384794fdad3aec/src/Calculator.Wasm/WasmScripts/CalcManager.js#L18) on the [emscripten reserved function pointers](https://emscripten.org/docs/porting/connecting_cpp_and_javascript/Interacting-with-code.html#calling-javascript-functions-as-function-pointers-from-c) and `addFunction` helper function to get WebAssembly invocable callbacks to C#. Each Javascript registered function then calls back to C# using Mono's binding helper.
 
 ### Challenge #9: String Marshalling
 
-String marshalling is a tricky piece. Windows systems use UTF16 encoding, while *nix systems use UTF32 encoding. Default p/invoke marshalling does not support the implicit conversion from and to UF32, and some [explicit management of strings](https://github.com/nventive/calculator/blob/2657413f889ba26f2e3d78e82d384794fdad3aec/src/Calculator.Shared/CalcManager/CalculatorManager.Interop.cs#L326) needed to be added to support the C++ `wchar_t` type.
+String marshalling is a tricky piece. Windows systems use UTF16 encoding, while \*nix systems use UTF32 encoding. Default p/invoke marshalling does not support the implicit conversion from and to UF32, and some [explicit management of strings](https://github.com/nventive/calculator/blob/2657413f889ba26f2e3d78e82d384794fdad3aec/src/Calculator.Shared/CalcManager/CalculatorManager.Interop.cs#L326) needed to be added to support the C++ `wchar_t` type.
 
 ### Challenge #10: Adding features to Uno
 
-In the course of adding support for the calculator, we had to add support for many of the XAML and WinRT features that the caculator is relying on. 
+In the course of porting the Calculator, we had to add support for many of the XAML and WinRT features that the caculator is relying on. 
 
-Features such as like Grid's [RowDefinitions.MaxWith/MaxHeight support](https://github.com/nventive/Uno/pull/1048) or [Attached Property localization using resources](https://github.com/nventive/Uno/pull/966), fixes such as [text measuring](https://github.com/nventive/Uno/pull/1034) and [caching](https://github.com/nventive/Uno/pull/931) for WebAssembly, performance improvements with [VisualState Triggers](https://github.com/nventive/Uno/pull/1008), [Javascript marshaling](https://github.com/nventive/Uno/pull/970),or support for the new [`x:Load` attribute](https://github.com/nventive/Uno/pull/870).
+Features such as Grid's [RowDefinitions.MaxWith/MaxHeight support](https://github.com/nventive/Uno/pull/1048), [Attached Property localization using resources](https://github.com/nventive/Uno/pull/966), fixes such as [text measuring](https://github.com/nventive/Uno/pull/1034) and [caching](https://github.com/nventive/Uno/pull/931) for WebAssembly, performance improvements with [VisualState Triggers](https://github.com/nventive/Uno/pull/1008), [Javascript marshaling](https://github.com/nventive/Uno/pull/970), and support for the new [`x:Load` attribute](https://github.com/nventive/Uno/pull/870) are some of the improvements we made to Uno.
 
-There are other adjustments that have been made in the original source code to adjust for Uno, and we're going to be addind support for those in the future as progressively add new features to the Uno Platform.
+There are other adjustments that have been made to the original source code of the calculator to adjust for Uno, and we're going to be adding support for those in the future as we progressively add new features to the Uno Platform.
 
 ## Other topics 
 
@@ -130,16 +130,16 @@ The Currency converter uses an API call to be able to get up-to-date rates, and 
 
 ### Notes on the Conversion
 
-Translating for C++ to C# is very useful to understand the code, and make it more familiar to the general population of Windows developers, but it has the disavantage of making the change tracking with the original source code harder.
+Translating for C++ to C# is very useful to understand the code, and make it more familiar to the general population of Windows developers, but it has the disadvantage of making change tracking against the original source code harder.
 
-This is the reason why we chose to refactor as little as possible the code (e.g. no adjustments to C# general naming conventions) and keep the C# code as close to the original C++ code as possible. This ensure that applying C++ updates back to the C# code base is as easy as possible.
+This is the reason why we chose to refactor as little as possible the code (e.g. no adjustments to conform to C# general naming conventions) and keep the C# code as close to the original C++ code as possible. This eases the process of applying upstream C++ updates to the C# code base.
 
 ### Final thoughts
 
 The porting of the Calculator is a very interesting project to work on, and also makes for a very good calculator to use on all platforms.
 
-You can try building it yourself through with the [instructions from the GitHub repo](https://github.com/nventive/calculator).
+You can try building it yourself with the [instructions from the GitHub repo](https://github.com/nventive/calculator).
 
 Let us know what you think!
 
-_Special thanks to the team at nventive for the hard work make the porting of this application a reality !_
+_Special thanks to the team at nventive for the hard work of making the porting of this application a reality !_
