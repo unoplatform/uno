@@ -897,6 +897,12 @@ namespace Windows.UI.Xaml.Controls
 			int actualOffset = 0;
 			int appliedOffset = 0;
 			var consumptionIncrement = GetScrollConsumptionIncrement(fillDirection) * Math.Sign(offset);
+
+			if (consumptionIncrement == 0)
+			{
+				// Exit early to avoid trying to incrementally scroll infinitely
+				return actualOffset;
+			}
 			while (Math.Abs(unconsumedOffset) > Math.Abs(consumptionIncrement))
 			{
 				//Consume the scroll offset in bite-sized chunks to allow us to recycle views at the same rate as we create them. A big optimization, for 
@@ -1653,6 +1659,12 @@ namespace Windows.UI.Xaml.Controls
 			}
 
 			var averageExtent = GetAverageVisibleItemExtent();
+			if (averageExtent == 0)
+			{
+				// All 'visible' items have 0 extent. We're not going to get a reasonable cache length, so give up.
+				return;
+			}
+
 			var itemsVisible = Extent / averageExtent;
 			var newCacheHalfLength = (itemsVisible * CacheLength) / 2 * GetTrailingLine(GeneratorDirection.Forward).NumberOfViews; ;
 			newCacheHalfLength = Math.Round(newCacheHalfLength);
