@@ -37,7 +37,7 @@ In the following part we will dissect the challenges we needed to solve in order
 
 The main reason for keeping C++ code as-is is the use of pointers and low-level memory techniques that do not map easily to C#, but also the fact that the Calculation Engine does not use any UI directly. The code is nicely exposed using the `CalculatorManager` class, an `IResourceProvider`  callback interface and `ICalcDisplay` UI updates callbacks interface.
 
-Most of this part of the code did not need to be updated, except for the use of the C99 **[flexible array member feature](https://en.wikipedia.org/wiki/Flexible_array_member)**. This feature is not supported in C++ (for good reasons), but Microsoft engineers added an exclusion for that feature, but clang does not have that and the code that relied on it needed some adjustments to use normal arrays.
+Most of this part of the code did not need to be updated, except for the use of the C99 **[flexible array member feature](https://en.wikipedia.org/wiki/Flexible_array_member)**. This feature is not supported in C++ (for good reasons), but Microsoft engineers added an exclusion for that feature. Clang however does not have that and the code that relied on it needed some adjustments to use normal arrays.
 
 Build scripts are used for [iOS](https://github.com/nventive/calculator/blob/uno/src/CalcManager/build_ios.sh) and [WebAssembly](https://github.com/nventive/calculator/blob/uno/src/CalcManager/build.sh) to generate their native payloads, where as Windows and Android use their own VisualStudio projects for integration.
 
