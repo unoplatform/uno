@@ -909,7 +909,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 			actualOffset = ScrollByInner(offset, recycler, state);
 
-			UpdateBuffers(recycler);
+			UpdateBuffers(recycler, state);
 
 			return actualOffset;
 		}
@@ -1027,7 +1027,7 @@ namespace Windows.UI.Xaml.Controls
 				// leading to weird behaviour
 				// And don't populate buffer after a collection change until visible layout has been rebuilt with up-to-date positions
 				AssertValidState();
-				UpdateBuffers(recycler);
+				UpdateBuffers(recycler, state);
 				AssertValidState();
 			}
 		}
@@ -1639,10 +1639,10 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		private void UpdateBuffers(RecyclerView.Recycler recycler)
+		private void UpdateBuffers(RecyclerView.Recycler recycler, RecyclerView.State state)
 		{
 			UpdateCacheHalfLength();
-			ViewCache.UpdateBuffers(recycler);
+			ViewCache.UpdateBuffers(recycler, state);
 		}
 
 		private void UpdateCacheHalfLength()
