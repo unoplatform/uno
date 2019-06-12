@@ -35,5 +35,6 @@
 			Previous Combo VisualTree (first item):<LineBreak />
 			<Run x:Name="_combo2Txt"></Run>
 		</TextBlock>
+		<Button x:Name="ChangeSelectionButton" Content="Increment SelectedIndex" Click="ChangeSelectionButton_Click"/>
 	</StackPanel>
 </UserControl>

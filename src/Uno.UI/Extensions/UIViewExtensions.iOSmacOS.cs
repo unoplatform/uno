@@ -227,6 +227,21 @@ namespace AppKit
 			}
 		}
 
+		/// <summary>
+		/// Add view to parent.
+		/// </summary>
+		/// <param name="parent">Parent view</param>
+		/// <param name="child">Child view to add</param>
+		public static void AddChild(this _View parent, _View child)
+		{
+			parent.AddSubview(child);
+		}
+
+		/// <summary>
+		/// Get the parent view in the visual tree. This may differ from the logical <see cref="FrameworkElement.Parent"/>.
+		/// </summary>
+		public static _View GetVisualTreeParent(this _View child) => child?.Superview;
+
 		public static IEnumerable<T> FindSubviewsOfType<T>(this _View view, int maxDepth = 20) where T : class
 		{
 			return FindSubviews(view, (v) => v as T != null, maxDepth)
