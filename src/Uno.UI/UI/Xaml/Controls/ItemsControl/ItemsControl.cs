@@ -89,7 +89,8 @@ namespace Windows.UI.Xaml.Controls
 
 			OnDisplayMemberPathChangedPartial(string.Empty, this.DisplayMemberPath);
 
-			_items.VectorChanged += (s, e) => {
+			_items.VectorChanged += (s, e) =>
+			{
 				OnItemsChanged(null);
 				SetNeedsUpdateItems();
 			};
@@ -615,12 +616,13 @@ namespace Windows.UI.Xaml.Controls
 
 		private void TryObserveCollectionViewSource(object newValue)
 		{
-			if(newValue is CollectionViewSource cvs)
+			if (newValue is CollectionViewSource cvs)
 			{
 				_cvsViewChanged.Disposable = null;
 				_cvsViewChanged.Disposable = cvs.RegisterDisposablePropertyChangedCallback(
 					CollectionViewSource.ViewProperty,
-					(s, e) => {
+					(s, e) =>
+					{
 						ObserveCollectionChanged();
 						SetNeedsUpdateItems();
 					}
@@ -1041,6 +1043,7 @@ namespace Windows.UI.Xaml.Controls
 
 				if (!isOwnContainer)
 				{
+					TryRepairContentConnection(containerAsContentControl, item);
 					// Set the datacontext first, then the binding.
 					// This avoids the inner content to go through a partial content being
 					// the result of the fallback value of the binding set below.
@@ -1051,6 +1054,25 @@ namespace Windows.UI.Xaml.Controls
 						containerAsContentControl.SetBinding(ContentControl.ContentProperty, new Binding());
 					}
 				}
+			}
+		}
+
+		/// <summary>
+		/// Ensure the container template updates correctly when recycling with the same item.
+		/// </summary>
+		/// <remarks>
+		/// This addresses the very specific case where 1) the item is a view, 2) It's being rebound to a container that was most
+		/// recently used to show that same view, but 3) the view is no longer connected to the container, perhaps because it was bound to
+		/// a different container in the interim.
+		///
+		/// To force the item view to be reconnected, we set DataContext to null, so that when we set it to the item view immediately afterward,
+		/// it does something instead of nothing.
+		/// </remarks>
+		private void TryRepairContentConnection(ContentControl container, object item)
+		{
+			if (item is View itemView && container.DataContext == itemView && itemView.GetVisualTreeParent() == null)
+			{
+				container.DataContext = null;
 			}
 		}
 
