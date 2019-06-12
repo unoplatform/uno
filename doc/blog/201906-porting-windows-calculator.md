@@ -29,7 +29,7 @@ Second, the calculator contains features such as: Standard mode, Scientific mode
 
 ## Porting the engine to the Uno Platform
 
-The Uno platform being developed in C#, to be able to support the Calculator on iOS, Android and WebAssembly, some parts of the code needed to be translated to C#, others needed to be adjusted to be compliant with clang's C++ 11 support. 
+The Uno platform being developed in C#, to be able to support the Calculator on iOS, Android and WebAssembly, some parts of the code needed to be translated to C#. Others needed to be adjusted to be compliant with clang's C++ 11 support. 
 
 In the following part we will dissect the challenges we needed to solve in order to port this code to Web, via WebAssembly support of Uno Platform, as well as native iOS and Android apps. 
 
