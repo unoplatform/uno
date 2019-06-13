@@ -2,12 +2,13 @@
 
 A few months ago, Microsoft [open sourced the Windows Calculator](https://blogs.windows.com/buildingapps/2019/03/06/announcing-the-open-sourcing-of-windows-calculator/), the very Calculator that ships with Windows 10.
 
-We decided to [port it to C# and the Uno Platform](https://github.com/nventive/calculator), so that iOS and Android users could use it, but also use it from the Web using Web Assembly. Why – well that’s what we at Uno Platform do 😊.
+We decided to [port it to C# and the Uno Platform](https://github.com/nventive/calculator), so that iOS and Android users could use it, but also use it from the Web using Web Assembly. Why – well that’s what we at Uno Platform do 😊 – enable the same C# and XAML code to run on the Web, Mobile and Desktop.
 
 You can use it today on:
 - [Apple App Store](https://bit.ly/calc-ios)
 - [Android Play Store](https://play.google.com/store/apps/details?id=uno.platform.calculator)
 - WebAssembly: https://calculator.platform.uno
+-	Windows 10 – well, just open it on Windows 10 😊
 
 ![Calculator](Assets/20190612-Calculator-01.png)
 
@@ -122,13 +123,18 @@ Features such as Grid's [RowDefinitions.MaxWith/MaxHeight support](https://githu
 
 There are other adjustments that have been made to the original source code of the calculator to adjust for Uno, and we're going to be adding support for those in the future as we progressively add new features to the Uno Platform.
 
-## Other topics 
+## Additional notes
 
 The Currency converter uses an API call to be able to get up-to-date rates, and the endpoint is not CORS-enabled, which makes invocation from a WebBrowser difficule. The API call is for now going through the [CORS-anywhere sample app](https://cors-anywhere.herokuapp.com/), but eventually Microsoft may be updating its endpoint to support it properly.
 
 ![Calculator](Assets/20190612-Calculator-05.png)
 
-### Notes on the Conversion
+Also, if you are trying the calculator, or any other WASM-related apps, because of WebAssembly limitations you should keep the following in mind. 
+
+1. WebAssembly is work in progress – performance is getting better and better, as emscripten, LLVM, Mono and Uno get improvements.
+1. A lot of devs use Chrome as their primary browser. Currently Chrome’s own support for WebAssembly is not quite there (the current canary is much better!), so you may want to try the Calculator using one of the other browsers.
+
+### About the C++ Conversion
 
 Translating for C++ to C# is very useful to understand the code, and make it more familiar to the general population of Windows developers, but it has the disadvantage of making change tracking against the original source code harder.
 
@@ -138,7 +144,9 @@ This is the reason why we chose to refactor as little as possible the code (e.g.
 
 The porting of the Calculator is a very interesting project to work on, and also makes for a very good calculator to use on all platforms.
 
-You can try building it yourself with the [instructions from the GitHub repo](https://github.com/nventive/calculator).
+You can try building it yourself [by heading over to the GitHub repo](https://github.com/nventive/calculator).
+
+We’d like to help developers write single-codebase applications that run natively on Web, Mobile and Desktop. To help you do that we have [created a simple tutorial](https://platform.uno/docs/articles/getting-started-tutorial-1.html) so you can test it out in your own environment. We’d appreciate if you give it a try. 
 
 Let us know what you think!
 
