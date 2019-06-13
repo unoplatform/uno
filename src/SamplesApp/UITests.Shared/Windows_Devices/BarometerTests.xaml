@@ -12,6 +12,6 @@
     <StackPanel>
 		<Button x:Name="StartReadingButton" Click="StartReadingClick">Start reading</Button>
 		<Button x:Name="EndReadingButton" Click="EndReadingClick">End reading</Button>
-		<TextBlock x:Name="ResultsTextBlock" />
+		<TextBlock x:Name="ResultsTextBlock" TextWrapping="WrapWholeWords" />
 	</StackPanel>
 </UserControl>

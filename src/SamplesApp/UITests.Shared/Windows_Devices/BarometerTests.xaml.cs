@@ -28,7 +28,7 @@ namespace UITests.Shared.Windows_Devices
 		{
 			this.InitializeComponent();
 			_barometer = Barometer.GetDefault();
-			if ( _barometer == null)
+			if (_barometer == null)
 			{
 				ResultsTextBlock.Text = "Barometer not available on this device";
 			}
@@ -49,9 +49,12 @@ namespace UITests.Shared.Windows_Devices
 		}
 
 
-		private void _barometer_ReadingChanged(Barometer sender, BarometerReadingChangedEventArgs args)
+		private async void _barometer_ReadingChanged(Barometer sender, BarometerReadingChangedEventArgs args)
 		{
-			ResultsTextBlock.Text = $"StationPressureInHectopascals: {args.Reading.StationPressureInHectopascals} at {args.Reading.Timestamp}";
+			await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
+			{
+				ResultsTextBlock.Text = $"StationPressureInHectopascals: {args.Reading.StationPressureInHectopascals}\r\nat {args.Reading.Timestamp}";
+			});
 		}
 	}
 }
