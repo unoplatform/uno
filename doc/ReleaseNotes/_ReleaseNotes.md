@@ -1,6 +1,7 @@
 ﻿# Release notes
 
 ## Next version
+* Basic support for `Windows.Devices.Sensors.Barometer`
 * `LinearGradientBrush.EndPoint` now defaults to (1,1) to match UWP
 * Add support for `Windows.System.Display.DisplayRequest` API on iOS and Android
 * Add support for the following `Windows.System.Power.PowerManager` APIs on iOS and Android:
