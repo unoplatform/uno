@@ -29,11 +29,17 @@ namespace UITests.Shared.Windows_UI_Xaml_Controls.AutoSuggestBoxTests
 			this.InitializeComponent();
 		}
 
+		private bool ShouldClear => ShouldClearTextBox.IsChecked.Value;
+
 		private void AutoSuggestBox_TextChanged(AutoSuggestBox sender, AutoSuggestBoxTextChangedEventArgs args)
 		{
 			if (args.Reason == AutoSuggestionBoxTextChangeReason.UserInput)
 			{
-				_suggestions.Clear();
+				if (ShouldClear || Suggestions.Count > 10)
+				{
+					_suggestions.Clear();
+				}
+
 				_suggestions.Add(sender.Text + "1");
 				_suggestions.Add(sender.Text + "2");
 			}
