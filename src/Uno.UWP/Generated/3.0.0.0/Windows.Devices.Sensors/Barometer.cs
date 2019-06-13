@@ -65,7 +65,7 @@ namespace Windows.Devices.Sensors
 			}
 		}
 		#endif
-		#if false || __IOS__ || NET461 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Devices.Sensors.BarometerReading GetCurrentReading()
 		{
