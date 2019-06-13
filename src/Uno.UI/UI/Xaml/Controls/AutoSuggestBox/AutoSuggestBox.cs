@@ -79,9 +79,13 @@ namespace Windows.UI.Xaml.Controls
 
 		protected override void OnItemsSourceChanged(DependencyPropertyChangedEventArgs e)
 		{
-			base.OnItemsSourceChanged(e);
-
+			// Calling this method before base.OnItemsSourceChanged() ensures that, in the case of an ObservableCollection, the list
+			// subscribes to CollectionChanged before AutoSuggestBox does. This is important for Android because the list needs to
+			// notify RecyclerView of collection changes before UpdateSuggestionList() measures it, otherwise we get errors like
+			// "Inconsistency detected. Invalid view holder adapter position"
 			UpdateSuggestionList();
+
+			base.OnItemsSourceChanged(e);
 		}
 
 		internal override void OnItemsSourceSingleCollectionChanged(object sender, NotifyCollectionChangedEventArgs args, int section)
