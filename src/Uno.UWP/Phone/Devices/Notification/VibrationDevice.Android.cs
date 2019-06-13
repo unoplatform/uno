@@ -12,17 +12,17 @@ namespace Windows.Phone.Devices.Notification
 	public partial class VibrationDevice
 	{
 		private const string Permission = "android.permission.VIBRATE";
-		
-		private readonly Vibrator _vibrator;
-
 		private static VibrationDevice _instance;
+		private static bool _initializationAttempted;
+
+		private readonly Vibrator _vibrator;
 
 		private VibrationDevice(Vibrator vibrator) =>
 			_vibrator = vibrator;
 
 		public static VibrationDevice GetDefault()
 		{
-			if (_instance == null)
+			if (!_initializationAttempted && _instance == null)
 			{
 				if (ContextCompat.CheckSelfPermission(Application.Context, Permission) == Android.Content.PM.Permission.Denied)
 				{
@@ -32,7 +32,8 @@ namespace Windows.Phone.Devices.Notification
 				if (vibrator != null && vibrator.HasVibrator)
 				{
 					_instance = new VibrationDevice(vibrator);
-				}				
+				}
+				_initializationAttempted = true;
 			}
 			return _instance;
 		}

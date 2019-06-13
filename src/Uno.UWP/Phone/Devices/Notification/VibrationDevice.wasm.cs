@@ -9,6 +9,7 @@ namespace Windows.Phone.Devices.Notification
 	{
 		private const string JsType = "Windows.Phone.Devices.Notification.VibrationDevice";
 		private static VibrationDevice _instance = null;
+		private static bool _initializationAttempted = false;
 
 		private VibrationDevice()
 		{
@@ -16,14 +17,15 @@ namespace Windows.Phone.Devices.Notification
 
 		public static VibrationDevice GetDefault()
 		{
-			if (_instance == null)
+			if (!_initializationAttempted && _instance == null)
 			{
 				var command = $"{JsType}.initialize()";
 				var initialized = Uno.Foundation.WebAssemblyRuntime.InvokeJS(command);
-				if (initialized.Equals("true", StringComparison.InvariantCultureIgnoreCase))
+				if (bool.Parse(initialized) == true)
 				{
-					 _instance = new VibrationDevice();
+					_instance = new VibrationDevice();
 				}
+				_initializationAttempted = true;
 			}
 			return _instance;
 		}
