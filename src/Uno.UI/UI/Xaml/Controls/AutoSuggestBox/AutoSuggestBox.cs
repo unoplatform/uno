@@ -43,7 +43,11 @@ namespace Windows.UI.Xaml.Controls
 			_suggestionsList = GetTemplateChild("SuggestionsList") as ListView;
 			_queryButton = GetTemplateChild("QueryButton") as Button;
 
-			if(_queryButton != null)
+#if __ANDROID__
+			_popup.DisableFocus();
+#endif
+
+			if (_queryButton != null)
 			{
 				_queryButton.Content = new SymbolIcon(Symbol.Find);
 			}
