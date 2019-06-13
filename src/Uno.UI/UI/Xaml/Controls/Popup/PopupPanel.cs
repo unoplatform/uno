@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Microsoft.Extensions.Logging;
+using Uno.Extensions;
 using Uno.UI;
 using Windows.Foundation;
 using Windows.UI.Xaml.Controls.Primitives;
@@ -80,6 +82,11 @@ namespace Windows.UI.Xaml.Controls
 				size.Height);
 
 			ArrangeElement(child, finalFrame);
+
+			if (this.Log().IsEnabled(LogLevel.Debug))
+			{
+				this.Log().LogDebug($"Arranging PopupPanel #={GetHashCode()} DC={Popup.DataContext} child={child} transform={transform.Matrix} offset={Popup.HorizontalOffset},{Popup.VerticalOffset} finalSize={finalSize} childFrame={finalFrame}");
+			}
 
 			return finalSize;
 		}
