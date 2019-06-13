@@ -35,7 +35,7 @@ namespace UITests.Shared.Windows_UI_Xaml_Controls.AutoSuggestBoxTests
 		{
 			if (args.Reason == AutoSuggestionBoxTextChangeReason.UserInput)
 			{
-				if (ShouldClear || Suggestions.Count > 10)
+				if (ShouldClear || _suggestions.Count > 10)
 				{
 					_suggestions.Clear();
 				}
