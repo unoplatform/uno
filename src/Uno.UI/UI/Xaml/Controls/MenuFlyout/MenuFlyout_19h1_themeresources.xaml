@@ -27,7 +27,8 @@
         <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Auto" />
         <Setter Property="ScrollViewer.IsHorizontalRailEnabled" Value="False" />
         <Setter Property="ScrollViewer.IsVerticalRailEnabled" Value="False" />
-        <Setter Property="ScrollViewer.ZoomMode" Value="Disabled" />
+		<!--ZoomMode attached property is currently not supported-->
+        <!--<Setter Property="ScrollViewer.ZoomMode" Value="Disabled" />-->
         <Setter Property="MaxWidth" Value="{ThemeResource FlyoutThemeMaxWidth}" />
         <Setter Property="MinHeight" Value="{ThemeResource MenuFlyoutThemeMinHeight}" />
         <Setter Property="Template">
@@ -43,7 +44,7 @@
                             VerticalScrollBarVisibility="{TemplateBinding ScrollViewer.VerticalScrollBarVisibility}"
                             IsHorizontalRailEnabled="{TemplateBinding ScrollViewer.IsHorizontalRailEnabled}"
                             IsVerticalRailEnabled="{TemplateBinding ScrollViewer.IsVerticalRailEnabled}"
-                            ZoomMode="{TemplateBinding ScrollViewer.ZoomMode}"
+                            ZoomMode="Disabled"
                             AutomationProperties.AccessibilityView="Raw">
                             <ItemsPresenter Margin="{ThemeResource MenuFlyoutScrollerMargin}" />
                         </ScrollViewer>

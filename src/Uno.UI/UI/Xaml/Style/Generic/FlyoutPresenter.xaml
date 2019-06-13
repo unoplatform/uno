@@ -52,7 +52,8 @@
                         CornerRadius="{TemplateBinding CornerRadius}"
                         Padding="{ThemeResource FlyoutBorderThemePadding}">
 						<ScrollViewer x:Name="ScrollViewer"
-                            ZoomMode="{TemplateBinding ScrollViewer.ZoomMode}"
+                            xamarin:ZoomMode="Disabled"
+                            win:ZoomMode="{TemplateBinding ScrollViewer.ZoomMode}"
                             HorizontalScrollMode="{TemplateBinding ScrollViewer.HorizontalScrollMode}"
                             HorizontalScrollBarVisibility="{TemplateBinding ScrollViewer.HorizontalScrollBarVisibility}"
                             VerticalScrollMode="{TemplateBinding ScrollViewer.VerticalScrollMode}"

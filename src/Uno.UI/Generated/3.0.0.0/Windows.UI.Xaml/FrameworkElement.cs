@@ -178,7 +178,7 @@ namespace Windows.UI.Xaml
 			}
 		}
 		#endif
-		#if false || false || NET461 || false || false
+		#if false || false || false || false || false
 		[global::Uno.NotImplemented]
 		public  double ActualHeight
 		{
@@ -188,7 +188,7 @@ namespace Windows.UI.Xaml
 			}
 		}
 		#endif
-		#if false || false || NET461 || false || false
+		#if false || false || false || false || false
 		[global::Uno.NotImplemented]
 		public  double ActualWidth
 		{
@@ -654,7 +654,7 @@ namespace Windows.UI.Xaml
 		// Forced skipping of method Windows.UI.Xaml.FrameworkElement.DataContextProperty.get
 		// Forced skipping of method Windows.UI.Xaml.FrameworkElement.StyleProperty.get
 		// Forced skipping of method Windows.UI.Xaml.FrameworkElement.FlowDirectionProperty.get
-		#if false || false || NET461 || __WASM__ || false
+		#if false || false || false || false || false
 		[global::Uno.NotImplemented]
 		public  event global::System.EventHandler<object> LayoutUpdated
 		{

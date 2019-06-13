@@ -786,6 +786,36 @@ namespace Uno.UI.Tests.GridTests
 		}
 
 		[TestMethod]
+		public void When_Grid_Column_Min_MaxWidth_Changes()
+		{
+			var SUT = new Grid();
+
+			SUT.ForceLoaded();
+
+			var child = SUT.AddChild(
+				new View { Name = "Child01", RequestedDesiredSize = new Windows.Foundation.Size(10, 10) }
+				.GridColumn(1)
+			);
+
+
+			SUT.Measure(new Windows.Foundation.Size(20, 20));
+			var measuredSize = SUT.DesiredSize;
+			SUT.Arrange(new Windows.Foundation.Rect(0, 0, 20, 20));
+
+			ColumnDefinition ColumnDefinition1;
+			SUT.ColumnDefinitions.Add(ColumnDefinition1 = new ColumnDefinition() { Width = new GridLength(5) });
+			Assert.AreEqual(1, SUT.InvalidateMeasureCallCount);
+			SUT.ColumnDefinitions.Add(new ColumnDefinition() { Width = new GridLength(1, GridUnitType.Auto) });
+			Assert.AreEqual(2, SUT.InvalidateMeasureCallCount);
+
+			ColumnDefinition1.MaxWidth = 22;
+			Assert.AreEqual(3, SUT.InvalidateMeasureCallCount);
+
+			ColumnDefinition1.MinWidth = 5;
+			Assert.AreEqual(4, SUT.InvalidateMeasureCallCount);
+		}
+
+		[TestMethod]
 		public void When_Grid_Has_Two_Columns_And_VerticalAlignment_Top()
 		{
 			var SUT = new Grid() { Name = "test" };
@@ -1004,17 +1034,29 @@ namespace Uno.UI.Tests.GridTests
 		{
 			var SUT = new Grid();
 
-			SUT.ColumnDefinitions.Add(new ColumnDefinition { Width = "*" });
-			SUT.ColumnDefinitions.Add(new ColumnDefinition { Width = "auto" });
+			SUT.ColumnDefinitions.Clear();
+			SUT.ColumnDefinitions.Add(new ColumnDefinition() { Width = GridLength.Auto });
+			SUT.ColumnDefinitions.Clear();
+		}
 
-			SUT.AddChild(new View { RequestedDesiredSize = new Windows.Foundation.Size(100, 100) });
-			SUT.AddChild(new View { RequestedDesiredSize = new Windows.Foundation.Size(100, 100) })
-				.GridPosition(0, 1)
-				.GridColumnSpan(3);
+		[TestMethod]
+		public void When_Clear_ColumnDefinitions()
+		{
+			var SUT = new Grid();
 
-			SUT.Measure(new Windows.Foundation.Size(1000, 100));
-			var measuredSize = SUT.DesiredSize;
-			SUT.Arrange(new Windows.Foundation.Rect(0, 0, 1000, 100));
+			SUT.ColumnDefinitions.Clear();
+			SUT.ColumnDefinitions.Add(new ColumnDefinition() { Width = GridLength.Auto });
+			SUT.ColumnDefinitions.Clear(); //Throws System.InvalidOperationException: Collection was modified; enumeration operation may not execute.
+		}
+
+		[TestMethod]
+		public void When_Clear_RowDefinitions()
+		{
+			var SUT = new Grid();
+			SUT.ForceLoaded();
+
+			SUT.RowDefinitions.Add(new RowDefinition() { Height = GridLength.Auto });
+			SUT.RowDefinitions.Clear();
 		}
 	}
 }

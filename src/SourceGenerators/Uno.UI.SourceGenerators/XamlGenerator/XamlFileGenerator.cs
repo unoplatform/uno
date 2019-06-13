@@ -2579,7 +2579,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				}
 
 				var finalFlags = validFlags.Intersect(actualFlags, StringComparer.OrdinalIgnoreCase);
-				return string.Join("|", finalFlags.Select(flag => $"{propertyType.ToDisplayString()}.{flag}"));
+				return string.Join("|", finalFlags.Select(flag => $"{propertyType.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat)}.{flag}"));
 			}
 
 			var hasImplictToString = propertyType

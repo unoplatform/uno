@@ -1,0 +1,19 @@
+{
+  "solution": {
+    "path": "Uno.UI.sln",
+    "projects": [
+      "AddIns\\Uno.UI.Lottie\\Uno.UI.Lottie.csproj",
+      "SamplesApp\\SamplesApp.Droid\\SamplesApp.Droid.csproj",
+      "SamplesApp\\SamplesApp.Shared\\SamplesApp.Shared.shproj",
+      "SamplesApp\\SamplesApp.UnitTests.Shared\\SamplesApp.UnitTests.Shared.shproj",
+      "SamplesApp\\UITests.Shared\\UITests.Shared.shproj",
+      "Uno.Foundation\\Uno.Foundation.csproj",
+      "Uno.UI.BindingHelper.Android\\Uno.UI.BindingHelper.Android.csproj",
+      "Uno.UI.Maps\\Uno.UI.Maps.csproj",
+      "Uno.UI.RuntimeTests\\Uno.UI.RuntimeTests.csproj",
+      "Uno.UI.Toolkit\\Uno.UI.Toolkit.csproj",
+      "Uno.UI\\Uno.UI.csproj",
+      "Uno.UWP\\Uno.csproj"
+    ]
+  }
+}

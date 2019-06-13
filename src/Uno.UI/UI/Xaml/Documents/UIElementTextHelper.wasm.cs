@@ -240,25 +240,18 @@ namespace Uno.UI.UI.Xaml.Documents
 							("word-break", ""),
 							("text-overflow", ""));
 						break;
-					case TextWrapping.WordEllipsis:
-						element.SetAttribute("wrap", "soft");
-						element.SetStyle(
-							("white-space", "pre"),
-							("word-break", ""),
-							("text-overflow", "ellipsis"));
-						break;
 					case TextWrapping.Wrap:
 						element.SetAttribute("wrap", "soft");
 						element.SetStyle(
 							("white-space", ""),
-							("word-break", ""),
-							("text-overflow", ""));
+							("word-break", "break-word"), // This is required to still wrap words that are longer than the ViewPort
+							("text-overflow", "")); 
 						break;
 					case TextWrapping.WrapWholeWords:
 						element.SetAttribute("wrap", "soft");
 						element.SetStyle(
 							("white-space", ""),
-							("word-break", "keep-all"),
+							("word-break", "keep-all"), // This is required to still wrap words that are longer than the ViewPort
 							("text-overflow", ""));
 						break;
 				}
