@@ -74,7 +74,7 @@ namespace Windows.UI.Xaml.Controls
 
 			if (_entries.TryGetValue(key, out var entry))
 			{
-				if (_queue.Count > 1 && _queue.Last.Value.Equals(key))
+				if (_queue.Count > 1 && !_queue.Last.Value.Equals(key))
 				{
 					// Move this key as last in the queue for perf
 					_queue.Remove(entry.ListNode);
