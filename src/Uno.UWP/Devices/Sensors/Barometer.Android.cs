@@ -64,7 +64,9 @@ namespace Windows.Devices.Sensors
 
 			void ISensorEventListener.OnSensorChanged(SensorEvent e)
 			{
-				var barometerReading = new BarometerReading(e.Values[0], DateTimeOffset.UtcNow);
+				var barometerReading = new BarometerReading(
+					e.Values[0],
+					DateTimeOffset.Now);
 				_barometer._readingChanged?.Invoke(
 					_barometer,
 					new BarometerReadingChangedEventArgs(barometerReading));
