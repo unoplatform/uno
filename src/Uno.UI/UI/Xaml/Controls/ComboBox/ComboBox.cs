@@ -32,7 +32,6 @@ namespace Windows.UI.Xaml.Controls
 
 		private IPopup _popup;
 		private Border _popupBorder;
-		private FrameworkElement _background;
 		private ContentPresenter _contentPresenter;
 		private ContentPresenter _headerContentPresenter;
 
@@ -53,13 +52,7 @@ namespace Windows.UI.Xaml.Controls
 
 			_popup = this.GetTemplateChild("Popup") as IPopup;
 			_popupBorder = this.GetTemplateChild("PopupBorder") as Border;
-			_background = this.GetTemplateChild("Background") as FrameworkElement;
 			_contentPresenter = this.GetTemplateChild("ContentPresenter") as ContentPresenter;
-
-			if (_background == null)
-			{
-				this.Log().Warn("ComboBox.Template is missing a 'Background' element. To ensure proper dropdown popup positionning, make sure the ControlTemplate contains a FrameworkElement named 'Background'.");
-			}
 
 			UpdateHeaderVisibility();
 			UpdateContentPresenter();
@@ -261,16 +254,15 @@ namespace Windows.UI.Xaml.Controls
 						popupChild.Width = windowSize.Width;
 						popupChild.Height = windowSize.Height;
 					}
-					else if (_background is FrameworkElement background)
+					else
 					{
 						// Reset popup offsets (Windows seems to do that)
 						popup.VerticalOffset = 0;
 						popup.HorizontalOffset = 0;
 
 						// Inject layouting constraints
-						popupChild.MinHeight = background.ActualHeight;
-						popupChild.MinWidth = background.ActualWidth;
-						popupChild.MaxHeight = MaxDropDownHeight;
+						popupChild.MinHeight = ActualHeight;
+						popupChild.MinWidth = ActualWidth;
 
 						var windowRect = Xaml.Window.Current.Bounds;
 						var visibleBounds = ApplicationView.GetForCurrentView().VisibleBounds;
@@ -280,25 +272,17 @@ namespace Windows.UI.Xaml.Controls
 						popupChild.MaxHeight = Math.Min(MaxDropDownHeight, visibleBounds.Height * 0.6);
 
 						var popupRect = popup.GetAbsoluteBoundsRect();
-						var backgroundRect = background.GetAbsoluteBoundsRect();
-
-						// Because Popup.Child is not part of the visual tree until Popup.IsOpen,
-						// some descendent Controls may never have loaded and materialized their templates.
-						// We force the materialization of all templates to ensure that Measure works properly.
-						foreach (var control in popupChild.EnumerateAllChildren().OfType<Control>())
-						{
-							control.ApplyTemplate();
-						}
+						var comboRect = this.GetAbsoluteBoundsRect();
 
 						popupChild.Measure(visibleBounds.Size);
 						var popupChildRect = new Rect(new Point(), popupChild.DesiredSize);
 
 						// Align left of popup with left of background 
-						popupChildRect.X = backgroundRect.Left;
+						popupChildRect.X = comboRect.Left;
 						if (popupChildRect.Right > visibleBounds.Right) // popup overflows at right
 						{
 							// Align right of popup with right of background
-							popupChildRect.X = backgroundRect.Right - popupChildRect.Width;
+							popupChildRect.X = comboRect.Right - popupChildRect.Width;
 						}
 						if (popupChildRect.Left < visibleBounds.Left) // popup overflows at left
 						{
@@ -307,11 +291,11 @@ namespace Windows.UI.Xaml.Controls
 						}
 
 						// Align top of popup with top of background
-						popupChildRect.Y = backgroundRect.Top;
+						popupChildRect.Y = comboRect.Top;
 						if (popupChildRect.Bottom > visibleBounds.Bottom) // popup overflows at bottom
 						{
 							// Align bottom of popup with bottom of background
-							popupChildRect.Y = backgroundRect.Bottom - popupChildRect.Height;
+							popupChildRect.Y = comboRect.Bottom - popupChildRect.Height;
 						}
 						if (popupChildRect.Top < visibleBounds.Top) // popup overflows at top
 						{

@@ -11,6 +11,7 @@ using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media;
 using Uno.Extensions;
+using Uno.Logging;
 
 namespace Uno.UI.Controls
 {
@@ -74,45 +75,63 @@ namespace Uno.UI.Controls
 		protected override void Render()
 		{
 			// Icon & Content
-			switch (Element.Icon)
+			if (Element.Icon != null)
 			{
-				case BitmapIcon bitmap:
-					Native.Title = null;
-					Native.Image = UIImageHelper.FromUri(bitmap.UriSource);
-					break;
-				default:
-					// iOS doesn't add the UIBarButtonItem to the native logical tree unless it has an Image or Title set. We 
-					// default to an empty string to ensure it is added, in order to support late-bound Content.
-					Native.Title = string.Empty;
+				switch (Element.Icon)
+				{
+					case BitmapIcon bitmap:
+						Native.Image = UIImageHelper.FromUri(bitmap.UriSource);
+						Native.CustomView = null;
+						Native.Title = null;
+						break;
 
-					switch (Element.Content)
-					{
-						case string str:
-							Native.Title = str ?? string.Empty;
-							_appBarButtonWrapper.Child = null;
-							Native.CustomView = null;
-							break;
-						case FrameworkElement content:
-							var currentParent = Element.GetParent();
+					case FontIcon font: // not supported
+					case PathIcon path: // not supported
+					case SymbolIcon symbol: // not supported
+					default:
+						this.Log().WarnIfEnabled(() => $"{GetType().Name ?? "FontIcon, PathIcon and SymbolIcon"} are not supported. Use BitmapIcon instead with UriSource.");
+						Native.Image = null;
+						Native.CustomView = null;
+						// iOS doesn't add the UIBarButtonItem to the native logical tree unless it has an Image or Title set. 
+						// We default to an empty string to ensure it is added.
+						Native.Title = string.Empty;
+						break;
+				}
+			}
+			else
+			{
+				switch (Element.Content)
+				{
+					case string text:
+						Native.Image = null;
+						Native.CustomView = null;
+						Native.Title = text;
+						break;
 
-							_appBarButtonWrapper.Child = Element;
+					case FrameworkElement fe:
+						var currentParent = Element.GetParent();
+						_appBarButtonWrapper.Child = Element;
 
-							// Restore the original parent if any, as we 
-							// want the DataContext to flow properly from the 
-							// CommandBar.
-							Element.SetParent(currentParent);
+						//Restore the original parent if any, as we
+						// want the DataContext to flow properly from the
+						// CommandBar.
+						Element.SetParent(currentParent);
 
-							if (content.Visibility == Visibility.Visible)
-							{
-								Native.CustomView = _appBarButtonWrapper;
-							}
-							else
-							{
-								Native.CustomView = null;
-							}
-							break;
-					};
-					break;
+						Native.Image = null;
+						Native.CustomView = fe.Visibility == Visibility.Visible ? _appBarButtonWrapper : null;
+						// iOS doesn't add the UIBarButtonItem to the native logical tree unless it has an Image or Title set.
+						// We default to an empty string to ensure it is added, in order to support late-bound Content.
+						Native.Title = string.Empty;
+						break;
+
+					default:
+						Native.Image = null;
+						Native.CustomView = null;
+						// iOS doesn't add the UIBarButtonItem to the native logical tree unless it has an Image or Title set. 
+						// We default to an empty string to ensure it is added.
+						Native.Title = string.Empty;
+						break;
+				}
 			}
 
 			// Label

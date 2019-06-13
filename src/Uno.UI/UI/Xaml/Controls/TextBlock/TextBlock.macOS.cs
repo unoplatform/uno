@@ -121,8 +121,10 @@ namespace Windows.UI.Xaml.Controls
 					// This matches Windows where empty TextBlocks still have a height (especially useful when measuring ListView items with no DataContext)
 					var font = NSFontHelper.TryGetFont((float)FontSize, FontWeight, FontStyle, FontFamily);
 
-					result = new Size(0, font.XHeight); /* MACOS TODO XHeight ? */
-					// result = (Text ?? NSString.Empty).StringSize(font, size);
+					var str = new NSAttributedString(Text, font);
+
+					var rect = str.BoundingRectWithSize(size, NSStringDrawingOptions.UsesDeviceMetrics);
+					result = new Size(rect.Width, rect.Height);
 				}
 
 				result.Width += horizontalPadding;
@@ -337,6 +339,10 @@ namespace Windows.UI.Xaml.Controls
 		private Size LayoutTypography(Size size)
 		{
 			_textContainer.Size = size;
+
+            // Required for GetUsedRectForTextContainer to return a value.
+            _layoutManager.GetGlyphRange(_textContainer);
+
 			return _layoutManager.GetUsedRectForTextContainer(_textContainer).Size;
 		}
 

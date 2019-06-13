@@ -69,11 +69,29 @@
 * `Grid` positions (`Row`, `RowSpan`, `Column` & `ColumnSpan`) are now behaving like UWP when the result overflows grid rows/columns definition
 * [Wasm] Improve TextBlock measure performance
 * [Wasm] Improve Html SetAttribute performance
+* MenuBar
+    - Import of MenuBar code, not functional yet as MenuItemFlyout (Issue #801)
+    - Basic support for macOS native system menus
+* Ensure FrameworkElement.LayoutUpdated is invoked on all elements being arranged
+* Fix Grid.ColumnDefinitions.Clear exception (#1006)
+* 155086 [Android] Fixed `AppBarButton.Label` taking precedence over `AppBarButton.Content` when used as `PrimaryCommands`.
+* ComboBox
+	- Remove dependency to a "Background" template part which is unnecessary and not required on UWP
+	- Make sure that the `PopupPanel` hides itself if collapsed (special cases as it's at the top of the `Window`)
+	- [iOS] Add support of `INotifyCollectionChanged` in the `Picker`
+	- [iOS] Remove the arbitrary `null` item added at the top of the `Picker`
+	- [iOS] Fix infinite layouting cycle in the iOS picker (Removed workaround which is no longer necessary as the given method is invoked properly on each measure/arrange phases)
+* [Wasm] Refactored the way the text is measured in Wasm. Wasn't working well when a parent with a RenderTransform.
+* `Grid` now supports `ColumnDefinition.MinWidth` and `MaxWidth` and `RowDefinition.MinHeight` and `MaxHeight` (#1032)
+* Implement the `PivotPanel` measure/arrange to allow text wrapping in pivot items
+* [Wasm] Add `PathIcon` support
 
 ### Breaking Changes
 * The `WebAssemblyRuntime.InvokeJSUnmarshalled` method with three parameters has been removed.
 * `NavigationBarHelper` has been removed.
 * Localized Text, Content etc is now applied even if the Text (etc) property isn't set in Xaml. Nested implicit content (eg `<Button><Border>...`) will be overridden by localized values if available.
+* [Android] Unless nested under `SecondaryCommands`, the `AppBarButton.Label` property will no longer be used for the title of menu item, instead use the `AppBarButton.Content` property. For `SecondaryCommands`, keep using `AppBarButton.Label`.
+* The `WordEllipsis` was removed from the `TextWrapping` as it's not a valid value for UWP (And it was actually supported only on WASM) (The right way to get ellipsis is with the `TextTrimming.WordEllipsis`)
 
 ### Bug fixes
 * DatePicker FlyoutPlacement now set to Full by default
@@ -123,6 +141,18 @@
 * Fix a potential crash during code generated from XAML, content were not properly escaped.
 * #977 Fix exception when setting MediaPlayerElement.Stretch in XAML.
 * [Android] Fix MediaPlayerElement.Stretch not applied
+* [Android] Fix for ListView elements measuring/layouting bug
+* Fix Grid.ColumnDefinitions.Clear exception (#1006)
+* [Wasm] Align Window.SizeChanged and ApplicationView.VisibleBoundsChanged ordering with UWP (#1015)
+* Add VS2019 Solution Filters for known developer tasks
+* #154969 [iOS] MediaPlayer ApplyStretch breaking mediaplayer- fixed
+* 154815 [WASM] ItemClick event could be raised for wrong item
+* 155256 Fixed xaml generated enum value not being globalized
+* 155161 [Android] fixed keyboard flicker when backing from a page with CommandBar
+* Fix the processing of the GotFocus event FocusManager (#973)
+* 116098 [iOS] The time/day pickers are missing diving lines on devices running firmware 11 and up.
+* [iOS] Fix invalid DataContext propagation when estimating ListView item size (#1051)
+* RadioButton was not applying Checked state correctly with non-standard visual state grouping in style
 
 ## Release 1.44.0
 

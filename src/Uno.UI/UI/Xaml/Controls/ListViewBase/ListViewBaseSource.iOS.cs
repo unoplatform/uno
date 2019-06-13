@@ -570,6 +570,10 @@ namespace Windows.UI.Xaml.Controls
 			{
 				var container = CreateContainerForElementKind(elementKind);
 
+				// Force a null DataContext so the parent's value does not flow
+				// through when temporarily adding the container to Owner.XamlParent
+				container.SetValue(FrameworkElement.DataContextProperty, null);
+
 				Style style = null;
 				if (elementKind == NativeListViewBase.ListViewItemElementKind)
 				{
@@ -604,6 +608,9 @@ namespace Windows.UI.Xaml.Controls
 				{
 					Owner.XamlParent.RemoveChild(BlockLayout);
 					BlockLayout.RemoveChild(container);
+
+					// Reset the DataContext for reuse.
+					container.ClearValue(FrameworkElement.DataContextProperty);
 				}
 
 				_templateCache[dataTemplate ?? _nullDataTemplateKey] = size;

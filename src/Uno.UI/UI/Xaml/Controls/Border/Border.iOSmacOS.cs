@@ -7,12 +7,16 @@ using Uno.Disposables;
 using Windows.UI.Xaml.Shapes;
 using Windows.UI.Xaml.Media;
 
-#if XAMARIN_IOS_UNIFIED
-using Foundation;
+#if __IOS__
 using UIKit;
-using CoreAnimation;
-using CoreGraphics;
-using Windows.UI.Xaml;
+using _View = UIKit.UIView;
+using _Color = UIKit.UIColor;
+using _Image = UIKit.UIImage;
+#elif __MACOS__
+using AppKit;
+using _View = AppKit.NSView;
+using _Color = AppKit.NSColor;
+using _Image = AppKit.NSImage;
 #endif
 
 namespace Windows.UI.Xaml.Controls
@@ -50,7 +54,7 @@ namespace Windows.UI.Xaml.Controls
 			UpdateBorderLayer();
 		}
 
-		private void UpdateBorderLayer(UIImage backgroundImage = null)
+		private void UpdateBorderLayer(_Image backgroundImage = null)
 		{
 			if (IsLoaded)
 			{
@@ -66,7 +70,7 @@ namespace Windows.UI.Xaml.Controls
 				);
 			}
 
-			base.SetNeedsDisplay();
+			this.SetNeedsDisplay();
 		}
 
 		protected override void OnBackgroundChanged(DependencyPropertyChangedEventArgs args)
@@ -90,7 +94,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		private void OnBackgroundImageBrushChanged(UIImage backgroundImage)
+		private void OnBackgroundImageBrushChanged(_Image backgroundImage)
 		{
 			UpdateBorderLayer(backgroundImage);
 		}
@@ -105,7 +109,7 @@ namespace Windows.UI.Xaml.Controls
 			UpdateBorderLayer();
 		}
 
-        partial void OnChildChangedPartial(UIView previousValue, UIView newValue)
+        partial void OnChildChangedPartial(_View previousValue, _View newValue)
 		{
 			previousValue?.RemoveFromSuperview();
 

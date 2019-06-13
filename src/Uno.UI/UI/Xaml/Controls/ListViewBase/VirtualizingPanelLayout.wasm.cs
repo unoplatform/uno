@@ -9,6 +9,7 @@ using Uno.UI;
 using Windows.Foundation;
 using Windows.UI.Xaml.Controls.Primitives;
 using static System.Math;
+using static Windows.UI.Xaml.Controls.Primitives.GeneratorDirection;
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -29,7 +30,15 @@ namespace Windows.UI.Xaml.Controls
 
 		private Size _availableSize;
 		private double _lastScrollOffset;
-		private Size _lastAvailableSize;
+
+		/// <summary>
+		/// The previous item to the old first visible item, used when a lightweight layout rebuild is called.
+		/// </summary>
+		private IndexPath? _dynamicSeedIndex;
+		/// <summary>
+		/// Start position of the old first group, used when a lightweight layout rebuild is called.
+		/// </summary>
+		private double? _dynamicSeedStart;
 
 		private double AvailableBreadth => ScrollOrientation == Orientation.Vertical ?
 			_availableSize.Width :
@@ -126,7 +135,7 @@ namespace Windows.UI.Xaml.Controls
 				}
 			}
 
-			if(
+			if (
 				ItemsControl == null
 				&& OwnerPanel.TemplatedParent is ItemsControl popupItemsControl
 			)
@@ -156,20 +165,20 @@ namespace Windows.UI.Xaml.Controls
 			var delta = ScrollOffset - _lastScrollOffset;
 			var sign = Sign(delta);
 			var unappliedDelta = Abs(delta);
-			var fillDirection = sign > 0 ? GeneratorDirection.Forward : GeneratorDirection.Backward;
+			var fillDirection = sign > 0 ? Forward : Backward;
 
-				while (unappliedDelta > 0)
+			while (unappliedDelta > 0)
+			{
+				// Apply scroll in bite-sized increments. This is crucial for good performance, since the delta may be in the 100s or 1000s of pixels, and we want to recycle unseen views at the same rate that we dequeue newly-visible views.
+				var scrollIncrement = GetScrollConsumptionIncrement(fillDirection);
+				if (scrollIncrement == 0)
 				{
-					// Apply scroll in bite-sized increments. This is crucial for good performance, since the delta may be in the 100s or 1000s of pixels, and we want to recycle unseen views at the same rate that we dequeue newly-visible views.
-					var scrollIncrement = GetScrollConsumptionIncrement(fillDirection);
-					if (scrollIncrement == 0)
-					{
-						break;
-					}
-					unappliedDelta -= scrollIncrement;
-					unappliedDelta = Max(0, unappliedDelta);
-					UpdateLayout(extentAdjustment: sign * -unappliedDelta);
+					break;
 				}
+				unappliedDelta -= scrollIncrement;
+				unappliedDelta = Max(0, unappliedDelta);
+				UpdateLayout(extentAdjustment: sign * -unappliedDelta);
+			}
 			UpdateCompleted();
 
 			_lastScrollOffset = ScrollOffset;
@@ -180,7 +189,7 @@ namespace Windows.UI.Xaml.Controls
 		/// </summary>
 		private double GetScrollConsumptionIncrement(GeneratorDirection fillDirection)
 		{
-			var incrementView = fillDirection == GeneratorDirection.Forward ?
+			var incrementView = fillDirection == Forward ?
 				GetFirstMaterializedLine()?.FirstView :
 				GetLastMaterializedLine()?.LastView;
 
@@ -208,49 +217,11 @@ namespace Windows.UI.Xaml.Controls
 			ViewportSize = ScrollViewer?.ViewportMeasureSize ?? default;
 			if (this.Log().IsEnabled(LogLevel.Debug))
 			{
-				this.Log().LogDebug($"Calling {GetMethodTag()}, availableSize={availableSize}, _availableSize={_lastAvailableSize} {GetDebugInfo()}");
+				this.Log().LogDebug($"Calling {GetMethodTag()}, availableSize={availableSize}, _availableSize={_availableSize} {GetDebugInfo()}");
 			}
 
-			if(_lastAvailableSize != availableSize)
-			{
-				// Drop the current cells for now, but we need to remeasure the cells instead.
-				ClearLines();
-			}
-			else
-			{
-				// Size has not changed, remeasure all items with their same sizes
-				foreach(var line in _materializedLines)
-				{
-					foreach (var view in line.ContainerViews)
-					{
-						//
-						// Remeasure the item will the full available width, to determine if it has changed.
-						// If it has, rebuild everything. This will have to be adjusted for performance.
-						//
-						var slotSize = ScrollOrientation == Orientation.Vertical ?
-							new Size(AvailableBreadth, double.PositiveInfinity) :
-							new Size(double.PositiveInfinity, AvailableBreadth);
-
-						var prevSize = view.DesiredSize;
-						view.Measure(slotSize);
-
-						if (this.Log().IsEnabled(LogLevel.Debug))
-						{
-							this.Log().LogDebug($"{GetMethodTag()} item remeasured prevSize:{prevSize} view.DesiredSize:{view.DesiredSize}");
-						}
-
-						if(prevSize != view.DesiredSize)
-						{
-							// Drop the current cells for now, but we need to remeasure the cells instead.
-							ClearLines();
-							break;
-						}
-					}
-				}
-			}
-
-			_lastAvailableSize = availableSize;
 			_availableSize = availableSize;
+			ScrapLayout();
 			UpdateLayout();
 
 			return EstimatePanelSize();
@@ -277,32 +248,6 @@ namespace Windows.UI.Xaml.Controls
 			_availableSize = finalSize;
 			UpdateLayout();
 
-			// This is a hack to propagate the "Arrange" phase to children following
-			// an .InvalidateArrange() (or .InvalidateMeasure, obviously)
-			foreach (var line in _materializedLines)
-			{
-				for (var i = 0; i < line.ContainerViews.Length; i++)
-				{
-					var view = line.ContainerViews[i];
-					var rect = line.Rects[i];
-
-					// Adjust the provided rect to use the current available breath
-					// as the current list may have changed size.
-					if(Orientation == Orientation.Horizontal)
-					{
-						rect.Height = AvailableBreadth;
-					}
-					else
-					{
-						rect.Width = AvailableBreadth;
-					}
-
-					// IMPORTANT: THIS HACK WON'T ALLOW THE ITEM TO CHANGE ITS SIZE, BUT
-					// WILL FIX THE PROBLEM OF PROPAGATING CORRECTLY THE ARRANGE PHASE.
-					view.Arrange(rect);
-				}
-			}
-
 			return EstimatePanelSize();
 		}
 
@@ -322,7 +267,11 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		private void UpdateCompleted() => Generator.UpdateVisibilities();
+		private void UpdateCompleted()
+		{
+			Generator.ClearScrappedViews();
+			Generator.UpdateVisibilities();
+		}
 
 		/// <summary>
 		/// Fill in extended viewport with views.
@@ -330,19 +279,25 @@ namespace Windows.UI.Xaml.Controls
 		/// <param name="extentAdjustment">Adjustment to apply when calculating fillable area.</param>
 		private void FillLayout(double extentAdjustment)
 		{
-			FillBackward();
+			if (!_dynamicSeedStart.HasValue) // Don't fill backward if we're doing a light rebuild (since we are starting from nearest previously-visible item)
+			{
+				FillBackward();
+			}
 			FillForward();
+
+			_dynamicSeedIndex = null;
+			_dynamicSeedStart = null;
 
 			void FillBackward()
 			{
 				if (GetItemsStart() > ExtendedViewportStart + extentAdjustment)
 				{
-					var nextItem = GetNextUnmaterializedItem(GeneratorDirection.Backward, GetFirstMaterializedIndexPath());
+					var nextItem = GetNextUnmaterializedItem(Backward, GetFirstMaterializedIndexPath());
 					while (nextItem != null && GetItemsStart() > ExtendedViewportStart + extentAdjustment)
 					{
 						// Fill gap at start with views
-						AddLine(GeneratorDirection.Backward, nextItem.Value);
-						nextItem = GetNextUnmaterializedItem(GeneratorDirection.Backward, GetFirstMaterializedIndexPath());
+						AddLine(Backward, nextItem.Value);
+						nextItem = GetNextUnmaterializedItem(Backward, GetFirstMaterializedIndexPath());
 					}
 				}
 			}
@@ -351,11 +306,11 @@ namespace Windows.UI.Xaml.Controls
 			{
 				if ((GetItemsEnd() ?? 0) < ExtendedViewportEnd + extentAdjustment)
 				{
-					var nextItem = GetNextUnmaterializedItem(GeneratorDirection.Forward, GetLastMaterializedIndexPath());
+					var nextItem = GetNextUnmaterializedItem(Forward, _dynamicSeedIndex ?? GetLastMaterializedIndexPath());
 					while (nextItem != null && (GetItemsEnd() ?? 0) < ExtendedViewportEnd + extentAdjustment)
 					{
-						AddLine(GeneratorDirection.Forward, nextItem.Value);
-						nextItem = GetNextUnmaterializedItem(GeneratorDirection.Forward, GetLastMaterializedIndexPath());
+						AddLine(Forward, nextItem.Value);
+						nextItem = GetNextUnmaterializedItem(Forward, GetLastMaterializedIndexPath());
 					}
 				}
 			}
@@ -400,6 +355,18 @@ namespace Windows.UI.Xaml.Controls
 			for (int i = 0; i < firstMaterializedLine.ContainerViews.Length; i++)
 			{
 				Generator.RecycleViewForItem(firstMaterializedLine.ContainerViews[i], firstMaterializedLine.FirstItemFlat + i);
+			}
+		}
+
+		/// <summary>
+		/// Send views in line to temporary scrap.
+		/// </summary>
+		/// <param name="firstMaterializedLine"></param>
+		private void ScrapLine(Line firstMaterializedLine)
+		{
+			for (int i = 0; i < firstMaterializedLine.ContainerViews.Length; i++)
+			{
+				Generator.ScrapViewForItem(firstMaterializedLine.ContainerViews[i], firstMaterializedLine.FirstItemFlat + i);
 			}
 		}
 
@@ -485,12 +452,49 @@ namespace Windows.UI.Xaml.Controls
 			_materializedLines.Clear();
 		}
 
+		/// <summary>
+		/// Sends all views to temporary scrap, in preparation for a lightweight layout rebuild.
+		/// </summary>
+		private void ScrapLayout()
+		{
+
+			var firstVisibleItem = GetFirstMaterializedIndexPath();
+
+			_dynamicSeedIndex = GetDynamicSeedIndex(firstVisibleItem);
+			_dynamicSeedStart = GetContentStart();
+
+			if (this.Log().IsEnabled(LogLevel.Debug))
+			{
+				this.Log().LogDebug($"{GetMethodTag()} seed index={_dynamicSeedIndex} seed start={_dynamicSeedStart}");
+			}
+
+			foreach (var line in _materializedLines)
+			{
+				ScrapLine(line);
+			}
+			_materializedLines.Clear();
+		}
+
+		/// <summary>
+		/// Get 'seed' index for recreating the visual state of the list after <see cref="ScrapLayout()"/>;
+		/// </summary>
+		protected virtual IndexPath? GetDynamicSeedIndex(IndexPath? firstVisibleItem)
+		{
+
+			var lastItem = XamlParent.GetLastItem();
+			if (lastItem == null ||
+				(firstVisibleItem != null && firstVisibleItem.Value > lastItem.Value)
+			)
+			{
+				// None of the previously-visible indices are now present in the updated items source
+				return null;
+			}
+			return GetNextUnmaterializedItem(Backward, firstVisibleItem);
+		}
+
 		private void OnOrientationChanged(Orientation newValue)
 		{
 			Refresh();
-
-			//TODO: preserve scroll position
-			OwnerPanel.InvalidateMeasure();
 		}
 
 		private IndexPath GetFirstVisibleIndexPath()
@@ -512,11 +516,11 @@ namespace Windows.UI.Xaml.Controls
 
 		private void AddLine(GeneratorDirection fillDirection, IndexPath nextVisibleItem)
 		{
-			var extentOffset = fillDirection == GeneratorDirection.Backward ? GetContentStart() : GetContentEnd();
+			var extentOffset = fillDirection == Backward ? GetContentStart() : GetContentEnd();
 
 			var line = CreateLine(fillDirection, extentOffset, AvailableBreadth, nextVisibleItem);
 
-			if (fillDirection == GeneratorDirection.Backward)
+			if (fillDirection == Backward)
 			{
 				_materializedLines.AddToFront(line);
 			}
@@ -535,7 +539,7 @@ namespace Windows.UI.Xaml.Controls
 
 		protected int GetFlatItemIndex(IndexPath indexPath) => ItemsControl.GetIndexFromIndexPath(indexPath);
 
-		protected Rect AddView(FrameworkElement view, GeneratorDirection fillDirection, double extentOffset, double breadthOffset)
+		protected void AddView(FrameworkElement view, GeneratorDirection fillDirection, double extentOffset, double breadthOffset)
 		{
 			if (view.Parent == null)
 			{
@@ -549,7 +553,7 @@ namespace Windows.UI.Xaml.Controls
 
 			view.Measure(slotSize);
 
-			var extentOffsetAdjustment = fillDirection == GeneratorDirection.Forward ?
+			var extentOffsetAdjustment = fillDirection == Forward ?
 				0 :
 				-GetExtent(view.DesiredSize);
 
@@ -575,8 +579,6 @@ namespace Windows.UI.Xaml.Controls
 			}
 
 			view.Arrange(finalRect);
-
-			return finalRect;
 		}
 
 		private Line GetFirstMaterializedLine() => _materializedLines.Count > 0 ? _materializedLines[0] : null;
@@ -606,7 +608,8 @@ namespace Windows.UI.Xaml.Controls
 				return GetEnd(lastView);
 			}
 
-			return null;
+			// This will be null except immediately after ScrapLayout(), when it will be the previous start of materialized items
+			return _dynamicSeedStart;
 		}
 
 		private double GetContentStart() => GetItemsStart() ?? 0;
@@ -656,7 +659,6 @@ namespace Windows.UI.Xaml.Controls
 		protected class Line
 		{
 			public FrameworkElement[] ContainerViews { get; }
-			public Rect[] Rects { get; }
 			public IndexPath FirstItem { get; }
 			public IndexPath LastItem { get; }
 			public int FirstItemFlat { get; }
@@ -664,23 +666,19 @@ namespace Windows.UI.Xaml.Controls
 			public FrameworkElement FirstView => ContainerViews[0];
 			public FrameworkElement LastView => ContainerViews[ContainerViews.Length - 1];
 
-			public Line(FrameworkElement[] containerViews, Rect[] rects, IndexPath firstItem, IndexPath lastItem, int firstItemFlat)
+			public Line(FrameworkElement[] containerViews, IndexPath firstItem, IndexPath lastItem, int firstItemFlat)
 			{
 				if (containerViews.Length == 0)
 				{
 					throw new InvalidOperationException("Line must contain at least one view");
 				}
 
-				if (containerViews.Length != rects.Length)
-				{
-					throw new InvalidOperationException("Must have same number of views and rect!");
-				}
 				ContainerViews = containerViews;
-				Rects = rects;
 				FirstItem = firstItem;
 				LastItem = lastItem;
 				FirstItemFlat = firstItemFlat;
 			}
+
 		}
 	}
 }

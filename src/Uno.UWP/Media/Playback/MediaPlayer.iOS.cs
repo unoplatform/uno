@@ -397,7 +397,10 @@ namespace Windows.Media.Playback
 
 		internal void UpdateVideoGravity(AVLayerVideoGravity gravity)
 		{
-			_videoLayer.VideoGravity = gravity;
+			if (_videoLayer != null)
+			{
+				_videoLayer.VideoGravity = gravity;
+			}
 		}
 
 		protected override void Dispose(bool disposing)

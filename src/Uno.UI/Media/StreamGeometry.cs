@@ -4,6 +4,7 @@ using System.Drawing;
 using System.Globalization;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Media;
+using Uno.UI.Extensions;
 
 #if XAMARIN_IOS_UNIFIED
 using Foundation;
@@ -110,18 +111,11 @@ namespace Uno.Media
 			return image;
 		}
 
-		public override CGPath ToCGPath ()
-		{
-#if __IOS__
-			return(bezierPath != null) ?  new CGPath(bezierPath.CGPath) :  new CGPath();
-#elif __MACOS__
-			// macOS TODO
-			throw new NotImplementedException();
-#endif
-		}
+		public override CGPath ToCGPath()
+			=> bezierPath != null ? bezierPath.ToCGPath() : new CGPath();
 #endif
 
-			#region implemented abstract members of Geometry
+		#region implemented abstract members of Geometry
 
 		public override void Dispose()
 		{

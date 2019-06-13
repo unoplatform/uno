@@ -69,6 +69,10 @@ namespace Uno.UI.Media
 
 		private void InitializeOrigin()
 		{
+#if __MACOS__
+			Owner.WantsLayer = true;
+#endif
+
 			var oldFrame = Owner.Layer.Frame;
 
 			Owner.Layer.AnchorPoint = CurrentOrigin;

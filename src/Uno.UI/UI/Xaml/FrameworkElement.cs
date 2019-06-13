@@ -179,7 +179,7 @@ namespace Windows.UI.Xaml
 		public override void Arrange(Rect finalRect)
 		{
 			_layouter.Arrange(finalRect);
-			_layouter.ArrangeChild(this, finalRect);
+			_layouter.ArrangeChild(this, finalRect, raiseLayoutUpdated: false);
 		}
 #endif
 
@@ -423,6 +423,13 @@ namespace Windows.UI.Xaml
 		internal bool GoToElementState(string stateName, bool useTransitions) => GoToElementStateCore(stateName, useTransitions);
 
 		protected virtual bool GoToElementStateCore(string stateName, bool useTransitions) => false;
+
+		public event EventHandler<object> LayoutUpdated;
+
+		internal virtual void OnLayoutUpdated()
+		{
+			LayoutUpdated?.Invoke(this, RoutedEventArgs.Empty);
+		}
 
 #if XAMARIN
 		private static FrameworkElement FindPhaseEnabledRoot(ContentControl content)

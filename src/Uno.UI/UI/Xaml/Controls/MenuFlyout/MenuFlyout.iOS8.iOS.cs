@@ -22,6 +22,7 @@ namespace Windows.UI.Xaml.Controls
 			_alertController = new UIAlertController();
 
 			Items
+				.OfType<MenuFlyoutItem>()
 				.Trim()
 				.Where(item => item.Visibility == Visibility.Visible)
 				.Select(item => UIAlertAction.Create(

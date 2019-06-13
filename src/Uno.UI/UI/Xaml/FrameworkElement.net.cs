@@ -100,5 +100,9 @@ namespace Windows.UI.Xaml
 
 		internal void ResumeRendering() => throw new NotSupportedException();
 		public IEnumerator GetEnumerator() => _children.GetEnumerator();
+
+		public double ActualWidth => Arranged.Width;
+
+		public double ActualHeight => Arranged.Height;
 	}
 }

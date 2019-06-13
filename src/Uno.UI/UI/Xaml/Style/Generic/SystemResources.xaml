@@ -18,6 +18,14 @@
 	<SolidColorBrush x:Key="SystemColorControlAccentBrush"
 					 Color="{StaticResource SystemAccentColor}" />
 
+	<!-- See https://docs.microsoft.com/en-us/windows/uwp/design/style/color?#accent-color-palette-->
+	<Color x:Key="SystemAccentColorLight1">#FF429CE3</Color>
+	<Color x:Key="SystemAccentColorLight2">#FF76B9ED</Color>
+	<Color x:Key="SystemAccentColorLight3">#FFA6D8FF</Color>
+	<Color x:Key="SystemAccentColorDark1">#FF005A9E</Color>
+	<Color x:Key="SystemAccentColorDark2">#FF004275</Color>
+	<Color x:Key="SystemAccentColorDark3">#FF002642</Color>
+
 	<Color x:Key="SystemColorButtonFaceColor">#FFF0F0F0</Color>
 	<Color x:Key="SystemColorButtonTextColor">#FF000000</Color>
 	<Color x:Key="SystemColorGrayTextColor">#FF6D6D6D</Color>
@@ -190,13 +198,7 @@
 	<Thickness x:Key="ListPickerFlyoutPresenterMultiselectCheckBoxMargin">0,9.5,0,0</Thickness>
 	<Thickness x:Key="ListPickerFlyoutPresenterItemMargin">0,0,0,19</Thickness>
 	<Thickness x:Key="ListViewItemCompactSelectedBorderThemeThickness">4</Thickness>
-	<Thickness x:Key="MenuFlyoutPresenterThemePadding">0,0</Thickness>
-	<Thickness x:Key="MenuFlyoutItemCheckGlyphMargin">12,11,0,13</Thickness>
-	<Thickness x:Key="MenuFlyoutItemChevronMargin">24,0,0,0</Thickness>
-	<Thickness x:Key="MenuFlyoutItemThemePadding">12,11,12,13</Thickness>
-	<Thickness x:Key="MenuFlyoutItemThemePaddingNarrow">12,5,12,7</Thickness>
-	<Thickness x:Key="MenuFlyoutItemPlaceholderThemeThickness">28,0,0,0</Thickness>
-	<Thickness x:Key="MenuFlyoutSeparatorThemePadding">12,4,12,4</Thickness>
+
 	<Thickness x:Key="PickerFlyoutContentPanelLandscapeThemeMargin">19,19,19,0</Thickness>
 	<Thickness x:Key="PickerFlyoutContentPanelPortraitThemeMargin">19,37,19,0</Thickness>
 	<Thickness x:Key="PickerFlyoutTitleThemeMargin">0,0,0,32.5</Thickness>
@@ -894,12 +896,28 @@
 
 	<win:RevealBorderBrush x:Key="SystemControlHighlightTransparentRevealBorderBrush" TargetTheme="Light" Color="Transparent" FallbackColor="Transparent" />
 	<xamarin:SolidColorBrush x:Key="SystemControlHighlightTransparentRevealBorderBrush" Color="Transparent" />
+
+	<win:RevealBorderBrush x:Key="SystemControlTransparentRevealBorderBrush" TargetTheme="Light" Color="Transparent" FallbackColor="Transparent" />
+	<xamarin:SolidColorBrush x:Key="SystemControlTransparentRevealBorderBrush" Color="Transparent" />
 	
 	<win:RevealBorderBrush x:Key="SystemControlHighlightAltTransparentRevealBorderBrush" TargetTheme="Light" Color="Transparent" FallbackColor="Transparent" />
 	<xamarin:SolidColorBrush x:Key="SystemControlHighlightAltTransparentRevealBorderBrush" Color="Transparent" />
 
 	<win:RevealBackgroundBrush x:Key="SystemControlHighlightBaseMediumLowRevealAccentBackgroundBrush" TargetTheme="Light" Color="{ThemeResource SystemAccentColor}" FallbackColor="{StaticResource SystemBaseMediumLowColor}" />
 	<xamarin:SolidColorBrush x:Key="SystemControlHighlightBaseMediumLowRevealAccentBackgroundBrush" Color="{StaticResource SystemBaseMediumLowColor}" />
+
+	<win:RevealBackgroundBrush x:Key="SystemControlHighlightAccent3RevealBackgroundBrush" TargetTheme="Dark" Color="{ThemeResource SystemAccentColorDark3}" FallbackColor="{ThemeResource SystemAccentColorDark3}" />
+	<xamarin:SolidColorBrush x:Key="SystemControlHighlightAccent3RevealBackgroundBrush" Color="{StaticResource SystemAccentColorDark3}" />
+
+	<win:RevealBackgroundBrush x:Key="SystemControlHighlightAccent2RevealBackgroundBrush" TargetTheme="Dark" Color="{ThemeResource SystemAccentColorDark2}" FallbackColor="{ThemeResource SystemAccentColorDark2}" />
+	<xamarin:SolidColorBrush x:Key="SystemControlHighlightAccent2RevealBackgroundBrush" Color="{StaticResource SystemAccentColorDark2}" />
+
+	<win:RevealBackgroundBrush x:Key="SystemControlHighlightAccentRevealBackgroundBrush" TargetTheme="Dark" Color="{ThemeResource SystemAccentColor}" FallbackColor="{ThemeResource SystemAccentColor}" />
+	<xamarin:SolidColorBrush x:Key="SystemControlHighlightAccentRevealBackgroundBrush" Color="{StaticResource SystemAccentColor}" />
+
+	<win:RevealBackgroundBrush x:Key="SystemControlHighlightAccent3RevealAccent2BackgroundBrush" TargetTheme="Dark" Color="{ThemeResource SystemAccentColorDark2}" FallbackColor="{ThemeResource SystemAccentColorDark3}" />
+	<xamarin:SolidColorBrush x:Key="SystemControlHighlightAccent3RevealAccent2BackgroundBrush" Color="{StaticResource SystemAccentColorDark3}" />
+
 
 	<StaticResource x:Key="SystemControlTransientBorderBrush" ResourceKey="SystemControlForegroundChromeHighBrush" />
 	<win:AcrylicBrush x:Key="SystemControlTransientBackgroundBrush" BackgroundSource="HostBackdrop" TintColor="{StaticResource SystemChromeAltHighColor}" TintOpacity="0.8" FallbackColor="{StaticResource SystemChromeMediumLowColor}" />

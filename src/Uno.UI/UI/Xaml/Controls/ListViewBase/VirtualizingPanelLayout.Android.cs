@@ -153,6 +153,7 @@ namespace Windows.UI.Xaml.Controls
 				}
 				else
 				{
+					UnoViewGroup.MeasureBeforeLayout();
 					UpdateLayout(GeneratorDirection.Forward, Extent, ContentBreadth, recycler, state, isMeasure: false);
 				}
 			}
@@ -765,7 +766,16 @@ namespace Windows.UI.Xaml.Controls
 
 			size = ApplyChildStretch(size, slotSize, viewType);
 
+			if (!child.IsInLayout)
+			{
+				UnoViewGroup.StartLayoutingFromMeasure();
+			}
 			LayoutChild(child, direction, extentOffset, breadthOffset, size);
+
+			if (!child.IsInLayout)
+			{
+				UnoViewGroup.EndLayoutingFromMeasure();
+			}
 
 			return size;
 		}
