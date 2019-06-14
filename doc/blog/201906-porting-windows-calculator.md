@@ -129,7 +129,7 @@ There are other adjustments that have been made to the original source code of t
 
 ## Additional notes
 
-The Currency converter uses an API call to be able to get up-to-date rates, and the endpoint is not CORS-enabled, which makes invocation from a WebBrowser difficule. The API call is for now going through the [CORS-anywhere sample app](https://cors-anywhere.herokuapp.com/), but eventually Microsoft may be updating its endpoint to support it properly.
+The Currency converter uses an API call to be able to get up-to-date rates, and the endpoint is not CORS-enabled, which makes invocation from a WebBrowser difficult. The API call is for now going through the [CORS-anywhere sample app](https://cors-anywhere.herokuapp.com/), but eventually Microsoft may be updating its endpoint to support it properly.
 
 ![Calculator](Assets/20190612-Calculator-05.png)
 
