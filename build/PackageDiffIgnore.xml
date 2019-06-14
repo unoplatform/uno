@@ -172,7 +172,7 @@
         <Member fullName="System.Void Uno.UI.Controls.Legacy.ListViewBase.OnLayoutUpdated()"
                 reason="Invalid method visibility"/>
         <Member fullName="System.Void Windows.Phone.Devices.Notification.VibrationDevice..ctor()"
-                reason="Parameter-less ctor does not exist in UWP">
+                reason="Parameter-less ctor does not exist in UWP" />
       </Methods>
 	  
 	  <Fields>
