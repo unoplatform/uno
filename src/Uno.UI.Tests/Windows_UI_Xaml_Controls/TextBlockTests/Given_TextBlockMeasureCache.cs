@@ -65,11 +65,49 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Controls.TextBlockTests
 		}
 
 		[TestMethod]
-		public void When_DefaultTextBlock_Wrap()
+		[DataRow(TextTrimming.Clip, DisplayName = "TextTrimming.Clip")]
+		[DataRow(TextTrimming.CharacterEllipsis, DisplayName = "TextTrimming.CharacterEllipsis")]
+		[DataRow(TextTrimming.WordEllipsis, DisplayName = "TextTrimming.WordEllipsis")]
+		public void When_DefaultTextBlock_Clip(TextTrimming trimmingMode)
 		{
 			var SUT = new TextBlockMeasureCache();
 
-			var tb = new TextBlock { Text = "42", TextWrapping = TextWrapping.Wrap }; // Used as key, never measured
+			var tb = new TextBlock { Text = "42", TextTrimming = trimmingMode }; // Used as key, never measured
+
+			SUT.CacheMeasure(tb, new Size(200, 100), new Size(125, 25));
+			SUT.CacheMeasure(tb, new Size(100, 100), new Size(100, 50));
+			SUT.CacheMeasure(tb, new Size(75, 100), new Size(75, 100));
+			SUT.CacheMeasure(tb, new Size(50, 100), new Size(50, 100));
+
+			Assert.AreEqual(
+				new Size(125, 25),
+				SUT.FindMeasuredSize(tb, new Size(125, 100))
+			);
+
+			Assert.AreEqual(
+				new Size(50, 100),
+				SUT.FindMeasuredSize(tb, new Size(50, 70))
+			);
+
+			Assert.AreEqual(
+				null,
+				SUT.FindMeasuredSize(tb, new Size(52, 70))
+			);
+
+			Assert.AreEqual(
+				null,
+				SUT.FindMeasuredSize(tb, new Size(500, 500))
+			);
+		}
+
+		[TestMethod]
+		[DataRow(TextWrapping.Wrap, DisplayName = "TextWrapping.Wrap")]
+		[DataRow(TextWrapping.WrapWholeWords, DisplayName = "TextWrapping.WrapWholeWords")]
+		public void When_DefaultTextBlock_Wrap(TextWrapping wrappingMode)
+		{
+			var SUT = new TextBlockMeasureCache();
+
+			var tb = new TextBlock { Text = "42", TextWrapping = wrappingMode }; // Used as key, never measured
 
 			SUT.CacheMeasure(tb, new Size(200, 100), new Size(125, 25));
 			SUT.CacheMeasure(tb, new Size(100, 100), new Size(100, 50));
