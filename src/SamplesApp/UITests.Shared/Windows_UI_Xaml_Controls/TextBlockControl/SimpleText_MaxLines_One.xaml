@@ -30,6 +30,14 @@
 				FontSize="20"
 				MaxLines="1"  />
 		</Border>
+
+		<Border Width="{Binding Value, ElementName=slider}" Background="Yellow" Grid.Row="2" x:Name="border2">
+			<TextBlock
+				Text="This is a very very very very long text that should not wrap even though it goes out of the screen"
+				FontSize="20"
+				TextTrimming="CharacterEllipsis"
+				MaxLines="1"  />
+		</Border>
 		<wasm:TextBlock Grid.Row="3">
 			(WASM ONLY) Cache: Hits=<Run x:Name="hits">0</Run>, Misses=<Run x:Name="misses">0</Run>.
 		</wasm:TextBlock>
