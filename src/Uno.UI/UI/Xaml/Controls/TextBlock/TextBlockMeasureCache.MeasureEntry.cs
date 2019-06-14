@@ -33,6 +33,7 @@ namespace Windows.UI.Xaml.Controls
 				}
 
 				var isWrapping = key.IsWrapping;
+				var isClipping = key.IsClipping;
 
 				foreach (var kvp in _sizes)
 				{
@@ -43,7 +44,7 @@ namespace Windows.UI.Xaml.Controls
 					var measurementAvailableWidth = size.Item1;
 					var measurementAvailableHeight = size.Item2;
 
-					if (isWrapping)
+					if (isWrapping || isClipping)
 					{
 						if (measurementCachedWidth <= currentAvailableWidth
 							&& currentAvailableWidth <= measurementAvailableWidth)

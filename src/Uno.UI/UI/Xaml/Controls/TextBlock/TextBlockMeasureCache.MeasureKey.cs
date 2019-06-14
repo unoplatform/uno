@@ -87,6 +87,7 @@ namespace Windows.UI.Xaml.Controls
 			private readonly TextDecorations _textDecorations;
 
 			internal bool IsWrapping => _textWrapping != TextWrapping.NoWrap;
+			internal bool IsClipping => _textTrimming != TextTrimming.None;
 		}
 	}
 }

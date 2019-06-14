@@ -20,8 +20,8 @@ namespace Windows.UI.Xaml.Controls
 
 		private static Stopwatch _timer = Stopwatch.StartNew();
 
-		private Dictionary<MeasureKey, MeasureEntry> _entries = new Dictionary<MeasureKey, MeasureEntry>(new MeasureKey.Comparer());
-		private LinkedList<MeasureKey> _queue = new LinkedList<MeasureKey>();
+		private readonly Dictionary<MeasureKey, MeasureEntry> _entries = new Dictionary<MeasureKey, MeasureEntry>(new MeasureKey.Comparer());
+		private readonly LinkedList<MeasureKey> _queue = new LinkedList<MeasureKey>();
 
 		/// <summary>
 		/// Finds a cached measure for the provided <see cref="TextBlock"/> characteristics
