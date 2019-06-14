@@ -65,6 +65,10 @@ That part is very easy: there's nothing to convert!
 
 The only thing needed was to adjust to Uno's differences, such as the missing support for Theme Resources or RevealBrush support.
 
+![Calculator](Assets/20190612-Calculator-07.png)
+
+The Calculator's interface layout is also very responsive, and can adjust to many break points. This enables multitasking and docking scenarios on the iPad very easily.
+
 ### Challenge #5: Localization Resources
 
 The Uno Platform supports the use of resw files, which means that those files are the exact same files that the original calculator uses. 
@@ -80,8 +84,6 @@ Note that the resources use the [attached property syntax](https://github.com/mi
 
 making for a clutter free localized XAML.
 
-![Calculator](Assets/20190612-Calculator-06.png)
-
 Image assets are also supported directly by the Uno Platform, though some of the original assets cannot be used directly as they use semantic features such as high contrast that are not yet supported by Uno. Those have been excluded for the time being.
 
 ## Connecting the C++ and C# together
@@ -95,6 +97,8 @@ To be able to invoke WebAssembly code directly from C# using P/Invoke, [Mono had
 The interpreter-based mode uses [emscripten's dynamic linking feature](https://github.com/emscripten-core/emscripten/wiki/Linking#overview-of-dynamic-linking), and is required to be ble to build a Wasm application under windows without having to rely on emscripten's tooling. This ensures that the development loop is as efficient as possible, though at the expense of runtime performance.
 
 The AOT-based mode uses emscripten's and [Mono's static linking feature](https://github.com/mono/mono/pull/14253), where Mono generates a set of "known p/invoke" methods into LLRM bitcode modules. This mode is the most efficient, but also the slowest to generate. It's generally best to use it in release CI builds.
+
+![Calculator](Assets/20190612-Calculator-06.png)
 
 ### Challenge #7: The C adaptation layer
 P/Invoke is only able to call C functions, exposed here through the `extern "C" { }` cdecl calling convention. This means that to be able to invoke the C++ part of the Calculation Engine, a [C to C++ translation layer](https://github.com/nventive/calculator/blob/uno/src/CalcManager/CCalcManager.h) needed to be created. It exposes a set of methods that can [create C++ instances](https://github.com/nventive/calculator/blob/2657413f889ba26f2e3d78e82d384794fdad3aec/src/CalcManager/CCalcManager.h#L86) and returns opaque identifiers that are [passed thereafter explicitly](https://github.com/nventive/calculator/blob/2657413f889ba26f2e3d78e82d384794fdad3aec/src/CalcManager/CCalcManager.h#L87) to C++ class instance methods.
