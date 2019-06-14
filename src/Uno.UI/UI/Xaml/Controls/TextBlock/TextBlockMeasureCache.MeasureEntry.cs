@@ -1,8 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Windows.Foundation;
 using Uno;
 using CachedSize = Uno.CachedTuple<double, double>;
-using System;
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -11,12 +11,12 @@ namespace Windows.UI.Xaml.Controls
 		/// <summary>
 		/// A set of TextBlock measures for a set of text characteristics
 		/// </summary>
-		class MeasureEntry
+		private class MeasureEntry
 		{
-			private Dictionary<CachedSize, MeasureSizeEntry> _sizes
+			private readonly Dictionary<CachedSize, MeasureSizeEntry> _sizes
 				= new Dictionary<CachedSize, MeasureSizeEntry>();
 
-			private LinkedList<CachedSize> _queue = new LinkedList<CachedSize>();
+			private readonly LinkedList<CachedSize> _queue = new LinkedList<CachedSize>();
 
 			public LinkedListNode<MeasureKey> ListNode { get; }
 
@@ -24,53 +24,108 @@ namespace Windows.UI.Xaml.Controls
 
 			public Size? FindMeasuredSize(MeasureKey key, Size availableSize)
 			{
-				if(_sizes.TryGetValue(CachedTuple.Create(availableSize.Width, availableSize.Height), out var sizeEntry))
+				var currentAvailableWidth = availableSize.Width;
+				var currentAvailableHeight = availableSize.Height;
+
+				if(_sizes.TryGetValue(CachedTuple.Create(currentAvailableWidth, currentAvailableHeight), out var sizeEntry))
 				{
 					return sizeEntry.MeasuredSize;
 				}
-				else
+
+				var isWrapping = key.IsWrapping;
+
+				foreach (var kvp in _sizes)
 				{
-					if(key.TextWrapping == TextWrapping.NoWrap)
+					var size = kvp.Key;
+					var measureSizeEntry = kvp.Value;
+					var measurementCachedWidth = measureSizeEntry.MeasuredSize.Width;
+					var measurementCachedHeight = measureSizeEntry.MeasuredSize.Height;
+					var measurementAvailableWidth = size.Item1;
+					var measurementAvailableHeight = size.Item2;
+
+					if (isWrapping)
 					{
-						// No wrap, assume any measured width below the asked available size
-						// is valid, if the available size is greater.
-						foreach(var keySize in _sizes)
+						if (measurementCachedWidth <= currentAvailableWidth
+							&& currentAvailableWidth <= measurementAvailableWidth)
 						{
-							if(keySize.Key.Item1 >= availableSize.Width &&
-								keySize.Value.MeasuredSize.Width <= availableSize.Width)
-							{
-								MoveToLast(keySize.Key, keySize.Value);
-								return keySize.Value.MeasuredSize;
-							}
+							// Ok we can reuse it
+						}
+						else
+						{
+							continue; // Check for another cached measurement
 						}
 					}
 					else
 					{
-						foreach (var keySize in _sizes)
+						// Non-wrapping text
+
+						if (double.IsInfinity(measurementAvailableWidth))
 						{
-							// If text wraps and the available width is the same, any height below the
-							// available size is valid.
-							if (
-								keySize.Key.Item1 == availableSize.Width
-								&& keySize.Value.MeasuredSize.Height <= availableSize.Height
-							)
+							// Previous measurement was unconstrained
+							// horizontally: we can definitely reuse it.
+						}
+						else
+						{
+							if (Math.Abs(measurementCachedWidth - measurementAvailableWidth) < 0.5d)
 							{
-								MoveToLast(keySize.Key, keySize.Value);
-								return keySize.Value.MeasuredSize;
+								// This measure was constrained, we can reuse only if the width is the same.
+
+								if (Math.Abs(measurementCachedWidth - currentAvailableWidth) < 0.5d)
+								{
+									// Yep, that's good
+								}
+
+								else
+								{
+									continue; // Check for another cached measurement
+								}
 							}
 						}
 					}
+
+					// We need to make sure the height is ok
+					if (double.IsInfinity(measurementAvailableHeight))
+					{
+						// Previous measurement was unconstrained
+						// vertically: we can definitely reuse it.
+					}
+					else
+					{
+						// A max-height was specified in the cached measurement:
+						// We must check if we can reuse it.
+						if (Math.Abs(measurementCachedHeight - measurementAvailableHeight) < 0.5d)
+						{
+							// This measure was constrained, we can reuse only if the available height
+							// is same or higher than current available height
+							if (measurementCachedHeight >= currentAvailableHeight)
+							{
+								// Yep, that's good
+							}
+
+							else
+							{
+								continue; // Check for another cached measurement
+							}
+						}
+					}
+
+					// Got it, this cached measurement fits
+					MoveToLast(size, measureSizeEntry);
+					return measureSizeEntry.MeasuredSize;
 				}
-				return null;
+
+				return null; // No valid cache entry found
 			}
 
 			private void MoveToLast(CachedSize key, MeasureSizeEntry value)
 			{
-				if(_queue.Count != 0 && _queue.Last.Value != key)
+				if (_queue.Count == 0 || Equals(_queue.Last.Value, key))
 				{
-					_queue.Remove(value.ListNode);
-					_queue.AddLast(value.ListNode);
+					return;
 				}
+
+				_queue.Remove(value.ListNode);
+				_queue.AddLast(value.ListNode);
 			}
 
 			internal void CacheMeasure(Size desiredSize, Size measuredSize)
@@ -84,13 +139,14 @@ namespace Windows.UI.Xaml.Controls
 
 			private void Scavenge()
 			{
-				if (_queue.Count >= MaxMeasureSizeKeyEntries)
+				if (_queue.Count < MaxMeasureSizeKeyEntries)
 				{
-					_sizes.Remove(_queue.First.Value);
-					_queue.RemoveFirst();
+					return;
 				}
+
+				_sizes.Remove(_queue.First.Value);
+				_queue.RemoveFirst();
 			}
 		}
-
 	}
 }

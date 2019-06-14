@@ -10,6 +10,7 @@ using Uno.UI.UI.Xaml.Documents;
 using Microsoft.Extensions.Logging;
 using Windows.UI.Text;
 using Windows.UI.Xaml.Media;
+using Uno.UI;
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -42,10 +43,12 @@ namespace Windows.UI.Xaml.Controls
 			{
 				if (_cache.FindMeasuredSize(this, availableSize) is Size desiredSize)
 				{
+					UnoMetrics.TextBlock.MeasureCacheHits++;
 					return desiredSize;
 				}
 				else
 				{
+					UnoMetrics.TextBlock.MeasureCacheMisses++;
 					desiredSize = MeasureView(availableSize);
 
 					_cache.CacheMeasure(this, availableSize, desiredSize);
