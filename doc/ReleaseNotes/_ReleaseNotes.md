@@ -161,6 +161,7 @@
 * RadioButton was not applying Checked state correctly with non-standard visual state grouping in style
 * [Android] Fix several bugs preventing AutoSuggestBox from working on Android. (#1012)
 * #1062 TextBlock measure caching can wrongly hit
+* Fix support for ScrollBar touch events (#871)
 
 ## Release 1.44.0
 
