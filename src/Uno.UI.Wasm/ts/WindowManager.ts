@@ -131,6 +131,7 @@
 
 		private static resizeMethod: any;
 		private static dispatchEventMethod: any;
+		private static getDependencyPropertyValueMethod: any;
 
 		private constructor(private containerElementId: string, private loadingElementId: string) {
 			this.initDom();
@@ -1286,6 +1287,22 @@
 			ret2.marshal(pReturn);
 
 			return true;
+		}
+
+		/**
+		 * Gets a dependency property value.
+		 *
+		 * Note that the casing of this method is intentionally Pascal for platform alignment.
+		 */
+		public GetDependencyPropertyValue(elementId: number, propertyName: string) : string {
+			if (!WindowManager.getDependencyPropertyValueMethod) {
+				WindowManager.getDependencyPropertyValueMethod = (<any>Module).mono_bind_static_method("[Uno.UI] Uno.UI.Helpers.Automation:GetDependencyPropertyValue");
+			}
+
+			const element = this.getView(elementId) as HTMLElement;
+			const htmlId = Number(element.getAttribute("XamlHandle"));
+
+			return WindowManager.getDependencyPropertyValueMethod(htmlId, propertyName);
 		}
 
 		/**
