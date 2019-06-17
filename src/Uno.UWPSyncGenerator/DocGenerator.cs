@@ -160,12 +160,12 @@ namespace Uno.UWPSyncGenerator
 								{
 									return;
 								}
-								using (_sb.Table($"Implemented {memberType} ", ""))
+								using (_sb.Table($"Implemented {memberType} ", "*Supported on*"))
 								{
 									foreach (var member in implemented)
 									{
 										var linkUrl = $"{baseDocLinkUrl}.{member.UAPSymbol.Name.ToLowerInvariant()}";
-										var implementedQualifier = member.ImplementedForMain != ImplementedFor.Main ? $" *({ToDisplayString(member.ImplementedForMain)})* " : "";
+										var implementedQualifier = $"*{ToDisplayString(member.ImplementedForMain)}*";
 										_sb.AppendRow(Hyperlink(member.UAPSymbol.ToDisplayString(DisplayFormat), linkUrl), implementedQualifier);
 									}
 									_sb.AppendParagraph();
@@ -184,7 +184,7 @@ namespace Uno.UWPSyncGenerator
 									foreach (var member in notImplemented)
 									{
 										var linkUrl = $"{baseDocLinkUrl}.{member.UAPSymbol.Name.ToLowerInvariant()}";
-										var notImplementedQualifier = member.ImplementedForMain != ImplementedFor.None ? $" *({ToDisplayString(member.ImplementedForMain ^ ImplementedFor.Main)})* " : "";
+										var notImplementedQualifier = $"*{ToDisplayString(member.ImplementedForMain ^ ImplementedFor.Main)}*";
 										_sb.AppendRow(Hyperlink(member.UAPSymbol.ToDisplayString(DisplayFormat), linkUrl), notImplementedQualifier);
 									}
 									_sb.AppendParagraph();
