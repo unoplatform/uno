@@ -136,58 +136,64 @@ namespace Uno.UWPSyncGenerator
 								.Select(m => m.Name)
 								.ToArray();
 
-							AppendImplementedMembers("properties", properties);
-							AppendImplementedMembers("methods", methods);
-							AppendImplementedMembers("events", events);
+							AppendImplementedMembers("properties", "Property", properties);
+							AppendImplementedMembers("methods", "Method", methods);
+							AppendImplementedMembers("events", "Event", events);
 
 							_sb.AppendHorizontalRule();
 
 							_sb.AppendParagraph($"Below are all properties, methods, and events of {formattedViewName} that are **not** currently implemented in Uno.");
 
-							AppendNotImplementedMembers("properties", properties);
-							AppendNotImplementedMembers("methods", methods);
-							AppendNotImplementedMembers("events", events);
+							AppendNotImplementedMembers("properties", "Property", properties);
+							AppendNotImplementedMembers("methods", "Method", methods);
+							AppendNotImplementedMembers("events", "Event", events);
 
 							_sb.AppendHorizontalRule();
 
 							_sb.AppendParagraph();
 							_sb.AppendParagraph($"Last updated {DateTimeOffset.UtcNow.ToString("f")}.");
 
-							void AppendImplementedMembers<T>(string memberType, IEnumerable<PlatformSymbols<T>> members) where T : ISymbol
+							void AppendImplementedMembers<T>(string memberTypePlural, string memberTypeSingular, IEnumerable<PlatformSymbols<T>> members) where T : ISymbol
 							{
 								var implemented = members.Where(ps => ps.ImplementedForMain != ImplementedFor.None);
 								if (implemented.None())
 								{
 									return;
 								}
-								using (_sb.Table($"Implemented {memberType} ", "*Supported on*"))
+								using (_sb.Section($"Implemented {memberTypePlural} "))
 								{
-									foreach (var member in implemented)
+									using (_sb.Table(memberTypeSingular, "*Supported on*"))
 									{
-										var linkUrl = $"{baseDocLinkUrl}.{member.UAPSymbol.Name.ToLowerInvariant()}";
-										var implementedQualifier = $"*{ToDisplayString(member.ImplementedForMain)}*";
-										_sb.AppendRow(Hyperlink(member.UAPSymbol.ToDisplayString(DisplayFormat), linkUrl), implementedQualifier);
+										foreach (var member in implemented)
+										{
+											var linkUrl = $"{baseDocLinkUrl}.{member.UAPSymbol.Name.ToLowerInvariant()}";
+											var implementedQualifier = $"*{ToDisplayString(member.ImplementedForMain)}*";
+											_sb.AppendRow(Hyperlink(member.UAPSymbol.ToDisplayString(DisplayFormat), linkUrl), implementedQualifier);
+										}
+										_sb.AppendParagraph();
 									}
-									_sb.AppendParagraph();
 								}
 							}
 
-							void AppendNotImplementedMembers<T>(string memberType, IEnumerable<PlatformSymbols<T>> members) where T : ISymbol
+							void AppendNotImplementedMembers<T>(string memberTypePlural, string memberTypeSingular, IEnumerable<PlatformSymbols<T>> members) where T : ISymbol
 							{
 								var notImplemented = members.Where(ps => ps.ImplementedForMain != ImplementedFor.Main);
 								if (notImplemented.None())
 								{
 									return;
 								}
-								using (_sb.Table($"Not implemented {memberType}", ""))
+								using (_sb.Section($"Not implemented {memberTypePlural}"))
 								{
-									foreach (var member in notImplemented)
+									using (_sb.Table(memberTypeSingular, "Not supported on"))
 									{
-										var linkUrl = $"{baseDocLinkUrl}.{member.UAPSymbol.Name.ToLowerInvariant()}";
-										var notImplementedQualifier = $"*{ToDisplayString(member.ImplementedForMain ^ ImplementedFor.Main)}*";
-										_sb.AppendRow(Hyperlink(member.UAPSymbol.ToDisplayString(DisplayFormat), linkUrl), notImplementedQualifier);
+										foreach (var member in notImplemented)
+										{
+											var linkUrl = $"{baseDocLinkUrl}.{member.UAPSymbol.Name.ToLowerInvariant()}";
+											var notImplementedQualifier = $"*{ToDisplayString(member.ImplementedForMain ^ ImplementedFor.Main)}*";
+											_sb.AppendRow(Hyperlink(member.UAPSymbol.ToDisplayString(DisplayFormat), linkUrl), notImplementedQualifier);
+										}
+										_sb.AppendParagraph();
 									}
-									_sb.AppendParagraph();
 								}
 							}
 						}
