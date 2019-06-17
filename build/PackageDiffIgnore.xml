@@ -171,6 +171,8 @@
                 reason="Invalid method visibility"/>
         <Member fullName="System.Void Uno.UI.Controls.Legacy.ListViewBase.OnLayoutUpdated()"
                 reason="Invalid method visibility"/>
+        <Member fullName="System.Void Windows.UI.Xaml.Controls.VirtualizingPanelLayout.UpdateLayoutAttributesForItem(UIKit.UICollectionViewLayoutAttributes layoutAttributes)"
+                reason="Implementation detail, made internal"/>
       </Methods>
 	  
 	  <Fields>
