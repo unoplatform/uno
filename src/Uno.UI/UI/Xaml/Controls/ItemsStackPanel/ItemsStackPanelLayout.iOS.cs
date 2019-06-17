@@ -76,7 +76,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		protected override void UpdateLayoutAttributesForItem(UICollectionViewLayoutAttributes updatingItem, bool shouldRecurse)
+		private protected override void UpdateLayoutAttributesForItem(UICollectionViewLayoutAttributes updatingItem, bool shouldRecurse)
 		{
 			//Update extent of either subsequent item in group, subsequent group header, or footer
 			var currentIndex = updatingItem.IndexPath;
