@@ -177,6 +177,8 @@
                 reason="Parameter-less ctor does not exist in UWP" />
         <Member fullName="System.Void Windows.Devices.Sensors.BarometerReadingChangedEventArgs..ctor()"
                 reason="Parameter-less ctor does not exist in UWP" />
+        <Member fullName="System.Void Windows.UI.Xaml.Controls.VirtualizingPanelLayout.UpdateLayoutAttributesForItem(UIKit.UICollectionViewLayoutAttributes layoutAttributes)"
+                reason="Implementation detail, made internal"/>
       </Methods>
 	  
 	  <Fields>

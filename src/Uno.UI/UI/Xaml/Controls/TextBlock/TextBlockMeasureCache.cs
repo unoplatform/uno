@@ -1,15 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
+using System.Diagnostics;
 using System.Text;
 using Windows.Foundation;
-using Windows.UI.Text;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Media;
 using Microsoft.Extensions.Logging;
-using Uno.Extensions;
 using Uno;
-using System.Diagnostics;
+using Uno.Extensions;
 using Uno.UI;
 
 namespace Windows.UI.Xaml.Controls
@@ -24,8 +20,8 @@ namespace Windows.UI.Xaml.Controls
 
 		private static Stopwatch _timer = Stopwatch.StartNew();
 
-		private Dictionary<MeasureKey, MeasureEntry> _entries = new Dictionary<MeasureKey, MeasureEntry>(new MeasureKey.Comparer());
-		private LinkedList<MeasureKey> _queue = new LinkedList<MeasureKey>();
+		private readonly Dictionary<MeasureKey, MeasureEntry> _entries = new Dictionary<MeasureKey, MeasureEntry>(new MeasureKey.Comparer());
+		private readonly LinkedList<MeasureKey> _queue = new LinkedList<MeasureKey>();
 
 		/// <summary>
 		/// Finds a cached measure for the provided <see cref="TextBlock"/> characteristics
@@ -36,28 +32,38 @@ namespace Windows.UI.Xaml.Controls
 		/// <returns>An optional <see cref="Size"/> if found.</returns>
 		public Size? FindMeasuredSize(TextBlock source, Size availableSize)
 		{
-			var key = new MeasureKey(source);
-
-			if (FeatureConfiguration.TextBlock.IsMeasureCacheEnabled && _entries.TryGetValue(key, out var entry))
+			if (!FeatureConfiguration.TextBlock.IsMeasureCacheEnabled)
 			{
-				var measuredSize = entry.FindMeasuredSize(key, availableSize);
+				return null; // Mesure cache feature disabled
+			}
+
+			var key = new MeasureKey(source); // Extract a key from TextBlock properties
+			if (!_entries.TryGetValue(key, out var entry))
+			{
 
 				if (this.Log().IsEnabled(LogLevel.Debug))
 				{
 					// {0} is used to avoid parsing errors caused by formatting a "{}" in the text
-					this.Log().LogDebug("{0}", $"TextMeasure-cached [{source.Text} / {source.TextWrapping} / {source.MaxLines}]: {availableSize} -> {measuredSize}");
+					this.Log().LogDebug("{0}", $"TextMeasure-cached [{source.Text} / {source.TextWrapping} / {source.MaxLines}]: {availableSize} -> NOT FOUND.");
 				}
 
-				return measuredSize;
-
+				return null; // This key not present in cache
 			}
 
-			return null;
+			var measuredSize = entry.FindMeasuredSize(key, availableSize);  // Get cache for specified availableSize, if exists
+
+			if (this.Log().IsEnabled(LogLevel.Debug))
+			{
+				// {0} is used to avoid parsing errors caused by formatting a "{}" in the text
+				this.Log().LogDebug("{0}", $"TextMeasure-cached [{source.Text} / {source.TextWrapping} / {source.MaxLines}]: {availableSize} -> {measuredSize}");
+			}
+
+			return measuredSize;
 		}
 
 		/// <summary>
 		/// Cache a <paramref name="measuredSize"/> for an <paramref name="availableSize"/>, given
-		/// the <paramref name="source"/> charateristics.
+		/// the <paramref name="source"/> characteristics.
 		/// </summary>
 		/// <param name="source"></param>
 		/// <param name="availableSize"></param>
@@ -66,19 +72,20 @@ namespace Windows.UI.Xaml.Controls
 		{
 			var key = new MeasureKey(source);
 
-			if (!_entries.TryGetValue(key, out var entry))
+			if (_entries.TryGetValue(key, out var entry))
+			{
+				if (_queue.Count > 1 && !_queue.Last.Value.Equals(key))
+				{
+					// Move this key as last in the queue for perf
+					_queue.Remove(entry.ListNode);
+					_queue.AddLast(entry.ListNode);
+				}
+			}
+			else
 			{
 				Scavenge();
 				var node = _queue.AddLast(key);
 				_entries[key] = entry = new MeasureEntry(node);
-			}
-			else
-			{
-				if (_queue.Count != 0 && _queue.Last.Value != key)
-				{
-					_queue.Remove(entry.ListNode);
-					_queue.AddLast(entry.ListNode);
-				}
 			}
 
 			if (this.Log().IsEnabled(LogLevel.Debug))
@@ -92,7 +99,7 @@ namespace Windows.UI.Xaml.Controls
 
 		private void Scavenge()
 		{
-			if (_queue.Count >= MaxMeasureKeyEntries)
+			while (_queue.Count >= MaxMeasureKeyEntries)
 			{
 				_entries.Remove(_queue.First.Value);
 				_queue.RemoveFirst();

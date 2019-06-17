@@ -118,5 +118,14 @@ namespace Windows.UI.Xaml.Controls
 			// Ensure Popup doesn't take any space.
 			this.SetMeasuredDimension(0, 0);
 		}
+
+		/// <summary>
+		/// Prevent the popup from stealing focus from views in the main window.
+		/// </summary>
+		internal void DisableFocus()
+		{
+			_popupWindow.Focusable = false;
+			_popupWindow.InputMethodMode = InputMethod.Needed;
+		}
 	}
 }
