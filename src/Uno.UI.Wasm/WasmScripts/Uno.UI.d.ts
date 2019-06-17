@@ -150,6 +150,7 @@ declare namespace Uno.UI {
         private allActiveElementsById;
         private static resizeMethod;
         private static dispatchEventMethod;
+        private static getDependencyPropertyValue;
         private constructor();
         /**
             * Creates the UWP-compatible splash screen
@@ -467,6 +468,12 @@ declare namespace Uno.UI {
          * mask the events coming from that zone.
          */
         getClientViewSizeNative(pParams: number, pReturn: number): boolean;
+        /**
+         * Gets a dependency property value.
+         *
+         * Note that the casing of this method is intentionally Pascal for platform alignment.
+         */
+        GetDependencyPropertyValue(elementId: number, propertyName: string): string;
         /**
             * Remove the loading indicator.
             *

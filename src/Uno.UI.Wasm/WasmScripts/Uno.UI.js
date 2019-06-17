@@ -1283,6 +1283,19 @@ var Uno;
                 return true;
             }
             /**
+             * Gets a dependency property value.
+             *
+             * Note that the casing of this method is intentionally Pascal for platform alignment.
+             */
+            GetDependencyPropertyValue(elementId, propertyName) {
+                if (!WindowManager.getDependencyPropertyValue) {
+                    WindowManager.getDependencyPropertyValue = Module.mono_bind_static_method("[Uno.UI] Uno.UI.Helpers.Automation:GetDependencyPropertyValue");
+                }
+                const element = this.getView(elementId);
+                const htmlId = Number(element.getAttribute("XamlHandle"));
+                return WindowManager.getDependencyPropertyValue(htmlId, propertyName);
+            }
+            /**
                 * Remove the loading indicator.
                 *
                 * In a future version it will also handle the splashscreen.
