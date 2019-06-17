@@ -28,22 +28,32 @@ namespace Windows.UI.Xaml.Controls
 			PointerReleased += ScrollViewer_PointerReleased;
 			PointerPressed += ScrollViewer_PointerPressed;
 			PointerCanceled += ScrollContentPresenter_PointerCanceled;
+			PointerMoved += ScrollContentPresenter_PointerMoved;
+			PointerEntered += ScrollContentPresenter_PointerEntered;
+			PointerExited += ScrollContentPresenter_PointerExited;
+			PointerWheelChanged += ScrollContentPresenter_PointerWheelChanged;
 		}
+
+		private void ScrollContentPresenter_PointerWheelChanged(object sender, Input.PointerRoutedEventArgs e)
+			=> HandlePointerEvent(e);
+
+		private void ScrollContentPresenter_PointerExited(object sender, Input.PointerRoutedEventArgs e)
+			=> HandlePointerEvent(e);
+
+		private void ScrollContentPresenter_PointerEntered(object sender, Input.PointerRoutedEventArgs e)
+			=> HandlePointerEvent(e);
+
+		private void ScrollContentPresenter_PointerMoved(object sender, Input.PointerRoutedEventArgs e)
+			=> HandlePointerEvent(e);
 
 		private void ScrollContentPresenter_PointerCanceled(object sender, Input.PointerRoutedEventArgs e)
-		{
-			HandlePointerEvent(e);
-		}
+			=> HandlePointerEvent(e);
 
 		private void ScrollViewer_PointerPressed(object sender, Input.PointerRoutedEventArgs e)
-		{
-			HandlePointerEvent(e);
-		}
+			=> HandlePointerEvent(e);
 
 		private void ScrollViewer_PointerReleased(object sender, Input.PointerRoutedEventArgs e)
-		{
-			HandlePointerEvent(e);
-		}
+			=> HandlePointerEvent(e);
 
 		private void HandlePointerEvent(Input.PointerRoutedEventArgs e)
 		{
