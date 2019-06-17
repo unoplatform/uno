@@ -9,6 +9,8 @@ using Uno.Disposables;
 using System.Runtime.CompilerServices;
 using System.Text;
 using Windows.Foundation;
+using Uno.UI.Xaml;
+using Microsoft.Extensions.Logging;
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -20,6 +22,53 @@ namespace Windows.UI.Xaml.Controls
 		private ScrollMode _verticalScrollMode1;
 
 		private static readonly string[] HorizontalModeClasses = { "scrollmode-x-disabled", "scrollmode-x-enabled", "scrollmode-x-auto" };
+
+		public ScrollContentPresenter()
+		{
+			PointerReleased += ScrollViewer_PointerReleased;
+			PointerPressed += ScrollViewer_PointerPressed;
+			PointerCanceled += ScrollContentPresenter_PointerCanceled;
+		}
+
+		private void ScrollContentPresenter_PointerCanceled(object sender, Input.PointerRoutedEventArgs e)
+		{
+			HandlePointerEvent(e);
+		}
+
+		private void ScrollViewer_PointerPressed(object sender, Input.PointerRoutedEventArgs e)
+		{
+			HandlePointerEvent(e);
+		}
+
+		private void ScrollViewer_PointerReleased(object sender, Input.PointerRoutedEventArgs e)
+		{
+			HandlePointerEvent(e);
+		}
+
+		private void HandlePointerEvent(Input.PointerRoutedEventArgs e)
+		{
+			var (clientSize, offsetSize) = WindowManagerInterop.GetClientViewSize(HtmlId);
+
+			bool hasHorizontalScroll = (offsetSize.Height - clientSize.Height) > 0;
+			bool hasVerticalScroll = (offsetSize.Width - clientSize.Width) > 0;
+
+			if (this.Log().IsEnabled(LogLevel.Debug))
+			{
+				this.Log().LogDebug($"{HtmlId}: {offsetSize} / {clientSize} / {e.GetCurrentPoint()}");
+			}
+
+			// The events coming from the scrollbars are bubbled up
+			// to the the parents, as those are not (yey) XAML elements.
+			// This can cause issues for popups with scrollable content and
+			// light dismiss patterns.
+			var isInVerticalScrollbar = hasVerticalScroll && e.GetCurrentPoint().X >= clientSize.Width;
+			var isInHorizontalScrollbar = hasHorizontalScroll && e.GetCurrentPoint().Y >= clientSize.Height;
+
+			if (isInVerticalScrollbar || isInHorizontalScrollbar)
+			{
+				e.Handled = true;
+			}
+		}
 
 		public ScrollMode HorizontalScrollMode
 		{

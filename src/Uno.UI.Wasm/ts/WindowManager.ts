@@ -1255,6 +1255,40 @@
 		}
 
 		/**
+		 * Gets the Client and Offset size of the specified element
+		 *
+		 * This method is used to determine the size of the scroll bars, to
+		 * mask the events coming from that zone.
+		 */
+		public getClientViewSize(elementId: number): string {
+			const element = this.getView(elementId) as HTMLElement;
+
+			return `${element.clientWidth};${element.clientHeight};${element.offsetWidth};${element.offsetHeight}`;
+		}
+
+		/**
+		 * Gets the Client and Offset size of the specified element
+		 *
+		 * This method is used to determine the size of the scroll bars, to
+		 * mask the events coming from that zone.
+		 */
+		public getClientViewSizeNative(pParams: number, pReturn: number): boolean {
+			const params = WindowManagerGetClientViewSizeParams.unmarshal(pParams);
+
+			const element = this.getView(params.HtmlId) as HTMLElement;
+
+			const ret2 = new WindowManagerGetClientViewSizeReturn();
+			ret2.ClientWidth = element.clientWidth;
+			ret2.ClientHeight = element.clientHeight;
+			ret2.OffsetWidth = element.offsetWidth;
+			ret2.OffsetHeight = element.offsetHeight;
+
+			ret2.marshal(pReturn);
+
+			return true;
+		}
+
+		/**
 			* Remove the loading indicator.
 			*
 			* In a future version it will also handle the splashscreen.
