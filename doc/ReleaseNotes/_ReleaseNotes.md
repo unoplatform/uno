@@ -214,6 +214,7 @@
 * Date and Time Picker Content fix and Refactored to use PickerFlyoutBase (to resemble UWP implementation)
 * `LinearGradientBrush.EndPoint` now defaults to (1,1) to match UWP
 * [Android] A ListView inside another ListView no longer causes an app freeze/crash
+* Fix ComboBox disappearing items when items are views (#1078)
 
 ## Release 1.44.0
 
