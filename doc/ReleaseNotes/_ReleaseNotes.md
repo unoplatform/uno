@@ -85,6 +85,7 @@
 * `Grid` now supports `ColumnDefinition.MinWidth` and `MaxWidth` and `RowDefinition.MinHeight` and `MaxHeight` (#1032)
 * Implement the `PivotPanel` measure/arrange to allow text wrapping in pivot items
 * [Wasm] Add `PathIcon` support
+* `ComboBox`'s dropdown list (`CarouselPanel`) is now virtualized (#1012)
 
 ### Breaking Changes
 * The `WebAssemblyRuntime.InvokeJSUnmarshalled` method with three parameters has been removed.
@@ -92,6 +93,12 @@
 * Localized Text, Content etc is now applied even if the Text (etc) property isn't set in Xaml. Nested implicit content (eg `<Button><Border>...`) will be overridden by localized values if available.
 * [Android] Unless nested under `SecondaryCommands`, the `AppBarButton.Label` property will no longer be used for the title of menu item, instead use the `AppBarButton.Content` property. For `SecondaryCommands`, keep using `AppBarButton.Label`.
 * The `WordEllipsis` was removed from the `TextWrapping` as it's not a valid value for UWP (And it was actually supported only on WASM) (The right way to get ellipsis is with the `TextTrimming.WordEllipsis`)
+* If `ComboBox` has a modified template (eg from overriding the default `Style`), then the `ScrollViewer` hosting the `ItemsPresenter` needs to have its `Style` set to `StaticResource ListViewBaseScrollViewerStyle` (as [here](https://github.com/nventive/Uno/blob/21c49fd1d6136352f71a894686a9b4130e300b95/src/Uno.UI/UI/Xaml/Style/Generic/Generic.xaml#L754)). Eg:
+```xaml
+								<ScrollViewer x:Name="ScrollViewer"
+											  xamarin:Style="{StaticResource ListViewBaseScrollViewerStyle}"
+											  ...
+```
 
 ### Bug fixes
 * DatePicker FlyoutPlacement now set to Full by default
@@ -153,6 +160,8 @@
 * 116098 [iOS] The time/day pickers are missing diving lines on devices running firmware 11 and up.
 * [iOS] Fix invalid DataContext propagation when estimating ListView item size (#1051)
 * RadioButton was not applying Checked state correctly with non-standard visual state grouping in style
+* [Android] Fix several bugs preventing AutoSuggestBox from working on Android. (#1012)
+* #1062 TextBlock measure caching can wrongly hit
 
 ## Release 1.44.0
 

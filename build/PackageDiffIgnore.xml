@@ -173,6 +173,8 @@
                 reason="Invalid method visibility"/>
         <Member fullName="System.Void Windows.Phone.Devices.Notification.VibrationDevice..ctor()"
                 reason="Parameter-less ctor does not exist in UWP" />
+        <Member fullName="System.Void Windows.UI.Xaml.Controls.VirtualizingPanelLayout.UpdateLayoutAttributesForItem(UIKit.UICollectionViewLayoutAttributes layoutAttributes)"
+                reason="Implementation detail, made internal"/>
       </Methods>
 	  
 	  <Fields>

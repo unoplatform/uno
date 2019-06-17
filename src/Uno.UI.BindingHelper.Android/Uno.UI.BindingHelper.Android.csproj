@@ -76,6 +76,19 @@
 		<Delete Files="@(_JavaFilesToDelete)" />
 	</Target>
 
+	<!-- Workaround for https://github.com/nventive/Uno/issues/986 -->
+	<Target Name="Issue986Workaround" BeforeTargets="ExportJarToXml">
+
+		<!--
+		This is required to ensure the first pass of the BindingsGenerator task is
+		executed properly (inside of ExportJarToXml). If not, the second pass in the
+		GenerateBindings target is not given proper api mappings, ending in the generation
+		of an empty assembly.
+		-->
+		
+		<Delete Files="$(IntermediateOutputPath)\api.xml" />
+	</Target>
+	
 	<ItemGroup>
 		<_CompileUnoJavaBeforeTargets Include="ExportJarToXml"/>
 		<_CompileUnoJavaBeforeTargets Include="GenerateBindings"/>

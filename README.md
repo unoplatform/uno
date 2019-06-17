@@ -1,4 +1,4 @@
-# Uno Platform - The UWP Bridge for iOS, Android and WebAssembly
+# Uno Platform - Build Mobile, Desktop and WebAssembly apps with C# and XAML. Today.
 
 [![Gitter](https://badges.gitter.im/uno-platform/Lobby.svg)](https://gitter.im/uno-platform/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
 
