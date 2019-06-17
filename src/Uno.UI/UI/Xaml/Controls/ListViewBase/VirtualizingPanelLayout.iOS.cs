@@ -1205,7 +1205,7 @@ namespace Windows.UI.Xaml.Controls
 			_sectionEnd[groupHeaderLayout.IndexPath.Section] += extentDifference;
 		}
 
-		protected virtual void UpdateLayoutAttributesForItem(UICollectionViewLayoutAttributes layoutAttributes, bool shouldRecurse)
+		private protected virtual void UpdateLayoutAttributesForItem(UICollectionViewLayoutAttributes layoutAttributes, bool shouldRecurse)
 		{
 			throw new NotSupportedException($"This should be overridden by types which set {nameof(SupportsDynamicItemSizes)} to true.");
 		}
