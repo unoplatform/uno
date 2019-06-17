@@ -113,7 +113,7 @@ namespace Uno.UWPSyncGenerator
 							_sb.AppendParagraph($"*Implemented for:* {ToDisplayString(view.ImplementedForMain)}");
 
 							var baseDocLinkUrl = @"https://docs.microsoft.com/en-us/uwp/api/" + view.UAPSymbol.ToDisplayString().ToLowerInvariant();
-							_sb.AppendParagraph($"This document lists all properties, methods, and events of {formattedViewName} that are currently implemented in Uno. See the {Hyperlink("UWP documentation", baseDocLinkUrl)} for help using {formattedViewName}. ");
+							_sb.AppendParagraph($"This document lists all properties, methods, and events of {formattedViewName} that are currently implemented by the Uno Platform. See the {Hyperlink("UWP documentation", baseDocLinkUrl)} for detailed usage guidelines. ");
 
 							var customDocLink = GetCustomDocLink(viewName);
 							if (customDocLink != null)
