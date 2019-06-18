@@ -2862,14 +2862,13 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			{
 				return $"global::{resource.Namespace}.GlobalStaticResources.{SanitizeResourceName(resourceName)}";
 			}
-			else if (_staticResources.ContainsKey(resourceName))
+
+			if (_staticResources.ContainsKey(resourceName))
 			{
 				return $"{GetCastString(targetType, _staticResources[resourceName])}StaticResources.{SanitizeResourceName(resourceName)}";
 			}
-			else
-			{
-				var validateString = _isDebug ? $" ?? throw new InvalidOperationException(\"The resource {resourceName} cannot be found\")" : "";
-				var valueString = $"(global::Windows.UI.Xaml.Application.Current.Resources[\"{resourceName}\"]{validateString})";
+
+			var valueString = $"(global::Windows.UI.Xaml.Application.Current.Resources[\"{resourceName}\"] ?? throw new InvalidOperationException(\"The resource {resourceName} cannot be found\"))";
 
 				if (targetType != null)
 				{
@@ -2882,7 +2881,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					return valueString;
 				}
 			}
-		}
 
 		private string RewriteAttachedPropertyPath(string value)
 		{
