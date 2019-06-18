@@ -156,6 +156,7 @@
 * [Android] Fix several bugs preventing AutoSuggestBox from working on Android. (#1012)
 * #1062 TextBlock measure caching can wrongly hit
 * Fix support for ScrollBar touch events (#871)
+* [iOS] Area of view outside Clip rect now allows touch to pass through, this fixes NavigationView not allowing touches to children (#1018)
 
 ## Release 1.44.0
 
