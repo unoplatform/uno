@@ -57,6 +57,14 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\Clip\ButtonClippingTestsControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\Clip\ButtonWithClippingAndOffset.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\DeferLoadStrategy\DeferLoadStrategyWithTemplateBinding.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -114,6 +122,14 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\VisualStateTests\VisualTransition_Execution_Order.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\Clip\XamlButtonWithClipping.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\Clip\XamlButtonWithClipping_Scrollable.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -1930,6 +1946,12 @@
       <DependentUpon>AutomationProperties_Name.xaml</DependentUpon>
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Core\SystemNavigationManagerTests\HardwareBackButton.xaml.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\Clip\ButtonClippingTestsControl.xaml.cs">
+      <DependentUpon>ButtonClippingTestsControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\Clip\ButtonWithClippingAndOffset.xaml.cs">
+      <DependentUpon>ButtonWithClippingAndOffset.xaml</DependentUpon>
+    </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\DeferLoadStrategy\DeferLoadStrategyViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\DeferLoadStrategy\DeferLoadStrategyWithTemplateBinding.xaml.cs">
       <DependentUpon>DeferLoadStrategyWithTemplateBinding.xaml</DependentUpon>
@@ -1967,6 +1989,12 @@
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\VisualStateTests\VisualTransition_Execution_Order.xaml.cs">
       <DependentUpon>VisualTransition_Execution_Order.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\Clip\XamlButtonWithClipping.xaml.cs">
+      <DependentUpon>XamlButtonWithClipping.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\Clip\XamlButtonWithClipping_Scrollable.xaml.cs">
+      <DependentUpon>XamlButtonWithClipping_Scrollable.xaml</DependentUpon>
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\xBindTests\xBind.xaml.cs">
       <DependentUpon>xBind.xaml</DependentUpon>
