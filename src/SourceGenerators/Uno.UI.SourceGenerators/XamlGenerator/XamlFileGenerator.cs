@@ -855,21 +855,19 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				writer.AppendLineInvariant(0, ";", namedResource.Value.Type);
 			}
 
-			if (namedResources.Any())
+			// Styles are handled differently for now, and there's no variable generated
+			// for those entries. Skip the ApplyCompiledBindings for those. See
+			// ImportResourceDictionary handling of x:Name for more details.
+			var namedResourcesExcludingStyles = namedResources
+				.Where(nr => nr.Value.Type.Name.Equals("Style", StringComparison.Ordinal))
+				.ToArray();
+
+			if (namedResourcesExcludingStyles.Any())
 			{
 				using (writer.BlockInvariant("Loading += (s, e) =>"))
 				{
-					foreach (var namedResource in namedResources)
+					foreach (var namedResource in namedResourcesExcludingStyles)
 					{
-						if (namedResource.Value.Type.Name == "Style")
-						{
-							// Styles are handled differently for now, and there's no variable generated
-							// for those entries. Skip the ApplyCompiledBindings for those. See
-							// ImportResourceDictionary handling of x:Name for more details.
-							continue;
-						}
-
-
 						writer.AppendFormatInvariant($"{namedResource.Key}.ApplyCompiledBindings();");
 					}
 				}
@@ -2870,17 +2868,17 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 			var valueString = $"(global::Windows.UI.Xaml.Application.Current.Resources[\"{resourceName}\"] ?? throw new InvalidOperationException(\"The resource {resourceName} cannot be found\"))";
 
-				if (targetType != null)
-				{
-					// We do not know the type of the source, and it must be converted first
-					return $"global::Windows.UI.Xaml.Markup.XamlBindingHelper.ConvertValue(typeof{GetCastString(targetType, null)}, {valueString})";
-				}
-				else
-				{
-
-					return valueString;
-				}
+			if (targetType != null)
+			{
+				// We do not know the type of the source, and it must be converted first
+				return $"global::Windows.UI.Xaml.Markup.XamlBindingHelper.ConvertValue(typeof{GetCastString(targetType, null)}, {valueString})";
 			}
+			else
+			{
+
+				return valueString;
+			}
+		}
 
 		private string RewriteAttachedPropertyPath(string value)
 		{
