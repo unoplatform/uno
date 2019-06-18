@@ -69,7 +69,7 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="MSTest.TestFramework" Version="1.2.0" />
-    <PackageReference Include="Uno.Core" Version="1.28.0-dev.86" />
+    <PackageReference Include="Uno.Core" Version="1.28.0-beta.90" />
 		<PackageReference Include="Newtonsoft.Json">
       <Version>12.0.1</Version>
     </PackageReference>
@@ -129,8 +129,7 @@
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Mac\Xamarin.Mac.CSharp.targets" />
 	
-		<Target Name="VS16Mac_RemoveSystemMemory"
-					BeforeTargets="ResolveAssemblyReferences">
+		<Target Name="VS16Mac_RemoveSystemMemory" BeforeTargets="ResolveAssemblyReferences">
 		<!--
 				VS4Mac seems to process System.Memory differently, and removes
 				the System.Memory local reference if the package is transitively referenced.
@@ -138,21 +137,15 @@
 				is properly adding the local System.Memory to the Reference item group.
 		-->
 		<ItemGroup>
-			<_ReferenceToRemove
-        Include="@(Reference)"
-        Condition="'%(Reference.Identity)'=='System.Memory'" />
+			<_ReferenceToRemove Include="@(Reference)" Condition="'%(Reference.Identity)'=='System.Memory'" />
 			<Reference Remove="@(_ReferenceToRemove)" />
-			<Reference Include="System.Memory"/>
+			<Reference Include="System.Memory" />
 		</ItemGroup>
 	</Target>
 
-	<Target
-    Name="VS16_RemoveSystemMemory"
-    BeforeTargets="FindReferenceAssembliesForReferences">
+	<Target Name="VS16_RemoveSystemMemory" BeforeTargets="FindReferenceAssembliesForReferences">
 		<ItemGroup>
-			<_ReferencePathToRemove
-        Include="@(ReferencePath)"
-        Condition="'%(ReferencePath.NuGetPackageId)'=='System.Memory'" />
+			<_ReferencePathToRemove Include="@(ReferencePath)" Condition="'%(ReferencePath.NuGetPackageId)'=='System.Memory'" />
 			<ReferencePath Remove="@(_ReferencePathToRemove)" />
 		</ItemGroup>
 	</Target>
