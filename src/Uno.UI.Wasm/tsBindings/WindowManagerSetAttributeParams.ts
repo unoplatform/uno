@@ -3,8 +3,8 @@ class WindowManagerSetAttributeParams
 {
 	/* Pack=4 */
 	HtmlId : number;
-	Pairs_Length : number;
-	Pairs : Array<string>;
+	Name : string;
+	Value : string;
 	public static unmarshal(pData:number) : WindowManagerSetAttributeParams
 	{
 		let ret = new WindowManagerSetAttributeParams();
@@ -14,32 +14,28 @@ class WindowManagerSetAttributeParams
 		}
 		
 		{
-			ret.Pairs_Length = Number(Module.getValue(pData + 4, "i32"));
-		}
-		
-		{
-			var pArray = Module.getValue(pData + 8, "*");
-			if(pArray !== 0)
+			var ptr = Module.getValue(pData + 4, "*");
+			if(ptr !== 0)
 			{
-				ret.Pairs = new Array<string>();
-				for(var i=0; i<ret.Pairs_Length; i++)
-				{
-					var value = Module.getValue(pArray + i * 4, "*");
-					if(value !== 0)
-					{
-						ret.Pairs.push(String(MonoRuntime.conv_string(value)));
-					}
-					else
-					
-					{
-						ret.Pairs.push(null);
-					}
-				}
+				ret.Name = String(Module.UTF8ToString(ptr));
 			}
 			else
 			
 			{
-				ret.Pairs = null;
+				ret.Name = null;
+			}
+		}
+		
+		{
+			var ptr = Module.getValue(pData + 8, "*");
+			if(ptr !== 0)
+			{
+				ret.Value = String(Module.UTF8ToString(ptr));
+			}
+			else
+			
+			{
+				ret.Value = null;
 			}
 		}
 		return ret;
