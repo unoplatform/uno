@@ -15,9 +15,9 @@
 	d:DesignHeight="2000"
 	d:DesignWidth="400">
 
-	<win:StackPanel HorizontalAlignment="Center"
-					Background="LightGray"
-					Margin="50">
+	<StackPanel HorizontalAlignment="Center"
+				Background="LightGray"
+				Margin="50">
 		<TextBlock x:Name="ClickCountTextBlock"
 				   Text="Not clicked"
 				   Margin="20"
@@ -52,6 +52,5 @@
 				</ControlTemplate>
 			</Button.Template>
 		</Button>
-	</win:StackPanel>
-	<xamarin:TextBlock Text="This sample should be enabled for Uno when support for event registration inside templates is merged" />
+	</StackPanel>
 </UserControl>

@@ -25,7 +25,6 @@ namespace Uno.UI.Samples.Content.UITests.Clip
 			this.InitializeComponent();
 		}
 
-#if !XAMARIN //Enable when inner event support is merged
 		private int counter;
 		private void IncrementCounter(object sender, RoutedEventArgs e)
 		{
@@ -39,6 +38,5 @@ namespace Uno.UI.Samples.Content.UITests.Clip
 			innerCounter++;
 			InnerClickCountTextBlock.Text = $"Inner button clicked {innerCounter} times.";
 		}
-#endif
 	}
 }
