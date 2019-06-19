@@ -124,6 +124,7 @@ jobs:
     displayName: 'Running UI Tests'
 
   - task: CopyFiles@2
+    condition: always()
     displayName: 'Publish Wasm Tests results'
     inputs:
       SourceFolder: $(build.sourcesdirectory)/src/SamplesApp/SamplesApp.Wasm.UITests/out
@@ -134,11 +135,13 @@ jobs:
       flattenFolders: false
 
   - task: PublishTestResults@2
+    condition: always()
     inputs:
       testResultsFormat: 'NUnit'
       testResultsFiles: '$(build.sourcesdirectory)/build/wasm-uitest-binaries/TestResult.xml'
 
   - task: PublishBuildArtifacts@1
+    condition: always()
     inputs:
       PathtoPublish: $(build.artifactstagingdirectory)
       ArtifactName: wasm-uitests
