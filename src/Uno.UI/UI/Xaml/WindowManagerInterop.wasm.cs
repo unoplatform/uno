@@ -842,5 +842,56 @@ namespace Uno.UI.Xaml
 
 
 		#endregion
+
+		#region GetClientViewSize
+
+		internal static (Size clientSize, Size offsetSize) GetClientViewSize(IntPtr htmlId)
+		{
+			if (UseJavascriptEval)
+			{
+				var sizeString = WebAssemblyRuntime.InvokeJS("Uno.UI.WindowManager.current.getClientViewSize(" + htmlId + ");");
+				var sizeParts = sizeString.Split(';');
+
+				return (
+					clientSize: new Size(double.Parse(sizeParts[0]), double.Parse(sizeParts[1])),
+					offsetSize: new Size(double.Parse(sizeParts[2]), double.Parse(sizeParts[3]))
+				);
+			}
+			else
+			{
+				var parms = new WindowManagerGetClientViewSizeParams
+				{
+					HtmlId = htmlId
+				};
+
+				var ret = TSInteropMarshaller.InvokeJS<WindowManagerGetClientViewSizeParams, WindowManagerGetClientViewSizeReturn>("Uno:getClientViewSizeNative", parms);
+
+				return (
+					clientSize: new Size(ret.ClientWidth, ret.ClientHeight),
+					offsetSize:new Size(ret.OffsetWidth, ret.OffsetHeight)
+				);
+			}
+		}
+
+		[TSInteropMessage]
+		[StructLayout(LayoutKind.Sequential, Pack = 4)]
+		private struct WindowManagerGetClientViewSizeParams
+		{
+			public IntPtr HtmlId;
+		}
+
+
+		[TSInteropMessage]
+		[StructLayout(LayoutKind.Sequential, Pack = 8)]
+		private struct WindowManagerGetClientViewSizeReturn
+		{
+			public double OffsetWidth;
+			public double OffsetHeight;
+			public double ClientWidth;
+			public double ClientHeight;
+		}
+
+		#endregion
+
 	}
 }

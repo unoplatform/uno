@@ -506,7 +506,7 @@ namespace Windows.UI.Xaml
 			return false;
 		}
 
-		private static UIElement GetElementFromHandle(int handle)
+		internal static UIElement GetElementFromHandle(int handle)
 		{
 			var gcHandle = GCHandle.FromIntPtr((IntPtr)handle);
 

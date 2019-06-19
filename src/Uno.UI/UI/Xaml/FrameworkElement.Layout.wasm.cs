@@ -106,18 +106,18 @@ namespace Windows.UI.Xaml
 
 				using (traceActivity)
 				{
-					InnerMeasureCore(finalRect);
+					InnerArrangeCore(finalRect);
 				}
 			}
 			else
 			{
 				// This method is split in two functions to avoid the dynCalls
 				// invocations generation for mono-wasm AOT inside of try/catch/finally blocks.
-				InnerMeasureCore(finalRect);
+				InnerArrangeCore(finalRect);
 			}
 		}
 
-		private void InnerMeasureCore(Rect finalRect)
+		private void InnerArrangeCore(Rect finalRect)
 		{
 			var arrangeSize = finalRect.Size;
 

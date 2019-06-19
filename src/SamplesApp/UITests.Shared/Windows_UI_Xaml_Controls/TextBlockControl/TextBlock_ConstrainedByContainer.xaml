@@ -26,7 +26,7 @@
 				   Width="200" 
 				   Fill="Black" />
 
-		<TextBlock Text="The following TextBlock is inside a 20x200 Border. There is enough space for one line of text so it should trim"
+		<TextBlock Text="The following TextBlock is inside a 200x20 Border. There is enough space for one line of text so it should trim"
 		           TextWrapping="WrapWholeWords"/>
 
 		<Border Height="20"
@@ -43,7 +43,7 @@
 				   Width="200" 
 				   Fill="Black" />
 
-		<TextBlock Text="The following TextBlock is inside a 40x200 Border. There is enough space for two lines of text so it should wrap and trim"
+		<TextBlock Text="The following TextBlock is inside a 200x40 Border. There is enough space for two lines of text so it should wrap and trim"
 		           TextWrapping="WrapWholeWords"/>
 
 		<Border Height="40"
@@ -60,7 +60,7 @@
 				   Width="200" 
 				   Fill="Black" />
 
-		<TextBlock Text="The following TextBlock is inside a 80x200 Border. There is enough text and space for 4 lines of text but the TextBlock has a MaxLines of 3."
+		<TextBlock Text="The following TextBlock is inside a 200x80 Border. There is enough text and space for 4 lines of text but the TextBlock has a MaxLines of 3."
 		           TextWrapping="WrapWholeWords"/>
 
 		<Border Height="80"

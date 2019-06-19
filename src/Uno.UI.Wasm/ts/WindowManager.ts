@@ -131,6 +131,7 @@
 
 		private static resizeMethod: any;
 		private static dispatchEventMethod: any;
+		private static getDependencyPropertyValueMethod: any;
 
 		private constructor(private containerElementId: string, private loadingElementId: string) {
 			this.initDom();
@@ -1252,6 +1253,56 @@
 		private setHtmlContentInternal(viewId: number, html: string): void {
 
 			this.getView(viewId).innerHTML = html;
+		}
+
+		/**
+		 * Gets the Client and Offset size of the specified element
+		 *
+		 * This method is used to determine the size of the scroll bars, to
+		 * mask the events coming from that zone.
+		 */
+		public getClientViewSize(elementId: number): string {
+			const element = this.getView(elementId) as HTMLElement;
+
+			return `${element.clientWidth};${element.clientHeight};${element.offsetWidth};${element.offsetHeight}`;
+		}
+
+		/**
+		 * Gets the Client and Offset size of the specified element
+		 *
+		 * This method is used to determine the size of the scroll bars, to
+		 * mask the events coming from that zone.
+		 */
+		public getClientViewSizeNative(pParams: number, pReturn: number): boolean {
+			const params = WindowManagerGetClientViewSizeParams.unmarshal(pParams);
+
+			const element = this.getView(params.HtmlId) as HTMLElement;
+
+			const ret2 = new WindowManagerGetClientViewSizeReturn();
+			ret2.ClientWidth = element.clientWidth;
+			ret2.ClientHeight = element.clientHeight;
+			ret2.OffsetWidth = element.offsetWidth;
+			ret2.OffsetHeight = element.offsetHeight;
+
+			ret2.marshal(pReturn);
+
+			return true;
+		}
+
+		/**
+		 * Gets a dependency property value.
+		 *
+		 * Note that the casing of this method is intentionally Pascal for platform alignment.
+		 */
+		public GetDependencyPropertyValue(elementId: number, propertyName: string) : string {
+			if (!WindowManager.getDependencyPropertyValueMethod) {
+				WindowManager.getDependencyPropertyValueMethod = (<any>Module).mono_bind_static_method("[Uno.UI] Uno.UI.Helpers.Automation:GetDependencyPropertyValue");
+			}
+
+			const element = this.getView(elementId) as HTMLElement;
+			const htmlId = Number(element.getAttribute("XamlHandle"));
+
+			return WindowManager.getDependencyPropertyValueMethod(htmlId, propertyName);
 		}
 
 		/**
