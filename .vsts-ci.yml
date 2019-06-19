@@ -26,7 +26,7 @@ jobs:
   - task: GitVersion@4
     inputs:
       updateAssemblyInfo: false
-      gitVersionPath: '$(build.sourcesdirectory)\build\gitversion'
+      gitVersionPath: '$(build.sourcesdirectory)\build\gitversion\GitVersion.exe'
 
   - task: NuGetToolInstaller@0
     inputs:
@@ -114,7 +114,7 @@ jobs:
   - task: GitVersion@4
     inputs:
       updateAssemblyInfo: false
-      gitVersionPath: '$(build.sourcesdirectory)\build\gitversion'
+      gitVersionPath: '$(build.sourcesdirectory)\build\gitversion\GitVersion.exe'
 
   - task: NuGetToolInstaller@0
     inputs:
