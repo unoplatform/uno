@@ -34,6 +34,17 @@ namespace Uno.UI
 #endif
 		}
 
+		public static class Xaml
+		{
+			/// <summary>
+			/// Maximal "BasedOn" recursive resoling depth.
+			/// </summary>
+			/// <remarks>
+			/// This is a mechanism to prevent hard-to-diagnose stack overflow when a resource name is not found.
+			/// </remarks>
+			public static int MaxRecursiveResolvingDepth { get; set; } = 12;
+		}
+
 		public static class FrameworkElement
 		{
 			/// <summary>
