@@ -54,6 +54,7 @@ jobs:
         **\*test*.dll
         !**\obj\**
         !**\*Wasm.Test*.dll
+        !**\*UITests.dll
         !**\*.RuntimeTests.dll
       vstestLocationMethod: version
       vsTestVersion: latest
