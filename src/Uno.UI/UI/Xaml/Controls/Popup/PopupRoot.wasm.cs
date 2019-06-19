@@ -58,8 +58,6 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		private static MatrixTransform _identityTransform = new MatrixTransform();
-
 		protected override Size ArrangeOverride(Size finalSize)
 		{
 			foreach (var child in Children)
@@ -69,13 +67,8 @@ namespace Windows.UI.Xaml.Controls
 					continue;
 				}
 
-				var desiredSize = child.DesiredSize;
-				var popup = panel.Popup;
-
-				var locationTransform1 = popup.TransformToVisual(this) ?? _identityTransform;
-				var r1 = new Rect(new Point(popup.HorizontalOffset, popup.VerticalOffset), desiredSize);
-				var rect = locationTransform1.TransformBounds(r1);
-				child.Arrange(rect);
+				// Note: The popup alignment is ensure by the PopupPanel itself
+				child.Arrange(new Rect(new Point(), finalSize));
 			}
 
 			return finalSize;
