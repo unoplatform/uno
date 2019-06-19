@@ -2,7 +2,7 @@ parameters:
   pool: ''
 
 jobs:
-- job: Wasm_UITests
+- job: Wasm_UITests_Build
   container: nv-bionic-wasm
 
   pool:
@@ -19,11 +19,57 @@ jobs:
       source /emsdk/emsdk_env.sh
       msbuild /r /p:Configuration=Release /t:restore src/SamplesApp/SamplesApp.Wasm/SamplesApp.Wasm.csproj
       msbuild /p:Configuration=Release /p:TargetFramework=netstandard2.0 src/SamplesApp/SamplesApp.Wasm/SamplesApp.Wasm.csproj /p:UnoSourceGeneratorUseGenerationHost=true /p:UnoSourceGeneratorUseGenerationController=false
+      msbuild /r /p:Configuration=Release src/SamplesApp/SamplesApp.UITests/SamplesApp.UITests.csproj
 
     displayName: 'Build sample app'
 
+  - task: CopyFiles@2
+    displayName: 'Publish Wasm Site'
+    inputs:
+      SourceFolder: $(build.sourcesdirectory)/src/SamplesApp/SamplesApp.Wasm/bin/Release/netstandard2.0/dist
+      Contents: '**/*.*'
+      TargetFolder: $(build.artifactstagingdirectory)/site
+      CleanTargetFolder: false
+      OverWrite: false
+      flattenFolders: false
+
+  - task: CopyFiles@2
+    displayName: 'Publish Wasm UITest binaries'
+    inputs:
+      SourceFolder: $(build.sourcesdirectory)/src/SamplesApp/SamplesApp.UITests/bin/Release/net47
+      Contents: '**/*.*'
+      TargetFolder: $(build.artifactstagingdirectory)/test-bin
+      CleanTargetFolder: false
+      OverWrite: false
+      flattenFolders: false
+      
+  - task: PublishBuildArtifacts@1
+    inputs:
+      PathtoPublish: $(build.artifactstagingdirectory)
+      ArtifactName: wasm-uitest-binaries
+      ArtifactType: Container
+
+- job: Wasm_UITests_Snap
+  dependsOn: Wasm_UITests_Build
+  container: nv-bionic-wasm
+
+  pool:
+    vmImage: 'ubuntu-16.04'
+
+  variables:
+    NUGET_PACKAGES: $(build.sourcesdirectory)/.nuget
+
+  steps:
+  - checkout: self
+    clean: true
+
+  - task: DownloadBuildArtifacts@0
+    inputs:
+        artifactName: wasm-uitest-binaries
+        downloadPath: '$(build.sourcesdirectory)/build'
+
   - bash: |
-      cd $(build.sourcesdirectory)/src/SamplesApp/SamplesApp.Wasm/bin/Release/netstandard2.0/dist
+      cd $(build.sourcesdirectory)/build/wasm-uitest-binaries/site
       python server.py &
       cd $(build.sourcesdirectory)/src/SamplesApp/SamplesApp.Wasm.UITests
       npm install
@@ -47,8 +93,60 @@ jobs:
       ArtifactName: wasm-uitests
       ArtifactType: Container
 
+
+- job: Wasm_UITests_Automated
+  dependsOn: Wasm_UITests_Build
+  container: nv-bionic-wasm
+
+  pool:
+    vmImage: 'ubuntu-16.04'
+
+  variables:
+    NUGET_PACKAGES: $(build.sourcesdirectory)/.nuget
+
+  steps:
+  - checkout: self
+    clean: true
+
+  - task: DownloadBuildArtifacts@0
+    inputs:
+        artifactName: wasm-uitest-binaries
+        downloadPath: '$(build.sourcesdirectory)/build'
+
+  - bash: |
+      chmod +x $(build.sourcesdirectory)/build/run-automated-uitests.sh
+      $(build.sourcesdirectory)/build/run-automated-uitests.sh
+
+    env:
+      BUILD_SOURCESDIRECTORY: "$(build.sourcesdirectory)"
+      BUILD_ARTIFACTSTAGINGDIRECTORY: "$(build.artifactstagingdirectory)"
+
+    displayName: 'Running UI Tests'
+
+  - task: CopyFiles@2
+    displayName: 'Publish Wasm Tests results'
+    inputs:
+      SourceFolder: $(build.sourcesdirectory)/src/SamplesApp/SamplesApp.Wasm.UITests/out
+      Contents: '**/*.*'
+      TargetFolder: $(build.artifactstagingdirectory)/screenshots
+      CleanTargetFolder: false
+      OverWrite: false
+      flattenFolders: false
+
+  - task: PublishTestResults@2
+    inputs:
+      testResultsFormat: 'NUnit'
+      testResultsFiles: '$(build.sourcesdirectory)/build/wasm-uitest-binaries/TestResult.xml'
+
+  - task: PublishBuildArtifacts@1
+    inputs:
+      PathtoPublish: $(build.artifactstagingdirectory)
+      ArtifactName: wasm-uitests
+      ArtifactType: Container
+
+
 - job: Wasm_UITests_Compare
-  dependsOn: Wasm_UITests
+  dependsOn: Wasm_UITests_Snap
 
   pool:
     vmImage: 'vs2017-win2016'
