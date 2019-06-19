@@ -1,6 +1,6 @@
 assembly-versioning-scheme: MajorMinorPatch
 mode: ContinuousDeployment
-next-version: 1.45.0
+next-version: 1.46.0
 continuous-delivery-fallback-tag: ""
 branches:
   master:
