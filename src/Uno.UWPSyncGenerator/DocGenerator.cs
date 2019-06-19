@@ -123,8 +123,8 @@ namespace Uno.UWPSyncGenerator
 
 							var properties = view.UAPSymbol.GetMembers().OfType<IPropertySymbol>().Select(p => GetAllMatchingPropertyMember(view, p)).ToArray();
 							var methods = view.UAPSymbol
-								.GetMembers().
-								OfType<IMethodSymbol>()
+								.GetMembers()
+								.OfType<IMethodSymbol>()
 								.Where(m => m.MethodKind == MethodKind.Ordinary &&
 									!(m.Name.StartsWith("add_") || m.Name.StartsWith("remove_")) // Filter out explicit event add/remove methods (associated with routed events). These should already be filtered out by the MethodKind.Ordinary check but for some reason, on the build server only, aren't.
 								)
