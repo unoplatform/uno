@@ -11,8 +11,7 @@
 * #854 `BasedOn` on a `<Style>` in `App.Xaml` were not resolving properly
 * #706 `x:Name` in `App.Xaml`'s resources were crashing the compilation.
 * #846 `x:Name` on non-`DependencyObject` resources were crashing the compilation
-* 
-
+*
 ## Release 1.45.0
 ### Features
 * Add support for `Windows.System.Display.DisplayRequest` API on iOS and Android
@@ -170,6 +169,7 @@
 * `LinearGradientBrush.EndPoint` now defaults to (1,1) to match UWP
 * Fixed an issue where a Two-Way binding would sometimes not update values back to source correctly
 * [Android] A ListView inside another ListView no longer causes an app freeze/crash
+* Date and Time Picker Content fix + Refactored to use PickerFlyoutBase (to resemble UWP implementation)
 
 ## Release 1.44.0
 
