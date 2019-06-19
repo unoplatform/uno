@@ -5,7 +5,7 @@ pull_request_rules:
       # Takes no options, see <https://doc.mergify.io/examples.html#deleting-merged-branch>
       delete_head_branch: {}
 
-  - name: automatic strict merge when CI passes, has 2 reviews and is labeled 'ready-to-merge' unless labelled 'do-not-merge/breaking-change' or 'do-not-merge/work-in-progress'
+  - name: automatic strict merge when CI passes, has 2 reviews, no requests for change and is labeled 'ready-to-merge' unless labelled 'do-not-merge/breaking-change' or 'do-not-merge/work-in-progress'
     conditions:
       # Only pull-requests sent to the master branch
       - base=master
@@ -19,6 +19,7 @@ pull_request_rules:
       # Note that this only matches people with write / admin access to the repo,
       # see <https://doc.mergify.io/conditions.html#attribute-list>
       - "#approved-reviews-by>=2"
+      - "#changes-requested-reviews-by=0"
 
       # Pull-request must be labeled with:
       - label=ready-to-merge
