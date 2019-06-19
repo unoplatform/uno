@@ -968,6 +968,13 @@ namespace <#= mixin.NamespaceName #>
 			{
 				return null;
 			}
+#if <#= mixin.IsFrameworkElement #> //IsFrameworkElement
+			if (Clip?.Rect is Rect rect && !rect.Contains(point))
+			{
+				// Clipped region must not block touch to the rest of the visual tree
+				return null;
+			}
+#endif
 
 			var viewHit = base.HitTest(point, uievent);
 

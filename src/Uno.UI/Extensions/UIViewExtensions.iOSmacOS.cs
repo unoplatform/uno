@@ -563,7 +563,8 @@ namespace AppKit
 
 			void AppendView(_View innerView)
 			{
-				sb.AppendLine($"{spacing}{(innerView == viewOfInterest ? "*" : "")}>{innerView.ToString()}-({innerView.Frame.Width}x{innerView.Frame.Height})");
+				var name = innerView is IFrameworkElement fe && !fe.Name.IsNullOrEmpty() ? $"\"{fe.Name}\"" : "";
+				sb.AppendLine($"{spacing}{(innerView == viewOfInterest ? "*" : "")}>{innerView.ToString()}{name}-({innerView.Frame.Width}x{innerView.Frame.Height})@({innerView.Frame.X},{innerView.Frame.Y})");
 			}
 		}
 
