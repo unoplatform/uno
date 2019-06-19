@@ -158,6 +158,12 @@ namespace <#= mixin.NamespaceName #>
                 combinedState = __normalState;
             }
 			VisualStateManager.GoToState(this, combinedState, useTransitions);
+
+#if <#= mixin.HasCheckedStates #> && !<#= mixin.HasCommonCheckedState #> && !<#= mixin.HasCombinedCheckedState #> // HasCheckedStates && !HasCommonCheckedState && !HasCombinedCheckedState
+			// Reapply checked state after changing common states. This is a no-op under the default style where pressed states and checked
+			// states are in different VisualStateGroups, and follows UWP in the non-standard case that they are in the same group (Checked/Unchecked is always reapplied last)
+			UpdateCheckedStates(useTransitions);
+#endif
 		}
 #endif
 

@@ -1,23 +1,20 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Windows.UI.Xaml.Media
 {
 	public partial class FontFamily
 	{
-		private readonly string _source;
 		private readonly int _hashCode;
 
 		public FontFamily(string familyName)
 		{
-			_source = familyName;
+			Source = familyName;
 
 			// This instance is immutable, we can cache the hash code.
-			_hashCode = _source.GetHashCode();
+			_hashCode = Source.GetHashCode();
 		}
 
-		public string Source => _source;
+		public string Source { get; }
 
 		// Makes introduction of FontFamily a non-breaking change (for now)
 		public static implicit operator FontFamily(string familyName) => new FontFamily(familyName);
@@ -26,16 +23,34 @@ namespace Windows.UI.Xaml.Media
 
 		public override bool Equals(object obj)
 		{
-			var fontFamily = obj as FontFamily;
-
-			if (fontFamily != null)
+			if (obj is FontFamily fontFamily)
 			{
-				return Source.Equals(fontFamily.Source);
+				return Source.Equals(fontFamily.Source, StringComparison.Ordinal);
 			}
 
 			return false;
 		}
 
 		public override int GetHashCode() => _hashCode;
+
+		public static bool operator ==(FontFamily a, FontFamily b)
+		{
+			if (ReferenceEquals(a, b))
+			{
+				return true;
+			}
+
+			return !ReferenceEquals(a, null) && a.Equals(b);
+		}
+
+		public static bool operator !=(FontFamily a, FontFamily b)
+		{
+			if (ReferenceEquals(a, b))
+			{
+				return false;
+			}
+
+			return ReferenceEquals(a, null) || !a.Equals(b);
+		}
 	}
 }

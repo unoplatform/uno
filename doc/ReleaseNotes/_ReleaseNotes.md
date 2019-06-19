@@ -83,12 +83,16 @@
 * [Wasm] Refactored the way the text is measured in Wasm. Wasn't working well when a parent with a RenderTransform.
 * `Grid` now supports `ColumnDefinition.MinWidth` and `MaxWidth` and `RowDefinition.MinHeight` and `MaxHeight` (#1032)
 * Implement the `PivotPanel` measure/arrange to allow text wrapping in pivot items
+* [Wasm] Add `PathIcon` support
+* Add support UI Testing support through for `Uno.UI.Helpers.Automation.GetDependencyPropertyValue`
 
 ### Breaking Changes
 * The `WebAssemblyRuntime.InvokeJSUnmarshalled` method with three parameters has been removed.
 * `NavigationBarHelper` has been removed.
 * Localized Text, Content etc is now applied even if the Text (etc) property isn't set in Xaml. Nested implicit content (eg `<Button><Border>...`) will be overridden by localized values if available.
 * [Android] Unless nested under `SecondaryCommands`, the `AppBarButton.Label` property will no longer be used for the title of menu item, instead use the `AppBarButton.Content` property. For `SecondaryCommands`, keep using `AppBarButton.Label`.
+* The `WordEllipsis` was removed from the `TextWrapping` as it's not a valid value for UWP (And it was actually supported only on WASM) (The right way to get ellipsis is with the `TextTrimming.WordEllipsis`)
+* [Android] `Popup.Anchor` is no longer available
 
 ### Bug fixes
 * DatePicker FlyoutPlacement now set to Full by default
@@ -149,6 +153,12 @@
 * Fix the processing of the GotFocus event FocusManager (#973)
 * 116098 [iOS] The time/day pickers are missing diving lines on devices running firmware 11 and up.
 * [iOS] Fix invalid DataContext propagation when estimating ListView item size (#1051)
+* RadioButton was not applying Checked state correctly with non-standard visual state grouping in style
+* [Android] Fix several bugs preventing AutoSuggestBox from working on Android. (#1012)
+* #1062 TextBlock measure caching can wrongly hit
+* Fix support for ScrollBar touch events (#871)
+* [iOS] Area of view outside Clip rect now allows touch to pass through, this fixes NavigationView not allowing touches to children (#1018)
+* `ComboBox` drop down is now placed following a logic which is closer to UWP and it longer flickers when it appears (especilly on WASM)
 
 ## Release 1.44.0
 

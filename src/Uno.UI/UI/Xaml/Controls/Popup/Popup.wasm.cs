@@ -10,8 +10,6 @@ namespace Windows.UI.Xaml.Controls
 	{
 		private readonly SerialDisposable _closePopup = new SerialDisposable();
 
-		internal UIElement Anchor { get; set; }
-
 		public Popup()
 		{
 			PopupPanel = new PopupPanel(this);

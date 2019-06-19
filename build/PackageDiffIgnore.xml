@@ -171,8 +171,17 @@
                 reason="Invalid method visibility"/>
         <Member fullName="System.Void Uno.UI.Controls.Legacy.ListViewBase.OnLayoutUpdated()"
                 reason="Invalid method visibility"/>
-
+				
+		<Member fullName="Android.Views.View Windows.UI.Xaml.Controls.Popup.get_Anchor()"
+				reason="Invalid method visibility"/>
+		<Member fullName="System.Void Windows.UI.Xaml.Controls.Popup.set_Anchor(Android.Views.View value)"
+				reason="Invalid method visibility"/>
       </Methods>
+	  
+	  <Fields>
+	  	<Member fullName="Windows.UI.Xaml.TextWrapping Windows.UI.Xaml.TextWrapping::WordEllipsis"
+                reason="Invalid enum value"/>
+	  </Fields>
 
       <Properties>
         <Member fullName="Windows.UI.Color Windows.UI.Xaml.Controls.ScrollViewer::BackgroundColor()"
@@ -180,6 +189,9 @@
         
         <Member fullName="System.Collections.Generic.IList`1&lt;Windows.UI.Xaml.Controls.MenuFlyoutItem&gt; Windows.UI.Xaml.Controls.MenuFlyout::Items()"
                 reason="Changed because of invalid property type" />
+				
+		<Member fullName="Android.Views.View Windows.UI.Xaml.Controls.Popup::Anchor()"
+                reason="Invalid property visibility" />
       </Properties>
 
     </IgnoreSet>

@@ -244,10 +244,10 @@ namespace Windows.UI.Xaml
 		/// </summary>
 		public Size DesiredSize { get; internal set; }
 
-		public Size RenderSize
-		{
-			get; internal set;
-		}
+		/// <summary>
+		/// Provides the size reported during the last call to Arrange (i.e. the ActualSize)
+		/// </summary>
+		public Size RenderSize { get; internal set; }
 
 		public virtual void Measure(Size availableSize)
 		{
