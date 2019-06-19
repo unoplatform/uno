@@ -93,6 +93,18 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\TouchEventsTests\TappedEventTest.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\TouchEventsTests\Touch.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\TouchEventsTests\TouchRotated.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\UIElementTests\Arrange_Performance01.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -133,11 +145,35 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\xBindTests\NoPhaseBinding_Large.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\xBindTests\PhaseBinding.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\xBindTests\PhaseBinding_Large.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\xBindTests\PhaseBinding_StartOne.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\xBindTests\xBind.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\xBindTests\XBindControl01.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\xBindTests\xBind_Field.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\xBindTests\XBind_Simple.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -442,6 +478,82 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ComboBox\ComboBox_Virtualizing.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ContentControlTestsControl\ContentControl_Changing_ContentTemplate.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ContentControlTestsControl\ContentControl_DefaultText.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ContentControlTestsControl\ContentControl_FindName.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ContentControlTestsControl\ContentControl_Inheritance.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ContentControlTestsControl\ContentControl_MultiLevelInheritance.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ContentControlTestsControl\ContentControl_Nested_TemplatedParent.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ContentControlTestsControl\ContentControl_NoTemplateDataContext.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ContentControlTestsControl\ContentControl_SelectorInheritance.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ContentControlTestsControl\ContentControl_SetNull.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ContentControlTestsControl\ContentControl_UnsetContent.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ContentControlTestsControl\ContentControl_WithInlineContent.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ContentControlTestsControl\ContentControl_WithPadding.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ContentPresenter\ContentPresenter_Background.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ContentPresenter\ContentPresenter_Changing_ContentTemplate.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ContentPresenter\ContentPresenter_Content_DataContext.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ContentPresenter\ContentPresenter_LocalOverride.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ContentPresenter\ContentPresenter_Padding.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ContentPresenter\ContentPresenter_Template.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ContentPresenter\ContentPresenter_TextProperties.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -801,6 +913,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\Popup\Popup_Automated.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\Popup\Popup_LightDismiss.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -810,6 +926,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\Progress\ProgressRing.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\RadioButtonTests\RadioButton_IsEnabled_Automated.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -1972,6 +2092,11 @@
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\Localization\Localization_Implicit.xaml.cs">
       <DependentUpon>Localization_Implicit.xaml</DependentUpon>
     </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\TouchEventsTests\ControlWithTouchEvent.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\TouchEventsTests\TappedEventTest.xaml.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\TouchEventsTests\Touch.xaml.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\TouchEventsTests\TouchRotated.xaml.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\TouchEventsTests\TouchViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\UIElementTests\Arrange_Performance01.xaml.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\UIElementTests\TransformToVisual_Simple.xaml.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\VisualStateTests\VisualState_AdaptiveTrigger_Storyboard.xaml.cs" />
@@ -1996,9 +2121,14 @@
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\Clip\XamlButtonWithClipping_Scrollable.xaml.cs">
       <DependentUpon>XamlButtonWithClipping_Scrollable.xaml</DependentUpon>
     </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\xBindTests\NoPhaseBinding_Large.xaml.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\xBindTests\PhaseBinding.xaml.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\xBindTests\PhaseBinding_Large.xaml.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\xBindTests\PhaseBinding_StartOne.xaml.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\xBindTests\xBind.xaml.cs">
       <DependentUpon>xBind.xaml</DependentUpon>
     </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\xBindTests\XBindControl01.xaml.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\xBindTests\XBindviewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\MarkupExtensionTests\MarkupExtension.xaml.cs">
       <DependentUpon>MarkupExtension.xaml</DependentUpon>
@@ -2007,6 +2137,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\xBindTests\xBind_Field.xaml.cs">
       <DependentUpon>xBind_Field.xaml</DependentUpon>
     </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\xBindTests\XBind_Simple.xaml.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\AutoSuggestBoxTests\BasicAutoSuggestBox.xaml.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\BorderTests\AutoBorderStretchwithbottommargin.xaml.cs">
       <DependentUpon>AutoBorderStretchwithbottommargin.xaml</DependentUpon>
@@ -2152,6 +2283,28 @@
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\CommandBar\CommandBar_Padding.xaml.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\CommandBar\CommandBar_Uppercase_Resource.xaml.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\CommandBar\CommandBar_With_Long_Sentences.xaml.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ContentControlTestsControl\ContentControlTestViewModel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ContentControlTestsControl\ContentControl_Changing_ContentTemplate.xaml.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ContentControlTestsControl\ContentControl_DefaultText.xaml.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ContentControlTestsControl\ContentControl_FindName.xaml.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ContentControlTestsControl\ContentControl_Inheritance.xaml.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ContentControlTestsControl\ContentControl_MultiLevelInheritance.xaml.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ContentControlTestsControl\ContentControl_Nested_TemplatedParent.xaml.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ContentControlTestsControl\ContentControl_NoTemplateDataContext.xaml.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ContentControlTestsControl\ContentControl_SelectorInheritance.xaml.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ContentControlTestsControl\ContentControl_SetNull.xaml.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ContentControlTestsControl\ContentControl_UnsetContent.xaml.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ContentControlTestsControl\ContentControl_WithInlineContent.xaml.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ContentControlTestsControl\ContentControl_WithPadding.xaml.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ContentControlTestsControl\FindNameTestControl.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ContentControlTestsControl\SelectorInheritanceTemplateSelector.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ContentPresenter\ContentPresenter_Background.xaml.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ContentPresenter\ContentPresenter_Changing_ContentTemplate.xaml.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ContentPresenter\ContentPresenter_Content_DataContext.xaml.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ContentPresenter\ContentPresenter_LocalOverride.xaml.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ContentPresenter\ContentPresenter_Padding.xaml.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ContentPresenter\ContentPresenter_Template.xaml.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ContentPresenter\ContentPresenter_TextProperties.xaml.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\DatePicker\DatePickerSample.xaml.cs">
       <DependentUpon>DatePickerSample.xaml</DependentUpon>
     </Compile>
@@ -2400,11 +2553,13 @@
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\NavigationViewTests\NavigationView_TopNavigation.xaml.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\Pivot\PivotSimpleTest.xaml.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\Popup\MessageDialog.xaml.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\Popup\Popup_Automated.xaml.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\Popup\Popup_LightDismiss.xaml.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\Popup\Popup_Simple.xaml.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\Progress\ProgressRing.xaml.cs">
       <DependentUpon>ProgressRing.xaml</DependentUpon>
     </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\RadioButtonTests\RadioButton_IsEnabled_Automated.xaml.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ScrollViewerTests\Hosted_ScrollViewer.xaml.cs">
       <DependentUpon>Hosted_ScrollViewer.xaml</DependentUpon>
     </Compile>

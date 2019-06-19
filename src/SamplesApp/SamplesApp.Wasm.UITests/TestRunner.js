@@ -34,14 +34,14 @@ class TestRunner {
                 console.log("---");
                 console.log(`Running ${i}/${allTestsData.length}: ${testName}`);
                 // Start the test run
-                var testRunId = yield this._page.evaluate(`SampleRunner.runTest(\'${testName}\')`);
+                var testRunId = yield this._page.evaluate(`SampleRunner.RunTest(\'${testName}\')`);
                 if (debug) {
                     console.log(`TestID: ${testRunId}`);
                 }
                 var startDate = new Date();
                 while ((startDate - new Date()) < 5000) {
                     // Then wait for the test to be reported as done
-                    if (yield this._page.evaluate(`SampleRunner.isTestDone(\'${testRunId}\')`)) {
+                    if (yield this._page.evaluate(`SampleRunner.IsTestDone(\'${testRunId}\')`)) {
                         break;
                     }
                     if (debug) {
@@ -56,7 +56,7 @@ class TestRunner {
     getAllTests(page) {
         return __awaiter(this, void 0, void 0, function* () {
             yield page.evaluate("SampleRunner.init()");
-            const allTestsData = yield page.evaluate("SampleRunner.getAllTests()");
+            const allTestsData = yield page.evaluate("SampleRunner.GetAllTests()");
             return allTestsData.split(';');
         });
     }
