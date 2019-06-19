@@ -2,13 +2,14 @@
 
 ## Next version
 ### Features
-* 
+* Add support for `Windows.Phone.Devices.Notification.VibrationDevice` API on iOS, Android and WASM
 
 ### Breaking changes
 * 
 
 ### Bug fixes
-* 
+* [iOS] Area of view outside Clip rect now allows touch to pass through, this fixes NavigationView not allowing touches to children (#1018)
+* `ComboBox` drop down is now placed following a logic which is closer to UWP and it longer flickers when it appears (especilly on WASM)
 
 ## Release 1.45.0
 ### Features
@@ -92,7 +93,8 @@
 * `Grid` now supports `ColumnDefinition.MinWidth` and `MaxWidth` and `RowDefinition.MinHeight` and `MaxHeight` (#1032)
 * Implement the `PivotPanel` measure/arrange to allow text wrapping in pivot items
 * [Wasm] Add `PathIcon` support
-* Add support UI Testing support through for `Uno.UI.Helpers.Automation.GetDependencyPropertyValue`
+* [iOS] Fix items dependency property propagation in ListView items
+* [Wasm] Add UI Testing support through for `Uno.UI.Helpers.Automation.GetDependencyPropertyValue`\
 
 ### Breaking Changes
 * The `WebAssemblyRuntime.InvokeJSUnmarshalled` method with three parameters has been removed.
@@ -100,6 +102,7 @@
 * Localized Text, Content etc is now applied even if the Text (etc) property isn't set in Xaml. Nested implicit content (eg `<Button><Border>...`) will be overridden by localized values if available.
 * [Android] Unless nested under `SecondaryCommands`, the `AppBarButton.Label` property will no longer be used for the title of menu item, instead use the `AppBarButton.Content` property. For `SecondaryCommands`, keep using `AppBarButton.Label`.
 * The `WordEllipsis` was removed from the `TextWrapping` as it's not a valid value for UWP (And it was actually supported only on WASM) (The right way to get ellipsis is with the `TextTrimming.WordEllipsis`)
+* [Android] `Popup.Anchor` is no longer available
 
 ### Bug fixes
 * DatePicker FlyoutPlacement now set to Full by default

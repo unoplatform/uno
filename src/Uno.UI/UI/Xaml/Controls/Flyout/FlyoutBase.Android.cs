@@ -27,7 +27,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			};
 		}
 
-		partial void SetPopupPositionPartial(View placementTarget)
+		partial void SetPopupPositionPartial(UIElement placementTarget)
 		{
 			_popup.Anchor = placementTarget;
 		}

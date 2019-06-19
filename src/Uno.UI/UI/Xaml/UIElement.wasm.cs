@@ -536,6 +536,14 @@ namespace Windows.UI.Xaml
 			}
 		}
 
+		partial void OnUidChangedPartial()
+		{
+			if (FeatureConfiguration.UIElement.AssignDOMXamlName)
+			{
+				Uno.UI.Xaml.WindowManagerInterop.SetXUid(HtmlId, _uid);
+			}
+		}
+
 		partial void InitializeCapture();
 
 		internal bool IsPointerCaptured => _pointCaptures.Any();
