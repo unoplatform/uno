@@ -26,7 +26,7 @@ namespace Uno.UI
 
 #if __WASM__
 			/// <summary>
-			/// Enable the assignation of a "XamlName" attribute on DOM elements created
+			/// Enable the assignation of the "XamlName" and "xuid" attributes on DOM elements created
 			/// from the XAML visual tree. This enables tools such as Puppeteer to select elements
 			/// in the DOM for automation purposes.
 			/// </summary>

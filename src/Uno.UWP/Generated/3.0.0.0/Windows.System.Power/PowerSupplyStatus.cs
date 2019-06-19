@@ -8,15 +8,9 @@ namespace Windows.System.Power
 	#endif
 	public   enum PowerSupplyStatus 
 	{
-#if false || false || false || false || false
-		NotPresent,
-#endif
-#if false || false || false || false || false
-		Inadequate,
-#endif
-#if false || false || false || false || false
-		Adequate,
-#endif
+		// Skipping already declared field Windows.System.Power.PowerSupplyStatus.NotPresent
+		// Skipping already declared field Windows.System.Power.PowerSupplyStatus.Inadequate
+		// Skipping already declared field Windows.System.Power.PowerSupplyStatus.Adequate
 	}
 	#endif
 }

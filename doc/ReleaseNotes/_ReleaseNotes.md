@@ -1,6 +1,7 @@
 ﻿# Release notes
 
 ## Next version
+* Add support for `Windows.Phone.Devices.Notification.VibrationDevice` API on iOS, Android and WASM
 * `LinearGradientBrush.EndPoint` now defaults to (1,1) to match UWP
 * Add support for `Windows.System.Display.DisplayRequest` API on iOS and Android
 * Add support for the following `Windows.System.Power.PowerManager` APIs on iOS and Android:
@@ -85,7 +86,7 @@
 * Implement the `PivotPanel` measure/arrange to allow text wrapping in pivot items
 * [Wasm] Add `PathIcon` support
 * [iOS] Fix items dependency property propagation in ListView items
-* Add support UI Testing support through for `Uno.UI.Helpers.Automation.GetDependencyPropertyValue`
+* [Wasm] Add UI Testing support through for `Uno.UI.Helpers.Automation.GetDependencyPropertyValue`\
 
 ### Breaking Changes
 * The `WebAssemblyRuntime.InvokeJSUnmarshalled` method with three parameters has been removed.
@@ -158,6 +159,7 @@
 * [Android] Fix several bugs preventing AutoSuggestBox from working on Android. (#1012)
 * #1062 TextBlock measure caching can wrongly hit
 * Fix support for ScrollBar touch events (#871)
+* [iOS] Area of view outside Clip rect now allows touch to pass through, this fixes NavigationView not allowing touches to children (#1018)
 * `ComboBox` drop down is now placed following a logic which is closer to UWP and it longer flickers when it appears (especilly on WASM)
 
 ## Release 1.44.0

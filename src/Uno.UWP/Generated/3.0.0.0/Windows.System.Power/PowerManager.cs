@@ -2,7 +2,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.System.Power
 {
-	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+	#if false || false || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class PowerManager 
@@ -17,7 +17,7 @@ namespace Windows.System.Power
 			}
 		}
 		#endif
-		#if false || false|| NET461 || __WASM__ || __MACOS__
+		#if false || false || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.System.Power.EnergySaverStatus EnergySaverStatus
 		{
