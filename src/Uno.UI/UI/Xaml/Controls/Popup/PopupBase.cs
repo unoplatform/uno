@@ -117,7 +117,7 @@ namespace Windows.UI.Xaml.Controls
 			/// Measure the content of the popup
 			/// </summary>
 			/// <param name="available">The available size to place to render the popup. This is expected to be the screen size.</param>
-			/// <param name="visibleSize">The size of the visible bounds of the window. This is expected to ba AtMost the available.</param>
+			/// <param name="visibleSize">The size of the visible bounds of the window. This is expected to be AtMost the available.</param>
 			/// <returns>The desired size to render the content</returns>
 			Size Measure(Size available, Size visibleSize);
 
