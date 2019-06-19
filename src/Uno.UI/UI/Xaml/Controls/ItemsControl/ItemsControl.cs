@@ -787,10 +787,6 @@ namespace Windows.UI.Xaml.Controls
 		/// </summary>
 		internal virtual void OnItemsSourceSingleCollectionChanged(object sender, NotifyCollectionChangedEventArgs args, int section)
 		{
-			if (this.Log().IsEnabled(LogLevel.Debug))
-			{
-				this.Log().LogDebug($"Called {nameof(OnItemsSourceSingleCollectionChanged)}(), Action={args.Action}, NoOfItems={NumberOfItems}");
-			}
 			UpdateItems();
 		}
 
@@ -799,10 +795,6 @@ namespace Windows.UI.Xaml.Controls
 		/// </summary>
 		internal virtual void OnItemsSourceGroupsChanged(object sender, NotifyCollectionChangedEventArgs args)
 		{
-			if (this.Log().IsEnabled(LogLevel.Debug))
-			{
-				this.Log().LogDebug($"Called {nameof(OnItemsSourceGroupsChanged)}(), Action={args.Action}, NoOfItems={NumberOfItems}, NoOfGroups={NumberOfGroups}");
-			}
 			UpdateItems();
 		}
 
