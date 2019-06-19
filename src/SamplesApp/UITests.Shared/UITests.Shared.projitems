@@ -3157,10 +3157,10 @@
     <Compile Update="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\GridTestsControl\Simpletwocolumnsplitgrid.xaml.cs">
       <DependentUpon>Simpletwocolumnsplitgrid.xaml</DependentUpon>
     </Compile>
-    <Compile Update="C:\Src\GitHub\nventive\Uno\src\SamplesApp\UITests.Shared\Windows_UI_Xaml_Controls\Pivot\PivotSimpleTest.xaml.cs">
+    <Compile Update="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\Pivot\PivotSimpleTest.xaml.cs">
       <DependentUpon>PivotSimpleTest.xaml</DependentUpon>
     </Compile>
-    <Compile Update="C:\s\nv.github\uno\src\SamplesApp\UITests.Shared\Windows_UI_Xaml_Controls\ListView\ListView_DataContext_Propagation.xaml.cs">
+    <Compile Update="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ListView\ListView_DataContext_Propagation.xaml.cs">
       <DependentUpon>ListView_DataContext_Propagation.xaml</DependentUpon>
     </Compile>
   </ItemGroup>
