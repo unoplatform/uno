@@ -2176,3 +2176,28 @@ var Windows;
         })(Core = UI.Core || (UI.Core = {}));
     })(UI = Windows.UI || (Windows.UI = {}));
 })(Windows || (Windows = {}));
+var Windows;
+(function (Windows) {
+    var Phone;
+    (function (Phone) {
+        var Devices;
+        (function (Devices) {
+            var Notification;
+            (function (Notification) {
+                class VibrationDevice {
+                    static initialize() {
+                        navigator.vibrate = navigator.vibrate || navigator.webkitVibrate || navigator.mozVibrate || navigator.msVibrate;
+                        if (navigator.vibrate) {
+                            return true;
+                        }
+                        return false;
+                    }
+                    static vibrate(duration) {
+                        return window.navigator.vibrate(duration);
+                    }
+                }
+                Notification.VibrationDevice = VibrationDevice;
+            })(Notification = Devices.Notification || (Devices.Notification = {}));
+        })(Devices = Phone.Devices || (Phone.Devices = {}));
+    })(Phone = Windows.Phone || (Windows.Phone = {}));
+})(Windows || (Windows = {}));

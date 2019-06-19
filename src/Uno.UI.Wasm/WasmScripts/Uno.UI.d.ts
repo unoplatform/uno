@@ -761,3 +761,9 @@ declare namespace Windows.UI.Core {
         private clearStack;
     }
 }
+declare namespace Windows.Phone.Devices.Notification {
+    class VibrationDevice {
+        static initialize(): boolean;
+        static vibrate(duration: number): boolean;
+    }
+}
