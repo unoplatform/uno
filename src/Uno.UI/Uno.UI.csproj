@@ -337,6 +337,10 @@
 		</ProjectReference>
 	</ItemGroup>
 
+	<ItemGroup>
+	  <UpToDateCheckInput Remove="UI\Xaml\Controls\Primitives\PickerFlyoutBase.cs" />
+	</ItemGroup>
+
 	<Target Name="GetPackagingOutputs" Condition=" '$(TargetFramework)' == 'uap10.0' " />
 
 	<Target Name="GetBuiltProjectOutputRecursive" Condition=" '$(TargetFramework)' == 'xamarinios10' " />

@@ -9,7 +9,6 @@ using Windows.UI.Xaml.Data;
 
 namespace Windows.UI.Xaml.Controls
 {
-	//TODO: should inherit from PickerFlyoutBase (Task 17592)
 	public partial class DatePickerFlyout : PickerFlyoutBase
 	{
 		private bool _isInitialized;
@@ -49,13 +48,13 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		#region Content DependencyProperty
-		public IUIElement Content
+		internal IUIElement Content
 		{
 			get { return (IUIElement)this.GetValue(ContentProperty); }
 			set { this.SetValue(ContentProperty, value); }
 		}
 
-		public static readonly DependencyProperty ContentProperty =
+		internal static readonly DependencyProperty ContentProperty =
 			DependencyProperty.Register(
 				"Content",
 				typeof(IUIElement),

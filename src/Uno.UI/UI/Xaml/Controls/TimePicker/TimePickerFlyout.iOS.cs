@@ -8,7 +8,7 @@ using Windows.UI.Xaml.Data;
 
 namespace Windows.UI.Xaml.Controls
 {
-	public partial class TimePickerFlyout : FlyoutBase
+	public partial class TimePickerFlyout : PickerFlyoutBase
 	{
 		private readonly SerialDisposable _onLoad = new SerialDisposable();
 		private readonly SerialDisposable _onUnloaded = new SerialDisposable();
@@ -55,14 +55,14 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		#region Content DependencyProperty
-		public IUIElement Content
+		internal IUIElement Content
 		{
 
 			get { return (IUIElement)this.GetValue(ContentProperty); }
 			set { this.SetValue(ContentProperty, value); }
 		}
 
-		public static readonly DependencyProperty ContentProperty =
+		internal static readonly DependencyProperty ContentProperty =
 			DependencyProperty.Register(
 				"Content",
 				typeof(IUIElement),
