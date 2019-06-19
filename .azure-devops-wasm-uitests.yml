@@ -123,17 +123,6 @@ jobs:
 
     displayName: 'Running UI Tests'
 
-  - task: CopyFiles@2
-    condition: always()
-    displayName: 'Publish Wasm Tests results'
-    inputs:
-      SourceFolder: $(build.sourcesdirectory)/src/SamplesApp/SamplesApp.Wasm.UITests/out
-      Contents: '**/*.*'
-      TargetFolder: $(build.artifactstagingdirectory)/screenshots
-      CleanTargetFolder: false
-      OverWrite: false
-      flattenFolders: false
-
   - task: PublishTestResults@2
     condition: always()
     inputs:
