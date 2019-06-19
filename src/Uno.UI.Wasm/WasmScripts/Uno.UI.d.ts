@@ -150,7 +150,7 @@ declare namespace Uno.UI {
         private allActiveElementsById;
         private static resizeMethod;
         private static dispatchEventMethod;
-        private static getDependencyPropertyValue;
+        private static getDependencyPropertyValueMethod;
         private constructor();
         /**
             * Creates the UWP-compatible splash screen
@@ -189,6 +189,19 @@ declare namespace Uno.UI {
             */
         setNameNative(pParam: number): boolean;
         private setNameInternal;
+        /**
+            * Set a name for an element.
+            *
+            * This is mostly for diagnostic purposes.
+            */
+        setXUid(elementId: number, name: string): string;
+        /**
+            * Set a name for an element.
+            *
+            * This is mostly for diagnostic purposes.
+            */
+        setXUidNative(pParam: number): boolean;
+        private setXUidInternal;
         /**
             * Set an attribute for an element.
             */
@@ -643,6 +656,11 @@ declare class WindowManagerSetStylesParams {
     Pairs_Length: number;
     Pairs: Array<string>;
     static unmarshal(pData: number): WindowManagerSetStylesParams;
+}
+declare class WindowManagerSetXUidParams {
+    HtmlId: number;
+    Uid: string;
+    static unmarshal(pData: number): WindowManagerSetXUidParams;
 }
 declare module Uno.UI {
     interface IAppManifest {

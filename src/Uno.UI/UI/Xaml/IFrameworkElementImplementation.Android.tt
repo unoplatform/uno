@@ -35,7 +35,7 @@ using Point = Windows.Foundation.Point;
 
 namespace <#= mixin.NamespaceName #>
 {
-	public partial class <#= mixin.ClassName #> : IFrameworkElement
+	public partial class <#= mixin.ClassName #> : IFrameworkElement, IXUidProvider
 	{
 		private readonly static IEventProvider _trace = Tracing.Get(FrameworkElement.TraceProvider.Id);
 
@@ -48,6 +48,8 @@ namespace <#= mixin.NamespaceName #>
 		public event RoutedEventHandler Unloaded;
 
 		public event SizeChangedEventHandler SizeChanged;
+
+		string IXUidProvider.Uid { get; set; }
 
 		public IFrameworkElement FindName(string name)
 		{
