@@ -274,10 +274,10 @@ namespace Windows.UI.Xaml.Controls
 				if (_combo.IsPopupFullscreen)
 				{
 					// Size : Note we set both Min and Max to match the UWP behavior which alter only those properties
-					child.MinWidth = visibleSize.Width;
-					child.MinHeight = visibleSize.Height;
-					child.MaxWidth = visibleSize.Width;
-					child.MaxHeight = visibleSize.Height;
+					child.MinWidth = available.Width;
+					child.MinHeight = available.Height;
+					child.MaxWidth = available.Width;
+					child.MaxHeight = available.Height;
 				}
 				else
 				{

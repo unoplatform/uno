@@ -41,9 +41,10 @@ namespace Windows.UI.Xaml.Controls
 			// Usually this check is achieved by the parent, but as this Panel
 			// is injected at the root (it's a subView of the Window), we make sure
 			// to enforce it here.
-			if (Visibility == Visibility.Collapsed)
+			var isOpen = Visibility != Visibility.Collapsed;
+			if (!isOpen)
 			{
-				availableSize = new Size(); // 0,0
+				availableSize = default; // 0,0
 			}
 
 			var child = this.GetChildren().FirstOrDefault();
@@ -52,13 +53,16 @@ namespace Windows.UI.Xaml.Controls
 				return availableSize;
 			}
 
-			if (Popup.CustomLayouter == null)
+			if (!isOpen || Popup.CustomLayouter == null)
 			{
 				_lastMeasuredSize = MeasureElement(child, availableSize);
 			}
 			else
 			{
 				var visibleBounds = ApplicationView.GetForCurrentView().VisibleBounds;
+				visibleBounds.Width = Math.Min(availableSize.Width, visibleBounds.Width);
+				visibleBounds.Height = Math.Min(availableSize.Height, visibleBounds.Height);
+
 				_lastMeasuredSize = Popup.CustomLayouter.Measure(availableSize, visibleBounds.Size);
 			}
 
@@ -77,13 +81,14 @@ namespace Windows.UI.Xaml.Controls
 			// Note: Here finalSize is expected to be the be the size of the window
 
 			var size = _lastMeasuredSize;
-			
+
 			// Usually this check is achieved by the parent, but as this Panel
 			// is injected at the root (it's a subView of the Window), we make sure
 			// to enforce it here.
-			if (Visibility == Visibility.Collapsed)
+			var isOpen = Visibility != Visibility.Collapsed;
+			if (!isOpen)
 			{
-				size = finalSize = new Size();
+				size = finalSize = default;
 			}
 
 			var child = this.GetChildren().FirstOrDefault();
@@ -92,7 +97,16 @@ namespace Windows.UI.Xaml.Controls
 				return finalSize;
 			}
 
-			if (Popup.CustomLayouter == null)
+			if (!isOpen)
+			{
+				ArrangeElement(child, default);
+
+				if (this.Log().IsEnabled(LogLevel.Debug))
+				{
+					this.Log().LogDebug($"Arranged PopupPanel #={GetHashCode()} **closed** DC={Popup.DataContext} child={child} finalSize={finalSize}");
+				}
+			}
+			else if (Popup.CustomLayouter == null)
 			{
 				// Gets the location of the popup (or its Anchor) in the VisualTree, so we will align Top/Left with it
 				// Note: we do not prevent overflow of the popup on any side as UWP does not!
@@ -117,6 +131,9 @@ namespace Windows.UI.Xaml.Controls
 				// Defer to the popup owner the responsibility to place the popup (e.g. ComboBox)
 
 				var visibleBounds = ApplicationView.GetForCurrentView().VisibleBounds;
+				visibleBounds.Width = Math.Min(finalSize.Width, visibleBounds.Width);
+				visibleBounds.Height = Math.Min(finalSize.Height, visibleBounds.Height);
+
 				Popup.CustomLayouter.Arrange(finalSize, visibleBounds, _lastMeasuredSize);
 
 				if (this.Log().IsEnabled(LogLevel.Debug))
