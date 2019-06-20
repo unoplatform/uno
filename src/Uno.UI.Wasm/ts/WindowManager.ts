@@ -288,6 +288,32 @@
 			this.getView(elementId).setAttribute("XamlName", name);
 		}
 
+
+		/**
+			* Set a name for an element.
+			*
+			* This is mostly for diagnostic purposes.
+			*/
+		public setXUid(elementId: number, name: string): string {
+			this.setXUidInternal(elementId, name);
+			return "ok";
+		}
+
+		/**
+			* Set a name for an element.
+			*
+			* This is mostly for diagnostic purposes.
+			*/
+		public setXUidNative(pParam: number): boolean {
+			const params = WindowManagerSetXUidParams.unmarshal(pParam);
+			this.setXUidInternal(params.HtmlId, params.Uid);
+			return true;
+		}
+
+		private setXUidInternal(elementId: number, name: string): void {
+			this.getView(elementId).setAttribute("xuid", name);
+		}
+
 		/**
 			* Set an attribute for an element.
 			*/

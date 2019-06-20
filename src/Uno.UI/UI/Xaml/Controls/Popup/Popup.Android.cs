@@ -14,8 +14,6 @@ namespace Windows.UI.Xaml.Controls
 	{
 		private readonly PopupWindow _popupWindow;
 
-		public View Anchor { get; set; }
-
 		internal FlyoutPlacementMode Placement { get; set; }
 
 		public Popup()
