@@ -2,31 +2,31 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.System.Profile
 {
-	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+#if NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
-	#endif
-	public  partial class AnalyticsVersionInfo 
+#endif
+	public partial class AnalyticsVersionInfo
 	{
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+#if NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
-		public  string DeviceFamily
+		public string DeviceFamily
 		{
 			get
 			{
 				throw new global::System.NotImplementedException("The member string AnalyticsVersionInfo.DeviceFamily is not implemented in Uno.");
 			}
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+#endif
+#if NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
-		public  string DeviceFamilyVersion
+		public string DeviceFamilyVersion
 		{
 			get
 			{
 				throw new global::System.NotImplementedException("The member string AnalyticsVersionInfo.DeviceFamilyVersion is not implemented in Uno.");
 			}
 		}
-		#endif
+#endif
 		// Forced skipping of method Windows.System.Profile.AnalyticsVersionInfo.DeviceFamily.get
 		// Forced skipping of method Windows.System.Profile.AnalyticsVersionInfo.DeviceFamilyVersion.get
 	}

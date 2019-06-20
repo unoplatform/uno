@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.System.Profile
 {
-	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+#if NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
-	#endif
-	public  partial class AnalyticsInfo 
+#endif
+	public partial class AnalyticsInfo
 	{
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+#if NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static string DeviceForm
 		{
@@ -16,8 +16,8 @@ namespace Windows.System.Profile
 				throw new global::System.NotImplementedException("The member string AnalyticsInfo.DeviceForm is not implemented in Uno.");
 			}
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+#endif
+#if NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.System.Profile.AnalyticsVersionInfo VersionInfo
 		{
@@ -26,14 +26,14 @@ namespace Windows.System.Profile
 				throw new global::System.NotImplementedException("The member AnalyticsVersionInfo AnalyticsInfo.VersionInfo is not implemented in Uno.");
 			}
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+#endif
+#if NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
-		public static global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IReadOnlyDictionary<string, string>> GetSystemPropertiesAsync( global::System.Collections.Generic.IEnumerable<string> attributeNames)
+		public static global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IReadOnlyDictionary<string, string>> GetSystemPropertiesAsync(global::System.Collections.Generic.IEnumerable<string> attributeNames)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<IReadOnlyDictionary<string, string>> AnalyticsInfo.GetSystemPropertiesAsync(IEnumerable<string> attributeNames) is not implemented in Uno.");
 		}
-		#endif
+#endif
 		// Forced skipping of method Windows.System.Profile.AnalyticsInfo.VersionInfo.get
 		// Forced skipping of method Windows.System.Profile.AnalyticsInfo.DeviceForm.get
 	}
