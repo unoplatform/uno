@@ -51,14 +51,15 @@ namespace SamplesApp
 		protected override void OnLaunched(LaunchActivatedEventArgs e)
 		{
 			var sw = Stopwatch.StartNew();
-			var n = Windows.UI.Xaml.Window.Current.Dispatcher.RunAsync(
-				CoreDispatcherPriority.Idle,
-				() => Console.WriteLine("Done loading " + sw.Elapsed));
+			var n = Window.Current.Dispatcher.RunIdleAsync(_ =>
+			{
+				Console.WriteLine("Done loading " + sw.Elapsed);
+			});
 
 #if DEBUG
 			if (System.Diagnostics.Debugger.IsAttached)
 			{
-			   // this.DebugSettings.EnableFrameRateCounter = true;
+				// this.DebugSettings.EnableFrameRateCounter = true;
 			}
 #endif
 			Frame rootFrame = Windows.UI.Xaml.Window.Current.Content as Frame;
@@ -186,12 +187,12 @@ namespace SamplesApp
 							}
 #endif
 
-							var t =  SampleControl.Presentation.SampleChooserViewModel.Instance.SetSelectedSample(CancellationToken.None, metadataName);
+							var t = SampleControl.Presentation.SampleChooserViewModel.Instance.SetSelectedSample(CancellationToken.None, metadataName);
 							var timeout = Task.Delay(30000);
 
 							await Task.WhenAny(t, timeout);
 
-							if(!(t.IsCompleted && !t.IsFaulted))
+							if (!(t.IsCompleted && !t.IsFaulted))
 							{
 								throw new TimeoutException();
 							}
