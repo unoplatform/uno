@@ -620,23 +620,23 @@ namespace Windows.UI.Xaml.Controls
 		{
 			var offset = child.RelativePosition;
 			return ScrollOrientation == Orientation.Vertical ?
-				offset.Y :
-				offset.X;
+				offset.Y - child.Margin.Top :
+				offset.X - child.Margin.Left;
 		}
 
 		private double GetEnd(FrameworkElement child)
 		{
 			var offset = child.RelativePosition;
 			return ScrollOrientation == Orientation.Vertical ?
-				offset.Y + child.ActualHeight :
-				offset.X + child.ActualWidth; //TODO: include margins
+				offset.Y + child.ActualHeight + child.Margin.Bottom :
+				offset.X + child.ActualWidth + child.Margin.Right;
 		}
 
 		private double GetExtent(FrameworkElement child)
 		{
 			return ScrollOrientation == Orientation.Vertical ?
-				child.ActualHeight :
-				child.ActualWidth; //TODO: include margins
+				child.ActualHeight + child.Margin.Top + child.Margin.Bottom :
+				child.ActualWidth + child.Margin.Left + child.Margin.Right;
 		}
 
 		private double GetExtent(Size size) => ScrollOrientation == Orientation.Vertical ?
