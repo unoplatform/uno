@@ -17,8 +17,10 @@ namespace Windows.Devices.Sensors
 
 		public DateTimeOffset Timestamp { get; }
 
+		[Uno.NotImplemented]
 		public TimeSpan? PerformanceCount { get; }
 
+		[Uno.NotImplemented]
 		public IReadOnlyDictionary<string, object> Properties { get; }
 	}
 }
