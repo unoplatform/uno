@@ -94,6 +94,8 @@
 * `Grid` now supports `ColumnDefinition.MinWidth` and `MaxWidth` and `RowDefinition.MinHeight` and `MaxHeight` (#1032)
 * Implement the `PivotPanel` measure/arrange to allow text wrapping in pivot items
 * [Wasm] Add `PathIcon` support
+* Add support UI Testing support through for `Uno.UI.Helpers.Automation.GetDependencyPropertyValue`
+* [WASM] ListView - support item margins correctly
 * [iOS] Fix items dependency property propagation in ListView items
 * [Wasm] Add UI Testing support through for `Uno.UI.Helpers.Automation.GetDependencyPropertyValue`\
 
