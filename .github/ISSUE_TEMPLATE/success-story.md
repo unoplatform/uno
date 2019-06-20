@@ -1,10 +1,7 @@
 ---
 name: Success Story
 about: If you are using Uno in production, we would love to hear about it.
-labels:
-- kind/consumer-experience
-- kind/documentation
-- triage/untriaged
+labels: kind/consumer-experience, kind/documentation, triage/untriaged
 ---
 
 <!-- STOP -- PLEASE READ!
