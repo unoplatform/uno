@@ -1,8 +1,19 @@
 ﻿# Release notes
 
 ## Next version
+### Features
+* Add support for `Windows.Phone.Devices.Notification.VibrationDevice` API on iOS, Android and WASM
 * Basic support for `Windows.Devices.Sensors.Barometer`
-* `LinearGradientBrush.EndPoint` now defaults to (1,1) to match UWP
+
+### Breaking changes
+* 
+
+### Bug fixes
+* [iOS] Area of view outside Clip rect now allows touch to pass through, this fixes NavigationView not allowing touches to children (#1018)
+* `ComboBox` drop down is now placed following a logic which is closer to UWP and it longer flickers when it appears (especilly on WASM)
+
+## Release 1.45.0
+### Features
 * Add support for `Windows.System.Display.DisplayRequest` API on iOS and Android
 * Add support for the following `Windows.System.Power.PowerManager` APIs on iOS and Android:
     - BatteryStatus
@@ -13,8 +24,6 @@
     - EnergySaverStatusChanged
     - RemainingChargePercentChanged
     - BatteryStatusChanged
-
-### Features
 * Updated `CheckBox` glyph to match UWP style on all platforms
 * Add support for the following `DisplayInformation` properties on iOS and Android:
 * Add support for `CurrentInputMethodLanguageTag` and `TrySetInputMethodLanguageTag` on Android, iOS and WASM
@@ -85,7 +94,8 @@
 * `Grid` now supports `ColumnDefinition.MinWidth` and `MaxWidth` and `RowDefinition.MinHeight` and `MaxHeight` (#1032)
 * Implement the `PivotPanel` measure/arrange to allow text wrapping in pivot items
 * [Wasm] Add `PathIcon` support
-* Add support UI Testing support through for `Uno.UI.Helpers.Automation.GetDependencyPropertyValue`
+* [iOS] Fix items dependency property propagation in ListView items
+* [Wasm] Add UI Testing support through for `Uno.UI.Helpers.Automation.GetDependencyPropertyValue`\
 
 ### Breaking Changes
 * The `WebAssemblyRuntime.InvokeJSUnmarshalled` method with three parameters has been removed.
@@ -158,7 +168,7 @@
 * [Android] Fix several bugs preventing AutoSuggestBox from working on Android. (#1012)
 * #1062 TextBlock measure caching can wrongly hit
 * Fix support for ScrollBar touch events (#871)
-* `ComboBox` drop down is now placed following a logic which is closer to UWP and it longer flickers when it appears (especilly on WASM)
+* `LinearGradientBrush.EndPoint` now defaults to (1,1) to match UWP
 
 ## Release 1.44.0
 

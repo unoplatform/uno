@@ -1,9 +1,7 @@
 ---
 name: Feedback
 about: Share feedback with the Uno team 💖
-labels:
-- kind/feedback
-- triage/untriaged
+labels: kind/feedback, triage/untriaged
 ---
 
 <!-- Thanks for stopping on by to share feedback 💖

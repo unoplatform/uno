@@ -24,7 +24,6 @@ using System.Threading;
 using Java.Lang.Ref;
 using System.IO;
 using Math = System.Math;
-using System.Drawing;
 using Size = System.Drawing.Size;
 using System.Reflection;
 using Windows.UI.Core;

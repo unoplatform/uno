@@ -1974,6 +1974,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 							else if (member.Member.Name == "Uid")
 							{
 								uidMember = member;
+								writer.AppendLineInvariant($"Uno.UI.Helpers.MarkupHelper.SetXUid({closureName}, \"{objectUid}\");");
 							}
 							else if (member.Member.Name == "FieldModifier")
 							{
