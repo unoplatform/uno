@@ -15,8 +15,6 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 
-// The User Control item template is documented at https://go.microsoft.com/fwlink/?LinkId=234236
-
 namespace UITests.Shared.Windows_Devices
 {
 	[SampleControlInfo("Windows.Devices", "Barometer", description: "Demonstrates use of Windows.Devices.Sensors.Barometer")]
