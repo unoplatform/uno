@@ -2,6 +2,7 @@
 
 ## Next version
 ### Features
+* Align `ApplicationData.Current.LocalSettings.Add` behavior with UWP for `null` and repeated adds.
 * Add support for `Windows.Phone.Devices.Notification.VibrationDevice` API on iOS, Android and WASM
 
 ### Breaking changes
