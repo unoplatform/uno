@@ -1,4 +1,5 @@
-﻿using System.Windows.Input;
+﻿using System.Collections.Generic;
+using System.Windows.Input;
 using Windows.UI.Core;
 using Uno.UI.Samples.UITests.Helpers;
 
@@ -59,6 +60,18 @@ namespace Uno.UI.Samples.Presentation.SamplePages
 				"Ike",
 				"Paloma"
 			};
+		}
+
+		public List<TwoLevelListItem> TwoLevelsItemList
+		{
+			get
+			{
+				return new List<TwoLevelListItem>
+				{
+					new TwoLevelListItem { SubLevelItems = new List<string> { "1a", "1b" } },
+					new TwoLevelListItem { SubLevelItems = new List<string> { "2a", "2b", "2c" } }
+				};
+			}
 		}
 	}
 }
