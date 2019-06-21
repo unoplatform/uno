@@ -28,10 +28,8 @@ namespace Windows.ApplicationModel.Calls
 				throw new ArgumentNullException(nameof(displayName));
 			}
 
-			OpenCallUI(phoneNumber, displayName);
+			ShowPhoneCallUIImpl(phoneNumber, displayName);
 		}
-
-		private partial void OpenCallUI(string phoneNumber, string displayName);
 	}
 }
 #endif

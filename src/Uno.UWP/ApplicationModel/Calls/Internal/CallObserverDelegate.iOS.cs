@@ -8,10 +8,8 @@ namespace Windows.ApplicationModel.Calls
 {
 	internal class CallObserverDelegate : CXCallObserverDelegate
 	{
-		public override void CallChanged(CXCallObserver callObserver, CXCall call)
-		{
-			
-		}
+		public override void CallChanged(CXCallObserver callObserver, CXCall call) =>
+			PhoneCallManager.RaiseCallStateChanged();
 	}
 }
 #endif

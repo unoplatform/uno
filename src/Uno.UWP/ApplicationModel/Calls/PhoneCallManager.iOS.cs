@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using CallKit;
+using Foundation;
+using UIKit;
 
 namespace Windows.ApplicationModel.Calls
 {
@@ -16,6 +18,9 @@ namespace Windows.ApplicationModel.Calls
 			_callObserver = new CXCallObserver();
 			_callObserver.SetDelegate(new CallObserverDelegate(), null);
 		}
+
+
+		public static event EventHandler<object> CallStateChanged;
 
 		public static bool IsCallActive =>
 			_callObserver.Calls?.Any(
@@ -30,9 +35,14 @@ namespace Windows.ApplicationModel.Calls
 						 !c.HasConnected &&
 						 !c.Outgoing) == true;
 
-		public static event EventHandler<object> CallStateChanged;
+		internal static void RaiseCallStateChanged() => CallStateChanged?.Invoke(null, null);
 
-		internal void RaiseCallStateChanged() => CallStateChanged?.Invoke(null, null);
+		private static void ShowPhoneCallUIImpl(string phoneNumber, string displayName)
+		{
+			var url = new NSUrl($"tel:{phoneNumber}");
+			UIApplication.SharedApplication.OpenUrl(url);
+		}
+
 	}
 }
 #endif
