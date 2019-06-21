@@ -3,10 +3,8 @@
 ## Next version
 ### Features
 * 
-
 ### Breaking changes
 * 
-
 ### Bug fixes
 * 
 
@@ -166,6 +164,7 @@
 * Fix support for ScrollBar touch events (#871)
 * `LinearGradientBrush.EndPoint` now defaults to (1,1) to match UWP
 * Fixed an issue where a Two-Way binding would sometimes not update values back to source correctly
+* [Android] A ListView inside another ListView no longer causes an app freeze/crash
 
 ## Release 1.44.0
 
