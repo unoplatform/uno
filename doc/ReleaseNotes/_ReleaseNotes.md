@@ -16,6 +16,7 @@
 * #854 `BasedOn` on a `<Style>` in `App.Xaml` were not resolving properly
 * #706 `x:Name` in `App.Xaml`'s resources were crashing the compilation.
 * #846 `x:Name` on non-`DependencyObject` resources were crashing the compilation
+* [Android/iOS] Fixed generated x:uid setter not globalized for Uno.UI.Helpers.MarkupHelper.SetXUid and Uno.UI.FrameworkElementHelper.SetRenderPhase
 
 ## Release 1.45.0
 ### Features
