@@ -3,6 +3,7 @@
 ## Next version
 ### Features
 * Add support for `Windows.Phone.Devices.Notification.VibrationDevice` API on iOS, Android and WASM
+* Basic support for `Windows.Devices.Sensors.Barometer`
 
 ### Breaking changes
 * 
