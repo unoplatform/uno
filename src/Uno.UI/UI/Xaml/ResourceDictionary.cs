@@ -1,15 +1,14 @@
 using System;
 using System.Collections.Generic;
-using System.Runtime.InteropServices;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
-using Windows.Foundation.Metadata;
+using System.Threading;
+using Uno.UI;
+
 namespace Windows.UI.Xaml
 {
 	public partial class ResourceDictionary : DependencyObject
 	{
-		private Dictionary<object, object> _values = new Dictionary<object, object>();
-		private bool _isResolving = false;
+		private readonly Dictionary<object, object> _values = new Dictionary<object, object>();
+		private int _resolvingDepth = 0;
 
 		public ResourceDictionary()
 		{
@@ -69,18 +68,19 @@ namespace Windows.UI.Xaml
 			{
 				try
 				{
-					if (!_isResolving)
+					_resolvingDepth++;
+
+					if (_resolvingDepth <= FeatureConfiguration.Xaml.MaxRecursiveResolvingDepth)
 					{
 						// This prevents a stack overflow while looking for a
 						// missing resource in generated xaml code.
-						_isResolving = true;
 
 						value = DefaultResolver?.Invoke(key.ToString());
 					}
 				}
 				finally
 				{
-					_isResolving = false;
+					_resolvingDepth--;
 				}
 
 				return value != null;
@@ -102,26 +102,12 @@ namespace Windows.UI.Xaml
 
 				return value;
 			}
-			set
-			{
-				_values[key] = value;
-			}
+			set => _values[key] = value;
 		}
 
-		public global::System.Collections.Generic.ICollection<object> Keys
-		{
-			get
-			{
-				return _values.Keys;
-			}
-		}
-		public global::System.Collections.Generic.ICollection<object> Values
-		{
-			get
-			{
-				return _values.Values;
-			}
-		}
+		public global::System.Collections.Generic.ICollection<object> Keys => _values.Keys;
+
+		public global::System.Collections.Generic.ICollection<object> Values => _values.Values;
 
 		public void Add(global::System.Collections.Generic.KeyValuePair<object, object> item) => _values.Add(item.Key.ToString(), item.Value);
 

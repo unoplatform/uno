@@ -4,6 +4,7 @@ using Uno.MsBuildTasks.Utils.XamlPathParser;
 using Uno.UI.SourceGenerators.XamlGenerator.Utils;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -73,6 +74,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		private readonly INamedTypeSymbol _stringSymbol;
 		private readonly INamedTypeSymbol _objectSymbol;
 		private readonly INamedTypeSymbol _iFrameworkElementSymbol;
+		private readonly INamedTypeSymbol _dependencyObjectSymbol;
 
 		private readonly INamedTypeSymbol _iCollectionSymbol;
 		private readonly INamedTypeSymbol _iCollectionOfTSymbol;
@@ -80,6 +82,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		private readonly INamedTypeSymbol _iListOfTSymbol;
 		private readonly INamedTypeSymbol _iDictionaryOfTKeySymbol;
 		private readonly INamedTypeSymbol _dataBindingSymbol;
+		private readonly INamedTypeSymbol _styleSymbol;
 
 		private readonly bool _isWasm;
 
@@ -130,12 +133,14 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			_elementStubSymbol = GetType(XamlConstants.Types.ElementStub);
 			_contentPresenterSymbol = GetType(XamlConstants.Types.ContentPresenter);
 			_iFrameworkElementSymbol = GetType(XamlConstants.Types.IFrameworkElement);
+			_dependencyObjectSymbol = GetType(XamlConstants.Types.DependencyObject);
 			_iCollectionSymbol = GetType("System.Collections.ICollection");
 			_iCollectionOfTSymbol = GetType("System.Collections.Generic.ICollection`1");
 			_iListSymbol = GetType("System.Collections.IList");
 			_iListOfTSymbol = GetType("System.Collections.Generic.IList`1");
 			_iDictionaryOfTKeySymbol = GetType("System.Collections.Generic.IDictionary`2");
 			_dataBindingSymbol = GetType("Windows.UI.Xaml.Data.Binding");
+			_styleSymbol = GetType(XamlConstants.Types.Style);
 
 			_isWasm = isWasm;
 		}
@@ -855,22 +860,39 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				writer.AppendLineInvariant(0, ";", namedResource.Value.Type);
 			}
 
-			if (namedResources.Any())
+			bool IsGenerateCompiledBindings(KeyValuePair<string, XamlObjectDefinition> nr)
+			{
+				var type = GetType(nr.Value.Type);
+
+				// Styles are handled differently for now, and there's no variable generated
+				// for those entries. Skip the ApplyCompiledBindings for those. See
+				// ImportResourceDictionary handling of x:Name for more details.
+				if (type.Equals(_styleSymbol))
+				{
+					return false;
+				}
+
+				if (type.AllInterfaces.Any(i => i.Equals(_dependencyObjectSymbol)))
+				{
+					return true;
+				}
+
+				return false;
+			}
+
+			var resourcesTogenerateApplyCompiledBindings = namedResources
+				.Where(IsGenerateCompiledBindings)
+				.ToArray();
+
+			if (resourcesTogenerateApplyCompiledBindings.Any())
 			{
 				using (writer.BlockInvariant("Loading += (s, e) =>"))
 				{
-					foreach (var namedResource in namedResources)
+					foreach (var namedResource in resourcesTogenerateApplyCompiledBindings)
 					{
-						if (namedResource.Value.Type.Name == "Style")
-						{
-							// Styles are handled differently for now, and there's no variable generated
-							// for those entries. Skip the ApplyCompiledBindings for those. See
-							// ImportResourceDictionary handling of x:Name for more details.
-							continue;
-						}
+						var type = GetType(namedResource.Value.Type);
 
-
-						writer.AppendFormatInvariant($"{namedResource.Key}.ApplyCompiledBindings();");
+						writer.AppendLineInvariant($"{namedResource.Key}.ApplyCompiledBindings();");
 					}
 				}
 				writer.AppendLineInvariant(0, ";");
@@ -964,7 +986,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				}
 				else
 				{
-					// If there is no method suffix, 
+					// If there is no method suffix,
 					using (writer.BlockInvariant("public static object FindResource(string name)"))
 					{
 						BuildGetResources(writer, keyedResources);
@@ -1680,7 +1702,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 				if (isExplicitResDictionary)
 				{
-					// To be able to have MergedDictionaries, the first node of the Resource node 
+					// To be able to have MergedDictionaries, the first node of the Resource node
 					// must be an explicit resource dictionary.
 
 					resourcesMember = FindImplicitContentMember(resourcesMember.Objects.First());
@@ -1733,8 +1755,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 			var fullMemberName = $"{FindType(member.Member.DeclaringType)?.GetFullMetadataName()}.{member.Member.Name}";
 
-			// Try to match each potential candidate by comparing based only on the name of the member first. 
-			// If that fails, try matching based on the full metadata name of the member 
+			// Try to match each potential candidate by comparing based only on the name of the member first.
+			// If that fails, try matching based on the full metadata name of the member
 			var hasUiAutomationMapping = targetMembers
 				.Any(candidateMember =>
 					(!candidateMember.Contains(".") && candidateMember == member.Member.Name) ||
@@ -1754,7 +1776,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 			string bindingPath;
 
-			// Checks the first binding member, which can be used to implicitlty declare the binding path (i.e. without 
+			// Checks the first binding member, which can be used to implicitlty declare the binding path (i.e. without
 			// declaring a "Path=" specifier). Otherwise, the we look for any explicit binding path declaration.
 			var firstBindingMember = bindingMembers?.FirstOrDefault();
 			if (firstBindingMember != null &&
@@ -2164,7 +2186,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					var hasRelativeSource = binding.Members
 						.Any(m =>
 							m.Member.Name == "RelativeSource"
-						// It can either be TemplatedParent or Self. In either cases, it does not use the inherited 
+						// It can either be TemplatedParent or Self. In either cases, it does not use the inherited
 						// DataContext, which falls outside of the scenario we want to avoid.
 						);
 
@@ -2231,9 +2253,9 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			closureName = "c" + (_applyIndex++).ToString(CultureInfo.InvariantCulture);
 
 			//
-			// Since we're using strings to generate the code, we can't know ahead of time if 
+			// Since we're using strings to generate the code, we can't know ahead of time if
 			// content will be generated only by looking at the Xaml object model.
-			// For now, we only observe if the inner code has generated code, and we create 
+			// For now, we only observe if the inner code has generated code, and we create
 			// the apply block at that time.
 			//
 			string delegateType = null;
@@ -2606,7 +2628,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 			throw new Exception("Unable to convert {0} for {1} with type {2}".InvariantCultureFormat(memberValue, memberName, propertyType));
 		}
-		
+
 		private string BuildLocalizedResourceValue(XamlMemberDefinition owner, string memberName, string objectUid)
 		{
 			var uidParts = objectUid.Split(new[] { '/' }, StringSplitOptions.RemoveEmptyEntries);
@@ -2862,25 +2884,23 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			{
 				return $"global::{resource.Namespace}.GlobalStaticResources.{SanitizeResourceName(resourceName)}";
 			}
-			else if (_staticResources.ContainsKey(resourceName))
+
+			if (_staticResources.ContainsKey(resourceName))
 			{
 				return $"{GetCastString(targetType, _staticResources[resourceName])}StaticResources.{SanitizeResourceName(resourceName)}";
 			}
+
+			var valueString = $"(global::Windows.UI.Xaml.Application.Current.Resources[\"{resourceName}\"] ?? throw new InvalidOperationException(\"The resource {resourceName} cannot be found\"))";
+
+			if (targetType != null)
+			{
+				// We do not know the type of the source, and it must be converted first
+				return $"global::Windows.UI.Xaml.Markup.XamlBindingHelper.ConvertValue(typeof{GetCastString(targetType, null)}, {valueString})";
+			}
 			else
 			{
-				var validateString = _isDebug ? $" ?? throw new InvalidOperationException(\"The resource {resourceName} cannot be found\")" : "";
-				var valueString = $"(global::Windows.UI.Xaml.Application.Current.Resources[\"{resourceName}\"]{validateString})";
 
-				if (targetType != null)
-				{
-					// We do not know the type of the source, and it must be converted first
-					return $"global::Windows.UI.Xaml.Markup.XamlBindingHelper.ConvertValue(typeof{GetCastString(targetType, null)}, {valueString})";
-				}
-				else
-				{
-
-					return valueString;
-				}
+				return valueString;
 			}
 		}
 
@@ -3032,7 +3052,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					}
 					else if (member.Member.DeclaringType == null && member.Member.Name == "Name")
 					{
-						// This is a special case, where the declaring type is from the x: namespace, 
+						// This is a special case, where the declaring type is from the x: namespace,
 						// but is considered of an unknown type. This can happen when providing the
 						// name of a control using x:Name instead of Name.
 						var hasNameProperty = HasProperty(objectDefinition.Type, "Name");
@@ -3199,7 +3219,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 				if (contentOwner != null)
 				{
-					// This case is to support the layout switching for the ListViewBaseLayout, which is not 
+					// This case is to support the layout switching for the ListViewBaseLayout, which is not
 					// a FrameworkTemplate. Thsi will need to be removed when this custom list view is removed.
 					var returnType = typeName == "ListViewBaseLayoutTemplate" ? "Uno.UI.Controls.Legacy.ListViewBaseLayout" : "_View";
 
@@ -3298,7 +3318,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						}
 					}
 
-					// Attached properties need to be expanded using the namespace, otherwise the resolution will be 
+					// Attached properties need to be expanded using the namespace, otherwise the resolution will be
 					// performed at runtime at a higher cost.
 					propertyName = RewriteAttachedPropertyPath(propertyName);
 
