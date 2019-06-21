@@ -7,7 +7,7 @@ namespace Windows.ApplicationModel.Calls
 	#endif
 	public  partial class PhoneCallManager 
 	{
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		#if false || false || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static bool IsCallActive
 		{
@@ -17,7 +17,7 @@ namespace Windows.ApplicationModel.Calls
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		#if false || false || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static bool IsCallIncoming
 		{
@@ -31,7 +31,7 @@ namespace Windows.ApplicationModel.Calls
 		// Forced skipping of method Windows.ApplicationModel.Calls.PhoneCallManager.CallStateChanged.remove
 		// Forced skipping of method Windows.ApplicationModel.Calls.PhoneCallManager.IsCallActive.get
 		// Forced skipping of method Windows.ApplicationModel.Calls.PhoneCallManager.IsCallIncoming.get
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		#if false || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static void ShowPhoneCallSettingsUI()
 		{
@@ -45,7 +45,7 @@ namespace Windows.ApplicationModel.Calls
 			throw new global::System.NotImplementedException("The member IAsyncOperation<PhoneCallStore> PhoneCallManager.RequestStoreAsync() is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		#if false || false || NET461 || false || __MACOS__
 		[global::Uno.NotImplemented]
 		public static void ShowPhoneCallUI( string phoneNumber,  string displayName)
 		{
