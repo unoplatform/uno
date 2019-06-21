@@ -253,6 +253,8 @@ namespace Windows.UI.Xaml.Controls
 
 		private void UpdateLayout(double? extentAdjustment = null)
 		{
+			OwnerPanel.ShouldInterceptInvalidate = true;
+
 			UnfillLayout(extentAdjustment ?? 0);
 			FillLayout(extentAdjustment ?? 0);
 
@@ -265,12 +267,18 @@ namespace Windows.UI.Xaml.Controls
 			{
 				UpdateCompleted();
 			}
+
+			OwnerPanel.ShouldInterceptInvalidate = false;
 		}
 
 		private void UpdateCompleted()
 		{
+			OwnerPanel.ShouldInterceptInvalidate = true;
+
 			Generator.ClearScrappedViews();
 			Generator.UpdateVisibilities();
+
+			OwnerPanel.ShouldInterceptInvalidate = false;
 		}
 
 		/// <summary>

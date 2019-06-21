@@ -14,8 +14,19 @@ namespace Windows.UI.Xaml
 
 		public Size DesiredSize => Visibility == Visibility.Collapsed ? new Size(0, 0) : _desiredSize;
 
+		/// <summary>
+		/// When set, measure and invalidate requests will not be propagated further up the visual tree, ie they won't trigger a relayout.
+		/// Used where repeated unnecessary measure/arrange passes would be unacceptable for performance (eg scrolling in a list).
+		/// </summary>
+		internal bool ShouldInterceptInvalidate { get; set; }
+
 		public void InvalidateMeasure()
 		{
+			if (ShouldInterceptInvalidate)
+			{
+				return;
+			}
+
 			// TODO: Figure out why this condition breaks layouting in some cases
 			//if (_isMeasureValid)
 			{
@@ -34,6 +45,11 @@ namespace Windows.UI.Xaml
 
 		public void InvalidateArrange()
 		{
+			if (ShouldInterceptInvalidate)
+			{
+				return;
+			}
+
 			if (_isArrangeValid)
 			{
 				_isArrangeValid = false;
