@@ -9,7 +9,13 @@ namespace Windows.ApplicationModel.Calls
 {
 	public partial class PhoneCallManager
 	{
-		private static CXCallObserver _callObserver = new CXCallObserver();
+		private static readonly CXCallObserver _callObserver;
+
+		static PhoneCallManager()
+		{
+			_callObserver = new CXCallObserver();
+			_callObserver.SetDelegate(new CallObserverDelegate(), null);
+		}
 
 		public static bool IsCallActive =>
 			_callObserver.Calls?.Any(
@@ -23,6 +29,10 @@ namespace Windows.ApplicationModel.Calls
 						 !c.HasEnded &&
 						 !c.HasConnected &&
 						 !c.Outgoing) == true;
+
+		public static event EventHandler<object> CallStateChanged;
+
+		internal void RaiseCallStateChanged() => CallStateChanged?.Invoke(null, null);
 	}
 }
 #endif
