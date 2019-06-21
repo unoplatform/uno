@@ -66,6 +66,5 @@ namespace Windows.ApplicationModel.Calls
 			ContextHelper.Current.StartActivity(phoneCallIntent);
 		}
 	}
-	}
 }
 #endif
