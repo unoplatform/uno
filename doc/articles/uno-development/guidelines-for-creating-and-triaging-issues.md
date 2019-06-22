@@ -40,7 +40,7 @@ Community support requests should be directed to:
 * The [Uno gitter room](https://gitter.im/uno-platform/Lobby)
 * On [Twitter using the #unoplatform](https://twitter.com/search?q=%23unoplatform) hashtag.
 
-Organizations that want a deeper level of support beyond community support, should be directed to [contact nventive](https://platform.uno/contact/) to discuss obaining professional support.
+Organizations that want a deeper level of support beyond community support, should be directed to [contact nventive](https://platform.uno/contact/) to discuss obtaining professional support.
 
 
 ## Validate if the issue is a bug
@@ -59,9 +59,9 @@ We use GitHub issue labels for prioritization. The absence of a priority label m
 
 We try to apply these priority labels consistently across the entire project, but if you notice an issue that you believe to be incorrectly prioritized, please do let us know and we will evaluate your counter-proposal.
 
-If you want an issue resolved faster, please tell the maintainers that you are willing to send in a pull-request and we'll do everything we can to bring you to speed with becoming a contributor.
+If you want an issue resolved faster, please tell the maintainers that you are willing to send in a pull-request and we'll do everything we can to bring you up to speed with becoming a contributor.
 
-* `priority/critical-urgent`: Must be actively worked on as someone's top priority right now. Stuff is burning. If it's not being actively worked on, someone is expected to drop what they're doing immediately to work on it. Team leaders are responsible for making sure that all the issues, labeled with this priority, are being actively worked on. Examples include user-visible bugs in core features, broken builds or tests and critical security issues.
+* `priority/critical-urgent`: Must be actively worked on as someone's top priority right now. Stuff is burning. If it's not being actively worked on, someone is expected to drop what they're doing immediately to work on it. Team leaders are responsible for making sure that all the issues, labeled with this priority, are being actively worked on. Examples include time-sensitive hotfixes, broken builds or tests and critical security issues.
 
 * `priority/important-soon`: Must be staffed and worked on either currently, or very soon, ideally in time for the next release.
 
@@ -73,7 +73,7 @@ If you want an issue resolved faster, please tell the maintainers that you are w
 
 ## Closing issues
 
-Issues that are identified as a support request, duplicate, not-reproducible or lacks enough information from reporter should be closed following guidelines explained in this file. Also, any issues that can not be resolved because of any particular reason should be closed. These issues should have one or more of following self-readable labels:
+Issues that are identified as a support request, duplicate, not-reproducible or lacks enough information from reporter should be closed using the following guidelines explained in this file. Also, any issues that can not be resolved because of any particular reason should be closed. These issues should have one or more of following self-readable labels:
 
 * `triage/support`: Indicates an issues is not a bug but a support request.
 * `triage/duplicate`: Indicates an issue is a duplicate of other open issue.
