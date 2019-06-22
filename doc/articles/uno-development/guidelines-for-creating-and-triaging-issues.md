@@ -8,7 +8,7 @@ Speed up issue management.
 
 The detailed list of labels can be found at https://github.com/nventive/uno/labels.
 
-While working on triaging issues you may not have privilege to assign a specific label and in that case add a comment in the issue with your findings.
+While working on triaging issues you may not have the privilege to assign a specific label and in that case add a comment in the issue with your findings.
 
 Here are a few predetermined searches on issues for convenience:
 
@@ -85,11 +85,11 @@ Issues that are identified as a support request, duplicate, not-reproducible or 
 
 We use two labels [help wanted](https://github.com/nventive/uno/issues?q=is%3Aopen+is%3Aissue+label%3A%22help+wanted%22+sort%3Aupdated-desc) and [good first issue](https://github.com/nventive/uno/issues?q=is%3Aopen+is%3Aissue+label%3A%22good+first+issue%22+sort%3Aupdated-desc) to identify issues that have been specially curated for new contributors.
 
-The `good first issue` label is a subset of `help wanted` label, indicating that members have committed to providing extra assistance for new contributors. All good `first issue` items also have the `help wanted` label.
+The `good first issue` label is a subset of `help wanted` label, indicating that members have committed to providing extra assistance for new contributors. All `good first issue` items also have the `help wanted` label.
 
 Items marked with the `good first issue` label are intended for _first-time
 contributors_. It indicates that members will keep an eye out for these pull
-requests and shepherd it through our processes.
+requests and shepherd them through our processes.
 
 **New contributors should not be left to find an approver, ping for reviews or identify that their build failed due to a flake.**
 
