@@ -1996,7 +1996,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 							else if (member.Member.Name == "Uid")
 							{
 								uidMember = member;
-								writer.AppendLineInvariant($"Uno.UI.Helpers.MarkupHelper.SetXUid({closureName}, \"{objectUid}\");");
+								writer.AppendLineInvariant($"{GlobalPrefix}Uno.UI.Helpers.MarkupHelper.SetXUid({closureName}, \"{objectUid}\");");
 							}
 							else if (member.Member.Name == "FieldModifier")
 							{
@@ -2004,7 +2004,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 							}
 							else if (member.Member.Name == "Phase")
 							{
-								writer.AppendLineInvariant($"Uno.UI.FrameworkElementHelper.SetRenderPhase({closureName}, {member.Value});");
+								writer.AppendLineInvariant($"{GlobalPrefix}Uno.UI.FrameworkElementHelper.SetRenderPhase({closureName}, {member.Value});");
 							}
 							else if (member.Member.Name == "Class" && member.Member.PreferredXamlNamespace == XamlConstants.XamlXmlNamespace)
 							{
