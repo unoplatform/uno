@@ -125,7 +125,7 @@ These items need to ensure that they follow the guidelines for `help wanted` lab
 
 ## Quick Replies
 
-When commenting on an issue or pull request, there's a [feature in GitHub](https://help.github.com/en/articles/using-saved-replies) where you can add a saved reply that you've already set up. The saved reply can be the entire comment or if you want to customize it, you can add or delete content. Below you'll find some guidelines that maintainers and contributors can use as a starting point.
+When commenting on an issue or pull request, there's a [feature in GitHub](https://help.github.com/en/articles/using-saved-replies) where you can add a saved reply that you've already set up. The saved reply can be the entire comment or if you want to customize it, you can add or delete content. Below you'll find some suggestions that maintainers and contributors can use as a starting point.
 
 ### already fixed
 
