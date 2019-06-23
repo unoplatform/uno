@@ -109,6 +109,8 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
+		private bool ShouldMeasuredBreadthStretch => ShouldBreadthStretch && GetBreadth(_availableSize) < double.MaxValue / 2;
+
 		internal void Initialize(IVirtualizingPanel owner)
 		{
 			Owner = owner ?? throw new ArgumentNullException(nameof(owner));
@@ -273,7 +275,8 @@ namespace Windows.UI.Xaml.Controls
 
 		private void UpdateCompleted()
 		{
-			OwnerPanel.ShouldInterceptInvalidate = true;
+			// If we're not stretched, then added views may change the breadth of the list, so we allow measure requests to propagate
+			OwnerPanel.ShouldInterceptInvalidate = ShouldMeasuredBreadthStretch;
 
 			Generator.ClearScrappedViews();
 			Generator.UpdateVisibilities();
@@ -384,12 +387,14 @@ namespace Windows.UI.Xaml.Controls
 
 			var ret = ScrollOrientation == Orientation.Vertical
 				? new Size(
-					double.IsInfinity(AvailableBreadth) ? _materializedLines.Select(l => l.FirstView.ActualWidth).MaxOrDefault() : AvailableBreadth,
+					ShouldMeasuredBreadthStretch ? AvailableBreadth :
+					_materializedLines.Select(l => l.FirstView.ActualWidth).MaxOrDefault() + GetBreadth(XamlParent.ScrollViewer.ScrollBarSize),
 					double.IsInfinity(_availableSize.Height) ? extent : Max(extent, _availableSize.Height)
 				)
 				: new Size(
 					double.IsInfinity(_availableSize.Width) ? extent : Max(extent, _availableSize.Width),
-					double.IsInfinity(AvailableBreadth) ? _materializedLines.Select(l => l.FirstView.ActualHeight).MaxOrDefault() : AvailableBreadth
+					ShouldMeasuredBreadthStretch ? AvailableBreadth :
+					_materializedLines.Select(l => l.FirstView.ActualHeight).MaxOrDefault() + GetBreadth(XamlParent.ScrollViewer.ScrollBarSize)
 				);
 
 			if (this.Log().IsEnabled(LogLevel.Debug))
@@ -569,15 +574,14 @@ namespace Windows.UI.Xaml.Controls
 				new Point(breadthOffset, extentOffset + extentOffsetAdjustment) :
 				new Point(extentOffset + extentOffsetAdjustment, breadthOffset);
 
-			bool isInfiniteBreadth = double.IsInfinity(AvailableBreadth);
 			var adjustedDesiredSize = ScrollOrientation == Orientation.Vertical
 				? new Size(
-					isInfiniteBreadth ? view.DesiredSize.Width : AvailableBreadth,
+					ShouldMeasuredBreadthStretch ? AvailableBreadth : view.DesiredSize.Width,
 					view.DesiredSize.Height
 				)
 				: new Size(
 					view.DesiredSize.Width,
-					isInfiniteBreadth ? view.DesiredSize.Height : AvailableBreadth
+					ShouldMeasuredBreadthStretch ? AvailableBreadth : view.DesiredSize.Height
 				);
 
 			var finalRect = new Rect(topLeft, adjustedDesiredSize);
@@ -650,6 +654,10 @@ namespace Windows.UI.Xaml.Controls
 		private double GetExtent(Size size) => ScrollOrientation == Orientation.Vertical ?
 			size.Height :
 			size.Width;
+
+		private double GetBreadth(Size size) => ScrollOrientation == Orientation.Vertical ?
+			size.Width :
+			size.Height;
 
 		private string GetMethodTag([CallerMemberName] string caller = null)
 		{
