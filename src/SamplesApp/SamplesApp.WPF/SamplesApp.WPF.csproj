@@ -91,7 +91,7 @@
   <ItemGroup>
     <PackageReference Include="MSTest.TestFramework" Version="1.2.0" />
     <PackageReference Include="cef.redist.x64">
-      <Version>3.3396.1786</Version>
+      <Version>73.1.13</Version>
     </PackageReference>
     <PackageReference Include="cef.redist.x86">
       <Version>3.3396.1786</Version>
