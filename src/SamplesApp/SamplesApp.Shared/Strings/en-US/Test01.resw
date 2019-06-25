@@ -120,6 +120,9 @@
   <data name="Given_ResourceLoader.When_NamedLoader" xml:space="preserve">
     <value>This is en-US\Test01.resw</value>
   </data>
+  <data name="Prefix/Given_ResourceLoader.When_PrefixedNamedLoader" xml:space="preserve">
+    <value>This is prefixed en-US\Test01.resw</value>
+  </data>
   <data name="Given_ResourceLoader.When_NamedLoader_Test01_Only" xml:space="preserve">
     <value>This is en-US\Test01.resw only</value>
   </data>
