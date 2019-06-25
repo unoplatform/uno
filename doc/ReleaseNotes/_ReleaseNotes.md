@@ -17,6 +17,7 @@
 * #706 `x:Name` in `App.Xaml`'s resources were crashing the compilation.
 * #846 `x:Name` on non-`DependencyObject` resources were crashing the compilation
 * [Android/iOS] Fixed generated x:uid setter not globalized for Uno.UI.Helpers.MarkupHelper.SetXUid and Uno.UI.FrameworkElementHelper.SetRenderPhase
+* Fix invalid XAML x:Uid parsing with resource file name and prefix (#1130)
 
 ## Release 1.45.0
 ### Features

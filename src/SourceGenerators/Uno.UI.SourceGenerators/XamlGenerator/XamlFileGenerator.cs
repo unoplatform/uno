@@ -2631,9 +2631,32 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 		private string BuildLocalizedResourceValue(XamlMemberDefinition owner, string memberName, string objectUid)
 		{
-			var uidParts = objectUid.Split(new[] { '/' }, StringSplitOptions.RemoveEmptyEntries);
-			var uidName = uidParts.Length == 2 ? uidParts[1] : uidParts[0];
-			var resourceFileName = uidParts.Length == 2 ? uidParts[0] : null;
+			// see: https://docs.microsoft.com/en-us/windows/uwp/app-resources/localize-strings-ui-manifest
+			// Valid formats:
+			// - MyUid
+			// - MyPrefix/MyUid
+			// - /ResourceFileName/MyPrefix/MyUid
+			// - /ResourceFilename/MyPrefix1/MyPrefix2/MyUid
+			// - /ResourceFilename/MyPrefix1/MyPrefix2/MyPrefix3/MyUid
+
+			(string resourceFileName, string uidName) parseXUid()
+			{
+				if (objectUid.StartsWith("/"))
+				{
+					var separator = objectUid.IndexOf('/', 1);
+
+					return (
+						objectUid.Substring(1, separator - 1),
+						objectUid.Substring(separator + 1)
+					);
+				}
+				else
+				{
+					return (null, objectUid);
+				}
+			}
+
+			var (resourceFileName, uidName) = parseXUid();
 
 			//windows 10 localization concat the xUid Value with the member value (Text, Content, Header etc...)
 			var fullKey = uidName + "/" + memberName;
