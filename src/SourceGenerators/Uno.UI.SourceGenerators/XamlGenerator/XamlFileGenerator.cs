@@ -2635,6 +2635,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			// Valid formats:
 			// - MyUid
 			// - MyPrefix/MyUid
+			// - /ResourceFileName/MyUid
 			// - /ResourceFileName/MyPrefix/MyUid
 			// - /ResourceFilename/MyPrefix1/MyPrefix2/MyUid
 			// - /ResourceFilename/MyPrefix1/MyPrefix2/MyPrefix3/MyUid
