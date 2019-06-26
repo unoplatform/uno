@@ -165,6 +165,7 @@
 * #1062 TextBlock measure caching can wrongly hit
 * Fix support for ScrollBar touch events (#871)
 * `LinearGradientBrush.EndPoint` now defaults to (1,1) to match UWP
+* Fixed an issue where a Two-Way binding would sometimes not update values back to source correctly
 
 ## Release 1.44.0
 
