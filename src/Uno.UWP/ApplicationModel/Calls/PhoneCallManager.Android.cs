@@ -15,6 +15,12 @@ namespace Windows.ApplicationModel.Calls
 
 		static PhoneCallManager()
 		{
+			if (ContextHelper.Current == null)
+			{
+				throw new InvalidOperationException(
+					"PhoneCallManager was used too early in the application lifetime. " +
+					"Android app context needs to be available.");
+			}
 			_telephonyManager = (TelephonyManager)ContextHelper.Current
 				.GetSystemService(Context.TelephonyService);
 			_telephonyManager.Listen(new CallStateListener(), PhoneStateListenerFlags.CallState);
