@@ -51,9 +51,9 @@ For a larger example and features demo:
     * [Microsoft XAML Behaviors](https://github.com/nventive/Uno.XamlBehaviors)
     * [Prism](https://github.com/nventive/Uno.Prism)
     * [MVVMCross](https://www.mvvmcross.com/) (soon)
-    * [ReactiveUI](https://github.com/nventive/Uno.ReactiveUI)
+    * [ReactiveUI Official](https://github.com/reactiveui/ReactiveUI/pull/2067)
     * [WindowsStateTriggers](https://github.com/nventive/Uno.WindowsStateTriggers)
-    * [Xamarin.Forms for UWP](https://github.com/nventive/Uno.Xamarin.Forms)
+    * [Xamarin.Forms for UWP](https://github.com/nventive/Uno.Xamarin.Forms), [NuGet](https://www.nuget.org/packages/ReactiveUI.Uno)
     * [Rx.NET](https://github.com/nventive/Uno.Rx.NET)
     * [ColorCode-Universal](https://github.com/nventive/Uno.ColorCode-Universal)
     * Any UWP project
