@@ -10,9 +10,11 @@ namespace Windows.UI.StartScreen
 {
 	public partial class JumpList
 	{
+		private JumpList() => Initialize();
+
 		public JumpListSystemGroupKind SystemGroupKind { get; set; }
 
-		public IList<JumpListItem> Items { get; }
+		public IList<JumpListItem> Items { get; } = new List<JumpListItem>();
 
 		public IAsyncAction SaveAsync()
 		{
