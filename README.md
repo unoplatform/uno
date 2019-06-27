@@ -1,4 +1,4 @@
-# Uno Platform - The only platform for building native mobile, desktop and WebAssembly with C#, XAML from single codebase. Open source and professionally supported.
+# Uno Platform - The only platform for building native mobile, desktop and WebAssembly with C#, XAML from a single codebase. Open source and professionally supported.
 [![Gitter](https://badges.gitter.im/uno-platform/Lobby.svg)](https://gitter.im/uno-platform/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge) [![All Contributors](https://img.shields.io/badge/all_contributors-1-orange.svg?style=flat-square)](#contributors)
 
 # What is the Uno Platform
