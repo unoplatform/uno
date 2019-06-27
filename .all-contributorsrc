@@ -1,0 +1,24 @@
+{
+  "files": [
+    "README.md"
+  ],
+  "imageSize": 100,
+  "commit": false,
+  "contributors": [
+    {
+      "login": "MartinZikmund",
+      "name": "Martin Zikmund",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/1075116?v=4",
+      "profile": "http://mzikmund.com",
+      "contributions": [
+        "code",
+        "test"
+      ]
+    }
+  ],
+  "contributorsPerLine": 7,
+  "projectName": "uno",
+  "projectOwner": "unoplatform",
+  "repoType": "github",
+  "repoHost": "https://github.com"
+}
