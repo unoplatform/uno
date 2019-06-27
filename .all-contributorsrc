@@ -14,6 +14,19 @@
         "code",
         "test"
       ]
+    },
+    {
+      "login": "carldebilly",
+      "name": "Carl de Billy",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/4174207?v=4",
+      "profile": "http://carl.debilly.net/",
+      "contributions": [
+        "code",
+        "test",
+        "doc",
+        "review",
+        "maintenance"
+      ]
     }
   ],
   "contributorsPerLine": 7,
