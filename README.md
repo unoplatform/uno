@@ -1,7 +1,5 @@
 # Uno Platform - Build Mobile, Desktop and WebAssembly apps with C# and XAML. Today.
-[![All Contributors](https://img.shields.io/badge/all_contributors-1-orange.svg?style=flat-square)](#contributors)
-
-[![Gitter](https://badges.gitter.im/uno-platform/Lobby.svg)](https://gitter.im/uno-platform/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
+[![Gitter](https://badges.gitter.im/uno-platform/Lobby.svg)](https://gitter.im/uno-platform/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge) [![All Contributors](https://img.shields.io/badge/all_contributors-1-orange.svg?style=flat-square)](#contributors)
 
 # What is the Uno Platform
 
@@ -92,7 +90,7 @@ Make sure to visit our [FAQ](doc/articles/faq.md), [StackOverflow](https://stack
 There are many ways that you can contribute to the Uno Platform, as the UWP API is
 pretty large! Read our [contributing guide](CONTRIBUTING.md) to learn about our development process and how to propose bug fixes and improvements.
 
-## Contributors
+# Contributors
 
 Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/docs/en/emoji-key)):
 
@@ -101,5 +99,3 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
 <table><tr><td align="center"><a href="http://mzikmund.com"><img src="https://avatars3.githubusercontent.com/u/1075116?v=4" width="100px;" alt="Martin Zikmund"/><br /><sub><b>Martin Zikmund</b></sub></a><br /><a href="https://github.com/unoplatform/uno/commits?author=MartinZikmund" title="Code">💻</a> <a href="https://github.com/unoplatform/uno/commits?author=MartinZikmund" title="Tests">⚠️</a></td></tr></table>
 
 <!-- ALL-CONTRIBUTORS-LIST:END -->
-
-This project follows the [all-contributors](https://github.com/all-contributors/all-contributors) specification. Contributions of any kind welcome!
