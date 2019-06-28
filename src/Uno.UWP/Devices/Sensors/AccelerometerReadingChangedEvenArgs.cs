@@ -1,0 +1,16 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
+
+namespace Windows.Devices.Sensors
+{
+	public partial class AccelerometerReadingChangedEventArgs
+	{
+		private AccelerometerReadingChangedEventArgs(AccelerometerReading reading)
+		{
+			Reading = reading;
+		}
+
+		public AccelerometerReading Reading { get; }
+	}
+}
