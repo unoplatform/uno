@@ -134,7 +134,7 @@ Similarly, on Xamarin.Android, the Ignorable attribute will automatically be set
     mc:Ignorable="d win ios"
 ```
 
-which will make the win and ios namespaces ignored by the Umbrella UI parser.
+which will make the win and ios namespaces ignored by the Uno.UI parser.
 
 In the Xaml file, it is then possible to write the following :
 

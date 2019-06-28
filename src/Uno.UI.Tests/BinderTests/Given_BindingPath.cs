@@ -137,9 +137,39 @@ namespace Uno.UI.Tests.BinderTests
 			Assert.AreEqual("TargetLocalValue", target.GetPrecedenceSpecificValue(MyTarget.ValueProperty, DependencyPropertyValuePrecedences.Local));
 		}
 
+		[TestMethod]
+		public void When_Initially_Incorrect_DataContext()
+		{
+			var (target, sut) = ArrangeIncorrect(DependencyPropertyValuePrecedences.Local);
+
+			// Expecting this to fail because the DataContext does not match expectations
+			sut.SetLocalValue("Initial");
+
+			// Fix the DataContext, which should also fix the setters and allow the BindingPath to work correctly
+			var vm = new MyTarget();
+			sut.DataContext = vm;
+
+			// Expecting this to succeed
+			sut.SetLocalValue("Initial2");
+
+			Assert.AreEqual("Initial2", sut.Value);
+			Assert.AreEqual("Initial2", vm.Value);
+		}
+
 		private static (MyTarget target, BindingPath binding) Arrange(DependencyPropertyValuePrecedences? precedence = null)
 		{
 			var target = new MyTarget();
+			var binding = new BindingPath(nameof(MyTarget.Value), MyTarget.FallbackValue, precedence, false)
+			{
+				DataContext = target
+			};
+
+			return (target, binding);
+		}
+
+		private static (object target, BindingPath binding) ArrangeIncorrect(DependencyPropertyValuePrecedences? precedence = null)
+		{
+			var target = new object();
 			var binding = new BindingPath(nameof(MyTarget.Value), MyTarget.FallbackValue, precedence, false)
 			{
 				DataContext = target
