@@ -38,6 +38,7 @@ namespace Uno.UI.Extensions
 			return date.ToTimeSpan().Add(offset);
 		}
 
+#pragma warning disable CS0618 // Type or member is obsolete
 		public static DateTime ToReferenceLocalTime(this DateTime time)
 		{
 			if (time.Kind == DateTimeKind.Local)
@@ -62,5 +63,6 @@ namespace Uno.UI.Extensions
 				throw new ArgumentException("The source time zone cannot be determined.");
 			}
 		}
+#pragma warning restore CS0618 // Type or member is obsolete
 	}
 }

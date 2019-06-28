@@ -21,6 +21,12 @@
 		
 		<ProduceReferenceAssembly>false</ProduceReferenceAssembly>
 		<Deterministic>true</Deterministic>
+
+		<!--
+		Use to avoid namespace conflicts with the default namespace of this
+		assembly, for non-fully qualified types in System and Windows.System
+		-->
+		<AndroidResgenNamespace>Uno.UWP</AndroidResgenNamespace>
 	</PropertyGroup>
 
 	<Import Project="..\Uno.CrossTargetting.props" />
