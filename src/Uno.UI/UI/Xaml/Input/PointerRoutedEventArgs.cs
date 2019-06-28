@@ -2,46 +2,26 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading;
 using Uno;
 using Uno.UI.Xaml.Input;
 using Windows.System;
+using Windows.UI.Input;
 
 namespace Windows.UI.Xaml.Input
 {
 	public sealed partial class PointerRoutedEventArgs : RoutedEventArgs, ICancellableRoutedEventArgs
 	{
-		private readonly Point _point;
 
-		internal PointerRoutedEventArgs()
-		{
-			InitializePartial();
-		}
-
-		internal PointerRoutedEventArgs(Point point) : this()
-		{
-			_point = point;
-		}
-
-		public Point GetCurrentPoint() => _point;
-
-		[NotImplemented]
-		public Point[] GetIntermediatePoints()
-		{
-			throw new NotImplementedException();
-		}
+		public IList<PointerPoint> GetIntermediatePoints(UIElement relativeTo)
+			=> new List<PointerPoint>(1) {GetCurrentPoint(relativeTo)};
 
 		public bool IsGenerated { get; } = false; // Generated events are not supported by UNO
 
 		public bool Handled { get; set; }
 
-		public VirtualKeyModifiers KeyModifiers { get; internal set; }
-		public Pointer Pointer { get; internal set; }
+		public VirtualKeyModifiers KeyModifiers { get; }
 
-		partial void InitializePartial();
-
-		public override string ToString()
-		{
-			return $"PointerRoutedEventArgs({Pointer}@{_point})";
-		}
+		public Pointer Pointer { get; }
 	}
 }

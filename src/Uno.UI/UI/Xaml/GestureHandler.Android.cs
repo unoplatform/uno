@@ -70,11 +70,11 @@ namespace Windows.UI.Xaml
 		{
 			try
 			{
-				var pointer = e.GetPointer(0);
+				var pointerType = e.GetToolType(0).ToPointerDeviceType();
 				var args = new TappedRoutedEventArgs(new Point(e.GetX(), e.GetY()))
 				{
 					OriginalSource = _target,
-					PointerDeviceType = pointer.PointerDeviceType,
+					PointerDeviceType = pointerType,
 					CanBubbleNatively = true
 				};
 
@@ -93,12 +93,11 @@ namespace Windows.UI.Xaml
 		{
 			try
 			{
-				var pointer = e.GetPointer(0);
-
+				var pointerType = e.GetToolType(0).ToPointerDeviceType();
 				var args = new DoubleTappedRoutedEventArgs(new Point(e.GetX(), e.GetY()))
 				{
 					OriginalSource = _target,
-					PointerDeviceType = pointer.PointerDeviceType,
+					PointerDeviceType = pointerType,
 					CanBubbleNatively = true
 				};
 
@@ -203,12 +202,7 @@ namespace Windows.UI.Xaml
 
 		private PointerRoutedEventArgs GetPointerEventArgs(MotionEvent ev, int pointerIndex)
 		{
-			return new PointerRoutedEventArgs(ev)
-			{
-				OriginalSource = _target,
-				Pointer = ev.GetPointer(pointerIndex),
-				CanBubbleNatively = true
-			};
+			return new PointerRoutedEventArgs(ev, _target);
 		}
 	}
 }

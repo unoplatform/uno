@@ -1,13 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using Windows.Devices.Input;
 using AppKit;
 using Foundation;
 using Windows.UI.Input;
 
 namespace Windows.UI.Xaml.Input
 {
-	public partial class PointerRoutedEventArgs
+	partial class PointerRoutedEventArgs
 	{
 		private readonly NSEvent _nativeEvent;
 		private readonly NSSet _nativeTouches;
@@ -23,12 +24,11 @@ namespace Windows.UI.Xaml.Input
 
 		public PointerPoint GetCurrentPoint(UIElement relativeTo)
 		{
-#if __IOS__
-			var point = (_nativeTouches.AnyObject as NSTouch).LocationInView(relativeTo);
-#elif __MACOS__
+			var device = PointerDevice.For(PointerDeviceType.Mouse);
 			var point = relativeTo.ConvertPointFromView(_nativeEvent.LocationInWindow, null);
-#endif
-			return new PointerPoint(point);
+			var properties = new PointerPointProperties() { IsInRange = true, IsPrimary = true };
+
+			return new PointerPoint(0, (ulong)DateTime.Now.Ticks, device, 0, point, true, properties);
 		}
 	}
 }

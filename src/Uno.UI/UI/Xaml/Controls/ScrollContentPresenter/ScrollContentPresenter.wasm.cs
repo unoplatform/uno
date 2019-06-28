@@ -75,7 +75,7 @@ namespace Windows.UI.Xaml.Controls
 
 			if (this.Log().IsEnabled(LogLevel.Debug))
 			{
-				this.Log().LogDebug($"{HtmlId}: {offsetSize} / {clientSize} / {e.GetCurrentPoint()}");
+				this.Log().LogDebug($"{HtmlId}: {offsetSize} / {clientSize} / {e.GetCurrentPoint(this)}");
 			}
 
 			if (!hasVerticalScroll && !hasHorizontalScroll)
@@ -87,8 +87,9 @@ namespace Windows.UI.Xaml.Controls
 			// to the the parents, as those are not (yey) XAML elements.
 			// This can cause issues for popups with scrollable content and
 			// light dismiss patterns.
-			var isInVerticalScrollbar = hasVerticalScroll && e.GetCurrentPoint().X >= clientSize.Width;
-			var isInHorizontalScrollbar = hasHorizontalScroll && e.GetCurrentPoint().Y >= clientSize.Height;
+			var position = e.GetCurrentPoint(this).Position;
+			var isInVerticalScrollbar = hasVerticalScroll && position.X >= clientSize.Width;
+			var isInHorizontalScrollbar = hasHorizontalScroll && position.Y >= clientSize.Height;
 
 			if (isInVerticalScrollbar || isInHorizontalScrollbar)
 			{

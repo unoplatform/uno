@@ -16,6 +16,18 @@ using UIKit;
 namespace Windows.UI.Xaml
 {
 	/*
+		This partial file handles the registration and bubbling of routed events of a UIElement
+		
+		The API exposed by this file to its native parts are:
+			partial void AddHandlerPartial(RoutedEvent routedEvent, int handlersCount, object handler, bool handledEventsToo);
+			partial void RemoveHandlerPartial(RoutedEvent routedEvent, int remainingHandlersCount, object handler);
+			internal bool RaiseEvent(RoutedEvent routedEvent, RoutedEventArgs args)
+		
+		The native components are responsible to subscribe to the native events, interpret them,
+		and then raise the recognized events.
+
+		Here the state machine of the bubbling logic:
+
 	[1]---------------------+
 	| An event is fired     |
 	+--------+--------------+
@@ -273,7 +285,7 @@ namespace Windows.UI.Xaml
 			var handlers = _eventHandlerStore.FindOrCreate(routedEvent, () => new List<RoutedEventHandlerInfo>());
 			handlers.Add(new RoutedEventHandlerInfo(handler, handledEventsToo));
 
-			AddHandlerPartial(routedEvent, handler, handledEventsToo);
+			AddHandlerPartial(routedEvent, handlers.Count, handler, handledEventsToo);
 
 			if (handledEventsToo)
 			{
@@ -281,34 +293,33 @@ namespace Windows.UI.Xaml
 			}
 		}
 
-		partial void AddHandlerPartial(RoutedEvent routedEvent, object handler, bool handledEventsToo);
+		partial void AddHandlerPartial(RoutedEvent routedEvent, int handlersCount, object handler, bool handledEventsToo);
 
 		public void RemoveHandler(RoutedEvent routedEvent, object handler)
 		{
 			if (_eventHandlerStore.TryGetValue(routedEvent, out var handlers))
 			{
-				var mustUpdateSubscribedToHandledEventsToo = false;
-
-				var matchingHandler = handlers
-					.FirstOrDefault(handlerInfo => (handlerInfo.Handler as Delegate).Equals(handler as Delegate));
-
-				mustUpdateSubscribedToHandledEventsToo = mustUpdateSubscribedToHandledEventsToo || matchingHandler.HandledEventsToo;
+				var matchingHandler = handlers.FirstOrDefault(handlerInfo => (handlerInfo.Handler as Delegate).Equals(handler as Delegate));
 
 				if (!matchingHandler.Equals(default(RoutedEventHandlerInfo)))
 				{
 					handlers.Remove(matchingHandler);
+
+					if (matchingHandler.HandledEventsToo)
+					{
+						UpdateSubscribedToHandledEventsToo();
+					}
 				}
 
-				if (mustUpdateSubscribedToHandledEventsToo)
-				{
-					UpdateSubscribedToHandledEventsToo();
-				}
+				RemoveHandlerPartial(routedEvent, handlers.Count, handler);
 			}
-
-			RemoveHandlerPartial(routedEvent, handler);
+			else
+			{
+				RemoveHandlerPartial(routedEvent, remainingHandlersCount: -1, handler);
+			}
 		}
 
-		partial void RemoveHandlerPartial(RoutedEvent routedEvent, object handler);
+		partial void RemoveHandlerPartial(RoutedEvent routedEvent, int remainingHandlersCount, object handler);
 
 		private void UpdateSubscribedToHandledEventsToo()
 		{

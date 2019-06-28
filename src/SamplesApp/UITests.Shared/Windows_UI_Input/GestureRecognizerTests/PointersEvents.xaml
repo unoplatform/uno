@@ -1,0 +1,14 @@
+﻿<Page
+	x:Class="UITests.Shared.Windows_UI_Input.GestureRecognizer.PointersEvents"
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:local="using:UITests.Shared.Windows_UI_Xaml_Input.RoutedEvents">
+
+	<Grid>
+		<ScrollViewer>
+			<Grid x:Name="_touchTarget" MinHeight="2048">
+				<TextBlock FontSize="8" x:Name="_output" />
+			</Grid>
+		</ScrollViewer>
+	</Grid>
+</Page>

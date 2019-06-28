@@ -8,47 +8,16 @@ namespace Windows.UI.Xaml.Input
 {
 	public partial class Pointer : IEquatable<Pointer>
 	{
-
-#if XAMARIN_ANDROID
-		internal Pointer(Android.Views.MotionEvent.PointerProperties properties)
+		public Pointer(uint id, PointerDeviceType type, bool isInContact, bool isInRange)
 		{
-			PointerId = (uint)properties.Id;
-			PointerDeviceType = GetPointerType(properties.ToolType);
+			PointerId = id;
+			PointerDeviceType = type;
+			IsInContact = isInContact;
+			IsInRange = isInRange;
 		}
 
-		private static PointerDeviceType GetPointerType(Android.Views.MotionEventToolType nativeType)
-		{
-			switch (nativeType)
-			{
-				case Android.Views.MotionEventToolType.Eraser:
-				case Android.Views.MotionEventToolType.Stylus:
-					return PointerDeviceType.Pen;
-				case Android.Views.MotionEventToolType.Finger:
-					return PointerDeviceType.Touch;
-				case Android.Views.MotionEventToolType.Mouse:
-					return PointerDeviceType.Mouse;
-				case Android.Views.MotionEventToolType.Unknown: // used by Xamarin.UITest
-				default:
-					return default(PointerDeviceType);
-			}
-		}
-#elif __IOS__
-		internal Pointer(UIKit.UIEvent uiEvent)
-		{
-			switch (uiEvent.Type)
-			{
-				case UIKit.UIEventType.Touches:
-				case UIKit.UIEventType.Motion:
-					PointerDeviceType = PointerDeviceType.Touch;
-					break;
 
-				case UIKit.UIEventType.Presses:
-				case UIKit.UIEventType.RemoteControl:
-					PointerDeviceType = PointerDeviceType.Pen;
-					break;
-			}
-		}
-#elif __MACOS__
+#if __MACOS__
 		internal Pointer(AppKit.NSEvent uiEvent)
 		{
 			switch (uiEvent.Type)
@@ -70,20 +39,13 @@ namespace Windows.UI.Xaml.Input
 		}
 #endif
 
-		[NotImplemented]
-		public bool IsInContact => true;
+		public uint PointerId { get; }
 
-		[NotImplemented]
-		public bool IsInRange => true;
+		public PointerDeviceType PointerDeviceType { get;}
 
-		public PointerDeviceType PointerDeviceType { get; private set; }
+		public bool IsInContact { get; }
 
-#if __WASM__ || XAMARIN_ANDROID
-		public uint PointerId { get; private set; }
-#else
-		[NotImplemented]
-		public uint PointerId => 1;
-#endif
+		public bool IsInRange { get; }
 
 		public override string ToString()
 		{

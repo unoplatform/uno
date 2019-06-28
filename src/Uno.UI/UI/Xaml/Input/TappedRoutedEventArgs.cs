@@ -21,6 +21,12 @@ namespace Windows.UI.Xaml.Input
 			_position = position;
 		}
 
+		internal TappedRoutedEventArgs(PointerDeviceType pointerType, Point position)
+		{
+			PointerDeviceType = pointerType;
+			_position = position;
+		}
+
 		public bool Handled { get; set; }
 
 		public Point GetPosition() => _position;

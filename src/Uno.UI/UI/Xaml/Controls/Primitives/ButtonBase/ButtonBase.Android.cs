@@ -74,7 +74,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 							this.Log().Debug("TouchUpInside, executing command");
 						}
 
-						OnPointerPressed(new PointerRoutedEventArgs { OriginalSource = this });
+						OnPointerPressed(new PointerRoutedEventArgs(this));
 
 						OnClick();
 

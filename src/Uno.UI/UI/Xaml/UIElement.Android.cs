@@ -16,7 +16,7 @@ namespace Windows.UI.Xaml
 		private readonly Lazy<GestureHandler> _gestures;
 
 		public UIElement()
-		: base(ContextHelper.Current)
+			: base(ContextHelper.Current)
 		{
 			_gestures = new Lazy<GestureHandler>(() => GestureHandler.Create(this));
 
@@ -100,12 +100,12 @@ namespace Windows.UI.Xaml
 			return _eventHandlerStore.TryGetValue(routedEvent, out var handlers) && handlers.Any();
 		}
 
-		partial void AddHandlerPartial(RoutedEvent routedEvent, object handler, bool handledEventsToo)
+		partial void AddHandlerPartial(RoutedEvent routedEvent, int handlersCount, object handler, bool handledEventsToo)
 		{
 			_gestures.Value.UpdateShouldHandle(routedEvent, HasHandler(routedEvent));
 		}
 
-		partial void RemoveHandlerPartial(RoutedEvent routedEvent, object handler)
+		partial void RemoveHandlerPartial(RoutedEvent routedEvent, int remainginHandlersCount, object handler)
 		{
 			_gestures.Value.UpdateShouldHandle(routedEvent, HasHandler(routedEvent));
 		}

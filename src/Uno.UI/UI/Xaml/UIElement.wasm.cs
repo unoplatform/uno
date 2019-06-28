@@ -19,6 +19,7 @@ using Windows.System;
 using Uno.Collections;
 using Uno.UI;
 using System.Numerics;
+using Windows.UI.Input;
 using Uno.UI.Xaml;
 
 namespace Windows.UI.Xaml
@@ -862,7 +863,7 @@ namespace Windows.UI.Xaml
 		// We keep track of registered routed events to avoid registering the same one twice (mainly because RemoveHandler is not implemented)
 		private HashSet<RoutedEvent> _registeredRoutedEvents = new HashSet<RoutedEvent>();
 
-		partial void AddHandlerPartial(RoutedEvent routedEvent, object handler, bool handledEventsToo)
+		partial void AddHandlerPartial(RoutedEvent routedEvent, int handlersCount, object handler, bool handledEventsToo)
 		{
 			if (!_registeredRoutedEvents.Contains(routedEvent))
 			{
@@ -881,15 +882,29 @@ namespace Windows.UI.Xaml
 					switch (eventDescription.eventName)
 					{
 						case nameof(PointerPressedEvent):
-						case nameof(PointerReleasedEvent):
-						case nameof(PointerMovedEvent):
-						case nameof(PointerEnteredEvent):
-						case nameof(PointerExitedEvent):
-							eventFilter = (routedEvent == PointerPressedEvent || routedEvent == PointerReleasedEvent)
-								? HtmlEventFilter.LeftPointerEventFilter
-								: (HtmlEventFilter?) null;
+							eventFilter = HtmlEventFilter.LeftPointerEventFilter;
 							eventExtractor = HtmlEventExtractor.PointerEventExtractor;
-							payloadConverter = PayloadToPointerArgs;
+							payloadConverter = PayloadToPressedPointerArgs;
+							break;
+						case nameof(PointerReleasedEvent):
+							eventFilter = HtmlEventFilter.LeftPointerEventFilter;
+							eventExtractor = HtmlEventExtractor.PointerEventExtractor;
+							payloadConverter = PayloadToReleasedPointerArgs;
+							break;
+						case nameof(PointerMovedEvent):
+							eventFilter = null;
+							eventExtractor = HtmlEventExtractor.PointerEventExtractor;
+							payloadConverter = PayloadToMovedPointerArgs;
+							break;
+						case nameof(PointerEnteredEvent):
+							eventFilter = null;
+							eventExtractor = HtmlEventExtractor.PointerEventExtractor;
+							payloadConverter = PayloadToEnteredPointerArgs;
+							break;
+						case nameof(PointerExitedEvent):
+							eventFilter = null;
+							eventExtractor = HtmlEventExtractor.PointerEventExtractor;
+							payloadConverter = PayloadToExitedPointerArgs;
 							break;
 
 						case nameof(TappedEvent):
@@ -942,7 +957,13 @@ namespace Windows.UI.Xaml
 			}
 		}
 
-		private PointerRoutedEventArgs PayloadToPointerArgs(string payload)
+		private PointerRoutedEventArgs PayloadToPressedPointerArgs(string payload) => PayloadToPointerArgs(payload, isInContact: true, pressed: true);
+		private PointerRoutedEventArgs PayloadToMovedPointerArgs(string payload) => PayloadToPointerArgs(payload, isInContact: true);
+		private PointerRoutedEventArgs PayloadToReleasedPointerArgs(string payload) => PayloadToPointerArgs(payload, isInContact: true, pressed: false);
+		private PointerRoutedEventArgs PayloadToEnteredPointerArgs(string payload) => PayloadToPointerArgs(payload, isInContact: false);
+		private PointerRoutedEventArgs PayloadToExitedPointerArgs(string payload) => PayloadToPointerArgs(payload, isInContact: false);
+
+		private PointerRoutedEventArgs PayloadToPointerArgs(string payload, bool isInContact, bool? pressed = null)
 		{
 			var parts = payload?.Split(';');
 			if (parts?.Length != 7)
@@ -955,20 +976,47 @@ namespace Windows.UI.Xaml
 			var y = double.Parse(parts[2], CultureInfo.InvariantCulture);
 			var ctrl = parts[3] == "1";
 			var shift = parts[4] == "1";
-			var buttons = int.Parse(parts[5], CultureInfo.InvariantCulture); // -1: none, 0:main, 1:middle, 2:other (commonly main=left, other=right)
+			var button = int.Parse(parts[5], CultureInfo.InvariantCulture); // -1: none, 0:main, 1:middle, 2:other (commonly main=left, other=right)
 			var typeStr = parts[6];
 
-			var keys = ctrl ? VirtualKeyModifiers.Control : (shift ? VirtualKeyModifiers.Shift : VirtualKeyModifiers.None);
-			var type = ConvertPointerTypeString(typeStr);
-
-			var args = new PointerRoutedEventArgs(new Point(x, y))
+			var position = new Point(x, y);
+			var pointerType = ConvertPointerTypeString(typeStr);
+			var key =
+				button == 0 ? VirtualKey.LeftButton
+				: button == 1 ? VirtualKey.MiddleButton
+				: button == 2 ? VirtualKey.RightButton
+				: VirtualKey.None; // includes -1 == none
+			var keyModifiers = VirtualKeyModifiers.None;
+			if (ctrl) keyModifiers |= VirtualKeyModifiers.Control;
+			if (shift) keyModifiers |= VirtualKeyModifiers.Shift;
+			var update = PointerUpdateKind.Other;
+			if (pressed.HasValue)
 			{
-				OriginalSource = this,
-				KeyModifiers = keys,
-				Pointer = new Pointer(pointerId, type)
-			};
+				if (pressed.Value)
+				{
+					update = key == VirtualKey.LeftButton ? PointerUpdateKind.LeftButtonPressed
+						: key == VirtualKey.MiddleButton ? PointerUpdateKind.MiddleButtonPressed
+						: key == VirtualKey.RightButton ? PointerUpdateKind.RightButtonPressed
+						: PointerUpdateKind.Other;
+				}
+				else
+				{
+					update = key == VirtualKey.LeftButton ? PointerUpdateKind.LeftButtonReleased
+						: key == VirtualKey.MiddleButton ? PointerUpdateKind.MiddleButtonReleased
+						: key == VirtualKey.RightButton ? PointerUpdateKind.RightButtonReleased
+						: PointerUpdateKind.Other;
+				}
+			}
 
-			return args;
+			return new PointerRoutedEventArgs(
+				pointerId,
+				pointerType,
+				position,
+				isInContact,
+				key,
+				keyModifiers,
+				update,
+				this);
 		}
 
 		private TappedRoutedEventArgs PayloadToTappedArgs(string payload)
@@ -1043,7 +1091,7 @@ namespace Windows.UI.Xaml
 			return type;
 		}
 
-#region HitTestVisibility
+		#region HitTestVisibility
 
 		private enum HitTestVisibility
 		{
