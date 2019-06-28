@@ -3123,6 +3123,12 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					BuildComplexPropertyValue(writer, styleMember, "");
 					writer.AppendLineInvariant(0, closingPunctuation);
 				}
+				else if (styleMember.Objects.FirstOrDefault(o => o.Type.Name == "Style") is XamlObjectDefinition literalStyle)
+				{
+					writer.AppendFormatInvariant($"Style = ");
+					BuildInlineStyle(writer, literalStyle);
+					writer.AppendLineInvariant(0, closingPunctuation);
+				}
 			}
 		}
 
