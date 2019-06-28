@@ -11,6 +11,7 @@
       "SamplesApp\\UITests.Shared\\UITests.Shared.shproj",
       "SourceGenerators\\Uno.UI.SourceGenerators\\Uno.UI.SourceGenerators.csproj",
       "Uno.Foundation\\Uno.Foundation.csproj",
+      "Uno.UI.BindingHelper.Android\\Uno.UI.BindingHelper.Android.csproj",
       "Uno.UI.RuntimeTests\\Uno.UI.RuntimeTests.csproj",
       "Uno.UI.Toolkit\\Uno.UI.Toolkit.csproj",
       "Uno.UI.Wasm.Tests\\Uno.UI.Wasm.Tests.csproj",
