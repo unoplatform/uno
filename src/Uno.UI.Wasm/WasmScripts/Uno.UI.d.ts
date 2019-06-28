@@ -761,6 +761,11 @@ declare namespace Windows.UI.Core {
         private clearStack;
     }
 }
+interface Navigator {
+    webkitVibrate(pattern: number | number[]): boolean;
+    mozVibrate(pattern: number | number[]): boolean;
+    msVibrate(pattern: number | number[]): boolean;
+}
 declare namespace Windows.Phone.Devices.Notification {
     class VibrationDevice {
         static initialize(): boolean;
