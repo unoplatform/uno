@@ -247,6 +247,47 @@ namespace SamplesApp.UITests
 		}
 
 		[Test]
+		public void TextBox_TextChanged()
+		{
+			Run("UITests.Shared.Windows_UI_Xaml_Controls.TextBoxTests.TextBox_TextChanged");
+
+			var appendOutput = _app.Marked("AppendTextBlock");
+
+			_app.WaitForElement(appendOutput);
+
+			Assert.AreEqual("", GetText(appendOutput));
+
+			const string AppendedText = "BondStreet";
+			var appendInput = TypeInto("AppendTextBox", "Bond", AppendedText);
+
+			Assert.AreEqual(AppendedText, GetText(appendInput));
+			Assert.AreEqual(AppendedText, GetText(appendOutput));
+
+			var capOutput = _app.Marked("CapitalizeTextBlock");
+
+			Assert.AreEqual("", GetText(capOutput));
+
+			const string CapitalizedText = "RABBIT";
+			var capInput = TypeInto("CapitalizeTextBox", "rabbit", CapitalizedText);
+
+			Assert.AreEqual(CapitalizedText, GetText(capInput));
+			Assert.AreEqual(CapitalizedText, GetText(capOutput));
+			;
+		}
+
+		private QueryEx TypeInto(string textBoxName, string inputText, string expectedText)
+		{
+			var tb = _app.Marked(textBoxName);
+			_app.WaitForElement(tb);
+			_app.Tap(tb);
+			_app.EnterText(tb, inputText);
+			_app.WaitFor(() => expectedText == GetText(tb));
+			return tb;
+		}
+
+		private string GetText(QueryEx textBlock) => textBlock.GetDependencyPropertyValue<string>("Text");
+
+		[Test]
 		[Ignore("Mobile only TODO")]
 		public void Keyboard_DismissTesting()
 		{
