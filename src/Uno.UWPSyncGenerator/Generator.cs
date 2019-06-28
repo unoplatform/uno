@@ -68,6 +68,7 @@ namespace Uno.UWPSyncGenerator
 			var origins = from externalRedfs in _referenceCompilation.ExternalReferences
 						  where Path.GetFileNameWithoutExtension(externalRedfs.Display).StartsWith("Windows.Foundation")
 						  || Path.GetFileNameWithoutExtension(externalRedfs.Display).StartsWith("Windows.Phone.PhoneContract")
+						  || Path.GetFileNameWithoutExtension(externalRedfs.Display).StartsWith("Windows.ApplicationModel.Calls.CallsPhoneContract")
 						  let asm = _referenceCompilation.GetAssemblyOrModuleSymbol(externalRedfs) as IAssemblySymbol
 						  where asm != null
 						  select asm;
@@ -708,7 +709,7 @@ namespace Uno.UWPSyncGenerator
 		{
 			foreach (var eventMember in type.GetMembers().OfType<IEventSymbol>())
 			{
-				if(!IsNotUWPMapping(type, eventMember))
+				if (!IsNotUWPMapping(type, eventMember))
 				{
 					return;
 				}
