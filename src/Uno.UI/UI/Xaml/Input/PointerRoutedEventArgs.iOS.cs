@@ -80,7 +80,7 @@ namespace Windows.UI.Xaml.Input
 		private static uint ToFrameId(double timestamp)
 		{
 			// The precision of the frameId is 10 frame per ms ... which should be enough
-			return (uint)timestamp * 1000 * 10;
+			return (uint)(timestamp * 1000.0 * 10.0);
 		}
 		#endregion
 	}

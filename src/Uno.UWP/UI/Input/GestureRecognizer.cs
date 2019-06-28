@@ -109,13 +109,13 @@ namespace Windows.UI.Input
 		}
 
 		#region Tap (includes DoubleTap)
-		private const ulong _multiTapMaxDelay = TimeSpan.TicksPerMillisecond * 100;
+		private const ulong _multiTapMaxDelay = TimeSpan.TicksPerMillisecond * 1000;
 		private const int _tapMaxXDelta = 15;
 		private const int _tapMaxYDelta = 15;
 
 		public event TypedEventHandler<GestureRecognizer, TappedEventArgs> Tapped;
 
-		private (ulong, ulong) _lastSingleTap;
+		private (ulong, ulong, Point) _lastSingleTap;
 
 		public bool CanBeDoubleTap(PointerPoint value)
 		{
@@ -124,7 +124,7 @@ namespace Windows.UI.Input
 				return false;
 			}
 
-			var (lastTapId, lastTapTs) = _lastSingleTap;
+			var (lastTapId, lastTapTs, lastTapLocation) = _lastSingleTap;
 			if (lastTapTs == 0)
 			{
 				return false;
@@ -132,8 +132,11 @@ namespace Windows.UI.Input
 
 			var currentId = GetPointerIdentifier(value);
 			var currentTs = value.Timestamp;
+			var currentPosition = value.Position;
 
-			return lastTapId == currentId && currentTs - lastTapTs <= _multiTapMaxDelay;
+			return lastTapId == currentId
+				&& currentTs - lastTapTs <= _multiTapMaxDelay
+				&& !IsOutOfTapRange(lastTapLocation, currentPosition);
 		}
 
 		private bool TryRecognizeTap(List<PointerPoint> points, PointerPoint pointerUp = null)
@@ -143,7 +146,8 @@ namespace Windows.UI.Input
 				return false;
 			}
 
-			var start = points[0];
+			var start = points[0]; // down
+			var end = pointerUp;
 			var startIdentifier = GetPointerIdentifier(start);
 
 			// Validate tap gesture
@@ -158,25 +162,27 @@ namespace Windows.UI.Input
 					pointIdentifier != startIdentifier
 
 					// Pointer moved to far
-					|| Math.Abs(point.Position.X - start.Position.X) > _tapMaxXDelta
-					|| Math.Abs(point.Position.Y - start.Position.Y) > _tapMaxYDelta
+					|| IsOutOfTapRange(point.Position, start.Position)
 				)
 				{
 					return false;
 				}
 			}
 			// For the pointer up, we check only the distance, as it's expected that the IsLeftButtonPressed changed!
-			if (Math.Abs(pointerUp.Position.X - start.Position.X) > _tapMaxXDelta
-				|| Math.Abs(pointerUp.Position.Y - start.Position.Y) > _tapMaxYDelta)
+			if (IsOutOfTapRange(end.Position, start.Position))
 			{
 				return false;
 			}
 
-			_lastSingleTap = (startIdentifier, start.Timestamp);
+			_lastSingleTap = (startIdentifier, end.Timestamp, end.Position);
 			Tapped?.Invoke(this, new TappedEventArgs(start.PointerDevice.PointerDeviceType, start.Position, tapCount: 1));
 
 			return true;
 		}
+
+		private static bool IsOutOfTapRange(Point p1, Point p2)
+			=> Math.Abs(p1.X - p2.X) > _tapMaxXDelta
+			|| Math.Abs(p1.Y - p2.Y) > _tapMaxYDelta;
 
 		private bool TryRecognizeMultiTap(PointerPoint pointerDown)
 		{
