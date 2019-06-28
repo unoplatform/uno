@@ -5,7 +5,7 @@ namespace Windows.Devices.Sensors
 	#if false || false || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
-	public partial class Barometer 
+	public  partial class Barometer 
 	{
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
