@@ -6,13 +6,21 @@
   "commit": false,
   "contributors": [
     {
-      "login": "MartinZikmund",
-      "name": "Martin Zikmund",
-      "avatar_url": "https://avatars3.githubusercontent.com/u/1075116?v=4",
-      "profile": "http://mzikmund.com",
+      "login": "jeromelaban",
+      "name": "Jérôme Laban",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/5839577?v=4",
+      "profile": "https://github.com/jeromelaban",
       "contributions": [
         "code",
-        "test"
+        "content",
+        "doc",
+        "example",
+        "maintenance",
+        "infra",
+        "ideas",
+        "review",
+        "test",
+        "projectManagement"
       ]
     },
     {
@@ -23,8 +31,18 @@
       "contributions": [
         "blog"
       ]
+    },
+    {
+      "login": "MartinZikmund",
+      "name": "Martin Zikmund",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/1075116?v=4",
+      "profile": "http://mzikmund.com",
+      "contributions": [
+        "code",
+        "test"
+      ]
     }
-  ],
+],
   "contributorsPerLine": 7,
   "projectName": "uno",
   "projectOwner": "unoplatform",
