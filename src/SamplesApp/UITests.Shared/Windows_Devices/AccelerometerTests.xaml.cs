@@ -15,11 +15,11 @@ using Windows.UI.Xaml.Navigation;
 using Windows.Devices.Sensors;
 using Uno.UI.Samples.UITests.Helpers;
 using Windows.UI.Core;
-
-// The User Control item template is documented at https://go.microsoft.com/fwlink/?LinkId=234236
+using Uno.UI.Samples.Controls;
 
 namespace UITests.Shared.Windows_Devices
 {
+	[SampleControlInfo("Windows.Devices", "Accelerometer", description: "Demonstrates use of Windows.Devices.Sensors.Accelerometer")]
 	public sealed partial class AccelerometerTests : UserControl
 	{
 

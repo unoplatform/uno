@@ -10,6 +10,7 @@ namespace Windows.Devices.Sensors
 		private static Accelerometer TryCreateInstance(AccelerometerReadingType type)
 		{
 			if (type != AccelerometerReadingType.Standard) return null;
+			return null;
 		}
 	}
 }

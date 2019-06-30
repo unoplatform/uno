@@ -1,4 +1,5 @@
-﻿using System;
+﻿#if __IOS__ || __ANDROID__ || __WASM__
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -13,7 +14,6 @@ namespace Windows.Devices.Sensors
 			new Dictionary<AccelerometerReadingType, bool>();
 
 		private readonly object _instanceLock = new object();
-		private int _readingChangedSubscribers = 0;
 
 		private Foundation.TypedEventHandler<Accelerometer, AccelerometerReadingChangedEventArgs> _readingChanged;
 		private Foundation.TypedEventHandler<Accelerometer, AccelerometerShakenEventArgs> _shaken;
@@ -90,3 +90,4 @@ namespace Windows.Devices.Sensors
 		}
 	}
 }
+#endif

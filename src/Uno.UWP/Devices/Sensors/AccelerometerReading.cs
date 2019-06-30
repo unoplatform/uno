@@ -1,4 +1,5 @@
-﻿using System;
+﻿#if __IOS__ || __ANDROID__ || __WASM__
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -19,3 +20,4 @@ namespace Windows.Devices.Sensors
 		public global::System.Collections.Generic.IReadOnlyDictionary<string, object> Properties { get; }
 	}
 }
+#endif
