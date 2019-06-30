@@ -7,13 +7,10 @@ namespace Windows.Devices.Sensors
 {
 	public partial class Accelerometer
 	{
-		private static readonly object _initializaitonLock = new object();
-		private readonly static Dictionary<AccelerometerReadingType, Accelerometer> _instances =
-			new Dictionary<AccelerometerReadingType, Accelerometer>();
-		private readonly static Dictionary<AccelerometerReadingType, bool> _initializationAttempted =
-			new Dictionary<AccelerometerReadingType, bool>();
+		private readonly static object _syncLock = new object();
 
-		private readonly object _instanceLock = new object();
+		private static Accelerometer _instance;
+		private static bool _initializaitonAttempted;
 
 		private Foundation.TypedEventHandler<Accelerometer, AccelerometerReadingChangedEventArgs> _readingChanged;
 		private Foundation.TypedEventHandler<Accelerometer, AccelerometerShakenEventArgs> _shaken;
@@ -27,21 +24,20 @@ namespace Windows.Devices.Sensors
 		[Uno.NotImplemented]
 		public Graphics.Display.DisplayOrientations ReadingTransform { get; set; } = Graphics.Display.DisplayOrientations.Portrait;
 
-		public static Accelerometer GetDefault() => CreateAccelerometer(AccelerometerReadingType.Standard);
-
-		private static Accelerometer CreateAccelerometer(AccelerometerReadingType type)
+		public static Accelerometer GetDefault()
 		{
-			if (_initializationAttempted[type])
+			if (_initializaitonAttempted)
 			{
-				return _instances[type];
+				return _instance;
 			}
-			lock (_initializaitonLock)
+			lock (_syncLock)
 			{
-				if ( !_initializationAttempted[type])
+				if (!_initializaitonAttempted)
 				{
-					_instances[type] = null; //TODO Implement
+					_instance = TryCreateInstance();
+					_initializaitonAttempted = true;
 				}
-				return _instances[type];
+				return _instance;
 			}
 		}
 
@@ -49,14 +45,14 @@ namespace Windows.Devices.Sensors
 		{			
 			add
 			{
-				lock (_instanceLock)
+				lock (_syncLock)
 				{
 					_readingChanged += value;
 				}
 			}			
 			remove
 			{
-				lock (_instanceLock)
+				lock (_syncLock)
 				{
 					_readingChanged -= value;
 					if (_readingChanged == null)
@@ -71,14 +67,14 @@ namespace Windows.Devices.Sensors
 		{
 			add
 			{
-				lock (_instanceLock)
+				lock (_syncLock)
 				{
 					_shaken += value;
 				}
 			}
 			remove
 			{
-				lock (_instanceLock)
+				lock (_syncLock)
 				{
 					_shaken -= value;
 					if (_shaken == null)

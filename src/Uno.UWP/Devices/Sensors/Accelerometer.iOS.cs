@@ -7,9 +7,8 @@ namespace Windows.Devices.Sensors
 {
 	public partial class Accelerometer
 	{
-		private static Accelerometer TryCreateInstance(AccelerometerReadingType type)
-		{
-			if (type != AccelerometerReadingType.Standard) return null;
+		private static Accelerometer TryCreateInstance()
+		{		
 			return null;
 		}
 	}

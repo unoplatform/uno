@@ -1,4 +1,4 @@
-﻿#if __ANDROID__
+﻿#if __WASM__
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -9,6 +9,9 @@ namespace Windows.Devices.Sensors
 	{
 		private static Accelerometer TryCreateInstance()
 		{
+			var command = $"Uno.UI.WindowManager.current.open(\"{uri.OriginalString}\");";
+			var result = Uno.Foundation.WebAssemblyRuntime.InvokeJS(command);
+			return result == "True";
 			return null;
 		}
 	}
