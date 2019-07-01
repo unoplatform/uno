@@ -69,7 +69,8 @@ namespace Windows.UI.Xaml.Controls
 
 		private void InitializeProperties()
 		{
-			OnTextChanged(CreateInitialValueChangerEventArgs(TextProperty, null, Text));
+			UpdatePlaceholderVisibility();
+			UpdateButtonStates();
 			OnInputScopeChanged(CreateInitialValueChangerEventArgs(InputScopeProperty, null, InputScope));
 			OnMaxLengthChanged(CreateInitialValueChangerEventArgs(MaxLengthProperty, null, MaxLength));
 			OnAcceptsReturnChanged(CreateInitialValueChangerEventArgs(AcceptsReturnProperty, null, AcceptsReturn));
@@ -178,12 +179,17 @@ namespace Windows.UI.Xaml.Controls
 				}
 			}
 
+			UpdatePlaceholderVisibility();
+
+			UpdateButtonStates();
+		}
+
+		private void UpdatePlaceholderVisibility()
+		{
 			if (_placeHolder != null)
 			{
 				_placeHolder.Visibility = Text.IsNullOrEmpty() ? Visibility.Visible : Visibility.Collapsed;
 			}
-
-			UpdateButtonStates();
 		}
 
 		#endregion
