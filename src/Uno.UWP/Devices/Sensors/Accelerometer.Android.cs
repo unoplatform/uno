@@ -1,4 +1,6 @@
-﻿#if __ANDROID__
+﻿
+using Windows.Devices.Sensors.Extensions;
+#if __ANDROID__
 using System;
 using System.Collections.Generic;
 using System.Text;
