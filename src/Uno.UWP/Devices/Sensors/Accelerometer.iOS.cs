@@ -1,12 +1,11 @@
-﻿
-using Windows.Devices.Sensors.Extensions;
-#if __IOS__
+﻿#if __IOS__
 using System;
 using System.Collections.Generic;
 using System.Text;
 using CoreMotion;
 using Foundation;
 using UIKit;
+using Windows.Devices.Sensors.Extensions;
 
 namespace Windows.Devices.Sensors
 {
@@ -66,9 +65,9 @@ namespace Windows.Devices.Sensors
 			}
 
 			var reading = new AccelerometerReading(
-				data.Acceleration.X * -1,
-				data.Acceleration.Y * -1,
-				data.Acceleration.Z * -1,
+				data.Acceleration.X,
+				data.Acceleration.Y,
+				data.Acceleration.Z,
 				data.Timestamp.SensorTimestampToDateTimeOffset());
 
 			OnReadingChanged(reading);

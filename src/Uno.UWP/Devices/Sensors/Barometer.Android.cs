@@ -6,7 +6,7 @@ using Android.App;
 using Android.Content;
 using Android.Hardware;
 using Android.Runtime;
-using Windows.Extensions;
+using Windows.Devices.Sensors.Extensions;
 
 namespace Windows.Devices.Sensors
 {

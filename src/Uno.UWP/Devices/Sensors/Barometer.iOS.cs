@@ -1,11 +1,10 @@
-﻿
-using Windows.Devices.Sensors.Extensions;
-#if __IOS__
+﻿#if __IOS__
 using System;
 using System.Collections.Generic;
 using System.Text;
 using CoreMotion;
 using Foundation;
+using Windows.Devices.Sensors.Extensions;
 
 namespace Windows.Devices.Sensors
 {

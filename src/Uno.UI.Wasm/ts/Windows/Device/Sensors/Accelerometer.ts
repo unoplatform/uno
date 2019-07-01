@@ -1,4 +1,8 @@
-﻿namespace Windows.Devices.Sensors {
+﻿interface Window {
+	DeviceMotionEvent():void;
+}
+
+namespace Windows.Devices.Sensors {
 
 	export class Accelerometer {
 
@@ -6,7 +10,7 @@
 
 		public static initialize(): boolean {
 			if (window.DeviceMotionEvent) {
-				this.dispatchReading = (<any>Module).mono_bind_static_method("[Uno] Windows.Devices.Sensors.Accelerometer:DispatchReading");
+				this.dispatchReading = (<any>Module).mono_bind_static_method("[Uno] Windows.Devices.Sensors.Accelerometer:DispatchBackRequest");
 				return true;
 			}
 			return false;
@@ -21,7 +25,10 @@
 		}
 
 		private static readingChangedHandler(event:any) {
-			this.dispatchReading(event.acceleration.x, event.acceleration.y, event.acceleration.z);
+			this.dispatchReading(
+				event.accelerationIncludingGravity.x,
+				event.accelerationIncludingGravity.y,
+				event.accelerationIncludingGravity.z);
 		}
 	}
 }

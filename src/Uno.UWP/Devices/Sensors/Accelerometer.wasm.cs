@@ -47,7 +47,7 @@ namespace Windows.Devices.Sensors
 		}
 
 		[Preserve]
-		private static int DispatchReading(float x, float y, float z)
+		public static int DispatchReading(float x, float y, float z)
 		{
 			_instance.OnReadingChanged(new AccelerometerReading(x, y, z, DateTimeOffset.UtcNow));
 			return 0;

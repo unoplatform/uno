@@ -12,6 +12,7 @@ using Android.Support.V4.App;
 using Microsoft.Extensions.Logging;
 using Uno.Extensions;
 using Uno.UI;
+using Windows.Extensions;
 using Windows.Foundation;
 using Windows.Storage;
 using static Android.Content.Res.Resources;
