@@ -87,7 +87,7 @@ namespace Windows.UI.Xaml.Controls
 			_textBoxView?.SetForeground(newValue);
 		}
 
-		partial void UpdateFontPartial(object sender)
+		partial void UpdateFontPartial()
 		{
 			_textBoxView?.SetFontSize(FontSize);
 			_textBoxView?.SetFontStyle(FontStyle);

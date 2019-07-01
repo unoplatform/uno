@@ -33,7 +33,7 @@ namespace Windows.UI.Xaml.Controls
 
 		}
 
-		partial void UpdateFontPartial(object sender)
+		partial void UpdateFontPartial()
 		{
 
 		}

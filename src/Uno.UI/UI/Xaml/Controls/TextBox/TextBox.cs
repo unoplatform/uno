@@ -59,7 +59,7 @@ namespace Windows.UI.Xaml.Controls
 
 		private void OnParentChanged(object instance, object key, DependencyObjectParentChangedEventArgs args)
 		{
-			UpdateFontPartial(this);
+			UpdateFontPartial();
 		}
 
 		protected TextBox(bool isPassword)
@@ -75,7 +75,7 @@ namespace Windows.UI.Xaml.Controls
 			OnAcceptsReturnChanged(CreateInitialValueChangerEventArgs(AcceptsReturnProperty, null, AcceptsReturn));
 			OnIsEnabledChanged(false, IsEnabled);
 			OnForegroundColorChanged(null, Foreground);
-			UpdateFontPartial(this);
+			UpdateFontPartial();
 			OnHeaderChanged();
 			OnIsTextPredictionEnabledChanged(CreateInitialValueChangerEventArgs(IsTextPredictionEnabledProperty, IsTextPredictionEnabledProperty.GetMetadata(GetType()).DefaultValue, IsTextPredictionEnabled));
 			OnIsSpellCheckEnabledChanged(CreateInitialValueChangerEventArgs(IsSpellCheckEnabledProperty, IsSpellCheckEnabledProperty.GetMetadata(GetType()).DefaultValue, IsSpellCheckEnabled));
@@ -109,13 +109,13 @@ namespace Windows.UI.Xaml.Controls
 			if (_contentElement is ScrollViewer scrollViewer)
 			{
 #if __IOS__
-				// We disable scrolling because the inner TextBoxView provides its own scrolling
+				// We disable scrolling because the inner ITextBoxView provides its own scrolling
 				scrollViewer.HorizontalScrollMode = ScrollMode.Disabled;
 				scrollViewer.VerticalScrollMode = ScrollMode.Disabled;
 				scrollViewer.HorizontalScrollBarVisibility = ScrollBarVisibility.Disabled;
 				scrollViewer.VerticalScrollBarVisibility = ScrollBarVisibility.Disabled;
 #elif __WASM__
-				// We disable horizontal scrolling because the inner SingleLineTextBoxView provides its own horizontal scrolling
+				// We disable horizontal scrolling because the inner TextBoxView provides its own horizontal scrolling
 				scrollViewer.HorizontalScrollMode = ScrollMode.Disabled;
 #endif
 			}
@@ -125,9 +125,8 @@ namespace Windows.UI.Xaml.Controls
 				_deleteButton = new WeakReference<Button>(button);
 			}
 
-#if !NET461
 			UpdateTextBoxView();
-#endif
+
 			InitializeProperties();
 		}
 
@@ -192,28 +191,28 @@ namespace Windows.UI.Xaml.Controls
 		protected override void OnFontSizeChanged(double oldValue, double newValue)
 		{
 			base.OnFontSizeChanged(oldValue, newValue);
-			UpdateFontPartial(this);
+			UpdateFontPartial();
 		}
 
 		protected override void OnFontFamilyChanged(FontFamily oldValue, FontFamily newValue)
 		{
 			base.OnFontFamilyChanged(oldValue, newValue);
-			UpdateFontPartial(this);
+			UpdateFontPartial();
 		}
 
 		protected override void OnFontStyleChanged(FontStyle oldValue, FontStyle newValue)
 		{
 			base.OnFontStyleChanged(oldValue, newValue);
-			UpdateFontPartial(this);
+			UpdateFontPartial();
 		}
 
 		protected override void OnFontWeightChanged(FontWeight oldValue, FontWeight newValue)
 		{
 			base.OnFontWeightChanged(oldValue, newValue);
-			UpdateFontPartial(this);
+			UpdateFontPartial();
 		}
 
-		partial void UpdateFontPartial(object sender);
+		partial void UpdateFontPartial();
 
 		protected override void OnForegroundColorChanged(Brush oldValue, Brush newValue)
 		{
@@ -462,12 +461,14 @@ namespace Windows.UI.Xaml.Controls
 
 		#region IsTextPredictionEnabled DependencyProperty
 
+		[Uno.NotImplemented]
 		public bool IsTextPredictionEnabled
 		{
 			get { return (bool)this.GetValue(IsTextPredictionEnabledProperty); }
 			set { this.SetValue(IsTextPredictionEnabledProperty, value); }
 		}
 
+		[Uno.NotImplemented]
 		public static readonly DependencyProperty IsTextPredictionEnabledProperty =
 			DependencyProperty.Register(
 				"IsTextPredictionEnabled",

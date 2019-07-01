@@ -360,16 +360,15 @@ namespace Windows.UI.Xaml.Controls
 			//TODO : see bug #8178
 		}
 
-		partial void UpdateFontPartial(object sender)
+		partial void UpdateFontPartial()
 		{
-			var textBox = sender as TextBox;
-			if (textBox != null && textBox.Parent != null && _textBoxView != null)
+			if (Parent != null && _textBoxView != null)
 			{
-				var style = GetTypefaceStyle(textBox.FontStyle, textBox.FontWeight);
-				var typeface = FontHelper.FontFamilyToTypeFace(textBox.FontFamily, textBox.FontWeight);
+				var style = GetTypefaceStyle(FontStyle, FontWeight);
+				var typeface = FontHelper.FontFamilyToTypeFace(FontFamily, FontWeight);
 
 				_textBoxView.SetTypeface(typeface, style);
-				_textBoxView.SetTextSize(ComplexUnitType.Px, (float)Math.Round(ViewHelper.LogicalToPhysicalFontPixels((float)textBox.FontSize)));
+				_textBoxView.SetTextSize(ComplexUnitType.Px, (float)Math.Round(ViewHelper.LogicalToPhysicalFontPixels((float)FontSize)));
 			}
 		}
 
