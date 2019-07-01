@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Text;
 using CoreMotion;
 using Foundation;
+using Windows.Extensions;
 
 namespace Windows.Devices.Sensors
 {
@@ -37,10 +38,9 @@ namespace Windows.Devices.Sensors
 
 		private void RelativeAltitudeUpdateReceived(CMAltitudeData data, NSError error)
 		{
-			var bootTime = NSDate.FromTimeIntervalSinceNow(-NSProcessInfo.ProcessInfo.SystemUptime);
 			var barometerReading = new BarometerReading(
 				KPaToHPa(data.Pressure.DoubleValue),
-				data.Timestamp
+				data.Timestamp.TimestampToDateTimeOffset()
 				);
 			_readingChanged?.Invoke(
 				this,

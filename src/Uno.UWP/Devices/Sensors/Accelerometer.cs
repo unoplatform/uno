@@ -47,7 +47,12 @@ namespace Windows.Devices.Sensors
 			{
 				lock (_syncLock)
 				{
+					bool isFirstSubscriber = _readingChanged == null;
 					_readingChanged += value;
+					if ( isFirstSubscriber)
+					{
+						StartReadingChanged();
+					}
 				}
 			}			
 			remove
@@ -57,7 +62,7 @@ namespace Windows.Devices.Sensors
 					_readingChanged -= value;
 					if (_readingChanged == null)
 					{
-
+						StopReadingChanged();
 					}
 				}
 			}
@@ -69,7 +74,12 @@ namespace Windows.Devices.Sensors
 			{
 				lock (_syncLock)
 				{
+					bool isFirstSubscriber = _shaken == null;
 					_shaken += value;
+					if (isFirstSubscriber)
+					{
+						StartShaken();
+					}
 				}
 			}
 			remove
@@ -79,7 +89,7 @@ namespace Windows.Devices.Sensors
 					_shaken -= value;
 					if (_shaken == null)
 					{
-
+						StopShaken();
 					}
 				}
 			}
@@ -88,6 +98,11 @@ namespace Windows.Devices.Sensors
 		private void OnReadingChanged(AccelerometerReading reading)
 		{
 			_readingChanged?.Invoke(this, new AccelerometerReadingChangedEventArgs(reading));
+		}
+
+		private void OnShaken(DateTimeOffset timestamp)
+		{
+			_shaken?.Invoke(this, new AccelerometerShakenEventArgs(timestamp));
 		}
 	}
 }
