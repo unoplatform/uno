@@ -1,11 +1,12 @@
-﻿#if __IOS__
+﻿
+using Windows.Devices.Sensors.Extensions;
+#if __IOS__
 using System;
 using System.Collections.Generic;
 using System.Text;
 using CoreMotion;
 using Foundation;
 using UIKit;
-using Windows.Extensions;
 
 namespace Windows.Devices.Sensors
 {
@@ -21,31 +22,20 @@ namespace Windows.Devices.Sensors
 		public uint ReportInterval
 		{
 			get => (uint)_motionManager.AccelerometerUpdateInterval * 1000;
-			set
-			{
-				_motionManager.AccelerometerUpdateInterval = value / 1000.0;
-			}
+			set => _motionManager.AccelerometerUpdateInterval = value / 1000.0;
 		}
 
 		internal static void HandleShake()
 		{
-			if (_instance != null)
-			{
-				_instance.OnShaken(DateTimeOffset.UtcNow);
-			}
+			_instance?.OnShaken(DateTimeOffset.UtcNow);
 		}
 
 		private static Accelerometer TryCreateInstance()
 		{
 			var motionManager = new CMMotionManager();
-			if (!motionManager.AccelerometerAvailable)
-			{
-				return null;
-			}
-			else
-			{
-				return new Accelerometer(motionManager);
-			}
+			return !motionManager.AccelerometerAvailable ?
+				null :
+				new Accelerometer(motionManager);
 		}
 
 		private void StartReadingChanged()
@@ -79,7 +69,7 @@ namespace Windows.Devices.Sensors
 				data.Acceleration.X * -1,
 				data.Acceleration.Y * -1,
 				data.Acceleration.Z * -1,
-				data.Timestamp.TimestampToDateTimeOffset());
+				data.Timestamp.SensorTimestampToDateTimeOffset());
 
 			OnReadingChanged(reading);
 		}

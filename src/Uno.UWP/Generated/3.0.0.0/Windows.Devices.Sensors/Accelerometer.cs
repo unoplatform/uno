@@ -7,7 +7,7 @@ namespace Windows.Devices.Sensors
 	#endif
 	public  partial class Accelerometer 
 	{
-		#if __ANDROID__ || false || NET461 || __WASM__ || __MACOS__
+		#if false || false || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  uint ReportInterval
 		{

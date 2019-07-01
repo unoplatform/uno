@@ -7,7 +7,7 @@ namespace Windows.Devices.Sensors
 {
 	public partial class AccelerometerShakenEventArgs
 	{
-		private AccelerometerShakenEventArgs(DateTimeOffset timestamp)
+		internal AccelerometerShakenEventArgs(DateTimeOffset timestamp)
 		{
 			Timestamp = timestamp;
 		}

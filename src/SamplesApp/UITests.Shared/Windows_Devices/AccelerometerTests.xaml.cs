@@ -34,7 +34,7 @@ namespace UITests.Shared.Windows_Devices
 		{
 			private Accelerometer _accelerometer = null;
 			private AccelerometerReading _lastReading;
-			private DateTimeOffset? _lastShake;
+			private string _lastShake;
 			private bool _readingChangedAttached;
 			private bool _shakenAttached;
 
@@ -98,7 +98,7 @@ namespace UITests.Shared.Windows_Devices
 				}
 			}
 
-			public DateTimeOffset? LastShake
+			public string LastShake
 			{
 				get => _lastShake;
 				set
@@ -110,10 +110,6 @@ namespace UITests.Shared.Windows_Devices
 
 			private async void Accelerometer_ReadingChanged(Accelerometer sender, AccelerometerReadingChangedEventArgs args)
 			{
-				Debug.WriteLine(args.Reading.AccelerationX);
-				Debug.WriteLine(args.Reading.AccelerationY);
-				Debug.WriteLine(args.Reading.AccelerationZ);
-				Debug.WriteLine(args.Reading.Timestamp);
 				await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal,
 					() => LastReading = args.Reading);
 			}
@@ -121,7 +117,7 @@ namespace UITests.Shared.Windows_Devices
 			private async void Accelerometer_Shaken(Accelerometer sender, AccelerometerShakenEventArgs args)
 			{
 				await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal,
-					() => LastShake = args.Timestamp);
+					() => LastShake = args.Timestamp.ToString("R"));
 			}
 		}
 	}

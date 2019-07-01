@@ -1,10 +1,11 @@
-﻿#if __IOS__
+﻿
+using Windows.Devices.Sensors.Extensions;
+#if __IOS__
 using System;
 using System.Collections.Generic;
 using System.Text;
 using CoreMotion;
 using Foundation;
-using Windows.Extensions;
 
 namespace Windows.Devices.Sensors
 {
@@ -40,7 +41,7 @@ namespace Windows.Devices.Sensors
 		{
 			var barometerReading = new BarometerReading(
 				KPaToHPa(data.Pressure.DoubleValue),
-				data.Timestamp.TimestampToDateTimeOffset()
+				data.Timestamp.SensorTimestampToDateTimeOffset()
 				);
 			_readingChanged?.Invoke(
 				this,

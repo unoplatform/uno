@@ -9,10 +9,23 @@ namespace Windows.Devices.Sensors
 	{
 		private static Accelerometer TryCreateInstance()
 		{
-			var command = $"Uno.UI.WindowManager.current.open(\"{uri.OriginalString}\");";
-			var result = Uno.Foundation.WebAssemblyRuntime.InvokeJS(command);
-			return result == "True";
 			return null;
+		}
+
+		private void StartReadingChanged()
+		{
+		}
+
+		private void StopReadingChanged()
+		{
+		}
+
+		private void StartShaken()
+		{
+		}
+
+		private void StopShaken()
+		{
 		}
 	}
 }
