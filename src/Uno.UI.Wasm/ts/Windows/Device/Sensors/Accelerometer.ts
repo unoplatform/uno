@@ -10,7 +10,7 @@ namespace Windows.Devices.Sensors {
 
 		public static initialize(): boolean {
 			if (window.DeviceMotionEvent) {
-				this.dispatchReading = (<any>Module).mono_bind_static_method("[Uno] Windows.Devices.Sensors.Accelerometer:DispatchBackRequest");
+				this.dispatchReading = (<any>Module).mono_bind_static_method("[Uno] Windows.Devices.Sensors.Accelerometer:DispatchReading");
 				return true;
 			}
 			return false;
