@@ -1,0 +1,30 @@
+﻿<UserControl
+    x:Class="SamplesApp.Windows_UI_Xaml_Controls.ToggleSwitchControl.ToggleSwitch_ReusingTemplate"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:UITests.Shared.Windows_UI_Xaml_Controls.ToggleSwitchControl"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	xmlns:controls="using:Uno.UI.Samples.Controls"
+    mc:Ignorable="d"
+    d:DesignHeight="2000"
+    d:DesignWidth="400">
+
+	<controls:SampleControl>
+		<controls:SampleControl.SampleContent>
+			<DataTemplate>
+				<StackPanel>
+					<ToggleSwitch IsOn="{Binding [IsOn], Mode=TwoWay}"
+								  x:Name="TS1" />
+					<ToggleSwitch IsOn="{Binding [IsOn], Mode=TwoWay}"
+								  x:Name="TS2" />
+					<ToggleSwitch IsOn="{Binding [IsOn], Mode=TwoWay}"
+								  x:Name="TS3" />
+					<ToggleSwitch IsOn="{Binding [IsOn], Mode=TwoWay}"
+								  x:Name="TS4" />
+				</StackPanel>
+			</DataTemplate>
+		</controls:SampleControl.SampleContent>
+		
+	</controls:SampleControl>
+</UserControl>
