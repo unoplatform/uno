@@ -63,12 +63,6 @@ namespace Windows.UI.Xaml
 
 		private bool _isDisposed;
 
-		/// <summary>
-		/// A stack of properties currently being set. This avoids loops in two-way bindings.
-		/// </summary>
-		private Stack<DependencyProperty> _currentlySettingPropertyStack = new Stack<DependencyProperty>(1);
-		private DependencyProperty _currentlySettingProperty;
-
 		private readonly DependencyPropertyDetailsCollection _properties;
 		private readonly DependencyPropertyDetails _dataContextPropertyDetails;
 		private readonly DependencyPropertyDetails _templatedParentPropertyDetails;
@@ -245,7 +239,7 @@ namespace Windows.UI.Xaml
 
 		private object GetValue(DependencyPropertyDetails propertyDetails, DependencyPropertyValuePrecedences? precedence = null, bool isPrecedenceSpecific = false)
 		{
-			if(propertyDetails == _dataContextPropertyDetails || propertyDetails == _templatedParentPropertyDetails)
+			if (propertyDetails == _dataContextPropertyDetails || propertyDetails == _templatedParentPropertyDetails)
 			{
 				TryRegisterInheritedProperties(force: true);
 			}
@@ -312,7 +306,8 @@ namespace Windows.UI.Xaml
 
 				_precedenceOverride = precedence;
 
-				return Disposable.Create(() => {
+				return Disposable.Create(() =>
+				{
 
 					_precedenceOverride = null;
 
@@ -388,74 +383,31 @@ namespace Windows.UI.Xaml
 
 		internal void SetValue(DependencyProperty property, object value, DependencyPropertyValuePrecedences precedence, DependencyPropertyDetails propertyDetails = null)
 		{
-			// Determines the state of the currently being set property
-			// to avoid two-way bindings to do a ping-pong.
-			var currentlySettingPropertyPushed = false;
+			if (_trace.IsEnabled)
+			{
+				using (WritePropertyEventTrace(TraceProvider.SetValueStart, TraceProvider.SetValueStop, property, precedence))
+				{
+					InnerSetValue(property, value, precedence, propertyDetails);
+				}
+			}
+			else
+			{
+				InnerSetValue(property, value, precedence, propertyDetails);
+			}
 
-#if !HAS_EXPENSIVE_TRYFINALLY
-			// The try/finally incurs a very large performance hit in mono-wasm, and SetValue is in a very hot execution path.
-			// See https://github.com/mono/mono/issues/13653 for more details.
-			try
-#endif
-			{
-				if (_trace.IsEnabled)
-				{
-					using (WritePropertyEventTrace(TraceProvider.SetValueStart, TraceProvider.SetValueStop, property, precedence))
-					{
-						InnerSetValue(property, value, precedence, propertyDetails, ref currentlySettingPropertyPushed);
-					}
-				}
-				else
-				{
-					InnerSetValue(property, value, precedence, propertyDetails, ref currentlySettingPropertyPushed);
-				}
-			}
-#if !HAS_EXPENSIVE_TRYFINALLY
-			finally
-#endif
-			{
-				if (currentlySettingPropertyPushed)
-				{
-					PopCurrentlySettingProperty(property);
-				}
-			}
 		}
 
-		private void InnerSetValue(DependencyProperty property, object value, DependencyPropertyValuePrecedences precedence, DependencyPropertyDetails propertyDetails, ref bool currentlySettingPropertyPushed)
+		private void InnerSetValue(DependencyProperty property, object value, DependencyPropertyValuePrecedences precedence, DependencyPropertyDetails propertyDetails)
 		{
 			if (precedence == DependencyPropertyValuePrecedences.Coercion)
 			{
 				throw new ArgumentException("SetValue must not be called with precedence DependencyPropertyValuePrecedences.Coercion, as it expects a non-coerced value to function properly.");
 			}
 
-			if (
-				IsCurrentlySettingProperty(property)
-				&& !ReferenceEquals(property, _dataContextProperty)
-			)
-			{
-				// This check is present to avoid having update loops in cases
-				// of multiple two-way bindings having ConvertBack implemented to invert its content.
-
-				if (property.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
-				{
-					property.Log().DebugFormat(
-						"Ignoring new property value [{1}] on [{0}] as it is already being updated."
-						, property.Name
-						, value
-					);
-				}
-
-				return;
-			}
-
 			var actualInstanceAlias = ActualInstance;
 
 			if (actualInstanceAlias != null)
 			{
-				PushCurrentlySettingProperty(property);
-
-				currentlySettingPropertyPushed = true;
-
 				ApplyPrecedenceOverride(ref precedence);
 
 				if ((value == DependencyProperty.UnsetValue) && precedence == DependencyPropertyValuePrecedences.DefaultValue)
@@ -566,55 +518,6 @@ namespace Windows.UI.Xaml
 			// Trigger the coercion mechanism of SetValue, by re-applying the base value (non-coerced value).
 			var (baseValue, basePrecedence) = GetValueUnderPrecedence(property, DependencyPropertyValuePrecedences.Coercion);
 			SetValue(property, baseValue, basePrecedence);
-		}
-
-		/// <summary>
-		/// Determines if the specified property is currently being set for this instance.
-		/// </summary>
-		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		private bool IsCurrentlySettingProperty(DependencyProperty property)
-		{
-			return _currentlySettingProperty == property
-				|| (
-				_currentlySettingProperty != null
-				&& _currentlySettingPropertyStack.Contains(property, DependencyPropertyComparer.Default)
-			);
-		}
-
-		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		private void PushCurrentlySettingProperty(DependencyProperty property)
-		{
-			if (_currentlySettingProperty == null)
-			{
-				_currentlySettingProperty = property;
-			}
-			else
-			{
-				_currentlySettingPropertyStack.Push(property);
-			}
-		}
-
-		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		private void PopCurrentlySettingProperty(DependencyProperty property)
-		{
-			var hasStack = _currentlySettingPropertyStack.Count > 0;
-			var popped = hasStack
-				? _currentlySettingPropertyStack.Pop()
-				: _currentlySettingProperty;
-
-			if (!hasStack)
-			{
-				_currentlySettingProperty = null;
-			}
-
-			if (popped != property && property.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
-			{
-				property.Log().DebugFormat(
-					"Invalid stack state for DependencyObject.SetValue()."
-					, property.Name
-					, _originalObjectType
-				);
-			}
 		}
 
 		private void WritePropertyEventTrace(int eventId, DependencyProperty property, DependencyPropertyValuePrecedences? precedence)
@@ -945,22 +848,22 @@ namespace Windows.UI.Xaml
 			if (
 				!_registeringInheritedProperties
 				&& !_unregisteringInheritedProperties
-				&& _inheritedProperties.Disposable == null 
+				&& _inheritedProperties.Disposable == null
 				&& (
-					IsAutoPropertyInheritanceEnabled 
+					IsAutoPropertyInheritanceEnabled
 					|| force
 
 					// these two cases may be required in case the
 					// graph is built in reverse (such as with the 
 					// XamlReader)
 					|| _properties.HasBindings
-					|| _childrenStores.Count != 0 
+					|| _childrenStores.Count != 0
 				)
 			)
 			{
-				if(parentProvider == null && Parent is IDependencyObjectStoreProvider p)
+				if (parentProvider == null && Parent is IDependencyObjectStoreProvider p)
 				{
-					parentProvider = p; 
+					parentProvider = p;
 				}
 
 				if (parentProvider != null)
@@ -1076,7 +979,7 @@ namespace Windows.UI.Xaml
 				// has been initialized. This avoids creating the details if the property has
 				// not been attached on a child, or if there's no property changed callback
 				// attached to a child.
-				else if(
+				else if (
 					property.IsAttached
 					&& _properties.FindPropertyDetails(property) is DependencyPropertyDetails attachedDetails
 					&& HasInherits(attachedDetails)
@@ -1376,7 +1279,7 @@ namespace Windows.UI.Xaml
 			}
 			else if (
 				hasPropagationBypass
-				&& _propagationBypassed.ContainsKey(propertyPath) 
+				&& _propagationBypassed.ContainsKey(propertyPath)
 				&& !_propagationBypass.Contains(propertyPath, DependencyPropertyPath.Comparer.Default)
 			)
 			{

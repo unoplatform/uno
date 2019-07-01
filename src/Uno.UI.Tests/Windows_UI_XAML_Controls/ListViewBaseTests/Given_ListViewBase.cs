@@ -4,7 +4,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Uno.Extensions;
 using Windows.Foundation;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -16,7 +15,7 @@ namespace Uno.UI.Tests.ListViewBaseTests
 	[TestClass]
 	public class Given_ListViewBase
 	{
-
+#if !NETFX_CORE
 		[TestMethod]
 		public void When_MultiSelectedItem()
 		{
@@ -152,6 +151,53 @@ namespace Uno.UI.Tests.ListViewBaseTests
 			SUT.OnItemClicked(0);
 
 			SUT.ItemsSource = null;
+		}
+#endif
+
+		[TestMethod]
+		public void When_SelectionChanged_Changes_Selection()
+		{
+			var list = new ListView();
+			list.ItemsSource = Enumerable.Range(0, 20);
+
+			list.SelectionChanged += OnSelectionChanged;
+			list.SelectedItem = 7;
+
+			Assert.AreEqual(14, list.SelectedItem);
+			Assert.AreEqual(14, list.SelectedIndex);
+
+			void OnSelectionChanged(object sender, SelectionChangedEventArgs e)
+			{
+				var l = sender as ListViewBase;
+				l.SelectedItem = 14;
+			}
+		}
+
+		[TestMethod]
+		public void When_SelectionChanged_Changes_Selection_Repeated()
+		{
+			var list = new ListView();
+			list.ItemsSource = Enumerable.Range(0, 20);
+			var callbackCount = 0;
+
+			list.SelectionChanged += OnSelectionChanged;
+			list.SelectedItem = 7;
+
+			Assert.AreEqual(14, list.SelectedItem);
+			Assert.AreEqual(14, list.SelectedIndex);
+			Assert.AreEqual(8, callbackCount); //Unlike eg TextBox.TextChanged there is no guard on reentrant modification
+
+			void OnSelectionChanged(object sender, SelectionChangedEventArgs e)
+			{
+				callbackCount++;
+				var l = sender as ListViewBase;
+				var selected = (int)l.SelectedItem;
+				if (selected < 14)
+				{
+					selected++;
+					l.SelectedItem = selected;
+				}
+			}
 		}
 	}
 

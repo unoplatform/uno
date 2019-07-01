@@ -720,7 +720,6 @@ namespace Uno.UI.Tests.BinderTests
 		}
 
 		[TestMethod]
-		//TODO: Amend this test when Uno correctly supports reentrantly modifying DPs.
 		public void When_Reentrant_Set()
 		{
 			var sut = new TextBox();
@@ -732,24 +731,25 @@ namespace Uno.UI.Tests.BinderTests
 
 			sut.Text = "Alice";
 
-			Assert.AreEqual("Alice", sut.Text);
+			Assert.AreEqual("Bob", sut.Text);
 		}
 
 		[TestMethod]
-		//TODO: Amend this test when Uno correctly supports reentrantly modifying DPs.
 		public void When_Reentrant_Set_With_Additional_Set()
 		{
 			var sut = new TextBox();
 
 			sut.TextChanged += (o, e) =>
 			{
-				sut.SetValue(Grid.RowProperty, 0);
+				sut.SetValue(Grid.RowProperty, 3);
 				sut.Text = "Bob";
 			};
 
 			sut.Text = "Alice";
 
-			Assert.AreEqual("Alice", sut.Text);
+			Assert.AreEqual("Bob", sut.Text);
+			var row = (int)sut.GetValue(Grid.RowProperty);
+			Assert.AreEqual(3, row);
 		}
 
 		[TestMethod]
