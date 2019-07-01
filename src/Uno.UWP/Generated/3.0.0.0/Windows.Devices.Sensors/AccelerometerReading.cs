@@ -47,7 +47,7 @@ namespace Windows.Devices.Sensors
 			}
 		}
 		#endif
-		#if false || false || NET461 || false || __MACOS__
+		#if __IOS__ || __ANDROID__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::System.TimeSpan? PerformanceCount
 		{
@@ -57,7 +57,7 @@ namespace Windows.Devices.Sensors
 			}
 		}
 		#endif
-		#if false || false || NET461 || false || __MACOS__
+		#if __IOS__ || __ANDROID__  || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::System.Collections.Generic.IReadOnlyDictionary<string, object> Properties
 		{

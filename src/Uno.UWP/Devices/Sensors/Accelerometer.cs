@@ -84,6 +84,11 @@ namespace Windows.Devices.Sensors
 				}
 			}
 		}
+
+		private void OnReadingChanged(AccelerometerReading reading)
+		{
+			_readingChanged?.Invoke(this, new AccelerometerReadingChangedEventArgs(reading));
+		}
 	}
 }
 #endif

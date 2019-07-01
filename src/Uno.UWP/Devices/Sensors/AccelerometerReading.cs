@@ -7,17 +7,25 @@ namespace Windows.Devices.Sensors
 {
 	public partial class AccelerometerReading
 	{
+		internal AccelerometerReading(
+			double accelerationX,
+			double accelerationY,
+			double accelerationZ,
+			DateTimeOffset timestamp)
+		{
+			AccelerationX = accelerationX;
+			AccelerationY = accelerationY;
+			AccelerationZ = accelerationZ;
+			Timestamp = timestamp;
+		}
+
 		public double AccelerationX { get; }
 
 		public double AccelerationY { get; }
 
 		public double AccelerationZ { get; }
 
-		public global::System.DateTimeOffset Timestamp { get; }
-
-		public global::System.TimeSpan? PerformanceCount { get; }
-
-		public global::System.Collections.Generic.IReadOnlyDictionary<string, object> Properties { get; }
+		public DateTimeOffset Timestamp { get; }
 	}
 }
 #endif

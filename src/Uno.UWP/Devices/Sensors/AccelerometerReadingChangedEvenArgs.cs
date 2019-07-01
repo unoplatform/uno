@@ -7,7 +7,7 @@ namespace Windows.Devices.Sensors
 {
 	public partial class AccelerometerReadingChangedEventArgs
 	{
-		private AccelerometerReadingChangedEventArgs(AccelerometerReading reading)
+		internal AccelerometerReadingChangedEventArgs(AccelerometerReading reading)
 		{
 			Reading = reading;
 		}

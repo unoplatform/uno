@@ -37,9 +37,10 @@ namespace Windows.Devices.Sensors
 
 		private void RelativeAltitudeUpdateReceived(CMAltitudeData data, NSError error)
 		{
+			var bootTime = NSDate.FromTimeIntervalSinceNow(-NSProcessInfo.ProcessInfo.SystemUptime);
 			var barometerReading = new BarometerReading(
 				KPaToHPa(data.Pressure.DoubleValue),
-				DateTimeOffset.Now
+				data.Timestamp
 				);
 			_readingChanged?.Invoke(
 				this,
