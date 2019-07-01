@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
@@ -34,12 +35,57 @@ namespace UITests.Shared.Windows_Devices
 			private Accelerometer _accelerometer = null;
 			private AccelerometerReading _lastReading;
 			private DateTimeOffset? _lastShake;
+			private bool _readingChangedAttached;
+			private bool _shakenAttached;
 
 			public AccelerometerTestsViewModel(CoreDispatcher dispatcher) : base(dispatcher)
 			{
 				_accelerometer = Accelerometer.GetDefault();
+				_accelerometer.ReportInterval = 250;
+			}
+
+			public Command AttachReadingChangedCommand => new Command((p) =>
+			{
 				_accelerometer.ReadingChanged += Accelerometer_ReadingChanged;
+				ReadingChangedAttached = true;
+			});
+
+			public Command DetachReadingChangedCommand => new Command((p) =>
+			{
+				_accelerometer.ReadingChanged -= Accelerometer_ReadingChanged;
+				ReadingChangedAttached = false;
+			});
+
+			public bool ReadingChangedAttached
+			{
+				get => _readingChangedAttached;
+				set
+				{
+					_readingChangedAttached = value;
+					RaisePropertyChanged();
+				}
+			}
+
+			public Command AttachShakenCommand => new Command((p) =>
+			{
 				_accelerometer.Shaken += Accelerometer_Shaken;
+				ShakenAttached = true;				
+			});
+
+			public Command DetachShakenCommand => new Command((p) =>
+			{
+				_accelerometer.Shaken -= Accelerometer_Shaken;
+				ShakenAttached = false;
+			});
+
+			public bool ShakenAttached
+			{
+				get => _shakenAttached;
+				set
+				{
+					_shakenAttached = value;
+					RaisePropertyChanged();
+				}
 			}
 
 			public AccelerometerReading LastReading
@@ -64,6 +110,10 @@ namespace UITests.Shared.Windows_Devices
 
 			private async void Accelerometer_ReadingChanged(Accelerometer sender, AccelerometerReadingChangedEventArgs args)
 			{
+				Debug.WriteLine(args.Reading.AccelerationX);
+				Debug.WriteLine(args.Reading.AccelerationY);
+				Debug.WriteLine(args.Reading.AccelerationZ);
+				Debug.WriteLine(args.Reading.Timestamp);
 				await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal,
 					() => LastReading = args.Reading);
 			}

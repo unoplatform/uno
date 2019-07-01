@@ -5,11 +5,18 @@
     xmlns:local="using:UITests.Shared.Windows_Devices"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    mc:Ignorable="d"
+	xmlns:valueconverters="using:UITests.Shared.ValueConverters"
+	mc:Ignorable="d"
     d:DesignHeight="300"
     d:DesignWidth="400">
 
+	<UserControl.Resources>
+		<valueconverters:BoolNegationValueConverter x:Key="BoolNegation" />
+	</UserControl.Resources>
+
     <StackPanel>
+		<Button Command="{Binding AttachReadingChangedCommand}" Content="Attach ReadingChanged" IsEnabled="{Binding ReadingChangedAttached, Converter={StaticResource BoolNegation}}" />
+		<Button Command="{Binding DetachReadingChangedCommand}" Content="Detach ReadingChanged" IsEnabled="{Binding ReadingChangedAttached}" />
 		<TextBlock Text="Last reading" Style="{ThemeResource SubtitleTextBlockStyle}" />
 		<TextBlock>
 			<Run FontWeight="Bold">AccelerationX: </Run>
@@ -27,7 +34,9 @@
 			<Run FontWeight="Bold">Timestamp: </Run>
 			<Run Text="{Binding LastReading.Timestamp}" />
 		</TextBlock>
-		<TextBlock Text="Last shaken" Style="{ThemeResource SubtitleTextBlockStyle}" Margin="0,20,0,0" />
+		<Button Command="{Binding AttachShakenCommand}" Content="Attach Shaken" IsEnabled="{Binding ShakenAttached, Converter={StaticResource BoolNegation}}" Margin="0,20,0,0" />
+		<Button Command="{Binding DetachShakenCommand}" Content="Detach Shaken" IsEnabled="{Binding ShakenAttached}"/>
+		<TextBlock Text="Last shaken" Style="{ThemeResource SubtitleTextBlockStyle}"  />
 		<TextBlock>
 			<Run FontWeight="Bold">Timestamp: </Run>
 			<Run Text="{Binding LastShake}" />
