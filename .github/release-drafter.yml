@@ -1,13 +1,24 @@
-name-template: v$NEXT_PATCH_VERSION
-tag-template: v$NEXT_PATCH_VERSION
+name-template: '$NEXT_PATCH_VERSION'
+tag-template: '$NEXT_PATCH_VERSION'
 categories:
-  - title: 🚀 Features
-    label: feature
-  - title: 🐛 Bug Fixes
-    label: fix
-  - title: 🧰 Maintenance
-    label: chore
-tag-template: - $TITLE @$AUTHOR (#$NUMBER)
+  - title: '⚠️ Breaking Changes'
+    labels:
+      - 'kind/api-change-breaking'
+  - title: '🐛 Bug Fixes'
+    labels:
+      - 'kind/bug'
+  - title: '🚀 Features'
+    labels:
+      - 'kind/enhancement'
+  - title: '🧰 Maintenance'
+    labels:
+      - 'kind/dependency'
+      - 'kind/cleanup'
+      - 'kind/documentation'
+      - 'kind/maintainer-experience'
+      - 'kind/consumer-experience'
+      - 'kind/contributor-experience'
+change-template: '- $TITLE @$AUTHOR (#$NUMBER)'
 template: |
   ## Changes
 
