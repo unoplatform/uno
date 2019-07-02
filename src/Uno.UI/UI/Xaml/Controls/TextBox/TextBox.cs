@@ -50,6 +50,11 @@ namespace Windows.UI.Xaml.Controls
 		/// </summary>
 		private bool _isInvokingTextChanged;
 
+		/// <summary>
+		/// Set when the <see cref="Text"/> property is being modified by user input.
+		/// </summary>
+		private bool _isInputModifyingText;
+
 		public TextBox()
 		{
 			_isPassword = false;
@@ -98,10 +103,8 @@ namespace Windows.UI.Xaml.Controls
 		{
 			base.OnApplyTemplate();
 
-#if !NET461
 			// Ensures we don't keep a reference to a textBoxView that exists in a previous template
 			_textBoxView = null;
-#endif
 
 			_placeHolder = GetTemplateChild(TextBoxConstants.PlaceHolderPartName) as IFrameworkElement;
 			_contentElement = GetTemplateChild(TextBoxConstants.ContentElementPartName) as ContentControl;
@@ -116,7 +119,7 @@ namespace Windows.UI.Xaml.Controls
 				scrollViewer.HorizontalScrollBarVisibility = ScrollBarVisibility.Disabled;
 				scrollViewer.VerticalScrollBarVisibility = ScrollBarVisibility.Disabled;
 #elif __WASM__
-				// We disable horizontal scrolling because the inner TextBoxView provides its own horizontal scrolling
+				// We disable horizontal scrolling because the inner single-line TextBoxView provides its own horizontal scrolling
 				scrollViewer.HorizontalScrollMode = ScrollMode.Disabled;
 #endif
 			}
@@ -177,6 +180,11 @@ namespace Windows.UI.Xaml.Controls
 				{
 					_isInvokingTextChanged = false;
 				}
+			}
+
+			if (!_isInputModifyingText)
+			{
+				_textBoxView.SetTextNative(Text);
 			}
 
 			UpdatePlaceholderVisibility();
@@ -609,6 +617,30 @@ namespace Windows.UI.Xaml.Controls
 			{
 				VisualStateManager.GoToState(this, ButtonCollapsedStateName, true);
 			}
+		}
+
+		/// <summary>
+		/// Respond to text input from user interaction.
+		/// </summary>
+		/// <param name="newText">The most recent version of the text from the input field.</param>
+		/// <returns>The value of the <see cref="Text"/> property, which may have been modified programmatically.</returns>
+		internal string ProcessTextInput(string newText)
+		{
+#if !HAS_EXPENSIVE_TRYFINALLY // Try/finally incurs a very large performance hit in mono-wasm - https://github.com/mono/mono/issues/13653
+			try
+#endif
+			{
+				_isInputModifyingText = true;
+				Text = newText;
+			}
+			#if !HAS_EXPENSIVE_TRYFINALLY // Try/finally incurs a very large performance hit in mono-wasm - https://github.com/mono/mono/issues/13653
+			finally
+#endif
+			{
+				_isInputModifyingText = false;
+			}
+
+			return Text; //This may have been modified by BeforeTextChanging, TextChanging, DP callback, etc
 		}
 
 		private void DeleteText()

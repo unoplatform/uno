@@ -84,13 +84,7 @@ namespace Windows.UI.Xaml.Controls
 
 				if (_textBoxView == null)
 				{
-					_textBoxView = new TextBoxView()
-						.Binding("BindableText", new Data.Binding()
-						{
-							Path = "Text",
-							RelativeSource = RelativeSource.TemplatedParent,
-							Mode = BindingMode.TwoWay
-						});
+					_textBoxView = new TextBoxView(this);
 
 					_contentElement.Content = _textBoxView;
 				}
@@ -210,7 +204,7 @@ namespace Windows.UI.Xaml.Controls
 
 				if (!types.HasPasswordFlag())
 				{
-					UpdateFontPartial(this);
+					UpdateFontPartial();
 				}
 			}
 		}

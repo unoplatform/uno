@@ -101,13 +101,7 @@ namespace Windows.UI.Xaml.Controls
 						return;
 					}
 
-					_textBoxView = new MultilineTextBoxView(this)
-					.Binding("Text", new Data.Binding()
-					{
-						Path = "Text",
-						Source = this,
-						Mode = BindingMode.TwoWay
-					});
+					_textBoxView = new MultilineTextBoxView(this);
 
 					_contentElement.Content = _textBoxView;
 					InitializeProperties();
@@ -119,13 +113,7 @@ namespace Windows.UI.Xaml.Controls
 						return;
 					}
 
-					_textBoxView = new SinglelineTextBoxView(this)
-					.Binding("Text", new Data.Binding()
-					{
-						Path = "Text",
-						Source = this,
-						Mode = BindingMode.TwoWay
-					});
+					_textBoxView = new SinglelineTextBoxView(this);
 
 					_contentElement.Content = _textBoxView;
 					InitializeProperties();
