@@ -85,18 +85,22 @@ namespace Windows.Devices.Sensors
 		[Preserve]
 		public static int DispatchReading(float x, float y, float z)
 		{
+			if ( _instance == null)
+			{
+				throw new InvalidOperationException("Accelerometer:DispatchReading can be called only after Accelerometer is initialized");
+			}
 			var now = DateTimeOffset.UtcNow;
-			if ((now - _instance._lastReading).TotalMilliseconds >= _instance?.ReportInterval * 0.8)
+			if ((now - _instance._lastReading).TotalMilliseconds >= _instance.ReportInterval * 0.8)
 			{
 				_instance._lastReading = now;
-				_instance?.OnReadingChanged(
+				_instance.OnReadingChanged(
 					new AccelerometerReading(
 						x / Gravity * -1,
 						y / Gravity * -1,
 						z / Gravity * -1,
 						now));				
 			}
-			_instance?._shakeDetector?.OnSensorChanged(x, y, z, DateTimeOffset.UtcNow);
+			_instance._shakeDetector?.OnSensorChanged(x, y, z, DateTimeOffset.UtcNow);
 			return 0;
 		}
 	}
