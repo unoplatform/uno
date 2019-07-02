@@ -89,6 +89,9 @@
 	  <None Update="Localization_Implicit.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </None>
+	  <None Update="XamlLocalResources.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </None>
 	</ItemGroup>
 
 		

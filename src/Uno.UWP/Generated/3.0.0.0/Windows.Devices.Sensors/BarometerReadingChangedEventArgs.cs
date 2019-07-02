@@ -2,21 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Devices.Sensors
 {
-	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+	#if false || false || false || false || false
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class BarometerReadingChangedEventArgs 
 	{
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  global::Windows.Devices.Sensors.BarometerReading Reading
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member BarometerReading BarometerReadingChangedEventArgs.Reading is not implemented in Uno.");
-			}
-		}
-		#endif
+		// Skipping already declared property Reading
 		// Forced skipping of method Windows.Devices.Sensors.BarometerReadingChangedEventArgs.Reading.get
 	}
 }

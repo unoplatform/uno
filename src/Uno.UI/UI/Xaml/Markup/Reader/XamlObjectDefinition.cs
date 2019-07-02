@@ -9,35 +9,33 @@ using Uno.Xaml;
 namespace Windows.UI.Xaml.Markup.Reader
 {
 #if DEBUG
-	[DebuggerDisplay("Type: {_type.Name}")]
+	[DebuggerDisplay("Type: {Type.Name}")]
 #endif
-    internal class XamlObjectDefinition
+	internal class XamlObjectDefinition
 	{
-		private XamlType _type;
-
 		public XamlObjectDefinition(XamlType type, int lineNumber, int linePosition, XamlObjectDefinition owner)
 		{
 			LineNumber = lineNumber;
 			LinePosition = linePosition;
-			_type = type;
+			Type = type;
 			Owner = owner;
 			Members = new List<XamlMemberDefinition>();
 			Objects = new List<XamlObjectDefinition>();
 		}
 
-		public XamlType Type { get { return _type; } }
+		public XamlType Type { get; }
 
-		public List<XamlMemberDefinition> Members { get; private set; }
+		public List<XamlMemberDefinition> Members { get; }
 
-		public List<XamlObjectDefinition> Objects { get; private set; }
+		public List<XamlObjectDefinition> Objects { get; }
 
 		public object Value { get; set; }
 
-		public int LineNumber { get; private set; }
+		public int LineNumber { get; }
 
 		public int LinePosition { get; set; }
 
-		public XamlObjectDefinition Owner { get; private set; }
+		public XamlObjectDefinition Owner { get; }
 	}
 
 }

@@ -1,9 +1,7 @@
 ---
 name: Enhancement Request
 about: Suggest an enhancement to the Uno project
-labels:
-- kind/enhancement
-- triage/untriaged
+labels: kind/enhancement, triage/untriaged
 ---
 
 <!-- Please only use this template for submitting enhancement requests -->

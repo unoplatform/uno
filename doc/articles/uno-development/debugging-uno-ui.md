@@ -11,12 +11,26 @@ Prerequisites:
     - `UWP Development`, install all recent UWP SDKs, starting from 10.0.14393 (or above or equal to `TargetPlatformVersion` line [in this file](/src/Uno.CrossTargetting.props))
 - Install all Android SDKs starting from 7.1 (or the Android versions [`TargetFrameworks` list used here](/src/Uno.UI.BindingHelper.Android/Uno.UI.BindingHelper.Android.csproj))
 
-Building Uno.UI:
+### Building Uno.UI for all available targets
 * Open the [Uno.UI.sln](/src/Uno.UI.sln)
-* Select the Uno.UI project
+* Select the `Uno.UI` project
 * Build
 
 Inside Visual Studio, the number of platforms is restricted to limit the compilation time.
+
+### Faster dev loop with single target-framework builds
+To enable faster development, it's possible to use the [Visual Studio Solution Filters](https://docs.microsoft.com/en-us/visualstudio/ide/filtered-solutions?view=vs-2019), and only load the projects relevant for the task at hand.
+
+For instance, if you want to debug an iOS feature:
+- Make sure the `Uno.UI.sln` solution is not opened in Visual Studio.
+- Make a copy of the [src/crosstargeting_override.props.sample](src/crosstargeting_override.props.sample) file to `src/crosstargeting_override.props`
+- Uncomment the `UnoTargetFrameworkOverride` line and set its value to `xamarinios10`
+- Open the `Uno.UI-iOS-only.slnf` solution filter (either via the VS folder view, or the Windows explorer)
+- Build
+
+This technique works for `xamarinios10`, `monoandroid90`, `netstandard2.0` (wasm), and `net461` (Unit Tests).
+
+> Note that it's very important to close Visual Studio when editing the `src/crosstargeting_override.props` file, otherwise VS may crash or behave inconsistently.
 
 ## Microsoft Source Link support
 Uno.UI supports [SourceLink](https://github.com/dotnet/sourcelink/) and it now possible to
@@ -45,6 +59,8 @@ To ensure that the file you have in your cache a correct, either clear the cache
 product version should contain a git CommitID.
 
 Once Uno.UI built, open the files you want to debug inside the solution running the application you need to debug, and set breakpoints there.
+
+You may improve your built time by selecting an active target framework, see the **Faster dev loop** section above.
 
 ## Running the samples applications
 
