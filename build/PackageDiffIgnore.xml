@@ -185,6 +185,14 @@
 	        reason="Invalid method visibility"/>
 	<Member fullName="System.Void Windows.UI.Xaml.Controls.Popup.set_Anchor(Android.Views.View value)"
 	        reason="Invalid method visibility"/>
+        <Member fullName="System.Void Windows.Devices.Sensors.AccelerometerReadingChangedEventArgs..ctor()"
+	        reason="Parameter-less ctor does not exist in UWP"/>
+        <Member fullName="System.Void Windows.Devices.Sensors.Accelerometer..ctor()"
+	        reason="Parameter-less ctor does not exist in UWP"/>
+        <Member fullName="System.Void Windows.Devices.Sensors.AccelerometerShakenEventArgs..ctor()"
+	        reason="Parameter-less ctor does not exist in UWP"/>
+        <Member fullName="System.Void Windows.Devices.Sensors.AccelerometerReading..ctor()"
+	        reason="Parameter-less ctor does not exist in UWP"/>
       </Methods>
 	  
 	  <Fields>
