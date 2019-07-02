@@ -41,8 +41,23 @@
         "code",
         "test"
       ]
+    },
+    {
+      "login": "ghuntley",
+      "name": "Geoffrey Huntley",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/127353?v=4",
+      "profile": "https://www.ghuntley.com/now",
+      "contributions": [
+        "question",
+        "doc",
+        "maintenance",
+        "code",
+        "test",
+        "tutorial",
+        "review"
+      ]
     }
-],
+  ],
   "contributorsPerLine": 7,
   "projectName": "uno",
   "projectOwner": "unoplatform",
