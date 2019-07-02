@@ -1,34 +1,5 @@
 jobs:
 
-- job: macOS_Tests
-  variables:
-    CI_Build: true
-    SourceLinkEnabled: false
-
-  pool:
-    vmImage: 'macOS-10.14'
-
-  steps:
-  - checkout: self
-    clean: true
-
-  - bash: /bin/bash -c "sudo $AGENT_HOMEDIRECTORY/scripts/select-xamarin-sdk.sh 5_18_1"
-    displayName: Select Xamarin Version
-
-  - bash: |
-    sdkmanager "system-images;android-21;default;armeabi-v7a" && echo "no" | avdmanager create avd -n test -k "system-images;android-21;default;armeabi-v7a"
-
-    displayName: Create Android simulator
-
-  - bash: |
-    cd ${ANDROID_HOME}/emulator;ls
-    export LD_LIBRARY_PATH=${ANDROID_HOME}/emulator/lib64:${ANDROID_HOME}/emulator/lib64/qt/lib
-    emulator -avd test -no-window -noaudio -no-boot-anim -no-window -accel on
-
-    displayName: Start Android simulator
-  
-
-
 - job: macOS
   variables:
     CI_Build: true

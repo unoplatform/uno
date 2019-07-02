@@ -1,0 +1,40 @@
+jobs:
+
+- job: Android_Tests
+  variables:
+    CI_Build: true
+    SourceLinkEnabled: false
+
+  pool:
+    vmImage: 'macOS-10.14'
+
+  steps:
+  - checkout: self
+    clean: true
+
+  - bash: /bin/bash -c "sudo $AGENT_HOMEDIRECTORY/scripts/select-xamarin-sdk.sh 5_18_1"
+    displayName: Select Xamarin Version
+
+  - bash: |
+      chmod +x $(build.sourcesdirectory)/build/macos-setup-android.sh
+      $(build.sourcesdirectory)/build/macos-setup-android.sh
+
+    displayName: Create Android simulator
+
+  - task: NuGetToolInstaller@0
+    inputs:
+      versionSpec: 4.7.0
+      checkLatest: false
+
+  - task: MSBuild@1
+    inputs:
+      solution: src/SamplesApp/SamplesApp.Droid/SamplesApp.Droid.csproj
+      msbuildLocationMethod: version
+      msbuildVersion: latest
+      msbuildArchitecture: x86
+      msbuildArguments: /r /p:Configuration=Release /detailedsummary /bl:$(build.artifactstagingdirectory)/build-android.binlog
+      clean: false
+      maximumCpuCount: true
+      restoreNugetPackages: false
+      logProjectEvents: false
+      createLogFile: false
