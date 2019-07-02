@@ -17,7 +17,7 @@ namespace UITests.Shared.Windows_UI_Xaml
 		private void Load(object sender, RoutedEventArgs e)
 		{
 			var html = (DataContext as WebViewViewModel).AlertHtml;
-			web.Source = html;
+			web.NavigateToString(html);
 		}
 	}
 }
