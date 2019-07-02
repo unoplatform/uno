@@ -20,7 +20,7 @@
 	</PropertyGroup>
 	
 	<ItemGroup>
-		<PackageReference Include="Xamarin.Build.Download" Version="0.4.9" />
+		<PackageReference Include="Xamarin.Build.Download" Version="0.4.11" />
 	</ItemGroup>
 
 	<ItemGroup Condition=" '$(TargetFramework)' == 'MonoAndroid80'">

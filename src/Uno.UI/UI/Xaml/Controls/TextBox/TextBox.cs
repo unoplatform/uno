@@ -45,6 +45,11 @@ namespace Windows.UI.Xaml.Controls
 		public event TextChangedEventHandler TextChanged;
 		public event RoutedEventHandler SelectionChanged;
 
+		/// <summary>
+		/// Set when <see cref="TextChanged"/> event is being raised, to ensure modifications by handlers don't trigger an infinite loop.
+		/// </summary>
+		private bool _isInvokingTextChanged;
+
 		public TextBox()
 		{
 			_isPassword = false;
@@ -133,7 +138,7 @@ namespace Windows.UI.Xaml.Controls
 			return new DependencyPropertyChangedEventArgs(property, oldValue, DependencyPropertyValuePrecedences.DefaultValue, newValue, DependencyPropertyValuePrecedences.DefaultValue);
 		}
 
-#region Text DependencyProperty
+		#region Text DependencyProperty
 
 		public string Text
 		{
@@ -157,7 +162,22 @@ namespace Windows.UI.Xaml.Controls
 
 		protected virtual void OnTextChanged(DependencyPropertyChangedEventArgs e)
 		{
-			TextChanged?.Invoke(this, new TextChangedEventArgs());
+			if (!_isInvokingTextChanged)
+			{
+#if !HAS_EXPENSIVE_TRYFINALLY // Try/finally incurs a very large performance hit in mono-wasm - https://github.com/mono/mono/issues/13653
+				try
+#endif
+				{
+					_isInvokingTextChanged = true;
+					TextChanged?.Invoke(this, new TextChangedEventArgs());
+				}
+#if !HAS_EXPENSIVE_TRYFINALLY // Try/finally incurs a very large performance hit in mono-wasm - https://github.com/mono/mono/issues/13653
+				finally
+#endif
+				{
+					_isInvokingTextChanged = false;
+				}
+			}
 
 			if (_placeHolder != null)
 			{
@@ -167,7 +187,7 @@ namespace Windows.UI.Xaml.Controls
 			UpdateButtonStates();
 		}
 
-#endregion
+		#endregion
 
 		protected override void OnFontSizeChanged(double oldValue, double newValue)
 		{
@@ -202,7 +222,7 @@ namespace Windows.UI.Xaml.Controls
 
 		partial void OnForegroundColorChangedPartial(Brush newValue);
 
-#region PlaceholderText DependencyProperty
+		#region PlaceholderText DependencyProperty
 
 		public string PlaceholderText
 		{
@@ -218,9 +238,9 @@ namespace Windows.UI.Xaml.Controls
 				new PropertyMetadata(defaultValue: string.Empty)
 			);
 
-#endregion
+		#endregion
 
-#region InputScope DependencyProperty
+		#region InputScope DependencyProperty
 
 		public InputScope InputScope
 		{
@@ -254,9 +274,9 @@ namespace Windows.UI.Xaml.Controls
 		}
 		partial void OnInputScopeChangedPartial(DependencyPropertyChangedEventArgs e);
 
-#endregion
+		#endregion
 
-#region MaxLength DependencyProperty
+		#region MaxLength DependencyProperty
 
 		public int MaxLength
 		{
@@ -282,9 +302,9 @@ namespace Windows.UI.Xaml.Controls
 
 		partial void OnMaxLengthChangedPartial(DependencyPropertyChangedEventArgs e);
 
-#endregion
+		#endregion
 
-#region AcceptsReturn DependencyProperty
+		#region AcceptsReturn DependencyProperty
 
 		public bool AcceptsReturn
 		{
@@ -311,9 +331,9 @@ namespace Windows.UI.Xaml.Controls
 
 		partial void OnAcceptsReturnChangedPartial(DependencyPropertyChangedEventArgs e);
 
-#endregion
+		#endregion
 
-#region TextWrapping DependencyProperty
+		#region TextWrapping DependencyProperty
 		public TextWrapping TextWrapping
 		{
 			get { return (TextWrapping)this.GetValue(TextWrappingProperty); }
@@ -338,9 +358,9 @@ namespace Windows.UI.Xaml.Controls
 
 		partial void OnTextWrappingChangedPartial(DependencyPropertyChangedEventArgs e);
 
-#endregion
+		#endregion
 
-#region IsReadOnly DependencyProperty
+		#region IsReadOnly DependencyProperty
 
 		public bool IsReadOnly
 		{
@@ -367,9 +387,9 @@ namespace Windows.UI.Xaml.Controls
 
 		partial void OnIsReadonlyChangedPartial(DependencyPropertyChangedEventArgs e);
 
-#endregion
+		#endregion
 
-#region Header DependencyProperties
+		#region Header DependencyProperties
 
 		public object Header
 		{
@@ -410,9 +430,9 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-#endregion
+		#endregion
 
-#region IsSpellCheckEnabled DependencyProperty
+		#region IsSpellCheckEnabled DependencyProperty
 
 		public bool IsSpellCheckEnabled
 		{
@@ -438,9 +458,9 @@ namespace Windows.UI.Xaml.Controls
 
 		partial void OnIsSpellCheckEnabledChangedPartial(DependencyPropertyChangedEventArgs e);
 
-#endregion
+		#endregion
 
-#region IsTextPredictionEnabled DependencyProperty
+		#region IsTextPredictionEnabled DependencyProperty
 
 		public bool IsTextPredictionEnabled
 		{
@@ -466,9 +486,9 @@ namespace Windows.UI.Xaml.Controls
 
 		partial void OnIsTextPredictionEnabledChangedPartial(DependencyPropertyChangedEventArgs e);
 
-#endregion
+		#endregion
 
-#region TextAlignment DependencyProperty
+		#region TextAlignment DependencyProperty
 
 #if XAMARIN_ANDROID
 		public new TextAlignment TextAlignment
@@ -491,7 +511,7 @@ namespace Windows.UI.Xaml.Controls
 
 		partial void OnTextAlignmentChangedPartial(DependencyPropertyChangedEventArgs e);
 
-#endregion
+		#endregion
 
 		protected override void OnFocusStateChanged(FocusState oldValue, FocusState newValue)
 		{
@@ -568,12 +588,12 @@ namespace Windows.UI.Xaml.Controls
 
 		private void UpdateButtonStates()
 		{
-			if (Text.HasValue() 
-				&& FocusState != FocusState.Unfocused 
+			if (Text.HasValue()
+				&& FocusState != FocusState.Unfocused
 				&& !IsReadOnly
 				&& !AcceptsReturn
 				&& TextWrapping == TextWrapping.NoWrap
-				// TODO (https://github.com/nventive/Uno/issues/683): && ActualWidth >= TDB / Note: We also have to invoke this method on SizeChanged
+			// TODO (https://github.com/nventive/Uno/issues/683): && ActualWidth >= TDB / Note: We also have to invoke this method on SizeChanged
 			)
 			{
 				VisualStateManager.GoToState(this, ButtonVisibleStateName, true);

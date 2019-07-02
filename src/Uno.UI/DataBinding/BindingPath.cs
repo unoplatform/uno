@@ -527,6 +527,7 @@ namespace Uno.UI.DataBinding
 					_valueGetter = null;
 					_precedenceSpecificGetter = null;
 					_substituteValueGetter = null;
+					_localValueSetter = null;
 					_valueSetter = null;
 					_valueUnsetter = null;
 				}
