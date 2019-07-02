@@ -5,7 +5,11 @@
     <TargetFrameworksCI>MonoAndroid80;MonoAndroid90;xamarinios10;net461;netstandard2.0;xamarinmac20</TargetFrameworksCI>
   </PropertyGroup>
 
-  <PropertyGroup>
+	<PropertyGroup Condition="'$(UnoTargetFrameworkOverride)'!=''">
+		<TargetFrameworks>$(UnoTargetFrameworkOverride)</TargetFrameworks>
+	</PropertyGroup>
+
+	<PropertyGroup>
 		<AssemblyName>Uno</AssemblyName>
 		<RootNamespace>Windows</RootNamespace>
 		<DefineConstants>$(DefineConstants);XAMARIN;IS_UNO;HAS_UMBRELLA_UI;HAS_UMBRELLA_BINDING;HAS_CRIPPLEDREFLECTION</DefineConstants>
