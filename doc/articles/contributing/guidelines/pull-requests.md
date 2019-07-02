@@ -1,6 +1,4 @@
----
-title: Guidelines for pull-requests
----
+# Guidelines for pull-requests
 
 ## Reviewing
 
@@ -19,10 +17,10 @@ The automation logic is as follows:
 * Not labelled with `do-not-merge/breaking-changes` or `do-not-merge/work-in-progress`
 * It will be automatically merged.
 
-This logic is defined in [this file](https://github.com/nventive/Uno/blob/master/.mergify.yml).
+This logic is defined in [this file](https://github.com/unoplatform/Uno/blob/master/.mergify.yml).
 
 Once a pull-request meets the above critera Mergify will automatically update the pull-request with the contents of master. If CI passes, then Mergify will merge that pull-request. If multiple pull-requests are mergeable open then Mergify will queue the mergeable pull requests and update them one at a time serially, merging if CI passes.
 
-If the branch is within the `nventive/uno` repository then the branch will be automatically deleted after merging.
+If the branch is within the `unoplatform/uno` repository then the branch will be automatically deleted after merging by the [delete-merged-branch](https://github.com/apps/delete-merged-branch) robot.
 
 

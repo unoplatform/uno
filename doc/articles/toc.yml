@@ -29,7 +29,7 @@
     - name: Migrate existing code
       href: howto-migrate-existing-code.md
 - name: Using Uno - features and controls
-  items: 
+  items:
   - name: Accessibility
     href: features/working-with-accessibility.md
   - name: Assets
@@ -67,6 +67,8 @@
       href: howto-use-uno-in-xamarin-forms.md
 - name: Contributing to Uno
   items:
+    - name: Guidelines for pull-requests
+      href: contributing/guidelines/pull-requests.md
     - name: Building and debugging Uno.UI
       href: uno-development\debugging-uno-ui.md
     - name: Working with the samples applications
