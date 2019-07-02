@@ -3,6 +3,7 @@ using Uno;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Uno.Devices.Sensors.Helpers;
 
 namespace Windows.Devices.Sensors
 {
@@ -11,6 +12,7 @@ namespace Windows.Devices.Sensors
 		private const string JsType = "Windows.Devices.Sensors.Accelerometer";
 		private const float Gravity = 9.81f;
 
+		private ShakeDetector _shakeDetector = null;
 
 		private Accelerometer()
 		{
@@ -29,10 +31,17 @@ namespace Windows.Devices.Sensors
 		}
 
 		private void StartReadingChanged() => AttachDeviceMotion();
-	
+
 		private void StopReadingChanged() => DetachDeviceMotion();
-		
-		private void StartShaken() => AttachDeviceMotion();
+
+		private void StartShaken()
+		{
+			if (_shakeDetector == null)
+			{
+				_shakeDetector = new ShakeDetector(this);
+			}
+			AttachDeviceMotion();
+		}
 
 		private void StopShaken() => DetachDeviceMotion();
 
@@ -62,12 +71,13 @@ namespace Windows.Devices.Sensors
 		[Preserve]
 		public static int DispatchReading(float x, float y, float z)
 		{
-			_instance.OnReadingChanged(
+			_instance?.OnReadingChanged(
 				new AccelerometerReading(
 					x / Gravity * -1,
 					y / Gravity * -1,
 					z / Gravity * -1,
 					DateTimeOffset.UtcNow));
+			_instance?._shakeDetector?.OnSensorChanged(x, y, z, DateTimeOffset.UtcNow);
 			return 0;
 		}
 	}

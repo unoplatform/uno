@@ -100,7 +100,7 @@ namespace Windows.Devices.Sensors
 			_readingChanged?.Invoke(this, new AccelerometerReadingChangedEventArgs(reading));
 		}
 
-		private void OnShaken(DateTimeOffset timestamp)
+		internal void OnShaken(DateTimeOffset timestamp)
 		{
 			_shaken?.Invoke(this, new AccelerometerShakenEventArgs(timestamp));
 		}

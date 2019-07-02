@@ -9,6 +9,7 @@ using Android.Hardware;
 using Android.Runtime;
 using Java.Lang;
 using Math = System.Math;
+using Uno.Devices.Sensors.Helpers;
 
 namespace Windows.Devices.Sensors
 {
@@ -121,24 +122,11 @@ namespace Windows.Devices.Sensors
 
 		class ShakeListener : Java.Lang.Object, ISensorEventListener
 		{
-			private const int MinimumForce = 10;
-			private const int MaxPauseBetweenDirectionChange = 200;
-			private const int MinDirectionChange = 3;
-			private const int MaxDurationOfShake = 400;
-
-			private readonly Accelerometer _accelerometer;
-
-			private long _firstDirectionChangeTime = 0;
-			private long _lastDirectionChangeTime = 0;
-			private int _directionChangeCount = 0;
-			private float _lastX = 0;
-			private float _lastY = 0;
-			private float _lastZ = 0;
-			
+			private readonly ShakeDetector _shakeDetector;
 
 			public ShakeListener(Accelerometer accelerometer)
 			{
-				_accelerometer = accelerometer;
+				_shakeDetector = new ShakeDetector(accelerometer);
 			}
 
 			public void OnAccuracyChanged(Sensor sensor, [GeneratedEnum] SensorStatus accuracy)
@@ -151,65 +139,7 @@ namespace Windows.Devices.Sensors
 				var y = e.Values[1];
 				var z = e.Values[2];
 
-				// calculate movement
-				float totalMovement = Math.Abs(x + y + z - _lastX - _lastY - _lastZ);
-
-				if (totalMovement > MinimumForce)
-				{
-
-					// get time
-					var now = JavaSystem.CurrentTimeMillis();
-
-					// store first movement time
-					if (_firstDirectionChangeTime == 0)
-					{
-						_firstDirectionChangeTime = now;
-						_lastDirectionChangeTime = now;
-					}
-
-					// check if the last movement was not long ago
-					var lastChangeWasAgo = now - _lastDirectionChangeTime;
-					if (lastChangeWasAgo < MaxPauseBetweenDirectionChange)
-					{
-
-						// store movement data
-						_lastDirectionChangeTime = now;
-						_directionChangeCount++;
-
-						// store last sensor data 
-						_lastX = x;
-						_lastY = y;
-						_lastZ = z;
-
-						// check how many movements are so far
-						if (_directionChangeCount >= MinDirectionChange)
-						{
-
-							// check total duration
-							long totalDuration = now - _firstDirectionChangeTime;
-							if (totalDuration < MaxDurationOfShake)
-							{
-								ResetShake();
-								_accelerometer.OnShaken(e.Timestamp.SensorTimestampToDateTimeOffset());
-							}
-						}
-
-					}
-					else
-					{
-						ResetShake();
-					}
-				}
-			}
-
-			private void ResetShake()
-			{
-				_firstDirectionChangeTime = 0;
-				_directionChangeCount = 0;
-				_lastDirectionChangeTime = 0;
-				_lastX = 0;
-				_lastY = 0;
-				_lastZ = 0;
+				_shakeDetector.OnSensorChanged(x, y, z, e.Timestamp.SensorTimestampToDateTimeOffset());
 			}
 		}
 	}
