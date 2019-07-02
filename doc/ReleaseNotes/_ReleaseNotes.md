@@ -180,6 +180,7 @@
 * RadioButton was not applying Checked state correctly with non-standard visual state grouping in style
 * [Android] Fix several bugs preventing AutoSuggestBox from working on Android. (#1012)
 * #1062 TextBlock measure caching can wrongly hit
+* 153974 [Android] fixed button flyout placement
 * Fix support for ScrollBar touch events (#871)
 * [iOS] Area of view outside Clip rect now allows touch to pass through, this fixes NavigationView not allowing touches to children (#1018)
 * `ComboBox` drop down is now placed following a logic which is closer to UWP and it longer flickers when it appears (especilly on WASM)
