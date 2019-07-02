@@ -8,6 +8,7 @@
 * Support setting `Style` inline (eg `<TextBlock><TextBlock.Style><Style TargetType="TextBlock"><Setter>...`)
 * [Wasm] Add support for `DisplayInformation` properties `LogicalDpi`, `ResolutionScale`, `ScreenWidthInRawPixels`, `RawPixelsPerViewPixel` , and `ScreenHeightInRawPixels`¸
 * Permit `DependencyProperty` to be set reentrantly. Eg this permits `TextBox.TextChanged` to modify the `Text` property (previously this could only be achieved using `Dispatcher.RunAsync()`).
+* Add support for filtered solutions development for Uno.UI contributions.
 
 ### Breaking changes
 *
