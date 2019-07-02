@@ -28,7 +28,7 @@ namespace UITests.Shared.Windows_Devices
 		{
 			this.InitializeComponent();
 			DataContext = new AccelerometerTestsViewModel(Dispatcher);
-		}		
+		}
 	}
 
 	[Bindable]
@@ -112,8 +112,15 @@ namespace UITests.Shared.Windows_Devices
 
 		private async void Accelerometer_ReadingChanged(Accelerometer sender, AccelerometerReadingChangedEventArgs args)
 		{
+			Debug.WriteLine(args.Reading.AccelerationX);
+			Debug.WriteLine(args.Reading.AccelerationY);
+			Debug.WriteLine(args.Reading.AccelerationZ);
+			Debug.WriteLine(args.Reading.Timestamp);
 			await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal,
-				() => LastReading = args.Reading);
+				() =>
+				{
+					LastReading = args.Reading;
+				});
 		}
 
 		private async void Accelerometer_Shaken(Accelerometer sender, AccelerometerShakenEventArgs args)
@@ -123,3 +130,4 @@ namespace UITests.Shared.Windows_Devices
 		}
 	}
 }
+
