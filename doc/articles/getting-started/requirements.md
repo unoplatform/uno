@@ -1,9 +1,6 @@
----
-title: Uno Platform requirements
----
+# Uno Platform requirements
 
 The platform requirements for the Uno Platform are as follows:
-
 
 ## Android
 
