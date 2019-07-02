@@ -28,97 +28,98 @@ namespace UITests.Shared.Windows_Devices
 		{
 			this.InitializeComponent();
 			DataContext = new AccelerometerTestsViewModel(Dispatcher);
+		}		
+	}
+
+	[Bindable]
+	public class AccelerometerTestsViewModel : ViewModelBase
+	{
+		private Accelerometer _accelerometer = null;
+		private AccelerometerReading _lastReading;
+		private string _lastShake;
+		private bool _readingChangedAttached;
+		private bool _shakenAttached;
+
+		public AccelerometerTestsViewModel(CoreDispatcher dispatcher) : base(dispatcher)
+		{
+			_accelerometer = Accelerometer.GetDefault();
+			_accelerometer.ReportInterval = 250;
 		}
 
-		private class AccelerometerTestsViewModel : ViewModelBase
+		public Command AttachReadingChangedCommand => new Command((p) =>
 		{
-			private Accelerometer _accelerometer = null;
-			private AccelerometerReading _lastReading;
-			private string _lastShake;
-			private bool _readingChangedAttached;
-			private bool _shakenAttached;
+			_accelerometer.ReadingChanged += Accelerometer_ReadingChanged;
+			ReadingChangedAttached = true;
+		});
 
-			public AccelerometerTestsViewModel(CoreDispatcher dispatcher) : base(dispatcher)
+		public Command DetachReadingChangedCommand => new Command((p) =>
+		{
+			_accelerometer.ReadingChanged -= Accelerometer_ReadingChanged;
+			ReadingChangedAttached = false;
+		});
+
+		public bool ReadingChangedAttached
+		{
+			get => _readingChangedAttached;
+			set
 			{
-				_accelerometer = Accelerometer.GetDefault();
-				_accelerometer.ReportInterval = 250;
+				_readingChangedAttached = value;
+				RaisePropertyChanged();
 			}
+		}
 
-			public Command AttachReadingChangedCommand => new Command((p) =>
-			{
-				_accelerometer.ReadingChanged += Accelerometer_ReadingChanged;
-				ReadingChangedAttached = true;
-			});
+		public Command AttachShakenCommand => new Command((p) =>
+		{
+			_accelerometer.Shaken += Accelerometer_Shaken;
+			ShakenAttached = true;
+		});
 
-			public Command DetachReadingChangedCommand => new Command((p) =>
-			{
-				_accelerometer.ReadingChanged -= Accelerometer_ReadingChanged;
-				ReadingChangedAttached = false;
-			});
+		public Command DetachShakenCommand => new Command((p) =>
+		{
+			_accelerometer.Shaken -= Accelerometer_Shaken;
+			ShakenAttached = false;
+		});
 
-			public bool ReadingChangedAttached
+		public bool ShakenAttached
+		{
+			get => _shakenAttached;
+			set
 			{
-				get => _readingChangedAttached;
-				set
-				{
-					_readingChangedAttached = value;
-					RaisePropertyChanged();
-				}
+				_shakenAttached = value;
+				RaisePropertyChanged();
 			}
+		}
 
-			public Command AttachShakenCommand => new Command((p) =>
+		public AccelerometerReading LastReading
+		{
+			get => _lastReading;
+			set
 			{
-				_accelerometer.Shaken += Accelerometer_Shaken;
-				ShakenAttached = true;				
-			});
-
-			public Command DetachShakenCommand => new Command((p) =>
-			{
-				_accelerometer.Shaken -= Accelerometer_Shaken;
-				ShakenAttached = false;
-			});
-
-			public bool ShakenAttached
-			{
-				get => _shakenAttached;
-				set
-				{
-					_shakenAttached = value;
-					RaisePropertyChanged();
-				}
+				_lastReading = value;
+				RaisePropertyChanged();
 			}
+		}
 
-			public AccelerometerReading LastReading
+		public string LastShake
+		{
+			get => _lastShake;
+			set
 			{
-				get => _lastReading;
-				set
-				{
-					_lastReading = value;
-					RaisePropertyChanged();
-				}
+				_lastShake = value;
+				RaisePropertyChanged();
 			}
+		}
 
-			public string LastShake
-			{
-				get => _lastShake;
-				set
-				{
-					_lastShake = value;
-					RaisePropertyChanged();
-				}
-			}
+		private async void Accelerometer_ReadingChanged(Accelerometer sender, AccelerometerReadingChangedEventArgs args)
+		{
+			await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal,
+				() => LastReading = args.Reading);
+		}
 
-			private async void Accelerometer_ReadingChanged(Accelerometer sender, AccelerometerReadingChangedEventArgs args)
-			{
-				await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal,
-					() => LastReading = args.Reading);
-			}
-
-			private async void Accelerometer_Shaken(Accelerometer sender, AccelerometerShakenEventArgs args)
-			{
-				await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal,
-					() => LastShake = args.Timestamp.ToString("R"));
-			}
+		private async void Accelerometer_Shaken(Accelerometer sender, AccelerometerShakenEventArgs args)
+		{
+			await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal,
+				() => LastShake = args.Timestamp.ToString("R"));
 		}
 	}
 }

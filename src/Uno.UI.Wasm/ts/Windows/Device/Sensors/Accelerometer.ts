@@ -6,7 +6,7 @@ namespace Windows.Devices.Sensors {
 
 	export class Accelerometer {
 
-		private static dispatchReading: any;
+		private static dispatchReading: (x:number, y:number, z:number) => number;
 
 		public static initialize(): boolean {
 			if (window.DeviceMotionEvent) {
@@ -17,15 +17,15 @@ namespace Windows.Devices.Sensors {
 		}
 
 		public static startReading() {
-			window.addEventListener('devicemotion', this.readingChangedHandler);
+			window.addEventListener('devicemotion', Accelerometer.readingChangedHandler);
 		}
 
 		public static stopReading() {
-			window.removeEventListener('devicemotion', this.readingChangedHandler);
+			window.removeEventListener('devicemotion', Accelerometer.readingChangedHandler);
 		}
 
-		private static readingChangedHandler(event:any) {
-			this.dispatchReading(
+		private static readingChangedHandler(event: any) {
+			Accelerometer.dispatchReading(
 				event.accelerationIncludingGravity.x,
 				event.accelerationIncludingGravity.y,
 				event.accelerationIncludingGravity.z);

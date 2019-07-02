@@ -2185,19 +2185,19 @@ var Windows;
             class Accelerometer {
                 static initialize() {
                     if (window.DeviceMotionEvent) {
-                        this.dispatchReading = Module.mono_bind_static_method("[Uno] Windows.Devices.Sensors.Accelerometer:DispatchBackRequest");
+                        this.dispatchReading = Module.mono_bind_static_method("[Uno] Windows.Devices.Sensors.Accelerometer:DispatchReading");
                         return true;
                     }
                     return false;
                 }
                 static startReading() {
-                    window.addEventListener('devicemotion', this.readingChangedHandler);
+                    window.addEventListener('devicemotion', Accelerometer.readingChangedHandler);
                 }
                 static stopReading() {
-                    window.removeEventListener('devicemotion', this.readingChangedHandler);
+                    window.removeEventListener('devicemotion', Accelerometer.readingChangedHandler);
                 }
                 static readingChangedHandler(event) {
-                    this.dispatchReading(event.accelerationIncludingGravity.x, event.accelerationIncludingGravity.y, event.accelerationIncludingGravity.z);
+                    Accelerometer.dispatchReading(event.accelerationIncludingGravity.x, event.accelerationIncludingGravity.y, event.accelerationIncludingGravity.z);
                 }
             }
             Sensors.Accelerometer = Accelerometer;

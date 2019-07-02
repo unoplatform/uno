@@ -15,6 +15,7 @@
   <assembly fullname="Uno">
     <type fullname="Windows.UI.Core.CoreDispatcher" />
     <type fullname="Windows.UI.Core.SystemNavigationManager" />
+    <type fullname="Windows.Devices.Sensors.Accelerometer" />
   </assembly>
   
   <assembly fullname="Uno.Foundation">
