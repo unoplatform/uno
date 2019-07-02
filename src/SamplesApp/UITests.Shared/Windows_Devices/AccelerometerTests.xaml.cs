@@ -112,6 +112,7 @@ namespace UITests.Shared.Windows_Devices
 
 		private async void Accelerometer_ReadingChanged(Accelerometer sender, AccelerometerReadingChangedEventArgs args)
 		{
+			//the properties are accessed to make sure linker does not throw them away
 			Debug.WriteLine(args.Reading.AccelerationX);
 			Debug.WriteLine(args.Reading.AccelerationY);
 			Debug.WriteLine(args.Reading.AccelerationZ);
