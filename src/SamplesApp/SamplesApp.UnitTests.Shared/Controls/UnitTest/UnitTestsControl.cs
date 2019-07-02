@@ -43,6 +43,11 @@ namespace Uno.UI.Samples.Tests
 			var t = Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () => runStatus.Text = message);
 		}
 
+		private void ReportFailedTests(int failedCount)
+		{
+			var t = Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () => failedTests.Text = failedCount.ToString());
+		}
+
 		private void ReportTestClass(TypeInfo testClass)
 		{
 			var t = Dispatcher.RunAsync(
@@ -86,6 +91,8 @@ namespace Uno.UI.Samples.Tests
 		{
 			try
 			{
+				int failedTests = 0;
+
 				ReportMessage("Enumerating tests");
 
 				var testTypes = InitializeTests();
@@ -121,6 +128,7 @@ namespace Uno.UI.Samples.Tests
 						}
 						catch (Exception e)
 						{
+							failedTests++;
 							if (e is AggregateException agg)
 							{
 								e = agg.InnerExceptions.FirstOrDefault();
@@ -145,10 +153,12 @@ namespace Uno.UI.Samples.Tests
 				}
 
 				ReportMessage("Tests finished running.");
+				ReportFailedTests(failedTests);
 			}
 			catch(Exception e)
 			{
 				ReportMessage($"Tests runner failed {e}");
+				ReportFailedTests(-1);
 			}
 		}
 
