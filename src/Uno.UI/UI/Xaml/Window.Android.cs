@@ -261,14 +261,14 @@ namespace Windows.UI.Xaml
 		private bool IsNavigationBarVisible()
 		{
 			var decorView = (ContextHelper.Current as Activity)?.Window?.DecorView;
-
 			if (decorView == null)
 			{
 				throw new global::System.Exception("Cannot check NavigationBar visibility property. DecorView is not defined yet.");
 			}
 
-			return ((int)decorView.SystemUiVisibility & (int)SystemUiFlags.HideNavigation) == 0
-				|| ((int)decorView.SystemUiVisibility & (int)SystemUiFlags.LayoutHideNavigation) == 0;
+			var visibility = decorView.SystemUiVisibility;
+			return visibility.HasFlag(SystemUiFlags.HideNavigation)
+				|| visibility.HasFlag(SystemUiFlags.LayoutHideNavigation);
 		}
 
 		private bool IsNavigationBarTranslucent()
@@ -278,8 +278,9 @@ namespace Windows.UI.Xaml
 				throw new Exception("Cannot check NavigationBar translucent property. Activity is not defined yet.");
 			}
 
-			return activity.Window.Attributes.Flags.HasFlag(WindowManagerFlags.TranslucentNavigation)
-				|| activity.Window.Attributes.Flags.HasFlag(WindowManagerFlags.LayoutNoLimits);
+			var flags = activity.Window.Attributes.Flags;
+			return flags.HasFlag(WindowManagerFlags.TranslucentNavigation)
+				|| flags.HasFlag(WindowManagerFlags.LayoutNoLimits);
 		}
 		#endregion
 	}

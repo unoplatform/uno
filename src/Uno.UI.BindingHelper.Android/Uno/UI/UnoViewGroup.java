@@ -151,15 +151,24 @@ public abstract class UnoViewGroup
 	{
 		if(!_unoLayoutOverride)
 		{
-			_isInOnLayoutCore = true;
-			_childrenNeedingForceLayout.clear();
-			onLayoutCore(changed, left, top, right, bottom);
+			try
+			{
+				_isInOnLayoutCore = true;
 
-			for (int i = 0 ; i < _childrenNeedingForceLayout.size() ; i++) {
-				_childrenNeedingForceLayout.get(i).forceLayout();
+				_childrenNeedingForceLayout.clear();
+				onLayoutCore(changed, left, top, right, bottom);
+
+				if (!_childrenNeedingForceLayout.isEmpty()) {
+					for (int i = 0; i < _childrenNeedingForceLayout.size(); i++) {
+						_childrenNeedingForceLayout.get(i).forceLayout();
+					}
+					_childrenNeedingForceLayout.clear();
+				}
 			}
-			_childrenNeedingForceLayout.clear();
-			_isInOnLayoutCore = false;
+			finally
+			{
+				_isInOnLayoutCore = false;
+			}
 		}
 	}
 
