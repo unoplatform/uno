@@ -76,7 +76,7 @@ namespace SamplesApp.UITests
 
 		[OneTimeTearDown]
 		public void CloseBrowser()
-			=> _app.Dispose();
+			=> _app?.Dispose();
 
 		protected void Run(string metadataName)
 		{
