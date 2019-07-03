@@ -29,7 +29,7 @@ export UNO_UITEST_ANDROIDAPK_PATH=$BUILD_SOURCESDIRECTORY/src/Sample/Sample.Droi
 
 cd $BUILD_SOURCESDIRECTORY/build
 
-mono nuget.exe install NUnit.ConsoleRunner -Version 3.10.0
+mono nuget/NuGet.exe install NUnit.ConsoleRunner -Version 3.10.0
 
 mkdir -p $UNO_UITEST_SCREENSHOT_PATH
 
