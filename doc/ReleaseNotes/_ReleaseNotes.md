@@ -132,7 +132,8 @@
 * [Android] Unless nested under `SecondaryCommands`, the `AppBarButton.Label` property will no longer be used for the title of menu item, instead use the `AppBarButton.Content` property. For `SecondaryCommands`, keep using `AppBarButton.Label`.
 * The `WordEllipsis` was removed from the `TextWrapping` as it's not a valid value for UWP (And it was actually supported only on WASM) (The right way to get ellipsis is with the `TextTrimming.WordEllipsis`)
 * [Android] `Popup.Anchor` is no longer available
-* TextBox no longer raises TextChanged when its template is applied, in line with UWP.
+* `TextBox` no longer raises TextChanged when its template is applied, in line with UWP.
+* `TextBox.TextChanged` is now called asynchronously after the UI is updated, in line with UWP. For most uses `TextChanging` should be preferred.
 
 ### Bug fixes
 * DatePicker FlyoutPlacement now set to Full by default

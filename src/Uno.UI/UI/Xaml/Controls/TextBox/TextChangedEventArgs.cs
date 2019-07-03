@@ -4,8 +4,11 @@ using System.Text;
 
 namespace Windows.UI.Xaml.Controls
 {
-	public partial class TextChangedEventArgs : RoutedEventArgs
+	public sealed partial class TextChangedEventArgs : RoutedEventArgs
 	{
-		// TODO: Implement
+		internal TextChangedEventArgs()
+		{
+
+		}
 	}
 }

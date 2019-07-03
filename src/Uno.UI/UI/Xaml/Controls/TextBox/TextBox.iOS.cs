@@ -104,6 +104,7 @@ namespace Windows.UI.Xaml.Controls
 					_textBoxView = new MultilineTextBoxView(this);
 
 					_contentElement.Content = _textBoxView;
+					_textBoxView.SetTextNative(Text);
 					InitializeProperties();
 				}
 				else
@@ -116,6 +117,7 @@ namespace Windows.UI.Xaml.Controls
 					_textBoxView = new SinglelineTextBoxView(this);
 
 					_contentElement.Content = _textBoxView;
+					_textBoxView.SetTextNative(Text);
 					InitializeProperties();
 				}
 			}

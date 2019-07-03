@@ -87,6 +87,7 @@ namespace Windows.UI.Xaml.Controls
 					_textBoxView = new TextBoxView(this);
 
 					_contentElement.Content = _textBoxView;
+					_textBoxView.SetTextNative(Text);
 				}
 
 				SetupTextBoxView();
