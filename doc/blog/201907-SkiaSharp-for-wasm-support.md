@@ -15,6 +15,7 @@ XAML:
 <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
     <skia:SKXamlCanvas x:Name="test" PaintSurface="OnPaintSurface" />
 </Grid>
+```
 
 Code Behind:
 
