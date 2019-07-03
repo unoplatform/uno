@@ -4,64 +4,144 @@ using System.Reflection;
 using NUnit.Framework;
 using Uno.UITest;
 using Uno.UITest.Helpers.Queries;
+using Uno.UITest.Xamarin.Extensions;
 
 namespace SamplesApp.UITests
 {
 	public class AppInitializer
 	{
-		public const string UITestPlatform = "UITEST_PLATFORM";
+		public const string UITestPlatform = "UNO_UITEST_PLATFORM";
+		public const string UITEST_IOSBUNDLE_PATH = "UNO_UITEST_IOSBUNDLE_PATH";
+		public const string UITEST_ANDROIDAPK_PATH = "UNO_UITEST_ANDROIDAPK_PATH";
+		public const string UITEST_SCREENSHOT_PATH = "UNO_UITEST_SCREENSHOT_PATH";
+
 		private const string DriverPath = @"..\..\..\..\SamplesApp.Wasm.UITests\node_modules\chromedriver\lib\chromedriver";
 
-		public static IApp StartApp()
+		public static IApp StartApp(bool alreadyRunningApp)
 		{
+			Console.WriteLine($"Starting app ({alreadyRunningApp})");
+
 			switch (Xamarin.UITest.TestEnvironment.Platform)
 			{
-				//case Xamarin.UITest.TestPlatform.TestCloudiOS:
-				//	return ConfigureApp
-				//		.iOS
-				//		.StartApp(Xamarin.UITest.Configuration.AppDataMode.Clear);
+				case Xamarin.UITest.TestPlatform.TestCloudiOS:
+					return Xamarin.UITest.ConfigureApp
+						.iOS
+						.StartApp(Xamarin.UITest.Configuration.AppDataMode.Clear)
+						.ToUnoApp();
 
-				//case TestPlatform.TestCloudAndroid:
-				//	return ConfigureApp
-				//		.Android
-				//		.StartApp(Xamarin.UITest.Configuration.AppDataMode.Clear);
+				case Xamarin.UITest.TestPlatform.TestCloudAndroid:
+					return Xamarin.UITest.ConfigureApp
+						.Android
+						.StartApp(Xamarin.UITest.Configuration.AppDataMode.Clear)
+						.ToUnoApp();
 
 				default:
 					var localPlatform = GetLocalPlatform();
 					switch (GetLocalPlatform())
 					{
-						//case Platform.Android:
-						//	return ConfigureApp
-						//		.Android
-						//		.Debug()
-						//		.EnableLocalScreenshots()
-						//		.InstalledApp("com.nventive.uno.samples")
-						//		.StartApp();
+						case Platform.Android:
+							return CreateAndroidApp(alreadyRunningApp);
 
-						//case Platform.iOS:
-						//	return ConfigureApp
-						//		.iOS
-						//		.Debug()
-						//		.EnableLocalScreenshots()
-						//		.InstalledApp("com.nventive.uno.samples")
-						//		.StartApp();
+						case Platform.iOS:
+							return CreateiOSApp(alreadyRunningApp);
 
 						case Platform.Browser:
-							return Uno.UITest.Selenium.ConfigureApp
-								.WebAssembly
-								.Uri(new Uri(Constants.DefaultUri))
-								.ChromeDriverLocation(Path.Combine(TestContext.CurrentContext.TestDirectory, DriverPath.Replace('\\', Path.DirectorySeparatorChar)))
-								.ScreenShotsPath(TestContext.CurrentContext.TestDirectory)
-#if DEBUG
-								.Headless(false)
-#endif
-								.StartApp();
-
+							return CreateBrowserApp();
 
 						default:
 							throw new Exception($"Platform {localPlatform} is not enabled.");
 					}
 			}
+		}
+
+		private static IApp CreateBrowserApp() => Uno.UITest.Selenium.ConfigureApp
+			.WebAssembly
+			.Uri(new Uri(Constants.DefaultUri))
+			.ChromeDriverLocation(Path.Combine(TestContext.CurrentContext.TestDirectory, DriverPath.Replace('\\', Path.DirectorySeparatorChar)))
+			.ScreenShotsPath(TestContext.CurrentContext.TestDirectory)
+#if DEBUG
+			.Headless(false)
+#endif
+			.StartApp();
+
+		private static IApp CreateAndroidApp(bool alreadyRunningApp)
+		{
+			// To set in case of Xamarin.UITest errors
+			//
+			Environment.SetEnvironmentVariable("ANDROID_HOME", @"C:\Program Files (x86)\Android\android-sdk");
+			Environment.SetEnvironmentVariable("JAVA_HOME", @"C:\Program Files\Android\Jdk\microsoft_dist_openjdk_1.8.0.25");
+
+			var androidConfig = Xamarin.UITest.ConfigureApp
+				.Android
+				.Debug()
+				.EnableLocalScreenshots();
+
+			if (GetAndroidApkPath() is string bundlePath)
+			{
+				androidConfig = androidConfig.ApkFile(bundlePath);
+			}
+			else
+			{
+				androidConfig = androidConfig.InstalledApp(Constants.AndroidAppName);
+			}
+
+			var app = alreadyRunningApp
+				? androidConfig.ConnectToApp()
+				: androidConfig.StartApp();
+
+			ApplyScreenShotPath();
+
+			return app.ToUnoApp();
+		}
+
+		private static void ApplyScreenShotPath()
+		{
+			var value = Environment.GetEnvironmentVariable(UITEST_SCREENSHOT_PATH);
+			if (!string.IsNullOrWhiteSpace(value))
+			{
+				Environment.CurrentDirectory = value;
+			}
+			else
+			{
+				Environment.CurrentDirectory = Path.GetDirectoryName(new Uri(typeof(AppInitializer).Assembly.Location).LocalPath);
+			}
+		}
+
+		private static IApp CreateiOSApp(bool alreadyRunningApp)
+		{
+			var iOSConfig = Xamarin.UITest.ConfigureApp
+				.iOS
+				.Debug()
+				.EnableLocalScreenshots();
+
+			if (GetiOSAppBundlePath() is string bundlePath)
+			{
+				iOSConfig = iOSConfig.AppBundle(bundlePath);
+			}
+			else
+			{
+				iOSConfig = iOSConfig.InstalledApp(Constants.AndroidAppName);
+			}
+
+			var app = alreadyRunningApp
+				? iOSConfig.ConnectToApp()
+				: iOSConfig.StartApp();
+
+			ApplyScreenShotPath();
+
+			return app.ToUnoApp();
+		}
+
+		private static string GetAndroidApkPath()
+		{
+			var value = Environment.GetEnvironmentVariable(UITEST_ANDROIDAPK_PATH);
+			return string.IsNullOrWhiteSpace(value) ? null : value;
+		}
+
+		private static string GetiOSAppBundlePath()
+		{
+			var value = Environment.GetEnvironmentVariable(UITEST_IOSBUNDLE_PATH);
+			return string.IsNullOrWhiteSpace(value) ? null : value;
 		}
 
 		public static Platform GetLocalPlatform()

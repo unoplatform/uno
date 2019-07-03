@@ -16,25 +16,11 @@ jobs:
     displayName: Select Xamarin Version
 
   - bash: |
-      chmod +x $(build.sourcesdirectory)/build/macos-setup-android.sh
-      $(build.sourcesdirectory)/build/macos-setup-android.sh
+      chmod +x $(build.sourcesdirectory)/build/android-uitest-run.sh
+      $(build.sourcesdirectory)/build/android-uitest-run.sh
 
-    displayName: Create Android simulator
+    displayName: Run Android Tests
 
-  - task: NuGetToolInstaller@0
-    inputs:
-      versionSpec: 4.7.0
-      checkLatest: false
-
-  - task: MSBuild@1
-    inputs:
-      solution: src/SamplesApp/SamplesApp.Droid/SamplesApp.Droid.csproj
-      msbuildLocationMethod: version
-      msbuildVersion: latest
-      msbuildArchitecture: x86
-      msbuildArguments: /r /p:Configuration=Release /detailedsummary /bl:$(build.artifactstagingdirectory)/build-android.binlog
-      clean: false
-      maximumCpuCount: true
-      restoreNugetPackages: false
-      logProjectEvents: false
-      createLogFile: false
+    env:
+      BUILD_SOURCESDIRECTORY: "$(build.sourcesdirectory)"
+      BUILD_ARTIFACTSTAGINGDIRECTORY: "$(build.artifactstagingdirectory)"

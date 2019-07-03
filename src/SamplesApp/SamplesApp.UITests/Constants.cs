@@ -10,6 +10,10 @@ namespace SamplesApp.UITests
 	public class Constants
 	{
 		public const string DefaultUri = "http://localhost:55838/";
-		public const Platform CurrentPlatform = Platform.Browser;
+		public readonly static string iOSAppName;
+		public readonly static string AndroidAppName = "uno.platform.unosampleapp";
+
+		// Default active platform when running under Visual Studio test runner
+		public const Platform CurrentPlatform = Platform.Android;
 	}
 }
