@@ -20,6 +20,8 @@ namespace SamplesApp.UITests
 			var runButton = _app.Marked("runButton");
 			var failedTests = _app.Marked("failedTests");
 
+			_app.WaitForElement(runButton);
+
 			_app.Tap(runButton);
 
 			_app.WaitFor(() => failedTests.GetDependencyPropertyValue("Text").ToString() != "Pending...");
