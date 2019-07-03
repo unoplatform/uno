@@ -2,7 +2,6 @@
 using Windows.UI.Xaml.Controls;
 using SamplesApp.UITests.Windows_UI_Xaml_Controls.Models;
 using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
 
 namespace UITests.Shared.Toolkit
 {
