@@ -8,7 +8,7 @@
 ### Bug fixes
 * 
 
-## Release 1.44.0
+## Release 1.45.0
 ### Features
 * Add support for `Windows.System.Display.DisplayRequest` API on iOS and Android
 * Add support for the following `Windows.System.Power.PowerManager` APIs on iOS and Android:
