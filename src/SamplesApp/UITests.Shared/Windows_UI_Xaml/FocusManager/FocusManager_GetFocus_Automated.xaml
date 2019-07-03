@@ -5,7 +5,7 @@
 						 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 						 mc:Ignorable="">
 
-  <Grid Background="White">
+  <Grid>
 	<StackPanel x:Name="RootStackPanel"
 							VerticalAlignment="Center">
 

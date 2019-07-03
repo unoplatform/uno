@@ -66,10 +66,12 @@ namespace SamplesApp.UITests
 
 		private static IApp CreateAndroidApp(bool alreadyRunningApp)
 		{
+#if DEBUG
 			// To set in case of Xamarin.UITest errors
 			//
 			Environment.SetEnvironmentVariable("ANDROID_HOME", @"C:\Program Files (x86)\Android\android-sdk");
 			Environment.SetEnvironmentVariable("JAVA_HOME", @"C:\Program Files\Android\Jdk\microsoft_dist_openjdk_1.8.0.25");
+#endif
 
 			var androidConfig = Xamarin.UITest.ConfigureApp
 				.Android
