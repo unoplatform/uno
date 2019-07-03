@@ -26,7 +26,7 @@ echo "Emulator started"
 
 export UNO_UITEST_SCREENSHOT_PATH=$BUILD_ARTIFACTSTAGINGDIRECTORY/screenshots/android
 export UNO_UITEST_PLATFORM=Android
-export UNO_UITEST_ANDROIDAPK_PATH=$BUILD_SOURCESDIRECTORY/src/Sample/Sample.Droid/bin/Release/uno.platform.unosampleapp.apk
+export UNO_UITEST_ANDROIDAPK_PATH=$BUILD_SOURCESDIRECTORY/src/SamplesApp/Sample.Droid/bin/Release/uno.platform.unosampleapp.apk
 
 cd $BUILD_SOURCESDIRECTORY/build
 
