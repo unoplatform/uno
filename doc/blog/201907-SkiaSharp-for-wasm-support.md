@@ -1,4 +1,4 @@
-# SkiaSharp support for WebAssembly
+# SkiaSharp support for WebAssembly via Uno Platform
 
 Skia is an open source 2D graphics library which provides common APIs that work across a variety of hardware and software platforms. It serves as the graphics engine for Google Chrome and Chrome OS, Android, Mozilla Firefox and Firefox OS, and many other products. 
 
@@ -80,3 +80,6 @@ You can follow the progress with [this GitHub issue](https://github.com/unoplatf
 
 Let us know what you think!
 
+_If you are new to Uno Platform and are wondering how to get started, we've created a
+step-by-step tutorial which gets you from zero to a small, fully working app on WebAssembly, iOS and
+Android - [Get Started now](https://platform.uno/docs/articles/getting-started-tutorial-1.html)_
