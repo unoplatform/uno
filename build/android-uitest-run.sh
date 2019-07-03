@@ -13,8 +13,9 @@ echo "Starting emulator"
 # Start emulator in background
 nohup $ANDROID_HOME/emulator/emulator -avd xamarin_android_emulator -skin 1280x800 -no-audio -no-snapshot > /dev/null 2>&1 &
 
-# build the sample, while the emulator is starting
+# build the sample and tests, while the emulator is starting
 msbuild /r /p:Configuration=Release $BUILD_SOURCESDIRECTORY/src/SamplesApp/SamplesApp.Droid/SamplesApp.Droid.csproj
+msbuild /r /p:Configuration=Release $BUILD_SOURCESDIRECTORY/src/SamplesApp/SamplesApp.UITests/SamplesApp.UITests.csproj
 
 # Wait for the emulator to finish booting
 $ANDROID_HOME/platform-tools/adb wait-for-device shell 'while [[ -z $(getprop sys.boot_completed | tr -d '\r') ]]; do sleep 1; done; input keyevent 82'
