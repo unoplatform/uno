@@ -1,12 +1,16 @@
 # SkiaSharp support for WebAssembly via Uno Platform
 
-Skia is an open source 2D graphics library which provides common APIs that work across a variety of hardware and software platforms. It serves as the graphics engine for Google Chrome and Chrome OS, Android, Mozilla Firefox and Firefox OS, and many other products. 
+Today we are proud to announce that the Uno Platform now has initial support for Skia via the [Uno.SkiaSharp.Views](https://www.nuget.org/packages/Uno.SkiaSharp.Views) package which was published to NuGet moments ago. Skia is an open source 2D graphics library which provides common APIs that work across a variety of hardware and software platforms. It serves as the graphics engine for Google Chrome and Chrome OS, Android, Mozilla Firefox and Firefox OS, and many other products. 
 
-Today we are proud to announce that the Uno Platform now has initial support for Skia via the [Uno.SkiaSharp.Views](https://www.nuget.org/packages/Uno.SkiaSharp.Views) package which was published to NuGet moments ago. Head on over [skiasharp-wasm.platform.uno](https://skiasharp-wasm.platform.uno) to see Skia, the Uno Platform and WebAssembly working together. The WebAssembly specification is under active heavy development and thus for the best experience we recommend using a desktop computer and the latest canary version of your favorite browser. 
+Head on over [skiasharp-wasm.platform.uno](https://skiasharp-wasm.platform.uno) to see Skia, the Uno Platform and WebAssembly working together. For the best experience we recommend using a desktop computer and the latest canary version of your favourite browser as the [specification is under construction](https://github.com/WebAssembly/spec) and support for WebAssembly is rapidly improving.
 
 ![SkiaSharp for WebAssembly](Assets/201906-skiasharp-demo.png)
 
-You can experiment with `SKXamlCanvas` by playing with [this sample in our samples repository](https://github.com/nventive/Uno.Samples/tree/master/UI/SkiaSharpTest). Alternatively, you can take it for a spin with the following XAML and Code Behind.
+You can find the source code for [skiasharp-wasm.platform.uno](https://skiasharp-wasm.platform.uno) over at [unoplatform/Uno.SkiaSharp](https://github.com/unoplatform/Uno.SkiaSharp). Internally this application uses [SkiaSharp](https://github.com/mono/SkiaSharp), a .NET binding to [P/Invoke the Skia API](https://github.com/mono/SkiaSharp/blob/master/binding/Binding/SkiaApi.cs#L96-L97) and a [custom Skia build](https://github.com/mono/skia) to provide the [C API to allow for the .NET interop](https://github.com/mono/skia/blob/xamarin-mobile-bindings/include/c/sk_canvas.h#L18).
+
+Inside of the `Uno.SkiaSharp.Views` package you'll find support for the [SKXamlCanvas](https://docs.microsoft.com/en-us/dotnet/api/skiasharp.views.uwp.skxamlcanvas?view=skiasharp-views-uwp-1.68.0) UWP control which enables drawing using Skia in a specific section of the XAML visual tree.
+
+You can experiment with `SKXamlCanvas` by playing with [this sample](https://github.com/nventive/Uno.Samples/tree/master/UI/SkiaSharpTest)  in our samples repository. Alternatively, you can take it for a spin with the following XAML and Code Behind.
 
 XAML:
 ```xaml
@@ -50,11 +54,7 @@ private void OnPaintSurface(object sender, SKPaintSurfaceEventArgs e)
 }
 ```
 
-You can find the source code for [skiasharp-wasm.platform.uno](https://skiasharp-wasm.platform.uno) over at [unoplatform/Uno.SkiaSharp](https://github.com/unoplatform/Uno.SkiaSharp). Internally this application uses [SkiaSharp](https://github.com/mono/SkiaSharp), a .NET binding to [P/Invoke the Skia API](https://github.com/mono/SkiaSharp/blob/master/binding/Binding/SkiaApi.cs#L96-L97) and a [custom Skia build](https://github.com/mono/skia) to provide the [C API to allow for the .NET interop](https://github.com/mono/skia/blob/xamarin-mobile-bindings/include/c/sk_canvas.h#L18).
-
-Inside of the `Uno.SkiaSharp.Views` package you'll find support for the [SKXamlCanvas](https://docs.microsoft.com/en-us/dotnet/api/skiasharp.views.uwp.skxamlcanvas?view=skiasharp-views-uwp-1.68.0) UWP control which enables drawing using Skia in a specific section of the XAML visual tree.
-
-## How we added SkiaSharp support for WebAssembly
+## How we made SkiaSharp work with WebAssembly
 
 We started by proving that it was possible to run the full SkiaSharp API on top of a custom interop layer, as Mono did not support proper WebAssembly dynamic linking. During our initial experiments with CanvasKit the user experience was pretty slow, but it worked.
 
