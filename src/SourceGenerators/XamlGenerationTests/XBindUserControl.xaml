@@ -20,6 +20,7 @@
 	</UserControl.Resources>
 
 	<Grid>
+		<Rectangle Style="{StaticResource rectangleStyle}" />
 		<TextBlock Text="{x:Bind Test}" />
 		<TextBlock Text="{x:Bind TypeProperty.Value, FallbackValue=42}" />
 	</Grid>
