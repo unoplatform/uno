@@ -12,6 +12,7 @@
 * Support setting `Style` inline (eg `<TextBlock><TextBlock.Style><Style TargetType="TextBlock"><Setter>...`)
 * [Wasm] Add support for `DisplayInformation` properties `LogicalDpi`, `ResolutionScale`, `ScreenWidthInRawPixels`, `RawPixelsPerViewPixel` , and `ScreenHeightInRawPixels`¸
 * Permit `DependencyProperty` to be set reentrantly. Eg this permits `TextBox.TextChanged` to modify the `Text` property (previously this could only be achieved using `Dispatcher.RunAsync()`).
+* Add support for filtered solutions development for Uno.UI contributions.
 
 ### Breaking changes
 *
@@ -19,7 +20,6 @@
 ### Bug fixes
 * [iOS] Area of view outside Clip rect now allows touch to pass through, this fixes NavigationView not allowing touches to children (#1018)
 * `ComboBox` drop down is now placed following a logic which is closer to UWP and it longer flickers when it appears (especilly on WASM)
-* [Android] A ListView inside another ListView no longer causes an app freeze/crash
 * #854 `BasedOn` on a `<Style>` in `App.Xaml` were not resolving properly
 * #706 `x:Name` in `App.Xaml`'s resources were crashing the compilation.
 * #846 `x:Name` on non-`DependencyObject` resources were crashing the compilation
@@ -184,11 +184,13 @@
 * RadioButton was not applying Checked state correctly with non-standard visual state grouping in style
 * [Android] Fix several bugs preventing AutoSuggestBox from working on Android. (#1012)
 * #1062 TextBlock measure caching can wrongly hit
+* 153974 [Android] fixed button flyout placement
 * Fix support for ScrollBar touch events (#871)
 * [iOS] Area of view outside Clip rect now allows touch to pass through, this fixes NavigationView not allowing touches to children (#1018)
 * `ComboBox` drop down is now placed following a logic which is closer to UWP and it longer flickers when it appears (especilly on WASM)
 * Date and Time Picker Content fix and Refactored to use PickerFlyoutBase (to resemble UWP implementation)
 * `LinearGradientBrush.EndPoint` now defaults to (1,1) to match UWP
+* [Android] A ListView inside another ListView no longer causes an app freeze/crash
 
 ## Release 1.44.0
 

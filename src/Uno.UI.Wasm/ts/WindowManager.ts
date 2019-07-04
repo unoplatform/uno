@@ -285,7 +285,7 @@
 		}
 
 		private setNameInternal(elementId: number, name: string): void {
-			this.getView(elementId).setAttribute("XamlName", name);
+			this.getView(elementId).setAttribute("xamlname", name);
 		}
 
 

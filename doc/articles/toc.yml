@@ -12,6 +12,8 @@
   items:
     - name: Getting started
       href: get-started.md
+    - name: Requirements
+      href: getting-started/requirements.md
     - name: Creating an app - Tutorial
       href: getting-started-tutorial-1.md
     - name: Developing with Uno.UI
@@ -29,7 +31,7 @@
     - name: Migrate existing code
       href: howto-migrate-existing-code.md
 - name: Using Uno - features and controls
-  items: 
+  items:
   - name: Accessibility
     href: features/working-with-accessibility.md
   - name: Assets
@@ -67,6 +69,10 @@
       href: howto-use-uno-in-xamarin-forms.md
 - name: Contributing to Uno
   items:
+    - name: Guidelines for issue triage
+    - href: contributing\guidelines\issue-triage.md
+    - name: Guidelines for pull-requests
+      href: contributing\guidelines\pull-requests.md
     - name: Building and debugging Uno.UI
       href: uno-development\debugging-uno-ui.md
     - name: Working with the samples applications

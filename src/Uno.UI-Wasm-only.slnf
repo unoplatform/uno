@@ -10,6 +10,8 @@
       "SamplesApp\\SamplesApp.Wasm\\SamplesApp.Wasm.csproj",
       "SamplesApp\\UITests.Shared\\UITests.Shared.shproj",
       "SourceGenerators\\Uno.UI.SourceGenerators\\Uno.UI.SourceGenerators.csproj",
+      "T4Generator\\T4Generator.csproj",
+      "SourceGenerators\\Uno.UI.Tasks\\Uno.UI.Tasks.csproj",
       "Uno.Foundation\\Uno.Foundation.csproj",
       "Uno.UI.BindingHelper.Android\\Uno.UI.BindingHelper.Android.csproj",
       "Uno.UI.RuntimeTests\\Uno.UI.RuntimeTests.csproj",
