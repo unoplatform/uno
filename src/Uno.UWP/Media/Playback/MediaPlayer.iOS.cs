@@ -67,23 +67,23 @@ namespace Windows.Media.Playback
 				switch (keyPath)
 				{
 					case "status":
-						player.ObserveStatus();
+						player.OnStatusChanged();
 						return;
 
 					case "loadedTimeRanges":
-						player.ObserveBufferingProgress();
+						player.OnBufferingProgressChanged();
 						return;
 
 					case "duration":
-						player.ObserveCurrentItemDuration();
+						player.OnCurrentItemDurationChanged();
 						return;
 
 					case "rate":
-						player.ObserveRate();
+						player.OnRateChanged();
 						return;
 
 					case "videoRect":
-						player.ObserveVideoRect();
+						player.OnVideoRectChanged();
 						return;
 				}
 			}
@@ -320,7 +320,7 @@ namespace Windows.Media.Playback
 			TryDisposePlayer();
 		}
 
-		private void ObserveStatus()
+		private void OnStatusChanged()
 		{
 			if (_player?.CurrentItem != null)
 			{
@@ -345,7 +345,7 @@ namespace Windows.Media.Playback
 			}
 		}
 
-		private void ObserveVideoRect()
+		private void OnVideoRectChanged()
 		{
 			if (_videoLayer?.VideoRect != null)
 			{
@@ -353,7 +353,7 @@ namespace Windows.Media.Playback
 			}
 		}
 
-		private void ObserveRate()
+		private void OnRateChanged()
 		{
 			if (_player != null)
 			{
@@ -367,7 +367,7 @@ namespace Windows.Media.Playback
 			}
 		}
 
-		private void ObserveBufferingProgress()
+		private void OnBufferingProgressChanged()
 		{
 			var loadedTimeRanges = _player?.CurrentItem?.LoadedTimeRanges;
 			if (loadedTimeRanges == null || loadedTimeRanges.Length == 0 || PlaybackSession.NaturalDuration == TimeSpan.Zero)
@@ -381,7 +381,7 @@ namespace Windows.Media.Playback
 			}
 		}
 
-		private void ObserveCurrentItemDuration()
+		private void OnCurrentItemDurationChanged()
 		{
 			var duration = _player.CurrentItem.Duration;
 
