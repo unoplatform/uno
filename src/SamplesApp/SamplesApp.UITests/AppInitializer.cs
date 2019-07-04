@@ -46,7 +46,15 @@ namespace SamplesApp.UITests
 							return CreateiOSApp(alreadyRunningApp);
 
 						case Platform.Browser:
-							return CreateBrowserApp();
+							if (alreadyRunningApp)
+							{
+								return CreateBrowserApp();
+							}
+							else
+							{
+								// Skip cold app start, there's no notion of reuse active browser yet.
+								return null;
+							}
 
 						default:
 							throw new Exception($"Platform {localPlatform} is not enabled.");
