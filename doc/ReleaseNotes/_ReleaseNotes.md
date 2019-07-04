@@ -11,6 +11,10 @@
 * Permit `DependencyProperty` to be set reentrantly. Eg this permits `TextBox.TextChanged` to modify the `Text` property (previously this could only be achieved using `Dispatcher.RunAsync()`).
 * Add support for filtered solutions development for Uno.UI contributions.
 * Add support for Android UI Tests in PRs for improved regression testing
+* Added static support for **ThemeResources**: `Application.Current.RequestedTheme` is supported
+  - Only `Dark` and `Light` are supported yet.
+  - Element's level `RequestedTheme` is ignored.
+  - Must be set when the application is starting.
 
 ### Breaking changes
 *

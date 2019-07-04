@@ -30,10 +30,17 @@ This difference is particularly visible for custom panel implementations.
 
 The implementations of the ListView for iOS and Android use the native controls for performance reasons, see the [ListViewBase implementation documentation][ListViewBase.md].
 
-## Styles 
+## Styles & XAML Resources
 
 The Xaml styles uno are currently supporting two levels: global and local a Xaml file. This means that any *named* style in a file containing only a `ResourceDictionary` is accessible everywhere without including that resource dictionary.
 
 Overriding implicit styles is currently not supported.
 
-Theme resources are also considered as `StaticResource`.
+### Theme Resources & Theme Dictionaries
+
+_Theme resources_ are also considered as `StaticResource`. In the current Uno's implementation, there's
+not difference between a `{StaticResource xxx}` and a `{ThemeResource xxx}`: they will both resolve on
+the resource.
+
+Element's level `RequestedTheme` is not supported yet. The `Application.Current.RequestedTheme` property
+must be set at launch time. Documentation: [`Application.RequestedTheme`](https://docs.microsoft.com/en-us/uwp/api/windows.ui.xaml.application.requestedtheme)
