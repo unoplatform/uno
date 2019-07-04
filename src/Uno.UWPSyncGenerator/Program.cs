@@ -19,7 +19,7 @@ namespace Uno.UWPSyncGenerator
 		{
 			if (args.Length == 0)
 			{
-				Console.WriteLine("No mode selected.");
+				Console.WriteLine("No mode selected. Supported modes: doc, sync & all.");
 				return;
 			}
 
@@ -28,12 +28,13 @@ namespace Uno.UWPSyncGenerator
 			if (mode == SyncMode || mode == AllMode)
 			{
 				Console.WriteLine("*** WARNING: Close all editor files in visual studio, otherwise VS will freeze for a few minutes ****");
-				Console.WriteLine("Press any key to continue...");
+				Console.WriteLine("Press enter to continue...");
 				Console.ReadLine();
 
 				new SyncGenerator().Build(@"..\..\..\..\Uno.Foundation", "Uno.Foundation", "Windows.Foundation.FoundationContract");
 				new SyncGenerator().Build(@"..\..\..\..\Uno.UWP", "Uno", "Windows.Foundation.UniversalApiContract");
 				new SyncGenerator().Build(@"..\..\..\..\Uno.UWP", "Uno", "Windows.Phone.PhoneContract");
+				new SyncGenerator().Build(@"..\..\..\..\Uno.UWP", "Uno", "Windows.ApplicationModel.Calls.CallsPhoneContract");
 				new SyncGenerator().Build(@"..\..\..\..\Uno.UI", "Uno.UI", "Windows.Foundation.UniversalApiContract");
 			}
 

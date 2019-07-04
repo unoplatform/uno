@@ -1,3 +1,4 @@
+#if false
 #pragma warning disable 108 // new keyword hiding
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Globalization
@@ -174,3 +175,4 @@ namespace Windows.Globalization
 		// Forced skipping of method Windows.Globalization.CalendarIdentifiers.UmAlQura.get
 	}
 }
+#endif

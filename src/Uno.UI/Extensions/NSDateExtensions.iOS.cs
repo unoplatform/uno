@@ -20,9 +20,10 @@ namespace Uno.UI.Extensions
 
 		public static NSDate ToNSDate(this DateTime date)
 		{
-			var reference = new DateTime(2001, 1, 1, 0, 0, 0);
+			var reference = DateTime.SpecifyKind(new DateTime(2001, 1, 1, 0, 0, 0), DateTimeKind.Utc);
+
 			var result = NSDate.FromTimeIntervalSinceReferenceDate(
-				(date - reference).TotalSeconds);
+				(date - reference.ToReferenceLocalTime()).TotalSeconds);
 			return result;
 		}
 
@@ -36,5 +37,32 @@ namespace Uno.UI.Extensions
 			var offset = TimeSpan.FromSeconds(offsetInSecondsFromGMT);
 			return date.ToTimeSpan().Add(offset);
 		}
+
+#pragma warning disable CS0618 // Type or member is obsolete
+		public static DateTime ToReferenceLocalTime(this DateTime time)
+		{
+			if (time.Kind == DateTimeKind.Local)
+			{
+				return time;
+			}
+			else if (time.Kind == DateTimeKind.Utc)
+			{
+				var returnTime = new DateTime(time.Ticks, DateTimeKind.Local);
+				returnTime += TimeZone.CurrentTimeZone.GetUtcOffset(returnTime);
+
+				// We need to know if the date to compare is saving daylight or not to adjust the reference date
+				if (TimeZone.CurrentTimeZone.IsDaylightSavingTime(DateTime.Now))
+				{
+					returnTime += new TimeSpan(1, 0, 0);
+				}
+
+				return returnTime;
+			}
+			else
+			{
+				throw new ArgumentException("The source time zone cannot be determined.");
+			}
+		}
+#pragma warning restore CS0618 // Type or member is obsolete
 	}
 }

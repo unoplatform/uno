@@ -37,9 +37,7 @@ namespace Windows.UI.Xaml.Controls
 			_path = new Shapes.Path();
 			_path.Fill = Foreground;
 			_path.Stretch = Stretch.None;
-#if XAMARIN
 			AddIconElementView(_path);
-#endif
 		}
 
 		public Geometry Data

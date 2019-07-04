@@ -117,6 +117,18 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="CustomTextTarget.CustomText" xml:space="preserve">
+    <value>I am text from resource</value>
+  </data>
+  <data name="CustomTextTarget.CustomTextObj" xml:space="preserve">
+    <value>I am boxed text from resource</value>
+  </data>
+  <data name="CustomTextTarget.CustomTextPlain" xml:space="preserve">
+    <value>I am non-DP text from resource</value>
+  </data>
+  <data name="LocalizedButton.Content" xml:space="preserve">
+    <value>I am button content from resource</value>
+  </data>
   <data name="Manifest_Description" xml:space="preserve">
     <value>GenericApp Description</value>
   </data>
@@ -137,6 +149,9 @@
   </data>
   <data name="NavigationError_Title" xml:space="preserve">
     <value>Navigation Failed</value>
+  </data>
+  <data name="NestedText.Text" xml:space="preserve">
+    <value>Overridding nested text from resource</value>
   </data>
   <data name="ProjectVersion" xml:space="preserve">
     <value>1.0</value>

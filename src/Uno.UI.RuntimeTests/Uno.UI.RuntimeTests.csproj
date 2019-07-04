@@ -1,17 +1,28 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="MSBuild.Sdk.Extras">
   <PropertyGroup>
-    <TargetFrameworks>netstandard2.0;xamarinios10;monoandroid80;monoandroid90;xamarinmac20;uap10.0</TargetFrameworks>
+    <TargetFrameworks>netstandard2.0;xamarinios10;monoandroid80;monoandroid90;xamarinmac20;uap10.0.17763</TargetFrameworks>
 		
     <!-- Ensures the .xr.xml files are generated in a proper layout folder -->
     <GenerateLibraryLayout>true</GenerateLibraryLayout>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(TargetFramework)'=='netstandard2.0'">
+
+	<PropertyGroup Condition="'$(UnoTargetFrameworkOverride)'!=''">
+		<TargetFrameworks>$(UnoTargetFrameworkOverride)</TargetFrameworks>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(TargetFramework)'=='netstandard2.0'">
     <DefineConstants>$(DefineConstants);__WASM__</DefineConstants>
   </PropertyGroup>
-
+	
+	<!--Workaround to prevent build to fail because the project has too many dependencies when checking support libraries versions. 
+	(Introduced with support libraries 28.0.0.1) -->
+	<PropertyGroup>
+		<XamarinAndroidSupportSkipVerifyVersions>true</XamarinAndroidSupportSkipVerifyVersions>
+	</PropertyGroup>
+	
 	<ItemGroup>
-		<PackageReference Include="MSTest.TestFramework" Version="1.2.0" />
+		<PackageReference Include="MSTest.TestFramework" Version="1.4.0" />
 		<PackageReference Include="Uno.SourceGenerationTasks" />
 	</ItemGroup>
 
@@ -38,7 +49,7 @@
 		<Reference Include="System.json" />
 	</ItemGroup>
 
-	<ItemGroup Condition="'$(TargetFramework)'=='uap10.0'">
+	<ItemGroup Condition="'$(TargetFramework)'=='uap10.0.17763'">
 		<PackageReference Include="System.Numerics.Vectors" Version="4.3.0" />
 	</ItemGroup>
 

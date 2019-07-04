@@ -199,10 +199,12 @@ namespace Windows.Media.Playback
 
 			try
 			{
-				// If we reached the end of media, we need to reset position to 0
 				if (PlaybackSession.PlaybackState == MediaPlaybackState.None)
 				{
-					PlaybackSession.Position = TimeSpan.Zero;
+					// It's AVPlayer default behavior to clear CurrentItem when no next item exists
+					// Solution to this is to reinitialize the source if video was: Ended, Failed or Manually stopped (not paused)
+					// This will also reinitialize all videos in case of source list, but only in one of 3 listed scenarios above
+					InitializeSource();
 				}
 
 				PlaybackSession.PlaybackState = MediaPlaybackState.Buffering;
@@ -395,7 +397,10 @@ namespace Windows.Media.Playback
 
 		internal void UpdateVideoGravity(AVLayerVideoGravity gravity)
 		{
-			_videoLayer.VideoGravity = gravity;
+			if (_videoLayer != null)
+			{
+				_videoLayer.VideoGravity = gravity;
+			}
 		}
 
 		protected override void Dispose(bool disposing)

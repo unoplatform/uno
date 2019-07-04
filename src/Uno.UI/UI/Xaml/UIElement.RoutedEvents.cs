@@ -280,20 +280,15 @@ namespace Windows.UI.Xaml
 			{
 				var mustUpdateSubscribedToHandledEventsToo = false;
 
-				handlers.Remove(handlerInfo =>
+				var matchingHandler = handlers
+					.FirstOrDefault(handlerInfo => (handlerInfo.Handler as Delegate).Equals(handler as Delegate));
+
+				mustUpdateSubscribedToHandledEventsToo = mustUpdateSubscribedToHandledEventsToo || matchingHandler.HandledEventsToo;
+
+				if (!matchingHandler.Equals(default(RoutedEventHandlerInfo)))
 				{
-					var shouldRemove = (handlerInfo.Handler as Delegate) == (handler as Delegate);
-
-					if (!shouldRemove)
-					{
-						return false;
-					}
-
-					mustUpdateSubscribedToHandledEventsToo =
-						mustUpdateSubscribedToHandledEventsToo || handlerInfo.HandledEventsToo;
-
-					return true;
-				});
+					handlers.Remove(matchingHandler);
+				}
 
 				if (mustUpdateSubscribedToHandledEventsToo)
 				{
@@ -343,7 +338,7 @@ namespace Windows.UI.Xaml
 			if (anyLocalHandlers)
 			{
 				// [4] Invoke local handlers
-				foreach (var handler in handlers)
+				foreach (var handler in handlers.ToArray())
 				{
 					if (!IsHandled(args) || handler.HandledEventsToo)
 					{

@@ -47,19 +47,7 @@ namespace Windows.UI.Xaml.Controls
 
 			EventHandler handler = (s, e) =>
 			{
-				// When the timezone is east of GMT (negative offset) the UIDatePicker returns a Date that's [1 day]
-				// after the visible selection from the spinner.
-				// In the particular case where a date outside the minYear or maxYear is selected, the picker will return the closest date to that boundary with the hours relative to the timezone offset
-				// example: 1/16/2019 5:00 AM for GMT -5 time zone
-				// Simply adding the hours offset to the selected date covers both the out of bounds selected date case and the regular selection
-				var dateTime = picker.Date.ToDateTime();
-				var offset = TimeSpan.FromSeconds(picker.TimeZone.GetSecondsFromGMT);
-				DateTime rounded;
-
-				rounded = dateTime.AddHours(offset.TotalHours);
-
-				var final = new DateTimeOffset(rounded.Date, offset);
-				Date = final;
+				Date = new DateTimeOffset(picker.Date.ToDateTime());
 			};
 
 			picker.ValueChanged += handler;
@@ -76,23 +64,13 @@ namespace Windows.UI.Xaml.Controls
 
 		partial void OnDateChangedPartialNative(DateTimeOffset oldDate, DateTimeOffset newDate)
 		{
-			// We have to change the DateTimeOffset to something readable by the UIDatePicker.
-			// First, we remove the offset to keep only the date.
-			// Then, we add 24 hours (1 day) when the offset is negative (timezone east of GMT) because the UIDatePicker is wrong by 1 day in this case.
-			var ajustedDate = newDate
-				.ToOffset(TimeSpan.Zero)
-				.Add(newDate.Offset);
-
-			if (newDate.Offset.TotalSeconds < 0)
-			{
-				ajustedDate = ajustedDate.AddHours(24);
-			}
-			var nsDate = ajustedDate.Date.ToNSDate();
-
 			// Animate to cover up the small delay in setting the date when the flyout is opened
 			var animated = !UIDevice.CurrentDevice.CheckSystemVersion(10, 0);
 
-			_picker?.SetDate(nsDate, animated: animated);
+			_picker?.SetDate(
+				DateTime.SpecifyKind(newDate.DateTime, DateTimeKind.Local).ToNSDate(),
+				animated: animated
+			);
 		}
 
 		partial void OnMinYearChangedPartialNative(DateTimeOffset oldMinYear, DateTimeOffset newMinYear)

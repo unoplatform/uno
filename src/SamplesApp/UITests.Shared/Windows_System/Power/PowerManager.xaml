@@ -1,0 +1,22 @@
+﻿<UserControl
+    x:Class="UITests.Shared.Windows_System.Power.PowerManager"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	xmlns:u="using:Uno.UI.Samples.Controls"
+	mc:Ignorable="d"
+	d:DesignHeight="2000"
+	d:DesignWidth="400">
+
+	<StackPanel>
+		<TextBlock Text="Battery status" FontWeight="Bold" />
+		<TextBlock x:Name="BatteryStatusOutput" />
+		<TextBlock Text="Energy saver status" FontWeight="Bold" />
+		<TextBlock x:Name="EnergySaverStatusOuptut" />
+		<TextBlock Text="Power supply status" FontWeight="Bold" />
+		<TextBlock x:Name="PowerSupplyStatusOuptut" />
+		<TextBlock Text="Remaining charge percent" FontWeight="Bold" />
+		<TextBlock x:Name="RemainingChargePercentOutput" />
+	</StackPanel>
+</UserControl>

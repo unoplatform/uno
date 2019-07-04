@@ -20,13 +20,6 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		{
 			throw new global::System.NotImplementedException("The member UIElement LayoutInformation.GetLayoutExceptionElement(object dispatcher) is not implemented in Uno.");
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public static global::Windows.Foundation.Rect GetLayoutSlot( global::Windows.UI.Xaml.FrameworkElement element)
-		{
-			throw new global::System.NotImplementedException("The member Rect LayoutInformation.GetLayoutSlot(FrameworkElement element) is not implemented in Uno.");
-		}
-		#endif
+#endif
 	}
 }

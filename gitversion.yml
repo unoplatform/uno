@@ -1,7 +1,8 @@
 assembly-versioning-scheme: MajorMinorPatch
 mode: ContinuousDeployment
-next-version: 1.45.0
+next-version: 1.46.0
 continuous-delivery-fallback-tag: ""
+tag-prefix: '[vV]'
 branches:
   master:
     increment: none
@@ -24,6 +25,10 @@ branches:
   projects:
     tag: proj-{BranchName}
     regex: projects/(.*?)
+    source-branches: ['master']
+  feature:
+    tag: feature.{BranchName}
+    regex: feature/(.*?)
     source-branches: ['master']
 
 ignore:

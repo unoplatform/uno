@@ -642,7 +642,84 @@ namespace Uno.UI.Tests.BinderTests
 		}
 
 		[TestMethod]
-		//TODO: Amend this test when Uno correctly supports reentrantly modifying DPs.
+		public void When_Public_Field_And_xBind()
+		{
+			var source = new PublicField(42);
+			var SUT = new Windows.UI.Xaml.Controls.Grid();
+
+			SUT.SetBinding(
+				Windows.UI.Xaml.Controls.Grid.TagProperty,
+				new Binding()
+				{
+					Path = "MyField",
+					CompiledSource = source
+				}
+			);
+
+			SUT.ApplyCompiledBindings();
+
+			Assert.AreEqual(42, SUT.Tag);
+		}
+
+		[TestMethod]
+		public void When_Private_Field_And_xBind()
+		{
+			var source = new PrivateField(42);
+			var SUT = new Windows.UI.Xaml.Controls.Grid();
+
+			SUT.SetBinding(
+				Windows.UI.Xaml.Controls.Grid.TagProperty,
+				new Binding()
+				{
+					Path = "MyField",
+					CompiledSource = source
+				}
+			);
+
+			SUT.ApplyCompiledBindings();
+
+			Assert.AreEqual(42, SUT.Tag);
+		}
+
+		[TestMethod]
+		public void When_Public_Field_And_Binding()
+		{
+			var source = new PublicField(42);
+			var SUT = new Windows.UI.Xaml.Controls.Grid();
+
+			SUT.SetBinding(
+				Windows.UI.Xaml.Controls.Grid.TagProperty,
+				new Binding()
+				{
+					Path = "MyField"
+				}
+			);
+
+			SUT.DataContext = source;
+
+			Assert.IsNull(SUT.Tag);
+		}
+
+		[TestMethod]
+		public void When_Private_Field_And_Binding()
+		{
+			var source = new PrivateField(42);
+			var SUT = new Windows.UI.Xaml.Controls.Grid();
+
+			SUT.SetBinding(
+				Windows.UI.Xaml.Controls.Grid.TagProperty,
+				new Binding()
+				{
+					Path = "MyField"
+				}
+			);
+
+			SUT.DataContext = source;
+
+			Assert.IsNull(SUT.Tag);
+		}
+
+		[TestMethod]
 		public void When_Reentrant_Set()
 		{
 			var sut = new TextBox();
@@ -654,24 +731,25 @@ namespace Uno.UI.Tests.BinderTests
 
 			sut.Text = "Alice";
 
-			Assert.AreEqual("Alice", sut.Text);
+			Assert.AreEqual("Bob", sut.Text);
 		}
 
 		[TestMethod]
-		//TODO: Amend this test when Uno correctly supports reentrantly modifying DPs.
 		public void When_Reentrant_Set_With_Additional_Set()
 		{
 			var sut = new TextBox();
 
 			sut.TextChanged += (o, e) =>
 			{
-				sut.SetValue(Grid.RowProperty, 0);
+				sut.SetValue(Grid.RowProperty, 3);
 				sut.Text = "Bob";
 			};
 
 			sut.Text = "Alice";
 
-			Assert.AreEqual("Alice", sut.Text);
+			Assert.AreEqual("Bob", sut.Text);
+			var row = (int)sut.GetValue(Grid.RowProperty);
+			Assert.AreEqual(3, row);
 		}
 
 		[TestMethod]
@@ -1041,6 +1119,26 @@ namespace Uno.UI.Tests.BinderTests
 			}
 
 			private int MyProperty { get; set; }
+		}
+
+		public class PublicField
+		{
+			public int MyField;
+
+			public PublicField(int value)
+			{
+				MyField = value;
+			}
+		}
+
+		public class PrivateField
+		{
+			private int MyField;
+
+			public PrivateField(int value)
+			{
+				MyField = value;
+			}
 		}
 	}
 

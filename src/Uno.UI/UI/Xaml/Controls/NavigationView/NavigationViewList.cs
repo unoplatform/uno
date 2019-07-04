@@ -123,7 +123,8 @@ namespace Windows.UI.Xaml.Controls
 
 		internal NavigationView GetNavigationViewParent()
 		{
-			if(m_navigationView.TryGetTarget(out var result))
+			var result = default(NavigationView);
+			if (m_navigationView?.TryGetTarget(out result) ?? false)
 			{
 				return result;
 			}

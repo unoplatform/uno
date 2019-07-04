@@ -2,24 +2,16 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.System.Power
 {
-	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+	#if false || false || false || false || false
+	#if false || false || false || false || false
 	[global::Uno.NotImplemented]
 	#endif
 	public   enum BatteryStatus 
 	{
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		NotPresent,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		Discharging,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		Idle,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		Charging,
-		#endif
+		// Skipping already declared field Windows.System.Power.BatteryStatus.NotPresent
+		// Skipping already declared field Windows.System.Power.BatteryStatus.Discharging
+		// Skipping already declared field Windows.System.Power.BatteryStatus.Idle
+		// Skipping already declared field Windows.System.Power.BatteryStatus.Charging
 	}
 	#endif
 }

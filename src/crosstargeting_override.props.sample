@@ -5,14 +5,37 @@
     
     		Instructions:
 			1) Copy this file and remove the ".sample" name
-			2) Adjust the BuildTargetFramework property below, there can only be one.
+			2) Uncomment and adjust the UnoNugetOverrideVersion property below
 			3) Make sure to do a Rebuild, so that nuget restores the proper packages for the new target
 	-->
 
   <PropertyGroup>
     <IsUnoUIProject>false</IsUnoUIProject>
     <IsUnoUIProject Condition="'$(AssemblyName)'=='Uno' or '$(AssemblyName)'=='Uno.UI' or '$(AssemblyName)'=='Uno.Foundation'">true</IsUnoUIProject>
+    
+    <!--
+    	This property controls the platform built by Visual Studio.
+		
+      	Available build targets:
+								uap10.0.17763 (Windows)
+								xamarinios10 (iOS)
+								MonoAndroid90 (Android 9.0)
+								netstandard2.0 (WebAssembly)
+								net461 (Tests)
 
+        Only one target can be built, and the corresponding solution filter must
+        be loaded in Visual Studio (see next to Uno.UI.sln).
+
+        *** WARNING ***
+        Note that changing that property while the solution is opened leads to
+        unstable nuget restore operations, and Visual Studio instabilities such
+        as caching issues or crashes.
+
+        Always unload the solution before changing or activating this property.
+        *** WARNING ***
+    -->
+    <!--<UnoTargetFrameworkOverride>netstandard2.0</UnoTargetFrameworkOverride>-->
+    
     <!-- 
     This property allows the override of the nuget local cache.
     Set it to the version you want to override, used in another app.

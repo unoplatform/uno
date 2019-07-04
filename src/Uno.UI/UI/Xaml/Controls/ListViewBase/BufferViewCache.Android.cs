@@ -9,6 +9,7 @@ using Android.Views;
 using Microsoft.Extensions.Logging;
 using Uno.Extensions;
 using Uno.Logging;
+using Uno.UI.Extensions;
 using Windows.UI.Xaml.Controls.Primitives;
 
 namespace Windows.UI.Xaml.Controls
@@ -137,12 +138,12 @@ namespace Windows.UI.Xaml.Controls
 		/// <summary>
 		/// Update buffers by removing out-of-range views and adding views in range.
 		/// </summary>
-		public void UpdateBuffers(RecyclerView.Recycler recycler)
+		public void UpdateBuffers(RecyclerView.Recycler recycler, RecyclerView.State state)
 		{
 			_initialChildCount = Layout.ChildCount;
 			_initialItemViewCount = Layout.ItemViewCount;
 			UnbufferViews(recycler);
-			PrefetchViews(recycler);
+			PrefetchViews(recycler, state);
 			TrimIntermediateCache(recycler);
 		}
 
@@ -282,7 +283,7 @@ namespace Windows.UI.Xaml.Controls
 		/// <summary>
 		/// Prefetch views in the target range that aren't yet in the buffer.
 		/// </summary>
-		private void PrefetchViews(RecyclerView.Recycler recycler)
+		private void PrefetchViews(RecyclerView.Recycler recycler, RecyclerView.State state)
 		{
 			if (Layout.ItemCount == 0 || CacheHalfLength == 0)
 			{
@@ -308,21 +309,21 @@ namespace Windows.UI.Xaml.Controls
 				// Seed buffer; otherwise succeeding logic fails
 				if (_trailingBuffer.Count == 0)
 				{
-					var record = PrefetchView(recycler, TrailingBufferTargetStart);
+					var record = PrefetchView(recycler, state, TrailingBufferTargetStart);
 					_trailingBuffer.AddToBack(record);
 					CheckValidState();
 				}
 
 				while (TrailingBufferStart > TrailingBufferTargetStart)
 				{
-					var record = PrefetchView(recycler, TrailingBufferStart - 1);
+					var record = PrefetchView(recycler, state, TrailingBufferStart - 1);
 					_trailingBuffer.AddToFront(record);
 					CheckValidState();
 				}
 
 				while (TrailingBufferEnd < TrailingBufferTargetEnd)
 				{
-					var record = PrefetchView(recycler, TrailingBufferEnd);
+					var record = PrefetchView(recycler, state, TrailingBufferEnd);
 					_trailingBuffer.AddToBack(record);
 					CheckValidState();
 				}
@@ -338,21 +339,21 @@ namespace Windows.UI.Xaml.Controls
 				// Seed buffer
 				if (_leadingBuffer.Count == 0)
 				{
-					var record = PrefetchView(recycler, LeadingBufferTargetStart);
+					var record = PrefetchView(recycler, state, LeadingBufferTargetStart);
 					_leadingBuffer.AddToBack(record);
 					CheckValidState();
 				}
 
 				while (LeadingBufferStart > LeadingBufferTargetStart)
 				{
-					var record = PrefetchView(recycler, LeadingBufferStart - 1);
+					var record = PrefetchView(recycler, state, LeadingBufferStart - 1);
 					_leadingBuffer.AddToFront(record);
 					CheckValidState();
 				}
 
 				while (LeadingBufferEnd < LeadingBufferTargetEnd)
 				{
-					var record = PrefetchView(recycler, LeadingBufferEnd);
+					var record = PrefetchView(recycler, state, LeadingBufferEnd);
 					_leadingBuffer.AddToBack(record);
 					CheckValidState();
 				}
@@ -379,7 +380,7 @@ namespace Windows.UI.Xaml.Controls
 					_shouldBlockIntermediateCache = true;
 					for (int i = LeadingBufferEnd; i < targetEnd; i++)
 					{
-						var record = PrefetchView(recycler, i);
+						var record = PrefetchView(recycler, state, i);
 						SendToIntermediateCache(recycler, record);
 					}
 				}
@@ -393,7 +394,7 @@ namespace Windows.UI.Xaml.Controls
 		/// <summary>
 		/// Prefetch a view for given <paramref name="displayPosition"/>.
 		/// </summary>
-		private ElementViewRecord PrefetchView(RecyclerView.Recycler recycler, int displayPosition)
+		private ElementViewRecord PrefetchView(RecyclerView.Recycler recycler, RecyclerView.State state, int displayPosition)
 		{
 			if (displayPosition < 0)
 			{
@@ -402,7 +403,7 @@ namespace Windows.UI.Xaml.Controls
 			var view = GetViewFromIntermediateCache(recycler, displayPosition);
 			if (view == null)
 			{
-				view = recycler.GetViewForPosition(displayPosition);
+				view = recycler.GetViewForPosition(displayPosition, state);
 
 				// Add->Detach allows view to be efficiently re-displayed
 				Layout.AddView(view);
@@ -498,6 +499,15 @@ namespace Windows.UI.Xaml.Controls
 				{
 					this.Log().Debug("Discarding empty record.");
 				}
+				return;
+			}
+
+			var isGenerated = (viewRecord.View as ContentControl)?.IsGeneratedContainer ?? false;
+			if (!isGenerated)
+			{
+				// If it's not a generated container then it must be an item that returned true for IsItemItsOwnContainerOverride (eg an
+				// explicitly-defined ListViewItem), and shouldn't be recycled for a different item.
+				Layout.RemoveView(viewRecord.View);
 				return;
 			}
 

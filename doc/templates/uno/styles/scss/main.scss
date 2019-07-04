@@ -1,46 +1,57 @@
-@import url(https://fonts.googleapis.com/css?family=Open+Sans:500,600,700,800,400italic,700italic,400);
+@import url('https://fonts.googleapis.com/css?family=Open+Sans:500,600,700,800,400italic,700italic,400');
 
 $blue: #159bff;
 $purple: #7a67f8;
 $turquoise: #66e4a8;
-$dgray: #242424;
+$dgray: #242424; 
 
 body {
     font-family: 'Open Sans', sans-serif;
     color: $dgray;
 }
 
+.row {
+    &:before {
+        content: none;
+    }
+
+    &:after {
+        content: '';
+    }
+}
+
 a {
     color: $blue;
 
-    &:hover, &:active {
+    &:hover,
+    &:active {
         color: $dgray;
     }
 }
 
 h1 {
-    font-size: 36px;
-    font-weight: 800;
-    text-transform: uppercase;
+    font-size: 44px;
+    font-weight: 600;
+    text-transform: none;
 }
 
 h2 {
-    font-size: 30px;
-    font-weight: 800;
-    text-transform: uppercase;
+    font-size: 36px;
+    font-weight: 600;
+    text-transform: none;
 }
 
 h3 {
-    font-size: 24px;
-    font-weight: 800;
-    text-transform: uppercase;
+    font-size: 30px;
+    font-weight: 600;
+    text-transform: none;
 }
 
 .body-content .article {
     margin-top: 120px;
     margin-right: 0;
 
-    @media only screen and (max-width: 768px) {
+    @media only screen and (max-width: 767px) {
         margin-top: 180px !important;
     }
 }
@@ -55,26 +66,28 @@ h3 {
     .nav > li.active > a {
         color: $purple;
 
-        &:hover { color: #000; }
+        &:hover {
+            color: #000;
+        }
     }
 
     .toc {
-
         @media only screen and (max-width: 768px) {
             margin-left: 0;
 
             ul {
                 margin: 0;
 
-                li a { margin: 0; }
+                li a {
+                    margin: 0;
+                }
             }
         }
     }
 }
 
 .sidenav {
-
-    @media only screen and (max-width: 768px) {
+    @media only screen and (max-width: 767px) {
         position: fixed;
         top: 116px;
         width: 100%;
@@ -83,50 +96,73 @@ h3 {
 }
 
 .navbar-header {
-
     .navbar-toggle {
         border: none;
         height: 18px;
         background: none;
         padding: 0;
         margin: 0;
-        margin-top: 28px;
 
-        &:hover {
+        &:hover,
+        &:focus {
             background: none;
         }
 
         .icon-bar {
-            background: #fff;
+            background: $dgray;
             width: 20px;
         }
 
-        .icon-bar+.icon-bar {
+        .icon-bar + .icon-bar {
             margin-top: 3px;
         }
 
-        &[aria-expanded="true"] {
-
+        &[aria-expanded='true'] {
             .icon-bar {
                 background: $purple;
             }
         }
+        @media (max-width: 767px) {
+            margin-top: 12px;
+        }
+    }
+
+    @media (max-width: 767px) {
+        display: inline-block;
+        vertical-align: middle;
+        width: 100%;
+        line-height: auto;
     }
 }
 
 .navbar:first-child {
     padding: 0 25px;
-    height: 75px;
-    background: $dgray;
+    min-height: 75px;
+    line-height: 75px;
+    vertical-align: middle;
+    background: #ffffff;
     position: fixed;
+    border-bottom: 1px solid #f4f2f3;
     top: 0;
     width: 100%;
-    border: none;
     z-index: 9999;
+
+    @media screen and(min-width: 768px) {
+        line-height: auto;
+        display: flex;
+        align-items: center;
+        height: 75px;
+    }
+    
 
     #logo {
         width: 43px;
-        margin-top: 16px;
+        margin-top: 0;
+        vertical-align: middle;
+    }
+
+    .navbar-brand {
+        height: auto;
     }
 }
 
@@ -138,37 +174,89 @@ h3 {
 }
 
 #navbar {
-    float: right;
+    margin: 0;
+    margin-left: auto;
     padding: 15px 0;
 
     .level1 {
-
         li {
-            padding: 0 15px;
+            padding: 0;
+            display: inline-block;
+            float: none;
         }
 
         a {
+            padding: 0 16px;
+            font-weight: 600;
             height: 43px;
             line-height: 43px;
-            font-size: 15px;
+            font-size: 14px;
             text-transform: uppercase;
-            color: #fff;
-            padding: 0;
+            color: #3a3a3a;
             border-bottom: 2px solid transparent;
-            transition: color .2s ease-in-out,background-color .2s ease-in-out,border-color .2s ease-in-out;
+            transition: color 0.2s ease-in-out,
+            background-color 0.2s ease-in-out, border-color 0.2s ease-in-out;
+
+            @media (min-width: 768px) and (max-width: 820px) {
+                font-size: 12px;
+            }
         }
 
-        a:hover, .active a, [title="Docs"] {
+        
+
+        a:hover,
+        .active a {
             background: none;
             border-color: $purple;
         }
+
+        a[title='Get Started'] {
+            background-color: rgb(122, 103, 248);
+            border: 0;
+            border-radius: 8px;
+            box-sizing: content-box;
+            color: rgb(255, 255, 255);
+            cursor: pointer;
+            display: inline-block;
+            font-family: 'Open Sans', sans-serif;
+            font-size: 18px;
+            font-weight: 700;
+            height: 27px;
+            letter-spacing: 0.3px;
+            line-height: 27px;
+            margin-bottom: 0px;
+            margin-left: 44px;
+            padding-bottom: 8px;
+            padding-left: 32px;
+            padding-right: 32px;
+            padding-top: 8px;
+            text-align: center;
+            text-transform: none;
+            transition-delay: 0s, 0s, 0s;
+            transition-duration: 0.2s, 0.2s, 0.2s;
+            transition-property: color, background-color, border-color;
+            transition-timing-function: ease-in-out, ease-in-out, ease-in-out;
+            width: auto;
+
+            @media (max-width: 1010px) {
+                display: none;
+            }
+
+            &:hover {
+                background: darken($purple, 5);
+            }
+        }
+    }
+
+    @media screen and (min-width: 768px) {
+        display: inline-flex;
     }
 
     @media (max-width: 767px) {
         position: fixed;
         top: 75px;
         left: 0;
-        background: $dgray;
+        background: #ffffff;
         width: 100%;
         margin: 0;
         border: none;
@@ -181,7 +269,10 @@ h3 {
             margin: 0;
             padding-bottom: 10px;
 
-            li { padding: 0; }
+            li {
+                display: block;
+                padding: 0;
+            }
 
             a {
                 display: block;
@@ -196,32 +287,32 @@ h3 {
 
                 &:hover {
                     background: $purple;
+                    color: #fff;
                 }
+            }
+
+            a[title='Get Started'] {
+                display: none;
             }
         }
     }
 }
 
 .front-page {
-
-    article section { margin-left: auto; }
+    article section {
+        margin-left: auto;
+    }
 
     p {
         margin: 20px auto;
     }
 
-    .subnav, .sideaffix, .footer {
+    .subnav,
+    .sideaffix,
+    .footer {
         display: none;
     }
 
-    .navbar:first-child {
-        background: none;
-        transition: background-color .2s ease-in-out;
-
-        &.scrolled {
-            background: #111;
-        }
-    }
 
     .body-content {
         width: 100%;
@@ -229,9 +320,9 @@ h3 {
         overflow: hidden;
 
         .article {
-            margin: 0!important;
+            margin: 0 !important;
 
-            & > [class*="col"] {
+            & > [class*='col'] {
                 width: auto;
                 padding: 0;
                 float: none;
@@ -240,7 +331,7 @@ h3 {
     }
 
     .button {
-        display: inline-block;
+        display: inline-block; 
 
         a {
             display: inline-block;
@@ -248,12 +339,13 @@ h3 {
             font-size: 20px;
             font-weight: bold;
             box-shadow: 0 2px 4px 0 rgba(31, 31, 31, 0.25);
-            border-radius: 20px;
-            transition: color .2s ease-in-out,background-color .2s ease-in-out;
+            border-radius: 8px;
+            transition: color 0.2s ease-in-out,
+            background-color 0.2s ease-in-out;
         }
 
         &.white a {
-            background: #fff;
+            background: #fff; 
             color: $dgray;
 
             &:hover {
@@ -263,62 +355,45 @@ h3 {
         }
 
         &.turquoise a {
-            background: $turquoise;
+            background: $purple;
             color: #fff;
 
             &:hover {
-                background: $blue;
+                background: darken($purple, 5);
             }
         }
     }
 
     .intro {
-        padding: 190px 15px 210px;
-        background: #111;
-        color: #fff;
+        padding: 100px 15px 60px;
+        @media screen and (min-width: 768px){
+            padding: 200px 15px 120px;
+        }
         text-align: center;
         font-size: 18px;
         position: relative;
-        
-        & > * {
-            position: relative;
-        }
-        
-        &:before, &:after {
-            content: '';
-            position: absolute;
-            top: 0;
-            bottom: 0;
-            width: 50%;
-        }
-
-        &:before {
-            left: 0;
-            background: url('../images/uno-bg-left.png') no-repeat left bottom;
-        }
-        
-        &:after {
-            right: 0;
-            background: url('../images/uno-bg-right.png') no-repeat right top;
-        }
 
         h1 {
-            font-size: 35px;
-            text-transform: uppercase;
-            font-weight: bold;
-            width: 360px;
+            font-size: 36px;
+            @media screen and (min-width: 768px) {
+                font-size: 44px;
+            }
+            
+            text-transform: none; 
+            font-weight: 600;
+            width: auto;
             max-width: 100%;
             margin: 0 auto;
-            letter-spacing: 2.2px;
+            letter-spacing: normal;
         }
 
         p {
-            width: 246px;
+            width: 100%;
+            font-size: 22px;
         }
 
         strong {
-            color: $blue;
-            font-weight: normal;
+            font-weight: bold;
         }
 
         .button a {
@@ -329,30 +404,28 @@ h3 {
     .headerboxes {
         display: flex;
         flex-wrap: wrap;
-        margin-top: -120px;
-        padding-bottom: 45px;
+        padding: 40px 15px;
+        @media screen and (min-width: 768px){
+            padding: 80px 15px; 
+        }
+        
+        background-color: #f4f2f3; 
 
         .headerbox {
-            margin-bottom: 30px;
+            margin: 40px auto; 
 
-            @media (min-width: 992px) {
-                width: 49%;
-            }
         }
 
         .headerbox-inner {
-            background: #fff;
-            border-radius: 22px;
-            box-shadow: 0 2px 13px 0 rgba(31, 31, 31, 0.25);
-            padding: 35px;
+            padding: 0;
             height: 100%;
         }
 
         h2 {
             font-size: 30px;
-            font-weight: 800;
-            text-transform: uppercase;
-            
+            font-weight: 600;
+            text-transform: none;
+
             .anchorjs-link {
                 display: none;
             }
@@ -364,8 +437,7 @@ h3 {
         }
 
         .icon {
-            float: right;
-            margin: 10px 0 0 10px;
+            margin: 0;
         }
     }
 }

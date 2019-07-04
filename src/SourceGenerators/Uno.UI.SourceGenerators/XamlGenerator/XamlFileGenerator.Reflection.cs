@@ -31,6 +31,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		private Func<XamlMember, INamedTypeSymbol> _findPropertyTypeByXamlMember;
 		private Func<XamlMember, IEventSymbol> _findEventType;
 		private Func<INamedTypeSymbol, Dictionary<string, IEventSymbol>> _getEventsForType;
+		private Func<INamedTypeSymbol, string[]> _findLocalizableDeclaredProperties;
 		private (string ns, string className) _className;
 		private bool _hasLiteralEventsRegistration = false;
 		private string[] _clrNamespaces;
@@ -45,6 +46,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			_findPropertyTypeByName = Funcs.Create<string, string, INamedTypeSymbol>(SourceFindPropertyType).AsLockedMemoized();
 			_findTypeByXamlType = Funcs.Create<XamlType, INamedTypeSymbol>(SourceFindTypeByXamlType).AsLockedMemoized();
 			_getEventsForType = Funcs.Create<INamedTypeSymbol, Dictionary<string, IEventSymbol>>(SourceGetEventsForType).AsLockedMemoized();
+			_findLocalizableDeclaredProperties = Funcs.Create<INamedTypeSymbol, string[]>(SourceFindLocalizableDeclaredProperties).AsLockedMemoized();
 
 			var defaultXmlNamespace = _fileDefinition
 				.Namespaces
@@ -438,7 +440,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		{
 			var output = new Dictionary<string, IEventSymbol>();
 
-			foreach(var evt in symbol.GetAllEvents())
+			foreach (var evt in symbol.GetAllEvents())
 			{
 				if (!output.ContainsKey(evt.Name))
 				{
@@ -783,6 +785,34 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				.Select(m => m())
 				.Trim()
 				.FirstOrDefault();
+		}
+
+		private IEnumerable<string> FindLocalizableProperties(XamlType xamlType)
+		{
+			var type = GetType(xamlType);
+
+			while (type != null)
+			{
+				foreach (var prop in FindLocalizableDeclaredProperties(type))
+				{
+					yield return prop;
+				}
+
+				type = type.BaseType;
+			}
+		}
+
+		private string[] FindLocalizableDeclaredProperties(INamedTypeSymbol type) => _findLocalizableDeclaredProperties(type);
+
+		private string[] SourceFindLocalizableDeclaredProperties(INamedTypeSymbol type)
+		{
+			return type.GetProperties()
+				.Where(p => !p.IsReadOnly &&
+					p.DeclaredAccessibility == Accessibility.Public &&
+					IsLocalizablePropertyType(p.Type as INamedTypeSymbol)
+				)
+				.Select(p=>p.Name)
+				.ToArray();
 		}
 	}
 }

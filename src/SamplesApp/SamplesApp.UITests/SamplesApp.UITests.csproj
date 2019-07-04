@@ -1,0 +1,18 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFramework>net47</TargetFramework>
+		<LangVersion>7.3</LangVersion>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.1.1" />
+		<PackageReference Include="NUnit" Version="3.12.0" />
+		<PackageReference Include="NUnit3TestAdapter" Version="3.12.0" />
+		<PackageReference Include="Uno.UITest" Version="1.0.0-dev.40" />
+		<PackageReference Include="Uno.UITest.Selenium" Version="1.0.0-dev.40" />
+		<PackageReference Include="Uno.UITest.Xamarin" Version="1.0.0-dev.40" />
+		<PackageReference Include="Uno.UITest.Helpers" Version="1.0.0-dev.40" />
+	</ItemGroup>
+
+</Project>

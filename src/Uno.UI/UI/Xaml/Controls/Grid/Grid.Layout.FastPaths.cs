@@ -84,7 +84,7 @@ namespace Windows.UI.Xaml.Controls
 				size.Width = pixelWidth;
 			}
 
-			var positions = GetPositions();
+			var positions = GetPositions(1, rows.Length);
 
 			using (positions.Subscription)
 			{
@@ -131,7 +131,7 @@ namespace Windows.UI.Xaml.Controls
 				size.Height = pixelHeight;
 			}
 
-			var positions = GetPositions();
+			var positions = GetPositions(columns.Length, 1);
 			using (positions.Subscription)
 			{
 				var measureChild = GetDirectMeasureChild();

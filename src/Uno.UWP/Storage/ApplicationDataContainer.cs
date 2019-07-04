@@ -7,23 +7,20 @@ namespace Windows.Storage
 {
 	public partial class ApplicationDataContainer
 	{
-		internal ApplicationDataContainer(string name, ApplicationDataLocality locality)
+		internal ApplicationDataContainer(ApplicationData owner, string name, ApplicationDataLocality locality)
 		{
 			Locality = locality;
 			Name = name;
 
-			InitializePartial();
+			InitializePartial(owner);
 		}
 
-		partial void InitializePartial();
+		partial void InitializePartial(ApplicationData owner);
 
 		public ApplicationDataLocality Locality { get; }
 
 		public string Name { get; }
 
-		public IPropertySet Values
-		{
-			get; private set;
-		}
+		public IPropertySet Values { get; private set; }
 	}
 }

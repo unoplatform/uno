@@ -3,7 +3,7 @@ using System.IO;
 
 namespace Windows.Storage
 {
-	public  partial class ApplicationData 
+	partial class ApplicationData 
 	{
 		private static string GetLocalCacheFolder()
 			=> Path.GetTempPath();
@@ -13,5 +13,11 @@ namespace Windows.Storage
 
 		private static string GetLocalFolder()
 			=> AppDomain.CurrentDomain.BaseDirectory;
+
+		private static string GetRoamingFolder()
+			=> Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+
+		private static string GetSharedLocalFolder()
+			=> Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
 	}
 }

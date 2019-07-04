@@ -159,16 +159,21 @@ namespace Windows.System
 					return VirtualKey.Stop;
 				// Numeric keypad
 				case "Decimal":
+				case ".":
 					return VirtualKey.Decimal;
 				case "Multiply":
+				case "*":
 					return VirtualKey.Multiply;
 				case "Add":
+				case "+":
 					return VirtualKey.Add;
 				case "Clear":
 					return VirtualKey.Clear;
 				case "Divide":
+				case "/":
 					return VirtualKey.Divide;
 				case "Subtract":
+				case "-":
 					return VirtualKey.Subtract;
 				case "Separator":
 					return VirtualKey.Separator;

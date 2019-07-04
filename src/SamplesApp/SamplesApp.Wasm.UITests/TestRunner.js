@@ -28,17 +28,20 @@ class TestRunner {
             // Ask for the list of available tests in the running application
             const allTestsData = yield this.getAllTests(this._page);
             console.log(`Running ${allTestsData.length}`);
+            let i = 0;
             for (let testName of allTestsData) {
-                console.log(`Running ${testName}`);
+                i += 1;
+                console.log("---");
+                console.log(`Running ${i}/${allTestsData.length}: ${testName}`);
                 // Start the test run
-                var testRunId = yield this._page.evaluate(`SampleRunner.runTest(\'${testName}\')`);
+                var testRunId = yield this._page.evaluate(`SampleRunner.RunTest(\'${testName}\')`);
                 if (debug) {
                     console.log(`TestID: ${testRunId}`);
                 }
                 var startDate = new Date();
                 while ((startDate - new Date()) < 5000) {
                     // Then wait for the test to be reported as done
-                    if (yield this._page.evaluate(`SampleRunner.isTestDone(\'${testRunId}\')`)) {
+                    if (yield this._page.evaluate(`SampleRunner.IsTestDone(\'${testRunId}\')`)) {
                         break;
                     }
                     if (debug) {
@@ -53,14 +56,14 @@ class TestRunner {
     getAllTests(page) {
         return __awaiter(this, void 0, void 0, function* () {
             yield page.evaluate("SampleRunner.init()");
-            const allTestsData = yield page.evaluate("SampleRunner.getAllTests()");
+            const allTestsData = yield page.evaluate("SampleRunner.GetAllTests()");
             return allTestsData.split(';');
         });
     }
     waitXamlElement(page, xamlName, waitTime = 10000) {
         return __awaiter(this, void 0, void 0, function* () {
             var startDate = new Date();
-            while ((startDate - new Date()) < waitTime) {
+            while ((new Date() - startDate) < waitTime) {
                 yield this.delay(200);
                 try {
                     var xamlElement = yield page.$eval(`[xamlname="${xamlName}"]`, a => a);
@@ -75,8 +78,7 @@ class TestRunner {
                     }
                 }
             }
-            console.log(`Failed to get [${xamlName}]`);
-            return null;
+            throw `Failed to get [${xamlName}]`;
         });
     }
     delay(time) {

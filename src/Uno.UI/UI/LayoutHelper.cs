@@ -110,14 +110,14 @@ namespace Uno.UI
 			);
 		}
 
-		public static double NumberOrDefault(this double value, double defaultValue)
+		internal static double NumberOrDefault(this double value, double defaultValue)
 		{
 			return IsNaN(value)
 				? defaultValue
 				: value;
 		}
 
-		public static Size NumberOrDefault(this Size value, Size defaultValue)
+		internal static Size NumberOrDefault(this Size value, Size defaultValue)
 		{
 			return new Size(
 				value.Width.NumberOrDefault(defaultValue.Width),
@@ -125,12 +125,12 @@ namespace Uno.UI
 			);
 		}
 
-		public static double AtMost(this double value, double most)
+		internal static double AtMost(this double value, double most)
 		{
 			return Math.Min(value, most);
 		}
 
-		public static Size AtMost(this Size value, Size most)
+		internal static Size AtMost(this Size value, Size most)
 		{
 			return new Size(
 				value.Width.AtMost(most.Width),
@@ -138,17 +138,36 @@ namespace Uno.UI
 			);
 		}
 
-		public static double AtLeast(this double value, double least)
+		internal static double AtLeast(this double value, double least)
 		{
 			return Math.Max(value, least);
 		}
 
-		public static Size AtLeast(this Size value, Size least)
+		internal static Size AtLeast(this Size value, Size least)
 		{
 			return new Size(
 				value.Width.AtLeast(least.Width),
 				value.Height.AtLeast(least.Height)
 			);
+		}
+
+		internal static Rect GetBoundsRectRelativeTo(this UIElement element, UIElement relativeTo)
+		{
+			var elementRect = new Rect(default, element.RenderSize);
+			if (element.RenderTransform != null)
+			{
+				elementRect = element.RenderTransform.TransformBounds(elementRect);
+			}
+
+			var transformToRoot = element.TransformToVisual(relativeTo);
+			var rect = transformToRoot.TransformBounds(elementRect);
+			return rect;
+		}
+
+		internal static Rect GetAbsoluteBoundsRect(this UIElement element)
+		{
+			var root = Window.Current.Content;
+			return GetBoundsRectRelativeTo(element, root);
 		}
 	}
 }

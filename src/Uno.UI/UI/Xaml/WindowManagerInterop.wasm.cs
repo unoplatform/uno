@@ -23,17 +23,16 @@ namespace Uno.UI.Xaml
 			!WebAssemblyRuntime.IsWebAssembly || FeatureConfiguration.Interop.ForceJavascriptInterop;
 
 		#region Init
-		internal static void Init(string localFolderPath, bool isHostedMode, bool isLoadEventsEnabled)
+		internal static void Init(bool isHostedMode, bool isLoadEventsEnabled)
 		{
 			if (UseJavascriptEval)
 			{
-				WebAssemblyRuntime.InvokeJS($"Uno.UI.WindowManager.init(\"{localFolderPath}\", {isHostedMode.ToString().ToLowerInvariant()}, {isLoadEventsEnabled.ToString().ToLowerInvariant()});");
+				WebAssemblyRuntime.InvokeJS($"Uno.UI.WindowManager.init({isHostedMode.ToString().ToLowerInvariant()}, {isLoadEventsEnabled.ToString().ToLowerInvariant()});");
 			}
 			else
 			{
 				var parms = new WindowManagerInitParams
 				{
-					LocalFolderPath = localFolderPath,
 					IsHostedMode = isHostedMode,
 					IsLoadEventsEnabled = isLoadEventsEnabled
 				};
@@ -46,9 +45,6 @@ namespace Uno.UI.Xaml
 		[StructLayout(LayoutKind.Sequential, Pack = 4)]
 		private struct WindowManagerInitParams
 		{
-			[MarshalAs(TSInteropMarshaller.LPUTF8Str)]
-			public string LocalFolderPath;
-
 			public bool IsHostedMode;
 
 			public bool IsLoadEventsEnabled;
@@ -306,6 +302,43 @@ namespace Uno.UI.Xaml
 
 		#endregion
 
+		#region SetClasses
+
+		internal static void SetClasses(IntPtr htmlId, string[] cssClasses, int index)
+		{
+			if (UseJavascriptEval)
+			{
+				var classes = string.Join(", ", cssClasses.Select(s => "\"" + s + "\""));
+				var command = "Uno.UI.WindowManager.current.setClasses(" + htmlId + ", [" + classes + "], " + index + ");";
+				WebAssemblyRuntime.InvokeJS(command);
+			}
+			else
+			{
+				var parms = new WindowManagerSetClassesParams
+				{
+					HtmlId = htmlId, CssClasses = cssClasses, CssClasses_Length = cssClasses.Length, Index = index
+				};
+
+				TSInteropMarshaller.InvokeJS<WindowManagerSetClassesParams>("Uno:setClassesNative", parms);
+			}
+		}
+
+		[TSInteropMessage]
+		[StructLayout(LayoutKind.Sequential, Pack = 4)]
+		private struct WindowManagerSetClassesParams
+		{
+			public IntPtr HtmlId;
+
+			public int CssClasses_Length;
+
+			[MarshalAs(UnmanagedType.LPArray, ArraySubType = UnmanagedType.LPStr)]
+			public string[] CssClasses;
+
+			public int Index;
+		}
+
+		#endregion
+
 		#region AddView
 
 		internal static void AddView(IntPtr htmlId, IntPtr child, int? index = null)
@@ -347,14 +380,14 @@ namespace Uno.UI.Xaml
 
 		#endregion
 
-		#region SetAttribute
+		#region SetAttributes
 
-		internal static void SetAttribute(IntPtr htmlId, (string name, string value)[] attributes)
+		internal static void SetAttributes(IntPtr htmlId, (string name, string value)[] attributes)
 		{
 			if (UseJavascriptEval)
 			{
 				var attributesStr = string.Join(", ", attributes.Select(s => "\"" + s.name + "\": \"" + WebAssemblyRuntime.EscapeJs(s.value) + "\""));
-				var command = "Uno.UI.WindowManager.current.setAttribute(\"" + htmlId + "\", {" + attributesStr + "});";
+				var command = "Uno.UI.WindowManager.current.setAttributes(\"" + htmlId + "\", {" + attributesStr + "});";
 
 				WebAssemblyRuntime.InvokeJS(command);
 			}
@@ -368,11 +401,49 @@ namespace Uno.UI.Xaml
 					pairs[i * 2 + 1] = attributes[i].value;
 				}
 
-				var parms = new WindowManagerSetAttributeParams()
+				var parms = new WindowManagerSetAttributesParams()
 				{
 					HtmlId = htmlId,
 					Pairs_Length = pairs.Length,
 					Pairs = pairs,
+				};
+
+				TSInteropMarshaller.InvokeJS<WindowManagerSetAttributesParams>("Uno:setAttributesNative", parms);
+			}
+		}
+
+
+		[TSInteropMessage]
+		[StructLayout(LayoutKind.Sequential, Pack = 4)]
+		private struct WindowManagerSetAttributesParams
+		{
+			public IntPtr HtmlId;
+
+			public int Pairs_Length;
+
+			[MarshalAs(UnmanagedType.LPArray, ArraySubType = TSInteropMarshaller.LPUTF8Str)]
+			public string[] Pairs;
+		}
+
+		#endregion
+		#region SetAttributes
+
+		internal static void SetAttribute(IntPtr htmlId, string name, string value)
+		{
+			if (UseJavascriptEval)
+			{
+				var attributesStr = "\"" + name + "\": \"" + WebAssemblyRuntime.EscapeJs(value) + "\"";
+				var command = "Uno.UI.WindowManager.current.setAttributes(\"" + htmlId + "\", {" + attributesStr + "});";
+
+				WebAssemblyRuntime.InvokeJS(command);
+			}
+			else
+			{
+				var parms = new WindowManagerSetAttributeParams()
+				{
+					HtmlId = htmlId,
+					Name = name,
+					Value = value,
 				};
 
 				TSInteropMarshaller.InvokeJS<WindowManagerSetAttributeParams>("Uno:setAttributeNative", parms);
@@ -386,10 +457,11 @@ namespace Uno.UI.Xaml
 		{
 			public IntPtr HtmlId;
 
-			public int Pairs_Length;
+			[MarshalAs(TSInteropMarshaller.LPUTF8Str)]
+			public string Name;
 
-			[MarshalAs(UnmanagedType.LPArray, ArraySubType = TSInteropMarshaller.LPUTF8Str)]
-			public string[] Pairs;
+			[MarshalAs(TSInteropMarshaller.LPUTF8Str)]
+			public string Value;
 		}
 
 		#endregion
@@ -426,6 +498,38 @@ namespace Uno.UI.Xaml
 		}
 		#endregion
 
+		#region SetXUid
+
+		internal static void SetXUid(IntPtr htmlId, string name)
+		{
+			if (UseJavascriptEval)
+			{
+				var command = $"Uno.UI.WindowManager.current.setXUid(\"{htmlId}\", \"{name}\");";
+				WebAssemblyRuntime.InvokeJS(command);
+			}
+			else
+			{
+				var parms = new WindowManagerSetXUidParams()
+				{
+					HtmlId = htmlId,
+					Uid = name,
+				};
+
+				TSInteropMarshaller.InvokeJS<WindowManagerSetXUidParams>("Uno:setXUidNative", parms);
+			}
+		}
+
+		[TSInteropMessage]
+		[StructLayout(LayoutKind.Sequential, Pack = 4)]
+		private struct WindowManagerSetXUidParams
+		{
+			public IntPtr HtmlId;
+
+			[MarshalAs(TSInteropMarshaller.LPUTF8Str)]
+			public string Uid;
+		}
+		#endregion
+
 		#region SetProperty
 
 		internal static void SetProperty(IntPtr htmlId, (string name, string value)[] properties)
@@ -447,14 +551,14 @@ namespace Uno.UI.Xaml
 					pairs[i * 2 + 1] = properties[i].value;
 				}
 
-				var parms = new WindowManagerSetAttributeParams()
+				var parms = new WindowManagerSetAttributesParams()
 				{
 					HtmlId = htmlId,
 					Pairs_Length = pairs.Length,
 					Pairs = pairs,
 				};
 
-				TSInteropMarshaller.InvokeJS<WindowManagerSetAttributeParams>("Uno:setPropertyNative", parms);
+				TSInteropMarshaller.InvokeJS<WindowManagerSetAttributesParams>("Uno:setPropertyNative", parms);
 
 			}
 		}
@@ -770,5 +874,56 @@ namespace Uno.UI.Xaml
 
 
 		#endregion
+
+		#region GetClientViewSize
+
+		internal static (Size clientSize, Size offsetSize) GetClientViewSize(IntPtr htmlId)
+		{
+			if (UseJavascriptEval)
+			{
+				var sizeString = WebAssemblyRuntime.InvokeJS("Uno.UI.WindowManager.current.getClientViewSize(" + htmlId + ");");
+				var sizeParts = sizeString.Split(';');
+
+				return (
+					clientSize: new Size(double.Parse(sizeParts[0]), double.Parse(sizeParts[1])),
+					offsetSize: new Size(double.Parse(sizeParts[2]), double.Parse(sizeParts[3]))
+				);
+			}
+			else
+			{
+				var parms = new WindowManagerGetClientViewSizeParams
+				{
+					HtmlId = htmlId
+				};
+
+				var ret = TSInteropMarshaller.InvokeJS<WindowManagerGetClientViewSizeParams, WindowManagerGetClientViewSizeReturn>("Uno:getClientViewSizeNative", parms);
+
+				return (
+					clientSize: new Size(ret.ClientWidth, ret.ClientHeight),
+					offsetSize:new Size(ret.OffsetWidth, ret.OffsetHeight)
+				);
+			}
+		}
+
+		[TSInteropMessage]
+		[StructLayout(LayoutKind.Sequential, Pack = 4)]
+		private struct WindowManagerGetClientViewSizeParams
+		{
+			public IntPtr HtmlId;
+		}
+
+
+		[TSInteropMessage]
+		[StructLayout(LayoutKind.Sequential, Pack = 8)]
+		private struct WindowManagerGetClientViewSizeReturn
+		{
+			public double OffsetWidth;
+			public double OffsetHeight;
+			public double ClientWidth;
+			public double ClientHeight;
+		}
+
+		#endregion
+
 	}
 }

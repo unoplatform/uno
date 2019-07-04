@@ -36,14 +36,12 @@
 			* @param containerElementId The ID of the container element for the Xaml UI
 			* @param loadingElementId The ID of the loading element to remove once ready
 			*/
-		public static init(localStoragePath: string, isHosted: boolean, isLoadEventsEnabled: boolean, containerElementId: string = "uno-body", loadingElementId: string = "uno-loading"): string {
+		public static init(isHosted: boolean, isLoadEventsEnabled: boolean, containerElementId: string = "uno-body", loadingElementId: string = "uno-loading"): string {
 
 			WindowManager._isHosted = isHosted;
 			WindowManager._isLoadEventsEnabled = isLoadEventsEnabled;
 
 			Windows.UI.Core.CoreDispatcher.init(WindowManager.buildReadyPromise());
-
-			WindowManager.setupStorage(localStoragePath);
 
 			this.current = new WindowManager(containerElementId, loadingElementId);
 			MonoSupport.jsCallDispatcher.registerScope("Uno", this.current);
@@ -121,7 +119,7 @@
 
 			const params = WindowManagerInitParams.unmarshal(pParams);
 
-			WindowManager.init(params.LocalFolderPath, params.IsHostedMode, params.IsLoadEventsEnabled);
+			WindowManager.init(params.IsHostedMode, params.IsLoadEventsEnabled);
 
 			return true;
 		}
@@ -136,70 +134,10 @@
 
 		private static resizeMethod: any;
 		private static dispatchEventMethod: any;
+		private static getDependencyPropertyValueMethod: any;
 
 		private constructor(private containerElementId: string, private loadingElementId: string) {
 			this.initDom();
-		}
-
-		/**
-		 * Setup the storage persistence
-		 *
-		 * */
-		static setupStorage(localStoragePath: string): void {
-			if (WindowManager.isHosted) {
-				console.debug("Hosted Mode: skipping IndexDB initialization");
-			}
-			else {
-				if (WindowManager.isIndexDBAvailable()) {
-
-					FS.mkdir(localStoragePath);
-					FS.mount(IDBFS, {}, localStoragePath);
-
-					FS.syncfs(true,
-						err => {
-							if (err) {
-								console.error(`Error synchronizing filsystem from IndexDB: ${err}`);
-							}
-						}
-					);
-
-					window.addEventListener(
-						"beforeunload",
-						() => WindowManager.synchronizeFileSystem()
-					);
-
-					setInterval(() => WindowManager.synchronizeFileSystem(), 10000);
-				}
-				else {
-					console.warn("IndexedDB is not available (private mode?), changed will not be persisted.");
-				}
-			}
-		}
-
-		/**
-		 * Determine if IndexDB is available, some browsers and modes disable it.
-		 * */
-		static isIndexDBAvailable(): boolean {
-			try {
-				// IndexedDB may not be available in private mode
-				window.indexedDB;
-				return true;
-			} catch (err) {
-				return false;
-			}
-		}
-
-		/**
-		 * Synchronize the IDBFS memory cache back to IndexDB
-		 * */
-		static synchronizeFileSystem(): void {
-			FS.syncfs(
-				err => {
-					if (err) {
-						console.error(`Error synchronizing filsystem from IndexDB: ${err}`);
-					}
-				}
-			);
 		}
 
 		/**
@@ -302,7 +240,7 @@
 			element.setAttribute("XamlType", contentDefinition.type);
 			element.setAttribute("XamlHandle", `${contentDefinition.handle}`);
 			if (contentDefinition.isFrameworkElement) {
-				element.classList.add(WindowManager.unoUnarrangedClassName);
+				this.setAsUnarranged(element);
 			}
 			if (element.hasOwnProperty("tabindex")) {
 				(element as any)["tabindex"] = contentDefinition.isFocusable ? 0 : -1;
@@ -350,18 +288,44 @@
 		}
 
 		private setNameInternal(elementId: number, name: string): void {
-			this.getView(elementId).setAttribute("XamlName", name);
+			this.getView(elementId).setAttribute("xamlname", name);
+		}
+
+
+		/**
+			* Set a name for an element.
+			*
+			* This is mostly for diagnostic purposes.
+			*/
+		public setXUid(elementId: number, name: string): string {
+			this.setXUidInternal(elementId, name);
+			return "ok";
+		}
+
+		/**
+			* Set a name for an element.
+			*
+			* This is mostly for diagnostic purposes.
+			*/
+		public setXUidNative(pParam: number): boolean {
+			const params = WindowManagerSetXUidParams.unmarshal(pParam);
+			this.setXUidInternal(params.HtmlId, params.Uid);
+			return true;
+		}
+
+		private setXUidInternal(elementId: number, name: string): void {
+			this.getView(elementId).setAttribute("xuid", name);
 		}
 
 		/**
 			* Set an attribute for an element.
 			*/
-		public setAttribute(elementId: number, attributes: { [name: string]: string }): string {
-			const htmlElement = this.getView(elementId);
+		public setAttributes(elementId: number, attributes: { [name: string]: string }): string {
+			const element = this.getView(elementId);
 
 			for (const name in attributes) {
 				if (attributes.hasOwnProperty(name)) {
-					htmlElement.setAttribute(name, attributes[name]);
+					element.setAttribute(name, attributes[name]);
 				}
 			}
 
@@ -371,14 +335,26 @@
 		/**
 			* Set an attribute for an element.
 			*/
+		public setAttributesNative(pParams: number): boolean {
+
+			const params = WindowManagerSetAttributesParams.unmarshal(pParams);
+			const element = this.getView(params.HtmlId);
+
+			for (let i = 0; i < params.Pairs_Length; i += 2) {
+				element.setAttribute(params.Pairs[i], params.Pairs[i + 1]);
+			}
+
+			return true;
+		}
+
+		/**
+			* Set an attribute for an element.
+			*/
 		public setAttributeNative(pParams: number): boolean {
 
 			const params = WindowManagerSetAttributeParams.unmarshal(pParams);
-			const htmlElement = this.getView(params.HtmlId);
-
-			for (let i = 0; i < params.Pairs_Length; i += 2) {
-				htmlElement.setAttribute(params.Pairs[i], params.Pairs[i + 1]);
-			}
+			const element = this.getView(params.HtmlId);
+			element.setAttribute(params.Name, params.Value);
 
 			return true;
 		}
@@ -395,11 +371,11 @@
 			* Set a property for an element.
 			*/
 		public setProperty(elementId: number, properties: { [name: string]: string }): string {
-			const htmlElement = this.getView(elementId);
+			const element = this.getView(elementId);
 
 			for (const name in properties) {
 				if (properties.hasOwnProperty(name)) {
-					(htmlElement as any)[name] = properties[name];
+					(element as any)[name] = properties[name];
 				}
 			}
 
@@ -412,10 +388,10 @@
 		public setPropertyNative(pParams:number): boolean {
 
 			const params = WindowManagerSetPropertyParams.unmarshal(pParams);
-			const htmlElement = this.getView(params.HtmlId);
+			const element = this.getView(params.HtmlId);
 
 			for (let i = 0; i < params.Pairs_Length; i += 2) {
-				(htmlElement as any)[params.Pairs[i]] = params.Pairs[i + 1];
+				(element as any)[params.Pairs[i]] = params.Pairs[i + 1];
 			}
 
 			return true;
@@ -425,9 +401,9 @@
 			* Get a property for an element.
 			*/
 		public getProperty(elementId: number, name: string): any {
-			const htmlElement = this.getView(elementId);
+			const element = this.getView(elementId);
 
-			return (htmlElement as any)[name] || "";
+			return (element as any)[name] || "";
 		}
 
 		/**
@@ -437,16 +413,16 @@
 			* @param styles A dictionary of styles to apply on html element.
 			*/
 		public setStyle(elementId: number, styles: { [name: string]: string }, setAsArranged: boolean = false): string {
-			const htmlElement = this.getView(elementId);
+			const element = this.getView(elementId);
 
 			for (const style in styles) {
 				if (styles.hasOwnProperty(style)) {
-					htmlElement.style.setProperty(style, styles[style]);
+					element.style.setProperty(style, styles[style]);
 				}
 			}
 
 			if (setAsArranged) {
-				htmlElement.classList.remove(WindowManager.unoUnarrangedClassName);
+				this.setAsArranged(element);
 			}
 
 			return "ok";
@@ -461,9 +437,9 @@
 		public setStyleNative(pParams: number): boolean {
 
 			const params = WindowManagerSetStylesParams.unmarshal(pParams);
-			const htmlElement = this.getView(params.HtmlId);
+			const element = this.getView(params.HtmlId);
 
-			const elementStyle = htmlElement.style;
+			const elementStyle = element.style;
 			const pairs = params.Pairs;
 
 			for (let i = 0; i < params.Pairs_Length; i += 2) {
@@ -474,7 +450,7 @@
 			}
 
 			if (params.SetAsArranged) {
-				htmlElement.classList.remove(WindowManager.unoUnarrangedClassName);
+				this.setAsArranged(element);
 			}
 
 			return true;
@@ -487,9 +463,9 @@
 		public setStyleDoubleNative(pParams: number): boolean {
 
 			const params = WindowManagerSetStyleDoubleParams.unmarshal(pParams);
-			const htmlElement = this.getView(params.HtmlId);
+			const element = this.getView(params.HtmlId);
 
-			htmlElement.style.setProperty(params.Name, String(params.Value));
+			element.style.setProperty(params.Name, String(params.Value));
 
 			return true;
 		}
@@ -518,11 +494,33 @@
 		}
 
 		private resetStyleInternal(elementId: number, names: string[]): void {
-			const htmlElement = this.getView(elementId);
+			const element = this.getView(elementId);
 
 			for(const name of names) {
-				htmlElement.style.setProperty(name, "");
+				element.style.setProperty(name, "");
 			}
+		}
+
+		/**
+		 * Set CSS classes on an element
+		 */
+		public setClasses(elementId: number, cssClassesList: string[], classIndex: number): string {
+			const element = this.getView(elementId);
+
+			for (let i = 0; i < cssClassesList.length; i++) {
+				if (i === classIndex) {
+					element.classList.add(cssClassesList[i]);
+				} else {
+					element.classList.remove(cssClassesList[i]);
+				}
+			}
+			return "ok";
+		}
+
+		public setClassesNative(pParams: number): boolean {
+			const params = WindowManagerSetClassesParams.unmarshal(pParams);
+			this.setClasses(params.HtmlId, params.CssClasses, params.Index);
+			return true;
 		}
 
 		/**
@@ -532,15 +530,15 @@
 		public arrangeElementNative(pParams: number): boolean {
 
 			const params = WindowManagerArrangeElementParams.unmarshal(pParams);
-			const htmlElement = this.getView(params.HtmlId);
+			const element = this.getView(params.HtmlId);
 
-			var style = htmlElement.style;
+			const style = element.style;
 
 			style.position = "absolute";
 			style.top = params.Top + "px";
 			style.left = params.Left + "px";
-			style.width = params.Width == NaN ? "auto" : params.Width + "px";
-			style.height = params.Height == NaN ? "auto" : params.Height + "px";
+			style.width = params.Width === NaN ? "auto" : params.Width + "px";
+			style.height = params.Height === NaN ? "auto" : params.Height + "px";
 
 			if (params.Clip) {
 				style.clip = `rect(${params.ClipTop}px, ${params.ClipRight}px, ${params.ClipBottom}px, ${params.ClipLeft}px)`;
@@ -548,10 +546,18 @@
 				style.clip = "";
 			}
 
-
-			htmlElement.classList.remove(WindowManager.unoUnarrangedClassName);
+			this.setAsArranged(element);
 
 			return true;
+		}
+
+		private setAsArranged(element: HTMLElement | SVGElement) {
+
+			element.classList.remove(WindowManager.unoUnarrangedClassName);
+		}
+
+		private setAsUnarranged(element: HTMLElement | SVGElement) {
+			element.classList.add(WindowManager.unoUnarrangedClassName);
 		}
 
 		/**
@@ -561,13 +567,13 @@
 		public setElementTransformNative(pParams: number): boolean {
 
 			const params = WindowManagerSetElementTransformParams.unmarshal(pParams);
-			const htmlElement = this.getView(params.HtmlId);
+			const element = this.getView(params.HtmlId);
 
-			var style = htmlElement.style;
+			var style = element.style;
 
 			style.transform = `matrix(${params.M11},${params.M12},${params.M21},${params.M22},${params.M31},${params.M32})`;
 
-			htmlElement.classList.remove(WindowManager.unoUnarrangedClassName);
+			element.classList.remove(WindowManager.unoUnarrangedClassName);
 
 			return true;
 		}
@@ -656,7 +662,7 @@
 			eventFilterName?: string,
 			eventExtractorName?: string
 		): void {
-			const htmlElement = this.getView(elementId);
+			const element = this.getView(elementId);
 
 			const eventFilter = this.getEventFilter(eventFilterName);
 			const eventExtractor = this.getEventExtractor(eventExtractorName);
@@ -671,13 +677,13 @@
 						? `${eventExtractor(event)}`
 						: "";
 
-				var handled = this.dispatchEvent(htmlElement, eventName, eventPayload);
+				var handled = this.dispatchEvent(element, eventName, eventPayload);
 				if (handled) {
 					event.stopPropagation();
 				}
 			};
 
-			htmlElement.addEventListener(eventName, eventHandler, onCapturePhase);
+			element.addEventListener(eventName, eventHandler, onCapturePhase);
 		}
 
 		/**
@@ -851,7 +857,7 @@
 			if (WindowManager.isLoadEventsEnabled) {
 				this.dispatchEvent(this.rootContent, "loaded");
 			}
-			newRootElement.classList.remove(WindowManager.unoUnarrangedClassName); // patch because root is not measured/arranged
+			this.setAsArranged(newRootElement); // patch because root is not measured/arranged
 
 			this.resize();
 
@@ -948,7 +954,7 @@
 
 			// Mark the element as unarranged, so if it gets measured while being
 			// disconnected from the root element, it won't be visible.
-			childElement.classList.add(WindowManager.unoUnarrangedClassName);
+			this.setAsUnarranged(childElement);
 
 			if (shouldRaiseLoadEvents) {
 				this.dispatchEvent(childElement, "unloaded");
@@ -979,10 +985,10 @@
 		}
 
 		private destroyViewInternal(elementId: number): void {
-			const htmlElement = this.getView(elementId);
+			const element = this.getView(elementId);
 
-			if (htmlElement.parentElement) {
-				htmlElement.parentElement.removeChild(htmlElement);
+			if (element.parentElement) {
+				element.parentElement.removeChild(element);
 			}
 
 			delete this.allActiveElementsById[elementId];
@@ -1055,11 +1061,16 @@
 			return true;
 		}
 
+		private static MAX_WIDTH = `${Number.MAX_SAFE_INTEGER}vw`;
+		private static MAX_HEIGHT = `${Number.MAX_SAFE_INTEGER}vh`;
+
 		private measureViewInternal(viewId: number, maxWidth: number, maxHeight: number): [number, number] {
 			const element = this.getView(viewId) as HTMLElement;
 
 			const elementStyle = element.style;
 			const originalStyleCssText = elementStyle.cssText;
+			let parentElement: HTMLElement = null;
+			let parentElementWidthHeight: { width: string, height: string } = null;
 
 			try {
 				if (!element.isConnected) {
@@ -1076,27 +1087,52 @@
 					this.containerElement.appendChild(unconnectedRoot);
 				}
 
-				var updatedStyles = <any>{};
+				// As per W3C css-transform spec:
+				// https://www.w3.org/TR/css-transforms-1/#propdef-transform
+				//
+				// > For elements whose layout is governed by the CSS box model, any value other than none
+				// > for the transform property also causes the element to establish a containing block for
+				// > all descendants.Its padding box will be used to layout for all of its
+				// > absolute - position descendants, fixed - position descendants, and descendant fixed
+				// > background attachments.
+				//
+				// We use this feature to allow an measure of text without being influenced by the bounds
+				// of the viewport. We just need to temporary set both the parent width & height to a very big value.
 
-				for (var i = 0; i < elementStyle.length; i++) {
+				parentElement = element.parentElement;
+				parentElementWidthHeight = { width: parentElement.style.width, height: parentElement.style.height };
+				parentElement.style.width = WindowManager.MAX_WIDTH;
+				parentElement.style.height = WindowManager.MAX_HEIGHT;
+
+				const updatedStyles = <any>{};
+
+				for (let i = 0; i < elementStyle.length; i++) {
 					const key = elementStyle[i];
 					updatedStyles[key] = elementStyle.getPropertyValue(key);
 				}
 
-				updatedStyles.width = "";
-				updatedStyles.height = "";
+				if (updatedStyles.hasOwnProperty("width")) {
+					delete updatedStyles.width;
+				}
+				if (updatedStyles.hasOwnProperty("height")) {
+					delete updatedStyles.height;
+				}
 
 				// This is required for an unconstrained measure (otherwise the parents size is taken into account)
 				updatedStyles.position = "fixed";
-				updatedStyles.maxWidth = Number.isFinite(maxWidth) ? maxWidth + "px" : "";
-				updatedStyles.maxHeight = Number.isFinite(maxHeight) ? maxHeight + "px" : "";
+				updatedStyles["max-width"] = Number.isFinite(maxWidth) ? maxWidth + "px" : "none";
+				updatedStyles["max-height"] = Number.isFinite(maxHeight) ? maxHeight + "px" : "none";
 
-				var updatedStyleString = "";
+				let updatedStyleString = "";
 
-				for (var key in updatedStyles) {
-					updatedStyleString += key + ": " + updatedStyles[key] + "; ";
+				for (let key in updatedStyles) {
+					if (updatedStyles.hasOwnProperty(key)) {
+						updatedStyleString += key + ": " + updatedStyles[key] + "; ";
+					}
 				}
 
+				// We use a string to prevent the browser to update the element between
+				// each style assignation. This way, the browser will update the element only once.
 				elementStyle.cssText = updatedStyleString;
 
 				if (element instanceof HTMLImageElement) {
@@ -1110,12 +1146,17 @@
 					const resultWidth = offsetWidth ? offsetWidth : element.clientWidth;
 					const resultHeight = offsetHeight ? offsetHeight : element.clientHeight;
 
-					/* +0.5 is added to take rounding into account */
+					// +0.5 is added to take rounding into account
 					return [resultWidth + 0.5, resultHeight];
 				}
 			}
 			finally {
 				elementStyle.cssText = originalStyleCssText;
+
+				if (parentElement && parentElementWidthHeight) {
+					parentElement.style.width = parentElementWidthHeight.width;
+					parentElement.style.height = parentElementWidthHeight.height;
+				}
 			}
 		}
 
@@ -1203,13 +1244,13 @@
 		}
 
 		public focusView(elementId: number): string {
-			const htmlElement = this.getView(elementId);
+			const element = this.getView(elementId);
 
-			if (!(htmlElement instanceof HTMLElement)) {
+			if (!(element instanceof HTMLElement)) {
 				throw `Element id ${elementId} is not focusable.`;
 			}
 
-			htmlElement.focus();
+			element.focus();
 
 			return "ok";
 		}
@@ -1241,6 +1282,56 @@
 		private setHtmlContentInternal(viewId: number, html: string): void {
 
 			this.getView(viewId).innerHTML = html;
+		}
+
+		/**
+		 * Gets the Client and Offset size of the specified element
+		 *
+		 * This method is used to determine the size of the scroll bars, to
+		 * mask the events coming from that zone.
+		 */
+		public getClientViewSize(elementId: number): string {
+			const element = this.getView(elementId) as HTMLElement;
+
+			return `${element.clientWidth};${element.clientHeight};${element.offsetWidth};${element.offsetHeight}`;
+		}
+
+		/**
+		 * Gets the Client and Offset size of the specified element
+		 *
+		 * This method is used to determine the size of the scroll bars, to
+		 * mask the events coming from that zone.
+		 */
+		public getClientViewSizeNative(pParams: number, pReturn: number): boolean {
+			const params = WindowManagerGetClientViewSizeParams.unmarshal(pParams);
+
+			const element = this.getView(params.HtmlId) as HTMLElement;
+
+			const ret2 = new WindowManagerGetClientViewSizeReturn();
+			ret2.ClientWidth = element.clientWidth;
+			ret2.ClientHeight = element.clientHeight;
+			ret2.OffsetWidth = element.offsetWidth;
+			ret2.OffsetHeight = element.offsetHeight;
+
+			ret2.marshal(pReturn);
+
+			return true;
+		}
+
+		/**
+		 * Gets a dependency property value.
+		 *
+		 * Note that the casing of this method is intentionally Pascal for platform alignment.
+		 */
+		public GetDependencyPropertyValue(elementId: number, propertyName: string) : string {
+			if (!WindowManager.getDependencyPropertyValueMethod) {
+				WindowManager.getDependencyPropertyValueMethod = (<any>Module).mono_bind_static_method("[Uno.UI] Uno.UI.Helpers.Automation:GetDependencyPropertyValue");
+			}
+
+			const element = this.getView(elementId) as HTMLElement;
+			const htmlId = Number(element.getAttribute("XamlHandle"));
+
+			return WindowManager.getDependencyPropertyValueMethod(htmlId, propertyName);
 		}
 
 		/**

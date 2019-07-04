@@ -11,27 +11,27 @@ Visual Studio for Mac is supported, but the editing capabilities are currently l
 
 ## Create a new project
 
-See the [Uno.Quickstart](https://github.com/nventive/Uno.QuickStart) repository for a simple example.
+Follow the instructions in the [Getting Started guide](get-started.md) to use the Uno app template to create a new app in Visual Studio. See the [Uno.Quickstart](https://github.com/nventive/Uno.QuickStart) repository for a simple example of a 'Hello World' application.
 
-## General Guidelines for Developing with Uno.UI
+## General guidelines for developing with Uno.UI
 
 * **Always develop for Windows UWP first**. Uno.UI uses the same namespaces and 
 conventions as UWP's XAML, which allows for a better use of Visual Studio
-debugging tools sur as Xaml Edit and Continue, and C# Edit and Continue. The compilation is also much faster, making the development inner loop more efficient.
-* When creating platform specific XAML, **make sure to wrap this specifity inside of
+debugging tools such as Xaml Edit and Continue, and C# Edit and Continue. The compilation is also much faster, making the development inner loop more efficient.
+* When creating platform specific XAML, **wrap it inside of
 a user control**, or a control style. This makes for cleaner code when the control is used.
-* When writing platform specific code, **always create partial classes and not conditional 
+* When writing platform-specific code, **prefer to create [partial classes](https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/classes-and-structs/partial-classes-and-methods) and avoid conditional 
 code that uses #if pre-compiler directives**. If the implementation becomes too large, consider
 abstracting the implementation using a common interface.
-* A platform specific code file **should always have an appropriate suffix** (.android.cs, .ios.cs, .uwp.cs, .xamarin.cs, ...)
+* A platform-specific code file **should have an appropriate suffix** (.android.cs, .ios.cs, .uwp.cs, .xamarin.cs, ...)
 * Uno.UI is not a perfect implementation of UWP's XAML, which means that there will be compatibility issues. When you 
 encounter one, a few approaches can be taken:
- 1. **Always report the issue to the Uno.UI maintainers**. This may be a known issue, for which there may be known 
-    workaround or guidance on how to handle the issue.
+ 1. **Always [report the issue](https://github.com/nventive/Uno/issues) to the Uno.UI maintainers**. This may be a known issue, for which there may be known 
+    workarounds or guidance on how to handle the issue.
  1. **Try to find a UWP-compatible workaround**, possibly non-breaking, meaning that the added Xaml produces the
     same behavior for all platforms, even if it does not conform to the expected UWP behavior.
  1. **Make the Xaml code conditional to Uno.UI**, using xml namespaces. Note that using 
-    this technique exposes the app's code to behaviors breaking changes.
+    this technique exposes the app's code to breaking changes.
 
 ## Bootstrapping Uno.UI
 
@@ -40,9 +40,9 @@ encounter one, a few approaches can be taken:
 Uno provides a simple logging infrastructure through the Uno.Logging namespace.
 
 The LogManager is the entry point to get the loggers, and Uno.UI provides a default Console
-logger that may output content in Android's LogCat, or iOS syslog.
+logger that may output content in Android's LogCat, or iOS' syslog.
 
-Here's how enable it :
+Here's how to enable it :
 
 ```csharp
 	Uno.Logging.LogManager.LoggerSelector = Uno.Logging.ConsoleLogger.Instance.GetLog;
@@ -62,10 +62,10 @@ Here's how enable it :
 	};
 ```
 
-Note that enabling debug logging may significantly slow down the application. It is **strongly** 
-suggested to keep the logging level to **LogLevel.Warn**.
+Note that enabling debug logging may significantly slow down the application. It is strongly 
+suggested to keep the logging level to **LogLevel.Warn** for routine development.
 
-## Troubleshooting Uno.UI Xaml Pages 
+## Troubleshooting Uno.UI Xaml pages 
 
 When building, the Uno.UI code generator produces .cs files that are
 located in the **MyApp.[iOS|Android]\Obj\[Platform]** folder.
@@ -73,10 +73,10 @@ located in the **MyApp.[iOS|Android]\Obj\[Platform]** folder.
 You may see those files in Visual Studio by selecting this project in the Solution Explorer, then click
 the **Show all Files** icon at the top.
 
-If you notice an issue, or an error in the commented code of the generated file, you may need to alter you Xaml.
+If you notice an issue, or an error in the commented code of the generated file, you may need to alter your Xaml.
 
-## Configure the Manifest for the WebAssembly Head
-In your WASM head, create a folder named `WasmScripts`, with a file containing the javascript below
+## Configure the manifest for the WebAssembly head
+In your WASM head, create a folder named `WasmScripts`, with a file containing the Javascript code below
 (e.g. `AppManifest.js`) and the `Embedded resource` build action.
 
 The manifest file should contain the following:
@@ -96,7 +96,7 @@ The properties are :
 * **splashScreenColor**: defines the background color of the splash screen
 * **displayName**: defines the default name of the application in the browser's window title
 
-## Supporting multiple Platforms in Xaml files
+## Supporting multiple platforms in Xaml files
 
 The Uno.UI Xaml parser has the ability to manage specific namespaces, giving the ability to ignore or enable specific Xaml nodes and attributes.
 
@@ -108,7 +108,7 @@ By default, these namespaces are supported :
 *   xmlns:xamarin="http://uno.ui/xamarin"
 *   xmlns:wasm="http://uno.ui/wasm"
 
-These namespaces are to be declared on top of each xaml file that will be included in the final binary.
+These namespaces are to be declared on top of each Xaml file that will be included in the final binary.
 
 Also, the following ignorables must be declared :
 
@@ -116,17 +116,17 @@ Also, the following ignorables must be declared :
     mc:Ignorable="d ios android xamarin"
 ```
 
-This list is mandatory for the Windows Xaml parser to ignore non-windows markup.
+This list is mandatory for the Windows Xaml parser to ignore non-Windows markup.
 
-On Xamarin based platforms, the Uno.UI will selectively remove or add the appropriate namespaces so that only the relevant markup is processed.
+On non-Windows platforms, the Uno Platform will selectively remove or add the appropriate namespaces so that only the relevant markup is processed.
 
-For instance, on Xamarin.iOS, the Ignorable attribute will automatically be set to :
+For instance, on Xamarin.iOS, the Ignorable attribute will automatically be set to:
 
 ```xml
     mc:Ignorable="d win android"
 ```
 
-which will make the win and android namespaces ignored by the Umbrella UI parser.
+which will make the `win` and `android` namespaces ignored by the Uno.UI parser.
 
 Similarly, on Xamarin.Android, the Ignorable attribute will automatically be set to : 
 
@@ -134,7 +134,7 @@ Similarly, on Xamarin.Android, the Ignorable attribute will automatically be set
     mc:Ignorable="d win ios"
 ```
 
-which will make the win and ios namespaces ignored by the Umbrella UI parser.
+which will make the win and ios namespaces ignored by the Uno.UI parser.
 
 In the Xaml file, it is then possible to write the following :
 
@@ -145,7 +145,7 @@ In the Xaml file, it is then possible to write the following :
     </ItemsPanelTemplate>
 ```
 
-Where depending on the platform, a panel will be selected at compile time.
+Where depending on the platform, a different panel will be selected at compile time.
 
 Here's a complete file sample :
 
@@ -171,44 +171,23 @@ Here's a complete file sample :
     </UserControl>
 ```
 
-## Using platform-specific code-behind
-
-There are some cases where the Xaml representation of a layout is not possible. In those cases, Uno UI makes use of the x:Name property to generate a partial method that can be used to alter the visual element being created.
-
-For instance :
-
-```xml
-    <ios:TextBox x:Name="MySampleTextBox" />
-```
-
-Will force the creation of the following method :
-
-```csharp
-	public MyPage()
-    {
-        this.InitializeComponent();
-
-        c.Started += (s, e) => Debug.WriteLine("Text editing has started");  
-    }
-```
-
 ## Uno.UI Layout Behavior
 
-The layout behavior is the notion of applying margins, paddings and alignments for a control inside its parent. In UWP/WPF, the code responsible for this behavior is located in the FrameworkElement class. This means that any control can alter its own rendering position inside its parent, and place its content properly, regardless of the parent type.
+The layout behavior is the notion of applying margins, paddings and alignments for a control inside its parent. In UWP/WPF, the code responsible for this behavior is located in the FrameworkElement class. This means that any control can alter its own rendering position inside its parent, and place its content accordingly, regardless of the parent type.
 
-The Uno.UI layout engine on Android and iOS is built in the Panel class, and the layout behavior is applied by a panel to its children. This means that if a control has an alignment or a margin set, if it is not child of a FrameworkElement, those properties will be ignored, and the control will stretch within its parent's available space.
+The Uno.UI layout engine on Android and iOS is applied by a parent to its children. This means that if a control has an alignment or a margin set, if it is not child of a FrameworkElement (ie it's the child of a non-Uno view), those properties will be ignored, and the control will stretch within its parent's available space.
 
 This behavior is is a direct consequence of the ability to mix native and Uno.UI controls.
 
 ## Dependency Properties
 
-Uno.UI allows the sharing of [Dependency Property] (https://msdn.microsoft.com/en-us/library/ms752914%28v=vs.110%29.aspx) declaration and 
+Uno.UI allows the sharing of [Dependency Property](https://msdn.microsoft.com/en-us/library/ms752914%28v=vs.110%29.aspx) declaration and 
 code between Windows and Xamarin based platforms.
 
 Declaring a dependency property in Uno UI requires a class to implement the  
 interface `DependencyProperty`, to gain access to the GetValue and SetValue methods.
 
-Here is an example of declaration:
+Here is an example of such a declaration:
 
 ```csharp
     public class ControlTemplateTest : Control  
@@ -224,14 +203,14 @@ Here is an example of declaration:
     }
 ```
 
-In visual studio, this code can be created using the `propdp`
+In Visual Studio, this code can be created using the `propdp`
 [code snippet](https://msdn.microsoft.com/en-us/library/ms165392.aspx).
 
 ## Creating a Control Template  
 
 Uno.UI provides the ability to create control templates, which provide another way of creating multi-platform user interfaces.
 
-For the following control class :  
+For the following control class:  
 
 ```csharp
     public class MyUserControl : Control  
@@ -247,7 +226,7 @@ For the following control class :
     }
 ```
 
-Which exposes a `MyCustomContent` property, it is then possible to apply a template that uses template bindings :
+Which exposes a `MyCustomContent` property, it is then possible to apply a template that uses template bindings:
 
 ```xml
     <UserControl
@@ -283,7 +262,7 @@ Uno.UI currently supports Static Resources using a two-level scope resolution.
 
 The local scope takes precedence over the global scope.
 
-Uno.UI generates a file named GlobalStaticResources, which contains :
+Uno.UI generates a file named GlobalStaticResources, which contains:
 
 *   Static members for all the available resources.
 *   A method called FindResource which takes a resource name to find.
@@ -294,14 +273,20 @@ Uno.UI also generates a nested class named StaticResources in all non-ResourceDi
 
 Uno.UI supports the [authoring of styles](https://msdn.microsoft.com/en-us/library/windows/apps/windows.ui.xaml.style.aspx).
 
+For many controls in Uno, two prepackaged styles are provided:
+* NativeDefault[Control] which is customized to match the UI guidelines of the target platform
+* XamlDefault[Control] which is the default style of controls on Windows
+
+On WASM, the NativeDefault[Control] styles are currently only aliases to the XamlDefault[Control], for compatibility with other platforms.
+
 ## Localization
 
-Localization is done through the `resw` files in the current project. Resources are then used using `x:Uid`.
+Localization is done through the `resw` files in the current project. Resources are then referenced using `x:Uid`.
 
-See [Localize strings in your UI](https://docs.microsoft.com/en-us/windows/uwp/app-resources/localize-strings-ui-manifest).
+See the UWP documentation on [localizing strings in your UI](https://docs.microsoft.com/en-us/windows/uwp/app-resources/localize-strings-ui-manifest).
 
-Resources may be placed in the default scope files `Resources.resw`, or in a custom named file. Custom named files content
-can by used with the `x:Uid="/myResources/MyResource"` format, see [how to factor strings into multiple resource files](https://docs.microsoft.com/en-us/windows/uwp/app-resources/localize-strings-ui-manifest#factoring-strings-into-multiple-resources-files)
+Resources may be placed in the default scope files `Resources.resw`, or in a custom named file. Custom named file content
+can be used with the `x:Uid="/myResources/MyResource"` format, see [how to factor strings into multiple resource files](https://docs.microsoft.com/en-us/windows/uwp/app-resources/localize-strings-ui-manifest#factoring-strings-into-multiple-resources-files).
 
 Note that the default language can be defined using the `DefaultLanguage` msbuild property, using an IETF Language Tag (e.g. `en` or `fr-FR`).
 
@@ -309,7 +294,7 @@ Note that the default language can be defined using the `DefaultLanguage` msbuil
 
 ### Grid
 
-The grid control is implemented as a best effort in terms of compatibility with UWP.
+The Grid control is implemented as a best effort in terms of compatibility with UWP.
 
 For more information, see the [Grid class](https://msdn.microsoft.com/en-us/library/windows/apps/windows.ui.xaml.controls.grid.aspx).
 
@@ -319,13 +304,13 @@ See the [Border control](https://msdn.microsoft.com/en-us/library/windows/apps/w
 
 ### Button
 
-The button control is implemented by default using a ControlTemplate that contains a bindable native button, that binds that the Content property as a string, and propagates the CanExecute of a databound command.
+The Button control is implemented by default using a ControlTemplate that contains a bindable native button, that binds that the Content property as a string, and propagates the CanExecute of a databound command.
 
 For more information, see the [Button class](https://msdn.microsoft.com/en-us/library/windows/apps/windows.ui.xaml.controls.button.aspx).
 
 ### CheckBox
 
-The CheckBox control is implemented by default using a ControlTemplate that contains a bindable native CheckBox, that binds that the Content property as a string, IsChecked as a boolean, and propagates the CanExecute of a databound command.
+The CheckBox control is implemented by default using a ControlTemplate that contains a bindable native CheckBox, that binds the Content property as a string, IsChecked as a boolean, and propagates the CanExecute of a databound command.
 
 For more information, see the [CheckBox class](https://msdn.microsoft.com/en-us/library/windows/apps/windows.ui.xaml.controls.checkbox.aspx).
 
@@ -335,7 +320,7 @@ For more information, see the [HyperLinkButton](https://msdn.microsoft.com/en-us
 
 ### RadioButton
 
-The RadioButton control is implemented by default using a ControlTemplate that contains a bindable native CheckBox, that binds that the Content property as a string, IsChecked as a boolean, and propagates the CanExecute of a databound command.
+The RadioButton control is implemented by default using a ControlTemplate that contains a bindable native CheckBox, that binds the Content property as a string, IsChecked as a boolean, and propagates the CanExecute of a databound command.
 
 For more information, see the [RadioButton clas](https://msdn.microsoft.com/en-us/library/windows/apps/windows.ui.xaml.controls.radiobutton.aspx).
 
@@ -357,13 +342,9 @@ For more information, see the [ContentPresenter class](https://msdn.microsoft.co
 
 For more information, see [Control class](https://msdn.microsoft.com/en-us/library/windows/apps/windows.ui.xaml.controls.control.aspx).
 
-### Expander
-
-The expander control has the ability to display a header text, and some content to be expanded when tapping the header.
-
 ### GridView
 
-For more information, see [Control class](https://msdn.microsoft.com/en-us/library/windows/apps/windows.ui.xaml.controls.control.aspx).
+For more information, see [GridView class](https://docs.microsoft.com/en-us/uwp/api/windows.ui.xaml.controls.gridview).
 
 ### Image
 
@@ -372,17 +353,13 @@ For more information, see [Image class](https://msdn.microsoft.com/en-us/library
 
 ### ImageSource
 
-By default, Uno.UI provides a working but slow way to download images from external sources.
+Image handling works 'out of the box' on iOS and WebAssembly without further configuration required.
 
-For both platforms, the `ImageSource.DefaultDownloader` can be set to an instance
-of `IImageSourceDownloader`, which provides a localy downloaded representation of the remote file.
-
-On Android, to handle the loading of images, the Image control has to be provided a 
+On Android, to handle the loading of images from a remote url, the Image control has to be provided a 
 ImageSource.DefaultImageLoader such as the [Android Universal Image Loader](https://github.com/nostra13/Android-Universal-Image-Loader).
 
-This package is installed by default when using the [Uno Cross-Platform solution templates](https://marketplace.visualstudio.com/items?itemName=nventivecorp.uno-platform-addin),
-or you can install the [nventive.UniversalImageLoader](https://www.nuget.org/packages/nventive.UniversalImageLoader/) and call the following code
-from your application's App constructor :
+This package is installed by default when using the [Uno Cross-Platform solution templates](https://marketplace.visualstudio.com/items?itemName=nventivecorp.uno-platform-addin). If not using the solution template, you can install the [nventive.UniversalImageLoader](https://www.nuget.org/packages/nventive.UniversalImageLoader/) NuGet package and call the following code
+from your application's App constructor:
 
 ```csharp
 private void ConfigureUniversalImageLoader()
@@ -400,7 +377,7 @@ private void ConfigureUniversalImageLoader()
 
 On iOS, bundle images can be selected using "bundle://" (e.g. bundle:///SplashScreen). When selecting the bundle resource, do not include the zoom factor, nor the file extension.
 
-The `ms-appx:///` format is also supported for local assets resolution.
+The `ms-appx:///` format is also supported for local asset resolution.
 
 ### ItemsControl
 
@@ -479,7 +456,7 @@ The format is the same as Windows, as follows:
 <Setter Property="FontFamily" Value="ms-appx:///Assets/Fonts/yourfont01.ttf#Roboto" />
 ```
 
-### Custom fonts on WebAssembly
+#### Custom fonts on WebAssembly
 Adding a custom font is done through the use of WebFonts, using a data-URI:
 
 ```css
@@ -496,7 +473,7 @@ data-URI ensures the font is readily available.
 
 #### Custom Fonts Notes
 Please note that some custom fonts need the FontFamily and FontWeight properties to be set at the same time in order to work properly on TextBlocks, Runs and for styles Setters.
-If it's your case, here are some examples of code:
+If that's your case, here are some examples of code:
 
 ```xml
 <FontFamily x:Key="FontFamilyLight">ms-appx:///Assets/Fonts/PierSans-Light.otf#Pier Sans Light</FontFamily>
@@ -558,13 +535,17 @@ The application's orientation can be controlled using the [DisplayInformation](h
 
 In order for the DisplayInformation's AutoRotationPreferences to work properly, you need to ensure that all potential orientations are supported within the iOS application's `info.plist` file.
 
-##### Warning for iOS 9+ Development
+**Warning for iOS 9+ Development**
 As of iOS 9, the system does not allow iPad applications to dictate their orientation if they support [Multitasking / Split View](https://developer.apple.com/library/prerelease/content/documentation/WindowsViews/Conceptual/AdoptingMultitaskingOniPad/). In order to control orientation through the DisplayInformation class, you will need to opt-out of Multitasking / Split View by ensuring that you have defined the following in your `info.plist`:
 
 ```xml
 <key>UIRequiresFullScreen</key>
 <true/>
 ```
+
+### Controlling the Keyboard on iOS
+
+If a view needs to keep the keyboard opened when tapping on it, use the `Uno.UI.Controls.Window.SetNeedsKeyboard` attached property.
 
 ## Creating/Using Android Activities
 At the root of every Android Uno app lies a `BaseActivity` class that extends from `Android.Support.V7.App.AppCompatActivity` which is part of the [Android v7 AppCompat Support Library](https://developer.android.com/topic/libraries/support-library/features.html#v7-appcompat). If you ever need to create a new Activity within your app or within Uno you must be sure to extend `BaseActivity` and, if you need to apply a Theme to the activity, ensure that the Theme you set is a `Theme.AppCompat` theme (or descendant).

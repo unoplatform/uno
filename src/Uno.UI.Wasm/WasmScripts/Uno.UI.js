@@ -231,6 +231,7 @@ var MonoSupport;
             else {
                 if (!jsCallDispatcher._isUnoRegistered) {
                     jsCallDispatcher.registerScope("UnoStatic", Uno.UI.WindowManager);
+                    jsCallDispatcher.registerScope("UnoStatic_Windows_Storage_StorageFolder", Windows.Storage.StorageFolder);
                     jsCallDispatcher._isUnoRegistered = true;
                 }
                 const { ns, methodName } = jsCallDispatcher.parseIdentifier(identifier);
@@ -312,11 +313,10 @@ var Uno;
                 * @param containerElementId The ID of the container element for the Xaml UI
                 * @param loadingElementId The ID of the loading element to remove once ready
                 */
-            static init(localStoragePath, isHosted, isLoadEventsEnabled, containerElementId = "uno-body", loadingElementId = "uno-loading") {
+            static init(isHosted, isLoadEventsEnabled, containerElementId = "uno-body", loadingElementId = "uno-loading") {
                 WindowManager._isHosted = isHosted;
                 WindowManager._isLoadEventsEnabled = isLoadEventsEnabled;
                 Windows.UI.Core.CoreDispatcher.init(WindowManager.buildReadyPromise());
-                WindowManager.setupStorage(localStoragePath);
                 this.current = new WindowManager(containerElementId, loadingElementId);
                 MonoSupport.jsCallDispatcher.registerScope("Uno", this.current);
                 this.current.init();
@@ -382,56 +382,8 @@ var Uno;
                 */
             static initNative(pParams) {
                 const params = WindowManagerInitParams.unmarshal(pParams);
-                WindowManager.init(params.LocalFolderPath, params.IsHostedMode, params.IsLoadEventsEnabled);
+                WindowManager.init(params.IsHostedMode, params.IsLoadEventsEnabled);
                 return true;
-            }
-            /**
-             * Setup the storage persistence
-             *
-             * */
-            static setupStorage(localStoragePath) {
-                if (WindowManager.isHosted) {
-                    console.debug("Hosted Mode: skipping IndexDB initialization");
-                }
-                else {
-                    if (WindowManager.isIndexDBAvailable()) {
-                        FS.mkdir(localStoragePath);
-                        FS.mount(IDBFS, {}, localStoragePath);
-                        FS.syncfs(true, err => {
-                            if (err) {
-                                console.error(`Error synchronizing filsystem from IndexDB: ${err}`);
-                            }
-                        });
-                        window.addEventListener("beforeunload", () => WindowManager.synchronizeFileSystem());
-                        setInterval(() => WindowManager.synchronizeFileSystem(), 10000);
-                    }
-                    else {
-                        console.warn("IndexedDB is not available (private mode?), changed will not be persisted.");
-                    }
-                }
-            }
-            /**
-             * Determine if IndexDB is available, some browsers and modes disable it.
-             * */
-            static isIndexDBAvailable() {
-                try {
-                    // IndexedDB may not be available in private mode
-                    window.indexedDB;
-                    return true;
-                }
-                catch (err) {
-                    return false;
-                }
-            }
-            /**
-             * Synchronize the IDBFS memory cache back to IndexDB
-             * */
-            static synchronizeFileSystem() {
-                FS.syncfs(err => {
-                    if (err) {
-                        console.error(`Error synchronizing filsystem from IndexDB: ${err}`);
-                    }
-                });
             }
             /**
                 * Creates the UWP-compatible splash screen
@@ -512,7 +464,7 @@ var Uno;
                 element.setAttribute("XamlType", contentDefinition.type);
                 element.setAttribute("XamlHandle", `${contentDefinition.handle}`);
                 if (contentDefinition.isFrameworkElement) {
-                    element.classList.add(WindowManager.unoUnarrangedClassName);
+                    this.setAsUnarranged(element);
                 }
                 if (element.hasOwnProperty("tabindex")) {
                     element["tabindex"] = contentDefinition.isFocusable ? 0 : -1;
@@ -555,16 +507,38 @@ var Uno;
                 return true;
             }
             setNameInternal(elementId, name) {
-                this.getView(elementId).setAttribute("XamlName", name);
+                this.getView(elementId).setAttribute("xamlname", name);
+            }
+            /**
+                * Set a name for an element.
+                *
+                * This is mostly for diagnostic purposes.
+                */
+            setXUid(elementId, name) {
+                this.setXUidInternal(elementId, name);
+                return "ok";
+            }
+            /**
+                * Set a name for an element.
+                *
+                * This is mostly for diagnostic purposes.
+                */
+            setXUidNative(pParam) {
+                const params = WindowManagerSetXUidParams.unmarshal(pParam);
+                this.setXUidInternal(params.HtmlId, params.Uid);
+                return true;
+            }
+            setXUidInternal(elementId, name) {
+                this.getView(elementId).setAttribute("xuid", name);
             }
             /**
                 * Set an attribute for an element.
                 */
-            setAttribute(elementId, attributes) {
-                const htmlElement = this.getView(elementId);
+            setAttributes(elementId, attributes) {
+                const element = this.getView(elementId);
                 for (const name in attributes) {
                     if (attributes.hasOwnProperty(name)) {
-                        htmlElement.setAttribute(name, attributes[name]);
+                        element.setAttribute(name, attributes[name]);
                     }
                 }
                 return "ok";
@@ -572,12 +546,21 @@ var Uno;
             /**
                 * Set an attribute for an element.
                 */
+            setAttributesNative(pParams) {
+                const params = WindowManagerSetAttributesParams.unmarshal(pParams);
+                const element = this.getView(params.HtmlId);
+                for (let i = 0; i < params.Pairs_Length; i += 2) {
+                    element.setAttribute(params.Pairs[i], params.Pairs[i + 1]);
+                }
+                return true;
+            }
+            /**
+                * Set an attribute for an element.
+                */
             setAttributeNative(pParams) {
                 const params = WindowManagerSetAttributeParams.unmarshal(pParams);
-                const htmlElement = this.getView(params.HtmlId);
-                for (let i = 0; i < params.Pairs_Length; i += 2) {
-                    htmlElement.setAttribute(params.Pairs[i], params.Pairs[i + 1]);
-                }
+                const element = this.getView(params.HtmlId);
+                element.setAttribute(params.Name, params.Value);
                 return true;
             }
             /**
@@ -590,10 +573,10 @@ var Uno;
                 * Set a property for an element.
                 */
             setProperty(elementId, properties) {
-                const htmlElement = this.getView(elementId);
+                const element = this.getView(elementId);
                 for (const name in properties) {
                     if (properties.hasOwnProperty(name)) {
-                        htmlElement[name] = properties[name];
+                        element[name] = properties[name];
                     }
                 }
                 return "ok";
@@ -603,9 +586,9 @@ var Uno;
                 */
             setPropertyNative(pParams) {
                 const params = WindowManagerSetPropertyParams.unmarshal(pParams);
-                const htmlElement = this.getView(params.HtmlId);
+                const element = this.getView(params.HtmlId);
                 for (let i = 0; i < params.Pairs_Length; i += 2) {
-                    htmlElement[params.Pairs[i]] = params.Pairs[i + 1];
+                    element[params.Pairs[i]] = params.Pairs[i + 1];
                 }
                 return true;
             }
@@ -613,8 +596,8 @@ var Uno;
                 * Get a property for an element.
                 */
             getProperty(elementId, name) {
-                const htmlElement = this.getView(elementId);
-                return htmlElement[name] || "";
+                const element = this.getView(elementId);
+                return element[name] || "";
             }
             /**
                 * Set the CSS style of a html element.
@@ -623,14 +606,14 @@ var Uno;
                 * @param styles A dictionary of styles to apply on html element.
                 */
             setStyle(elementId, styles, setAsArranged = false) {
-                const htmlElement = this.getView(elementId);
+                const element = this.getView(elementId);
                 for (const style in styles) {
                     if (styles.hasOwnProperty(style)) {
-                        htmlElement.style.setProperty(style, styles[style]);
+                        element.style.setProperty(style, styles[style]);
                     }
                 }
                 if (setAsArranged) {
-                    htmlElement.classList.remove(WindowManager.unoUnarrangedClassName);
+                    this.setAsArranged(element);
                 }
                 return "ok";
             }
@@ -642,8 +625,8 @@ var Uno;
             */
             setStyleNative(pParams) {
                 const params = WindowManagerSetStylesParams.unmarshal(pParams);
-                const htmlElement = this.getView(params.HtmlId);
-                const elementStyle = htmlElement.style;
+                const element = this.getView(params.HtmlId);
+                const elementStyle = element.style;
                 const pairs = params.Pairs;
                 for (let i = 0; i < params.Pairs_Length; i += 2) {
                     const key = pairs[i];
@@ -651,7 +634,7 @@ var Uno;
                     elementStyle.setProperty(key, value);
                 }
                 if (params.SetAsArranged) {
-                    htmlElement.classList.remove(WindowManager.unoUnarrangedClassName);
+                    this.setAsArranged(element);
                 }
                 return true;
             }
@@ -661,8 +644,8 @@ var Uno;
             */
             setStyleDoubleNative(pParams) {
                 const params = WindowManagerSetStyleDoubleParams.unmarshal(pParams);
-                const htmlElement = this.getView(params.HtmlId);
-                htmlElement.style.setProperty(params.Name, String(params.Value));
+                const element = this.getView(params.HtmlId);
+                element.style.setProperty(params.Name, String(params.Value));
                 return true;
             }
             /**
@@ -687,10 +670,30 @@ var Uno;
                 return true;
             }
             resetStyleInternal(elementId, names) {
-                const htmlElement = this.getView(elementId);
+                const element = this.getView(elementId);
                 for (const name of names) {
-                    htmlElement.style.setProperty(name, "");
+                    element.style.setProperty(name, "");
                 }
+            }
+            /**
+             * Set CSS classes on an element
+             */
+            setClasses(elementId, cssClassesList, classIndex) {
+                const element = this.getView(elementId);
+                for (let i = 0; i < cssClassesList.length; i++) {
+                    if (i === classIndex) {
+                        element.classList.add(cssClassesList[i]);
+                    }
+                    else {
+                        element.classList.remove(cssClassesList[i]);
+                    }
+                }
+                return "ok";
+            }
+            setClassesNative(pParams) {
+                const params = WindowManagerSetClassesParams.unmarshal(pParams);
+                this.setClasses(params.HtmlId, params.CssClasses, params.Index);
+                return true;
             }
             /**
             * Arrange and clips a native elements
@@ -698,21 +701,27 @@ var Uno;
             */
             arrangeElementNative(pParams) {
                 const params = WindowManagerArrangeElementParams.unmarshal(pParams);
-                const htmlElement = this.getView(params.HtmlId);
-                var style = htmlElement.style;
+                const element = this.getView(params.HtmlId);
+                const style = element.style;
                 style.position = "absolute";
                 style.top = params.Top + "px";
                 style.left = params.Left + "px";
-                style.width = params.Width == NaN ? "auto" : params.Width + "px";
-                style.height = params.Height == NaN ? "auto" : params.Height + "px";
+                style.width = params.Width === NaN ? "auto" : params.Width + "px";
+                style.height = params.Height === NaN ? "auto" : params.Height + "px";
                 if (params.Clip) {
                     style.clip = `rect(${params.ClipTop}px, ${params.ClipRight}px, ${params.ClipBottom}px, ${params.ClipLeft}px)`;
                 }
                 else {
                     style.clip = "";
                 }
-                htmlElement.classList.remove(WindowManager.unoUnarrangedClassName);
+                this.setAsArranged(element);
                 return true;
+            }
+            setAsArranged(element) {
+                element.classList.remove(WindowManager.unoUnarrangedClassName);
+            }
+            setAsUnarranged(element) {
+                element.classList.add(WindowManager.unoUnarrangedClassName);
             }
             /**
             * Sets the transform matrix of an element
@@ -720,10 +729,10 @@ var Uno;
             */
             setElementTransformNative(pParams) {
                 const params = WindowManagerSetElementTransformParams.unmarshal(pParams);
-                const htmlElement = this.getView(params.HtmlId);
-                var style = htmlElement.style;
+                const element = this.getView(params.HtmlId);
+                var style = element.style;
                 style.transform = `matrix(${params.M11},${params.M12},${params.M21},${params.M22},${params.M31},${params.M32})`;
-                htmlElement.classList.remove(WindowManager.unoUnarrangedClassName);
+                element.classList.remove(WindowManager.unoUnarrangedClassName);
                 return true;
             }
             /**
@@ -787,7 +796,7 @@ var Uno;
                 * @param onCapturePhase true means "on trickle down", false means "on bubble up". Default is false.
                 */
             registerEventOnViewInternal(elementId, eventName, onCapturePhase = false, eventFilterName, eventExtractorName) {
-                const htmlElement = this.getView(elementId);
+                const element = this.getView(elementId);
                 const eventFilter = this.getEventFilter(eventFilterName);
                 const eventExtractor = this.getEventExtractor(eventExtractorName);
                 const eventHandler = (event) => {
@@ -797,12 +806,12 @@ var Uno;
                     const eventPayload = eventExtractor
                         ? `${eventExtractor(event)}`
                         : "";
-                    var handled = this.dispatchEvent(htmlElement, eventName, eventPayload);
+                    var handled = this.dispatchEvent(element, eventName, eventPayload);
                     if (handled) {
                         event.stopPropagation();
                     }
                 };
-                htmlElement.addEventListener(eventName, eventHandler, onCapturePhase);
+                element.addEventListener(eventName, eventHandler, onCapturePhase);
             }
             /**
              * left pointer event filter to be used with registerEventOnView
@@ -941,7 +950,7 @@ var Uno;
                 if (WindowManager.isLoadEventsEnabled) {
                     this.dispatchEvent(this.rootContent, "loaded");
                 }
-                newRootElement.classList.remove(WindowManager.unoUnarrangedClassName); // patch because root is not measured/arranged
+                this.setAsArranged(newRootElement); // patch because root is not measured/arranged
                 this.resize();
                 return "ok";
             }
@@ -1017,7 +1026,7 @@ var Uno;
                 parentElement.removeChild(childElement);
                 // Mark the element as unarranged, so if it gets measured while being
                 // disconnected from the root element, it won't be visible.
-                childElement.classList.add(WindowManager.unoUnarrangedClassName);
+                this.setAsUnarranged(childElement);
                 if (shouldRaiseLoadEvents) {
                     this.dispatchEvent(childElement, "unloaded");
                 }
@@ -1044,9 +1053,9 @@ var Uno;
                 return true;
             }
             destroyViewInternal(elementId) {
-                const htmlElement = this.getView(elementId);
-                if (htmlElement.parentElement) {
-                    htmlElement.parentElement.removeChild(htmlElement);
+                const element = this.getView(elementId);
+                if (element.parentElement) {
+                    element.parentElement.removeChild(element);
                 }
                 delete this.allActiveElementsById[elementId];
             }
@@ -1101,6 +1110,8 @@ var Uno;
                 const element = this.getView(viewId);
                 const elementStyle = element.style;
                 const originalStyleCssText = elementStyle.cssText;
+                let parentElement = null;
+                let parentElementWidthHeight = null;
                 try {
                     if (!element.isConnected) {
                         // If the element is not connected to the DOM, we need it
@@ -1113,21 +1124,44 @@ var Uno;
                         }
                         this.containerElement.appendChild(unconnectedRoot);
                     }
-                    var updatedStyles = {};
-                    for (var i = 0; i < elementStyle.length; i++) {
+                    // As per W3C css-transform spec:
+                    // https://www.w3.org/TR/css-transforms-1/#propdef-transform
+                    //
+                    // > For elements whose layout is governed by the CSS box model, any value other than none
+                    // > for the transform property also causes the element to establish a containing block for
+                    // > all descendants.Its padding box will be used to layout for all of its
+                    // > absolute - position descendants, fixed - position descendants, and descendant fixed
+                    // > background attachments.
+                    //
+                    // We use this feature to allow an measure of text without being influenced by the bounds
+                    // of the viewport. We just need to temporary set both the parent width & height to a very big value.
+                    parentElement = element.parentElement;
+                    parentElementWidthHeight = { width: parentElement.style.width, height: parentElement.style.height };
+                    parentElement.style.width = WindowManager.MAX_WIDTH;
+                    parentElement.style.height = WindowManager.MAX_HEIGHT;
+                    const updatedStyles = {};
+                    for (let i = 0; i < elementStyle.length; i++) {
                         const key = elementStyle[i];
                         updatedStyles[key] = elementStyle.getPropertyValue(key);
                     }
-                    updatedStyles.width = "";
-                    updatedStyles.height = "";
+                    if (updatedStyles.hasOwnProperty("width")) {
+                        delete updatedStyles.width;
+                    }
+                    if (updatedStyles.hasOwnProperty("height")) {
+                        delete updatedStyles.height;
+                    }
                     // This is required for an unconstrained measure (otherwise the parents size is taken into account)
                     updatedStyles.position = "fixed";
-                    updatedStyles.maxWidth = Number.isFinite(maxWidth) ? maxWidth + "px" : "";
-                    updatedStyles.maxHeight = Number.isFinite(maxHeight) ? maxHeight + "px" : "";
-                    var updatedStyleString = "";
-                    for (var key in updatedStyles) {
-                        updatedStyleString += key + ": " + updatedStyles[key] + "; ";
+                    updatedStyles["max-width"] = Number.isFinite(maxWidth) ? maxWidth + "px" : "none";
+                    updatedStyles["max-height"] = Number.isFinite(maxHeight) ? maxHeight + "px" : "none";
+                    let updatedStyleString = "";
+                    for (let key in updatedStyles) {
+                        if (updatedStyles.hasOwnProperty(key)) {
+                            updatedStyleString += key + ": " + updatedStyles[key] + "; ";
+                        }
                     }
+                    // We use a string to prevent the browser to update the element between
+                    // each style assignation. This way, the browser will update the element only once.
                     elementStyle.cssText = updatedStyleString;
                     if (element instanceof HTMLImageElement) {
                         const imgElement = element;
@@ -1138,12 +1172,16 @@ var Uno;
                         const offsetHeight = element.offsetHeight;
                         const resultWidth = offsetWidth ? offsetWidth : element.clientWidth;
                         const resultHeight = offsetHeight ? offsetHeight : element.clientHeight;
-                        /* +0.5 is added to take rounding into account */
+                        // +0.5 is added to take rounding into account
                         return [resultWidth + 0.5, resultHeight];
                     }
                 }
                 finally {
                     elementStyle.cssText = originalStyleCssText;
+                    if (parentElement && parentElementWidthHeight) {
+                        parentElement.style.width = parentElementWidthHeight.width;
+                        parentElement.style.height = parentElementWidthHeight.height;
+                    }
                 }
             }
             setImageRawData(viewId, dataPtr, width, height) {
@@ -1208,11 +1246,11 @@ var Uno;
                 return "ok";
             }
             focusView(elementId) {
-                const htmlElement = this.getView(elementId);
-                if (!(htmlElement instanceof HTMLElement)) {
+                const element = this.getView(elementId);
+                if (!(element instanceof HTMLElement)) {
                     throw `Element id ${elementId} is not focusable.`;
                 }
-                htmlElement.focus();
+                element.focus();
                 return "ok";
             }
             /**
@@ -1238,6 +1276,46 @@ var Uno;
             }
             setHtmlContentInternal(viewId, html) {
                 this.getView(viewId).innerHTML = html;
+            }
+            /**
+             * Gets the Client and Offset size of the specified element
+             *
+             * This method is used to determine the size of the scroll bars, to
+             * mask the events coming from that zone.
+             */
+            getClientViewSize(elementId) {
+                const element = this.getView(elementId);
+                return `${element.clientWidth};${element.clientHeight};${element.offsetWidth};${element.offsetHeight}`;
+            }
+            /**
+             * Gets the Client and Offset size of the specified element
+             *
+             * This method is used to determine the size of the scroll bars, to
+             * mask the events coming from that zone.
+             */
+            getClientViewSizeNative(pParams, pReturn) {
+                const params = WindowManagerGetClientViewSizeParams.unmarshal(pParams);
+                const element = this.getView(params.HtmlId);
+                const ret2 = new WindowManagerGetClientViewSizeReturn();
+                ret2.ClientWidth = element.clientWidth;
+                ret2.ClientHeight = element.clientHeight;
+                ret2.OffsetWidth = element.offsetWidth;
+                ret2.OffsetHeight = element.offsetHeight;
+                ret2.marshal(pReturn);
+                return true;
+            }
+            /**
+             * Gets a dependency property value.
+             *
+             * Note that the casing of this method is intentionally Pascal for platform alignment.
+             */
+            GetDependencyPropertyValue(elementId, propertyName) {
+                if (!WindowManager.getDependencyPropertyValueMethod) {
+                    WindowManager.getDependencyPropertyValueMethod = Module.mono_bind_static_method("[Uno.UI] Uno.UI.Helpers.Automation:GetDependencyPropertyValue");
+                }
+                const element = this.getView(elementId);
+                const htmlId = Number(element.getAttribute("XamlHandle"));
+                return WindowManager.getDependencyPropertyValueMethod(htmlId, propertyName);
             }
             /**
                 * Remove the loading indicator.
@@ -1347,6 +1425,8 @@ var Uno;
             WindowManager.initMethods();
             UI.HtmlDom.initPolyfills();
         })();
+        WindowManager.MAX_WIDTH = `${Number.MAX_SAFE_INTEGER}vw`;
+        WindowManager.MAX_HEIGHT = `${Number.MAX_SAFE_INTEGER}vh`;
         UI.WindowManager = WindowManager;
         if (typeof define === "function") {
             define(["AppManifest"], () => {
@@ -1359,6 +1439,34 @@ var Uno;
 })(Uno || (Uno = {}));
 // Ensure the "Uno" namespace is availablle globally
 window.Uno = Uno;
+/* TSBindingsGenerator Generated code -- this code is regenerated on each build */
+class StorageFolderMakePersistentParams {
+    static unmarshal(pData) {
+        let ret = new StorageFolderMakePersistentParams();
+        {
+            ret.Paths_Length = Number(Module.getValue(pData + 0, "i32"));
+        }
+        {
+            var pArray = Module.getValue(pData + 4, "*");
+            if (pArray !== 0) {
+                ret.Paths = new Array();
+                for (var i = 0; i < ret.Paths_Length; i++) {
+                    var value = Module.getValue(pArray + i * 4, "*");
+                    if (value !== 0) {
+                        ret.Paths.push(String(MonoRuntime.conv_string(value)));
+                    }
+                    else {
+                        ret.Paths.push(null);
+                    }
+                }
+            }
+            else {
+                ret.Paths = null;
+            }
+        }
+        return ret;
+    }
+}
 /* TSBindingsGenerator Generated code -- this code is regenerated on each build */
 class WindowManagerAddViewParams {
     static unmarshal(pData) {
@@ -1503,23 +1611,33 @@ class WindowManagerGetBBoxReturn {
     }
 }
 /* TSBindingsGenerator Generated code -- this code is regenerated on each build */
+class WindowManagerGetClientViewSizeParams {
+    static unmarshal(pData) {
+        let ret = new WindowManagerGetClientViewSizeParams();
+        {
+            ret.HtmlId = Number(Module.getValue(pData + 0, "*"));
+        }
+        return ret;
+    }
+}
+/* TSBindingsGenerator Generated code -- this code is regenerated on each build */
+class WindowManagerGetClientViewSizeReturn {
+    marshal(pData) {
+        Module.setValue(pData + 0, this.OffsetWidth, "double");
+        Module.setValue(pData + 8, this.OffsetHeight, "double");
+        Module.setValue(pData + 16, this.ClientWidth, "double");
+        Module.setValue(pData + 24, this.ClientHeight, "double");
+    }
+}
+/* TSBindingsGenerator Generated code -- this code is regenerated on each build */
 class WindowManagerInitParams {
     static unmarshal(pData) {
         let ret = new WindowManagerInitParams();
         {
-            var ptr = Module.getValue(pData + 0, "*");
-            if (ptr !== 0) {
-                ret.LocalFolderPath = String(Module.UTF8ToString(ptr));
-            }
-            else {
-                ret.LocalFolderPath = null;
-            }
+            ret.IsHostedMode = Boolean(Module.getValue(pData + 0, "i32"));
         }
         {
-            ret.IsHostedMode = Boolean(Module.getValue(pData + 4, "i32"));
-        }
-        {
-            ret.IsLoadEventsEnabled = Boolean(Module.getValue(pData + 8, "i32"));
+            ret.IsLoadEventsEnabled = Boolean(Module.getValue(pData + 4, "i32"));
         }
         return ret;
     }
@@ -1639,6 +1757,34 @@ class WindowManagerSetAttributeParams {
             ret.HtmlId = Number(Module.getValue(pData + 0, "*"));
         }
         {
+            var ptr = Module.getValue(pData + 4, "*");
+            if (ptr !== 0) {
+                ret.Name = String(Module.UTF8ToString(ptr));
+            }
+            else {
+                ret.Name = null;
+            }
+        }
+        {
+            var ptr = Module.getValue(pData + 8, "*");
+            if (ptr !== 0) {
+                ret.Value = String(Module.UTF8ToString(ptr));
+            }
+            else {
+                ret.Value = null;
+            }
+        }
+        return ret;
+    }
+}
+/* TSBindingsGenerator Generated code -- this code is regenerated on each build */
+class WindowManagerSetAttributesParams {
+    static unmarshal(pData) {
+        let ret = new WindowManagerSetAttributesParams();
+        {
+            ret.HtmlId = Number(Module.getValue(pData + 0, "*"));
+        }
+        {
             ret.Pairs_Length = Number(Module.getValue(pData + 4, "i32"));
         }
         {
@@ -1658,6 +1804,40 @@ class WindowManagerSetAttributeParams {
             else {
                 ret.Pairs = null;
             }
+        }
+        return ret;
+    }
+}
+/* TSBindingsGenerator Generated code -- this code is regenerated on each build */
+class WindowManagerSetClassesParams {
+    static unmarshal(pData) {
+        let ret = new WindowManagerSetClassesParams();
+        {
+            ret.HtmlId = Number(Module.getValue(pData + 0, "*"));
+        }
+        {
+            ret.CssClasses_Length = Number(Module.getValue(pData + 4, "i32"));
+        }
+        {
+            var pArray = Module.getValue(pData + 8, "*");
+            if (pArray !== 0) {
+                ret.CssClasses = new Array();
+                for (var i = 0; i < ret.CssClasses_Length; i++) {
+                    var value = Module.getValue(pArray + i * 4, "*");
+                    if (value !== 0) {
+                        ret.CssClasses.push(String(MonoRuntime.conv_string(value)));
+                    }
+                    else {
+                        ret.CssClasses.push(null);
+                    }
+                }
+            }
+            else {
+                ret.CssClasses = null;
+            }
+        }
+        {
+            ret.Index = Number(Module.getValue(pData + 12, "i32"));
         }
         return ret;
     }
@@ -1815,6 +1995,25 @@ class WindowManagerSetStylesParams {
         return ret;
     }
 }
+/* TSBindingsGenerator Generated code -- this code is regenerated on each build */
+class WindowManagerSetXUidParams {
+    static unmarshal(pData) {
+        let ret = new WindowManagerSetXUidParams();
+        {
+            ret.HtmlId = Number(Module.getValue(pData + 0, "*"));
+        }
+        {
+            var ptr = Module.getValue(pData + 4, "*");
+            if (ptr !== 0) {
+                ret.Uid = String(Module.UTF8ToString(ptr));
+            }
+            else {
+                ret.Uid = null;
+            }
+        }
+        return ret;
+    }
+}
 var Uno;
 (function (Uno) {
     var Foundation;
@@ -1865,6 +2064,77 @@ var Uno;
     })(UI = Uno.UI || (Uno.UI = {}));
 })(Uno || (Uno = {}));
 // ReSharper disable InconsistentNaming
+var Windows;
+(function (Windows) {
+    var Storage;
+    (function (Storage) {
+        class StorageFolder {
+            /**
+             * Determine if IndexDB is available, some browsers and modes disable it.
+             * */
+            static isIndexDBAvailable() {
+                try {
+                    // IndexedDB may not be available in private mode
+                    window.indexedDB;
+                    return true;
+                }
+                catch (err) {
+                    return false;
+                }
+            }
+            /**
+             * Setup the storage persistence of a given set of paths.
+             * */
+            static makePersistent(pParams) {
+                const params = StorageFolderMakePersistentParams.unmarshal(pParams);
+                for (var i = 0; i < params.Paths.length; i++) {
+                    this.setupStorage(params.Paths[i]);
+                }
+            }
+            /**
+             * Setup the storage persistence of a given path.
+             * */
+            static setupStorage(path) {
+                if (Uno.UI.WindowManager.isHosted) {
+                    console.debug("Hosted Mode: skipping IndexDB initialization");
+                    return;
+                }
+                if (!this.isIndexDBAvailable()) {
+                    console.warn("IndexedDB is not available (private mode or uri starts with file:// ?), changes will not be persisted.");
+                    return;
+                }
+                console.debug("Making persistent: " + path);
+                FS.mkdir(path);
+                FS.mount(IDBFS, {}, path);
+                // Request an initial sync to populate the file system
+                const that = this;
+                FS.syncfs(true, err => {
+                    if (err) {
+                        console.error(`Error synchronizing filsystem from IndexDB: ${err}`);
+                    }
+                });
+                // Ensure to sync pseudo file system on unload (and periodically for safety)
+                if (!this._isInit) {
+                    window.addEventListener("beforeunload", this.synchronizeFileSystem);
+                    setInterval(this.synchronizeFileSystem, 10000);
+                    this._isInit = true;
+                }
+            }
+            /**
+             * Synchronize the IDBFS memory cache back to IndexDB
+             * */
+            static synchronizeFileSystem() {
+                FS.syncfs(err => {
+                    if (err) {
+                        console.error(`Error synchronizing filsystem from IndexDB: ${err}`);
+                    }
+                });
+            }
+        }
+        StorageFolder._isInit = false;
+        Storage.StorageFolder = StorageFolder;
+    })(Storage = Windows.Storage || (Windows.Storage = {}));
+})(Windows || (Windows = {}));
 var Windows;
 (function (Windows) {
     var UI;
@@ -1924,4 +2194,29 @@ var Windows;
             Core.SystemNavigationManager = SystemNavigationManager;
         })(Core = UI.Core || (UI.Core = {}));
     })(UI = Windows.UI || (Windows.UI = {}));
+})(Windows || (Windows = {}));
+var Windows;
+(function (Windows) {
+    var Phone;
+    (function (Phone) {
+        var Devices;
+        (function (Devices) {
+            var Notification;
+            (function (Notification) {
+                class VibrationDevice {
+                    static initialize() {
+                        navigator.vibrate = navigator.vibrate || navigator.webkitVibrate || navigator.mozVibrate || navigator.msVibrate;
+                        if (navigator.vibrate) {
+                            return true;
+                        }
+                        return false;
+                    }
+                    static vibrate(duration) {
+                        return window.navigator.vibrate(duration);
+                    }
+                }
+                Notification.VibrationDevice = VibrationDevice;
+            })(Notification = Devices.Notification || (Devices.Notification = {}));
+        })(Devices = Phone.Devices || (Phone.Devices = {}));
+    })(Phone = Windows.Phone || (Windows.Phone = {}));
 })(Windows || (Windows = {}));

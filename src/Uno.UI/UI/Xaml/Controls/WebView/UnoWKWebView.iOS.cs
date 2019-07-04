@@ -188,7 +188,9 @@ namespace Windows.UI.Xaml.Controls
 			var alert = UIKit.UIAlertController.Create(string.Empty, message, UIKit.UIAlertControllerStyle.Alert);
 			alert.AddAction(UIKit.UIAlertAction.Create(OkString, UIKit.UIAlertActionStyle.Default, null));
 
-			controller?.PresentViewController(alert, true, completionHandler);
+			controller?.PresentViewController(alert, true, null);
+
+			completionHandler();
 		}
 
 		private void OnRunJavaScriptConfirmPanel(WKWebView webview, string message, WKFrameInfo frame, Action<bool> completionHandler)

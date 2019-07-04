@@ -35,7 +35,7 @@ namespace Windows.UI.Xaml
 				return newContent;				
 #elif __MACOS__
 				// macOS TODO
-				currentSuperview.AddSubview(newContent, NSWindowOrderingMode.Above, currentSuperview.Subviews[currentPosition]);
+				currentSuperview.AddSubview(newContent, NSWindowOrderingMode.Above, currentSuperview.Subviews[Math.Max(0, currentPosition-1)]);
 #endif
 			}
 

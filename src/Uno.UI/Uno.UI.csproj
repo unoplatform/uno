@@ -4,6 +4,10 @@
 		<TargetFrameworksCI>MonoAndroid80;MonoAndroid90;xamarinios10;net461;netstandard2.0;xamarinmac20</TargetFrameworksCI>
 	</PropertyGroup>
 
+	<PropertyGroup Condition="'$(UnoTargetFrameworkOverride)'!=''">
+		<TargetFrameworks>$(UnoTargetFrameworkOverride)</TargetFrameworks>
+	</PropertyGroup>
+
 	<PropertyGroup>
 		<AssemblyName>Uno.UI</AssemblyName>
 		<RootNamespace>Uno.UI</RootNamespace>
@@ -28,11 +32,11 @@
 	</PropertyGroup>
 
 	<Import Project="..\Uno.CrossTargetting.props" />
-	
+
 	<ItemGroup>
 		<UpToDateCheckInput Include="**\*.cs" Exclude="bin\**\*.cs;obj\**\*.cs;" />
 	</ItemGroup>
-	
+
 	<ItemGroup>
 		<UpToDateCheckInput Include="**\*.xaml" Exclude="bin\**\*.xaml;obj\**\*.xaml;" />
 		<UpToDateCheckInput Include="**\*.cs" Exclude="bin\**\*.cs;obj\**\*.cs;" />
@@ -62,14 +66,14 @@
 			<DependentUpon>DependencyPropertyMixins.tt</DependentUpon>
 		</Compile>
 		<Compile Include="Mixins\macOS\FrameworkElementMixins.g.cs">
-		  <DependentUpon>FrameworkElementMixins.tt</DependentUpon>
-		  <DesignTime>True</DesignTime>
-		  <AutoGen>True</AutoGen>
+			<DependentUpon>FrameworkElementMixins.tt</DependentUpon>
+			<DesignTime>True</DesignTime>
+			<AutoGen>True</AutoGen>
 		</Compile>
 		<Compile Include="Mixins\macOS\VisualStatesMixins.g.cs">
-		  <DependentUpon>VisualStatesMixins.tt</DependentUpon>
-		  <DesignTime>True</DesignTime>
-		  <AutoGen>True</AutoGen>
+			<DependentUpon>VisualStatesMixins.tt</DependentUpon>
+			<DesignTime>True</DesignTime>
+			<AutoGen>True</AutoGen>
 		</Compile>
 		<Compile Include="Mixins\iOS\FrameworkElementMixins.g.cs">
 			<DesignTime>True</DesignTime>
@@ -145,7 +149,7 @@
 		</None>
 		<None Include="Resources\IResourceRegistry.cs" />
 		<None Include="Resources\ResourceRegistry.cs" />
-		<None Include="UI\Xaml\Controls\Panel\Panel.macOS.cs" />  
+		<None Include="UI\Xaml\Controls\Panel\Panel.macOS.cs" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -155,7 +159,7 @@
 		<PackageReference Include="Uno.MonoAnalyzers" />
 		<PackageReference Include="System.Memory" />
 	</ItemGroup>
-	
+
 	<ItemGroup Condition=" '$(TargetFramework)' == 'MonoAndroid80'">
 		<PackageReference Include="Xamarin.Android.Support.v4" Version="26.1.0.1">
 			<PrivateAssets>none</PrivateAssets>
@@ -169,13 +173,13 @@
 	</ItemGroup>
 
 	<ItemGroup Condition=" '$(TargetFramework)' == 'MonoAndroid90'">
-		<PackageReference Include="Xamarin.Android.Support.v4" Version="26.1.0.1">
+		<PackageReference Include="Xamarin.Android.Support.v4" Version="28.0.0.1">
 			<PrivateAssets>none</PrivateAssets>
 		</PackageReference>
-		<PackageReference Include="Xamarin.Android.Support.v7.AppCompat" Version="26.1.0.1">
+		<PackageReference Include="Xamarin.Android.Support.v7.AppCompat" Version="28.0.0.1">
 			<PrivateAssets>none</PrivateAssets>
 		</PackageReference>
-		<PackageReference Include="Xamarin.Android.Support.v7.RecyclerView" Version="26.1.0.1">
+		<PackageReference Include="Xamarin.Android.Support.v7.RecyclerView" Version="28.0.0.1">
 			<PrivateAssets>none</PrivateAssets>
 		</PackageReference>
 	</ItemGroup>
@@ -192,9 +196,9 @@
 			<TreatAsPackageReference>false</TreatAsPackageReference>
 		</ProjectReference>
 		<ProjectReference Include="..\SourceGenerators\System.Xaml\Uno.Xaml.csproj" />
-		 <ProjectReference Include="..\Uno.UI.BindingHelper.Android\Uno.UI.BindingHelper.Android.csproj" Condition="'$(TargetFramework)' == 'MonoAndroid80' or '$(TargetFramework)' == 'MonoAndroid90'">
+		<ProjectReference Include="..\Uno.UI.BindingHelper.Android\Uno.UI.BindingHelper.Android.csproj" Condition="'$(TargetFramework)' == 'MonoAndroid80' or '$(TargetFramework)' == 'MonoAndroid90'">
 			<TreatAsPackageReference>false</TreatAsPackageReference>
-		</ProjectReference> 
+		</ProjectReference>
 	</ItemGroup>
 
 	<ItemGroup Condition="$(IsMonoAndroid) or $(IsXamarinIOS) or $(IsXamarinMac)">
@@ -290,13 +294,13 @@
 		<Reference Remove="PresentationFramework" />
 		<Reference Remove="PresentationCore" />
 		<Reference Remove="WindowsBase" />
-		<Reference Remove="System.Xaml" /> 
+		<Reference Remove="System.Xaml" />
 	</ItemGroup>
 
-	<PropertyGroup> 
-		<UnoUIGeneratorsBinPath>$(MSBuildThisFileDirectory)..\SourceGenerators\Uno.UI.SourceGenerators\bin\$(Configuration)</UnoUIGeneratorsBinPath> 
+	<PropertyGroup>
+		<UnoUIGeneratorsBinPath>$(MSBuildThisFileDirectory)..\SourceGenerators\Uno.UI.SourceGenerators\bin\$(Configuration)</UnoUIGeneratorsBinPath>
 		<UnoUIMSBuildTasksPath>$(MSBuildThisFileDirectory)..\SourceGenerators\Uno.UI.Tasks\bin\$(Configuration)_Shadow</UnoUIMSBuildTasksPath>
-	</PropertyGroup> 
+	</PropertyGroup>
 
 	<Import Project="..\SourceGenerators\Uno.UI.SourceGenerators\Content\Uno.UI.SourceGenerators.props" />
 	<Import Project="..\SourceGenerators\Uno.UI.Tasks\Content\Uno.UI.Tasks.targets" Condition="'$(SkipUnoResourceGeneration)' == '' " />
@@ -338,15 +342,110 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <UpToDateCheckInput Remove="UI\Xaml\HtmlCustomEventArgs.cs" />
-	</ItemGroup>
-
-	<ItemGroup>
+	  <None Update="BaseActivity.Callbacks.Implementation.Android.tt">
+	    <Generator>TextTemplatingFileGenerator</Generator>
+	  </None>
+	  <None Update="Mixins\macOS\FrameworkElementMixins.tt">
+	    <Generator>TextTemplatingFileGenerator</Generator>
+	  </None>
+	  <None Update="Mixins\macOS\VisualStatesMixins.tt">
+	    <Generator>TextTemplatingFileGenerator</Generator>
+	  </None>
 	  <None Update="Mixins\net461\VisualStatesMixins.tt">
 	    <Generator>TextTemplatingFileGenerator</Generator>
 	  </None>
+	  <None Update="Mixins\Wasm\VisualStatesMixins.tt">
+	    <Generator>TextTemplatingFileGenerator</Generator>
+	  </None>
+	  <None Update="UI\Xaml\Controls\MenuBar\MenuBar.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </None>
+	  <None Update="UI\Xaml\Controls\MenuBar\MenuBarItem.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </None>
+	  <None Update="UI\Xaml\Controls\MenuBar\MenuBar_themeresources.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </None>
+	  <None Update="UI\Xaml\Controls\MenuFlyout\MenuFlyout_19h1_themeresources.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </None>
+	  <None Update="UI\Xaml\Controls\MenuFlyout\MenuFlyout_rs1_themeresources.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </None>
+	  <None Update="UI\Xaml\Controls\MenuFlyout\MenuFlyout_rs2_themeresources.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </None>
+	  <None Update="UI\Xaml\Controls\MenuFlyout\MenuFlyout_rs4_themeresources.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </None>
+	  <None Update="UI\Xaml\Controls\MenuFlyout\MenuFlyout_rs5_themeresources.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </None>
+	  <None Update="UI\Xaml\Controls\NavigationView\NavigationBackButton.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </None>
+	  <None Update="UI\Xaml\Controls\NavigationView\NavigationBackButton_rs1_themeresources.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </None>
+	  <None Update="UI\Xaml\Controls\NavigationView\NavigationBackButton_rs4_themeresources.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </None>
+	  <None Update="UI\Xaml\Controls\NavigationView\NavigationBackButton_rs5_themeresources.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </None>
+	  <None Update="UI\Xaml\Controls\NavigationView\NavigationView.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </None>
+	  <None Update="UI\Xaml\Controls\NavigationView\NavigationView_rs1_themeresources.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </None>
+	  <None Update="UI\Xaml\Controls\NavigationView\NavigationView_rs2_themeresources.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </None>
+	  <None Update="UI\Xaml\Controls\NavigationView\NavigationView_rs5_themeresources.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </None>
+	  <None Update="UI\Xaml\Controls\VisualStatesImplementation.tt">
+	    <Generator>TextTemplatingFileGenerator</Generator>
+	  </None>
+	  <None Update="UI\Xaml\DependencyPropertiesImplementation.tt">
+	    <Generator>TextTemplatingFileGenerator</Generator>
+	  </None>
+	  <None Update="UI\Xaml\IFrameworkElementImplementation.Android.tt">
+	    <Generator>TextTemplatingFileGenerator</Generator>
+	  </None>
+	  <None Update="UI\Xaml\IFrameworkElementImplementation.iOS.cs">
+	    <DesignTime>True</DesignTime>
+	    <AutoGen>True</AutoGen>
+	    <DependentUpon>IFrameworkElementImplementation.iOS.tt</DependentUpon>
+	  </None>
+	  <None Update="UI\Xaml\IFrameworkElementImplementation.iOS.tt">
+	    <Generator>TextTemplatingFileGenerator</Generator>
+	    <LastGenOutput>IFrameworkElementImplementation.iOS.cs</LastGenOutput>
+	  </None>
+	  <None Update="UI\Xaml\IFrameworkElementImplementation.macOS.tt">
+	    <Generator>TextTemplatingFileGenerator</Generator>
+	  </None>
+	  <None Update="UI\Xaml\Style\Generic\DatePickerSelector.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </None>
+	  <None Update="UI\Xaml\Style\Generic\FlyoutPresenter.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </None>
+	  <None Update="UI\Xaml\Style\Generic\Generic.Native.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </None>
+	  <None Update="UI\Xaml\Style\Generic\Generic.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </None>
+	  <None Update="UI\Xaml\Style\Generic\SemanticStylesResources.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </None>
+	  <None Update="UI\Xaml\Style\Generic\SystemResources.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </None>
 	</ItemGroup>
-	
+
 	<Target Name="GetPackagingOutputs" Condition=" '$(TargetFramework)' == 'uap10.0' " />
 
 	<Target Name="GetBuiltProjectOutputRecursive" Condition=" '$(TargetFramework)' == 'xamarinios10' " />
@@ -354,17 +453,24 @@
 	<Target Name="GetNativeManifest" Condition=" '$(TargetFramework)' == 'xamarinios10' " />
 
 	<Target Name="GetBuiltProjectOutputRecursive" Condition=" '$(TargetFramework)' == 'xamarinios10' " />
-	
-	<Target
-    Name="VS16_RemoveSystemMemory"
-    BeforeTargets="FindReferenceAssembliesForReferences"
-    Condition="'$(MSBuildVersion)' &gt;= '16.0' and ($(IsMonoAndroid) or $(IsXamarinIOS) or $(IsXamarinMac))">
+
+	<Target Name="VS16Mac_RemoveSystemMemory" BeforeTargets="ResolveAssemblyReferences" Condition="'$(MSBuildVersion)' &gt;= '16.0' and $([MSBuild]::IsOsPlatform('OSX'))">
+		<!--
+				VS4Mac seems to process System.Memory differently, and removes
+				the System.Memory local reference if the package is transitively referenced.
+				We remove the Reference added by the nuget targets so that ResolveAssemblyReferences
+				is properly adding the local System.Memory to the Reference item group.
+		-->
 		<ItemGroup>
-			<_ReferencePathToRemove
-        Include="@(ReferencePath)"
-        Condition="'%(ReferencePath.NuGetPackageId)'=='System.Memory'" />
+			<_ReferenceToRemove Include="@(Reference)" Condition="'%(Reference.Identity)'=='System.Memory'" />
+			<Reference Remove="@(_ReferenceToRemove)" />
+		</ItemGroup>
+	</Target>
+
+	<Target Name="VS16_RemoveSystemMemory" BeforeTargets="FindReferenceAssembliesForReferences" Condition="'$(MSBuildVersion)' &gt;= '16.0' and ($(IsMonoAndroid) or $(IsXamarinIOS) or $(IsXamarinMac))">
+		<ItemGroup>
+			<_ReferencePathToRemove Include="@(ReferencePath)" Condition="'%(ReferencePath.NuGetPackageId)'=='System.Memory'" />
 			<ReferencePath Remove="@(_ReferencePathToRemove)" />
 		</ItemGroup>
 	</Target>
-	
 </Project>

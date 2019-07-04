@@ -4,12 +4,12 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 using Uno.UI.Common;
+using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Data;
 
 namespace Windows.UI.Xaml.Controls
 {
-	//TODO: should inherit from PickerFlyoutBase (Task 17592)
-	public partial class DatePickerFlyout : Flyout
+	public partial class DatePickerFlyout : PickerFlyoutBase
 	{
 		private bool _isInitialized;
 
@@ -47,6 +47,37 @@ namespace Windows.UI.Xaml.Controls
 			AttachAcceptCommand((DatePickerSelector)Content);
 		}
 
+		#region Content DependencyProperty
+		internal IUIElement Content
+		{
+			get { return (IUIElement)this.GetValue(ContentProperty); }
+			set { this.SetValue(ContentProperty, value); }
+		}
+
+		internal static readonly DependencyProperty ContentProperty =
+			DependencyProperty.Register(
+				"Content",
+				typeof(IUIElement),
+				typeof(DatePickerFlyout),
+				new FrameworkPropertyMetadata(default(IUIElement), FrameworkPropertyMetadataOptions.AffectsMeasure, OnContentChanged));
+		private DatePickerFlyoutPresenter _datePickerPresenter;
+
+		private static void OnContentChanged(object dependencyObject, DependencyPropertyChangedEventArgs args)
+		{
+			var flyout = dependencyObject as DatePickerFlyout;
+
+			if (flyout._datePickerPresenter != null)
+			{
+				if (args.NewValue is IDependencyObjectStoreProvider binder)
+				{
+					binder.Store.SetValue(binder.Store.TemplatedParentProperty, flyout.TemplatedParent, DependencyPropertyValuePrecedences.Local);
+				}
+
+				flyout._datePickerPresenter.Content = args.NewValue;
+			}
+		}
+		#endregion
+
 		private void DatePickerFlyout_Opening(object sender, EventArgs e)
 		{
 			InitializeContent();
@@ -82,15 +113,14 @@ namespace Windows.UI.Xaml.Controls
 
 		protected override Control CreatePresenter()
 		{
-			var presenter = new DatePickerFlyoutPresenter()
+			_datePickerPresenter = new DatePickerFlyoutPresenter()
 			{
-				Style = FlyoutPresenterStyle,
 				Content = Content
 			};
 
-			AttachAcceptCommand(presenter);
+			AttachAcceptCommand(_datePickerPresenter);
 
-			return presenter;
+			return _datePickerPresenter;
 		}
 
 		private void AttachAcceptCommand(IFrameworkElement rootControl)

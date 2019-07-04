@@ -786,6 +786,36 @@ namespace Uno.UI.Tests.GridTests
 		}
 
 		[TestMethod]
+		public void When_Grid_Column_Min_MaxWidth_Changes()
+		{
+			var SUT = new Grid();
+
+			SUT.ForceLoaded();
+
+			var child = SUT.AddChild(
+				new View { Name = "Child01", RequestedDesiredSize = new Windows.Foundation.Size(10, 10) }
+				.GridColumn(1)
+			);
+
+
+			SUT.Measure(new Windows.Foundation.Size(20, 20));
+			var measuredSize = SUT.DesiredSize;
+			SUT.Arrange(new Windows.Foundation.Rect(0, 0, 20, 20));
+
+			ColumnDefinition ColumnDefinition1;
+			SUT.ColumnDefinitions.Add(ColumnDefinition1 = new ColumnDefinition() { Width = new GridLength(5) });
+			Assert.AreEqual(1, SUT.InvalidateMeasureCallCount);
+			SUT.ColumnDefinitions.Add(new ColumnDefinition() { Width = new GridLength(1, GridUnitType.Auto) });
+			Assert.AreEqual(2, SUT.InvalidateMeasureCallCount);
+
+			ColumnDefinition1.MaxWidth = 22;
+			Assert.AreEqual(3, SUT.InvalidateMeasureCallCount);
+
+			ColumnDefinition1.MinWidth = 5;
+			Assert.AreEqual(4, SUT.InvalidateMeasureCallCount);
+		}
+
+		[TestMethod]
 		public void When_Grid_Has_Two_Columns_And_VerticalAlignment_Top()
 		{
 			var SUT = new Grid() { Name = "test" };
@@ -926,6 +956,44 @@ namespace Uno.UI.Tests.GridTests
 		}
 
 		[TestMethod]
+		public void When_Row_Out_Of_Range()
+		{
+			var SUT = new Grid();
+
+			SUT.RowDefinitions.Add(new RowDefinition { Height = "5" });
+			SUT.RowDefinitions.Add(new RowDefinition { Height = "5" });
+			SUT.ColumnDefinitions.Add(new ColumnDefinition { Width = "5" });
+			SUT.ColumnDefinitions.Add(new ColumnDefinition { Width = "5" });
+
+			SUT.AddChild(new View { RequestedDesiredSize = new Windows.Foundation.Size(100, 100) });
+			SUT.AddChild(new View { RequestedDesiredSize = new Windows.Foundation.Size(100, 100) })
+				.GridRow(3);
+
+			SUT.Measure(new Windows.Foundation.Size(100, 1000));
+			var measuredSize = SUT.DesiredSize;
+			SUT.Arrange(new Windows.Foundation.Rect(0, 0, 100, 1000));
+		}
+
+		[TestMethod]
+		public void When_Column_Out_Of_Range()
+		{
+			var SUT = new Grid();
+
+			SUT.RowDefinitions.Add(new RowDefinition { Height = "5" });
+			SUT.RowDefinitions.Add(new RowDefinition { Height = "5" });
+			SUT.ColumnDefinitions.Add(new ColumnDefinition { Width = "5" });
+			SUT.ColumnDefinitions.Add(new ColumnDefinition { Width = "5" });
+
+			SUT.AddChild(new View { RequestedDesiredSize = new Windows.Foundation.Size(100, 100) });
+			SUT.AddChild(new View { RequestedDesiredSize = new Windows.Foundation.Size(100, 100) })
+				.GridColumn(3);
+
+			SUT.Measure(new Windows.Foundation.Size(100, 1000));
+			var measuredSize = SUT.DesiredSize;
+			SUT.Arrange(new Windows.Foundation.Rect(0, 0, 100, 1000));
+		}
+
+		[TestMethod]
 		public void When_RowSpan_Out_Of_Range()
 		{
 			var SUT = new Grid();
@@ -959,6 +1027,36 @@ namespace Uno.UI.Tests.GridTests
 			SUT.Measure(new Windows.Foundation.Size(1000, 100));
 			var measuredSize = SUT.DesiredSize;
 			SUT.Arrange(new Windows.Foundation.Rect(0, 0, 1000, 100));
+		}
+
+		[TestMethod]
+		public void When_ColumnSpan_With_AutoColumn_Out_Of_Range()
+		{
+			var SUT = new Grid();
+
+			SUT.ColumnDefinitions.Clear();
+			SUT.ColumnDefinitions.Add(new ColumnDefinition() { Width = GridLength.Auto });
+			SUT.ColumnDefinitions.Clear();
+		}
+
+		[TestMethod]
+		public void When_Clear_ColumnDefinitions()
+		{
+			var SUT = new Grid();
+
+			SUT.ColumnDefinitions.Clear();
+			SUT.ColumnDefinitions.Add(new ColumnDefinition() { Width = GridLength.Auto });
+			SUT.ColumnDefinitions.Clear(); //Throws System.InvalidOperationException: Collection was modified; enumeration operation may not execute.
+		}
+
+		[TestMethod]
+		public void When_Clear_RowDefinitions()
+		{
+			var SUT = new Grid();
+			SUT.ForceLoaded();
+
+			SUT.RowDefinitions.Add(new RowDefinition() { Height = GridLength.Auto });
+			SUT.RowDefinitions.Clear();
 		}
 	}
 }

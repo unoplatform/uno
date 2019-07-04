@@ -3,10 +3,11 @@ using System;
 using Android.App;
 using Android.Content;
 using Android.Content.PM;
+using Android.Views;
+using Windows.Graphics.Display;
 using Android.Content.Res;
 using Android.Graphics;
 using Android.OS;
-using Android.Views;
 using Android.Views.InputMethods;
 using Uno.UI;
 using Windows.UI.ViewManagement;
@@ -170,6 +171,7 @@ namespace Windows.UI.Xaml
 		{
 			Xaml.Window.Current?.RaiseNativeSizeChanged();
 			ViewHelper.RefreshFontScale();
+			DisplayInformation.GetForCurrentView().HandleConfigurationChange();
 		}
 
 		public override void OnBackPressed()

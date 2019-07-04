@@ -16,6 +16,7 @@ using Windows.Foundation;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.System;
+using Uno.Collections;
 using Uno.UI;
 using System.Numerics;
 
@@ -158,6 +159,17 @@ namespace Windows.UI.Xaml
 			Uno.UI.Xaml.WindowManagerInterop.SetStyles(HtmlId, styles);
 		}
 
+		/// <summary>
+		/// Set a specified CSS class to an element from a set of possible values.
+		/// All other possible values will be removed from the element.
+		/// </summary>
+		/// <param name="cssClasses">All possible class values</param>
+		/// <param name="index">The index of the value to set (-1: unset)</param>
+		protected internal void SetClasses(string[] cssClasses, int index = -1)
+		{
+			Uno.UI.Xaml.WindowManagerInterop.SetClasses(HtmlId, cssClasses, index);
+		}
+
 #if DEBUG
 		private long _arrangeCount = 0;
 #endif
@@ -191,7 +203,7 @@ namespace Windows.UI.Xaml
 
 		protected internal void SetAttribute(string name, string value)
 		{
-			Uno.UI.Xaml.WindowManagerInterop.SetAttribute(HtmlId, new[] { (name, value) });
+			Uno.UI.Xaml.WindowManagerInterop.SetAttribute(HtmlId, name, value);
 		}
 
 		protected internal void SetAttribute(params (string name, string value)[] attributes)
@@ -201,7 +213,7 @@ namespace Windows.UI.Xaml
 				return; // nothing to do
 			}
 
-			Uno.UI.Xaml.WindowManagerInterop.SetAttribute(HtmlId, attributes);
+			Uno.UI.Xaml.WindowManagerInterop.SetAttributes(HtmlId, attributes);
 		}
 
 		protected internal string GetAttribute(string name)
@@ -242,12 +254,15 @@ namespace Windows.UI.Xaml
 				return;
 			}
 
+			var width = double.IsInfinity(rect.Width) ? 100000.0f : rect.Width;
+			var height = double.IsInfinity(rect.Height) ? 100000.0f : rect.Height;
+
 			SetStyle(
 				"clip",
 				"rect("
 				+ Math.Floor(rect.Y) + "px,"
-				+ Math.Ceiling(rect.X + rect.Width) + "px,"
-				+ Math.Ceiling(rect.Y + rect.Height) + "px,"
+				+ Math.Ceiling(rect.X + width) + "px,"
+				+ Math.Ceiling(rect.Y + height) + "px,"
 				+ Math.Floor(rect.X) + "px"
 				+ ")"
 			);
@@ -491,7 +506,7 @@ namespace Windows.UI.Xaml
 			return false;
 		}
 
-		private static UIElement GetElementFromHandle(int handle)
+		internal static UIElement GetElementFromHandle(int handle)
 		{
 			var gcHandle = GCHandle.FromIntPtr((IntPtr)handle);
 
@@ -505,7 +520,7 @@ namespace Windows.UI.Xaml
 
 		private Rect _arranged;
 		private string _name;
-		internal List<UIElement> _children = new List<UIElement>();
+		internal IList<UIElement> _children = new MaterializableList<UIElement>();
 
 		public string Name
 		{
@@ -514,7 +529,18 @@ namespace Windows.UI.Xaml
 			{
 				_name = value;
 
-				Uno.UI.Xaml.WindowManagerInterop.SetName(HtmlId, _name);
+				if (FeatureConfiguration.UIElement.AssignDOMXamlName)
+				{
+					Uno.UI.Xaml.WindowManagerInterop.SetName(HtmlId, _name);
+				}
+			}
+		}
+
+		partial void OnUidChangedPartial()
+		{
+			if (FeatureConfiguration.UIElement.AssignDOMXamlName)
+			{
+				Uno.UI.Xaml.WindowManagerInterop.SetXUid(HtmlId, _uid);
 			}
 		}
 

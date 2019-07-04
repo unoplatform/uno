@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Uno.Extensions;
-using System.Linq;
-using System.Drawing;
+﻿using Uno.Extensions;
 using Uno.Disposables;
-using Windows.UI.Xaml.Media;
 using Uno.Logging;
+using Windows.UI.Xaml.Controls.Primitives;
+using System;
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -14,16 +10,17 @@ namespace Windows.UI.Xaml.Controls
 	{
 		private readonly SerialDisposable _closePopup = new SerialDisposable();
 
-		internal UIElement Anchor { get; set; }
+		public Popup()
+		{
+			PopupPanel = new PopupPanel(this);
+		}
 
 		protected override void OnChildChanged(FrameworkElement oldChild, FrameworkElement newChild)
 		{
 			base.OnChildChanged(oldChild, newChild);
 
-			if (newChild != null)
-			{
-				PopupRoot.SetPopup(newChild, this);
-			}
+			PopupPanel.Children.Remove(oldChild);
+			PopupPanel.Children.Add(newChild);
 		}
 
 		protected override void OnIsOpenChanged(bool oldIsOpen, bool newIsOpen)
@@ -38,10 +35,60 @@ namespace Windows.UI.Xaml.Controls
 			if (newIsOpen)
 			{
 				_closePopup.Disposable = Window.Current.OpenPopup(this);
+				PopupPanel.Visibility = Visibility.Visible;
 			}
 			else
 			{
 				_closePopup.Disposable = null;
+				PopupPanel.Visibility = Visibility.Collapsed;
+			}
+		}
+
+		partial void OnPopupPanelChanged(DependencyPropertyChangedEventArgs e)
+		{
+			var previousPanel = e.OldValue as PopupPanel;
+			var newPanel = e.NewValue as PopupPanel;
+
+			previousPanel?.Children.Clear();
+
+			if (PopupPanel != null)
+			{
+				if (Child != null)
+				{
+					PopupPanel.Children.Add(Child);
+				}
+			}
+
+			if (previousPanel != null)
+			{
+				previousPanel.PointerPressed -= OnPanelPointerPressed;
+				previousPanel.PointerReleased -= OnPanelPointerReleased;
+			}
+			if (newPanel != null)
+			{
+				newPanel.PointerPressed += OnPanelPointerPressed;
+				newPanel.PointerReleased += OnPanelPointerReleased;
+			}
+
+		}
+
+		private bool _pressed;
+
+		private void OnPanelPointerPressed(object sender, Input.PointerRoutedEventArgs args)
+		{
+			// Both pressed & released must reach
+			// the popup to close it.
+			// (and, obviously, the popup must be light dismiss!)
+			_pressed = IsLightDismissEnabled;
+		}
+
+		private void OnPanelPointerReleased(object sender, Input.PointerRoutedEventArgs args)
+		{
+			if (_pressed && IsLightDismissEnabled)
+			{
+				// Received the completed sequence
+				// pressed + released: we can close.
+				IsOpen = false;
 			}
 		}
 	}

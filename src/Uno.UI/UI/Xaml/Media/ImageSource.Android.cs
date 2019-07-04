@@ -6,7 +6,6 @@ using Uno.UI;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Drawing;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -26,7 +25,7 @@ namespace Windows.UI.Xaml.Media
 		private const string ContactUriPrefix = "content://com.android.contacts/";
 
 		private static bool _resourceCacheLock;
-		private static Dictionary<Tuple<int, Size?>, Bitmap> _resourceCache = new Dictionary<Tuple<int, Size?>, Bitmap>();
+		private static Dictionary<Tuple<int, global::System.Drawing.Size?>, Bitmap> _resourceCache = new Dictionary<Tuple<int, global::System.Drawing.Size?>, Bitmap>();
 
 		/// <summary>
 		/// Defines an asynchronous image loader handler.
@@ -35,7 +34,7 @@ namespace Windows.UI.Xaml.Media
 		/// <param name="uri">The image uri</param>
 		/// <param name="targetSize">An optional target decoding size</param>
 		/// <returns>A Bitmap instance</returns>
-		public delegate Task<Bitmap> ImageLoaderHandler(CancellationToken ct, string uri, Android.Widget.ImageView imageView, Size? targetSize);
+		public delegate Task<Bitmap> ImageLoaderHandler(CancellationToken ct, string uri, Android.Widget.ImageView imageView, global::System.Drawing.Size? targetSize);
 
 		/// <summary>
 		/// Provides a optional external image loader.
@@ -131,7 +130,7 @@ namespace Windows.UI.Xaml.Media
 			options.InJustDecodeBounds = true;
 
 			var targetSize = UseTargetSize && targetWidth != null && targetHeight != null
-				? (Size?)new Size(targetWidth.Value, targetHeight.Value)
+				? (global::System.Drawing.Size?)new global::System.Drawing.Size(targetWidth.Value, targetHeight.Value)
 				: null;
 
 			if (ResourceId.HasValue)
@@ -273,7 +272,7 @@ namespace Windows.UI.Xaml.Media
 		/// <param name="resourceId"></param>
 		/// <param name="targetSize"></param>
 		/// <returns></returns>
-		private async Task<Bitmap> FetchResourceWithDownsampling(CancellationToken ct, int resourceId, Size? targetSize)
+		private async Task<Bitmap> FetchResourceWithDownsampling(CancellationToken ct, int resourceId, global::System.Drawing.Size? targetSize)
 		{
 			var key = Tuple.Create(resourceId, targetSize);
 

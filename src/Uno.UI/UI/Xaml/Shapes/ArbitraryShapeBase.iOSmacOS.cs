@@ -41,7 +41,7 @@ namespace Windows.UI.Xaml.Shapes
 
 		protected abstract CGPath GetPath();
 
-		public override void OnLayoutUpdated()
+		internal override void OnLayoutUpdated()
 		{
 			base.OnLayoutUpdated();
 			var size = SizeFromUISize(Bounds.Size);

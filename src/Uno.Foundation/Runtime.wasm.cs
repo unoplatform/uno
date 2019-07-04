@@ -51,8 +51,7 @@ namespace Uno.Foundation
 
 		private static readonly Lazy<ILogger> _logger = new Lazy<ILogger>(() => typeof(WebAssemblyRuntime).Log());
 
-		public static bool IsWebAssembly { get; }
-			= RuntimeInformation.IsOSPlatform(OSPlatform.Create("WEBASSEMBLY"));
+		public static bool IsWebAssembly { get; } = RuntimeInformation.IsOSPlatform(OSPlatform.Create("WEBASSEMBLY"));
 
 
 		[Preserve]
@@ -213,11 +212,6 @@ namespace Uno.Foundation
 			else
 			{
 				result = InvokeJSOverride(str);
-			}
-
-			if (result == null)
-			{
-				throw new InvalidOperationException("The invoked Javascript method did not return a value (" + str + ")");
 			}
 
 			return result;
