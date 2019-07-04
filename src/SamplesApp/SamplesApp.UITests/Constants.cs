@@ -14,6 +14,6 @@ namespace SamplesApp.UITests
 		public readonly static string AndroidAppName = "uno.platform.unosampleapp";
 
 		// Default active platform when running under Visual Studio test runner
-		public const Platform CurrentPlatform = Platform.Android;
+		public const Platform CurrentPlatform = Platform.Browser;
 	}
 }

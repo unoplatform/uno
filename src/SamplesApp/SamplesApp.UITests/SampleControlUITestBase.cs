@@ -18,15 +18,7 @@ namespace SamplesApp.UITests
 		{
 			// Start the app only once, so the tests runs don't restart it
 			// and gain some time for the tests.
-			AppInitializer.StartApp(alreadyRunningApp: false);
-		}
-
-		[SetUp]
-		public void OneTimeSetup()
-		{
-			_app = AppInitializer.StartApp(alreadyRunningApp: true);
-
-			Helpers.App = _app;
+			AppInitializer.ColdStartApp();
 		}
 
 		public SampleControlUITestBase(Platform platform) : this()
@@ -37,6 +29,10 @@ namespace SamplesApp.UITests
 		[SetUp]
 		public void BeforeEachTest()
 		{
+			_app = AppInitializer.AttachToApp();
+
+			Helpers.App = _app;
+
 			// Check if the test needs to be ignore or not
 			// If nothing specified, it is considered as a global test
 			if(_platform == null)
@@ -73,10 +69,6 @@ namespace SamplesApp.UITests
 				Assert.Ignore("This test is ignored on this platform");
 			}
 		}
-
-		[OneTimeTearDown]
-		public void CloseBrowser()
-			=> _app?.Dispose();
 
 		protected void Run(string metadataName)
 		{

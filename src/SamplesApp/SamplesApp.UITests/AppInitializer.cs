@@ -16,11 +16,18 @@ namespace SamplesApp.UITests
 		public const string UITEST_SCREENSHOT_PATH = "UNO_UITEST_SCREENSHOT_PATH";
 
 		private const string DriverPath = @"..\..\..\..\SamplesApp.Wasm.UITests\node_modules\chromedriver\lib\chromedriver";
+		private static IApp _currentApp;
 
-		public static IApp StartApp(bool alreadyRunningApp)
+		public static IApp ColdStartApp()
+			=> Xamarin.UITest.TestEnvironment.Platform == Xamarin.UITest.TestPlatform.Local
+				? StartApp(alreadyRunningApp: false)
+				: null;
+
+		public static IApp AttachToApp()
+			=> StartApp(alreadyRunningApp: true);
+
+		private static IApp StartApp(bool alreadyRunningApp)
 		{
-			Console.WriteLine($"Starting app ({alreadyRunningApp})");
-
 			switch (Xamarin.UITest.TestEnvironment.Platform)
 			{
 				case Xamarin.UITest.TestPlatform.TestCloudiOS:
@@ -48,7 +55,7 @@ namespace SamplesApp.UITests
 						case Platform.Browser:
 							if (alreadyRunningApp)
 							{
-								return CreateBrowserApp();
+								return CreateBrowserApp(alreadyRunningApp);
 							}
 							else
 							{
@@ -62,15 +69,30 @@ namespace SamplesApp.UITests
 			}
 		}
 
-		private static IApp CreateBrowserApp() => Uno.UITest.Selenium.ConfigureApp
-			.WebAssembly
-			.Uri(new Uri(Constants.DefaultUri))
-			.ChromeDriverLocation(Path.Combine(TestContext.CurrentContext.TestDirectory, DriverPath.Replace('\\', Path.DirectorySeparatorChar)))
-			.ScreenShotsPath(TestContext.CurrentContext.TestDirectory)
+		private static IApp CreateBrowserApp(bool alreadyRunningApp)
+		{
+			if(_currentApp != null)
+			{
+				if (!alreadyRunningApp)
+				{
+					_currentApp.Dispose();
+				}
+				else
+				{
+					return _currentApp;
+				}
+			}
+
+			return _currentApp = Uno.UITest.Selenium.ConfigureApp
+				.WebAssembly
+				.Uri(new Uri(Constants.DefaultUri))
+				.ChromeDriverLocation(Path.Combine(TestContext.CurrentContext.TestDirectory, DriverPath.Replace('\\', Path.DirectorySeparatorChar)))
+				.ScreenShotsPath(TestContext.CurrentContext.TestDirectory)
 #if DEBUG
-			.Headless(false)
+				.Headless(false)
 #endif
-			.StartApp();
+				.StartApp();
+		}
 
 		private static IApp CreateAndroidApp(bool alreadyRunningApp)
 		{
