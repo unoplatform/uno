@@ -30,8 +30,10 @@ using Windows.UI.Xaml.Automation;
 
 namespace <#= mixin.NamespaceName #>
 {
-    public partial class <#= mixin.ClassName #> : IFrameworkElement
+    public partial class <#= mixin.ClassName #> : IFrameworkElement, IXUidProvider
 	{		
+		string IXUidProvider.Uid { get; set; }
+
 #if !<#= mixin.IsFrameworkElement #>
 		/// <summary>
 		/// Gets the parent of this FrameworkElement in the object tree.
@@ -159,8 +161,6 @@ namespace <#= mixin.NamespaceName #>
 
 		public event RoutedEventHandler Unloaded;
 
-		public event EventHandler<object> LayoutUpdated;
-
 		public event SizeChangedEventHandler SizeChanged;
 		
 #if <#= mixin.DefineLayoutSubviews #> || <#= mixin.DefineSetNeedsLayout #>
@@ -204,14 +204,6 @@ namespace <#= mixin.NamespaceName #>
 			if (actualSuperview != null)
 			{
 				actualSuperview.SetNeedsLayout();
-			}
-		}
-
-
-		public virtual void OnLayoutUpdated ()
-		{
-			if (LayoutUpdated != null) {
-				LayoutUpdated (this, EventArgs.Empty);
 			}
 		}
 
@@ -491,6 +483,16 @@ namespace <#= mixin.NamespaceName #>
 		public Rect AppliedFrame { get; private set; }
 
 #if !<#= mixin.IsFrameworkElement #>
+
+		public event EventHandler<object> LayoutUpdated;
+
+		internal virtual void OnLayoutUpdated ()
+		{
+			if (LayoutUpdated != null) {
+				LayoutUpdated (this, EventArgs.Empty);
+			}
+		}
+
 		// This is also defined in UIElement for actual UIElement hierarchy
 		internal bool IsRenderingSuspended { get; set; }
 
@@ -968,6 +970,13 @@ namespace <#= mixin.NamespaceName #>
 			{
 				return null;
 			}
+#if <#= mixin.IsFrameworkElement #> //IsFrameworkElement
+			if (Clip?.Rect is Rect rect && !rect.Contains(point))
+			{
+				// Clipped region must not block touch to the rest of the visual tree
+				return null;
+			}
+#endif
 
 			var viewHit = base.HitTest(point, uievent);
 

@@ -68,6 +68,7 @@ namespace Uno.UWPSyncGenerator
 			var origins = from externalRedfs in _referenceCompilation.ExternalReferences
 						  where Path.GetFileNameWithoutExtension(externalRedfs.Display).StartsWith("Windows.Foundation")
 						  || Path.GetFileNameWithoutExtension(externalRedfs.Display).StartsWith("Windows.Phone.PhoneContract")
+						  || Path.GetFileNameWithoutExtension(externalRedfs.Display).StartsWith("Windows.ApplicationModel.Calls.CallsPhoneContract")
 						  let asm = _referenceCompilation.GetAssemblyOrModuleSymbol(externalRedfs) as IAssemblySymbol
 						  where asm != null
 						  select asm;
@@ -586,7 +587,7 @@ namespace Uno.UWPSyncGenerator
 			};
 
 			string[] skipBaseTypes = new[] {
-				
+
 				// skipped because of legacy mismatched hierarchy
 				"Windows.UI.Xaml.FrameworkElement",
 				"Windows.UI.Xaml.UIElement",
@@ -708,7 +709,7 @@ namespace Uno.UWPSyncGenerator
 		{
 			foreach (var eventMember in type.GetMembers().OfType<IEventSymbol>())
 			{
-				if(!IsNotUWPMapping(type, eventMember))
+				if (!IsNotUWPMapping(type, eventMember))
 				{
 					return;
 				}
@@ -925,7 +926,7 @@ namespace Uno.UWPSyncGenerator
 			{
 				switch (method.Name)
 				{
-					// The base type does not match for this parameter until Uno adjusts the 
+					// The base type does not match for this parameter until Uno adjusts the
 					// hierarchy based on IFrameworkElement.
 					case "SetRow":
 					case "SetRowSpan":
@@ -1156,7 +1157,7 @@ namespace Uno.UWPSyncGenerator
 
 								b.AppendLineInvariant($"Windows.UI.Xaml.DependencyProperty.Register{attachedModifier}(");
 
-								b.AppendLineInvariant($"\t\"{propertyName}\", typeof({propertyDisplayType}), ");
+								b.AppendLineInvariant($"\tnameof({propertyName})\", typeof({propertyDisplayType}), ");
 								b.AppendLineInvariant($"\ttypeof({property.ContainingType.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat)}), ");
 								b.AppendLineInvariant($"\tnew FrameworkPropertyMetadata(default({propertyDisplayType})));");
 							}
@@ -1444,7 +1445,7 @@ namespace Uno.UWPSyncGenerator
 			{
 				// In this case, this may mean that Rolsyn failed to execute some msbuild task that loads the
 				// references in a UWA project (or NuGet 3.0+ with project.json, more specifically). For these
-				// projects, references are materialized through a task using a output parameter that injects 
+				// projects, references are materialized through a task using a output parameter that injects
 				// "References" nodes. If this task fails, no references are loaded, and simple type resolution
 				// such "int?" may fail.
 
@@ -1521,7 +1522,7 @@ namespace Uno.UWPSyncGenerator
 				}
 
 				// Lookup for the highest version matching assembly in the current app domain.
-				// There may be an existing one that already matches, even though the 
+				// There may be an existing one that already matches, even though the
 				// fusion loader did not find an exact match.
 				var loadedAsm = (
 									from asm in AppDomain.CurrentDomain.GetAssemblies()

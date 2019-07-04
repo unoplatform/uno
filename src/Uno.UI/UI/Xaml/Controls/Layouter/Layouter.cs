@@ -130,6 +130,11 @@ namespace Windows.UI.Xaml.Controls
 				}
 
 				ArrangeOverride(finalRect.Size);
+
+				if (_element is FrameworkElement fe)
+				{
+					fe.OnLayoutUpdated();
+				}
 			}
 		}
 
@@ -303,6 +308,11 @@ namespace Windows.UI.Xaml.Controls
 		/// <param name="frame">The rectangle to use, in Logical position</param>
 		public void ArrangeChild(View view, Rect frame)
 		{
+			ArrangeChild(view, frame, true);
+		}
+
+		internal void ArrangeChild(View view, Rect frame, bool raiseLayoutUpdated)
+		{
 			if ((view as IFrameworkElement)?.Visibility == Visibility.Collapsed)
 			{
 				return;
@@ -310,6 +320,11 @@ namespace Windows.UI.Xaml.Controls
 			frame = ApplyMarginAndAlignments(view, frame);
 
 			ArrangeChildOverride(view, frame);
+
+			if (raiseLayoutUpdated && view is FrameworkElement fe)
+			{
+				fe?.OnLayoutUpdated();
+			}
 		}
 
 		private void LogArrange(View view, Rect frame)

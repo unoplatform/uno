@@ -2,7 +2,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.System.Display
 {
-	#if false || false  || NET461 || __WASM__ || __MACOS__
+	#if false || false || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class DisplayRequest 
@@ -15,14 +15,14 @@ namespace Windows.System.Display
 		}
 		#endif
 		// Forced skipping of method Windows.System.Display.DisplayRequest.DisplayRequest()
-		#if false || false  || NET461 || __WASM__ || __MACOS__
+		#if false || false || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  void RequestActive()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.Display.DisplayRequest", "void DisplayRequest.RequestActive()");
 		}
 		#endif
-		#if false || false  || NET461 || __WASM__ || __MACOS__
+		#if false || false || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  void RequestRelease()
 		{

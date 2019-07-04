@@ -1,7 +1,31 @@
 ﻿# Release notes
 
 ## Next version
-* `LinearGradientBrush.EndPoint` now defaults to (1,1) to match UWP
+### Features
+* Add support for `Windows.ApplicationModel.Calls.PhoneCallManager`
+* Add support for `Windows.Phone.Devices.Notification.VibrationDevice` API on iOS, Android and WASM
+* Basic support for `Windows.Devices.Sensors.Barometer`
+* Support setting `Style` inline (eg `<TextBlock><TextBlock.Style><Style TargetType="TextBlock"><Setter>...`)
+* [Wasm] Add support for `DisplayInformation` properties `LogicalDpi`, `ResolutionScale`, `ScreenWidthInRawPixels`, `RawPixelsPerViewPixel` , and `ScreenHeightInRawPixels`¸
+* Permit `DependencyProperty` to be set reentrantly. Eg this permits `TextBox.TextChanged` to modify the `Text` property (previously this could only be achieved using `Dispatcher.RunAsync()`).
+* Add support for filtered solutions development for Uno.UI contributions.
+* 132984 [Android] Notch support on Android
+
+### Breaking changes
+*
+
+### Bug fixes
+* [iOS] Area of view outside Clip rect now allows touch to pass through, this fixes NavigationView not allowing touches to children (#1018)
+* `ComboBox` drop down is now placed following a logic which is closer to UWP and it longer flickers when it appears (especilly on WASM)
+* #854 `BasedOn` on a `<Style>` in `App.Xaml` were not resolving properly
+* #706 `x:Name` in `App.Xaml`'s resources were crashing the compilation.
+* #846 `x:Name` on non-`DependencyObject` resources were crashing the compilation
+* [Android/iOS] Fixed generated x:uid setter not globalized for Uno.UI.Helpers.MarkupHelper.SetXUid and Uno.UI.FrameworkElementHelper.SetRenderPhase
+* Fix invalid XAML x:Uid parsing with resource file name and prefix (#1130, #228)
+* Fixed an issue where a Two-Way binding would sometimes not update values back to source correctly
+
+## Release 1.45.0
+### Features
 * Add support for `Windows.System.Display.DisplayRequest` API on iOS and Android
 * Add support for the following `Windows.System.Power.PowerManager` APIs on iOS and Android:
     - BatteryStatus
@@ -12,8 +36,6 @@
     - EnergySaverStatusChanged
     - RemainingChargePercentChanged
     - BatteryStatusChanged
-
-### Features
 * Updated `CheckBox` glyph to match UWP style on all platforms
 * Add support for the following `DisplayInformation` properties on iOS and Android:
 * Add support for `CurrentInputMethodLanguageTag` and `TrySetInputMethodLanguageTag` on Android, iOS and WASM
@@ -71,12 +93,31 @@
 * MenuBar
     - Import of MenuBar code, not functional yet as MenuItemFlyout (Issue #801)
     - Basic support for macOS native system menus
-* 132984 [Android] Notch support on Android
+* Ensure FrameworkElement.LayoutUpdated is invoked on all elements being arranged
+* Fix Grid.ColumnDefinitions.Clear exception (#1006)
+* 155086 [Android] Fixed `AppBarButton.Label` taking precedence over `AppBarButton.Content` when used as `PrimaryCommands`.
+* ComboBox
+	- Remove dependency to a "Background" template part which is unnecessary and not required on UWP
+	- Make sure that the `PopupPanel` hides itself if collapsed (special cases as it's at the top of the `Window`)
+	- [iOS] Add support of `INotifyCollectionChanged` in the `Picker`
+	- [iOS] Remove the arbitrary `null` item added at the top of the `Picker`
+	- [iOS] Fix infinite layouting cycle in the iOS picker (Removed workaround which is no longer necessary as the given method is invoked properly on each measure/arrange phases)
+* [Wasm] Refactored the way the text is measured in Wasm. Wasn't working well when a parent with a RenderTransform.
+* `Grid` now supports `ColumnDefinition.MinWidth` and `MaxWidth` and `RowDefinition.MinHeight` and `MaxHeight` (#1032)
+* Implement the `PivotPanel` measure/arrange to allow text wrapping in pivot items
+* [Wasm] Add `PathIcon` support
+* Add support UI Testing support through for `Uno.UI.Helpers.Automation.GetDependencyPropertyValue`
+* [WASM] ListView - support item margins correctly
+* [iOS] Fix items dependency property propagation in ListView items
+* [Wasm] Add UI Testing support through for `Uno.UI.Helpers.Automation.GetDependencyPropertyValue`\
 
 ### Breaking Changes
 * The `WebAssemblyRuntime.InvokeJSUnmarshalled` method with three parameters has been removed.
 * `NavigationBarHelper` has been removed.
 * Localized Text, Content etc is now applied even if the Text (etc) property isn't set in Xaml. Nested implicit content (eg `<Button><Border>...`) will be overridden by localized values if available.
+* [Android] Unless nested under `SecondaryCommands`, the `AppBarButton.Label` property will no longer be used for the title of menu item, instead use the `AppBarButton.Content` property. For `SecondaryCommands`, keep using `AppBarButton.Label`.
+* The `WordEllipsis` was removed from the `TextWrapping` as it's not a valid value for UWP (And it was actually supported only on WASM) (The right way to get ellipsis is with the `TextTrimming.WordEllipsis`)
+* [Android] `Popup.Anchor` is no longer available
 
 ### Bug fixes
 * DatePicker FlyoutPlacement now set to Full by default
@@ -126,6 +167,27 @@
 * Fix a potential crash during code generated from XAML, content were not properly escaped.
 * #977 Fix exception when setting MediaPlayerElement.Stretch in XAML.
 * [Android] Fix MediaPlayerElement.Stretch not applied
+* [Android] Fix for ListView elements measuring/layouting bug
+* Fix Grid.ColumnDefinitions.Clear exception (#1006)
+* [Wasm] Align Window.SizeChanged and ApplicationView.VisibleBoundsChanged ordering with UWP (#1015)
+* Add VS2019 Solution Filters for known developer tasks
+* #154969 [iOS] MediaPlayer ApplyStretch breaking mediaplayer- fixed
+* 154815 [WASM] ItemClick event could be raised for wrong item
+* 155256 Fixed xaml generated enum value not being globalized
+* 155161 [Android] fixed keyboard flicker when backing from a page with CommandBar
+* Fix the processing of the GotFocus event FocusManager (#973)
+* 116098 [iOS] The time/day pickers are missing diving lines on devices running firmware 11 and up.
+* [iOS] Fix invalid DataContext propagation when estimating ListView item size (#1051)
+* RadioButton was not applying Checked state correctly with non-standard visual state grouping in style
+* [Android] Fix several bugs preventing AutoSuggestBox from working on Android. (#1012)
+* #1062 TextBlock measure caching can wrongly hit
+* 153974 [Android] fixed button flyout placement
+* Fix support for ScrollBar touch events (#871)
+* [iOS] Area of view outside Clip rect now allows touch to pass through, this fixes NavigationView not allowing touches to children (#1018)
+* `ComboBox` drop down is now placed following a logic which is closer to UWP and it longer flickers when it appears (especilly on WASM)
+* Date and Time Picker Content fix and Refactored to use PickerFlyoutBase (to resemble UWP implementation)
+* `LinearGradientBrush.EndPoint` now defaults to (1,1) to match UWP
+* [Android] A ListView inside another ListView no longer causes an app freeze/crash
 
 ## Release 1.44.0
 

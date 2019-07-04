@@ -42,5 +42,29 @@ namespace Windows.UI.Xaml.Controls
 		{
 			return new RowDefinition { Height = GridLength.ParseGridLength(value).First() };
 		}
+
+		public double MinHeight
+		{
+			get => (double)this.GetValue(MinHeightProperty);
+			set => this.SetValue(MinHeightProperty, value);
+		}
+
+		public double MaxHeight
+		{
+			get => (double)this.GetValue(MaxHeightProperty);
+			set => this.SetValue(MaxHeightProperty, value);
+		}
+		public static DependencyProperty MinHeightProperty { get; } =
+		DependencyProperty.Register(
+			"MinHeight", typeof(double),
+			typeof(RowDefinition),
+			new FrameworkPropertyMetadata(0d));
+
+		public static DependencyProperty MaxHeightProperty { get; } =
+		DependencyProperty.Register(
+			"MaxHeight", typeof(double),
+			typeof(RowDefinition),
+			new FrameworkPropertyMetadata(double.PositiveInfinity));
+
 	}
 }

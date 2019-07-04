@@ -1,0 +1,66 @@
+{
+  "files": [
+    "README.md"
+  ],
+  "imageSize": 100,
+  "commit": false,
+  "contributors": [
+    {
+      "login": "jeromelaban",
+      "name": "Jérôme Laban",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/5839577?v=4",
+      "profile": "https://github.com/jeromelaban",
+      "contributions": [
+        "code",
+        "content",
+        "doc",
+        "example",
+        "maintenance",
+        "infra",
+        "ideas",
+        "review",
+        "test",
+        "projectManagement"
+      ]
+    },
+    {
+      "login": "davidjohnoliver",
+      "name": "David Oliver",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/8270914?v=4",
+      "profile": "http://www.dissolutegames.com/",
+      "contributions": [
+        "blog"
+      ]
+    },
+    {
+      "login": "MartinZikmund",
+      "name": "Martin Zikmund",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/1075116?v=4",
+      "profile": "http://mzikmund.com",
+      "contributions": [
+        "code",
+        "test"
+      ]
+    },
+    {
+      "login": "ghuntley",
+      "name": "Geoffrey Huntley",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/127353?v=4",
+      "profile": "https://www.ghuntley.com/now",
+      "contributions": [
+        "question",
+        "doc",
+        "maintenance",
+        "code",
+        "test",
+        "tutorial",
+        "review"
+      ]
+    }
+  ],
+  "contributorsPerLine": 7,
+  "projectName": "uno",
+  "projectOwner": "unoplatform",
+  "repoType": "github",
+  "repoHost": "https://github.com"
+}

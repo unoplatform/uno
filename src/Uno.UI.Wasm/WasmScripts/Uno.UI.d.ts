@@ -150,6 +150,7 @@ declare namespace Uno.UI {
         private allActiveElementsById;
         private static resizeMethod;
         private static dispatchEventMethod;
+        private static getDependencyPropertyValueMethod;
         private constructor();
         /**
             * Creates the UWP-compatible splash screen
@@ -189,11 +190,28 @@ declare namespace Uno.UI {
         setNameNative(pParam: number): boolean;
         private setNameInternal;
         /**
+            * Set a name for an element.
+            *
+            * This is mostly for diagnostic purposes.
+            */
+        setXUid(elementId: number, name: string): string;
+        /**
+            * Set a name for an element.
+            *
+            * This is mostly for diagnostic purposes.
+            */
+        setXUidNative(pParam: number): boolean;
+        private setXUidInternal;
+        /**
             * Set an attribute for an element.
             */
-        setAttribute(elementId: number, attributes: {
+        setAttributes(elementId: number, attributes: {
             [name: string]: string;
         }): string;
+        /**
+            * Set an attribute for an element.
+            */
+        setAttributesNative(pParams: number): boolean;
         /**
             * Set an attribute for an element.
             */
@@ -262,6 +280,8 @@ declare namespace Uno.UI {
         *
         */
         arrangeElementNative(pParams: number): boolean;
+        private setAsArranged;
+        private setAsUnarranged;
         /**
         * Sets the transform matrix of an element
         *
@@ -418,6 +438,8 @@ declare namespace Uno.UI {
             * @param maxHeight string containing height in pixels. Empty string means infinite.
             */
         measureViewNative(pParams: number, pReturn: number): boolean;
+        private static MAX_WIDTH;
+        private static MAX_HEIGHT;
         private measureViewInternal;
         setImageRawData(viewId: number, dataPtr: number, width: number, height: number): string;
         /**
@@ -445,6 +467,26 @@ declare namespace Uno.UI {
             */
         setHtmlContentNative(pParams: number): boolean;
         private setHtmlContentInternal;
+        /**
+         * Gets the Client and Offset size of the specified element
+         *
+         * This method is used to determine the size of the scroll bars, to
+         * mask the events coming from that zone.
+         */
+        getClientViewSize(elementId: number): string;
+        /**
+         * Gets the Client and Offset size of the specified element
+         *
+         * This method is used to determine the size of the scroll bars, to
+         * mask the events coming from that zone.
+         */
+        getClientViewSizeNative(pParams: number, pReturn: number): boolean;
+        /**
+         * Gets a dependency property value.
+         *
+         * Note that the casing of this method is intentionally Pascal for platform alignment.
+         */
+        GetDependencyPropertyValue(elementId: number, propertyName: string): string;
         /**
             * Remove the loading indicator.
             *
@@ -511,6 +553,17 @@ declare class WindowManagerGetBBoxReturn {
     Height: number;
     marshal(pData: number): void;
 }
+declare class WindowManagerGetClientViewSizeParams {
+    HtmlId: number;
+    static unmarshal(pData: number): WindowManagerGetClientViewSizeParams;
+}
+declare class WindowManagerGetClientViewSizeReturn {
+    OffsetWidth: number;
+    OffsetHeight: number;
+    ClientWidth: number;
+    ClientHeight: number;
+    marshal(pData: number): void;
+}
 declare class WindowManagerInitParams {
     IsHostedMode: boolean;
     IsLoadEventsEnabled: boolean;
@@ -548,9 +601,15 @@ declare class WindowManagerResetStyleParams {
 }
 declare class WindowManagerSetAttributeParams {
     HtmlId: number;
+    Name: string;
+    Value: string;
+    static unmarshal(pData: number): WindowManagerSetAttributeParams;
+}
+declare class WindowManagerSetAttributesParams {
+    HtmlId: number;
     Pairs_Length: number;
     Pairs: Array<string>;
-    static unmarshal(pData: number): WindowManagerSetAttributeParams;
+    static unmarshal(pData: number): WindowManagerSetAttributesParams;
 }
 declare class WindowManagerSetClassesParams {
     HtmlId: number;
@@ -597,6 +656,11 @@ declare class WindowManagerSetStylesParams {
     Pairs_Length: number;
     Pairs: Array<string>;
     static unmarshal(pData: number): WindowManagerSetStylesParams;
+}
+declare class WindowManagerSetXUidParams {
+    HtmlId: number;
+    Uid: string;
+    static unmarshal(pData: number): WindowManagerSetXUidParams;
 }
 declare module Uno.UI {
     interface IAppManifest {
@@ -695,5 +759,16 @@ declare namespace Windows.UI.Core {
         enable(): void;
         disable(): void;
         private clearStack;
+    }
+}
+interface Navigator {
+    webkitVibrate(pattern: number | number[]): boolean;
+    mozVibrate(pattern: number | number[]): boolean;
+    msVibrate(pattern: number | number[]): boolean;
+}
+declare namespace Windows.Phone.Devices.Notification {
+    class VibrationDevice {
+        static initialize(): boolean;
+        static vibrate(duration: number): boolean;
     }
 }

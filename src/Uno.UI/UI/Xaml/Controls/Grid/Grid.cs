@@ -34,8 +34,12 @@ namespace Windows.UI.Xaml.Controls
 		private readonly SerialDisposable _rowSubscriptions;
 		private readonly SerialDisposable _columnSubscriptions;
 		private readonly Dictionary<object, IDisposable> _childSubscriptions = new Dictionary<object, IDisposable>(ReferenceEqualityComparer<object>.Default);
-		private readonly Dictionary<RowDefinition, IDisposable> _rowsSubscriptions = new Dictionary<RowDefinition, IDisposable>(ReferenceEqualityComparer<DependencyObject>.Default);
-		private readonly Dictionary<ColumnDefinition, IDisposable> _columnsSubscriptions = new Dictionary<ColumnDefinition, IDisposable>(ReferenceEqualityComparer<DependencyObject>.Default);
+		private readonly Dictionary<RowDefinition, IDisposable> _rowsHeightSubscriptions = new Dictionary<RowDefinition, IDisposable>(ReferenceEqualityComparer<DependencyObject>.Default);
+		private readonly Dictionary<RowDefinition, IDisposable> _rowsMinHeightSubscriptions = new Dictionary<RowDefinition, IDisposable>(ReferenceEqualityComparer<DependencyObject>.Default);
+		private readonly Dictionary<RowDefinition, IDisposable> _rowsMaxHeightSubscriptions = new Dictionary<RowDefinition, IDisposable>(ReferenceEqualityComparer<DependencyObject>.Default);
+		private readonly Dictionary<ColumnDefinition, IDisposable> _columnsWidthSubscriptions = new Dictionary<ColumnDefinition, IDisposable>(ReferenceEqualityComparer<DependencyObject>.Default);
+		private readonly Dictionary<ColumnDefinition, IDisposable> _columnsMinWidthSubscriptions = new Dictionary<ColumnDefinition, IDisposable>(ReferenceEqualityComparer<DependencyObject>.Default);
+		private readonly Dictionary<ColumnDefinition, IDisposable> _columnsMaxWidthSubscriptions = new Dictionary<ColumnDefinition, IDisposable>(ReferenceEqualityComparer<DependencyObject>.Default);
 
 		static Grid()
 		{
@@ -186,18 +190,26 @@ namespace Windows.UI.Xaml.Controls
 
 		private void DisposeAllRowsColumnsSubscriptions()
 		{
-			DisposeDefinitionsSubscriptions(_rowsSubscriptions);
-			DisposeDefinitionsSubscriptions(_columnsSubscriptions);
+			DisposeDefinitionsSubscriptions(_rowsHeightSubscriptions);
+			DisposeDefinitionsSubscriptions(_rowsMinHeightSubscriptions);
+			DisposeDefinitionsSubscriptions(_rowsMaxHeightSubscriptions);
+			DisposeDefinitionsSubscriptions(_columnsWidthSubscriptions);
+			DisposeDefinitionsSubscriptions(_columnsMinWidthSubscriptions);
+			DisposeDefinitionsSubscriptions(_columnsMaxWidthSubscriptions);
 		}
 
 		private void ObserveRowDefinitions(List<RowDefinition> definitions)
 		{
-			ObserveDefinitions(_rowsSubscriptions, definitions, RowDefinition.HeightProperty, OnGridDefinitionChanged);
+			ObserveDefinitions(_rowsHeightSubscriptions, definitions, RowDefinition.HeightProperty, OnGridDefinitionChanged);
+			ObserveDefinitions(_rowsMinHeightSubscriptions, definitions, RowDefinition.MinHeightProperty, OnGridDefinitionChanged);
+			ObserveDefinitions(_rowsMaxHeightSubscriptions, definitions, RowDefinition.MaxHeightProperty, OnGridDefinitionChanged);
 		}
 
 		private void ObserveColumnDefinitions(List<ColumnDefinition> definitions)
 		{
-			ObserveDefinitions(_columnsSubscriptions, definitions, ColumnDefinition.WidthProperty, OnGridDefinitionChanged);
+			ObserveDefinitions(_columnsWidthSubscriptions, definitions, ColumnDefinition.WidthProperty, OnGridDefinitionChanged);
+			ObserveDefinitions(_columnsMinWidthSubscriptions, definitions, ColumnDefinition.MinWidthProperty, OnGridDefinitionChanged);
+			ObserveDefinitions(_columnsMaxWidthSubscriptions, definitions, ColumnDefinition.MaxWidthProperty, OnGridDefinitionChanged);
 		}
 
 		/// <remarks>
@@ -224,7 +236,7 @@ namespace Windows.UI.Xaml.Controls
 			// Removed definitions
 			var definitionSet = new HashSet<T>(definitions, ReferenceEqualityComparer<T>.Default);
 
-			foreach (var existing in subcriptions)
+			foreach (var existing in subcriptions.ToArray())
 			{
 				if (!definitionSet.Contains(existing.Key))
 				{
@@ -237,7 +249,7 @@ namespace Windows.UI.Xaml.Controls
 
 		private static void DisposeDefinitionsSubscriptions<T>(Dictionary<T, IDisposable> subcriptions)
 		{
-			foreach (var pair in subcriptions)
+			foreach (var pair in subcriptions.ToArray())
 			{
 				pair.Value.Dispose();
 			}

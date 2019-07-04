@@ -9,6 +9,9 @@ using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media;
 using Windows.Foundation;
 using Uno.Disposables;
+using Android.Graphics.Drawables;
+using Uno.Extensions;
+using Uno.Logging;
 
 namespace Uno.UI.Controls
 {
@@ -64,44 +67,70 @@ namespace Uno.UI.Controls
 
 		protected override void Render()
 		{
+			// CommandBar::PrimaryCommands -> !IsInOverflow -> AsAction.Never -> displayed directly on command bar
+			// CommandBar::SecondaryCommands -> IsInOverflow -> AsAction.Awalys -> (displayed as flyout menu items under [...])
+
 			// IsInOverflow
 			var showAsAction = Element.IsInOverflow
 				? ShowAsAction.Never
 				: ShowAsAction.Always;
-
 			Native.SetShowAsAction(showAsAction);
 
-			// Label / String Content
-			Native.SetTitle(Element.Label ?? (Element.Content is string contentLabel ? contentLabel : string.Empty));
-
-			// Content & Icon
-			if (!Element.IsInOverflow) // We don't want to consider Icon or Content in overflow
+			// (Icon ?? Content) and Label
+			if (Element.IsInOverflow)
 			{
-				// Icon
+				Native.SetActionView(null);
+				Native.SetIcon(null);
+				Native.SetTitle(Element.Label);
+			}
+			else if (Element.Icon != null)
+			{
 				switch (Element.Icon)
 				{
 					case BitmapIcon bitmap:
 						var drawable = DrawableHelper.FromUri(bitmap.UriSource);
 						Native.SetIcon(drawable);
 						break;
-					default:
-						// Custom Content
-						switch (Element.Content)
-						{
-							case FrameworkElement content:
-								var currentParent = Element.GetParent();
-								_appBarButtonWrapper.Child = Element;
 
-								// Restore the original parent if any, as we 
-								// want the DataContext to flow properly from the 
-								// CommandBar.
-								Element.SetParent(currentParent);
-								if (content.Visibility == Visibility.Visible)
-								{
-									Native.SetActionView(_appBarButtonWrapper);
-								}
-								break;
-						}
+					case FontIcon font: // not supported
+					case PathIcon path: // not supported
+					case SymbolIcon symbol: // not supported
+					default:
+						this.Log().WarnIfEnabled(() => $"{GetType().Name ?? "FontIcon, PathIcon and SymbolIcon"} are not supported. Use BitmapIcon instead with UriSource.");
+						Native.SetIcon(null);
+						break;
+				}
+				Native.SetActionView(null);
+				Native.SetTitle(null);
+			}
+			else
+			{
+				switch (Element.Content)
+				{
+					case string text:
+						Native.SetIcon(null);
+						Native.SetActionView(null);
+						Native.SetTitle(text);
+						break;
+
+					case FrameworkElement fe:
+						var currentParent = Element.GetParent();
+						_appBarButtonWrapper.Child = Element;
+
+						//Restore the original parent if any, as we
+						// want the DataContext to flow properly from the
+						// CommandBar.
+						Element.SetParent(currentParent);
+
+						Native.SetIcon(null);
+						Native.SetActionView(fe.Visibility == Visibility.Visible ? _appBarButtonWrapper : null);
+						Native.SetTitle(null);
+						break;
+
+					default:
+						Native.SetIcon(null);
+						Native.SetActionView(null);
+						Native.SetTitle(null);
 						break;
 				}
 			}

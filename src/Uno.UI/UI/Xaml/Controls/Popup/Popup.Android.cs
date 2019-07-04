@@ -14,8 +14,6 @@ namespace Windows.UI.Xaml.Controls
 	{
 		private readonly PopupWindow _popupWindow;
 
-		public View Anchor { get; set; }
-
 		internal FlyoutPlacementMode Placement { get; set; }
 
 		public Popup()
@@ -117,6 +115,15 @@ namespace Windows.UI.Xaml.Controls
 		{
 			// Ensure Popup doesn't take any space.
 			this.SetMeasuredDimension(0, 0);
+		}
+
+		/// <summary>
+		/// Prevent the popup from stealing focus from views in the main window.
+		/// </summary>
+		internal void DisableFocus()
+		{
+			_popupWindow.Focusable = false;
+			_popupWindow.InputMethodMode = InputMethod.Needed;
 		}
 	}
 }

@@ -8,21 +8,22 @@
 			 d:DesignHeight="300"
 			 d:DesignWidth="400">
 
-	<Grid>
-		<Grid.RowDefinitions>
-			<RowDefinition Height="Auto" />
-			<RowDefinition Height="*" />
-		</Grid.RowDefinitions>
-		<StackPanel Grid.Row="0">
-			<Button x:Name="runButton"
-					Content="Run"
-					Click="OnRunTests" />
-			<TextBlock x:Name="runStatus"
-					   Text="Not initialized" />
-		</StackPanel>
-		<ScrollViewer Grid.Row="1">
-			<StackPanel x:Name="testResults">
-			</StackPanel>
-		</ScrollViewer>
-	</Grid>
+  <Grid>
+	<Grid.RowDefinitions>
+	  <RowDefinition Height="Auto" />
+	  <RowDefinition Height="*" />
+	</Grid.RowDefinitions>
+	<StackPanel Grid.Row="0">
+	  <Button x:Name="runButton"
+			  Content="Run"
+			  Click="OnRunTests" />
+	  <TextBlock x:Name="runStatus"
+				 Text="Not initialized" />
+	  <TextBlock x:Name="failedTests" Text="Pending..." />
+	</StackPanel>
+	<ScrollViewer Grid.Row="1">
+	  <StackPanel x:Name="testResults">
+	  </StackPanel>
+	</ScrollViewer>
+  </Grid>
 </UserControl>

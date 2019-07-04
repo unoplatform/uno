@@ -14,13 +14,17 @@
 		<_isWindows>$([MSBuild]::IsOsPlatform(Windows))</_isWindows>
 	</PropertyGroup>
 
+	<PropertyGroup Condition="'$(UnoTargetFrameworkOverride)'!=''">
+		<TargetFrameworks>$(UnoTargetFrameworkOverride)</TargetFrameworks>
+	</PropertyGroup>
+
 	<!--Workaround because this variable is missing by default. See https://github.com/xamarin/xamarin-android/issues/2452 -->
 	<PropertyGroup>
 		<AndroidSdkBuildToolsVersion Condition="'$(AndroidSdkBuildToolsVersion)' == ''">28.0.3</AndroidSdkBuildToolsVersion>
 	</PropertyGroup>
 	
 	<ItemGroup>
-		<PackageReference Include="Xamarin.Build.Download" Version="0.4.9" />
+		<PackageReference Include="Xamarin.Build.Download" Version="0.4.11" />
 	</ItemGroup>
 
 	<ItemGroup Condition=" '$(TargetFramework)' == 'MonoAndroid80'">
@@ -76,6 +80,19 @@
 		<Delete Files="@(_JavaFilesToDelete)" />
 	</Target>
 
+	<!-- Workaround for https://github.com/nventive/Uno/issues/986 -->
+	<Target Name="Issue986Workaround" BeforeTargets="ExportJarToXml">
+
+		<!--
+		This is required to ensure the first pass of the BindingsGenerator task is
+		executed properly (inside of ExportJarToXml). If not, the second pass in the
+		GenerateBindings target is not given proper api mappings, ending in the generation
+		of an empty assembly.
+		-->
+		
+		<Delete Files="$(IntermediateOutputPath)\api.xml" />
+	</Target>
+	
 	<ItemGroup>
 		<_CompileUnoJavaBeforeTargets Include="ExportJarToXml"/>
 		<_CompileUnoJavaBeforeTargets Include="GenerateBindings"/>

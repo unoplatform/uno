@@ -506,7 +506,7 @@ namespace Windows.UI.Xaml
 			return false;
 		}
 
-		private static UIElement GetElementFromHandle(int handle)
+		internal static UIElement GetElementFromHandle(int handle)
 		{
 			var gcHandle = GCHandle.FromIntPtr((IntPtr)handle);
 
@@ -533,6 +533,14 @@ namespace Windows.UI.Xaml
 				{
 					Uno.UI.Xaml.WindowManagerInterop.SetName(HtmlId, _name);
 				}
+			}
+		}
+
+		partial void OnUidChangedPartial()
+		{
+			if (FeatureConfiguration.UIElement.AssignDOMXamlName)
+			{
+				Uno.UI.Xaml.WindowManagerInterop.SetXUid(HtmlId, _uid);
 			}
 		}
 

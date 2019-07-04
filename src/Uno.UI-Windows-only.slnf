@@ -1,0 +1,14 @@
+{
+  "solution": {
+    "path": "Uno.UI.sln",
+    "projects": [
+      "SamplesApp\\Benchmarks.Shared\\SamplesApp.Benchmarks.shproj",
+      "SamplesApp\\SamplesApp.Shared\\SamplesApp.Shared.shproj",
+      "SamplesApp\\SamplesApp.UWP\\SamplesApp.UWP.csproj",
+      "SamplesApp\\SamplesApp.UnitTests.Shared\\SamplesApp.UnitTests.Shared.shproj",
+      "SamplesApp\\UITests.Shared\\UITests.Shared.shproj",
+      "Uno.UI.RuntimeTests\\Uno.UI.RuntimeTests.csproj",
+      "Uno.UI.Toolkit\\Uno.UI.Toolkit.csproj"
+    ]
+  }
+}

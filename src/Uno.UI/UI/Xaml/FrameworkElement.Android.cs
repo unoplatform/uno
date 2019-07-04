@@ -277,7 +277,6 @@ namespace Windows.UI.Xaml
 
 				_layouter.Arrange(new Rect(0, 0, newSize.Width, newSize.Height));
 
-				OnLayoutUpdated();
 				OnAfterArrange();
 			}
 

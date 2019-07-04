@@ -44,7 +44,7 @@
 								<VisualState x:Name="PointerOver">
 									<VisualState.Setters>
 										<Setter Target="RootGrid.Background"
-												Value="Gray" />
+												Value="Silver" />
 									</VisualState.Setters>
 								</VisualState>
 								<VisualState x:Name="Pressed">
@@ -52,7 +52,7 @@
 										<ObjectAnimationUsingKeyFrames Storyboard.TargetName="RootGrid"
 																	   Storyboard.TargetProperty="Background">
 											<DiscreteObjectKeyFrame KeyTime="0"
-																	Value="Blue" />
+																	Value="Gainsboro" />
 										</ObjectAnimationUsingKeyFrames>
 									</Storyboard>
 								</VisualState>

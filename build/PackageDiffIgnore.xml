@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <DiffIgnore>
-  <IgnoreSets>
+  <IgnoreSets>        
     <IgnoreSet baseVersion="1.43.1">
       <Methods>
         <Member fullName="System.Void Windows.UI.Xaml.WindowCreatedEventArgs..ctor()"
@@ -113,7 +113,7 @@
                 reason="Moved to Uno.Extensions"/>
       </Types>
 
-      <Methods>
+      <Methods>        
         <Member fullName="System.Boolean Uno.Foundation.WebAssemblyRuntime.InvokeJSUnmarshalled(System.String functionIdentifier, System.IntPtr arg0, System.IntPtr arg1, System.IntPtr arg2)"
                 reason="Removed to improve the C#/JS call performance"/>
 
@@ -122,11 +122,75 @@
 
         <Member fullName="System.Void Windows.UI.Xaml.Controls.ScrollViewer.set_BackgroundColor(Windows.UI.Color value)"
                 reason="This was a legacy mock done during initial Wasm POC, never implemented, never used." />
-        
+
         <Member fullName="System.Void Windows.UI.Xaml.Shapes.Rectangle.LayoutSubviews()"
                 reason="Removed to use ArrangeOverride for macOS compatibility"/>
 
+        <Member fullName="System.Void Windows.UI.Xaml.Shapes.Rectangle.LayoutSubviews()"
+                reason="Removed to use ArrangeOverride for macOS compatibility"/>
+
+        <Member fullName="System.Void Windows.UI.Xaml.StateTriggerBase.SetActive(System.Boolean isActive)"
+                reason="Aligned visiblity with UWP" />
+        <Member fullName="System.Void Windows.UI.Xaml.UIElement.set_RenderSize(Windows.Foundation.Size value)"
+                reason="Aligned visiblity with UWP" />
+
+        <Member fullName="System.Void Uno.UI.UnoViewGroup.set_IsPointerCaptured(System.Boolean value)"
+                reason="Aligned visiblity with UWP" />
+        
+        <Member fullName="System.Void Windows.UI.Xaml.FrameworkElement.OnLayoutUpdated()"
+                reason="Invalid method visibility"/>
+        <Member fullName="System.Void Windows.UI.Xaml.StateTriggerBase.SetActive(System.Boolean isActive)"
+                reason="Invalid method visibility"/>
+        <Member fullName="System.Void Windows.UI.Xaml.Controls.Image.OnLayoutUpdated()"
+                reason="Invalid method visibility"/>
+        <Member fullName="System.Void Windows.UI.Xaml.Controls.ProgressRing.OnLayoutUpdated()"
+                reason="Invalid method visibility"/>
+        <Member fullName="System.Void Windows.UI.Xaml.Controls.ScrollContentPresenter.OnLayoutUpdated()"
+                reason="Invalid method visibility"/>
+        <Member fullName="System.Void Windows.UI.Xaml.Controls.NativeListViewBase.OnLayoutUpdated()"
+                reason="Invalid method visibility"/>
+        <Member fullName="System.Void Windows.UI.Xaml.Controls.NativePagedView.OnLayoutUpdated()"
+                reason="Invalid method visibility"/>
+        <Member fullName="System.Void Windows.UI.Xaml.Controls.TextBoxView.OnLayoutUpdated()"
+                reason="Invalid method visibility"/>
+        <Member fullName="System.Void Uno.UI.Controls.Legacy.GridView.OnLayoutUpdated()"
+                reason="Invalid method visibility"/>
+        <Member fullName="System.Void Uno.UI.Controls.Legacy.HorizontalGridView.OnLayoutUpdated()"
+                reason="Invalid method visibility"/>
+        <Member fullName="System.Void Uno.UI.Controls.Legacy.HorizontalListView.OnLayoutUpdated()"
+                reason="Invalid method visibility"/>
+        <Member fullName="System.Void Uno.UI.Controls.Legacy.ListView.OnLayoutUpdated()"
+                reason="Invalid method visibility"/>
+        <Member fullName="System.Void Windows.UI.Xaml.Shapes.ArbitraryShapeBase.OnLayoutUpdated()"
+                reason="Invalid method visibility"/>
+        <Member fullName="System.Void Windows.UI.Xaml.Controls.Picker.OnLayoutUpdated()"
+                reason="Invalid method visibility"/>
+        <Member fullName="System.Void Windows.UI.Xaml.Controls.MultilineTextBoxView.OnLayoutUpdated()"
+                reason="Invalid method visibility"/>
+        <Member fullName="System.Void Windows.UI.Xaml.Controls.SinglelineTextBoxView.OnLayoutUpdated()"
+                reason="Invalid method visibility"/>
+        <Member fullName="System.Void Uno.UI.Controls.Legacy.ListViewBase.OnLayoutUpdated()"
+                reason="Invalid method visibility"/>
+        <Member fullName="System.Void Windows.Devices.Sensors.Barometer..ctor()"
+                reason="Parameter-less ctor does not exist in UWP" />
+        <Member fullName="System.Void Windows.Devices.Sensors.BarometerReading..ctor()"
+                reason="Parameter-less ctor does not exist in UWP" />
+        <Member fullName="System.Void Windows.Devices.Sensors.BarometerReadingChangedEventArgs..ctor()"
+		reason="Parameter-less ctor does not exist in UWP" />
+        <Member fullName="System.Void Windows.Phone.Devices.Notification.VibrationDevice..ctor()"
+                reason="Parameter-less ctor does not exist in UWP" />
+        <Member fullName="System.Void Windows.UI.Xaml.Controls.VirtualizingPanelLayout.UpdateLayoutAttributesForItem(UIKit.UICollectionViewLayoutAttributes layoutAttributes)"
+                reason="Implementation detail, made internal"/>
+        <Member fullName="Android.Views.View Windows.UI.Xaml.Controls.Popup.get_Anchor()"
+	        reason="Invalid method visibility"/>
+	<Member fullName="System.Void Windows.UI.Xaml.Controls.Popup.set_Anchor(Android.Views.View value)"
+	        reason="Invalid method visibility"/>
       </Methods>
+	  
+	  <Fields>
+	  	<Member fullName="Windows.UI.Xaml.TextWrapping Windows.UI.Xaml.TextWrapping::WordEllipsis"
+                reason="Invalid enum value"/>
+	  </Fields>
 
       <Properties>
         <Member fullName="Windows.UI.Color Windows.UI.Xaml.Controls.ScrollViewer::BackgroundColor()"
@@ -134,6 +198,9 @@
         
         <Member fullName="System.Collections.Generic.IList`1&lt;Windows.UI.Xaml.Controls.MenuFlyoutItem&gt; Windows.UI.Xaml.Controls.MenuFlyout::Items()"
                 reason="Changed because of invalid property type" />
+				
+		<Member fullName="Android.Views.View Windows.UI.Xaml.Controls.Popup::Anchor()"
+                reason="Invalid property visibility" />
       </Properties>
 
     </IgnoreSet>

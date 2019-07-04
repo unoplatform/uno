@@ -4,4 +4,42 @@
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 	RequestedTheme="Light">
 
+	<Application.Resources>
+
+		<!-- ReSharper disable once InconsistentNaming -->
+		<SolidColorBrush x:Key="Pink_From_App_Xaml_Resources" Color="#FF54BA" />
+
+		<Style x:Key="Style_Bold_From_App_Xaml_Resources" TargetType="TextBlock">
+			<Setter Property="FontWeight" Value="ExtraBold" />
+		</Style>
+
+		<Style x:Key="Style_Pink_From_App_Xaml_Resources" TargetType="TextBlock" BasedOn="{StaticResource Style_Bold_From_App_Xaml_Resources}">
+			<Setter Property="Foreground" Value="{StaticResource Pink_From_App_Xaml_Resources}" />
+		</Style>
+
+		<Style x:Key="CustomTextBox" TargetType="TextBox" >
+			<Setter Property="Template">
+				<Setter.Value>
+					<ControlTemplate TargetType="TextBox">
+						<Grid>
+							<Grid.Resources>
+								<Style x:Key="TestStyle" TargetType="Button">
+									<Setter Property="Template">
+										<Setter.Value>
+											<ControlTemplate TargetType="Button">
+												<Grid>
+													<TextBlock Text="Sample" />
+												</Grid>
+											</ControlTemplate>
+										</Setter.Value>
+									</Setter>
+								</Style>
+							</Grid.Resources>
+						</Grid>
+					</ControlTemplate>
+				</Setter.Value>
+			</Setter>
+		</Style>
+
+	</Application.Resources>
 </Application>

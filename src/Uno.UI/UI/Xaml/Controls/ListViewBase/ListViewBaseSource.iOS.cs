@@ -229,7 +229,11 @@ namespace Windows.UI.Xaml.Controls
 						}
 
 						FrameworkElement.InitializePhaseBinding(selectorItem);
-					}
+                        
+                        // Ensure the item has a parent, since it's added to the native collection view
+                        // which does not automatically sets the parent DependencyObject.
+                        selectorItem.SetParent(Owner?.XamlParent);
+                    }
 					else if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
 					{
 						this.Log().Debug($"Reusing view at indexPath={indexPath}, previously bound to {selectorItem.DataContext}.");
@@ -570,6 +574,10 @@ namespace Windows.UI.Xaml.Controls
 			{
 				var container = CreateContainerForElementKind(elementKind);
 
+				// Force a null DataContext so the parent's value does not flow
+				// through when temporarily adding the container to Owner.XamlParent
+				container.SetValue(FrameworkElement.DataContextProperty, null);
+
 				Style style = null;
 				if (elementKind == NativeListViewBase.ListViewItemElementKind)
 				{
@@ -604,6 +612,9 @@ namespace Windows.UI.Xaml.Controls
 				{
 					Owner.XamlParent.RemoveChild(BlockLayout);
 					BlockLayout.RemoveChild(container);
+
+					// Reset the DataContext for reuse.
+					container.ClearValue(FrameworkElement.DataContextProperty);
 				}
 
 				_templateCache[dataTemplate ?? _nullDataTemplateKey] = size;

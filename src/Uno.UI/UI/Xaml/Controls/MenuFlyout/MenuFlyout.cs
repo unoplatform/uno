@@ -40,7 +40,26 @@ namespace Windows.UI.Xaml.Controls
 					default:
 						break;
 				}
+
+				SetFlyoutItemsDataContext();
 			}
+		}
+
+		internal protected override void OnDataContextChanged(DependencyPropertyChangedEventArgs e)
+		{
+			base.OnDataContextChanged(e);
+
+			SetFlyoutItemsDataContext();
+		}
+
+		private void SetFlyoutItemsDataContext()
+		{
+			// This is present to force the dataContext to be passed to the popup of the flyout since it is not directly a child in the visual tree of the flyout. 
+			Items?.ForEach(item => item?.SetValue(
+				MenuFlyoutItem.DataContextProperty,
+				this.DataContext,
+				precedence: DependencyPropertyValuePrecedences.Inheritance
+			));
 		}
 
 		#region Items DependencyProperty
@@ -55,7 +74,7 @@ namespace Windows.UI.Xaml.Controls
 			DependencyProperty.Register(
 				"Items",
 				typeof(IList<MenuFlyoutItemBase>),
-				typeof(MenuFlyoutItem),
+				typeof(MenuFlyout),
 				new PropertyMetadata(defaultValue: null)
 			);
 

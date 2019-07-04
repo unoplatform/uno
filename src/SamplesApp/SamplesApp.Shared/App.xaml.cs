@@ -51,9 +51,8 @@ namespace SamplesApp
 		protected override void OnLaunched(LaunchActivatedEventArgs e)
 		{
 			var sw = Stopwatch.StartNew();
-			var n = Windows.UI.Xaml.Window.Current.Dispatcher.RunAsync(
-				CoreDispatcherPriority.Idle,
-				() => Console.WriteLine("Done loading " + sw.Elapsed));
+			var n = Windows.UI.Xaml.Window.Current.Dispatcher.RunIdleAsync(
+				_ => Console.WriteLine("Done loading " + sw.Elapsed));
 
 #if DEBUG
 			if (System.Diagnostics.Debugger.IsAttached)
