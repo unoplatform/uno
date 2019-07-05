@@ -44,3 +44,20 @@ the resource.
 
 `FrameworkElement.RequestedTheme` is not supported yet. The `Application.Current.RequestedTheme` property
 must be set at launch time. Documentation: [`Application.RequestedTheme`](https://docs.microsoft.com/en-us/uwp/api/windows.ui.xaml.application.requestedtheme)
+
+### Custom Themes
+
+On Windows, there is some _themes_ you can target, but there's no way to trigger them. The most
+known is the `HighContrast` theme.
+
+You can do something similar - an even create totally custom themes - by using the following helper:
+
+``` csharp
+  // Set current theme to Hich contrast
+  Uno.UI.RequestedCustomTheme = "HighContrast";
+```
+
+* Beware, all themes are **CASE SENSITIVE**.
+* Themed dictionaries will fall back to `Application.Current.RequestedTheme` when they are not
+  defining a resource for the custom theme.
+* You can put any string and create totally custom themes, but they won't be supported by UWP.
