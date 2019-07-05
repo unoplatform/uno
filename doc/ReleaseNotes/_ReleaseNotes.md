@@ -12,9 +12,15 @@
 * Add support for filtered solutions development for Uno.UI contributions.
 * Add support for Android UI Tests in PRs for improved regression testing
 * Add static support for **ThemeResources**: `Application.Current.RequestedTheme` is supported
-  - Only `Dark` and `Light` are supported yet.
-  - `FrameworkElement.RequestedTheme ` is ignored.
-  - Must be set when the application is starting.
+  - `Dark` and `Light` are supported.
+  - **Custom Themes** are supported. This let you specify `HighContrast` or any other custom themes.
+    (this is a feature not supported in UWP)
+    ``` csharp
+    // Put that somewhere during app initialization...
+    Uno.UI.ApplicationHelper.RequestedCustomTheme = "MyCustomTheme";
+    ```
+  - `FrameworkElement.RequestedTheme ` is ignored for now.
+  - Should be set when the application is starting (before first request to a static resource).
 
 ### Breaking changes
 *
