@@ -14,7 +14,7 @@ echo "Starting emulator"
 nohup $ANDROID_HOME/emulator/emulator -avd xamarin_android_emulator -skin 1280x800 -no-audio -no-snapshot > /dev/null 2>&1 &
 
 # build the sample and tests, while the emulator is starting
-msbuild /r /p:Configuration=Release $BUILD_SOURCESDIRECTORY/src/SamplesApp/SamplesApp.Droid/SamplesApp.Droid.csproj
+msbuild /r /p:Configuration=Release "/p:IsUiAutomationMappingEnabled=true" $BUILD_SOURCESDIRECTORY/src/SamplesApp/SamplesApp.Droid/SamplesApp.Droid.csproj
 msbuild /r /p:Configuration=Release $BUILD_SOURCESDIRECTORY/src/SamplesApp/SamplesApp.UITests/SamplesApp.UITests.csproj
 
 # Wait for the emulator to finish booting
