@@ -16,6 +16,7 @@
 				<ResourceDictionary x:Key="Dark">
 					<SolidColorBrush x:Key="LocalThemeColor"
 									 Color="Blue" />
+
 				</ResourceDictionary>
 				<ResourceDictionary x:Key="Light">
 					<SolidColorBrush x:Key="LocalThemeColor"
