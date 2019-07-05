@@ -42,5 +42,5 @@ _Theme resources_ are also considered as `StaticResource`. In the current Uno's 
 not difference between a `{StaticResource xxx}` and a `{ThemeResource xxx}`: they will both resolve on
 the resource.
 
-Element's level `RequestedTheme` is not supported yet. The `Application.Current.RequestedTheme` property
+`FrameworkElement.RequestedTheme` is not supported yet. The `Application.Current.RequestedTheme` property
 must be set at launch time. Documentation: [`Application.RequestedTheme`](https://docs.microsoft.com/en-us/uwp/api/windows.ui.xaml.application.requestedtheme)
