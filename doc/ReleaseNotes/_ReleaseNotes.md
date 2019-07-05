@@ -22,6 +22,7 @@
   - `FrameworkElement.RequestedTheme ` is ignored for now.
   - Should be set when the application is starting (before first request to a static resource).
 * Prevent possible crash with `MediaPlayerElement` (tentative)
+* Add support for `ContentDialog`
 
 ### Breaking changes
 *

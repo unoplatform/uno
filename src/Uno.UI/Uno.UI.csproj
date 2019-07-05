@@ -357,91 +357,10 @@
 	  <None Update="Mixins\Wasm\VisualStatesMixins.tt">
 	    <Generator>TextTemplatingFileGenerator</Generator>
 	  </None>
-	  <None Update="UI\Xaml\Controls\MenuBar\MenuBar.xaml">
+	  <None Update="C:\s\nv.github\uno\src\Uno.UI\UI\Xaml\Controls\ContentDialog\ContentDialog.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </None>
-	  <None Update="UI\Xaml\Controls\MenuBar\MenuBarItem.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </None>
-	  <None Update="UI\Xaml\Controls\MenuBar\MenuBar_themeresources.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </None>
-	  <None Update="UI\Xaml\Controls\MenuFlyout\MenuFlyout_19h1_themeresources.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </None>
-	  <None Update="UI\Xaml\Controls\MenuFlyout\MenuFlyout_rs1_themeresources.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </None>
-	  <None Update="UI\Xaml\Controls\MenuFlyout\MenuFlyout_rs2_themeresources.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </None>
-	  <None Update="UI\Xaml\Controls\MenuFlyout\MenuFlyout_rs4_themeresources.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </None>
-	  <None Update="UI\Xaml\Controls\MenuFlyout\MenuFlyout_rs5_themeresources.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </None>
-	  <None Update="UI\Xaml\Controls\NavigationView\NavigationBackButton.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </None>
-	  <None Update="UI\Xaml\Controls\NavigationView\NavigationBackButton_rs1_themeresources.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </None>
-	  <None Update="UI\Xaml\Controls\NavigationView\NavigationBackButton_rs4_themeresources.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </None>
-	  <None Update="UI\Xaml\Controls\NavigationView\NavigationBackButton_rs5_themeresources.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </None>
-	  <None Update="UI\Xaml\Controls\NavigationView\NavigationView.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </None>
-	  <None Update="UI\Xaml\Controls\NavigationView\NavigationView_rs1_themeresources.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </None>
-	  <None Update="UI\Xaml\Controls\NavigationView\NavigationView_rs2_themeresources.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </None>
-	  <None Update="UI\Xaml\Controls\NavigationView\NavigationView_rs5_themeresources.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </None>
-	  <None Update="UI\Xaml\Controls\VisualStatesImplementation.tt">
-	    <Generator>TextTemplatingFileGenerator</Generator>
-	  </None>
-	  <None Update="UI\Xaml\DependencyPropertiesImplementation.tt">
-	    <Generator>TextTemplatingFileGenerator</Generator>
-	  </None>
-	  <None Update="UI\Xaml\IFrameworkElementImplementation.Android.tt">
-	    <Generator>TextTemplatingFileGenerator</Generator>
-	  </None>
-	  <None Update="UI\Xaml\IFrameworkElementImplementation.iOS.cs">
-	    <DesignTime>True</DesignTime>
-	    <AutoGen>True</AutoGen>
-	    <DependentUpon>IFrameworkElementImplementation.iOS.tt</DependentUpon>
-	  </None>
-	  <None Update="UI\Xaml\IFrameworkElementImplementation.iOS.tt">
-	    <Generator>TextTemplatingFileGenerator</Generator>
-	    <LastGenOutput>IFrameworkElementImplementation.iOS.cs</LastGenOutput>
-	  </None>
-	  <None Update="UI\Xaml\IFrameworkElementImplementation.macOS.tt">
-	    <Generator>TextTemplatingFileGenerator</Generator>
-	  </None>
-	  <None Update="UI\Xaml\Style\Generic\DatePickerSelector.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </None>
-	  <None Update="UI\Xaml\Style\Generic\FlyoutPresenter.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </None>
-	  <None Update="UI\Xaml\Style\Generic\Generic.Native.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </None>
-	  <None Update="UI\Xaml\Style\Generic\Generic.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </None>
-	  <None Update="UI\Xaml\Style\Generic\SemanticStylesResources.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </None>
-	  <None Update="UI\Xaml\Style\Generic\SystemResources.xaml">
+	  <None Update="UI\Xaml\Controls\ContentDialog\ContentDialog.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </None>
 	</ItemGroup>
