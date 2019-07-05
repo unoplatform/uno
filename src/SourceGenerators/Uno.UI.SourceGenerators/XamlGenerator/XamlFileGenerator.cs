@@ -958,7 +958,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						break;
 					default:
 					{
-						var appThemes = resources.Where(x => x.Key.Equals("Light") || x.Key.Equals("Dark")).ToArray();
+						var appThemes = resources.Where(x => x.Key.Equals("Light") || x.Key.Equals("Dark") || x.Key.Equals("Default")).ToArray();
 						var customThemes = resources.Except(appThemes).ToArray();
 
 						using (writer.BlockInvariant($"public static {GetGlobalizedTypeName(resourceTypeName)} {SanitizeResourceName(resourcePropertyName)}"))
@@ -992,16 +992,24 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 									{
 										writer.AppendLineInvariant($"case global::Windows.UI.Xaml.ApplicationTheme.Dark: return {resourcePropertyName}___{theme.Key};");
 									}
+									// Default is not generated here
 								}
 							}
-							writer.AppendLine();
-							var msg = customThemes.Any()
-								? $"$\"The themed resource {resourcePropertyName} cannot be found for custom theme {{{{global::Uno.UI.ApplicationHelper.RequestedCustomTheme ?? global::Windows.UI.Xaml.Application.Current.RequestedTheme}}}}.\""
-								: $"$\"The themed resource {resourcePropertyName} cannot be found for theme {{{{global::Windows.UI.Xaml.Application.Current.RequestedTheme}}}}.\"";
-							writer.AppendLineInvariant($"throw new InvalidOperationException({msg});");
-						}
 
 							writer.AppendLine();
+							if (appThemes.Any(t=> t.Key.Equals("Default")))
+							{
+									writer.AppendLineInvariant("// .");
+									writer.AppendLineInvariant($"return {resourcePropertyName}___Default;");
+							}
+							else
+							{
+								var msg = customThemes.Any()
+									? $"$\"The themed resource {resourcePropertyName} cannot be found for custom theme {{{{global::Uno.UI.ApplicationHelper.RequestedCustomTheme ?? global::Windows.UI.Xaml.Application.Current.RequestedTheme}}}}.\""
+									: $"$\"The themed resource {resourcePropertyName} cannot be found for theme {{{{global::Windows.UI.Xaml.Application.Current.RequestedTheme}}}}.\"";
+								writer.AppendLineInvariant($"throw new InvalidOperationException({msg});");
+							}
+						}
 						break;
 					}
 				}

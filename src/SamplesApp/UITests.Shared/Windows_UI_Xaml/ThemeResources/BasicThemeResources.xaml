@@ -13,6 +13,10 @@
 					<SolidColorBrush x:Key="LocalThemeColor"
 									 Color="Red" />
 				</ResourceDictionary>
+				<ResourceDictionary x:Key="Default">
+					<SolidColorBrush x:Key="LocalThemeColor"
+					                 Color="Gray" />
+				</ResourceDictionary>
 				<ResourceDictionary x:Key="Dark">
 					<SolidColorBrush x:Key="LocalThemeColor"
 									 Color="Blue" />
