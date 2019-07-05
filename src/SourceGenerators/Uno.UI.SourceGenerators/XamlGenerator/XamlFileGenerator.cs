@@ -958,16 +958,32 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						break;
 					default:
 					{
+						var appThemes = resources.Where(x => x.Key.Equals("Light") || x.Key.Equals("Dark")).ToArray();
+						var customThemes = resources.Except(appThemes).ToArray();
+
 						using (writer.BlockInvariant($"public static {GetGlobalizedTypeName(resourceTypeName)} {SanitizeResourceName(resourcePropertyName)}"))
 						using (writer.BlockInvariant("get"))
 						{
+							if (customThemes.Any())
+							{
+								writer.AppendLineInvariant("// Element's RequestedTheme not supported yet. Checking custom theme.");
+								writer.AppendLineInvariant("var currentApplicationCustomTheme = global::Uno.UI.ApplicationHelper.RequestedCustomTheme;");
+								using (writer.BlockInvariant($"switch(currentApplicationCustomTheme)"))
+								{
+									foreach (var theme in customThemes)
+									{
+										writer.AppendLineInvariant($"case \"{theme.Key}\": return {resourcePropertyName}___{theme.Key};");
+									}
+								}
+							}
+
 							writer.AppendLineInvariant("// Element's RequestedTheme not supported yet. Fallback on Application's RequestedTheme.");
 							writer.AppendLineInvariant("var currentApplicationTheme = global::Windows.UI.Xaml.Application.Current.RequestedTheme;");
 							writer.AppendLine();
 
 							using (writer.BlockInvariant($"switch(currentApplicationTheme)"))
 							{
-								foreach (var theme in resources)
+								foreach (var theme in appThemes)
 								{
 									if (theme.Key.Equals("Light"))
 									{
@@ -976,10 +992,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 									else if (theme.Key.Equals("Dark"))
 									{
 										writer.AppendLineInvariant($"case global::Windows.UI.Xaml.ApplicationTheme.Dark: return {resourcePropertyName}___{theme.Key};");
-									}
-									else
-									{
-										writer.AppendLineInvariant($"// Theme {theme.Key} not supported: skipped.");
 									}
 								}
 							}
@@ -1850,8 +1862,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				}
 			}
 		}
-
-		private readonly string[] ThemeResourcesPrecedences = new[] {"Light", "Dark"};
 
 		private bool IsTextBlock(XamlType xamlType)
 		{
