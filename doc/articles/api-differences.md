@@ -47,7 +47,7 @@ must be set at launch time. Documentation: [`Application.RequestedTheme`](https:
 
 ### Custom Themes
 
-On Windows, there is some _themes_ you can target, but there's no way to trigger them. The most
+On Windows, there are some _themes_ that can target, but there is no way to trigger them. The most
 known is the `HighContrast` theme.
 
 You can do something similar - an even create totally custom themes - by using the following helper:
