@@ -18,10 +18,10 @@ taskkill /fi "imagename eq Uno.SourceGeneration.Host.exe" /f /t
 Reset the source generation cache, your nuget cache and all local changes to your git repository. Be careful, as this will wipe out code you haven't yet commited.
 
 ```bash
-$ git reset --hard
-$ git clean -fdx
-$ git checkout master
-$ git pull origin master
+git reset --hard
+git clean -fdx
+git checkout master
+git pull origin master
 ```
 
 Open the solution again and wait for background tasks (bottom left blue corner) to be {} aka None aka Ready.
@@ -32,9 +32,9 @@ If that doesn't work, try the following.
 
 ```
 cd src
-$ nuget locals all -clear
-$ msbuild Uno.UI.sln /m /r /bl:restore.binlog /t:restore
-$ msbuild Uno.UI.sln /m /r /bl:build.binlog
+msbuild Uno.UI.sln /m /r /bl:restore.binlog /t:restore
+msbuild Uno.UI.sln /m /r /bl:build.binlog
+nuget locals all -clear
 ```
 
 Then privately share the binlog. Please note that binlogs can contain sensitive information such as environment variables, thus if `ARM_CLIENT_SECRET` or `AWS_IAM_SECRET` or `MY_SUPER_SECRET_GITHUB_TOKEN` are set then they will be inside the logs and anyone with the logs can view em. Be careful.
