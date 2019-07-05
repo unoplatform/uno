@@ -1,21 +1,16 @@
 ﻿#if __ANDROID__
-using Windows.Devices.Sensors.Extensions;
-using System;
-using System.Collections.Generic;
-using System.Text;
 using Android.App;
 using Android.Content;
 using Android.Hardware;
 using Android.Runtime;
-using Java.Lang;
-using Math = System.Math;
 using Uno.Devices.Sensors.Helpers;
 
 namespace Windows.Devices.Sensors
 {
 	public partial class Accelerometer
 	{
-		private Sensor _accelerometer;
+		private readonly Sensor _accelerometer;
+
 		private ReadingChangedListener _readingChangedListener;
 		private ShakeListener _shakeListener;
 		private uint _reportInterval = 0;
@@ -113,7 +108,7 @@ namespace Windows.Devices.Sensors
 					e.Values[0] / SensorManager.GravityEarth * -1,
 					e.Values[1] / SensorManager.GravityEarth * -1,
 					e.Values[2] / SensorManager.GravityEarth * -1,
-					e.Timestamp.SensorTimestampToDateTimeOffset());
+					SensorHelpers.TimestampToDateTimeOffset(e.Timestamp));
 
 				_lastTimestamp = e.Timestamp;
 				_accelerometer.OnReadingChanged(reading);
@@ -139,7 +134,7 @@ namespace Windows.Devices.Sensors
 				var y = e.Values[1];
 				var z = e.Values[2];
 
-				_shakeDetector.OnSensorChanged(x, y, z, e.Timestamp.SensorTimestampToDateTimeOffset());
+				_shakeDetector.OnSensorChanged(x, y, z, SensorHelpers.TimestampToDateTimeOffset(e.Timestamp));
 			}
 		}
 	}

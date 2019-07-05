@@ -6,7 +6,7 @@ using Android.App;
 using Android.Content;
 using Android.Hardware;
 using Android.Runtime;
-using Windows.Devices.Sensors.Extensions;
+using Uno.Devices.Sensors.Helpers;
 
 namespace Windows.Devices.Sensors
 {
@@ -67,7 +67,7 @@ namespace Windows.Devices.Sensors
 			{
 				var barometerReading = new BarometerReading(
 					e.Values[0],
-					e.Timestamp.SensorTimestampToDateTimeOffset());
+					SensorHelpers.TimestampToDateTimeOffset(e.Timestamp));
 				_barometer._readingChanged?.Invoke(
 					_barometer,
 					new BarometerReadingChangedEventArgs(barometerReading));

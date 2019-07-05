@@ -5,11 +5,11 @@ using System.Text;
 using Android.OS;
 using Java.Lang;
 
-namespace Windows.Devices.Sensors.Extensions
+namespace Uno.Devices.Sensors.Helpers
 {
-	public static class LongExtensions
+	internal static class SensorHelpers
 	{
-		public static DateTimeOffset SensorTimestampToDateTimeOffset(this long timestamp)
+		public static DateTimeOffset TimestampToDateTimeOffset(long timestamp)
 		{
 			return DateTimeOffset.Now
 				.AddMilliseconds(-SystemClock.ElapsedRealtime())

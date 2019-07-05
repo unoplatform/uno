@@ -18,19 +18,19 @@ namespace Uno.Devices.Sensors.Helpers
 		private DateTimeOffset _firstDirectionChangeTime = DateTimeOffset.MinValue;
 		private DateTimeOffset _lastDirectionChangeTime = DateTimeOffset.MinValue;
 		private int _directionChangeCount = 0;
-		private float _lastX = 0;
-		private float _lastY = 0;
-		private float _lastZ = 0;
+		private double _lastX = 0;
+		private double _lastY = 0;
+		private double _lastZ = 0;
 
 		public ShakeDetector(Accelerometer accelerometer)
 		{
 			_accelerometer = accelerometer;
 		}
 
-		public void OnSensorChanged(float x, float y, float z, DateTimeOffset now)
+		public void OnSensorChanged(double x, double y, double z, DateTimeOffset now)
 		{
 			// calculate movement
-			float totalMovement = Math.Abs(x + y + z - _lastX - _lastY - _lastZ);
+			var totalMovement = Math.Abs(x + y + z - _lastX - _lastY - _lastZ);
 
 			if (totalMovement > MinimumForce)
 			{

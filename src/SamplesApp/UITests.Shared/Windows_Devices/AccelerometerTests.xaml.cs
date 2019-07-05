@@ -20,21 +20,20 @@ using Uno.UI.Samples.Controls;
 
 namespace UITests.Shared.Windows_Devices
 {
-	[SampleControlInfo("Windows.Devices", "Accelerometer", description: "Demonstrates use of Windows.Devices.Sensors.Accelerometer")]
+	[SampleControlInfo("Windows.Devices", "Accelerometer", description: "Demonstrates use of Windows.Devices.Sensors.Accelerometer", viewModelType : typeof(AccelerometerTestsViewModel))]
 	public sealed partial class AccelerometerTests : UserControl
 	{
 
 		public AccelerometerTests()
 		{
 			this.InitializeComponent();
-			DataContext = new AccelerometerTestsViewModel(Dispatcher);
 		}
 	}
 
 	[Bindable]
 	public class AccelerometerTestsViewModel : ViewModelBase
 	{
-		private Accelerometer _accelerometer = null;
+		private readonly Accelerometer _accelerometer = null;
 		private AccelerometerReading _lastReading;
 		private string _lastShake;
 		private bool _readingChangedAttached;

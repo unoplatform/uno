@@ -7,18 +7,19 @@ namespace UITests.Shared.ValueConverters
 {
 	public class BoolNegationValueConverter : IValueConverter
 	{
-		public object Convert(object value, Type targetType, object parameter, string language)
+		public object Convert(object value, Type targetType, object parameter, string language) =>
+			NegateValue(value);
+
+		public object ConvertBack(object value, Type targetType, object parameter, string language) =>
+			NegateValue(value);
+
+		private static object NegateValue(object value)
 		{
-			if ( value is bool boolValue)
+			if (value is bool boolValue)
 			{
 				return !boolValue;
 			}
 			return false;
-		}
-
-		public object ConvertBack(object value, Type targetType, object parameter, string language)
-		{
-			throw new NotImplementedException();
 		}
 	}
 }

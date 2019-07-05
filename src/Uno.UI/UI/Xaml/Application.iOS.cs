@@ -68,7 +68,7 @@ namespace Windows.UI.Xaml
         public override UIInterfaceOrientationMask GetSupportedInterfaceOrientations(UIApplication application, [Transient] UIWindow forWindow)
         {
             return DisplayInformation.AutoRotationPreferences.ToUIInterfaceOrientationMask();
-        }		
+        }
 
         /// <summary>
         /// This method enables UI Tests to get the output path

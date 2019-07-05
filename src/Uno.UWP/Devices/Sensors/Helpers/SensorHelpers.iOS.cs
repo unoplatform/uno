@@ -1,12 +1,12 @@
-﻿using Foundation;
-#if __IOS__
+﻿#if __IOS__
+using Foundation;
 using System;
 
-namespace Windows.Devices.Sensors.Extensions
+namespace Uno.Devices.Sensors.Helpers
 {
-	internal static class DoubleExtensions
+	internal static class SensorHelpers
 	{
-		public static DateTimeOffset SensorTimestampToDateTimeOffset(this double timestamp)
+		public static DateTimeOffset TimestampToDateTimeOffset(double timestamp)
 		{
 			var bootTime = NSDate.FromTimeIntervalSinceNow(-NSProcessInfo.ProcessInfo.SystemUptime);
 			var date = (DateTime)bootTime.AddSeconds(timestamp);

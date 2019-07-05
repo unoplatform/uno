@@ -1,11 +1,9 @@
 ﻿#if __IOS__
 using System;
-using System.Collections.Generic;
-using System.Text;
 using CoreMotion;
 using Foundation;
 using UIKit;
-using Windows.Devices.Sensors.Extensions;
+using Uno.Devices.Sensors.Helpers;
 
 namespace Windows.Devices.Sensors
 {
@@ -68,7 +66,7 @@ namespace Windows.Devices.Sensors
 				data.Acceleration.X,
 				data.Acceleration.Y,
 				data.Acceleration.Z,
-				data.Timestamp.SensorTimestampToDateTimeOffset());
+				SensorHelpers.TimestampToDateTimeOffset(data.Timestamp));
 
 			OnReadingChanged(reading);
 		}
