@@ -966,22 +966,21 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						{
 							if (customThemes.Any())
 							{
-								writer.AppendLineInvariant("// Element's RequestedTheme not supported yet. Checking custom theme.");
-								writer.AppendLineInvariant("var currentApplicationCustomTheme = global::Uno.UI.ApplicationHelper.RequestedCustomTheme;");
-								using (writer.BlockInvariant($"switch(currentApplicationCustomTheme)"))
+								writer.AppendLineInvariant("// Custom themes defined for this resource: checking custom theme.");
+								using (writer.BlockInvariant($"switch(global::Uno.UI.ApplicationHelper.RequestedCustomTheme)"))
 								{
 									foreach (var theme in customThemes)
 									{
 										writer.AppendLineInvariant($"case \"{theme.Key}\": return {resourcePropertyName}___{theme.Key};");
 									}
 								}
+								writer.AppendLine();
 							}
 
 							writer.AppendLineInvariant("// Element's RequestedTheme not supported yet. Fallback on Application's RequestedTheme.");
-							writer.AppendLineInvariant("var currentApplicationTheme = global::Windows.UI.Xaml.Application.Current.RequestedTheme;");
 							writer.AppendLine();
 
-							using (writer.BlockInvariant($"switch(currentApplicationTheme)"))
+							using (writer.BlockInvariant($"switch(global::Windows.UI.Xaml.Application.Current.RequestedTheme)"))
 							{
 								foreach (var theme in appThemes)
 								{
