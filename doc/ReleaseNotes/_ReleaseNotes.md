@@ -2,6 +2,7 @@
 
 ## Next version
 ### Features
+* Align `ApplicationData.Current.LocalSettings.Add` behavior with UWP for `null` and repeated adds.
 * Add support for `Windows.ApplicationModel.Calls.PhoneCallManager`
 * Add support for `Windows.Phone.Devices.Notification.VibrationDevice` API on iOS, Android and WASM
 * Basic support for `Windows.Devices.Sensors.Barometer`
@@ -10,6 +11,7 @@
 * Permit `DependencyProperty` to be set reentrantly. Eg this permits `TextBox.TextChanged` to modify the `Text` property (previously this could only be achieved using `Dispatcher.RunAsync()`).
 * Add support for filtered solutions development for Uno.UI contributions.
 * 132984 [Android] Notch support on Android
+* Add support for Android UI Tests in PRs for improved regression testing
 
 ### Breaking changes
 *

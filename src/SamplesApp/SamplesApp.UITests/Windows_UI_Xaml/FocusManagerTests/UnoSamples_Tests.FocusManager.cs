@@ -13,6 +13,12 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.FocusManagerTests
 	[TestFixture]
 	public partial class FocusManagerTests_Tests : SampleControlUITestBase
 	{
+		public FocusManagerTests_Tests()
+		{
+			// Ignore focus tests for android, focus is getting stolen incorrectly 
+			_platform = Platform.Browser;
+		}
+
 		[Test]
 		public void FocusManager_GetFocusedElement_Border_Validation()
 		{

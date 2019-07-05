@@ -14,7 +14,10 @@ namespace SamplesApp.Samples.UnitTests
 
 			// Manually load the runtime tests assembly
 			Assembly.Load("Uno.UI.RuntimeTests");
+
+#if __WASM__
 			Assembly.Load("Uno.UI.Wasm.Tests");
+#endif
 		}
 	}
 }

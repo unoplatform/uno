@@ -39,7 +39,9 @@
       "profile": "http://mzikmund.com",
       "contributions": [
         "code",
-        "test"
+        "test",
+        "review",
+        "bug"
       ]
     },
     {

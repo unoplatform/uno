@@ -147,4 +147,10 @@
   <data name="LocalizedText.Text" xml:space="preserve">
     <value>More text from resource</value>
   </data>
+  <data name="Given_ResourceService.ValidResource" xml:space="preserve">
+    <value>ValidResource (en-US)</value>
+  </data>
+  <data name="Given_ResourcesService.When_Get_ResourceFromResw" xml:space="preserve">
+    <value>Value for When_Get_ResourceFromResw (en-US)</value>
+  </data>
 </root>

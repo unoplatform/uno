@@ -23,7 +23,7 @@ namespace Uno.UI.RuntimeTests.Tests.Uno_UI_Services
 			var sut = ResourceHelper.ResourcesService;
 			var value = sut.Get("Given_ResourcesService.When_Get_ResourceFromResw");
 
-			Assert.AreEqual($"Value for {nameof(When_Get_ResourceFromResw)}", value);
+			Assert.AreEqual($"Value for {nameof(When_Get_ResourceFromResw)} (en)", value);
 		}
 	}
 #endif
