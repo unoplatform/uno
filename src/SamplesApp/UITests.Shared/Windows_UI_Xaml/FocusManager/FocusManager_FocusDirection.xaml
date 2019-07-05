@@ -1,0 +1,65 @@
+<UserControl
+	x:Class="Uno.UI.Samples.Content.UITests.FocusManager.FocusManager_FocusDirection" 
+	xmlns:controls="using:Uno.UI.Samples.Controls"
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:local="Uno.UI.Samples.Content.UITests.FocusManager"
+	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	xmlns:u="using:Uno.UI.Samples.Controls"
+	xmlns:ios="http://uno.ui/ios"
+	xmlns:win="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:android="http://uno.ui/android"
+	mc:Ignorable="d ios android"
+	d:DesignHeight="2000"
+	d:DesignWidth="400">
+
+	<StackPanel>
+		
+		<StackPanel Orientation="Horizontal"
+					Margin="10">
+			<TextBox Text="1" Width="75"/>
+			<TextBox Text="2" Width="75"/>
+			<TextBox Text="3" Width="75"/>
+		</StackPanel>
+		
+		<StackPanel Orientation="Horizontal"
+					Margin="10">
+			<TextBox Text="4" Width="75"/>
+			<TextBox Text="5" Width="75"/>
+			<TextBox Text="6" Width="75"/>
+		</StackPanel>
+		
+		<StackPanel Orientation="Horizontal"
+					Margin="10">
+			<TextBox Text="7" Width="75"/>
+			<TextBox Text="8" Width="75"/>
+			<TextBox Text="9" Width="75"/>
+		</StackPanel>
+
+		<StackPanel Orientation="Horizontal">
+			<Button x:Name="NextButton"
+					Content="Next"
+					IsTabStop="False"/>
+			<Button x:Name="PreviousButton"
+					Content="Previous"
+					IsTabStop="False"/>
+			<Button x:Name="UpButton"
+					Content="Up"
+					IsTabStop="False"/>
+			<Button x:Name="DownButton"
+					Content="Down"
+					IsTabStop="False"/>
+			<Button x:Name="LeftButton"
+					Content="Left"
+					IsTabStop="False"/>
+			<Button x:Name="RightButton"
+					Content="Right"
+					IsTabStop="False"/>
+			<Button x:Name="NoneButton"
+					Content="None"
+					IsTabStop="False"/>
+		</StackPanel>
+		
+	</StackPanel>
+</UserControl>
