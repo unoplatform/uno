@@ -40,7 +40,7 @@ Overriding implicit styles is currently not supported.
 
 _Theme resources_ are also considered as `StaticResource`. In the current Uno's implementation, there's
 no difference between a `{StaticResource xxx}` and a `{ThemeResource xxx}`: they will both resolve to
-the resource.
+the resource `xxx`.
 
 `FrameworkElement.RequestedTheme` is not supported yet. The `Application.Current.RequestedTheme` property
 must be set at launch time. Documentation: [`Application.RequestedTheme`](https://docs.microsoft.com/en-us/uwp/api/windows.ui.xaml.application.requestedtheme)
