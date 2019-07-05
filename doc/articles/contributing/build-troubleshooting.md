@@ -37,7 +37,7 @@ taskkill /fi "imagename eq Uno.SourceGeneration.Host.exe" /f /t
 
 Open the solution again and wait for background tasks (bottom left blue corner) to be {} aka None aka Ready.
 
-Compile the `Uno UI -> Uno` project.
+Compile the `Uno UI -> Uno.UI` project.
 
 If that doesn't work, try the following.
 
