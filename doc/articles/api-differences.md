@@ -39,7 +39,7 @@ Overriding implicit styles is currently not supported.
 ### Theme Resources & Theme Dictionaries
 
 _Theme resources_ are also considered as `StaticResource`. In the current Uno's implementation, there's
-not difference between a `{StaticResource xxx}` and a `{ThemeResource xxx}`: they will both resolve on
+no difference between a `{StaticResource xxx}` and a `{ThemeResource xxx}`: they will both resolve to
 the resource.
 
 `FrameworkElement.RequestedTheme` is not supported yet. The `Application.Current.RequestedTheme` property
