@@ -23,8 +23,12 @@
   - Should be set when the application is starting (before first request to a static resource).
 * Prevent possible crash with `MediaPlayerElement` (tentative)
 * Add support for `ContentDialog`
+* Permit `DependencyProperty` to be set reentrantly. Eg this permits `TextBox.TextChanging` to modify the `Text` property (previously this could only be achieved using `Dispatcher.RunAsync()`).
+* Implement `TextBox.TextChanging` and `TextBox.BeforeTextChanging`. As on UWP, this allows the text to be intercepted and modified before the UI is updated. Previously on Android using the `TextChanged` event would lead to laggy response and dropped characters when typing rapidly; this is no longer the case with `TextChanging`.
 
 ### Breaking changes
+* `TextBox` no longer raises TextChanged when its template is applied, in line with UWP.
+* `TextBox.TextChanged` is now called asynchronously after the UI is updated, in line with UWP. For most uses `TextChanging` should be preferred.
 * [Android] `TextBox.IsSpellCheckEnabled = false` is now enforced in a way that may cause issues in certain use cases (see https://stackoverflow.com/a/5188119/1902058). The old behavior can be restored by setting `ShouldForceDisableSpellCheck = false`, per `TextBox`.
 
 ### Bug fixes
@@ -133,8 +137,6 @@
 * [Android] Unless nested under `SecondaryCommands`, the `AppBarButton.Label` property will no longer be used for the title of menu item, instead use the `AppBarButton.Content` property. For `SecondaryCommands`, keep using `AppBarButton.Label`.
 * The `WordEllipsis` was removed from the `TextWrapping` as it's not a valid value for UWP (And it was actually supported only on WASM) (The right way to get ellipsis is with the `TextTrimming.WordEllipsis`)
 * [Android] `Popup.Anchor` is no longer available
-* `TextBox` no longer raises TextChanged when its template is applied, in line with UWP.
-* `TextBox.TextChanged` is now called asynchronously after the UI is updated, in line with UWP. For most uses `TextChanging` should be preferred.
 
 ### Bug fixes
 * DatePicker FlyoutPlacement now set to Full by default

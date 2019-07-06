@@ -13,6 +13,7 @@ using Uno.Disposables;
 using Uno.Extensions;
 using Uno.Logging;
 using Uno.UI;
+using Uno.UI.DataBinding;
 using Uno.UI.Extensions;
 using Windows.UI.Core;
 using Windows.UI.Text;
@@ -28,6 +29,7 @@ namespace Windows.UI.Xaml.Controls
 		private int _keyboardAccessDelay = 50;
 		private TextBoxView _textBoxView;
 		private readonly SerialDisposable _keyboardDisposable = new SerialDisposable();
+		private Factory _editableFactory;
 
 		/// <summary>
 		/// If true, and <see cref="IsSpellCheckEnabled"/> is false, take vigorous measures to ensure that spell-check (ie predictive text) is
@@ -101,6 +103,9 @@ namespace Windows.UI.Xaml.Controls
 
 					_contentElement.Content = _textBoxView;
 					_textBoxView.SetTextNative(Text);
+
+					_editableFactory = _editableFactory ?? new Factory(WeakReferencePool.RentSelfWeakReference(this));
+					_textBoxView.SetEditableFactory(_editableFactory);
 				}
 
 				SetupTextBoxView();

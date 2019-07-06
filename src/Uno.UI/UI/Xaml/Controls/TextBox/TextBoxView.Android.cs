@@ -27,7 +27,7 @@ namespace Windows.UI.Xaml.Controls
 		private bool _isInitialized = false;
 
 		private readonly ManagedWeakReference _ownerRef;
-		private TextBox Owner => _ownerRef?.Target as TextBox;
+		internal TextBox Owner => _ownerRef?.Target as TextBox;
 
 		public TextBoxView(TextBox owner)
 			: base(ContextHelper.Current)
@@ -91,6 +91,11 @@ namespace Windows.UI.Xaml.Controls
 				var text = Owner.ProcessTextInput(Text);
 				SetTextNative(text);
 			}
+		}
+
+		public override IInputConnection OnCreateInputConnection(EditorInfo outAttrs)
+		{
+			return new TextBox.TextBoxInputConnection(this, base.OnCreateInputConnection(outAttrs));
 		}
 
 		internal void SetCursorColor(Color color)
