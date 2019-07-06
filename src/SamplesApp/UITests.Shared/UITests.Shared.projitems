@@ -125,6 +125,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\ThemeResources\BasicThemeResources.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\TouchEventsTests\TappedEventTest.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -2380,6 +2384,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\StyleTests\Style_Inline.xaml.cs">
       <DependentUpon>Style_Inline.xaml</DependentUpon>
     </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\ThemeResources\BasicThemeResources.xaml.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\TouchEventsTests\ControlWithTouchEvent.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\TouchEventsTests\TappedEventTest.xaml.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\TouchEventsTests\Touch.xaml.cs" />
@@ -4044,41 +4049,50 @@
     <Compile Update="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ToggleSwitchControl\ToggleSwitch_IsOn.xaml.cs">
       <DependentUpon>ToggleSwitch_IsOn.xaml</DependentUpon>
     </Compile>
-    <Compile Update="C:\src\Uno2\src\SamplesApp\UITests.Shared\Windows_UI_Xaml\WebViewToDelete.xaml.cs">
+    <Compile Update="$(MSBuildThisFileDirectory)Windows_UI_Xaml\WebViewToDelete.xaml.cs">
       <DependentUpon>WebViewToDelete.xaml</DependentUpon>
     </Compile>
-    <Compile Update="C:\src\Uno2\src\SamplesApp\UITests.Shared\Windows_UI_Xaml_Controls\WebView\WebViewControl_JavaScript_Alert_Confirm_Prompt.xaml.cs">
+    <Compile Update="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\WebView\WebViewControl_JavaScript_Alert_Confirm_Prompt.xaml.cs">
       <DependentUpon>WebViewControl_JavaScript_Alert_Confirm_Prompt.xaml</DependentUpon>
     </Compile>
-    <Compile Update="C:\src\Uno2\src\SamplesApp\UITests.Shared\Windows_UI_Xaml_Controls\WebView\WebViewToDelete.xaml.cs">
+    <Compile Update="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\WebView\WebViewToDelete.xaml.cs">
       <DependentUpon>WebViewToDelete.xaml</DependentUpon>
     </Compile>
-    <Compile Update="C:\src\Uno2\src\SamplesApp\UITests.Shared\Windows_UI_Xaml_Controls\WebView\WebView_Alert.xaml.cs">
+    <Compile Update="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\WebView\WebView_Alert.xaml.cs">
       <DependentUpon>WebView_Alert.xaml</DependentUpon>
     </Compile>
-    <Compile Update="C:\src\Uno2\src\SamplesApp\UITests.Shared\Windows_UI_Xaml_Controls\WebView\WebView_ChromeClient.xaml.cs">
+    <Compile Update="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\WebView\WebView_ChromeClient.xaml.cs">
       <DependentUpon>WebView_ChromeClient.xaml</DependentUpon>
     </Compile>
-    <Compile Update="C:\src\Uno2\src\SamplesApp\UITests.Shared\Windows_UI_Xaml_Controls\WebView\WebView_Events.xaml.cs">
+    <Compile Update="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\WebView\WebView_Events.xaml.cs">
       <DependentUpon>WebView_Events.xaml</DependentUpon>
     </Compile>
-    <Compile Update="C:\src\Uno2\src\SamplesApp\UITests.Shared\Windows_UI_Xaml_Controls\WebView\WebView_JavascriptInvoke.xaml.cs">
+    <Compile Update="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\WebView\WebView_JavascriptInvoke.xaml.cs">
       <DependentUpon>WebView_JavascriptInvoke.xaml</DependentUpon>
     </Compile>
-    <Compile Update="C:\src\Uno2\src\SamplesApp\UITests.Shared\Windows_UI_Xaml_Controls\WebView\WebView_Mailto.xaml.cs">
+    <Compile Update="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\WebView\WebView_Mailto.xaml.cs">
       <DependentUpon>WebView_Mailto.xaml</DependentUpon>
     </Compile>
-    <Compile Update="C:\src\Uno2\src\SamplesApp\UITests.Shared\Windows_UI_Xaml_Controls\WebView\WebView_NavigateToString.xaml.cs">
+    <Compile Update="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\WebView\WebView_NavigateToString.xaml.cs">
       <DependentUpon>WebView_NavigateToString.xaml</DependentUpon>
     </Compile>
-    <Compile Update="C:\src\Uno2\src\SamplesApp\UITests.Shared\Windows_UI_Xaml_Controls\WebView\WebView_NavigateToUri.xaml.cs">
+    <Compile Update="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\WebView\WebView_NavigateToUri.xaml.cs">
       <DependentUpon>WebView_NavigateToUri.xaml</DependentUpon>
     </Compile>
-    <Compile Update="C:\src\Uno2\src\SamplesApp\UITests.Shared\Windows_UI_Xaml_Controls\WebView\WebView_Static.xaml.cs">
+    <Compile Update="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\WebView\WebView_Static.xaml.cs">
       <DependentUpon>WebView_Static.xaml</DependentUpon>
     </Compile>
-    <Compile Update="C:\src\Uno2\src\SamplesApp\UITests.Shared\Windows_UI_Xaml_Controls\WebView\WebView_WithHeaders.xaml.cs">
+    <Compile Update="$(MSBuildThisFileDirectory)Windows_UI_Xaml\Resources\ChangingStaticResource.xaml.cs">
+      <DependentUpon>ChangingStaticResource.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="$(MSBuildThisFileDirectory)Windows_UI_Xaml\Resources\XamlGlobalResources.xaml.cs">
+      <DependentUpon>XamlGlobalResources.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\WebView\WebView_WithHeaders.xaml.cs">
       <DependentUpon>WebView_WithHeaders.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="$(MSBuildThisFileDirectory)Windows_UI_Xaml\ThemeResources\BasicThemeResources.xaml.cs">
+      <DependentUpon>BasicThemeResources.xaml</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>
