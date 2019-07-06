@@ -21,27 +21,14 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		internal static InputTypes ConvertToRemoveSuggestions(InputTypes value) 
-			=> value | InputTypes.TextFlagNoSuggestions;
-
-		internal static InputTypes ConvertInputScope(InputScope value, bool isPassword = false)
+		internal static InputTypes ConvertToRemoveSuggestions(InputTypes value, bool forceRemove)
 		{
-			if (isPassword)
+			value |= InputTypes.TextFlagNoSuggestions;
+			if (forceRemove)
 			{
-				var scope = ConvertInputScope(value);
-				if (scope == InputTypes.ClassNumber)
-				{
-					return InputTypes.ClassNumber | InputTypes.NumberVariationPassword;
-				}
-				else
-				{
-					return InputTypes.ClassText | InputTypes.TextVariationPassword;
-				}
+				value |= InputTypes.TextVariationVisiblePassword;
 			}
-			else
-			{
-				return ConvertInputScope(value);
-			}
+			return value;
 		}
 
 		internal static InputTypes ConvertInputScope(InputScope value)

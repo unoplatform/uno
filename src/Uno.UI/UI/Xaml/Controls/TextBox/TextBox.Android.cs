@@ -29,6 +29,19 @@ namespace Windows.UI.Xaml.Controls
 		private TextBoxView _textBoxView;
 		private readonly SerialDisposable _keyboardDisposable = new SerialDisposable();
 
+		/// <summary>
+		/// If true, and <see cref="IsSpellCheckEnabled"/> is false, take vigorous measures to ensure that spell-check (ie predictive text) is
+		/// really disabled.
+		/// </summary>
+		/// <remarks>
+		/// Specifically, when true, and <see cref="IsSpellCheckEnabled"/> is false, this sets <see cref="InputTypes.TextVariationPassword"/> on
+		/// the inner <see cref="TextBoxView"/>. This is required because a number of OEM keyboards (particularly on older devices?) ignore
+		/// the <see cref="InputTypes.TextFlagNoSuggestions"/>. It's optional because setting the password InputType is a workaround which is
+		/// known to cause issues in certain circumstances. See discussion here: https://stackoverflow.com/a/5188119/1902058
+		/// </remarks>
+		[Uno.UnoOnly]
+		public bool ShouldForceDisableSpellCheck { get; set; } = true;
+
 		public bool PreventKeyboardDisplayOnProgrammaticFocus
 		{
 			get
@@ -295,7 +308,7 @@ namespace Windows.UI.Xaml.Controls
 
 				if (!IsSpellCheckEnabled)
 				{
-					inputType = InputScopeHelper.ConvertToRemoveSuggestions(inputType);
+					inputType = InputScopeHelper.ConvertToRemoveSuggestions(inputType, ShouldForceDisableSpellCheck);
 				}
 
 				if (AcceptsReturn)

@@ -25,7 +25,7 @@
 * Add support for `ContentDialog`
 
 ### Breaking changes
-*
+* [Android] `TextBox.IsSpellCheckEnabled = false` is now enforced in a way that may cause issues in certain use cases (see https://stackoverflow.com/a/5188119/1902058). The old behavior can be restored by setting `ShouldForceDisableSpellCheck = false`, per `TextBox`.
 
 ### Bug fixes
 * [iOS] Area of view outside Clip rect now allows touch to pass through, this fixes NavigationView not allowing touches to children (#1018)
@@ -37,6 +37,7 @@
 * Fix invalid XAML x:Uid parsing with resource file name and prefix (#1130, #228)
 * Fixed an issue where a Two-Way binding would sometimes not update values back to source correctly
 * Adjust the behavior of `DisplayInformation.LogicalDpi` to match UWP's behavior
+* [Android] Ensure TextBox spell-check is properly enabled/disabled on all devices. 
 
 ## Release 1.45.0
 ### Features
