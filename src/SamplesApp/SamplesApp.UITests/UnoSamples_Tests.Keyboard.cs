@@ -275,6 +275,16 @@ namespace SamplesApp.UITests
 			;
 		}
 
+		[Test]
+		public void TextBox_PageLoadedTest()
+		{
+			Run("UITests.Shared.Windows_UI_Xaml_Controls.TextBoxTests.TextBox_TextChanged");
+
+			var appendOutput = _app.Marked("AppendTextBlock");
+
+			_app.WaitForElement(appendOutput);
+		}
+
 		private QueryEx TypeInto(string textBoxName, string inputText, string expectedText)
 		{
 			var tb = _app.Marked(textBoxName);

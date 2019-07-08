@@ -6,6 +6,7 @@ resources:
 jobs:
 - template: .azure-devops-wasm-uitests.yml
 - template: .azure-devops-macos.yml
+- template: .azure-devops-android-tests.yml
 
 - job: VS_Latest
 

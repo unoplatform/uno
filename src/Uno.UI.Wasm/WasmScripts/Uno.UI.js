@@ -507,7 +507,7 @@ var Uno;
                 return true;
             }
             setNameInternal(elementId, name) {
-                this.getView(elementId).setAttribute("XamlName", name);
+                this.getView(elementId).setAttribute("xamlname", name);
             }
             /**
                 * Set a name for an element.

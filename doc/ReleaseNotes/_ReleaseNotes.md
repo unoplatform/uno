@@ -2,6 +2,7 @@
 
 ## Next version
 ### Features
+* Align `ApplicationData.Current.LocalSettings.Add` behavior with UWP for `null` and repeated adds.
 * Add support for `Windows.ApplicationModel.Calls.PhoneCallManager`
 * Add support for `Windows.Phone.Devices.Notification.VibrationDevice` API on iOS, Android and WASM
 * Basic support for `Windows.Devices.Sensors.Barometer`
@@ -9,6 +10,17 @@
 * [Wasm] Add support for `DisplayInformation` properties `LogicalDpi`, `ResolutionScale`, `ScreenWidthInRawPixels`, `RawPixelsPerViewPixel` , and `ScreenHeightInRawPixels`¸
 * Permit `DependencyProperty` to be set reentrantly. Eg this permits `TextBox.TextChanged` to modify the `Text` property (previously this could only be achieved using `Dispatcher.RunAsync()`).
 * Add support for filtered solutions development for Uno.UI contributions.
+* Add support for Android UI Tests in PRs for improved regression testing
+* Add static support for **ThemeResources**: `Application.Current.RequestedTheme` is supported
+  - `Dark` and `Light` are supported.
+  - **Custom Themes** are supported. This let you specify `HighContrast` or any other custom themes.
+    (this is a feature not supported in UWP)
+    ``` csharp
+    // Put that somewhere during app initialization...
+    Uno.UI.ApplicationHelper.RequestedCustomTheme = "MyCustomTheme";
+    ```
+  - `FrameworkElement.RequestedTheme ` is ignored for now.
+  - Should be set when the application is starting (before first request to a static resource).
 
 ### Breaking changes
 *
@@ -16,7 +28,6 @@
 ### Bug fixes
 * [iOS] Area of view outside Clip rect now allows touch to pass through, this fixes NavigationView not allowing touches to children (#1018)
 * `ComboBox` drop down is now placed following a logic which is closer to UWP and it longer flickers when it appears (especilly on WASM)
-* [Android] A ListView inside another ListView no longer causes an app freeze/crash
 * #854 `BasedOn` on a `<Style>` in `App.Xaml` were not resolving properly
 * #706 `x:Name` in `App.Xaml`'s resources were crashing the compilation.
 * #846 `x:Name` on non-`DependencyObject` resources were crashing the compilation
@@ -187,6 +198,7 @@
 * `ComboBox` drop down is now placed following a logic which is closer to UWP and it longer flickers when it appears (especilly on WASM)
 * Date and Time Picker Content fix and Refactored to use PickerFlyoutBase (to resemble UWP implementation)
 * `LinearGradientBrush.EndPoint` now defaults to (1,1) to match UWP
+* [Android] A ListView inside another ListView no longer causes an app freeze/crash
 
 ## Release 1.44.0
 

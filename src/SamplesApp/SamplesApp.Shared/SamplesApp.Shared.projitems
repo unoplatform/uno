@@ -45,7 +45,6 @@
     <Content Include="$(MSBuildThisFileDirectory)Assets\splashscreen.scale-200.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\square150x150logo.scale-200.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\square44x44logo.scale-200.png" />
-    <Content Include="$(MSBuildThisFileDirectory)Assets\square44x44logo.targetsize-24_altform-unplated.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\storelogo.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\wide310x150logo.scale-200.png" />
   </ItemGroup>

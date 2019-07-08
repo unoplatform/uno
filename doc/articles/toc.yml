@@ -70,7 +70,7 @@
 - name: Contributing to Uno
   items:
     - name: Guidelines for issue triage
-    - href: contributing\guidelines\issue-triage.md
+      href: contributing\guidelines\issue-triage.md
     - name: Guidelines for pull-requests
       href: contributing\guidelines\pull-requests.md
     - name: Building and debugging Uno.UI

@@ -81,14 +81,25 @@ namespace Windows.Storage
 
 			public void Add(string key, object value)
 			{
-				_preferences
-					.Edit()
-					.PutString(key, DataTypeSerializer.Serialize(value))
-					.Commit();
+				if (value != null)
+				{
+					if (ContainsKey(key))
+					{
+						throw new ArgumentException("An item with the same key has already been added.");
+					}
+					_preferences
+						.Edit()
+						.PutString(key, DataTypeSerializer.Serialize(value))
+						.Commit();
+				}
+				else
+				{
+					Remove(key);
+				}
 			}
 
 			public void Add(KeyValuePair<string, object> item)
-				=> throw new NotSupportedException();
+				=> Add(item.Key, item.Value);
 
 			public void Clear()
 			{
