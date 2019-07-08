@@ -254,30 +254,48 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 				if (topLevelControl?.Type.Name == "ResourceDictionary")
 				{
-					var resources = new Dictionary<string, XamlObjectDefinition>();
-
 					BuildResourceMap(topLevelControl, map);
 
-					var themeResources = topLevelControl.Members.FirstOrDefault(m => m.Member.Name == "ThemeDictionaries");
+					var themeDictionaries = topLevelControl.Members.FirstOrDefault(m => m.Member.Name == "ThemeDictionaries");
 
-					if (themeResources != null)
+					if (themeDictionaries != null)
 					{
-						// Theme resources are not supported for now, so we take the default key
-						// and consider everthing inside as a standard StaticResource.
+						// We extract all distinct keys of all themed resource dictionaries defined and add them to global map
 
-						var defaultTheme = themeResources
-							.Objects
-							.FirstOrDefault(o => o
-								.Members
-								.Any(m =>
-									m.Member.Name == "Key"
-									&& m.Value.ToString() == "Default"
-								)
-							);
-
-						if (defaultTheme != null)
+						IEnumerable<string> GetResources(XamlObjectDefinition themeDictionary)
 						{
-							BuildResourceMap(defaultTheme, map);
+							if (!(themeDictionary.Members
+								.FirstOrDefault(x => x.Member.Name.Equals("Key"))
+								?.Value is string))
+							{
+								yield break;
+							}
+
+							var resources = themeDictionary.Members
+								.FirstOrDefault(x => x.Member.Name.Equals("_UnknownContent"))
+								?.Objects;
+
+							if (resources != null)
+							{
+								foreach (var resource in resources)
+								{
+									if (resource.Members.FirstOrDefault(x => x.Member.Name.Equals("Key"))
+										?.Value is string resourceKey)
+									{
+										yield return resourceKey;
+									}
+								}
+							}
+						}
+
+						var themeResources = themeDictionaries
+							.Objects
+							.SelectMany(GetResources)
+							.Distinct();
+
+						foreach (var themeResource in themeResources)
+						{
+							map.Add(themeResource, _defaultNamespace, XamlGlobalStaticResourcesMap.ResourcePrecedence.Local);
 						}
 					}
 				}
