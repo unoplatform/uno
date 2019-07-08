@@ -17,7 +17,7 @@ When developing for the Universal Windows Platform (UWP) there are no special re
 
 ## WebAssembly
 
-WebAssembly is supported in Chrome, Edge, Firefox and Safari. See the official WebAssembly site for [more details](https://webassembly.org/roadmap/).
+WebAssembly is supported in Chrome, Edge, Edge Dev, Opera, Firefox and Safari. See the official WebAssembly site for [more details](https://webassembly.org/roadmap/).
 
 ## Visual Studio
 
