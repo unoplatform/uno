@@ -25,4 +25,4 @@ Visual Studio 2019 is recommended (Visual Studio 2017 version 15.8 minimum) for 
 
 - Universal Windows Platform (if using Visual Studio for Windows)
 - Xamarin (for Android and iOS development)
-- ASP.NET/web component, along with .NET Core 2.2 (for WASM development)
+- ASP.NET/web component, along with .NET Core 2.2 (for WebAssembly development)
