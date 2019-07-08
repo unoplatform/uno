@@ -5,7 +5,6 @@ using System.Text;
 using Uno.Extensions;
 using Android.Graphics.Drawables.Shapes;
 using System.Linq;
-using System.Drawing;
 using Uno.Disposables;
 using Windows.UI.Xaml.Media;
 using Uno.UI;

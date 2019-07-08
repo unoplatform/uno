@@ -498,6 +498,38 @@ namespace Uno.UI.Xaml
 		}
 		#endregion
 
+		#region SetXUid
+
+		internal static void SetXUid(IntPtr htmlId, string name)
+		{
+			if (UseJavascriptEval)
+			{
+				var command = $"Uno.UI.WindowManager.current.setXUid(\"{htmlId}\", \"{name}\");";
+				WebAssemblyRuntime.InvokeJS(command);
+			}
+			else
+			{
+				var parms = new WindowManagerSetXUidParams()
+				{
+					HtmlId = htmlId,
+					Uid = name,
+				};
+
+				TSInteropMarshaller.InvokeJS<WindowManagerSetXUidParams>("Uno:setXUidNative", parms);
+			}
+		}
+
+		[TSInteropMessage]
+		[StructLayout(LayoutKind.Sequential, Pack = 4)]
+		private struct WindowManagerSetXUidParams
+		{
+			public IntPtr HtmlId;
+
+			[MarshalAs(TSInteropMarshaller.LPUTF8Str)]
+			public string Uid;
+		}
+		#endregion
+
 		#region SetProperty
 
 		internal static void SetProperty(IntPtr htmlId, (string name, string value)[] properties)

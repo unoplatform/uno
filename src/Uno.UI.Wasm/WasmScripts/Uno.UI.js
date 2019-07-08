@@ -507,7 +507,29 @@ var Uno;
                 return true;
             }
             setNameInternal(elementId, name) {
-                this.getView(elementId).setAttribute("XamlName", name);
+                this.getView(elementId).setAttribute("xamlname", name);
+            }
+            /**
+                * Set a name for an element.
+                *
+                * This is mostly for diagnostic purposes.
+                */
+            setXUid(elementId, name) {
+                this.setXUidInternal(elementId, name);
+                return "ok";
+            }
+            /**
+                * Set a name for an element.
+                *
+                * This is mostly for diagnostic purposes.
+                */
+            setXUidNative(pParam) {
+                const params = WindowManagerSetXUidParams.unmarshal(pParam);
+                this.setXUidInternal(params.HtmlId, params.Uid);
+                return true;
+            }
+            setXUidInternal(elementId, name) {
+                this.getView(elementId).setAttribute("xuid", name);
             }
             /**
                 * Set an attribute for an element.
@@ -1288,12 +1310,12 @@ var Uno;
              * Note that the casing of this method is intentionally Pascal for platform alignment.
              */
             GetDependencyPropertyValue(elementId, propertyName) {
-                if (!WindowManager.getDependencyPropertyValue) {
-                    WindowManager.getDependencyPropertyValue = Module.mono_bind_static_method("[Uno.UI] Uno.UI.Helpers.Automation:GetDependencyPropertyValue");
+                if (!WindowManager.getDependencyPropertyValueMethod) {
+                    WindowManager.getDependencyPropertyValueMethod = Module.mono_bind_static_method("[Uno.UI] Uno.UI.Helpers.Automation:GetDependencyPropertyValue");
                 }
                 const element = this.getView(elementId);
                 const htmlId = Number(element.getAttribute("XamlHandle"));
-                return WindowManager.getDependencyPropertyValue(htmlId, propertyName);
+                return WindowManager.getDependencyPropertyValueMethod(htmlId, propertyName);
             }
             /**
                 * Remove the loading indicator.
@@ -1954,6 +1976,25 @@ class WindowManagerSetStylesParams {
         return ret;
     }
 }
+/* TSBindingsGenerator Generated code -- this code is regenerated on each build */
+class WindowManagerSetXUidParams {
+    static unmarshal(pData) {
+        let ret = new WindowManagerSetXUidParams();
+        {
+            ret.HtmlId = Number(Module.getValue(pData + 0, "*"));
+        }
+        {
+            var ptr = Module.getValue(pData + 4, "*");
+            if (ptr !== 0) {
+                ret.Uid = String(Module.UTF8ToString(ptr));
+            }
+            else {
+                ret.Uid = null;
+            }
+        }
+        return ret;
+    }
+}
 var Uno;
 (function (Uno) {
     var Foundation;
@@ -2134,4 +2175,29 @@ var Windows;
             Core.SystemNavigationManager = SystemNavigationManager;
         })(Core = UI.Core || (UI.Core = {}));
     })(UI = Windows.UI || (Windows.UI = {}));
+})(Windows || (Windows = {}));
+var Windows;
+(function (Windows) {
+    var Phone;
+    (function (Phone) {
+        var Devices;
+        (function (Devices) {
+            var Notification;
+            (function (Notification) {
+                class VibrationDevice {
+                    static initialize() {
+                        navigator.vibrate = navigator.vibrate || navigator.webkitVibrate || navigator.mozVibrate || navigator.msVibrate;
+                        if (navigator.vibrate) {
+                            return true;
+                        }
+                        return false;
+                    }
+                    static vibrate(duration) {
+                        return window.navigator.vibrate(duration);
+                    }
+                }
+                Notification.VibrationDevice = VibrationDevice;
+            })(Notification = Devices.Notification || (Devices.Notification = {}));
+        })(Devices = Phone.Devices || (Phone.Devices = {}));
+    })(Phone = Windows.Phone || (Windows.Phone = {}));
 })(Windows || (Windows = {}));

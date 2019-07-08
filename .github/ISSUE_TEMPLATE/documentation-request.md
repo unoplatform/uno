@@ -1,10 +1,7 @@
 ---
 name: Documentation Request
 about: Request an enhancement to the Uno documentation
-labels:
-- kind/consumer-experience
-- kind/documentation
-- triage/untriaged
+labels: kind/consumer-experience, kind/documentation, triage/untriaged
 ---
 
 <!-- Please only use this template for submitting documentation requests -->

@@ -37,7 +37,7 @@ export class TestRunner {
 			console.log("---")
 			console.log(`Running ${i}/${allTestsData.length}: ${testName}`);
 			// Start the test run
-			var testRunId = await this._page.evaluate(`SampleRunner.runTest(\'${testName}\')`);
+			var testRunId = await this._page.evaluate(`SampleRunner.RunTest(\'${testName}\')`);
 
 			if (debug) {
 				console.log(`TestID: ${testRunId}`);
@@ -48,7 +48,7 @@ export class TestRunner {
 			while ((<any>startDate - <any>new Date()) < 5000) {
 
 				// Then wait for the test to be reported as done
-				if (await this._page.evaluate(`SampleRunner.isTestDone(\'${testRunId}\')`)) {
+				if (await this._page.evaluate(`SampleRunner.IsTestDone(\'${testRunId}\')`)) {
 					break;
 				}
 
@@ -65,7 +65,7 @@ export class TestRunner {
 
 	private async getAllTests(page: any): Promise<Array<string>> {
 		await page.evaluate("SampleRunner.init()");
-		const allTestsData = await page.evaluate("SampleRunner.getAllTests()") as String;
+		const allTestsData = await page.evaluate("SampleRunner.GetAllTests()") as String;
 
 		return allTestsData.split(';');
 	}

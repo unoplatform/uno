@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <DiffIgnore>
-  <IgnoreSets>
+  <IgnoreSets>        
     <IgnoreSet baseVersion="1.43.1">
       <Methods>
         <Member fullName="System.Void Windows.UI.Xaml.WindowCreatedEventArgs..ctor()"
@@ -113,7 +113,7 @@
                 reason="Moved to Uno.Extensions"/>
       </Types>
 
-      <Methods>
+      <Methods>        
         <Member fullName="System.Boolean Uno.Foundation.WebAssemblyRuntime.InvokeJSUnmarshalled(System.String functionIdentifier, System.IntPtr arg0, System.IntPtr arg1, System.IntPtr arg2)"
                 reason="Removed to improve the C#/JS call performance"/>
 
@@ -171,6 +171,20 @@
                 reason="Invalid method visibility"/>
         <Member fullName="System.Void Uno.UI.Controls.Legacy.ListViewBase.OnLayoutUpdated()"
                 reason="Invalid method visibility"/>
+        <Member fullName="System.Void Windows.Devices.Sensors.Barometer..ctor()"
+                reason="Parameter-less ctor does not exist in UWP" />
+        <Member fullName="System.Void Windows.Devices.Sensors.BarometerReading..ctor()"
+                reason="Parameter-less ctor does not exist in UWP" />
+        <Member fullName="System.Void Windows.Devices.Sensors.BarometerReadingChangedEventArgs..ctor()"
+		reason="Parameter-less ctor does not exist in UWP" />
+        <Member fullName="System.Void Windows.Phone.Devices.Notification.VibrationDevice..ctor()"
+                reason="Parameter-less ctor does not exist in UWP" />
+        <Member fullName="System.Void Windows.UI.Xaml.Controls.VirtualizingPanelLayout.UpdateLayoutAttributesForItem(UIKit.UICollectionViewLayoutAttributes layoutAttributes)"
+                reason="Implementation detail, made internal"/>
+        <Member fullName="Android.Views.View Windows.UI.Xaml.Controls.Popup.get_Anchor()"
+	        reason="Invalid method visibility"/>
+	<Member fullName="System.Void Windows.UI.Xaml.Controls.Popup.set_Anchor(Android.Views.View value)"
+	        reason="Invalid method visibility"/>
       </Methods>
 	  
 	  <Fields>
@@ -184,6 +198,9 @@
         
         <Member fullName="System.Collections.Generic.IList`1&lt;Windows.UI.Xaml.Controls.MenuFlyoutItem&gt; Windows.UI.Xaml.Controls.MenuFlyout::Items()"
                 reason="Changed because of invalid property type" />
+				
+		<Member fullName="Android.Views.View Windows.UI.Xaml.Controls.Popup::Anchor()"
+                reason="Invalid property visibility" />
       </Properties>
 
     </IgnoreSet>

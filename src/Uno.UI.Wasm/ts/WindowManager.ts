@@ -285,7 +285,33 @@
 		}
 
 		private setNameInternal(elementId: number, name: string): void {
-			this.getView(elementId).setAttribute("XamlName", name);
+			this.getView(elementId).setAttribute("xamlname", name);
+		}
+
+
+		/**
+			* Set a name for an element.
+			*
+			* This is mostly for diagnostic purposes.
+			*/
+		public setXUid(elementId: number, name: string): string {
+			this.setXUidInternal(elementId, name);
+			return "ok";
+		}
+
+		/**
+			* Set a name for an element.
+			*
+			* This is mostly for diagnostic purposes.
+			*/
+		public setXUidNative(pParam: number): boolean {
+			const params = WindowManagerSetXUidParams.unmarshal(pParam);
+			this.setXUidInternal(params.HtmlId, params.Uid);
+			return true;
+		}
+
+		private setXUidInternal(elementId: number, name: string): void {
+			this.getView(elementId).setAttribute("xuid", name);
 		}
 
 		/**

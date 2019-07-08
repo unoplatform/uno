@@ -21,6 +21,24 @@ To create a UI Test for the sample applications:
 - Add `[Uno.UI.Samples.Controls.SampleControlInfo("Replace_with_control_or_class_name", "MyTestName", description: "MyDescription")]` on the code-behind class.
 - Run the samples application, and the sample should appear in the samples browser
 
+The Uno.UI process validates does two types of validations:
+- Screenshot based validation (with results comparison, see below)
+- Automated UI Testing for WebAssembly and Android using the `SamplesApp.UITests` and the [`Uno.UITest`](https://www.nuget.org/packages?q=uno.uitest) package.
+
+At this time, only WebAssembly and Android are used to run UI Tests, iOS is coming soon.
+
+## Setup for Automated UI Tests on WebAssembly
+- Navigate to the `SamplesApp.Wasm.UITests` folder and run `npm i`. This will download Puppeteer and the Chrome driver.
+- Deploy and run the `SamplesApp.Wasm` application once.
+
+## Setup for Automated UI Tests on Android
+- Setup an android simulator or device, start it
+- Deploy and run the `SamplesApp.Droid` application on that device
+
+## Running UI Tests
+- Open the [`Constants.cs](src/SamplesApp/SamplesApp.UITests/Constants.cs) file and change the `CurrentPlatform` field to the platform you want to test.
+- Select a test in the `SamplesApp.UITests` project and run a specific test.
+
 # Requirements for UI tests
 
 - Each sample should demonstrate one and only one feature of a control so

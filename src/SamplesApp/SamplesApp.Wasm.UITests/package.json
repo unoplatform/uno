@@ -6,10 +6,15 @@
   "author": {
     "name": ""
   },
+  "scripts": {
+    "build": "tsc --build",
+    "clean": "tsc --build --clean"
+  },
   "devDependencies": {
     "@types/node": "^8.0.14"
   },
   "dependencies": {
-    "puppeteer": "^1.13.0"
+    "puppeteer": "^1.13.0",
+    "chromedriver": "^74.0.0"
   }
 }

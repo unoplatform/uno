@@ -17,6 +17,7 @@ using Uno.UI;
 using Uno;
 using Uno.UI.Controls;
 using Uno.UI.Media;
+using System;
 
 #if __IOS__
 using UIKit;
@@ -24,17 +25,29 @@ using UIKit;
 
 namespace Windows.UI.Xaml
 {
-	public partial class UIElement : DependencyObject
+	public partial class UIElement : DependencyObject, IXUidProvider
 	{
 		private readonly SerialDisposable _clipSubscription = new SerialDisposable();
 		private readonly List<Pointer> _pointCaptures = new List<Pointer>();
 		private readonly List<KeyboardAccelerator> _keyboardAccelerators = new List<KeyboardAccelerator>();
+		private string _uid;
 
 		partial void InitializeCapture()
 		{
 			this.SetValue(PointerCapturesProperty, _pointCaptures);
 		}
 
+		string IXUidProvider.Uid
+		{
+			get => _uid;
+			set
+			{
+				_uid = value;
+				OnUidChangedPartial();
+			}
+		}
+
+		partial void OnUidChangedPartial();
 
 		/// <summary>
 		/// Determines if an <see cref="UIElement"/> clips its children to its bounds.
@@ -244,10 +257,10 @@ namespace Windows.UI.Xaml
 		/// </summary>
 		public Size DesiredSize { get; internal set; }
 
-		public Size RenderSize
-		{
-			get; internal set;
-		}
+		/// <summary>
+		/// Provides the size reported during the last call to Arrange (i.e. the ActualSize)
+		/// </summary>
+		public Size RenderSize { get; internal set; }
 
 		public virtual void Measure(Size availableSize)
 		{

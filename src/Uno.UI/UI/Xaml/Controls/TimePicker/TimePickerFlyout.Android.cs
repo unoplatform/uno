@@ -9,7 +9,7 @@ using static Android.App.TimePickerDialog;
 
 namespace Windows.UI.Xaml.Controls
 {
-	public partial class TimePickerFlyout : FlyoutBase
+	public partial class TimePickerFlyout : PickerFlyoutBase
 	{
 		private UnoTimePickerDialog _dialog;
 		private TimeSpan _initialTime;

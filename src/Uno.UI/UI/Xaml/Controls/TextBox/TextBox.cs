@@ -45,6 +45,11 @@ namespace Windows.UI.Xaml.Controls
 		public event TextChangedEventHandler TextChanged;
 		public event RoutedEventHandler SelectionChanged;
 
+		/// <summary>
+		/// Set when <see cref="TextChanged"/> event is being raised, to ensure modifications by handlers don't trigger an infinite loop.
+		/// </summary>
+		private bool _isInvokingTextChanged;
+
 		public TextBox()
 		{
 			_isPassword = false;

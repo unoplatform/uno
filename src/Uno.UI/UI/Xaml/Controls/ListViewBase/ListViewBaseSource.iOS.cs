@@ -229,7 +229,11 @@ namespace Windows.UI.Xaml.Controls
 						}
 
 						FrameworkElement.InitializePhaseBinding(selectorItem);
-					}
+                        
+                        // Ensure the item has a parent, since it's added to the native collection view
+                        // which does not automatically sets the parent DependencyObject.
+                        selectorItem.SetParent(Owner?.XamlParent);
+                    }
 					else if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
 					{
 						this.Log().Debug($"Reusing view at indexPath={indexPath}, previously bound to {selectorItem.DataContext}.");

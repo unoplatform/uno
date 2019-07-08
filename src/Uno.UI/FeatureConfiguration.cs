@@ -26,12 +26,23 @@ namespace Uno.UI
 
 #if __WASM__
 			/// <summary>
-			/// Enable the assignation of a "XamlName" attribute on DOM elements created
+			/// Enable the assignation of the "XamlName" and "xuid" attributes on DOM elements created
 			/// from the XAML visual tree. This enables tools such as Puppeteer to select elements
 			/// in the DOM for automation purposes.
 			/// </summary>
 			public static bool AssignDOMXamlName { get; set; } = false;
 #endif
+		}
+
+		public static class Xaml
+		{
+			/// <summary>
+			/// Maximal "BasedOn" recursive resolution depth.
+			/// </summary>
+			/// <remarks>
+			/// This is a mechanism to prevent hard-to-diagnose stack overflow when a resource name is not found.
+			/// </remarks>
+			public static int MaxRecursiveResolvingDepth { get; set; } = 12;
 		}
 
 		public static class FrameworkElement

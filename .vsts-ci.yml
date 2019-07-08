@@ -6,6 +6,7 @@ resources:
 jobs:
 - template: .azure-devops-wasm-uitests.yml
 - template: .azure-devops-macos.yml
+- template: .azure-devops-android-tests.yml
 
 - job: VS_Latest
 
@@ -26,6 +27,7 @@ jobs:
   - task: GitVersion@4
     inputs:
       updateAssemblyInfo: false
+      gitVersionPath: '$(build.sourcesdirectory)\build\gitversion\GitVersion.exe'
 
   - task: NuGetToolInstaller@0
     inputs:
@@ -34,6 +36,9 @@ jobs:
 
   # Required for the Wasm uitests project
   - task: NodeTool@0
+
+  - powershell: .\build\Install-WindowsSdkISO.ps1 17763
+    displayName: Insider SDK
 
   - task: MSBuild@1
     inputs:
@@ -54,6 +59,7 @@ jobs:
         **\*test*.dll
         !**\obj\**
         !**\*Wasm.Test*.dll
+        !**\*UITests.dll
         !**\*.RuntimeTests.dll
       vstestLocationMethod: version
       vsTestVersion: latest
@@ -111,11 +117,9 @@ jobs:
     clean: true
     
   - task: GitVersion@4
-    # Ignore gitversion for forks, until this is fixed:
-    # https://developercommunity.visualstudio.com/content/problem/284991/public-vsts-previouw-cant-set-build-number-of-pr-b.html
-    condition: eq(variables['System.PullRequest.IsFork'], 'False')
     inputs:
       updateAssemblyInfo: false
+      gitVersionPath: '$(build.sourcesdirectory)\build\gitversion\GitVersion.exe'
 
   - task: NuGetToolInstaller@0
     inputs:
