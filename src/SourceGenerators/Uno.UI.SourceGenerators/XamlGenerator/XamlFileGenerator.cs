@@ -65,6 +65,10 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		private readonly bool _isDebug;
 		private readonly string _relativePath;
 
+		// Determines if the source generator will skip the inclusion of UseControls in the
+		// visual tree. See https://github.com/unoplatform/uno/issues/61
+		private readonly bool _skipUserControlsInVisualTree;
+
 		private readonly List<INamedTypeSymbol> _xamlAppliedTypes = new List<INamedTypeSymbol>();
 
 		private readonly INamedTypeSymbol _elementStubSymbol;
@@ -107,7 +111,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			Dictionary<string, string[]> uiAutomationMappings,
 			string defaultLanguage,
 			bool isWasm,
-			bool isDebug
+			bool isDebug,
+			bool skipUserControlsInVisualTree
 		)
 		{
 			_fileDefinition = file;
@@ -124,6 +129,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			_uiAutomationMappings = uiAutomationMappings;
 			_defaultLanguage = defaultLanguage.HasValue() ? defaultLanguage : "en-US";
 			_isDebug = isDebug;
+			_skipUserControlsInVisualTree = skipUserControlsInVisualTree;
 
 			InitCaches();
 
@@ -2212,7 +2218,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 												// creation of a WeakReference.
 												//
 												writer.AppendLineInvariant($"var {member.Member.Name}_{member.Value}_That = ({eventSource} as global::Uno.UI.DataBinding.IWeakReferenceProvider).WeakReference;");
-												writer.AppendLineInvariant($"{closureName}.{member.Member.Name} += ({parms}) => ({member.Member.Name}_{member.Value}_That.Target as {_className.className}).{member.Value}({parms});");
+												writer.AppendLineInvariant($"{closureName}.{member.Member.Name} += ({parms}) => ({member.Member.Name}_{member.Value}_That.Target as {_className.className})?.{member.Value}({parms});");
 											}
 											else
 											{
@@ -3409,7 +3415,10 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			{
 				BuildComplexPropertyValue(writer, owner, "c.");
 			}
-			else if (IsDirectUserControlSubType(xamlObjectDefinition) && HasNoUserControlProperties(xamlObjectDefinition))
+			else if (
+				_skipUserControlsInVisualTree
+				&& IsDirectUserControlSubType(xamlObjectDefinition)
+				&& HasNoUserControlProperties(xamlObjectDefinition))
 			{
 				writer.AppendLineInvariant("new {0}(skipsInitializeComponents: true).GetContent()", GetGlobalizedTypeName(fullTypeName));
 
