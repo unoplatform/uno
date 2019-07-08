@@ -1,10 +1,5 @@
 ﻿using Microsoft.Practices.ServiceLocation;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Moq;
-using Uno.Logging;
-using Uno.Extensions;
-using Uno.Presentation.Resources;
-using Uno.UI.DataBinding;
 using Windows.UI.Xaml.Data;
 using System;
 using System.Collections.Generic;
@@ -13,8 +8,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Runtime.CompilerServices;
-using Uno.Disposables;
-using Uno.UI;
 using Windows.UI.Xaml;
 using System.Threading;
 using System.Diagnostics;
@@ -25,15 +18,14 @@ namespace Uno.UI.Tests.BinderTests.Inversion
 	[TestClass]
 	public partial class Given_DependencyProperty_Inversion
 	{
-		[Ignore] // This test does not work, because of the way uno handles asymetric convertBack loops. See #26477.
 		[TestMethod]
-		public void MyTestMethod()
+		public void When_TwoWay_Converted()
 		{
 			var a = new MyDependencyObject() { PropName = "a" };
 			var b = new MyDependencyObject() { PropName = "b" };
 			var converter = new MyConverter();
 
-			b.SetBinding(
+			BindingOperations.SetBinding(b,
 				MyDependencyObject.MyIntegerProperty,
 				new Windows.UI.Xaml.Data.Binding
 				{
@@ -48,33 +40,30 @@ namespace Uno.UI.Tests.BinderTests.Inversion
 			Assert.AreEqual(0, converter.ConvertBackCallCount);
 			Assert.AreEqual(1, b.MyInteger);
 
-			Debug.WriteLine("setting a.MyInteger = 1");
 			a.MyInteger = 1;
 			Assert.AreEqual(2, converter.ConvertCallCount);
 			Assert.AreEqual(0, converter.ConvertBackCallCount);
 			Assert.AreEqual(1, a.MyInteger);
 			Assert.AreEqual(2, b.MyInteger);
 
-			Debug.WriteLine("setting b.MyInteger = 2");
 			b.MyInteger = 2;
 			Assert.AreEqual(2, converter.ConvertCallCount);
 			Assert.AreEqual(0, converter.ConvertBackCallCount);
 			Assert.AreEqual(1, a.MyInteger);
 			Assert.AreEqual(2, b.MyInteger);
 
-			Debug.WriteLine("setting b.MyInteger = 3");
 			b.MyInteger = 3;
 
-			Assert.AreEqual(3, converter.ConvertCallCount);
+			Assert.AreEqual(2, converter.ConvertCallCount);
 			Assert.AreEqual(1, converter.ConvertBackCallCount);
 			Assert.AreEqual(3, a.MyInteger);
 			Assert.AreEqual(3, b.MyInteger);
 
 			a.MyInteger = 42;
-			Assert.AreEqual(2, converter.ConvertCallCount);
-			Assert.AreEqual(2, converter.ConvertBackCallCount);
+			Assert.AreEqual(3, converter.ConvertCallCount);
+			Assert.AreEqual(1, converter.ConvertBackCallCount);
 			Assert.AreEqual(42, a.MyInteger);
-			Assert.AreEqual(42, b.MyInteger);
+			Assert.AreEqual(43, b.MyInteger);
 		}
 	}
 

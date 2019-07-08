@@ -1,6 +1,5 @@
 # Uno Platform - Build Mobile, Desktop and WebAssembly apps with C# and XAML. Today.
-
-[![Gitter](https://badges.gitter.im/uno-platform/Lobby.svg)](https://gitter.im/uno-platform/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
+[![Gitter](https://badges.gitter.im/uno-platform/Lobby.svg)](https://gitter.im/uno-platform/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge) [![All Contributors](https://img.shields.io/badge/all_contributors-4-orange.svg?style=flat-square)](#contributors)
 
 # What is the Uno Platform
 
@@ -51,9 +50,9 @@ For a larger example and features demo:
     * [Microsoft XAML Behaviors](https://github.com/nventive/Uno.XamlBehaviors)
     * [Prism](https://github.com/nventive/Uno.Prism)
     * [MVVMCross](https://www.mvvmcross.com/) (soon)
-    * [ReactiveUI](https://github.com/nventive/Uno.ReactiveUI)
+    * [ReactiveUI Official](https://github.com/reactiveui/ReactiveUI/pull/2067)
     * [WindowsStateTriggers](https://github.com/nventive/Uno.WindowsStateTriggers)
-    * [Xamarin.Forms for UWP](https://github.com/nventive/Uno.Xamarin.Forms)
+    * [Xamarin.Forms for UWP](https://github.com/nventive/Uno.Xamarin.Forms), [NuGet](https://www.nuget.org/packages/ReactiveUI.Uno)
     * [Rx.NET](https://github.com/nventive/Uno.Rx.NET)
     * [ColorCode-Universal](https://github.com/nventive/Uno.ColorCode-Universal)
     * Any UWP project
@@ -90,3 +89,13 @@ Make sure to visit our [FAQ](doc/articles/faq.md), [StackOverflow](https://stack
 
 There are many ways that you can contribute to the Uno Platform, as the UWP API is
 pretty large! Read our [contributing guide](CONTRIBUTING.md) to learn about our development process and how to propose bug fixes and improvements.
+
+# Contributors
+
+Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/docs/en/emoji-key)):
+
+<!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
+<!-- prettier-ignore -->
+<table><tr><td align="center"><a href="https://github.com/jeromelaban"><img src="https://avatars0.githubusercontent.com/u/5839577?v=4" width="100px;" alt="Jérôme Laban"/><br /><sub><b>Jérôme Laban</b></sub></a><br /><a href="https://github.com/unoplatform/uno/commits?author=jeromelaban" title="Code">💻</a> <a href="#content-jeromelaban" title="Content">🖋</a> <a href="https://github.com/unoplatform/uno/commits?author=jeromelaban" title="Documentation">📖</a> <a href="#example-jeromelaban" title="Examples">💡</a> <a href="#maintenance-jeromelaban" title="Maintenance">🚧</a> <a href="#infra-jeromelaban" title="Infrastructure (Hosting, Build-Tools, etc)">🚇</a> <a href="#ideas-jeromelaban" title="Ideas, Planning, & Feedback">🤔</a> <a href="#review-jeromelaban" title="Reviewed Pull Requests">👀</a> <a href="https://github.com/unoplatform/uno/commits?author=jeromelaban" title="Tests">⚠️</a> <a href="#projectManagement-jeromelaban" title="Project Management">📆</a></td><td align="center"><a href="http://www.dissolutegames.com/"><img src="https://avatars0.githubusercontent.com/u/8270914?v=4" width="100px;" alt="David Oliver"/><br /><sub><b>David Oliver</b></sub></a><br /><a href="#blog-davidjohnoliver" title="Blogposts">📝</a></td><td align="center"><a href="http://mzikmund.com"><img src="https://avatars3.githubusercontent.com/u/1075116?v=4" width="100px;" alt="Martin Zikmund"/><br /><sub><b>Martin Zikmund</b></sub></a><br /><a href="https://github.com/unoplatform/uno/commits?author=MartinZikmund" title="Code">💻</a> <a href="https://github.com/unoplatform/uno/commits?author=MartinZikmund" title="Tests">⚠️</a> <a href="#review-MartinZikmund" title="Reviewed Pull Requests">👀</a> <a href="https://github.com/unoplatform/uno/issues?q=author%3AMartinZikmund" title="Bug reports">🐛</a></td><td align="center"><a href="https://www.ghuntley.com/now"><img src="https://avatars0.githubusercontent.com/u/127353?v=4" width="100px;" alt="Geoffrey Huntley"/><br /><sub><b>Geoffrey Huntley</b></sub></a><br /><a href="#question-ghuntley" title="Answering Questions">💬</a> <a href="https://github.com/unoplatform/uno/commits?author=ghuntley" title="Documentation">📖</a> <a href="#maintenance-ghuntley" title="Maintenance">🚧</a> <a href="https://github.com/unoplatform/uno/commits?author=ghuntley" title="Code">💻</a> <a href="https://github.com/unoplatform/uno/commits?author=ghuntley" title="Tests">⚠️</a> <a href="#tutorial-ghuntley" title="Tutorials">✅</a> <a href="#review-ghuntley" title="Reviewed Pull Requests">👀</a></td></tr></table>
+
+<!-- ALL-CONTRIBUTORS-LIST:END -->

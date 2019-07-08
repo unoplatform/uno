@@ -271,7 +271,7 @@ namespace Windows.UI.Xaml.Markup.Reader
 			}
 			else if (member.Member.DeclaringType == null && member.Member.Name == "Name")
 			{
-				// This is a special case, where the declaring type is from the x: namespace, 
+				// This is a special case, where the declaring type is from the x: namespace,
 				// but is considered of an unknown type. This can happen when providing the
 				// name of a control using x:Name instead of Name.
 				if (TypeResolver.GetPropertyByName(control.Type, "Name") is PropertyInfo nameInfo)
@@ -465,6 +465,11 @@ namespace Windows.UI.Xaml.Markup.Reader
 					}
 
 					_postActions.Enqueue(ResolveResource);
+				}
+				else
+				{
+					// Here we assigned a {StaticResource} on a standard property (not a DependencyProperty)
+					// We can't resolve it.
 				}
 			}
 		}

@@ -292,7 +292,7 @@ namespace Windows.UI.Xaml
 		/// Register for changes all dependency properties changes notifications for the specified instance.
 		/// </summary>
 		/// <param name="instance">The instance for which to observe properties changes</param>
-		/// <param name="callback">The callback</param>
+		/// <param name="handler">The callback</param>
 		/// <returns>A disposable that will unregister the callback when disposed.</returns>
 		internal static IDisposable RegisterInheritedPropertyChangedCallback(this object instance, ExplicitPropertyChangedCallback handler)
 		{
@@ -300,10 +300,10 @@ namespace Windows.UI.Xaml
 		}
 
 		/// <summary>
-		/// Register for compiled bindinds updates progapation
+		/// Register for compiled bindings updates propagation
 		/// </summary>
 		/// <param name="instance">The instance for which to observe compiled bindings updates</param>
-		/// <param name="callback">The callback</param>
+		/// <param name="handler">The callback</param>
 		/// <returns>A disposable that will unregister the callback when disposed.</returns>
 		internal static IDisposable RegisterCompiledBindingsUpdateCallback(this object instance, Action handler) 
 			=> GetStore(instance).RegisterCompiledBindingsUpdateCallback(handler);
@@ -312,8 +312,8 @@ namespace Windows.UI.Xaml
 		/// Registers to parent changes.
 		/// </summary>
 		/// <param name="instance">The target dependency object</param>
-		/// <param name="key">A key to be passed to the callack parameter.</param>
-		/// <param name="callback">A callback to be called</param>
+		/// <param name="key">A key to be passed to the callback parameter.</param>
+		/// <param name="handler">A callback to be called</param>
 		/// <returns>A disposable that cancels the subscription.</returns>
 		internal static IDisposable RegisterParentChangedCallback(this DependencyObject instance, object key, ParentChangedCallback handler)
 		{

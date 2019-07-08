@@ -46,6 +46,20 @@ namespace Uno.UI.RuntimeTests.Tests
 		}
 
 		[TestMethod]
+		public void When_PrefixUnnamedLoader()
+		{
+			var SUT = ResourceLoader.GetForViewIndependentUse();
+			Assert.AreEqual(@"This is prefixed en\Test01.resw", SUT.GetString("Prefix/Given_ResourceLoader/When_PrefixedNamedLoader"));
+		}
+
+		[TestMethod]
+		public void When_PrefixNamedLoader()
+		{
+			var SUT = ResourceLoader.GetForViewIndependentUse("Test01");
+			Assert.AreEqual(@"This is prefixed en-US\Test01.resw", SUT.GetString("Prefix/Given_ResourceLoader/When_PrefixedNamedLoader"));
+		}
+
+		[TestMethod]
 		public void When_NamedLoader_Resources()
 		{
 			var SUT = ResourceLoader.GetForViewIndependentUse("Resources");

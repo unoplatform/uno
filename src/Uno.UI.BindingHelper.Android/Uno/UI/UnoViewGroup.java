@@ -620,6 +620,12 @@ public abstract class UnoViewGroup
 	 * This should be called subsequently to {{@link #endLayoutingFromMeasure()}}, typically during a true layout pass, to flush any captured layout requests.
 	 */
 	public static void measureBeforeLayout() {
+		if (_isLayoutingFromMeasure)
+		{
+			// This can happen when nested controls call startLayoutingFromMeasure()/measureBeforeLayout()
+			return;
+		}
+
 		try {
 			for (int i = 0; i < callToRequestLayout.size(); i++) {
 				UnoViewGroup view = callToRequestLayout.get(i);

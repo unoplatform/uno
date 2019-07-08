@@ -126,6 +126,9 @@
   <data name="Given_ResourceLoader.When_NamedLoader" xml:space="preserve">
     <value>This is en\Resources.resw</value>
   </data>
+  <data name="Prefix/Given_ResourceLoader.When_PrefixedNamedLoader" xml:space="preserve">
+    <value>This is prefixed en\Test01.resw</value>
+  </data>
   <data name="Given_ResourceLoader.When_SimpleString" xml:space="preserve">
     <value>My Simple String (en)</value>
   </data>
@@ -136,6 +139,6 @@
     <value>ValidResource (en)</value>
   </data>
   <data name="Given_ResourcesService.When_Get_ResourceFromResw" xml:space="preserve">
-    <value>Value for When_Get_ResourceFromResw</value>
+    <value>Value for When_Get_ResourceFromResw (en)</value>
   </data>
 </root>
