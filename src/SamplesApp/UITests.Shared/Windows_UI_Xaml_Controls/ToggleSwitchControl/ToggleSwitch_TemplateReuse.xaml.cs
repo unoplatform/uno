@@ -26,12 +26,15 @@ namespace UITests.Shared.Windows_UI_Xaml_Controls.ToggleSwitchControl
 				root.Child = c;
 				unload.IsEnabled = true;
 				reload.IsEnabled = false;
+#if !WINDOWS_UWP
 				PropagateOnTemplateReusedTest(separatedToggleSwitch);
+#endif
 			};
 		}
 
 		// Test is a copy of method PropagateOnTemplateReused which is inaccessible due to protection level and isn't called due to no caching in Samples
-		// Therefore this method 
+		// Therefore this method
+#if !WINDOWS_UWP
 		internal static void PropagateOnTemplateReusedTest(ToggleSwitch instance)
 		{
 			if (instance is ToggleSwitch templateAwareElement && (instance as IFrameworkElement).DataContext == null)
@@ -39,5 +42,6 @@ namespace UITests.Shared.Windows_UI_Xaml_Controls.ToggleSwitchControl
 				templateAwareElement.OnTemplateRecycled();
 			}
 		}
+#endif
 	}
 }

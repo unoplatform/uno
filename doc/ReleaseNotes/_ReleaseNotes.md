@@ -54,6 +54,7 @@
 * [Android/iOS] Fixed Arc command in paths
 * Changing the `DataContext` of an element to a new value were pushing the properties default
   value on data bound properties before setting the new value.
+* TemplateReuse not called when dataContext is set
 
 ## Release 1.45.0
 ### Features
