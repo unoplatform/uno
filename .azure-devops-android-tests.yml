@@ -37,5 +37,5 @@ jobs:
     condition: always()
     inputs:
       PathtoPublish: $(build.artifactstagingdirectory)
-      ArtifactName: wasm-uitests
+      ArtifactName: uitests-results
       ArtifactType: Container

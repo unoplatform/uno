@@ -82,7 +82,7 @@ jobs:
     inputs:
       SourceFolder: $(build.sourcesdirectory)/src/SamplesApp/SamplesApp.Wasm.UITests/out
       Contents: '**/*.*'
-      TargetFolder: $(build.artifactstagingdirectory)/screenshots
+      TargetFolder: $(build.artifactstagingdirectory)/screenshots/wasm
       CleanTargetFolder: false
       OverWrite: false
       flattenFolders: false
@@ -90,7 +90,7 @@ jobs:
   - task: PublishBuildArtifacts@1
     inputs:
       PathtoPublish: $(build.artifactstagingdirectory)
-      ArtifactName: wasm-uitests
+      ArtifactName: uitests-results
       ArtifactType: Container
 
 
@@ -133,9 +133,8 @@ jobs:
     condition: always()
     inputs:
       PathtoPublish: $(build.artifactstagingdirectory)
-      ArtifactName: wasm-uitests
+      ArtifactName: uitests-results
       ArtifactType: Container
-
 
 - job: Wasm_UITests_Compare
   dependsOn: Wasm_UITests_Snap
@@ -166,7 +165,7 @@ jobs:
       createLogFile: false
 
   - script: |
-      src\Uno.UI.TestComparer\bin\Release\net461\Uno.UI.TestComparer.exe "azdo" "$(UITestsCompare_PAT)" "$(build.artifactstagingdirectory)" "%GIT_SOURCEBRANCH%" "%GIT_TARGETBRANCH%" "wasm-uitests" "$(Build.DefinitionName)" "$(System.TeamProject)" "$(System.TeamFoundationCollectionUri)" "$(Build.BuildId)" "3"
+      src\Uno.UI.TestComparer\bin\Release\net461\Uno.UI.TestComparer.exe "azdo" "$(UITestsCompare_PAT)" "$(build.artifactstagingdirectory)" "%GIT_SOURCEBRANCH%" "%GIT_TARGETBRANCH%" "uitests-results" "$(Build.DefinitionName)" "$(System.TeamProject)" "$(System.TeamFoundationCollectionUri)" "$(Build.BuildId)" "3"
       
     env:
       GIT_TARGETBRANCH: "$(System.PullRequest.TargetBranch)"

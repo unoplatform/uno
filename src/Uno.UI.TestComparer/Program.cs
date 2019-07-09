@@ -46,9 +46,11 @@ namespace Umbrella.UI.TestComparer
 				var runLimit = int.Parse(args[10]);
 
 				var downloader = new AzureDevopsDownloader(pat, serverUri);
-				downloader.DownloadArtifacts(Path.Combine(basePath, "wasm"), projectName, definitionName, artifactName, sourceBranch, targetBranch, currentBuild, runLimit).Wait();
+				downloader.DownloadArtifacts(basePath, projectName, definitionName, artifactName, sourceBranch, targetBranch, currentBuild, runLimit).Wait();
 
 				ProcessFiles(args, basePath, "wasm");
+				ProcessFiles(args, basePath, "wasm-automated");
+				ProcessFiles(args, basePath, "android");
 			}
 			else if (args[0] == "compare")
 			{
