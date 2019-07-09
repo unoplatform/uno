@@ -53,6 +53,10 @@ namespace Windows.Media.Playback
 			{
 				_target = new WeakReference<MediaPlayer>(target);
 
+				OnMediaFailed = OnMediaFailedCore;
+				OnMediaStalled = OnMediaStalledCore;
+				OnMediaEnded = OnMediaEndedCore;
+
 				// Explicitly leak this object! Cf. Remarks above.
 				GCHandle.Alloc(this);
 			}
@@ -87,6 +91,18 @@ namespace Windows.Media.Playback
 						return;
 				}
 			}
+
+			public EventHandler<AVPlayerItemErrorEventArgs> OnMediaFailed { get; }
+			private void OnMediaFailedCore(object sender, AVPlayerItemErrorEventArgs args)
+				=> _target.GetTarget()?.OnMediaFailed(new Exception(args.Error.LocalizedDescription));
+
+			public EventHandler<NSNotificationEventArgs> OnMediaStalled { get; }
+			private void OnMediaStalledCore(object sender, NSNotificationEventArgs args)
+				=> _target.GetTarget()?.OnMediaFailed();
+
+			public EventHandler<NSNotificationEventArgs> OnMediaEnded { get; }
+			private void OnMediaEndedCore(object sender, NSNotificationEventArgs args)
+				=> _target.GetTarget()?.OnMediaEnded(sender, args);
 		}
 
 		private Observer _observer;
@@ -164,9 +180,9 @@ namespace Windows.Media.Playback
 			_videoLayer.AddObserver(_observer, new NSString("videoRect"), NSKeyValueObservingOptions.New | NSKeyValueObservingOptions.Initial, _videoLayer.Handle);
 			_player.AddObserver(_observer, new NSString("rate"), NSKeyValueObservingOptions.New | NSKeyValueObservingOptions.Initial, RateObservationContext.Handle);
 
-			_itemFailedToPlayToEndTimeNotification = AVPlayerItem.Notifications.ObserveItemFailedToPlayToEndTime((sender, args) => OnMediaFailed(new Exception(args.Error.LocalizedDescription)));
-			_playbackStalledNotification = AVPlayerItem.Notifications.ObservePlaybackStalled((sender, args) => OnMediaFailed());
-			_didPlayToEndTimeNotification = AVPlayerItem.Notifications.ObserveDidPlayToEndTime((sender, args) => OnMediaEnded(sender, args));
+			_itemFailedToPlayToEndTimeNotification = AVPlayerItem.Notifications.ObserveItemFailedToPlayToEndTime(_observer.OnMediaFailed);
+			_playbackStalledNotification = AVPlayerItem.Notifications.ObservePlaybackStalled(_observer.OnMediaStalled);
+			_didPlayToEndTimeNotification = AVPlayerItem.Notifications.ObserveDidPlayToEndTime(_observer.OnMediaEnded);
 
 			_periodicTimeObserverObject = _player.AddPeriodicTimeObserver(new CMTime(1, 4), DispatchQueue.MainQueue, delegate
 			{
