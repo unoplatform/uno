@@ -315,6 +315,19 @@ namespace SamplesApp.UITests
 
 			Assert.AreEqual(Final, GetText(textBox));
 			Assert.AreEqual(Final, GetText(textBlock));
+
+			_app.ClearText();
+
+			Assert.AreEqual("", GetText(textBox));
+			Assert.AreEqual("", GetText(textBlock));
+
+			const string Entered2 = "Any way the wind blows";
+			const string Final2 = " the wind blows";
+
+			TypeInto("LimitLengthTextBox", Entered2, Final2);
+
+			Assert.AreEqual(Final2, GetText(textBox));
+			Assert.AreEqual(Final2, GetText(textBlock));
 		}
 
 		[Test]
@@ -331,6 +344,19 @@ namespace SamplesApp.UITests
 
 			Assert.AreEqual(Final, GetText(textBox));
 			Assert.AreEqual(Final, GetText(textBlock));
+
+			_app.ClearText();
+
+			Assert.AreEqual("", GetText(textBox));
+			Assert.AreEqual("", GetText(textBlock));
+
+			const string Entered2 = "See the eels";
+			const string Final2 = "eeeee";
+
+			TypeInto("BeforeTextBox", Entered2, Final2);
+
+			Assert.AreEqual(Final2, GetText(textBox));
+			Assert.AreEqual(Final2, GetText(textBlock));
 		}
 
 		private QueryEx TypeInto(string textBoxName, string inputText, string expectedText)
