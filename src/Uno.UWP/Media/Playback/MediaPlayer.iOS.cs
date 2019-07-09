@@ -53,6 +53,8 @@ namespace Windows.Media.Playback
 			{
 				_target = new WeakReference<MediaPlayer>(target);
 
+				// Here we make sure to create only one instance of each handler delegate
+				// and mainly we make sure to hold those instances so they won't be collected.
 				OnMediaFailed = OnMediaFailedCore;
 				OnMediaStalled = OnMediaStalledCore;
 				OnMediaEnded = OnMediaEndedCore;
