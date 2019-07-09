@@ -13,7 +13,8 @@
 	  <Button x:Name="showDialog1" Click="OnMyButtonClick" Content="Show Dialog" />
 	  <Button x:Name="showDialog2" Click="OnMyButtonClick2" Content="Show Dialog 2" />
 	  <Button x:Name="showDialog3" Click="OnMyButtonClick3" Content="Show Dialog 3" />
-	  <Button x:Name="showDialog4" Click="OnMyButtonClick4" Content="Show Dialog 4" />
+	  <Button x:Name="showDialog4" Click="OnMyButtonClick4" Content="Show Dialog 4 (Command)" />
+	  <Button x:Name="showDialog5" Click="OnMyButtonClick5" Content="Show Dialog 5 (Primary as Default Button)" />
 	  <TextBlock x:Name="dialogResult" Text="Undefined" />
 	  <TextBlock x:Name="commandResult" Text="Undefined" />
 	</StackPanel>

@@ -7,6 +7,7 @@ using Uno.Client;
 using Uno.Disposables;
 using Uno.Extensions;
 using Windows.Foundation;
+using Windows.UI.Xaml.Input;
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -25,9 +26,41 @@ namespace Windows.UI.Xaml.Controls
 				Opened?.Invoke(this, new ContentDialogOpenedEventArgs());
 				VisualStateManager.GoToState(this, "DialogShowing", true);
 			};
+			this.KeyDown += OnPopupKeyDown;
 
 			Loaded += (s, e) => RegisterEvents();
 			Unloaded += (s, e) => UnregisterEvents();
+		}
+
+		private void OnPopupKeyDown(object sender, KeyRoutedEventArgs e)
+		{
+			switch (e.Key)
+			{
+				case System.VirtualKey.Enter:
+					switch(DefaultButton)
+					{
+						case ContentDialogButton.Close:
+							ProcessCloseButton();
+							break;
+
+						case ContentDialogButton.Primary:
+							ProcessPrimaryButton();
+							break;
+
+						case ContentDialogButton.Secondary:
+							ProcessSecondaryButton();
+							break;
+
+						default:
+						case ContentDialogButton.None:
+							break;
+					}
+					break;
+
+				case System.VirtualKey.Escape:
+					ProcessCloseButton();
+					break;
+			}
 		}
 
 		public void Hide()
@@ -40,6 +73,7 @@ namespace Windows.UI.Xaml.Controls
 			base.OnApplyTemplate();
 
 			UpdateButtonsVisualStates();
+			ApplyDefaultButtonChanged(DefaultButton);
 		}
 
 		public IAsyncOperation<ContentDialogResult> ShowAsync()
@@ -174,6 +208,15 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		private void OnCloseButtonClicked(object sender, RoutedEventArgs e)
+			=> ProcessCloseButton();
+
+		private void OnSecondaryButtonClicked(object sender, RoutedEventArgs e)
+			=> ProcessSecondaryButton();
+
+		private void OnPrimaryButtonClicked(object sender, RoutedEventArgs e)
+			=> ProcessPrimaryButton();
+
+		private void ProcessCloseButton()
 		{
 			void Complete(ContentDialogButtonClickEventArgs a)
 			{
@@ -194,7 +237,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		private void OnSecondaryButtonClicked(object sender, RoutedEventArgs e)
+		private void ProcessSecondaryButton()
 		{
 			void Complete(ContentDialogButtonClickEventArgs a)
 			{
@@ -215,7 +258,8 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		private void OnPrimaryButtonClicked(object sender, RoutedEventArgs e)
+
+		private void ProcessPrimaryButton()
 		{
 			void Complete(ContentDialogButtonClickEventArgs a)
 			{
@@ -244,6 +288,11 @@ namespace Windows.UI.Xaml.Controls
 
 		private void OnDefaultButtonChanged(ContentDialogButton oldValue, ContentDialogButton newValue)
 		{
+			ApplyDefaultButtonChanged(newValue);
+		}
+
+		private void ApplyDefaultButtonChanged(ContentDialogButton newValue)
+		{
 			switch (newValue)
 			{
 				case ContentDialogButton.None:
@@ -253,7 +302,7 @@ namespace Windows.UI.Xaml.Controls
 				case ContentDialogButton.Close:
 				case ContentDialogButton.Primary:
 				case ContentDialogButton.Secondary:
-					VisualStateManager.GoToState(this, $"{newValue}SAsDefaultButton", true);
+					VisualStateManager.GoToState(this, $"{newValue}AsDefaultButton", true);
 					break;
 			}
 		}
