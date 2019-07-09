@@ -17,7 +17,7 @@ using Windows.UI.Xaml.Navigation;
 
 namespace Uno.UI.Samples.Content.UITests.TextBoxControl
 {
-	[SampleControlInfoAttribute("TextBoxControl", "PasswordBox_Simple")]
+	[SampleControlInfoAttribute("TextBox", "PasswordBox_Simple")]
 	public sealed partial class PasswordBox_Simple : UserControl
 	{
 		public PasswordBox_Simple()

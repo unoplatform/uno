@@ -17,7 +17,7 @@ using Windows.UI.Xaml.Navigation;
 
 namespace Uno.UI.Samples.Content.UITests.TextBoxControl
 {
-	[SampleControlInfoAttribute("TextBoxControl", "TextBox_Focus")]
+	[SampleControlInfoAttribute("TextBox", "TextBox_Focus")]
 	public sealed partial class TextBox_Focus : UserControl
 	{
 		public TextBox_Focus()

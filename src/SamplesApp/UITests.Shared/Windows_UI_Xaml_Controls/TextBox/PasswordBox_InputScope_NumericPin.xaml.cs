@@ -17,7 +17,7 @@ using Windows.UI.Xaml.Navigation;
 
 namespace Uno.UI.Samples.Content.UITests.TextBoxControl
 {
-	[SampleControlInfoAttribute("TextBoxControl", "PasswordBox_InputScope_NumericPin")]
+	[SampleControlInfoAttribute("TextBox", "PasswordBox_InputScope_NumericPin")]
 	public sealed partial class PasswordBox_InputScope_NumericPin : UserControl
 	{
 		public PasswordBox_InputScope_NumericPin()
