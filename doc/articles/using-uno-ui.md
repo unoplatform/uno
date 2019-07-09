@@ -30,7 +30,7 @@ encounter one, a few approaches can be taken:
     workarounds or guidance on how to handle the issue.
  1. **Try to find a UWP-compatible workaround**, possibly non-breaking, meaning that the added Xaml produces the
     same behavior for all platforms, even if it does not conform to the expected UWP behavior.
- 1. **Make the Xaml code conditional to Uno.UI**, using xml namespaces. Note that using 
+ 1. **Make the Xaml code conditional to Uno.UI**, using [xml namespaces](platform-specific-xaml.md). Note that using 
     this technique exposes the app's code to breaking changes.
 
 ## Bootstrapping Uno.UI
@@ -98,78 +98,7 @@ The properties are :
 
 ## Supporting multiple platforms in Xaml files
 
-The Uno.UI Xaml parser has the ability to manage specific namespaces, giving the ability to ignore or enable specific Xaml nodes and attributes.
-
-By default, these namespaces are supported :
-
-*   xmlns:win="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-*   xmlns:ios="http://uno.ui/ios"
-*   xmlns:android="http://uno.ui/android"
-*   xmlns:xamarin="http://uno.ui/xamarin"
-*   xmlns:wasm="http://uno.ui/wasm"
-
-These namespaces are to be declared on top of each Xaml file that will be included in the final binary.
-
-Also, the following ignorables must be declared :
-
-```xml
-    mc:Ignorable="d ios android xamarin"
-```
-
-This list is mandatory for the Windows Xaml parser to ignore non-Windows markup.
-
-On non-Windows platforms, the Uno Platform will selectively remove or add the appropriate namespaces so that only the relevant markup is processed.
-
-For instance, on Xamarin.iOS, the Ignorable attribute will automatically be set to:
-
-```xml
-    mc:Ignorable="d win android"
-```
-
-which will make the `win` and `android` namespaces ignored by the Uno.UI parser.
-
-Similarly, on Xamarin.Android, the Ignorable attribute will automatically be set to : 
-
-```xml
-    mc:Ignorable="d win ios"
-```
-
-which will make the win and ios namespaces ignored by the Uno.UI parser.
-
-In the Xaml file, it is then possible to write the following :
-
-```xml
-    <ItemsPanelTemplate>  
-          <xamarin:WrapPanel ItemWidth="100" Name="WrapPanelElement_SimpleHorizontal" />  
-          <win:WrapGrid ItemWidth="100" Name="WrapGridElement" />  
-    </ItemsPanelTemplate>
-```
-
-Where depending on the platform, a different panel will be selected at compile time.
-
-Here's a complete file sample :
-
-```xml
-    <UserControl
-        x:Class="GenericApp.Views.Content.UITests.MyControl"
-        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:ios="http://nventive.com/ios"
-        xmlns:win="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:android="http://nventive.com/android"
-        mc:Ignorable="d ios android"
-        d:DesignHeight="300"
-        d:DesignWidth="400">
-    
-       <ItemsPanelTemplate>  
-          <xamarin:WrapPanel ItemWidth="100" Name="WrapPanelElement_SimpleHorizontal" />  
-          <win:WrapGrid ItemWidth="100" Name="WrapGridElement" />  
-       </ItemsPanelTemplate>  
-    
-    </UserControl>
-```
+See [here for a detailed guide to authoring platform-specific XAML code](platform-specific-xaml.md).
 
 ## Uno.UI Layout Behavior
 
@@ -185,7 +114,7 @@ Uno.UI allows the sharing of [Dependency Property](https://msdn.microsoft.com/en
 code between Windows and Xamarin based platforms.
 
 Declaring a dependency property in Uno UI requires a class to implement the  
-interface `DependencyProperty`, to gain access to the GetValue and SetValue methods.
+interface `DependencyObject`, to gain access to the GetValue and SetValue methods.
 
 Here is an example of such a declaration:
 
