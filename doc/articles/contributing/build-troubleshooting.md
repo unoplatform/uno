@@ -1,5 +1,8 @@
 # build troubleshooting
 
+
+## on your computer
+
 Increase the build log verbosity in [Visual Studio to diagnostics](https://docs.microsoft.com/en-us/visualstudio/msbuild/obtaining-build-logs-with-msbuild?view=vs-2019). 
 
 Head to Tools -> Options -> MS Build Verbosity
@@ -38,3 +41,7 @@ nuget locals all -clear
 ```
 
 Then privately share the binlog. Please note that binlogs can contain sensitive information such as environment variables, thus if `ARM_CLIENT_SECRET` or `AWS_IAM_SECRET` or `MY_SUPER_SECRET_GITHUB_TOKEN` are set then they will be inside the logs and anyone with the logs can view em. Be careful.
+
+## on azure devops
+
+Logs and artifacts from a build can be accessed via `https://uno-platform.visualstudio.com/Uno%20Platform/_build/results?buildId=<buildid>`
