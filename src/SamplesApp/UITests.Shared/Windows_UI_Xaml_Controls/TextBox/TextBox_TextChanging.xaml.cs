@@ -18,7 +18,7 @@ using Windows.UI.Xaml.Navigation;
 
 namespace UITests.Shared.Windows_UI_Xaml_Controls.TextBoxTests
 {
-	[SampleControlInfoAttribute("TextBox", "TextBox_TextChanging")]
+	[SampleControlInfo("TextBox", "TextBox_TextChanging")]
 	public sealed partial class TextBox_TextChanging : UserControl
 	{
 		public TextBox_TextChanging()
