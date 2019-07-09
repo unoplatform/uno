@@ -30,10 +30,34 @@ This difference is particularly visible for custom panel implementations.
 
 The implementations of the ListView for iOS and Android use the native controls for performance reasons, see the [ListViewBase implementation documentation][ListViewBase.md].
 
-## Styles 
+## Styles & XAML Resources
 
 The Xaml styles uno are currently supporting two levels: global and local a Xaml file. This means that any *named* style in a file containing only a `ResourceDictionary` is accessible everywhere without including that resource dictionary.
 
 Overriding implicit styles is currently not supported.
 
-Theme resources are also considered as `StaticResource`.
+### Theme Resources & Theme Dictionaries
+
+_Theme resources_ are also considered as `StaticResource`. In the current Uno's implementation, there's
+no difference between a `{StaticResource xxx}` and a `{ThemeResource xxx}`: they will both resolve to
+the resource `xxx`.
+
+`FrameworkElement.RequestedTheme` is not supported yet. The `Application.Current.RequestedTheme` property
+must be set at launch time. Documentation: [`Application.RequestedTheme`](https://docs.microsoft.com/en-us/uwp/api/windows.ui.xaml.application.requestedtheme)
+
+### Custom Themes
+
+On Windows, there are some _themes_ that can target, but there is no way to trigger them. The most
+known is the `HighContrast` theme.
+
+You can do something similar - an even create totally custom themes - by using the following helper:
+
+``` csharp
+  // Set current theme to Hich contrast
+  Uno.UI.RequestedCustomTheme = "HighContrast";
+```
+
+* Beware, all themes are **CASE SENSITIVE**.
+* Themed dictionaries will fall back to `Application.Current.RequestedTheme` when they are not
+  defining a resource for the custom theme.
+* You can put any string and create totally custom themes, but they won't be supported by UWP.

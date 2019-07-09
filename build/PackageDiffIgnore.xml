@@ -176,16 +176,20 @@
         <Member fullName="System.Void Windows.Devices.Sensors.BarometerReading..ctor()"
                 reason="Parameter-less ctor does not exist in UWP" />
         <Member fullName="System.Void Windows.Devices.Sensors.BarometerReadingChangedEventArgs..ctor()"
-		reason="Parameter-less ctor does not exist in UWP" />
+				reason="Parameter-less ctor does not exist in UWP" />
         <Member fullName="System.Void Windows.Phone.Devices.Notification.VibrationDevice..ctor()"
                 reason="Parameter-less ctor does not exist in UWP" />
         <Member fullName="System.Void Windows.UI.Xaml.Controls.VirtualizingPanelLayout.UpdateLayoutAttributesForItem(UIKit.UICollectionViewLayoutAttributes layoutAttributes)"
                 reason="Implementation detail, made internal"/>
         <Member fullName="Android.Views.View Windows.UI.Xaml.Controls.Popup.get_Anchor()"
-	        reason="Invalid method visibility"/>
-	<Member fullName="System.Void Windows.UI.Xaml.Controls.Popup.set_Anchor(Android.Views.View value)"
-	        reason="Invalid method visibility"/>
-      </Methods>
+				reason="Invalid method visibility"/>
+		<Member fullName="System.Void Windows.UI.Xaml.Controls.Popup.set_Anchor(Android.Views.View value)"
+				reason="Invalid method visibility"/>
+		<Member fullName="System.Void Windows.Media.Playback.MediaPlayer.ObserveValue(Foundation.NSString keyPath, Foundation.NSObject ofObject, Foundation.NSDictionary change, System.IntPtr context)"
+				reason="Invalid method visibility"/>
+        <Member fullName="System.Void Windows.Media.Playback.MediaPlayer.Dispose(System.Boolean disposing)"
+				reason="Invalid method visibility"/>
+	  </Methods>
 	  
 	  <Fields>
 	  	<Member fullName="Windows.UI.Xaml.TextWrapping Windows.UI.Xaml.TextWrapping::WordEllipsis"

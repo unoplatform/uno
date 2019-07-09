@@ -12,6 +12,17 @@
 * Add support for filtered solutions development for Uno.UI contributions.
 * 132984 [Android] Notch support on Android
 * Add support for Android UI Tests in PRs for improved regression testing
+* Add static support for **ThemeResources**: `Application.Current.RequestedTheme` is supported
+  - `Dark` and `Light` are supported.
+  - **Custom Themes** are supported. This let you specify `HighContrast` or any other custom themes.
+    (this is a feature not supported in UWP)
+    ``` csharp
+    // Put that somewhere during app initialization...
+    Uno.UI.ApplicationHelper.RequestedCustomTheme = "MyCustomTheme";
+    ```
+  - `FrameworkElement.RequestedTheme ` is ignored for now.
+  - Should be set when the application is starting (before first request to a static resource).
+* Prevent possible crash with `MediaPlayerElement` (tentative)
 
 ### Breaking changes
 *
