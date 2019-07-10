@@ -865,6 +865,22 @@ namespace Uno.UI.Tests.BinderTests
 			Assert.AreEqual(42, SUT.Property2);
 		}
 
+#if !NET461
+		[TestMethod]
+		public void When_SettingBindingWithDataContext()
+		{
+			var source = new MyBindingSource { IntValue = 42 };
+			var target = new MyControl();
+			var target2 = new MyObjectTest();
+
+			target.SetBinding(MyControl.MyPropertyProperty, new Binding { Source = source, Path = nameof(MyBindingSource.IntValue), Mode = BindingMode.TwoWay, UpdateSourceTrigger = UpdateSourceTrigger.Explicit });
+			Assert.AreEqual(42, target.MyProperty);
+
+			target.Binding(target2.MyProperty.GetType(), target2.MyProperty.GetType(), target2, BindingMode.TwoWay);
+			Assert.AreEqual(42, target2.MyProperty);
+		}
+#endif
+
 		public partial class BaseTarget : DependencyObject
 		{
 			private List<object> _dataContextChangedList = new List<object>();
@@ -884,7 +900,7 @@ namespace Uno.UI.Tests.BinderTests
 				DataContextChangedCount++;
 			}
 
-			#region ChildrenBinders DependencyProperty
+#region ChildrenBinders DependencyProperty
 
 			public IList<DependencyObject> ChildrenBinders
 			{
@@ -906,7 +922,7 @@ namespace Uno.UI.Tests.BinderTests
 			{
 			}
 
-			#endregion
+#endregion
 
 		}
 
@@ -923,7 +939,7 @@ namespace Uno.UI.Tests.BinderTests
 
 			}
 
-			#region TargetValue DependencyProperty
+#region TargetValue DependencyProperty
 
 			public int TargetValue
 			{
@@ -941,14 +957,14 @@ namespace Uno.UI.Tests.BinderTests
 				TargetValueSetCount++;
 			}
 
-			#endregion
+#endregion
 
 
 
 			public int TargetValueSetCount { get; set; }
 
 
-			#region Brush DependencyProperty
+#region Brush DependencyProperty
 
 			public Brush Brush
 			{
@@ -966,12 +982,12 @@ namespace Uno.UI.Tests.BinderTests
 				BrushSetCount++;
 			}
 
-			#endregion
+#endregion
 
 			public int BrushSetCount { get; set; }
 
 
-			#region Object DependencyProperty
+#region Object DependencyProperty
 
 			public Object Object
 			{
@@ -989,7 +1005,7 @@ namespace Uno.UI.Tests.BinderTests
 				objectSetCount++;
 			}
 
-			#endregion
+#endregion
 
 			public int objectSetCount { get; set; }
 		}
@@ -1165,7 +1181,7 @@ namespace Uno.UI.Tests.BinderTests
 
 	public partial class MyObjectTest : DependencyObject
 	{
-		#region MyProperty DependencyProperty
+#region MyProperty DependencyProperty
 
 		public int MyProperty
 		{
@@ -1182,7 +1198,7 @@ namespace Uno.UI.Tests.BinderTests
 		{
 		}
 
-		#endregion
+#endregion
 	}
 
 

@@ -115,8 +115,11 @@ namespace Windows.UI.Xaml.Data
 				_isElementNameSource = true;
 			}
 
-
-			ApplyFallbackValue();
+			if (!(GetWeakDataContext()?.IsAlive ?? false))
+			{
+				ApplyFallbackValue();
+			}
+			
 			ApplyExplicitSource();
 			ApplyElementName();
 		}
