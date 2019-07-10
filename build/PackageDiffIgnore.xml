@@ -210,6 +210,20 @@
                 reason="ctor is internal in UWP"/>
         <Member fullName="System.Void Windows.UI.Xaml.Controls.ContentDialogClosingEventArgs..ctor()"
                 reason="ctor is internal in UWP"/>
+        <Member fullName="System.Void Windows.UI.Xaml.Controls.TextBoxBeforeTextChangingEventArgs..ctor()"
+				reason="Constructor is internal on UWP"/>
+        <Member fullName="System.Void Windows.UI.Xaml.Controls.TextBoxTextChangingEventArgs..ctor()"
+				reason="Constructor is internal on UWP"/>
+        <Member fullName="System.Void Windows.UI.Xaml.Controls.TextChangedEventArgs..ctor()"
+				reason="Constructor is internal on UWP"/>
+        <Member fullName="System.Void Windows.UI.Xaml.Controls.TextBoxView..ctor()"
+				reason="Added required parameter to Android constructor. TextBoxView is internal on UWP, shouldn't normally be created or manipulated by user code."/>
+        <Member fullName="System.String Windows.UI.Xaml.Controls.TextBoxView.get_BindableText()"
+				reason="Removed obsolete property. TextBoxView is internal on UWP, shouldn't normally be created or manipulated by user code."/>
+        <Member fullName="System.Void Windows.UI.Xaml.Controls.TextBoxView.set_BindableText(System.String value)"
+				reason="Removed obsolete property. TextBoxView is internal on UWP, shouldn't normally be created or manipulated by user code."/>
+        <Member fullName="System.Void Windows.UI.Xaml.Controls.TextBoxView.NotifyTextChanged()"
+				reason="Removed obsolete method. TextBoxView is internal on UWP, shouldn't normally be created or manipulated by user code."/>
 	  </Methods>
 	  
       <Fields>
@@ -226,6 +240,8 @@
 
         <Member fullName="Android.Views.View Windows.UI.Xaml.Controls.Popup::Anchor()"
                 reason="Invalid property visibility" />
+        <Member fullName="System.String Windows.UI.Xaml.Controls.TextBoxView::BindableText()"
+				reason="Removed obsolete method. TextBoxView is internal on UWP, shouldn't normally be created or manipulated by user code."/>
       </Properties>
 
     </IgnoreSet>
