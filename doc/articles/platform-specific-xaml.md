@@ -23,26 +23,33 @@ For prefixes which will be excluded on Windows (eg `android`, `ios`), the actual
 ### Example
 
 ```xaml
-<Page x:Class="UnoTestbed4.MainPage"
+<Page x:Class="HelloWorld.MainPage"
 	  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 	  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 	  xmlns:android="http://uno.ui/android"
 	  xmlns:ios="http://uno.ui/ios"
+	  xmlns:wasm="http://uno.ui/wasm"
 	  xmlns:win="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 	  xmlns:not_android="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 	  xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 	  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-	  mc:Ignorable="d android ios">
+	  mc:Ignorable="d android ios wasm">
 
-	<StackPanel>
-		<TextBlock Text="This text will be large on Windows"
-				   win:FontSize="16" />
+	<StackPanel Margin="20,70,0,0">
+		<TextBlock Text="This text will be large on Windows, and pink on WASM"
+				   win:FontSize="24"
+				   wasm:Foreground="DeepPink"
+				   TextWrapping="Wrap"/>
 		<TextBlock android:Text="This version will be used on Android"
 				   not_android:Text="This version will be used on every other platform" />
 		<ios:TextBlock Text="This TextBlock will only be created on iOS" />
 	</StackPanel>
 </Page>
 ```
+
+This results in:
+
+![Visual output](Assets/platform-specific-xaml.png)
 
 ### Available prefixes
 
