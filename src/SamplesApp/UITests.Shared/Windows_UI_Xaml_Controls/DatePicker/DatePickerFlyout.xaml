@@ -1,0 +1,32 @@
+﻿<Page x:Class="SamplesApp.Samples.DatePicker.DatePickerFlyoutSample"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:local="using:ControlTests"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+      xmlns:xamarin="http://nventive.com/xamarin"
+      xmlns:ios="http://nventive.com/ios"
+      xmlns:android="http://nventive.com/android"
+      xmlns:native_ios="using:UIKit"
+      xmlns:native_android="using:Android.Widget"
+      xmlns:controls="using:Uno.UI.Samples.Controls"
+      mc:Ignorable="xamarin android ios native_ios native_android">
+
+	<controls:SampleControl SampleDescription="Sample for Date Picker Flyout. The DatePicker should appear at the bottom on iOS.">
+		<controls:SampleControl.SampleContent>
+			<DataTemplate>
+				<Grid Margin="0,100,0,0">
+					<Grid.RowDefinitions>
+						<RowDefinition Height="Auto" />
+						<RowDefinition Height="Auto" />
+					</Grid.RowDefinitions>
+
+					<Button Content="Click to open a date picker flyout">
+						<Button.Flyout>
+							<DatePickerFlyout ios:Placement="Full"/>
+						</Button.Flyout>
+					</Button>
+				</Grid>
+			</DataTemplate>
+		</controls:SampleControl.SampleContent>
+	</controls:SampleControl>
+</Page>

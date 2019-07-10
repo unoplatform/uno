@@ -25,6 +25,16 @@ namespace Windows.UI.Xaml.Controls
 			_flyout = flyout;
 		}
 
+		protected override Size MeasureOverride(Size availableSize)
+		{
+			if (this._flyout.Placement == FlyoutPlacementMode.Full)
+			{
+				return base.MeasureOverride(new Size(double.MaxValue, double.MaxValue));
+			}
+
+			return base.MeasureOverride(availableSize);
+		}
+
 		protected override Size ArrangeOverride(Size finalSize)
 		{
 			foreach (var child in Children)
@@ -35,7 +45,15 @@ namespace Windows.UI.Xaml.Controls
 				}
 
 				var desiredSize = elem.DesiredSize;
-				var rect = CalculateFlyoutPlacement(desiredSize);
+				Rect rect;
+				if (this._flyout.Placement == FlyoutPlacementMode.Full)
+				{
+					rect = CalculateFlyoutPlacement(new Size(double.MaxValue, double.MaxValue));
+				}
+				else
+				{
+					rect = CalculateFlyoutPlacement(desiredSize);
+				}
 				elem.Arrange(rect);
 			}
 

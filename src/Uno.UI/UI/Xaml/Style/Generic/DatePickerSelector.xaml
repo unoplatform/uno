@@ -15,16 +15,48 @@
 		<ios:Setter Property="Template">
 			<Setter.Value>
 				<ControlTemplate TargetType="DatePickerSelector">
-					<Border Background="White"
-							Margin="5"
-							CornerRadius="10">
-						<native:UIDatePicker/>
-					</Border>
+					<Grid VerticalAlignment="Stretch">
+						<Border x:Name="FlyoutScrim"
+								Background="#8000"
+								VerticalAlignment="Stretch"
+								HorizontalAlignment="Stretch"/>
+						<Border x:Name="FlyoutContent"
+								Background="White"
+								VerticalAlignment="Bottom">
+							<StackPanel>
+								<Border Height="44"
+										Background="White">
+									<!--Customize this section with the desired content. Don't forget to localize your resources-->
+									<Button Content="Done"
+											x:Name="AcceptButton"
+											x:Uid="ComboBox_Done"
+											Padding="0,0,15,0"
+											HorizontalAlignment="Right"
+											VerticalContentAlignment="Center"
+											HorizontalContentAlignment="Right"
+											VerticalAlignment="Stretch">
+										<Button.Template>
+											<ControlTemplate>
+												<TextBlock FontSize="16" 
+														   Foreground="Black" 
+														   Margin="0,0,15,0"
+														   VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+														   HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+														   Text="{TemplateBinding Content}" />
+											</ControlTemplate>
+										</Button.Template>
+									</Button>
+								</Border>
+								<!-- Native date picker -->
+								<native:UIDatePicker/>
+							</StackPanel>
+						</Border>
+					</Grid>
 				</ControlTemplate>
 			</Setter.Value>
 		</ios:Setter>
-        <ios:Setter Property="FlyoutPlacement"
-				Value="Full" />		
+		<Setter Property="VerticalAlignment"
+				Value="Stretch"/>
 	</xamarin:Style>
 
 </ResourceDictionary>

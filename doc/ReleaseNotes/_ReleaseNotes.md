@@ -36,6 +36,7 @@
 * Fix invalid XAML x:Uid parsing with resource file name and prefix (#1130, #228)
 * Fixed an issue where a Two-Way binding would sometimes not update values back to source correctly
 * Adjust the behavior of `DisplayInformation.LogicalDpi` to match UWP's behavior
+* [iOS] DatePickerFlyout is displayed at the bottom of the screen instead of the center
 
 ## Release 1.45.0
 ### Features
