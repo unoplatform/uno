@@ -51,7 +51,7 @@ namespace Windows.UI.Xaml.Controls
 		private readonly Dictionary<int, LayoutInfoDictionary> _itemLayoutInfos = new Dictionary<int, LayoutInfoDictionary>();
 		private readonly Dictionary<string, LayoutInfoDictionary> _supplementaryLayoutInfos = new Dictionary<string, LayoutInfoDictionary>();
 		/// <summary>
-		/// The last element in the list. This is set when the layout is created (and will point to the databound size and position of 
+		/// The last element in the list. This is set when the layout is created (and will point to the databound size and position of
 		/// the element, once it has been materialized).
 		/// </summary>
 		private UICollectionViewLayoutAttributes _lastElement;
@@ -131,7 +131,7 @@ namespace Windows.UI.Xaml.Controls
 		private ListViewBase XamlParent => Source.GetTarget()?.Owner?.XamlParent;
 
 		/// <summary>
-		/// Whether this panel supports item view sizes which vary depending on the bound data. (Note that this doesn't 
+		/// Whether this panel supports item view sizes which vary depending on the bound data. (Note that this doesn't
 		/// include variable databound sizes for headers, footers, and group headers, which all panels are assumed to support.)
 		/// </summary>
 		internal abstract bool SupportsDynamicItemSizes { get; }
@@ -192,8 +192,8 @@ namespace Windows.UI.Xaml.Controls
 			var isHeaderOrFooter = kind == NativeListViewBase.ListViewFooterElementKindNS || kind == NativeListViewBase.ListViewHeaderElementKindNS;
 			if (isHeaderOrFooter && indexPath?.Section != 0)
 			{
-				// We always give the Header and Footer indexPath (0,0) by convention, but in the case that a group is inserted at 0, 
-				// UICollectionView can momentarily believe that the section of the header/footer has also shifted. 
+				// We always give the Header and Footer indexPath (0,0) by convention, but in the case that a group is inserted at 0,
+				// UICollectionView can momentarily believe that the section of the header/footer has also shifted.
 				indexPath = NSIndexPath.FromRowSection(0, 0);
 			}
 
@@ -297,7 +297,7 @@ namespace Windows.UI.Xaml.Controls
 		public override UICollectionViewLayoutAttributes InitialLayoutAttributesForAppearingItem(NSIndexPath itemIndexPath)
 		{
 			var attributes = base.InitialLayoutAttributesForAppearingItem(itemIndexPath);
-			//For some reason (dynamic item sizing?) this can be called not only for appearing items but any visible item. In this case 
+			//For some reason (dynamic item sizing?) this can be called not only for appearing items but any visible item. In this case
 			// returning a value from our cache prevents glitchy animations.
 			var isUpdatingItem = _updateItems?.Any(item => item.IndexPathAfterUpdate?.Equals(itemIndexPath) ?? false) ?? false;
 			if (!isUpdatingItem)
@@ -315,7 +315,7 @@ namespace Windows.UI.Xaml.Controls
 		public override UICollectionViewLayoutAttributes FinalLayoutAttributesForDisappearingItem(NSIndexPath itemIndexPath)
 		{
 			var attributes = base.FinalLayoutAttributesForDisappearingItem(itemIndexPath);
-			//For some reason (dynamic item sizing?) this can be called not only for disappearing items but any visible item. In this case 
+			//For some reason (dynamic item sizing?) this can be called not only for disappearing items but any visible item. In this case
 			// returning a value from our cache prevents glitchy animations.
 			var isUpdatingItem = _updateItems?.Any(item => item.IndexPathBeforeUpdate?.Equals(itemIndexPath) ?? false) ?? false;
 			if (!isUpdatingItem)
@@ -405,7 +405,7 @@ namespace Windows.UI.Xaml.Controls
 			var oldBreadth = GetBreadth(oldAvailableSize);
 			var newBreadth = GetBreadth(newAvailableSize);
 
-			// Recalculate layout only when the breadth changes. Extent changes don't affect the desired extent reported by layouting (since 
+			// Recalculate layout only when the breadth changes. Extent changes don't affect the desired extent reported by layouting (since
 			// items always get measured with infinite extent).
 			return NMath.Abs(oldBreadth - newBreadth) > epsilon
 				// Skip recalculating layout for 0 size.
@@ -434,7 +434,7 @@ namespace Windows.UI.Xaml.Controls
 				.FirstOrDefault()
 				.Value?.Frame.Size;
 
-			// Header/Footer can be measured by ListViewBaseInternalContainer as zero if, eg, Header is null and HeaderTemplate is set. In 
+			// Header/Footer can be measured by ListViewBaseInternalContainer as zero if, eg, Header is null and HeaderTemplate is set. In
 			// this case we don't want to start with zero dimension because UICollectionView seems to ignore it.
 			if (oldHeaderSize?.HasZeroArea() ?? false)
 			{
@@ -448,7 +448,7 @@ namespace Windows.UI.Xaml.Controls
 			(NSIndexPath Path, string Kind, nfloat Offset)? anchorItem = null;
 			if (isCollectionChanged)
 			{
-				// We are layouting after an INotifyCollectionChanged operation(s). Cache the previous element sizes, under their new index 
+				// We are layouting after an INotifyCollectionChanged operation(s). Cache the previous element sizes, under their new index
 				// paths, so we can reuse them in order not to have to lay out elements with different databound sizes with their static size.
 				oldItemSizes = _itemLayoutInfos.SelectMany(kvp => kvp.Value)
 					.ToDictionary(
@@ -572,7 +572,7 @@ namespace Windows.UI.Xaml.Controls
 
 			if (xamlParent.ShouldShowFooter)
 			{
-				//3. Layout footer 
+				//3. Layout footer
 				frame.Size = oldFooterSize ?? GetFooterSize();
 				//Give the maximum breadth available, since for now we don't adjust the measured width of the list based on the databound item
 				SetBreadth(ref frame, availableBreadth);
@@ -611,7 +611,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		/// <summary>
-		/// Get item which should act as an 'anchor' during a partial relayout of the list. This is the item closest to the top of the 
+		/// Get item which should act as an 'anchor' during a partial relayout of the list. This is the item closest to the top of the
 		/// viewport that isn't being removed or replaced.
 		/// </summary>
 		/// <returns>The index path of the item, its element Kind, and its offset relative to the current scroll position.</returns>
@@ -637,7 +637,7 @@ namespace Windows.UI.Xaml.Controls
 					var kind = layout.RepresentedElementKind ?? NativeListViewBase.ListViewItemElementKind;
 					var indexPath = OffsetIndexForPendingChanges(layout.IndexPath, kind);
 					return GetExtentEnd(layout.Frame) > scrollOffset &&
-					// Exclude items that are being removed or replaced. (These items are set to row or section of int.MaxValue == 2, but 
+					// Exclude items that are being removed or replaced. (These items are set to row or section of int.MaxValue == 2, but
 					// subsequent insertions/deletions mean they might no longer be exactly equal.)
 					indexPath.Row < int.MaxValue / 4 &&
 					indexPath.Section < int.MaxValue / 4;
@@ -757,7 +757,7 @@ namespace Windows.UI.Xaml.Controls
 		/// </summary>
 		private static int PutOutOfRange(int value)
 		{
-			// We don't use 
+			// We don't use
 			const int veryLarge = int.MaxValue / 2;
 
 			if (value < veryLarge / 2)
@@ -870,7 +870,7 @@ namespace Windows.UI.Xaml.Controls
 			if (AreStickyGroupHeadersEnabled)
 			{
 				_invalidatingHeadersOnBoundsChange = true;
-				InvalidateLayout(); 
+				InvalidateLayout();
 			}
 		}
 
@@ -907,8 +907,8 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		/// <summary>
-		/// Notify the layout that an INotifyCollectionChanged operation is pending. (Note: the UICollectionView already implements 
-		/// PrepareForCollectionViewUpdates() which is essentially the same thing; unfortunately it is called *after* 
+		/// Notify the layout that an INotifyCollectionChanged operation is pending. (Note: the UICollectionView already implements
+		/// PrepareForCollectionViewUpdates() which is essentially the same thing; unfortunately it is called *after*
 		/// InvalidateLayout+PrepareLayout, and is therefore useless for us.)
 		/// </summary>
 		internal void NotifyCollectionChange(CollectionChangedOperation change)
@@ -982,13 +982,13 @@ namespace Windows.UI.Xaml.Controls
 		{
 			// Calling ClearCaches is required because UIKit
 			// seems to release the UICollectionViewLayoutAttributes
-			// if the data is reloaded completely. This can lead to having 
+			// if the data is reloaded completely. This can lead to having
 			// InternalContainer.ApplyLayoutAttributes being called with an
-			// instance that is not of a type UICollectionViewLayoutAttributes, 
-			// and raise an exception like this one: 
+			// instance that is not of a type UICollectionViewLayoutAttributes,
+			// and raise an exception like this one:
 
-			//		Foundation.MonoTouchException: Objective-C exception thrown. 
-			//		Name: NSInvalidArgumentException Reason: 
+			//		Foundation.MonoTouchException: Objective-C exception thrown.
+			//		Name: NSInvalidArgumentException Reason:
 			//		-[UICollectionViewLayoutAttributes nextResponder]: unrecognized selector sent to instance 0x7de0a6e0
 
 			ClearCaches();
@@ -1077,7 +1077,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		/// <summary>
-		/// Adjust the scroll offset of the list so that layout updates out of view don't affect the position of visible items. 
+		/// Adjust the scroll offset of the list so that layout updates out of view don't affect the position of visible items.
 		/// </summary>
 		private void AdjustScrollOffset(nfloat extentDifference, nfloat frameEnd)
 		{
@@ -1229,7 +1229,12 @@ namespace Windows.UI.Xaml.Controls
 
 			nfloat GetBaseOffset()
 			{
-				var frame = LayoutAttributesForItem(item).Frame;
+				var attributes = LayoutAttributesForItem(item);
+				if (attributes == null)
+				{
+					return default;
+				}
+				var frame = attributes.Frame;
 				var headerCorrection = GetStickyHeaderExtent(item.Section);
 				var frameExtentStart = GetExtentStart(frame) - headerCorrection;
 				if (alignment == ScrollIntoViewAlignment.Leading)
