@@ -865,22 +865,6 @@ namespace Uno.UI.Tests.BinderTests
 			Assert.AreEqual(42, SUT.Property2);
 		}
 
-#if !NET461
-		[TestMethod]
-		public void When_SettingBindingWithDataContext()
-		{
-			var source = new MyBindingSource { IntValue = 42 };
-			var target = new MyControl();
-			var target2 = new MyObjectTest();
-
-			target.SetBinding(MyControl.MyPropertyProperty, new Binding { Source = source, Path = nameof(MyBindingSource.IntValue), Mode = BindingMode.TwoWay, UpdateSourceTrigger = UpdateSourceTrigger.Explicit });
-			Assert.AreEqual(42, target.MyProperty);
-
-			target.Binding(target2.MyProperty.GetType(), target2.MyProperty.GetType(), target2, BindingMode.TwoWay);
-			Assert.AreEqual(42, target2.MyProperty);
-		}
-#endif
-
 		public partial class BaseTarget : DependencyObject
 		{
 			private List<object> _dataContextChangedList = new List<object>();
