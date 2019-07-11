@@ -28,7 +28,8 @@ http://www.hemingwayapp.com/
 
 ## how to write great documentation
 
-https://www.youtube.com/watch?v=FJHsnqyvOjY
+- https://www.youtube.com/watch?v=FJHsnqyvOjY
+- https://ghuntley.com/notes/technical-writing/
 
 ## content style guide
 
