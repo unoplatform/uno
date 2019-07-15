@@ -79,6 +79,11 @@ namespace Windows.UI.Xaml.Controls
 		public IAsyncOperation<ContentDialogResult> ShowAsync()
 			=> AsyncOperation.FromTask(async ct =>
 			{
+				if (_popup.IsOpen)
+				{
+					throw new InvalidOperationException("A ContentDialog is already opened.");
+				}
+
 				_popup.Child = this;
 
 				_popup.IsOpen = true;
