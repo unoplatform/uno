@@ -17,6 +17,8 @@ using Windows.UI.Xaml.Automation.Peers;
 using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
+using Windows.Foundation;
+using Windows.UI.Core;
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -43,12 +45,22 @@ namespace Windows.UI.Xaml.Controls
 		private bool _isPassword;
 
 		public event TextChangedEventHandler TextChanged;
+		public event TypedEventHandler<TextBox, TextBoxTextChangingEventArgs> TextChanging;
+		public event TypedEventHandler<TextBox, TextBoxBeforeTextChangingEventArgs> BeforeTextChanging;
 		public event RoutedEventHandler SelectionChanged;
 
 		/// <summary>
 		/// Set when <see cref="TextChanged"/> event is being raised, to ensure modifications by handlers don't trigger an infinite loop.
 		/// </summary>
 		private bool _isInvokingTextChanged;
+		/// <summary>
+		/// Set when the <see cref="Text"/> property is being modified by user input.
+		/// </summary>
+		private bool _isInputModifyingText;
+		/// <summary>
+		/// Set when <see cref="RaiseTextChanged"/> has been dispatched but not yet called.
+		/// </summary>
+		private bool _isTextChangedPending;
 
 		public TextBox()
 		{
@@ -59,7 +71,7 @@ namespace Windows.UI.Xaml.Controls
 
 		private void OnParentChanged(object instance, object key, DependencyObjectParentChangedEventArgs args)
 		{
-			UpdateFontPartial(this);
+			UpdateFontPartial();
 		}
 
 		protected TextBox(bool isPassword)
@@ -69,13 +81,14 @@ namespace Windows.UI.Xaml.Controls
 
 		private void InitializeProperties()
 		{
-			OnTextChanged(CreateInitialValueChangerEventArgs(TextProperty, null, Text));
+			UpdatePlaceholderVisibility();
+			UpdateButtonStates();
 			OnInputScopeChanged(CreateInitialValueChangerEventArgs(InputScopeProperty, null, InputScope));
 			OnMaxLengthChanged(CreateInitialValueChangerEventArgs(MaxLengthProperty, null, MaxLength));
 			OnAcceptsReturnChanged(CreateInitialValueChangerEventArgs(AcceptsReturnProperty, null, AcceptsReturn));
 			OnIsEnabledChanged(false, IsEnabled);
 			OnForegroundColorChanged(null, Foreground);
-			UpdateFontPartial(this);
+			UpdateFontPartial();
 			OnHeaderChanged();
 			OnIsTextPredictionEnabledChanged(CreateInitialValueChangerEventArgs(IsTextPredictionEnabledProperty, IsTextPredictionEnabledProperty.GetMetadata(GetType()).DefaultValue, IsTextPredictionEnabled));
 			OnIsSpellCheckEnabledChanged(CreateInitialValueChangerEventArgs(IsSpellCheckEnabledProperty, IsSpellCheckEnabledProperty.GetMetadata(GetType()).DefaultValue, IsSpellCheckEnabled));
@@ -97,10 +110,8 @@ namespace Windows.UI.Xaml.Controls
 		{
 			base.OnApplyTemplate();
 
-#if !NET461
 			// Ensures we don't keep a reference to a textBoxView that exists in a previous template
 			_textBoxView = null;
-#endif
 
 			_placeHolder = GetTemplateChild(TextBoxConstants.PlaceHolderPartName) as IFrameworkElement;
 			_contentElement = GetTemplateChild(TextBoxConstants.ContentElementPartName) as ContentControl;
@@ -109,13 +120,13 @@ namespace Windows.UI.Xaml.Controls
 			if (_contentElement is ScrollViewer scrollViewer)
 			{
 #if __IOS__
-				// We disable scrolling because the inner TextBoxView provides its own scrolling
+				// We disable scrolling because the inner ITextBoxView provides its own scrolling
 				scrollViewer.HorizontalScrollMode = ScrollMode.Disabled;
 				scrollViewer.VerticalScrollMode = ScrollMode.Disabled;
 				scrollViewer.HorizontalScrollBarVisibility = ScrollBarVisibility.Disabled;
 				scrollViewer.VerticalScrollBarVisibility = ScrollBarVisibility.Disabled;
 #elif __WASM__
-				// We disable horizontal scrolling because the inner SingleLineTextBoxView provides its own horizontal scrolling
+				// We disable horizontal scrolling because the inner single-line TextBoxView provides its own horizontal scrolling
 				scrollViewer.HorizontalScrollMode = ScrollMode.Disabled;
 #endif
 			}
@@ -125,9 +136,8 @@ namespace Windows.UI.Xaml.Controls
 				_deleteButton = new WeakReference<Button>(button);
 			}
 
-#if !NET461
 			UpdateTextBoxView();
-#endif
+
 			InitializeProperties();
 		}
 
@@ -155,12 +165,50 @@ namespace Windows.UI.Xaml.Controls
 					defaultValue: string.Empty,
 					options: FrameworkPropertyMetadataOptions.None,
 					propertyChangedCallback: (s, e) => ((TextBox)s)?.OnTextChanged(e),
-					coerceValueCallback: null,
+					coerceValueCallback: (d, v) => ((TextBox)d)?.CoerceText(v),
 					defaultUpdateSourceTrigger: UpdateSourceTrigger.Explicit
 				)
+				{
+					CoerceWhenUnchanged = false
+				}
 			);
 
 		protected virtual void OnTextChanged(DependencyPropertyChangedEventArgs e)
+		{
+			if (!_isInvokingTextChanged)
+			{
+#if !HAS_EXPENSIVE_TRYFINALLY // Try/finally incurs a very large performance hit in mono-wasm - https://github.com/mono/mono/issues/13653
+				try
+#endif
+				{
+					_isInvokingTextChanged = true;
+					TextChanging?.Invoke(this, new TextBoxTextChangingEventArgs());
+				}
+#if !HAS_EXPENSIVE_TRYFINALLY // Try/finally incurs a very large performance hit in mono-wasm - https://github.com/mono/mono/issues/13653
+				finally
+#endif
+				{
+					_isInvokingTextChanged = false;
+				}
+			}
+
+			if (!_isInputModifyingText)
+			{
+				_textBoxView?.SetTextNative(Text);
+			}
+
+			UpdatePlaceholderVisibility();
+
+			UpdateButtonStates();
+
+			if (!_isTextChangedPending)
+			{
+				_isTextChangedPending = true;
+				Dispatcher.RunAsync(CoreDispatcherPriority.Normal, RaiseTextChanged);
+			}
+		}
+
+		private void RaiseTextChanged()
 		{
 			if (!_isInvokingTextChanged)
 			{
@@ -176,15 +224,36 @@ namespace Windows.UI.Xaml.Controls
 #endif
 				{
 					_isInvokingTextChanged = false;
+					_isTextChangedPending = false;
 				}
 			}
 
+			_textBoxView?.SetTextNative(Text);
+		}
+
+		private void UpdatePlaceholderVisibility()
+		{
 			if (_placeHolder != null)
 			{
 				_placeHolder.Visibility = Text.IsNullOrEmpty() ? Visibility.Visible : Visibility.Collapsed;
 			}
+		}
 
-			UpdateButtonStates();
+		private object CoerceText(object baseValue)
+		{
+			if (!(baseValue is string baseString))
+			{
+				return DependencyProperty.UnsetValue; //TODO: UWP throws ArgumentNullException, in principle we should do the same. 
+			}
+
+			var args = new TextBoxBeforeTextChangingEventArgs(baseString);
+			BeforeTextChanging?.Invoke(this, args);
+			if (args.Cancel)
+			{
+				return DependencyProperty.UnsetValue;
+			}
+
+			return baseValue;
 		}
 
 		#endregion
@@ -192,28 +261,28 @@ namespace Windows.UI.Xaml.Controls
 		protected override void OnFontSizeChanged(double oldValue, double newValue)
 		{
 			base.OnFontSizeChanged(oldValue, newValue);
-			UpdateFontPartial(this);
+			UpdateFontPartial();
 		}
 
 		protected override void OnFontFamilyChanged(FontFamily oldValue, FontFamily newValue)
 		{
 			base.OnFontFamilyChanged(oldValue, newValue);
-			UpdateFontPartial(this);
+			UpdateFontPartial();
 		}
 
 		protected override void OnFontStyleChanged(FontStyle oldValue, FontStyle newValue)
 		{
 			base.OnFontStyleChanged(oldValue, newValue);
-			UpdateFontPartial(this);
+			UpdateFontPartial();
 		}
 
 		protected override void OnFontWeightChanged(FontWeight oldValue, FontWeight newValue)
 		{
 			base.OnFontWeightChanged(oldValue, newValue);
-			UpdateFontPartial(this);
+			UpdateFontPartial();
 		}
 
-		partial void UpdateFontPartial(object sender);
+		partial void UpdateFontPartial();
 
 		protected override void OnForegroundColorChanged(Brush oldValue, Brush newValue)
 		{
@@ -462,12 +531,14 @@ namespace Windows.UI.Xaml.Controls
 
 		#region IsTextPredictionEnabled DependencyProperty
 
+		[Uno.NotImplemented]
 		public bool IsTextPredictionEnabled
 		{
 			get { return (bool)this.GetValue(IsTextPredictionEnabledProperty); }
 			set { this.SetValue(IsTextPredictionEnabledProperty, value); }
 		}
 
+		[Uno.NotImplemented]
 		public static readonly DependencyProperty IsTextPredictionEnabledProperty =
 			DependencyProperty.Register(
 				"IsTextPredictionEnabled",
@@ -602,6 +673,30 @@ namespace Windows.UI.Xaml.Controls
 			{
 				VisualStateManager.GoToState(this, ButtonCollapsedStateName, true);
 			}
+		}
+
+		/// <summary>
+		/// Respond to text input from user interaction.
+		/// </summary>
+		/// <param name="newText">The most recent version of the text from the input field.</param>
+		/// <returns>The value of the <see cref="Text"/> property, which may have been modified programmatically.</returns>
+		internal string ProcessTextInput(string newText)
+		{
+#if !HAS_EXPENSIVE_TRYFINALLY // Try/finally incurs a very large performance hit in mono-wasm - https://github.com/mono/mono/issues/13653
+			try
+#endif
+			{
+				_isInputModifyingText = true;
+				Text = newText;
+			}
+#if !HAS_EXPENSIVE_TRYFINALLY // Try/finally incurs a very large performance hit in mono-wasm - https://github.com/mono/mono/issues/13653
+			finally
+#endif
+			{
+				_isInputModifyingText = false;
+			}
+
+			return Text; //This may have been modified by BeforeTextChanging, TextChanging, DP callback, etc
 		}
 
 		private void DeleteText()

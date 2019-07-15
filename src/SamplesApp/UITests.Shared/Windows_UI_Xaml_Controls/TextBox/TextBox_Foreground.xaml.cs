@@ -16,7 +16,7 @@ using Windows.UI.Xaml.Navigation;
 
 namespace Uno.UI.Samples.Content.UITests.TextBoxControl
 {
-	[SampleControlInfo("TextBoxControl", "TextBox_Foreground")]
+	[SampleControlInfo("TextBox", "TextBox_Foreground")]
 	public sealed partial class TextBox_Foreground : UserControl
     {
         public TextBox_Foreground()
