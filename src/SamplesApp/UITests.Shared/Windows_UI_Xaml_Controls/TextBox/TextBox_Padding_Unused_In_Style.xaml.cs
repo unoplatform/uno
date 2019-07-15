@@ -17,7 +17,7 @@ using Windows.UI.Xaml.Navigation;
 
 namespace Uno.UI.Samples.Content.UITests.TextBoxControl
 {
-	[SampleControlInfoAttribute("TextBoxControl", "TextBox_Padding_Unused_In_Style")]
+	[SampleControlInfoAttribute("TextBox", "TextBox_Padding_Unused_In_Style")]
 	public sealed partial class TextBox_Padding_Unused_In_Style : UserControl
 	{
 		public TextBox_Padding_Unused_In_Style()

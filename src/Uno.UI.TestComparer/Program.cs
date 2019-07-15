@@ -7,6 +7,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
+using Mono.Options;
 using Uno.UI.TestComparer;
 
 namespace Umbrella.UI.TestComparer
@@ -17,38 +18,62 @@ namespace Umbrella.UI.TestComparer
 		{
 			if (args[0] == "appcenter")
 			{
-				if (args.Length != 4)
-				{
-					Console.WriteLine("tc [base path] [run limit] [api key]");
-					return;
-				}
-
 				var basePath = args[1];
 				var runLimit = int.Parse(args[2]);
-				var apiKey = args[3];
+				var appCenterApiKey = args[3];
 
-				new AppCenterTestsDownloader(apiKey).Download(apiKey, basePath, runLimit).Wait();
+				var p = new OptionSet() {
+					{ "base-path=", s => basePath = s },
+					{ "appCenterApiKey=", s => appCenterApiKey = s },
+					{ "runLimit=", s => runLimit = int.Parse(s) },
+				};
 
-				ProcessFiles(args, basePath, "ios");
-				ProcessFiles(args, basePath, "Android");
+				var list = p.Parse(args);
+
+				new AppCenterTestsDownloader(appCenterApiKey).Download(appCenterApiKey, basePath, runLimit).Wait();
+
+				ProcessFiles(args, basePath, basePath, "", "ios");
+				ProcessFiles(args, basePath, basePath, "", "Android");
 			}
 			else if (args[0] == "azdo")
 			{
-				var pat = args[1];
-				var basePath = args[2];
-				var sourceBranch = args[3];      // Build.SourceBranchName	
-				var targetBranch = !string.IsNullOrEmpty(args[4]) && args[4] != "$(System.PullRequest.TargetBranch)" ? args[4] : sourceBranch;      // System.PullRequest.TargetBranch	
-				var artifactName = args[5]; 
-				var definitionName = args[6];	// Build.DefinitionName
-				var projectName = args[7];      // System.TeamProject
-				var serverUri = args[8];        // System.TeamFoundationCollectionUri
-				var currentBuild = int.Parse(args[9]);     // Build.BuildId
-				var runLimit = int.Parse(args[10]);
+				var basePath = "";
+				var runLimit = 0;
+				var pat = "";
+				var sourceBranch = "";
+				var targetBranchParam = "";
+				var artifactName = ""; 
+				var artifactInnerBasePath = ""; // base path inside the artifact archive
+				var definitionName = "";		// Build.DefinitionName
+				var projectName = "";      // System.TeamProject
+				var serverUri = "";        // System.TeamFoundationCollectionUri
+				var currentBuild = 0;			// Build.BuildId
+
+				var p = new OptionSet() {
+					{ "base-path=", s => basePath = s },
+					{ "pat=", s => pat = s },
+					{ "run-limit=", s => runLimit = int.Parse(s) },
+					{ "source-branch=", s => sourceBranch = s },   // Build.SourceBranchName	
+					{ "target-branch=", s => targetBranchParam = s },   // System.PullRequest.TargetBranch
+					{ "artifact-name=", s => artifactName = s },
+					{ "artifact-inner-path=", s => artifactInnerBasePath = s },
+					{ "definition-name=", s => definitionName = s },
+					{ "project-name=", s => projectName = s },
+					{ "server-uri=", s => serverUri = s },
+					{ "current-build=", s => currentBuild = int.Parse(s) },
+				};
+
+				var list = p.Parse(args);
+
+				var targetBranch = !string.IsNullOrEmpty(targetBranchParam) && targetBranchParam != "$(System.PullRequest.TargetBranch)" ? targetBranchParam : sourceBranch;      	
 
 				var downloader = new AzureDevopsDownloader(pat, serverUri);
-				downloader.DownloadArtifacts(Path.Combine(basePath, "wasm"), projectName, definitionName, artifactName, sourceBranch, targetBranch, currentBuild, runLimit).Wait();
+				downloader.DownloadArtifacts(basePath, projectName, definitionName, artifactName, sourceBranch, targetBranch, currentBuild, runLimit).Wait();
 
-				ProcessFiles(args, basePath, "wasm");
+				var artifactsBasePath = Path.Combine(basePath, "artifacts");
+				ProcessFiles(args, basePath, artifactsBasePath, artifactInnerBasePath, "wasm");
+				ProcessFiles(args, basePath, artifactsBasePath, artifactInnerBasePath, "wasm-automated");
+				ProcessFiles(args, basePath, artifactsBasePath, artifactInnerBasePath, "android");
 			}
 			else if (args[0] == "compare")
 			{
@@ -96,9 +121,9 @@ namespace Umbrella.UI.TestComparer
 			}
 		}
 
-		private static void ProcessFiles(string[] args, string basePath, string platform)
+		private static void ProcessFiles(string[] args, string basePath, string artifactsBasePath, string artifactsInnerBasePath, string platform)
 		{
-			string path = Path.Combine(basePath, platform);
+			string path = basePath;
 			var resultsId = $"{DateTime.Now:yyyyMMdd-hhmmss}";
 			string diffPath = Path.Combine(basePath, $"Results-{platform}-{resultsId}");
 			string resultsFilePath = Path.Combine(basePath, $"Results-{platform}-{resultsId}.html");
@@ -106,7 +131,7 @@ namespace Umbrella.UI.TestComparer
 			Directory.CreateDirectory(path);
 			Directory.CreateDirectory(diffPath);
 
-			var q1 = from directory in Directory.EnumerateDirectories(path)
+			var q1 = from directory in Directory.EnumerateDirectories(artifactsBasePath)
 					 let info = new DirectoryInfo(directory)
 					 orderby info.CreationTime descending
 					 select directory;
@@ -118,7 +143,7 @@ namespace Umbrella.UI.TestComparer
 									 select directory;
 
 			var q = from directory in orderedDirectories.Select((v, i) => new { Index = i, Path = v })
-					let files = from sample in EnumerateFiles(Path.Combine(directory.Path, ""), "*.png").AsParallel()
+					let files = from sample in EnumerateFiles(Path.Combine(directory.Path, artifactsInnerBasePath, platform), "*.png").AsParallel()
 								select new { File = sample, Id = BuildSha1(sample) }
 					select new
 					{

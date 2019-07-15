@@ -490,6 +490,12 @@ namespace Windows.UI.Xaml
 				return;
 			}
 
+			if (!propertyDetails.Metadata.CoerceWhenUnchanged && Equals(previousValue, baseValue))
+			{
+				// Value hasn't changed, don't coerce.
+				return;
+			}
+
 			var coercedValue = coerceValueCallback(actualInstanceAlias, baseValue);
 			if (coercedValue == DependencyProperty.UnsetValue)
 			{

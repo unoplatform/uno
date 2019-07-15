@@ -56,9 +56,17 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
+		public void SetTextNative(string text) => Text = text;
+
 		internal void OnTextChanged()
 		{
-			SetBindingValue(Text, "Text");
+			var textBox = _textBox?.GetTarget();
+			if (textBox != null)
+			{
+				var text = textBox.ProcessTextInput(Text);
+				SetTextNative(text);
+			}
+
 			SetNeedsLayout();
 			//We need to schedule the scrolling on the dispatcher so that we wait for the whole UI to be done before scrolling.
 			//Because the multiline must have its height set so we can set properly the scrollviewer insets

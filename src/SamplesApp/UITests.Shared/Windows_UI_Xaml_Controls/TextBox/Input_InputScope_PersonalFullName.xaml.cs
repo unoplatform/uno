@@ -17,7 +17,7 @@ using Windows.UI.Xaml.Navigation;
 
 namespace Uno.UI.Samples.Content.UITests.TextBoxControl
 {
-	[SampleControlInfoAttribute("TextBoxControl", "Input_InputScope_PersonalFullName")]
+	[SampleControlInfoAttribute("TextBox", "Input_InputScope_PersonalFullName")]
 	public sealed partial class Input_InputScope_PersonalFullName : UserControl
 	{
 		public Input_InputScope_PersonalFullName()

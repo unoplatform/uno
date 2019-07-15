@@ -17,7 +17,7 @@ using Windows.UI.Xaml.Navigation;
 
 namespace Uno.UI.Samples.Content.UITests.TextBoxControl
 {
-	[SampleControlInfoAttribute("TextBoxControl", "Multiline_TextBox_In_ScrollViewer", typeof(Uno.UI.Samples.Presentation.SamplePages.TextBoxViewModel))]
+	[SampleControlInfoAttribute("TextBox", "Multiline_TextBox_In_ScrollViewer", typeof(Uno.UI.Samples.Presentation.SamplePages.TextBoxViewModel))]
 	public sealed partial class Multiline_TextBox_In_ScrollViewer : UserControl
 	{
 		public Multiline_TextBox_In_ScrollViewer()

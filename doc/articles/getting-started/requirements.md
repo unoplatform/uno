@@ -9,7 +9,7 @@ The platform requirements for the Uno Platform are as follows:
 
 ## iOS
 
-- The minimumn supported version by the Uno Platform is iOS 8 from 2014.
+The minimumn supported version by the Uno Platform is iOS 8 from 2014.
 
 ## Universal Windows Platform (UWP)
 
@@ -17,8 +17,12 @@ When developing for the Universal Windows Platform (UWP) there are no special re
 
 ## WebAssembly
 
-- WebAssembly is supported in Chrome, Edge, Firefox and Safari. See the official WebAssembly site for [more details](https://webassembly.org/roadmap/).
+WebAssembly is supported in Chrome, Edge, Edge Dev, Opera, Firefox and Safari. See the official WebAssembly site for [more details](https://webassembly.org/roadmap/).
 
 ## Visual Studio
 
-- Visual Studio 2019 recommended (Visual Studio 2017 version 15.8 minimum)
+Visual Studio 2019 is recommended (Visual Studio 2017 version 15.8 minimum) for Windows or Mac with the following components installed:
+
+- Universal Windows Platform (if using Visual Studio for Windows)
+- Xamarin (for Android and iOS development)
+- ASP.NET/web component, along with .NET Core 2.2 (for WebAssembly development)

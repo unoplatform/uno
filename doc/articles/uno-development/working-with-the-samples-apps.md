@@ -39,6 +39,9 @@ At this time, only WebAssembly and Android are used to run UI Tests, iOS is comi
 - Open the [`Constants.cs](src/SamplesApp/SamplesApp.UITests/Constants.cs) file and change the `CurrentPlatform` field to the platform you want to test.
 - Select a test in the `SamplesApp.UITests` project and run a specific test.
 
+## Troubleshooting tests running during the CI
+The build output contains the 
+
 # Requirements for UI tests
 
 - Each sample should demonstrate one and only one feature of a control so

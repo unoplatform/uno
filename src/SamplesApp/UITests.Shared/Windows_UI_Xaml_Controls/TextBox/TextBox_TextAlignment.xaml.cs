@@ -17,7 +17,7 @@ using Windows.UI.Xaml.Navigation;
 
 namespace Uno.UI.Samples.Content.UITests.TextBoxControl
 {
-	[SampleControlInfoAttribute("TextBoxControl", "TextBox_TextAlignment")]
+	[SampleControlInfoAttribute("TextBox", "TextBox_TextAlignment")]
 	public sealed partial class TextBox_TextAlignment : UserControl
 	{
 		public TextBox_TextAlignment()
