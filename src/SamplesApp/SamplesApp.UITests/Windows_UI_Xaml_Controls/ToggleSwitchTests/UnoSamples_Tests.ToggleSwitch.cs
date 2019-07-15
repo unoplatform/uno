@@ -12,10 +12,9 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ToggleSwitchTests
 	public partial class ToggleSwitch_Tests : SampleControlUITestBase
 	{
 		[Test]
-		[Ignore("Not available yet")]
 		public void ToggleSwitch_TemplateReuseTest()
 		{
-			Run("Uno.UI.Samples.Content.UITests.ToggleSwitchControl.ToggleSwitch_TemplateReuse");
+			Run("UITests.Shared.Windows_UI_Xaml_Controls.ToggleSwitchControl.ToggleSwitch_TemplateReuse");
 
 			var toggleSwitchGroup = _app.Marked("toggleSwitchGroup");
 
@@ -27,11 +26,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ToggleSwitchTests
 
 			// Assert inital state 
 			Assert.AreEqual("False", toggleSwitchGroup.GetDependencyPropertyValue("IsOn")?.ToString());
-			Assert.AreEqual("False", separatedToggleSwitch.GetDependencyPropertyValue("IsOn")?.ToString());
-
-			// Toggle group and unload/reload to cause templateReuse on lone toggleSwitch
-			toggleSwitchGroup.Tap();
-			_app.Wait(2);
+			Assert.AreEqual("True", separatedToggleSwitch.GetDependencyPropertyValue("IsOn")?.ToString());
 
 			unloadButton.Tap();
 			_app.Wait(2);
@@ -40,8 +35,8 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ToggleSwitchTests
 			_app.Wait(2);
 
 			//Assert final state
-			Assert.AreEqual("True", toggleSwitchGroup.GetDependencyPropertyValue("IsOn")?.ToString());
-			Assert.AreEqual("False", separatedToggleSwitch.GetDependencyPropertyValue("IsOn")?.ToString());
+			Assert.AreEqual("False", toggleSwitchGroup.GetDependencyPropertyValue("IsOn")?.ToString());
+			Assert.AreEqual("True", separatedToggleSwitch.GetDependencyPropertyValue("IsOn")?.ToString());
 		}
 	}
 }

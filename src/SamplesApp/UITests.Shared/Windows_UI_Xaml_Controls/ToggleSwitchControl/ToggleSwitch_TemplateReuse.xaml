@@ -147,14 +147,14 @@
 		<Button x:Name="reload" IsEnabled="False">Reload</Button>
 		<CheckBox x:Name="chk" />
 		<Border x:Name="root">
-			<StackPanel>
+			<StackPanel x:Name="theStackPanel">
 				<ToggleSwitch x:Name="toggleSwitchGroup" IsOn="{Binding IsChecked, ElementName=chk, Mode=TwoWay}" Style="{StaticResource BrokenToggleSwitchStyle}" />
 				<ToggleSwitch IsOn="{Binding IsChecked, ElementName=chk, Mode=TwoWay}" Style="{StaticResource BrokenToggleSwitchStyle}" />
 				<TextBlock Text="{Binding IsChecked, ElementName=chk}" />
 			</StackPanel>
 		</Border>
 		<Border>
-			<ToggleSwitch x:Name="separatedToggleSwitch" IsOn="{Binding IsChecked, ElementName=chk}" Style="{StaticResource BrokenToggleSwitchStyle}" />
+			<ToggleSwitch x:Name="separatedToggleSwitch" IsOn="{Binding [IsOn2], Mode=TwoWay}" Style="{StaticResource BrokenToggleSwitchStyle}" />
 		</Border>
 	</StackPanel>
 </Page>
