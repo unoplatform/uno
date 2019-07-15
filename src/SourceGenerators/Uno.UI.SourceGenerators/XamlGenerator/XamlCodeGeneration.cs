@@ -39,6 +39,10 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		private readonly bool _isUiAutomationMappingEnabled;
 		private Dictionary<string, string> _legacyTypes;
 
+		// Determines if the source generator will skip the inclusion of UseControls in the
+		// visual tree. See https://github.com/unoplatform/uno/issues/61
+		private bool _skipUserControlsInVisualTree = true;
+
 #pragma warning disable 649 // Unused member
 		private readonly bool _forceGeneration;
 #pragma warning restore 649 // Unused member
@@ -93,6 +97,11 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			if (bool.TryParse(msbProject.GetProperty("UseUnoXamlParser")?.EvaluatedValue, out var useUnoXamlParser) && useUnoXamlParser)
 			{
 				XamlRedirection.XamlConfig.IsUnoXaml = useUnoXamlParser || XamlRedirection.XamlConfig.IsMono;
+			}
+
+			if (bool.TryParse(msbProject.GetProperty("UnoSkipUserControlsInVisualTree")?.EvaluatedValue, out var skipUserControlsInVisualTree))
+			{
+				_skipUserControlsInVisualTree = skipUserControlsInVisualTree;
 			}
 
 			if (bool.TryParse(msbProject.GetProperty("ShouldWriteErrorOnInvalidXaml")?.EvaluatedValue, out var shouldWriteErrorOnInvalidXaml))
@@ -179,7 +188,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 							uiAutomationMappings: _uiAutomationMappings,
 							defaultLanguage: _defaultLanguage,
 							isWasm: _isWasm,
-							isDebug: _isDebug
+							isDebug: _isDebug,
+							skipUserControlsInVisualTree: _skipUserControlsInVisualTree
 						)
 						.GenerateFile()
 					)

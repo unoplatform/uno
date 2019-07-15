@@ -27,7 +27,14 @@ namespace Uno.UI.TestComparer
 			_collectionUri = collectionUri;
 		}
 
-		public async Task DownloadArtifacts(string basePath, string project, string definitionName, string artifactName, string sourceBranch, string targetBranchName, int buildId, int runLimit)
+		public async Task DownloadArtifacts(string basePath,
+									  string project,
+									  string definitionName,
+									  string artifactName,
+									  string sourceBranch,
+									  string targetBranchName,
+									  int buildId,
+									  int runLimit)
 		{
 			Directory.CreateDirectory(basePath);
 
@@ -65,23 +72,10 @@ namespace Uno.UI.TestComparer
 						}
 					}
 
-					var fullPath = Path.Combine(basePath, $"{build.LastChangedDate:yyyyMMdd-hhmmss}-{build.Id}");
+					var fullPath = Path.Combine(basePath, $@"artifacts\\{build.LastChangedDate:yyyyMMdd-hhmmss}-{build.Id}");
 
 					Console.WriteLine($"Extracting artifact for build {build.Id}");
 					ZipFile.ExtractToDirectory(tempFile, fullPath);
-
-					foreach (var file in Directory.EnumerateFiles(fullPath, "*.*", SearchOption.AllDirectories))
-					{
-						if (Path.GetDirectoryName(file) != fullPath)
-						{
-							var destFileName = Path.Combine(fullPath, Path.GetFileName(file));
-
-							if (!File.Exists(destFileName))
-							{
-								File.Move(file, destFileName);
-							}
-						}
-					}
 				}
 				else
 				{

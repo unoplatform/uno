@@ -317,8 +317,8 @@ namespace Windows.UI.Xaml
 		{
 			if (
 				!_defaultStyleApplied
-				&& Style.DefaultStyleForType(GetType()) is Style defaultStyle
-				&& this.GetPrecedenceSpecificValue(StyleProperty, Style.DefaultStylePrecedence) == DependencyProperty.UnsetValue
+				&& Style.DefaultStyleForType(GetDefaultStyleType()) is Style defaultStyle
+				&& (this).GetPrecedenceSpecificValue(StyleProperty, Style.DefaultStylePrecedence) == DependencyProperty.UnsetValue
 			)
 			{
 				_defaultStyleApplied = true;
@@ -333,6 +333,12 @@ namespace Windows.UI.Xaml
 				}
 			}
 		}
+
+		/// <summary>
+		/// This method is kept internal until https://github.com/unoplatform/uno/issues/119 is adressed.
+		/// </summary>
+		/// <returns></returns>
+		internal virtual Type GetDefaultStyleType() => GetType();
 
 		protected virtual void OnApplyTemplate()
 		{
