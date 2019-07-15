@@ -16,7 +16,7 @@ using Windows.UI.Xaml.Navigation;
 
 namespace Uno.UI.Samples.Content.UITests.TextBoxControl
 {
-	[SampleControlInfoAttribute("TextBoxControl", "TextBox_TextProperty", typeof(Uno.UI.Samples.Presentation.SamplePages.TextBoxViewModel))]
+	[SampleControlInfoAttribute("TextBox", "TextBox_TextProperty", typeof(Uno.UI.Samples.Presentation.SamplePages.TextBoxViewModel))]
 	public sealed partial class TextBox_TextProperty : UserControl
     {
         public TextBox_TextProperty()

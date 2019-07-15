@@ -17,7 +17,7 @@ using Windows.UI.Xaml.Navigation;
 
 namespace Uno.UI.Samples.Content.UITests.TextBoxControl
 {
-	[SampleControlInfoAttribute("TextBoxControl", "Input_InputScope_PhoneNumber", typeof(Uno.UI.Samples.Presentation.SamplePages.TextBoxViewModel))]
+	[SampleControlInfoAttribute("TextBox", "Input_InputScope_PhoneNumber", typeof(Uno.UI.Samples.Presentation.SamplePages.TextBoxViewModel))]
 	public sealed partial class Input_InputScope_PhoneNumber : UserControl
 	{
 		public Input_InputScope_PhoneNumber()

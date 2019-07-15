@@ -17,7 +17,7 @@ using Windows.UI.Xaml.Navigation;
 
 namespace Uno.UI.Samples.Content.UITests.TextBoxControl
 {
-	[SampleControlInfoAttribute("TextBoxControl", "TextBoxPadding")]
+	[SampleControlInfoAttribute("TextBox", "TextBoxPadding")]
 	public sealed partial class TextBoxPadding : UserControl
 	{
 		public TextBoxPadding()

@@ -285,6 +285,80 @@ namespace SamplesApp.UITests
 			_app.WaitForElement(appendOutput);
 		}
 
+		[Test]
+		public void TextBox_TextChanging_Capitalize()
+		{
+			Run("UITests.Shared.Windows_UI_Xaml_Controls.TextBoxTests.TextBox_TextChanging");
+
+			var textBlock = _app.Marked("CapitalizePreviousTextBlock");
+
+			const string Entered = "This patience is a virtue";
+			const string Final = "THIS PATIENCE IS A VIRTue";
+
+			var textBox = TypeInto("CapitalizePreviousTextBox", Entered, Final);
+
+			Assert.AreEqual(Final, GetText(textBox));
+			Assert.AreEqual(Final, GetText(textBlock));
+		}
+
+		[Test]
+		public void TextBox_TextChanging_Limit()
+		{
+			Run("UITests.Shared.Windows_UI_Xaml_Controls.TextBoxTests.TextBox_TextChanging");
+
+			var textBlock = _app.Marked("LimitLengthTextBlock");
+
+			const string Entered = "abcdefghijklmnopqr";
+			const string Final = "defghijklmnopqr";
+
+			var textBox = TypeInto("LimitLengthTextBox", Entered, Final);
+
+			Assert.AreEqual(Final, GetText(textBox));
+			Assert.AreEqual(Final, GetText(textBlock));
+
+			_app.ClearText();
+
+			Assert.AreEqual("", GetText(textBox));
+			Assert.AreEqual("", GetText(textBlock));
+
+			const string Entered2 = "Any way the wind blows";
+			const string Final2 = " the wind blows";
+
+			TypeInto("LimitLengthTextBox", Entered2, Final2);
+
+			Assert.AreEqual(Final2, GetText(textBox));
+			Assert.AreEqual(Final2, GetText(textBlock));
+		}
+
+		[Test]
+		public void TextBox_BeforeTextChanging()
+		{
+			Run("UITests.Shared.Windows_UI_Xaml_Controls.TextBoxTests.TextBox_BeforeTextChanging");
+
+			var textBlock = _app.Marked("BeforeTextBlock");
+
+			const string Entered = "reassesses";
+			const string Final = "eee";
+
+			var textBox = TypeInto("BeforeTextBox", Entered, Final);
+
+			Assert.AreEqual(Final, GetText(textBox));
+			Assert.AreEqual(Final, GetText(textBlock));
+
+			_app.ClearText();
+
+			Assert.AreEqual("", GetText(textBox));
+			Assert.AreEqual("", GetText(textBlock));
+
+			const string Entered2 = "See the eels";
+			const string Final2 = "eeeee";
+
+			TypeInto("BeforeTextBox", Entered2, Final2);
+
+			Assert.AreEqual(Final2, GetText(textBox));
+			Assert.AreEqual(Final2, GetText(textBlock));
+		}
+
 		private QueryEx TypeInto(string textBoxName, string inputText, string expectedText)
 		{
 			var tb = _app.Marked(textBoxName);

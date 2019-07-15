@@ -20,7 +20,7 @@ using Windows.UI.Xaml.Navigation;
 
 namespace Uno.UI.Samples.Content.UITests.TextBoxControl
 {
-	[SampleControlInfoAttribute("TextBoxControl", "TextBox_Selection", typeof(Uno.UI.Samples.Presentation.SamplePages.TextBoxViewModel))]
+	[SampleControlInfoAttribute("TextBox", "TextBox_Selection", typeof(Uno.UI.Samples.Presentation.SamplePages.TextBoxViewModel))]
 	public sealed partial class TextBox_Selection : UserControl
     {
 		private SerialDisposable _subscriptions = new SerialDisposable();

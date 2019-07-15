@@ -17,7 +17,7 @@ using Windows.UI.Xaml.Navigation;
 
 namespace Uno.UI.Samples.Content.UITests.TextBoxControl
 {
-	[SampleControlInfoAttribute("TextBoxControl", "Input_Multiline", typeof(Uno.UI.Samples.Presentation.SamplePages.TextBoxViewModel))]
+	[SampleControlInfoAttribute("TextBox", "Input_Multiline", typeof(Uno.UI.Samples.Presentation.SamplePages.TextBoxViewModel))]
 	public sealed partial class Input_Multiline : UserControl
 	{
 		public Input_Multiline()

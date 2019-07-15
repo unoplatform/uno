@@ -4,8 +4,10 @@ using System.Text;
 
 namespace Windows.UI.Xaml.Controls
 {
-	public partial class TextChangedEventArgs : RoutedEventArgs
+	public partial class TextBox
 	{
-		// TODO: Implement
+		private TextBoxView _textBoxView;
+
+		private void UpdateTextBoxView() { }
 	}
 }

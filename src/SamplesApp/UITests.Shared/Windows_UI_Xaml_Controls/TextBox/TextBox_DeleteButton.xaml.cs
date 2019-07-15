@@ -17,7 +17,7 @@ using Windows.UI.Xaml.Navigation;
 
 namespace Uno.UI.Samples.Content.UITests.TextBoxControl
 {
-	[SampleControlInfoAttribute("TextBoxControl", "TextBox_DeleteButton", typeof(Uno.UI.Samples.Presentation.SamplePages.TextBoxViewModel))]
+	[SampleControlInfoAttribute("TextBox", "TextBox_DeleteButton", typeof(Uno.UI.Samples.Presentation.SamplePages.TextBoxViewModel))]
 	public sealed partial class TextBox_DeleteButton : UserControl
 	{
 		public TextBox_DeleteButton()

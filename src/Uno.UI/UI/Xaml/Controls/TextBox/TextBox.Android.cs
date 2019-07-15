@@ -13,6 +13,7 @@ using Uno.Disposables;
 using Uno.Extensions;
 using Uno.Logging;
 using Uno.UI;
+using Uno.UI.DataBinding;
 using Uno.UI.Extensions;
 using Windows.UI.Core;
 using Windows.UI.Text;
@@ -28,6 +29,20 @@ namespace Windows.UI.Xaml.Controls
 		private int _keyboardAccessDelay = 50;
 		private TextBoxView _textBoxView;
 		private readonly SerialDisposable _keyboardDisposable = new SerialDisposable();
+		private Factory _editableFactory;
+
+		/// <summary>
+		/// If true, and <see cref="IsSpellCheckEnabled"/> is false, take vigorous measures to ensure that spell-check (ie predictive text) is
+		/// really disabled.
+		/// </summary>
+		/// <remarks>
+		/// Specifically, when true, and <see cref="IsSpellCheckEnabled"/> is false, this sets <see cref="InputTypes.TextVariationPassword"/> on
+		/// the inner <see cref="TextBoxView"/>. This is required because a number of OEM keyboards (particularly on older devices?) ignore
+		/// the <see cref="InputTypes.TextFlagNoSuggestions"/>. It's optional because setting the password InputType is a workaround which is
+		/// known to cause issues in certain circumstances. See discussion here: https://stackoverflow.com/a/5188119/1902058
+		/// </remarks>
+		[Uno.UnoOnly]
+		public bool ShouldForceDisableSpellCheck { get; set; } = true;
 
 		public bool PreventKeyboardDisplayOnProgrammaticFocus
 		{
@@ -84,15 +99,13 @@ namespace Windows.UI.Xaml.Controls
 
 				if (_textBoxView == null)
 				{
-					_textBoxView = new TextBoxView()
-						.Binding("BindableText", new Data.Binding()
-						{
-							Path = "Text",
-							RelativeSource = RelativeSource.TemplatedParent,
-							Mode = BindingMode.TwoWay
-						});
+					_textBoxView = new TextBoxView(this);
 
 					_contentElement.Content = _textBoxView;
+					_textBoxView.SetTextNative(Text);
+
+					_editableFactory = _editableFactory ?? new Factory(WeakReferencePool.RentSelfWeakReference(this));
+					_textBoxView.SetEditableFactory(_editableFactory);
 				}
 
 				SetupTextBoxView();
@@ -210,7 +223,7 @@ namespace Windows.UI.Xaml.Controls
 
 				if (!types.HasPasswordFlag())
 				{
-					UpdateFontPartial(this);
+					UpdateFontPartial();
 				}
 			}
 		}
@@ -300,7 +313,7 @@ namespace Windows.UI.Xaml.Controls
 
 				if (!IsSpellCheckEnabled)
 				{
-					inputType = InputScopeHelper.ConvertToRemoveSuggestions(inputType);
+					inputType = InputScopeHelper.ConvertToRemoveSuggestions(inputType, ShouldForceDisableSpellCheck);
 				}
 
 				if (AcceptsReturn)
@@ -360,16 +373,15 @@ namespace Windows.UI.Xaml.Controls
 			//TODO : see bug #8178
 		}
 
-		partial void UpdateFontPartial(object sender)
+		partial void UpdateFontPartial()
 		{
-			var textBox = sender as TextBox;
-			if (textBox != null && textBox.Parent != null && _textBoxView != null)
+			if (Parent != null && _textBoxView != null)
 			{
-				var style = GetTypefaceStyle(textBox.FontStyle, textBox.FontWeight);
-				var typeface = FontHelper.FontFamilyToTypeFace(textBox.FontFamily, textBox.FontWeight);
+				var style = GetTypefaceStyle(FontStyle, FontWeight);
+				var typeface = FontHelper.FontFamilyToTypeFace(FontFamily, FontWeight);
 
 				_textBoxView.SetTypeface(typeface, style);
-				_textBoxView.SetTextSize(ComplexUnitType.Px, (float)Math.Round(ViewHelper.LogicalToPhysicalFontPixels((float)textBox.FontSize)));
+				_textBoxView.SetTextSize(ComplexUnitType.Px, (float)Math.Round(ViewHelper.LogicalToPhysicalFontPixels((float)FontSize)));
 			}
 		}
 

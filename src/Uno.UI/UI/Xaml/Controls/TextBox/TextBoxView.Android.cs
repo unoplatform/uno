@@ -17,6 +17,7 @@ using Android.Views.InputMethods;
 using Android.OS;
 using Windows.UI.Xaml.Input;
 using Uno.UI.Extensions;
+using Uno.UI.DataBinding;
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -25,9 +26,13 @@ namespace Windows.UI.Xaml.Controls
 		private bool _isRunningTextChanged;
 		private bool _isInitialized = false;
 
-		public TextBoxView()
+		private readonly ManagedWeakReference _ownerRef;
+		internal TextBox Owner => _ownerRef?.Target as TextBox;
+
+		public TextBoxView(TextBox owner)
 			: base(ContextHelper.Current)
 		{
+			_ownerRef = WeakReferencePool.RentWeakReference(this, owner);
 			InitializeBinder();
 
 			base.SetSingleLine(true);
@@ -46,22 +51,14 @@ namespace Windows.UI.Xaml.Controls
 			);
 		}
 
-		/// <summary>
-		/// An alias to the Text property, that allows the interception of the changes.
-		/// </summary>
-		/// <remarks>
-		/// Setting the text via the Text property sets the carret back 
-		/// at the beginning, even if the text is the same.
-		/// </remarks>
-		public string BindableText
+		internal void SetTextNative(string text)
 		{
-			get { return Text; }
-			set
+			var textSafe = text ?? string.Empty;
+			if (textSafe != Text)
 			{
-				if (!string.Equals(value ?? string.Empty, Text))
-				{
-					Text = value;
-				}
+				/// Setting the text via the Text property sets the caret back 
+				/// at the beginning, even if the text is the same.
+				Text = textSafe;
 			}
 		}
 
@@ -78,11 +75,7 @@ namespace Windows.UI.Xaml.Controls
 
 					base.OnTextChanged(text, start, lengthBefore, lengthAfter);
 
-					if (IsStoreInitialized)
-					{
-						// OnTextChanged is called before the ctor has been executed...
-						NotifyTextChanged();
-					}
+					NotifyTextChanged();
 				}
 				finally
 				{
@@ -91,9 +84,18 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		protected virtual void NotifyTextChanged()
+		private void NotifyTextChanged()
 		{
-			SetBindingValue(Text, "BindableText");
+			if (Owner != null) // OnTextChanged is called before the ctor has been executed...
+			{
+				var text = Owner.ProcessTextInput(Text);
+				SetTextNative(text);
+			}
+		}
+
+		public override IInputConnection OnCreateInputConnection(EditorInfo outAttrs)
+		{
+			return new TextBox.TextBoxInputConnection(this, base.OnCreateInputConnection(outAttrs));
 		}
 
 		internal void SetCursorColor(Color color)

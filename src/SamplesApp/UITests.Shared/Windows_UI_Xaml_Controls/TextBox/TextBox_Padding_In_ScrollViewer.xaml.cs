@@ -17,7 +17,7 @@ using Windows.UI.Xaml.Navigation;
 
 namespace Uno.UI.Samples.Content.UITests.TextBoxControl
 {
-	[SampleControlInfoAttribute("TextBoxControl", "TextBox_Padding_In_ScrollViewer")]
+	[SampleControlInfoAttribute("TextBox", "TextBox_Padding_In_ScrollViewer")]
 	public sealed partial class TextBox_Padding_In_ScrollViewer : UserControl
 	{
 		public TextBox_Padding_In_ScrollViewer()

@@ -724,7 +724,7 @@ namespace Uno.UI.Tests.BinderTests
 		{
 			var sut = new TextBox();
 
-			sut.TextChanged += (o, e) =>
+			sut.TextChanging += (o, e) =>
 			{
 				sut.Text = "Bob";
 			};
@@ -739,7 +739,7 @@ namespace Uno.UI.Tests.BinderTests
 		{
 			var sut = new TextBox();
 
-			sut.TextChanged += (o, e) =>
+			sut.TextChanging += (o, e) =>
 			{
 				sut.SetValue(Grid.RowProperty, 3);
 				sut.Text = "Bob";
