@@ -32,10 +32,11 @@ jobs:
       testRunTitle: 'Android Test Run'
       testResultsFormat: 'NUnit'
       testResultsFiles: '$(build.sourcesdirectory)/build/TestResult.xml'
+      failTaskOnFailedTests: true
 
   - task: PublishBuildArtifacts@1
     condition: always()
     inputs:
       PathtoPublish: $(build.artifactstagingdirectory)
-      ArtifactName: wasm-uitests
+      ArtifactName: uitests-results
       ArtifactType: Container

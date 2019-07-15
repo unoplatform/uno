@@ -82,7 +82,7 @@ jobs:
     inputs:
       SourceFolder: $(build.sourcesdirectory)/src/SamplesApp/SamplesApp.Wasm.UITests/out
       Contents: '**/*.*'
-      TargetFolder: $(build.artifactstagingdirectory)/screenshots
+      TargetFolder: $(build.artifactstagingdirectory)/screenshots/wasm
       CleanTargetFolder: false
       OverWrite: false
       flattenFolders: false
@@ -90,7 +90,7 @@ jobs:
   - task: PublishBuildArtifacts@1
     inputs:
       PathtoPublish: $(build.artifactstagingdirectory)
-      ArtifactName: wasm-uitests
+      ArtifactName: uitests-results
       ArtifactType: Container
 
 
@@ -126,16 +126,17 @@ jobs:
   - task: PublishTestResults@2
     condition: always()
     inputs:
-      testResultsFormat: 'NUnit'
       testResultsFiles: '$(build.sourcesdirectory)/build/wasm-uitest-binaries/TestResult.xml'
+      testRunTitle: 'WebAssembly Test Run'
+      testResultsFormat: 'NUnit'
+      failTaskOnFailedTests: true
 
   - task: PublishBuildArtifacts@1
     condition: always()
     inputs:
       PathtoPublish: $(build.artifactstagingdirectory)
-      ArtifactName: wasm-uitests
+      ArtifactName: uitests-results
       ArtifactType: Container
-
 
 - job: Wasm_UITests_Compare
   dependsOn: Wasm_UITests_Snap
@@ -166,7 +167,7 @@ jobs:
       createLogFile: false
 
   - script: |
-      src\Uno.UI.TestComparer\bin\Release\net461\Uno.UI.TestComparer.exe "azdo" "$(UITestsCompare_PAT)" "$(build.artifactstagingdirectory)" "%GIT_SOURCEBRANCH%" "%GIT_TARGETBRANCH%" "wasm-uitests" "$(Build.DefinitionName)" "$(System.TeamProject)" "$(System.TeamFoundationCollectionUri)" "$(Build.BuildId)" "3"
+      src\Uno.UI.TestComparer\bin\Release\net461\Uno.UI.TestComparer.exe "azdo" --pat="$(UITestsCompare_PAT)" --base-path="$(build.artifactstagingdirectory)" --source-branch="%GIT_SOURCEBRANCH%" --target-branch="%GIT_TARGETBRANCH%" --artifact-name="uitests-results" --artifact-inner-path="uitests-results\screenshots" --definition-name="$(Build.DefinitionName)" --project-name="$(System.TeamProject)" --server-uri="$(System.TeamFoundationCollectionUri)" --current-build="$(Build.BuildId)" --run-limit="3"
       
     env:
       GIT_TARGETBRANCH: "$(System.PullRequest.TargetBranch)"

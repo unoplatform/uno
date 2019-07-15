@@ -12,7 +12,10 @@
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
     <ResourcesDirectory>..\SamplesApp.Shared\Strings</ResourcesDirectory>
-  </PropertyGroup>
+		
+		<!-- https://github.com/unoplatform/uno/issues/61 -->
+		<UnoSkipUserControlsInVisualTree>false</UnoSkipUserControlsInVisualTree>
+	</PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|iPhoneSimulator' ">
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
