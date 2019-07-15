@@ -25,6 +25,7 @@
 * Add support for `ContentDialog`
 * Permit `DependencyProperty` to be set reentrantly. Eg this permits `TextBox.TextChanging` to modify the `Text` property (previously this could only be achieved using `Dispatcher.RunAsync()`).
 * Implement `TextBox.TextChanging` and `TextBox.BeforeTextChanging`. As on UWP, this allows the text to be intercepted and modified before the UI is updated. Previously on Android using the `TextChanged` event would lead to laggy response and dropped characters when typing rapidly; this is no longer the case with `TextChanging`.
+* [WASM] `ComboBox`'s dropdown list (`CarouselPanel`) is now virtualized (#1012)
 
 ### Breaking changes
 * `TextBox` no longer raises TextChanged when its template is applied, in line with UWP.
@@ -42,6 +43,7 @@
 * Fixed an issue where a Two-Way binding would sometimes not update values back to source correctly
 * Adjust the behavior of `DisplayInformation.LogicalDpi` to match UWP's behavior
 * [Android] Ensure TextBox spell-check is properly enabled/disabled on all devices. 
+* Fix ComboBox disappearing items when items are views (#1078)
 
 ## Release 1.45.0
 ### Features
@@ -129,7 +131,6 @@
 * [WASM] ListView - support item margins correctly
 * [iOS] Fix items dependency property propagation in ListView items
 * [Wasm] Add UI Testing support through for `Uno.UI.Helpers.Automation.GetDependencyPropertyValue`\
-* [WASM] `ComboBox`'s dropdown list (`CarouselPanel`) is now virtualized (#1012)
 
 ### Breaking Changes
 * The `WebAssemblyRuntime.InvokeJSUnmarshalled` method with three parameters has been removed.
@@ -208,7 +209,6 @@
 * Date and Time Picker Content fix and Refactored to use PickerFlyoutBase (to resemble UWP implementation)
 * `LinearGradientBrush.EndPoint` now defaults to (1,1) to match UWP
 * [Android] A ListView inside another ListView no longer causes an app freeze/crash
-* Fix ComboBox disappearing items when items are views (#1078)
 
 ## Release 1.44.0
 
