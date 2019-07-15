@@ -360,12 +360,6 @@
 	  <None Update="Mixins\Wasm\VisualStatesMixins.tt">
 	    <Generator>TextTemplatingFileGenerator</Generator>
 	  </None>
-	  <None Update="C:\s\nv.github\uno\src\Uno.UI\UI\Xaml\Controls\ContentDialog\ContentDialog.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </None>
-	  <None Update="UI\Xaml\Controls\ContentDialog\ContentDialog.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </None>
 	</ItemGroup>
 
 	<Target Name="GetPackagingOutputs" Condition=" '$(TargetFramework)' == 'uap10.0' " />
