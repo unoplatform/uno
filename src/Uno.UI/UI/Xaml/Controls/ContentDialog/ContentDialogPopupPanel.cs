@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Microsoft.Extensions.Logging;
+using Uno.Extensions;
 using Uno.UI;
 using Windows.Foundation;
 using Windows.UI.ViewManagement;
@@ -20,7 +22,10 @@ namespace Windows.UI.Xaml.Controls
 
 		protected override Size ArrangeOverride(Size finalSize)
 		{
-			Console.WriteLine($"ArrangeOverride ContentDialogPopupPanel {finalSize}");
+			if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+			{
+				this.Log().LogDebug($"ArrangeOverride ContentDialogPopupPanel {finalSize}");
+			}
 
 			foreach (var child in Children)
 			{
@@ -31,7 +36,12 @@ namespace Windows.UI.Xaml.Controls
 
 				var desiredSize = elem.DesiredSize;
 				var rect = CalculateDialogPlacement(desiredSize);
-				Console.WriteLine($"Arranging ContentDialogPopupPanel {desiredSize} to {rect}");
+
+				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+				{
+					this.Log().LogDebug($"Arranging ContentDialogPopupPanel {desiredSize} to {rect}");
+				}
+
 				elem.Arrange(rect);
 			}
 
