@@ -126,8 +126,10 @@ jobs:
   - task: PublishTestResults@2
     condition: always()
     inputs:
-      testResultsFormat: 'NUnit'
       testResultsFiles: '$(build.sourcesdirectory)/build/wasm-uitest-binaries/TestResult.xml'
+      testRunTitle: 'WebAssembly Test Run'
+      testResultsFormat: 'NUnit'
+      failTaskOnFailedTests: true
 
   - task: PublishBuildArtifacts@1
     condition: always()
