@@ -849,6 +849,21 @@ namespace Uno.UI.Tests.BinderTests
 		}
 
 		[TestMethod]
+		public void When_ExplicitSetBindingBetweenProperties_IsNotFallBackValue()
+		{
+			var source = new MyBindingSource { IntValue = 42 };
+			var target = new MyControl();
+			var target2 = new MyObjectTest();
+
+			target.SetBinding(MyControl.MyPropertyProperty, new Binding { Source = source, Path = nameof(MyBindingSource.IntValue), Mode = BindingMode.TwoWay, UpdateSourceTrigger = UpdateSourceTrigger.Explicit });
+			target2.Binding(nameof(MyControl.MyProperty), nameof(MyControl.MyProperty), source: target, BindingMode.TwoWay);
+
+			Assert.AreEqual(42, source.IntValue);
+			Assert.AreEqual(42, target.MyProperty);
+			Assert.AreEqual(42, target2.MyProperty);
+		}
+
+		[TestMethod]
 		public void When_SelfRelativeSource()
 		{
 			var SUT = new SelfBindingTest();
@@ -1175,7 +1190,7 @@ namespace Uno.UI.Tests.BinderTests
 
 		// Using a DependencyProperty as the backing store for MyProperty.  This enables animation, styling, binding, etc...
 		public static readonly DependencyProperty MyPropertyProperty =
-			DependencyProperty.Register("MyProperty", typeof(int), typeof(object), new PropertyMetadata(0));
+			DependencyProperty.Register("MyProperty", typeof(int), typeof(MyObjectTest), new PropertyMetadata(0));
 
 
 		private void OnMyPropertyChanged(DependencyPropertyChangedEventArgs e)
