@@ -36,8 +36,7 @@ namespace Windows.UI.Xaml
 
 		public UIElement()
 		{
-			_gestures = new Lazy<GestureRecognizer>(CreateGestureRecognizer);
-
+			InitializePointers();
 			InitializeCapture();
 		}
 

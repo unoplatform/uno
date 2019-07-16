@@ -23,7 +23,7 @@ namespace Windows.UI.Xaml.Input
 			Pointer = new Pointer(0, PointerDeviceType.Touch, true, isInRange: true);
 			KeyModifiers = VirtualKeyModifiers.None;
 			OriginalSource = receiver;
-			CanBubbleNatively = true; // Required for gesture recognition, and integration of native components in the visual tree
+			CanBubbleNatively = true; // Required for native gesture recognition (i.e. ScrollViewer), and integration of native components in the visual tree
 		}
 
 		internal PointerRoutedEventArgs(NSSet touches, UIEvent nativeEvent, UIElement receiver)
@@ -42,7 +42,7 @@ namespace Windows.UI.Xaml.Input
 			Pointer = new Pointer(pointerId, type, isInContact, isInRange: true);
 			KeyModifiers = VirtualKeyModifiers.None;
 			OriginalSource = _nativeTouch.View as UIElement ?? receiver; // TODO: walk the tree
-			CanBubbleNatively = true; // Required for gesture recognition, and integration of native components in the visual tree
+			CanBubbleNatively = true; // Required for native gesture recognition (i.e. ScrollViewer), and integration of native components in the visual tree
 		}
 
 		public PointerPoint GetCurrentPoint(UIElement relativeTo)
