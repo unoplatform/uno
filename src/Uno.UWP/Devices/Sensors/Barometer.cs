@@ -8,8 +8,7 @@ namespace Windows.Devices.Sensors
 	{
 		private static readonly object _syncLock = new object();
 		private static bool _initializationAttempted = false;
-		private static Barometer _instance = null;
-		private static int _activeSubscribers = 0;		
+		private static Barometer _instance = null;	
 
 		private TypedEventHandler<Barometer, BarometerReadingChangedEventArgs> _readingChanged;
 
@@ -36,9 +35,9 @@ namespace Windows.Devices.Sensors
 			{
 				lock (_syncLock)
 				{
-					_activeSubscribers++;
+					bool isFirstSubscriber = _readingChanged == null;
 					_readingChanged += value;
-					if (_activeSubscribers == 1)
+					if (isFirstSubscriber)
 					{
 						StartReading();
 					}
@@ -49,8 +48,7 @@ namespace Windows.Devices.Sensors
 				lock (_syncLock)
 				{
 					_readingChanged -= value;
-					_activeSubscribers--;
-					if (_activeSubscribers == 0)
+					if (_readingChanged == null)
 					{
 						StopReading();
 					}

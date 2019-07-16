@@ -2,7 +2,11 @@
 
 ## Next version
 ### Features
-* Align `ApplicationData.Current.LocalSettings.Add` behavior with UWP for `null` and repeated adds.
+* Add support for `Windows.Devices.Sensors.Accelerometer` APIs on iOS, Android and WASM
+   * `ReadingChanged`
+   * `Shaken`
+   * `ReportInterval`  
+* Align `ApplicationData.Current.LocalSettings.Add` behavior with UWP for `null` and repeated adds
 * Add support for `Windows.ApplicationModel.Calls.PhoneCallManager`
 * Add support for `Windows.Phone.Devices.Notification.VibrationDevice` API on iOS, Android and WASM
 * Basic support for `Windows.Devices.Sensors.Barometer`
