@@ -205,7 +205,12 @@ namespace Windows.UI.Xaml.Controls
 
 				if (itemView != null)
 				{
-					if (itemView.FindFirstParent<ComboBoxItem>() != null)
+#if __ANDROID__
+					var comboBoxItem = itemView.FindFirstParentOfView<ComboBoxItem>();
+#else
+					var comboBoxItem = itemView.FindFirstParent<ComboBoxItem>();
+#endif
+					if (comboBoxItem != null)
 					{
 						// Keep track of the former parent, so we can put the item back when the dropdown is shown
 						_selectionParentInDropdown = (itemView.GetVisualTreeParent() as IWeakReferenceProvider)?.WeakReference;
@@ -246,7 +251,11 @@ namespace Windows.UI.Xaml.Controls
 		private void RestoreSelectedItem(_View selectionView)
 		{
 			var dropdownParent = _selectionParentInDropdown?.Target as FrameworkElement;
+#if __ANDROID__
+			var comboBoxItem = dropdownParent?.FindFirstParentOfView<ComboBoxItem>();
+#else
 			var comboBoxItem = dropdownParent?.FindFirstParent<ComboBoxItem>();
+#endif
 
 			// Sanity check, ensure parent is still valid (ComboBoxItem may have been recycled)
 			if (comboBoxItem?.Content == selectionView && selectionView.GetVisualTreeParent() != dropdownParent)

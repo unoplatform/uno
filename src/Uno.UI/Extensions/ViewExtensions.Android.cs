@@ -45,13 +45,22 @@ namespace Uno.UI
 			return view.Parent != null;
 		}
 
+
 		/// <summary>
 		/// Return First parent of the view of specified T type.
 		/// </summary>
 		/// <typeparam name="T"></typeparam>
 		/// <param name="view"></param>
 		/// <returns>First parent of the view of specified T type.</returns>
-		public static T FindFirstParent<T>(this View childView)
+		public static T FindFirstParent<T>(this IViewParent view) where T : class => FindFirstParentOfView<T>(view as View);
+
+		/// <summary>
+		/// Return First parent of the view of specified T type.
+		/// </summary>
+		/// <typeparam name="T"></typeparam>
+		/// <param name="view"></param>
+		/// <returns>First parent of the view of specified T type.</returns>
+		public static T FindFirstParentOfView<T>(this View childView)
 			where T : class
 		{
 			var view = childView?.Parent;

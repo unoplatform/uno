@@ -224,6 +224,12 @@
 				reason="Removed obsolete property. TextBoxView is internal on UWP, shouldn't normally be created or manipulated by user code."/>
         <Member fullName="System.Void Windows.UI.Xaml.Controls.TextBoxView.NotifyTextChanged()"
 				reason="Removed obsolete method. TextBoxView is internal on UWP, shouldn't normally be created or manipulated by user code."/>
+        <Member fullName="System.Void Windows.UI.Xaml.Controls.ComboBoxItem.OnLoaded()"
+				reason="Removed no-longer-needed override. Uno-only protected method that shouldn't be called by user code."/>
+        <Member fullName="System.Void Windows.UI.Xaml.Controls.ComboBoxItem.OnUnloaded()"
+				reason="Removed no-longer-needed override. Uno-only protected method that shouldn't be called by user code."/>
+        <Member fullName="Windows.UI.Xaml.Controls.Popup Windows.UI.Xaml.Controls.ComboBoxItem.GetPopupControl()"
+				reason="Removed no-longer-needed method. Implementation detail."/>
 	  </Methods>
 	  
       <Fields>
