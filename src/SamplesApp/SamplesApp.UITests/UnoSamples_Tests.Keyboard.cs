@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using NUnit.Framework;
 using SamplesApp.UITests;
+using SamplesApp.UITests.TestFramework;
 using Uno.UITest.Helpers;
 using Uno.UITest.Helpers.Queries;
 
@@ -15,6 +16,7 @@ namespace SamplesApp.UITests
 	partial class UnoSamples_Tests : SampleControlUITestBase
 	{
 		[Test]
+		[AutoRetry]
 		public void Keyboard_Textbox_InsideScrollViewer_Validation()
 		{
 			Run("Uno.UI.Samples.Content.UITests.TextBoxControl.Input_Test_InsideScrollerViewer_Automated");
@@ -110,6 +112,7 @@ namespace SamplesApp.UITests
 		}
 
 		[Test]
+		[AutoRetry]
 		public void Keyboard_Textbox_NoScrollViewer_Validation()
 		{
 			Run("Uno.UI.Samples.Content.UITests.TextBoxControl.Input_Test_NoScrollViewer_Automated");
@@ -205,6 +208,7 @@ namespace SamplesApp.UITests
 		}
 
 		[Test]
+		[AutoRetry]
 		public void Keyboard_Textbox_IsEnabled_Validation()
 		{
 			Run("Uno.UI.Samples.Content.UITests.TextBoxControl.Input_Test_InsideScrollerViewer_Automated");
@@ -247,6 +251,7 @@ namespace SamplesApp.UITests
 		}
 
 		[Test]
+		[AutoRetry]
 		public void TextBox_TextChanged()
 		{
 			Run("UITests.Shared.Windows_UI_Xaml_Controls.TextBoxTests.TextBox_TextChanged");
@@ -276,6 +281,7 @@ namespace SamplesApp.UITests
 		}
 
 		[Test]
+		[AutoRetry]
 		public void TextBox_PageLoadedTest()
 		{
 			Run("UITests.Shared.Windows_UI_Xaml_Controls.TextBoxTests.TextBox_TextChanged");
@@ -298,7 +304,8 @@ namespace SamplesApp.UITests
 		private string GetText(QueryEx textBlock) => textBlock.GetDependencyPropertyValue<string>("Text");
 
 		[Test]
-		[Ignore("Mobile only TODO")]
+		[AutoRetry]
+		[ActivePlatforms(Platform.Android, Platform.iOS)]
 		public void Keyboard_DismissTesting()
 		{
 			Run(("Uno.UI.Samples.Content.UITests.ButtonTestsControl.AppBar_KeyBoard"));
