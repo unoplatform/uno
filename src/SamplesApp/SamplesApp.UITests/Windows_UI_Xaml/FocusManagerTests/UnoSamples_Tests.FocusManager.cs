@@ -1,4 +1,5 @@
 ﻿using NUnit.Framework;
+using SamplesApp.UITests.TestFramework;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -10,15 +11,10 @@ using Uno.UITest.Helpers.Queries;
 
 namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.FocusManagerTests
 {
+	[ActivePlatforms(Platform.iOS, Platform.Browser)]	// Ignore focus tests for android, focus is getting stolen incorrectly 
 	[TestFixture]
 	public partial class FocusManagerTests_Tests : SampleControlUITestBase
 	{
-		public FocusManagerTests_Tests()
-		{
-			// Ignore focus tests for android, focus is getting stolen incorrectly 
-			_platform = Platform.Browser;
-		}
-
 		[Test]
 		public void FocusManager_GetFocusedElement_Border_Validation()
 		{

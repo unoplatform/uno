@@ -1,4 +1,7 @@
-﻿using NUnit.Framework;
+﻿using System;
+using System.Linq;
+using NUnit.Framework;
+using SamplesApp.UITests.TestFramework;
 using Uno.UITest;
 using Uno.UITest.Helpers;
 using Uno.UITest.Helpers.Queries;
@@ -8,7 +11,6 @@ namespace SamplesApp.UITests
 	public class SampleControlUITestBase
 	{
 		protected IApp _app;
-		protected Platform? _platform;
 
 		public SampleControlUITestBase()
 		{
@@ -21,53 +23,81 @@ namespace SamplesApp.UITests
 			AppInitializer.ColdStartApp();
 		}
 
-		public SampleControlUITestBase(Platform platform) : this()
-		{
-			_platform = platform;
-		}
 
 		[SetUp]
 		public void BeforeEachTest()
 		{
-			_app = AppInitializer.AttachToApp();
-
-			Helpers.App = _app;
-
 			// Check if the test needs to be ignore or not
 			// If nothing specified, it is considered as a global test
-			if(_platform == null)
+			var platforms = GetActivePlatforms();
+			if (platforms.Length != 0)
 			{
-				return;
-			}
+				// Otherwise, we need to define on which platform the test is running and compare it with targeted platform
+				var shouldIgnore = false;
+				var currentPlatform = AppInitializer.GetLocalPlatform();
 
-			// Otherwise, we need to define on which platform the test is running and compare it with targeted platform
-			var shouldIgnore = false;
-			var currentPlatform = AppInitializer.GetLocalPlatform();
-
-			if (_app is Uno.UITest.Xamarin.XamarinApp xa)
-			{
-				if (Xamarin.UITest.TestEnvironment.Platform == Xamarin.UITest.TestPlatform.Local)
+				if (_app is Uno.UITest.Xamarin.XamarinApp xa)
 				{
-					shouldIgnore = currentPlatform != _platform;
+					if (Xamarin.UITest.TestEnvironment.Platform == Xamarin.UITest.TestPlatform.Local)
+					{
+						shouldIgnore = !platforms.Contains(currentPlatform);
+					}
+					else
+					{
+						var testCloudPlatform = Xamarin.UITest.TestEnvironment.Platform == Xamarin.UITest.TestPlatform.TestCloudiOS
+							? Platform.iOS
+							: Platform.Android;
+
+						shouldIgnore = !platforms.Contains(testCloudPlatform);
+					}
 				}
 				else
 				{
-					var testCloudPlatform = Xamarin.UITest.TestEnvironment.Platform == Xamarin.UITest.TestPlatform.TestCloudiOS
-						? Platform.iOS
-						: Platform.Android;
+					shouldIgnore = !platforms.Contains(currentPlatform);
+				}
 
-					shouldIgnore = _platform != testCloudPlatform;
+				if (shouldIgnore)
+				{
+					var list = string.Join(", ", platforms.Select(p => p.ToString()));
+
+					Assert.Ignore($"This test is ignored on this platform (runs on {list})");
+				}
+			}
+
+			_app = AppInitializer.AttachToApp();
+
+			Helpers.App = _app;
+		}
+
+		private Platform[] GetActivePlatforms()
+		{
+			if(TestContext.CurrentContext.Test.Properties["ActivePlatforms"].FirstOrDefault() is Platform[] platforms)
+			{
+				if(platforms.Length != 0)
+				{
+					return platforms;
 				}
 			}
 			else
 			{
-				shouldIgnore = _platform != currentPlatform;
+				if(Type.GetType(TestContext.CurrentContext.Test.ClassName) is Type classType)
+				{
+					if(classType.GetCustomAttributes(typeof(ActivePlatformsAttribute), false) is ActivePlatformsAttribute[] attributes)
+					{
+						if(
+							attributes.Length != 0
+							&& attributes[0]
+								.Properties["ActivePlatforms"]
+								.OfType<object>()
+								.FirstOrDefault() is Platform[] platforms2)
+						{
+							return platforms2;
+						}
+					}
+				}
 			}
 
-			if (shouldIgnore)
-			{
-				Assert.Ignore("This test is ignored on this platform");
-			}
+			return Array.Empty<Platform>();
 		}
 
 		protected void Run(string metadataName)

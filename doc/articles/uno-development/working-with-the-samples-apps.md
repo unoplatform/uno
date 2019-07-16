@@ -27,6 +27,19 @@ The Uno.UI process validates does two types of validations:
 
 At this time, only WebAssembly and Android are used to run UI Tests, iOS is coming soon.
 
+## Selectively ignore tests per platform
+
+It may be that some UI Tests are platform specific, or that some tests may not work on a particular platform.
+
+In order to do so, the `ActivePlatformsAttribute` allows to specify which platform are active for a given test.
+
+This attribute is used as follows:
+```
+[ActivePlatforms(Platform.iOS, Platform.Browser)]	// Run on iOS and Browser.
+```
+
+This attribute can be placed at the test or class level.
+
 ## Setup for Automated UI Tests on WebAssembly
 - Navigate to the `SamplesApp.Wasm.UITests` folder and run `npm i`. This will download Puppeteer and the Chrome driver.
 - Deploy and run the `SamplesApp.Wasm` application once.
@@ -40,7 +53,7 @@ At this time, only WebAssembly and Android are used to run UI Tests, iOS is comi
 - Select a test in the `SamplesApp.UITests` project and run a specific test.
 
 ## Troubleshooting tests running during the CI
-The build output contains the 
+The build artifacts contain the tests output, as well as the device logs (in the case of Android).
 
 # Requirements for UI tests
 
