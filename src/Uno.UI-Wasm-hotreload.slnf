@@ -6,16 +6,19 @@
       "SamplesApp\\Benchmarks.Shared\\SamplesApp.Benchmarks.shproj",
       "SamplesApp\\SamplesApp.Shared\\SamplesApp.Shared.shproj",
       "SamplesApp\\SamplesApp.UITests\\SamplesApp.UITests.csproj",
-      "SamplesApp\\SamplesApp.UWP.Design\\SamplesApp.UWP.Design.csproj",
       "SamplesApp\\SamplesApp.UnitTests.Shared\\SamplesApp.UnitTests.Shared.shproj",
       "SamplesApp\\SamplesApp.Wasm\\SamplesApp.Wasm.csproj",
       "SamplesApp\\UITests.Shared\\UITests.Shared.shproj",
-      "SolutionTemplate\\Uno.ProjectTemplates.Dotnet\\Uno.ProjectTemplates.Dotnet.csproj",
+      "SolutionTemplate\\UnoLibraryTemplate\\UnoLibraryTemplate.csproj",
+      "SolutionTemplate\\UnoSolutionTemplate.VISX\\UnoSolutionTemplate.VISX.csproj",
+      "SolutionTemplate\\UnoSolutionTemplate.Wizard\\UnoSolutionTemplate.Wizard.csproj",
+      "SolutionTemplate\\UnoSolutionTemplate\\UnoSolutionTemplate.csproj",
       "SourceGenerators\\Uno.UI.SourceGenerators\\Uno.UI.SourceGenerators.csproj",
       "SourceGenerators\\Uno.UI.Tasks\\Uno.UI.Tasks.csproj",
       "T4Generator\\T4Generator.csproj",
       "Uno.Foundation\\Uno.Foundation.csproj",
       "Uno.HotReload.Host\\Uno.HotReload.Host.csproj",
+      "Uno.HotReload.VS\\Uno.UI.HotReload.VS.csproj",
       "Uno.HotReload\\Uno.UI.HotReload.csproj",
       "Uno.UI.BindingHelper.Android\\Uno.UI.BindingHelper.Android.csproj",
       "Uno.UI.RuntimeTests\\Uno.UI.RuntimeTests.csproj",
@@ -23,7 +26,8 @@
       "Uno.UI.Wasm.Tests\\Uno.UI.Wasm.Tests.csproj",
       "Uno.UI.Wasm\\Uno.UI.Wasm.csproj",
       "Uno.UI\\Uno.UI.csproj",
-      "Uno.UWP\\Uno.csproj"
+      "Uno.UWP\\Uno.csproj",
+      "UnoItemTemplate\\UnoItemTemplate.csproj"
     ]
   }
 }

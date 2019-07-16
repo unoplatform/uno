@@ -323,6 +323,11 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
                                 {
                                     writer.AppendLineInvariant("Content = (_View)GetContent();");
                                 }
+
+                                if (_isDebug)
+                                {
+                                    writer.AppendLineInvariant($"global::Uno.UI.FrameworkElementHelper.SetBaseUri(this, \"file:///{_fileDefinition.FilePath.Replace("\\", "/")}\");");
+                                }
                             }
 
                             BuildPartials(writer, isStatic: false);
@@ -395,6 +400,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
         private void BuildApplicationInitializerBody(IndentedStringBuilder writer, XamlObjectDefinition topLevelControl)
         {
+            InitializeRemoteControlClient(writer);
+
             writer.AppendLineInvariant($"global::Windows.UI.Xaml.GenericStyles.Initialize();");
             writer.AppendLineInvariant($"global::Windows.UI.Xaml.ResourceDictionary.DefaultResolver = global::{_defaultNamespace}.GlobalStaticResources.FindResource;");
             GenerateResourceLoader(writer);
@@ -428,6 +435,14 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				writer.AppendLineInvariant("global::Uno.UI.FrameworkElementHelper.IsUiAutomationMappingEnabled = true;");
 			}
 		}
+
+        private void InitializeRemoteControlClient(IndentedStringBuilder writer)
+        {
+            if (_isDebug)
+            {
+                writer.AppendLineInvariant($"global::Uno.UI.HotReload.RemoteControlClient.Initialize(GetType());");
+            }
+        }
 
         private void GenerateResourceLoader(IndentedStringBuilder writer)
         {
@@ -2363,6 +2378,11 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
                                 }
                             }
                         }
+                    }
+
+                    if (_isDebug && IsFrameworkElement(objectDefinition.Type))
+                    {
+                        writer.AppendLineInvariant($"global::Uno.UI.FrameworkElementHelper.SetBaseUri({closureName}, \"file:///{_fileDefinition.FilePath.Replace("\\", "/")}\");");
                     }
 
                     if (_isUiAutomationMappingEnabled)

@@ -1,0 +1,17 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>netcoreapp2.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+		<Compile Include="..\Uno.HotReload\HotReload\Messages\**\*.cs" Link="Messages/%(Filename)" />
+		<Compile Include="..\Uno.HotReload\Helpers\**\*.cs" Link="Helpers/%(Filename)" />
+		<Compile Include="..\Uno.HotReload\IMessage.cs" Link="%(Filename)" />
+	</ItemGroup>
+	
+	<ItemGroup>
+		<PackageReference Include="Microsoft.AspNetCore.App" Version="2.1.4" />
+	</ItemGroup>
+</Project>

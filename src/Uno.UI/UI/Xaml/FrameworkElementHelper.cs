@@ -36,5 +36,13 @@ namespace Uno.UI
 		/// </summary>
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static bool IsUiAutomationMappingEnabled { get; set; } = false;
+
+		public static void SetBaseUri(IFrameworkElement target, string uri)
+		{
+			if (target is FrameworkElement fe)
+			{
+				fe.BaseUri = new Uri(uri);
+			}
+		}
 	}
 }
