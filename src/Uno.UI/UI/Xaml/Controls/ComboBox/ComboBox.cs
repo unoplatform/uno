@@ -26,7 +26,7 @@ using UIKit;
 using _View = UIKit.UIView;
 #elif __MACOS__
 using AppKit;
-using _View = _AppKit.NSView;
+using _View = AppKit.NSView;
 #else
 using _View = Windows.UI.Xaml.FrameworkElement;
 #endif

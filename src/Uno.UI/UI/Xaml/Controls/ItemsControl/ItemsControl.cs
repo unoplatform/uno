@@ -28,6 +28,7 @@ using Color = UIKit.UIColor;
 using Font = UIKit.UIFont;
 using UIKit;
 #elif __MACOS__
+using AppKit;
 using View = AppKit.NSView;
 using Color = Windows.UI.Color;
 #else
