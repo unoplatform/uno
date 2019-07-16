@@ -67,6 +67,10 @@
       href: wasm-custom-events.md
     - name: Using Uno Platform Controls in Xamarin.Forms
       href: howto-use-uno-in-xamarin-forms.md
+- name: Concepts
+  items:
+    - name: Source Generation
+      href: concepts/source-generation.md
 - name: Tasks
   items:
     - name: Troubleshooting the Source Generator
