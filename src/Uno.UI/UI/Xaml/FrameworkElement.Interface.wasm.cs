@@ -48,10 +48,12 @@ namespace Windows.UI.Xaml
 
 		protected internal readonly ILogger _log;
 
+		private static readonly Uri DefaultBaseUri = new Uri("ms-appx://local");
 		public global::System.Uri BaseUri
 		{
 			get;
-		} = new Uri("ms-appx://local");
+			internal set;
+		} = DefaultBaseUri;
 
 		protected virtual void OnLoaded()
 		{

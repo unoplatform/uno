@@ -10,7 +10,11 @@
     d:DesignWidth="400">
 
     <StackPanel Spacing="30">
+	  <TextBlock Text="Hello Wasm !" FontSize="40" FontWeight="Bold" Foreground="Red" />
+	  <Slider x:Name="slider"/>
+	  <Slider Value="{Binding Value, ElementName=slider}" />
 		<Border HorizontalAlignment="Center" Background="Red"  VerticalAlignment="Center" Width="100" Height="100" BorderBrush="#88000000" BorderThickness="10,20,30,40" />
-		<Border HorizontalAlignment="Center" Background="Red"  VerticalAlignment="Center" Width="100" Height="100" BorderBrush="#88000000" BorderThickness="10,0,0,40" />
+	  <Border HorizontalAlignment="Center" Background="Red"  VerticalAlignment="Center" Width="100" Height="100" BorderBrush="#88000000" BorderThickness="10,0,0,40" />
+	  <Border HorizontalAlignment="Center" Background="Red"  VerticalAlignment="Center" Width="100" Height="100" BorderBrush="#88000000" BorderThickness="10,0,0,40" />
 	</StackPanel>
 </UserControl>
