@@ -6,9 +6,13 @@ This guide briefly explains the structure of an app created with the default [Un
 
 Let's say we've created a new solution with the [Uno app template](https://marketplace.visualstudio.com/items?itemName=nventivecorp.uno-platform-addin), call it `HelloWorld`. It will already contain the following projects:
 
-1. A `HelloWorld.[Platform].csproj` file for each platform that Uno supports: UWP (Windows), Android, iOS, and WebAssembly (Web). This project is known as the **head** for that platform. It contains typical information like settings, metadata, dependencies, and also a list of files included in the project. The platform *head* builds and packages the binary executable for that platform.
+1. A `HelloWorld.[Platform].csproj` file for each platform that Uno supports: UWP (Windows), Android, iOS, and WebAssembly (Web). This project is known as the **head** for that platform. It contains typical information like settings, metadata, dependencies, and also a list of files included in the project. The platform *head* builds and packages the binary executable for that platform. 
+
+> The Android head is named `Droid` to avoid namespace clashes with the original Android namespace.
 
 2. A single `HelloWorld.Shared.shproj` file, plus an accompanying `HelloWorld.Shared.projitems` file. This *shared project* contains files that are shared between all of the heads.
+
+> The main reason the solution contains a shared project and not a cross-targeted library is related to a missing Visual Studio feature. At present time (VS16.1.x), building a head that references such a cross-targeted library implies that all target frameworks are built, leading to a slow developer inner loop.
 
 Normally, your UI and business logic will go in the shared project. Bootstrapping code, packaging settings, and platform-specific code goes in the corresponding platform head. [String resources](using-uno-ui.md#localization) normally go in the shared project. [Image assets](features/working-with-assets.md) may go either in the shared project or under each head. [Font assets](using-uno-ui.md#custom-fonts) must be placed under each head.
 
