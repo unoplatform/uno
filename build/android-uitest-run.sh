@@ -20,8 +20,8 @@ msbuild /r /p:Configuration=Release $BUILD_SOURCESDIRECTORY/src/SamplesApp/Sampl
 msbuild /r /p:Configuration=Release $BUILD_SOURCESDIRECTORY/src/SamplesApp/SamplesApp.UITests/SamplesApp.UITests.csproj
 
 # Wait for the emulator to finish booting
-chmod +x android-uitest-wait-systemui.sh
-./android-uitest-wait-systemui.sh
+chmod +x $BUILD_SOURCESDIRECTORY/build/android-uitest-wait-systemui.sh
+$BUILD_SOURCESDIRECTORY/build/android-uitest-wait-systemui.sh
 
 $ANDROID_HOME/platform-tools/adb devices
 
