@@ -2,6 +2,8 @@
   items:
     - name: What is the Uno Platform?
       href: intro.md
+    - name: Philosophy of Uno
+      href: concepts/overview/philosophy-of-uno.md
     - name: API differences
       href: api-differences.md
     - name: Features list
