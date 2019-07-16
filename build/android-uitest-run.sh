@@ -20,7 +20,8 @@ msbuild /r /p:Configuration=Release $BUILD_SOURCESDIRECTORY/src/SamplesApp/Sampl
 msbuild /r /p:Configuration=Release $BUILD_SOURCESDIRECTORY/src/SamplesApp/SamplesApp.UITests/SamplesApp.UITests.csproj
 
 # Wait for the emulator to finish booting
-$ANDROID_HOME/platform-tools/adb wait-for-device shell 'while [[ -z $(getprop sys.boot_completed | tr -d '\r') ]]; do sleep 1; done; input keyevent 82'
+chmod +x $BUILD_SOURCESDIRECTORY/build/android-uitest-wait-systemui.sh
+$BUILD_SOURCESDIRECTORY/build/android-uitest-wait-systemui.sh
 
 $ANDROID_HOME/platform-tools/adb devices
 

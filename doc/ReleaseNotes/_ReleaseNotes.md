@@ -2,7 +2,11 @@
 
 ## Next version
 ### Features
-* Align `ApplicationData.Current.LocalSettings.Add` behavior with UWP for `null` and repeated adds.
+* Add support for `Windows.Devices.Sensors.Accelerometer` APIs on iOS, Android and WASM
+   * `ReadingChanged`
+   * `Shaken`
+   * `ReportInterval`  
+* Align `ApplicationData.Current.LocalSettings.Add` behavior with UWP for `null` and repeated adds
 * Add support for `Windows.ApplicationModel.Calls.PhoneCallManager`
 * Add support for `Windows.Phone.Devices.Notification.VibrationDevice` API on iOS, Android and WASM
 * Basic support for `Windows.Devices.Sensors.Barometer`
@@ -25,6 +29,7 @@
 * Add support for `ContentDialog`
 * Permit `DependencyProperty` to be set reentrantly. Eg this permits `TextBox.TextChanging` to modify the `Text` property (previously this could only be achieved using `Dispatcher.RunAsync()`).
 * Implement `TextBox.TextChanging` and `TextBox.BeforeTextChanging`. As on UWP, this allows the text to be intercepted and modified before the UI is updated. Previously on Android using the `TextChanged` event would lead to laggy response and dropped characters when typing rapidly; this is no longer the case with `TextChanging`.
+* [WASM] `ComboBox`'s dropdown list (`CarouselPanel`) is now virtualized (#1012)
 
 ### Breaking changes
 * `TextBox` no longer raises TextChanged when its template is applied, in line with UWP.
@@ -42,6 +47,7 @@
 * Fixed an issue where a Two-Way binding would sometimes not update values back to source correctly
 * Adjust the behavior of `DisplayInformation.LogicalDpi` to match UWP's behavior
 * [Android] Ensure TextBox spell-check is properly enabled/disabled on all devices. 
+* Fix ComboBox disappearing items when items are views (#1078)
 * Checks dataContext before applying FallbackValue to explicit set bindings
 
 ## Release 1.45.0

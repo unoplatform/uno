@@ -18,10 +18,17 @@ using System.Linq;
 using Windows.UI.ViewManagement;
 using Microsoft.Extensions.Logging;
 
-#if __IOS__
+using Uno.UI.DataBinding;
+#if __ANDROID__
+using _View = Android.Views.View;
+#elif __IOS__
 using UIKit;
+using _View = UIKit.UIView;
 #elif __MACOS__
 using AppKit;
+using _View = AppKit.NSView;
+#else
+using _View = Windows.UI.Xaml.FrameworkElement;
 #endif
 
 namespace Windows.UI.Xaml.Controls
@@ -36,6 +43,11 @@ namespace Windows.UI.Xaml.Controls
 		private Border _popupBorder;
 		private ContentPresenter _contentPresenter;
 		private ContentPresenter _headerContentPresenter;
+
+		/// <summary>
+		/// The 'inline' parent view of the selected item within the dropdown list. This is only set if SelectedItem is a view type.
+		/// </summary>
+		private ManagedWeakReference _selectionParentInDropdown;
 
 		public ComboBox()
 		{
@@ -168,6 +180,11 @@ namespace Windows.UI.Xaml.Controls
 
 		internal override void OnSelectedItemChanged(object oldSelectedItem, object selectedItem)
 		{
+			if (oldSelectedItem is _View view)
+			{
+				// Ensure previous SelectedItem is put back in the dropdown list if it's a view
+				RestoreSelectedItem(view);
+			}
 			base.OnSelectedItemChanged(oldSelectedItem, selectedItem);
 			UpdateContentPresenter();
 		}
@@ -182,8 +199,68 @@ namespace Windows.UI.Xaml.Controls
 		{
 			if (_contentPresenter != null)
 			{
-				var item = SelectedItem is ComboBoxItem cbi ? cbi.Content : SelectedItem;
+				var item = GetSelectionContent();
+
+				var itemView = item as _View;
+
+				if (itemView != null)
+				{
+#if __ANDROID__
+					var comboBoxItem = itemView.FindFirstParentOfView<ComboBoxItem>();
+#else
+					var comboBoxItem = itemView.FindFirstParent<ComboBoxItem>();
+#endif
+					if (comboBoxItem != null)
+					{
+						// Keep track of the former parent, so we can put the item back when the dropdown is shown
+						_selectionParentInDropdown = (itemView.GetVisualTreeParent() as IWeakReferenceProvider)?.WeakReference;
+					}
+				}
+				else
+				{
+					_selectionParentInDropdown = null;
+				}
+
 				_contentPresenter.Content = item;
+
+				if (itemView != null && itemView.GetVisualTreeParent() != _contentPresenter)
+				{
+					// Item may have been put back in list, reattach it to _contentPresenter
+					_contentPresenter.AddChild(itemView);
+				}
+			}
+		}
+
+		private object GetSelectionContent()
+		{
+			return SelectedItem is ComboBoxItem cbi ? cbi.Content : SelectedItem;
+		}
+
+		private void RestoreSelectedItem()
+		{
+			var selection = GetSelectionContent();
+			if (selection is _View selectionView)
+			{
+				RestoreSelectedItem(selectionView);
+			}
+		}
+
+		/// <summary>
+		/// Restore SelectedItem (or former SelectedItem) view to its position in the dropdown list.
+		/// </summary>
+		private void RestoreSelectedItem(_View selectionView)
+		{
+			var dropdownParent = _selectionParentInDropdown?.Target as FrameworkElement;
+#if __ANDROID__
+			var comboBoxItem = dropdownParent?.FindFirstParentOfView<ComboBoxItem>();
+#else
+			var comboBoxItem = dropdownParent?.FindFirstParent<ComboBoxItem>();
+#endif
+
+			// Sanity check, ensure parent is still valid (ComboBoxItem may have been recycled)
+			if (comboBoxItem?.Content == selectionView && selectionView.GetVisualTreeParent() != dropdownParent)
+			{
+				dropdownParent.AddChild(selectionView);
 			}
 		}
 
@@ -208,10 +285,18 @@ namespace Windows.UI.Xaml.Controls
 			if (newIsDropDownOpen)
 			{
 				DropDownOpened?.Invoke(this, newIsDropDownOpen);
+
+				RestoreSelectedItem();
+
+				if (SelectedItem != null)
+				{
+					ScrollIntoView(SelectedItem);
+				}
 			}
 			else
 			{
 				DropDownClosed?.Invoke(this, newIsDropDownOpen);
+				UpdateContentPresenter();
 			}
 
 			UpdateDropDownState();
