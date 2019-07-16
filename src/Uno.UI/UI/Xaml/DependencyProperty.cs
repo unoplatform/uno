@@ -64,7 +64,7 @@ namespace Windows.UI.Xaml
 
 			_metadata.Add(_ownerType, defaultMetadata ?? new PropertyMetadata(null));
 
-			// Improve the performance of the hash code by 
+			// Improve the performance of the hash code by
 			CachedHashCode = _name.GetHashCode() ^ ownerType.GetHashCode();
 		}
 
@@ -76,8 +76,8 @@ namespace Windows.UI.Xaml
 		/// dependency property, or that cannot be used in a data binding context. Those types
 		/// are forcibly ignored, even if they inherit from <see cref="DependencyObject"/>.
 		/// </remarks>
-		private static bool CanAutoInheritDataContext(Type propertyType) 
-			=> typeof(DependencyObject).IsAssignableFrom(propertyType) 
+		private static bool CanAutoInheritDataContext(Type propertyType)
+			=> typeof(DependencyObject).IsAssignableFrom(propertyType)
 			&& propertyType != typeof(Style)
 			&& !typeof(FrameworkTemplate).IsAssignableFrom(propertyType);
 
@@ -163,10 +163,12 @@ namespace Windows.UI.Xaml
 		}
 
 		/// <summary>
-		/// Specifies a static value that is used by the dependency property system rather than null to indicate that 
+		/// Specifies a static value that is used by the dependency property system rather than null to indicate that
 		/// the property exists, but does not have its value set by the dependency property system.
 		/// </summary>
-		public static readonly object UnsetValue = new object();
+		public static readonly object UnsetValue = new UnsetValueClass();
+
+		private class UnsetValueClass { }
 
 		/// <summary>
 		/// Retrieves the property metadata value for the dependency property as registered to a type. You specify the type you want info from as a type reference.
@@ -181,7 +183,7 @@ namespace Windows.UI.Xaml
 				if (
 					!IsTypeDependencyObject(forType)
 
-					// This check must be removed when Panel.Children will support only 
+					// This check must be removed when Panel.Children will support only
 					// UIElement as its elements. See #103492
 					&& !forType.Is<_View>()
 				)
@@ -260,7 +262,7 @@ namespace Windows.UI.Xaml
 			get { return _isTypeNullable; }
 		}
 
-		internal object GetFallbackDefaultValue() 
+		internal object GetFallbackDefaultValue()
 			=> _fallbackDefaultValue != null ? _fallbackDefaultValue : _fallbackDefaultValue = Activator.CreateInstance(Type);
 
 		/// <summary>
@@ -444,12 +446,12 @@ namespace Windows.UI.Xaml
 		/// Forces the invocation of the cctor of a type and its base types that may contain DependencyProperty registrations.
 		/// </summary>
 		/// <remarks>
-		/// This is required because of the lazy initialization nature of the classes that do not contain 
-		/// an explicit type ctor, but contain statically initialized fields. DependencyProperty.Register may not be called as a 
+		/// This is required because of the lazy initialization nature of the classes that do not contain
+		/// an explicit type ctor, but contain statically initialized fields. DependencyProperty.Register may not be called as a
 		/// result, if none of the DependencyProperty fields are accessed prior to the enumeration of the fields via reflection.
-		/// 
+		///
 		/// This method avoids requiring controls to include an explicit type constructor to function properly.
-		/// 
+		///
 		/// See: http://stackoverflow.com/questions/6729841/why-did-the-beforefieldinit-behavior-change-in-net-4
 		/// </remarks>
 		private static void ForceInitializeTypeConstructor(Type type)
@@ -495,7 +497,7 @@ namespace Windows.UI.Xaml
 					(
 						prop.HasAutoDataContextInherit
 
-						// We must include explicitly marked properties for now, until the 
+						// We must include explicitly marked properties for now, until the
 						// metadata generator can provide this information.
 						|| propertyOptions.HasValueInheritsDataContext()
 					)
