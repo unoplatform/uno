@@ -15,6 +15,10 @@ namespace Windows.UI.Xaml.Controls
 	{
 		protected enum RelativeHeaderPlacement { Inline, Adjacent }
 
+		/// <summary>
+		/// The direction of scroll.
+		/// </summary>
+		/// <remarks>For <see cref="ItemsStackPanel"/> layouting this is identical to <see cref="Orientation"/> but for <see cref="ItemsWrapGrid"/> it is the opposite of <see cref="Orientation"/>.</remarks>
 		public abstract Orientation ScrollOrientation { get; }
 #if !__WASM__
 		protected readonly ILayouter _layouter = new VirtualizingPanelLayouter();
@@ -96,6 +100,9 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
+		/// <summary>
+		/// Bound to <see cref="ItemsStackPanel.Orientation"/> or <see cref="ItemsWrapGrid.Orientation"/>.
+		/// </summary>
 		public Orientation Orientation
 		{
 			get { return (Orientation)GetValue(OrientationProperty); }
@@ -104,6 +111,29 @@ namespace Windows.UI.Xaml.Controls
 
 		public static readonly DependencyProperty OrientationProperty =
 			DependencyProperty.Register("Orientation", typeof(Orientation), typeof(VirtualizingPanelLayout), new PropertyMetadata(Orientation.Vertical, (o, e) => ((VirtualizingPanelLayout)o).OnOrientationChanged((Orientation)e.NewValue)));
+
+		/// <summary>
+		/// Whether the content should be stretched in breadth (ie perpendicular to the direction of scroll).
+		/// </summary>
+		public bool ShouldBreadthStretch
+		{
+			get
+			{
+				if (XamlParent == null)
+				{
+					return true;
+				}
+
+				if (ScrollOrientation == Orientation.Vertical)
+				{
+					return XamlParent.HorizontalAlignment == HorizontalAlignment.Stretch;
+				}
+				else
+				{
+					return XamlParent.VerticalAlignment == VerticalAlignment.Stretch;
+				}
+			}
+		}
 
 		public IReadOnlyList<float> GetIrregularSnapPoints(Orientation orientation, SnapPointsAlignment alignment)
 		{

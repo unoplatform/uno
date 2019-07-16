@@ -23,6 +23,16 @@ namespace Windows.UI.Xaml.Controls
 
 		private static readonly string[] HorizontalModeClasses = { "scrollmode-x-disabled", "scrollmode-x-enabled", "scrollmode-x-auto" };
 
+		internal Size ScrollBarSize
+		{
+			get
+			{
+				var (clientSize, offsetSize) = WindowManagerInterop.GetClientViewSize(HtmlId);
+
+				return new Size(offsetSize.Width - clientSize.Width, offsetSize.Height - clientSize.Height);
+			}
+		}
+
 		public ScrollContentPresenter()
 		{
 			PointerReleased += ScrollViewer_PointerReleased;

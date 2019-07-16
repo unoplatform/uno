@@ -76,7 +76,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		protected override void UpdateLayoutAttributesForItem(UICollectionViewLayoutAttributes updatingItem)
+		private protected override void UpdateLayoutAttributesForItem(UICollectionViewLayoutAttributes updatingItem, bool shouldRecurse)
 		{
 			//Update extent of either subsequent item in group, subsequent group header, or footer
 			var currentIndex = updatingItem.IndexPath;
@@ -115,6 +115,11 @@ namespace Windows.UI.Xaml.Controls
 				var frame = elementToAdjust.Frame;
 				SetExtentStart(ref frame, GetExtentEnd(updatingItem.Frame));
 				elementToAdjust.Frame = frame;
+
+				if (shouldRecurse)
+				{
+					UpdateLayoutAttributesForItem(elementToAdjust, shouldRecurse: true);
+				}
 			}
 			else
 			{

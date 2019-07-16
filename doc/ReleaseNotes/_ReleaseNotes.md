@@ -29,6 +29,7 @@
 * Add support for `ContentDialog`
 * Permit `DependencyProperty` to be set reentrantly. Eg this permits `TextBox.TextChanging` to modify the `Text` property (previously this could only be achieved using `Dispatcher.RunAsync()`).
 * Implement `TextBox.TextChanging` and `TextBox.BeforeTextChanging`. As on UWP, this allows the text to be intercepted and modified before the UI is updated. Previously on Android using the `TextChanged` event would lead to laggy response and dropped characters when typing rapidly; this is no longer the case with `TextChanging`.
+* [WASM] `ComboBox`'s dropdown list (`CarouselPanel`) is now virtualized (#1012)
 
 ### Breaking changes
 * `TextBox` no longer raises TextChanged when its template is applied, in line with UWP.
@@ -46,6 +47,7 @@
 * Fixed an issue where a Two-Way binding would sometimes not update values back to source correctly
 * Adjust the behavior of `DisplayInformation.LogicalDpi` to match UWP's behavior
 * [Android] Ensure TextBox spell-check is properly enabled/disabled on all devices. 
+* Fix ComboBox disappearing items when items are views (#1078)
 
 ## Release 1.45.0
 ### Features

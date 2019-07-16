@@ -58,6 +58,8 @@ namespace SamplesApp.Windows_UI_Xaml_Controls.Models
 
 		public string[] SampleItemsDuplicates => GetSampleItemsWithDuplicates();
 
+		public string[] SampleTowns { get; } = ListViewGroupedViewModel.SampleTowns;
+
 		public string SelectedItem
 		{
 			get => _selectedItem;
