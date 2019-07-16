@@ -11,7 +11,7 @@ echo $ANDROID_HOME/emulator/emulator -list-avds
 echo "Starting emulator"
 
 # Start emulator in background
-nohup $ANDROID_HOME/emulator/emulator -avd xamarin_android_emulator -skin 1280x800 -memory 2048 -no-audio -no-snapshot -netfast -no-window > /dev/null 2>&1 &
+nohup $ANDROID_HOME/emulator/emulator -avd xamarin_android_emulator -skin 1280x800 -memory 2048 -no-audio -no-snapshot -netfast > /dev/null 2>&1 &
 
 export IsUiAutomationMappingEnabled=true
 
@@ -20,7 +20,8 @@ msbuild /r /p:Configuration=Release $BUILD_SOURCESDIRECTORY/src/SamplesApp/Sampl
 msbuild /r /p:Configuration=Release $BUILD_SOURCESDIRECTORY/src/SamplesApp/SamplesApp.UITests/SamplesApp.UITests.csproj
 
 # Wait for the emulator to finish booting
-$ANDROID_HOME/platform-tools/adb wait-for-device shell 'while [[ -z $(getprop sys.boot_completed | tr -d '\r') ]]; do sleep 1; done; input keyevent 82'
+chmod +x android-uitest-wait-systemui.sh
+./android-uitest-wait-systemui.sh
 
 $ANDROID_HOME/platform-tools/adb devices
 
