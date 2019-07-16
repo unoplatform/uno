@@ -4,7 +4,7 @@ This guide briefly explains the structure of an app created with the default [Un
 
 ## The project files in an Uno app
 
-Let's say we've created a new solution with the [Uno app template](), call it `HelloWorld`. It will already contain the following projects:
+Let's say we've created a new solution with the [Uno app template](https://marketplace.visualstudio.com/items?itemName=nventivecorp.uno-platform-addin), call it `HelloWorld`. It will already contain the following projects:
 
 1. A `HelloWorld.[Platform].csproj` file for each platform that Uno supports: UWP (Windows), Android, iOS, and WebAssembly (Web). This project is known as the **head** for that platform. It contains typical information like settings, metadata, dependencies, and also a list of files included in the project. The platform *head* builds and packages the binary executable for that platform.
 
