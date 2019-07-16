@@ -9,7 +9,6 @@ fourish different categories of documentation:
 - tutorials/task/activity docs (how to update between release v1 to v2 which unfortunately had breaking changes)
 - reference docs (public api reference ie class members/what's implemented/per control information)
 
-
 ## building the documentation locally
 
 tba. Any advice? It should be as simple as `make documentation` or `build.ps1 documentation`
@@ -20,7 +19,7 @@ If new documentation is created without adding it to the table of contents then 
 
 ## what parts of the UWP contract are currently implemented by Uno
 
-See https://github.com/unoplatform/uno/blob/master/src/Uno.UWPSyncGenerator/DocGenerator.cs
+See https://github.com/unoplatform/uno/blob/master/src/Uno.UWPSyncGenerator/DocGenerator.cs which outputs to https://platform.uno/docs/articles/implemented-views.html
 
 ## useful tools
 
