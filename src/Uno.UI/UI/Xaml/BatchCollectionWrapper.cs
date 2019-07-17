@@ -7,7 +7,7 @@ using System.Collections;
 namespace Windows.UI.Xaml.Controls
 {
 	/// <summary>
-	/// A collection of items,
+	/// A collection of items, 
 	///  Implements the INotifyCollectionChanged
 	/// Call back when thread is liberated
 	/// </summary>
@@ -157,7 +157,7 @@ namespace Windows.UI.Xaml.Controls
 
 		public IEnumerator<T> GetEnumerator() => GetEnumeratorCore();
 
-		protected abstract IEnumerator<T> GetEnumeratorCore();
+		protected abstract List<T>.Enumerator GetEnumeratorCore();
 
 		#endregion
 

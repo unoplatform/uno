@@ -99,12 +99,12 @@ namespace Windows.UI.Xaml.Controls
 			_owner.MoveViewTo((int)oldIndex, (int)newIndex);
 		}
 
-		protected override IEnumerator<NSView> GetEnumeratorCore()
+		protected override List<NSView>.Enumerator GetEnumeratorCore()
 			=> _owner.GetChildrenEnumerator();
 
 		// This method is a explicit replace of GetEnumerator in BatchCollection<T> to
 		// enable allocation-less enumeration. It is present at this level to avoid
 		// a binary breaking change.
-		public new IEnumerator<NSView> GetEnumerator() => GetEnumeratorCore();
+		public new List<NSView>.Enumerator GetEnumerator() => GetEnumeratorCore();
 	}
 }

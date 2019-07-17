@@ -19,9 +19,9 @@ namespace Uno.UI.Controls
 {
 	public partial class BindableNSView : NSView, INotifyPropertyChanged, DependencyObject, IShadowChildrenProvider, IEnumerable
 	{
-		private IReadOnlyList<NSView> _shadowChildren = new List<NSView>(0);
+		private MaterializableList<NSView> _shadowChildren = new MaterializableList<NSView>(0);
 
-		IReadOnlyList<NSView> IShadowChildrenProvider.ChildrenShadow => _shadowChildren;
+		List<NSView> IShadowChildrenProvider.ChildrenShadow => _shadowChildren.Materialized;
 
 		internal IReadOnlyList<NSView> ChildrenShadow => _shadowChildren;
 
@@ -33,10 +33,10 @@ namespace Uno.UI.Controls
 			// the items has been added other than by getting the complete list.
 			// Subviews materializes a new array at every call, which makes it safe to
 			// reference.
-			_shadowChildren = Subviews.ToList();
+			_shadowChildren = new MaterializableList<NSView>(Subviews);
 		}
 
-		internal IEnumerator<NSView> GetChildrenEnumerator() => _shadowChildren.GetEnumerator();
+		internal List<NSView>.Enumerator GetChildrenEnumerator() => _shadowChildren.Materialized.GetEnumerator();
 
 		public override void WillRemoveSubview(NSView NSView)
 		{
@@ -46,9 +46,7 @@ namespace Uno.UI.Controls
 
 			if(position != -1)
 			{
-				var newShadow = _shadowChildren.ToList();
-				newShadow.RemoveAt(position);
-				_shadowChildren = newShadow;
+				_shadowChildren.RemoveAt(position);
 			}
 		}
 
@@ -92,7 +90,7 @@ namespace Uno.UI.Controls
 		/// </remarks>
 		internal void MoveViewTo(int oldIndex, int newIndex)
 		{
-			var newShadow = _shadowChildren.ToList();
+			var newShadow = _shadowChildren.Materialized;
 
 			var view = newShadow[oldIndex];
 
@@ -107,7 +105,7 @@ namespace Uno.UI.Controls
 				// BringSubviewToFront(newShadow[i]);
 			}
 
-			_shadowChildren = newShadow.ToList();
+			_shadowChildren = new MaterializableList<NSView>(newShadow);
 		}
 
 		protected void RaisePropertyChanged([CallerMemberName] string propertyName = null)

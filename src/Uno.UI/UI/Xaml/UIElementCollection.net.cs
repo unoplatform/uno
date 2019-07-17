@@ -40,7 +40,7 @@ namespace Windows.UI.Xaml.Controls
 
 		protected override View GetAtIndexCore(int index) => _elements[index];
 
-		protected override IEnumerator<View> GetEnumeratorCore() => _elements.GetEnumerator();
+		protected override List<View>.Enumerator GetEnumeratorCore() => _elements.GetEnumerator();
 
 		protected override int IndexOfCore(View item) => _elements.IndexOf(item);
 

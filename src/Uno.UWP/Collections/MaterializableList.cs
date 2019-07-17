@@ -26,6 +26,11 @@ namespace Uno.Collections
 			_innerList = new List<T>(capacity);
 		}
 
+		public MaterializableList(List<T> collection)
+		{
+			_innerList = collection;
+		}
+
 		public MaterializableList(IEnumerable<T> collection)
 		{
 			_innerList = new List<T>(collection);

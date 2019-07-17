@@ -87,9 +87,9 @@ namespace Uno.UI.Controls
 		/// <summary>
 		/// Provides a shadowed list of views, used to limit the impact of the marshalling.
 		/// </summary>
-		IReadOnlyList<View> IShadowChildrenProvider.ChildrenShadow => _childrenShadow;
+		List<View> IShadowChildrenProvider.ChildrenShadow => _childrenShadow.Materialized;
 
-		internal IEnumerator<View> GetChildrenEnumerator() => _childrenShadow.GetEnumerator();
+		internal List<View>.Enumerator GetChildrenEnumerator() => _childrenShadow.Materialized.GetEnumerator();
 
 		/// <summary>
 		/// Gets the view at a specific position.
