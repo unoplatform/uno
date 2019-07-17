@@ -12,7 +12,6 @@ namespace Windows.UI.Xaml.Input
 {
 	public sealed partial class PointerRoutedEventArgs : RoutedEventArgs, ICancellableRoutedEventArgs
 	{
-
 		public IList<PointerPoint> GetIntermediatePoints(UIElement relativeTo)
 			=> new List<PointerPoint>(1) {GetCurrentPoint(relativeTo)};
 
@@ -23,5 +22,9 @@ namespace Windows.UI.Xaml.Input
 		public VirtualKeyModifiers KeyModifiers { get; }
 
 		public Pointer Pointer { get; }
+
+		/// <inheritdoc />
+		public override string ToString()
+			=> $"PointerRoutedEventArgs({Pointer}@{GetCurrentPoint(null).Position})";
 	}
 }

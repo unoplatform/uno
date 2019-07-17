@@ -193,11 +193,35 @@
 						reason="Invalid method visibility"/>
 				<Member fullName="System.Void Uno.UI.Controls.Legacy.ListViewBase.OnLayoutUpdated()"
 						reason="Invalid method visibility"/>
+
+				<Member 
+					fullName="System.Void Windows.UI.Input.PointerPointProperties..ctor()"
+					reason="Invalid visibility."/>
+				<Member 
+					fullName="System.Void Windows.Devices.Input.PointerDevice..ctor()"
+					reason="Invalid visibility."/>
+				<Member 
+					fullName="Windows.Foundation.Point Windows.UI.Xaml.Input.PointerRoutedEventArgs.GetCurrentPoint()"
+					reason="Method was missing a required parameter"/>
+				<Member 
+					fullName="Windows.Foundation.Point[] Windows.UI.Xaml.Input.PointerRoutedEventArgs.GetIntermediatePoints()"
+					reason="Method was missing a required parameter"/>
 			</Methods>
 
 			<Fields>
-				<Member fullName="Windows.UI.Xaml.TextWrapping Windows.UI.Xaml.TextWrapping::WordEllipsis"
-						reason="Invalid enum value"/>
+				<Member 
+					fullName="Windows.UI.Xaml.TextWrapping Windows.UI.Xaml.TextWrapping::WordEllipsis"
+					reason="Invalid enum value"/>
+
+				<Member 
+					fullName="System.Int32 Windows.UI.Input.GestureSettings::value__"
+					reason="Enum was a int instead of uint like UWP"/>
+				<Member 
+					fullName="System.Int32 Windows.System.VirtualKeyModifiers::value__"
+					reason="Enum was a int instead of uint like UWP"/>
+				<Member 
+					fullName="System.Int32 Windows.UI.Xaml.Input.ManipulationModes::value__"
+					reason="Enum was a int instead of uint like UWP"/>
 			</Fields>
 
 			<Properties>

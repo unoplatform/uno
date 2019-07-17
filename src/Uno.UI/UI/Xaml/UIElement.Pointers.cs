@@ -34,7 +34,7 @@ namespace Windows.UI.Xaml
 	partial class UIElement
 	{
 		#region ManipulationMode (DP)
-		public static readonly DependencyProperty ManipulationModeProperty = DependencyProperty.Register(
+		public static DependencyProperty ManipulationModeProperty { get; } = DependencyProperty.Register(
 			"ManipulationMode",
 			typeof(ManipulationModes),
 			typeof(UIElement),
