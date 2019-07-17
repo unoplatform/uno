@@ -478,15 +478,37 @@ namespace Uno.UI.DataBinding
 				return GetSourceValue(_substituteValueGetter);
 			}
 
+			private bool _isDataContextChanging;
+
 			private void OnDataContextChanged()
 			{
-				if (DataContext != null && DataContext != DependencyProperty.UnsetValue)
+				if (DataContext != null)
 				{
 					ClearCachedGetters();
+					if (_propertyChanged.Disposable != null)
+					{
+						try
+						{
+							_isDataContextChanging = true;
+							_propertyChanged.Disposable = null;
+						}
+						finally
+						{
+							_isDataContextChanging = false;
+						}
+					}
 
 					_propertyChanged.Disposable =
 							SubscribeToPropertyChanged((previousValue, newValue, shouldRaiseValueChanged) =>
 								{
+									if (_isDataContextChanging && newValue == DependencyProperty.UnsetValue)
+									{
+										// We're in a "resubscribe" scenario, so we don't need to
+										// pass through the DependencyProperty.UnsetValue.
+										// We simply discard this update.
+										return;
+									}
+
 									if (Next != null)
 									{
 										Next.DataContext = newValue;
@@ -693,11 +715,10 @@ namespace Uno.UI.DataBinding
 			/// <returns>A disposable to be called when the subscription is disposed.</returns>
 			private IDisposable SubscribeToPropertyChanged(PropertyChangedHandler action)
 			{
-				var disposable = new CompositeDisposable();
-
+				var disposables = new CompositeDisposable((_propertyChangedHandlers.Count * 3));
 				foreach (var handler in _propertyChangedHandlers)
 				{
-					object previousValue = null;
+					object previousValue = default;
 
 					Action updateProperty = () =>
 					{
@@ -723,16 +744,15 @@ namespace Uno.UI.DataBinding
 						// in this disposable. The reference is attached to the source's
 						// object lifetime, to the target (bound) object.
 						//
-						// The registerations made by _propertyChangedHandlers are all
+						// All registrations made by _propertyChangedHandlers are
 						// weak with regards to the delegates that are provided.
-						disposable.Add(() => updateProperty = null);
-
-						disposable.Add(handlerDisposable);
-						disposable.Add(disposeAction);
+						disposables.Add(() => updateProperty = null);
+						disposables.Add(handlerDisposable);
+						disposables.Add(disposeAction);
 					}
 				}
 
-				return disposable;
+				return disposables;
 			}
 
 			public void Dispose()
