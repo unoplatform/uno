@@ -1,4 +1,5 @@
 ﻿using NUnit.Framework;
+using SamplesApp.UITests.TestFramework;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -14,6 +15,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TimePickerTests
 	public partial class ContentDialog_Tests : SampleControlUITestBase
 	{
 		[Test]
+		[AutoRetry]
 		public void Simple_ContentDialog_01_Primary()
 		{
 			Run("UITests.Shared.Windows_UI_Xaml_Controls.ContentDialogTests.ContentDialog_Simple");
@@ -40,6 +42,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TimePickerTests
 		}
 
 		[Test]
+		[AutoRetry]
 		public void Simple_ContentDialog_01_Primary_Disabled()
 		{
 			Run("UITests.Shared.Windows_UI_Xaml_Controls.ContentDialogTests.ContentDialog_Simple");
@@ -75,6 +78,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TimePickerTests
 		}
 
 		[Test]
+		[AutoRetry]
 		public void Simple_ContentDialog_01_Secondary()
 		{
 			Run("UITests.Shared.Windows_UI_Xaml_Controls.ContentDialogTests.ContentDialog_Simple");
@@ -101,6 +105,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TimePickerTests
 		}
 
 		[Test]
+		[AutoRetry]
 		public void Simple_ContentDialog_01_PrimaryCommand()
 		{
 			Run("UITests.Shared.Windows_UI_Xaml_Controls.ContentDialogTests.ContentDialog_Simple");
@@ -129,6 +134,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TimePickerTests
 		}
 
 		[Test]
+		[AutoRetry]
 		public void Simple_ContentDialog_01_Close()
 		{
 			Run("UITests.Shared.Windows_UI_Xaml_Controls.ContentDialogTests.ContentDialog_Simple");
@@ -155,6 +161,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TimePickerTests
 		}
 
 		[Test]
+		[AutoRetry]
 		public void Simple_ContentDialog_01_TypeInner()
 		{
 			Run("UITests.Shared.Windows_UI_Xaml_Controls.ContentDialogTests.ContentDialog_Simple");

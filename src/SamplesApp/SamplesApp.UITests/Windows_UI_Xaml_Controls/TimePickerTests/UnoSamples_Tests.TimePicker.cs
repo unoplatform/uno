@@ -1,4 +1,5 @@
 ﻿using NUnit.Framework;
+using SamplesApp.UITests.TestFramework;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -14,6 +15,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TimePickerTests
 	public partial class TimePickerTests_Tests : SampleControlUITestBase
 	{
 		[Test]
+		[AutoRetry]
 		[Ignore("Not available yet")]
 		public void TimePickerFlyout_DiscardChanges()
 		{
@@ -52,6 +54,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TimePickerTests
 		}
 
 		[Test]
+		[AutoRetry]
 		[Ignore("Not available yet")]
 		public void TimePickerFlyout_ApplyChanges()
 		{

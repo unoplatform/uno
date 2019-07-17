@@ -41,4 +41,4 @@ while [[ -z ${LAUNCHER_READY} ]]; do
     esac
 done
 
-echo "Launcher is ready :-)"
+echo "Launcher is ready!"

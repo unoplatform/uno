@@ -1,5 +1,6 @@
 ﻿using NUnit.Framework;
 using SamplesApp.UITests;
+using SamplesApp.UITests.TestFramework;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,6 +15,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ButtonTests
 	public partial class Button_Tests : SampleControlUITestBase
 	{
 		[Test]
+		[AutoRetry]
 		public void Button_IsOpacity_Validation()
 		{
 			Run("Uno.UI.Samples.Content.UITests.ButtonTestsControl.Button_Opacity_Automated");
