@@ -26,7 +26,7 @@ namespace Uno.UI.Controls
 		/// This property is exposed as a concrete <see cref="List{T}"/> to benefit from
 		/// allocation-less enumeration of the shadow children.
 		/// </remarks>
-        List<View> ChildrenShadow { get; }
+        IReadOnlyList<View> ChildrenShadow { get; }
 	}
 }
 #endif

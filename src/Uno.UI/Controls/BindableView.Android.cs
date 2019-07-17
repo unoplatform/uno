@@ -10,6 +10,7 @@ using System.ComponentModel;
 using Windows.UI.Xaml.Media;
 using Android.Graphics;
 using Android.Views.Animations;
+using Uno.Collections;
 using Uno.Disposables;
 using Uno.UI.Media;
 
@@ -24,7 +25,7 @@ namespace Uno.UI.Controls
 		DependencyObject,
 		IShadowChildrenProvider
 	{
-		private readonly List<View> _childrenShadow = new List<View>();
+		private readonly MaterializableList<View> _childrenShadow = new MaterializableList<View>();
 
 		public event PropertyChangedEventHandler PropertyChanged;
 
@@ -67,7 +68,7 @@ namespace Uno.UI.Controls
 		/// </summary>
 		/// <remarks>
 		/// This method exists to avoid having to call twice the View
-		/// methods to get the measured width and height, and pay for the 
+		/// methods to get the measured width and height, and pay for the
 		/// interop cost.
 		/// </remarks>
 		internal static Windows.Foundation.Size GetNativeMeasuredDimensionsFast(View view)
@@ -86,14 +87,14 @@ namespace Uno.UI.Controls
 		/// <summary>
 		/// Provides a shadowed list of views, used to limit the impact of the marshalling.
 		/// </summary>
-		List<View> IShadowChildrenProvider.ChildrenShadow => _childrenShadow;
+		IReadOnlyList<View> IShadowChildrenProvider.ChildrenShadow => _childrenShadow;
 
-		internal List<View>.Enumerator GetChildrenEnumerator() => _childrenShadow.GetEnumerator();
+		internal IEnumerator<View> GetChildrenEnumerator() => _childrenShadow.GetEnumerator();
 
 		/// <summary>
 		/// Gets the view at a specific position.
 		/// </summary>
-		/// <remarks>This method does not call the actual GetChildAt method, 
+		/// <remarks>This method does not call the actual GetChildAt method,
 		/// but an optimized version of it that does not require a hierarchy
 		/// observer.</remarks>
 		public new virtual View GetChildAt(int position) => _childrenShadow[position];
@@ -101,7 +102,7 @@ namespace Uno.UI.Controls
 		/// <summary>
 		/// Gets the number of child views.
 		/// </summary>
-		/// <remarks>This method does not call the actual ChildCount method, 
+		/// <remarks>This method does not call the actual ChildCount method,
 		/// but an optimized version of it that does not require a hierarchy
 		/// observer.</remarks>
 		public new virtual int ChildCount => _childrenShadow.Count;
@@ -109,7 +110,7 @@ namespace Uno.UI.Controls
 		/// <summary>
 		/// Adds a view to the current view group.
 		/// </summary>
-		/// <remarks>This method does not call the actual AddView method, 
+		/// <remarks>This method does not call the actual AddView method,
 		/// but an optimized version of it that does not require a hierarchy
 		/// observer.</remarks>
 		public new virtual void AddView(View view)
@@ -122,7 +123,7 @@ namespace Uno.UI.Controls
 		/// <summary>
 		/// Adds a view to the current view group using a position index.
 		/// </summary>
-		/// <remarks>This method does not call the actual AddView method, 
+		/// <remarks>This method does not call the actual AddView method,
 		/// but an optimized version of it that does not require a hierarchy
 		/// observer.</remarks>
 		public new virtual void AddView(View view, int index)
@@ -135,7 +136,7 @@ namespace Uno.UI.Controls
 		/// <summary>
 		/// Removes a view from the current view group.
 		/// </summary>
-		/// <remarks>This method does not call the actual AddView method, 
+		/// <remarks>This method does not call the actual AddView method,
 		/// but an optimized version of it that does not require a hierarchy
 		/// observer.</remarks>
 		public new virtual void RemoveView(View view)
@@ -158,7 +159,7 @@ namespace Uno.UI.Controls
 		/// <summary>
 		/// Removes a view from the current view group using a position index.
 		/// </summary>
-		/// <remarks>This method does not call the actual AddView method, 
+		/// <remarks>This method does not call the actual AddView method,
 		/// but an optimized version of it that does not require a hierarchy
 		/// observer.</remarks>
 		public new virtual void RemoveViewAt(int index)
@@ -188,7 +189,7 @@ namespace Uno.UI.Controls
 		/// <remarks>
 		/// The trick for this method is to move the child from one position to the other
 		/// without calling RemoveView and AddView. In this context, the only way to do this is
-		/// to call BringToFront, which is the only available method on ViewGroup that manipulates 
+		/// to call BringToFront, which is the only available method on ViewGroup that manipulates
 		/// the index of a view, even if it does not allow for specifying an index.
 		/// </remarks>
 		internal void MoveViewTo(int oldIndex, int newIndex)
@@ -244,7 +245,7 @@ namespace Uno.UI.Controls
 		}
 
 		/// <summary>
-		/// Provides a default implementation for the HitCheck 
+		/// Provides a default implementation for the HitCheck
 		/// performed in the UnoViewGroup java class.
 		/// </summary>
 		/// <returns></returns>
@@ -272,7 +273,7 @@ namespace Uno.UI.Controls
 		}
 
 		/// <summary>
-		/// Called whenever the current view is being removed from its parent. This method is 
+		/// Called whenever the current view is being removed from its parent. This method is
 		/// called only if the parent is a BindableView.
 		/// </summary>
 		protected override void OnRemovedFromParent()
@@ -297,7 +298,7 @@ namespace Uno.UI.Controls
 		/// Resets the dependency object parent for non BindableView views, but that implement IDependencyObject provider.
 		/// </summary>
 		/// <remarks>
-		/// This is required on Android because native <see cref="View"/> instances 
+		/// This is required on Android because native <see cref="View"/> instances
 		/// can't be notificed if their parent changes. <see cref="UnoViewGroup"/> provides this behavior
 		/// by intercepting add/remove children and calls <see cref="OnRemovedFromParent"/>.
 		/// <see cref="FrameworkTemplatePool"/> relies on knowing that the <see cref="DependencyObject.Parent"/> of a
@@ -317,7 +318,7 @@ namespace Uno.UI.Controls
 		}
 
 		/// <summary>
-		/// Call from non-<see cref="UnoViewGroup"/> parents from <see cref="RemoveView(View)"/> and <see cref="RemoveViewAt(int)"/> in 
+		/// Call from non-<see cref="UnoViewGroup"/> parents from <see cref="RemoveView(View)"/> and <see cref="RemoveViewAt(int)"/> in
 		/// order to clear the <see cref="DependencyObject.Parent"/> correctly.
 		/// </summary>
 		internal void NotifyRemovedFromParent()

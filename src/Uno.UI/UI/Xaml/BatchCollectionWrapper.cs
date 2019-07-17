@@ -1,16 +1,13 @@
 ﻿using System;
-using System.Collections.ObjectModel;
 using System.Collections.Generic;
 using System.Collections.Specialized;
-using System.Threading.Tasks;
 using System.Linq;
-using Uno.Extensions;
 using System.Collections;
 
 namespace Windows.UI.Xaml.Controls
 {
 	/// <summary>
-	/// A collection of items, 
+	/// A collection of items,
 	///  Implements the INotifyCollectionChanged
 	/// Call back when thread is liberated
 	/// </summary>
@@ -160,7 +157,7 @@ namespace Windows.UI.Xaml.Controls
 
 		public IEnumerator<T> GetEnumerator() => GetEnumeratorCore();
 
-		protected abstract List<T>.Enumerator GetEnumeratorCore();
+		protected abstract IEnumerator<T> GetEnumeratorCore();
 
 		#endregion
 

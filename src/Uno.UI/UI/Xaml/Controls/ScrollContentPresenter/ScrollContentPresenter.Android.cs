@@ -14,12 +14,13 @@ using System.Linq;
 using Uno.UI.Controls;
 using Uno.UI;
 using Windows.Foundation;
+using Uno.Collections;
 
 namespace Windows.UI.Xaml.Controls
 {
 	public partial class ScrollContentPresenter : UnoTwoDScrollView, IShadowChildrenProvider, DependencyObject
 	{
-		private readonly static List<View> _emptyList = new List<View>(0);
+		private static readonly List<View> _emptyList = new List<View>(0);
 
 		private ScrollBarVisibility _verticalScrollBarVisibility;
 		public ScrollBarVisibility VerticalScrollBarVisibility
@@ -99,7 +100,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		List<View> IShadowChildrenProvider.ChildrenShadow => Content != null ? new List<View>(1) { Content } : _emptyList;
+		IReadOnlyList<View> IShadowChildrenProvider.ChildrenShadow => Content != null ? new List<View>(1) { Content } : _emptyList;
 
 		partial void OnContentChanged(View previousView, View newView)
 		{
@@ -147,7 +148,7 @@ namespace Windows.UI.Xaml.Controls
 
 			// WARNING: The layouter must be called every time here,
 			// even if the size has not changed. Failing to call the layouter
-			// may leave the default ScrollViewer implementation place 
+			// may leave the default ScrollViewer implementation place
 			// the child at an invalid location when the visibility changes.
 
 			_layouter.Arrange(newSize);
@@ -301,7 +302,7 @@ namespace Windows.UI.Xaml.Controls
 		private void SetChildMargin(Thickness childMargin)
 		{
 			// We're using the ScrollView's padding as the child's margin
-			// because the native ScrollView determines the scroll area 
+			// because the native ScrollView determines the scroll area
 			// based on the measured size of its children, which doesn't account for margins.
 			_childMargin = childMargin;
 			UpdatePadding();

@@ -25,9 +25,9 @@ namespace Uno.UI.Controls
 {
 	public partial class BindableUIView : UIView, INotifyPropertyChanged, DependencyObject, IShadowChildrenProvider
 	{
-		private List<UIView> _shadowChildren = new List<UIView>();
+		private List<UIView> _shadowChildren = new List<UIView>(0);
 
-		List<UIView> IShadowChildrenProvider.ChildrenShadow => _shadowChildren;
+		IReadOnlyList<UIView> IShadowChildrenProvider.ChildrenShadow => _shadowChildren;
 
 		internal IReadOnlyList<UIView> ChildrenShadow => _shadowChildren;
 
@@ -35,14 +35,14 @@ namespace Uno.UI.Controls
 		{
 			base.SubviewAdded(uiview);
 
-			// Reference the list as we don't know where 
+			// Reference the list as we don't know where
 			// the items has been added other than by getting the complete list.
 			// Subviews materializes a new array at every call, which makes it safe to
 			// reference.
 			_shadowChildren = Subviews.ToList();
 		}
 
-		internal List<UIView>.Enumerator GetChildrenEnumerator() => _shadowChildren.GetEnumerator();
+		internal IEnumerator<UIView> GetChildrenEnumerator() => _shadowChildren.GetEnumerator();
 
 		public override void WillRemoveSubview(UIView uiview)
 		{
@@ -52,7 +52,9 @@ namespace Uno.UI.Controls
 
 			if(position != -1)
 			{
-				_shadowChildren.RemoveAt(position);
+				var newShadow = _shadowChildren.ToList();
+				newShadow.RemoveAt(position);
+				_shadowChildren = newShadow;
 			}
 		}
 
@@ -93,7 +95,7 @@ namespace Uno.UI.Controls
 		/// <remarks>
 		/// The trick for this method is to move the child from one position to the other
 		/// without calling RemoveView and AddView. In this context, the only way to do this is
-		/// to call BringSubviewToFront, which is the only available method on UIView that manipulates 
+		/// to call BringSubviewToFront, which is the only available method on UIView that manipulates
 		/// the index of a view, even if it does not allow for specifying an index.
 		/// </remarks>
 		internal void MoveViewTo(int oldIndex, int newIndex)
@@ -112,7 +114,7 @@ namespace Uno.UI.Controls
 				BringSubviewToFront(newShadow[i]);
 			}
 
-			_shadowChildren = newShadow.ToList();
+			_shadowChildren = newShadow;
 		}
 
 		protected void RaisePropertyChanged([CallerMemberName] string propertyName = null)

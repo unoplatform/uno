@@ -12,10 +12,10 @@ namespace Windows.UI.Xaml.Controls
 {
 	public class UIElementCollection : BatchCollection<View>, IList<View>, IEnumerable<View>
     {
-        private readonly BindableView _owner;	
+        private readonly BindableView _owner;
 
         public UIElementCollection(BindableView owner) : base(owner)
-        { 
+        {
             _owner = owner;
         }
 
@@ -98,13 +98,13 @@ namespace Windows.UI.Xaml.Controls
 			_owner.MoveViewTo((int)oldIndex, (int)newIndex);
 		}
 
-		protected override List<View>.Enumerator GetEnumeratorCore() 
+		protected override IEnumerator<View> GetEnumeratorCore()
 			=> _owner.GetChildrenEnumerator();
 
 		// This method is a explicit replace of GetEnumerator in BatchCollection<T> to
 		// enable allocation-less enumeration. It is present at this level to avoid
 		// a binary breaking change.
-		public new List<View>.Enumerator GetEnumerator() => GetEnumeratorCore();
+		public new IEnumerator<View> GetEnumerator() => GetEnumeratorCore();
 	}
 }
 #endif

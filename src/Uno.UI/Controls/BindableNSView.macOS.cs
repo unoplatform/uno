@@ -19,9 +19,9 @@ namespace Uno.UI.Controls
 {
 	public partial class BindableNSView : NSView, INotifyPropertyChanged, DependencyObject, IShadowChildrenProvider, IEnumerable
 	{
-		private List<NSView> _shadowChildren = new List<NSView>();
+		private IReadOnlyList<NSView> _shadowChildren = new List<NSView>(0);
 
-		List<NSView> IShadowChildrenProvider.ChildrenShadow => _shadowChildren;
+		IReadOnlyList<NSView> IShadowChildrenProvider.ChildrenShadow => _shadowChildren;
 
 		internal IReadOnlyList<NSView> ChildrenShadow => _shadowChildren;
 
@@ -29,14 +29,14 @@ namespace Uno.UI.Controls
 		{
 			base.DidAddSubview(NSView);
 
-			// Reference the list as we don't know where 
+			// Reference the list as we don't know where
 			// the items has been added other than by getting the complete list.
 			// Subviews materializes a new array at every call, which makes it safe to
 			// reference.
 			_shadowChildren = Subviews.ToList();
 		}
 
-		internal List<NSView>.Enumerator GetChildrenEnumerator() => _shadowChildren.GetEnumerator();
+		internal IEnumerator<NSView> GetChildrenEnumerator() => _shadowChildren.GetEnumerator();
 
 		public override void WillRemoveSubview(NSView NSView)
 		{
@@ -46,7 +46,9 @@ namespace Uno.UI.Controls
 
 			if(position != -1)
 			{
-				_shadowChildren.RemoveAt(position);
+				var newShadow = _shadowChildren.ToList();
+				newShadow.RemoveAt(position);
+				_shadowChildren = newShadow;
 			}
 		}
 
