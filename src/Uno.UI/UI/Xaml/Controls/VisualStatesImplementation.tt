@@ -145,7 +145,7 @@ namespace <#= mixin.NamespaceName #>
 
 		protected override void OnPointerCaptureLost(PointerRoutedEventArgs args)
 		{
-			base.OnPointerReleased(args);
+			base.OnPointerCaptureLost(args);
 			
 			this.UpdateCommonStates(true);
 		}

@@ -141,7 +141,7 @@ namespace Windows.UI.Xaml
 			if (_gestures.IsValueCreated)
 			{
 				// We need to process only events that are bubbling natively to this control,
-				// if they are bubbling in managed it means that tey where handled a child control,
+				// if they are bubbling in managed it means that they were handled by a child control,
 				// so we should not use them for gesture recognition.
 				_gestures.Value.ProcessDownEvent(args.GetCurrentPoint(this));
 			}
@@ -160,7 +160,7 @@ namespace Windows.UI.Xaml
 			if (_gestures.IsValueCreated)
 			{
 				// We need to process only events that are bubbling natively to this control,
-				// if they are bubbling in managed it means that tey where handled a child control,
+				// if they are bubbling in managed it means that they were handled by a child control,
 				// so we should not use them for gesture recognition.
 				_gestures.Value.ProcessMoveEvents(args.GetIntermediatePoints(this));
 			}

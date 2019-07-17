@@ -54,7 +54,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 			if (!(GetContentElement() is UIControl uiControl))
 			{
-				// Button is using Windows template, no native events to register too
+				// Button is using Windows template, no native events to register to
 				return;
 			}
 

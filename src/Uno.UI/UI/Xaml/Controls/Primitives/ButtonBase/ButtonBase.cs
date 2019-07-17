@@ -229,7 +229,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 				args.Handled = true;
 			}
 
-			base.OnPointerPressed(args);
+			base.OnPointerReleased(args);
 		}
 #else
 		protected override void OnPointerPressed(PointerRoutedEventArgs args)
