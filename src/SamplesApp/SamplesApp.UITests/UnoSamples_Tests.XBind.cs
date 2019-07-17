@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using NUnit.Framework;
+using SamplesApp.UITests.TestFramework;
 using Uno.UITest.Helpers;
 using Uno.UITest.Helpers.Queries;
 
@@ -13,6 +14,7 @@ namespace SamplesApp.UITests
 	public partial class UnoSamples_Tests : SampleControlUITestBase
 	{
 		[Test]
+		[AutoRetry]
 		public void XBind_Validation()
 		{
 			Run("Uno.UI.Samples.Content.UITests.XBind.XBind_Simple");

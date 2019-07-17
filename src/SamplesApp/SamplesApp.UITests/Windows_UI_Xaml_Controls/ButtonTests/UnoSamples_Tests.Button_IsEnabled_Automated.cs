@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using NUnit.Framework;
 using SamplesApp.UITests;
+using SamplesApp.UITests.TestFramework;
 using Uno.UITest.Helpers;
 using Uno.UITest.Helpers.Queries;
 using Xamarin.UITest;
@@ -15,6 +16,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ButtonTests
 	partial class Button_Tests : SampleControlUITestBase
 	{
 		[Test]
+		[AutoRetry]
 		public void Button_IsEnabled_Validation()
 		{
 			Run("Uno.UI.Samples.Content.UITests.ButtonTestsControl.Button_IsEnabled_Automated");
@@ -41,6 +43,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ButtonTests
 		}
 
 		[Test]
+		[AutoRetry]
 		public void CheckBox_IsEnabled_Validation()
 		{
 			Run("Uno.UI.Samples.Content.UITests.ButtonTestsControl.CheckBox_IsEnabled_Automated");
@@ -73,6 +76,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ButtonTests
 		}
 
 		[Test]
+		[AutoRetry]
 		public void ToggleButton_IsEnabled_Validation()
 		{
 			Run("Uno.UI.Samples.Content.UITests.ButtonTestsControl.ToggleButton_IsEnabled_Automated");
@@ -105,6 +109,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ButtonTests
 		}
 		
 		[Test]
+		[AutoRetry]
 		public void ToggleSwitch_IsEnabled_Validation()
 		{
 			Run("Uno.UI.Samples.Content.UITests.ButtonTestsControl.ToggleSwitch_IsEnable_Automated");
@@ -130,6 +135,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ButtonTests
 		}
 
 		[Test]
+		[AutoRetry]
 		public void HyperlinkButton_IsEnabled_Validation()
 		{
 			Run("Uno.UI.Samples.Content.UITests.ButtonTestsControl.HyperlinkButton_IsEnabled_Automated");
@@ -156,6 +162,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ButtonTests
 		}
 				
 		[Test]
+		[AutoRetry]
 		public void CheckBox_IsEnabled_StatePreservation()
 		{
 			Run("Uno.UI.Samples.Content.UITests.ButtonTestsControl.CheckBox_IsEnabled_Automated");
@@ -194,6 +201,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ButtonTests
 		}
 
 		[Test]
+		[AutoRetry]
 		public void CheckBox_DoubleTapValidation()
 		{
 			Run("Uno.UI.Samples.Content.UITests.ButtonTestsControl.CheckBox_IsEnabled_Automated");
