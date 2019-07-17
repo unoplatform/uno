@@ -32,8 +32,13 @@ while [[ -z ${LAUNCHER_READY} ]]; do
     *)
         echo "Waiting for launcher..."
         sleep 3
+
+		# For some reason the messaging app can be brought up in front
+		# (DEBUG) Current focus:   mCurrentFocus=Window{1170051 u0 com.google.android.apps.messaging/com.google.android.apps.messaging.ui.ConversationListActivity}
+		# Try bringing back the home screen to check on the launcher.
+        $ANDROID_HOME/platform-tools/adb shell input keyevent KEYCODE_HOME
     ;;
     esac
 done
 
-echo "Launcher is ready :-)"
+echo "Launcher is ready!"

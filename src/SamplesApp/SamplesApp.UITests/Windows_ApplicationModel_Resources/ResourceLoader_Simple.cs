@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using NUnit.Framework;
+using SamplesApp.UITests.TestFramework;
 using Uno.UITest.Helpers;
 using Uno.UITest.Helpers.Queries;
 
@@ -13,6 +14,7 @@ namespace SamplesApp.UITests.Windows_ApplicationModel_Resources
 	public class ResourceLoader_Simple : SampleControlUITestBase
 	{
 		[Test]
+		[AutoRetry]
 		public void ValidateResourceLoader_Simple()
 		{
 			Run("UITests.Shared.Windows_ApplicationModel_Resources_ResourceLoader.ResourceLoader_Simple");
