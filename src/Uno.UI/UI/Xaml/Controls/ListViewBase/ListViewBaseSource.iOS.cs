@@ -599,6 +599,7 @@ namespace Windows.UI.Xaml.Controls
 					// applied until view is loaded.
 					Owner.XamlParent.AddSubview(BlockLayout);
 					BlockLayout.AddSubview(container);
+					// Measure with PositiveInfinity rather than MaxValue, since some views handle this better.
 					size = Owner.NativeLayout.Layouter.MeasureChild(container, new Size(double.PositiveInfinity, double.PositiveInfinity));
 
 					if ((size.Height > nfloat.MaxValue / 2 || size.Width > nfloat.MaxValue / 2) &&
