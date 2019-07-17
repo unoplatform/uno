@@ -13,11 +13,10 @@
 				<!-- Message -->
 				<TextBlock Text="Elevation is only supported on Android and iOS."
 						   HorizontalAlignment="Center"
-						   Margin="10"/>
+						   Margin="10" />
 
 				<!-- Dialog No Elevation -->
 				<Grid x:Name="MyDialog_NoElevation"
-					  Visibility="Collapsed"
 					  Background="White"
 					  Height="125"
 					  Width="300"
@@ -29,11 +28,11 @@
 					  Height="125"
 					  Width="300"
 					  toolkit:UIElementExtensions.Elevation="24"
+					  Visibility="Collapsed"
 					  Margin="10" />
 
 				<!-- Floating Action Button No Elevation -->
 				<Border x:Name="MyButton_NoElevation"
-						Visibility="Collapsed"
 						Background="Red"
 						Height="56"
 						Width="56"
@@ -45,13 +44,13 @@
 						Background="Red"
 						Height="56"
 						Width="56"
-						toolkit:UIElementExtensions.Elevation="16"
+						toolkit:UIElementExtensions.Elevation="6"
+						Visibility="Collapsed"
 						CornerRadius="28"
 						Margin="10" />
 
 				<!-- Complex Corner Radius Outline Test No Elevation -->
 				<Border x:Name="MyComplexRadius_NoElevation"
-						Visibility="Collapsed"
 						Background="Orange"
 						Height="56"
 						Width="56"
@@ -63,13 +62,13 @@
 						Background="Orange"
 						Height="56"
 						Width="56"
-						toolkit:UIElementExtensions.Elevation="16"
+						toolkit:UIElementExtensions.Elevation="6"
 						CornerRadius="4,8,12,16"
+						Visibility="Collapsed"
 						Margin="10" />
 
 				<!-- App Bar No Elevation -->
 				<CommandBar x:Name="MyAppBar_NoElevation"
-							Visibility="Collapsed"
 							Content="Title"
 							Background="RoyalBlue"
 							Foreground="White"
@@ -82,12 +81,12 @@
 							Background="RoyalBlue"
 							Foreground="White"
 							Width="200"
-							toolkit:UIElementExtensions.Elevation="10"
+							toolkit:UIElementExtensions.Elevation="4"
+							Visibility="Collapsed"
 							Margin="10" />
 
 				<!-- Card No Elevation -->
 				<Border x:Name="MyCard_NoElevation"
-						Visibility="Collapsed"
 						Background="White"
 						Height="100"
 						Width="75"
@@ -99,29 +98,30 @@
 						Height="100"
 						Width="75"
 						toolkit:UIElementExtensions.Elevation="2"
+						Visibility="Collapsed"
 						Margin="10" />
 			</StackPanel>
 		</ScrollViewer>
-		
+
 		<StackPanel VerticalAlignment="Bottom">
 
 			<!-- Label -->
 			<TextBlock Text="Elevation"
-					   Margin="5"/>
-			
+					   Margin="5" />
+
 			<!-- TurnElevation ON Button -->
 			<Button x:Name="TurnElevation_ON_Button"
 					Content="ON"
 					Click="TurnElevation_ON"
 					HorizontalAlignment="Left"
-					Margin="5"/>
+					Margin="5" />
 
 			<!-- TurnElevation OFF Button -->
 			<Button x:Name="TurnElevation_OFF_Button"
 					Content="OFF"
 					Click="TurnElevation_OFF"
 					HorizontalAlignment="Left"
-					Margin="5"/>
+					Margin="5" />
 		</StackPanel>
 	</Grid>
 </UserControl>
