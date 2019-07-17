@@ -5,8 +5,8 @@ using System.Text;
 
 namespace Windows.UI.Xaml.Media.Animation
 {
-    public partial class EasingFunctionBase
+    public abstract partial class EasingFunctionBase
     {
-		internal virtual ITimeInterpolator CreateTimeInterpolator() { throw new InvalidOperationException("Don't call base.CreateTimeInterpolator()"); }
+	    internal abstract ITimeInterpolator CreateTimeInterpolator();
     }
 }
