@@ -57,6 +57,16 @@ namespace UITests.Shared.Windows_UI_Input.GestureRecognizer
 			};
 		}
 
+		private void OnButtonClicked(object sender, RoutedEventArgs e)
+		{
+			Log("[BUTTON] Button clicked");
+		}
+
+		private void OnButtonTapped(object sender, TappedRoutedEventArgs e)
+		{
+			Log("[BUTTON] Button tapped");
+		}
+
 		private void Log(PointerRoutedEventArgs e, string eventName)
 		{
 			var point = e.GetCurrentPoint(this);

@@ -209,7 +209,7 @@ namespace Windows.UI.Xaml
 				var pointerEventIsHandledOrBubblingInManaged = false;
 				if (IsPointerCaptured || wasPointerOver)
 				{
-					pointerEventIsHandledOrBubblingInManaged = RaiseNativelyBubbledLost();
+					pointerEventIsHandledOrBubblingInManaged = RaiseNativelyBubbledLost(new PointerRoutedEventArgs(touches, evt, this));
 				}
 
 				if (!pointerEventIsHandledOrBubblingInManaged)
@@ -288,7 +288,12 @@ namespace Windows.UI.Xaml
 			handledInManaged |= RaiseEvent(PointerExitedEvent, args);
 
 			// On pointer up (and *after* the exited) we request to release an remaining captures
-			ReleasePointerCaptures();
+			if (_pointCaptures.Count > 0)
+			{
+				ReleasePointerCaptures();
+				args.Handled = false;
+				handledInManaged |= RaiseEvent(PointerCaptureLostEvent, args);
+			}
 
 			return handledInManaged;
 		}
@@ -297,7 +302,7 @@ namespace Windows.UI.Xaml
 		/// This occurs when the pointer is lost (e.g. when captured by a native control like the ScrollViewer)
 		/// which prevents us to continue the touches handling.
 		/// </summary>
-		private bool RaiseNativelyBubbledLost()
+		private bool RaiseNativelyBubbledLost(PointerRoutedEventArgs args)
 		{
 			// When a pointer is captured, we don't even receive "Released" nor "Exited"
 
@@ -308,10 +313,16 @@ namespace Windows.UI.Xaml
 				_gestures.Value.CompleteGesture();
 			}
 
-			// On pointer up (and *after* the exited) we request to release an remaining captures
+			// If the pointer was natively captured, it means that we lost all managed captures
+			// Note: Here we should raise either PointerCaptureLost or PointerCancelled depending of the reason which
+			//		 drives the system to bubble a lost. However we don't have this kind of information on iOS, and it's
+			//		 usually due to the ScrollView which kicks in. So we always raise the CaptureLost which is the behavior
+			//		 on UWP when scroll starts (even if no capture are actives at this time).
 			ReleasePointerCaptures();
+			args.Handled = false;
+			var handledInManaged = RaiseEvent(PointerCaptureLostEvent, args);
 
-			return false;
+			return handledInManaged;
 		}
 		#endregion
 
@@ -322,11 +333,10 @@ namespace Windows.UI.Xaml
 		 * - When a pointer is captured, it will still bubble up, but it will bubble up from the element
 		 *   that captured the touch (so the a inner control won't receive it, even if under the pointer !)
 		 *   !!! BUT !!! The OriginalSource will still be the inner control!
-		 * - Captured are exclusive : first come, first served!
+		 * - Captured are exclusive : first come, first served! (For a given pointer)
 		 * - A control can capture a pointer, even if not under the pointer
 		 *
 		 */
-
 
 		private void ReleasePointerCaptureNative(Pointer value)
 		{
@@ -342,7 +352,7 @@ namespace Windows.UI.Xaml
 			ReleaseParentTouchesManager();
 
 			// 2. If this control can  Walk the tree to detect all ScrollView and register our self as a manipulation listener
-			if (mode == ManipulationModes.System)
+			if (mode != ManipulationModes.System)
 			{
 				_parentsTouchesManager = TouchesManager.GetAllParents(this).ToList();
 

@@ -12,6 +12,8 @@
 				<Border Margin="200" Width="200" Height="200" ManipulationMode="None" Background="#33CC0000">
 					<TextBlock Text="Frozen region" />
 				</Border>
+
+				<Button Margin="200, 600" Height="100" Width="300" Content="Click me ... but not while scrolling" Click="OnButtonClicked" Tapped="OnButtonTapped" />
 			</Grid>
 		</ScrollViewer>
 	</Grid>

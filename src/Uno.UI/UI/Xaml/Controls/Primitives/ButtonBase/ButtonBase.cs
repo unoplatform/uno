@@ -5,7 +5,9 @@ using System.Collections.Generic;
 using Uno.Disposables;
 using System.Text;
 using System.Windows.Input;
+using Windows.UI.Input;
 using Windows.UI.Xaml.Input;
+using Uno.Extensions.Specialized;
 using Uno.Logging;
 #if XAMARIN_IOS
 using View = UIKit.UIView;
@@ -73,6 +75,25 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		private static void OnCommandChanged(object dependencyobject, DependencyPropertyChangedEventArgs args)
 		{
 			((ButtonBase)dependencyobject).OnCommandChanged(args.NewValue as ICommand);
+		}
+		#endregion
+
+		#region CommandParameter
+		public static global::Windows.UI.Xaml.DependencyProperty CommandParameterProperty { get; } =
+			Windows.UI.Xaml.DependencyProperty.Register(
+				"CommandParameter", typeof(object),
+				typeof(global::Windows.UI.Xaml.Controls.Primitives.ButtonBase),
+				new FrameworkPropertyMetadata(default(object), OnCommandParameterChanged));
+
+		public object CommandParameter
+		{
+			get => (object)GetValue(CommandParameterProperty);
+			set => SetValue(CommandParameterProperty, value);
+		}
+
+		private static void OnCommandParameterChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs args)
+		{
+			((ButtonBase)dependencyObject)?.CoerceValue(IsEnabledProperty);
 		}
 		#endregion
 
@@ -145,25 +166,72 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			RegisterEvents();
 		}
 
-		private void OnClick(PointerRoutedEventArgs args = null)
+#if __IOS__ // This should be for all platforms once the PointerEvents are raised properly on all platforms
+		/// <inheritdoc />
+		protected override void OnPointerEntered(PointerRoutedEventArgs args)
 		{
-			Click?.Invoke(this, RoutedEventArgs.Empty);
-
-			try
+			if (ClickMode == ClickMode.Hover)
 			{
-				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
-				{
-					this.Log().Debug("Raising command");
-				}
+				RaiseClick(args);
+			}
 
-				Command.ExecuteIfPossible(CommandParameter);
-			}
-			catch (Exception e)
-			{
-				this.Log().Error("Failed to execute command", e);
-			}
+			base.OnPointerEntered(args);
 		}
 
+		/// <inheritdoc />
+		protected override void OnPointerPressed(PointerRoutedEventArgs args)
+		{
+			var mode = ClickMode;
+			if (mode != ClickMode.Hover)
+			{
+				// Note: even if ClickMode is Press, we capture the pointer and handle the Release args, but we do nothing if Hover
+
+				// Capturing the Pointer ensures that we will be the first element to receive the pointer released event
+				// It will also ensure that if we scroll while pressing the button, as the capture will be lost, we won't raise Click.
+				var handle = args.GetCurrentPoint(this).Properties.IsLeftButtonPressed && CapturePointer(args.Pointer);
+				args.Handled = handle;
+
+				if (handle && mode == ClickMode.Press)
+				{
+					RaiseClick(args);
+				}
+			}
+
+			base.OnPointerPressed(args);
+
+#if !__WASM__
+			// TODO: Remove when Focus is implemented properly.
+			// Focus the button when pressed down to ensure that any focused TextBox loses focus 
+			// so that TwoWay binding (to source) is triggered before the button is released and Click is raised.
+			Focus(FocusState.Pointer);
+#endif
+		}
+
+		/// <inheritdoc />
+		protected override void OnPointerReleased(PointerRoutedEventArgs args)
+		{
+			if (PointerCaptures.Contains(args.Pointer))
+			{
+				// The click is raised as soon as the release occurs over the button,
+				// no matter the distance from the pressed location nor the delay since pressed.
+				var location = args.GetCurrentPoint(this).Position;
+				if (location.X >= 0 && location.Y >= 0
+					&& location.X <= ActualWidth && location.Y <= ActualHeight)
+				{
+					if (ClickMode == ClickMode.Release)
+					{
+						RaiseClick(args); // First raise the click
+					}
+					ReleasePointerCaptures(); // Then release capture (will raise CaptureLost event)
+				}
+
+				// On UWP the args are handled no matter if the Click was raised or not
+				args.Handled = true;
+			}
+
+			base.OnPointerPressed(args);
+		}
+#else
 		protected override void OnPointerPressed(PointerRoutedEventArgs args)
 		{
 			base.OnPointerPressed(args);
@@ -213,27 +281,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 			IsPointerOver = false;
 		}
-
-		#region CommandParameter
-
-		public object CommandParameter
-		{
-			get { return (object)GetValue(CommandParameterProperty); }
-			set { SetValue(CommandParameterProperty, value); }
-		}
-
-		public static global::Windows.UI.Xaml.DependencyProperty CommandParameterProperty { get; } =
-			Windows.UI.Xaml.DependencyProperty.Register(
-				"CommandParameter", typeof(object),
-				typeof(global::Windows.UI.Xaml.Controls.Primitives.ButtonBase),
-				new FrameworkPropertyMetadata(default(object), OnCommandParameterChanged));
-
-		private static void OnCommandParameterChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs args)
-		{
-			((ButtonBase)dependencyObject)?.CoerceValue(IsEnabledProperty);
-		}
-
-		#endregion
+#endif
 
 		// Might be changed if the method does not conflict in UnoViewGroup.
 		internal override bool IsViewHit()
@@ -251,6 +299,24 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		internal void AutomationPeerClick()
 		{
 			OnClick();
+		}
+
+		private void OnClick(PointerRoutedEventArgs args = null)
+		{
+			Click?.Invoke(this, RoutedEventArgs.Empty);
+			try
+			{
+				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+				{
+					this.Log().Debug("Raising command");
+				}
+
+				Command.ExecuteIfPossible(CommandParameter);
+			}
+			catch (Exception e)
+			{
+				this.Log().Error("Failed to execute command", e);
+			}
 		}
 	}
 }

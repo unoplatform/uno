@@ -142,6 +142,13 @@ namespace <#= mixin.NamespaceName #>
 			
 			this.UpdateCommonStates(true);
 		}
+
+		protected override void OnPointerCaptureLost(PointerRoutedEventArgs args)
+		{
+			base.OnPointerReleased(args);
+			
+			this.UpdateCommonStates(true);
+		}
 #endif
 
 #if <#= mixin.HasCommonFocusedState #>
