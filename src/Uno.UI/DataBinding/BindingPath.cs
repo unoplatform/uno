@@ -97,7 +97,7 @@ namespace Uno.UI.DataBinding
 		/// </summary>
 		/// <returns>An enumerable of binding items</returns>
 		/// <remarks>
-		/// The DataContext and PropertyType of the descriptor may be null 
+		/// The DataContext and PropertyType of the descriptor may be null
 		/// if the binding is incomplete (the DataContext may be null, or the path is invalid)
 		/// </remarks>
 		public IEnumerable<IBindingItem> GetPathItems()
@@ -136,7 +136,7 @@ namespace Uno.UI.DataBinding
 		/// Registers a property changed registration handler.
 		/// </summary>
 		/// <param name="handler">The handled to be called when a property needs to be observed.</param>
-		/// <remarks>This method exists to provide layer separation, 
+		/// <remarks>This method exists to provide layer separation,
 		/// when BindingPath is in the presentation layer, and DependencyProperty is in the (some) Views layer.
 		/// </remarks>
 		public static void RegisterPropertyChangedRegistrationHandler(PropertyChangedRegistrationHandler handler)
@@ -153,7 +153,7 @@ namespace Uno.UI.DataBinding
 		}
 
 		/// <summary>
-		/// Provides the value of the <see cref="Path"/> using the 
+		/// Provides the value of the <see cref="Path"/> using the
 		/// current <see cref="DataContext"/> using the current precedence.
 		/// </summary>
 		public object Value
@@ -182,8 +182,8 @@ namespace Uno.UI.DataBinding
 		}
 
 		/// <summary>
-		/// Gets the value of the DependencyProperty with a 
-		/// precedence immediately below the one specified at the creation 
+		/// Gets the value of the DependencyProperty with a
+		/// precedence immediately below the one specified at the creation
 		/// of the BindingPath.
 		/// </summary>
 		/// <returns>The lower precedence value</returns>
@@ -214,7 +214,7 @@ namespace Uno.UI.DataBinding
 		/// <summary>
 		/// Clears the value of the current precendence.
 		/// </summary>
-		/// <remarks>After this call, the value returned 
+		/// <remarks>After this call, the value returned
 		/// by <see cref="Value"/> will be of the next available
 		///  precedence.</remarks>
 		public void ClearValue()
@@ -336,7 +336,7 @@ namespace Uno.UI.DataBinding
 				return Disposable.Create(() =>
 				{
 					// This weak reference ensure that the closure will not link
-					// the caller and the callee, in the same way "newValueActionWeak" 
+					// the caller and the callee, in the same way "newValueActionWeak"
 					// does not link the callee to the caller.
 					var that = dataContextReference.Target as INotifyPropertyChanged;
 
@@ -480,7 +480,7 @@ namespace Uno.UI.DataBinding
 
 			private void OnDataContextChanged()
 			{
-				if (DataContext != null)
+				if (DataContext != null && DataContext != DependencyProperty.UnsetValue)
 				{
 					ClearCachedGetters();
 
@@ -723,7 +723,7 @@ namespace Uno.UI.DataBinding
 						// in this disposable. The reference is attached to the source's
 						// object lifetime, to the target (bound) object.
 						//
-						// The registerations made by _propertyChangedHandlers are all 
+						// The registerations made by _propertyChangedHandlers are all
 						// weak with regards to the delegates that are provided.
 						disposable.Add(() => updateProperty = null);
 
