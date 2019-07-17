@@ -21,10 +21,10 @@ namespace Windows.UI.Xaml
 		The API exposed by this file to its native parts are:
 			partial void AddHandlerPartial(RoutedEvent routedEvent, int handlersCount, object handler, bool handledEventsToo);
 			partial void RemoveHandlerPartial(RoutedEvent routedEvent, int remainingHandlersCount, object handler);
-			internal bool RaiseEvent(RoutedEvent routedEvent, RoutedEventArgs args)
-		
+			internal bool RaiseEvent(RoutedEvent routedEvent, RoutedEventArgs args);
+
 		The native components are responsible to subscribe to the native events, interpret them,
-		and then raise the recognized events.
+		and then raise the recognized events using the "RaiseEvent" API.
 
 		Here the state machine of the bubbling logic:
 

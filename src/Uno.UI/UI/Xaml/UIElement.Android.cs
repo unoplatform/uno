@@ -20,6 +20,7 @@ namespace Windows.UI.Xaml
 		{
 			_gestures = new Lazy<GestureHandler>(() => GestureHandler.Create(this));
 
+			InitializePointers();
 			InitializeCapture();
 
 			MotionEventSplittingEnabled = false;

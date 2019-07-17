@@ -85,7 +85,7 @@ namespace UITests.Shared.Windows_UI_Input.GestureRecognizer
 
 		void Log(string message)
 		{
-			Debug.WriteLine(message);
+			System.Diagnostics.Debug.WriteLine(message);
 			_output.Text += message + "\r\n";
 		}
 	}

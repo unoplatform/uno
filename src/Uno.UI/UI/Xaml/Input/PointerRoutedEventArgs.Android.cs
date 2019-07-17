@@ -79,7 +79,7 @@ namespace Windows.UI.Xaml.Input
 			};
 
 			var type = _nativeEvent.GetToolType(0);
-			var action = _nativeEvent.ActionButton;
+			var action = _nativeEvent.Action;
 			var isDown = action.HasFlag(MotionEventActions.Down);
 			var isUp = action.HasFlag(MotionEventActions.Up);
 			var updates = _none;

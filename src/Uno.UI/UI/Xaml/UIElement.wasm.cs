@@ -116,6 +116,7 @@ namespace Windows.UI.Xaml
 				classes: ClassNames.GetForType(type)
 			);
 
+			InitializePointers();
 			UpdateHitTest();
 
 			FocusManager.Track(this);

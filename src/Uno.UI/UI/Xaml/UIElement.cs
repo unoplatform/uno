@@ -297,53 +297,6 @@ namespace Windows.UI.Xaml
 		}
 #endif
 
-		public bool CapturePointer(Pointer value)
-		{
-			if (_pointCaptures.Contains(value))
-			{
-				this.Log().Error($"{this}: Pointer {value} already captured.");
-			}
-			else
-			{
-				_pointCaptures.Add(value);
-#if __WASM__
-				CapturePointerNative(value);
-#endif
-			}
-			return true;
-		}
-
-		public void ReleasePointerCapture(Pointer value)
-		{
-			if (_pointCaptures.Contains(value))
-			{
-				_pointCaptures.Remove(value);
-#if __WASM__ || __IOS__
-				ReleasePointerCaptureNative(value);
-#endif
-			}
-			else
-			{
-				this.Log().Error($"{this}: Cannot release pointer {value}: not captured by this control.");
-			}
-		}
-
-		public void ReleasePointerCaptures()
-		{
-			if (_pointCaptures.Count == 0)
-			{
-				this.Log().Warn($"{this}: no pointers to release.");
-				return;
-			}
-#if __WASM__ || __IOS__
-			foreach (var pointer in _pointCaptures)
-			{
-				ReleasePointerCaptureNative(pointer);
-			}
-#endif
-			_pointCaptures.Clear();
-		}
-
 		public global::System.Collections.Generic.IReadOnlyList<global::Windows.UI.Xaml.Input.Pointer> PointerCaptures
 			=> (IReadOnlyList<global::Windows.UI.Xaml.Input.Pointer>)this.GetValue(PointerCapturesProperty);
 

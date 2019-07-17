@@ -15,90 +15,13 @@ namespace Windows.UI.Xaml
 {
 	partial class UIElement
 	{
-		#region ManipulationMode (DP)
-		public static readonly DependencyProperty ManipulationModeProperty = DependencyProperty.Register(
-			"ManipulationMode",
-			typeof(ManipulationModes),
-			typeof(UIElement),
-			new FrameworkPropertyMetadata(ManipulationModes.System, FrameworkPropertyMetadataOptions.None, OnManipulationModeChanged));
-
-		private static void OnManipulationModeChanged(DependencyObject snd, DependencyPropertyChangedEventArgs args)
-		{
-			if (snd is UIElement elt)
-			{
-				elt.PrepareParentTouchesManagers((ManipulationModes)args.NewValue);
-			}
-		}
-
-		public ManipulationModes ManipulationMode
-		{
-			get => (ManipulationModes)this.GetValue(ManipulationModeProperty);
-			set => this.SetValue(ManipulationModeProperty, value);
-		}
-		#endregion
-
-		private /* readonly */ Lazy<GestureRecognizer> _gestures;
 		private IEnumerable<TouchesManager> _parentsTouchesManager;
 		private bool _isManipulating;
 
-		// ctor
-		private void InitializePointers()
+		partial void InitializePointersPartial()
 		{
-			_gestures = new Lazy<GestureRecognizer>(CreateGestureRecognizer);
 			RegisterLoadActions(PrepareParentTouchesManagers, ReleaseParentTouchesManager);
 		}
-
-		private GestureRecognizer CreateGestureRecognizer()
-		{
-			var recognizer = new GestureRecognizer();
-
-			recognizer.Tapped += OnTapRecognized;
-
-			return recognizer;
-
-			void OnTapRecognized(GestureRecognizer sender, TappedEventArgs args)
-			{
-				if (args.TapCount == 1)
-				{
-					RaiseEvent(TappedEvent, new TappedRoutedEventArgs(args.PointerDeviceType, args.Position));
-				}
-				else // i.e. args.TapCount == 2
-				{
-					RaiseEvent(DoubleTappedEvent, new DoubleTappedRoutedEventArgs(args.PointerDeviceType, args.Position));
-				}
-			}
-		}
-
-		#region Add/Remove handler (This should be moved in the shared file once all platform use the GestureRecognizer)
-		partial void AddHandlerPartial(RoutedEvent routedEvent, int handlersCount, object handler, bool handledEventsToo)
-		{
-			if (handlersCount == 1)
-			{
-				// If greater than 1, it means that we already enabled the setting (and if lower than 0 ... it's weird !)
-				ToggleGesture(routedEvent);
-			}
-		}
-
-		partial void RemoveHandlerPartial(RoutedEvent routedEvent, int remainingHandlersCount, object handler)
-		{
-			if (remainingHandlersCount == 0)
-			{
-				ToggleGesture(routedEvent);
-			}
-		}
-
-		private void ToggleGesture(RoutedEvent routedEvent)
-		{
-			if (routedEvent == TappedEvent)
-			{
-				_gestures.Value.GestureSettings |= GestureSettings.Tap;
-			}
-			else if (routedEvent == DoubleTappedEvent)
-			{
-				_gestures.Value.GestureSettings |= GestureSettings.DoubleTap;
-			}
-		}
-		#endregion
 
 		#region Native touch handling (i.e. source of the pointer / gesture events)
 		public override void TouchesBegan(NSSet touches, UIEvent evt)
@@ -227,123 +150,9 @@ namespace Windows.UI.Xaml
 		}
 		#endregion
 
-		#region Raise pointer events and gesture recognition (This should be moved in the shared file once all platform use the GestureRecognizer)
-		private bool RaiseNativelyBubbledDown(PointerRoutedEventArgs args)
-		{
-			IsPointerPressed = true;
-
-			args.Handled = false; // reset event
-			var handledInManaged = RaiseEvent(PointerEnteredEvent, args);
-
-			args.Handled = false; // reset event
-			handledInManaged |= RaiseEvent(PointerPressedEvent, args);
-
-			// Note: We process the DownEvent *after* the Raise(Pressed), so in case of DoubleTapped
-			//		 the event is fired after
-			if (_gestures.IsValueCreated)
-			{
-				// We need to process only events that are bubbling natively to this control,
-				// if they are bubbling in managed it means that tey where handled a child control,
-				// so we should not use them for gesture recognition.
-				_gestures.Value.ProcessDownEvent(args.GetCurrentPoint(this));
-			}
-
-			return handledInManaged;
-		}
-
-		private bool RaiseNativelyBubbledMove(PointerRoutedEventArgs args)
-		{
-			args.Handled = false; // reset event
-			var handledInManaged = RaiseEvent(PointerMovedEvent, args);
-
-			if (_gestures.IsValueCreated)
-			{
-				// We need to process only events that are bubbling natively to this control,
-				// if they are bubbling in managed it means that tey where handled a child control,
-				// so we should not use them for gesture recognition.
-				_gestures.Value.ProcessMoveEvents(args.GetIntermediatePoints(this));
-			}
-
-			return handledInManaged;
-		}
-
-		private bool RaiseNativelyBubbledUp(PointerRoutedEventArgs args)
-		{
-			IsPointerPressed = false;
-
-			args.Handled = false; // reset event
-			var handledInManaged = RaiseEvent(PointerReleasedEvent, args);
-
-			// Note: We process the UpEvent between Release and Exited as the gestures like "Tap"
-			//		 are fired between those events.
-			if (_gestures.IsValueCreated)
-			{
-				// We need to process only events that are bubbling natively to this control,
-				// if they are bubbling in managed it means that they where handled a child control,
-				// so we should not use them for gesture recognition.
-				_gestures.Value.ProcessUpEvent(args.GetCurrentPoint(this));
-			}
-
-			args.Handled = false; // reset event
-			handledInManaged |= RaiseEvent(PointerExitedEvent, args);
-
-			// On pointer up (and *after* the exited) we request to release an remaining captures
-			if (_pointCaptures.Count > 0)
-			{
-				ReleasePointerCaptures();
-				args.Handled = false;
-				handledInManaged |= RaiseEvent(PointerCaptureLostEvent, args);
-			}
-
-			return handledInManaged;
-		}
-
-		/// <summary>
-		/// This occurs when the pointer is lost (e.g. when captured by a native control like the ScrollViewer)
-		/// which prevents us to continue the touches handling.
-		/// </summary>
-		private bool RaiseNativelyBubbledLost(PointerRoutedEventArgs args)
-		{
-			// When a pointer is captured, we don't even receive "Released" nor "Exited"
-
-			IsPointerPressed = false;
-
-			if (_gestures.IsValueCreated)
-			{
-				_gestures.Value.CompleteGesture();
-			}
-
-			// If the pointer was natively captured, it means that we lost all managed captures
-			// Note: Here we should raise either PointerCaptureLost or PointerCancelled depending of the reason which
-			//		 drives the system to bubble a lost. However we don't have this kind of information on iOS, and it's
-			//		 usually due to the ScrollView which kicks in. So we always raise the CaptureLost which is the behavior
-			//		 on UWP when scroll starts (even if no capture are actives at this time).
-			ReleasePointerCaptures();
-			args.Handled = false;
-			var handledInManaged = RaiseEvent(PointerCaptureLostEvent, args);
-
-			return handledInManaged;
-		}
-		#endregion
-
-		#region Pointer capture handling
-		/*
-		 * About pointer capture
-		 *
-		 * - When a pointer is captured, it will still bubble up, but it will bubble up from the element
-		 *   that captured the touch (so the a inner control won't receive it, even if under the pointer !)
-		 *   !!! BUT !!! The OriginalSource will still be the inner control!
-		 * - Captured are exclusive : first come, first served! (For a given pointer)
-		 * - A control can capture a pointer, even if not under the pointer
-		 *
-		 */
-
-		private void ReleasePointerCaptureNative(Pointer value)
-		{
-		}
-		#endregion
-
 		#region TouchesManager (Alter the parents native scroll view to make sure to receive all touches)
+		partial void OnManipulationModeChanged(ManipulationModes mode) => PrepareParentTouchesManagers(mode);
+
 		// Loaded
 		private void PrepareParentTouchesManagers() => PrepareParentTouchesManagers(ManipulationMode);
 		private void PrepareParentTouchesManagers(ManipulationModes mode)
@@ -545,5 +354,9 @@ namespace Windows.UI.Xaml
 				=> _scrollView.CanCancelContentTouches = canCancel;
 		}
 		#endregion
+
+		private void ReleasePointerCaptureNative(Pointer value)
+		{
+		}
 	}
 }
