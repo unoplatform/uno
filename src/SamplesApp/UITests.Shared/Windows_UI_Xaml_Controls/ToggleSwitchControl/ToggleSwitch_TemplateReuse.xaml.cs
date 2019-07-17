@@ -13,9 +13,6 @@ namespace UITests.Shared.Windows_UI_Xaml_Controls.ToggleSwitchControl
 		{
 			this.InitializeComponent();
 
-			FeatureConfiguration.Page.IsPoolingEnabled = true;
-			FrameworkTemplatePool.IsPoolingEnabled = true;
-
 			var c = root.Child;
 
 			unload.Tapped += (snd, evt) =>
@@ -33,6 +30,24 @@ namespace UITests.Shared.Windows_UI_Xaml_Controls.ToggleSwitchControl
 				reload.IsEnabled = false;
 				(theStackPanel as StackPanel).Add(separatedToggleSwitch);
 			};
+		}
+
+		protected override void OnLoaded()
+		{
+			base.OnLoaded();
+			SetPoolingEnabled(true);
+		}
+
+		protected override void OnUnloaded()
+		{
+			base.OnLoaded();
+			SetPoolingEnabled(false);
+		}
+
+		private void SetPoolingEnabled(bool enabled)
+		{
+			FeatureConfiguration.Page.IsPoolingEnabled = enabled;
+			FrameworkTemplatePool.IsPoolingEnabled = enabled;
 		}
 	}
 }
