@@ -59,7 +59,7 @@ namespace Windows.UI.Xaml
 
 #if __IOS__ // This is temporary until all platforms Pointers have been reworked
 
-		private /* readonly */ Lazy<GestureRecognizer> _gestures;
+		private /* readonly but partial */ Lazy<GestureRecognizer> _gestures;
 
 		// ctor
 		private void InitializePointers()

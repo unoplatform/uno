@@ -18,6 +18,8 @@ namespace Windows.UI.Xaml.Input
 
 		/// <summary>
 		/// DO NOT USE - LEGACY SUPPORT - Will be removed soon
+		/// Used by the native ButtonBase to simulate the PointerEvents.
+		/// Needs to be reworked to include all expected properties of a PointerEventArgs, and to ensure the right sequence.
 		/// </summary>
 		internal PointerRoutedEventArgs(UIElement receiver)
 		{
