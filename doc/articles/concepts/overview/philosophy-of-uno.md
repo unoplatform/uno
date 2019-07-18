@@ -22,7 +22,7 @@ Separation of model, view and presentation keeps your code loosely coupled and e
 
 ## Native intercompatibility (leave an escape hatch)
 
-100% code reuse is the ideal, but it should also be easy to access functionality specific to a single platform, or to incorporate native third-party libraries. 
+100% code reuse is the ideal, but it must also be easy to access functionality specific to a single platform, or to incorporate native third-party libraries., and the Uno Platform must make as much as possible to not stand in the way.
 
 ## Performance is a feature
 
