@@ -166,9 +166,7 @@ namespace Windows.UI.Xaml
 		/// Specifies a static value that is used by the dependency property system rather than null to indicate that
 		/// the property exists, but does not have its value set by the dependency property system.
 		/// </summary>
-		public static readonly object UnsetValue = new UnsetValueClass();
-
-		private class UnsetValueClass { }
+		public static readonly object UnsetValue = Windows.UI.Xaml.UnsetValue.Instance;
 
 		/// <summary>
 		/// Retrieves the property metadata value for the dependency property as registered to a type. You specify the type you want info from as a type reference.
