@@ -49,6 +49,7 @@
 * [Android] Ensure TextBox spell-check is properly enabled/disabled on all devices. 
 * Fix ComboBox disappearing items when items are views (#1078)
 * [iOS] TextBox with `AcceptsReturn=True` crashes ListView
+* [Android/iOS] Fixed Arc command in paths
 
 ## Release 1.45.0
 ### Features

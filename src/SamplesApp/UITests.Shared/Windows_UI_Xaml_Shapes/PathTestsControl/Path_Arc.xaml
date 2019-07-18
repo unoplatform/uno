@@ -39,6 +39,13 @@
 					  StrokeThickness="5" />
 			</Grid>
 
+			<TextBlock Text="Center computation of the following Arc implies possible sqrt of a negative number" />
+			<Grid>
+				<Path Data="M6.2 5.63a4.89 4.89 0 1 1 9.78 0z"
+					  Fill="Green"
+					  Stroke="Yellow" />
+			</Grid>
+
 		</StackPanel>
 
 	</ScrollViewer>
