@@ -15,10 +15,6 @@ nohup $ANDROID_HOME/emulator/emulator -avd xamarin_android_emulator -skin 1280x8
 
 export IsUiAutomationMappingEnabled=true
 
-export IsUiAutomationMappingEnabled=true
-
-export IsUiAutomationMappingEnabled=true
-
 # build the sample and tests, while the emulator is starting
 msbuild /r /p:Configuration=Release $BUILD_SOURCESDIRECTORY/src/SamplesApp/SamplesApp.Droid/SamplesApp.Droid.csproj
 msbuild /r /p:Configuration=Release $BUILD_SOURCESDIRECTORY/src/SamplesApp/SamplesApp.UITests/SamplesApp.UITests.csproj
