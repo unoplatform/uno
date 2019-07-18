@@ -50,6 +50,23 @@ namespace Windows.UI.Xaml
 				var args = new PointerRoutedEventArgs(touches, evt, this);
 				var isHandledOrBubblingInManaged = RaiseNativelyBubbledDown(args);
 
+				/*
+				 * **** WARNING ****
+				 *
+				 * If we do not propagate the "TouchesBegan" to the parents, they won't receive the
+				 * "TouchesMoved" nor the "TouchesEnded". 
+				 *
+				 * It means that if a control (like the Button) handles the "Pressed" (or the "Entered")
+				 * parent won't receive any touch event. As it doesn't seems to be have any impact in application,
+				 * it's accepted as a known limitation.
+				 *
+				 * There is 2 ways to fix this:
+				 *  - Still propagate the native "TouchesBegan" and then in parents control filter out events
+				 *	  that was already raised in managed
+				 *  - Keep a track in local element that the "TouchesBegan" was handled in managed, and then raise
+				 *    all subsequent "Move", "Released" and "Exited" in managed only.
+				 */
+
 				if (!isHandledOrBubblingInManaged)
 				{
 					// Continue native bubbling up of the event
