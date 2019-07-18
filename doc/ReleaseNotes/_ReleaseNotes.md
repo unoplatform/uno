@@ -79,6 +79,7 @@
 * Properties on root node in XAML were not applied when there was no content (sub-elements)
 * [Android] GroupedListviewHeaders were causing scrolling lag, missing flag
 * Flyout that are than anchor but fit in page were defaulting to full placement.
+* [iOS]Fixed DatePickerFlyout & TimePickerFlyout not being placed at the bottom
 
 ## Release 1.45.0
 ### Features
