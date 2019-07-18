@@ -54,10 +54,6 @@ namespace Windows.UI.Xaml
 		/// </summary>
 		internal bool ClipChildrenToBounds { get; set; } = true;
 
-		internal bool IsPointerPressed { get; set; }
-
-		internal bool IsPointerOver { get; set; }
-
 		#region Clip DependencyProperty
 
 		public RectangleGeometry Clip

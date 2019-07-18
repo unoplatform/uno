@@ -57,6 +57,54 @@ namespace Windows.UI.Xaml
 		}
 		#endregion
 
+		#region IsPointerPressed (Internal property with overridable callback)
+		private bool _isPointerPressed;
+
+		/// <summary>
+		/// Indicates if a pointer was pressed while over the element (i.e. PressedState)
+		/// </summary>
+		internal bool IsPointerPressed
+		{
+			get => _isPointerPressed;
+			private set
+			{
+				if (_isPointerPressed != value)
+				{
+					_isPointerPressed = value;
+					OnIsPointerPressedChanged(value);
+				}
+			}
+		}
+
+		internal virtual void OnIsPointerPressedChanged(bool isPointerPressed)
+		{
+		}
+		#endregion
+
+		#region IsPointerOver (Internal property with overridable callback)
+		private bool _isPointerOver;
+
+		/// <summary>
+		/// Indicates if a pointer is currently over the element (i.e. OverState)
+		/// </summary>
+		internal bool IsPointerOver
+		{
+			get => _isPointerOver;
+			private set
+			{
+				if (_isPointerOver != value)
+				{
+					_isPointerOver = value;
+					OnIsPointerOverChanged(value);
+				}
+			}
+		}
+
+		internal virtual void OnIsPointerOverChanged(bool isPointerOver)
+		{
+		}
+		#endregion
+
 #if __IOS__ // This is temporary until all platforms Pointers have been reworked
 
 		private /* readonly but partial */ Lazy<GestureRecognizer> _gestures;

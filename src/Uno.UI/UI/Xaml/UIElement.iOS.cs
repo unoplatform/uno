@@ -32,8 +32,6 @@ namespace Windows.UI.Xaml
 
 		private static Dictionary<UIView, CALayer> _debugLayers;
 
-		internal bool IsPointerCaptured => _pointCaptures.Any();
-
 		public UIElement()
 		{
 			InitializePointers();
