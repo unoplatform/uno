@@ -503,7 +503,7 @@ namespace Uno.UI.DataBinding
 								{
 									if (_isDataContextChanging && newValue == DependencyProperty.UnsetValue)
 									{
-										// We're in a "resubscribe" scenario, so we don't need to
+										// We're in a "resubscribe" scenario when the DataContext is provided a new non-null value, so we don't need to
 										// pass through the DependencyProperty.UnsetValue.
 										// We simply discard this update.
 										return;
