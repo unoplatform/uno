@@ -79,7 +79,7 @@ namespace Windows.UI.Xaml.Controls
 				}},
 			};
 
-		private Rect CalculateFlyoutPlacement(Size desiredSize)
+		protected virtual Rect CalculateFlyoutPlacement(Size desiredSize)
 		{
 			var anchor = _flyout.Target as FrameworkElement;
 			if (anchor == null)

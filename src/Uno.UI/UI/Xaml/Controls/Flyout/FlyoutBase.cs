@@ -36,10 +36,15 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			_popup.Opened += OnPopupOpened;
 			_popup.Closed += OnPopupClosed;
 
-			InitializePartial();
+			InitializePopupPanel();
 		}
 
-		partial void InitializePartial();
+		protected virtual void InitializePopupPanel()
+		{
+			InitializePopupPanelPartial();
+		}
+
+		partial void InitializePopupPanelPartial();
 
 		private void OnPopupOpened(object sender, object e)
 		{

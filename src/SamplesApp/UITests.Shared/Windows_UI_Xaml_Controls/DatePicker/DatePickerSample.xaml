@@ -14,13 +14,19 @@
 	<controls:SampleControl SampleDescription="Sample for Date Picker">
 		<controls:SampleControl.SampleContent>
 			<DataTemplate>
-				<Grid Background="White">
+				<StackPanel>
 					<DatePicker Grid.Row="1"
 								Margin="15,10"
 								HorizontalAlignment="Center"
 								VerticalAlignment="Top">
 					</DatePicker>
-				</Grid>
+
+					<Button Content="Open DatePickerFlyout">
+						<Button.Flyout>
+							<DatePickerFlyout />
+						</Button.Flyout>
+					</Button>
+				</StackPanel>
 			</DataTemplate>
 		</controls:SampleControl.SampleContent>
 	</controls:SampleControl>

@@ -1,6 +1,9 @@
 ﻿#if XAMARIN_IOS
 
+using CoreGraphics;
+using UIKit;
 using Uno.Disposables;
+using Uno.UI;
 using Uno.UI.Common;
 using Uno.UI.DataBinding;
 using Windows.UI.Xaml.Controls.Primitives;
@@ -18,6 +21,17 @@ namespace Windows.UI.Xaml.Controls
 
 		public TimePickerFlyout()
 		{
+		}
+
+		protected override void InitializePopupPanel()
+		{
+			_popup.PopupPanel = new TimePickerFlyoutPopupPanel(this)
+			{
+				Visibility = Visibility.Collapsed,
+				Background = SolidColorBrushHelper.Transparent,
+				AutoresizingMask = UIViewAutoresizing.All,
+				Frame = new CGRect(CGPoint.Empty, ViewHelper.GetScreenSize())
+			};
 		}
 
 		/// <summary>

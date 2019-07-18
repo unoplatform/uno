@@ -3,6 +3,9 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
+using CoreGraphics;
+using UIKit;
+using Uno.UI;
 using Uno.UI.Common;
 using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Data;
@@ -17,6 +20,17 @@ namespace Windows.UI.Xaml.Controls
 		{
 			Opening += DatePickerFlyout_Opening;
 			Closed += DatePickerFlyout_Closed;
+		}
+
+		protected override void InitializePopupPanel()
+		{
+			_popup.PopupPanel = new DatePickerFlyoutPopupPanel(this)
+			{
+				Visibility = Visibility.Collapsed,
+				Background = SolidColorBrushHelper.Transparent,
+				AutoresizingMask = UIViewAutoresizing.All,
+				Frame = new CGRect(CGPoint.Empty, ViewHelper.GetScreenSize())
+			};
 		}
 
 		/// <summary>
