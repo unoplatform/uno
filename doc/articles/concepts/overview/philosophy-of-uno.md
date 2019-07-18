@@ -10,7 +10,7 @@ We stand on the shoulders of giants, Microsoft's tooling is a treat to work wit
 - [Live Visual Tree](https://docs.microsoft.com/en-us/visualstudio/debugger/inspect-xaml-properties-while-debugging).
 - [XAML Hot Reload](https://docs.microsoft.com/en-us/visualstudio/debugger/xaml-hot-reload?view=vs-2019)
 
-The promise of Uno is to enable build your app with those tools and then deploy it to iOS, Android, and ultimately to the web via WebAssembly. 
+The promise of the Uno Platform is to enable build your app with those tools and then deploy it to iOS, Android, and the web via WebAssembly. 
 
 ## Create rich, responsive UIs
 
