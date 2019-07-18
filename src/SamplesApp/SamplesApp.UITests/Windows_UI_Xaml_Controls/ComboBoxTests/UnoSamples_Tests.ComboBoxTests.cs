@@ -1,18 +1,33 @@
-﻿using System;
+﻿using NUnit.Framework;
+using SamplesApp.UITests.TestFramework;
+using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using NUnit.Framework;
 using Uno.UITest.Helpers;
+using Uno.UITest.Helpers.Queries;
 
-namespace SamplesApp.UITests
+namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ComboBoxTests
 {
 	[TestFixture]
-	partial class UnoSamples_Tests : SampleControlUITestBase
+	public partial class ComboBoxTests_Tests : SampleControlUITestBase
 	{
 		[Test]
-		public void ComboBox_Kidnapping()
+		[ActivePlatforms(Platform.iOS)]
+		public void ComboBoxTests_PickerDefaultValue()
+		{
+			Run("SamplesApp.Wasm.Windows_UI_Xaml_Controls.ComboBox.ComboBox_Picker");
+
+			_app.WaitForElement(_app.Marked("theComboBox"));
+			var theComboBox = _app.Marked("theComboBox");
+
+			Assert.IsNull(theComboBox.GetDependencyPropertyValue("SelectedItem"));
+		}
+
+		[Test]
+		public void ComboBoxTests_Kidnapping()
 		{
 			Run("UITests.Shared.Windows_UI_Xaml_Controls.ComboBox.ComboBox_ComboBoxItem_Selection");
 
@@ -26,16 +41,16 @@ namespace SamplesApp.UITests
 			_app.Tap(button);
 
 			var first = _app.FindWithin("_tb1", presenter);
-			Assert.AreEqual("Item 1", GetText(first));
+			Assert.AreEqual("Item 1", first.GetDependencyPropertyValue<string>("Text"));
 
 			_app.Tap(comboBox);
 			_app.TapCoordinates(300, 100);
 			first = _app.FindWithin("_tb1", presenter);
-			Assert.AreEqual("Item 1", GetText(first));
+			Assert.AreEqual("Item 1", first.GetDependencyPropertyValue<string>("Text"));
 
 			_app.Tap(button);
 			var second = _app.FindWithin("_tb2", presenter);
-			Assert.AreEqual("Item 2", GetText(second));
+			Assert.AreEqual("Item 2", second.GetDependencyPropertyValue<string>("Text"));
 
 			Configuration.AttemptToFindTargetBeforeScrolling = scrollingInitial;
 		}
