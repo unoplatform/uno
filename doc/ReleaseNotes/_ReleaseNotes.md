@@ -48,7 +48,7 @@
 * Adjust the behavior of `DisplayInformation.LogicalDpi` to match UWP's behavior
 * [Android] Ensure TextBox spell-check is properly enabled/disabled on all devices. 
 * Fix ComboBox disappearing items when items are views (#1078)
-* Checks dataContext before applying FallbackValue to explicit set bindings
+* [iOS] TextBox with `AcceptsReturn=True` crashes ListView
 
 ## Release 1.45.0
 ### Features
