@@ -30,7 +30,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		}
 
 		/// <remarks>
-		/// Ensure that the ContentControl will create its chidren even
+		/// Ensure that the ContentControl will create its children even
 		/// if it has no parent view. This is critical for the recycling panels,
 		/// where the content is databound before being assigned to its
 		/// parent and displayed.
@@ -52,7 +52,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			}
 		}
 
-		private class CommonStates
+		private static class CommonStates
 		{
 			public const string Selected = "Selected";
 			public const string Normal = "Normal";
@@ -60,7 +60,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			public const string PressedSelected = "PressedSelected";
 		}
 
-		private class DisabledStates
+		private static class DisabledStates
 		{
 			public const string Enabled = "Enabled";
 			public const string Disabled = "Disabled";
@@ -78,7 +78,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 		internal bool IsPressed
 		{
-			get { return _isPressed; }
+			get => _isPressed;
 			set
 			{
 				using (InterceptSetNeedsLayout())
@@ -147,6 +147,79 @@ namespace Windows.UI.Xaml.Controls.Primitives
 #endif
 		}
 
+#if __IOS__
+		/// <inheritdoc />
+		protected override void OnPointerPressed(PointerRoutedEventArgs args)
+		{
+			var handled = ShouldHandlePressed
+				&& IsItemClickEnabled
+				&& args.GetCurrentPoint(this).Properties.IsLeftButtonPressed
+				&& CapturePointer(args.Pointer);
+
+			SetPressed(handled);
+			args.Handled = handled;
+
+#if !__WASM__
+			Focus(FocusState.Pointer);
+#endif
+
+			base.OnPointerPressed(args);
+		}
+
+		/// <inheritdoc />
+		protected override void OnPointerExited(PointerRoutedEventArgs args)
+		{
+			// Not like a Button, if the pointer goes out of this item, we abort the ItemClick
+			ReleasePointerCaptures();
+
+			base.OnPointerExited(args);
+		}
+
+		/// <inheritdoc />
+		protected override void OnPointerReleased(PointerRoutedEventArgs args)
+		{
+			if (IsCaptured(args.Pointer))
+			{
+				Selector?.OnItemClicked(this);
+
+				args.Handled = true;
+			}
+
+			base.OnPointerReleased(args);
+		}
+
+		/// <inheritdoc />
+		protected override void OnPointerCaptureLost(PointerRoutedEventArgs args)
+		{
+			SetPressed(false);
+
+			base.OnPointerCaptureLost(args);
+		}
+
+		private ulong _nextDelayedPressUpdateRequest;
+		private void SetPressed(bool value)
+		{
+			if (value)
+			{
+				_nextDelayedPressUpdateRequest++;
+				IsPressed = true;
+			}
+			else
+			{
+				var requestId = _nextDelayedPressUpdateRequest;
+				CoreDispatcher.Main.RunAsync(CoreDispatcherPriority.Normal, SetNotPressed);
+
+				async void SetNotPressed()
+				{
+					await Task.Delay(MinTimeBetweenPressStates);
+					if (_nextDelayedPressUpdateRequest == requestId)
+					{ 
+						IsPressed = false;
+					}
+				}
+			}
+		}
+#else
 		protected override void OnPointerPressed(PointerRoutedEventArgs args)
 		{
 			if (!ShouldHandlePressed || !IsItemClickEnabled)
@@ -204,6 +277,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			IsPressed = false;
 			base.OnPointerExited(args);
 		}
+#endif
 
 		private IDisposable InterceptSetNeedsLayout()
 		{

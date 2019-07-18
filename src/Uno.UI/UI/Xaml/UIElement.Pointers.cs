@@ -66,7 +66,7 @@ namespace Windows.UI.Xaml
 		internal bool IsPointerPressed
 		{
 			get => _isPointerPressed;
-			private set
+			set // TODO: This should be private, but we need to update all controls that are setting
 			{
 				if (_isPointerPressed != value)
 				{
@@ -90,7 +90,7 @@ namespace Windows.UI.Xaml
 		internal bool IsPointerOver
 		{
 			get => _isPointerOver;
-			private set
+			set // TODO: This should be private, but we need to update all controls that are setting
 			{
 				if (_isPointerOver != value)
 				{
@@ -367,7 +367,7 @@ namespace Windows.UI.Xaml
 		 * - The PointersCapture property remains `null` until a pointer is captured
 		 */
 
-		private bool IsCaptured(Pointer pointer) => _pointCaptures.Any();
+		internal bool IsCaptured(Pointer pointer) => _pointCaptures.Any();
 
 
 		public bool CapturePointer(Pointer value)

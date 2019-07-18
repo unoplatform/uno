@@ -110,7 +110,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		{
 			base.OnPointerMoved(args);
 
-			if (ShouldCapturePointer && IsPointerCaptured)
+			if (ShouldCapturePointer && IsCaptured(args.Pointer))
 			{
 				args.Handled = true;
 				DeltaDrag(args.GetCurrentPoint(this).Position);
