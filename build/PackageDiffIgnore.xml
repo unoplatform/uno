@@ -206,6 +206,18 @@
 				<Member 
 					fullName="Windows.Foundation.Point[] Windows.UI.Xaml.Input.PointerRoutedEventArgs.GetIntermediatePoints()"
 					reason="Method was missing a required parameter"/>
+				<Member
+					fullName="System.Void Windows.UI.Xaml.Controls.Primitives.ButtonBase.OnPointerMoved(Windows.UI.Xaml.Input.PointerRoutedEventArgs args)"
+					reason="Binary issue, but not an API changed. Ignore it since we already have some other bin conflict."/>
+				<Member 
+					fullName="System.Void Windows.UI.Xaml.Controls.Primitives.ButtonBase.OnPointerCanceled(Windows.UI.Xaml.Input.PointerRoutedEventArgs args)"
+					reason="Binary issue, but not an API changed. Ignore it since we already have some other bin conflict."/>
+				<Member 
+					fullName="System.Void Windows.UI.Xaml.Controls.Primitives.ButtonBase.OnPointerExited(Windows.UI.Xaml.Input.PointerRoutedEventArgs args)"
+					reason="Binary issue, but not an API changed. Ignore it since we already have some other bin conflict."/>
+				<Member 
+					fullName="System.Void Windows.UI.Xaml.Controls.Primitives.ButtonBase.OnTapped(Windows.UI.Xaml.Input.TappedRoutedEventArgs e)"
+					reason="Binary issue, but not an API changed. Ignore it since we already have some other bin conflict."/>
 			</Methods>
 
 			<Fields>
