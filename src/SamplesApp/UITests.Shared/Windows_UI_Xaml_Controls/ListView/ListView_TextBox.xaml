@@ -9,9 +9,13 @@
 			 d:DesignWidth="400">
 
 	<ListView ItemsSource="{Binding [SampleItems]}">
+				<ListView.Header>
+					<TextBox AcceptsReturn="True"
+							 PlaceholderText="Header..." />
+				</ListView.Header>
 		<ListView.ItemTemplate>
 			<DataTemplate>
-				<TextBox Text="Example"
+				<TextBox Text="{Binding}"
 						 AcceptsReturn="True"
 						 TextWrapping="Wrap" />
 			</DataTemplate>
