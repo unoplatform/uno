@@ -45,18 +45,12 @@ namespace Windows.UI.Xaml
 
 			try
 			{
-				var isPointerOver = evt.IsTouchInView(this);
-				IsPointerOver = isPointerOver;
+				NotifyParentTouchesManagersManipulationStarted();
 
-				var pointerEventIsHandledOrBubblingInManaged = false;
-				if (isPointerOver)
-				{
-					NotifyParentTouchesManagersManipulationStarted();
+				var args = new PointerRoutedEventArgs(touches, evt, this);
+				var isHandledOrBubblingInManaged = RaiseNativelyBubbledDown(args);
 
-					pointerEventIsHandledOrBubblingInManaged = RaiseNativelyBubbledDown(new PointerRoutedEventArgs(touches, evt, this));
-				}
-
-				if (!pointerEventIsHandledOrBubblingInManaged)
+				if (!isHandledOrBubblingInManaged)
 				{
 					// Continue native bubbling up of the event
 					base.TouchesBegan(touches, evt);
@@ -72,16 +66,11 @@ namespace Windows.UI.Xaml
 		{
 			try
 			{
+				var args = new PointerRoutedEventArgs(touches, evt, this);
 				var isPointerOver = evt.IsTouchInView(this);
-				IsPointerOver = isPointerOver;
+				var isHandledOrBubblingInManaged = RaiseNativelyBubbledMove(args, isPointerOver);
 
-				var pointerEventIsHandledInManaged = false;
-				if (IsPointerCaptured || isPointerOver)
-				{
-					pointerEventIsHandledInManaged = RaiseNativelyBubbledMove(new PointerRoutedEventArgs(touches, evt, this));
-				}
-
-				if (!pointerEventIsHandledInManaged)
+				if (!isHandledOrBubblingInManaged)
 				{
 					// Continue native bubbling up of the event
 					base.TouchesMoved(touches, evt);
@@ -97,17 +86,11 @@ namespace Windows.UI.Xaml
 		{
 			try
 			{
-				var wasPointerOver = IsPointerOver;
-				var isPointerOver = false;
-				IsPointerOver = isPointerOver;
+				var args = new PointerRoutedEventArgs(touches, evt, this);
+				var isPointerOver = evt.IsTouchInView(this);
+				var isHandledOrBubblingInManaged = RaiseNativelyBubbledUp(args, isPointerOver);
 
-				var pointerEventIsHandledOrBubblingInManaged = false;
-				if (IsPointerCaptured || wasPointerOver)
-				{
-					pointerEventIsHandledOrBubblingInManaged = RaiseNativelyBubbledUp(new PointerRoutedEventArgs(touches, evt, this));
-				}
-
-				if (!pointerEventIsHandledOrBubblingInManaged)
+				if (!isHandledOrBubblingInManaged)
 				{
 					// Continue native bubbling up of the event
 					base.TouchesEnded(touches, evt);
@@ -125,17 +108,10 @@ namespace Windows.UI.Xaml
 		{
 			try
 			{
-				var wasPointerOver = IsPointerOver;
-				var isPointerOver = false;
-				IsPointerOver = isPointerOver;
+				var args = new PointerRoutedEventArgs(touches, evt, this);
+				var isHandledOrBubblingInManaged = RaiseNativelyBubbledLost(args);
 
-				var pointerEventIsHandledOrBubblingInManaged = false;
-				if (IsPointerCaptured || wasPointerOver)
-				{
-					pointerEventIsHandledOrBubblingInManaged = RaiseNativelyBubbledLost(new PointerRoutedEventArgs(touches, evt, this));
-				}
-
-				if (!pointerEventIsHandledOrBubblingInManaged)
+				if (!isHandledOrBubblingInManaged)
 				{
 					// Continue native bubbling up of the event
 					base.TouchesCancelled(touches, evt);

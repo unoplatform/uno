@@ -126,16 +126,28 @@ namespace Windows.UI.Xaml
 		/// <summary>
 		/// This should be invoked by the native part of the UIElement when a native touch starts
 		/// </summary>
-		private bool RaiseNativelyBubbledDown(PointerRoutedEventArgs args)
+		private bool RaiseNativelyBubbledDown(PointerRoutedEventArgs args, bool isOver = true)
 		{
-			IsPointerPressed = true;
+			var handledInManaged = false;
 
-			args.Handled = false; // reset event
-			var handledInManaged = RaiseEvent(PointerEnteredEvent, args);
+			// 1. Update the state
+			var wasOver = IsPointerOver;
+			IsPointerOver = isOver;
+			IsPointerPressed = true; // we do not support multiple pointers at once
 
-			args.Handled = false; // reset event
-			handledInManaged |= RaiseEvent(PointerPressedEvent, args);
+			// 2. Raise enter if needed
+			// Note: Enter is raised *before* the Pressed
+			handledInManaged = RaiseEnteredOrExited(args, wasOver, isOver);
 
+			// 3. Raise the pressed event
+			var isLocal = isOver || IsCaptured(args.Pointer);
+			if (isLocal)
+			{
+				args.Handled = false;
+				handledInManaged |= RaiseEvent(PointerPressedEvent, args);
+			}
+
+			// 4. Process gestures
 			// Note: We process the DownEvent *after* the Raise(Pressed), so in case of DoubleTapped
 			//		 the event is fired after
 			if (_gestures.IsValueCreated)
@@ -152,12 +164,28 @@ namespace Windows.UI.Xaml
 		/// <summary>
 		/// This should be invoked by the native part of the UIElement when a native pointer moved is received
 		/// </summary>
-		private bool RaiseNativelyBubbledMove(PointerRoutedEventArgs args)
+		private bool RaiseNativelyBubbledMove(PointerRoutedEventArgs args, bool isOver)
 		{
-			args.Handled = false; // reset event
-			var handledInManaged = RaiseEvent(PointerMovedEvent, args);
+			var handledInManaged = false;
 
-			if (_gestures.IsValueCreated)
+			// 1. Update the state
+			var wasOver = IsPointerOver;
+			IsPointerOver = isOver;
+
+			// 2. Raise enter/exited if needed
+			// Note: Entered / Exited are raised *before* the Move (Checked using the args timestamp)
+			handledInManaged = RaiseEnteredOrExited(args, wasOver, isOver);
+
+			// 3. Raise the Moved event
+			var isLocal = isOver || IsCaptured(args.Pointer);
+			if (isLocal)
+			{
+				args.Handled = false;
+				handledInManaged |= RaiseEvent(PointerMovedEvent, args);
+			}
+
+			// 4. Process gestures
+			if (isLocal && _gestures.IsValueCreated)
 			{
 				// We need to process only events that are bubbling natively to this control,
 				// if they are bubbling in managed it means that they were handled by a child control,
@@ -171,16 +199,29 @@ namespace Windows.UI.Xaml
 		/// <summary>
 		/// This should be invoked by the native part of the UIElement when a native pointer up is received
 		/// </summary>
-		private bool RaiseNativelyBubbledUp(PointerRoutedEventArgs args)
+		private bool RaiseNativelyBubbledUp(PointerRoutedEventArgs args, bool isOver = false)
 		{
-			IsPointerPressed = false;
+			var handledInManaged = false;
 
-			args.Handled = false; // reset event
-			var handledInManaged = RaiseEvent(PointerReleasedEvent, args);
+			// 1. Update the state
+			var wasOver = IsPointerOver;
+			IsPointerOver = isOver;
+			IsPointerPressed = false; // we do not support multiple pointers at once
 
+			// 2. => For Release step 2. is moved at 5.
+
+			// 3. Raise the Released event
+			var isLocal = wasOver || IsCaptured(args.Pointer);
+			if (isLocal)
+			{
+				args.Handled = false; // reset event
+				handledInManaged = RaiseEvent(PointerReleasedEvent, args);
+			}
+
+			// 4. Process gestures
 			// Note: We process the UpEvent between Release and Exited as the gestures like "Tap"
 			//		 are fired between those events.
-			if (_gestures.IsValueCreated)
+			if (isLocal && _gestures.IsValueCreated)
 			{
 				// We need to process only events that are bubbling natively to this control,
 				// if they are bubbling in managed it means that they where handled a child control,
@@ -188,10 +229,12 @@ namespace Windows.UI.Xaml
 				_gestures.Value.ProcessUpEvent(args.GetCurrentPoint(this));
 			}
 
-			args.Handled = false; // reset event
-			handledInManaged |= RaiseEvent(PointerExitedEvent, args);
+			// 5. Raise exited if needed
+			// Note: Exited is raise *after* the Released
+			handledInManaged |= RaiseEnteredOrExited(args, wasOver, isOver);
 
-			// On pointer up (and *after* the exited) we request to release an remaining captures
+			// 6. Release remaining pointer captures
+			// Note: CaptureLost is raise *after* Exited
 			if (_pointCaptures.Count > 0)
 			{
 				ReleasePointerCaptures();
@@ -206,27 +249,58 @@ namespace Windows.UI.Xaml
 		/// This occurs when the pointer is lost (e.g. when captured by a native control like the ScrollViewer)
 		/// which prevents us to continue the touches handling.
 		/// </summary>
-		private bool RaiseNativelyBubbledLost(PointerRoutedEventArgs args)
+		private bool RaiseNativelyBubbledLost(PointerRoutedEventArgs args, bool isOver = false)
 		{
 			// When a pointer is captured, we don't even receive "Released" nor "Exited"
 
-			IsPointerPressed = false;
+			var handledInManaged = false;
 
-			if (_gestures.IsValueCreated)
+			// 1. Update the state
+			IsPointerOver = isOver;
+			IsPointerPressed = false; // we do not support multiple pointers at once
+
+			// 2. => Exited not raised for PointerLost
+
+			// 3. => Cf. Note on point 6.
+			var isLocal = isOver || IsCaptured(args.Pointer);
+
+			// 4. Process gestures
+			if (isLocal && _gestures.IsValueCreated)
 			{
 				_gestures.Value.CompleteGesture();
 			}
 
+			// 5. => Exited not raised for PointerLost
+
+			// 6. Release remaining pointer captures
 			// If the pointer was natively captured, it means that we lost all managed captures
-			// Note: Here we should raise either PointerCaptureLost or PointerCancelled depending of the reason which
+			// Note: We should have raise either PointerCaptureLost in 3. or PointerCancelled here in 6. depending of the reason which
 			//		 drives the system to bubble a lost. However we don't have this kind of information on iOS, and it's
 			//		 usually due to the ScrollView which kicks in. So we always raise the CaptureLost which is the behavior
 			//		 on UWP when scroll starts (even if no capture are actives at this time).
 			ReleasePointerCaptures(); // Note this should raise the CaptureLost only if pointer was effectively captured TODO
 			args.Handled = false;
-			var handledInManaged = RaiseEvent(PointerCaptureLostEvent, args);
+			handledInManaged = RaiseEvent(PointerCaptureLostEvent, args);
 
 			return handledInManaged;
+		}
+
+		private bool RaiseEnteredOrExited(PointerRoutedEventArgs args, bool wasOver, bool isOver)
+		{
+			if (wasOver && !isOver) // Exited
+			{
+				args.Handled = false;
+				return RaiseEvent(PointerExitedEvent, args);
+			}
+			else if (!wasOver && isOver) // Entered
+			{
+				args.Handled = false;
+				return RaiseEvent(PointerEnteredEvent, args);
+			}
+			else
+			{
+				return false;
+			}
 		}
 		#endregion
 #else
@@ -244,6 +318,8 @@ namespace Windows.UI.Xaml
 		 * - A control can capture a pointer, even if not under the pointer
 		 * - The PointersCapture property remains `null` until a pointer is captured
 		 */
+
+		private bool IsCaptured(Pointer pointer) => _pointCaptures.Any();
 
 
 		public bool CapturePointer(Pointer value)
