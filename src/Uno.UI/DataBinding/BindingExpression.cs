@@ -115,14 +115,17 @@ namespace Windows.UI.Xaml.Data
 				_isElementNameSource = true;
 			}
 
-
-			ApplyFallbackValue();
+			if (!(GetWeakDataContext()?.IsAlive ?? false))
+			{
+				ApplyFallbackValue();
+			}
+			
 			ApplyExplicitSource();
 			ApplyElementName();
 		}
 
 		private ManagedWeakReference GetWeakDataContext()
-			=> _isElementNameSource || _explicitSourceStore.IsAlive ? _explicitSourceStore : _dataContext;
+			=> _isElementNameSource || (_explicitSourceStore?.IsAlive ?? false) ? _explicitSourceStore : _dataContext;
 
 		/// <summary>
 		/// Sends the current binding target value to the binding source property in TwoWay bindings.

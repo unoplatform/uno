@@ -4,7 +4,7 @@
 						 xmlns:local="using:Uno.UI.Samples.Content.UITests.TextBoxControl"
 						 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006">
 
-	<StackPanel Padding="16,8,16,16">
+	<StackPanel Padding="16,0">
 
 		<!-- Normal Label -->
 		<TextBlock Text="Normal"
@@ -13,7 +13,7 @@
 		<!-- Normal TextBox -->
 		<Border BorderBrush="Black"
 						BorderThickness="2"
-						Margin="0,8,0,0"
+						Margin="0,4,0,0"
 						Padding="4">
 			<TextBox x:Name="NormalTextBox"
 								FontSize="16"/>
@@ -22,12 +22,12 @@
 		<!-- Filled Label -->
 		<TextBlock Text="Filled"
 								FontSize="16"
-								Margin="0,16,0,0" />
+								Margin="0,4,0,0" />
 
 		<!-- Filled TextBox -->
 		<Border BorderBrush="Black"
 						BorderThickness="2"
-						Margin="0,8,0,0"
+						Margin="0,4,0,0"
 						Padding="4">
 			<TextBox x:Name="FilledTextBox"
 								Text="Text"
@@ -37,12 +37,12 @@
 		<!-- PlaceholderText Label -->
 		<TextBlock Text="PlaceholderText"
 								FontSize="16"
-								Margin="0,16,0,0"/>
+								Margin="0,4,0,0"/>
 
 		<!-- PlaceholderText TextBox -->
 		<Border BorderBrush="Black"
 						BorderThickness="2"
-						Margin="0,8,0,0"
+						Margin="0,4,0,0"
 						Padding="4">
 			<TextBox x:Name="PlaceholderTextTextBox"
 								PlaceholderText="PlaceholderText"
@@ -52,12 +52,12 @@
 		<!-- Disabled Label -->
 		<TextBlock Text="Disabled"
 								FontSize="16"
-								Margin="0,16,0,0" />
+								Margin="0,4,0,0" />
 
 		<!-- Disabled TextBox -->
 		<Border BorderBrush="Black"
 						BorderThickness="2"
-						Margin="0,8,0,0"
+						Margin="0,4,0,0"
 						Padding="4">
 			<TextBox x:Name="DisabledTextBox"
 								PlaceholderText="Disabled"
@@ -68,12 +68,12 @@
 		<!-- Multiline Label -->
 		<TextBlock Text="Multiline"
 								FontSize="16"
-								Margin="0,16,0,0"  />
+								Margin="0,4,0,0"  />
 
 		<!-- Multiline TextBox -->
 		<Border BorderBrush="Black"
 						BorderThickness="2"
-						Margin="0,8,0,0"
+						Margin="0,4,0,0"
 						Padding="4">
 			<TextBox x:Name="MultilineTextBox"
 								PlaceholderText="Multiline"
@@ -85,12 +85,12 @@
 		<!--  Number Label -->
 		<TextBlock Text="Number"
 								FontSize="16"
-								Margin="0,16,0,0"  />
+								Margin="0,4,0,0"  />
 
 		<!-- Number TextBox -->
 		<Border BorderBrush="Black"
 						BorderThickness="2"
-						Margin="0,8,0,0"
+						Margin="0,4,0,0"
 						Padding="4">
 			<TextBox x:Name="NumberTextBox"
 								PlaceholderText="Number"

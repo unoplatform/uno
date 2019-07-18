@@ -92,5 +92,20 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TimePickerTests
 				// To do Task Number: - 155260 complete test case for IOS.KD
 			}
 		}
+
+		[Test]
+		public void TimePickerFlyout_DoesntApplyDefaultTime()
+		{
+			Run("SamplesApp.Samples.TimePicker.Sample1");
+
+			_app.WaitForElement(_app.Marked("theTimePicker"));
+			var theTimePicker = _app.Marked("theTimePicker");
+
+			// Assert initial state
+			if (DateTime.Now.TimeOfDay != new TimeSpan(12, 0, 0))
+			{
+				Assert.AreEqual("12:00:00", theTimePicker.GetDependencyPropertyValue("Time")?.ToString());
+			}
+		}
 	}
 }

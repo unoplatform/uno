@@ -9,7 +9,7 @@ namespace SamplesApp.Windows_UI_Xaml_Controls.Models
 	[Bindable]
 	public class TimePickerViewModel : ViewModelBase
 	{
-		private TimeSpan _time = DateTime.Now.TimeOfDay;
+		private TimeSpan _time = new TimeSpan(12,0,0);
 
 		public TimePickerViewModel(CoreDispatcher dispatcher) : base(dispatcher)
 		{
