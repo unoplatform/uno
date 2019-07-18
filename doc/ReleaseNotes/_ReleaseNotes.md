@@ -5,7 +5,7 @@
 * Add support for `Windows.Devices.Sensors.Accelerometer` APIs on iOS, Android and WASM
    * `ReadingChanged`
    * `Shaken`
-   * `ReportInterval`  
+   * `ReportInterval`
 * Align `ApplicationData.Current.LocalSettings.Add` behavior with UWP for `null` and repeated adds
 * Add support for `Windows.ApplicationModel.Calls.PhoneCallManager`
 * Add support for `Windows.Phone.Devices.Notification.VibrationDevice` API on iOS, Android and WASM
@@ -47,10 +47,12 @@
 * Fix invalid XAML x:Uid parsing with resource file name and prefix (#1130, #228)
 * Fixed an issue where a Two-Way binding would sometimes not update values back to source correctly
 * Adjust the behavior of `DisplayInformation.LogicalDpi` to match UWP's behavior
-* [Android] Ensure TextBox spell-check is properly enabled/disabled on all devices. 
+* [Android] Ensure TextBox spell-check is properly enabled/disabled on all devices.
 * Fix ComboBox disappearing items when items are views (#1078)
 * [iOS] TextBox with `AcceptsReturn=True` crashes ListView
 * [Android/iOS] Fixed Arc command in paths
+* Changing the `DataContext` of an element to a new value were pushing the properties default
+  value on bound properties before setting the new value.
 
 ## Release 1.45.0
 ### Features
