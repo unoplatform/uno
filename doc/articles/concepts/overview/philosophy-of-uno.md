@@ -18,7 +18,7 @@ Bland apps don't quite cut it these days. Strong support for animations, templat
 
 ## Let views do views
 
-Separation of model, view and presentation keeps your code loosely coupled and easy to maintain. Features like databinding and attached properties let you write clean, elegant MVVM-style code. 
+Separation of model, view and presentation keeps your code loosely coupled and easy to maintain. Features like data binding and attached properties let you write clean, elegant MVVM-style code. 
 
 ## Native intercompatibility (leave an escape hatch)
 
