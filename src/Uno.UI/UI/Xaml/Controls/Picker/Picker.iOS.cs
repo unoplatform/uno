@@ -81,7 +81,17 @@ namespace Windows.UI.Xaml.Controls
 
 		private void OnItemSourceChanged(object collection, NotifyCollectionChangedEventArgs _)
 		{
-			Items = (collection as IEnumerable)?.ToObjectArray() ?? new object[0];
+			if (SelectedItem == null)
+			{
+				Items = new[] { (object)null }
+				  .Concat((collection as IEnumerable)?.ToObjectArray() ?? new object[0])
+				  .ToObjectArray();
+			}
+			else
+			{
+				Items = (collection as IEnumerable)?.ToObjectArray() ?? new object[0];
+			}
+
 			ReloadAllComponents();
 
 			if (!Items.Contains(SelectedItem))
@@ -101,6 +111,13 @@ namespace Windows.UI.Xaml.Controls
 					SelectedItem = firstItem;
 					return;
 				}
+			}
+			else if (newSelectedItem != null && Items[0] == null)
+			{
+				// On ItemSelection remove initial null item at Items[0]
+				Items = Items
+					.Skip(1)
+					.ToObjectArray();
 			}
 
 			Select(row, component: 0, animated: true);
