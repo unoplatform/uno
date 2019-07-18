@@ -884,7 +884,7 @@ namespace Uno.UI.Tests.BinderTests
 				DataContextChangedCount++;
 			}
 
-			#region ChildrenBinders DependencyProperty
+#region ChildrenBinders DependencyProperty
 
 			public IList<DependencyObject> ChildrenBinders
 			{
@@ -906,7 +906,7 @@ namespace Uno.UI.Tests.BinderTests
 			{
 			}
 
-			#endregion
+#endregion
 
 		}
 
@@ -923,7 +923,7 @@ namespace Uno.UI.Tests.BinderTests
 
 			}
 
-			#region TargetValue DependencyProperty
+#region TargetValue DependencyProperty
 
 			public int TargetValue
 			{
@@ -941,14 +941,14 @@ namespace Uno.UI.Tests.BinderTests
 				TargetValueSetCount++;
 			}
 
-			#endregion
+#endregion
 
 
 
 			public int TargetValueSetCount { get; set; }
 
 
-			#region Brush DependencyProperty
+#region Brush DependencyProperty
 
 			public Brush Brush
 			{
@@ -966,12 +966,12 @@ namespace Uno.UI.Tests.BinderTests
 				BrushSetCount++;
 			}
 
-			#endregion
+#endregion
 
 			public int BrushSetCount { get; set; }
 
 
-			#region Object DependencyProperty
+#region Object DependencyProperty
 
 			public Object Object
 			{
@@ -989,7 +989,7 @@ namespace Uno.UI.Tests.BinderTests
 				objectSetCount++;
 			}
 
-			#endregion
+#endregion
 
 			public int objectSetCount { get; set; }
 		}
@@ -1165,7 +1165,7 @@ namespace Uno.UI.Tests.BinderTests
 
 	public partial class MyObjectTest : DependencyObject
 	{
-		#region MyProperty DependencyProperty
+#region MyProperty DependencyProperty
 
 		public int MyProperty
 		{
@@ -1182,7 +1182,7 @@ namespace Uno.UI.Tests.BinderTests
 		{
 		}
 
-		#endregion
+#endregion
 	}
 
 
