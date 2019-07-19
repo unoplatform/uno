@@ -23,7 +23,7 @@ Since Uno can't change the design of the iOS or Android frameworks, Uno chose to
 
 Most statically-typed languages, except C++, don't permit multiple base classes on account of the added complexity it brings, a.k.a. the ['diamond problem'](https://en.wikipedia.org/wiki/Multiple_inheritance#The_diamond_problem). In dynamically-typed languages, it's quite common to bolt on extra functionality to a class in a reusable way with [mixins](https://en.wikipedia.org/wiki/Mixin). As C# is a statically-typed language, it doesn't support mixins as a first-class language feature.
 
-We can however, generate code. 
+Uno can however, generate code. 
 
 With Roslyn, Microsoft open-sourced the C# compiler, but they also exposed a powerful API for code analysis. Roslyn provides a easy to access all the syntactic and semantic information that the compiler possesses. Uno created a [source generator](https://github.com/nventive/Uno.SourceGeneration) that leverages this power for code generation and like the Uno platform, it's free and open-source.
 
