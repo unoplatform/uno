@@ -31,7 +31,7 @@
 		<UnoForceProcessPRIResource>true</UnoForceProcessPRIResource>
 
 		<!-- Generate automation IDs in debug builds, use by UI tests. -->
-		<IsUiAutomationMappingEnabled Condition="'$(Configuration)'=='Debug'">true</IsUiAutomationMappingEnabled>
+		<IsUiAutomationMappingEnabled>true</IsUiAutomationMappingEnabled>
 	</PropertyGroup>
 
 	<Import Project="..\Uno.CrossTargetting.props" />
