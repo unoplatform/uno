@@ -52,7 +52,7 @@
 * [iOS] TextBox with `AcceptsReturn=True` crashes ListView
 * [Android/iOS] Fixed Arc command in paths
 * Changing the `DataContext` of an element to a new value were pushing the properties default
-  value on bound properties before setting the new value.
+  value on data bound properties before setting the new value.
 
 ## Release 1.45.0
 ### Features
