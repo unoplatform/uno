@@ -1,10 +1,7 @@
 ﻿using System;
-using System.Collections.ObjectModel;
 using System.Collections.Generic;
 using System.Collections.Specialized;
-using System.Threading.Tasks;
 using System.Linq;
-using Uno.Extensions;
 using System.Collections;
 
 namespace Windows.UI.Xaml.Controls

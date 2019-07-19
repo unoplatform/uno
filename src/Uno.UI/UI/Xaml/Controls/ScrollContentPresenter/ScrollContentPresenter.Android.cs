@@ -19,7 +19,7 @@ namespace Windows.UI.Xaml.Controls
 {
 	public partial class ScrollContentPresenter : UnoTwoDScrollView, IShadowChildrenProvider, DependencyObject
 	{
-		private readonly static List<View> _emptyList = new List<View>(0);
+		private static readonly List<View> _emptyList = new List<View>(0);
 
 		private ScrollBarVisibility _verticalScrollBarVisibility;
 		public ScrollBarVisibility VerticalScrollBarVisibility

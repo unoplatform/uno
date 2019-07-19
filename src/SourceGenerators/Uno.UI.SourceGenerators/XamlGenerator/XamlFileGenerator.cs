@@ -952,7 +952,9 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 							appThemes.Remove(defaultThemes.First());
 						}
 
-						using (writer.BlockInvariant($"public static {GetGlobalizedTypeName(resourceTypeName)} {SanitizeResourceName(resourcePropertyName)}"))
+						var globalizedTypeName = GetGlobalizedTypeName(resourceTypeName);
+						var sanitizeResourceName = SanitizeResourceName(resourcePropertyName);
+						using (writer.BlockInvariant($"public static {globalizedTypeName} {sanitizeResourceName}"))
 						using (writer.BlockInvariant("get"))
 						{
 							if (customThemes.Any())
@@ -963,7 +965,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 								{
 									foreach (var theme in customThemes)
 									{
-										writer.AppendLineInvariant($"case \"{theme.Key}\": return {resourcePropertyName}___{theme.Key};");
+										writer.AppendLineInvariant($"case \"{theme.Key}\": return {sanitizeResourceName}___{theme.Key};");
 									}
 								}
 								writer.AppendLine();
@@ -981,11 +983,11 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 									{
 										if (theme.Key.Equals("Light"))
 										{
-											writer.AppendLineInvariant($"case global::Windows.UI.Xaml.ApplicationTheme.Light: return {resourcePropertyName}___{theme.Key};");
+											writer.AppendLineInvariant($"case global::Windows.UI.Xaml.ApplicationTheme.Light: return {sanitizeResourceName}___{theme.Key};");
 										}
 										else if (theme.Key.Equals("Dark"))
 										{
-											writer.AppendLineInvariant($"case global::Windows.UI.Xaml.ApplicationTheme.Dark: return {resourcePropertyName}___{theme.Key};");
+											writer.AppendLineInvariant($"case global::Windows.UI.Xaml.ApplicationTheme.Dark: return {sanitizeResourceName}___{theme.Key};");
 										}
 
 										// Default is not generated here
@@ -996,8 +998,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 							writer.AppendLine();
 							if (defaultThemes.Any())
 							{
-									writer.AppendLineInvariant("// .");
-									writer.AppendLineInvariant($"return {resourcePropertyName}___Default;");
+									writer.AppendLineInvariant("// This resource is defined in a Default theme as a fallback.");
+									writer.AppendLineInvariant($"return {sanitizeResourceName}___Default;");
 							}
 							else
 							{

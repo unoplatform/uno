@@ -83,14 +83,14 @@ namespace Windows.UI.Xaml
 
 			// After setting the value, we need to update the current highest precedence if needed
 			// If a higher value precedence was set, then this is the new highest
-			if ((value != DependencyProperty.UnsetValue) && (precedence < _highestPrecedence))
+			if (!(value is UnsetValue) && precedence < _highestPrecedence)
 			{
 				_highestPrecedence = precedence;
 				return;
 			}
 
 			// If we were unsetting the current highest precedence value, we need to find the next highest
-			if ((value == DependencyProperty.UnsetValue) && (precedence == _highestPrecedence))
+			if (value is UnsetValue && precedence == _highestPrecedence)
 			{
 				// Start from current precedence and find next highest
 				for (int i = (int)precedence; i < (int)DependencyPropertyValuePrecedences.DefaultValue; i++)
@@ -106,7 +106,7 @@ namespace Windows.UI.Xaml
 			}
 		}
 
-		internal BindingExpression GetLastBinding() 
+		internal BindingExpression GetLastBinding()
 			=> _lastBindings;
 
 		internal void SetBinding(BindingExpression bindingExpression)
@@ -127,7 +127,7 @@ namespace Windows.UI.Xaml
 		/// Gets the value at the current highest precedence level
 		/// </summary>
 		/// <returns>The value at the current highest precedence level</returns>
-		internal object GetValue() 
+		internal object GetValue()
 			=> GetValue(_highestPrecedence);
 
 		/// <summary>
@@ -136,7 +136,7 @@ namespace Windows.UI.Xaml
 		/// <param name="precedence">The precedence level to get the value at</param>
 		/// <returns>The value at a given precedence level</returns>
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		internal object GetValue(DependencyPropertyValuePrecedences precedence) 
+		internal object GetValue(DependencyPropertyValuePrecedences precedence)
 			=> Unwrap(_stack[(int)precedence]);
 
 		/// <summary>
@@ -165,7 +165,7 @@ namespace Windows.UI.Xaml
 		/// <summary>
 		/// Gets the current highest value precedence level
 		/// </summary>
-		internal DependencyPropertyValuePrecedences CurrentHighestValuePrecedence 
+		internal DependencyPropertyValuePrecedences CurrentHighestValuePrecedence
 			=> _highestPrecedence;
 
 		/// <summary>
@@ -183,13 +183,13 @@ namespace Windows.UI.Xaml
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		private object Wrap(object value)
 			=> _hasWeakStorage && value != null && value != DependencyProperty.UnsetValue
-			? WeakReferencePool.RentWeakReference(this, value) 
+			? WeakReferencePool.RentWeakReference(this, value)
 			: value;
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		private object Unwrap(object value)
-			=> _hasWeakStorage && value is ManagedWeakReference mwr 
-			? mwr.Target 
+			=> _hasWeakStorage && value is ManagedWeakReference mwr
+			? mwr.Target
 			: value;
 
 		#region IEnumerable implementation
