@@ -14,6 +14,7 @@
 * [Wasm] Add support for `DisplayInformation` properties `LogicalDpi`, `ResolutionScale`, `ScreenWidthInRawPixels`, `RawPixelsPerViewPixel` , and `ScreenHeightInRawPixels`¸
 * Permit `DependencyProperty` to be set reentrantly. Eg this permits `TextBox.TextChanged` to modify the `Text` property (previously this could only be achieved using `Dispatcher.RunAsync()`).
 * Add support for filtered solutions development for Uno.UI contributions.
+* 132984 [Android] Notch support on Android
 * Add support for Android UI Tests in PRs for improved regression testing
 * Add static support for **ThemeResources**: `Application.Current.RequestedTheme` is supported
   - `Dark` and `Light` are supported.
