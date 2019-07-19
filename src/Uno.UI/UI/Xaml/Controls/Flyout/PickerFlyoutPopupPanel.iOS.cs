@@ -6,9 +6,9 @@ using Windows.UI.Xaml.Controls.Primitives;
 
 namespace Windows.UI.Xaml.Controls
 {
-	internal partial class TimePickerFlyoutPopupPanel : FlyoutBasePopupPanel
+	internal partial class PickerFlyoutPopupPanel : FlyoutBasePopupPanel
 	{
-		public TimePickerFlyoutPopupPanel(FlyoutBase flyout) : base(flyout)
+		public PickerFlyoutPopupPanel(FlyoutBase flyout) : base(flyout)
 		{
 		}
 

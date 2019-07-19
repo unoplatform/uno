@@ -21,6 +21,8 @@
 								VerticalAlignment="Top">
 					</DatePicker>
 
+					<!-- DatePicker is broken: https://github.com/unoplatform/uno/issues/188 -->
+					<!-- Using a Button with DatePickerFlyout to simulate a DatePicker -->
 					<Button Content="Open DatePickerFlyout">
 						<Button.Flyout>
 							<DatePickerFlyout />

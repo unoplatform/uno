@@ -24,7 +24,7 @@ namespace Windows.UI.Xaml.Controls
 
 		protected override void InitializePopupPanel()
 		{
-			_popup.PopupPanel = new DatePickerFlyoutPopupPanel(this)
+			_popup.PopupPanel = new PickerFlyoutPopupPanel(this)
 			{
 				Visibility = Visibility.Collapsed,
 				Background = SolidColorBrushHelper.Transparent,
