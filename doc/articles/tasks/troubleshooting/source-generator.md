@@ -3,7 +3,8 @@
 
 ## Before you begin
 
-- [Install the MSBuild Binary and Structured Log Viewer](http://msbuildlog.com/). 
+- Install the [MSBuild Binary and Structured Log Viewer](http://msbuildlog.com/). 
+- Install the [Microsoft Child Process Debugging Power Tool](https://marketplace.visualstudio.com/items?itemName=vsdbgplat.MicrosoftChildProcessDebuggingPowerTool)
 
 ## Debugging the source generators of the Uno solution
 
