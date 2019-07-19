@@ -118,11 +118,11 @@ namespace Uno.UI.TestComparer.Comparer
 
 				testResult.Tests.Add(compareResultFile);
 
-				if (hasChanges)
+				// if (hasChanges)
 				{
 					var changeResult = increments[0];
 
-					if (changeResult.Count() > 1)
+					// if (changeResult.Count() > 1)
 					{
 						var firstFolder = changeResult.Where(i => i.FolderIndex != -1).Min(i => i.FolderIndex);
 
@@ -130,31 +130,34 @@ namespace Uno.UI.TestComparer.Comparer
 						{
 							var folderInfo = changeResult.FirstOrDefault(inc => inc.FolderIndex == folderIndex);
 
-							var hasChangedFromPrevious = folderIndex != firstFolder && folderInfo?.IdSha != null;
-
-							var compareResultFileRun = new CompareResultFileRun();
-							compareResultFile.ResultRun.Add(compareResultFileRun);
-
-							compareResultFileRun.ImageId = folderInfo.Id;
-							compareResultFileRun.ImageSha = folderInfo.IdSha;
-							compareResultFileRun.FilePath = folderInfo.Path;
-
-							compareResultFileRun.HasChanged = hasChangedFromPrevious;
-
 							if (folderInfo != null)
 							{
-								var previousFolderInfo = changeResult.FirstOrDefault(inc => inc.FolderIndex == folderIndex - 1);
-								if (hasChangedFromPrevious && previousFolderInfo != null)
+								var hasChangedFromPrevious = folderIndex != firstFolder && folderInfo?.IdSha != null;
+
+								var compareResultFileRun = new CompareResultFileRun();
+								compareResultFile.ResultRun.Add(compareResultFileRun);
+
+								compareResultFileRun.ImageId = folderInfo.Id;
+								compareResultFileRun.ImageSha = folderInfo.IdSha;
+								compareResultFileRun.FilePath = folderInfo.Path;
+
+								compareResultFileRun.HasChanged = hasChangedFromPrevious;
+
+								if (folderInfo != null)
 								{
-									var currentImage = DecodeImage(folderInfo.Path);
-									var previousImage = DecodeImage(previousFolderInfo.Path);
+									var previousFolderInfo = changeResult.FirstOrDefault(inc => inc.FolderIndex == folderIndex - 1);
+									if (hasChangedFromPrevious && previousFolderInfo != null)
+									{
+										var currentImage = DecodeImage(folderInfo.Path);
+										var previousImage = DecodeImage(previousFolderInfo.Path);
 
-									var diff = DiffImages(currentImage.pixels, previousImage.pixels);
+										var diff = DiffImages(currentImage.pixels, previousImage.pixels);
 
-									var diffFilePath = Path.Combine(diffPath, $"{folderInfo.Id}-{folderInfo.CompareeId}.png");
-									WriteImage(diffFilePath, diff, currentImage.frame);
+										var diffFilePath = Path.Combine(diffPath, $"{folderInfo.Id}-{folderInfo.CompareeId}.png");
+										WriteImage(diffFilePath, diff, currentImage.frame);
 
-									compareResultFileRun.DiffResultImage = diffFilePath;
+										compareResultFileRun.DiffResultImage = diffFilePath;
+									}
 								}
 							}
 						}

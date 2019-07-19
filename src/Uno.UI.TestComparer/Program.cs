@@ -7,7 +7,9 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
+using System.Xml;
 using Mono.Options;
+using NUnit.Engine.Services;
 using Uno.UI.TestComparer;
 using Uno.UI.TestComparer.Comparer;
 
@@ -127,6 +129,107 @@ namespace Umbrella.UI.TestComparer
 			var result = new TestFilesComparer(basePath, artifactsBasePath, artifactsInnerBasePath, platform).Compare();
 
 			GenerateHTMLResults(basePath, platform, result);
+			GenerateNUnitTestResults(basePath, platform, result);
+		}
+
+		private static void GenerateNUnitTestResults(string basePath, string platform, CompareResult compareResult)
+		{
+			var resultsId = $"{DateTime.Now:yyyyMMdd-hhmmss}";
+			var resultsFilePath = Path.Combine(basePath, $"Results-{platform}-{resultsId}.xml");
+
+			var doc = new XmlDocument();
+			var rootNode = doc.CreateElement("test-results");
+			doc.AppendChild(rootNode);
+			rootNode.SetAttribute("name", resultsId);
+			rootNode.SetAttribute("total", compareResult.TotalTests.ToString());
+			rootNode.SetAttribute("errors", (compareResult.TotalTests - compareResult.UnchangedTests).ToString());
+			rootNode.SetAttribute("failures", "0");
+			rootNode.SetAttribute("not-run", "0");
+			rootNode.SetAttribute("ignored", "0");
+			rootNode.SetAttribute("invalid", "0");
+			rootNode.SetAttribute("skipped", "0");
+
+			var now = DateTimeOffset.Now;
+			rootNode.SetAttribute("date", now.ToString("YYYY-MM-DD"));
+			rootNode.SetAttribute("time", now.ToString("HH:mm:SS"));
+
+			var resultsNode = doc.CreateElement("results");
+			rootNode.AppendChild(resultsNode);
+
+			var testSuiteNode = doc.CreateElement("test-suite");
+			resultsNode.AppendChild(testSuiteNode);
+
+			testSuiteNode.SetAttribute("type", "TestFixture");
+			testSuiteNode.SetAttribute("name", resultsId);
+			testSuiteNode.SetAttribute("executed", "true");
+
+			var success = !compareResult.Tests.Any(t => t.ResultRun.LastOrDefault()?.HasChanged ?? false);
+			testSuiteNode.SetAttribute("result", success ? "Success" : "Failure");
+			testSuiteNode.SetAttribute("success", success.ToString());
+
+			foreach (var run in compareResult.Tests)
+			{
+				var testSuiteResulstNode = doc.CreateElement("results");
+				testSuiteNode.AppendChild(testSuiteResulstNode);
+
+				var testCaseNode = doc.CreateElement("test-case");
+				testSuiteResulstNode.AppendChild(testCaseNode);
+
+				var lastTestRun = run.ResultRun.LastOrDefault();
+
+				testCaseNode.SetAttribute("name", run.TestName);
+				testCaseNode.SetAttribute("executed", "True");
+
+				var testRunSuccess = !(lastTestRun?.HasChanged ?? false);
+				testCaseNode.SetAttribute("success", testRunSuccess.ToString());
+				testCaseNode.SetAttribute("result", testRunSuccess ? "Success" : "Failure");
+
+				if (lastTestRun != null)
+				{
+					if (!testRunSuccess)
+					{
+						var failureNode = doc.CreateElement("failure");
+						testCaseNode.AppendChild(failureNode);
+
+						var messageNode = doc.CreateElement("message");
+						failureNode.AppendChild(messageNode);
+
+						messageNode.InnerText = $"Results are different";
+					}
+
+					var attachmentsNode = doc.CreateElement("attachments");
+					testCaseNode.AppendChild(attachmentsNode);
+
+					AddAttachment(doc, attachmentsNode, lastTestRun.FilePath, "Result output");
+
+					if (!testRunSuccess)
+					{
+						AddAttachment(doc, attachmentsNode, lastTestRun.DiffResultImage, "Image diff");
+
+						var previousRun = run.ResultRun.ElementAtOrDefault(run.ResultRun.Count - 2);
+						AddAttachment(doc, attachmentsNode, previousRun.FilePath, "Previous result output");
+					}
+				}
+			}
+
+			using (var file = XmlWriter.Create(File.OpenWrite(resultsFilePath), new XmlWriterSettings { Indent = true } ))
+			{
+				doc.WriteTo(file);
+			}
+		}
+
+		private static void AddAttachment(XmlDocument doc, XmlElement attachmentsNode, string filePath, string description)
+		{
+			var attachmentNode = doc.CreateElement("attachment");
+			attachmentsNode.AppendChild(attachmentNode);
+
+			var filePathNode = doc.CreateElement("filePath");
+			attachmentNode.AppendChild(filePathNode);
+			filePathNode.InnerText = filePath;
+
+			var descriptionNode = doc.CreateElement("description");
+			attachmentNode.AppendChild(descriptionNode);
+			descriptionNode.InnerText = description;
 		}
 
 		private static void GenerateHTMLResults(string basePath, string platform, CompareResult result)
