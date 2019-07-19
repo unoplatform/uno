@@ -43,13 +43,13 @@ namespace Uno.Collections
 		public void Add(T item)
 		{
 			_innerList.Add(item);
-			_materialized = null;
+			ClearMaterialized();
 		}
 
 		public void Clear()
 		{
 			_innerList.Clear();
-			_materialized = null;
+			ClearMaterialized();
 		}
 
 		public bool Contains(T item) => _innerList.Contains(item);
@@ -58,7 +58,7 @@ namespace Uno.Collections
 
 		public bool Remove(T item)
 		{
-			_materialized = null;
+			ClearMaterialized();
 			return _innerList.Remove(item);
 		}
 
@@ -71,13 +71,13 @@ namespace Uno.Collections
 		public void Insert(int index, T item)
 		{
 			_innerList.Insert(index, item);
-			_materialized = null;
+			ClearMaterialized();
 		}
 
 		public void RemoveAt(int index)
 		{
 			_innerList.RemoveAt(index);
-			_materialized = null;
+			ClearMaterialized();
 		}
 
 		public T this[int index]
@@ -86,12 +86,36 @@ namespace Uno.Collections
 			set
 			{
 				_innerList[index] = value;
-				_materialized = null;
+				ClearMaterialized();
 			}
 		}
 
 		private List<T> _materialized;
 
+		/// <summary>
+		/// Get a materialized copy of the inner list. DON'T UPDATE IT!!
+		/// </summary>
+		/// <remarks>
+		/// You should NEVER update directly this list or you can still produce a
+		/// "Collection was modified" exception.
+		/// </remarks>
 		public List<T> Materialized => _materialized ?? (_materialized = _innerList.ToList());
+
+		/// <summary>
+		/// Get an exclusive copy of the inner list which can be freely updated
+		/// without impacting any concurrent enumeration.
+		/// </summary>
+		public List<T> GetUpdatableCopy() => _innerList.ToList();
+
+		/// <summary>
+		/// Force this instance to regenerate a new `Materialized` instance.
+		/// </summary>
+		/// <remarks>
+		/// Useful it you're planning to "own" the MaterializedList and update it.
+		/// </remarks>
+		public void ClearMaterialized()
+		{
+			_materialized = null;
+		}
 	}
 }

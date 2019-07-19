@@ -90,22 +90,18 @@ namespace Uno.UI.Controls
 		/// </remarks>
 		internal void MoveViewTo(int oldIndex, int newIndex)
 		{
-			var newShadow = _shadowChildren.Materialized;
+			var view = _shadowChildren[oldIndex];
 
-			var view = newShadow[oldIndex];
-
-			newShadow.RemoveAt(oldIndex);
-			newShadow.Insert(newIndex, view);
+			_shadowChildren.RemoveAt(oldIndex);
+			_shadowChildren.Insert(newIndex, view);
 
 			var reorderIndex = Math.Min(oldIndex, newIndex);
 
-			for (int i = reorderIndex; i < newShadow.Count; i++)
+			for (int i = reorderIndex; i < _shadowChildren.Count; i++)
 			{
 				// TODO: Use AddSubview with foremost
 				// BringSubviewToFront(newShadow[i]);
 			}
-
-			_shadowChildren = new MaterializableList<NSView>(newShadow);
 		}
 
 		protected void RaisePropertyChanged([CallerMemberName] string propertyName = null)
