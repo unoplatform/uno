@@ -179,7 +179,7 @@ jobs:
     condition: always()
     inputs:
       testResultsFiles: '$(build.artifactstagingdirectory)\*.xml'
-      testRunTitle: 'screenshots Compare Test Run'
+      testRunTitle: 'Screenshots Compare Test Run'
       testResultsFormat: 'NUnit'
       failTaskOnFailedTests: false
 
