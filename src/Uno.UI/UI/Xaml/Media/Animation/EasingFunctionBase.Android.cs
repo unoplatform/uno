@@ -1,12 +1,14 @@
-﻿using Android.Animation;
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System;
+using Android.Animation;
+using Android.Views.Animations;
 
 namespace Windows.UI.Xaml.Media.Animation
 {
-    public abstract partial class EasingFunctionBase
-    {
-	    internal abstract ITimeInterpolator CreateTimeInterpolator();
-    }
+	public abstract partial class EasingFunctionBase
+	{
+		internal virtual ITimeInterpolator CreateTimeInterpolator()
+		{
+			return new LinearInterpolator();
+		}
+	}
 }
