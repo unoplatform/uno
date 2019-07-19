@@ -482,7 +482,7 @@ namespace Uno.UI.DataBinding
 
 			private void OnDataContextChanged()
 			{
-				if (DataContext != null && DataContext != DependencyProperty.UnsetValue)
+				if (DataContext != null)
 				{
 					ClearCachedGetters();
 					if (_propertyChanged.Disposable != null)
