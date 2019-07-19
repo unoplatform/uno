@@ -14,6 +14,6 @@
 - Attach to that process from the Uno.UI solution
 - Rebuild the side app
 - Your breakpoints in the source generators will hit
-
+- Output from the generator is stored at `obj\Debug\netstandard2.0\g\XamlCodeGenerator`
 
 
