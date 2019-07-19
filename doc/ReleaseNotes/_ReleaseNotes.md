@@ -165,6 +165,7 @@
 * RadioButton was not applying Checked state correctly with non-standard visual state grouping in style
 * [Android] Fix several bugs preventing AutoSuggestBox from working on Android. (#1012)
 * #1062 TextBlock measure caching can wrongly hit
+* 153974 [Android] fixed button flyout placement
 * Fix support for ScrollBar touch events (#871)
 * `LinearGradientBrush.EndPoint` now defaults to (1,1) to match UWP
 * Fixed an issue where a Two-Way binding would sometimes not update values back to source correctly
