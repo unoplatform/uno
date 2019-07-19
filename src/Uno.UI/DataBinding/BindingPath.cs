@@ -505,7 +505,7 @@ namespace Uno.UI.DataBinding
 					_propertyChanged.Disposable =
 							SubscribeToPropertyChanged((previousValue, newValue, shouldRaiseValueChanged) =>
 								{
-									if (_isDataContextChanging && newValue == DependencyProperty.UnsetValue)
+									if (_isDataContextChanging && newValue is UnsetValue)
 									{
 										// We're in a "resubscribe" scenario when the DataContext is provided a new non-null value, so we don't need to
 										// pass through the DependencyProperty.UnsetValue.

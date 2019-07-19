@@ -17,7 +17,7 @@ namespace Windows.UI.Xaml
 
 		public override bool Equals(object obj)
 		{
-			return ReferenceEquals(obj, this) || obj is UnsetValue;
+			return ReferenceEquals(obj, this);
 		}
 
 		public override int GetHashCode() => 0;
