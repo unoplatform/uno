@@ -150,20 +150,8 @@ namespace Windows.UI.Core
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Core.CoreWindow", "void CoreWindow.Close()");
 		}
 		#endif
-		#if false
-		[global::Uno.NotImplemented]
-		public  global::Windows.UI.Core.CoreVirtualKeyStates GetAsyncKeyState( global::Windows.System.VirtualKey virtualKey)
-		{
-			throw new global::System.NotImplementedException("The member CoreVirtualKeyStates CoreWindow.GetAsyncKeyState(VirtualKey virtualKey) is not implemented in Uno.");
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented]
-		public  global::Windows.UI.Core.CoreVirtualKeyStates GetKeyState( global::Windows.System.VirtualKey virtualKey)
-		{
-			throw new global::System.NotImplementedException("The member CoreVirtualKeyStates CoreWindow.GetKeyState(VirtualKey virtualKey) is not implemented in Uno.");
-		}
-		#endif
+		// Skipping already declared method Windows.UI.Core.CoreWindow.GetAsyncKeyState(Windows.System.VirtualKey)
+		// Skipping already declared method Windows.UI.Core.CoreWindow.GetKeyState(Windows.System.VirtualKey)
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  void ReleasePointerCapture()

@@ -55,7 +55,7 @@ namespace Windows.UI.Xaml.Media.Imaging
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty AutoPlayProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"AutoPlay", typeof(bool), 
+			nameof(AutoPlay), typeof(bool), 
 			typeof(global::Windows.UI.Xaml.Media.Imaging.BitmapImage), 
 			new FrameworkPropertyMetadata(default(bool)));
 		#endif
@@ -63,7 +63,7 @@ namespace Windows.UI.Xaml.Media.Imaging
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty IsAnimatedBitmapProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"IsAnimatedBitmap", typeof(bool), 
+			nameof(IsAnimatedBitmap), typeof(bool), 
 			typeof(global::Windows.UI.Xaml.Media.Imaging.BitmapImage), 
 			new FrameworkPropertyMetadata(default(bool)));
 		#endif
@@ -71,7 +71,7 @@ namespace Windows.UI.Xaml.Media.Imaging
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty IsPlayingProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"IsPlaying", typeof(bool), 
+			nameof(IsPlaying), typeof(bool), 
 			typeof(global::Windows.UI.Xaml.Media.Imaging.BitmapImage), 
 			new FrameworkPropertyMetadata(default(bool)));
 		#endif

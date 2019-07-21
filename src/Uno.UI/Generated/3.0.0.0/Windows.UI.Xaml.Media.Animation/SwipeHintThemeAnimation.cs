@@ -53,7 +53,7 @@ namespace Windows.UI.Xaml.Media.Animation
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty TargetNameProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"TargetName", typeof(string), 
+			nameof(TargetName), typeof(string), 
 			typeof(global::Windows.UI.Xaml.Media.Animation.SwipeHintThemeAnimation), 
 			new FrameworkPropertyMetadata(default(string)));
 		#endif
@@ -61,7 +61,7 @@ namespace Windows.UI.Xaml.Media.Animation
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty ToHorizontalOffsetProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"ToHorizontalOffset", typeof(double), 
+			nameof(ToHorizontalOffset), typeof(double), 
 			typeof(global::Windows.UI.Xaml.Media.Animation.SwipeHintThemeAnimation), 
 			new FrameworkPropertyMetadata(default(double)));
 		#endif
@@ -69,7 +69,7 @@ namespace Windows.UI.Xaml.Media.Animation
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty ToVerticalOffsetProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"ToVerticalOffset", typeof(double), 
+			nameof(ToVerticalOffset), typeof(double), 
 			typeof(global::Windows.UI.Xaml.Media.Animation.SwipeHintThemeAnimation), 
 			new FrameworkPropertyMetadata(default(double)));
 		#endif

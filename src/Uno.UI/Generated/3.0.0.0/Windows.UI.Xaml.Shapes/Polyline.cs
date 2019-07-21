@@ -39,7 +39,7 @@ namespace Windows.UI.Xaml.Shapes
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty FillRuleProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"FillRule", typeof(global::Windows.UI.Xaml.Media.FillRule), 
+			nameof(FillRule), typeof(global::Windows.UI.Xaml.Media.FillRule), 
 			typeof(global::Windows.UI.Xaml.Shapes.Polyline), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.FillRule)));
 		#endif
@@ -47,7 +47,7 @@ namespace Windows.UI.Xaml.Shapes
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty PointsProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"Points", typeof(global::Windows.UI.Xaml.Media.PointCollection), 
+			nameof(Points), typeof(global::Windows.UI.Xaml.Media.PointCollection), 
 			typeof(global::Windows.UI.Xaml.Shapes.Polyline), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.PointCollection)));
 		#endif

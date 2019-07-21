@@ -57,7 +57,7 @@ namespace Windows.UI.Xaml.Media.Animation
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty AutoReverseProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"AutoReverse", typeof(bool), 
+			nameof(AutoReverse), typeof(bool), 
 			typeof(global::Windows.UI.Xaml.Media.Animation.Timeline), 
 			new FrameworkPropertyMetadata(default(bool)));
 		#endif
@@ -69,7 +69,7 @@ namespace Windows.UI.Xaml.Media.Animation
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty SpeedRatioProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"SpeedRatio", typeof(double), 
+			nameof(SpeedRatio), typeof(double), 
 			typeof(global::Windows.UI.Xaml.Media.Animation.Timeline), 
 			new FrameworkPropertyMetadata(default(double)));
 		#endif

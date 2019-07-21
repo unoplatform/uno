@@ -113,7 +113,7 @@ namespace Windows.UI.Xaml.Shapes
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty StrokeDashCapProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"StrokeDashCap", typeof(global::Windows.UI.Xaml.Media.PenLineCap), 
+			nameof(StrokeDashCap), typeof(global::Windows.UI.Xaml.Media.PenLineCap), 
 			typeof(global::Windows.UI.Xaml.Shapes.Shape), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.PenLineCap)));
 		#endif
@@ -121,7 +121,7 @@ namespace Windows.UI.Xaml.Shapes
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty StrokeDashOffsetProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"StrokeDashOffset", typeof(double), 
+			nameof(StrokeDashOffset), typeof(double), 
 			typeof(global::Windows.UI.Xaml.Shapes.Shape), 
 			new FrameworkPropertyMetadata(default(double)));
 		#endif
@@ -129,7 +129,7 @@ namespace Windows.UI.Xaml.Shapes
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty StrokeEndLineCapProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"StrokeEndLineCap", typeof(global::Windows.UI.Xaml.Media.PenLineCap), 
+			nameof(StrokeEndLineCap), typeof(global::Windows.UI.Xaml.Media.PenLineCap), 
 			typeof(global::Windows.UI.Xaml.Shapes.Shape), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.PenLineCap)));
 		#endif
@@ -137,7 +137,7 @@ namespace Windows.UI.Xaml.Shapes
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty StrokeLineJoinProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"StrokeLineJoin", typeof(global::Windows.UI.Xaml.Media.PenLineJoin), 
+			nameof(StrokeLineJoin), typeof(global::Windows.UI.Xaml.Media.PenLineJoin), 
 			typeof(global::Windows.UI.Xaml.Shapes.Shape), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.PenLineJoin)));
 		#endif
@@ -145,7 +145,7 @@ namespace Windows.UI.Xaml.Shapes
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty StrokeMiterLimitProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"StrokeMiterLimit", typeof(double), 
+			nameof(StrokeMiterLimit), typeof(double), 
 			typeof(global::Windows.UI.Xaml.Shapes.Shape), 
 			new FrameworkPropertyMetadata(default(double)));
 		#endif
@@ -154,7 +154,7 @@ namespace Windows.UI.Xaml.Shapes
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty StrokeStartLineCapProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"StrokeStartLineCap", typeof(global::Windows.UI.Xaml.Media.PenLineCap), 
+			nameof(StrokeStartLineCap), typeof(global::Windows.UI.Xaml.Media.PenLineCap), 
 			typeof(global::Windows.UI.Xaml.Shapes.Shape), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.PenLineCap)));
 		#endif

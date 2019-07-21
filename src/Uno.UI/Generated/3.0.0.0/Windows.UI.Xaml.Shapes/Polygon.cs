@@ -26,7 +26,7 @@ namespace Windows.UI.Xaml.Shapes
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty FillRuleProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"FillRule", typeof(global::Windows.UI.Xaml.Media.FillRule), 
+			nameof(FillRule), typeof(global::Windows.UI.Xaml.Media.FillRule), 
 			typeof(global::Windows.UI.Xaml.Shapes.Polygon), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.FillRule)));
 		#endif
