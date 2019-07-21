@@ -39,7 +39,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty DelayProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"Delay", typeof(int), 
+			nameof(Delay), typeof(int), 
 			typeof(global::Windows.UI.Xaml.Controls.Primitives.RepeatButton), 
 			new FrameworkPropertyMetadata(default(int)));
 		#endif
@@ -47,7 +47,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty IntervalProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"Interval", typeof(int), 
+			nameof(Interval), typeof(int), 
 			typeof(global::Windows.UI.Xaml.Controls.Primitives.RepeatButton), 
 			new FrameworkPropertyMetadata(default(int)));
 		#endif

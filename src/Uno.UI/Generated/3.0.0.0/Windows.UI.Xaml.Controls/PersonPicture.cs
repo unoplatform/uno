@@ -151,7 +151,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty BadgeGlyphProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"BadgeGlyph", typeof(string), 
+			nameof(BadgeGlyph), typeof(string), 
 			typeof(global::Windows.UI.Xaml.Controls.PersonPicture), 
 			new FrameworkPropertyMetadata(default(string)));
 		#endif
@@ -159,7 +159,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty BadgeImageSourceProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"BadgeImageSource", typeof(global::Windows.UI.Xaml.Media.ImageSource), 
+			nameof(BadgeImageSource), typeof(global::Windows.UI.Xaml.Media.ImageSource), 
 			typeof(global::Windows.UI.Xaml.Controls.PersonPicture), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.ImageSource)));
 		#endif
@@ -167,7 +167,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty BadgeNumberProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"BadgeNumber", typeof(int), 
+			nameof(BadgeNumber), typeof(int), 
 			typeof(global::Windows.UI.Xaml.Controls.PersonPicture), 
 			new FrameworkPropertyMetadata(default(int)));
 		#endif
@@ -175,7 +175,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty BadgeTextProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"BadgeText", typeof(string), 
+			nameof(BadgeText), typeof(string), 
 			typeof(global::Windows.UI.Xaml.Controls.PersonPicture), 
 			new FrameworkPropertyMetadata(default(string)));
 		#endif
@@ -183,7 +183,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty ContactProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"Contact", typeof(global::Windows.ApplicationModel.Contacts.Contact), 
+			nameof(Contact), typeof(global::Windows.ApplicationModel.Contacts.Contact), 
 			typeof(global::Windows.UI.Xaml.Controls.PersonPicture), 
 			new FrameworkPropertyMetadata(default(global::Windows.ApplicationModel.Contacts.Contact)));
 		#endif
@@ -191,7 +191,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty DisplayNameProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"DisplayName", typeof(string), 
+			nameof(DisplayName), typeof(string), 
 			typeof(global::Windows.UI.Xaml.Controls.PersonPicture), 
 			new FrameworkPropertyMetadata(default(string)));
 		#endif
@@ -199,7 +199,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty InitialsProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"Initials", typeof(string), 
+			nameof(Initials), typeof(string), 
 			typeof(global::Windows.UI.Xaml.Controls.PersonPicture), 
 			new FrameworkPropertyMetadata(default(string)));
 		#endif
@@ -207,7 +207,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty IsGroupProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"IsGroup", typeof(bool), 
+			nameof(IsGroup), typeof(bool), 
 			typeof(global::Windows.UI.Xaml.Controls.PersonPicture), 
 			new FrameworkPropertyMetadata(default(bool)));
 		#endif
@@ -215,7 +215,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty PreferSmallImageProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"PreferSmallImage", typeof(bool), 
+			nameof(PreferSmallImage), typeof(bool), 
 			typeof(global::Windows.UI.Xaml.Controls.PersonPicture), 
 			new FrameworkPropertyMetadata(default(bool)));
 		#endif
@@ -223,7 +223,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty ProfilePictureProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"ProfilePicture", typeof(global::Windows.UI.Xaml.Media.ImageSource), 
+			nameof(ProfilePicture), typeof(global::Windows.UI.Xaml.Media.ImageSource), 
 			typeof(global::Windows.UI.Xaml.Controls.PersonPicture), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.ImageSource)));
 		#endif

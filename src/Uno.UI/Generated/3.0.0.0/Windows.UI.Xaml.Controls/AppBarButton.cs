@@ -115,7 +115,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty IconProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"Icon", typeof(global::Windows.UI.Xaml.Controls.IconElement), 
+			nameof(Icon), typeof(global::Windows.UI.Xaml.Controls.IconElement), 
 			typeof(global::Windows.UI.Xaml.Controls.AppBarButton), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Controls.IconElement)));
 		#endif
@@ -123,7 +123,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty IsCompactProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"IsCompact", typeof(bool), 
+			nameof(IsCompact), typeof(bool), 
 			typeof(global::Windows.UI.Xaml.Controls.AppBarButton), 
 			new FrameworkPropertyMetadata(default(bool)));
 		#endif
@@ -131,7 +131,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty LabelProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"Label", typeof(string), 
+			nameof(Label), typeof(string), 
 			typeof(global::Windows.UI.Xaml.Controls.AppBarButton), 
 			new FrameworkPropertyMetadata(default(string)));
 		#endif
@@ -139,7 +139,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty DynamicOverflowOrderProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"DynamicOverflowOrder", typeof(int), 
+			nameof(DynamicOverflowOrder), typeof(int), 
 			typeof(global::Windows.UI.Xaml.Controls.AppBarButton), 
 			new FrameworkPropertyMetadata(default(int)));
 		#endif
@@ -147,7 +147,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty IsInOverflowProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"IsInOverflow", typeof(bool), 
+			nameof(IsInOverflow), typeof(bool), 
 			typeof(global::Windows.UI.Xaml.Controls.AppBarButton), 
 			new FrameworkPropertyMetadata(default(bool)));
 		#endif
@@ -155,7 +155,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty LabelPositionProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"LabelPosition", typeof(global::Windows.UI.Xaml.Controls.CommandBarLabelPosition), 
+			nameof(LabelPosition), typeof(global::Windows.UI.Xaml.Controls.CommandBarLabelPosition), 
 			typeof(global::Windows.UI.Xaml.Controls.AppBarButton), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Controls.CommandBarLabelPosition)));
 		#endif
@@ -163,7 +163,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty KeyboardAcceleratorTextOverrideProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"KeyboardAcceleratorTextOverride", typeof(string), 
+			nameof(KeyboardAcceleratorTextOverride), typeof(string), 
 			typeof(global::Windows.UI.Xaml.Controls.AppBarButton), 
 			new FrameworkPropertyMetadata(default(string)));
 		#endif

@@ -8,6 +8,8 @@ namespace Windows.UI.Xaml.Controls
 	public  partial class ColumnDefinition : global::Windows.UI.Xaml.DependencyObject
 	{
 		// Skipping already declared property Width
+		// Skipping already declared property MinWidth
+		// Skipping already declared property MaxWidth
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  double ActualWidth
@@ -18,6 +20,8 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 		#endif
+		// Skipping already declared property MaxWidthProperty
+		// Skipping already declared property MinWidthProperty
 		// Skipping already declared property WidthProperty
 		// Skipping already declared method Windows.UI.Xaml.Controls.ColumnDefinition.ColumnDefinition()
 		// Forced skipping of method Windows.UI.Xaml.Controls.ColumnDefinition.ColumnDefinition()

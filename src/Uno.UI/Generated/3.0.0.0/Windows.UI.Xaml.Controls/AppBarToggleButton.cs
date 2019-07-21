@@ -47,7 +47,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty KeyboardAcceleratorTextOverrideProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"KeyboardAcceleratorTextOverride", typeof(string), 
+			nameof(KeyboardAcceleratorTextOverride), typeof(string), 
 			typeof(global::Windows.UI.Xaml.Controls.AppBarToggleButton), 
 			new FrameworkPropertyMetadata(default(string)));
 		#endif

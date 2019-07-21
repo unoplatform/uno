@@ -164,7 +164,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty IsTextSearchEnabledProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"IsTextSearchEnabled", typeof(bool), 
+			nameof(IsTextSearchEnabled), typeof(bool), 
 			typeof(global::Windows.UI.Xaml.Controls.ComboBox), 
 			new FrameworkPropertyMetadata(default(bool)));
 		#endif
@@ -172,7 +172,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty LightDismissOverlayModeProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"LightDismissOverlayMode", typeof(global::Windows.UI.Xaml.Controls.LightDismissOverlayMode), 
+			nameof(LightDismissOverlayMode), typeof(global::Windows.UI.Xaml.Controls.LightDismissOverlayMode), 
 			typeof(global::Windows.UI.Xaml.Controls.ComboBox), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Controls.LightDismissOverlayMode)));
 		#endif
@@ -180,7 +180,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty SelectionChangedTriggerProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"SelectionChangedTrigger", typeof(global::Windows.UI.Xaml.Controls.ComboBoxSelectionChangedTrigger), 
+			nameof(SelectionChangedTrigger), typeof(global::Windows.UI.Xaml.Controls.ComboBoxSelectionChangedTrigger), 
 			typeof(global::Windows.UI.Xaml.Controls.ComboBox), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Controls.ComboBoxSelectionChangedTrigger)));
 		#endif
@@ -188,7 +188,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty PlaceholderForegroundProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"PlaceholderForeground", typeof(global::Windows.UI.Xaml.Media.Brush), 
+			nameof(PlaceholderForeground), typeof(global::Windows.UI.Xaml.Media.Brush), 
 			typeof(global::Windows.UI.Xaml.Controls.ComboBox), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.Brush)));
 		#endif
@@ -196,7 +196,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty DescriptionProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"Description", typeof(object), 
+			nameof(Description), typeof(object), 
 			typeof(global::Windows.UI.Xaml.Controls.ComboBox), 
 			new FrameworkPropertyMetadata(default(object)));
 		#endif
@@ -204,7 +204,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty IsEditableProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"IsEditable", typeof(bool), 
+			nameof(IsEditable), typeof(bool), 
 			typeof(global::Windows.UI.Xaml.Controls.ComboBox), 
 			new FrameworkPropertyMetadata(default(bool)));
 		#endif
@@ -212,7 +212,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty TextBoxStyleProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"TextBoxStyle", typeof(global::Windows.UI.Xaml.Style), 
+			nameof(TextBoxStyle), typeof(global::Windows.UI.Xaml.Style), 
 			typeof(global::Windows.UI.Xaml.Controls.ComboBox), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Style)));
 		#endif
@@ -220,7 +220,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty TextProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"Text", typeof(string), 
+			nameof(Text), typeof(string), 
 			typeof(global::Windows.UI.Xaml.Controls.ComboBox), 
 			new FrameworkPropertyMetadata(default(string)));
 		#endif

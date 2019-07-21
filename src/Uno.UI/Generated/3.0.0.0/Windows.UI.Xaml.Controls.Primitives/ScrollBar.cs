@@ -53,7 +53,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty IndicatorModeProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"IndicatorMode", typeof(global::Windows.UI.Xaml.Controls.Primitives.ScrollingIndicatorMode), 
+			nameof(IndicatorMode), typeof(global::Windows.UI.Xaml.Controls.Primitives.ScrollingIndicatorMode), 
 			typeof(global::Windows.UI.Xaml.Controls.Primitives.ScrollBar), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Controls.Primitives.ScrollingIndicatorMode)));
 		#endif
@@ -61,7 +61,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty OrientationProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"Orientation", typeof(global::Windows.UI.Xaml.Controls.Orientation), 
+			nameof(Orientation), typeof(global::Windows.UI.Xaml.Controls.Orientation), 
 			typeof(global::Windows.UI.Xaml.Controls.Primitives.ScrollBar), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Controls.Orientation)));
 		#endif
@@ -69,7 +69,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty ViewportSizeProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"ViewportSize", typeof(double), 
+			nameof(ViewportSize), typeof(double), 
 			typeof(global::Windows.UI.Xaml.Controls.Primitives.ScrollBar), 
 			new FrameworkPropertyMetadata(default(double)));
 		#endif

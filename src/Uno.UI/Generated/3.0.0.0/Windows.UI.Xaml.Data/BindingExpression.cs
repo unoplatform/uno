@@ -20,6 +20,6 @@ namespace Windows.UI.Xaml.Data
 		// Skipping already declared property ParentBinding
 		// Forced skipping of method Windows.UI.Xaml.Data.BindingExpression.DataItem.get
 		// Forced skipping of method Windows.UI.Xaml.Data.BindingExpression.ParentBinding.get
-		// Skipping already declared property UpdateSource()
+		// Skipping already declared method Windows.UI.Xaml.Data.BindingExpression.UpdateSource()
 	}
 }
