@@ -1157,7 +1157,15 @@ namespace Uno.UWPSyncGenerator
 
 								b.AppendLineInvariant($"Windows.UI.Xaml.DependencyProperty.Register{attachedModifier}(");
 
-								b.AppendLineInvariant($"\tnameof({propertyName}), typeof({propertyDisplayType}), ");
+								if (getAttached == null)
+								{
+									b.AppendLineInvariant($"\tnameof({propertyName}), typeof({propertyDisplayType}), ");
+								}
+								else
+								{
+									b.AppendLineInvariant($"\t\"{propertyName}\", typeof({propertyDisplayType}), ");
+								}
+
 								b.AppendLineInvariant($"\ttypeof({property.ContainingType.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat)}), ");
 								b.AppendLineInvariant($"\tnew FrameworkPropertyMetadata(default({propertyDisplayType})));");
 							}
