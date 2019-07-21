@@ -103,7 +103,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty HorizontalChildrenAlignmentProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"HorizontalChildrenAlignment", typeof(global::Windows.UI.Xaml.HorizontalAlignment), 
+			nameof(HorizontalChildrenAlignment), typeof(global::Windows.UI.Xaml.HorizontalAlignment), 
 			typeof(global::Windows.UI.Xaml.Controls.VariableSizedWrapGrid), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.HorizontalAlignment)));
 		#endif
@@ -111,7 +111,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty ItemHeightProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"ItemHeight", typeof(double), 
+			nameof(ItemHeight), typeof(double), 
 			typeof(global::Windows.UI.Xaml.Controls.VariableSizedWrapGrid), 
 			new FrameworkPropertyMetadata(default(double)));
 		#endif
@@ -119,7 +119,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty ItemWidthProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"ItemWidth", typeof(double), 
+			nameof(ItemWidth), typeof(double), 
 			typeof(global::Windows.UI.Xaml.Controls.VariableSizedWrapGrid), 
 			new FrameworkPropertyMetadata(default(double)));
 		#endif
@@ -127,7 +127,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty MaximumRowsOrColumnsProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"MaximumRowsOrColumns", typeof(int), 
+			nameof(MaximumRowsOrColumns), typeof(int), 
 			typeof(global::Windows.UI.Xaml.Controls.VariableSizedWrapGrid), 
 			new FrameworkPropertyMetadata(default(int)));
 		#endif
@@ -135,7 +135,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty OrientationProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"Orientation", typeof(global::Windows.UI.Xaml.Controls.Orientation), 
+			nameof(Orientation), typeof(global::Windows.UI.Xaml.Controls.Orientation), 
 			typeof(global::Windows.UI.Xaml.Controls.VariableSizedWrapGrid), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Controls.Orientation)));
 		#endif
@@ -151,7 +151,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty VerticalChildrenAlignmentProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"VerticalChildrenAlignment", typeof(global::Windows.UI.Xaml.VerticalAlignment), 
+			nameof(VerticalChildrenAlignment), typeof(global::Windows.UI.Xaml.VerticalAlignment), 
 			typeof(global::Windows.UI.Xaml.Controls.VariableSizedWrapGrid), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.VerticalAlignment)));
 		#endif

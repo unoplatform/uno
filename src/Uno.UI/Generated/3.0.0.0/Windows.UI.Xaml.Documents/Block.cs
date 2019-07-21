@@ -81,7 +81,7 @@ namespace Windows.UI.Xaml.Documents
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty LineHeightProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"LineHeight", typeof(double), 
+			nameof(LineHeight), typeof(double), 
 			typeof(global::Windows.UI.Xaml.Documents.Block), 
 			new FrameworkPropertyMetadata(default(double)));
 		#endif
@@ -89,7 +89,7 @@ namespace Windows.UI.Xaml.Documents
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty LineStackingStrategyProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"LineStackingStrategy", typeof(global::Windows.UI.Xaml.LineStackingStrategy), 
+			nameof(LineStackingStrategy), typeof(global::Windows.UI.Xaml.LineStackingStrategy), 
 			typeof(global::Windows.UI.Xaml.Documents.Block), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.LineStackingStrategy)));
 		#endif
@@ -97,7 +97,7 @@ namespace Windows.UI.Xaml.Documents
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty MarginProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"Margin", typeof(global::Windows.UI.Xaml.Thickness), 
+			nameof(Margin), typeof(global::Windows.UI.Xaml.Thickness), 
 			typeof(global::Windows.UI.Xaml.Documents.Block), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Thickness)));
 		#endif
@@ -105,7 +105,7 @@ namespace Windows.UI.Xaml.Documents
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty TextAlignmentProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"TextAlignment", typeof(global::Windows.UI.Xaml.TextAlignment), 
+			nameof(TextAlignment), typeof(global::Windows.UI.Xaml.TextAlignment), 
 			typeof(global::Windows.UI.Xaml.Documents.Block), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.TextAlignment)));
 		#endif
@@ -113,7 +113,7 @@ namespace Windows.UI.Xaml.Documents
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty HorizontalTextAlignmentProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"HorizontalTextAlignment", typeof(global::Windows.UI.Xaml.TextAlignment), 
+			nameof(HorizontalTextAlignment), typeof(global::Windows.UI.Xaml.TextAlignment), 
 			typeof(global::Windows.UI.Xaml.Documents.Block), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.TextAlignment)));
 		#endif

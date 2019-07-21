@@ -29,7 +29,7 @@ namespace Windows.UI.Xaml.Media
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty TransformProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"Transform", typeof(global::Windows.UI.Xaml.Media.Transform), 
+			nameof(Transform), typeof(global::Windows.UI.Xaml.Media.Transform), 
 			typeof(global::Windows.UI.Xaml.Media.Brush), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.Transform)));
 		#endif

@@ -133,7 +133,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty AllowedScriptNotifyUrisProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"AllowedScriptNotifyUris", typeof(global::System.Collections.Generic.IList<global::System.Uri>), 
+			nameof(AllowedScriptNotifyUris), typeof(global::System.Collections.Generic.IList<global::System.Uri>), 
 			typeof(global::Windows.UI.Xaml.Controls.WebView), 
 			new FrameworkPropertyMetadata(default(global::System.Collections.Generic.IList<global::System.Uri>)));
 		#endif
@@ -151,7 +151,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty DataTransferPackageProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"DataTransferPackage", typeof(global::Windows.ApplicationModel.DataTransfer.DataPackage), 
+			nameof(DataTransferPackage), typeof(global::Windows.ApplicationModel.DataTransfer.DataPackage), 
 			typeof(global::Windows.UI.Xaml.Controls.WebView), 
 			new FrameworkPropertyMetadata(default(global::Windows.ApplicationModel.DataTransfer.DataPackage)));
 		#endif
@@ -159,7 +159,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty SourceProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"Source", typeof(global::System.Uri), 
+			nameof(Source), typeof(global::System.Uri), 
 			typeof(global::Windows.UI.Xaml.Controls.WebView), 
 			new FrameworkPropertyMetadata(default(global::System.Uri)));
 		#endif
@@ -167,7 +167,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty CanGoBackProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"CanGoBack", typeof(bool), 
+			nameof(CanGoBack), typeof(bool), 
 			typeof(global::Windows.UI.Xaml.Controls.WebView), 
 			new FrameworkPropertyMetadata(default(bool)));
 		#endif
@@ -175,7 +175,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty CanGoForwardProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"CanGoForward", typeof(bool), 
+			nameof(CanGoForward), typeof(bool), 
 			typeof(global::Windows.UI.Xaml.Controls.WebView), 
 			new FrameworkPropertyMetadata(default(bool)));
 		#endif
@@ -183,7 +183,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty DefaultBackgroundColorProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"DefaultBackgroundColor", typeof(global::Windows.UI.Color), 
+			nameof(DefaultBackgroundColor), typeof(global::Windows.UI.Color), 
 			typeof(global::Windows.UI.Xaml.Controls.WebView), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Color)));
 		#endif
@@ -191,7 +191,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty DocumentTitleProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"DocumentTitle", typeof(string), 
+			nameof(DocumentTitle), typeof(string), 
 			typeof(global::Windows.UI.Xaml.Controls.WebView), 
 			new FrameworkPropertyMetadata(default(string)));
 		#endif
@@ -199,7 +199,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty ContainsFullScreenElementProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"ContainsFullScreenElement", typeof(bool), 
+			nameof(ContainsFullScreenElement), typeof(bool), 
 			typeof(global::Windows.UI.Xaml.Controls.WebView), 
 			new FrameworkPropertyMetadata(default(bool)));
 		#endif

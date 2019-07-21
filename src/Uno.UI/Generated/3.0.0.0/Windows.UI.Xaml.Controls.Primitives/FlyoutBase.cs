@@ -140,7 +140,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty AllowFocusOnInteractionProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"AllowFocusOnInteraction", typeof(bool), 
+			nameof(AllowFocusOnInteraction), typeof(bool), 
 			typeof(global::Windows.UI.Xaml.Controls.Primitives.FlyoutBase), 
 			new FrameworkPropertyMetadata(default(bool)));
 		#endif
@@ -148,7 +148,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty AllowFocusWhenDisabledProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"AllowFocusWhenDisabled", typeof(bool), 
+			nameof(AllowFocusWhenDisabled), typeof(bool), 
 			typeof(global::Windows.UI.Xaml.Controls.Primitives.FlyoutBase), 
 			new FrameworkPropertyMetadata(default(bool)));
 		#endif
@@ -156,7 +156,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty ElementSoundModeProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"ElementSoundMode", typeof(global::Windows.UI.Xaml.ElementSoundMode), 
+			nameof(ElementSoundMode), typeof(global::Windows.UI.Xaml.ElementSoundMode), 
 			typeof(global::Windows.UI.Xaml.Controls.Primitives.FlyoutBase), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.ElementSoundMode)));
 		#endif
@@ -164,7 +164,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty LightDismissOverlayModeProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"LightDismissOverlayMode", typeof(global::Windows.UI.Xaml.Controls.LightDismissOverlayMode), 
+			nameof(LightDismissOverlayMode), typeof(global::Windows.UI.Xaml.Controls.LightDismissOverlayMode), 
 			typeof(global::Windows.UI.Xaml.Controls.Primitives.FlyoutBase), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Controls.LightDismissOverlayMode)));
 		#endif
@@ -172,7 +172,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty OverlayInputPassThroughElementProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"OverlayInputPassThroughElement", typeof(global::Windows.UI.Xaml.DependencyObject), 
+			nameof(OverlayInputPassThroughElement), typeof(global::Windows.UI.Xaml.DependencyObject), 
 			typeof(global::Windows.UI.Xaml.Controls.Primitives.FlyoutBase), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.DependencyObject)));
 		#endif
@@ -180,7 +180,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty AreOpenCloseAnimationsEnabledProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"AreOpenCloseAnimationsEnabled", typeof(bool), 
+			nameof(AreOpenCloseAnimationsEnabled), typeof(bool), 
 			typeof(global::Windows.UI.Xaml.Controls.Primitives.FlyoutBase), 
 			new FrameworkPropertyMetadata(default(bool)));
 		#endif
@@ -188,7 +188,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty InputDevicePrefersPrimaryCommandsProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"InputDevicePrefersPrimaryCommands", typeof(bool), 
+			nameof(InputDevicePrefersPrimaryCommands), typeof(bool), 
 			typeof(global::Windows.UI.Xaml.Controls.Primitives.FlyoutBase), 
 			new FrameworkPropertyMetadata(default(bool)));
 		#endif
@@ -196,7 +196,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty IsOpenProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"IsOpen", typeof(bool), 
+			nameof(IsOpen), typeof(bool), 
 			typeof(global::Windows.UI.Xaml.Controls.Primitives.FlyoutBase), 
 			new FrameworkPropertyMetadata(default(bool)));
 		#endif
@@ -204,7 +204,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty ShowModeProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"ShowMode", typeof(global::Windows.UI.Xaml.Controls.Primitives.FlyoutShowMode), 
+			nameof(ShowMode), typeof(global::Windows.UI.Xaml.Controls.Primitives.FlyoutShowMode), 
 			typeof(global::Windows.UI.Xaml.Controls.Primitives.FlyoutBase), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Controls.Primitives.FlyoutShowMode)));
 		#endif
@@ -212,7 +212,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty TargetProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"Target", typeof(global::Windows.UI.Xaml.FrameworkElement), 
+			nameof(Target), typeof(global::Windows.UI.Xaml.FrameworkElement), 
 			typeof(global::Windows.UI.Xaml.Controls.Primitives.FlyoutBase), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.FrameworkElement)));
 		#endif
@@ -281,27 +281,9 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		// Forced skipping of method Windows.UI.Xaml.Controls.Primitives.FlyoutBase.ElementSoundModeProperty.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.Primitives.FlyoutBase.PlacementProperty.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.Primitives.FlyoutBase.AttachedFlyoutProperty.get
-		#if false || false || false || false || false
-		[global::Uno.NotImplemented]
-		public static global::Windows.UI.Xaml.Controls.Primitives.FlyoutBase GetAttachedFlyout( global::Windows.UI.Xaml.FrameworkElement element)
-		{
-			return (global::Windows.UI.Xaml.Controls.Primitives.FlyoutBase)element.GetValue(AttachedFlyoutProperty);
-		}
-		#endif
-		#if false || false || false || false || false
-		[global::Uno.NotImplemented]
-		public static void SetAttachedFlyout( global::Windows.UI.Xaml.FrameworkElement element,  global::Windows.UI.Xaml.Controls.Primitives.FlyoutBase value)
-		{
-			element.SetValue(AttachedFlyoutProperty, value);
-		}
-#endif
-#if false || false || false || false || false
-		[global::Uno.NotImplemented]
-		public static void ShowAttachedFlyout( global::Windows.UI.Xaml.FrameworkElement flyoutOwner)
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.Primitives.FlyoutBase", "void FlyoutBase.ShowAttachedFlyout(FrameworkElement flyoutOwner)");
-		}
-#endif
+		// Skipping already declared method Windows.UI.Xaml.Controls.Primitives.FlyoutBase.GetAttachedFlyout(Windows.UI.Xaml.FrameworkElement)
+		// Skipping already declared method Windows.UI.Xaml.Controls.Primitives.FlyoutBase.SetAttachedFlyout(Windows.UI.Xaml.FrameworkElement, Windows.UI.Xaml.Controls.Primitives.FlyoutBase)
+		// Skipping already declared method Windows.UI.Xaml.Controls.Primitives.FlyoutBase.ShowAttachedFlyout(Windows.UI.Xaml.FrameworkElement)
 		// Skipping already declared event Windows.UI.Xaml.Controls.Primitives.FlyoutBase.Closed
 		// Skipping already declared event Windows.UI.Xaml.Controls.Primitives.FlyoutBase.Opened
 		// Skipping already declared event Windows.UI.Xaml.Controls.Primitives.FlyoutBase.Opening

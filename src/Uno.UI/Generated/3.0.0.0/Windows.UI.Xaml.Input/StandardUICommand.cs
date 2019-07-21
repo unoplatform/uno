@@ -21,7 +21,7 @@ namespace Windows.UI.Xaml.Input
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty KindProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"Kind", typeof(global::Windows.UI.Xaml.Input.StandardUICommandKind), 
+			nameof(Kind), typeof(global::Windows.UI.Xaml.Input.StandardUICommandKind), 
 			typeof(global::Windows.UI.Xaml.Input.StandardUICommand), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Input.StandardUICommandKind)));
 		#endif

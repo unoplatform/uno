@@ -91,7 +91,7 @@ namespace Windows.UI.Xaml.Input
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty AccessKeyProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"AccessKey", typeof(string), 
+			nameof(AccessKey), typeof(string), 
 			typeof(global::Windows.UI.Xaml.Input.XamlUICommand), 
 			new FrameworkPropertyMetadata(default(string)));
 		#endif
@@ -99,7 +99,7 @@ namespace Windows.UI.Xaml.Input
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty CommandProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"Command", typeof(global::System.Windows.Input.ICommand), 
+			nameof(Command), typeof(global::System.Windows.Input.ICommand), 
 			typeof(global::Windows.UI.Xaml.Input.XamlUICommand), 
 			new FrameworkPropertyMetadata(default(global::System.Windows.Input.ICommand)));
 		#endif
@@ -107,7 +107,7 @@ namespace Windows.UI.Xaml.Input
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty DescriptionProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"Description", typeof(string), 
+			nameof(Description), typeof(string), 
 			typeof(global::Windows.UI.Xaml.Input.XamlUICommand), 
 			new FrameworkPropertyMetadata(default(string)));
 		#endif
@@ -115,7 +115,7 @@ namespace Windows.UI.Xaml.Input
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty IconSourceProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"IconSource", typeof(global::Windows.UI.Xaml.Controls.IconSource), 
+			nameof(IconSource), typeof(global::Windows.UI.Xaml.Controls.IconSource), 
 			typeof(global::Windows.UI.Xaml.Input.XamlUICommand), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Controls.IconSource)));
 		#endif
@@ -123,7 +123,7 @@ namespace Windows.UI.Xaml.Input
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty KeyboardAcceleratorsProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"KeyboardAccelerators", typeof(global::System.Collections.Generic.IList<global::Windows.UI.Xaml.Input.KeyboardAccelerator>), 
+			nameof(KeyboardAccelerators), typeof(global::System.Collections.Generic.IList<global::Windows.UI.Xaml.Input.KeyboardAccelerator>), 
 			typeof(global::Windows.UI.Xaml.Input.XamlUICommand), 
 			new FrameworkPropertyMetadata(default(global::System.Collections.Generic.IList<global::Windows.UI.Xaml.Input.KeyboardAccelerator>)));
 		#endif
@@ -131,7 +131,7 @@ namespace Windows.UI.Xaml.Input
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty LabelProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"Label", typeof(string), 
+			nameof(Label), typeof(string), 
 			typeof(global::Windows.UI.Xaml.Input.XamlUICommand), 
 			new FrameworkPropertyMetadata(default(string)));
 		#endif

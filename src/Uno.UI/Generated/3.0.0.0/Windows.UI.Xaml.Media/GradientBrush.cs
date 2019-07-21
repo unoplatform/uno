@@ -67,7 +67,7 @@ namespace Windows.UI.Xaml.Media
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty ColorInterpolationModeProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"ColorInterpolationMode", typeof(global::Windows.UI.Xaml.Media.ColorInterpolationMode), 
+			nameof(ColorInterpolationMode), typeof(global::Windows.UI.Xaml.Media.ColorInterpolationMode), 
 			typeof(global::Windows.UI.Xaml.Media.GradientBrush), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.ColorInterpolationMode)));
 		#endif
@@ -75,7 +75,7 @@ namespace Windows.UI.Xaml.Media
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty GradientStopsProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"GradientStops", typeof(global::Windows.UI.Xaml.Media.GradientStopCollection), 
+			nameof(GradientStops), typeof(global::Windows.UI.Xaml.Media.GradientStopCollection), 
 			typeof(global::Windows.UI.Xaml.Media.GradientBrush), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.GradientStopCollection)));
 		#endif
@@ -83,7 +83,7 @@ namespace Windows.UI.Xaml.Media
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty MappingModeProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"MappingMode", typeof(global::Windows.UI.Xaml.Media.BrushMappingMode), 
+			nameof(MappingMode), typeof(global::Windows.UI.Xaml.Media.BrushMappingMode), 
 			typeof(global::Windows.UI.Xaml.Media.GradientBrush), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.BrushMappingMode)));
 		#endif
@@ -91,7 +91,7 @@ namespace Windows.UI.Xaml.Media
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty SpreadMethodProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"SpreadMethod", typeof(global::Windows.UI.Xaml.Media.GradientSpreadMethod), 
+			nameof(SpreadMethod), typeof(global::Windows.UI.Xaml.Media.GradientSpreadMethod), 
 			typeof(global::Windows.UI.Xaml.Media.GradientBrush), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.GradientSpreadMethod)));
 		#endif

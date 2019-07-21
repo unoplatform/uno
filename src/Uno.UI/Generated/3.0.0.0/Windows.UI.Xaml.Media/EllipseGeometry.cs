@@ -53,7 +53,7 @@ namespace Windows.UI.Xaml.Media
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty CenterProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"Center", typeof(global::Windows.Foundation.Point), 
+			nameof(Center), typeof(global::Windows.Foundation.Point), 
 			typeof(global::Windows.UI.Xaml.Media.EllipseGeometry), 
 			new FrameworkPropertyMetadata(default(global::Windows.Foundation.Point)));
 		#endif
@@ -61,7 +61,7 @@ namespace Windows.UI.Xaml.Media
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty RadiusXProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"RadiusX", typeof(double), 
+			nameof(RadiusX), typeof(double), 
 			typeof(global::Windows.UI.Xaml.Media.EllipseGeometry), 
 			new FrameworkPropertyMetadata(default(double)));
 		#endif
@@ -69,7 +69,7 @@ namespace Windows.UI.Xaml.Media
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty RadiusYProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"RadiusY", typeof(double), 
+			nameof(RadiusY), typeof(double), 
 			typeof(global::Windows.UI.Xaml.Media.EllipseGeometry), 
 			new FrameworkPropertyMetadata(default(double)));
 		#endif

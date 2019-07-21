@@ -39,7 +39,7 @@ namespace Windows.UI.Xaml.Media.Animation
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty OscillationsProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"Oscillations", typeof(int), 
+			nameof(Oscillations), typeof(int), 
 			typeof(global::Windows.UI.Xaml.Media.Animation.ElasticEase), 
 			new FrameworkPropertyMetadata(default(int)));
 		#endif
@@ -47,7 +47,7 @@ namespace Windows.UI.Xaml.Media.Animation
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty SpringinessProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"Springiness", typeof(double), 
+			nameof(Springiness), typeof(double), 
 			typeof(global::Windows.UI.Xaml.Media.Animation.ElasticEase), 
 			new FrameworkPropertyMetadata(default(double)));
 		#endif

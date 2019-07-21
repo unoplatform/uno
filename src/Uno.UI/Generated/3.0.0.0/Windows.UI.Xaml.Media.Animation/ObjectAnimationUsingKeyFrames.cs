@@ -26,7 +26,7 @@ namespace Windows.UI.Xaml.Media.Animation
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty EnableDependentAnimationProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"EnableDependentAnimation", typeof(bool), 
+			nameof(EnableDependentAnimation), typeof(bool), 
 			typeof(global::Windows.UI.Xaml.Media.Animation.ObjectAnimationUsingKeyFrames), 
 			new FrameworkPropertyMetadata(default(bool)));
 		#endif

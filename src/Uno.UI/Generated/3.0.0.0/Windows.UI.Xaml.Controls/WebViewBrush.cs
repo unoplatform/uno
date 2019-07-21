@@ -25,7 +25,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty SourceNameProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"SourceName", typeof(string), 
+			nameof(SourceName), typeof(string), 
 			typeof(global::Windows.UI.Xaml.Controls.WebViewBrush), 
 			new FrameworkPropertyMetadata(default(string)));
 		#endif

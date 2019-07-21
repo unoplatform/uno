@@ -81,7 +81,7 @@ namespace Windows.UI.Xaml.Media.Animation
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty ByProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"By", typeof(global::Windows.Foundation.Point?), 
+			nameof(By), typeof(global::Windows.Foundation.Point?), 
 			typeof(global::Windows.UI.Xaml.Media.Animation.PointAnimation), 
 			new FrameworkPropertyMetadata(default(global::Windows.Foundation.Point?)));
 		#endif
@@ -89,7 +89,7 @@ namespace Windows.UI.Xaml.Media.Animation
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty EasingFunctionProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"EasingFunction", typeof(global::Windows.UI.Xaml.Media.Animation.EasingFunctionBase), 
+			nameof(EasingFunction), typeof(global::Windows.UI.Xaml.Media.Animation.EasingFunctionBase), 
 			typeof(global::Windows.UI.Xaml.Media.Animation.PointAnimation), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.Animation.EasingFunctionBase)));
 		#endif
@@ -97,7 +97,7 @@ namespace Windows.UI.Xaml.Media.Animation
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty EnableDependentAnimationProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"EnableDependentAnimation", typeof(bool), 
+			nameof(EnableDependentAnimation), typeof(bool), 
 			typeof(global::Windows.UI.Xaml.Media.Animation.PointAnimation), 
 			new FrameworkPropertyMetadata(default(bool)));
 		#endif
@@ -105,7 +105,7 @@ namespace Windows.UI.Xaml.Media.Animation
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty FromProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"From", typeof(global::Windows.Foundation.Point?), 
+			nameof(From), typeof(global::Windows.Foundation.Point?), 
 			typeof(global::Windows.UI.Xaml.Media.Animation.PointAnimation), 
 			new FrameworkPropertyMetadata(default(global::Windows.Foundation.Point?)));
 		#endif
@@ -113,7 +113,7 @@ namespace Windows.UI.Xaml.Media.Animation
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty ToProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"To", typeof(global::Windows.Foundation.Point?), 
+			nameof(To), typeof(global::Windows.Foundation.Point?), 
 			typeof(global::Windows.UI.Xaml.Media.Animation.PointAnimation), 
 			new FrameworkPropertyMetadata(default(global::Windows.Foundation.Point?)));
 		#endif

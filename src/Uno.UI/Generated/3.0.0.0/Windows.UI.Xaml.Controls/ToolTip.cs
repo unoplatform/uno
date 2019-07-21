@@ -105,7 +105,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty HorizontalOffsetProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"HorizontalOffset", typeof(double), 
+			nameof(HorizontalOffset), typeof(double), 
 			typeof(global::Windows.UI.Xaml.Controls.ToolTip), 
 			new FrameworkPropertyMetadata(default(double)));
 		#endif
@@ -113,7 +113,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty IsOpenProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"IsOpen", typeof(bool), 
+			nameof(IsOpen), typeof(bool), 
 			typeof(global::Windows.UI.Xaml.Controls.ToolTip), 
 			new FrameworkPropertyMetadata(default(bool)));
 		#endif
@@ -121,7 +121,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty PlacementProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"Placement", typeof(global::Windows.UI.Xaml.Controls.Primitives.PlacementMode), 
+			nameof(Placement), typeof(global::Windows.UI.Xaml.Controls.Primitives.PlacementMode), 
 			typeof(global::Windows.UI.Xaml.Controls.ToolTip), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Controls.Primitives.PlacementMode)));
 		#endif
@@ -129,7 +129,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty PlacementTargetProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"PlacementTarget", typeof(global::Windows.UI.Xaml.UIElement), 
+			nameof(PlacementTarget), typeof(global::Windows.UI.Xaml.UIElement), 
 			typeof(global::Windows.UI.Xaml.Controls.ToolTip), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.UIElement)));
 		#endif
@@ -137,7 +137,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty VerticalOffsetProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"VerticalOffset", typeof(double), 
+			nameof(VerticalOffset), typeof(double), 
 			typeof(global::Windows.UI.Xaml.Controls.ToolTip), 
 			new FrameworkPropertyMetadata(default(double)));
 		#endif
@@ -145,7 +145,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty PlacementRectProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"PlacementRect", typeof(global::Windows.Foundation.Rect?), 
+			nameof(PlacementRect), typeof(global::Windows.Foundation.Rect?), 
 			typeof(global::Windows.UI.Xaml.Controls.ToolTip), 
 			new FrameworkPropertyMetadata(default(global::Windows.Foundation.Rect?)));
 		#endif
