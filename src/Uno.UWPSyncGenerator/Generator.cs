@@ -1163,6 +1163,7 @@ namespace Uno.UWPSyncGenerator
 								}
 								else
 								{
+									//attached properties do not have a corresponding property
 									b.AppendLineInvariant($"\t\"{propertyName}\", typeof({propertyDisplayType}), ");
 								}
 
