@@ -228,6 +228,17 @@ namespace Uno.UI.Samples.Tests.Windows_Storage
 		}
 
 		[TestMethod]
+		public void When_IndexerClearsSettingWithNull()
+		{
+			var SUT = ApplicationData.Current.LocalSettings;
+			var key = "test";
+			var value = "something";
+			SUT.Values.Add(key, value);
+			SUT.Values[key] = null;
+			Assert.IsFalse(SUT.Values.ContainsKey(key));
+		}
+
+		[TestMethod]
 		public void When_AddNullTriesToClearSetting()
 		{
 			var SUT = ApplicationData.Current.LocalSettings;
