@@ -144,14 +144,21 @@ namespace Windows.UI.Xaml.Input
 
 		private static ulong ToTimeStamp(long uptimeMillis)
 		{
-			// We cannot cache the "bootTime" as the "uptimeMillis" is frozen while in deep sleep
-			// (cf. https://developer.android.com/reference/android/os/SystemClock)
+			if (FeatureConfiguration.PointerRoutedPointerEventArgs.AllowRelativeTimeStamp)
+			{
+				return (ulong)(TimeSpan.TicksPerMillisecond * uptimeMillis);
+			}
+			else
+			{
+				// We cannot cache the "bootTime" as the "uptimeMillis" is frozen while in deep sleep
+				// (cf. https://developer.android.com/reference/android/os/SystemClock)
 
-			var sleepTime = Android.OS.SystemClock.ElapsedRealtime() - Android.OS.SystemClock.UptimeMillis();
-			var realUptime = (ulong)(uptimeMillis + sleepTime);
-			var timestamp = _unixEpochMs + realUptime;
+				var sleepTime = Android.OS.SystemClock.ElapsedRealtime() - Android.OS.SystemClock.UptimeMillis();
+				var realUptime = (ulong)(uptimeMillis + sleepTime);
+				var timestamp = TimeSpan.TicksPerMillisecond * (_unixEpochMs + realUptime);
 
-			return timestamp;
+				return timestamp;
+			}
 		}
 		#endregion
 	}

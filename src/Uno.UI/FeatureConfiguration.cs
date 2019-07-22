@@ -231,6 +231,23 @@ namespace Uno.UI
 			public static bool ForceJavascriptInterop { get; set; } = false;
 		}
 #endif
+
+		public static class PointerRoutedPointerEventArgs
+		{
+#if __ANDROID__
+			/// <summary>
+			/// Defines if the PointerPoint.Timestamp retrieved from PointerRoutedPointerEventArgs.GetCurrentPoint(relativeTo)
+			/// or PointerRoutedPointerEventArgs.GetIntermediatePoints(relativeTo) can be relative using the Android's
+			/// "SystemClock.uptimeMillis()" or if they must be converted into an absolute scale
+			/// (using the "elapsedRealtime()", cf. https://developer.android.com/reference/android/os/SystemClock).
+			/// Disabling it negatively impacts the performance it requires to compute the "sleep time"
+			/// (i.e. [real elapsed time] - [up time]) for each event (as the up time is paused when device is in deep sleep).
+			/// By default this is `true`.
+			/// </summary>
+			public static bool AllowRelativeTimeStamp { get; set; } = true;
+#endif
+		}
+
 		public static class ToolTip
 		{
 			public static bool UseToolTips { get; set; }
