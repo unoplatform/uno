@@ -178,26 +178,8 @@ namespace Windows.UI.Xaml
 			}
 		}
 		#endif
-		#if false || false || false || false || false
-		[global::Uno.NotImplemented]
-		public  double ActualHeight
-		{
-			get
-			{
-				return (double)this.GetValue(ActualHeightProperty);
-			}
-		}
-		#endif
-		#if false || false || false || false || false
-		[global::Uno.NotImplemented]
-		public  double ActualWidth
-		{
-			get
-			{
-				return (double)this.GetValue(ActualWidthProperty);
-			}
-		}
-		#endif
+		// Skipping already declared property ActualHeight
+		// Skipping already declared property ActualWidth
 		#if false || false || NET461 || false || false
 		[global::Uno.NotImplemented]
 		public  global::System.Uri BaseUri
@@ -346,7 +328,7 @@ namespace Windows.UI.Xaml
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty ActualHeightProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"ActualHeight", typeof(double), 
+			nameof(ActualHeight), typeof(double), 
 			typeof(global::Windows.UI.Xaml.FrameworkElement), 
 			new FrameworkPropertyMetadata(default(double)));
 		#endif
@@ -354,7 +336,7 @@ namespace Windows.UI.Xaml
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty ActualWidthProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"ActualWidth", typeof(double), 
+			nameof(ActualWidth), typeof(double), 
 			typeof(global::Windows.UI.Xaml.FrameworkElement), 
 			new FrameworkPropertyMetadata(default(double)));
 		#endif
@@ -362,7 +344,7 @@ namespace Windows.UI.Xaml
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty FlowDirectionProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"FlowDirection", typeof(global::Windows.UI.Xaml.FlowDirection), 
+			nameof(FlowDirection), typeof(global::Windows.UI.Xaml.FlowDirection), 
 			typeof(global::Windows.UI.Xaml.FrameworkElement), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.FlowDirection)));
 		#endif
@@ -370,7 +352,7 @@ namespace Windows.UI.Xaml
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty HeightProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"Height", typeof(double), 
+			nameof(Height), typeof(double), 
 			typeof(global::Windows.UI.Xaml.FrameworkElement), 
 			new FrameworkPropertyMetadata(default(double)));
 		#endif
@@ -378,7 +360,7 @@ namespace Windows.UI.Xaml
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty HorizontalAlignmentProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"HorizontalAlignment", typeof(global::Windows.UI.Xaml.HorizontalAlignment), 
+			nameof(HorizontalAlignment), typeof(global::Windows.UI.Xaml.HorizontalAlignment), 
 			typeof(global::Windows.UI.Xaml.FrameworkElement), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.HorizontalAlignment)));
 		#endif
@@ -386,7 +368,7 @@ namespace Windows.UI.Xaml
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty LanguageProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"Language", typeof(string), 
+			nameof(Language), typeof(string), 
 			typeof(global::Windows.UI.Xaml.FrameworkElement), 
 			new FrameworkPropertyMetadata(default(string)));
 		#endif
@@ -394,7 +376,7 @@ namespace Windows.UI.Xaml
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty MarginProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"Margin", typeof(global::Windows.UI.Xaml.Thickness), 
+			nameof(Margin), typeof(global::Windows.UI.Xaml.Thickness), 
 			typeof(global::Windows.UI.Xaml.FrameworkElement), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Thickness)));
 		#endif
@@ -402,7 +384,7 @@ namespace Windows.UI.Xaml
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty MaxHeightProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"MaxHeight", typeof(double), 
+			nameof(MaxHeight), typeof(double), 
 			typeof(global::Windows.UI.Xaml.FrameworkElement), 
 			new FrameworkPropertyMetadata(default(double)));
 		#endif
@@ -410,7 +392,7 @@ namespace Windows.UI.Xaml
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty MaxWidthProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"MaxWidth", typeof(double), 
+			nameof(MaxWidth), typeof(double), 
 			typeof(global::Windows.UI.Xaml.FrameworkElement), 
 			new FrameworkPropertyMetadata(default(double)));
 		#endif
@@ -418,7 +400,7 @@ namespace Windows.UI.Xaml
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty MinHeightProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"MinHeight", typeof(double), 
+			nameof(MinHeight), typeof(double), 
 			typeof(global::Windows.UI.Xaml.FrameworkElement), 
 			new FrameworkPropertyMetadata(default(double)));
 		#endif
@@ -426,7 +408,7 @@ namespace Windows.UI.Xaml
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty MinWidthProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"MinWidth", typeof(double), 
+			nameof(MinWidth), typeof(double), 
 			typeof(global::Windows.UI.Xaml.FrameworkElement), 
 			new FrameworkPropertyMetadata(default(double)));
 		#endif
@@ -434,7 +416,7 @@ namespace Windows.UI.Xaml
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty NameProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"Name", typeof(string), 
+			nameof(Name), typeof(string), 
 			typeof(global::Windows.UI.Xaml.FrameworkElement), 
 			new FrameworkPropertyMetadata(default(string)));
 		#endif
@@ -443,7 +425,7 @@ namespace Windows.UI.Xaml
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty TagProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"Tag", typeof(object), 
+			nameof(Tag), typeof(object), 
 			typeof(global::Windows.UI.Xaml.FrameworkElement), 
 			new FrameworkPropertyMetadata(default(object)));
 		#endif
@@ -451,7 +433,7 @@ namespace Windows.UI.Xaml
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty VerticalAlignmentProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"VerticalAlignment", typeof(global::Windows.UI.Xaml.VerticalAlignment), 
+			nameof(VerticalAlignment), typeof(global::Windows.UI.Xaml.VerticalAlignment), 
 			typeof(global::Windows.UI.Xaml.FrameworkElement), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.VerticalAlignment)));
 		#endif
@@ -459,7 +441,7 @@ namespace Windows.UI.Xaml
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty WidthProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"Width", typeof(double), 
+			nameof(Width), typeof(double), 
 			typeof(global::Windows.UI.Xaml.FrameworkElement), 
 			new FrameworkPropertyMetadata(default(double)));
 		#endif
@@ -467,7 +449,7 @@ namespace Windows.UI.Xaml
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty RequestedThemeProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"RequestedTheme", typeof(global::Windows.UI.Xaml.ElementTheme), 
+			nameof(RequestedTheme), typeof(global::Windows.UI.Xaml.ElementTheme), 
 			typeof(global::Windows.UI.Xaml.FrameworkElement), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.ElementTheme)));
 		#endif
@@ -475,7 +457,7 @@ namespace Windows.UI.Xaml
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty AllowFocusOnInteractionProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"AllowFocusOnInteraction", typeof(bool), 
+			nameof(AllowFocusOnInteraction), typeof(bool), 
 			typeof(global::Windows.UI.Xaml.FrameworkElement), 
 			new FrameworkPropertyMetadata(default(bool)));
 		#endif
@@ -483,7 +465,7 @@ namespace Windows.UI.Xaml
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty AllowFocusWhenDisabledProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"AllowFocusWhenDisabled", typeof(bool), 
+			nameof(AllowFocusWhenDisabled), typeof(bool), 
 			typeof(global::Windows.UI.Xaml.FrameworkElement), 
 			new FrameworkPropertyMetadata(default(bool)));
 		#endif
@@ -491,7 +473,7 @@ namespace Windows.UI.Xaml
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty FocusVisualMarginProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"FocusVisualMargin", typeof(global::Windows.UI.Xaml.Thickness), 
+			nameof(FocusVisualMargin), typeof(global::Windows.UI.Xaml.Thickness), 
 			typeof(global::Windows.UI.Xaml.FrameworkElement), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Thickness)));
 		#endif
@@ -499,7 +481,7 @@ namespace Windows.UI.Xaml
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty FocusVisualPrimaryBrushProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"FocusVisualPrimaryBrush", typeof(global::Windows.UI.Xaml.Media.Brush), 
+			nameof(FocusVisualPrimaryBrush), typeof(global::Windows.UI.Xaml.Media.Brush), 
 			typeof(global::Windows.UI.Xaml.FrameworkElement), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.Brush)));
 		#endif
@@ -507,7 +489,7 @@ namespace Windows.UI.Xaml
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty FocusVisualPrimaryThicknessProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"FocusVisualPrimaryThickness", typeof(global::Windows.UI.Xaml.Thickness), 
+			nameof(FocusVisualPrimaryThickness), typeof(global::Windows.UI.Xaml.Thickness), 
 			typeof(global::Windows.UI.Xaml.FrameworkElement), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Thickness)));
 		#endif
@@ -515,7 +497,7 @@ namespace Windows.UI.Xaml
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty FocusVisualSecondaryBrushProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"FocusVisualSecondaryBrush", typeof(global::Windows.UI.Xaml.Media.Brush), 
+			nameof(FocusVisualSecondaryBrush), typeof(global::Windows.UI.Xaml.Media.Brush), 
 			typeof(global::Windows.UI.Xaml.FrameworkElement), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.Brush)));
 		#endif
@@ -523,7 +505,7 @@ namespace Windows.UI.Xaml
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty FocusVisualSecondaryThicknessProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"FocusVisualSecondaryThickness", typeof(global::Windows.UI.Xaml.Thickness), 
+			nameof(FocusVisualSecondaryThickness), typeof(global::Windows.UI.Xaml.Thickness), 
 			typeof(global::Windows.UI.Xaml.FrameworkElement), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Thickness)));
 		#endif
@@ -531,7 +513,7 @@ namespace Windows.UI.Xaml
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty ActualThemeProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"ActualTheme", typeof(global::Windows.UI.Xaml.ElementTheme), 
+			nameof(ActualTheme), typeof(global::Windows.UI.Xaml.ElementTheme), 
 			typeof(global::Windows.UI.Xaml.FrameworkElement), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.ElementTheme)));
 		#endif
@@ -583,12 +565,24 @@ namespace Windows.UI.Xaml
 		// Forced skipping of method Windows.UI.Xaml.FrameworkElement.LayoutUpdated.add
 		// Forced skipping of method Windows.UI.Xaml.FrameworkElement.LayoutUpdated.remove
 		// Skipping already declared method Windows.UI.Xaml.FrameworkElement.FindName(string)
-		// Skipping already declared method Windows.UI.Xaml.FrameworkElement.SetBinding(Windows.UI.Xaml.DependencyProperty, Windows.UI.Xaml.Data.BindingBase)
+		#if false || false || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  void SetBinding( global::Windows.UI.Xaml.DependencyProperty dp,  global::Windows.UI.Xaml.Data.BindingBase binding)
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.FrameworkElement", "void FrameworkElement.SetBinding(DependencyProperty dp, BindingBase binding)");
+		}
+		#endif
 		// Forced skipping of method Windows.UI.Xaml.FrameworkElement.RequestedTheme.get
 		// Forced skipping of method Windows.UI.Xaml.FrameworkElement.RequestedTheme.set
 		// Forced skipping of method Windows.UI.Xaml.FrameworkElement.DataContextChanged.add
 		// Forced skipping of method Windows.UI.Xaml.FrameworkElement.DataContextChanged.remove
-		// Skipping already declared method Windows.UI.Xaml.FrameworkElement.GetBindingExpression(Windows.UI.Xaml.DependencyProperty)
+		#if false || false || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  global::Windows.UI.Xaml.Data.BindingExpression GetBindingExpression( global::Windows.UI.Xaml.DependencyProperty dp)
+		{
+			throw new global::System.NotImplementedException("The member BindingExpression FrameworkElement.GetBindingExpression(DependencyProperty dp) is not implemented in Uno.");
+		}
+		#endif
 		// Forced skipping of method Windows.UI.Xaml.FrameworkElement.Loading.add
 		// Forced skipping of method Windows.UI.Xaml.FrameworkElement.Loading.remove
 		// Forced skipping of method Windows.UI.Xaml.FrameworkElement.AllowFocusOnInteraction.get
@@ -621,6 +615,7 @@ namespace Windows.UI.Xaml
 		// Skipping already declared method Windows.UI.Xaml.FrameworkElement.MeasureOverride(Windows.Foundation.Size)
 		// Skipping already declared method Windows.UI.Xaml.FrameworkElement.ArrangeOverride(Windows.Foundation.Size)
 		// Skipping already declared method Windows.UI.Xaml.FrameworkElement.OnApplyTemplate()
+		// Skipping already declared method Windows.UI.Xaml.FrameworkElement.GoToElementStateCore(string, bool)
 		// Forced skipping of method Windows.UI.Xaml.FrameworkElement.ActualThemeProperty.get
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
@@ -654,38 +649,8 @@ namespace Windows.UI.Xaml
 		// Forced skipping of method Windows.UI.Xaml.FrameworkElement.DataContextProperty.get
 		// Forced skipping of method Windows.UI.Xaml.FrameworkElement.StyleProperty.get
 		// Forced skipping of method Windows.UI.Xaml.FrameworkElement.FlowDirectionProperty.get
-		#if false || false || false || false || false
-		[global::Uno.NotImplemented]
-		public  event global::System.EventHandler<object> LayoutUpdated
-		{
-			[global::Uno.NotImplemented]
-			add
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.FrameworkElement", "event EventHandler<object> FrameworkElement.LayoutUpdated");
-			}
-			[global::Uno.NotImplemented]
-			remove
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.FrameworkElement", "event EventHandler<object> FrameworkElement.LayoutUpdated");
-			}
-		}
-		#endif
-		#if false || false || false || false || false
-		[global::Uno.NotImplemented]
-		public  event global::Windows.UI.Xaml.RoutedEventHandler Loaded
-		{
-			[global::Uno.NotImplemented]
-			add
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.FrameworkElement", "event RoutedEventHandler FrameworkElement.Loaded");
-			}
-			[global::Uno.NotImplemented]
-			remove
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.FrameworkElement", "event RoutedEventHandler FrameworkElement.Loaded");
-			}
-		}
-		#endif
+		// Skipping already declared event Windows.UI.Xaml.FrameworkElement.LayoutUpdated
+		// Skipping already declared event Windows.UI.Xaml.FrameworkElement.Loaded
 		#if false || false || NET461 || false || false
 		[global::Uno.NotImplemented]
 		public  event global::Windows.UI.Xaml.SizeChangedEventHandler SizeChanged
@@ -702,39 +667,24 @@ namespace Windows.UI.Xaml
 			}
 		}
 		#endif
-		#if false || false || false || false || false
+		// Skipping already declared event Windows.UI.Xaml.FrameworkElement.Unloaded
+		#if false || false || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
-		public  event global::Windows.UI.Xaml.RoutedEventHandler Unloaded
+		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Xaml.FrameworkElement, global::Windows.UI.Xaml.DataContextChangedEventArgs> DataContextChanged
 		{
 			[global::Uno.NotImplemented]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.FrameworkElement", "event RoutedEventHandler FrameworkElement.Unloaded");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.FrameworkElement", "event TypedEventHandler<FrameworkElement, DataContextChangedEventArgs> FrameworkElement.DataContextChanged");
 			}
 			[global::Uno.NotImplemented]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.FrameworkElement", "event RoutedEventHandler FrameworkElement.Unloaded");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.FrameworkElement", "event TypedEventHandler<FrameworkElement, DataContextChangedEventArgs> FrameworkElement.DataContextChanged");
 			}
 		}
 		#endif
-		// Skipping already declared event Windows.UI.Xaml.FrameworkElement.DataContextChanged
-		#if false || false || false || false || false
-		[global::Uno.NotImplemented]
-		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Xaml.FrameworkElement, object> Loading
-		{
-			[global::Uno.NotImplemented]
-			add
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.FrameworkElement", "event TypedEventHandler<FrameworkElement, object> FrameworkElement.Loading");
-			}
-			[global::Uno.NotImplemented]
-			remove
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.FrameworkElement", "event TypedEventHandler<FrameworkElement, object> FrameworkElement.Loading");
-			}
-		}
-		#endif
+		// Skipping already declared event Windows.UI.Xaml.FrameworkElement.Loading
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Xaml.FrameworkElement, object> ActualThemeChanged

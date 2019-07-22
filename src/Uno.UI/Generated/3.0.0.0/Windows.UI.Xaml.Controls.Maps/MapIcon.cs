@@ -81,7 +81,7 @@ namespace Windows.UI.Xaml.Controls.Maps
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty LocationProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"Location", typeof(global::Windows.Devices.Geolocation.Geopoint), 
+			nameof(Location), typeof(global::Windows.Devices.Geolocation.Geopoint), 
 			typeof(global::Windows.UI.Xaml.Controls.Maps.MapIcon), 
 			new FrameworkPropertyMetadata(default(global::Windows.Devices.Geolocation.Geopoint)));
 		#endif
@@ -89,7 +89,7 @@ namespace Windows.UI.Xaml.Controls.Maps
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty NormalizedAnchorPointProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"NormalizedAnchorPoint", typeof(global::Windows.Foundation.Point), 
+			nameof(NormalizedAnchorPoint), typeof(global::Windows.Foundation.Point), 
 			typeof(global::Windows.UI.Xaml.Controls.Maps.MapIcon), 
 			new FrameworkPropertyMetadata(default(global::Windows.Foundation.Point)));
 		#endif
@@ -97,7 +97,7 @@ namespace Windows.UI.Xaml.Controls.Maps
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty TitleProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"Title", typeof(string), 
+			nameof(Title), typeof(string), 
 			typeof(global::Windows.UI.Xaml.Controls.Maps.MapIcon), 
 			new FrameworkPropertyMetadata(default(string)));
 		#endif
@@ -105,7 +105,7 @@ namespace Windows.UI.Xaml.Controls.Maps
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty CollisionBehaviorDesiredProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"CollisionBehaviorDesired", typeof(global::Windows.UI.Xaml.Controls.Maps.MapElementCollisionBehavior), 
+			nameof(CollisionBehaviorDesired), typeof(global::Windows.UI.Xaml.Controls.Maps.MapElementCollisionBehavior), 
 			typeof(global::Windows.UI.Xaml.Controls.Maps.MapIcon), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Controls.Maps.MapElementCollisionBehavior)));
 		#endif

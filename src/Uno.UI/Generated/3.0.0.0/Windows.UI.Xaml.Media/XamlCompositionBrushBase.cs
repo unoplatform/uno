@@ -39,7 +39,7 @@ namespace Windows.UI.Xaml.Media
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty FallbackColorProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"FallbackColor", typeof(global::Windows.UI.Color), 
+			nameof(FallbackColor), typeof(global::Windows.UI.Color), 
 			typeof(global::Windows.UI.Xaml.Media.XamlCompositionBrushBase), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Color)));
 		#endif

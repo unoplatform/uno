@@ -607,6 +607,6 @@ namespace Windows.UI.Xaml.Automation.Peers
 			throw new global::System.NotImplementedException("The member RawElementProviderRuntimeId AutomationPeer.GenerateRawElementProviderRuntimeId() is not implemented in Uno.");
 		}
 		#endif
-		// Skipping already declared method Windows.UI.Xaml.Automation.Peers.AutomationPeer.ListenerExists()
+		// Skipping already declared method Windows.UI.Xaml.Automation.Peers.AutomationPeer.ListenerExists(Windows.UI.Xaml.Automation.Peers.AutomationEvents)
 	}
 }

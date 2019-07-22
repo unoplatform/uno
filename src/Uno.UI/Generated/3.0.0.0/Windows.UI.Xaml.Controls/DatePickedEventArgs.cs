@@ -2,7 +2,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml.Controls
 {
-	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || false
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class DatePickedEventArgs : global::Windows.UI.Xaml.DependencyObject
@@ -27,7 +27,13 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 		#endif
-		// Skipping already declared method Windows.UI.Xaml.Controls.DatePickedEventArgs.DatePickedEventArgs()
+		#if false || false || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public DatePickedEventArgs() : base()
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.DatePickedEventArgs", "DatePickedEventArgs.DatePickedEventArgs()");
+		}
+		#endif
 		// Forced skipping of method Windows.UI.Xaml.Controls.DatePickedEventArgs.DatePickedEventArgs()
 		// Forced skipping of method Windows.UI.Xaml.Controls.DatePickedEventArgs.OldDate.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.DatePickedEventArgs.NewDate.get

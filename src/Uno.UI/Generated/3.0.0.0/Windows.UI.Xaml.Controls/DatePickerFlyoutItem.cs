@@ -2,7 +2,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml.Controls
 {
-	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || false
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class DatePickerFlyoutItem : global::Windows.UI.Xaml.DependencyObject,global::Windows.UI.Xaml.Data.ICustomPropertyProvider
@@ -49,7 +49,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty PrimaryTextProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"PrimaryText", typeof(string), 
+			nameof(PrimaryText), typeof(string), 
 			typeof(global::Windows.UI.Xaml.Controls.DatePickerFlyoutItem), 
 			new FrameworkPropertyMetadata(default(string)));
 		#endif
@@ -57,7 +57,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty SecondaryTextProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"SecondaryText", typeof(string), 
+			nameof(SecondaryText), typeof(string), 
 			typeof(global::Windows.UI.Xaml.Controls.DatePickerFlyoutItem), 
 			new FrameworkPropertyMetadata(default(string)));
 		#endif

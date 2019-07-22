@@ -2,7 +2,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml.Automation
 {
-	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || false
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class AutomationAnnotation : global::Windows.UI.Xaml.DependencyObject
@@ -39,7 +39,7 @@ namespace Windows.UI.Xaml.Automation
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty ElementProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"Element", typeof(global::Windows.UI.Xaml.UIElement), 
+			nameof(Element), typeof(global::Windows.UI.Xaml.UIElement), 
 			typeof(global::Windows.UI.Xaml.Automation.AutomationAnnotation), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.UIElement)));
 		#endif
@@ -47,7 +47,7 @@ namespace Windows.UI.Xaml.Automation
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty TypeProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"Type", typeof(global::Windows.UI.Xaml.Automation.AnnotationType), 
+			nameof(Type), typeof(global::Windows.UI.Xaml.Automation.AnnotationType), 
 			typeof(global::Windows.UI.Xaml.Automation.AutomationAnnotation), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Automation.AnnotationType)));
 		#endif
@@ -67,7 +67,13 @@ namespace Windows.UI.Xaml.Automation
 		}
 		#endif
 		// Forced skipping of method Windows.UI.Xaml.Automation.AutomationAnnotation.AutomationAnnotation(Windows.UI.Xaml.Automation.AnnotationType, Windows.UI.Xaml.UIElement)
-		// Skipping already declared method Windows.UI.Xaml.Automation.AutomationAnnotation.AutomationAnnotation()
+		#if false || false || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public AutomationAnnotation() : base()
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Automation.AutomationAnnotation", "AutomationAnnotation.AutomationAnnotation()");
+		}
+		#endif
 		// Forced skipping of method Windows.UI.Xaml.Automation.AutomationAnnotation.AutomationAnnotation()
 		// Forced skipping of method Windows.UI.Xaml.Automation.AutomationAnnotation.Type.get
 		// Forced skipping of method Windows.UI.Xaml.Automation.AutomationAnnotation.Type.set

@@ -2,7 +2,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml.Controls.Primitives
 {
-	#if __ANDROID__ || __IOS__ || NET461 || false || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class Popup : global::Windows.UI.Xaml.FrameworkElement
@@ -109,7 +109,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty ChildProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"Child", typeof(global::Windows.UI.Xaml.UIElement), 
+			nameof(Child), typeof(global::Windows.UI.Xaml.UIElement), 
 			typeof(global::Windows.UI.Xaml.Controls.Primitives.Popup), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.UIElement)));
 		#endif
@@ -117,7 +117,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty ChildTransitionsProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"ChildTransitions", typeof(global::Windows.UI.Xaml.Media.Animation.TransitionCollection), 
+			nameof(ChildTransitions), typeof(global::Windows.UI.Xaml.Media.Animation.TransitionCollection), 
 			typeof(global::Windows.UI.Xaml.Controls.Primitives.Popup), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.Animation.TransitionCollection)));
 		#endif
@@ -125,7 +125,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty HorizontalOffsetProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"HorizontalOffset", typeof(double), 
+			nameof(HorizontalOffset), typeof(double), 
 			typeof(global::Windows.UI.Xaml.Controls.Primitives.Popup), 
 			new FrameworkPropertyMetadata(default(double)));
 		#endif
@@ -133,7 +133,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty IsLightDismissEnabledProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"IsLightDismissEnabled", typeof(bool), 
+			nameof(IsLightDismissEnabled), typeof(bool), 
 			typeof(global::Windows.UI.Xaml.Controls.Primitives.Popup), 
 			new FrameworkPropertyMetadata(default(bool)));
 		#endif
@@ -141,7 +141,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty IsOpenProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"IsOpen", typeof(bool), 
+			nameof(IsOpen), typeof(bool), 
 			typeof(global::Windows.UI.Xaml.Controls.Primitives.Popup), 
 			new FrameworkPropertyMetadata(default(bool)));
 		#endif
@@ -149,7 +149,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty VerticalOffsetProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"VerticalOffset", typeof(double), 
+			nameof(VerticalOffset), typeof(double), 
 			typeof(global::Windows.UI.Xaml.Controls.Primitives.Popup), 
 			new FrameworkPropertyMetadata(default(double)));
 		#endif
@@ -157,11 +157,11 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty LightDismissOverlayModeProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"LightDismissOverlayMode", typeof(global::Windows.UI.Xaml.Controls.LightDismissOverlayMode), 
+			nameof(LightDismissOverlayMode), typeof(global::Windows.UI.Xaml.Controls.LightDismissOverlayMode), 
 			typeof(global::Windows.UI.Xaml.Controls.Primitives.Popup), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Controls.LightDismissOverlayMode)));
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || false || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public Popup() : base()
 		{

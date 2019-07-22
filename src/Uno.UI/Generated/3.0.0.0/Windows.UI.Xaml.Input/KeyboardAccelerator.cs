@@ -2,7 +2,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml.Input
 {
-	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || false
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class KeyboardAccelerator : global::Windows.UI.Xaml.DependencyObject
@@ -67,7 +67,7 @@ namespace Windows.UI.Xaml.Input
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty IsEnabledProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"IsEnabled", typeof(bool), 
+			nameof(IsEnabled), typeof(bool), 
 			typeof(global::Windows.UI.Xaml.Input.KeyboardAccelerator), 
 			new FrameworkPropertyMetadata(default(bool)));
 		#endif
@@ -75,7 +75,7 @@ namespace Windows.UI.Xaml.Input
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty KeyProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"Key", typeof(global::Windows.System.VirtualKey), 
+			nameof(Key), typeof(global::Windows.System.VirtualKey), 
 			typeof(global::Windows.UI.Xaml.Input.KeyboardAccelerator), 
 			new FrameworkPropertyMetadata(default(global::Windows.System.VirtualKey)));
 		#endif
@@ -83,7 +83,7 @@ namespace Windows.UI.Xaml.Input
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty ModifiersProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"Modifiers", typeof(global::Windows.System.VirtualKeyModifiers), 
+			nameof(Modifiers), typeof(global::Windows.System.VirtualKeyModifiers), 
 			typeof(global::Windows.UI.Xaml.Input.KeyboardAccelerator), 
 			new FrameworkPropertyMetadata(default(global::Windows.System.VirtualKeyModifiers)));
 		#endif
@@ -91,11 +91,17 @@ namespace Windows.UI.Xaml.Input
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty ScopeOwnerProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"ScopeOwner", typeof(global::Windows.UI.Xaml.DependencyObject), 
+			nameof(ScopeOwner), typeof(global::Windows.UI.Xaml.DependencyObject), 
 			typeof(global::Windows.UI.Xaml.Input.KeyboardAccelerator), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.DependencyObject)));
 		#endif
-		// Skipping already declared method Windows.UI.Xaml.Input.KeyboardAccelerator.KeyboardAccelerator()
+		#if false || false || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public KeyboardAccelerator() : base()
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Input.KeyboardAccelerator", "KeyboardAccelerator.KeyboardAccelerator()");
+		}
+		#endif
 		// Forced skipping of method Windows.UI.Xaml.Input.KeyboardAccelerator.KeyboardAccelerator()
 		// Forced skipping of method Windows.UI.Xaml.Input.KeyboardAccelerator.Key.get
 		// Forced skipping of method Windows.UI.Xaml.Input.KeyboardAccelerator.Key.set
