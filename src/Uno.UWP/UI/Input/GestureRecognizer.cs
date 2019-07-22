@@ -109,9 +109,9 @@ namespace Windows.UI.Input
 		}
 
 		#region Tap (includes DoubleTap)
-		private const ulong _multiTapMaxDelay = TimeSpan.TicksPerMillisecond * 1000;
-		private const int _tapMaxXDelta = 15;
-		private const int _tapMaxYDelta = 15;
+		internal const ulong MultiTapMaxDelayTicks = TimeSpan.TicksPerMillisecond * 1000;
+		internal const int TapMaxXDelta = 15;
+		internal const int TapMaxYDelta = 15;
 
 		public event TypedEventHandler<GestureRecognizer, TappedEventArgs> Tapped;
 
@@ -135,7 +135,7 @@ namespace Windows.UI.Input
 			var currentPosition = value.Position;
 
 			return lastTapId == currentId
-				&& currentTs - lastTapTs <= _multiTapMaxDelay
+				&& currentTs - lastTapTs <= MultiTapMaxDelayTicks
 				&& !IsOutOfTapRange(lastTapLocation, currentPosition);
 		}
 
@@ -181,8 +181,8 @@ namespace Windows.UI.Input
 		}
 
 		private static bool IsOutOfTapRange(Point p1, Point p2)
-			=> Math.Abs(p1.X - p2.X) > _tapMaxXDelta
-			|| Math.Abs(p1.Y - p2.Y) > _tapMaxYDelta;
+			=> Math.Abs(p1.X - p2.X) > TapMaxXDelta
+			|| Math.Abs(p1.Y - p2.Y) > TapMaxYDelta;
 
 		private bool TryRecognizeMultiTap(PointerPoint pointerDown)
 		{
