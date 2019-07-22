@@ -218,6 +218,9 @@
 				<Member 
 					fullName="System.Void Windows.UI.Xaml.Controls.Primitives.ButtonBase.OnTapped(Windows.UI.Xaml.Input.TappedRoutedEventArgs e)"
 					reason="Binary issue, but not an API changed. Ignore it since we already have some other bin conflict."/>
+				<Member 
+					fullName="System.Void Windows.UI.Xaml.Controls.Primitives.SelectorItem.OnPointerCanceled(Windows.UI.Xaml.Input.PointerRoutedEventArgs args)"
+					reason="Binary issue, but not an API changed. Ignore it since we already have some other bin conflict."/>
 			</Methods>
 
 			<Fields>
