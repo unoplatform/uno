@@ -8,7 +8,6 @@ using Windows.UI.Xaml.Controls;
 
 namespace SamplesApp.Windows_UI_Xaml_Controls.ListView
 {
-	//Adapted from National Geographic - LearnEnglish
 	[TemplatePart(Name = "PART_HeaderBackground", Type = typeof(Windows.UI.Xaml.Controls.ScrollViewer))]
 	[TemplatePart(Name = "PART_HeaderForeground", Type = typeof(Windows.UI.Xaml.Controls.ScrollViewer))]
 	[TemplatePart(Name = "PART_ListView", Type = typeof(Windows.UI.Xaml.Controls.ListView))]
