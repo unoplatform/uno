@@ -63,7 +63,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty NineGridProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"NineGrid", typeof(global::Windows.UI.Xaml.Thickness), 
+			nameof(NineGrid), typeof(global::Windows.UI.Xaml.Thickness), 
 			typeof(global::Windows.UI.Xaml.Controls.Image), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Thickness)));
 		#endif
@@ -71,7 +71,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty PlayToSourceProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"PlayToSource", typeof(global::Windows.Media.PlayTo.PlayToSource), 
+			nameof(PlayToSource), typeof(global::Windows.Media.PlayTo.PlayToSource), 
 			typeof(global::Windows.UI.Xaml.Controls.Image), 
 			new FrameworkPropertyMetadata(default(global::Windows.Media.PlayTo.PlayToSource)));
 		#endif
@@ -79,7 +79,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty SourceProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"Source", typeof(global::Windows.UI.Xaml.Media.ImageSource), 
+			nameof(Source), typeof(global::Windows.UI.Xaml.Media.ImageSource), 
 			typeof(global::Windows.UI.Xaml.Controls.Image), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.ImageSource)));
 		#endif
@@ -87,7 +87,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty StretchProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"Stretch", typeof(global::Windows.UI.Xaml.Media.Stretch), 
+			nameof(Stretch), typeof(global::Windows.UI.Xaml.Media.Stretch), 
 			typeof(global::Windows.UI.Xaml.Controls.Image), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.Stretch)));
 		#endif

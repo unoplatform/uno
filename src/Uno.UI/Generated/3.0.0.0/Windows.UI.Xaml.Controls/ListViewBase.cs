@@ -199,7 +199,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty CanDragItemsProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"CanDragItems", typeof(bool), 
+			nameof(CanDragItems), typeof(bool), 
 			typeof(global::Windows.UI.Xaml.Controls.ListViewBase), 
 			new FrameworkPropertyMetadata(default(bool)));
 		#endif
@@ -207,7 +207,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty CanReorderItemsProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"CanReorderItems", typeof(bool), 
+			nameof(CanReorderItems), typeof(bool), 
 			typeof(global::Windows.UI.Xaml.Controls.ListViewBase), 
 			new FrameworkPropertyMetadata(default(bool)));
 		#endif
@@ -218,7 +218,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty HeaderTransitionsProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"HeaderTransitions", typeof(global::Windows.UI.Xaml.Media.Animation.TransitionCollection), 
+			nameof(HeaderTransitions), typeof(global::Windows.UI.Xaml.Media.Animation.TransitionCollection), 
 			typeof(global::Windows.UI.Xaml.Controls.ListViewBase), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.Animation.TransitionCollection)));
 		#endif
@@ -228,7 +228,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty IsActiveViewProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"IsActiveView", typeof(bool), 
+			nameof(IsActiveView), typeof(bool), 
 			typeof(global::Windows.UI.Xaml.Controls.ListViewBase), 
 			new FrameworkPropertyMetadata(default(bool)));
 		#endif
@@ -237,7 +237,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty IsSwipeEnabledProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"IsSwipeEnabled", typeof(bool), 
+			nameof(IsSwipeEnabled), typeof(bool), 
 			typeof(global::Windows.UI.Xaml.Controls.ListViewBase), 
 			new FrameworkPropertyMetadata(default(bool)));
 		#endif
@@ -245,7 +245,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty IsZoomedInViewProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"IsZoomedInView", typeof(bool), 
+			nameof(IsZoomedInView), typeof(bool), 
 			typeof(global::Windows.UI.Xaml.Controls.ListViewBase), 
 			new FrameworkPropertyMetadata(default(bool)));
 		#endif
@@ -254,7 +254,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty SemanticZoomOwnerProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"SemanticZoomOwner", typeof(global::Windows.UI.Xaml.Controls.SemanticZoom), 
+			nameof(SemanticZoomOwner), typeof(global::Windows.UI.Xaml.Controls.SemanticZoom), 
 			typeof(global::Windows.UI.Xaml.Controls.ListViewBase), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Controls.SemanticZoom)));
 		#endif
@@ -264,7 +264,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty FooterTransitionsProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"FooterTransitions", typeof(global::Windows.UI.Xaml.Media.Animation.TransitionCollection), 
+			nameof(FooterTransitions), typeof(global::Windows.UI.Xaml.Media.Animation.TransitionCollection), 
 			typeof(global::Windows.UI.Xaml.Controls.ListViewBase), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.Animation.TransitionCollection)));
 		#endif
@@ -272,7 +272,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty ShowsScrollingPlaceholdersProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"ShowsScrollingPlaceholders", typeof(bool), 
+			nameof(ShowsScrollingPlaceholders), typeof(bool), 
 			typeof(global::Windows.UI.Xaml.Controls.ListViewBase), 
 			new FrameworkPropertyMetadata(default(bool)));
 		#endif
@@ -280,7 +280,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty ReorderModeProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"ReorderMode", typeof(global::Windows.UI.Xaml.Controls.ListViewReorderMode), 
+			nameof(ReorderMode), typeof(global::Windows.UI.Xaml.Controls.ListViewReorderMode), 
 			typeof(global::Windows.UI.Xaml.Controls.ListViewBase), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Controls.ListViewReorderMode)));
 		#endif
@@ -288,7 +288,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty IsMultiSelectCheckBoxEnabledProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"IsMultiSelectCheckBoxEnabled", typeof(bool), 
+			nameof(IsMultiSelectCheckBoxEnabled), typeof(bool), 
 			typeof(global::Windows.UI.Xaml.Controls.ListViewBase), 
 			new FrameworkPropertyMetadata(default(bool)));
 		#endif
@@ -296,7 +296,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty SingleSelectionFollowsFocusProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"SingleSelectionFollowsFocus", typeof(bool), 
+			nameof(SingleSelectionFollowsFocus), typeof(bool), 
 			typeof(global::Windows.UI.Xaml.Controls.ListViewBase), 
 			new FrameworkPropertyMetadata(default(bool)));
 		#endif

@@ -63,7 +63,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty AreCandidatesEnabledProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"AreCandidatesEnabled", typeof(bool), 
+			nameof(AreCandidatesEnabled), typeof(bool), 
 			typeof(global::Windows.UI.Xaml.Controls.HandwritingView), 
 			new FrameworkPropertyMetadata(default(bool)));
 		#endif
@@ -71,7 +71,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty IsOpenProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"IsOpen", typeof(bool), 
+			nameof(IsOpen), typeof(bool), 
 			typeof(global::Windows.UI.Xaml.Controls.HandwritingView), 
 			new FrameworkPropertyMetadata(default(bool)));
 		#endif
@@ -79,7 +79,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty PlacementAlignmentProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"PlacementAlignment", typeof(global::Windows.UI.Xaml.Controls.HandwritingPanelPlacementAlignment), 
+			nameof(PlacementAlignment), typeof(global::Windows.UI.Xaml.Controls.HandwritingPanelPlacementAlignment), 
 			typeof(global::Windows.UI.Xaml.Controls.HandwritingView), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Controls.HandwritingPanelPlacementAlignment)));
 		#endif
@@ -87,7 +87,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty PlacementTargetProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"PlacementTarget", typeof(global::Windows.UI.Xaml.UIElement), 
+			nameof(PlacementTarget), typeof(global::Windows.UI.Xaml.UIElement), 
 			typeof(global::Windows.UI.Xaml.Controls.HandwritingView), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.UIElement)));
 		#endif

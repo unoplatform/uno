@@ -38,6 +38,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 		#endif
+		// Skipping already declared property TemplateSettings
 		// Skipping already declared property CommandParameterProperty
 		// Skipping already declared property CommandProperty
 		// Skipping already declared property TextProperty
@@ -45,7 +46,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty IconProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"Icon", typeof(global::Windows.UI.Xaml.Controls.IconElement), 
+			nameof(Icon), typeof(global::Windows.UI.Xaml.Controls.IconElement), 
 			typeof(global::Windows.UI.Xaml.Controls.MenuFlyoutItem), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Controls.IconElement)));
 		#endif
@@ -53,7 +54,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty KeyboardAcceleratorTextOverrideProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"KeyboardAcceleratorTextOverride", typeof(string), 
+			nameof(KeyboardAcceleratorTextOverride), typeof(string), 
 			typeof(global::Windows.UI.Xaml.Controls.MenuFlyoutItem), 
 			new FrameworkPropertyMetadata(default(string)));
 		#endif
@@ -77,6 +78,6 @@ namespace Windows.UI.Xaml.Controls
 		// Forced skipping of method Windows.UI.Xaml.Controls.MenuFlyoutItem.TextProperty.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.MenuFlyoutItem.CommandProperty.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.MenuFlyoutItem.CommandParameterProperty.get
-
+		// Skipping already declared event Windows.UI.Xaml.Controls.MenuFlyoutItem.Click
 	}
 }

@@ -98,7 +98,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty HeaderProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"Header", typeof(object), 
+			nameof(Header), typeof(object), 
 			typeof(global::Windows.UI.Xaml.Controls.ItemsPresenter), 
 			new FrameworkPropertyMetadata(default(object)));
 		#endif
@@ -106,7 +106,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty HeaderTemplateProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"HeaderTemplate", typeof(global::Windows.UI.Xaml.DataTemplate), 
+			nameof(HeaderTemplate), typeof(global::Windows.UI.Xaml.DataTemplate), 
 			typeof(global::Windows.UI.Xaml.Controls.ItemsPresenter), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.DataTemplate)));
 		#endif
@@ -114,7 +114,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty HeaderTransitionsProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"HeaderTransitions", typeof(global::Windows.UI.Xaml.Media.Animation.TransitionCollection), 
+			nameof(HeaderTransitions), typeof(global::Windows.UI.Xaml.Media.Animation.TransitionCollection), 
 			typeof(global::Windows.UI.Xaml.Controls.ItemsPresenter), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.Animation.TransitionCollection)));
 		#endif
@@ -123,7 +123,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty FooterProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"Footer", typeof(object), 
+			nameof(Footer), typeof(object), 
 			typeof(global::Windows.UI.Xaml.Controls.ItemsPresenter), 
 			new FrameworkPropertyMetadata(default(object)));
 		#endif
@@ -131,7 +131,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty FooterTemplateProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"FooterTemplate", typeof(global::Windows.UI.Xaml.DataTemplate), 
+			nameof(FooterTemplate), typeof(global::Windows.UI.Xaml.DataTemplate), 
 			typeof(global::Windows.UI.Xaml.Controls.ItemsPresenter), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.DataTemplate)));
 		#endif
@@ -139,7 +139,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty FooterTransitionsProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"FooterTransitions", typeof(global::Windows.UI.Xaml.Media.Animation.TransitionCollection), 
+			nameof(FooterTransitions), typeof(global::Windows.UI.Xaml.Media.Animation.TransitionCollection), 
 			typeof(global::Windows.UI.Xaml.Controls.ItemsPresenter), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.Animation.TransitionCollection)));
 		#endif

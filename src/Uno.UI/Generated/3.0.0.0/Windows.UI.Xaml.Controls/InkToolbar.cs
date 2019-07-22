@@ -129,7 +129,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty ActiveToolProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"ActiveTool", typeof(global::Windows.UI.Xaml.Controls.InkToolbarToolButton), 
+			nameof(ActiveTool), typeof(global::Windows.UI.Xaml.Controls.InkToolbarToolButton), 
 			typeof(global::Windows.UI.Xaml.Controls.InkToolbar), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Controls.InkToolbarToolButton)));
 		#endif
@@ -137,7 +137,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty ChildrenProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"Children", typeof(global::Windows.UI.Xaml.DependencyObjectCollection), 
+			nameof(Children), typeof(global::Windows.UI.Xaml.DependencyObjectCollection), 
 			typeof(global::Windows.UI.Xaml.Controls.InkToolbar), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.DependencyObjectCollection)));
 		#endif
@@ -145,7 +145,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty InitialControlsProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"InitialControls", typeof(global::Windows.UI.Xaml.Controls.InkToolbarInitialControls), 
+			nameof(InitialControls), typeof(global::Windows.UI.Xaml.Controls.InkToolbarInitialControls), 
 			typeof(global::Windows.UI.Xaml.Controls.InkToolbar), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Controls.InkToolbarInitialControls)));
 		#endif
@@ -153,7 +153,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty InkDrawingAttributesProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"InkDrawingAttributes", typeof(global::Windows.UI.Input.Inking.InkDrawingAttributes), 
+			nameof(InkDrawingAttributes), typeof(global::Windows.UI.Input.Inking.InkDrawingAttributes), 
 			typeof(global::Windows.UI.Xaml.Controls.InkToolbar), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Input.Inking.InkDrawingAttributes)));
 		#endif
@@ -161,7 +161,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty IsRulerButtonCheckedProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"IsRulerButtonChecked", typeof(bool), 
+			nameof(IsRulerButtonChecked), typeof(bool), 
 			typeof(global::Windows.UI.Xaml.Controls.InkToolbar), 
 			new FrameworkPropertyMetadata(default(bool)));
 		#endif
@@ -169,7 +169,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty TargetInkCanvasProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"TargetInkCanvas", typeof(global::Windows.UI.Xaml.Controls.InkCanvas), 
+			nameof(TargetInkCanvas), typeof(global::Windows.UI.Xaml.Controls.InkCanvas), 
 			typeof(global::Windows.UI.Xaml.Controls.InkToolbar), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Controls.InkCanvas)));
 		#endif
@@ -177,7 +177,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty ButtonFlyoutPlacementProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"ButtonFlyoutPlacement", typeof(global::Windows.UI.Xaml.Controls.InkToolbarButtonFlyoutPlacement), 
+			nameof(ButtonFlyoutPlacement), typeof(global::Windows.UI.Xaml.Controls.InkToolbarButtonFlyoutPlacement), 
 			typeof(global::Windows.UI.Xaml.Controls.InkToolbar), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Controls.InkToolbarButtonFlyoutPlacement)));
 		#endif
@@ -185,7 +185,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty IsStencilButtonCheckedProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"IsStencilButtonChecked", typeof(bool), 
+			nameof(IsStencilButtonChecked), typeof(bool), 
 			typeof(global::Windows.UI.Xaml.Controls.InkToolbar), 
 			new FrameworkPropertyMetadata(default(bool)));
 		#endif
@@ -193,7 +193,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty OrientationProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"Orientation", typeof(global::Windows.UI.Xaml.Controls.Orientation), 
+			nameof(Orientation), typeof(global::Windows.UI.Xaml.Controls.Orientation), 
 			typeof(global::Windows.UI.Xaml.Controls.InkToolbar), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Controls.Orientation)));
 		#endif

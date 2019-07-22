@@ -25,7 +25,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty IsClearAllVisibleProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"IsClearAllVisible", typeof(bool), 
+			nameof(IsClearAllVisible), typeof(bool), 
 			typeof(global::Windows.UI.Xaml.Controls.InkToolbarEraserButton), 
 			new FrameworkPropertyMetadata(default(bool)));
 		#endif

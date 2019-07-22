@@ -25,7 +25,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty IconSourceProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"IconSource", typeof(global::Windows.UI.Xaml.Controls.IconSource), 
+			nameof(IconSource), typeof(global::Windows.UI.Xaml.Controls.IconSource), 
 			typeof(global::Windows.UI.Xaml.Controls.IconSourceElement), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Controls.IconSource)));
 		#endif

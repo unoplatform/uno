@@ -95,7 +95,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty DisabledGlyphProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"DisabledGlyph", typeof(string), 
+			nameof(DisabledGlyph), typeof(string), 
 			typeof(global::Windows.UI.Xaml.Controls.RatingItemFontInfo), 
 			new FrameworkPropertyMetadata(default(string)));
 		#endif
@@ -103,7 +103,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty GlyphProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"Glyph", typeof(string), 
+			nameof(Glyph), typeof(string), 
 			typeof(global::Windows.UI.Xaml.Controls.RatingItemFontInfo), 
 			new FrameworkPropertyMetadata(default(string)));
 		#endif
@@ -111,7 +111,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty PlaceholderGlyphProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"PlaceholderGlyph", typeof(string), 
+			nameof(PlaceholderGlyph), typeof(string), 
 			typeof(global::Windows.UI.Xaml.Controls.RatingItemFontInfo), 
 			new FrameworkPropertyMetadata(default(string)));
 		#endif
@@ -119,7 +119,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty PointerOverGlyphProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"PointerOverGlyph", typeof(string), 
+			nameof(PointerOverGlyph), typeof(string), 
 			typeof(global::Windows.UI.Xaml.Controls.RatingItemFontInfo), 
 			new FrameworkPropertyMetadata(default(string)));
 		#endif
@@ -127,7 +127,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty PointerOverPlaceholderGlyphProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"PointerOverPlaceholderGlyph", typeof(string), 
+			nameof(PointerOverPlaceholderGlyph), typeof(string), 
 			typeof(global::Windows.UI.Xaml.Controls.RatingItemFontInfo), 
 			new FrameworkPropertyMetadata(default(string)));
 		#endif
@@ -135,7 +135,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty UnsetGlyphProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"UnsetGlyph", typeof(string), 
+			nameof(UnsetGlyph), typeof(string), 
 			typeof(global::Windows.UI.Xaml.Controls.RatingItemFontInfo), 
 			new FrameworkPropertyMetadata(default(string)));
 		#endif

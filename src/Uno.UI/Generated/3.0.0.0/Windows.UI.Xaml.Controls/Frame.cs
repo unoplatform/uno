@@ -41,7 +41,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty IsNavigationStackEnabledProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"IsNavigationStackEnabled", typeof(bool), 
+			nameof(IsNavigationStackEnabled), typeof(bool), 
 			typeof(global::Windows.UI.Xaml.Controls.Frame), 
 			new FrameworkPropertyMetadata(default(bool)));
 		#endif

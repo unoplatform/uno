@@ -61,7 +61,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty GroupStyleSelectorProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"GroupStyleSelector", typeof(global::Windows.UI.Xaml.Controls.GroupStyleSelector), 
+			nameof(GroupStyleSelector), typeof(global::Windows.UI.Xaml.Controls.GroupStyleSelector), 
 			typeof(global::Windows.UI.Xaml.Controls.ItemsControl), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Controls.GroupStyleSelector)));
 		#endif
@@ -72,7 +72,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty ItemContainerTransitionsProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"ItemContainerTransitions", typeof(global::Windows.UI.Xaml.Media.Animation.TransitionCollection), 
+			nameof(ItemContainerTransitions), typeof(global::Windows.UI.Xaml.Media.Animation.TransitionCollection), 
 			typeof(global::Windows.UI.Xaml.Controls.ItemsControl), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.Animation.TransitionCollection)));
 		#endif

@@ -67,7 +67,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty ColumnSpacingProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"ColumnSpacing", typeof(double), 
+			nameof(ColumnSpacing), typeof(double), 
 			typeof(global::Windows.UI.Xaml.Controls.Grid), 
 			new FrameworkPropertyMetadata(default(double)));
 		#endif
@@ -75,7 +75,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty RowSpacingProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"RowSpacing", typeof(double), 
+			nameof(RowSpacing), typeof(double), 
 			typeof(global::Windows.UI.Xaml.Controls.Grid), 
 			new FrameworkPropertyMetadata(default(double)));
 		#endif
@@ -83,7 +83,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty BackgroundSizingProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"BackgroundSizing", typeof(global::Windows.UI.Xaml.Controls.BackgroundSizing), 
+			nameof(BackgroundSizing), typeof(global::Windows.UI.Xaml.Controls.BackgroundSizing), 
 			typeof(global::Windows.UI.Xaml.Controls.Grid), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Controls.BackgroundSizing)));
 		#endif

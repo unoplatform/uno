@@ -27,7 +27,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty IsThreeStateProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"IsThreeState", typeof(bool), 
+			nameof(IsThreeState), typeof(bool), 
 			typeof(global::Windows.UI.Xaml.Controls.Primitives.ToggleButton), 
 			new FrameworkPropertyMetadata(default(bool)));
 		#endif
