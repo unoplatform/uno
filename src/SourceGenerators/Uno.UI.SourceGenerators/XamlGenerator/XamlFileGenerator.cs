@@ -705,25 +705,25 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 		private void BuildSingleTimeInitializer(IIndentedStringBuilder writer, string propertyType, string propertyName, Action propertyBodyBuilder, bool isStatic = true)
 		{
+			// The property type may be partially qualified, try resolving it through FindType
+			var propertySymbol = FindType(propertyType);
+			propertyType = propertySymbol?.GetFullName() ?? propertyType;
+
 			var sanitizedPropertyName = SanitizeResourceName(propertyName);
 
 			var propertyInitializedVariable = "_{0}Initialized".InvariantCultureFormat(sanitizedPropertyName);
 			var backingFieldVariable = "__{0}BackingField".InvariantCultureFormat(sanitizedPropertyName);
 			var staticModifier = isStatic ? "static" : "";
 			var publicPropertyType = FindType(propertyType)?.DeclaredAccessibility == Accessibility.Public
-				? GetGlobalizedTypeName(propertyType)
-				: "object";
-
-			// The property type may be partially qualified, try resolving it through FindType
-			var propertySymbol = FindType(propertyType);
-			propertyType = propertySymbol?.GetFullName() ?? propertyType;
+				? propertyType
+				: "System.Object";
 
 			writer.AppendLineInvariant($"private {staticModifier} bool {propertyInitializedVariable} = false;");
 			writer.AppendLineInvariant($"private {staticModifier} {GetGlobalizedTypeName(propertyType)} {backingFieldVariable};");
 
 			writer.AppendLine();
 
-			using (writer.BlockInvariant($"public {staticModifier} {publicPropertyType} {sanitizedPropertyName}"))
+			using (writer.BlockInvariant($"public {staticModifier} {GetGlobalizedTypeName(publicPropertyType)} {sanitizedPropertyName}"))
 			{
 				using (writer.BlockInvariant("get"))
 				{
