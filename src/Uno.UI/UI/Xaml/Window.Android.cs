@@ -266,9 +266,9 @@ namespace Windows.UI.Xaml
 				throw new global::System.Exception("Cannot check NavigationBar visibility property. DecorView is not defined yet.");
 			}
 
-			var visibility = decorView.SystemUiVisibility;
-			return visibility.HasFlag(SystemUiFlags.HideNavigation)
-				|| visibility.HasFlag(SystemUiFlags.LayoutHideNavigation);
+			var uiFlags = (int)decorView.SystemUiVisibility;
+			return (uiFlags & (int)SystemUiFlags.HideNavigation) == 0
+				|| (uiFlags & (int)SystemUiFlags.LayoutHideNavigation) == 0;
 		}
 
 		private bool IsNavigationBarTranslucent()
