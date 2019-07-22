@@ -454,7 +454,7 @@
 					<Grid.RowDefinitions>
 						<RowDefinition Height="*" />
 						<RowDefinition Height="Auto" />
-						<RowDefinition Height="Auto"/>
+						<RowDefinition Height="Auto" />
 					</Grid.RowDefinitions>
 
 					<ListView x:Name="RotatedListView"
@@ -511,9 +511,10 @@
 						<Run Text="{Binding [SelectedItem].FirstName}" />
 						<Run Text="{Binding [SelectedItem].LastName}" />
 					</TextBlock>
-					<Button Content="Add Item"
-									Grid.Row="2"
-									Command="{Binding [AddItem]}"/>
+					<Button x:Name="theAddButton"
+							Content="Add Item"
+							Grid.Row="2"
+							Command="{Binding [AddItem]}" />
 				</Grid>
 			</DataTemplate>
 		</controls:SampleControl.SampleContent>
