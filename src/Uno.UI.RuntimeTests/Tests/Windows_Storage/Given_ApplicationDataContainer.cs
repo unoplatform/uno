@@ -228,16 +228,22 @@ namespace Uno.UI.Samples.Tests.Windows_Storage
 		}
 
 		[TestMethod]
-		public void When_AddNullClearsSetting()
+		public void When_AddNullTriesToClearSetting()
 		{
 			var SUT = ApplicationData.Current.LocalSettings;
 			var key = "test";
 			var value = "something";
-			var secondValue = "somethingElse";
 			SUT.Values.Add(key, value);
-			SUT.Values.Add(key, null);
-			SUT.Values.Add(key, secondValue);
-			Assert.AreEqual(secondValue, SUT.Values[key]);
+			Assert.ThrowsException<ArgumentException>(
+				() => SUT.Values.Add(key, null)); 
+		}
+
+		[TestMethod]
+        public void When_KeyDoesNotExist()
+		{
+			var SUT = ApplicationData.Current.LocalSettings;
+
+			Assert.IsNull(SUT.Values["ThisKeyDoesNotExist"]);
 		}
 	}
 }
