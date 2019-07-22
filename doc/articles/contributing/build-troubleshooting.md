@@ -18,7 +18,7 @@ taskkill /fi "imagename eq msbuild.exe" /f /t
 taskkill /fi "imagename eq Uno.SourceGeneration.Host.exe" /f /t
 ```
 
-Reset the source generation cache, your nuget cache and all local changes to your git repository. Be careful, as this will wipe out code you haven't yet commited.
+Reset the source generation cache and all local changes to your git repository. Be careful, as this will wipe out code you haven't yet commited.
 
 ```bash
 git reset --hard
