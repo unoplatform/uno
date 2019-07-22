@@ -58,18 +58,6 @@ namespace Windows.UI.Xaml
 			}
 		}
 
-		private void CapturePointerNative(Pointer pointer)
-		{
-			var command = "Uno.UI.WindowManager.current.setPointerCapture(" + HtmlId + ", " + pointer.PointerId + ");";
-			WebAssemblyRuntime.InvokeJS(command);
-		}
-
-		private void ReleasePointerCaptureNative(Pointer pointer)
-		{
-			var command = "Uno.UI.WindowManager.current.releasePointerCapture(" + HtmlId + ", " + pointer.PointerId + ");";
-			WebAssemblyRuntime.InvokeJS(command);
-		}
-
 		public Size MeasureView(Size availableSize)
 		{
 			return Uno.UI.Xaml.WindowManagerInterop.MeasureView(HtmlId, availableSize);
@@ -558,8 +546,6 @@ namespace Windows.UI.Xaml
 
 		partial void InitializeCapture();
 
-		internal bool IsPointerCaptured => _pointCaptures.Any();
-
 		public int MeasureCallCount { get; protected set; }
 		public int ArrangeCallCount { get; protected set; }
 
@@ -618,14 +604,6 @@ namespace Windows.UI.Xaml
 		public override string ToString()
 		{
 			return GetType().Name + "-" + HtmlId;
-		}
-
-		internal void RaiseTapped(TappedRoutedEventArgs args)
-		{
-			if (this.Log().IsEnabled(LogLevel.Warning))
-			{
-				this.Log().Warn("RaiseTapped is not supported");
-			}
 		}
 
 		public GeneralTransform TransformToVisual(UIElement visual)
