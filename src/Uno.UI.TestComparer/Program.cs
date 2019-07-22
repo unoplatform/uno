@@ -176,7 +176,7 @@ namespace Umbrella.UI.TestComparer
 
 
 			testSuiteFixtureNode.SetAttribute("type", "TestFixture");
-			testSuiteFixtureNode.SetAttribute("name", resultsId);
+			testSuiteFixtureNode.SetAttribute("name", platform + "-" + resultsId);
 			testSuiteFixtureNode.SetAttribute("executed", "true");
 
 			testSuiteFixtureNode.SetAttribute("testcasecount", compareResult.TotalTests.ToString());
@@ -197,8 +197,8 @@ namespace Umbrella.UI.TestComparer
 
 				var lastTestRun = run.ResultRun.LastOrDefault();
 
-				testCaseNode.SetAttribute("name", SanitizeTestName(run.TestName));
-				testCaseNode.SetAttribute("fullname", SanitizeTestName(run.TestName));
+				testCaseNode.SetAttribute("name", platform + "-" + SanitizeTestName(run.TestName));
+				testCaseNode.SetAttribute("fullname", platform + "-" + SanitizeTestName(run.TestName));
 				testCaseNode.SetAttribute("duration", "0");
 				testCaseNode.SetAttribute("time", "0");
 
