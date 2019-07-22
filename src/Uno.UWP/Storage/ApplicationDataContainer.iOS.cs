@@ -67,18 +67,14 @@ namespace Windows.Storage
 
 			public void Add(string key, object value)
 			{
-				if (value != null)
+				if (ContainsKey(key))
 				{
-					if (ContainsKey(key))
-					{
-						throw new ArgumentException("An item with the same key has already been added.");
-					}
+					throw new ArgumentException("An item with the same key has already been added.");
+				}
+				if (value != null)
+				{					
 					var nativeObject = NSObject.FromObject(DataTypeSerializer.Serialize(value));
 					NSUserDefaults.StandardUserDefaults.SetValueForKey(nativeObject, (NSString)key);
-				}
-				else
-				{
-					Remove(key);
 				}
 			}
 
