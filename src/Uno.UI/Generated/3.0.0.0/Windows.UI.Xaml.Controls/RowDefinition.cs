@@ -7,6 +7,8 @@ namespace Windows.UI.Xaml.Controls
 	#endif
 	public  partial class RowDefinition : global::Windows.UI.Xaml.DependencyObject
 	{
+		// Skipping already declared property MinHeight
+		// Skipping already declared property MaxHeight
 		// Skipping already declared property Height
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
@@ -19,6 +21,8 @@ namespace Windows.UI.Xaml.Controls
 		}
 		#endif
 		// Skipping already declared property HeightProperty
+		// Skipping already declared property MaxHeightProperty
+		// Skipping already declared property MinHeightProperty
 		// Skipping already declared method Windows.UI.Xaml.Controls.RowDefinition.RowDefinition()
 		// Forced skipping of method Windows.UI.Xaml.Controls.RowDefinition.RowDefinition()
 		// Forced skipping of method Windows.UI.Xaml.Controls.RowDefinition.Height.get

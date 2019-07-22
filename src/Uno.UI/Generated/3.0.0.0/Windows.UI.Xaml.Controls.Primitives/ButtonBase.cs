@@ -38,7 +38,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty ClickModeProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"ClickMode", typeof(global::Windows.UI.Xaml.Controls.ClickMode), 
+			nameof(ClickMode), typeof(global::Windows.UI.Xaml.Controls.ClickMode), 
 			typeof(global::Windows.UI.Xaml.Controls.Primitives.ButtonBase), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Controls.ClickMode)));
 		#endif
@@ -48,7 +48,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty IsPointerOverProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"IsPointerOver", typeof(bool), 
+			nameof(IsPointerOver), typeof(bool), 
 			typeof(global::Windows.UI.Xaml.Controls.Primitives.ButtonBase), 
 			new FrameworkPropertyMetadata(default(bool)));
 		#endif
@@ -56,7 +56,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty IsPressedProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"IsPressed", typeof(bool), 
+			nameof(IsPressed), typeof(bool), 
 			typeof(global::Windows.UI.Xaml.Controls.Primitives.ButtonBase), 
 			new FrameworkPropertyMetadata(default(bool)));
 		#endif

@@ -141,7 +141,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty CanContentRenderOutsideBoundsProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"CanContentRenderOutsideBounds", typeof(bool), 
+			nameof(CanContentRenderOutsideBounds), typeof(bool), 
 			typeof(global::Windows.UI.Xaml.Controls.ScrollContentPresenter), 
 			new FrameworkPropertyMetadata(default(bool)));
 		#endif
@@ -149,7 +149,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty SizesContentToTemplatedParentProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"SizesContentToTemplatedParent", typeof(bool), 
+			nameof(SizesContentToTemplatedParent), typeof(bool), 
 			typeof(global::Windows.UI.Xaml.Controls.ScrollContentPresenter), 
 			new FrameworkPropertyMetadata(default(bool)));
 		#endif

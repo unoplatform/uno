@@ -327,7 +327,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty ZoomSnapPointsProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"ZoomSnapPoints", typeof(global::System.Collections.Generic.IList<float>), 
+			nameof(ZoomSnapPoints), typeof(global::System.Collections.Generic.IList<float>), 
 			typeof(global::Windows.UI.Xaml.Controls.ScrollViewer), 
 			new FrameworkPropertyMetadata(default(global::System.Collections.Generic.IList<float>)));
 		#endif
@@ -336,7 +336,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty ComputedHorizontalScrollBarVisibilityProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"ComputedHorizontalScrollBarVisibility", typeof(global::Windows.UI.Xaml.Visibility), 
+			nameof(ComputedHorizontalScrollBarVisibility), typeof(global::Windows.UI.Xaml.Visibility), 
 			typeof(global::Windows.UI.Xaml.Controls.ScrollViewer), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Visibility)));
 		#endif
@@ -344,7 +344,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty ComputedVerticalScrollBarVisibilityProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"ComputedVerticalScrollBarVisibility", typeof(global::Windows.UI.Xaml.Visibility), 
+			nameof(ComputedVerticalScrollBarVisibility), typeof(global::Windows.UI.Xaml.Visibility), 
 			typeof(global::Windows.UI.Xaml.Controls.ScrollViewer), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Visibility)));
 		#endif
@@ -354,7 +354,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty HorizontalOffsetProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"HorizontalOffset", typeof(double), 
+			nameof(HorizontalOffset), typeof(double), 
 			typeof(global::Windows.UI.Xaml.Controls.ScrollViewer), 
 			new FrameworkPropertyMetadata(default(double)));
 		#endif
@@ -390,7 +390,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty ZoomSnapPointsTypeProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"ZoomSnapPointsType", typeof(global::Windows.UI.Xaml.Controls.SnapPointsType), 
+			nameof(ZoomSnapPointsType), typeof(global::Windows.UI.Xaml.Controls.SnapPointsType), 
 			typeof(global::Windows.UI.Xaml.Controls.ScrollViewer), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Controls.SnapPointsType)));
 		#endif
@@ -434,7 +434,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty VerticalOffsetProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"VerticalOffset", typeof(double), 
+			nameof(VerticalOffset), typeof(double), 
 			typeof(global::Windows.UI.Xaml.Controls.ScrollViewer), 
 			new FrameworkPropertyMetadata(default(double)));
 		#endif
@@ -445,7 +445,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty LeftHeaderProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"LeftHeader", typeof(global::Windows.UI.Xaml.UIElement), 
+			nameof(LeftHeader), typeof(global::Windows.UI.Xaml.UIElement), 
 			typeof(global::Windows.UI.Xaml.Controls.ScrollViewer), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.UIElement)));
 		#endif
@@ -453,7 +453,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty TopHeaderProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"TopHeader", typeof(global::Windows.UI.Xaml.UIElement), 
+			nameof(TopHeader), typeof(global::Windows.UI.Xaml.UIElement), 
 			typeof(global::Windows.UI.Xaml.Controls.ScrollViewer), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.UIElement)));
 		#endif
@@ -461,7 +461,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty TopLeftHeaderProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"TopLeftHeader", typeof(global::Windows.UI.Xaml.UIElement), 
+			nameof(TopLeftHeader), typeof(global::Windows.UI.Xaml.UIElement), 
 			typeof(global::Windows.UI.Xaml.Controls.ScrollViewer), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.UIElement)));
 		#endif
@@ -469,7 +469,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty HorizontalAnchorRatioProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"HorizontalAnchorRatio", typeof(double), 
+			nameof(HorizontalAnchorRatio), typeof(double), 
 			typeof(global::Windows.UI.Xaml.Controls.ScrollViewer), 
 			new FrameworkPropertyMetadata(default(double)));
 		#endif
@@ -477,7 +477,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty ReduceViewportForCoreInputViewOcclusionsProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"ReduceViewportForCoreInputViewOcclusions", typeof(bool), 
+			nameof(ReduceViewportForCoreInputViewOcclusions), typeof(bool), 
 			typeof(global::Windows.UI.Xaml.Controls.ScrollViewer), 
 			new FrameworkPropertyMetadata(default(bool)));
 		#endif
@@ -485,7 +485,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty VerticalAnchorRatioProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"VerticalAnchorRatio", typeof(double), 
+			nameof(VerticalAnchorRatio), typeof(double), 
 			typeof(global::Windows.UI.Xaml.Controls.ScrollViewer), 
 			new FrameworkPropertyMetadata(default(double)));
 		#endif
