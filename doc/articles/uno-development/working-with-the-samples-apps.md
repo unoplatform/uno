@@ -85,7 +85,7 @@ To run the tests:
 - Press `F5`, node will start and run the tests sequentially
 - The screen shots are placed in a folder named `out`
 
-Note that the same operation is run during the CI, in a specific job running under Linux. The screen shots are located in an build artifact.
+Note that the same operation is run during the CI, in a specific job running under Linux. The screen shots are located in the Unit Tests section under `Screenshots Compare Test Run` as well as in the build artifact.
 
 ## Validating the WebAssembly UI Tests results
 
