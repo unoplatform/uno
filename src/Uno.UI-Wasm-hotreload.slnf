@@ -20,6 +20,7 @@
       "Uno.HotReload.Host\\Uno.HotReload.Host.csproj",
       "Uno.HotReload.VS\\Uno.UI.HotReload.VS.csproj",
       "Uno.HotReload\\Uno.UI.HotReload.csproj",
+      "Uno.RemoteControl.Server\\Uno.RemoteControl.Server.csproj",
       "Uno.UI.BindingHelper.Android\\Uno.UI.BindingHelper.Android.csproj",
       "Uno.UI.RuntimeTests\\Uno.UI.RuntimeTests.csproj",
       "Uno.UI.Toolkit\\Uno.UI.Toolkit.csproj",

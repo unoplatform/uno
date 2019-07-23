@@ -4,6 +4,12 @@
     <TargetFramework>net461</TargetFramework>
   </PropertyGroup>
 
+	<ItemGroup>
+		<Compile Include="..\Uno.HotReload\HotReload\Messages\**\*.cs" Link="Messages/%(Filename)" />
+		<Compile Include="..\Uno.HotReload\Helpers\**\*.cs" Link="Helpers/%(Filename)" />
+		<Compile Include="..\Uno.HotReload\IMessage.cs" Link="%(Filename)" />
+	</ItemGroup>
+
 	<PropertyGroup>
 		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
 		<NoWarn>$(NoWarn);NU1701</NoWarn>
@@ -24,8 +30,8 @@
 
 	<ItemGroup>
 		<PackageReference Include="EnvDTE100" Version="10.0.3" />
-		<PackageReference Include="Microsoft.VisualStudio.Shell.Interop" Version="7.10.6072" />
 		<PackageReference Include="Newtonsoft.Json" Version="12.0.2" />
+		<PackageReference Include="Microsoft.AspNetCore.App" Version="2.1.4" />
 	</ItemGroup>
 
 	<Target Name="_UnoToolkitOverrideNuget" AfterTargets="AfterBuild" DependsOnTargets="BuiltProjectOutputGroup" Condition="'$(UnoNugetOverrideVersion)'!=''">
