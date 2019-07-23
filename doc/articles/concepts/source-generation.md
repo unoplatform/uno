@@ -1,10 +1,11 @@
 # Source Generation Overview
 
-At compile time, there's two main things under the hood that Uno does:
+At compile time, there's four main things under the hood that Uno does:
 
 - Parses XAML files and generates C# code to create the information needed to build your applications visual tree.
-- Generation of dependency objects that are optimised for static type-checking where possible.
-
+- Generation of [dependency objects](https://github.com/unoplatform/uno/blob/master/src/SourceGenerators/Uno.UI.SourceGenerators/DependencyObject/DependencyObjectGenerator.cs) that are optimised for static type-checking where possible.
+- Generation of [native constructors for iOS and Android](https://github.com/unoplatform/uno/blob/master/src/SourceGenerators/Uno.UI.SourceGenerators/NativeCtor/NativeCtorsGenerator.cs). 
+- Generation of [Localizable.strings (iOS) and Strings.xml (Android)](https://github.com/unoplatform/uno/blob/master/src/SourceGenerators/Uno.UI.Tasks/ResourcesGenerator/ResourcesGenerationTask.cs) files from `.resw` resources.
 
 # Parsing of XAML files
 
@@ -40,3 +41,11 @@ Here's a [small snippet](https://github.com/nventive/Uno/blob/74ba91756c446107e7
 - A check to ensure the type doesn't _already_ override the same method so that the generator doesn't accidentally generate code that clashes with authored code and causes a compiler error. 
 
 All this goes on under the hood without user intervention, whenever your app compiles. The end result is that `DependencyObject` can be used almost exactly the same way with Uno as with UWP, even though it's an interface and not a class.
+
+# Generation of native constructors
+
+tba
+
+# Generation from `.resw` resources
+
+tba
