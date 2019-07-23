@@ -148,6 +148,9 @@ namespace SamplesApp
 						   
 						//  Binder memory references tracking
 						// { "ReferenceHolder", LogLevel.Debug },
+
+						// LayoutProvider logging
+						{ "Uno.UI.LayoutProvider", LogLevel.Debug },
 					}
 				)
 				.AddConsole(LogLevel.Debug);

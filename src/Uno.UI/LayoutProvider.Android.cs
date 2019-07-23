@@ -1,12 +1,17 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using Android.App;
 using Android.Graphics;
 using Android.Graphics.Drawables;
 using Android.Util;
 using Android.Views;
 using Android.Widget;
+using Microsoft.Extensions.Logging;
+using Uno.Extensions;
+using Uno.Logging;
 using Windows.Devices.Sensors;
 using Windows.Foundation;
 using Windows.Graphics.Display;
@@ -70,6 +75,7 @@ namespace Uno.UI
 			_adjustResizeLayoutProvider.Stop();
 		}
 
+		// handlers
 		private void MeasureLayout(PopupWindow sender)
 		{
 			// We can obtain the size of keyboard by comparing the layout of two popup windows
@@ -105,6 +111,32 @@ namespace Uno.UI
 					break;
 			}
 
+			if (this.Log().IsEnabled(LogLevel.Debug))
+			{
+				var flags = _activity.Window.Attributes.Flags;
+				var systemUiVisibility = _activity.Window.DecorView.SystemUiVisibility;
+
+				var props = string.Join(", ", new Dictionary<string, string>
+				{
+					// measured values
+					[nameof(realMetrics)] = JsonHelper.Jsonify(realMetrics),
+					[nameof(adjustNothingFrame)] = JsonHelper.Jsonify(adjustNothingFrame),
+					[nameof(adjustResizeFrame)] = JsonHelper.Jsonify(adjustResizeFrame),
+					// computed values
+					[nameof(StatusBarRect)] = JsonHelper.Jsonify(StatusBarRect),
+					[nameof(KeyboardRect)] = JsonHelper.Jsonify(KeyboardRect),
+					[nameof(NavigationBarRect)] = JsonHelper.Jsonify(NavigationBarRect),
+					// for debugging
+					[nameof(orientation)] = JsonHelper.Jsonify(orientation),
+					[nameof(flags)] = JsonHelper.Jsonify(flags),
+					[nameof(systemUiVisibility)] = JsonHelper.Jsonify(systemUiVisibility),
+					[nameof(flags) + "Raw"] = JsonHelper.Jsonify((int)flags),
+					[nameof(systemUiVisibility) + "Raw"] = JsonHelper.Jsonify((int)systemUiVisibility),
+				}.Select(kvp => string.Concat(JsonHelper.Camelize(kvp.Key), ": ", kvp.Value)));
+
+				this.Log().Debug($"=== MeasureLayout: {{ {props} }}");
+			}
+
 			LayoutChanged?.Invoke(StatusBarRect, KeyboardRect, NavigationBarRect);
 
 			T Get<T>(Action<T> getter) where T : new()
@@ -124,6 +156,11 @@ namespace Uno.UI
 				ViewHelper.PhysicalToLogicalPixels(insets.SystemWindowInsetRight),
 				ViewHelper.PhysicalToLogicalPixels(insets.SystemWindowInsetBottom)
 			);
+
+			if (this.Log().IsEnabled(LogLevel.Debug))
+			{
+				this.Log().Debug($"=== MeasureInsets: {{ physicalInsets: {JsonHelper.Jsonify(ViewHelper.LogicalToPhysicalPixels(Insets))} }}");
+			}
 
 			InsetsChanged?.Invoke(Insets);
 		}
@@ -186,6 +223,23 @@ namespace Uno.UI
 				// We need to consume insets here since we will handle them in the Window.Android.cs
 				return insets.ConsumeSystemWindowInsets();
 			}
+		}
+
+		private static class JsonHelper
+		{
+			public static string Camelize(string x) => Regex.Replace(x, @"^\w", c => c.Value.ToLower());
+
+			public static string Jsonify(bool x) => x.ToString().ToLower();
+
+			public static string Jsonify(int x) => x.ToString().ToLower();
+
+			public static string Jsonify(Enum x) => $"\"{x}\"";
+
+			public static string Jsonify(DisplayMetrics x) => $"{{ width: {x.WidthPixels}, height: {x.HeightPixels} }}";
+
+			public static string Jsonify(Rect x) => $"{{ left: {x.Left}, top: {x.Top}, right: {x.Right}, bottom: {x.Bottom} }}";
+
+			public static string Jsonify(Thickness x) => $"{{ left: {x.Left}, top: {x.Top}, right: {x.Right}, bottom: {x.Bottom} }}";
 		}
 	}
 }
