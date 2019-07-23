@@ -8,13 +8,13 @@ branches:
     tag: dev
     regex: master
   beta:
-    regex: beta
+    regex: release/beta/
     tag: beta
     increment: none
     source-branches: ['master']
   stable:
-    regex: stable
-    tag: 
+    regex: release/stable/
+    tag: ''
     increment: none
     source-branches: ['master']
   dev:
