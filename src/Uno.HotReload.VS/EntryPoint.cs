@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using EnvDTE;
 using EnvDTE80;
+using Microsoft.VisualStudio.Shell.Interop;
 
 namespace Uno.UI.HotReload.VS
 {
@@ -29,6 +30,12 @@ namespace Uno.UI.HotReload.VS
 			_toolsPath = toolsPath;
 
 			SetupOutputWindow();
+
+			_dte.Events.BuildEvents.OnBuildBegin += BuildEvents_OnBuildBegin;
+		}
+
+		private void BuildEvents_OnBuildBegin(vsBuildScope Scope, vsBuildAction Action)
+		{
 		}
 
 		private void SetupOutputWindow()

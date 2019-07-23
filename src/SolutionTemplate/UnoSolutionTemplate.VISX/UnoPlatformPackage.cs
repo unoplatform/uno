@@ -3,6 +3,7 @@ using System.ComponentModel.Design;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
+using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
@@ -14,6 +15,7 @@ using Microsoft.VisualStudio.OLE.Interop;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.Win32;
+using NuGet.VisualStudio;
 using Task = System.Threading.Tasks.Task;
 
 namespace UnoSolutionTemplate
@@ -38,12 +40,17 @@ namespace UnoSolutionTemplate
 	[PackageRegistration(UseManagedResourcesOnly = true, AllowsBackgroundLoading = true)]
 	[InstalledProductRegistration("#110", "#112", "1.0", IconResourceID = 400)] // Info on this package for Help/About
 	[Guid(UnoPlatformPackage.PackageGuidString)]
-	[ProvideAutoLoad(VSConstants.UICONTEXT.NoSolution_string, PackageAutoLoadFlags.BackgroundLoad)]
+	[ProvideAutoLoad(VSConstants.UICONTEXT.SolutionExistsAndFullyLoaded_string, PackageAutoLoadFlags.BackgroundLoad)]
 	[SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1650:ElementDocumentationMustBeSpelledCorrectly", Justification = "pkgdef, VS and vsixmanifest are valid VS terms")]
 	public sealed class UnoPlatformPackage : AsyncPackage
 	{
+		private Action<string> _warningAction;
+		private Action<string> _infoAction;
+		private Action<string> _verboseAction;
+		private Action<Exception> _errorAction;
 		private DTE2 _dte;
 		private _dispSolutionEvents_OpenedEventHandler _openedHandler;
+		private IDisposable _remoteControl;
 
 		/// <summary>
 		/// UnoPlatformPackage GUID string.
@@ -59,6 +66,8 @@ namespace UnoSolutionTemplate
 			// any Visual Studio service because at this point the package object is created but
 			// not sited yet inside Visual Studio environment. The place to do all the other
 			// initialization is the Initialize method.
+
+			Debug.WriteLine(string.Format(CultureInfo.CurrentCulture, "Entering constructor for: {0}", this.ToString()));
 		}
 
 		#region Package Members
@@ -72,24 +81,76 @@ namespace UnoSolutionTemplate
 		/// <returns>A task representing the async work of package initialization, or an already completed task if there is none. Do not return null from this method.</returns>
 		protected override async Task InitializeAsync(CancellationToken cancellationToken, IProgress<ServiceProgressData> progress)
 		{
+			Debug.WriteLine(string.Format(CultureInfo.CurrentCulture, "Entering InitializeAsync for: {0}", this.ToString()));
+
 			// When initialized asynchronously, the current thread may be a background thread at this point.
 			// Do any initialization that requires the UI thread after switching to the UI thread.
 			await this.JoinableTaskFactory.SwitchToMainThreadAsync(cancellationToken);
 
 			_dte = await GetServiceAsync(typeof(DTE)) as DTE2;
 
-			_openedHandler = () => OnOpened();
+			_openedHandler = () => InvokeOnMainThread(() => OnOpened());
 
 			_dte.Events.SolutionEvents.Opened += _openedHandler;
+
+			SetupOutputWindow();
+
+			if (_dte.Solution.IsOpen)
+			{
+				await OnOpened();
+			}
 		}
+
+		void InvokeOnMainThread(Func<Task> func)
+		{
+			JoinableTaskFactory.RunAsync(async () =>
+			{
+				// When initialized asynchronously, the current thread may be a background thread at this point.
+				// Do any initialization that requires the UI thread after switching to the UI thread.
+				await this.JoinableTaskFactory.SwitchToMainThreadAsync(CancellationToken.None);
+				await func();
+			});
+		}
+
+		private void SetupOutputWindow()
+		{
+			OutputWindowPane owP = null;
+
+			Func<OutputWindowPane> pane = () =>
+			{
+				if (owP == null)
+				{
+					OutputWindow ow = _dte.ToolWindows.OutputWindow;
+						// Add a new pane to the Output window.
+						owP = ow
+						.OutputWindowPanes
+						.OfType<OutputWindowPane>()
+						.FirstOrDefault(p => p.Name == "nventive");
+
+					if (owP == null)
+					{
+						owP = ow
+						.OutputWindowPanes
+						.Add("nventive");
+					}
+				}
+
+				return owP;
+			};
+
+			_infoAction = s => pane().OutputString("[INFO] " + s + "\r\n");
+			_verboseAction = s => pane().OutputString("[VERBOSE] " + s + "\r\n");
+			_warningAction = s => pane().OutputString("[WARNING] " + s + "\r\n");
+			_errorAction = e => pane().OutputString("[ERROR] " + e.ToString() + "\r\n");
+		}
+		
 
 		#endregion
 
-		private async void OnOpened()
+		private async Task OnOpened()
 		{
-			// When initialized asynchronously, the current thread may be a background thread at this point.
-			// Do any initialization that requires the UI thread after switching to the UI thread.
-			await this.JoinableTaskFactory.SwitchToMainThreadAsync(CancellationToken.None);
+			Debug.WriteLine(string.Format(CultureInfo.CurrentCulture, "OnOpened: {0}", this.ToString()));
+
 
 			do
 			{
@@ -99,39 +160,42 @@ namespace UnoSolutionTemplate
 					IVsPackageInstallerServices installerServices = componentModel.GetService<IVsPackageInstallerServices>();
 					var installedPackages = installerServices.GetInstalledPackages();
 
-					var umbrella = installedPackages
-						.Where(p => p.Id.Equals("Umbrella", StringComparison.OrdinalIgnoreCase))
+					var unoNuGetPackage = installedPackages
+						.Where(p => p.Id.Equals("Uno.UI", StringComparison.OrdinalIgnoreCase))
 						.OrderByDescending(p => p.VersionString)
 						.LastOrDefault();
 
-					if (umbrella != null)
+					if (unoNuGetPackage != null)
 					{
-						if (string.IsNullOrWhiteSpace(umbrella.InstallPath.Trim()))
+						if (string.IsNullOrWhiteSpace(unoNuGetPackage.InstallPath.Trim()))
 						{
-							_infoAction("The umbrella package has not been restored yet, retrying...");
+							_infoAction("The Uno.UI package has not been restored yet, retrying...");
 						}
 						else
 						{
-							var toolsPath = System.IO.Path.Combine(umbrella.InstallPath, "tools");
-							var asmPath = System.IO.Path.Combine(toolsPath, "umbrella.powershell.dll");
+							var toolsPath = System.IO.Path.Combine(unoNuGetPackage.InstallPath, "tools", "rc");
+							var asmPath = System.IO.Path.Combine(toolsPath, "Uno.UI.HotReload.VS.dll");
 							var asm = System.Reflection.Assembly.LoadFrom(asmPath);
 
-							var dispatcherType = asm.GetType("Umbrella.Powershell.DomainDispatcher");
+							var entryPointType = asm.GetType("Uno.UI.HotReload.VS.EntryPoint");
 
-							if (dispatcherType.GetConstructor(new[] { typeof(DTE2), typeof(string), typeof(CommandBarPopup) }) != null)
+							if (entryPointType.GetConstructor(new[] { typeof(DTE2), typeof(string) }) != null)
 							{
-								_dispatcher = Activator.CreateInstance(dispatcherType, dte, toolsPath, mainMenu) as IDisposable;
+								_remoteControl = Activator.CreateInstance(entryPointType, _dte, toolsPath) as IDisposable;
+
+								_infoAction($"Loaded the Uno.UI Remote Control service ({unoNuGetPackage.VersionString}).");
 							}
 							else
 							{
-								_infoAction("The loaded solution contains an Umbrella package that does not provide UI commands.");
+								_infoAction("The loaded solution contains an Uno.UI Remote Control service.");
 							}
 						}
 					}
 
-					CreateUmbrellaIntegrationCommandsMenu(dte, mainMenu);
-
-					return;
+					if (_dte.Solution.IsOpen)
+					{
+						return;
+					}
 				}
 				catch (Exception e)
 				{
