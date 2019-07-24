@@ -29,7 +29,7 @@ namespace Uno.HotReload.Host
 			app
 				.UseDeveloperExceptionPage()
 				.UseWebSockets()
-				.UseHotReloadServer(options);
+				.UseRemoteControlServer(options);
 		}
 
 	}
@@ -57,10 +57,10 @@ namespace Uno.HotReload.Host
 			return filtered;
 		}
 
-		public static IApplicationBuilder UseHotReloadServer(this IApplicationBuilder app, ProxyOptions options)
-			=> UseHotReloadServer(app, options, MapValues);
+		public static IApplicationBuilder UseRemoteControlServer(this IApplicationBuilder app, ProxyOptions options)
+			=> UseRemoteControlServer(app, options, MapValues);
 
-		public static IApplicationBuilder UseHotReloadServer(
+		public static IApplicationBuilder UseRemoteControlServer(
 			this IApplicationBuilder app,
 			ProxyOptions options,
 			Func<Dictionary<string, string>, HttpContext, Uri, Dictionary<string, string>> mapFunc)

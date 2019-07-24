@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Immutable;
+using System.ComponentModel.Composition;
 using System.ComponentModel.Design;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
@@ -12,6 +14,8 @@ using EnvDTE80;
 using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.ComponentModelHost;
 using Microsoft.VisualStudio.OLE.Interop;
+using Microsoft.VisualStudio.ProjectSystem;
+using Microsoft.VisualStudio.ProjectSystem.Build;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.Win32;
@@ -40,7 +44,7 @@ namespace UnoSolutionTemplate
 	[PackageRegistration(UseManagedResourcesOnly = true, AllowsBackgroundLoading = true)]
 	[InstalledProductRegistration("#110", "#112", "1.0", IconResourceID = 400)] // Info on this package for Help/About
 	[Guid(UnoPlatformPackage.PackageGuidString)]
-	[ProvideAutoLoad(VSConstants.UICONTEXT.SolutionExistsAndFullyLoaded_string, PackageAutoLoadFlags.BackgroundLoad)]
+	[ProvideAutoLoad(VSConstants.UICONTEXT.SolutionExists_string, PackageAutoLoadFlags.BackgroundLoad)]
 	[SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1650:ElementDocumentationMustBeSpelledCorrectly", Justification = "pkgdef, VS and vsixmanifest are valid VS terms")]
 	public sealed class UnoPlatformPackage : AsyncPackage
 	{
@@ -151,12 +155,11 @@ namespace UnoSolutionTemplate
 		{
 			Debug.WriteLine(string.Format(CultureInfo.CurrentCulture, "OnOpened: {0}", this.ToString()));
 
-
 			do
 			{
 				try
 				{
-					var componentModel = (IComponentModel)GetService(typeof(SComponentModel));
+					var componentModel = (IComponentModel)await GetServiceAsync(typeof(SComponentModel));
 					IVsPackageInstallerServices installerServices = componentModel.GetService<IVsPackageInstallerServices>();
 					var installedPackages = installerServices.GetInstalledPackages();
 
@@ -179,9 +182,9 @@ namespace UnoSolutionTemplate
 
 							var entryPointType = asm.GetType("Uno.UI.HotReload.VS.EntryPoint");
 
-							if (entryPointType.GetConstructor(new[] { typeof(DTE2), typeof(string) }) != null)
+							if (entryPointType.GetConstructor(new[] { typeof(DTE2), typeof(string), typeof(AsyncPackage) }) != null)
 							{
-								_remoteControl = Activator.CreateInstance(entryPointType, _dte, toolsPath) as IDisposable;
+								_remoteControl = Activator.CreateInstance(entryPointType, _dte, toolsPath, this) as IDisposable;
 
 								_infoAction($"Loaded the Uno.UI Remote Control service ({unoNuGetPackage.VersionString}).");
 							}
@@ -205,6 +208,26 @@ namespace UnoSolutionTemplate
 				await System.Threading.Tasks.Task.Delay(5000);
 			}
 			while (true);
+		}
+	}
+
+	// https://github.com/microsoft/VSProjectSystem/blob/4ad5716f8fca76403699b818c3d907ce8a8b9a38/doc/extensibility/IProjectGlobalPropertiesProvider.md
+	[ExportBuildGlobalPropertiesProvider]
+	[AppliesTo("(" + ProjectCapabilities.CSharp + " | " + ProjectCapabilities.VB + ")" + " & " + ProjectCapabilities.LanguageService)]
+	public class SetGlobalGlobalPropertiesForUno : StaticGlobalPropertiesProviderBase
+	{
+		[ImportingConstructor]
+		public SetGlobalGlobalPropertiesForUno(IProjectService projectService)
+			: base(projectService.Services)
+		{
+			Debug.WriteLine(string.Format(CultureInfo.CurrentCulture, "Entering constructor for: {0}", this.ToString()));
+		}
+
+		public override System.Threading.Tasks.Task<IImmutableDictionary<string, string>> GetGlobalPropertiesAsync(System.Threading.CancellationToken cancellationToken)
+		{
+			Debug.WriteLine(string.Format(CultureInfo.CurrentCulture, "Entering GetGlobalPropertiesAsync for: {0}", this.ToString()));
+
+			return Task.FromResult<IImmutableDictionary<string, string>>(Empty.PropertiesMap.Add("UnoRemoteControlPort", "12345"));
 		}
 	}
 }
