@@ -54,7 +54,7 @@ namespace Uno.UI.Samples.Presentation.SamplePages
 
 		public string Placeholder
 		{
-			get { return _placeholder; }
+			get => _placeholder;
 			set { _placeholder = value; RaisePropertyChanged(); }
 		}
 
@@ -68,8 +68,7 @@ namespace Uno.UI.Samples.Presentation.SamplePages
 
 		private void OnToggleHeader()
 		{
-			var currenValue = Header;
-			if(currenValue == null)
+			if(Header == null)
 			{
 				Header = HeaderText;
 				Placeholder = HeaderVisible;
