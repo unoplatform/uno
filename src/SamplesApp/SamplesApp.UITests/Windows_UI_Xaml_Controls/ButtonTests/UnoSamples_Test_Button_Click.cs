@@ -58,31 +58,31 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ButtonTests
 			// Tap on layer1 through "hit visible" panel
 			_app.TapCoordinates(
 				x: ((layer1InnerRect.X - layer1Rect.X) / 2) + layer1Rect.X,
-				y: hitVisibleRect.GetCenter().y);
+				y: hitVisibleRect.CenterY);
 			CheckClickCounts(0, 0, 0, 0);
 
 			// Tap on layer1 through "hit invisible" panel
 			_app.TapCoordinates(
 				x: ((layer1InnerRect.X - layer1Rect.X) / 2) + layer1Rect.X,
-				y: hitInvisibleRect.GetCenter().y);
+				y: hitInvisibleRect.CenterY);
 			CheckClickCounts(1, 0, 0, 0);
 
 			// Tap on layer2 through "hit invisible" panel, right over layer1 & layer1_inner
 			_app.TapCoordinates(
 				x: ((layer1InnerRect.GetRight() - layer2Rect.X) / 2) + layer2Rect.X,
-				y: hitInvisibleRect.GetCenter().y);
+				y: hitInvisibleRect.CenterY);
 			CheckClickCounts(1, 0, 1, 0);
 
 			// Tap on layer3 through "hit invisible" panel, right over layer2
 			_app.TapCoordinates(
 				x: ((layer2Rect.GetRight() - layer3Rect.X) / 2) + layer3Rect.X,
-				y: hitInvisibleRect.GetCenter().y);
+				y: hitInvisibleRect.CenterY);
 			CheckClickCounts(1, 0, 1, 1);
 
 			// Tap on layer1_inner through "hit invisible" panel
 			_app.TapCoordinates(
 				x: ((layer2Rect.X - layer1InnerRect.X) / 2) + layer1InnerRect.X,
-				y: hitInvisibleRect.GetCenter().y);
+				y: hitInvisibleRect.CenterY);
 			// PATCH-WARNING ** PATCH-WARNING ** PATCH-WARNING ** PATCH-WARNING ** PATCH-WARNING ** PATCH-WARNING
 			// PATCH-WARNING ** PATCH-WARNING ** PATCH-WARNING ** PATCH-WARNING ** PATCH-WARNING ** PATCH-WARNING
 			// PATCH-WARNING ** PATCH-WARNING ** PATCH-WARNING ** PATCH-WARNING ** PATCH-WARNING ** PATCH-WARNING
