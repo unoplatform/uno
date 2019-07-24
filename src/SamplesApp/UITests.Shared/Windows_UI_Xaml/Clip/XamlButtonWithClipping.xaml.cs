@@ -18,7 +18,7 @@ using Windows.UI.Xaml.Navigation;
 
 namespace Uno.UI.Samples.Content.UITests.Clip
 {
-	[SampleControlInfoAttribute("Clip", "XamlButtonWithClipping", typeof(ButtonTestsViewModel))]
+	[SampleControlInfo("Clip", "XamlButtonWithClipping", typeof(ButtonTestsViewModel))]
 	public sealed partial class XamlButtonWithClipping : UserControl
 	{
 		public XamlButtonWithClipping()

@@ -17,7 +17,7 @@ using Windows.UI.Xaml.Navigation;
 
 namespace Uno.UI.Samples.Content.UITests.TextBoxControl
 {
-	[SampleControlInfoAttribute("TextBox", "Input_Multiline_AutoHeight", typeof(Uno.UI.Samples.Presentation.SamplePages.TextBoxViewModel))]
+	[SampleControlInfo("TextBox", "Input_Multiline_AutoHeight", typeof(Uno.UI.Samples.Presentation.SamplePages.TextBoxViewModel))]
 	public sealed partial class Input_Multiline_AutoHeight : UserControl
 	{
 		public Input_Multiline_AutoHeight()

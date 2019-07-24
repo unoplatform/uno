@@ -8,7 +8,7 @@ using Uno.UI.Samples.Controls;
 
 namespace Uno.UI.Samples.Content.UITests.Animations
 {
-	[SampleControlInfoAttribute("Visual states", "VisualTransition_Execution_Order")]
+	[SampleControlInfo("Visual states", "VisualTransition_Execution_Order")]
 	public sealed partial class VisualTransition_Execution_Order : UserControl
 	{
 		public VisualTransition_Execution_Order()

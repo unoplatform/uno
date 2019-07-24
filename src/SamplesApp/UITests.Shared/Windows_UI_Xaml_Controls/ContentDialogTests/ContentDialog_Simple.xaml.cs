@@ -17,7 +17,7 @@ using Windows.UI.Xaml.Navigation;
 
 namespace UITests.Shared.Windows_UI_Xaml_Controls.ContentDialogTests
 {
-	[SampleControlInfoAttribute("ContentDialog", "ContentDialog_Simple")]
+	[SampleControlInfo("ContentDialog", "ContentDialog_Simple")]
 	public sealed partial class ContentDialog_Simple : UserControl
 	{
 		public ContentDialog_Simple()

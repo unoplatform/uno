@@ -17,7 +17,7 @@ using Windows.UI.Xaml.Navigation;
 
 namespace GenericApp.Views.Content.UITests.TextBoxControl
 {
-	[SampleControlInfoAttribute("TextBox", "Textbox_Keyboard_AutoFocused", typeof(Uno.UI.Samples.Presentation.SamplePages.TextBoxViewModel))]
+	[SampleControlInfo("TextBox", "Textbox_Keyboard_AutoFocused", typeof(Uno.UI.Samples.Presentation.SamplePages.TextBoxViewModel))]
 	public sealed partial class Textbox_Keyboard_AutoFocus : UserControl
     {
         public Textbox_Keyboard_AutoFocus()

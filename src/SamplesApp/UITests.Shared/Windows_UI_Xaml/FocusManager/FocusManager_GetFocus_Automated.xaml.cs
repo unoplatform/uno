@@ -23,7 +23,7 @@ using Windows.UI.Xaml.Navigation;
 
 namespace Uno.UI.Samples.Content.UITests.FocusManager
 {
-	[SampleControlInfoAttribute("FocusManager", "GetFocus")]
+	[SampleControlInfo("FocusManager", "GetFocus")]
 	public sealed partial class FocusManager_GetFocus_Automated : UserControl
 	{
 		public FocusManager_GetFocus_Automated()
@@ -41,7 +41,7 @@ namespace Uno.UI.Samples.Content.UITests.FocusManager
 			var myElement = Windows.UI.Xaml.Input.FocusManager.GetFocusedElement();
 			var myFrameworkElement = myElement as FrameworkElement;
 			var elementName = myFrameworkElement?.Name ?? "";
-			
+
 			this.TxtCurrentFocused.Text = elementName;
 		}
 	}

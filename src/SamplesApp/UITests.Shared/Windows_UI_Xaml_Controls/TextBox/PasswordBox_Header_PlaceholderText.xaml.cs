@@ -17,7 +17,7 @@ using Windows.UI.Xaml.Navigation;
 
 namespace Uno.UI.Samples.Content.UITests.TextBoxControl
 {
-	[SampleControlInfoAttribute("TextBox", "PasswordBox_Header_PlaceholderText")]
+	[SampleControlInfo("TextBox", "PasswordBox_Header_PlaceholderText")]
 	public sealed partial class PasswordBox_Header_PlaceholderText : UserControl
 	{
 		public PasswordBox_Header_PlaceholderText()

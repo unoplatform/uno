@@ -4,7 +4,7 @@ using Windows.UI.Xaml.Controls;
 
 namespace Uno.UI.Samples.Content.UITests.ButtonTestsControl
 {
-	[SampleControlInfoAttribute("Button", "ComboBox_Simple", typeof(ButtonTestsViewModel))]
+	[SampleControlInfo("Button", "ComboBox_Simple", typeof(ButtonTestsViewModel))]
 	public sealed partial class ComboBox_Simple : UserControl
 	{
 		public ComboBox_Simple()

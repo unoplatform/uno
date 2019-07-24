@@ -3,7 +3,7 @@ using Windows.UI.Xaml.Controls;
 
 namespace Uno.UI.Samples.Content.UITests.Transform
 {
-	[SampleControlInfoAttribute("Transform", "Image_With_RotateTransform")]
+	[SampleControlInfo("Transform", "Image_With_RotateTransform")]
 	public sealed partial class Image_With_RotateTransform : UserControl
 	{
 		public Image_With_RotateTransform()

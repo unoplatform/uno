@@ -18,7 +18,7 @@ using Windows.UI.Xaml.Navigation;
 
 namespace Uno.UI.Samples.Content.UITests.TextBoxControl
 {
-	[SampleControlInfoAttribute("TextBox", "TextBox_Keyboard_Dismiss", typeof(TextKeyboardDismissViewModel))]
+	[SampleControlInfo("TextBox", "TextBox_Keyboard_Dismiss", typeof(TextKeyboardDismissViewModel))]
 	public sealed partial class TextBox_Keyboard_Dismiss : UserControl
 	{
 		public TextBox_Keyboard_Dismiss()

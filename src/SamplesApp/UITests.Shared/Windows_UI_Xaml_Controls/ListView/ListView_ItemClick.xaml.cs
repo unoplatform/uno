@@ -6,7 +6,7 @@ using Windows.UI.Xaml.Controls;
 
 namespace SamplesApp.Windows_UI_Xaml_Controls.ListView
 {
-	[SampleControlInfoAttribute("ListView", "ListView_ItemClick", typeof(ListViewViewModel))]
+	[SampleControlInfo("ListView", "ListView_ItemClick", typeof(ListViewViewModel))]
 	public sealed partial class ListView_ItemClick : UserControl
 	{
 		public ListView_ItemClick()

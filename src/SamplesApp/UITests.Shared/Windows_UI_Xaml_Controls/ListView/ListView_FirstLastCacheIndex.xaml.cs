@@ -7,7 +7,7 @@ using Uno.UI.Sample.Views.Helper;
 
 namespace SamplesApp.Windows_UI_Xaml_Controls.ListView
 {
-	[SampleControlInfoAttribute("ListView", "ListView_FirstLastCacheIndex", description: "Demonstrates FirstCacheIndex and LastCacheIndex properties of ItemsStackPanel.")]
+	[SampleControlInfo("ListView", "ListView_FirstLastCacheIndex", description: "Demonstrates FirstCacheIndex and LastCacheIndex properties of ItemsStackPanel.")]
 	public sealed partial class ListView_FirstLastCacheIndex : UserControl
 	{
 		public ListView_FirstLastCacheIndex()

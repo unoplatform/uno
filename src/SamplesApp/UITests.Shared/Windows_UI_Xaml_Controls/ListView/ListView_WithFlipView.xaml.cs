@@ -4,7 +4,7 @@ using Windows.UI.Xaml.Controls;
 
 namespace SamplesApp.Windows_UI_Xaml_Controls.ListView
 {
-	[SampleControlInfoAttribute("ListView", "ListView_WithFlipView", typeof(ListViewWithFlipViewViewModel))]
+	[SampleControlInfo("ListView", "ListView_WithFlipView", typeof(ListViewWithFlipViewViewModel))]
 	public sealed partial class ListView_WithFlipView : UserControl
 	{
 		public ListView_WithFlipView()
