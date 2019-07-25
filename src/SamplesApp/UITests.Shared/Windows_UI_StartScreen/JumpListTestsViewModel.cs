@@ -5,6 +5,7 @@ using System.Text;
 using System.Windows.Input;
 using Windows.UI.Core;
 using Windows.UI.StartScreen;
+using UITests.Shared.Helpers;
 using Uno.UI.Common;
 using Uno.UI.Samples.UITests.Helpers;
 
@@ -66,7 +67,8 @@ namespace UITests.Shared.Windows_UI_StartScreen
 
 		private async void AddItemAsync()
 		{
-			var item = JumpListItem.CreateWithArguments("args", NewItem.DisplayName);
+			var item = JumpListItem.CreateWithArguments(NewItem.Arguments, NewItem.DisplayName);
+			item.Description = NewItem.Description;
 			_jumpList.Items.Add(item);
 			NewItem = new NewJumpListItem();
 			await _jumpList.SaveAsync();
@@ -99,9 +101,13 @@ namespace UITests.Shared.Windows_UI_StartScreen
 			Items = new ObservableCollection<JumpListItem>(_jumpList.Items);
 		}
 
-		public class NewJumpListItem
+		public class NewJumpListItem : BindableBase
 		{
-			public string DisplayName { get; set; }
+			public string Arguments { get; set; } = "";
+
+			public string DisplayName { get; set; } = "";
+
+			public string Description { get; set; } = "";
 		}
 	}
 }

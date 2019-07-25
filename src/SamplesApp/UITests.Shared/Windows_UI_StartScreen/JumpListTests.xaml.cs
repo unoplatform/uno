@@ -18,7 +18,7 @@ using Uno.UI.Samples.Controls;
 
 namespace UITests.Shared.Windows_UI_StartScreen
 {
-	[SampleControlInfo("Windows_UI_StartScreen", "JumpList", typeof(JumpListTestsViewModel))]
+	[SampleControlInfo("Windows.UI.StartScreen", "JumpList", typeof(JumpListTestsViewModel))]
 	public sealed partial class JumpListTests : UserControl
 	{
 		public JumpListTests()
@@ -29,7 +29,7 @@ namespace UITests.Shared.Windows_UI_StartScreen
 
 		public JumpListTestsViewModel Model { get; private set; }
 
-		private void JumpListTests_DataContextChanged(FrameworkElement sender, DataContextChangedEventArgs args)
+		private void JumpListTests_DataContextChanged(DependencyObject sender, DataContextChangedEventArgs args)
 		{
 			Model = args.NewValue as JumpListTestsViewModel;
 		}

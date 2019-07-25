@@ -2347,6 +2347,7 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)Helpers\BindableBase.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Helpers\ViewModelBase.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Lottie\SampleLottieAnimation.xaml.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Resources\StaticResource\StaticResource_Simple.xaml.cs" />
