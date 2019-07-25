@@ -81,6 +81,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_StartScreen\JumpListTests.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\Clip\ButtonClippingTestsControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -2389,6 +2393,8 @@
       <DependentUpon>AutomationProperties_Name.xaml</DependentUpon>
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Core\SystemNavigationManagerTests\HardwareBackButton.xaml.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_StartScreen\JumpListTests.xaml.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_StartScreen\JumpListTestsViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\Clip\ButtonClippingTestsControl.xaml.cs">
       <DependentUpon>ButtonClippingTestsControl.xaml</DependentUpon>
     </Compile>
@@ -4151,6 +4157,9 @@
     </Compile>
     <Compile Update="$(MSBuildThisFileDirectory)Resources\StaticResource\StaticResource_Simple.xaml.cs">
       <DependentUpon>StaticResource_Simple.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="D:\Dev\Uno\src\SamplesApp\UITests.Shared\Windows_UI_StartScreen\JumpListTests.xaml.cs">
+      <DependentUpon>JumpListTests.xaml</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>

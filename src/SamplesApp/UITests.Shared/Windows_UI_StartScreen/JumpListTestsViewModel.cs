@@ -1,0 +1,107 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Text;
+using System.Windows.Input;
+using Windows.UI.Core;
+using Windows.UI.StartScreen;
+using Uno.UI.Common;
+using Uno.UI.Samples.UITests.Helpers;
+
+namespace UITests.Shared.Windows_UI_StartScreen
+{
+	public class JumpListTestsViewModel : ViewModelBase
+	{
+		private ICommand _loadCurrentCommand;
+		private JumpList _jumpList;
+		private JumpListItem _selectedItem;
+		private ObservableCollection<JumpListItem> _items = new ObservableCollection<JumpListItem>();
+		private ICommand _removeItemCommand;
+		private ICommand _addItemCommand;
+		private NewJumpListItem _newItem = new NewJumpListItem();
+
+		public JumpListTestsViewModel(CoreDispatcher dispatcher) : base(dispatcher)
+		{
+			IsSupported = JumpList.IsSupported();
+		}
+
+		public bool IsSupported { get; }
+
+		public bool IsLoaded => _jumpList != null;
+
+		public bool ItemSelected => SelectedItem != null;
+
+		public ObservableCollection<JumpListItem> Items
+		{
+			get => _items;
+			private set
+			{
+				_items = value;
+                RaisePropertyChanged();
+			}
+		}
+
+		public JumpListItem SelectedItem
+		{
+			get => _selectedItem;
+			set
+			{
+				_selectedItem = value;
+				RaisePropertyChanged(nameof(ItemSelected));
+			}
+		}
+
+		public NewJumpListItem NewItem
+		{
+			get => _newItem;
+			set
+			{
+				_newItem = value;
+				RaisePropertyChanged(nameof(NewItem));
+			}
+		}
+
+		public ICommand AddItemCommand =>
+			_addItemCommand ?? (_addItemCommand = new DelegateCommand(AddItemAsync));
+
+		private async void AddItemAsync()
+		{
+			var item = JumpListItem.CreateWithArguments("args", NewItem.DisplayName);
+			_jumpList.Items.Add(item);
+			NewItem = new NewJumpListItem();
+			await _jumpList.SaveAsync();
+            RefreshItems();
+		}
+
+		public ICommand RemoveItemCommand =>
+			_removeItemCommand ?? (_removeItemCommand = new DelegateCommand(RemoveItemAsync));
+
+		private async void RemoveItemAsync()
+		{
+			_jumpList.Items.Remove(SelectedItem);
+			SelectedItem = null;
+			await _jumpList.SaveAsync();
+            RefreshItems();
+		}
+
+		public ICommand LoadCurrentCommand =>
+			_loadCurrentCommand ?? (_loadCurrentCommand = new DelegateCommand(LoadCurrentAsync));
+
+        private async void LoadCurrentAsync()
+		{
+			_jumpList = await JumpList.LoadCurrentAsync();
+            RefreshItems();
+			RaisePropertyChanged(nameof(IsLoaded));
+		}
+
+		private void RefreshItems()
+		{
+			Items = new ObservableCollection<JumpListItem>(_jumpList.Items);
+		}
+
+		public class NewJumpListItem
+		{
+			public string DisplayName { get; set; }
+		}
+	}
+}
