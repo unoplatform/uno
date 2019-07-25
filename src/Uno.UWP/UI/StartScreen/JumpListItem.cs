@@ -9,6 +9,11 @@ namespace Windows.UI.StartScreen
 {
 	public partial class JumpListItem
 	{
+		private JumpListItem(string arguments)
+		{
+			Arguments = arguments;
+		}
+
 		public Uri Logo { get; set; }
 
 		public string GroupName { get; set; }
@@ -19,13 +24,13 @@ namespace Windows.UI.StartScreen
 
 		public string Arguments { get; }
 
-		public JumpListItemKind Kind { get; }
+		public JumpListItemKind Kind => JumpListItemKind.Arguments;
 
-		public bool RemovedByUser { get; }
+		public bool RemovedByUser => false;
 
 		public static JumpListItem CreateWithArguments(string arguments, string displayName)
 		{
-			return null;
+			return new JumpListItem(arguments) { DisplayName = displayName };
 		}
 
 		public static JumpListItem CreateSeparator()

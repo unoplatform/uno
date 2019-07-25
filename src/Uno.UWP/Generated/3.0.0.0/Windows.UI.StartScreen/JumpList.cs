@@ -48,7 +48,7 @@ namespace Windows.UI.StartScreen
 			throw new global::System.NotImplementedException("The member IAsyncOperation<JumpList> JumpList.LoadCurrentAsync() is not implemented in Uno.");
 		}
 		#endif
-		#if false || false || NET461 || __WASM__ || __MACOS__
+		#if false || false || false || false || false
 		[global::Uno.NotImplemented]
 		public static bool IsSupported()
 		{

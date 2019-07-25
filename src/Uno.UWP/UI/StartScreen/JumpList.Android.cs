@@ -16,29 +16,30 @@ namespace Windows.UI.StartScreen
 	{
 		private ShortcutManager _manager;
 
-		private JumpList()
+		private void Init()
 		{
 			_manager = (ShortcutManager)Application.Context.GetSystemService(Context.ShortcutService);
 		}
 
 		public static bool IsSupported() => Build.VERSION.SdkInt >= BuildVersionCodes.NMr1;
 
-		public static async IAsyncOperation<JumpList> LoadCurrentAsync()
-		{
-			
-		}
-
 		private async Task LoadShortcuts()
 		{
-			
+			throw new NotImplementedException();
 		}
 
 		private JumpListItem ShortcutToJumpListItem(ShortcutInfo shortcut)
 		{
-			var item = JumpListItem.CreateWithArguments(shortcut.Intent.ToUri(IntentUriType.AllowUnsafe), shortcut.ShortLabel);
-			item.Description = shortcut.LongLabel;
-			item. = shortcut.
-			shortcut.LongLabel
+			throw new NotImplementedException();
+			//var item = JumpListItem.CreateWithArguments(shortcut.Intent.ToUri(IntentUriType.AllowUnsafe), shortcut.ShortLabel);
+			//item.Description = shortcut.LongLabel;
+			//item. = shortcut.
+			//shortcut.LongLabel
+		}
+
+		private IAsyncAction InternalSaveAsync()
+		{
+			throw new NotImplementedException();
 		}
 	}
 }
