@@ -263,8 +263,6 @@
 						reason="Invalid method visibility"/>
 				<Member fullName="Windows.UI.Xaml.Controls.Popup Windows.UI.Xaml.Controls.ComboBoxItem.GetPopupControl()"
 						reason="Removed no-longer-needed method. Implementation detail."/>
-				<Member fulName="System.Void Windows.UI.Xaml.Controls.Primitives.ButtonBase.OnTapped(Windows.UI.Xaml.Input.TappedRoutedEventArgs e)"
-						reason="Not UWP compliant and was just available on iOS."/>
 				<Member fullName="System.Void Windows.Media.Playback.MediaPlayer.ObserveValue(Foundation.NSString keyPath, Foundation.NSObject ofObject, Foundation.NSDictionary change, System.IntPtr context)"
 						reason="Invalid method visibility"/>
 				<Member fullName="System.Void Windows.Media.Playback.MediaPlayer.Dispose(System.Boolean disposing)"

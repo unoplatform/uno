@@ -111,6 +111,8 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			_clickSubscription.Disposable = Disposable.Create(unregister);
 		}
 
+		protected override void OnTapped(TappedRoutedEventArgs e) => base.OnTapped(e);
+
 		private UIView GetContentElement()
 		{
 			return TemplatedRoot
