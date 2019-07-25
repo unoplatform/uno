@@ -14,6 +14,7 @@ using Windows.ApplicationModel.Activation;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.UI.Core;
+using Windows.UI.Popups;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
@@ -48,7 +49,7 @@ namespace SamplesApp
 		/// will be used such as when the application is launched to open a specific file.
 		/// </summary>
 		/// <param name="e">Details about the launch request and process.</param>
-		protected override void OnLaunched(LaunchActivatedEventArgs e)
+		protected override async void OnLaunched(LaunchActivatedEventArgs e)
 		{
 			var sw = Stopwatch.StartNew();
 			var n = Windows.UI.Xaml.Window.Current.Dispatcher.RunIdleAsync(
@@ -92,6 +93,7 @@ namespace SamplesApp
 				// Ensure the current window is active
 				Windows.UI.Xaml.Window.Current.Activate();
 			}
+
 			DisplayLaunchArguments(e);
 		}
 
@@ -99,14 +101,7 @@ namespace SamplesApp
 		{
 			if (!string.IsNullOrEmpty(launchActivatedEventArgs.Arguments))
 			{
-				var dlg = new ContentDialog
-				{
-					Title = "App launch arguments",
-					Content = new TextBlock()
-					{
-						Text = launchActivatedEventArgs.Arguments
-					}
-				};
+				var dlg = new MessageDialog(launchActivatedEventArgs.Arguments, "Launch arguments");
 				await dlg.ShowAsync();
 			}
 		}

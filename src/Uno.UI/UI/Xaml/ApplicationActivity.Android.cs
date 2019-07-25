@@ -13,6 +13,7 @@ using Uno.UI;
 using Windows.UI.ViewManagement;
 using Windows.UI.Xaml.Media;
 using Windows.Devices.Sensors;
+using Windows.UI.StartScreen;
 
 namespace Windows.UI.Xaml
 {
@@ -114,7 +115,7 @@ namespace Windows.UI.Xaml
 		protected override void OnCreate(Bundle bundle)
 		{
 			base.OnCreate(bundle);
-
+			
 			LayoutProvider = new LayoutProvider(this);
 			LayoutProvider.LayoutChanged += OnLayoutChanged;
 			LayoutProvider.InsetsChanged += OnInsetsChanged;

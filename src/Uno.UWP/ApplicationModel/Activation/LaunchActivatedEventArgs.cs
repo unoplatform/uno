@@ -18,7 +18,6 @@ namespace Windows.ApplicationModel.Activation
 			Kind = kind;
 		}
 
-		[NotImplemented]
 		public ActivationKind Kind
 		{
 			get;
