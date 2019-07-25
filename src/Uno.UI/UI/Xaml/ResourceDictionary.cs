@@ -22,7 +22,7 @@ namespace Windows.UI.Xaml
 			set;
 		}
 
-		public ResourceDictionary[] MergedDictionaries => Array.Empty<ResourceDictionary>();
+		public IList<ResourceDictionary> MergedDictionaries => Array.Empty<ResourceDictionary>();
 
 		public IDictionary<object, object> ThemeDictionaries { get; } = new Dictionary<object, object>();
 
