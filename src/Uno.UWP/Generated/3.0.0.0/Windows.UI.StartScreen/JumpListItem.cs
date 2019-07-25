@@ -111,7 +111,7 @@ namespace Windows.UI.StartScreen
 			throw new global::System.NotImplementedException("The member JumpListItem JumpListItem.CreateWithArguments(string arguments, string displayName) is not implemented in Uno.");
 		}
 		#endif
-		#if false || false || NET461 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.StartScreen.JumpListItem CreateSeparator()
 		{

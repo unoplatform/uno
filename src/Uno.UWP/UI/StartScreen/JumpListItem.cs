@@ -32,11 +32,6 @@ namespace Windows.UI.StartScreen
 		{
 			return new JumpListItem(arguments) { DisplayName = displayName };
 		}
-
-		public static JumpListItem CreateSeparator()
-		{
-			return null;
-		}
 	}
 }
 #endif
