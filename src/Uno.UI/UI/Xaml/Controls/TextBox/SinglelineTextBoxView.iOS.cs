@@ -48,15 +48,22 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		internal void OnTextChanged()
+		private void OnTextChanged()
 		{
-			SetBindingValue(Text, "Text");
+			var textBox = _textBox?.GetTarget();
+			if (textBox != null)
+			{
+				var text = textBox.ProcessTextInput(Text);
+				SetTextNative(text);
+			}
 		}
+
+		public void SetTextNative(string text) => Text = text;
 
 		private void Initialize()
 		{
 			//Set native VerticalAlignment to top-aligned (default is center) to match Windows text placement
-			base.VerticalAlignment = UIControlContentVerticalAlignment.Top; 
+			base.VerticalAlignment = UIControlContentVerticalAlignment.Top;
 
 			Delegate = _delegate = new SinglelineTextBoxDelegate(_textBox)
 			{

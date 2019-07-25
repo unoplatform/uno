@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using NUnit.Framework;
+using SamplesApp.UITests.TestFramework;
 using Uno.UITest.Helpers;
 using Uno.UITest.Helpers.Queries;
 
@@ -13,6 +14,7 @@ namespace SamplesApp.UITests
 	public partial class UnoSamples_Tests : SampleControlUITestBase
 	{
 		[Test]
+		[AutoRetry]
 		public void ContentPresenter_Template()
 		{
 			Run("Uno.UI.Samples.Content.UITests.ContentPresenter.ContentPresenter_Template");
@@ -37,6 +39,7 @@ namespace SamplesApp.UITests
 		}
 
 		[Test]
+		[AutoRetry]
 		public void ContentPresenter_Changing_ContentTemplate()
 		{
 			Run("Uno.UI.Samples.Content.UITests.ContentPresenter.ContentPresenter_Changing_ContentTemplate");
@@ -50,6 +53,7 @@ namespace SamplesApp.UITests
 		}
 
 		[Test]
+		[AutoRetry]
 		public void ContentControl_Changing_ContentTemplate()
 		{
 			Run("Uno.UI.Samples.Content.UITests.ContentControlTestsControl.ContentControl_Changing_ContentTemplate");

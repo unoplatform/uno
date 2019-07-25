@@ -761,6 +761,23 @@ declare namespace Windows.UI.Core {
         private clearStack;
     }
 }
+interface Window {
+    DeviceMotionEvent(): void;
+}
+declare namespace Windows.Devices.Sensors {
+    class Accelerometer {
+        private static dispatchReading;
+        static initialize(): boolean;
+        static startReading(): void;
+        static stopReading(): void;
+        private static readingChangedHandler;
+    }
+}
+interface Navigator {
+    webkitVibrate(pattern: number | number[]): boolean;
+    mozVibrate(pattern: number | number[]): boolean;
+    msVibrate(pattern: number | number[]): boolean;
+}
 declare namespace Windows.Phone.Devices.Notification {
     class VibrationDevice {
         static initialize(): boolean;

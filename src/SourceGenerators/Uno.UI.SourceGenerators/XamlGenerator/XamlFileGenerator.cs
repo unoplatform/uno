@@ -13,12 +13,9 @@ using System.Threading.Tasks;
 using System.Text.RegularExpressions;
 using Microsoft.CodeAnalysis;
 using Uno.Roslyn;
-using Microsoft.CodeAnalysis.CSharp.Formatting;
-using Microsoft.CodeAnalysis.MSBuild;
-using Microsoft.CodeAnalysis.CSharp;
-using Microsoft.CodeAnalysis.Formatting;
 using System.Threading;
 using Uno;
+using Uno.Equality;
 using Uno.Logging;
 using Uno.UI.SourceGenerators.XamlGenerator.XamlRedirection;
 
@@ -44,14 +41,15 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			},
 		};
 
-		private Dictionary<string, XamlObjectDefinition> _staticResources = new Dictionary<string, XamlObjectDefinition>();
-		private Dictionary<string, XamlObjectDefinition> _namedResources = new Dictionary<string, XamlObjectDefinition>();
-		private List<string> _partials = new List<string>();
-		private Stack<NameScope> _scopeStack = new Stack<NameScope>();
+		private readonly Dictionary<string, XamlObjectDefinition> _staticResources = new Dictionary<string, XamlObjectDefinition>();
+		private readonly Dictionary<string, Dictionary<string, XamlObjectDefinition>> _themeResources = new Dictionary<string, Dictionary<string, XamlObjectDefinition>>();
+		private readonly Dictionary<string, XamlObjectDefinition> _namedResources = new Dictionary<string, XamlObjectDefinition>();
+		private readonly List<string> _partials = new List<string>();
+		private readonly Stack<NameScope> _scopeStack = new Stack<NameScope>();
 		private readonly XamlFileDefinition _fileDefinition;
 		private readonly string _targetPath;
 		private readonly string _defaultNamespace;
-		private RoslynMetadataHelper _medataHelper;
+		private readonly RoslynMetadataHelper _medataHelper;
 		private readonly string _fileUniqueId;
 		private readonly DateTime _lastReferenceUpdateTime;
 		private readonly string[] _analyzerSuppressions;
@@ -60,14 +58,18 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		private int _applyIndex = 0;
 		private int _collectionIndex = 0;
 		private int _subclassIndex = 0;
-		private XamlGlobalStaticResourcesMap _globalStaticResourcesMap;
+		private readonly XamlGlobalStaticResourcesMap _globalStaticResourcesMap;
 		private readonly bool _isUiAutomationMappingEnabled;
 		private readonly Dictionary<string, string[]> _uiAutomationMappings;
 		private readonly string _defaultLanguage;
 		private readonly bool _isDebug;
 		private readonly string _relativePath;
 
-		private List<INamedTypeSymbol> _xamlAppliedTypes = new List<INamedTypeSymbol>();
+		// Determines if the source generator will skip the inclusion of UseControls in the
+		// visual tree. See https://github.com/unoplatform/uno/issues/61
+		private readonly bool _skipUserControlsInVisualTree;
+
+		private readonly List<INamedTypeSymbol> _xamlAppliedTypes = new List<INamedTypeSymbol>();
 
 		private readonly INamedTypeSymbol _elementStubSymbol;
 		private readonly INamedTypeSymbol _contentPresenterSymbol;
@@ -85,6 +87,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		private readonly INamedTypeSymbol _styleSymbol;
 
 		private readonly bool _isWasm;
+
+		private bool _isGeneratingGlobalResource = false;
 
 		static XamlFileGenerator()
 		{
@@ -107,7 +111,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			Dictionary<string, string[]> uiAutomationMappings,
 			string defaultLanguage,
 			bool isWasm,
-			bool isDebug
+			bool isDebug,
+			bool skipUserControlsInVisualTree
 		)
 		{
 			_fileDefinition = file;
@@ -124,6 +129,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			_uiAutomationMappings = uiAutomationMappings;
 			_defaultLanguage = defaultLanguage.HasValue() ? defaultLanguage : "en-US";
 			_isDebug = isDebug;
+			_skipUserControlsInVisualTree = skipUserControlsInVisualTree;
 
 			InitCaches();
 
@@ -239,6 +245,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 			if (topLevelControl.Type.Name == "ResourceDictionary")
 			{
+				_isGeneratingGlobalResource = true;
 				BuildEmptyBackingClass(writer, topLevelControl);
 
 				BuildResourceDictionary(writer, topLevelControl);
@@ -247,9 +254,11 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			{
 				if (IsApplication(topLevelControl.Type))
 				{
+					_isGeneratingGlobalResource = true;
 					BuildResourceDictionary(writer, topLevelControl);
 				}
 
+				_isGeneratingGlobalResource = false;
 				_className = GetClassName(topLevelControl);
 
 				using (writer.BlockInvariant("namespace {0}", _className.ns))
@@ -276,6 +285,11 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 								}
 
 								BuildNamedResources(writer, _namedResources);
+
+								if (isDirectUserControlChild)
+								{
+									writer.AppendLineInvariant("return content;");
+								}
 							}
 
 							if (isDirectUserControlChild)
@@ -304,7 +318,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 							{
 								using (Scope("{0}{1}StaticResources".InvariantCultureFormat(_className.ns.Replace(".", ""), _className.className)))
 								{
-									BuildStaticResources(writer, _staticResources, isGlobalResources: false);
+									BuildStaticResources(writer, _staticResources, themeResources: _themeResources);
 
 									// Build child subclasses for static resources
 									BuildChildSubclasses(writer);
@@ -438,50 +452,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 			writer.AppendLineInvariant("OnInitializeCompleted();");
 			writer.AppendLineInvariant("InitializeXamlOwner();");
-
-			if (isDirectUserControlChild)
-			{
-				writer.AppendLineInvariant("return content;");
-			}
-		}
-
-		private static string ReformatCode(string generatedCode)
-		{
-			using (var workspace = MSBuildWorkspace.Create())
-			{
-				var syntaxTree = CSharpSyntaxTree.ParseText(generatedCode);
-
-				var options = workspace.Options
-					.WithChangedOption(FormattingOptions.SmartIndent, LanguageNames.CSharp, FormattingOptions.IndentStyle.Block)
-					.WithChangedOption(FormattingOptions.NewLine, LanguageNames.CSharp, Environment.NewLine)
-					.WithChangedOption(FormattingOptions.UseTabs, LanguageNames.CSharp, true)
-					.WithChangedOption(CSharpFormattingOptions.SpaceAfterDot, false)
-					.WithChangedOption(CSharpFormattingOptions.SpaceBeforeDot, false)
-					.WithChangedOption(CSharpFormattingOptions.NewLineForElse, true)
-					.WithChangedOption(CSharpFormattingOptions.NewLineForCatch, true)
-					.WithChangedOption(CSharpFormattingOptions.NewLineForClausesInQuery, true)
-					.WithChangedOption(CSharpFormattingOptions.NewLineForFinally, true)
-					.WithChangedOption(CSharpFormattingOptions.NewLinesForBracesInAnonymousMethods, true)
-					.WithChangedOption(CSharpFormattingOptions.NewLinesForBracesInLambdaExpressionBody, true)
-					.WithChangedOption(CSharpFormattingOptions.NewLinesForBracesInAnonymousTypes, true)
-					.WithChangedOption(CSharpFormattingOptions.NewLinesForBracesInControlBlocks, true)
-					.WithChangedOption(CSharpFormattingOptions.NewLinesForBracesInMethods, true)
-					.WithChangedOption(CSharpFormattingOptions.NewLinesForBracesInObjectCollectionArrayInitializers, true)
-					.WithChangedOption(CSharpFormattingOptions.NewLinesForBracesInTypes, true)
-					.WithChangedOption(CSharpFormattingOptions.SpaceAfterCast, false)
-					.WithChangedOption(CSharpFormattingOptions.SpaceWithinCastParentheses, false)
-					.WithChangedOption(CSharpFormattingOptions.SpacingAroundBinaryOperator, BinaryOperatorSpacingOptions.Single)
-					.WithChangedOption(CSharpFormattingOptions.SpacingAfterMethodDeclarationName, true)
-					.WithChangedOption(CSharpFormattingOptions.IndentBlock, true)
-					.WithChangedOption(CSharpFormattingOptions.IndentBraces, false)
-					.WithChangedOption(CSharpFormattingOptions.IndentSwitchCaseSection, true)
-					.WithChangedOption(CSharpFormattingOptions.IndentSwitchSection, true)
-					.WithChangedOption(CSharpFormattingOptions.NewLineForMembersInObjectInit, true);
-
-				var formatted = Formatter.Format(syntaxTree.GetRoot(), workspace, options);
-
-				return formatted.ToFullString();
-			}
 		}
 
 		private void BuildPartials(IIndentedStringBuilder writer, bool isStatic)
@@ -618,29 +588,12 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 						if (themeResources != null)
 						{
-							// Theme resources are not supported for now, so we take the default key
-							// and consider everthing inside as a standard StaticResource.
-
-							var defaultTheme = themeResources
-								.Objects
-								.FirstOrDefault(o => o
-									.Members
-									.Any(m =>
-										m.Member.Name == "Key"
-										&& m.Value.ToString() == "Default"
-									)
-								);
-
-							if (defaultTheme != null)
-							{
-								globalResources.Merge(ImportResourceDictionary(writer, defaultTheme));
-							}
+							RegisterThemeDictionaries(themeResources);
 						}
 
-						BuildStaticResources(writer, globalResources, isGlobalResources: true);
+						BuildStaticResources(writer, globalResources, themeResources: _themeResources);
 
 						BuildPartials(writer, isStatic: true);
-
 					}
 				}
 
@@ -685,7 +638,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			{
 				contentNode = FindMember(topLevelControl, "_UnknownContent");
 			}
-
 
 			if (contentNode != null)
 			{
@@ -805,21 +757,19 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			}
 		}
 
-		private void BuildStaticResources(
-			IIndentedStringBuilder writer,
+		private void BuildStaticResources(IIndentedStringBuilder writer,
 			Dictionary<string, XamlObjectDefinition> resources,
-			bool isGlobalResources
-		)
+			Dictionary<string, Dictionary<string, XamlObjectDefinition>> themeResources = null)
 		{
-			BuildKeyedStaticResources(writer, isGlobalResources, resources);
+			BuildKeyedStaticResources(writer, resources, themeResources);
 
-			if (isGlobalResources)
+			if (_isGeneratingGlobalResource)
 			{
-				BuildImplicitStaticResources(writer, isGlobalResources, resources);
+				BuildImplicitStaticResources(writer, resources);
 			}
 		}
 
-		private void BuildImplicitStaticResources(IIndentedStringBuilder writer, bool isGlobalResources, IEnumerable<KeyValuePair<string, XamlObjectDefinition>> resources)
+		private void BuildImplicitStaticResources(IIndentedStringBuilder writer, IEnumerable<KeyValuePair<string, XamlObjectDefinition>> resources)
 		{
 			var styleResources = resources.Where(r =>
 				r.Value.Type.Name == "Style" && r.Key.StartsWith(ImplicitStyleMarker)
@@ -913,90 +863,218 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			;
 		}
 
-		private static string FormatResourcePropertyName(string key)
-		{
-			if (key.Contains(":"))
-			{
-				return key.Replace(":", "_");
-			}
-
-			return key;
-		}
-
 		private void BuildKeyedStaticResources(
 			IIndentedStringBuilder writer,
-			bool isGlobalResources,
-			IEnumerable<KeyValuePair<string, XamlObjectDefinition>> keyedResources
+			IDictionary<string, XamlObjectDefinition> keyedResources,
+			Dictionary<string, Dictionary<string, XamlObjectDefinition>> themeResources
 		)
 		{
-			foreach (var keyedResource in keyedResources)
+			string FormatResourcePropertyName(string key)
 			{
-				BuildSourceLineInfo(writer, keyedResource.Value);
+				if (key.Contains(":"))
+				{
+					return key.Replace(":", "_");
+				}
 
-				var resourceType = FindType(keyedResource.Value.Type);
-				var resourcePropertyName = FormatResourcePropertyName(keyedResource.Key);
-				var resourceTypeName = GenerateTypeName(keyedResource);
+				return key;
+			}
 
-				if (keyedResource.Value.Type.Name == "Style")
+			void WriteResourceDeclaration(string resourceKey, XamlObjectDefinition resource)
+			{
+				BuildSourceLineInfo(writer, resource);
+
+				var resourcePropertyName = FormatResourcePropertyName(resourceKey);
+				var resourceTypeName = GenerateTypeName(resource);
+
+				switch (resource.Type.Name)
 				{
-					BuildStyle(writer, keyedResource);
-				}
-				else if (keyedResource.Value.Type.Name == "StaticResource")
-				{
-					// Skip and add it to the global resolver
-				}
-				else if (IsSingleTimeInitializable(keyedResource.Value.Type))
-				{
-					writer.AppendLineInvariant($"public static {GetGlobalizedTypeName(resourceTypeName)} {SanitizeResourceName(resourcePropertyName)} {{{{ get; }}}} = ");
-					BuildChild(writer, null, keyedResource.Value);
-					writer.AppendLine(";");
-					writer.AppendLine();
-				}
-				else
-				{
-					BuildSingleTimeInitializer(
-						writer,
-						GenerateTypeName(keyedResource),
-						keyedResource.Key,
-						() =>
+					case "Style":
+						BuildStyle(writer, resourceKey, resource);
+						break;
+					case "StaticResource":
+						// Skip and add it to the global resolver
+						break;
+					case "ThemeResource":
+						// Skip and add it to the global resolver
+						break;
+					default:
+					{
+						if (IsSingleTimeInitializable(resource.Type))
 						{
-							BuildChild(writer, null, keyedResource.Value);
-							writer.AppendLineInvariant(0, ";", keyedResource.Value.Type);
+							writer.AppendLineInvariant(
+								$"public static {GetGlobalizedTypeName(resourceTypeName)} {SanitizeResourceName(resourcePropertyName)} {{{{ get; }}}} = ");
+							BuildChild(writer, null, resource);
+							writer.AppendLine(";");
+							writer.AppendLine();
 						}
-					);
+						else
+						{
+							BuildSingleTimeInitializer(
+								writer,
+								GenerateTypeName(resource),
+								resourceKey,
+								() =>
+								{
+									BuildChild(writer, null, resource);
+									writer.AppendLineInvariant(0, ";", resource.Type);
+								}
+							);
+						}
+
+						break;
+					}
 				}
 			}
 
-			if (keyedResources.Any())
+			void WriteThemeResourceDeclaration(string resourceKey, IEnumerable<KeyValuePair<string, XamlObjectDefinition>> resources)
 			{
-				if (isGlobalResources)
+				var resource = resources.First().Value;
+
+				var resourcePropertyName = FormatResourcePropertyName(resourceKey);
+				var resourceTypeName = GenerateTypeName(resource);
+
+				switch (resource.Type.Name)
 				{
-					// Generate the lookup table, using the index provided at construction.
-					// The index is used to generate the methods per partial file, so that a global
-					// file can call them one by one.
-					using (writer.BlockInvariant("static partial void RegisterResources_{0}()", _fileUniqueId.ToString()))
+					case "StaticResource":
+						// Skip and add it to the global resolver
+						break;
+					case "ThemeResource":
+						// Skip and add it to the global resolver
+						break;
+					default:
 					{
-						using (writer.BlockInvariant("AddResolver(name =>"))
+						var appThemes = resources.Where(x => x.Key.Equals("Light") || x.Key.Equals("Dark") || x.Key.Equals("Default")).ToList();
+						var customThemes = resources.Except(appThemes).ToArray();
+						var defaultThemes = appThemes.Where(x => x.Key.Equals("Default")).ToArray();
+
+						if (defaultThemes.Any())
 						{
-							BuildGetResources(writer, keyedResources);
+							appThemes.Remove(defaultThemes.First());
 						}
 
-						writer.AppendLineInvariant(");");
+						var globalizedTypeName = GetGlobalizedTypeName(resourceTypeName);
+						var sanitizeResourceName = SanitizeResourceName(resourcePropertyName);
+						using (writer.BlockInvariant($"public static {globalizedTypeName} {sanitizeResourceName}"))
+						using (writer.BlockInvariant("get"))
+						{
+							if (customThemes.Any())
+							{
+								writer.AppendLineInvariant("// Custom themes defined for this resource: checking custom theme.");
+								writer.AppendLineInvariant("var currentCustomTheme = global::Uno.UI.ApplicationHelper.RequestedCustomTheme;");
+								using (writer.BlockInvariant($"switch(currentCustomTheme)"))
+								{
+									foreach (var theme in customThemes)
+									{
+										writer.AppendLineInvariant($"case \"{theme.Key}\": return {sanitizeResourceName}___{theme.Key};");
+									}
+								}
+								writer.AppendLine();
+							}
+
+							writer.AppendLineInvariant("// Element's RequestedTheme not supported yet. Fallback on Application's RequestedTheme.");
+							writer.AppendLine();
+
+							writer.AppendLineInvariant("var currentTheme = global::Windows.UI.Xaml.Application.Current.RequestedTheme;");
+							if (appThemes.Any())
+							{
+								using (writer.BlockInvariant($"switch(currentTheme)"))
+								{
+									foreach (var theme in appThemes)
+									{
+										if (theme.Key.Equals("Light"))
+										{
+											writer.AppendLineInvariant($"case global::Windows.UI.Xaml.ApplicationTheme.Light: return {sanitizeResourceName}___{theme.Key};");
+										}
+										else if (theme.Key.Equals("Dark"))
+										{
+											writer.AppendLineInvariant($"case global::Windows.UI.Xaml.ApplicationTheme.Dark: return {sanitizeResourceName}___{theme.Key};");
+										}
+
+										// Default is not generated here
+									}
+								}
+							}
+
+							writer.AppendLine();
+							if (defaultThemes.Any())
+							{
+									writer.AppendLineInvariant("// This resource is defined in a Default theme as a fallback.");
+									writer.AppendLineInvariant($"return {sanitizeResourceName}___Default;");
+							}
+							else
+							{
+								var msg = customThemes.Any()
+									? $"$\"The themed resource {resourcePropertyName} cannot be found for custom theme \\\"{{{{currentCustomTheme}}}}\\\", theme={{{{currentTheme}}}}.\""
+									: $"$\"The themed resource {resourcePropertyName} cannot be found for theme {{{{currentTheme}}}}.\"";
+								writer.AppendLineInvariant($"throw new InvalidOperationException({msg});");
+							}
+						}
+						break;
 					}
 				}
-				else
+			}
+
+			foreach (var keyedResource in keyedResources)
+			{
+				WriteResourceDeclaration(keyedResource.Key, keyedResource.Value);
+			}
+
+			foreach (var keyedThemeResources in themeResources)
+			{
+				foreach (var theme in keyedThemeResources.Value)
 				{
-					// If there is no method suffix,
-					using (writer.BlockInvariant("public static object FindResource(string name)"))
+					WriteResourceDeclaration(keyedThemeResources.Key + "___" + theme.Key, theme.Value);
+				}
+
+				if (keyedResources.ContainsKey(keyedThemeResources.Key))
+				{
+					writer.AppendLineInvariant($"#warning Can't generate code for theme resource {keyedThemeResources.Key} because there's a static resource with the same key/name.");
+					writer.AppendLine();
+					continue;
+				}
+
+				WriteThemeResourceDeclaration(keyedThemeResources.Key, keyedThemeResources.Value);
+			}
+
+			if (!keyedResources.Any() && !themeResources.Any())
+			{
+				return; // no resources registration to generate
+			}
+
+			var resourcesToRegister =
+				keyedResources
+					.Concat(themeResources.Select(tr => new KeyValuePair<string, XamlObjectDefinition>(tr.Key, tr.Value.First().Value)))
+					.Distinct(FuncEqualityComparer<KeyValuePair<string, XamlObjectDefinition>>.Create(x => x.Key));
+
+			if (_isGeneratingGlobalResource)
+			{
+				// Generate the lookup table, using the index provided at construction.
+				// The index is used to generate the methods per partial file, so that a global
+				// file can call them one by one.
+				using (writer.BlockInvariant("static partial void RegisterResources_{0}()", _fileUniqueId.ToString()))
+				{
+					using (writer.BlockInvariant("AddResolver(name =>"))
 					{
-						BuildGetResources(writer, keyedResources);
+						BuildGetResources(writer, resourcesToRegister);
 					}
+
+					writer.AppendLineInvariant(");");
+				}
+			}
+			else
+			{
+				// If there is no method suffix,
+				using (writer.BlockInvariant("public static object FindResource(string name)"))
+				{
+					BuildGetResources(writer, resourcesToRegister);
 				}
 			}
 		}
 
 
-		private void BuildGetResources(IIndentedStringBuilder writer, IEnumerable<KeyValuePair<string, XamlObjectDefinition>> resources)
+		private void BuildGetResources(
+			IIndentedStringBuilder writer,
+			IEnumerable<KeyValuePair<string, XamlObjectDefinition>> resources)
 		{
 			using (writer.BlockInvariant("switch(name)"))
 			{
@@ -1022,13 +1100,13 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			writer.AppendLineInvariant("return null;");
 		}
 
-		private string GenerateTypeName(KeyValuePair<string, XamlObjectDefinition> definition)
+		private string GenerateTypeName(XamlObjectDefinition definition)
 		{
-			var typeName = definition.Value.Type.Name;
+			var typeName = definition.Type.Name;
 
-			if (definition.Value.Type.PreferredXamlNamespace.StartsWith("using:"))
+			if (definition.Type.PreferredXamlNamespace.StartsWith("using:"))
 			{
-				typeName = definition.Value.Type.PreferredXamlNamespace.TrimStart("using:") + "." + typeName;
+				typeName = definition.Type.PreferredXamlNamespace.TrimStart("using:") + "." + typeName;
 			}
 
 			// Color is an alias the base color type for the target platform.
@@ -1041,23 +1119,23 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			return typeName;
 		}
 
-		private void BuildStyle(IIndentedStringBuilder writer, KeyValuePair<string, XamlObjectDefinition> resource)
+		private void BuildStyle(IIndentedStringBuilder writer, string resourceKey, XamlObjectDefinition resource)
 		{
-			BuildSingleTimeInitializer(writer, "global::Windows.UI.Xaml.Style", resource.Key, () =>
+			BuildSingleTimeInitializer(writer, "global::Windows.UI.Xaml.Style", resourceKey, () =>
 			{
-				BuildInlineStyle(writer, resource.Value);
+				BuildInlineStyle(writer, resource);
 
-				var partialOverrideNode = resource.Value.Members.FirstOrDefault(o => o.Member.Name.Equals("PartialOverride", StringComparison.OrdinalIgnoreCase));
+				var partialOverrideNode = resource.Members.FirstOrDefault(o => o.Member.Name.Equals("PartialOverride", StringComparison.OrdinalIgnoreCase));
 
 				if (partialOverrideNode != null
 					&& partialOverrideNode.Value.SelectOrDefault(v => v.ToString()).Equals("true", StringComparison.OrdinalIgnoreCase)
 				)
 				{
-					writer.AppendLineInvariant(".Apply(s => On{0}Override(s))", resource.Key);
-					RegisterPartial("void On{0}Override(Style s)", resource.Key);
+					writer.AppendLineInvariant(".Apply(s => On{0}Override(s))", resourceKey);
+					RegisterPartial("void On{0}Override(Style s)", resourceKey);
 				}
 
-				writer.AppendLineInvariant(";", resource.Value.Type);
+				writer.AppendLineInvariant(";", resource.Type);
 			});
 		}
 
@@ -1685,11 +1763,11 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 		private bool IsApplication(XamlType xamlType) => IsType(xamlType, XamlConstants.Types.Application);
 
-		private XamlMemberDefinition FindImplicitContentMember(XamlObjectDefinition topLevelControl)
+		private XamlMemberDefinition FindImplicitContentMember(XamlObjectDefinition topLevelControl, string memberName = "_UnknownContent")
 		{
 			return topLevelControl
 				.Members
-				.FirstOrDefault(m => m.Member.Name == "_UnknownContent");
+				.FirstOrDefault(m => m.Member.Name == memberName);
 		}
 
 		private void RegisterResources(XamlObjectDefinition topLevelControl)
@@ -1698,19 +1776,16 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 			if (resourcesMember != null)
 			{
+				// To be able to have MergedDictionaries, the first node of the Resource node
+				// must be an explicit resource dictionary.
 				var isExplicitResDictionary = resourcesMember.Objects.Any(o => o.Type.Name == "ResourceDictionary");
+				var resourcesRoot = isExplicitResDictionary
+					? FindImplicitContentMember(resourcesMember.Objects.First())
+					: resourcesMember;
 
-				if (isExplicitResDictionary)
+				if (resourcesRoot != null)
 				{
-					// To be able to have MergedDictionaries, the first node of the Resource node
-					// must be an explicit resource dictionary.
-
-					resourcesMember = FindImplicitContentMember(resourcesMember.Objects.First());
-				}
-
-				if (resourcesMember != null)
-				{
-					foreach (var resource in resourcesMember.Objects)
+					foreach (var resource in resourcesRoot.Objects)
 					{
 						var key = resource.Members.FirstOrDefault(m => m.Member.Name == "Key");
 						var name = resource.Members.FirstOrDefault(m => m.Member.Name == "Name");
@@ -1737,6 +1812,64 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 							);
 						}
 					}
+				}
+
+				// Process any theme resources.
+				// For now, they are just added as _standard resources_, without any dynamic capabilities
+				var themesResourcesRoot = isExplicitResDictionary
+					? FindImplicitContentMember(resourcesMember.Objects.First(), memberName: "ThemeDictionaries")
+					: null;
+
+				if (themesResourcesRoot != null)
+				{
+					RegisterThemeDictionaries(themesResourcesRoot);
+				}
+			}
+		}
+
+		private void RegisterThemeDictionaries(XamlMemberDefinition themeDictionariesRoot)
+		{
+			foreach (var themeDictionary in themeDictionariesRoot.Objects)
+			{
+				var theme = themeDictionary.Members
+					.FirstOrDefault(m => m.Member.Name == "Key")
+					?.Value
+					?.ToString();
+
+				if (theme == null)
+				{
+					continue;
+				}
+
+				var dict = themeDictionary.Members
+					.FirstOrDefault(m => m.Member.Name == "_UnknownContent");
+
+				if (dict == null)
+				{
+					continue;
+				}
+
+				foreach (var resource in dict.Objects)
+				{
+					// We check for both x:Key and x:Name, but they have the exact same result
+					// when used in a theme dictionary
+					var key =
+						(resource.Members.FirstOrDefault(m => m.Member.Name == "Key")
+						 ?? resource.Members.FirstOrDefault(m => m.Member.Name == "Name"))
+						?.Value
+						?.ToString();
+
+					if (key == null)
+					{
+						continue;
+					}
+
+					if (!_themeResources.TryGetValue(key, out var themeResources))
+					{
+						themeResources = _themeResources[key] = new Dictionary<string, XamlObjectDefinition>();
+					}
+
+					themeResources[theme] = resource;
 				}
 			}
 		}
@@ -2087,7 +2220,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 												// creation of a WeakReference.
 												//
 												writer.AppendLineInvariant($"var {member.Member.Name}_{member.Value}_That = ({eventSource} as global::Uno.UI.DataBinding.IWeakReferenceProvider).WeakReference;");
-												writer.AppendLineInvariant($"{closureName}.{member.Member.Name} += ({parms}) => ({member.Member.Name}_{member.Value}_That.Target as {_className.className}).{member.Value}({parms});");
+												writer.AppendLineInvariant($"{closureName}.{member.Member.Name} += ({parms}) => ({member.Member.Name}_{member.Value}_That.Target as {_className.className})?.{member.Value}({parms});");
 											}
 											else
 											{
@@ -2428,19 +2561,21 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 				targetPropertyType = targetPropertyType ?? FindPropertyType(member.Member);
 
-				if (_staticResources.ContainsKey(resourcePath))
+				if (!_isGeneratingGlobalResource && _staticResources.TryGetValue(resourcePath, out var res))
 				{
-					return $"{GetCastString(targetPropertyType, _staticResources[resourcePath])}StaticResources.{SanitizeResourceName(resourcePath)}";
+					return $"{GetCastString(targetPropertyType, res)}StaticResources.{SanitizeResourceName(resourcePath)}";
 				}
-				else if (targetPropertyType?.Name == "TimeSpan")
+				if (!_isGeneratingGlobalResource && _themeResources.TryGetValue(resourcePath, out var themeRes))
+				{
+					return $"{GetCastString(targetPropertyType, themeRes.First().Value)}StaticResources.{SanitizeResourceName(resourcePath)}";
+				}
+				if (targetPropertyType?.Name == "TimeSpan")
 				{
 					// explicit support for TimeSpan because we can't override the parsing.
 					return $"global::System.TimeSpan.Parse({GetGlobalStaticResource(resourcePath)}.ToString())";
 				}
-				else
-				{
-					return $"({GetCastString(targetPropertyType, null)}{GetGlobalStaticResource(resourcePath, targetPropertyType)})";
-				}
+
+				return $"({GetCastString(targetPropertyType, null)}{GetGlobalStaticResource(resourcePath, targetPropertyType)})";
 			}
 		}
 
@@ -2631,9 +2766,33 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 		private string BuildLocalizedResourceValue(XamlMemberDefinition owner, string memberName, string objectUid)
 		{
-			var uidParts = objectUid.Split(new[] { '/' }, StringSplitOptions.RemoveEmptyEntries);
-			var uidName = uidParts.Length == 2 ? uidParts[1] : uidParts[0];
-			var resourceFileName = uidParts.Length == 2 ? uidParts[0] : null;
+			// see: https://docs.microsoft.com/en-us/windows/uwp/app-resources/localize-strings-ui-manifest
+			// Valid formats:
+			// - MyUid
+			// - MyPrefix/MyUid
+			// - /ResourceFileName/MyUid
+			// - /ResourceFileName/MyPrefix/MyUid
+			// - /ResourceFilename/MyPrefix1/MyPrefix2/MyUid
+			// - /ResourceFilename/MyPrefix1/MyPrefix2/MyPrefix3/MyUid
+
+			(string resourceFileName, string uidName) parseXUid()
+			{
+				if (objectUid.StartsWith("/"))
+				{
+					var separator = objectUid.IndexOf('/', 1);
+
+					return (
+						objectUid.Substring(1, separator - 1),
+						objectUid.Substring(separator + 1)
+					);
+				}
+				else
+				{
+					return (null, objectUid);
+				}
+			}
+
+			var (resourceFileName, uidName) = parseXUid();
 
 			//windows 10 localization concat the xUid Value with the member value (Text, Content, Header etc...)
 			var fullKey = uidName + "/" + memberName;
@@ -2815,13 +2974,19 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					)
 				{
 					var resourceName = bindingType.Members.First().Value.ToString();
-					if (_staticResources.ContainsKey(resourceName))
+					if (!_isGeneratingGlobalResource && _staticResources.ContainsKey(resourceName))
 					{
 						return "{0}StaticResources.{1}".InvariantCultureFormat(
 							GetCastString(prependCastToType ? propertyType : null, _staticResources[resourceName]),
 							resourceName);
 					}
-					else if (_namedResources.ContainsKey(resourceName))
+					else if (!_isGeneratingGlobalResource && _themeResources.ContainsKey(resourceName))
+					{
+						return "{0}StaticResources.{1}".InvariantCultureFormat(
+							GetCastString(prependCastToType ? propertyType : null, _themeResources[resourceName].First().Value),
+							resourceName);
+					}
+					else if (!_isGeneratingGlobalResource && _namedResources.ContainsKey(resourceName))
 					{
 						// Skip the literal value, use the elementNameSubject instead
 						// so the source can be updated when the subject is set.
@@ -3099,6 +3264,12 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					BuildComplexPropertyValue(writer, styleMember, "");
 					writer.AppendLineInvariant(0, closingPunctuation);
 				}
+				else if (styleMember.Objects.FirstOrDefault(o => o.Type.Name == "Style") is XamlObjectDefinition literalStyle)
+				{
+					writer.AppendFormatInvariant($"Style = ");
+					BuildInlineStyle(writer, literalStyle);
+					writer.AppendLineInvariant(0, closingPunctuation);
+				}
 			}
 		}
 
@@ -3246,7 +3417,10 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			{
 				BuildComplexPropertyValue(writer, owner, "c.");
 			}
-			else if (IsDirectUserControlSubType(xamlObjectDefinition) && HasNoUserControlProperties(xamlObjectDefinition))
+			else if (
+				_skipUserControlsInVisualTree
+				&& IsDirectUserControlSubType(xamlObjectDefinition)
+				&& HasNoUserControlProperties(xamlObjectDefinition))
 			{
 				writer.AppendLineInvariant("new {0}(skipsInitializeComponents: true).GetContent()", GetGlobalizedTypeName(fullTypeName));
 

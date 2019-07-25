@@ -18,6 +18,8 @@ using System.ComponentModel;
 using Uno.UI;
 using Windows.UI.Xaml;
 using System.Threading;
+using Windows.UI.Xaml.Controls;
+using FluentAssertions;
 using Microsoft.Extensions.Logging;
 
 namespace Uno.UI.Tests.BinderTests
@@ -944,7 +946,7 @@ namespace Uno.UI.Tests.BinderTests
 		}
 
 		#endregion
-		
+
 		[TestMethod]
 		[ExpectedException(typeof(ArgumentException))]
 		public void When_OverrideMetadata_With_Metadata_Is_Not_Derived_From_BaseMetadata_Then_Fail()
@@ -1010,7 +1012,7 @@ namespace Uno.UI.Tests.BinderTests
 				typeof(MockDependencyObject),
 				null
 			);
-			
+
 			SUT.SetValue(testProperty, "test", DependencyPropertyValuePrecedences.Coercion);
 		}
 
@@ -1029,7 +1031,7 @@ namespace Uno.UI.Tests.BinderTests
 			Assert.AreEqual("default2", SUT2.GetValue(MyDependencyObject1.MyPropertyProperty));
 			Assert.AreEqual("default3", SUT3.GetValue(MyDependencyObject1.MyPropertyProperty));
 		}
-		
+
 		[TestMethod]
 		public void When_OverrideMetadata_CoerceValueCallback()
 		{
@@ -1326,7 +1328,7 @@ namespace Uno.UI.Tests.BinderTests
 			{
 				SUT.SetValue(property3, 3);
 			};
-			
+
 			PropertyChangedCallback OnProperty3Changed = (s, e) =>
 			{
 			};
@@ -1361,6 +1363,50 @@ namespace Uno.UI.Tests.BinderTests
 
 			Assert.AreEqual(42, o2.Tag);
 		}
+
+		[TestMethod]
+		public void When_DataContext_Changing()
+		{
+			var SUT = new NullablePropertyOwner();
+			var datacontext1 = new NullablePropertyOwner {MyNullable = 42};
+			var datacontext2 = new NullablePropertyOwner {MyNullable = 42};
+			var datacontext3 = new NullablePropertyOwner {MyNullable = 84};
+
+			var changes = new List<DependencyPropertyChangedEventArgs>();
+
+			SUT.MyNullableChanged += (snd, evt) => changes.Add(evt);
+
+			SUT.SetBinding(
+				NullablePropertyOwner.MyNullableProperty,
+				new Binding() {
+					Path = "MyNullable"
+				}
+			);
+
+			SUT.DataContext = datacontext1;
+			changes.Count.Should().Be(1);
+			changes.Last().NewValue.Should().Be(42);
+
+			SUT.DataContext = datacontext2;
+			changes.Count.Should().Be(1); // Here we ensure we're not receiving a default value, still no changes
+
+			SUT.DataContext = datacontext3;
+			changes.Count.Should().Be(2);
+			changes.Last().NewValue.Should().Be(84);
+
+			SUT.DataContext = null;
+			changes.Count.Should().Be(3);
+			changes.Last().NewValue.Should().Be(null);
+
+			var parent = new Border {Child = SUT};
+
+			parent.DataContext = datacontext1;
+			changes.Count.Should().Be(3);
+
+			SUT.DataContext = DependencyProperty.UnsetValue; // Propagate the datacontext from parent
+			changes.Count.Should().Be(4);
+			changes.Last().NewValue.Should().Be(42);
+		}
 	}
 
     #region DependencyObjects
@@ -1369,7 +1415,7 @@ namespace Uno.UI.Tests.BinderTests
 	{
 
 	}
-	
+
 	partial class MockDependencyObject2 : MockDependencyObject
 	{
 
@@ -1446,7 +1492,7 @@ namespace Uno.UI.Tests.BinderTests
 		public MyDependencyObject3() { }
 	}
 
-	partial class NullablePropertyOwner : DependencyObject
+	partial class NullablePropertyOwner : FrameworkElement
 	{
 
 		#region MyNullable DependencyProperty
@@ -1472,7 +1518,10 @@ namespace Uno.UI.Tests.BinderTests
 
 		private void OnMyNullableChanged(DependencyPropertyChangedEventArgs e)
 		{
+			MyNullableChanged?.Invoke(this, e);
 		}
+
+		internal event EventHandler<DependencyPropertyChangedEventArgs> MyNullableChanged;
 
 		#endregion
 

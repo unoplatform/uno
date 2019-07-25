@@ -507,7 +507,7 @@ var Uno;
                 return true;
             }
             setNameInternal(elementId, name) {
-                this.getView(elementId).setAttribute("XamlName", name);
+                this.getView(elementId).setAttribute("xamlname", name);
             }
             /**
                 * Set a name for an element.
@@ -2175,6 +2175,34 @@ var Windows;
             Core.SystemNavigationManager = SystemNavigationManager;
         })(Core = UI.Core || (UI.Core = {}));
     })(UI = Windows.UI || (Windows.UI = {}));
+})(Windows || (Windows = {}));
+var Windows;
+(function (Windows) {
+    var Devices;
+    (function (Devices) {
+        var Sensors;
+        (function (Sensors) {
+            class Accelerometer {
+                static initialize() {
+                    if (window.DeviceMotionEvent) {
+                        this.dispatchReading = Module.mono_bind_static_method("[Uno] Windows.Devices.Sensors.Accelerometer:DispatchReading");
+                        return true;
+                    }
+                    return false;
+                }
+                static startReading() {
+                    window.addEventListener('devicemotion', Accelerometer.readingChangedHandler);
+                }
+                static stopReading() {
+                    window.removeEventListener('devicemotion', Accelerometer.readingChangedHandler);
+                }
+                static readingChangedHandler(event) {
+                    Accelerometer.dispatchReading(event.accelerationIncludingGravity.x, event.accelerationIncludingGravity.y, event.accelerationIncludingGravity.z);
+                }
+            }
+            Sensors.Accelerometer = Accelerometer;
+        })(Sensors = Devices.Sensors || (Devices.Sensors = {}));
+    })(Devices = Windows.Devices || (Windows.Devices = {}));
 })(Windows || (Windows = {}));
 var Windows;
 (function (Windows) {

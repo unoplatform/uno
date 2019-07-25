@@ -25,8 +25,8 @@
 			<Run x:Name="_combo1Txt"></Run>
 		</TextBlock>
 		<ComboBox x:Name="_combo2">
-			<TextBlock>Item 1</TextBlock>
-			<TextBlock>Item 2</TextBlock>
+			<TextBlock x:Name="_tb1">Item 1</TextBlock>
+			<TextBlock x:Name="_tb2">Item 2</TextBlock>
 			<TextBlock>Item 3</TextBlock>
 			<TextBlock>Item 4</TextBlock>
 			<TextBlock>Item 5</TextBlock>
@@ -35,5 +35,6 @@
 			Previous Combo VisualTree (first item):<LineBreak />
 			<Run x:Name="_combo2Txt"></Run>
 		</TextBlock>
+		<Button x:Name="ChangeSelectionButton" Content="Increment SelectedIndex" Click="ChangeSelectionButton_Click"/>
 	</StackPanel>
 </UserControl>

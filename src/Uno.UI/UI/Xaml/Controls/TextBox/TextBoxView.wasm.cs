@@ -17,7 +17,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			IsMultiline = isMultiline;
 			_textBox = textBox;
-			SynchronizeTextBoxText();
+			SetTextNative(_textBox.Text);
 
 			SetStyle(
 				("overflow-x", "visible"),
@@ -37,32 +37,34 @@ namespace Windows.UI.Xaml.Controls
 		protected override void OnLoaded()
 		{
 			base.OnLoaded();
-
-			_textBox.TextChanged += OnTextChanged;
+			
 			HtmlInput += OnInput;
 
-			SynchronizeTextBoxText();
+			SetTextNative(_textBox.Text);
 		}
 
 		protected override void OnUnloaded()
 		{
 			base.OnUnloaded();
-
-			_textBox.TextChanged -= OnTextChanged;
+			
 			HtmlInput -= OnInput;
 		}
 
-		private void SynchronizeTextBoxText()
-			=> OnTextChanged(_textBox, new TextChangedEventArgs());
-
 		private void OnInput(object sender, EventArgs eventArgs)
 		{
-			_textBox.Text = GetProperty("value");
+			var text = GetProperty("value");
+
+			var updatedText = _textBox.ProcessTextInput(text);
+
+			if (updatedText != text)
+			{
+				SetTextNative(updatedText);
+			}
 		}
 
-		private void OnTextChanged(object sender, TextChangedEventArgs e)
+		internal void SetTextNative(string text)
 		{
-			SetProperty("value", _textBox.Text);
+			SetProperty("value", text);
 		}
 
 		internal void SetIsPassword(bool isPassword)

@@ -42,13 +42,7 @@ namespace Windows.UI.Xaml.Controls
 						return;
 					}
 
-					_textBoxView = new TextBoxView(this, isMultiline: true)
-						.Binding("Text", new Data.Binding()
-						{
-							Path = "Text",
-							Source = this,
-							Mode = BindingMode.TwoWay
-						});
+					_textBoxView = new TextBoxView(this, isMultiline: true);
 
 					_contentElement.Content = _textBoxView;
 					InitializeProperties();
@@ -60,13 +54,7 @@ namespace Windows.UI.Xaml.Controls
 						return;
 					}
 
-					_textBoxView = new TextBoxView(this, isMultiline: false)
-						.Binding("Text", new Data.Binding()
-						{
-							Path = "Text",
-							Source = this,
-							Mode = BindingMode.TwoWay
-						});
+					_textBoxView = new TextBoxView(this, isMultiline: false);
 
 					_contentElement.Content = _textBoxView;
 					InitializeProperties();
@@ -87,7 +75,7 @@ namespace Windows.UI.Xaml.Controls
 			_textBoxView?.SetForeground(newValue);
 		}
 
-		partial void UpdateFontPartial(object sender)
+		partial void UpdateFontPartial()
 		{
 			_textBoxView?.SetFontSize(FontSize);
 			_textBoxView?.SetFontStyle(FontStyle);

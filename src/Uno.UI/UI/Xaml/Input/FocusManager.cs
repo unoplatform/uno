@@ -60,8 +60,12 @@ namespace Windows.UI.Xaml.Input
 			}
 			else // Focused
 			{
-				(_focusedElement as Control)?.Unfocus();
-				_focusedElement = control;
+				if (_focusedElement != control)
+				{
+					(_focusedElement as Control)?.Unfocus();
+					_focusedElement = control;
+				}
+				
 				_fallbackFocusedElement = control;
 
 #if __ANDROID__

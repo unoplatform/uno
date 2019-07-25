@@ -370,7 +370,7 @@ namespace Uno.UWPSyncGenerator
 			["controls/MediaPlayerElement.md"] = new[] { "MediaPlayerElement", "MediaPlayerPresenter" },
 			["controls/Pivot.md"] = new[] { "Pivot", "PivotHeaderItem", "PivotHeaderPanel" },
 			["controls/ToggleSwitch.md"] = new[] { "ToggleSwitch" },
-			["controls/working-with-commandbar.md"] = new[] { "CommandBar" },
+			["controls/commandbar.md"] = new[] { "CommandBar" },
 			["features/shapes-and-brushes.md"] = new[] { "Ellipse", "Line", "Path", "Polygon", "Polyline", "Rectangle", "ArbitraryShapeBase" },
 		};
 	}

@@ -89,7 +89,7 @@ namespace Uno.UI.Tests.BinderTests
 			var converter = new OppositeConverter();
 
 			child.SetBinding(Target2.DataContextProperty, new Binding("Item.List[0]"));
-			child.SetBinding("TargetValue", new Binding("Details.Info", converter: converter) { FallbackValue = 10});
+			child.SetBinding("TargetValue", new Binding("Details.Info", converter: converter) { FallbackValue = 10 });
 			SUT.ChildrenBinders.Add(child);
 
 			SUT.DataContext = new SourceLevel0();
@@ -233,7 +233,7 @@ namespace Uno.UI.Tests.BinderTests
 			child.SetBinding("TargetValue", new Binding("Details_zzz.InfoBoolean", converter: converter) { FallbackValue = 10 });
 			SUT.ChildrenBinders.Add(child);
 
-			// With the invalid path (Details_zzz instead of Details), the converter should be be called at all.
+			// With the invalid path (Details_zzz instead of Details), the converter should not be called at all.
 			// FallbackValue should be used
 			SUT.DataContext = new SourceLevel0() { Item = new SourceLevel1() { List = new SourceLevel2[] { new SourceLevel2() } } };
 			Assert.AreEqual(10, child.TargetValue);
@@ -298,7 +298,7 @@ namespace Uno.UI.Tests.BinderTests
 			Assert.AreEqual(1, SUT.DataContextChangedCount);
 			Assert.AreEqual(2, child.DataContextChangedCount);
 		}
-		
+
 		[TestMethod]
 		public void When_DataContext_Changed_With_TwoWay_Binding()
 		{
@@ -315,7 +315,7 @@ namespace Uno.UI.Tests.BinderTests
 			control.DataContext = targetA;
 			Assert.AreEqual(10, targetA.TargetValue);
 			Assert.AreEqual(SolidColorBrushHelper.Tomato.Color, (targetA.Brush as SolidColorBrush).Color);
-			
+
 			// This test used to fail because changing the DataContext would dispose the previous PropertyChanged subscription,
 			// which would clear the value and RaisePropertyChanged with null, 
 			// which would propagate that value up to the new DataContext (with TwoWay binding enabled).
@@ -337,7 +337,7 @@ namespace Uno.UI.Tests.BinderTests
 			Assert.AreEqual(1, targetA.BrushSetCount);
 			Assert.AreEqual(1, targetA.BrushSetCount);
 		}
-		
+
 		[TestMethod]
 		public void When_Direct_data_Context_binding()
 		{
@@ -536,7 +536,7 @@ namespace Uno.UI.Tests.BinderTests
 			SUT.SetBinding(MyControl.MyPropertyProperty, new Binding("[0]") { FallbackValue = 42 });
 
 			Assert.AreEqual(42, SUT.MyProperty);
-			
+
 			SUT.DataContext = new int[1] { 43 };
 
 			Assert.AreEqual(43, SUT.MyProperty);
@@ -557,7 +557,7 @@ namespace Uno.UI.Tests.BinderTests
 
 			Assert.AreEqual(42, SUT.MyProperty);
 
-			SUT.DataContext = new Dictionary<string, int> { { "key", 43 } }; 
+			SUT.DataContext = new Dictionary<string, int> { { "key", 43 } };
 
 			Assert.AreEqual(43, SUT.MyProperty);
 
@@ -582,12 +582,12 @@ namespace Uno.UI.Tests.BinderTests
 			SUT.DataContext = source;
 			Assert.AreEqual(Visibility.Visible, SUT.MyVisibilityProperty);
 
-			source.Object = 10;			
+			source.Object = 10;
 			Assert.AreEqual(Visibility.Collapsed, SUT.MyVisibilityProperty);
 
 			source.Object = Visibility.Visible;
 			Assert.AreEqual(Visibility.Visible, SUT.MyVisibilityProperty);
-			
+
 			SUT.DataContext = null;
 			Assert.AreEqual(Visibility.Collapsed, SUT.MyVisibilityProperty);
 		}
@@ -720,36 +720,36 @@ namespace Uno.UI.Tests.BinderTests
 		}
 
 		[TestMethod]
-		//TODO: Amend this test when Uno correctly supports reentrantly modifying DPs.
 		public void When_Reentrant_Set()
 		{
 			var sut = new TextBox();
 
-			sut.TextChanged += (o, e) =>
+			sut.TextChanging += (o, e) =>
 			{
 				sut.Text = "Bob";
 			};
 
 			sut.Text = "Alice";
 
-			Assert.AreEqual("Alice", sut.Text);
+			Assert.AreEqual("Bob", sut.Text);
 		}
 
 		[TestMethod]
-		//TODO: Amend this test when Uno correctly supports reentrantly modifying DPs.
 		public void When_Reentrant_Set_With_Additional_Set()
 		{
 			var sut = new TextBox();
 
-			sut.TextChanged += (o, e) =>
+			sut.TextChanging += (o, e) =>
 			{
-				sut.SetValue(Grid.RowProperty, 0);
+				sut.SetValue(Grid.RowProperty, 3);
 				sut.Text = "Bob";
 			};
 
 			sut.Text = "Alice";
 
-			Assert.AreEqual("Alice", sut.Text);
+			Assert.AreEqual("Bob", sut.Text);
+			var row = (int)sut.GetValue(Grid.RowProperty);
+			Assert.AreEqual(3, row);
 		}
 
 		[TestMethod]
@@ -816,9 +816,9 @@ namespace Uno.UI.Tests.BinderTests
 		[TestMethod]
 		public void When_ExplicitUpdateSourceTrigger()
 		{
-			var source = new MyBindingSource {IntValue = 42};
+			var source = new MyBindingSource { IntValue = 42 };
 			var target = new MyControl();
-			target.SetBinding(MyControl.MyPropertyProperty, new Binding {Source = source, Path = nameof(MyBindingSource.IntValue), Mode = BindingMode.TwoWay, UpdateSourceTrigger = UpdateSourceTrigger.Explicit});
+			target.SetBinding(MyControl.MyPropertyProperty, new Binding { Source = source, Path = nameof(MyBindingSource.IntValue), Mode = BindingMode.TwoWay, UpdateSourceTrigger = UpdateSourceTrigger.Explicit });
 
 			Assert.AreEqual(42, source.IntValue);
 			Assert.AreEqual(42, target.MyProperty);
@@ -832,7 +832,7 @@ namespace Uno.UI.Tests.BinderTests
 		[TestMethod]
 		public void When_ExplicitUpdateSourceTrigger_UpdateSource()
 		{
-			var source = new MyBindingSource {IntValue = 42};
+			var source = new MyBindingSource { IntValue = 42 };
 			var target = new MyControl();
 			target.SetBinding(MyControl.MyPropertyProperty, new Binding { Source = source, Path = nameof(MyBindingSource.IntValue), Mode = BindingMode.TwoWay, UpdateSourceTrigger = UpdateSourceTrigger.Explicit });
 
@@ -846,6 +846,21 @@ namespace Uno.UI.Tests.BinderTests
 
 			Assert.AreEqual(-42, source.IntValue);
 			Assert.AreEqual(-42, target.MyProperty);
+		}
+
+		[TestMethod]
+		public void When_ExplicitSetBindingBetweenProperties_IsNotFallBackValue()
+		{
+			var source = new MyBindingSource { IntValue = 42 };
+			var target = new MyControl();
+			var target2 = new MyObjectTest();
+
+			target.SetBinding(MyControl.MyPropertyProperty, new Binding { Source = source, Path = nameof(MyBindingSource.IntValue), Mode = BindingMode.TwoWay, UpdateSourceTrigger = UpdateSourceTrigger.Explicit });
+			target2.Binding(nameof(MyControl.MyProperty), nameof(MyControl.MyProperty), source: target, BindingMode.TwoWay);
+
+			Assert.AreEqual(42, source.IntValue);
+			Assert.AreEqual(42, target.MyProperty);
+			Assert.AreEqual(42, target2.MyProperty);
 		}
 
 		[TestMethod]
@@ -895,7 +910,7 @@ namespace Uno.UI.Tests.BinderTests
 			// Using a DependencyProperty as the backing store for ChildrenBinders.  This enables animation, styling, binding, etc...
 			public static readonly DependencyProperty ChildrenBindersProperty =
 				DependencyProperty.Register(
-					name: "ChildrenBinders", 
+					name: "ChildrenBinders",
 					propertyType: typeof(IList<DependencyObject>),
 					ownerType: typeof(BaseTarget),
 					typeMetadata: new PropertyMetadata(null, (s, e) => ((BaseTarget)s)?.OnChildrenBindersChanged(e))
@@ -1175,7 +1190,7 @@ namespace Uno.UI.Tests.BinderTests
 
 		// Using a DependencyProperty as the backing store for MyProperty.  This enables animation, styling, binding, etc...
 		public static readonly DependencyProperty MyPropertyProperty =
-			DependencyProperty.Register("MyProperty", typeof(int), typeof(object), new PropertyMetadata(0));
+			DependencyProperty.Register("MyProperty", typeof(int), typeof(MyObjectTest), new PropertyMetadata(0));
 
 
 		private void OnMyPropertyChanged(DependencyPropertyChangedEventArgs e)
@@ -1223,7 +1238,7 @@ namespace Uno.UI.Tests.BinderTests
 		// Using a DependencyProperty as the backing store for MyVisibilityProperty.  This enables animation, styling, binding, etc...
 		public static readonly DependencyProperty MyVisibilityPropertyProperty =
 			DependencyProperty.Register("MyVisibilityProperty", typeof(Visibility), typeof(MyControl), new PropertyMetadata(Visibility.Visible));
-			
+
 	}
 
 	public class OppositeConverter : IValueConverter
@@ -1231,7 +1246,7 @@ namespace Uno.UI.Tests.BinderTests
 		public int ConversionCount { get; private set; }
 
 		public object LastValue { get; private set; }
-		
+
 		public object Convert(object value, Type targetType, object parameter, string language)
 		{
 			LastValue = value;
@@ -1253,7 +1268,7 @@ namespace Uno.UI.Tests.BinderTests
 		public int ConversionCount { get; private set; }
 
 		public object LastValue { get; private set; }
-		
+
 		public object Convert(object value, Type targetType, object parameter, string language)
 		{
 			LastValue = value;

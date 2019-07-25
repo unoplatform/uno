@@ -1,17 +1,17 @@
-﻿using Uno.Collections;
-using Microsoft.Practices.ServiceLocation;
+﻿using Microsoft.Practices.ServiceLocation;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
-using Uno.Extensions;
-using Uno.UI.DataBinding;
 using System.Runtime.CompilerServices;
 using System.Drawing;
-using Uno.Disposables;
 using Windows.UI.Xaml;
-using System.ComponentModel;
 using Windows.UI.Xaml.Media;
+using Uno.Collections;
+using Uno.Disposables;
+using Uno.Extensions;
+using Uno.UI.DataBinding;
 
 #if XAMARIN_IOS_UNIFIED
 using Foundation;
@@ -25,9 +25,9 @@ namespace Uno.UI.Controls
 {
 	public partial class BindableUIView : UIView, INotifyPropertyChanged, DependencyObject, IShadowChildrenProvider
 	{
-		private List<UIView> _shadowChildren = new List<UIView>();
+		private MaterializableList<UIView> _shadowChildren = new MaterializableList<UIView>();
 
-		List<UIView> IShadowChildrenProvider.ChildrenShadow => _shadowChildren;
+		List<UIView> IShadowChildrenProvider.ChildrenShadow => _shadowChildren.Materialized;
 
 		internal IReadOnlyList<UIView> ChildrenShadow => _shadowChildren;
 
@@ -35,14 +35,14 @@ namespace Uno.UI.Controls
 		{
 			base.SubviewAdded(uiview);
 
-			// Reference the list as we don't know where 
+			// Reference the list as we don't know where
 			// the items has been added other than by getting the complete list.
 			// Subviews materializes a new array at every call, which makes it safe to
 			// reference.
-			_shadowChildren = Subviews.ToList();
+			_shadowChildren = new MaterializableList<UIView>(Subviews);
 		}
 
-		internal List<UIView>.Enumerator GetChildrenEnumerator() => _shadowChildren.GetEnumerator();
+		internal List<UIView>.Enumerator GetChildrenEnumerator() => _shadowChildren.Materialized.GetEnumerator();
 
 		public override void WillRemoveSubview(UIView uiview)
 		{
@@ -93,26 +93,22 @@ namespace Uno.UI.Controls
 		/// <remarks>
 		/// The trick for this method is to move the child from one position to the other
 		/// without calling RemoveView and AddView. In this context, the only way to do this is
-		/// to call BringSubviewToFront, which is the only available method on UIView that manipulates 
+		/// to call BringSubviewToFront, which is the only available method on UIView that manipulates
 		/// the index of a view, even if it does not allow for specifying an index.
 		/// </remarks>
 		internal void MoveViewTo(int oldIndex, int newIndex)
 		{
-			var newShadow = _shadowChildren.ToList();
+			var view = _shadowChildren[oldIndex];
 
-			var view = newShadow[oldIndex];
-
-			newShadow.RemoveAt(oldIndex);
-			newShadow.Insert(newIndex, view);
+			_shadowChildren.RemoveAt(oldIndex);
+			_shadowChildren.Insert(newIndex, view);
 
 			var reorderIndex = Math.Min(oldIndex, newIndex);
 
-			for (int i = reorderIndex; i < newShadow.Count; i++)
+			for (int i = reorderIndex; i < _shadowChildren.Count; i++)
 			{
-				BringSubviewToFront(newShadow[i]);
+				BringSubviewToFront(_shadowChildren[i]);
 			}
-
-			_shadowChildren = newShadow.ToList();
 		}
 
 		protected void RaisePropertyChanged([CallerMemberName] string propertyName = null)

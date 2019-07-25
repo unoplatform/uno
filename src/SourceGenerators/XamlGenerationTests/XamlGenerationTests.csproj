@@ -51,6 +51,7 @@
 
 	<ItemGroup>
 	  <None Remove="NonDPAssignableTest.xaml" />
+	  <None Remove="ThemeResourcesTest.xaml" />
 	  <None Remove="xNameResources.xaml" />
 	</ItemGroup>
 

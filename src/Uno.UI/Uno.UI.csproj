@@ -4,6 +4,10 @@
 		<TargetFrameworksCI>MonoAndroid80;MonoAndroid90;xamarinios10;net461;netstandard2.0;xamarinmac20</TargetFrameworksCI>
 	</PropertyGroup>
 
+	<PropertyGroup Condition="'$(UnoTargetFrameworkOverride)'!=''">
+		<TargetFrameworks>$(UnoTargetFrameworkOverride)</TargetFrameworks>
+	</PropertyGroup>
+
 	<PropertyGroup>
 		<AssemblyName>Uno.UI</AssemblyName>
 		<RootNamespace>Uno.UI</RootNamespace>
@@ -25,7 +29,10 @@
 
 		<!-- Force the generation of upri files for Uno.UI self localization -->
 		<UnoForceProcessPRIResource>true</UnoForceProcessPRIResource>
-	</PropertyGroup>
+
+		<!-- Generate automation IDs in debug builds, use by UI tests. -->
+    <IsUiAutomationMappingEnabled Condition="'$(Configuration)'=='Debug'">true</IsUiAutomationMappingEnabled>
+  </PropertyGroup>
 
 	<Import Project="..\Uno.CrossTargetting.props" />
 
@@ -335,6 +342,24 @@
 			<SkipGetTargetFrameworkProperties>true</SkipGetTargetFrameworkProperties>
 			<UndefineProperties>TargetFramework</UndefineProperties>
 		</ProjectReference>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <None Update="BaseActivity.Callbacks.Implementation.Android.tt">
+	    <Generator>TextTemplatingFileGenerator</Generator>
+	  </None>
+	  <None Update="Mixins\macOS\FrameworkElementMixins.tt">
+	    <Generator>TextTemplatingFileGenerator</Generator>
+	  </None>
+	  <None Update="Mixins\macOS\VisualStatesMixins.tt">
+	    <Generator>TextTemplatingFileGenerator</Generator>
+	  </None>
+	  <None Update="Mixins\net461\VisualStatesMixins.tt">
+	    <Generator>TextTemplatingFileGenerator</Generator>
+	  </None>
+	  <None Update="Mixins\Wasm\VisualStatesMixins.tt">
+	    <Generator>TextTemplatingFileGenerator</Generator>
+	  </None>
 	</ItemGroup>
 
 	<Target Name="GetPackagingOutputs" Condition=" '$(TargetFramework)' == 'uap10.0' " />

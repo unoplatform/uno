@@ -120,4 +120,7 @@
   <data name="ResourceLoader_Simple_tb01.Text" xml:space="preserve">
     <value>This is ResourceLoader_Simple_tb01.Text in UITestsStrings\en-US\Resources.resw</value>
   </data>
+  <data name="MyPrefix/ResourceLoader_Simple_tb02.Text" xml:space="preserve">
+    <value>This is MyPrefix/ResourceLoader_Simple_tb02 in UITestsStrings\en-US\Resources.resw</value>
+  </data>
 </root>

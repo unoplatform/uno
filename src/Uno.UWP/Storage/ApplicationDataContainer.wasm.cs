@@ -171,12 +171,19 @@ namespace Windows.Storage
 
 			public void Add(string key, object value)
 			{
-				_values.Add(key, DataTypeSerializer.Serialize(value));
-				WriteToFile();
+                if (ContainsKey(key))
+                {
+                    throw new ArgumentException("An item with the same key has already been added.");
+                }
+                if (value != null)
+				{				
+					_values.Add(key, DataTypeSerializer.Serialize(value));
+					WriteToFile();
+				}
 			}
 
 			public void Add(KeyValuePair<string, object> item)
-				=> throw new NotSupportedException();
+				=> Add(item.Key, item.Value);
 
 			public void Clear()
 			{

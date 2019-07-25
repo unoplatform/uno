@@ -2,21 +2,59 @@
 
 ## Next version
 ### Features
+* Add support for `Windows.Devices.Sensors.Accelerometer` APIs on iOS, Android and WASM
+   * `ReadingChanged`
+   * `Shaken`
+   * `ReportInterval`
+* Align `ApplicationData.Current.LocalSettings.Add` behavior with UWP for `null` and repeated adds
+* Add support for `Windows.ApplicationModel.Calls.PhoneCallManager`
 * Add support for `Windows.Phone.Devices.Notification.VibrationDevice` API on iOS, Android and WASM
 * Basic support for `Windows.Devices.Sensors.Barometer`
+* Support setting `Style` inline (eg `<TextBlock><TextBlock.Style><Style TargetType="TextBlock"><Setter>...`)
 * [Wasm] Add support for `DisplayInformation` properties `LogicalDpi`, `ResolutionScale`, `ScreenWidthInRawPixels`, `RawPixelsPerViewPixel` , and `ScreenHeightInRawPixels`¸
+* Permit `DependencyProperty` to be set reentrantly. Eg this permits `TextBox.TextChanged` to modify the `Text` property (previously this could only be achieved using `Dispatcher.RunAsync()`).
+* Add support for filtered solutions development for Uno.UI contributions.
+* 132984 [Android] Notch support on Android
+* Add support for Android UI Tests in PRs for improved regression testing
+* Add static support for **ThemeResources**: `Application.Current.RequestedTheme` is supported
+  - `Dark` and `Light` are supported.
+  - **Custom Themes** are supported. This let you specify `HighContrast` or any other custom themes.
+    (this is a feature not supported in UWP)
+    ``` csharp
+    // Put that somewhere during app initialization...
+    Uno.UI.ApplicationHelper.RequestedCustomTheme = "MyCustomTheme";
+    ```
+  - `FrameworkElement.RequestedTheme ` is ignored for now.
+  - Should be set when the application is starting (before first request to a static resource).
+* Prevent possible crash with `MediaPlayerElement` (tentative)
+* Add support for `ContentDialog`
+* Permit `DependencyProperty` to be set reentrantly. Eg this permits `TextBox.TextChanging` to modify the `Text` property (previously this could only be achieved using `Dispatcher.RunAsync()`).
+* Implement `TextBox.TextChanging` and `TextBox.BeforeTextChanging`. As on UWP, this allows the text to be intercepted and modified before the UI is updated. Previously on Android using the `TextChanged` event would lead to laggy response and dropped characters when typing rapidly; this is no longer the case with `TextChanging`.
+* [WASM] `ComboBox`'s dropdown list (`CarouselPanel`) is now virtualized (#1012)
+* Improve Screenshot comparer tool, CI test results now contain Screenshots compare data
 
 ### Breaking changes
-*
+* `TextBox` no longer raises TextChanged when its template is applied, in line with UWP.
+* `TextBox.TextChanged` is now called asynchronously after the UI is updated, in line with UWP. For most uses `TextChanging` should be preferred.
+* [Android] `TextBox.IsSpellCheckEnabled = false` is now enforced in a way that may cause issues in certain use cases (see https://stackoverflow.com/a/5188119/1902058). The old behavior can be restored by setting `ShouldForceDisableSpellCheck = false`, per `TextBox`.
 
 ### Bug fixes
+* #1276 retrieving non-existent setting via indexer should not throw and  `ApplicationDataContainer` allowed clearing value by calling `Add(null)` which was not consistent with UWP.
 * [iOS] Area of view outside Clip rect now allows touch to pass through, this fixes NavigationView not allowing touches to children (#1018)
 * `ComboBox` drop down is now placed following a logic which is closer to UWP and it longer flickers when it appears (especilly on WASM)
-* [Android] A ListView inside another ListView no longer causes an app freeze/crash
 * #854 `BasedOn` on a `<Style>` in `App.Xaml` were not resolving properly
 * #706 `x:Name` in `App.Xaml`'s resources were crashing the compilation.
 * #846 `x:Name` on non-`DependencyObject` resources were crashing the compilation
 * [Android/iOS] Fixed generated x:uid setter not globalized for Uno.UI.Helpers.MarkupHelper.SetXUid and Uno.UI.FrameworkElementHelper.SetRenderPhase
+* Fix invalid XAML x:Uid parsing with resource file name and prefix (#1130, #228)
+* Fixed an issue where a Two-Way binding would sometimes not update values back to source correctly
+* Adjust the behavior of `DisplayInformation.LogicalDpi` to match UWP's behavior
+* [Android] Ensure TextBox spell-check is properly enabled/disabled on all devices.
+* Fix ComboBox disappearing items when items are views (#1078)
+* [iOS] TextBox with `AcceptsReturn=True` crashes ListView
+* [Android/iOS] Fixed Arc command in paths
+* Changing the `DataContext` of an element to a new value were pushing the properties default
+  value on data bound properties before setting the new value.
 
 ## Release 1.45.0
 ### Features
@@ -175,11 +213,13 @@
 * RadioButton was not applying Checked state correctly with non-standard visual state grouping in style
 * [Android] Fix several bugs preventing AutoSuggestBox from working on Android. (#1012)
 * #1062 TextBlock measure caching can wrongly hit
+* 153974 [Android] fixed button flyout placement
 * Fix support for ScrollBar touch events (#871)
 * [iOS] Area of view outside Clip rect now allows touch to pass through, this fixes NavigationView not allowing touches to children (#1018)
 * `ComboBox` drop down is now placed following a logic which is closer to UWP and it longer flickers when it appears (especilly on WASM)
 * Date and Time Picker Content fix and Refactored to use PickerFlyoutBase (to resemble UWP implementation)
 * `LinearGradientBrush.EndPoint` now defaults to (1,1) to match UWP
+* [Android] A ListView inside another ListView no longer causes an app freeze/crash
 
 ## Release 1.44.0
 

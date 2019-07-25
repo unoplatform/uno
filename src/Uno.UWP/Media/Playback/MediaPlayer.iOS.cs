@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 using AVFoundation;
 using CoreFoundation;
 using CoreMedia;
@@ -13,8 +14,101 @@ using Windows.Media.Core;
 
 namespace Windows.Media.Playback
 {
-	public partial class MediaPlayer : NSObject
+	public partial class MediaPlayer : IDisposable
 	{
+		/// <summary>
+		/// The property changed dispatcher for a the iOS MediaPlayer
+		/// </summary>
+		/// <remarks>
+		/// It seems that the AudioToolbox may try to raise some property changed on collected MediaPlayer, which may crash the application.
+		/// This object is a lightweight ** leaking ** object which acts as a proxy to receive the callbacks and propagate them
+		/// to the target MediaPlayer but only if was not collected yet. This is acceptable only as the MediaPlayer is not a control which
+		/// is created frequently and this proxy object is really thin in memory.
+		/// 
+		/// The stacktrace of the crash report that this object is expected to fix:
+		///		Crashed: AVAudioSession Notify Thread
+		///		0  AudioToolbox                   0x1a96762c0 AudioSessionPropertyListeners::CallPropertyListenersImp(AudioSessionPropertyListeners const&, unsigned int, unsigned int, void const*) + 456
+		///		1  AudioToolbox                   0x1a976c100 AudioSessionPropertyListeners::CallPropertyListeners(unsigned int, unsigned int, void const*) + 220
+		///		2  AudioToolbox                   0x1a97aa43c HandleCFPropertyListChange(unsigned int, unsigned int, unsigned long, unsigned char*, unsigned int) + 456
+		///		3  AudioToolbox                   0x1a97aea34 HandleAudioSessionCFTypePropertyChangedMessage(unsigned int, unsigned int, void*, unsigned int) + 268
+		///		4  AudioToolbox                   0x1a97adcf8 ProcessDeferredMessage(unsigned int, __CFData const*, unsigned int, unsigned int) + 1312
+		///		5  AudioToolbox                   0x1a97ad4e4 ASCallbackReceiver_AudioSessionPingMessage + 588
+		///		6  AudioToolbox                   0x1a9666ec0 _XAudioSessionPingMessage + 52
+		///		7  AudioToolbox                   0x1a99ae1a8 mshMIGPerform + 232
+		///		8  CoreFoundation                 0x1a56af690 __CFRUNLOOP_IS_CALLING_OUT_TO_A_SOURCE1_PERFORM_FUNCTION__ + 56
+		///		9  CoreFoundation                 0x1a56aeddc __CFRunLoopDoSource1 + 440
+		///		10 CoreFoundation                 0x1a56a9c00 __CFRunLoopRun + 2096
+		///		11 CoreFoundation                 0x1a56a90b0 CFRunLoopRunSpecific + 436
+		///		12 AVFAudio                       0x1ab591334 GenericRunLoopThread::Entry(void*) + 156
+		///		13 AVFAudio                       0x1ab5bbc60 CAPThread::Entry(CAPThread*) + 88
+		///		14 libsystem_pthread.dylib        0x1a533c2c0 _pthread_body + 128
+		///		15 libsystem_pthread.dylib        0x1a533c220 _pthread_start + 44
+		///		16 libsystem_pthread.dylib        0x1a533fcdc thread_start + 4
+		/// </remarks>
+		private class Observer : NSObject
+		{
+			private readonly WeakReference<MediaPlayer> _target;
+
+			public Observer(MediaPlayer target)
+			{
+				_target = new WeakReference<MediaPlayer>(target);
+
+				// Here we make sure to create only one instance of each handler delegate
+				// and mainly we make sure to hold those instances so they won't be collected.
+				OnMediaFailed = OnMediaFailedCore;
+				OnMediaStalled = OnMediaStalledCore;
+				OnMediaEnded = OnMediaEndedCore;
+
+				// Explicitly leak this object! Cf. Remarks above.
+				GCHandle.Alloc(this);
+			}
+
+			public override void ObserveValue(NSString keyPath, NSObject ofObject, NSDictionary change, IntPtr context)
+			{
+				if (!_target.TryGetTarget(out var player))
+				{
+					return;
+				}
+
+				switch (keyPath)
+				{
+					case "status":
+						player.OnStatusChanged();
+						return;
+
+					case "loadedTimeRanges":
+						player.OnBufferingProgressChanged();
+						return;
+
+					case "duration":
+						player.OnCurrentItemDurationChanged();
+						return;
+
+					case "rate":
+						player.OnRateChanged();
+						return;
+
+					case "videoRect":
+						player.OnVideoRectChanged();
+						return;
+				}
+			}
+
+			public EventHandler<AVPlayerItemErrorEventArgs> OnMediaFailed { get; }
+			private void OnMediaFailedCore(object sender, AVPlayerItemErrorEventArgs args)
+				=> _target.GetTarget()?.OnMediaFailed(new Exception(args.Error.LocalizedDescription));
+
+			public EventHandler<NSNotificationEventArgs> OnMediaStalled { get; }
+			private void OnMediaStalledCore(object sender, NSNotificationEventArgs args)
+				=> _target.GetTarget()?.OnMediaFailed();
+
+			public EventHandler<NSNotificationEventArgs> OnMediaEnded { get; }
+			private void OnMediaEndedCore(object sender, NSNotificationEventArgs args)
+				=> _target.GetTarget()?.OnMediaEnded(sender, args);
+		}
+
+		private Observer _observer;
+
 		private AVQueuePlayer _player;
 		private AVPlayerLayer _videoLayer;
 		private NSObject _periodicTimeObserverObject;
@@ -31,6 +125,7 @@ namespace Windows.Media.Playback
 
 		private void Initialize()
 		{
+			_observer = new Observer(this);
 		}
 
 		#region Player Initialization
@@ -41,13 +136,13 @@ namespace Windows.Media.Playback
 			{
 				try
 				{
-					_videoLayer.RemoveObserver(this, new NSString("videoRect"), _videoLayer.Handle);
+					_videoLayer.RemoveObserver(_observer, new NSString("videoRect"), _videoLayer.Handle);
 					_videoLayer.RemoveFromSuperLayer();
 
-					_player.CurrentItem?.RemoveObserver(this, new NSString("loadedTimeRanges"), _player.Handle);
-					_player.CurrentItem?.RemoveObserver(this, new NSString("status"), _player.Handle);
-					_player.CurrentItem?.RemoveObserver(this, new NSString("duration"), _player.Handle);
-					_player.RemoveObserver(this, new NSString("rate"), RateObservationContext.Handle);
+					_player.CurrentItem?.RemoveObserver(_observer, new NSString("loadedTimeRanges"), _player.Handle);
+					_player.CurrentItem?.RemoveObserver(_observer, new NSString("status"), _player.Handle);
+					_player.CurrentItem?.RemoveObserver(_observer, new NSString("duration"), _player.Handle);
+					_player.RemoveObserver(_observer, new NSString("rate"), RateObservationContext.Handle);
 					_player.RemoveTimeObserver(_periodicTimeObserverObject);
 					_player.RemoveAllItems();
 				}
@@ -84,12 +179,12 @@ namespace Windows.Media.Playback
 				this.Log().WarnIfEnabled(() => $"Could not activate audio session: {activationError.LocalizedDescription}");
 			}
 
-			_videoLayer.AddObserver(this, new NSString("videoRect"), NSKeyValueObservingOptions.New | NSKeyValueObservingOptions.Initial, _videoLayer.Handle);
-			_player.AddObserver(this, new NSString("rate"), NSKeyValueObservingOptions.New | NSKeyValueObservingOptions.Initial, RateObservationContext.Handle);
+			_videoLayer.AddObserver(_observer, new NSString("videoRect"), NSKeyValueObservingOptions.New | NSKeyValueObservingOptions.Initial, _videoLayer.Handle);
+			_player.AddObserver(_observer, new NSString("rate"), NSKeyValueObservingOptions.New | NSKeyValueObservingOptions.Initial, RateObservationContext.Handle);
 
-			_itemFailedToPlayToEndTimeNotification = AVPlayerItem.Notifications.ObserveItemFailedToPlayToEndTime((sender, args) => OnMediaFailed(new Exception(args.Error.LocalizedDescription)));
-			_playbackStalledNotification = AVPlayerItem.Notifications.ObservePlaybackStalled((sender, args) => OnMediaFailed());
-			_didPlayToEndTimeNotification = AVPlayerItem.Notifications.ObserveDidPlayToEndTime((sender, args) => OnMediaEnded(sender, args));
+			_itemFailedToPlayToEndTimeNotification = AVPlayerItem.Notifications.ObserveItemFailedToPlayToEndTime(_observer.OnMediaFailed);
+			_playbackStalledNotification = AVPlayerItem.Notifications.ObservePlaybackStalled(_observer.OnMediaStalled);
+			_didPlayToEndTimeNotification = AVPlayerItem.Notifications.ObserveDidPlayToEndTime(_observer.OnMediaEnded);
 
 			_periodicTimeObserverObject = _player.AddPeriodicTimeObserver(new CMTime(1, 4), DispatchQueue.MainQueue, delegate
 			{
@@ -122,10 +217,10 @@ namespace Windows.Media.Playback
 				InitializePlayer();
 
 				PlaybackSession.PlaybackState = MediaPlaybackState.Opening;
-
-				_player.CurrentItem?.RemoveObserver(this, new NSString("duration"), _player.Handle);
-				_player.CurrentItem?.RemoveObserver(this, new NSString("status"), _player.Handle);
-				_player.CurrentItem?.RemoveObserver(this, new NSString("loadedTimeRanges"), _player.Handle);
+				
+				_player.CurrentItem?.RemoveObserver(_observer, new NSString("duration"), _player.Handle);
+				_player.CurrentItem?.RemoveObserver(_observer, new NSString("status"), _player.Handle);
+				_player.CurrentItem?.RemoveObserver(_observer, new NSString("loadedTimeRanges"), _player.Handle);
 
 				if (Source is MediaPlaybackList)
 				{
@@ -144,9 +239,9 @@ namespace Windows.Media.Playback
 					_player.ReplaceCurrentItemWithPlayerItem(streamingItem);
 				}
 
-				_player.CurrentItem.AddObserver(this, new NSString("duration"), NSKeyValueObservingOptions.Initial, _player.Handle);
-				_player.CurrentItem.AddObserver(this, new NSString("status"), NSKeyValueObservingOptions.New | NSKeyValueObservingOptions.Initial, _player.Handle);
-				_player.CurrentItem.AddObserver(this, new NSString("loadedTimeRanges"), NSKeyValueObservingOptions.Initial | NSKeyValueObservingOptions.New, _player.Handle);
+				_player.CurrentItem.AddObserver(_observer, new NSString("duration"), NSKeyValueObservingOptions.Initial, _player.Handle);
+				_player.CurrentItem.AddObserver(_observer, new NSString("status"), NSKeyValueObservingOptions.New | NSKeyValueObservingOptions.Initial, _player.Handle);
+				_player.CurrentItem.AddObserver(_observer, new NSString("loadedTimeRanges"), NSKeyValueObservingOptions.Initial | NSKeyValueObservingOptions.New, _player.Handle);
 
 				_player.CurrentItem.SeekingWaitsForVideoCompositionRendering = true;
 
@@ -243,33 +338,7 @@ namespace Windows.Media.Playback
 			TryDisposePlayer();
 		}
 
-		public override void ObserveValue(NSString keyPath, NSObject ofObject, NSDictionary change, IntPtr context)
-		{
-			switch (keyPath)
-			{
-				case "status":
-					ObserveStatus();
-					return;
-
-				case "loadedTimeRanges":
-					ObserveBufferingProgress();
-					return;
-
-				case "duration":
-					ObserveCurrentItemDuration();
-					return;
-
-				case "rate":
-					ObserveRate();
-					return;
-
-				case "videoRect":
-					ObserveVideoRect();
-					return;
-			}
-		}
-
-		private void ObserveStatus()
+		private void OnStatusChanged()
 		{
 			if (_player?.CurrentItem != null)
 			{
@@ -294,7 +363,7 @@ namespace Windows.Media.Playback
 			}
 		}
 
-		private void ObserveVideoRect()
+		private void OnVideoRectChanged()
 		{
 			if (_videoLayer?.VideoRect != null)
 			{
@@ -302,7 +371,7 @@ namespace Windows.Media.Playback
 			}
 		}
 
-		private void ObserveRate()
+		private void OnRateChanged()
 		{
 			if (_player != null)
 			{
@@ -316,7 +385,7 @@ namespace Windows.Media.Playback
 			}
 		}
 
-		private void ObserveBufferingProgress()
+		private void OnBufferingProgressChanged()
 		{
 			var loadedTimeRanges = _player?.CurrentItem?.LoadedTimeRanges;
 			if (loadedTimeRanges == null || loadedTimeRanges.Length == 0 || PlaybackSession.NaturalDuration == TimeSpan.Zero)
@@ -330,7 +399,7 @@ namespace Windows.Media.Playback
 			}
 		}
 
-		private void ObserveCurrentItemDuration()
+		private void OnCurrentItemDurationChanged()
 		{
 			var duration = _player.CurrentItem.Duration;
 
@@ -403,7 +472,7 @@ namespace Windows.Media.Playback
 			}
 		}
 
-		protected override void Dispose(bool disposing)
+		public void Dispose()
 		{
 			TryDisposePlayer();
 		}

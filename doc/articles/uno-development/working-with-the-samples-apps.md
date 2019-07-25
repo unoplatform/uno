@@ -23,13 +23,37 @@ To create a UI Test for the sample applications:
 
 The Uno.UI process validates does two types of validations:
 - Screenshot based validation (with results comparison, see below)
-- Automated UI Testing using the `SamplesApp.UITests` and the [`Uno.UITest`](https://www.nuget.org/packages?q=uno.uitest) package.
+- Automated UI Testing for WebAssembly and Android using the `SamplesApp.UITests` and the [`Uno.UITest`](https://www.nuget.org/packages?q=uno.uitest) package.
+
+At this time, only WebAssembly and Android are used to run UI Tests, iOS is coming soon.
+
+## Selectively ignore tests per platform
+
+It may be that some UI Tests are platform specific, or that some tests may not work on a particular platform.
+
+In order to do so, the `ActivePlatformsAttribute` allows to specify which platform are active for a given test.
+
+This attribute is used as follows:
+```
+[ActivePlatforms(Platform.iOS, Platform.Browser)]	// Run on iOS and Browser.
+```
+
+This attribute can be placed at the test or class level.
 
 ## Setup for Automated UI Tests on WebAssembly
-- Navigate to the `SamplesApp.Wasm.UITests` folder and run `npm i`. This will download Puppeteer and the chrome driver.
+- Navigate to the `SamplesApp.Wasm.UITests` folder and run `npm i`. This will download Puppeteer and the Chrome driver.
+- Deploy and run the `SamplesApp.Wasm` application once.
+
+## Setup for Automated UI Tests on Android
+- Setup an android simulator or device, start it
+- Deploy and run the `SamplesApp.Droid` application on that device
+
+## Running UI Tests
+- Open the [`Constants.cs](src/SamplesApp/SamplesApp.UITests/Constants.cs) file and change the `CurrentPlatform` field to the platform you want to test.
 - Select a test in the `SamplesApp.UITests` project and run a specific test.
 
-At this time, only WebAssembly is used to run UI Tests, iOS and Android are coming soon.
+## Troubleshooting tests running during the CI
+The build artifacts contain the tests output, as well as the device logs (in the case of Android).
 
 # Requirements for UI tests
 
@@ -61,7 +85,7 @@ To run the tests:
 - Press `F5`, node will start and run the tests sequentially
 - The screen shots are placed in a folder named `out`
 
-Note that the same operation is run during the CI, in a specific job running under Linux. The screen shots are located in an build artifact.
+Note that the same operation is run during the CI, in a specific job running under Linux. The screen shots are located in the Unit Tests section under `Screenshots Compare Test Run` as well as in the build artifact.
 
 ## Validating the WebAssembly UI Tests results
 
