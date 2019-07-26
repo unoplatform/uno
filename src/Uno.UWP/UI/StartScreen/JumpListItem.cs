@@ -9,6 +9,12 @@ namespace Windows.UI.StartScreen
 {
 	public partial class JumpListItem
 	{
+		internal const string UnoShortcutKey = "UnoShortcut";
+		internal const string ImagePathKey = "UnoLogoImagePath";
+#if __ANDROID__
+		internal const string ArgumentsExtraKey = "UnoArguments";
+#endif
+
 		private JumpListItem(string arguments)
 		{
 			Arguments = arguments;
