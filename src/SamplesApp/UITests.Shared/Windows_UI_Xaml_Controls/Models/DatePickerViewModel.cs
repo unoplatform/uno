@@ -13,7 +13,6 @@ namespace SamplesApp.Windows_UI_Xaml_Controls.Models
 
 		public DatePickerViewModel(CoreDispatcher dispatcher) : base(dispatcher)
 		{
-			SetToCurrentDate = CreateCommand(ExecuteSetToCurrentDate);
 		}
 
 		public DateTime Date
@@ -26,11 +25,6 @@ namespace SamplesApp.Windows_UI_Xaml_Controls.Models
 			}
 		}
 
-		public ICommand SetToCurrentDate { get; }
-
-		private void ExecuteSetToCurrentDate()
-		{
-			Date = DateTime.Now.Date;
-		}
+		public ICommand SetToCurrentDate => GetOrCreateCommand(() => Date = DateTime.Now.Date);
 	}
 }

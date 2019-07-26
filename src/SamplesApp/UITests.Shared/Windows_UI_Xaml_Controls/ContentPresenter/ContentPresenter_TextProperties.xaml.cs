@@ -17,7 +17,7 @@ using Windows.UI.Xaml.Navigation;
 
 namespace Uno.UI.Samples.Content.UITests.ContentPresenter
 {
-	[SampleControlInfoAttribute("ContentPresenter", "ContentPresenter_TextProperties")]
+	[SampleControlInfo("ContentPresenter", "ContentPresenter_TextProperties")]
 	public sealed partial class ContentPresenter_TextProperties : UserControl
 	{
 		public ContentPresenter_TextProperties()

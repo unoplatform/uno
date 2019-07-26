@@ -37,8 +37,10 @@
 * `TextBox` no longer raises TextChanged when its template is applied, in line with UWP.
 * `TextBox.TextChanged` is now called asynchronously after the UI is updated, in line with UWP. For most uses `TextChanging` should be preferred.
 * [Android] `TextBox.IsSpellCheckEnabled = false` is now enforced in a way that may cause issues in certain use cases (see https://stackoverflow.com/a/5188119/1902058). The old behavior can be restored by setting `ShouldForceDisableSpellCheck = false`, per `TextBox`.
+* `TextBox.Text = null` will now throw an exception, as on UWP. Pushing `null` via a binding is still valid.
 
 ### Bug fixes
+* #1276 retrieving non-existent setting via indexer should not throw and  `ApplicationDataContainer` allowed clearing value by calling `Add(null)` which was not consistent with UWP.
 * [iOS] Area of view outside Clip rect now allows touch to pass through, this fixes NavigationView not allowing touches to children (#1018)
 * `ComboBox` drop down is now placed following a logic which is closer to UWP and it longer flickers when it appears (especilly on WASM)
 * #854 `BasedOn` on a `<Style>` in `App.Xaml` were not resolving properly
@@ -220,6 +222,7 @@
 * Date and Time Picker Content fix and Refactored to use PickerFlyoutBase (to resemble UWP implementation)
 * `LinearGradientBrush.EndPoint` now defaults to (1,1) to match UWP
 * [Android] A ListView inside another ListView no longer causes an app freeze/crash
+* `Click` on `ButtonBase` was not properly raised.
 
 ## Release 1.44.0
 

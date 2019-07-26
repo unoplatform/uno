@@ -11,10 +11,7 @@ namespace SamplesApp.Windows_UI_Xaml_Controls.ToggleSwitchControl.Models
 
 		public ToggleSwitchViewModel(CoreDispatcher dispatcher) : base(dispatcher)
 		{
-			Flip = CreateCommand(OnFlip);
 		}
-
-		private void OnFlip() => IsOn = !IsOn;
 
 		public bool IsOn
 		{
@@ -36,6 +33,6 @@ namespace SamplesApp.Windows_UI_Xaml_Controls.ToggleSwitchControl.Models
 			}
 		}
 
-		public ICommand Flip { get; }
+		public ICommand Flip => GetOrCreateCommand(() => IsOn = !IsOn);
 	}
 }

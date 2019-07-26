@@ -3,10 +3,11 @@ using System.Windows.Input;
 using Uno.UI.Samples.Controls;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
+using Uno.UI.Samples.Presentation.SamplePages;
 
 namespace Uno.UI.Samples.Content.UITests.ButtonTestsControl
 {
-	[SampleControlInfo("Button", "Button_IsEnabled")]
+	[SampleControlInfo("Button", "Button_IsEnabled", typeof(ButtonTestsViewModel))]
 	public sealed partial class Button_IsEnabled : UserControl
 	{
 		public Button_IsEnabled()

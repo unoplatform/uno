@@ -50,14 +50,24 @@ namespace Uno.UI.Samples.UITests.Helpers
 			}
 		}
 
-		protected static Command CreateCommand<T>(Action<T> action)
+		private readonly Dictionary<string, Command> _commands = new Dictionary<string,Command>();
+
+		protected Command GetOrCreateCommand<T>(Action<T> action, [CallerMemberName] string commandName = null)
 		{
-			return new Command(x => action((T)x));
+			if(!_commands.TryGetValue(commandName, out var command))
+			{
+				_commands[commandName] = command = new Command(x => action((T)x));
+			}
+			return command;
 		}
 
-		protected static Command CreateCommand(Action action)
+		protected Command GetOrCreateCommand(Action action, [CallerMemberName] string commandName = null)
 		{
-			return new Command(_ => action());
+			if (!_commands.TryGetValue(commandName, out var command))
+			{
+				_commands[commandName] = command = new Command(_ => action());
+			}
+			return command;
 		}
 
 		public void Dispose()

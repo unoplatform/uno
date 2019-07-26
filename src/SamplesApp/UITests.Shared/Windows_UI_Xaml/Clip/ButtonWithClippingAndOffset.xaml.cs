@@ -17,7 +17,7 @@ using Windows.UI.Xaml.Navigation;
 
 namespace Uno.UI.Samples.Content.UITests.Clip
 {
-	[SampleControlInfoAttribute("Clip", "ButtonWithClippingAndOffset", description: "Button with Clip set to offset rectangle. Touch should be detected correctly.")]
+	[SampleControlInfo("Clip", "ButtonWithClippingAndOffset", description: "Button with Clip set to offset rectangle. Touch should be detected correctly.")]
 	public sealed partial class ButtonWithClippingAndOffset : UserControl
 	{
 		public ButtonWithClippingAndOffset()

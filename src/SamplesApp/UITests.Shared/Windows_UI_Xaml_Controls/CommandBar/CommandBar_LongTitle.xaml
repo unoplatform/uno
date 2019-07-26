@@ -1,21 +1,21 @@
 ﻿<Page x:Class="Uno.UI.Samples.Content.UITests.CommandBar.CommandBar_LongTitle"
-    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="using:Uno.UI.Samples.Content.UITests.CommandBar"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-		xmlns:toolkit="using:Uno.UI.Toolkit">
+	  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	  xmlns:local="using:Uno.UI.Samples.Content.UITests.CommandBar"
+	  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	  xmlns:toolkit="using:Uno.UI.Toolkit">
 
 	<StackPanel VerticalAlignment="Top">
 
 		<!-- CommandBar without button -->
 		<CommandBar Content="This is a long sentence to test the command bar on ios and android - Ceci est une longue phrase pour tester la commandBar sur Android et iOS - 123456789"
-								Background="#1FA2E1"
-								Foreground="White"/>
+					Background="#1FA2E1"
+					Foreground="White" />
 
 		<!-- CommandBar with button and search button -->
-		<CommandBar Content ="This is a long sentence to test the command bar on ios and android - Ceci est une longue phrase pour tester la commandBar sur Android et iOS - 123456789"
-								Background="Red"
-								Foreground="White">
+		<CommandBar Content="This is a long sentence to test the command bar on ios and android - Ceci est une longue phrase pour tester la commandBar sur Android et iOS - 123456789"
+					Background="Red"
+					Foreground="White">
 			<CommandBar.PrimaryCommands>
 				<AppBarButton>
 					<AppBarButton.Icon>
@@ -28,26 +28,26 @@
 
 		<!-- CommandBar without button and inline content -->
 		<CommandBar Background="#FFFF00"
-								Foreground="Black">
+					Foreground="Black">
 			<CommandBar.Content>
 				<TextBlock x:Name="TextBlockWidthTest"
-									 Text="This is a long sentence to test the command bar on ios and android - Ceci est une longue phrase pour tester la commandBar sur Android et iOS - 123456789"
-									 TextTrimming="CharacterEllipsis"
-									 FontWeight="Bold"
-									 FontSize="18"
-									 VerticalAlignment="Center"/>
+						   Text="This is a long sentence to test the command bar on ios and android - Ceci est une longue phrase pour tester la commandBar sur Android et iOS - 123456789"
+						   TextTrimming="CharacterEllipsis"
+						   FontWeight="Bold"
+						   FontSize="18"
+						   VerticalAlignment="Center" />
 			</CommandBar.Content>
 		</CommandBar>
 
 		<!-- CommandBar with button and inline content -->
 		<CommandBar Background="#808000"
-								Foreground="White">
+					Foreground="White">
 			<CommandBar.Content>
-				<TextBlock Text ="This is a long sentence to test the command bar on ios and android - Ceci est une longue phrase pour tester la commandBar sur Android et iOS - 123456789"
-									 TextTrimming="CharacterEllipsis"
-									 FontWeight="Bold"
-									 FontSize="18"
-									 VerticalAlignment="Center"/>
+				<TextBlock Text="This is a long sentence to test the command bar on ios and android - Ceci est une longue phrase pour tester la commandBar sur Android et iOS - 123456789"
+						   TextTrimming="CharacterEllipsis"
+						   FontWeight="Bold"
+						   FontSize="18"
+						   VerticalAlignment="Center" />
 			</CommandBar.Content>
 			<CommandBar.PrimaryCommands>
 				<AppBarButton>
@@ -61,8 +61,8 @@
 
 		<!-- Exampl with toolkit	-->
 		<CommandBar Content="This is a long sentence to test the command bar on ios and android - Ceci est une longue phrase pour tester la commandBar sur Android et iOS"
-								Foreground="Red"
-								Background="Pink">
+					Foreground="Red"
+					Background="Pink">
 
 			<!-- Burger Menu -->
 			<toolkit:CommandBarExtensions.NavigationCommand>
