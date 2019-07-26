@@ -16,7 +16,6 @@ namespace Uno.UI.Samples.UITests.ImageTests.Models
 	{
 		public ImageWithLateSourceViewModel(CoreDispatcher dispatcher) : base(dispatcher)
 		{
-			SetSource = CreateCommand(OnSetSource);
 		}
 
 		private string _sourceUri;
@@ -31,7 +30,7 @@ namespace Uno.UI.Samples.UITests.ImageTests.Models
 			}
 		}
 
-		public ICommand SetSource { get; }
+		public ICommand SetSource => GetOrCreateCommand(OnSetSource);
 
 		private void OnSetSource()
 		{

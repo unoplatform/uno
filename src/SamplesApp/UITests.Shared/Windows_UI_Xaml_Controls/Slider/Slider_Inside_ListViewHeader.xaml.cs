@@ -3,7 +3,7 @@ using Windows.UI.Xaml.Controls;
 
 namespace Uno.UI.Samples.Content.UITests.Slider
 {
-	[SampleControlInfoAttribute("Slider", "Slider_Inside_ListViewHeader")]
+	[SampleControlInfo("Slider", "Slider_Inside_ListViewHeader")]
 	public sealed partial class Slider_Inside_ListViewHeader : UserControl
     {
 #pragma warning disable CS0414

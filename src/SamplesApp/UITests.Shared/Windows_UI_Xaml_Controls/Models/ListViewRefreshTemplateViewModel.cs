@@ -45,15 +45,9 @@ namespace Uno.UI.Samples.Presentation.SamplePages
 
 		public ItemViewModel(string item, CoreDispatcher dispatcher) : base (dispatcher)
 		{
-			MakeVisible = CreateCommand(ExecuteMakeVisible);
 		}
 
-		public ICommand MakeVisible { get; }
-
-		private void ExecuteMakeVisible()
-		{
-			IsVisible = !IsVisible;
-		}
+		public ICommand MakeVisible => GetOrCreateCommand(() => IsVisible = !IsVisible);
 
 		public bool IsVisible
 		{

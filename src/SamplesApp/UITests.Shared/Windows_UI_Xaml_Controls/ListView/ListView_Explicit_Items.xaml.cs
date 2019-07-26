@@ -19,7 +19,7 @@ using Windows.UI.Xaml.Navigation;
 
 namespace UITests.Shared.Windows_UI_Xaml_Controls.ListView
 {
-	[SampleControlInfoAttribute("ListView", "ListView_Explicit_Items", typeof(ViewModelBase), description: "ListView containing explicitly-defined ListViewItems. Items shouldn't be corrupted by scrolling.")]
+	[SampleControlInfo("ListView", "ListView_Explicit_Items", typeof(ViewModelBase), description: "ListView containing explicitly-defined ListViewItems. Items shouldn't be corrupted by scrolling.")]
 	public sealed partial class ListView_Explicit_Items : UserControl
 	{
 		public ListView_Explicit_Items()

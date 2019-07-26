@@ -8,7 +8,7 @@ using Uno.UI.Samples.Controls;
 
 namespace Uno.UI.Samples.Content.UITests.Animations
 {
-	[SampleControlInfoAttribute("Visual states", "VisualState_Setters")]
+	[SampleControlInfo("Visual states", "VisualState_Setters")]
 	public sealed partial class VisualState_Setters : UserControl
 	{
 		public VisualState_Setters()

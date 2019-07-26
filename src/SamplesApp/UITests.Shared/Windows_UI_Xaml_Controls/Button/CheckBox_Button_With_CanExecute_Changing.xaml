@@ -10,11 +10,9 @@
 	d:DesignHeight="300"
 	d:DesignWidth="400">
 
-	<controls:SampleControl SampleDescription="CheckBox_Button_With_CanExecute_Changing">
-		<controls:SampleControl.SampleContent>
-			<DataTemplate>
-				<CheckBox Content="My Checkbox" Command="{Binding [AlternateEnableCommand]}" />
-			</DataTemplate>
-		</controls:SampleControl.SampleContent>
-	</controls:SampleControl>
+	<StackPanel>
+		<CheckBox Content="My Checkbox" Command="{Binding [AlternateEnableCommand]}" />
+
+		<TextBlock Text="{Binding [Message]}" />
+	</StackPanel>
 </UserControl>

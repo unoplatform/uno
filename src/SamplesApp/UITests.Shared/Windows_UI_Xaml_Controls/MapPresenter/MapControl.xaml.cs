@@ -9,7 +9,7 @@ using Windows.UI.Xaml.Controls.Maps;
 
 namespace Uno.UI.Samples.Content.UITests.MapControl
 {
-	[SampleControlInfoAttribute("Map", "MapControl")]
+	[SampleControlInfo("Map", "MapControl")]
 	public sealed partial class MapControl : UserControl
     {
 		public Geopoint PinPoint { get; set; }

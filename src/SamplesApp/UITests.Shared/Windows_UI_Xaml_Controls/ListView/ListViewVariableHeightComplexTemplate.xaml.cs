@@ -4,7 +4,7 @@ using SamplesApp.Windows_UI_Xaml_Controls.Models;
 
 namespace SamplesApp.Windows_UI_Xaml_Controls.ListView
 {
-	[SampleControlInfoAttribute("ListView", "ListViewVariableHeightComplexTemplate", typeof(ListViewViewModel))]
+	[SampleControlInfo("ListView", "ListViewVariableHeightComplexTemplate", typeof(ListViewViewModel))]
 	public sealed partial class ListViewVariableHeightComplexTemplate : UserControl
 	{
 		public ListViewVariableHeightComplexTemplate()

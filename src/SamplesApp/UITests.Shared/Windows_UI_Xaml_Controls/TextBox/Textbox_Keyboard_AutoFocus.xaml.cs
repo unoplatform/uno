@@ -1,30 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
-using Uno.UI.Samples.Controls;
+﻿using Uno.UI.Samples.Controls;
 using Windows.UI.Xaml;
-
-using Windows.Foundation;
-using Windows.Foundation.Collections;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Navigation;
 
 namespace GenericApp.Views.Content.UITests.TextBoxControl
 {
-	[SampleControlInfoAttribute("TextBox", "Textbox_Keyboard_AutoFocused", typeof(Uno.UI.Samples.Presentation.SamplePages.TextBoxViewModel))]
+	[SampleControlInfo("TextBox", "Textbox_Keyboard_AutoFocused")]
 	public sealed partial class Textbox_Keyboard_AutoFocus : UserControl
     {
         public Textbox_Keyboard_AutoFocus()
         {
             this.InitializeComponent();
 
-			var textbox = this.FindName("FocusedTextbox") as TextBox;
+			var textbox = FindName("FocusedTextbox") as TextBox;
 			textbox.Loaded += RequestTextboxFocus;
 		}
 
