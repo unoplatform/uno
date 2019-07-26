@@ -4159,7 +4159,7 @@
     <Compile Update="$(MSBuildThisFileDirectory)Resources\StaticResource\StaticResource_Simple.xaml.cs">
       <DependentUpon>StaticResource_Simple.xaml</DependentUpon>
     </Compile>
-    <Compile Update="D:\Dev\Uno\src\SamplesApp\UITests.Shared\Windows_UI_StartScreen\JumpListTests.xaml.cs">
+    <Compile Update="$(MSBuildThisFileDirectory)Windows_UI_StartScreen\JumpListTests.xaml.cs">
       <DependentUpon>JumpListTests.xaml</DependentUpon>
     </Compile>
   </ItemGroup>
