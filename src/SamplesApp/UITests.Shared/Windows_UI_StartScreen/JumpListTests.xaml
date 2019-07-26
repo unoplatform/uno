@@ -34,6 +34,7 @@
 					<TextBox Header="Arguments" Text="{Binding NewItem.Arguments, Mode=TwoWay}" />
 					<TextBox Header="Display name" Text="{Binding NewItem.DisplayName, Mode=TwoWay}" />
 					<TextBox Header="Description" Text="{Binding NewItem.Description, Mode=TwoWay}" />
+					<TextBox Header="Logo" Text="{Binding NewItem.Logo, Mode=TwoWay}" />
 					<Button IsEnabled="{x:Bind Model.IsLoaded, Mode=OneWay}" Command="{x:Bind Model.AddItemCommand}">Add item</Button>
 				</StackPanel>
 

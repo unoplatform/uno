@@ -69,6 +69,7 @@ namespace UITests.Shared.Windows_UI_StartScreen
 		{
 			var item = JumpListItem.CreateWithArguments(NewItem.Arguments, NewItem.DisplayName);
 			item.Description = NewItem.Description;
+			item.Logo = new Uri(NewItem.Logo);
 			_jumpList.Items.Add(item);
 			NewItem = new NewJumpListItem();
 			await _jumpList.SaveAsync();
@@ -108,6 +109,8 @@ namespace UITests.Shared.Windows_UI_StartScreen
 			public string DisplayName { get; set; } = "";
 
 			public string Description { get; set; } = "";
+
+			public string Logo { get; set; } = "ms-appx:///Assets/Icons/home.png";
 		}
 	}
 }

@@ -11,6 +11,7 @@ using Android.Views;
 using Android.Widget;
 using Com.Nostra13.Universalimageloader.Core;
 using Windows.UI.Xaml.Media;
+using Uno;
 
 namespace SamplesApp.Droid
 {
@@ -26,7 +27,7 @@ namespace SamplesApp.Droid
 			: base(new App(), javaReference, transfer)
 		{
 			Android.App.Application.Context.Resources.GetIdentifier("String1", "string", Android.App.Application.Context.PackageName);
-
+			DrawablesHelper.Drawables = typeof(SamplesApp.Droid.Resource.Drawable);
 			ConfigureUniversalImageLoader();
 		}
 
