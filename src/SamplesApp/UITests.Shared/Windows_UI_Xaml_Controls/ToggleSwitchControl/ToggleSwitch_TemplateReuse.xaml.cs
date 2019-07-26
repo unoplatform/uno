@@ -30,7 +30,7 @@ namespace UITests.Shared.Windows_UI_Xaml_Controls.ToggleSwitchControl
 				root.Child = c;
 				unload.IsEnabled = true;
 				reload.IsEnabled = false;
-				(theStackPanel as StackPanel).Add(separatedToggleSwitch);
+				(theStackPanel as StackPanel).Children.Add(separatedToggleSwitch);
 			};
 
 			unload.Unloaded += (snd, evt) =>
@@ -41,8 +41,10 @@ namespace UITests.Shared.Windows_UI_Xaml_Controls.ToggleSwitchControl
 
 		private void SetPoolingEnabled(bool enabled)
 		{
+#if __ANDROID || __IOS__
 			FeatureConfiguration.Page.IsPoolingEnabled = enabled;
 			FrameworkTemplatePool.IsPoolingEnabled = enabled;
+#endif
 		}
 	}
 }
