@@ -20,7 +20,7 @@ using UwpPowerManager = Windows.System.Power.PowerManager;
 
 namespace UITests.Shared.Windows_System.Power
 {
-	[SampleControlInfoAttribute("Windows.System", "Power.PowerManager",
+	[SampleControlInfo("Windows.System", "Power.PowerManager",
 		description: "Shows properties of Power manager and handles its events")]
 	public sealed partial class PowerManager : UserControl
 	{

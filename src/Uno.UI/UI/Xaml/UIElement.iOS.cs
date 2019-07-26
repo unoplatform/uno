@@ -701,6 +701,7 @@ namespace Windows.UI.Xaml
 						OriginalSource = owner,
 						PointerDeviceType = PointerDeviceType.Touch
 					};
+					owner.PreRaiseTapped?.Invoke(this, null);
 					owner.RaiseEvent(TappedEvent, tappedArgs);
 				}
 			}

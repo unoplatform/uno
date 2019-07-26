@@ -4159,6 +4159,72 @@
     <Compile Update="$(MSBuildThisFileDirectory)Resources\StaticResource\StaticResource_Simple.xaml.cs">
       <DependentUpon>StaticResource_Simple.xaml</DependentUpon>
     </Compile>
+    <Compile Update="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\Button\AppBarButtonTest.xaml.cs">
+      <DependentUpon>AppBarButtonTest.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\Button\AppBarButtonWithIconTest.xaml.cs">
+      <DependentUpon>AppBarButtonWithIconTest.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\Button\AppBarToggleButtonTest.xaml.cs">
+      <DependentUpon>AppBarToggleButtonTest.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\Button\Buttons.xaml.cs">
+      <DependentUpon>Buttons.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\Button\Button_IsEnabled.xaml.cs">
+      <DependentUpon>Button_IsEnabled.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\Button\CheckBox_Button.xaml.cs">
+      <DependentUpon>CheckBox_Button.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\Button\CheckBox_Button_UWA_Style.xaml.cs">
+      <DependentUpon>CheckBox_Button_UWA_Style.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\Button\CheckBox_Button_With_CanExecute_Changing.xaml.cs">
+      <DependentUpon>CheckBox_Button_With_CanExecute_Changing.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\Button\ComboBox_Simple.xaml.cs">
+      <DependentUpon>ComboBox_Simple.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\Button\Custom_Button_With_ContentTemplate.xaml.cs">
+      <DependentUpon>Custom_Button_With_ContentTemplate.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\Button\Custom_Button_With_ContentTemplate_And_StackPanel.xaml.cs">
+      <DependentUpon>Custom_Button_With_ContentTemplate_And_StackPanel.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\Button\Hyperlink_Button.xaml.cs">
+      <DependentUpon>Hyperlink_Button.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\Button\Hyperlink_CanExecute_False.xaml.cs">
+      <DependentUpon>Hyperlink_CanExecute_False.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\Button\Hyperlink_Disabled.xaml.cs">
+      <DependentUpon>Hyperlink_Disabled.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\Button\Nested_Buttons.xaml.cs">
+      <DependentUpon>Nested_Buttons.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\Button\Overlapped_Buttons.xaml.cs">
+      <DependentUpon>Overlapped_Buttons.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\Button\RadioButton_Multiple_Unnamed_Groups.xaml.cs">
+      <DependentUpon>RadioButton_Multiple_Unnamed_Groups.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\Button\RadioButton_Pressed.xaml.cs">
+      <DependentUpon>RadioButton_Pressed.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\Button\RadioButton_With_GroupName.xaml.cs">
+      <DependentUpon>RadioButton_With_GroupName.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\Button\Radio_Button.xaml.cs">
+      <DependentUpon>Radio_Button.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\Button\Simple_Button.xaml.cs">
+      <DependentUpon>Simple_Button.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\Button\Simple_Button_With_CanExecute_Changing.xaml.cs">
+      <DependentUpon>Simple_Button_With_CanExecute_Changing.xaml</DependentUpon>
+    </Compile>
     <Compile Update="$(MSBuildThisFileDirectory)Windows_UI_StartScreen\JumpListTests.xaml.cs">
       <DependentUpon>JumpListTests.xaml</DependentUpon>
     </Compile>

@@ -79,7 +79,7 @@ namespace Uno.UI.Samples.Presentation.SamplePages
 			}
 		}
 
-		public ICommand ComboBoxSimple_GenerateNewList => CreateCommand(() =>
+		public ICommand ComboBoxSimple_GenerateNewList => GetOrCreateCommand(() =>
 		{
 			ComboBoxSimple_ItemsSource = ComboBoxSimple_ItemsSource.Select(x => x + 1).ToArray();
 		});
@@ -99,9 +99,9 @@ namespace Uno.UI.Samples.Presentation.SamplePages
 		public ICommand OuterCommand => MsgCommand();
 		public ICommand InnerCommand => MsgCommand();
 
-		public ICommand ComboBoxSimple_Command => CreateCommand<int>(i => WriteMsg($"ComboBoxSimple_Command - {i}"));
+		public ICommand ComboBoxSimple_Command => GetOrCreateCommand<int>(i => WriteMsg($"ComboBoxSimple_Command - {i}"));
 
-		private ICommand MsgCommand([CallerMemberName] string commandName = null) => CreateCommand(() => WriteMsg(commandName));
+		private ICommand MsgCommand([CallerMemberName] string commandName = null) => GetOrCreateCommand(() => WriteMsg(commandName), commandName);
 
 		private void DoStuff()
 		{

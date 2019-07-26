@@ -16,7 +16,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.Models
 
 		public DateTimeOffset Date
 		{
-			get { return _date; }
+			get => _date;
 			set
 			{
 				_date = value;
@@ -28,7 +28,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.Models
 
 		public TimeSpan Time
 		{
-			get { return _time; }
+			get => _time;
 			set
 			{
 				_time = value;

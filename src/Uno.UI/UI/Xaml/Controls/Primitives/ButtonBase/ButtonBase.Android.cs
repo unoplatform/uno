@@ -1,4 +1,5 @@
-﻿using Android.Views;
+﻿using System;
+using Android.Views;
 using Uno.Disposables;
 using Uno.Extensions;
 using Uno.Logging;
@@ -23,7 +24,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 			OnCanExecuteChanged();
 
-			Tapped += HandleTapped;
+			PreRaiseTapped += OnPreRaiseTapped;
 		}
 
 		protected override void OnUnloaded()
@@ -32,12 +33,14 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			_isEnabledSubscription.Disposable = null;
 			_touchSubscription.Disposable = null;
 
-			Tapped -= HandleTapped;
+			PreRaiseTapped -= OnPreRaiseTapped;
 		}
 
-		private void HandleTapped(object sender, TappedRoutedEventArgs e)
+		private void OnPreRaiseTapped(object sender, EventArgs e)
 		{
-			e.Handled = true;
+			// This even is raised only when the source is a Uno-managed control
+			// (when not using native styling)
+			OnClick();
 		}
 
 		partial void OnIsEnabledChangedPartial(bool oldValue, bool newValue)

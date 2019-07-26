@@ -10,7 +10,7 @@ using Uno.UI.Samples.Controls;
 
 namespace Uno.UI.Samples.Content.UITests.Animations
 {
-	[SampleControlInfoAttribute("Animations", "DoubleAnimation_Cumulative")]
+	[SampleControlInfo("Animations", "DoubleAnimation_Cumulative")]
 	public sealed partial class DoubleAnimation_Cumulative : UserControl
 	{
 		public DoubleAnimation_Cumulative()

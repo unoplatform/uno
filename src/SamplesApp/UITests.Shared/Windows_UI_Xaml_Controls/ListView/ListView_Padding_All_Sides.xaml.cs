@@ -4,7 +4,7 @@ using SamplesApp.Windows_UI_Xaml_Controls.Models;
 
 namespace SamplesApp.Windows_UI_Xaml_Controls.ListView
 {
-	[SampleControlInfoAttribute("ListView", "ListView_Padding_All_Sides", typeof(ListViewViewModel))]
+	[SampleControlInfo("ListView", "ListView_Padding_All_Sides", typeof(ListViewViewModel))]
 	public sealed partial class ListView_Padding_All_Sides : UserControl
 	{
 		public ListView_Padding_All_Sides()

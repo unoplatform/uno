@@ -17,7 +17,7 @@ using Windows.UI.Xaml.Navigation;
 
 namespace Uno.UI.Samples.Content.UITests.ContentPresenter
 {
-	[SampleControlInfoAttribute("ContentPresenter", "ContentPresenter_Changing_ContentTemplate", description: "ContentPresenter where ContentTemplate can be toggled between non-null and null. Content view should be visible when null.")]
+	[SampleControlInfo("ContentPresenter", "ContentPresenter_Changing_ContentTemplate", description: "ContentPresenter where ContentTemplate can be toggled between non-null and null. Content view should be visible when null.")]
 	public sealed partial class ContentPresenter_Changing_ContentTemplate : UserControl
 	{
 		public ContentPresenter_Changing_ContentTemplate()
