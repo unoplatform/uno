@@ -31,10 +31,10 @@ namespace Windows.UI.Xaml
 		private void OnActivityStarted(Activity activity)
 		{
 			if (_lastHandledIntent != activity.Intent &&
-			    activity.Intent?.Extras?.ContainsKey(JumpList.JumpListItemExtra) == true)
+			    activity.Intent?.Extras?.ContainsKey(JumpListItem.ArgumentsExtraKey) == true)
 			{
 				_lastHandledIntent = activity.Intent;
-				_app.OnLaunched(new LaunchActivatedEventArgs(ActivationKind.Launch, activity.Intent.GetStringExtra(JumpList.JumpListItemExtra)));
+				_app.OnLaunched(new LaunchActivatedEventArgs(ActivationKind.Launch, activity.Intent.GetStringExtra(JumpListItem.ArgumentsExtraKey)));
 			}
 			else
 			{
