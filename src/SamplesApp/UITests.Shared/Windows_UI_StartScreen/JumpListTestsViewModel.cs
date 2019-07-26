@@ -62,8 +62,7 @@ namespace UITests.Shared.Windows_UI_StartScreen
 			}
 		}
 
-		public ICommand AddItemCommand =>
-			_addItemCommand ?? (_addItemCommand = new DelegateCommand(AddItemAsync));
+		public ICommand AddItemCommand => GetOrCreateCommand(AddItemAsync);
 
 		private async void AddItemAsync()
 		{
@@ -76,8 +75,7 @@ namespace UITests.Shared.Windows_UI_StartScreen
             RefreshItems();
 		}
 
-		public ICommand RemoveItemCommand =>
-			_removeItemCommand ?? (_removeItemCommand = new DelegateCommand(RemoveItemAsync));
+		public ICommand RemoveItemCommand => GetOrCreateCommand(RemoveItemAsync);
 
 		private async void RemoveItemAsync()
 		{
@@ -87,8 +85,7 @@ namespace UITests.Shared.Windows_UI_StartScreen
             RefreshItems();
 		}
 
-		public ICommand LoadCurrentCommand =>
-			_loadCurrentCommand ?? (_loadCurrentCommand = new DelegateCommand(LoadCurrentAsync));
+		public ICommand LoadCurrentCommand => GetOrCreateCommand(LoadCurrentAsync);
 
         private async void LoadCurrentAsync()
 		{
