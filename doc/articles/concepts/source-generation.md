@@ -44,7 +44,7 @@ All this goes on under the hood without user intervention, whenever your app com
 
 # Generation of native constructors
 
-tba
+Because views in Uno inherit directly from native views on Android/iOS, they need to have special constructors that are called [under-the-hood by Xamarin](https://docs.microsoft.com/en-us/xamarin/android/platform/java-integration/working-with-jni#binding-constructors). Writing these by hand would be tedius and particularly painful when porting existing UWP code, so Uno generates them them for you automatically [if they don't already exist](https://github.com/unoplatform/uno/blob/ce1aa4d271fbcd30ff9b491f7f87fe28e24102ce/src/SourceGenerators/Uno.UI.SourceGenerators/NativeCtor/NativeCtorsGenerator.cs#L126).
 
 # Generation from `.resw` resources
 
