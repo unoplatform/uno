@@ -27,6 +27,8 @@ namespace Windows.UI.Xaml.Media
 		private static bool _resourceCacheLock;
 		private static Dictionary<Tuple<int, global::System.Drawing.Size?>, Bitmap> _resourceCache = new Dictionary<Tuple<int, global::System.Drawing.Size?>, Bitmap>();
 
+		private int? _resourceId;
+
 		/// <summary>
 		/// Defines an asynchronous image loader handler.
 		/// </summary>
@@ -110,7 +112,7 @@ namespace Windows.UI.Xaml.Media
 		partial void InitFromResource(Uri uri)
 		{
 			ResourceString = uri.PathAndQuery.TrimStart(new[] { '/' });
-			ResourceId = FindResourceId(ResourceString);
+			ResourceId = DrawableHelper.FindResourceId(ResourceString);
 		}
 
 		/// <summary>
@@ -320,63 +322,6 @@ namespace Windows.UI.Xaml.Media
 
 			return bitmap;
 		}
-
-		#region Resources
-		private static Dictionary<string, int> _drawablesLookup;
-		private static Type _drawables;
-		private int? _resourceId;
-
-		public static Type Drawables
-		{
-			get
-			{
-				return _drawables;
-			}
-			set
-			{
-				_drawables = value;
-				Initialize();
-			}
-		}
-
-		private static void Initialize()
-		{
-			_drawablesLookup = _drawables
-				.GetFields(BindingFlags.Static | BindingFlags.Public)
-				.ToDictionary(
-					p => p.Name,
-					p => (int)p.GetValue(null)
-				);
-		}
-
-		/// <summary>
-		/// Returns the Id of the bundled image.
-		/// </summary>
-		/// <param name="imageName">Name of the image</param>
-		/// <returns>Resource's id</returns>
-		public static int? FindResourceId(string imageName)
-		{
-			var key = global::System.IO.Path.GetFileNameWithoutExtension(imageName);
-			if (_drawablesLookup == null)
-			{
-				throw new Exception("You must initialize drawable resources by invoking this in your main Module (replace \"GenericApp\"):\nWindows.UI.Xaml.Media.ImageSource.Drawables = typeof(GenericApp.Resource.Drawable);");
-			}
-			var id = _drawablesLookup.UnoGetValueOrDefault(key, 0);
-			if (id == 0)
-			{
-				if (typeof(ImageSource).Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Error))
-				{
-					typeof(ImageSource).Log().Error("Couldn't find drawable with key: " + key);
-				}
-
-				return null;
-			}
-
-			return id;
-		}
-
-
-		#endregion
 
 		partial void DisposePartial()
 		{
