@@ -2,6 +2,7 @@
 
 ## Next version
 ### Features
+* Refactored `DrawableHelper` to the `Uno` project
 * Add support for `Windows.Devices.Sensors.Accelerometer` APIs on iOS, Android and WASM
    * `ReadingChanged`
    * `Shaken`
