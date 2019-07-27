@@ -42,9 +42,6 @@ namespace Uno.UI.Controls
 
 		private string _uriSource;
 
-		private static Type _drawables;
-		private static Dictionary<string, int> _drawablesLookup;
-
 		private readonly SerialDisposable _download = new SerialDisposable();
 		private readonly CompositeDisposable _subscriptions = new CompositeDisposable();
 
@@ -115,43 +112,6 @@ namespace Uno.UI.Controls
 			DrawableSource = null;
 		}
 
-		public static Type Drawables
-		{
-			get
-			{
-				return _drawables;
-			}
-			set
-			{
-				_drawables = value;
-				Initialize();
-			}
-		}
-		private static void Initialize()
-		{
-			_drawablesLookup = _drawables
-				.GetFields(BindingFlags.Static | BindingFlags.Public)
-				.ToDictionary(
-					p => p.Name,
-					p => (int)p.GetValue(null)
-				);
-		}
-
-		private int GetResourceId(string imageName)
-		{
-			var key = System.IO.Path.GetFileNameWithoutExtension(imageName);
-			if (_drawablesLookup == null)
-			{
-				throw new System.Exception("You must initialize drawable resources by invoking this in your main Module (replace \"GenericApp\"):\nUno.UI.Controls.BindableImageView.Drawables = typeof(GenericApp.Resource.Drawable);");
-			}
-			var id = _drawablesLookup.UnoGetValueOrDefault(key, 0);
-			if (id == 0)
-			{
-				throw new KeyNotFoundException("Couldn't find drawable with key: " + key);
-			}
-			return id;
-		}
-
 		private void OnUriSourceChanged()
 		{
 			ResetImage();
@@ -164,7 +124,8 @@ namespace Uno.UI.Controls
 
 			if (newUri.Scheme == "resource")
 			{
-				Resource = GetResourceId(newUri.PathAndQuery.TrimStart(new[] { '/' }));
+				Resource = DrawableHelper.FindResourceId(newUri.PathAndQuery.TrimStart(new[] { '/' })) ??
+					throw new KeyNotFoundException($"Resource {newUri} was not found");
 			}
 			else if (UriSource.StartsWith("res:///", StringComparison.OrdinalIgnoreCase))
 			{
