@@ -25,5 +25,17 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ListViewTests
 			// Assert initial state
 			Assert.IsNotNull(theListView.GetDependencyPropertyValue("DataContext"));
 		}
+
+		[Test]
+		public void ListView_ListViewWithHeader_InitializesTest()
+		{
+			Run("SamplesApp.Windows_UI_Xaml_Controls.ListView.HorizontalListViewGrouped");
+
+			_app.WaitForElement(_app.Marked("TargetListView"));
+			var theListView = _app.Marked("TargetListView");
+
+			// Assert initial state
+			Assert.IsNotNull(theListView.GetDependencyPropertyValue("DataContext"));
+		}
 	}
 }
