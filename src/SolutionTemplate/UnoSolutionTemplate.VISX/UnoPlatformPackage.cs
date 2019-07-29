@@ -1,6 +1,5 @@
 ﻿using System;
-using System.Collections.Immutable;
-using System.ComponentModel.Composition;
+using System.Collections.Generic;
 using System.ComponentModel.Design;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
@@ -14,8 +13,6 @@ using EnvDTE80;
 using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.ComponentModelHost;
 using Microsoft.VisualStudio.OLE.Interop;
-using Microsoft.VisualStudio.ProjectSystem;
-using Microsoft.VisualStudio.ProjectSystem.Build;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.Win32;
@@ -46,6 +43,7 @@ namespace UnoSolutionTemplate
 	[Guid(UnoPlatformPackage.PackageGuidString)]
 	[ProvideAutoLoad(VSConstants.UICONTEXT.SolutionExists_string, PackageAutoLoadFlags.BackgroundLoad)]
 	[SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1650:ElementDocumentationMustBeSpelledCorrectly", Justification = "pkgdef, VS and vsixmanifest are valid VS terms")]
+	[ProvideMenuResource("Menus.ctmenu", 1)]
 	public sealed class UnoPlatformPackage : AsyncPackage
 	{
 		private Action<string> _warningAction;
@@ -61,10 +59,12 @@ namespace UnoSolutionTemplate
 		/// </summary>
 		public const string PackageGuidString = "e2245c5b-bbe5-40c8-96d6-94ea655a5ff7";
 
-		/// <summary>
-		/// Initializes a new instance of the <see cref="UnoPlatformPackage"/> class.
-		/// </summary>
-		public UnoPlatformPackage()
+        public static Func<Task<Dictionary<string, string>>> GlobalFunctionProvider { get; internal set; }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="UnoPlatformPackage"/> class.
+        /// </summary>
+        public UnoPlatformPackage()
 		{
 			// Inside this method you can place any initialization code that does not require
 			// any Visual Studio service because at this point the package object is created but
@@ -129,13 +129,13 @@ namespace UnoSolutionTemplate
 						owP = ow
 						.OutputWindowPanes
 						.OfType<OutputWindowPane>()
-						.FirstOrDefault(p => p.Name == "nventive");
+						.FirstOrDefault(p => p.Name == "Uno Platform");
 
 					if (owP == null)
 					{
 						owP = ow
 						.OutputWindowPanes
-						.Add("nventive");
+						.Add("Uno Platform");
 					}
 				}
 
@@ -182,9 +182,15 @@ namespace UnoSolutionTemplate
 
 							var entryPointType = asm.GetType("Uno.UI.HotReload.VS.EntryPoint");
 
-							if (entryPointType.GetConstructor(new[] { typeof(DTE2), typeof(string), typeof(AsyncPackage) }) != null)
+							if (entryPointType.GetConstructor(
+								new[] {
+									typeof(DTE2),
+									typeof(string),
+									typeof(AsyncPackage),
+									typeof(Action<Func<Task<Dictionary<string, string>>>>)
+								}) != null)
 							{
-								_remoteControl = Activator.CreateInstance(entryPointType, _dte, toolsPath, this) as IDisposable;
+								_remoteControl = Activator.CreateInstance(entryPointType, _dte, toolsPath, this, (Action<Func<Task<Dictionary<string, string>>>>)SetGlobalVariablesProvider) as IDisposable;
 
 								_infoAction($"Loaded the Uno.UI Remote Control service ({unoNuGetPackage.VersionString}).");
 							}
@@ -209,25 +215,10 @@ namespace UnoSolutionTemplate
 			}
 			while (true);
 		}
-	}
 
-	// https://github.com/microsoft/VSProjectSystem/blob/4ad5716f8fca76403699b818c3d907ce8a8b9a38/doc/extensibility/IProjectGlobalPropertiesProvider.md
-	[ExportBuildGlobalPropertiesProvider]
-	[AppliesTo("(" + ProjectCapabilities.CSharp + " | " + ProjectCapabilities.VB + ")" + " & " + ProjectCapabilities.LanguageService)]
-	public class SetGlobalGlobalPropertiesForUno : StaticGlobalPropertiesProviderBase
-	{
-		[ImportingConstructor]
-		public SetGlobalGlobalPropertiesForUno(IProjectService projectService)
-			: base(projectService.Services)
+		private void SetGlobalVariablesProvider(Func<Task<Dictionary<string, string>>> globalFunctionProvider)
 		{
-			Debug.WriteLine(string.Format(CultureInfo.CurrentCulture, "Entering constructor for: {0}", this.ToString()));
-		}
-
-		public override System.Threading.Tasks.Task<IImmutableDictionary<string, string>> GetGlobalPropertiesAsync(System.Threading.CancellationToken cancellationToken)
-		{
-			Debug.WriteLine(string.Format(CultureInfo.CurrentCulture, "Entering GetGlobalPropertiesAsync for: {0}", this.ToString()));
-
-			return Task.FromResult<IImmutableDictionary<string, string>>(Empty.PropertiesMap.Add("UnoRemoteControlPort", "12345"));
+			GlobalFunctionProvider = globalFunctionProvider;
 		}
 	}
 }

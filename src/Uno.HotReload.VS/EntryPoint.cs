@@ -2,9 +2,12 @@
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.ComponentModel.Composition;
+using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using System.Threading.Tasks;
 using EnvDTE;
 using EnvDTE80;
 using Microsoft.Build.Evaluation;
@@ -20,25 +23,35 @@ namespace Uno.UI.HotReload.VS
 	{
 		private const string UnoPlatformOutputPane = "Uno Platform";
 		private const string FolderKind = "{66A26720-8FB5-11D2-AA7E-00C04F688DDE}";
+		private const string RemoteControlServerPort = "5000";
+		private const string RemoteControlServerPortProperty = "UnoRemoteControlPort";
 		private readonly DTE _dte;
 		private readonly DTE2 _dte2;
 		private readonly string _toolsPath;
 		private readonly AsyncPackage _asyncPackage;
+		private Action<string> _debugAction;
 		private Action<string> _infoAction;
 		private Action<string> _verboseAction;
 		private Action<string> _warningAction;
 		private Action<string> _errorAction;
+		private System.Diagnostics.Process _process;
 
-		public EntryPoint(DTE2 dte2, string toolsPath, AsyncPackage asyncPackage)
+		public EntryPoint(DTE2 dte2, string toolsPath, AsyncPackage asyncPackage, Action<Func<Task<Dictionary<string, string>>>> globalPropertiesProvider)
 		{
 			_dte = dte2 as DTE;
 			_dte2 = dte2;
 			_toolsPath = toolsPath;
 			_asyncPackage = asyncPackage;
+			globalPropertiesProvider(OnProvideGlobalPropertiesAsync);
 
 			SetupOutputWindow();
 
 			_dte.Events.BuildEvents.OnBuildBegin += (s, e) => BuildEvents_OnBuildBeginAsync(s, e);
+		}
+
+		private async Task<Dictionary<string, string>> OnProvideGlobalPropertiesAsync()
+		{
+			return new Dictionary<string, string> { { RemoteControlServerPortProperty, RemoteControlServerPort } };
 		}
 
 		private void SetupOutputWindow()
@@ -58,6 +71,8 @@ namespace Uno.UI.HotReload.VS
 				.Add(UnoPlatformOutputPane);
 			}
 
+			_debugAction = s => owPane.OutputString("[DEBUG] " + s + "\r\n");
+			_infoAction = s => owPane.OutputString("[INFO] " + s + "\r\n");
 			_infoAction = s => owPane.OutputString("[INFO] " + s + "\r\n");
 			_verboseAction = s => owPane.OutputString("[VERBOSE] " + s + "\r\n");
 			_warningAction = s => owPane.OutputString("[WARNING] " + s + "\r\n");
@@ -88,7 +103,44 @@ namespace Uno.UI.HotReload.VS
 		{
 			foreach(var project in await GetProjectsAsync())
 			{
-				SetGlobalProperty(project.FileName, "UnoRemoteControlPort", "12345");
+				SetGlobalProperty(project.FileName, RemoteControlServerPortProperty, RemoteControlServerPort);
+			}
+
+			await StartServerAsync();
+		}
+
+		private async Task StartServerAsync()
+		{
+			if (_process?.HasExited ?? true)
+			{
+				var sb = new StringBuilder();
+
+				var hostBinPath = Path.Combine(_toolsPath, "host", "Uno.HotReload.Host.dll");
+				string arguments = $"{hostBinPath}";
+				var pi = new ProcessStartInfo("dotnet", arguments)
+				{
+					UseShellExecute = false,
+					CreateNoWindow = true,
+					WindowStyle = ProcessWindowStyle.Hidden,
+					WorkingDirectory = Path.Combine(_toolsPath, "host"),
+				};
+
+				// redirect the output
+				pi.RedirectStandardOutput = true;
+				pi.RedirectStandardError = true;
+
+				_process = new System.Diagnostics.Process();
+
+				// hookup the eventhandlers to capture the data that is received
+				_process.OutputDataReceived += (sender, args) => _debugAction(args.Data);
+				_process.ErrorDataReceived += (sender, args) => _debugAction(args.Data);
+
+				_process.StartInfo = pi;
+				_process.Start();
+
+				// start our event pumps
+				_process.BeginOutputReadLine();
+				_process.BeginErrorReadLine();
 			}
 		}
 
