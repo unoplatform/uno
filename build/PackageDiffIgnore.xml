@@ -269,7 +269,17 @@
 						reason="Invalid method visibility"/>
 				<Member fullName="System.Void Windows.UI.Xaml.Controls.VirtualizingPanelLayout.UpdateLayoutAttributesForItem(UIKit.UICollectionViewLayoutAttributes layoutAttributes)"
 						reason="Implementation detail, made internal"/>
-			</Methods>
+                <Member fullName="Uno.UI.DrawableHelper"
+                        reason="Refactored into Uno assembly" />
+                <Member fullName="System.Type Windows.UI.Xaml.Media.ImageSource.get_Drawables()"
+                        reason="Refactored into Uno.UI.DrawableHelper" />
+                <Member fullName="System.Void Windows.UI.Xaml.Media.ImageSource.set_Drawables(System.Type value)"
+                        reason="Refactored into Uno.UI.DrawableHelper" />
+                <Member fullName="System.Nullable`1&lt;System.Int32&gt; Windows.UI.Xaml.Media.ImageSource.FindResourceId(System.String imageName)"
+                        reason="Refactored into Uno.UI.DrawableHelper" />
+                <Member fullName="System.Type Windows.UI.Xaml.Media.ImageSource::Drawables()"
+                        reason="Refactored into Uno.UI.DrawableHelper" />
+            </Methods>
 
 			<Properties>
 				<Member fullName="Android.Views.View Windows.UI.Xaml.Controls.Popup::Anchor()"
