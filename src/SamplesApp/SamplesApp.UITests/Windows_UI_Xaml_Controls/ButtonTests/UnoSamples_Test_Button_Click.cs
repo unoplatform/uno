@@ -1,3 +1,4 @@
+using System.Globalization;
 using System.Linq;
 using FluentAssertions;
 using NUnit.Framework;
@@ -38,7 +39,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ButtonTests
 
 			void CheckClickCounts(int layer1Count, int layer1InnerCount, int layer2Count, int layer3Count)
 			{
-				_app.Wait(0.15f); // give time to browser to execute the action
+				_app.Wait(0.15f); // give time to app to execute the action
 
 				var browserValues = new[]
 					{
@@ -88,6 +89,135 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ButtonTests
 			// PATCH-WARNING ** PATCH-WARNING ** PATCH-WARNING ** PATCH-WARNING ** PATCH-WARNING ** PATCH-WARNING
 			// The following values should be (1, 1, 1, 1) when the "click" will be fixed correctly.
 			CheckClickCounts(2, 1, 1, 1);
+		}
+
+		[Test]
+		[AutoRetry]
+		public void Button_Events()
+		{
+			Run("UITests.Shared.Windows_UI_Xaml_Controls.Button.Button_Events");
+
+			_app.WaitForElement(_app.Marked("btnTapped"));
+
+			_app.Wait(0.45f);
+
+			var btnTapped = _app.Marked("btnTapped");
+			var btnTappedRect = btnTapped.FirstResult().Rect;
+			var btnDoubleTapped = _app.Marked("btnDoubleTapped");
+			var btnDoubleTappedRect = btnDoubleTapped.FirstResult().Rect;
+			var btnClick = _app.Marked("btnClick");
+			var btnClickRect = btnClick.FirstResult().Rect;
+			var btnPointerPressed = _app.Marked("btnPointerPressed");
+			var btnPointerPressedRect = btnPointerPressed.FirstResult().Rect;
+			var btnPointerReleased = _app.Marked("btnPointerReleased");
+			var btnPointerReleasedRect = btnPointerReleased.FirstResult().Rect;
+			var btnPointerEntered = _app.Marked("btnPointerEntered");
+			var btnPointerEnteredRect = btnPointerEntered.FirstResult().Rect;
+			var btnPointerExited = _app.Marked("btnPointerExited");
+			var btnPointerExitedRect = btnPointerExited.FirstResult().Rect;
+
+			var btnTappedCount = _app.Marked("btnTappedCount");
+			var btnDoubleTappedCount = _app.Marked("btnDoubleTappedCount");
+			var btnClickCount = _app.Marked("btnClickCount");
+			var btnPointerPressedCount = _app.Marked("btnPointerPressedCount");
+			var btnPointerReleasedCount = _app.Marked("btnPointerReleasedCount");
+			var btnPointerEnteredCount = _app.Marked("btnPointerEnteredCount");
+			var btnPointerExitedCount = _app.Marked("btnPointerExitedCount");
+
+			var hitInvisibleZoneRect = _app.Marked("hitInvisibleZone").FirstResult().Rect;
+			var hitVisibleZoneRect = _app.Marked("hitVisibleZone").FirstResult().Rect;
+
+			var xDirect = (hitInvisibleZoneRect.X - btnTappedRect.X) / 2 + btnTappedRect.X;
+			var xInvisible = hitInvisibleZoneRect.CenterX;
+			var xVisible = hitVisibleZoneRect.CenterX;
+
+			void CheckCount(QueryEx mark, int expected, string msg)
+			{
+				_app.Wait(0.15f); // give time to app to execute the action
+
+				var countString = mark.GetDependencyPropertyValue("Text") as string;
+				var count = int.TryParse(countString, out var c) ? c : -1;
+				count.Should().Be(expected, msg);
+			}
+
+			// ---- TAPPED ----
+			CheckCount(btnTappedCount, 0, "tapped starting value");
+			// Tapped - Direct
+			_app.TapCoordinates(
+				x: xDirect,
+				y: btnTappedRect.CenterY
+				);
+			CheckCount(btnTappedCount, 1, msg: "after direct tapped");
+			// Tapped - Invisible
+			_app.TapCoordinates(
+				x: xInvisible,
+				y: btnTappedRect.CenterY
+			);
+			CheckCount(btnTappedCount, 2, msg: "after tapped though invisible");
+			// Tapped - Visible
+			_app.TapCoordinates(
+				x: xVisible,
+				y: btnTappedRect.CenterY
+			);
+			CheckCount(btnTappedCount, 2, msg: "after tapped though visible");
+			// Tapped - Dragged
+			_app.DragCoordinates(
+				fromX: xVisible,
+				fromY: btnTappedRect.CenterY,
+				toX: btnTappedRect.Right - 1,
+				toY: btnTappedRect.CenterY
+			);
+			CheckCount(btnTappedCount, 2, msg: "after dragged tapped (should not tap)");
+
+			// ---- DOUBLE TAPPED ----
+			/*CheckCount(btnDoubleTappedCount, 0, "double tapped starting value");
+			// Double Tapped - Direct
+			_app.DoubleTapCoordinates(
+				x: xDirect,
+				y: btnDoubleTappedRect.CenterY
+			);
+			CheckCount(btnDoubleTappedCount, 1, msg: "after direct double tapped");
+			// Double Tapped - Invisible
+			_app.DoubleTapCoordinates(
+				x: xInvisible,
+				y: btnDoubleTappedRect.CenterY
+			);
+			CheckCount(btnDoubleTappedCount, 2, msg: "after double tapped though invisible");
+			// Double Tapped - Visible
+			_app.DoubleTapCoordinates(
+				x: xVisible,
+				y: btnDoubleTappedRect.CenterY
+			);
+			CheckCount(btnDoubleTappedCount, 2, msg: "after double tapped though visible");*/
+
+			// ---- CLICKED ----
+			CheckCount(btnClickCount, 0, "clicked starting value");
+			// Clicked - Direct
+			_app.TapCoordinates(
+				x: xDirect,
+				y: btnClickRect.CenterY
+			);
+			CheckCount(btnClickCount, 1, msg: "after direct clicked");
+			// Clicked - Invisible
+			_app.TapCoordinates(
+				x: xInvisible,
+				y: btnClickRect.CenterY
+			);
+			CheckCount(btnClickCount, 2, msg: "after clicked though invisible");
+			// Clicked - Visible
+			_app.TapCoordinates(
+				x: xVisible,
+				y: btnClickRect.CenterY
+			);
+			CheckCount(btnClickCount, 2, msg: "after clicked though visible");
+			// Clicked - Drag
+			_app.DragCoordinates(
+				fromX: xVisible,
+				fromY: btnClickRect.CenterY,
+				toX: btnClickRect.Right - 1,
+				toY: btnClickRect.CenterY
+			);
+			CheckCount(btnClickCount, 3, msg: "after dragged click");
 		}
 	}
 }
