@@ -38,14 +38,6 @@
 	<ItemGroup>
 		<UpToDateCheckInput Include="**\*.cs" Exclude="bin\**\*.cs;obj\**\*.cs;" />
 	</ItemGroup>
-	
-	<ItemGroup>
-	  <None Remove="DrawableHelper.Android.cs" />
-	</ItemGroup>
-	
-	<ItemGroup>
-	  <UpToDateCheckInput Remove="DrawableHelper.Android.cs" />
-	</ItemGroup>
 
 	<ItemGroup>
 		<PackageReference Include="System.Numerics.Vectors" Version="4.5.0" />
