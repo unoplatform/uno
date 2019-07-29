@@ -7,8 +7,13 @@ namespace Uno.UI.HotReload
 	[System.AttributeUsage(AttributeTargets.Assembly, Inherited = false, AllowMultiple = true)]
 	public sealed class ServerEndpointAttribute : Attribute
 	{
-		public ServerEndpointAttribute(string endpoint) => Endpoint = endpoint;
+		public ServerEndpointAttribute(string endpoint, string port)
+		{
+			Endpoint = endpoint;
+			Port = port;
+		}
 
 		public string Endpoint { get; }
+		public string Port { get; }
 	}
 }

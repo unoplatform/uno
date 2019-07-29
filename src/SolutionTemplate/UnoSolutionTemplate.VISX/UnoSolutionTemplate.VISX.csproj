@@ -73,6 +73,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SetGlobalGlobalPropertiesForUno.cs" />
     <Compile Include="UnoPlatformPackage.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -168,7 +169,7 @@
     <PackageReference Include="Microsoft.VisualStudio.Imaging.Interop.14.0.DesignTime" version="14.3.26930" />
     <PackageReference Include="Microsoft.VisualStudio.OLE.Interop" version="7.10.6071" />
     <PackageReference Include="Microsoft.VisualStudio.ProjectSystem">
-      <Version>15.0.751</Version>
+      <Version>16.0.374-pre</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.VisualStudio.SDK.EmbedInteropTypes" version="15.0.16" />
     <PackageReference Include="Microsoft.VisualStudio.Shell.15.0" version="15.9.28307" />
@@ -193,5 +194,19 @@
     <PackageReference Include="NuGet.VisualStudio" version="4.5.0" />
     <PackageReference Include="stdole" version="7.0.3302" />
     <PackageReference Include="StreamJsonRpc" version="1.3.23" />
+  </ItemGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Design" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xaml" />
+    <Reference Include="System.Xml" />
+    <Reference Include="WindowsBase" />
   </ItemGroup>
 </Project>

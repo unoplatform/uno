@@ -15,7 +15,7 @@ using Uno.UI.SourceGenerators.Helpers;
 
 namespace Uno.UI.SourceGenerators.NativeCtor
 {
-	public class HotReloadGenerator : SourceGenerator
+	public class RemoteControlGenerator : SourceGenerator
 	{
 		public override void Execute(SourceGeneratorContext context)
 		{
@@ -23,6 +23,8 @@ namespace Uno.UI.SourceGenerators.NativeCtor
 				context.GetProjectInstance().GetPropertyValue("Configuration") == "Debug"
 				&& IsApplication(context.GetProjectInstance()))
 			{
+				var unoRemoteControlPort = context.GetProjectInstance().GetPropertyValue("UnoRemoteControlPort");
+
 				var addresses = NetworkInterface.GetAllNetworkInterfaces()
 					  .SelectMany(x => x.GetIPProperties().UnicastAddresses)
 					  .Where(x => !IPAddress.IsLoopback(x.Address));
@@ -31,7 +33,7 @@ namespace Uno.UI.SourceGenerators.NativeCtor
 
 				foreach(var addressInfo in addresses)
 				{
-					sb.AppendLineInvariant($"[assembly: global::Uno.UI.HotReload.ServerEndpointAttribute(\"{addressInfo.Address}\")]");
+					sb.AppendLineInvariant($"[assembly: global::Uno.UI.HotReload.ServerEndpointAttribute(\"{addressInfo.Address}\", \"{unoRemoteControlPort}\")]");
 				}
 
 				sb.AppendLineInvariant($"[assembly: global::Uno.UI.HotReload.ProjectConfigurationAttribute(");
