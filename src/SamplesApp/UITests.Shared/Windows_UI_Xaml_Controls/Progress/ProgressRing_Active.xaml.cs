@@ -14,17 +14,15 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 
-// The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=234238
-
-namespace SamplesApp.Samples.Progress
+namespace UITests.Shared.Windows_UI_Xaml_Controls.Progress
 {
 	/// <summary>
-	/// An empty page that can be used on its own or navigated to within a Frame.
+	/// ignoreInAutomatedTests set to true because progressrings animate.
 	/// </summary>
-	[SampleControlInfo("Progress", "ProgressRing")]
-	public sealed partial class ProgressRing : Page
+	[SampleControlInfo("Progress", nameof(ProgressRing_Active), ignoreInAutomatedTests: true, description: "Four active progress rings")]
+	public sealed partial class ProgressRing_Active : Page
 	{
-		public ProgressRing()
+		public ProgressRing_Active()
 		{
 			this.InitializeComponent();
 		}
