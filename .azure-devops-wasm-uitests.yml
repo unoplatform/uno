@@ -114,8 +114,8 @@ jobs:
         downloadPath: '$(build.sourcesdirectory)/build'
 
   - bash: |
-      sudo chmod +x $(build.sourcesdirectory)/build/run-automated-uitests.sh
-      sudo $(build.sourcesdirectory)/build/run-automated-uitests.sh
+      chmod +x $(build.sourcesdirectory)/build/run-automated-uitests.sh
+      $(build.sourcesdirectory)/build/run-automated-uitests.sh
 
     env:
       BUILD_SOURCESDIRECTORY: "$(build.sourcesdirectory)"
