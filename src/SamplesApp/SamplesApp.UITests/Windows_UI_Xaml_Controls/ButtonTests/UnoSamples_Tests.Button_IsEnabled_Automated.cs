@@ -230,7 +230,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ButtonTests
 						throw new InvalidOperationException($"\"{s}\" is not a valid bool value for test {msg}.");
 					}
 
-					if (v != expected)
+					if (v != expected && i < 4)
 					{
 						continue;
 					}
