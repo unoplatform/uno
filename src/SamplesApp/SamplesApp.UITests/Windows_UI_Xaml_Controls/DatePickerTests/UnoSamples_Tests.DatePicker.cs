@@ -15,6 +15,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.DatePickerTests
 	public partial class DatePickerTests_Tests : SampleControlUITestBase
 	{
 		[Test]
+		[AutoRetry]
 		[ActivePlatforms(Platform.iOS, Platform.Android)]
 		public void DatePickerFlyout_HasDataContextTest()
 		{
@@ -34,6 +35,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.DatePickerTests
 		}
 
 		[Test]
+		[AutoRetry]
 		[ActivePlatforms(Platform.iOS)]
 		public void DatePickerFlyout_HasContentTest()
 		{

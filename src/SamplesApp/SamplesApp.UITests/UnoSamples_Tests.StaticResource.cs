@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using NUnit.Framework;
+using SamplesApp.UITests.TestFramework;
 using Uno.UITest.Helpers;
 using Uno.UITest.Helpers.Queries;
 using Xamarin.UITest;
@@ -14,6 +15,7 @@ namespace SamplesApp.UITests
 	partial class UnoSamples_Tests : SampleControlUITestBase
 	{
 		[Test]
+		[AutoRetry]
 		public void StaticResource_XAML_Validation()
 		{
 			Run("UITests.Shared.Resources.StaticResource.StaticResource_Simple");
@@ -26,6 +28,7 @@ namespace SamplesApp.UITests
 		}
 
 		[Test]
+		[AutoRetry]
 		public void StaticResource_CSharp_Validation()
 		{
 			Run("UITests.Shared.Resources.StaticResource.StaticResource_Simple");
@@ -38,6 +41,7 @@ namespace SamplesApp.UITests
 		}
 
 		[Test]
+		[AutoRetry]
 		public void StaticResource_Converter_Validation()
 		{
 			Run("UITests.Shared.Resources.StaticResource.StaticResource_Simple");

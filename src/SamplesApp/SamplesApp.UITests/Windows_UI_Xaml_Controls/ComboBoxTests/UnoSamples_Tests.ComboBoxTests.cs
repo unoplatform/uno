@@ -15,6 +15,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ComboBoxTests
 	public partial class ComboBoxTests_Tests : SampleControlUITestBase
 	{
 		[Test]
+		[AutoRetry]
 		[ActivePlatforms(Platform.iOS)]
 		public void ComboBoxTests_PickerDefaultValue()
 		{
@@ -27,6 +28,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ComboBoxTests
 		}
 
 		[Test]
+		[AutoRetry]
 		public void ComboBoxTests_Kidnapping()
 		{
 			Run("UITests.Shared.Windows_UI_Xaml_Controls.ComboBox.ComboBox_ComboBoxItem_Selection");
