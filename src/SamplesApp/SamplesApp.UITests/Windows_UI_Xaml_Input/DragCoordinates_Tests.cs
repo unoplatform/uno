@@ -19,15 +19,10 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TimePickerTests
 		{
 			Run("UITests.Shared.Windows_UI_Xaml_Input.Pointers.DragCoordinates_Automated");
 
-			Query testSelector = q => q.Text("DragCoordinates 01");
-
 			Query rootCanvas = q => q.Marked("rootCanvas");
 			Query myBorder = q => q.Marked("myBorder");
 			Query topValue = q => q.Marked("borderPositionTop");
 			Query leftValue = q => q.Marked("borderPositionLeft");
-
-			_app.WaitForElement(testSelector);
-			_app.Tap(testSelector);
 
 			_app.WaitForElement(rootCanvas);
 
