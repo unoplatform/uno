@@ -25,8 +25,11 @@ namespace SamplesApp.UITests
 
 
 		[SetUp]
+		[AutoRetry]
 		public void BeforeEachTest()
 		{
+			ValidateAutoRetry();
+
 			// Check if the test needs to be ignore or not
 			// If nothing specified, it is considered as a global test
 			var platforms = GetActivePlatforms();
@@ -67,6 +70,16 @@ namespace SamplesApp.UITests
 			_app = AppInitializer.AttachToApp();
 
 			Helpers.App = _app;
+		}
+
+		private static void ValidateAutoRetry()
+		{
+			var testType = Type.GetType(TestContext.CurrentContext.Test.ClassName);
+			var methodInfo = testType?.GetMethod(TestContext.CurrentContext.Test.MethodName);
+			if (methodInfo?.GetCustomAttributes(typeof(AutoRetryAttribute), true).Length == 0 && false)
+			{
+				Assert.Fail($"The AutoRetryAttribute is not defined for this test");
+			}
 		}
 
 		private Platform[] GetActivePlatforms()

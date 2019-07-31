@@ -7,6 +7,12 @@
     <WriteLinesToFile File="$(AndroidResgenFile)" Lines="// Empty Content from uno.ui Directory.Build.targets." />
   </Target>
 
+  <Target Name="AndroidResourceGenWorkaround_16_2"
+          AfterTargets="_UpdateAndroidResgen"
+          Condition="'$(AndroidUseIntermediateDesignerFile)'=='True' and !Exists($(_AndroidResourceDesignerFile))">
+    <WriteLinesToFile File="$(_AndroidResourceDesignerFile)" Lines="// Empty Content from uno.ui Directory.Build.targets." />
+  </Target>
+
   <ItemGroup>
     <PackageReference Update="Uno.SourceGenerationTasks" Version="1.31.0-dev.285" />
     <PackageReference Update="Uno.SourceGeneration" Version="1.31.0-dev.285" />
