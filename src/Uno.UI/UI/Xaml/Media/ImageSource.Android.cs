@@ -329,6 +329,7 @@ namespace Windows.UI.Xaml.Media
 		/// Type used as the source of Drawables.
 		/// Now available outside in Uno library with <see cref="DrawableHelper"/>.
 		/// </summary>
+		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static Type Drawables
 		{
 			get => Uno.DrawableHelper.Drawables;
@@ -341,6 +342,7 @@ namespace Windows.UI.Xaml.Media
 		/// </summary>
 		/// <param name="imageName">Name of the image</param>
 		/// <returns>Resource's id</returns>
+		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static int? FindResourceId(string imageName) =>
 			Uno.DrawableHelper.FindResourceId(imageName);
 
