@@ -2,7 +2,6 @@
 using Android.Graphics.Drawables;
 using Uno.Extensions;
 using Uno.Logging;
-using Uno.UI;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -15,6 +14,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Android.Provider;
 using Microsoft.Extensions.Logging;
+using Uno.UI;
 
 namespace Windows.UI.Xaml.Media
 {
@@ -112,7 +112,7 @@ namespace Windows.UI.Xaml.Media
 		partial void InitFromResource(Uri uri)
 		{
 			ResourceString = uri.PathAndQuery.TrimStart(new[] { '/' });
-			ResourceId = DrawableHelper.FindResourceId(ResourceString);
+			ResourceId = Uno.DrawableHelper.FindResourceId(ResourceString);
 		}
 
 		/// <summary>
@@ -322,6 +322,29 @@ namespace Windows.UI.Xaml.Media
 
 			return bitmap;
 		}
+
+		#region Resources
+
+		/// <summary>
+		/// Type used as the source of Drawables.
+		/// Now available outside in Uno library with <see cref="DrawableHelper"/>.
+		/// </summary>
+		public static Type Drawables
+		{
+			get => Uno.DrawableHelper.Drawables;
+			set => Uno.DrawableHelper.Drawables = value;
+		}
+
+		/// <summary>
+		/// Returns the Id of the bundled image.
+		/// Now available outside in Uno library with <see cref="DrawableHelper"/>.
+		/// </summary>
+		/// <param name="imageName">Name of the image</param>
+		/// <returns>Resource's id</returns>
+		public static int? FindResourceId(string imageName) =>
+			Uno.DrawableHelper.FindResourceId(imageName);
+
+		#endregion
 
 		partial void DisposePartial()
 		{

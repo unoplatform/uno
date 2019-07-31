@@ -345,6 +345,14 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <None Remove="DrawableHelper.Android.cs" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <UpToDateCheckInput Remove="DrawableHelper.Android.cs" />
+	</ItemGroup>
+
+	<ItemGroup>
 	  <None Update="BaseActivity.Callbacks.Implementation.Android.tt">
 	    <Generator>TextTemplatingFileGenerator</Generator>
 	  </None>
