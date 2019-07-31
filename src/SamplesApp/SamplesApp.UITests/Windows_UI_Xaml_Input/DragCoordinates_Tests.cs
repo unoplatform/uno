@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using NUnit.Framework;
+using SamplesApp.UITests.TestFramework;
 using Uno.UITest.Helpers.Queries;
 using Query = System.Func<Uno.UITest.IAppQuery, Uno.UITest.IAppQuery>;
 using StringQuery = System.Func<Uno.UITest.IAppQuery, Uno.UITest.IAppTypedSelector<string>>;
@@ -13,20 +14,15 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TimePickerTests
 	public class DragCoordinates_Tests : SampleControlUITestBase
 	{
 		[Test]
-		[Ignore("https://github.com/unoplatform/uno/issues/1257")]
+		[ActivePlatforms(Platform.iOS, Platform.Browser)] // Android is disabled https://github.com/unoplatform/uno/issues/1257
 		public void DragBorder01()
 		{
 			Run("UITests.Shared.Windows_UI_Xaml_Input.Pointers.DragCoordinates_Automated");
-
-			Query testSelector = q => q.Text("DragCoordinates 01");
 
 			Query rootCanvas = q => q.Marked("rootCanvas");
 			Query myBorder = q => q.Marked("myBorder");
 			Query topValue = q => q.Marked("borderPositionTop");
 			Query leftValue = q => q.Marked("borderPositionLeft");
-
-			_app.WaitForElement(testSelector);
-			_app.Tap(testSelector);
 
 			_app.WaitForElement(rootCanvas);
 

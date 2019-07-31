@@ -13,6 +13,12 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		private readonly SerialDisposable _touchSubscription = new SerialDisposable();
 		private readonly SerialDisposable _isEnabledSubscription = new SerialDisposable();
 
+		partial void PartialInitializeProperties()
+		{
+			// need the Tapped event to be registered for "Click" to work properly
+			Tapped += (snd, evt) => { };
+		}
+
 		protected override void OnLoaded()
 		{
 			base.OnLoaded();
@@ -115,6 +121,6 @@ namespace Windows.UI.Xaml.Controls.Primitives
 				// Finally check for templated ContentControl root
 				?? TemplatedRoot as View
 				;
-		}		
+		}
 	}
 }
