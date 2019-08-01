@@ -15,6 +15,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ListViewTests
 	public partial class ListViewTests_Tests : SampleControlUITestBase
 	{
 		[Test]
+		[AutoRetry]
 		public void ListView_ListViewVariableItemHeightLong_InitializesTest()
 		{
 			Run("SamplesApp.Windows_UI_Xaml_Controls.ListView.ListViewVariableItemHeightLong");

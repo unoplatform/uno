@@ -14,6 +14,7 @@ namespace SamplesApp.UITests.CommandBar
 	public partial class UnoSamples_Tests : SampleControlUITestBase
 	{
 		[Test]
+		[AutoRetry]
 		[ActivePlatforms(Platform.Android, Platform.iOS)]
 		public void CommandBar_LongTitle_Validation()
 		{

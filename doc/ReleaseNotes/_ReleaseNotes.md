@@ -2,6 +2,7 @@
 
 ## Next version
 ### Features
+* Add full implementation of `Windows.UI.Xaml.Input.InputScopeNameValue` on all platforms.
 * Add support for `Windows.Devices.Sensors.Accelerometer` APIs on iOS, Android and WASM
    * `ReadingChanged`
    * `Shaken`
@@ -56,6 +57,7 @@
 * [Android/iOS] Fixed Arc command in paths
 * Changing the `DataContext` of an element to a new value were pushing the properties default
   value on data bound properties before setting the new value.
+* [Android] `.Click` on a `ButtonBase` were not raising events properly
 
 ## Release 1.45.0
 ### Features

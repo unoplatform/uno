@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.28516.95
+# Visual Studio 15
+VisualStudioVersion = 15.0.28307.645
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Uno.UI", "Uno.UI", "{416684CF-A4E3-4079-B380-3FF0B00E433C}"
 EndProject
@@ -132,7 +132,7 @@ Project("{9092AA53-FB77-4645-B42D-1CCCA6BD08BD}") = "SamplesApp.Wasm.UITests", "
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Uno.UI.TestComparer", "Uno.UI.TestComparer\Uno.UI.TestComparer.csproj", "{8B51C7BA-BE67-4707-97CF-A57190236860}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SamplesApp.UITests", "SamplesApp\SamplesApp.UITests\SamplesApp.UITests.csproj", "{F65D1C57-8BF7-4894-B491-3AD94F889C4D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SamplesApp.UITests", "SamplesApp\SamplesApp.UITests\SamplesApp.UITests.csproj", "{F65D1C57-8BF7-4894-B491-3AD94F889C4D}"
 EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution

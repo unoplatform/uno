@@ -93,14 +93,23 @@
 			<TextBlock x:Name="msgs" FontSize="8" />
 		</Border>
 
-		<uno:StarStackPanel Sizes="Auto,*" Grid.Row="2" Grid.ColumnSpan="5">
-			<Button Tapped="ClearMsgs">CLEAR</Button>
-			<TextBlock>
-				layer1 clicks: <Run x:Name="l1Clicks" FontWeight="Bold" />,
-				layer1_inner clicks: <Run x:Name="l1innerClicks" FontWeight="Bold" />,
-				layer2 clicks: <Run x:Name="l2Clicks" FontWeight="Bold" />,
-				layer3 clicks: <Run x:Name="l3Clicks" FontWeight="Bold" />
-			</TextBlock>
+		<Button Tapped="ClearMsgs" Grid.Row="2" Grid.ColumnSpan="5">CLEAR</Button>
+
+		<uno:StarStackPanel
+			Sizes="Auto"
+			Orientation="Horizontal"
+			Grid.Row="0"
+			Grid.ColumnSpan="5"
+			IsHitTestVisible="False"
+			VerticalAlignment="Bottom">
+			<TextBlock>layer1 clicks:</TextBlock>
+			<TextBlock x:Name="l1Clicks" FontWeight="Bold"/>
+			<TextBlock>, layer1_inner clicks:</TextBlock>
+			<TextBlock x:Name="l1innerClicks" FontWeight="Bold"/>
+			<TextBlock>, layer2 clicks:</TextBlock>
+			<TextBlock x:Name="l2Clicks" FontWeight="Bold"/>
+			<TextBlock>, layer3 clicks:</TextBlock>
+			<TextBlock x:Name="l3Clicks" FontWeight="Bold"/>
 		</uno:StarStackPanel>
 
 	</Grid>
