@@ -193,50 +193,12 @@
 						reason="Invalid method visibility"/>
 				<Member fullName="System.Void Uno.UI.Controls.Legacy.ListViewBase.OnLayoutUpdated()"
 						reason="Invalid method visibility"/>
-
-				<Member 
-					fullName="System.Void Windows.UI.Input.PointerPointProperties..ctor()"
-					reason="Invalid visibility."/>
-				<Member 
-					fullName="System.Void Windows.Devices.Input.PointerDevice..ctor()"
-					reason="Invalid visibility."/>
-				<Member 
-					fullName="Windows.Foundation.Point Windows.UI.Xaml.Input.PointerRoutedEventArgs.GetCurrentPoint()"
-					reason="Method was missing a required parameter"/>
-				<Member 
-					fullName="Windows.Foundation.Point[] Windows.UI.Xaml.Input.PointerRoutedEventArgs.GetIntermediatePoints()"
-					reason="Method was missing a required parameter"/>
-				<Member
-					fullName="System.Void Windows.UI.Xaml.Controls.Primitives.ButtonBase.OnPointerMoved(Windows.UI.Xaml.Input.PointerRoutedEventArgs args)"
-					reason="Binary issue, but not an API changed. Ignore it since we already have some other bin conflict."/>
-				<Member 
-					fullName="System.Void Windows.UI.Xaml.Controls.Primitives.ButtonBase.OnPointerCanceled(Windows.UI.Xaml.Input.PointerRoutedEventArgs args)"
-					reason="Binary issue, but not an API changed. Ignore it since we already have some other bin conflict."/>
-				<Member 
-					fullName="System.Void Windows.UI.Xaml.Controls.Primitives.ButtonBase.OnPointerExited(Windows.UI.Xaml.Input.PointerRoutedEventArgs args)"
-					reason="Binary issue, but not an API changed. Ignore it since we already have some other bin conflict."/>
-				<Member 
-					fullName="System.Void Windows.UI.Xaml.Controls.Primitives.ButtonBase.OnTapped(Windows.UI.Xaml.Input.TappedRoutedEventArgs e)"
-					reason="Binary issue, but not an API changed. Ignore it since we already have some other bin conflict."/>
-				<Member 
-					fullName="System.Void Windows.UI.Xaml.Controls.Primitives.SelectorItem.OnPointerCanceled(Windows.UI.Xaml.Input.PointerRoutedEventArgs args)"
-					reason="Binary issue, but not an API changed. Ignore it since we already have some other bin conflict."/>
 			</Methods>
 
 			<Fields>
 				<Member 
 					fullName="Windows.UI.Xaml.TextWrapping Windows.UI.Xaml.TextWrapping::WordEllipsis"
 					reason="Invalid enum value"/>
-
-				<Member 
-					fullName="System.Int32 Windows.UI.Input.GestureSettings::value__"
-					reason="Enum was a int instead of uint like UWP"/>
-				<Member 
-					fullName="System.Int32 Windows.System.VirtualKeyModifiers::value__"
-					reason="Enum was a int instead of uint like UWP"/>
-				<Member 
-					fullName="System.Int32 Windows.UI.Xaml.Input.ManipulationModes::value__"
-					reason="Enum was a int instead of uint like UWP"/>
 			</Fields>
 
 			<Properties>
@@ -331,28 +293,73 @@
 						reason="Removed unneeded pseudo-internal property" />
 				<Member fullName="System.Boolean Uno.UI.UnoViewGroup.InvalidateTransformedHierarchy()"
 						reason="Removed unneeded pseudo-internal method" />
-              
-				<Member fullName="System.Void Windows.UI.Xaml.Media.Imaging.BitmapSource.set_PixelHeight(System.Int32 value)"
-						reason="Removed API not available in WinUI" />
-				<Member fullName="System.Void Windows.UI.Xaml.Media.Imaging.BitmapSource.set_PixelWidth(System.Int32 value)"
-						reason="Removed API not available in WinUI" />
-				<Member fullName="System.Void Windows.Devices.Sensors.GyrometerReadingChangedEventArgs..ctor()"
-						reason="Parameter-less ctor does not exist in UWP"/>
-				<Member fullName="System.Void Windows.Devices.Sensors.Gyrometer..ctor()"
-						reason="Parameter-less ctor does not exist in UWP"/>
-				<Member fullName="System.Void Windows.Devices.Sensors.GyrometerReading..ctor()"
-						reason="Parameter-less ctor does not exist in UWP"/>
-				<Member fullName="System.Void Windows.UI.Xaml.Media.RenderingEventArgs..ctor()"
-						reason="Constructor is internal on UWP" />
-
-              <Member fullName="Windows.UI.Xaml.Style Uno.UI.GlobalStaticResources.get_EllipsisButton()"
-                      reason="Invalid global style renamed to align with CommandBar" />
-              <Member fullName="Windows.UI.Xaml.Style Uno.UI.GlobalStaticResources.get___ImplicitStyle_Windows_UI_Xaml_Controls_AppBarToggleButton()"
-                      reason="Implicit style moved to GenericStyles.cs" />
-              <Member fullName="Windows.UI.Xaml.Style Uno.UI.GlobalStaticResources.get___ImplicitStyle_Windows_UI_Xaml_Controls_AppBarSeparator()"
-                      reason="Implicit style moved to GenericStyles.cs" />
-
-            </Methods>
+				<Member
+					fullName="System.Void Windows.UI.Xaml.Media.Imaging.BitmapSource.set_PixelHeight(System.Int32 value)"
+					reason="Removed API not available in WinUI" />
+				<Member
+					fullName="System.Void Windows.UI.Xaml.Media.Imaging.BitmapSource.set_PixelWidth(System.Int32 value)"
+					reason="Removed API not available in WinUI" />
+				<Member 
+					fullName="System.Void Windows.Devices.Sensors.GyrometerReadingChangedEventArgs..ctor()"
+					reason="Parameter-less ctor does not exist in UWP"/>
+				<Member 
+					fullName="System.Void Windows.Devices.Sensors.Gyrometer..ctor()"
+					reason="Parameter-less ctor does not exist in UWP"/>
+				<Member 
+					fullName="System.Void Windows.Devices.Sensors.GyrometerReading..ctor()"
+					reason="Parameter-less ctor does not exist in UWP"/>
+				<Member
+					fullName="System.Void Windows.UI.Xaml.Media.RenderingEventArgs..ctor()"
+					reason="Constructor is internal on UWP" />
+				<Member
+					fullName="Windows.UI.Xaml.Style Uno.UI.GlobalStaticResources.get_EllipsisButton()"
+					reason="Invalid global style renamed to align with CommandBar" />
+				<Member
+					fullName="Windows.UI.Xaml.Style Uno.UI.GlobalStaticResources.get___ImplicitStyle_Windows_UI_Xaml_Controls_AppBarToggleButton()"
+					reason="Implicit style moved to GenericStyles.cs" />
+				<Member
+					fullName="Windows.UI.Xaml.Style Uno.UI.GlobalStaticResources.get___ImplicitStyle_Windows_UI_Xaml_Controls_AppBarSeparator()"
+					reason="Implicit style moved to GenericStyles.cs" />
+				<Member 
+					fullName="System.Void Windows.UI.Input.PointerPointProperties..ctor()"
+					reason="Invalid visibility."/>
+				<Member 
+					fullName="System.Void Windows.Devices.Input.PointerDevice..ctor()"
+					reason="Invalid visibility."/>
+				<Member 
+					fullName="Windows.Foundation.Point Windows.UI.Xaml.Input.PointerRoutedEventArgs.GetCurrentPoint()"
+					reason="Method was missing a required parameter"/>
+				<Member 
+					fullName="Windows.Foundation.Point[] Windows.UI.Xaml.Input.PointerRoutedEventArgs.GetIntermediatePoints()"
+					reason="Method was missing a required parameter"/>
+				<Member
+					fullName="System.Void Windows.UI.Xaml.Controls.Primitives.ButtonBase.OnPointerMoved(Windows.UI.Xaml.Input.PointerRoutedEventArgs args)"
+					reason="Binary issue, but not an API changed. Ignore it since we already have some other bin conflict."/>
+				<Member 
+					fullName="System.Void Windows.UI.Xaml.Controls.Primitives.ButtonBase.OnPointerCanceled(Windows.UI.Xaml.Input.PointerRoutedEventArgs args)"
+					reason="Binary issue, but not an API changed. Ignore it since we already have some other bin conflict."/>
+				<Member 
+					fullName="System.Void Windows.UI.Xaml.Controls.Primitives.ButtonBase.OnPointerExited(Windows.UI.Xaml.Input.PointerRoutedEventArgs args)"
+					reason="Binary issue, but not an API changed. Ignore it since we already have some other bin conflict."/>
+				<Member 
+					fullName="System.Void Windows.UI.Xaml.Controls.Primitives.ButtonBase.OnTapped(Windows.UI.Xaml.Input.TappedRoutedEventArgs e)"
+					reason="Binary issue, but not an API changed. Ignore it since we already have some other bin conflict."/>
+				<Member 
+					fullName="System.Void Windows.UI.Xaml.Controls.Primitives.SelectorItem.OnPointerCanceled(Windows.UI.Xaml.Input.PointerRoutedEventArgs args)"
+					reason="Binary issue, but not an API changed. Ignore it since we already have some other bin conflict."/>
+			</Methods>
+			
+			<Fields>
+				<Member 
+					fullName="System.Int32 Windows.UI.Input.GestureSettings::value__"
+					reason="Enum was a int instead of uint like UWP"/>
+				<Member 
+					fullName="System.Int32 Windows.System.VirtualKeyModifiers::value__"
+					reason="Enum was a int instead of uint like UWP"/>
+				<Member 
+					fullName="System.Int32 Windows.UI.Xaml.Input.ManipulationModes::value__"
+					reason="Enum was a int instead of uint like UWP"/>
+			</Fields>
 
 			<Properties>
 				<Member fullName="Android.Views.View Windows.UI.Xaml.Controls.Popup::Anchor()"
