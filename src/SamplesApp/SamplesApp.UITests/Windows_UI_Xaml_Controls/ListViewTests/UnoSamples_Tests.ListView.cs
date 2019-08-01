@@ -28,6 +28,8 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ListViewTests
 		}
 
 		[Test]
+		[AutoRetry]
+		[ActivePlatforms(Platform.iOS, Platform.Android)]
 		public void ListView_ListViewWithHeader_InitializesTest()
 		{
 			Run("SamplesApp.Windows_UI_Xaml_Controls.ListView.HorizontalListViewGrouped");
