@@ -67,6 +67,10 @@ You may improve your built time by selecting an active target framework, see the
 The Uno solution provides a set of sample applications that provide a way to test features, as
 well as provide a way to write UI Tests. See [this document](working-with-the-samples-apps.md) for more information.
 
+## Using the Package Diff tool
+
+Refer to the [guidelines for breaking changes](../contributing/guidelines/breaking-changes.md) document.
+
 ## Building Uno.UI for macOS using Visual Studio for Mac
 
 Building Uno.UI for the macOS platform using vs4mac requires Visual Studio for mac 8.1 Preview or later.
