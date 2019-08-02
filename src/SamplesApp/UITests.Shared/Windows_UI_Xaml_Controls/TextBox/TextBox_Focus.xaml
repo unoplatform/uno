@@ -1,9 +1,8 @@
 <UserControl
-	x:Class="Uno.UI.Samples.Content.UITests.TextBoxControl.TextBox_Focus" 
+	x:Class="Uno.UI.Samples.Content.UITests.TextBoxControl.TextBox_Focus"
 	xmlns:controls="using:Uno.UI.Samples.Controls"
 	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-	xmlns:local="Uno.UI.Samples.Content.UITests.TextBoxControl"
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	xmlns:u="using:Uno.UI.Samples.Controls"
@@ -79,12 +78,12 @@
 		</Setter>
 	</Style>
 	</UserControl.Resources>
-	
+
 	<controls:SampleControl SampleDescription="Tapping on My Header should bring up the keyboard">
 		<controls:SampleControl.SampleContent>
 			<DataTemplate>
 				<Border Background="CornflowerBlue">
-					<TextBox Header="My Header"  
+					<TextBox Header="My Header"
 								 Width="200"
 								 Height="100"
 								 PlaceholderText="Placeholder"

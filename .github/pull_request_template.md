@@ -35,7 +35,7 @@ Please check if your PR fulfills the following requirements:
 - [ ] Tested code with current [supported SDKs](../README.md#supported)
 - [ ] Docs have been added/updated which fit [documentation template](https://github.com/nventive/Uno/blob/master/doc/.feature-template.md). (for bug fixes / features)
 - [ ] [Unit Tests and/or UI Tests](doc/articles/working-with-the-samples-apps.md) for the changes have been added (for bug fixes / features) (if applicable)
-- [ ] [Wasm UI Tests](doc/articles/working-with-the-samples-apps.md#running-the-webassembly-ui-tests-snapshots) are not showing unexpected any differences
+- [ ] [Wasm UI Tests](doc/articles/working-with-the-samples-apps.md#running-the-webassembly-ui-tests-snapshots) are not showing unexpected any differences. Validate PR `Screenshots Compare Test Run` results.
 - [ ] Contains **NO** breaking changes
 - [ ] Updated the [Release Notes](https://github.com/nventive/Uno/tree/master/doc/ReleaseNotes)
 - [ ] Associated with an issue (GitHub or internal)

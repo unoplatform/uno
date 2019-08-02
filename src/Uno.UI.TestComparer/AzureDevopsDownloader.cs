@@ -57,29 +57,37 @@ namespace Uno.UI.TestComparer
 
 			foreach (var build in builds.Concat(new[] { currentBuild }).Distinct(new BuildComparer()))
 			{
-				var tempFile = Path.GetTempFileName();
+				var fullPath = Path.Combine(basePath, $@"artifacts\\{build.LastChangedDate:yyyyMMdd-hhmmss}-{build.Id}");
 
-				var artifacts = await client.GetArtifactsAsync(project, build.Id);
-
-				if (artifacts.Any(a => a.Name == artifactName))
+				if (!Directory.Exists(fullPath))
 				{
-					Console.WriteLine($"Getting artifact for build {build.Id}");
-					using (var stream = await client.GetArtifactContentZipAsync(project, build.Id, artifactName))
+					var tempFile = Path.GetTempFileName();
+
+					var artifacts = await client.GetArtifactsAsync(project, build.Id);
+
+					if (artifacts.Any(a => a.Name == artifactName))
 					{
-						using (var f = File.OpenWrite(tempFile))
+						Console.WriteLine($"Getting artifact for build {build.Id}");
+						using (var stream = await client.GetArtifactContentZipAsync(project, build.Id, artifactName))
 						{
-							await stream.CopyToAsync(f);
+							using (var f = File.OpenWrite(tempFile))
+							{
+								await stream.CopyToAsync(f);
+							}
 						}
+
+
+						Console.WriteLine($"Extracting artifact for build {build.Id}");
+						ZipFile.ExtractToDirectory(tempFile, fullPath);
 					}
-
-					var fullPath = Path.Combine(basePath, $@"artifacts\\{build.LastChangedDate:yyyyMMdd-hhmmss}-{build.Id}");
-
-					Console.WriteLine($"Extracting artifact for build {build.Id}");
-					ZipFile.ExtractToDirectory(tempFile, fullPath);
+					else
+					{
+						Console.WriteLine($"Skipping download artifact for build {build.Id} (The artifact {artifactName} cannot be found)");
+					}
 				}
 				else
 				{
-					Console.WriteLine($"Skipping download artifact for build {build.Id} (The artifact {artifactName} cannot be found)");
+					Console.WriteLine($"Skipping already downloaded build {build.Id} artifacts");
 				}
 			}
 		}

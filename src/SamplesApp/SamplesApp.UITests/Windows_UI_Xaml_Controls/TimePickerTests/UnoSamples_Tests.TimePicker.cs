@@ -94,9 +94,10 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TimePickerTests
 		}
 
 		[Test]
+		[AutoRetry]
 		public void TimePickerFlyout_DoesntApplyDefaultTime()
 		{
-			Run("SamplesApp.Samples.TimePicker.Sample1");
+			Run("UITests.Shared.Windows_UI_Xaml_Controls.TimePicker.Sample1");
 
 			_app.WaitForElement(_app.Marked("theTimePicker"));
 			var theTimePicker = _app.Marked("theTimePicker");
@@ -106,6 +107,45 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TimePickerTests
 			{
 				Assert.AreEqual("12:00:00", theTimePicker.GetDependencyPropertyValue("Time")?.ToString());
 			}
+		}
+
+		[Test]
+		[AutoRetry]
+		[ActivePlatforms(Platform.iOS, Platform.Android)]
+		public void TimePickerFlyout_HasDataContextTest()
+		{
+			Run("UITests.Shared.Windows_UI_Xaml_Controls.TimePicker.Sample2");
+
+			_app.WaitForElement(_app.Marked("theTimePicker"));
+
+			var theTimePicker = _app.Marked("theTimePicker");
+			var timePickerFlyout = theTimePicker.Child;
+
+			// Open flyout
+			theTimePicker.Tap();
+
+			//Assert
+			Assert.IsNotNull(theTimePicker.GetDependencyPropertyValue("DataContext"));
+			Assert.IsNotNull(timePickerFlyout.GetDependencyPropertyValue("DataContext"));
+		}
+
+		[Test]
+		[AutoRetry]
+		[ActivePlatforms(Platform.iOS)]
+		public void TimePickerFlyout_HasContentTest()
+		{
+			Run("UITests.Shared.Windows_UI_Xaml_Controls.TimePicker.Sample2");
+
+			_app.WaitForElement(_app.Marked("theTimePicker"));
+
+			var theTimePicker = _app.Marked("theTimePicker");
+			var timePickerFlyout = theTimePicker.Child;
+
+			// Open flyout
+			theTimePicker.Tap();
+
+			//Assert
+			Assert.IsNotNull(timePickerFlyout.GetDependencyPropertyValue("Content"));
 		}
 	}
 }

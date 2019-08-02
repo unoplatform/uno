@@ -78,6 +78,8 @@ namespace Windows.UI.Xaml
 					CanBubbleNatively = true
 				};
 
+				_target.PreRaiseTapped?.Invoke(_target, null);
+
 				return _target.RaiseEvent(UIElement.TappedEvent, args);
 			}
 			catch (Exception ex)

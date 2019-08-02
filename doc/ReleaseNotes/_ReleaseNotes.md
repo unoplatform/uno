@@ -2,6 +2,7 @@
 
 ## Next version
 ### Features
+* Add full implementation of `Windows.UI.Xaml.Input.InputScopeNameValue` on all platforms.
 * Add support for `Windows.Devices.Sensors.Accelerometer` APIs on iOS, Android and WASM
    * `ReadingChanged`
    * `Shaken`
@@ -31,13 +32,16 @@
 * Permit `DependencyProperty` to be set reentrantly. Eg this permits `TextBox.TextChanging` to modify the `Text` property (previously this could only be achieved using `Dispatcher.RunAsync()`).
 * Implement `TextBox.TextChanging` and `TextBox.BeforeTextChanging`. As on UWP, this allows the text to be intercepted and modified before the UI is updated. Previously on Android using the `TextChanged` event would lead to laggy response and dropped characters when typing rapidly; this is no longer the case with `TextChanging`.
 * [WASM] `ComboBox`'s dropdown list (`CarouselPanel`) is now virtualized (#1012)
+* Improve Screenshot comparer tool, CI test results now contain Screenshots compare data
 
 ### Breaking changes
 * `TextBox` no longer raises TextChanged when its template is applied, in line with UWP.
 * `TextBox.TextChanged` is now called asynchronously after the UI is updated, in line with UWP. For most uses `TextChanging` should be preferred.
 * [Android] `TextBox.IsSpellCheckEnabled = false` is now enforced in a way that may cause issues in certain use cases (see https://stackoverflow.com/a/5188119/1902058). The old behavior can be restored by setting `ShouldForceDisableSpellCheck = false`, per `TextBox`.
+* `TextBox.Text = null` will now throw an exception, as on UWP. Pushing `null` via a binding is still valid.
 
 ### Bug fixes
+* #1276 retrieving non-existent setting via indexer should not throw and  `ApplicationDataContainer` allowed clearing value by calling `Add(null)` which was not consistent with UWP.
 * [iOS] Area of view outside Clip rect now allows touch to pass through, this fixes NavigationView not allowing touches to children (#1018)
 * `ComboBox` drop down is now placed following a logic which is closer to UWP and it longer flickers when it appears (especilly on WASM)
 * #854 `BasedOn` on a `<Style>` in `App.Xaml` were not resolving properly
@@ -53,6 +57,7 @@
 * [Android/iOS] Fixed Arc command in paths
 * Changing the `DataContext` of an element to a new value were pushing the properties default
   value on data bound properties before setting the new value.
+* [Android] `.Click` on a `ButtonBase` were not raising events properly
 
 ## Release 1.45.0
 ### Features
@@ -218,6 +223,7 @@
 * Date and Time Picker Content fix and Refactored to use PickerFlyoutBase (to resemble UWP implementation)
 * `LinearGradientBrush.EndPoint` now defaults to (1,1) to match UWP
 * [Android] A ListView inside another ListView no longer causes an app freeze/crash
+* `Click` on `ButtonBase` was not properly raised.
 
 ## Release 1.44.0
 

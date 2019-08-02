@@ -12,7 +12,7 @@ using Uno.UI.Samples.Controls;
 
 namespace Uno.UI.Samples.Content.UITests.Animations
 {
-	[SampleControlInfoAttribute("Animations", "DoubleAnimation_VisualStates")]
+	[SampleControlInfo("Animations", "DoubleAnimation_VisualStates")]
 	public sealed partial class DoubleAnimation_VisualStates : UserControl
 	{
 		public DoubleAnimation_VisualStates()

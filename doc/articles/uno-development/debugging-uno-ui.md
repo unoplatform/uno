@@ -69,16 +69,7 @@ well as provide a way to write UI Tests. See [this document](working-with-the-sa
 
 ## Using the Package Diff tool
 
-Uno uses a [Package Diff tool](https://github.com/nventive/Uno.PackageDiff) to ensure that binary breaking changes do not
-go unnoticed. Binary breaking changes are making packages depending on Uno.UI unuseable, as the IL Linker is crawling all
-the code of all assemblies.
-
-The package diff tool is run on every Pull Request, and generates a markdown document that can be found in the build artifacts. The
-CI will use the last published non-experimental package available on nuget.org, and compare it with the output of the current PR.
-
-In most cases, breaking changes are not acceptable, but in cases where there is no easy work around, the
-[build/PackageDiffIgnore.xml](build/PackageDiffIgnore.xml) can be used to make diff exclusions. Please refer
-to the documentation of the [Uno.PackageDiff tool](https://github.com/nventive/Uno.PackageDiff) for more information.
+Refer to the [guidelines for breaking changes](../contributing/guidelines/breaking-changes.md) document.
 
 ## Building Uno.UI for macOS using Visual Studio for Mac
 

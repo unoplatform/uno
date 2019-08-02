@@ -8,19 +8,18 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.Models
 	{
 		public ChatBoxViewModel(CoreDispatcher dispatcher) : base(dispatcher)
 		{			
-			ToggleHeader = CreateCommand(ExecuteToggleHeader);
-			m_ClickCount = 0;
+			_clickCount = 0;
 		}
 
-		public ICommand ToggleHeader { get; }
+		public ICommand ToggleHeader => GetOrCreateCommand(ExecuteToggleHeader);
 
-		private int m_ClickCount;
+		private int _clickCount;
 
 		public int ClickCount {
-			get { return m_ClickCount; }
+			get => _clickCount;
 			set
 			{
-				m_ClickCount = value;
+				_clickCount = value;
 				RaisePropertyChanged();
 			}
 		}

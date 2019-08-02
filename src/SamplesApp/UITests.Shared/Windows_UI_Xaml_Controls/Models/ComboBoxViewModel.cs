@@ -13,7 +13,6 @@ namespace SamplesApp.Windows_UI_Xaml_Controls.Models
 
 		public ComboBoxViewModel(CoreDispatcher dispatcher) : base(dispatcher)
 		{
-			ToggleHeader = CreateCommand(ExecuteToggleHeader);
 		}
 
 		public string Header
@@ -26,11 +25,6 @@ namespace SamplesApp.Windows_UI_Xaml_Controls.Models
 			}
 		}
 
-		public ICommand ToggleHeader { get; }
-
-		private void ExecuteToggleHeader()
-		{
-			Header = Header == null ? HeaderText : null;
-		}
+		public ICommand ToggleHeader => GetOrCreateCommand(() => Header = Header == null ? HeaderText : null);
 	}
 }

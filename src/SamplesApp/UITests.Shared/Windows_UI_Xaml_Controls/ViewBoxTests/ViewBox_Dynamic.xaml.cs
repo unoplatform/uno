@@ -8,7 +8,7 @@ namespace Uno.UI.Samples.Content.UITests.ViewBoxTests
 	/// <summary>
 	/// An empty page that can be used on its own or navigated to within a Frame.
 	/// </summary>
-	[SampleControlInfoAttribute("ViewBox", nameof(ViewBox_Dynamic))]
+	[SampleControlInfo("ViewBox", nameof(ViewBox_Dynamic))]
 	public sealed partial class ViewBox_Dynamic : UserControl
 	{
         public ViewBox_Dynamic()

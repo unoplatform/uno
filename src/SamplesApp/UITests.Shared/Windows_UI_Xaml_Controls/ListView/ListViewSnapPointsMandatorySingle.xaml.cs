@@ -3,7 +3,7 @@ using Windows.UI.Xaml.Controls;
 
 namespace SamplesApp.Windows_UI_Xaml_Controls.ListView
 {
-	[SampleControlInfoAttribute("ListView", "ListViewSnapPointsMandatorySingle")]
+	[SampleControlInfo("ListView", "ListViewSnapPointsMandatorySingle")]
 	public sealed partial class ListViewSnapPointsMandatorySingle : UserControl
 	{
 		public ListViewSnapPointsMandatorySingle()

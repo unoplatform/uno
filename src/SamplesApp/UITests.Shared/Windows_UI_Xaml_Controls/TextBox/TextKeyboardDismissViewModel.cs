@@ -23,10 +23,9 @@ namespace Uno.UI.Samples.Presentation.SamplePages
 
 		public bool IsFieldVisible
 		{
-			get { return _isFieldVisible; }
-			set { _isFieldVisible = value; }
+			get => _isFieldVisible;
+			set => _isFieldVisible = value;
 		}
-
 
 		private void ExecuteHideField()
 		{

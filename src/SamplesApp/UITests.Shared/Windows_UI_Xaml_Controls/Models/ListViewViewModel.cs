@@ -27,22 +27,15 @@ namespace SamplesApp.Windows_UI_Xaml_Controls.Models
 
 		public ListViewViewModel(CoreDispatcher dispatcher) : base(dispatcher)
 		{
-			RefreshRandomItems = CreateCommand(ExecuteRefreshRandomItems);
-			DoSomething = CreateCommand(ExecuteDoSomething);
-			VaryWidth = CreateCommand(ExecuteVaryWidth);
-			UpdateWithNewInput = CreateCommand(ExecuteOnUpdateWithNewInput);
-
 			VariableLengthItemsLong = CreateVariableLengthItemsLong().ToArray();
 			VariableLengthItemsLongLazy = CreateVariableLengthItemsLong();
 			EmptyItemsLong = Enumerable.Range(0, 1000).Select(_ => "").ToArray();
 		}
 
-		public ICommand RefreshRandomItems { get; }
-		public ICommand DoSomething { get; }
-
-		public ICommand VaryWidth { get; }
-
-		public ICommand UpdateWithNewInput { get; }
+		public ICommand RefreshRandomItems => GetOrCreateCommand(ExecuteRefreshRandomItems);
+		public ICommand DoSomething => GetOrCreateCommand(ExecuteDoSomething);
+		public ICommand VaryWidth => GetOrCreateCommand(ExecuteVaryWidth);
+		public ICommand UpdateWithNewInput => GetOrCreateCommand(ExecuteOnUpdateWithNewInput);
 
 		public Orientation SelectedOrientation => Orientation.Horizontal;
 

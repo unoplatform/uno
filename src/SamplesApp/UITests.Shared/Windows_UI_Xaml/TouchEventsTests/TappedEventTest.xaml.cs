@@ -17,13 +17,13 @@ using Windows.UI.Xaml.Navigation;
 
 namespace Uno.UI.Samples.Samples.Shared.Content.UITests
 {
-	[SampleControlInfoAttribute("TouchEventTests", "TappedEventTest")]
+	[SampleControlInfo("TouchEventTests", "TappedEventTest")]
 	public sealed partial class TappedEventTest : UserControl
 	{
 		public TappedEventTest()
 		{
 			this.InitializeComponent();
-            
+
         }
     }
 }

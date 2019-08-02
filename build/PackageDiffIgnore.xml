@@ -1,264 +1,283 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <DiffIgnore>
-  <IgnoreSets>
-    <IgnoreSet baseVersion="1.43.1">
-      <Methods>
-        <Member fullName="System.Void Windows.UI.Xaml.WindowCreatedEventArgs..ctor()"
-                reason="Parameter-less ctor does not exist in UWP" />
+	<IgnoreSets>
+		<IgnoreSet baseVersion="1.43.1">
+			<Methods>
+				<Member fullName="System.Void Windows.UI.Xaml.WindowCreatedEventArgs..ctor()"
+						reason="Parameter-less ctor does not exist in UWP"/>
 
-        <Member fullName="System.Void Windows.UI.Xaml.RoutedEvent..ctor()"
-                reason="Parameter-less ctor does not exist in UWP" />
+				<Member fullName="System.Void Windows.UI.Xaml.RoutedEvent..ctor()"
+						reason="Parameter-less ctor does not exist in UWP"/>
 
-        <Member fullName="System.Boolean Windows.UI.Xaml.Controls.TextBlock.OnTouchEvent(Android.Views.MotionEvent e)"
-                reason="Removed as Routed Events implement it properly" />
-        <Member fullName="System.Boolean Windows.UI.Xaml.Controls.Primitives.Thumb.DispatchTouchEvent(Android.Views.MotionEvent e)"
-                reason="Removed as Routed Events implement it properly" />
+				<Member
+					fullName="System.Boolean Windows.UI.Xaml.Controls.TextBlock.OnTouchEvent(Android.Views.MotionEvent e)"
+					reason="Removed as Routed Events implement it properly"/>
+				<Member
+					fullName="System.Boolean Windows.UI.Xaml.Controls.Primitives.Thumb.DispatchTouchEvent(Android.Views.MotionEvent e)"
+					reason="Removed as Routed Events implement it properly"/>
 
-        <Member fullName="Windows.Foundation.Rect Windows.UI.ViewManagement.InputPane.get_KeyboardRect()"
-                reason="Unused Uno specific property" />
-        <Member fullName="Windows.Foundation.Rect Windows.UI.ViewManagement.InputPane.get_NavigationBarRect()"
-                reason="Unused Uno specific property" />
+				<Member fullName="Windows.Foundation.Rect Windows.UI.ViewManagement.InputPane.get_KeyboardRect()"
+						reason="Unused Uno specific property"/>
+				<Member fullName="Windows.Foundation.Rect Windows.UI.ViewManagement.InputPane.get_NavigationBarRect()"
+						reason="Unused Uno specific property"/>
 
-        <Member fullName="System.Void Uno.UI.IFragmentTracker.PushCreated(Android.App.Fragment fragment)"
-                reason="Removed unused type" />
-        <Member fullName="System.Void Uno.UI.IFragmentTracker.PushStart(Android.App.Fragment fragment)"
-                reason="Removed unused type" />
-        <Member fullName="System.Void Uno.UI.IFragmentTracker.PushPause(Android.App.Fragment fragment)"
-                reason="Removed unused type" />
-        <Member fullName="System.Void Uno.UI.IFragmentTracker.PushResume(Android.App.Fragment fragment)"
-                reason="Removed unused type"/>
-        <Member fullName="System.Void Uno.UI.IFragmentTracker.PushViewCreated(Android.App.Fragment fragment)"
-                reason="Removed unused type" />
-        <Member fullName="System.Void Uno.UI.IFragmentTracker.PushStop(Android.App.Fragment fragment)"
-                reason="Removed unused type" />
-        <Member fullName="System.Void Uno.UI.IFragmentTracker.PushDestroyed(Android.App.Fragment fragment)"
-                reason="Removed unused type" />
-        <Member fullName="Uno.UI.BaseFragment Uno.UI.Extensions.FragmentManagerExtensions.GetCurrentFragment(Android.App.FragmentManager fragmentManager)"
-                reason="Removed unused type" />
+				<Member fullName="System.Void Uno.UI.IFragmentTracker.PushCreated(Android.App.Fragment fragment)"
+						reason="Removed unused type"/>
+				<Member fullName="System.Void Uno.UI.IFragmentTracker.PushStart(Android.App.Fragment fragment)"
+						reason="Removed unused type"/>
+				<Member fullName="System.Void Uno.UI.IFragmentTracker.PushPause(Android.App.Fragment fragment)"
+						reason="Removed unused type"/>
+				<Member fullName="System.Void Uno.UI.IFragmentTracker.PushResume(Android.App.Fragment fragment)"
+						reason="Removed unused type"/>
+				<Member fullName="System.Void Uno.UI.IFragmentTracker.PushViewCreated(Android.App.Fragment fragment)"
+						reason="Removed unused type"/>
+				<Member fullName="System.Void Uno.UI.IFragmentTracker.PushStop(Android.App.Fragment fragment)"
+						reason="Removed unused type"/>
+				<Member fullName="System.Void Uno.UI.IFragmentTracker.PushDestroyed(Android.App.Fragment fragment)"
+						reason="Removed unused type"/>
+				<Member
+					fullName="Uno.UI.BaseFragment Uno.UI.Extensions.FragmentManagerExtensions.GetCurrentFragment(Android.App.FragmentManager fragmentManager)"
+					reason="Removed unused type"/>
 
-        <Member fullName="System.Void Windows.UI.Xaml.Controls.Canvas.add_PointerPressed(Windows.UI.Xaml.Input.PointerEventHandler value)"
-                reason="Removed as Routed Events implement it properly" />
-        <Member fullName="System.Void Windows.UI.Xaml.Controls.Canvas.remove_PointerPressed(Windows.UI.Xaml.Input.PointerEventHandler value)"
-                reason="Removed as Routed Events implement it properly"/>
-        <Member fullName="System.Void Windows.UI.Xaml.Controls.Canvas.TouchesBegan(Foundation.NSSet touches, UIKit.UIEvent evt)"
-                reason="Removed as Routed Events implement it properly" />
-        <Member fullName="System.Void Windows.UI.Xaml.Controls.TextBlock.TouchesBegan(Foundation.NSSet touches, UIKit.UIEvent evt)"
-                reason="Removed as Routed Events implement it properly" />
-        <Member fullName="System.Void Windows.UI.Xaml.Controls.TextBlock.TouchesEnded(Foundation.NSSet touches, UIKit.UIEvent evt)"
-                reason="Removed as Routed Events implement it properly"/>
-        <Member fullName="System.Void Windows.UI.Xaml.Controls.TextBlock.TouchesCancelled(Foundation.NSSet touches, UIKit.UIEvent evt)"
-                reason="Removed as Routed Events implement it properly"/>
-        <Member fullName="System.Void Windows.UI.Xaml.Controls.TextBox.add_KeyUp(Windows.UI.Xaml.Input.KeyEventHandler value)"
-                reason="Removed as Routed Events implement it properly" />
-        <Member fullName="System.Void Windows.UI.Xaml.Controls.TextBox.remove_KeyUp(Windows.UI.Xaml.Input.KeyEventHandler value)"
-                reason="Removed as Routed Events implement it properly" />
-        <Member fullName="System.Void Windows.UI.Xaml.Controls.TextBox.add_KeyDown(Windows.UI.Xaml.Input.KeyEventHandler value)"
-                reason="Removed as Routed Events implement it properly"/>
-        <Member fullName="System.Void Windows.UI.Xaml.Controls.TextBox.remove_KeyDown(Windows.UI.Xaml.Input.KeyEventHandler value)"
-                reason="Removed as Routed Events implement it properly" />
-        <Member fullName="System.Void Windows.UI.Xaml.Controls.Primitives.Thumb.TouchesEnded(Foundation.NSSet touches, UIKit.UIEvent evt)"
-                reason="Removed as Routed Events implement it properly" />
-        <Member fullName="System.Void Windows.UI.Xaml.Controls.Primitives.Thumb.TouchesBegan(Foundation.NSSet touches, UIKit.UIEvent evt)"
-                reason="Removed as Routed Events implement it properly" />
-        <Member fullName="System.Void Windows.UI.Xaml.Controls.Primitives.Thumb.TouchesMoved(Foundation.NSSet touches, UIKit.UIEvent evt)"
-                reason="Removed as Routed Events implement it properly"/>
+				<Member
+					fullName="System.Void Windows.UI.Xaml.Controls.Canvas.add_PointerPressed(Windows.UI.Xaml.Input.PointerEventHandler value)"
+					reason="Removed as Routed Events implement it properly"/>
+				<Member
+					fullName="System.Void Windows.UI.Xaml.Controls.Canvas.remove_PointerPressed(Windows.UI.Xaml.Input.PointerEventHandler value)"
+					reason="Removed as Routed Events implement it properly"/>
+				<Member
+					fullName="System.Void Windows.UI.Xaml.Controls.Canvas.TouchesBegan(Foundation.NSSet touches, UIKit.UIEvent evt)"
+					reason="Removed as Routed Events implement it properly"/>
+				<Member
+					fullName="System.Void Windows.UI.Xaml.Controls.TextBlock.TouchesBegan(Foundation.NSSet touches, UIKit.UIEvent evt)"
+					reason="Removed as Routed Events implement it properly"/>
+				<Member
+					fullName="System.Void Windows.UI.Xaml.Controls.TextBlock.TouchesEnded(Foundation.NSSet touches, UIKit.UIEvent evt)"
+					reason="Removed as Routed Events implement it properly"/>
+				<Member
+					fullName="System.Void Windows.UI.Xaml.Controls.TextBlock.TouchesCancelled(Foundation.NSSet touches, UIKit.UIEvent evt)"
+					reason="Removed as Routed Events implement it properly"/>
+				<Member
+					fullName="System.Void Windows.UI.Xaml.Controls.TextBox.add_KeyUp(Windows.UI.Xaml.Input.KeyEventHandler value)"
+					reason="Removed as Routed Events implement it properly"/>
+				<Member
+					fullName="System.Void Windows.UI.Xaml.Controls.TextBox.remove_KeyUp(Windows.UI.Xaml.Input.KeyEventHandler value)"
+					reason="Removed as Routed Events implement it properly"/>
+				<Member
+					fullName="System.Void Windows.UI.Xaml.Controls.TextBox.add_KeyDown(Windows.UI.Xaml.Input.KeyEventHandler value)"
+					reason="Removed as Routed Events implement it properly"/>
+				<Member
+					fullName="System.Void Windows.UI.Xaml.Controls.TextBox.remove_KeyDown(Windows.UI.Xaml.Input.KeyEventHandler value)"
+					reason="Removed as Routed Events implement it properly"/>
+				<Member
+					fullName="System.Void Windows.UI.Xaml.Controls.Primitives.Thumb.TouchesEnded(Foundation.NSSet touches, UIKit.UIEvent evt)"
+					reason="Removed as Routed Events implement it properly"/>
+				<Member
+					fullName="System.Void Windows.UI.Xaml.Controls.Primitives.Thumb.TouchesBegan(Foundation.NSSet touches, UIKit.UIEvent evt)"
+					reason="Removed as Routed Events implement it properly"/>
+				<Member
+					fullName="System.Void Windows.UI.Xaml.Controls.Primitives.Thumb.TouchesMoved(Foundation.NSSet touches, UIKit.UIEvent evt)"
+					reason="Removed as Routed Events implement it properly"/>
 
-        <Member fullName="System.Boolean Uno.Foundation.WebAssemblyRuntime.InvokeJSUnmarshalled(System.String functionIdentifier, System.IntPtr arg0, System.IntPtr arg1, System.IntPtr arg2)"
-                reason="Removed to improve the C#/JS call performance"/>
+				<Member
+					fullName="System.Boolean Uno.Foundation.WebAssemblyRuntime.InvokeJSUnmarshalled(System.String functionIdentifier, System.IntPtr arg0, System.IntPtr arg1, System.IntPtr arg2)"
+					reason="Removed to improve the C#/JS call performance"/>
 
-      </Methods>
+			</Methods>
 
-      <Events>
-        <Member fullName="Windows.UI.Xaml.Input.PointerEventHandler Windows.UI.Xaml.Controls.Canvas::PointerPressed"
-                reason="Removed as Routed Events implement it properly" />
-        <Member fullName="Windows.UI.Xaml.Input.KeyEventHandler Windows.UI.Xaml.Controls.TextBox::KeyUp"
-                reason="Removed as Routed Events implement it properly" />
-        <Member fullName="Windows.UI.Xaml.Input.KeyEventHandler Windows.UI.Xaml.Controls.TextBox::KeyDown"
-                reason="Removed as Routed Events implement it properly" />
-      </Events>
+			<Events>
+				<Member
+					fullName="Windows.UI.Xaml.Input.PointerEventHandler Windows.UI.Xaml.Controls.Canvas::PointerPressed"
+					reason="Removed as Routed Events implement it properly"/>
+				<Member fullName="Windows.UI.Xaml.Input.KeyEventHandler Windows.UI.Xaml.Controls.TextBox::KeyUp"
+						reason="Removed as Routed Events implement it properly"/>
+				<Member fullName="Windows.UI.Xaml.Input.KeyEventHandler Windows.UI.Xaml.Controls.TextBox::KeyDown"
+						reason="Removed as Routed Events implement it properly"/>
+			</Events>
 
-      <Fields>
-        <Member fullName="Windows.UI.Xaml.RoutedEventArgs Windows.UI.Xaml.RoutedEventArgs::Empty"
-                reason="Type was incorrectly changed in 1.43.1" />
-        <Member fullName="Windows.UI.Xaml.DependencyProperty Windows.UI.Xaml.Controls.SymbolIcon::SymbolProperty"
-                reason="Type was incorrectly changed in 1.43.1" />
-        <Member fullName="Windows.UI.Xaml.DependencyProperty Windows.UI.Xaml.Controls.TimePicker::TimeProperty"
-                reason="Type was incorrectly marked as a field in 1.43.1" />
-      </Fields>
+			<Fields>
+				<Member fullName="Windows.UI.Xaml.RoutedEventArgs Windows.UI.Xaml.RoutedEventArgs::Empty"
+						reason="Type was incorrectly changed in 1.43.1"/>
+				<Member
+					fullName="Windows.UI.Xaml.DependencyProperty Windows.UI.Xaml.Controls.SymbolIcon::SymbolProperty"
+					reason="Type was incorrectly changed in 1.43.1"/>
+				<Member fullName="Windows.UI.Xaml.DependencyProperty Windows.UI.Xaml.Controls.TimePicker::TimeProperty"
+						reason="Type was incorrectly marked as a field in 1.43.1"/>
+			</Fields>
 
-      <Properties>
-        <Member fullName="Windows.Foundation.Rect Windows.UI.ViewManagement.InputPane::KeyboardRect()"
-                reason="Unused Uno specific property" />
-        <Member fullName="Windows.Foundation.Rect Windows.UI.ViewManagement.InputPane::NavigationBarRect()"
-                reason="Unused Uno specific property" />
-      </Properties>
-    </IgnoreSet>
+			<Properties>
+				<Member fullName="Windows.Foundation.Rect Windows.UI.ViewManagement.InputPane::KeyboardRect()"
+						reason="Unused Uno specific property"/>
+				<Member fullName="Windows.Foundation.Rect Windows.UI.ViewManagement.InputPane::NavigationBarRect()"
+						reason="Unused Uno specific property"/>
+			</Properties>
+		</IgnoreSet>
 
-    <IgnoreSet baseVersion="1.44.0">
-      <Types>
-        <Member fullName="Windows.UI.Xaml.UIElementExtensions"
-                reason="Moved to Uno.Extensions"/>
-      </Types>
+		<IgnoreSet baseVersion="1.44.0">
+			<Types>
+				<Member fullName="Windows.UI.Xaml.UIElementExtensions"
+						reason="Moved to Uno.Extensions"/>
+			</Types>
 
-      <Methods>
-        <Member fullName="System.Boolean Uno.Foundation.WebAssemblyRuntime.InvokeJSUnmarshalled(System.String functionIdentifier, System.IntPtr arg0, System.IntPtr arg1, System.IntPtr arg2)"
-                reason="Removed to improve the C#/JS call performance"/>
-      </Methods>
+			<Methods>
+				<Member
+					fullName="System.Boolean Uno.Foundation.WebAssemblyRuntime.InvokeJSUnmarshalled(System.String functionIdentifier, System.IntPtr arg0, System.IntPtr arg1, System.IntPtr arg2)"
+					reason="Removed to improve the C#/JS call performance"/>
+			</Methods>
 
-    </IgnoreSet>
+		</IgnoreSet>
 
-    <IgnoreSet baseVersion="1.44.1">
-      <Types>
-        <Member fullName="Windows.UI.Xaml.UIElementExtensions"
-                reason="Moved to Uno.Extensions"/>
-      </Types>
+		<IgnoreSet baseVersion="1.44.1">
+			<Types>
+				<Member fullName="Windows.UI.Xaml.UIElementExtensions"
+						reason="Moved to Uno.Extensions"/>
+			</Types>
 
-      <Methods>
-        <Member fullName="System.Boolean Uno.Foundation.WebAssemblyRuntime.InvokeJSUnmarshalled(System.String functionIdentifier, System.IntPtr arg0, System.IntPtr arg1, System.IntPtr arg2)"
-                reason="Removed to improve the C#/JS call performance"/>
+			<Methods>
+				<Member
+					fullName="System.Boolean Uno.Foundation.WebAssemblyRuntime.InvokeJSUnmarshalled(System.String functionIdentifier, System.IntPtr arg0, System.IntPtr arg1, System.IntPtr arg2)"
+					reason="Removed to improve the C#/JS call performance"/>
 
-        <Member fullName="Windows.UI.Color Windows.UI.Xaml.Controls.ScrollViewer.get_BackgroundColor()"
-                reason="This was a legacy mock done during initial Wasm POC, never implemented, never used." />
+				<Member fullName="Windows.UI.Color Windows.UI.Xaml.Controls.ScrollViewer.get_BackgroundColor()"
+						reason="This was a legacy mock done during initial Wasm POC, never implemented, never used."/>
 
-        <Member fullName="System.Void Windows.UI.Xaml.Controls.ScrollViewer.set_BackgroundColor(Windows.UI.Color value)"
-                reason="This was a legacy mock done during initial Wasm POC, never implemented, never used." />
+				<Member
+					fullName="System.Void Windows.UI.Xaml.Controls.ScrollViewer.set_BackgroundColor(Windows.UI.Color value)"
+					reason="This was a legacy mock done during initial Wasm POC, never implemented, never used."/>
 
-        <Member fullName="System.Void Windows.UI.Xaml.Shapes.Rectangle.LayoutSubviews()"
-                reason="Removed to use ArrangeOverride for macOS compatibility"/>
+				<Member fullName="System.Void Windows.UI.Xaml.Shapes.Rectangle.LayoutSubviews()"
+						reason="Removed to use ArrangeOverride for macOS compatibility"/>
 
-        <Member fullName="System.Void Windows.UI.Xaml.Shapes.Rectangle.LayoutSubviews()"
-                reason="Removed to use ArrangeOverride for macOS compatibility"/>
+				<Member fullName="System.Void Windows.UI.Xaml.Shapes.Rectangle.LayoutSubviews()"
+						reason="Removed to use ArrangeOverride for macOS compatibility"/>
 
-        <Member fullName="System.Void Windows.UI.Xaml.StateTriggerBase.SetActive(System.Boolean isActive)"
-                reason="Aligned visiblity with UWP" />
-        <Member fullName="System.Void Windows.UI.Xaml.UIElement.set_RenderSize(Windows.Foundation.Size value)"
-                reason="Aligned visiblity with UWP" />
+				<Member fullName="System.Void Windows.UI.Xaml.StateTriggerBase.SetActive(System.Boolean isActive)"
+						reason="Aligned visiblity with UWP"/>
+				<Member fullName="System.Void Windows.UI.Xaml.UIElement.set_RenderSize(Windows.Foundation.Size value)"
+						reason="Aligned visiblity with UWP"/>
 
-        <Member fullName="System.Void Uno.UI.UnoViewGroup.set_IsPointerCaptured(System.Boolean value)"
-                reason="Aligned visiblity with UWP" />
+				<Member fullName="System.Void Uno.UI.UnoViewGroup.set_IsPointerCaptured(System.Boolean value)"
+						reason="Aligned visiblity with UWP"/>
 
-        <Member fullName="System.Void Windows.UI.Xaml.FrameworkElement.OnLayoutUpdated()"
-                reason="Invalid method visibility"/>
-        <Member fullName="System.Void Windows.UI.Xaml.StateTriggerBase.SetActive(System.Boolean isActive)"
-                reason="Invalid method visibility"/>
-        <Member fullName="System.Void Windows.UI.Xaml.Controls.Image.OnLayoutUpdated()"
-                reason="Invalid method visibility"/>
-        <Member fullName="System.Void Windows.UI.Xaml.Controls.ProgressRing.OnLayoutUpdated()"
-                reason="Invalid method visibility"/>
-        <Member fullName="System.Void Windows.UI.Xaml.Controls.ScrollContentPresenter.OnLayoutUpdated()"
-                reason="Invalid method visibility"/>
-        <Member fullName="System.Void Windows.UI.Xaml.Controls.NativeListViewBase.OnLayoutUpdated()"
-                reason="Invalid method visibility"/>
-        <Member fullName="System.Void Windows.UI.Xaml.Controls.NativePagedView.OnLayoutUpdated()"
-                reason="Invalid method visibility"/>
-        <Member fullName="System.Void Windows.UI.Xaml.Controls.TextBoxView.OnLayoutUpdated()"
-                reason="Invalid method visibility"/>
-        <Member fullName="System.Void Uno.UI.Controls.Legacy.GridView.OnLayoutUpdated()"
-                reason="Invalid method visibility"/>
-        <Member fullName="System.Void Uno.UI.Controls.Legacy.HorizontalGridView.OnLayoutUpdated()"
-                reason="Invalid method visibility"/>
-        <Member fullName="System.Void Uno.UI.Controls.Legacy.HorizontalListView.OnLayoutUpdated()"
-                reason="Invalid method visibility"/>
-        <Member fullName="System.Void Uno.UI.Controls.Legacy.ListView.OnLayoutUpdated()"
-                reason="Invalid method visibility"/>
-        <Member fullName="System.Void Windows.UI.Xaml.Shapes.ArbitraryShapeBase.OnLayoutUpdated()"
-                reason="Invalid method visibility"/>
-        <Member fullName="System.Void Windows.UI.Xaml.Controls.Picker.OnLayoutUpdated()"
-                reason="Invalid method visibility"/>
-        <Member fullName="System.Void Windows.UI.Xaml.Controls.MultilineTextBoxView.OnLayoutUpdated()"
-                reason="Invalid method visibility"/>
-        <Member fullName="System.Void Windows.UI.Xaml.Controls.SinglelineTextBoxView.OnLayoutUpdated()"
-                reason="Invalid method visibility"/>
-        <Member fullName="System.Void Uno.UI.Controls.Legacy.ListViewBase.OnLayoutUpdated()"
-                reason="Invalid method visibility"/>
-        <Member fullName="System.Void Windows.Devices.Sensors.Barometer..ctor()"
-                reason="Parameter-less ctor does not exist in UWP" />
-        <Member fullName="System.Void Windows.Devices.Sensors.BarometerReading..ctor()"
-                reason="Parameter-less ctor does not exist in UWP" />
-        <Member fullName="System.Void Windows.Devices.Sensors.BarometerReadingChangedEventArgs..ctor()"
-				        reason="Parameter-less ctor does not exist in UWP" />
-        <Member fullName="System.Void Windows.Phone.Devices.Notification.VibrationDevice..ctor()"
-                reason="Parameter-less ctor does not exist in UWP" />
-        <Member fullName="System.Void Windows.UI.Xaml.Controls.VirtualizingPanelLayout.UpdateLayoutAttributesForItem(UIKit.UICollectionViewLayoutAttributes layoutAttributes)"
-                reason="Implementation detail, made internal"/>
-        <Member fullName="Android.Views.View Windows.UI.Xaml.Controls.Popup.get_Anchor()"
-				        reason="Invalid method visibility"/>
-		    <Member fullName="System.Void Windows.UI.Xaml.Controls.Popup.set_Anchor(Android.Views.View value)"
-				        reason="Invalid method visibility"/>        
-		    <Member fullName="System.Void Windows.Media.Playback.MediaPlayer.ObserveValue(Foundation.NSString keyPath, Foundation.NSObject ofObject, Foundation.NSDictionary change, System.IntPtr context)"
-				        reason="Invalid method visibility"/>
-        <Member fullName="System.Void Windows.Media.Playback.MediaPlayer.Dispose(System.Boolean disposing)"
-				        reason="Invalid method visibility"/>
-	      <Member fullName="System.Void Windows.UI.Xaml.Controls.Popup.set_Anchor(Android.Views.View value)"
-	              reason="Invalid method visibility"/>        
-        <Member fullName="System.Void Windows.Devices.Sensors.AccelerometerReadingChangedEventArgs..ctor()"
-	              reason="Parameter-less ctor does not exist in UWP"/>
-        <Member fullName="System.Void Windows.Devices.Sensors.Accelerometer..ctor()"
-	              reason="Parameter-less ctor does not exist in UWP"/>
-        <Member fullName="System.Void Windows.Devices.Sensors.AccelerometerShakenEventArgs..ctor()"
-	              reason="Parameter-less ctor does not exist in UWP"/>
-        <Member fullName="System.Void Windows.Devices.Sensors.AccelerometerReading..ctor()"
-	              reason="Parameter-less ctor does not exist in UWP"/>
-        <Member fullName="System.Void Windows.UI.Xaml.Controls.ContentDialogButtonClickDeferral..ctor()"
-                reason="ctor is internal in UWP"/>
-        <Member fullName="System.Void Windows.UI.Xaml.Controls.ContentDialogButtonClickEventArgs..ctor()"
-                reason="ctor is internal in UWP"/>
-        <Member fullName="System.Void Windows.UI.Xaml.Controls.ContentDialogClosedEventArgs..ctor()"
-                reason="ctor is internal in UWP"/>
-        <Member fullName="System.Void Windows.UI.Xaml.Controls.ContentDialogClosingDeferral..ctor()"
-                reason="ctor is internal in UWP"/>
-        <Member fullName="System.Void Windows.UI.Xaml.Controls.ContentDialogClosingEventArgs..ctor()"
-                reason="ctor is internal in UWP"/>
-        <Member fullName="System.Void Windows.UI.Xaml.Controls.ContentDialogButtonClickDeferral..ctor()"
-                reason="ctor is internal in UWP"/>
-        <Member fullName="System.Void Windows.UI.Xaml.Controls.ContentDialogButtonClickEventArgs..ctor()"
-                reason="ctor is internal in UWP"/>
-        <Member fullName="System.Void Windows.UI.Xaml.Controls.ContentDialogClosedEventArgs..ctor()"
-                reason="ctor is internal in UWP"/>
-        <Member fullName="System.Void Windows.UI.Xaml.Controls.ContentDialogClosingDeferral..ctor()"
-                reason="ctor is internal in UWP"/>
-        <Member fullName="System.Void Windows.UI.Xaml.Controls.ContentDialogClosingEventArgs..ctor()"
-                reason="ctor is internal in UWP"/>
-        <Member fullName="System.Void Windows.UI.Xaml.Controls.TextBoxBeforeTextChangingEventArgs..ctor()"
-				reason="Constructor is internal on UWP"/>
-        <Member fullName="System.Void Windows.UI.Xaml.Controls.TextBoxTextChangingEventArgs..ctor()"
-				reason="Constructor is internal on UWP"/>
-        <Member fullName="System.Void Windows.UI.Xaml.Controls.TextChangedEventArgs..ctor()"
-				reason="Constructor is internal on UWP"/>
-        <Member fullName="System.Void Windows.UI.Xaml.Controls.TextBoxView..ctor()"
-				reason="Added required parameter to Android constructor. TextBoxView is internal on UWP, shouldn't normally be created or manipulated by user code."/>
-        <Member fullName="System.String Windows.UI.Xaml.Controls.TextBoxView.get_BindableText()"
-				reason="Removed obsolete property. TextBoxView is internal on UWP, shouldn't normally be created or manipulated by user code."/>
-        <Member fullName="System.Void Windows.UI.Xaml.Controls.TextBoxView.set_BindableText(System.String value)"
-				reason="Removed obsolete property. TextBoxView is internal on UWP, shouldn't normally be created or manipulated by user code."/>
-        <Member fullName="System.Void Windows.UI.Xaml.Controls.TextBoxView.NotifyTextChanged()"
-				reason="Removed obsolete method. TextBoxView is internal on UWP, shouldn't normally be created or manipulated by user code."/>
-        <Member fullName="System.Void Windows.UI.Xaml.Controls.ComboBoxItem.OnLoaded()"
-				reason="Removed no-longer-needed override. Uno-only protected method that shouldn't be called by user code."/>
-        <Member fullName="System.Void Windows.UI.Xaml.Controls.ComboBoxItem.OnUnloaded()"
-				reason="Removed no-longer-needed override. Uno-only protected method that shouldn't be called by user code."/>
-        <Member fullName="Windows.UI.Xaml.Controls.Popup Windows.UI.Xaml.Controls.ComboBoxItem.GetPopupControl()"
-				reason="Removed no-longer-needed method. Implementation detail."/>
-	  </Methods>
-	  
-      <Fields>
-        <Member fullName="Windows.UI.Xaml.TextWrapping Windows.UI.Xaml.TextWrapping::WordEllipsis"
-                reason="Invalid enum value"/>
-      </Fields>
+				<Member fullName="System.Void Windows.UI.Xaml.FrameworkElement.OnLayoutUpdated()"
+						reason="Invalid method visibility"/>
+				<Member fullName="System.Void Windows.UI.Xaml.StateTriggerBase.SetActive(System.Boolean isActive)"
+						reason="Invalid method visibility"/>
+				<Member fullName="System.Void Windows.UI.Xaml.Controls.Image.OnLayoutUpdated()"
+						reason="Invalid method visibility"/>
+				<Member fullName="System.Void Windows.UI.Xaml.Controls.ProgressRing.OnLayoutUpdated()"
+						reason="Invalid method visibility"/>
+				<Member fullName="System.Void Windows.UI.Xaml.Controls.ScrollContentPresenter.OnLayoutUpdated()"
+						reason="Invalid method visibility"/>
+				<Member fullName="System.Void Windows.UI.Xaml.Controls.NativeListViewBase.OnLayoutUpdated()"
+						reason="Invalid method visibility"/>
+				<Member fullName="System.Void Windows.UI.Xaml.Controls.NativePagedView.OnLayoutUpdated()"
+						reason="Invalid method visibility"/>
+				<Member fullName="System.Void Windows.UI.Xaml.Controls.TextBoxView.OnLayoutUpdated()"
+						reason="Invalid method visibility"/>
+				<Member fullName="System.Void Uno.UI.Controls.Legacy.GridView.OnLayoutUpdated()"
+						reason="Invalid method visibility"/>
+				<Member fullName="System.Void Uno.UI.Controls.Legacy.HorizontalGridView.OnLayoutUpdated()"
+						reason="Invalid method visibility"/>
+				<Member fullName="System.Void Uno.UI.Controls.Legacy.HorizontalListView.OnLayoutUpdated()"
+						reason="Invalid method visibility"/>
+				<Member fullName="System.Void Uno.UI.Controls.Legacy.ListView.OnLayoutUpdated()"
+						reason="Invalid method visibility"/>
+				<Member fullName="System.Void Windows.UI.Xaml.Shapes.ArbitraryShapeBase.OnLayoutUpdated()"
+						reason="Invalid method visibility"/>
+				<Member fullName="System.Void Windows.UI.Xaml.Controls.Picker.OnLayoutUpdated()"
+						reason="Invalid method visibility"/>
+				<Member fullName="System.Void Windows.UI.Xaml.Controls.MultilineTextBoxView.OnLayoutUpdated()"
+						reason="Invalid method visibility"/>
+				<Member fullName="System.Void Windows.UI.Xaml.Controls.SinglelineTextBoxView.OnLayoutUpdated()"
+						reason="Invalid method visibility"/>
+				<Member fullName="System.Void Uno.UI.Controls.Legacy.ListViewBase.OnLayoutUpdated()"
+						reason="Invalid method visibility"/>
+			</Methods>
 
-      <Properties>
-        <Member fullName="Windows.UI.Color Windows.UI.Xaml.Controls.ScrollViewer::BackgroundColor()"
-                reason="This was a legacy mock done during initial Wasm POC, never implemented, never used." />
+			<Fields>
+				<Member fullName="Windows.UI.Xaml.TextWrapping Windows.UI.Xaml.TextWrapping::WordEllipsis"
+						reason="Invalid enum value"/>
+			</Fields>
 
-        <Member fullName="System.Collections.Generic.IList`1&lt;Windows.UI.Xaml.Controls.MenuFlyoutItem&gt; Windows.UI.Xaml.Controls.MenuFlyout::Items()"
-                reason="Changed because of invalid property type" />
+			<Properties>
+				<Member fullName="Windows.UI.Color Windows.UI.Xaml.Controls.ScrollViewer::BackgroundColor()"
+						reason="This was a legacy mock done during initial Wasm POC, never implemented, never used."/>
 
-        <Member fullName="Android.Views.View Windows.UI.Xaml.Controls.Popup::Anchor()"
-                reason="Invalid property visibility" />
-        <Member fullName="System.String Windows.UI.Xaml.Controls.TextBoxView::BindableText()"
-				reason="Removed obsolete method. TextBoxView is internal on UWP, shouldn't normally be created or manipulated by user code."/>
-      </Properties>
+				<Member
+					fullName="System.Collections.Generic.IList`1&lt;Windows.UI.Xaml.Controls.MenuFlyoutItem&gt; Windows.UI.Xaml.Controls.MenuFlyout::Items()"
+					reason="Changed because of invalid property type"/>
+			</Properties>
 
-    </IgnoreSet>
-  </IgnoreSets>
+		</IgnoreSet>
+
+		<IgnoreSet baseVersion="1.45.0">
+			<Methods>
+				<Member fullName="System.Void Windows.Phone.Devices.Notification.VibrationDevice..ctor()"
+						reason="Parameter-less ctor does not exist in UWP"/>
+				<Member fullName="System.Void Windows.Devices.Sensors.AccelerometerReadingChangedEventArgs..ctor()"
+						reason="Parameter-less ctor does not exist in UWP"/>
+				<Member fullName="System.Void Windows.Devices.Sensors.Accelerometer..ctor()"
+						reason="Parameter-less ctor does not exist in UWP"/>
+				<Member fullName="System.Void Windows.Devices.Sensors.AccelerometerShakenEventArgs..ctor()"
+						reason="Parameter-less ctor does not exist in UWP"/>
+				<Member fullName="System.Void Windows.Devices.Sensors.AccelerometerReading..ctor()"
+						reason="Parameter-less ctor does not exist in UWP"/>
+				<Member fullName="System.Void Windows.Devices.Sensors.Barometer..ctor()"
+						reason="Parameter-less ctor does not exist in UWP"/>
+				<Member fullName="System.Void Windows.Devices.Sensors.BarometerReading..ctor()"
+						reason="Parameter-less ctor does not exist in UWP"/>
+				<Member fullName="System.Void Windows.Devices.Sensors.BarometerReadingChangedEventArgs..ctor()"
+						reason="Parameter-less ctor does not exist in UWP"/>
+				<Member fullName="System.Void Windows.UI.Xaml.Controls.ComboBoxItem.OnLoaded()"
+						reason="Removed no-longer-needed override. Uno-only protected method that shouldn't be called by user code."/>
+				<Member fullName="System.Void Windows.UI.Xaml.Controls.ComboBoxItem.OnUnloaded()"
+						reason="Removed no-longer-needed override. Uno-only protected method that shouldn't be called by user code."/>
+				<Member fullName="System.Void Windows.UI.Xaml.Controls.ContentDialogButtonClickDeferral..ctor()"
+						reason="ctor is internal in UWP"/>
+				<Member fullName="System.Void Windows.UI.Xaml.Controls.ContentDialogButtonClickEventArgs..ctor()"
+						reason="ctor is internal in UWP"/>
+				<Member fullName="System.Void Windows.UI.Xaml.Controls.ContentDialogClosedEventArgs..ctor()"
+						reason="ctor is internal in UWP"/>
+				<Member fullName="System.Void Windows.UI.Xaml.Controls.ContentDialogClosingDeferral..ctor()"
+						reason="ctor is internal in UWP"/>
+				<Member fullName="System.Void Windows.UI.Xaml.Controls.ContentDialogClosingEventArgs..ctor()"
+						reason="ctor is internal in UWP"/>
+				<Member fullName="System.Void Windows.UI.Xaml.Controls.TextBoxView..ctor()"
+						reason="Added required parameter to Android constructor. TextBoxView is internal on UWP, shouldn't normally be created or manipulated by user code."/>
+				<Member fullName="System.Void Windows.UI.Xaml.Controls.TextBoxBeforeTextChangingEventArgs..ctor()"
+						reason="Constructor is internal on UWP"/>
+				<Member fullName="System.Void Windows.UI.Xaml.Controls.TextBoxTextChangingEventArgs..ctor()"
+						reason="Constructor is internal on UWP"/>
+				<Member fullName="System.Void Windows.UI.Xaml.Controls.TextChangedEventArgs..ctor()"
+						reason="Constructor is internal on UWP"/>
+				<Member fullName="System.String Windows.UI.Xaml.Controls.TextBoxView.get_BindableText()"
+						reason="Removed obsolete property. TextBoxView is internal on UWP, shouldn't normally be created or manipulated by user code."/>
+				<Member fullName="System.Void Windows.UI.Xaml.Controls.TextBoxView.set_BindableText(System.String value)"
+						reason="Removed obsolete property. TextBoxView is internal on UWP, shouldn't normally be created or manipulated by user code."/>
+				<Member fullName="System.Void Windows.UI.Xaml.Controls.TextBoxView.NotifyTextChanged()"
+						reason="Removed obsolete method. TextBoxView is internal on UWP, shouldn't normally be created or manipulated by user code."/>
+				<Member fullName="Android.Views.View Windows.UI.Xaml.Controls.Popup.get_Anchor()"
+						reason="Invalid method visibility"/>
+				<Member fullName="System.Void Windows.UI.Xaml.Controls.Popup.set_Anchor(Android.Views.View value)"
+						reason="Invalid method visibility"/>
+				<Member fullName="Windows.UI.Xaml.Controls.Popup Windows.UI.Xaml.Controls.ComboBoxItem.GetPopupControl()"
+						reason="Removed no-longer-needed method. Implementation detail."/>
+				<Member fullName="System.Void Windows.Media.Playback.MediaPlayer.ObserveValue(Foundation.NSString keyPath, Foundation.NSObject ofObject, Foundation.NSDictionary change, System.IntPtr context)"
+						reason="Invalid method visibility"/>
+				<Member fullName="System.Void Windows.Media.Playback.MediaPlayer.Dispose(System.Boolean disposing)"
+						reason="Invalid method visibility"/>
+				<Member fullName="System.Void Windows.UI.Xaml.Controls.VirtualizingPanelLayout.UpdateLayoutAttributesForItem(UIKit.UICollectionViewLayoutAttributes layoutAttributes)"
+						reason="Implementation detail, made internal"/>
+			</Methods>
+
+			<Properties>
+				<Member fullName="Android.Views.View Windows.UI.Xaml.Controls.Popup::Anchor()"
+						reason="Invalid property visibility"/>
+				<Member fullName="System.String Windows.UI.Xaml.Controls.TextBoxView::BindableText()"
+						reason="Removed obsolete method. TextBoxView is internal on UWP, shouldn't normally be created or manipulated by user code."/>
+			</Properties>
+		</IgnoreSet>
+
+	</IgnoreSets>
 </DiffIgnore>

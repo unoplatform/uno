@@ -153,7 +153,14 @@ namespace Windows.UI.Xaml.Controls
 		public string Text
 		{
 			get { return (string)this.GetValue(TextProperty); }
-			set { this.SetValue(TextProperty, value); }
+			set {
+				if (value == null)
+				{
+					throw new ArgumentNullException();
+				}
+
+				this.SetValue(TextProperty, value);
+			}
 		}
 
 		public static readonly DependencyProperty TextProperty =
@@ -243,7 +250,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			if (!(baseValue is string baseString))
 			{
-				return DependencyProperty.UnsetValue; //TODO: UWP throws ArgumentNullException, in principle we should do the same. 
+				return ""; //Pushing null to the binding resets the text. (Setting null to the Text property directly throws an exception.)
 			}
 
 			var args = new TextBoxBeforeTextChangingEventArgs(baseString);

@@ -19,21 +19,29 @@ namespace Windows.UI.Xaml.Controls.Primitives
 {
 	public partial class ButtonBase : ContentControl
 	{
-		private readonly SerialDisposable _touchSubscription = new SerialDisposable();
-		private readonly SerialDisposable _isEnabledSubscription = new SerialDisposable();
+		partial void PartialInitializeProperties()
+		{
+			// We need to ensure the "Tapped" event is registered
+			// for the "Click" event to work properly
+			Tapped += (snd, evt) => { };
+		}
 
 		protected override void OnLoaded()
 		{
 			base.OnLoaded();
 
-			//Focusable = true;
-			//FocusableInTouchMode = true;
-
-			//RegisterEvents();
-
-			//OnCanExecuteChanged();
+			RegisterEvents();
 
 			KeyDown += OnKeyDown;
+			PreRaiseTapped += OnPreRaiseTapped;
+		}
+
+		protected override void OnUnloaded()
+		{
+			base.OnUnloaded();
+
+			KeyDown -= OnKeyDown;
+			PreRaiseTapped -= OnPreRaiseTapped;
 		}
 
 		private void OnKeyDown(object sender, KeyRoutedEventArgs keyRoutedEventArgs)
@@ -48,11 +56,9 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			}
 		}
 
-		protected override void OnUnloaded()
+		private void OnPreRaiseTapped(object sender, EventArgs e)
 		{
-			base.OnUnloaded();
-			_isEnabledSubscription.Disposable = null;
-			_touchSubscription.Disposable = null;
+			OnClick();
 		}
 
 		/// <summary>

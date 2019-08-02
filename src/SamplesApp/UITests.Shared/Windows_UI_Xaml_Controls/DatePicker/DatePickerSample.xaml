@@ -1,4 +1,4 @@
-﻿<Page x:Class="SamplesApp.Samples.DatePicker.DatePickerSample"
+﻿<UserControl x:Class="UITests.Shared.Windows_UI_Xaml_Controls.DatePicker.DatePickerSample"
       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:local="using:ControlTests"
@@ -24,4 +24,4 @@
 			</DataTemplate>
 		</controls:SampleControl.SampleContent>
 	</controls:SampleControl>
-</Page>
+</UserControl>

@@ -17,7 +17,7 @@ using Windows.UI.Xaml.Navigation;
 
 namespace Uno.UI.Samples.Content.UITests.ContentControlTestsControl
 {
-	[SampleControlInfoAttribute("ContentControlTestsControl", "ContentControl_SelectorInheritance")]
+	[SampleControlInfo("ContentControlTestsControl", "ContentControl_SelectorInheritance")]
 	public sealed partial class ContentControl_SelectorInheritance : UserControl
     {
         public ContentControl_SelectorInheritance()
