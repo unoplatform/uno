@@ -27,6 +27,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ListViewTests
 			Assert.IsNotNull(theListView.GetDependencyPropertyValue("DataContext"));
 		}
 
+		// HorizontalListViewGrouped isn't present on WASM
 		[Test]
 		[AutoRetry]
 		[ActivePlatforms(Platform.iOS, Platform.Android)]
