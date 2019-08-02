@@ -17,7 +17,7 @@ namespace SamplesApp.Windows_UI_Xaml_Controls.Models
 		public RotatedListViewViewModel(CoreDispatcher dispatcher) : base(dispatcher)
 		{
 			SampleItems = CreatePerson();
-			AddItem = CreateCommand(AddPerson);
+			AddItem = GetOrCreateCommand(AddPerson);
 		}
 
 		public ICommand AddItem { get; }
