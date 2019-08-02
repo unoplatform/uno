@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Linq;
 using NUnit.Framework;
 using SamplesApp.UITests.TestFramework;
@@ -25,8 +26,11 @@ namespace SamplesApp.UITests
 
 
 		[SetUp]
+		[AutoRetry]
 		public void BeforeEachTest()
 		{
+			ValidateAutoRetry();
+
 			// Check if the test needs to be ignore or not
 			// If nothing specified, it is considered as a global test
 			var platforms = GetActivePlatforms();
@@ -67,6 +71,37 @@ namespace SamplesApp.UITests
 			_app = AppInitializer.AttachToApp();
 
 			Helpers.App = _app;
+		}
+
+		public void TakeScreenshot(string stepName)
+		{
+			var title = $"{TestContext.CurrentContext.Test.Name}_{stepName}"
+				.Replace(" ", "_")
+				.Replace(".", "_");
+
+			var fileInfo = _app.Screenshot(title);
+
+			var fileNameWithoutExt = Path.GetFileNameWithoutExtension(fileInfo.Name);
+			if (fileNameWithoutExt != title)
+			{
+				var destFileName = Path.Combine(Path.GetDirectoryName(fileInfo.FullName), fileNameWithoutExt + "." + Path.GetExtension(fileInfo.Name));
+				if (File.Exists(destFileName))
+				{
+					File.Delete(destFileName);
+				}
+
+				File.Move(fileInfo.FullName, destFileName);
+			}
+		}
+
+		private static void ValidateAutoRetry()
+		{
+			var testType = Type.GetType(TestContext.CurrentContext.Test.ClassName);
+			var methodInfo = testType?.GetMethod(TestContext.CurrentContext.Test.MethodName);
+			if (methodInfo?.GetCustomAttributes(typeof(AutoRetryAttribute), true).Length == 0 && false)
+			{
+				Assert.Fail($"The AutoRetryAttribute is not defined for this test");
+			}
 		}
 
 		private Platform[] GetActivePlatforms()
@@ -112,7 +147,7 @@ namespace SamplesApp.UITests
 				return bool.TryParse(result, out var testDone) && testDone;
 			});
 
-			_app.Screenshot(metadataName.Replace(".", "_"));
+			TakeScreenshot(metadataName.Replace(".", "_"));
 		}
 	}
 }

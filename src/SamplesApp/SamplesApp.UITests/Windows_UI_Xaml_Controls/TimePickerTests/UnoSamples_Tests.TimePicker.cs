@@ -94,6 +94,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TimePickerTests
 		}
 
 		[Test]
+		[AutoRetry]
 		public void TimePickerFlyout_DoesntApplyDefaultTime()
 		{
 			Run("UITests.Shared.Windows_UI_Xaml_Controls.TimePicker.Sample1");
@@ -109,6 +110,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TimePickerTests
 		}
 
 		[Test]
+		[AutoRetry]
 		[ActivePlatforms(Platform.iOS, Platform.Android)]
 		public void TimePickerFlyout_HasDataContextTest()
 		{
@@ -128,6 +130,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TimePickerTests
 		}
 
 		[Test]
+		[AutoRetry]
 		[ActivePlatforms(Platform.iOS)]
 		public void TimePickerFlyout_HasContentTest()
 		{

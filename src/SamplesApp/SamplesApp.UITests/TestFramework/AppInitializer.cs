@@ -24,7 +24,8 @@ namespace SamplesApp.UITests
 				: null;
 
 		public static IApp AttachToApp()
-			=> StartApp(alreadyRunningApp: true);
+			// If the retry count is set, the test already failed. Retry the test with restarting the app.
+			=> StartApp(alreadyRunningApp: TestContext.CurrentContext.CurrentRepeatCount == 0);
 
 		private static IApp StartApp(bool alreadyRunningApp)
 		{
@@ -96,12 +97,13 @@ namespace SamplesApp.UITests
 
 		private static IApp CreateAndroidApp(bool alreadyRunningApp)
 		{
-#if DEBUG
-			// To set in case of Xamarin.UITest errors
-			//
-			Environment.SetEnvironmentVariable("ANDROID_HOME", @"C:\Program Files (x86)\Android\android-sdk");
-			Environment.SetEnvironmentVariable("JAVA_HOME", @"C:\Program Files\Android\Jdk\microsoft_dist_openjdk_1.8.0.25");
-#endif
+			if (string.IsNullOrEmpty(Environment.GetEnvironmentVariable("ANDROID_HOME")))
+			{
+				// To set in case of Xamarin.UITest errors
+				//
+				Environment.SetEnvironmentVariable("ANDROID_HOME", @"C:\Program Files (x86)\Android\android-sdk");
+				Environment.SetEnvironmentVariable("JAVA_HOME", @"C:\Program Files\Android\Jdk\microsoft_dist_openjdk_1.8.0.25");
+			}
 
 			var androidConfig = Xamarin.UITest.ConfigureApp
 				.Android

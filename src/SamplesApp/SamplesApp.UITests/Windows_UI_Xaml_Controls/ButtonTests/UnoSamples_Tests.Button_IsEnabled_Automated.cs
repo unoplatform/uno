@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using FluentAssertions;
 using NUnit.Framework;
 using SamplesApp.UITests;
 using SamplesApp.UITests.TestFramework;
@@ -27,7 +28,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ButtonTests
 			var totalClicksText = _app.Marked("TotalClicks");
 			var toggleClickingButtonIsEnable = _app.Marked("ToggleClickingButtonIsEnable");
 
-			// Assert inital state 
+			// Assert inital state
 			Assert.AreEqual("0", totalClicksText.GetDependencyPropertyValue("Text")?.ToString());
 
 			clickingButton.Tap();
@@ -54,7 +55,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ButtonTests
 			var checkBoxIsCheckedState = _app.Marked("CheckBoxIsCheckedState");
 			var myCheckBoxDisabler = _app.Marked("MyCheckBoxDisabler");
 
-			// Assert inital state 
+			// Assert inital state
 			Assert.AreEqual("False", checkBoxIsCheckedState.GetDependencyPropertyValue("Text")?.ToString());
 
 			myCheckBox.Tap();
@@ -87,7 +88,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ButtonTests
 			var toggleButtonIsCheckedState = _app.Marked("ToggleButtonIsCheckedState");
 			var myToggleButtonDisabler = _app.Marked("MyToggleButtonDisabler");
 
-			// Assert inital state 
+			// Assert inital state
 			Assert.AreEqual("False", toggleButtonIsCheckedState.GetDependencyPropertyValue("Text")?.ToString());
 
 			myToggleButton.Tap();
@@ -107,7 +108,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ButtonTests
 			// Assert after clicking once while myToggleButton enabled
 			Assert.AreEqual("False", toggleButtonIsCheckedState.GetDependencyPropertyValue("Text")?.ToString());
 		}
-		
+
 		[Test]
 		[AutoRetry]
 		public void ToggleSwitch_IsEnabled_Validation()
@@ -119,7 +120,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ButtonTests
 			var toggleSwitch_1_IsOn = _app.Marked("ToggleSwitch_1_IsOn");
 			var toggleSwitch_2_IsOn = _app.Marked("ToggleSwitch_2_IsOn");
 
-			// Assert inital state 
+			// Assert inital state
 			Assert.AreEqual("ToggleSwitch_1 is OFF", toggleSwitch_1_IsOn.GetDependencyPropertyValue("Text")?.ToString());
 			Assert.AreEqual("ToggleSwitch_2 is OFF", toggleSwitch_2_IsOn.GetDependencyPropertyValue("Text")?.ToString());
 
@@ -146,7 +147,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ButtonTests
 			var totalClicksText = _app.Marked("TotalClicks");
 			var toggleClickingButtonIsEnable = _app.Marked("ToggleClickingButtonIsEnable");
 
-			// Assert inital state 
+			// Assert inital state
 			Assert.AreEqual("0", totalClicksText.GetDependencyPropertyValue("Text")?.ToString());
 
 			clickingButton.Tap();
@@ -160,7 +161,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ButtonTests
 			// Assert after clicking once while clickingButton disabled
 			Assert.AreEqual("1", totalClicksText.GetDependencyPropertyValue("Text")?.ToString());
 		}
-				
+
 		[Test]
 		[AutoRetry]
 		public void CheckBox_IsEnabled_StatePreservation()
@@ -174,7 +175,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ButtonTests
 			var myCheckBoxDisabler = _app.Marked("MyCheckBoxDisabler");
 
 			//disabled state preservation
-			// Assert inital state 
+			// Assert inital state
 			Assert.AreEqual("False", checkBoxIsCheckedState.GetDependencyPropertyValue("Text")?.ToString());
 
 			myCheckBoxDisabler.Tap();
@@ -186,7 +187,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ButtonTests
 
 			myCheckBoxDisabler.Tap();
 
-			// Assert inital state 
+			// Assert inital state
 			Assert.AreEqual("False", checkBoxIsCheckedState.GetDependencyPropertyValue("Text")?.ToString());
 
 			myCheckBox.Tap();
@@ -212,24 +213,46 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ButtonTests
 			var checkBoxIsCheckedState = _app.Marked("CheckBoxIsCheckedState");
 			var myCheckBoxDisabler = _app.Marked("MyCheckBoxDisabler");
 
-			// Assert inital state 
-			Assert.AreEqual("False", checkBoxIsCheckedState.GetDependencyPropertyValue("Text")?.ToString());
+			void Check(bool expected, string msg)
+			{
+				for (var i = 0; i < 5; i++)
+				{
+					_app.Wait(0.25f * i);
+
+					var s = checkBoxIsCheckedState.GetDependencyPropertyValue("Text")?.ToString();
+					if (!bool.TryParse(s, out var v))
+					{
+						if (i < 4)
+						{
+							continue;
+						}
+
+						throw new InvalidOperationException($"\"{s}\" is not a valid bool value for test {msg}.");
+					}
+
+					if (v != expected && i < 4)
+					{
+						continue;
+					}
+
+					v.Should().Be(expected, msg);
+				}
+			}
+
+			// Assert inital state
+			Check(false, "initial value: unchecked");
 
 			myCheckBox.DoubleTap();
-			_app.Wait(2);
 
-			// Assert after double click while myCheckBox is not enabled
-			Assert.AreEqual("False", checkBoxIsCheckedState.GetDependencyPropertyValue("Text")?.ToString());
+			Check(false, "Assert after fist double click while myCheckBox is not checked");
 
 			myCheckBox.Tap();
-			Assert.AreEqual("True", checkBoxIsCheckedState.GetDependencyPropertyValue("Text")?.ToString());
-			_app.Wait(2);
+			Check(true, "Assert after single tap myCheckBox should be checked");
 
 			myCheckBox.DoubleTap();
 
 			// Assert after double click while myCheckBox is enabled
-			Assert.AreEqual("True", checkBoxIsCheckedState.GetDependencyPropertyValue("Text")?.ToString());
-
+			Check(true, "Assert after another double click while myCheckBox should stay checked");
 		}
 	}
 }
