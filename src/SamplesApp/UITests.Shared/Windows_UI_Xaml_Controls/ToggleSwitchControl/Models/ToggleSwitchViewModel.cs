@@ -7,6 +7,7 @@ namespace SamplesApp.Windows_UI_Xaml_Controls.ToggleSwitchControl.Models
 	public class ToggleSwitchViewModel : ViewModelBase
 	{
 		private bool _isOn = true;
+		private bool _isOn2 = true;
 
 		public ToggleSwitchViewModel(CoreDispatcher dispatcher) : base(dispatcher)
 		{
@@ -18,6 +19,16 @@ namespace SamplesApp.Windows_UI_Xaml_Controls.ToggleSwitchControl.Models
 			set
 			{
 				_isOn = value;
+				RaisePropertyChanged();
+			}
+		}
+
+		public bool IsOn2
+		{
+			get => _isOn2;
+			set
+			{
+				_isOn2 = value;
 				RaisePropertyChanged();
 			}
 		}
