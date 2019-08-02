@@ -26,5 +26,20 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ListViewTests
 			// Assert initial state
 			Assert.IsNotNull(theListView.GetDependencyPropertyValue("DataContext"));
 		}
+
+		// HorizontalListViewGrouped isn't present on WASM
+		[Test]
+		[AutoRetry]
+		[ActivePlatforms(Platform.iOS, Platform.Android)]
+		public void ListView_ListViewWithHeader_InitializesTest()
+		{
+			Run("SamplesApp.Windows_UI_Xaml_Controls.ListView.HorizontalListViewGrouped");
+
+			_app.WaitForElement(_app.Marked("TargetListView"));
+			var theListView = _app.Marked("TargetListView");
+
+			// Assert initial state
+			Assert.IsNotNull(theListView.GetDependencyPropertyValue("DataContext"));
+		}
 	}
 }
