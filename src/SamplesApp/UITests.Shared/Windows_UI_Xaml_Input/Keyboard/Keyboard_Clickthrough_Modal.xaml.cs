@@ -41,7 +41,6 @@ namespace UITests.Shared.Windows_UI_Xaml_Input.Keyboard
                 tf.Placeholder = "placeholder";
             });
             UIApplication.SharedApplication.KeyWindow.RootViewController.PresentViewController(alert, true, null);
-            //await UserDialogs.Instance.PromptAsync("This is a message", "This is a title", "OK", "Cancel", "Placeholder");
 #endif
 		}
 	}
