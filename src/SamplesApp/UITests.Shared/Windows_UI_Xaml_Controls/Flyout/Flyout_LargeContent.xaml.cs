@@ -14,16 +14,14 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 
-namespace UITests.Shared.Windows_UI_Xaml_Controls.DatePicker
+namespace UITests.Shared.Windows_UI_Xaml_Controls.Flyout
 {
-	[SampleControlInfo("Date Picker", nameof(DatePickerFlyout_Automated))]
-	public sealed partial class DatePickerFlyout_Automated : UserControl
+	[SampleControlInfoAttribute("Flyout", nameof(Flyout_LargeContent))]
+	public sealed partial class Flyout_LargeContent : UserControl
 	{
-		public DatePickerFlyout_Automated()
+		public Flyout_LargeContent()
 		{
 			this.InitializeComponent();
-
-			this.TestDatePickerFlyout.Date = new DateTimeOffset(new DateTime(2019, 3, 12));
 		}
 	}
 }
