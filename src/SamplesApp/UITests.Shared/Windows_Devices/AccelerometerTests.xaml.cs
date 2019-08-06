@@ -42,7 +42,10 @@ namespace UITests.Shared.Windows_Devices
 		public AccelerometerTestsViewModel(CoreDispatcher dispatcher) : base(dispatcher)
 		{
 			_accelerometer = Accelerometer.GetDefault();
-			_accelerometer.ReportInterval = 250;
+			if (_accelerometer != null)
+			{
+				_accelerometer.ReportInterval = 250;
+			}
 		}
 
 		public Command AttachReadingChangedCommand => new Command((p) =>
@@ -56,6 +59,8 @@ namespace UITests.Shared.Windows_Devices
 			_accelerometer.ReadingChanged -= Accelerometer_ReadingChanged;
 			ReadingChangedAttached = false;
 		});
+
+		public bool AccelerometerAvailable => _accelerometer != null;
 
 		public bool ReadingChangedAttached
 		{
