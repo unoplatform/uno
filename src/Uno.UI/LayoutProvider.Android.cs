@@ -58,12 +58,6 @@ namespace Uno.UI
 			}
 		}
 
-		internal void StartListenInsets()
-		{
-			_adjustNothingLayoutProvider.StartListenInsets();
-			_adjustResizeLayoutProvider.StartListenInsets();
-		}
-
 		internal void Stop()
 		{
 			_adjustNothingLayoutProvider.Stop();

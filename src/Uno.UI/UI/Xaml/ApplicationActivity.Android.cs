@@ -119,9 +119,6 @@ namespace Windows.UI.Xaml
 			LayoutProvider.LayoutChanged += OnLayoutChanged;
 			LayoutProvider.InsetsChanged += OnInsetsChanged;
 
-			// We need to start listening insets as soon as we can since it is raised only once the DecorView is set
-			LayoutProvider.StartListenInsets();
-
 			RaiseConfigurationChanges();
 		}
 
