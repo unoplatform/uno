@@ -21,12 +21,19 @@ namespace Windows.Devices.Sensors
 
 		public static Barometer GetDefault()
 		{
-			if (_instance == null && !_initializationAttempted)
+			if (_initializationAttempted)
 			{
-				_instance = TryCreateInstance();
-				_initializationAttempted = true;
+				return _instance;
 			}
-			return _instance;
+			lock (_syncLock)
+			{
+				if (!_initializationAttempted)
+				{
+					_instance = TryCreateInstance();
+					_initializationAttempted = true;
+				}
+				return _instance;
+			}
 		}
 
 		public event TypedEventHandler<Barometer, BarometerReadingChangedEventArgs> ReadingChanged
