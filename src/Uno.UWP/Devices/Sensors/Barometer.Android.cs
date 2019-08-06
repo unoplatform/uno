@@ -22,7 +22,7 @@ namespace Windows.Devices.Sensors
 
 		private static Barometer TryCreateInstance()
 		{
-			var sensorManager = GetSensorManager();
+			var sensorManager = SensorHelpers.GetSensorManager();
 			var sensor = sensorManager.GetDefaultSensor(Android.Hardware.SensorType.Pressure);
 			if (sensor != null)
 			{
@@ -31,20 +31,17 @@ namespace Windows.Devices.Sensors
 			return null;
 		}
 
-		private static SensorManager GetSensorManager() =>
-			Application.Context.GetSystemService(Context.SensorService) as SensorManager;
-
 		private void StartReading()
 		{
 			_listener = new BarometerListener(this);
-			GetSensorManager().RegisterListener(_listener, _sensor, SensorDelay.Normal);
+			SensorHelpers.GetSensorManager().RegisterListener(_listener, _sensor, SensorDelay.Normal);
 		}
 
 		private void StopReading()
 		{
 			if ( _listener != null)
 			{
-				GetSensorManager().UnregisterListener(_listener, _sensor);
+				SensorHelpers.GetSensorManager().UnregisterListener(_listener, _sensor);
 				_listener.Dispose();
 				_listener = null;
 			}
