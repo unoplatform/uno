@@ -30,6 +30,7 @@ namespace UITests.Shared.Windows_Devices
 			{
 				ResultsTextBlock.Text = "Barometer not available on this device";
 			}
+			MainContent.IsEnabled = _barometer != null;
 		}
 
 		private void StartReadingClick(object sender, RoutedEventArgs e)
