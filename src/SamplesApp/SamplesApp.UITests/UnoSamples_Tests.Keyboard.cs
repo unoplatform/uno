@@ -369,6 +369,7 @@ namespace SamplesApp.UITests
 		}
 
 		[Test]
+		[AutoRetry]
 		public void TextBox_Disable()
 		{
 			Run("UITests.Shared.Windows_UI_Xaml_Controls.TextBoxTests.TextBox_Disabled");
