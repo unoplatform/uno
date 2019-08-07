@@ -2206,6 +2206,47 @@ var Windows;
 })(Windows || (Windows = {}));
 var Windows;
 (function (Windows) {
+    var Devices;
+    (function (Devices) {
+        var Sensors;
+        (function (Sensors) {
+            class MagnetometerSensor {
+                static initialize() {
+                    console.log("start initialize()");
+                    try {
+                        console.log("typeof " + (typeof Magnetometer));
+                        if (typeof Magnetometer === "function") {
+                            this.dispatchReading = Module.mono_bind_static_method("[Uno] Windows.Devices.Sensors.Magnetometer:DispatchReading");
+                            this.magnetometer = new Magnetometer({ referenceFrame: 'device' });
+                            return true;
+                        }
+                    }
+                    catch (error) {
+                        //handles the case when sensor cannot be initialized
+                        console.log('Magnetometer could not be initialized.');
+                    }
+                    return false;
+                }
+                static startReading() {
+                    console.log("start reading");
+                    this.magnetometer.addEventListener('reading', MagnetometerSensor.readingChangedHandler);
+                    this.magnetometer.start();
+                }
+                static stopReading() {
+                    console.log("stop reading");
+                    this.magnetometer.removeEventListener('reading', MagnetometerSensor.readingChangedHandler);
+                    this.magnetometer.stop();
+                }
+                static readingChangedHandler(event) {
+                    MagnetometerSensor.dispatchReading(event.accelerationIncludingGravity.x, event.accelerationIncludingGravity.y, event.accelerationIncludingGravity.z);
+                }
+            }
+            Sensors.MagnetometerSensor = MagnetometerSensor;
+        })(Sensors = Devices.Sensors || (Devices.Sensors = {}));
+    })(Devices = Windows.Devices || (Windows.Devices = {}));
+})(Windows || (Windows = {}));
+var Windows;
+(function (Windows) {
     var Phone;
     (function (Phone) {
         var Devices;
