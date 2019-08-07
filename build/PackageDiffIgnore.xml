@@ -223,6 +223,12 @@
 						reason="Parameter-less ctor does not exist in UWP"/>
 				<Member fullName="System.Void Windows.Devices.Sensors.AccelerometerReading..ctor()"
 						reason="Parameter-less ctor does not exist in UWP"/>
+				<Member fullName="System.Void Windows.Devices.Sensors.MagnetometerReadingChangedEventArgs..ctor()"
+						reason="Parameter-less ctor does not exist in UWP"/>
+				<Member fullName="System.Void Windows.Devices.Sensors.Magnetometer..ctor()"
+						reason="Parameter-less ctor does not exist in UWP"/>
+				<Member fullName="System.Void Windows.Devices.Sensors.MagnetometerReading..ctor()"
+						reason="Parameter-less ctor does not exist in UWP"/>
 				<Member fullName="System.Void Windows.Devices.Sensors.Barometer..ctor()"
 						reason="Parameter-less ctor does not exist in UWP"/>
 				<Member fullName="System.Void Windows.Devices.Sensors.BarometerReading..ctor()"
