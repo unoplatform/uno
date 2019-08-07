@@ -20,10 +20,8 @@ namespace Windows.Devices.Sensors
 
 		private static Magnetometer TryCreateInstance()
 		{
-			Debug.WriteLine("Try create instance");
 			var command = $"{JsType}.initialize()";
 			var initialized = Uno.Foundation.WebAssemblyRuntime.InvokeJS(command);
-			Debug.WriteLine("Initialized result " + initialized);
 			if (bool.Parse(initialized) == true)
 			{
 				return new Magnetometer();
@@ -32,15 +30,13 @@ namespace Windows.Devices.Sensors
 		}
 
 		private void StartReading()
-		{
-			Debug.WriteLine("Start reading");
+		{			
 			var command = $"{JsType}.startReading()";
 			Uno.Foundation.WebAssemblyRuntime.InvokeJS(command);
 		}
 		
 		private void StopReading()
 		{
-			Debug.WriteLine("Stop reading");
 			var command = $"{JsType}.stopReading()";
 			Uno.Foundation.WebAssemblyRuntime.InvokeJS(command);
 		}
@@ -59,7 +55,6 @@ namespace Windows.Devices.Sensors
 		[Preserve]
 		public static int DispatchReading(float x, float y, float z)
 		{
-			Debug.WriteLine("Dispatch reading");
 			if (_instance == null)
 			{
 				throw new InvalidOperationException("Magnetometer:DispatchReading can be called only after Magnetometer is initialized");
