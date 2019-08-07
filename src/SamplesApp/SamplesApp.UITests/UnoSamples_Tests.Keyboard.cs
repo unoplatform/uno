@@ -368,6 +368,22 @@ namespace SamplesApp.UITests
 			Assert.AreEqual(Final2, GetText(textBlock));
 		}
 
+		[Test]
+		[AutoRetry]
+		public void TextBox_Disable()
+		{
+			Run("UITests.Shared.Windows_UI_Xaml_Controls.TextBoxTests.TextBox_Disabled");
+
+			const string Entered = "Catfish";
+			const string Final = "Cat";
+
+			var textBox = TypeInto("DisableOnf", Entered, Final);
+
+			var isEnabled = textBox.GetDependencyPropertyValue<bool>("IsEnabled");
+			Assert.False(isEnabled);
+			Assert.AreEqual(Final, GetText(textBox));
+		}
+
 		private QueryEx TypeInto(string textBoxName, string inputText, string expectedText)
 		{
 			var tb = _app.Marked(textBoxName);
