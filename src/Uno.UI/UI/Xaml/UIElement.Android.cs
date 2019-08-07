@@ -96,19 +96,36 @@ namespace Windows.UI.Xaml
 
 		protected override bool IsPointerCaptured => _pointCaptures.Any();
 
-		private bool HasHandler(RoutedEvent routedEvent)
+		partial void AddPointerHandler(RoutedEvent routedEvent, int handlersCount, object handler, bool handledEventsToo)
 		{
-			return _eventHandlerStore.TryGetValue(routedEvent, out var handlers) && handlers.Any();
+			if (handlersCount == 1)
+			{
+				_gestures.Value.UpdateShouldHandle(routedEvent, true);
+			}
 		}
 
-		partial void AddHandlerPartial(RoutedEvent routedEvent, int handlersCount, object handler, bool handledEventsToo)
+		partial void AddGestureHandler(RoutedEvent routedEvent, int handlersCount, object handler, bool handledEventsToo)
 		{
-			_gestures.Value.UpdateShouldHandle(routedEvent, HasHandler(routedEvent));
+			if (handlersCount == 1)
+			{
+				_gestures.Value.UpdateShouldHandle(routedEvent, true);
+			}
 		}
 
-		partial void RemoveHandlerPartial(RoutedEvent routedEvent, int remainginHandlersCount, object handler)
+		partial void RemovePointerHandler(RoutedEvent routedEvent, int remainingHandlersCount, object handler)
 		{
-			_gestures.Value.UpdateShouldHandle(routedEvent, HasHandler(routedEvent));
+			if (remainingHandlersCount == 0)
+			{
+				_gestures.Value.UpdateShouldHandle(routedEvent, false);
+			}
+		}
+
+		partial void RemoveGestureHandler(RoutedEvent routedEvent, int remainingHandlersCount, object handler)
+		{
+			if (remainingHandlersCount == 0)
+			{
+				_gestures.Value.UpdateShouldHandle(routedEvent, false);
+			}
 		}
 
 		protected virtual void OnVisibilityChanged(Visibility oldValue, Visibility newValue)

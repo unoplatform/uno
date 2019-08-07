@@ -5,9 +5,11 @@
 	xmlns:local="using:UITests.Shared.Windows_UI_Xaml_Input.RoutedEvents">
 
 	<Grid>
-		<ScrollViewer>
+		<Border x:Name="_flashingZone" Margin="100" Width="200" Height="200" VerticalAlignment="Top" HorizontalAlignment="Right" Background="DeepPink" />
+
+		<!--<ScrollViewer>-->
 			<Grid x:Name="_touchTarget" MinHeight="2048">
-				<TextBlock FontSize="8" x:Name="_output" />
+				<TextBlock FontSize="8" x:Name="_output" Width="300" HorizontalAlignment="Left" />
 
 				<Border Margin="200" Width="200" Height="200" ManipulationMode="None" Background="#33CC0000">
 					<TextBlock Text="Frozen region" />
@@ -15,6 +17,6 @@
 
 				<Button Margin="200, 600" Height="100" Width="300" Content="Click me ... but not while scrolling" Click="OnButtonClicked" Tapped="OnButtonTapped" />
 			</Grid>
-		</ScrollViewer>
+		<!--</ScrollViewer>-->
 	</Grid>
 </Page>

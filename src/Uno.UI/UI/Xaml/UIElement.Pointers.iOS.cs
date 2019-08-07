@@ -48,7 +48,10 @@ namespace Windows.UI.Xaml
 				NotifyParentTouchesManagersManipulationStarted();
 
 				var args = new PointerRoutedEventArgs(touches, evt, this);
-				var isHandledOrBubblingInManaged = RaiseNativelyBubbledDown(args);
+				var isHandledOrBubblingInManaged = default(bool);
+
+				isHandledOrBubblingInManaged |= OnNativePointerEnter(args);
+				isHandledOrBubblingInManaged |= OnNativePointerDown(args);
 
 				/*
 				 * **** WARNING ****
@@ -85,7 +88,13 @@ namespace Windows.UI.Xaml
 			{
 				var args = new PointerRoutedEventArgs(touches, evt, this);
 				var isPointerOver = evt.IsTouchInView(this);
-				var isHandledOrBubblingInManaged = RaiseNativelyBubbledMove(args, isPointerOver);
+				var isHandledOrBubblingInManaged = default(bool);
+
+				// As we don't have enter/exit equivalents on iOS, we have to update the IsOver on each move
+				// Note: Entered / Exited are raised *before* the Move (Checked using the args timestamp)
+				// Note 2: We use directly the SetOver as we know that the pointer is still pressed here!
+				isHandledOrBubblingInManaged |= SetOver(args, isPointerOver); 
+				isHandledOrBubblingInManaged |= OnNativePointerMove(args);
 
 				if (!isHandledOrBubblingInManaged)
 				{
@@ -104,8 +113,10 @@ namespace Windows.UI.Xaml
 			try
 			{
 				var args = new PointerRoutedEventArgs(touches, evt, this);
-				var isPointerOver = evt.IsTouchInView(this);
-				var isHandledOrBubblingInManaged = RaiseNativelyBubbledUp(args, isPointerOver);
+				var isHandledOrBubblingInManaged = default(bool);
+
+				isHandledOrBubblingInManaged |= OnNativePointerUp(args);
+				isHandledOrBubblingInManaged |= OnNativePointerExited(args);
 
 				if (!isHandledOrBubblingInManaged)
 				{
@@ -126,7 +137,14 @@ namespace Windows.UI.Xaml
 			try
 			{
 				var args = new PointerRoutedEventArgs(touches, evt, this);
-				var isHandledOrBubblingInManaged = RaiseNativelyBubbledLost(args);
+				var isHandledOrBubblingInManaged = default(bool);
+
+				// Note: We should have raise either PointerCaptureLost or PointerCancelled here depending of the reason which
+				//		 drives the system to bubble a lost. However we don't have this kind of information on iOS, and it's
+				//		 usually due to the ScrollView which kicks in. So we always raise the CaptureLost which is the behavior
+				//		 on UWP when scroll starts (even if no capture are actives at this time).
+
+				isHandledOrBubblingInManaged |= OnNativePointerCancel(args, isSwallowedBySystem: true);
 
 				if (!isHandledOrBubblingInManaged)
 				{

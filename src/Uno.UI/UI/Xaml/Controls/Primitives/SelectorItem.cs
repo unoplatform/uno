@@ -76,7 +76,11 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 		private bool _isPressed;
 
+#if __IOS__ || __WASM__
+		internal new bool IsPressed
+#else
 		internal bool IsPressed
+#endif
 		{
 			get => _isPressed;
 			set

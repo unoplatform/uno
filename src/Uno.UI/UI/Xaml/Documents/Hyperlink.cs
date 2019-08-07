@@ -111,7 +111,12 @@ namespace Windows.UI.Xaml.Documents
 
 		#region Click
 
+
+#if __IOS__ || __WASM__
+		internal new bool IsPressed { get; private set; }
+#else
 		internal bool IsPressed { get; private set; }
+#endif
 
 		internal void OnPointerPressed(PointerRoutedEventArgs e)
 		{

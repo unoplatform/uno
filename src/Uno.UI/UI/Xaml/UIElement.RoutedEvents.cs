@@ -19,8 +19,14 @@ namespace Windows.UI.Xaml
 		This partial file handles the registration and bubbling of routed events of a UIElement
 		
 		The API exposed by this file to its native parts are:
-			partial void AddHandlerPartial(RoutedEvent routedEvent, int handlersCount, object handler, bool handledEventsToo);
-			partial void RemoveHandlerPartial(RoutedEvent routedEvent, int remainingHandlersCount, object handler);
+			partial void AddPointerHandler(RoutedEvent routedEvent, int handlersCount, object handler, bool handledEventsToo);
+			partial void AddGestureHandler(RoutedEvent routedEvent, int handlersCount, object handler, bool handledEventsToo);
+			partial void AddKeyHandler(RoutedEvent routedEvent, int handlersCount, object handler, bool handledEventsToo);
+			partial void AddFocusHandler(RoutedEvent routedEvent, int handlersCount, object handler, bool handledEventsToo);
+			partial void RemovePointerHandler(RoutedEvent routedEvent, int remainingHandlersCount, object handler);
+			partial void RemoveGestureHandler(RoutedEvent routedEvent, int remainingHandlersCount, object handler);
+			partial void RemoveKeyHandler(RoutedEvent routedEvent, int remainingHandlersCount, object handler);
+			partial void RemoveFocusHandler(RoutedEvent routedEvent, int remainingHandlersCount, object handler);
 			internal bool RaiseEvent(RoutedEvent routedEvent, RoutedEventArgs args);
 
 		The native components are responsible to subscribe to the native events, interpret them,
@@ -204,12 +210,6 @@ namespace Windows.UI.Xaml
 			remove => RemoveHandler(GotFocusEvent, value);
 		}
 
-		public event DoubleTappedEventHandler DoubleTapped
-		{
-			add => AddHandler(DoubleTappedEvent, value, false);
-			remove => RemoveHandler(DoubleTappedEvent, value);
-		}
-
 #pragma warning disable 67 // Unused member
 		public event PointerEventHandler PointerCanceled
 		{
@@ -260,6 +260,12 @@ namespace Windows.UI.Xaml
 			remove => RemoveHandler(TappedEvent, value);
 		}
 
+		public event DoubleTappedEventHandler DoubleTapped
+		{
+			add => AddHandler(DoubleTappedEvent, value, false);
+			remove => RemoveHandler(DoubleTappedEvent, value);
+		}
+
 #if __MACOS__
 		public new event KeyEventHandler KeyDown
 #else
@@ -285,7 +291,7 @@ namespace Windows.UI.Xaml
 			var handlers = _eventHandlerStore.FindOrCreate(routedEvent, () => new List<RoutedEventHandlerInfo>());
 			handlers.Add(new RoutedEventHandlerInfo(handler, handledEventsToo));
 
-			AddHandlerPartial(routedEvent, handlers.Count, handler, handledEventsToo);
+			AddHandler(routedEvent, handlers.Count, handler, handledEventsToo);
 
 			if (handledEventsToo)
 			{
@@ -293,7 +299,30 @@ namespace Windows.UI.Xaml
 			}
 		}
 
-		partial void AddHandlerPartial(RoutedEvent routedEvent, int handlersCount, object handler, bool handledEventsToo);
+		private void AddHandler(RoutedEvent routedEvent, int handlersCount, object handler, bool handledEventsToo)
+		{
+			if (routedEvent.Flag.IsPointerEvent())
+			{
+				AddPointerHandler(routedEvent, handlersCount, handler, handledEventsToo);
+			}
+			else if (routedEvent.Flag.IsGestureEvent())
+			{
+				AddGestureHandler(routedEvent, handlersCount, handler, handledEventsToo);
+			}
+			else if (routedEvent.Flag.IsKeyEvent())
+			{
+				AddKeyHandler(routedEvent, handlersCount, handler, handledEventsToo);
+			}
+			else if (routedEvent.Flag.IsFocusEvent())
+			{
+				AddFocusHandler(routedEvent, handlersCount, handler, handledEventsToo);
+			}
+		}
+
+		partial void AddPointerHandler(RoutedEvent routedEvent, int handlersCount, object handler, bool handledEventsToo);
+		partial void AddGestureHandler(RoutedEvent routedEvent, int handlersCount, object handler, bool handledEventsToo);
+		partial void AddKeyHandler(RoutedEvent routedEvent, int handlersCount, object handler, bool handledEventsToo);
+		partial void AddFocusHandler(RoutedEvent routedEvent, int handlersCount, object handler, bool handledEventsToo);
 
 		public void RemoveHandler(RoutedEvent routedEvent, object handler)
 		{
@@ -311,15 +340,38 @@ namespace Windows.UI.Xaml
 					}
 				}
 
-				RemoveHandlerPartial(routedEvent, handlers.Count, handler);
+				RemoveHandler(routedEvent, handlers.Count, handler);
 			}
 			else
 			{
-				RemoveHandlerPartial(routedEvent, remainingHandlersCount: -1, handler);
+				RemoveHandler(routedEvent, remainingHandlersCount: -1, handler);
 			}
 		}
 
-		partial void RemoveHandlerPartial(RoutedEvent routedEvent, int remainingHandlersCount, object handler);
+		private void RemoveHandler(RoutedEvent routedEvent, int remainingHandlersCount, object handler)
+		{
+			if (routedEvent.Flag.IsPointerEvent())
+			{
+				RemovePointerHandler(routedEvent, remainingHandlersCount, handler);
+			}
+			else if (routedEvent.Flag.IsGestureEvent())
+			{
+				RemoveGestureHandler(routedEvent, remainingHandlersCount, handler);
+			}
+			else if (routedEvent.Flag.IsKeyEvent())
+			{
+				RemoveKeyHandler(routedEvent, remainingHandlersCount, handler);
+			}
+			else if (routedEvent.Flag.IsFocusEvent())
+			{
+				RemoveFocusHandler(routedEvent, remainingHandlersCount, handler);
+			}
+		}
+
+		partial void RemovePointerHandler(RoutedEvent routedEvent, int remainingHandlersCount, object handler);
+		partial void RemoveGestureHandler(RoutedEvent routedEvent, int remainingHandlersCount, object handler);
+		partial void RemoveKeyHandler(RoutedEvent routedEvent, int remainingHandlersCount, object handler);
+		partial void RemoveFocusHandler(RoutedEvent routedEvent, int remainingHandlersCount, object handler);
 
 		private void UpdateSubscribedToHandledEventsToo()
 		{

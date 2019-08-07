@@ -55,6 +55,21 @@ namespace UITests.Shared.Windows_UI_Input.GestureRecognizer
 			{
 				Log($"[GESTURE] Double tapped: type={e.PointerDeviceType} | position={e.GetPosition(this)}");
 			};
+
+			_flashingZone.PointerEntered += (snd, e) =>
+			{
+				Log(e, "FLASHING Entered");
+			};
+			_flashingZone.PointerExited += (snd, e) =>
+			{
+				Log(e, "FLASHING Exited");
+			};
+			//var timer = new DispatcherTimer()
+			//{
+			//	Interval = TimeSpan.FromSeconds(15)
+			//};
+			//timer.Tick += (snd, e) => { _flashingZone.Visibility = _flashingZone.Visibility == Visibility.Visible ? Visibility.Collapsed : Visibility.Visible; };
+			//timer.Start();
 		}
 
 		private void OnButtonClicked(object sender, RoutedEventArgs e)

@@ -36,13 +36,13 @@ namespace Windows.UI.Xaml.Controls
 
 		public ScrollContentPresenter()
 		{
-			PointerReleased += ScrollViewer_PointerReleased;
-			PointerPressed += ScrollViewer_PointerPressed;
-			PointerCanceled += ScrollContentPresenter_PointerCanceled;
-			PointerMoved += ScrollContentPresenter_PointerMoved;
-			PointerEntered += ScrollContentPresenter_PointerEntered;
-			PointerExited += ScrollContentPresenter_PointerExited;
-			PointerWheelChanged += ScrollContentPresenter_PointerWheelChanged;
+			//PointerReleased += ScrollViewer_PointerReleased;
+			//PointerPressed += ScrollViewer_PointerPressed;
+			//PointerCanceled += ScrollContentPresenter_PointerCanceled;
+			//PointerMoved += ScrollContentPresenter_PointerMoved;
+			//PointerEntered += ScrollContentPresenter_PointerEntered;
+			//PointerExited += ScrollContentPresenter_PointerExited;
+			//PointerWheelChanged += ScrollContentPresenter_PointerWheelChanged;
 		}
 
 		private void ScrollContentPresenter_PointerWheelChanged(object sender, Input.PointerRoutedEventArgs e)
@@ -84,7 +84,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 
 			// The events coming from the scrollbars are bubbled up
-			// to the the parents, as those are not (yey) XAML elements.
+			// to the parents, as those are not (yet) XAML elements.
 			// This can cause issues for popups with scrollable content and
 			// light dismiss patterns.
 			var position = e.GetCurrentPoint(this).Position;
