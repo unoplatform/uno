@@ -11,7 +11,6 @@ namespace Windows.Devices.Sensors {
 		private static magnetometer: any;
 
 		public static initialize(): boolean {
-			console.log("start initialize()");
 			try {
 				console.log("typeof " + (typeof Magnetometer));
 				if (typeof Magnetometer === "function") {
@@ -20,30 +19,27 @@ namespace Windows.Devices.Sensors {
 					return true;
 				}
 			} catch (error) {
-				//handles the case when sensor cannot be initialized
+				//sensor not available
 				console.log('Magnetometer could not be initialized.');
 			}
 			return false;
 		}
 
 		public static startReading() {
-			console.log("start reading");
-			this.magnetometer.addEventListener('reading', MagnetometerSensor.readingChangedHandler);
+			this.magnetometer.addEventLi1stener('reading', MagnetometerSensor.readingChangedHandler);
 			this.magnetometer.start();
 		}
 
 		public static stopReading() {
-			console.log("stop reading");
 			this.magnetometer.removeEventListener('reading', MagnetometerSensor.readingChangedHandler);
 			this.magnetometer.stop();
 		}
 
 		private static readingChangedHandler(event: any) {
-			console.log("Reading gathered");
 			MagnetometerSensor.dispatchReading(
-				event.accelerationIncludingGravity.x,
-				event.accelerationIncludingGravity.y,
-				event.accelerationIncludingGravity.z);
+				this.magnetometer.x,
+				this.magnetometer.y,
+				this.magnetometer.z);
 		}
 	}
 }
