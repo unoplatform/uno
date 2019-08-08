@@ -419,37 +419,34 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			writer.AppendLineInvariant("NameScope.SetNameScope(this, nameScope);");
 
 			RegisterResources(topLevelControl);
-			var hasContent = BuildProperties(writer, topLevelControl, isInline: false, returnsContent: isDirectUserControlChild);
+			BuildProperties(writer, topLevelControl, isInline: false, returnsContent: isDirectUserControlChild);
 
 			writer.AppendLineInvariant(";");
 
-			if (hasContent)
+			writer.AppendLineInvariant("");
+			writer.AppendLineInvariant(isDirectUserControlChild ? "content" : "this");
+
+			string closure;
+
+			using (var blockWriter = CreateApplyBlock(writer, null, out closure))
 			{
-				writer.AppendLineInvariant("");
-				writer.AppendLineInvariant(isDirectUserControlChild ? "content" : "this");
+				blockWriter.AppendLineInvariant(
+					"// Source {0} (Line {1}:{2})",
+					_fileDefinition.FilePath,
+					topLevelControl.LineNumber,
+					topLevelControl.LinePosition
+				);
 
-				string closure;
-
-				using (var blockWriter = CreateApplyBlock(writer, null, out closure))
-				{
-					blockWriter.AppendLineInvariant(
-						"// Source {0} (Line {1}:{2})",
-						_fileDefinition.FilePath,
-						topLevelControl.LineNumber,
-						topLevelControl.LinePosition
-					);
-
-					BuildLiteralProperties(blockWriter, topLevelControl, closure);
-				}
-
-				if (IsFrameworkElement(topLevelControl.Type))
-				{
-					BuildExtendedProperties(writer, topLevelControl, isDirectUserControlChild, useGenericApply: true);
-				}
-
-				writer.AppendLineInvariant(";");
+				BuildLiteralProperties(blockWriter, topLevelControl, closure);
 			}
 
+			if (IsFrameworkElement(topLevelControl.Type))
+			{
+				BuildExtendedProperties(writer, topLevelControl, isDirectUserControlChild, useGenericApply: true);
+			}
+
+			writer.AppendLineInvariant(";");
+			
 			writer.AppendLineInvariant("OnInitializeCompleted();");
 			writer.AppendLineInvariant("InitializeXamlOwner();");
 		}
