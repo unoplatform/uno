@@ -58,7 +58,7 @@
     <PRIResource Include="$(MSBuildThisFileDirectory)Strings\sr-Cyrl-BA\Resources.resw" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Update="C:\src\Uno\src\SamplesApp\SamplesApp.Shared\Samples\UnitTests\HttpUnitTests.xaml.cs">
+    <Compile Update="$(MSBuildThisFileDirectory)Samples\UnitTests\HttpUnitTests.xaml.cs">
       <DependentUpon>HttpUnitTests.xaml</DependentUpon>
     </Compile>
   </ItemGroup>
