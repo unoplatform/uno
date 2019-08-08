@@ -60,6 +60,7 @@
 * [Android] `.Click` on a `ButtonBase` were not raising events properly
 * TemplateReuse not called when dataContext is set
 * [WASM] #1167 Apply `IsEnabled` correctly to `TextBox` (inner `TextBoxView` is now correctly disabled)
+* [Android/WASM] Fix MaxLength not respected or overwriting text
 
 ## Release 1.45.0
 ### Features
