@@ -4240,7 +4240,7 @@
     <Compile Update="C:\src\Uno2\src\SamplesApp\UITests.Shared\Windows_UI_Xaml_Controls\Button\Button_Events.xaml.cs">
       <DependentUpon>Button_Events.xaml</DependentUpon>
     </Compile>
-    <Compile Update="C:\Users\pdeco\Documents\dev\Uno\src\SamplesApp\UITests.Shared\Windows_UI_Xaml_Input\Keyboard\Keyboard_Clickthrough_Modal.xaml.cs">
+    <Compile Update=""$(MSBuildThisFileDirectory)Windows_UI_Xaml_Input\Keyboard\Keyboard_Clickthrough_Modal.xaml.cs">
       <DependentUpon>Keyboard_Clickthrough_Modal.xaml</DependentUpon>
     </Compile>
   </ItemGroup>
