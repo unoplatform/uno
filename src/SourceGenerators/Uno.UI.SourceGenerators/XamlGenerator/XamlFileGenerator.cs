@@ -3194,7 +3194,19 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 								var isInitializableCollection = IsInitializableCollection(member.Member);
 								var isInlineCollection = IsInlineCollection(member.Member, nonBindingObjects);
 
-								if (isInitializableCollection || isInlineCollection)
+								if (isInlineCollection && closureName != null)
+								{
+									foreach (var child in nonBindingObjects)
+									{
+										writer.AppendLineInvariant($"{fullValueSetter}.Add(");
+										using (writer.Indent())
+										{
+											BuildChild(writer, member, child);
+										}
+										writer.AppendLineInvariant(");");
+									}
+								}
+								else if (isInitializableCollection || isInlineCollection)
 								{
 									using (writer.BlockInvariant($"{fullValueSetter} = "))
 									{
