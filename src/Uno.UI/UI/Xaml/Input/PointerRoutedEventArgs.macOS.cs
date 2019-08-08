@@ -22,7 +22,7 @@ namespace Windows.UI.Xaml.Input
 		}
 
 
-		public PointerPoint GetCurrentPoint(UIElement relativeTo) : this()
+		public PointerPoint GetCurrentPoint(UIElement relativeTo)
 		{
 			var device = PointerDevice.For(PointerDeviceType.Mouse);
 			var point = relativeTo.ConvertPointFromView(_nativeEvent.LocationInWindow, null);

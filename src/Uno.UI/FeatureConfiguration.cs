@@ -232,12 +232,12 @@ namespace Uno.UI
 		}
 #endif
 
-		public static class PointerRoutedPointerEventArgs
+		public static class PointerRoutedEventArgs
 		{
 #if __ANDROID__
 			/// <summary>
-			/// Defines if the PointerPoint.Timestamp retrieved from PointerRoutedPointerEventArgs.GetCurrentPoint(relativeTo)
-			/// or PointerRoutedPointerEventArgs.GetIntermediatePoints(relativeTo) can be relative using the Android's
+			/// Defines if the PointerPoint.Timestamp retrieved from PointerRoutedEventArgs.GetCurrentPoint(relativeTo)
+			/// or PointerRoutedEventArgs.GetIntermediatePoints(relativeTo) can be relative using the Android's
 			/// "SystemClock.uptimeMillis()" or if they must be converted into an absolute scale
 			/// (using the "elapsedRealtime()", cf. https://developer.android.com/reference/android/os/SystemClock).
 			/// Disabling it negatively impacts the performance it requires to compute the "sleep time"

@@ -144,7 +144,7 @@ namespace Windows.UI.Xaml.Input
 
 		private static ulong ToTimeStamp(long uptimeMillis)
 		{
-			if (FeatureConfiguration.PointerRoutedPointerEventArgs.AllowRelativeTimeStamp)
+			if (FeatureConfiguration.PointerRoutedEventArgs.AllowRelativeTimeStamp)
 			{
 				return (ulong)(TimeSpan.TicksPerMillisecond * uptimeMillis);
 			}
