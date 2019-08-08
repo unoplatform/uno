@@ -191,24 +191,21 @@ namespace Windows.UI.Xaml
 			var wasOver = IsPointerOver;
 			IsPointerOver = isOver;
 
-			if (isPointerCancelled)
+			if (isPointerCancelled
+				|| wasOver == isOver) // nothing changed
 			{
 				return false;
 			}
 
-			if (wasOver && !isOver) // Exited
-			{
-				args.Handled = false;
-				return RaiseEvent(PointerExitedEvent, args);
-			}
-			else if (!wasOver && isOver) // Entered
+			if (isOver) // Entered
 			{
 				args.Handled = false;
 				return RaiseEvent(PointerEnteredEvent, args);
 			}
-			else
+			else // Exited
 			{
-				return false;
+				args.Handled = false;
+				return RaiseEvent(PointerExitedEvent, args);
 			}
 		}
 
@@ -217,24 +214,21 @@ namespace Windows.UI.Xaml
 			var wasPressed = IsPointerPressed;
 			IsPointerPressed = isPressed;
 
-			if (isPointerCancelled)
+			if (isPointerCancelled
+				|| wasPressed == isPressed) // nothing changed
 			{
 				return false;
 			}
 
-			if (wasPressed && !isPressed) // Pressed
+			if (isPressed) // Pressed
 			{
 				args.Handled = false;
 				return RaiseEvent(PointerPressedEvent, args);
 			}
-			else if (!wasPressed && isPressed) // Released
+			else // Released
 			{
 				args.Handled = false;
 				return RaiseEvent(PointerReleasedEvent, args);
-			}
-			else
-			{
-				return false;
 			}
 		}
 
