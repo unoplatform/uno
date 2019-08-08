@@ -6,12 +6,23 @@ using System.Threading;
 using Uno;
 using Uno.UI.Xaml.Input;
 using Windows.System;
+using Windows.UI.Core;
 using Windows.UI.Input;
 
 namespace Windows.UI.Xaml.Input
 {
-	public sealed partial class PointerRoutedEventArgs : RoutedEventArgs, ICancellableRoutedEventArgs
+	public sealed partial class PointerRoutedEventArgs : RoutedEventArgs, ICancellableRoutedEventArgs, CoreWindow.IPointerEventArgs
 	{
+		public PointerRoutedEventArgs()
+		{
+			// This is acceptable as all ctors of this class are internal
+			CoreWindow.GetForCurrentThread().SetLastPointerEvent(this);
+		}
+
+		/// <inheritdoc />
+		Point CoreWindow.IPointerEventArgs.GetLocation()
+			=> GetCurrentPoint(null).Position;
+
 		public IList<PointerPoint> GetIntermediatePoints(UIElement relativeTo)
 			=> new List<PointerPoint>(1) {GetCurrentPoint(relativeTo)};
 

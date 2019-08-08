@@ -21,7 +21,7 @@ namespace Windows.UI.Xaml.Input
 		/// Used by the native ButtonBase to simulate the PointerEvents.
 		/// Needs to be reworked to include all expected properties of a PointerEventArgs, and to ensure the right sequence.
 		/// </summary>
-		internal PointerRoutedEventArgs(UIElement receiver)
+		internal PointerRoutedEventArgs(UIElement receiver) : this()
 		{
 			Pointer = new Pointer(0, PointerDeviceType.Touch, true, isInRange: true);
 			KeyModifiers = VirtualKeyModifiers.None;
@@ -29,7 +29,7 @@ namespace Windows.UI.Xaml.Input
 			CanBubbleNatively = true; // Required for gesture recognition, and integration of native components in the visual tree
 		}
 
-		internal PointerRoutedEventArgs(MotionEvent nativeEvent, UIElement receiver)
+		internal PointerRoutedEventArgs(MotionEvent nativeEvent, UIElement receiver) : this()
 		{
 			_nativeEvent = nativeEvent;
 

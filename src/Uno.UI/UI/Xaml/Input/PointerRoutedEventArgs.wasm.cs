@@ -28,6 +28,7 @@ namespace Windows.UI.Xaml.Input
 			PointerUpdateKind updateKind,
 			UIElement receiver,
 			bool canBubbleNatively)
+			: this()
 		{
 			_absolutePosition = absolutePosition;
 			_button = button;

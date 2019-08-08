@@ -13,7 +13,7 @@ namespace Windows.UI.Xaml.Input
 		private readonly NSEvent _nativeEvent;
 		private readonly NSSet _nativeTouches;
 
-		internal PointerRoutedEventArgs(NSSet touches, NSEvent nativeEvent)
+		internal PointerRoutedEventArgs(NSSet touches, NSEvent nativeEvent) : this()
 		{
 			_nativeEvent = nativeEvent;
 			_nativeTouches = touches;
@@ -22,7 +22,7 @@ namespace Windows.UI.Xaml.Input
 		}
 
 
-		public PointerPoint GetCurrentPoint(UIElement relativeTo)
+		public PointerPoint GetCurrentPoint(UIElement relativeTo) : this()
 		{
 			var device = PointerDevice.For(PointerDeviceType.Mouse);
 			var point = relativeTo.ConvertPointFromView(_nativeEvent.LocationInWindow, null);

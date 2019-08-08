@@ -18,7 +18,7 @@ namespace Windows.UI.Xaml.Input
 		/// <summary>
 		/// DO NOT USE - LEGACY SUPPORT - Will be removed soon
 		/// </summary>
-		internal PointerRoutedEventArgs(UIElement receiver)
+		internal PointerRoutedEventArgs(UIElement receiver) : this()
 		{
 			Pointer = new Pointer(0, PointerDeviceType.Touch, true, isInRange: true);
 			KeyModifiers = VirtualKeyModifiers.None;
@@ -26,7 +26,7 @@ namespace Windows.UI.Xaml.Input
 			CanBubbleNatively = true; // Required for native gesture recognition (i.e. ScrollViewer), and integration of native components in the visual tree
 		}
 
-		internal PointerRoutedEventArgs(NSSet touches, UIEvent nativeEvent, UIElement receiver)
+		internal PointerRoutedEventArgs(NSSet touches, UIEvent nativeEvent, UIElement receiver) : this()
 		{
 			_nativeTouch = (UITouch)touches.AnyObject;
 			_nativeEvent = nativeEvent;

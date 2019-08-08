@@ -13,7 +13,7 @@ namespace Windows.UI.Xaml.Input
 	{
 		private readonly Point _point;
 
-		public PointerRoutedEventArgs(Point point)
+		public PointerRoutedEventArgs(Point point) : this()
 		{
 			_point = point;
 		}
