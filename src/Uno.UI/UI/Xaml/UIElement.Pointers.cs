@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using Windows.UI.Input;
@@ -114,11 +115,14 @@ namespace Windows.UI.Xaml
 #if __IOS__ || __WASM__ // This is temporary until all platforms Pointers have been reworked
 
 		private /* readonly but partial */ Lazy<GestureRecognizer> _gestures;
+		private readonly List<Pointer> _pointCaptures = new List<Pointer>();
 
 		// ctor
 		private void InitializePointers()
 		{
 			_gestures = new Lazy<GestureRecognizer>(CreateGestureRecognizer);
+			this.SetValue(PointerCapturesProperty, _pointCaptures); // Note: On UWP this is done only on first capture
+
 			InitializePointersPartial();
 		}
 

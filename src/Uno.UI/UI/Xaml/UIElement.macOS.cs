@@ -45,7 +45,7 @@ namespace Windows.UI.Xaml
 
 		public UIElement()
 		{
-			InitializeCapture();
+			InitializePointers();
 		}
 
 		partial void InitializeCapture();

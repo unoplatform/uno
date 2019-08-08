@@ -35,10 +35,7 @@ namespace Windows.UI.Xaml
 		public UIElement()
 		{
 			InitializePointers();
-			InitializeCapture();
 		}
-
-		partial void InitializeCapture();
 
 		partial void EnsureClip(Rect rect)
 		{

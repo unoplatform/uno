@@ -13,8 +13,6 @@ namespace Windows.UI.Xaml
 
 		public string Name { get; set; }
 
-		partial void InitializeCapture();
-		
 		internal bool IsPointerCaptured { get; set; }
 
 		public int MeasureCallCount { get; protected set; }

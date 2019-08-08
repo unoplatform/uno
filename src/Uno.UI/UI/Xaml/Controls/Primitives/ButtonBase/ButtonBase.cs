@@ -2,6 +2,7 @@
 using Uno.Extensions;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using Uno.Disposables;
 using System.Text;
 using System.Windows.Input;
@@ -166,7 +167,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			RegisterEvents();
 		}
 
-#if __IOS__ // This should be for all platforms once the PointerEvents are raised properly on all platforms
+#if __IOS__ || __WASM__ // This should be for all platforms once the PointerEvents are raised properly on all platforms
 		/// <inheritdoc />
 		protected override void OnPointerEntered(PointerRoutedEventArgs args)
 		{
@@ -210,7 +211,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		/// <inheritdoc />
 		protected override void OnPointerReleased(PointerRoutedEventArgs args)
 		{
-			if (PointerCaptures.Contains(args.Pointer))
+			if (PointerCaptures?.Contains(args.Pointer) ?? false)
 			{
 				// The click is raised as soon as the release occurs over the button,
 				// no matter the distance from the pressed location nor the delay since pressed.
