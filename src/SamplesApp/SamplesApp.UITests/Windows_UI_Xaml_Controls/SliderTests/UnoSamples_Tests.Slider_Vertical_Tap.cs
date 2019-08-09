@@ -24,31 +24,23 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.SliderTests
 			_app.WaitForElement(verticalSlider);
 			_app.TapCoordinates(
 				x: sliderRect.CenterX,
-				y: sliderRect.CenterY);
+				y: sliderRect.CenterY + (sliderRect.Height * 0.3f));
 
 			var tbSliderValue = _app.Marked("mySlider2Value");
-			CheckValue(tbSliderValue, 56, "Center Tap Value");
+			getSliderValue(tbSliderValue).Should().BeLessThan(50, "Below 50% Value");
 
 			_app.TapCoordinates(
 				x: sliderRect.CenterX,
-				y: sliderRect.CenterY + 225);
+				y: sliderRect.CenterY - (sliderRect.Height * 0.3f));
 
-			CheckValue(tbSliderValue, 20, "20% Tap Value");
-
-			_app.TapCoordinates(
-				x: sliderRect.CenterX,
-				y: sliderRect.CenterY - 155);
-
-			CheckValue(tbSliderValue, 80, "80% Tap Value");
+			getSliderValue(tbSliderValue).Should().BeGreaterThan(50, "Above 50% Value");
 		}
 
-		private void CheckValue(QueryEx mark, int expected, string msg)
+		private int getSliderValue(QueryEx mark)
 		{
 			_app.Wait(0.15f); // give time to app to execute the action
-
 			var valueString = mark.GetDependencyPropertyValue("Text") as string;
-			int value = int.TryParse(valueString, out var c) ? c : -1;
-			value.Should().Be(expected, msg);
+			return int.TryParse(valueString, out var c) ? c : -1;
 		}
 	}
 }
