@@ -15,18 +15,56 @@ namespace Windows.UI.StartScreen
 		internal const string ArgumentsExtraKey = "UnoArguments";
 #endif
 
+		private string _description;
+		private string _displayName;
+		private Uri _logo;
+
 		private JumpListItem(string arguments)
 		{
-			Arguments = arguments;
+			Arguments = arguments ?? throw new ArgumentNullException(nameof(arguments));
 		}
 
-		public Uri Logo { get; set; }
+		public Uri Logo
+		{
+			get => _logo;
+			set
+			{
+				if (value != null)
+				{
+					var isRelative = !value.IsAbsoluteUri;
+					var wrongSchema = !value.Scheme.Equals(
+						"ms-appx",
+						StringComparison.InvariantCultureIgnoreCase);
+					if (isRelative || wrongSchema)
+					{
+						throw new ArgumentException(
+							"Only ms-appx scheme is allowed for Logo Uri",
+							nameof(value));
+					}
+				}
+				_logo = value;
+			}
+		}
 
-		public string GroupName { get; set; }
+		public string DisplayName
+		{
+			get => _displayName;
+			set
+			{
+				_displayName = value ??
+					throw new ArgumentNullException(nameof(value));
+			}
+		}
 
-		public string DisplayName { get; set; }
-
-		public string Description { get; set; }
+		public string Description
+		{
+			get => _description;
+			set
+			{
+				_description = value ??
+					throw new ArgumentNullException(nameof(value));
+			}
+		}
 
 		public string Arguments { get; }
 
@@ -36,7 +74,14 @@ namespace Windows.UI.StartScreen
 
 		public static JumpListItem CreateWithArguments(string arguments, string displayName)
 		{
-			return new JumpListItem(arguments) { DisplayName = displayName };
+			if (displayName == null)
+			{
+				throw new ArgumentNullException(nameof(displayName));
+			}
+			return new JumpListItem(arguments)
+			{
+				DisplayName = displayName
+			};
 		}
 	}
 }
