@@ -26,7 +26,7 @@ namespace Windows.UI.Xaml.Input
 			VirtualKey button,
 			VirtualKeyModifiers keys,
 			PointerUpdateKind updateKind,
-			UIElement receiver,
+			UIElement source,
 			bool canBubbleNatively)
 			: this()
 		{
@@ -36,7 +36,7 @@ namespace Windows.UI.Xaml.Input
 
 			Pointer = new Pointer(pointerId, pointerType, isInContact, isInRange: true);
 			KeyModifiers = keys;
-			OriginalSource = receiver; // This is not true, however we currently do not have a way to get it on WASM
+			OriginalSource = source;
 			CanBubbleNatively = canBubbleNatively;
 		}
 

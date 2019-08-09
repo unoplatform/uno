@@ -845,9 +845,23 @@
 		 * @param evt
 		 */
 		private pointerEventExtractor(evt: PointerEvent): string {
-			return evt
-				? `${evt.pointerId};${evt.clientX};${evt.clientY};${(evt.ctrlKey ? "1" : "0")};${(evt.shiftKey ? "1" : "0")};${evt.button};${evt.pointerType}`
-				: "";
+			if (!evt) {
+				return "";
+			}
+
+			let src = evt.target as HTMLElement | SVGElement;
+			let srcHandle = "0";
+			while (src) {
+				let handle = src.getAttribute("XamlHandle");
+				if (handle) {
+					srcHandle = handle;
+					break;
+				}
+
+				src = src.parentElement;
+			}
+
+			return `${evt.pointerId};${evt.clientX};${evt.clientY};${(evt.ctrlKey ? "1" : "0")};${(evt.shiftKey ? "1" : "0")};${evt.button};${evt.pointerType};${srcHandle}`;
 		}
 
 		/**

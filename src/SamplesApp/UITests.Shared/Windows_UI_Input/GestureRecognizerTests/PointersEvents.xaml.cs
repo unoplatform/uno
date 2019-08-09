@@ -86,6 +86,7 @@ namespace UITests.Shared.Windows_UI_Input.GestureRecognizer
 		{
 			var point = e.GetCurrentPoint(this);
 			var message = $"[POINTER] {eventName}: id={e.Pointer.PointerId} "
+				+ $"| src={e.OriginalSource}"
 				+ $"| frame={point.FrameId}"
 				+ $"| type={e.Pointer.PointerDeviceType} "
 				+ $"| position={point.Position} "
