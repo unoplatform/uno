@@ -63,6 +63,8 @@
 * TemplateReuse not called when dataContext is set
 * [WASM] #1167 Apply `IsEnabled` correctly to `TextBox` (inner `TextBoxView` is now correctly disabled)
 * [Android/WASM] Fix MaxLength not respected or overwriting text
+* Settings collection-based properties on root node in XAML were leading to C# compilation errors
+* Properties on root node in XAML were not applied when there was no content (sub-elements)
 
 ## Release 1.45.0
 ### Features
