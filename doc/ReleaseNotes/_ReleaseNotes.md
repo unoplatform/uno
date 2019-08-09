@@ -2,6 +2,9 @@
 
 ## Next version
 ### Features
+* Added support for `Windows.UI.StartScreen.JumpList` APIs on Android and iOS
+   * Includes `Logo`, `DisplayName` and `Arguments`
+   * The activation proceeds through the `OnLaunched` method same as on UWP  
 * Refactored `DrawableHelper` to the `Uno` project
 * Add full implementation of `Windows.UI.Xaml.Input.InputScopeNameValue` on all platforms.
 * Add support for `Windows.Devices.Sensors.Accelerometer` APIs on iOS, Android and WASM
