@@ -2,6 +2,7 @@
 using Android.Graphics;
 using Uno.Extensions;
 using Uno.UI;
+using Uno.Helpers;
 #if __ANDROID__
 using Android.Graphics.Drawables;
 using Android.OS;
@@ -34,10 +35,16 @@ namespace Windows.UI.StartScreen.Extensions
 
 			if (jumpListItem.Logo != null)
 			{
-                persistableBundle.PutString(JumpListItem.ImagePathKey, jumpListItem.Logo.ToString());
-                var imageResourceId = DrawablesHelper.GetResourceId(jumpListItem.Logo.LocalPath);
-                var bitmap = await BitmapFactory.DecodeResourceAsync(ContextHelper.Current.Resources, imageResourceId, new BitmapFactory.Options());
-                builder.SetIcon(Icon.CreateWithBitmap(bitmap));
+				persistableBundle.PutString(JumpListItem.ImagePathKey, jumpListItem.Logo.ToString());
+				var imageResourceId = DrawableHelper.FindResourceId(jumpListItem.Logo.LocalPath);
+				if (imageResourceId != null)
+				{
+					var bitmap = await BitmapFactory.DecodeResourceAsync(
+						ContextHelper.Current.Resources,
+						imageResourceId.Value,
+						new BitmapFactory.Options());
+					builder.SetIcon(Icon.CreateWithBitmap(bitmap));
+				}
 			}
 
 			builder.SetExtras(persistableBundle);
