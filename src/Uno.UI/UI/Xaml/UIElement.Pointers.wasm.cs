@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using System.Runtime.InteropServices;
@@ -38,10 +39,11 @@ namespace Windows.UI.Xaml
 				//		 are routed only in some particular cases (entering at once on multiple controls),
 				//		 it's easier to handle this in managed code.
 				{PointerEnteredEvent, ("pointerenter", PayloadToEnteredPointerArgs, (snd, args) => ((UIElement)snd).OnNativePointerEnter((PointerRoutedEventArgs)args))},
-				{PointerPressedEvent, ("pointerdown", PayloadToPressedPointerArgs, (snd, args) => ((UIElement)snd).OnNativePointerDown((PointerRoutedEventArgs)args))},
-				{PointerMovedEvent, ("pointermove", PayloadToMovedPointerArgs, (snd, args) => ((UIElement)snd).OnNativePointerMove((PointerRoutedEventArgs)args))},
-				{PointerReleasedEvent, ("pointerup", PayloadToReleasedPointerArgs, (snd, args) => ((UIElement)snd).OnNativePointerUp((PointerRoutedEventArgs)args))},
 				{PointerExitedEvent, ("pointerleave", PayloadToExitedPointerArgs, (snd, args) => ((UIElement)snd).OnNativePointerExited((PointerRoutedEventArgs)args))},
+				{PointerPressedEvent, ("pointerdown", PayloadToPressedPointerArgs, (snd, args) => ((UIElement)snd).OnNativePointerDown((PointerRoutedEventArgs)args))},
+				{PointerReleasedEvent, ("pointerup", PayloadToReleasedPointerArgs, (snd, args) => ((UIElement)snd).OnNativePointerUp((PointerRoutedEventArgs)args))},
+
+				{PointerMovedEvent, ("pointermove", PayloadToMovedPointerArgs, (snd, args) => ((UIElement)snd).OnNativePointerMove((PointerRoutedEventArgs)args))},
 				{PointerCanceledEvent, ("pointercancel", PayloadToCancelledPointerArgs, (snd, args) => ((UIElement)snd).OnNativePointerCancel((PointerRoutedEventArgs)args, isSwallowedBySystem: true))}, //https://www.w3.org/TR/pointerevents/#the-pointercancel-event
 			};
 
@@ -52,25 +54,44 @@ namespace Windows.UI.Xaml
 
 			foreach (var pointerEvent in _pointerHandlers.Keys)
 			{
-				AddPointerHandler(pointerEvent, 1, default, default);
+				AddPointerHandlerCore(pointerEvent);
 			}
 		}
 
 		partial void AddPointerHandler(RoutedEvent routedEvent, int handlersCount, object handler, bool handledEventsToo)
 		{
-			if (handlersCount != 1
-				// We do not remove event handlers for now, so do not rely only on the handlersCount and keep track of registered events
-				|| _registeredRoutedEvents.HasFlag(routedEvent.Flag))
+			if (handlersCount != 1 || _registeredRoutedEvents.HasFlag(routedEvent.Flag))
 			{
 				return;
 			}
-			_registeredRoutedEvents |= routedEvent.Flag;
+
+			// In order to ensure valid pressed and over state, we ** must ** subscribe to all the related events
+			// before subscribing to other pointer events.
+			if (!_registeredRoutedEvents.HasFlag(RoutedEventFlag.PointerEntered))
+			{
+				AddPointerHandlerCore(PointerEnteredEvent);
+				AddPointerHandlerCore(PointerExitedEvent);
+				AddPointerHandlerCore(PointerPressedEvent);
+				AddPointerHandlerCore(PointerReleasedEvent);
+			}
+
+			AddPointerHandlerCore(routedEvent);
+		}
+
+		private void AddPointerHandlerCore(RoutedEvent routedEvent)
+		{
+			if (_registeredRoutedEvents.HasFlag(routedEvent.Flag))
+			{
+				return;
+			}
 
 			if (!_pointerHandlers.TryGetValue(routedEvent, out var evt))
 			{
 				Application.Current.RaiseRecoverableUnhandledException(new NotImplementedException($"Pointer event {routedEvent.Name} is not supported on this platform"));
 				return;
 			}
+
+			_registeredRoutedEvents |= routedEvent.Flag;
 
 			RegisterEventHandler(
 				evt.domEventName,
