@@ -36,7 +36,7 @@ namespace Uno.Helpers
 			var key = System.IO.Path.GetFileNameWithoutExtension(imageName);
 			if (_drawablesLookup == null)
 			{
-				throw new Exception("You must initialize drawable resources by invoking this in your main Module (replace \"GenericApp\"):\nWindows.UI.Xaml.Media.ImageSource.Drawables = typeof(GenericApp.Resource.Drawable);");
+				throw new Exception("Drawable resources were not initialized.");
 			}
 			var id = _drawablesLookup.UnoGetValueOrDefault(key, 0);
 			if (id == 0)
