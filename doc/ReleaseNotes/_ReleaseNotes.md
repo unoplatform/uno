@@ -2,6 +2,7 @@
 
 ## Next version
 ### Features
+* Refactored `DrawableHelper` to the `Uno` project
 * Add full implementation of `Windows.UI.Xaml.Input.InputScopeNameValue` on all platforms.
 * Add support for `Windows.Devices.Sensors.Accelerometer` APIs on iOS, Android and WASM
    * `ReadingChanged`
@@ -58,8 +59,12 @@
 * Changing the `DataContext` of an element to a new value were pushing the properties default
   value on data bound properties before setting the new value.
 * [Android] `.Click` on a `ButtonBase` were not raising events properly
+* #1350 Vertical Slider was inverting value when tapped
 * TemplateReuse not called when dataContext is set
 * [WASM] #1167 Apply `IsEnabled` correctly to `TextBox` (inner `TextBoxView` is now correctly disabled)
+* [Android/WASM] Fix MaxLength not respected or overwriting text
+* Settings collection-based properties on root node in XAML were leading to C# compilation errors
+* Properties on root node in XAML were not applied when there was no content (sub-elements)
 * Flyout that are than anchor but fit in page were defaulting to full placement.
 
 ## Release 1.45.0

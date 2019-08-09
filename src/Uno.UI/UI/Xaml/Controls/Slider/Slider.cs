@@ -352,7 +352,7 @@ namespace Windows.UI.Xaml.Controls
 
 			var newOffset = Orientation == Orientation.Horizontal ?
 				point.X / container.ActualWidth :
-				point.Y / container.ActualHeight;
+				1 - (point.Y / container.ActualHeight);
 
 			ApplySlideToValue(newOffset);
 
