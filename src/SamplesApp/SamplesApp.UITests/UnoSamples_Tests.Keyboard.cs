@@ -293,6 +293,24 @@ namespace SamplesApp.UITests
 
 		[Test]
 		[AutoRetry]
+		public void TextBox_MaxLength()
+		{
+			Run("UITests.Shared.Windows_UI_Xaml_Controls.TextBoxTests.TextBox_MaxLength");
+
+			const string Entered = "123456789";
+			const string Final = "12345";
+
+			var textBox = TypeInto("MaxLengthTextBox", Entered, Final);
+
+			Assert.AreEqual(Final, GetText(textBox));
+
+			_app.ClearText();
+
+			Assert.AreEqual("", GetText(textBox));
+		}
+
+		[Test]
+		[AutoRetry]
 		public void TextBox_TextChanging_Capitalize()
 		{
 			Run("UITests.Shared.Windows_UI_Xaml_Controls.TextBoxTests.TextBox_TextChanging");
@@ -366,6 +384,22 @@ namespace SamplesApp.UITests
 
 			Assert.AreEqual(Final2, GetText(textBox));
 			Assert.AreEqual(Final2, GetText(textBlock));
+		}
+
+		[Test]
+		[AutoRetry]
+		public void TextBox_Disable()
+		{
+			Run("UITests.Shared.Windows_UI_Xaml_Controls.TextBoxTests.TextBox_Disabled");
+
+			const string Entered = "Catfish";
+			const string Final = "Cat";
+
+			var textBox = TypeInto("DisableOnf", Entered, Final);
+
+			var isEnabled = textBox.GetDependencyPropertyValue<bool>("IsEnabled");
+			Assert.False(isEnabled);
+			Assert.AreEqual(Final, GetText(textBox));
 		}
 
 		private QueryEx TypeInto(string textBoxName, string inputText, string expectedText)

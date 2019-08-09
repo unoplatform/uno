@@ -576,7 +576,16 @@ var Uno;
                 const element = this.getView(elementId);
                 for (const name in properties) {
                     if (properties.hasOwnProperty(name)) {
-                        element[name] = properties[name];
+                        var setVal = properties[name];
+                        if (setVal === "true") {
+                            element[name] = true;
+                        }
+                        else if (setVal === "false") {
+                            element[name] = false;
+                        }
+                        else {
+                            element[name] = setVal;
+                        }
                     }
                 }
                 return "ok";
@@ -588,7 +597,16 @@ var Uno;
                 const params = WindowManagerSetPropertyParams.unmarshal(pParams);
                 const element = this.getView(params.HtmlId);
                 for (let i = 0; i < params.Pairs_Length; i += 2) {
-                    element[params.Pairs[i]] = params.Pairs[i + 1];
+                    var setVal = params.Pairs[i + 1];
+                    if (setVal === "true") {
+                        element[params.Pairs[i]] = true;
+                    }
+                    else if (setVal === "false") {
+                        element[params.Pairs[i]] = false;
+                    }
+                    else {
+                        element[params.Pairs[i]] = setVal;
+                    }
                 }
                 return true;
             }
