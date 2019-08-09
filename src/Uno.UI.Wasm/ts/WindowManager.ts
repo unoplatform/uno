@@ -372,7 +372,16 @@
 
 			for (const name in properties) {
 				if (properties.hasOwnProperty(name)) {
-					(element as any)[name] = properties[name];
+					var setVal = properties[name];
+					if (setVal === "true") {
+						(element as any)[name] = true;
+					}
+					else if (setVal === "false") {
+						(element as any)[name] = false;
+					}
+					else {
+						(element as any)[name] = setVal;
+					}
 				}
 			}
 
@@ -388,7 +397,16 @@
 			const element = this.getView(params.HtmlId);
 
 			for (let i = 0; i < params.Pairs_Length; i += 2) {
-				(element as any)[params.Pairs[i]] = params.Pairs[i + 1];
+				var setVal = params.Pairs[i + 1];
+				if (setVal === "true") {
+					(element as any)[params.Pairs[i]] = true;
+				}
+				else if (setVal === "false") {
+					(element as any)[params.Pairs[i]] = false;
+				}
+				else {
+					(element as any)[params.Pairs[i]] = setVal;
+				}
 			}
 
 			return true;
