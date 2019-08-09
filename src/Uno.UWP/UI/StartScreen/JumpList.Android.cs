@@ -1,15 +1,13 @@
-﻿
-using System.Collections.Generic;
-#if __ANDROID__
+﻿#if __ANDROID__
 using System;
 using System.Linq;
-using System.Threading.Tasks;
 using Android.App;
 using Android.Content;
 using Android.Content.PM;
 using Android.OS;
 using Windows.Foundation;
-using Windows.UI.StartScreen.Extensions;
+using System.Collections.Generic;
+using Uno.UI.StartScreen.Extensions;
 using Uno.Extensions;
 
 namespace Windows.UI.StartScreen

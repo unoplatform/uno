@@ -2,8 +2,9 @@
 using Foundation;
 using System;
 using UIKit;
+using Windows.UI.StartScreen;
 
-namespace Windows.UI.StartScreen.Extensions
+namespace Uno.UI.StartScreen.Extensions
 {
 	internal static class UIApplicationShortcutItemExtensions
 	{

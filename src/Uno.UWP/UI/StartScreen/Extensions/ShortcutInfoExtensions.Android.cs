@@ -1,12 +1,9 @@
 ﻿#if __ANDROID__
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Android.Content.PM;
+using Windows.UI.StartScreen;
 
-namespace Windows.UI.StartScreen.Extensions
+namespace Uno.UI.StartScreen.Extensions
 {
 	internal static class ShortcutInfoExtensions
 	{

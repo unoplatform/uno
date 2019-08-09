@@ -1,13 +1,10 @@
-﻿
-using Windows.UI.StartScreen.Extensions;
-#if __IOS__
+﻿#if __IOS__
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Windows.Foundation;
 using UIKit;
+using Uno.UI.StartScreen.Extensions;
 
 namespace Windows.UI.StartScreen
 {

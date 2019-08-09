@@ -1,21 +1,15 @@
-﻿
+﻿#if __ANDROID__
 using Android.Graphics;
-using Uno.Extensions;
-using Uno.UI;
 using Uno.Helpers;
-#if __ANDROID__
+using Windows.UI.StartScreen;
 using Android.Graphics.Drawables;
 using Android.OS;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Android.App;
 using Android.Content.PM;
-using Uno;
 
-namespace Windows.UI.StartScreen.Extensions
+namespace Uno.UI.StartScreen.Extensions
 {
 	internal static class JumpListItemExtensions
 	{

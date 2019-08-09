@@ -1,9 +1,5 @@
 ﻿#if __ANDROID__ || __IOS__
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Windows.UI.StartScreen
 {
@@ -15,8 +11,8 @@ namespace Windows.UI.StartScreen
 		internal const string ArgumentsExtraKey = "UnoArguments";
 #endif
 
-		private string _description;
-		private string _displayName;
+		private string _description = "";
+		private string _displayName = "";
 		private Uri _logo;
 
 		private JumpListItem(string arguments)

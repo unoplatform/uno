@@ -3,14 +3,17 @@ using System.Linq;
 using UIKit;
 using System.Collections.Generic;
 using Foundation;
+using Windows.UI.StartScreen;
 
-namespace Windows.UI.StartScreen.Extensions
+namespace Uno.UI.StartScreen.Extensions
 {
 	internal static class JumpListItemExtensions
 	{
 		internal static UIApplicationShortcutItem ToShortcutItem(this JumpListItem jumpListItem)
 		{
-			var dictionary = new Dictionary<string, string>() { { JumpListItem.UnoShortcutKey, "true" } };
+			var dictionary = new Dictionary<string, string>() {
+				{ JumpListItem.UnoShortcutKey, "true" }
+			};
 			if (jumpListItem.Logo != null)
 			{
 				dictionary[JumpListItem.ImagePathKey] = jumpListItem.Logo.ToString();
