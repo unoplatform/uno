@@ -2,7 +2,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.StartScreen
 {
-	#if false || false || NET461 || __WASM__ || __MACOS__
+	#if false || false || false || false || false
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class JumpList 
@@ -48,12 +48,6 @@ namespace Windows.UI.StartScreen
 			throw new global::System.NotImplementedException("The member IAsyncOperation<JumpList> JumpList.LoadCurrentAsync() is not implemented in Uno.");
 		}
 		#endif
-		#if false || false || false || false || false
-		[global::Uno.NotImplemented]
-		public static bool IsSupported()
-		{
-			throw new global::System.NotImplementedException("The member bool JumpList.IsSupported() is not implemented in Uno.");
-		}
-		#endif
+		// Skipping already declared method Windows.UI.StartScreen.JumpList.IsSupported()
 	}
 }
