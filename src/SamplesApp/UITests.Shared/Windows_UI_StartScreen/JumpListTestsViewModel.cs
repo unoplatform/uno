@@ -13,12 +13,9 @@ namespace UITests.Shared.Windows_UI_StartScreen
 {
 	public class JumpListTestsViewModel : ViewModelBase
 	{
-		private ICommand _loadCurrentCommand;
 		private JumpList _jumpList;
 		private JumpListItem _selectedItem;
 		private ObservableCollection<JumpListItem> _items = new ObservableCollection<JumpListItem>();
-		private ICommand _removeItemCommand;
-		private ICommand _addItemCommand;
 		private NewJumpListItem _newItem = new NewJumpListItem();
 
 		public JumpListTestsViewModel(CoreDispatcher dispatcher) : base(dispatcher)
