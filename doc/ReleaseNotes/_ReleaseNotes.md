@@ -59,6 +59,7 @@
 * Changing the `DataContext` of an element to a new value were pushing the properties default
   value on data bound properties before setting the new value.
 * [Android] `.Click` on a `ButtonBase` were not raising events properly
+* #1350 Vertical Slider was inverting value when tapped
 * TemplateReuse not called when dataContext is set
 * [WASM] #1167 Apply `IsEnabled` correctly to `TextBox` (inner `TextBoxView` is now correctly disabled)
 * [Android/WASM] Fix MaxLength not respected or overwriting text
