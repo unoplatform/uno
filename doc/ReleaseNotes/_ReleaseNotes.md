@@ -2,6 +2,7 @@
 
 ## Next version
 ### Features
+* Refactored `DrawableHelper` to the `Uno` project
 * Add full implementation of `Windows.UI.Xaml.Input.InputScopeNameValue` on all platforms.
 * Add support for `Windows.Devices.Sensors.Accelerometer` APIs on iOS, Android and WASM
    * `ReadingChanged`

@@ -381,7 +381,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			writer.AppendLineInvariant($"global::Uno.UI.DataBinding.BindableMetadata.Provider = new global::{_defaultNamespace}.BindableMetadataProvider();");
 
 			writer.AppendLineInvariant($"#if __ANDROID__");
-			writer.AppendLineInvariant($"global::Windows.UI.Xaml.Media.ImageSource.Drawables = typeof(global::{_defaultNamespace}.Resource.Drawable);");
+			writer.AppendLineInvariant($"global::Uno.Helpers.DrawableHelper.Drawables = typeof(global::{_defaultNamespace}.Resource.Drawable);");
 			writer.AppendLineInvariant($"#endif");
 
 			RegisterResources(topLevelControl);
