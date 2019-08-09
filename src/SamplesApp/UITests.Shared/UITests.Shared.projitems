@@ -129,6 +129,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\Properties\DataContextProperty.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\StyleTests\Style_Inline.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -2442,6 +2446,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\Localization\Localization_Implicit.xaml.cs">
       <DependentUpon>Localization_Implicit.xaml</DependentUpon>
     </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\Properties\DataContextProperty.xaml.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\StyleTests\Style_Inline.xaml.cs">
       <DependentUpon>Style_Inline.xaml</DependentUpon>
     </Compile>
@@ -4259,6 +4264,9 @@
     </Compile>
     <Compile Update="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\Button\Simple_Button_With_CanExecute_Changing.xaml.cs">
       <DependentUpon>Simple_Button_With_CanExecute_Changing.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="C:\src\Uno2\src\SamplesApp\UITests.Shared\Windows_UI_Xaml\Properties\DataContextProperty.xaml.cs">
+      <DependentUpon>DataContextProperty.xaml</DependentUpon>
     </Compile>
     <Compile Update="C:\src\Uno2\src\SamplesApp\UITests.Shared\Windows_UI_Xaml_Controls\Button\Button_Events.xaml.cs">
       <DependentUpon>Button_Events.xaml</DependentUpon>
