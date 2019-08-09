@@ -42,72 +42,72 @@ namespace SamplesApp.UITests
 				// Setting focus on normalTextBox
 				_app.Tap(normalTextBox);
 				_app.Wait(1);
-				_app.Screenshot("Inside ScrollViewer - 0 - Focus on normalTextBox ");
+				TakeScreenshot("0 - Focus on normalTextBox ");
 
 				// Removing focus on normalTextBox
 				_app.TapCoordinates(0f, 0f);
 				_app.Wait(1);
-				_app.Screenshot("Inside ScrollViewer - 0 - Remove Focus on normalTextBox");
+				TakeScreenshot("0 - Remove Focus on normalTextBox");
 			}
 
 			{
 				// Setting focus on normalTextBox
 				_app.Tap(filledTextBox);
 				_app.Wait(1);
-				_app.Screenshot("Inside ScrollViewer - 1 - Focus on filledTextBox");
+				TakeScreenshot("1 - Focus on filledTextBox");
 
 				// Removing focus on normalTextBox
 				_app.TapCoordinates(0f, 0f);
 				_app.Wait(1);
-				_app.Screenshot("Inside ScrollViewer - 1 - Remove Focus on filledTextBox");
+				TakeScreenshot("1 - Remove Focus on filledTextBox");
 			}
 
 			{
 				// Setting focus on placeholderTextTextBox
 				_app.Tap(placeholderTextTextBox);
 				_app.Wait(1);
-				_app.Screenshot("Inside ScrollViewer - 2 - Focus on placeholderTextTextBox");
+				TakeScreenshot("2 - Focus on placeholderTextTextBox");
 
 				// Removing focus on placeholderTextTextBox
 				_app.TapCoordinates(0f, 0f);
 				_app.Wait(1);
-				_app.Screenshot("Inside ScrollViewer - 2 - Remove Focus on placeholderTextTextBox");
+				TakeScreenshot("2 - Remove Focus on placeholderTextTextBox");
 			}
 
 			{
 				// Setting focus on disabledTextBox
 				_app.Tap(disabledTextBox);
 				_app.Wait(1);
-				_app.Screenshot("Inside ScrollViewer - 3 - Focus on disabledTextBox");
+				TakeScreenshot("3 - Focus on disabledTextBox");
 
 				// Removing focus on disabledTextBox
 				_app.TapCoordinates(0f, 0f);
 				_app.Wait(1);
-				_app.Screenshot("Inside ScrollViewer - 3 - Remove Focus on disabledTextBox");
+				TakeScreenshot("3 - Remove Focus on disabledTextBox");
 			}
 
 			{
 				// Setting focus on multilineTextBox
 				_app.Tap(multilineTextBox);
 				_app.Wait(1);
-				_app.Screenshot("Inside ScrollViewer - 4 - Focus on multilineTextBox");
+				TakeScreenshot("4 - Focus on multilineTextBox");
 
 				// Removing focus on multilineTextBox
 				_app.TapCoordinates(0f, 0f);
 				_app.Wait(1);
-				_app.Screenshot("Inside ScrollViewer - 4 - Remove Focus on multilineTextBox");
+				TakeScreenshot("4 - Remove Focus on multilineTextBox");
 			}
 
 			{
 				// Setting focus on numberTextBox
 				_app.Tap(numberTextBox);
 				_app.Wait(1);
-				_app.Screenshot("Inside ScrollViewer - 5 - Focus on numberTextBox");
+				TakeScreenshot("5 - Focus on numberTextBox");
 
 				// Removing focus on numberTextBox
 				_app.TapCoordinates(0f, 0f);
 				_app.Wait(1);
-				_app.Screenshot("Inside ScrollViewer - 5 - Remove Focus on numberTextBox");
+				TakeScreenshot("5 - Remove Focus on numberTextBox");
 			}
 		}
 
@@ -138,72 +138,72 @@ namespace SamplesApp.UITests
 				// Setting focus on normalTextBox
 				_app.Tap(normalTextBox);
 				_app.Wait(1);
-				_app.Screenshot("No ScrollViewer - 0 - Focus on normalTextBox");
+				TakeScreenshot("0 - Focus on normalTextBox");
 
 				// Removing focus on normalTextBox
 				_app.TapCoordinates(0f, 0f);
 				_app.Wait(1);
-				_app.Screenshot("No ScrollViewer - 0 - Remove Focus on normalTextBox");
+				TakeScreenshot("0 - Remove Focus on normalTextBox");
 			}
 
 			{
 				// Setting focus on normalTextBox
 				_app.Tap(filledTextBox);
 				_app.Wait(1);
-				_app.Screenshot("No ScrollViewer - 1 - Focus on filledTextBox");
+				TakeScreenshot("1 - Focus on filledTextBox");
 
 				// Removing focus on normalTextBox
 				_app.TapCoordinates(0f, 0f);
 				_app.Wait(1);
-				_app.Screenshot("No ScrollViewer - 1 - Remove Focus on filledTextBox");
+				TakeScreenshot("1 - Remove Focus on filledTextBox");
 			}
 
 			{
 				// Setting focus on placeholderTextTextBox
 				_app.Tap(placeholderTextTextBox);
 				_app.Wait(1);
-				_app.Screenshot("No ScrollViewer - 2 - Focus on placeholderTextTextBox");
+				TakeScreenshot("2 - Focus on placeholderTextTextBox");
 
 				// Removing focus on placeholderTextTextBox
 				_app.TapCoordinates(0f, 0f);
 				_app.Wait(1);
-				_app.Screenshot("No ScrollViewer - 2 - Remove Focus on placeholderTextTextBox");
+				TakeScreenshot("2 - Remove Focus on placeholderTextTextBox");
 			}
 
 			{
 				// Setting focus on disabledTextBox
 				_app.Tap(disabledTextBox);
 				_app.Wait(1);
-				_app.Screenshot("No ScrollViewer - 3 - Focus on disabledTextBox");
+				TakeScreenshot("3 - Focus on disabledTextBox");
 
 				// Removing focus on disabledTextBox
 				_app.TapCoordinates(0f, 0f);
 				_app.Wait(1);
-				_app.Screenshot("No ScrollViewer - 3 - Remove Focus on disabledTextBox");
+				TakeScreenshot("3 - Remove Focus on disabledTextBox");
 			}
 
 			{
 				// Setting focus on multilineTextBox
 				_app.Tap(multilineTextBox);
 				_app.Wait(1);
-				_app.Screenshot("No ScrollViewer - 4 - Focus on multilineTextBox");
+				TakeScreenshot("4 - Focus on multilineTextBox");
 
 				// Removing focus on multilineTextBox
 				_app.TapCoordinates(0f, 0f);
 				_app.Wait(1);
-				_app.Screenshot("No ScrollViewer - 4 - Remove Focus on multilineTextBox");
+				TakeScreenshot("4 - Remove Focus on multilineTextBox");
 			}
 
 			{
 				// Setting focus on numberTextBox
 				_app.Tap(numberTextBox);
 				_app.Wait(1);
-				_app.Screenshot("No ScrollViewer - 5 - Focus on numberTextBox");
+				TakeScreenshot("5 - Focus on numberTextBox");
 
 				// Removing focus on numberTextBox
 				_app.TapCoordinates(0f, 0f);
 				_app.Wait(1);
-				_app.Screenshot("No ScrollViewer - 5 - Remove Focus on numberTextBox");
+				TakeScreenshot("5 - Remove Focus on numberTextBox");
 			}
 		}
 
@@ -292,6 +292,25 @@ namespace SamplesApp.UITests
 		}
 
 		[Test]
+		[AutoRetry]
+		public void TextBox_MaxLength()
+		{
+			Run("UITests.Shared.Windows_UI_Xaml_Controls.TextBoxTests.TextBox_MaxLength");
+
+			const string Entered = "123456789";
+			const string Final = "12345";
+
+			var textBox = TypeInto("MaxLengthTextBox", Entered, Final);
+
+			Assert.AreEqual(Final, GetText(textBox));
+
+			_app.ClearText();
+
+			Assert.AreEqual("", GetText(textBox));
+		}
+
+		[Test]
+		[AutoRetry]
 		public void TextBox_TextChanging_Capitalize()
 		{
 			Run("UITests.Shared.Windows_UI_Xaml_Controls.TextBoxTests.TextBox_TextChanging");
@@ -308,6 +327,7 @@ namespace SamplesApp.UITests
 		}
 
 		[Test]
+		[AutoRetry]
 		public void TextBox_TextChanging_Limit()
 		{
 			Run("UITests.Shared.Windows_UI_Xaml_Controls.TextBoxTests.TextBox_TextChanging");
@@ -337,6 +357,7 @@ namespace SamplesApp.UITests
 		}
 
 		[Test]
+		[AutoRetry]
 		public void TextBox_BeforeTextChanging()
 		{
 			Run("UITests.Shared.Windows_UI_Xaml_Controls.TextBoxTests.TextBox_BeforeTextChanging");
@@ -365,6 +386,22 @@ namespace SamplesApp.UITests
 			Assert.AreEqual(Final2, GetText(textBlock));
 		}
 
+		[Test]
+		[AutoRetry]
+		public void TextBox_Disable()
+		{
+			Run("UITests.Shared.Windows_UI_Xaml_Controls.TextBoxTests.TextBox_Disabled");
+
+			const string Entered = "Catfish";
+			const string Final = "Cat";
+
+			var textBox = TypeInto("DisableOnf", Entered, Final);
+
+			var isEnabled = textBox.GetDependencyPropertyValue<bool>("IsEnabled");
+			Assert.False(isEnabled);
+			Assert.AreEqual(Final, GetText(textBox));
+		}
+
 		private QueryEx TypeInto(string textBoxName, string inputText, string expectedText)
 		{
 			var tb = _app.Marked(textBoxName);
@@ -391,7 +428,7 @@ namespace SamplesApp.UITests
 
 			_app.WaitForElement(singleTextBox);
 
-			var f = _app.Screenshot("initial");
+			TakeScreenshot("initial");
 
 			singleTextBox.Tap();
 			_app.Wait(2);
@@ -404,7 +441,7 @@ namespace SamplesApp.UITests
 			_app.Wait(3);
 			_app.Back();
 
-			var t = _app.Screenshot("final");
+			TakeScreenshot("final");
 			_app.Wait(2);
 
 			// TODO do not rely on GDI to do the image comparison

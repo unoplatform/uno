@@ -133,6 +133,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\Properties\DataContextProperty.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\StyleTests\Style_Inline.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -213,11 +217,35 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ListView\RotatedListView_WithRotatedItems.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\Button\Button_Events.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\TextBox\TextBox_BeforeTextChanging.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\TextBox\TextBox_Disabled.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\TextBox\TextBox_MaxLength.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\TextBox\TextBox_TextChanging.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ToggleSwitchControl\ToggleSwitch_TemplateReuse.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\DatePicker\DatePicker_SampleContent.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -2425,6 +2453,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\Localization\Localization_Implicit.xaml.cs">
       <DependentUpon>Localization_Implicit.xaml</DependentUpon>
     </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\Properties\DataContextProperty.xaml.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\StyleTests\Style_Inline.xaml.cs">
       <DependentUpon>Style_Inline.xaml</DependentUpon>
     </Compile>
@@ -2463,11 +2492,26 @@
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\xBindTests\PhaseBinding.xaml.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\xBindTests\PhaseBinding_Large.xaml.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\xBindTests\PhaseBinding_StartOne.xaml.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ListView\RotatedListView_WithRotatedItems.xaml.cs">
+      <DependentUpon>RotatedListView_WithRotatedItems.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\Models\RotatedListViewViewModel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\Button\Button_Events.xaml.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\TextBox\TextBox_BeforeTextChanging.xaml.cs">
       <DependentUpon>TextBox_BeforeTextChanging.xaml</DependentUpon>
     </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\TextBox\TextBox_Disabled.xaml.cs">
+      <DependentUpon>TextBox_Disabled.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\TextBox\TextBox_MaxLength.xaml.cs"/>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\TextBox\TextBox_TextChanging.xaml.cs">
       <DependentUpon>TextBox_TextChanging.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ToggleSwitchControl\ToggleSwitch_TemplateReuse.xaml.cs">
+      <DependentUpon>ToggleSwitch_TemplateReuse.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\DatePicker\DatePicker_SampleContent.xaml.cs">
+      <DependentUpon>DatePicker_SampleContent.xaml</DependentUpon>
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\WebView\WebViewControl_JavaScript_Alert_Confirm_Prompt.xaml.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\WebView\WebViewObserverBehavior.cs" />
@@ -2851,7 +2895,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\MediaPlayerElement\MediaPlayerElement_Original.xaml.cs">
       <DependentUpon>MediaPlayerElement_Original.xaml</DependentUpon>
     </Compile>
-    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\Models\DatePickerViewModel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\DatePicker\Models\DatePickerViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\Models\DateTimePickerViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\Models\ListViewWithFlipViewViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\Models\StringKeyTemplateSelector.cs" />
@@ -2917,7 +2961,7 @@
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ImageTests\Models\ImageWithLateSourceViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\Models\TextBlockViewModel.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\Models\TimePickerViewModel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\TimePicker\Model\TimePickerViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\Models\TwoLevelListItem.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\NavigationViewTests\NavigationView_TopNavigation.xaml.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\Pivot\PivotSimpleTest.xaml.cs" />
@@ -4108,6 +4152,9 @@
     <Compile Update="$(MSBuildThisFileDirectory)Windows_Devices\AccelerometerTests.xaml.cs">
       <DependentUpon>AccelerometerTests.xaml</DependentUpon>
     </Compile>
+    <Compile Update="$(MSBuildThisFileDirectory)Windows_Devices\BarometerTests.xaml.cs">
+      <DependentUpon>BarometerTests.xaml</DependentUpon>
+    </Compile>
     <Compile Update="$(MSBuildThisFileDirectory)Windows_UI_Xaml\Resources\XamlGlobalResources.xaml.cs">
       <DependentUpon>XamlGlobalResources.xaml</DependentUpon>
     </Compile>
@@ -4225,8 +4272,11 @@
     <Compile Update="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\Button\Simple_Button_With_CanExecute_Changing.xaml.cs">
       <DependentUpon>Simple_Button_With_CanExecute_Changing.xaml</DependentUpon>
     </Compile>
-    <Compile Update="$(MSBuildThisFileDirectory)Windows_UI_StartScreen\JumpListTests.xaml.cs">
-      <DependentUpon>JumpListTests.xaml</DependentUpon>
+    <Compile Update="$(MSBuildThisFileDirectory)\Windows_UI_Xaml\Properties\DataContextProperty.xaml.cs">
+      <DependentUpon>DataContextProperty.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="$(MSBuildThisFileDirectory)\Windows_UI_Xaml_Controls\Button\Button_Events.xaml.cs">
+      <DependentUpon>Button_Events.xaml</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>
@@ -4255,5 +4305,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ChatBox\" />
+    <Folder Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\DatePicker\Models\" />
+    <Folder Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\TimePicker\Model\" />
   </ItemGroup>
 </Project>

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
-using SamplesApp.Windows_UI_Xaml_Controls.Models;
+using UITests.Shared.Windows_UI_Xaml_Controls.DatePicker.Models;
 using Uno.UI.Samples.Controls;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
@@ -15,10 +15,10 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 
-namespace SamplesApp.Samples.DatePicker
+namespace UITests.Shared.Windows_UI_Xaml_Controls.DatePicker
 {
 	[SampleControlInfo("Date Picker", "Sample", typeof(DatePickerViewModel))]
-	public sealed partial class DatePickerSample : Page
+	public sealed partial class DatePickerSample : UserControl
 	{
 		public DatePickerSample()
 		{

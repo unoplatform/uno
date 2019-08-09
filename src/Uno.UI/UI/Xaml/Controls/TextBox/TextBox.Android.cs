@@ -338,27 +338,6 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		partial void OnMaxLengthChangedPartial(DependencyPropertyChangedEventArgs e)
-		{
-			if (_textBoxView != null)
-			{
-				if (e.NewValue != null)
-				{
-					var maxValue = (int)e.NewValue;
-
-					if (maxValue != 0)
-					{
-						_textBoxView.SetFilters(new IInputFilter[] { new InputFilterLengthFilter(maxValue) });
-					}
-					else
-					{
-						// Remove length filter
-						_textBoxView.SetFilters(new IInputFilter[0]);
-					}
-				}
-			}
-		}
-
 		partial void OnAcceptsReturnChangedPartial(DependencyPropertyChangedEventArgs e)
 		{
 			var acceptsReturn = (bool)e.NewValue;
