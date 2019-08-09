@@ -408,7 +408,13 @@ namespace Windows.UI.Xaml
 		#endregion
 #endif
 #else
-		private void InitializePointers() { }
+		private readonly List<Pointer> _pointCaptures = new List<Pointer>();
+
+		// ctor
+		private void InitializePointers()
+		{
+			this.SetValue(PointerCapturesProperty, _pointCaptures); // Note: On UWP this is done only on first capture
+		}
 #endif
 
 		#region Pointer capture handling
