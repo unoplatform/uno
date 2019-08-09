@@ -9,7 +9,7 @@ using Uno.Extensions;
 using Uno.Logging;
 using Uno.UI;
 
-namespace Uno
+namespace Uno.Helpers
 {
 	public static class DrawableHelper
 	{

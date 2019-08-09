@@ -112,7 +112,7 @@ namespace Windows.UI.Xaml.Media
 		partial void InitFromResource(Uri uri)
 		{
 			ResourceString = uri.PathAndQuery.TrimStart(new[] { '/' });
-			ResourceId = Uno.DrawableHelper.FindResourceId(ResourceString);
+			ResourceId = Uno.Helpers.DrawableHelper.FindResourceId(ResourceString);
 		}
 
 		/// <summary>
@@ -332,8 +332,8 @@ namespace Windows.UI.Xaml.Media
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static Type Drawables
 		{
-			get => Uno.DrawableHelper.Drawables;
-			set => Uno.DrawableHelper.Drawables = value;
+			get => Uno.Helpers.DrawableHelper.Drawables;
+			set => Uno.Helpers.DrawableHelper.Drawables = value;
 		}
 
 		/// <summary>
@@ -344,7 +344,7 @@ namespace Windows.UI.Xaml.Media
 		/// <returns>Resource's id</returns>
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static int? FindResourceId(string imageName) =>
-			Uno.DrawableHelper.FindResourceId(imageName);
+			Uno.Helpers.DrawableHelper.FindResourceId(imageName);
 
 		#endregion
 

@@ -1,10 +1,12 @@
 ﻿using Android.Graphics.Drawables;
 using Android.Support.V4.Content;
 using System;
+using System.ComponentModel;
 using Windows.UI.Xaml.Media;
 
 namespace Uno.UI
 {
+	[EditorBrowsable(EditorBrowsableState.Never)]
 	public static class DrawableHelper
 	{
 		/// <summary>
@@ -14,6 +16,6 @@ namespace Uno.UI
 		/// <param name="uri">URI</param>
 		/// <returns>Drawable</returns>
 		public static Drawable FromUri(Uri uri) =>
-			Uno.DrawableHelper.FromUri(uri);
+			Uno.Helpers.DrawableHelper.FromUri(uri);
 	}
 }
