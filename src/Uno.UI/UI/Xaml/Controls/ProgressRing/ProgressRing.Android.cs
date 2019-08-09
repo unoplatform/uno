@@ -5,8 +5,6 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using Windows.UI.Xaml.Media;
-using Uno.UI;
-using Android.Views;
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -53,22 +51,6 @@ namespace Windows.UI.Xaml.Controls
 				{
 					progressRing.Visibility = Visibility.Collapsed;
 				}
-			}
-		}
-		protected override void OnDraw(Android.Graphics.Canvas canvas)
-		{
-			base.OnDraw(canvas);
-			if (!IsActive)
-			{
-				return;
-			}
-
-			// This is required for progress ring to visually update when inside transformed ancestor on hardware-accelerated devices
-			var didInvalidate = ((this as View).Parent as UnoViewGroup).InvalidateTransformedHierarchy();
-			if (didInvalidate)
-			{
-				// Invalidate self to ensure OnDraw() is called as long as transform is applied
-				Invalidate();
 			}
 		}
 	}
