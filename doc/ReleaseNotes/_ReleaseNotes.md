@@ -65,6 +65,7 @@
 * [Android/WASM] Fix MaxLength not respected or overwriting text
 * Settings collection-based properties on root node in XAML were leading to C# compilation errors
 * Properties on root node in XAML were not applied when there was no content (sub-elements)
+* [Android] GroupedListviewHeaders were causing scrolling lag, missing flag
 * Flyout that are than anchor but fit in page were defaulting to full placement.
 
 ## Release 1.45.0
