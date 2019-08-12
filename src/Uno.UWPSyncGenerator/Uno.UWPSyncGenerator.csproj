@@ -29,7 +29,7 @@
 			<Version>15.8.166</Version>
 		</PackageReference>
 		<PackageReference Include="Microsoft.CodeAnalysis">
-			<Version>2.9.0</Version>
+			<Version>3.2.1</Version>
 		</PackageReference>
 		<PackageReference Include="Microsoft.CodeAnalysis.Common">
 			<Version>2.9.0</Version>
