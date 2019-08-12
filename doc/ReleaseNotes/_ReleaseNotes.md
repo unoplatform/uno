@@ -34,12 +34,16 @@
 * Implement `TextBox.TextChanging` and `TextBox.BeforeTextChanging`. As on UWP, this allows the text to be intercepted and modified before the UI is updated. Previously on Android using the `TextChanged` event would lead to laggy response and dropped characters when typing rapidly; this is no longer the case with `TextChanging`.
 * [WASM] `ComboBox`'s dropdown list (`CarouselPanel`) is now virtualized (#1012)
 * Improve Screenshot comparer tool, CI test results now contain Screenshots compare data
+* Updated Xamarin.GooglePlayServices.* packages to 60.1142.1 for Target MonoAndroid80
+* Updated Xamarin.GooglePlayServices.* packages to 71.1600.0 for Target MonoAndroid90
 
 ### Breaking changes
 * `TextBox` no longer raises TextChanged when its template is applied, in line with UWP.
 * `TextBox.TextChanged` is now called asynchronously after the UI is updated, in line with UWP. For most uses `TextChanging` should be preferred.
 * [Android] `TextBox.IsSpellCheckEnabled = false` is now enforced in a way that may cause issues in certain use cases (see https://stackoverflow.com/a/5188119/1902058). The old behavior can be restored by setting `ShouldForceDisableSpellCheck = false`, per `TextBox`.
 * `TextBox.Text = null` will now throw an exception, as on UWP. Pushing `null` via a binding is still valid.
+* Projects targeting Android 8 must now use Xamarin.GooglePlayServices.* 60.1142.1 (60.1142.0 has been unlisted)
+* Projects targeting Android 9 must now use Xamarin.GooglePlayServices.* 71.1600.0
 
 ### Bug fixes
 * #1276 retrieving non-existent setting via indexer should not throw and  `ApplicationDataContainer` allowed clearing value by calling `Add(null)` which was not consistent with UWP.
