@@ -107,6 +107,8 @@ public abstract class UnoViewGroup
 				}
 			}
 		);
+
+		setClipChildren(false); // This is required for animations not to be cut off by transformed ancestor views. (#1333)
 	}
 
 	private boolean _unoLayoutOverride;
