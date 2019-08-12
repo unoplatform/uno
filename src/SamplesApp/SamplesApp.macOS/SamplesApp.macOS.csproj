@@ -17,7 +17,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug</OutputPath>
-    <DefineConstants>DEBUG;</DefineConstants>
+    <DefineConstants>DEBUG;XAMARIN;HAS_UNO</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <EnableCodeSigning>false</EnableCodeSigning>
@@ -42,8 +42,7 @@
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release</OutputPath>
-    <DefineConstants>
-    </DefineConstants>
+    <DefineConstants>XAMARIN;HAS_UNO</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <EnableCodeSigning>false</EnableCodeSigning>
@@ -66,24 +65,30 @@
     <Reference Include="Xamarin.Mac" />
     <Reference Include="System.Numerics" />
     <Reference Include="System.Numerics.Vectors" />
+    <Reference Include="System.Memory" />
   </ItemGroup>
   <ItemGroup>
-		<PackageReference Include="MSTest.TestFramework" Version="1.2.0" />
-		<PackageReference Include="Uno.SourceGenerationTasks">
-      <Version>1.29.0-dev.200</Version>
-      <NoWarn>NU1701</NoWarn>
+    <PackageReference Include="MSTest.TestFramework" Version="1.4.0" />
+    <PackageReference Include="Uno.Core" Version="1.28.0-dev.86" />
+		<PackageReference Include="Newtonsoft.Json">
+      <Version>12.0.1</Version>
     </PackageReference>
+    <PackageReference Include="Uno.SourceGenerationTasks" />
     <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="1.1.1" />
     <PackageReference Include="Microsoft.Extensions.Logging.Filter" Version="1.1.1" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\AddIns\Uno.UI.Lottie\Uno.UI.Lottie.csproj">
+      <Project>{f9277925-fc11-4a97-8ca1-b4a33e726f55}</Project>
+      <Name>Uno.UI.Lottie</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\Uno.Foundation\Uno.Foundation.csproj">
       <Project>{528AE586-5DF3-4DAD-AA5C-F12F4D5E0605}</Project>
       <Name>Uno.Foundation</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Uno.UI.RuntimeTests\Uno.UI.RuntimeTests.csproj">
-      <Project>{028f3ee0-d51b-469a-a72c-c272585dcd40}</Project>
-      <Name>Uno.UI.RuntimeTests</Name>
+    <ProjectReference Include="..\..\Uno.UI.Toolkit\Uno.UI.Toolkit.csproj">
+      <Project>{2eaf39e3-2ac9-457a-a5b2-47d6548799b3}</Project>
+      <Name>Uno.UI.Toolkit</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Uno.UI\Uno.UI.csproj">
       <Project>{C6884723-81DB-43BD-924F-3FA367633E64}</Project>
@@ -94,10 +99,10 @@
       <Name>Uno</Name>
     </ProjectReference>
   </ItemGroup>
-	<Import Project="..\..\SourceGenerators\sourcegenerators.local.props" />
-	<Import Project="..\SamplesApp.Shared\SamplesApp.Shared.projitems" Label="Shared" Condition="Exists('..\SamplesApp.Shared\SamplesApp.Shared.projitems')" />
-	<Import Project="..\SamplesApp.UnitTests.Shared\SamplesApp.UnitTests.Shared.projitems" Label="Shared" />
-	<ItemGroup>
+  <Import Project="..\..\SourceGenerators\sourcegenerators.local.props" />
+  <Import Project="..\SamplesApp.Shared\SamplesApp.Shared.projitems" Label="Shared" Condition="Exists('..\SamplesApp.Shared\SamplesApp.Shared.projitems')" />
+  <Import Project="..\SamplesApp.UnitTests.Shared\SamplesApp.UnitTests.Shared.projitems" Label="Shared" />
+  <ItemGroup>
     <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\Contents.json" />
     <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\AppIcon-128.png" />
     <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\AppIcon-128%402x.png" />
@@ -123,4 +128,32 @@
     <Compile Include="AppDelegate.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Mac\Xamarin.Mac.CSharp.targets" />
+	
+		<Target Name="VS16Mac_RemoveSystemMemory"
+					BeforeTargets="ResolveAssemblyReferences">
+		<!--
+				VS4Mac seems to process System.Memory differently, and removes
+				the System.Memory local reference if the package is transitively referenced.
+				We remove the Reference added by the nuget targets so that ResolveAssemblyReferences
+				is properly adding the local System.Memory to the Reference item group.
+		-->
+		<ItemGroup>
+			<_ReferenceToRemove
+        Include="@(Reference)"
+        Condition="'%(Reference.Identity)'=='System.Memory'" />
+			<Reference Remove="@(_ReferenceToRemove)" />
+			<Reference Include="System.Memory"/>
+		</ItemGroup>
+	</Target>
+
+	<Target
+    Name="VS16_RemoveSystemMemory"
+    BeforeTargets="FindReferenceAssembliesForReferences">
+		<ItemGroup>
+			<_ReferencePathToRemove
+        Include="@(ReferencePath)"
+        Condition="'%(ReferencePath.NuGetPackageId)'=='System.Memory'" />
+			<ReferencePath Remove="@(_ReferencePathToRemove)" />
+		</ItemGroup>
+	</Target>
 </Project>

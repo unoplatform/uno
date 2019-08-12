@@ -10,11 +10,11 @@ namespace Windows.UI.Xaml
 	{
 		// Skipping already declared field Windows.UI.Xaml.TextAlignment.Center
 		// Skipping already declared field Windows.UI.Xaml.TextAlignment.Left
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		Start,
 		#endif
 		// Skipping already declared field Windows.UI.Xaml.TextAlignment.Right
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		End,
 		#endif
 		// Skipping already declared field Windows.UI.Xaml.TextAlignment.Justify

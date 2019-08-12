@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.System.UserProfile
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class AdvertisingManager 
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static string AdvertisingId
 		{
@@ -17,7 +17,7 @@ namespace Windows.System.UserProfile
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.System.UserProfile.AdvertisingManagerForUser GetForUser( global::Windows.System.User user)
 		{

@@ -11,7 +11,9 @@ using Windows.UI.Xaml.Controls;
 using Windows.Foundation;
 using View = Windows.UI.Xaml.UIElement;
 using System.Collections;
+using System.Runtime.CompilerServices;
 using Windows.UI.Xaml.Media;
+using Uno.UI;
 
 namespace Windows.UI.Xaml
 {
@@ -19,10 +21,41 @@ namespace Windows.UI.Xaml
 	{
 		partial void OnLoadingPartial();
 
-		private void OnLoading(object sender, RoutedEventArgs args)
+		/*
+			About NativeOn** vs ManagedOn** methods:
+				The flag FeatureConfiguration.FrameworkElement.WasmUseManagedLoadedUnloaded will configure which set of methods will be used
+				but they are mutually exclusive: Only one of each is going to be invoked.
+
+			For the managed methods: for perf consideration (avoid lots of casting) the loaded state is managed by the UI Element,
+				the FrameworkElement only makes it publicly available by overriding methods from UIElement and raising events.
+				The propagation of this loaded state is also made by the UIElement.
+		 */
+
+		internal sealed override void ManagedOnLoading()
 		{
 			OnLoadingPartial();
+			ApplyCompiledBindings();
 
+			try
+			{
+				// Raise event before invoking base in order to raise them top to bottom
+				_loading?.Invoke(this, RoutedEventArgs.Empty);
+			}
+			catch (Exception error)
+			{
+				this.Log().Error("ManagedOnLoading failed in FrameworkElement", error);
+				Application.Current.RaiseRecoverableUnhandledException(error);
+			}
+
+			// Explicit propagation of the loading even must be performed
+			// after the compiled bindings are applied (cf. OnLoading), as there may be altered
+			// properties that affect the visual tree.
+			base.ManagedOnLoading();
+		}
+
+		private void NativeOnLoading(object sender, RoutedEventArgs args)
+		{
+			OnLoadingPartial();
 			ApplyCompiledBindings();
 
 			// Explicit propagation of the loading even must be performed
@@ -34,28 +67,81 @@ namespace Windows.UI.Xaml
 			}
 		}
 
-		private void OnLoaded(object sender, RoutedEventArgs args)
+		internal sealed override void ManagedOnLoaded()
 		{
-			IsLoaded = true;
+			// Make sure to set the flag before raising the loaded event (duplicated with the base.ManagedOnLoaded)
+			base.IsLoaded = true;
+
+			try
+			{
+				// Raise event before invoking base in order to raise them top to bottom
+				OnLoaded();
+				_loaded?.Invoke(this, RoutedEventArgs.Empty);
+			}
+			catch (Exception error)
+			{
+				this.Log().Error("ManagedOnLoaded failed in FrameworkElement", error);
+				Application.Current.RaiseRecoverableUnhandledException(error);
+			}
+
+			base.ManagedOnLoaded();
+		}
+
+		private void NativeOnLoaded(object sender, RoutedEventArgs args)
+		{
+			base.IsLoaded = true;
 
 			foreach (var child in _children)
 			{
 				(child as FrameworkElement)?.InternalDispatchEvent("loaded", args);
 			}
 
-			OnLoaded();
+			try
+			{
+				OnLoaded();
+			}
+			catch (Exception error)
+			{
+				this.Log().Error("NativeOnLoaded failed in FrameworkElement", error);
+				Application.Current.RaiseRecoverableUnhandledException(error);
+			}
 		}
 
-		private void OnUnloaded(object sender, RoutedEventArgs args)
+		internal sealed override void ManagedOnUnloaded()
 		{
-			IsLoaded = false;
+			base.ManagedOnUnloaded(); // Will set flag IsLoaded to false
+
+			try
+			{
+				// Raise event after invoking base in order to raise them bottom to top
+				OnUnloaded();
+				_unloaded?.Invoke(this, RoutedEventArgs.Empty);
+			}
+			catch (Exception error)
+			{
+				this.Log().Error("ManagedOnUnloaded failed in FrameworkElement", error);
+				Application.Current.RaiseRecoverableUnhandledException(error);
+			}
+		}
+
+		private void NativeOnUnloaded(object sender, RoutedEventArgs args)
+		{
+			base.IsLoaded = false;
 
 			foreach (var child in _children)
 			{
 				(child as FrameworkElement)?.InternalDispatchEvent("unloaded", args);
 			}
 
-			OnUnloaded();
+			try
+			{
+				OnUnloaded();
+			}
+			catch (Exception error)
+			{
+				this.Log().Error("NativeOnUnloaded failed in FrameworkElement", error);
+				Application.Current.RaiseRecoverableUnhandledException(error);
+			}
 		}
 
 		public bool HasParent()
@@ -71,29 +157,93 @@ namespace Windows.UI.Xaml
 		internal void RaiseSizeChanged(SizeChangedEventArgs args)
 		{
 			SizeChanged?.Invoke(this, args);
+			_renderTransform?.UpdateSize(args.NewSize);
 		}
 
 		static partial void OnGenericPropertyUpdatedPartial(object dependencyObject, DependencyPropertyChangedEventArgs args);
 
+		private event RoutedEventHandler _loading;
 		public event RoutedEventHandler Loading
 		{
-			add => RegisterEventHandler("loading", value);
-			remove => UnregisterEventHandler("loading", value);
+			add
+			{
+				if (FeatureConfiguration.FrameworkElement.WasmUseManagedLoadedUnloaded)
+				{
+					_loading += value;
+				}
+				else
+				{
+					RegisterEventHandler("loading", value);
+				}
+			}
+			remove
+			{
+				if (FeatureConfiguration.FrameworkElement.WasmUseManagedLoadedUnloaded)
+				{
+					_loading -= value;
+				}
+				else
+				{
+					UnregisterEventHandler("loading", value);
+				}
+			}
 		}
 
+		private event RoutedEventHandler _loaded;
 		public event RoutedEventHandler Loaded
 		{
-			add => RegisterEventHandler("loaded", value);
-			remove => UnregisterEventHandler("loaded", value);
+			add
+			{
+				if (FeatureConfiguration.FrameworkElement.WasmUseManagedLoadedUnloaded)
+				{
+					_loaded += value;
+				}
+				else
+				{
+					RegisterEventHandler("loaded", value);
+				}
+			}
+			remove
+			{
+				if (FeatureConfiguration.FrameworkElement.WasmUseManagedLoadedUnloaded)
+				{
+					_loaded -= value;
+				}
+				else
+				{
+					UnregisterEventHandler("loaded", value);
+				}
+			}
 		}
 
+		private event RoutedEventHandler _unloaded;
 		public event RoutedEventHandler Unloaded
 		{
-			add => RegisterEventHandler("unloaded", value);
-			remove => UnregisterEventHandler("unloaded", value);
+			add
+			{
+				if (FeatureConfiguration.FrameworkElement.WasmUseManagedLoadedUnloaded)
+				{
+					_unloaded += value;
+				}
+				else
+				{
+					RegisterEventHandler("unloaded", value);
+				}
+			}
+			remove
+			{
+				if (FeatureConfiguration.FrameworkElement.WasmUseManagedLoadedUnloaded)
+				{
+					_unloaded -= value;
+				}
+				else
+				{
+					UnregisterEventHandler("unloaded", value);
+				}
+			}
 		}
 
-		public bool IsLoaded { get; private set; } = false;
+		public new bool IsLoaded => base.IsLoaded; // The IsLoaded state is managed by the UIElement, FrameworkElement only makes it publicly visible
 
 		private bool IsTopLevelXamlView() => throw new NotSupportedException();
 
@@ -150,7 +300,10 @@ namespace Windows.UI.Xaml
 				"Margin",
 				typeof(Thickness),
 				typeof(FrameworkElement),
-				new PropertyMetadata(Thickness.Empty, OnMeasurePropertyUpdated)
+				new FrameworkPropertyMetadata(
+					defaultValue: Thickness.Empty,
+					options: FrameworkPropertyMetadataOptions.AutoConvert | FrameworkPropertyMetadataOptions.AffectsMeasure
+				)
 		);
 
 		public virtual Thickness Margin
@@ -167,7 +320,10 @@ namespace Windows.UI.Xaml
 				"HorizontalAlignment",
 				typeof(HorizontalAlignment),
 				typeof(FrameworkElement),
-				new PropertyMetadata(HorizontalAlignment.Stretch, OnArrangePropertyUpdated)
+				new FrameworkPropertyMetadata(
+					defaultValue: Xaml.HorizontalAlignment.Stretch,
+					options: FrameworkPropertyMetadataOptions.AutoConvert | FrameworkPropertyMetadataOptions.AffectsMeasure
+				)
 			);
 
 		public HorizontalAlignment HorizontalAlignment
@@ -184,7 +340,10 @@ namespace Windows.UI.Xaml
 				"VerticalAlignment",
 				typeof(VerticalAlignment),
 				typeof(FrameworkElement),
-				new PropertyMetadata(VerticalAlignment.Stretch, OnArrangePropertyUpdated)
+				new FrameworkPropertyMetadata(
+					defaultValue: Xaml.VerticalAlignment.Stretch,
+					options: FrameworkPropertyMetadataOptions.AutoConvert | FrameworkPropertyMetadataOptions.AffectsMeasure
+				)
 			);
 
 		public VerticalAlignment VerticalAlignment
@@ -203,8 +362,7 @@ namespace Windows.UI.Xaml
 				typeof(FrameworkElement),
 				new FrameworkPropertyMetadata(
 					defaultValue: double.NaN,
-					propertyChangedCallback: OnMeasurePropertyUpdated,
-					options: FrameworkPropertyMetadataOptions.AutoConvert
+					options: FrameworkPropertyMetadataOptions.AutoConvert | FrameworkPropertyMetadataOptions.AffectsMeasure
 				)
 			);
 
@@ -224,8 +382,7 @@ namespace Windows.UI.Xaml
 				typeof(FrameworkElement),
 				new FrameworkPropertyMetadata(
 					defaultValue: double.NaN,
-					propertyChangedCallback: OnMeasurePropertyUpdated,
-					options: FrameworkPropertyMetadataOptions.AutoConvert
+					options: FrameworkPropertyMetadataOptions.AutoConvert | FrameworkPropertyMetadataOptions.AffectsMeasure
 				)
 			);
 
@@ -244,9 +401,8 @@ namespace Windows.UI.Xaml
 				typeof(double),
 				typeof(FrameworkElement),
 				new FrameworkPropertyMetadata(
-					defaultValue: 0.0,
-					propertyChangedCallback: OnMeasurePropertyUpdated,
-					options: FrameworkPropertyMetadataOptions.AutoConvert
+					defaultValue: 0.0d,
+					options: FrameworkPropertyMetadataOptions.AutoConvert | FrameworkPropertyMetadataOptions.AffectsMeasure
 				)
 			);
 
@@ -265,9 +421,8 @@ namespace Windows.UI.Xaml
 				typeof(double),
 				typeof(FrameworkElement),
 				new FrameworkPropertyMetadata(
-					defaultValue: 0.0,
-					propertyChangedCallback: OnMeasurePropertyUpdated,
-					options: FrameworkPropertyMetadataOptions.AutoConvert
+					defaultValue: 0.0d,
+					options: FrameworkPropertyMetadataOptions.AutoConvert | FrameworkPropertyMetadataOptions.AffectsMeasure
 				)
 			);
 
@@ -287,8 +442,7 @@ namespace Windows.UI.Xaml
 				typeof(FrameworkElement),
 				new FrameworkPropertyMetadata(
 					defaultValue: double.PositiveInfinity,
-					propertyChangedCallback: OnMeasurePropertyUpdated,
-					options: FrameworkPropertyMetadataOptions.AutoConvert
+					options: FrameworkPropertyMetadataOptions.AutoConvert | FrameworkPropertyMetadataOptions.AffectsMeasure
 				)
 			);
 
@@ -308,8 +462,7 @@ namespace Windows.UI.Xaml
 				typeof(FrameworkElement),
 				new FrameworkPropertyMetadata(
 					defaultValue: double.PositiveInfinity,
-					propertyChangedCallback: OnMeasurePropertyUpdated,
-					options: FrameworkPropertyMetadataOptions.AutoConvert
+					options: FrameworkPropertyMetadataOptions.AutoConvert | FrameworkPropertyMetadataOptions.AffectsMeasure
 				)
 			);
 
@@ -319,17 +472,5 @@ namespace Windows.UI.Xaml
 			set { this.SetValue(MaxHeightProperty, value); }
 		}
 		#endregion
-
-		private static void OnMeasurePropertyUpdated(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs args)
-		{
-			var element = dependencyObject as UIElement;
-			element?.InvalidateMeasure();
-		}
-
-		private static void OnArrangePropertyUpdated(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs args)
-		{
-			var element = dependencyObject as UIElement;
-			element?.InvalidateArrange();
-		}
 	}
 }

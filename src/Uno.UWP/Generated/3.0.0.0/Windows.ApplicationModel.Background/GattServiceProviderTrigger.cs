@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.ApplicationModel.Background
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class GattServiceProviderTrigger : global::Windows.ApplicationModel.Background.IBackgroundTrigger
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Devices.Bluetooth.GenericAttributeProfile.GattServiceProviderAdvertisingParameters AdvertisingParameters
 		{
@@ -21,7 +21,7 @@ namespace Windows.ApplicationModel.Background
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Devices.Bluetooth.GenericAttributeProfile.GattLocalService Service
 		{
@@ -31,7 +31,7 @@ namespace Windows.ApplicationModel.Background
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  string TriggerId
 		{
@@ -45,7 +45,7 @@ namespace Windows.ApplicationModel.Background
 		// Forced skipping of method Windows.ApplicationModel.Background.GattServiceProviderTrigger.Service.get
 		// Forced skipping of method Windows.ApplicationModel.Background.GattServiceProviderTrigger.AdvertisingParameters.set
 		// Forced skipping of method Windows.ApplicationModel.Background.GattServiceProviderTrigger.AdvertisingParameters.get
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.Background.GattServiceProviderTriggerResult> CreateAsync( string triggerId,  global::System.Guid serviceUuid)
 		{

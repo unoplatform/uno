@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Web.Http.Headers
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class HttpDateOrDeltaHeaderValue : global::Windows.Foundation.IStringable
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::System.DateTimeOffset? Date
 		{
@@ -17,7 +17,7 @@ namespace Windows.Web.Http.Headers
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::System.TimeSpan? Delta
 		{
@@ -29,21 +29,21 @@ namespace Windows.Web.Http.Headers
 		#endif
 		// Forced skipping of method Windows.Web.Http.Headers.HttpDateOrDeltaHeaderValue.Date.get
 		// Forced skipping of method Windows.Web.Http.Headers.HttpDateOrDeltaHeaderValue.Delta.get
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public override string ToString()
 		{
 			throw new global::System.NotImplementedException("The member string HttpDateOrDeltaHeaderValue.ToString() is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.Web.Http.Headers.HttpDateOrDeltaHeaderValue Parse( string input)
 		{
 			throw new global::System.NotImplementedException("The member HttpDateOrDeltaHeaderValue HttpDateOrDeltaHeaderValue.Parse(string input) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static bool TryParse( string input, out global::Windows.Web.Http.Headers.HttpDateOrDeltaHeaderValue dateOrDeltaHeaderValue)
 		{

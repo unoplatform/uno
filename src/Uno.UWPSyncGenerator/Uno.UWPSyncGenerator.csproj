@@ -2,7 +2,7 @@
 
 	<PropertyGroup>
 		<OutputType>Exe</OutputType>
-		<TargetFramework>net46</TargetFramework>
+		<TargetFramework>net461</TargetFramework>
 
 		<AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
 		<GenerateBindingRedirectsOutputType>true</GenerateBindingRedirectsOutputType>
@@ -53,7 +53,7 @@
 		<PackageReference Include="Microsoft.Tpl.Dataflow">
 			<Version>4.5.24</Version>
 		</PackageReference>
-		<PackageReference Include="Uno.Core" Version="1.26.0-dev.58" />
+		<PackageReference Include="Uno.Core" Version="1.28.0-dev.86" />
 	</ItemGroup>
 	
 	<ItemGroup>

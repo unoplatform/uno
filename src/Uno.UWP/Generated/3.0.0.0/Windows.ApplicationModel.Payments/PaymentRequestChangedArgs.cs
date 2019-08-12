@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.ApplicationModel.Payments
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class PaymentRequestChangedArgs 
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.ApplicationModel.Payments.PaymentRequestChangeKind ChangeKind
 		{
@@ -17,7 +17,7 @@ namespace Windows.ApplicationModel.Payments
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.ApplicationModel.Payments.PaymentShippingOption SelectedShippingOption
 		{
@@ -27,7 +27,7 @@ namespace Windows.ApplicationModel.Payments
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.ApplicationModel.Payments.PaymentAddress ShippingAddress
 		{
@@ -40,7 +40,7 @@ namespace Windows.ApplicationModel.Payments
 		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentRequestChangedArgs.ChangeKind.get
 		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentRequestChangedArgs.ShippingAddress.get
 		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentRequestChangedArgs.SelectedShippingOption.get
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  void Acknowledge( global::Windows.ApplicationModel.Payments.PaymentRequestChangedResult changeResult)
 		{

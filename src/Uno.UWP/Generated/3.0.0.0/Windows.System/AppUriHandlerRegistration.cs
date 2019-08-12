@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.System
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class AppUriHandlerRegistration 
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  string Name
 		{
@@ -17,7 +17,7 @@ namespace Windows.System
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.System.User User
 		{
@@ -29,14 +29,14 @@ namespace Windows.System
 		#endif
 		// Forced skipping of method Windows.System.AppUriHandlerRegistration.Name.get
 		// Forced skipping of method Windows.System.AppUriHandlerRegistration.User.get
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IList<global::Windows.System.AppUriHandlerHost>> GetAppAddedHostsAsync()
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<IList<AppUriHandlerHost>> AppUriHandlerRegistration.GetAppAddedHostsAsync() is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Foundation.IAsyncAction SetAppAddedHostsAsync( global::System.Collections.Generic.IEnumerable<global::Windows.System.AppUriHandlerHost> hosts)
 		{

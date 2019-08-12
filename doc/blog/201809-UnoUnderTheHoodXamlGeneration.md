@@ -8,7 +8,7 @@ XAML stands for eXtensible Application Markup Language. It's an XML-based syntax
 
 XAML hits a sweet spot: it's human readable, expressive, and sufficiently structured to support design tools like [Blend](https://docs.microsoft.com/en-us/visualstudio/designers/creating-a-ui-by-using-blend-for-visual-studio?view=vs-2017) and [XAML Designer](https://docs.microsoft.com/en-us/visualstudio/designers/creating-a-ui-by-using-xaml-designer-in-visual-studio?view=vs-2017). One nice feature is that it can be seamlessly intermingled with C# via [code-behind](https://docs.microsoft.com/en-us/dotnet/framework/wpf/advanced/code-behind-and-xaml-in-wpf) files. 
 
-To tap into that power, Uno needs to be able to read a XAML file and convert it into compileable C# code.  
+To tap into that power, Uno needs to be able to read a XAML file and convert it into compilable C# code.  
 
 The first step is to parse the file into a Xaml object tree, using the [System.Xaml](https://docs.microsoft.com/en-us/dotnet/api/system.xaml?view=netframework-4.7.2) namespace. Next, the Xaml object tree is processed into a C# class definition. The bulk of the heavy lifting is done in the mammoth [XamlFileGenerator](https://github.com/nventive/Uno/blob/master/src/SourceGenerators/Uno.UI.SourceGenerators/XamlGenerator/XamlFileGenerator.cs) class. We lean on the [Microsoft.CodeAnalysis API](https://github.com/dotnet/roslyn) here (aka 'Roslyn') to match types used in XAML to types defined in the app assembly or its dependencies. The output is saved to a generated file.  
 

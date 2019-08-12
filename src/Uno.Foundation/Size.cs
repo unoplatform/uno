@@ -22,10 +22,8 @@ namespace Windows.Foundation
 
 		public override bool Equals(object o)
 		{
-			if(o is Size)
+			if(o is Size other)
 			{
-				var other = (Size)o;
-
 				return other.Width == Width 
 					&& other.Height == Height;
 			}

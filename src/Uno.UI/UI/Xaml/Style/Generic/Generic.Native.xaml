@@ -15,8 +15,17 @@
 					xmlns:toolkit="using:Uno.UI.Toolkit"
 					xmlns:maps="using:Windows.UI.Xaml.Controls.Maps"
 					xmlns:mapsPresenter="using:Windows.UI.Xaml.Controls.Maps"
+					xmlns:wasm="http://uno.ui/wasm"
 					xmlns:not_wasm="http://uno.ui/not_wasm"
-					mc:Ignorable="d xamarin ios android not_wasm">
+					mc:Ignorable="d xamarin ios android wasm not_wasm">
+
+	<wasm:ResourceDictionary.MergedDictionaries>
+		<!--
+			On WASM we don't  necessarilly have native style, so we refrence the Windows styles as "native" so we are able
+			to multi-target their usage in application without having to discover which native styles are available or not.
+		-->
+		<ResourceDictionary Source="Generic.xaml" />
+	</wasm:ResourceDictionary.MergedDictionaries>
 
 	<!-- Default native Button styles -->
 	<android:Style x:Key="NativeDefaultButton"
@@ -55,8 +64,14 @@
 			   BasedOn="{StaticResource NativeDefaultButton}"
 			   TargetType="Button" />
 
-	<not_wasm:Style BasedOn="{StaticResource NativeDefaultButton}"
-					TargetType="Button" />
+	<wasm:Style
+		x:Key="NativeDefaultButton"
+		TargetType="Button"
+		BasedOn="{StaticResource XamlDefaultButton}" />
+
+	<xamarin:Style
+		TargetType="Button"
+		BasedOn="{StaticResource NativeDefaultButton}" />
 
 	<!-- Default native CheckBox styles -->
 	<android:Style x:Key="NativeDefaultCheckBox"
@@ -82,7 +97,7 @@
 			<Setter.Value>
 				<ControlTemplate TargetType="CheckBox">
 					<StackPanel Orientation="Horizontal">
-						<BindableUISwitch IsOn="{TemplateBinding IsOn, Mode=TwoWay}"
+						<BindableUISwitch IsOn="{TemplateBinding IsChecked, Mode=TwoWay}"
 										  Enabled="{TemplateBinding IsEnabled}"
 										  TintColorBrush="{TemplateBinding BorderBrush}"
 										  OnTintColorBrush="{TemplateBinding Background}"
@@ -95,8 +110,14 @@
 		</Setter>
 	</ios:Style>
 
-	<not_wasm:Style BasedOn="{StaticResource NativeDefaultCheckBox}"
-					TargetType="CheckBox" />
+	<wasm:Style
+		x:Key="NativeDefaultCheckBox"
+		TargetType="CheckBox"
+		BasedOn="{StaticResource XamlDefaultCheckBox}" />
+
+	<xamarin:Style
+		TargetType="CheckBox"
+		BasedOn="{StaticResource NativeDefaultCheckBox}" />
 
 	<!-- Default native RadioButton styles -->
 	<android:Style x:Key="AndroidRadioButtonStyle"
@@ -115,14 +136,14 @@
 	<!-- Default native ToggleSwitch styles -->
 	<ios:Style x:Key="NativeDefaultToggleSwitch"
 			   TargetType="ToggleSwitch">
+		<!-- Ensures the UISwitch's shadow doesn't get clipped. -->
+		<Setter Property="ClipsToBounds"
+				Value="False" />
 		<Setter Property="Template">
 			<Setter.Value>
 				<ControlTemplate TargetType="ToggleSwitch">
 					<BindableUISwitch IsOn="{TemplateBinding IsOn, Mode=TwoWay}"
-									  Enabled="{TemplateBinding IsEnabled}"
-									  TintColorBrush="{TemplateBinding BorderBrush}"
-									  OnTintColorBrush="{TemplateBinding Background}"
-									  ThumbTintColorBrush="{TemplateBinding Foreground}" />
+									  Enabled="{TemplateBinding IsEnabled}" />
 				</ControlTemplate>
 			</Setter.Value>
 		</Setter>
@@ -135,17 +156,20 @@
 				<ControlTemplate TargetType="ToggleSwitch">
 					<BindableSwitchCompat Checked="{TemplateBinding IsOn, Mode=TwoWay}"
 										  Enabled="{TemplateBinding IsEnabled}"
-										  Text="{TemplateBinding Header}"
-										  TextColor="{TemplateBinding Foreground}"
-										  ThumbTint="{TemplateBinding BorderBrush}"
-										  TrackTint="{TemplateBinding Background}" />
+										  Text="{TemplateBinding Header}" />
 				</ControlTemplate>
 			</Setter.Value>
 		</Setter>
 	</android:Style>
 
-	<not_wasm:Style BasedOn="{StaticResource NativeDefaultToggleSwitch}"
-					TargetType="ToggleSwitch" />
+	<wasm:Style
+		x:Key="NativeDefaultToggleSwitch"
+		TargetType="ToggleSwitch"
+		BasedOn="{StaticResource XamlDefaultToggleSwitch}" />
+
+	<xamarin:Style
+		TargetType="ToggleSwitch"
+		BasedOn="{StaticResource NativeDefaultToggleSwitch}" />
 
 	<!-- Default native Slider styles -->
 	<ios:Style x:Key="NativeDefaultSlider"
@@ -176,8 +200,14 @@
 		</Setter>
 	</android:Style>
 
-	<not_wasm:Style BasedOn="{StaticResource NativeDefaultSlider}"
-					TargetType="Slider" />
+	<wasm:Style
+		x:Key="NativeDefaultSlider"
+		TargetType="Slider"
+		BasedOn="{StaticResource XamlDefaultSlider}" />
+
+	<xamarin:Style
+		BasedOn="{StaticResource NativeDefaultSlider}"
+		TargetType="Slider" />
 
 	<converters:UnoNativeDefaultProgressBarReverseBoolConverter x:Key="nativeDefaultProgressBarReverseBool" />
 
@@ -218,8 +248,14 @@
 		</Setter>
 	</android:Style>
 
-	<not_wasm:Style BasedOn="{StaticResource NativeDefaultProgressBar}"
-					TargetType="ProgressBar" />
+	<wasm:Style
+		x:Key="NativeDefaultProgressBar"
+		TargetType="ProgressBar" 
+		BasedOn="{StaticResource XamlDefaultProgressBar}" />
+
+	<xamarin:Style
+		TargetType="ProgressBar" 
+		BasedOn="{StaticResource NativeDefaultProgressBar}" />
 
 	<!-- Default native TextBox styles -->
 	<xamarin:Style x:Key="NativeDefaultTextBox"
@@ -299,8 +335,13 @@
 		</Setter>
 	</android:Style>
 
-	<not_wasm:Style BasedOn="{StaticResource NativeDefaultPivot}"
-					TargetType="Pivot" />
+	<not_wasm:Style
+		TargetType="Pivot"
+		BasedOn="{StaticResource NativeDefaultPivot}" />
+
+	<wasm:Style
+		TargetType="Pivot"
+		BasedOn="{StaticResource XamlDefaultPivot}" />
 
 	<ios:Style x:Key="NativeDefaultCommandBar"
 			   TargetType="CommandBar">
@@ -345,8 +386,14 @@
 		</Setter>
 	</android:Style>
 
-	<not_wasm:Style TargetType="CommandBar"
-					BasedOn="{StaticResource NativeDefaultCommandBar}" />
+	<wasm:Style
+		x:Key="NativeDefaultCommandBar"
+		TargetType="CommandBar"
+		BasedOn="{StaticResource XamlCommandBar}" />
+
+	<xamarin:Style
+		TargetType="CommandBar"
+		BasedOn="{StaticResource NativeDefaultCommandBar}" />
 
 	<ios:Style x:Key="NativeDefaultAppBarButton"
 			   TargetType="AppBarButton">
@@ -364,8 +411,14 @@
 					Value="{x:Null}" />
 	</android:Style>
 
-	<not_wasm:Style TargetType="AppBarButton"
-					BasedOn="{StaticResource NativeDefaultAppBarButton}" />
+	<wasm:Style
+		x:Key="NativeDefaultAppBarButton"
+		TargetType="AppBarButton"
+		BasedOn="{StaticResource XamlAppBarButton}" />
+
+	<xamarin:Style
+		TargetType="AppBarButton"
+		BasedOn="{StaticResource NativeDefaultAppBarButton}" />
 
 	<!-- Default native Frame styles -->
 	<ios:Style x:Key="NativeDefaultFrame"
@@ -392,8 +445,15 @@
 		</Setter>
 	</android:Style>
 
-	<not_wasm:Style BasedOn="{StaticResource NativeDefaultFrame}"
-					TargetType="Frame" />
+	<!-- Default native Frame styles -->
+	<wasm:Style
+		x:Key="NativeDefaultFrame"
+		TargetType="Frame"
+		BasedOn="{StaticResource XamlDefaultFrame}" />
+
+	<xamarin:Style
+		TargetType="Frame"
+		BasedOn="{StaticResource NativeDefaultFrame}" />
 
 	<!--
 		Official recommendation: 

@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Notifications
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class ToastCollectionManager 
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  string AppId
 		{
@@ -17,7 +17,7 @@ namespace Windows.UI.Notifications
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.System.User User
 		{
@@ -27,35 +27,35 @@ namespace Windows.UI.Notifications
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Foundation.IAsyncAction SaveToastCollectionAsync( global::Windows.UI.Notifications.ToastCollection collection)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncAction ToastCollectionManager.SaveToastCollectionAsync(ToastCollection collection) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IReadOnlyList<global::Windows.UI.Notifications.ToastCollection>> FindAllToastCollectionsAsync()
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<IReadOnlyList<ToastCollection>> ToastCollectionManager.FindAllToastCollectionsAsync() is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Foundation.IAsyncOperation<global::Windows.UI.Notifications.ToastCollection> GetToastCollectionAsync( string collectionId)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<ToastCollection> ToastCollectionManager.GetToastCollectionAsync(string collectionId) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Foundation.IAsyncAction RemoveToastCollectionAsync( string collectionId)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncAction ToastCollectionManager.RemoveToastCollectionAsync(string collectionId) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Foundation.IAsyncAction RemoveAllToastCollectionsAsync()
 		{

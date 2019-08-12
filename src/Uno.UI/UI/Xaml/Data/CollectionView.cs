@@ -16,18 +16,20 @@ namespace Windows.UI.Xaml.Data
 	{
 		private IEnumerable _collection;
 		private readonly bool _isGrouped;
+		private readonly PropertyPath _itemsPath;
 
-		public CollectionView(IEnumerable collection, bool isGrouped)
+		public CollectionView(IEnumerable collection, bool isGrouped, PropertyPath itemsPath)
 		{
 			_collection = collection;
 			_isGrouped = isGrouped;
+			_itemsPath = itemsPath;
 
 			if (isGrouped)
 			{
 				var collectionGroups = new ObservableVector<object>();
 				foreach (var group in collection)
 				{
-					collectionGroups.Add(new CollectionViewGroup(group));
+					collectionGroups.Add(new CollectionViewGroup(group, _itemsPath));
 				}
 
 				CollectionGroups = collectionGroups;
@@ -48,7 +50,7 @@ namespace Windows.UI.Xaml.Data
 				case NotifyCollectionChangedAction.Add:
 					for (int i = e.NewStartingIndex; i < e.NewStartingIndex + e.NewItems.Count; i++)
 					{
-						CollectionGroups.Insert(i, new CollectionViewGroup(_collection.ElementAt(i)));
+						CollectionGroups.Insert(i, new CollectionViewGroup(_collection.ElementAt(i), _itemsPath));
 					}
 					break;
 				case NotifyCollectionChangedAction.Move:
@@ -70,7 +72,7 @@ namespace Windows.UI.Xaml.Data
 				case NotifyCollectionChangedAction.Replace:
 					for (int i = e.NewStartingIndex; i < e.NewStartingIndex + e.NewItems.Count; i++)
 					{
-						CollectionGroups[i] = new CollectionViewGroup(_collection.ElementAt(i));
+						CollectionGroups[i] = new CollectionViewGroup(_collection.ElementAt(i), _itemsPath);
 					}
 					break;
 				case NotifyCollectionChangedAction.Reset:
@@ -244,7 +246,16 @@ namespace Windows.UI.Xaml.Data
 
 		void ICollection<object>.CopyTo(object[] array, int arrayIndex)
 		{
-			throw new NotSupportedException();
+			if(_collection is ICollection<object> list)
+			{
+				list.CopyTo(array, arrayIndex);
+			}
+			else if (_collection is ICollection collection)
+			{
+				collection.CopyTo(array, arrayIndex);
+			}
+
+			_collection?.ToObjectArray().CopyTo(array, arrayIndex);
 		}
 
 		IEnumerator<object> IEnumerable<object>.GetEnumerator()

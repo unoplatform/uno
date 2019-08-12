@@ -15,10 +15,11 @@ using System.Collections;
 using Uno.Conversion;
 using Microsoft.Extensions.Logging;
 using Windows.UI.Xaml.Data;
+using System.Dynamic;
 
 namespace Uno.UI.DataBinding
 {
-    internal delegate void ValueSetterHandler(object instance, object value);
+	internal delegate void ValueSetterHandler(object instance, object value);
     internal delegate void ValueUnsetterHandler(object instance);
     internal delegate object ValueGetterHandler(object instance);
 
@@ -352,6 +353,31 @@ namespace Uno.UI.DataBinding
 			return null;
 		}
 
+		private static FieldInfo GetFieldInfo(Type type, string name, bool allowPrivateMembers)
+		{
+			do
+			{
+				var info = type.GetField(
+					name,
+					BindingFlags.Instance
+					| BindingFlags.Static
+					| BindingFlags.Public
+					| (allowPrivateMembers ? BindingFlags.NonPublic : BindingFlags.Default)
+					| BindingFlags.DeclaredOnly
+				);
+
+				if (info != null)
+				{
+					return info;
+				}
+
+				type = type.BaseType;
+			}
+			while (type != null);
+
+			return null;
+		}
+
 		/// <summary>
 		/// Determines if the property is referencing a C# indexer.
 		/// </summary>
@@ -372,7 +398,7 @@ namespace Uno.UI.DataBinding
 			{
 				var parts = property
 					.Replace(":", ".") // ':' is sometimes used to separate namespace from type
-					.Split('.')
+					.Split(new[] { '.' })
 					.Reverse()
 					.Take(2) // type name + property name
 					.Reverse()
@@ -590,6 +616,16 @@ namespace Uno.UI.DataBinding
 					return instance => handler(instance, new object[0]);
 				}
 
+				// Look for a field (permitted for x:Bind only)
+				if (allowPrivateMembers)
+				{
+					var fieldInfo = GetFieldInfo(type, property, true);
+					if (fieldInfo != null)
+					{
+						return instance => fieldInfo.GetValue(instance);
+					}
+				}
+
 				// Look for an attached property
 				var attachedPropertyGetter = GetAttachedPropertyGetter(type, property);
 
@@ -613,7 +649,8 @@ namespace Uno.UI.DataBinding
 				{
 					return instance =>
 					{
-						if (instance is IDictionary<string, object> source
+						if (
+							instance is IDictionary<string, object> source
 							&& source.TryGetValue(property, out var value)
 						)
 						{
@@ -624,7 +661,23 @@ namespace Uno.UI.DataBinding
 					};
 				}
 
-				if(
+				if(type.Is(typeof(System.Dynamic.DynamicObject)))
+				{
+					return instance =>
+					{
+						if (
+							instance is System.Dynamic.DynamicObject dynamicObject
+							&& dynamicObject.TryGetMember(new UnoGetMemberBinder(property, true), out var binderValue)
+						)
+						{
+							return binderValue;
+						}
+
+						return null;
+					};
+				}
+
+				if (
 					type.IsPrimitive
 					&& property == "Value"
 				)
@@ -735,9 +788,6 @@ namespace Uno.UI.DataBinding
 				}
 			}
 
-			var propertyInfo = Uno.Funcs.CreateMemoized(() => GetPropertyInfo(type, property, allowPrivateMembers: false));
-			var propertyType = Uno.Funcs.CreateMemoized(() => GetPropertyOrDependencyPropertyType(type, property));
-
 			// Start by using the provider, to avoid reflection
 			if (BindableMetadataProvider != null)
 			{
@@ -781,12 +831,14 @@ namespace Uno.UI.DataBinding
 					return (instance, value) => DependencyObjectExtensions.SetValue((DependencyObject)instance, dp, convertSelector(() => dp.Type, value), precedence);
 				}
 
-				if (propertyInfo() != null)
+				var propertyInfo = GetPropertyInfo(type, property, allowPrivateMembers: false);
+				if (propertyInfo != null)
 				{
-					var setMethod = propertyInfo().GetSetMethod();
+					var setMethod = propertyInfo.GetSetMethod();
 
 					if (setMethod != null)
 					{
+						var propertyType = Uno.Funcs.CreateMemoized(() => GetPropertyOrDependencyPropertyType(type, property));
 						var handler = MethodInvokerBuilder(setMethod);
 
 						return (instance, value) => handler(instance, new object[] { convertSelector(propertyType, value) });
@@ -800,6 +852,18 @@ namespace Uno.UI.DataBinding
 						if (instance is IDictionary<string, object> source)
 						{
 							source[property] = value;
+						}
+					};
+				}
+
+
+				if (type.Is(typeof(System.Dynamic.DynamicObject)))
+				{
+					return (instance, value) =>
+					{
+						if (instance is System.Dynamic.DynamicObject dynamicObject)
+						{
+							dynamicObject.TrySetMember(new UnoSetMemberBinder(property, true), value);
 						}
 					};
 				}

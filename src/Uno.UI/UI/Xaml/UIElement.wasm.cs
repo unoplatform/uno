@@ -1,34 +1,37 @@
-﻿using Windows.Foundation;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
-using System.Diagnostics.Contracts;
+using System.Globalization;
 using System.Linq;
 using System.Runtime.InteropServices;
-using System.Text;
 using System.Threading;
-using Windows.UI.Xaml.Controls;
+using Microsoft.Extensions.Logging;
+using Uno;
 using Uno.Extensions;
 using Uno.Foundation;
 using Uno.Logging;
-using Uno;
-using System.Globalization;
-using Microsoft.Extensions.Logging;
-using Uno.Core.Comparison;
+using Uno.UI.Xaml.Input;
 using Windows.Devices.Input;
+using Windows.Foundation;
+using Windows.UI.Xaml.Input;
+using Windows.UI.Xaml.Media;
+using Windows.System;
+using Uno.Collections;
+using Uno.UI;
+using System.Numerics;
+using Uno.UI.Xaml;
 
 namespace Windows.UI.Xaml
 {
 	public partial class UIElement : DependencyObject
 	{
-		private readonly GCHandle _gcHandle;
+		// Even if this a concept of FrameworkElement, the loaded state is handled by the UIElement in order to avoid
+		// to cast to FrameworkElement each time a child is added or removed.
+		internal bool IsLoaded;
 
-		internal interface IHandlableEventArgs
-		{
-			bool Handled { get; set; }
-		}
+		private readonly GCHandle _gcHandle;
+		private readonly bool _isFrameworkElement;
+
 
 		private static class ClassNames
 		{
@@ -56,13 +59,13 @@ namespace Windows.UI.Xaml
 
 		private void CapturePointerNative(Pointer pointer)
 		{
-			var command = "Uno.UI.WindowManager.current.setPointerCapture(\"" + HtmlId + "\", " + pointer.PointerId + ");";
+			var command = "Uno.UI.WindowManager.current.setPointerCapture(" + HtmlId + ", " + pointer.PointerId + ");";
 			WebAssemblyRuntime.InvokeJS(command);
 		}
 
 		private void ReleasePointerCaptureNative(Pointer pointer)
 		{
-			var command = "Uno.UI.WindowManager.current.releasePointerCapture(\"" + HtmlId + "\", " + pointer.PointerId + ");";
+			var command = "Uno.UI.WindowManager.current.releasePointerCapture(" + HtmlId + ", " + pointer.PointerId + ");";
 			WebAssemblyRuntime.InvokeJS(command);
 		}
 
@@ -83,7 +86,7 @@ namespace Windows.UI.Xaml
 
 		private Rect GetBoundingClientRect()
 		{
-			var sizeString = WebAssemblyRuntime.InvokeJS("Uno.UI.WindowManager.current.getBoundingClientRect(\"" + HtmlId + "\");");
+			var sizeString = WebAssemblyRuntime.InvokeJS("Uno.UI.WindowManager.current.getBoundingClientRect(" + HtmlId + ");");
 			var sizeParts = sizeString.Split(';');
 			return new Rect(double.Parse(sizeParts[0]), double.Parse(sizeParts[1]), double.Parse(sizeParts[2]), double.Parse(sizeParts[3]));
 		}
@@ -91,6 +94,7 @@ namespace Windows.UI.Xaml
 		public UIElement(string htmlTag = "div", bool isSvg = false)
 		{
 			_gcHandle = GCHandle.Alloc(this, GCHandleType.Weak);
+			_isFrameworkElement = this is FrameworkElement;
 			HtmlTag = htmlTag;
 			HtmlTagIsSvg = isSvg;
 
@@ -141,6 +145,11 @@ namespace Windows.UI.Xaml
 			Uno.UI.Xaml.WindowManagerInterop.SetStyles(HtmlId, new[] { (name, value) });
 		}
 
+		protected internal void SetStyle(string name, double value)
+		{
+			Uno.UI.Xaml.WindowManagerInterop.SetStyleDouble(HtmlId, name, value);
+		}
+
 		protected internal void SetStyle(params (string name, string value)[] styles)
 		{
 			if (styles == null || styles.Length == 0)
@@ -151,24 +160,35 @@ namespace Windows.UI.Xaml
 			Uno.UI.Xaml.WindowManagerInterop.SetStyles(HtmlId, styles);
 		}
 
+		/// <summary>
+		/// Set a specified CSS class to an element from a set of possible values.
+		/// All other possible values will be removed from the element.
+		/// </summary>
+		/// <param name="cssClasses">All possible class values</param>
+		/// <param name="index">The index of the value to set (-1: unset)</param>
+		protected internal void SetClasses(string[] cssClasses, int index = -1)
+		{
+			Uno.UI.Xaml.WindowManagerInterop.SetClasses(HtmlId, cssClasses, index);
+		}
+
 #if DEBUG
 		private long _arrangeCount = 0;
 #endif
 
-		protected internal void SetStyleArranged(params (string name, string value)[] styles)
+		protected internal void ArrangeElementNative(Rect rect, Rect? clipRect)
 		{
-			if (styles == null || styles.Length == 0)
-			{
-				return; // nothing to do
-			}
-
-			Uno.UI.Xaml.WindowManagerInterop.SetStyles(HtmlId, styles, true);
+			Uno.UI.Xaml.WindowManagerInterop.ArrangeElement(HtmlId, rect, clipRect);
 
 #if DEBUG
 			var count = Interlocked.Increment(ref _arrangeCount);
 
 			SetAttribute(("xamlArrangeCount", count.ToString()));
 #endif
+		}
+
+		protected internal void SetNativeTransform(Matrix3x2 matrix)
+		{
+			Uno.UI.Xaml.WindowManagerInterop.SetElementTransform(HtmlId, matrix);
 		}
 
 		protected internal void ResetStyle(params string[] names)
@@ -184,7 +204,7 @@ namespace Windows.UI.Xaml
 
 		protected internal void SetAttribute(string name, string value)
 		{
-			Uno.UI.Xaml.WindowManagerInterop.SetAttribute(HtmlId, new[] { (name, value) });
+			Uno.UI.Xaml.WindowManagerInterop.SetAttribute(HtmlId, name, value);
 		}
 
 		protected internal void SetAttribute(params (string name, string value)[] attributes)
@@ -194,12 +214,12 @@ namespace Windows.UI.Xaml
 				return; // nothing to do
 			}
 
-			Uno.UI.Xaml.WindowManagerInterop.SetAttribute(HtmlId, attributes);
+			Uno.UI.Xaml.WindowManagerInterop.SetAttributes(HtmlId, attributes);
 		}
 
 		protected internal string GetAttribute(string name)
 		{
-			var command = "Uno.UI.WindowManager.current.getAttribute(\"" + HtmlId + "\", \"" + name + "\");";
+			var command = "Uno.UI.WindowManager.current.getAttribute(" + HtmlId + ", \"" + name + "\");";
 			return WebAssemblyRuntime.InvokeJS(command);
 		}
 
@@ -218,58 +238,13 @@ namespace Windows.UI.Xaml
 
 		protected internal string GetProperty(string name)
 		{
-			var command = "Uno.UI.WindowManager.current.getProperty(\"" + HtmlId + "\", \"" + name + "\");";
+			var command = "Uno.UI.WindowManager.current.getProperty(" + HtmlId + ", \"" + name + "\");";
 			return WebAssemblyRuntime.InvokeJS(command);
 		}
 
 		protected internal void SetHtmlContent(string html)
 		{
 			Uno.UI.Xaml.WindowManagerInterop.SetContentHtml(HtmlId, html);
-		}
-
-		protected internal void AddView(UIElement view)
-		{
-			if (view == null)
-			{
-				return;
-			}
-
-			Uno.UI.Xaml.WindowManagerInterop.AddView(HtmlId, view.HtmlId);
-
-			InvalidateMeasure();
-		}
-
-		protected internal void AddView(UIElement view, int index)
-		{
-			if (view == null)
-			{
-				return;
-			}
-
-			Uno.UI.Xaml.WindowManagerInterop.AddView(HtmlId, view.HtmlId, index);
-
-			InvalidateMeasure();
-		}
-
-		protected internal void RemoveView(UIElement view)
-		{
-			if (view == null)
-			{
-				return;
-			}
-
-			Uno.UI.Xaml.WindowManagerInterop.RemoveView(HtmlId, view.HtmlId);
-
-			InvalidateMeasure();
-		}
-
-		internal void MoveViewTo(int oldIndex, int newIndex)
-		{
-			var view = _children[oldIndex];
-
-			Uno.UI.Xaml.WindowManagerInterop.AddView(HtmlId, view.HtmlId, newIndex);
-
-			InvalidateMeasure();
 		}
 
 		partial void EnsureClip(Rect rect)
@@ -280,12 +255,15 @@ namespace Windows.UI.Xaml
 				return;
 			}
 
+			var width = double.IsInfinity(rect.Width) ? 100000.0f : rect.Width;
+			var height = double.IsInfinity(rect.Height) ? 100000.0f : rect.Height;
+
 			SetStyle(
 				"clip",
 				"rect("
 				+ Math.Floor(rect.Y) + "px,"
-				+ Math.Ceiling(rect.X + rect.Width) + "px,"
-				+ Math.Ceiling(rect.Y + rect.Height) + "px,"
+				+ Math.Ceiling(rect.X + width) + "px,"
+				+ Math.Ceiling(rect.Y + height) + "px,"
 				+ Math.Floor(rect.X) + "px"
 				+ ")"
 			);
@@ -293,13 +271,18 @@ namespace Windows.UI.Xaml
 
 		internal enum HtmlEventFilter
 		{
+			Default,
 			LeftPointerEventFilter,
 		}
 
 		internal enum HtmlEventExtractor
 		{
 			PointerEventExtractor, // See PayloadToPointerArgs
+			TappedEventExtractor,
 			KeyboardEventExtractor,
+			FocusEventExtractor,
+			CustomEventDetailStringExtractor, // For use with CustomEvent("name", {detail:{string detail here}})
+			CustomEventDetailJsonExtractor, // For use with CustomEvent("name", {detail:{detail here}}) - will be JSON.stringify
 		}
 
 		private class EventRegistration
@@ -309,6 +292,8 @@ namespace Windows.UI.Xaml
 
 			private readonly UIElement _owner;
 			private readonly string _eventName;
+			private RoutedEvent _routedEvent;
+			private readonly bool _canBubbleNatively;
 			private readonly Func<string, EventArgs> _payloadConverter;
 			private readonly Func<EventArgs, bool> _eventFilterManaged;
 			private readonly Action _subscribeCommand;
@@ -321,7 +306,9 @@ namespace Windows.UI.Xaml
 			public EventRegistration(
 				UIElement owner,
 				string eventName,
+				RoutedEvent routedEvent,
 				bool onCapturePhase = false,
+				bool canBubbleNatively = false,
 				HtmlEventFilter? eventFilter = null,
 				HtmlEventExtractor? eventExtractor = null,
 				Func<string, EventArgs> payloadConverter = null,
@@ -329,6 +316,8 @@ namespace Windows.UI.Xaml
 			{
 				_owner = owner;
 				_eventName = eventName;
+				_routedEvent = routedEvent;
+				_canBubbleNatively = canBubbleNatively;
 				_payloadConverter = payloadConverter;
 				_eventFilterManaged = eventFilterManaged ?? _emptyFilter;
 				if (noRegistrationEventNames.Contains(eventName))
@@ -381,7 +370,7 @@ namespace Windows.UI.Xaml
 			{
 				if (_invocationList.Count == 0)
 				{
-					// Nothing to do (should not occures once we can remove handler in HTML)
+					// Nothing to do (should not occur once we can remove handler in HTML)
 					return false;
 				}
 
@@ -400,44 +389,30 @@ namespace Windows.UI.Xaml
 						args = _payloadConverter(nativeEventPayload);
 					}
 
-					// We assume that all handlers are of the same type. So we peak the invocation list to check the type.
-					switch (_invocationList[0])
+					if (args is RoutedEventArgs routedArgs)
 					{
-						case EventHandler eh:
-							eventArgs = args ?? EventArgs.Empty;
-							if (_eventFilterManaged(eventArgs))
-							{
-								foreach (var handler in _invocationList)
-								{
-									((EventHandler) handler).Invoke(_owner, eventArgs);
-								}
-							}
+						routedArgs.CanBubbleNatively = _canBubbleNatively;
 
-							return false;
-
-						case RoutedEventHandler reh:
-							var routedEventArgs = args as RoutedEventArgs ?? RoutedEventArgs.Empty;
-							if (_eventFilterManaged(routedEventArgs))
-							{
-								foreach (var handler in _invocationList)
-								{
-									((RoutedEventHandler) handler).Invoke(_owner, routedEventArgs);
-								}
-							}
-
-							return false;
-
-						default:
-							if (_eventFilterManaged(args))
-							{
-								foreach (var handler in _invocationList)
-								{
-									handler.DynamicInvoke(_owner, args);
-								}
-							}
-
-							return args is IHandlableEventArgs handelable && handelable.Handled;
+						if (_routedEvent?.Flag == RoutedEventFlag.Tapped)
+						{
+							_owner.PreRaiseTapped?.Invoke(_owner, null);
+						}
 					}
+
+					if (_eventFilterManaged(args))
+					{
+						foreach (var handler in _invocationList)
+						{
+							var result = handler.DynamicInvoke(_owner, args);
+
+							if (result is bool isHandedInManaged && isHandedInManaged)
+							{
+								return true; // will call ".preventDefault()" in JS to prevent native bubbling
+							}
+						}
+					}
+
+					return false; // let native bubbling in HTML
 				}
 				catch (Exception e)
 				{
@@ -462,103 +437,100 @@ namespace Windows.UI.Xaml
 			}
 		}
 
-		private readonly Dictionary<string, EventRegistration> _eventHandlers = new Dictionary<string, EventRegistration>();
+		private readonly Dictionary<string, EventRegistration> _eventHandlers = new Dictionary<string, EventRegistration>(StringComparer.InvariantCultureIgnoreCase);
 
 		internal void RegisterEventHandler(
 			string eventName,
 			Delegate handler,
+			RoutedEvent routedEvent = null,
 			bool onCapturePhase = false,
+			bool canBubbleNatively = false,
 			HtmlEventFilter? eventFilter = null,
 			HtmlEventExtractor? eventExtractor = null,
-			Func<string, EventArgs> payloadConverter = null,
-			Func<EventArgs, bool> eventFilterManaged = null)
+			Func<string, EventArgs> payloadConverter = null)
 		{
-			if(!_eventHandlers.TryGetValue(eventName, out var registartion))
+			if (!_eventHandlers.TryGetValue(eventName, out var registration))
 			{
-				_eventHandlers[eventName] = registartion = new EventRegistration(this, eventName, onCapturePhase, eventFilter, eventExtractor, payloadConverter);
+				_eventHandlers[eventName] = registration = new EventRegistration(
+					this,
+					eventName,
+					routedEvent,
+					onCapturePhase,
+					canBubbleNatively,
+					eventFilter,
+					eventExtractor,
+					payloadConverter);
 			}
 
-			registartion.Add(handler);
-		}
-
-		internal void RegisterEventHandlerEx(
-			string managedEventIdentifier,
-			string eventName,
-			Delegate handler,
-			bool onCapturePhase = false,
-			HtmlEventFilter? eventFilter = null,
-			HtmlEventExtractor? eventExtractor = null,
-			Func<string, EventArgs> payloadConverter = null,
-			Func<EventArgs, bool> eventFilterManaged = null)
-		{
-			if (!_eventHandlers.TryGetValue(eventName, out var registartion))
-			{
-				_eventHandlers[managedEventIdentifier] = registartion = new EventRegistration(this, eventName, onCapturePhase, eventFilter, eventExtractor, payloadConverter);
-			}
-
-			registartion.Add(handler);
+			registration.Add(handler);
 		}
 
 		internal void UnregisterEventHandler(string eventName, Delegate handler)
 		{
-			if (_eventHandlers.TryGetValue(eventName, out var registartion))
+			if (_eventHandlers.TryGetValue(eventName, out var registration))
 			{
-				registartion.Remove(handler);
+				registration.Remove(handler);
 			}
-			else
+			else if (this.Log().IsEnabled(LogLevel.Debug))
 			{
-				if (this.Log().IsEnabled(LogLevel.Debug))
-				{
-					this.Log().Debug(message: $"No handler registered for event {eventName}.");
-				}
+				this.Log().Debug(message: $"No handler registered for event {eventName}.");
 			}
 		}
 
 		internal bool InternalDispatchEvent(string eventName, EventArgs eventArgs = null, string nativeEventPayload = null)
 		{
+			var n = eventName;
 			try
 			{
-				if (_eventHandlers.TryGetValue(eventName, out var registration))
+				if (_eventHandlers.TryGetValue(n, out var registration))
 				{
 					return registration.Dispatch(eventArgs, nativeEventPayload);
 				}
+
+				var registered = string.Join(", ", _eventHandlers.Keys);
+
+				this.Log().Warn(message: $"{this}: No Handler for {n}. Registered: {registered}");
 			}
-			catch(Exception e)
+			catch (Exception e)
 			{
+				this.Log().Error(message: $"{this}/{eventName}/\"{nativeEventPayload}\": Error: {e}");
 				Application.Current.RaiseRecoverableUnhandledExceptionOrLog(e, this);
 			}
 
 			return false;
 		}
 
-		private static readonly Func<string, IntPtr> _strToIntPtr =
-			Marshal.SizeOf<IntPtr>() == 4
-				? (s => (IntPtr)int.Parse(s))
-				: (Func<string, IntPtr>)(s => (IntPtr)long.Parse(s));
-
 		[Preserve]
-		public static string DispatchEvent(string htmlId, string eventName, string eventArgs)
+		public static bool DispatchEvent(int handle, string eventName, string eventArgs)
 		{
-			// parse htmlId to IntPtr
-			var handle = _strToIntPtr(htmlId);
-
-			// Dispatch to right object... if we can find it
-			var gcHandle = GCHandle.FromIntPtr(handle);
-			if (gcHandle.IsAllocated && gcHandle.Target is UIElement element)
+			// Dispatch to right object, if we can find it
+			if (GetElementFromHandle(handle) is UIElement element)
 			{
-				return element.InternalDispatchEvent(eventName, nativeEventPayload: eventArgs).ToString();
+				return element.InternalDispatchEvent(eventName, nativeEventPayload: eventArgs);
 			}
 			else
 			{
-				Console.Error.WriteLine($"No UIElement found for htmlId \"{htmlId}\" {gcHandle.IsAllocated}.");
+				Console.Error.WriteLine($"No UIElement found for htmlId \"{handle}\"");
 			}
 
-			return false.ToString();
+			return false;
+		}
+
+		internal static UIElement GetElementFromHandle(int handle)
+		{
+			var gcHandle = GCHandle.FromIntPtr((IntPtr)handle);
+
+			if(gcHandle.IsAllocated && gcHandle.Target is UIElement element)
+			{
+				return element;
+			}
+
+			return null;
 		}
 
 		private Rect _arranged;
 		private string _name;
-		internal List<UIElement> _children = new List<UIElement>();
+		internal IList<UIElement> _children = new MaterializableList<UIElement>();
 
 		public string Name
 		{
@@ -567,13 +539,24 @@ namespace Windows.UI.Xaml
 			{
 				_name = value;
 
-				Uno.UI.Xaml.WindowManagerInterop.SetName(HtmlId, _name);
+				if (FeatureConfiguration.UIElement.AssignDOMXamlName)
+				{
+					Uno.UI.Xaml.WindowManagerInterop.SetName(HtmlId, _name);
+				}
+			}
+		}
+
+		partial void OnUidChangedPartial()
+		{
+			if (FeatureConfiguration.UIElement.AssignDOMXamlName)
+			{
+				Uno.UI.Xaml.WindowManagerInterop.SetXUid(HtmlId, _uid);
 			}
 		}
 
 		partial void InitializeCapture();
 
-		internal bool IsPointerCaptured { get; set; }
+		internal bool IsPointerCaptured => _pointCaptures.Any();
 
 		public int MeasureCallCount { get; protected set; }
 		public int ArrangeCallCount { get; protected set; }
@@ -623,36 +606,7 @@ namespace Windows.UI.Xaml
 			}
 			else
 			{
-				SetStyle("opacity", opacity.ToStringInvariant());
-			}
-		}
-
-		static partial void OnRenderTransformChanged(object dependencyObject, DependencyPropertyChangedEventArgs args)
-		{
-			var newValue = args.NewValue as Transform;
-			var oldValue = args.OldValue as Transform;
-
-			if (newValue != null)
-			{
-				var view = (UIElement)dependencyObject;
-
-				newValue.View = view;
-				newValue.Origin = view.RenderTransformOrigin;
-			}
-			if (oldValue != null)
-			{
-				oldValue.View = null;
-			}
-		}
-
-		static partial void OnRenderTransformOriginChanged(object dependencyObject, DependencyPropertyChangedEventArgs args)
-		{
-			var view = (UIElement)dependencyObject;
-			var point = (Point)args.NewValue;
-
-			if (view.RenderTransform != null)
-			{
-				view.RenderTransform.Origin = point;
+				SetStyle("opacity", opacity);
 			}
 		}
 
@@ -686,14 +640,19 @@ namespace Windows.UI.Xaml
 			}
 			else
 			{
-				visual.GetBoundingClientRect();
+				otherBounds = visual.GetBoundingClientRect();
 			}
 
-			// TODO: UWP returns a MatrixTransform here. For now TransformToVisual doesn't support rotations, scalings, etc.
-			return new TranslateTransform
+			return new MatrixTransform
 			{
-				X = bounds.X - otherBounds.X,
-				Y = bounds.Y - otherBounds.Y
+				Matrix = new Matrix(
+					m11: 1,
+					m12: 0,
+					m21: 0,
+					m22: 1,
+					offsetX: bounds.X - otherBounds.X,
+					offsetY: bounds.Y - otherBounds.Y
+				)
 			};
 		}
 
@@ -704,6 +663,10 @@ namespace Windows.UI.Xaml
 
 		internal virtual bool IsEnabledOverride() => true;
 
+		public UIElement FindFirstChild() => _children.FirstOrDefault();
+
+		public virtual IEnumerable<UIElement> GetChildren() => _children;
+
 		public void AddChild(UIElement child, int? index = null)
 		{
 			if (child == null)
@@ -711,93 +674,277 @@ namespace Windows.UI.Xaml
 				return;
 			}
 
+			var currentParent = child.GetParent() as UIElement;
+
+			// Remove child from current parent, if any
+			if (currentParent != this && currentParent != null)
+			{
+				// ---IMPORTANT---
+				// This behavior is different than UWP:
+				// On UWP the behavior would be to throw an "Element already has a logical parent" exception.
+
+				// It is done here to align Wasm with Android and iOS where the control is
+				// simply "moved" when attached to another parent.
+
+				// This could lead to "child kidnapping", like the one happening in ComboBox & ComboBoxItem
+
+				this.Log().Info($"{this}.AddChild({child}): Removing child {child} from its current parent {currentParent}.");
+				currentParent.RemoveChild(child);
+			}
+
 			child.SetParent(this);
+
+			OnAddingChild(child);
 
 			_children.Add(child);
 
 			if (index.HasValue)
 			{
-				AddView(child, index.Value);
+				Uno.UI.Xaml.WindowManagerInterop.AddView(HtmlId, child.HtmlId, index);
 			}
 			else
 			{
-				AddView(child);
+				Uno.UI.Xaml.WindowManagerInterop.AddView(HtmlId, child.HtmlId);
 			}
+
+			OnChildAdded(child);
+
+			child.InvalidateMeasure();
+
+			// Arrange is required to unset the uno-unarranged CSS class
+			child.InvalidateArrange();
 		}
 
 		public void ClearChildren()
 		{
-			foreach (var child  in _children)
+			foreach (var child in _children)
 			{
 				child.SetParent(null);
-				RemoveView(child);
+				Uno.UI.Xaml.WindowManagerInterop.RemoveView(HtmlId, child.HtmlId);
+
+				OnChildRemoved(child);
 			}
 
 			_children.Clear();
+			InvalidateMeasure();
 		}
 
 		public bool RemoveChild(UIElement child)
 		{
-			if (_children.Remove(child))
+			if (child != null && _children.Remove(child))
 			{
 				child.SetParent(null);
-				RemoveView(child);
+				Uno.UI.Xaml.WindowManagerInterop.RemoveView(HtmlId, child.HtmlId);
+
+				OnChildRemoved(child);
+
+				InvalidateMeasure();
+
 				return true;
 			}
 
 			return false;
 		}
 
-		public UIElement FindFirstChild()
+		internal void MoveChildTo(int oldIndex, int newIndex)
 		{
-			return _children.FirstOrDefault();
-		}
+			var view = _children[oldIndex];
 
-		public virtual IEnumerable<UIElement> GetChildren()
-		{
-			return _children;
-		}
-
-		[global::Uno.NotImplemented]
-		public static global::Windows.UI.Xaml.RoutedEvent DoubleTappedEvent { get; } = new RoutedEvent();
-
-		[global::Uno.NotImplemented]
-		public static global::Windows.UI.Xaml.RoutedEvent TappedEvent { get; } = new RoutedEvent();
-
-		[global::Uno.NotImplemented]
-		public void AddHandler(global::Windows.UI.Xaml.RoutedEvent routedEvent, object handler, bool handledEventsToo)
-		{
-			if (routedEvent == UIElement.TappedEvent)
+			_children.RemoveAt(oldIndex);
+			if (newIndex == _children.Count)
 			{
-				var h = (TappedEventHandler)handler;
-				var pointerHandler = new PointerEventHandler((snd, e) => h(snd, new TappedRoutedEventArgs(e.GetCurrentPoint())));
-
-				this.PointerPressed += pointerHandler;
-			}
-			else if (routedEvent == UIElement.DoubleTappedEvent)
-			{
-				var h = (DoubleTappedEventHandler)handler;
-				var lastTapped = DateTimeOffset.MinValue.AddDays(2);
-				this.PointerPressed += (snd, e) =>
-				{
-					var now = DateTimeOffset.Now;
-					if (lastTapped.AddMilliseconds(250) < now)
-					{
-						h(this, new DoubleTappedRoutedEventArgs(e.GetCurrentPoint()));
-					}
-					else
-					{
-						lastTapped = now;
-					}
-				};
+				_children.Add(view);
 			}
 			else
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.UIElement", "void UIElement.AddHandler(RoutedEvent routedEvent, object handler, bool handledEventsToo)");
+				_children.Insert(newIndex, view);
+			}
+
+			Uno.UI.Xaml.WindowManagerInterop.AddView(HtmlId, view.HtmlId, newIndex);
+
+			InvalidateMeasure();
+		}
+
+		private void OnAddingChild(UIElement child)
+		{
+			if (FeatureConfiguration.FrameworkElement.WasmUseManagedLoadedUnloaded
+				&& IsLoaded
+				&& child._isFrameworkElement)
+			{
+				if (child.IsLoaded)
+				{
+					this.Log().Error($"{this}: Inconsistent state: child {child} is already loaded (OnAddingChild)");
+				}
+				else
+				{
+					child.ManagedOnLoading();
+				}
 			}
 		}
 
-		private EventArgs PayloadToPointerArgs(string payload)
+		private void OnChildAdded(UIElement child)
+		{
+			if (FeatureConfiguration.FrameworkElement.WasmUseManagedLoadedUnloaded
+				&& IsLoaded
+				&& child._isFrameworkElement)
+			{
+				if (child.IsLoaded)
+				{
+					this.Log().Error($"{this}: Inconsistent state: child {child} is already loaded (OnChildAdded)");
+				}
+				else
+				{
+					child.ManagedOnLoaded();
+				}
+			}
+		}
+
+		private void OnChildRemoved(UIElement child)
+		{
+			if (FeatureConfiguration.FrameworkElement.WasmUseManagedLoadedUnloaded
+				&& IsLoaded
+				&& child._isFrameworkElement)
+			{
+				if (child.IsLoaded)
+				{
+					child.ManagedOnUnloaded();
+				}
+				else
+				{
+					this.Log().Error($"{this}: Inconsistent state: child {child} is not loaded (OnChildRemoved)");
+				}
+			}
+		}
+
+		internal virtual void ManagedOnLoading()
+		{
+			foreach (var child in _children)
+			{
+				child.ManagedOnLoading();
+			}
+		}
+
+		internal virtual void ManagedOnLoaded()
+		{
+			IsLoaded = true;
+
+			foreach (var child in _children)
+			{
+				child.ManagedOnLoaded();
+			}
+		}
+
+		internal virtual void ManagedOnUnloaded()
+		{
+			IsLoaded = false;
+
+			foreach (var child in _children)
+			{
+				child.ManagedOnUnloaded();
+			}
+		}
+
+		private static Dictionary<RoutedEvent, (string eventName, string domEventName)> RoutedEventNames
+			= new Dictionary<RoutedEvent, (string, string)>
+			{
+				// Add more events
+				{ PointerPressedEvent, (nameof(PointerPressedEvent), "pointerdown") },
+				{ PointerReleasedEvent, (nameof(PointerReleasedEvent), "pointerup") },
+				{ PointerMovedEvent, (nameof(PointerMovedEvent), "pointermove") },
+				{ PointerEnteredEvent, (nameof(PointerEnteredEvent), "pointerenter") },
+				{ PointerExitedEvent, (nameof(PointerExitedEvent), "pointerleave") },
+				{ KeyDownEvent, (nameof(KeyDownEvent), "keydown") },
+				{ KeyUpEvent, (nameof(KeyUpEvent), "keyup") },
+				{ GotFocusEvent, (nameof(GotFocusEvent), "focus") },
+				{ LostFocusEvent, (nameof(LostFocusEvent), "focusout") },
+				{ TappedEvent, (nameof(TappedEvent), "click") },
+				{ DoubleTappedEvent, (nameof(DoubleTappedEvent), "dblclick") }
+			};
+
+		// We keep track of registered routed events to avoid registering the same one twice (mainly because RemoveHandler is not implemented)
+		private HashSet<RoutedEvent> _registeredRoutedEvents = new HashSet<RoutedEvent>();
+
+		partial void AddHandlerPartial(RoutedEvent routedEvent, object handler, bool handledEventsToo)
+		{
+			if (!_registeredRoutedEvents.Contains(routedEvent))
+			{
+				if (this.Log().IsEnabled(LogLevel.Debug))
+				{
+					this.Log().Debug($"Registering {routedEvent.Name} on {this}.");
+				}
+
+				_registeredRoutedEvents.Add(routedEvent);
+				if (RoutedEventNames.TryGetValue(routedEvent, out var eventDescription))
+				{
+					HtmlEventFilter? eventFilter;
+					HtmlEventExtractor? eventExtractor;
+					Func<string, EventArgs> payloadConverter;
+
+					switch (eventDescription.eventName)
+					{
+						case nameof(PointerPressedEvent):
+						case nameof(PointerReleasedEvent):
+						case nameof(PointerMovedEvent):
+						case nameof(PointerEnteredEvent):
+						case nameof(PointerExitedEvent):
+							eventFilter = (routedEvent == PointerPressedEvent || routedEvent == PointerReleasedEvent)
+								? HtmlEventFilter.LeftPointerEventFilter
+								: (HtmlEventFilter?) null;
+							eventExtractor = HtmlEventExtractor.PointerEventExtractor;
+							payloadConverter = PayloadToPointerArgs;
+							break;
+
+						case nameof(TappedEvent):
+							eventFilter = HtmlEventFilter.LeftPointerEventFilter;
+							eventExtractor = HtmlEventExtractor.TappedEventExtractor;
+							payloadConverter = PayloadToTappedArgs;
+							break;
+
+						case nameof(DoubleTappedEvent):
+							eventFilter = HtmlEventFilter.LeftPointerEventFilter;
+							eventExtractor = HtmlEventExtractor.TappedEventExtractor;
+							payloadConverter = PayloadToTappedArgs;
+							break;
+
+						case nameof(KeyDownEvent):
+						case nameof(KeyUpEvent):
+							eventFilter = null;
+							eventExtractor = HtmlEventExtractor.KeyboardEventExtractor;
+							payloadConverter = PayloadToKeyArgs;
+							break;
+
+						case nameof(GotFocusEvent):
+						case nameof(LostFocusEvent):
+							eventFilter = null;
+							eventExtractor = HtmlEventExtractor.FocusEventExtractor;
+							payloadConverter = PayloadToFocusArgs;
+							break;
+
+						default:
+							eventFilter = null;
+							eventExtractor = null;
+							payloadConverter = s => new RoutedEventArgs { OriginalSource = this };
+							break;
+					}
+
+					bool RoutedEventHandler(object sender, RoutedEventArgs args)
+						=> RaiseEvent(routedEvent, args);
+
+					RegisterEventHandler(
+						eventDescription.domEventName,
+						routedEvent: routedEvent,
+						handler: new RoutedEventHandlerWithHandled(RoutedEventHandler),
+						onCapturePhase: false,
+						canBubbleNatively: true,
+						eventFilter: eventFilter ?? HtmlEventFilter.Default,
+						eventExtractor: eventExtractor,
+						payloadConverter: payloadConverter
+					);
+				}
+			}
+		}
+
+		private PointerRoutedEventArgs PayloadToPointerArgs(string payload)
 		{
 			var parts = payload?.Split(';');
 			if (parts?.Length != 7)
@@ -818,6 +965,7 @@ namespace Windows.UI.Xaml
 
 			var args = new PointerRoutedEventArgs(new Point(x, y))
 			{
+				OriginalSource = this,
 				KeyModifiers = keys,
 				Pointer = new Pointer(pointerId, type)
 			};
@@ -825,8 +973,7 @@ namespace Windows.UI.Xaml
 			return args;
 		}
 
-
-		private EventArgs PayloadToTappedArgs(string payload)
+		private TappedRoutedEventArgs PayloadToTappedArgs(string payload)
 		{
 			var parts = payload?.Split(';');
 			if (parts?.Length != 7)
@@ -843,10 +990,39 @@ namespace Windows.UI.Xaml
 
 			var args = new TappedRoutedEventArgs(new Point(x, y))
 			{
+				OriginalSource = this,
 				PointerDeviceType = type
 			};
 
 			return args;
+		}
+
+		private KeyRoutedEventArgs PayloadToKeyArgs(string payload)
+		{
+			return new KeyRoutedEventArgs
+			{
+				OriginalSource = this,
+				Key = System.VirtualKeyHelper.FromKey(payload),
+			};
+		}
+
+		private RoutedEventArgs PayloadToFocusArgs(string payload)
+		{
+			if(int.TryParse(payload, out int xamlHandle))
+			{
+				if(GetElementFromHandle(xamlHandle) is UIElement element)
+				{
+					return new RoutedEventArgs
+					{
+						OriginalSource = element,
+					};
+				}
+			}
+
+			return new KeyRoutedEventArgs
+			{
+				OriginalSource = this,
+			};
 		}
 
 		private static PointerDeviceType ConvertPointerTypeString(string typeStr)
@@ -869,7 +1045,7 @@ namespace Windows.UI.Xaml
 			return type;
 		}
 
-		#region HitTestVisibility
+#region HitTestVisibility
 
 		private enum HitTestVisibility
 		{
@@ -968,6 +1144,6 @@ namespace Windows.UI.Xaml
 			}
 		}
 
-		#endregion
+#endregion
 	}
 }

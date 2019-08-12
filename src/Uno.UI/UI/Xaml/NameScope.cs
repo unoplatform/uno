@@ -2,37 +2,42 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Text;
+using Uno.Extensions;
+using Uno.Logging;
+using Uno.UI.DataBinding;
 using Windows.UI.Xaml.Markup;
 
 namespace Windows.UI.Xaml
 {
 	[EditorBrowsable(EditorBrowsableState.Never)]
-	public class NameScope :
-		Dictionary<string, object>,
-		INameScope,
-		IDictionary<string, object>,
-		ICollection<KeyValuePair<string, object>>,
-		IEnumerable<KeyValuePair<string, object>>
+	public class NameScope : INameScope
 	{
+		private Dictionary<string, ManagedWeakReference> _names = new Dictionary<string, ManagedWeakReference>();
+
 		public NameScope()
 		{
 		}
 
 		public object FindName(string name)
 		{
-			return TryGetValue(name, out var element)
-				? element
+			return _names.TryGetValue(name, out var element)
+				? element.Target
 				: null;
 		}
 
 		public void RegisterName(string name, object scopedElement)
 		{
-			Add(name, scopedElement);
+			if (_names.ContainsKey(name))
+			{
+				this.Log().Warn($"The name [{name}] already exists in the current XAML scope");
+			}
+
+			_names[name] = WeakReferencePool.RentWeakReference(this, scopedElement);
 		}
 
 		public void UnregisterName(string name)
 		{
-			Remove(name);
+			_names.Remove(name);
 		}
 
 		#region NameScope attached property

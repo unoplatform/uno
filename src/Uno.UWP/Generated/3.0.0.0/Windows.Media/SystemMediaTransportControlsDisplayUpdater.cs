@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Media
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class SystemMediaTransportControlsDisplayUpdater 
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Media.MediaPlaybackType Type
 		{
@@ -21,7 +21,7 @@ namespace Windows.Media
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Storage.Streams.RandomAccessStreamReference Thumbnail
 		{
@@ -35,7 +35,7 @@ namespace Windows.Media
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  string AppMediaId
 		{
@@ -49,7 +49,7 @@ namespace Windows.Media
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Media.ImageDisplayProperties ImageProperties
 		{
@@ -59,7 +59,7 @@ namespace Windows.Media
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Media.MusicDisplayProperties MusicProperties
 		{
@@ -69,7 +69,7 @@ namespace Windows.Media
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Media.VideoDisplayProperties VideoProperties
 		{
@@ -88,21 +88,21 @@ namespace Windows.Media
 		// Forced skipping of method Windows.Media.SystemMediaTransportControlsDisplayUpdater.MusicProperties.get
 		// Forced skipping of method Windows.Media.SystemMediaTransportControlsDisplayUpdater.VideoProperties.get
 		// Forced skipping of method Windows.Media.SystemMediaTransportControlsDisplayUpdater.ImageProperties.get
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Foundation.IAsyncOperation<bool> CopyFromFileAsync( global::Windows.Media.MediaPlaybackType type,  global::Windows.Storage.StorageFile source)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> SystemMediaTransportControlsDisplayUpdater.CopyFromFileAsync(MediaPlaybackType type, StorageFile source) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  void ClearAll()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.SystemMediaTransportControlsDisplayUpdater", "void SystemMediaTransportControlsDisplayUpdater.ClearAll()");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  void Update()
 		{

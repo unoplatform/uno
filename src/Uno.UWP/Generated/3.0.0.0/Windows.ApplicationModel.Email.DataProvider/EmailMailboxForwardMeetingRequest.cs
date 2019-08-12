@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.ApplicationModel.Email.DataProvider
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class EmailMailboxForwardMeetingRequest 
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  string Comment
 		{
@@ -17,7 +17,7 @@ namespace Windows.ApplicationModel.Email.DataProvider
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  string EmailMailboxId
 		{
@@ -27,7 +27,7 @@ namespace Windows.ApplicationModel.Email.DataProvider
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  string EmailMessageId
 		{
@@ -37,7 +37,7 @@ namespace Windows.ApplicationModel.Email.DataProvider
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  string ForwardHeader
 		{
@@ -47,7 +47,7 @@ namespace Windows.ApplicationModel.Email.DataProvider
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.ApplicationModel.Email.EmailMessageBodyKind ForwardHeaderType
 		{
@@ -57,7 +57,7 @@ namespace Windows.ApplicationModel.Email.DataProvider
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::System.Collections.Generic.IReadOnlyList<global::Windows.ApplicationModel.Email.EmailRecipient> Recipients
 		{
@@ -67,7 +67,7 @@ namespace Windows.ApplicationModel.Email.DataProvider
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  string Subject
 		{
@@ -84,14 +84,14 @@ namespace Windows.ApplicationModel.Email.DataProvider
 		// Forced skipping of method Windows.ApplicationModel.Email.DataProvider.EmailMailboxForwardMeetingRequest.ForwardHeaderType.get
 		// Forced skipping of method Windows.ApplicationModel.Email.DataProvider.EmailMailboxForwardMeetingRequest.ForwardHeader.get
 		// Forced skipping of method Windows.ApplicationModel.Email.DataProvider.EmailMailboxForwardMeetingRequest.Comment.get
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Foundation.IAsyncAction ReportCompletedAsync()
 		{
 			throw new global::System.NotImplementedException("The member IAsyncAction EmailMailboxForwardMeetingRequest.ReportCompletedAsync() is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Foundation.IAsyncAction ReportFailedAsync()
 		{

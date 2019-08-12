@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Media.Core
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class FaceDetectionEffect : global::Windows.Media.IMediaExtension
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  bool Enabled
 		{
@@ -21,7 +21,7 @@ namespace Windows.Media.Core
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::System.TimeSpan DesiredDetectionInterval
 		{
@@ -41,14 +41,14 @@ namespace Windows.Media.Core
 		// Forced skipping of method Windows.Media.Core.FaceDetectionEffect.DesiredDetectionInterval.get
 		// Forced skipping of method Windows.Media.Core.FaceDetectionEffect.FaceDetected.add
 		// Forced skipping of method Windows.Media.Core.FaceDetectionEffect.FaceDetected.remove
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  void SetProperties( global::Windows.Foundation.Collections.IPropertySet configuration)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.FaceDetectionEffect", "void FaceDetectionEffect.SetProperties(IPropertySet configuration)");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Media.Core.FaceDetectionEffect, global::Windows.Media.Core.FaceDetectedEventArgs> FaceDetected
 		{

@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Globalization.NumberFormatting
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class CurrencyFormatter : global::Windows.Globalization.NumberFormatting.INumberParser,global::Windows.Globalization.NumberFormatting.INumberFormatter2,global::Windows.Globalization.NumberFormatting.INumberFormatter,global::Windows.Globalization.NumberFormatting.INumberFormatterOptions,global::Windows.Globalization.NumberFormatting.ISignificantDigitsOption,global::Windows.Globalization.NumberFormatting.INumberRounderOption,global::Windows.Globalization.NumberFormatting.ISignedZeroOption
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  string Currency
 		{
@@ -21,7 +21,7 @@ namespace Windows.Globalization.NumberFormatting
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Globalization.NumberFormatting.CurrencyFormatterMode Mode
 		{
@@ -35,7 +35,7 @@ namespace Windows.Globalization.NumberFormatting
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  string NumeralSystem
 		{
@@ -49,7 +49,7 @@ namespace Windows.Globalization.NumberFormatting
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  bool IsGrouped
 		{
@@ -63,7 +63,7 @@ namespace Windows.Globalization.NumberFormatting
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  bool IsDecimalPointAlwaysDisplayed
 		{
@@ -77,7 +77,7 @@ namespace Windows.Globalization.NumberFormatting
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  int IntegerDigits
 		{
@@ -91,7 +91,7 @@ namespace Windows.Globalization.NumberFormatting
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  int FractionDigits
 		{
@@ -105,7 +105,7 @@ namespace Windows.Globalization.NumberFormatting
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  string GeographicRegion
 		{
@@ -115,7 +115,7 @@ namespace Windows.Globalization.NumberFormatting
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  string ResolvedGeographicRegion
 		{
@@ -125,7 +125,7 @@ namespace Windows.Globalization.NumberFormatting
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  string ResolvedLanguage
 		{
@@ -135,7 +135,7 @@ namespace Windows.Globalization.NumberFormatting
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::System.Collections.Generic.IReadOnlyList<string> Languages
 		{
@@ -145,7 +145,7 @@ namespace Windows.Globalization.NumberFormatting
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Globalization.NumberFormatting.INumberRounder NumberRounder
 		{
@@ -159,7 +159,7 @@ namespace Windows.Globalization.NumberFormatting
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  bool IsZeroSigned
 		{
@@ -173,7 +173,7 @@ namespace Windows.Globalization.NumberFormatting
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  int SignificantDigits
 		{
@@ -187,7 +187,7 @@ namespace Windows.Globalization.NumberFormatting
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public CurrencyFormatter( string currencyCode) 
 		{
@@ -195,7 +195,7 @@ namespace Windows.Globalization.NumberFormatting
 		}
 		#endif
 		// Forced skipping of method Windows.Globalization.NumberFormatting.CurrencyFormatter.CurrencyFormatter(string)
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public CurrencyFormatter( string currencyCode,  global::System.Collections.Generic.IEnumerable<string> languages,  string geographicRegion) 
 		{
@@ -219,63 +219,63 @@ namespace Windows.Globalization.NumberFormatting
 		// Forced skipping of method Windows.Globalization.NumberFormatting.CurrencyFormatter.NumeralSystem.set
 		// Forced skipping of method Windows.Globalization.NumberFormatting.CurrencyFormatter.ResolvedLanguage.get
 		// Forced skipping of method Windows.Globalization.NumberFormatting.CurrencyFormatter.ResolvedGeographicRegion.get
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  string Format( long value)
 		{
 			throw new global::System.NotImplementedException("The member string CurrencyFormatter.Format(long value) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  string Format( ulong value)
 		{
 			throw new global::System.NotImplementedException("The member string CurrencyFormatter.Format(ulong value) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  string Format( double value)
 		{
 			throw new global::System.NotImplementedException("The member string CurrencyFormatter.Format(double value) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  string FormatInt( long value)
 		{
 			throw new global::System.NotImplementedException("The member string CurrencyFormatter.FormatInt(long value) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  string FormatUInt( ulong value)
 		{
 			throw new global::System.NotImplementedException("The member string CurrencyFormatter.FormatUInt(ulong value) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  string FormatDouble( double value)
 		{
 			throw new global::System.NotImplementedException("The member string CurrencyFormatter.FormatDouble(double value) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  long? ParseInt( string text)
 		{
 			throw new global::System.NotImplementedException("The member long? CurrencyFormatter.ParseInt(string text) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  ulong? ParseUInt( string text)
 		{
 			throw new global::System.NotImplementedException("The member ulong? CurrencyFormatter.ParseUInt(string text) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  double? ParseDouble( string text)
 		{
@@ -284,7 +284,7 @@ namespace Windows.Globalization.NumberFormatting
 		#endif
 		// Forced skipping of method Windows.Globalization.NumberFormatting.CurrencyFormatter.Mode.get
 		// Forced skipping of method Windows.Globalization.NumberFormatting.CurrencyFormatter.Mode.set
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  void ApplyRoundingForCurrency( global::Windows.Globalization.NumberFormatting.RoundingAlgorithm roundingAlgorithm)
 		{

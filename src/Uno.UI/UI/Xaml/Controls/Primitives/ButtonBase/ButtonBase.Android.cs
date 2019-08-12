@@ -1,18 +1,10 @@
-﻿using Android.App;
-using Android.Graphics;
-using Android.Util;
+﻿using System;
 using Android.Views;
-using Uno;
-using Uno.Client;
+using Uno.Disposables;
 using Uno.Extensions;
 using Uno.Logging;
 using Uno.UI;
 using Windows.UI.Xaml.Input;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using Uno.Disposables;
-using System.Text;
 
 namespace Windows.UI.Xaml.Controls.Primitives
 {
@@ -20,6 +12,12 @@ namespace Windows.UI.Xaml.Controls.Primitives
 	{
 		private readonly SerialDisposable _touchSubscription = new SerialDisposable();
 		private readonly SerialDisposable _isEnabledSubscription = new SerialDisposable();
+
+		partial void PartialInitializeProperties()
+		{
+			// need the Tapped event to be registered for "Click" to work properly
+			Tapped += (snd, evt) => { };
+		}
 
 		protected override void OnLoaded()
 		{
@@ -31,6 +29,8 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			RegisterEvents();
 
 			OnCanExecuteChanged();
+
+			PreRaiseTapped += OnPreRaiseTapped;
 		}
 
 		protected override void OnUnloaded()
@@ -38,8 +38,16 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			base.OnUnloaded();
 			_isEnabledSubscription.Disposable = null;
 			_touchSubscription.Disposable = null;
+
+			PreRaiseTapped -= OnPreRaiseTapped;
 		}
 
+		private void OnPreRaiseTapped(object sender, EventArgs e)
+		{
+			// This even is raised only when the source is a Uno-managed control
+			// (when not using native styling)
+			OnClick();
+		}
 
 		partial void OnIsEnabledChangedPartial(bool oldValue, bool newValue)
 		{
@@ -66,7 +74,13 @@ namespace Windows.UI.Xaml.Controls.Primitives
 							this.Log().Debug("TouchUpInside, executing command");
 						}
 
+						OnPointerPressed(new PointerRoutedEventArgs { OriginalSource = this });
+
 						OnClick();
+
+						var args = new TappedRoutedEventArgs { OriginalSource = this };
+
+						RaiseEvent(TappedEvent, args);
 					});
 
 				_isEnabledSubscription.Disposable =
@@ -80,20 +94,6 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			}
 			else if (uiControl != null)
 			{
-				PointerExited += OnPointerExited;
-				PointerEntered += OnPointerEntered;
-				PointerCanceled += OnPointerCanceled;
-				PointerPressed += OnPointerPressed;
-				PointerReleased += OnPointerReleased;
-
-				_touchSubscription.Disposable = Disposable.Create(() =>
-				{
-					PointerExited -= OnPointerExited;
-					PointerEntered -= OnPointerEntered;
-					PointerCanceled -= OnPointerCanceled;
-					PointerPressed -= OnPointerPressed;
-					PointerReleased -= OnPointerReleased;
-				});
 			}
 			else
 			{
@@ -121,33 +121,6 @@ namespace Windows.UI.Xaml.Controls.Primitives
 				// Finally check for templated ContentControl root
 				?? TemplatedRoot as View
 				;
-		}
-
-
-		// TODO: these event handlers should be removed when overrides are correctly called from Control
-		private void OnPointerPressed(object sender, PointerRoutedEventArgs args)
-		{
-			OnPointerPressed(args);
-		}
-
-		private void OnPointerReleased(object sender, PointerRoutedEventArgs args)
-		{
-			OnPointerReleased(args);
-		}
-
-		private void OnPointerCanceled(object sender, PointerRoutedEventArgs args)
-		{
-			OnPointerCanceled(args);
-		}
-
-		private void OnPointerExited(object sender, PointerRoutedEventArgs args)
-		{
-			OnPointerExited(args);
-		}
-
-		private void OnPointerEntered(object sender, PointerRoutedEventArgs args)
-		{
-			OnPointerEntered(args);
 		}
 	}
 }

@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.ApplicationModel.UserDataTasks
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class UserDataTaskListSyncManager 
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.ApplicationModel.UserDataTasks.UserDataTaskListSyncStatus Status
 		{
@@ -21,7 +21,7 @@ namespace Windows.ApplicationModel.UserDataTasks
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::System.DateTimeOffset LastSuccessfulSyncTime
 		{
@@ -35,7 +35,7 @@ namespace Windows.ApplicationModel.UserDataTasks
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::System.DateTimeOffset LastAttemptedSyncTime
 		{
@@ -55,7 +55,7 @@ namespace Windows.ApplicationModel.UserDataTasks
 		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.UserDataTaskListSyncManager.LastSuccessfulSyncTime.set
 		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.UserDataTaskListSyncManager.Status.get
 		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.UserDataTaskListSyncManager.Status.set
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Foundation.IAsyncOperation<bool> SyncAsync()
 		{
@@ -64,7 +64,7 @@ namespace Windows.ApplicationModel.UserDataTasks
 		#endif
 		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.UserDataTaskListSyncManager.SyncStatusChanged.add
 		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.UserDataTaskListSyncManager.SyncStatusChanged.remove
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.ApplicationModel.UserDataTasks.UserDataTaskListSyncManager, object> SyncStatusChanged
 		{

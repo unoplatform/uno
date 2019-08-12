@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Devices.AllJoyn
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class AllJoynServiceInfo 
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  string ObjectPath
 		{
@@ -17,7 +17,7 @@ namespace Windows.Devices.AllJoyn
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  ushort SessionPort
 		{
@@ -27,7 +27,7 @@ namespace Windows.Devices.AllJoyn
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  string UniqueName
 		{
@@ -37,7 +37,7 @@ namespace Windows.Devices.AllJoyn
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public AllJoynServiceInfo( string uniqueName,  string objectPath,  ushort sessionPort) 
 		{
@@ -48,7 +48,7 @@ namespace Windows.Devices.AllJoyn
 		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynServiceInfo.UniqueName.get
 		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynServiceInfo.ObjectPath.get
 		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynServiceInfo.SessionPort.get
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.AllJoyn.AllJoynServiceInfo> FromIdAsync( string deviceId)
 		{

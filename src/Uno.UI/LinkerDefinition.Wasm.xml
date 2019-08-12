@@ -1,0 +1,32 @@
+﻿<linker>
+  <assembly fullname="Uno.UI.Wasm" />
+  
+  <assembly fullname="Uno.UI">
+    <type fullname="Windows.UI.Xaml.UIElement" />
+    <type fullname="Windows.UI.Xaml.Window" />
+    <type fullname="Windows.UI.Xaml.Media.BrushConverter" />
+    <type fullname="Windows.UI.Xaml.Media.ImageSourceConverter" />
+    <type fullname="Windows.UI.Xaml.Media.CornerRadiusConverter" />
+    <type fullname="Uno.Media.GeometryConverter" />
+    <type fullname="Windows.UI.Xaml.ThicknessConverter" />
+    <type fullname="Windows.UI.Xaml.ObservableVectorWrapper" />
+  </assembly>
+  
+  <assembly fullname="Uno">
+    <type fullname="Windows.UI.Core.CoreDispatcher" />
+    <type fullname="Windows.UI.Core.SystemNavigationManager" />
+    <type fullname="Windows.Devices.Sensors.Accelerometer">
+      <method name="DispatchReading" />
+    </type>
+  </assembly>
+  
+  <assembly fullname="Uno.Foundation">
+    <type fullname="Uno.Foundation.Interop.JSObject" />
+    <type fullname="Windows.Foundation.SizeConverter" />
+  </assembly>
+
+  <assembly fullname="System">
+    <type fullname="System.ComponentModel.*Converter" />
+    <type fullname="System.*Converter" />
+  </assembly>
+</linker>

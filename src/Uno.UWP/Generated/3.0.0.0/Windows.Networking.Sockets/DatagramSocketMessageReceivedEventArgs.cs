@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Networking.Sockets
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class DatagramSocketMessageReceivedEventArgs 
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Networking.HostName LocalAddress
 		{
@@ -17,7 +17,7 @@ namespace Windows.Networking.Sockets
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Networking.HostName RemoteAddress
 		{
@@ -27,7 +27,7 @@ namespace Windows.Networking.Sockets
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  string RemotePort
 		{
@@ -40,14 +40,14 @@ namespace Windows.Networking.Sockets
 		// Forced skipping of method Windows.Networking.Sockets.DatagramSocketMessageReceivedEventArgs.RemoteAddress.get
 		// Forced skipping of method Windows.Networking.Sockets.DatagramSocketMessageReceivedEventArgs.RemotePort.get
 		// Forced skipping of method Windows.Networking.Sockets.DatagramSocketMessageReceivedEventArgs.LocalAddress.get
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Storage.Streams.DataReader GetDataReader()
 		{
 			throw new global::System.NotImplementedException("The member DataReader DatagramSocketMessageReceivedEventArgs.GetDataReader() is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Storage.Streams.IInputStream GetDataStream()
 		{

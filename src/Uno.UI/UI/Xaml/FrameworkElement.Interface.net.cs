@@ -12,7 +12,7 @@ namespace Windows.UI.Xaml
 {
 	public partial class FrameworkElement : UIElement, IFrameworkElement
 	{
-		public T FindFirstParent<T>() where T:class
+		public T FindFirstParent<T>() where T : class
 		{
 			var view = this.Parent;
 			while (view != null)
@@ -34,26 +34,35 @@ namespace Windows.UI.Xaml
 			Initialize();
 		}
 
+		protected virtual void OnLoading()
+		{
+			Loading?.Invoke(this, null);
+		}
+
 		protected virtual void OnLoaded()
 		{
-
+			Loaded?.Invoke(this, RoutedEventArgs.Empty);
 		}
 
 		protected virtual void OnUnloaded()
 		{
-
+			Unloaded?.Invoke(this, RoutedEventArgs.Empty);
 		}
+
+		public event RoutedEventHandler Loaded;
+		public event RoutedEventHandler Unloaded;
+		public event TypedEventHandler<FrameworkElement, object> Loading;
 
 		public TransitionCollection Transitions { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
-		public IFrameworkElement FindName(string name) 
+		public IFrameworkElement FindName(string name)
 			=> IFrameworkElementHelper.FindName(this, GetChildren(), name);
 
 
 		public void Dispose()
 		{
 			throw new NotImplementedException();
-        }
+		}
 
 		public Size AdjustArrange(Size finalSize)
 		{
@@ -101,7 +110,7 @@ namespace Windows.UI.Xaml
 
 		protected virtual void OnBackgroundChanged(DependencyPropertyChangedEventArgs e)
 		{
-			
+
 		}
 
 		#endregion

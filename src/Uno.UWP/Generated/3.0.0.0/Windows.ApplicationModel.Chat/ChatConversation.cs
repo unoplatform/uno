@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.ApplicationModel.Chat
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class ChatConversation : global::Windows.ApplicationModel.Chat.IChatItem
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  string Subject
 		{
@@ -21,7 +21,7 @@ namespace Windows.ApplicationModel.Chat
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  bool IsConversationMuted
 		{
@@ -35,7 +35,7 @@ namespace Windows.ApplicationModel.Chat
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  bool HasUnreadMessages
 		{
@@ -45,7 +45,7 @@ namespace Windows.ApplicationModel.Chat
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  string Id
 		{
@@ -55,7 +55,7 @@ namespace Windows.ApplicationModel.Chat
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  string MostRecentMessageId
 		{
@@ -65,7 +65,7 @@ namespace Windows.ApplicationModel.Chat
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::System.Collections.Generic.IList<string> Participants
 		{
@@ -75,7 +75,7 @@ namespace Windows.ApplicationModel.Chat
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.ApplicationModel.Chat.ChatConversationThreadingInfo ThreadingInfo
 		{
@@ -85,7 +85,7 @@ namespace Windows.ApplicationModel.Chat
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  bool CanModifyParticipants
 		{
@@ -99,7 +99,7 @@ namespace Windows.ApplicationModel.Chat
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.ApplicationModel.Chat.ChatItemKind ItemKind
 		{
@@ -118,49 +118,49 @@ namespace Windows.ApplicationModel.Chat
 		// Forced skipping of method Windows.ApplicationModel.Chat.ChatConversation.MostRecentMessageId.get
 		// Forced skipping of method Windows.ApplicationModel.Chat.ChatConversation.Participants.get
 		// Forced skipping of method Windows.ApplicationModel.Chat.ChatConversation.ThreadingInfo.get
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Foundation.IAsyncAction DeleteAsync()
 		{
 			throw new global::System.NotImplementedException("The member IAsyncAction ChatConversation.DeleteAsync() is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.ApplicationModel.Chat.ChatMessageReader GetMessageReader()
 		{
 			throw new global::System.NotImplementedException("The member ChatMessageReader ChatConversation.GetMessageReader() is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Foundation.IAsyncAction MarkMessagesAsReadAsync()
 		{
 			throw new global::System.NotImplementedException("The member IAsyncAction ChatConversation.MarkMessagesAsReadAsync() is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Foundation.IAsyncAction MarkMessagesAsReadAsync( global::System.DateTimeOffset value)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncAction ChatConversation.MarkMessagesAsReadAsync(DateTimeOffset value) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Foundation.IAsyncAction SaveAsync()
 		{
 			throw new global::System.NotImplementedException("The member IAsyncAction ChatConversation.SaveAsync() is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  void NotifyLocalParticipantComposing( string transportId,  string participantAddress,  bool isComposing)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Chat.ChatConversation", "void ChatConversation.NotifyLocalParticipantComposing(string transportId, string participantAddress, bool isComposing)");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  void NotifyRemoteParticipantComposing( string transportId,  string participantAddress,  bool isComposing)
 		{
@@ -172,7 +172,7 @@ namespace Windows.ApplicationModel.Chat
 		// Forced skipping of method Windows.ApplicationModel.Chat.ChatConversation.CanModifyParticipants.get
 		// Forced skipping of method Windows.ApplicationModel.Chat.ChatConversation.CanModifyParticipants.set
 		// Forced skipping of method Windows.ApplicationModel.Chat.ChatConversation.ItemKind.get
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.ApplicationModel.Chat.ChatConversation, global::Windows.ApplicationModel.Chat.RemoteParticipantComposingChangedEventArgs> RemoteParticipantComposingChanged
 		{

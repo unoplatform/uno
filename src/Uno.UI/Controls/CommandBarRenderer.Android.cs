@@ -20,6 +20,8 @@ using Android.App;
 using Uno.Extensions;
 using Uno.Logging;
 using Microsoft.Extensions.Logging;
+using Android.Views.InputMethods;
+using Android.Content;
 
 namespace Uno.UI.Controls
 {
@@ -264,6 +266,8 @@ namespace Uno.UI.Controls
 
 		private void Native_MenuItemClick(object sender, Toolbar.MenuItemClickEventArgs e)
 		{
+			CloseKeyboard();
+
 			var hashCode = e.Item.ItemId;
 			var appBarButton = Element.PrimaryCommands
 				.Concat(Element.SecondaryCommands)
@@ -275,6 +279,8 @@ namespace Uno.UI.Controls
 
 		private void Native_NavigationClick(object sender, Toolbar.NavigationClickEventArgs e)
 		{
+			CloseKeyboard();
+
 			var navigationCommand = Element.GetValue(NavigationCommandProperty) as AppBarButton;
 			if (navigationCommand != null)
 			{
@@ -283,6 +289,15 @@ namespace Uno.UI.Controls
 			else
 			{
 				SystemNavigationManager.GetForCurrentView().RequestBack();
+			}
+		}
+
+		private void CloseKeyboard()
+		{
+			if ((ContextHelper.Current as Activity)?.CurrentFocus is View focused)
+			{
+				var imm = (InputMethodManager)ContextHelper.Current.GetSystemService(Context.InputMethodService);
+				imm.HideSoftInputFromWindow(focused.WindowToken, HideSoftInputFlags.None);
 			}
 		}
 	}

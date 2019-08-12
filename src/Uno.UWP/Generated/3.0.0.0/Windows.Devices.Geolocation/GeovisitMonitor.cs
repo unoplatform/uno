@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Devices.Geolocation
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class GeovisitMonitor 
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Devices.Geolocation.VisitMonitoringScope MonitoringScope
 		{
@@ -17,7 +17,7 @@ namespace Windows.Devices.Geolocation
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public GeovisitMonitor() 
 		{
@@ -26,14 +26,14 @@ namespace Windows.Devices.Geolocation
 		#endif
 		// Forced skipping of method Windows.Devices.Geolocation.GeovisitMonitor.GeovisitMonitor()
 		// Forced skipping of method Windows.Devices.Geolocation.GeovisitMonitor.MonitoringScope.get
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  void Start( global::Windows.Devices.Geolocation.VisitMonitoringScope value)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Geolocation.GeovisitMonitor", "void GeovisitMonitor.Start(VisitMonitoringScope value)");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  void Stop()
 		{
@@ -42,14 +42,14 @@ namespace Windows.Devices.Geolocation
 		#endif
 		// Forced skipping of method Windows.Devices.Geolocation.GeovisitMonitor.VisitStateChanged.add
 		// Forced skipping of method Windows.Devices.Geolocation.GeovisitMonitor.VisitStateChanged.remove
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Geolocation.Geovisit> GetLastReportAsync()
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<Geovisit> GeovisitMonitor.GetLastReportAsync() is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Devices.Geolocation.GeovisitMonitor, global::Windows.Devices.Geolocation.GeovisitStateChangedEventArgs> VisitStateChanged
 		{

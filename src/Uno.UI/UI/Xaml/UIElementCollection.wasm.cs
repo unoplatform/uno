@@ -42,7 +42,7 @@ namespace Windows.UI.Xaml.Controls
 
 		protected override View GetAtIndexCore(int index) => _view._children[index];
 
-		protected override List<View>.Enumerator GetEnumeratorCore() => _view._children.GetEnumerator();
+		protected override List<View>.Enumerator GetEnumeratorCore() => (List<View>.Enumerator)_view._children.GetEnumerator();
 
 		protected override int IndexOfCore(View item) => _view._children.IndexOf(item);
 
@@ -53,7 +53,7 @@ namespace Windows.UI.Xaml.Controls
 
 		protected override void MoveCore(uint oldIndex, uint newIndex)
 		{
-			_view.MoveViewTo((int)oldIndex, (int)newIndex);
+			_view.MoveChildTo((int)oldIndex, (int)newIndex);
 		}
 
 		protected override View RemoveAtCore(int index)

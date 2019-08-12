@@ -1,26 +1,109 @@
-- name: Introduction
-  href: intro.md
-- name: Supported Features
-  href: supported-features.md
-- name: Frequently Asked Questions
-  href: faq.md
-- name: API Differences
-  href: api-differences.md
-- name: Supported Controls
-  href: implemented-views.md
-- name: Uno.UI Performance Tips
-  href: Uno-UI-Performance.md
-- name: Working with Assets
-  href: working-with-assets.md
-- name: Command Bar
-  href: working-with-commandbar.md
-- name: ListViewBase implementation
-  href: ListViewBase.md
-- name: Building and Debugging
-  href: debugging-uno-ui.md
-- name: Feature Flags
-  href: feature-flags.md
-- name: Speech Recognition
-  href: SpeechRecognition.md
-- name: Media Player
-  href: MediaPlayerElement.md
+- name: About
+  items:
+    - name: What is the Uno Platform?
+      href: intro.md
+    - name: Philosophy of Uno
+      href: concepts/overview/philosophy-of-uno.md
+    - name: API differences
+      href: api-differences.md
+    - name: Features list
+      href: supported-features.md
+    - name: FAQ
+      href: faq.md
+- name: Using Uno
+  items:
+    - name: Getting started
+      href: get-started.md
+    - name: Requirements
+      href: getting-started/requirements.md
+    - name: Creating an app - Tutorial
+      href: getting-started-tutorial-1.md
+    - name: Developing with Uno.UI
+      href: using-uno-ui.md
+    - name: Platform-specific C# code in Uno
+      href: platform-specific-csharp.md
+    - name: Platform-specific XAML markup in Uno
+      href: platform-specific-xaml.md
+    - name: Feature flags
+      href: feature-flags.md
+    - name: Uno.UI.Toolkit
+      href: Uno.UI.Toolkit.md
+    - name: Uno app solution structure
+      href: uno-app-solution-structure.md
+    - name: Performance tips
+      href: Uno-UI-Performance.md
+    - name: Debugging C# on WASM
+      href: debugging-wasm.md
+    - name: Build telemetry
+      href: uno-toolchain-telemetry.md
+    - name: Migrate existing code
+      href: howto-migrate-existing-code.md
+- name: Using Uno - features and controls
+  items:
+  - name: Accessibility
+    href: features/working-with-accessibility.md
+  - name: Assets
+    href: features/working-with-assets.md
+  - name: Animations
+    href: features/working-with-animations.md
+  - name: Routed Events
+    href: features/routed-events.md
+  - name: Shapes & Brushes
+    href: features/shapes-and-brushes.md
+  - name: Speech Recognition
+    href: features/SpeechRecognition.md
+  - name: PowerManager
+    href: features/windows-system-power.md
+  - name: PasswordVault
+    href: features\PasswordVault.md
+  - name: Windows.ApplicationModel.Calls
+    href: features\windows-applicationmodel-calls.md
+  - name: Windows.Devices.Sensors
+    href: features\windows-devices-sensors.md
+  - name: Windows.Phone.Devices.Notification
+    href: features\windows-phone-devices-notification-vibrationdevice.md
+  - name: CommandBar
+    href: controls\commandbar.md
+  - name: ListView and GridView
+    href: controls\ListViewBase.md
+  - name: MapControl
+    href: controls\map-control-support.md
+  - name: MediaPlayerElement
+    href: controls\MediaPlayerElement.md
+  - name: Pivot
+    href: controls\Pivot.md
+  - name: ToggleSwitch
+    href: controls\ToggleSwitch.md
+- name: Using Uno - implemented views
+  href: implemented/toc.yml
+  topicHref: implemented-views.md
+- name: Using Uno - advanced topics
+  items:
+    - name: (Wasm) Handling custom HTML events
+      href: wasm-custom-events.md
+    - name: Using Uno Platform Controls in Xamarin.Forms
+      href: howto-use-uno-in-xamarin-forms.md
+- name: Contributing to Uno
+  items:
+    - name: Guidelines for breaking changes
+      href: contributing\guidelines\breaking-changes.md
+    - name: Guidelines for issue triage
+      href: contributing\guidelines\issue-triage.md
+    - name: Guidelines for pull-requests
+      href: contributing\guidelines\pull-requests.md
+    - name: Building and debugging Uno.UI
+      href: uno-development\debugging-uno-ui.md
+    - name: Working with the samples applications
+      href: uno-development\working-with-the-samples-apps.md
+    - name: Inspecting the visual tree
+      href: uno-development\debugging-inspect-visual-tree.md
+    - name: The WeakEventHelper class
+      href: uno-development\Internal-WeakEventHelper.md
+    - name: Layouting in Android
+      href: uno-development\Uno-UI-Layouting-Android.md
+    - name: Layouting in iOS
+      href: uno-development\Uno-UI-Layouting-iOS.md
+    - name: Debugging Uno.UI Java code with Android studio
+      href: uno-development\Uno-UI-Debugging-Android-Studio.md
+    - name: The Uno.UI WebAssembly WPF Host
+      href: uno-development\working-with-uno-wpf-host.md

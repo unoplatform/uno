@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Devices.PointOfService.Provider
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class BarcodeScannerGetSymbologyAttributesRequest 
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  uint Symbology
 		{
@@ -18,28 +18,28 @@ namespace Windows.Devices.PointOfService.Provider
 		}
 		#endif
 		// Forced skipping of method Windows.Devices.PointOfService.Provider.BarcodeScannerGetSymbologyAttributesRequest.Symbology.get
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Foundation.IAsyncAction ReportCompletedAsync( global::Windows.Devices.PointOfService.BarcodeSymbologyAttributes attributes)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncAction BarcodeScannerGetSymbologyAttributesRequest.ReportCompletedAsync(BarcodeSymbologyAttributes attributes) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Foundation.IAsyncAction ReportFailedAsync()
 		{
 			throw new global::System.NotImplementedException("The member IAsyncAction BarcodeScannerGetSymbologyAttributesRequest.ReportFailedAsync() is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Foundation.IAsyncAction ReportFailedAsync( int reason)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncAction BarcodeScannerGetSymbologyAttributesRequest.ReportFailedAsync(int reason) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Foundation.IAsyncAction ReportFailedAsync( int reason,  string failedReasonDescription)
 		{

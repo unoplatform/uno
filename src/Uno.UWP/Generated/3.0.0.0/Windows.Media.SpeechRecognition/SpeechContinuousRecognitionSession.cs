@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Media.SpeechRecognition
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class SpeechContinuousRecognitionSession 
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::System.TimeSpan AutoStopSilenceTimeout
 		{
@@ -23,42 +23,42 @@ namespace Windows.Media.SpeechRecognition
 		#endif
 		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechContinuousRecognitionSession.AutoStopSilenceTimeout.get
 		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechContinuousRecognitionSession.AutoStopSilenceTimeout.set
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Foundation.IAsyncAction StartAsync()
 		{
 			throw new global::System.NotImplementedException("The member IAsyncAction SpeechContinuousRecognitionSession.StartAsync() is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Foundation.IAsyncAction StartAsync( global::Windows.Media.SpeechRecognition.SpeechContinuousRecognitionMode mode)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncAction SpeechContinuousRecognitionSession.StartAsync(SpeechContinuousRecognitionMode mode) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Foundation.IAsyncAction StopAsync()
 		{
 			throw new global::System.NotImplementedException("The member IAsyncAction SpeechContinuousRecognitionSession.StopAsync() is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Foundation.IAsyncAction CancelAsync()
 		{
 			throw new global::System.NotImplementedException("The member IAsyncAction SpeechContinuousRecognitionSession.CancelAsync() is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Foundation.IAsyncAction PauseAsync()
 		{
 			throw new global::System.NotImplementedException("The member IAsyncAction SpeechContinuousRecognitionSession.PauseAsync() is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  void Resume()
 		{
@@ -69,7 +69,7 @@ namespace Windows.Media.SpeechRecognition
 		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechContinuousRecognitionSession.Completed.remove
 		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechContinuousRecognitionSession.ResultGenerated.add
 		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechContinuousRecognitionSession.ResultGenerated.remove
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Media.SpeechRecognition.SpeechContinuousRecognitionSession, global::Windows.Media.SpeechRecognition.SpeechContinuousRecognitionCompletedEventArgs> Completed
 		{
@@ -85,7 +85,7 @@ namespace Windows.Media.SpeechRecognition
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Media.SpeechRecognition.SpeechContinuousRecognitionSession, global::Windows.Media.SpeechRecognition.SpeechContinuousRecognitionResultGeneratedEventArgs> ResultGenerated
 		{

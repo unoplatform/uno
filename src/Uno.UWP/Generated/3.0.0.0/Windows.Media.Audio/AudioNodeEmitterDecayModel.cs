@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Media.Audio
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class AudioNodeEmitterDecayModel 
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Media.Audio.AudioNodeEmitterDecayKind Kind
 		{
@@ -17,7 +17,7 @@ namespace Windows.Media.Audio
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  double MaxGain
 		{
@@ -27,7 +27,7 @@ namespace Windows.Media.Audio
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  double MinGain
 		{
@@ -37,7 +37,7 @@ namespace Windows.Media.Audio
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Media.Audio.AudioNodeEmitterNaturalDecayModelProperties NaturalProperties
 		{
@@ -51,14 +51,14 @@ namespace Windows.Media.Audio
 		// Forced skipping of method Windows.Media.Audio.AudioNodeEmitterDecayModel.MinGain.get
 		// Forced skipping of method Windows.Media.Audio.AudioNodeEmitterDecayModel.MaxGain.get
 		// Forced skipping of method Windows.Media.Audio.AudioNodeEmitterDecayModel.NaturalProperties.get
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.Media.Audio.AudioNodeEmitterDecayModel CreateNatural( double minGain,  double maxGain,  double unityGainDistance,  double cutoffDistance)
 		{
 			throw new global::System.NotImplementedException("The member AudioNodeEmitterDecayModel AudioNodeEmitterDecayModel.CreateNatural(double minGain, double maxGain, double unityGainDistance, double cutoffDistance) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.Media.Audio.AudioNodeEmitterDecayModel CreateCustom( double minGain,  double maxGain)
 		{

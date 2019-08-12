@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Perception.Spatial
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class SpatialStageFrameOfReference 
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Perception.Spatial.SpatialCoordinateSystem CoordinateSystem
 		{
@@ -17,7 +17,7 @@ namespace Windows.Perception.Spatial
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Perception.Spatial.SpatialLookDirectionRange LookDirectionRange
 		{
@@ -27,7 +27,7 @@ namespace Windows.Perception.Spatial
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Perception.Spatial.SpatialMovementRange MovementRange
 		{
@@ -37,7 +37,7 @@ namespace Windows.Perception.Spatial
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.Perception.Spatial.SpatialStageFrameOfReference Current
 		{
@@ -50,14 +50,14 @@ namespace Windows.Perception.Spatial
 		// Forced skipping of method Windows.Perception.Spatial.SpatialStageFrameOfReference.CoordinateSystem.get
 		// Forced skipping of method Windows.Perception.Spatial.SpatialStageFrameOfReference.MovementRange.get
 		// Forced skipping of method Windows.Perception.Spatial.SpatialStageFrameOfReference.LookDirectionRange.get
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Perception.Spatial.SpatialCoordinateSystem GetCoordinateSystemAtCurrentLocation( global::Windows.Perception.Spatial.SpatialLocator locator)
 		{
 			throw new global::System.NotImplementedException("The member SpatialCoordinateSystem SpatialStageFrameOfReference.GetCoordinateSystemAtCurrentLocation(SpatialLocator locator) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::System.Numerics.Vector3[] TryGetMovementBounds( global::Windows.Perception.Spatial.SpatialCoordinateSystem coordinateSystem)
 		{
@@ -67,14 +67,14 @@ namespace Windows.Perception.Spatial
 		// Forced skipping of method Windows.Perception.Spatial.SpatialStageFrameOfReference.Current.get
 		// Forced skipping of method Windows.Perception.Spatial.SpatialStageFrameOfReference.CurrentChanged.add
 		// Forced skipping of method Windows.Perception.Spatial.SpatialStageFrameOfReference.CurrentChanged.remove
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Perception.Spatial.SpatialStageFrameOfReference> RequestNewStageAsync()
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<SpatialStageFrameOfReference> SpatialStageFrameOfReference.RequestNewStageAsync() is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static event global::System.EventHandler<object> CurrentChanged
 		{

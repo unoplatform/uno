@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Web.Http
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class HttpResponseMessage : global::System.IDisposable,global::Windows.Foundation.IStringable
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Web.Http.HttpVersion Version
 		{
@@ -21,7 +21,7 @@ namespace Windows.Web.Http
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Web.Http.HttpStatusCode StatusCode
 		{
@@ -35,7 +35,7 @@ namespace Windows.Web.Http
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Web.Http.HttpResponseMessageSource Source
 		{
@@ -49,7 +49,7 @@ namespace Windows.Web.Http
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Web.Http.HttpRequestMessage RequestMessage
 		{
@@ -63,7 +63,7 @@ namespace Windows.Web.Http
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  string ReasonPhrase
 		{
@@ -77,7 +77,7 @@ namespace Windows.Web.Http
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Web.Http.IHttpContent Content
 		{
@@ -91,7 +91,7 @@ namespace Windows.Web.Http
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Web.Http.Headers.HttpResponseHeaderCollection Headers
 		{
@@ -101,7 +101,7 @@ namespace Windows.Web.Http
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  bool IsSuccessStatusCode
 		{
@@ -111,7 +111,7 @@ namespace Windows.Web.Http
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public HttpResponseMessage( global::Windows.Web.Http.HttpStatusCode statusCode) 
 		{
@@ -119,7 +119,7 @@ namespace Windows.Web.Http
 		}
 		#endif
 		// Forced skipping of method Windows.Web.Http.HttpResponseMessage.HttpResponseMessage(Windows.Web.Http.HttpStatusCode)
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public HttpResponseMessage() 
 		{
@@ -141,21 +141,21 @@ namespace Windows.Web.Http
 		// Forced skipping of method Windows.Web.Http.HttpResponseMessage.StatusCode.set
 		// Forced skipping of method Windows.Web.Http.HttpResponseMessage.Version.get
 		// Forced skipping of method Windows.Web.Http.HttpResponseMessage.Version.set
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Web.Http.HttpResponseMessage EnsureSuccessStatusCode()
 		{
 			throw new global::System.NotImplementedException("The member HttpResponseMessage HttpResponseMessage.EnsureSuccessStatusCode() is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  void Dispose()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.HttpResponseMessage", "void HttpResponseMessage.Dispose()");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public override string ToString()
 		{

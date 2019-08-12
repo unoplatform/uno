@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Input.Inking
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class InkUnprocessedInput 
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.UI.Input.Inking.InkPresenter InkPresenter
 		{
@@ -32,7 +32,7 @@ namespace Windows.UI.Input.Inking
 		// Forced skipping of method Windows.UI.Input.Inking.InkUnprocessedInput.PointerLost.add
 		// Forced skipping of method Windows.UI.Input.Inking.InkUnprocessedInput.PointerLost.remove
 		// Forced skipping of method Windows.UI.Input.Inking.InkUnprocessedInput.InkPresenter.get
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Input.Inking.InkUnprocessedInput, global::Windows.UI.Core.PointerEventArgs> PointerEntered
 		{
@@ -48,7 +48,7 @@ namespace Windows.UI.Input.Inking
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Input.Inking.InkUnprocessedInput, global::Windows.UI.Core.PointerEventArgs> PointerExited
 		{
@@ -64,7 +64,7 @@ namespace Windows.UI.Input.Inking
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Input.Inking.InkUnprocessedInput, global::Windows.UI.Core.PointerEventArgs> PointerHovered
 		{
@@ -80,7 +80,7 @@ namespace Windows.UI.Input.Inking
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Input.Inking.InkUnprocessedInput, global::Windows.UI.Core.PointerEventArgs> PointerLost
 		{
@@ -96,7 +96,7 @@ namespace Windows.UI.Input.Inking
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Input.Inking.InkUnprocessedInput, global::Windows.UI.Core.PointerEventArgs> PointerMoved
 		{
@@ -112,7 +112,7 @@ namespace Windows.UI.Input.Inking
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Input.Inking.InkUnprocessedInput, global::Windows.UI.Core.PointerEventArgs> PointerPressed
 		{
@@ -128,7 +128,7 @@ namespace Windows.UI.Input.Inking
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Input.Inking.InkUnprocessedInput, global::Windows.UI.Core.PointerEventArgs> PointerReleased
 		{

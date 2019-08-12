@@ -4,6 +4,7 @@ using Uno.Extensions;
 using Uno.Logging;
 using Windows.Foundation;
 using Windows.Foundation.Metadata;
+
 namespace Windows.UI.Xaml
 {
 	public partial class StateTriggerBase : DependencyObject
@@ -21,18 +22,34 @@ namespace Windows.UI.Xaml
 			);
 		}
 
-		protected void SetActive(bool isActive)
+		protected void SetActive(bool active)
 		{
-			if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+			SetActivePrecedence(active ? StateTriggerPrecedence.CustomTrigger : StateTriggerPrecedence.Inactive);
+		}
+
+		internal void SetActivePrecedence(StateTriggerPrecedence precedence)
+		{
+			if (CurrentPrecedence == precedence)
 			{
-				this.Log().DebugFormat($"State [{GetType().Name}] isActive:{isActive}");
+				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+				{
+					this.Log().DebugFormat($"StateTrigger [{GetType().Name}] (owner={Owner?.Owner ?? (object)"<null>"}/{Owner ?? (object)"<null>"}) precedence:{precedence} [DUPLICATED: IGNORED]");
+				}
+
+				return; // nothing to do
 			}
 
-			InternalIsActive = isActive;
+			if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+			{
+				this.Log().DebugFormat($"StateTrigger [{GetType().Name}] (owner={Owner?.Owner ?? (object)"<null>"}/{Owner ?? (object)"<null>"}) precedence:{precedence}");
+			}
+
+			CurrentPrecedence = precedence;
+
 			Owner?.Owner?.RefreshStateTriggers();
 		}
 
-		internal bool InternalIsActive { get; set; }
+		internal StateTriggerPrecedence CurrentPrecedence { get; set; } = 0;
 
 		internal VisualState Owner => this.GetParent() as VisualState;
 

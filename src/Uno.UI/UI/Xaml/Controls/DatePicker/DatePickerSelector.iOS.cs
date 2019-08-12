@@ -47,25 +47,7 @@ namespace Windows.UI.Xaml.Controls
 
 			EventHandler handler = (s, e) =>
 			{
-				// When the timezone is east of GMT (negative offset) the UIDatePicker returns a Date that's [1 day]
-				// after the visible selection from the spinner.
-				// Also, when we change the month from summer to winter or vice-versa (when daylight saving changes),
-				// the day is off by ± 1h. For that we always add 12 hours to avoid changing day (because midnight -1h is actually the day before).
-				// Once we have a "rounded" datetime (around midday) we set the Date into the dependency property injecting
-				// the timezone from the date picker (which is the local timezone)
-				var dateTime = picker.Date.ToDateTime();
-				var offset = TimeSpan.FromSeconds(picker.TimeZone.GetSecondsFromGMT);
-				DateTime rounded;
-				if (offset.TotalSeconds < 0)
-				{
-					rounded = dateTime.AddHours(-12);
-				}
-				else
-				{
-					rounded = dateTime.AddHours(12);
-				}
-				var final = new DateTimeOffset(rounded.Date, offset);
-				Date = final;
+				Date = new DateTimeOffset(picker.Date.ToDateTime());
 			};
 
 			picker.ValueChanged += handler;
@@ -82,23 +64,13 @@ namespace Windows.UI.Xaml.Controls
 
 		partial void OnDateChangedPartialNative(DateTimeOffset oldDate, DateTimeOffset newDate)
 		{
-			// We have to change the DateTimeOffset to something readable by the UIDatePicker.
-			// First, we remove the offset to keep only the date.
-			// Then, we add 24 hours (1 day) when the offset is negative (timezone east of GMT) because the UIDatePicker is wrong by 1 day in this case.
-			var ajustedDate = newDate
-				.ToOffset(TimeSpan.Zero)
-				.Add(newDate.Offset);
-
-			if (newDate.Offset.TotalSeconds < 0)
-			{
-				ajustedDate = ajustedDate.AddHours(24);
-			}
-			var nsDate = ajustedDate.Date.ToNSDate();
-
 			// Animate to cover up the small delay in setting the date when the flyout is opened
 			var animated = !UIDevice.CurrentDevice.CheckSystemVersion(10, 0);
 
-			_picker?.SetDate(nsDate, animated: animated);
+			_picker?.SetDate(
+				DateTime.SpecifyKind(newDate.DateTime, DateTimeKind.Local).ToNSDate(),
+				animated: animated
+			);
 		}
 
 		partial void OnMinYearChangedPartialNative(DateTimeOffset oldMinYear, DateTimeOffset newMinYear)

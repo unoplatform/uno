@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Data.Xml.Dom
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class DtdEntity : global::Windows.Data.Xml.Dom.IXmlNode,global::Windows.Data.Xml.Dom.IXmlNodeSerializer,global::Windows.Data.Xml.Dom.IXmlNodeSelector
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  object NotationName
 		{
@@ -17,7 +17,7 @@ namespace Windows.Data.Xml.Dom
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  object PublicId
 		{
@@ -27,7 +27,7 @@ namespace Windows.Data.Xml.Dom
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  object SystemId
 		{
@@ -37,7 +37,7 @@ namespace Windows.Data.Xml.Dom
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  object Prefix
 		{
@@ -51,7 +51,7 @@ namespace Windows.Data.Xml.Dom
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  object NodeValue
 		{
@@ -65,7 +65,7 @@ namespace Windows.Data.Xml.Dom
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Data.Xml.Dom.IXmlNode FirstChild
 		{
@@ -75,7 +75,7 @@ namespace Windows.Data.Xml.Dom
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Data.Xml.Dom.IXmlNode LastChild
 		{
@@ -85,7 +85,7 @@ namespace Windows.Data.Xml.Dom
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  object LocalName
 		{
@@ -95,7 +95,7 @@ namespace Windows.Data.Xml.Dom
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  object NamespaceUri
 		{
@@ -105,7 +105,7 @@ namespace Windows.Data.Xml.Dom
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Data.Xml.Dom.IXmlNode NextSibling
 		{
@@ -115,7 +115,7 @@ namespace Windows.Data.Xml.Dom
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  string NodeName
 		{
@@ -125,7 +125,7 @@ namespace Windows.Data.Xml.Dom
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Data.Xml.Dom.NodeType NodeType
 		{
@@ -135,7 +135,7 @@ namespace Windows.Data.Xml.Dom
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Data.Xml.Dom.XmlNamedNodeMap Attributes
 		{
@@ -145,7 +145,7 @@ namespace Windows.Data.Xml.Dom
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Data.Xml.Dom.XmlDocument OwnerDocument
 		{
@@ -155,7 +155,7 @@ namespace Windows.Data.Xml.Dom
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Data.Xml.Dom.XmlNodeList ChildNodes
 		{
@@ -165,7 +165,7 @@ namespace Windows.Data.Xml.Dom
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Data.Xml.Dom.IXmlNode ParentNode
 		{
@@ -175,7 +175,7 @@ namespace Windows.Data.Xml.Dom
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Data.Xml.Dom.IXmlNode PreviousSibling
 		{
@@ -185,7 +185,7 @@ namespace Windows.Data.Xml.Dom
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  string InnerText
 		{
@@ -213,7 +213,7 @@ namespace Windows.Data.Xml.Dom
 		// Forced skipping of method Windows.Data.Xml.Dom.DtdEntity.PreviousSibling.get
 		// Forced skipping of method Windows.Data.Xml.Dom.DtdEntity.NextSibling.get
 		// Forced skipping of method Windows.Data.Xml.Dom.DtdEntity.Attributes.get
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  bool HasChildNodes()
 		{
@@ -221,35 +221,35 @@ namespace Windows.Data.Xml.Dom
 		}
 		#endif
 		// Forced skipping of method Windows.Data.Xml.Dom.DtdEntity.OwnerDocument.get
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Data.Xml.Dom.IXmlNode InsertBefore( global::Windows.Data.Xml.Dom.IXmlNode newChild,  global::Windows.Data.Xml.Dom.IXmlNode referenceChild)
 		{
 			throw new global::System.NotImplementedException("The member IXmlNode DtdEntity.InsertBefore(IXmlNode newChild, IXmlNode referenceChild) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Data.Xml.Dom.IXmlNode ReplaceChild( global::Windows.Data.Xml.Dom.IXmlNode newChild,  global::Windows.Data.Xml.Dom.IXmlNode referenceChild)
 		{
 			throw new global::System.NotImplementedException("The member IXmlNode DtdEntity.ReplaceChild(IXmlNode newChild, IXmlNode referenceChild) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Data.Xml.Dom.IXmlNode RemoveChild( global::Windows.Data.Xml.Dom.IXmlNode childNode)
 		{
 			throw new global::System.NotImplementedException("The member IXmlNode DtdEntity.RemoveChild(IXmlNode childNode) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Data.Xml.Dom.IXmlNode AppendChild( global::Windows.Data.Xml.Dom.IXmlNode newChild)
 		{
 			throw new global::System.NotImplementedException("The member IXmlNode DtdEntity.AppendChild(IXmlNode newChild) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Data.Xml.Dom.IXmlNode CloneNode( bool deep)
 		{
@@ -259,7 +259,7 @@ namespace Windows.Data.Xml.Dom
 		// Forced skipping of method Windows.Data.Xml.Dom.DtdEntity.NamespaceUri.get
 		// Forced skipping of method Windows.Data.Xml.Dom.DtdEntity.LocalName.get
 		// Forced skipping of method Windows.Data.Xml.Dom.DtdEntity.Prefix.get
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  void Normalize()
 		{
@@ -267,35 +267,35 @@ namespace Windows.Data.Xml.Dom
 		}
 		#endif
 		// Forced skipping of method Windows.Data.Xml.Dom.DtdEntity.Prefix.set
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Data.Xml.Dom.IXmlNode SelectSingleNode( string xpath)
 		{
 			throw new global::System.NotImplementedException("The member IXmlNode DtdEntity.SelectSingleNode(string xpath) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Data.Xml.Dom.XmlNodeList SelectNodes( string xpath)
 		{
 			throw new global::System.NotImplementedException("The member XmlNodeList DtdEntity.SelectNodes(string xpath) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Data.Xml.Dom.IXmlNode SelectSingleNodeNS( string xpath,  object namespaces)
 		{
 			throw new global::System.NotImplementedException("The member IXmlNode DtdEntity.SelectSingleNodeNS(string xpath, object namespaces) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Data.Xml.Dom.XmlNodeList SelectNodesNS( string xpath,  object namespaces)
 		{
 			throw new global::System.NotImplementedException("The member XmlNodeList DtdEntity.SelectNodesNS(string xpath, object namespaces) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  string GetXml()
 		{

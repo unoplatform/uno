@@ -59,7 +59,6 @@ namespace Windows.UI.Xaml
 					var size = SizeFromUISize(Bounds.Size);
 					_layouter.Arrange(new Rect(0, 0, size.Width, size.Height));
 
-					OnLayoutUpdated();
 					OnAfterArrange();
 				}
 				finally

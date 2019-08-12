@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Web.Syndication
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class SyndicationContent : global::Windows.Web.Syndication.ISyndicationText,global::Windows.Web.Syndication.ISyndicationNode
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::System.Uri SourceUri
 		{
@@ -21,7 +21,7 @@ namespace Windows.Web.Syndication
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  string NodeValue
 		{
@@ -35,7 +35,7 @@ namespace Windows.Web.Syndication
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::System.Uri BaseUri
 		{
@@ -49,7 +49,7 @@ namespace Windows.Web.Syndication
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  string Language
 		{
@@ -63,7 +63,7 @@ namespace Windows.Web.Syndication
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  string NodeName
 		{
@@ -77,7 +77,7 @@ namespace Windows.Web.Syndication
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  string NodeNamespace
 		{
@@ -91,7 +91,7 @@ namespace Windows.Web.Syndication
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::System.Collections.Generic.IList<global::Windows.Web.Syndication.SyndicationAttribute> AttributeExtensions
 		{
@@ -101,7 +101,7 @@ namespace Windows.Web.Syndication
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::System.Collections.Generic.IList<global::Windows.Web.Syndication.ISyndicationNode> ElementExtensions
 		{
@@ -111,7 +111,7 @@ namespace Windows.Web.Syndication
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  string Text
 		{
@@ -125,7 +125,7 @@ namespace Windows.Web.Syndication
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  string Type
 		{
@@ -139,7 +139,7 @@ namespace Windows.Web.Syndication
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Data.Xml.Dom.XmlDocument Xml
 		{
@@ -153,7 +153,7 @@ namespace Windows.Web.Syndication
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public SyndicationContent( string text,  global::Windows.Web.Syndication.SyndicationTextType type) 
 		{
@@ -161,7 +161,7 @@ namespace Windows.Web.Syndication
 		}
 		#endif
 		// Forced skipping of method Windows.Web.Syndication.SyndicationContent.SyndicationContent(string, Windows.Web.Syndication.SyndicationTextType)
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public SyndicationContent( global::System.Uri sourceUri) 
 		{
@@ -169,7 +169,7 @@ namespace Windows.Web.Syndication
 		}
 		#endif
 		// Forced skipping of method Windows.Web.Syndication.SyndicationContent.SyndicationContent(System.Uri)
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public SyndicationContent() 
 		{
@@ -195,7 +195,7 @@ namespace Windows.Web.Syndication
 		// Forced skipping of method Windows.Web.Syndication.SyndicationContent.BaseUri.set
 		// Forced skipping of method Windows.Web.Syndication.SyndicationContent.AttributeExtensions.get
 		// Forced skipping of method Windows.Web.Syndication.SyndicationContent.ElementExtensions.get
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Data.Xml.Dom.XmlDocument GetXmlDocument( global::Windows.Web.Syndication.SyndicationFormat format)
 		{

@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.System.Power
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class BackgroundEnergyManager 
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static uint ExcessiveUsageLevel
 		{
@@ -17,7 +17,7 @@ namespace Windows.System.Power
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static uint LowUsageLevel
 		{
@@ -27,7 +27,7 @@ namespace Windows.System.Power
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static uint MaxAcceptableUsageLevel
 		{
@@ -37,7 +37,7 @@ namespace Windows.System.Power
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static uint NearMaxAcceptableUsageLevel
 		{
@@ -47,7 +47,7 @@ namespace Windows.System.Power
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static uint NearTerminationUsageLevel
 		{
@@ -57,7 +57,7 @@ namespace Windows.System.Power
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static uint RecentEnergyUsage
 		{
@@ -67,7 +67,7 @@ namespace Windows.System.Power
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static uint RecentEnergyUsageLevel
 		{
@@ -77,7 +77,7 @@ namespace Windows.System.Power
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static uint TerminationUsageLevel
 		{
@@ -99,7 +99,7 @@ namespace Windows.System.Power
 		// Forced skipping of method Windows.System.Power.BackgroundEnergyManager.RecentEnergyUsageIncreased.remove
 		// Forced skipping of method Windows.System.Power.BackgroundEnergyManager.RecentEnergyUsageReturnedToLow.add
 		// Forced skipping of method Windows.System.Power.BackgroundEnergyManager.RecentEnergyUsageReturnedToLow.remove
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static event global::System.EventHandler<object> RecentEnergyUsageIncreased
 		{
@@ -115,7 +115,7 @@ namespace Windows.System.Power
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static event global::System.EventHandler<object> RecentEnergyUsageReturnedToLow
 		{

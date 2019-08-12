@@ -2,7 +2,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.ApplicationModel.DataTransfer
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class DataTransferManager 
@@ -13,35 +13,35 @@ namespace Windows.ApplicationModel.DataTransfer
 		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DataTransferManager.TargetApplicationChosen.remove
 		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DataTransferManager.ShareProvidersRequested.add
 		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DataTransferManager.ShareProvidersRequested.remove
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static void ShowShareUI( global::Windows.ApplicationModel.DataTransfer.ShareUIOptions options)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.DataTransfer.DataTransferManager", "void DataTransferManager.ShowShareUI(ShareUIOptions options)");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static bool IsSupported()
 		{
 			throw new global::System.NotImplementedException("The member bool DataTransferManager.IsSupported() is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static void ShowShareUI()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.DataTransfer.DataTransferManager", "void DataTransferManager.ShowShareUI()");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.ApplicationModel.DataTransfer.DataTransferManager GetForCurrentView()
 		{
 			throw new global::System.NotImplementedException("The member DataTransferManager DataTransferManager.GetForCurrentView() is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.ApplicationModel.DataTransfer.DataTransferManager, global::Windows.ApplicationModel.DataTransfer.DataRequestedEventArgs> DataRequested
 		{
@@ -57,7 +57,7 @@ namespace Windows.ApplicationModel.DataTransfer
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.ApplicationModel.DataTransfer.DataTransferManager, global::Windows.ApplicationModel.DataTransfer.TargetApplicationChosenEventArgs> TargetApplicationChosen
 		{
@@ -73,7 +73,7 @@ namespace Windows.ApplicationModel.DataTransfer
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.ApplicationModel.DataTransfer.DataTransferManager, global::Windows.ApplicationModel.DataTransfer.ShareProvidersRequestedEventArgs> ShareProvidersRequested
 		{

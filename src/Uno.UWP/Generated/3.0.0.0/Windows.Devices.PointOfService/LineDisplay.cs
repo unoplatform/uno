@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Devices.PointOfService
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class LineDisplay : global::System.IDisposable
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Devices.PointOfService.LineDisplayCapabilities Capabilities
 		{
@@ -17,7 +17,7 @@ namespace Windows.Devices.PointOfService
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  string DeviceControlDescription
 		{
@@ -27,7 +27,7 @@ namespace Windows.Devices.PointOfService
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  string DeviceControlVersion
 		{
@@ -37,7 +37,7 @@ namespace Windows.Devices.PointOfService
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  string DeviceId
 		{
@@ -47,7 +47,7 @@ namespace Windows.Devices.PointOfService
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  string DeviceServiceVersion
 		{
@@ -57,7 +57,7 @@ namespace Windows.Devices.PointOfService
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  string PhysicalDeviceDescription
 		{
@@ -67,7 +67,7 @@ namespace Windows.Devices.PointOfService
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  string PhysicalDeviceName
 		{
@@ -77,7 +77,7 @@ namespace Windows.Devices.PointOfService
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.Devices.PointOfService.LineDisplayStatisticsCategorySelector StatisticsCategorySelector
 		{
@@ -94,21 +94,21 @@ namespace Windows.Devices.PointOfService
 		// Forced skipping of method Windows.Devices.PointOfService.LineDisplay.DeviceControlDescription.get
 		// Forced skipping of method Windows.Devices.PointOfService.LineDisplay.DeviceControlVersion.get
 		// Forced skipping of method Windows.Devices.PointOfService.LineDisplay.DeviceServiceVersion.get
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.PointOfService.ClaimedLineDisplay> ClaimAsync()
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<ClaimedLineDisplay> LineDisplay.ClaimAsync() is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  void Dispose()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.PointOfService.LineDisplay", "void LineDisplay.Dispose()");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.PointOfService.LineDisplayPowerStatus> CheckPowerStatusAsync()
 		{
@@ -116,28 +116,28 @@ namespace Windows.Devices.PointOfService
 		}
 		#endif
 		// Forced skipping of method Windows.Devices.PointOfService.LineDisplay.StatisticsCategorySelector.get
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.PointOfService.LineDisplay> FromIdAsync( string deviceId)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<LineDisplay> LineDisplay.FromIdAsync(string deviceId) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.PointOfService.LineDisplay> GetDefaultAsync()
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<LineDisplay> LineDisplay.GetDefaultAsync() is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static string GetDeviceSelector()
 		{
 			throw new global::System.NotImplementedException("The member string LineDisplay.GetDeviceSelector() is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static string GetDeviceSelector( global::Windows.Devices.PointOfService.PosConnectionTypes connectionTypes)
 		{

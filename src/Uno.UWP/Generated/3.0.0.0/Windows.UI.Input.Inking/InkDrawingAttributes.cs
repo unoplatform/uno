@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Input.Inking
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class InkDrawingAttributes 
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Foundation.Size Size
 		{
@@ -21,7 +21,7 @@ namespace Windows.UI.Input.Inking
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.UI.Input.Inking.PenTipShape PenTip
 		{
@@ -35,7 +35,7 @@ namespace Windows.UI.Input.Inking
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  bool IgnorePressure
 		{
@@ -49,7 +49,7 @@ namespace Windows.UI.Input.Inking
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  bool FitToCurve
 		{
@@ -63,7 +63,7 @@ namespace Windows.UI.Input.Inking
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.UI.Color Color
 		{
@@ -77,7 +77,7 @@ namespace Windows.UI.Input.Inking
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::System.Numerics.Matrix3x2 PenTipTransform
 		{
@@ -91,7 +91,7 @@ namespace Windows.UI.Input.Inking
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  bool DrawAsHighlighter
 		{
@@ -105,7 +105,7 @@ namespace Windows.UI.Input.Inking
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.UI.Input.Inking.InkDrawingAttributesKind Kind
 		{
@@ -115,7 +115,7 @@ namespace Windows.UI.Input.Inking
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.UI.Input.Inking.InkDrawingAttributesPencilProperties PencilProperties
 		{
@@ -125,7 +125,7 @@ namespace Windows.UI.Input.Inking
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  bool IgnoreTilt
 		{
@@ -139,7 +139,7 @@ namespace Windows.UI.Input.Inking
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.UI.Input.Inking.InkModelerAttributes ModelerAttributes
 		{
@@ -149,7 +149,7 @@ namespace Windows.UI.Input.Inking
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public InkDrawingAttributes() 
 		{
@@ -176,7 +176,7 @@ namespace Windows.UI.Input.Inking
 		// Forced skipping of method Windows.UI.Input.Inking.InkDrawingAttributes.IgnoreTilt.get
 		// Forced skipping of method Windows.UI.Input.Inking.InkDrawingAttributes.IgnoreTilt.set
 		// Forced skipping of method Windows.UI.Input.Inking.InkDrawingAttributes.ModelerAttributes.get
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Input.Inking.InkDrawingAttributes CreateForPencil()
 		{

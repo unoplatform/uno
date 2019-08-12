@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Media.Playback
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class MediaPlaybackCommandManagerRateReceivedEventArgs 
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  bool Handled
 		{
@@ -21,7 +21,7 @@ namespace Windows.Media.Playback
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  double PlaybackRate
 		{
@@ -34,7 +34,7 @@ namespace Windows.Media.Playback
 		// Forced skipping of method Windows.Media.Playback.MediaPlaybackCommandManagerRateReceivedEventArgs.Handled.get
 		// Forced skipping of method Windows.Media.Playback.MediaPlaybackCommandManagerRateReceivedEventArgs.Handled.set
 		// Forced skipping of method Windows.Media.Playback.MediaPlaybackCommandManagerRateReceivedEventArgs.PlaybackRate.get
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Foundation.Deferral GetDeferral()
 		{

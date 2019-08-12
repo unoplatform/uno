@@ -1,30 +1,32 @@
 ﻿#if XAMARIN_ANDROID
+using System;
 using Android.App;
+using Android.Content;
 using Android.Content.PM;
 using Android.Views;
-using System;
-using System.Collections.Generic;
-using System.Text;
+using Windows.Graphics.Display;
 using Android.Content.Res;
-using Windows.UI.Xaml.Media;
-using Uno.Extensions;
-using Uno.UI;
-using Android.Views.InputMethods;
-using Android.Content;
-using Android.OS;
-using Android.Widget;
-using Android.Graphics.Drawables;
 using Android.Graphics;
-using Android.Util;
+using Android.OS;
+using Android.Views.InputMethods;
+using Uno.UI;
 using Windows.UI.ViewManagement;
+using Windows.UI.Xaml.Media;
+using Windows.Devices.Sensors;
 
 namespace Windows.UI.Xaml
 {
 	[Activity(ConfigurationChanges = ConfigChanges.Orientation | ConfigChanges.ScreenSize, WindowSoftInputMode = SoftInput.AdjustPan | SoftInput.StateHidden)]
 	public class ApplicationActivity : Controls.NativePage
 	{
+
+		/// The windows model implies only one managed activity.
+		/// </summary>
+		internal static ApplicationActivity Instance { get; private set; }
+
+		internal LayoutProvider LayoutProvider { get; private set; }
+
 		private InputPane _inputPane;
-		private KeyboardRectProvider _keyboardRectProvider;
 
 		public ApplicationActivity(IntPtr ptr, Android.Runtime.JniHandleOwnership owner) : base(ptr, owner)
 		{
@@ -51,6 +53,12 @@ namespace Windows.UI.Xaml
 			// Cannot call this in ctor: see
 			// https://stackoverflow.com/questions/10593022/monodroid-error-when-calling-constructor-of-custom-view-twodscrollview#10603714
 			RaiseConfigurationChanges();
+			Devices.Sensors.SimpleOrientationSensor.GetDefault().OrientationChanged += OnSensorOrientationChanged;
+		}
+
+		private void OnSensorOrientationChanged(SimpleOrientationSensor sender, SimpleOrientationSensorOrientationChangedEventArgs args)
+		{
+			RaiseConfigurationChanges();
 		}
 
 		private void OnInputPaneVisibilityChanged(InputPane sender, InputPaneVisibilityEventArgs args)
@@ -62,11 +70,6 @@ namespace Windows.UI.Xaml
 				args.EnsuredFocusedElementInView = true;
 			}
 		}
-
-		/// <summary>
-		/// The windows model implies only one managed activity.
-		/// </summary>
-		internal static ApplicationActivity Instance { get; private set; }
 
 		protected override void InitializeComponent()
 		{
@@ -102,19 +105,31 @@ namespace Windows.UI.Xaml
 			Window.ClearFlags(WindowManagerFlags.Fullscreen);
 		}
 
-		private void OnLayoutChanged(Rect keyboard, Rect navigation, Rect union)
+		private void OnLayoutChanged(Rect statusBar, Rect keyboard, Rect navigationBar)
 		{
-			_inputPane.KeyboardRect = ViewHelper.PhysicalToLogicalPixels(keyboard);
-			_inputPane.NavigationBarRect = ViewHelper.PhysicalToLogicalPixels(navigation);
-			_inputPane.OccludedRect = ViewHelper.PhysicalToLogicalPixels(union);
+			Xaml.Window.Current?.RaiseNativeSizeChanged();
+			_inputPane.OccludedRect = ViewHelper.PhysicalToLogicalPixels(keyboard);
 		}
 
 		protected override void OnCreate(Bundle bundle)
 		{
 			base.OnCreate(bundle);
 
-			_keyboardRectProvider = new KeyboardRectProvider(this, OnLayoutChanged);
+			LayoutProvider = new LayoutProvider(this);
+			LayoutProvider.LayoutChanged += OnLayoutChanged;
+			LayoutProvider.InsetsChanged += OnInsetsChanged;
+
 			RaiseConfigurationChanges();
+		}
+
+		private void OnInsetsChanged(Thickness insets)
+		{
+			if (Xaml.Window.Current != null)
+			{
+				//Set insets before raising the size changed event
+				Xaml.Window.Current.Insets = insets;
+				Xaml.Window.Current.RaiseNativeSizeChanged();
+			}
 		}
 
 		public override void SetContentView(View view)
@@ -123,14 +138,14 @@ namespace Windows.UI.Xaml
 			{
 				if (view.IsAttachedToWindow)
 				{
-					_keyboardRectProvider.Start(view);
+					LayoutProvider.Start(view);
 				}
 				else
 				{
 					EventHandler<View.ViewAttachedToWindowEventArgs> handler = null;
 					handler = (s, e) =>
 					{
-						_keyboardRectProvider.Start(view);
+						LayoutProvider.Start(view);
 						view.ViewAttachedToWindow -= handler;
 					};
 					view.ViewAttachedToWindow += handler;
@@ -160,7 +175,7 @@ namespace Windows.UI.Xaml
 		{
 			base.OnDestroy();
 
-			_keyboardRectProvider.Stop();
+			LayoutProvider.Stop();
 		}
 
 		public override void OnConfigurationChanged(Configuration newConfig)
@@ -174,6 +189,7 @@ namespace Windows.UI.Xaml
 		{
 			Xaml.Window.Current?.RaiseNativeSizeChanged();
 			ViewHelper.RefreshFontScale();
+			DisplayInformation.GetForCurrentView().HandleConfigurationChange();
 		}
 
 		public override void OnBackPressed()

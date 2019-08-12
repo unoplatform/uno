@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Media.SpeechRecognition
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class SpeechRecognitionTopicConstraint : global::Windows.Media.SpeechRecognition.ISpeechRecognitionConstraint
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  string Tag
 		{
@@ -21,7 +21,7 @@ namespace Windows.Media.SpeechRecognition
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Media.SpeechRecognition.SpeechRecognitionConstraintProbability Probability
 		{
@@ -35,7 +35,7 @@ namespace Windows.Media.SpeechRecognition
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  bool IsEnabled
 		{
@@ -49,7 +49,7 @@ namespace Windows.Media.SpeechRecognition
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Media.SpeechRecognition.SpeechRecognitionConstraintType Type
 		{
@@ -59,7 +59,7 @@ namespace Windows.Media.SpeechRecognition
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Media.SpeechRecognition.SpeechRecognitionScenario Scenario
 		{
@@ -69,7 +69,7 @@ namespace Windows.Media.SpeechRecognition
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  string TopicHint
 		{
@@ -79,7 +79,7 @@ namespace Windows.Media.SpeechRecognition
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public SpeechRecognitionTopicConstraint( global::Windows.Media.SpeechRecognition.SpeechRecognitionScenario scenario,  string topicHint) 
 		{
@@ -87,7 +87,7 @@ namespace Windows.Media.SpeechRecognition
 		}
 		#endif
 		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognitionTopicConstraint.SpeechRecognitionTopicConstraint(Windows.Media.SpeechRecognition.SpeechRecognitionScenario, string)
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public SpeechRecognitionTopicConstraint( global::Windows.Media.SpeechRecognition.SpeechRecognitionScenario scenario,  string topicHint,  string tag) 
 		{

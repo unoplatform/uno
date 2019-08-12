@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Notifications
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class ScheduledToastNotification 
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  string Id
 		{
@@ -21,7 +21,7 @@ namespace Windows.UI.Notifications
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Data.Xml.Dom.XmlDocument Content
 		{
@@ -31,7 +31,7 @@ namespace Windows.UI.Notifications
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::System.DateTimeOffset DeliveryTime
 		{
@@ -41,7 +41,7 @@ namespace Windows.UI.Notifications
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  uint MaximumSnoozeCount
 		{
@@ -51,7 +51,7 @@ namespace Windows.UI.Notifications
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::System.TimeSpan? SnoozeInterval
 		{
@@ -61,7 +61,7 @@ namespace Windows.UI.Notifications
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  string Tag
 		{
@@ -75,7 +75,7 @@ namespace Windows.UI.Notifications
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  bool SuppressPopup
 		{
@@ -89,7 +89,7 @@ namespace Windows.UI.Notifications
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  string Group
 		{
@@ -103,7 +103,7 @@ namespace Windows.UI.Notifications
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  string RemoteId
 		{
@@ -117,7 +117,7 @@ namespace Windows.UI.Notifications
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.UI.Notifications.NotificationMirroring NotificationMirroring
 		{
@@ -131,7 +131,7 @@ namespace Windows.UI.Notifications
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::System.DateTimeOffset? ExpirationTime
 		{
@@ -145,7 +145,7 @@ namespace Windows.UI.Notifications
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public ScheduledToastNotification( global::Windows.Data.Xml.Dom.XmlDocument content,  global::System.DateTimeOffset deliveryTime) 
 		{
@@ -153,7 +153,7 @@ namespace Windows.UI.Notifications
 		}
 		#endif
 		// Forced skipping of method Windows.UI.Notifications.ScheduledToastNotification.ScheduledToastNotification(Windows.Data.Xml.Dom.XmlDocument, System.DateTimeOffset)
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public ScheduledToastNotification( global::Windows.Data.Xml.Dom.XmlDocument content,  global::System.DateTimeOffset deliveryTime,  global::System.TimeSpan snoozeInterval,  uint maximumSnoozeCount) 
 		{

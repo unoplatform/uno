@@ -18,16 +18,16 @@ using View = Windows.UI.Xaml.DependencyObject;
 
 namespace Uno.UI.Behaviors
 {
-    public class TextBoxBehavior
-    {
+	public class TextBoxBehavior
+	{
 #region Attached property: NextControl
 
-        public static object GetNextControl(TextBox obj)
-        {
-            return obj.GetValue(NextControlProperty);
-        }
-        
-        public static readonly DependencyProperty NextControlProperty =
+		public static object GetNextControl(TextBox obj)
+		{
+			return obj.GetValue(NextControlProperty);
+		}
+		
+		public static readonly DependencyProperty NextControlProperty =
 			DependencyProperty.RegisterAttached("NextControl", typeof(object), typeof(TextBoxBehavior),
 			new PropertyMetadata( null,  new PropertyChangedCallback(OnNextControlChanged)));
 
@@ -44,15 +44,14 @@ namespace Uno.UI.Behaviors
 		private static void RegisterTextChanged(TextBox textBox)
 		{
 			textBox.TextChanged += OnTargetTextChanged;
-            textBox.KeyUp += OnKeyUp;
-        }
+			textBox.KeyUp += OnKeyUp;
+		}
 
-    
-        private static void UnregisterTextChanged(TextBox textBox)
+		private static void UnregisterTextChanged(TextBox textBox)
 		{
 			textBox.TextChanged -= OnTargetTextChanged;
-            textBox.KeyUp -= OnKeyUp;
-        }
+			textBox.KeyUp -= OnKeyUp;
+		}
 
 		private static void OnTargetTextChanged(object sender, TextChangedEventArgs e)
 		{
@@ -60,26 +59,27 @@ namespace Uno.UI.Behaviors
 
 			textBox?.SetValue(TextProperty, textBox.Text);
 		}
-        private static void OnKeyUp(object sender, KeyRoutedEventArgs e)
-        {
-            if (e.Key == VirtualKey.Enter)
-            {
-                var textBox = sender as TextBox;
-                var nextControl = GetNextControl(textBox) as View;
+
+		private static void OnKeyUp(object sender, KeyRoutedEventArgs e)
+		{
+			if (e.Key == VirtualKey.Enter)
+			{
+				var textBox = sender as TextBox;
+				var nextControl = GetNextControl(textBox) as View;
 #if XAMARIN_ANDROID
-                nextControl?.RequestFocus();
+				nextControl?.RequestFocus();
 #elif __IOS__ || __MACOS__
 				nextControl?.BecomeFirstResponder();
 #endif
 				e.Handled = true;
-            }
-        }
+			}
+		}
 
 #endregion
 
 #region Attached property: Text
 
-        public static readonly DependencyProperty TextProperty =
+		public static readonly DependencyProperty TextProperty =
 			DependencyProperty.RegisterAttached("Text", typeof(string), typeof(TextBoxBehavior), new PropertyMetadata(default(string), OnTextChanged));
 
 		private static void OnTextChanged(object d, DependencyPropertyChangedEventArgs e)

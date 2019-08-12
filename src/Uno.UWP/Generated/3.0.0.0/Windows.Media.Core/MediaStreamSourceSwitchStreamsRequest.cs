@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Media.Core
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class MediaStreamSourceSwitchStreamsRequest 
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Media.Core.IMediaStreamDescriptor NewStreamDescriptor
 		{
@@ -17,7 +17,7 @@ namespace Windows.Media.Core
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Media.Core.IMediaStreamDescriptor OldStreamDescriptor
 		{
@@ -29,7 +29,7 @@ namespace Windows.Media.Core
 		#endif
 		// Forced skipping of method Windows.Media.Core.MediaStreamSourceSwitchStreamsRequest.OldStreamDescriptor.get
 		// Forced skipping of method Windows.Media.Core.MediaStreamSourceSwitchStreamsRequest.NewStreamDescriptor.get
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Media.Core.MediaStreamSourceSwitchStreamsRequestDeferral GetDeferral()
 		{

@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Data.Text
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class TextConversionGenerator 
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  bool LanguageAvailableButNotInstalled
 		{
@@ -17,7 +17,7 @@ namespace Windows.Data.Text
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  string ResolvedLanguage
 		{
@@ -27,7 +27,7 @@ namespace Windows.Data.Text
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public TextConversionGenerator( string languageTag) 
 		{
@@ -37,14 +37,14 @@ namespace Windows.Data.Text
 		// Forced skipping of method Windows.Data.Text.TextConversionGenerator.TextConversionGenerator(string)
 		// Forced skipping of method Windows.Data.Text.TextConversionGenerator.ResolvedLanguage.get
 		// Forced skipping of method Windows.Data.Text.TextConversionGenerator.LanguageAvailableButNotInstalled.get
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IReadOnlyList<string>> GetCandidatesAsync( string input)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<IReadOnlyList<string>> TextConversionGenerator.GetCandidatesAsync(string input) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IReadOnlyList<string>> GetCandidatesAsync( string input,  uint maxCandidates)
 		{

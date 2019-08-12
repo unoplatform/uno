@@ -6,7 +6,9 @@
 	 * */
 	export class jsCallDispatcher {
 
-		static registrations: Map<string, object> = new Map<string, object>();
+		static registrations: Map<string, any> = new Map<string, any>();
+		static methodMap: { [id: number]: any } = {};
+		static _isUnoRegistered : boolean;
 
 		/**
 		 * Registers a instance for a specified identier
@@ -18,22 +20,64 @@
 		}
 
 		public static findJSFunction(identifier: string): any {
-			var parts = identifier.split(':');
-			if (parts[0] === 'Uno') {
-				var c = <any>Uno.UI.WindowManager.current;
 
-				return c[parts[1]].bind(Uno.UI.WindowManager.current);
+			if (!identifier) {
+				return jsCallDispatcher.dispatch;
 			}
 			else {
-				var instance = jsCallDispatcher.registrations.get(parts[0]);
+				if (!jsCallDispatcher._isUnoRegistered) {
+					jsCallDispatcher.registerScope("UnoStatic", Uno.UI.WindowManager);
+					jsCallDispatcher.registerScope("UnoStatic_Windows_Storage_StorageFolder", Windows.Storage.StorageFolder);
+					jsCallDispatcher._isUnoRegistered = true;
+				}
+
+				const { ns, methodName } = jsCallDispatcher.parseIdentifier(identifier);
+
+				var instance = jsCallDispatcher.registrations.get(ns);
 
 				if (instance) {
-					return (<any>instance)[parts[1]].bind(instance);
+					var boundMethod = instance[methodName].bind(instance);
+
+					var methodId = jsCallDispatcher.cacheMethod(boundMethod);
+
+					return () => methodId;
 				}
 				else {
-					throw `Unknown scope ${parts[0]}`;
+					throw `Unknown scope ${ns}`;
 				}
 			}
+		}
+
+		/**
+		 * Internal dispatcher for methods invoked through TSInteropMarshaller
+		 * @param id The method ID obtained when invoking WebAssemblyRuntime.InvokeJSUnmarshalled with a method name
+		 * @param pParams The parameters structure ID
+		 * @param pRet The pointer to the return value structure
+		 */
+		private static dispatch(id: number, pParams: any, pRet: any) {
+			return jsCallDispatcher.methodMap[id](pParams, pRet);
+		}
+
+		/**
+		 * Parses the method identifier
+		 * @param identifier
+		 */
+		private static parseIdentifier(identifier: string) {
+			var parts = identifier.split(':');
+			const ns = parts[0];
+			const methodName = parts[1];
+			return { ns, methodName };
+		}
+
+		/**
+		 * Adds the a resolved method for a given identifier
+		 * @param identifier the findJSFunction identifier
+		 * @param boundMethod the method to call
+		 */
+		private static cacheMethod(boundMethod: any): number {
+			var methodId = Object.keys(jsCallDispatcher.methodMap).length;
+			jsCallDispatcher.methodMap[methodId] = boundMethod;
+			return methodId;
 		}
 	}
 }

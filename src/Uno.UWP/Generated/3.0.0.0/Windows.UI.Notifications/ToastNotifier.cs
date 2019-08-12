@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Notifications
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class ToastNotifier 
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.UI.Notifications.NotificationSetting Setting
 		{
@@ -17,14 +17,14 @@ namespace Windows.UI.Notifications
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  void Show( global::Windows.UI.Notifications.ToastNotification notification)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Notifications.ToastNotifier", "void ToastNotifier.Show(ToastNotification notification)");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  void Hide( global::Windows.UI.Notifications.ToastNotification notification)
 		{
@@ -32,35 +32,35 @@ namespace Windows.UI.Notifications
 		}
 		#endif
 		// Forced skipping of method Windows.UI.Notifications.ToastNotifier.Setting.get
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  void AddToSchedule( global::Windows.UI.Notifications.ScheduledToastNotification scheduledToast)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Notifications.ToastNotifier", "void ToastNotifier.AddToSchedule(ScheduledToastNotification scheduledToast)");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  void RemoveFromSchedule( global::Windows.UI.Notifications.ScheduledToastNotification scheduledToast)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Notifications.ToastNotifier", "void ToastNotifier.RemoveFromSchedule(ScheduledToastNotification scheduledToast)");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::System.Collections.Generic.IReadOnlyList<global::Windows.UI.Notifications.ScheduledToastNotification> GetScheduledToastNotifications()
 		{
 			throw new global::System.NotImplementedException("The member IReadOnlyList<ScheduledToastNotification> ToastNotifier.GetScheduledToastNotifications() is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.UI.Notifications.NotificationUpdateResult Update( global::Windows.UI.Notifications.NotificationData data,  string tag,  string group)
 		{
 			throw new global::System.NotImplementedException("The member NotificationUpdateResult ToastNotifier.Update(NotificationData data, string tag, string group) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.UI.Notifications.NotificationUpdateResult Update( global::Windows.UI.Notifications.NotificationData data,  string tag)
 		{
@@ -69,7 +69,7 @@ namespace Windows.UI.Notifications
 		#endif
 		// Forced skipping of method Windows.UI.Notifications.ToastNotifier.ScheduledToastNotificationShowing.add
 		// Forced skipping of method Windows.UI.Notifications.ToastNotifier.ScheduledToastNotificationShowing.remove
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Notifications.ToastNotifier, global::Windows.UI.Notifications.ScheduledToastNotificationShowingEventArgs> ScheduledToastNotificationShowing
 		{

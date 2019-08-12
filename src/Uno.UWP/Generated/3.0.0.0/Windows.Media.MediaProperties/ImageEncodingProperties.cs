@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Media.MediaProperties
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class ImageEncodingProperties : global::Windows.Media.MediaProperties.IMediaEncodingProperties
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  uint Width
 		{
@@ -21,7 +21,7 @@ namespace Windows.Media.MediaProperties
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  uint Height
 		{
@@ -35,7 +35,7 @@ namespace Windows.Media.MediaProperties
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  string Subtype
 		{
@@ -49,7 +49,7 @@ namespace Windows.Media.MediaProperties
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Media.MediaProperties.MediaPropertySet Properties
 		{
@@ -59,7 +59,7 @@ namespace Windows.Media.MediaProperties
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  string Type
 		{
@@ -69,7 +69,7 @@ namespace Windows.Media.MediaProperties
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public ImageEncodingProperties() 
 		{
@@ -85,49 +85,49 @@ namespace Windows.Media.MediaProperties
 		// Forced skipping of method Windows.Media.MediaProperties.ImageEncodingProperties.Type.get
 		// Forced skipping of method Windows.Media.MediaProperties.ImageEncodingProperties.Subtype.set
 		// Forced skipping of method Windows.Media.MediaProperties.ImageEncodingProperties.Subtype.get
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Media.MediaProperties.ImageEncodingProperties Copy()
 		{
 			throw new global::System.NotImplementedException("The member ImageEncodingProperties ImageEncodingProperties.Copy() is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.Media.MediaProperties.ImageEncodingProperties CreateHeif()
 		{
 			throw new global::System.NotImplementedException("The member ImageEncodingProperties ImageEncodingProperties.CreateHeif() is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.Media.MediaProperties.ImageEncodingProperties CreateUncompressed( global::Windows.Media.MediaProperties.MediaPixelFormat format)
 		{
 			throw new global::System.NotImplementedException("The member ImageEncodingProperties ImageEncodingProperties.CreateUncompressed(MediaPixelFormat format) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.Media.MediaProperties.ImageEncodingProperties CreateBmp()
 		{
 			throw new global::System.NotImplementedException("The member ImageEncodingProperties ImageEncodingProperties.CreateBmp() is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.Media.MediaProperties.ImageEncodingProperties CreateJpeg()
 		{
 			throw new global::System.NotImplementedException("The member ImageEncodingProperties ImageEncodingProperties.CreateJpeg() is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.Media.MediaProperties.ImageEncodingProperties CreatePng()
 		{
 			throw new global::System.NotImplementedException("The member ImageEncodingProperties ImageEncodingProperties.CreatePng() is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.Media.MediaProperties.ImageEncodingProperties CreateJpegXR()
 		{

@@ -16,7 +16,7 @@
 	<Copyright>nventive</Copyright>
 	<Author>nventive</Author>
 
-	<LangVersion>7.2</LangVersion>
+	<LangVersion>7.3</LangVersion>
 	<WarningsAsErrors>all</WarningsAsErrors>
 
   </PropertyGroup>
@@ -25,12 +25,12 @@
 
   <Target Name="SetNoWarn"
 				  BeforeTargets="Build"
-				  Condition=" '$(TargetFramework)' == 'net46' ">
+				  Condition=" '$(TargetFramework)' == 'net461' ">
 
 	<!--
 		This target is the equivalent to this property group, until this
 		is fixed: https://github.com/NuGet/Home/issues/6662
-		<PropertyGroup Condition=" '$(TargetFramework)' == 'net46' ">
+		<PropertyGroup Condition=" '$(TargetFramework)' == 'net461' ">
 			<NoWarn>$(NoWarn);67</NoWarn>
 		</PropertyGroup>
 		-->
@@ -44,14 +44,14 @@
 
 
   <PropertyGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
-	<DefineConstants>$(DefineConstants);__WASM__</DefineConstants>
+	<DefineConstants>$(DefineConstants);__WASM__;HAS_EXPENSIVE_TRYFINALLY</DefineConstants>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(TargetFrameworkIdentifier)' == 'Xamarin.iOS'">
+  <PropertyGroup Condition="$(IsXamarinIOS)">
 	<DefineConstants>$(DefineConstants);IOS1_0;XAMARIN;XAMARIN_IOS;XAMARIN_IOS_UNIFIED</DefineConstants>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(TargetFrameworkIdentifier)' == 'MonoAndroid'">
+  <PropertyGroup Condition="$(IsMonoAndroid)">
 	<DefineConstants>$(DefineConstants);XAMARIN;XAMARIN_ANDROID</DefineConstants>
 	<AndroidUseIntermediateDesignerFile>True</AndroidUseIntermediateDesignerFile>
 	<AndroidResgenFile>obj\$(TargetFramework)\Resources\Resource.Designer.cs</AndroidResgenFile>
@@ -61,8 +61,8 @@
   </PropertyGroup>
 
   <PropertyGroup Condition=" '$(TargetFramework)' == 'uap10.0' ">
-	<TargetPlatformVersion>10.0.14393.0</TargetPlatformVersion>
-	<TargetPlatformMinVersion>10.0.14393.0</TargetPlatformMinVersion>
+	<TargetPlatformVersion>10.0.17763.0</TargetPlatformVersion>
+	<TargetPlatformMinVersion>10.0.17763.0</TargetPlatformMinVersion>
 	<DefineConstants>$(DefineConstants);NETFX_CORE</DefineConstants>
 
 	<!-- Ensures the .xr.xml files are generated in a proper layout folder -->
@@ -70,11 +70,10 @@
   </PropertyGroup>
 
   <ItemGroup>
-	<PackageReference Include="MSBuild.Sdk.Extras" Version="1.5.4" PrivateAssets="All" />
-	<PackageReference Include="xamarin.build.download" Version="0.4.9" />
+	<PackageReference Include="xamarin.build.download" />
   </ItemGroup>
 
-  <ItemGroup Condition=" '$(TargetFrameworkIdentifier)' == 'MonoAndroid' or  '$(TargetFrameworkIdentifier)' == 'Xamarin.iOS' ">
+  <ItemGroup Condition=" $(IsMonoAndroid) or $(IsXamarinIOS) ">
 	<!-- remove files included by msbuild extras -->
 	<Page Remove="@(Page)" />
 	<Page Include="**\*.xaml" Exclude="bin\**\*.xaml;obj\**\*.xaml" />

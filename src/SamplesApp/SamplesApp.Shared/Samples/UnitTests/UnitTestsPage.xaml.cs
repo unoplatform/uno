@@ -1,34 +1,23 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Reflection;
-using System.Runtime.InteropServices.WindowsRuntime;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
+﻿using System.Reflection;
 using Windows.UI.Xaml;
+using Uno.UI.Samples.Controls;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Navigation;
-
-// The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=234238
 
 namespace SamplesApp.Samples.UnitTests
 {
-    /// <summary>
-    /// An empty page that can be used on its own or navigated to within a Frame.
-    /// </summary>
-    public sealed partial class UnitTestsPage : Page
-    {
-        public UnitTestsPage()
-        {
-            this.InitializeComponent();
+	[SampleControlInfo("Unit Tests", "Unit Tests Runner")]
+	public sealed partial class UnitTestsPage : Page
+	{
+		public UnitTestsPage()
+		{
+			this.InitializeComponent();
 
 			// Manually load the runtime tests assembly
 			Assembly.Load("Uno.UI.RuntimeTests");
-        }
-    }
+
+#if __WASM__
+			Assembly.Load("Uno.UI.Wasm.Tests");
+#endif
+		}
+	}
 }

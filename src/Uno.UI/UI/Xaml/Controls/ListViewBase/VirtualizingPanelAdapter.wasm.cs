@@ -18,6 +18,11 @@ namespace Windows.UI.Xaml.Controls
 
 		private readonly Dictionary<int, Stack<FrameworkElement>> _itemContainerCache = new Dictionary<int, Stack<FrameworkElement>>();
 
+		/// <summary>
+		/// Items that have been temporarily scrapped and can be reused without being rebound.
+		/// </summary>
+		private readonly Dictionary<int, FrameworkElement> _scrapCache = new Dictionary<int, FrameworkElement>();
+
 		private ItemsControl ItemsControl => _owner.ItemsControl;
 
 		public VirtualizingPanelGenerator(VirtualizingPanelLayout owner)
@@ -27,6 +32,13 @@ namespace Windows.UI.Xaml.Controls
 
 		public FrameworkElement DequeueViewForItem(int index)
 		{
+			//Try scrap first to save rebinding view
+			var scrapped = TryGetScrappedContainer(index);
+			if (scrapped != null)
+			{
+				return scrapped;
+			}
+
 			var id = GetItemId(index);
 
 			var container = TryDequeueCachedContainer(id);
@@ -59,30 +71,85 @@ namespace Windows.UI.Xaml.Controls
 			return null;
 		}
 
+		private FrameworkElement TryGetScrappedContainer(int index)
+		{
+			if (_scrapCache.TryGetValue(index, out var container))
+			{
+				_scrapCache.Remove(index);
+
+				return container;
+			}
+
+			return null;
+		}
+
 		public void RecycleViewForItem(FrameworkElement container, int index)
 		{
 			var id = GetItemId(index);
 
-			if (this.Log().IsEnabled(LogLevel.Debug))
+			if (!(_owner.XamlParent?.IsIndexItsOwnContainer(index) ?? false))
 			{
-				this.Log().LogDebug($"{GetMethodTag()} container={container} index={index}");
-			}
+				if (this.Log().IsEnabled(LogLevel.Debug))
+				{
+					this.Log().LogDebug($"{GetMethodTag()} container={container} index={index}");
+				}
 
-			var cache = _itemContainerCache.FindOrCreate(id, () => new Stack<FrameworkElement>());
+				var cache = _itemContainerCache.FindOrCreate(id, () => new Stack<FrameworkElement>());
 
-			if (cache.Count < CacheLimit)
-			{
-				cache.Push(container);
+				if (cache.Count < CacheLimit)
+				{
+					cache.Push(container);
+				}
+				else
+				{
+					DiscardContainer(container);
+				}
 			}
 			else
 			{
-				// Cache is full, remove the view
-				var parent = (container.Parent) as Panel;
-				if (parent != null)
+				// Non-generated containers cannot be recycled as they
+				// are placed at specific positions.
+
+				if (this.Log().IsEnabled(LogLevel.Debug))
 				{
-					parent.Children.Remove(container);
+					this.Log().LogDebug($"{GetMethodTag()} itemIsItsOwnContainer container={container} index={index}");
 				}
+
+				DiscardContainer(container);
 			}
+		}
+
+		private static void DiscardContainer(FrameworkElement container)
+		{
+			// Cache is full, remove the view
+			var parent = (container.Parent) as Panel;
+			if (parent != null)
+			{
+				parent.Children.Remove(container);
+			}
+		}
+
+		/// <summary>
+		/// Send view to temporary scrap. Intended for use during lightweight layout rebuild. Views in scrap will be reused without being rebound if a view for that position is requested.
+		/// </summary>
+		/// <param name="container"></param>
+		/// <param name="index"></param>
+		public void ScrapViewForItem(FrameworkElement container, int index)
+		{
+			_scrapCache[index] = container;
+		}
+
+		/// <summary>
+		/// Empty scrap, this should be called after a lightweight layout rebuild.
+		/// </summary>
+		public void ClearScrappedViews()
+		{
+			foreach (var kvp in _scrapCache)
+			{
+				RecycleViewForItem(kvp.Value, kvp.Key);
+			}
+
+			_scrapCache.Clear();
 		}
 
 		/// <summary>
@@ -104,8 +171,8 @@ namespace Windows.UI.Xaml.Controls
 
 		private int GetItemId(int index)
 		{
-			var item = ItemsControl.GetItemFromIndex(index);
-			var template = ItemsControl.ResolveItemTemplate(item);
+			var item = ItemsControl?.GetItemFromIndex(index);
+			var template = ItemsControl?.ResolveItemTemplate(item);
 			var id = template?.GetHashCode() ?? NoTemplateItemId;
 			return id;
 		}

@@ -75,6 +75,25 @@ namespace Windows.UI.Xaml.Markup.Reader
 
 				return Activator.CreateInstance(type, builder);
 			}
+			else if (type.Is<ResourceDictionary>())
+			{
+				var contentOwner = control.Members.FirstOrDefault(m => m.Member.Name == "_UnknownContent");
+
+				var rd = Activator.CreateInstance(type) as ResourceDictionary;
+				foreach (var xamlObjectDefinition in contentOwner.Objects)
+				{
+					var key = xamlObjectDefinition.Members.FirstOrDefault(m => m.Member.Name == "Key")?.Value;
+
+					var instance = LoadObject(xamlObjectDefinition);
+
+					if (key != null)
+					{
+						rd.Add(key, instance);
+					}
+				}
+
+				return rd;
+			}
 			else
 			{
 				var instance = Activator.CreateInstance(type);
@@ -90,8 +109,9 @@ namespace Windows.UI.Xaml.Markup.Reader
 								_styleTargetTypeStack.Push(targetType);
 
 								return Uno.Disposables.Disposable.Create(
-									() => {
-										if(_styleTargetTypeStack.Pop() != targetType)
+									() =>
+									{
+										if (_styleTargetTypeStack.Pop() != targetType)
 										{
 											throw new InvalidOperationException("StyleTargetType is out of synchronization");
 										}
@@ -145,7 +165,7 @@ namespace Windows.UI.Xaml.Markup.Reader
 							// if there is no ":" this means that the type is using the default
 							// namespace, so try to resolve the best way we can.
 
-							var parts = match.Value.Trim(new[] { '(', ')' }).Split('.');
+							var parts = match.Value.Trim(new[] { '(', ')' }).Split(new[] { '.' });
 
 							if (parts.Length == 2)
 							{
@@ -251,7 +271,7 @@ namespace Windows.UI.Xaml.Markup.Reader
 			}
 			else if (member.Member.DeclaringType == null && member.Member.Name == "Name")
 			{
-				// This is a special case, where the declaring type is from the x: namespace, 
+				// This is a special case, where the declaring type is from the x: namespace,
 				// but is considered of an unknown type. This can happen when providing the
 				// name of a control using x:Name instead of Name.
 				if (TypeResolver.GetPropertyByName(control.Type, "Name") is PropertyInfo nameInfo)
@@ -445,6 +465,11 @@ namespace Windows.UI.Xaml.Markup.Reader
 					}
 
 					_postActions.Enqueue(ResolveResource);
+				}
+				else
+				{
+					// Here we assigned a {StaticResource} on a standard property (not a DependencyProperty)
+					// We can't resolve it.
 				}
 			}
 		}

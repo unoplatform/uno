@@ -7,4 +7,8 @@
 	<!-- This is required by JSon.NET and any expression.Compile caller -->
 	<type fullname="System.Linq.Expressions*" />
   </assembly>
+
+  <assembly fullname="BenchmarkDotNet">
+    <type fullname="BenchmarkDotNet.Toolchains.InProcess.InProcessRunner*" />
+  </assembly>
 </linker>

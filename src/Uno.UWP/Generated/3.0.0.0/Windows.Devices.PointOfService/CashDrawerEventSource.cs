@@ -2,7 +2,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Devices.PointOfService
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class CashDrawerEventSource 
@@ -11,7 +11,7 @@ namespace Windows.Devices.PointOfService
 		// Forced skipping of method Windows.Devices.PointOfService.CashDrawerEventSource.DrawerClosed.remove
 		// Forced skipping of method Windows.Devices.PointOfService.CashDrawerEventSource.DrawerOpened.add
 		// Forced skipping of method Windows.Devices.PointOfService.CashDrawerEventSource.DrawerOpened.remove
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Devices.PointOfService.CashDrawerEventSource, global::Windows.Devices.PointOfService.CashDrawerClosedEventArgs> DrawerClosed
 		{
@@ -27,7 +27,7 @@ namespace Windows.Devices.PointOfService
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Devices.PointOfService.CashDrawerEventSource, global::Windows.Devices.PointOfService.CashDrawerOpenedEventArgs> DrawerOpened
 		{

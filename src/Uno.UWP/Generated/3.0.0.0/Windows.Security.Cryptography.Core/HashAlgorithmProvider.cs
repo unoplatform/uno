@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Security.Cryptography.Core
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class HashAlgorithmProvider 
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  string AlgorithmName
 		{
@@ -17,7 +17,7 @@ namespace Windows.Security.Cryptography.Core
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  uint HashLength
 		{
@@ -29,21 +29,21 @@ namespace Windows.Security.Cryptography.Core
 		#endif
 		// Forced skipping of method Windows.Security.Cryptography.Core.HashAlgorithmProvider.AlgorithmName.get
 		// Forced skipping of method Windows.Security.Cryptography.Core.HashAlgorithmProvider.HashLength.get
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Storage.Streams.IBuffer HashData( global::Windows.Storage.Streams.IBuffer data)
 		{
 			throw new global::System.NotImplementedException("The member IBuffer HashAlgorithmProvider.HashData(IBuffer data) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Security.Cryptography.Core.CryptographicHash CreateHash()
 		{
 			throw new global::System.NotImplementedException("The member CryptographicHash HashAlgorithmProvider.CreateHash() is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.Security.Cryptography.Core.HashAlgorithmProvider OpenAlgorithm( string algorithm)
 		{

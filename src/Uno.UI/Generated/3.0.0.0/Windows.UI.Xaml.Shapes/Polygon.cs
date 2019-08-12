@@ -8,7 +8,7 @@ namespace Windows.UI.Xaml.Shapes
 	public  partial class Polygon 
 	{
 		// Skipping already declared property Points
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.UI.Xaml.Media.FillRule FillRule
 		{
@@ -22,7 +22,7 @@ namespace Windows.UI.Xaml.Shapes
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty FillRuleProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(

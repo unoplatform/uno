@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Input
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class PointerVisualizationSettings 
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  bool IsContactFeedbackEnabled
 		{
@@ -21,7 +21,7 @@ namespace Windows.UI.Input
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  bool IsBarrelButtonFeedbackEnabled
 		{
@@ -39,7 +39,7 @@ namespace Windows.UI.Input
 		// Forced skipping of method Windows.UI.Input.PointerVisualizationSettings.IsContactFeedbackEnabled.get
 		// Forced skipping of method Windows.UI.Input.PointerVisualizationSettings.IsBarrelButtonFeedbackEnabled.set
 		// Forced skipping of method Windows.UI.Input.PointerVisualizationSettings.IsBarrelButtonFeedbackEnabled.get
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Input.PointerVisualizationSettings GetForCurrentView()
 		{

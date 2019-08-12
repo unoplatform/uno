@@ -2,7 +2,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Input
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class EdgeGesture 
@@ -13,14 +13,14 @@ namespace Windows.UI.Input
 		// Forced skipping of method Windows.UI.Input.EdgeGesture.Completed.remove
 		// Forced skipping of method Windows.UI.Input.EdgeGesture.Canceled.add
 		// Forced skipping of method Windows.UI.Input.EdgeGesture.Canceled.remove
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Input.EdgeGesture GetForCurrentView()
 		{
 			throw new global::System.NotImplementedException("The member EdgeGesture EdgeGesture.GetForCurrentView() is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Input.EdgeGesture, global::Windows.UI.Input.EdgeGestureEventArgs> Canceled
 		{
@@ -36,7 +36,7 @@ namespace Windows.UI.Input
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Input.EdgeGesture, global::Windows.UI.Input.EdgeGestureEventArgs> Completed
 		{
@@ -52,7 +52,7 @@ namespace Windows.UI.Input
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Input.EdgeGesture, global::Windows.UI.Input.EdgeGestureEventArgs> Starting
 		{

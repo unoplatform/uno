@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Devices.AllJoyn
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class AllJoynCredentialsRequestedEventArgs 
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  ushort AttemptCount
 		{
@@ -17,7 +17,7 @@ namespace Windows.Devices.AllJoyn
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Devices.AllJoyn.AllJoynCredentials Credentials
 		{
@@ -27,7 +27,7 @@ namespace Windows.Devices.AllJoyn
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  string PeerUniqueName
 		{
@@ -37,7 +37,7 @@ namespace Windows.Devices.AllJoyn
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  string RequestedUserName
 		{
@@ -51,7 +51,7 @@ namespace Windows.Devices.AllJoyn
 		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynCredentialsRequestedEventArgs.Credentials.get
 		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynCredentialsRequestedEventArgs.PeerUniqueName.get
 		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynCredentialsRequestedEventArgs.RequestedUserName.get
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Foundation.Deferral GetDeferral()
 		{

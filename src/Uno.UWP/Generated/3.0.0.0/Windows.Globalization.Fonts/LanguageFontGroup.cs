@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Globalization.Fonts
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class LanguageFontGroup 
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Globalization.Fonts.LanguageFont DocumentAlternate1Font
 		{
@@ -17,7 +17,7 @@ namespace Windows.Globalization.Fonts
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Globalization.Fonts.LanguageFont DocumentAlternate2Font
 		{
@@ -27,7 +27,7 @@ namespace Windows.Globalization.Fonts
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Globalization.Fonts.LanguageFont DocumentHeadingFont
 		{
@@ -37,7 +37,7 @@ namespace Windows.Globalization.Fonts
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Globalization.Fonts.LanguageFont FixedWidthTextFont
 		{
@@ -47,7 +47,7 @@ namespace Windows.Globalization.Fonts
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Globalization.Fonts.LanguageFont ModernDocumentFont
 		{
@@ -57,7 +57,7 @@ namespace Windows.Globalization.Fonts
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Globalization.Fonts.LanguageFont TraditionalDocumentFont
 		{
@@ -67,7 +67,7 @@ namespace Windows.Globalization.Fonts
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Globalization.Fonts.LanguageFont UICaptionFont
 		{
@@ -77,7 +77,7 @@ namespace Windows.Globalization.Fonts
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Globalization.Fonts.LanguageFont UIHeadingFont
 		{
@@ -87,7 +87,7 @@ namespace Windows.Globalization.Fonts
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Globalization.Fonts.LanguageFont UINotificationHeadingFont
 		{
@@ -97,7 +97,7 @@ namespace Windows.Globalization.Fonts
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Globalization.Fonts.LanguageFont UITextFont
 		{
@@ -107,7 +107,7 @@ namespace Windows.Globalization.Fonts
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Globalization.Fonts.LanguageFont UITitleFont
 		{
@@ -117,7 +117,7 @@ namespace Windows.Globalization.Fonts
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public LanguageFontGroup( string languageTag) 
 		{

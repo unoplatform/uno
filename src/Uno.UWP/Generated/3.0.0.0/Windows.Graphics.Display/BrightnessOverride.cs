@@ -9,7 +9,7 @@ namespace Windows.Graphics.Display
 	{
 		// Skipping already declared property BrightnessLevel
 		// Skipping already declared property IsOverrideActive
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  bool IsSupported
 		{
@@ -22,35 +22,35 @@ namespace Windows.Graphics.Display
 		// Forced skipping of method Windows.Graphics.Display.BrightnessOverride.IsSupported.get
 		// Forced skipping of method Windows.Graphics.Display.BrightnessOverride.IsOverrideActive.get
 		// Forced skipping of method Windows.Graphics.Display.BrightnessOverride.BrightnessLevel.get
-		#if false || false || NET46 || false || __MACOS__
+		#if false || false || NET461 || false || __MACOS__
 		[global::Uno.NotImplemented]
 		public  void SetBrightnessLevel( double brightnessLevel,  global::Windows.Graphics.Display.DisplayBrightnessOverrideOptions options)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Display.BrightnessOverride", "void BrightnessOverride.SetBrightnessLevel(double brightnessLevel, DisplayBrightnessOverrideOptions options)");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  void SetBrightnessScenario( global::Windows.Graphics.Display.DisplayBrightnessScenario scenario,  global::Windows.Graphics.Display.DisplayBrightnessOverrideOptions options)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Display.BrightnessOverride", "void BrightnessOverride.SetBrightnessScenario(DisplayBrightnessScenario scenario, DisplayBrightnessOverrideOptions options)");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  double GetLevelForScenario( global::Windows.Graphics.Display.DisplayBrightnessScenario scenario)
 		{
 			throw new global::System.NotImplementedException("The member double BrightnessOverride.GetLevelForScenario(DisplayBrightnessScenario scenario) is not implemented in Uno.");
 		}
 		#endif
-		#if false || false || NET46 || false || __MACOS__
+		#if false || false || NET461 || false || __MACOS__
 		[global::Uno.NotImplemented]
 		public  void StartOverride()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Display.BrightnessOverride", "void BrightnessOverride.StartOverride()");
 		}
 		#endif
-		#if false || false || NET46 || false || __MACOS__
+		#if false || false || NET461 || false || __MACOS__
 		[global::Uno.NotImplemented]
 		public  void StopOverride()
 		{
@@ -63,7 +63,7 @@ namespace Windows.Graphics.Display
 		// Forced skipping of method Windows.Graphics.Display.BrightnessOverride.IsOverrideActiveChanged.remove
 		// Forced skipping of method Windows.Graphics.Display.BrightnessOverride.BrightnessLevelChanged.add
 		// Forced skipping of method Windows.Graphics.Display.BrightnessOverride.BrightnessLevelChanged.remove
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.Graphics.Display.BrightnessOverride GetDefaultForSystem()
 		{
@@ -71,14 +71,14 @@ namespace Windows.Graphics.Display
 		}
 		#endif
 		// Skipping already declared method Windows.Graphics.Display.BrightnessOverride.GetForCurrentView()
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.Foundation.IAsyncOperation<bool> SaveForSystemAsync( global::Windows.Graphics.Display.BrightnessOverride value)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> BrightnessOverride.SaveForSystemAsync(BrightnessOverride value) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Graphics.Display.BrightnessOverride, object> BrightnessLevelChanged
 		{
@@ -94,7 +94,7 @@ namespace Windows.Graphics.Display
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Graphics.Display.BrightnessOverride, object> IsOverrideActiveChanged
 		{
@@ -110,7 +110,7 @@ namespace Windows.Graphics.Display
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Graphics.Display.BrightnessOverride, object> IsSupportedChanged
 		{

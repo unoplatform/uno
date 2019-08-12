@@ -7,9 +7,11 @@ namespace $ext_safeprojectname$.Wasm
 	{
 		private static App _app;
 
-		static void Main(string[] args)
+		static int Main(string[] args)
 		{
 			Windows.UI.Xaml.Application.Start(_ => _app = new App());
+
+			return 0;
 		}
 	}
 }

@@ -32,128 +32,15 @@ namespace Windows.UI.Xaml.Controls
 		// Skipping already declared property PaneTitle
 		// Skipping already declared property IsBackEnabled
 		// Skipping already declared property IsBackButtonVisible
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  global::Windows.UI.Xaml.Controls.NavigationViewShoulderNavigationEnabled ShoulderNavigationEnabled
-		{
-			get
-			{
-				return (global::Windows.UI.Xaml.Controls.NavigationViewShoulderNavigationEnabled)this.GetValue(ShoulderNavigationEnabledProperty);
-			}
-			set
-			{
-				this.SetValue(ShoulderNavigationEnabledProperty, value);
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  global::Windows.UI.Xaml.Controls.NavigationViewSelectionFollowsFocus SelectionFollowsFocus
-		{
-			get
-			{
-				return (global::Windows.UI.Xaml.Controls.NavigationViewSelectionFollowsFocus)this.GetValue(SelectionFollowsFocusProperty);
-			}
-			set
-			{
-				this.SetValue(SelectionFollowsFocusProperty, value);
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  global::Windows.UI.Xaml.UIElement PaneHeader
-		{
-			get
-			{
-				return (global::Windows.UI.Xaml.UIElement)this.GetValue(PaneHeaderProperty);
-			}
-			set
-			{
-				this.SetValue(PaneHeaderProperty, value);
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  global::Windows.UI.Xaml.Controls.NavigationViewPaneDisplayMode PaneDisplayMode
-		{
-			get
-			{
-				return (global::Windows.UI.Xaml.Controls.NavigationViewPaneDisplayMode)this.GetValue(PaneDisplayModeProperty);
-			}
-			set
-			{
-				this.SetValue(PaneDisplayModeProperty, value);
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  global::Windows.UI.Xaml.UIElement PaneCustomContent
-		{
-			get
-			{
-				return (global::Windows.UI.Xaml.UIElement)this.GetValue(PaneCustomContentProperty);
-			}
-			set
-			{
-				this.SetValue(PaneCustomContentProperty, value);
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  global::Windows.UI.Xaml.Controls.NavigationViewOverflowLabelMode OverflowLabelMode
-		{
-			get
-			{
-				return (global::Windows.UI.Xaml.Controls.NavigationViewOverflowLabelMode)this.GetValue(OverflowLabelModeProperty);
-			}
-			set
-			{
-				this.SetValue(OverflowLabelModeProperty, value);
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  bool IsPaneVisible
-		{
-			get
-			{
-				return (bool)this.GetValue(IsPaneVisibleProperty);
-			}
-			set
-			{
-				this.SetValue(IsPaneVisibleProperty, value);
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  global::Windows.UI.Xaml.UIElement ContentOverlay
-		{
-			get
-			{
-				return (global::Windows.UI.Xaml.UIElement)this.GetValue(ContentOverlayProperty);
-			}
-			set
-			{
-				this.SetValue(ContentOverlayProperty, value);
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  global::Windows.UI.Xaml.Controls.NavigationViewTemplateSettings TemplateSettings
-		{
-			get
-			{
-				return (global::Windows.UI.Xaml.Controls.NavigationViewTemplateSettings)this.GetValue(TemplateSettingsProperty);
-			}
-		}
-		#endif
+		// Skipping already declared property ShoulderNavigationEnabled
+		// Skipping already declared property SelectionFollowsFocus
+		// Skipping already declared property PaneHeader
+		// Skipping already declared property PaneDisplayMode
+		// Skipping already declared property PaneCustomContent
+		// Skipping already declared property OverflowLabelMode
+		// Skipping already declared property IsPaneVisible
+		// Skipping already declared property ContentOverlay
+		// Skipping already declared property TemplateSettings
 		// Skipping already declared property ExpandedModeThresholdWidthProperty
 		// Skipping already declared property IsSettingsVisibleProperty
 		// Skipping already declared property MenuItemContainerStyleProperty
@@ -179,78 +66,15 @@ namespace Windows.UI.Xaml.Controls
 		// Skipping already declared property IsBackButtonVisibleProperty
 		// Skipping already declared property IsBackEnabledProperty
 		// Skipping already declared property PaneTitleProperty
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public static global::Windows.UI.Xaml.DependencyProperty IsPaneVisibleProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			"IsPaneVisible", typeof(bool), 
-			typeof(global::Windows.UI.Xaml.Controls.NavigationView), 
-			new FrameworkPropertyMetadata(default(bool)));
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public static global::Windows.UI.Xaml.DependencyProperty OverflowLabelModeProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			"OverflowLabelMode", typeof(global::Windows.UI.Xaml.Controls.NavigationViewOverflowLabelMode), 
-			typeof(global::Windows.UI.Xaml.Controls.NavigationView), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Controls.NavigationViewOverflowLabelMode)));
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public static global::Windows.UI.Xaml.DependencyProperty PaneCustomContentProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			"PaneCustomContent", typeof(global::Windows.UI.Xaml.UIElement), 
-			typeof(global::Windows.UI.Xaml.Controls.NavigationView), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.UIElement)));
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public static global::Windows.UI.Xaml.DependencyProperty PaneDisplayModeProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			"PaneDisplayMode", typeof(global::Windows.UI.Xaml.Controls.NavigationViewPaneDisplayMode), 
-			typeof(global::Windows.UI.Xaml.Controls.NavigationView), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Controls.NavigationViewPaneDisplayMode)));
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public static global::Windows.UI.Xaml.DependencyProperty PaneHeaderProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			"PaneHeader", typeof(global::Windows.UI.Xaml.UIElement), 
-			typeof(global::Windows.UI.Xaml.Controls.NavigationView), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.UIElement)));
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public static global::Windows.UI.Xaml.DependencyProperty SelectionFollowsFocusProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			"SelectionFollowsFocus", typeof(global::Windows.UI.Xaml.Controls.NavigationViewSelectionFollowsFocus), 
-			typeof(global::Windows.UI.Xaml.Controls.NavigationView), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Controls.NavigationViewSelectionFollowsFocus)));
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public static global::Windows.UI.Xaml.DependencyProperty ShoulderNavigationEnabledProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			"ShoulderNavigationEnabled", typeof(global::Windows.UI.Xaml.Controls.NavigationViewShoulderNavigationEnabled), 
-			typeof(global::Windows.UI.Xaml.Controls.NavigationView), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Controls.NavigationViewShoulderNavigationEnabled)));
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public static global::Windows.UI.Xaml.DependencyProperty TemplateSettingsProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			"TemplateSettings", typeof(global::Windows.UI.Xaml.Controls.NavigationViewTemplateSettings), 
-			typeof(global::Windows.UI.Xaml.Controls.NavigationView), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Controls.NavigationViewTemplateSettings)));
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public static global::Windows.UI.Xaml.DependencyProperty ContentOverlayProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			"ContentOverlay", typeof(global::Windows.UI.Xaml.UIElement), 
-			typeof(global::Windows.UI.Xaml.Controls.NavigationView), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.UIElement)));
-		#endif
+		// Skipping already declared property IsPaneVisibleProperty
+		// Skipping already declared property OverflowLabelModeProperty
+		// Skipping already declared property PaneCustomContentProperty
+		// Skipping already declared property PaneDisplayModeProperty
+		// Skipping already declared property PaneHeaderProperty
+		// Skipping already declared property SelectionFollowsFocusProperty
+		// Skipping already declared property ShoulderNavigationEnabledProperty
+		// Skipping already declared property TemplateSettingsProperty
+		// Skipping already declared property ContentOverlayProperty
 		// Skipping already declared method Windows.UI.Xaml.Controls.NavigationView.NavigationView()
 		// Forced skipping of method Windows.UI.Xaml.Controls.NavigationView.NavigationView()
 		// Forced skipping of method Windows.UI.Xaml.Controls.NavigationView.IsPaneOpen.get

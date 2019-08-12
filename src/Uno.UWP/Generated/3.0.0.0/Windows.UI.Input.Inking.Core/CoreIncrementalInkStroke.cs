@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Input.Inking.Core
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class CoreIncrementalInkStroke 
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Foundation.Rect BoundingRect
 		{
@@ -17,7 +17,7 @@ namespace Windows.UI.Input.Inking.Core
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.UI.Input.Inking.InkDrawingAttributes DrawingAttributes
 		{
@@ -27,7 +27,7 @@ namespace Windows.UI.Input.Inking.Core
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::System.Numerics.Matrix3x2 PointTransform
 		{
@@ -37,7 +37,7 @@ namespace Windows.UI.Input.Inking.Core
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public CoreIncrementalInkStroke( global::Windows.UI.Input.Inking.InkDrawingAttributes drawingAttributes,  global::System.Numerics.Matrix3x2 pointTransform) 
 		{
@@ -45,14 +45,14 @@ namespace Windows.UI.Input.Inking.Core
 		}
 		#endif
 		// Forced skipping of method Windows.UI.Input.Inking.Core.CoreIncrementalInkStroke.CoreIncrementalInkStroke(Windows.UI.Input.Inking.InkDrawingAttributes, System.Numerics.Matrix3x2)
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Foundation.Rect AppendInkPoints( global::System.Collections.Generic.IEnumerable<global::Windows.UI.Input.Inking.InkPoint> inkPoints)
 		{
 			throw new global::System.NotImplementedException("The member Rect CoreIncrementalInkStroke.AppendInkPoints(IEnumerable<InkPoint> inkPoints) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.UI.Input.Inking.InkStroke CreateInkStroke()
 		{

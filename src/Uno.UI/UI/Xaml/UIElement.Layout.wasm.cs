@@ -6,7 +6,6 @@ namespace Windows.UI.Xaml
 	public partial class UIElement : DependencyObject
 	{
 		private Size _size;
-		private Rect _finalRect;
 		private Size _desiredSize;
 		private Size _previousAvailableSize;
 
@@ -15,8 +14,19 @@ namespace Windows.UI.Xaml
 
 		public Size DesiredSize => Visibility == Visibility.Collapsed ? new Size(0, 0) : _desiredSize;
 
+		/// <summary>
+		/// When set, measure and invalidate requests will not be propagated further up the visual tree, ie they won't trigger a relayout.
+		/// Used where repeated unnecessary measure/arrange passes would be unacceptable for performance (eg scrolling in a list).
+		/// </summary>
+		internal bool ShouldInterceptInvalidate { get; set; }
+
 		public void InvalidateMeasure()
 		{
+			if (ShouldInterceptInvalidate)
+			{
+				return;
+			}
+
 			// TODO: Figure out why this condition breaks layouting in some cases
 			//if (_isMeasureValid)
 			{
@@ -35,6 +45,11 @@ namespace Windows.UI.Xaml
 
 		public void InvalidateArrange()
 		{
+			if (ShouldInterceptInvalidate)
+			{
+				return;
+			}
+
 			if (_isArrangeValid)
 			{
 				_isArrangeValid = false;
@@ -74,8 +89,6 @@ namespace Windows.UI.Xaml
 				return;
 			}
 
-			var prevSize = _desiredSize;
-			
 			InvalidateArrange();
 
 			var desiredSize = MeasureCore(availableSize);
@@ -93,14 +106,14 @@ namespace Windows.UI.Xaml
 
 			if (Visibility == Visibility.Collapsed)
 			{
-				_finalRect = finalRect;
+				LayoutSlot = finalRect;
 				return;
 			}
 
-			if (!_isArrangeValid || finalRect != _finalRect)
+			if (!_isArrangeValid || finalRect != LayoutSlot)
 			{
 				ArrangeCore(finalRect);
-				_finalRect = finalRect;
+				LayoutSlot = finalRect;
 				_isArrangeValid = true;
 			}
 		}
@@ -118,7 +131,7 @@ namespace Windows.UI.Xaml
 		public Size RenderSize
 		{
 			get => Visibility == Visibility.Collapsed ? new Size() : _size;
-			set
+			internal set
 			{
 				var previousSize = _size;
 				_size = value;

@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Data.Xml.Dom
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class XmlNamedNodeMap : global::System.Collections.Generic.IReadOnlyList<global::Windows.Data.Xml.Dom.IXmlNode>,global::System.Collections.Generic.IEnumerable<global::Windows.Data.Xml.Dom.IXmlNode>
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  uint Length
 		{
@@ -17,7 +17,7 @@ namespace Windows.Data.Xml.Dom
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  uint Size
 		{
@@ -29,42 +29,42 @@ namespace Windows.Data.Xml.Dom
 		#endif
 		// Forced skipping of method Windows.Data.Xml.Dom.XmlNamedNodeMap.Length.get
 		// Forced skipping of method Windows.Data.Xml.Dom.XmlNamedNodeMap.Item(uint)
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Data.Xml.Dom.IXmlNode GetNamedItem( string name)
 		{
 			throw new global::System.NotImplementedException("The member IXmlNode XmlNamedNodeMap.GetNamedItem(string name) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Data.Xml.Dom.IXmlNode SetNamedItem( global::Windows.Data.Xml.Dom.IXmlNode node)
 		{
 			throw new global::System.NotImplementedException("The member IXmlNode XmlNamedNodeMap.SetNamedItem(IXmlNode node) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Data.Xml.Dom.IXmlNode RemoveNamedItem( string name)
 		{
 			throw new global::System.NotImplementedException("The member IXmlNode XmlNamedNodeMap.RemoveNamedItem(string name) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Data.Xml.Dom.IXmlNode GetNamedItemNS( object namespaceUri,  string name)
 		{
 			throw new global::System.NotImplementedException("The member IXmlNode XmlNamedNodeMap.GetNamedItemNS(object namespaceUri, string name) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Data.Xml.Dom.IXmlNode RemoveNamedItemNS( object namespaceUri,  string name)
 		{
 			throw new global::System.NotImplementedException("The member IXmlNode XmlNamedNodeMap.RemoveNamedItemNS(object namespaceUri, string name) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Data.Xml.Dom.IXmlNode SetNamedItemNS( global::Windows.Data.Xml.Dom.IXmlNode node)
 		{
@@ -77,7 +77,7 @@ namespace Windows.Data.Xml.Dom
 		// Forced skipping of method Windows.Data.Xml.Dom.XmlNamedNodeMap.GetMany(uint, Windows.Data.Xml.Dom.IXmlNode[])
 		// Forced skipping of method Windows.Data.Xml.Dom.XmlNamedNodeMap.First()
 		// Processing: System.Collections.Generic.IReadOnlyList<Windows.Data.Xml.Dom.IXmlNode>
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public global::Windows.Data.Xml.Dom.IXmlNode this[int index]
 		{
@@ -92,7 +92,7 @@ namespace Windows.Data.Xml.Dom
 		}
 		#endif
 		// Processing: System.Collections.Generic.IEnumerable<Windows.Data.Xml.Dom.IXmlNode>
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		// DeclaringType: System.Collections.Generic.IEnumerable<Windows.Data.Xml.Dom.IXmlNode>
 		[global::Uno.NotImplemented]
 		public global::System.Collections.Generic.IEnumerator<global::Windows.Data.Xml.Dom.IXmlNode> GetEnumerator()
@@ -101,7 +101,7 @@ namespace Windows.Data.Xml.Dom
 		}
 		#endif
 		// Processing: System.Collections.IEnumerable
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		// DeclaringType: System.Collections.IEnumerable
 		[global::Uno.NotImplemented]
 		 global::System.Collections.IEnumerator global::System.Collections.IEnumerable.GetEnumerator()
@@ -110,7 +110,7 @@ namespace Windows.Data.Xml.Dom
 		}
 		#endif
 		// Processing: System.Collections.Generic.IReadOnlyCollection<Windows.Data.Xml.Dom.IXmlNode>
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public int Count
 		{

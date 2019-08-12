@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml.Automation.Peers
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class AppBarAutomationPeer : global::Windows.UI.Xaml.Automation.Peers.FrameworkElementAutomationPeer,global::Windows.UI.Xaml.Automation.Provider.IToggleProvider,global::Windows.UI.Xaml.Automation.Provider.IExpandCollapseProvider,global::Windows.UI.Xaml.Automation.Provider.IWindowProvider
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.UI.Xaml.Automation.ExpandCollapseState ExpandCollapseState
 		{
@@ -17,7 +17,7 @@ namespace Windows.UI.Xaml.Automation.Peers
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.UI.Xaml.Automation.ToggleState ToggleState
 		{
@@ -27,7 +27,7 @@ namespace Windows.UI.Xaml.Automation.Peers
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.UI.Xaml.Automation.WindowInteractionState InteractionState
 		{
@@ -37,7 +37,7 @@ namespace Windows.UI.Xaml.Automation.Peers
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  bool IsModal
 		{
@@ -47,7 +47,7 @@ namespace Windows.UI.Xaml.Automation.Peers
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  bool IsTopmost
 		{
@@ -57,7 +57,7 @@ namespace Windows.UI.Xaml.Automation.Peers
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  bool Maximizable
 		{
@@ -67,7 +67,7 @@ namespace Windows.UI.Xaml.Automation.Peers
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  bool Minimizable
 		{
@@ -77,7 +77,7 @@ namespace Windows.UI.Xaml.Automation.Peers
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.UI.Xaml.Automation.WindowVisualState VisualState
 		{
@@ -87,7 +87,7 @@ namespace Windows.UI.Xaml.Automation.Peers
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public AppBarAutomationPeer( global::Windows.UI.Xaml.Controls.AppBar owner) : base(owner)
 		{
@@ -96,7 +96,7 @@ namespace Windows.UI.Xaml.Automation.Peers
 		#endif
 		// Forced skipping of method Windows.UI.Xaml.Automation.Peers.AppBarAutomationPeer.AppBarAutomationPeer(Windows.UI.Xaml.Controls.AppBar)
 		// Forced skipping of method Windows.UI.Xaml.Automation.Peers.AppBarAutomationPeer.ToggleState.get
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  void Toggle()
 		{
@@ -104,14 +104,14 @@ namespace Windows.UI.Xaml.Automation.Peers
 		}
 		#endif
 		// Forced skipping of method Windows.UI.Xaml.Automation.Peers.AppBarAutomationPeer.ExpandCollapseState.get
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  void Collapse()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Automation.Peers.AppBarAutomationPeer", "void AppBarAutomationPeer.Collapse()");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  void Expand()
 		{
@@ -124,21 +124,21 @@ namespace Windows.UI.Xaml.Automation.Peers
 		// Forced skipping of method Windows.UI.Xaml.Automation.Peers.AppBarAutomationPeer.Minimizable.get
 		// Forced skipping of method Windows.UI.Xaml.Automation.Peers.AppBarAutomationPeer.InteractionState.get
 		// Forced skipping of method Windows.UI.Xaml.Automation.Peers.AppBarAutomationPeer.VisualState.get
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  void Close()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Automation.Peers.AppBarAutomationPeer", "void AppBarAutomationPeer.Close()");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  void SetVisualState( global::Windows.UI.Xaml.Automation.WindowVisualState state)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Automation.Peers.AppBarAutomationPeer", "void AppBarAutomationPeer.SetVisualState(WindowVisualState state)");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  bool WaitForInputIdle( int milliseconds)
 		{

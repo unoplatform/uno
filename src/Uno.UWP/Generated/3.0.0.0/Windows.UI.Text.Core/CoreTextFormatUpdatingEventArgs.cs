@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Text.Core
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class CoreTextFormatUpdatingEventArgs 
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.UI.Text.Core.CoreTextFormatUpdatingResult Result
 		{
@@ -21,7 +21,7 @@ namespace Windows.UI.Text.Core
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.UI.ViewManagement.UIElementType? BackgroundColor
 		{
@@ -31,7 +31,7 @@ namespace Windows.UI.Text.Core
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  bool IsCanceled
 		{
@@ -41,7 +41,7 @@ namespace Windows.UI.Text.Core
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.UI.Text.Core.CoreTextRange Range
 		{
@@ -51,7 +51,7 @@ namespace Windows.UI.Text.Core
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.UI.Text.Core.CoreTextFormatUpdatingReason Reason
 		{
@@ -61,7 +61,7 @@ namespace Windows.UI.Text.Core
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.UI.ViewManagement.UIElementType? TextColor
 		{
@@ -71,7 +71,7 @@ namespace Windows.UI.Text.Core
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.UI.ViewManagement.UIElementType? UnderlineColor
 		{
@@ -81,7 +81,7 @@ namespace Windows.UI.Text.Core
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.UI.Text.UnderlineType? UnderlineType
 		{
@@ -100,7 +100,7 @@ namespace Windows.UI.Text.Core
 		// Forced skipping of method Windows.UI.Text.Core.CoreTextFormatUpdatingEventArgs.Result.get
 		// Forced skipping of method Windows.UI.Text.Core.CoreTextFormatUpdatingEventArgs.Result.set
 		// Forced skipping of method Windows.UI.Text.Core.CoreTextFormatUpdatingEventArgs.IsCanceled.get
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Foundation.Deferral GetDeferral()
 		{

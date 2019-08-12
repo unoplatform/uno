@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Networking.NetworkOperators
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class MobileBroadbandUiccApp 
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Storage.Streams.IBuffer Id
 		{
@@ -17,7 +17,7 @@ namespace Windows.Networking.NetworkOperators
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Networking.NetworkOperators.UiccAppKind Kind
 		{
@@ -29,14 +29,14 @@ namespace Windows.Networking.NetworkOperators
 		#endif
 		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandUiccApp.Id.get
 		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandUiccApp.Kind.get
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Foundation.IAsyncOperation<global::Windows.Networking.NetworkOperators.MobileBroadbandUiccAppRecordDetailsResult> GetRecordDetailsAsync( global::System.Collections.Generic.IEnumerable<uint> uiccFilePath)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<MobileBroadbandUiccAppRecordDetailsResult> MobileBroadbandUiccApp.GetRecordDetailsAsync(IEnumerable<uint> uiccFilePath) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Foundation.IAsyncOperation<global::Windows.Networking.NetworkOperators.MobileBroadbandUiccAppReadRecordResult> ReadRecordAsync( global::System.Collections.Generic.IEnumerable<uint> uiccFilePath,  int recordIndex)
 		{

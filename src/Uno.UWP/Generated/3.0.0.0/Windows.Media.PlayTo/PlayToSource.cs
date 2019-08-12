@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Media.PlayTo
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class PlayToSource 
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Media.PlayTo.PlayToSource Next
 		{
@@ -21,7 +21,7 @@ namespace Windows.Media.PlayTo
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Media.PlayTo.PlayToConnection Connection
 		{
@@ -31,7 +31,7 @@ namespace Windows.Media.PlayTo
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::System.Uri PreferredSourceUri
 		{
@@ -48,7 +48,7 @@ namespace Windows.Media.PlayTo
 		// Forced skipping of method Windows.Media.PlayTo.PlayToSource.Connection.get
 		// Forced skipping of method Windows.Media.PlayTo.PlayToSource.Next.get
 		// Forced skipping of method Windows.Media.PlayTo.PlayToSource.Next.set
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  void PlayNext()
 		{

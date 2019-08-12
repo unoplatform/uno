@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class GattWriteRequest 
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  uint Offset
 		{
@@ -17,7 +17,7 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Devices.Bluetooth.GenericAttributeProfile.GattWriteOption Option
 		{
@@ -27,7 +27,7 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Devices.Bluetooth.GenericAttributeProfile.GattRequestState State
 		{
@@ -37,7 +37,7 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Storage.Streams.IBuffer Value
 		{
@@ -53,21 +53,21 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattWriteRequest.State.get
 		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattWriteRequest.StateChanged.add
 		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattWriteRequest.StateChanged.remove
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  void Respond()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Bluetooth.GenericAttributeProfile.GattWriteRequest", "void GattWriteRequest.Respond()");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  void RespondWithProtocolError( byte protocolError)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Bluetooth.GenericAttributeProfile.GattWriteRequest", "void GattWriteRequest.RespondWithProtocolError(byte protocolError)");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Devices.Bluetooth.GenericAttributeProfile.GattWriteRequest, global::Windows.Devices.Bluetooth.GenericAttributeProfile.GattRequestStateChangedEventArgs> StateChanged
 		{

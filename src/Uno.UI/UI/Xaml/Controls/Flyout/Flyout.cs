@@ -20,12 +20,7 @@ namespace Windows.UI.Xaml.Controls
 {
 	[ContentProperty(Name = "Content")]
 	public partial class Flyout : FlyoutBase
-    {
-		private readonly FlyoutPresenter _presenter = new FlyoutPresenter();
-		internal protected Popup _popup;
-
-		private readonly SerialDisposable _sizeChangedDisposable = new SerialDisposable();
-
+	{
 		public Style FlyoutPresenterStyle
 		{
 			get { return (Style)this.GetValue(FlyoutPresenterStyleProperty); }
@@ -34,12 +29,16 @@ namespace Windows.UI.Xaml.Controls
 
 		// Using a DependencyProperty as the backing store for FlyoutPresenterStyle.  This enables animation, styling, binding, etc...
 		public static readonly DependencyProperty FlyoutPresenterStyleProperty =
-			DependencyProperty.Register("FlyoutPresenterStyle", typeof(Style), typeof(Flyout), new PropertyMetadata((Style)null,OnFlyoutPresenterStyleChanged));
+			DependencyProperty.Register(
+				"FlyoutPresenterStyle",
+				typeof(Style),
+				typeof(Flyout),
+				new FrameworkPropertyMetadata(default(Style), FrameworkPropertyMetadataOptions.AffectsMeasure, OnFlyoutPresenterStyleChanged));
 
 		private static void OnFlyoutPresenterStyleChanged(object dependencyObject, DependencyPropertyChangedEventArgs args)
 		{
 			var flyout = dependencyObject as Flyout;
-            if (flyout._presenter != null)
+			if (flyout._presenter != null)
 			{
 				flyout._presenter.Style = (Style)args.NewValue;
 			}
@@ -53,7 +52,12 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		public static readonly DependencyProperty ContentProperty =
-			DependencyProperty.Register("Content", typeof(IUIElement), typeof(Flyout), new PropertyMetadata(default(IUIElement),OnContentChanged));
+			DependencyProperty.Register(
+				"Content",
+				typeof(IUIElement),
+				typeof(Flyout),
+				new FrameworkPropertyMetadata(default(IUIElement), FrameworkPropertyMetadataOptions.AffectsMeasure, OnContentChanged));
+		private FlyoutPresenter _presenter;
 
 		private static void OnContentChanged(object dependencyObject, DependencyPropertyChangedEventArgs args)
 		{
@@ -73,67 +77,23 @@ namespace Windows.UI.Xaml.Controls
 
 		public Flyout()
 		{
-			_popup = new Popup()
-			{
-				Child = _presenter = CreatePresenter() as FlyoutPresenter,
-			};
-
-			InitializePartial();
-
-			_popup.Opened += OnPopupOpened;
-			_popup.Closed += OnPopupClosed;
-		}
-
-		private void OnPopupOpened(object sender, object e)
-		{
-			var child = _popup.Child as FrameworkElement;
-
-			if(child != null)
-			{
-				SizeChangedEventHandler handler = (_, __) => SetPopupPositionPartial(Target);
-
-				child.SizeChanged += handler;
-
-				_sizeChangedDisposable.Disposable = Disposable
-					.Create(() => child.SizeChanged -= handler);
-			}
-		}
-
-		partial void InitializePartial();
-
-		private void OnPopupClosed(object sender, object e)
-		{
-			Hide(canCancel: false);
-			_sizeChangedDisposable.Disposable = null;
 		}
 
 		protected internal override void Close()
 		{
-			_popup.IsOpen = false;
+			// This overload is required for binary compatibility
+			base.Close();
 		}
 
 		protected internal override void Open()
 		{
-			SetPopupPositionPartial(Target);
-
-			_popup.IsOpen = true;
-		}
-
-		partial void SetPopupPositionPartial(View placementTarget);
-
-		//This is present to force the dataContext to be passed to the popup of the flyout since it is not directly a child in the visual tree of the flyout. 
-		internal protected override void OnDataContextChanged(DependencyPropertyChangedEventArgs e)
-		{
-			base.OnDataContextChanged(e);
-
-			_popup?.SetValue(Popup.DataContextProperty, this.DataContext, precedence: DependencyPropertyValuePrecedences.Local);
+			// This overload is required for binary compatibility
+			base.Open();
 		}
 
 		protected internal override void OnTemplatedParentChanged(DependencyPropertyChangedEventArgs e)
 		{
 			base.OnTemplatedParentChanged(e);
-
-			_popup?.SetValue(Popup.TemplatedParentProperty, TemplatedParent, precedence: DependencyPropertyValuePrecedences.Local);
 
 			if (Content is IDependencyObjectStoreProvider binder)
 			{
@@ -143,10 +103,10 @@ namespace Windows.UI.Xaml.Controls
 
 		protected override Control CreatePresenter()
 		{
-			return new FlyoutPresenter()
+			return _presenter = new FlyoutPresenter()
 			{
 				Style = FlyoutPresenterStyle,
-				Content = this.Content
+				Content = Content
 			};
 		}
 	}

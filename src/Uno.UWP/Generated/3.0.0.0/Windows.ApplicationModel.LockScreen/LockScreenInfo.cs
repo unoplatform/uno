@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.ApplicationModel.LockScreen
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class LockScreenInfo 
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Storage.Streams.IRandomAccessStream AlarmIcon
 		{
@@ -17,7 +17,7 @@ namespace Windows.ApplicationModel.LockScreen
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::System.Collections.Generic.IReadOnlyList<global::Windows.ApplicationModel.LockScreen.LockScreenBadge> Badges
 		{
@@ -27,7 +27,7 @@ namespace Windows.ApplicationModel.LockScreen
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::System.Collections.Generic.IReadOnlyList<string> DetailText
 		{
@@ -37,7 +37,7 @@ namespace Windows.ApplicationModel.LockScreen
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Storage.Streams.IRandomAccessStream LockScreenImage
 		{
@@ -59,7 +59,7 @@ namespace Windows.ApplicationModel.LockScreen
 		// Forced skipping of method Windows.ApplicationModel.LockScreen.LockScreenInfo.AlarmIconChanged.add
 		// Forced skipping of method Windows.ApplicationModel.LockScreen.LockScreenInfo.AlarmIconChanged.remove
 		// Forced skipping of method Windows.ApplicationModel.LockScreen.LockScreenInfo.AlarmIcon.get
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.ApplicationModel.LockScreen.LockScreenInfo, object> AlarmIconChanged
 		{
@@ -75,7 +75,7 @@ namespace Windows.ApplicationModel.LockScreen
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.ApplicationModel.LockScreen.LockScreenInfo, object> BadgesChanged
 		{
@@ -91,7 +91,7 @@ namespace Windows.ApplicationModel.LockScreen
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.ApplicationModel.LockScreen.LockScreenInfo, object> DetailTextChanged
 		{
@@ -107,7 +107,7 @@ namespace Windows.ApplicationModel.LockScreen
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.ApplicationModel.LockScreen.LockScreenInfo, object> LockScreenImageChanged
 		{

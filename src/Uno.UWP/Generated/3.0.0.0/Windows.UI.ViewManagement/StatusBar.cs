@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.ViewManagement
 {
-	#if false || false || NET46 || __WASM__ || __MACOS__
+	#if false || false || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class StatusBar 
 	{
-		#if false || false || NET46 || __WASM__ || __MACOS__
+		#if false || false || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.UI.Color? ForegroundColor
 		{
@@ -21,7 +21,7 @@ namespace Windows.UI.ViewManagement
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  double BackgroundOpacity
 		{
@@ -35,7 +35,7 @@ namespace Windows.UI.ViewManagement
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.UI.Color? BackgroundColor
 		{
@@ -49,7 +49,7 @@ namespace Windows.UI.ViewManagement
 			}
 		}
 		#endif
-		#if false || false || NET46 || __WASM__ || __MACOS__
+		#if false || false || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Foundation.Rect OccludedRect
 		{
@@ -59,7 +59,7 @@ namespace Windows.UI.ViewManagement
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.UI.ViewManagement.StatusBarProgressIndicator ProgressIndicator
 		{
@@ -69,14 +69,14 @@ namespace Windows.UI.ViewManagement
 			}
 		}
 		#endif
-		#if false || false || NET46 || __WASM__ || __MACOS__
+		#if false || false || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Foundation.IAsyncAction ShowAsync()
 		{
 			throw new global::System.NotImplementedException("The member IAsyncAction StatusBar.ShowAsync() is not implemented in Uno.");
 		}
 		#endif
-		#if false || false || NET46 || __WASM__ || __MACOS__
+		#if false || false || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Foundation.IAsyncAction HideAsync()
 		{
@@ -95,14 +95,14 @@ namespace Windows.UI.ViewManagement
 		// Forced skipping of method Windows.UI.ViewManagement.StatusBar.Showing.remove
 		// Forced skipping of method Windows.UI.ViewManagement.StatusBar.Hiding.add
 		// Forced skipping of method Windows.UI.ViewManagement.StatusBar.Hiding.remove
-		#if false || false || NET46 || __WASM__ || __MACOS__
+		#if false || false || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.ViewManagement.StatusBar GetForCurrentView()
 		{
 			throw new global::System.NotImplementedException("The member StatusBar StatusBar.GetForCurrentView() is not implemented in Uno.");
 		}
 		#endif
-		#if false || false || NET46 || __WASM__ || __MACOS__
+		#if false || false || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.ViewManagement.StatusBar, object> Hiding
 		{
@@ -118,7 +118,7 @@ namespace Windows.UI.ViewManagement
 			}
 		}
 		#endif
-		#if false || false || NET46 || __WASM__ || __MACOS__
+		#if false || false || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.ViewManagement.StatusBar, object> Showing
 		{

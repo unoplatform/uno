@@ -24,6 +24,83 @@ var Uno;
         Utils.Clipboard = Clipboard;
     })(Utils = Uno.Utils || (Uno.Utils = {}));
 })(Uno || (Uno = {}));
+var Windows;
+(function (Windows) {
+    var UI;
+    (function (UI) {
+        var Core;
+        (function (Core) {
+            /**
+             * Support file for the Windows.UI.Core
+             * */
+            class CoreDispatcher {
+                static init(isReady) {
+                    MonoSupport.jsCallDispatcher.registerScope("CoreDispatcher", Windows.UI.Core.CoreDispatcher);
+                    CoreDispatcher.initMethods();
+                    CoreDispatcher._isReady = isReady;
+                    CoreDispatcher._isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+                }
+                /**
+                 * Enqueues a core dispatcher callback on the javascript's event loop
+                 *
+                 * */
+                static WakeUp() {
+                    // Is there a Ready promise ?
+                    if (CoreDispatcher._isReady) {
+                        // Are we already waiting for a Ready promise ?
+                        if (!CoreDispatcher._isWaitingReady) {
+                            CoreDispatcher._isReady
+                                .then(() => {
+                                CoreDispatcher.InnerWakeUp();
+                                CoreDispatcher._isReady = null;
+                            });
+                            CoreDispatcher._isWaitingReady = true;
+                        }
+                    }
+                    else {
+                        CoreDispatcher.InnerWakeUp();
+                    }
+                    return true;
+                }
+                static InnerWakeUp() {
+                    if (CoreDispatcher._isIOS && CoreDispatcher._isFirstCall) {
+                        //
+                        // This is a workaround for the available call stack during the first 5 (?) seconds
+                        // of the startup of an application. See https://github.com/mono/mono/issues/12357 for
+                        // more details.
+                        //
+                        CoreDispatcher._isFirstCall = false;
+                        console.debug("Detected iOS, delaying first CoreDispatched dispatch for 5s (see https://github.com/mono/mono/issues/12357)");
+                        window.setTimeout(() => this.WakeUp(), 5000);
+                    }
+                    else {
+                        window.setImmediate(() => {
+                            try {
+                                CoreDispatcher._coreDispatcherCallback();
+                            }
+                            catch (e) {
+                                console.error(`Unhandled dispatcher exception: ${e} (${e.stack})`);
+                                throw e;
+                            }
+                        });
+                    }
+                }
+                static initMethods() {
+                    if (Uno.UI.WindowManager.isHosted) {
+                        console.debug("Hosted Mode: Skipping CoreDispatcher initialization ");
+                    }
+                    else {
+                        if (!CoreDispatcher._coreDispatcherCallback) {
+                            CoreDispatcher._coreDispatcherCallback = Module.mono_bind_static_method("[Uno] Windows.UI.Core.CoreDispatcher:DispatcherCallback");
+                        }
+                    }
+                }
+            }
+            CoreDispatcher._isFirstCall = true;
+            Core.CoreDispatcher = CoreDispatcher;
+        })(Core = UI.Core || (UI.Core = {}));
+    })(UI = Windows.UI || (Windows.UI = {}));
+})(Windows || (Windows = {}));
 var Uno;
 (function (Uno) {
     var UI;
@@ -148,23 +225,59 @@ var MonoSupport;
             jsCallDispatcher.registrations.set(identifier, instance);
         }
         static findJSFunction(identifier) {
-            var parts = identifier.split(':');
-            if (parts[0] === 'Uno') {
-                var c = Uno.UI.WindowManager.current;
-                return c[parts[1]].bind(Uno.UI.WindowManager.current);
+            if (!identifier) {
+                return jsCallDispatcher.dispatch;
             }
             else {
-                var instance = jsCallDispatcher.registrations.get(parts[0]);
+                if (!jsCallDispatcher._isUnoRegistered) {
+                    jsCallDispatcher.registerScope("UnoStatic", Uno.UI.WindowManager);
+                    jsCallDispatcher.registerScope("UnoStatic_Windows_Storage_StorageFolder", Windows.Storage.StorageFolder);
+                    jsCallDispatcher._isUnoRegistered = true;
+                }
+                const { ns, methodName } = jsCallDispatcher.parseIdentifier(identifier);
+                var instance = jsCallDispatcher.registrations.get(ns);
                 if (instance) {
-                    return instance[parts[1]].bind(instance);
+                    var boundMethod = instance[methodName].bind(instance);
+                    var methodId = jsCallDispatcher.cacheMethod(boundMethod);
+                    return () => methodId;
                 }
                 else {
-                    throw `Unknown scope ${parts[0]}`;
+                    throw `Unknown scope ${ns}`;
                 }
             }
         }
+        /**
+         * Internal dispatcher for methods invoked through TSInteropMarshaller
+         * @param id The method ID obtained when invoking WebAssemblyRuntime.InvokeJSUnmarshalled with a method name
+         * @param pParams The parameters structure ID
+         * @param pRet The pointer to the return value structure
+         */
+        static dispatch(id, pParams, pRet) {
+            return jsCallDispatcher.methodMap[id](pParams, pRet);
+        }
+        /**
+         * Parses the method identifier
+         * @param identifier
+         */
+        static parseIdentifier(identifier) {
+            var parts = identifier.split(':');
+            const ns = parts[0];
+            const methodName = parts[1];
+            return { ns, methodName };
+        }
+        /**
+         * Adds the a resolved method for a given identifier
+         * @param identifier the findJSFunction identifier
+         * @param boundMethod the method to call
+         */
+        static cacheMethod(boundMethod) {
+            var methodId = Object.keys(jsCallDispatcher.methodMap).length;
+            jsCallDispatcher.methodMap[methodId] = boundMethod;
+            return methodId;
+        }
     }
     jsCallDispatcher.registrations = new Map();
+    jsCallDispatcher.methodMap = {};
     MonoSupport.jsCallDispatcher = jsCallDispatcher;
 })(MonoSupport || (MonoSupport = {}));
 // Export the DotNet helper for WebAssembly.JSInterop.InvokeJSUnmarshalled
@@ -182,82 +295,101 @@ var Uno;
             }
             /**
              * Defines if the WindowManager is running in hosted mode, and should skip the
-             * initialization of WebAssembly, use this mode in conjuction with the Uno.UI.WpfHost
+             * initialization of WebAssembly, use this mode in conjunction with the Uno.UI.WpfHost
              * to improve debuggability.
              */
             static get isHosted() {
                 return WindowManager._isHosted;
             }
             /**
+             * Defines if the WindowManager is responsible to raise the loading, loaded and unloaded events,
+             * or if they are raised directly by the managed code to reduce interop.
+             */
+            static get isLoadEventsEnabled() {
+                return WindowManager._isLoadEventsEnabled;
+            }
+            /**
                 * Initialize the WindowManager
                 * @param containerElementId The ID of the container element for the Xaml UI
                 * @param loadingElementId The ID of the loading element to remove once ready
                 */
-            static init(localStoragePath, isHosted, containerElementId = "uno-body", loadingElementId = "uno-loading") {
-                if (WindowManager.assembly) {
-                    throw "Already initialized";
-                }
+            static init(isHosted, isLoadEventsEnabled, containerElementId = "uno-body", loadingElementId = "uno-loading") {
                 WindowManager._isHosted = isHosted;
-                WindowManager.initMethods();
-                UI.HtmlDom.initPolyfills();
-                WindowManager.setupStorage(localStoragePath);
+                WindowManager._isLoadEventsEnabled = isLoadEventsEnabled;
+                Windows.UI.Core.CoreDispatcher.init(WindowManager.buildReadyPromise());
                 this.current = new WindowManager(containerElementId, loadingElementId);
+                MonoSupport.jsCallDispatcher.registerScope("Uno", this.current);
                 this.current.init();
                 return "ok";
             }
             /**
-             * Setup the storage persistence
-             *
+             * Builds a promise that will signal the ability for the dispatcher
+             * to initiate work.
              * */
-            static setupStorage(localStoragePath) {
-                if (WindowManager.isHosted) {
-                    console.debug("Hosted Mode: skipping IndexDB initialization");
-                }
-                else {
-                    if (WindowManager.isIndexDBAvailable()) {
-                        FS.mkdir(localStoragePath);
-                        FS.mount(IDBFS, {}, localStoragePath);
-                        FS.syncfs(true, err => {
-                            if (err) {
-                                console.error(`Error synchronizing filsystem from IndexDB: ${err}`);
-                            }
-                        });
-                        window.addEventListener("beforeunload", () => WindowManager.synchronizeFileSystem());
-                        setInterval(() => WindowManager.synchronizeFileSystem(), 10000);
-                    }
-                    else {
-                        console.warn("IndexedDB is not available (private mode?), changed will not be persisted.");
-                    }
-                }
-            }
-            /**
-             * Determine if IndexDB is available, some browsers and modes disable it.
-             * */
-            static isIndexDBAvailable() {
-                try {
-                    // IndexedDB may not be available in private mode
-                    window.indexedDB;
-                    return true;
-                }
-                catch (err) {
-                    return false;
-                }
-            }
-            /**
-             * Synchronize the IDBFS memory cache back to IndexDB
-             * */
-            static synchronizeFileSystem() {
-                FS.syncfs(err => {
-                    if (err) {
-                        console.error(`Error synchronizing filsystem from IndexDB: ${err}`);
-                    }
+            static buildReadyPromise() {
+                return new Promise(resolve => {
+                    Promise.all([WindowManager.buildSplashScreen()]).then(() => resolve(true));
                 });
+            }
+            /**
+             * Build the splashscreen image eagerly
+             * */
+            static buildSplashScreen() {
+                return new Promise(resolve => {
+                    const img = new Image();
+                    let loaded = false;
+                    let loadingDone = () => {
+                        if (!loaded) {
+                            loaded = true;
+                            if (img.width !== 0 && img.height !== 0) {
+                                // Materialize the image content so it shows immediately
+                                // even if the dispatcher is blocked thereafter by all
+                                // the Uno initialization work. The resulting canvas is not used.
+                                //
+                                // If the image fails to load, setup the splashScreen anyways with the
+                                // proper sample.
+                                let canvas = document.createElement('canvas');
+                                canvas.width = img.width;
+                                canvas.height = img.height;
+                                let ctx = canvas.getContext("2d");
+                                ctx.drawImage(img, 0, 0);
+                            }
+                            if (document.readyState === "loading") {
+                                document.addEventListener("DOMContentLoaded", () => {
+                                    WindowManager.setupSplashScreen(img);
+                                    resolve(true);
+                                });
+                            }
+                            else {
+                                WindowManager.setupSplashScreen(img);
+                                resolve(true);
+                            }
+                        }
+                    };
+                    // Preload the splash screen so the image element
+                    // created later on 
+                    img.onload = loadingDone;
+                    img.onerror = loadingDone;
+                    img.src = String(UnoAppManifest.splashScreenImage);
+                    // If there's no response, skip the loading
+                    setTimeout(loadingDone, 2000);
+                });
+            }
+            /**
+                * Initialize the WindowManager
+                * @param containerElementId The ID of the container element for the Xaml UI
+                * @param loadingElementId The ID of the loading element to remove once ready
+                */
+            static initNative(pParams) {
+                const params = WindowManagerInitParams.unmarshal(pParams);
+                WindowManager.init(params.IsHostedMode, params.IsLoadEventsEnabled);
+                return true;
             }
             /**
                 * Creates the UWP-compatible splash screen
                 *
                 */
-            static setupSplashScreen() {
+            static setupSplashScreen(splashImage) {
                 if (UnoAppManifest && UnoAppManifest.splashScreenImage) {
                     const loading = document.getElementById("loading");
                     if (loading) {
@@ -271,11 +403,9 @@ var Uno;
                             const body = document.getElementsByTagName("body")[0];
                             body.style.backgroundColor = UnoAppManifest.splashScreenColor;
                         }
-                        const unoLoadingSplash = document.createElement("div");
-                        unoLoadingSplash.id = "uno-loading-splash";
-                        unoLoadingSplash.classList.add("uno-splash");
-                        unoLoadingSplash.style.backgroundImage = `url('${UnoAppManifest.splashScreenImage}')`;
-                        unoLoading.appendChild(unoLoadingSplash);
+                        splashImage.id = "uno-loading-splash";
+                        splashImage.classList.add("uno-splash");
+                        unoLoading.appendChild(splashImage);
                         unoBody.appendChild(unoLoading);
                     }
                 }
@@ -289,8 +419,8 @@ var Uno;
                     return new URLSearchParams(window.location.search).toString();
                 }
                 else {
-                    let queryIndex = document.location.search.indexOf('?');
-                    if (queryIndex != -1) {
+                    const queryIndex = document.location.search.indexOf('?');
+                    if (queryIndex !== -1) {
                         return document.location.search.substring(queryIndex + 1);
                     }
                     return "";
@@ -311,8 +441,8 @@ var Uno;
                 * You need to call addView to connect it to the DOM.
                 */
             createContentNative(pParams) {
-                var params = WindowManagerCreateContentParams.unmarshal(pParams);
-                var def = {
+                const params = WindowManagerCreateContentParams.unmarshal(pParams);
+                const def = {
                     id: params.HtmlId,
                     handle: params.Handle,
                     isFocusable: params.IsFocusable,
@@ -334,13 +464,13 @@ var Uno;
                 element.setAttribute("XamlType", contentDefinition.type);
                 element.setAttribute("XamlHandle", `${contentDefinition.handle}`);
                 if (contentDefinition.isFrameworkElement) {
-                    element.classList.add(WindowManager.unoUnarrangedClassName);
+                    this.setAsUnarranged(element);
                 }
                 if (element.hasOwnProperty("tabindex")) {
                     element["tabindex"] = contentDefinition.isFocusable ? 0 : -1;
                 }
                 else {
-                    element.setAttribute("tabindex", contentDefinition.isFocusable ? '0' : '-1');
+                    element.setAttribute("tabindex", contentDefinition.isFocusable ? "0" : "-1");
                 }
                 if (contentDefinition) {
                     for (const className of contentDefinition.classes) {
@@ -349,6 +479,13 @@ var Uno;
                 }
                 // Add the html element to list of elements
                 this.allActiveElementsById[contentDefinition.id] = element;
+            }
+            getView(elementHandle) {
+                const element = this.allActiveElementsById[elementHandle];
+                if (!element) {
+                    throw `Element id ${elementHandle} not found.`;
+                }
+                return element;
             }
             /**
                 * Set a name for an element.
@@ -365,28 +502,43 @@ var Uno;
                 * This is mostly for diagnostic purposes.
                 */
             setNameNative(pParam) {
-                let params = WindowManagerSetNameParams.unmarshal(pParam);
+                const params = WindowManagerSetNameParams.unmarshal(pParam);
                 this.setNameInternal(params.HtmlId, params.Name);
                 return true;
             }
             setNameInternal(elementId, name) {
-                const htmlElement = this.allActiveElementsById[elementId];
-                if (!htmlElement) {
-                    throw `Element id ${elementId} not found.`;
-                }
-                htmlElement.setAttribute("XamlName", name);
+                this.getView(elementId).setAttribute("xamlname", name);
+            }
+            /**
+                * Set a name for an element.
+                *
+                * This is mostly for diagnostic purposes.
+                */
+            setXUid(elementId, name) {
+                this.setXUidInternal(elementId, name);
+                return "ok";
+            }
+            /**
+                * Set a name for an element.
+                *
+                * This is mostly for diagnostic purposes.
+                */
+            setXUidNative(pParam) {
+                const params = WindowManagerSetXUidParams.unmarshal(pParam);
+                this.setXUidInternal(params.HtmlId, params.Uid);
+                return true;
+            }
+            setXUidInternal(elementId, name) {
+                this.getView(elementId).setAttribute("xuid", name);
             }
             /**
                 * Set an attribute for an element.
                 */
-            setAttribute(elementId, attributes) {
-                const htmlElement = this.allActiveElementsById[elementId];
-                if (!htmlElement) {
-                    throw `Element id ${elementId} not found.`;
-                }
+            setAttributes(elementId, attributes) {
+                const element = this.getView(elementId);
                 for (const name in attributes) {
                     if (attributes.hasOwnProperty(name)) {
-                        htmlElement.setAttribute(name, attributes[name]);
+                        element.setAttribute(name, attributes[name]);
                     }
                 }
                 return "ok";
@@ -394,38 +546,46 @@ var Uno;
             /**
                 * Set an attribute for an element.
                 */
+            setAttributesNative(pParams) {
+                const params = WindowManagerSetAttributesParams.unmarshal(pParams);
+                const element = this.getView(params.HtmlId);
+                for (let i = 0; i < params.Pairs_Length; i += 2) {
+                    element.setAttribute(params.Pairs[i], params.Pairs[i + 1]);
+                }
+                return true;
+            }
+            /**
+                * Set an attribute for an element.
+                */
             setAttributeNative(pParams) {
-                let params = WindowManagerSetAttributeParams.unmarshal(pParams);
-                const htmlElement = this.allActiveElementsById[params.HtmlId];
-                if (!htmlElement) {
-                    throw `Element id ${params.HtmlId} not found.`;
-                }
-                for (var i = 0; i < params.Pairs_Length; i += 2) {
-                    htmlElement.setAttribute(params.Pairs[i], params.Pairs[i + 1]);
-                }
+                const params = WindowManagerSetAttributeParams.unmarshal(pParams);
+                const element = this.getView(params.HtmlId);
+                element.setAttribute(params.Name, params.Value);
                 return true;
             }
             /**
                 * Get an attribute for an element.
                 */
             getAttribute(elementId, name) {
-                const htmlElement = this.allActiveElementsById[elementId];
-                if (!htmlElement) {
-                    throw `Element id ${elementId} not found.`;
-                }
-                return htmlElement.getAttribute(name);
+                return this.getView(elementId).getAttribute(name);
             }
             /**
                 * Set a property for an element.
                 */
             setProperty(elementId, properties) {
-                const htmlElement = this.allActiveElementsById[elementId];
-                if (!htmlElement) {
-                    throw `Element id ${elementId} not found.`;
-                }
+                const element = this.getView(elementId);
                 for (const name in properties) {
                     if (properties.hasOwnProperty(name)) {
-                        htmlElement[name] = properties[name];
+                        var setVal = properties[name];
+                        if (setVal === "true") {
+                            element[name] = true;
+                        }
+                        else if (setVal === "false") {
+                            element[name] = false;
+                        }
+                        else {
+                            element[name] = setVal;
+                        }
                     }
                 }
                 return "ok";
@@ -434,13 +594,19 @@ var Uno;
                 * Set a property for an element.
                 */
             setPropertyNative(pParams) {
-                let params = WindowManagerSetPropertyParams.unmarshal(pParams);
-                const htmlElement = this.allActiveElementsById[params.HtmlId];
-                if (!htmlElement) {
-                    throw `Element id ${params.HtmlId} not found.`;
-                }
-                for (var i = 0; i < params.Pairs_Length; i += 2) {
-                    htmlElement[params.Pairs[i]] = params.Pairs[i + 1];
+                const params = WindowManagerSetPropertyParams.unmarshal(pParams);
+                const element = this.getView(params.HtmlId);
+                for (let i = 0; i < params.Pairs_Length; i += 2) {
+                    var setVal = params.Pairs[i + 1];
+                    if (setVal === "true") {
+                        element[params.Pairs[i]] = true;
+                    }
+                    else if (setVal === "false") {
+                        element[params.Pairs[i]] = false;
+                    }
+                    else {
+                        element[params.Pairs[i]] = setVal;
+                    }
                 }
                 return true;
             }
@@ -448,11 +614,8 @@ var Uno;
                 * Get a property for an element.
                 */
             getProperty(elementId, name) {
-                const htmlElement = this.allActiveElementsById[elementId];
-                if (!htmlElement) {
-                    throw `Element id ${elementId} not found.`;
-                }
-                return htmlElement[name] || "";
+                const element = this.getView(elementId);
+                return element[name] || "";
             }
             /**
                 * Set the CSS style of a html element.
@@ -461,17 +624,14 @@ var Uno;
                 * @param styles A dictionary of styles to apply on html element.
                 */
             setStyle(elementId, styles, setAsArranged = false) {
-                const htmlElement = this.allActiveElementsById[elementId];
-                if (!htmlElement) {
-                    throw `Element id ${elementId} not found.`;
-                }
+                const element = this.getView(elementId);
                 for (const style in styles) {
                     if (styles.hasOwnProperty(style)) {
-                        htmlElement.style.setProperty(style, styles[style]);
+                        element.style.setProperty(style, styles[style]);
                     }
                 }
                 if (setAsArranged) {
-                    htmlElement.classList.remove(WindowManager.unoUnarrangedClassName);
+                    this.setAsArranged(element);
                 }
                 return "ok";
             }
@@ -482,19 +642,28 @@ var Uno;
             * @param styles A dictionary of styles to apply on html element.
             */
             setStyleNative(pParams) {
-                let params = WindowManagerSetStylesParams.unmarshal(pParams);
-                const htmlElement = this.allActiveElementsById[params.HtmlId];
-                if (!htmlElement) {
-                    throw `Element id ${params.HtmlId} not found.`;
-                }
-                for (var i = 0; i < params.Pairs_Length; i += 2) {
-                    let key = params.Pairs[i];
-                    let value = params.Pairs[i + 1];
-                    htmlElement.style.setProperty(key, value);
+                const params = WindowManagerSetStylesParams.unmarshal(pParams);
+                const element = this.getView(params.HtmlId);
+                const elementStyle = element.style;
+                const pairs = params.Pairs;
+                for (let i = 0; i < params.Pairs_Length; i += 2) {
+                    const key = pairs[i];
+                    const value = pairs[i + 1];
+                    elementStyle.setProperty(key, value);
                 }
                 if (params.SetAsArranged) {
-                    htmlElement.classList.remove(WindowManager.unoUnarrangedClassName);
+                    this.setAsArranged(element);
                 }
+                return true;
+            }
+            /**
+            * Set a single CSS style of a html element
+            *
+            */
+            setStyleDoubleNative(pParams) {
+                const params = WindowManagerSetStyleDoubleParams.unmarshal(pParams);
+                const element = this.getView(params.HtmlId);
+                element.style.setProperty(params.Name, String(params.Value));
                 return true;
             }
             /**
@@ -504,7 +673,7 @@ var Uno;
                 * @param styles A dictionary of styles to apply on html element.
                 */
             resetStyle(elementId, names) {
-                this.resetStyleInternal(elementId, name);
+                this.resetStyleInternal(elementId, names);
                 return "ok";
             }
             /**
@@ -514,18 +683,75 @@ var Uno;
                 * @param styles A dictionary of styles to apply on html element.
                 */
             resetStyleNative(pParams) {
-                let params = WindowManagerResetStyleParams.unmarshal(pParams);
+                const params = WindowManagerResetStyleParams.unmarshal(pParams);
                 this.resetStyleInternal(params.HtmlId, params.Styles);
                 return true;
             }
             resetStyleInternal(elementId, names) {
-                const htmlElement = this.allActiveElementsById[elementId];
-                if (!htmlElement) {
-                    throw `Element id ${elementId} not found.`;
-                }
+                const element = this.getView(elementId);
                 for (const name of names) {
-                    htmlElement.style.setProperty(name, "");
+                    element.style.setProperty(name, "");
                 }
+            }
+            /**
+             * Set CSS classes on an element
+             */
+            setClasses(elementId, cssClassesList, classIndex) {
+                const element = this.getView(elementId);
+                for (let i = 0; i < cssClassesList.length; i++) {
+                    if (i === classIndex) {
+                        element.classList.add(cssClassesList[i]);
+                    }
+                    else {
+                        element.classList.remove(cssClassesList[i]);
+                    }
+                }
+                return "ok";
+            }
+            setClassesNative(pParams) {
+                const params = WindowManagerSetClassesParams.unmarshal(pParams);
+                this.setClasses(params.HtmlId, params.CssClasses, params.Index);
+                return true;
+            }
+            /**
+            * Arrange and clips a native elements
+            *
+            */
+            arrangeElementNative(pParams) {
+                const params = WindowManagerArrangeElementParams.unmarshal(pParams);
+                const element = this.getView(params.HtmlId);
+                const style = element.style;
+                style.position = "absolute";
+                style.top = params.Top + "px";
+                style.left = params.Left + "px";
+                style.width = params.Width === NaN ? "auto" : params.Width + "px";
+                style.height = params.Height === NaN ? "auto" : params.Height + "px";
+                if (params.Clip) {
+                    style.clip = `rect(${params.ClipTop}px, ${params.ClipRight}px, ${params.ClipBottom}px, ${params.ClipLeft}px)`;
+                }
+                else {
+                    style.clip = "";
+                }
+                this.setAsArranged(element);
+                return true;
+            }
+            setAsArranged(element) {
+                element.classList.remove(WindowManager.unoUnarrangedClassName);
+            }
+            setAsUnarranged(element) {
+                element.classList.add(WindowManager.unoUnarrangedClassName);
+            }
+            /**
+            * Sets the transform matrix of an element
+            *
+            */
+            setElementTransformNative(pParams) {
+                const params = WindowManagerSetElementTransformParams.unmarshal(pParams);
+                const element = this.getView(params.HtmlId);
+                var style = element.style;
+                style.transform = `matrix(${params.M11},${params.M12},${params.M21},${params.M22},${params.M31},${params.M32})`;
+                element.classList.remove(WindowManager.unoUnarrangedClassName);
+                return true;
             }
             /**
                 * Load the specified URL into a new tab or window
@@ -564,7 +790,7 @@ var Uno;
                 * Add an event handler to a html element.
                 *
                 * @param eventName The name of the event
-                * @param onCapturePhase true means "on trickle down", false means "on bubble up". Default is false.
+                * @param onCapturePhase true means "on trickle down" (going down to target), false means "on bubble up" (bubbling back to ancestors). Default is false.
                 */
             registerEventOnView(elementId, eventName, onCapturePhase = false, eventFilterName, eventExtractorName) {
                 this.registerEventOnViewInternal(elementId, eventName, onCapturePhase, eventFilterName, eventExtractorName);
@@ -577,7 +803,7 @@ var Uno;
                 * @param onCapturePhase true means "on trickle down", false means "on bubble up". Default is false.
                 */
             registerEventOnViewNative(pParams) {
-                let params = WindowManagerRegisterEventOnViewParams.unmarshal(pParams);
+                const params = WindowManagerRegisterEventOnViewParams.unmarshal(pParams);
                 this.registerEventOnViewInternal(params.HtmlId, params.EventName, params.OnCapturePhase, params.EventFilterName, params.EventExtractorName);
                 return true;
             }
@@ -588,10 +814,7 @@ var Uno;
                 * @param onCapturePhase true means "on trickle down", false means "on bubble up". Default is false.
                 */
             registerEventOnViewInternal(elementId, eventName, onCapturePhase = false, eventFilterName, eventExtractorName) {
-                const htmlElement = this.allActiveElementsById[elementId];
-                if (!htmlElement) {
-                    throw `Element id ${elementId} not found.`;
-                }
+                const element = this.getView(elementId);
                 const eventFilter = this.getEventFilter(eventFilterName);
                 const eventExtractor = this.getEventExtractor(eventExtractorName);
                 const eventHandler = (event) => {
@@ -601,22 +824,43 @@ var Uno;
                     const eventPayload = eventExtractor
                         ? `${eventExtractor(event)}`
                         : "";
-                    var handled = this.dispatchEvent(htmlElement, eventName, eventPayload);
+                    var handled = this.dispatchEvent(element, eventName, eventPayload);
                     if (handled) {
                         event.stopPropagation();
-                        if (event instanceof KeyboardEvent) {
-                            event.preventDefault();
-                        }
                     }
                 };
-                htmlElement.addEventListener(eventName, eventHandler, onCapturePhase);
+                element.addEventListener(eventName, eventHandler, onCapturePhase);
             }
             /**
              * left pointer event filter to be used with registerEventOnView
              * @param evt
              */
             leftPointerEventFilter(evt) {
-                return evt ? (!evt.button || evt.button == 0) : false;
+                return evt ? evt.eventPhase === 2 || evt.eventPhase === 3 && (!evt.button || evt.button === 0) : false;
+            }
+            /**
+             * default event filter to be used with registerEventOnView to
+             * use for most routed events
+             * @param evt
+             */
+            defaultEventFilter(evt) {
+                return evt ? evt.eventPhase === 2 || evt.eventPhase === 3 : false;
+            }
+            /**
+             * Gets the event filter function. See UIElement.HtmlEventFilter
+             * @param eventFilterName an event filter name.
+             */
+            getEventFilter(eventFilterName) {
+                if (eventFilterName) {
+                    switch (eventFilterName) {
+                        case "LeftPointerEventFilter":
+                            return this.leftPointerEventFilter;
+                        case "Default":
+                            return this.defaultEventFilter;
+                    }
+                    throw `Event filter ${eventFilterName} is not supported`;
+                }
+                return null;
             }
             /**
              * pointer event extractor to be used with registerEventOnView
@@ -635,18 +879,41 @@ var Uno;
                 return (evt instanceof KeyboardEvent) ? evt.key : "0";
             }
             /**
-             * Gets the event filter function. See UIElement.HtmlEventFilter
-             * @param eventFilterName an event filter name.
+             * tapped (mouse clicked / double clicked) event extractor to be used with registerEventOnView
+             * @param evt
              */
-            getEventFilter(eventFilterName) {
-                if (eventFilterName) {
-                    switch (eventFilterName) {
-                        case "LeftPointerEventFilter":
-                            return this.leftPointerEventFilter;
+            tappedEventExtractor(evt) {
+                return evt
+                    ? `0;${evt.clientX};${evt.clientY};${(evt.ctrlKey ? "1" : "0")};${(evt.shiftKey ? "1" : "0")};${evt.button};mouse`
+                    : "";
+            }
+            /**
+             * tapped (mouse clicked / double clicked) event extractor to be used with registerEventOnView
+             * @param evt
+             */
+            focusEventExtractor(evt) {
+                if (evt) {
+                    const targetElement = evt.target;
+                    if (targetElement) {
+                        const targetXamlHandle = targetElement.getAttribute("XamlHandle");
+                        if (targetXamlHandle) {
+                            return `${targetXamlHandle}`;
+                        }
                     }
-                    throw `Event filter ${eventFilterName} is not supported`;
                 }
-                return null;
+                return "";
+            }
+            customEventDetailExtractor(evt) {
+                if (evt) {
+                    const detail = evt.detail;
+                    if (detail) {
+                        return JSON.stringify(detail);
+                    }
+                }
+                return "";
+            }
+            customEventDetailStringExtractor(evt) {
+                return evt ? `${evt.detail}` : "";
             }
             /**
              * Gets the event extractor function. See UIElement.HtmlEventExtractor
@@ -659,6 +926,14 @@ var Uno;
                             return this.pointerEventExtractor;
                         case "KeyboardEventExtractor":
                             return this.keyboardEventExtractor;
+                        case "TappedEventExtractor":
+                            return this.tappedEventExtractor;
+                        case "FocusEventExtractor":
+                            return this.focusEventExtractor;
+                        case "CustomEventDetailJsonExtractor":
+                            return this.customEventDetailExtractor;
+                        case "CustomEventDetailStringExtractor":
+                            return this.customEventDetailStringExtractor;
                     }
                     throw `Event filter ${eventExtractorName} is not supported`;
                 }
@@ -668,33 +943,39 @@ var Uno;
                 * Set or replace the root content element.
                 */
             setRootContent(elementId) {
-                if (this.rootContent && this.rootContent.id === elementId) {
+                if (this.rootContent && Number(this.rootContent.id) === elementId) {
                     return null; // nothing to do
                 }
                 if (this.rootContent) {
                     // Remove existing
                     this.containerElement.removeChild(this.rootContent);
-                    this.dispatchEvent(this.rootContent, "unloaded");
+                    if (WindowManager.isLoadEventsEnabled) {
+                        this.dispatchEvent(this.rootContent, "unloaded");
+                    }
                     this.rootContent.classList.remove(WindowManager.unoRootClassName);
                 }
                 if (!elementId) {
                     return null;
                 }
                 // set new root
-                const newRootElement = this.allActiveElementsById[elementId];
+                const newRootElement = this.getView(elementId);
                 newRootElement.classList.add(WindowManager.unoRootClassName);
                 this.rootContent = newRootElement;
-                this.dispatchEvent(this.rootContent, "loading");
+                if (WindowManager.isLoadEventsEnabled) {
+                    this.dispatchEvent(this.rootContent, "loading");
+                }
                 this.containerElement.appendChild(this.rootContent);
-                this.dispatchEvent(this.rootContent, "loaded");
-                newRootElement.classList.remove(WindowManager.unoUnarrangedClassName); // patch because root is not measured/arranged
+                if (WindowManager.isLoadEventsEnabled) {
+                    this.dispatchEvent(this.rootContent, "loaded");
+                }
+                this.setAsArranged(newRootElement); // patch because root is not measured/arranged
                 this.resize();
                 return "ok";
             }
             /**
                 * Set a view as a child of another one.
                 *
-                * "Loading" & "Loaded" events will be raised if nescessary.
+                * "Loading" & "Loaded" events will be raised if necessary.
                 *
                 * @param index Position in children list. Appended at end if not specified.
                 */
@@ -705,28 +986,25 @@ var Uno;
             /**
                 * Set a view as a child of another one.
                 *
-                * "Loading" & "Loaded" events will be raised if nescessary.
+                * "Loading" & "Loaded" events will be raised if necessary.
                 *
                 * @param pParams Pointer to a WindowManagerAddViewParams native structure.
                 */
             addViewNative(pParams) {
-                let params = WindowManagerAddViewParams.unmarshal(pParams);
+                const params = WindowManagerAddViewParams.unmarshal(pParams);
                 this.addViewInternal(params.HtmlId, params.ChildView, params.Index != -1 ? params.Index : null);
                 return true;
             }
             addViewInternal(parentId, childId, index) {
-                const parentElement = this.allActiveElementsById[parentId];
-                if (!parentElement) {
-                    throw `addView: Parent element id ${parentId} not found.`;
-                }
-                const childElement = this.allActiveElementsById[childId];
-                if (!childElement) {
-                    throw `addView: Child element id ${parentId} not found.`;
-                }
-                const alreadyLoaded = this.getIsConnectedToRootElement(childElement);
-                const isLoading = !alreadyLoaded && this.getIsConnectedToRootElement(parentElement);
-                if (isLoading) {
-                    this.dispatchEvent(childElement, "loading");
+                const parentElement = this.getView(parentId);
+                const childElement = this.getView(childId);
+                let shouldRaiseLoadEvents = false;
+                if (WindowManager.isLoadEventsEnabled) {
+                    const alreadyLoaded = this.getIsConnectedToRootElement(childElement);
+                    shouldRaiseLoadEvents = !alreadyLoaded && this.getIsConnectedToRootElement(parentElement);
+                    if (shouldRaiseLoadEvents) {
+                        this.dispatchEvent(childElement, "loading");
+                    }
                 }
                 if (index && index < parentElement.childElementCount) {
                     const insertBeforeElement = parentElement.children[index];
@@ -735,14 +1013,14 @@ var Uno;
                 else {
                     parentElement.appendChild(childElement);
                 }
-                if (isLoading) {
+                if (shouldRaiseLoadEvents) {
                     this.dispatchEvent(childElement, "loaded");
                 }
             }
             /**
                 * Remove a child from a parent element.
                 *
-                * "Unloading" & "Unloaded" events will be raised if nescessary.
+                * "Unloading" & "Unloaded" events will be raised if necessary.
                 */
             removeView(parentId, childId) {
                 this.removeViewInternal(parentId, childId);
@@ -751,25 +1029,23 @@ var Uno;
             /**
                 * Remove a child from a parent element.
                 *
-                * "Unloading" & "Unloaded" events will be raised if nescessary.
+                * "Unloading" & "Unloaded" events will be raised if necessary.
                 */
             removeViewNative(pParams) {
-                var params = WindowManagerRemoveViewParams.unmarshal(pParams);
+                const params = WindowManagerRemoveViewParams.unmarshal(pParams);
                 this.removeViewInternal(params.HtmlId, params.ChildView);
                 return true;
             }
             removeViewInternal(parentId, childId) {
-                const parentElement = this.allActiveElementsById[parentId];
-                if (!parentElement) {
-                    throw `removeView: Parent element id ${parentId} not found.`;
-                }
-                const childElement = this.allActiveElementsById[childId];
-                if (!childElement) {
-                    throw `removeView: Child element id ${parentId} not found.`;
-                }
-                const loaded = this.getIsConnectedToRootElement(childElement);
+                const parentElement = this.getView(parentId);
+                const childElement = this.getView(childId);
+                const shouldRaiseLoadEvents = WindowManager.isLoadEventsEnabled
+                    && this.getIsConnectedToRootElement(childElement);
                 parentElement.removeChild(childElement);
-                if (loaded) {
+                // Mark the element as unarranged, so if it gets measured while being
+                // disconnected from the root element, it won't be visible.
+                this.setAsUnarranged(childElement);
+                if (shouldRaiseLoadEvents) {
                     this.dispatchEvent(childElement, "unloaded");
                 }
             }
@@ -779,8 +1055,8 @@ var Uno;
                 * The element won't be available anymore. Usually indicate the managed
                 * version has been scavenged by the GC.
                 */
-            destroyView(viewId) {
-                this.destroyViewInternal(viewId);
+            destroyView(elementId) {
+                this.destroyViewInternal(elementId);
                 return "ok";
             }
             /**
@@ -790,36 +1066,29 @@ var Uno;
                 * version has been scavenged by the GC.
                 */
             destroyViewNative(pParams) {
-                let params = WindowManagerDestroyViewParams.unmarshal(pParams);
+                const params = WindowManagerDestroyViewParams.unmarshal(pParams);
                 this.destroyViewInternal(params.HtmlId);
                 return true;
             }
-            destroyViewInternal(viewId) {
-                const element = this.allActiveElementsById[viewId];
-                if (!element) {
-                    throw `destroyView: Element id ${viewId} not found.`;
-                }
+            destroyViewInternal(elementId) {
+                const element = this.getView(elementId);
                 if (element.parentElement) {
                     element.parentElement.removeChild(element);
-                    delete this.allActiveElementsById[viewId];
                 }
+                delete this.allActiveElementsById[elementId];
             }
             getBoundingClientRect(elementId) {
-                const htmlElement = this.allActiveElementsById[elementId];
-                if (!htmlElement) {
-                    throw `Element id ${elementId} not found.`;
-                }
-                var bounds = htmlElement.getBoundingClientRect();
+                const bounds = this.getView(elementId).getBoundingClientRect();
                 return `${bounds.left};${bounds.top};${bounds.right - bounds.left};${bounds.bottom - bounds.top}`;
             }
             getBBox(elementId) {
-                var bbox = this.getBBoxInternal(elementId);
+                const bbox = this.getBBoxInternal(elementId);
                 return `${bbox.x};${bbox.y};${bbox.width};${bbox.height}`;
             }
             getBBoxNative(pParams, pReturn) {
-                let params = WindowManagerGetBBoxParams.unmarshal(pParams);
-                var bbox = this.getBBoxInternal(params.HtmlId);
-                var ret = new WindowManagerGetBBoxReturn();
+                const params = WindowManagerGetBBoxParams.unmarshal(pParams);
+                const bbox = this.getBBoxInternal(params.HtmlId);
+                const ret = new WindowManagerGetBBoxReturn();
                 ret.X = bbox.x;
                 ret.Y = bbox.y;
                 ret.Width = bbox.width;
@@ -828,11 +1097,7 @@ var Uno;
                 return true;
             }
             getBBoxInternal(elementId) {
-                const htmlElement = this.allActiveElementsById[elementId];
-                if (!htmlElement) {
-                    throw `Element id ${elementId} not found.`;
-                }
-                return htmlElement.getBBox();
+                return this.getView(elementId).getBBox();
             }
             /**
                 * Use the Html engine to measure the element using specified constraints.
@@ -841,7 +1106,7 @@ var Uno;
                 * @param maxHeight string containing height in pixels. Empty string means infinite.
                 */
             measureView(viewId, maxWidth, maxHeight) {
-                var ret = this.measureViewInternal(Number(viewId), maxWidth ? Number(maxWidth) : NaN, maxHeight ? Number(maxHeight) : NaN);
+                const ret = this.measureViewInternal(Number(viewId), maxWidth ? Number(maxWidth) : NaN, maxHeight ? Number(maxHeight) : NaN);
                 return `${ret[0]};${ret[1]}`;
             }
             /**
@@ -851,22 +1116,20 @@ var Uno;
                 * @param maxHeight string containing height in pixels. Empty string means infinite.
                 */
             measureViewNative(pParams, pReturn) {
-                var params = WindowManagerMeasureViewParams.unmarshal(pParams);
-                var ret = this.measureViewInternal(params.HtmlId, params.AvailableWidth, params.AvailableHeight);
-                var ret2 = new WindowManagerMeasureViewReturn();
+                const params = WindowManagerMeasureViewParams.unmarshal(pParams);
+                const ret = this.measureViewInternal(params.HtmlId, params.AvailableWidth, params.AvailableHeight);
+                const ret2 = new WindowManagerMeasureViewReturn();
                 ret2.DesiredWidth = ret[0];
                 ret2.DesiredHeight = ret[1];
                 ret2.marshal(pReturn);
                 return true;
             }
             measureViewInternal(viewId, maxWidth, maxHeight) {
-                const element = this.allActiveElementsById[viewId];
-                if (!element) {
-                    throw `measureView: Element id ${viewId} not found.`;
-                }
-                const previousWidth = element.style.width;
-                const previousHeight = element.style.height;
-                const previousPosition = element.style.position;
+                const element = this.getView(viewId);
+                const elementStyle = element.style;
+                const originalStyleCssText = elementStyle.cssText;
+                let parentElement = null;
+                let parentElementWidthHeight = null;
                 try {
                     if (!element.isConnected) {
                         // If the element is not connected to the DOM, we need it
@@ -879,45 +1142,77 @@ var Uno;
                         }
                         this.containerElement.appendChild(unconnectedRoot);
                     }
-                    element.style.width = "";
-                    element.style.height = "";
-                    // This is required for an unconstrained measure (otherwise the parents size is taken into accound)
-                    element.style.position = "fixed";
-                    element.style.maxWidth = Number.isFinite(maxWidth) ? `${maxWidth}px` : "";
-                    element.style.maxHeight = Number.isFinite(maxHeight) ? `${maxHeight}px` : "";
-                    if (element.tagName.toUpperCase() === "IMG") {
+                    // As per W3C css-transform spec:
+                    // https://www.w3.org/TR/css-transforms-1/#propdef-transform
+                    //
+                    // > For elements whose layout is governed by the CSS box model, any value other than none
+                    // > for the transform property also causes the element to establish a containing block for
+                    // > all descendants.Its padding box will be used to layout for all of its
+                    // > absolute - position descendants, fixed - position descendants, and descendant fixed
+                    // > background attachments.
+                    //
+                    // We use this feature to allow an measure of text without being influenced by the bounds
+                    // of the viewport. We just need to temporary set both the parent width & height to a very big value.
+                    parentElement = element.parentElement;
+                    parentElementWidthHeight = { width: parentElement.style.width, height: parentElement.style.height };
+                    parentElement.style.width = WindowManager.MAX_WIDTH;
+                    parentElement.style.height = WindowManager.MAX_HEIGHT;
+                    const updatedStyles = {};
+                    for (let i = 0; i < elementStyle.length; i++) {
+                        const key = elementStyle[i];
+                        updatedStyles[key] = elementStyle.getPropertyValue(key);
+                    }
+                    if (updatedStyles.hasOwnProperty("width")) {
+                        delete updatedStyles.width;
+                    }
+                    if (updatedStyles.hasOwnProperty("height")) {
+                        delete updatedStyles.height;
+                    }
+                    // This is required for an unconstrained measure (otherwise the parents size is taken into account)
+                    updatedStyles.position = "fixed";
+                    updatedStyles["max-width"] = Number.isFinite(maxWidth) ? maxWidth + "px" : "none";
+                    updatedStyles["max-height"] = Number.isFinite(maxHeight) ? maxHeight + "px" : "none";
+                    let updatedStyleString = "";
+                    for (let key in updatedStyles) {
+                        if (updatedStyles.hasOwnProperty(key)) {
+                            updatedStyleString += key + ": " + updatedStyles[key] + "; ";
+                        }
+                    }
+                    // We use a string to prevent the browser to update the element between
+                    // each style assignation. This way, the browser will update the element only once.
+                    elementStyle.cssText = updatedStyleString;
+                    if (element instanceof HTMLImageElement) {
                         const imgElement = element;
                         return [imgElement.naturalWidth, imgElement.naturalHeight];
                     }
                     else {
-                        const resultWidth = element.offsetWidth ? element.offsetWidth : element.clientWidth;
-                        const resultHeight = element.offsetHeight ? element.offsetHeight : element.clientHeight;
-                        /* +0.5 is added to take rounding into account */
+                        const offsetWidth = element.offsetWidth;
+                        const offsetHeight = element.offsetHeight;
+                        const resultWidth = offsetWidth ? offsetWidth : element.clientWidth;
+                        const resultHeight = offsetHeight ? offsetHeight : element.clientHeight;
+                        // +0.5 is added to take rounding into account
                         return [resultWidth + 0.5, resultHeight];
                     }
                 }
                 finally {
-                    element.style.width = previousWidth;
-                    element.style.height = previousHeight;
-                    element.style.position = previousPosition;
-                    element.style.maxWidth = "";
-                    element.style.maxHeight = "";
+                    elementStyle.cssText = originalStyleCssText;
+                    if (parentElement && parentElementWidthHeight) {
+                        parentElement.style.width = parentElementWidthHeight.width;
+                        parentElement.style.height = parentElementWidthHeight.height;
+                    }
                 }
             }
             setImageRawData(viewId, dataPtr, width, height) {
-                const element = this.allActiveElementsById[viewId];
-                if (!element) {
-                    throw `setImageRawData: Element id ${viewId} not found.`;
-                }
+                const element = this.getView(viewId);
                 if (element.tagName.toUpperCase() === "IMG") {
                     const imgElement = element;
-                    var rawCanvas = document.createElement("canvas");
+                    const rawCanvas = document.createElement("canvas");
                     rawCanvas.width = width;
                     rawCanvas.height = height;
-                    var ctx = rawCanvas.getContext("2d");
-                    var imgData = ctx.createImageData(width, height);
-                    var bufferSize = width * height * 4;
-                    for (var i = 0; i < bufferSize; i += 4) {
+                    const ctx = rawCanvas.getContext("2d");
+                    const imgData = ctx.createImageData(width, height);
+                    const bufferSize = width * height * 4;
+                    for (let i = 0; i < bufferSize; i += 4) {
                         imgData.data[i + 0] = Module.HEAPU8[dataPtr + i + 2];
                         imgData.data[i + 1] = Module.HEAPU8[dataPtr + i + 1];
                         imgData.data[i + 2] = Module.HEAPU8[dataPtr + i + 0];
@@ -935,10 +1230,7 @@ var Uno;
              * @param color the color to apply to the monochrome pixels
              */
             setImageAsMonochrome(viewId, url, color) {
-                const element = this.allActiveElementsById[viewId];
-                if (!element) {
-                    throw `setImageAsMonochrome: Element id ${viewId} not found.`;
-                }
+                const element = this.getView(viewId);
                 if (element.tagName.toUpperCase() === "IMG") {
                     const imgElement = element;
                     var img = new Image();
@@ -946,8 +1238,8 @@ var Uno;
                     img.src = url;
                     function buildMonochromeImage() {
                         // create a colored version of img
-                        var c = document.createElement('canvas');
-                        var ctx = c.getContext('2d');
+                        const c = document.createElement('canvas');
+                        const ctx = c.getContext('2d');
                         c.width = img.width;
                         c.height = img.height;
                         ctx.drawImage(img, 0, 0);
@@ -964,30 +1256,19 @@ var Uno;
                 }
             }
             setPointerCapture(viewId, pointerId) {
-                const element = this.allActiveElementsById[viewId];
-                if (!element) {
-                    throw `setPointerCapture: Element id ${viewId} not found.`;
-                }
-                element.setPointerCapture(pointerId);
+                this.getView(viewId).setPointerCapture(pointerId);
                 return "ok";
             }
             releasePointerCapture(viewId, pointerId) {
-                const element = this.allActiveElementsById[viewId];
-                if (!element) {
-                    throw `releasePointerCapture: Element id ${viewId} not found.`;
-                }
-                element.releasePointerCapture(pointerId);
+                this.getView(viewId).releasePointerCapture(pointerId);
                 return "ok";
             }
             focusView(elementId) {
-                const htmlElement = this.allActiveElementsById[elementId];
-                if (!htmlElement) {
-                    throw `Element id ${elementId} not found.`;
-                }
-                if (!(htmlElement instanceof HTMLElement)) {
+                const element = this.getView(elementId);
+                if (!(element instanceof HTMLElement)) {
                     throw `Element id ${elementId} is not focusable.`;
                 }
-                htmlElement.focus();
+                element.focus();
                 return "ok";
             }
             /**
@@ -1007,16 +1288,52 @@ var Uno;
                 * WARNING: you should avoid mixing this and `addView` for the same element.
                 */
             setHtmlContentNative(pParams) {
-                let params = WindowManagerSetContentHtmlParams.unmarshal(pParams);
+                const params = WindowManagerSetContentHtmlParams.unmarshal(pParams);
                 this.setHtmlContentInternal(params.HtmlId, params.Html);
                 return true;
             }
             setHtmlContentInternal(viewId, html) {
-                const element = this.allActiveElementsById[viewId];
-                if (!element) {
-                    throw `setHtmlContent: Element id ${viewId} not found.`;
+                this.getView(viewId).innerHTML = html;
+            }
+            /**
+             * Gets the Client and Offset size of the specified element
+             *
+             * This method is used to determine the size of the scroll bars, to
+             * mask the events coming from that zone.
+             */
+            getClientViewSize(elementId) {
+                const element = this.getView(elementId);
+                return `${element.clientWidth};${element.clientHeight};${element.offsetWidth};${element.offsetHeight}`;
+            }
+            /**
+             * Gets the Client and Offset size of the specified element
+             *
+             * This method is used to determine the size of the scroll bars, to
+             * mask the events coming from that zone.
+             */
+            getClientViewSizeNative(pParams, pReturn) {
+                const params = WindowManagerGetClientViewSizeParams.unmarshal(pParams);
+                const element = this.getView(params.HtmlId);
+                const ret2 = new WindowManagerGetClientViewSizeReturn();
+                ret2.ClientWidth = element.clientWidth;
+                ret2.ClientHeight = element.clientHeight;
+                ret2.OffsetWidth = element.offsetWidth;
+                ret2.OffsetHeight = element.offsetHeight;
+                ret2.marshal(pReturn);
+                return true;
+            }
+            /**
+             * Gets a dependency property value.
+             *
+             * Note that the casing of this method is intentionally Pascal for platform alignment.
+             */
+            GetDependencyPropertyValue(elementId, propertyName) {
+                if (!WindowManager.getDependencyPropertyValueMethod) {
+                    WindowManager.getDependencyPropertyValueMethod = Module.mono_bind_static_method("[Uno.UI] Uno.UI.Helpers.Automation:GetDependencyPropertyValue");
                 }
-                element.innerHTML = html;
+                const element = this.getView(elementId);
+                const htmlId = Number(element.getAttribute("XamlHandle"));
+                return WindowManager.getDependencyPropertyValueMethod(htmlId, propertyName);
             }
             /**
                 * Remove the loading indicator.
@@ -1037,28 +1354,11 @@ var Uno;
                     console.debug("Hosted Mode: Skipping MonoRuntime initialization ");
                 }
                 else {
-                    if (!WindowManager.assembly) {
-                        WindowManager.assembly = MonoRuntime.assembly_load("Uno.UI");
-                        if (!WindowManager.assembly) {
-                            throw `Unable to find assembly Uno.UI`;
-                        }
-                    }
                     if (!WindowManager.resizeMethod) {
-                        const type = MonoRuntime.find_class(WindowManager.assembly, "Windows.UI.Xaml", "Window");
-                        if (!type) {
-                            throw `Unable to find type Windows.UI.Xaml.Window`;
-                        }
-                        WindowManager.resizeMethod = MonoRuntime.find_method(type, "Resize", -1);
-                        if (!WindowManager.resizeMethod) {
-                            throw `Unable to find Windows.UI.Xaml.Window.Resize method`;
-                        }
+                        WindowManager.resizeMethod = Module.mono_bind_static_method("[Uno.UI] Windows.UI.Xaml.Window:Resize");
                     }
                     if (!WindowManager.dispatchEventMethod) {
-                        const type = MonoRuntime.find_class(WindowManager.assembly, "Windows.UI.Xaml", "UIElement");
-                        WindowManager.dispatchEventMethod = MonoRuntime.find_method(type, "DispatchEvent", -1);
-                        if (!WindowManager.dispatchEventMethod) {
-                            throw `Unable to find Windows.UI.Xaml.UIElement.DispatchEvent method`;
-                        }
+                        WindowManager.dispatchEventMethod = Module.mono_bind_static_method("[Uno.UI] Windows.UI.Xaml.UIElement:DispatchEvent");
                     }
                 }
             }
@@ -1081,19 +1381,18 @@ var Uno;
                 }
                 // UWP Window's default background is white.
                 const body = document.getElementsByTagName("body")[0];
-                body.style.backgroundColor = '#fff';
+                body.style.backgroundColor = "#fff";
             }
             resize() {
                 if (WindowManager.isHosted) {
-                    UnoDispatch.resize(`${window.innerWidth};${window.innerHeight}`);
+                    UnoDispatch.resize(`${document.documentElement.clientWidth};${document.documentElement.clientHeight}`);
                 }
                 else {
-                    const sizeStr = this.getMonoString(`${window.innerWidth};${window.innerHeight}`);
-                    MonoRuntime.call_method(WindowManager.resizeMethod, null, [sizeStr]);
+                    WindowManager.resizeMethod(document.documentElement.clientWidth, document.documentElement.clientHeight);
                 }
             }
             dispatchEvent(element, eventName, eventPayload = null) {
-                const htmlId = element.getAttribute("XamlHandle");
+                const htmlId = Number(element.getAttribute("XamlHandle"));
                 // console.debug(`${element.getAttribute("id")}: Raising event ${eventName}.`);
                 if (!htmlId) {
                     throw `No attribute XamlHandle on element ${element}. Can't raise event.`;
@@ -1102,24 +1401,12 @@ var Uno;
                     // Dispatch to the C# backed UnoDispatch class. Events propagated
                     // this way always succeed because synchronous calls are not possible
                     // between the host and the browser, unlike wasm.
-                    UnoDispatch.dispatch(htmlId, eventName, eventPayload);
+                    UnoDispatch.dispatch(String(htmlId), eventName, eventPayload);
                     return true;
                 }
                 else {
-                    const htmlIdStr = this.getMonoString(htmlId);
-                    const eventNameStr = this.getMonoString(eventName);
-                    const eventPayloadStr = this.getMonoString(eventPayload);
-                    var handledHandle = MonoRuntime.call_method(WindowManager.dispatchEventMethod, null, [htmlIdStr, eventNameStr, eventPayloadStr]);
-                    var handledStr = this.fromMonoString(handledHandle);
-                    var handled = handledStr == "True";
-                    return handled;
+                    return WindowManager.dispatchEventMethod(htmlId, eventName, eventPayload || "");
                 }
-            }
-            getMonoString(str) {
-                return str ? MonoRuntime.mono_string(str) : null;
-            }
-            fromMonoString(strHandle) {
-                return strHandle ? MonoRuntime.conv_string(strHandle) : "";
             }
             getIsConnectedToRootElement(element) {
                 const rootElement = this.rootContent;
@@ -1130,17 +1417,18 @@ var Uno;
             }
         }
         WindowManager._isHosted = false;
+        WindowManager._isLoadEventsEnabled = false;
         WindowManager.unoRootClassName = "uno-root-element";
         WindowManager.unoUnarrangedClassName = "uno-unarranged";
+        WindowManager._cctor = (() => {
+            WindowManager.initMethods();
+            UI.HtmlDom.initPolyfills();
+        })();
+        WindowManager.MAX_WIDTH = `${Number.MAX_SAFE_INTEGER}vw`;
+        WindowManager.MAX_HEIGHT = `${Number.MAX_SAFE_INTEGER}vh`;
         UI.WindowManager = WindowManager;
-        if (typeof define === 'function') {
-            define(['AppManifest'], () => {
-                if (document.readyState === "loading") {
-                    document.addEventListener("DOMContentLoaded", () => WindowManager.setupSplashScreen());
-                }
-                else {
-                    WindowManager.setupSplashScreen();
-                }
+        if (typeof define === "function") {
+            define(["AppManifest"], () => {
             });
         }
         else {
@@ -1151,12 +1439,83 @@ var Uno;
 // Ensure the "Uno" namespace is availablle globally
 window.Uno = Uno;
 /* TSBindingsGenerator Generated code -- this code is regenerated on each build */
+class StorageFolderMakePersistentParams {
+    static unmarshal(pData) {
+        let ret = new StorageFolderMakePersistentParams();
+        {
+            ret.Paths_Length = Number(Module.getValue(pData + 0, "i32"));
+        }
+        {
+            var pArray = Module.getValue(pData + 4, "*");
+            if (pArray !== 0) {
+                ret.Paths = new Array();
+                for (var i = 0; i < ret.Paths_Length; i++) {
+                    var value = Module.getValue(pArray + i * 4, "*");
+                    if (value !== 0) {
+                        ret.Paths.push(String(MonoRuntime.conv_string(value)));
+                    }
+                    else {
+                        ret.Paths.push(null);
+                    }
+                }
+            }
+            else {
+                ret.Paths = null;
+            }
+        }
+        return ret;
+    }
+}
+/* TSBindingsGenerator Generated code -- this code is regenerated on each build */
 class WindowManagerAddViewParams {
     static unmarshal(pData) {
         let ret = new WindowManagerAddViewParams();
-        ret.HtmlId = Number((Module.getValue(pData + 0, "*")));
-        ret.ChildView = Number((Module.getValue(pData + 4, "*")));
-        ret.Index = Number((Module.getValue(pData + 8, "i32")));
+        {
+            ret.HtmlId = Number(Module.getValue(pData + 0, "*"));
+        }
+        {
+            ret.ChildView = Number(Module.getValue(pData + 4, "*"));
+        }
+        {
+            ret.Index = Number(Module.getValue(pData + 8, "i32"));
+        }
+        return ret;
+    }
+}
+/* TSBindingsGenerator Generated code -- this code is regenerated on each build */
+class WindowManagerArrangeElementParams {
+    static unmarshal(pData) {
+        let ret = new WindowManagerArrangeElementParams();
+        {
+            ret.Top = Number(Module.getValue(pData + 0, "double"));
+        }
+        {
+            ret.Left = Number(Module.getValue(pData + 8, "double"));
+        }
+        {
+            ret.Width = Number(Module.getValue(pData + 16, "double"));
+        }
+        {
+            ret.Height = Number(Module.getValue(pData + 24, "double"));
+        }
+        {
+            ret.ClipTop = Number(Module.getValue(pData + 32, "double"));
+        }
+        {
+            ret.ClipLeft = Number(Module.getValue(pData + 40, "double"));
+        }
+        {
+            ret.ClipBottom = Number(Module.getValue(pData + 48, "double"));
+        }
+        {
+            ret.ClipRight = Number(Module.getValue(pData + 56, "double"));
+        }
+        {
+            ret.HtmlId = Number(Module.getValue(pData + 64, "*"));
+        }
+        {
+            ret.Clip = Boolean(Module.getValue(pData + 68, "i32"));
+        }
         return ret;
     }
 }
@@ -1164,19 +1523,58 @@ class WindowManagerAddViewParams {
 class WindowManagerCreateContentParams {
     static unmarshal(pData) {
         let ret = new WindowManagerCreateContentParams();
-        ret.HtmlId = Number((Module.getValue(pData + 0, "*")));
-        ret.TagName = String(Module.UTF8ToString(Module.getValue(pData + 4, "*")));
-        ret.Handle = Number((Module.getValue(pData + 8, "*")));
-        ret.Type = String(Module.UTF8ToString(Module.getValue(pData + 12, "*")));
-        ret.IsSvg = Boolean((Module.getValue(pData + 16, "i32")));
-        ret.IsFrameworkElement = Boolean((Module.getValue(pData + 20, "i32")));
-        ret.IsFocusable = Boolean((Module.getValue(pData + 24, "i32")));
-        ret.Classes_Length = Number((Module.getValue(pData + 28, "i32")));
         {
-            ret.Classes = new Array();
+            ret.HtmlId = Number(Module.getValue(pData + 0, "*"));
+        }
+        {
+            var ptr = Module.getValue(pData + 4, "*");
+            if (ptr !== 0) {
+                ret.TagName = String(Module.UTF8ToString(ptr));
+            }
+            else {
+                ret.TagName = null;
+            }
+        }
+        {
+            ret.Handle = Number(Module.getValue(pData + 8, "*"));
+        }
+        {
+            var ptr = Module.getValue(pData + 12, "*");
+            if (ptr !== 0) {
+                ret.Type = String(Module.UTF8ToString(ptr));
+            }
+            else {
+                ret.Type = null;
+            }
+        }
+        {
+            ret.IsSvg = Boolean(Module.getValue(pData + 16, "i32"));
+        }
+        {
+            ret.IsFrameworkElement = Boolean(Module.getValue(pData + 20, "i32"));
+        }
+        {
+            ret.IsFocusable = Boolean(Module.getValue(pData + 24, "i32"));
+        }
+        {
+            ret.Classes_Length = Number(Module.getValue(pData + 28, "i32"));
+        }
+        {
             var pArray = Module.getValue(pData + 32, "*");
-            for (var i = 0; i < ret.Classes_Length; i++) {
-                ret.Classes.push(String(MonoRuntime.conv_string(Module.getValue(pArray + i * 4, "*"))));
+            if (pArray !== 0) {
+                ret.Classes = new Array();
+                for (var i = 0; i < ret.Classes_Length; i++) {
+                    var value = Module.getValue(pArray + i * 4, "*");
+                    if (value !== 0) {
+                        ret.Classes.push(String(MonoRuntime.conv_string(value)));
+                    }
+                    else {
+                        ret.Classes.push(null);
+                    }
+                }
+            }
+            else {
+                ret.Classes = null;
             }
         }
         return ret;
@@ -1186,7 +1584,9 @@ class WindowManagerCreateContentParams {
 class WindowManagerDestroyViewParams {
     static unmarshal(pData) {
         let ret = new WindowManagerDestroyViewParams();
-        ret.HtmlId = Number((Module.getValue(pData + 0, "*")));
+        {
+            ret.HtmlId = Number(Module.getValue(pData + 0, "*"));
+        }
         return ret;
     }
 }
@@ -1194,7 +1594,9 @@ class WindowManagerDestroyViewParams {
 class WindowManagerGetBBoxParams {
     static unmarshal(pData) {
         let ret = new WindowManagerGetBBoxParams();
-        ret.HtmlId = Number((Module.getValue(pData + 0, "*")));
+        {
+            ret.HtmlId = Number(Module.getValue(pData + 0, "*"));
+        }
         return ret;
     }
 }
@@ -1208,12 +1610,50 @@ class WindowManagerGetBBoxReturn {
     }
 }
 /* TSBindingsGenerator Generated code -- this code is regenerated on each build */
+class WindowManagerGetClientViewSizeParams {
+    static unmarshal(pData) {
+        let ret = new WindowManagerGetClientViewSizeParams();
+        {
+            ret.HtmlId = Number(Module.getValue(pData + 0, "*"));
+        }
+        return ret;
+    }
+}
+/* TSBindingsGenerator Generated code -- this code is regenerated on each build */
+class WindowManagerGetClientViewSizeReturn {
+    marshal(pData) {
+        Module.setValue(pData + 0, this.OffsetWidth, "double");
+        Module.setValue(pData + 8, this.OffsetHeight, "double");
+        Module.setValue(pData + 16, this.ClientWidth, "double");
+        Module.setValue(pData + 24, this.ClientHeight, "double");
+    }
+}
+/* TSBindingsGenerator Generated code -- this code is regenerated on each build */
+class WindowManagerInitParams {
+    static unmarshal(pData) {
+        let ret = new WindowManagerInitParams();
+        {
+            ret.IsHostedMode = Boolean(Module.getValue(pData + 0, "i32"));
+        }
+        {
+            ret.IsLoadEventsEnabled = Boolean(Module.getValue(pData + 4, "i32"));
+        }
+        return ret;
+    }
+}
+/* TSBindingsGenerator Generated code -- this code is regenerated on each build */
 class WindowManagerMeasureViewParams {
     static unmarshal(pData) {
         let ret = new WindowManagerMeasureViewParams();
-        ret.HtmlId = Number((Module.getValue(pData + 0, "*")));
-        ret.AvailableWidth = Number((Module.getValue(pData + 8, "double")));
-        ret.AvailableHeight = Number((Module.getValue(pData + 16, "double")));
+        {
+            ret.HtmlId = Number(Module.getValue(pData + 0, "*"));
+        }
+        {
+            ret.AvailableWidth = Number(Module.getValue(pData + 8, "double"));
+        }
+        {
+            ret.AvailableHeight = Number(Module.getValue(pData + 16, "double"));
+        }
         return ret;
     }
 }
@@ -1228,11 +1668,39 @@ class WindowManagerMeasureViewReturn {
 class WindowManagerRegisterEventOnViewParams {
     static unmarshal(pData) {
         let ret = new WindowManagerRegisterEventOnViewParams();
-        ret.HtmlId = Number((Module.getValue(pData + 0, "*")));
-        ret.EventName = String(Module.UTF8ToString(Module.getValue(pData + 4, "*")));
-        ret.OnCapturePhase = Boolean((Module.getValue(pData + 8, "i32")));
-        ret.EventFilterName = String(Module.UTF8ToString(Module.getValue(pData + 12, "*")));
-        ret.EventExtractorName = String(Module.UTF8ToString(Module.getValue(pData + 16, "*")));
+        {
+            ret.HtmlId = Number(Module.getValue(pData + 0, "*"));
+        }
+        {
+            var ptr = Module.getValue(pData + 4, "*");
+            if (ptr !== 0) {
+                ret.EventName = String(Module.UTF8ToString(ptr));
+            }
+            else {
+                ret.EventName = null;
+            }
+        }
+        {
+            ret.OnCapturePhase = Boolean(Module.getValue(pData + 8, "i32"));
+        }
+        {
+            var ptr = Module.getValue(pData + 12, "*");
+            if (ptr !== 0) {
+                ret.EventFilterName = String(Module.UTF8ToString(ptr));
+            }
+            else {
+                ret.EventFilterName = null;
+            }
+        }
+        {
+            var ptr = Module.getValue(pData + 16, "*");
+            if (ptr !== 0) {
+                ret.EventExtractorName = String(Module.UTF8ToString(ptr));
+            }
+            else {
+                ret.EventExtractorName = null;
+            }
+        }
         return ret;
     }
 }
@@ -1240,8 +1708,12 @@ class WindowManagerRegisterEventOnViewParams {
 class WindowManagerRemoveViewParams {
     static unmarshal(pData) {
         let ret = new WindowManagerRemoveViewParams();
-        ret.HtmlId = Number((Module.getValue(pData + 0, "*")));
-        ret.ChildView = Number((Module.getValue(pData + 4, "*")));
+        {
+            ret.HtmlId = Number(Module.getValue(pData + 0, "*"));
+        }
+        {
+            ret.ChildView = Number(Module.getValue(pData + 4, "*"));
+        }
         return ret;
     }
 }
@@ -1249,13 +1721,28 @@ class WindowManagerRemoveViewParams {
 class WindowManagerResetStyleParams {
     static unmarshal(pData) {
         let ret = new WindowManagerResetStyleParams();
-        ret.HtmlId = Number((Module.getValue(pData + 0, "*")));
-        ret.Styles_Length = Number((Module.getValue(pData + 4, "i32")));
         {
-            ret.Styles = new Array();
+            ret.HtmlId = Number(Module.getValue(pData + 0, "*"));
+        }
+        {
+            ret.Styles_Length = Number(Module.getValue(pData + 4, "i32"));
+        }
+        {
             var pArray = Module.getValue(pData + 8, "*");
-            for (var i = 0; i < ret.Styles_Length; i++) {
-                ret.Styles.push(String(MonoRuntime.conv_string(Module.getValue(pArray + i * 4, "*"))));
+            if (pArray !== 0) {
+                ret.Styles = new Array();
+                for (var i = 0; i < ret.Styles_Length; i++) {
+                    var value = Module.getValue(pArray + i * 4, "*");
+                    if (value !== 0) {
+                        ret.Styles.push(String(MonoRuntime.conv_string(value)));
+                    }
+                    else {
+                        ret.Styles.push(null);
+                    }
+                }
+            }
+            else {
+                ret.Styles = null;
             }
         }
         return ret;
@@ -1265,14 +1752,91 @@ class WindowManagerResetStyleParams {
 class WindowManagerSetAttributeParams {
     static unmarshal(pData) {
         let ret = new WindowManagerSetAttributeParams();
-        ret.HtmlId = Number((Module.getValue(pData + 0, "*")));
-        ret.Pairs_Length = Number((Module.getValue(pData + 4, "i32")));
         {
-            ret.Pairs = new Array();
-            var pArray = Module.getValue(pData + 8, "*");
-            for (var i = 0; i < ret.Pairs_Length; i++) {
-                ret.Pairs.push(String(MonoRuntime.conv_string(Module.getValue(pArray + i * 4, "*"))));
+            ret.HtmlId = Number(Module.getValue(pData + 0, "*"));
+        }
+        {
+            var ptr = Module.getValue(pData + 4, "*");
+            if (ptr !== 0) {
+                ret.Name = String(Module.UTF8ToString(ptr));
             }
+            else {
+                ret.Name = null;
+            }
+        }
+        {
+            var ptr = Module.getValue(pData + 8, "*");
+            if (ptr !== 0) {
+                ret.Value = String(Module.UTF8ToString(ptr));
+            }
+            else {
+                ret.Value = null;
+            }
+        }
+        return ret;
+    }
+}
+/* TSBindingsGenerator Generated code -- this code is regenerated on each build */
+class WindowManagerSetAttributesParams {
+    static unmarshal(pData) {
+        let ret = new WindowManagerSetAttributesParams();
+        {
+            ret.HtmlId = Number(Module.getValue(pData + 0, "*"));
+        }
+        {
+            ret.Pairs_Length = Number(Module.getValue(pData + 4, "i32"));
+        }
+        {
+            var pArray = Module.getValue(pData + 8, "*");
+            if (pArray !== 0) {
+                ret.Pairs = new Array();
+                for (var i = 0; i < ret.Pairs_Length; i++) {
+                    var value = Module.getValue(pArray + i * 4, "*");
+                    if (value !== 0) {
+                        ret.Pairs.push(String(MonoRuntime.conv_string(value)));
+                    }
+                    else {
+                        ret.Pairs.push(null);
+                    }
+                }
+            }
+            else {
+                ret.Pairs = null;
+            }
+        }
+        return ret;
+    }
+}
+/* TSBindingsGenerator Generated code -- this code is regenerated on each build */
+class WindowManagerSetClassesParams {
+    static unmarshal(pData) {
+        let ret = new WindowManagerSetClassesParams();
+        {
+            ret.HtmlId = Number(Module.getValue(pData + 0, "*"));
+        }
+        {
+            ret.CssClasses_Length = Number(Module.getValue(pData + 4, "i32"));
+        }
+        {
+            var pArray = Module.getValue(pData + 8, "*");
+            if (pArray !== 0) {
+                ret.CssClasses = new Array();
+                for (var i = 0; i < ret.CssClasses_Length; i++) {
+                    var value = Module.getValue(pArray + i * 4, "*");
+                    if (value !== 0) {
+                        ret.CssClasses.push(String(MonoRuntime.conv_string(value)));
+                    }
+                    else {
+                        ret.CssClasses.push(null);
+                    }
+                }
+            }
+            else {
+                ret.CssClasses = null;
+            }
+        }
+        {
+            ret.Index = Number(Module.getValue(pData + 12, "i32"));
         }
         return ret;
     }
@@ -1281,8 +1845,46 @@ class WindowManagerSetAttributeParams {
 class WindowManagerSetContentHtmlParams {
     static unmarshal(pData) {
         let ret = new WindowManagerSetContentHtmlParams();
-        ret.HtmlId = Number((Module.getValue(pData + 0, "*")));
-        ret.Html = String(Module.UTF8ToString(Module.getValue(pData + 4, "*")));
+        {
+            ret.HtmlId = Number(Module.getValue(pData + 0, "*"));
+        }
+        {
+            var ptr = Module.getValue(pData + 4, "*");
+            if (ptr !== 0) {
+                ret.Html = String(Module.UTF8ToString(ptr));
+            }
+            else {
+                ret.Html = null;
+            }
+        }
+        return ret;
+    }
+}
+/* TSBindingsGenerator Generated code -- this code is regenerated on each build */
+class WindowManagerSetElementTransformParams {
+    static unmarshal(pData) {
+        let ret = new WindowManagerSetElementTransformParams();
+        {
+            ret.M11 = Number(Module.getValue(pData + 0, "double"));
+        }
+        {
+            ret.M12 = Number(Module.getValue(pData + 8, "double"));
+        }
+        {
+            ret.M21 = Number(Module.getValue(pData + 16, "double"));
+        }
+        {
+            ret.M22 = Number(Module.getValue(pData + 24, "double"));
+        }
+        {
+            ret.M31 = Number(Module.getValue(pData + 32, "double"));
+        }
+        {
+            ret.M32 = Number(Module.getValue(pData + 40, "double"));
+        }
+        {
+            ret.HtmlId = Number(Module.getValue(pData + 48, "*"));
+        }
         return ret;
     }
 }
@@ -1290,8 +1892,18 @@ class WindowManagerSetContentHtmlParams {
 class WindowManagerSetNameParams {
     static unmarshal(pData) {
         let ret = new WindowManagerSetNameParams();
-        ret.HtmlId = Number((Module.getValue(pData + 0, "*")));
-        ret.Name = String(Module.UTF8ToString(Module.getValue(pData + 4, "*")));
+        {
+            ret.HtmlId = Number(Module.getValue(pData + 0, "*"));
+        }
+        {
+            var ptr = Module.getValue(pData + 4, "*");
+            if (ptr !== 0) {
+                ret.Name = String(Module.UTF8ToString(ptr));
+            }
+            else {
+                ret.Name = null;
+            }
+        }
         return ret;
     }
 }
@@ -1299,14 +1911,51 @@ class WindowManagerSetNameParams {
 class WindowManagerSetPropertyParams {
     static unmarshal(pData) {
         let ret = new WindowManagerSetPropertyParams();
-        ret.HtmlId = Number((Module.getValue(pData + 0, "*")));
-        ret.Pairs_Length = Number((Module.getValue(pData + 4, "i32")));
         {
-            ret.Pairs = new Array();
+            ret.HtmlId = Number(Module.getValue(pData + 0, "*"));
+        }
+        {
+            ret.Pairs_Length = Number(Module.getValue(pData + 4, "i32"));
+        }
+        {
             var pArray = Module.getValue(pData + 8, "*");
-            for (var i = 0; i < ret.Pairs_Length; i++) {
-                ret.Pairs.push(String(MonoRuntime.conv_string(Module.getValue(pArray + i * 4, "*"))));
+            if (pArray !== 0) {
+                ret.Pairs = new Array();
+                for (var i = 0; i < ret.Pairs_Length; i++) {
+                    var value = Module.getValue(pArray + i * 4, "*");
+                    if (value !== 0) {
+                        ret.Pairs.push(String(MonoRuntime.conv_string(value)));
+                    }
+                    else {
+                        ret.Pairs.push(null);
+                    }
+                }
             }
+            else {
+                ret.Pairs = null;
+            }
+        }
+        return ret;
+    }
+}
+/* TSBindingsGenerator Generated code -- this code is regenerated on each build */
+class WindowManagerSetStyleDoubleParams {
+    static unmarshal(pData) {
+        let ret = new WindowManagerSetStyleDoubleParams();
+        {
+            ret.HtmlId = Number(Module.getValue(pData + 0, "*"));
+        }
+        {
+            var ptr = Module.getValue(pData + 4, "*");
+            if (ptr !== 0) {
+                ret.Name = String(Module.UTF8ToString(ptr));
+            }
+            else {
+                ret.Name = null;
+            }
+        }
+        {
+            ret.Value = Number(Module.getValue(pData + 8, "double"));
         }
         return ret;
     }
@@ -1315,14 +1964,50 @@ class WindowManagerSetPropertyParams {
 class WindowManagerSetStylesParams {
     static unmarshal(pData) {
         let ret = new WindowManagerSetStylesParams();
-        ret.HtmlId = Number((Module.getValue(pData + 0, "*")));
-        ret.SetAsArranged = Boolean((Module.getValue(pData + 4, "i32")));
-        ret.Pairs_Length = Number((Module.getValue(pData + 8, "i32")));
         {
-            ret.Pairs = new Array();
+            ret.HtmlId = Number(Module.getValue(pData + 0, "*"));
+        }
+        {
+            ret.SetAsArranged = Boolean(Module.getValue(pData + 4, "i32"));
+        }
+        {
+            ret.Pairs_Length = Number(Module.getValue(pData + 8, "i32"));
+        }
+        {
             var pArray = Module.getValue(pData + 12, "*");
-            for (var i = 0; i < ret.Pairs_Length; i++) {
-                ret.Pairs.push(String(MonoRuntime.conv_string(Module.getValue(pArray + i * 4, "*"))));
+            if (pArray !== 0) {
+                ret.Pairs = new Array();
+                for (var i = 0; i < ret.Pairs_Length; i++) {
+                    var value = Module.getValue(pArray + i * 4, "*");
+                    if (value !== 0) {
+                        ret.Pairs.push(String(MonoRuntime.conv_string(value)));
+                    }
+                    else {
+                        ret.Pairs.push(null);
+                    }
+                }
+            }
+            else {
+                ret.Pairs = null;
+            }
+        }
+        return ret;
+    }
+}
+/* TSBindingsGenerator Generated code -- this code is regenerated on each build */
+class WindowManagerSetXUidParams {
+    static unmarshal(pData) {
+        let ret = new WindowManagerSetXUidParams();
+        {
+            ret.HtmlId = Number(Module.getValue(pData + 0, "*"));
+        }
+        {
+            var ptr = Module.getValue(pData + 4, "*");
+            if (ptr !== 0) {
+                ret.Uid = String(Module.UTF8ToString(ptr));
+            }
+            else {
+                ret.Uid = null;
             }
         }
         return ret;
@@ -1336,31 +2021,13 @@ var Uno;
         (function (Interop) {
             class ManagedObject {
                 static init() {
-                    if (!ManagedObject.assembly) {
-                        ManagedObject.assembly = MonoRuntime.assembly_load("Uno.Foundation");
-                        if (!ManagedObject.assembly) {
-                            throw "Unable to find assembly Uno.Foundation";
-                        }
-                    }
-                    if (!ManagedObject.dispatchMethod) {
-                        const type = MonoRuntime.find_class(ManagedObject.assembly, "Uno.Foundation.Interop", "JSObject");
-                        ManagedObject.dispatchMethod = MonoRuntime.find_method(type, "Dispatch", -1);
-                        if (!ManagedObject.dispatchMethod) {
-                            throw "Unable to find Uno.Foundation.Interop.JSObject.Dispatch method";
-                        }
-                    }
+                    ManagedObject.dispatchMethod = Module.mono_bind_static_method("[Uno.Foundation] Uno.Foundation.Interop.JSObject:Dispatch");
                 }
                 static dispatch(handle, method, parameters) {
                     if (!ManagedObject.dispatchMethod) {
                         ManagedObject.init();
                     }
-                    const handleStr = handle ? MonoRuntime.mono_string(handle) : null;
-                    const methodStr = method ? MonoRuntime.mono_string(method) : null;
-                    const parametersStr = parameters ? MonoRuntime.mono_string(parameters) : null;
-                    if (methodStr == null) {
-                        throw "Cannot dispatch to unknown method";
-                    }
-                    MonoRuntime.call_method(ManagedObject.dispatchMethod, null, [handleStr, methodStr, parametersStr]);
+                    ManagedObject.dispatchMethod(handle, method, parameters || "");
                 }
             }
             Interop.ManagedObject = ManagedObject;
@@ -1396,3 +2063,187 @@ var Uno;
     })(UI = Uno.UI || (Uno.UI = {}));
 })(Uno || (Uno = {}));
 // ReSharper disable InconsistentNaming
+var Windows;
+(function (Windows) {
+    var Storage;
+    (function (Storage) {
+        class StorageFolder {
+            /**
+             * Determine if IndexDB is available, some browsers and modes disable it.
+             * */
+            static isIndexDBAvailable() {
+                try {
+                    // IndexedDB may not be available in private mode
+                    window.indexedDB;
+                    return true;
+                }
+                catch (err) {
+                    return false;
+                }
+            }
+            /**
+             * Setup the storage persistence of a given set of paths.
+             * */
+            static makePersistent(pParams) {
+                const params = StorageFolderMakePersistentParams.unmarshal(pParams);
+                for (var i = 0; i < params.Paths.length; i++) {
+                    this.setupStorage(params.Paths[i]);
+                }
+            }
+            /**
+             * Setup the storage persistence of a given path.
+             * */
+            static setupStorage(path) {
+                if (Uno.UI.WindowManager.isHosted) {
+                    console.debug("Hosted Mode: skipping IndexDB initialization");
+                    return;
+                }
+                if (!this.isIndexDBAvailable()) {
+                    console.warn("IndexedDB is not available (private mode or uri starts with file:// ?), changes will not be persisted.");
+                    return;
+                }
+                console.debug("Making persistent: " + path);
+                FS.mkdir(path);
+                FS.mount(IDBFS, {}, path);
+                // Request an initial sync to populate the file system
+                const that = this;
+                FS.syncfs(true, err => {
+                    if (err) {
+                        console.error(`Error synchronizing filsystem from IndexDB: ${err}`);
+                    }
+                });
+                // Ensure to sync pseudo file system on unload (and periodically for safety)
+                if (!this._isInit) {
+                    window.addEventListener("beforeunload", this.synchronizeFileSystem);
+                    setInterval(this.synchronizeFileSystem, 10000);
+                    this._isInit = true;
+                }
+            }
+            /**
+             * Synchronize the IDBFS memory cache back to IndexDB
+             * */
+            static synchronizeFileSystem() {
+                FS.syncfs(err => {
+                    if (err) {
+                        console.error(`Error synchronizing filsystem from IndexDB: ${err}`);
+                    }
+                });
+            }
+        }
+        StorageFolder._isInit = false;
+        Storage.StorageFolder = StorageFolder;
+    })(Storage = Windows.Storage || (Windows.Storage = {}));
+})(Windows || (Windows = {}));
+var Windows;
+(function (Windows) {
+    var UI;
+    (function (UI) {
+        var Core;
+        (function (Core) {
+            class SystemNavigationManager {
+                constructor() {
+                    var that = this;
+                    var dispatchBackRequest = Module.mono_bind_static_method("[Uno] Windows.UI.Core.SystemNavigationManager:DispatchBackRequest");
+                    window.history.replaceState(0, document.title, null);
+                    window.addEventListener("popstate", function (evt) {
+                        if (that._isEnabled) {
+                            if (evt.state === 0) {
+                                // Push something in the stack only if we know that we reached the first page.
+                                // There is no way to track our location in the stack, so we use indexes (in the 'state').
+                                window.history.pushState(1, document.title, null);
+                            }
+                            dispatchBackRequest();
+                        }
+                        else if (evt.state === 1) {
+                            // The manager is disabled, but the user requested to navigate forward to our dummy entry,
+                            // but we prefer to keep this dummy entry in teh forward stack (is more prompt to be cleared by the browser,
+                            // and as it's less commonly used it should be less annoying for the user)
+                            window.history.back();
+                        }
+                    });
+                }
+                static get current() {
+                    if (!this._current) {
+                        this._current = new SystemNavigationManager();
+                    }
+                    return this._current;
+                }
+                enable() {
+                    // Clear the back stack, so the only items will be ours (and we won't have any remaining forward item)
+                    this.clearStack();
+                    window.history.pushState(1, document.title, null);
+                    // Then set the enabled flag so the handler will begin its work
+                    this._isEnabled = true;
+                }
+                disable() {
+                    // Disable the handler, then clear the history
+                    // Note: As a side effect, the forward button will be enabled :(
+                    this._isEnabled = false;
+                    this.clearStack();
+                }
+                clearStack() {
+                    // There is no way to determine our position in the stack, so we only navigate back if we determine that
+                    // we are currently on our dummy target page.
+                    if (window.history.state === 1) {
+                        window.history.back();
+                    }
+                    window.history.replaceState(0, document.title, null);
+                }
+            }
+            Core.SystemNavigationManager = SystemNavigationManager;
+        })(Core = UI.Core || (UI.Core = {}));
+    })(UI = Windows.UI || (Windows.UI = {}));
+})(Windows || (Windows = {}));
+var Windows;
+(function (Windows) {
+    var Devices;
+    (function (Devices) {
+        var Sensors;
+        (function (Sensors) {
+            class Accelerometer {
+                static initialize() {
+                    if (window.DeviceMotionEvent) {
+                        this.dispatchReading = Module.mono_bind_static_method("[Uno] Windows.Devices.Sensors.Accelerometer:DispatchReading");
+                        return true;
+                    }
+                    return false;
+                }
+                static startReading() {
+                    window.addEventListener('devicemotion', Accelerometer.readingChangedHandler);
+                }
+                static stopReading() {
+                    window.removeEventListener('devicemotion', Accelerometer.readingChangedHandler);
+                }
+                static readingChangedHandler(event) {
+                    Accelerometer.dispatchReading(event.accelerationIncludingGravity.x, event.accelerationIncludingGravity.y, event.accelerationIncludingGravity.z);
+                }
+            }
+            Sensors.Accelerometer = Accelerometer;
+        })(Sensors = Devices.Sensors || (Devices.Sensors = {}));
+    })(Devices = Windows.Devices || (Windows.Devices = {}));
+})(Windows || (Windows = {}));
+var Windows;
+(function (Windows) {
+    var Phone;
+    (function (Phone) {
+        var Devices;
+        (function (Devices) {
+            var Notification;
+            (function (Notification) {
+                class VibrationDevice {
+                    static initialize() {
+                        navigator.vibrate = navigator.vibrate || navigator.webkitVibrate || navigator.mozVibrate || navigator.msVibrate;
+                        if (navigator.vibrate) {
+                            return true;
+                        }
+                        return false;
+                    }
+                    static vibrate(duration) {
+                        return window.navigator.vibrate(duration);
+                    }
+                }
+                Notification.VibrationDevice = VibrationDevice;
+            })(Notification = Devices.Notification || (Devices.Notification = {}));
+        })(Devices = Phone.Devices || (Phone.Devices = {}));
+    })(Phone = Windows.Phone || (Windows.Phone = {}));
+})(Windows || (Windows = {}));

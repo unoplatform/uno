@@ -54,12 +54,7 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Uno.Core">
-      <Version>1.26.0-dev.58</Version>
-    </PackageReference>
-    <PackageReference Include="Uno.SourceGenerationTasks">
-      <Version>1.29.0-dev.200</Version>
-    </PackageReference>
+    <PackageReference Include="Uno.Core"/>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="..\..\Uno.UWP\ApplicationModel\Resources\Core\AndroidResourceConverter.cs">
@@ -108,4 +103,18 @@
 		<Copy SkipUnchangedFiles="true" SourceFiles="@(_unoTasksFiles)" DestinationFolder="$(OutputPath)\..\$(Configuration)_Shadow" Retries="1" RetryDelayMilliseconds="500" ContinueOnError="true" />
 	</Target>
   <Import Project="..\..\Common.targets" />
+	
+	<Target Name="_UnoToolkitOverrideNuget" AfterTargets="AfterBuild" DependsOnTargets="BuiltProjectOutputGroup" Condition="'$(UnoNugetOverrideVersion)'!=''">
+		<PropertyGroup>
+			<_OverrideTargetFramework>$(TargetFramework)</_OverrideTargetFramework>
+			<_TargetNugetFolder>$(USERPROFILE)\.nuget\packages\Uno.UI\$(UnoNugetOverrideVersion)\build\Uno.UI.Tasks</_TargetNugetFolder>
+		</PropertyGroup>
+		<ItemGroup>
+			<_OutputFiles Include="$(TargetDir)*.*" />
+		</ItemGroup>
+		<MakeDir Directories="$(_TargetNugetFolder)" />
+		<Message Importance="high" Text="OVERRIDING NUGET PACKAGE CACHE: $(_TargetNugetFolder)" />
+		<Copy SourceFiles="@(_OutputFiles)" DestinationFiles="@(_OutputFiles->'$(_TargetNugetFolder)\%(RecursiveDir)%(Filename)%(Extension)')" />
+		<Copy SourceFiles="@(_OutputFilesPDB)" DestinationFiles="@(_OutputFilesPDB->'$(_TargetNugetFolder)\%(RecursiveDir)%(Filename).pdb')" />
+	</Target>
 </Project>

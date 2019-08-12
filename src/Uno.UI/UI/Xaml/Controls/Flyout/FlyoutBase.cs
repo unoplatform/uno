@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using Uno.Disposables;
 using Windows.Foundation;
+
 #if XAMARIN_IOS
 using View = UIKit.UIView;
 #elif XAMARIN_ANDROID
@@ -21,13 +23,46 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 		private bool _isOpen = false;
 
+		protected internal Windows.UI.Xaml.Controls.Popup _popup;
+		private readonly SerialDisposable _sizeChangedDisposable = new SerialDisposable();
+
 		public FlyoutBase()
 		{
-			InitializeBinder();
+			_popup = new Windows.UI.Xaml.Controls.Popup()
+			{
+				Child = CreatePresenter(),
+			};
+
+			_popup.Opened += OnPopupOpened;
+			_popup.Closed += OnPopupClosed;
+
+			InitializePartial();
+		}
+
+		partial void InitializePartial();
+
+		private void OnPopupOpened(object sender, object e)
+		{
+			if (_popup.Child is FrameworkElement child)
+			{
+				SizeChangedEventHandler handler = (_, __) => SetPopupPositionPartial(Target);
+
+				child.SizeChanged += handler;
+
+				_sizeChangedDisposable.Disposable = Disposable
+					.Create(() => child.SizeChanged -= handler);
+			}
 		}
 
 		#region Placement
 
+		/// <summary>
+		/// Preferred placement of the flyout.
+		/// </summary>
+		/// <remarks>
+		/// If there's not enough place, the following logic will be used:
+		/// https://docs.microsoft.com/en-us/previous-versions/windows/apps/dn308515(v=win.10)#placing-a-flyout
+		/// </remarks>
 		public FlyoutPlacementMode Placement
 		{
 			get { return (FlyoutPlacementMode)GetValue(PlacementProperty); }
@@ -73,11 +108,6 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			Closed?.Invoke(this, EventArgs.Empty);
 		}
 
-		internal protected virtual void Close()
-		{
-			throw new NotImplementedException("This method has no base class implementation and must be overridden in a derived class.");
-		}
-
 		public void ShowAt(FrameworkElement placementTarget)
 		{
 			if (_isOpen)
@@ -101,14 +131,56 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			Opened?.Invoke(this, EventArgs.Empty);
 		}
 
-		internal protected virtual void Open()
-		{
-			throw new NotImplementedException("This method has no base class implementation and must be overridden in a derived class.");
-		}
-
 		protected virtual Control CreatePresenter()
 		{
-			throw new NotImplementedException("This method has no base class implementation and must be overridden in a derived class.");
+			return null;
+		}
+
+		private void OnPopupClosed(object sender, object e)
+		{
+			Hide(canCancel: false);
+			_sizeChangedDisposable.Disposable = null;
+		}
+
+		protected internal virtual void Close()
+		{
+			_popup.IsOpen = false;
+		}
+
+		protected internal virtual void Open()
+		{
+			SetPopupPositionPartial(Target);
+
+			_popup.IsOpen = true;
+		}
+
+		partial void SetPopupPositionPartial(UIElement placementTarget);
+
+		partial void OnDataContextChangedPartial(DependencyPropertyChangedEventArgs e)
+		{
+			// This is present to force the dataContext to be passed to the popup of the flyout since it is not directly a child in the visual tree of the flyout. 
+			_popup?.SetValue(Popup.DataContextProperty, this.DataContext, precedence: DependencyPropertyValuePrecedences.Local);
+		}
+
+		partial void OnTemplatedParentChangedPartial(DependencyPropertyChangedEventArgs e)
+		{
+			_popup?.SetValue(Popup.TemplatedParentProperty, TemplatedParent, precedence: DependencyPropertyValuePrecedences.Local);
+		}
+
+		public static FlyoutBase GetAttachedFlyout(FrameworkElement element)
+		{
+			return (FlyoutBase)element.GetValue(AttachedFlyoutProperty);
+		}
+
+		public static void SetAttachedFlyout(FrameworkElement element, FlyoutBase value)
+		{
+			element.SetValue(AttachedFlyoutProperty, value);
+		}
+
+		public static void ShowAttachedFlyout(FrameworkElement flyoutOwner)
+		{
+			var flyout = GetAttachedFlyout(flyoutOwner);
+			flyout?.ShowAt(flyoutOwner);
 		}
 	}
 }

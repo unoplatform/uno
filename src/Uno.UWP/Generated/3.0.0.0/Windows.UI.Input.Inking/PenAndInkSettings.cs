@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Input.Inking
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class PenAndInkSettings 
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  string FontFamilyName
 		{
@@ -17,7 +17,7 @@ namespace Windows.UI.Input.Inking
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.UI.Input.Inking.HandwritingLineHeight HandwritingLineHeight
 		{
@@ -27,7 +27,7 @@ namespace Windows.UI.Input.Inking
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  bool IsHandwritingDirectlyIntoTextFieldEnabled
 		{
@@ -37,7 +37,7 @@ namespace Windows.UI.Input.Inking
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  bool IsTouchHandwritingEnabled
 		{
@@ -47,7 +47,7 @@ namespace Windows.UI.Input.Inking
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.UI.Input.Inking.PenHandedness PenHandedness
 		{
@@ -57,7 +57,7 @@ namespace Windows.UI.Input.Inking
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  bool UserConsentsToHandwritingTelemetryCollection
 		{
@@ -73,7 +73,7 @@ namespace Windows.UI.Input.Inking
 		// Forced skipping of method Windows.UI.Input.Inking.PenAndInkSettings.FontFamilyName.get
 		// Forced skipping of method Windows.UI.Input.Inking.PenAndInkSettings.UserConsentsToHandwritingTelemetryCollection.get
 		// Forced skipping of method Windows.UI.Input.Inking.PenAndInkSettings.IsTouchHandwritingEnabled.get
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Input.Inking.PenAndInkSettings GetDefault()
 		{

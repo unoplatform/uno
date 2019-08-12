@@ -1,4 +1,4 @@
-﻿#if !NET46 && !__WASM__ && !__MACOS__
+﻿#if !NET461 && !__WASM__ && !__MACOS__
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;

@@ -1,6 +1,6 @@
-﻿<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="15.0">
+﻿<Project Sdk="MSBuild.Sdk.Extras" ToolsVersion="15.0">
 	<PropertyGroup>
-		<TargetFrameworks>MonoAndroid71;MonoAndroid80;net46;xamarinios10;netstandard2.0;xamarinmac20</TargetFrameworks>
+		<TargetFrameworks>MonoAndroid80;MonoAndroid90;net461;xamarinios10;netstandard2.0;xamarinmac20</TargetFrameworks>
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 		<NoWarn>1701;1702;1705;109</NoWarn>
 
@@ -10,30 +10,21 @@
 		<ProduceReferenceAssembly>false</ProduceReferenceAssembly>
 		<Deterministic>true</Deterministic>
 		
-		<IsBindingProject Condition="'$(TargetFramework)' == 'MonoAndroid71' or '$(TargetFramework)' == 'MonoAndroid80'">true</IsBindingProject>
+		<IsBindingProject Condition="'$(TargetFramework)' == 'MonoAndroid80' or '$(TargetFramework)' == 'MonoAndroid90'">true</IsBindingProject>
 		<_isWindows>$([MSBuild]::IsOsPlatform(Windows))</_isWindows>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(UnoTargetFrameworkOverride)'!=''">
+		<TargetFrameworks>$(UnoTargetFrameworkOverride)</TargetFrameworks>
+	</PropertyGroup>
+
+	<!--Workaround because this variable is missing by default. See https://github.com/xamarin/xamarin-android/issues/2452 -->
+	<PropertyGroup>
+		<AndroidSdkBuildToolsVersion Condition="'$(AndroidSdkBuildToolsVersion)' == ''">28.0.3</AndroidSdkBuildToolsVersion>
 	</PropertyGroup>
 	
 	<ItemGroup>
-		<PackageReference Include="MSBuild.Sdk.Extras" Version="1.6.55" PrivateAssets="All" />
-		<PackageReference Include="Xamarin.Build.Download" Version="0.4.9" />
-	</ItemGroup>
-	<ItemGroup Condition=" '$(TargetFramework)' == 'MonoAndroid60' or '$(TargetFramework)' == 'MonoAndroid70'">
-		<PackageReference Include="Xamarin.Android.Support.v4">
-			<Version>23.4.0.1</Version>
-		</PackageReference>
-		<PackageReference Include="Xamarin.Android.Support.v7.RecyclerView">
-			<Version>23.4.0.1</Version>
-		</PackageReference>
-	</ItemGroup>
-
-	<ItemGroup Condition=" '$(TargetFramework)' == 'MonoAndroid71'">
-		<PackageReference Include="Xamarin.Android.Support.v4">
-			<Version>25.3.1</Version>
-		</PackageReference>
-		<PackageReference Include="Xamarin.Android.Support.v7.RecyclerView">
-			<Version>25.3.1</Version>
-		</PackageReference>
+		<PackageReference Include="Xamarin.Build.Download" Version="0.4.11" />
 	</ItemGroup>
 
 	<ItemGroup Condition=" '$(TargetFramework)' == 'MonoAndroid80'">
@@ -42,6 +33,15 @@
 		</PackageReference>
 		<PackageReference Include="Xamarin.Android.Support.v7.RecyclerView">
 			<Version>26.1.0.1</Version>
+		</PackageReference>
+	</ItemGroup>
+
+	<ItemGroup Condition=" '$(TargetFramework)' == 'MonoAndroid90'">
+		<PackageReference Include="Xamarin.Android.Support.v4">
+			<Version>28.0.0.1</Version>
+		</PackageReference>
+		<PackageReference Include="Xamarin.Android.Support.v7.RecyclerView">
+			<Version>28.0.0.1</Version>
 		</PackageReference>
 	</ItemGroup>
 
@@ -57,10 +57,11 @@
 		<TransformFile Include="Transforms\EnumMethods.xml" />
 	</ItemGroup>
 	
-	<Import Project="$(MSBuildSDKExtrasTargets)" Condition="Exists('$(MSBuildSDKExtrasTargets)')" />
 	<Import Project="..\Uno.CrossTargetting.props" />
 
-	<Target Name="_CompileUnoJavaCreateOutputs">
+	<Target Name="_CompileUnoJavaCreateOutputs"
+					BeforeTargets="Build"
+					AfterTargets="Restore">
 		<!-- 
 		Create the EmbeddedJar itemgroup here so the Xamarin tooling picks it up, 
 		but in the obj folder so we dont have rebuild and git ignore issues.
@@ -79,7 +80,35 @@
 		<Delete Files="@(_JavaFilesToDelete)" />
 	</Target>
 
-	<Target Name="_CompileUnoJava" Condition="'$(DesignTimeBuild)' != 'true'" BeforeTargets="ExportJarToXml;GenerateBindings;_GetLibraryImports;ExportJarToXml" Inputs="@(_JavaFile)" Outputs="@(EmbeddedJar)" DependsOnTargets="_CompileUnoJavaCreateOutputs;@(XamarinBuildRestoreResources);_FillMsBuildVersion">
+	<!-- Workaround for https://github.com/nventive/Uno/issues/986 -->
+	<Target Name="Issue986Workaround" BeforeTargets="ExportJarToXml">
+
+		<!--
+		This is required to ensure the first pass of the BindingsGenerator task is
+		executed properly (inside of ExportJarToXml). If not, the second pass in the
+		GenerateBindings target is not given proper api mappings, ending in the generation
+		of an empty assembly.
+		-->
+		
+		<Delete Files="$(IntermediateOutputPath)\api.xml" />
+	</Target>
+	
+	<ItemGroup>
+		<_CompileUnoJavaBeforeTargets Include="ExportJarToXml"/>
+		<_CompileUnoJavaBeforeTargets Include="GenerateBindings"/>
+		<_CompileUnoJavaBeforeTargets Include="_GetLibraryImports"/>
+		<_CompileUnoJavaBeforeTargets Include="ExportJarToXml"/>
+
+		<_CompileUnoJavaAfterTargets Include="_ExtractLibraryProjectImports"/> <!-- This target generates the \lp\**\classes.jar -->
+	</ItemGroup>
+
+	<Target Name="_CompileUnoJava"
+					Condition="'$(DesignTimeBuild)' != 'true'"
+					BeforeTargets="@(_CompileUnoJavaBeforeTargets)"
+					AfterTargets="@(_CompileUnoJavaAfterTargets)"
+					Inputs="@(_JavaFile)"
+					Outputs="@(EmbeddedJar)"
+					DependsOnTargets="_CompileUnoJavaCreateOutputs;@(XamarinBuildRestoreResources);_FillMsBuildVersion">
 	
 		<ItemGroup>
 			<_AndroidJar Include="%ProgramFiles(x86)%\Reference Assemblies\Microsoft\Framework\MonoAndroid\$(TargetFrameworkVersion)\mono.android.jar" />
@@ -128,9 +157,9 @@
 	
 
 	<!-- This is to be removed when VS15.3 will be released. This is caused by conditional ProjectReference from Uno.UI -->
-	<ItemGroup Condition="'$(TargetFrameworkIdentifier)' != 'MonoAndroid'">
+	<ItemGroup Condition="$(IsMonoAndroid)">
 		<Compile Remove="**\*.cs" />
 	</ItemGroup>
-	<Target Name="GetBuiltProjectOutputRecursive" Condition=" '$(TargetFrameworkIdentifier)' != 'MonoAndroid' " />
+	<Target Name="GetBuiltProjectOutputRecursive" Condition="!$(IsMonoAndroid)" />
 
 </Project>

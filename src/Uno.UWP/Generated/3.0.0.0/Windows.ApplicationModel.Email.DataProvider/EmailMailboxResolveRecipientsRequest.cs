@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.ApplicationModel.Email.DataProvider
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class EmailMailboxResolveRecipientsRequest 
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  string EmailMailboxId
 		{
@@ -17,7 +17,7 @@ namespace Windows.ApplicationModel.Email.DataProvider
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::System.Collections.Generic.IReadOnlyList<string> Recipients
 		{
@@ -29,14 +29,14 @@ namespace Windows.ApplicationModel.Email.DataProvider
 		#endif
 		// Forced skipping of method Windows.ApplicationModel.Email.DataProvider.EmailMailboxResolveRecipientsRequest.EmailMailboxId.get
 		// Forced skipping of method Windows.ApplicationModel.Email.DataProvider.EmailMailboxResolveRecipientsRequest.Recipients.get
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Foundation.IAsyncAction ReportCompletedAsync( global::System.Collections.Generic.IEnumerable<global::Windows.ApplicationModel.Email.EmailRecipientResolutionResult> resolutionResults)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncAction EmailMailboxResolveRecipientsRequest.ReportCompletedAsync(IEnumerable<EmailRecipientResolutionResult> resolutionResults) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Foundation.IAsyncAction ReportFailedAsync()
 		{

@@ -3,13 +3,33 @@ declare namespace Uno.Utils {
         static setText(text: string): string;
     }
 }
+declare namespace Windows.UI.Core {
+    /**
+     * Support file for the Windows.UI.Core
+     * */
+    class CoreDispatcher {
+        static _coreDispatcherCallback: any;
+        static _isIOS: boolean;
+        static _isFirstCall: boolean;
+        static _isReady: Promise<boolean>;
+        static _isWaitingReady: boolean;
+        static init(isReady: Promise<boolean>): void;
+        /**
+         * Enqueues a core dispatcher callback on the javascript's event loop
+         *
+         * */
+        static WakeUp(): boolean;
+        private static InnerWakeUp;
+        private static initMethods;
+    }
+}
 declare namespace Uno.UI {
     class HtmlDom {
         /**
          * Initialize various polyfills used by Uno
          */
         static initPolyfills(): void;
-        private static isConnectedPolyfill();
+        private static isConnectedPolyfill;
     }
 }
 declare namespace Uno.Http {
@@ -24,13 +44,13 @@ declare namespace Uno.Http {
     }
     class HttpClient {
         static send(config: IHttpClientConfig): Promise<void>;
-        private static blobFromBase64(base64, contentType);
-        private static base64FromBlob(blob);
-        private static dispatchResponse(requestId, status, headers, payload);
-        private static dispatchError(requestId, error);
+        private static blobFromBase64;
+        private static base64FromBlob;
+        private static dispatchResponse;
+        private static dispatchError;
         private static dispatchResponseMethod;
         private static dispatchErrorMethod;
-        private static initMethods();
+        private static initMethods;
     }
 }
 declare module Uno.UI {
@@ -51,7 +71,11 @@ declare namespace MonoSupport {
      * unmarshaled invocation of javascript from .NET code.
      * */
     class jsCallDispatcher {
-        static registrations: Map<string, object>;
+        static registrations: Map<string, any>;
+        static methodMap: {
+            [id: number]: any;
+        };
+        static _isUnoRegistered: boolean;
         /**
          * Registers a instance for a specified identier
          * @param identifier the scope name
@@ -59,6 +83,24 @@ declare namespace MonoSupport {
          */
         static registerScope(identifier: string, instance: any): void;
         static findJSFunction(identifier: string): any;
+        /**
+         * Internal dispatcher for methods invoked through TSInteropMarshaller
+         * @param id The method ID obtained when invoking WebAssemblyRuntime.InvokeJSUnmarshalled with a method name
+         * @param pParams The parameters structure ID
+         * @param pRet The pointer to the return value structure
+         */
+        private static dispatch;
+        /**
+         * Parses the method identifier
+         * @param identifier
+         */
+        private static parseIdentifier;
+        /**
+         * Adds the a resolved method for a given identifier
+         * @param identifier the findJSFunction identifier
+         * @param boundMethod the method to call
+         */
+        private static cacheMethod;
     }
 }
 declare namespace Uno.UI {
@@ -67,45 +109,54 @@ declare namespace Uno.UI {
         private loadingElementId;
         static current: WindowManager;
         private static _isHosted;
+        private static _isLoadEventsEnabled;
         /**
          * Defines if the WindowManager is running in hosted mode, and should skip the
-         * initialization of WebAssembly, use this mode in conjuction with the Uno.UI.WpfHost
+         * initialization of WebAssembly, use this mode in conjunction with the Uno.UI.WpfHost
          * to improve debuggability.
          */
         static readonly isHosted: boolean;
+        /**
+         * Defines if the WindowManager is responsible to raise the loading, loaded and unloaded events,
+         * or if they are raised directly by the managed code to reduce interop.
+         */
+        static readonly isLoadEventsEnabled: boolean;
         private static readonly unoRootClassName;
         private static readonly unoUnarrangedClassName;
+        private static _cctor;
         /**
             * Initialize the WindowManager
             * @param containerElementId The ID of the container element for the Xaml UI
             * @param loadingElementId The ID of the loading element to remove once ready
             */
-        static init(localStoragePath: string, isHosted: boolean, containerElementId?: string, loadingElementId?: string): string;
+        static init(isHosted: boolean, isLoadEventsEnabled: boolean, containerElementId?: string, loadingElementId?: string): string;
+        /**
+         * Builds a promise that will signal the ability for the dispatcher
+         * to initiate work.
+         * */
+        private static buildReadyPromise;
+        /**
+         * Build the splashscreen image eagerly
+         * */
+        private static buildSplashScreen;
+        /**
+            * Initialize the WindowManager
+            * @param containerElementId The ID of the container element for the Xaml UI
+            * @param loadingElementId The ID of the loading element to remove once ready
+            */
+        static initNative(pParams: number): boolean;
         private containerElement;
         private rootContent;
         private allActiveElementsById;
-        static assembly: UI.Interop.IMonoAssemblyHandle;
         private static resizeMethod;
         private static dispatchEventMethod;
+        private static getDependencyPropertyValueMethod;
         private constructor();
-        /**
-         * Setup the storage persistence
-         *
-         * */
-        static setupStorage(localStoragePath: string): void;
-        /**
-         * Determine if IndexDB is available, some browsers and modes disable it.
-         * */
-        static isIndexDBAvailable(): boolean;
-        /**
-         * Synchronize the IDBFS memory cache back to IndexDB
-         * */
-        static synchronizeFileSystem(): void;
         /**
             * Creates the UWP-compatible splash screen
             *
             */
-        static setupSplashScreen(): void;
+        static setupSplashScreen(splashImage: HTMLImageElement): void;
         /**
             * Reads the window's search parameters
             *
@@ -123,7 +174,8 @@ declare namespace Uno.UI {
             * You need to call addView to connect it to the DOM.
             */
         createContentNative(pParams: number): boolean;
-        private createContentInternal(contentDefinition);
+        private createContentInternal;
+        getView(elementHandle: number): HTMLElement | SVGElement;
         /**
             * Set a name for an element.
             *
@@ -136,13 +188,30 @@ declare namespace Uno.UI {
             * This is mostly for diagnostic purposes.
             */
         setNameNative(pParam: number): boolean;
-        private setNameInternal(elementId, name);
+        private setNameInternal;
+        /**
+            * Set a name for an element.
+            *
+            * This is mostly for diagnostic purposes.
+            */
+        setXUid(elementId: number, name: string): string;
+        /**
+            * Set a name for an element.
+            *
+            * This is mostly for diagnostic purposes.
+            */
+        setXUidNative(pParam: number): boolean;
+        private setXUidInternal;
         /**
             * Set an attribute for an element.
             */
-        setAttribute(elementId: string, attributes: {
+        setAttributes(elementId: number, attributes: {
             [name: string]: string;
         }): string;
+        /**
+            * Set an attribute for an element.
+            */
+        setAttributesNative(pParams: number): boolean;
         /**
             * Set an attribute for an element.
             */
@@ -150,11 +219,11 @@ declare namespace Uno.UI {
         /**
             * Get an attribute for an element.
             */
-        getAttribute(elementId: string, name: string): any;
+        getAttribute(elementId: number, name: string): any;
         /**
             * Set a property for an element.
             */
-        setProperty(elementId: string, properties: {
+        setProperty(elementId: number, properties: {
             [name: string]: string;
         }): string;
         /**
@@ -164,14 +233,14 @@ declare namespace Uno.UI {
         /**
             * Get a property for an element.
             */
-        getProperty(elementId: string, name: string): any;
+        getProperty(elementId: number, name: string): any;
         /**
             * Set the CSS style of a html element.
             *
             * To remove a value, set it to empty string.
             * @param styles A dictionary of styles to apply on html element.
             */
-        setStyle(elementId: string, styles: {
+        setStyle(elementId: number, styles: {
             [name: string]: string;
         }, setAsArranged?: boolean): string;
         /**
@@ -181,6 +250,11 @@ declare namespace Uno.UI {
         * @param styles A dictionary of styles to apply on html element.
         */
         setStyleNative(pParams: number): boolean;
+        /**
+        * Set a single CSS style of a html element
+        *
+        */
+        setStyleDoubleNative(pParams: number): boolean;
         /**
             * Set the CSS style of a html element.
             *
@@ -195,7 +269,24 @@ declare namespace Uno.UI {
             * @param styles A dictionary of styles to apply on html element.
             */
         resetStyleNative(pParams: number): boolean;
-        private resetStyleInternal(elementId, names);
+        private resetStyleInternal;
+        /**
+         * Set CSS classes on an element
+         */
+        setClasses(elementId: number, cssClassesList: string[], classIndex: number): string;
+        setClassesNative(pParams: number): boolean;
+        /**
+        * Arrange and clips a native elements
+        *
+        */
+        arrangeElementNative(pParams: number): boolean;
+        private setAsArranged;
+        private setAsUnarranged;
+        /**
+        * Sets the transform matrix of an element
+        *
+        */
+        setElementTransformNative(pParams: number): boolean;
         /**
             * Load the specified URL into a new tab or window
             * @param url URL to load
@@ -220,7 +311,7 @@ declare namespace Uno.UI {
             * Add an event handler to a html element.
             *
             * @param eventName The name of the event
-            * @param onCapturePhase true means "on trickle down", false means "on bubble up". Default is false.
+            * @param onCapturePhase true means "on trickle down" (going down to target), false means "on bubble up" (bubbling back to ancestors). Default is false.
             */
         registerEventOnView(elementId: number, eventName: string, onCapturePhase?: boolean, eventFilterName?: string, eventExtractorName?: string): string;
         /**
@@ -236,40 +327,58 @@ declare namespace Uno.UI {
             * @param eventName The name of the event
             * @param onCapturePhase true means "on trickle down", false means "on bubble up". Default is false.
             */
-        private registerEventOnViewInternal(elementId, eventName, onCapturePhase?, eventFilterName?, eventExtractorName?);
+        private registerEventOnViewInternal;
         /**
          * left pointer event filter to be used with registerEventOnView
          * @param evt
          */
-        private leftPointerEventFilter(evt);
+        private leftPointerEventFilter;
         /**
-         * pointer event extractor to be used with registerEventOnView
+         * default event filter to be used with registerEventOnView to
+         * use for most routed events
          * @param evt
          */
-        private pointerEventExtractor(evt);
-        /**
-         * keyboard event extractor to be used with registerEventOnView
-         * @param evt
-         */
-        private keyboardEventExtractor(evt);
+        private defaultEventFilter;
         /**
          * Gets the event filter function. See UIElement.HtmlEventFilter
          * @param eventFilterName an event filter name.
          */
-        private getEventFilter(eventFilterName);
+        private getEventFilter;
+        /**
+         * pointer event extractor to be used with registerEventOnView
+         * @param evt
+         */
+        private pointerEventExtractor;
+        /**
+         * keyboard event extractor to be used with registerEventOnView
+         * @param evt
+         */
+        private keyboardEventExtractor;
+        /**
+         * tapped (mouse clicked / double clicked) event extractor to be used with registerEventOnView
+         * @param evt
+         */
+        private tappedEventExtractor;
+        /**
+         * tapped (mouse clicked / double clicked) event extractor to be used with registerEventOnView
+         * @param evt
+         */
+        private focusEventExtractor;
+        private customEventDetailExtractor;
+        private customEventDetailStringExtractor;
         /**
          * Gets the event extractor function. See UIElement.HtmlEventExtractor
          * @param eventExtractorName an event extractor name.
          */
-        private getEventExtractor(eventExtractorName);
+        private getEventExtractor;
         /**
             * Set or replace the root content element.
             */
-        setRootContent(elementId?: string): string;
+        setRootContent(elementId?: number): string;
         /**
             * Set a view as a child of another one.
             *
-            * "Loading" & "Loaded" events will be raised if nescessary.
+            * "Loading" & "Loaded" events will be raised if necessary.
             *
             * @param index Position in children list. Appended at end if not specified.
             */
@@ -277,7 +386,7 @@ declare namespace Uno.UI {
         /**
             * Set a view as a child of another one.
             *
-            * "Loading" & "Loaded" events will be raised if nescessary.
+            * "Loading" & "Loaded" events will be raised if necessary.
             *
             * @param pParams Pointer to a WindowManagerAddViewParams native structure.
             */
@@ -286,23 +395,23 @@ declare namespace Uno.UI {
         /**
             * Remove a child from a parent element.
             *
-            * "Unloading" & "Unloaded" events will be raised if nescessary.
+            * "Unloading" & "Unloaded" events will be raised if necessary.
             */
         removeView(parentId: number, childId: number): string;
         /**
             * Remove a child from a parent element.
             *
-            * "Unloading" & "Unloaded" events will be raised if nescessary.
+            * "Unloading" & "Unloaded" events will be raised if necessary.
             */
         removeViewNative(pParams: number): boolean;
-        private removeViewInternal(parentId, childId);
+        private removeViewInternal;
         /**
             * Destroy a html element.
             *
             * The element won't be available anymore. Usually indicate the managed
             * version has been scavenged by the GC.
             */
-        destroyView(viewId: number): string;
+        destroyView(elementId: number): string;
         /**
             * Destroy a html element.
             *
@@ -310,11 +419,11 @@ declare namespace Uno.UI {
             * version has been scavenged by the GC.
             */
         destroyViewNative(pParams: number): boolean;
-        private destroyViewInternal(viewId);
-        getBoundingClientRect(elementId: string): string;
+        private destroyViewInternal;
+        getBoundingClientRect(elementId: number): string;
         getBBox(elementId: number): string;
         getBBoxNative(pParams: number, pReturn: number): boolean;
-        private getBBoxInternal(elementId);
+        private getBBoxInternal;
         /**
             * Use the Html engine to measure the element using specified constraints.
             *
@@ -329,18 +438,20 @@ declare namespace Uno.UI {
             * @param maxHeight string containing height in pixels. Empty string means infinite.
             */
         measureViewNative(pParams: number, pReturn: number): boolean;
-        private measureViewInternal(viewId, maxWidth, maxHeight);
-        setImageRawData(viewId: string, dataPtr: number, width: number, height: number): string;
+        private static MAX_WIDTH;
+        private static MAX_HEIGHT;
+        private measureViewInternal;
+        setImageRawData(viewId: number, dataPtr: number, width: number, height: number): string;
         /**
          * Sets the provided image with a mono-chrome version of the provided url.
          * @param viewId the image to manipulate
          * @param url the source image
          * @param color the color to apply to the monochrome pixels
          */
-        setImageAsMonochrome(viewId: string, url: string, color: string): string;
-        setPointerCapture(viewId: string, pointerId: number): string;
-        releasePointerCapture(viewId: string, pointerId: number): string;
-        focusView(elementId: string): string;
+        setImageAsMonochrome(viewId: number, url: string, color: string): string;
+        setPointerCapture(viewId: number, pointerId: number): string;
+        releasePointerCapture(viewId: number, pointerId: number): string;
+        focusView(elementId: number): string;
         /**
             * Set the Html content for an element.
             *
@@ -355,29 +466,65 @@ declare namespace Uno.UI {
             * WARNING: you should avoid mixing this and `addView` for the same element.
             */
         setHtmlContentNative(pParams: number): boolean;
-        private setHtmlContentInternal(viewId, html);
+        private setHtmlContentInternal;
+        /**
+         * Gets the Client and Offset size of the specified element
+         *
+         * This method is used to determine the size of the scroll bars, to
+         * mask the events coming from that zone.
+         */
+        getClientViewSize(elementId: number): string;
+        /**
+         * Gets the Client and Offset size of the specified element
+         *
+         * This method is used to determine the size of the scroll bars, to
+         * mask the events coming from that zone.
+         */
+        getClientViewSizeNative(pParams: number, pReturn: number): boolean;
+        /**
+         * Gets a dependency property value.
+         *
+         * Note that the casing of this method is intentionally Pascal for platform alignment.
+         */
+        GetDependencyPropertyValue(elementId: number, propertyName: string): string;
         /**
             * Remove the loading indicator.
             *
             * In a future version it will also handle the splashscreen.
             */
         activate(): string;
-        private init();
-        private static initMethods();
-        private initDom();
-        private removeLoading();
-        private resize();
-        private dispatchEvent(element, eventName, eventPayload?);
-        private getMonoString(str);
-        private fromMonoString(strHandle);
-        private getIsConnectedToRootElement(element);
+        private init;
+        private static initMethods;
+        private initDom;
+        private removeLoading;
+        private resize;
+        private dispatchEvent;
+        private getIsConnectedToRootElement;
     }
+}
+declare class StorageFolderMakePersistentParams {
+    Paths_Length: number;
+    Paths: Array<string>;
+    static unmarshal(pData: number): StorageFolderMakePersistentParams;
 }
 declare class WindowManagerAddViewParams {
     HtmlId: number;
     ChildView: number;
     Index: number;
     static unmarshal(pData: number): WindowManagerAddViewParams;
+}
+declare class WindowManagerArrangeElementParams {
+    Top: number;
+    Left: number;
+    Width: number;
+    Height: number;
+    ClipTop: number;
+    ClipLeft: number;
+    ClipBottom: number;
+    ClipRight: number;
+    HtmlId: number;
+    Clip: boolean;
+    static unmarshal(pData: number): WindowManagerArrangeElementParams;
 }
 declare class WindowManagerCreateContentParams {
     HtmlId: number;
@@ -405,6 +552,22 @@ declare class WindowManagerGetBBoxReturn {
     Width: number;
     Height: number;
     marshal(pData: number): void;
+}
+declare class WindowManagerGetClientViewSizeParams {
+    HtmlId: number;
+    static unmarshal(pData: number): WindowManagerGetClientViewSizeParams;
+}
+declare class WindowManagerGetClientViewSizeReturn {
+    OffsetWidth: number;
+    OffsetHeight: number;
+    ClientWidth: number;
+    ClientHeight: number;
+    marshal(pData: number): void;
+}
+declare class WindowManagerInitParams {
+    IsHostedMode: boolean;
+    IsLoadEventsEnabled: boolean;
+    static unmarshal(pData: number): WindowManagerInitParams;
 }
 declare class WindowManagerMeasureViewParams {
     HtmlId: number;
@@ -438,14 +601,37 @@ declare class WindowManagerResetStyleParams {
 }
 declare class WindowManagerSetAttributeParams {
     HtmlId: number;
+    Name: string;
+    Value: string;
+    static unmarshal(pData: number): WindowManagerSetAttributeParams;
+}
+declare class WindowManagerSetAttributesParams {
+    HtmlId: number;
     Pairs_Length: number;
     Pairs: Array<string>;
-    static unmarshal(pData: number): WindowManagerSetAttributeParams;
+    static unmarshal(pData: number): WindowManagerSetAttributesParams;
+}
+declare class WindowManagerSetClassesParams {
+    HtmlId: number;
+    CssClasses_Length: number;
+    CssClasses: Array<string>;
+    Index: number;
+    static unmarshal(pData: number): WindowManagerSetClassesParams;
 }
 declare class WindowManagerSetContentHtmlParams {
     HtmlId: number;
     Html: string;
     static unmarshal(pData: number): WindowManagerSetContentHtmlParams;
+}
+declare class WindowManagerSetElementTransformParams {
+    M11: number;
+    M12: number;
+    M21: number;
+    M22: number;
+    M31: number;
+    M32: number;
+    HtmlId: number;
+    static unmarshal(pData: number): WindowManagerSetElementTransformParams;
 }
 declare class WindowManagerSetNameParams {
     HtmlId: number;
@@ -458,12 +644,23 @@ declare class WindowManagerSetPropertyParams {
     Pairs: Array<string>;
     static unmarshal(pData: number): WindowManagerSetPropertyParams;
 }
+declare class WindowManagerSetStyleDoubleParams {
+    HtmlId: number;
+    Name: string;
+    Value: number;
+    static unmarshal(pData: number): WindowManagerSetStyleDoubleParams;
+}
 declare class WindowManagerSetStylesParams {
     HtmlId: number;
     SetAsArranged: boolean;
     Pairs_Length: number;
     Pairs: Array<string>;
     static unmarshal(pData: number): WindowManagerSetStylesParams;
+}
+declare class WindowManagerSetXUidParams {
+    HtmlId: number;
+    Uid: string;
+    static unmarshal(pData: number): WindowManagerSetXUidParams;
 }
 declare module Uno.UI {
     interface IAppManifest {
@@ -514,14 +711,14 @@ declare namespace Uno.Foundation.Interop {
     class ManagedObject {
         private static assembly;
         private static dispatchMethod;
-        private static init();
+        private static init;
         static dispatch(handle: string, method: string, parameters: string): void;
     }
 }
 declare namespace Uno.UI.Interop {
     class Runtime {
         static readonly engine: any;
-        private static init();
+        private static init;
     }
 }
 declare namespace Uno.UI.Interop {
@@ -532,3 +729,58 @@ declare const MonoRuntime: Uno.UI.Interop.IMonoRuntime;
 declare const WebAssemblyApp: Uno.UI.Interop.IWebAssemblyApp;
 declare const UnoAppManifest: Uno.UI.IAppManifest;
 declare const UnoDispatch: Uno.UI.Interop.IUnoDispatch;
+declare namespace Windows.Storage {
+    class StorageFolder {
+        private static _isInit;
+        /**
+         * Determine if IndexDB is available, some browsers and modes disable it.
+         * */
+        static isIndexDBAvailable(): boolean;
+        /**
+         * Setup the storage persistence of a given set of paths.
+         * */
+        private static makePersistent;
+        /**
+         * Setup the storage persistence of a given path.
+         * */
+        static setupStorage(path: string): void;
+        /**
+         * Synchronize the IDBFS memory cache back to IndexDB
+         * */
+        private static synchronizeFileSystem;
+    }
+}
+declare namespace Windows.UI.Core {
+    class SystemNavigationManager {
+        private static _current;
+        static readonly current: SystemNavigationManager;
+        private _isEnabled;
+        constructor();
+        enable(): void;
+        disable(): void;
+        private clearStack;
+    }
+}
+interface Window {
+    DeviceMotionEvent(): void;
+}
+declare namespace Windows.Devices.Sensors {
+    class Accelerometer {
+        private static dispatchReading;
+        static initialize(): boolean;
+        static startReading(): void;
+        static stopReading(): void;
+        private static readingChangedHandler;
+    }
+}
+interface Navigator {
+    webkitVibrate(pattern: number | number[]): boolean;
+    mozVibrate(pattern: number | number[]): boolean;
+    msVibrate(pattern: number | number[]): boolean;
+}
+declare namespace Windows.Phone.Devices.Notification {
+    class VibrationDevice {
+        static initialize(): boolean;
+        static vibrate(duration: number): boolean;
+    }
+}

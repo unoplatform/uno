@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Devices.Sms
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class SmsDevice2 
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  string SmscAddress
 		{
@@ -21,7 +21,7 @@ namespace Windows.Devices.Sms
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  string AccountPhoneNumber
 		{
@@ -31,7 +31,7 @@ namespace Windows.Devices.Sms
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Devices.Sms.CellularClass CellularClass
 		{
@@ -41,7 +41,7 @@ namespace Windows.Devices.Sms
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  string DeviceId
 		{
@@ -51,7 +51,7 @@ namespace Windows.Devices.Sms
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Devices.Sms.SmsDeviceStatus DeviceStatus
 		{
@@ -61,7 +61,7 @@ namespace Windows.Devices.Sms
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  string ParentDeviceId
 		{
@@ -78,14 +78,14 @@ namespace Windows.Devices.Sms
 		// Forced skipping of method Windows.Devices.Sms.SmsDevice2.AccountPhoneNumber.get
 		// Forced skipping of method Windows.Devices.Sms.SmsDevice2.CellularClass.get
 		// Forced skipping of method Windows.Devices.Sms.SmsDevice2.DeviceStatus.get
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Devices.Sms.SmsEncodedLength CalculateLength( global::Windows.Devices.Sms.ISmsMessageBase message)
 		{
 			throw new global::System.NotImplementedException("The member SmsEncodedLength SmsDevice2.CalculateLength(ISmsMessageBase message) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Sms.SmsSendMessageResult> SendMessageAndGetResultAsync( global::Windows.Devices.Sms.ISmsMessageBase message)
 		{
@@ -94,35 +94,35 @@ namespace Windows.Devices.Sms
 		#endif
 		// Forced skipping of method Windows.Devices.Sms.SmsDevice2.DeviceStatusChanged.add
 		// Forced skipping of method Windows.Devices.Sms.SmsDevice2.DeviceStatusChanged.remove
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static string GetDeviceSelector()
 		{
 			throw new global::System.NotImplementedException("The member string SmsDevice2.GetDeviceSelector() is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.Devices.Sms.SmsDevice2 FromId( string deviceId)
 		{
 			throw new global::System.NotImplementedException("The member SmsDevice2 SmsDevice2.FromId(string deviceId) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.Devices.Sms.SmsDevice2 GetDefault()
 		{
 			throw new global::System.NotImplementedException("The member SmsDevice2 SmsDevice2.GetDefault() is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.Devices.Sms.SmsDevice2 FromParentId( string parentDeviceId)
 		{
 			throw new global::System.NotImplementedException("The member SmsDevice2 SmsDevice2.FromParentId(string parentDeviceId) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Devices.Sms.SmsDevice2, object> DeviceStatusChanged
 		{

@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.System.RemoteSystems
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class RemoteSystemSessionWatcher 
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.System.RemoteSystems.RemoteSystemSessionWatcherStatus Status
 		{
@@ -17,14 +17,14 @@ namespace Windows.System.RemoteSystems
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  void Start()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.RemoteSystems.RemoteSystemSessionWatcher", "void RemoteSystemSessionWatcher.Start()");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  void Stop()
 		{
@@ -38,7 +38,7 @@ namespace Windows.System.RemoteSystems
 		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemSessionWatcher.Updated.remove
 		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemSessionWatcher.Removed.add
 		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemSessionWatcher.Removed.remove
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.System.RemoteSystems.RemoteSystemSessionWatcher, global::Windows.System.RemoteSystems.RemoteSystemSessionAddedEventArgs> Added
 		{
@@ -54,7 +54,7 @@ namespace Windows.System.RemoteSystems
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.System.RemoteSystems.RemoteSystemSessionWatcher, global::Windows.System.RemoteSystems.RemoteSystemSessionRemovedEventArgs> Removed
 		{
@@ -70,7 +70,7 @@ namespace Windows.System.RemoteSystems
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.System.RemoteSystems.RemoteSystemSessionWatcher, global::Windows.System.RemoteSystems.RemoteSystemSessionUpdatedEventArgs> Updated
 		{

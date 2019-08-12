@@ -1,43 +1,43 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="15.0">
-  <PropertyGroup>
+	<PropertyGroup>
 		<TargetFrameworks>netstandard2.0</TargetFrameworks>
 	</PropertyGroup>
 
 	<PropertyGroup>
+		<UnoSourceGeneratorUseGenerationHost>false</UnoSourceGeneratorUseGenerationHost>
 		<NoWarn>$(NoWarn);NU1701</NoWarn>
 		
 		<ProduceReferenceAssembly>false</ProduceReferenceAssembly>
 		<Deterministic>true</Deterministic>
-
+ 
 		<TSBindingsPath>$(MSBuildThisFileDirectory)tsBindings</TSBindingsPath>
 	</PropertyGroup>
 
 	<ItemGroup>
+		<TSBindingAssemblySource Include="Uno" />
+		<TSBindingAssemblySource Include="Uno.UI" />
+	</ItemGroup>
+
+	<ItemGroup> 
 		<EmbeddedResource Include="WasmCSS\**\*.css" />
 		<EmbeddedResource Include="WasmScripts\**\*.js" />
 
-		<UpToDateCheckInput Include="WasmCSS\**\*" />
+		<UpToDateCheckInput Include="WasmCSS\**\*.css" />
 		<UpToDateCheckInput Include="ts\**\*" />
 		<UpToDateCheckInput Include="tsBindings\**\*" />
 	</ItemGroup>
 
 	<ItemGroup>
-	  <UpToDateCheckInput Remove="ts\AppManifest.ts" />
-	  <UpToDateCheckInput Remove="ts\Interop\IAppManifest.ts" />
-	  <UpToDateCheckInput Remove="ts\Interop\IUnoDispatch.ts" />
-	  <UpToDateCheckInput Remove="ts\MonoSupport.ts" />
+	  <EmbeddedResource Include="LinkerDefinition.xml">
+		<LogicalName>$(AssemblyName).xml</LogicalName>
+	  </EmbeddedResource>
 	</ItemGroup>
 
 	<ItemGroup>
-    <PackageReference Include="Uno.Core">
-      <Version>1.26.0-dev.58</Version>
-      <ExcludeAssets>Runtime</ExcludeAssets>
-    </PackageReference>
-		<PackageReference Include="Microsoft.TypeScript.Compiler" Version="2.8.3" />
-		<PackageReference Include="Microsoft.TypeScript.MSBuild" Version="2.8.3" />
-		<PackageReference Include="Uno.SourceGenerationTasks">
-			<Version>1.29.0-dev.200</Version>
-		</PackageReference>
+		<PackageReference Include="Uno.Core" />
+		<PackageReference Include="Microsoft.TypeScript.Compiler" />
+		<PackageReference Include="Microsoft.TypeScript.MSBuild" />
+		<PackageReference Include="Uno.SourceGenerationTasks" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -47,9 +47,12 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<EmbeddedResource Update="WasmScripts\*.js" />
+	</ItemGroup>
+	<ItemGroup>
 	  <Folder Include="tsBindings\" />
 	</ItemGroup>
-	
+
 	<Import Project="..\Uno.CrossTargetting.props" />
 
 	<PropertyGroup>

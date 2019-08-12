@@ -40,7 +40,7 @@ namespace Windows.UI.Xaml.Controls
 			CanWrap && CanTrim ||
 			CanWrap && MaxLines != 0;
 
-		private bool CanWrap => TextWrapping != TextWrapping.NoWrap && MaxLines != 1;
+		private bool CanWrap => TextWrapping != TextWrapping.NoWrap;
 
 		private bool CanTrim => TextTrimming != TextTrimming.None;
 
@@ -283,42 +283,6 @@ namespace Windows.UI.Xaml.Controls
 			return true;
 		}
 
-		public override void TouchesBegan(NSSet touches, UIEvent evt)
-		{
-			var point = (touches.AnyObject as UITouch).LocationInView(this);
-			var args = new PointerRoutedEventArgs(point);
-			OnPointerPressed(args);
-			if (!args.Handled)
-			{
-				// Give parent a chance to handle the event.
-				base.TouchesBegan(touches, evt);
-			}
-		}
-
-		public override void TouchesEnded(NSSet touches, UIEvent evt)
-		{
-			var point = (touches.AnyObject as UITouch).LocationInView(this);
-			var args = new PointerRoutedEventArgs(point);
-			OnPointerReleased(args);
-			if (!args.Handled)
-			{
-				// Give parent a chance to handle the event.
-				base.TouchesEnded(touches, evt);
-			}
-		}
-
-		public override void TouchesCancelled(NSSet touches, UIEvent evt)
-		{
-			var point = (touches.AnyObject as UITouch).LocationInView(this);
-			var args = new PointerRoutedEventArgs(point);
-			OnPointerCanceled(args);
-			if (!args.Handled)
-			{
-				// Give parent a chance to handle the event.
-				base.TouchesCancelled(touches, evt);
-			}
-		}
-
 		#endregion
 
 		private void UpdateTypography()
@@ -367,7 +331,9 @@ namespace Windows.UI.Xaml.Controls
 			// Find the tapped character's index
 			var partialFraction = (nfloat)0;
 			var pointInTextContainer = new CGPoint(point.X - _drawRect.X, point.Y - _drawRect.Y);
+#pragma warning disable CS0618 // Type or member is obsolete (For VS2017 compatibility)
 			var characterIndex = (int)_layoutManager.CharacterIndexForPoint(pointInTextContainer, _layoutManager.TextContainers.FirstOrDefault(), ref partialFraction);
+#pragma warning restore CS0618 // Type or member is obsolete
 
 			return characterIndex;
 		}

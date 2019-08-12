@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Perception.Spatial.Surfaces
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class SpatialSurfaceMesh 
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Perception.Spatial.SpatialCoordinateSystem CoordinateSystem
 		{
@@ -17,7 +17,7 @@ namespace Windows.Perception.Spatial.Surfaces
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Perception.Spatial.Surfaces.SpatialSurfaceInfo SurfaceInfo
 		{
@@ -27,7 +27,7 @@ namespace Windows.Perception.Spatial.Surfaces
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Perception.Spatial.Surfaces.SpatialSurfaceMeshBuffer TriangleIndices
 		{
@@ -37,7 +37,7 @@ namespace Windows.Perception.Spatial.Surfaces
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Perception.Spatial.Surfaces.SpatialSurfaceMeshBuffer VertexNormals
 		{
@@ -47,7 +47,7 @@ namespace Windows.Perception.Spatial.Surfaces
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::System.Numerics.Vector3 VertexPositionScale
 		{
@@ -57,7 +57,7 @@ namespace Windows.Perception.Spatial.Surfaces
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Perception.Spatial.Surfaces.SpatialSurfaceMeshBuffer VertexPositions
 		{

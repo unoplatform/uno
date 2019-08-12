@@ -13,6 +13,7 @@ using Uno.Disposables;
 using Uno.Extensions;
 using Uno.Logging;
 using Uno.UI;
+using Uno.UI.DataBinding;
 using Uno.UI.Extensions;
 using Windows.UI.Core;
 using Windows.UI.Text;
@@ -27,8 +28,21 @@ namespace Windows.UI.Xaml.Controls
 	{
 		private int _keyboardAccessDelay = 50;
 		private TextBoxView _textBoxView;
-		private readonly SerialDisposable _keyPressDisposable = new SerialDisposable();
 		private readonly SerialDisposable _keyboardDisposable = new SerialDisposable();
+		private Factory _editableFactory;
+
+		/// <summary>
+		/// If true, and <see cref="IsSpellCheckEnabled"/> is false, take vigorous measures to ensure that spell-check (ie predictive text) is
+		/// really disabled.
+		/// </summary>
+		/// <remarks>
+		/// Specifically, when true, and <see cref="IsSpellCheckEnabled"/> is false, this sets <see cref="InputTypes.TextVariationPassword"/> on
+		/// the inner <see cref="TextBoxView"/>. This is required because a number of OEM keyboards (particularly on older devices?) ignore
+		/// the <see cref="InputTypes.TextFlagNoSuggestions"/>. It's optional because setting the password InputType is a workaround which is
+		/// known to cause issues in certain circumstances. See discussion here: https://stackoverflow.com/a/5188119/1902058
+		/// </remarks>
+		[Uno.UnoOnly]
+		public bool ShouldForceDisableSpellCheck { get; set; } = true;
 
 		public bool PreventKeyboardDisplayOnProgrammaticFocus
 		{
@@ -52,28 +66,24 @@ namespace Windows.UI.Xaml.Controls
 		{
 			base.OnUnloaded();
 
-			_keyPressDisposable.Disposable = null;
-			PointerPressed -= OnPointerPressed;
-
 			if (_textBoxView != null)
 			{
 				_textBoxView.OnFocusChangeListener = null;
 			}
+
+			// We always force lose the focus when unloading the control.
+			// This is required as the FocusChangedListener may not be called
+			// when the unloaded propagation is done on the .NET side (see
+			// FeatureConfiguration.FrameworkElement.AndroidUseManagedLoadedUnloaded for
+			// more details.
+			ProcessFocusChanged(false);
 		}
 
 		protected override void OnLoaded()
 		{
 			base.OnLoaded();
-
-			PointerPressed += OnPointerPressed;
 			SetupTextBoxView();
 			UpdateCommonStates();
-		}
-
-		// TODO: remove event handler when override is correctly called from Control
-		private void OnPointerPressed(object sender, PointerRoutedEventArgs args)
-		{
-			OnPointerPressed(args);
 		}
 
 		partial void InitializePropertiesPartial()
@@ -89,15 +99,13 @@ namespace Windows.UI.Xaml.Controls
 
 				if (_textBoxView == null)
 				{
-					_textBoxView = new TextBoxView()
-						.Binding("BindableText", new Data.Binding()
-						{
-							Path = "Text",
-							RelativeSource = RelativeSource.TemplatedParent,
-							Mode = BindingMode.TwoWay
-						});
+					_textBoxView = new TextBoxView(this);
 
 					_contentElement.Content = _textBoxView;
+					_textBoxView.SetTextNative(Text);
+
+					_editableFactory = _editableFactory ?? new Factory(WeakReferencePool.RentSelfWeakReference(this));
+					_textBoxView.SetEditableFactory(_editableFactory);
 				}
 
 				SetupTextBoxView();
@@ -215,7 +223,7 @@ namespace Windows.UI.Xaml.Controls
 
 				if (!types.HasPasswordFlag())
 				{
-					UpdateFontPartial(this);
+					UpdateFontPartial();
 				}
 			}
 		}
@@ -305,12 +313,17 @@ namespace Windows.UI.Xaml.Controls
 
 				if (!IsSpellCheckEnabled)
 				{
-					inputType = InputScopeHelper.ConvertToRemoveSuggestions(inputType);
+					inputType = InputScopeHelper.ConvertToRemoveSuggestions(inputType, ShouldForceDisableSpellCheck);
 				}
 
 				if (AcceptsReturn)
 				{
 					inputType |= InputTypes.TextFlagMultiLine;
+				}
+
+				if (IsReadOnly)
+				{
+					inputType = InputTypes.Null;
 				}
 
 				_textBoxView.InputType = inputType;
@@ -322,27 +335,6 @@ namespace Windows.UI.Xaml.Controls
 			if (_textBoxView != null)
 			{
 				UpdateInputScope(InputScope);
-			}
-		}
-
-		partial void OnMaxLengthChangedPartial(DependencyPropertyChangedEventArgs e)
-		{
-			if (_textBoxView != null)
-			{
-				if (e.NewValue != null)
-				{
-					var maxValue = (int)e.NewValue;
-
-					if (maxValue != 0)
-					{
-						_textBoxView.SetFilters(new IInputFilter[] { new InputFilterLengthFilter(maxValue) });
-					}
-					else
-					{
-						// Remove length filter
-						_textBoxView.SetFilters(new IInputFilter[0]);
-					}
-				}
 			}
 		}
 
@@ -360,16 +352,15 @@ namespace Windows.UI.Xaml.Controls
 			//TODO : see bug #8178
 		}
 
-		partial void UpdateFontPartial(object sender)
+		partial void UpdateFontPartial()
 		{
-			var textBox = sender as TextBox;
-			if (textBox != null && textBox.Parent != null && _textBoxView != null)
+			if (Parent != null && _textBoxView != null)
 			{
-				var style = GetTypefaceStyle(textBox.FontStyle, textBox.FontWeight);
-				var typeface = FontHelper.FontFamilyToTypeFace(textBox.FontFamily, textBox.FontWeight);
+				var style = GetTypefaceStyle(FontStyle, FontWeight);
+				var typeface = FontHelper.FontFamilyToTypeFace(FontFamily, FontWeight);
 
 				_textBoxView.SetTypeface(typeface, style);
-				_textBoxView.SetTextSize(ComplexUnitType.Px, (float)Math.Round(ViewHelper.LogicalToPhysicalFontPixels((float)textBox.FontSize)));
+				_textBoxView.SetTextSize(ComplexUnitType.Px, (float)Math.Round(ViewHelper.LogicalToPhysicalFontPixels((float)FontSize)));
 			}
 		}
 
@@ -403,7 +394,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			if (_textBoxView != null)
 			{
-				_textBoxView.InputType = InputTypes.Null;
+				UpdateInputScope(InputScope);
 			}
 		}
 
@@ -411,7 +402,6 @@ namespace Windows.UI.Xaml.Controls
 		{
 			if (_textBoxView != null)
 			{
-				_keyPressDisposable.Disposable = _textBoxView.RegisterKeyPress(OnKeyPress);
 				_textBoxView.OnFocusChangeListener = this;
 				_textBoxView.SetOnEditorActionListener(this);
 			}
@@ -422,54 +412,65 @@ namespace Windows.UI.Xaml.Controls
 			//When a TextBox loses focus, we want to dismiss the keyboard if no other view requiring it is focused
 			if (v == _textBoxView)
 			{
-				_keyboardDisposable.Disposable = CoreDispatcher.Main
-					//The delay is required because the OnFocusChange method is called when the focus is being changed, not when it has changed.
-					//If the focus is moved from one TextBox to another, the CurrentFocus will be null, meaning we would hide the keyboard when we shouldn't.
-					.RunAsync(
+				ProcessFocusChanged(hasFocus);
+			}
+		}
+
+		private void ProcessFocusChanged(bool hasFocus)
+		{
+			//We get the view token early to avoid nullvalues when the view has already been detached
+			var viewWindowToken = _textBoxView.WindowToken;
+
+			_keyboardDisposable.Disposable = CoreDispatcher.Main
+				//The delay is required because the OnFocusChange method is called when the focus is being changed, not when it has changed.
+				//If the focus is moved from one TextBox to another, the CurrentFocus will be null, meaning we would hide the keyboard when we shouldn't.
+				.RunAsync(
 					CoreDispatcherPriority.Normal,
-						async () =>
+					async () =>
+					{
+						await Task.Delay(TimeSpan.FromMilliseconds(_keyboardAccessDelay));
+
+						var activity = ContextHelper.Current as Activity;
+						//In Android, the focus can be transferred to some controls not requiring the keyboard
+						var needsKeyboard = activity?.CurrentFocus != null &&
+						activity?.CurrentFocus is TextBoxView &&
+							// Don't show keyboard if programmatically focussed and PreventKeyboardDisplayOnProgrammaticFocus is true
+							!(FocusState == FocusState.Programmatic && PreventKeyboardDisplayOnProgrammaticFocus);
+
+						var inputManager = activity?.GetSystemService(Android.Content.Context.InputMethodService) as Android.Views.InputMethods.InputMethodManager;
+
+						//When a TextBox gains focus, we want to show the keyboard
+						if (hasFocus && needsKeyboard)
 						{
-							await Task.Delay(TimeSpan.FromMilliseconds(_keyboardAccessDelay));
+							inputManager?.ShowSoftInput(_textBoxView, Android.Views.InputMethods.ShowFlags.Implicit);
+						}
 
-							var activity = ContextHelper.Current as Activity;
-							//In Android, the focus can be transferred to some controls not requiring the keyboard
-							var needsKeyboard = activity?.CurrentFocus != null &&
-							activity?.CurrentFocus is TextBoxView &&
-								// Don't show keyboard if programmatically focussed and PreventKeyboardDisplayOnProgrammaticFocus is true
-								!(FocusState == FocusState.Programmatic && PreventKeyboardDisplayOnProgrammaticFocus);
+						//When a TextBox loses focus, we want to dismiss the keyboard if no other view requiring it is focused
+						if (!hasFocus && !needsKeyboard)
+						{
+							// Hide they keyboard for the activity's current focus instead of the view
+							// because it may have already been assigned to another focused control
 
-							var inputManager = activity?.GetSystemService(Android.Content.Context.InputMethodService) as Android.Views.InputMethods.InputMethodManager;
+							//Seems like CurrentFocus can be null if the previously focused element is not part of the view anymore,
+							//resulting in the keyboard not being closed.
+							//We still try to get the Window token from it and if we fail, we get it from the TextBox we're currently unfocusing.
+							inputManager?.HideSoftInputFromWindow(activity?.CurrentFocus?.WindowToken ?? viewWindowToken, Android.Views.InputMethods.HideSoftInputFlags.None);
+						}
 
-							//When a TextBox gains focus, we want to show the keyboard
-							if (hasFocus && needsKeyboard)
+						if (hasFocus)
+						{
+							if (FocusState == FocusState.Unfocused)
 							{
-								inputManager?.ShowSoftInput(v, Android.Views.InputMethods.ShowFlags.Forced);
-								inputManager?.ToggleSoftInput(Android.Views.InputMethods.ShowFlags.Forced, Android.Views.InputMethods.HideSoftInputFlags.ImplicitOnly);
-							}
-
-							//When a TextBox loses focus, we want to dismiss the keyboard if no other view requiring it is focused
-							if (!hasFocus && !needsKeyboard)
-							{
-								// Hide they keyboard for the activity's current focus instead of the view
-								// because it may have already been assigned to another focused control
-								inputManager?.HideSoftInputFromWindow(activity?.CurrentFocus?.WindowToken, Android.Views.InputMethods.HideSoftInputFlags.None);
-							}
-
-							if (hasFocus)
-							{
-								if (FocusState == FocusState.Unfocused)
-								{
-									// Using FocusState.Pointer by default until need to distinguish between Pointer, Programmatic and Keyboard.
-									Focus(FocusState.Pointer);
-								}
-							}
-							else
-							{
-								Unfocus();
+								// Using FocusState.Pointer by default until need to distinguish between Pointer, Programmatic and Keyboard.
+								Focus(FocusState.Pointer);
 							}
 						}
-					);
-			}
+						else
+						{
+							Unfocus();
+						}
+					}
+				);
 		}
 
 		partial void OnTextAlignmentChangedPartial(DependencyPropertyChangedEventArgs e)
@@ -505,7 +506,8 @@ namespace Windows.UI.Xaml.Controls
 		public bool OnEditorAction(TextView v, [GeneratedEnum] ImeAction actionId, KeyEvent e)
 		{
 			//We need to force a keypress event on editor action.
-			//the key press event is not trigerred if we press the enter key depending on the ime.options
+			//the key press event is not triggered if we press the enter key depending on the ime.options
+
 			OnKeyPress(v, new KeyEventArgs(true, Keycode.Enter, new KeyEvent(KeyEventActions.Up, Keycode.Enter)));
 
 			// Action will be ImeNull if AcceptsReturn is true, in which case we return false to allow the new line to register.

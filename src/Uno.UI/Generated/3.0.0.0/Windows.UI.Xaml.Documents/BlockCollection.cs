@@ -22,7 +22,7 @@ namespace Windows.UI.Xaml.Documents
 		// Forced skipping of method Windows.UI.Xaml.Documents.BlockCollection.ReplaceAll(Windows.UI.Xaml.Documents.Block[])
 		// Forced skipping of method Windows.UI.Xaml.Documents.BlockCollection.First()
 		// Processing: System.Collections.Generic.IList<Windows.UI.Xaml.Documents.Block>
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public global::Windows.UI.Xaml.Documents.Block this[int index]
 		{

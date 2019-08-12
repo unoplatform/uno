@@ -1,93 +1,98 @@
 ﻿#if XAMARIN_ANDROID
-using Android.App;
+using Android.OS;
 using System;
-using System.Collections.Generic;
-using System.Text;
+using Uno.UI;
+using Uno.UI.Extensions;
 using Windows.Globalization;
 using Windows.UI.Xaml.Controls.Primitives;
-using Uno.Extensions;
-using Uno.UI;
+using static Android.App.TimePickerDialog;
 
 namespace Windows.UI.Xaml.Controls
 {
-	public partial class TimePickerFlyout : FlyoutBase // TODO: Inherit from PickerFlyoutBase
+	public partial class TimePickerFlyout : PickerFlyoutBase
 	{
-		private Dialog _dialog;
+		private UnoTimePickerDialog _dialog;
+		private TimeSpan _initialTime;
 
 		internal protected override void Open()
 		{
-			if (UseAlertDialogWorkAround())
+			SaveInitialTime();
+
+			//Minute increments are not supported with clock and Samsung devices running marshmallow (Android 6.0)
+			//show the clock as truncated in landscape. The spinner style is enforced in these two cases.
+
+			var isSamsungAndMarshmellow = Build.VERSION.SdkInt == BuildVersionCodes.M &&
+										  Build.Manufacturer.ToLower().IndexOf("samsung") >= 0;
+
+			var tryEnforceSpinnerStyle = isSamsungAndMarshmellow || MinuteIncrement > 1;
+
+			ShowTimePicker(tryEnforceSpinnerStyle);
+		}
+
+		private void SaveInitialTime() => _initialTime = Time;
+
+		internal protected override void Close() { base.Close(); }
+
+		private void SaveTime(TimeSpan time)
+		{
+			if (Time != time)
 			{
-				ShowUsingAlertDialog();
+				Time = time;
+				SaveInitialTime();
 			}
-			else
+		}
+
+		private void AdjustAndSaveTime(int hourOfDay, int minutes)
+		{
+			if (Time.Hours != hourOfDay || Time.Minutes != minutes)
 			{
-				ShowUsingTimePickerDialog();
+				if (_dialog.IsInSpinnerMode)
+				{
+					minutes = minutes * MinuteIncrement;
+				}
+
+				var time = new TimeSpan(Time.Days, hourOfDay, minutes, Time.Seconds, Time.Milliseconds);
+				SaveTime(time.RoundToMinuteInterval(MinuteIncrement));
 			}
 		}
 
-		internal protected override void Close()
+		private void ShowTimePicker(bool useSpinnerStyle)
 		{
-			_dialog?.Dismiss();
-		}
+			var time = Time.RoundToNextMinuteInterval(MinuteIncrement);
+			var listener = new OnSetTimeListener((view, hourOfDay, minute) => AdjustAndSaveTime(hourOfDay, minute));
+			int timePickerStyleResId = useSpinnerStyle ? 3 : 0;
 
-		private bool UseAlertDialogWorkAround()
-		{
-			// WARNING Adding any case that uses API lower than 6.0 will require the use of deprecated properties 
-			// on the TimePicker i.e. CurrentHour and CurrentMinute, server build rules may need to be modified or
-			// a #prama directive may be needed.
-
-			var ver = Android.OS.Build.VERSION.Release;
-			//On Samsung devices >= 6.0 the TimePickerDialog is not displayed properly in Landscape.
-			return Android.OS.Build.VERSION.Release.StartsWith("6.") && //Any 6.x.x version				
-				   Android.OS.Build.Manufacturer.Contains("samsung", StringComparison.OrdinalIgnoreCase);
-		}
-
-		private void ShowUsingTimePickerDialog()
-		{
-			_dialog = new TimePickerDialog(
+			_dialog = new UnoTimePickerDialog(
 					ContextHelper.Current,
-					(sender, e) => Time = new TimeSpan(Time.Days, e.HourOfDay, e.Minute, Time.Seconds, Time.Milliseconds),
-					Time.Hours,
-					Time.Minutes,
-					ClockIdentifier == ClockIdentifiers.TwentyFourHour
+					timePickerStyleResId,
+					listener,
+					time.Hours,
+					time.Minutes,
+					ClockIdentifier == ClockIdentifiers.TwentyFourHour,
+					MinuteIncrement
 				);
 
 			_dialog.DismissEvent += OnDismiss;
 			_dialog.Show();
 		}
 
-		private void ShowUsingAlertDialog()
-		{
-			//On Samsung devices ?= 6.0 the TimepickerDialog is not displayed properly in Landscape.
-			//Instead using this work around seems to work.
-			var androidTimePicker = new Android.Widget.TimePicker(ContextHelper.Current);
-
-			//Hour and Minute properties are not supported on Android before 6.0
-			androidTimePicker.Hour = Time.Hours;
-			androidTimePicker.Minute = Time.Minutes;
-
-			androidTimePicker.SetIs24HourView(new Java.Lang.Boolean(ClockIdentifier == ClockIdentifiers.TwentyFourHour));
-
-			_dialog = new AlertDialog.Builder(ContextHelper.Current)
-				.SetPositiveButton(
-					Android.Resource.String.Ok,
-					(sender, eventArgs) => 
-						Time = new TimeSpan(Time.Days, androidTimePicker.Hour, androidTimePicker.Minute, Time.Seconds, Time.Milliseconds)
-				)
-				.SetNegativeButton(
-					Android.Resource.String.Cancel,
-					(sender, eventArgs) => { /*Nothing to do*/ }
-				)
-				.SetView(androidTimePicker)
-				.Show();
-
-			_dialog.DismissEvent += OnDismiss;
-		}
-
 		private void OnDismiss(object sender, EventArgs e)
 		{
 			Hide(canCancel: false);
+		}
+
+		partial void OnTimeChangedPartialNative(TimeSpan oldTime, TimeSpan newTime) { }
+
+		public class OnSetTimeListener : Java.Lang.Object, IOnTimeSetListener
+		{
+			private Action<Android.Widget.TimePicker, int, int> _action;
+
+			public OnSetTimeListener(Action<Android.Widget.TimePicker, int, int> action)
+			{
+				_action = action;
+			}
+
+			public void OnTimeSet(Android.Widget.TimePicker view, int hourOfDay, int minute) => _action(view, hourOfDay, minute);
 		}
 	}
 }

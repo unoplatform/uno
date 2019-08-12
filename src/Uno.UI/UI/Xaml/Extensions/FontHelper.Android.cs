@@ -15,7 +15,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Windows.UI.Xaml
 {
-    internal class FontHelper
+	internal class FontHelper
 	{
 		internal static readonly Func<FontFamily, FontWeight, TypefaceStyle, Typeface> _fontFamilyToTypeFace;
 		private static bool _assetsListed;
@@ -40,11 +40,11 @@ namespace Windows.UI.Xaml
 				fontFamily = GetDefaultFontFamily(fontWeight);
 			}
 
-			Typeface typeface;	
+			Typeface typeface;
 
 			try
 			{
-				if(typeof(FontHelper).Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+				if (typeof(FontHelper).Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
 				{
 					typeof(FontHelper).Log().Debug($"Searching for font [{fontFamily.Source}]");
 				}
@@ -58,7 +58,7 @@ namespace Windows.UI.Xaml
 					// with UWP.
 					source = source.TrimStart("ms-appx://", StringComparison.OrdinalIgnoreCase);
 					source = source.TrimStart("/assets/", StringComparison.OrdinalIgnoreCase);
-					source = FontFamilyHelper.RemoveHashFamilyName(source); 
+					source = FontFamilyHelper.RemoveHashFamilyName(source);
 
 					if (typeof(FontHelper).Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
 					{
@@ -89,7 +89,7 @@ namespace Windows.UI.Xaml
 
 				return typeface;
 			}
-			catch(Exception e)
+			catch (Exception e)
 			{
 				if (typeof(FontHelper).Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Error))
 				{
@@ -108,14 +108,14 @@ namespace Windows.UI.Xaml
 				}
 
 				return null;
-			}				
+			}
 		}
 
 		private static FontFamily GetDefaultFontFamily(FontWeight fontWeight)
 		{
 			string fontVariant = string.Empty;
 
-			if (fontWeight == FontWeights.Light 
+			if (fontWeight == FontWeights.Light
 				|| fontWeight == FontWeights.UltraLight
 				|| fontWeight == FontWeights.ExtraLight)
 			{
@@ -149,7 +149,7 @@ namespace Windows.UI.Xaml
 		/// <returns></returns>
 		public static double GetFontRatio()
 		{
-			return ViewHelper.FontScale / ViewHelper.Scale;
+			return ViewHelper.FontScale / ViewHelper.Scale;	
 		}
 	}
 }

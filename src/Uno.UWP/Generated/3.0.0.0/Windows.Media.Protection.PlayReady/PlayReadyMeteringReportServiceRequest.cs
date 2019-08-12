@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Media.Protection.PlayReady
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class PlayReadyMeteringReportServiceRequest : global::Windows.Media.Protection.PlayReady.IPlayReadyServiceRequest,global::Windows.Media.Protection.IMediaProtectionServiceRequest
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::System.Guid ProtectionSystem
 		{
@@ -17,7 +17,7 @@ namespace Windows.Media.Protection.PlayReady
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::System.Guid Type
 		{
@@ -27,7 +27,7 @@ namespace Windows.Media.Protection.PlayReady
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  byte[] MeteringCertificate
 		{
@@ -41,7 +41,7 @@ namespace Windows.Media.Protection.PlayReady
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::System.Uri Uri
 		{
@@ -55,7 +55,7 @@ namespace Windows.Media.Protection.PlayReady
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  string ChallengeCustomData
 		{
@@ -69,7 +69,7 @@ namespace Windows.Media.Protection.PlayReady
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  string ResponseCustomData
 		{
@@ -79,7 +79,7 @@ namespace Windows.Media.Protection.PlayReady
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public PlayReadyMeteringReportServiceRequest() 
 		{
@@ -94,28 +94,28 @@ namespace Windows.Media.Protection.PlayReady
 		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyMeteringReportServiceRequest.ResponseCustomData.get
 		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyMeteringReportServiceRequest.ChallengeCustomData.get
 		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyMeteringReportServiceRequest.ChallengeCustomData.set
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Foundation.IAsyncAction BeginServiceRequest()
 		{
 			throw new global::System.NotImplementedException("The member IAsyncAction PlayReadyMeteringReportServiceRequest.BeginServiceRequest() is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Media.Protection.PlayReady.IPlayReadyServiceRequest NextServiceRequest()
 		{
 			throw new global::System.NotImplementedException("The member IPlayReadyServiceRequest PlayReadyMeteringReportServiceRequest.NextServiceRequest() is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Media.Protection.PlayReady.PlayReadySoapMessage GenerateManualEnablingChallenge()
 		{
 			throw new global::System.NotImplementedException("The member PlayReadySoapMessage PlayReadyMeteringReportServiceRequest.GenerateManualEnablingChallenge() is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::System.Exception ProcessManualEnablingResponse( byte[] responseBytes)
 		{

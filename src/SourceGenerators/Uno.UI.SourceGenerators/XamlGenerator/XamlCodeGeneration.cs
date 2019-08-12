@@ -11,10 +11,11 @@ using Microsoft.CodeAnalysis;
 using Uno.Extensions;
 using Microsoft.Build.Execution;
 using Uno.Logging;
+using Uno.UI.SourceGenerators.Telemetry;
 
 namespace Uno.UI.SourceGenerators.XamlGenerator
 {
-    internal class XamlCodeGeneration
+	internal partial class XamlCodeGeneration
 	{
 		private string[] _xamlSourceFiles;
 		private string _targetPath;
@@ -38,12 +39,18 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		private readonly bool _isUiAutomationMappingEnabled;
 		private Dictionary<string, string> _legacyTypes;
 
+		// Determines if the source generator will skip the inclusion of UseControls in the
+		// visual tree. See https://github.com/unoplatform/uno/issues/61
+		private bool _skipUserControlsInVisualTree = true;
+
 #pragma warning disable 649 // Unused member
 		private readonly bool _forceGeneration;
 #pragma warning restore 649 // Unused member
 
 		public XamlCodeGeneration(Compilation sourceCompilation, ProjectInstance msbProject, Project roslynProject)
 		{
+			InitTelemetry(msbProject);
+
 			_legacyTypes = msbProject
 				.GetItems("LegacyTypes")
 				.Select(i => i.EvaluatedInclude)
@@ -87,9 +94,14 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				.Select(i => i.EvaluatedInclude)
 				.ToArray();
 
-			if(bool.TryParse(msbProject.GetProperty("UseUnoXamlParser")?.EvaluatedValue, out var useUnoXamlParser) && useUnoXamlParser)
+			if (bool.TryParse(msbProject.GetProperty("UseUnoXamlParser")?.EvaluatedValue, out var useUnoXamlParser) && useUnoXamlParser)
 			{
 				XamlRedirection.XamlConfig.IsUnoXaml = useUnoXamlParser || XamlRedirection.XamlConfig.IsMono;
+			}
+
+			if (bool.TryParse(msbProject.GetProperty("UnoSkipUserControlsInVisualTree")?.EvaluatedValue, out var skipUserControlsInVisualTree))
+			{
+				_skipUserControlsInVisualTree = skipUserControlsInVisualTree;
 			}
 
 			if (bool.TryParse(msbProject.GetProperty("ShouldWriteErrorOnInvalidXaml")?.EvaluatedValue, out var shouldWriteErrorOnInvalidXaml))
@@ -134,21 +146,28 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			_isWasm = msbProject.GetProperty("DefineConstants").EvaluatedValue?.Contains("__WASM__") ?? false;
 		}
 
+
 		public KeyValuePair<string, string>[] Generate()
 		{
-			this.Log().InfoFormat("Xaml Source Generation is using the {0} Xaml Parser", XamlRedirection.XamlConfig.IsUnoXaml ? "Uno.UI" : "System");
+			var stopwatch = Stopwatch.StartNew();
 
-			var lastBinaryUpdateTime = _forceGeneration ? DateTime.MaxValue : GetLastBinaryUpdateTime();
+			try
+			{
+				this.Log().InfoFormat("Xaml Source Generation is using the {0} Xaml Parser", XamlRedirection.XamlConfig.IsUnoXaml ? "Uno.UI" : "System");
 
-			var resourceKeys = GetResourceKeys();
-			var files = new XamlFileParser(_excludeXamlNamespaces, _includeXamlNamespaces).ParseFiles(_xamlSourceFiles);
+				var lastBinaryUpdateTime = _forceGeneration ? DateTime.MaxValue : GetLastBinaryUpdateTime();
 
-			var globalStaticResourcesMap = BuildAssemblyGlobalStaticResourcesMap(files);
+				var resourceKeys = GetResourceKeys();
+				var files = new XamlFileParser(_excludeXamlNamespaces, _includeXamlNamespaces).ParseFiles(_xamlSourceFiles);
 
-			var filesQuery = files
-				.ToArray();
+				TrackStartGeneration(files);
 
-			var outputFiles = filesQuery
+				var globalStaticResourcesMap = BuildAssemblyGlobalStaticResourcesMap(files);
+
+				var filesQuery = files
+					.ToArray();
+
+				var outputFiles = filesQuery
 #if !DEBUG
 				.AsParallel()
 #endif
@@ -169,17 +188,31 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 							uiAutomationMappings: _uiAutomationMappings,
 							defaultLanguage: _defaultLanguage,
 							isWasm: _isWasm,
-							isDebug: _isDebug
+							isDebug: _isDebug,
+							skipUserControlsInVisualTree: _skipUserControlsInVisualTree
 						)
 						.GenerateFile()
 					)
-				)
-				.ToList();
+					)
+					.ToList();
 
 
-			outputFiles.Add(new KeyValuePair<string, string>("GlobalStaticResources", GenerateGlobalResources(files)));
+				outputFiles.Add(new KeyValuePair<string, string>("GlobalStaticResources", GenerateGlobalResources(files)));
 
-			return outputFiles.ToArray();
+				TrackGenerationDone(stopwatch.Elapsed);
+
+				return outputFiles.ToArray();
+			}
+			catch (Exception e)
+			{
+				TrackGenerationFailed(e, stopwatch.Elapsed);
+
+				throw;
+			}
+			finally
+			{
+				_telemetry.Flush();
+			}
 		}
 
 		private XamlGlobalStaticResourcesMap BuildAssemblyGlobalStaticResourcesMap(XamlFileDefinition[] files)
@@ -231,30 +264,48 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 				if (topLevelControl?.Type.Name == "ResourceDictionary")
 				{
-					var resources = new Dictionary<string, XamlObjectDefinition>();
-
 					BuildResourceMap(topLevelControl, map);
 
-					var themeResources = topLevelControl.Members.FirstOrDefault(m => m.Member.Name == "ThemeDictionaries");
+					var themeDictionaries = topLevelControl.Members.FirstOrDefault(m => m.Member.Name == "ThemeDictionaries");
 
-					if (themeResources != null)
+					if (themeDictionaries != null)
 					{
-						// Theme resources are not supported for now, so we take the default key
-						// and consider everthing inside as a standard StaticResource.
+						// We extract all distinct keys of all themed resource dictionaries defined and add them to global map
 
-						var defaultTheme = themeResources
-							.Objects
-							.FirstOrDefault(o => o
-								.Members
-								.Any(m =>
-									m.Member.Name == "Key"
-									&& m.Value.ToString() == "Default"
-								)
-							);
-
-						if (defaultTheme != null)
+						IEnumerable<string> GetResources(XamlObjectDefinition themeDictionary)
 						{
-							BuildResourceMap(defaultTheme, map);
+							if (!(themeDictionary.Members
+								.FirstOrDefault(x => x.Member.Name.Equals("Key"))
+								?.Value is string))
+							{
+								yield break;
+							}
+
+							var resources = themeDictionary.Members
+								.FirstOrDefault(x => x.Member.Name.Equals("_UnknownContent"))
+								?.Objects;
+
+							if (resources != null)
+							{
+								foreach (var resource in resources)
+								{
+									if (resource.Members.FirstOrDefault(x => x.Member.Name.Equals("Key"))
+										?.Value is string resourceKey)
+									{
+										yield return resourceKey;
+									}
+								}
+							}
+						}
+
+						var themeResources = themeDictionaries
+							.Objects
+							.SelectMany(GetResources)
+							.Distinct();
+
+						foreach (var themeResource in themeResources)
+						{
+							map.Add(themeResource, _defaultNamespace, XamlGlobalStaticResourcesMap.ResourcePrecedence.Local);
 						}
 					}
 				}
@@ -307,6 +358,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 							.ToArray()
 						)
 						.Distinct()
+						.Select(k => k.Replace(".", "/"))
 						.ToArray();
 				}
 			}

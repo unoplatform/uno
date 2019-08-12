@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Media.Capture.Frames
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class MediaFrameSource 
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Media.Capture.Frames.MediaFrameSourceController Controller
 		{
@@ -17,7 +17,7 @@ namespace Windows.Media.Capture.Frames
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Media.Capture.Frames.MediaFrameFormat CurrentFormat
 		{
@@ -27,7 +27,7 @@ namespace Windows.Media.Capture.Frames
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Media.Capture.Frames.MediaFrameSourceInfo Info
 		{
@@ -37,7 +37,7 @@ namespace Windows.Media.Capture.Frames
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::System.Collections.Generic.IReadOnlyList<global::Windows.Media.Capture.Frames.MediaFrameFormat> SupportedFormats
 		{
@@ -51,7 +51,7 @@ namespace Windows.Media.Capture.Frames
 		// Forced skipping of method Windows.Media.Capture.Frames.MediaFrameSource.Controller.get
 		// Forced skipping of method Windows.Media.Capture.Frames.MediaFrameSource.SupportedFormats.get
 		// Forced skipping of method Windows.Media.Capture.Frames.MediaFrameSource.CurrentFormat.get
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Foundation.IAsyncAction SetFormatAsync( global::Windows.Media.Capture.Frames.MediaFrameFormat format)
 		{
@@ -60,14 +60,14 @@ namespace Windows.Media.Capture.Frames
 		#endif
 		// Forced skipping of method Windows.Media.Capture.Frames.MediaFrameSource.FormatChanged.add
 		// Forced skipping of method Windows.Media.Capture.Frames.MediaFrameSource.FormatChanged.remove
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Media.Devices.Core.CameraIntrinsics TryGetCameraIntrinsics( global::Windows.Media.Capture.Frames.MediaFrameFormat format)
 		{
 			throw new global::System.NotImplementedException("The member CameraIntrinsics MediaFrameSource.TryGetCameraIntrinsics(MediaFrameFormat format) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Media.Capture.Frames.MediaFrameSource, object> FormatChanged
 		{

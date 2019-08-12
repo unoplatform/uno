@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.System.RemoteSystems
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class RemoteSystem 
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  string DisplayName
 		{
@@ -17,7 +17,7 @@ namespace Windows.System.RemoteSystems
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  string Id
 		{
@@ -27,7 +27,7 @@ namespace Windows.System.RemoteSystems
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  bool IsAvailableByProximity
 		{
@@ -37,7 +37,7 @@ namespace Windows.System.RemoteSystems
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  string Kind
 		{
@@ -47,7 +47,7 @@ namespace Windows.System.RemoteSystems
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.System.RemoteSystems.RemoteSystemStatus Status
 		{
@@ -57,7 +57,7 @@ namespace Windows.System.RemoteSystems
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  bool IsAvailableBySpatialProximity
 		{
@@ -67,7 +67,7 @@ namespace Windows.System.RemoteSystems
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  string ManufacturerDisplayName
 		{
@@ -77,7 +77,7 @@ namespace Windows.System.RemoteSystems
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  string ModelDisplayName
 		{
@@ -87,7 +87,7 @@ namespace Windows.System.RemoteSystems
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.System.RemoteSystems.RemoteSystemPlatform Platform
 		{
@@ -97,7 +97,7 @@ namespace Windows.System.RemoteSystems
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::System.Collections.Generic.IReadOnlyList<global::Windows.System.RemoteSystems.RemoteSystemApp> Apps
 		{
@@ -113,7 +113,7 @@ namespace Windows.System.RemoteSystems
 		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystem.Status.get
 		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystem.IsAvailableByProximity.get
 		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystem.IsAvailableBySpatialProximity.get
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Foundation.IAsyncOperation<bool> GetCapabilitySupportedAsync( string capabilityName)
 		{
@@ -124,35 +124,35 @@ namespace Windows.System.RemoteSystems
 		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystem.ModelDisplayName.get
 		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystem.Platform.get
 		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystem.Apps.get
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static bool IsAuthorizationKindEnabled( global::Windows.System.RemoteSystems.RemoteSystemAuthorizationKind kind)
 		{
 			throw new global::System.NotImplementedException("The member bool RemoteSystem.IsAuthorizationKindEnabled(RemoteSystemAuthorizationKind kind) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.System.RemoteSystems.RemoteSystem> FindByHostNameAsync( global::Windows.Networking.HostName hostName)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<RemoteSystem> RemoteSystem.FindByHostNameAsync(HostName hostName) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.System.RemoteSystems.RemoteSystemWatcher CreateWatcher()
 		{
 			throw new global::System.NotImplementedException("The member RemoteSystemWatcher RemoteSystem.CreateWatcher() is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.System.RemoteSystems.RemoteSystemWatcher CreateWatcher( global::System.Collections.Generic.IEnumerable<global::Windows.System.RemoteSystems.IRemoteSystemFilter> filters)
 		{
 			throw new global::System.NotImplementedException("The member RemoteSystemWatcher RemoteSystem.CreateWatcher(IEnumerable<IRemoteSystemFilter> filters) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.System.RemoteSystems.RemoteSystemAccessStatus> RequestAccessAsync()
 		{

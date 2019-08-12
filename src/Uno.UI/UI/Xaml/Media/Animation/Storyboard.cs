@@ -8,18 +8,19 @@ using Windows.UI.Xaml.Data;
 using Uno.Diagnostics.Eventing;
 using Windows.UI.Xaml.Markup;
 using System.Threading;
+using Windows.UI.Core;
 
 namespace Windows.UI.Xaml.Media.Animation
 {
 	[ContentProperty(Name = "Children")]
 	public sealed partial class Storyboard : Timeline, ITimeline
 	{
-		private readonly static IEventProvider _trace = Tracing.Get(TraceProvider.Id);
+		private static readonly IEventProvider _trace = Tracing.Get(TraceProvider.Id);
 		private EventActivity _traceActivity;
 
 		public static class TraceProvider
 		{
-			public readonly static Guid Id = Guid.Parse("{57A7F5D4-8AA9-453F-A2D5-9F9DCA48BF54}");
+			public static readonly Guid Id = Guid.Parse("{57A7F5D4-8AA9-453F-A2D5-9F9DCA48BF54}");
 
 			public const int StoryBoard_Start = 1;
 			public const int StoryBoard_Stop = 2;
@@ -34,21 +35,15 @@ namespace Windows.UI.Xaml.Media.Animation
 
 		public Storyboard()
 		{
-			this.Children = new TimelineCollection(owner: this, isAutoPropertyInheritanceEnabled: false);
+			Children = new TimelineCollection(owner: this, isAutoPropertyInheritanceEnabled: false);
 		}
 
 		public TimelineCollection Children { get; }
 
 		#region TargetName Attached Property
-		public static string GetTargetName(Timeline timeline)
-		{
-			return (string)timeline.GetValue(TargetNameProperty);
-		}
+		public static string GetTargetName(Timeline timeline) => (string)timeline.GetValue(TargetNameProperty);
 
-		public static void SetTargetName(Timeline timeline, string value)
-		{
-			timeline.SetValue(TargetNameProperty, value);
-		}
+		public static void SetTargetName(Timeline timeline, string value) => timeline.SetValue(TargetNameProperty, value);
 
 		// Using a DependencyProperty as the backing store for TargetName.  This enables animation, styling, binding, etc...
 		public static readonly DependencyProperty TargetNameProperty =
@@ -56,34 +51,22 @@ namespace Windows.UI.Xaml.Media.Animation
 		#endregion
 
 		#region TargetProperty Attached Property
-		public static string GetTargetProperty(Timeline timeline)
-		{
-			return (string)timeline.GetValue(TargetPropertyProperty);
-		}
+		public static string GetTargetProperty(Timeline timeline) => (string)timeline.GetValue(TargetPropertyProperty);
 
-		public static void SetTargetProperty(Timeline timeline, string value)
-		{
-			timeline.SetValue(TargetPropertyProperty, value);
-		}
+		public static void SetTargetProperty(Timeline timeline, string value) => timeline.SetValue(TargetPropertyProperty, value);
 
 		// Using a DependencyProperty as the backing store for TargetProperty.  This enables animation, styling, binding, etc...
 		public static readonly DependencyProperty TargetPropertyProperty =
 			DependencyProperty.RegisterAttached("TargetProperty", typeof(string), typeof(Storyboard), new PropertyMetadata(null));
 		#endregion
 
-		public static void SetTarget(Timeline timeline, DependencyObject target)
-		{
-			timeline.Target = target;
-		}
+		public static void SetTarget(Timeline timeline, DependencyObject target) => timeline.Target = target;
 
 		/// <summary>
 		/// Explicitly sets the target using an ElementNameSubject, in case of lazy 
 		/// evaluation of the target element.
 		/// </summary>
-		public static void SetTarget(Timeline timeline, ElementNameSubject target)
-		{
-			timeline.SetElementNameTarget(target);
-		}
+		public static void SetTarget(Timeline timeline, ElementNameSubject target) => timeline.SetElementNameTarget(target);
 
 		/// <summary>
 		/// Replay this animation.
@@ -119,14 +102,23 @@ namespace Windows.UI.Xaml.Media.Animation
 
 		private void Play()
 		{
-			if (this.Children != null)
+			if (Children != null && Children.Count > 0)
 			{
-				foreach (ITimeline child in this.Children)
+				foreach (ITimeline child in Children)
 				{
 					_runningChildren++;
 					child.Completed += Child_Completed;
 					child.Begin();
 				}
+			}
+			else
+			{
+				Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+				{
+					// No children, so we complete immediately
+					State = TimelineState.Stopped;
+					OnCompleted();
+				});
 			}
 		}
 
@@ -138,23 +130,22 @@ namespace Windows.UI.Xaml.Media.Animation
 					eventId: TraceProvider.StoryBoard_Stop,
 					opCode: EventOpcode.Stop, 
 					activity: _traceActivity,
-					payload: new[] { Target?.GetType().ToString(), PropertyInfo?.Path }
+					payload: new object[] { Target?.GetType().ToString(), PropertyInfo?.Path }
 				);
 			}
 
 			State = TimelineState.Stopped;
 			_hasFillingChildren = false;
 
-			if (this.Children != null)
+			if (Children != null)
 			{
-				foreach (ITimeline child in this.Children)
+				foreach (ITimeline child in Children)
 				{
 					child.Stop();
 					child.Completed -= Child_Completed;
 				}
-
-				_runningChildren = 0;
 			}
+			_runningChildren = 0;
 		}
 
 		public void Resume()
@@ -165,15 +156,15 @@ namespace Windows.UI.Xaml.Media.Animation
 					eventId: TraceProvider.StoryBoard_Resume,
 					opCode: EventOpcode.Send,
 					activity: _traceActivity,
-					payload: new[] { Target?.GetType().ToString(), PropertyInfo?.Path }
+					payload: new object[] { Target?.GetType().ToString(), PropertyInfo?.Path }
 				);
 			}
 
-			State = TimelineState.Active;
-
-			if (this.Children != null)
+			if (Children != null && Children.Count > 0)
 			{
-				foreach (ITimeline child in this.Children)
+				State = TimelineState.Active;
+
+				foreach (ITimeline child in Children)
 				{
 					child.Resume();
 				}
@@ -188,15 +179,15 @@ namespace Windows.UI.Xaml.Media.Animation
 					eventId: TraceProvider.StoryBoard_Pause,
 					opCode: EventOpcode.Send,
 					activity: _traceActivity,
-					payload: new[] { Target?.GetType().ToString(), PropertyInfo?.Path }
+					payload: new object[] { Target?.GetType().ToString(), PropertyInfo?.Path }
 				);
 			}
 
 			State = TimelineState.Paused;
 
-			if (this.Children != null)
+			if (Children != null)
 			{
-				foreach (ITimeline child in this.Children)
+				foreach (ITimeline child in Children)
 				{
 					child.Pause();
 				}
@@ -205,9 +196,9 @@ namespace Windows.UI.Xaml.Media.Animation
 
 		public void Seek(TimeSpan offset)
 		{
-			if (this.Children != null)
+			if (Children != null)
 			{
-				foreach (ITimeline child in this.Children)
+				foreach (ITimeline child in Children)
 				{
 					child.Seek(offset);
 				}
@@ -216,9 +207,9 @@ namespace Windows.UI.Xaml.Media.Animation
 
 		public void SeekAlignedToLastTick(TimeSpan offset)
 		{
-			if (this.Children != null)
+			if (Children != null)
 			{
-				foreach (ITimeline child in this.Children)
+				foreach (ITimeline child in Children)
 				{
 					child.SeekAlignedToLastTick(offset);
 				}
@@ -226,9 +217,9 @@ namespace Windows.UI.Xaml.Media.Animation
 		}
 		public void SkipToFill()
 		{
-			if (this.Children != null)
+			if (Children != null)
 			{
-				foreach (ITimeline child in this.Children)
+				foreach (ITimeline child in Children)
 				{
 					child.SkipToFill();
 				}
@@ -240,9 +231,9 @@ namespace Windows.UI.Xaml.Media.Animation
 			State = TimelineState.Stopped;
 			_hasFillingChildren = false;
 
-			if (this.Children != null)
+			if (Children != null)
 			{
-				foreach (ITimeline child in this.Children)
+				foreach (ITimeline child in Children)
 				{
 					child.Deactivate();
 					child.Completed -= Child_Completed;
@@ -256,7 +247,7 @@ namespace Windows.UI.Xaml.Media.Animation
 		{
 			var affectedProperties = storyboard.Children.TargetedProperties;
 
-			foreach (var child in this.Children)
+			foreach (var child in Children)
 			{
 				var id = child.GetTimelineTargetFullName();
 
@@ -293,9 +284,7 @@ namespace Windows.UI.Xaml.Media.Animation
 
 		private void Child_Completed(object sender, object e)
 		{
-			var child = (Timeline)sender;
-
-			if (child == null)
+			if (!(sender is Timeline child))
 			{
 				return;
 			}
@@ -325,9 +314,9 @@ namespace Windows.UI.Xaml.Media.Animation
 		{
 			base.Dispose(disposing);
 
-			if (this.Children != null)
+			if (Children != null)
 			{
-				foreach (var child in this.Children)
+				foreach (var child in Children)
 				{
 					child.Dispose();
 				}

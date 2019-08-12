@@ -1,5 +1,4 @@
 using System;
-using System.Drawing;
 using Uno.Disposables;
 using System.Runtime.CompilerServices;
 using Windows.UI.Xaml.Data;
@@ -31,7 +30,7 @@ namespace Uno.UI.Views.Controls
 			IsOn = On;
 		}
 
-		public BindableUISwitch(RectangleF frame)
+		public BindableUISwitch(System.Drawing.RectangleF frame)
 			: base(frame)
 		{
 			InitializeBinder();
@@ -120,14 +119,14 @@ namespace Uno.UI.Views.Controls
 			}
 		}
 
-		#endregion
+        #endregion
 
-		#region Background Alias Property
+        #region Background Alias Property
 
-		/// <summary>
-		/// An alias to the ThumbTintColorBrush property, in order to avoid binary breaking change.
-		/// </summary>
-		public Brush Background
+        /// <summary>
+        /// An alias to the OnTintColorBrush property, in order to avoid binary breaking change.
+        /// </summary>
+        public Brush Background
 		{
 			get { return OnTintColorBrush; }
 			set

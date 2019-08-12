@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml.Media
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class PlaneProjection : global::Windows.UI.Xaml.Media.Projection
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  double RotationZ
 		{
@@ -21,7 +21,7 @@ namespace Windows.UI.Xaml.Media
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  double RotationY
 		{
@@ -35,7 +35,7 @@ namespace Windows.UI.Xaml.Media
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  double RotationX
 		{
@@ -49,7 +49,7 @@ namespace Windows.UI.Xaml.Media
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  double LocalOffsetZ
 		{
@@ -63,7 +63,7 @@ namespace Windows.UI.Xaml.Media
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  double LocalOffsetY
 		{
@@ -77,7 +77,7 @@ namespace Windows.UI.Xaml.Media
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  double LocalOffsetX
 		{
@@ -91,7 +91,7 @@ namespace Windows.UI.Xaml.Media
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  double GlobalOffsetZ
 		{
@@ -105,7 +105,7 @@ namespace Windows.UI.Xaml.Media
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  double GlobalOffsetY
 		{
@@ -119,7 +119,7 @@ namespace Windows.UI.Xaml.Media
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  double GlobalOffsetX
 		{
@@ -133,7 +133,7 @@ namespace Windows.UI.Xaml.Media
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  double CenterOfRotationZ
 		{
@@ -147,7 +147,7 @@ namespace Windows.UI.Xaml.Media
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  double CenterOfRotationY
 		{
@@ -161,7 +161,7 @@ namespace Windows.UI.Xaml.Media
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  double CenterOfRotationX
 		{
@@ -175,7 +175,7 @@ namespace Windows.UI.Xaml.Media
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.UI.Xaml.Media.Media3D.Matrix3D ProjectionMatrix
 		{
@@ -185,7 +185,7 @@ namespace Windows.UI.Xaml.Media
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty CenterOfRotationXProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
@@ -193,7 +193,7 @@ namespace Windows.UI.Xaml.Media
 			typeof(global::Windows.UI.Xaml.Media.PlaneProjection), 
 			new FrameworkPropertyMetadata(default(double)));
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty CenterOfRotationYProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
@@ -201,7 +201,7 @@ namespace Windows.UI.Xaml.Media
 			typeof(global::Windows.UI.Xaml.Media.PlaneProjection), 
 			new FrameworkPropertyMetadata(default(double)));
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty CenterOfRotationZProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
@@ -209,7 +209,7 @@ namespace Windows.UI.Xaml.Media
 			typeof(global::Windows.UI.Xaml.Media.PlaneProjection), 
 			new FrameworkPropertyMetadata(default(double)));
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty GlobalOffsetXProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
@@ -217,7 +217,7 @@ namespace Windows.UI.Xaml.Media
 			typeof(global::Windows.UI.Xaml.Media.PlaneProjection), 
 			new FrameworkPropertyMetadata(default(double)));
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty GlobalOffsetYProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
@@ -225,7 +225,7 @@ namespace Windows.UI.Xaml.Media
 			typeof(global::Windows.UI.Xaml.Media.PlaneProjection), 
 			new FrameworkPropertyMetadata(default(double)));
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty GlobalOffsetZProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
@@ -233,7 +233,7 @@ namespace Windows.UI.Xaml.Media
 			typeof(global::Windows.UI.Xaml.Media.PlaneProjection), 
 			new FrameworkPropertyMetadata(default(double)));
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty LocalOffsetXProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
@@ -241,7 +241,7 @@ namespace Windows.UI.Xaml.Media
 			typeof(global::Windows.UI.Xaml.Media.PlaneProjection), 
 			new FrameworkPropertyMetadata(default(double)));
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty LocalOffsetYProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
@@ -249,7 +249,7 @@ namespace Windows.UI.Xaml.Media
 			typeof(global::Windows.UI.Xaml.Media.PlaneProjection), 
 			new FrameworkPropertyMetadata(default(double)));
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty LocalOffsetZProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
@@ -257,7 +257,7 @@ namespace Windows.UI.Xaml.Media
 			typeof(global::Windows.UI.Xaml.Media.PlaneProjection), 
 			new FrameworkPropertyMetadata(default(double)));
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty ProjectionMatrixProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
@@ -265,7 +265,7 @@ namespace Windows.UI.Xaml.Media
 			typeof(global::Windows.UI.Xaml.Media.PlaneProjection), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.Media3D.Matrix3D)));
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty RotationXProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
@@ -273,7 +273,7 @@ namespace Windows.UI.Xaml.Media
 			typeof(global::Windows.UI.Xaml.Media.PlaneProjection), 
 			new FrameworkPropertyMetadata(default(double)));
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty RotationYProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
@@ -281,7 +281,7 @@ namespace Windows.UI.Xaml.Media
 			typeof(global::Windows.UI.Xaml.Media.PlaneProjection), 
 			new FrameworkPropertyMetadata(default(double)));
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty RotationZProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
@@ -289,7 +289,7 @@ namespace Windows.UI.Xaml.Media
 			typeof(global::Windows.UI.Xaml.Media.PlaneProjection), 
 			new FrameworkPropertyMetadata(default(double)));
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public PlaneProjection() : base()
 		{

@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Media.Audio
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class AudioNodeEmitter 
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::System.Numerics.Vector3 Position
 		{
@@ -21,7 +21,7 @@ namespace Windows.Media.Audio
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  double Gain
 		{
@@ -35,7 +35,7 @@ namespace Windows.Media.Audio
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::System.Numerics.Vector3 DopplerVelocity
 		{
@@ -49,7 +49,7 @@ namespace Windows.Media.Audio
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  double DopplerScale
 		{
@@ -63,7 +63,7 @@ namespace Windows.Media.Audio
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  double DistanceScale
 		{
@@ -77,7 +77,7 @@ namespace Windows.Media.Audio
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::System.Numerics.Vector3 Direction
 		{
@@ -91,7 +91,7 @@ namespace Windows.Media.Audio
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Media.Audio.AudioNodeEmitterDecayModel DecayModel
 		{
@@ -101,7 +101,7 @@ namespace Windows.Media.Audio
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  bool IsDopplerDisabled
 		{
@@ -111,7 +111,7 @@ namespace Windows.Media.Audio
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Media.Audio.AudioNodeEmitterShape Shape
 		{
@@ -121,7 +121,7 @@ namespace Windows.Media.Audio
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Media.Audio.SpatialAudioModel SpatialAudioModel
 		{
@@ -135,7 +135,7 @@ namespace Windows.Media.Audio
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public AudioNodeEmitter( global::Windows.Media.Audio.AudioNodeEmitterShape shape,  global::Windows.Media.Audio.AudioNodeEmitterDecayModel decayModel,  global::Windows.Media.Audio.AudioNodeEmitterSettings settings) 
 		{
@@ -143,7 +143,7 @@ namespace Windows.Media.Audio
 		}
 		#endif
 		// Forced skipping of method Windows.Media.Audio.AudioNodeEmitter.AudioNodeEmitter(Windows.Media.Audio.AudioNodeEmitterShape, Windows.Media.Audio.AudioNodeEmitterDecayModel, Windows.Media.Audio.AudioNodeEmitterSettings)
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public AudioNodeEmitter() 
 		{

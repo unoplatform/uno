@@ -150,6 +150,8 @@ namespace Windows.UI.Xaml.Controls
 
 		internal IEnumerable<SelectorItem> CachedItemViews => Enumerable.Empty<SelectorItem>();
 
+		private bool UseCollectionAnimations => XamlParent?.UseCollectionAnimations ?? true;
+
 		public NativeListViewBase() :
 			this(new RectangleF(),
 				//Supply a layout, otherwise UICollectionView constructor throws ArgumentNullException. This will later be set to ListViewLayout or GridViewLayout as desired.
@@ -212,19 +214,22 @@ namespace Windows.UI.Xaml.Controls
 		{
 			if (TryApplyCollectionChange())
 			{
-				NativeLayout?.NotifyCollectionChange(new CollectionChangedOperation(
-						indexPaths.First().ToIndexPath(),
-						indexPaths.Length,
-						NotifyCollectionChangedAction.Add,
-						CollectionChangedOperation.Element.Item
-					));
-				try
+				using (EnableOrDisableAnimations())
 				{
-					base.InsertItems(indexPaths);
-				}
-				catch (MonoTouchException e)
-				{
-					this.Log().Error("Error when updating collection", e);
+					NativeLayout?.NotifyCollectionChange(new CollectionChangedOperation(
+									indexPaths.First().ToIndexPath(),
+									indexPaths.Length,
+									NotifyCollectionChangedAction.Add,
+									CollectionChangedOperation.Element.Item
+								));
+					try
+					{
+						base.InsertItems(indexPaths);
+					}
+					catch (MonoTouchException e)
+					{
+						this.Log().Error("Error when updating collection", e);
+					}
 				}
 			}
 		}
@@ -233,19 +238,22 @@ namespace Windows.UI.Xaml.Controls
 		{
 			if (TryApplyCollectionChange())
 			{
-				NativeLayout?.NotifyCollectionChange(new CollectionChangedOperation(
-						IndexPath.FromRowSection(0, (int)sections.FirstIndex),
-						(int)sections.Count,
-						NotifyCollectionChangedAction.Add,
-						CollectionChangedOperation.Element.Group
-					));
-				try
+				using (EnableOrDisableAnimations())
 				{
-					base.InsertSections(sections);
-				}
-				catch (MonoTouchException e)
-				{
-					this.Log().Error("Error when updating collection", e);
+					NativeLayout?.NotifyCollectionChange(new CollectionChangedOperation(
+									IndexPath.FromRowSection(0, (int)sections.FirstIndex),
+									(int)sections.Count,
+									NotifyCollectionChangedAction.Add,
+									CollectionChangedOperation.Element.Group
+								));
+					try
+					{
+						base.InsertSections(sections);
+					}
+					catch (MonoTouchException e)
+					{
+						this.Log().Error("Error when updating collection", e);
+					}
 				}
 			}
 		}
@@ -254,19 +262,22 @@ namespace Windows.UI.Xaml.Controls
 		{
 			if (TryApplyCollectionChange())
 			{
-				NativeLayout?.NotifyCollectionChange(new CollectionChangedOperation(
-						indexPaths.First().ToIndexPath(),
-						indexPaths.Length,
-						NotifyCollectionChangedAction.Remove,
-						CollectionChangedOperation.Element.Item
-					));
-				try
+				using (EnableOrDisableAnimations())
 				{
-					base.DeleteItems(indexPaths);
-				}
-				catch (MonoTouchException e)
-				{
-					this.Log().Error("Error when updating collection", e);
+					NativeLayout?.NotifyCollectionChange(new CollectionChangedOperation(
+									indexPaths.First().ToIndexPath(),
+									indexPaths.Length,
+									NotifyCollectionChangedAction.Remove,
+									CollectionChangedOperation.Element.Item
+								));
+					try
+					{
+						base.DeleteItems(indexPaths);
+					}
+					catch (MonoTouchException e)
+					{
+						this.Log().Error("Error when updating collection", e);
+					}
 				}
 			}
 		}
@@ -275,19 +286,22 @@ namespace Windows.UI.Xaml.Controls
 		{
 			if (TryApplyCollectionChange())
 			{
-				NativeLayout?.NotifyCollectionChange(new CollectionChangedOperation(
-						IndexPath.FromRowSection(0, (int)sections.FirstIndex),
-						(int)sections.Count,
-						NotifyCollectionChangedAction.Remove,
-						CollectionChangedOperation.Element.Group
-					));
-				try
+				using (EnableOrDisableAnimations())
 				{
-					base.DeleteSections(sections);
-				}
-				catch (MonoTouchException e)
-				{
-					this.Log().Error("Error when updating collection", e);
+					NativeLayout?.NotifyCollectionChange(new CollectionChangedOperation(
+									IndexPath.FromRowSection(0, (int)sections.FirstIndex),
+									(int)sections.Count,
+									NotifyCollectionChangedAction.Remove,
+									CollectionChangedOperation.Element.Group
+								));
+					try
+					{
+						base.DeleteSections(sections);
+					}
+					catch (MonoTouchException e)
+					{
+						this.Log().Error("Error when updating collection", e);
+					}
 				}
 			}
 		}
@@ -296,25 +310,34 @@ namespace Windows.UI.Xaml.Controls
 		{
 			if (TryApplyCollectionChange())
 			{
-				NativeLayout?.NotifyCollectionChange(new CollectionChangedOperation(
-						indexPaths.First().ToIndexPath(),
-						indexPaths.Length,
-						NotifyCollectionChangedAction.Replace,
-						CollectionChangedOperation.Element.Item
-					));
-				base.ReloadItems(indexPaths);
+				using (EnableOrDisableAnimations())
+				{
+					NativeLayout?.NotifyCollectionChange(new CollectionChangedOperation(
+									indexPaths.First().ToIndexPath(),
+									indexPaths.Length,
+									NotifyCollectionChangedAction.Replace,
+									CollectionChangedOperation.Element.Item
+								));
+					base.ReloadItems(indexPaths);
+				}
 			}
 		}
 
 		public override void ReloadSections(NSIndexSet sections)
 		{
-			NativeLayout?.NotifyCollectionChange(new CollectionChangedOperation(
-				IndexPath.FromRowSection(0, (int)sections.FirstIndex),
-				(int)sections.Count,
-				NotifyCollectionChangedAction.Replace,
-				CollectionChangedOperation.Element.Group
-			));
-			base.ReloadSections(sections);
+			if (TryApplyCollectionChange())
+			{
+				using (EnableOrDisableAnimations())
+				{
+					NativeLayout?.NotifyCollectionChange(new CollectionChangedOperation(
+						IndexPath.FromRowSection(0, (int)sections.FirstIndex),
+						(int)sections.Count,
+						NotifyCollectionChangedAction.Replace,
+						CollectionChangedOperation.Element.Group
+					));
+					base.ReloadSections(sections);
+				}
+			}
 		}
 
 		/// <summary>
@@ -334,6 +357,18 @@ namespace Windows.UI.Xaml.Controls
 			}
 
 			return true;
+		}
+
+		private IDisposable EnableOrDisableAnimations()
+		{
+			if (UseCollectionAnimations)
+			{
+				return null;
+			}
+
+			AnimationsEnabled = false;
+
+			return Disposable.Create(() => AnimationsEnabled = true);
 		}
 
 		internal SelectorItem ContainerFromIndex(NSIndexPath indexPath)
@@ -415,7 +450,7 @@ namespace Windows.UI.Xaml.Controls
 					continue;
 				}
 
-				var isAnimating = unoCell.Layer.AnimationKeys?.Any() ?? false;
+				var isAnimating = unoCell./* cache */Layer.AnimationKeys?.Any() ?? false;
 				if (isAnimating)
 				{
 					// Don't bother checking for consistency while items are animating
@@ -429,22 +464,25 @@ namespace Windows.UI.Xaml.Controls
 				);
 				var actualItem = unoCell.Content?.DataContext;
 
-				var areMatching = Object.Equals(expectedItem, actualItem);
-				if (
-					// This check is present for the support of explicit ListViewItem 
-					// through the Items property. The DataContext may be set to some
-					// user defined object.
-					XamlParent.ItemsSource != null
-
-					&& !areMatching
-				)
+				if (!XamlParent.IsItemItsOwnContainer(expectedItem))
 				{
-					// This is a failsafe for in-place collection changes which leave the list in an inconsistent state, for exact reasons known only to UICollectionView.
-					if (this.Log().IsEnabled(LogLevel.Warning))
+					var areMatching = Object.Equals(expectedItem, actualItem);
+					if (
+						// This check is present for the support of explicit ListViewItem 
+						// through the Items property. The DataContext may be set to some
+						// user defined object.
+						XamlParent.ItemsSource != null
+
+						&& !areMatching
+					)
 					{
-						(this).Log().Warn($"Cell had context {actualItem} instead of {expectedItem}, scheduling a refresh to ensure correct display of list. (IndexPath={tuple.Path}");
+						// This is a failsafe for in-place collection changes which leave the list in an inconsistent state, for exact reasons known only to UICollectionView.
+						if (this.Log().IsEnabled(LogLevel.Warning))
+						{
+							(this).Log().Warn($"Cell had context {actualItem} instead of {expectedItem}, scheduling a refresh to ensure correct display of list. (IndexPath={tuple.Path}");
+						}
+						DispatchReloadData();
 					}
-					DispatchReloadData();
 				}
 			}
 		}

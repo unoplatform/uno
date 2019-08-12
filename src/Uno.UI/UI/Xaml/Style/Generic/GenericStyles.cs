@@ -24,7 +24,7 @@ namespace Windows.UI.Xaml
 		{
 			if (Uno.UI.FeatureConfiguration.Style.UseUWPDefaultStyles)
 			{
-#if !NET46
+#if !NET461
 				Style.RegisterDefaultStyleForType(typeof(Controls.Button), Uno.UI.GlobalStaticResources.XamlDefaultButton);
 				Style.RegisterDefaultStyleForType(typeof(Controls.TextBox), Uno.UI.GlobalStaticResources.XamlDefaultTextBox);
 				Style.RegisterDefaultStyleForType(typeof(Controls.PasswordBox), Uno.UI.GlobalStaticResources.XamlDefaultPasswordBox);
@@ -39,6 +39,7 @@ namespace Windows.UI.Xaml
 				Style.RegisterDefaultStyleForType(typeof(Controls.Primitives.ToggleButton), Uno.UI.GlobalStaticResources.XamlDefaultToggleButton);
 				Style.RegisterDefaultStyleForType(typeof(Controls.ToggleSwitch), Uno.UI.GlobalStaticResources.XamlDefaultToggleSwitch);
 				Style.RegisterDefaultStyleForType(typeof(Controls.Pivot), Uno.UI.GlobalStaticResources.XamlDefaultPivot);
+				Style.RegisterDefaultStyleForType(typeof(Controls.MenuBar), Uno.UI.GlobalStaticResources.XamlDefaultMenuBar);
 
 #if !__WASM__
 				Style.RegisterDefaultStyleForType(typeof(Controls.AppBar), Uno.UI.GlobalStaticResources.XamlCommandBar);

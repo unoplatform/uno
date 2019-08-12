@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Devices.Perception
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class PerceptionColorFrameSourceWatcher 
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Devices.Enumeration.DeviceWatcherStatus Status
 		{
@@ -26,21 +26,21 @@ namespace Windows.Devices.Perception
 		// Forced skipping of method Windows.Devices.Perception.PerceptionColorFrameSourceWatcher.EnumerationCompleted.add
 		// Forced skipping of method Windows.Devices.Perception.PerceptionColorFrameSourceWatcher.EnumerationCompleted.remove
 		// Forced skipping of method Windows.Devices.Perception.PerceptionColorFrameSourceWatcher.Status.get
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  void Start()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Perception.PerceptionColorFrameSourceWatcher", "void PerceptionColorFrameSourceWatcher.Start()");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  void Stop()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Perception.PerceptionColorFrameSourceWatcher", "void PerceptionColorFrameSourceWatcher.Stop()");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Devices.Perception.PerceptionColorFrameSourceWatcher, object> EnumerationCompleted
 		{
@@ -56,7 +56,7 @@ namespace Windows.Devices.Perception
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Devices.Perception.PerceptionColorFrameSourceWatcher, global::Windows.Devices.Perception.PerceptionColorFrameSourceAddedEventArgs> SourceAdded
 		{
@@ -72,7 +72,7 @@ namespace Windows.Devices.Perception
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Devices.Perception.PerceptionColorFrameSourceWatcher, global::Windows.Devices.Perception.PerceptionColorFrameSourceRemovedEventArgs> SourceRemoved
 		{
@@ -88,7 +88,7 @@ namespace Windows.Devices.Perception
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Devices.Perception.PerceptionColorFrameSourceWatcher, object> Stopped
 		{

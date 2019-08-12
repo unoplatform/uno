@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.ApplicationModel.ExtendedExecution
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class ExtendedExecutionSession : global::System.IDisposable
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.ApplicationModel.ExtendedExecution.ExtendedExecutionReason Reason
 		{
@@ -21,7 +21,7 @@ namespace Windows.ApplicationModel.ExtendedExecution
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  uint PercentProgress
 		{
@@ -35,7 +35,7 @@ namespace Windows.ApplicationModel.ExtendedExecution
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  string Description
 		{
@@ -49,7 +49,7 @@ namespace Windows.ApplicationModel.ExtendedExecution
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public ExtendedExecutionSession() 
 		{
@@ -65,21 +65,21 @@ namespace Windows.ApplicationModel.ExtendedExecution
 		// Forced skipping of method Windows.ApplicationModel.ExtendedExecution.ExtendedExecutionSession.PercentProgress.set
 		// Forced skipping of method Windows.ApplicationModel.ExtendedExecution.ExtendedExecutionSession.Revoked.add
 		// Forced skipping of method Windows.ApplicationModel.ExtendedExecution.ExtendedExecutionSession.Revoked.remove
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.ExtendedExecution.ExtendedExecutionResult> RequestExtensionAsync()
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<ExtendedExecutionResult> ExtendedExecutionSession.RequestExtensionAsync() is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  void Dispose()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.ExtendedExecution.ExtendedExecutionSession", "void ExtendedExecutionSession.Dispose()");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  event global::Windows.Foundation.TypedEventHandler<object, global::Windows.ApplicationModel.ExtendedExecution.ExtendedExecutionRevokedEventArgs> Revoked
 		{

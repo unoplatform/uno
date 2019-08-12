@@ -6,7 +6,10 @@ namespace Windows.Globalization
 {
 	public static partial class ClockIdentifiers
 	{
-		public static string TwelveHour { get; } = "12HourClock";
-		public static string TwentyFourHour { get; } = "24HourClock";
+		internal const string TwelveHourValue = "12HourClock";
+		public static string TwelveHour => TwelveHourValue;
+
+		internal const string TwentyFourHourValue = "24HourClock";
+		public static string TwentyFourHour => TwentyFourHourValue;
 	}
 }

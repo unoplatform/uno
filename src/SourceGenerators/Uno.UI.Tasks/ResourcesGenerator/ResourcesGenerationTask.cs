@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using Microsoft.Build.Framework;
@@ -51,7 +52,7 @@ namespace Uno.UI.Tasks.ResourcesGenerator
 			{
 				GeneratedFiles = Resources
 					// TODO: Add support for other resources file names
-					.Where(resource => resource.ItemSpec?.EndsWith("Resources.resw") ?? false)
+					.Where(resource => resource.ItemSpec?.EndsWith("resw") ?? false)
 					// TODO: Merge duplicates (based on file name and qualifiers)
 					.SelectMany(GetResourcesForItem)
 					.Trim()
@@ -90,21 +91,50 @@ namespace Uno.UI.Tasks.ResourcesGenerator
 
 			this.Log().Info("{0} resources found".InvariantCultureFormat(resources.Count));
 
-			if (TargetPlatform == "android")
+			if (Path.GetFileNameWithoutExtension(resource.ItemSpec).Equals("Resources", StringComparison.OrdinalIgnoreCase))
 			{
-				yield return GenerateAndroidResources(language, sourceLastWriteTime, resources, comment);
-			}
-			else if (TargetPlatform == "ios")
-			{
-				yield return GenerateiOSResources(language, sourceLastWriteTime, resources, comment);
+				if (TargetPlatform == "android")
+				{
+					yield return GenerateAndroidResources(language, sourceLastWriteTime, resources, comment, resource);
+				}
+				else if (TargetPlatform == "ios")
+				{
+					yield return GenerateiOSResources(language, sourceLastWriteTime, resources, comment);
+				}
 			}
 
-			yield return GenerateUnoPRIResources(language, sourceLastWriteTime, resources, comment);
+			yield return GenerateUnoPRIResources(language, sourceLastWriteTime, resources, comment, resource);
 		}
 
-		private ITaskItem GenerateUnoPRIResources(string language, DateTime sourceLastWriteTime, Dictionary<string, string> resources, string comment)
+		private ITaskItem GenerateUnoPRIResources(string language, DateTime sourceLastWriteTime, Dictionary<string, string> resources, string comment, ITaskItem resource)
 		{
-			var logicalTargetPath = Path.Combine($"{language}", "resources.upri");
+			string buildBasePath()
+			{
+				if (Path.IsPathRooted(resource.ItemSpec))
+				{
+					string definingProjectDirectory = resource.GetMetadata("DefiningProjectDirectory");
+					if (resource.ItemSpec.StartsWith(definingProjectDirectory))
+					{
+						return resource.ItemSpec.Replace(definingProjectDirectory, "");
+					}
+					else if (resource.ItemSpec.StartsWith(TargetProjectDirectory))
+					{
+						return resource.ItemSpec.Replace(TargetProjectDirectory, "");
+					}
+					else
+					{
+						return language;
+					}
+				}
+				else
+				{
+					return Path.GetDirectoryName(resource.ItemSpec);
+				}
+			}
+
+
+			var resourceMapName = Path.GetFileNameWithoutExtension(resource.ItemSpec);
+			var logicalTargetPath = Path.Combine(buildBasePath(), resourceMapName + ".upri");
 			var actualTargetPath = Path.Combine(OutputPath, logicalTargetPath);
 
 			Directory.CreateDirectory(Path.GetDirectoryName(actualTargetPath));
@@ -115,7 +145,7 @@ namespace Uno.UI.Tasks.ResourcesGenerator
 			{
 				this.Log().Info("Writing resources to {0}".InvariantCultureFormat(actualTargetPath));
 
-				UnoPRIResourcesWriter.Write(language, resources, actualTargetPath, comment);
+				UnoPRIResourcesWriter.Write(resourceMapName, language, resources, actualTargetPath, comment);
 			}
 			else
 			{
@@ -162,12 +192,33 @@ namespace Uno.UI.Tasks.ResourcesGenerator
 			);
 		}
 
-		private ITaskItem GenerateAndroidResources(string language, DateTime sourceLastWriteTime, Dictionary<string, string> resources, string comment)
+		private ITaskItem GenerateAndroidResources(string language, DateTime sourceLastWriteTime, Dictionary<string, string> resources, string comment, ITaskItem resource)
 		{
-			// Resources targetting the default application language must go in a directory called "Values" (no language extension).
-			var localizedDirectory = DefaultLanguage == language ? "values" : $"values-{language}";
+			string localizedDirectory;
+			if (language == DefaultLanguage)
+			{
+				// Resources targeting the default application language must go in a directory called "values" (no language extension).
+				localizedDirectory = "values";
+			}
+			else
+			{
+				// More info about localized resources file structure and codes on Android:
+				// https://developer.android.com/guide/topics/resources/providing-resources#AlternativeResources
+				var cultureWithRegion = new CultureInfo(language);
+				var languageOnly = cultureWithRegion;
+				while (languageOnly.Parent != CultureInfo.InvariantCulture)
+				{
+					languageOnly = languageOnly.Parent;
+				}
 
-			var logicalTargetPath = Path.Combine(localizedDirectory, "strings.xml"); // this path is required by Xamarin
+				localizedDirectory = cultureWithRegion.LCID < 255
+					? $"values-{languageOnly.IetfLanguageTag}" // No Region info
+					: $"values-b+{languageOnly.IetfLanguageTag}+{cultureWithRegion.LCID}";
+			}
+
+			// The file name have to be unique, otherwise it could be overwritten by a file with the same named defined directly in the application's head
+			var resourceMapName = Path.GetFileNameWithoutExtension(resource.ItemSpec)?.ToLowerInvariant();
+			var logicalTargetPath = Path.Combine(localizedDirectory, $"{resourceMapName}_resw-strings.xml");
 			var actualTargetPath = Path.Combine(OutputPath, logicalTargetPath);
 
 			var targetLastWriteTime = new FileInfo(actualTargetPath).LastWriteTimeUtc;

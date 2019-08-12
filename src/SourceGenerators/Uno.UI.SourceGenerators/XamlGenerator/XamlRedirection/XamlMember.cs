@@ -1,11 +1,12 @@
 ﻿extern alias __ms;
 extern alias __uno;
 
+using System;
 using Uno.Extensions;
 
 namespace Uno.UI.SourceGenerators.XamlGenerator.XamlRedirection
 {
-	internal class XamlMember
+	internal class XamlMember : IEquatable<XamlMember>
 	{
 		private string _name;
 		private XamlType _declaringType;
@@ -40,7 +41,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator.XamlRedirection
 			=> _declaringType != null ? _declaringType : XamlConfig.IsUnoXaml ? XamlType.FromType(_unoMember.DeclaringType) : XamlType.FromType(_msMember.DeclaringType);
 
 		public XamlType Type
-			=> XamlConfig.IsUnoXaml ? XamlType.FromType(_unoMember.Type) : XamlType.FromType(_msMember.Type);
+			=> XamlConfig.IsUnoXaml ? XamlType.FromType(_unoMember?.Type) : XamlType.FromType(_msMember?.Type);
 
 		public string PreferredXamlNamespace 
 			=> XamlConfig.IsUnoXaml ? _unoMember.PreferredXamlNamespace : _msMember.PreferredXamlNamespace;
@@ -49,5 +50,25 @@ namespace Uno.UI.SourceGenerators.XamlGenerator.XamlRedirection
 			=> _declaringType != null ? _isAttachable : XamlConfig.IsUnoXaml ? _unoMember.IsAttachable : _msMember.IsAttachable;
 
 		public override string ToString() => XamlConfig.IsUnoXaml ? _unoMember.ToString() : _msMember.ToString();
+
+		public bool Equals(XamlMember other)
+			=> _name.HasValue()
+			? (
+				other != null
+				&& _name == other._name
+				&& _declaringType == other._declaringType
+				&& _isAttachable == other.IsAttachable
+			)
+			: XamlConfig.IsUnoXaml ? _unoMember.Equals(other?._unoMember) : _msMember.Equals(other?._msMember);
+
+		public override bool Equals(object other)
+			=> other is XamlMember otherMember ? Equals(otherMember) : false;
+
+		public override int GetHashCode()
+			=> _name.HasValue()
+			? _name.GetHashCode()
+			: XamlConfig.IsUnoXaml
+				? _unoMember.GetHashCode()
+				: _msMember.GetHashCode();
 	}
 }

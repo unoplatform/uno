@@ -6,7 +6,7 @@ namespace Windows.UI.Xaml
 {
 	public partial class AdaptiveTrigger : StateTriggerBase
 	{
-		private SerialDisposable _sizeChangedSubscription = new SerialDisposable();
+		private readonly SerialDisposable _sizeChangedSubscription = new SerialDisposable();
 
 		public AdaptiveTrigger()
 		{
@@ -22,25 +22,35 @@ namespace Windows.UI.Xaml
 		{
 			var size = Window.Current.Bounds;
 
-			var isMinWidthSet = MinWindowWidth != -1;
-			var isMinHeightSet = MinWindowHeight != -1;
+			var w = size.Width;
+			var h = size.Height;
+			var mw = MinWindowWidth;
+			var mh = MinWindowHeight;
 
-			var widthIsActive = isMinWidthSet && size.Width >= MinWindowWidth;
-			var heightIsActive = isMinHeightSet && size.Height >= MinWindowHeight;
+			var isActive = w >= mw && h >= mh;
 
-			SetActive(
-				(isMinWidthSet && isMinHeightSet && heightIsActive && widthIsActive)
-				|| (isMinWidthSet && widthIsActive)
-				|| (isMinHeightSet && heightIsActive)
-			);
+			if (isActive && mw >= 0)
+			{
+				// If we have 'mw' and 'mh' we activate using the 'MinWidthTrigger' as it's higher ranked by 'ViusalStateGroup.GetActiveTrigger()'
+				SetActivePrecedence(StateTriggerPrecedence.MinWidthTrigger);
+			}
+			else if (isActive)
+			{
+				// We don't validate that 'mh > 0' so we are able to activate trigger with 'MinWindowWidth = 0' and 'MinWindowHeight = 0'
+				SetActivePrecedence(StateTriggerPrecedence.MinHeightTrigger);
+			}
+			else
+			{
+				SetActivePrecedence(StateTriggerPrecedence.Inactive);
+			}
 		}
 
 		#region MinWindowHeight DependencyProperty
 
 		public double MinWindowHeight
 		{
-			get { return (double)this.GetValue(MinWindowHeightProperty); }
-			set { this.SetValue(MinWindowHeightProperty, value); }
+			get => (double)this.GetValue(MinWindowHeightProperty);
+			set => this.SetValue(MinWindowHeightProperty, value);
 		}
 
 		// Using a DependencyProperty as the backing store for MinWindowHeight.  This enables animation, styling, binding, etc...
@@ -58,8 +68,8 @@ namespace Windows.UI.Xaml
 
 		public double MinWindowWidth
 		{
-			get { return (double)this.GetValue(MinWindowWidthProperty); }
-			set { this.SetValue(MinWindowWidthProperty, value); }
+			get => (double)GetValue(MinWindowWidthProperty);
+			set => SetValue(MinWindowWidthProperty, value);
 		}
 
 		// Using a DependencyProperty as the backing store for MinWindowWidthProperty.  This enables animation, styling, binding, etc...

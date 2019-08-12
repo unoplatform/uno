@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Graphics.Display
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class DisplayEnhancementOverrideCapabilities 
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  bool IsBrightnessControlSupported
 		{
@@ -17,7 +17,7 @@ namespace Windows.Graphics.Display
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  bool IsBrightnessNitsControlSupported
 		{
@@ -29,7 +29,7 @@ namespace Windows.Graphics.Display
 		#endif
 		// Forced skipping of method Windows.Graphics.Display.DisplayEnhancementOverrideCapabilities.IsBrightnessControlSupported.get
 		// Forced skipping of method Windows.Graphics.Display.DisplayEnhancementOverrideCapabilities.IsBrightnessNitsControlSupported.get
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::System.Collections.Generic.IReadOnlyList<global::Windows.Graphics.Display.NitRange> GetSupportedNitRanges()
 		{

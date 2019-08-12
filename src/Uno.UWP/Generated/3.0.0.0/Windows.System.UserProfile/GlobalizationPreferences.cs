@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.System.UserProfile
 {
-	#if false || false || NET46 || __WASM__ || __MACOS__
+	#if false || false || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class GlobalizationPreferences 
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::System.Collections.Generic.IReadOnlyList<string> Calendars
 		{
@@ -17,7 +17,7 @@ namespace Windows.System.UserProfile
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::System.Collections.Generic.IReadOnlyList<string> Clocks
 		{
@@ -27,7 +27,7 @@ namespace Windows.System.UserProfile
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::System.Collections.Generic.IReadOnlyList<string> Currencies
 		{
@@ -37,7 +37,7 @@ namespace Windows.System.UserProfile
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static string HomeGeographicRegion
 		{
@@ -47,7 +47,7 @@ namespace Windows.System.UserProfile
 			}
 		}
 		#endif
-		#if false || false || NET46 || __WASM__ || __MACOS__
+		#if false || false || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::System.Collections.Generic.IReadOnlyList<string> Languages
 		{
@@ -57,7 +57,7 @@ namespace Windows.System.UserProfile
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.Globalization.DayOfWeek WeekStartsOn
 		{
@@ -67,21 +67,21 @@ namespace Windows.System.UserProfile
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.System.UserProfile.GlobalizationPreferencesForUser GetForUser( global::Windows.System.User user)
 		{
 			throw new global::System.NotImplementedException("The member GlobalizationPreferencesForUser GlobalizationPreferences.GetForUser(User user) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static bool TrySetHomeGeographicRegion( string region)
 		{
 			throw new global::System.NotImplementedException("The member bool GlobalizationPreferences.TrySetHomeGeographicRegion(string region) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static bool TrySetLanguages( global::System.Collections.Generic.IEnumerable<string> languageTags)
 		{

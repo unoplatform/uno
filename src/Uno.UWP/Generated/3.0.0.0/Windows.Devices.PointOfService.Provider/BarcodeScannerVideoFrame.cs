@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Devices.PointOfService.Provider
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class BarcodeScannerVideoFrame : global::System.IDisposable
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Graphics.Imaging.BitmapPixelFormat Format
 		{
@@ -17,7 +17,7 @@ namespace Windows.Devices.PointOfService.Provider
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  uint Height
 		{
@@ -27,7 +27,7 @@ namespace Windows.Devices.PointOfService.Provider
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Storage.Streams.IBuffer PixelData
 		{
@@ -37,7 +37,7 @@ namespace Windows.Devices.PointOfService.Provider
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  uint Width
 		{
@@ -51,7 +51,7 @@ namespace Windows.Devices.PointOfService.Provider
 		// Forced skipping of method Windows.Devices.PointOfService.Provider.BarcodeScannerVideoFrame.Width.get
 		// Forced skipping of method Windows.Devices.PointOfService.Provider.BarcodeScannerVideoFrame.Height.get
 		// Forced skipping of method Windows.Devices.PointOfService.Provider.BarcodeScannerVideoFrame.PixelData.get
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  void Dispose()
 		{

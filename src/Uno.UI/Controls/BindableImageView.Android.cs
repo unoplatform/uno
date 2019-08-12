@@ -24,7 +24,6 @@ using System.Threading;
 using Java.Lang.Ref;
 using System.IO;
 using Math = System.Math;
-using System.Drawing;
 using Size = System.Drawing.Size;
 using System.Reflection;
 using Windows.UI.Core;
@@ -237,7 +236,7 @@ namespace Uno.UI.Controls
                 || newUri.IsFile
                 || newUri.IsLocalResource())
 			{
-				SetImageResource(GetResourceId(newUri.PathAndQuery.TrimStart('/')));			
+				SetImageResource(GetResourceId(newUri.PathAndQuery.TrimStart(new[] { '/' })));			
 			}
 			else if (UriSource.StartsWith("res:///", StringComparison.OrdinalIgnoreCase))
 			{

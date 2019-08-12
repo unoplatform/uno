@@ -1,4 +1,4 @@
-﻿#if NET46
+﻿#if NET461
 #pragma warning disable CS0067 
 #endif
 
@@ -44,7 +44,7 @@ namespace Windows.UI.Xaml.Controls
 
 		static ScrollViewer()
 		{
-#if !NET46
+#if !NET461
 			HorizontalContentAlignmentProperty.OverrideMetadata(
 				typeof(ScrollViewer),
 				new FrameworkPropertyMetadata(HorizontalAlignment.Stretch)
@@ -523,7 +523,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-#if !NET46
+#if !NET461
 		/// <summary>
 		/// Sets the content of the ScrollViewer
 		/// </summary>
@@ -549,12 +549,12 @@ namespace Windows.UI.Xaml.Controls
 				throw new InvalidOperationException("The template part ScrollContentPresenter could not be found or is not a ScrollContentPresenter");
 			}
 
-			_sv.Content = Content as View;
+			ApplyScrollContentPresenterContent();
+
+			OnApplyTemplatePartial();
 
 			// Apply correct initial zoom settings
 			OnZoomModeChanged(ZoomMode);
-
-			OnApplyTemplatePartial();
 
 			OnBringIntoViewOnFocusChangeChangedPartial(BringIntoViewOnFocusChange);
 		}
@@ -571,14 +571,33 @@ namespace Windows.UI.Xaml.Controls
 				// for the lack of TemplatedParentScope support
 				ClearContentTemplatedParent(oldValue);
 
-				_sv.Content = Content as View;
-
-				// Propagate the ScrollViewer's own templated parent, instead of 
-				// the scrollviewer itself (through ScrollContentPreset
-				SynchronizeContentTemplatedParent(TemplatedParent);
+				ApplyScrollContentPresenterContent();
 			}
 
 			UpdateSizeChangedSubscription();
+		}
+
+		private void ApplyScrollContentPresenterContent()
+		{
+			// Stop the automatic propagation of the templated parent on the Content
+			// This prevents issues when the a ScrollViewer is hosted in a control template
+			// and its content is a ContentControl or ContentPresenter, which has a TemplateBinding
+			// on the Content property. This can make the Content added twice in the visual tree.
+			StopContentTemplatedParentPropagation();
+
+			_sv.Content = Content as View;
+
+			// Propagate the ScrollViewer's own templated parent, instead of 
+			// the scrollviewer itself (through ScrollContentPreset
+			SynchronizeContentTemplatedParent(TemplatedParent);
+		}
+
+		private void StopContentTemplatedParentPropagation()
+		{
+			if (Content is IDependencyObjectStoreProvider provider)
+			{
+				provider.Store.SetValue(provider.Store.TemplatedParentProperty, null, DependencyPropertyValuePrecedences.Local);
+			}
 		}
 
 		private void UpdateSizeChangedSubscription(bool isCleanupRequired = false)

@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Devices.Sms
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class SmsMessageRegistration 
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  string Id
 		{
@@ -17,7 +17,7 @@ namespace Windows.Devices.Sms
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::System.Collections.Generic.IReadOnlyList<global::Windows.Devices.Sms.SmsMessageRegistration> AllRegistrations
 		{
@@ -28,7 +28,7 @@ namespace Windows.Devices.Sms
 		}
 		#endif
 		// Forced skipping of method Windows.Devices.Sms.SmsMessageRegistration.Id.get
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  void Unregister()
 		{
@@ -38,14 +38,14 @@ namespace Windows.Devices.Sms
 		// Forced skipping of method Windows.Devices.Sms.SmsMessageRegistration.MessageReceived.add
 		// Forced skipping of method Windows.Devices.Sms.SmsMessageRegistration.MessageReceived.remove
 		// Forced skipping of method Windows.Devices.Sms.SmsMessageRegistration.AllRegistrations.get
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.Devices.Sms.SmsMessageRegistration Register( string id,  global::Windows.Devices.Sms.SmsFilterRules filterRules)
 		{
 			throw new global::System.NotImplementedException("The member SmsMessageRegistration SmsMessageRegistration.Register(string id, SmsFilterRules filterRules) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Devices.Sms.SmsMessageRegistration, global::Windows.Devices.Sms.SmsMessageReceivedTriggerDetails> MessageReceived
 		{

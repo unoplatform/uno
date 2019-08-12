@@ -1,11 +1,29 @@
 using System;
 using System.IO;
+using System.Runtime.InteropServices;
 using Uno.Foundation;
+using Uno.Foundation.Interop;
 
 namespace Windows.Storage
 {
-	public  partial class ApplicationData 
+	partial class ApplicationData 
 	{
+		internal static void Init()
+		{
+			// Nothing to do here, this is only a way to explicitely poke the 'ApplicationData' so the
+			// 'Current' is instanciated and the 'PartialCtor' is invoked.
+		}
+
+		partial void PartialCtor()
+		{
+			StorageFolder.MakePersistent(
+				LocalFolder,
+				RoamingFolder,
+				// TemporaryFolder.Path: No needs to persist it!
+				// LocalCacheFolder.Path: Usually this does needs to be persisted, so keep it disable by default for perf consideration
+				SharedLocalFolder);
+		}
+
 		private static string GetLocalCacheFolder()
 			=> WebAssemblyRuntime.IsWebAssembly ? "/cache" : @".\cache";
 
@@ -14,5 +32,11 @@ namespace Windows.Storage
 
 		private static string GetLocalFolder()
 			=> WebAssemblyRuntime.IsWebAssembly ? "/local" : @".\local";
+
+		private static string GetRoamingFolder()
+			=> WebAssemblyRuntime.IsWebAssembly ? "/roaming" : @".\roaming";
+
+		private static string GetSharedLocalFolder()
+			=> WebAssemblyRuntime.IsWebAssembly ? "/shared" : @".\shared";
 	}
 }

@@ -7,7 +7,7 @@ on a real application.
 To do this, you need to recompile your app using a _debug_ version of Uno­
 (or a _Release_ version if you prefer).
 
-> Instead of tweating your app solution to reference the your custom Uno
+> Instead of tweaking your app solution to reference the your custom Uno
 > output (because there's many steps to follow and you will have to avoid commiting this
 > to source control), we found a simpler way: override the nuget output folder.
 
@@ -53,3 +53,18 @@ To do this, you need to recompile your app using a _debug_ version of Uno­
 > just to make sure other apps referencing the same version of Uno won't get weird
 > results.
 
+# How to debug generators of Uno.UI.Tasks
+There is a known issue for this project: Visual Studio is locking the dll file,
+so you cannot easily debug it.
+
+The easiest way to debug it is :
+1. Configure the `nuget_version_override.txt` as described above 
+   (If you try to debug using the Uno SampleApp you don't have to do anything as it's already configured)
+1. Close/kill all your devenv.exe, msbuild.exe, and Uno.SourceGeneration.Host.exe
+1. Open a new Visual studio an open only the project src\SourceGenerators\Uno.UI.Tasks\Uno.UI.Tasks.csproj
+1. In the _Debug_ tab of the project settings configure those:
+   * **Start external program:** `C:\Program Files (x86)\Microsoft Visual Studio\2017\Professional\MSBuild\15.0\Bin\MSBuild.exe`
+   * **Command line argmuents:** `[PATH_TO_YOUR_PROJECT/SOLUTION_FILE] /p:Configuration=Debug`
+
+_[PATH_TO_YOUR_PROJECT/SOLUTION_FILE] can be relative to the output folder of the Uno.UI.Tasks project, so `..\..\..\..\SamplesApp\SamplesApp.Droid\SamplesApp.Droid.csproj`
+will build the Android SampleApp_

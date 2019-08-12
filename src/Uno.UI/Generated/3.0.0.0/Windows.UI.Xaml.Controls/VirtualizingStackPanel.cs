@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml.Controls
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class VirtualizingStackPanel : global::Windows.UI.Xaml.Controls.Primitives.OrientedVirtualizingPanel
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.UI.Xaml.Controls.Orientation Orientation
 		{
@@ -21,7 +21,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  bool AreScrollSnapPointsRegular
 		{
@@ -35,7 +35,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty AreScrollSnapPointsRegularProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
@@ -43,7 +43,7 @@ namespace Windows.UI.Xaml.Controls
 			typeof(global::Windows.UI.Xaml.Controls.VirtualizingStackPanel), 
 			new FrameworkPropertyMetadata(default(bool)));
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty IsVirtualizingProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.RegisterAttached(
@@ -51,7 +51,7 @@ namespace Windows.UI.Xaml.Controls
 			typeof(global::Windows.UI.Xaml.Controls.VirtualizingStackPanel), 
 			new FrameworkPropertyMetadata(default(bool)));
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty OrientationProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
@@ -59,7 +59,7 @@ namespace Windows.UI.Xaml.Controls
 			typeof(global::Windows.UI.Xaml.Controls.VirtualizingStackPanel), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Controls.Orientation)));
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty VirtualizationModeProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.RegisterAttached(
@@ -67,7 +67,7 @@ namespace Windows.UI.Xaml.Controls
 			typeof(global::Windows.UI.Xaml.Controls.VirtualizingStackPanel), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Controls.VirtualizationMode)));
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public VirtualizingStackPanel() 
 		{
@@ -81,7 +81,7 @@ namespace Windows.UI.Xaml.Controls
 		// Forced skipping of method Windows.UI.Xaml.Controls.VirtualizingStackPanel.Orientation.set
 		// Forced skipping of method Windows.UI.Xaml.Controls.VirtualizingStackPanel.CleanUpVirtualizedItemEvent.add
 		// Forced skipping of method Windows.UI.Xaml.Controls.VirtualizingStackPanel.CleanUpVirtualizedItemEvent.remove
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		protected virtual void OnCleanUpVirtualizedItem( global::Windows.UI.Xaml.Controls.CleanUpVirtualizedItemEventArgs e)
 		{
@@ -91,14 +91,14 @@ namespace Windows.UI.Xaml.Controls
 		// Forced skipping of method Windows.UI.Xaml.Controls.VirtualizingStackPanel.AreScrollSnapPointsRegularProperty.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.VirtualizingStackPanel.OrientationProperty.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.VirtualizingStackPanel.VirtualizationModeProperty.get
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.Controls.VirtualizationMode GetVirtualizationMode( global::Windows.UI.Xaml.DependencyObject element)
 		{
 			return (global::Windows.UI.Xaml.Controls.VirtualizationMode)element.GetValue(VirtualizationModeProperty);
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static void SetVirtualizationMode( global::Windows.UI.Xaml.DependencyObject element,  global::Windows.UI.Xaml.Controls.VirtualizationMode value)
 		{
@@ -106,14 +106,14 @@ namespace Windows.UI.Xaml.Controls
 		}
 		#endif
 		// Forced skipping of method Windows.UI.Xaml.Controls.VirtualizingStackPanel.IsVirtualizingProperty.get
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static bool GetIsVirtualizing( global::Windows.UI.Xaml.DependencyObject o)
 		{
 			return (bool)o.GetValue(IsVirtualizingProperty);
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  event global::Windows.UI.Xaml.Controls.CleanUpVirtualizedItemEventHandler CleanUpVirtualizedItemEvent
 		{

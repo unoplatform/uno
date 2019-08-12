@@ -20,9 +20,9 @@ Resource.Designer.cs
 *.userprefs
 
 # Build results
-[Dd]ebug[-\w]*/
+[Dd]ebug/
 [Dd]ebugPublic/
-[Rr]elease[-\w]*/
+[Rr]elease/
 [Rr]eleases/
 [Xx]64/
 [Xx]86/
@@ -245,3 +245,6 @@ msbuild.binlog
 *.diagsession
 
 /src/SourceGenerators/System.Xaml/obj-net_4_x-win32
+/src/SamplesApp/SamplesApp.Wasm.UITests/out
+.DS_Store
+/src/Uno.UI.TestComparer/Properties/launchSettings.json

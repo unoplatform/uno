@@ -99,6 +99,14 @@ namespace Windows.UI.Xaml.Controls
 
 			var measuredSize = _layouter.Measure(availableSize);
 
+			if (
+				!double.IsInfinity(availableSize.Width)
+				&& !double.IsInfinity(availableSize.Height)
+				)
+			{
+				measuredSize = this.AdjustSize(availableSize, measuredSize);
+			}
+
 			measuredSize = measuredSize.LogicalToPhysicalPixels();
 
 			// Report our final dimensions.
@@ -530,8 +538,8 @@ namespace Windows.UI.Xaml.Controls
 			var sourceRect = new Windows.Foundation.Rect(Windows.Foundation.Point.Zero, SourceImageSize);
 			var imageRect = new Windows.Foundation.Rect(Windows.Foundation.Point.Zero, frameSize);
 
-			MeasureSource(imageRect, ref sourceRect);
-			ArrangeSource(imageRect, ref sourceRect);
+			this.MeasureSource(imageRect, ref sourceRect);
+			this.ArrangeSource(imageRect, ref sourceRect);
 
 			var scaleX = (sourceRect.Width / SourceImageSize.Width) * _sourceImageScale;
 			var scaleY = (sourceRect.Height / SourceImageSize.Height) * _sourceImageScale;
@@ -542,67 +550,6 @@ namespace Windows.UI.Xaml.Controls
 			matrix.PostScale((float)scaleX, (float)scaleY);
 			matrix.PostTranslate(translateX, translateY);
 			ImageMatrix = matrix;
-		}
-
-		private void MeasureSource(Windows.Foundation.Rect parent, ref Windows.Foundation.Rect child)
-		{
-			switch (Stretch)
-			{
-				case Stretch.UniformToFill:
-					var uniformToFillScale = (child.Width * parent.Height > child.Height * parent.Width)
-						? parent.Height / child.Height // child is flatter than parent
-						: parent.Width / child.Width; // child is taller than parent
-					child.Width *= uniformToFillScale;
-					child.Height *= uniformToFillScale;
-					break;
-
-				case Stretch.Uniform:
-					var uniformScale = (child.Width * parent.Height > child.Height * parent.Width)
-						? parent.Width / child.Width // child is taller than parent
-						: parent.Height / child.Height; // child is flatter than parent
-					child.Width *= uniformScale;
-					child.Height *= uniformScale;
-					break;
-
-				case Stretch.Fill:
-					child.Width = parent.Width;
-					child.Height = parent.Height;
-					break;
-
-				case Stretch.None:
-					break;
-			}
-		}
-
-		private void ArrangeSource(Windows.Foundation.Rect parent, ref Windows.Foundation.Rect child)
-		{
-			switch (HorizontalAlignment)
-			{
-				case HorizontalAlignment.Left:
-					child.X = 0;
-					break;
-				case HorizontalAlignment.Right:
-					child.X = parent.Width - child.Width;
-					break;
-				case HorizontalAlignment.Center:
-				case HorizontalAlignment.Stretch:
-					child.X = (parent.Width * 0.5f) - (child.Width * 0.5f);
-					break;
-			}
-
-			switch (VerticalAlignment)
-			{
-				case VerticalAlignment.Top:
-					child.Y = 0;
-					break;
-				case VerticalAlignment.Bottom:
-					child.Y = parent.Height - child.Height;
-					break;
-				case VerticalAlignment.Center:
-				case VerticalAlignment.Stretch:
-					child.Y = (parent.Height * 0.5f) - (child.Height * 0.5f);
-					break;
-			}
 		}
 
 		partial void HitCheckOverridePartial(ref bool hitCheck)

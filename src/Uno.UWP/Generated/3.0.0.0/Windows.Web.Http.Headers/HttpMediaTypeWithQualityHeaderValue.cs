@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Web.Http.Headers
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class HttpMediaTypeWithQualityHeaderValue : global::Windows.Foundation.IStringable
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  double? Quality
 		{
@@ -21,7 +21,7 @@ namespace Windows.Web.Http.Headers
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  string MediaType
 		{
@@ -35,7 +35,7 @@ namespace Windows.Web.Http.Headers
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  string CharSet
 		{
@@ -49,7 +49,7 @@ namespace Windows.Web.Http.Headers
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::System.Collections.Generic.IList<global::Windows.Web.Http.Headers.HttpNameValueHeaderValue> Parameters
 		{
@@ -59,7 +59,7 @@ namespace Windows.Web.Http.Headers
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public HttpMediaTypeWithQualityHeaderValue( string mediaType) 
 		{
@@ -67,7 +67,7 @@ namespace Windows.Web.Http.Headers
 		}
 		#endif
 		// Forced skipping of method Windows.Web.Http.Headers.HttpMediaTypeWithQualityHeaderValue.HttpMediaTypeWithQualityHeaderValue(string)
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public HttpMediaTypeWithQualityHeaderValue( string mediaType,  double quality) 
 		{
@@ -82,21 +82,21 @@ namespace Windows.Web.Http.Headers
 		// Forced skipping of method Windows.Web.Http.Headers.HttpMediaTypeWithQualityHeaderValue.Parameters.get
 		// Forced skipping of method Windows.Web.Http.Headers.HttpMediaTypeWithQualityHeaderValue.Quality.get
 		// Forced skipping of method Windows.Web.Http.Headers.HttpMediaTypeWithQualityHeaderValue.Quality.set
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public override string ToString()
 		{
 			throw new global::System.NotImplementedException("The member string HttpMediaTypeWithQualityHeaderValue.ToString() is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.Web.Http.Headers.HttpMediaTypeWithQualityHeaderValue Parse( string input)
 		{
 			throw new global::System.NotImplementedException("The member HttpMediaTypeWithQualityHeaderValue HttpMediaTypeWithQualityHeaderValue.Parse(string input) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static bool TryParse( string input, out global::Windows.Web.Http.Headers.HttpMediaTypeWithQualityHeaderValue mediaTypeWithQualityHeaderValue)
 		{

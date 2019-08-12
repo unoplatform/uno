@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Media.Playback
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class MediaBreak 
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  bool CanStart
 		{
@@ -21,7 +21,7 @@ namespace Windows.Media.Playback
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Foundation.Collections.ValueSet CustomProperties
 		{
@@ -31,7 +31,7 @@ namespace Windows.Media.Playback
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Media.Playback.MediaBreakInsertionMethod InsertionMethod
 		{
@@ -41,7 +41,7 @@ namespace Windows.Media.Playback
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Media.Playback.MediaPlaybackList PlaybackList
 		{
@@ -51,7 +51,7 @@ namespace Windows.Media.Playback
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::System.TimeSpan? PresentationPosition
 		{
@@ -61,7 +61,7 @@ namespace Windows.Media.Playback
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public MediaBreak( global::Windows.Media.Playback.MediaBreakInsertionMethod insertionMethod) 
 		{
@@ -69,7 +69,7 @@ namespace Windows.Media.Playback
 		}
 		#endif
 		// Forced skipping of method Windows.Media.Playback.MediaBreak.MediaBreak(Windows.Media.Playback.MediaBreakInsertionMethod)
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public MediaBreak( global::Windows.Media.Playback.MediaBreakInsertionMethod insertionMethod,  global::System.TimeSpan presentationPosition) 
 		{

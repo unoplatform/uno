@@ -9,10 +9,102 @@
     <Import_RootNamespace>SamplesApp.UnitTests</Import_RootNamespace>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="$(MSBuildThisFileDirectory)Controls\UnitTestsControl.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Controls\UITests\Presentation\SampleChooserViewMode.Commands.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Controls\UITests\Presentation\SampleChooserViewMode.Properties.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Controls\UITests\Presentation\SampleChooserViewModel.macOS.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Controls\UITests\Presentation\SampleChooserViewModel.Android.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Controls\UITests\Presentation\SampleChooserViewModel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Controls\UITests\Presentation\SampleChooserViewModel.iOS.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Controls\UITests\Presentation\SampleChooserViewModel.netstd.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Controls\UITests\Presentation\SampleChooserViewModel.Uwa.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Controls\UITests\Views\Behaviors\ListViewBaseCommand.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Controls\UITests\Views\Behaviors\SplitViewBehavior.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Controls\UITests\Views\Behaviors\WebViewBehavior.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Controls\UITests\Views\Controls\PathControl.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Controls\UITests\Views\Controls\SampleChooserCategory.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Controls\UITests\Views\Controls\SampleChooserContent.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Controls\UITests\Views\Controls\SampleChooserControl.xaml.cs">
+      <DependentUpon>SampleChooserControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Controls\UITests\Views\Controls\SampleControl.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Controls\UITests\Views\Controls\SampleControlInfoAttribute.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Controls\UITests\Views\Controls\StarStackPanel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Controls\UITests\Views\Converters\FromBoolToBrushConverter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Controls\UITests\Views\Converters\FromBoolToObjectConverter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Controls\UITests\Views\Converters\FromBoolToObjectConverter.Generic.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Controls\UITests\Views\Converters\FromNullableBoolToDefaultValueConverter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Controls\UITests\Views\Converters\FromNullableBoolToReverseBoolConverter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Controls\UITests\Views\Converters\FromNullableBoolToVisibilityConverter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Controls\UITests\Views\Converters\FromNullableToDefaultValueConverter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Controls\UITests\Views\Converters\StringFormatConverter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Controls\UITests\Views\Entities\Section.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Controls\UITests\Views\Extensions\InputPanelExtensions.PanIntoView.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Controls\UITests\Views\Helper\ContentNavigationBehavior.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Controls\UITests\Views\Helper\DelegateCommand.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Controls\UITests\Views\Helper\DelegateCommand.T.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Controls\UITests\Views\Helper\DependencyObjectExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Controls\UITests\Views\Helper\PropertyMetadataHelper.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Controls\UITests\Views\Helper\SampleHelper.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Controls\UnitTest\UnitTestsControl.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Page Include="$(MSBuildThisFileDirectory)Controls\UnitTestsControl.xaml">
+    <Page Include="$(MSBuildThisFileDirectory)Controls\UITests\Views\Controls\SampleChooserControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Controls\UITests\Views\Styles\Application\Colors.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Controls\UITests\Views\Styles\Application\Converters.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Controls\UITests\Views\Styles\Application\_Application.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Controls\UITests\Views\Styles\Controls\Button.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Controls\UITests\Views\Styles\Controls\ListView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Controls\UITests\Views\Styles\Controls\ListViewItem.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Controls\UITests\Views\Styles\Controls\Path.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Controls\UITests\Views\Styles\Controls\RadioButton.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Controls\UITests\Views\Styles\Controls\TextBlock.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Controls\UITests\Views\Styles\Controls\TextBox.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Controls\UITests\Views\Styles\Controls\ToggleButton.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Controls\UITests\Views\Styles\Controls\_Controls.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Controls\UITests\Views\Styles\SampleControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Controls\UnitTest\UnitTestsControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

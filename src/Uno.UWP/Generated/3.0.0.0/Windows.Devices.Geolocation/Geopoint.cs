@@ -8,7 +8,7 @@ namespace Windows.Devices.Geolocation
 	public  partial class Geopoint : global::Windows.Devices.Geolocation.IGeoshape
 	{
 		// Skipping already declared property Position
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Devices.Geolocation.AltitudeReferenceSystem AltitudeReferenceSystem
 		{
@@ -18,7 +18,7 @@ namespace Windows.Devices.Geolocation
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Devices.Geolocation.GeoshapeType GeoshapeType
 		{
@@ -28,7 +28,7 @@ namespace Windows.Devices.Geolocation
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  uint SpatialReferenceId
 		{
@@ -40,7 +40,7 @@ namespace Windows.Devices.Geolocation
 		#endif
 		// Skipping already declared method Windows.Devices.Geolocation.Geopoint.Geopoint(Windows.Devices.Geolocation.BasicGeoposition)
 		// Forced skipping of method Windows.Devices.Geolocation.Geopoint.Geopoint(Windows.Devices.Geolocation.BasicGeoposition)
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public Geopoint( global::Windows.Devices.Geolocation.BasicGeoposition position,  global::Windows.Devices.Geolocation.AltitudeReferenceSystem altitudeReferenceSystem) 
 		{
@@ -48,7 +48,7 @@ namespace Windows.Devices.Geolocation
 		}
 		#endif
 		// Forced skipping of method Windows.Devices.Geolocation.Geopoint.Geopoint(Windows.Devices.Geolocation.BasicGeoposition, Windows.Devices.Geolocation.AltitudeReferenceSystem)
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public Geopoint( global::Windows.Devices.Geolocation.BasicGeoposition position,  global::Windows.Devices.Geolocation.AltitudeReferenceSystem altitudeReferenceSystem,  uint spatialReferenceId) 
 		{

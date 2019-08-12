@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.ApplicationModel.Store.Preview.InstallControl
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class AppInstallOptions 
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Management.Deployment.PackageVolume TargetVolume
 		{
@@ -21,7 +21,7 @@ namespace Windows.ApplicationModel.Store.Preview.InstallControl
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  bool Repair
 		{
@@ -35,7 +35,7 @@ namespace Windows.ApplicationModel.Store.Preview.InstallControl
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  bool LaunchAfterInstall
 		{
@@ -49,7 +49,7 @@ namespace Windows.ApplicationModel.Store.Preview.InstallControl
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  bool ForceUseOfNonRemovableStorage
 		{
@@ -63,7 +63,7 @@ namespace Windows.ApplicationModel.Store.Preview.InstallControl
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  string CatalogId
 		{
@@ -77,7 +77,7 @@ namespace Windows.ApplicationModel.Store.Preview.InstallControl
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  bool AllowForcedAppRestart
 		{
@@ -91,7 +91,7 @@ namespace Windows.ApplicationModel.Store.Preview.InstallControl
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  bool StageButDoNotInstall
 		{
@@ -105,7 +105,7 @@ namespace Windows.ApplicationModel.Store.Preview.InstallControl
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  bool PinToTaskbarAfterInstall
 		{
@@ -119,7 +119,7 @@ namespace Windows.ApplicationModel.Store.Preview.InstallControl
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  bool PinToStartAfterInstall
 		{
@@ -133,7 +133,7 @@ namespace Windows.ApplicationModel.Store.Preview.InstallControl
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  bool PinToDesktopAfterInstall
 		{
@@ -147,7 +147,7 @@ namespace Windows.ApplicationModel.Store.Preview.InstallControl
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallationToastNotificationMode InstallInProgressToastNotificationMode
 		{
@@ -161,7 +161,7 @@ namespace Windows.ApplicationModel.Store.Preview.InstallControl
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  bool InstallForAllUsers
 		{
@@ -175,7 +175,7 @@ namespace Windows.ApplicationModel.Store.Preview.InstallControl
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  string ExtendedCampaignId
 		{
@@ -189,7 +189,7 @@ namespace Windows.ApplicationModel.Store.Preview.InstallControl
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallationToastNotificationMode CompletedInstallToastNotificationMode
 		{
@@ -203,7 +203,7 @@ namespace Windows.ApplicationModel.Store.Preview.InstallControl
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  string CampaignId
 		{
@@ -217,7 +217,7 @@ namespace Windows.ApplicationModel.Store.Preview.InstallControl
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public AppInstallOptions() 
 		{

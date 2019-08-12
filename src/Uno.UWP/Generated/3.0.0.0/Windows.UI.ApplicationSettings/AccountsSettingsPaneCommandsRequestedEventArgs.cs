@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.ApplicationSettings
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class AccountsSettingsPaneCommandsRequestedEventArgs 
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  string HeaderText
 		{
@@ -21,7 +21,7 @@ namespace Windows.UI.ApplicationSettings
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::System.Collections.Generic.IList<global::Windows.UI.ApplicationSettings.SettingsCommand> Commands
 		{
@@ -31,7 +31,7 @@ namespace Windows.UI.ApplicationSettings
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::System.Collections.Generic.IList<global::Windows.UI.ApplicationSettings.CredentialCommand> CredentialCommands
 		{
@@ -41,7 +41,7 @@ namespace Windows.UI.ApplicationSettings
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::System.Collections.Generic.IList<global::Windows.UI.ApplicationSettings.WebAccountCommand> WebAccountCommands
 		{
@@ -51,7 +51,7 @@ namespace Windows.UI.ApplicationSettings
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::System.Collections.Generic.IList<global::Windows.UI.ApplicationSettings.WebAccountProviderCommand> WebAccountProviderCommands
 		{
@@ -61,7 +61,7 @@ namespace Windows.UI.ApplicationSettings
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.System.User User
 		{
@@ -77,7 +77,7 @@ namespace Windows.UI.ApplicationSettings
 		// Forced skipping of method Windows.UI.ApplicationSettings.AccountsSettingsPaneCommandsRequestedEventArgs.Commands.get
 		// Forced skipping of method Windows.UI.ApplicationSettings.AccountsSettingsPaneCommandsRequestedEventArgs.HeaderText.get
 		// Forced skipping of method Windows.UI.ApplicationSettings.AccountsSettingsPaneCommandsRequestedEventArgs.HeaderText.set
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.UI.ApplicationSettings.AccountsSettingsPaneEventDeferral GetDeferral()
 		{

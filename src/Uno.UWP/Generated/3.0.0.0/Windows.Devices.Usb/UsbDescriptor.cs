@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Devices.Usb
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class UsbDescriptor 
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  byte DescriptorType
 		{
@@ -17,7 +17,7 @@ namespace Windows.Devices.Usb
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  byte Length
 		{
@@ -29,7 +29,7 @@ namespace Windows.Devices.Usb
 		#endif
 		// Forced skipping of method Windows.Devices.Usb.UsbDescriptor.Length.get
 		// Forced skipping of method Windows.Devices.Usb.UsbDescriptor.DescriptorType.get
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  void ReadDescriptorBuffer( global::Windows.Storage.Streams.IBuffer buffer)
 		{

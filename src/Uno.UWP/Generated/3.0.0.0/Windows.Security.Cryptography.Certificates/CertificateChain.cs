@@ -2,26 +2,26 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Security.Cryptography.Certificates
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class CertificateChain 
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Security.Cryptography.Certificates.ChainValidationResult Validate()
 		{
 			throw new global::System.NotImplementedException("The member ChainValidationResult CertificateChain.Validate() is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Security.Cryptography.Certificates.ChainValidationResult Validate( global::Windows.Security.Cryptography.Certificates.ChainValidationParameters parameter)
 		{
 			throw new global::System.NotImplementedException("The member ChainValidationResult CertificateChain.Validate(ChainValidationParameters parameter) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::System.Collections.Generic.IReadOnlyList<global::Windows.Security.Cryptography.Certificates.Certificate> GetCertificates( bool includeRoot)
 		{

@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.ApplicationModel.Email
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class EmailRecipientResolutionResult 
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.ApplicationModel.Email.EmailRecipientResolutionStatus Status
 		{
@@ -21,7 +21,7 @@ namespace Windows.ApplicationModel.Email
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::System.Collections.Generic.IReadOnlyList<global::Windows.Security.Cryptography.Certificates.Certificate> PublicKeys
 		{
@@ -31,7 +31,7 @@ namespace Windows.ApplicationModel.Email
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public EmailRecipientResolutionResult() 
 		{
@@ -42,7 +42,7 @@ namespace Windows.ApplicationModel.Email
 		// Forced skipping of method Windows.ApplicationModel.Email.EmailRecipientResolutionResult.Status.get
 		// Forced skipping of method Windows.ApplicationModel.Email.EmailRecipientResolutionResult.PublicKeys.get
 		// Forced skipping of method Windows.ApplicationModel.Email.EmailRecipientResolutionResult.Status.set
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  void SetPublicKeys( global::System.Collections.Generic.IEnumerable<global::Windows.Security.Cryptography.Certificates.Certificate> value)
 		{

@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Devices.SmartCards
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class SmartCardReader 
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  string DeviceId
 		{
@@ -17,7 +17,7 @@ namespace Windows.Devices.SmartCards
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Devices.SmartCards.SmartCardReaderKind Kind
 		{
@@ -27,7 +27,7 @@ namespace Windows.Devices.SmartCards
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  string Name
 		{
@@ -40,14 +40,14 @@ namespace Windows.Devices.SmartCards
 		// Forced skipping of method Windows.Devices.SmartCards.SmartCardReader.DeviceId.get
 		// Forced skipping of method Windows.Devices.SmartCards.SmartCardReader.Name.get
 		// Forced skipping of method Windows.Devices.SmartCards.SmartCardReader.Kind.get
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.SmartCards.SmartCardReaderStatus> GetStatusAsync()
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<SmartCardReaderStatus> SmartCardReader.GetStatusAsync() is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IReadOnlyList<global::Windows.Devices.SmartCards.SmartCard>> FindAllCardsAsync()
 		{
@@ -58,28 +58,28 @@ namespace Windows.Devices.SmartCards
 		// Forced skipping of method Windows.Devices.SmartCards.SmartCardReader.CardAdded.remove
 		// Forced skipping of method Windows.Devices.SmartCards.SmartCardReader.CardRemoved.add
 		// Forced skipping of method Windows.Devices.SmartCards.SmartCardReader.CardRemoved.remove
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static string GetDeviceSelector()
 		{
 			throw new global::System.NotImplementedException("The member string SmartCardReader.GetDeviceSelector() is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static string GetDeviceSelector( global::Windows.Devices.SmartCards.SmartCardReaderKind kind)
 		{
 			throw new global::System.NotImplementedException("The member string SmartCardReader.GetDeviceSelector(SmartCardReaderKind kind) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.SmartCards.SmartCardReader> FromIdAsync( string deviceId)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<SmartCardReader> SmartCardReader.FromIdAsync(string deviceId) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Devices.SmartCards.SmartCardReader, global::Windows.Devices.SmartCards.CardAddedEventArgs> CardAdded
 		{
@@ -95,7 +95,7 @@ namespace Windows.Devices.SmartCards
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Devices.SmartCards.SmartCardReader, global::Windows.Devices.SmartCards.CardRemovedEventArgs> CardRemoved
 		{

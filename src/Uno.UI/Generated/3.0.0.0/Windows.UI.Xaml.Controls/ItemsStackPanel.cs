@@ -8,7 +8,7 @@ namespace Windows.UI.Xaml.Controls
 	public  partial class ItemsStackPanel : global::Windows.UI.Xaml.Controls.Panel
 	{
 		// Skipping already declared property Orientation
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.UI.Xaml.Controls.ItemsUpdatingScrollMode ItemsUpdatingScrollMode
 		{
@@ -24,7 +24,7 @@ namespace Windows.UI.Xaml.Controls
 		#endif
 		// Skipping already declared property GroupPadding
 		// Skipping already declared property GroupHeaderPlacement
-		#if false || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if false || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  double CacheLength
 		{
@@ -38,7 +38,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 		#endif
-		#if false || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if false || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  int FirstCacheIndex
 		{
@@ -48,7 +48,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 		#endif
-		#if false || false || NET46 || false || __MACOS__
+		#if false || false || NET461 || false || __MACOS__
 		[global::Uno.NotImplemented]
 		public  int FirstVisibleIndex
 		{
@@ -58,7 +58,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 		#endif
-		#if false || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if false || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  int LastCacheIndex
 		{
@@ -68,7 +68,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 		#endif
-		#if false || false || NET46 || false || __MACOS__
+		#if false || false || NET461 || false || __MACOS__
 		[global::Uno.NotImplemented]
 		public  int LastVisibleIndex
 		{
@@ -78,7 +78,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.UI.Xaml.Controls.PanelScrollingDirection ScrollingDirection
 		{
@@ -89,7 +89,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 		#endif
 		// Skipping already declared property AreStickyGroupHeadersEnabled
-		#if false || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if false || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty CacheLengthProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(

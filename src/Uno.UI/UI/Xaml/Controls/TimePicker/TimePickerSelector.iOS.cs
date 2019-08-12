@@ -1,17 +1,21 @@
-﻿using Foundation;
+﻿#if XAMARIN_IOS
+
+using Foundation;
 using System;
 using System.Linq;
 using UIKit;
 using Uno.Extensions;
+using Uno.Logging;
 using Uno.UI.Extensions;
 using Windows.Globalization;
-using Uno.Logging;
 
 namespace Windows.UI.Xaml.Controls
 {
 	public partial class TimePickerSelector
 	{
 		private UIDatePicker _picker;
+		private NSDate _initialTime;
+		private NSDate _newDate;
 
 		protected override void OnLoaded()
 		{
@@ -19,16 +23,11 @@ namespace Windows.UI.Xaml.Controls
 
 			_picker = this.FindSubviewsOfType<UIDatePicker>().FirstOrDefault();
 
-			var parent = _picker.FindFirstParent<FrameworkElement>();
-
 			if (_picker == null)
 			{
 				this.Log().DebugIfEnabled(() => $"No {nameof(UIDatePicker)} was found in the visual hierarchy.");
-
 				return;
 			}
-
-			_picker.Mode = UIDatePickerMode.Time;
 
 			// The time zone must be the same as DatePickerSelector
 			// otherwise, if a DatePicker and a TimePicker are present
@@ -36,10 +35,11 @@ namespace Windows.UI.Xaml.Controls
 			// and result in weird behaviors (like decrementing the year when a month changes).
 			_picker.TimeZone = NSTimeZone.LocalTimeZone;
 			_picker.Calendar = new NSCalendar(NSCalendarType.Gregorian);
+			_picker.Mode = UIDatePickerMode.Time;
 
-			SetTime(Time);
-
-			OnClockIdentifierChangedPartialNative(null, ClockIdentifier);
+			_picker.ValueChanged += OnValueChanged;
+			
+			var parent = _picker.FindFirstParent<FrameworkElement>();
 
 			//Removing the date picker and adding it is what enables the lines to appear. Seems to be a side effect of adding it as a view. 
 			if (parent != null)
@@ -48,63 +48,101 @@ namespace Windows.UI.Xaml.Controls
 				parent.AddSubview(_picker);
 			}
 		}
-
-		internal void UpdateTime()
+		
+		private void OnValueChanged(object sender, EventArgs e)
 		{
-			if (_picker == null)
+			_newDate = _picker.Date;
+		}
+
+		public void Initialize()
+		{
+			SetPickerClockIdentifier(ClockIdentifier);
+			SetPickerMinuteIncrement(MinuteIncrement);
+			SetPickerTime(Time.RoundToNextMinuteInterval(MinuteIncrement));
+			SaveInitialTime();
+		}
+
+		private void SetPickerMinuteIncrement(int minuteIncrement)
+		{
+			if (_picker != null)
 			{
-				return;
+				_picker.MinuteInterval = minuteIncrement;
 			}
-
-			var offset = TimeSpan.FromSeconds(_picker.TimeZone.GetSecondsFromGMT);
-			var timeSpan = _picker.Date.ToTimeSpan().Add(offset);
-
-			Time = timeSpan;
 		}
 
-		protected override void OnUnloaded()
-		{
-			base.OnUnloaded();
-		}
+		private void SaveInitialTime() => _initialTime = _picker.Date;
 
-		partial void OnTimeChangedPartialNative(TimeSpan oldTime, TimeSpan newTime)
+		internal void SaveTime()
 		{
-			SetTime(newTime);
-		}
-
-		private void SetTime(TimeSpan newTime)
-		{
-			if (_picker == null)
+			if (_picker != null)
 			{
-				return;
+				if ((_newDate != null) && _newDate != _initialTime)
+				{
+					var time = _newDate.ToTimeSpan(_picker.TimeZone.GetSecondsFromGMT);
+
+					if (Time.Hours != time.Hours || Time.Minutes != time.Minutes)
+					{
+						Time = new TimeSpan(Time.Days, time.Hours, time.Minutes, 0, 0);
+						SaveInitialTime();
+					}
+				}
+
+				_picker.EndEditing(false);
 			}
+		}
 
-			// Because the UIDatePicker is set to use LocalTimeZone,
-			// we need to get the offset and apply it to the requested time.
-			var offset = TimeSpan.FromSeconds(_picker.TimeZone.GetSecondsFromGMT);
+		public void Cancel()
+		{
+			if (_picker != null)
+			{
+				_picker.SetDate(_initialTime, false);
+				_picker.EndEditing(false);
+			}
+		}
 
-			// Because the UIDatePicker applies the local timezone offset automatically when we set it,
-			// we need to compensate with a negated offset. This will show the time
-			// as if it was provided with no offset.
-			var timeWithOffset = newTime.Add(offset.Negate());
+		private void SetPickerClockIdentifier(string clockIdentifier)
+		{
+			if (_picker != null)
+			{
+				_picker.Locale = ToNSLocale(clockIdentifier);
+			}
+		}
 
-			var nsDate = timeWithOffset.ToNSDate();
-
-			_picker.SetDate(nsDate, animated: false);
+		private void SetPickerTime(TimeSpan time)
+		{
+			_picker?.SetDate(time.ToNSDate(), animated: false);
 		}
 
 		partial void OnClockIdentifierChangedPartialNative(string oldClockIdentifier, string newClockIdentifier)
 		{
-			if (_picker == null)
-			{
-				return;
-			}
+			SetPickerClockIdentifier(newClockIdentifier);
+		}
 
-			var localeID = newClockIdentifier == ClockIdentifiers.TwelveHour 
-				? "en" 
-				: "fr";
+		partial void OnMinuteIncrementChangedPartialNative(int oldMinuteIncrement, int newMinuteIncrement)
+		{
+			SetPickerMinuteIncrement(newMinuteIncrement);
+		}
 
-			_picker.Locale = new NSLocale(localeID);
+		partial void OnTimeChangedPartialNative(TimeSpan oldTime, TimeSpan newTime)
+		{
+			SetPickerTime(newTime);
+		}
+
+		private static NSLocale ToNSLocale(string clockIdentifier)
+		{
+			var localeID = clockIdentifier == ClockIdentifiers.TwelveHour
+							? "en"
+							: "fr";
+
+			return new NSLocale(localeID);
+		}
+
+		protected override void OnUnloaded()
+		{
+			_picker.ValueChanged -= OnValueChanged;
+
+			base.OnUnloaded();
 		}
 	}
 }
+#endif

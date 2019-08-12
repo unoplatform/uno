@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.ApplicationModel.Background
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class MediaProcessingTrigger : global::Windows.ApplicationModel.Background.IBackgroundTrigger
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public MediaProcessingTrigger() 
 		{
@@ -15,14 +15,14 @@ namespace Windows.ApplicationModel.Background
 		}
 		#endif
 		// Forced skipping of method Windows.ApplicationModel.Background.MediaProcessingTrigger.MediaProcessingTrigger()
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.Background.MediaProcessingTriggerResult> RequestAsync()
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<MediaProcessingTriggerResult> MediaProcessingTrigger.RequestAsync() is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.Background.MediaProcessingTriggerResult> RequestAsync( global::Windows.Foundation.Collections.ValueSet arguments)
 		{

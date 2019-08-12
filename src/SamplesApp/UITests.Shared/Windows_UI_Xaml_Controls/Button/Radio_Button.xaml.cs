@@ -1,0 +1,16 @@
+using Uno.UI.Samples.Controls;
+using Uno.UI.Samples.Presentation.SamplePages;
+using Windows.UI.Xaml.Controls;
+
+namespace Uno.UI.Samples.Content.UITests.ButtonTestsControl
+{
+	[SampleControlInfo("Button", "Radio_Button", typeof(ButtonTestsViewModel))]
+
+	public sealed partial class Radio_Button : UserControl
+	{
+		public Radio_Button()
+		{
+			this.InitializeComponent();
+		}
+	}
+}

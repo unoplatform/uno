@@ -8,7 +8,8 @@
 
 	<Import Project="$(SourceGeneratorBasePath)Uno.UI.SourceGenerators.props" />
 	<Import Project="$(UnoUIMSBuildTasksTargetPath)Uno.UI.Tasks.targets" />
-	<Target Name="_UnoFeatureDefines" BeforeTargets="BeforeCompile">
+	<Target Name="_UnoFeatureDefines"
+            BeforeTargets="BeforeCompile">
 
 		<!-- 
 			Defines Uno features. 

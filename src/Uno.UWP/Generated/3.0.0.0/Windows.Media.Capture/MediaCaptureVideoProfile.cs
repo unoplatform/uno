@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Media.Capture
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class MediaCaptureVideoProfile 
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  string Id
 		{
@@ -17,7 +17,7 @@ namespace Windows.Media.Capture
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::System.Collections.Generic.IReadOnlyList<global::Windows.Media.Capture.MediaCaptureVideoProfileMediaDescription> SupportedPhotoMediaDescription
 		{
@@ -27,7 +27,7 @@ namespace Windows.Media.Capture
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::System.Collections.Generic.IReadOnlyList<global::Windows.Media.Capture.MediaCaptureVideoProfileMediaDescription> SupportedPreviewMediaDescription
 		{
@@ -37,7 +37,7 @@ namespace Windows.Media.Capture
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::System.Collections.Generic.IReadOnlyList<global::Windows.Media.Capture.MediaCaptureVideoProfileMediaDescription> SupportedRecordMediaDescription
 		{
@@ -47,7 +47,7 @@ namespace Windows.Media.Capture
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  string VideoDeviceId
 		{
@@ -57,7 +57,7 @@ namespace Windows.Media.Capture
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::System.Collections.Generic.IReadOnlyList<global::Windows.Media.Capture.Frames.MediaFrameSourceInfo> FrameSourceInfos
 		{
@@ -67,7 +67,7 @@ namespace Windows.Media.Capture
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::System.Collections.Generic.IReadOnlyDictionary<global::System.Guid, object> Properties
 		{
@@ -82,7 +82,7 @@ namespace Windows.Media.Capture
 		// Forced skipping of method Windows.Media.Capture.MediaCaptureVideoProfile.SupportedPreviewMediaDescription.get
 		// Forced skipping of method Windows.Media.Capture.MediaCaptureVideoProfile.SupportedRecordMediaDescription.get
 		// Forced skipping of method Windows.Media.Capture.MediaCaptureVideoProfile.SupportedPhotoMediaDescription.get
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::System.Collections.Generic.IReadOnlyList<global::Windows.Media.Capture.MediaCaptureVideoProfile> GetConcurrency()
 		{

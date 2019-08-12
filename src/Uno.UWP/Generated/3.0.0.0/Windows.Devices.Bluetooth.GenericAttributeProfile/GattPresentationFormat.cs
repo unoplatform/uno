@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class GattPresentationFormat 
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  ushort Description
 		{
@@ -17,7 +17,7 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  int Exponent
 		{
@@ -27,7 +27,7 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  byte FormatType
 		{
@@ -37,7 +37,7 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  byte Namespace
 		{
@@ -47,7 +47,7 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  ushort Unit
 		{
@@ -57,7 +57,7 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static byte BluetoothSigAssignedNumbers
 		{
@@ -72,7 +72,7 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattPresentationFormat.Unit.get
 		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattPresentationFormat.Namespace.get
 		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattPresentationFormat.Description.get
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.Devices.Bluetooth.GenericAttributeProfile.GattPresentationFormat FromParts( byte formatType,  int exponent,  ushort unit,  byte namespaceId,  ushort description)
 		{

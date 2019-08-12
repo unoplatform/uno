@@ -11,7 +11,7 @@ namespace Windows.UI.Xaml.Media
 		// Skipping already declared property EndPoint
 		// Skipping already declared property EndPointProperty
 		// Skipping already declared property StartPointProperty
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public LinearGradientBrush( global::Windows.UI.Xaml.Media.GradientStopCollection gradientStopCollection,  double angle) : base()
 		{

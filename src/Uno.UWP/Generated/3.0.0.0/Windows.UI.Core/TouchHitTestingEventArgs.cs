@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Core
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class TouchHitTestingEventArgs : global::Windows.UI.Core.ICoreWindowEventArgs
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  bool Handled
 		{
@@ -21,7 +21,7 @@ namespace Windows.UI.Core
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.UI.Core.CoreProximityEvaluation ProximityEvaluation
 		{
@@ -35,7 +35,7 @@ namespace Windows.UI.Core
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Foundation.Rect BoundingBox
 		{
@@ -45,7 +45,7 @@ namespace Windows.UI.Core
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Foundation.Point Point
 		{
@@ -59,14 +59,14 @@ namespace Windows.UI.Core
 		// Forced skipping of method Windows.UI.Core.TouchHitTestingEventArgs.ProximityEvaluation.set
 		// Forced skipping of method Windows.UI.Core.TouchHitTestingEventArgs.Point.get
 		// Forced skipping of method Windows.UI.Core.TouchHitTestingEventArgs.BoundingBox.get
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.UI.Core.CoreProximityEvaluation EvaluateProximity( global::Windows.Foundation.Rect controlBoundingBox)
 		{
 			throw new global::System.NotImplementedException("The member CoreProximityEvaluation TouchHitTestingEventArgs.EvaluateProximity(Rect controlBoundingBox) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.UI.Core.CoreProximityEvaluation EvaluateProximity( global::Windows.Foundation.Point[] controlVertices)
 		{

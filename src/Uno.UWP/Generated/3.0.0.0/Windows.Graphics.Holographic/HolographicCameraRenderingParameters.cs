@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Graphics.Holographic
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class HolographicCameraRenderingParameters 
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Graphics.DirectX.Direct3D11.IDirect3DSurface Direct3D11BackBuffer
 		{
@@ -17,7 +17,7 @@ namespace Windows.Graphics.Holographic
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Graphics.DirectX.Direct3D11.IDirect3DDevice Direct3D11Device
 		{
@@ -27,7 +27,7 @@ namespace Windows.Graphics.Holographic
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Graphics.Holographic.HolographicReprojectionMode ReprojectionMode
 		{
@@ -41,7 +41,7 @@ namespace Windows.Graphics.Holographic
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  bool IsContentProtectionEnabled
 		{
@@ -55,21 +55,21 @@ namespace Windows.Graphics.Holographic
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  void SetFocusPoint( global::Windows.Perception.Spatial.SpatialCoordinateSystem coordinateSystem,  global::System.Numerics.Vector3 position)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Holographic.HolographicCameraRenderingParameters", "void HolographicCameraRenderingParameters.SetFocusPoint(SpatialCoordinateSystem coordinateSystem, Vector3 position)");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  void SetFocusPoint( global::Windows.Perception.Spatial.SpatialCoordinateSystem coordinateSystem,  global::System.Numerics.Vector3 position,  global::System.Numerics.Vector3 normal)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Holographic.HolographicCameraRenderingParameters", "void HolographicCameraRenderingParameters.SetFocusPoint(SpatialCoordinateSystem coordinateSystem, Vector3 position, Vector3 normal)");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  void SetFocusPoint( global::Windows.Perception.Spatial.SpatialCoordinateSystem coordinateSystem,  global::System.Numerics.Vector3 position,  global::System.Numerics.Vector3 normal,  global::System.Numerics.Vector3 linearVelocity)
 		{
@@ -80,7 +80,7 @@ namespace Windows.Graphics.Holographic
 		// Forced skipping of method Windows.Graphics.Holographic.HolographicCameraRenderingParameters.Direct3D11BackBuffer.get
 		// Forced skipping of method Windows.Graphics.Holographic.HolographicCameraRenderingParameters.ReprojectionMode.get
 		// Forced skipping of method Windows.Graphics.Holographic.HolographicCameraRenderingParameters.ReprojectionMode.set
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  void CommitDirect3D11DepthBuffer( global::Windows.Graphics.DirectX.Direct3D11.IDirect3DSurface value)
 		{

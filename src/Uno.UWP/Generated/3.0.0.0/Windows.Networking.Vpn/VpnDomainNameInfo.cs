@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Networking.Vpn
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class VpnDomainNameInfo 
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Networking.Vpn.VpnDomainNameType DomainNameType
 		{
@@ -21,7 +21,7 @@ namespace Windows.Networking.Vpn
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Networking.HostName DomainName
 		{
@@ -35,7 +35,7 @@ namespace Windows.Networking.Vpn
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::System.Collections.Generic.IList<global::Windows.Networking.HostName> DnsServers
 		{
@@ -45,7 +45,7 @@ namespace Windows.Networking.Vpn
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::System.Collections.Generic.IList<global::Windows.Networking.HostName> WebProxyServers
 		{
@@ -55,7 +55,7 @@ namespace Windows.Networking.Vpn
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::System.Collections.Generic.IList<global::System.Uri> WebProxyUris
 		{
@@ -65,7 +65,7 @@ namespace Windows.Networking.Vpn
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public VpnDomainNameInfo( string name,  global::Windows.Networking.Vpn.VpnDomainNameType nameType,  global::System.Collections.Generic.IEnumerable<global::Windows.Networking.HostName> dnsServerList,  global::System.Collections.Generic.IEnumerable<global::Windows.Networking.HostName> proxyServerList) 
 		{

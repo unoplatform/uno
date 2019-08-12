@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Foundation.Diagnostics
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class ErrorDetails 
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  string Description
 		{
@@ -17,7 +17,7 @@ namespace Windows.Foundation.Diagnostics
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::System.Uri HelpUri
 		{
@@ -27,7 +27,7 @@ namespace Windows.Foundation.Diagnostics
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  string LongDescription
 		{
@@ -40,7 +40,7 @@ namespace Windows.Foundation.Diagnostics
 		// Forced skipping of method Windows.Foundation.Diagnostics.ErrorDetails.Description.get
 		// Forced skipping of method Windows.Foundation.Diagnostics.ErrorDetails.LongDescription.get
 		// Forced skipping of method Windows.Foundation.Diagnostics.ErrorDetails.HelpUri.get
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Foundation.Diagnostics.ErrorDetails> CreateFromHResultAsync( int errorCode)
 		{

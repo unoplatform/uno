@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Globalization.NumberFormatting
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class NumeralSystemTranslator 
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  string NumeralSystem
 		{
@@ -21,7 +21,7 @@ namespace Windows.Globalization.NumberFormatting
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::System.Collections.Generic.IReadOnlyList<string> Languages
 		{
@@ -31,7 +31,7 @@ namespace Windows.Globalization.NumberFormatting
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  string ResolvedLanguage
 		{
@@ -41,7 +41,7 @@ namespace Windows.Globalization.NumberFormatting
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public NumeralSystemTranslator( global::System.Collections.Generic.IEnumerable<string> languages) 
 		{
@@ -49,7 +49,7 @@ namespace Windows.Globalization.NumberFormatting
 		}
 		#endif
 		// Forced skipping of method Windows.Globalization.NumberFormatting.NumeralSystemTranslator.NumeralSystemTranslator(System.Collections.Generic.IEnumerable<string>)
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public NumeralSystemTranslator() 
 		{
@@ -61,7 +61,7 @@ namespace Windows.Globalization.NumberFormatting
 		// Forced skipping of method Windows.Globalization.NumberFormatting.NumeralSystemTranslator.ResolvedLanguage.get
 		// Forced skipping of method Windows.Globalization.NumberFormatting.NumeralSystemTranslator.NumeralSystem.get
 		// Forced skipping of method Windows.Globalization.NumberFormatting.NumeralSystemTranslator.NumeralSystem.set
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  string TranslateNumerals( string value)
 		{

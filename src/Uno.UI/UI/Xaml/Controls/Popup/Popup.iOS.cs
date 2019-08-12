@@ -119,12 +119,14 @@ namespace Windows.UI.Xaml.Controls
 		{
 			base.OnIsOpenChanged(oldIsOpen, newIsOpen);
 
-			UpdateListDismissLayer(newIsOpen);
+			UpdateLightDismissLayer(newIsOpen);
 
 			UpdateDismissTriggers();
+
+			EnsureForward();
 		}
 
-		private void UpdateListDismissLayer(bool newIsOpen)
+		private void UpdateLightDismissLayer(bool newIsOpen)
 		{
 			if (PopupPanel != null)
 			{
@@ -163,6 +165,15 @@ namespace Windows.UI.Xaml.Controls
 					PopupPanel.PointerPressed -= OnPointerPressed;
 				}
 			}
+		}
+
+		/// <summary>
+		/// Ensure that Popup panel is forward-most in the window. This ensures it isn't hidden behind the main content, which can happen when
+		/// the Popup is created during initial launch.
+		/// </summary>
+		private void EnsureForward()
+		{
+			PopupPanel.Superview?.BringSubviewToFront(PopupPanel);
 		}
 
 		private void OnPointerPressed(object sender, EventArgs args)

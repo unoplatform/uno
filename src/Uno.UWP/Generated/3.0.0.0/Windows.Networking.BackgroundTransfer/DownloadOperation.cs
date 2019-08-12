@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Networking.BackgroundTransfer
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class DownloadOperation : global::Windows.Networking.BackgroundTransfer.IBackgroundTransferOperation,global::Windows.Networking.BackgroundTransfer.IBackgroundTransferOperationPriority
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Networking.BackgroundTransfer.BackgroundTransferCostPolicy CostPolicy
 		{
@@ -21,7 +21,7 @@ namespace Windows.Networking.BackgroundTransfer
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::System.Uri RequestedUri
 		{
@@ -35,7 +35,7 @@ namespace Windows.Networking.BackgroundTransfer
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  string Method
 		{
@@ -45,7 +45,7 @@ namespace Windows.Networking.BackgroundTransfer
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  string Group
 		{
@@ -55,7 +55,7 @@ namespace Windows.Networking.BackgroundTransfer
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::System.Guid Guid
 		{
@@ -65,7 +65,7 @@ namespace Windows.Networking.BackgroundTransfer
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Networking.BackgroundTransfer.BackgroundTransferPriority Priority
 		{
@@ -79,7 +79,7 @@ namespace Windows.Networking.BackgroundTransfer
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Networking.BackgroundTransfer.BackgroundDownloadProgress Progress
 		{
@@ -89,7 +89,7 @@ namespace Windows.Networking.BackgroundTransfer
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Storage.IStorageFile ResultFile
 		{
@@ -99,7 +99,7 @@ namespace Windows.Networking.BackgroundTransfer
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Networking.BackgroundTransfer.BackgroundTransferGroup TransferGroup
 		{
@@ -109,7 +109,7 @@ namespace Windows.Networking.BackgroundTransfer
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  bool IsRandomAccessRequired
 		{
@@ -123,7 +123,7 @@ namespace Windows.Networking.BackgroundTransfer
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Web.WebErrorStatus? CurrentWebErrorStatus
 		{
@@ -133,7 +133,7 @@ namespace Windows.Networking.BackgroundTransfer
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::System.Collections.Generic.IList<global::Windows.Web.WebErrorStatus> RecoverableWebErrorStatuses
 		{
@@ -145,28 +145,28 @@ namespace Windows.Networking.BackgroundTransfer
 		#endif
 		// Forced skipping of method Windows.Networking.BackgroundTransfer.DownloadOperation.ResultFile.get
 		// Forced skipping of method Windows.Networking.BackgroundTransfer.DownloadOperation.Progress.get
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Foundation.IAsyncOperationWithProgress<global::Windows.Networking.BackgroundTransfer.DownloadOperation, global::Windows.Networking.BackgroundTransfer.DownloadOperation> StartAsync()
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperationWithProgress<DownloadOperation, DownloadOperation> DownloadOperation.StartAsync() is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Foundation.IAsyncOperationWithProgress<global::Windows.Networking.BackgroundTransfer.DownloadOperation, global::Windows.Networking.BackgroundTransfer.DownloadOperation> AttachAsync()
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperationWithProgress<DownloadOperation, DownloadOperation> DownloadOperation.AttachAsync() is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  void Pause()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.BackgroundTransfer.DownloadOperation", "void DownloadOperation.Pause()");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  void Resume()
 		{
@@ -179,14 +179,14 @@ namespace Windows.Networking.BackgroundTransfer
 		// Forced skipping of method Windows.Networking.BackgroundTransfer.DownloadOperation.Group.get
 		// Forced skipping of method Windows.Networking.BackgroundTransfer.DownloadOperation.CostPolicy.get
 		// Forced skipping of method Windows.Networking.BackgroundTransfer.DownloadOperation.CostPolicy.set
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Storage.Streams.IInputStream GetResultStreamAt( ulong position)
 		{
 			throw new global::System.NotImplementedException("The member IInputStream DownloadOperation.GetResultStreamAt(ulong position) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Networking.BackgroundTransfer.ResponseInformation GetResponseInformation()
 		{
@@ -198,14 +198,14 @@ namespace Windows.Networking.BackgroundTransfer
 		// Forced skipping of method Windows.Networking.BackgroundTransfer.DownloadOperation.TransferGroup.get
 		// Forced skipping of method Windows.Networking.BackgroundTransfer.DownloadOperation.IsRandomAccessRequired.get
 		// Forced skipping of method Windows.Networking.BackgroundTransfer.DownloadOperation.IsRandomAccessRequired.set
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Storage.Streams.IRandomAccessStreamReference GetResultRandomAccessStreamReference()
 		{
 			throw new global::System.NotImplementedException("The member IRandomAccessStreamReference DownloadOperation.GetResultRandomAccessStreamReference() is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::System.Collections.Generic.IList<global::Windows.Networking.BackgroundTransfer.BackgroundTransferFileRange> GetDownloadedRanges()
 		{
@@ -217,14 +217,14 @@ namespace Windows.Networking.BackgroundTransfer
 		// Forced skipping of method Windows.Networking.BackgroundTransfer.DownloadOperation.RequestedUri.set
 		// Forced skipping of method Windows.Networking.BackgroundTransfer.DownloadOperation.RecoverableWebErrorStatuses.get
 		// Forced skipping of method Windows.Networking.BackgroundTransfer.DownloadOperation.CurrentWebErrorStatus.get
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  void MakeCurrentInTransferGroup()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.BackgroundTransfer.DownloadOperation", "void DownloadOperation.MakeCurrentInTransferGroup()");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Networking.BackgroundTransfer.DownloadOperation, global::Windows.Networking.BackgroundTransfer.BackgroundTransferRangesDownloadedEventArgs> RangesDownloaded
 		{

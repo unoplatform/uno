@@ -31,7 +31,7 @@ using CoreGraphics;
 using View = MonoTouch.UIKit.UIView;
 using Color = MonoTouch.UIKit.UIColor;
 using Font = MonoTouch.UIKit.UIFont;
-#elif NET46 || __WASM__
+#elif NET461 || __WASM__
 using View = Windows.UI.Xaml.UIElement;
 #endif
 
@@ -39,17 +39,17 @@ namespace Windows.UI.Xaml.Controls
 {
 	public abstract partial class Layouter : ILayouter
 	{
-		private readonly static IEventProvider _trace = Tracing.Get(FrameworkElement.TraceProvider.Id);
+		private static readonly IEventProvider _trace = Tracing.Get(FrameworkElement.TraceProvider.Id);
 
 		private readonly IFrameworkElement _element;
 
 		public IFrameworkElement Panel { get { return _element; } }
 
-		public Layouter(IFrameworkElement element)
+		protected Layouter(IFrameworkElement element)
 		{
 			_element = element;
 		}
-		
+
 		/// <summary>
 		/// Determine the size of the panel.
 		/// </summary>
@@ -106,9 +106,13 @@ namespace Windows.UI.Xaml.Controls
 		/// <summary>
 		/// Places the children of the panel using a specific size, in logical pixels.
 		/// </summary>
-		/// <param name="finalSize">The final panel size</param>
 		public void Arrange(Rect finalRect)
 		{
+			if (_element is UIElement ui)
+			{
+				ui.LayoutSlot = finalRect;
+			}
+
 			IDisposable traceActivity = null;
 			if (_trace.IsEnabled)
 			{
@@ -126,6 +130,11 @@ namespace Windows.UI.Xaml.Controls
 				}
 
 				ArrangeOverride(finalRect.Size);
+
+				if (_element is FrameworkElement fe)
+				{
+					fe.OnLayoutUpdated();
+				}
 			}
 		}
 
@@ -299,6 +308,11 @@ namespace Windows.UI.Xaml.Controls
 		/// <param name="frame">The rectangle to use, in Logical position</param>
 		public void ArrangeChild(View view, Rect frame)
 		{
+			ArrangeChild(view, frame, true);
+		}
+
+		internal void ArrangeChild(View view, Rect frame, bool raiseLayoutUpdated)
+		{
 			if ((view as IFrameworkElement)?.Visibility == Visibility.Collapsed)
 			{
 				return;
@@ -306,6 +320,11 @@ namespace Windows.UI.Xaml.Controls
 			frame = ApplyMarginAndAlignments(view, frame);
 
 			ArrangeChildOverride(view, frame);
+
+			if (raiseLayoutUpdated && view is FrameworkElement fe)
+			{
+				fe?.OnLayoutUpdated();
+			}
 		}
 
 		private void LogArrange(View view, Rect frame)
@@ -322,9 +341,7 @@ namespace Windows.UI.Xaml.Controls
 
 		protected Thickness MarginChild(View view)
 		{
-			var frameworkElement = view as IFrameworkElement;
-
-			if (frameworkElement != null)
+			if (view is IFrameworkElement frameworkElement)
 			{
 				return frameworkElement.Margin;
 			}
@@ -344,9 +361,7 @@ namespace Windows.UI.Xaml.Controls
 			// Panel that do not use this helper a bit more complex, but for all other panels that use this
 			// layouter, the logic is implied.
 
-			var frameworkElement = view as IFrameworkElement;
-
-			if (frameworkElement != null)
+			if (view is IFrameworkElement frameworkElement)
 			{
 				// Apply the margin for framework elements, as if it were padding to the child.
 				double x = frame.X;

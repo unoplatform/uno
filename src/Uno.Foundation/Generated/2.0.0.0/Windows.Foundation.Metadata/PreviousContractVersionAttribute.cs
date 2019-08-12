@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Foundation.Metadata
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class PreviousContractVersionAttribute : global::System.Attribute
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public PreviousContractVersionAttribute( string contract,  uint versionLow,  uint versionHigh,  string newContract) : base()
 		{
@@ -15,7 +15,7 @@ namespace Windows.Foundation.Metadata
 		}
 		#endif
 		// Forced skipping of method Windows.Foundation.Metadata.PreviousContractVersionAttribute.PreviousContractVersionAttribute(string, uint, uint, string)
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public PreviousContractVersionAttribute( string contract,  uint versionLow,  uint versionHigh) : base()
 		{

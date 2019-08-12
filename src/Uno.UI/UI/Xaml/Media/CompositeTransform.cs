@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Numerics;
 using System.Text;
 using Windows.Foundation;
 
@@ -11,67 +12,36 @@ namespace Windows.UI.Xaml.Media
 	/// </summary>
 	public partial class CompositeTransform : Transform
 	{
-		private readonly ScaleTransform _scale = new ScaleTransform();
-		private readonly SkewTransform _skew = new SkewTransform();
-		private readonly RotateTransform _rotation = new RotateTransform();
-		private readonly TranslateTransform _translation = new TranslateTransform();
-		//TODO: this doubles up on the 'ToNativeTransform' method and should be removed.
-		private readonly Transform _innerTransform;
-
-
-		public CompositeTransform()
+		internal override Matrix3x2 ToMatrix(Point absoluteOrigin)
 		{
 			// Creates native transform which applies multiple transformations in this order:
-			// Scale(ScaleX, ScaleY )
+			// Scale(ScaleX, ScaleY)
 			// Skew(SkewX, SkewY)
 			// Rotate(Rotation)
 			// Translate(TranslateX, TranslateY)
 			// https://msdn.microsoft.com/en-us/library/windows/apps/windows.ui.xaml.media.compositetransform.aspx
 
-			_innerTransform = new TransformGroup
-			{
-				Children = new TransformCollection
-				{
-					_scale,
-					_skew,
-					_rotation,
-					_translation
-				}
-			};
+			var centerX = absoluteOrigin.X + CenterX;
+			var centerY = absoluteOrigin.Y + CenterY;
+
+			var matrix = Matrix3x2.Identity;
+
+			matrix *= ScaleTransform.GetMatrix(centerX, centerY, ScaleX, ScaleY);
+			matrix *= SkewTransform.GetMatrix(CenterX, CenterY, SkewX, SkewY);
+			matrix *= RotateTransform.GetMatrix(CenterX, CenterY, Rotation);
+			matrix *= TranslateTransform.GetMatrix(TranslateX, TranslateY);
+
+			return matrix;
 		}
 
-		internal override void OnViewSizeChanged(Size oldSize, Size newSize)
-		{
-			_innerTransform.OnViewSizeChanged(oldSize, newSize);
-		}
-
-		internal override Point Origin
-        {
-            get => _innerTransform.Origin;
-			set => _innerTransform.Origin = value;
-		}
-
-        public double CenterX
+		public double CenterX
 		{
 			get => (double)this.GetValue(CenterXProperty);
 			set => this.SetValue(CenterXProperty, value);
 		}
 
 		public static readonly DependencyProperty CenterXProperty =
-			DependencyProperty.Register("CenterX", typeof(double), typeof(CompositeTransform), new PropertyMetadata(0.0d, OnCenterXChanged));
-
-		private static void OnCenterXChanged(object dependencyObject, DependencyPropertyChangedEventArgs args)
-		{
-			// Update the internal value if the value is being animated.
-			// The value is not being animated by the platform itself.
-
-			if (dependencyObject is CompositeTransform transform)
-			{
-				transform._scale.CenterX = transform.CenterX;
-				transform._skew.CenterX = transform.CenterX;
-				transform._rotation.CenterX = transform.CenterX;
-			}
-		}
+			DependencyProperty.Register("CenterX", typeof(double), typeof(CompositeTransform), new PropertyMetadata(0.0d, NotifyChangedCallback));
 
 		public double CenterY
 		{
@@ -80,19 +50,7 @@ namespace Windows.UI.Xaml.Media
 		}
 
 		public static readonly DependencyProperty CenterYProperty =
-			DependencyProperty.Register("CenterY", typeof(double), typeof(CompositeTransform), new PropertyMetadata(0.0d, OnCenterYChanged));
-		private static void OnCenterYChanged(object dependencyObject, DependencyPropertyChangedEventArgs args)
-        {
-            // Update the internal value if the value is being animated.
-            // The value is not being animated by the platform itself.
-
-			if (dependencyObject is CompositeTransform transform)
-			{
-				transform._scale.CenterY = transform.CenterY;
-				transform._skew.CenterY = transform.CenterY;
-				transform._rotation.CenterY = transform.CenterY;
-			}
-		}
+			DependencyProperty.Register("CenterY", typeof(double), typeof(CompositeTransform), new PropertyMetadata(0.0d, NotifyChangedCallback));
 
 		public double Rotation
 		{
@@ -101,21 +59,7 @@ namespace Windows.UI.Xaml.Media
 		}
 
 		public static readonly DependencyProperty RotationProperty =
-			DependencyProperty.Register("Rotation", typeof(double), typeof(CompositeTransform), new PropertyMetadata(0.0d, OnRotationChanged));
-		private static void OnRotationChanged(object dependencyObject, DependencyPropertyChangedEventArgs args)
-		{
-            // Don't update the internal value if the value is being animated.
-            // The value is being animated by the platform itself.
-            if (args.NewPrecedence == DependencyPropertyValuePrecedences.Animations && args.BypassesPropagation)
-            {
-                return;
-            }
-
-			if (dependencyObject is CompositeTransform transform)
-			{
-				transform._rotation.Angle = transform.Rotation;
-			}
-		}
+			DependencyProperty.Register("Rotation", typeof(double), typeof(CompositeTransform), new PropertyMetadata(0.0d, NotifyChangedCallback));
 
 		public double ScaleX
 		{
@@ -124,21 +68,7 @@ namespace Windows.UI.Xaml.Media
 		}
 
 		public static readonly DependencyProperty ScaleXProperty =
-			DependencyProperty.Register("ScaleX", typeof(double), typeof(CompositeTransform), new PropertyMetadata(1.0d, OnScaleXChanged));
-		private static void OnScaleXChanged(object dependencyObject, DependencyPropertyChangedEventArgs args)
-		{
-            // Don't update the internal value if the value is being animated.
-            // The value is being animated by the platform itself.
-            if (args.NewPrecedence == DependencyPropertyValuePrecedences.Animations && args.BypassesPropagation)
-            {
-                return;
-            }
-
-			if (dependencyObject is CompositeTransform transform)
-			{
-				transform._scale.ScaleX = transform.ScaleX;
-			}
-		}
+			DependencyProperty.Register("ScaleX", typeof(double), typeof(CompositeTransform), new PropertyMetadata(1.0d, NotifyChangedCallback));
 
 		public double ScaleY
 		{
@@ -147,22 +77,7 @@ namespace Windows.UI.Xaml.Media
 		}
 
 		public static readonly DependencyProperty ScaleYProperty =
-			DependencyProperty.Register("ScaleY", typeof(double), typeof(CompositeTransform), new PropertyMetadata(1.0d, OnScaleYChanged));
-		private static void OnScaleYChanged(object dependencyObject, DependencyPropertyChangedEventArgs args)
-		{
-            // Don't update the internal value if the value is being animated.
-            // The value is being animated by the platform itself.
-            if (args.NewPrecedence == DependencyPropertyValuePrecedences.Animations && args.BypassesPropagation)
-            {
-                return;
-            }
-
-			if (dependencyObject is CompositeTransform transform)
-			{
-				transform._scale.ScaleY = transform.ScaleY;
-			}
-		}
-
+			DependencyProperty.Register("ScaleY", typeof(double), typeof(CompositeTransform), new PropertyMetadata(1.0d, NotifyChangedCallback));
 
 		public double SkewX
 		{
@@ -171,21 +86,7 @@ namespace Windows.UI.Xaml.Media
 		}
 
 		public static readonly DependencyProperty SkewXProperty =
-			DependencyProperty.Register("SkewX", typeof(double), typeof(CompositeTransform), new PropertyMetadata(0.0d, OnSkewXChanged));
-		private static void OnSkewXChanged(object dependencyObject, DependencyPropertyChangedEventArgs args)
-		{
-            // Don't update the internal value if the value is being animated.
-            // The value is being animated by the platform itself.
-            if (args.NewPrecedence == DependencyPropertyValuePrecedences.Animations && args.BypassesPropagation)
-            {
-                return;
-            }
-
-			if (dependencyObject is CompositeTransform transform)
-			{
-				transform._skew.AngleX = transform.SkewX;
-			}
-		}
+			DependencyProperty.Register("SkewX", typeof(double), typeof(CompositeTransform), new PropertyMetadata(0.0d, NotifyChangedCallback));
 
 		public double SkewY
 		{
@@ -194,21 +95,7 @@ namespace Windows.UI.Xaml.Media
 		}
 
 		public static readonly DependencyProperty SkewYProperty =
-			DependencyProperty.Register("SkewY", typeof(double), typeof(CompositeTransform), new PropertyMetadata(0.0d, OnSkewYChanged));
-		private static void OnSkewYChanged(object dependencyObject, DependencyPropertyChangedEventArgs args)
-		{
-            // Don't update the internal value if the value is being animated.
-            // The value is being animated by the platform itself.
-            if (args.NewPrecedence == DependencyPropertyValuePrecedences.Animations && args.BypassesPropagation)
-            {
-                return;
-            }
-
-			if (dependencyObject is CompositeTransform transform)
-			{
-				transform._skew.AngleY = transform.SkewY;
-			}
-		}
+			DependencyProperty.Register("SkewY", typeof(double), typeof(CompositeTransform), new PropertyMetadata(0.0d, NotifyChangedCallback));
 
 		public double TranslateX
 		{
@@ -217,22 +104,7 @@ namespace Windows.UI.Xaml.Media
 		}
 
 		public static readonly DependencyProperty TranslateXProperty =
-			DependencyProperty.Register("TranslateX", typeof(double), typeof(CompositeTransform), new PropertyMetadata(0.0d, OnTranslateXChanged));
-		private static void OnTranslateXChanged(object dependencyObject, DependencyPropertyChangedEventArgs args)
-		{
-            // Don't update the internal value if the value is being animated.
-            // The value is being animated by the platform itself.
-            if (args.NewPrecedence == DependencyPropertyValuePrecedences.Animations && args.BypassesPropagation)
-            {
-                return;
-            }
-
-			if (dependencyObject is CompositeTransform transform)
-			{
-				transform._translation.X = transform.TranslateX;
-			}
-		}
-
+			DependencyProperty.Register("TranslateX", typeof(double), typeof(CompositeTransform), new PropertyMetadata(0.0d, NotifyChangedCallback));
 
 		public double TranslateY
 		{
@@ -241,22 +113,7 @@ namespace Windows.UI.Xaml.Media
 		}
 
 		public static readonly DependencyProperty TranslateYProperty =
-			DependencyProperty.Register("TranslateY", typeof(double), typeof(CompositeTransform), new PropertyMetadata(0.0d, OnTranslateYChanged));
-		private static void OnTranslateYChanged(object dependencyObject, DependencyPropertyChangedEventArgs args)
-		{
-            // Don't update the internal value if the value is being animated.
-            // The value is being animated by the platform itself.
-            if (args.NewPrecedence == DependencyPropertyValuePrecedences.Animations && args.BypassesPropagation)
-            {
-                return;
-            }
+			DependencyProperty.Register("TranslateY", typeof(double), typeof(CompositeTransform), new PropertyMetadata(0.0d, NotifyChangedCallback));
 
-			if (dependencyObject is CompositeTransform transform)
-			{
-				transform._translation.Y = transform.TranslateY;
-			}
-		}
 	}
-
 }
-

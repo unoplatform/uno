@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.ApplicationModel.UserDataAccounts.SystemAccess
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class DeviceAccountConfiguration 
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  string EmailAddress
 		{
@@ -21,7 +21,7 @@ namespace Windows.ApplicationModel.UserDataAccounts.SystemAccess
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  string Domain
 		{
@@ -35,7 +35,7 @@ namespace Windows.ApplicationModel.UserDataAccounts.SystemAccess
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  string DeviceAccountTypeId
 		{
@@ -49,7 +49,7 @@ namespace Windows.ApplicationModel.UserDataAccounts.SystemAccess
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  string OutgoingServerAddress
 		{
@@ -63,7 +63,7 @@ namespace Windows.ApplicationModel.UserDataAccounts.SystemAccess
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  bool ContactsSyncEnabled
 		{
@@ -77,7 +77,7 @@ namespace Windows.ApplicationModel.UserDataAccounts.SystemAccess
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  bool CalendarSyncEnabled
 		{
@@ -91,7 +91,7 @@ namespace Windows.ApplicationModel.UserDataAccounts.SystemAccess
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  string AccountName
 		{
@@ -105,7 +105,7 @@ namespace Windows.ApplicationModel.UserDataAccounts.SystemAccess
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  string IncomingServerUsername
 		{
@@ -119,7 +119,7 @@ namespace Windows.ApplicationModel.UserDataAccounts.SystemAccess
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  bool IncomingServerRequiresSsl
 		{
@@ -133,7 +133,7 @@ namespace Windows.ApplicationModel.UserDataAccounts.SystemAccess
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  int IncomingServerPort
 		{
@@ -147,7 +147,7 @@ namespace Windows.ApplicationModel.UserDataAccounts.SystemAccess
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  string IncomingServerAddress
 		{
@@ -161,7 +161,7 @@ namespace Windows.ApplicationModel.UserDataAccounts.SystemAccess
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  bool EmailSyncEnabled
 		{
@@ -175,7 +175,7 @@ namespace Windows.ApplicationModel.UserDataAccounts.SystemAccess
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountServerType ServerType
 		{
@@ -189,7 +189,7 @@ namespace Windows.ApplicationModel.UserDataAccounts.SystemAccess
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  string OutgoingServerUsername
 		{
@@ -203,7 +203,7 @@ namespace Windows.ApplicationModel.UserDataAccounts.SystemAccess
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  bool OutgoingServerRequiresSsl
 		{
@@ -217,7 +217,7 @@ namespace Windows.ApplicationModel.UserDataAccounts.SystemAccess
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  int OutgoingServerPort
 		{
@@ -231,7 +231,7 @@ namespace Windows.ApplicationModel.UserDataAccounts.SystemAccess
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountIconId AccountIconId
 		{
@@ -245,7 +245,7 @@ namespace Windows.ApplicationModel.UserDataAccounts.SystemAccess
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::System.Uri CalDavServerUrl
 		{
@@ -259,7 +259,7 @@ namespace Windows.ApplicationModel.UserDataAccounts.SystemAccess
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  bool CalDavRequiresSsl
 		{
@@ -273,7 +273,7 @@ namespace Windows.ApplicationModel.UserDataAccounts.SystemAccess
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  bool AutoSelectAuthenticationCertificate
 		{
@@ -287,7 +287,7 @@ namespace Windows.ApplicationModel.UserDataAccounts.SystemAccess
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountAuthenticationType AuthenticationType
 		{
@@ -301,7 +301,7 @@ namespace Windows.ApplicationModel.UserDataAccounts.SystemAccess
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  string AuthenticationCertificateId
 		{
@@ -315,7 +315,7 @@ namespace Windows.ApplicationModel.UserDataAccounts.SystemAccess
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  bool IsOutgoingServerAuthenticationEnabled
 		{
@@ -329,7 +329,7 @@ namespace Windows.ApplicationModel.UserDataAccounts.SystemAccess
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  bool IsClientAuthenticationCertificateRequired
 		{
@@ -343,7 +343,7 @@ namespace Windows.ApplicationModel.UserDataAccounts.SystemAccess
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Security.Credentials.PasswordCredential IncomingServerCredential
 		{
@@ -357,7 +357,7 @@ namespace Windows.ApplicationModel.UserDataAccounts.SystemAccess
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  bool IsOutgoingServerAuthenticationRequired
 		{
@@ -371,7 +371,7 @@ namespace Windows.ApplicationModel.UserDataAccounts.SystemAccess
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountSyncScheduleKind CardDavSyncScheduleKind
 		{
@@ -385,7 +385,7 @@ namespace Windows.ApplicationModel.UserDataAccounts.SystemAccess
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  bool AlwaysDownloadFullMessage
 		{
@@ -399,7 +399,7 @@ namespace Windows.ApplicationModel.UserDataAccounts.SystemAccess
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::System.Uri CardDavServerUrl
 		{
@@ -413,7 +413,7 @@ namespace Windows.ApplicationModel.UserDataAccounts.SystemAccess
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  bool CardDavRequiresSsl
 		{
@@ -427,7 +427,7 @@ namespace Windows.ApplicationModel.UserDataAccounts.SystemAccess
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountSyncScheduleKind CalDavSyncScheduleKind
 		{
@@ -441,7 +441,7 @@ namespace Windows.ApplicationModel.UserDataAccounts.SystemAccess
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  string IncomingServerCertificateHash
 		{
@@ -455,7 +455,7 @@ namespace Windows.ApplicationModel.UserDataAccounts.SystemAccess
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  bool WasOutgoingServerCertificateHashConfirmed
 		{
@@ -469,7 +469,7 @@ namespace Windows.ApplicationModel.UserDataAccounts.SystemAccess
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  bool WasModifiedByUser
 		{
@@ -483,7 +483,7 @@ namespace Windows.ApplicationModel.UserDataAccounts.SystemAccess
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountSyncScheduleKind SyncScheduleKind
 		{
@@ -497,7 +497,7 @@ namespace Windows.ApplicationModel.UserDataAccounts.SystemAccess
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  string SsoAccountId
 		{
@@ -511,7 +511,7 @@ namespace Windows.ApplicationModel.UserDataAccounts.SystemAccess
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  bool WasIncomingServerCertificateHashConfirmed
 		{
@@ -525,7 +525,7 @@ namespace Windows.ApplicationModel.UserDataAccounts.SystemAccess
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  string OAuthRefreshToken
 		{
@@ -539,7 +539,7 @@ namespace Windows.ApplicationModel.UserDataAccounts.SystemAccess
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  bool IsExternallyManaged
 		{
@@ -553,7 +553,7 @@ namespace Windows.ApplicationModel.UserDataAccounts.SystemAccess
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountMailAgeFilter MailAgeFilter
 		{
@@ -567,7 +567,7 @@ namespace Windows.ApplicationModel.UserDataAccounts.SystemAccess
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  bool IsSyncScheduleManagedBySystem
 		{
@@ -581,7 +581,7 @@ namespace Windows.ApplicationModel.UserDataAccounts.SystemAccess
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  string OutgoingServerCertificateHash
 		{
@@ -595,7 +595,7 @@ namespace Windows.ApplicationModel.UserDataAccounts.SystemAccess
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Security.Credentials.PasswordCredential OutgoingServerCredential
 		{
@@ -609,7 +609,7 @@ namespace Windows.ApplicationModel.UserDataAccounts.SystemAccess
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  bool DoesPolicyAllowMailSync
 		{
@@ -619,7 +619,7 @@ namespace Windows.ApplicationModel.UserDataAccounts.SystemAccess
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  bool IsSsoAuthenticationSupported
 		{
@@ -629,7 +629,7 @@ namespace Windows.ApplicationModel.UserDataAccounts.SystemAccess
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public DeviceAccountConfiguration() 
 		{

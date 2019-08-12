@@ -27,13 +27,6 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 		public SelectorItem()
 		{
-#if XAMARIN_ANDROID
-			//TODO: remove these subscriptions when Control.OnPointerPressed et al. are properly supported on Android
-			PointerPressed += (o, e) => OnPointerPressed(e);
-			PointerCanceled += (o, e) => OnPointerCanceled(e);
-			PointerReleased += (o, e) => OnPointerReleased(e);
-			PointerExited += (o, e) => OnPointerExited(e);
-#endif
 		}
 
 		/// <remarks>
@@ -82,6 +75,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		}
 
 		private bool _isPressed;
+
 		internal bool IsPressed
 		{
 			get { return _isPressed; }
@@ -95,6 +89,29 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			}
 		}
 
+		/// <summary>
+		/// Set appropriate visual state from MultiSelectStates group. (https://msdn.microsoft.com/en-us/library/windows/apps/mt299136.aspx?f=255&MSPPError=-2147217396)
+		/// </summary>
+		internal void ApplyMultiSelectState(bool isSelectionMultiple)
+		{
+			if (isSelectionMultiple)
+			{
+				// We can safely always go to multiselect state
+				VisualStateManager.GoToState(this, "MultiSelectEnabled", useTransitions: true);
+			}
+			else
+			{
+				// Retrieve the current state (which 'lives' on the SelectorItem's template root, and may change if it is retemplated)
+				var currentState = VisualStateManager.GetCurrentState(this, "MultiSelectStates")?.Name;
+
+				if (currentState == "MultiSelectEnabled")
+				{
+					// The MultiSelectDisabled state goes through VisibleRect then collapsed, which means Disabled state can't be
+					// invoked if the state is already disabled without having the selected check box appearing briefly. (Issue #403)
+					VisualStateManager.GoToState(this, "MultiSelectDisabled", useTransitions: true);
+				}
+			}
+		}
 
 		partial void OnIsSelectedChangedPartial(bool oldIsSelected, bool newIsSelected)
 		{

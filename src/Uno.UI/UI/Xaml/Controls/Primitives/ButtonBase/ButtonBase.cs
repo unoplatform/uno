@@ -54,7 +54,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 		partial void PartialInitializeProperties();
 
-#region Command (DP)
+		#region Command (DP)
 		public static readonly DependencyProperty CommandProperty = DependencyProperty.Register(
 			"Command", typeof(ICommand), typeof(ButtonBase), new PropertyMetadata(default(ICommand), OnCommandChanged));
 
@@ -68,7 +68,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		{
 			((ButtonBase)dependencyobject).OnCommandChanged(args.NewValue as ICommand);
 		}
-#endregion
+		#endregion
 
 		partial void RegisterEvents();
 
@@ -138,10 +138,10 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 			RegisterEvents();
 		}
-		
+
 		private void OnClick(PointerRoutedEventArgs args = null)
 		{
-			Click?.Invoke(this, new RoutedEventArgs());
+			Click?.Invoke(this, RoutedEventArgs.Empty);
 
 			try
 			{
@@ -156,16 +156,6 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			{
 				this.Log().Error("Failed to execute command", e);
 			}
-			
-			if (args != null)
-			{
-				args.Handled = true;
-			}
-
-			// This is a naive implementation that doesn't consider ClickMode or the distance traveled between press and release.
-			// Will be implemented properly when pointer logic is moved to UIElement.
-			// It is important that Tapped is raised after Click.
-			RaiseTapped(new TappedRoutedEventArgs());
 		}
 
 		protected override void OnPointerPressed(PointerRoutedEventArgs args)
@@ -174,8 +164,6 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 			IsPointerOver = true;
 			IsPointerPressed = true;
-
-			args.Handled = true;
 
 #if !__WASM__
 			// TODO: Remove when Focus is implemented properly.
@@ -188,11 +176,6 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		protected override void OnPointerReleased(PointerRoutedEventArgs args)
 		{
 			base.OnPointerReleased(args);
-
-			if (IsPointerOver)
-			{
-				OnClick(args); // TODO: Consider ClickMode and mouse pointer button
-			}
 
 			IsPointerOver = false;
 			IsPointerPressed = false;
@@ -225,7 +208,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			IsPointerOver = false;
 		}
 
-#region CommandParameter
+		#region CommandParameter
 
 		public object CommandParameter
 		{
@@ -244,7 +227,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			((ButtonBase)dependencyObject)?.CoerceValue(IsEnabledProperty);
 		}
 
-#endregion
+		#endregion
 
 		// Might be changed if the method does not conflict in UnoViewGroup.
 		internal override bool IsViewHit()

@@ -2,19 +2,19 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Management.Policies
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class NamedPolicy 
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.Management.Policies.NamedPolicyData GetPolicyFromPath( string area,  string name)
 		{
 			throw new global::System.NotImplementedException("The member NamedPolicyData NamedPolicy.GetPolicyFromPath(string area, string name) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.Management.Policies.NamedPolicyData GetPolicyFromPathForUser( global::Windows.System.User user,  string area,  string name)
 		{

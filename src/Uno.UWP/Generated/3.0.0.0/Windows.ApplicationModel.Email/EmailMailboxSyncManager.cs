@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.ApplicationModel.Email
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class EmailMailboxSyncManager 
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.ApplicationModel.Email.EmailMailboxSyncStatus Status
 		{
@@ -21,7 +21,7 @@ namespace Windows.ApplicationModel.Email
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::System.DateTimeOffset LastSuccessfulSyncTime
 		{
@@ -35,7 +35,7 @@ namespace Windows.ApplicationModel.Email
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::System.DateTimeOffset LastAttemptedSyncTime
 		{
@@ -52,7 +52,7 @@ namespace Windows.ApplicationModel.Email
 		// Forced skipping of method Windows.ApplicationModel.Email.EmailMailboxSyncManager.Status.get
 		// Forced skipping of method Windows.ApplicationModel.Email.EmailMailboxSyncManager.LastSuccessfulSyncTime.get
 		// Forced skipping of method Windows.ApplicationModel.Email.EmailMailboxSyncManager.LastAttemptedSyncTime.get
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Foundation.IAsyncOperation<bool> SyncAsync()
 		{
@@ -64,7 +64,7 @@ namespace Windows.ApplicationModel.Email
 		// Forced skipping of method Windows.ApplicationModel.Email.EmailMailboxSyncManager.Status.set
 		// Forced skipping of method Windows.ApplicationModel.Email.EmailMailboxSyncManager.LastSuccessfulSyncTime.set
 		// Forced skipping of method Windows.ApplicationModel.Email.EmailMailboxSyncManager.LastAttemptedSyncTime.set
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.ApplicationModel.Email.EmailMailboxSyncManager, object> SyncStatusChanged
 		{

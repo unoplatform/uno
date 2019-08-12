@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Composition
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class ColorKeyFrameAnimation : global::Windows.UI.Composition.KeyFrameAnimation
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.UI.Composition.CompositionColorSpace InterpolationColorSpace
 		{
@@ -23,14 +23,14 @@ namespace Windows.UI.Composition
 		#endif
 		// Forced skipping of method Windows.UI.Composition.ColorKeyFrameAnimation.InterpolationColorSpace.get
 		// Forced skipping of method Windows.UI.Composition.ColorKeyFrameAnimation.InterpolationColorSpace.set
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  void InsertKeyFrame( float normalizedProgressKey,  global::Windows.UI.Color value)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.ColorKeyFrameAnimation", "void ColorKeyFrameAnimation.InsertKeyFrame(float normalizedProgressKey, Color value)");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  void InsertKeyFrame( float normalizedProgressKey,  global::Windows.UI.Color value,  global::Windows.UI.Composition.CompositionEasingFunction easingFunction)
 		{

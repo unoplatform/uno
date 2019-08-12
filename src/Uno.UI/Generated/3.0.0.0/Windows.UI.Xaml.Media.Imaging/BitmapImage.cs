@@ -12,7 +12,7 @@ namespace Windows.UI.Xaml.Media.Imaging
 		// Skipping already declared property DecodePixelHeight
 		// Skipping already declared property CreateOptions
 		// Skipping already declared property DecodePixelType
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  bool AutoPlay
 		{
@@ -26,7 +26,7 @@ namespace Windows.UI.Xaml.Media.Imaging
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  bool IsAnimatedBitmap
 		{
@@ -36,7 +36,7 @@ namespace Windows.UI.Xaml.Media.Imaging
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  bool IsPlaying
 		{
@@ -51,7 +51,7 @@ namespace Windows.UI.Xaml.Media.Imaging
 		// Skipping already declared property DecodePixelWidthProperty
 		// Skipping already declared property UriSourceProperty
 		// Skipping already declared property DecodePixelTypeProperty
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty AutoPlayProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
@@ -59,7 +59,7 @@ namespace Windows.UI.Xaml.Media.Imaging
 			typeof(global::Windows.UI.Xaml.Media.Imaging.BitmapImage), 
 			new FrameworkPropertyMetadata(default(bool)));
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty IsAnimatedBitmapProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
@@ -67,7 +67,7 @@ namespace Windows.UI.Xaml.Media.Imaging
 			typeof(global::Windows.UI.Xaml.Media.Imaging.BitmapImage), 
 			new FrameworkPropertyMetadata(default(bool)));
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty IsPlayingProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
@@ -99,14 +99,14 @@ namespace Windows.UI.Xaml.Media.Imaging
 		// Forced skipping of method Windows.UI.Xaml.Media.Imaging.BitmapImage.IsPlaying.get
 		// Forced skipping of method Windows.UI.Xaml.Media.Imaging.BitmapImage.AutoPlay.get
 		// Forced skipping of method Windows.UI.Xaml.Media.Imaging.BitmapImage.AutoPlay.set
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  void Play()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Media.Imaging.BitmapImage", "void BitmapImage.Play()");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  void Stop()
 		{

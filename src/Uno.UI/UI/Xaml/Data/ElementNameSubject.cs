@@ -35,13 +35,24 @@ namespace Windows.UI.Xaml.Data
 		/// </summary>
 		public object ElementInstance
 		{
-			get { return _elementInstance; }
+			// element stubs are not returned, are only materialized
+			// as part of FindName or Visibility binding
+			get => _elementInstance is ElementStub ? null : _elementInstance;
 			set
 			{
 				_elementInstance = value;
-				ElementInstanceChanged?.Invoke(this, _elementInstance);
+
+				if (!(_elementInstance is ElementStub))
+				{
+					// In the case of element stubs, the XAML generator sets the subject as part of the
+					// materialization of the final element, raising this event.
+
+					ElementInstanceChanged?.Invoke(this, _elementInstance);
+				}
 			}
 		}
+
+		internal object ActualElementInstance => _elementInstance;
 
 		/// <summary>
 		/// Should the ElementName binding be applied when the view loads? True when the named element is not in local scope.

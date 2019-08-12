@@ -10,7 +10,7 @@ namespace Windows.ApplicationModel.Activation
 		// Skipping already declared property Kind
 		// Skipping already declared property PreviousExecutionState
 		// Skipping already declared property SplashScreen
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.System.User User
 		{
@@ -23,7 +23,7 @@ namespace Windows.ApplicationModel.Activation
 		// Skipping already declared property CurrentlyShownApplicationViewId
 		// Skipping already declared property Arguments
 		// Skipping already declared property TileId
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.ApplicationModel.Activation.TileActivatedInfo TileActivatedInfo
 		{
@@ -34,7 +34,7 @@ namespace Windows.ApplicationModel.Activation
 		}
 		#endif
 		// Skipping already declared property PrelaunchActivated
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.UI.ViewManagement.ActivationViewSwitcher ViewSwitcher
 		{

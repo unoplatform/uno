@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Input.Inking.Core
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class CoreWetStrokeUpdateSource 
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.UI.Input.Inking.InkPresenter InkPresenter
 		{
@@ -28,14 +28,14 @@ namespace Windows.UI.Input.Inking.Core
 		// Forced skipping of method Windows.UI.Input.Inking.Core.CoreWetStrokeUpdateSource.WetStrokeCanceled.add
 		// Forced skipping of method Windows.UI.Input.Inking.Core.CoreWetStrokeUpdateSource.WetStrokeCanceled.remove
 		// Forced skipping of method Windows.UI.Input.Inking.Core.CoreWetStrokeUpdateSource.InkPresenter.get
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Input.Inking.Core.CoreWetStrokeUpdateSource Create( global::Windows.UI.Input.Inking.InkPresenter inkPresenter)
 		{
 			throw new global::System.NotImplementedException("The member CoreWetStrokeUpdateSource CoreWetStrokeUpdateSource.Create(InkPresenter inkPresenter) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Input.Inking.Core.CoreWetStrokeUpdateSource, global::Windows.UI.Input.Inking.Core.CoreWetStrokeUpdateEventArgs> WetStrokeCanceled
 		{
@@ -51,7 +51,7 @@ namespace Windows.UI.Input.Inking.Core
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Input.Inking.Core.CoreWetStrokeUpdateSource, global::Windows.UI.Input.Inking.Core.CoreWetStrokeUpdateEventArgs> WetStrokeCompleted
 		{
@@ -67,7 +67,7 @@ namespace Windows.UI.Input.Inking.Core
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Input.Inking.Core.CoreWetStrokeUpdateSource, global::Windows.UI.Input.Inking.Core.CoreWetStrokeUpdateEventArgs> WetStrokeContinuing
 		{
@@ -83,7 +83,7 @@ namespace Windows.UI.Input.Inking.Core
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Input.Inking.Core.CoreWetStrokeUpdateSource, global::Windows.UI.Input.Inking.Core.CoreWetStrokeUpdateEventArgs> WetStrokeStarting
 		{
@@ -99,7 +99,7 @@ namespace Windows.UI.Input.Inking.Core
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Input.Inking.Core.CoreWetStrokeUpdateSource, global::Windows.UI.Input.Inking.Core.CoreWetStrokeUpdateEventArgs> WetStrokeStopping
 		{

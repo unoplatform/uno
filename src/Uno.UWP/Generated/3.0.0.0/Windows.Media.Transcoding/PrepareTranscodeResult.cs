@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Media.Transcoding
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class PrepareTranscodeResult 
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  bool CanTranscode
 		{
@@ -17,7 +17,7 @@ namespace Windows.Media.Transcoding
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Media.Transcoding.TranscodeFailureReason FailureReason
 		{
@@ -29,7 +29,7 @@ namespace Windows.Media.Transcoding
 		#endif
 		// Forced skipping of method Windows.Media.Transcoding.PrepareTranscodeResult.CanTranscode.get
 		// Forced skipping of method Windows.Media.Transcoding.PrepareTranscodeResult.FailureReason.get
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Foundation.IAsyncActionWithProgress<double> TranscodeAsync()
 		{

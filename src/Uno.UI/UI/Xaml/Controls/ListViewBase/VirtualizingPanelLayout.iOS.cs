@@ -47,8 +47,30 @@ namespace Windows.UI.Xaml.Controls
 			NeedsHeaderRelayout
 		}
 
+		private enum UnusedSpaceState
+		{
+			/// <summary>
+			/// Initial state
+			/// </summary>
+			Unset,
+			/// <summary>
+			/// The panel left some available extent unused on a previous measure pass, and hasn't attempted to use it.
+			/// </summary>
+			HasUnusedSpace,
+			/// <summary>
+			/// The panel has called a relayout to try to claim unused space that was available on a previous measure.
+			/// </summary>
+			ConsumeUnusedSpacePending
+		}
+
 		#region Members
+		/// <summary>
+		/// All cached item <see cref="UICollectionViewLayoutAttributes"/>s, grouped by collection group.
+		/// </summary>
 		private readonly Dictionary<int, LayoutInfoDictionary> _itemLayoutInfos = new Dictionary<int, LayoutInfoDictionary>();
+		/// <summary>
+		/// All cached <see cref="UICollectionViewLayoutAttributes"/> for supplementary elements (Header, Footer, group headers), grouped by element type.
+		/// </summary>
 		private readonly Dictionary<string, LayoutInfoDictionary> _supplementaryLayoutInfos = new Dictionary<string, LayoutInfoDictionary>();
 		/// <summary>
 		/// The last element in the list. This is set when the layout is created (and will point to the databound size and position of 
@@ -56,6 +78,9 @@ namespace Windows.UI.Xaml.Controls
 		/// </summary>
 		private UICollectionViewLayoutAttributes _lastElement;
 
+		/// <summary>
+		/// Locations of group header frames if they were to appear inline with items (ie not 'sticky').
+		/// </summary>
 		private readonly Dictionary<int, CGRect> _inlineHeaderFrames = new Dictionary<int, CGRect>();
 		protected readonly Dictionary<int, nfloat> _sectionEnd = new Dictionary<int, nfloat>();
 
@@ -63,10 +88,17 @@ namespace Windows.UI.Xaml.Controls
 		private Dictionary<CachedTuple<int, int>, NSIndexPath> _indexPaths = new Dictionary<CachedTuple<int, int>, NSIndexPath>(CachedTuple<int, int>.Comparer);
 		private Dictionary<CachedTuple<int, int>, UICollectionViewLayoutAttributes> _layoutAttributesForIndexPaths = new Dictionary<CachedTuple<int, int>, UICollectionViewLayoutAttributes>(CachedTuple<int, int>.Comparer);
 		private DirtyState _dirtyState;
+		/// <summary>
+		/// The most recently returned desired size.
+		/// </summary>
 		private CGSize _lastReportedSize;
+		/// <summary>
+		/// The most recent available size given by measure.
+		/// </summary>
 		private CGSize _lastAvailableSize;
 		private bool _invalidatingHeadersOnBoundsChange;
 		private bool _invalidatingOnCollectionChanged;
+		private UnusedSpaceState _unusedSpaceState;
 		private readonly Queue<CollectionChangedOperation> _pendingCollectionChanges = new Queue<CollectionChangedOperation>();
 		/// <summary>
 		/// Updates being applied in response to in-place collection modifications.
@@ -162,7 +194,7 @@ namespace Windows.UI.Xaml.Controls
 					if (SupportsDynamicItemSizes && HasDynamicElementSizes && areItems)
 					{
 						//Propagate layout changes for materialized items that may have a different size to the non-databound template.
-						UpdateLayoutAttributesForItem(layoutAttributes);
+						UpdateLayoutAttributesForItem(layoutAttributes, shouldRecurse: false);
 					}
 
 					if (rect.Contains(frame) ||
@@ -333,9 +365,18 @@ namespace Windows.UI.Xaml.Controls
 
 		public CGSize SizeThatFits(CGSize size)
 		{
+			TrySetHasConsumedUnusedSpace();
 			return PrepareLayout(false, size);
 		}
 
+		/// <summary>
+		/// Prepare layout if necessary and return its size.
+		/// </summary>
+		/// <param name="createLayoutInfo">Should we create <see cref="UICollectionViewLayoutAttributes"/>?</param>
+		/// <param name="size">The available size</param>
+		/// <returns>The total collection size</returns>
+		/// <remarks>This is called by overidden methods which need to know the total dimensions of the panel content. If a full relayout is required,
+		/// it calls <see cref="PrepareLayoutInternal(bool, bool, CGSize)"/>; otherwise it returns a cached value.</remarks>
 		private CGSize PrepareLayout(bool createLayoutInfo, CGSize? size = null)
 		{
 			using (
@@ -366,6 +407,11 @@ namespace Windows.UI.Xaml.Controls
 						_lastElement = null;
 					}
 					_lastReportedSize = PrepareLayoutInternal(createLayoutInfo, _dirtyState == DirtyState.CollectionChanged, availableSize);
+
+					if (_dirtyState == DirtyState.NeedsRelayout && GetExtent(_lastReportedSize) < GetExtent(_lastAvailableSize))
+					{
+						SetHasUnusedSpace();
+					}
 
 					if (createLayoutInfo)
 					{
@@ -413,7 +459,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		/// <summary>
-		/// Determine the layout for all elements (items, header, footer, and group headers).
+		/// Recalculate the layout for all elements (items, header, footer, and group headers).
 		/// </summary>
 		/// <param name="createLayoutInfo">Should we create <see cref="UICollectionViewLayoutAttributes"/>?</param>
 		/// <param name="isCollectionChanged">Is this a partial layout in response to an INotifyCollectionChanged operation</param>
@@ -542,7 +588,10 @@ namespace Windows.UI.Xaml.Controls
 				}
 
 				//Ensure container for group exists even if group contains no items, to simplify subsequent logic
-				_itemLayoutInfos[section] = new Dictionary<NSIndexPath, UICollectionViewLayoutAttributes>();
+				if (createLayoutInfo)
+				{
+					_itemLayoutInfos[section] = new Dictionary<NSIndexPath, UICollectionViewLayoutAttributes>(); 
+				}
 				//b. Layout items in group
 				var itemsBreadth = LayoutItemsInGroup(section, availableGroupBreadth, ref frame, createLayoutInfo, oldItemSizes);
 				var groupBreadth = itemsBreadth;
@@ -768,6 +817,9 @@ namespace Windows.UI.Xaml.Controls
 			return value;
 		}
 
+		/// <summary>
+		/// Apply 'stickiness' to group header positions.
+		/// </summary>
 		private void UpdateHeaderPositions()
 		{
 			// Get coordinate index to modify
@@ -870,7 +922,7 @@ namespace Windows.UI.Xaml.Controls
 			if (AreStickyGroupHeadersEnabled)
 			{
 				_invalidatingHeadersOnBoundsChange = true;
-				InvalidateLayout(); 
+				InvalidateLayout();
 			}
 		}
 
@@ -924,7 +976,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			if (_dirtyState == DirtyState.NeedsRelayout && this.Log().IsEnabled(LogLevel.Warning))
 			{
-				this.Log().Warn("Trying to refreshing layout when a full recreate is required - this will cause unexpected behaviour.");
+				this.Log().Warn("Trying to refresh layout when a full recreate is required - this will cause unexpected behaviour.");
 			}
 
 			//Calling base avoids setting the _dirtyState, avoiding internal layout recalculations.
@@ -999,6 +1051,9 @@ namespace Windows.UI.Xaml.Controls
 			InvalidateLayout();
 		}
 
+		/// <summary>
+		/// Update cached layout attributes for an element after the materialized, databound element has been measured.
+		/// </summary>
 		public void UpdateLayoutAttributesForElement(UICollectionViewLayoutAttributes layoutAttributes)
 		{
 			//Update frame of target layoutAttributes
@@ -1055,7 +1110,7 @@ namespace Windows.UI.Xaml.Controls
 
 			if (SupportsDynamicItemSizes && layoutAttributes.RepresentedElementKind == null)
 			{
-				UpdateLayoutAttributesForItem(layoutAttributes);
+				UpdateLayoutAttributesForItem(layoutAttributes, shouldRecurse: true);
 			}
 
 			// If this pushes content size bigger than viewport, and we 'left money on the table' when we requested desired size, send up a layout request
@@ -1064,15 +1119,43 @@ namespace Windows.UI.Xaml.Controls
 
 		private void CheckDesiredSizeChanged()
 		{
-			var available = GetExtent(_lastAvailableSize);
-			var lastRequested = GetExtent(_lastReportedSize);
-			if (lastRequested < available && DynamicContentExtent > lastRequested)
+			var lastReported = GetExtent(_lastReportedSize);
+			if (DidLeaveUnusedSpace() && DynamicContentExtent > lastReported)
 			{
+				SetWillConsumeUnusedSpace();
+
 				SetExtent(ref _lastReportedSize, DynamicContentExtent);
+
 				var nativePanel = CollectionView as NativeListViewBase;
 				nativePanel.SetNeedsLayout();
 				// NativeListViewBase swallows layout requests by design
 				nativePanel.SetSuperviewNeedsLayout();
+			}
+		}
+
+		/// <summary>
+		/// A previous measure pass left unused space, which hasn't been consumed yet.
+		/// </summary>
+		private bool DidLeaveUnusedSpace() => _unusedSpaceState != UnusedSpaceState.Unset;
+
+		/// <summary>
+		/// The panel is returning a smaller desired extent than the available size (ie the current items at their currently-known dimensions don't fill the entire available size).
+		/// </summary>
+		private void SetHasUnusedSpace() => _unusedSpaceState = UnusedSpaceState.HasUnusedSpace;
+
+		/// <summary>
+		/// An update to the dynamic (ie databound) size of an item is attempting to consume unused space. The result will transpire on a subsequent measure pass.
+		/// </summary>
+		private void SetWillConsumeUnusedSpace() => _unusedSpaceState = UnusedSpaceState.ConsumeUnusedSpacePending;
+
+		/// <summary>
+		/// Called on measure pass to indicate that a request to consume unused space has been processed.
+		/// </summary>
+		private void TrySetHasConsumedUnusedSpace()
+		{
+			if (_unusedSpaceState == UnusedSpaceState.ConsumeUnusedSpacePending)
+			{
+				_unusedSpaceState = UnusedSpaceState.Unset;
 			}
 		}
 
@@ -1122,7 +1205,7 @@ namespace Windows.UI.Xaml.Controls
 			_sectionEnd[groupHeaderLayout.IndexPath.Section] += extentDifference;
 		}
 
-		protected virtual void UpdateLayoutAttributesForItem(UICollectionViewLayoutAttributes layoutAttributes)
+		private protected virtual void UpdateLayoutAttributesForItem(UICollectionViewLayoutAttributes layoutAttributes, bool shouldRecurse)
 		{
 			throw new NotSupportedException($"This should be overridden by types which set {nameof(SupportsDynamicItemSizes)} to true.");
 		}
@@ -1521,5 +1604,11 @@ namespace Windows.UI.Xaml.Controls
 		{
 			return _inlineHeaderFrames[section];
 		}
+
+#if DEBUG
+		UICollectionViewLayoutAttributes[] AllItemLayoutAttributes => _itemLayoutInfos?.SelectMany(kvp => kvp.Value.Values).ToArray();
+
+		CGRect[] AllItemFrames => AllItemLayoutAttributes?.Select(l => l.Frame).ToArray();
+#endif
 	}
 }

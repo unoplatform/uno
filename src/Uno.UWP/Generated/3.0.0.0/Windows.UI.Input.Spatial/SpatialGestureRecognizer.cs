@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Input.Spatial
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class SpatialGestureRecognizer 
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.UI.Input.Spatial.SpatialGestureSettings GestureSettings
 		{
@@ -17,7 +17,7 @@ namespace Windows.UI.Input.Spatial
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public SpatialGestureRecognizer( global::Windows.UI.Input.Spatial.SpatialGestureSettings settings) 
 		{
@@ -53,21 +53,21 @@ namespace Windows.UI.Input.Spatial
 		// Forced skipping of method Windows.UI.Input.Spatial.SpatialGestureRecognizer.NavigationCompleted.remove
 		// Forced skipping of method Windows.UI.Input.Spatial.SpatialGestureRecognizer.NavigationCanceled.add
 		// Forced skipping of method Windows.UI.Input.Spatial.SpatialGestureRecognizer.NavigationCanceled.remove
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  void CaptureInteraction( global::Windows.UI.Input.Spatial.SpatialInteraction interaction)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Spatial.SpatialGestureRecognizer", "void SpatialGestureRecognizer.CaptureInteraction(SpatialInteraction interaction)");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  void CancelPendingGestures()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Spatial.SpatialGestureRecognizer", "void SpatialGestureRecognizer.CancelPendingGestures()");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  bool TrySetGestureSettings( global::Windows.UI.Input.Spatial.SpatialGestureSettings settings)
 		{
@@ -75,7 +75,7 @@ namespace Windows.UI.Input.Spatial
 		}
 		#endif
 		// Forced skipping of method Windows.UI.Input.Spatial.SpatialGestureRecognizer.GestureSettings.get
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Input.Spatial.SpatialGestureRecognizer, global::Windows.UI.Input.Spatial.SpatialHoldCanceledEventArgs> HoldCanceled
 		{
@@ -91,7 +91,7 @@ namespace Windows.UI.Input.Spatial
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Input.Spatial.SpatialGestureRecognizer, global::Windows.UI.Input.Spatial.SpatialHoldCompletedEventArgs> HoldCompleted
 		{
@@ -107,7 +107,7 @@ namespace Windows.UI.Input.Spatial
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Input.Spatial.SpatialGestureRecognizer, global::Windows.UI.Input.Spatial.SpatialHoldStartedEventArgs> HoldStarted
 		{
@@ -123,7 +123,7 @@ namespace Windows.UI.Input.Spatial
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Input.Spatial.SpatialGestureRecognizer, global::Windows.UI.Input.Spatial.SpatialManipulationCanceledEventArgs> ManipulationCanceled
 		{
@@ -139,7 +139,7 @@ namespace Windows.UI.Input.Spatial
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Input.Spatial.SpatialGestureRecognizer, global::Windows.UI.Input.Spatial.SpatialManipulationCompletedEventArgs> ManipulationCompleted
 		{
@@ -155,7 +155,7 @@ namespace Windows.UI.Input.Spatial
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Input.Spatial.SpatialGestureRecognizer, global::Windows.UI.Input.Spatial.SpatialManipulationStartedEventArgs> ManipulationStarted
 		{
@@ -171,7 +171,7 @@ namespace Windows.UI.Input.Spatial
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Input.Spatial.SpatialGestureRecognizer, global::Windows.UI.Input.Spatial.SpatialManipulationUpdatedEventArgs> ManipulationUpdated
 		{
@@ -187,7 +187,7 @@ namespace Windows.UI.Input.Spatial
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Input.Spatial.SpatialGestureRecognizer, global::Windows.UI.Input.Spatial.SpatialNavigationCanceledEventArgs> NavigationCanceled
 		{
@@ -203,7 +203,7 @@ namespace Windows.UI.Input.Spatial
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Input.Spatial.SpatialGestureRecognizer, global::Windows.UI.Input.Spatial.SpatialNavigationCompletedEventArgs> NavigationCompleted
 		{
@@ -219,7 +219,7 @@ namespace Windows.UI.Input.Spatial
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Input.Spatial.SpatialGestureRecognizer, global::Windows.UI.Input.Spatial.SpatialNavigationStartedEventArgs> NavigationStarted
 		{
@@ -235,7 +235,7 @@ namespace Windows.UI.Input.Spatial
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Input.Spatial.SpatialGestureRecognizer, global::Windows.UI.Input.Spatial.SpatialNavigationUpdatedEventArgs> NavigationUpdated
 		{
@@ -251,7 +251,7 @@ namespace Windows.UI.Input.Spatial
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Input.Spatial.SpatialGestureRecognizer, global::Windows.UI.Input.Spatial.SpatialRecognitionEndedEventArgs> RecognitionEnded
 		{
@@ -267,7 +267,7 @@ namespace Windows.UI.Input.Spatial
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Input.Spatial.SpatialGestureRecognizer, global::Windows.UI.Input.Spatial.SpatialRecognitionStartedEventArgs> RecognitionStarted
 		{
@@ -283,7 +283,7 @@ namespace Windows.UI.Input.Spatial
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Input.Spatial.SpatialGestureRecognizer, global::Windows.UI.Input.Spatial.SpatialTappedEventArgs> Tapped
 		{

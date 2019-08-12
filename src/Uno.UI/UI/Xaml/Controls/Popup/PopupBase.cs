@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Windows.Foundation;
 using Uno.Extensions;
 using Uno.UI.DataBinding;
 using Windows.UI.Xaml.Media;
@@ -15,7 +16,7 @@ using AppKit;
 using View = AppKit.NSView;
 #elif XAMARIN_ANDROID
 using View = Android.Views.View;
-#elif NET46 || __WASM__
+#elif NET461 || __WASM__
 using View = Windows.UI.Xaml.FrameworkElement;
 #endif
 
@@ -25,12 +26,30 @@ namespace Windows.UI.Xaml.Controls
 	{
 		private IDisposable _openPopupRegistration;
 
-        public event EventHandler<object> Closed;
-        public event EventHandler<object> Opened;
+		public event EventHandler<object> Closed;
+		public event EventHandler<object> Opened;
 
-		public PopupBase()
+		/// <summary>
+		/// Defines a custom layouter which overrides the default placement logic of the <see cref="PopupPanel"/>
+		/// </summary>
+		internal IDynamicPopupLayouter CustomLayouter { get; set; }
+
+		/// <inheritdoc />
+		protected override Size MeasureOverride(Size availableSize)
 		{
+			// As the Child is NOT part of the visual tree, it does not have to be measured,
+			// and the result size of this Popup is always 0,0
 
+			return new Size();
+		}
+
+		/// <inheritdoc />
+		protected override Size ArrangeOverride(Size finalSize)
+		{
+			// As the Child is NOT part of the visual tree, it does not have to be arranged,
+			// and the result size of this Popup is always 0,0
+
+			return new Size();
 		}
 
 		partial void OnIsOpenChangedPartial(bool oldIsOpen, bool newIsOpen)
@@ -48,20 +67,29 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		partial void OnChildChangedPartial(View oldChild, View newChild)
-        {
+		{
 			if (oldChild is IDependencyObjectStoreProvider provider)
 			{
 				provider.Store.ClearValue(provider.Store.DataContextProperty, DependencyPropertyValuePrecedences.Local);
+				provider.Store.ClearValue(provider.Store.TemplatedParentProperty, DependencyPropertyValuePrecedences.Local);
 			}
 
 			UpdateDataContext();
+			UpdateTemplatedParent();
 		}
 
-		internal protected override void OnDataContextChanged(DependencyPropertyChangedEventArgs e)
+		protected internal override void OnDataContextChanged(DependencyPropertyChangedEventArgs e)
 		{
 			base.OnDataContextChanged(e);
 
 			UpdateDataContext();
+		}
+
+		protected internal override void OnTemplatedParentChanged(DependencyPropertyChangedEventArgs e)
+		{
+			base.OnTemplatedParentChanged(e);
+
+			UpdateTemplatedParent();
 		}
 
 		private void UpdateDataContext()
@@ -70,6 +98,36 @@ namespace Windows.UI.Xaml.Controls
 			{
 				provider.Store.SetValue(provider.Store.DataContextProperty, this.DataContext, DependencyPropertyValuePrecedences.Local);
 			}
+		}
+
+		private void UpdateTemplatedParent()
+		{
+			if (Child is IDependencyObjectStoreProvider provider)
+			{
+				provider.Store.SetValue(provider.Store.TemplatedParentProperty, this.TemplatedParent, DependencyPropertyValuePrecedences.Local);
+			}
+		}
+
+		/// <summary>
+		/// A layouter responsible to layout the content of a poup at the right place
+		/// </summary>
+		internal interface IDynamicPopupLayouter
+		{
+			/// <summary>
+			/// Measure the content of the popup
+			/// </summary>
+			/// <param name="available">The available size to place to render the popup. This is expected to be the screen size.</param>
+			/// <param name="visibleSize">The size of the visible bounds of the window. This is expected to be AtMost the available.</param>
+			/// <returns>The desired size to render the content</returns>
+			Size Measure(Size available, Size visibleSize);
+
+			/// <summary>
+			/// Render the content of the popup at its final location
+			/// </summary>
+			/// <param name="finalSize">The final size available to render the view. This is expected to be the screen size.</param>
+			/// <param name="visibleBounds">The frame of the visible bounds of the window. This is expected to ba AtMost the finalSize.</param>
+			/// <param name="desiredSize">The size at which the content expect to be rendered. This is the result of the last <see cref="Measure"/>.</param>
+			void Arrange(Size finalSize, Rect visibleBounds, Size desiredSize);
 		}
 	}
 }

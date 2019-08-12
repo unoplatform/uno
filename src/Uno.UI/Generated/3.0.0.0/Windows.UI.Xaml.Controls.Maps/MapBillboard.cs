@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml.Controls.Maps
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class MapBillboard : global::Windows.UI.Xaml.Controls.Maps.MapElement
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Foundation.Point NormalizedAnchorPoint
 		{
@@ -21,7 +21,7 @@ namespace Windows.UI.Xaml.Controls.Maps
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Devices.Geolocation.Geopoint Location
 		{
@@ -35,7 +35,7 @@ namespace Windows.UI.Xaml.Controls.Maps
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Storage.Streams.IRandomAccessStreamReference Image
 		{
@@ -49,7 +49,7 @@ namespace Windows.UI.Xaml.Controls.Maps
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.UI.Xaml.Controls.Maps.MapElementCollisionBehavior CollisionBehaviorDesired
 		{
@@ -63,7 +63,7 @@ namespace Windows.UI.Xaml.Controls.Maps
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.UI.Xaml.Controls.Maps.MapCamera ReferenceCamera
 		{
@@ -73,7 +73,7 @@ namespace Windows.UI.Xaml.Controls.Maps
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty CollisionBehaviorDesiredProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
@@ -81,7 +81,7 @@ namespace Windows.UI.Xaml.Controls.Maps
 			typeof(global::Windows.UI.Xaml.Controls.Maps.MapBillboard), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Controls.Maps.MapElementCollisionBehavior)));
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty LocationProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
@@ -89,7 +89,7 @@ namespace Windows.UI.Xaml.Controls.Maps
 			typeof(global::Windows.UI.Xaml.Controls.Maps.MapBillboard), 
 			new FrameworkPropertyMetadata(default(global::Windows.Devices.Geolocation.Geopoint)));
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty NormalizedAnchorPointProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
@@ -97,7 +97,7 @@ namespace Windows.UI.Xaml.Controls.Maps
 			typeof(global::Windows.UI.Xaml.Controls.Maps.MapBillboard), 
 			new FrameworkPropertyMetadata(default(global::Windows.Foundation.Point)));
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public MapBillboard( global::Windows.UI.Xaml.Controls.Maps.MapCamera camera) : base()
 		{

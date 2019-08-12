@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Storage.Pickers
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class FilePickerSelectedFilesArray : global::System.Collections.Generic.IReadOnlyList<global::Windows.Storage.StorageFile>,global::System.Collections.Generic.IEnumerable<global::Windows.Storage.StorageFile>
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  uint Size
 		{
@@ -23,7 +23,7 @@ namespace Windows.Storage.Pickers
 		// Forced skipping of method Windows.Storage.Pickers.FilePickerSelectedFilesArray.GetMany(uint, Windows.Storage.StorageFile[])
 		// Forced skipping of method Windows.Storage.Pickers.FilePickerSelectedFilesArray.First()
 		// Processing: System.Collections.Generic.IReadOnlyList<Windows.Storage.StorageFile>
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public global::Windows.Storage.StorageFile this[int index]
 		{
@@ -38,7 +38,7 @@ namespace Windows.Storage.Pickers
 		}
 		#endif
 		// Processing: System.Collections.Generic.IEnumerable<Windows.Storage.StorageFile>
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		// DeclaringType: System.Collections.Generic.IEnumerable<Windows.Storage.StorageFile>
 		[global::Uno.NotImplemented]
 		public global::System.Collections.Generic.IEnumerator<global::Windows.Storage.StorageFile> GetEnumerator()
@@ -47,7 +47,7 @@ namespace Windows.Storage.Pickers
 		}
 		#endif
 		// Processing: System.Collections.IEnumerable
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		// DeclaringType: System.Collections.IEnumerable
 		[global::Uno.NotImplemented]
 		 global::System.Collections.IEnumerator global::System.Collections.IEnumerable.GetEnumerator()
@@ -56,7 +56,7 @@ namespace Windows.Storage.Pickers
 		}
 		#endif
 		// Processing: System.Collections.Generic.IReadOnlyCollection<Windows.Storage.StorageFile>
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public int Count
 		{

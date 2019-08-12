@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Media.Protection.PlayReady
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class PlayReadyLicenseIterator : global::Windows.Foundation.Collections.IIterator<global::Windows.Media.Protection.PlayReady.IPlayReadyLicense>
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Media.Protection.PlayReady.IPlayReadyLicense Current
 		{
@@ -17,7 +17,7 @@ namespace Windows.Media.Protection.PlayReady
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  bool HasCurrent
 		{
@@ -29,14 +29,14 @@ namespace Windows.Media.Protection.PlayReady
 		#endif
 		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyLicenseIterator.Current.get
 		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyLicenseIterator.HasCurrent.get
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  bool MoveNext()
 		{
 			throw new global::System.NotImplementedException("The member bool PlayReadyLicenseIterator.MoveNext() is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  uint GetMany( global::Windows.Media.Protection.PlayReady.IPlayReadyLicense[] items)
 		{

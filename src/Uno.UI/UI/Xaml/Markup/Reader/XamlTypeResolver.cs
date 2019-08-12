@@ -13,6 +13,8 @@ namespace Windows.UI.Xaml.Markup.Reader
 {
     internal class XamlTypeResolver
     {
+		private readonly static Assembly _frameworkElementAssembly = typeof(FrameworkElement).Assembly;
+
         private readonly Func<string, Type> _findType;
         private readonly Func<Type, string, bool> _isAttachedProperty;
         private readonly XamlFileDefinition FileDefinition;
@@ -20,7 +22,7 @@ namespace Windows.UI.Xaml.Markup.Reader
         private readonly Func<XamlMember, Type> _findPropertyTypeByXamlMember;
         private readonly Func<Type, PropertyInfo> _findContentProperty;
 
-        public static ImmutableDictionary<string, string[]> KnownNamespaces { get; } 
+		public static ImmutableDictionary<string, string[]> KnownNamespaces { get; } 
 			= new Dictionary<string, string[]>
 			{
 				{
@@ -292,7 +294,7 @@ namespace Windows.UI.Xaml.Markup.Reader
 
             if (name.Contains(":"))
             {
-                var fields = name.Split(':');
+                var fields = name.Split(new[] { ':' });
 
                 var ns = FileDefinition.Namespaces.FirstOrDefault(n => n.Prefix == fields[0]);
 
@@ -302,7 +304,7 @@ namespace Windows.UI.Xaml.Markup.Reader
 
                     if (nsName.StartsWith("clr-namespace:"))
                     {
-                        nsName = nsName.Split(';')[0].TrimStart("clr-namespace:");
+                        nsName = nsName.Split(new[] { ';' })[0].TrimStart("clr-namespace:");
                     }
 
                     name = nsName + "." + fields[1];
@@ -321,7 +323,10 @@ namespace Windows.UI.Xaml.Markup.Reader
                 // Search first using the default namespace
                 foreach (var clrNamespace in clrNamespaces)
                 {
-                    var type = Type.GetType(clrNamespace + "." + name);
+					// This lookup is performed in the current assembly as it is the
+					// original behavior, and the Wasm AOT engine does not yet respect this
+					// behavior (because of Wasm missing stack walking feature)
+					var type = _frameworkElementAssembly.GetType(clrNamespace + "." + name);
 
                     if (type != null)
                     {
@@ -339,7 +344,7 @@ namespace Windows.UI.Xaml.Markup.Reader
 				() => Type.GetType(originalName),
 
 				// As a partial name using the non-qualified name
-				() => Type.GetType(originalName.Split(':').ElementAtOrDefault(1) ?? ""),
+				() => Type.GetType(originalName.Split(new[] { ':' }).ElementAtOrDefault(1) ?? ""),
 
 				// Look for the type in all loaded assemblies
 				() => AppDomain.CurrentDomain
@@ -363,7 +368,7 @@ namespace Windows.UI.Xaml.Markup.Reader
                 var property = type.GetProperties().FirstOrDefault(p => p.Name == name);
                 var setMethod = type.GetMethods().FirstOrDefault(p => p.Name == "Set" + name);
 
-                if (property != null && property.GetMethod.IsStatic)
+                if (property?.GetMethod?.IsStatic ?? false)
                 {
                     return true;
                 }

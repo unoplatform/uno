@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Media.Editing
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class MediaOverlay 
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Foundation.Rect Position
 		{
@@ -21,7 +21,7 @@ namespace Windows.Media.Editing
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  double Opacity
 		{
@@ -35,7 +35,7 @@ namespace Windows.Media.Editing
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::System.TimeSpan Delay
 		{
@@ -49,7 +49,7 @@ namespace Windows.Media.Editing
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  bool AudioEnabled
 		{
@@ -63,7 +63,7 @@ namespace Windows.Media.Editing
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Media.Editing.MediaClip Clip
 		{
@@ -73,7 +73,7 @@ namespace Windows.Media.Editing
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public MediaOverlay( global::Windows.Media.Editing.MediaClip clip) 
 		{
@@ -81,7 +81,7 @@ namespace Windows.Media.Editing
 		}
 		#endif
 		// Forced skipping of method Windows.Media.Editing.MediaOverlay.MediaOverlay(Windows.Media.Editing.MediaClip)
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public MediaOverlay( global::Windows.Media.Editing.MediaClip clip,  global::Windows.Foundation.Rect position,  double opacity) 
 		{
@@ -95,7 +95,7 @@ namespace Windows.Media.Editing
 		// Forced skipping of method Windows.Media.Editing.MediaOverlay.Delay.get
 		// Forced skipping of method Windows.Media.Editing.MediaOverlay.Opacity.get
 		// Forced skipping of method Windows.Media.Editing.MediaOverlay.Opacity.set
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Media.Editing.MediaOverlay Clone()
 		{

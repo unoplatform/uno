@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml.Automation.Peers
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class LoopingSelectorAutomationPeer : global::Windows.UI.Xaml.Automation.Peers.FrameworkElementAutomationPeer,global::Windows.UI.Xaml.Automation.Provider.ISelectionProvider,global::Windows.UI.Xaml.Automation.Provider.IItemContainerProvider,global::Windows.UI.Xaml.Automation.Provider.IExpandCollapseProvider,global::Windows.UI.Xaml.Automation.Provider.IScrollProvider
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.UI.Xaml.Automation.ExpandCollapseState ExpandCollapseState
 		{
@@ -17,7 +17,7 @@ namespace Windows.UI.Xaml.Automation.Peers
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  double HorizontalScrollPercent
 		{
@@ -27,7 +27,7 @@ namespace Windows.UI.Xaml.Automation.Peers
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  double HorizontalViewSize
 		{
@@ -37,7 +37,7 @@ namespace Windows.UI.Xaml.Automation.Peers
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  bool HorizontallyScrollable
 		{
@@ -47,7 +47,7 @@ namespace Windows.UI.Xaml.Automation.Peers
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  double VerticalScrollPercent
 		{
@@ -57,7 +57,7 @@ namespace Windows.UI.Xaml.Automation.Peers
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  double VerticalViewSize
 		{
@@ -67,7 +67,7 @@ namespace Windows.UI.Xaml.Automation.Peers
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  bool VerticallyScrollable
 		{
@@ -77,7 +77,7 @@ namespace Windows.UI.Xaml.Automation.Peers
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  bool CanSelectMultiple
 		{
@@ -87,7 +87,7 @@ namespace Windows.UI.Xaml.Automation.Peers
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  bool IsSelectionRequired
 		{
@@ -99,14 +99,14 @@ namespace Windows.UI.Xaml.Automation.Peers
 		#endif
 		// Forced skipping of method Windows.UI.Xaml.Automation.Peers.LoopingSelectorAutomationPeer.CanSelectMultiple.get
 		// Forced skipping of method Windows.UI.Xaml.Automation.Peers.LoopingSelectorAutomationPeer.IsSelectionRequired.get
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.UI.Xaml.Automation.Provider.IRawElementProviderSimple[] GetSelection()
 		{
 			throw new global::System.NotImplementedException("The member IRawElementProviderSimple[] LoopingSelectorAutomationPeer.GetSelection() is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.UI.Xaml.Automation.Provider.IRawElementProviderSimple FindItemByProperty( global::Windows.UI.Xaml.Automation.Provider.IRawElementProviderSimple startAfter,  global::Windows.UI.Xaml.Automation.AutomationProperty automationProperty,  object value)
 		{
@@ -114,14 +114,14 @@ namespace Windows.UI.Xaml.Automation.Peers
 		}
 		#endif
 		// Forced skipping of method Windows.UI.Xaml.Automation.Peers.LoopingSelectorAutomationPeer.ExpandCollapseState.get
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  void Collapse()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Automation.Peers.LoopingSelectorAutomationPeer", "void LoopingSelectorAutomationPeer.Collapse()");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  void Expand()
 		{
@@ -134,14 +134,14 @@ namespace Windows.UI.Xaml.Automation.Peers
 		// Forced skipping of method Windows.UI.Xaml.Automation.Peers.LoopingSelectorAutomationPeer.VerticallyScrollable.get
 		// Forced skipping of method Windows.UI.Xaml.Automation.Peers.LoopingSelectorAutomationPeer.VerticalScrollPercent.get
 		// Forced skipping of method Windows.UI.Xaml.Automation.Peers.LoopingSelectorAutomationPeer.VerticalViewSize.get
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  void Scroll( global::Windows.UI.Xaml.Automation.ScrollAmount horizontalAmount,  global::Windows.UI.Xaml.Automation.ScrollAmount verticalAmount)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Automation.Peers.LoopingSelectorAutomationPeer", "void LoopingSelectorAutomationPeer.Scroll(ScrollAmount horizontalAmount, ScrollAmount verticalAmount)");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  void SetScrollPercent( double horizontalPercent,  double verticalPercent)
 		{

@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Devices.Bluetooth
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class BluetoothDeviceId 
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  string Id
 		{
@@ -17,7 +17,7 @@ namespace Windows.Devices.Bluetooth
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  bool IsClassicDevice
 		{
@@ -27,7 +27,7 @@ namespace Windows.Devices.Bluetooth
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  bool IsLowEnergyDevice
 		{
@@ -40,7 +40,7 @@ namespace Windows.Devices.Bluetooth
 		// Forced skipping of method Windows.Devices.Bluetooth.BluetoothDeviceId.Id.get
 		// Forced skipping of method Windows.Devices.Bluetooth.BluetoothDeviceId.IsClassicDevice.get
 		// Forced skipping of method Windows.Devices.Bluetooth.BluetoothDeviceId.IsLowEnergyDevice.get
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.Devices.Bluetooth.BluetoothDeviceId FromId( string deviceId)
 		{

@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Gaming.Input.Custom
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class XusbGameControllerProvider : global::Windows.Gaming.Input.Custom.IGameControllerProvider
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Gaming.Input.Custom.GameControllerVersionInfo FirmwareVersionInfo
 		{
@@ -17,7 +17,7 @@ namespace Windows.Gaming.Input.Custom
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  ushort HardwareProductId
 		{
@@ -27,7 +27,7 @@ namespace Windows.Gaming.Input.Custom
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  ushort HardwareVendorId
 		{
@@ -37,7 +37,7 @@ namespace Windows.Gaming.Input.Custom
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Gaming.Input.Custom.GameControllerVersionInfo HardwareVersionInfo
 		{
@@ -47,7 +47,7 @@ namespace Windows.Gaming.Input.Custom
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  bool IsConnected
 		{
@@ -57,7 +57,7 @@ namespace Windows.Gaming.Input.Custom
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  void SetVibration( double lowFrequencyMotorSpeed,  double highFrequencyMotorSpeed)
 		{

@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml.Media.Imaging
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class RenderTargetBitmap : global::Windows.UI.Xaml.Media.ImageSource
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  int PixelHeight
 		{
@@ -17,7 +17,7 @@ namespace Windows.UI.Xaml.Media.Imaging
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  int PixelWidth
 		{
@@ -27,7 +27,7 @@ namespace Windows.UI.Xaml.Media.Imaging
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty PixelHeightProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
@@ -35,7 +35,7 @@ namespace Windows.UI.Xaml.Media.Imaging
 			typeof(global::Windows.UI.Xaml.Media.Imaging.RenderTargetBitmap), 
 			new FrameworkPropertyMetadata(default(int)));
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty PixelWidthProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
@@ -43,7 +43,7 @@ namespace Windows.UI.Xaml.Media.Imaging
 			typeof(global::Windows.UI.Xaml.Media.Imaging.RenderTargetBitmap), 
 			new FrameworkPropertyMetadata(default(int)));
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public RenderTargetBitmap() 
 		{
@@ -53,21 +53,21 @@ namespace Windows.UI.Xaml.Media.Imaging
 		// Forced skipping of method Windows.UI.Xaml.Media.Imaging.RenderTargetBitmap.RenderTargetBitmap()
 		// Forced skipping of method Windows.UI.Xaml.Media.Imaging.RenderTargetBitmap.PixelWidth.get
 		// Forced skipping of method Windows.UI.Xaml.Media.Imaging.RenderTargetBitmap.PixelHeight.get
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Foundation.IAsyncAction RenderAsync( global::Windows.UI.Xaml.UIElement element)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncAction RenderTargetBitmap.RenderAsync(UIElement element) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Foundation.IAsyncAction RenderAsync( global::Windows.UI.Xaml.UIElement element,  int scaledWidth,  int scaledHeight)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncAction RenderTargetBitmap.RenderAsync(UIElement element, int scaledWidth, int scaledHeight) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.Streams.IBuffer> GetPixelsAsync()
 		{

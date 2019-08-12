@@ -1,21 +1,37 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using Uno.UI;
 using Windows.UI.Xaml.Controls;
 
 namespace Windows.UI.Xaml
 {
-    public static class DataTemplateHelper
-    {
-		public static DataTemplate ResolveTemplate(DataTemplate dataTemplate, DataTemplateSelector dataTemplateSelector, object data)
+	public static class DataTemplateHelper
+	{
+		public static DataTemplate ResolveTemplate(
+			DataTemplate dataTemplate,
+			DataTemplateSelector dataTemplateSelector,
+			object data,
+			DependencyObject container)
 		{
-			return ResolveTemplate(dataTemplate, dataTemplateSelector, () => data);
-		}
+			var template = dataTemplate;
+			if (template != null)
+			{
+				return template;
+			}
 
-		public static DataTemplate ResolveTemplate(DataTemplate dataTemplate, DataTemplateSelector dataTemplateSelector, Func<object> data)
-		{
-			return dataTemplate
-				?? dataTemplateSelector?.SelectTemplate(data?.Invoke());
+			if (dataTemplateSelector != null)
+			{
+				var result = dataTemplateSelector.SelectTemplate(data);
+
+				if (result == null
+					&& container != null
+					&& !FeatureConfiguration.DataTemplateSelector.UseLegacyTemplateSelectorOverload)
+				{
+					result = dataTemplateSelector.SelectTemplate(data, container);
+				}
+
+				return result;
+			}
+
+			return null;
 		}
 	}
 }

@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Data.Json
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class JsonArray : global::Windows.Data.Json.IJsonValue,global::System.Collections.Generic.IList<global::Windows.Data.Json.IJsonValue>,global::System.Collections.Generic.IEnumerable<global::Windows.Data.Json.IJsonValue>,global::Windows.Foundation.IStringable
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Data.Json.JsonValueType ValueType
 		{
@@ -17,7 +17,7 @@ namespace Windows.Data.Json
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  uint Size
 		{
@@ -27,7 +27,7 @@ namespace Windows.Data.Json
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public JsonArray() 
 		{
@@ -35,35 +35,35 @@ namespace Windows.Data.Json
 		}
 		#endif
 		// Forced skipping of method Windows.Data.Json.JsonArray.JsonArray()
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Data.Json.JsonObject GetObjectAt( uint index)
 		{
 			throw new global::System.NotImplementedException("The member JsonObject JsonArray.GetObjectAt(uint index) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Data.Json.JsonArray GetArrayAt( uint index)
 		{
 			throw new global::System.NotImplementedException("The member JsonArray JsonArray.GetArrayAt(uint index) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  string GetStringAt( uint index)
 		{
 			throw new global::System.NotImplementedException("The member string JsonArray.GetStringAt(uint index) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  double GetNumberAt( uint index)
 		{
 			throw new global::System.NotImplementedException("The member double JsonArray.GetNumberAt(uint index) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  bool GetBooleanAt( uint index)
 		{
@@ -71,42 +71,42 @@ namespace Windows.Data.Json
 		}
 		#endif
 		// Forced skipping of method Windows.Data.Json.JsonArray.ValueType.get
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  string Stringify()
 		{
 			throw new global::System.NotImplementedException("The member string JsonArray.Stringify() is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  string GetString()
 		{
 			throw new global::System.NotImplementedException("The member string JsonArray.GetString() is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  double GetNumber()
 		{
 			throw new global::System.NotImplementedException("The member double JsonArray.GetNumber() is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  bool GetBoolean()
 		{
 			throw new global::System.NotImplementedException("The member bool JsonArray.GetBoolean() is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Data.Json.JsonArray GetArray()
 		{
 			throw new global::System.NotImplementedException("The member JsonArray JsonArray.GetArray() is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Data.Json.JsonObject GetObject()
 		{
@@ -126,21 +126,21 @@ namespace Windows.Data.Json
 		// Forced skipping of method Windows.Data.Json.JsonArray.GetMany(uint, Windows.Data.Json.IJsonValue[])
 		// Forced skipping of method Windows.Data.Json.JsonArray.ReplaceAll(Windows.Data.Json.IJsonValue[])
 		// Forced skipping of method Windows.Data.Json.JsonArray.First()
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public override string ToString()
 		{
 			throw new global::System.NotImplementedException("The member string JsonArray.ToString() is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.Data.Json.JsonArray Parse( string input)
 		{
 			throw new global::System.NotImplementedException("The member JsonArray JsonArray.Parse(string input) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static bool TryParse( string input, out global::Windows.Data.Json.JsonArray result)
 		{
@@ -149,7 +149,7 @@ namespace Windows.Data.Json
 		#endif
 		// Processing: Windows.Data.Json.IJsonValue
 		// Processing: System.Collections.Generic.IList<Windows.Data.Json.IJsonValue>
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		// DeclaringType: System.Collections.Generic.IList<Windows.Data.Json.IJsonValue>
 		[global::Uno.NotImplemented]
 		public int IndexOf( global::Windows.Data.Json.IJsonValue item)
@@ -157,7 +157,7 @@ namespace Windows.Data.Json
 			throw new global::System.NotSupportedException();
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		// DeclaringType: System.Collections.Generic.IList<Windows.Data.Json.IJsonValue>
 		[global::Uno.NotImplemented]
 		public void Insert( int index,  global::Windows.Data.Json.IJsonValue item)
@@ -165,7 +165,7 @@ namespace Windows.Data.Json
 			throw new global::System.NotSupportedException();
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		// DeclaringType: System.Collections.Generic.IList<Windows.Data.Json.IJsonValue>
 		[global::Uno.NotImplemented]
 		public void RemoveAt( int index)
@@ -173,7 +173,7 @@ namespace Windows.Data.Json
 			throw new global::System.NotSupportedException();
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public global::Windows.Data.Json.IJsonValue this[int index]
 		{
@@ -188,7 +188,7 @@ namespace Windows.Data.Json
 		}
 		#endif
 		// Processing: System.Collections.Generic.ICollection<Windows.Data.Json.IJsonValue>
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		// DeclaringType: System.Collections.Generic.ICollection<Windows.Data.Json.IJsonValue>
 		[global::Uno.NotImplemented]
 		public void Add( global::Windows.Data.Json.IJsonValue item)
@@ -196,7 +196,7 @@ namespace Windows.Data.Json
 			throw new global::System.NotSupportedException();
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		// DeclaringType: System.Collections.Generic.ICollection<Windows.Data.Json.IJsonValue>
 		[global::Uno.NotImplemented]
 		public void Clear()
@@ -204,7 +204,7 @@ namespace Windows.Data.Json
 			throw new global::System.NotSupportedException();
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		// DeclaringType: System.Collections.Generic.ICollection<Windows.Data.Json.IJsonValue>
 		[global::Uno.NotImplemented]
 		public bool Contains( global::Windows.Data.Json.IJsonValue item)
@@ -212,7 +212,7 @@ namespace Windows.Data.Json
 			throw new global::System.NotSupportedException();
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		// DeclaringType: System.Collections.Generic.ICollection<Windows.Data.Json.IJsonValue>
 		[global::Uno.NotImplemented]
 		public void CopyTo( global::Windows.Data.Json.IJsonValue[] array,  int arrayIndex)
@@ -220,7 +220,7 @@ namespace Windows.Data.Json
 			throw new global::System.NotSupportedException();
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		// DeclaringType: System.Collections.Generic.ICollection<Windows.Data.Json.IJsonValue>
 		[global::Uno.NotImplemented]
 		public bool Remove( global::Windows.Data.Json.IJsonValue item)
@@ -228,7 +228,7 @@ namespace Windows.Data.Json
 			throw new global::System.NotSupportedException();
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public int Count
 		{
@@ -242,7 +242,7 @@ namespace Windows.Data.Json
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public bool IsReadOnly
 		{
@@ -257,7 +257,7 @@ namespace Windows.Data.Json
 		}
 		#endif
 		// Processing: System.Collections.Generic.IEnumerable<Windows.Data.Json.IJsonValue>
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		// DeclaringType: System.Collections.Generic.IEnumerable<Windows.Data.Json.IJsonValue>
 		[global::Uno.NotImplemented]
 		public global::System.Collections.Generic.IEnumerator<global::Windows.Data.Json.IJsonValue> GetEnumerator()
@@ -266,7 +266,7 @@ namespace Windows.Data.Json
 		}
 		#endif
 		// Processing: System.Collections.IEnumerable
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		// DeclaringType: System.Collections.IEnumerable
 		[global::Uno.NotImplemented]
 		 global::System.Collections.IEnumerator global::System.Collections.IEnumerable.GetEnumerator()

@@ -15,10 +15,20 @@ using Windows.UI.Xaml.Controls.Primitives;
 using Windows.Foundation;
 using Uno.UI;
 using System.Linq;
-#if __IOS__
+using Windows.UI.ViewManagement;
+using Microsoft.Extensions.Logging;
+
+using Uno.UI.DataBinding;
+#if __ANDROID__
+using _View = Android.Views.View;
+#elif __IOS__
 using UIKit;
+using _View = UIKit.UIView;
 #elif __MACOS__
 using AppKit;
+using _View = AppKit.NSView;
+#else
+using _View = Windows.UI.Xaml.FrameworkElement;
 #endif
 
 namespace Windows.UI.Xaml.Controls
@@ -31,9 +41,13 @@ namespace Windows.UI.Xaml.Controls
 
 		private IPopup _popup;
 		private Border _popupBorder;
-		private FrameworkElement _background;
 		private ContentPresenter _contentPresenter;
 		private ContentPresenter _headerContentPresenter;
+
+		/// <summary>
+		/// The 'inline' parent view of the selected item within the dropdown list. This is only set if SelectedItem is a view type.
+		/// </summary>
+		private ManagedWeakReference _selectionParentInDropdown;
 
 		public ComboBox()
 		{
@@ -50,24 +64,33 @@ namespace Windows.UI.Xaml.Controls
 		{
 			base.OnApplyTemplate();
 
+			if (_popup is PopupBase oldPopup)
+			{
+				oldPopup.CustomLayouter = null;
+			}
+
 			_popup = this.GetTemplateChild("Popup") as IPopup;
 			_popupBorder = this.GetTemplateChild("PopupBorder") as Border;
-			_background = this.GetTemplateChild("Background") as FrameworkElement;
 			_contentPresenter = this.GetTemplateChild("ContentPresenter") as ContentPresenter;
 
-			if (_background == null)
+			if (_popup is PopupBase popup)
 			{
-				this.Log().Warn("ComboBox.Template is missing a 'Background' element. To ensure proper dropdown popup positionning, make sure the ControlTemplate contains a FrameworkElement named 'Background'.");
+				popup.CustomLayouter = new DropDownLayouter(this, popup);
 			}
 
 			UpdateHeaderVisibility();
 			UpdateContentPresenter();
+		}
 
 #if __ANDROID__
-			PointerPressed += (s, e) => { e.Handled = true; }; // For some reasons, PointerReleased is not raised unless PointerPressed is Handled.
-			PointerReleased += (s, e) => OnPointerReleased(new PointerRoutedEventArgs());
-#endif
+		protected override void OnPointerPressed(PointerRoutedEventArgs args)
+		{
+			base.OnPointerPressed(args);
+
+			// For some reasons, PointerReleased is not raised unless PointerPressed is Handled.
+			args.Handled = true;
 		}
+#endif
 
 		protected override void OnLoaded()
 		{
@@ -157,6 +180,11 @@ namespace Windows.UI.Xaml.Controls
 
 		internal override void OnSelectedItemChanged(object oldSelectedItem, object selectedItem)
 		{
+			if (oldSelectedItem is _View view)
+			{
+				// Ensure previous SelectedItem is put back in the dropdown list if it's a view
+				RestoreSelectedItem(view);
+			}
 			base.OnSelectedItemChanged(oldSelectedItem, selectedItem);
 			UpdateContentPresenter();
 		}
@@ -171,7 +199,68 @@ namespace Windows.UI.Xaml.Controls
 		{
 			if (_contentPresenter != null)
 			{
-				_contentPresenter.Content = SelectedItem;
+				var item = GetSelectionContent();
+
+				var itemView = item as _View;
+
+				if (itemView != null)
+				{
+#if __ANDROID__
+					var comboBoxItem = itemView.FindFirstParentOfView<ComboBoxItem>();
+#else
+					var comboBoxItem = itemView.FindFirstParent<ComboBoxItem>();
+#endif
+					if (comboBoxItem != null)
+					{
+						// Keep track of the former parent, so we can put the item back when the dropdown is shown
+						_selectionParentInDropdown = (itemView.GetVisualTreeParent() as IWeakReferenceProvider)?.WeakReference;
+					}
+				}
+				else
+				{
+					_selectionParentInDropdown = null;
+				}
+
+				_contentPresenter.Content = item;
+
+				if (itemView != null && itemView.GetVisualTreeParent() != _contentPresenter)
+				{
+					// Item may have been put back in list, reattach it to _contentPresenter
+					_contentPresenter.AddChild(itemView);
+				}
+			}
+		}
+
+		private object GetSelectionContent()
+		{
+			return SelectedItem is ComboBoxItem cbi ? cbi.Content : SelectedItem;
+		}
+
+		private void RestoreSelectedItem()
+		{
+			var selection = GetSelectionContent();
+			if (selection is _View selectionView)
+			{
+				RestoreSelectedItem(selectionView);
+			}
+		}
+
+		/// <summary>
+		/// Restore SelectedItem (or former SelectedItem) view to its position in the dropdown list.
+		/// </summary>
+		private void RestoreSelectedItem(_View selectionView)
+		{
+			var dropdownParent = _selectionParentInDropdown?.Target as FrameworkElement;
+#if __ANDROID__
+			var comboBoxItem = dropdownParent?.FindFirstParentOfView<ComboBoxItem>();
+#else
+			var comboBoxItem = dropdownParent?.FindFirstParent<ComboBoxItem>();
+#endif
+
+			// Sanity check, ensure parent is still valid (ComboBoxItem may have been recycled)
+			if (comboBoxItem?.Content == selectionView && selectionView.GetVisualTreeParent() != dropdownParent)
+			{
+				dropdownParent.AddChild(selectionView);
 			}
 		}
 
@@ -188,8 +277,6 @@ namespace Windows.UI.Xaml.Controls
 
 		partial void OnIsDropDownOpenChangedPartial(bool oldIsDropDownOpen, bool newIsDropDownOpen)
 		{
-			LayoutPopup();
-
 			if (_popup != null)
 			{
 				_popup.IsOpen = newIsDropDownOpen;
@@ -198,10 +285,18 @@ namespace Windows.UI.Xaml.Controls
 			if (newIsDropDownOpen)
 			{
 				DropDownOpened?.Invoke(this, newIsDropDownOpen);
+
+				RestoreSelectedItem();
+
+				if (SelectedItem != null)
+				{
+					ScrollIntoView(SelectedItem);
+				}
 			}
 			else
 			{
 				DropDownClosed?.Invoke(this, newIsDropDownOpen);
+				UpdateContentPresenter();
 			}
 
 			UpdateDropDownState();
@@ -215,96 +310,6 @@ namespace Windows.UI.Xaml.Controls
 		// This is required by some apps trying to emulate the native iPhone look for ComboBox. 
 		// The standard popup layouter works like on Windows, and doesn't stretch to take the full size of the screen.
 		public bool IsPopupFullscreen { get; set; } = false;
-
-		private void LayoutPopup()
-		{
-			if (IsDropDownOpen && _popup.Child is FrameworkElement popupChild)
-			{
-				// Because Popup.Child is not part of the visual tree until Popup.IsOpen,
-				// some descendent Controls may never have loaded and materialized their templates.
-				// We force the materialization of all templates to ensure that Measure works properly.
-				foreach (var control in popupChild.EnumerateAllChildren().OfType<Control>())
-				{
-					control.ApplyTemplate();
-				}
-
-				if (_popup is Popup popup)
-				{
-					if (IsPopupFullscreen) // Legacy
-					{
-						// Location
-						var popupOffset = popup.TransformToVisual(Xaml.Window.Current.Content) as TranslateTransform;
-						popup.HorizontalOffset = -popupOffset.X;
-						popup.VerticalOffset = -popupOffset.Y;
-						// Size
-						var windowSize = Xaml.Window.Current.Bounds.Size;
-						popupChild.Width = windowSize.Width;
-						popupChild.Height = windowSize.Height;
-						return;
-					}
-
-					if (_background is FrameworkElement background)
-					{
-						// Reset popup offsets (Windows seems to do that)
-						popup.VerticalOffset = 0;
-						popup.HorizontalOffset = 0;
-
-						// Inject layouting constraints
-						popupChild.MinHeight = background.ActualHeight;
-						popupChild.MinWidth = background.ActualWidth;
-						popupChild.MaxHeight = MaxDropDownHeight;
-
-						var windowRect = Xaml.Window.Current.Bounds;
-
-						var popupTransform = popup.TransformToVisual(Xaml.Window.Current.Content) as TranslateTransform;
-						var popupRect = new Rect(popupTransform.X, popupTransform.Y, popup.ActualWidth, popup.ActualHeight);
-
-						var backgroundTransform = background.TransformToVisual(Xaml.Window.Current.Content) as TranslateTransform;
-						var backgroundRect = new Rect(backgroundTransform.X, backgroundTransform.Y, background.ActualWidth, background.ActualHeight);
-
-						// Because Popup.Child is not part of the visual tree until Popup.IsOpen,
-						// some descendent Controls may never have loaded and materialized their templates.
-						// We force the materialization of all templates to ensure that Measure works properly.
-						foreach (var control in popupChild.EnumerateAllChildren().OfType<Control>())
-						{
-							control.ApplyTemplate();
-						}
-
-						popupChild.Measure(windowRect.Size);
-						var popupChildRect = new Rect(new Point(), popupChild.DesiredSize);
-
-						// Align left of popup with left of background 
-						popupChildRect.X = backgroundRect.Left;
-						if (popupChildRect.Right > windowRect.Right) // popup overflows at right
-						{
-							// Align right of popup with right of background
-							popupChildRect.X = backgroundRect.Right - popupChildRect.Width;
-						}
-						if (popupChildRect.Left < windowRect.Left) // popup overflows at left
-						{
-							// Align center of popup with center of window
-							popupChildRect.X = (windowRect.Width - popupChildRect.Width) / 2.0;
-						}
-
-						// Align top of popup with top of background
-						popupChildRect.Y = backgroundRect.Top;
-						if (popupChildRect.Bottom > windowRect.Bottom) // popup overflows at bottom
-						{
-							// Align bottom of popup with bottom of background
-							popupChildRect.Y = backgroundRect.Bottom - popupChildRect.Height;
-						}
-						if (popupChildRect.Top < windowRect.Top) // popup overflows at top
-						{
-							// Align center of popup with center of window
-							popupChildRect.Y = (windowRect.Height - popupChildRect.Height) / 2.0;
-						}
-
-						popup.HorizontalOffset = popupChildRect.X - popupRect.X;
-						popup.VerticalOffset = popupChildRect.Y - popupRect.Y;
-					}
-				}
-			}
-		}
 
 		private void UpdateDropDownState()
 		{
@@ -321,6 +326,147 @@ namespace Windows.UI.Xaml.Controls
 		protected override AutomationPeer OnCreateAutomationPeer()
 		{
 			return new ComboBoxAutomationPeer(this);
+		}
+
+		private class DropDownLayouter : PopupBase.IDynamicPopupLayouter
+		{
+			private readonly ComboBox _combo;
+			private readonly PopupBase _popup;
+
+			public DropDownLayouter(ComboBox combo, PopupBase popup)
+			{
+				_combo = combo;
+				_popup = popup;
+			}
+
+			/// <inheritdoc />
+			public Size Measure(Size available, Size visibleSize)
+			{
+				if (!(_popup.Child is FrameworkElement child))
+				{
+					return new Size();
+				}
+
+				// Inject layouting constraints
+				// Note: Even if this is ugly (as we should never alter properties of a random child like this),
+				//		 it's how UWP behaves (but it does that only if the child is a Border, otherwise everything is messed up).
+				//		 It sets (at least) those properties :
+				//			MinWidth
+				//			MinHeight
+				//			MaxWidth
+				//			MaxHeight
+
+				if (_combo.IsPopupFullscreen)
+				{
+					// Size : Note we set both Min and Max to match the UWP behavior which alter only those properties
+					child.MinWidth = available.Width;
+					child.MinHeight = available.Height;
+					child.MaxWidth = available.Width;
+					child.MaxHeight = available.Height;
+				}
+				else
+				{
+					// Set the popup child as max 9 x the height of the combo
+					// (UWP seams to actually limiting to 9 visible items ... which is not necessarily the 9 x the combo height)
+					var maxHeight = Math.Min(visibleSize.Height, Math.Min(_combo.MaxDropDownHeight, _combo.ActualHeight * _itemsToShow));
+
+					child.MinHeight = _combo.ActualHeight;
+					child.MinWidth = _combo.ActualWidth;
+					child.MaxHeight = maxHeight;
+					child.MaxWidth = visibleSize.Width;
+				}
+
+				child.Measure(visibleSize);
+
+				return child.DesiredSize;
+			}
+
+			private const int _itemsToShow = 9;
+
+			/// <inheritdoc />
+			public void Arrange(Size finalSize, Rect visibleBounds, Size desiredSize)
+			{
+				if (!(_popup.Child is FrameworkElement child))
+				{
+					return;
+				}
+
+				if (_combo.IsPopupFullscreen)
+				{
+					child.Arrange(new Rect(new Point(), finalSize));
+
+					return;
+				}
+
+				var comboRect = _combo.GetAbsoluteBoundsRect();
+				var frame = new Rect(comboRect.Location, desiredSize.AtMost(visibleBounds.Size));
+
+				// On windows, the popup is Y-aligned accordingly to the selected item in order to keep
+				// the selected at the same place no matter if the drop down is open or not.
+				// For instance if selected is:
+				//  * the first option: The drop-down appears below the combobox
+				//  * the last option: The dop-down appears above the combobox
+				// However this would requires us to determine the actual location of the SelectedItem container's
+				// which might not be ready at this point (we could try a 2-pass arrange), and to scroll into view to make it visible.
+				// So for now we only rely on the SelectedIndex and make a highly improvable vertical alignment based on it.
+
+				var itemsCount = _combo.NumberOfItems;
+				var selectedIndex = _combo.SelectedIndex;
+				if (selectedIndex < 0 && itemsCount > 0)
+				{
+					selectedIndex = itemsCount / 2;
+				}
+
+				var stickyThreshold = Math.Max(1, Math.Min(4, (itemsCount / 2) - 1));
+				if (selectedIndex >= 0 && selectedIndex < stickyThreshold)
+				{
+					// Try to appear below
+					frame.Y = comboRect.Top;
+				}
+				else if (selectedIndex >= 0 && selectedIndex >= itemsCount - stickyThreshold
+					// As we don't scroll into view to the selected item, this case seems awkward if the selected item
+					// is not directly visible (i.e. without scrolling) when the drop-down appears.
+					// So if we detect that we should had to scroll to make it visible, we don't try to appear above!
+					&& (itemsCount <= _itemsToShow && frame.Height < (_combo.ActualHeight * _itemsToShow) - 3))
+				{
+					// Try to appear above
+					frame.Y = comboRect.Bottom - frame.Height;
+				}
+				else
+				{
+					// Try to appear centered
+					frame.Y = comboRect.Top - (frame.Height / 2.0) + (comboRect.Height / 2.0);
+				}
+
+				// Make sure that the popup does not appears out of the viewport
+				if (frame.Left < visibleBounds.Left)
+				{
+					frame.X = visibleBounds.X;
+				}
+				else if (frame.Right > visibleBounds.Width)
+				{
+					// On UWP, the popup is just aligned to the right on the window if it overflows on right
+					// Note: frame.Width is already at most visibleBounds.Width
+					frame.X = visibleBounds.Width - frame.Width;
+				}
+				if (frame.Top < visibleBounds.Top)
+				{
+					frame.Y = visibleBounds.Y;
+				}
+				else if (frame.Bottom > visibleBounds.Height)
+				{
+					// On UWP, the popup always let 1 px free at the bottom
+					// Note: frame.Height is already at most visibleBounds.Height
+					frame.Y = visibleBounds.Height - frame.Height - 1; 
+				}
+
+				if (this.Log().IsEnabled(LogLevel.Debug))
+				{
+					this.Log().Debug($"Layout the combo's dropdown at {frame} (desired: {desiredSize} / available: {finalSize} / visible: {visibleBounds} / selected: {selectedIndex} of {itemsCount})");
+				}
+
+				child.Arrange(frame);
+			}
 		}
 	}
 }

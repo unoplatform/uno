@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Devices.PointOfService
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class MagneticStripeReader : global::System.IDisposable
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Devices.PointOfService.MagneticStripeReaderCapabilities Capabilities
 		{
@@ -17,7 +17,7 @@ namespace Windows.Devices.PointOfService
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Devices.PointOfService.MagneticStripeReaderAuthenticationProtocol DeviceAuthenticationProtocol
 		{
@@ -27,7 +27,7 @@ namespace Windows.Devices.PointOfService
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  string DeviceId
 		{
@@ -37,7 +37,7 @@ namespace Windows.Devices.PointOfService
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  uint[] SupportedCardTypes
 		{
@@ -51,28 +51,28 @@ namespace Windows.Devices.PointOfService
 		// Forced skipping of method Windows.Devices.PointOfService.MagneticStripeReader.Capabilities.get
 		// Forced skipping of method Windows.Devices.PointOfService.MagneticStripeReader.SupportedCardTypes.get
 		// Forced skipping of method Windows.Devices.PointOfService.MagneticStripeReader.DeviceAuthenticationProtocol.get
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Foundation.IAsyncOperation<string> CheckHealthAsync( global::Windows.Devices.PointOfService.UnifiedPosHealthCheckLevel level)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<string> MagneticStripeReader.CheckHealthAsync(UnifiedPosHealthCheckLevel level) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.PointOfService.ClaimedMagneticStripeReader> ClaimReaderAsync()
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<ClaimedMagneticStripeReader> MagneticStripeReader.ClaimReaderAsync() is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.Streams.IBuffer> RetrieveStatisticsAsync( global::System.Collections.Generic.IEnumerable<string> statisticsCategories)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<IBuffer> MagneticStripeReader.RetrieveStatisticsAsync(IEnumerable<string> statisticsCategories) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Devices.PointOfService.MagneticStripeReaderErrorReportingType GetErrorReportingType()
 		{
@@ -81,42 +81,42 @@ namespace Windows.Devices.PointOfService
 		#endif
 		// Forced skipping of method Windows.Devices.PointOfService.MagneticStripeReader.StatusUpdated.add
 		// Forced skipping of method Windows.Devices.PointOfService.MagneticStripeReader.StatusUpdated.remove
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  void Dispose()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.PointOfService.MagneticStripeReader", "void MagneticStripeReader.Dispose()");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static string GetDeviceSelector( global::Windows.Devices.PointOfService.PosConnectionTypes connectionTypes)
 		{
 			throw new global::System.NotImplementedException("The member string MagneticStripeReader.GetDeviceSelector(PosConnectionTypes connectionTypes) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.PointOfService.MagneticStripeReader> GetDefaultAsync()
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<MagneticStripeReader> MagneticStripeReader.GetDefaultAsync() is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.PointOfService.MagneticStripeReader> FromIdAsync( string deviceId)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<MagneticStripeReader> MagneticStripeReader.FromIdAsync(string deviceId) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static string GetDeviceSelector()
 		{
 			throw new global::System.NotImplementedException("The member string MagneticStripeReader.GetDeviceSelector() is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Devices.PointOfService.MagneticStripeReader, global::Windows.Devices.PointOfService.MagneticStripeReaderStatusUpdatedEventArgs> StatusUpdated
 		{

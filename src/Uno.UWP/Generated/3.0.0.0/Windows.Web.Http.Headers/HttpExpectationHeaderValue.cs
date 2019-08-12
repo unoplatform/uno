@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Web.Http.Headers
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class HttpExpectationHeaderValue : global::Windows.Foundation.IStringable
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  string Value
 		{
@@ -21,7 +21,7 @@ namespace Windows.Web.Http.Headers
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  string Name
 		{
@@ -31,7 +31,7 @@ namespace Windows.Web.Http.Headers
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::System.Collections.Generic.IList<global::Windows.Web.Http.Headers.HttpNameValueHeaderValue> Parameters
 		{
@@ -41,7 +41,7 @@ namespace Windows.Web.Http.Headers
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public HttpExpectationHeaderValue( string name) 
 		{
@@ -49,7 +49,7 @@ namespace Windows.Web.Http.Headers
 		}
 		#endif
 		// Forced skipping of method Windows.Web.Http.Headers.HttpExpectationHeaderValue.HttpExpectationHeaderValue(string)
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public HttpExpectationHeaderValue( string name,  string value) 
 		{
@@ -61,21 +61,21 @@ namespace Windows.Web.Http.Headers
 		// Forced skipping of method Windows.Web.Http.Headers.HttpExpectationHeaderValue.Value.get
 		// Forced skipping of method Windows.Web.Http.Headers.HttpExpectationHeaderValue.Value.set
 		// Forced skipping of method Windows.Web.Http.Headers.HttpExpectationHeaderValue.Parameters.get
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public override string ToString()
 		{
 			throw new global::System.NotImplementedException("The member string HttpExpectationHeaderValue.ToString() is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.Web.Http.Headers.HttpExpectationHeaderValue Parse( string input)
 		{
 			throw new global::System.NotImplementedException("The member HttpExpectationHeaderValue HttpExpectationHeaderValue.Parse(string input) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static bool TryParse( string input, out global::Windows.Web.Http.Headers.HttpExpectationHeaderValue expectationHeaderValue)
 		{

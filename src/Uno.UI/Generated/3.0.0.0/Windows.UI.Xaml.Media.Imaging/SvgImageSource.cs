@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml.Media.Imaging
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class SvgImageSource : global::Windows.UI.Xaml.Media.ImageSource
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::System.Uri UriSource
 		{
@@ -21,7 +21,7 @@ namespace Windows.UI.Xaml.Media.Imaging
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  double RasterizePixelWidth
 		{
@@ -35,7 +35,7 @@ namespace Windows.UI.Xaml.Media.Imaging
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  double RasterizePixelHeight
 		{
@@ -49,7 +49,7 @@ namespace Windows.UI.Xaml.Media.Imaging
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty RasterizePixelHeightProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
@@ -57,7 +57,7 @@ namespace Windows.UI.Xaml.Media.Imaging
 			typeof(global::Windows.UI.Xaml.Media.Imaging.SvgImageSource), 
 			new FrameworkPropertyMetadata(default(double)));
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty RasterizePixelWidthProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
@@ -65,7 +65,7 @@ namespace Windows.UI.Xaml.Media.Imaging
 			typeof(global::Windows.UI.Xaml.Media.Imaging.SvgImageSource), 
 			new FrameworkPropertyMetadata(default(double)));
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty UriSourceProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
@@ -73,7 +73,7 @@ namespace Windows.UI.Xaml.Media.Imaging
 			typeof(global::Windows.UI.Xaml.Media.Imaging.SvgImageSource), 
 			new FrameworkPropertyMetadata(default(global::System.Uri)));
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public SvgImageSource() 
 		{
@@ -81,7 +81,7 @@ namespace Windows.UI.Xaml.Media.Imaging
 		}
 		#endif
 		// Forced skipping of method Windows.UI.Xaml.Media.Imaging.SvgImageSource.SvgImageSource()
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public SvgImageSource( global::System.Uri uriSource) 
 		{
@@ -99,7 +99,7 @@ namespace Windows.UI.Xaml.Media.Imaging
 		// Forced skipping of method Windows.UI.Xaml.Media.Imaging.SvgImageSource.Opened.remove
 		// Forced skipping of method Windows.UI.Xaml.Media.Imaging.SvgImageSource.OpenFailed.add
 		// Forced skipping of method Windows.UI.Xaml.Media.Imaging.SvgImageSource.OpenFailed.remove
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Foundation.IAsyncOperation<global::Windows.UI.Xaml.Media.Imaging.SvgImageSourceLoadStatus> SetSourceAsync( global::Windows.Storage.Streams.IRandomAccessStream streamSource)
 		{
@@ -109,7 +109,7 @@ namespace Windows.UI.Xaml.Media.Imaging
 		// Forced skipping of method Windows.UI.Xaml.Media.Imaging.SvgImageSource.UriSourceProperty.get
 		// Forced skipping of method Windows.UI.Xaml.Media.Imaging.SvgImageSource.RasterizePixelWidthProperty.get
 		// Forced skipping of method Windows.UI.Xaml.Media.Imaging.SvgImageSource.RasterizePixelHeightProperty.get
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Xaml.Media.Imaging.SvgImageSource, global::Windows.UI.Xaml.Media.Imaging.SvgImageSourceFailedEventArgs> OpenFailed
 		{
@@ -125,7 +125,7 @@ namespace Windows.UI.Xaml.Media.Imaging
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Xaml.Media.Imaging.SvgImageSource, global::Windows.UI.Xaml.Media.Imaging.SvgImageSourceOpenedEventArgs> Opened
 		{

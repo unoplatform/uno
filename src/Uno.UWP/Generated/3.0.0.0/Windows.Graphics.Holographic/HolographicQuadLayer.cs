@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Graphics.Holographic
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class HolographicQuadLayer : global::System.IDisposable
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Graphics.DirectX.DirectXPixelFormat PixelFormat
 		{
@@ -17,7 +17,7 @@ namespace Windows.Graphics.Holographic
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Foundation.Size Size
 		{
@@ -27,7 +27,7 @@ namespace Windows.Graphics.Holographic
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public HolographicQuadLayer( global::Windows.Foundation.Size size) 
 		{
@@ -35,7 +35,7 @@ namespace Windows.Graphics.Holographic
 		}
 		#endif
 		// Forced skipping of method Windows.Graphics.Holographic.HolographicQuadLayer.HolographicQuadLayer(Windows.Foundation.Size)
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public HolographicQuadLayer( global::Windows.Foundation.Size size,  global::Windows.Graphics.DirectX.DirectXPixelFormat pixelFormat) 
 		{
@@ -43,7 +43,7 @@ namespace Windows.Graphics.Holographic
 		}
 		#endif
 		// Forced skipping of method Windows.Graphics.Holographic.HolographicQuadLayer.HolographicQuadLayer(Windows.Foundation.Size, Windows.Graphics.DirectX.DirectXPixelFormat)
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  void Dispose()
 		{

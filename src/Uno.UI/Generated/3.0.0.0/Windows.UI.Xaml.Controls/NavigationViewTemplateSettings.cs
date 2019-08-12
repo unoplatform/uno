@@ -2,137 +2,25 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml.Controls
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || false
+	#if false || false || false || false || false
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class NavigationViewTemplateSettings : global::Windows.UI.Xaml.DependencyObject
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  global::Windows.UI.Xaml.Visibility BackButtonVisibility
-		{
-			get
-			{
-				return (global::Windows.UI.Xaml.Visibility)this.GetValue(BackButtonVisibilityProperty);
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  global::Windows.UI.Xaml.Visibility LeftPaneVisibility
-		{
-			get
-			{
-				return (global::Windows.UI.Xaml.Visibility)this.GetValue(LeftPaneVisibilityProperty);
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  global::Windows.UI.Xaml.Visibility OverflowButtonVisibility
-		{
-			get
-			{
-				return (global::Windows.UI.Xaml.Visibility)this.GetValue(OverflowButtonVisibilityProperty);
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  global::Windows.UI.Xaml.Visibility PaneToggleButtonVisibility
-		{
-			get
-			{
-				return (global::Windows.UI.Xaml.Visibility)this.GetValue(PaneToggleButtonVisibilityProperty);
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  bool SingleSelectionFollowsFocus
-		{
-			get
-			{
-				return (bool)this.GetValue(SingleSelectionFollowsFocusProperty);
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  double TopPadding
-		{
-			get
-			{
-				return (double)this.GetValue(TopPaddingProperty);
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  global::Windows.UI.Xaml.Visibility TopPaneVisibility
-		{
-			get
-			{
-				return (global::Windows.UI.Xaml.Visibility)this.GetValue(TopPaneVisibilityProperty);
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public static global::Windows.UI.Xaml.DependencyProperty BackButtonVisibilityProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			"BackButtonVisibility", typeof(global::Windows.UI.Xaml.Visibility), 
-			typeof(global::Windows.UI.Xaml.Controls.NavigationViewTemplateSettings), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Visibility)));
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public static global::Windows.UI.Xaml.DependencyProperty LeftPaneVisibilityProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			"LeftPaneVisibility", typeof(global::Windows.UI.Xaml.Visibility), 
-			typeof(global::Windows.UI.Xaml.Controls.NavigationViewTemplateSettings), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Visibility)));
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public static global::Windows.UI.Xaml.DependencyProperty OverflowButtonVisibilityProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			"OverflowButtonVisibility", typeof(global::Windows.UI.Xaml.Visibility), 
-			typeof(global::Windows.UI.Xaml.Controls.NavigationViewTemplateSettings), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Visibility)));
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public static global::Windows.UI.Xaml.DependencyProperty PaneToggleButtonVisibilityProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			"PaneToggleButtonVisibility", typeof(global::Windows.UI.Xaml.Visibility), 
-			typeof(global::Windows.UI.Xaml.Controls.NavigationViewTemplateSettings), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Visibility)));
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public static global::Windows.UI.Xaml.DependencyProperty SingleSelectionFollowsFocusProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			"SingleSelectionFollowsFocus", typeof(bool), 
-			typeof(global::Windows.UI.Xaml.Controls.NavigationViewTemplateSettings), 
-			new FrameworkPropertyMetadata(default(bool)));
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public static global::Windows.UI.Xaml.DependencyProperty TopPaddingProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			"TopPadding", typeof(double), 
-			typeof(global::Windows.UI.Xaml.Controls.NavigationViewTemplateSettings), 
-			new FrameworkPropertyMetadata(default(double)));
-		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public static global::Windows.UI.Xaml.DependencyProperty TopPaneVisibilityProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			"TopPaneVisibility", typeof(global::Windows.UI.Xaml.Visibility), 
-			typeof(global::Windows.UI.Xaml.Controls.NavigationViewTemplateSettings), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Visibility)));
-		#endif
+		// Skipping already declared property BackButtonVisibility
+		// Skipping already declared property LeftPaneVisibility
+		// Skipping already declared property OverflowButtonVisibility
+		// Skipping already declared property PaneToggleButtonVisibility
+		// Skipping already declared property SingleSelectionFollowsFocus
+		// Skipping already declared property TopPadding
+		// Skipping already declared property TopPaneVisibility
+		// Skipping already declared property BackButtonVisibilityProperty
+		// Skipping already declared property LeftPaneVisibilityProperty
+		// Skipping already declared property OverflowButtonVisibilityProperty
+		// Skipping already declared property PaneToggleButtonVisibilityProperty
+		// Skipping already declared property SingleSelectionFollowsFocusProperty
+		// Skipping already declared property TopPaddingProperty
+		// Skipping already declared property TopPaneVisibilityProperty
 		// Skipping already declared method Windows.UI.Xaml.Controls.NavigationViewTemplateSettings.NavigationViewTemplateSettings()
 		// Forced skipping of method Windows.UI.Xaml.Controls.NavigationViewTemplateSettings.NavigationViewTemplateSettings()
 		// Forced skipping of method Windows.UI.Xaml.Controls.NavigationViewTemplateSettings.TopPadding.get

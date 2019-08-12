@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Graphics.Imaging
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class BitmapFrame : global::Windows.Graphics.Imaging.IBitmapFrame,global::Windows.Graphics.Imaging.IBitmapFrameWithSoftwareBitmap
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Graphics.Imaging.BitmapAlphaMode BitmapAlphaMode
 		{
@@ -17,7 +17,7 @@ namespace Windows.Graphics.Imaging
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Graphics.Imaging.BitmapPixelFormat BitmapPixelFormat
 		{
@@ -27,7 +27,7 @@ namespace Windows.Graphics.Imaging
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Graphics.Imaging.BitmapPropertiesView BitmapProperties
 		{
@@ -37,7 +37,7 @@ namespace Windows.Graphics.Imaging
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  double DpiX
 		{
@@ -47,7 +47,7 @@ namespace Windows.Graphics.Imaging
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  double DpiY
 		{
@@ -57,7 +57,7 @@ namespace Windows.Graphics.Imaging
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  uint OrientedPixelHeight
 		{
@@ -67,7 +67,7 @@ namespace Windows.Graphics.Imaging
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  uint OrientedPixelWidth
 		{
@@ -77,7 +77,7 @@ namespace Windows.Graphics.Imaging
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  uint PixelHeight
 		{
@@ -87,7 +87,7 @@ namespace Windows.Graphics.Imaging
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  uint PixelWidth
 		{
@@ -97,7 +97,7 @@ namespace Windows.Graphics.Imaging
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Foundation.IAsyncOperation<global::Windows.Graphics.Imaging.ImageStream> GetThumbnailAsync()
 		{
@@ -113,35 +113,35 @@ namespace Windows.Graphics.Imaging
 		// Forced skipping of method Windows.Graphics.Imaging.BitmapFrame.PixelHeight.get
 		// Forced skipping of method Windows.Graphics.Imaging.BitmapFrame.OrientedPixelWidth.get
 		// Forced skipping of method Windows.Graphics.Imaging.BitmapFrame.OrientedPixelHeight.get
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Foundation.IAsyncOperation<global::Windows.Graphics.Imaging.PixelDataProvider> GetPixelDataAsync()
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<PixelDataProvider> BitmapFrame.GetPixelDataAsync() is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Foundation.IAsyncOperation<global::Windows.Graphics.Imaging.PixelDataProvider> GetPixelDataAsync( global::Windows.Graphics.Imaging.BitmapPixelFormat pixelFormat,  global::Windows.Graphics.Imaging.BitmapAlphaMode alphaMode,  global::Windows.Graphics.Imaging.BitmapTransform transform,  global::Windows.Graphics.Imaging.ExifOrientationMode exifOrientationMode,  global::Windows.Graphics.Imaging.ColorManagementMode colorManagementMode)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<PixelDataProvider> BitmapFrame.GetPixelDataAsync(BitmapPixelFormat pixelFormat, BitmapAlphaMode alphaMode, BitmapTransform transform, ExifOrientationMode exifOrientationMode, ColorManagementMode colorManagementMode) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Foundation.IAsyncOperation<global::Windows.Graphics.Imaging.SoftwareBitmap> GetSoftwareBitmapAsync()
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<SoftwareBitmap> BitmapFrame.GetSoftwareBitmapAsync() is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Foundation.IAsyncOperation<global::Windows.Graphics.Imaging.SoftwareBitmap> GetSoftwareBitmapAsync( global::Windows.Graphics.Imaging.BitmapPixelFormat pixelFormat,  global::Windows.Graphics.Imaging.BitmapAlphaMode alphaMode)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<SoftwareBitmap> BitmapFrame.GetSoftwareBitmapAsync(BitmapPixelFormat pixelFormat, BitmapAlphaMode alphaMode) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Foundation.IAsyncOperation<global::Windows.Graphics.Imaging.SoftwareBitmap> GetSoftwareBitmapAsync( global::Windows.Graphics.Imaging.BitmapPixelFormat pixelFormat,  global::Windows.Graphics.Imaging.BitmapAlphaMode alphaMode,  global::Windows.Graphics.Imaging.BitmapTransform transform,  global::Windows.Graphics.Imaging.ExifOrientationMode exifOrientationMode,  global::Windows.Graphics.Imaging.ColorManagementMode colorManagementMode)
 		{

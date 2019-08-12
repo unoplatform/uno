@@ -19,6 +19,8 @@ namespace Windows.UI.Xaml.Controls
 {
 	public partial class ScrollContentPresenter : UnoTwoDScrollView, IShadowChildrenProvider, DependencyObject
 	{
+		private static readonly List<View> _emptyList = new List<View>(0);
+
 		private ScrollBarVisibility _verticalScrollBarVisibility;
 		public ScrollBarVisibility VerticalScrollBarVisibility
 		{
@@ -87,7 +89,7 @@ namespace Windows.UI.Xaml.Controls
 			// Force scrollbars to initialize since we're not inflating from xml
 			if (Android.OS.Build.VERSION.SdkInt <= Android.OS.BuildVersionCodes.Kitkat)
 			{
-				var styledAttributes = Context.Theme.ObtainStyledAttributes(Resource.Styleable.View);
+				var styledAttributes = Context.Theme.ObtainStyledAttributes(Uno.UI.Resource.Styleable.View);
 				InitializeScrollbars(styledAttributes);
 				styledAttributes.Recycle();
 			}
@@ -97,7 +99,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		IReadOnlyList<View> IShadowChildrenProvider.ChildrenShadow => Content != null ? new[] { Content } : new View[0];
+		List<View> IShadowChildrenProvider.ChildrenShadow => Content != null ? new List<View>(1) { Content } : _emptyList;
 
 		partial void OnContentChanged(View previousView, View newView)
 		{
@@ -306,6 +308,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		private Thickness _occludedRectPadding;
+
 		private void SetOccludedRectPadding(Thickness occludedRectPadding)
 		{
 			_occludedRectPadding = occludedRectPadding;

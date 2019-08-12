@@ -3,12 +3,14 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using Uno;
+using Uno.UI.Xaml.Input;
+using Windows.System;
 
 namespace Windows.UI.Xaml.Input
 {
-	public sealed partial class PointerRoutedEventArgs : RoutedEventArgs
+	public sealed partial class PointerRoutedEventArgs : RoutedEventArgs, ICancellableRoutedEventArgs
 	{
-		private Point _point;
+		private readonly Point _point;
 
 		internal PointerRoutedEventArgs()
 		{
@@ -28,11 +30,18 @@ namespace Windows.UI.Xaml.Input
 			throw new NotImplementedException();
 		}
 
+		public bool IsGenerated { get; } = false; // Generated events are not supported by UNO
+
 		public bool Handled { get; set; }
 
 		public VirtualKeyModifiers KeyModifiers { get; internal set; }
 		public Pointer Pointer { get; internal set; }
 
 		partial void InitializePartial();
+
+		public override string ToString()
+		{
+			return $"PointerRoutedEventArgs({Pointer}@{_point})";
+		}
 	}
 }

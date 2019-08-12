@@ -1,6 +1,6 @@
 ﻿#pragma warning disable CS0109
 
-#if !NET46
+#if !NET461
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
@@ -39,6 +39,22 @@ namespace Windows.UI.Xaml.Controls
 			InitializeProperties();
 
 			InitializePartial();
+		}
+
+		protected override void OnLoaded()
+		{
+			base.OnLoaded();
+			PointerPressed += OnPointerPressed;
+			PointerReleased += OnPointerReleased;
+			PointerCanceled += OnPointerCanceled;
+		}
+
+		protected override void OnUnloaded()
+		{
+			base.OnUnloaded();
+			PointerPressed -= OnPointerPressed;
+			PointerReleased -= OnPointerReleased;
+			PointerCanceled -= OnPointerCanceled;
 		}
 #endif
 
@@ -93,7 +109,7 @@ namespace Windows.UI.Xaml.Controls
 			UpdateHyperlinks();
 
 			OnInlinesChangedPartial();
-			this.InvalidateMeasure();
+			InvalidateTextBlock();
 		}
 
 		partial void OnInlinesChangedPartial();
@@ -123,7 +139,7 @@ namespace Windows.UI.Xaml.Controls
 		private void OnFontStyleChanged()
 		{
 			OnFontStyleChangedPartial();
-			this.InvalidateMeasure();
+			InvalidateTextBlock();
 		}
 
 		partial void OnFontStyleChangedPartial();
@@ -152,7 +168,7 @@ namespace Windows.UI.Xaml.Controls
 		private void OnTextWrappingChanged()
 		{
 			OnTextWrappingChangedPartial();
-			this.InvalidateMeasure();
+			InvalidateTextBlock();
 		}
 
 		partial void OnTextWrappingChangedPartial();
@@ -182,7 +198,7 @@ namespace Windows.UI.Xaml.Controls
 		private void OnFontWeightChanged()
 		{
 			OnFontWeightChangedPartial();
-			this.InvalidateMeasure();
+			InvalidateTextBlock();
 		}
 
 		partial void OnFontWeightChangedPartial();
@@ -225,7 +241,7 @@ namespace Windows.UI.Xaml.Controls
 			UpdateInlines(newValue);
 
 			OnTextChangedPartial();
-			this.InvalidateMeasure();
+			InvalidateTextBlock();
 		}
 
 		partial void OnTextChangedPartial();
@@ -260,7 +276,7 @@ namespace Windows.UI.Xaml.Controls
 		private void OnFontFamilyChanged()
 		{
 			OnFontFamilyChangedPartial();
-			this.InvalidateMeasure();
+			InvalidateTextBlock();
 		}
 
 		partial void OnFontFamilyChangedPartial();
@@ -290,7 +306,7 @@ namespace Windows.UI.Xaml.Controls
 		private void OnFontSizeChanged()
 		{
 			OnFontSizeChangedPartial();
-			this.InvalidateMeasure();
+			InvalidateTextBlock();
 		}
 
 		partial void OnFontSizeChangedPartial();
@@ -319,7 +335,7 @@ namespace Windows.UI.Xaml.Controls
 		private void OnMaxLinesChanged()
 		{
 			OnMaxLinesChangedPartial();
-			this.InvalidateMeasure();
+			InvalidateTextBlock();
 		}
 
 		partial void OnMaxLinesChangedPartial();
@@ -348,7 +364,7 @@ namespace Windows.UI.Xaml.Controls
 		private void OnTextTrimmingChanged()
 		{
 			OnTextTrimmingChangedPartial();
-			this.InvalidateMeasure();
+			InvalidateTextBlock();
 		}
 
 		partial void OnTextTrimmingChangedPartial();
@@ -390,7 +406,7 @@ namespace Windows.UI.Xaml.Controls
 		private void OnForegroundChanged()
 		{
 			OnForegroundChangedPartial();
-			this.InvalidateMeasure();
+			InvalidateTextBlock();
 		}
 
 		partial void OnForegroundChangedPartial();
@@ -419,7 +435,7 @@ namespace Windows.UI.Xaml.Controls
 		private void OnTextAlignmentChanged()
 		{
 			OnTextAlignmentChangedPartial();
-			this.InvalidateMeasure();
+			InvalidateTextBlock();
 		}
 
 		partial void OnTextAlignmentChangedPartial();
@@ -442,7 +458,7 @@ namespace Windows.UI.Xaml.Controls
 		private void OnLineHeightChanged()
 		{
 			OnLineHeightChangedPartial();
-			this.InvalidateMeasure();
+			InvalidateTextBlock();
 		}
 
 		partial void OnLineHeightChangedPartial();
@@ -465,7 +481,7 @@ namespace Windows.UI.Xaml.Controls
 		private void OnLineStackingStrategyChanged()
 		{
 			OnLineStackingStrategyChangedPartial();
-			this.InvalidateMeasure();
+			InvalidateTextBlock();
 		}
 
 		partial void OnLineStackingStrategyChangedPartial();
@@ -491,7 +507,7 @@ namespace Windows.UI.Xaml.Controls
 		private void OnPaddingChanged()
 		{
 			OnPaddingChangedPartial();
-			this.InvalidateMeasure();
+			InvalidateTextBlock();
 		}
 
 		partial void OnPaddingChangedPartial();
@@ -521,7 +537,7 @@ namespace Windows.UI.Xaml.Controls
 		private void OnCharacterSpacingChanged()
 		{
 			OnCharacterSpacingChangedPartial();
-			this.InvalidateMeasure();
+			InvalidateTextBlock();
 		}
 
 		partial void OnCharacterSpacingChangedPartial();
@@ -551,7 +567,7 @@ namespace Windows.UI.Xaml.Controls
 		private void OnTextDecorationsChanged()
 		{
 			OnTextDecorationsChangedPartial();
-			this.InvalidateMeasure();
+			InvalidateTextBlock();
 		}
 
 		partial void OnTextDecorationsChangedPartial();
@@ -596,7 +612,7 @@ namespace Windows.UI.Xaml.Controls
 				return;
 			}
 
-			if (this.ReadLocalValue(TextProperty) == DependencyProperty.UnsetValue)
+			if (this.ReadLocalValue(TextProperty) is UnsetValue)
 			{
 				Inlines.Clear();
 				ClearTextPartial();
@@ -655,23 +671,23 @@ namespace Windows.UI.Xaml.Controls
 			var characterIndex = GetCharacterIndexAtPoint(point);
 			return GetHyperlinkAtCharacterIndex(characterIndex);
 		}
-		
+
 		private Hyperlink GetHyperlinkAtCharacterIndex(int characterIndex)
 		{
 			return _hyperlinks.FirstOrDefault(h => h.start <= characterIndex && h.end > characterIndex).hyperlink;
 		}
 
-		protected virtual void OnPointerPressed(PointerRoutedEventArgs e)
+		private void OnPointerPressed(object sender, PointerRoutedEventArgs e)
 		{
-			_pressedHyperlink = GetHyperlinkAtPoint(e.GetCurrentPoint());
+			_pressedHyperlink = GetHyperlinkAtPoint(e.GetCurrentPoint(this).Position);
 			_pressedHyperlink?.OnPointerPressed(e);
 		}
 
-		protected virtual void OnPointerReleased(PointerRoutedEventArgs e)
+		private void OnPointerReleased(object sender, PointerRoutedEventArgs e)
 		{
 			if (_pressedHyperlink != null)
 			{
-				var releasedHyperlink = GetHyperlinkAtPoint(e.GetCurrentPoint());
+				var releasedHyperlink = GetHyperlinkAtPoint(e.GetCurrentPoint(this).Position);
 				if (releasedHyperlink == _pressedHyperlink)
 				{
 					_pressedHyperlink.OnPointerReleased(e);
@@ -685,7 +701,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		protected virtual void OnPointerCanceled(PointerRoutedEventArgs e)
+		private void OnPointerCanceled(object sender, PointerRoutedEventArgs e)
 		{
 			if (_pressedHyperlink != null)
 			{
@@ -695,6 +711,14 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		#endregion
+
+		private void InvalidateTextBlock()
+		{
+			InvalidateTextBlockPartial();
+			this.InvalidateMeasure();
+		}
+
+		partial void InvalidateTextBlockPartial();
 
 		protected override AutomationPeer OnCreateAutomationPeer()
 		{

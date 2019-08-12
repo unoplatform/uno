@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.ApplicationModel.Background
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class DeviceServicingTrigger : global::Windows.ApplicationModel.Background.IBackgroundTrigger
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public DeviceServicingTrigger() 
 		{
@@ -15,14 +15,14 @@ namespace Windows.ApplicationModel.Background
 		}
 		#endif
 		// Forced skipping of method Windows.ApplicationModel.Background.DeviceServicingTrigger.DeviceServicingTrigger()
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.Background.DeviceTriggerResult> RequestAsync( string deviceId,  global::System.TimeSpan expectedDuration)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<DeviceTriggerResult> DeviceServicingTrigger.RequestAsync(string deviceId, TimeSpan expectedDuration) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.Background.DeviceTriggerResult> RequestAsync( string deviceId,  global::System.TimeSpan expectedDuration,  string arguments)
 		{

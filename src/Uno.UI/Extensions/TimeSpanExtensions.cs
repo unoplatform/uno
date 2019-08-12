@@ -4,8 +4,8 @@ using System.Text;
 
 namespace Uno.UI.Extensions
 {
-    public static class TimeSpanExtensions
-    {
+	public static class TimeSpanExtensions
+	{
 		public static string ToXamlString(this TimeSpan timeSpan, IFormatProvider provider)
 		{
 			var builder = new StringBuilder();
@@ -24,5 +24,56 @@ namespace Uno.UI.Extensions
 
 			return builder.ToString();
 		}
-    }
+
+		/// <summary>
+		/// Round timespan to previous minute interval
+		/// input time seconds are ignored
+		/// </summary>
+		/// <param name="interval">minute interval</param>
+		/// <returns>Rounded timespan</returns>
+		internal static TimeSpan RoundToPreviousMinuteInterval(this TimeSpan time, int interval)
+		{
+			if (interval > 0 && time != TimeSpan.Zero)
+			{
+				var roundedMinutes = Math.Floor(Math.Truncate(time.TotalMinutes) / interval) * interval;
+				return TimeSpan.FromMinutes(roundedMinutes);
+			}
+
+			return time;
+		}
+
+		/// <summary>
+		/// Round timespan to next minute interval
+		/// input time seconds are ignored
+		/// </summary>
+		/// <param name="interval">minute interval</param>
+		/// <returns>Rounded timespan</returns>
+		internal static TimeSpan RoundToNextMinuteInterval(this TimeSpan time, int interval)
+		{
+			if (interval > 0 && time != TimeSpan.Zero)
+			{
+				var roundedMinutes = Math.Ceiling(Math.Truncate(time.TotalMinutes) / interval) * interval;
+				return TimeSpan.FromMinutes(roundedMinutes);
+			}
+
+			return time;
+		}
+
+		/// <summary>
+		/// Round timespan to minute interval
+		/// input time seconds are ignored
+		/// </summary>
+		/// <param name="interval">minute interval</param>
+		/// <returns>Rounded timespan</returns>
+		internal static TimeSpan RoundToMinuteInterval(this TimeSpan time, int interval)
+		{
+			if (interval > 0 && time != TimeSpan.Zero)
+			{
+				var roundedMinutes = Math.Round(Math.Truncate(time.TotalMinutes) / interval) * interval;
+				return TimeSpan.FromMinutes(roundedMinutes);
+			}
+
+			return time;
+		}
+	}
 }

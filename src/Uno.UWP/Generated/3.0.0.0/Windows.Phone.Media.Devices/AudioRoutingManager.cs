@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Phone.Media.Devices
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class AudioRoutingManager 
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Phone.Media.Devices.AvailableAudioRoutingEndpoints AvailableAudioEndpoints
 		{
@@ -17,14 +17,14 @@ namespace Windows.Phone.Media.Devices
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Phone.Media.Devices.AudioRoutingEndpoint GetAudioEndpoint()
 		{
 			throw new global::System.NotImplementedException("The member AudioRoutingEndpoint AudioRoutingManager.GetAudioEndpoint() is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  void SetAudioEndpoint( global::Windows.Phone.Media.Devices.AudioRoutingEndpoint endpoint)
 		{
@@ -34,14 +34,14 @@ namespace Windows.Phone.Media.Devices
 		// Forced skipping of method Windows.Phone.Media.Devices.AudioRoutingManager.AudioEndpointChanged.add
 		// Forced skipping of method Windows.Phone.Media.Devices.AudioRoutingManager.AudioEndpointChanged.remove
 		// Forced skipping of method Windows.Phone.Media.Devices.AudioRoutingManager.AvailableAudioEndpoints.get
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.Phone.Media.Devices.AudioRoutingManager GetDefault()
 		{
 			throw new global::System.NotImplementedException("The member AudioRoutingManager AudioRoutingManager.GetDefault() is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Phone.Media.Devices.AudioRoutingManager, object> AudioEndpointChanged
 		{

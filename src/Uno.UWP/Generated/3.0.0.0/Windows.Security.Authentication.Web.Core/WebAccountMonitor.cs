@@ -2,7 +2,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Security.Authentication.Web.Core
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class WebAccountMonitor 
@@ -13,7 +13,7 @@ namespace Windows.Security.Authentication.Web.Core
 		// Forced skipping of method Windows.Security.Authentication.Web.Core.WebAccountMonitor.Removed.remove
 		// Forced skipping of method Windows.Security.Authentication.Web.Core.WebAccountMonitor.DefaultSignInAccountChanged.add
 		// Forced skipping of method Windows.Security.Authentication.Web.Core.WebAccountMonitor.DefaultSignInAccountChanged.remove
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Security.Authentication.Web.Core.WebAccountMonitor, object> DefaultSignInAccountChanged
 		{
@@ -29,7 +29,7 @@ namespace Windows.Security.Authentication.Web.Core
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Security.Authentication.Web.Core.WebAccountMonitor, global::Windows.Security.Authentication.Web.Core.WebAccountEventArgs> Removed
 		{
@@ -45,7 +45,7 @@ namespace Windows.Security.Authentication.Web.Core
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Security.Authentication.Web.Core.WebAccountMonitor, global::Windows.Security.Authentication.Web.Core.WebAccountEventArgs> Updated
 		{

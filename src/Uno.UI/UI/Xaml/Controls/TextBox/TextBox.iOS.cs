@@ -21,8 +21,6 @@ namespace Windows.UI.Xaml.Controls
 
 		//Only implemented in TextBox in IOS. Key events are not passed to UIViews that dont implement UIKeyInput protocol
 		//http://stackoverflow.com/questions/24106882/how-do-i-get-keyboard-events-without-a-textbox
-		public new event KeyEventHandler KeyUp;
-        public new event KeyEventHandler KeyDown;
 
 		partial void InitializePropertiesPartial()
 		{
@@ -63,11 +61,11 @@ namespace Windows.UI.Xaml.Controls
 		{
 		}
 
-        public override bool BecomeFirstResponder()
-        {
-            return (_textBoxView?.BecomeFirstResponder())
-                .GetValueOrDefault(false);
-        }
+		public override bool BecomeFirstResponder()
+		{
+			return (_textBoxView?.BecomeFirstResponder())
+				.GetValueOrDefault(false);
+		}
 
 		partial void OnAcceptsReturnChangedPartial(DependencyPropertyChangedEventArgs e)
 		{
@@ -82,7 +80,7 @@ namespace Windows.UI.Xaml.Controls
 		partial void OnTextAlignmentChangedPartial(DependencyPropertyChangedEventArgs e)
 		{
 			_textBoxView?.UpdateTextAlignment();
-        }
+		}
 
 		internal MultilineTextBoxView MultilineTextBox
 		{
@@ -98,54 +96,48 @@ namespace Windows.UI.Xaml.Controls
 			{
 				if (AcceptsReturn || TextWrapping != TextWrapping.NoWrap)
 				{
-                    if (_textBoxView is MultilineTextBoxView)
-                    {
-                        return;
-                    }
-
-					_textBoxView = new MultilineTextBoxView(this)
-					.Binding("Text", new Data.Binding()
+					if (_textBoxView is MultilineTextBoxView)
 					{
-						Path = "Text",
-						Source = this,
-						Mode = BindingMode.TwoWay
-					});
+						return;
+					}
+
+					_textBoxView = new MultilineTextBoxView(this);
 
 					_contentElement.Content = _textBoxView;
+					_textBoxView.SetTextNative(Text);
 					InitializeProperties();
 				}
 				else
 				{
-                    if (_textBoxView is SinglelineTextBoxView)
-                    {
-                        return;
-                    }
-
-                    _textBoxView = new SinglelineTextBoxView(this)
-					.Binding("Text", new Data.Binding()
+					if (_textBoxView is SinglelineTextBoxView)
 					{
-						Path = "Text",
-						Source = this,
-						Mode = BindingMode.TwoWay
-					});
+						return;
+					}
+
+					_textBoxView = new SinglelineTextBoxView(this);
 
 					_contentElement.Content = _textBoxView;
-                    InitializeProperties();
-                }
-            }
+					_textBoxView.SetTextNative(Text);
+					InitializeProperties();
+				}
+			}
 		}
-        internal bool OnKey(char key)
-        {
-            var keyRoutedEventArgs = new KeyRoutedEventArgs()
-            {
-                Key = key.ToVirtualKey()
-            };
 
-            KeyDown?.Invoke(this, keyRoutedEventArgs);
-            KeyUp?.Invoke(this, keyRoutedEventArgs);
+		internal bool OnKey(char key)
+		{
+			var keyRoutedEventArgs = new KeyRoutedEventArgs()
+			{
+				Key = key.ToVirtualKey(),
+				CanBubbleNatively = true
+			};
 
-            return keyRoutedEventArgs.Handled;
-        }
+			var downHandled = RaiseEvent(KeyDownEvent, keyRoutedEventArgs);
+
+			keyRoutedEventArgs.Handled = false; // reset to unhandled for Up
+			var upHandled = RaiseEvent(KeyUpEvent, keyRoutedEventArgs);
+
+			return downHandled || upHandled;
+		}
 
 		partial void OnInputScopeChangedPartial(DependencyPropertyChangedEventArgs e)
 		{
@@ -163,10 +155,9 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		partial void UpdateFontPartial(object sender)
+		partial void UpdateFontPartial()
 		{
-			var textBox = sender as TextBox;
-			if (textBox != null && _textBoxView != null)
+			if (_textBoxView != null)
 			{
 				_textBoxView.UpdateFont();
 			}
@@ -290,11 +281,11 @@ namespace Windows.UI.Xaml.Controls
 
 		public static readonly DependencyProperty ReturnKeyTypeProperty =
 			DependencyProperty.Register(
-				"ReturnKeyType", 
-				typeof(UIReturnKeyType), 
-				typeof(TextBox), 
+				"ReturnKeyType",
+				typeof(UIReturnKeyType),
+				typeof(TextBox),
 				new FrameworkPropertyMetadata(
-					UIReturnKeyType.Default, 
+					UIReturnKeyType.Default,
 					(s, e) => ((TextBox)s)?.OnReturnKeyTypeChanged((UIReturnKeyType)e.NewValue),
 					coerceValueCallback: CoerceReturnKeyType
 				)
@@ -338,7 +329,7 @@ namespace Windows.UI.Xaml.Controls
 
 		private void OnKeyboardAppearanceChanged(UIKeyboardAppearance newValue)
 		{
-			if(_textBoxView != null)
+			if (_textBoxView != null)
 			{
 				_textBoxView.KeyboardAppearance = newValue;
 			}

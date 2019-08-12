@@ -9,7 +9,7 @@ namespace Windows.UI.Xaml
 	{
 		// Skipping already declared property To
 		// Skipping already declared property Storyboard
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.UI.Xaml.Media.Animation.EasingFunctionBase GeneratedEasingFunction
 		{
@@ -23,7 +23,7 @@ namespace Windows.UI.Xaml
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.UI.Xaml.Duration GeneratedDuration
 		{

@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Security.Authentication.Web.Provider
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class WebAccountClientView 
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  string AccountPairwiseId
 		{
@@ -17,7 +17,7 @@ namespace Windows.Security.Authentication.Web.Provider
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::System.Uri ApplicationCallbackUri
 		{
@@ -27,7 +27,7 @@ namespace Windows.Security.Authentication.Web.Provider
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Security.Authentication.Web.Provider.WebAccountClientViewType Type
 		{
@@ -37,7 +37,7 @@ namespace Windows.Security.Authentication.Web.Provider
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public WebAccountClientView( global::Windows.Security.Authentication.Web.Provider.WebAccountClientViewType viewType,  global::System.Uri applicationCallbackUri) 
 		{
@@ -45,7 +45,7 @@ namespace Windows.Security.Authentication.Web.Provider
 		}
 		#endif
 		// Forced skipping of method Windows.Security.Authentication.Web.Provider.WebAccountClientView.WebAccountClientView(Windows.Security.Authentication.Web.Provider.WebAccountClientViewType, System.Uri)
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public WebAccountClientView( global::Windows.Security.Authentication.Web.Provider.WebAccountClientViewType viewType,  global::System.Uri applicationCallbackUri,  string accountPairwiseId) 
 		{

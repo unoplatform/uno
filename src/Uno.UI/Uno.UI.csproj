@@ -1,7 +1,11 @@
-﻿<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="15.0">
+﻿<Project Sdk="MSBuild.Sdk.Extras" ToolsVersion="15.0">
 	<PropertyGroup>
-		<TargetFrameworks>xamarinmac20;MonoAndroid80;xamarinios10;net46;netstandard2.0</TargetFrameworks>
-		<TargetFrameworksCI>MonoAndroid71;MonoAndroid80;xamarinios10;net46;netstandard2.0;xamarinmac20</TargetFrameworksCI>
+		<TargetFrameworks>xamarinmac20;MonoAndroid90;xamarinios10;net461;netstandard2.0</TargetFrameworks>
+		<TargetFrameworksCI>MonoAndroid80;MonoAndroid90;xamarinios10;net461;netstandard2.0;xamarinmac20</TargetFrameworksCI>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(UnoTargetFrameworkOverride)'!=''">
+		<TargetFrameworks>$(UnoTargetFrameworkOverride)</TargetFrameworks>
 	</PropertyGroup>
 
 	<PropertyGroup>
@@ -12,7 +16,7 @@
 		<BuildForLiveUnitTesting>false</BuildForLiveUnitTesting>
 		<NoWarn>$(NoWarn);NU1701</NoWarn>
 		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-		
+
 		<ProduceReferenceAssembly>false</ProduceReferenceAssembly>
 		<Deterministic>true</Deterministic>
 
@@ -25,15 +29,17 @@
 
 		<!-- Force the generation of upri files for Uno.UI self localization -->
 		<UnoForceProcessPRIResource>true</UnoForceProcessPRIResource>
-	</PropertyGroup>
 
-	<Import Project="$(MSBuildSDKExtrasTargets)" Condition="Exists('$(MSBuildSDKExtrasTargets)')" />
+		<!-- Generate automation IDs in debug builds, use by UI tests. -->
+    <IsUiAutomationMappingEnabled Condition="'$(Configuration)'=='Debug'">true</IsUiAutomationMappingEnabled>
+  </PropertyGroup>
+
 	<Import Project="..\Uno.CrossTargetting.props" />
-	
+
 	<ItemGroup>
 		<UpToDateCheckInput Include="**\*.cs" Exclude="bin\**\*.cs;obj\**\*.cs;" />
 	</ItemGroup>
-	
+
 	<ItemGroup>
 		<UpToDateCheckInput Include="**\*.xaml" Exclude="bin\**\*.xaml;obj\**\*.xaml;" />
 		<UpToDateCheckInput Include="**\*.cs" Exclude="bin\**\*.cs;obj\**\*.cs;" />
@@ -63,14 +69,14 @@
 			<DependentUpon>DependencyPropertyMixins.tt</DependentUpon>
 		</Compile>
 		<Compile Include="Mixins\macOS\FrameworkElementMixins.g.cs">
-		  <DependentUpon>FrameworkElementMixins.tt</DependentUpon>
-		  <DesignTime>True</DesignTime>
-		  <AutoGen>True</AutoGen>
+			<DependentUpon>FrameworkElementMixins.tt</DependentUpon>
+			<DesignTime>True</DesignTime>
+			<AutoGen>True</AutoGen>
 		</Compile>
 		<Compile Include="Mixins\macOS\VisualStatesMixins.g.cs">
-		  <DependentUpon>VisualStatesMixins.tt</DependentUpon>
-		  <DesignTime>True</DesignTime>
-		  <AutoGen>True</AutoGen>
+			<DependentUpon>VisualStatesMixins.tt</DependentUpon>
+			<DesignTime>True</DesignTime>
+			<AutoGen>True</AutoGen>
 		</Compile>
 		<Compile Include="Mixins\iOS\FrameworkElementMixins.g.cs">
 			<DesignTime>True</DesignTime>
@@ -82,12 +88,12 @@
 			<AutoGen>True</AutoGen>
 			<DependentUpon>VisualStatesMixins.tt</DependentUpon>
 		</Compile>
-		<Compile Include="Mixins\net46\VisualStatesMixins.g.cs">
+		<Compile Include="Mixins\net461\VisualStatesMixins.g.cs">
 			<DesignTime>True</DesignTime>
 			<AutoGen>True</AutoGen>
 			<DependentUpon>VisualStatesMixins.tt</DependentUpon>
 		</Compile>
-		<Compile Include="Mixins\wasm\VisualStatesMixins.g.cs">
+		<Compile Include="Mixins\Wasm\VisualStatesMixins.g.cs">
 			<DesignTime>True</DesignTime>
 			<AutoGen>True</AutoGen>
 			<DependentUpon>VisualStatesMixins.tt</DependentUpon>
@@ -95,7 +101,7 @@
 	</ItemGroup>
 
 	<Choose>
-		<When Condition="'$(TargetFramework)'=='net46'">
+		<When Condition="'$(TargetFramework)'=='net461'">
 			<ItemGroup>
 				<None Include="$(MSBuildThisFileDirectory)**/*.xaml" Exclude="bin/**/*.xaml;obj/**/*.xaml" />
 				<Page Remove="@(Page)" />
@@ -144,38 +150,17 @@
 			<Generator>TextTemplatingFileGenerator</Generator>
 			<LastGenOutput>VisualStatesMixins.g.cs</LastGenOutput>
 		</None>
-		<None Include="Mixins\net46\VisualStatesMixins.tt">
-			<Generator>TextTemplatingFileGenerator</Generator>
-			<LastGenOutput>VisualStatesMixins.g.cs</LastGenOutput>
-		</None>
 		<None Include="Resources\IResourceRegistry.cs" />
 		<None Include="Resources\ResourceRegistry.cs" />
-		<None Include="UI\Xaml\Controls\Panel\Panel.macOS.cs" />  
+		<None Include="UI\Xaml\Controls\Panel\Panel.macOS.cs" />
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="MSBuild.Sdk.Extras" Version="1.6.55" PrivateAssets="All" />
-		<PackageReference Include="Uno.SourceGenerationTasks">
-			<Version>1.29.0-dev.200</Version> 
-		</PackageReference>
-		<PackageReference Include="Uno.Core">
-			<Version>1.26.0-dev.58</Version>
-		</PackageReference>
-		<PackageReference Include="Uno.Core.Build">
-			<Version>1.26.0-dev.58</Version>
-		</PackageReference>
-	</ItemGroup>
-
-	 <ItemGroup Condition=" '$(TargetFramework)' == 'MonoAndroid71'">
-		<PackageReference Include="Xamarin.Android.Support.v4" Version="25.3.1">
-			<PrivateAssets>none</PrivateAssets>
-		</PackageReference>
-		<PackageReference Include="Xamarin.Android.Support.v7.AppCompat" Version="25.3.1">
-			<PrivateAssets>none</PrivateAssets>
-		</PackageReference>
-		<PackageReference Include="Xamarin.Android.Support.v7.RecyclerView" Version="25.3.1">
-			<PrivateAssets>none</PrivateAssets>
-		</PackageReference>
+		<PackageReference Include="Uno.SourceGenerationTasks" />
+		<PackageReference Include="Uno.Core" />
+		<PackageReference Include="Uno.Core.Build" />
+		<PackageReference Include="Uno.MonoAnalyzers" />
+		<PackageReference Include="System.Memory" />
 	</ItemGroup>
 
 	<ItemGroup Condition=" '$(TargetFramework)' == 'MonoAndroid80'">
@@ -188,10 +173,22 @@
 		<PackageReference Include="Xamarin.Android.Support.v7.RecyclerView" Version="26.1.0.1">
 			<PrivateAssets>none</PrivateAssets>
 		</PackageReference>
-	</ItemGroup> 
+	</ItemGroup>
+
+	<ItemGroup Condition=" '$(TargetFramework)' == 'MonoAndroid90'">
+		<PackageReference Include="Xamarin.Android.Support.v4" Version="28.0.0.1">
+			<PrivateAssets>none</PrivateAssets>
+		</PackageReference>
+		<PackageReference Include="Xamarin.Android.Support.v7.AppCompat" Version="28.0.0.1">
+			<PrivateAssets>none</PrivateAssets>
+		</PackageReference>
+		<PackageReference Include="Xamarin.Android.Support.v7.RecyclerView" Version="28.0.0.1">
+			<PrivateAssets>none</PrivateAssets>
+		</PackageReference>
+	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="xamarin.build.download" Version="0.4.9" />
+		<PackageReference Include="xamarin.build.download" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -202,15 +199,16 @@
 			<TreatAsPackageReference>false</TreatAsPackageReference>
 		</ProjectReference>
 		<ProjectReference Include="..\SourceGenerators\System.Xaml\Uno.Xaml.csproj" />
-		 <ProjectReference Include="..\Uno.UI.BindingHelper.Android\Uno.UI.BindingHelper.Android.csproj" Condition="'$(TargetFrameworkIdentifier)'=='MonoAndroid'">
+		<ProjectReference Include="..\Uno.UI.BindingHelper.Android\Uno.UI.BindingHelper.Android.csproj" Condition="'$(TargetFramework)' == 'MonoAndroid80' or '$(TargetFramework)' == 'MonoAndroid90'">
 			<TreatAsPackageReference>false</TreatAsPackageReference>
-		</ProjectReference> 
+		</ProjectReference>
 	</ItemGroup>
 
-	<ItemGroup Condition="'$(TargetFrameworkIdentifier)'=='MonoAndroid' or '$(TargetFrameworkIdentifier)'=='Xamarin.iOS' or '$(TargetFramework)'=='xamarinmac20'">
+	<ItemGroup Condition="$(IsMonoAndroid) or $(IsXamarinIOS) or $(IsXamarinMac)">
 		<Reference Include="System.Numerics" />
 		<Reference Include="System.Numerics.Vectors" />
 		<Reference Include="System.json" />
+		<Reference Include="System.Memory" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -226,7 +224,7 @@
 		<MixinInput Include=".\Mixins\macOS\FrameworkElementMixins.tt" />
 		<MixinInput Include=".\Mixins\macOS\VisualStatesMixins.tt" />
 		<MixinInput Include=".\Mixins\Wasm\VisualStatesMixins.tt" />
-		<MixinInput Include=".\Mixins\net46\VisualStatesMixins.tt" />
+		<MixinInput Include=".\Mixins\net461\VisualStatesMixins.tt" />
 		<MixinInput Include=".\UI\Xaml\IFrameworkElementImplementation.iOS.tt" />
 		<MixinInput Include=".\UI\Xaml\IFrameworkElementImplementation.macOS.tt" />
 
@@ -239,14 +237,14 @@
 		<MixinOutput Include=".\Mixins\macOS\FrameworkElementMixins.g.cs" />
 		<MixinOutput Include=".\Mixins\macOS\VisualStatesMixins.g.cs" />
 		<MixinOutput Include=".\Mixins\Wasm\VisualStatesMixins.g.cs" />
-		<MixinOutput Include=".\Mixins\net46\VisualStatesMixins.g.cs" />
+		<MixinOutput Include=".\Mixins\net461\VisualStatesMixins.g.cs" />
 	</ItemGroup>
 
 	<!--
 	DispatchToInnerBuilds is used for direct builds, CoreCompile/_UnoSourceGenerator is for 
 	project dependency induced builds.
 	-->
-	<Target Name="GenerateMixins" Inputs="@(MixinInput)" Outputs="@(MixinOutput)" BeforeTargets="DispatchToInnerBuilds;Build;_UnoSourceGenerator" Condition="'$(DesignTimeBuild)' != 'true'" DependsOnTargets="BuildManualDependencies">
+	<Target Name="GenerateMixins" Inputs="@(MixinInput)" Outputs="@(MixinOutput)" BeforeTargets="DispatchToInnerBuilds;Build;_UnoSourceGenerator" Condition="'$(DesignTimeBuild)' != 'true'">
 
 		<ItemGroup>
 			<MixinDefinition Include="$(MSBuildThisFileFullPath)">
@@ -277,7 +275,7 @@
 				<Properties>InputFile=.\Mixins\Wasm\VisualStatesMixins.tt;OutputPath=.\Mixins\Wasm;Configuration=$(Configuration);Platform=$(Platform)</Properties>
 			</MixinDefinition>
 			<MixinDefinition Include="$(MSBuildThisFileFullPath)">
-				<Properties>InputFile=.\Mixins\net46\VisualStatesMixins.tt;OutputPath=.\Mixins\net46;Configuration=$(Configuration);Platform=$(Platform)</Properties>
+				<Properties>InputFile=.\Mixins\net461\VisualStatesMixins.tt;OutputPath=.\Mixins\net461;Configuration=$(Configuration);Platform=$(Platform)</Properties>
 			</MixinDefinition>
 			<MixinDefinition Include="$(MSBuildThisFileFullPath)">
 				<Properties>InputFile=.\Mixins\DependencyPropertyMixins.tt;OutputPath=.\Mixins;Configuration=$(Configuration);Platform=$(Platform)</Properties>
@@ -294,18 +292,18 @@
 		<Exec Command="&quot;$(T4Bin)&quot; $(InputFile) $(OutputPath)" />
 	</Target>
 
-	<ItemGroup Condition="'$(TargetFramework)'=='net46'">
+	<ItemGroup Condition="'$(TargetFramework)'=='net461'">
 		<!-- Remove the reference added automatically by msbuild extras -->
 		<Reference Remove="PresentationFramework" />
 		<Reference Remove="PresentationCore" />
 		<Reference Remove="WindowsBase" />
-		<Reference Remove="System.Xaml" /> 
+		<Reference Remove="System.Xaml" />
 	</ItemGroup>
 
-	<PropertyGroup> 
-		<UnoUIGeneratorsBinPath>..\SourceGenerators\Uno.UI.SourceGenerators\bin\$(Configuration)</UnoUIGeneratorsBinPath> 
+	<PropertyGroup>
+		<UnoUIGeneratorsBinPath>$(MSBuildThisFileDirectory)..\SourceGenerators\Uno.UI.SourceGenerators\bin\$(Configuration)</UnoUIGeneratorsBinPath>
 		<UnoUIMSBuildTasksPath>$(MSBuildThisFileDirectory)..\SourceGenerators\Uno.UI.Tasks\bin\$(Configuration)_Shadow</UnoUIMSBuildTasksPath>
-	</PropertyGroup> 
+	</PropertyGroup>
 
 	<Import Project="..\SourceGenerators\Uno.UI.SourceGenerators\Content\Uno.UI.SourceGenerators.props" />
 	<Import Project="..\SourceGenerators\Uno.UI.Tasks\Content\Uno.UI.Tasks.targets" Condition="'$(SkipUnoResourceGeneration)' == '' " />
@@ -313,58 +311,56 @@
 	<ItemGroup>
 		<Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
 	</ItemGroup>
-
-	<ItemGroup>
-		<None Update="C:\s\nv.github\uno-2\src\Uno.UI\UI\Xaml\Style\Generic\Generic.NavigationView.xaml">
-		  <Generator>MSBuild:Compile</Generator>
-		</None>
-		<None Update="Mixins\macOS\FrameworkElementMixins.tt">
-		  <Generator>TextTemplatingFileGenerator</Generator>
-		  <LastGenOutput>FrameworkElementMixins.g.cs</LastGenOutput>
-		</None>
-		<None Update="Mixins\macOS\VisualStatesMixins.tt">
-		  <Generator>TextTemplatingFileGenerator</Generator>
-		  <LastGenOutput>VisualStatesMixins.g.cs</LastGenOutput>
-		</None>
-		<None Update="Mixins\Wasm\VisualStatesMixins.tt">
-			<Generator>TextTemplatingFileGenerator</Generator>
-			<LastGenOutput>VisualStatesMixins.g.cs</LastGenOutput>
-		</None>
-		<None Update="UI\Xaml\IFrameworkElementImplementation.macOS.cs">
-		  <DesignTime>True</DesignTime>
-		  <AutoGen>True</AutoGen>
-		  <DependentUpon>IFrameworkElementImplementation.macOS.tt</DependentUpon>
-		</None>
-		<None Update="UI\Xaml\IFrameworkElementImplementation.macOS.tt">
-		  <Generator>TextTemplatingFileGenerator</Generator>
-		  <LastGenOutput>IFrameworkElementImplementation.macOS.cs</LastGenOutput>
-		</None>
-		<None Update="UI\Xaml\Style\Generic\Generic.NavigationView.xaml">
-		  <Generator>MSBuild:Compile</Generator>
-		</None>
-	</ItemGroup>
-
 	<ItemGroup>
 		<Folder Include="Mixins\Wasm\" />
 		<Folder Include="UI\Xaml\Maps\Presenters\" />
 	</ItemGroup>
 
 	<ItemGroup>
-		<PRIResource Include="Resources\Strings\**\*.resw" />
+		<PRIResource Include="**\*.resw" />
+	</ItemGroup>
+
+	<ItemGroup Condition="'$(TargetFramework)'=='netstandard2.0'">
+		<EmbeddedResource Include="LinkerDefinition.Wasm.xml">
+			<LogicalName>$(AssemblyName).xml</LogicalName>
+		</EmbeddedResource>
+	</ItemGroup>
+
+	<ItemGroup Condition="'$(DocsGeneration)'==''">
+		<ProjectReference Include="..\SourceGenerators\Uno.UI.SourceGenerators\Uno.UI.SourceGenerators.csproj">
+			<ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+			<SkipGetTargetFrameworkProperties>true</SkipGetTargetFrameworkProperties>
+			<UndefineProperties>TargetFramework</UndefineProperties>
+		</ProjectReference>
+		<ProjectReference Include="..\SourceGenerators\Uno.UI.Tasks\Uno.UI.Tasks.csproj">
+			<ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+			<SkipGetTargetFrameworkProperties>true</SkipGetTargetFrameworkProperties>
+			<UndefineProperties>TargetFramework</UndefineProperties>
+		</ProjectReference>
+		<ProjectReference Include="..\T4Generator\T4Generator.csproj">
+			<ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+			<SkipGetTargetFrameworkProperties>true</SkipGetTargetFrameworkProperties>
+			<UndefineProperties>TargetFramework</UndefineProperties>
+		</ProjectReference>
 	</ItemGroup>
 
 	<ItemGroup>
-	  <UpToDateCheckInput Remove="UI\Xaml\Controls\NavigationView\NavigationViewItemPresenter.cs" />
-	  <UpToDateCheckInput Remove="UI\Xaml\Controls\NavigationView\NavigationViewTemplateSettings.cs" />
+	  <None Update="BaseActivity.Callbacks.Implementation.Android.tt">
+	    <Generator>TextTemplatingFileGenerator</Generator>
+	  </None>
+	  <None Update="Mixins\macOS\FrameworkElementMixins.tt">
+	    <Generator>TextTemplatingFileGenerator</Generator>
+	  </None>
+	  <None Update="Mixins\macOS\VisualStatesMixins.tt">
+	    <Generator>TextTemplatingFileGenerator</Generator>
+	  </None>
+	  <None Update="Mixins\net461\VisualStatesMixins.tt">
+	    <Generator>TextTemplatingFileGenerator</Generator>
+	  </None>
+	  <None Update="Mixins\Wasm\VisualStatesMixins.tt">
+	    <Generator>TextTemplatingFileGenerator</Generator>
+	  </None>
 	</ItemGroup>
-
-	<Target Name="BuildManualDependencies" BeforeTargets="_UnoSourceGenerator" Condition="!Exists($(T4Bin))">
-		<Message Text="Building Generators" Importance="high" />
-		<!-- This is required because the non-reference dependencies are not properly handled -->
-		<MSBuild Properties="Configuration=$(Configuration);Platform=AnyCPU" Targets="Build" Projects="..\SourceGenerators\Uno.UI.SourceGenerators\Uno.UI.SourceGenerators.csproj" RebaseOutputs="false" />
-		<MSBuild Properties="Configuration=$(Configuration);Platform=AnyCPU" Targets="Build" Projects="..\SourceGenerators\Uno.UI.Tasks\Uno.UI.Tasks.csproj" RebaseOutputs="false" />
-		<MSBuild Properties="Configuration=$(Configuration);Platform=AnyCPU" Targets="Build" Projects="..\T4Generator\T4Generator.csproj" RebaseOutputs="false" />
-	</Target>
 
 	<Target Name="GetPackagingOutputs" Condition=" '$(TargetFramework)' == 'uap10.0' " />
 
@@ -374,4 +370,23 @@
 
 	<Target Name="GetBuiltProjectOutputRecursive" Condition=" '$(TargetFramework)' == 'xamarinios10' " />
 
+	<Target Name="VS16Mac_RemoveSystemMemory" BeforeTargets="ResolveAssemblyReferences" Condition="'$(MSBuildVersion)' &gt;= '16.0' and $([MSBuild]::IsOsPlatform('OSX'))">
+		<!--
+				VS4Mac seems to process System.Memory differently, and removes
+				the System.Memory local reference if the package is transitively referenced.
+				We remove the Reference added by the nuget targets so that ResolveAssemblyReferences
+				is properly adding the local System.Memory to the Reference item group.
+		-->
+		<ItemGroup>
+			<_ReferenceToRemove Include="@(Reference)" Condition="'%(Reference.Identity)'=='System.Memory'" />
+			<Reference Remove="@(_ReferenceToRemove)" />
+		</ItemGroup>
+	</Target>
+
+	<Target Name="VS16_RemoveSystemMemory" BeforeTargets="FindReferenceAssembliesForReferences" Condition="'$(MSBuildVersion)' &gt;= '16.0' and ($(IsMonoAndroid) or $(IsXamarinIOS) or $(IsXamarinMac))">
+		<ItemGroup>
+			<_ReferencePathToRemove Include="@(ReferencePath)" Condition="'%(ReferencePath.NuGetPackageId)'=='System.Memory'" />
+			<ReferencePath Remove="@(_ReferencePathToRemove)" />
+		</ItemGroup>
+	</Target>
 </Project>

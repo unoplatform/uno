@@ -7,7 +7,7 @@ namespace Windows.UI.Xaml.Input
 	#endif
 	public  partial class XamlUICommand : global::Windows.UI.Xaml.DependencyObject,global::System.Windows.Input.ICommand
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  string Label
 		{
@@ -21,7 +21,7 @@ namespace Windows.UI.Xaml.Input
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.UI.Xaml.Controls.IconSource IconSource
 		{
@@ -35,7 +35,7 @@ namespace Windows.UI.Xaml.Input
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  string Description
 		{
@@ -49,7 +49,7 @@ namespace Windows.UI.Xaml.Input
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::System.Windows.Input.ICommand Command
 		{
@@ -63,7 +63,7 @@ namespace Windows.UI.Xaml.Input
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  string AccessKey
 		{
@@ -77,7 +77,7 @@ namespace Windows.UI.Xaml.Input
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::System.Collections.Generic.IList<global::Windows.UI.Xaml.Input.KeyboardAccelerator> KeyboardAccelerators
 		{
@@ -87,7 +87,7 @@ namespace Windows.UI.Xaml.Input
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty AccessKeyProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
@@ -95,7 +95,7 @@ namespace Windows.UI.Xaml.Input
 			typeof(global::Windows.UI.Xaml.Input.XamlUICommand), 
 			new FrameworkPropertyMetadata(default(string)));
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty CommandProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
@@ -103,7 +103,7 @@ namespace Windows.UI.Xaml.Input
 			typeof(global::Windows.UI.Xaml.Input.XamlUICommand), 
 			new FrameworkPropertyMetadata(default(global::System.Windows.Input.ICommand)));
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty DescriptionProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
@@ -111,7 +111,7 @@ namespace Windows.UI.Xaml.Input
 			typeof(global::Windows.UI.Xaml.Input.XamlUICommand), 
 			new FrameworkPropertyMetadata(default(string)));
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty IconSourceProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
@@ -119,7 +119,7 @@ namespace Windows.UI.Xaml.Input
 			typeof(global::Windows.UI.Xaml.Input.XamlUICommand), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Controls.IconSource)));
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty KeyboardAcceleratorsProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
@@ -127,7 +127,7 @@ namespace Windows.UI.Xaml.Input
 			typeof(global::Windows.UI.Xaml.Input.XamlUICommand), 
 			new FrameworkPropertyMetadata(default(global::System.Collections.Generic.IList<global::Windows.UI.Xaml.Input.KeyboardAccelerator>)));
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty LabelProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
@@ -152,7 +152,7 @@ namespace Windows.UI.Xaml.Input
 		// Forced skipping of method Windows.UI.Xaml.Input.XamlUICommand.ExecuteRequested.remove
 		// Forced skipping of method Windows.UI.Xaml.Input.XamlUICommand.CanExecuteRequested.add
 		// Forced skipping of method Windows.UI.Xaml.Input.XamlUICommand.CanExecuteRequested.remove
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  void NotifyCanExecuteChanged()
 		{
@@ -169,7 +169,7 @@ namespace Windows.UI.Xaml.Input
 		// Forced skipping of method Windows.UI.Xaml.Input.XamlUICommand.AccessKeyProperty.get
 		// Forced skipping of method Windows.UI.Xaml.Input.XamlUICommand.DescriptionProperty.get
 		// Forced skipping of method Windows.UI.Xaml.Input.XamlUICommand.CommandProperty.get
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Xaml.Input.XamlUICommand, global::Windows.UI.Xaml.Input.CanExecuteRequestedEventArgs> CanExecuteRequested
 		{
@@ -185,7 +185,7 @@ namespace Windows.UI.Xaml.Input
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Xaml.Input.XamlUICommand, global::Windows.UI.Xaml.Input.ExecuteRequestedEventArgs> ExecuteRequested
 		{

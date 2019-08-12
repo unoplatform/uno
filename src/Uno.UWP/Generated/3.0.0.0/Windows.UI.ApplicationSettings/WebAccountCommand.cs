@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.ApplicationSettings
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class WebAccountCommand 
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.UI.ApplicationSettings.SupportedWebAccountActions Actions
 		{
@@ -17,7 +17,7 @@ namespace Windows.UI.ApplicationSettings
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.UI.ApplicationSettings.WebAccountCommandInvokedHandler Invoked
 		{
@@ -27,7 +27,7 @@ namespace Windows.UI.ApplicationSettings
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Security.Credentials.WebAccount WebAccount
 		{
@@ -37,7 +37,7 @@ namespace Windows.UI.ApplicationSettings
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public WebAccountCommand( global::Windows.Security.Credentials.WebAccount webAccount,  global::Windows.UI.ApplicationSettings.WebAccountCommandInvokedHandler invoked,  global::Windows.UI.ApplicationSettings.SupportedWebAccountActions actions) 
 		{

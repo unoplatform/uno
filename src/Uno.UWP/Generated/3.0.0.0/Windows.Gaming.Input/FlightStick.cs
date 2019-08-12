@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Gaming.Input
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class FlightStick : global::Windows.Gaming.Input.IGameController,global::Windows.Gaming.Input.IGameControllerBatteryInfo
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Gaming.Input.GameControllerSwitchKind HatSwitchKind
 		{
@@ -17,7 +17,7 @@ namespace Windows.Gaming.Input
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Gaming.Input.Headset Headset
 		{
@@ -27,7 +27,7 @@ namespace Windows.Gaming.Input
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  bool IsWireless
 		{
@@ -37,7 +37,7 @@ namespace Windows.Gaming.Input
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.System.User User
 		{
@@ -47,7 +47,7 @@ namespace Windows.Gaming.Input
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::System.Collections.Generic.IReadOnlyList<global::Windows.Gaming.Input.FlightStick> FlightSticks
 		{
@@ -58,14 +58,14 @@ namespace Windows.Gaming.Input
 		}
 		#endif
 		// Forced skipping of method Windows.Gaming.Input.FlightStick.HatSwitchKind.get
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Gaming.Input.GameControllerButtonLabel GetButtonLabel( global::Windows.Gaming.Input.FlightStickButtons button)
 		{
 			throw new global::System.NotImplementedException("The member GameControllerButtonLabel FlightStick.GetButtonLabel(FlightStickButtons button) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Gaming.Input.FlightStickReading GetCurrentReading()
 		{
@@ -81,7 +81,7 @@ namespace Windows.Gaming.Input
 		// Forced skipping of method Windows.Gaming.Input.FlightStick.Headset.get
 		// Forced skipping of method Windows.Gaming.Input.FlightStick.IsWireless.get
 		// Forced skipping of method Windows.Gaming.Input.FlightStick.User.get
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Devices.Power.BatteryReport TryGetBatteryReport()
 		{
@@ -93,14 +93,14 @@ namespace Windows.Gaming.Input
 		// Forced skipping of method Windows.Gaming.Input.FlightStick.FlightStickRemoved.add
 		// Forced skipping of method Windows.Gaming.Input.FlightStick.FlightStickRemoved.remove
 		// Forced skipping of method Windows.Gaming.Input.FlightStick.FlightSticks.get
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.Gaming.Input.FlightStick FromGameController( global::Windows.Gaming.Input.IGameController gameController)
 		{
 			throw new global::System.NotImplementedException("The member FlightStick FlightStick.FromGameController(IGameController gameController) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Gaming.Input.IGameController, global::Windows.Gaming.Input.Headset> HeadsetConnected
 		{
@@ -116,7 +116,7 @@ namespace Windows.Gaming.Input
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Gaming.Input.IGameController, global::Windows.Gaming.Input.Headset> HeadsetDisconnected
 		{
@@ -132,7 +132,7 @@ namespace Windows.Gaming.Input
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Gaming.Input.IGameController, global::Windows.System.UserChangedEventArgs> UserChanged
 		{
@@ -148,7 +148,7 @@ namespace Windows.Gaming.Input
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static event global::System.EventHandler<global::Windows.Gaming.Input.FlightStick> FlightStickAdded
 		{
@@ -164,7 +164,7 @@ namespace Windows.Gaming.Input
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static event global::System.EventHandler<global::Windows.Gaming.Input.FlightStick> FlightStickRemoved
 		{

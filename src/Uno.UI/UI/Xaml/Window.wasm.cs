@@ -14,6 +14,7 @@ using Uno.UI;
 using Windows.Foundation;
 using Windows.Foundation.Metadata;
 using Windows.UI.Core;
+using Windows.UI.ViewManagement;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Media;
@@ -33,15 +34,13 @@ namespace Windows.UI.Xaml
 		public Window()
 		{
 			Init();
+
+			InitializeCommon();
 		}
 
-		public void Init()
+		private void Init()
 		{
 			Dispatcher = CoreDispatcher.Main;
-
-			bool isHostedMode = !WebAssemblyRuntime.IsWebAssembly;
-
-			WebAssemblyRuntime.InvokeJS($"Uno.UI.WindowManager.init(\"{Windows.Storage.ApplicationData.Current.LocalFolder.Path}\", {isHostedMode.ToString().ToLowerInvariant()});");
 			CoreWindow = new CoreWindow();
 		}
 
@@ -90,7 +89,7 @@ namespace Windows.UI.Xaml
 		}
 
 		[Preserve]
-		public static void Resize(string newSize)
+		public static void Resize(double width, double height)
 		{
 			var window = Current?._window;
 			if (window == null)
@@ -99,10 +98,7 @@ namespace Windows.UI.Xaml
 				return; // nothing to measure
 			}
 
-			var sizeParts = newSize.Split(';');
-			var size = new Size(double.Parse(sizeParts[0]), double.Parse(sizeParts[1]));
-
-			Current.OnNativeSizeChanged(size);
+			Current.OnNativeSizeChanged(new Size(width, height));
 		}
 
 		private void OnNativeSizeChanged(Size size)
@@ -120,6 +116,12 @@ namespace Windows.UI.Xaml
 
 				DispatchInvalidateMeasure();
 				RaiseSizeChanged(new WindowSizeChangedEventArgs(size));
+
+				// Note that UWP raises the ApplicationView.VisibleBoundsChanged event
+				// *after* Window.SizeChanged.
+
+				// TODO: support for "viewport-fix" on devices with a notch.
+				ApplicationView.GetForCurrentView()?.SetVisibleBounds(newBounds);
 			}
 		}
 
@@ -155,11 +157,26 @@ namespace Windows.UI.Xaml
 			_rootBorder.Child = _content = content;
 			if (content != null)
 			{
-				WebAssemblyRuntime.InvokeJS($"Uno.UI.WindowManager.current.setRootContent(\"{_window.HtmlId}\");");
+				if (FeatureConfiguration.FrameworkElement.WasmUseManagedLoadedUnloaded && !_window.IsLoaded)
+				{
+					_window.ManagedOnLoading();
+				}
+
+				WebAssemblyRuntime.InvokeJS($"Uno.UI.WindowManager.current.setRootContent({_window.HtmlId});");
+
+				if (FeatureConfiguration.FrameworkElement.WasmUseManagedLoadedUnloaded && !_window.IsLoaded)
+				{
+					_window.ManagedOnLoaded();
+				}
 			}
 			else
 			{
 				WebAssemblyRuntime.InvokeJS($"Uno.UI.WindowManager.current.setRootContent();");
+
+				if (FeatureConfiguration.FrameworkElement.WasmUseManagedLoadedUnloaded && _window.IsLoaded)
+				{
+					_window.ManagedOnUnloaded();
+				}
 			}
 		}
 
@@ -184,9 +201,9 @@ namespace Windows.UI.Xaml
 			{
 				this.Log().Debug($"Creating popup");
 			}
-			
-			var popupChild = popup.Child;
-			_popupRoot.Children.Add(popupChild);
+
+			var popupPanel = popup.PopupPanel;
+			_popupRoot.Children.Add(popupPanel);
 
 			return new CompositeDisposable(
 				Disposable.Create(() => {
@@ -196,7 +213,7 @@ namespace Windows.UI.Xaml
 						this.Log().Debug($"Closing popup");
 					}
 
-					_popupRoot.Children.Remove(popupChild);
+					_popupRoot.Children.Remove(popupPanel);
 				}),
 				VisualTreeHelper.RegisterOpenPopup(popup)
 			);

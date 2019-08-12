@@ -13,9 +13,14 @@
 		<DataTemplate x:Key="Test" x:DataType="local:MyType">
 			<Border Background="{x:Bind Value}" />
 		</DataTemplate>
+		<Style x:Name="rectangleStyle"  TargetType="Rectangle">
+			<Setter Property="Width" Value="{StaticResource SwatchSize}"/>
+			<Setter Property="Height" Value="{StaticResource SwatchSize}"/>
+		</Style>
 	</UserControl.Resources>
 
 	<Grid>
+		<Rectangle Style="{StaticResource rectangleStyle}" />
 		<TextBlock Text="{x:Bind Test}" />
 		<TextBlock Text="{x:Bind TypeProperty.Value, FallbackValue=42}" />
 	</Grid>

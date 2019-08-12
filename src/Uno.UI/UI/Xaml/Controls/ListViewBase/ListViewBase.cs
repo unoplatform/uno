@@ -1,4 +1,4 @@
-﻿#if !NET46 && !__MACOS__
+﻿#if !__MACOS__
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -50,7 +50,7 @@ namespace Windows.UI.Xaml.Controls
 		/// </summary>
 		private bool _isIncrementalLoadingInFlight;
 
-		protected ListViewBase()
+		protected internal ListViewBase()
 		{
 			Initialize();
 
@@ -175,6 +175,24 @@ namespace Windows.UI.Xaml.Controls
 			else
 			{
 				base.OnSelectedItemChanged(oldSelectedItem, selectedItem);
+
+				try
+				{
+					_modifyingSelectionInternally = true;
+
+					if (selectedItem != null)
+					{
+						SelectedItems.Update(new[] { selectedItem });
+					}
+					else
+					{
+						SelectedItems.Clear();
+					}
+				}
+				finally
+				{
+					_modifyingSelectionInternally = false;
+				}
 			}
 		}
 
@@ -312,6 +330,9 @@ namespace Windows.UI.Xaml.Controls
 			var item = ItemFromIndex(clickedIndex);
 			if (IsItemClickEnabled)
 			{
+				// This is required for the NavigationView which references a non-public issue (#17546992 in NavigationViewList)
+				IsItemItsOwnContainerOverride(item);
+
 				ItemClickCommand.ExecuteIfPossible(item);
 				ItemClick?.Invoke(this, new ItemClickEventArgs { ClickedItem = item });
 			}
@@ -546,19 +567,12 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		/// <summary>
-		/// Set appropriate visual state from MultiSelectStates group. (https://msdn.microsoft.com/en-us/library/windows/apps/mt299136.aspx?f=255&MSPPError=-2147217396)
+		/// Apply the multi-selection state to the provided item
 		/// </summary>
 		/// <param name="selectorItem"></param>
 		internal void ApplyMultiSelectState(SelectorItem selectorItem)
 		{
-			if (IsSelectionMultiple)
-			{
-				VisualStateManager.GoToState(selectorItem, "MultiSelectEnabled", useTransitions: true);
-			}
-			else
-			{
-				VisualStateManager.GoToState(selectorItem, "MultiSelectDisabled", useTransitions: true);
-			}
+			selectorItem.ApplyMultiSelectState(IsSelectionMultiple);
 		}
 
 		/// <summary>
@@ -588,7 +602,8 @@ namespace Windows.UI.Xaml.Controls
 				}
 				else
 				{
-					// On Android, we call the native replace-equivalent to make sure that views awaiting recycling are correctly marked as needing rebinding.
+					// On Android, if we can't find a materialized view to rebind, we call the native replace-equivalent to make sure that
+					// views awaiting recycling are correctly marked as needing rebinding.
 					NativeReplaceItems(i, 1, section);
 				}
 			}

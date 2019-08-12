@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Devices.Display.Core
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class DisplayView 
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Graphics.SizeInt32? ContentResolution
 		{
@@ -21,7 +21,7 @@ namespace Windows.Devices.Display.Core
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::System.Collections.Generic.IReadOnlyList<global::Windows.Devices.Display.Core.DisplayPath> Paths
 		{
@@ -31,7 +31,7 @@ namespace Windows.Devices.Display.Core
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::System.Collections.Generic.IDictionary<global::System.Guid, object> Properties
 		{
@@ -44,7 +44,7 @@ namespace Windows.Devices.Display.Core
 		// Forced skipping of method Windows.Devices.Display.Core.DisplayView.Paths.get
 		// Forced skipping of method Windows.Devices.Display.Core.DisplayView.ContentResolution.get
 		// Forced skipping of method Windows.Devices.Display.Core.DisplayView.ContentResolution.set
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  void SetPrimaryPath( global::Windows.Devices.Display.Core.DisplayPath path)
 		{

@@ -22,7 +22,7 @@ namespace Windows.UI.Xaml.Controls
 	[Markup.ContentProperty(Name = "Children")]
 	public partial class Panel : FrameworkElement
 	{
-#if NET46 || __WASM__
+#if NET461 || __WASM__
 		private new UIElementCollection _children;
 #else
 		private UIElementCollection _children;

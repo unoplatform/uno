@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Security.Authentication.Web.Core
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class WebTokenRequest 
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  string ClientId
 		{
@@ -17,7 +17,7 @@ namespace Windows.Security.Authentication.Web.Core
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Security.Authentication.Web.Core.WebTokenRequestPromptType PromptType
 		{
@@ -27,7 +27,7 @@ namespace Windows.Security.Authentication.Web.Core
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::System.Collections.Generic.IDictionary<string, string> Properties
 		{
@@ -37,7 +37,7 @@ namespace Windows.Security.Authentication.Web.Core
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  string Scope
 		{
@@ -47,7 +47,7 @@ namespace Windows.Security.Authentication.Web.Core
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Security.Credentials.WebAccountProvider WebAccountProvider
 		{
@@ -57,7 +57,7 @@ namespace Windows.Security.Authentication.Web.Core
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::System.Collections.Generic.IDictionary<string, string> AppProperties
 		{
@@ -67,7 +67,7 @@ namespace Windows.Security.Authentication.Web.Core
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  string CorrelationId
 		{
@@ -81,7 +81,7 @@ namespace Windows.Security.Authentication.Web.Core
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public WebTokenRequest( global::Windows.Security.Credentials.WebAccountProvider provider,  string scope,  string clientId) 
 		{
@@ -89,7 +89,7 @@ namespace Windows.Security.Authentication.Web.Core
 		}
 		#endif
 		// Forced skipping of method Windows.Security.Authentication.Web.Core.WebTokenRequest.WebTokenRequest(Windows.Security.Credentials.WebAccountProvider, string, string)
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public WebTokenRequest( global::Windows.Security.Credentials.WebAccountProvider provider,  string scope,  string clientId,  global::Windows.Security.Authentication.Web.Core.WebTokenRequestPromptType promptType) 
 		{
@@ -97,7 +97,7 @@ namespace Windows.Security.Authentication.Web.Core
 		}
 		#endif
 		// Forced skipping of method Windows.Security.Authentication.Web.Core.WebTokenRequest.WebTokenRequest(Windows.Security.Credentials.WebAccountProvider, string, string, Windows.Security.Authentication.Web.Core.WebTokenRequestPromptType)
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public WebTokenRequest( global::Windows.Security.Credentials.WebAccountProvider provider) 
 		{
@@ -105,7 +105,7 @@ namespace Windows.Security.Authentication.Web.Core
 		}
 		#endif
 		// Forced skipping of method Windows.Security.Authentication.Web.Core.WebTokenRequest.WebTokenRequest(Windows.Security.Credentials.WebAccountProvider)
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public WebTokenRequest( global::Windows.Security.Credentials.WebAccountProvider provider,  string scope) 
 		{

@@ -10,6 +10,7 @@ using Windows.Foundation.Collections;
 using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
+using System.Collections.Specialized;
 
 #if __IOS__
 using UIKit;
@@ -42,7 +43,11 @@ namespace Windows.UI.Xaml.Controls
 			_suggestionsList = GetTemplateChild("SuggestionsList") as ListView;
 			_queryButton = GetTemplateChild("QueryButton") as Button;
 
-			if(_queryButton != null)
+#if __ANDROID__
+			_popup.DisableFocus();
+#endif
+
+			if (_queryButton != null)
 			{
 				_queryButton.Content = new SymbolIcon(Symbol.Find);
 			}
@@ -68,6 +73,36 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		private void OnItemsChanged(IObservableVector<object> sender, IVectorChangedEventArgs @event)
+		{
+			UpdateSuggestionList();
+		}
+
+		protected override void OnItemsSourceChanged(DependencyPropertyChangedEventArgs e)
+		{
+			// Calling this method before base.OnItemsSourceChanged() ensures that, in the case of an ObservableCollection, the list
+			// subscribes to CollectionChanged before AutoSuggestBox does. This is important for Android because the list needs to
+			// notify RecyclerView of collection changes before UpdateSuggestionList() measures it, otherwise we get errors like
+			// "Inconsistency detected. Invalid view holder adapter position"
+			UpdateSuggestionList();
+
+			base.OnItemsSourceChanged(e);
+		}
+
+		internal override void OnItemsSourceSingleCollectionChanged(object sender, NotifyCollectionChangedEventArgs args, int section)
+		{
+			base.OnItemsSourceSingleCollectionChanged(sender, args, section);
+
+			UpdateSuggestionList();
+		}
+
+		internal override void OnItemsSourceGroupsChanged(object sender, NotifyCollectionChangedEventArgs args)
+		{
+			base.OnItemsSourceGroupsChanged(sender, args);
+
+			UpdateSuggestionList();
+		}
+
+		private void UpdateSuggestionList()
 		{
 			if (_suggestionsList != null)
 			{
@@ -115,11 +150,11 @@ namespace Windows.UI.Xaml.Controls
 
 						var windowRect = Xaml.Window.Current.Bounds;
 
-						var popupTransform = popup.TransformToVisual(Xaml.Window.Current.Content) as TranslateTransform;
-						var popupRect = new Rect(popupTransform.X, popupTransform.Y, popup.ActualWidth, popup.ActualHeight);
+						var popupTransform = (MatrixTransform)popup.TransformToVisual(Xaml.Window.Current.Content);
+						var popupRect = new Rect(popupTransform.Matrix.OffsetX, popupTransform.Matrix.OffsetY, popup.ActualWidth, popup.ActualHeight);
 
-						var backgroundTransform = background.TransformToVisual(Xaml.Window.Current.Content) as TranslateTransform;
-						var backgroundRect = new Rect(backgroundTransform.X, backgroundTransform.Y + background.ActualHeight, background.ActualWidth, background.ActualHeight);
+						var backgroundTransform = (MatrixTransform)background.TransformToVisual(Xaml.Window.Current.Content);
+						var backgroundRect = new Rect(backgroundTransform.Matrix.OffsetX, backgroundTransform.Matrix.OffsetY + background.ActualHeight, background.ActualWidth, background.ActualHeight);
 
 						// Because Popup.Child is not part of the visual tree until Popup.IsOpen,
 						// some descendent Controls may never have loaded and materialized their templates.
@@ -181,6 +216,39 @@ namespace Windows.UI.Xaml.Controls
 			{
 				_suggestionsList.ItemClick += OnSuggestionListItemClick;
 			}
+
+			if (_popup != null)
+			{
+				_popup.Closed += OnPopupClosed;
+			}
+		}
+
+		void UnregisterEvents()
+		{
+			if (_textBox != null)
+			{
+				_textBox.KeyDown -= OnTextBoxKeyDown;
+			}
+
+			if (_queryButton != null)
+			{
+				_queryButton.Click -= OnQueryButtonClick;
+			}
+
+			if (_suggestionsList != null)
+			{
+				_suggestionsList.ItemClick -= OnSuggestionListItemClick;
+			}
+
+			if (_popup != null)
+			{
+				_popup.Closed -= OnPopupClosed;
+			}
+		}
+
+		private void OnPopupClosed(object sender, object e)
+		{
+			IsSuggestionListOpen = false;
 		}
 
 		private void OnIsSuggestionListOpenChanged(DependencyPropertyChangedEventArgs e)
@@ -239,22 +307,5 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		void UnregisterEvents()
-		{
-			if (_textBox != null)
-			{
-				_textBox.KeyDown -= OnTextBoxKeyDown;
-			}
-
-			if (_queryButton != null)
-			{
-				_queryButton.Click -= OnQueryButtonClick;
-			}
-
-			if (_suggestionsList != null)
-			{
-				_suggestionsList.ItemClick -= OnSuggestionListItemClick;
-			}
-		}
 	}
 }

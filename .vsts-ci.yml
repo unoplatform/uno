@@ -1,40 +1,52 @@
-phases:
-- phase: VS_Latest
+resources:
+  containers:
+  - container: nv-bionic-wasm
+    image: nventive/wasm-build:1.1-bionic
+
+jobs:
+- template: .azure-devops-wasm-uitests.yml
+- template: .azure-devops-macos.yml
+- template: .azure-devops-android-tests.yml
+
+- job: VS_Latest
+
+  pool:
+    vmImage: 'vs2017-win2016'
+
   variables:
     CombinedConfiguration: Release|Any CPU
     CI_Build: true
+
+    # This is required to be able to use hard links as much as possible
+    NUGET_PACKAGES: $(Agent.WorkFolder)\.nuget
 
   steps:
   - checkout: self
     clean: true
     
-  - task: GitVersion@3
-    # Ignore gitversion for forks, until this is fixed:
-    # https://developercommunity.visualstudio.com/content/problem/284991/public-vsts-previouw-cant-set-build-number-of-pr-b.html
-    condition: eq(variables['System.PullRequest.IsFork'], 'False')
+  - task: GitVersion@4
     inputs:
       updateAssemblyInfo: false
+      gitVersionPath: '$(build.sourcesdirectory)\build\gitversion\GitVersion.exe'
 
   - task: NuGetToolInstaller@0
     inputs:
-      versionSpec: 4.7.0
+      versionSpec: 4.9.1
       checkLatest: false
 
-  - task: NuGetCommand@2
-    inputs:
-      command: restore
-      solution: src/Uno.UI.sln
-      selectOrConfig: select
-      includeNuGetOrg: true
-      verbosityRestore: Normal
+  # Required for the Wasm uitests project
+  - task: NodeTool@0
+
+  - powershell: .\build\Install-WindowsSdkISO.ps1 17763
+    displayName: Insider SDK
 
   - task: MSBuild@1
     inputs:
-      solution: Build/Uno.UI.proj
+      solution: Build/Uno.UI.Build.csproj
       msbuildLocationMethod: version
       msbuildVersion: latest
       msbuildArchitecture: x86
-      msbuildArguments: /p:CheckExclusions=True "/p:CombinedConfiguration=$(CombinedConfiguration)" /nodeReuse:true /detailedsummary /m:16 /nr:false #/bl:$(build.artifactstagingdirectory)\build.binlog
+      msbuildArguments: /r /p:CheckExclusions=True "/p:CombinedConfiguration=$(CombinedConfiguration)" /nodeReuse:true /detailedsummary /m:16 /nr:false /bl:$(build.artifactstagingdirectory)\build.binlog
       clean: false
       maximumCpuCount: true
       restoreNugetPackages: false
@@ -46,6 +58,9 @@ phases:
       testAssemblyVer2: |
         **\*test*.dll
         !**\obj\**
+        !**\*Wasm.Test*.dll
+        !**\*UITests.dll
+        !**\*.RuntimeTests.dll
       vstestLocationMethod: version
       vsTestVersion: latest
       testSelector: testAssemblies
@@ -59,6 +74,15 @@ phases:
       OverWrite: false
       flattenFolders: false
 
+  - task: CopyFiles@2
+    inputs:
+      SourceFolder: $(build.sourcesdirectory)\src\SamplesApp\SamplesApp.Wasm\bin\Release\netstandard2.0\dist
+      Contents: '**\*.*'
+      TargetFolder: $(build.artifactstagingdirectory)\sampleapp-wasm
+      CleanTargetFolder: false
+      OverWrite: false
+      flattenFolders: false
+
   - task: PowerShell@2
     displayName: Authenticode Sign Packages
     inputs:
@@ -68,71 +92,23 @@ phases:
       SignClientSecret: $(SignClientSecret)
       SignPackageName: "Uno Platform"
       SignPackageDescription: "The Uno Platform"
-      ArtifactDirectory: $(build.artifactstagingdirectory)
+      ArtifactDirectory: $(build.artifactstagingdirectory)\vslatest
     condition: and(succeeded(), not(eq(variables['build.reason'], 'PullRequest')), not(eq(variables['SignClientSecret'], '')), not(eq(variables['SignClientUser'], '')))
 
   - task: PublishBuildArtifacts@1
     # https://developercommunity.visualstudio.com/content/problem/284991/public-vsts-previouw-cant-set-build-number-of-pr-b.html
-    condition: eq(variables['System.PullRequest.IsFork'], 'False')
+    condition: always()
     inputs:
       PathtoPublish: $(build.artifactstagingdirectory)
       ArtifactName: NugetPackages
       ArtifactType: Container
 
-# Disabled until VS4Mac is updated to 7.7 or later.
-#- phase: macOS
-#  variables:
-#    NUGET_PACKAGES: $(Agent.WorkFolder)\.nuget
-#    NUGET_HTTP_CACHE_PATH: $(Agent.WorkFolder)\.nuget-http-cache
-#    CombinedConfiguration: Release|Any CPU
-#    CI_Build: true
-#    SourceLinkEnabled: false
-#
-#  queue:
-#    name: Hosted macOS
-#
-#  steps:
-#  - checkout: self
-#    clean: true
-#
-#  - task: NuGetToolInstaller@0
-#    inputs:
-#      versionSpec: 4.7.0
-#      checkLatest: false
-#
-#  - task: NuGetCommand@2
-#    inputs:
-#      command: restore
-#      solution: src/Uno.UI-vs4mac.sln
-#      selectOrConfig: select
-#      includeNuGetOrg: true
-#      verbosityRestore: Normal
-#
-#  - task: MSBuild@1
-#    inputs:
-#      solution: Build/Uno.UI.proj
-#      msbuildLocationMethod: version
-#      msbuildVersion: latest
-#      msbuildArchitecture: x86
-#      msbuildArguments: /r /p:CheckExclusions=True "/p:CombinedConfiguration=$(CombinedConfiguration)" /detailedsummary /bl:$(build.artifactstagingdirectory)/build-macos.binlog
-#      clean: false
-#      maximumCpuCount: true
-#      restoreNugetPackages: false
-#      logProjectEvents: false
-#      createLogFile: false
-#
-#  - task: PublishBuildArtifacts@1
-#    # https://developercommunity.visualstudio.com/content/problem/284991/public-vsts-previouw-cant-set-build-number-of-pr-b.html
-#    condition: eq(variables['System.PullRequest.IsFork'], 'False')
-#    inputs:
-#      PathtoPublish: $(build.artifactstagingdirectory)
-#      ArtifactName: uno-macos-artifacts
-#      ArtifactType: Container
+- job: Documentation
 
-- phase: Documentation
+  pool:
+    vmImage: 'vs2017-win2016'
+
   variables:
-    NUGET_PACKAGES: $(Agent.WorkFolder)\.nuget
-    NUGET_HTTP_CACHE_PATH: $(Agent.WorkFolder)\.nuget-http-cache
     CombinedConfiguration: Release|Any CPU
     CI_Build: true
 
@@ -140,33 +116,23 @@ phases:
   - checkout: self
     clean: true
     
-  - task: GitVersion@3
-    # Ignore gitversion for forks, until this is fixed:
-    # https://developercommunity.visualstudio.com/content/problem/284991/public-vsts-previouw-cant-set-build-number-of-pr-b.html
-    condition: eq(variables['System.PullRequest.IsFork'], 'False')
+  - task: GitVersion@4
     inputs:
       updateAssemblyInfo: false
+      gitVersionPath: '$(build.sourcesdirectory)\build\gitversion\GitVersion.exe'
 
   - task: NuGetToolInstaller@0
     inputs:
-      versionSpec: 4.7.0
+      versionSpec: 4.9.1
       checkLatest: false
-
-  - task: NuGetCommand@2
-    inputs:
-      command: restore
-      solution: src/Uno.UI.sln
-      selectOrConfig: select
-      includeNuGetOrg: true
-      verbosityRestore: Normal
 
   - task: MSBuild@1
     inputs:
-      solution: Build/Uno.UI.proj
+      solution: Build/Uno.UI.Build.csproj
       msbuildLocationMethod: version
       msbuildVersion: latest
       msbuildArchitecture: x86
-      msbuildArguments: /t:GenerateDoc /p:CheckExclusions=True "/p:CombinedConfiguration=$(CombinedConfiguration)" /detailedsummary
+      msbuildArguments: /r /t:GenerateDoc /p:CheckExclusions=True "/p:CombinedConfiguration=$(CombinedConfiguration)" /detailedsummary
       clean: false
       maximumCpuCount: true
       restoreNugetPackages: false

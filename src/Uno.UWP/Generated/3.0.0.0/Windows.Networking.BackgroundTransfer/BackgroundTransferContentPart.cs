@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Networking.BackgroundTransfer
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class BackgroundTransferContentPart 
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public BackgroundTransferContentPart( string name) 
 		{
@@ -15,7 +15,7 @@ namespace Windows.Networking.BackgroundTransfer
 		}
 		#endif
 		// Forced skipping of method Windows.Networking.BackgroundTransfer.BackgroundTransferContentPart.BackgroundTransferContentPart(string)
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public BackgroundTransferContentPart( string name,  string fileName) 
 		{
@@ -23,7 +23,7 @@ namespace Windows.Networking.BackgroundTransfer
 		}
 		#endif
 		// Forced skipping of method Windows.Networking.BackgroundTransfer.BackgroundTransferContentPart.BackgroundTransferContentPart(string, string)
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public BackgroundTransferContentPart() 
 		{
@@ -31,21 +31,21 @@ namespace Windows.Networking.BackgroundTransfer
 		}
 		#endif
 		// Forced skipping of method Windows.Networking.BackgroundTransfer.BackgroundTransferContentPart.BackgroundTransferContentPart()
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  void SetHeader( string headerName,  string headerValue)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.BackgroundTransfer.BackgroundTransferContentPart", "void BackgroundTransferContentPart.SetHeader(string headerName, string headerValue)");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  void SetText( string value)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.BackgroundTransfer.BackgroundTransferContentPart", "void BackgroundTransferContentPart.SetText(string value)");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  void SetFile( global::Windows.Storage.IStorageFile value)
 		{

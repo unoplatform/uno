@@ -10,7 +10,7 @@ namespace Windows.UI.Xaml.Controls
 	public enum ScrollBarVisibility
 	{
 		/// <summary>
-		/// Enables the scrollbars if the content is greated that the view port.
+		/// Enables the scrollbars if the content is greater than the view port.
 		/// </summary>
 		Auto,
 

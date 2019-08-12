@@ -22,12 +22,6 @@ namespace Windows.UI.Xaml.Controls
 		public Control(string htmlTag = "div") : base(htmlTag)
 		{
 			InitializeControl();
-
-			PointerPressed += (o, e) => OnPointerPressed(e);
-			PointerCanceled += (o, e) => OnPointerCanceled(e);
-			PointerReleased += (o, e) => OnPointerReleased(e);
-			PointerExited += (o, e) => OnPointerExited(e);
-			PointerMoved += (o, e) => OnPointerMoved(e);
 		}
 
 		partial void UnregisterSubView()
@@ -84,18 +78,24 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		internal void SetFocused(bool isFocused)
+		internal bool SetFocused(bool isFocused)
 		{
 			if (isFocused)
 			{
 				if (IsFocusable)
 				{
 					FocusState = _pendingFocusRequestState ?? FocusState.Pointer;
+					return true;
+				}
+				else
+				{
+					return false;
 				}
 			}
 			else
 			{
 				Unfocus();
+				return true;
 			}
 		}
 	}

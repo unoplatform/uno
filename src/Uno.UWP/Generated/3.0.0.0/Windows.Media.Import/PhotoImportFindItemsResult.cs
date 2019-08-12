@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Media.Import
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class PhotoImportFindItemsResult 
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::System.Collections.Generic.IReadOnlyList<global::Windows.Media.Import.PhotoImportItem> FoundItems
 		{
@@ -17,7 +17,7 @@ namespace Windows.Media.Import
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  bool HasSucceeded
 		{
@@ -27,7 +27,7 @@ namespace Windows.Media.Import
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Media.Import.PhotoImportImportMode ImportMode
 		{
@@ -37,7 +37,7 @@ namespace Windows.Media.Import
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  uint PhotosCount
 		{
@@ -47,7 +47,7 @@ namespace Windows.Media.Import
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  ulong PhotosSizeInBytes
 		{
@@ -57,7 +57,7 @@ namespace Windows.Media.Import
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  uint SelectedPhotosCount
 		{
@@ -67,7 +67,7 @@ namespace Windows.Media.Import
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  ulong SelectedPhotosSizeInBytes
 		{
@@ -77,7 +77,7 @@ namespace Windows.Media.Import
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  uint SelectedSiblingsCount
 		{
@@ -87,7 +87,7 @@ namespace Windows.Media.Import
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  ulong SelectedSiblingsSizeInBytes
 		{
@@ -97,7 +97,7 @@ namespace Windows.Media.Import
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  uint SelectedSidecarsCount
 		{
@@ -107,7 +107,7 @@ namespace Windows.Media.Import
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  ulong SelectedSidecarsSizeInBytes
 		{
@@ -117,7 +117,7 @@ namespace Windows.Media.Import
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  uint SelectedTotalCount
 		{
@@ -127,7 +127,7 @@ namespace Windows.Media.Import
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  ulong SelectedTotalSizeInBytes
 		{
@@ -137,7 +137,7 @@ namespace Windows.Media.Import
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  uint SelectedVideosCount
 		{
@@ -147,7 +147,7 @@ namespace Windows.Media.Import
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  ulong SelectedVideosSizeInBytes
 		{
@@ -157,7 +157,7 @@ namespace Windows.Media.Import
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Media.Import.PhotoImportSession Session
 		{
@@ -167,7 +167,7 @@ namespace Windows.Media.Import
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  uint SiblingsCount
 		{
@@ -177,7 +177,7 @@ namespace Windows.Media.Import
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  ulong SiblingsSizeInBytes
 		{
@@ -187,7 +187,7 @@ namespace Windows.Media.Import
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  uint SidecarsCount
 		{
@@ -197,7 +197,7 @@ namespace Windows.Media.Import
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  ulong SidecarsSizeInBytes
 		{
@@ -207,7 +207,7 @@ namespace Windows.Media.Import
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  uint TotalCount
 		{
@@ -217,7 +217,7 @@ namespace Windows.Media.Import
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  ulong TotalSizeInBytes
 		{
@@ -227,7 +227,7 @@ namespace Windows.Media.Import
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  uint VideosCount
 		{
@@ -237,7 +237,7 @@ namespace Windows.Media.Import
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  ulong VideosSizeInBytes
 		{
@@ -260,28 +260,28 @@ namespace Windows.Media.Import
 		// Forced skipping of method Windows.Media.Import.PhotoImportFindItemsResult.SiblingsSizeInBytes.get
 		// Forced skipping of method Windows.Media.Import.PhotoImportFindItemsResult.TotalCount.get
 		// Forced skipping of method Windows.Media.Import.PhotoImportFindItemsResult.TotalSizeInBytes.get
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  void SelectAll()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Import.PhotoImportFindItemsResult", "void PhotoImportFindItemsResult.SelectAll()");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  void SelectNone()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Import.PhotoImportFindItemsResult", "void PhotoImportFindItemsResult.SelectNone()");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Foundation.IAsyncAction SelectNewAsync()
 		{
 			throw new global::System.NotImplementedException("The member IAsyncAction PhotoImportFindItemsResult.SelectNewAsync() is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  void SetImportMode( global::Windows.Media.Import.PhotoImportImportMode value)
 		{
@@ -301,7 +301,7 @@ namespace Windows.Media.Import
 		// Forced skipping of method Windows.Media.Import.PhotoImportFindItemsResult.SelectedTotalSizeInBytes.get
 		// Forced skipping of method Windows.Media.Import.PhotoImportFindItemsResult.SelectionChanged.add
 		// Forced skipping of method Windows.Media.Import.PhotoImportFindItemsResult.SelectionChanged.remove
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Foundation.IAsyncOperationWithProgress<global::Windows.Media.Import.PhotoImportImportItemsResult, global::Windows.Media.Import.PhotoImportProgress> ImportItemsAsync()
 		{
@@ -310,14 +310,14 @@ namespace Windows.Media.Import
 		#endif
 		// Forced skipping of method Windows.Media.Import.PhotoImportFindItemsResult.ItemImported.add
 		// Forced skipping of method Windows.Media.Import.PhotoImportFindItemsResult.ItemImported.remove
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  void AddItemsInDateRangeToSelection( global::System.DateTimeOffset rangeStart,  global::System.TimeSpan rangeLength)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Import.PhotoImportFindItemsResult", "void PhotoImportFindItemsResult.AddItemsInDateRangeToSelection(DateTimeOffset rangeStart, TimeSpan rangeLength)");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Media.Import.PhotoImportFindItemsResult, global::Windows.Media.Import.PhotoImportItemImportedEventArgs> ItemImported
 		{
@@ -333,7 +333,7 @@ namespace Windows.Media.Import
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Media.Import.PhotoImportFindItemsResult, global::Windows.Media.Import.PhotoImportSelectionChangedEventArgs> SelectionChanged
 		{

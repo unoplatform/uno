@@ -8,7 +8,7 @@ namespace Windows.UI.Xaml
 	public  partial class SetterBaseCollection : global::System.Collections.Generic.IList<global::Windows.UI.Xaml.SetterBase>,global::System.Collections.Generic.IEnumerable<global::Windows.UI.Xaml.SetterBase>
 	{
 		// Skipping already declared property Size
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  bool IsSealed
 		{

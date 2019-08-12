@@ -1,11 +1,15 @@
-﻿<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="15.0">
+﻿<Project Sdk="MSBuild.Sdk.Extras" ToolsVersion="15.0">
   
   <PropertyGroup>
-    <TargetFrameworks>xamarinmac20;xamarinios10;MonoAndroid80;net46;netstandard2.0</TargetFrameworks>
-    <TargetFrameworksCI>MonoAndroid71;MonoAndroid80;xamarinios10;net46;netstandard2.0;xamarinmac20</TargetFrameworksCI>
+    <TargetFrameworks>xamarinmac20;xamarinios10;MonoAndroid90;net461;netstandard2.0</TargetFrameworks>
+    <TargetFrameworksCI>MonoAndroid80;MonoAndroid90;xamarinios10;net461;netstandard2.0;xamarinmac20</TargetFrameworksCI>
   </PropertyGroup>
 
-  <PropertyGroup>
+	<PropertyGroup Condition="'$(UnoTargetFrameworkOverride)'!=''">
+		<TargetFrameworks>$(UnoTargetFrameworkOverride)</TargetFrameworks>
+	</PropertyGroup>
+
+	<PropertyGroup>
 		<AssemblyName>Uno</AssemblyName>
 		<RootNamespace>Windows</RootNamespace>
 		<DefineConstants>$(DefineConstants);XAMARIN;IS_UNO;HAS_UMBRELLA_UI;HAS_UMBRELLA_BINDING;HAS_CRIPPLEDREFLECTION</DefineConstants>
@@ -21,9 +25,14 @@
 		
 		<ProduceReferenceAssembly>false</ProduceReferenceAssembly>
 		<Deterministic>true</Deterministic>
+
+		<!--
+		Use to avoid namespace conflicts with the default namespace of this
+		assembly, for non-fully qualified types in System and Windows.System
+		-->
+		<AndroidResgenNamespace>Uno.UWP</AndroidResgenNamespace>
 	</PropertyGroup>
 
-	<Import Project="$(MSBuildSDKExtrasTargets)" Condition="Exists('$(MSBuildSDKExtrasTargets)')" />
 	<Import Project="..\Uno.CrossTargetting.props" />
 	
 	<ItemGroup>
@@ -31,26 +40,10 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="MSBuild.Sdk.Extras" Version="1.6.55" PrivateAssets="All" />
-		<PackageReference Include="System.Numerics.Vectors" Version="4.5.0-preview1-26216-02" />
-		<PackageReference Include="Uno.SourceGenerationTasks">
-			<Version>1.29.0-dev.200</Version>
-		</PackageReference>
-		<PackageReference Include="Uno.Core">
-			<Version>1.26.0-dev.58</Version>
-			<ExcludeAssets>Runtime</ExcludeAssets>
-		</PackageReference>
-	</ItemGroup>
-	
-	 <ItemGroup Condition=" '$(TargetFramework)' == 'MonoAndroid71'">
-		<PackageReference Include="Xamarin.Android.Support.v4">
-			<Version>25.3.1</Version>
-			<PrivateAssets>none</PrivateAssets>
-		</PackageReference>
-		<PackageReference Include="Xamarin.Android.Support.v7.AppCompat">
-			<Version>25.3.1</Version>
-			<PrivateAssets>none</PrivateAssets>
-		</PackageReference>
+		<PackageReference Include="System.Numerics.Vectors" Version="4.5.0" />
+		<PackageReference Include="Uno.SourceGenerationTasks" />
+		<PackageReference Include="Uno.Core" />
+		<PackageReference Include="Uno.MonoAnalyzers" />
 	</ItemGroup>
 	
 	<ItemGroup Condition=" '$(TargetFramework)' == 'MonoAndroid80'">
@@ -64,7 +57,18 @@
 		</PackageReference>
 	</ItemGroup>
 
-	<ItemGroup Condition="'$(TargetFrameworkIdentifier)'=='MonoAndroid' or '$(TargetFrameworkIdentifier)'=='Xamarin.iOS' or '$(TargetFramework)'=='xamarinmac20'">
+	<ItemGroup Condition=" '$(TargetFramework)' == 'MonoAndroid90'">
+		<PackageReference Include="Xamarin.Android.Support.v4">
+			<Version>28.0.0.1</Version>
+			<PrivateAssets>none</PrivateAssets>
+		</PackageReference>
+		<PackageReference Include="Xamarin.Android.Support.v7.AppCompat">
+			<Version>28.0.0.1</Version>
+			<PrivateAssets>none</PrivateAssets>
+		</PackageReference>
+	</ItemGroup>
+
+	<ItemGroup Condition="$(IsMonoAndroid) or $(IsXamarinIOS) or '$(TargetFramework)'=='xamarinmac20'">
 		<Reference Include="System.Numerics" />
 		<Reference Include="System.Numerics.Vectors" />
 	</ItemGroup>

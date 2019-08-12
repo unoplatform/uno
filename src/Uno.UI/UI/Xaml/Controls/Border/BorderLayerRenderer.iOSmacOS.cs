@@ -2,7 +2,6 @@
 using CoreGraphics;
 using System;
 using System.Collections.Generic;
-using System.Drawing;
 using Uno.Disposables;
 using System.Text;
 using Uno;
@@ -50,9 +49,9 @@ namespace Windows.UI.Xaml.Shapes
 			_Image backgroundImage
 		)
 		{
-			// Frame is captured to avoid calling twice calls below.
-			var frame = owner.Frame;
-			var area = new CGRect(0, 0, frame.Width, frame.Height);
+			// Bounds is captured to avoid calling twice calls below.
+			var bounds = owner.Bounds;
+			var area = new CGRect(0, 0, bounds.Width, bounds.Height);
 
 			var newState = new LayoutState(area, background, borderThickness, borderBrush, cornerRadius, backgroundImage);
 			var previousLayoutState = _currentState;
@@ -261,8 +260,8 @@ namespace Windows.UI.Xaml.Shapes
 						{
 							l.LineWidth = (nfloat)borderThickness.Top;
 							var lineWidthAdjust = (nfloat)(borderThickness.Top / 2);
-							path.MoveToPoint(area.X, area.Y + lineWidthAdjust);
-							path.AddLineToPoint(area.X + area.Width, area.Y + lineWidthAdjust);
+							path.MoveToPoint(area.X + (nfloat)borderThickness.Left, area.Y + lineWidthAdjust);
+							path.AddLineToPoint(area.X + area.Width - (nfloat)borderThickness.Right, area.Y + lineWidthAdjust);
 							path.CloseSubpath();
 						});
 					}
@@ -273,8 +272,8 @@ namespace Windows.UI.Xaml.Shapes
 						{
 							l.LineWidth = (nfloat)borderThickness.Bottom;
 							var lineWidthAdjust = borderThickness.Bottom / 2;
-							path.MoveToPoint(area.X, (nfloat)(area.Y + area.Height - lineWidthAdjust));
-							path.AddLineToPoint(area.X + area.Width, (nfloat)(area.Y + area.Height - lineWidthAdjust));
+							path.MoveToPoint(area.X + (nfloat)borderThickness.Left, (nfloat)(area.Y + area.Height - lineWidthAdjust));
+							path.AddLineToPoint(area.X + area.Width - (nfloat)borderThickness.Right, (nfloat)(area.Y + area.Height - lineWidthAdjust));
 							path.CloseSubpath();
 						});
 					}
@@ -400,6 +399,8 @@ namespace Windows.UI.Xaml.Shapes
 			public readonly Thickness BorderThickness;
 			public readonly CornerRadius CornerRadius;
 			public readonly _Image BackgroundImage;
+
+			public Transform Transform { get; }
 
 			public LayoutState(CGRect area, Brush background, Thickness borderThickness, Brush borderBrush, CornerRadius cornerRadius, _Image backgroundImage)
 			{

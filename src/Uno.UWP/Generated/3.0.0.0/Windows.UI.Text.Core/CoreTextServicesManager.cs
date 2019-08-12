@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Text.Core
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class CoreTextServicesManager 
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Globalization.Language InputLanguage
 		{
@@ -20,21 +20,21 @@ namespace Windows.UI.Text.Core
 		// Forced skipping of method Windows.UI.Text.Core.CoreTextServicesManager.InputLanguage.get
 		// Forced skipping of method Windows.UI.Text.Core.CoreTextServicesManager.InputLanguageChanged.add
 		// Forced skipping of method Windows.UI.Text.Core.CoreTextServicesManager.InputLanguageChanged.remove
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.UI.Text.Core.CoreTextEditContext CreateEditContext()
 		{
 			throw new global::System.NotImplementedException("The member CoreTextEditContext CoreTextServicesManager.CreateEditContext() is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Text.Core.CoreTextServicesManager GetForCurrentView()
 		{
 			throw new global::System.NotImplementedException("The member CoreTextServicesManager CoreTextServicesManager.GetForCurrentView() is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Text.Core.CoreTextServicesManager, object> InputLanguageChanged
 		{

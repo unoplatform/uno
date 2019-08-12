@@ -4,7 +4,7 @@ namespace Windows.Media.Capture
 {
 	public  partial class CameraCaptureUIVideoCaptureSettings 
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Media.Capture.CameraCaptureUIMaxVideoResolution MaxResolution
 		{
@@ -18,7 +18,7 @@ namespace Windows.Media.Capture
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__
 		[global::Uno.NotImplemented]
 		public  float MaxDurationInSeconds
 		{
@@ -32,7 +32,7 @@ namespace Windows.Media.Capture
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Media.Capture.CameraCaptureUIVideoFormat Format
 		{
@@ -46,7 +46,7 @@ namespace Windows.Media.Capture
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__
 		[global::Uno.NotImplemented]
 		public  bool AllowTrimming
 		{

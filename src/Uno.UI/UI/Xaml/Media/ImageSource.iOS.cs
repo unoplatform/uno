@@ -282,7 +282,7 @@ namespace Windows.UI.Xaml.Media
 		{
 			var path = uri
 				.PathAndQuery
-				.TrimStart('/')
+				.TrimStart(new[] { '/' })
 
 				// UWP supports backward slash in path for directory separators.
 				.Replace("\\", "/");

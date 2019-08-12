@@ -1,4 +1,4 @@
-﻿#if !NET46
+﻿#if !NET461
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -7,11 +7,7 @@ namespace Windows.UI.Xaml.Controls
 {
 	public partial class TimePickerFlyoutPresenter : FlyoutPresenter
 	{
-		public TimePickerFlyoutPresenter()
-		{
-
-		}
+		public TimePickerFlyoutPresenter() { }
 	}
 }
-
 #endif

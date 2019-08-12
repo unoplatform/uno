@@ -10,7 +10,5 @@ namespace Windows.UI.Xaml
 		NoWrap,
 		Wrap,
 		WrapWholeWords,
-		// Not supported for now on iOS/Android
-		WordEllipsis,
 	}
 }

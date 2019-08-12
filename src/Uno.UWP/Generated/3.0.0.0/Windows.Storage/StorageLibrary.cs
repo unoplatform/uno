@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Storage
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class StorageLibrary 
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Foundation.Collections.IObservableVector<global::Windows.Storage.StorageFolder> Folders
 		{
@@ -17,7 +17,7 @@ namespace Windows.Storage
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Storage.StorageFolder SaveFolder
 		{
@@ -27,7 +27,7 @@ namespace Windows.Storage
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Storage.StorageLibraryChangeTracker ChangeTracker
 		{
@@ -37,14 +37,14 @@ namespace Windows.Storage
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.StorageFolder> RequestAddFolderAsync()
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<StorageFolder> StorageLibrary.RequestAddFolderAsync() is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Foundation.IAsyncOperation<bool> RequestRemoveFolderAsync( global::Windows.Storage.StorageFolder folder)
 		{
@@ -56,28 +56,28 @@ namespace Windows.Storage
 		// Forced skipping of method Windows.Storage.StorageLibrary.DefinitionChanged.add
 		// Forced skipping of method Windows.Storage.StorageLibrary.DefinitionChanged.remove
 		// Forced skipping of method Windows.Storage.StorageLibrary.ChangeTracker.get
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Foundation.IAsyncOperation<bool> AreFolderSuggestionsAvailableAsync()
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> StorageLibrary.AreFolderSuggestionsAvailableAsync() is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.StorageLibrary> GetLibraryForUserAsync( global::Windows.System.User user,  global::Windows.Storage.KnownLibraryId libraryId)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<StorageLibrary> StorageLibrary.GetLibraryForUserAsync(User user, KnownLibraryId libraryId) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.StorageLibrary> GetLibraryAsync( global::Windows.Storage.KnownLibraryId libraryId)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<StorageLibrary> StorageLibrary.GetLibraryAsync(KnownLibraryId libraryId) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Storage.StorageLibrary, object> DefinitionChanged
 		{

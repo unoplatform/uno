@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.System.Diagnostics
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class SystemDiagnosticInfo 
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.System.Diagnostics.SystemCpuUsage CpuUsage
 		{
@@ -17,7 +17,7 @@ namespace Windows.System.Diagnostics
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.System.Diagnostics.SystemMemoryUsage MemoryUsage
 		{
@@ -29,7 +29,7 @@ namespace Windows.System.Diagnostics
 		#endif
 		// Forced skipping of method Windows.System.Diagnostics.SystemDiagnosticInfo.MemoryUsage.get
 		// Forced skipping of method Windows.System.Diagnostics.SystemDiagnosticInfo.CpuUsage.get
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.System.Diagnostics.SystemDiagnosticInfo GetForCurrentSystem()
 		{

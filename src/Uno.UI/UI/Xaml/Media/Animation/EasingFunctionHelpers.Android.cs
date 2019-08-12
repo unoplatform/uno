@@ -8,7 +8,7 @@ namespace Windows.UI.Xaml.Media.Animation
 {
 	internal static class EasingFunctionHelpers
 	{
-		internal static ITimeInterpolator GetPowerTimeInterpolator(int power, EasingMode mode)
+		internal static ITimeInterpolator GetPowerTimeInterpolator(float power, EasingMode mode)
 		{
 			switch (mode)
 			{

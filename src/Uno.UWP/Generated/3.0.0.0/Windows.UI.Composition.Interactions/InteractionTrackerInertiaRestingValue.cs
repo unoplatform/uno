@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Composition.Interactions
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class InteractionTrackerInertiaRestingValue : global::Windows.UI.Composition.Interactions.InteractionTrackerInertiaModifier
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.UI.Composition.ExpressionAnimation RestingValue
 		{
@@ -21,7 +21,7 @@ namespace Windows.UI.Composition.Interactions
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.UI.Composition.ExpressionAnimation Condition
 		{
@@ -39,7 +39,7 @@ namespace Windows.UI.Composition.Interactions
 		// Forced skipping of method Windows.UI.Composition.Interactions.InteractionTrackerInertiaRestingValue.Condition.set
 		// Forced skipping of method Windows.UI.Composition.Interactions.InteractionTrackerInertiaRestingValue.RestingValue.get
 		// Forced skipping of method Windows.UI.Composition.Interactions.InteractionTrackerInertiaRestingValue.RestingValue.set
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Composition.Interactions.InteractionTrackerInertiaRestingValue Create( global::Windows.UI.Composition.Compositor compositor)
 		{

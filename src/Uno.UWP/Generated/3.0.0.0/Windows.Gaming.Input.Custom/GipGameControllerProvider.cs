@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Gaming.Input.Custom
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class GipGameControllerProvider : global::Windows.Gaming.Input.Custom.IGameControllerProvider
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Gaming.Input.Custom.GameControllerVersionInfo FirmwareVersionInfo
 		{
@@ -17,7 +17,7 @@ namespace Windows.Gaming.Input.Custom
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  ushort HardwareProductId
 		{
@@ -27,7 +27,7 @@ namespace Windows.Gaming.Input.Custom
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  ushort HardwareVendorId
 		{
@@ -37,7 +37,7 @@ namespace Windows.Gaming.Input.Custom
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Gaming.Input.Custom.GameControllerVersionInfo HardwareVersionInfo
 		{
@@ -47,7 +47,7 @@ namespace Windows.Gaming.Input.Custom
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  bool IsConnected
 		{
@@ -57,21 +57,21 @@ namespace Windows.Gaming.Input.Custom
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  void SendMessage( global::Windows.Gaming.Input.Custom.GipMessageClass messageClass,  byte messageId,  byte[] messageBuffer)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Gaming.Input.Custom.GipGameControllerProvider", "void GipGameControllerProvider.SendMessage(GipMessageClass messageClass, byte messageId, byte[] messageBuffer)");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  void SendReceiveMessage( global::Windows.Gaming.Input.Custom.GipMessageClass messageClass,  byte messageId,  byte[] requestMessageBuffer,  byte[] responseMessageBuffer)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Gaming.Input.Custom.GipGameControllerProvider", "void GipGameControllerProvider.SendReceiveMessage(GipMessageClass messageClass, byte messageId, byte[] requestMessageBuffer, byte[] responseMessageBuffer)");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Foundation.IAsyncOperationWithProgress<global::Windows.Gaming.Input.Custom.GipFirmwareUpdateResult, global::Windows.Gaming.Input.Custom.GipFirmwareUpdateProgress> UpdateFirmwareAsync( global::Windows.Storage.Streams.IInputStream firmwareImage)
 		{

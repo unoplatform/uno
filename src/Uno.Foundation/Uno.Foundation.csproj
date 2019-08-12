@@ -1,7 +1,11 @@
-﻿<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="15.0">
+﻿<Project Sdk="MSBuild.Sdk.Extras" ToolsVersion="15.0">
   <PropertyGroup>
-    <TargetFrameworks>xamarinmac20;xamarinios10;MonoAndroid80;net46;netstandard2.0</TargetFrameworks>
-		<TargetFrameworksCI>MonoAndroid71;MonoAndroid80;xamarinios10;net46;netstandard2.0;xamarinmac20</TargetFrameworksCI>
+    <TargetFrameworks>xamarinmac20;xamarinios10;MonoAndroid90;net461;netstandard2.0</TargetFrameworks>
+		<TargetFrameworksCI>MonoAndroid80;MonoAndroid90;xamarinios10;net461;netstandard2.0;xamarinmac20</TargetFrameworksCI>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(UnoTargetFrameworkOverride)'!=''">
+		<TargetFrameworks>$(UnoTargetFrameworkOverride)</TargetFrameworks>
 	</PropertyGroup>
 
 	<PropertyGroup>
@@ -15,15 +19,17 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="MSBuild.Sdk.Extras" Version="1.6.55" PrivateAssets="All" />
-    <PackageReference Include="Uno.SourceGenerationTasks">
-      <Version>1.29.0-dev.200</Version>
-      <ExcludeAssets>Runtime</ExcludeAssets>
-    </PackageReference>
-    <PackageReference Include="Uno.Core">
-      <Version>1.26.0-dev.58</Version>
-      <ExcludeAssets>Runtime</ExcludeAssets>
-    </PackageReference>
+    <PackageReference Include="Uno.SourceGenerationTasks" />
+    <PackageReference Include="Uno.Core" />
+		<PackageReference Include="Uno.MonoAnalyzers" />
+	</ItemGroup>
+
+	<ItemGroup Condition="$(_IsAndroid) or $(_IsIOS) or $(_IsMacOS)">
+		<Reference Include="System.Memory" />
+	</ItemGroup>
+
+	<ItemGroup Condition="$(_IsNetStd) or $(_IsNet)">
+		<PackageReference Include="System.Memory" />
 	</ItemGroup>
 	
 	<ItemGroup>
@@ -33,8 +39,7 @@
 	<ItemGroup Condition="'$(TargetFrameworkIdentifier)'=='.NETStandard'">
 		<PackageReference Include="System.Runtime.InteropServices.WindowsRuntime" Version="4.3.0" />
 	</ItemGroup>
-	
-	<Import Project="$(MSBuildSDKExtrasTargets)" Condition="Exists('$(MSBuildSDKExtrasTargets)')" />
+
 	<Import Project="..\Uno.CrossTargetting.props" />
 
 </Project>

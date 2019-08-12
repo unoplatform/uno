@@ -13,6 +13,7 @@ using Windows.UI.Xaml.Media.Animation;
 using Windows.UI.Xaml.Markup;
 using Uno.UI;
 using Windows.Foundation.Collections;
+using Microsoft.Extensions.Logging;
 
 #if XAMARIN_IOS
 using UIKit;
@@ -237,12 +238,25 @@ namespace Windows.UI.Xaml
 
 				foreach (var setter in this.CurrentState.Setters.OfType<Setter>())
 				{
+					if (element != null && (state?.Setters.OfType<Setter>().Any(o => o.HasSameTarget(setter, DependencyPropertyValuePrecedences.Animations, element)) ?? false))
+					{
+						// PERF: We clear the value of the current setter only if there isn't any setter in the target state
+						// which changes the same target property.
+
+						if (this.Log().IsEnabled(LogLevel.Debug))
+						{
+							this.Log().Debug($"Ignoring reset of setter of '{setter.Target?.Path}' as it will be updated again by '{state.Name}'");
+						}
+
+						continue;
+					}
+
 					setter.ClearValue();
 				}
 			}
 
 			this.CurrentState = state;
-			if (this.CurrentState != null)
+			if (this.CurrentState != null && element != null)
 			{
 				foreach (var setter in this.CurrentState.Setters.OfType<Setter>())
 				{
@@ -263,6 +277,11 @@ namespace Windows.UI.Xaml
 
 		private VisualTransition FindTransition(string oldStateName, string newStateName)
 		{
+			if (oldStateName.IsNullOrEmpty() || newStateName.IsNullOrEmpty())
+			{
+				return null;
+			}
+
 			var perfectMatch = Transitions.FirstOrDefault(vt =>
 				string.Equals(vt.From, oldStateName) &&
 				string.Equals(vt.To, newStateName));
@@ -288,25 +307,32 @@ namespace Windows.UI.Xaml
 			return toMatch;
 		}
 
-		internal void RefreshStateTriggers()
+		internal void RefreshStateTriggers(bool force = false)
 		{
-			var activeVisualState = GetActiveTrigger();
+			var newState = GetActiveTrigger();
 			var oldState = CurrentState;
-
-			if (this.GetParent() is IFrameworkElement parent)
+			if (!force && newState == oldState)
 			{
-				// The parent may be null when the VisualStateGroup is being built.
-
-				if (CurrentState != null || activeVisualState != null)
-				{
-					GoToState(parent, activeVisualState, CurrentState, false, () => RaiseCurrentStateChanged(oldState, activeVisualState));
-				}
+				return;
 			}
+
+			if (this.Log().IsEnabled(LogLevel.Debug))
+			{
+				this.Log().Debug($"[{this}].RefreshStateTriggers() activeState={newState}, oldState={oldState}");
+			}
+
+			void OnStateChanged()
+			{
+				RaiseCurrentStateChanged(oldState, newState);
+			}
+
+			var parent = this.GetParent() as IFrameworkElement;
+			GoToState(parent, newState, CurrentState, false, OnStateChanged);
 		}
 
 		private void OnParentChanged(object instance, object key, DependencyObjectParentChangedEventArgs args)
 		{
-			RefreshStateTriggers();
+			RefreshStateTriggers(force: true);
 		}
 
 		/// <remarks>
@@ -314,18 +340,62 @@ namespace Windows.UI.Xaml
 		/// </remarks>
 		private VisualState GetActiveTrigger()
 		{
-			for (int index = States.Count - 1; index >= 0; index--)
+			// As documented there:
+			// https://docs.microsoft.com/en-us/uwp/api/windows.ui.xaml.visualstategroup#remarks
+			// We're using a priority-based mechanism
+
+			// When using StateTriggers to control visual states, the trigger engine uses the following precedence
+			// rules to score triggers and determine which trigger, and the corresponding VisualState, will be active:
+			//
+			// 1. Custom trigger that derives from StateTriggerBase
+			// 2. AdaptiveTrigger activated due to MinWindowWidth
+			// 3. AdaptiveTrigger activated due to MinWindowHeight
+			//
+			// If there are multiple active triggers at a time that have a conflict in scoring(i.e.two active custom
+			// triggers), then the first one declared in the markup file takes precedence.
+
+			var winningPrecedence2 = default(VisualState);
+			var winningPrecedence3 = default(VisualState);
+
+			for (var stateIndex = 0; stateIndex < States.Count; stateIndex++)
 			{
-				foreach (var trigger in States[index].StateTriggers)
+				var state = States[stateIndex];
+				for (var triggerIndex = 0; triggerIndex < state.StateTriggers.Count; triggerIndex++)
 				{
-					if (trigger.InternalIsActive)
+					var trigger = state.StateTriggers[triggerIndex];
+
+					if (trigger.CurrentPrecedence == StateTriggerPrecedence.CustomTrigger)
 					{
-						return trigger.Owner;
+						return state; // we have a winner!
 					}
+					if (trigger.CurrentPrecedence == StateTriggerPrecedence.MinWidthTrigger && winningPrecedence2 == null)
+					{
+						winningPrecedence2 = state;
+						if (winningPrecedence3 != null)
+						{
+							break;
+						}
+					}
+					else if (trigger.CurrentPrecedence == StateTriggerPrecedence.MinHeightTrigger && winningPrecedence3 == null)
+					{
+						winningPrecedence3 = state;
+						if (winningPrecedence2 != null)
+						{
+							break;
+						}
+					}
+				}
+
+				if (winningPrecedence2 != null && winningPrecedence3 != null)
+				{
+					break;
 				}
 			}
 
-			return null;
+			var winnerState = winningPrecedence2 ?? winningPrecedence3;
+			return winnerState;
 		}
+
+		public override string ToString() => Name ?? $"<unnamed group {GetHashCode()}>";
 	}
 }

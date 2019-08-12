@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Composition.Interactions
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class VisualInteractionSource : global::Windows.UI.Composition.CompositionObject,global::Windows.UI.Composition.Interactions.ICompositionInteractionSource
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.UI.Composition.Interactions.InteractionSourceMode ScaleSourceMode
 		{
@@ -21,7 +21,7 @@ namespace Windows.UI.Composition.Interactions
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.UI.Composition.Interactions.InteractionChainingMode ScaleChainingMode
 		{
@@ -35,7 +35,7 @@ namespace Windows.UI.Composition.Interactions
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.UI.Composition.Interactions.InteractionSourceMode PositionYSourceMode
 		{
@@ -49,7 +49,7 @@ namespace Windows.UI.Composition.Interactions
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.UI.Composition.Interactions.InteractionChainingMode PositionYChainingMode
 		{
@@ -63,7 +63,7 @@ namespace Windows.UI.Composition.Interactions
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.UI.Composition.Interactions.InteractionSourceMode PositionXSourceMode
 		{
@@ -77,7 +77,7 @@ namespace Windows.UI.Composition.Interactions
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.UI.Composition.Interactions.InteractionChainingMode PositionXChainingMode
 		{
@@ -91,7 +91,7 @@ namespace Windows.UI.Composition.Interactions
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.UI.Composition.Interactions.VisualInteractionSourceRedirectionMode ManipulationRedirectionMode
 		{
@@ -105,7 +105,7 @@ namespace Windows.UI.Composition.Interactions
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  bool IsPositionYRailsEnabled
 		{
@@ -119,7 +119,7 @@ namespace Windows.UI.Composition.Interactions
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  bool IsPositionXRailsEnabled
 		{
@@ -133,7 +133,7 @@ namespace Windows.UI.Composition.Interactions
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.UI.Composition.Visual Source
 		{
@@ -143,7 +143,7 @@ namespace Windows.UI.Composition.Interactions
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::System.Numerics.Vector3 DeltaPosition
 		{
@@ -153,7 +153,7 @@ namespace Windows.UI.Composition.Interactions
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  float DeltaScale
 		{
@@ -163,7 +163,7 @@ namespace Windows.UI.Composition.Interactions
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::System.Numerics.Vector3 Position
 		{
@@ -173,7 +173,7 @@ namespace Windows.UI.Composition.Interactions
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::System.Numerics.Vector3 PositionVelocity
 		{
@@ -183,7 +183,7 @@ namespace Windows.UI.Composition.Interactions
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  float Scale
 		{
@@ -193,7 +193,7 @@ namespace Windows.UI.Composition.Interactions
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  float ScaleVelocity
 		{
@@ -203,7 +203,7 @@ namespace Windows.UI.Composition.Interactions
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.UI.Composition.Interactions.InteractionSourceConfiguration PointerWheelConfig
 		{
@@ -232,7 +232,7 @@ namespace Windows.UI.Composition.Interactions
 		// Forced skipping of method Windows.UI.Composition.Interactions.VisualInteractionSource.ScaleSourceMode.get
 		// Forced skipping of method Windows.UI.Composition.Interactions.VisualInteractionSource.ScaleSourceMode.set
 		// Forced skipping of method Windows.UI.Composition.Interactions.VisualInteractionSource.Source.get
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  void TryRedirectForManipulation( global::Windows.UI.Input.PointerPoint pointerPoint)
 		{
@@ -245,35 +245,35 @@ namespace Windows.UI.Composition.Interactions
 		// Forced skipping of method Windows.UI.Composition.Interactions.VisualInteractionSource.PositionVelocity.get
 		// Forced skipping of method Windows.UI.Composition.Interactions.VisualInteractionSource.Scale.get
 		// Forced skipping of method Windows.UI.Composition.Interactions.VisualInteractionSource.ScaleVelocity.get
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  void ConfigureCenterPointXModifiers( global::System.Collections.Generic.IEnumerable<global::Windows.UI.Composition.Interactions.CompositionConditionalValue> conditionalValues)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.Interactions.VisualInteractionSource", "void VisualInteractionSource.ConfigureCenterPointXModifiers(IEnumerable<CompositionConditionalValue> conditionalValues)");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  void ConfigureCenterPointYModifiers( global::System.Collections.Generic.IEnumerable<global::Windows.UI.Composition.Interactions.CompositionConditionalValue> conditionalValues)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.Interactions.VisualInteractionSource", "void VisualInteractionSource.ConfigureCenterPointYModifiers(IEnumerable<CompositionConditionalValue> conditionalValues)");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  void ConfigureDeltaPositionXModifiers( global::System.Collections.Generic.IEnumerable<global::Windows.UI.Composition.Interactions.CompositionConditionalValue> conditionalValues)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.Interactions.VisualInteractionSource", "void VisualInteractionSource.ConfigureDeltaPositionXModifiers(IEnumerable<CompositionConditionalValue> conditionalValues)");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  void ConfigureDeltaPositionYModifiers( global::System.Collections.Generic.IEnumerable<global::Windows.UI.Composition.Interactions.CompositionConditionalValue> conditionalValues)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.Interactions.VisualInteractionSource", "void VisualInteractionSource.ConfigureDeltaPositionYModifiers(IEnumerable<CompositionConditionalValue> conditionalValues)");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  void ConfigureDeltaScaleModifiers( global::System.Collections.Generic.IEnumerable<global::Windows.UI.Composition.Interactions.CompositionConditionalValue> conditionalValues)
 		{
@@ -281,7 +281,7 @@ namespace Windows.UI.Composition.Interactions
 		}
 		#endif
 		// Forced skipping of method Windows.UI.Composition.Interactions.VisualInteractionSource.PointerWheelConfig.get
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Composition.Interactions.VisualInteractionSource Create( global::Windows.UI.Composition.Visual source)
 		{

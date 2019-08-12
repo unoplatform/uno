@@ -10,7 +10,7 @@ namespace Windows.UI.Core
 	{
 		// Skipping already declared field Windows.UI.Core.AppViewBackButtonVisibility.Visible
 		// Skipping already declared field Windows.UI.Core.AppViewBackButtonVisibility.Collapsed
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		Disabled,
 		#endif
 	}

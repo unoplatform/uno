@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.System.Diagnostics
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class ProcessDiagnosticInfo 
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.System.Diagnostics.ProcessCpuUsage CpuUsage
 		{
@@ -17,7 +17,7 @@ namespace Windows.System.Diagnostics
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.System.Diagnostics.ProcessDiskUsage DiskUsage
 		{
@@ -27,7 +27,7 @@ namespace Windows.System.Diagnostics
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  string ExecutableFileName
 		{
@@ -37,7 +37,7 @@ namespace Windows.System.Diagnostics
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.System.Diagnostics.ProcessMemoryUsage MemoryUsage
 		{
@@ -47,7 +47,7 @@ namespace Windows.System.Diagnostics
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.System.Diagnostics.ProcessDiagnosticInfo Parent
 		{
@@ -57,7 +57,7 @@ namespace Windows.System.Diagnostics
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  uint ProcessId
 		{
@@ -67,7 +67,7 @@ namespace Windows.System.Diagnostics
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::System.DateTimeOffset ProcessStartTime
 		{
@@ -77,7 +77,7 @@ namespace Windows.System.Diagnostics
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  bool IsPackaged
 		{
@@ -94,7 +94,7 @@ namespace Windows.System.Diagnostics
 		// Forced skipping of method Windows.System.Diagnostics.ProcessDiagnosticInfo.DiskUsage.get
 		// Forced skipping of method Windows.System.Diagnostics.ProcessDiagnosticInfo.MemoryUsage.get
 		// Forced skipping of method Windows.System.Diagnostics.ProcessDiagnosticInfo.CpuUsage.get
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::System.Collections.Generic.IList<global::Windows.System.AppDiagnosticInfo> GetAppDiagnosticInfos()
 		{
@@ -102,21 +102,21 @@ namespace Windows.System.Diagnostics
 		}
 		#endif
 		// Forced skipping of method Windows.System.Diagnostics.ProcessDiagnosticInfo.IsPackaged.get
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.System.Diagnostics.ProcessDiagnosticInfo TryGetForProcessId( uint processId)
 		{
 			throw new global::System.NotImplementedException("The member ProcessDiagnosticInfo ProcessDiagnosticInfo.TryGetForProcessId(uint processId) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::System.Collections.Generic.IReadOnlyList<global::Windows.System.Diagnostics.ProcessDiagnosticInfo> GetForProcesses()
 		{
 			throw new global::System.NotImplementedException("The member IReadOnlyList<ProcessDiagnosticInfo> ProcessDiagnosticInfo.GetForProcesses() is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.System.Diagnostics.ProcessDiagnosticInfo GetForCurrentProcess()
 		{

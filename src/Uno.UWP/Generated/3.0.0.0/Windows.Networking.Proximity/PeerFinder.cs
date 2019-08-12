@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Networking.Proximity
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class PeerFinder 
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static string DisplayName
 		{
@@ -21,7 +21,7 @@ namespace Windows.Networking.Proximity
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static bool AllowWiFiDirect
 		{
@@ -35,7 +35,7 @@ namespace Windows.Networking.Proximity
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static bool AllowInfrastructure
 		{
@@ -49,7 +49,7 @@ namespace Windows.Networking.Proximity
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static bool AllowBluetooth
 		{
@@ -63,7 +63,7 @@ namespace Windows.Networking.Proximity
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::System.Collections.Generic.IDictionary<string, string> AlternateIdentities
 		{
@@ -73,7 +73,7 @@ namespace Windows.Networking.Proximity
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.Networking.Proximity.PeerDiscoveryTypes SupportedDiscoveryTypes
 		{
@@ -83,7 +83,7 @@ namespace Windows.Networking.Proximity
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.Networking.Proximity.PeerRole Role
 		{
@@ -97,7 +97,7 @@ namespace Windows.Networking.Proximity
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.Storage.Streams.IBuffer DiscoveryData
 		{
@@ -115,7 +115,7 @@ namespace Windows.Networking.Proximity
 		// Forced skipping of method Windows.Networking.Proximity.PeerFinder.Role.set
 		// Forced skipping of method Windows.Networking.Proximity.PeerFinder.DiscoveryData.get
 		// Forced skipping of method Windows.Networking.Proximity.PeerFinder.DiscoveryData.set
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.Networking.Proximity.PeerWatcher CreateWatcher()
 		{
@@ -132,21 +132,21 @@ namespace Windows.Networking.Proximity
 		// Forced skipping of method Windows.Networking.Proximity.PeerFinder.DisplayName.set
 		// Forced skipping of method Windows.Networking.Proximity.PeerFinder.SupportedDiscoveryTypes.get
 		// Forced skipping of method Windows.Networking.Proximity.PeerFinder.AlternateIdentities.get
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static void Start()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Proximity.PeerFinder", "void PeerFinder.Start()");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static void Start( string peerMessage)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Proximity.PeerFinder", "void PeerFinder.Start(string peerMessage)");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static void Stop()
 		{
@@ -157,21 +157,21 @@ namespace Windows.Networking.Proximity
 		// Forced skipping of method Windows.Networking.Proximity.PeerFinder.TriggeredConnectionStateChanged.remove
 		// Forced skipping of method Windows.Networking.Proximity.PeerFinder.ConnectionRequested.add
 		// Forced skipping of method Windows.Networking.Proximity.PeerFinder.ConnectionRequested.remove
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IReadOnlyList<global::Windows.Networking.Proximity.PeerInformation>> FindAllPeersAsync()
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<IReadOnlyList<PeerInformation>> PeerFinder.FindAllPeersAsync() is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Networking.Sockets.StreamSocket> ConnectAsync( global::Windows.Networking.Proximity.PeerInformation peerInformation)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<StreamSocket> PeerFinder.ConnectAsync(PeerInformation peerInformation) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static event global::Windows.Foundation.TypedEventHandler<object, global::Windows.Networking.Proximity.ConnectionRequestedEventArgs> ConnectionRequested
 		{
@@ -187,7 +187,7 @@ namespace Windows.Networking.Proximity
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static event global::Windows.Foundation.TypedEventHandler<object, global::Windows.Networking.Proximity.TriggeredConnectionStateChangedEventArgs> TriggeredConnectionStateChanged
 		{

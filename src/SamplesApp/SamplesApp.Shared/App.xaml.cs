@@ -1,14 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using System.Threading;
+using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Uno.Extensions;
 using Windows.ApplicationModel;
 using Windows.ApplicationModel.Activation;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using Windows.UI.Core;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
@@ -45,11 +50,15 @@ namespace SamplesApp
 		/// <param name="e">Details about the launch request and process.</param>
 		protected override void OnLaunched(LaunchActivatedEventArgs e)
 		{
+			var sw = Stopwatch.StartNew();
+			var n = Windows.UI.Xaml.Window.Current.Dispatcher.RunIdleAsync(
+				_ => Console.WriteLine("Done loading " + sw.Elapsed));
+
 #if DEBUG
-            if (System.Diagnostics.Debugger.IsAttached)
-            {
-               // this.DebugSettings.EnableFrameRateCounter = true;
-            }
+			if (System.Diagnostics.Debugger.IsAttached)
+			{
+			   // this.DebugSettings.EnableFrameRateCounter = true;
+			}
 #endif
 			Frame rootFrame = Windows.UI.Xaml.Window.Current.Content as Frame;
 
@@ -117,6 +126,7 @@ namespace SamplesApp
 						{ "Uno", LogLevel.Warning },
 						{ "Windows", LogLevel.Warning },
 						// { "Uno.Foundation.WebAssemblyRuntime", LogLevel.Debug },
+						// { "Windows.UI.Xaml.Controls.PopupPanel", LogLevel.Debug },
 						
 						// Generic Xaml events
 						//{ "Windows.UI.Xaml", LogLevel.Debug },
@@ -124,12 +134,13 @@ namespace SamplesApp
 						//{ "Windows.UI.Xaml.VisualStateGroup", LogLevel.Debug },
 						//{ "Windows.UI.Xaml.StateTriggerBase", LogLevel.Debug },
 						// { "Windows.UI.Xaml.UIElement", LogLevel.Debug },
-						// { "Windows.UI.Xaml.Setter", LogLevel.Debug },
+						// { "Windows.UI.Xaml.Controls.TextBlock", LogLevel.Debug },
 						   
 						// Layouter specific messages
 						// { "Windows.UI.Xaml.Controls", LogLevel.Debug },
 						//{ "Windows.UI.Xaml.Controls.Layouter", LogLevel.Debug },
 						//{ "Windows.UI.Xaml.Controls.Panel", LogLevel.Debug },
+						// { "Windows.Storage", LogLevel.Debug },
 						   
 						// Binding related messages
 						// { "Windows.UI.Xaml.Data", LogLevel.Debug },
@@ -142,5 +153,67 @@ namespace SamplesApp
 				.AddConsole(LogLevel.Debug);
 		}
 
+
+#pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
+		private static ImmutableHashSet<int> _doneTests = ImmutableHashSet<int>.Empty;
+		private static int _testIdCounter = 0;
+
+		public static string GetAllTests()
+			=> SampleControl.Presentation.SampleChooserViewModel.Instance.GetAllSamplesNames();
+
+		public static string RunTest(string metadataName)
+		{
+			try
+			{
+				Console.WriteLine($"Initiate Running Test {metadataName}");
+
+				var testId = Interlocked.Increment(ref _testIdCounter);
+
+				Windows.UI.Xaml.Window.Current.Dispatcher.RunAsync(
+					CoreDispatcherPriority.Normal,
+					async () =>
+					{
+						try
+						{
+#if __IOS__ || __ANDROID__
+							var statusBar = Windows.UI.ViewManagement.StatusBar.GetForCurrentView();
+							if (statusBar != null)
+							{
+								Windows.UI.Xaml.Window.Current.Dispatcher.RunAsync(
+									Windows.UI.Core.CoreDispatcherPriority.Normal,
+									async () => await statusBar.HideAsync()
+								);
+							}
+#endif
+
+							var t =  SampleControl.Presentation.SampleChooserViewModel.Instance.SetSelectedSample(CancellationToken.None, metadataName);
+							var timeout = Task.Delay(30000);
+
+							await Task.WhenAny(t, timeout);
+
+							if(!(t.IsCompleted && !t.IsFaulted))
+							{
+								throw new TimeoutException();
+							}
+
+							ImmutableInterlocked.Update(ref _doneTests, lst => lst.Add(testId));
+						}
+						catch (Exception e)
+						{
+							Console.WriteLine($"Failed to run test {metadataName}, {e}");
+						}
+					}
+				);
+
+				return testId.ToString();
+			}
+			catch (Exception e)
+			{
+				Console.WriteLine($"Failed Running Test {metadataName}, {e}");
+				return "";
+			}
+		}
+
+		public static bool IsTestDone(string testId) => int.TryParse(testId, out var id) ? _doneTests.Contains(id) : false;
 	}
 }

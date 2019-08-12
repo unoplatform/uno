@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Web.Http
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class HttpCookieCollection : global::System.Collections.Generic.IReadOnlyList<global::Windows.Web.Http.HttpCookie>,global::System.Collections.Generic.IEnumerable<global::Windows.Web.Http.HttpCookie>
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  uint Size
 		{
@@ -23,7 +23,7 @@ namespace Windows.Web.Http
 		// Forced skipping of method Windows.Web.Http.HttpCookieCollection.GetMany(uint, Windows.Web.Http.HttpCookie[])
 		// Forced skipping of method Windows.Web.Http.HttpCookieCollection.First()
 		// Processing: System.Collections.Generic.IReadOnlyList<Windows.Web.Http.HttpCookie>
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public global::Windows.Web.Http.HttpCookie this[int index]
 		{
@@ -38,7 +38,7 @@ namespace Windows.Web.Http
 		}
 		#endif
 		// Processing: System.Collections.Generic.IEnumerable<Windows.Web.Http.HttpCookie>
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		// DeclaringType: System.Collections.Generic.IEnumerable<Windows.Web.Http.HttpCookie>
 		[global::Uno.NotImplemented]
 		public global::System.Collections.Generic.IEnumerator<global::Windows.Web.Http.HttpCookie> GetEnumerator()
@@ -47,7 +47,7 @@ namespace Windows.Web.Http
 		}
 		#endif
 		// Processing: System.Collections.IEnumerable
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		// DeclaringType: System.Collections.IEnumerable
 		[global::Uno.NotImplemented]
 		 global::System.Collections.IEnumerator global::System.Collections.IEnumerable.GetEnumerator()
@@ -56,7 +56,7 @@ namespace Windows.Web.Http
 		}
 		#endif
 		// Processing: System.Collections.Generic.IReadOnlyCollection<Windows.Web.Http.HttpCookie>
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public int Count
 		{

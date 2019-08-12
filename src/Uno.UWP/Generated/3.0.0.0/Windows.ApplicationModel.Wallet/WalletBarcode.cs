@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.ApplicationModel.Wallet
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class WalletBarcode 
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.ApplicationModel.Wallet.WalletBarcodeSymbology Symbology
 		{
@@ -17,7 +17,7 @@ namespace Windows.ApplicationModel.Wallet
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  string Value
 		{
@@ -27,7 +27,7 @@ namespace Windows.ApplicationModel.Wallet
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public WalletBarcode( global::Windows.ApplicationModel.Wallet.WalletBarcodeSymbology symbology,  string value) 
 		{
@@ -35,7 +35,7 @@ namespace Windows.ApplicationModel.Wallet
 		}
 		#endif
 		// Forced skipping of method Windows.ApplicationModel.Wallet.WalletBarcode.WalletBarcode(Windows.ApplicationModel.Wallet.WalletBarcodeSymbology, string)
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public WalletBarcode( global::Windows.Storage.Streams.IRandomAccessStreamReference streamToBarcodeImage) 
 		{
@@ -45,7 +45,7 @@ namespace Windows.ApplicationModel.Wallet
 		// Forced skipping of method Windows.ApplicationModel.Wallet.WalletBarcode.WalletBarcode(Windows.Storage.Streams.IRandomAccessStreamReference)
 		// Forced skipping of method Windows.ApplicationModel.Wallet.WalletBarcode.Symbology.get
 		// Forced skipping of method Windows.ApplicationModel.Wallet.WalletBarcode.Value.get
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.Streams.IRandomAccessStreamReference> GetImageAsync()
 		{

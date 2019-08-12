@@ -1,14 +1,14 @@
-﻿#if !NET46 && !__WASM__
+﻿#if !NET461 && !__WASM__
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using System.Text;
 using Uno.Extensions;
 using Windows.Globalization;
-using Windows.UI.Xaml.Data;
-using System.Linq;
-using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Automation.Peers;
+using Windows.UI.Xaml.Controls.Primitives;
+using Windows.UI.Xaml.Data;
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -27,16 +27,86 @@ namespace Windows.UI.Xaml.Controls
 		private TextBlock _periodTextBlock;
 		private Grid _flyoutButtonContentGrid;
 		private ColumnDefinition _thirdTextBlockColumn;
+		private bool _isLoaded;
+		private bool _isViewReady;
 
 		public TimePicker() { }
 
-		//Properties defined in DependencyPropertyMixins.tt
+		#region Time DependencyProperty
 
-		/// <summary>
-		/// Property that allows apps to specify any flyout placement 
-		/// (especially FlyoutPlacementMode.Full, which is commonly used on iPhone)
-		/// </summary>
-		public FlyoutPlacementMode FlyoutPlacement { get; set; }
+		public TimeSpan Time
+		{
+			get { return (TimeSpan)this.GetValue(TimeProperty); }
+			set { this.SetValue(TimeProperty, value); }
+		}
+
+		public static readonly DependencyProperty TimeProperty =
+			DependencyProperty.Register(
+				"Time",
+				typeof(TimeSpan),
+				typeof(TimePicker),
+				new FrameworkPropertyMetadata(
+					defaultValue: DateTime.Now.TimeOfDay,
+					options: FrameworkPropertyMetadataOptions.None,
+					propertyChangedCallback: (s, e) => ((TimePicker)s)?.OnTimeChangedPartial((TimeSpan)e.OldValue, (TimeSpan)e.NewValue),
+					coerceValueCallback: (s, e) =>
+					{
+						var ts = (TimeSpan)e;
+						return new TimeSpan(ts.Days, ts.Hours, ts.Minutes, 0);
+					})
+				);
+
+		#endregion
+
+		#region MinuteIncrement DependencyProperty
+
+		public int MinuteIncrement
+		{
+			get { return (int)this.GetValue(MinuteIncrementProperty); }
+			set { this.SetValue(MinuteIncrementProperty, value); }
+		}
+
+		public static readonly DependencyProperty MinuteIncrementProperty =
+			DependencyProperty.Register(
+				"MinuteIncrement",
+				typeof(int),
+				typeof(TimePicker),
+				new FrameworkPropertyMetadata(
+					defaultValue: 1,
+					options: FrameworkPropertyMetadataOptions.None,
+					propertyChangedCallback: (s, e) => ((TimePicker)s)?.OnMinuteIncrementChanged((int)e.OldValue, (int)e.NewValue),
+					coerceValueCallback: (s, e) =>
+					{
+						var value = (int)e;
+
+						if (value < 1)
+							return 1;
+
+						if (value > 30)
+							return 30;
+
+						return value;
+					})
+				);
+
+		#endregion
+
+		#region FlyoutPlacement DependencyProperty
+
+		public FlyoutPlacementMode FlyoutPlacement
+		{
+			get { return (FlyoutPlacementMode)this.GetValue(FlyoutPlacementProperty); }
+			set { this.SetValue(FlyoutPlacementProperty, value); }
+		}
+
+		public static readonly DependencyProperty FlyoutPlacementProperty =
+			DependencyProperty.Register(
+				"FlyoutPlacement",
+				typeof(FlyoutPlacementMode),
+				typeof(TimePicker),
+				new FrameworkPropertyMetadata(FlyoutPlacementMode.Full));
+
+		#endregion
 
 		protected override void OnApplyTemplate()
 		{
@@ -59,35 +129,50 @@ namespace Windows.UI.Xaml.Controls
 				_thirdTextBlockColumn = columns.ElementAt(periodColumnPosition);
 			}
 
+			_isViewReady = true;
+
 			SetupFlyoutButton();
 		}
 
 		protected override void OnLoaded()
 		{
 			base.OnLoaded();
+
+			_isLoaded = true;
+
 			SetupFlyoutButton();
 		}
 
 		private void SetupFlyoutButton()
 		{
-			if (_flyoutButton != null)
+			if (!_isViewReady || !_isLoaded)
 			{
-#if __IOS__
-				_flyoutButton.Flyout = new TimePickerFlyout
-				{
-					Placement = FlyoutPlacement,
-					Time = this.Time,
-					ClockIdentifier = this.ClockIdentifier
-				};
-#endif
-				BindToFlyout(nameof(Time));
-				BindToFlyout(nameof(ClockIdentifier));
+				return;
 			}
 
 			UpdateDisplayedDate();
+
+			if (_flyoutButton != null)
+			{
+#if __IOS__ || __ANDROID__
+				_flyoutButton.Flyout = new TimePickerFlyout
+				{
+#if __IOS__
+					Placement = FlyoutPlacement,
+#endif
+					Time = this.Time,
+					MinuteIncrement = this.MinuteIncrement,
+					ClockIdentifier = this.ClockIdentifier
+				};
+
+				BindToFlyout(nameof(Time));
+				BindToFlyout(nameof(MinuteIncrement));
+				BindToFlyout(nameof(ClockIdentifier));
+#endif
+			}
 		}
 
-		partial void OnTimeChangedPartial(TimeSpan oldTime, TimeSpan newTime)
+		void OnTimeChangedPartial(TimeSpan oldTime, TimeSpan newTime)
 		{
 			UpdateDisplayedDate();
 		}
@@ -101,6 +186,8 @@ namespace Windows.UI.Xaml.Controls
 
 			UpdateDisplayedDate();
 		}
+
+		partial void OnMinuteIncrementChanged(int oldTimeIncrement, int newTimeIncrement);
 
 		private void UpdateDisplayedDate()
 		{
@@ -123,6 +210,13 @@ namespace Windows.UI.Xaml.Controls
 			{
 				_thirdTextBlockColumn.Width = isTwelveHour ? "*" : "0";
 			}
+
+#if __IOS__
+			if (_flyoutButton?.Flyout is TimePickerFlyout timePickerFlyout)
+			{
+				timePickerFlyout.Time = Time;
+			}
+#endif
 		}
 
 		/// <summary>
@@ -133,13 +227,11 @@ namespace Windows.UI.Xaml.Controls
 		{
 			this.Binding(propertyName, propertyName, _flyoutButton.Flyout, BindingMode.TwoWay);
 		}
-		
+
 		protected override AutomationPeer OnCreateAutomationPeer()
 		{
 			return new TimePickerAutomationPeer(this);
 		}
 	}
 }
-
-
 #endif

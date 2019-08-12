@@ -24,7 +24,7 @@ namespace Windows.UI.Xaml
 
 		protected FrameworkTemplate() { }
 
-		public FrameworkTemplate (Func<View> factory)
+		public FrameworkTemplate(Func<View> factory)
 		{
 			InitializeBinder();
 
@@ -79,6 +79,10 @@ namespace Windows.UI.Xaml
 		}
 
 		public override int GetHashCode() => _hashCode;
+
+#if DEBUG
+		public string TemplateSource => $"{_viewFactory?.Method.DeclaringType}.{_viewFactory?.Method.Name}";
+#endif
 
 		internal class FrameworkTemplateEqualityComparer : IEqualityComparer<FrameworkTemplate>
 		{

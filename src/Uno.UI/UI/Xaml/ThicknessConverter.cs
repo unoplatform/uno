@@ -9,7 +9,10 @@ namespace Windows.UI.Xaml
 	{
 		public override bool CanConvertFrom(ITypeDescriptorContext context, Type sourceType)
 		{
-			var canConvert = sourceType == typeof(string);
+			var canConvert = sourceType == typeof(string)
+				|| sourceType == typeof(double)
+				|| sourceType == typeof(float)
+				|| sourceType == typeof(int);
 
 			if (canConvert)
 			{
@@ -21,12 +24,10 @@ namespace Windows.UI.Xaml
 
 		public override object ConvertFrom(ITypeDescriptorContext context, CultureInfo culture, object value)
 		{
-			var stringValue = value as string;
-
-			if (stringValue != null)
+			if (value is string stringValue)
 			{
 				var values = stringValue
-					.Split(',')
+					.Split(new[] { ',' })
 					.Select(s => double.Parse(s, CultureInfo.InvariantCulture))
 					.ToArray();
 
@@ -42,6 +43,18 @@ namespace Windows.UI.Xaml
 				{
 					return new Thickness(values[0], values[0], values[0], values[0]);
 				}
+			}
+			else if(value is double doubleValue)
+			{
+				return new Thickness(doubleValue);
+			}
+			else if (value is float floatValue)
+			{
+				return new Thickness(floatValue);
+			}
+			else if (value is int intValue)
+			{
+				return new Thickness(intValue);
 			}
 
 			return base.ConvertFrom(context, culture, value);

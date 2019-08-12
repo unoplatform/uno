@@ -215,7 +215,10 @@ namespace Windows.UI.Xaml.Controls
 				{
 					var selectorItem = cell.Content as SelectorItem;
 
-					if (selectorItem == null)
+					if (selectorItem == null ||
+						// If it's not a generated container then it must be an item that returned true for IsItemItsOwnContainerOverride (eg an
+						// explicitly-defined ListViewItem), and shouldn't be recycled for a different item.
+						!selectorItem.IsGeneratedContainer)
 					{
 						cell.Owner = Owner;
 						selectorItem = Owner?.XamlParent?.GetContainerForIndex(index) as SelectorItem;
@@ -226,7 +229,11 @@ namespace Windows.UI.Xaml.Controls
 						}
 
 						FrameworkElement.InitializePhaseBinding(selectorItem);
-					}
+                        
+                        // Ensure the item has a parent, since it's added to the native collection view
+                        // which does not automatically sets the parent DependencyObject.
+                        selectorItem.SetParent(Owner?.XamlParent);
+                    }
 					else if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
 					{
 						this.Log().Debug($"Reusing view at indexPath={indexPath}, previously bound to {selectorItem.DataContext}.");
@@ -539,7 +546,11 @@ namespace Windows.UI.Xaml.Controls
 			var groupStyle = Owner.GroupStyle;
 			if (IsMaterialized(section))
 			{
-				return DataTemplateHelper.ResolveTemplate(groupStyle?.HeaderTemplate, groupStyle?.HeaderTemplateSelector, Owner.XamlParent.GetGroupAtDisplaySection(section).Group);
+				return DataTemplateHelper.ResolveTemplate(
+					groupStyle?.HeaderTemplate,
+					groupStyle?.HeaderTemplateSelector,
+					Owner.XamlParent.GetGroupAtDisplaySection(section).Group,
+					Owner);
 			}
 			else
 			{
@@ -563,6 +574,10 @@ namespace Windows.UI.Xaml.Controls
 			{
 				var container = CreateContainerForElementKind(elementKind);
 
+				// Force a null DataContext so the parent's value does not flow
+				// through when temporarily adding the container to Owner.XamlParent
+				container.SetValue(FrameworkElement.DataContextProperty, null);
+
 				Style style = null;
 				if (elementKind == NativeListViewBase.ListViewItemElementKind)
 				{
@@ -584,7 +599,8 @@ namespace Windows.UI.Xaml.Controls
 					// applied until view is loaded.
 					Owner.XamlParent.AddSubview(BlockLayout);
 					BlockLayout.AddSubview(container);
-					size = Owner.NativeLayout.Layouter.MeasureChild(container, new Size(double.MaxValue, double.MaxValue));
+					// Measure with PositiveInfinity rather than MaxValue, since some views handle this better.
+					size = Owner.NativeLayout.Layouter.MeasureChild(container, new Size(double.PositiveInfinity, double.PositiveInfinity));
 
 					if ((size.Height > nfloat.MaxValue / 2 || size.Width > nfloat.MaxValue / 2) &&
 						this.Log().IsEnabled(LogLevel.Warning)
@@ -597,6 +613,9 @@ namespace Windows.UI.Xaml.Controls
 				{
 					Owner.XamlParent.RemoveChild(BlockLayout);
 					BlockLayout.RemoveChild(container);
+
+					// Reset the DataContext for reuse.
+					container.ClearValue(FrameworkElement.DataContextProperty);
 				}
 
 				_templateCache[dataTemplate ?? _nullDataTemplateKey] = size;
@@ -631,7 +650,6 @@ namespace Windows.UI.Xaml.Controls
 	/// <summary>
 	/// A hidden root item that allows the reuse of ContentControl features.
 	/// </summary>
-	[global::Foundation.Register]
 	internal class ListViewBaseInternalContainer : UICollectionViewCell
 	{
 		/// <summary>
@@ -642,6 +660,11 @@ namespace Windows.UI.Xaml.Controls
 		/// objects that may have been collected in the managed world.
 		/// </remarks>
 		public ListViewBaseInternalContainer(IntPtr handle) : base(handle) { }
+
+		public ListViewBaseInternalContainer()
+		{
+
+		}
 
 		private CGSize _lastUsedSize;
 		private CGSize? _measuredContentSize;
@@ -693,7 +716,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			get
 			{
-				return ContentView.Subviews.FirstOrDefault() as ContentControl;
+				return /* Cache the content ?*/ContentView.Subviews.FirstOrDefault() as ContentControl;
 			}
 			set
 			{
@@ -766,6 +789,12 @@ namespace Windows.UI.Xaml.Controls
 				// method maps to another object. The repro steps are not clear, and it may be related to ListView/GridView
 				// data reload.
 				this.Log().Error("ApplyLayoutAttributes has been called with an invalid instance. See bug #XXX for more details.");
+				return null;
+			}
+
+			if(Content == null)
+			{
+				this.Log().Error("Empty ListViewBaseInternalContainer content.");
 				return null;
 			}
 
@@ -909,11 +938,11 @@ namespace Windows.UI.Xaml.Controls
 		{
 			if (ScrollOrientation == Orientation.Vertical)
 			{
-				availableSize.Height = float.MaxValue;
+				availableSize.Height = double.PositiveInfinity;
 			}
 			else
 			{
-				availableSize.Width = float.MaxValue;
+				availableSize.Width = double.PositiveInfinity;
 			}
 			return availableSize;
 		}

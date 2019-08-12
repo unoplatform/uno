@@ -15,7 +15,7 @@ namespace Windows.UI.Xaml.Media
 			var gradientLayer = new CAGradientLayer();
 			gradientLayer.Colors = GradientStops.Select(gs => (CGColor)gs.Color).ToArray();
 			gradientLayer.Locations = GradientStops.Select(gs => new NSNumber(gs.Offset)).ToArray();
-			var transform = RelativeTransform?.ToNativeTransform(size);
+			var transform = RelativeTransform;
 
 #if __IOS__
 			gradientLayer.StartPoint = transform?.TransformPoint(StartPoint) ?? StartPoint;

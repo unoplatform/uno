@@ -28,6 +28,7 @@ using Color = UIKit.UIColor;
 using Font = UIKit.UIFont;
 using UIKit;
 #elif __MACOS__
+using AppKit;
 using View = AppKit.NSView;
 using Color = Windows.UI.Color;
 #else
@@ -41,8 +42,10 @@ namespace Windows.UI.Xaml.Controls
 	public partial class ItemsControl : Control, IItemsControl
 	{
 		private ItemsPresenter _itemsPresenter;
-		private SerialDisposable _notifyCollectionChanged = new SerialDisposable();
+
+		private readonly SerialDisposable _notifyCollectionChanged = new SerialDisposable();
 		private readonly SerialDisposable _notifyCollectionGroupsChanged = new SerialDisposable();
+		private readonly SerialDisposable _cvsViewChanged = new SerialDisposable();
 
 		private bool _isReady; // Template applied
 		private bool _needsUpdateItems;
@@ -87,7 +90,8 @@ namespace Windows.UI.Xaml.Controls
 
 			OnDisplayMemberPathChangedPartial(string.Empty, this.DisplayMemberPath);
 
-			_items.VectorChanged += (s, e) => {
+			_items.VectorChanged += (s, e) =>
+			{
 				OnItemsChanged(null);
 				SetNeedsUpdateItems();
 			};
@@ -156,7 +160,7 @@ namespace Windows.UI.Xaml.Controls
 
 		private void OnItemsPanelChanged(ItemsPanelTemplate oldItemsPanel, ItemsPanelTemplate newItemsPanel)
 		{
-			if (_isReady) // Panel is created on ApplyTemplate, so do not create it twice (first on set PanelTemplate, second on ApplyTemplate)
+			if (_isReady && !Equals(oldItemsPanel, newItemsPanel)) // Panel is created on ApplyTemplate, so do not create it twice (first on set PanelTemplate, second on ApplyTemplate)
 			{
 				UpdateItemsPanelRoot();
 			}
@@ -596,11 +600,35 @@ namespace Windows.UI.Xaml.Controls
 
 		protected virtual void OnItemsSourceChanged(DependencyPropertyChangedEventArgs e)
 		{
-			Items?.Clear();
+			if (this.Log().IsEnabled(LogLevel.Debug))
+			{
+				this.Log().LogDebug($"Calling OnItemsSourceChanged(), Old source={e.OldValue}, new source={e.NewValue}, NoOfItems={NumberOfItems}");
+			}
+
+			// Following line is commented out, since updating Items will trigger a call to SetNeedsUpdateItems() and causes unexpected results
+			// There is no effect to comment out this line, as 1) there is no sync up between Items and ItemsSource and 2) GetItems() will give precedence to ItemsSource
+			// Items?.Clear();
 
 			IsGrouping = (e.NewValue as ICollectionView)?.CollectionGroups != null;
 			SetNeedsUpdateItems();
 			ObserveCollectionChanged();
+			TryObserveCollectionViewSource(e.NewValue);
+		}
+
+		private void TryObserveCollectionViewSource(object newValue)
+		{
+			if (newValue is CollectionViewSource cvs)
+			{
+				_cvsViewChanged.Disposable = null;
+				_cvsViewChanged.Disposable = cvs.RegisterDisposablePropertyChangedCallback(
+					CollectionViewSource.ViewProperty,
+					(s, e) =>
+					{
+						ObserveCollectionChanged();
+						SetNeedsUpdateItems();
+					}
+				);
+			}
 		}
 
 		internal int GetGroupCount(int groupIndex) => IsGrouping ? GetGroupAt(groupIndex).GroupItems.Count : 0;
@@ -708,6 +736,7 @@ namespace Windows.UI.Xaml.Controls
 						)
 							.DisposeWith(disposables);
 						bindableGroup.PropertyChanged += onPropertyChanged;
+						OnGroupPropertyChanged(group, insideLoop);
 
 						void onPropertyChanged(object sender, PropertyChangedEventArgs e)
 						{
@@ -761,6 +790,10 @@ namespace Windows.UI.Xaml.Controls
 		/// </summary>
 		internal virtual void OnItemsSourceSingleCollectionChanged(object sender, NotifyCollectionChangedEventArgs args, int section)
 		{
+			if (this.Log().IsEnabled(LogLevel.Debug))
+			{
+				this.Log().LogDebug($"Called {nameof(OnItemsSourceSingleCollectionChanged)}(), Action={args.Action}, NoOfItems={NumberOfItems}");
+			}
 			UpdateItems();
 		}
 
@@ -769,6 +802,10 @@ namespace Windows.UI.Xaml.Controls
 		/// </summary>
 		internal virtual void OnItemsSourceGroupsChanged(object sender, NotifyCollectionChangedEventArgs args)
 		{
+			if (this.Log().IsEnabled(LogLevel.Debug))
+			{
+				this.Log().LogDebug($"Called {nameof(OnItemsSourceGroupsChanged)}(), Action={args.Action}, NoOfItems={NumberOfItems}, NoOfGroups={NumberOfGroups}");
+			}
 			UpdateItems();
 		}
 
@@ -841,16 +878,18 @@ namespace Windows.UI.Xaml.Controls
 			RequestLayoutPartial();
 		}
 
-		public void UpdateItemsIfNeeded()
+		public bool UpdateItemsIfNeeded()
 		{
 			if (_needsUpdateItems)
 			{
 				_needsUpdateItems = false;
-				UpdateItems();
+				return UpdateItems();
 			}
+
+			return false;
 		}
 
-		protected virtual void UpdateItems()
+		protected virtual bool UpdateItems()
 		{
 			if (ItemsPanelRoot != null && ShouldItemsControlManageChildren)
 			{
@@ -875,7 +914,11 @@ namespace Windows.UI.Xaml.Controls
 						CleanUpContainer(removedObject);
 					}
 				}
+
+				return results.HasChanged();
 			}
+
+			return false;
 		}
 
 		protected virtual void ClearContainerForItemOverride(DependencyObject element, object item) { }
@@ -1001,6 +1044,7 @@ namespace Windows.UI.Xaml.Controls
 
 				if (!isOwnContainer)
 				{
+					TryRepairContentConnection(containerAsContentControl, item);
 					// Set the datacontext first, then the binding.
 					// This avoids the inner content to go through a partial content being
 					// the result of the fallback value of the binding set below.
@@ -1011,6 +1055,25 @@ namespace Windows.UI.Xaml.Controls
 						containerAsContentControl.SetBinding(ContentControl.ContentProperty, new Binding());
 					}
 				}
+			}
+		}
+
+		/// <summary>
+		/// Ensure the container template updates correctly when recycling with the same item.
+		/// </summary>
+		/// <remarks>
+		/// This addresses the very specific case where 1) the item is a view, 2) It's being rebound to a container that was most
+		/// recently used to show that same view, but 3) the view is no longer connected to the container, perhaps because it was bound to
+		/// a different container in the interim.
+		///
+		/// To force the item view to be reconnected, we set DataContext to null, so that when we set it to the item view immediately afterward,
+		/// it does something instead of nothing.
+		/// </remarks>
+		private void TryRepairContentConnection(ContentControl container, object item)
+		{
+			if (item is View itemView && container.DataContext == itemView && itemView.GetVisualTreeParent() == null)
+			{
+				container.DataContext = null;
 			}
 		}
 
@@ -1130,7 +1193,7 @@ namespace Windows.UI.Xaml.Controls
 
 		internal IEnumerable<DependencyObject> MaterializedContainers =>
 			GetItemsPanelChildren()
-#if !NET46 // TODO
+#if !NET461 // TODO
 				.Prepend(_containerBeingPrepared) // we put it first, because it's the most likely to be requested
 #endif
 				.Trim()
@@ -1210,7 +1273,7 @@ namespace Windows.UI.Xaml.Controls
 
 		internal DataTemplate ResolveItemTemplate(object item)
 		{
-			return DataTemplateHelper.ResolveTemplate(ItemTemplate, ItemTemplateSelector, item);
+			return DataTemplateHelper.ResolveTemplate(ItemTemplate, ItemTemplateSelector, item, this);
 		}
 	}
 }

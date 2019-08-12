@@ -43,6 +43,8 @@ namespace Windows.UI.Xaml
 
 			Dispatcher = CoreDispatcher.Main;
 			CoreWindow = new CoreWindow(_window);
+
+			InitializeCommon();
 		}
 
 		private void ObserveOrientationAndSize()
@@ -71,7 +73,8 @@ namespace Windows.UI.Xaml
 
 			_content = value;
 			_mainController.View = value;
-			value.Frame = _mainController.View.Bounds;
+			_window.BackgroundColor = Colors.White;
+			value.Frame = _window.Frame;
 			value.AutoresizingMask = NSViewResizingMask.WidthSizable | NSViewResizingMask.HeightSizable;
 		}
 

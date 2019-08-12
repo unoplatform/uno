@@ -7,7 +7,7 @@ namespace Windows.ApplicationModel.Resources.Core
 	#endif
 	public  partial class ResourceQualifier 
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  bool IsDefault
 		{
@@ -17,7 +17,7 @@ namespace Windows.ApplicationModel.Resources.Core
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  bool IsMatch
 		{
@@ -29,7 +29,7 @@ namespace Windows.ApplicationModel.Resources.Core
 		#endif
 		// Skipping already declared property QualifierName
 		// Skipping already declared property QualifierValue
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  double Score
 		{

@@ -2,21 +2,21 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Devices.Input
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class MouseDevice 
 	{
 		// Forced skipping of method Windows.Devices.Input.MouseDevice.MouseMoved.add
 		// Forced skipping of method Windows.Devices.Input.MouseDevice.MouseMoved.remove
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.Devices.Input.MouseDevice GetForCurrentView()
 		{
 			throw new global::System.NotImplementedException("The member MouseDevice MouseDevice.GetForCurrentView() is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Devices.Input.MouseDevice, global::Windows.Devices.Input.MouseEventArgs> MouseMoved
 		{

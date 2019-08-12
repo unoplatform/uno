@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Networking.BackgroundTransfer
 {
-	#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class BackgroundTransferGroup 
 	{
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Networking.BackgroundTransfer.BackgroundTransferBehavior TransferBehavior
 		{
@@ -21,7 +21,7 @@ namespace Windows.Networking.BackgroundTransfer
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  string Name
 		{
@@ -34,7 +34,7 @@ namespace Windows.Networking.BackgroundTransfer
 		// Forced skipping of method Windows.Networking.BackgroundTransfer.BackgroundTransferGroup.Name.get
 		// Forced skipping of method Windows.Networking.BackgroundTransfer.BackgroundTransferGroup.TransferBehavior.get
 		// Forced skipping of method Windows.Networking.BackgroundTransfer.BackgroundTransferGroup.TransferBehavior.set
-		#if __ANDROID__ || __IOS__ || NET46 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.Networking.BackgroundTransfer.BackgroundTransferGroup CreateGroup( string name)
 		{

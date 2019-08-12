@@ -7,11 +7,19 @@ using Uno.Extensions;
 using Uno.Foundation;
 using System.Linq;
 using Uno.UI.UI.Xaml.Documents;
+using Microsoft.Extensions.Logging;
+using Windows.UI.Text;
+using Windows.UI.Xaml.Media;
+using Uno.UI;
 
 namespace Windows.UI.Xaml.Controls
 {
 	partial class TextBlock : FrameworkElement
 	{
+		private const int MaxMeasureCache = 50;
+
+		private static TextBlockMeasureCache _cache = new TextBlockMeasureCache();
+
 		public TextBlock() : base("p")
 		{
 			OnFontStyleChangedPartial();
@@ -24,10 +32,36 @@ namespace Windows.UI.Xaml.Controls
 			OnTextWrappingChangedPartial();
 		}
 
+		partial void InvalidateTextBlockPartial()
+		{
+
+		}
+
 		protected override Size MeasureOverride(Size availableSize)
 		{
-			var size = MeasureView(availableSize);
-			return size;
+			if (UseInlinesFastPath)
+			{
+				if (_cache.FindMeasuredSize(this, availableSize) is Size desiredSize)
+				{
+					UnoMetrics.TextBlock.MeasureCacheHits++;
+					return desiredSize;
+				}
+				else
+				{
+					UnoMetrics.TextBlock.MeasureCacheMisses++;
+					desiredSize = MeasureView(availableSize);
+
+					_cache.CacheMeasure(this, availableSize, desiredSize);
+
+					return desiredSize;
+				}
+			}
+			else
+			{
+				var desizedSize = MeasureView(availableSize);
+
+				return desizedSize;
+			}
 		}
 
 		private int GetCharacterIndexAtPoint(Point point)
