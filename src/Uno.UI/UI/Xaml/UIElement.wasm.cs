@@ -170,7 +170,7 @@ namespace Windows.UI.Xaml
 			Uno.UI.Xaml.WindowManagerInterop.ArrangeElement(HtmlId, rect, clipRect);
 
 #if DEBUG
-			var count = Interlocked.Increment(ref _arrangeCount);
+			var count = ++_arrangeCount;
 
 			SetAttribute(("xamlArrangeCount", count.ToString()));
 #endif
@@ -516,7 +516,7 @@ namespace Windows.UI.Xaml
 
 		private Rect _arranged;
 		private string _name;
-		internal IList<UIElement> _children = new MaterializableList<UIElement>();
+		internal readonly IList<UIElement> _children = new MaterializableList<UIElement>();
 
 		public string Name
 		{
