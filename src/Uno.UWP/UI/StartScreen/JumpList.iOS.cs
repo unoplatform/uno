@@ -17,8 +17,7 @@ namespace Windows.UI.StartScreen
 		private void LoadItems()
 		{
 			var shortcuts = UIApplication.SharedApplication.ShortcutItems
-				.Where(s => s.IsUnoShortcut())
-				.Reverse()
+				.Where(s => s.IsUnoShortcut())				
 				.ToArray();
 			Items.Clear();
 			foreach (var shortcut in shortcuts)
@@ -32,10 +31,9 @@ namespace Windows.UI.StartScreen
 		{
 			var nonUnoShortcuts = UIApplication.SharedApplication.ShortcutItems.Where(s => !s.IsUnoShortcut()).ToArray();
 			var convertedItems = Items
-				.Select(item => item.ToShortcutItem())
-				.Reverse()
+				.Select(item => item.ToShortcutItem())				
 				.ToArray();
-			UIApplication.SharedApplication.ShortcutItems = convertedItems.Union(nonUnoShortcuts).ToArray();
+			UIApplication.SharedApplication.ShortcutItems = nonUnoShortcuts.Union(convertedItems).ToArray();
 			return Task.CompletedTask.AsAsyncAction();
 		}
 	}
