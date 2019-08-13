@@ -1,0 +1,63 @@
+﻿<UserControl x:Class="UITests.Shared.Windows_UI_Xaml_Controls.GridView.GridViewSelection"
+			 xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+			 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			 xmlns:local="using:UITests.Shared.Windows_UI_Xaml_Controls.GridView"
+			 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 xmlns:controls="using:Uno.UI.Samples.Controls"
+			 mc:Ignorable="">
+
+	<controls:SampleControl SampleDescription="GridView with Selection">
+		<controls:SampleControl.SampleContent>
+			<DataTemplate>
+				
+				<Grid>
+					<Grid.RowDefinitions>
+						<RowDefinition Height="auto" />
+						<RowDefinition Height="auto" />
+						<RowDefinition Height="*" />
+					</Grid.RowDefinitions>
+
+					<StackPanel Grid.Row="0"
+								Orientation="Horizontal">
+						
+						<Button Content="None"
+								Command="{Binding [NoneSelection]}" />
+
+						<Button Content="Single"
+								Command="{Binding [SingleSelection]}" />
+
+						<Button Content="Multiple"
+								Command="{Binding [MultipleSelection]}" />
+					</StackPanel>
+
+					<StackPanel Grid.Row="1"
+								Orientation="Horizontal">
+						
+						<TextBlock Text="Selection: " />
+
+						<TextBlock Text="{Binding [SelectionMode]}" />
+					</StackPanel>
+
+					<GridView Grid.Row="2"
+							  ItemsSource="{Binding [SampleItems]}"
+							  SelectionMode="{Binding [SelectionMode]}">
+
+						<GridView.ItemsPanel>
+							<ItemsPanelTemplate>
+								<ItemsWrapGrid MaximumRowsOrColumns="1" />
+							</ItemsPanelTemplate>
+						</GridView.ItemsPanel>
+
+						<GridView.ItemTemplate>
+							<DataTemplate>
+								<TextBlock Height="50"
+										   Width="50"
+										   Text="{Binding}" />
+							</DataTemplate>
+						</GridView.ItemTemplate>
+					</GridView>
+				</Grid>
+			</DataTemplate>
+		</controls:SampleControl.SampleContent>
+	</controls:SampleControl>
+</UserControl>

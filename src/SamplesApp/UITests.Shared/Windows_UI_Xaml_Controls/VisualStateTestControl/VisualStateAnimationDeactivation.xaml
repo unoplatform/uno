@@ -1,0 +1,103 @@
+﻿<UserControl x:Class="UITests.Shared.Windows_UI_Xaml_Controls.VisualStateTestControl.VisualStateAnimationDeactivation"
+			 xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+			 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			 xmlns:local="using:UITests.Shared.Windows_UI_Xaml_Controls.VisualStateTestControl"
+			 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 xmlns:controls="using:Uno.UI.Samples.Controls"
+			 mc:Ignorable="">
+
+	<controls:SampleControl SampleDescription="VisualStateAnimationDeactivation">
+		<controls:SampleControl.SampleContent>
+			<DataTemplate>
+				<local:TriStateControl>
+					<local:TriStateControl.Template>
+						<ControlTemplate TargetType="local:TriStateControl">
+							
+							<Border x:Name="Root"
+									Background="Red">
+
+								<VisualStateManager.VisualStateGroups>
+									<VisualStateGroup x:Name="TriStates">
+										<VisualState x:Name="First">
+											<Storyboard>
+												<ObjectAnimationUsingKeyFrames Storyboard.TargetName="Root"
+																			   Storyboard.TargetProperty="Background">
+													<DiscreteObjectKeyFrame KeyTime="0">
+														<DiscreteObjectKeyFrame.Value>
+															<SolidColorBrush Color="Red" />
+														</DiscreteObjectKeyFrame.Value>
+													</DiscreteObjectKeyFrame>
+												</ObjectAnimationUsingKeyFrames>
+											</Storyboard>
+										</VisualState>
+										
+										<VisualState x:Name="Second">
+											<Storyboard>
+												<ObjectAnimationUsingKeyFrames Storyboard.TargetName="Root"
+																			   Storyboard.TargetProperty="Background">
+													<DiscreteObjectKeyFrame KeyTime="0">
+														<DiscreteObjectKeyFrame.Value>
+															<SolidColorBrush Color="Blue" />
+														</DiscreteObjectKeyFrame.Value>
+													</DiscreteObjectKeyFrame>
+												</ObjectAnimationUsingKeyFrames>
+
+												<ObjectAnimationUsingKeyFrames Storyboard.TargetName="Footer"
+																			   Storyboard.TargetProperty="Background">
+													<DiscreteObjectKeyFrame KeyTime="0">
+														<DiscreteObjectKeyFrame.Value>
+															<SolidColorBrush Color="Purple" />
+														</DiscreteObjectKeyFrame.Value>
+													</DiscreteObjectKeyFrame>
+												</ObjectAnimationUsingKeyFrames>
+											</Storyboard>
+										</VisualState>
+										
+										<VisualState x:Name="Third">
+											<Storyboard>
+												<ObjectAnimationUsingKeyFrames Storyboard.TargetName="Root"
+																			   Storyboard.TargetProperty="Background">
+													<DiscreteObjectKeyFrame KeyTime="0">
+														<DiscreteObjectKeyFrame.Value>
+															<SolidColorBrush Color="Yellow" />
+														</DiscreteObjectKeyFrame.Value>
+													</DiscreteObjectKeyFrame>
+												</ObjectAnimationUsingKeyFrames>
+
+												<ObjectAnimationUsingKeyFrames Storyboard.TargetName="Footer"
+																			   Storyboard.TargetProperty="Background">
+													<DiscreteObjectKeyFrame KeyTime="0">
+														<DiscreteObjectKeyFrame.Value>
+															<SolidColorBrush Color="Green" />
+														</DiscreteObjectKeyFrame.Value>
+													</DiscreteObjectKeyFrame>
+												</ObjectAnimationUsingKeyFrames>
+											</Storyboard>
+										</VisualState>
+									</VisualStateGroup>
+								</VisualStateManager.VisualStateGroups>
+
+								<StackPanel>
+									<RadioButton GroupName="TriState"
+												 IsChecked="{Binding IsFirst, RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay}"
+												 Content="First" />
+
+									<RadioButton GroupName="TriState"
+												 IsChecked="{Binding IsSecond, RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay}"
+												 Content="Second" />
+
+									<RadioButton GroupName="TriState"
+												 Content="Third" />
+
+									<Border x:Name="Footer"
+											Height="40"
+											Background="Orange" />
+								</StackPanel>
+							</Border>
+						</ControlTemplate>
+					</local:TriStateControl.Template>
+				</local:TriStateControl>
+			</DataTemplate>
+		</controls:SampleControl.SampleContent>
+	</controls:SampleControl>
+</UserControl>

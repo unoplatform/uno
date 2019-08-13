@@ -1,0 +1,53 @@
+﻿<UserControl x:Class="UITests.Shared.Windows_UI_Xaml.AdaptiveTrigger.AdaptiveTrigger_TextBlock"
+			 xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+			 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			 xmlns:local="using:UITests.Shared.Windows_UI_Xaml.AdaptiveTrigger"
+			 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 mc:Ignorable="">
+
+	<Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+		<VisualStateManager.VisualStateGroups>
+			<VisualStateGroup>
+				<VisualState>
+					<VisualState.StateTriggers>
+						<AdaptiveTrigger MinWindowWidth="20" />
+					</VisualState.StateTriggers>
+					<VisualState.Setters>
+						<Setter Target="myPanel.Orientation"
+								Value="Horizontal" />
+					</VisualState.Setters>
+				</VisualState>
+
+				<VisualState>
+					<VisualState.StateTriggers>
+						<AdaptiveTrigger MinWindowWidth="360" />
+					</VisualState.StateTriggers>
+					<VisualState.Setters>
+						<Setter Target="AdaptiveTriggerTextBlock.Text"
+								Value="Narrow Text" />
+						<Setter Target="AdaptiveTriggerTextBlock.FontSize"
+								Value="30" />
+					</VisualState.Setters>
+				</VisualState>
+
+				<VisualState>
+					<VisualState.StateTriggers>
+						<AdaptiveTrigger MinWindowWidth="800" />
+					</VisualState.StateTriggers>
+					<VisualState.Setters>
+						<Setter Target="AdaptiveTriggerTextBlock.Text"
+								Value="Wide Text" />
+						<Setter Target="AdaptiveTriggerTextBlock.FontSize"
+								Value="50" />
+					</VisualState.Setters>
+				</VisualState>
+			</VisualStateGroup>
+		</VisualStateManager.VisualStateGroups>
+
+		<StackPanel x:Name="myPanel">
+			<TextBlock x:Name="AdaptiveTriggerTextBlock"
+					   Text="Testing Trigger"
+					   Style="{ThemeResource BodyTextBlockStyle}" />
+		</StackPanel>
+	</Grid>
+</UserControl>

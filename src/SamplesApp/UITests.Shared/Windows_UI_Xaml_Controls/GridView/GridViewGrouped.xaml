@@ -1,0 +1,63 @@
+﻿<UserControl x:Class="UITests.Shared.Windows_UI_Xaml_Controls.GridView.GridViewGrouped"
+			 xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+			 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			 xmlns:local="using:UITests.Shared.Windows_UI_Xaml_Controls.GridView"
+			 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 xmlns:win="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+			 xmlns:controls="using:Uno.UI.Samples.Controls"
+			 mc:Ignorable="">
+
+	<controls:SampleControl SampleDescription="GridViewGrouped">
+		<controls:SampleControl.SampleContent>
+			<DataTemplate>
+
+				<Border Background="Red"
+						VerticalAlignment="Center">
+
+					<GridView ItemsSource="{Binding [GroupedSampleItemsAsSource]}"
+							  win:ScrollViewer.HorizontalScrollBarVisibility="Auto"
+							  win:ScrollViewer.HorizontalScrollMode="Auto">
+
+						<GridView.ItemsPanel>
+							<ItemsPanelTemplate>
+								<ItemsWrapGrid  MaximumRowsOrColumns="1" />
+							</ItemsPanelTemplate>
+						</GridView.ItemsPanel>
+
+						<GridView.GroupStyle>
+							<GroupStyle>
+								<GroupStyle.HeaderTemplate>
+									<DataTemplate>
+
+										<Border Background="Blue"
+												BorderBrush="Gray"
+												BorderThickness="2">
+
+											<TextBlock Text="{Binding Key}"
+													   Foreground="Red"
+													   FontSize="32"
+													   Height="40"
+													   Width="50" />
+										</Border>
+									</DataTemplate>
+								</GroupStyle.HeaderTemplate>
+							</GroupStyle>
+						</GridView.GroupStyle>
+
+						<GridView.ItemTemplate>
+							<DataTemplate>
+
+								<Border Background="White">
+									<TextBlock Text="{Binding}"
+											   Foreground="Blue"
+											   Height="16"
+											   Width="100" />
+								</Border>
+							</DataTemplate>
+						</GridView.ItemTemplate>
+					</GridView>
+				</Border>
+			</DataTemplate>
+		</controls:SampleControl.SampleContent>
+	</controls:SampleControl>
+</UserControl>

@@ -1,0 +1,65 @@
+﻿<UserControl x:Class="UITests.Shared.Windows_UI_Xaml.BindableDrawerLayout.BindableDrawerLayout_LeftRightPaneEnabled"
+			 xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+			 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			 xmlns:local="using:UITests.Shared.Windows_UI_Xaml.BindableDrawerLayout"
+			 xmlns:controls="using:Uno.UI.Samples.Controls"
+			 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 xmlns:win="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+			 xmlns:ios="http://uno.ui/ios"
+			 xmlns:android="http://nventive.com/android"
+			 xmlns:not_android="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+			 mc:Ignorable="ios android">
+
+	<controls:SampleControl>
+
+		<controls:SampleControl.SampleDescription>
+			Demonstrates the use of the BindableDrawerLayout control for Android.
+			Swiping from the left and right edges of the yellow surface will make
+			the drawers appear.
+		</controls:SampleControl.SampleDescription>
+
+		<controls:SampleControl.SampleContent>
+			<DataTemplate>
+				<android:Grid>
+					<Border Padding="20"
+							Background="Red">
+						<Border Background="Yellow">
+
+							<BindableDrawerLayout LeftPaneOpenLength="150"
+												  RightPaneOpenLength="150"
+												  IsEnabled="{Binding [Enabled]}"
+												  IsLeftPaneEnabled="{Binding [LeftPaneEnabled]}"
+												  IsRightPaneEnabled="{Binding [RightPaneEnabled]}">
+
+								<BindableDrawerLayout.LeftPane>
+									<Border Background="Blue">
+										<TextBlock Text="Left pane text" />
+									</Border>
+								</BindableDrawerLayout.LeftPane>
+
+								<BindableDrawerLayout.RightPane>
+									<Border Background="Green">
+										<TextBlock Text="Right pane text" />
+									</Border>
+								</BindableDrawerLayout.RightPane>
+
+								<BindableDrawerLayout.Content>
+									<StackPanel Background="Purple">
+										<CheckBox Content="Enable all panels"
+												  IsChecked="{Binding [Enabled], Mode=TwoWay}" />
+										<CheckBox Content="Enable left pane"
+												  IsChecked="{Binding [LeftPaneEnabled], Mode=TwoWay}" />
+										<CheckBox Content="Enable right pane"
+												  IsChecked="{Binding [RightPaneEnabled], Mode=TwoWay}" />
+									</StackPanel>
+								</BindableDrawerLayout.Content>
+							</BindableDrawerLayout>
+						</Border>
+					</Border>
+				</android:Grid>
+
+				<not_android:TextBlock Text="This sample is only available on Android" />
+			</DataTemplate>
+		</controls:SampleControl.SampleContent>
+	</controls:SampleControl>
+</UserControl>

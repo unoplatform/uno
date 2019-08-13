@@ -1,0 +1,35 @@
+﻿<UserControl x:Class="UITests.Shared.Windows_UI_Xaml_Controls.Canvas.Canvas_Simple"
+			 xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+			 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			 xmlns:local="using:UITests.Shared.Windows_UI_Xaml_Controls.Canvas"
+			 xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+			 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 mc:Ignorable="">
+
+	<Canvas Width="200"
+			Height="200"
+			Background="LightGray">
+
+		<Border Width="100"
+				Height="100"
+				Background="Red" />
+
+		<Border Width="100"
+				Height="100"
+				Background="Blue"
+				Canvas.Left="50"
+				Canvas.Top="50" />
+
+		<Border Width="100"
+				Height="100"
+				Background="Green"
+				Canvas.Left="100"
+				Canvas.Top="100" />
+
+		<Border Width="100"
+				Height="100"
+				Background="Yellow"
+				Canvas.Left="150"
+				Canvas.Top="150" />
+	</Canvas>
+</UserControl>

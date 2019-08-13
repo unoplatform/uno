@@ -1,0 +1,39 @@
+﻿<UserControl x:Class="UITests.Shared.Windows_UI_Xaml_Controls.WrapPanelControl.WrapPanel_SimpleHorizontal"
+			 xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+			 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			 xmlns:local="using:UITests.Shared.Windows_UI_Xaml_Controls.WrapPanelControl"
+			 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 xmlns:win="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+			 xmlns:controls="using:Uno.UI.Samples.Controls"
+			 xmlns:xamarin="http://umbrella/xamarin"
+			 mc:Ignorable="xamarin">
+
+	<controls:SampleControl SampleDescription="WrapPanel_SimpleHorizontal">
+		<controls:SampleControl.SampleContent>
+			<DataTemplate>
+
+				<ItemsControl Name="WrapPanel_SimpleHorizontal"
+							  ItemsSource="{Binding [SampleItems]}">
+					
+					<ItemsControl.ItemsPanel>
+						<ItemsPanelTemplate>
+							<xamarin:WrapPanel ItemWidth="100"
+											   Name="WrapPanelElement_SimpleHorizontal" />
+							<win:WrapGrid ItemWidth="100"
+										  Name="WrapGridElement" />
+						</ItemsPanelTemplate>
+					</ItemsControl.ItemsPanel>
+					
+					<ItemsControl.ItemTemplate>
+						<DataTemplate>
+							<StackPanel Background="Blue">
+								<TextBlock Foreground="White"
+										   Text="{Binding}" />
+							</StackPanel>
+						</DataTemplate>
+					</ItemsControl.ItemTemplate>
+				</ItemsControl>
+			</DataTemplate>
+		</controls:SampleControl.SampleContent>
+	</controls:SampleControl>
+</UserControl>

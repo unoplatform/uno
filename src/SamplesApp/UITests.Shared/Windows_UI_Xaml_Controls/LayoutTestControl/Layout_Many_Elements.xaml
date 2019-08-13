@@ -1,0 +1,286 @@
+﻿<UserControl x:Class="UITests.Shared.Windows_UI_Xaml_Controls.LayoutTestControl.Layout_Many_Elements"
+			 xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+			 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			 xmlns:local="using:UITests.Shared.Windows_UI_Xaml_Controls.LayoutTestControl"
+			 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 xmlns:controls="using:Uno.UI.Samples.Controls"
+			 mc:Ignorable="">
+
+	<controls:SampleControl SampleDescription="Stacked smaller rectangles should add up to exactly the same height as tall grey rectangle">
+		<controls:SampleControl.SampleContent>
+			<DataTemplate>
+				<ScrollViewer Height="300">
+
+					<StackPanel Orientation="Horizontal"
+								Height="1700"
+								Background="Pink">
+
+						<Rectangle Width="100"
+								   Height="1600"
+								   Fill="Gray"
+								   VerticalAlignment="Top" />
+
+						<StackPanel VerticalAlignment="Top">
+
+							<Rectangle Width="100"
+									   Height="25"
+									   Fill="LawnGreen" />
+
+							<Rectangle Width="100"
+									   Height="25"
+									   Fill="Wheat" />
+
+							<Rectangle Width="100"
+									   Height="25"
+									   Fill="LawnGreen" />
+
+							<Rectangle Width="100"
+									   Height="25"
+									   Fill="Wheat" />
+
+							<Rectangle Width="100"
+									   Height="25"
+									   Fill="LawnGreen" />
+
+							<Rectangle Width="100"
+									   Height="25"
+									   Fill="Wheat" />
+
+							<Rectangle Width="100"
+									   Height="25"
+									   Fill="LawnGreen" />
+
+							<Rectangle Width="100"
+									   Height="25"
+									   Fill="Wheat" />
+
+							<Rectangle Width="100"
+									   Height="25"
+									   Fill="LawnGreen" />
+
+							<Rectangle Width="100"
+									   Height="25"
+									   Fill="Wheat" />
+
+							<Rectangle Width="100"
+									   Height="25"
+									   Fill="LawnGreen" />
+
+							<Rectangle Width="100"
+									   Height="25"
+									   Fill="Wheat" />
+
+							<Rectangle Width="100"
+									   Height="25"
+									   Fill="LawnGreen" />
+
+							<Rectangle Width="100"
+									   Height="25"
+									   Fill="Wheat" />
+
+							<Rectangle Width="100"
+									   Height="25"
+									   Fill="LawnGreen" />
+
+							<Rectangle Width="100"
+									   Height="25"
+									   Fill="Wheat" />
+
+							<Rectangle Width="100"
+									   Height="25"
+									   Fill="LawnGreen" />
+
+							<Rectangle Width="100"
+									   Height="25"
+									   Fill="Wheat" />
+
+							<Rectangle Width="100"
+									   Height="25"
+									   Fill="LawnGreen" />
+
+							<Rectangle Width="100"
+									   Height="25"
+									   Fill="Wheat" />
+
+							<Rectangle Width="100"
+									   Height="25"
+									   Fill="LawnGreen" />
+
+							<Rectangle Width="100"
+									   Height="25"
+									   Fill="Wheat" />
+
+							<Rectangle Width="100"
+									   Height="25"
+									   Fill="LawnGreen" />
+
+							<Rectangle Width="100"
+									   Height="25"
+									   Fill="Wheat" />
+
+							<Rectangle Width="100"
+									   Height="25"
+									   Fill="LawnGreen" />
+
+							<Rectangle Width="100"
+									   Height="25"
+									   Fill="Wheat" />
+
+							<Rectangle Width="100"
+									   Height="25"
+									   Fill="LawnGreen" />
+
+							<Rectangle Width="100"
+									   Height="25"
+									   Fill="Wheat" />
+
+							<Rectangle Width="100"
+									   Height="25"
+									   Fill="LawnGreen" />
+
+							<Rectangle Width="100"
+									   Height="25"
+									   Fill="Wheat" />
+
+							<Rectangle Width="100"
+									   Height="25"
+									   Fill="LawnGreen" />
+
+							<Rectangle Width="100"
+									   Height="25"
+									   Fill="Wheat" />
+
+							<Rectangle Width="100"
+									   Height="25"
+									   Fill="LawnGreen" />
+
+							<Rectangle Width="100"
+									   Height="25"
+									   Fill="Wheat" />
+
+							<Rectangle Width="100"
+									   Height="25"
+									   Fill="LawnGreen" />
+
+							<Rectangle Width="100"
+									   Height="25"
+									   Fill="Wheat" />
+
+							<Rectangle Width="100"
+									   Height="25"
+									   Fill="LawnGreen" />
+
+							<Rectangle Width="100"
+									   Height="25"
+									   Fill="Wheat" />
+
+							<Rectangle Width="100"
+									   Height="25"
+									   Fill="LawnGreen" />
+
+							<Rectangle Width="100"
+									   Height="25"
+									   Fill="Wheat" />
+
+							<Rectangle Width="100"
+									   Height="25"
+									   Fill="LawnGreen" />
+
+							<Rectangle Width="100"
+									   Height="25"
+									   Fill="Wheat" />
+
+							<Rectangle Width="100"
+									   Height="25"
+									   Fill="LawnGreen" />
+
+							<Rectangle Width="100"
+									   Height="25"
+									   Fill="Wheat" />
+
+							<Rectangle Width="100"
+									   Height="25"
+									   Fill="LawnGreen" />
+
+							<Rectangle Width="100"
+									   Height="25"
+									   Fill="Wheat" />
+
+							<Rectangle Width="100"
+									   Height="25"
+									   Fill="LawnGreen" />
+
+							<Rectangle Width="100"
+									   Height="25"
+									   Fill="Wheat" />
+
+							<Rectangle Width="100"
+									   Height="25"
+									   Fill="LawnGreen" />
+
+							<Rectangle Width="100"
+									   Height="25"
+									   Fill="Wheat" />
+
+							<Rectangle Width="100"
+									   Height="25"
+									   Fill="LawnGreen" />
+
+							<Rectangle Width="100"
+									   Height="25"
+									   Fill="Wheat" />
+
+							<Rectangle Width="100"
+									   Height="25"
+									   Fill="LawnGreen" />
+
+							<Rectangle Width="100"
+									   Height="25"
+									   Fill="Wheat" />
+
+							<Rectangle Width="100"
+									   Height="25"
+									   Fill="LawnGreen" />
+
+							<Rectangle Width="100"
+									   Height="25"
+									   Fill="Wheat" />
+
+							<Rectangle Width="100"
+									   Height="25"
+									   Fill="LawnGreen" />
+
+							<Rectangle Width="100"
+									   Height="25"
+									   Fill="Wheat" />
+
+							<Rectangle Width="100"
+									   Height="25"
+									   Fill="LawnGreen" />
+
+							<Rectangle Width="100"
+									   Height="25"
+									   Fill="Wheat" />
+
+							<Rectangle Width="100"
+									   Height="25"
+									   Fill="LawnGreen" />
+
+							<Rectangle Width="100"
+									   Height="25"
+									   Fill="Wheat" />
+
+							<Rectangle Width="100"
+									   Height="25"
+									   Fill="LawnGreen" />
+
+							<Rectangle Width="100"
+									   Height="25"
+									   Fill="Wheat" />
+						</StackPanel>
+					</StackPanel>
+				</ScrollViewer>
+			</DataTemplate>
+		</controls:SampleControl.SampleContent>
+	</controls:SampleControl>
+</UserControl>

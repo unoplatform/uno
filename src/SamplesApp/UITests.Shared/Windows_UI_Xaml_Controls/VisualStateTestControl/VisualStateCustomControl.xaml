@@ -1,0 +1,55 @@
+﻿<UserControl x:Class="UITests.Shared.Windows_UI_Xaml_Controls.VisualStateTestControl.VisualStateCustomControl"
+			 xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+			 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			 xmlns:local="using:UITests.Shared.Windows_UI_Xaml_Controls.VisualStateTestControl"
+			 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 xmlns:controls="using:Uno.UI.Samples.Controls"
+			 mc:Ignorable="">
+
+	<controls:SampleControl SampleDescription="VisualStateCustomControl">
+		<controls:SampleControl.SampleContent>
+			<DataTemplate>
+				<local:SwitchingControl Height="100">
+					<local:SwitchingControl.Template>
+						<ControlTemplate TargetType="local:SwitchingControl">
+
+							<Border x:Name="Root"
+									Background="Red">
+								
+								<VisualStateManager.VisualStateGroups>
+									<VisualStateGroup x:Name="OnOff">
+										<VisualState x:Name="Off"></VisualState>
+										<VisualState x:Name="On">
+											<Storyboard>
+												<DoubleAnimation Storyboard.TargetName="Root"
+																 Storyboard.TargetProperty="Opacity"
+																 From="1.0"
+																 To="0.5"
+																 Duration="0:0:1" />
+											</Storyboard>
+										</VisualState>
+
+										<VisualStateGroup.Transitions>
+											<VisualTransition From="On"
+															  To="Off">
+												<Storyboard>
+													<DoubleAnimation Storyboard.TargetName="Root"
+																	 Storyboard.TargetProperty="Opacity"
+																	 To="1.0"
+																	 Duration="0:0:1" />
+												</Storyboard>
+											</VisualTransition>
+										</VisualStateGroup.Transitions>
+									</VisualStateGroup>
+								</VisualStateManager.VisualStateGroups>
+								
+								<Button Content="switch"
+										Command="{TemplateBinding Switch}" />
+							</Border>
+						</ControlTemplate>
+					</local:SwitchingControl.Template>
+				</local:SwitchingControl>
+			</DataTemplate>
+		</controls:SampleControl.SampleContent>
+	</controls:SampleControl>
+</UserControl>

@@ -1,0 +1,41 @@
+﻿<UserControl x:Class="UITests.Shared.Windows_UI_Xaml_Controls.RelativePanel.RelativePanel_SiblingAlignedVCenter"
+			 xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+			 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			 xmlns:local="using:UITests.Shared.Windows_UI_Xaml_Controls.RelativePanel"
+			 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 xmlns:controls="using:Uno.UI.Samples.Controls"
+			 mc:Ignorable="">
+
+	<controls:SampleControl SampleDescription="Description for sample of RelativePanel_SiblingAlignedToVerticallyCenterAlignedSibling">
+		<controls:SampleControl.SampleContent>
+			<DataTemplate>
+				<StackPanel>
+
+					<TextBlock Text="Align sibling right of and below vertically centered aligned sibling within other item - Fixed width and height children" />
+
+					<RelativePanel Background="Gray"
+								   Height="300">
+						
+						<Border x:Name="Corny"
+								Background="CornflowerBlue"
+								Width="100"
+								Height="200" />
+
+						<Border x:Name="Greeny"
+								Background="Lime"
+								Width="100"
+								Height="100"
+								RelativePanel.AlignVerticalCenterWith="Corny" />
+
+						<Border x:Name="Burple"
+								Background="Purple"
+								Width="100"
+								Height="100"
+								RelativePanel.RightOf="Greeny"
+								RelativePanel.Below="Greeny" />
+					</RelativePanel>
+				</StackPanel>
+			</DataTemplate>
+		</controls:SampleControl.SampleContent>
+	</controls:SampleControl>
+</UserControl>

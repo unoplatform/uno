@@ -1,0 +1,100 @@
+﻿<UserControl x:Class="UITests.Shared.Windows_UI_Xaml_Controls.TimePicker.TimePicker_Automated"
+			 xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+			 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			 xmlns:local="using:UITests.Shared.Windows_UI_Xaml_Controls.TimePicker"
+			 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 xmlns:converters="using:Uno.UI.Samples.Converters"
+			 xmlns:controls="using:Uno.UI.Samples.Controls"
+			 xmlns:ios="http://uno.ui/ios"
+			 mc:Ignorable="ios">
+
+	<UserControl.Resources>
+		<converters:StringFormatConverter x:Key="StringFormatConverter" />
+	</UserControl.Resources>
+	
+	<Grid>
+		<ScrollViewer>
+			<StackPanel HorizontalAlignment="Center"
+						VerticalAlignment="Center">
+
+				<!-- Selected date -->
+				<StackPanel Orientation="Horizontal">
+
+					<!-- Label -->
+					<TextBlock Text="Selected Time: "
+							   FontSize="20"
+							   Margin="0,0,4,0" />
+
+					<!-- Value -->
+					<TextBlock x:Name="txtSelectedTime"
+							   Text="{Binding Time, ElementName=myTimePicker, Converter={StaticResource StringFormatConverter}, ConverterParameter='\{0:h\\:mm}', Mode=TwoWay}"
+							   FontSize="20" />
+				</StackPanel>
+
+				<!-- TimePicker -->
+				<TimePicker x:Name="myTimePicker"
+							Time="{Binding [SelectedTime], Mode=TwoWay}"
+							ios:FlyoutPlacement="Full"
+							Loaded="MyTimePickerLoaded"
+							ClockIdentifier="{Binding [SelectedClockIdentifier], FallbackValue=12HourClock, TargetNullValue=12HourClock}" />
+
+				<!-- Disable/Enable -->
+				<CheckBox x:Name="ToggleMyTimePickerIsEnable"
+						  Content="Enable DatePicker"
+						  HorizontalAlignment="Left"
+						  IsChecked="{Binding IsEnabled,ElementName=myTimePicker, Mode=TwoWay}"
+						  Margin="0,10,0,14" />
+
+				<StackPanel>
+
+					<!-- Selected clock identifier: -->
+					<TextBlock Text="Selected clock identifier:"
+							   FontSize="16" />
+
+					<StackPanel Orientation="Horizontal">
+
+						<Button x:Name="btn12HourClock"
+								Content="12 Hour Clock"
+								Tag="12HourClock"
+								Click="changeSelectedClockIdentifier" />
+
+						<Button x:Name="btn24HourClock"
+								Content="24 Hour Clock"
+								Tag="24HourClock"
+								Click="changeSelectedClockIdentifier" />
+					</StackPanel>
+
+					<!-- New hour -->
+					<TextBlock Text="Set hour:"
+							   FontSize="16"
+							   Margin="0,8,0,0" />
+
+					<Border BorderBrush="Black"
+							BorderThickness="2">
+						<TextBox x:Name="txtNewHour"
+								 InputScope="Number"
+								 FontSize="20" />
+					</Border>
+
+					<!-- New minute -->
+					<TextBlock Text="Set minute:"
+							   FontSize="16"
+							   Margin="0,8,0,0" />
+					<Border BorderBrush="Black"
+							BorderThickness="2">
+						<TextBox x:Name="txtNewMinute"
+								 InputScope="Number"
+								 FontSize="20" />
+					</Border>
+
+					<!-- Apply New Time -->
+					<Button x:Name="btnApplyNewTime"
+							Content="Apply"
+							HorizontalAlignment="Left"
+							Click="applyNewTime"
+							Margin="0,12,0,0" />
+				</StackPanel>
+			</StackPanel>
+		</ScrollViewer>
+	</Grid>
+</UserControl>

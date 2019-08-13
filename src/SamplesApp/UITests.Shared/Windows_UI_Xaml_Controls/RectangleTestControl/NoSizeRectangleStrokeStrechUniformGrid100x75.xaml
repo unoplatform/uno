@@ -1,0 +1,27 @@
+﻿<UserControl x:Class="UITests.Shared.Windows_UI_Xaml_Controls.RectangleTestControl.NoSizeRectangleStrokeStrechUniformGrid100x75"
+			 xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+			 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			 xmlns:local="using:UITests.Shared.Windows_UI_Xaml_Controls.RectangleTestControl"
+			 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 xmlns:controls="using:Uno.UI.Samples.Controls"
+			 mc:Ignorable="">
+
+	<controls:SampleControl SampleDescription="No_Size_Rectangle_WithStroke_StrechUniform_In_Grid100x75">
+		<controls:SampleControl.SampleContent>
+			<DataTemplate>
+				
+				<Grid Height="75"
+					  Width="100"
+					  HorizontalAlignment="Stretch"
+					  VerticalAlignment="Stretch"
+					  Background="Red">
+					
+					<Rectangle Fill="Purple"
+							   Stroke="Yellow"
+							   StrokeThickness="5"
+							   Stretch="Uniform" />
+				</Grid>
+			</DataTemplate>
+		</controls:SampleControl.SampleContent>
+	</controls:SampleControl>
+</UserControl>

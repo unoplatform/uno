@@ -1,0 +1,23 @@
+﻿<UserControl x:Class="UITests.Shared.Windows_UI_Xaml_Controls.SplitView.SplitView_Simple"
+			 xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+			 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			 xmlns:local="using:UITests.Shared.Windows_UI_Xaml_Controls.SplitView"
+			 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 mc:Ignorable="">
+
+	<SplitView x:Name="SplitView"
+			   DisplayMode="Overlay"
+			   OpenPaneLength="100">
+		
+		<SplitView.Pane>
+			<Border Background="Red" />
+		</SplitView.Pane>
+
+		<SplitView.Content>
+			<Border Background="Green">
+				<ToggleButton Content="Toggle SplitView.IsPaneOpen"
+							  IsChecked="{Binding IsPaneOpen, ElementName=SplitView, Mode=TwoWay}" />
+			</Border>
+		</SplitView.Content>
+	</SplitView>
+</UserControl>

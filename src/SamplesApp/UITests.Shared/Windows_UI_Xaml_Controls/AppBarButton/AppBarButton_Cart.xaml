@@ -1,0 +1,47 @@
+﻿<UserControl x:Class="UITests.Shared.Windows_UI_Xaml_Controls.AppBarButton.AppBarButton_Cart"
+			 xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+			 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			 xmlns:local="using:UITests.Shared.Windows_UI_Xaml_Controls.AppBarButton"
+			 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 mc:Ignorable="">
+
+	<StackPanel>
+		<CommandBar>
+			<AppBarButton>
+				<AppBarButton.Content>
+					<Grid Height="48"
+						  Width="48">
+						<Image Source="ms-appx:///Assets/cart.png"
+							   VerticalAlignment="Center"
+							   HorizontalAlignment="Center" />
+						<Border x:Name="Badge"
+								VerticalAlignment="Top"
+								HorizontalAlignment="Right"
+								Background="Red"
+								Margin="8,4"
+								Padding="4,0"
+								MinWidth="16"
+								Height="16"
+								CornerRadius="8">
+							<TextBlock x:Name="Count"
+									   HorizontalAlignment="Center"
+									   VerticalAlignment="Center"
+									   Foreground="White"
+									   FontSize="8"
+									   Text="0" />
+						</Border>
+					</Grid>
+				</AppBarButton.Content>
+			</AppBarButton>
+		</CommandBar>
+
+		<!-- Add to Cart Button -->
+		<Button Content="Add to cart"
+				Click="AddToCart" />
+
+		<!-- Clear Cart Button -->
+		<Button Content="Clear cart"
+				Click="ClearCart" />
+	</StackPanel>
+</UserControl>
+

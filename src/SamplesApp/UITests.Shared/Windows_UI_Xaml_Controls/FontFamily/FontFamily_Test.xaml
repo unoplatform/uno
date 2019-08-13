@@ -1,0 +1,42 @@
+﻿<UserControl x:Class="UITests.Shared.Windows_UI_Xaml_Controls.FontFamily.FontFamily_Test"
+			 xmlns:controls="using:Uno.UI.Samples.Controls"
+			 xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+			 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			 xmlns:local="using:UITests.Shared.Windows_UI_Xaml_Controls.FontFamily"
+			 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 mc:Ignorable="">
+
+	<controls:SampleControl SampleDescription="Description for sample of FontFamily_Test">
+		<controls:SampleControl.SampleContent>
+			<DataTemplate>
+				<StackPanel>
+					
+					<TextBlock Text="Default font in bold"
+							   FontWeight="Bold"
+							   FontSize="30" />
+
+					<TextBlock Text="Verdana-Bold"
+							   FontWeight="Bold"
+							   FontFamily="Verdana"
+							   FontSize="30" />
+
+					<TextBlock Text="Verdana-Bold (shouldn't be bold)"
+							   FontFamily="Verdana"
+							   FontSize="30" />
+
+					<TextBlock Text="DharmaGothicE-BoldItalic"
+							   FontFamily="ms-appx:///Assets/Fonts/DharmaGothicE-BoldItalic.otf#Dharma Gothic E"
+							   FontSize="30" />
+
+					<TextBlock Text="LiquidCrystal"
+							   FontFamily="/Assets/Fonts/LiquidCrystal.otf#LiquidCrystal"
+							   FontSize="30" />
+
+					<TextBlock Text="LiquidCrystal-lower"
+							   FontFamily="/assets/fonts/liquidcrystal.otf#liquidcrystal"
+							   FontSize="30" />
+				</StackPanel>
+			</DataTemplate>
+		</controls:SampleControl.SampleContent>
+	</controls:SampleControl>
+</UserControl>

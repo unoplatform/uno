@@ -1,0 +1,25 @@
+﻿<UserControl x:Class="UITests.Shared.Windows_UI_Xaml_Controls.ItemsControlTestsControl.ItemsControl_InlineItems"
+			 xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+			 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			 xmlns:local="using:UITests.Shared.Windows_UI_Xaml_Controls.ItemsControlTestsControl"
+			 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 xmlns:controls="using:Uno.UI.Samples.Controls"
+			 mc:Ignorable="">
+
+	<controls:SampleControl SampleDescription="Demonstrate ItemsControl's support for inline FrameworkElements">
+		<controls:SampleControl.SampleContent>
+			<DataTemplate>
+
+				<ItemsControl>
+					<TextBlock Text="Test" />
+					<TextBlock Text="Test" />
+					<TextBlock Text="Test" />
+					<TextBlock Text="Test" />
+					<TextBlock Text="Items below are bound:" />
+					<TextBlock Text="{Binding [Header]}" />
+					<TextBlock Text="{Binding [Footer]}" />
+				</ItemsControl>
+			</DataTemplate>
+		</controls:SampleControl.SampleContent>
+	</controls:SampleControl>
+</UserControl>

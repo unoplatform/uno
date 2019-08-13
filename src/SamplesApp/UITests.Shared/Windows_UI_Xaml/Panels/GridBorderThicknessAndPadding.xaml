@@ -1,0 +1,80 @@
+﻿<UserControl x:Class="UITests.Shared.Windows_UI_Xaml.Panels.GridBorderThicknessAndPadding"
+			 xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+			 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			 xmlns:local="using:UITests.Shared.Windows_UI_Xaml.Panels"
+			 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 xmlns:controls="using:Uno.UI.Samples.Controls"
+			 mc:Ignorable="">
+
+	<controls:SampleControl SampleDescription="Sample higlighting the behavior of a content (black) with a Grid (white) with Padding or a BorderThickness (pink)">
+		<controls:SampleControl.SampleContent>
+			<DataTemplate>
+
+				<StackPanel HorizontalAlignment="Stretch"
+							VerticalAlignment="Stretch">
+
+					<TextBlock Text="Grid with BorderThickness" />
+					
+					<Grid Height="100"
+						  Width="100"
+						  VerticalAlignment="Center"
+						  HorizontalAlignment="Center"
+						  Background="White"
+						  BorderBrush="DeepPink"
+						  BorderThickness="5">
+						<Grid HorizontalAlignment="Stretch"
+							  VerticalAlignment="Stretch"
+							  Background="Black" />
+					</Grid>
+
+					<TextBlock Text="Grid with Padding" />
+					
+					<Grid Height="100"
+						  Width="100"
+						  VerticalAlignment="Center"
+						  HorizontalAlignment="Center"
+						  Background="White"
+						  Padding="5">
+						
+						<Grid HorizontalAlignment="Stretch"
+							  VerticalAlignment="Stretch"
+							  Background="Black" />
+					</Grid>
+
+					<TextBlock Text="Grid with BorderThickness and Padding" />
+					
+					<Grid Height="100"
+						  Width="100"
+						  VerticalAlignment="Center"
+						  HorizontalAlignment="Center"
+						  Background="White"
+						  BorderBrush="DeepPink"
+						  BorderThickness="5"
+						  Padding="5">
+						
+						<Grid HorizontalAlignment="Stretch"
+							  VerticalAlignment="Stretch"
+							  Background="Black" />
+					</Grid>
+
+					<TextBlock Text="Grid with BorderThickness, Padding and a ConerRadius" />
+					
+					<Grid Height="100"
+						  Width="100"
+						  CornerRadius="5"
+						  VerticalAlignment="Center"
+						  HorizontalAlignment="Center"
+						  Background="White"
+						  BorderBrush="DeepPink"
+						  BorderThickness="5"
+						  Padding="5">
+						
+						<Grid HorizontalAlignment="Stretch"
+							  VerticalAlignment="Stretch"
+							  Background="Black" />
+					</Grid>
+				</StackPanel>
+			</DataTemplate>
+		</controls:SampleControl.SampleContent>
+	</controls:SampleControl>
+</UserControl>

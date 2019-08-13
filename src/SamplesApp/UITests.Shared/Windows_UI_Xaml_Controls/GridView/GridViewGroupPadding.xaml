@@ -1,0 +1,63 @@
+﻿<UserControl x:Class="UITests.Shared.Windows_UI_Xaml_Controls.GridView.GridViewGroupPadding"
+			 xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+			 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			 xmlns:local="using:UITests.Shared.Windows_UI_Xaml_Controls.GridView"
+			 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 xmlns:controls="using:Uno.UI.Samples.Controls"
+			 mc:Ignorable="">
+
+	<UserControl.Resources>
+		<ResourceDictionary>
+			<DataTemplate x:Key="GridViewVerticalGroupedHeaderTemplate">
+				<Border Background="#99FF6347">
+					<TextBlock Text="{Binding Key}"
+							   Foreground="Navy"
+							   FontSize="32"
+							   Height="40"
+							   Width="200" />
+				</Border>
+			</DataTemplate>
+		</ResourceDictionary>
+	</UserControl.Resources>
+
+	<controls:SampleControl SampleDescription="Grouped GridView with GroupPadding set">
+		<controls:SampleControl.SampleContent>
+			<DataTemplate>
+				<StackPanel>
+
+					<CheckBox x:Name="GridViewVerticalGroupedCheckBox"
+							  IsChecked="{Binding [AreStickyHeadersEnabled], Mode=TwoWay}" />
+
+					<GridView ItemsSource="{Binding [GroupedNumericItemsAsSource]}"
+							  Height="400"
+							  Background="LightGray">
+
+						<GridView.ItemsPanel>
+							<ItemsPanelTemplate>
+								<ItemsWrapGrid MaximumRowsOrColumns="3"
+											   Orientation="Horizontal"
+											   AreStickyGroupHeadersEnabled="{Binding [AreStickyHeadersEnabled]}"
+											   GroupPadding="50,40,0,20" />
+							</ItemsPanelTemplate>
+						</GridView.ItemsPanel>
+
+						<GridView.GroupStyle>
+							<GroupStyle HeaderTemplate="{StaticResource GridViewVerticalGroupedHeaderTemplate}" />
+						</GridView.GroupStyle>
+
+						<GridView.ItemTemplate>
+							<DataTemplate>
+								<Border Background="White">
+									<TextBlock Text="{Binding}"
+											   Foreground="Blue"
+											   Height="16"
+											   Width="100" />
+								</Border>
+							</DataTemplate>
+						</GridView.ItemTemplate>
+					</GridView>
+				</StackPanel>
+			</DataTemplate>
+		</controls:SampleControl.SampleContent>
+	</controls:SampleControl>
+</UserControl>

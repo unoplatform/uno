@@ -1,0 +1,20 @@
+﻿<UserControl x:Class="UITests.Shared.Windows_UI_Xaml_Controls.FlipViewTests.FlipView_Collapsed"
+			 xmlns:controls="using:Uno.UI.Samples.Controls"
+			 xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+			 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			 xmlns:local="using:UITests.Shared.Windows_UI_Xaml_Controls.FlipViewTests"
+			 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 mc:Ignorable="">
+
+	<controls:SampleControl SampleDescription="Collapsed FlipView - this should not crash">
+		<controls:SampleControl.SampleContent>
+			<DataTemplate>
+				
+				<!-- Insert your code sample here -->
+				<FlipView Visibility="Collapsed">
+					<TextBlock Text="Sample for FlipView_Collapsed" />
+				</FlipView>
+			</DataTemplate>
+		</controls:SampleControl.SampleContent>
+	</controls:SampleControl>
+</UserControl>

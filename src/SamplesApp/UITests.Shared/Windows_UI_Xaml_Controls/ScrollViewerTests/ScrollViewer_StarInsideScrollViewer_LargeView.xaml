@@ -1,0 +1,33 @@
+﻿<UserControl x:Class="UITests.Shared.Windows_UI_Xaml_Controls.ScrollViewerTests.ScrollViewer_StarInsideScrollViewer_LargeView"
+			 xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+			 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			 xmlns:local="using:UITests.Shared.Windows_UI_Xaml_Controls.ScrollViewerTests"
+			 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 xmlns:controls="using:Uno.UI.Samples.Controls"
+			 xmlns:uno="using:Uno.UI.Samples.Controls"
+			 mc:Ignorable="">
+
+	<controls:SampleControl SampleDescription="The content is larger than the viewport and should scroll horizontally. ">
+		<controls:SampleControl.SampleContent>
+			<DataTemplate>
+
+				<ScrollViewer Width="200"
+							  MinHeight="200">
+
+					<uno:StarStackPanel Name="InnerStarStackPanel">
+
+						<Border uno:StarStackPanel.Size="*"
+								Background="IndianRed">
+							<TextBlock Text="This a very text block that should not fit in the current scrollviewer" />
+						</Border>
+
+						<Border uno:StarStackPanel.Size="*"
+								Background="LightBlue">
+							<TextBlock Text="This a very text block that should not fit in the current scrollviewer" />
+						</Border>
+					</uno:StarStackPanel>
+				</ScrollViewer>
+			</DataTemplate>
+		</controls:SampleControl.SampleContent>
+	</controls:SampleControl>
+</UserControl>

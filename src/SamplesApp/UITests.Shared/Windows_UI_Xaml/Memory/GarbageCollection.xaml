@@ -1,0 +1,24 @@
+﻿<UserControl x:Class="UITests.Shared.Windows_UI_Xaml.Memory.GarbageCollection"
+			 xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+			 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			 xmlns:local="using:UITests.Shared.Windows_UI_Xaml.Memory"
+			 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 mc:Ignorable="">
+
+	<StackPanel>
+
+		<Button Content="Refresh"
+				Click="Refresh" />
+		<TextBlock x:Name="Info"
+				   TextWrapping="Wrap" />
+
+		<Button Content="Add 100"
+				Click="Add" />
+		<Button Content="Clear"
+				Click="Clear" />
+
+		<TextBlock Text="Container" />
+		<StackPanel x:Name="Container" />
+
+	</StackPanel>
+</UserControl>

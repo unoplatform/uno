@@ -1,0 +1,30 @@
+﻿<UserControl x:Class="UITests.Shared.Windows_UI_Xaml_Controls.SolidColorBrushTests.Opacity"
+			 xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+			 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			 xmlns:local="using:UITests.Shared.Windows_UI_Xaml_Controls.SolidColorBrushTests"
+			 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 xmlns:controls="using:Uno.UI.Samples.Controls"
+			 mc:Ignorable="">
+
+	<controls:SampleControl SampleDescription="SolidColorBrush - Opacity">
+		<controls:SampleControl.SampleContent>
+			<DataTemplate>
+				<Grid>
+					
+					<Rectangle Fill="LightSalmon"
+							   Width="200"
+							   Height="75" />
+					
+					<Rectangle Width="75"
+							   Height="200">
+
+						<Rectangle.Fill>
+							<SolidColorBrush Color="LightBlue"
+											 Opacity="0.5" />
+						</Rectangle.Fill>
+					</Rectangle>
+				</Grid>
+			</DataTemplate>
+		</controls:SampleControl.SampleContent>
+	</controls:SampleControl>
+</UserControl>

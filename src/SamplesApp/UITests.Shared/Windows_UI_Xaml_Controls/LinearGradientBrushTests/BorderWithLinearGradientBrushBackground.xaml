@@ -1,0 +1,99 @@
+﻿<UserControl x:Class="UITests.Shared.Windows_UI_Xaml_Controls.LinearGradientBrushTests.BorderWithLinearGradientBrushBackground"
+			 xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+			 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			 xmlns:local="using:UITests.Shared.Windows_UI_Xaml_Controls.LinearGradientBrushTests"
+			 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 xmlns:controls="using:Uno.UI.Samples.Controls"
+			 mc:Ignorable="">
+
+	<controls:SampleControl>
+		<controls:SampleControl.SampleContent>
+			<DataTemplate>
+
+				<StackPanel>
+
+					<TextBlock Text="Border with LinearGradientBrush background - Yellow, Red, Blue, LimeGreen top to bottom" />
+
+					<Border Name="BorderTest"
+							BorderBrush="Black"
+							BorderThickness="2"
+							Width="200"
+							Height="200">
+						<Border.Background>
+
+							<LinearGradientBrush StartPoint="0.5,0"
+												 EndPoint="0.5,1">
+
+								<LinearGradientBrush.GradientStops>
+									<GradientStopCollection>
+										<GradientStop Color="Yellow"
+													  Offset="0.0" />
+										<GradientStop Color="Red"
+													  Offset="0.25" />
+										<GradientStop Color="Blue"
+													  Offset="0.75" />
+										<GradientStop Color="LimeGreen"
+													  Offset="1.0" />
+									</GradientStopCollection>
+								</LinearGradientBrush.GradientStops>
+							</LinearGradientBrush>
+						</Border.Background>
+					</Border>
+
+					<TextBlock Text="Border with LinearGradientBrush background - Yellow, Orange, Red (thick), top left to bottom right" />
+
+					<Border BorderBrush="Black"
+							BorderThickness="2"
+							Width="200"
+							Height="200">
+						<Border.Background>
+
+							<LinearGradientBrush StartPoint="0,0"
+												 EndPoint="1,1">
+
+								<LinearGradientBrush.GradientStops>
+									<GradientStopCollection>
+										<GradientStop Color="Yellow"
+													  Offset="0.0" />
+										<GradientStop Color="Orange"
+													  Offset="0.3" />
+										<GradientStop Color="Red"
+													  Offset="1.0" />
+									</GradientStopCollection>
+								</LinearGradientBrush.GradientStops>
+							</LinearGradientBrush>
+						</Border.Background>
+					</Border>
+
+					<TextBlock Text="Border with LinearGradientBrush background - Yellow, Cyan left to right, enclosing text" />
+
+					<Border BorderBrush="Black"
+							BorderThickness="2"
+							Width="200"
+							Height="100">
+						<Border.Background>
+
+							<LinearGradientBrush StartPoint="0,0.5"
+												 EndPoint="1,0.5">
+								<LinearGradientBrush.GradientStops>
+									<GradientStopCollection>
+										<GradientStop Color="Yellow"
+													  Offset="0.0" />
+										<GradientStop Color="Cyan"
+													  Offset="1.0" />
+									</GradientStopCollection>
+								</LinearGradientBrush.GradientStops>
+							</LinearGradientBrush>
+						</Border.Background>
+
+						<Border.Child>
+							<TextBlock Text="Text inside Border"
+									   Foreground="Black" />
+						</Border.Child>
+					</Border>
+				</StackPanel>
+			</DataTemplate>
+		</controls:SampleControl.SampleContent>
+	</controls:SampleControl>
+</UserControl>
+

@@ -1,0 +1,100 @@
+﻿<UserControl x:Class="UITests.Shared.Windows_UI_Xaml_Controls.ScrollViewerTests.ScrollViewer_Child_Margin_Narrow"
+			 xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+			 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			 xmlns:local="using:UITests.Shared.Windows_UI_Xaml_Controls.ScrollViewerTests"
+			 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 xmlns:controls="using:Uno.UI.Samples.Controls"
+			 mc:Ignorable="">
+
+	<controls:SampleControl SampleDescription="ScrollViewers with content narrower than available width and asymmetric horizontal margins">
+		<controls:SampleControl.SampleContent>
+			<DataTemplate>
+				
+				<StackPanel HorizontalAlignment="Center">
+					
+					<StackPanel Orientation="Horizontal"
+								HorizontalAlignment="Center">
+						<Rectangle Height="10"
+								   Width="30"
+								   Fill="LightGray" />
+						<Rectangle Height="10"
+								   Width="30"
+								   Fill="Black" />
+						<Rectangle Height="10"
+								   Width="30"
+								   Fill="LightGray" />
+						<Rectangle Height="10"
+								   Width="30"
+								   Fill="Black" />
+						<Rectangle Height="10"
+								   Width="30"
+								   Fill="LightGray" />
+						<Rectangle Height="10"
+								   Width="30"
+								   Fill="Black" />
+						<Rectangle Height="10"
+								   Width="30"
+								   Fill="LightGray" />
+						<Rectangle Height="10"
+								   Width="30"
+								   Fill="Black" />
+					</StackPanel>
+					
+					<ScrollViewer Background="Beige"
+								  HorizontalAlignment="Center"
+								  Width="240"
+								  Height="200">
+						<Border HorizontalAlignment="Center"
+								Width="90"
+								Margin="60,10,30,10"
+								BorderBrush="Blue"
+								BorderThickness="2"
+								Background="Red"
+								Height="800" />
+					</ScrollViewer>
+					
+					<ScrollViewer Background="Moccasin"
+								  HorizontalAlignment="Center"
+								  Width="240"
+								  Height="200">
+						<Border HorizontalAlignment="Center"
+								Width="90"
+								Margin="30,10,60,10"
+								BorderBrush="Blue"
+								BorderThickness="2"
+								Background="Red"
+								Height="800" />
+					</ScrollViewer>
+					
+					<StackPanel Orientation="Horizontal"
+								HorizontalAlignment="Center">
+						<Rectangle Height="10"
+								   Width="30"
+								   Fill="LightGray" />
+						<Rectangle Height="10"
+								   Width="30"
+								   Fill="Black" />
+						<Rectangle Height="10"
+								   Width="30"
+								   Fill="LightGray" />
+						<Rectangle Height="10"
+								   Width="30"
+								   Fill="Black" />
+						<Rectangle Height="10"
+								   Width="30"
+								   Fill="LightGray" />
+						<Rectangle Height="10"
+								   Width="30"
+								   Fill="Black" />
+						<Rectangle Height="10"
+								   Width="30"
+								   Fill="LightGray" />
+						<Rectangle Height="10"
+								   Width="30"
+								   Fill="Black" />
+					</StackPanel>
+				</StackPanel>
+			</DataTemplate>
+		</controls:SampleControl.SampleContent>
+	</controls:SampleControl>
+</UserControl>

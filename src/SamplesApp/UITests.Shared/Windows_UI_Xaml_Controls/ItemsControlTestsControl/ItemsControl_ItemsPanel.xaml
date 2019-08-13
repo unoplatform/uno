@@ -1,0 +1,59 @@
+﻿<UserControl x:Class="UITests.Shared.Windows_UI_Xaml_Controls.ItemsControlTestsControl.ItemsControl_ItemsPanel"
+			 xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+			 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			 xmlns:local="using:UITests.Shared.Windows_UI_Xaml_Controls.ItemsControlTestsControl"
+			 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 xmlns:converters="using:Uno.UI.Samples.Converters"
+			 xmlns:controls="using:Uno.UI.Samples.Controls"
+			 mc:Ignorable="">
+
+	<UserControl.Resources>
+
+		<converters:FromNullableBoolToDefaultValueConverter x:Key="boolToItemsPanel">
+
+			<converters:FromNullableBoolToDefaultValueConverter.TrueValue>
+				<ItemsPanelTemplate>
+					<StackPanel Background="Tomato"
+								Orientation="Vertical"
+								Margin="10" />
+				</ItemsPanelTemplate>
+			</converters:FromNullableBoolToDefaultValueConverter.TrueValue>
+
+			<converters:FromNullableBoolToDefaultValueConverter.NullOrFalseValue>
+				<ItemsPanelTemplate>
+					<StackPanel Background="Olive"
+								Orientation="Horizontal"
+								Margin="20" />
+				</ItemsPanelTemplate>
+			</converters:FromNullableBoolToDefaultValueConverter.NullOrFalseValue>
+		</converters:FromNullableBoolToDefaultValueConverter>
+	</UserControl.Resources>
+
+	<controls:SampleControl SampleDescription="Demonstrating the use and swapping of ItemsControl.ItemsPanel">
+		<controls:SampleControl.SampleContent>
+			<DataTemplate>
+
+				<StackPanel>
+
+					<CheckBox x:Name="MyCheckBox"
+							  Content="Toggle Panel"
+							  HorizontalAlignment="Left"
+							  VerticalAlignment="Top">
+
+						<CheckBox.Template>
+							<ControlTemplate>
+								<Border Background="LightGray"
+										Padding="10">
+									<TextBlock Text="Toggle ItemsPanel" />
+								</Border>
+							</ControlTemplate>
+						</CheckBox.Template>
+					</CheckBox>
+
+					<ItemsControl ItemsSource="{Binding [SampleItems]}"
+								  ItemsPanel="{Binding IsChecked, ElementName=MyCheckBox, Converter={StaticResource boolToItemsPanel}}" />
+				</StackPanel>
+			</DataTemplate>
+		</controls:SampleControl.SampleContent>
+	</controls:SampleControl>
+</UserControl>

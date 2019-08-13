@@ -1,0 +1,89 @@
+﻿<UserControl x:Class="UITests.Shared.Windows_UI_Xaml_Controls.RelativePanel.RelativePanel_LeftRightRectangle"
+			 xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+			 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			 xmlns:local="using:UITests.Shared.Windows_UI_Xaml_Controls.RelativePanel"
+			 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 xmlns:controls="using:Uno.UI.Samples.Controls"
+			 mc:Ignorable="">
+
+	<controls:SampleControl SampleDescription="Sample for a RelativePanel with mutiple textblocks aligned to the right of rectangle on top of each other">
+		<controls:SampleControl.SampleContent>
+			<DataTemplate>
+				<StackPanel>
+
+					<RelativePanel Background="White"
+								   Height="100">
+						
+						<Rectangle Width="60"
+								   Fill="Blue"
+								   Height="85"
+								   x:Name="Image"
+								   RelativePanel.AlignLeftWithPanel="True"
+								   RelativePanel.AlignTopWithPanel="True" />
+
+						<TextBlock Text="MovieTitle"
+								   x:Name="Title"
+								   RelativePanel.RightOf="Image"
+								   RelativePanel.AlignTopWithPanel="True" />
+
+						<TextBlock Foreground="Black"
+								   x:Name="Genre"
+								   RelativePanel.RightOf="Image"
+								   RelativePanel.Below="Title">
+							<Run Text="Genre:" />
+							<Run Text=" " />
+							<Run Text="Genre" />
+						</TextBlock>
+
+						<TextBlock RelativePanel.RightOf="Image"
+								   RelativePanel.Below="Genre">
+							<Run Text="Release Date:" />
+							<Run Text=" " />
+							<Run Text="ReleaseDate" />
+						</TextBlock>
+					</RelativePanel>
+
+					<TextBlock Text="Same Sample With Added Margins"
+							   Margin="0,20,0,10" />
+
+					<RelativePanel Background="White"
+								   Height="105">
+
+						<Rectangle Width="60"
+								   Fill="Blue"
+								   Height="85"
+								   x:Name="Image2"
+								   RelativePanel.AlignLeftWithPanel="True"
+								   RelativePanel.AlignTopWithPanel="True"
+								   Margin="10,10,15,10" />
+
+						<TextBlock Text="MovieTitle"
+								   Margin="0,10,10,7"
+								   x:Name="Title2"
+								   RelativePanel.RightOf="Image2"
+								   RelativePanel.AlignTopWithPanel="True" />
+
+						<TextBlock Foreground="Black"
+								   x:Name="Genre2"
+								   RelativePanel.RightOf="Image2"
+								   Margin="0,0,10,0"
+								   RelativePanel.Below="Title2">
+							<Run Text="Genre:" />
+							<Run Text=" " />
+							<Run Text="Genre" />
+						</TextBlock>
+
+						<TextBlock RelativePanel.RightOf="Image2"
+								   RelativePanel.Below="Genre2"
+								   Margin="0,0,10,0">
+							<Run Text="Release Date:" />
+							<Run Text=" " />
+							<Run Text="ReleaseDate" />
+						</TextBlock>
+					</RelativePanel>
+				</StackPanel>
+			</DataTemplate>
+		</controls:SampleControl.SampleContent>
+	</controls:SampleControl>
+</UserControl>
+

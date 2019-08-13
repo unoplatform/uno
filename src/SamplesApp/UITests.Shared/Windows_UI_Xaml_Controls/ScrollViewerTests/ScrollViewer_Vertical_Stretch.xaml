@@ -1,0 +1,38 @@
+﻿<UserControl x:Class="UITests.Shared.Windows_UI_Xaml_Controls.ScrollViewerTests.ScrollViewer_Vertical_Stretch"
+			 xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+			 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			 xmlns:local="using:UITests.Shared.Windows_UI_Xaml_Controls.ScrollViewerTests"
+			 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 xmlns:controls="using:Uno.UI.Samples.Controls"
+			 mc:Ignorable="">
+
+	<controls:SampleControl SampleDescription="ScrollViewer containing Grid with top- and bottom-aligned elements. The Grid should stretch to the full available height.">
+		<controls:SampleControl.SampleContent>
+			<DataTemplate>
+				
+				<Border BorderBrush="PaleVioletRed"
+						BorderThickness="3"
+						Background="LightGray">
+
+					<ScrollViewer>
+						<Grid>
+							<Grid.RowDefinitions>
+								<RowDefinition Height="Auto" />
+								<RowDefinition Height="*" />
+							</Grid.RowDefinitions>
+
+							<Rectangle Fill="Beige"
+									   Height="50" />
+
+							<Rectangle Fill="Aqua"
+									   Height="50"
+									   HorizontalAlignment="Stretch"
+									   VerticalAlignment="Bottom"
+									   Grid.Row="1" />
+						</Grid>
+					</ScrollViewer>
+				</Border>
+			</DataTemplate>
+		</controls:SampleControl.SampleContent>
+	</controls:SampleControl>
+</UserControl>

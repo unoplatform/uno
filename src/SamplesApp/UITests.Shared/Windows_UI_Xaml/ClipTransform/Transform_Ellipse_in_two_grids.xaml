@@ -1,0 +1,36 @@
+﻿<UserControl x:Class="UITests.Shared.Windows_UI_Xaml.ClipTransform.Transform_Ellipse_in_two_grids"
+			 xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+			 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			 xmlns:local="using:UITests.Shared.Windows_UI_Xaml.ClipTransform"
+			 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 mc:Ignorable="">
+
+	<Grid>
+
+		<Grid Width="100"
+			  Height="100"
+			  BorderBrush="yellow"
+			  BorderThickness="1">
+			
+			<Grid Width="100"
+				  Height="100"
+				  BorderBrush="Blue"
+				  BorderThickness="1">
+
+				<Ellipse Fill="Red"
+						 Width="120"
+						 Height="120">
+					<Ellipse.RenderTransform>
+						<RotateTransform Angle="45" />
+					</Ellipse.RenderTransform>
+				</Ellipse>
+
+				<Grid.RenderTransform>
+					<RotateTransform Angle="45" />
+				</Grid.RenderTransform>
+			</Grid>
+		</Grid>
+		
+		<local:LegacyClippingWarningControl />
+	</Grid>
+</UserControl>

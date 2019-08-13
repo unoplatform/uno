@@ -1,0 +1,128 @@
+﻿<UserControl x:Class="UITests.Shared.Windows_UI_Xaml_Controls.Margins.Margins_Spacing"
+			 xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+			 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			 xmlns:local="using:UITests.Shared.Windows_UI_Xaml_Controls.Margins"
+			 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 xmlns:controls="using:Uno.UI.Samples.Controls"
+			 mc:Ignorable="">
+
+	<controls:SampleControl SampleDescription="Margins Spacing, The element under here should have exponential spacing between them and should be the same between version and platforms.
+                            This test was mainly designed for Android to test between versions.">
+		<controls:SampleControl.SampleContent>
+			<DataTemplate>
+				<StackPanel>
+
+					<StackPanel Orientation="Horizontal">
+						<Rectangle Height="30"
+								   Width="30"
+								   Fill="Blue"
+								   Margin="0,0,1,0" />
+						<Rectangle Height="30"
+								   Width="30"
+								   Fill="Blue" />
+					</StackPanel>
+
+					<StackPanel Orientation="Horizontal">
+						<Rectangle Height="30"
+								   Width="30"
+								   Fill="Blue"
+								   Margin="0,0,2,0" />
+						<Rectangle Height="30"
+								   Width="30"
+								   Fill="Blue" />
+					</StackPanel>
+
+					<StackPanel Orientation="Horizontal">
+						<Rectangle Height="30"
+								   Width="30"
+								   Fill="Blue"
+								   Margin="0,0,4,0" />
+						<Rectangle Height="30"
+								   Width="30"
+								   Fill="Blue" />
+					</StackPanel>
+
+					<StackPanel Orientation="Horizontal">
+						<Rectangle Height="30"
+								   Width="30"
+								   Fill="Blue"
+								   Margin="0,0,8,0" />
+						<Rectangle Height="30"
+								   Width="30"
+								   Fill="Blue" />
+					</StackPanel>
+
+					<StackPanel Orientation="Horizontal">
+						<Rectangle Height="30"
+								   Width="30"
+								   Fill="Blue"
+								   Margin="0,0,16,0" />
+						<Rectangle Height="30"
+								   Width="30"
+								   Fill="Blue" />
+					</StackPanel>
+
+					<StackPanel Orientation="Horizontal">
+						<Rectangle Height="30"
+								   Width="30"
+								   Fill="Blue"
+								   Margin="0,0,32,0" />
+						<Rectangle Height="30"
+								   Width="30"
+								   Fill="Blue" />
+					</StackPanel>
+
+					<StackPanel Orientation="Horizontal">
+						<Rectangle Height="30"
+								   Width="30"
+								   Fill="Blue"
+								   Margin="0,0,64,0" />
+						<Rectangle Height="30"
+								   Width="30"
+								   Fill="Blue" />
+					</StackPanel>
+
+					<StackPanel Orientation="Horizontal">
+						<Rectangle Height="30"
+								   Width="30"
+								   Fill="Blue"
+								   Margin="0,0,128,0" />
+						<Rectangle Height="30"
+								   Width="30"
+								   Fill="Blue" />
+					</StackPanel>
+
+					<StackPanel Orientation="Horizontal">
+						<Rectangle Height="30"
+								   Width="30"
+								   Fill="Blue"
+								   Margin="0,0,256,0" />
+						<Rectangle Height="30"
+								   Width="30"
+								   Fill="Blue" />
+					</StackPanel>
+
+					<StackPanel Orientation="Horizontal">
+						<Rectangle Height="30"
+								   Width="30"
+								   Fill="Blue"
+								   Margin="0,0,512,0" />
+						<Rectangle Height="30"
+								   Width="30"
+								   Fill="Blue" />
+					</StackPanel>
+
+					<StackPanel Orientation="Horizontal">
+						<Rectangle Height="30"
+								   Width="30"
+								   Fill="Blue"
+								   Margin="0,0,1024,0" />
+						<Rectangle Height="30"
+								   Width="30"
+								   Fill="Blue" />
+					</StackPanel>
+				</StackPanel>
+			</DataTemplate>
+		</controls:SampleControl.SampleContent>
+	</controls:SampleControl>
+</UserControl>

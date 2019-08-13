@@ -1,0 +1,130 @@
+﻿<UserControl x:Class="UITests.Shared.Windows_UI_Xaml_Controls.RelativePanel.RelativePanel_Complex_Shapes"
+			 xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+			 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			 xmlns:local="using:UITests.Shared.Windows_UI_Xaml_Controls.RelativePanel"
+			 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 xmlns:controls="using:Uno.UI.Samples.Controls"
+			 mc:Ignorable="">
+
+	<controls:SampleControl SampleDescription="RelativePanel_Complex_Shapes">
+		<controls:SampleControl.SampleContent>
+			<DataTemplate>
+				<StackPanel>
+
+					<TextBlock Text="2x2 4 color square + Black shape |\" />
+
+					<RelativePanel Background="Gray">
+
+						<Border x:Name="Corny3"
+								Background="CornflowerBlue"
+								Width="100"
+								Height="100" />
+
+						<Border x:Name="Greeny3"
+								Background="Lime"
+								Width="100"
+								Height="100"
+								RelativePanel.RightOf="Corny3" />
+
+						<Border x:Name="Redish3"
+								Background="Tomato"
+								Width="100"
+								Height="100"
+								RelativePanel.Below="Corny3"
+								RelativePanel.AlignRightWith="Greeny3" />
+
+						<Border x:Name="Burple3"
+								Background="Violet"
+								Width="100"
+								Height="100"
+								RelativePanel.Below="Corny3" />
+
+						<Border Background="Black"
+								VerticalAlignment="Stretch"
+								HorizontalAlignment="Stretch"
+								RelativePanel.AlignTopWithPanel="True"
+								RelativePanel.AlignBottomWithPanel="True"
+								RelativePanel.AlignLeftWithPanel="True"
+								RelativePanel.AlignRightWith="Corny3"
+								Margin="0,0,50,0" />
+
+						<Border Background="Black"
+								Width="50"
+								Height="50"
+								RelativePanel.AlignBottomWith="Corny3"
+								RelativePanel.AlignRightWith="Corny3" />
+
+						<Border Background="Black"
+								Width="50"
+								Height="50"
+								x:Name="Zoid"
+								RelativePanel.AlignTopWith="Redish3"
+								RelativePanel.AlignLeftWith="Redish3" />
+
+						<Border Background="Black"
+								VerticalAlignment="Stretch"
+								HorizontalAlignment="Stretch"
+								RelativePanel.RightOf="Zoid"
+								RelativePanel.Below="Zoid"
+								RelativePanel.AlignBottomWith="Redish3"
+								RelativePanel.AlignRightWith="Redish3" />
+					</RelativePanel>
+
+					<TextBlock Text="2x2 4 color square + Black shape '.-" />
+
+					<RelativePanel Background="Gray">
+
+						<Border x:Name="Corny4"
+								Background="CornflowerBlue"
+								Width="100"
+								Height="100" />
+
+						<Border x:Name="Greeny4"
+								Background="Lime"
+								Width="100"
+								Height="100"
+								RelativePanel.RightOf="Corny4" />
+
+						<Border x:Name="Redish4"
+								Background="Tomato"
+								Width="100"
+								Height="100"
+								RelativePanel.Below="Corny4"
+								RelativePanel.AlignRightWith="Greeny4" />
+
+						<Border x:Name="Burple4"
+								Background="Violet"
+								Width="100"
+								Height="100"
+								RelativePanel.Below="Corny4" />
+
+						<Border x:Name="Zerg"
+								Background="Black"
+								Width="50"
+								Height="50"
+								VerticalAlignment="Center"
+								HorizontalAlignment="Center"
+								RelativePanel.AlignTopWith="Corny4"
+								RelativePanel.AlignLeftWith="Corny4"
+								RelativePanel.AlignBottomWith="Corny4"
+								RelativePanel.AlignRightWith="Corny4" />
+
+						<Border x:Name="Zerg2"
+								Background="Black"
+								Width="100"
+								Height="50"
+								RelativePanel.Below="Zerg"
+								RelativePanel.RightOf="Zerg" />
+
+						<Border x:Name="Zerg3"
+								Background="Black"
+								Width="50"
+								Height="50"
+								RelativePanel.Below="Zerg2"
+								RelativePanel.LeftOf="Zerg2" />
+					</RelativePanel>
+				</StackPanel>
+			</DataTemplate>
+		</controls:SampleControl.SampleContent>
+	</controls:SampleControl>
+</UserControl>

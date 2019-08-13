@@ -1,0 +1,33 @@
+﻿<UserControl x:Class="UITests.Shared.Windows_UI_Xaml_Controls.ScrollViewerTests.ScrollViewer_BottomRightAlignSmallView"
+			 xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+			 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			 xmlns:local="using:UITests.Shared.Windows_UI_Xaml_Controls.ScrollViewerTests"
+			 xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+			 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 xmlns:controls="using:Uno.UI.Samples.Controls"
+			 xmlns:uno="using:Uno.UI.Samples.Controls"
+			 mc:Ignorable="">
+
+	<controls:SampleControl SampleDescription="The content is smaller than the viewport and should be aligned at the bottom right of the ScrollViewer.">
+		<controls:SampleControl.SampleContent>
+			<DataTemplate>
+				<ScrollViewer MinWidth="300"
+							  MinHeight="300">
+
+					<uno:StarStackPanel Name="InnerStarStackPanel"
+									  Width="50"
+									  Height="50"
+									  VerticalAlignment="Bottom"
+									  HorizontalAlignment="Right">
+
+						<Border Background="Red"
+								uno:StarStackPanel.Size="*" />
+
+						<Border Background="Blue"
+								uno:StarStackPanel.Size="*" />
+					</uno:StarStackPanel>
+				</ScrollViewer>
+			</DataTemplate>
+		</controls:SampleControl.SampleContent>
+	</controls:SampleControl>
+</UserControl>

@@ -1,0 +1,42 @@
+﻿<UserControl x:Class="UITests.Shared.Windows_UI_Xaml_Controls.LayoutTestControl.RemeasuresWithinScrollViewer"
+			 xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+			 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			 xmlns:local="using:UITests.Shared.Windows_UI_Xaml_Controls.LayoutTestControl"
+			 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 xmlns:controls="using:Uno.UI.Samples.Controls"
+			 mc:Ignorable="">
+
+	<UserControl.Resources>
+		<ResourceDictionary Source="MeasureArrangeContentControl.xaml" />
+	</UserControl.Resources>
+
+	<controls:SampleControl SampleDescription="This sample a button changing size (height or width) and detecting if the scrollviewer is remeasuring">
+		<local:MeasureArrangeContentControl>
+			<local:MeasureArrangeContentControl.ContentTemplate>
+				<DataTemplate>
+
+					<ScrollViewer VerticalScrollBarVisibility="Auto"
+								  VerticalScrollMode="Auto"
+								  HorizontalAlignment="Stretch"
+								  HorizontalContentAlignment="Stretch"
+								  HorizontalScrollBarVisibility="Disabled"
+								  HorizontalScrollMode="Disabled"
+								  Background="Aqua">
+
+						<StackPanel Orientation="Vertical"
+									HorizontalAlignment="Stretch"
+									Background="Lime">
+
+							<local:ChangingButton ChangingMode="HeightOnly"
+												  Content="Click me!" />
+
+							<local:ChangingButton ChangingMode="WidthOnly"
+												  Content="Click me!"
+												  Height="300" />
+						</StackPanel>
+					</ScrollViewer>
+				</DataTemplate>
+			</local:MeasureArrangeContentControl.ContentTemplate>
+		</local:MeasureArrangeContentControl>
+	</controls:SampleControl>
+</UserControl>

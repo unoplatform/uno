@@ -1,0 +1,50 @@
+﻿<UserControl x:Class="UITests.Shared.Windows_UI_Xaml_Controls.TimePicker.TimePicker_Simple"
+			 xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+			 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			 xmlns:local="using:UITests.Shared.Windows_UI_Xaml_Controls.TimePicker"
+			 xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+			 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 xmlns:controls="using:Uno.UI.Samples.Controls"
+			 xmlns:ios="http://uno.ui/ios"
+			 mc:Ignorable="ios">
+
+	<controls:SampleControl SampleDescription="TimePicker sample">
+		<controls:SampleControl.SampleContent>
+			<DataTemplate>
+				<StackPanel>
+					
+					<StackPanel Orientation="Horizontal"
+								Background="PowderBlue">
+						
+						<TextBlock Text="Selected time: " />
+
+						<TextBlock Text="{Binding [SelectedTime]}" />
+					</StackPanel>
+
+					<TimePicker Time="{Binding [SelectedTime], Mode=TwoWay}"
+								ios:FlyoutPlacement="Full"
+								ClockIdentifier="{Binding [SelectedClockIdentifier], FallbackValue=12HourClock, TargetNullValue=12HourClock}" />
+
+					<StackPanel Orientation="Horizontal">
+
+						<TextBlock Text="Set hour:" />
+
+						<TextBox Text="{Binding [HourToSet], Mode=TwoWay}"
+								 InputScope="Number" />
+
+						<TextBlock Text="Set minute:" />
+
+						<TextBox Text="{Binding [MinuteToSet], Mode=TwoWay}"
+								 InputScope="Number" />
+
+						<Button Content="Apply"
+								Command="{Binding [SetSelectedTime]}" />
+					</StackPanel>
+
+					<ComboBox ItemsSource="{Binding [ClockIdentifierValues]}"
+							  SelectedItem="{Binding [SelectedClockIdentifier], Mode=TwoWay}" />
+				</StackPanel>
+			</DataTemplate>
+		</controls:SampleControl.SampleContent>
+	</controls:SampleControl>
+</UserControl>

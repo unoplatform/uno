@@ -1,0 +1,19 @@
+﻿<UserControl x:Class="UITests.Shared.Windows_UI_Xaml_Controls.EllipseTestControl.Ellipse_Simple"
+			 xmlns:controls="using:Uno.UI.Samples.Controls"
+			 xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+			 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			 xmlns:local="using:UITests.Shared.Windows_UI_Xaml_Controls.EllipseTestControl"
+			 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 mc:Ignorable="">
+
+	<controls:SampleControl SampleDescription="Ellipse_Simple">
+		<controls:SampleControl.SampleContent>
+
+			<DataTemplate>
+				<Ellipse Fill="DeepSkyBlue"
+						 Width="200"
+						 Height="100" />
+			</DataTemplate>
+		</controls:SampleControl.SampleContent>
+	</controls:SampleControl>
+</UserControl>

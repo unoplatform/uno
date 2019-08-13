@@ -1,0 +1,121 @@
+﻿<UserControl x:Class="UITests.Shared.Windows_UI_Xaml_Controls.ScrollViewerTests.ScrollViewer_VerticalScrollMode"
+			 xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+			 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			 xmlns:local="using:UITests.Shared.Windows_UI_Xaml_Controls.ScrollViewerTests"
+			 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 mc:Ignorable="">
+
+	<ScrollViewer>
+		<StackPanel>
+
+			<StackPanel Background="LightBlue"
+						Margin="16">
+
+				<TextBlock Text="ScrollMode: Enabled" />
+
+				<TextBlock Text="ScrollBarVisibility: Visible" />
+
+				<ScrollViewer Width="200"
+							  Height="200"
+							  VerticalScrollBarVisibility="Visible"
+							  VerticalScrollMode="Enabled">
+
+					<TextBlock TextWrapping="Wrap"
+							   Text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla pellentesque malesuada ligula at egestas. Donec vitae pellentesque nibh, et tempor elit. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam erat volutpat. Duis elementum ex nec ex tempor bibendum. Etiam pharetra viverra eros, vel blandit ligula placerat a. Phasellus nec mi iaculis, ornare magna sit amet, ultrices magna. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. 
+
+Maecenas varius, orci nec aliquet vestibulum, ex ex tincidunt quam, vel laoreet nibh lacus ac urna. Donec eu dolor sed diam egestas efficitur. Praesent mattis, velit non mollis luctus, urna turpis lacinia massa, vel fermentum diam justo id neque. Maecenas ullamcorper ultricies metus vitae vulputate. Vivamus convallis massa odio, sed ornare neque euismod a. Nam tincidunt nec sapien at congue. Curabitur quis semper ex. Nulla pulvinar, lectus quis malesuada pretium, nulla orci sollicitudin lectus, et blandit mi nisi finibus massa. Nullam ullamcorper erat nec elit maximus lobortis. Morbi mauris leo, dapibus et efficitur sit amet, malesuada vitae lectus. Sed quis porta sapien, consectetur ultricies lectus. Cras at elementum diam, sit amet lobortis orci. 
+
+Nam ut nisl lorem. Cras malesuada leo magna, id lacinia augue ultricies ut. Etiam eu arcu efficitur diam vestibulum congue. Nunc sed tortor nulla. Pellentesque ut fringilla nunc, non laoreet elit. Suspendisse elementum, nisi id condimentum elementum, ex est lobortis tortor, at ultricies lacus turpis ut eros. Vestibulum tincidunt purus a ex faucibus ultricies. Quisque nulla sapien, sodales ac sapien et, vestibulum euismod enim. Duis eget eros elementum, dictum arcu eu, vestibulum lorem. Ut ac molestie mi. Fusce hendrerit ac neque sit amet tincidunt. Donec convallis eros ut laoreet efficitur. Mauris arcu odio, pharetra ut pharetra ut, tincidunt a lectus. Aliquam erat volutpat. Vivamus non est volutpat, varius neque non, efficitur magna. In pellentesque dapibus iaculis. 
+
+Duis suscipit felis sit amet placerat interdum. Fusce hendrerit elit mauris, ut placerat tellus rutrum nec. Maecenas vehicula erat sed velit pharetra dignissim. Vestibulum consectetur luctus sapien, vel vestibulum enim gravida eu. Cras pulvinar risus libero, id luctus elit venenatis sit amet. Phasellus id ullamcorper nibh. Praesent quam sem, ullamcorper eget justo ut, feugiat vestibulum dolor. Nulla facilisi. Sed euismod dui erat, a consectetur nunc suscipit eu. Curabitur et ipsum eu sapien congue faucibus. 
+
+Nunc fringilla justo eget dui finibus bibendum. Morbi vel mi in augue vulputate feugiat at eu metus. Curabitur bibendum sollicitudin pellentesque. Mauris eget mi tortor. Quisque tortor felis, dapibus in mattis nec, aliquam vitae nisi. Nunc vitae quam vitae est fringilla egestas. Nullam eget diam dolor. Curabitur iaculis leo eu tempor convallis. 
+" />
+				</ScrollViewer>
+			</StackPanel>
+
+			<StackPanel Background="LightGoldenrodYellow"
+						Margin="16">
+
+				<TextBlock Text="ScrollMode: Enabled" />
+
+				<TextBlock Text="ScrollBarVisibility: Disabled" />
+
+				<ScrollViewer Width="200"
+							  Height="200"
+							  VerticalScrollBarVisibility="Disabled"
+							  VerticalScrollMode="Enabled">
+
+					<TextBlock TextWrapping="Wrap"
+							   Text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla pellentesque malesuada ligula at egestas. Donec vitae pellentesque nibh, et tempor elit. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam erat volutpat. Duis elementum ex nec ex tempor bibendum. Etiam pharetra viverra eros, vel blandit ligula placerat a. Phasellus nec mi iaculis, ornare magna sit amet, ultrices magna. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. 
+
+Maecenas varius, orci nec aliquet vestibulum, ex ex tincidunt quam, vel laoreet nibh lacus ac urna. Donec eu dolor sed diam egestas efficitur. Praesent mattis, velit non mollis luctus, urna turpis lacinia massa, vel fermentum diam justo id neque. Maecenas ullamcorper ultricies metus vitae vulputate. Vivamus convallis massa odio, sed ornare neque euismod a. Nam tincidunt nec sapien at congue. Curabitur quis semper ex. Nulla pulvinar, lectus quis malesuada pretium, nulla orci sollicitudin lectus, et blandit mi nisi finibus massa. Nullam ullamcorper erat nec elit maximus lobortis. Morbi mauris leo, dapibus et efficitur sit amet, malesuada vitae lectus. Sed quis porta sapien, consectetur ultricies lectus. Cras at elementum diam, sit amet lobortis orci. 
+
+Nam ut nisl lorem. Cras malesuada leo magna, id lacinia augue ultricies ut. Etiam eu arcu efficitur diam vestibulum congue. Nunc sed tortor nulla. Pellentesque ut fringilla nunc, non laoreet elit. Suspendisse elementum, nisi id condimentum elementum, ex est lobortis tortor, at ultricies lacus turpis ut eros. Vestibulum tincidunt purus a ex faucibus ultricies. Quisque nulla sapien, sodales ac sapien et, vestibulum euismod enim. Duis eget eros elementum, dictum arcu eu, vestibulum lorem. Ut ac molestie mi. Fusce hendrerit ac neque sit amet tincidunt. Donec convallis eros ut laoreet efficitur. Mauris arcu odio, pharetra ut pharetra ut, tincidunt a lectus. Aliquam erat volutpat. Vivamus non est volutpat, varius neque non, efficitur magna. In pellentesque dapibus iaculis. 
+
+Duis suscipit felis sit amet placerat interdum. Fusce hendrerit elit mauris, ut placerat tellus rutrum nec. Maecenas vehicula erat sed velit pharetra dignissim. Vestibulum consectetur luctus sapien, vel vestibulum enim gravida eu. Cras pulvinar risus libero, id luctus elit venenatis sit amet. Phasellus id ullamcorper nibh. Praesent quam sem, ullamcorper eget justo ut, feugiat vestibulum dolor. Nulla facilisi. Sed euismod dui erat, a consectetur nunc suscipit eu. Curabitur et ipsum eu sapien congue faucibus. 
+
+Nunc fringilla justo eget dui finibus bibendum. Morbi vel mi in augue vulputate feugiat at eu metus. Curabitur bibendum sollicitudin pellentesque. Mauris eget mi tortor. Quisque tortor felis, dapibus in mattis nec, aliquam vitae nisi. Nunc vitae quam vitae est fringilla egestas. Nullam eget diam dolor. Curabitur iaculis leo eu tempor convallis. 
+" />
+				</ScrollViewer>
+			</StackPanel>
+
+			<StackPanel Background="LightGreen"
+						Margin="16">
+
+				<TextBlock Text="ScrollMode: Disabled" />
+
+				<TextBlock Text="ScrollBarVisibility: Visible" />
+
+				<ScrollViewer Width="200"
+							  Height="200"
+							  VerticalScrollBarVisibility="Visible"
+							  VerticalScrollMode="Disabled">
+
+					<TextBlock TextWrapping="Wrap"
+							   Text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla pellentesque malesuada ligula at egestas. Donec vitae pellentesque nibh, et tempor elit. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam erat volutpat. Duis elementum ex nec ex tempor bibendum. Etiam pharetra viverra eros, vel blandit ligula placerat a. Phasellus nec mi iaculis, ornare magna sit amet, ultrices magna. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. 
+
+	Maecenas varius, orci nec aliquet vestibulum, ex ex tincidunt quam, vel laoreet nibh lacus ac urna. Donec eu dolor sed diam egestas efficitur. Praesent mattis, velit non mollis luctus, urna turpis lacinia massa, vel fermentum diam justo id neque. Maecenas ullamcorper ultricies metus vitae vulputate. Vivamus convallis massa odio, sed ornare neque euismod a. Nam tincidunt nec sapien at congue. Curabitur quis semper ex. Nulla pulvinar, lectus quis malesuada pretium, nulla orci sollicitudin lectus, et blandit mi nisi finibus massa. Nullam ullamcorper erat nec elit maximus lobortis. Morbi mauris leo, dapibus et efficitur sit amet, malesuada vitae lectus. Sed quis porta sapien, consectetur ultricies lectus. Cras at elementum diam, sit amet lobortis orci. 
+
+	Nam ut nisl lorem. Cras malesuada leo magna, id lacinia augue ultricies ut. Etiam eu arcu efficitur diam vestibulum congue. Nunc sed tortor nulla. Pellentesque ut fringilla nunc, non laoreet elit. Suspendisse elementum, nisi id condimentum elementum, ex est lobortis tortor, at ultricies lacus turpis ut eros. Vestibulum tincidunt purus a ex faucibus ultricies. Quisque nulla sapien, sodales ac sapien et, vestibulum euismod enim. Duis eget eros elementum, dictum arcu eu, vestibulum lorem. Ut ac molestie mi. Fusce hendrerit ac neque sit amet tincidunt. Donec convallis eros ut laoreet efficitur. Mauris arcu odio, pharetra ut pharetra ut, tincidunt a lectus. Aliquam erat volutpat. Vivamus non est volutpat, varius neque non, efficitur magna. In pellentesque dapibus iaculis. 
+
+	Duis suscipit felis sit amet placerat interdum. Fusce hendrerit elit mauris, ut placerat tellus rutrum nec. Maecenas vehicula erat sed velit pharetra dignissim. Vestibulum consectetur luctus sapien, vel vestibulum enim gravida eu. Cras pulvinar risus libero, id luctus elit venenatis sit amet. Phasellus id ullamcorper nibh. Praesent quam sem, ullamcorper eget justo ut, feugiat vestibulum dolor. Nulla facilisi. Sed euismod dui erat, a consectetur nunc suscipit eu. Curabitur et ipsum eu sapien congue faucibus. 
+
+	Nunc fringilla justo eget dui finibus bibendum. Morbi vel mi in augue vulputate feugiat at eu metus. Curabitur bibendum sollicitudin pellentesque. Mauris eget mi tortor. Quisque tortor felis, dapibus in mattis nec, aliquam vitae nisi. Nunc vitae quam vitae est fringilla egestas. Nullam eget diam dolor. Curabitur iaculis leo eu tempor convallis. " />
+				</ScrollViewer>
+			</StackPanel>
+
+			<StackPanel Background="LightPink"
+						Margin="16">
+
+				<TextBlock Text="ScrollMode: Disabled" />
+
+				<TextBlock Text="ScrollBarVisibility: Visible" />
+
+				<TextBlock x:Name="MyTextBlock" />
+
+				<ScrollViewer Width="200"
+							  Height="200"
+							  VerticalScrollBarVisibility="Visible"
+							  VerticalScrollMode="Disabled">
+					<StackPanel>
+
+						<Button  x:Name="MyButton"
+								 Content="Press Me" />
+
+						<TextBlock TextWrapping="Wrap"
+								   Text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla pellentesque malesuada ligula at egestas. Donec vitae pellentesque nibh, et tempor elit. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam erat volutpat. Duis elementum ex nec ex tempor bibendum. Etiam pharetra viverra eros, vel blandit ligula placerat a. Phasellus nec mi iaculis, ornare magna sit amet, ultrices magna. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. 
+
+	Maecenas varius, orci nec aliquet vestibulum, ex ex tincidunt quam, vel laoreet nibh lacus ac urna. Donec eu dolor sed diam egestas efficitur. Praesent mattis, velit non mollis luctus, urna turpis lacinia massa, vel fermentum diam justo id neque. Maecenas ullamcorper ultricies metus vitae vulputate. Vivamus convallis massa odio, sed ornare neque euismod a. Nam tincidunt nec sapien at congue. Curabitur quis semper ex. Nulla pulvinar, lectus quis malesuada pretium, nulla orci sollicitudin lectus, et blandit mi nisi finibus massa. Nullam ullamcorper erat nec elit maximus lobortis. Morbi mauris leo, dapibus et efficitur sit amet, malesuada vitae lectus. Sed quis porta sapien, consectetur ultricies lectus. Cras at elementum diam, sit amet lobortis orci. 
+
+	Nam ut nisl lorem. Cras malesuada leo magna, id lacinia augue ultricies ut. Etiam eu arcu efficitur diam vestibulum congue. Nunc sed tortor nulla. Pellentesque ut fringilla nunc, non laoreet elit. Suspendisse elementum, nisi id condimentum elementum, ex est lobortis tortor, at ultricies lacus turpis ut eros. Vestibulum tincidunt purus a ex faucibus ultricies. Quisque nulla sapien, sodales ac sapien et, vestibulum euismod enim. Duis eget eros elementum, dictum arcu eu, vestibulum lorem. Ut ac molestie mi. Fusce hendrerit ac neque sit amet tincidunt. Donec convallis eros ut laoreet efficitur. Mauris arcu odio, pharetra ut pharetra ut, tincidunt a lectus. Aliquam erat volutpat. Vivamus non est volutpat, varius neque non, efficitur magna. In pellentesque dapibus iaculis. 
+
+	Duis suscipit felis sit amet placerat interdum. Fusce hendrerit elit mauris, ut placerat tellus rutrum nec. Maecenas vehicula erat sed velit pharetra dignissim. Vestibulum consectetur luctus sapien, vel vestibulum enim gravida eu. Cras pulvinar risus libero, id luctus elit venenatis sit amet. Phasellus id ullamcorper nibh. Praesent quam sem, ullamcorper eget justo ut, feugiat vestibulum dolor. Nulla facilisi. Sed euismod dui erat, a consectetur nunc suscipit eu. Curabitur et ipsum eu sapien congue faucibus. 
+
+	Nunc fringilla justo eget dui finibus bibendum. Morbi vel mi in augue vulputate feugiat at eu metus. Curabitur bibendum sollicitudin pellentesque. Mauris eget mi tortor. Quisque tortor felis, dapibus in mattis nec, aliquam vitae nisi. Nunc vitae quam vitae est fringilla egestas. Nullam eget diam dolor. Curabitur iaculis leo eu tempor convallis. " />
+					</StackPanel>
+				</ScrollViewer>
+			</StackPanel>
+		</StackPanel>
+	</ScrollViewer>
+</UserControl>

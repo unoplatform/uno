@@ -1,0 +1,81 @@
+﻿<UserControl x:Class="UITests.Shared.Windows_UI_Xaml_Controls.RelativePanel.RelativePanel_RightAlignedPanel_II"
+			 xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+			 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			 xmlns:local="using:UITests.Shared.Windows_UI_Xaml_Controls.RelativePanel"
+			 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 xmlns:controls="using:Uno.UI.Samples.Controls"
+			 mc:Ignorable="">
+
+	<controls:SampleControl SampleDescription="RelativePanel_RightAlignedPanel_II">
+		<controls:SampleControl.SampleContent>
+			<DataTemplate>
+				<StackPanel>
+
+					<TextBlock Text="2x2 4 color square + Black stretched rectangle with margins" />
+					
+					<RelativePanel Background="Gray"
+								   HorizontalAlignment="Right">
+
+						<Border x:Name="Corny4"
+								Background="CornflowerBlue"
+								Width="100"
+								Height="100" />
+
+						<Border x:Name="Greeny3"
+								Background="Lime"
+								Width="100"
+								Height="100"
+								RelativePanel.RightOf="Corny4" />
+
+						<Border x:Name="Redish"
+								Background="Tomato"
+								Width="100"
+								Height="100"
+								RelativePanel.Below="Corny4"
+								RelativePanel.AlignRightWith="Greeny3" />
+
+						<Border x:Name="Burple"
+								Background="Violet"
+								Width="100"
+								Height="100"
+								RelativePanel.Below="Corny4" />
+
+						<Border Background="Black"
+								VerticalAlignment="Stretch"
+								HorizontalAlignment="Stretch"
+								RelativePanel.AlignTopWithPanel="True"
+								RelativePanel.AlignBottomWithPanel="True"
+								RelativePanel.AlignLeftWithPanel="True"
+								RelativePanel.AlignRightWithPanel="True"
+								Margin="25" />
+					</RelativePanel>
+
+					<TextBlock Text="Green RightOf and Below Blue; Red RightOf and Below Green" />
+
+					<RelativePanel Background="Gray"
+								   HorizontalAlignment="Right">
+
+						<Border x:Name="Corny5"
+								Background="CornflowerBlue"
+								Width="100"
+								Height="100" />
+
+						<Border x:Name="Greeny4"
+								Background="Lime"
+								Width="100"
+								Height="100"
+								RelativePanel.Below="Corny5"
+								RelativePanel.RightOf="Corny5" />
+
+						<Border x:Name="Redish2"
+								Background="Tomato"
+								Width="100"
+								Height="100"
+								RelativePanel.Below="Greeny4"
+								RelativePanel.RightOf="Greeny4" />
+					</RelativePanel>
+				</StackPanel>
+			</DataTemplate>
+		</controls:SampleControl.SampleContent>
+	</controls:SampleControl>
+</UserControl>

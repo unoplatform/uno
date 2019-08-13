@@ -1,0 +1,19 @@
+﻿<UserControl x:Class="UITests.Shared.Windows_UI_Xaml_Controls.ProgressRing.ProgressRing_IsActive"
+			 xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+			 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			 xmlns:local="using:UITests.Shared.Windows_UI_Xaml_Controls.ProgressRing"
+			 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 mc:Ignorable="">
+
+	<StackPanel>
+
+		<CheckBox x:Name="IsActive"
+				  Content="IsActive"
+				  IsChecked="True" />
+
+		<ProgressRing IsActive="{Binding IsChecked, ElementName=IsActive}"
+					  Height="50"
+					  Width="50"
+					  Foreground="Red" />
+	</StackPanel>
+</UserControl>

@@ -1,0 +1,54 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+					xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+					xmlns:local="using:UITests.Shared.Windows_UI_Xaml_Controls.LayoutTestControl">
+
+	<Style TargetType="local:MeasureArrangeContentControl">
+
+		<Setter Property="Background"
+				Value="Yellow" />
+		
+		<Setter Property="Template">
+			<Setter.Value>
+				<ControlTemplate TargetType="local:MeasureArrangeContentControl">
+					
+					<Grid Background="{TemplateBinding Background}"
+						  Height="500"
+						  Width="300"
+						  HorizontalAlignment="Left"
+						  VerticalAlignment="Top">
+
+						<TextBlock Text="{Binding MeasureCount, ElementName=PART_CounterControl}"
+								   VerticalAlignment="Top"
+								   HorizontalAlignment="Left"
+								   Foreground="Red"
+								   Width="100"
+								   Height="25"
+								   Margin="10,0,0,0" />
+
+						<TextBlock Text="{Binding ArrangeCount, ElementName=PART_CounterControl}"
+								   Foreground="Red"
+								   VerticalAlignment="Top"
+								   HorizontalAlignment="Left"
+								   Height="25"
+								   Width="100"
+								   Margin="10,25,0,0" />
+
+						<Button Content="Update"
+								x:Name="PART_UpdateButton"
+								HorizontalAlignment="Right"
+								VerticalAlignment="Top" />
+						
+						<local:MeasureArrangeCounter x:Name="PART_CounterControl"
+													 Content="{TemplateBinding Content}"
+													 ContentTemplate="{TemplateBinding ContentTemplate}"
+													 ContentTemplateSelector="{TemplateBinding ContentTemplateSelector}"
+													 HorizontalContentAlignment="Stretch"
+													 VerticalContentAlignment="Stretch"
+													 Margin="10,50,0,0" />
+					</Grid>
+				</ControlTemplate>
+			</Setter.Value>
+		</Setter>
+	</Style>
+</ResourceDictionary>
+

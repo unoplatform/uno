@@ -1,0 +1,56 @@
+﻿<UserControl x:Class="UITests.Shared.Windows_UI_Xaml_Controls.LayoutTestControl.Collapsed_Child"
+			 xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+			 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			 xmlns:local="using:UITests.Shared.Windows_UI_Xaml_Controls.LayoutTestControl"
+			 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 mc:Ignorable="">
+
+	<StackPanel>
+
+		<TextBlock Text="Border: You should see nothing (no red)" />
+		
+		<Border HorizontalAlignment="Left"
+				VerticalAlignment="Top"
+				Background="Red">
+			<Border Height="50"
+					Width="50"
+					Visibility="Collapsed" />
+		</Border>
+
+		<TextBlock Text="Grid: You should see a green square (no red)" />
+
+		<Grid HorizontalAlignment="Left"
+			  VerticalAlignment="Top"
+			  Background="Red">
+			<Grid.RowDefinitions>
+				<RowDefinition Height="Auto" />
+				<RowDefinition Height="Auto" />
+			</Grid.RowDefinitions>
+
+			<Border Grid.Row="0"
+					Height="50"
+					Width="50"
+					Visibility="Collapsed" />
+			
+			<Border Grid.Row="1"
+					Height="50"
+					Width="50"
+					Background="Green" />
+		</Grid>
+
+		<TextBlock Text="StackPanel: You should see a green square (no red)" />
+
+		<StackPanel HorizontalAlignment="Left"
+					VerticalAlignment="Top"
+					Background="Red">
+
+			<Border Height="50"
+					Width="50"
+					Visibility="Collapsed" />
+
+			<Border Height="50"
+					Width="50"
+					Background="Green" />
+		</StackPanel>
+	</StackPanel>
+</UserControl>

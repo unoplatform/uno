@@ -1,0 +1,66 @@
+﻿<UserControl x:Class="UITests.Shared.Windows_UI_Xaml_Controls.RelativePanel.RelativePanelBottom"
+			 xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+			 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			 xmlns:local="using:UITests.Shared.Windows_UI_Xaml_Controls.RelativePanel"
+			 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 xmlns:controls="using:Uno.UI.Samples.Controls"
+			 mc:Ignorable="">
+
+	<StackPanel>
+
+		<TextBlock Text="Red above Blue" />
+
+		<RelativePanel Background="Gray">
+
+			<Border x:Name="Top"
+					Background="Red"
+					Height="50"
+					Width="50"
+					RelativePanel.AlignTopWithPanel="True" />
+
+			<Border Background="Green"
+					Width="50"
+					RelativePanel.Above="Bottom"
+					RelativePanel.Below="Top" />
+
+			<Border x:Name="Bottom"
+					Background="Blue"
+					Height="50"
+					Width="50"
+					RelativePanel.AlignBottomWithPanel="True" />
+		</RelativePanel>
+
+		<TextBlock Text="Red above Green above Blue" />
+
+		<RelativePanel Height="200"
+					   Background="Gray">
+
+			<Border x:Name="Top2"
+					Background="Red"
+					Height="50"
+					Width="50"
+					RelativePanel.AlignTopWithPanel="True" />
+
+			<Border Background="Green"
+					Width="50"
+					RelativePanel.Above="Bottom2"
+					RelativePanel.Below="Top2" />
+
+			<Border x:Name="Bottom2"
+					Background="Blue"
+					Height="50"
+					Width="50"
+					RelativePanel.AlignBottomWithPanel="True" />
+		</RelativePanel>
+
+		<TextBlock Text="Red" />
+
+		<RelativePanel Background="Gray">
+
+			<Border Background="Red"
+					Height="50"
+					Width="50"
+					RelativePanel.AlignBottomWithPanel="True" />
+		</RelativePanel>
+	</StackPanel>
+</UserControl>

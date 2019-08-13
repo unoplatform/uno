@@ -1,0 +1,114 @@
+﻿<UserControl x:Class="UITests.Shared.Windows_UI_Xaml_Controls.VisualStateTestControl.VisualStateButton"
+			 xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+			 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			 xmlns:local="using:UITests.Shared.Windows_UI_Xaml_Controls.VisualStateTestControl"
+			 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 xmlns:controls="using:Uno.UI.Samples.Controls"
+			 mc:Ignorable="">
+
+	<controls:SampleControl SampleDescription="VisualStateButton">
+		<controls:SampleControl.SampleContent>
+			<DataTemplate>
+				<Button Content="Press Me!"
+						Background="Green">
+					<Button.Template>
+						<ControlTemplate TargetType="Button">
+							<Grid>
+								<VisualStateManager.VisualStateGroups>
+									<VisualStateGroup x:Name="CommonStates">
+										<VisualState x:Name="Normal" />
+
+										<VisualState x:Name="PointerOver">
+											<Storyboard>
+												<ObjectAnimationUsingKeyFrames Storyboard.TargetName="Border"
+																			   Storyboard.TargetProperty="Background">
+													<DiscreteObjectKeyFrame KeyTime="0"
+																			Value="Orange" />
+												</ObjectAnimationUsingKeyFrames>
+												<ObjectAnimationUsingKeyFrames Storyboard.TargetName="ButonContentPresenter"
+																			   Storyboard.TargetProperty="Foreground">
+													<DiscreteObjectKeyFrame KeyTime="0"
+																			Value="Blue" />
+												</ObjectAnimationUsingKeyFrames>
+											</Storyboard>
+										</VisualState>
+
+										<VisualState x:Name="Pressed">
+											<Storyboard>
+
+												<ObjectAnimationUsingKeyFrames Storyboard.TargetName="Border"
+																			   Storyboard.TargetProperty="Background">
+													<DiscreteObjectKeyFrame KeyTime="0"
+																			Value="DeepPink" />
+												</ObjectAnimationUsingKeyFrames>
+
+												<ObjectAnimationUsingKeyFrames Storyboard.TargetName="ButonContentPresenter"
+																			   Storyboard.TargetProperty="Foreground">
+													<DiscreteObjectKeyFrame KeyTime="0"
+																			Value="DarkGoldenRod" />
+												</ObjectAnimationUsingKeyFrames>
+
+												<DoubleAnimation Storyboard.TargetName="BorderScale"
+																 Storyboard.TargetProperty="ScaleX"
+																 Duration="00:00:00.200"
+																 To="0.9" />
+
+												<DoubleAnimation Storyboard.TargetName="BorderScale"
+																 Storyboard.TargetProperty="ScaleY"
+																 Duration="00:00:00.200"
+																 To="0.9" />
+											</Storyboard>
+										</VisualState>
+
+										<VisualState x:Name="Disabled">
+											<Storyboard>
+
+												<ObjectAnimationUsingKeyFrames Storyboard.TargetName="Border"
+																			   Storyboard.TargetProperty="Background">
+													<DiscreteObjectKeyFrame KeyTime="0"
+																			Value="Gray" />
+												</ObjectAnimationUsingKeyFrames>
+
+												<ObjectAnimationUsingKeyFrames Storyboard.TargetName="Border"
+																			   Storyboard.TargetProperty="BorderBrush">
+													<DiscreteObjectKeyFrame KeyTime="0"
+																			Value="DarkGray" />
+												</ObjectAnimationUsingKeyFrames>
+
+												<ObjectAnimationUsingKeyFrames Storyboard.TargetName="ButonContentPresenter"
+																			   Storyboard.TargetProperty="Foreground">
+													<DiscreteObjectKeyFrame KeyTime="0"
+																			Value="White" />
+												</ObjectAnimationUsingKeyFrames>
+											</Storyboard>
+										</VisualState>
+									</VisualStateGroup>
+								</VisualStateManager.VisualStateGroups>
+
+								<Border x:Name="Border"
+										Background="{TemplateBinding Background}"
+										BorderBrush="{TemplateBinding BorderBrush}"
+										BorderThickness="{TemplateBinding BorderThickness}"
+										Margin="3"
+										RenderTransformOrigin="0.5,0.5">
+									<Border.RenderTransform>
+										<ScaleTransform x:Name="BorderScale" />
+									</Border.RenderTransform>
+
+									<ContentPresenter x:Name="ButonContentPresenter"
+													  Content="{TemplateBinding Content}"
+													  ContentTransitions="{TemplateBinding ContentTransitions}"
+													  ContentTemplate="{TemplateBinding ContentTemplate}"
+													  Margin="{TemplateBinding Padding}"
+													  HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+													  VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+													  AutomationProperties.AccessibilityView="Raw" />
+								</Border>
+							</Grid>
+						</ControlTemplate>
+					</Button.Template>
+				</Button>
+			</DataTemplate>
+		</controls:SampleControl.SampleContent>
+	</controls:SampleControl>
+</UserControl>

@@ -1,0 +1,20 @@
+﻿<UserControl x:Class="UITests.Shared.Windows_UI_Xaml_Controls.LayoutTestControl.ContentControlTest"
+			 xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+			 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			 xmlns:local="using:UITests.Shared.Windows_UI_Xaml_Controls.LayoutTestControl"
+			 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 mc:Ignorable="">
+
+	<Grid>
+		<Button Content="ChangeContent"
+				Click="ChangeContentClick"
+				VerticalAlignment="Top"
+				HorizontalAlignment="Left"
+				Height="50" />
+
+		<ContentControl x:Name="MyContent"
+						Background="Green"
+						Margin="10,50,0,0" />
+	</Grid>
+</UserControl>
+

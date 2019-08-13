@@ -1,0 +1,46 @@
+﻿<UserControl x:Class="UITests.Shared.Windows_UI_Xaml_Controls.ScrollViewerTests.ScrollViewer_ContentInheritance"
+			 xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+			 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			 xmlns:local="using:UITests.Shared.Windows_UI_Xaml_Controls.ScrollViewerTests"
+			 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 xmlns:controls="using:Uno.UI.Samples.Controls"
+			 mc:Ignorable="">
+
+	<UserControl.Resources>
+		<Style x:Key="scrollViewerOverrideStyle"
+			   TargetType="ContentControl">
+			<Setter Property="Template">
+				<Setter.Value>
+					<ControlTemplate TargetType="ContentControl">
+						
+						<ScrollViewer Tag="ScrollViewer's tag"
+									  Background="Yellow">
+
+							<StackPanel Background="CadetBlue">
+
+								<TextBlock Text="Inside the ScrolViewer" />
+
+								<ContentControl Content="{TemplateBinding Tag}" />
+
+								<ContentPresenter Content="{TemplateBinding Content}" />
+							</StackPanel>
+						</ScrollViewer>
+					</ControlTemplate>
+				</Setter.Value>
+			</Setter>
+		</Style>
+	</UserControl.Resources>
+
+	<controls:SampleControl SampleDescription="This test demonstrates that the TemplatedParent of the inner content control is not overriden by the ScrollContentPresenter.">
+		<controls:SampleControl.SampleContent>
+			<DataTemplate>
+				<ContentControl Style="{StaticResource scrollViewerOverrideStyle}"
+								Tag="ContentControls's tag">
+					<StackPanel>
+						<TextBlock Text="The text below should be 'ContentControl Tag'" />
+					</StackPanel>
+				</ContentControl>
+			</DataTemplate>
+		</controls:SampleControl.SampleContent>
+	</controls:SampleControl>
+</UserControl>

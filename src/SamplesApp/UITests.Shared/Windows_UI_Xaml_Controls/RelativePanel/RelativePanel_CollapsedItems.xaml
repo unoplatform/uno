@@ -1,0 +1,63 @@
+﻿<UserControl x:Class="UITests.Shared.Windows_UI_Xaml_Controls.RelativePanel.RelativePanel_CollapsedItems"
+			 xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+			 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			 xmlns:local="using:UITests.Shared.Windows_UI_Xaml_Controls.RelativePanel"
+			 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 xmlns:controls="using:Uno.UI.Samples.Controls"
+			 mc:Ignorable="">
+
+	<controls:SampleControl SampleDescription="The sample illustrates the behavior of a RelativePanel with Collapsed items.">
+		<controls:SampleControl.SampleContent>
+			<DataTemplate>
+				<StackPanel>
+					<RelativePanel Background="BlanchedAlmond"
+								   Margin="0,50,0,0">
+
+						<TextBlock x:Name="Top"
+								   Text="Top" />
+
+						<TextBlock x:Name="CenterLeft"
+								   Text="CenterLeft"
+								   RelativePanel.Below="Top"
+								   RelativePanel.Above="Bottom" />
+
+						<TextBlock x:Name="CenterRight"
+								   Text="CenterRight"
+								   RelativePanel.RightOf="CenterLeft"
+								   RelativePanel.Above="Bottom"
+								   RelativePanel.Below="Top" />
+
+						<TextBlock x:Name="Bottom"
+								   Text="Bottom"
+								   RelativePanel.AlignBottomWithPanel="True" />
+					</RelativePanel>
+
+					<TextBlock Margin="0,50,0,0"
+							   Text="The following panel has the same children as the one above but CenterLeft is Collapsed." />
+
+					<RelativePanel Background="BlanchedAlmond">
+
+						<TextBlock x:Name="Top2"
+								   Text="Top" />
+
+						<TextBlock x:Name="CenterLeft2"
+								   Text="CenterLeft"
+								   Visibility="Collapsed"
+								   RelativePanel.Below="Top2"
+								   RelativePanel.Above="Bottom2" />
+
+						<TextBlock x:Name="CenterRight2"
+								   Text="CenterRight"
+								   RelativePanel.RightOf="CenterLeft2"
+								   RelativePanel.Above="Bottom2"
+								   RelativePanel.Below="Top2" />
+
+						<TextBlock x:Name="Bottom2"
+								   Text="Bottom"
+								   RelativePanel.AlignBottomWithPanel="True" />
+					</RelativePanel>
+				</StackPanel>
+			</DataTemplate>
+		</controls:SampleControl.SampleContent>
+	</controls:SampleControl>
+</UserControl>

@@ -1,0 +1,81 @@
+﻿<UserControl x:Class="UITests.Shared.Windows_UI_Xaml_Controls.GridView.GridView_Vertical_MaxItemWidth"
+			 xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+			 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			 xmlns:local="using:UITests.Shared.Windows_UI_Xaml_Controls.GridView"
+			 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 xmlns:win="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+			 xmlns:controls="using:Uno.UI.Samples.Controls"
+			 mc:Ignorable="">
+
+	<controls:SampleControl SampleDescription="Demonstrates the use of the ItemMaxWidth property on supported platforms, where the items should use up all the space.">
+		<controls:SampleControl.SampleContent>
+			<DataTemplate>
+				<StackPanel>
+
+					<Border BorderThickness="1"
+							BorderBrush="Green"
+							Height="150"
+							Width="300">
+
+						<GridView ItemsSource="{Binding [SampleItems]}"
+								  win:ScrollViewer.HorizontalScrollBarVisibility="Auto"
+								  win:ScrollViewer.HorizontalScrollMode="Auto">
+							<GridView.ItemTemplate>
+								<DataTemplate>
+
+									<Border Background="White">
+										<TextBlock Text="{Binding}"
+												   Foreground="Blue"
+												   Height="50" />
+									</Border>
+								</DataTemplate>
+							</GridView.ItemTemplate>
+						</GridView>
+					</Border>
+
+					<Border BorderThickness="1"
+							BorderBrush="Purple"
+							Height="150"
+							Width="400">
+
+						<GridView ItemsSource="{Binding [SampleItems]}"
+								  win:ScrollViewer.HorizontalScrollBarVisibility="Auto"
+								  win:ScrollViewer.HorizontalScrollMode="Auto">
+							<GridView.ItemTemplate>
+								<DataTemplate>
+
+									<Border Background="White">
+										<TextBlock Text="{Binding}"
+												   Foreground="Blue"
+												   Height="50" />
+									</Border>
+								</DataTemplate>
+							</GridView.ItemTemplate>
+						</GridView>
+					</Border>
+
+					<Border BorderThickness="1"
+							BorderBrush="Purple"
+							Height="150"
+							Width="500">
+
+						<GridView ItemsSource="{Binding [SampleItems]}"
+								  win:ScrollViewer.HorizontalScrollBarVisibility="Auto"
+								  win:ScrollViewer.HorizontalScrollMode="Auto">
+							<GridView.ItemTemplate>
+								<DataTemplate>
+
+									<Border Background="White">
+										<TextBlock Text="{Binding}"
+												   Foreground="Blue"
+												   Height="50" />
+									</Border>
+								</DataTemplate>
+							</GridView.ItemTemplate>
+						</GridView>
+					</Border>
+				</StackPanel>
+			</DataTemplate>
+		</controls:SampleControl.SampleContent>
+	</controls:SampleControl>
+</UserControl>

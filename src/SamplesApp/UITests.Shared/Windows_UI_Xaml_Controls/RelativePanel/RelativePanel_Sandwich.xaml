@@ -1,0 +1,47 @@
+﻿<UserControl x:Class="UITests.Shared.Windows_UI_Xaml_Controls.RelativePanel.RelativePanel_Sandwich"
+			 xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+			 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			 xmlns:local="using:UITests.Shared.Windows_UI_Xaml_Controls.RelativePanel"
+			 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 xmlns:controls="using:Uno.UI.Samples.Controls"
+			 mc:Ignorable="">
+
+	<controls:SampleControl SampleDescription="RelativePanel sample with two controls side to side with two other controls over and under">
+		<controls:SampleControl.SampleContent>
+			<DataTemplate>
+				<StackPanel>
+					
+					<RelativePanel BorderThickness="0,1,0,0"
+								   BorderBrush="Black"
+								   MinHeight="39">
+
+						<Border Background="Red"
+								Height="30"
+								HorizontalAlignment="Stretch"
+								RelativePanel.AlignTopWithPanel="True"
+								x:Name="Banner" />
+
+						<TextBlock Text="(UltraAVX)"
+								   Margin="0,10,5,0"
+								   x:Name="Description"
+								   RelativePanel.Above="Time"
+								   RelativePanel.Below="Banner" />
+
+						<TextBlock Text="No Passes"
+								   Margin="0,10,0,0"
+								   RelativePanel.Above="Time"
+								   RelativePanel.RightOf="Description"
+								   RelativePanel.Below="Banner" />
+
+						<TextBlock VerticalAlignment="Center"
+								   Text="12:40PM, 3:50PM, 7:00PM, 10:10PM"
+								   RelativePanel.AlignBottomWithPanel="True"
+								   Margin="0,0,0,10"
+								   x:Name="Time" />
+					</RelativePanel>
+				</StackPanel>
+			</DataTemplate>
+		</controls:SampleControl.SampleContent>
+	</controls:SampleControl>
+</UserControl>
+

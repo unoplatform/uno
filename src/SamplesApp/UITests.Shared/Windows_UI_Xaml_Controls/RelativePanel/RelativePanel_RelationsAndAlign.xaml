@@ -1,0 +1,65 @@
+﻿<UserControl x:Class="UITests.Shared.Windows_UI_Xaml_Controls.RelativePanel.RelativePanel_RelationsAndAlign"
+			 xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+			 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			 xmlns:local="using:UITests.Shared.Windows_UI_Xaml_Controls.RelativePanel"
+			 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 xmlns:controls="using:Uno.UI.Samples.Controls"
+			 mc:Ignorable="">
+
+	<controls:SampleControl SampleDescription="Sample for a RelativePanel containing multiple children of fixed size with relative positionning">
+		<controls:SampleControl.SampleContent>
+			<DataTemplate>
+				<ScrollViewer>
+					<StackPanel>
+
+						<TextBlock Text="Green RightOf Blue; Red Below Blue; Red AlignRightWith Blue" />
+						
+						<RelativePanel Background="Gray">
+
+							<Border x:Name="Corny"
+									Background="CornflowerBlue"
+									Width="100"
+									Height="100" />
+
+							<Border x:Name="Greeny"
+									Background="Lime"
+									Width="100"
+									Height="100"
+									RelativePanel.RightOf="Corny" />
+
+							<Border x:Name="Redish"
+									Background="Tomato"
+									Width="100"
+									Height="100"
+									RelativePanel.Below="Corny"
+									RelativePanel.AlignRightWith="Greeny" />
+						</RelativePanel>
+
+						<TextBlock Text="Green Below Blue; Red RightOf Blue; Red AlignTopWith Green" />
+
+						<RelativePanel Background="Gray">
+
+							<Border x:Name="Corny2"
+									Background="CornflowerBlue"
+									Width="100"
+									Height="100" />
+
+							<Border x:Name="Greeny2"
+									Background="Lime"
+									Width="100"
+									Height="100"
+									RelativePanel.Below="Corny2" />
+
+							<Border x:Name="Redish2"
+									Background="Tomato"
+									Width="100"
+									Height="100"
+									RelativePanel.RightOf="Corny2"
+									RelativePanel.AlignTopWith="Greeny2" />
+						</RelativePanel>
+					</StackPanel>
+				</ScrollViewer>
+			</DataTemplate>
+		</controls:SampleControl.SampleContent>
+	</controls:SampleControl>
+</UserControl>

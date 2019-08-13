@@ -1,0 +1,89 @@
+﻿<UserControl x:Class="UITests.Shared.Windows_UI_Xaml_Controls.FlipViewTests.FlipViewVertical"
+			 xmlns:controls="using:Uno.UI.Samples.Controls"
+			 xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+			 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			 xmlns:local="using:UITests.Shared.Windows_UI_Xaml_Controls.FlipViewTests"
+			 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 xmlns:win="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+			 xmlns:ios="http://uno.ui/ios"
+			 xmlns:android="http://uno.ui/android"
+			 xmlns:wasm="http://uno.ui/wasm"
+			 mc:Ignorable="ios android wasm">
+
+	<controls:SampleControl SampleDescription="FlipViewVertical">
+		<controls:SampleControl.SampleContent>
+			<DataTemplate>
+				
+				<android:TextBlock Text="Not implemented for Android." />
+
+				<win:FlipView ItemsSource="{Binding [SampleItems]}"
+							  x:Name="FlipView"
+							  Width="300"
+							  Height="150"
+							  Background="Red">
+
+					<FlipView.ItemTemplate>
+						<DataTemplate>
+
+							<Border BorderBrush="Blue"
+									BorderThickness="3">
+
+								<StackPanel>
+
+									<TextBlock Text="Image"
+											   Height="20"
+											   Foreground="Blue" />
+
+									<Image Source="{Binding Uri}"
+										   Width="200"
+										   Height="100" />
+								</StackPanel>
+							</Border>
+						</DataTemplate>
+					</FlipView.ItemTemplate>
+					
+					<FlipView.ItemsPanel>
+						<ItemsPanelTemplate>
+							<win:VirtualizingStackPanel Orientation="Vertical" />
+							<ios:PagedCollectionView Orientation="Vertical" />
+						</ItemsPanelTemplate>
+					</FlipView.ItemsPanel>
+				</win:FlipView>
+				
+				<ios:FlipView ItemsSource="{Binding [SampleItems]}"
+							  x:Name="FlipView"
+							  Width="300"
+							  Height="150"
+							  Background="Red">
+					
+					<FlipView.ItemTemplate>
+						<DataTemplate>
+
+							<Border BorderBrush="Blue"
+									BorderThickness="3">
+								
+								<StackPanel>
+									<TextBlock Text="Image"
+											   Height="20"
+											   Foreground="Blue" />
+									<Image Source="{Binding Uri}"
+										   Width="200"
+										   Height="100" />
+								</StackPanel>
+							</Border>
+						</DataTemplate>
+					</FlipView.ItemTemplate>
+					
+					<FlipView.ItemsPanel>
+						<ItemsPanelTemplate>
+							<win:VirtualizingStackPanel Orientation="Vertical" />
+							<ios:PagedCollectionView Orientation="Vertical" />
+						</ItemsPanelTemplate>
+					</FlipView.ItemsPanel>
+				</ios:FlipView>
+				
+				<wasm:TextBlock Text="Not supported yet" />
+			</DataTemplate>
+		</controls:SampleControl.SampleContent>
+	</controls:SampleControl>
+</UserControl>

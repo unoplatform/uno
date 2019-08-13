@@ -1,0 +1,77 @@
+﻿<UserControl x:Class="UITests.Shared.Windows_UI_Xaml_Controls.VisualStateTestControl.VisualStateCheckBox"
+			 xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+			 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			 xmlns:local="using:UITests.Shared.Windows_UI_Xaml_Controls.VisualStateTestControl"
+			 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 xmlns:controls="using:Uno.UI.Samples.Controls"
+			 mc:Ignorable="">
+
+	<controls:SampleControl SampleDescription="VisualStateCheckBox">
+		<controls:SampleControl.SampleContent>
+			<DataTemplate>
+				<CheckBox Content="Check Me!">
+					<CheckBox.Template>
+						<ControlTemplate TargetType="CheckBox">
+
+							<Border Background="{TemplateBinding Background}"
+									BorderBrush="{TemplateBinding BorderBrush}"
+									BorderThickness="{TemplateBinding BorderThickness}">
+
+								<VisualStateManager.VisualStateGroups>
+									<VisualStateGroup x:Name="CheckStates">
+										<VisualState x:Name="Checked">
+											<Storyboard>
+												<DoubleAnimation Storyboard.TargetName="CheckGlyph"
+																 Storyboard.TargetProperty="Opacity"
+																 To="1"
+																 Duration="0" />
+											</Storyboard>
+										</VisualState>
+										<VisualState x:Name="Unchecked" />
+									</VisualStateGroup>
+								</VisualStateManager.VisualStateGroups>
+
+								<Grid>
+									<Grid.ColumnDefinitions>
+										<ColumnDefinition Width="27" />
+										<ColumnDefinition Width="*" />
+									</Grid.ColumnDefinitions>
+
+									<Grid VerticalAlignment="Top">
+
+										<Rectangle x:Name="NormalRectangle"
+												   Fill="White"
+												   Stroke="Black"
+												   StrokeThickness="2"
+												   UseLayoutRounding="False"
+												   Height="21"
+												   Width="21" />
+
+										<Path x:Name="CheckGlyph"
+											  Data="F1 M 0,58 L 2,56 L 6,60 L 13,51 L 15,53 L 6,64 z"
+											  Fill="Black"
+											  Height="14"
+											  Stretch="Fill"
+											  Width="16"
+											  Opacity="0"
+											  FlowDirection="LeftToRight" />
+									</Grid>
+
+									<ContentPresenter x:Name="ContentPresenter"
+													  ContentTemplate="{TemplateBinding ContentTemplate}"
+													  ContentTransitions="{TemplateBinding ContentTransitions}"
+													  Content="{TemplateBinding Content}"
+													  Margin="{TemplateBinding Padding}"
+													  HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+													  VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+													  Grid.Column="1"
+													  AutomationProperties.AccessibilityView="Raw" />
+								</Grid>
+							</Border>
+						</ControlTemplate>
+					</CheckBox.Template>
+				</CheckBox>
+			</DataTemplate>
+		</controls:SampleControl.SampleContent>
+	</controls:SampleControl>
+</UserControl>

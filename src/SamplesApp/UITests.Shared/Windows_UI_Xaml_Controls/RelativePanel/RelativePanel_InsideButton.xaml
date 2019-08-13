@@ -1,0 +1,181 @@
+﻿<UserControl x:Class="UITests.Shared.Windows_UI_Xaml_Controls.RelativePanel.RelativePanel_InsideButton"
+			 xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+			 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			 xmlns:local="using:UITests.Shared.Windows_UI_Xaml_Controls.RelativePanel"
+			 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 xmlns:controls="using:Uno.UI.Samples.Controls"
+			 xmlns:uno="using:Uno.UI.Samples.Controls"
+			 mc:Ignorable="">
+
+	<UserControl.Resources>
+
+		<Style x:Key="TextStyle"
+			   TargetType="TextBlock">
+
+			<Setter Property="LineStackingStrategy"
+					Value="BlockLineHeight" />
+			<Setter Property="TextTrimming"
+					Value="CharacterEllipsis" />
+			<Setter Property="TextWrapping"
+					Value="Wrap" />
+			<Setter Property="Foreground"
+					Value="#FFFFFFFF" />
+			<Setter Property="FontSize"
+					Value="14" />
+			<Setter Property="FontWeight"
+					Value="Normal" />
+			<Setter Property="MaxLines"
+					Value="0" />
+		</Style>
+
+		<Style x:Key="DefaultButtonStyle"
+			   TargetType="Button">
+
+			<Setter Property="Background"
+					Value="Gray" />
+			<Setter Property="Foreground"
+					Value="White" />
+			<Setter Property="HorizontalAlignment"
+					Value="Stretch" />
+			<Setter Property="VerticalAlignment"
+					Value="Stretch" />
+			<Setter Property="HorizontalContentAlignment"
+					Value="Center" />
+			<Setter Property="VerticalContentAlignment"
+					Value="Center" />
+			<Setter Property="FontWeight"
+					Value="Medium" />
+			<Setter Property="FontSize"
+					Value="14" />
+			<Setter Property="Margin"
+					Value="0,20,0,0" />
+			<Setter Property="MinHeight"
+					Value="45" />
+			<Setter Property="MinWidth"
+					Value="40" />
+			<Setter Property="Padding"
+					Value="0" />
+
+			<Setter Property="Template">
+				<Setter.Value>
+					<ControlTemplate TargetType="Button">
+
+						<ContentPresenter x:Name="ContentPresenter"
+										  AutomationProperties.AccessibilityView="Raw"
+										  Background="{TemplateBinding Background}"
+										  BorderBrush="{TemplateBinding BorderBrush}"
+										  BorderThickness="{TemplateBinding BorderThickness}"
+										  ContentTemplate="{TemplateBinding ContentTemplate}"
+										  ContentTransitions="{TemplateBinding ContentTransitions}"
+										  Content="{TemplateBinding Content}"
+										  Padding="{TemplateBinding Padding}"
+										  HorizontalAlignment="Stretch"
+										  HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+										  VerticalAlignment="Stretch"
+										  VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}">
+
+							<VisualStateManager.VisualStateGroups>
+								<VisualStateGroup x:Name="CommonStates">
+									<VisualState x:Name="Normal" />
+									<VisualState x:Name="PointerOver" />
+
+									<VisualState x:Name="Pressed">
+										<Storyboard>
+											<DoubleAnimation Duration="0"
+															 To="0.8"
+															 Storyboard.TargetProperty="Opacity"
+															 Storyboard.TargetName="ContentPresenter" />
+										</Storyboard>
+									</VisualState>
+
+									<VisualState x:Name="Disabled">
+										<Storyboard>
+											<DoubleAnimation Duration="0"
+															 To="0.3"
+															 Storyboard.TargetProperty="Opacity"
+															 Storyboard.TargetName="ContentPresenter" />
+										</Storyboard>
+									</VisualState>
+								</VisualStateGroup>
+							</VisualStateManager.VisualStateGroups>
+						</ContentPresenter>
+					</ControlTemplate>
+				</Setter.Value>
+			</Setter>
+		</Style>
+
+	</UserControl.Resources>
+
+	<controls:SampleControl SampleDescription="You should see a white text AND and blue button. There is a relative panel inside a button. It should only take the space it needs (text + chevron)">
+		<controls:SampleControl.SampleContent>
+			<DataTemplate>
+				<uno:StarStackPanel>
+
+					<TextBlock Text="I'm in a StarStackPanel and my size is *. I should have all the space that the button doesn't need"
+							   Style="{StaticResource TextStyle}"
+							   Foreground="Black"
+							   uno:StarStackPanel.Size="*" />
+
+					<Button Padding="0"
+							Background="#FF2ba9dd"
+							VerticalAlignment="Bottom"
+							HorizontalAlignment="Center"
+							VerticalContentAlignment="Bottom"
+							MaxWidth="276"
+							Style="{StaticResource DefaultButtonStyle}">
+
+						<RelativePanel Background="Transparent"
+									   VerticalAlignment="Stretch"
+									   HorizontalAlignment="Stretch"
+									   BorderBrush="Transparent"
+									   Padding="20,2,20,0">
+
+							<PathIcon x:Name="PrimaryIcon"
+									  Data="F1M0.5,17.001C0.382,17.001 0.265,16.96 0.169,16.876 -0.038,16.694 -0.058,16.378 0.125,16.17L6.879,8.501 0.125,0.831C-0.058,0.624 -0.038,0.308 0.169,0.126 0.377,-0.057 0.693,-0.037 0.875,0.17L7.92,8.17C8.086,8.359,8.086,8.642,7.92,8.831L0.875,16.832C0.776,16.944,0.639,17.001,0.5,17.001"
+									  Visibility="Collapsed"
+									  RelativePanel.AlignLeftWithPanel="True"
+									  RelativePanel.AlignTopWithPanel="True"
+									  RelativePanel.AlignBottomWithPanel="True" />
+
+							<PathIcon Data="F1M0.5,17.001C0.382,17.001 0.265,16.96 0.169,16.876 -0.038,16.694 -0.058,16.378 0.125,16.17L6.879,8.501 0.125,0.831C-0.058,0.624 -0.038,0.308 0.169,0.126 0.377,-0.057 0.693,-0.037 0.875,0.17L7.92,8.17C8.086,8.359,8.086,8.642,7.92,8.831L0.875,16.832C0.776,16.944,0.639,17.001,0.5,17.001"
+									  x:Name="Chevron"
+									  Foreground="#FFFFFFFF"
+									  Margin="10,0,0,0"
+									  VerticalAlignment="Center"
+									  RelativePanel.AlignRightWithPanel="True"
+									  RelativePanel.AlignTopWithPanel="True"
+									  RelativePanel.AlignBottomWithPanel="True" />
+
+							<PathIcon x:Name="SecondaryIcon"
+									  Data="F1M0.5,17.001C0.382,17.001 0.265,16.96 0.169,16.876 -0.038,16.694 -0.058,16.378 0.125,16.17L6.879,8.501 0.125,0.831C-0.058,0.624 -0.038,0.308 0.169,0.126 0.377,-0.057 0.693,-0.037 0.875,0.17L7.92,8.17C8.086,8.359,8.086,8.642,7.92,8.831L0.875,16.832C0.776,16.944,0.639,17.001,0.5,17.001"
+									  Visibility="Collapsed"
+									  RelativePanel.LeftOf="Chevron"
+									  RelativePanel.AlignTopWithPanel="True"
+									  RelativePanel.AlignBottomWithPanel="True" />
+
+							<uno:StarStackPanel VerticalAlignment="Center"
+												RelativePanel.AlignTopWithPanel="True"
+												RelativePanel.AlignBottomWithPanel="True"
+												RelativePanel.RightOf="PrimaryIcon"
+												RelativePanel.LeftOf="SecondaryIcon">
+								<TextBlock Text="Stuff"
+										   Style="{StaticResource TextStyle}"
+										   Visibility="Collapsed" />
+
+								<TextBlock Text="Débutez votre expérience"
+										   Style="{StaticResource TextStyle}" />
+
+								<TextBlock Text="Stuff"
+										   Style="{StaticResource TextStyle}"
+										   TextWrapping="Wrap"
+										   MaxLines="0"
+										   Visibility="Collapsed" />
+							</uno:StarStackPanel>
+						</RelativePanel>
+					</Button>
+				</uno:StarStackPanel>
+			</DataTemplate>
+		</controls:SampleControl.SampleContent>
+	</controls:SampleControl>
+</UserControl>
+

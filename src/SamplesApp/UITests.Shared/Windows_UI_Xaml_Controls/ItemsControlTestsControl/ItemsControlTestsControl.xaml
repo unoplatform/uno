@@ -1,0 +1,63 @@
+﻿<UserControl x:Class="UITests.Shared.Windows_UI_Xaml_Controls.ItemsControlTestsControl.ItemsControlTestsControl"
+			 xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+			 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			 xmlns:local="using:UITests.Shared.Windows_UI_Xaml_Controls.ItemsControlTestsControl"
+			 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 xmlns:controls="using:Uno.UI.Samples.Controls"
+			 xmlns:uno="using:Uno.UI.Samples.Controls"
+			 mc:Ignorable="">
+
+	<UserControl.Resources>
+
+		<Style x:Key="ContainerStyle1"
+			   TargetType="ContentPresenter">
+			<Setter Property="Width"
+					Value="30" />
+		</Style>
+
+		<Style x:Key="ContainerStyle2"
+			   TargetType="ContentPresenter">
+			<Setter Property="Width"
+					Value="10" />
+		</Style>
+
+		<ItemsPanelTemplate x:Key="ItemsPanelTemplate">
+			<uno:StarStackPanel Orientation="Horizontal"
+								HorizontalAlignment="Stretch"
+								Height="30"
+								Background="Red" />
+		</ItemsPanelTemplate>
+
+		<DataTemplate x:Key="ItemTemplate1">
+			<TextBlock Text="{Binding}"
+					   Foreground="Pink" />
+		</DataTemplate>
+
+		<DataTemplate x:Key="ItemTemplate2">
+			<TextBlock Text="{Binding}"
+					   Foreground="Blue" />
+		</DataTemplate>
+
+		<local:ObjectTemplateSelector x:Key="ItemTemplateSelector"
+									  ObjectForTemplate1="3"
+									  Template1="{StaticResource ItemTemplate1}"
+									  Template2="{StaticResource ItemTemplate2}" />
+
+		<local:ObjectStyleSelector x:Key="ItemContainerStyleSelector"
+								   ObjectForStyle1="3"
+								   Style1="{StaticResource ContainerStyle1}"
+								   Style2="{StaticResource ContainerStyle2}" />
+	</UserControl.Resources>
+
+	<controls:SampleControl SampleDescription="ItemsControlTestsControl">
+		<controls:SampleControl.SampleContent>
+			<DataTemplate>
+				<ItemsControl ItemsSource="{Binding [SampleItems]}"
+							  ItemsPanel="{StaticResource ItemsPanelTemplate}"
+							  ItemContainerStyleSelector="{StaticResource ItemContainerStyleSelector}"
+							  ItemTemplateSelector="{StaticResource ItemTemplateSelector}" />
+			</DataTemplate>
+		</controls:SampleControl.SampleContent>
+	</controls:SampleControl>
+</UserControl>
+

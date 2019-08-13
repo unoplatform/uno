@@ -1,0 +1,29 @@
+﻿<UserControl x:Class="UITests.Shared.Windows_UI_Xaml_Controls.ProgressBar.ProgressBar_ListView"
+			 xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+			 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			 xmlns:local="using:UITests.Shared.Windows_UI_Xaml_Controls.ProgressBar"
+			 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 mc:Ignorable="">
+
+	<Grid>
+
+		<ListView ItemsSource="{Binding}">
+			
+			<ListView.ItemTemplate>
+				<DataTemplate>
+					
+					<Grid Height="50">
+
+						<ProgressBar Width="200"
+									 Height="40"
+									 Minimum="0"
+									 Maximum="100"
+									 Value="{Binding}" />
+						
+						<TextBlock Text="{Binding}" />
+					</Grid>
+				</DataTemplate>
+			</ListView.ItemTemplate>
+		</ListView>
+	</Grid>
+</UserControl>

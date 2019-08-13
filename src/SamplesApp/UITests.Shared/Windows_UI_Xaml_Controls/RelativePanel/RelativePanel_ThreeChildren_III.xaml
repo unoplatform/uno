@@ -1,0 +1,65 @@
+﻿<UserControl x:Class="UITests.Shared.Windows_UI_Xaml_Controls.RelativePanel.RelativePanel_ThreeChildren_III"
+			 xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+			 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			 xmlns:local="using:UITests.Shared.Windows_UI_Xaml_Controls.RelativePanel"
+			 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 xmlns:controls="using:Uno.UI.Samples.Controls"
+			 mc:Ignorable="">
+
+	<controls:SampleControl SampleDescription="RelativePanel_ThreeChildren_III">
+		<controls:SampleControl.SampleContent>
+			<DataTemplate>
+				<StackPanel>
+
+					<TextBlock Text="Green RightOf and Below Blue; Red RightOf and Above Green" />
+
+					<RelativePanel Background="Gray">
+						
+						<Border x:Name="Corny06"
+								Background="CornflowerBlue"
+								Width="100"
+								Height="100" />
+
+						<Border x:Name="Greeny06"
+								Background="Lime"
+								Width="100"
+								Height="100"
+								RelativePanel.Below="Corny06"
+								RelativePanel.RightOf="Corny06" />
+						
+						<Border x:Name="Redish06"
+								Background="Tomato"
+								Width="100"
+								Height="100"
+								RelativePanel.Above="Greeny06"
+								RelativePanel.RightOf="Greeny06" />
+					</RelativePanel>
+
+					<TextBlock Text="Green RightOf and Below small Blue; Red RightOf and Above Green (Red is clipped)" />
+
+					<RelativePanel Background="Gray">
+
+						<Border x:Name="Corny07"
+								Background="CornflowerBlue"
+								Width="50"
+								Height="50" />
+
+						<Border x:Name="Greeny07"
+								Background="Lime"
+								Width="100"
+								Height="100"
+								RelativePanel.Below="Corny07"
+								RelativePanel.RightOf="Corny07" />
+						
+						<Border x:Name="Redish07"
+								Background="Tomato"
+								Width="100"
+								Height="100"
+								RelativePanel.Above="Greeny07"
+								RelativePanel.RightOf="Greeny07" />
+					</RelativePanel>
+				</StackPanel>
+			</DataTemplate>
+		</controls:SampleControl.SampleContent>
+	</controls:SampleControl>
+</UserControl>

@@ -1,0 +1,43 @@
+﻿<UserControl x:Class="UITests.Shared.Windows_UI_Xaml_Controls.EllipseTestControl.Ellipse_NoExplicitSize"
+			 xmlns:controls="using:Uno.UI.Samples.Controls"
+			 xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+			 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			 xmlns:local="using:UITests.Shared.Windows_UI_Xaml_Controls.EllipseTestControl"
+			 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 mc:Ignorable="">
+
+	<controls:SampleControl SampleDescription="An aqua ellipse should appear of size 100 by 100">
+		<controls:SampleControl.SampleContent>
+			<DataTemplate>
+				<StackPanel>
+
+					<Border Height="100"
+							Width="200"
+							Background="Orange">
+						<Ellipse HorizontalAlignment="Stretch"
+								 VerticalAlignment="Stretch"
+								 Fill="Aqua" />
+					</Border>
+					
+					<Border Height="100"
+							Width="200"
+							Background="Tomato">
+						<Ellipse HorizontalAlignment="Stretch"
+								 VerticalAlignment="Stretch"
+								 Stretch="Uniform"
+								 Fill="Aqua" />
+					</Border>
+
+					<Border Height="100"
+							Width="200"
+							Background="Gray">
+						<Ellipse HorizontalAlignment="Stretch"
+								 VerticalAlignment="Stretch"
+								 Stretch="UniformToFill"
+								 Fill="Aqua" />
+					</Border>
+				</StackPanel>
+			</DataTemplate>
+		</controls:SampleControl.SampleContent>
+	</controls:SampleControl>
+</UserControl>

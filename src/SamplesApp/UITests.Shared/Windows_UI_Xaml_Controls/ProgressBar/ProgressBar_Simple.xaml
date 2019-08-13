@@ -1,0 +1,36 @@
+﻿<UserControl x:Class="UITests.Shared.Windows_UI_Xaml_Controls.ProgressBar.ProgressBar_Simple"
+			 xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+			 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			 xmlns:local="using:UITests.Shared.Windows_UI_Xaml_Controls.ProgressBar"
+			 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 mc:Ignorable="">
+
+	<StackPanel>
+
+		<Slider x:Name="Slider"
+				Value="50" />
+
+		<TextBlock Text="Normal" />
+
+		<ProgressBar Value="{Binding Value, ElementName=Slider}" />
+
+		<TextBlock Text="Background/Foreground" />
+
+		<ProgressBar Value="{Binding Value, ElementName=Slider}"
+					 Background="Red"
+					 Foreground="Green" />
+
+		<TextBlock Text="Minimum/Maximum" />
+
+		<ProgressBar Value="{Binding Value, ElementName=Slider}"
+					 Minimum="25"
+					 Maximum="75" />
+
+		<TextBlock Text="Width/Height" />
+
+		<ProgressBar Value="{Binding Value, ElementName=Slider}"
+					 HorizontalAlignment="Left"
+					 Height="50"
+					 Width="50" />
+	</StackPanel>
+</UserControl>

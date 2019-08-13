@@ -1,0 +1,31 @@
+﻿<UserControl x:Class="UITests.Shared.Windows_UI_Xaml_Controls.ScrollViewerTests.ScrollViewer_Padding"
+			 xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+			 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			 xmlns:local="using:UITests.Shared.Windows_UI_Xaml_Controls.ScrollViewerTests"
+			 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 xmlns:controls="using:Uno.UI.Samples.Controls"
+			 mc:Ignorable="">
+
+	<controls:SampleControl SampleDescription="Testing ScrollViewer Padding">
+		<controls:SampleControl.SampleContent>
+			<DataTemplate>
+
+				<Border Background="Blue"
+						VerticalAlignment="Stretch"
+						HorizontalAlignment="Stretch">
+
+					<ScrollViewer Padding="20">
+
+						<Border Background="Red"
+								Height="2000">
+
+							<TextBox Margin="0,800,0,0"
+									 Header="Tap here:"
+									 PlaceholderText="Hello !" />
+						</Border>
+					</ScrollViewer>
+				</Border>
+			</DataTemplate>
+		</controls:SampleControl.SampleContent>
+	</controls:SampleControl>
+</UserControl>

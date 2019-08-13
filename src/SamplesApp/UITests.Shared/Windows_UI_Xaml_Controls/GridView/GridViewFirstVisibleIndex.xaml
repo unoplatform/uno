@@ -1,0 +1,62 @@
+﻿<UserControl x:Class="UITests.Shared.Windows_UI_Xaml_Controls.GridView.GridViewFirstVisibleIndex"
+			 xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+			 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			 xmlns:local="using:UITests.Shared.Windows_UI_Xaml_Controls.GridView"
+			 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 mc:Ignorable="">
+
+	<StackPanel>
+		
+		<TextBlock Text="FirstVisibleIndex:" />
+
+		<TextBlock x:Name="FirstVisibleIndexTextBlock" />
+
+		<TextBlock Text="LastVisibleIndex:" />
+
+		<TextBlock x:Name="LastVisibleIndexTextBlock" />
+
+		<GridView Loaded="ListView_Loaded"
+				  ItemsSource="0123456789ABCDEFGHIJKLMNOP"
+				  Width="150"
+				  Height="250">
+			
+			<GridView.ItemTemplate>
+				<DataTemplate>
+					
+					<Border Width="60"
+							BorderBrush="Red"
+							BorderThickness="2">
+						
+						<StackPanel>
+							
+							<TextBlock Height="14"
+									   Text="{Binding}"
+									   Foreground="Red"
+									   FontSize="10" />
+
+							<TextBlock Height="14"
+									   Text="{Binding}"
+									   Foreground="Red"
+									   FontSize="10" />
+
+							<TextBlock Height="14"
+									   Text="{Binding}"
+									   Foreground="Red"
+									   FontSize="10" />
+
+							<TextBlock Height="14"
+									   Text="{Binding}"
+									   Foreground="Red"
+									   FontSize="10" />
+
+							<TextBlock Height="14"
+									   Text="{Binding}"
+									   Foreground="Red"
+									   FontSize="10" />
+						</StackPanel>
+					</Border>
+				</DataTemplate>
+			</GridView.ItemTemplate>
+		</GridView>
+	</StackPanel>
+</UserControl>

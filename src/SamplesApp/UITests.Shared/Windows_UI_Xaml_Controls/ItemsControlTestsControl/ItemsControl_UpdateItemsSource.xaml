@@ -1,0 +1,24 @@
+﻿<UserControl x:Class="UITests.Shared.Windows_UI_Xaml_Controls.ItemsControlTestsControl.ItemsControl_UpdateItemsSource"
+			 xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+			 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			 xmlns:local="using:UITests.Shared.Windows_UI_Xaml_Controls.ItemsControlTestsControl"
+			 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 xmlns:controls="using:Uno.UI.Samples.Controls"
+			 mc:Ignorable="">
+
+	<controls:SampleControl SampleDescription="ItemsControl where ItemsSource is updated">
+		<controls:SampleControl.SampleContent>
+			<DataTemplate>
+				<StackPanel Orientation="Vertical">
+
+					<ItemsControl ItemsSource="{Binding [SampleItemsGenerated]}" />
+
+					<TextBox Text="{Binding [NewInput], Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+
+					<Button Content="Update items source"
+							Command="{Binding [UpdateWithNewInput]}" />
+				</StackPanel>
+			</DataTemplate>
+		</controls:SampleControl.SampleContent>
+	</controls:SampleControl>
+</UserControl>

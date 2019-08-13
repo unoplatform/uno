@@ -1,0 +1,36 @@
+﻿<UserControl x:Class="UITests.Shared.Windows_UI_Xaml_Controls.SolidColorBrushTests.Ignore_Letter_Case"
+			 xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+			 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			 xmlns:local="using:UITests.Shared.Windows_UI_Xaml_Controls.SolidColorBrushTests"
+			 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 mc:Ignorable="">
+
+	<StackPanel>
+
+		<TextBlock Text="DarkGoldenrod (official name)" />
+
+		<Border Height="50"
+				Width="50"
+				Background="DarkGoldenrod" />
+
+		<TextBlock Text="DarkGoldenRod" />
+
+		<Border Height="50"
+				Width="50"
+				Background="DarkGoldenRod" />
+
+		<TextBlock Text="darkgoldenrod" />
+
+		<Border Height="50"
+				Width="50"
+				Background="darkgoldenrod" />
+
+		<TextBlock Text="DARKGOLDENROD" />
+
+		<Border Height="50"
+				Width="50"
+				Background="DARKGOLDENROD" />
+
+	</StackPanel>
+</UserControl>
+

@@ -1,0 +1,52 @@
+﻿<UserControl x:Class="UITests.Shared.Windows_UI_Xaml_Controls.LayoutTestControl.StretchingControl_WithMaxDimensions"
+			 xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+			 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			 xmlns:local="using:UITests.Shared.Windows_UI_Xaml_Controls.LayoutTestControl"
+			 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 xmlns:controls="using:Uno.UI.Samples.Controls"
+			 mc:Ignorable="">
+
+
+	<controls:SampleControl SampleDescription="This sample illustrates how Stretch alignment works with MaxWidth and MaxHeight">
+		<controls:SampleControl.SampleContent>
+			<DataTemplate>
+
+				<Border Height="300"
+						Width="300"
+						BorderBrush="Red"
+						BorderThickness="1">
+					<Grid>
+						<Grid.RowDefinitions>
+							<RowDefinition Height="*" />
+							<RowDefinition Height="*" />
+						</Grid.RowDefinitions>
+
+						<Border Width="200"
+								Height="100"
+								Background="Tomato"
+								Grid.Row="0">
+
+							<TextBlock Foreground="White"
+									   TextWrapping="Wrap"
+									   MaxLines="0"
+									   Text="Reference : this control is 200x100. The next one should look like this" />
+						</Border>
+
+						<Border MaxWidth="200"
+								MaxHeight="100"
+								HorizontalAlignment="Stretch"
+								VerticalAlignment="Stretch"
+								Background="Olive"
+								Grid.Row="1">
+
+							<TextBlock Foreground="White"
+									   TextWrapping="Wrap"
+									   MaxLines="0"
+									   Text="This control has a MaxWidth and MaxHeight of 100 and is stretched" />
+						</Border>
+					</Grid>
+				</Border>
+			</DataTemplate>
+		</controls:SampleControl.SampleContent>
+	</controls:SampleControl>
+</UserControl>

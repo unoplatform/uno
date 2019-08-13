@@ -1,0 +1,10 @@
+﻿<UserControl x:Class="UITests.Shared.Windows_UI_Xaml_Controls.ApplicationView.ApplicationView_Orientation"
+			 xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+			 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			 xmlns:local="using:UITests.Shared.Windows_UI_Xaml_Controls.ApplicationView"
+			 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 mc:Ignorable="">
+
+	<TextBlock x:Name="Orientation" />
+
+</UserControl>

@@ -1,0 +1,31 @@
+﻿<UserControl x:Class="UITests.Shared.Windows_UI_Xaml_Controls.RelativePanel.RelativePanelVCenterLeftFixed"
+			 xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+			 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			 xmlns:local="using:UITests.Shared.Windows_UI_Xaml_Controls.RelativePanel"
+			 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 xmlns:controls="using:Uno.UI.Samples.Controls"
+			 mc:Ignorable="">
+
+	<controls:SampleControl SampleDescription="RelativePanel_AlignWithPanel_VerticallyCenter_Left_Fixed">
+		<controls:SampleControl.SampleContent>
+			<DataTemplate>
+				<StackPanel>
+
+					<TextBlock Text="Vertical Center, Left - Fixed height child" />
+
+					<RelativePanel Background="Gray"
+								   Height="200">
+
+						<Border x:Name="Corny5"
+								Width="100"
+								Height="100"
+								Background="CornflowerBlue"
+								RelativePanel.AlignLeftWithPanel="True"
+								RelativePanel.AlignVerticalCenterWithPanel="True" />
+					</RelativePanel>
+				</StackPanel>
+			</DataTemplate>
+		</controls:SampleControl.SampleContent>
+	</controls:SampleControl>
+</UserControl>
+

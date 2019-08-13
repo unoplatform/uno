@@ -1,0 +1,32 @@
+﻿<UserControl x:Class="UITests.Shared.Windows_UI_Xaml_Controls.LayoutTestControl.RemeasuresContentControlBorder"
+			 xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+			 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			 xmlns:local="using:UITests.Shared.Windows_UI_Xaml_Controls.LayoutTestControl"
+			 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 xmlns:controls="using:Uno.UI.Samples.Controls"
+			 mc:Ignorable="">
+
+	<controls:SampleControl SampleDescription="This sample a ContentControl with fixed height and width within a StackPanel to test that changing the Content doesn't relayout Parents">
+		<StackPanel>
+
+			<TextBlock Text="Pressing the button changes the Content of the ContentControl but shouldn't increase the measure/arrange counts" />
+
+			<TextBlock x:Name="MeasureText" />
+
+			<Button Content="ChangeContent"
+					Click="ChangeContentClick" />
+
+			<Grid Background="Blue"
+				  HorizontalAlignment="Center">
+				<ContentControl x:Name="MyContent"
+								Height="100"
+								Width="200">
+					<Border x:Name="ContentBorder"
+							Background="Chartreuse"
+							Width="50"
+							Height="50" />
+				</ContentControl>
+			</Grid>
+		</StackPanel>
+	</controls:SampleControl>
+</UserControl>

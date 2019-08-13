@@ -1,0 +1,70 @@
+﻿<UserControl x:Class="UITests.Shared.Windows_UI_Xaml_Controls.FontFamily.FontFamily_Defaults"
+			 xmlns:controls="using:Uno.UI.Samples.Controls"
+			 xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+			 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			 xmlns:local="using:UITests.Shared.Windows_UI_Xaml_Controls.FontFamily"
+			 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 mc:Ignorable="">
+
+	<controls:SampleControl SampleDescription="Default system fonts with different FontWeights">
+		<controls:SampleControl.SampleContent>
+			<DataTemplate>
+				<ScrollViewer>
+					<StackPanel>
+						<TextBlock Text="Default font in Thin"
+								   FontWeight="Thin"
+								   FontSize="30" />
+
+						<TextBlock Text="Default font in Thin Italic"
+								   FontWeight="Thin"
+								   FontStyle="Italic"
+								   FontSize="30" />
+
+						<TextBlock Text="Default font in Light"
+								   FontWeight="Light"
+								   FontSize="30" />
+
+						<TextBlock Text="Default font in Light Italic"
+								   FontWeight="Light"
+								   FontStyle="Italic"
+								   FontSize="30" />
+
+						<TextBlock Text="Default font"
+								   FontSize="30" />
+
+						<TextBlock Text="Default font italic"
+								   FontSize="30"
+								   FontStyle="Italic" />
+
+						<TextBlock Text="Default font in Medium"
+								   FontWeight="Medium"
+								   FontSize="30" />
+
+						<TextBlock Text="Default font in Medium Italic"
+								   FontWeight="Medium"
+								   FontStyle="Italic"
+								   FontSize="30" />
+
+						<TextBlock Text="Default font in Bold"
+								   FontWeight="Bold"
+								   FontSize="30" />
+
+						<TextBlock Text="Default font in Bold Italic"
+								   FontWeight="Bold"
+								   FontStyle="Italic"
+								   FontSize="30" />
+
+						<TextBlock Text="Default font in Black"
+								   FontWeight="Black"
+								   FontSize="30" />
+
+						<TextBlock Text="Default font in Black Italic"
+								   FontWeight="Black"
+								   FontStyle="Italic"
+								   FontSize="30" />
+					</StackPanel>
+				</ScrollViewer>
+			</DataTemplate>
+		</controls:SampleControl.SampleContent>
+	</controls:SampleControl>
+</UserControl>

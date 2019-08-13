@@ -1,0 +1,23 @@
+﻿<UserControl x:Class="UITests.Shared.Windows_Graphics_Display.BrightnessOverride.BrightnessOverride_SetBrightness"
+			 xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+			 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			 xmlns:local="using:UITests.Shared.Windows_Graphics_Display.BrightnessOverride"
+			 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 mc:Ignorable="">
+
+	<StackPanel>
+
+		<!-- SetBrightness Button -->
+		<Button Content="Set the brightness to 50%"
+				x:Name="SetBrightness" />
+
+		<!-- Reset Button -->
+		<Button Content="Reset"
+				x:Name="Reset" />
+			
+		<!-- Sample -->
+		<Border Background="Red"
+				Height="40"
+				Width="40" />
+	</StackPanel>
+</UserControl>

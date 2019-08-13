@@ -1,0 +1,25 @@
+﻿<UserControl x:Class="UITests.Shared.Windows_UI_Xaml.PolygonTestsControl.PolygonStrokeThickness10"
+			 xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+			 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			 xmlns:local="using:UITests.Shared.Windows_UI_Xaml.PolygonTestsControl"
+			 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 xmlns:controls="using:Uno.UI.Samples.Controls"
+			 mc:Ignorable="">
+
+	<controls:SampleControl SampleDescription="PolygonStrokeThickness10">
+		<controls:SampleControl.SampleContent>
+			<DataTemplate>
+				<Grid>
+					<Border Background="Red">
+						<Polygon Stroke="Blue"
+								 StrokeThickness="10"
+								 Fill="Cyan"
+								 Width="400"
+								 Height="400"
+								 Points="10,100.5 10,300 300,-200 300,100" />
+					</Border>
+				</Grid>
+			</DataTemplate>
+		</controls:SampleControl.SampleContent>
+	</controls:SampleControl>
+</UserControl>

@@ -1,0 +1,39 @@
+﻿<UserControl x:Class="UITests.Shared.Windows_UI_Xaml_Controls.ItemsControlTestsControl.ItemsControl_ItemContainerStyleSelector"
+			 xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+			 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			 xmlns:local="using:UITests.Shared.Windows_UI_Xaml_Controls.ItemsControlTestsControl"
+			 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 mc:Ignorable="">
+
+	<StackPanel>
+
+		<TextBlock Text="Even indices should have green text." />
+
+		<TextBlock Text="Odd indices should have red text." />
+
+		<TextBlock Text="ItemsControl" />
+
+		<ItemsControl ItemsSource="{Binding [SampleItems]}">
+			<ItemsControl.ItemContainerStyleSelector>
+				<local:EvenOddStyleSelector />
+			</ItemsControl.ItemContainerStyleSelector>
+		</ItemsControl>
+
+		<TextBlock Text="ListView" />
+
+		<ListView ItemsSource="{Binding [SampleItems]}">
+			<ListView.ItemContainerStyleSelector>
+				<local:EvenOddStyleSelector />
+			</ListView.ItemContainerStyleSelector>
+		</ListView>
+
+		<TextBlock Text="GridView" />
+		
+		<GridView ItemsSource="{Binding [SampleItems]}">
+			<GridView.ItemContainerStyleSelector>
+				<local:EvenOddStyleSelector />
+			</GridView.ItemContainerStyleSelector>
+		</GridView>
+	</StackPanel>
+</UserControl>
+

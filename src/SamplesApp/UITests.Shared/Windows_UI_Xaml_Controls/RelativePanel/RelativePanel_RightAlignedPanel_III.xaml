@@ -1,0 +1,104 @@
+﻿<UserControl x:Class="UITests.Shared.Windows_UI_Xaml_Controls.RelativePanel.RelativePanel_RightAlignedPanel_III"
+			 xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+			 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			 xmlns:local="using:UITests.Shared.Windows_UI_Xaml_Controls.RelativePanel"
+			 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 xmlns:controls="using:Uno.UI.Samples.Controls"	
+			 mc:Ignorable="">
+
+	<controls:SampleControl SampleDescription="RelativePanel_RightAlignedPanel_III">
+		<controls:SampleControl.SampleContent>
+			<DataTemplate>
+				<StackPanel>
+
+					<TextBlock Text="Green RightOf and Below small Blue; Red RightOf and Above Green (Red is clipped)" />
+
+					<RelativePanel Background="Gray"
+								   HorizontalAlignment="Right">
+
+						<Border x:Name="Corny6"
+								Background="CornflowerBlue"
+								Width="50"
+								Height="50" />
+
+						<Border x:Name="Greeny5"
+								Background="Lime"
+								Width="100"
+								Height="100"
+								RelativePanel.Below="Corny6"
+								RelativePanel.RightOf="Corny6" />
+
+						<Border x:Name="Redish3"
+								Background="Tomato"
+								Width="100"
+								Height="100"
+								RelativePanel.Above="Greeny5"
+								RelativePanel.RightOf="Greeny5" />
+					</RelativePanel>
+
+					<TextBlock Text="Green RightOf and Below small Blue; Red RightOf and Above Green (Red is clipped), with small black right aligned rectangle with margin 10" />
+
+					<RelativePanel Background="Gray"
+								   HorizontalAlignment="Right">
+
+						<Border x:Name="Corny7"
+								Background="CornflowerBlue"
+								Width="50"
+								Height="50" />
+
+						<Border x:Name="Greeny6"
+								Background="Lime"
+								Width="100"
+								Height="100"
+								RelativePanel.Below="Corny7"
+								RelativePanel.RightOf="Corny7" />
+
+						<Border x:Name="Redish4"
+								Background="Tomato"
+								Width="100"
+								Height="100"
+								RelativePanel.Above="Greeny6"
+								RelativePanel.RightOf="Greeny6" />
+
+						<Border Background="Black"
+								Width="50"
+								Height="50"
+								VerticalAlignment="Center"
+								RelativePanel.AlignRightWithPanel="True"
+								Margin="10" />
+					</RelativePanel>
+
+					<TextBlock Text="Two children each attached to the opposite side, one child in between" />
+
+					<RelativePanel Background="Gray"
+								   HorizontalAlignment="Right">
+
+						<Border x:Name="Corny8"
+								Background="CornflowerBlue"
+								Width="100"
+								Height="100" />
+
+						<Border x:Name="Greeny7"
+								Background="Lime"
+								Width="75"
+								Height="75"
+								RelativePanel.AlignRightWithPanel="True" />
+
+						<Border Background="Tomato"
+								RelativePanel.RightOf="Corny8"
+								RelativePanel.LeftOf="Greeny7"
+								RelativePanel.AlignTopWithPanel="True"
+								RelativePanel.AlignBottomWithPanel="True">
+
+							<Border Background="Black"
+									Height="25"
+									Width="25"
+									HorizontalAlignment="Center"
+									VerticalAlignment="Center" />
+						</Border>
+					</RelativePanel>
+				</StackPanel>
+			</DataTemplate>
+		</controls:SampleControl.SampleContent>
+	</controls:SampleControl>
+</UserControl>

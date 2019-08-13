@@ -1,0 +1,63 @@
+﻿<UserControl x:Class="UITests.Shared.Windows_UI_Xaml_Controls.RelativePanel.RelativePanel_RightAlignedPanel"
+			 xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+			 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			 xmlns:local="using:UITests.Shared.Windows_UI_Xaml_Controls.RelativePanel"
+			 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 xmlns:controls="using:Uno.UI.Samples.Controls"
+			 mc:Ignorable="">
+
+	<controls:SampleControl SampleDescription="A series of samples where the RelativePanel is RightAligned">
+		<controls:SampleControl.SampleContent>
+			<DataTemplate>
+				<ScrollViewer>
+					<StackPanel>
+
+						<TextBlock Text="One child" />
+
+						<RelativePanel Background="Gray"
+									   HorizontalAlignment="Right">
+
+							<Border x:Name="Corny"
+									Background="CornflowerBlue"
+									Width="100"
+									Height="100" />
+						</RelativePanel>
+
+						<TextBlock Text="Two children" />
+
+						<RelativePanel Background="Gray"
+									   HorizontalAlignment="Right">
+
+							<Border x:Name="Corny2"
+									Background="CornflowerBlue"
+									Width="100"
+									Height="100" />
+
+							<Border x:Name="Greeny"
+									Background="Lime"
+									Width="75"
+									Height="75" />
+						</RelativePanel>
+
+						<TextBlock Text="Two children each attached to the opposite side" />
+
+						<RelativePanel Background="Gray"
+									   HorizontalAlignment="Right">
+
+							<Border x:Name="Corny3"
+									Background="CornflowerBlue"
+									Width="100"
+									Height="100" />
+
+							<Border x:Name="Greeny2"
+									Background="Lime"
+									Width="75"
+									Height="75"
+									RelativePanel.AlignRightWithPanel="True" />
+						</RelativePanel>
+					</StackPanel>
+				</ScrollViewer>
+			</DataTemplate>
+		</controls:SampleControl.SampleContent>
+	</controls:SampleControl>
+</UserControl>

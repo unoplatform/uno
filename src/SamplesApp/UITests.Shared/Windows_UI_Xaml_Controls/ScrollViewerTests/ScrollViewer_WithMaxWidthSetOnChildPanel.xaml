@@ -1,0 +1,123 @@
+﻿<UserControl x:Class="UITests.Shared.Windows_UI_Xaml_Controls.ScrollViewerTests.ScrollViewer_WithMaxWidthSetOnChildPanel"
+			 xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+			 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			 xmlns:local="using:UITests.Shared.Windows_UI_Xaml_Controls.ScrollViewerTests"
+			 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 xmlns:controls="using:Uno.UI.Samples.Controls"
+			 mc:Ignorable="">
+
+	<controls:SampleControl SampleDescription="StackPanel in ScrollViewer with and without Border with different values of MinWidth, Width, MaxWidth, all should be = 100">
+		<controls:SampleControl.SampleContent>
+			<DataTemplate>
+				<StackPanel Background="White">
+
+					<TextBlock Text="Rectangle with Width = 100 as a guide" />
+
+					<Rectangle Height="20"
+							   Width="100"
+							   Fill="Green" />
+
+					<TextBlock TextAlignment="Center"
+							   Text="Min=~,width=~,Max=100, no Border around StackPanel" />
+
+					<ScrollViewer Background="Gray">
+						<StackPanel Height="20"
+									MaxWidth="100"
+									Background="Pink">
+						</StackPanel>
+					</ScrollViewer>
+
+					<TextBlock TextAlignment="Center"
+							   Text="Min=~,width=100,Max=~, no Border around StackPanel" />
+
+					<ScrollViewer Background="Gray">
+						<StackPanel Height="20"
+									Width="100"
+									Background="Pink">
+						</StackPanel>
+					</ScrollViewer>
+
+					<TextBlock TextAlignment="Center"
+							   Text="Min=~,width=~,Max=100, Border (black) around StackPanel" />
+
+					<ScrollViewer Background="Gray">
+						<Border Background="Black">
+							<StackPanel Height="20"
+										MaxWidth="100"
+										Background="Pink">
+							</StackPanel>
+						</Border>
+					</ScrollViewer>
+
+					<TextBlock TextAlignment="Center"
+							   Text="Min=~,width=100,Max=~, Border (black) around StackPanel" />
+
+					<ScrollViewer Background="Gray">
+						<Border Background="Black">
+							<StackPanel Height="20"
+										Width="100"
+										Background="Pink">
+							</StackPanel>
+						</Border>
+					</ScrollViewer>
+
+					<TextBlock TextAlignment="Center"
+							   Text="Min=100,width=50,Max=50" />
+
+					<ScrollViewer Background="Gray">
+						<StackPanel Height="20"
+									MinWidth="100"
+									Width="50"
+									MaxWidth="50"
+									Background="Pink">
+						</StackPanel>
+					</ScrollViewer>
+
+					<TextBlock TextAlignment="Center"
+							   Text="Min=50,width=~,Max=100" />
+
+					<ScrollViewer Background="Gray">
+						<StackPanel Height="20"
+									MinWidth="50"
+									MaxWidth="100"
+									Background="Pink">
+						</StackPanel>
+					</ScrollViewer>
+
+					<TextBlock TextAlignment="Center"
+							   Text="Min=50,width=~,Max=100 - HorizontalAlignment=Left - EXCEPTION WILL BE 50" />
+
+					<ScrollViewer Background="Gray">
+						<StackPanel HorizontalAlignment="Left"
+									Height="20"
+									MinWidth="50"
+									MaxWidth="100"
+									Background="Purple">
+						</StackPanel>
+					</ScrollViewer>
+
+					<TextBlock TextAlignment="Center"
+							   Text="Min=50,width=~,Max=100 - HorizontalAlignment=Right - EXCEPTION WILL BE 50" />
+
+					<ScrollViewer Background="Gray">
+						<StackPanel HorizontalAlignment="Right"
+									Height="20"
+									MinWidth="50"
+									MaxWidth="100"
+									Background="Purple">
+						</StackPanel>
+					</ScrollViewer>
+
+					<TextBlock TextAlignment="Center"
+							   Text="Min=~,width=~,Max=~ - EXCEPTION SHOULD STRECH" />
+
+					<ScrollViewer Background="Gray">
+						<StackPanel Height="20"
+									Background="Red">
+						</StackPanel>
+					</ScrollViewer>
+				</StackPanel>
+			</DataTemplate>
+		</controls:SampleControl.SampleContent>
+	</controls:SampleControl>
+</UserControl>

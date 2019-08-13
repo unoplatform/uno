@@ -1,0 +1,123 @@
+﻿<UserControl x:Class="UITests.Shared.Windows_UI_Xaml_Controls.ScrollViewerTests.ScrollViewer_HorizontalScrollMode"
+			 xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+			 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			 xmlns:local="using:UITests.Shared.Windows_UI_Xaml_Controls.ScrollViewerTests"
+			 xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+			 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 xmlns:controls="using:Uno.UI.Samples.Controls"
+			 xmlns:uno="using:Uno.UI.Samples.Controls"
+			 mc:Ignorable="">
+	
+	<ScrollViewer>
+		<StackPanel>
+
+			<StackPanel Background="Aqua"
+						Margin="16">
+			
+				<TextBlock Text="ScrollMode: Enabled" />
+				<TextBlock Text="ScrollBarVisibility: Visible" />
+
+				<ScrollViewer HorizontalScrollMode="Enabled"
+							  HorizontalScrollBarVisibility="Visible"
+							  VerticalScrollMode="Disabled">
+					<uno:StarStackPanel Margin="30,20"
+										Orientation="Horizontal">
+						<TextBlock uno:StarStackPanel.Size="*"
+								   Text="Bacon ipsum dolor amet short ribs shoulder ribeye filet mignon cupim, pork belly pastrami. Pork belly short ribs ball tip t-bone strip steak swine biltong pork loin. Tri-tip pork loin ground round, shankle capicola bresaola jerky chuck. Shankle tenderloin fatback, venison cow meatball tail frankfurter pork porchetta ham hamburger beef chuck ground round. Salami ribeye pastrami cow picanha pork loin, alcatra t-bone ball tip bresaola jerky beef ribs. Kevin short loin shoulder doner jerky biltong ribeye fatback bacon filet mignon kielbasa pancetta capicola landjaeger." />
+					</uno:StarStackPanel>
+				</ScrollViewer>
+			</StackPanel>
+
+			<StackPanel Background="IndianRed"
+						Margin="16">
+			
+				<TextBlock Text="ScrollMode: Enabled" />
+				<TextBlock Text="ScrollBarVisibility: Disabled" />
+
+				<ScrollViewer HorizontalScrollMode="Enabled"
+							  HorizontalScrollBarVisibility="Disabled"
+							  VerticalScrollMode="Disabled">
+					<uno:StarStackPanel Margin="30,20"
+										Orientation="Horizontal">
+						<TextBlock Text="Terms and Conditions" />
+						<TextBlock uno:StarStackPanel.Size="*"
+								   Text="Bacon ipsum dolor amet short ribs shoulder ribeye filet mignon cupim, pork belly pastrami. Pork belly short ribs ball tip t-bone strip steak swine biltong pork loin. Tri-tip pork loin ground round, shankle capicola bresaola jerky chuck. Shankle tenderloin fatback, venison cow meatball tail frankfurter pork porchetta ham hamburger beef chuck ground round. Salami ribeye pastrami cow picanha pork loin, alcatra t-bone ball tip bresaola jerky beef ribs. Kevin short loin shoulder doner jerky biltong ribeye fatback bacon filet mignon kielbasa pancetta capicola landjaeger." />
+					</uno:StarStackPanel>
+				</ScrollViewer>
+			</StackPanel>
+
+			<StackPanel Background="MistyRose"
+						Margin="16">
+			
+				<TextBlock Text="ScrollMode: Disabled" />
+				<TextBlock Text="ScrollBarVisibility: Visible" />
+
+				<ScrollViewer HorizontalScrollMode="Disabled"
+							  HorizontalScrollBarVisibility="Visible"
+							  VerticalScrollMode="Disabled">
+					<uno:StarStackPanel Margin="30,20"
+										Orientation="Horizontal">
+						<TextBlock Text="Terms and Conditions" />
+						<TextBlock uno:StarStackPanel.Size="*"
+								   Text="Bacon ipsum dolor amet short ribs shoulder ribeye filet mignon cupim, pork belly pastrami. Pork belly short ribs ball tip t-bone strip steak swine biltong pork loin. Tri-tip pork loin ground round, shankle capicola bresaola jerky chuck. Shankle tenderloin fatback, venison cow meatball tail frankfurter pork porchetta ham hamburger beef chuck ground round. Salami ribeye pastrami cow picanha pork loin, alcatra t-bone ball tip bresaola jerky beef ribs. Kevin short loin shoulder doner jerky biltong ribeye fatback bacon filet mignon kielbasa pancetta capicola landjaeger." />
+					</uno:StarStackPanel>
+				</ScrollViewer>
+			</StackPanel>
+
+			<StackPanel Background="LemonChiffon"
+						Margin="16">
+			
+				<TextBlock Text="ScrollMode: Enabled" />
+				<TextBlock Text="ScrollBarVisibility: Visible" />
+
+				<TextBlock x:Name="MyTextBlock" />
+
+				<ScrollViewer HorizontalScrollMode="Enabled"
+							  HorizontalScrollBarVisibility="Visible"
+							  VerticalScrollMode="Disabled">
+					<uno:StarStackPanel Margin="30,20"
+										Orientation="Horizontal">
+						<TextBlock Text="Terms and Conditions" />
+						<Button x:Name="MyButton"
+								Content="Press Me" />
+						<TextBlock uno:StarStackPanel.Size="*"
+								   Text="Bacon ipsum dolor amet short ribs shoulder ribeye filet mignon cupim, pork belly pastrami. Pork belly short ribs ball tip t-bone strip steak swine biltong pork loin. Tri-tip pork loin ground round, shankle capicola bresaola jerky chuck. Shankle tenderloin fatback, venison cow meatball tail frankfurter pork porchetta ham hamburger beef chuck ground round. Salami ribeye pastrami cow picanha pork loin, alcatra t-bone ball tip bresaola jerky beef ribs. Kevin short loin shoulder doner jerky biltong ribeye fatback bacon filet mignon kielbasa pancetta capicola landjaeger." />
+					</uno:StarStackPanel>
+				</ScrollViewer>
+			</StackPanel>
+
+			<StackPanel Background="BurlyWood"
+						Margin="16">
+				<TextBlock Text="ScrollMode: Enabled" />
+				<TextBlock Text="ScrollBarVisibility: Hidden" />
+
+				<ScrollViewer HorizontalScrollMode="Enabled"
+							  HorizontalScrollBarVisibility="Hidden"
+							  VerticalScrollMode="Disabled">
+					<uno:StarStackPanel Margin="30,20"
+										Orientation="Horizontal">
+						<TextBlock uno:StarStackPanel.Size="*"
+								   Text="Bacon ipsum dolor amet short ribs shoulder ribeye filet mignon cupim, pork belly pastrami. Pork belly short ribs ball tip t-bone strip steak swine biltong pork loin. Tri-tip pork loin ground round, shankle capicola bresaola jerky chuck. Shankle tenderloin fatback, venison cow meatball tail frankfurter pork porchetta ham hamburger beef chuck ground round. Salami ribeye pastrami cow picanha pork loin, alcatra t-bone ball tip bresaola jerky beef ribs. Kevin short loin shoulder doner jerky biltong ribeye fatback bacon filet mignon kielbasa pancetta capicola landjaeger." />
+					</uno:StarStackPanel>
+				</ScrollViewer>
+			</StackPanel>
+
+			<StackPanel Background="YellowGreen"
+						Margin="16">
+			
+				<TextBlock Text="ScrollMode: Disabled" />
+				<TextBlock Text="ScrollBarVisibility: Hidden" />
+
+				<ScrollViewer HorizontalScrollMode="Disabled"
+							  HorizontalScrollBarVisibility="Hidden"
+							  VerticalScrollMode="Disabled">
+					<uno:StarStackPanel Margin="30,20"
+										Orientation="Horizontal">
+						<TextBlock uno:StarStackPanel.Size="*"
+								   Text="Bacon ipsum dolor amet short ribs shoulder ribeye filet mignon cupim, pork belly pastrami. Pork belly short ribs ball tip t-bone strip steak swine biltong pork loin. Tri-tip pork loin ground round, shankle capicola bresaola jerky chuck. Shankle tenderloin fatback, venison cow meatball tail frankfurter pork porchetta ham hamburger beef chuck ground round. Salami ribeye pastrami cow picanha pork loin, alcatra t-bone ball tip bresaola jerky beef ribs. Kevin short loin shoulder doner jerky biltong ribeye fatback bacon filet mignon kielbasa pancetta capicola landjaeger." />
+					</uno:StarStackPanel>
+				</ScrollViewer>
+			</StackPanel>
+		</StackPanel>
+	</ScrollViewer>
+</UserControl>

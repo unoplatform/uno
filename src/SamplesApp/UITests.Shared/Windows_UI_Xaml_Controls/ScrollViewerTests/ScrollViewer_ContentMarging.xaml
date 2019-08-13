@@ -1,0 +1,27 @@
+﻿<UserControl x:Class="UITests.Shared.Windows_UI_Xaml_Controls.ScrollViewerTests.ScrollViewer_ContentMarging"
+			 xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+			 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			 xmlns:local="using:UITests.Shared.Windows_UI_Xaml_Controls.ScrollViewerTests"
+			 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 xmlns:controls="using:Uno.UI.Samples.Controls"
+			 xmlns:uno="using:Uno.UI.Samples.Controls"
+			 mc:Ignorable="">
+
+	<controls:SampleControl SampleDescription="This test demonstrates that margin on the first child control in the scrollviewer is working">
+		<controls:SampleControl.SampleContent>
+			<DataTemplate>
+				<ScrollViewer MaxWidth="495"
+							  HorizontalAlignment="Stretch">
+					
+					<uno:StarStackPanel Margin="30,60,30,60">
+
+						<TextBlock Text="Terms and Conditions" />
+
+						<TextBlock uno:StarStackPanel.Size="*"
+								   Text="Bacon ipsum dolor amet short ribs shoulder ribeye filet mignon cupim, pork belly pastrami. Pork belly short ribs ball tip t-bone strip steak swine biltong pork loin. Tri-tip pork loin ground round, shankle capicola bresaola jerky chuck. Shankle tenderloin fatback, venison cow meatball tail frankfurter pork porchetta ham hamburger beef chuck ground round. Salami ribeye pastrami cow picanha pork loin, alcatra t-bone ball tip bresaola jerky beef ribs. Kevin short loin shoulder doner jerky biltong ribeye fatback bacon filet mignon kielbasa pancetta capicola landjaeger." />
+					</uno:StarStackPanel>
+				</ScrollViewer>
+			</DataTemplate>
+		</controls:SampleControl.SampleContent>
+	</controls:SampleControl>
+</UserControl>

@@ -1,0 +1,56 @@
+﻿<UserControl x:Class="UITests.Shared.Windows_UI_Xaml_Controls.FontFamily.FontFamily_Custom"
+			 xmlns:controls="using:Uno.UI.Samples.Controls"
+			 xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+			 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			 xmlns:local="using:UITests.Shared.Windows_UI_Xaml_Controls.FontFamily"
+			 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 mc:Ignorable="">
+
+	<controls:SampleControl SampleDescription="Here we only define 1 FontFamily 'Constantia' regular but we set the FontWeight and FontStyle. Windows and Android natively change the rendering of the font. iOS doesn't that. Instead it searches for a font with the same family that has the desired weight and style. In this sample, Windows and Android look the same and iOS looks different.">
+		<controls:SampleControl.SampleContent>
+			<DataTemplate>
+				<StackPanel>
+					<TextBlock Text="Custom font Constantia ygàGfQµ§ [Normal]"
+							   FontFamily="ms-appx:///Assets/Fonts/Constantia.ttf#Constantia"
+							   FontSize="30" />
+
+					<TextBlock Text="Custom font Constantia ygàGfQµ§ [Bold]"
+							   FontFamily="ms-appx:///Assets/Fonts/Constantia.ttf#Constantia"
+							   FontWeight="Bold"
+							   FontSize="30" />
+
+					<TextBlock Text="Custom font Constantia ygàGfQµ§ [Italic]"
+							   FontFamily="ms-appx:///Assets/Fonts/Constantia.ttf#Constantia"
+							   FontStyle="Italic"
+							   FontSize="30" />
+
+					<TextBlock Text="Custom font Constantia ygàGfQµ§ [Bold Italic]"
+							   FontFamily="ms-appx:///Assets/Fonts/Constantia.ttf#Constantia"
+							   FontWeight="Bold"
+							   FontStyle="Italic"
+							   FontSize="30" />
+
+					<Rectangle Height="2"
+							   HorizontalAlignment="Stretch"
+							   Fill="Black" />
+
+					<TextBlock Text="Custom font Constantia ygàGfQµ§ [Bold] but this is how iOS will display it"
+							   FontFamily="ms-appx:///Assets/Fonts/Constantia Bold.ttf#Constantia"
+							   FontWeight="Bold"
+							   FontSize="30" />
+
+					<TextBlock Text="Custom font Constantia ygàGfQµ§ [Italic] but this is how iOS will display it"
+							   FontFamily="ms-appx:///Assets/Fonts/Constantia Italic.ttf#Constantia"
+							   FontStyle="Italic"
+							   FontSize="30" />
+
+					<TextBlock Text="Custom font Constantia ygàGfQµ§ [Bold Italic] but this is how iOS will display it"
+							   FontFamily="ms-appx:///Assets/Fonts/Constantia Bold Italic.ttf#Constantia"
+							   FontWeight="Bold"
+							   FontStyle="Italic"
+							   FontSize="30" />
+				</StackPanel>
+			</DataTemplate>
+		</controls:SampleControl.SampleContent>
+	</controls:SampleControl>
+</UserControl>

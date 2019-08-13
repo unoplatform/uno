@@ -1,0 +1,33 @@
+﻿<UserControl x:Class="UITests.Shared.Windows_UI_Xaml.MessageDialog.MessageDialog_Simple"
+			 xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+			 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			 xmlns:local="using:UITests.Shared.Windows_UI_Xaml.MessageDialog"
+			 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 mc:Ignorable="">
+
+	<Grid>
+		<StackPanel HorizontalAlignment="Stretch"
+					VerticalAlignment="Center">
+			
+			<HyperlinkButton NavigateUri="https://www.screencast.com/t/2tw4veV3n"
+							 Content="Click here to view expected behavior on Windows" />
+
+			<Button Content="Show simple dialog"
+					Click="ShowDialog"
+					Margin="0,0,0,10" />
+			<Button Content="Show complex dialog"
+					Click="ShowComplexDialog"
+					Margin="0,0,0,10" />
+			<Button Content="Show dialogs in series"
+					Click="ShowDialogs"
+					Margin="0,0,0,10" />
+			<Button Content="Show stacked dialogs"
+					Click="ShowDialogsStacked"
+					Margin="0,0,0,10" />
+			<Button Content="Show cancelled dialog"
+					Click="ShowDialogCancelled2"
+					Margin="0,0,0,10" />
+		</StackPanel>
+	</Grid>
+</UserControl>
+

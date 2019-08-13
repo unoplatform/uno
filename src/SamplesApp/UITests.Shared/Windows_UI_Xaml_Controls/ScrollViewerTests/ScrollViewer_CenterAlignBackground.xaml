@@ -1,0 +1,30 @@
+﻿<UserControl x:Class="UITests.Shared.Windows_UI_Xaml_Controls.ScrollViewerTests.ScrollViewer_CenterAlignBackground"
+			 xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+			 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			 xmlns:local="using:UITests.Shared.Windows_UI_Xaml_Controls.ScrollViewerTests"
+			 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 xmlns:controls="using:Uno.UI.Samples.Controls"
+			 xmlns:uno="using:Uno.UI.Samples.Controls"
+			 mc:Ignorable="">
+
+	<controls:SampleControl SampleDescription="The ScrollViewer should takes all the space (background yellow) and borders Red and Blue should be center align (horizontal and vertical)."
+							Height="300">
+		<controls:SampleControl.SampleContent>
+			<DataTemplate>
+				<ScrollViewer Background="Yellow"
+							  HorizontalAlignment="Center"
+							  VerticalContentAlignment="Center">
+					<StackPanel>
+						<Border Height="50"
+								Width="50"
+								Background="Red" />
+
+						<Border Height="50"
+								Width="50"
+								Background="Blue" />
+					</StackPanel>
+				</ScrollViewer>
+			</DataTemplate>
+		</controls:SampleControl.SampleContent>
+	</controls:SampleControl>
+</UserControl>

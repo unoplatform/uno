@@ -1,0 +1,42 @@
+﻿<UserControl x:Class="UITests.Shared.Windows_UI_Xaml_Controls.GridView.GridViewUngrouped"
+			 xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+			 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			 xmlns:local="using:UITests.Shared.Windows_UI_Xaml_Controls.GridView"
+			 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 xmlns:win="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+			 xmlns:controls="using:Uno.UI.Samples.Controls"
+			 mc:Ignorable="">
+
+	<controls:SampleControl SampleDescription="GridViewUngrouped">
+		<controls:SampleControl.SampleContent>
+			<DataTemplate>
+				
+				<Border Background="Red">
+
+					<GridView ItemsSource="{Binding [UngroupedSampleItems]}"
+							  win:ScrollViewer.HorizontalScrollBarVisibility="Auto"
+							  win:ScrollViewer.HorizontalScrollMode="Auto">
+
+						<GridView.ItemsPanel>
+							<ItemsPanelTemplate>
+								<ItemsWrapGrid  MaximumRowsOrColumns="1" />
+							</ItemsPanelTemplate>
+						</GridView.ItemsPanel>
+
+						<GridView.ItemTemplate>
+							<DataTemplate>
+								
+								<Border Background="White">
+
+									<TextBlock Text="{Binding}"
+											   Foreground="Blue"
+											   Width="100" />
+								</Border>
+							</DataTemplate>
+						</GridView.ItemTemplate>
+					</GridView>
+				</Border>
+			</DataTemplate>
+		</controls:SampleControl.SampleContent>
+	</controls:SampleControl>
+</UserControl>

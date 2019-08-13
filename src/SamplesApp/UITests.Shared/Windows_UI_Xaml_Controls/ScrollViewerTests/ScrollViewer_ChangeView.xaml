@@ -1,0 +1,57 @@
+﻿<UserControl x:Class="UITests.Shared.Windows_UI_Xaml_Controls.ScrollViewerTests.ScrollViewer_ChangeView"
+			 xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+			 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			 xmlns:local="using:UITests.Shared.Windows_UI_Xaml_Controls.ScrollViewerTests"
+			 xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+			 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 xmlns:controls="using:Uno.UI.Samples.Controls"
+			 mc:Ignorable="">
+
+	<StackPanel>
+
+		<TextBlock Text="ScrollViewer demonstrating ChangeView method" />
+
+		<TextBlock>
+			<Run Text="Current VerticalOffset: " /><Run Text="{Binding Path=VerticalOffset, ElementName=ChangeViewScrollViewer}" />
+		</TextBlock>
+
+		<TextBlock>
+			<Run Text="Current ZoomFactor: " /><Run Text="{Binding Path=ZoomFactor, ElementName=ChangeViewScrollViewer}" />
+		</TextBlock>
+
+		<ScrollViewer Width="300"
+					  Height="250"
+					  x:Name="ChangeViewScrollViewer"
+					  HorizontalScrollMode="Enabled"
+					  HorizontalScrollBarVisibility="Visible"
+					  VerticalScrollMode="Enabled"
+					  VerticalScrollBarVisibility="Visible"
+					  ZoomMode="Enabled"
+					  MinZoomFactor="0.5"
+					  MaxZoomFactor="2">
+			<Border Width="500"
+					Height="500"
+					Background="BlanchedAlmond">
+				<TextBlock Text="Crucifix velit irony pabst literally, chicharrones portland fixie ut mustache jean shorts deserunt. Mumblecore kinfolk vero chartreuse cardigan. Officia actually fingerstache tousled, ut VHS flannel laboris pitchfork pour-over twee flexitarian 90's mlkshk. Humblebrag meggings everyday carry, narwhal keffiyeh nulla shoreditch chicharrones taxidermy chillwave ethical. Meggings mumblecore portland, tattooed truffaut bushwick exercitation readymade aesthetic street art fugiat. Roof party literally 8-bit humblebrag crucifix ea. Tousled semiotics cold-pressed, narwhal nihil nisi try-hard cliche freegan delectus bitters XOXO skateboard forage.
+
+Aliquip four loko dreamcatcher sustainable ut, nostrud chia migas blue bottle sint etsy wolf ennui nisi qui. Occaecat flexitarian keytar, normcore franzen portland deep v food truck non lumbersexual. Irony nulla crucifix actually, kitsch ea poutine mustache taxidermy ugh incididunt. Photo booth distillery artisan, assumenda portland 8-bit butcher man braid pour-over scenester kitsch tote bag anim. Everyday carry irure man braid, thundercats dolore literally aesthetic put a bird on it helvetica. Retro venmo swag, williamsburg knausgaard irure 3 wolf moon chillwave. Fashion axe squid adipisicing, mlkshk ennui pariatur church-key in.
+
+Ex try-hard street art next level, cold-pressed church-key excepteur ut. Disrupt viral seitan squid minim kickstarter. Hoodie dreamcatcher sunt, celiac seitan sartorial est organic tempor beard portland. Butcher ex sed, bitters qui freegan kitsch wayfarers narwhal meh kinfolk cray. Ethical street art consequat artisan, bicycle rights consectetur drinking vinegar quinoa meggings meditation. Pop-up crucifix nesciunt squid nisi kickstarter. Occaecat nesciunt exercitation, nostrud helvetica consectetur minim accusamus adipisicing fanny pack shabby chic meggings blog.
+
+Narwhal synth laboris, photo booth chicharrones meditation twee mollit sapiente whatever tempor keffiyeh ut. Flexitarian swag readymade selvage quis, photo booth tofu flannel. Cronut seitan adipisicing jean shorts, waistcoat nihil kale chips cupidatat cliche banjo shabby chic elit sed roof party. Fingerstache accusamus elit, ramps voluptate pork belly hoodie deserunt 3 wolf moon cronut health goth. Salvia aute banjo fanny pack mlkshk swag. +1 flexitarian pug mumblecore pinterest reprehenderit. YOLO church-key forage aute gochujang keytar 8-bit."
+						   TextWrapping="Wrap" />
+			</Border>
+		</ScrollViewer>
+		
+		<TextBox PlaceholderText="Set VerticalOffset"
+				 InputScope="Number"
+				 x:Name="VerticalOffsetTextBox" />
+
+		<TextBox PlaceholderText="Set ZoomFactor"
+				 InputScope="Number"
+				 x:Name="ZoomFactorTextBox" />
+
+		<CheckBox Content="DisableAnimation"
+				  x:Name="DisableAnimationCheckBox" />
+	</StackPanel>
+</UserControl>

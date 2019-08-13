@@ -48,7 +48,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Uno.Analyzers.Tests", "Uno.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UWPUsageStatsGenerator", "UWPUsageStatsGenerator\UWPUsageStatsGenerator.csproj", "{E44A7B8A-6FE0-410D-8A0D-7EC185F3A17A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "T4Generator", "T4Generator\T4Generator.csproj", "{A94EFF4A-3CE5-4755-85E5-57D9119055AA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "T4Generator", "T4Generator\T4Generator.csproj", "{A94EFF4A-3CE5-4755-85E5-57D9119055AA}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Uno.UI", "Uno.UI\Uno.UI.csproj", "{C6884723-81DB-43BD-924F-3FA367633E64}"
 	ProjectSection(ProjectDependencies) = postProject
@@ -162,7 +162,6 @@ Global
 		SamplesApp\SamplesApp.Shared\SamplesApp.Shared.projitems*{b71ae380-558c-4d6c-81d8-9c043b50262c}*SharedItemsImports = 4
 		SamplesApp\SamplesApp.UnitTests.Shared\SamplesApp.UnitTests.Shared.projitems*{b71ae380-558c-4d6c-81d8-9c043b50262c}*SharedItemsImports = 4
 		SamplesApp\UITests.Shared\UITests.Shared.projitems*{b71ae380-558c-4d6c-81d8-9c043b50262c}*SharedItemsImports = 4
-		SamplesApp\UITests.Shared\UITests.Shared.projitems*{beb0ab3a-16a7-49cf-ad5e-f4a53b985afe}*SharedItemsImports = 13
 		SamplesApp\SamplesApp.UnitTests.Shared\SamplesApp.UnitTests.Shared.projitems*{e3b940da-15a4-4104-b96b-6951d932fe0e}*SharedItemsImports = 4
 		SamplesApp\UITests.Shared\UITests.Shared.projitems*{e3b940da-15a4-4104-b96b-6951d932fe0e}*SharedItemsImports = 4
 		SamplesApp\Benchmarks.Shared\Benchmarks.Shared.projitems*{f4581f51-40d6-4035-8a1d-65cc6917d0a9}*SharedItemsImports = 13

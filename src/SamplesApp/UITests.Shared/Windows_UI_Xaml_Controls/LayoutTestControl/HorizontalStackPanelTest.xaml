@@ -1,0 +1,35 @@
+﻿<UserControl x:Class="UITests.Shared.Windows_UI_Xaml_Controls.LayoutTestControl.HorizontalStackPanelTest"
+			 xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+			 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			 xmlns:local="using:UITests.Shared.Windows_UI_Xaml_Controls.LayoutTestControl"
+			 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 mc:Ignorable="">
+
+	<Grid HorizontalAlignment="Stretch"
+		  VerticalAlignment="Stretch"
+		  Height="100"
+		  Background="Aqua">
+		
+		<Button Click="ButtonClick"
+				Content="Change rect height"
+				FontSize="16"
+				HorizontalAlignment="Left"
+				VerticalAlignment="Top" />
+
+		<StackPanel Orientation="Horizontal"
+					Margin="5,50,5,5"
+					Background="Yellow"
+					HorizontalAlignment="Left"
+					VerticalAlignment="Stretch">
+
+			<Rectangle x:Name="MyRectangle"
+					   Fill="Red"
+					   Height="50"
+					   Width="50" />
+
+			<Rectangle Fill="Green"
+					   Height="50"
+					   Width="100" />
+		</StackPanel>
+	</Grid>
+</UserControl>

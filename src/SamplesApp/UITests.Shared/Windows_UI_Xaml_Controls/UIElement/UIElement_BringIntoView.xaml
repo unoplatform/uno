@@ -1,0 +1,67 @@
+﻿<UserControl x:Class="UITests.Shared.Windows_UI_Xaml_Controls.UIElement.UIElement_BringIntoView"
+			 xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+			 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			 xmlns:local="using:UITests.Shared.Windows_UI_Xaml_Controls.UIElement"
+			 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 mc:Ignorable="">
+
+	<StackPanel>
+		<ComboBox x:Name="ComboBox"
+				  SelectionChanged="SelectionChanged" />
+
+		<ScrollViewer x:Name="ScrollViewer"
+					  Height="200"
+					  BorderBrush="Red"
+					  BorderThickness="1">
+			<StackPanel>
+
+				<TextBlock x:Name="TextBlock"
+						   Margin="0,0,0,50"
+						   Text="TextBlock" />
+
+				<TextBox x:Name="TextBox"
+						 Margin="0,0,0,50"
+						 Text="TextBox" />
+
+				<Button x:Name="Button"
+						Margin="0,0,0,50"
+						Content="Button" />
+
+				<Border x:Name="Border"
+						Margin="0,0,0,50"
+						Height="100"
+						Width="100"
+						Background="Red">
+					<TextBlock Text="Border" />
+				</Border>
+
+				<Grid x:Name="Grid"
+					  Margin="0,0,0,50"
+					  Height="100"
+					  Width="100"
+					  Background="Green">
+					<TextBlock Text="Grid" />
+				</Grid>
+
+				<Grid Margin="0,0,0,50"
+					  HorizontalAlignment="Center">
+					<Rectangle x:Name="Rectangle"
+							   Height="100"
+							   Width="100"
+							   Fill="Blue" />
+					<TextBlock Text="Rectangle" />
+				</Grid>
+
+				<Image x:Name="Image"
+					   Margin="0,0,0,50"
+					   Height="100"
+					   Width="100"
+					   Source="http://lh5.ggpht.com/lxBMauupBiLIpgOgu5apeiX_YStXeHRLK1oneS4NfwwNt7fGDKMP0KpQIMwfjfL9GdHRVEavmg7gOrj5RYC4qwrjh3Y0jCWFDj83jzg" />
+
+				<ToggleSwitch x:Name="ToggleSwitch"
+							  Margin="0,0,0,50" />
+			</StackPanel>
+		</ScrollViewer>
+	</StackPanel>
+</UserControl>
+

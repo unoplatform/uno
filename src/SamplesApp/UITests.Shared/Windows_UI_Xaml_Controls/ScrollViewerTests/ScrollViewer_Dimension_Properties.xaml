@@ -1,0 +1,76 @@
+﻿<UserControl x:Class="UITests.Shared.Windows_UI_Xaml_Controls.ScrollViewerTests.ScrollViewer_Dimension_Properties"
+			 xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+			 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			 xmlns:local="using:UITests.Shared.Windows_UI_Xaml_Controls.ScrollViewerTests"
+			 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 mc:Ignorable="">
+
+	<StackPanel>
+		
+		<ScrollViewer x:Name="TargetScrollViewer"
+					  Height="300"
+					  Width="250">
+			<TextBlock Foreground="Brown"
+					   Text="{Binding}"
+					   TextWrapping="Wrap" />
+		</ScrollViewer>
+
+		<Button Content="Change scrollable content"
+				Click="ChangeText" />
+
+		<Button Content="Remove scrollable content"
+				Click="RemoveContent" />
+		<Grid>
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition Width="Auto" />
+				<ColumnDefinition Width="Auto" />
+			</Grid.ColumnDefinitions>
+			<Grid.RowDefinitions>
+				<RowDefinition Height="Auto" />
+				<RowDefinition Height="Auto" />
+				<RowDefinition Height="Auto" />
+				<RowDefinition Height="Auto" />
+			</Grid.RowDefinitions>
+
+			<TextBlock Text="VerticalOffset="
+					   Grid.Column="0"
+					   Grid.Row="0"
+					   HorizontalAlignment="Right" />
+
+			<TextBlock Text="{Binding ElementName=TargetScrollViewer, Path=VerticalOffset}"
+					   Grid.Column="1"
+					   Grid.Row="0"
+					   HorizontalAlignment="Left" />
+
+			<TextBlock Text="ViewportHeight="
+					   Grid.Column="0"
+					   Grid.Row="1"
+					   HorizontalAlignment="Right" />
+
+			<TextBlock Text="{Binding ElementName=TargetScrollViewer, Path=ViewportHeight}"
+					   Grid.Column="1"
+					   Grid.Row="1"
+					   HorizontalAlignment="Left" />
+
+			<TextBlock Text="ExtentHeight="
+					   Grid.Column="0"
+					   Grid.Row="2"
+					   HorizontalAlignment="Right" />
+
+			<TextBlock Text="{Binding ElementName=TargetScrollViewer, Path=ExtentHeight}"
+					   Grid.Column="1"
+					   Grid.Row="2"
+					   HorizontalAlignment="Left" />
+
+			<TextBlock Text="ScrollableHeight="
+					   Grid.Column="0"
+					   Grid.Row="3"
+					   HorizontalAlignment="Right" />
+
+			<TextBlock Text="{Binding ElementName=TargetScrollViewer, Path=ScrollableHeight}"
+					   Grid.Column="1"
+					   Grid.Row="3"
+					   HorizontalAlignment="Left" />
+		</Grid>
+	</StackPanel>
+</UserControl>

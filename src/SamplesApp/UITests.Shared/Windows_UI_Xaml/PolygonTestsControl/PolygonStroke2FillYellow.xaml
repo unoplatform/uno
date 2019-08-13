@@ -1,0 +1,16 @@
+﻿<UserControl x:Class="UITests.Shared.Windows_UI_Xaml.PolygonTestsControl.PolygonStroke2FillYellow"
+			 xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+			 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			 xmlns:local="using:UITests.Shared.Windows_UI_Xaml.PolygonTestsControl"
+			 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 xmlns:controls="using:Uno.UI.Samples.Controls"
+			 mc:Ignorable="">
+
+  <Grid>
+	<Polygon Points="10,00 20,00 30,10 30,20 20,30 10,30 00,20 00,10 10,00"
+			  Height="200"
+			  Fill="Yellow"
+			  Stroke="Purple"
+			  StrokeThickness="2" />
+  </Grid>
+</UserControl>

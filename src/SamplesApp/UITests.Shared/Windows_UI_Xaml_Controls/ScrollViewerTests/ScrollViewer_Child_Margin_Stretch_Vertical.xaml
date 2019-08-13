@@ -1,0 +1,27 @@
+﻿<UserControl x:Class="UITests.Shared.Windows_UI_Xaml_Controls.ScrollViewerTests.ScrollViewer_Child_Margin_Stretch_Vertical"
+			 xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+			 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			 xmlns:local="using:UITests.Shared.Windows_UI_Xaml_Controls.ScrollViewerTests"
+			 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 xmlns:controls="using:Uno.UI.Samples.Controls"
+			 mc:Ignorable="">
+
+	<controls:SampleControl SampleDescription="ScrollViewer with content stretched horizontally and vertically">
+		<controls:SampleControl.SampleContent>
+			<DataTemplate>
+				
+				<ScrollViewer Background="Beige"
+							  Width="250"
+							  Height="200">
+					
+					<Border HorizontalAlignment="Stretch"
+							VerticalAlignment="Stretch"
+							Margin="30"
+							BorderBrush="Blue"
+							BorderThickness="2"
+							Background="Red" />
+				</ScrollViewer>
+			</DataTemplate>
+		</controls:SampleControl.SampleContent>
+	</controls:SampleControl>
+</UserControl>

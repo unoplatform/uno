@@ -1,0 +1,42 @@
+﻿<UserControl x:Class="UITests.Shared.Windows_UI_Xaml_Controls.RelativePanel.RelativePanel_RigthPanelBiggerThanParent"
+			 xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+			 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			 xmlns:local="using:UITests.Shared.Windows_UI_Xaml_Controls.RelativePanel"
+			 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 xmlns:controls="using:Uno.UI.Samples.Controls"
+			 mc:Ignorable="">
+
+	<controls:SampleControl SampleDescription="Sample of a relativePanel with a middle Panel too mutch big">
+		<controls:SampleControl.SampleContent>
+			<DataTemplate>
+				<RelativePanel Height="200"
+							   Width="500"
+							   Background="Gray"
+							   VerticalAlignment="Top">
+					
+					<Border x:Name="LeftPanel"
+							RelativePanel.AlignLeftWithPanel="True"
+							RelativePanel.AlignTopWithPanel="True"
+							RelativePanel.AlignBottomWithPanel="True"
+							Background="Red"
+							Width="200" />
+
+					<Border x:Name="MiddlePAnel"
+							RelativePanel.RightOf="LeftPanel"
+							RelativePanel.LeftOf="RightPanel"
+							RelativePanel.AlignTopWithPanel="True"
+							RelativePanel.AlignBottomWithPanel="True"
+							Background="Green"
+							Width="600" />
+
+					<Border x:Name="RightPanel"
+							RelativePanel.AlignRightWithPanel="True"
+							RelativePanel.AlignTopWithPanel="True"
+							RelativePanel.AlignBottomWithPanel="True"
+							Background="Blue"
+							Width="50" />
+				</RelativePanel>
+			</DataTemplate>
+		</controls:SampleControl.SampleContent>
+	</controls:SampleControl>
+</UserControl>
