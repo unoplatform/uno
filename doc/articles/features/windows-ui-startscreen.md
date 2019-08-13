@@ -6,6 +6,8 @@ The APIs are implemented on iOS and Android. Other platforms return `false` when
 
 `JumpListItem` supports `DisplayName`, `Description`, `Arguments` and `Logo` properties on both Android and iOS.
 
+`DisplayName` may not be empty on Android - this behavior differs from UWP. If left empty, a single space will be used instead.
+
 `Logo` property can be initialized only with `ms-appx:`-based images. This behavior matches UWP and actually matches native support on both platforms as well.
 
 To handle `JumpListItem` activation, check the `LaunchActivatedEventArgs.Arguments` in `App.OnLaunched` method. Note, that when the application is running, the method will still be called again (this behavior matches UWP).

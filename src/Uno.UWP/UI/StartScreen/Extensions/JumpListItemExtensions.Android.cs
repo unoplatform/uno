@@ -20,9 +20,13 @@ namespace Uno.UI.StartScreen.Extensions
 			var intent = pm.GetLaunchIntentForPackage(Application.Context.PackageName);
 			intent.PutExtra(JumpListItem.ArgumentsExtraKey, jumpListItem.Arguments);
 			builder.SetIntent(intent);
-
-			builder.SetShortLabel(jumpListItem.DisplayName);
-			builder.SetLongLabel(jumpListItem.Description);
+			builder.SetShortLabel(
+				!string.IsNullOrEmpty(jumpListItem.DisplayName) ?
+					jumpListItem.DisplayName : " "); //Android requires non-empty DisplayName
+			if (!string.IsNullOrEmpty(jumpListItem.Description))
+			{
+				builder.SetLongLabel(jumpListItem.Description);
+			}
 
 			var persistableBundle = new PersistableBundle();
 			persistableBundle.PutString(JumpListItem.UnoShortcutKey, "true");
