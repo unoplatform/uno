@@ -19,10 +19,16 @@ namespace Uno.UI.StartScreen.Extensions
 				dictionary[JumpListItem.ImagePathKey] = jumpListItem.Logo.ToString();
 			}
 
+			var displayName = jumpListItem.DisplayName;
+			if (string.IsNullOrEmpty(displayName))
+			{
+				displayName = " "; //use single space to make sure item is displayed
+			}
+
 			var shortcut =
 				new UIApplicationShortcutItem(
 					jumpListItem.Arguments,
-					jumpListItem.DisplayName,
+					displayName,
 					jumpListItem.Description,
 					jumpListItem.Logo != null ? UIApplicationShortcutIcon.FromTemplateImageName(jumpListItem.Logo.LocalPath) : null,
 					NSDictionary<NSString, NSObject>.FromObjectsAndKeys(
