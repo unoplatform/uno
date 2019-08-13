@@ -122,23 +122,23 @@ namespace Windows.UI.Xaml.Controls
 				{
 					case FlyoutPlacementMode.Top:
 						finalPosition = new Point(
-							x: anchorRect.Left + halfAnchorWidth - halfChildWidth,
-							y: anchorRect.Top - PopupPlacementTargetMargin - desiredSize.Height);
+							x: Math.Max(anchorRect.Left + halfAnchorWidth - halfChildWidth, 0d),
+							y: Math.Max(anchorRect.Top - PopupPlacementTargetMargin - desiredSize.Height, 0d));
 						break;
 					case FlyoutPlacementMode.Bottom:
 						finalPosition = new Point(
-							x: anchorRect.Left + halfAnchorWidth - halfChildWidth,
+							x: Math.Max(anchorRect.Left + halfAnchorWidth - halfChildWidth, 0d),
 							y: anchorRect.Bottom + PopupPlacementTargetMargin);
 						break;
 					case FlyoutPlacementMode.Left:
 						finalPosition = new Point(
-							x: anchorRect.Left - PopupPlacementTargetMargin - desiredSize.Width,
-							y: anchorRect.Top + halfAnchorHeight - halfChildHeight);
+							x: Math.Max(anchorRect.Left - PopupPlacementTargetMargin - desiredSize.Width, 0d),
+							y: Math.Max(anchorRect.Top + halfAnchorHeight - halfChildHeight, 0d));
 						break;
 					case FlyoutPlacementMode.Right:
 						finalPosition = new Point(
 							x: anchorRect.Right + PopupPlacementTargetMargin,
-							y: anchorRect.Top + halfAnchorHeight - halfChildHeight);
+							y: Math.Max(anchorRect.Top + halfAnchorHeight - halfChildHeight, 0d));
 						break;
 					default: // Full + other unsupported placements
 						finalPosition = new Point(
