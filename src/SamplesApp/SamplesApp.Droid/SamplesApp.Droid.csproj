@@ -19,7 +19,7 @@
     <AndroidManifest>Properties\AndroidManifest.xml</AndroidManifest>
     <AndroidUseIntermediateDesignerFile>True</AndroidUseIntermediateDesignerFile>
     <ResourcesDirectory>..\SamplesApp.Shared\Strings</ResourcesDirectory>
-    <!-- AndroidUseAapt2 is disabled until https://github.com/xamarin/xamarin-android/pull/3327 is resolved -->
+    <!-- AndroidUseAapt2 is disabled until https://github.com/unoplatform/uno/issues/1382 is resolved -->
     <AndroidUseAapt2>false</AndroidUseAapt2>
     <!-- https://github.com/unoplatform/uno/issues/61 -->
     <UnoSkipUserControlsInVisualTree>false</UnoSkipUserControlsInVisualTree>
