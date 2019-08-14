@@ -428,7 +428,7 @@ public abstract class UnoViewGroup
 			// Doing this we bypass a lot of logic done by the super ViewGroup, (https://android.googlesource.com/platform/frameworks/base/+/0e71b4f19ba602c8c646744e690ab01c69808b42/core/java/android/view/ViewGroup.java#2557)
 			// especially optimization of the TouchTarget resolving / tracking. (https://android.googlesource.com/platform/frameworks/base/+/0e71b4f19ba602c8c646744e690ab01c69808b42/core/java/android/view/ViewGroup.java#2654)
 			// We assume that events that are wronlgy dispatched to children are going to be filteerd by children themselves
-			// and thios support is sufficient enough for our current cases.
+			// and this support is sufficient enough for our current cases.
 			// Note: this is not fully compliant with the UWP contract (cf. https://github.com/unoplatform/uno/issues/649)
 
 			// Note: If this logic is called once, it has to be called for all MotionEvents in the same touch cycle, including Cancel, because if
@@ -479,9 +479,9 @@ public abstract class UnoViewGroup
 			}
 		}
 
-		final boolean didPointerExit = wasPointInView &&
-			!_isPointInView &&
-			(e.getActionMasked() == MotionEvent.ACTION_MOVE || e.getActionMasked() == MotionEvent.ACTION_CANCEL);
+		final boolean didPointerExit = wasPointInView
+			&& !_isPointInView
+			&& (e.getActionMasked() == MotionEvent.ACTION_MOVE || e.getActionMasked() == MotionEvent.ACTION_CANCEL);
 
 		final boolean isCurrentPointer = isCurrentPointer(e, _isPointInView);
 
@@ -501,8 +501,8 @@ public abstract class UnoViewGroup
 		// only executed if left-hand side is false (prevents event from being handled twice)
 		// gives the current view a chance to block/handle the touch event if none of its children have
 		boolean isBlockingTouchEvent = _childBlockedTouchEvent || nativeHitCheck();
-		boolean isHandlingTouchEvent = _childHandledTouchEvent ||
-			((isBlockingTouchEvent || didPointerExit) && tryHandleTouchEvent(e, _isPointInView, wasPointInView, isCurrentPointer));
+		boolean isHandlingTouchEvent = _childHandledTouchEvent
+			|| ((isBlockingTouchEvent || didPointerExit) && tryHandleTouchEvent(e, _isPointInView, wasPointInView, isCurrentPointer));
 
 		//Log.i(LOGTAG, _indent + "superDispatchTouchEvent: " + superDispatchTouchEvent);
 		//Log.i(LOGTAG, _indent + "_childBlockedTouchEvent: " + _childBlockedTouchEvent);

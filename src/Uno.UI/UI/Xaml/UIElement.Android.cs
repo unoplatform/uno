@@ -13,8 +13,6 @@ namespace Windows.UI.Xaml
 {
 	public partial class UIElement : BindableView
 	{
-		private readonly Lazy<GestureHandler> _gestures;
-
 		public UIElement()
 			: base(ContextHelper.Current)
 		{
@@ -22,10 +20,9 @@ namespace Windows.UI.Xaml
 
 			InitializePointers();
 
+			// This enables implicit pointer capture, like iOS
 			MotionEventSplittingEnabled = false;
 		}
-
-		partial void InitializeCapture();
 
 		partial void EnsureClip(Rect rect)
 		{
@@ -88,45 +85,6 @@ namespace Windows.UI.Xaml
 			};
 		}
 
-		protected override void ClearCaptures()
-		{
-			_pointCaptures.Clear();
-		}
-
-		protected override bool IsPointerCaptured => _pointCaptures.Any();
-
-		partial void AddPointerHandler(RoutedEvent routedEvent, int handlersCount, object handler, bool handledEventsToo)
-		{
-			if (handlersCount == 1)
-			{
-				_gestures.Value.UpdateShouldHandle(routedEvent, true);
-			}
-		}
-
-		partial void AddGestureHandler(RoutedEvent routedEvent, int handlersCount, object handler, bool handledEventsToo)
-		{
-			if (handlersCount == 1)
-			{
-				_gestures.Value.UpdateShouldHandle(routedEvent, true);
-			}
-		}
-
-		partial void RemovePointerHandler(RoutedEvent routedEvent, int remainingHandlersCount, object handler)
-		{
-			if (remainingHandlersCount == 0)
-			{
-				_gestures.Value.UpdateShouldHandle(routedEvent, false);
-			}
-		}
-
-		partial void RemoveGestureHandler(RoutedEvent routedEvent, int remainingHandlersCount, object handler)
-		{
-			if (remainingHandlersCount == 0)
-			{
-				_gestures.Value.UpdateShouldHandle(routedEvent, false);
-			}
-		}
-
 		protected virtual void OnVisibilityChanged(Visibility oldValue, Visibility newValue)
 		{
 			var newNativeVisibility = newValue == Visibility.Visible ? Android.Views.ViewStates.Visible : Android.Views.ViewStates.Gone;
@@ -151,17 +109,6 @@ namespace Windows.UI.Xaml
 		{
 			Alpha = IsRenderingSuspended ? 0 : (float)Opacity;
 		}
-
-		partial void OnIsHitTestVisibleChangedPartial(bool oldValue, bool newValue)
-		{
-			base.SetNativeHitTestVisible(newValue);
-		}
-
-		// This section is using the UnoViewGroup overrides for performance reasons
-		// where most of the work is performed on the java side.
-
-		protected override bool NativeHitCheck() 
-			=> IsViewHit();
 
 		internal Windows.Foundation.Point GetPosition(Point position, global::Windows.UI.Xaml.UIElement relativeTo)
 		{
