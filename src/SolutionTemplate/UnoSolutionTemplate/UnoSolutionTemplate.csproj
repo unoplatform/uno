@@ -76,6 +76,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Content Include=".vsconfig">
+      <IncludeInVSIX>true</IncludeInVSIX>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <None Include="Droid\Assets\Fonts\winjs-symbols.ttf">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

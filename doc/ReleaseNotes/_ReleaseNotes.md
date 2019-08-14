@@ -2,6 +2,7 @@
 
 ## Next version
 ### Features
+* [#1384](https://github.com/unoplatform/uno/pull/1384) Add Visual Studio for Windows payload configuration to the Uno Solution Template that prompts people if they don't have the pre-requisite Visual Studio for Windows features installed.
 * Refactored `DrawableHelper` to the `Uno` project
 * Add full implementation of `Windows.UI.Xaml.Input.InputScopeNameValue` on all platforms.
 * Add support for `Windows.Devices.Sensors.Accelerometer` APIs on iOS, Android and WASM
