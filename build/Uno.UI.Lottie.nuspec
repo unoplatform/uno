@@ -22,7 +22,7 @@
 	<dependencies>
 
 	  <group targetFramework="netstandard2.0">
-		<dependency id="Uno.UI" version="1.45.0-dev.1112" />
+		<dependency id="Uno.UI" version="1.46.196-dev.2440" />
 	  </group>
 	  <!--<group targetFramework="xamarinios10">
 		<dependency id="Uno.UI" version="0.0.1" />
