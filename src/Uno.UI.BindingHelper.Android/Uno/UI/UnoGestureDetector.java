@@ -1,4 +1,4 @@
-package Uno.UI;
+/*package Uno.UI;
 
 import android.graphics.PointF;
 import android.graphics.Rect;
@@ -13,7 +13,7 @@ public abstract class UnoGestureDetector extends GestureDetector {
 	 * @param isPointerCaptured Has the pointer been captured?
 	 * @param isCurrentPointer If this is a pointer_up event, does it correspond to the first pointer (ie, finger) received on pointer_down by this view?
 	 * @return Was the event handled.
-	 */
+	 *  /
 	public boolean onTouchEvent(MotionEvent ev, boolean isPointInView, boolean wasPointInView, boolean isPointerCaptured, boolean isCurrentPointer)
 	{
 		boolean isEventHandled = false;
@@ -276,4 +276,4 @@ public abstract class UnoGestureDetector extends GestureDetector {
 	protected abstract boolean onCancel(MotionEvent e);
 
 	protected abstract boolean onMove(MotionEvent e);
-}
+}*/

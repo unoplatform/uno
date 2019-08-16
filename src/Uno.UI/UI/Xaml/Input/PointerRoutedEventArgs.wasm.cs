@@ -50,7 +50,7 @@ namespace Windows.UI.Xaml.Input
 				: relativeTo.TransformToVisual(null).Inverse.TransformPoint(_absolutePosition);
 			var properties = GetProperties();
 
-			return new PointerPoint(frameId, timestamp, device, Pointer.PointerId, position, Pointer.IsInContact, properties);
+			return new PointerPoint(frameId, timestamp, device, Pointer.PointerId, position, position, Pointer.IsInContact, properties);
 		}
 
 		private PointerPointProperties GetProperties()

@@ -191,13 +191,13 @@ namespace Windows.UI.Xaml
 		}
 
 		#region Capture
-		private void CapturePointerNative(Pointer pointer)
+		partial void CapturePointerNative(Pointer pointer)
 		{
 			var command = "Uno.UI.WindowManager.current.setPointerCapture(" + HtmlId + ", " + pointer.PointerId + ");";
 			WebAssemblyRuntime.InvokeJS(command);
 		}
 
-		private void ReleasePointerCaptureNative(Pointer pointer)
+		partial void ReleasePointerCaptureNative(Pointer pointer)
 		{
 			var command = "Uno.UI.WindowManager.current.releasePointerCapture(" + HtmlId + ", " + pointer.PointerId + ");";
 			WebAssemblyRuntime.InvokeJS(command);
@@ -295,7 +295,7 @@ namespace Windows.UI.Xaml
 					// By default, elements have 'pointer-event' set to 'auto' (see Uno.UI.css .uno-uielement class).
 					// This means that they can be the target of hit-testing and will raise pointer events when interacted with.
 					// This is aligned with HitTestVisibilityProperty's default value of Visible.
-					element.SetStyle("pointer-events", "visiblePainted");
+					element.SetStyle("pointer-events", "auto");
 				}
 				else
 				{

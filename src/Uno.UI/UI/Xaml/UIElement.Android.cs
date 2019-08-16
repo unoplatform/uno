@@ -16,8 +16,6 @@ namespace Windows.UI.Xaml
 		public UIElement()
 			: base(ContextHelper.Current)
 		{
-			_gestures = new Lazy<GestureHandler>(() => GestureHandler.Create(this));
-
 			InitializePointers();
 
 			// This enables implicit pointer capture, like iOS

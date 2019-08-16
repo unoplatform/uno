@@ -14,6 +14,7 @@ namespace Windows.UI.Input
 			ulong timestamp,
 			PointerDevice device,
 			uint pointerId,
+			Point rawPosition,
 			Point position,
 			bool isInContact,
 			PointerPointProperties properties)
@@ -22,6 +23,7 @@ namespace Windows.UI.Input
 			Timestamp = timestamp;
 			PointerDevice = device;
 			PointerId = pointerId;
+			RawPosition = rawPosition;
 			Position = position;
 			IsInContact = isInContact;
 			Properties = properties;
@@ -35,7 +37,7 @@ namespace Windows.UI.Input
 
 		public uint PointerId { get; }
 
-		public Point RawPosition => Position;
+		public Point RawPosition { get; }
 
 		public Point Position { get; }
 

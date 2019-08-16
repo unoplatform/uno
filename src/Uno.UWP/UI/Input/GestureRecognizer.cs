@@ -8,7 +8,7 @@ using Uno.Logging;
 
 namespace Windows.UI.Input
 {
-	public  partial class GestureRecognizer 
+	public partial class GestureRecognizer 
 	{
 		private readonly ILogger _log;
 		private IDictionary<uint, List<PointerPoint>> _activePointers = new Dictionary<uint, List<PointerPoint>>();

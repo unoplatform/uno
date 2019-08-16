@@ -25,7 +25,7 @@ namespace Windows.UI.Xaml.Input
 			var offset = new Point(_point.X - translation.X, _point.Y - translation.Y);
 			var properties = new PointerPointProperties(){IsInRange = true, IsPrimary = true};
 
-			return new PointerPoint(0, (ulong)DateTime.Now.Ticks, device, 0, offset, true, properties);
+			return new PointerPoint(0, (ulong)DateTime.Now.Ticks, device, 0, offset, offset, true, properties);
 		}
 	}
 }

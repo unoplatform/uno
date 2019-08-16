@@ -5,6 +5,8 @@ using Uno.Extensions;
 using Uno.Logging;
 using Uno.UI;
 using Windows.UI.Xaml.Input;
+using Android.Runtime;
+using Java.Interop;
 
 namespace Windows.UI.Xaml.Controls.Primitives
 {
@@ -74,6 +76,8 @@ namespace Windows.UI.Xaml.Controls.Primitives
 							this.Log().Debug("TouchUpInside, executing command");
 						}
 
+						// TODO: Simulate the complete pointer sequence on "this", and remove the Tapped and Click
+						// uiControl.SetOnTouchListener()
 						OnPointerPressed(new PointerRoutedEventArgs(this));
 
 						OnClick();

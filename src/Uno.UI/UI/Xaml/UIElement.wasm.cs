@@ -540,8 +540,6 @@ namespace Windows.UI.Xaml
 			}
 		}
 
-		partial void InitializeCapture();
-
 		public int MeasureCallCount { get; protected set; }
 		public int ArrangeCallCount { get; protected set; }
 

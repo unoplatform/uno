@@ -48,8 +48,6 @@ namespace Windows.UI.Xaml
 			InitializePointers();
 		}
 
-		partial void InitializeCapture();
-
 		partial void EnsureClip(Rect rect)
 		{
 			if (rect.IsEmpty

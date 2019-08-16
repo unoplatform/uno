@@ -33,9 +33,10 @@ namespace Windows.UI.Xaml.Input
 		{
 			_nativeEvent = nativeEvent;
 
-			var pointerId = (uint)nativeEvent.DeviceId;
-			var type = nativeEvent.GetToolType(0).ToPointerDeviceType();
+			var pointerId = (uint)nativeEvent.DeviceId; // The nativeEvent.GetPointerId(**) almost always returns 0
+			var type = nativeEvent.GetToolType(nativeEvent.ActionIndex).ToPointerDeviceType();
 			var isInContact = nativeEvent.Action.HasFlag(MotionEventActions.Down)
+				|| nativeEvent.Action.HasFlag(MotionEventActions.PointerDown)
 				|| nativeEvent.Action.HasFlag(MotionEventActions.Move);
 			var keys = nativeEvent.MetaState.ToVirtualKeyModifiers();
 
@@ -50,10 +51,11 @@ namespace Windows.UI.Xaml.Input
 			var frameId = (uint)_nativeEvent.EventTime;
 			var timestamp = ToTimeStamp(_nativeEvent.EventTime);
 			var device = PointerDevice.For(Pointer.PointerDeviceType);
+			var rawPosition = new Point(_nativeEvent.RawX, _nativeEvent.RawY); // Relative to the screen
 			var position = GetPosition(relativeTo);
 			var properties = GetProperties();
 
-			return new PointerPoint(frameId, timestamp, device, Pointer.PointerId, position, Pointer.IsInContact, properties);
+			return new PointerPoint(frameId, timestamp, device, Pointer.PointerId, rawPosition, position, Pointer.IsInContact, properties);
 		}
 
 		private Point GetPosition(UIElement relativeTo)
@@ -66,7 +68,11 @@ namespace Windows.UI.Xaml.Input
 				xOrigin = viewCoords[0];
 				yOrigin = viewCoords[1];
 			}
-			var physicalPoint = new Point(_nativeEvent.RawX - xOrigin, _nativeEvent.RawY - yOrigin);
+
+			// Note: _nativeEvent.RawX/Y are relative to the screen, not the window
+			var x = _nativeEvent.GetX(_nativeEvent.ActionIndex);
+			var y = _nativeEvent.GetY(_nativeEvent.ActionIndex);
+			var physicalPoint = new Point(x - xOrigin, y - yOrigin);
 			var logicalPoint = physicalPoint.PhysicalToLogicalPixels();
 
 			return logicalPoint;
@@ -80,10 +86,10 @@ namespace Windows.UI.Xaml.Input
 				IsInRange = Pointer.IsInRange
 			};
 
-			var type = _nativeEvent.GetToolType(0);
+			var type = _nativeEvent.GetToolType(_nativeEvent.ActionIndex);
 			var action = _nativeEvent.Action;
-			var isDown = action.HasFlag(MotionEventActions.Down);
-			var isUp = action.HasFlag(MotionEventActions.Up);
+			var isDown = action.HasFlag(MotionEventActions.Down) || action.HasFlag(MotionEventActions.PointerDown);
+			var isUp = action.HasFlag(MotionEventActions.Up) || action.HasFlag(MotionEventActions.PointerUp);
 			var updates = _none;
 			switch (type)
 			{

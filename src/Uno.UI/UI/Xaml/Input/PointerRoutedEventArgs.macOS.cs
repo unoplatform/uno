@@ -28,7 +28,7 @@ namespace Windows.UI.Xaml.Input
 			var point = relativeTo.ConvertPointFromView(_nativeEvent.LocationInWindow, null);
 			var properties = new PointerPointProperties() { IsInRange = true, IsPrimary = true };
 
-			return new PointerPoint(0, (ulong)DateTime.Now.Ticks, device, 0, point, true, properties);
+			return new PointerPoint(0, (ulong)DateTime.Now.Ticks, device, 0, point, point, true, properties);
 		}
 	}
 }

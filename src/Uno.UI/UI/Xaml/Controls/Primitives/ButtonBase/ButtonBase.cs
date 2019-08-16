@@ -167,7 +167,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			RegisterEvents();
 		}
 
-#if __IOS__ || __WASM__ // This should be for all platforms once the PointerEvents are raised properly on all platforms
+#if __IOS__ || __WASM__ || __ANDROID__ // This should be for all platforms once the PointerEvents are raised properly on all platforms
 		/// <inheritdoc />
 		protected override void OnPointerEntered(PointerRoutedEventArgs args)
 		{

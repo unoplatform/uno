@@ -112,7 +112,7 @@ namespace Windows.UI.Xaml
 		}
 		#endregion
 
-#if __IOS__ || __WASM__ // This is temporary until all platforms Pointers have been reworked
+#if __IOS__ || __WASM__ || __ANDROID__ // This is temporary until all platforms Pointers have been reworked
 
 		private /* readonly but partial */ Lazy<GestureRecognizer> _gestures;
 		private readonly List<Pointer> _pointCaptures = new List<Pointer>();
@@ -128,7 +128,7 @@ namespace Windows.UI.Xaml
 
 		partial void InitializePointersPartial();
 
-		#region Gestures handling
+		#region Gestures recognition
 		private GestureRecognizer CreateGestureRecognizer()
 		{
 			var recognizer = new GestureRecognizer();
@@ -185,7 +185,6 @@ namespace Windows.UI.Xaml
 		}
 		#endregion
 
-#if __IOS__ || __WASM__
 		#region Pointer states (Usually updated by the partial API OnNative***)
 		internal bool IsOver(Pointer pointer) => IsPointerOver;
 		internal bool IsPressed(Pointer pointer) => IsPointerPressed;
@@ -406,7 +405,6 @@ namespace Windows.UI.Xaml
 			return handledInManaged;
 		}
 		#endregion
-#endif
 #else
 		private readonly List<Pointer> _pointCaptures = new List<Pointer>();
 
@@ -440,9 +438,7 @@ namespace Windows.UI.Xaml
 			else
 			{
 				_pointCaptures.Add(value);
-#if __WASM__
 				CapturePointerNative(value);
-#endif
 			}
 			return true;
 		}
@@ -452,15 +448,16 @@ namespace Windows.UI.Xaml
 			if (_pointCaptures.Contains(value))
 			{
 				_pointCaptures.Remove(value);
-#if __WASM__ || __IOS__
 				ReleasePointerCaptureNative(value);
-#endif
 			}
 			else
 			{
 				this.Log().Error($"{this}: Cannot release pointer {value}: not captured by this control.");
 			}
 		}
+
+		partial void CapturePointerNative(Pointer pointer);
+		partial void ReleasePointerCaptureNative(Pointer pointer);
 
 		public void ReleasePointerCaptures()
 		{
@@ -469,12 +466,12 @@ namespace Windows.UI.Xaml
 				this.Log().Warn($"{this}: no pointers to release.");
 				return;
 			}
-#if __WASM__ || __IOS__
+
 			foreach (var pointer in _pointCaptures)
 			{
 				ReleasePointerCaptureNative(pointer);
 			}
-#endif
+
 			_pointCaptures.Clear();
 		}
 		#endregion

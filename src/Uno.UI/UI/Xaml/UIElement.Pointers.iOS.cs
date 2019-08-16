@@ -366,8 +366,10 @@ namespace Windows.UI.Xaml
 		}
 		#endregion
 
-		private void ReleasePointerCaptureNative(Pointer value)
-		{
-		}
+		#region Capture
+		// Pointer capture is not supported on iOS
+		// partial void CapturePointerNative(Pointer pointer);
+		// partial void ReleasePointerCaptureNative(Pointer pointer);
+		#endregion
 	}
 }

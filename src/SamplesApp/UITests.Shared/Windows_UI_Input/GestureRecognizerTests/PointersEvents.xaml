@@ -9,7 +9,7 @@
 
 		<!--<ScrollViewer>-->
 			<Grid x:Name="_touchTarget" MinHeight="2048">
-				<TextBlock FontSize="8" x:Name="_output" Width="300" HorizontalAlignment="Left" />
+				<TextBlock FontSize="8" x:Name="_output" Width="300" HorizontalAlignment="Left" TextWrapping="NoWrap" />
 
 				<Border Margin="200" Width="200" Height="200" ManipulationMode="None" Background="#33CC0000">
 					<TextBlock Text="Frozen region" />

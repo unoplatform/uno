@@ -76,7 +76,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 		private bool _isPressed;
 
-#if __IOS__ || __WASM__
+#if __IOS__ || __WASM__ || __ANDROID__
 		internal new bool IsPressed
 #else
 		internal bool IsPressed
@@ -151,7 +151,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 #endif
 		}
 
-#if __IOS__ || __WASM__
+#if __IOS__ || __WASM__ || __ANDROID__
 		/// <inheritdoc />
 		protected override void OnPointerPressed(PointerRoutedEventArgs args)
 		{

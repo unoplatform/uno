@@ -53,7 +53,7 @@ namespace Windows.UI.Xaml.Input
 			var position = (Point)_nativeTouch.LocationInView(relativeTo);
 			var properties = GetProperties();
 
-			return new PointerPoint(frameId, timestamp, device, Pointer.PointerId, position, Pointer.IsInContact, properties);
+			return new PointerPoint(frameId, timestamp, device, Pointer.PointerId, position, position, Pointer.IsInContact, properties);
 		}
 
 		private PointerPointProperties GetProperties()
