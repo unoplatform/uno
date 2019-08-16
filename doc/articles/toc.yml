@@ -62,6 +62,8 @@
     href: features\windows-devices-sensors.md
   - name: Windows.Phone.Devices.Notification
     href: features\windows-phone-devices-notification-vibrationdevice.md
+  - name: Windows.UI.StartScreen
+    href: features\windows-ui-startscreen.md
   - name: CommandBar
     href: controls\commandbar.md
   - name: ListView and GridView
