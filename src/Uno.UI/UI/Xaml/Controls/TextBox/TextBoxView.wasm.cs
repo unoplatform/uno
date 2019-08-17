@@ -81,11 +81,9 @@ namespace Windows.UI.Xaml.Controls
 			return MeasureView(availableSize);
 		}
 
-		protected override void OnIsEnabledChanged(bool oldValue, bool newValue)
+		internal void SetEnabled(bool newValue)
 		{
-			base.OnIsEnabledChanged(oldValue, newValue);
-
-			SetProperty("disabled", newValue ? "true" : "false");
+			SetProperty("disabled", newValue ? "false" : "true");
 		}
 
 		public int SelectionStart

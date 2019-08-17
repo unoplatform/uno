@@ -62,6 +62,11 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
+		partial void InitializePropertiesPartial()
+		{
+			ApplyEnabled();
+		}
+
 		protected void SetIsPassword(bool isPassword)
 		{
 			if (_textBoxView != null)
@@ -97,6 +102,15 @@ namespace Windows.UI.Xaml.Controls
 		{
 			_textBoxView?.SetAttribute("spellcheck", IsSpellCheckEnabled.ToString());
 		}
+
+		protected override void OnIsEnabledChanged(bool oldValue, bool newValue)
+		{
+			base.OnIsEnabledChanged(oldValue, newValue);
+
+			ApplyEnabled();
+		}
+
+		private void ApplyEnabled() => _textBoxView?.SetEnabled(IsEnabled);
 
 		public int SelectionStart
 		{

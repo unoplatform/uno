@@ -19,7 +19,7 @@
     <AndroidManifest>Properties\AndroidManifest.xml</AndroidManifest>
     <AndroidUseIntermediateDesignerFile>True</AndroidUseIntermediateDesignerFile>
     <ResourcesDirectory>..\SamplesApp.Shared\Strings</ResourcesDirectory>
-    <!-- AndroidUseAapt2 is disabled until https://github.com/xamarin/xamarin-android/pull/3327 is resolved -->
+    <!-- AndroidUseAapt2 is disabled until https://github.com/unoplatform/uno/issues/1382 is resolved -->
     <AndroidUseAapt2>false</AndroidUseAapt2>
     <!-- https://github.com/unoplatform/uno/issues/61 -->
     <UnoSkipUserControlsInVisualTree>false</UnoSkipUserControlsInVisualTree>
@@ -84,7 +84,7 @@
   <ItemGroup>
     <PackageReference Include="MSTest.TestFramework" Version="1.4.0" />
     <PackageReference Include="Uno.SourceGenerationTasks" />
-    <PackageReference Include="Uno.Wasm.Bootstrap" Version="1.0.0-dev.244" />
+    <PackageReference Include="Uno.Wasm.Bootstrap" Version="1.0.0-dev.302" />
     <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="1.1.1" />
     <PackageReference Include="Microsoft.Extensions.Logging.Filter" Version="1.1.1" />
   </ItemGroup>
