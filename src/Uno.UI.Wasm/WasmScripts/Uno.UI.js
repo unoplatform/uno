@@ -2224,6 +2224,44 @@ var Windows;
 })(Windows || (Windows = {}));
 var Windows;
 (function (Windows) {
+    var Devices;
+    (function (Devices) {
+        var Sensors;
+        (function (Sensors) {
+            class Magnetometer {
+                static initialize() {
+                    try {
+                        if (typeof window.Magnetometer === "function") {
+                            this.dispatchReading = Module.mono_bind_static_method("[Uno] Windows.Devices.Sensors.Magnetometer:DispatchReading");
+                            let magnetometerClass = window.Magnetometer;
+                            this.magnetometer = new magnetometerClass({ referenceFrame: 'device' });
+                            return true;
+                        }
+                    }
+                    catch (error) {
+                        //sensor not available
+                        console.log('Magnetometer could not be initialized.');
+                    }
+                    return false;
+                }
+                static startReading() {
+                    this.magnetometer.addEventLi1stener('reading', Magnetometer.readingChangedHandler);
+                    this.magnetometer.start();
+                }
+                static stopReading() {
+                    this.magnetometer.removeEventListener('reading', Magnetometer.readingChangedHandler);
+                    this.magnetometer.stop();
+                }
+                static readingChangedHandler(event) {
+                    Magnetometer.dispatchReading(this.magnetometer.x, this.magnetometer.y, this.magnetometer.z);
+                }
+            }
+            Sensors.Magnetometer = Magnetometer;
+        })(Sensors = Devices.Sensors || (Devices.Sensors = {}));
+    })(Devices = Windows.Devices || (Windows.Devices = {}));
+})(Windows || (Windows = {}));
+var Windows;
+(function (Windows) {
     var Phone;
     (function (Phone) {
         var Devices;

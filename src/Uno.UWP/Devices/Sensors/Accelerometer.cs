@@ -10,7 +10,7 @@ namespace Windows.Devices.Sensors
 		private readonly static object _syncLock = new object();
 
 		private static Accelerometer _instance;
-		private static bool _initializaitonAttempted;
+		private static bool _initializationAttempted;
 
 		private Foundation.TypedEventHandler<Accelerometer, AccelerometerReadingChangedEventArgs> _readingChanged;
 		private Foundation.TypedEventHandler<Accelerometer, AccelerometerShakenEventArgs> _shaken;
@@ -26,16 +26,16 @@ namespace Windows.Devices.Sensors
 
 		public static Accelerometer GetDefault()
 		{
-			if (_initializaitonAttempted)
+			if (_initializationAttempted)
 			{
 				return _instance;
 			}
 			lock (_syncLock)
 			{
-				if (!_initializaitonAttempted)
+				if (!_initializationAttempted)
 				{
 					_instance = TryCreateInstance();
-					_initializaitonAttempted = true;
+					_initializationAttempted = true;
 				}
 				return _instance;
 			}

@@ -1,5 +1,5 @@
 ﻿<UserControl
-    x:Class="UITests.Shared.Windows_Devices.BarometerTests"
+    x:Class="UITests.Shared.Windows_Devices.MagnetometerTests"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:UITests.Shared.Windows_Devices"
@@ -13,18 +13,29 @@
 	<UserControl.Resources>
 		<valueconverters:BoolNegationValueConverter x:Key="BoolNegation" />
 	</UserControl.Resources>
-
-	<ContentControl IsEnabled="{Binding BarometerAvailable}">
+	<ContentControl IsEnabled="{Binding MagnetometerAvailable}">
 		<StackPanel>
 			<TextBlock Text="{Binding SensorStatus}" />
 
 			<Button Command="{Binding AttachReadingChangedCommand}" Content="Attach ReadingChanged" IsEnabled="{Binding ReadingChangedAttached, Converter={StaticResource BoolNegation}}" />
 			<Button Command="{Binding DetachReadingChangedCommand}" Content="Detach ReadingChanged" IsEnabled="{Binding ReadingChangedAttached}" />
-
+			
 			<TextBlock Text="Last reading" Style="{ThemeResource SubtitleTextBlockStyle}" />
 			<TextBlock>
-				<Run FontWeight="Bold">StationPressureInHectopascals:</Run>
-				<Run Text="{Binding StationPressureInHectopascals}" />
+				<Run FontWeight="Bold">MagneticFieldX: </Run>
+				<Run Text="{Binding MagneticFieldX}" />
+			</TextBlock>
+			<TextBlock>
+				<Run FontWeight="Bold">MagneticFieldY: </Run>
+				<Run Text="{Binding MagneticFieldY}" />
+			</TextBlock>
+			<TextBlock>
+				<Run FontWeight="Bold">MagneticFieldZ: </Run>
+				<Run Text="{Binding MagneticFieldZ}" />
+			</TextBlock>
+			<TextBlock>
+				<Run FontWeight="Bold">DirectionalAccuracy: </Run>
+				<Run Text="{Binding DirectionalAccuracy}" />
 			</TextBlock>
 			<TextBlock>
 				<Run FontWeight="Bold">Timestamp: </Run>

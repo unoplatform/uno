@@ -45,6 +45,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_Devices\MagnetometerTests.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="$(MSBuildThisFileDirectory)Windows_Globalization\Language_Properties.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -2403,6 +2407,9 @@
     <Compile Include="$(MSBuildThisFileDirectory)Windows_Devices\BarometerTests.xaml.cs">
       <DependentUpon>BarometerTests.xaml</DependentUpon>
     </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_Devices\MagnetometerTests.xaml.cs">
+      <DependentUpon>MagnetometerTests.xaml</DependentUpon>
+    </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_Globalization\Language_Properties.xaml.cs">
       <DependentUpon>Language_Properties.xaml</DependentUpon>
     </Compile>
@@ -4280,6 +4287,12 @@
     </Compile>
     <Compile Update="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\Button\Simple_Button_With_CanExecute_Changing.xaml.cs">
       <DependentUpon>Simple_Button_With_CanExecute_Changing.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="$(MSBuildThisFileDirectory)\Windows_UI_Xaml_Controls\Button\Button_Events.xaml.cs">
+      <DependentUpon>Button_Events.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="$(MSBuildThisFileDirectory)\Windows_Devices\MagnetometerTests.xaml.cs">
+      <DependentUpon>MagnetometerTests.xaml</DependentUpon>
     </Compile>
     <Compile Update="$(MSBuildThisFileDirectory)\Windows_UI_Xaml\Properties\DataContextProperty.xaml.cs">
       <DependentUpon>DataContextProperty.xaml</DependentUpon>
