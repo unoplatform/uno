@@ -114,13 +114,10 @@ namespace Windows.UI.Xaml
 		protected override void OnCreate(Bundle bundle)
 		{
 			base.OnCreate(bundle);
-
+			
 			LayoutProvider = new LayoutProvider(this);
 			LayoutProvider.LayoutChanged += OnLayoutChanged;
 			LayoutProvider.InsetsChanged += OnInsetsChanged;
-
-			// We need to start listening insets as soon as we can since it is raised only once the DecorView is set
-			LayoutProvider.StartListenInsets();
 
 			RaiseConfigurationChanges();
 		}

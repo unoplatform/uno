@@ -253,6 +253,11 @@ namespace Windows.UI.Xaml.Controls
 				return ""; //Pushing null to the binding resets the text. (Setting null to the Text property directly throws an exception.)
 			}
 
+			if (MaxLength > 0 && baseString.Length > MaxLength)
+			{
+				return DependencyProperty.UnsetValue;
+			}
+
 			var args = new TextBoxBeforeTextChangingEventArgs(baseString);
 			BeforeTextChanging?.Invoke(this, args);
 			if (args.Cancel)
