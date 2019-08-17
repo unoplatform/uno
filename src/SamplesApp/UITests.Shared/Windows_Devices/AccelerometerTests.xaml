@@ -23,8 +23,8 @@
 			
 			<TextBlock Text="Last reading" Style="{ThemeResource SubtitleTextBlockStyle}" />
 			<TextBlock>
-			<Run FontWeight="Bold">AccelerationX: </Run>
-			<Run Text="{Binding AccelerationX}" />
+				<Run FontWeight="Bold">AccelerationX: </Run>
+				<Run Text="{Binding AccelerationX}" />
 			</TextBlock>
 			<TextBlock>
 				<Run FontWeight="Bold">AccelerationY: </Run>

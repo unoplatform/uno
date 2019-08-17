@@ -22,24 +22,24 @@
 			
 			<TextBlock Text="Last reading" Style="{ThemeResource SubtitleTextBlockStyle}" />
 			<TextBlock>
-			<Run FontWeight="Bold">MagneticFieldX: </Run>
-			<Run Text="{Binding MagneticFieldX}" />
+				<Run FontWeight="Bold">MagneticFieldX: </Run>
+				<Run Text="{Binding MagneticFieldX}" />
 			</TextBlock>
 			<TextBlock>
-			<Run FontWeight="Bold">MagneticFieldY: </Run>
-			<Run Text="{Binding MagneticFieldY}" />
+				<Run FontWeight="Bold">MagneticFieldY: </Run>
+				<Run Text="{Binding MagneticFieldY}" />
 			</TextBlock>
 			<TextBlock>
-			<Run FontWeight="Bold">MagneticFieldZ: </Run>
-			<Run Text="{Binding MagneticFieldZ}" />
+				<Run FontWeight="Bold">MagneticFieldZ: </Run>
+				<Run Text="{Binding MagneticFieldZ}" />
 			</TextBlock>
 			<TextBlock>
-			<Run FontWeight="Bold">DirectionalAccuracy: </Run>
-			<Run Text="{Binding DirectionalAccuracy}" />
+				<Run FontWeight="Bold">DirectionalAccuracy: </Run>
+				<Run Text="{Binding DirectionalAccuracy}" />
 			</TextBlock>
 			<TextBlock>
-			<Run FontWeight="Bold">Timestamp: </Run>
-			<Run Text="{Binding Timestamp}" />
+				<Run FontWeight="Bold">Timestamp: </Run>
+				<Run Text="{Binding Timestamp}" />
 			</TextBlock>
 		</StackPanel>
 	</ContentControl>
