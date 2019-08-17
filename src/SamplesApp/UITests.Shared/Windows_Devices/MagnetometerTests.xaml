@@ -15,28 +15,31 @@
 	</UserControl.Resources>
 	<ContentControl IsEnabled="{Binding MagnetometerAvailable}">
 		<StackPanel>
+			<TextBlock Text="{Binding SensorStatus}" />
+
 			<Button Command="{Binding AttachReadingChangedCommand}" Content="Attach ReadingChanged" IsEnabled="{Binding ReadingChangedAttached, Converter={StaticResource BoolNegation}}" />
 			<Button Command="{Binding DetachReadingChangedCommand}" Content="Detach ReadingChanged" IsEnabled="{Binding ReadingChangedAttached}" />
+			
 			<TextBlock Text="Last reading" Style="{ThemeResource SubtitleTextBlockStyle}" />
 			<TextBlock>
-			<Run FontWeight="Bold">AccelerationX: </Run>
-			<Run Text="{Binding LastReading.MagneticFieldX}" />
+			<Run FontWeight="Bold">MagneticFieldX: </Run>
+			<Run Text="{Binding MagneticFieldX}" />
 			</TextBlock>
 			<TextBlock>
-			<Run FontWeight="Bold">AccelerationY: </Run>
-			<Run Text="{Binding LastReading.MagneticFieldY}" />
+			<Run FontWeight="Bold">MagneticFieldY: </Run>
+			<Run Text="{Binding MagneticFieldY}" />
 			</TextBlock>
 			<TextBlock>
-			<Run FontWeight="Bold">AccelerationZ: </Run>
-			<Run Text="{Binding LastReading.MagneticFieldZ}" />
+			<Run FontWeight="Bold">MagneticFieldZ: </Run>
+			<Run Text="{Binding MagneticFieldZ}" />
 			</TextBlock>
 			<TextBlock>
-			<Run FontWeight="Bold">Accuracy: </Run>
-			<Run Text="{Binding LastReading.DirectionalAccuracy}" />
+			<Run FontWeight="Bold">DirectionalAccuracy: </Run>
+			<Run Text="{Binding DirectionalAccuracy}" />
 			</TextBlock>
 			<TextBlock>
 			<Run FontWeight="Bold">Timestamp: </Run>
-			<Run Text="{Binding LastReading.Timestamp}" />
+			<Run Text="{Binding Timestamp}" />
 			</TextBlock>
 		</StackPanel>
 	</ContentControl>
