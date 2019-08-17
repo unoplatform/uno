@@ -3,19 +3,23 @@
 	addEventListener(type: "reading" | "activate", listener: (this: this, ev: Event) => any, useCapture?: boolean): void;
 }
 
+interface Window {
+	Magnetometer: Magnetometer;
+}
+
 namespace Windows.Devices.Sensors {
 
-	export class MagnetometerSensor {
+	export class Magnetometer {
 
 		private static dispatchReading: (magneticFieldX: number, magneticFieldY: number, magneticFieldZ: number) => number;		
 		private static magnetometer: any;
 
 		public static initialize(): boolean {
 			try {
-				console.log("typeof " + (typeof Magnetometer));
-				if (typeof Magnetometer === "function") {
+				if (typeof window.Magnetometer === "function") {
 					this.dispatchReading = (<any>Module).mono_bind_static_method("[Uno] Windows.Devices.Sensors.Magnetometer:DispatchReading");
-					this.magnetometer = new Magnetometer({ referenceFrame: 'device' });
+					let magnetometerClass: any = window.Magnetometer;
+					this.magnetometer = new magnetometerClass({ referenceFrame: 'device' });
 					return true;
 				}
 			} catch (error) {
@@ -26,17 +30,17 @@ namespace Windows.Devices.Sensors {
 		}
 
 		public static startReading() {
-			this.magnetometer.addEventLi1stener('reading', MagnetometerSensor.readingChangedHandler);
+			this.magnetometer.addEventLi1stener('reading', Magnetometer.readingChangedHandler);
 			this.magnetometer.start();
 		}
 
 		public static stopReading() {
-			this.magnetometer.removeEventListener('reading', MagnetometerSensor.readingChangedHandler);
+			this.magnetometer.removeEventListener('reading', Magnetometer.readingChangedHandler);
 			this.magnetometer.stop();
 		}
 
 		private static readingChangedHandler(event: any) {
-			MagnetometerSensor.dispatchReading(
+			Magnetometer.dispatchReading(
 				this.magnetometer.x,
 				this.magnetometer.y,
 				this.magnetometer.z);

@@ -8,7 +8,7 @@ namespace Windows.Devices.Sensors
 {
 	public partial class Magnetometer
 	{
-		private const string JsType = "Windows.Devices.Sensors.MagnetometerSensor";		
+		private const string JsType = "Windows.Devices.Sensors.Magnetometer";		
 
 		private DateTimeOffset _lastReading = DateTimeOffset.MinValue;
 

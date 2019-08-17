@@ -18,7 +18,9 @@ On Android, when both `ReadingChanged` and `Shaken` events are attached and the 
 
 ## `Barometer`
 
-### Limitations
+### Implementation notes
+
+`ReportInterval` and `ReadingChanged` APIs are available on Android and iOS.
 
 #### Android
 
@@ -34,7 +36,7 @@ On Android, when both `ReadingChanged` and `Shaken` events are attached and the 
 
 ## `Magnetometer`
 
-### Limitations
+### Implementation notes
 
 `ReportInterval` property on WASM is currently not supported directly and we use an approximation in the form of raising the `ReadingChanged` event only when enough time has passed since the last report. The event is actually raised a bit more often to make sure the gap caused by the filter is not too large, but this is in-line with the behavior of UWP Magnetometer.
 

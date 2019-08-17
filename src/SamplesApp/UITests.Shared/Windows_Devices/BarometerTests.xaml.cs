@@ -23,8 +23,6 @@ namespace UITests.Shared.Windows_Devices
     [SampleControlInfo("Windows.Devices", "Barometer", description: "Demonstrates use of Windows.Devices.Sensors.Barometer", viewModelType: typeof(BarometerTestsViewModel))]
     public sealed partial class BarometerTests : UserControl
     {
-        private Barometer _barometer;
-
         public BarometerTests()
         {
             this.InitializeComponent();

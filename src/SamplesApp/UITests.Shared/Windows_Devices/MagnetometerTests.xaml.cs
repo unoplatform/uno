@@ -36,7 +36,6 @@ namespace UITests.Shared.Windows_Devices
     public class MagnetometerTestsViewModel : ViewModelBase
     {
         private readonly Magnetometer _magnetometer = null;
-        private MagnetometerReading _lastReading;
         private bool _readingChangedAttached;
         private string _sensorStatus;
         private MagnetometerAccuracy _directionalAccuracy;

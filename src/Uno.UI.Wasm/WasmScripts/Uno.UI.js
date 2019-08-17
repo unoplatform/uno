@@ -2210,38 +2210,35 @@ var Windows;
     (function (Devices) {
         var Sensors;
         (function (Sensors) {
-            class MagnetometerSensor {
+            class Magnetometer {
                 static initialize() {
-                    console.log("start initialize()");
                     try {
-                        console.log("typeof " + (typeof Magnetometer));
-                        if (typeof Magnetometer === "function") {
+                        if (typeof window.Magnetometer === "function") {
                             this.dispatchReading = Module.mono_bind_static_method("[Uno] Windows.Devices.Sensors.Magnetometer:DispatchReading");
-                            this.magnetometer = new Magnetometer({ referenceFrame: 'device' });
+                            let magnetometerClass = window.Magnetometer;
+                            this.magnetometer = new magnetometerClass({ referenceFrame: 'device' });
                             return true;
                         }
                     }
                     catch (error) {
-                        //handles the case when sensor cannot be initialized
+                        //sensor not available
                         console.log('Magnetometer could not be initialized.');
                     }
                     return false;
                 }
                 static startReading() {
-                    console.log("start reading");
-                    this.magnetometer.addEventListener('reading', MagnetometerSensor.readingChangedHandler);
+                    this.magnetometer.addEventLi1stener('reading', Magnetometer.readingChangedHandler);
                     this.magnetometer.start();
                 }
                 static stopReading() {
-                    console.log("stop reading");
-                    this.magnetometer.removeEventListener('reading', MagnetometerSensor.readingChangedHandler);
+                    this.magnetometer.removeEventListener('reading', Magnetometer.readingChangedHandler);
                     this.magnetometer.stop();
                 }
                 static readingChangedHandler(event) {
-                    MagnetometerSensor.dispatchReading(event.accelerationIncludingGravity.x, event.accelerationIncludingGravity.y, event.accelerationIncludingGravity.z);
+                    Magnetometer.dispatchReading(this.magnetometer.x, this.magnetometer.y, this.magnetometer.z);
                 }
             }
-            Sensors.MagnetometerSensor = MagnetometerSensor;
+            Sensors.Magnetometer = Magnetometer;
         })(Sensors = Devices.Sensors || (Devices.Sensors = {}));
     })(Devices = Windows.Devices || (Windows.Devices = {}));
 })(Windows || (Windows = {}));

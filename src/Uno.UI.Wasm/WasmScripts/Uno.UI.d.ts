@@ -777,8 +777,11 @@ declare class Magnetometer {
     constructor(config: any);
     addEventListener(type: "reading" | "activate", listener: (this: this, ev: Event) => any, useCapture?: boolean): void;
 }
+interface Window {
+    Magnetometer: Magnetometer;
+}
 declare namespace Windows.Devices.Sensors {
-    class MagnetometerSensor {
+    class Magnetometer {
         private static dispatchReading;
         private static magnetometer;
         static initialize(): boolean;
