@@ -27,9 +27,8 @@ namespace Windows.Devices.Sensors
 		private static Magnetometer TryCreateInstance()
 		{
 			var motionManager = new CMMotionManager();
-			return !motionManager.MagnetometerAvailable ?
-				null :
-				new Magnetometer(motionManager);
+			return motionManager.MagnetometerAvailable ?
+				new Magnetometer(motionManager) : null;
 		}
 
 		private void StartReading()
