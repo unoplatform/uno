@@ -37,3 +37,5 @@ On Android, when both `ReadingChanged` and `Shaken` events are attached and the 
 ### Limitations
 
 `ReportInterval` property on WASM is currently not supported directly and we use an approximation in the form of raising the `ReadingChanged` event only when enough time has passed since the last report. The event is actually raised a bit more often to make sure the gap caused by the filter is not too large, but this is in-line with the behavior of UWP Magnetometer.
+
+`DirectionalAccuracy` is not reported on iOS, so it will always return `Unknown`.
