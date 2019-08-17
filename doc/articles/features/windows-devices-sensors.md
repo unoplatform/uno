@@ -20,15 +20,13 @@ On Android, when both `ReadingChanged` and `Shaken` events are attached and the 
 
 ### Implementation notes
 
-`ReportInterval` and `ReadingChanged` APIs are available on Android and iOS.
-
 #### Android
 
-* Only `ReadingChanged` event is supported, system does not support retrieval of a single reading
+* Only `ReadingChanged` event and `ReportInterval` is supported, system does not support retrieval of a single reading.
 
 #### iOS
 
-* Only `ReadingChanged` event is supported, system does not support retrieval of a single reading
+* Only `ReadingChanged` event is supported, system does not support retrieval of a single reading. `ReportInterval` is not supported.
 
 #### WASM
 

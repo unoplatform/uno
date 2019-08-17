@@ -14,10 +14,30 @@ namespace Windows.Devices.Sensors
 	{
 		private readonly Sensor _sensor;
 		private BarometerListener _listener;
+		private uint _reportInterval = 0;
 
 		private Barometer(Sensor barometerSensor)
 		{
 			_sensor = barometerSensor;
+		}
+
+		public uint ReportInterval
+		{
+			get => _reportInterval;
+			set
+			{
+				lock (_syncLock)
+				{
+					_reportInterval = value;
+
+					if (_readingChanged != null)
+					{
+						//restart reading to apply interval
+						StartReading();
+						StopReading();
+					}
+				}
+			}
 		}
 
 		private static Barometer TryCreateInstance()
