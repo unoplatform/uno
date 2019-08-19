@@ -98,16 +98,7 @@ namespace Uno.UI.Media
 				{
 					// A property on the Transform was change, request a redraw to apply the updated matrix
 					Owner.Invalidate();
-
-					// This is necessary to ensure descendants are redrawn properly esp. when animating, since hardware-accelerated
-					// animations don't take getChildStaticTransformation() into account properly
-					InvalidateDescendants();
 				}
-			}
-
-			if (Owner is UnoViewGroup uvg)
-			{
-				uvg.IsAnimationInProgress = Transform.IsAnimating;
 			}
 		}
 
@@ -116,32 +107,6 @@ namespace Uno.UI.Media
 			(Owner.Parent as BindableView)?.UnregisterChildTransform(this);
 
 			Owner.Invalidate();
-		}
-		
-		private void InvalidateDescendants()
-		{
-			InvalidateViewAndSubviews(Owner);
-
-			void InvalidateViewAndSubviews(View subRoot)
-			{
-				subRoot.Invalidate();
-
-				if (subRoot is BindableView bindableView)
-				{
-					// Prefer new'ed versions without interop
-					for (int i = 0; i < bindableView.ChildCount; i++)
-					{
-						InvalidateViewAndSubviews(bindableView.GetChildAt(i));
-					}
-				}
-				else if (subRoot is ViewGroup viewGroup)
-				{
-					for (int i = 0; i < viewGroup.ChildCount; i++)
-					{
-						InvalidateViewAndSubviews(viewGroup.GetChildAt(i));
-					}
-				}
-			}
 		}
 	}
 }
