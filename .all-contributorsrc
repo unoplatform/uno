@@ -58,6 +58,17 @@
         "tutorial",
         "review"
       ]
+    },
+    {
+      "login": "pdecostervgls",
+      "name": "Patrick Decoster",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/47024956?v=4",
+      "profile": "https://www.vogels.com",
+      "contributions": [
+        "test",
+        "code",
+        "example"
+      ]
     }
   ],
   "contributorsPerLine": 7,
