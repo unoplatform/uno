@@ -2,7 +2,7 @@
 {
 	public partial class FlyoutBase
 	{
-		partial void InitializePartial()
+		partial void InitializePopupPanelPartial()
 		{
 			_popup.PopupPanel = new FlyoutBasePopupPanel(this)
 			{
