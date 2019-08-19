@@ -97,7 +97,7 @@
       <Version>3.3396.1786</Version>
     </PackageReference>
     <PackageReference Include="CefSharp.Common">
-      <Version>67.0.0</Version>
+      <Version>75.1.141</Version>
     </PackageReference>
     <PackageReference Include="CefSharp.Wpf">
       <Version>67.0.0</Version>
