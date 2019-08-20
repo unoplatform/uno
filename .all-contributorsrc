@@ -92,6 +92,22 @@
         "test",
         "example"
       ]
+    },
+    {
+      "login": "carldebilly",
+      "name": "Carl de Billy",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/4174207?v=4",
+      "profile": "http://carl.debilly.net/",
+      "contributions": [
+        "code",
+        "content",
+        "doc",
+        "maintenance",
+        "tutorial",
+        "review",
+        "test",
+        "example"
+      ]
     }
   ],
   "contributorsPerLine": 7,
