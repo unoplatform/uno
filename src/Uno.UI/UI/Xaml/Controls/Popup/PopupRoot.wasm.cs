@@ -22,11 +22,14 @@ namespace Windows.UI.Xaml.Controls
 
 		private bool _pointerHandlerRegistered = false;
 
-		private void UpdateIsHitTestVisible()
+		internal void UpdateIsHitTestVisible()
 		{
-			var anyChildren = Children.Any();
-			IsHitTestVisible = anyChildren;
-			if (anyChildren)
+			var anyDismissableChild = Children
+				.OfType<PopupPanel>()
+				.Any(pp => pp.Popup.IsLightDismissEnabled);
+
+			IsHitTestVisible = anyDismissableChild;
+			if (anyDismissableChild)
 			{
 				if (!_pointerHandlerRegistered)
 				{

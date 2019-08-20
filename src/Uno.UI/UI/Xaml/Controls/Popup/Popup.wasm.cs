@@ -23,6 +23,15 @@ namespace Windows.UI.Xaml.Controls
 			PopupPanel.Children.Add(newChild);
 		}
 
+		protected override void OnIsLightDismissEnabledChanged(bool oldIsLightDismissEnabled, bool newIsLightDismissEnabled)
+		{
+			base.OnIsLightDismissEnabledChanged(oldIsLightDismissEnabled, newIsLightDismissEnabled);
+
+			(PopupPanel.Parent as PopupRoot)?.UpdateIsHitTestVisible();
+
+			PopupPanel.IsHitTestVisible = newIsLightDismissEnabled;
+		}
+
 		protected override void OnIsOpenChanged(bool oldIsOpen, bool newIsOpen)
 		{
 			base.OnIsOpenChanged(oldIsOpen, newIsOpen);
