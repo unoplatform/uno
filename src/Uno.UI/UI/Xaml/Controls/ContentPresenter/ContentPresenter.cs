@@ -724,6 +724,8 @@ namespace Windows.UI.Xaml.Controls
 			SynchronizeContentTemplatedParent();
 
 			UpdateBorder();
+
+			SetImplicitContent();
 		}
 
 		private void ResetDataContextOnFirstLoad()
@@ -798,10 +800,11 @@ namespace Windows.UI.Xaml.Controls
 
 			var textBlock = new ImplicitTextBlock(this);
 
-			void setBinding(DependencyProperty property, string path) 
+			void setBinding(DependencyProperty property, string path)
 				=> textBlock.SetBinding(
-					property, 
-					new Binding {
+					property,
+					new Binding
+					{
 						Path = new PropertyPath(path),
 						Source = this,
 						Mode = BindingMode.OneWay
@@ -816,6 +819,36 @@ namespace Windows.UI.Xaml.Controls
 			setBinding(TextBlock.TextAlignmentProperty, nameof(TextAlignment));
 
 			ContentTemplateRoot = textBlock;
+		}
+
+		private void SetImplicitContent()
+		{
+			if (!(TemplatedParent is ContentControl))
+			{
+				return; // Not applicable: no TemplatedParent or it's not a ContentControl 
+			}
+
+			// Check if the Content is set to something
+			var v = this.GetValueUnderPrecedence(ContentProperty, DependencyPropertyValuePrecedences.DefaultValue);
+			if (v.precedence != DependencyPropertyValuePrecedences.DefaultValue)
+			{
+				return; // Nope, there's a value somewhere
+			}
+
+			// Check if the Content property is bound to something
+			var b = GetBindingExpression(ContentProperty);
+			if (b != null)
+			{
+				return; // Yep, there's a binding: a value "will" come eventually
+			}
+
+			// Create an implicit binding of Content to Content property of the TemplatedParent (which is a ContentControl)
+			var binding =
+				new Binding(new PropertyPath("Content"), null)
+				{
+					RelativeSource = RelativeSource.TemplatedParent
+				};
+			SetBinding(ContentProperty, binding);
 		}
 
 		partial void RegisterContentTemplateRoot();

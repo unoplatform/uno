@@ -151,7 +151,7 @@ namespace Windows.UI.Xaml
 		/// <param name="property">The dependency property to get</param>
 		/// <param name="precedence">The value precedence under which to fetch a value</param>
 		/// <returns></returns>
-		internal static object GetValueUnderPrecedence(this DependencyObject instance, DependencyProperty property, DependencyPropertyValuePrecedences precedence)
+		internal static (object value, DependencyPropertyValuePrecedences precedence) GetValueUnderPrecedence(this DependencyObject instance, DependencyProperty property, DependencyPropertyValuePrecedences precedence)
 		{
 			return GetStore(instance).GetValueUnderPrecedence(property, precedence);
 		}
