@@ -511,18 +511,6 @@ public abstract class UnoViewGroup
 	public /* hidden to C# */ int getChildrenRenderTransformCount() { return _childrenTransformations.size(); }
 	public /* hidden to C# */ Matrix findChildRenderTransform(View child) { return _childrenTransformations.get(child); }
 
-	private boolean hasTransformedChildren() {
-		return  _childrenTransformations.size() != 0;
-	}
-
-	private boolean hasTransformedSiblings() {
-		ViewParent parent = getParent();
-		if (parent instanceof UnoViewGroup) {
-			return ((UnoViewGroup)parent).hasTransformedChildren();
-		}
-
-		return false;
-	}
 
 	@Override
 	public void getLocationInWindow(int[] outLocation) {
