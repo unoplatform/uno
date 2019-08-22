@@ -185,6 +185,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			if (IsCaptured(args.Pointer))
 			{
 				Selector?.OnItemClicked(this);
+				SetPressed(false);
 
 				args.Handled = true;
 			}
