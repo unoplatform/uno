@@ -17,9 +17,6 @@ namespace Windows.UI.Xaml
 			: base(ContextHelper.Current)
 		{
 			InitializePointers();
-
-			// This enables implicit pointer capture, like iOS
-			MotionEventSplittingEnabled = false;
 		}
 
 		partial void EnsureClip(Rect rect)

@@ -1,95 +1,55 @@
 package Uno.UI;
 
 import android.content.Context;
+import android.graphics.Matrix;
 import android.support.v7.widget.RecyclerView;
 import android.view.*;
-import android.graphics.PointF;
-import android.graphics.Rect;
-import android.util.Log;
-import android.support.v4.view.*;
+
 import java.lang.*;
-import java.lang.reflect.*;
 
 public abstract class UnoRecyclerView
-		extends RecyclerView
-		implements UnoViewParent{
-	private boolean _childHandledTouchEvent;
-	private boolean _childBlockedTouchEvent;
-	private boolean _childIsUnoViewGroup;
+	extends RecyclerView
+	implements Uno.UI.UnoMotionTarget {
 
 	protected UnoRecyclerView(Context context) {
 		super(context);
 	}
 
-	public final void setChildHandledTouchEvent(boolean childHandledTouchEvent)
+	// NativeIsEnabled property
+	private boolean _isEnabled = true;
+	@Override public /* hidden to C# */ final boolean getNativeIsEnabled() { return _isEnabled; }
+	public /* protected to C# */ final void setNativeIsEnabled(boolean isEnabled) { _isEnabled = isEnabled; }
+
+	@Override public /* hidden to C# */ final boolean getNativeIsHitTestVisible() { return true; }
+	@Override public /* hidden to C# */ final boolean nativeHitCheck() { return true; }
+
+	@Override public /* hidden to C# */ final int getChildrenRenderTransformCount() { return 0; }
+	@Override public /* hidden to C# */ final Matrix findChildRenderTransform(View child) { return null; }
+
+	@Override public /* protected in C# */ final boolean getIsNativeMotionEventsEnabled() { return false; }
+	// public /* protected in C# */ final void setIsNativeMotionEventsEnabled(boolean value) { }
+	@Override public /* protected in C# */ boolean onNativeMotionEvent(MotionEvent event, View originalSource, boolean isInView) { return false; }
+
+	private class TouchMotionTarget extends Uno.UI.TouchMotionTarget
 	{
-		_childHandledTouchEvent |= childHandledTouchEvent;
+		protected TouchMotionTarget() { super(UnoRecyclerView.this); }
+		@Override public boolean dispatchToSuper(MotionEvent event) { return Uno.UI.UnoRecyclerView.super.dispatchTouchEvent(event); }
 	}
 
-	public final void setChildBlockedTouchEvent(boolean childBlockedTouchEvent)
+	private class GenericMotionTarget extends Uno.UI.GenericMotionTarget
 	{
-		_childBlockedTouchEvent |= childBlockedTouchEvent;
+		protected GenericMotionTarget() { super(UnoRecyclerView.this); }
+		@Override public boolean dispatchToSuper(MotionEvent event) { return Uno.UI.UnoRecyclerView.super.dispatchGenericMotionEvent(event); }
 	}
 
-	public final void setChildIsUnoViewGroup(boolean childIsUnoViewGroup)
-	{
-		_childIsUnoViewGroup |= childIsUnoViewGroup;
+	private final Uno.UI.MotionTargetAdapter _thisAsTouchTarget = new TouchMotionTarget();
+	private final Uno.UI.MotionTargetAdapter _thisAsGenericMotionTarget = new GenericMotionTarget();
+
+	@Override public final boolean dispatchTouchEvent(MotionEvent event) {
+		return Uno.UI.UnoMotionHelper.Instance.dispatchMotionEvent(_thisAsTouchTarget, event);
 	}
-
-	public boolean dispatchTouchEvent(MotionEvent e)
-	{
-		// See UnoViewGroup for exegesis of Uno.Android's touch handling logic.
-		_childIsUnoViewGroup = false;
-		_childBlockedTouchEvent = false;
-		_childHandledTouchEvent = false;
-
-		// Always dispatch the touch events, otherwise system controls may not behave
-		// properly, such as not displaying "material design" animation cues (e.g. the
-		// growing circles in buttons when keeping pressed).
-		boolean superDispatchTouchEvent = super.dispatchTouchEvent(e);
-
-		if (!_childIsUnoViewGroup) // child is native
-		{
-			// Log.i(this.toString(), "!_childIsUnoViewGroup: " + !_childIsUnoViewGroup);
-			// If no child is under the touch, or the UnoRecyclerView is scrolling, superDispatchTouchEvent is normally true.
-			_childBlockedTouchEvent = _childHandledTouchEvent = superDispatchTouchEvent;
-		}
-
-		boolean isBlockingTouchEvent = _childBlockedTouchEvent;
-		// Always return true if super returns true, otherwise scrolling might not be handled correctly.
-		boolean isHandlingTouchEvent = _childHandledTouchEvent || superDispatchTouchEvent;
-
-		// Log.i(this.toString(), "MotionEvent: " + e.toString());
-		// Log.i(this.toString(), "superDispatchTouchEvent: " + superDispatchTouchEvent);
-		// Log.i(this.toString(), "_childBlockedTouchEvent: " + _childBlockedTouchEvent);
-		// Log.i(this.toString(), "_childHandledTouchEvent: " + _childHandledTouchEvent);
-		// Log.i(this.toString(), "isBlockingTouchEvent: " + isBlockingTouchEvent);
-		// Log.i(this.toString(), "isHandlingTouchEvent: " + isHandlingTouchEvent);
-
-		UnoViewParent parentUnoViewGroup = getParentUnoViewGroup();
-		boolean parentIsUnoViewGroup = parentUnoViewGroup != null;
-		// Log.i(this.toString(), "parentIsUnoViewGroup: " + parentIsUnoViewGroup);
-
-		if (parentIsUnoViewGroup)
-		{
-			parentUnoViewGroup.setChildIsUnoViewGroup(true);
-		}
-
-		if (parentIsUnoViewGroup)
-		{
-			parentUnoViewGroup.setChildBlockedTouchEvent(isBlockingTouchEvent);
-			parentUnoViewGroup.setChildHandledTouchEvent(isHandlingTouchEvent);
-
-			// Prevents siblings from receiving the touch event.
-			// Won't actually be read by parent (which will prefer _childBlockedTouchEvent and _childHandledTouchEvent).
-			return isBlockingTouchEvent;
-		}
-		else // parent is native
-		{
-			// Native views don't understand the difference between 'blocked' and 'handled',
-			// and will assume true to mean that the touch event was handled (which can cause problems when nested inside native controls like ListViews).
-			return isHandlingTouchEvent;
-		}
+	@Override public final boolean dispatchGenericMotionEvent(MotionEvent event) {
+		return Uno.UI.UnoMotionHelper.Instance.dispatchMotionEvent(_thisAsGenericMotionTarget, event);
 	}
 
 	@Override
@@ -108,8 +68,8 @@ public abstract class UnoRecyclerView
 	private void notifyChildRemoved(View child)
 	{
 		Uno.UI.UnoViewGroup childViewGroup = child instanceof Uno.UI.UnoViewGroup
-				? (Uno.UI.UnoViewGroup)child
-				: null;
+			? (Uno.UI.UnoViewGroup)child
+			: null;
 
 		if(childViewGroup != null)
 		{
@@ -117,14 +77,5 @@ public abstract class UnoRecyclerView
 			// after the onDetachedFromWindow is called.
 			childViewGroup.onRemovedFromParent();
 		}
-	}
-
-	private UnoViewParent getParentUnoViewGroup()
-	{
-		ViewParent parent = getParent();
-
-		return parent instanceof UnoViewParent
-				? (UnoViewParent)parent
-				: null;
 	}
 }

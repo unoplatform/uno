@@ -12,7 +12,7 @@
 	AddClass("Windows.UI.Xaml.Controls", "ScrollContentPresenter");
 	AddClass("Windows.UI.Xaml.Controls", "NativePagedView");
 	AddClass("Windows.UI.Xaml.Controls", "TextBoxView", hasNewMinWidthHeight: true, hasNewMaxWidthHeight: true);
-	AddClass("Windows.UI.Xaml.Controls", "NativeListViewBase");
+	AddClass("Windows.UI.Xaml.Controls", "NativeListViewBase", isUnoMotionTarget: true);
 #>
 <#@include file="..\..\UI\Xaml\IFrameworkElementImplementation.Android.tt"#>
 #endif

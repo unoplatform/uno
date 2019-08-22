@@ -7,6 +7,7 @@ using Windows.UI.Input;
 using Windows.UI.Xaml.Input;
 using Android.Runtime;
 using Android.Views;
+using Microsoft.Extensions.Logging;
 using Uno.Extensions;
 using Uno.Logging;
 
@@ -31,27 +32,8 @@ namespace Windows.UI.Xaml
 
 			/// <inheritdoc />
 			public bool OnTouch(View view, MotionEvent nativeEvent)
-				=> _target.OnNativeTouch(nativeEvent);
+				=> _target.OnNativeMotionEvent(nativeEvent, view, true);
 		}
-
-		//private class TouchListener : Java.Lang.Object, View.IOnTouchListener
-		//{
-		//	private static TouchListener Instance { get; } = new TouchListener();
-
-		//	public TouchListener(IntPtr handle, JniHandleOwnership transfer)
-		//		: base(handle, transfer)
-		//	{
-		//	}
-
-		//	private TouchListener()
-		//		: base(IntPtr.Zero, JniHandleOwnership.DoNotRegister)
-		//	{
-		//	}
-
-		//	/// <inheritdoc />
-		//	public bool OnTouch(View view, MotionEvent nativeEvent)
-		//		=> view is UIElement elt && elt.OnNativeTouch(nativeEvent);
-		//}
 
 		private class PointerListener
 		{
@@ -62,6 +44,7 @@ namespace Windows.UI.Xaml
 		{
 			if (handlersCount == 1)
 			{
+				IsNativeMotionEventsEnabled = true;
 				// ??? this.SetOnTouchListener(TouchListener.Instance);
 
 				// TODO: Enable pointer events reporting
@@ -76,9 +59,15 @@ namespace Windows.UI.Xaml
 			}
 		}
 
-		protected sealed override bool OnNativeTouch(MotionEvent nativeEvent)
+		protected sealed override bool OnNativeMotionEvent(MotionEvent nativeEvent, View originalSource, bool isInView)
 		{
+			if (nativeEvent.PointerCount > 1)
+			{
+				this.Log().Error("Multi touches is not supported yet by UNO. You will receive only event only for the first pointer.");
+			}
+
 			var args = new PointerRoutedEventArgs(nativeEvent, this);
+
 			switch (nativeEvent.ActionMasked)
 			{
 				case MotionEventActions.HoverEnter:
@@ -88,9 +77,17 @@ namespace Windows.UI.Xaml
 
 				case MotionEventActions.Down when args.Pointer.PointerDeviceType == PointerDeviceType.Touch:
 				case MotionEventActions.PointerDown when args.Pointer.PointerDeviceType == PointerDeviceType.Touch:
+					if (ManipulationMode != ManipulationModes.System)
+					{
+						RequestDisallowInterceptTouchEvent(true); // this is cleared on each pointer up
+					}
 					return OnNativePointerEnter(args) | OnNativePointerDown(args);
 				case MotionEventActions.Down:
 				case MotionEventActions.PointerDown:
+					if (ManipulationMode != ManipulationModes.System)
+					{
+						RequestDisallowInterceptTouchEvent(true); // this is cleared on each pointer up
+					}
 					return OnNativePointerDown(args);
 				case MotionEventActions.Up when args.Pointer.PointerDeviceType == PointerDeviceType.Touch:
 				case MotionEventActions.PointerUp when args.Pointer.PointerDeviceType == PointerDeviceType.Touch:
@@ -99,14 +96,18 @@ namespace Windows.UI.Xaml
 				case MotionEventActions.PointerUp:
 					return OnNativePointerUp(args);
 
-				case MotionEventActions.Move:
-				case MotionEventActions.HoverMove:
+				case MotionEventActions.Move: // when IsCaptured(args.Pointer) || IsInView(args.Pointer):
+				case MotionEventActions.HoverMove: //when IsCaptured(args.Pointer) || IsInView(args.Pointer):
 					return OnNativePointerMove(args);
 
 				case MotionEventActions.Cancel:
-					return OnNativePointerCancel(args, isSwallowedBySystem: true /* TODO: Check if we can determine the real reason */);
+					return OnNativePointerCancel(args, isSwallowedBySystem: true);
 
 				default:
+					if (this.Log().IsEnabled(LogLevel.Warning))
+					{
+						this.Log().Warn($"We receive a native motion event of '{nativeEvent.ActionMasked}', but this is not supported and should have been filtered out in native code.");
+					}
 					return false;
 			}
 		}
@@ -115,11 +116,13 @@ namespace Windows.UI.Xaml
 		// No needs to explicitly capture pointers on Android, they are implicitly captured
 		// partial void CapturePointerNative(Pointer pointer);
 		// partial void ReleasePointerCaptureNative(Pointer pointer);
+
+		// TODO: For the capture RequestDisallowInterceptTouchEvent
 		#endregion
 
 		partial void OnIsHitTestVisibleChangedPartial(bool oldValue, bool newValue)
 		{
-			base.SetNativeHitTestVisible(newValue);
+			base.SetNativeIsHitTestVisible(newValue);
 		}
 
 		// This section is using the UnoViewGroup overrides for performance reasons

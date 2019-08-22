@@ -120,6 +120,12 @@ namespace Windows.UI.Xaml
 		// ctor
 		private void InitializePointers()
 		{
+			// Setting MotionEventSplittingEnabled to false makes sure that for multi-touches, all the pointers are
+			// be dispatched on the same target (the one on which the first pressed occured).
+			// This is **not** the behavior of windows which dispatches each pointer to the right target,
+			// so we keep the initial value which is true.
+			// MotionEventSplittingEnabled = true;
+
 			_gestures = new Lazy<GestureRecognizer>(CreateGestureRecognizer);
 			this.SetValue(PointerCapturesProperty, _pointCaptures); // Note: On UWP this is done only on first capture
 
@@ -473,6 +479,51 @@ namespace Windows.UI.Xaml
 			}
 
 			_pointCaptures.Clear();
+		}
+
+		//private class PressedPointer
+		//{
+
+		//}
+
+		private class PointerCapture
+		{
+			public PointerCapture(UIElement owner, Pointer pointer)
+			{
+				Owner = owner;
+				Pointer = pointer;
+			}
+
+			/// <summary>
+			/// The captured pointer
+			/// </summary>
+			public Pointer Pointer { get; }
+
+			/// <summary>
+			/// The element on for which the pointer was captured
+			/// </summary>
+			public UIElement Owner { get; }
+
+			/// <summary>
+			/// Determines if the <see cref="Owner"/> is in the native bubbling tree.
+			/// If so we could rely on standard events bubbling to reach it.
+			/// Otherwise this means that we have to bubble the veent in managed only.
+			///
+			/// This makes sens only for platform that has "implicit capture"
+			/// (i.e. all pointers events are sent to the element on which the pointer pressed
+			/// occured at the beginning of the gesture). This is the case on iOS and Android.
+			/// </summary>
+			public bool IsInNativeBubblingTree { get; set; }
+
+			/// <summary>
+			/// Gets the timestamp of the last event dispatched by the <see cref="Owner"/>.
+			/// In case of native bubbling (cf. <see cref="IsInNativeBubblingTree"/>),
+			/// this helps to determine that an event was already dispatched by the Owner:
+			/// if a UIElement is receiving and event with the same timestamp, it means that the element
+			/// is a parent of the Owner and we are only bubbling the routed event, so this element can
+			/// raise the event (if the opposite, it means that the element is a child, so it has to mute the event).
+			/// </summary>
+			public long LastDispatchedEventTimestamp { get; set; }
 		}
 		#endregion
 	}

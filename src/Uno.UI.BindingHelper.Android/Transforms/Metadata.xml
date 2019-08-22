@@ -13,13 +13,18 @@
 	
 	<attr path="/api/package[@name='Uno.UI']/class[@name='UnoViewGroup']/method[@name='onLocalViewRemoved']/parameter[@name='p0']" name="name">view</attr>
 
-	<remove-node path="/api/package[@name='Uno.UI']/class[@name='UnoViewGroup']/method[@name='getGestureDetector' and count(parameter)=0]" />
-	<remove-node path="/api/package[@name='Uno.UI']/class[@name='UnoViewGroup']/method[@name='setGestureDetector' and count(parameter)=1 and parameter[1][@type='Uno.UI.UnoGestureDetector']]" />
-
 	<attr path="/api/package[@name='Uno.UI']/class[@name='UnoViewGroup']/method[@name='getText']" name="propertyName">UIAutomationText</attr>
 	<attr path="/api/package[@name='Uno.UI']/class[@name='UnoViewGroup']/method[@name='getText']" name="visibility">protected</attr>
-	
-	<attr path="/api/package[@name='Uno.UI']/class[@name='UnoViewGroup']/method[@name='getIsPointerCaptured' and count(parameter)=0]" name="visibility">protected</attr>
-	<attr path="/api/package[@name='Uno.UI']/class[@name='UnoViewGroup']/method[@name='setIsPointerCaptured' and count(parameter)=1 and parameter[1][@type='boolean']]" name="visibility">protected</attr>
 
+	<!--Hide the UnoMotionTarget interface and all its members (for all implementors) -->
+	<remove-node path="/api/package[@name='Uno.UI']/interface[@name='UnoMotionTarget']" />
+	<remove-node path="/api/package[@name='Uno.UI']/class/method[@name='getNativeIsEnabled']" />
+	<remove-node path="/api/package[@name='Uno.UI']/class/method[@name='getNativeIsHitTestVisible']" />
+	<attr path="/api/package[@name='Uno.UI']/class[@name='UnoViewGroup']/method[@name='nativeHitCheck']" name="visibility">protected</attr>
+	<remove-node path="/api/package[@name='Uno.UI']/class[@name='UnoRecyclerView']/method[@name='nativeHitCheck']" />
+	<remove-node path="/api/package[@name='Uno.UI']/class/method[@name='getChildrenRenderTransformCount']" />
+	<remove-node path="/api/package[@name='Uno.UI']/class/method[@name='findChildRenderTransform']" />
+	<attr path="/api/package[@name='Uno.UI']/class/method[@name='getIsNativeMotionEventsEnabled']" name="visibility">protected</attr>
+	<attr path="/api/package[@name='Uno.UI']/class/method[@name='setIsNativeMotionEventsEnabled']" name="visibility">protected</attr>
+	<attr path="/api/package[@name='Uno.UI']/class/method[@name='onNativeMotionEvent']" name="visibility">protected</attr>
 </metadata>
