@@ -150,7 +150,7 @@ import android.view.ViewParent;
 			return false;
 		}
 
-		if (isDown && !isMotionInView(view, event)) {
+		if (isDown && !isMotionInView(event, view)) {
 			// When using the "super" dispatch path, it's possible that for visual constraints (i.e. clipping),
 			// the view must not handle the touch. If that's the case, the touch event must be dispatched
 			// to other controls.
@@ -186,30 +186,6 @@ import android.view.ViewParent;
 		// To workaround this, simply put a transparent background on the clickable control
 		// so that it receives the touch (tryHandleTouchEvent) instead of its children.
 
-		final boolean isTouchTarget = childIsTouchTarget || target.nativeHitCheck();
-		if (isTouchTarget && _currentMotionOriginalSource == null) {
-			// If the ** static ** _currentMotionOriginalSource is null, it means we are the are the first managed child that
-			// completes the dispatch, so we are the "OriginalSource" of the event (a.k.a. the leaf of the visual tree)
-
-			Log.i(LOGTAG, _indent + "This control is the leaf, it's being set as the OriginalSource of the event.");
-
-			_currentMotionOriginalSource = view;
-		}
-
-		if (!_currentMotionIsHandled && isTouchTarget && target.getIsNativeMotionEventsEnabled()) {
-			// If the event was not "handled" (in the UWP terminology) by the managed code yet,
-			// try to handle it here for the current target. (i.e. we are bubbling the managed event here !)
-
-			// As on Android there is an implicit capture of motion event (down -> move -> up) are raised on the same
-			// target until pointer is released, the managed code will have to filter/re-route the event in order to follow
-			// the UWP behavior. We prefer to compute the 'isInView' in native as it's less expensive.
-			final boolean isInView = isMotionInView(view, event);
-
-			_currentMotionIsHandled = target.onNativeMotionEvent(event, _currentMotionOriginalSource, isInView);
-
-			Log.i(LOGTAG, _indent + "Managed event not handled yet, tried to raise it, result: " + _currentMotionIsHandled);
-		}
-
 		// Walk the tree up to the first UnoMotionTarget, if any.
 		ViewParent parent = view.getParent();
 		Uno.UI.UnoMotionTarget parentTarget = null;
@@ -220,6 +196,42 @@ import android.view.ViewParent;
 				break;
 			}
 			parent = parent.getParent();
+		}
+
+		final boolean isTouchTarget = childIsTouchTarget || target.nativeHitCheck();
+		if (isTouchTarget && _currentMotionOriginalSource == null) {
+			// If the ** static ** _currentMotionOriginalSource is null, it means we are the are the first managed child that
+			// completes the dispatch, so we are the "OriginalSource" of the event (a.k.a. the leaf of the visual tree)
+
+			// The original source must be convertible to a UIElement. As we don't have access to the UIElement class,
+			// here we only make sure to (continue to) walk tree up to the first UnoViewGroup (which is the base class for UIElement).
+			ViewParent originalSource = view;
+			if (!(originalSource instanceof Uno.UI.UnoViewGroup))
+			{
+				originalSource = parent;
+				while(originalSource != null && !(originalSource instanceof Uno.UI.UnoViewGroup)) {
+					originalSource = originalSource.getParent();
+				}
+			}
+
+			// Strong cast is legit here: either the originalSource will be a UnoViewGroup or null.
+			_currentMotionOriginalSource = (View)originalSource;
+
+			Log.i(LOGTAG, _indent + "This control is the leaf, set OriginalSource= " + _currentMotionOriginalSource);
+		}
+
+		if (!_currentMotionIsHandled && isTouchTarget && target.getIsNativeMotionEventsEnabled() && isMotionSupportedByManaged(event)) {
+			// If the event was not "handled" (in the UWP terminology) by the managed code yet,
+			// try to handle it here for the current target. (i.e. we are bubbling the managed event here !)
+
+			// As on Android there is an implicit capture of motion event (down -> move -> up) are raised on the same
+			// target until pointer is released, the managed code will have to filter/re-route the event in order to follow
+			// the UWP behavior. We prefer to compute the 'isInView' in native as it's less expensive.
+			final boolean isInView = isMotionInView(event, view);
+
+			_currentMotionIsHandled = target.onNativeMotionEvent(event, _currentMotionOriginalSource, isInView);
+
+			Log.i(LOGTAG, _indent + "Managed event not handled yet, tried to raise it, result: " + _currentMotionIsHandled);
 		}
 
 		if (parentTarget == null) {
@@ -327,7 +339,7 @@ import android.view.ViewParent;
 
 			// When we are searching for the target (i.e. !assumeInView),
 			// we make sure that the view is under the touch event.
-			if (assumeInView || isMotionInView(child, event)) {
+			if (assumeInView || isMotionInView(event, child)) {
 				handled = adapter.dispatchToChild(child, event);
 			}
 
@@ -345,7 +357,7 @@ import android.view.ViewParent;
 
 			// When we are searching for the target (i.e. !assumeInView),
 			// we make sure that the view is under the touch event.
-			if (assumeInView || isMotionInView(child, transformedEvent)) {
+			if (assumeInView || isMotionInView(transformedEvent, child)) {
 				handled = adapter.dispatchToChild(child, transformedEvent);
 			}
 
@@ -360,7 +372,7 @@ import android.view.ViewParent;
 	 * @param e The event to check
 	 * @return True if the point is within the view's bounds, false otherwise.
 	 */
-	private static boolean isMotionInView(View view, MotionEvent e) {
+	private static final boolean isMotionInView(MotionEvent e, View view) {
 		final float x = e.getX();
 		final float y = e.getY();
 
@@ -374,6 +386,24 @@ import android.view.ViewParent;
 			return true;
 		} else{
 			return x >= clipBounds.left && x < clipBounds.right && y >= clipBounds.top && y < clipBounds.bottom;
+		}
+	}
+
+	private static final boolean isMotionSupportedByManaged(MotionEvent event) {
+		switch (event.getActionMasked())
+		{
+			case MotionEvent.ACTION_DOWN:
+			case MotionEvent.ACTION_POINTER_DOWN:
+			case MotionEvent.ACTION_MOVE:
+			case MotionEvent.ACTION_UP:
+			case MotionEvent.ACTION_CANCEL:
+			case MotionEvent.ACTION_POINTER_UP:
+			case MotionEvent.ACTION_HOVER_ENTER:
+			case MotionEvent.ACTION_HOVER_MOVE:
+			case MotionEvent.ACTION_HOVER_EXIT:
+				return true;
+			default:
+				return false;
 		}
 	}
 }

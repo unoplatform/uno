@@ -74,6 +74,7 @@ namespace Windows.UI.Xaml
 
 			var args = new PointerRoutedEventArgs(nativeEvent, srcElement, this);
 
+			// Warning: MotionEvent of other kinds are filtered out in native code (UnoMotionHelper.java)
 			switch (nativeEvent.ActionMasked)
 			{
 				case MotionEventActions.HoverEnter:
