@@ -1,5 +1,5 @@
 # Uno Platform - Build Mobile, Desktop and WebAssembly apps with C# and XAML. Today.
-[![Gitter](https://badges.gitter.im/uno-platform/Lobby.svg)](https://gitter.im/uno-platform/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge) [![All Contributors](https://img.shields.io/badge/all_contributors-7-orange.svg?style=flat-square)](#contributors)
+[![Gitter](https://badges.gitter.im/uno-platform/Lobby.svg)](https://gitter.im/uno-platform/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge) [![All Contributors](https://img.shields.io/badge/all_contributors-8-orange.svg?style=flat-square)](#contributors)
 
 # What is the Uno Platform
 
@@ -107,6 +107,9 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
     <td align="center"><a href="https://www.vogels.com"><img src="https://avatars0.githubusercontent.com/u/47024956?v=4" width="100px;" alt="Patrick Decoster"/><br /><sub><b>Patrick Decoster</b></sub></a><br /><a href="https://github.com/unoplatform/uno/commits?author=pdecostervgls" title="Tests">⚠️</a> <a href="https://github.com/unoplatform/uno/commits?author=pdecostervgls" title="Code">💻</a> <a href="#example-pdecostervgls" title="Examples">💡</a></td>
     <td align="center"><a href="https://github.com/dr1rrb"><img src="https://avatars3.githubusercontent.com/u/8635919?v=4" width="100px;" alt="David"/><br /><sub><b>David</b></sub></a><br /><a href="https://github.com/unoplatform/uno/commits?author=dr1rrb" title="Code">💻</a> <a href="#content-dr1rrb" title="Content">🖋</a> <a href="https://github.com/unoplatform/uno/commits?author=dr1rrb" title="Documentation">📖</a> <a href="#maintenance-dr1rrb" title="Maintenance">🚧</a> <a href="#review-dr1rrb" title="Reviewed Pull Requests">👀</a> <a href="https://github.com/unoplatform/uno/commits?author=dr1rrb" title="Tests">⚠️</a> <a href="#example-dr1rrb" title="Examples">💡</a></td>
     <td align="center"><a href="http://carl.debilly.net/"><img src="https://avatars1.githubusercontent.com/u/4174207?v=4" width="100px;" alt="Carl de Billy"/><br /><sub><b>Carl de Billy</b></sub></a><br /><a href="https://github.com/unoplatform/uno/commits?author=carldebilly" title="Code">💻</a> <a href="#content-carldebilly" title="Content">🖋</a> <a href="https://github.com/unoplatform/uno/commits?author=carldebilly" title="Documentation">📖</a> <a href="#maintenance-carldebilly" title="Maintenance">🚧</a> <a href="#tutorial-carldebilly" title="Tutorials">✅</a> <a href="#review-carldebilly" title="Reviewed Pull Requests">👀</a> <a href="https://github.com/unoplatform/uno/commits?author=carldebilly" title="Tests">⚠️</a> <a href="#example-carldebilly" title="Examples">💡</a></td>
+  </tr>
+  <tr>
+    <td align="center"><a href="https://github.com/vincentcastagna"><img src="https://avatars3.githubusercontent.com/u/15191066?v=4" width="100px;" alt="vincentcastagna"/><br /><sub><b>vincentcastagna</b></sub></a><br /><a href="https://github.com/unoplatform/uno/commits?author=vincentcastagna" title="Code">💻</a> <a href="#example-vincentcastagna" title="Examples">💡</a></td>
   </tr>
 </table>
 
