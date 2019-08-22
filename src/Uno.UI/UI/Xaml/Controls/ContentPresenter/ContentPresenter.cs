@@ -613,6 +613,13 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
+		protected internal override void OnTemplatedParentChanged(DependencyPropertyChangedEventArgs e)
+		{
+			base.OnTemplatedParentChanged(e);
+
+			SetImplicitContent();
+		}
+
 		protected virtual void OnContentTemplateChanged(DataTemplate oldTemplate, DataTemplate newTemplate)
 		{
 			if (ContentTemplateRoot != null)
@@ -666,8 +673,7 @@ namespace Windows.UI.Xaml.Controls
 
 		private void SynchronizeContentTemplatedParent()
 		{
-			var binder = _contentTemplateRoot as IFrameworkElement;
-			if (binder != null)
+			if (_contentTemplateRoot is IFrameworkElement binder)
 			{
 				var templatedParent = _contentTemplateRoot is ImplicitTextBlock
 					? this // ImplicitTextBlock is a special case that requires its TemplatedParent to be the ContentPresenter
@@ -724,8 +730,6 @@ namespace Windows.UI.Xaml.Controls
 			SynchronizeContentTemplatedParent();
 
 			UpdateBorder();
-
-			SetImplicitContent();
 		}
 
 		private void ResetDataContextOnFirstLoad()
