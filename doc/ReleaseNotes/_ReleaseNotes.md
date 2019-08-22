@@ -7,7 +7,7 @@
    * `ReportInterval`
 * Added support for `Windows.UI.StartScreen.JumpList` APIs on Android and iOS
    * Includes `Logo`, `DisplayName` and `Arguments`
-   * The activation proceeds through the `OnLaunched` method same as on UWP  
+   * The activation proceeds through the `OnLaunched` method same as on UWP
 * Refactored `DrawableHelper` to the `Uno` project
 * Add full implementation of `Windows.UI.Xaml.Input.InputScopeNameValue` on all platforms.
 * Add support for `Windows.Devices.Sensors.Accelerometer` APIs on iOS, Android and WASM
@@ -81,6 +81,8 @@
 * Flyout that are than anchor but fit in page were defaulting to full placement.
 * [iOS]Fixed DatePickerFlyout & TimePickerFlyout not being placed at the bottom
 * [Android] Animated content is cut off/glitchy when RenderTransform translation is applied (#1333)
+* `<ContentPresenter>` will now - as a fallback when not set - automatically bind to
+  `TemplatedParent`'s `Content` when this one is a `ContentControl`.
 
 ## Release 1.45.0
 ### Features
