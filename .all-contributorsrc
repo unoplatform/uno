@@ -108,6 +108,16 @@
         "test",
         "example"
       ]
+    },
+    {
+      "login": "vincentcastagna",
+      "name": "vincentcastagna",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/15191066?v=4",
+      "profile": "https://github.com/vincentcastagna",
+      "contributions": [
+        "code",
+        "example"
+      ]
     }
   ],
   "contributorsPerLine": 7,
