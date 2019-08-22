@@ -66,7 +66,13 @@ namespace Windows.UI.Xaml
 				this.Log().Error("Multi touches is not supported yet by UNO. You will receive only event only for the first pointer.");
 			}
 
-			var args = new PointerRoutedEventArgs(nativeEvent, this);
+			if (!(originalSource is UIElement srcElement))
+			{
+				this.Log().Error("Invalid OriginalSource in OnNativeMotionEvent, fall-backing to the receiver");
+				srcElement = this;
+			}
+
+			var args = new PointerRoutedEventArgs(nativeEvent, srcElement, this);
 
 			switch (nativeEvent.ActionMasked)
 			{

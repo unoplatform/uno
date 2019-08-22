@@ -15,6 +15,7 @@ namespace Windows.UI.Xaml.Input
 	partial class PointerRoutedEventArgs
 	{
 		private readonly MotionEvent _nativeEvent;
+		private readonly UIElement _receiver;
 
 		/// <summary>
 		/// DO NOT USE - LEGACY SUPPORT - Will be removed soon
@@ -26,12 +27,13 @@ namespace Windows.UI.Xaml.Input
 			Pointer = new Pointer(0, PointerDeviceType.Touch, true, isInRange: true);
 			KeyModifiers = VirtualKeyModifiers.None;
 			OriginalSource = receiver;
-			CanBubbleNatively = true; // Required for gesture recognition, and integration of native components in the visual tree
+			CanBubbleNatively = true;
 		}
 
-		internal PointerRoutedEventArgs(MotionEvent nativeEvent, UIElement receiver) : this()
+		internal PointerRoutedEventArgs(MotionEvent nativeEvent, UIElement originalSource, UIElement receiver) : this()
 		{
 			_nativeEvent = nativeEvent;
+			_receiver = receiver;
 
 			var pointerId = (uint)nativeEvent.DeviceId; // The nativeEvent.GetPointerId(**) almost always returns 0
 			var type = nativeEvent.GetToolType(nativeEvent.ActionIndex).ToPointerDeviceType();
@@ -42,8 +44,8 @@ namespace Windows.UI.Xaml.Input
 
 			Pointer = new Pointer(pointerId, type, isInContact, isInRange: true);
 			KeyModifiers = keys;
-			OriginalSource = receiver;
-			CanBubbleNatively = true; // Required for gesture recognition, and integration of native components in the visual tree
+			OriginalSource = originalSource;
+			CanBubbleNatively = true;
 		}
 
 		public PointerPoint GetCurrentPoint(UIElement relativeTo)
@@ -60,18 +62,36 @@ namespace Windows.UI.Xaml.Input
 
 		private Point GetPosition(UIElement relativeTo)
 		{
-			int xOrigin = 0, yOrigin = 0;
-			if (relativeTo != null)
+			float x, y, xOrigin, yOrigin;
+			if (relativeTo == null) // Relative to the window
 			{
 				var viewCoords = new int[2];
-				relativeTo.GetLocationInWindow(viewCoords);
+				_receiver.GetLocationInWindow(viewCoords);
+
+				x = _nativeEvent.GetX(_nativeEvent.ActionIndex) + viewCoords[0];
+				y = _nativeEvent.GetY(_nativeEvent.ActionIndex) + viewCoords[1];
+				xOrigin = 0;
+				yOrigin = 0;
+			}
+			else if (relativeTo == _receiver) // Fast path
+			{
+				x = _nativeEvent.GetX(_nativeEvent.ActionIndex);
+				y = _nativeEvent.GetY(_nativeEvent.ActionIndex);
+				xOrigin = 0;
+				yOrigin = 0;
+			}
+			else
+			{
+				var viewCoords = new int[2];
+				relativeTo.GetLocationOnScreen(viewCoords);
+
+				// Note: _nativeEvent.RawX/Y are relative to the screen, not the window
+				x = _nativeEvent.RawX;
+				y = _nativeEvent.RawY;
 				xOrigin = viewCoords[0];
 				yOrigin = viewCoords[1];
 			}
 
-			// Note: _nativeEvent.RawX/Y are relative to the screen, not the window
-			var x = _nativeEvent.GetX(_nativeEvent.ActionIndex);
-			var y = _nativeEvent.GetY(_nativeEvent.ActionIndex);
 			var physicalPoint = new Point(x - xOrigin, y - yOrigin);
 			var logicalPoint = physicalPoint.PhysicalToLogicalPixels();
 
