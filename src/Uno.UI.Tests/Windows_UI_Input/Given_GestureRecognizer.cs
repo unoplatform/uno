@@ -212,7 +212,7 @@ namespace Uno.UI.Tests.Windows_UI_Input
 				IsLeftButtonPressed = true,
 			};
 
-			return new PointerPoint(id.Value, ts.Value, pointer, (uint)pointer.PointerDeviceType, location, isInContact.GetValueOrDefault(), properties);
+			return new PointerPoint(id.Value, ts.Value, pointer, (uint)pointer.PointerDeviceType, location, location, isInContact.GetValueOrDefault(), properties);
 		}
 
 		public static TappedEventArgs Tap(double x, double y, uint tapCount = 1, PointerDeviceType? device = null)
