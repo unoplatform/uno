@@ -84,15 +84,26 @@ namespace SamplesApp.UITests
 				}
 			}
 
-			return _currentApp = Uno.UITest.Selenium.ConfigureApp
-				.WebAssembly
-				.Uri(new Uri(Constants.DefaultUri))
-				.ChromeDriverLocation(Path.Combine(TestContext.CurrentContext.TestDirectory, DriverPath.Replace('\\', Path.DirectorySeparatorChar)))
-				.ScreenShotsPath(TestContext.CurrentContext.TestDirectory)
+			try
+			{
+				var app = _currentApp = Uno.UITest.Selenium.ConfigureApp
+					.WebAssembly
+					.Uri(new Uri(Constants.DefaultUri))
+					.ChromeDriverLocation(Path.Combine(TestContext.CurrentContext.TestDirectory,
+						DriverPath.Replace('\\', Path.DirectorySeparatorChar)))
+					.ScreenShotsPath(TestContext.CurrentContext.TestDirectory)
 #if DEBUG
-				.Headless(false)
+					.Headless(false)
 #endif
-				.StartApp();
+					.StartApp();
+
+				return app;
+			}
+			catch (Exception ex)
+			{
+				Console.Error.WriteLine(ex.Message);
+				throw;
+			}
 		}
 
 		private static IApp CreateAndroidApp(bool alreadyRunningApp)

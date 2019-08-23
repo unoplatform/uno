@@ -7,7 +7,7 @@
    * `ReportInterval`
 * Added support for `Windows.UI.StartScreen.JumpList` APIs on Android and iOS
    * Includes `Logo`, `DisplayName` and `Arguments`
-   * The activation proceeds through the `OnLaunched` method same as on UWP  
+   * The activation proceeds through the `OnLaunched` method same as on UWP
 * Refactored `DrawableHelper` to the `Uno` project
 * Add full implementation of `Windows.UI.Xaml.Input.InputScopeNameValue` on all platforms.
 * Add support for `Windows.Devices.Sensors.Accelerometer` APIs on iOS, Android and WASM
@@ -42,6 +42,12 @@
 * Improve Screenshot comparer tool, CI test results now contain Screenshots compare data
 * Updated Xamarin.GooglePlayServices.* packages to 60.1142.1 for Target MonoAndroid80
 * Updated Xamarin.GooglePlayServices.* packages to 71.1600.0 for Target MonoAndroid90
+* `<ContentPresenter>` will now - as a fallback when not set - automatically bind to
+  `TemplatedParent`'s `Content` when this one is a `ContentControl`.
+  You can deactivate this behavior like this:
+  ```
+  FeatureConfiguration.ContentPresenter.UseImplicitContentFromTemplatedParent = false;
+  ```
 
 ### Breaking changes
 * `TextBox` no longer raises TextChanged when its template is applied, in line with UWP.
