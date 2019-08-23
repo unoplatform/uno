@@ -73,7 +73,7 @@ import android.view.ViewParent;
 
 	// To trace the pointer events (dispatchTouchEvent and dispatchGenericMotionEvent),
 	// uncomment this and then uncomment logs in the method itself.
-	//*
+	/*
 	private static String _indent = "";
 	public boolean dispatchMotionEvent(Uno.UI.MotionTargetAdapter adapter, MotionEvent event)
 	{
@@ -92,7 +92,7 @@ import android.view.ViewParent;
 	}
 
 	private boolean dispatchMotionEventCore(Uno.UI.MotionTargetAdapter adapter, MotionEvent event)
-	//*/ public boolean dispatchMotionEvent(Uno.UI.MotionTargetAdapter adapter, MotionEvent event)
+	*/ public boolean dispatchMotionEvent(Uno.UI.MotionTargetAdapter adapter, MotionEvent event)
 	{
 		// The purpose of dispatchTouchEvent is to find the target (view) of a touch event.
 		// When the user touches the screen, dispatchTouchEvent is called on the top-most view, and recursively passed down to all children.
@@ -152,7 +152,7 @@ import android.view.ViewParent;
 
 		if (!target.getNativeIsHitTestVisible() || !target.getNativeIsEnabled()) {
 			// The View is not TestVisible or disabled, there is nothing to do here!
-			Log.i(LOGTAG, _indent + "BLOCKED [isHitTestVisible: " + target.getNativeIsHitTestVisible() + " | isEnabled: " + target.getNativeIsEnabled() + "]");
+			// Log.i(LOGTAG, _indent + "BLOCKED [isHitTestVisible: " + target.getNativeIsHitTestVisible() + " | isEnabled: " + target.getNativeIsEnabled() + "]");
 
 			return false;
 		}
@@ -166,7 +166,7 @@ import android.view.ViewParent;
 			// 			(!dispatch.getIsTargetCachingSupported() || isDown), BUT if we do this, we may miss some HOVER_EXIT
 			//			So we prefer to not follow the UWP behavior (PointerEnter/Exit are raised only when entering/leaving
 			//			non clipped content) and get all the events.
-			Log.i(LOGTAG, _indent + "BLOCKED (not in view due to clipping)");
+			// Log.i(LOGTAG, _indent + "BLOCKED (not in view due to clipping)");
 
 			return false;
 		}
@@ -177,11 +177,11 @@ import android.view.ViewParent;
 
 		boolean childIsTouchTarget; // a.k.a. blocking
 		if (adapter.getCustomDispatchIsActive()) {
-			Log.i(LOGTAG, _indent + "CUSTOM dispatch (" + target.getChildrenRenderTransformCount() + " of " + view.getChildCount() + " children are transformed )");
+			// Log.i(LOGTAG, _indent + "CUSTOM dispatch (" + target.getChildrenRenderTransformCount() + " of " + view.getChildCount() + " children are transformed )");
 
 			childIsTouchTarget = dispatchStaticTransformedMotionEvent(adapter, event);
 		} else {
-			Log.i(LOGTAG, _indent + "SUPER dispatch (none of the " + view.getChildCount() + " children is transformed)");
+			// Log.i(LOGTAG, _indent + "SUPER dispatch (none of the " + view.getChildCount() + " children is transformed)");
 
 			childIsTouchTarget = adapter.dispatchToSuper(event);
 		}
@@ -224,7 +224,7 @@ import android.view.ViewParent;
 			// Strong cast is legit here: either the originalSource will be a UnoViewGroup or null.
 			_currentMotionOriginalSource = (View)originalSource;
 
-			Log.i(LOGTAG, _indent + "This control is the leaf, set OriginalSource= " + _currentMotionOriginalSource);
+			// Log.i(LOGTAG, _indent + "This control is the leaf, set OriginalSource= " + _currentMotionOriginalSource);
 		}
 
 		if (!_currentMotionIsHandled && isTouchTarget && target.getIsNativeMotionEventsEnabled() && isMotionSupportedByManaged(event)) {
@@ -238,14 +238,14 @@ import android.view.ViewParent;
 
 			_currentMotionIsHandled = target.onNativeMotionEvent(event, _currentMotionOriginalSource, isInView);
 
-			Log.i(LOGTAG, _indent + "Managed event not handled yet, tried to raise it, result: " + _currentMotionIsHandled);
+			// Log.i(LOGTAG, _indent + "Managed event not handled yet, tried to raise it, result: " + _currentMotionIsHandled);
 		}
 
 		if (parentTarget == null) {
 			// The top element of the visual tree must always reply 'true' in order to receive all pointers events.
 			// (If we reply 'false' to an ACTION_DOWN, we won't receive the subsequent ACTION_MOVE nor ACTION_UP.)
 
-			Log.i(LOGTAG, _indent + "ROOT true [isTarget: " + isTouchTarget + " | isHandled: " + _currentMotionIsHandled + "]");
+			// Log.i(LOGTAG, _indent + "ROOT true [isTarget: " + isTouchTarget + " | isHandled: " + _currentMotionIsHandled + "]");
 
 			// When we reach to top of the visual tree, we clear the original source to prevent leak!
 			_currentMotionOriginalSource = null;
@@ -256,7 +256,7 @@ import android.view.ViewParent;
 			// This View (or one of its children) is opaque to the touch (a.k.a. blocking),
 			// we reply "true" in order to prevent siblings View from receiving the motion event.
 
-			Log.i(LOGTAG, _indent + "TARGET true [isTarget: " + isTouchTarget + " | isHandled: " + _currentMotionIsHandled + "]");
+			// Log.i(LOGTAG, _indent + "TARGET true [isTarget: " + isTouchTarget + " | isHandled: " + _currentMotionIsHandled + "]");
 
 			return true;
 		}
@@ -265,13 +265,13 @@ import android.view.ViewParent;
 			// This View and all its children are "transparent" to the touch (**null** background / fill / ...).
 			// We have to reply "false", so the parent View will try to dispatch this motion event to the siblings of this target.
 
-			if (!_currentMotionIsHandled) {
-				Log.e(LOGTAG, _indent + "ERROR Invalid state: This View is being considered as 'transparent', " +
-					"however the managed event is already 'handled'. This means either that the motion event should have " +
-					"been dispatched to this target at all, or a child control handed the event but did not 'blocked' the touch.");
-			}
+			// if (!_currentMotionIsHandled) {
+			// 	Log.e(LOGTAG, _indent + "ERROR Invalid state: This View is being considered as 'transparent', " +
+			// 		"however the managed event is already 'handled'. This means either that the motion event should have " +
+			// 		"been dispatched to this target at all, or a child control handed the event but did not 'blocked' the touch.");
+			// }
 
-			Log.i(LOGTAG, _indent + "OUT false [isTarget: " + isTouchTarget + " | isHandled: " + _currentMotionIsHandled + "]");
+			// Log.i(LOGTAG, _indent + "OUT false [isTarget: " + isTouchTarget + " | isHandled: " + _currentMotionIsHandled + "]");
 
 			return false;
 		}
