@@ -122,5 +122,138 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 
 			Assert.IsTrue(rd.ContainsKey("Grin"));
 		}
+
+		[TestMethod]
+		public void When_Has_Themes()
+		{
+			var rd = new ResourceDictionary();
+			var dflt = new ResourceDictionary();
+			rd.ThemeDictionaries["Default"] = dflt;
+
+			dflt["Blu"] = new SolidColorBrush(Colors.DodgerBlue);
+
+			var retrievedExplicit = (rd.ThemeDictionaries["Default"] as ResourceDictionary)["Blu"];
+			Assert.AreEqual(Colors.DodgerBlue, ((SolidColorBrush)retrievedExplicit).Color);
+			;
+
+			var retrieved = rd["Blu"];
+			Assert.AreEqual(Colors.DodgerBlue, ((SolidColorBrush)retrieved).Color);
+			;
+			Assert.IsTrue(rd.ContainsKey("Blu"));
+		}
+
+		[TestMethod]
+		public void When_Has_Themes_And_Direct()
+		{
+			var rd = new ResourceDictionary();
+			var dflt = new ResourceDictionary();
+			rd.ThemeDictionaries["Default"] = dflt;
+
+			dflt["Blu"] = new SolidColorBrush(Colors.DodgerBlue);
+
+			rd["Blu"] = new SolidColorBrush(Colors.CornflowerBlue);
+
+			var retrievedExplicit = (rd.ThemeDictionaries["Default"] as ResourceDictionary)["Blu"];
+			Assert.AreEqual(Colors.DodgerBlue, ((SolidColorBrush)retrievedExplicit).Color);
+			;
+
+			var retrieved = rd["Blu"];
+			Assert.AreEqual(Colors.CornflowerBlue, ((SolidColorBrush)retrieved).Color);
+			;
+		}
+
+		[TestMethod]
+		public void When_Has_Themes_And_Inherited_Direct()
+		{
+			var rd = new ResourceDictionary();
+			var dflt = new ResourceDictionary();
+			rd.ThemeDictionaries["Default"] = dflt;
+
+			dflt["Blu"] = new SolidColorBrush(Colors.DodgerBlue);
+
+			var rd2 = new ResourceDictionary();
+			rd2["Blu"] = new SolidColorBrush(Colors.CornflowerBlue);
+			rd.MergedDictionaries.Add(rd2);
+
+			var retrievedExplicit = (rd.ThemeDictionaries["Default"] as ResourceDictionary)["Blu"];
+			Assert.AreEqual(Colors.DodgerBlue, ((SolidColorBrush)retrievedExplicit).Color);
+			;
+
+			var retrieved = rd["Blu"];
+			Assert.AreEqual(Colors.CornflowerBlue, ((SolidColorBrush)retrieved).Color);
+			;
+		}
+
+		[TestMethod]
+		public void When_Has_Inherited_Themes()
+		{
+			var rd = new ResourceDictionary();
+
+			var rd2 = new ResourceDictionary();
+			var dflt = new ResourceDictionary();
+			rd2.ThemeDictionaries["Default"] = dflt;
+			dflt["Blu"] = new SolidColorBrush(Colors.DodgerBlue);
+			rd.MergedDictionaries.Add(rd2);
+			;
+
+			var retrieved = rd["Blu"];
+			Assert.AreEqual(Colors.DodgerBlue, ((SolidColorBrush)retrieved).Color);
+			;
+			Assert.IsTrue(rd.ContainsKey("Blu"));
+		}
+
+		[TestMethod]
+		public void When_Has_Multiple_Themes()
+		{
+#if !NETFX_CORE
+			Application.EnsureApplication();
+#endif
+
+			var rd = new ResourceDictionary();
+			var light = new ResourceDictionary();
+			light["Blu"] = new SolidColorBrush(Colors.LightBlue);
+			var dark = new ResourceDictionary();
+			dark["Blu"] = new SolidColorBrush(Colors.DarkBlue);
+
+			rd.ThemeDictionaries["Light"] = light;
+			rd.ThemeDictionaries["Dark"] = dark;
+
+			Assert.IsTrue(rd.ContainsKey("Blu"));
+
+			var retrieved1 = rd["Blu"];
+			Assert.AreEqual(ApplicationTheme.Light, Application.Current.RequestedTheme);
+			Assert.AreEqual(Colors.LightBlue, ((SolidColorBrush)retrieved1).Color);
+
+#if !NETFX_CORE //Not legal on UWP to change theme after app has launched
+			try
+			{
+				Application.Current.RequestedTheme = ApplicationTheme.Dark;
+				var retrieved2 = rd["Blu"];
+				Assert.AreEqual(Colors.DarkBlue, ((SolidColorBrush)retrieved2).Color);
+			}
+			finally
+			{
+				Application.Current.RequestedTheme = ApplicationTheme.Light;
+			}
+#endif
+		}
+
+		[TestMethod]
+		public void When_Has_Inactive_Theme()
+		{
+#if !NETFX_CORE
+			Application.EnsureApplication();
+#endif
+
+			var rd = new ResourceDictionary();
+			var dark = new ResourceDictionary();
+			dark["Blu"] = new SolidColorBrush(Colors.DarkBlue);
+
+			rd.ThemeDictionaries["Dark"] = dark;
+
+			Assert.AreEqual(ApplicationTheme.Light, Application.Current.RequestedTheme);
+			Assert.IsFalse(rd.ContainsKey("Blu"));
+			;
+		}
 	}
 }

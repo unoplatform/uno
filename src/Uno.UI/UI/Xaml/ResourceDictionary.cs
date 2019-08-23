@@ -60,43 +60,48 @@ namespace Windows.UI.Xaml
 
 		public void Add(object key, object value) => _values.Add(key.ToString(), value);
 
-		public bool ContainsKey(object key) => _values.ContainsKey(key.ToString()) || ContainsKeyMerged(key);
+		public bool ContainsKey(object key) => _values.ContainsKey(key.ToString()) || ContainsKeyMerged(key) || ContainsKeyTheme(key);
 
 		public bool TryGetValue(object key, out object value) => TryGetValue(key, out value, useResolver: true);
 
 		private bool TryGetValue(object key, out object value, bool useResolver)
 		{
-			if (!_values.TryGetValue(key, out value))
+			if (_values.TryGetValue(key, out value))
 			{
-				if (useResolver)
-				{
-					try
-					{
-						_resolvingDepth++;
-
-						if (_resolvingDepth <= FeatureConfiguration.Xaml.MaxRecursiveResolvingDepth)
-						{
-							// This prevents a stack overflow while looking for a
-							// missing resource in generated xaml code.
-
-							value = DefaultResolver?.Invoke(key.ToString());
-						}
-					}
-					finally
-					{
-						_resolvingDepth--;
-					}
-
-					if (value != null)
-					{
-						return true;
-					}
-				}
-
-				return GetFromMerged(key, out value);
+				return true;
 			}
 
-			return true;
+			if (useResolver)
+			{
+				try
+				{
+					_resolvingDepth++;
+
+					if (_resolvingDepth <= FeatureConfiguration.Xaml.MaxRecursiveResolvingDepth)
+					{
+						// This prevents a stack overflow while looking for a
+						// missing resource in generated xaml code.
+
+						value = DefaultResolver?.Invoke(key.ToString());
+					}
+				}
+				finally
+				{
+					_resolvingDepth--;
+				}
+
+				if (value != null)
+				{
+					return true;
+				}
+			}
+
+			if (GetFromMerged(key, out value))
+			{
+				return true;
+			}
+
+			return GetFromTheme(key, out value);
 		}
 
 		public object this[object key]
@@ -130,8 +135,69 @@ namespace Windows.UI.Xaml
 		{
 			for (int i = MergedDictionaries.Count - 1; i >= 0; i++)
 			{
-				var merged = MergedDictionaries[i];
-				if (merged.ContainsKey(key))
+				if (MergedDictionaries[i].ContainsKey(key))
+				{
+					return true;
+				}
+			}
+
+			return false;
+		}
+
+		private ResourceDictionary GetThemeDictionary(string theme)
+		{
+			if (ThemeDictionaries.TryGetValue(theme, out var dict))
+			{
+				return dict as ResourceDictionary;
+			}
+
+			return null;
+		}
+
+		private bool GetFromTheme(object key, out object value)
+		{
+			return GetFromTheme(Themes.Active, key, out value) ||
+				GetFromTheme(Themes.Default, key, out value);
+		}
+
+		private bool GetFromTheme(string theme, object key, out object value)
+		{
+			value = null;
+			return GetThemeDictionary(theme)?.TryGetValue(key, out value) ?? GetFromThemeMerged(theme, key, out value);
+		}
+
+		private bool GetFromThemeMerged(string theme, object key, out object value)
+		{
+			for (int i = MergedDictionaries.Count - 1; i >= 0; i++)
+			{
+				if (MergedDictionaries[i].GetFromTheme(theme, key, out value))
+				{
+					return true;
+				}
+			}
+
+			value = null;
+
+			return false;
+		}
+
+
+		private bool ContainsKeyTheme(object key)
+		{
+			return ContainsKeyTheme(Themes.Active, key) ||
+				ContainsKeyTheme(Themes.Default, key);
+		}
+
+		private bool ContainsKeyTheme(string theme, object key)
+		{
+			return GetThemeDictionary(theme)?.ContainsKey(key) ?? ContainsKeyThemeMerged(theme, key);
+		}
+
+		private bool ContainsKeyThemeMerged(string theme, object key)
+		{
+			for (int i = MergedDictionaries.Count - 1; i >= 0; i++)
+			{
+				if (MergedDictionaries[i].ContainsKeyTheme(theme, key))
 				{
 					return true;
 				}
@@ -161,5 +227,29 @@ namespace Windows.UI.Xaml
 		public global::System.Collections.Generic.IEnumerator<global::System.Collections.Generic.KeyValuePair<object, object>> GetEnumerator() => _values.GetEnumerator();
 
 		global::System.Collections.IEnumerator global::System.Collections.IEnumerable.GetEnumerator() => _values.GetEnumerator();
+
+		private static class Themes
+		{
+			public const string Default = "Default";
+			public static string Active
+			{
+				get
+				{
+					if (Application.Current == null)
+					{
+						return "Light";
+					}
+					switch (Application.Current.RequestedTheme)
+					{
+						case ApplicationTheme.Light:
+							return "Light";
+						case ApplicationTheme.Dark:
+							return "Dark";
+						default:
+							throw new InvalidOperationException($"Theme {Application.Current.RequestedTheme} is not valid");
+					}
+				}
+			}
+		}
 	}
 }
