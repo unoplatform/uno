@@ -119,7 +119,9 @@ namespace Windows.UI.Xaml.Controls
 
 				Java.Lang.Class textViewClass;
 				using (var textView = new TextView(context))
+				{
 					textViewClass = textView.Class;
+			    }
 				var editText = new EditText(context);
 
 				_cursorDrawableResField = textViewClass.GetDeclaredField("mCursorDrawableRes");
@@ -133,8 +135,9 @@ namespace Windows.UI.Xaml.Controls
 					_cursorDrawableField = _editorField.Get(editText).Class.GetDeclaredField("mCursorDrawable");
 					_cursorDrawableField.Accessible = true;
 				}
-				else // set differently in Android P (API 28) and higher
+				else
 				{
+				    // set differently in Android P (API 28) and higher
 					_cursorDrawableField = _editorField.Get(editText).Class.GetDeclaredField("mDrawableForCursor");
 					_cursorDrawableField.Accessible = true;
 				}
