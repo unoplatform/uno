@@ -162,7 +162,9 @@ namespace Windows.UI.Xaml
 		#endregion
 
 		#region TouchesManager (Alter the parents native scroll view to make sure to receive all touches)
-		partial void OnManipulationModeChanged(ManipulationModes mode) => PrepareParentTouchesManagers(mode);
+		partial void OnManipulationModeChanged(ManipulationModes _, ManipulationModes newMode)
+			// As we have to walk the tree and this method may be invoked too early, we don't try to track the state between the old and the new mode
+			=> PrepareParentTouchesManagers(newMode);
 
 		// Loaded
 		private void PrepareParentTouchesManagers() => PrepareParentTouchesManagers(ManipulationMode);

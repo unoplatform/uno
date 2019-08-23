@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using Windows.UI.Input;
 using Windows.UI.Xaml.Input;
+using Microsoft.Extensions.Logging;
 using Uno.Extensions;
 using Uno.Logging;
 
@@ -51,11 +52,11 @@ namespace Windows.UI.Xaml
 		{
 			if (snd is UIElement elt)
 			{
-				elt.OnManipulationModeChanged((ManipulationModes)args.NewValue);
+				elt.OnManipulationModeChanged((ManipulationModes)args.OldValue, (ManipulationModes)args.NewValue);
 			}
 		}
 
-		partial void OnManipulationModeChanged(ManipulationModes mode);
+		partial void OnManipulationModeChanged(ManipulationModes oldMode, ManipulationModes newMode);
 
 		public ManipulationModes ManipulationMode
 		{
@@ -67,7 +68,6 @@ namespace Windows.UI.Xaml
 #if __IOS__ || __WASM__ || __ANDROID__ // This is temporary until all platforms Pointers have been reworked
 
 		private /* readonly but partial */ Lazy<GestureRecognizer> _gestures;
-		private readonly List<Pointer> _pointCaptures = new List<Pointer>();
 
 		// ctor
 		private void InitializePointers()
@@ -79,7 +79,6 @@ namespace Windows.UI.Xaml
 			// MotionEventSplittingEnabled = true;
 
 			_gestures = new Lazy<GestureRecognizer>(CreateGestureRecognizer);
-			this.SetValue(PointerCapturesProperty, _pointCaptures); // Note: On UWP this is done only on first capture
 
 			InitializePointersPartial();
 		}
@@ -206,7 +205,7 @@ namespace Windows.UI.Xaml
 
 		private bool ReleaseCaptures(PointerRoutedEventArgs args, bool forceCaptureLostEvent = false)
 		{
-			if (_pointCaptures.Count > 0)
+			if (_localCaptures?.Count > 0)
 			{
 				ReleasePointerCaptures();
 				args.Handled = false;
@@ -399,32 +398,73 @@ namespace Windows.UI.Xaml
 		 * - The PointersCapture property remains `null` until a pointer is captured
 		 */
 
-		internal bool IsCaptured(Pointer pointer) => _pointCaptures.Any();
+		public IReadOnlyList<Pointer> PointerCaptures
+			=> (IReadOnlyList<Pointer>)this.GetValue(PointerCapturesProperty);
 
-		public bool CapturePointer(Pointer value)
+		public static DependencyProperty PointerCapturesProperty { get; } =
+			DependencyProperty.Register(
+				"PointerCaptures", typeof(IReadOnlyList<Pointer>),
+				typeof(UIElement),
+				new FrameworkPropertyMetadata(defaultValue: null)
+			);
+
+		[ThreadStatic]
+		private static IDictionary<Pointer, PointerCapture> _allCaptures;
+
+		private List<Pointer> _localCaptures; 
+
+		internal bool IsCaptured(Pointer pointer) => _localCaptures?.Any() ?? false;
+
+		public bool CapturePointer(Pointer pointer)
 		{
-			if (_pointCaptures.Contains(value))
+			if (_allCaptures == null)
 			{
-				this.Log().Error($"{this}: Pointer {value} already captured.");
+				_allCaptures = new Dictionary<Pointer, PointerCapture>(EqualityComparer<Pointer>.Default);
+			}
+
+			if (_localCaptures == null)
+			{
+				_localCaptures = new List<Pointer>();
+				this.SetValue(PointerCapturesProperty, _localCaptures); // Note: On UWP this is done only on first capture
+			}
+
+			if (_allCaptures.TryGetValue(pointer, out var capture))
+			{
+				if (this.Log().IsEnabled(LogLevel.Information))
+				{
+					this.Log().Info($"{this}: Pointer {pointer} already captured by {capture.Owner}");
+				}
+
+				return false;
 			}
 			else
 			{
-				_pointCaptures.Add(value);
-				CapturePointerNative(value);
+				capture = new PointerCapture(this, pointer);
+				_allCaptures.Add(pointer, capture);
+				_localCaptures.Add(pointer);
+
+				CapturePointerNative(pointer);
+
+				return true;
 			}
-			return true;
 		}
 
-		public void ReleasePointerCapture(Pointer value)
+		public void ReleasePointerCapture(Pointer pointer)
 		{
-			if (_pointCaptures.Contains(value))
+			if (_allCaptures != null
+				&& _allCaptures.TryGetValue(pointer, out var capture)
+				&& capture.Owner == this)
 			{
-				_pointCaptures.Remove(value);
-				ReleasePointerCaptureNative(value);
+				_allCaptures.Remove(pointer);
+				_localCaptures.Remove(pointer);
+
+				ReleasePointerCaptureNative(pointer);
+
+				// TODO: Raise capture lost
 			}
-			else
+			else if (this.Log().IsEnabled(LogLevel.Information))
 			{
-				this.Log().Error($"{this}: Cannot release pointer {value}: not captured by this control.");
+				this.Log().Info($"{this}: Cannot release pointer {pointer}: not captured by this control.");
 			}
 		}
 
@@ -433,24 +473,27 @@ namespace Windows.UI.Xaml
 
 		public void ReleasePointerCaptures()
 		{
-			if (_pointCaptures.Count == 0)
+			if (_localCaptures?.Count == 0)
 			{
-				this.Log().Warn($"{this}: no pointers to release.");
+				if (this.Log().IsEnabled(LogLevel.Information))
+				{
+					this.Log().Info($"{this}: no pointers to release.");
+				}
+
 				return;
 			}
 
-			foreach (var pointer in _pointCaptures)
+			foreach (var pointer in _localCaptures)
 			{
+				_allCaptures.Remove(pointer);
+
 				ReleasePointerCaptureNative(pointer);
+
+				// TOD: Raise capture lost
 			}
 
-			_pointCaptures.Clear();
+			_localCaptures.Clear();
 		}
-
-		//private class PressedPointer
-		//{
-
-		//}
 
 		private class PointerCapture
 		{
@@ -479,7 +522,7 @@ namespace Windows.UI.Xaml
 			/// (i.e. all pointers events are sent to the element on which the pointer pressed
 			/// occured at the beginning of the gesture). This is the case on iOS and Android.
 			/// </summary>
-			public bool IsInNativeBubblingTree { get; set; }
+			public bool? IsInNativeBubblingTree { get; set; }
 
 			/// <summary>
 			/// Gets the timestamp of the last event dispatched by the <see cref="Owner"/>.

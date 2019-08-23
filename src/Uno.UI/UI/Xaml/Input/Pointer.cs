@@ -6,7 +6,7 @@ using Windows.Devices.Input;
 
 namespace Windows.UI.Xaml.Input
 {
-	public partial class Pointer : IEquatable<Pointer>
+	public sealed partial class Pointer : IEquatable<Pointer>
 	{
 		public Pointer(uint id, PointerDeviceType type, bool isInContact, bool isInRange)
 		{
@@ -63,8 +63,8 @@ namespace Windows.UI.Xaml.Input
 		{
 			if (ReferenceEquals(null, obj)) return false;
 			if (ReferenceEquals(this, obj)) return true;
-			if (obj.GetType() != this.GetType()) return false;
-			return Equals((Pointer) obj);
+			if (!(obj is Pointer pointer)) return false;
+			return Equals(pointer);
 		}
 
 		public override int GetHashCode()

@@ -287,16 +287,6 @@ namespace Windows.UI.Xaml
 		}
 #endif
 
-		public global::System.Collections.Generic.IReadOnlyList<global::Windows.UI.Xaml.Input.Pointer> PointerCaptures
-			=> (IReadOnlyList<global::Windows.UI.Xaml.Input.Pointer>)this.GetValue(PointerCapturesProperty);
-
-		public static DependencyProperty PointerCapturesProperty { get; } =
-		DependencyProperty.Register(
-			"PointerCaptures", typeof(global::System.Collections.Generic.IReadOnlyList<global::Windows.UI.Xaml.Input.Pointer>),
-			typeof(global::Windows.UI.Xaml.UIElement),
-			new FrameworkPropertyMetadata(defaultValue: null)
-		);
-
 		public void StartBringIntoView()
 		{
 			StartBringIntoView(new BringIntoViewOptions());
