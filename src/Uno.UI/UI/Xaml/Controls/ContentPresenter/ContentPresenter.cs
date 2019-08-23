@@ -13,7 +13,7 @@ using Windows.Foundation;
 using Uno.UI;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Text;
-
+using Microsoft.Extensions.Logging;
 #if XAMARIN_ANDROID
 using View = Android.Views.View;
 using ViewGroup = Android.Views.ViewGroup;
@@ -601,7 +601,7 @@ namespace Windows.UI.Xaml.Controls
 			{
 				if (!(value is View))
 				{
-					// If the content is not a view, we apply the content as the 
+					// If the content is not a view, we apply the content as the
 					// DataContext of the materialized content.
 					DataContext = value;
 				}
@@ -825,17 +825,26 @@ namespace Windows.UI.Xaml.Controls
 			ContentTemplateRoot = textBlock;
 		}
 
+		private bool _isBoundImplicitelyToContent;
+
 		private void SetImplicitContent()
 		{
+			if(!FeatureConfiguration.ContentPresenter.UseImplicitContentFromTemplatedParent)
+			{
+				return;
+			}
+
 			if (!(TemplatedParent is ContentControl))
 			{
-				return; // Not applicable: no TemplatedParent or it's not a ContentControl 
+				ClearImplicitBindinds();
+				return; // Not applicable: no TemplatedParent or it's not a ContentControl
 			}
 
 			// Check if the Content is set to something
 			var v = this.GetValueUnderPrecedence(ContentProperty, DependencyPropertyValuePrecedences.DefaultValue);
 			if (v.precedence != DependencyPropertyValuePrecedences.DefaultValue)
 			{
+				ClearImplicitBindinds();
 				return; // Nope, there's a value somewhere
 			}
 
@@ -843,6 +852,7 @@ namespace Windows.UI.Xaml.Controls
 			var b = GetBindingExpression(ContentProperty);
 			if (b != null)
 			{
+				ClearImplicitBindinds();
 				return; // Yep, there's a binding: a value "will" come eventually
 			}
 
@@ -850,9 +860,18 @@ namespace Windows.UI.Xaml.Controls
 			var binding =
 				new Binding(new PropertyPath("Content"), null)
 				{
-					RelativeSource = RelativeSource.TemplatedParent
+					RelativeSource = RelativeSource.TemplatedParent,
 				};
 			SetBinding(ContentProperty, binding);
+			_isBoundImplicitelyToContent = true;
+
+			void ClearImplicitBindinds()
+			{
+				if (_isBoundImplicitelyToContent)
+				{
+					SetBinding(ContentProperty, new Binding());
+				}
+			}
 		}
 
 		partial void RegisterContentTemplateRoot();
