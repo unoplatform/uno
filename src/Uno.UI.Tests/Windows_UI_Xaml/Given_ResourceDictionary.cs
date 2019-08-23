@@ -74,6 +74,8 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 
 			Assert.IsTrue(rd.ContainsKey("Grin"));
 
+			Assert.IsFalse(rd.ContainsKey("Blu"));
+
 			var retrieved = rd["Grin"];
 			Assert.AreEqual(Colors.DarkOliveGreen, ((SolidColorBrush)retrieved).Color);
 

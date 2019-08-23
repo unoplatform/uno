@@ -118,7 +118,8 @@ namespace Windows.UI.Xaml
 
 		private bool GetFromMerged(object key, out object value)
 		{
-			for (int i = MergedDictionaries.Count - 1; i >= 0; i++)
+			// Check last dictionary first - //https://docs.microsoft.com/en-us/windows/uwp/design/controls-and-patterns/resourcedictionary-and-xaml-resource-references#merged-resource-dictionaries
+			for (int i = MergedDictionaries.Count - 1; i >= 0; i--)
 			{
 				if (MergedDictionaries[i].TryGetValue(key, out value, useResolver: false))
 				{
@@ -133,7 +134,7 @@ namespace Windows.UI.Xaml
 
 		private bool ContainsKeyMerged(object key)
 		{
-			for (int i = MergedDictionaries.Count - 1; i >= 0; i++)
+			for (int i = MergedDictionaries.Count - 1; i >= 0; i--)
 			{
 				if (MergedDictionaries[i].ContainsKey(key))
 				{
@@ -168,7 +169,7 @@ namespace Windows.UI.Xaml
 
 		private bool GetFromThemeMerged(string theme, object key, out object value)
 		{
-			for (int i = MergedDictionaries.Count - 1; i >= 0; i++)
+			for (int i = MergedDictionaries.Count - 1; i >= 0; i--)
 			{
 				if (MergedDictionaries[i].GetFromTheme(theme, key, out value))
 				{
@@ -195,7 +196,7 @@ namespace Windows.UI.Xaml
 
 		private bool ContainsKeyThemeMerged(string theme, object key)
 		{
-			for (int i = MergedDictionaries.Count - 1; i >= 0; i++)
+			for (int i = MergedDictionaries.Count - 1; i >= 0; i--)
 			{
 				if (MergedDictionaries[i].ContainsKeyTheme(theme, key))
 				{
