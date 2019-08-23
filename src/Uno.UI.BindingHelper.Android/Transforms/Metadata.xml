@@ -24,6 +24,8 @@
 	<remove-node path="/api/package[@name='Uno.UI']/class[@name='UnoRecyclerView']/method[@name='nativeHitCheck']" />
 	<remove-node path="/api/package[@name='Uno.UI']/class/method[@name='getChildrenRenderTransformCount']" />
 	<remove-node path="/api/package[@name='Uno.UI']/class/method[@name='findChildRenderTransform']" />
+	<attr path="/api/package[@name='Uno.UI']/class/method[@name='getIsNativeMotionEventsInterceptForbidden']" name="visibility">protected</attr>
+	<attr path="/api/package[@name='Uno.UI']/class/method[@name='setIsNativeMotionEventsInterceptForbidden']" name="visibility">protected</attr>
 	<attr path="/api/package[@name='Uno.UI']/class/method[@name='getIsNativeMotionEventsEnabled']" name="visibility">protected</attr>
 	<attr path="/api/package[@name='Uno.UI']/class/method[@name='setIsNativeMotionEventsEnabled']" name="visibility">protected</attr>
 	<attr path="/api/package[@name='Uno.UI']/class/method[@name='onNativeMotionEvent']" name="visibility">protected</attr>

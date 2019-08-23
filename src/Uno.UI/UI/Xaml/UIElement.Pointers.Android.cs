@@ -35,19 +35,12 @@ namespace Windows.UI.Xaml
 				=> _target.OnNativeMotionEvent(nativeEvent, view, true);
 		}
 
-		private class PointerListener
-		{
-
-		}
 
 		partial void AddPointerHandler(RoutedEvent routedEvent, int handlersCount, object handler, bool handledEventsToo)
 		{
 			if (handlersCount == 1)
 			{
 				IsNativeMotionEventsEnabled = true;
-				// ??? this.SetOnTouchListener(TouchListener.Instance);
-
-				// TODO: Enable pointer events reporting
 			}
 		}
 
@@ -84,17 +77,9 @@ namespace Windows.UI.Xaml
 
 				case MotionEventActions.Down when args.Pointer.PointerDeviceType == PointerDeviceType.Touch:
 				case MotionEventActions.PointerDown when args.Pointer.PointerDeviceType == PointerDeviceType.Touch:
-					if (ManipulationMode != ManipulationModes.System)
-					{
-						RequestDisallowInterceptTouchEvent(true); // this is cleared on each pointer up
-					}
 					return OnNativePointerEnter(args) | OnNativePointerDown(args);
 				case MotionEventActions.Down:
 				case MotionEventActions.PointerDown:
-					if (ManipulationMode != ManipulationModes.System)
-					{
-						RequestDisallowInterceptTouchEvent(true); // this is cleared on each pointer up
-					}
 					return OnNativePointerDown(args);
 				case MotionEventActions.Up when args.Pointer.PointerDeviceType == PointerDeviceType.Touch:
 				case MotionEventActions.PointerUp when args.Pointer.PointerDeviceType == PointerDeviceType.Touch:
@@ -118,6 +103,9 @@ namespace Windows.UI.Xaml
 					return false;
 			}
 		}
+
+		partial void OnManipulationModeChanged(ManipulationModes oldMode, ManipulationModes newMode)
+			=> IsNativeMotionEventsInterceptForbidden = newMode != ManipulationModes.System;
 
 		#region Capture
 		// No needs to explicitly capture pointers on Android, they are implicitly captured

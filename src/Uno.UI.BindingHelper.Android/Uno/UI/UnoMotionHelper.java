@@ -141,6 +141,13 @@ import android.view.ViewParent;
 
 			adapter.setCustomDispatchIsActive(target.getChildrenRenderTransformCount() > 0);
 			adapter.setCustomDispatchTouchTarget(null);
+
+			// Make sure that the system won't stole the motion events if the ManipulationMode is not 'System'.
+			// Note: We have to do this in native as we might not forward the ACTION_DOWN if !target.getIsNativeMotionEventsEnabled()
+			// Note: This is automatically cleared on each ACTION_UP
+			if (target.getIsNativeMotionEventsInterceptForbidden()) {
+				view.requestDisallowInterceptTouchEvent(true);
+			}
 		}
 
 		if (!target.getNativeIsHitTestVisible() || !target.getNativeIsEnabled()) {

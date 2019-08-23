@@ -2,11 +2,6 @@ package Uno.UI;
 
 import android.graphics.Matrix;
 import android.view.*;
-import android.graphics.PointF;
-import android.graphics.Rect;
-import android.util.Log;
-import java.lang.*;
-import java.lang.reflect.*;
 
 /**
  * A view that participates in Uno's expanded gesture-consumption logic, which distinguishes between
@@ -15,40 +10,35 @@ import java.lang.reflect.*;
  * Note: This interface is for internal use (a.k.a. package-private) and is NOT VISIBLE to the C# binding
  */
 interface UnoMotionTarget {
-//	/**
-//	 * Called by a child to indicate to its parent that it is an Uno view. Normally called every time
-//	 * the child receives a {@link android.view.View.dispatchTouchEvent(MotionEvent)}, and should be
-//	 * reset by the owner at the beginning of its own dispatchTouchEvent().
-//	 * @param value True if the child is an {@link UnoMotionTarget}
-//	 */
-//	public void setChildIsUnoViewGroup(boolean value);
-//
-//	/**
-//	 * Called by a child from dispatchTouchEvent to indicate that it (or one of its descendants) blocked
-//	 * the touch event, meaning that siblings should be prevented from consuming the event.
-//	 * @param isBlockingTouchEvent True if touch event is blocked (eg because the child has a background)
-//	 */
-//	public void setChildBlockedTouchEvent(boolean isBlockingTouchEvent);
-//
-//	/**
-//	 * Called by a child from dispatchTouchEvent to indicate that it (or one of its descendants) handled
-//	 * the touch event.
-//	 * @param isHandlingTouchEvent True if the touch event is handled (eg the child is a button)
-//	 */
-//	public void setChildHandledTouchEvent(boolean isHandlingTouchEvent);
-
-	//void setChildMotionEventResult(View child, boolean isBlocking, boolean isHandling);
-
 	/**
-	 * Get the
-	 * @return
+	 * Get value of the managed IsEnabled
 	 */
 	/* internal */ boolean getNativeIsEnabled();
+
+	/**
+	 * Gets the value of the managed IsHitTestVisible
+	 */
 	/* internal */ boolean getNativeIsHitTestVisible();
 	/* internal OR protected */	boolean nativeHitCheck(); // TODO: This should be coerced into the IsHitTestVisible()
 
+	/**
+	 * Gets the number of children that have a RenderTransform
+	 */
 	/* internal */ int getChildrenRenderTransformCount();
+
+	/**
+	 * Gets the RenderTransform of the given child
+	 */
 	/* internal */ Matrix findChildRenderTransform(View child);
+
+	/**
+	 * Gets a boolean which indicates if a View is allowed to natively capture the pointer events
+	 * (like the ScrollViewer). If 'true', we will receive a ACTION_CANCEL events when the native
+	 * view is "stilling" the motion events.
+	 * In UWP this is managed by the ManipulationMode.
+	 * @return true to prevent the system to stole the motions
+	 */
+	/* protected */ boolean getIsNativeMotionEventsInterceptForbidden();
 
 	/**
 	 * Gets a boolean which indicates if the native motion events should be propagated to the managed

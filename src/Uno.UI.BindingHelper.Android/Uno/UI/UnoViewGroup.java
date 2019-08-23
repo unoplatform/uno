@@ -332,6 +332,10 @@ public abstract class UnoViewGroup
 		return Uno.UI.UnoMotionHelper.Instance.dispatchMotionEvent(_thisAsGenericMotionTarget, event);
 	}
 
+	private boolean _isNativeMotionEventsInterceptForbidden = false;
+	@Override public /* protected in C# */ final boolean getIsNativeMotionEventsInterceptForbidden(){ return _isNativeMotionEventsInterceptForbidden; }
+	public /* protected in C# */ final void setIsNativeMotionEventsInterceptForbidden(boolean isNativeMotionEventsInterceptForbidden){ _isNativeMotionEventsInterceptForbidden = isNativeMotionEventsInterceptForbidden; }
+
 	private boolean _isNativeMotionEventsEnabled = true;
 	@Override public /* protected in C# */ final boolean getIsNativeMotionEventsEnabled(){ return _isNativeMotionEventsEnabled; }
 	public /* protected in C# */ final void setIsNativeMotionEventsEnabled(boolean isNativeMotionEventsEnabled){ _isNativeMotionEventsEnabled = isNativeMotionEventsEnabled; }
