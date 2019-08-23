@@ -9,7 +9,9 @@ namespace UITests.Shared.Windows_UI_Xaml_Controls.ContentPresenter
 	{
 		public ContentPresenter_ImplicitContent()
 		{
+#if HAS_UNO
 			FeatureConfiguration.ContentPresenter.UseImplicitContentFromTemplatedParent = true;
+#endif
 			this.InitializeComponent();
 		}
 	}
