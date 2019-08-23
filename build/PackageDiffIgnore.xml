@@ -354,6 +354,51 @@
 				<Member 
 					fullName="System.Void Windows.UI.Xaml.Controls.Primitives.SelectorItem.OnPointerCanceled(Windows.UI.Xaml.Input.PointerRoutedEventArgs args)"
 					reason="Binary issue, but not an API changed. Ignore it since we already have some other bin conflict."/>
+				<Member 
+					fullName="System.Void Uno.UI.UnoViewGroup.set_IsAnimationInProgress(System.Boolean value)"
+					reason="Removed internal stuff."/>
+				<Member 
+					fullName="System.Boolean Uno.UI.UnoViewGroup.get_IsPointerCaptured()"
+					reason="Removed internal stuff."/>
+				<Member 
+					fullName="System.Single Uno.UI.UnoViewGroup.get_TransformedTouchX()"
+					reason="Removed internal stuff."/>
+				<Member 
+					fullName="System.Single Uno.UI.UnoViewGroup.get_TransformedTouchY()"
+					reason="Removed internal stuff."/>
+				<Member 
+					fullName="System.Void Uno.UI.UnoViewGroup.ClearCaptures()"
+					reason="Removed internal stuff."/>
+				<Member 
+					fullName="System.Boolean Uno.UI.UnoViewGroup.InvalidateTransformedHierarchy()"
+					reason="Removed internal stuff."/>
+				<Member 
+					fullName="System.Boolean Uno.UI.UnoViewGroup.IsCurrentPointer(Android.Views.MotionEvent e, System.Boolean isPointInView)"
+					reason="Removed internal stuff."/>
+				<Member 
+					fullName="System.Boolean Uno.UI.UnoViewGroup.IsLocalTouchPointInView(System.Single x, System.Single y)"
+					reason="Removed internal stuff."/>
+				<Member 
+					fullName="System.Void Uno.UI.UnoViewGroup.SetChildBlockedTouchEvent(System.Boolean childBlockedTouchEvent)"
+					reason="Removed internal stuff."/>
+				<Member 
+					fullName="System.Void Uno.UI.UnoViewGroup.SetChildHandledTouchEvent(System.Boolean childHandledTouchEvent)"
+					reason="Removed internal stuff."/>
+				<Member 
+					fullName="System.Void Uno.UI.UnoViewGroup.SetChildIsUnoViewGroup(System.Boolean childIsUnoViewGroup)"
+					reason="Removed internal stuff."/>
+				<Member 
+					fullName="System.Void Uno.UI.UnoViewGroup.SetNativeHitTestVisible(System.Boolean hitTestVisible)"
+					reason="Removed internal stuff."/>
+				<Member 
+					fullName="System.Void Uno.UI.UnoViewGroup.SetChildRenderTransform(Android.Views.View child, Android.Graphics.Matrix transform)"
+					reason="Changed visibility of internal method."/>
+				<Member 
+					fullName="System.Void Uno.UI.UnoViewGroup.RemoveChildRenderTransform(Android.Views.View child)"
+					reason="Changed visibility of internal method."/>
+				<Member 
+					fullName="System.Boolean Windows.UI.Xaml.Controls.NativeListViewBase.HitCheck()"
+					reason="Not part of the UWP API."/>
 				<Member
 					fullName="System.Void Windows.UI.Core.CoreWindow..ctor()"
 					reason="Invalid visibility."/>
@@ -372,18 +417,37 @@
 			</Fields>
 
 			<Properties>
-				<Member fullName="Android.Views.View Windows.UI.Xaml.Controls.Popup::Anchor()"
-						reason="Invalid property visibility"/>
-				<Member fullName="System.String Windows.UI.Xaml.Controls.TextBoxView::BindableText()"
-						reason="Removed obsolete method. TextBoxView is internal on UWP, shouldn't normally be created or manipulated by user code."/>
-				<Member fullName="System.Boolean Uno.UI.UnoViewGroup::HasNonIdentityStaticTransformation()"
-						reason="Removed unneeded pseudo-internal property" />
-				<Member fullName="System.Boolean Uno.UI.UnoViewGroup::IsAnimationInProgress()"
-						reason="Removed unneeded pseudo-internal property" />
-				<Member fullName="Windows.UI.Xaml.ResourceDictionary[] Windows.UI.Xaml.ResourceDictionary::MergedDictionaries()"
-						reason="Property type fixed to match UWP" />
+				<Member 
+					fullName="System.Boolean Uno.UI.UnoViewGroup::HasNonIdentityStaticTransformation()"
+					reason="Removed internal stuff."/>
+				<Member 
+					fullName="System.Boolean Uno.UI.UnoViewGroup::IsPointerCaptured()"
+					reason="Removed internal stuff."/>
+				<Member 
+					fullName="System.Single Uno.UI.UnoViewGroup::TransformedTouchX()"
+					reason="Removed internal stuff."/>
+				<Member 
+					fullName="System.Single Uno.UI.UnoViewGroup::TransformedTouchY()"
+					reason="Removed internal stuff."/>
+				<Member 
+					fullName="System.Boolean Windows.UI.Xaml.UIElement::IsPointerCaptured()"
+					reason="Not part of the UWP API."/>
+				<Member 
+					fullName="Android.Views.View Windows.UI.Xaml.Controls.Popup::Anchor()"
+					reason="Invalid property visibility"/>
+				<Member 
+					fullName="System.String Windows.UI.Xaml.Controls.TextBoxView::BindableText()"
+					reason="Removed obsolete method. TextBoxView is internal on UWP, shouldn't normally be created or manipulated by user code."/>
+				<Member 
+					fullName="System.Boolean Uno.UI.UnoViewGroup::HasNonIdentityStaticTransformation()"
+					reason="Removed unneeded pseudo-internal property" />
+				<Member 
+					fullName="System.Boolean Uno.UI.UnoViewGroup::IsAnimationInProgress()"
+					reason="Removed unneeded pseudo-internal property" />
+				<Member 
+					fullName="Windows.UI.Xaml.ResourceDictionary[] Windows.UI.Xaml.ResourceDictionary::MergedDictionaries()"
+					reason="Property type fixed to match UWP" />
 			</Properties>
 		</IgnoreSet>
-
-        </IgnoreSets>
+	</IgnoreSets>
 </DiffIgnore>
