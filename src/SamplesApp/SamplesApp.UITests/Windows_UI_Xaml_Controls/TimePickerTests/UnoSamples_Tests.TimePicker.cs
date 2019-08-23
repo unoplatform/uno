@@ -147,5 +147,21 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TimePickerTests
 			//Assert
 			Assert.IsNotNull(timePickerFlyout.GetDependencyPropertyValue("Content"));
 		}
+
+		[Test]
+		[AutoRetry]
+		[ActivePlatforms(Platform.iOS, Platform.Android)]
+		public void TimePicker_Flyout()
+		{
+			Run("UITests.Shared.Windows_UI_Xaml_Controls.TimePicker.TimePicker_Flyout_Automated");
+
+			var picker = _app.Marked("TestTimePicker");
+
+			_app.WaitForElement(picker);
+
+			picker.Tap();
+
+			_app.Screenshot("TimePicker - Flyout");
+		}
 	}
 }
