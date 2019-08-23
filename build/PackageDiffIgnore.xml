@@ -213,11 +213,18 @@
 		</IgnoreSet>
 
 		<IgnoreSet baseVersion="1.45.0">
-            <Types>
-                <Member fullName="Windows.UI.Xaml.Controls.UnoUIWebView"
-                        reason="UIWebView support has been removed by Apple"/>
-            </Types>
-          
+			<Types>
+				<Member 
+					fullName="Uno.UI.IUnoViewParent"
+					reason="Removed internal stuff."/>
+				<Member 
+					fullName="Uno.UI.UnoGestureDetector"
+					reason="Removed internal stuff."/>
+				<Member 
+					fullName="Windows.UI.Xaml.Controls.UnoUIWebView"
+					reason="UIWebView support has been removed by Apple"/>
+			</Types>
+
 			<Methods>
 				<Member fullName="System.Void Windows.Phone.Devices.Notification.VibrationDevice..ctor()"
 						reason="Parameter-less ctor does not exist in UWP"/>
@@ -375,14 +382,7 @@
 						reason="Removed unneeded pseudo-internal property" />
 				<Member fullName="Windows.UI.Xaml.ResourceDictionary[] Windows.UI.Xaml.ResourceDictionary::MergedDictionaries()"
 						reason="Property type fixed to match UWP" />
-
-              <Member fullName="Windows.UI.Xaml.Style Uno.UI.GlobalStaticResources::EllipsisButton()"
-                      reason="Invalid global style renamed to align with CommandBar" />
-              <Member fullName="Windows.UI.Xaml.Style Uno.UI.GlobalStaticResources::__ImplicitStyle_Windows_UI_Xaml_Controls_AppBarToggleButton()"
-                      reason="Implicit style moved to GenericStyles.cs" />
-              <Member fullName="Windows.UI.Xaml.Style Uno.UI.GlobalStaticResources::__ImplicitStyle_Windows_UI_Xaml_Controls_AppBarSeparator()"
-                      reason="Implicit style moved to GenericStyles.cs" />
-            </Properties>
+			</Properties>
 		</IgnoreSet>
 
         </IgnoreSets>
