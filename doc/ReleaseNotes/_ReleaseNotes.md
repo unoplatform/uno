@@ -81,6 +81,7 @@
 * Flyout that are than anchor but fit in page were defaulting to full placement.
 * [iOS]Fixed DatePickerFlyout & TimePickerFlyout not being placed at the bottom
 * [Android] Animated content is cut off/glitchy when RenderTransform translation is applied (#1333)
+* [#1409](https://github.com/unoplatform/uno/pull/1413) Provide a better error-message on Page-Navigation-Errors
 
 ## Release 1.45.0
 ### Features
