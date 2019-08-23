@@ -22,7 +22,7 @@ namespace Windows.UI.Xaml
 			set;
 		}
 
-		public ResourceDictionary[] MergedDictionaries => Array.Empty<ResourceDictionary>();
+		public IList<ResourceDictionary> MergedDictionaries { get; } = new List<ResourceDictionary>();
 
 		public IDictionary<object, object> ThemeDictionaries { get; } = new Dictionary<object, object>();
 
@@ -60,30 +60,40 @@ namespace Windows.UI.Xaml
 
 		public void Add(object key, object value) => _values.Add(key.ToString(), value);
 
-		public bool ContainsKey(object key) => _values.ContainsKey(key.ToString());
+		public bool ContainsKey(object key) => _values.ContainsKey(key.ToString()) || ContainsKeyMerged(key);
 
-		public bool TryGetValue(object key, out object value)
+		public bool TryGetValue(object key, out object value) => TryGetValue(key, out value, useResolver: true);
+
+		private bool TryGetValue(object key, out object value, bool useResolver)
 		{
 			if (!_values.TryGetValue(key, out value))
 			{
-				try
+				if (useResolver)
 				{
-					_resolvingDepth++;
-
-					if (_resolvingDepth <= FeatureConfiguration.Xaml.MaxRecursiveResolvingDepth)
+					try
 					{
-						// This prevents a stack overflow while looking for a
-						// missing resource in generated xaml code.
+						_resolvingDepth++;
 
-						value = DefaultResolver?.Invoke(key.ToString());
+						if (_resolvingDepth <= FeatureConfiguration.Xaml.MaxRecursiveResolvingDepth)
+						{
+							// This prevents a stack overflow while looking for a
+							// missing resource in generated xaml code.
+
+							value = DefaultResolver?.Invoke(key.ToString());
+						}
+					}
+					finally
+					{
+						_resolvingDepth--;
+					}
+
+					if (value != null)
+					{
+						return true;
 					}
 				}
-				finally
-				{
-					_resolvingDepth--;
-				}
 
-				return value != null;
+				return GetFromMerged(key, out value);
 			}
 
 			return true;
@@ -94,15 +104,40 @@ namespace Windows.UI.Xaml
 			get
 			{
 				object value;
-
-				if (!TryGetValue(key, out value))
-				{
-					return value;
-				}
+				TryGetValue(key, out value);
 
 				return value;
 			}
 			set => _values[key] = value;
+		}
+
+		private bool GetFromMerged(object key, out object value)
+		{
+			for (int i = MergedDictionaries.Count - 1; i >= 0; i++)
+			{
+				if (MergedDictionaries[i].TryGetValue(key, out value, useResolver: false))
+				{
+					return true;
+				}
+			}
+
+			value = null;
+
+			return false;
+		}
+
+		private bool ContainsKeyMerged(object key)
+		{
+			for (int i = MergedDictionaries.Count - 1; i >= 0; i++)
+			{
+				var merged = MergedDictionaries[i];
+				if (merged.ContainsKey(key))
+				{
+					return true;
+				}
+			}
+
+			return false;
 		}
 
 		public global::System.Collections.Generic.ICollection<object> Keys => _values.Keys;
