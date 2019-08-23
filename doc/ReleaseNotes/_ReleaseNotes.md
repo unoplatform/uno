@@ -42,6 +42,12 @@
 * Improve Screenshot comparer tool, CI test results now contain Screenshots compare data
 * Updated Xamarin.GooglePlayServices.* packages to 60.1142.1 for Target MonoAndroid80
 * Updated Xamarin.GooglePlayServices.* packages to 71.1600.0 for Target MonoAndroid90
+* `<ContentPresenter>` will now - as a fallback when not set - automatically bind to
+  `TemplatedParent`'s `Content` when this one is a `ContentControl`.
+  You can deactivate this behavior like this:
+  ```
+  FeatureConfiguration.ContentPresenter.UseImplicitContentFromTemplatedParent = false;
+  ```
 
 ### Breaking changes
 * `TextBox` no longer raises TextChanged when its template is applied, in line with UWP.
@@ -81,8 +87,6 @@
 * Flyout that are than anchor but fit in page were defaulting to full placement.
 * [iOS]Fixed DatePickerFlyout & TimePickerFlyout not being placed at the bottom
 * [Android] Animated content is cut off/glitchy when RenderTransform translation is applied (#1333)
-* `<ContentPresenter>` will now - as a fallback when not set - automatically bind to
-  `TemplatedParent`'s `Content` when this one is a `ContentControl`.
 
 ## Release 1.45.0
 ### Features
