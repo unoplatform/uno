@@ -130,7 +130,7 @@ namespace Windows.UI.Xaml.Controls
 				_editorField = textViewClass.GetDeclaredField("mEditor");
 				_editorField.Accessible = true;
 
-				if ((int)Build.VERSION.SdkInt < 28)  // 28 means BuildVersionCodes.P
+				if ((int)Build.VERSION.SdkInt < 28) // 28 means BuildVersionCodes.P
 				{
 					_cursorDrawableField = _editorField.Get(editText).Class.GetDeclaredField("mCursorDrawable");
 					_cursorDrawableField.Accessible = true;
@@ -154,7 +154,7 @@ namespace Windows.UI.Xaml.Controls
 
 					var mCursorDrawableRes = _cursorDrawableResField.GetInt(editText);
 					var editor = _editorField.Get(editText);
-					if (Build.VERSION.SdkInt < BuildVersionCodes.P)
+					if ((int)Build.VERSION.SdkInt < BuildVersionCodes.P) // 28 means BuildVersionCodes.P
 					{
 						var drawables = new Drawable[2];
 						drawables[0] = Android.Support.V4.Content.ContextCompat.GetDrawable(editText.Context, mCursorDrawableRes);
