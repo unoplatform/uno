@@ -130,7 +130,7 @@ namespace Windows.UI.Xaml.Controls
 				_editorField = textViewClass.GetDeclaredField("mEditor");
 				_editorField.Accessible = true;
 
-				if (Build.VERSION.SdkInt < BuildVersionCodes.P)
+				if ((int)Build.VERSION.SdkInt < 28)  // 28 means BuildVersionCodes.P
 				{
 					_cursorDrawableField = _editorField.Get(editText).Class.GetDeclaredField("mCursorDrawable");
 					_cursorDrawableField.Accessible = true;
