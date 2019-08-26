@@ -133,7 +133,7 @@ namespace Uno.UI.HotReload.VS
 
 				// hookup the eventhandlers to capture the data that is received
 				_process.OutputDataReceived += (sender, args) => _debugAction(args.Data);
-				_process.ErrorDataReceived += (sender, args) => _debugAction(args.Data);
+				_process.ErrorDataReceived += (sender, args) => _errorAction(args.Data);
 
 				_process.StartInfo = pi;
 				_process.Start();
