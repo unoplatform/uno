@@ -205,7 +205,7 @@ namespace Windows.UI.Xaml
 
 		private bool ReleaseCaptures(PointerRoutedEventArgs args, bool forceCaptureLostEvent = false)
 		{
-			if (_localCaptures?.Count > 0)
+			if ((_localCaptures?.Count ?? 0) > 0)
 			{
 				ReleasePointerCaptures();
 				args.Handled = false;
@@ -408,7 +408,6 @@ namespace Windows.UI.Xaml
 				new FrameworkPropertyMetadata(defaultValue: null)
 			);
 
-		[ThreadStatic]
 		private static IDictionary<Pointer, PointerCapture> _allCaptures;
 
 		private List<Pointer> _localCaptures; 
@@ -417,7 +416,7 @@ namespace Windows.UI.Xaml
 
 		public bool CapturePointer(Pointer pointer)
 		{
-			value = value ?? throw new ArgumentNullException(nameof(value));
+			var pointer = value ?? throw new ArgumentNullException(nameof(value));
 
 			if (_allCaptures == null)
 			{
@@ -453,7 +452,7 @@ namespace Windows.UI.Xaml
 
 		public void ReleasePointerCapture(Pointer pointer)
 		{
-			value = value ?? throw new ArgumentNullException(nameof(value));
+			var pointer = value ?? throw new ArgumentNullException(nameof(value));
 
 			if (_allCaptures != null
 				&& _allCaptures.TryGetValue(pointer, out var capture)
