@@ -1,5 +1,5 @@
 # Uno Platform - Build Mobile, Desktop and WebAssembly apps with C# and XAML. Today.
-[![Gitter](https://badges.gitter.im/uno-platform/Lobby.svg)](https://gitter.im/uno-platform/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge) [![All Contributors](https://img.shields.io/badge/all_contributors-8-orange.svg?style=flat-square)](#contributors)
+[![Gitter](https://badges.gitter.im/uno-platform/Lobby.svg)](https://gitter.im/uno-platform/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge) [![All Contributors](https://img.shields.io/badge/all_contributors-9-orange.svg?style=flat-square)](#contributors)
 
 # What is the Uno Platform
 
@@ -110,6 +110,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
   </tr>
   <tr>
     <td align="center"><a href="https://github.com/vincentcastagna"><img src="https://avatars3.githubusercontent.com/u/15191066?v=4" width="100px;" alt="vincentcastagna"/><br /><sub><b>vincentcastagna</b></sub></a><br /><a href="https://github.com/unoplatform/uno/commits?author=vincentcastagna" title="Code">💻</a> <a href="#example-vincentcastagna" title="Examples">💡</a></td>
+    <td align="center"><a href="https://github.com/TopperDEL"><img src="https://avatars2.githubusercontent.com/u/1833242?v=4" width="100px;" alt="TopperDEL"/><br /><sub><b>TopperDEL</b></sub></a><br /><a href="https://github.com/unoplatform/uno/commits?author=TopperDEL" title="Code">💻</a></td>
   </tr>
 </table>
 
