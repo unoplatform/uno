@@ -30,7 +30,14 @@ namespace Windows.UI.Xaml.Controls
 				return;
 			}
 
-			if (args.NewValue is ToolTip toolTip)
+			var toolTip = args.NewValue as ToolTip;
+
+			if (toolTip == null && args.NewValue is string toolTipString)
+			{
+				toolTip = new ToolTip {Content = toolTipString};
+			}
+
+			if (toolTip != null)
 			{
 				// First time: we're subscribing to event handlers
 
