@@ -417,6 +417,8 @@ namespace Windows.UI.Xaml
 
 		public bool CapturePointer(Pointer pointer)
 		{
+			value = value ?? throw new ArgumentNullException(nameof(value));
+
 			if (_allCaptures == null)
 			{
 				_allCaptures = new Dictionary<Pointer, PointerCapture>(EqualityComparer<Pointer>.Default);
@@ -451,6 +453,8 @@ namespace Windows.UI.Xaml
 
 		public void ReleasePointerCapture(Pointer pointer)
 		{
+			value = value ?? throw new ArgumentNullException(nameof(value));
+
 			if (_allCaptures != null
 				&& _allCaptures.TryGetValue(pointer, out var capture)
 				&& capture.Owner == this)
@@ -473,7 +477,7 @@ namespace Windows.UI.Xaml
 
 		public void ReleasePointerCaptures()
 		{
-			if (_localCaptures?.Count == 0)
+			if ((_localCaptures?.Count ?? 0) == 0)
 			{
 				if (this.Log().IsEnabled(LogLevel.Information))
 				{
