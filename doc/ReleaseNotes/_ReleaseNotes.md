@@ -48,6 +48,7 @@
   ```
   FeatureConfiguration.ContentPresenter.UseImplicitContentFromTemplatedParent = false;
   ```
+* Add support for `Selector.IsSynchronizedWithCurrentItem`
 
 ### Breaking changes
 * `TextBox` no longer raises TextChanged when its template is applied, in line with UWP.
