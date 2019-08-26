@@ -136,6 +136,8 @@ namespace Windows.UI.Xaml.Controls
 					{
 						UpdateLayoutAttributesForGroupHeader(elementToAdjust, extentDifference, true);
 					}
+
+					updatingItem = null;
 				}
 			}
 		}

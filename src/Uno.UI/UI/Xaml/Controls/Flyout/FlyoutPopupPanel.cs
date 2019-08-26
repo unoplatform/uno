@@ -79,7 +79,7 @@ namespace Windows.UI.Xaml.Controls
 				}},
 			};
 
-		private Rect CalculateFlyoutPlacement(Size desiredSize)
+		protected virtual Rect CalculateFlyoutPlacement(Size desiredSize)
 		{
 			var anchor = _flyout.Target as FrameworkElement;
 			if (anchor == null)
@@ -90,15 +90,9 @@ namespace Windows.UI.Xaml.Controls
 			var visibleBounds = ApplicationView.GetForCurrentView().VisibleBounds;
 			var anchorRect = anchor.GetBoundsRectRelativeTo(this);
 
-			// Make sure the desiredSize fits in visibleBounds
-			if (desiredSize.Width > visibleBounds.Width)
-			{
-				desiredSize.Width = visibleBounds.Width;
-			}
-			if (desiredSize.Height > visibleBounds.Height)
-			{
-				desiredSize.Height = visibleBounds.Height;
-			}
+			// Make sure the desiredSize fits in the panel
+			desiredSize.Width = Math.Min(desiredSize.Width, ActualWidth);
+			desiredSize.Height = Math.Min(desiredSize.Height, ActualHeight);
 
 			// Try all placements...
 			var placementsToTry = PlacementsToTry.TryGetValue(_flyout.Placement, out var p)
@@ -122,28 +116,28 @@ namespace Windows.UI.Xaml.Controls
 				{
 					case FlyoutPlacementMode.Top:
 						finalPosition = new Point(
-							x: anchorRect.Left + halfAnchorWidth - halfChildWidth,
-							y: anchorRect.Top - PopupPlacementTargetMargin - desiredSize.Height);
+							x: Math.Max(anchorRect.Left + halfAnchorWidth - halfChildWidth, 0d),
+							y: Math.Max(anchorRect.Top - PopupPlacementTargetMargin - desiredSize.Height, 0d));
 						break;
 					case FlyoutPlacementMode.Bottom:
 						finalPosition = new Point(
-							x: anchorRect.Left + halfAnchorWidth - halfChildWidth,
+							x: Math.Max(anchorRect.Left + halfAnchorWidth - halfChildWidth, 0d),
 							y: anchorRect.Bottom + PopupPlacementTargetMargin);
 						break;
 					case FlyoutPlacementMode.Left:
 						finalPosition = new Point(
-							x: anchorRect.Left - PopupPlacementTargetMargin - desiredSize.Width,
-							y: anchorRect.Top + halfAnchorHeight - halfChildHeight);
+							x: Math.Max(anchorRect.Left - PopupPlacementTargetMargin - desiredSize.Width, 0d),
+							y: Math.Max(anchorRect.Top + halfAnchorHeight - halfChildHeight, 0d));
 						break;
 					case FlyoutPlacementMode.Right:
 						finalPosition = new Point(
 							x: anchorRect.Right + PopupPlacementTargetMargin,
-							y: anchorRect.Top + halfAnchorHeight - halfChildHeight);
+							y: Math.Max(anchorRect.Top + halfAnchorHeight - halfChildHeight, 0d));
 						break;
 					default: // Full + other unsupported placements
 						finalPosition = new Point(
-							x: (visibleBounds.Width - desiredSize.Width) / 2.0,
-							y: (visibleBounds.Height - desiredSize.Height) / 2.0);
+							x: (ActualWidth - desiredSize.Width) / 2.0,
+							y: (ActualHeight - desiredSize.Height) / 2.0);
 						break;
 				}
 

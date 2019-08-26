@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Linq;
 using NUnit.Framework;
 using SamplesApp.UITests.TestFramework;
@@ -67,9 +68,31 @@ namespace SamplesApp.UITests
 				}
 			}
 
-			_app = AppInitializer.AttachToApp();
+			var app = AppInitializer.AttachToApp();
+			_app = app ?? _app;
 
 			Helpers.App = _app;
+		}
+
+		public void TakeScreenshot(string stepName)
+		{
+			var title = $"{TestContext.CurrentContext.Test.Name}_{stepName}"
+				.Replace(" ", "_")
+				.Replace(".", "_");
+
+			var fileInfo = _app.Screenshot(title);
+
+			var fileNameWithoutExt = Path.GetFileNameWithoutExtension(fileInfo.Name);
+			if (fileNameWithoutExt != title)
+			{
+				var destFileName = Path.Combine(Path.GetDirectoryName(fileInfo.FullName), fileNameWithoutExt + "." + Path.GetExtension(fileInfo.Name));
+				if (File.Exists(destFileName))
+				{
+					File.Delete(destFileName);
+				}
+
+				File.Move(fileInfo.FullName, destFileName);
+			}
 		}
 
 		private static void ValidateAutoRetry()
@@ -125,7 +148,7 @@ namespace SamplesApp.UITests
 				return bool.TryParse(result, out var testDone) && testDone;
 			});
 
-			_app.Screenshot(metadataName.Replace(".", "_"));
+			TakeScreenshot(metadataName.Replace(".", "_"));
 		}
 	}
 }

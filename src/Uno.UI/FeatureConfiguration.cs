@@ -111,6 +111,17 @@ namespace Uno.UI
 			public static bool UseLegacyLazyApplyTemplate { get; set; } = false;
 		}
 
+		public static class ContentPresenter
+		{
+			/// <summary>
+			/// Enables the implicit binding Content of a ContentPresenter to the one of the TemplatedParent
+			/// when this one is a ContentControl.
+			/// It means you can put a `<ContentPresenter />` directly in the ControlTemplate and it will
+			/// be bound automatically to its TemplatedPatent's Content.
+			/// </summary>
+			public static bool UseImplicitContentFromTemplatedParent { get; set; } = true;
+		}
+
 		public static class DataTemplateSelector
 		{
 			/// <summary>

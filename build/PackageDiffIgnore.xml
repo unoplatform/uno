@@ -223,6 +223,12 @@
 						reason="Parameter-less ctor does not exist in UWP"/>
 				<Member fullName="System.Void Windows.Devices.Sensors.AccelerometerReading..ctor()"
 						reason="Parameter-less ctor does not exist in UWP"/>
+				<Member fullName="System.Void Windows.Devices.Sensors.MagnetometerReadingChangedEventArgs..ctor()"
+						reason="Parameter-less ctor does not exist in UWP"/>
+				<Member fullName="System.Void Windows.Devices.Sensors.Magnetometer..ctor()"
+						reason="Parameter-less ctor does not exist in UWP"/>
+				<Member fullName="System.Void Windows.Devices.Sensors.MagnetometerReading..ctor()"
+						reason="Parameter-less ctor does not exist in UWP"/>
 				<Member fullName="System.Void Windows.Devices.Sensors.Barometer..ctor()"
 						reason="Parameter-less ctor does not exist in UWP"/>
 				<Member fullName="System.Void Windows.Devices.Sensors.BarometerReading..ctor()"
@@ -269,6 +275,18 @@
 						reason="Invalid method visibility"/>
 				<Member fullName="System.Void Windows.UI.Xaml.Controls.VirtualizingPanelLayout.UpdateLayoutAttributesForItem(UIKit.UICollectionViewLayoutAttributes layoutAttributes)"
 						reason="Implementation detail, made internal"/>
+				<Member fullName="System.Void Windows.UI.StartScreen.JumpList..ctor()"
+						reason="Constructor is internal on UWP" />
+				<Member fullName="System.Void Windows.UI.StartScreen.JumpListItem..ctor()"
+						reason="Constructor is internal on UWP" />
+				<Member fullName="System.Boolean Uno.UI.UnoViewGroup.get_HasNonIdentityStaticTransformation()"
+						reason="Removed unneeded pseudo-internal property" />
+				<Member fullName="System.Boolean Uno.UI.UnoViewGroup.get_IsAnimationInProgress()"
+						reason="Removed unneeded pseudo-internal property" />
+				<Member fullName="System.Void Uno.UI.UnoViewGroup.set_IsAnimationInProgress(System.Boolean value)"
+						reason="Removed unneeded pseudo-internal property" />
+				<Member fullName="System.Boolean Uno.UI.UnoViewGroup.InvalidateTransformedHierarchy()"
+						reason="Removed unneeded pseudo-internal method" />
 			</Methods>
 
 			<Properties>
@@ -276,6 +294,10 @@
 						reason="Invalid property visibility"/>
 				<Member fullName="System.String Windows.UI.Xaml.Controls.TextBoxView::BindableText()"
 						reason="Removed obsolete method. TextBoxView is internal on UWP, shouldn't normally be created or manipulated by user code."/>
+				<Member fullName="System.Boolean Uno.UI.UnoViewGroup::HasNonIdentityStaticTransformation()"
+						reason="Removed unneeded pseudo-internal property" />
+				<Member fullName="System.Boolean Uno.UI.UnoViewGroup::IsAnimationInProgress()"
+						reason="Removed unneeded pseudo-internal property" />
 			</Properties>
 		</IgnoreSet>
 

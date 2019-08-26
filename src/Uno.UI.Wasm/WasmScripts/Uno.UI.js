@@ -576,7 +576,16 @@ var Uno;
                 const element = this.getView(elementId);
                 for (const name in properties) {
                     if (properties.hasOwnProperty(name)) {
-                        element[name] = properties[name];
+                        var setVal = properties[name];
+                        if (setVal === "true") {
+                            element[name] = true;
+                        }
+                        else if (setVal === "false") {
+                            element[name] = false;
+                        }
+                        else {
+                            element[name] = setVal;
+                        }
                     }
                 }
                 return "ok";
@@ -588,7 +597,16 @@ var Uno;
                 const params = WindowManagerSetPropertyParams.unmarshal(pParams);
                 const element = this.getView(params.HtmlId);
                 for (let i = 0; i < params.Pairs_Length; i += 2) {
-                    element[params.Pairs[i]] = params.Pairs[i + 1];
+                    var setVal = params.Pairs[i + 1];
+                    if (setVal === "true") {
+                        element[params.Pairs[i]] = true;
+                    }
+                    else if (setVal === "false") {
+                        element[params.Pairs[i]] = false;
+                    }
+                    else {
+                        element[params.Pairs[i]] = setVal;
+                    }
                 }
                 return true;
             }
@@ -2201,6 +2219,44 @@ var Windows;
                 }
             }
             Sensors.Accelerometer = Accelerometer;
+        })(Sensors = Devices.Sensors || (Devices.Sensors = {}));
+    })(Devices = Windows.Devices || (Windows.Devices = {}));
+})(Windows || (Windows = {}));
+var Windows;
+(function (Windows) {
+    var Devices;
+    (function (Devices) {
+        var Sensors;
+        (function (Sensors) {
+            class Magnetometer {
+                static initialize() {
+                    try {
+                        if (typeof window.Magnetometer === "function") {
+                            this.dispatchReading = Module.mono_bind_static_method("[Uno] Windows.Devices.Sensors.Magnetometer:DispatchReading");
+                            let magnetometerClass = window.Magnetometer;
+                            this.magnetometer = new magnetometerClass({ referenceFrame: 'device' });
+                            return true;
+                        }
+                    }
+                    catch (error) {
+                        //sensor not available
+                        console.log('Magnetometer could not be initialized.');
+                    }
+                    return false;
+                }
+                static startReading() {
+                    this.magnetometer.addEventLi1stener('reading', Magnetometer.readingChangedHandler);
+                    this.magnetometer.start();
+                }
+                static stopReading() {
+                    this.magnetometer.removeEventListener('reading', Magnetometer.readingChangedHandler);
+                    this.magnetometer.stop();
+                }
+                static readingChangedHandler(event) {
+                    Magnetometer.dispatchReading(this.magnetometer.x, this.magnetometer.y, this.magnetometer.z);
+                }
+            }
+            Sensors.Magnetometer = Magnetometer;
         })(Sensors = Devices.Sensors || (Devices.Sensors = {}));
     })(Devices = Windows.Devices || (Windows.Devices = {}));
 })(Windows || (Windows = {}));

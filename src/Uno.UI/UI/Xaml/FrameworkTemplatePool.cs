@@ -240,9 +240,10 @@ namespace Windows.UI.Xaml
 
 		internal static void PropagateOnTemplateReused(object instance)
 		{
-			if (instance is IFrameworkTemplatePoolAware a)
+			// If DataContext is not null, it means it has been explicitly set (not inherited). Resetting the view could push an invalid value through 2-way binding in this case.
+			if (instance is IFrameworkTemplatePoolAware templateAwareElement && (instance as IFrameworkElement).DataContext == null)
 			{
-				a.OnTemplateRecycled();
+				templateAwareElement.OnTemplateRecycled();
 			}
 
 			//Try Panel.Children before ViewGroup.GetChildren - this results in fewer allocations

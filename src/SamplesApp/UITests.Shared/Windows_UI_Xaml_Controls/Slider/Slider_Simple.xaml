@@ -27,9 +27,10 @@
 					Foreground="Red" 
 					Background="Green"
 					Orientation="Vertical" />
-			<TextBlock>
-				<Run Text="Vertical Value: " /><Run Text="{Binding Value, ElementName=mySlider2}" />
-			</TextBlock>
+			<StackPanel Orientation="Horizontal">
+				<TextBlock Text="Vertical Value: " />
+				<TextBlock x:Name="mySlider2Value" Text="{Binding Value, ElementName=mySlider2}" />
+			</StackPanel>
 
 		</StackPanel>
 	</Grid>

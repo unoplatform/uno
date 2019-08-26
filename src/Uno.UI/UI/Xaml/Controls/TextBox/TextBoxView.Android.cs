@@ -117,17 +117,30 @@ namespace Windows.UI.Xaml.Controls
 			{
 				_prepared = true;
 
-				var textView = new TextView(context);
+				Java.Lang.Class textViewClass;
+				using (var textView = new TextView(context))
+				{
+					textViewClass = textView.Class;
+			    }
 				var editText = new EditText(context);
 
-				_cursorDrawableResField = textView.Class.GetDeclaredField("mCursorDrawableRes");
+				_cursorDrawableResField = textViewClass.GetDeclaredField("mCursorDrawableRes");
 				_cursorDrawableResField.Accessible = true;
 
-				_editorField = textView.Class.GetDeclaredField("mEditor");
+				_editorField = textViewClass.GetDeclaredField("mEditor");
 				_editorField.Accessible = true;
 
-				_cursorDrawableField = _editorField.Get(editText).Class.GetDeclaredField("mCursorDrawable");
-				_cursorDrawableField.Accessible = true;
+				if ((int)Build.VERSION.SdkInt < 28) // 28 means BuildVersionCodes.P
+				{
+					_cursorDrawableField = _editorField.Get(editText).Class.GetDeclaredField("mCursorDrawable");
+					_cursorDrawableField.Accessible = true;
+				}
+				else
+				{
+				    // set differently in Android P (API 28) and higher
+					_cursorDrawableField = _editorField.Get(editText).Class.GetDeclaredField("mDrawableForCursor");
+					_cursorDrawableField.Accessible = true;
+				}
 			}
 
 			public static void SetCursorColor(EditText editText, Color color)
@@ -140,13 +153,22 @@ namespace Windows.UI.Xaml.Controls
 					}
 
 					var mCursorDrawableRes = _cursorDrawableResField.GetInt(editText);
-					var drawables = new Drawable[2];
-					drawables[0] = Android.Support.V4.Content.ContextCompat.GetDrawable(editText.Context, mCursorDrawableRes);
-					drawables[1] = Android.Support.V4.Content.ContextCompat.GetDrawable(editText.Context, mCursorDrawableRes);
-					drawables[0].SetColorFilter(color, PorterDuff.Mode.SrcIn);
-					drawables[1].SetColorFilter(color, PorterDuff.Mode.SrcIn);
 					var editor = _editorField.Get(editText);
-					_cursorDrawableField.Set(editor, drawables);
+					if ((int)Build.VERSION.SdkInt < 28) // 28 means BuildVersionCodes.P
+					{
+						var drawables = new Drawable[2];
+						drawables[0] = Android.Support.V4.Content.ContextCompat.GetDrawable(editText.Context, mCursorDrawableRes);
+						drawables[1] = Android.Support.V4.Content.ContextCompat.GetDrawable(editText.Context, mCursorDrawableRes);
+						drawables[0].SetColorFilter(color, PorterDuff.Mode.SrcIn);
+						drawables[1].SetColorFilter(color, PorterDuff.Mode.SrcIn);
+						_cursorDrawableField.Set(editor, drawables);
+					}
+					else
+					{
+						var drawable = Android.Support.V4.Content.ContextCompat.GetDrawable(editText.Context, mCursorDrawableRes);
+						drawable.SetColorFilter(color, PorterDuff.Mode.SrcIn);
+						_cursorDrawableField.Set(editor, drawable);
+					}
 				}
 				catch (Exception)
 				{
