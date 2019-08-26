@@ -257,5 +257,26 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 			Assert.IsFalse(rd.ContainsKey("Blu"));
 			;
 		}
+
+		[TestMethod]
+		public void When_Has_Custom_Theme()
+		{
+			var rd = new ResourceDictionary();
+			var pink = new ResourceDictionary();
+			pink["Color1"] = new SolidColorBrush(Colors.HotPink);
+
+			rd.ThemeDictionaries["Pink"] = pink;
+
+#if !NETFX_CORE
+			Application.EnsureApplication();
+
+			ApplicationHelper.RequestedCustomTheme = "Pink";
+
+			Assert.IsTrue(rd.ContainsKey("Color1"));
+
+			var retrieved = rd["Color1"];
+			Assert.AreEqual(Colors.HotPink, ((SolidColorBrush)retrieved).Color);
+#endif
+		}
 	}
 }

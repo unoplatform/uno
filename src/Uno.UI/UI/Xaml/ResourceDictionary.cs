@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using Uno.UI;
+using Uno.Extensions;
 
 namespace Windows.UI.Xaml
 {
@@ -240,6 +241,14 @@ namespace Windows.UI.Xaml
 					{
 						return "Light";
 					}
+
+					var custom = ApplicationHelper.RequestedCustomTheme;
+
+					if (!custom.IsNullOrEmpty())
+					{
+						return custom;
+					}
+
 					switch (Application.Current.RequestedTheme)
 					{
 						case ApplicationTheme.Light:
