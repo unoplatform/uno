@@ -9,28 +9,6 @@ namespace Windows.UI.Xaml.Controls.Primitives
 	{
 		// Skipping already declared property SelectedItem
 		// Skipping already declared property SelectedIndex
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  bool? IsSynchronizedWithCurrentItem
-		{
-			get
-			{
-				return (bool?)this.GetValue(IsSynchronizedWithCurrentItemProperty);
-			}
-			set
-			{
-				this.SetValue(IsSynchronizedWithCurrentItemProperty, value);
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public static global::Windows.UI.Xaml.DependencyProperty IsSynchronizedWithCurrentItemProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			"IsSynchronizedWithCurrentItem", typeof(bool?), 
-			typeof(global::Windows.UI.Xaml.Controls.Primitives.Selector), 
-			new FrameworkPropertyMetadata(default(bool?)));
-		#endif
 		// Skipping already declared property SelectedIndexProperty
 		// Skipping already declared property SelectedItemProperty
 		// Forced skipping of method Windows.UI.Xaml.Controls.Primitives.Selector.SelectedIndex.get

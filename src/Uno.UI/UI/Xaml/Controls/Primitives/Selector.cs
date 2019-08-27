@@ -200,6 +200,31 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			return selector.GetItems()?.Contains(baseValue) ?? false ? baseValue : null;
 		}
 
+		public bool? IsSynchronizedWithCurrentItem
+		{
+			get => (bool?)GetValue(IsSynchronizedWithCurrentItemProperty);
+			set => SetValue(IsSynchronizedWithCurrentItemProperty, value);
+		}
+
+		public static DependencyProperty IsSynchronizedWithCurrentItemProperty { get; } =
+			Windows.UI.Xaml.DependencyProperty.Register(
+				nameof(IsSynchronizedWithCurrentItem),
+				typeof(bool?),
+				typeof(Selector),
+				new FrameworkPropertyMetadata(
+					default(bool?),
+					propertyChangedCallback: (s, e) => (s as Selector)?.IsSynchronizedWithCurrentItemChanged((bool?)e.OldValue, (bool?)e.NewValue)));
+
+		private void IsSynchronizedWithCurrentItemChanged(bool? oldValue, bool? newValue)
+		{
+			if(newValue == true)
+			{
+				throw new ArgumentOutOfRangeException("True is not a supported value for this property");
+			}
+
+			TrySubscribeToCurrentChanged();
+		}
+
 		/// <summary>
 		/// The selected index as an <see cref="IndexPath"/> of (group, group position), where group=0 if the source is ungrouped.
 		/// </summary>
@@ -208,7 +233,14 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		protected override void OnItemsSourceChanged(DependencyPropertyChangedEventArgs e)
 		{
 			base.OnItemsSourceChanged(e);
-			if (ItemsSource is ICollectionView collectionView)
+			TrySubscribeToCurrentChanged();
+		}
+
+		private void TrySubscribeToCurrentChanged()
+		{
+			var trackCurrentItem = IsSynchronizedWithCurrentItem ?? true;
+
+			if (ItemsSource is ICollectionView collectionView && trackCurrentItem)
 			{
 				// This is a workaround to support the use of EventRegistrationTokenTable in consumer code. EventRegistrationTokenTable 
 				// currently has a bug on Xamarin that prevents instance methods subscribed directly from ever being unsubscribed.

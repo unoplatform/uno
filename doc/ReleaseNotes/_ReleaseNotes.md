@@ -49,7 +49,8 @@
   ```
   FeatureConfiguration.ContentPresenter.UseImplicitContentFromTemplatedParent = false;
   ```
- * Add support for `CoreApplication.MainView` and `CoreApplication.Views` 
+* Add support for `Selector.IsSynchronizedWithCurrentItem`
+* Add support for `CoreApplication.MainView` and `CoreApplication.Views` 
 
 ### Breaking changes
 * `TextBox` no longer raises TextChanged when its template is applied, in line with UWP.

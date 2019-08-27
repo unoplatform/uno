@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Windows.Foundation.Collections;
 using Windows.UI.Xaml.Data;
+using Windows.UI.Xaml.Controls;
 
 namespace Uno.UI.Tests.CollectionViewTests
 {
@@ -203,5 +204,127 @@ namespace Uno.UI.Tests.CollectionViewTests
 				Key = collection.Key;
 			}
 		}
-	}
+
+        [TestMethod]
+        public void When_Set_As_ItemsSource_And_Current_Initially_Set()
+        {
+            const int initialCount = 10;
+            var array = Enumerable.Range(0, initialCount).Select(i => i * 10).ToArray();
+            var source = new CollectionViewSource
+            {
+                Source = array,
+                IsSourceGrouped = false
+            };
+
+            var view = source.View;
+
+            Assert.AreEqual(0, view.CurrentItem);
+            Assert.AreEqual(0, view.CurrentPosition);
+
+            view.MoveCurrentTo(30);
+            Assert.AreEqual(30, view.CurrentItem);
+            Assert.AreEqual(3, view.CurrentPosition);
+
+            var list = new ListView();
+
+            list.ItemsSource = view;
+
+            Assert.AreEqual(3, list.SelectedIndex);
+        }
+
+        [TestMethod]
+        public void When_Set_As_ItemsSource_And_Current_Initially_Set_Without_IsSynchronizedWithCurrentItem()
+        {
+            const int initialCount = 10;
+            var array = Enumerable.Range(0, initialCount).Select(i => i * 10).ToArray();
+            var source = new CollectionViewSource
+            {
+                Source = array,
+                IsSourceGrouped = false
+            };
+
+            var view = source.View;
+
+            Assert.AreEqual(0, view.CurrentItem);
+            Assert.AreEqual(0, view.CurrentPosition);
+
+            view.MoveCurrentTo(30);
+            Assert.AreEqual(30, view.CurrentItem);
+            Assert.AreEqual(3, view.CurrentPosition);
+
+            var list = new ListView() { IsSynchronizedWithCurrentItem = false };
+            list.ItemsSource = view;
+
+            Assert.AreEqual(-1, list.SelectedIndex);
+        }
+
+		[TestMethod]
+		public void When_Set_As_ItemsSource_And_Current_Initially_Set_With_Changing_IsSynchronizedWithCurrentItem()
+		{
+			const int initialCount = 10;
+			var array = Enumerable.Range(0, initialCount).Select(i => i * 10).ToArray();
+			var source = new CollectionViewSource
+			{
+				Source = array,
+				IsSourceGrouped = false
+			};
+
+			var view = source.View;
+
+			Assert.AreEqual(0, view.CurrentItem);
+			Assert.AreEqual(0, view.CurrentPosition);
+
+			view.MoveCurrentTo(30);
+			Assert.AreEqual(30, view.CurrentItem);
+			Assert.AreEqual(3, view.CurrentPosition);
+
+			var list = new ListView() { IsSynchronizedWithCurrentItem = false };
+			list.ItemsSource = view;
+
+			Assert.AreEqual(-1, list.SelectedIndex);
+
+			list.IsSynchronizedWithCurrentItem = null;
+
+			Assert.AreEqual(3, list.SelectedIndex);
+
+			list.IsSynchronizedWithCurrentItem = false;
+		}
+
+		[TestMethod]
+		public void When_Set_As_ItemsSource_And_Current_Initially_Set_With_Disabled_IsSynchronizedWithCurrentItem()
+		{
+			const int initialCount = 10;
+			var array = Enumerable.Range(0, initialCount).Select(i => i * 10).ToArray();
+			var source = new CollectionViewSource
+			{
+				Source = array,
+				IsSourceGrouped = false
+			};
+
+			var view = source.View;
+
+			Assert.AreEqual(0, view.CurrentItem);
+			Assert.AreEqual(0, view.CurrentPosition);
+
+			view.MoveCurrentTo(30);
+			Assert.AreEqual(30, view.CurrentItem);
+			Assert.AreEqual(3, view.CurrentPosition);
+
+			var list = new ListView();
+			list.ItemsSource = view;
+
+			Assert.AreEqual(3, list.SelectedIndex);
+
+			list.IsSynchronizedWithCurrentItem = false;
+
+			Assert.AreEqual(-1, list.SelectedIndex);
+		}
+
+		[TestMethod]
+		[ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void When_IsSynchronizedWithCurrentItem_Is_True()
+        {
+            new ListView() { IsSynchronizedWithCurrentItem = true };
+        }
+    }
 }
