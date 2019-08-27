@@ -1,5 +1,5 @@
 # Uno Platform - Build Mobile, Desktop and WebAssembly apps with C# and XAML. Today.
-[![Gitter](https://badges.gitter.im/uno-platform/Lobby.svg)](https://gitter.im/uno-platform/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge) [![All Contributors](https://img.shields.io/badge/all_contributors-10-orange.svg?style=flat-square)](#contributors)
+[![Gitter](https://badges.gitter.im/uno-platform/Lobby.svg)](https://gitter.im/uno-platform/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge) [![All Contributors](https://img.shields.io/badge/all_contributors-11-orange.svg?style=flat-square)](#contributors)
 
 # What is the Uno Platform
 
@@ -112,6 +112,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
     <td align="center"><a href="https://github.com/vincentcastagna"><img src="https://avatars3.githubusercontent.com/u/15191066?v=4" width="100px;" alt="vincentcastagna"/><br /><sub><b>vincentcastagna</b></sub></a><br /><a href="https://github.com/unoplatform/uno/commits?author=vincentcastagna" title="Code">💻</a> <a href="#example-vincentcastagna" title="Examples">💡</a></td>
     <td align="center"><a href="https://github.com/TopperDEL"><img src="https://avatars2.githubusercontent.com/u/1833242?v=4" width="100px;" alt="TopperDEL"/><br /><sub><b>TopperDEL</b></sub></a><br /><a href="https://github.com/unoplatform/uno/commits?author=TopperDEL" title="Code">💻</a></td>
     <td align="center"><a href="https://github.com/MaxineMheir"><img src="https://avatars1.githubusercontent.com/u/18086278?v=4" width="100px;" alt="Maxine Mheir-El-Saadi"/><br /><sub><b>Maxine Mheir-El-Saadi</b></sub></a><br /><a href="https://github.com/unoplatform/uno/commits?author=MaxineMheir" title="Code">💻</a> <a href="#example-MaxineMheir" title="Examples">💡</a> <a href="https://github.com/unoplatform/uno/commits?author=MaxineMheir" title="Tests">⚠️</a></td>
+    <td align="center"><a href="https://github.com/artemious7"><img src="https://avatars2.githubusercontent.com/u/16724889?v=4" width="100px;" alt="Artem"/><br /><sub><b>Artem</b></sub></a><br /><a href="https://github.com/unoplatform/uno/commits?author=artemious7" title="Code">💻</a> <a href="https://github.com/unoplatform/uno/commits?author=artemious7" title="Documentation">📖</a></td>
   </tr>
 </table>
 
