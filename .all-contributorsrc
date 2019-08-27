@@ -48,8 +48,7 @@
       "contributions": [
         "code",
         "test",
-        "review",
-        "bug"
+        "review"
       ]
     },
     {
@@ -127,9 +126,30 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "MaxineMheir",
+      "name": "Maxine Mheir-El-Saadi",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/18086278?v=4",
+      "profile": "https://github.com/MaxineMheir",
+      "contributions": [
+        "code",
+        "example",
+        "test"
+      ]
+    },
+    {
+      "login": "artemious7",
+      "name": "Artem",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/16724889?v=4",
+      "profile": "https://github.com/artemious7",
+      "contributions": [
+        "code",
+        "doc"
+      ]
     }
   ],
-  "contributorsPerLine": 7,
+  "contributorsPerLine": 5,
   "projectName": "uno",
   "projectOwner": "unoplatform",
   "repoType": "github",
