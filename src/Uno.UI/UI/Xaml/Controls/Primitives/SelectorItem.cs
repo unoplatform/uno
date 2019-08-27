@@ -56,8 +56,11 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		{
 			public const string Selected = "Selected";
 			public const string Normal = "Normal";
+			public const string Over = "PointerOver";
 			public const string Pressed = "Pressed";
-			public const string PressedSelected = "PressedSelected";
+			public const string OverSelected = "PointerOverSelected"; // "SelectedPointerOver" for ListBoxItem, ComboBoxItem and PivotHeaderItem
+			public const string OverPressed = "PointerOverPressed"; // Only for ListViewItem and GridViewItem
+			public const string PressedSelected = "PressedSelected"; // "SelectedPressed" for ListBoxItem, ComboBoxItem and PivotHeaderItem
 		}
 
 		private static class DisabledStates
@@ -74,24 +77,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			base.OnIsEnabledChanged(oldValue, newValue);
 		}
 
-		private bool _isPressed;
-
-#if __IOS__ || __WASM__ || __ANDROID__
-		internal new bool IsPressed
-#else
-		internal bool IsPressed
-#endif
-		{
-			get => _isPressed;
-			set
-			{
-				using (InterceptSetNeedsLayout())
-				{
-					_isPressed = value;
-					UpdateCommonStates();
-				}
-			}
-		}
+		internal virtual bool HasPointerOverPressedState => false;
 
 		/// <summary>
 		/// Set appropriate visual state from MultiSelectStates group. (https://msdn.microsoft.com/en-us/library/windows/apps/mt299136.aspx?f=255&MSPPError=-2147217396)
@@ -125,17 +111,32 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		public void UpdateCommonStates()
 		{
 			var state = CommonStates.Normal;
-			if (IsSelected && IsPressed)
+			if (IsSelected && IsPointerPressed)
 			{
 				state = CommonStates.PressedSelected;
+			}
+			else if (FeatureConfiguration.SelectorItem.UseOverStates
+				&& IsSelected && IsPointerOver)
+			{
+				state = CommonStates.OverSelected;
+			}
+			else if (FeatureConfiguration.SelectorItem.UseOverStates && HasPointerOverPressedState
+				&& IsPointerOver && IsPointerPressed)
+			{
+				state = CommonStates.OverPressed;
 			}
 			else if (IsSelected)
 			{
 				state = CommonStates.Selected;
 			}
-			else if (IsPressed)
+			else if (IsPointerPressed)
 			{
 				state = CommonStates.Pressed;
+			}
+			else if (FeatureConfiguration.SelectorItem.UseOverStates
+				&& IsPointerOver)
+			{
+				state = CommonStates.Over;
 			}
 
 			VisualStateManager.GoToState(this, state, true);
@@ -144,7 +145,6 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		protected override void OnLoaded()
 		{
 			base.OnLoaded();
-			IsPressed = false;
 #if XAMARIN_ANDROID
 			Focusable = true;
 			FocusableInTouchMode = true;
@@ -153,6 +153,26 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 #if __IOS__ || __WASM__ || __ANDROID__
 		/// <inheritdoc />
+		internal override void OnIsPointerOverChanged(bool isPointerOver)
+		{
+			base.OnIsPointerOverChanged(isPointerOver);
+			using (InterceptSetNeedsLayout())
+			{
+				UpdateCommonStates();
+			}
+		}
+
+		/// <inheritdoc />
+		internal override void OnIsPointerPressedChanged(bool isPointerPressed)
+		{
+			base.OnIsPointerPressedChanged(isPointerPressed);
+			using (InterceptSetNeedsLayout())
+			{
+				UpdateCommonStates();
+			}
+		}
+
+		/// <inheritdoc />
 		protected override void OnPointerPressed(PointerRoutedEventArgs args)
 		{
 			var handled = ShouldHandlePressed
@@ -160,7 +180,6 @@ namespace Windows.UI.Xaml.Controls.Primitives
 				&& args.GetCurrentPoint(this).Properties.IsLeftButtonPressed
 				&& CapturePointer(args.Pointer);
 
-			SetPressed(handled);
 			args.Handled = handled;
 
 #if !__WASM__
@@ -185,44 +204,11 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			if (IsCaptured(args.Pointer))
 			{
 				Selector?.OnItemClicked(this);
-				SetPressed(false);
 
 				args.Handled = true;
 			}
 
 			base.OnPointerReleased(args);
-		}
-
-		/// <inheritdoc />
-		protected override void OnPointerCaptureLost(PointerRoutedEventArgs args)
-		{
-			SetPressed(false);
-
-			base.OnPointerCaptureLost(args);
-		}
-
-		private ulong _nextDelayedPressUpdateRequest;
-		private void SetPressed(bool value)
-		{
-			if (value)
-			{
-				_nextDelayedPressUpdateRequest++;
-				IsPressed = true;
-			}
-			else
-			{
-				var requestId = _nextDelayedPressUpdateRequest;
-				CoreDispatcher.Main.RunAsync(CoreDispatcherPriority.Normal, SetNotPressed);
-
-				async void SetNotPressed()
-				{
-					await Task.Delay(MinTimeBetweenPressStates);
-					if (_nextDelayedPressUpdateRequest == requestId)
-					{ 
-						IsPressed = false;
-					}
-				}
-			}
 		}
 #else
 		protected override void OnPointerPressed(PointerRoutedEventArgs args)

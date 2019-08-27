@@ -14,6 +14,8 @@ namespace Windows.UI.Xaml.Controls
 	/// <remarks>This container supports vertical scrolling and stretching for the whole item.</remarks>
 	public partial class ListViewItem : SelectorItem
 	{
+		internal sealed override bool HasPointerOverPressedState => true;
+
 		public ListViewItem()
 		{
 		}

@@ -28,7 +28,7 @@ using UIKit;
 
 namespace <#= mixin.NamespaceName #>
 {
-    public partial class <#= mixin.ClassName #>
+	public partial class <#= mixin.ClassName #>
 	{
 #if <#= mixin.HasCommonStates #>
 		private static readonly string __normalState = "Normal";
@@ -37,24 +37,24 @@ namespace <#= mixin.NamespaceName #>
 #if <#= mixin.HasCommonPressedState #>
 		private static readonly string __pressedState = "Pressed";
 #endif
+#if <#= mixin.HasCommonOverState #>
+		private static readonly string __pointerOverState = "PointerOver";
+#endif
 
 #if <#= mixin.HasCommonFocusedState #>
 		private static readonly string __focusedState = "Focused";
 #endif
-
-#if <#= mixin.HasCommonCheckedState #>
-		private static readonly string __checkedState = "Checked";
-#endif
 #endif
 
-#if <#= mixin.HasCheckedStates #> || <#= mixin.HasCombinedCheckedState #>
+#if <#= mixin.HasCheckedStates #> || <#= mixin.HasCombinedCheckedState #> || <#= mixin.HasCommonCheckedState #>
+		private static readonly string __indeterminateState = "Indeterminate";
 		private static readonly string __checkedState = "Checked";
 		private static readonly string __uncheckedState = "Unchecked";
 #endif
 
-        /// <summary>
-        /// This method must be called from the constructor in the non-generated part of the class in order to register visual state changes.
-        /// </summary>
+		/// <summary>
+		/// This method must be called from the constructor in the non-generated part of the class in order to register visual state changes.
+		/// </summary>
 		private void InitializeVisualStates()
 		{
 			this.Loaded += On<#= mixin.ClassName #>Loaded;
@@ -107,48 +107,64 @@ namespace <#= mixin.NamespaceName #>
 			this.UpdateCommonStates(true);
 		}
 
-#if <#= mixin.HasCommonPressedState #>
-		protected override void OnPointerCanceled(PointerRoutedEventArgs args)
+#if <#= mixin.HasCommonOverState #>
+		protected override void OnPointerEntered(PointerRoutedEventArgs args)
 		{
-			base.OnPointerCanceled(args);
+			base.OnPointerEntered(args);
+			OnPointerEnteredPartial(args);
 			
 			this.UpdateCommonStates(true);
 		}
+		partial void OnPointerEnteredPartial(PointerRoutedEventArgs args);
 
 		protected override void OnPointerExited(PointerRoutedEventArgs args)
 		{
 			base.OnPointerExited(args);
+			OnPointerExitedPartial(args);
 			
 			this.UpdateCommonStates(true);
 		}
+		partial void OnPointerExitedPartial(PointerRoutedEventArgs args);
+#endif
 
-		protected override void OnPointerEntered(PointerRoutedEventArgs args)
-		{
-			base.OnPointerEntered(args);
-			
-			this.UpdateCommonStates(true);
-		}
-
+#if <#= mixin.HasCommonPressedState #>
 		protected override void OnPointerPressed(PointerRoutedEventArgs args)
 		{
 			base.OnPointerPressed(args);
+			OnPointerPressedPartial(args);
 
 			this.UpdateCommonStates(true);
 		}
+		partial void OnPointerPressedPartial(PointerRoutedEventArgs args);
 
 		protected override void OnPointerReleased(PointerRoutedEventArgs args)
 		{
 			base.OnPointerReleased(args);
-			
+			OnPointerReleasedPartial(args);
+
 			this.UpdateCommonStates(true);
 		}
+		partial void OnPointerReleasedPartial(PointerRoutedEventArgs args);
+#endif
+
+#if <#= mixin.HasCommonPressedState #> || <#= mixin.HasCommonOverState #>
+		protected override void OnPointerCanceled(PointerRoutedEventArgs args)
+		{
+			base.OnPointerCanceled(args);
+			OnPointerCanceledPartial(args);
+
+			this.UpdateCommonStates(true);
+		}
+		partial void OnPointerCanceledPartial(PointerRoutedEventArgs args);
 
 		protected override void OnPointerCaptureLost(PointerRoutedEventArgs args)
 		{
 			base.OnPointerCaptureLost(args);
-			
+			OnPointerCaptureLostPartial(args);
+
 			this.UpdateCommonStates(true);
 		}
+		partial void OnPointerCaptureLostPartial(PointerRoutedEventArgs args);
 #endif
 
 #if <#= mixin.HasCommonFocusedState #>
@@ -160,11 +176,16 @@ namespace <#= mixin.NamespaceName #>
 
 		private void UpdateCommonStates(bool useTransitions)
 		{
-			var combinedState = GetCombinedStatePrefix() + GetCombinedStateSuffix();
-            if (combinedState.IsNullOrEmpty()) {
-                combinedState = __normalState;
-            }
-			VisualStateManager.GoToState(this, combinedState, useTransitions);
+#if <#= mixin.HasCommonCheckedState #> || <#= mixin.HasCombinedCheckedState #>
+			var state = GetFullState();
+#else
+			var state = GetCommonState();
+#endif
+//			var combinedState = GetCombinedStatePrefix() + GetCombinedStateSuffix();
+//			if (combinedState.IsNullOrEmpty()) {
+//				combinedState = __normalState;
+//			}
+			VisualStateManager.GoToState(this, state, useTransitions);
 
 #if <#= mixin.HasCheckedStates #> && !<#= mixin.HasCommonCheckedState #> && !<#= mixin.HasCombinedCheckedState #> // HasCheckedStates && !HasCommonCheckedState && !HasCombinedCheckedState
 			// Reapply checked state after changing common states. This is a no-op under the default style where pressed states and checked
@@ -174,46 +195,79 @@ namespace <#= mixin.NamespaceName #>
 		}
 #endif
 
-        private string GetCombinedStatePrefix() {
-#if <#= mixin.HasCommonCheckedState #>
-            return (this.IsChecked != null && this.IsChecked.Value) ?
-                __checkedState :
-                "";
-#elif <#= mixin.HasCombinedCheckedState #>
-            return (this.IsChecked != null && this.IsChecked.Value) ?
-                __checkedState :
-                __uncheckedState;
-#else
-                return "";
-#endif
-        }
+#if <#= mixin.HasCommonCheckedState #> || <#= mixin.HasCombinedCheckedState #>
+		private string GetFullState()
+		{
+			var commonState = GetCommonState();
+			var checkedState = GetCheckedState();
 
-        private string GetCombinedStateSuffix() {
+#if <#= mixin.HasCommonCheckedState #>
+			if (commonState == __normalState)
+			{
+				return checkedState == __uncheckedState
+					? __normalState
+					: checkedState;
+			}
+#endif
+			return checkedState + commonState;
+		}
+#endif
+
+		private string GetCommonState()
+		{
 			var targetState = __normalState;
 			if (!this.IsEnabled)
 			{
-				targetState = __disabledState;
+				return __disabledState;
 			}
 #if <#= mixin.HasCommonPressedState #>
 			else if (IsPointerPressed && IsPointerOver)
 			{
-				targetState = __pressedState;
+				return __pressedState;
+			}
+#endif
+#if <#= mixin.HasCommonOverState #>
+			else if (IsPointerOver)
+			{
+				return __pointerOverState;
 			}
 #endif
 #if <#= mixin.HasCommonFocusedState #>
 			else if (this.IsFocused)
 			{
-				targetState = __focusedState;
+				return __focusedState;
 			}
 #endif
 
-#if !<#= mixin.HasCombinedCheckedState #>
-            if (targetState == __normalState) {
-                return "";
-            }
+// #if !<#= mixin.HasCombinedCheckedState #>
+// 			if (targetState == __normalState) {
+// 				return "";
+// 			}
+// #endif
+			else
+			{
+				return __normalState;
+			}
+		}
+
+#if <#= mixin.HasCheckedStates #> || <#= mixin.HasCommonCheckedState #> || <#= mixin.HasCombinedCheckedState #>
+		private string GetCheckedState()
+		{
+			if (this.IsChecked == null)
+			{
+				return __indeterminateState;
+			}
+			else if (this.IsChecked.Value)
+			{
+				return __checkedState;
+			}
+			else
+			{
+				return __uncheckedState;
+			}
+		}
 #endif
-            return targetState;
-        }
+
 
 #if <#= mixin.HasCommonCheckedState #> || <#= mixin.HasCombinedCheckedState #>
 		private IDisposable _isCheckedChanged = null;
@@ -246,7 +300,7 @@ namespace <#= mixin.NamespaceName #>
 
 		private void UpdateCheckedStates(bool useTransitions)
 		{
-			VisualStateManager.GoToState(this, (this.IsChecked != null && this.IsChecked.Value) ? __checkedState : __uncheckedState, useTransitions);
+			VisualStateManager.GoToState(this, GetCheckedState(), useTransitions);
 		}
 #endif
 	}
@@ -256,10 +310,11 @@ namespace <#= mixin.NamespaceName #>
 #>
 
 <#+
-    public void AddClass(
+	public void AddClass(
 		string namespaceName, 
 		string className, 
 		bool hasCommonStates = false,
+		bool hasCommonOverState = false,
 		bool hasCommonPressedState = false,
 		bool hasCommonFocusedState = false,
 		bool hasCommonCheckedState = false,
@@ -267,11 +322,12 @@ namespace <#= mixin.NamespaceName #>
 		bool hasCheckedStates = false
 	)
 	{
-        _mixins.Add(
+		_mixins.Add(
 			new MixinParams { 
 				NamespaceName = namespaceName, 
 				ClassName = className,
 				HasCommonStates = hasCommonStates ? "true" : "false",
+				HasCommonOverState = hasCommonOverState ? "true" : "false",
 				HasCommonPressedState = hasCommonPressedState ? "true" : "false",
 				HasCommonFocusedState = hasCommonFocusedState ? "true" : "false",
 				HasCommonCheckedState = hasCommonCheckedState ? "true" : "false",
@@ -279,21 +335,22 @@ namespace <#= mixin.NamespaceName #>
 				HasCheckedStates = hasCheckedStates ? "true" : "false"
 			}
 		);
-    }
+	}
 
 	private class MixinParams
 	{
 		public string NamespaceName;
 		public string ClassName;
-        //The class has the 'CommonStates' visual group
+		//The class has the 'CommonStates' visual group
 		public string HasCommonStates;
+		public string HasCommonOverState;
 		public string HasCommonPressedState;
 		public string HasCommonFocusedState;
-        //The control has checked states included within the 'CommonStates' visual group
+		//The control has checked states included within the 'CommonStates' visual group
 		public string HasCommonCheckedState;
-        //The control has checked states included within the 'CombinedStates' visual group, with a naming convention to explicitly specify the default (eg 'UncheckedNormal' instead of 'Normal').
-        public string HasCombinedCheckedState;
-        //The control has a 'CheckStates' visual group
+		//The control has checked states included within the 'CombinedStates' visual group, with a naming convention to explicitly specify the default (eg 'UncheckedNormal' instead of 'Normal').
+		public string HasCombinedCheckedState;
+		//The control has a 'CheckStates' visual group
 		public string HasCheckedStates;
 	}
 
