@@ -138,6 +138,16 @@
         "example",
         "test"
       ]
+    },
+    {
+      "login": "artemious7",
+      "name": "Artem",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/16724889?v=4",
+      "profile": "https://github.com/artemious7",
+      "contributions": [
+        "code",
+        "doc"
+      ]
     }
   ],
   "contributorsPerLine": 7,
