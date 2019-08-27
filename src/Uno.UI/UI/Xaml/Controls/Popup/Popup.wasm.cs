@@ -27,9 +27,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			base.OnIsLightDismissEnabledChanged(oldIsLightDismissEnabled, newIsLightDismissEnabled);
 
-			(PopupPanel.Parent as PopupRoot)?.UpdateIsHitTestVisible();
-
-			PopupPanel.IsHitTestVisible = newIsLightDismissEnabled;
+			(PopupPanel.Parent as PopupRoot)?.UpdateLightDismissArea();
 		}
 
 		protected override void OnIsOpenChanged(bool oldIsOpen, bool newIsOpen)
@@ -78,7 +76,6 @@ namespace Windows.UI.Xaml.Controls
 				newPanel.PointerPressed += OnPanelPointerPressed;
 				newPanel.PointerReleased += OnPanelPointerReleased;
 			}
-
 		}
 
 		private bool _pressed;

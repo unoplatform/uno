@@ -31,7 +31,6 @@ namespace Windows.UI.Xaml.Controls
 		{
 			Popup = popup ?? throw new ArgumentNullException(nameof(popup));
 			Visibility = Visibility.Collapsed;
-			Background = SolidColorBrushHelper.Transparent;
 		}
 
 		protected Size _lastMeasuredSize;

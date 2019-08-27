@@ -11,24 +11,27 @@ namespace Windows.UI.Xaml.Controls
 		public PopupRoot()
 		{
 			Background = new SolidColorBrush(Colors.Transparent);
-			UpdateIsHitTestVisible();
+			UpdateLightDismissArea();
 		}
 
 		protected override void OnChildrenChanged()
 		{
 			base.OnChildrenChanged();
-			UpdateIsHitTestVisible();
+			UpdateLightDismissArea();
 		}
 
 		private bool _pointerHandlerRegistered = false;
 
-		internal void UpdateIsHitTestVisible()
+		internal void UpdateLightDismissArea()
 		{
 			var anyDismissableChild = Children
 				.OfType<PopupPanel>()
 				.Any(pp => pp.Popup.IsLightDismissEnabled);
 
-			IsHitTestVisible = anyDismissableChild;
+			Background = anyDismissableChild
+				? new SolidColorBrush(Colors.Transparent)
+				: null;
+
 			if (anyDismissableChild)
 			{
 				if (!_pointerHandlerRegistered)
