@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using Uno.UI;
+using Uno.Extensions;
 
 namespace Windows.UI.Xaml
 {
@@ -22,7 +23,7 @@ namespace Windows.UI.Xaml
 			set;
 		}
 
-		public ResourceDictionary[] MergedDictionaries => Array.Empty<ResourceDictionary>();
+		public IList<ResourceDictionary> MergedDictionaries { get; } = new List<ResourceDictionary>();
 
 		public IDictionary<object, object> ThemeDictionaries { get; } = new Dictionary<object, object>();
 
@@ -60,11 +61,18 @@ namespace Windows.UI.Xaml
 
 		public void Add(object key, object value) => _values.Add(key.ToString(), value);
 
-		public bool ContainsKey(object key) => _values.ContainsKey(key.ToString());
+		public bool ContainsKey(object key) => _values.ContainsKey(key.ToString()) || ContainsKeyMerged(key) || ContainsKeyTheme(key);
 
-		public bool TryGetValue(object key, out object value)
+		public bool TryGetValue(object key, out object value) => TryGetValue(key, out value, useResolver: true);
+
+		private bool TryGetValue(object key, out object value, bool useResolver)
 		{
-			if (!_values.TryGetValue(key, out value))
+			if (_values.TryGetValue(key, out value))
+			{
+				return true;
+			}
+
+			if (useResolver)
 			{
 				try
 				{
@@ -83,10 +91,18 @@ namespace Windows.UI.Xaml
 					_resolvingDepth--;
 				}
 
-				return value != null;
+				if (value != null)
+				{
+					return true;
+				}
 			}
 
-			return true;
+			if (GetFromMerged(key, out value))
+			{
+				return true;
+			}
+
+			return GetFromTheme(key, out value);
 		}
 
 		public object this[object key]
@@ -94,15 +110,102 @@ namespace Windows.UI.Xaml
 			get
 			{
 				object value;
-
-				if (!TryGetValue(key, out value))
-				{
-					return value;
-				}
+				TryGetValue(key, out value);
 
 				return value;
 			}
 			set => _values[key] = value;
+		}
+
+		private bool GetFromMerged(object key, out object value)
+		{
+			// Check last dictionary first - //https://docs.microsoft.com/en-us/windows/uwp/design/controls-and-patterns/resourcedictionary-and-xaml-resource-references#merged-resource-dictionaries
+			for (int i = MergedDictionaries.Count - 1; i >= 0; i--)
+			{
+				if (MergedDictionaries[i].TryGetValue(key, out value, useResolver: false))
+				{
+					return true;
+				}
+			}
+
+			value = null;
+
+			return false;
+		}
+
+		private bool ContainsKeyMerged(object key)
+		{
+			for (int i = MergedDictionaries.Count - 1; i >= 0; i--)
+			{
+				if (MergedDictionaries[i].ContainsKey(key))
+				{
+					return true;
+				}
+			}
+
+			return false;
+		}
+
+		private ResourceDictionary GetThemeDictionary(string theme)
+		{
+			if (ThemeDictionaries.TryGetValue(theme, out var dict))
+			{
+				return dict as ResourceDictionary;
+			}
+
+			return null;
+		}
+
+		private bool GetFromTheme(object key, out object value)
+		{
+			return GetFromTheme(Themes.Active, key, out value) ||
+				GetFromTheme(Themes.Default, key, out value);
+		}
+
+		private bool GetFromTheme(string theme, object key, out object value)
+		{
+			value = null;
+			return GetThemeDictionary(theme)?.TryGetValue(key, out value) ?? GetFromThemeMerged(theme, key, out value);
+		}
+
+		private bool GetFromThemeMerged(string theme, object key, out object value)
+		{
+			for (int i = MergedDictionaries.Count - 1; i >= 0; i--)
+			{
+				if (MergedDictionaries[i].GetFromTheme(theme, key, out value))
+				{
+					return true;
+				}
+			}
+
+			value = null;
+
+			return false;
+		}
+
+
+		private bool ContainsKeyTheme(object key)
+		{
+			return ContainsKeyTheme(Themes.Active, key) ||
+				ContainsKeyTheme(Themes.Default, key);
+		}
+
+		private bool ContainsKeyTheme(string theme, object key)
+		{
+			return GetThemeDictionary(theme)?.ContainsKey(key) ?? ContainsKeyThemeMerged(theme, key);
+		}
+
+		private bool ContainsKeyThemeMerged(string theme, object key)
+		{
+			for (int i = MergedDictionaries.Count - 1; i >= 0; i--)
+			{
+				if (MergedDictionaries[i].ContainsKeyTheme(theme, key))
+				{
+					return true;
+				}
+			}
+
+			return false;
 		}
 
 		public global::System.Collections.Generic.ICollection<object> Keys => _values.Keys;
@@ -126,5 +229,37 @@ namespace Windows.UI.Xaml
 		public global::System.Collections.Generic.IEnumerator<global::System.Collections.Generic.KeyValuePair<object, object>> GetEnumerator() => _values.GetEnumerator();
 
 		global::System.Collections.IEnumerator global::System.Collections.IEnumerable.GetEnumerator() => _values.GetEnumerator();
+
+		private static class Themes
+		{
+			public const string Default = "Default";
+			public static string Active
+			{
+				get
+				{
+					if (Application.Current == null)
+					{
+						return "Light";
+					}
+
+					var custom = ApplicationHelper.RequestedCustomTheme;
+
+					if (!custom.IsNullOrEmpty())
+					{
+						return custom;
+					}
+
+					switch (Application.Current.RequestedTheme)
+					{
+						case ApplicationTheme.Light:
+							return "Light";
+						case ApplicationTheme.Dark:
+							return "Dark";
+						default:
+							throw new InvalidOperationException($"Theme {Application.Current.RequestedTheme} is not valid");
+					}
+				}
+			}
+		}
 	}
 }

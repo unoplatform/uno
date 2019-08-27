@@ -298,6 +298,8 @@
 						reason="Removed unneeded pseudo-internal property" />
 				<Member fullName="System.Boolean Uno.UI.UnoViewGroup::IsAnimationInProgress()"
 						reason="Removed unneeded pseudo-internal property" />
+				<Member fullName="Windows.UI.Xaml.ResourceDictionary[] Windows.UI.Xaml.ResourceDictionary::MergedDictionaries()"
+						reason="Property type fixed to match UWP" />
 			</Properties>
 		</IgnoreSet>
 
