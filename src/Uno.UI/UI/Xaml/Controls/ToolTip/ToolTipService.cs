@@ -1,6 +1,7 @@
 using System;
 using System.Threading.Tasks;
 using Windows.UI.Xaml.Input;
+using Uno.UI;
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -25,6 +26,11 @@ namespace Windows.UI.Xaml.Controls
 
 		private static void OnToolTipChanged(DependencyObject dependencyobject, DependencyPropertyChangedEventArgs args)
 		{
+			if (!FeatureConfiguration.ToolTip.UseToolTips)
+			{
+				return; // ToolTips are disabled
+			}
+
 			if (!(dependencyobject is FrameworkElement element))
 			{
 				return;
@@ -72,13 +78,13 @@ namespace Windows.UI.Xaml.Controls
 
 				async Task HoverTask(long hoverId)
 				{
-					await Task.Delay(1000);
+					await Task.Delay(FeatureConfiguration.ToolTip.ShowDelay);
 					if (currentHoverId != hoverId)
 					{
 						return;
 					}
 					toolTip.IsOpen = true;
-					await Task.Delay(7000);
+					await Task.Delay(FeatureConfiguration.ToolTip.ShowDuration);
 					if (currentHoverId == hoverId)
 					{
 						toolTip.IsOpen = false;
