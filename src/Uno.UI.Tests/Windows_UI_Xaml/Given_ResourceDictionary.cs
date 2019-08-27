@@ -208,7 +208,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 		public void When_Has_Multiple_Themes()
 		{
 #if !NETFX_CORE
-			Application.EnsureApplication();
+			UnitTestsApp.App.EnsureApplication();
 #endif
 
 			var rd = new ResourceDictionary();
@@ -244,7 +244,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 		public void When_Has_Inactive_Theme()
 		{
 #if !NETFX_CORE
-			Application.EnsureApplication();
+			UnitTestsApp.App.EnsureApplication();
 #endif
 
 			var rd = new ResourceDictionary();
@@ -268,7 +268,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 			rd.ThemeDictionaries["Pink"] = pink;
 
 #if !NETFX_CORE
-			Application.EnsureApplication();
+			UnitTestsApp.App.EnsureApplication();
 
 			ApplicationHelper.RequestedCustomTheme = "Pink";
 
