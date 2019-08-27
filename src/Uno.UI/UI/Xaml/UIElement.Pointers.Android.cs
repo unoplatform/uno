@@ -104,7 +104,7 @@ namespace Windows.UI.Xaml
 			}
 		}
 
-		partial void OnManipulationModeChanged(ManipulationModes oldMode, ManipulationModes newMode)
+		partial void OnManipulationModeChanged(ManipulationModes newMode)
 			=> IsNativeMotionEventsInterceptForbidden = newMode != ManipulationModes.System;
 
 		#region Capture

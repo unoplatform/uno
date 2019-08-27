@@ -4337,9 +4337,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ContentControlTestsControl\ContentControl_Changing_ContentTemplate.xaml.cs">
       <DependentUpon>ContentControl_Changing_ContentTemplate.xaml</DependentUpon>
     </Compile>
-    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ContentControlTestsControl\ContentControl_ContentPresenter.xaml.cs">
-      <DependentUpon>ContentControl_ContentPresenter.xaml</DependentUpon>
-    </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ContentControlTestsControl\ContentControl_DefaultText.xaml.cs">
       <DependentUpon>ContentControl_DefaultText.xaml</DependentUpon>
     </Compile>
