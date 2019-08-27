@@ -52,6 +52,8 @@
 * Add support for `Selector.IsSynchronizedWithCurrentItem`
 * Add support for `CoreApplication.MainView` and `CoreApplication.Views` 
 * Add support for resolution of merged and theme resources from `ResourceDictionary` in code
+* Add non-failing StatusBar BackgroundOpacity and BackgroundColor getters
+* Relax DependencyProperty owner validation for non-FrameworkElement
 * `ToolTip` & `ToolTipService` are now implemented.
 
 ### Breaking changes
@@ -96,6 +98,9 @@
 * [Android] Animated content is cut off/glitchy when RenderTransform translation is applied (#1333)
 * [#1409](https://github.com/unoplatform/uno/pull/1413) Provide a better error-message on Page-Navigation-Errors
 * Fix NRE when using custom `Pivot` templates.
+* Fix iOS CompositionTarget handler race condition
+* [Wasm] Fix TextBoxView SelectionStart/SelectionEnd value parsing
+* [Wasm] Don't fail on FrameworkElement.Dispose()
 * [Android] ScrollViewer were no more clipping the scrollable area.
 
 ## Release 1.45.0
