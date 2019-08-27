@@ -2,6 +2,7 @@
 
 ## Next version
 ### Features
+*  [#1428](https://github.com/unoplatform/uno/issues/1428) - Add support for horizontal progressbars to `BindableProgressBar` on Android.
 * Add support for `Windows.Devices.Sensors.Magnetometer` APIs on iOS, Android and WASM
    * `ReadingChanged`
    * `ReportInterval`
@@ -48,6 +49,8 @@
   ```
   FeatureConfiguration.ContentPresenter.UseImplicitContentFromTemplatedParent = false;
   ```
+* Add support for `Selector.IsSynchronizedWithCurrentItem`
+* Add support for `CoreApplication.MainView` and `CoreApplication.Views` 
 
 ### Breaking changes
 * `TextBox` no longer raises TextChanged when its template is applied, in line with UWP.

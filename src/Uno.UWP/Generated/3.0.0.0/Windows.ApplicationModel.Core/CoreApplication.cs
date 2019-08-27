@@ -29,26 +29,6 @@ namespace Windows.ApplicationModel.Core
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
-		public static global::Windows.ApplicationModel.Core.CoreApplicationView MainView
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member CoreApplicationView CoreApplication.MainView is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public static global::System.Collections.Generic.IReadOnlyList<global::Windows.ApplicationModel.Core.CoreApplicationView> Views
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<CoreApplicationView> CoreApplication.Views is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
 		public static global::Windows.ApplicationModel.Core.CoreApplicationView CreateNewView( global::Windows.ApplicationModel.Core.IFrameworkViewSource viewSource)
 		{
 			throw new global::System.NotImplementedException("The member CoreApplicationView CoreApplication.CreateNewView(IFrameworkViewSource viewSource) is not implemented in Uno.");
