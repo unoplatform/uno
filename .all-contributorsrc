@@ -48,8 +48,7 @@
       "contributions": [
         "code",
         "test",
-        "review",
-        "bug"
+        "review"
       ]
     },
     {
@@ -150,7 +149,7 @@
       ]
     }
   ],
-  "contributorsPerLine": 7,
+  "contributorsPerLine": 5,
   "projectName": "uno",
   "projectOwner": "unoplatform",
   "repoType": "github",
