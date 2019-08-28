@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Uno.UI.Tests.App.Xaml;
 using Windows.UI;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Media;
@@ -278,6 +279,31 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 
 			ApplicationHelper.RequestedCustomTheme = null;
 #endif
+		}
+
+		[TestMethod]
+		public void When_Resource_On_Top_Control_Xaml()
+		{
+			var app = UnitTestsApp.App.EnsureApplication();
+
+			var control = new Test_Control();
+			app.HostView.Children.Add(control);
+
+			var brush = control.Resources["LocalColorBrush"] as SolidColorBrush;
+			Assert.AreEqual(Colors.Linen, brush.Color);
+		}
+
+		[TestMethod]
+		public void When_Resource_On_Inner_Control_Xaml()
+		{
+			var app = UnitTestsApp.App.EnsureApplication();
+
+			var control = new Test_Control();
+			app.HostView.Children.Add(control);
+
+			var brush = control.TestGrid.Resources["LocalToGridColorBrush"] as SolidColorBrush;
+
+			Assert.AreEqual(Colors.LimeGreen, brush.Color);
 		}
 	}
 }

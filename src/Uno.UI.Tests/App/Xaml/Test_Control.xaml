@@ -7,6 +7,9 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
+	<UserControl.Resources>
+		<SolidColorBrush x:Key="LocalColorBrush" Color="Linen"/>
+	</UserControl.Resources>
 
 	<Grid x:Name="topGrid" Background="{StaticResource SuperiorColorBrush}">
 		<TextBlock x:Name="testTextBlock" Text="Test control" Foreground="{ThemeResource ApplicationForegroundThemeBrush}"/>
@@ -16,6 +19,9 @@
 			<Grid.RowDefinitions>
 				<RowDefinition Height="{StaticResource GridLength256}"/>
 			</Grid.RowDefinitions>
+			<Grid.Resources>
+				<SolidColorBrush x:Key="LocalToGridColorBrush" Color="LimeGreen"/>
+			</Grid.Resources>
 		</Grid>
 		<Button x:Name="styledButton" Style="{StaticResource ExplicitButtonStyle}"/>
 		<views:MyControl x:Name="testMyControl"  Splinitude="{StaticResource GoodSize}" Poco="{StaticResource PocoLinda}"/>
