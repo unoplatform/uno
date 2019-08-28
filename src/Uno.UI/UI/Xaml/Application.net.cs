@@ -10,16 +10,5 @@ namespace Windows.UI.Xaml
 		{
 			Current = this;
 		}
-
-		/// <summary>
-		/// Ensure that application exists, for unit tests. 
-		/// </summary>
-		internal static void EnsureApplication()
-		{
-			if (Current == null)
-			{
-				new Application();
-			}
-		}
 	}
 }
