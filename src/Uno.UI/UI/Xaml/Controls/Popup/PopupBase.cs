@@ -109,7 +109,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		/// <summary>
-		/// A layouter responsible to layout the content of a poup at the right place
+		/// A layouter responsible to layout the content of a popup at the right place
 		/// </summary>
 		internal interface IDynamicPopupLayouter
 		{
@@ -128,6 +128,11 @@ namespace Windows.UI.Xaml.Controls
 			/// <param name="visibleBounds">The frame of the visible bounds of the window. This is expected to ba AtMost the finalSize.</param>
 			/// <param name="desiredSize">The size at which the content expect to be rendered. This is the result of the last <see cref="Measure"/>.</param>
 			void Arrange(Size finalSize, Rect visibleBounds, Size desiredSize);
+		}
+
+		partial void OnIsLightDismissEnabledChangedPartial(bool oldIsLightDismissEnabled, bool newIsLightDismissEnabled)
+		{
+
 		}
 	}
 }

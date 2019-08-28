@@ -23,6 +23,13 @@ namespace Windows.UI.Xaml.Controls
 			PopupPanel.Children.Add(newChild);
 		}
 
+		protected override void OnIsLightDismissEnabledChanged(bool oldIsLightDismissEnabled, bool newIsLightDismissEnabled)
+		{
+			base.OnIsLightDismissEnabledChanged(oldIsLightDismissEnabled, newIsLightDismissEnabled);
+
+			(PopupPanel.Parent as PopupRoot)?.UpdateLightDismissArea();
+		}
+
 		protected override void OnIsOpenChanged(bool oldIsOpen, bool newIsOpen)
 		{
 			base.OnIsOpenChanged(oldIsOpen, newIsOpen);
@@ -69,7 +76,6 @@ namespace Windows.UI.Xaml.Controls
 				newPanel.PointerPressed += OnPanelPointerPressed;
 				newPanel.PointerReleased += OnPanelPointerReleased;
 			}
-
 		}
 
 		private bool _pressed;
