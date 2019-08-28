@@ -420,7 +420,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			writer.AppendLineInvariant($"global::Uno.Helpers.DrawableHelper.Drawables = typeof(global::{_defaultNamespace}.Resource.Drawable);");
 			writer.AppendLineInvariant($"#endif");
 
-			RegisterResources(topLevelControl);
+			RegisterAndBuildResources(writer, topLevelControl, isInInitializer: false);
 			BuildProperties(writer, topLevelControl, isInline: false, returnsContent: false);
 
 			writer.AppendLineInvariant("");
@@ -513,7 +513,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 			using (TrySetDefaultBindMode(topLevelControl))
 			{
-				RegisterResources(topLevelControl);
+				RegisterAndBuildResources(writer, topLevelControl, isInInitializer: false);
 				BuildProperties(writer, topLevelControl, isInline: false, returnsContent: isDirectUserControlChild);
 
 				writer.AppendLineInvariant(";");
@@ -713,6 +713,9 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			return contentType == null ? XamlConstants.Types.IFrameworkElement : FindType(contentType)?.ToDisplayString() ?? XamlConstants.Types.IFrameworkElement;
 		}
 
+		/// <summary>
+		/// Processes a top-level ResourceDictionary declaration.
+		/// </summary>
 		private void BuildResourceDictionary(IIndentedStringBuilder writer, XamlObjectDefinition topLevelControl)
 		{
 			var globalResources = new Dictionary<string, XamlObjectDefinition>();
@@ -1040,28 +1043,28 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						// Skip and add it to the global resolver
 						break;
 					default:
-					{
-						if (IsSingleTimeInitializable(resource.Type))
 						{
-							writer.AppendLineInvariant(
-								$"public static {GetGlobalizedTypeName(resourceTypeName)} {SanitizeResourceName(resourcePropertyName)} {{{{ get; }}}} = ");
-							BuildChild(writer, null, resource);
-							writer.AppendLine(";");
-							writer.AppendLine();
-						}
-						else
-						{
-							BuildSingleTimeInitializer(
-								writer,
-								GenerateTypeName(resource),
-								resourceKey,
-								() =>
-								{
-									BuildChild(writer, null, resource);
-									writer.AppendLineInvariant(0, ";", resource.Type);
-								}
-							);
-						}
+							if (IsSingleTimeInitializable(resource.Type))
+							{
+								writer.AppendLineInvariant(
+									$"public static {GetGlobalizedTypeName(resourceTypeName)} {SanitizeResourceName(resourcePropertyName)} {{{{ get; }}}} = ");
+								BuildChild(writer, null, resource);
+								writer.AppendLine(";");
+								writer.AppendLine();
+							}
+							else
+							{
+								BuildSingleTimeInitializer(
+									writer,
+									GenerateTypeName(resource),
+									resourceKey,
+									() =>
+									{
+										BuildChild(writer, null, resource);
+										writer.AppendLineInvariant(0, ";", resource.Type);
+									}
+								);
+							}
 
 							break;
 						}
@@ -1084,75 +1087,75 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						// Skip and add it to the global resolver
 						break;
 					default:
-					{
-						var appThemes = resources.Where(x => x.Key.Equals("Light") || x.Key.Equals("Dark") || x.Key.Equals("Default")).ToList();
-						var customThemes = resources.Except(appThemes).ToArray();
-						var defaultThemes = appThemes.Where(x => x.Key.Equals("Default")).ToArray();
-
-						if (defaultThemes.Any())
 						{
-							appThemes.Remove(defaultThemes.First());
-						}
+							var appThemes = resources.Where(x => x.Key.Equals("Light") || x.Key.Equals("Dark") || x.Key.Equals("Default")).ToList();
+							var customThemes = resources.Except(appThemes).ToArray();
+							var defaultThemes = appThemes.Where(x => x.Key.Equals("Default")).ToArray();
 
-						var globalizedTypeName = GetGlobalizedTypeName(resourceTypeName);
-						var sanitizeResourceName = SanitizeResourceName(resourcePropertyName);
-						using (writer.BlockInvariant($"public static {globalizedTypeName} {sanitizeResourceName}"))
-						using (writer.BlockInvariant("get"))
-						{
-							if (customThemes.Any())
-							{
-								writer.AppendLineInvariant("// Custom themes defined for this resource: checking custom theme.");
-								writer.AppendLineInvariant("var currentCustomTheme = global::Uno.UI.ApplicationHelper.RequestedCustomTheme;");
-								using (writer.BlockInvariant($"switch(currentCustomTheme)"))
-								{
-									foreach (var theme in customThemes)
-									{
-										writer.AppendLineInvariant($"case \"{theme.Key}\": return {sanitizeResourceName}___{theme.Key};");
-									}
-								}
-								writer.AppendLine();
-							}
-
-							writer.AppendLineInvariant("// Element's RequestedTheme not supported yet. Fallback on Application's RequestedTheme.");
-							writer.AppendLine();
-
-							writer.AppendLineInvariant("var currentTheme = global::Windows.UI.Xaml.Application.Current.RequestedTheme;");
-							if (appThemes.Any())
-							{
-								using (writer.BlockInvariant($"switch(currentTheme)"))
-								{
-									foreach (var theme in appThemes)
-									{
-										if (theme.Key.Equals("Light"))
-										{
-											writer.AppendLineInvariant($"case global::Windows.UI.Xaml.ApplicationTheme.Light: return {sanitizeResourceName}___{theme.Key};");
-										}
-										else if (theme.Key.Equals("Dark"))
-										{
-											writer.AppendLineInvariant($"case global::Windows.UI.Xaml.ApplicationTheme.Dark: return {sanitizeResourceName}___{theme.Key};");
-										}
-
-										// Default is not generated here
-									}
-								}
-							}
-
-							writer.AppendLine();
 							if (defaultThemes.Any())
 							{
+								appThemes.Remove(defaultThemes.First());
+							}
+
+							var globalizedTypeName = GetGlobalizedTypeName(resourceTypeName);
+							var sanitizeResourceName = SanitizeResourceName(resourcePropertyName);
+							using (writer.BlockInvariant($"public static {globalizedTypeName} {sanitizeResourceName}"))
+							using (writer.BlockInvariant("get"))
+							{
+								if (customThemes.Any())
+								{
+									writer.AppendLineInvariant("// Custom themes defined for this resource: checking custom theme.");
+									writer.AppendLineInvariant("var currentCustomTheme = global::Uno.UI.ApplicationHelper.RequestedCustomTheme;");
+									using (writer.BlockInvariant($"switch(currentCustomTheme)"))
+									{
+										foreach (var theme in customThemes)
+										{
+											writer.AppendLineInvariant($"case \"{theme.Key}\": return {sanitizeResourceName}___{theme.Key};");
+										}
+									}
+									writer.AppendLine();
+								}
+
+								writer.AppendLineInvariant("// Element's RequestedTheme not supported yet. Fallback on Application's RequestedTheme.");
+								writer.AppendLine();
+
+								writer.AppendLineInvariant("var currentTheme = global::Windows.UI.Xaml.Application.Current.RequestedTheme;");
+								if (appThemes.Any())
+								{
+									using (writer.BlockInvariant($"switch(currentTheme)"))
+									{
+										foreach (var theme in appThemes)
+										{
+											if (theme.Key.Equals("Light"))
+											{
+												writer.AppendLineInvariant($"case global::Windows.UI.Xaml.ApplicationTheme.Light: return {sanitizeResourceName}___{theme.Key};");
+											}
+											else if (theme.Key.Equals("Dark"))
+											{
+												writer.AppendLineInvariant($"case global::Windows.UI.Xaml.ApplicationTheme.Dark: return {sanitizeResourceName}___{theme.Key};");
+											}
+
+											// Default is not generated here
+										}
+									}
+								}
+
+								writer.AppendLine();
+								if (defaultThemes.Any())
+								{
 									writer.AppendLineInvariant("// This resource is defined in a Default theme as a fallback.");
 									writer.AppendLineInvariant($"return {sanitizeResourceName}___Default;");
+								}
+								else
+								{
+									var msg = customThemes.Any()
+										? $"$\"The themed resource {resourcePropertyName} cannot be found for custom theme \\\"{{{{currentCustomTheme}}}}\\\", theme={{{{currentTheme}}}}.\""
+										: $"$\"The themed resource {resourcePropertyName} cannot be found for theme {{{{currentTheme}}}}.\"";
+									writer.AppendLineInvariant($"throw new InvalidOperationException({msg});");
+								}
 							}
-							else
-							{
-								var msg = customThemes.Any()
-									? $"$\"The themed resource {resourcePropertyName} cannot be found for custom theme \\\"{{{{currentCustomTheme}}}}\\\", theme={{{{currentTheme}}}}.\""
-									: $"$\"The themed resource {resourcePropertyName} cannot be found for theme {{{{currentTheme}}}}.\"";
-								writer.AppendLineInvariant($"throw new InvalidOperationException({msg});");
-							}
+							break;
 						}
-						break;
-					}
 				}
 			}
 
@@ -1995,7 +1998,11 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				.FirstOrDefault(m => m.Member.Name == memberName);
 		}
 
-		private void RegisterResources(XamlObjectDefinition topLevelControl)
+		/// <summary>
+		/// Processes a Resources node, creating a ResourceDictionary if needed, and saving static resources for later registration.
+		/// </summary>
+		/// <param name="isInInitializer">True if inside an object initialization</param>
+		private void RegisterAndBuildResources(IIndentedStringBuilder writer, XamlObjectDefinition topLevelControl, bool isInInitializer)
 		{
 			var resourcesMember = topLevelControl.Members.FirstOrDefault(m => m.Member.Name == "Resources");
 
@@ -2008,17 +2015,36 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					? FindImplicitContentMember(resourcesMember.Objects.First())
 					: resourcesMember;
 
+
 				if (resourcesRoot != null)
 				{
+					if (isInInitializer)
+					{
+						writer.AppendLineInvariant("Resources = {{");
+					}
+
+					var closingPunctuation = isInInitializer ? "," : ";";
+
 					foreach (var resource in resourcesRoot.Objects)
 					{
-						var key = resource.Members.FirstOrDefault(m => m.Member.Name == "Key");
+						var keyDef = resource.Members.FirstOrDefault(m => m.Member.Name == "Key");
 						var name = resource.Members.FirstOrDefault(m => m.Member.Name == "Name");
 						var mergedDictionaries = resource.Members.FirstOrDefault(m => m.Member.Name == "MergedDictionaries");
 
-						if (key != null)
+						if (keyDef != null)
 						{
-							_staticResources.Add(key.Value.ToString(), resource);
+							var key = keyDef.Value.ToString();
+							_staticResources.Add(key, resource);
+							if (isInInitializer)
+							{
+								writer.AppendLineInvariant("[\"{0}\"] = ", key);
+							}
+							else
+							{
+								writer.AppendLineInvariant("Resources[\"{0}\"] = ", key); 
+							}
+							BuildChild(writer, null, resource);
+							writer.AppendLineInvariant(closingPunctuation);
 						}
 						else if (mergedDictionaries != null)
 						{
@@ -2036,6 +2062,11 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 								.InvariantCultureFormat(topLevelControl.Type.Name, topLevelControl.LineNumber, topLevelControl.LinePosition)
 							);
 						}
+					}
+
+					if (isInInitializer)
+					{
+						writer.AppendLineInvariant("}},");
 					}
 				}
 
@@ -4149,7 +4180,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 					using (var innerWriter = CreateApplyBlock(writer, null, out var closureName))
 					{
-						RegisterResources(xamlObjectDefinition);
+						RegisterAndBuildResources(writer, xamlObjectDefinition, isInInitializer: true);
 						BuildLiteralProperties(innerWriter, xamlObjectDefinition, closureName);
 						BuildProperties(innerWriter, xamlObjectDefinition, closureName: closureName);
 					}
@@ -4256,7 +4287,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						{
 							using (writer.BlockInvariant("new {0}{1}", GetGlobalizedTypeName(fullTypeName), GenerateConstructorParameters(xamlObjectDefinition.Type)))
 							{
-								RegisterResources(xamlObjectDefinition);
+								RegisterAndBuildResources(writer, xamlObjectDefinition, isInInitializer: true);
 								BuildLiteralProperties(writer, xamlObjectDefinition);
 								BuildProperties(writer, xamlObjectDefinition);
 								BuildLocalizedProperties(writer, xamlObjectDefinition);
