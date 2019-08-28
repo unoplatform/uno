@@ -64,54 +64,6 @@ namespace Windows.UI.Xaml
 		}
 		#endregion
 
-		#region IsPointerPressed (Internal property with overridable callback)
-		private bool _isPointerPressed;
-
-		/// <summary>
-		/// Indicates if a pointer was pressed while over the element (i.e. PressedState)
-		/// </summary>
-		internal bool IsPointerPressed
-		{
-			get => _isPointerPressed;
-			set // TODO: This should be private, but we need to update all controls that are setting
-			{
-				if (_isPointerPressed != value)
-				{
-					_isPointerPressed = value;
-					OnIsPointerPressedChanged(value);
-				}
-			}
-		}
-
-		internal virtual void OnIsPointerPressedChanged(bool isPointerPressed)
-		{
-		}
-		#endregion
-
-		#region IsPointerOver (Internal property with overridable callback)
-		private bool _isPointerOver;
-
-		/// <summary>
-		/// Indicates if a pointer (no matter the pointer) is currently over the element (i.e. OverState)
-		/// </summary>
-		internal bool IsPointerOver
-		{
-			get => _isPointerOver;
-			set // TODO: This should be private, but we need to update all controls that are setting
-			{
-				if (_isPointerOver != value)
-				{
-					_isPointerOver = value;
-					OnIsPointerOverChanged(value);
-				}
-			}
-		}
-
-		internal virtual void OnIsPointerOverChanged(bool isPointerOver)
-		{
-		}
-		#endregion
-
 #if __IOS__ || __WASM__ || __ANDROID__ // This is temporary until all platforms Pointers have been reworked
 
 		private /* readonly but partial */ Lazy<GestureRecognizer> _gestures;
@@ -192,7 +144,18 @@ namespace Windows.UI.Xaml
 		#endregion
 
 		#region Pointer states (Usually updated by the partial API OnNative***)
+		/// <summary>
+		/// Indicates if a pointer was pressed while over the element (i.e. PressedState)
+		/// </summary>
+		internal bool IsPointerPressed { get; set; } // TODO: 'Set' should be private, but we need to update all controls that are setting
+
+		/// <summary>
+		/// Indicates if a pointer (no matter the pointer) is currently over the element (i.e. OverState)
+		/// </summary>
+		internal bool IsPointerOver { get; set; } // TODO: 'Set' should be private, but we need to update all controls that are setting
+
 		internal bool IsOver(Pointer pointer) => IsPointerOver;
+
 		internal bool IsPressed(Pointer pointer) => IsPointerPressed;
 
 		private bool SetOver(PointerRoutedEventArgs args, bool isOver, bool isPointerCancelled = false)
@@ -419,6 +382,9 @@ namespace Windows.UI.Xaml
 		{
 			this.SetValue(PointerCapturesProperty, _pointCaptures); // Note: On UWP this is done only on first capture
 		}
+
+		internal bool IsPointerPressed { get; set; } // TODO: 'Set' should be private, but we need to update all controls that are setting
+		internal bool IsPointerOver { get; set; } // TODO: 'Set' should be private, but we need to update all controls that are setting
 #endif
 
 		#region Pointer capture handling
