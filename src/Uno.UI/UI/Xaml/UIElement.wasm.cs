@@ -577,9 +577,7 @@ namespace Windows.UI.Xaml
 		public Func<Size, Size> DesiredSizeSelector { get; set; }
 
 		internal Windows.Foundation.Point GetPosition(Point position, global::Windows.UI.Xaml.UIElement relativeTo)
-		{
-			throw new NotSupportedException();
-		}
+			=> TransformToVisual(relativeTo).TransformPoint(position);
 
 		protected virtual void OnVisibilityChanged(Visibility oldValue, Visibility newVisibility)
 		{
