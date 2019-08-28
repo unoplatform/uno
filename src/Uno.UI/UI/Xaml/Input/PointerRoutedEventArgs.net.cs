@@ -12,6 +12,7 @@ namespace Windows.UI.Xaml.Input
 	partial class PointerRoutedEventArgs
 	{
 		private readonly Point _point;
+		private readonly ulong _pseudoTimestamp = (ulong)DateTime.UtcNow.Ticks;
 
 		public PointerRoutedEventArgs(Point point) : this()
 		{
@@ -25,7 +26,7 @@ namespace Windows.UI.Xaml.Input
 			var offset = new Point(_point.X - translation.X, _point.Y - translation.Y);
 			var properties = new PointerPointProperties(){IsInRange = true, IsPrimary = true};
 
-			return new PointerPoint(0, (ulong)DateTime.Now.Ticks, device, 0, offset, offset, true, properties);
+			return new PointerPoint(0, _pseudoTimestamp, device, 0, offset, offset, true, properties);
 		}
 	}
 }

@@ -12,6 +12,7 @@ namespace Windows.UI.Xaml.Input
 	{
 		private readonly NSEvent _nativeEvent;
 		private readonly NSSet _nativeTouches;
+		private readonly ulong _pseudoTimestamp = (ulong)DateTime.UtcNow.Ticks;
 
 		internal PointerRoutedEventArgs(NSSet touches, NSEvent nativeEvent) : this()
 		{
@@ -28,7 +29,7 @@ namespace Windows.UI.Xaml.Input
 			var point = relativeTo.ConvertPointFromView(_nativeEvent.LocationInWindow, null);
 			var properties = new PointerPointProperties() { IsInRange = true, IsPrimary = true };
 
-			return new PointerPoint(0, (ulong)DateTime.Now.Ticks, device, 0, point, point, true, properties);
+			return new PointerPoint(0, _pseudoTimestamp, device, 0, point, point, true, properties);
 		}
 	}
 }
