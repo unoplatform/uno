@@ -21,7 +21,7 @@ namespace Windows.UI.Xaml.Controls
 	{
 		partial void InitializePartial()
 		{
-			base.SetClip();
+			base.EnableAndroidClipping();
 		}
 
 		internal static int GetMeasureValue(int value, ScrollBarVisibility scrollBarVisibility)
