@@ -202,11 +202,13 @@ namespace <#= mixin.NamespaceName #>
 			var checkedState = GetCheckedState();
 
 #if <#= mixin.HasCommonCheckedState #>
-			if (commonState == __normalState)
+			if (checkedState == __uncheckedState)
 			{
-				return checkedState == __uncheckedState
-					? __normalState
-					: checkedState;
+				return commonState;
+			}
+			else if (commonState == __normalState)
+			{
+				return checkedState;
 			}
 #endif
 			return checkedState + commonState;

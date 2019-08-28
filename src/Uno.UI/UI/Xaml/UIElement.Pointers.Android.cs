@@ -72,8 +72,12 @@ namespace Windows.UI.Xaml
 			{
 				case MotionEventActions.HoverEnter:
 					return OnNativePointerEnter(args);
-				case MotionEventActions.HoverExit:
+				case MotionEventActions.HoverExit when nativeEvent.ButtonState == 0:
+					// When a mouse button is pressed, we receive an HoverExit the the Down. As on UWP Exit is raised only when pointer moves
+					// out of bounds of the control, we ignore the HoverExit when a button is pressed, and then update the Over state on each Move.
 					return OnNativePointerExited(args);
+				case MotionEventActions.HoverExit:
+					return false; // avoid useless logging
 
 				case MotionEventActions.Down when args.Pointer.PointerDeviceType == PointerDeviceType.Touch:
 				case MotionEventActions.PointerDown when args.Pointer.PointerDeviceType == PointerDeviceType.Touch:
@@ -88,9 +92,12 @@ namespace Windows.UI.Xaml
 				case MotionEventActions.PointerUp:
 					return OnNativePointerUp(args);
 
-				case MotionEventActions.Move: // when IsCaptured(args.Pointer) || IsInView(args.Pointer):
-				case MotionEventActions.HoverMove: //when IsCaptured(args.Pointer) || IsInView(args.Pointer):
-					return OnNativePointerMove(args);
+				case MotionEventActions.Move:
+				case MotionEventActions.HoverMove:
+					// As the HoverExit is raised when pointer is pressed (and we are filtering them out),
+					// if the user moves the pointer out (still while pressing the button), we won't receive the OverExit.
+					// However if the pointer was captured, we have to raise the PointerExit, so make sure update the Over state before raising the move.
+					return SetOver(args, isInView) | OnNativePointerMove(args);
 
 				case MotionEventActions.Cancel:
 					return OnNativePointerCancel(args, isSwallowedBySystem: true);
