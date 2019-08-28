@@ -16,6 +16,7 @@ using Windows.Foundation;
 using Uno.UI;
 using System.Linq;
 using Windows.UI.ViewManagement;
+using Windows.UI.Xaml.Data;
 using Microsoft.Extensions.Logging;
 
 using Uno.UI.DataBinding;
@@ -80,6 +81,22 @@ namespace Windows.UI.Xaml.Controls
 
 			UpdateHeaderVisibility();
 			UpdateContentPresenter();
+
+			if (_contentPresenter != null)
+			{
+				_contentPresenter.SetBinding(
+					ContentPresenter.ContentTemplateProperty,
+					new Binding(new PropertyPath("ItemTemplate"), null)
+					{
+						RelativeSource = RelativeSource.TemplatedParent
+					});
+				_contentPresenter.SetBinding(
+					ContentPresenter.ContentTemplateSelectorProperty,
+					new Binding(new PropertyPath("ItemTemplateSelector"), null)
+					{
+						RelativeSource = RelativeSource.TemplatedParent
+					});
+			}
 		}
 
 #if __ANDROID__

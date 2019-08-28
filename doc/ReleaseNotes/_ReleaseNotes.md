@@ -50,7 +50,7 @@
   FeatureConfiguration.ContentPresenter.UseImplicitContentFromTemplatedParent = false;
   ```
 * Add support for `Selector.IsSynchronizedWithCurrentItem`
-* Add support for `CoreApplication.MainView` and `CoreApplication.Views` 
+* Add support for `CoreApplication.MainView` and `CoreApplication.Views`
 * Add support for resolution of merged and theme resources from `ResourceDictionary` in code
 * `ToolTip` & `ToolTipService` are now implemented.
 
@@ -97,6 +97,7 @@
 * [#1409](https://github.com/unoplatform/uno/pull/1413) Provide a better error-message on Page-Navigation-Errors
 * Fix NRE when using custom `Pivot` templates.
 * [Android] ScrollViewer were no more clipping the scrollable area.
+* `ComboBox`'s ControlTemplate was requiring a binding to _TemplatedParent_ for the `x:Name="ContentPresenter"` control. Now aligned with UWP by making this binding in the control itself.
 
 ## Release 1.45.0
 ### Features
