@@ -14,44 +14,6 @@ namespace Windows.UI.Xaml.Controls.Primitives
 {
 	public partial class SelectorItem : ContentControl
 	{
-		/// <summary>
-		/// Delay time before setting the pressed state of an item to false, to allow time for the Pressed visual state to be drawn and perceived. 
-		/// </summary>
-		private static readonly TimeSpan MinTimeBetweenPressStates = TimeSpan.FromMilliseconds(100);
-
-		/// <summary>
-		/// Whether the SelectorItem will handle touches. This can be set to false for compatibility with controls where the parent 
-		/// handles touches (ComboBox-Android, legacy ListView/GridView). 
-		/// </summary>
-		internal bool ShouldHandlePressed { get; set; } = true;
-
-		public SelectorItem()
-		{
-		}
-
-		/// <remarks>
-		/// Ensure that the ContentControl will create its children even
-		/// if it has no parent view. This is critical for the recycling panels,
-		/// where the content is databound before being assigned to its
-		/// parent and displayed.
-		/// </remarks>
-		protected override bool CanCreateTemplateWithoutParent { get; } = true;
-
-		private Selector Selector => ItemsControl.ItemsControlFromItemContainer(this) as Selector;
-
-		private bool IsItemClickEnabled
-		{
-			get
-			{
-				if (!(Selector is ListViewBase listViewBase))
-				{
-					return true;
-				}
-
-				return listViewBase.IsItemClickEnabled || listViewBase.SelectionMode != ListViewSelectionMode.None;
-			}
-		}
-
 		private static class CommonStates
 		{
 			public const string Selected = "Selected";
@@ -69,6 +31,62 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			public const string Disabled = "Disabled";
 		}
 
+		private enum ManipulationUpdateKind
+		{
+			None = 0,
+			Begin,
+			End,
+			Clicked
+		}
+
+		/// <summary>
+		/// Delay time before setting the pressed state of an item to false, to allow time for the Pressed visual state to be drawn and perceived. 
+		/// </summary>
+		private static readonly TimeSpan MinTimeBetweenPressStates = TimeSpan.FromMilliseconds(100);
+
+		/// <summary>
+		/// Whether the SelectorItem will handle touches. This can be set to false for compatibility with controls where the parent 
+		/// handles touches (ComboBox-Android, legacy ListView/GridView). 
+		/// </summary>
+		internal bool ShouldHandlePressed { get; set; } = true;
+
+		/// <remarks>
+		/// Ensure that the ContentControl will create its children even
+		/// if it has no parent view. This is critical for the recycling panels,
+		/// where the content is databound before being assigned to its
+		/// parent and displayed.
+		/// </remarks>
+		protected override bool CanCreateTemplateWithoutParent { get; } = true;
+
+		/// <summary>
+		/// Indicates if the SelectorItem has the "PointerOverPressed" visual state (GridViewItem and ListViewItem only)
+		/// </summary>
+		internal virtual bool HasPointerOverPressedState => false;
+
+		private string _currentState;
+		private uint _goToStateRequest;
+		private DateTime _pauseStateUpdateUntil;
+
+		public SelectorItem()
+		{
+
+		}
+
+		private Selector Selector => ItemsControl.ItemsControlFromItemContainer(this) as Selector;
+
+		private bool IsItemClickEnabled
+		{
+			get
+			{
+				if (!(Selector is ListViewBase listViewBase))
+				{
+					return true;
+				}
+
+				return listViewBase.IsItemClickEnabled || listViewBase.SelectionMode != ListViewSelectionMode.None;
+			}
+		}
+
 		protected override void OnIsEnabledChanged(bool oldValue, bool newValue)
 		{
 			var disabledStates = newValue ? DisabledStates.Enabled : DisabledStates.Disabled;
@@ -76,8 +94,6 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 			base.OnIsEnabledChanged(oldValue, newValue);
 		}
-
-		internal virtual bool HasPointerOverPressedState => false;
 
 		/// <summary>
 		/// Set appropriate visual state from MultiSelectStates group. (https://msdn.microsoft.com/en-us/library/windows/apps/mt299136.aspx?f=255&MSPPError=-2147217396)
@@ -108,85 +124,182 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			UpdateCommonStates();
 		}
 
-		public void UpdateCommonStates()
+		private void UpdateCommonStatesWithoutNeedsLayout(ManipulationUpdateKind manipulationUpdate = ManipulationUpdateKind.None)
+		{
+			using (InterceptSetNeedsLayout())
+			{
+				UpdateCommonStates(manipulationUpdate);
+			}
+		}
+
+		private void UpdateCommonStates(ManipulationUpdateKind manipulationUpdate = ManipulationUpdateKind.None)
+		{
+			var state = GetState(IsSelected, IsPointerOver, IsPointerPressed);
+
+			// On Windows, the pressed state appears only after a few, and won't appear at all if you quickly start to scroll with the finger.
+			// So here we make sure to delay the beginning of a manipulation to match this behavior (and avoid flickering when scrolling)
+			// We also make sure that when user taps (Enter->Pressed->Move*->Release->Exit) on the item, he is able to see the pressed (selected) state.
+			var request = ++_goToStateRequest;
+
+			TimeSpan delay; // delay to apply the 'state'
+			bool pause; // should we force a pause after applying the 'state'
+			if (manipulationUpdate == ManipulationUpdateKind.Clicked
+				&& _currentState != CommonStates.PressedSelected
+				&& _currentState != CommonStates.OverPressed
+				&& _currentState != CommonStates.Pressed)
+			{
+				// When clicked (i.e. pointer released), but not yet in pressed state, we force to go immediately in pressed state
+				// Then we let the standard go to state process to reach the final expected state.
+
+				var pressedState = GetState(IsSelected, IsPointerOver, isPressed: true);
+				_currentState = pressedState;
+				VisualStateManager.GoToState(this, pressedState, true);
+
+				_pauseStateUpdateUntil = DateTime.Now + MinTimeBetweenPressStates;
+
+				delay = MinTimeBetweenPressStates;
+				pause = false;
+			}
+			else if (manipulationUpdate == ManipulationUpdateKind.Begin)
+			{
+				// We delay the beginning of a manipulation to avoid flickers, but not for "exact" devices
+
+				delay = MinTimeBetweenPressStates;
+				pause = true;
+			}
+			else
+			{
+				delay = _pauseStateUpdateUntil - DateTime.Now;
+				pause = false;
+			}
+
+			if (delay < TimeSpan.Zero)
+			{
+				_currentState = state;
+				VisualStateManager.GoToState(this, state, true);
+			}
+			else
+			{
+				CoreDispatcher.Main.RunAsync(CoreDispatcherPriority.Normal, async () =>
+				{
+					await Task.Delay(delay);
+
+					if (_goToStateRequest != request)
+					{
+						return;
+					}
+
+					_currentState = state;
+					VisualStateManager.GoToState(this, state, true);
+
+					if (pause)
+					{
+						_pauseStateUpdateUntil = DateTime.Now + MinTimeBetweenPressStates;
+					}
+				});
+			}
+		}
+
+		private string GetState(bool isSelected, bool isOver, bool isPressed)
 		{
 			var state = CommonStates.Normal;
-			if (IsSelected && IsPointerPressed)
+			if (isSelected && isPressed)
 			{
 				state = CommonStates.PressedSelected;
 			}
 			else if (FeatureConfiguration.SelectorItem.UseOverStates
-				&& IsSelected && IsPointerOver)
+				&& isSelected && isOver)
 			{
 				state = CommonStates.OverSelected;
 			}
 			else if (FeatureConfiguration.SelectorItem.UseOverStates && HasPointerOverPressedState
-				&& IsPointerOver && IsPointerPressed)
+				&& isOver && isPressed)
 			{
 				state = CommonStates.OverPressed;
 			}
-			else if (IsSelected)
+			else if (isSelected)
 			{
 				state = CommonStates.Selected;
 			}
-			else if (IsPointerPressed)
+			else if (isPressed)
 			{
 				state = CommonStates.Pressed;
 			}
 			else if (FeatureConfiguration.SelectorItem.UseOverStates
-				&& IsPointerOver)
+				&& isOver)
 			{
 				state = CommonStates.Over;
 			}
 
-			VisualStateManager.GoToState(this, state, true);
+			return state;
 		}
 
 		protected override void OnLoaded()
 		{
 			base.OnLoaded();
-#if XAMARIN_ANDROID
+#if __ANDROID__
 			Focusable = true;
 			FocusableInTouchMode = true;
 #endif
+
+			UpdateCommonStates();
 		}
 
-#if __IOS__ || __WASM__ || __ANDROID__
-		/// <inheritdoc />
-		internal override void OnIsPointerOverChanged(bool isPointerOver)
-		{
-			base.OnIsPointerOverChanged(isPointerOver);
-			using (InterceptSetNeedsLayout())
-			{
-				UpdateCommonStates();
-			}
-		}
+#if __IOS__
+		private bool _pressedOverride;
+		private new bool IsPointerPressed => _pressedOverride || base.IsPointerPressed;
+
+		/// <summary>
+		/// Used by the legacy list view to set the item pressed
+		/// </summary>
+		internal void LegacySetPressed(bool isPressed)
+			=> _pressedOverride = isPressed;
+#endif
 
 		/// <inheritdoc />
-		internal override void OnIsPointerPressedChanged(bool isPointerPressed)
+		protected override void OnPointerEntered(PointerRoutedEventArgs args)
 		{
-			base.OnIsPointerPressedChanged(isPointerPressed);
-			using (InterceptSetNeedsLayout())
-			{
-				UpdateCommonStates();
-			}
+			base.OnPointerEntered(args);
+			UpdateCommonStatesWithoutNeedsLayout(ManipulationUpdateKind.Begin);
 		}
 
 		/// <inheritdoc />
 		protected override void OnPointerPressed(PointerRoutedEventArgs args)
 		{
-			var handled = ShouldHandlePressed
+			if (ShouldHandlePressed
 				&& IsItemClickEnabled
 				&& args.GetCurrentPoint(this).Properties.IsLeftButtonPressed
-				&& CapturePointer(args.Pointer);
-
-			args.Handled = handled;
+				&& CapturePointer(args.Pointer))
+			{
+				args.Handled = true;
+			}
 
 #if !__WASM__
 			Focus(FocusState.Pointer);
 #endif
 
 			base.OnPointerPressed(args);
+			UpdateCommonStatesWithoutNeedsLayout(ManipulationUpdateKind.Begin);
+		}
+
+		/// <inheritdoc />
+		protected override void OnPointerReleased(PointerRoutedEventArgs args)
+		{
+			ManipulationUpdateKind update;
+			if (IsCaptured(args.Pointer))
+			{
+				update = ManipulationUpdateKind.Clicked;
+				Selector?.OnItemClicked(this);
+
+				args.Handled = true;
+			}
+			else
+			{
+				update = ManipulationUpdateKind.End;
+			}
+
+			base.OnPointerReleased(args);
+			UpdateCommonStatesWithoutNeedsLayout(update);
 		}
 
 		/// <inheritdoc />
@@ -196,98 +309,26 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			ReleasePointerCaptures();
 
 			base.OnPointerExited(args);
+			UpdateCommonStatesWithoutNeedsLayout(ManipulationUpdateKind.End);
 		}
 
 		/// <inheritdoc />
-		protected override void OnPointerReleased(PointerRoutedEventArgs args)
-		{
-			if (IsCaptured(args.Pointer))
-			{
-				Selector?.OnItemClicked(this);
-
-				args.Handled = true;
-			}
-
-			base.OnPointerReleased(args);
-		}
-#else
-		private bool _isPressed;
-
-		internal bool IsPressed
-		{
-			get => _isPressed;
-			set
-			{
-				using (InterceptSetNeedsLayout())
-				{
-					_isPressed = value;
-					UpdateCommonStates();
-				}
-			}
-		}
-
-		protected override void OnPointerPressed(PointerRoutedEventArgs args)
-		{
-			if (!ShouldHandlePressed || !IsItemClickEnabled)
-			{
-				return;
-			}
-
-			IsPressed = true;
-			args.Handled = true;
-#if !__WASM__
-			Focus(FocusState.Pointer);
-#endif
-			base.OnPointerPressed(args);
-		}
-
 		protected override void OnPointerCanceled(PointerRoutedEventArgs args)
 		{
-			if (!ShouldHandlePressed || !IsItemClickEnabled)
-			{
-				return;
-			}
-
-			IsPressed = false;
 			base.OnPointerCanceled(args);
+			UpdateCommonStatesWithoutNeedsLayout(ManipulationUpdateKind.End);
 		}
 
-		protected override void OnPointerReleased(PointerRoutedEventArgs args)
+		/// <inheritdoc />
+		protected override void OnPointerCaptureLost(PointerRoutedEventArgs args)
 		{
-			if (!ShouldHandlePressed || !IsItemClickEnabled)
-			{
-				return;
-			}
-
-			Selector?.OnItemClicked(this);
-			base.OnPointerReleased(args);
-
-			CoreDispatcher.Main
-				.RunAsync(
-					CoreDispatcherPriority.Normal,
-					async () =>
-					{
-						await Task.Delay(MinTimeBetweenPressStates);
-						IsPressed = false;
-					}
-				);
+			base.OnPointerCaptureLost(args);
+			UpdateCommonStatesWithoutNeedsLayout(ManipulationUpdateKind.End);
 		}
-
-		protected override void OnPointerExited(PointerRoutedEventArgs args)
-		{
-			if (!ShouldHandlePressed || !IsItemClickEnabled)
-			{
-				return;
-			}
-
-			IsPressed = false;
-			base.OnPointerExited(args);
-		}
-#endif
 
 		private IDisposable InterceptSetNeedsLayout()
 		{
-#if XAMARIN_IOS
+#if __IOS__
 			bool match(UIView view) => view is ListViewBaseInternalContainer || view is Selector;
 			var cell = this.FindFirstParent<UIView>(predicate: match);
 			return (cell as ListViewBaseInternalContainer)?.InterceptSetNeedsLayout();
