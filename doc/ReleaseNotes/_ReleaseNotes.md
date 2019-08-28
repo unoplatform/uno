@@ -53,7 +53,6 @@
 * Add support for `CoreApplication.MainView` and `CoreApplication.Views` 
 * Add support for resolution of merged and theme resources from `ResourceDictionary` in code
 * `ToolTip` & `ToolTipService` are now implemented.
-* Add support for `CoreApplication.MainView` and `CoreApplication.Views`
 
 ### Breaking changes
 * `TextBox` no longer raises TextChanged when its template is applied, in line with UWP.
