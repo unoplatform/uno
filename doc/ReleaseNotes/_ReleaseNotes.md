@@ -1,4 +1,4 @@
-# Release notes
+﻿# Release notes
 
 ## Next version
 ### Features
@@ -96,6 +96,7 @@
 * [Android] Animated content is cut off/glitchy when RenderTransform translation is applied (#1333)
 * [#1409](https://github.com/unoplatform/uno/pull/1413) Provide a better error-message on Page-Navigation-Errors
 * Fix NRE when using custom `Pivot` templates.
+* [Android] ScrollViewer were no more clipping the scrollable area.
 
 ## Release 1.45.0
 ### Features
