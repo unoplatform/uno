@@ -402,6 +402,9 @@
 				<Member
 					fullName="System.Void Windows.UI.Core.CoreWindow..ctor()"
 					reason="Invalid visibility."/>
+				<Member 
+					fullName="System.Void Windows.UI.Xaml.Controls.Primitives.SelectorItem.UpdateCommonStates()"
+					reason="Not part of the UWP API."/>
 			</Methods>
 			
 			<Fields>
