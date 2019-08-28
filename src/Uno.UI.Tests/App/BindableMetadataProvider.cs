@@ -12,12 +12,12 @@ namespace Uno.UI.Tests
 	{
 		public IBindableType GetBindableTypeByFullName(string fullName)
 		{
-			throw new NotImplementedException();
+			return null;
 		}
 
 		public IBindableType GetBindableTypeByType(Type type)
 		{
-			throw new NotImplementedException();
+			return null;
 		}
 	}
 }
