@@ -933,11 +933,82 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				switch (resource.Type.Name)
 				{
 					case "StaticResource":
-						// Skip and add it to the global resolver
-						break;
+					{
+						var appThemes = resources.Where(x => x.Key.Equals("Light") || x.Key.Equals("Dark") || x.Key.Equals("Default")).ToArray();
+						var customThemes = resources.Except(appThemes).ToArray();
+
+						using (writer.BlockInvariant($"public static object {SanitizeResourceName(resourcePropertyName)}"))
+						using (writer.BlockInvariant("get"))
+						{
+							if (customThemes.Any())
+							{
+								writer.AppendLineInvariant("// Custom themes defined for this resource: checking custom theme.");
+								writer.AppendLineInvariant("var currentCustomTheme = global::Uno.UI.ApplicationHelper.RequestedCustomTheme;");
+								using (writer.BlockInvariant($"switch(currentCustomTheme)"))
+								{
+									foreach (var theme in customThemes)
+									{
+										if (GetMember(theme.Value, "ResourceKey").Value is string key)
+										{
+											writer.AppendLineInvariant($"case \"{theme.Key}\": return {GetGlobalStaticResource(key)};");
+										}
+										else
+										{
+											writer.AppendLineInvariant($"#warning ResourceKey not defined on StaticResource '{resourceKey}' (Theme: {theme.Key}).");
+										}
+									}
+								}
+								writer.AppendLine();
+							}
+
+							writer.AppendLineInvariant("// Element's RequestedTheme not supported yet. Fallback on Application's RequestedTheme.");
+							writer.AppendLineInvariant("var currentTheme = global::Windows.UI.Xaml.Application.Current.RequestedTheme;");
+							if (appThemes.Any())
+							{
+								using (writer.BlockInvariant($"switch(currentTheme)"))
+								{
+									foreach (var theme in appThemes)
+									{
+										switch (theme.Key)
+										{
+											case "Light":
+											case "Dark":
+											case "Default": // ApplicationTheme.Default
+												if (GetMember(theme.Value, "ResourceKey").Value is string key)
+												{
+													writer.AppendLineInvariant("{0}: return {1};",
+														theme.Key == "Default" ? "default" : $"case global::Windows.UI.Xaml.ApplicationTheme.{theme.Key}",
+														GetGlobalStaticResource(key)
+													);
+												}
+												else
+												{
+													writer.AppendLineInvariant("{0}:", theme.Key == "Default" ? "default" : $"case global::Windows.UI.Xaml.ApplicationTheme.{theme.Key}");
+													writer.AppendLineInvariant($"\t#warning ResourceKey not defined on StaticResource '{resourceKey}' (Theme: {theme.Key}).");
+													writer.AppendLineInvariant("\tbreak;");
+												}
+												break;
+										}
+									}
+								}
+							}
+							
+							if (!appThemes.Any(x => x.Key == "Default"))
+							{
+								writer.AppendLine();
+								var msg = customThemes.Any()
+									? $"$\"The themed resource {resourcePropertyName} cannot be found for custom theme \\\"{{{{currentCustomTheme}}}}\\\", theme={{{{currentTheme}}}}.\""
+									: $"$\"The themed resource {resourcePropertyName} cannot be found for theme {{{{currentTheme}}}}.\"";
+								writer.AppendLineInvariant($"throw new InvalidOperationException({msg});");
+							}
+						}
+					}
+					break;
+
 					case "ThemeResource":
 						// Skip and add it to the global resolver
 						break;
+
 					default:
 					{
 						var appThemes = resources.Where(x => x.Key.Equals("Light") || x.Key.Equals("Dark") || x.Key.Equals("Default")).ToList();
@@ -1038,10 +1109,10 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				return; // no resources registration to generate
 			}
 
-			var resourcesToRegister =
-				keyedResources
-					.Concat(themeResources.Select(tr => new KeyValuePair<string, XamlObjectDefinition>(tr.Key, tr.Value.First().Value)))
-					.Distinct(FuncEqualityComparer<KeyValuePair<string, XamlObjectDefinition>>.Create(x => x.Key));
+			var resourcesToRegister = Enumerable.Concat<(string Key, XamlObjectDefinition Resource, XamlObjectDefinition[] ThemeResources)>(
+				keyedResources.Select(kvp => (kvp.Key, kvp.Value, default(XamlObjectDefinition[]))),
+				themeResources.Select(kvp => (kvp.Key, default(XamlObjectDefinition), kvp.Value.Values.ToArray()))
+			).Distinct(FuncEqualityComparer<(string Key, XamlObjectDefinition Resource, XamlObjectDefinition[] ThemeResources)>.Create(x => x.Key));
 
 			if (_isGeneratingGlobalResource)
 			{
@@ -1054,7 +1125,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					{
 						BuildGetResources(writer, resourcesToRegister);
 					}
-
 					writer.AppendLineInvariant(");");
 				}
 			}
@@ -1069,21 +1139,24 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		}
 
 
-		private void BuildGetResources(
-			IIndentedStringBuilder writer,
-			IEnumerable<KeyValuePair<string, XamlObjectDefinition>> resources)
+		private void BuildGetResources(IIndentedStringBuilder writer, IEnumerable<(string Key, XamlObjectDefinition Resource, XamlObjectDefinition[] ThemeResources)> resources)
 		{
 			using (writer.BlockInvariant("switch(name)"))
 			{
 				foreach (var resource in resources)
 				{
-					if (resource.Value.Type.Name == "StaticResource")
+					if (resource.Resource?.Type.Name == "StaticResource")
 					{
 						writer.AppendLineInvariant($"case \"{resource.Key}\":");
-
-						if (GetMember(resource.Value, "ResourceKey").Value is string resourceKey)
+						if (GetMember(resource.Resource, "ResourceKey").Value is string resourceKey)
 						{
 							writer.AppendLineInvariant($"\treturn {GetGlobalStaticResource(resourceKey)};");
+						}
+						else
+						{
+							// prevent fall through
+							writer.AppendLineInvariant($"\t#warning ResourceKey not defined on StaticResource '{resource.Key}'.");
+							writer.AppendLineInvariant($"\treturn null;");
 						}
 					}
 					else
