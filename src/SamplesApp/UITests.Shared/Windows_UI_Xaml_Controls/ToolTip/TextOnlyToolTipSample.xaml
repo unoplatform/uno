@@ -25,7 +25,7 @@
 				   Width="150"
 				   Height="70">
 			<ToolTipService.ToolTip>
-				<ToolTip>
+				<ToolTip x:Name="richToolTip">
 					<local:ShowPathToRootControl />
 				</ToolTip>
 			</ToolTipService.ToolTip>
