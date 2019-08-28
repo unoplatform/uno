@@ -211,6 +211,21 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			base.OnPointerReleased(args);
 		}
 #else
+		private bool _isPressed;
+
+		internal bool IsPressed
+		{
+			get => _isPressed;
+			set
+			{
+				using (InterceptSetNeedsLayout())
+				{
+					_isPressed = value;
+					UpdateCommonStates();
+				}
+			}
+		}
+
 		protected override void OnPointerPressed(PointerRoutedEventArgs args)
 		{
 			if (!ShouldHandlePressed || !IsItemClickEnabled)
