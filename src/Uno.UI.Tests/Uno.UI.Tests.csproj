@@ -98,6 +98,7 @@
 		<Page Include="App\App.xaml" />
 		<Page Include="App\Xaml\Test_CreateFromString.xaml" />
 		<Page Include="App\Xaml\Test_Dictionary.xaml" />
+		<Page Include="App\Xaml\Test_Dictionary_Inner.xaml" />
 		<Page Include="App\Xaml\Test_Control.xaml" />
 		<Page Include="App\Xaml\Test_MarkupExtension.xaml" />
 	</ItemGroup>
