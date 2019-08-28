@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using Uno.UI.Tests.App.Views;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.UI.Xaml;
@@ -25,6 +26,10 @@ namespace Uno.UI.Tests.App.Xaml
 		public Grid TopGrid => topGrid;
 		public CheckBox TestCheckBox => testCheckBox;
 		public TextBlock TestTextBlock => testTextBlock;
+		public Border TestBorder => testBorder;
+		public Grid TestGrid => testGrid;
+		public Button StyledButton => styledButton;
+		public MyControl TestMyControl => testMyControl;
 
         public Test_Control()
         {

@@ -16,8 +16,9 @@
 					xmlns:maps="using:Windows.UI.Xaml.Controls.Maps"
 					xmlns:mapsPresenter="using:Windows.UI.Xaml.Controls.Maps"
 					xmlns:wasm="http://uno.ui/wasm"
+					xmlns:net461="http://uno.ui/net461"
 					xmlns:not_wasm="http://uno.ui/not_wasm"
-					mc:Ignorable="d xamarin ios android wasm not_wasm">
+					mc:Ignorable="d xamarin ios android wasm not_wasm net461">
 
 	<wasm:ResourceDictionary.MergedDictionaries>
 		<!--
@@ -65,6 +66,11 @@
 			   TargetType="Button" />
 
 	<wasm:Style
+		x:Key="NativeDefaultButton"
+		TargetType="Button"
+		BasedOn="{StaticResource XamlDefaultButton}" />
+	
+	<net461:Style
 		x:Key="NativeDefaultButton"
 		TargetType="Button"
 		BasedOn="{StaticResource XamlDefaultButton}" />
