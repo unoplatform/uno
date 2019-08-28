@@ -710,8 +710,6 @@
 								Opacity="0" />
 						<ContentPresenter x:Name="ContentPresenter"
 										  Grid.Row="1"
-										  ContentTemplate="{TemplateBinding ItemTemplate}"
-										  ContentTemplateSelector="{TemplateBinding ItemTemplateSelector}"
 										  Margin="{TemplateBinding Padding}"
 										  HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
 										  VerticalAlignment="{TemplateBinding VerticalContentAlignment}">
