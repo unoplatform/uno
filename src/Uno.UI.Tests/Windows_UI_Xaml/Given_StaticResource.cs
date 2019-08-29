@@ -20,6 +20,8 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 			var app = UnitTestsApp.App.EnsureApplication();
 
 			var control = new Test_Control();
+			Assert.AreEqual(Colors.MediumSpringGreen, (control.TopGrid.Background as SolidColorBrush).Color); //Resource is resolved before control is in visual tree
+
 			app.HostView.Children.Add(control);
 
 			Assert.AreEqual(Colors.MediumSpringGreen, (control.TopGrid.Background as SolidColorBrush).Color);
