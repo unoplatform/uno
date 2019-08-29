@@ -1,4 +1,4 @@
-using Uno.Extensions;
+﻿using Uno.Extensions;
 using Uno.MsBuildTasks.Utils;
 using Uno.MsBuildTasks.Utils.XamlPathParser;
 using Uno.UI.SourceGenerators.XamlGenerator.Utils;
@@ -901,8 +901,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 							writer.AppendLineInvariant(
 								$"public static {GetGlobalizedTypeName(resourceTypeName)} {SanitizeResourceName(resourcePropertyName)} {{{{ get; }}}} = ");
 							BuildChild(writer, null, resource);
-							writer.AppendLine(";");
-							writer.AppendLine();
+							writer.AppendLineInvariant(";");
 						}
 						else
 						{
@@ -913,7 +912,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 								() =>
 								{
 									BuildChild(writer, null, resource);
-									writer.AppendLineInvariant(0, ";", resource.Type);
+									writer.AppendLineInvariant(";");
 								}
 							);
 						}
@@ -923,162 +922,112 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				}
 			}
 
-			void WriteThemeResourceDeclaration(string resourceKey, IEnumerable<KeyValuePair<string, XamlObjectDefinition>> resources)
+			void WriteThemeResourceDeclaration(string resourceKey, Dictionary<string, XamlObjectDefinition> resources)
 			{
-				var resource = resources.First().Value;
+				var applicationThemeSwithCaseMapping = new Dictionary<string, string>
+				{
+					["Light"] = "case global::Windows.UI.Xaml.ApplicationTheme.Light",
+					["Dark"] = "case global::Windows.UI.Xaml.ApplicationTheme.Dark",
+					["Default"] = "default",
+				};
+				var appThemes = resources.Where(x => applicationThemeSwithCaseMapping.ContainsKey(x.Key)).ToArray();
+				var customThemes = resources.Except(appThemes);
 
 				var resourcePropertyName = FormatResourcePropertyName(resourceKey);
-				var resourceTypeName = GenerateTypeName(resource);
+				var sanitizeResourceName = SanitizeResourceName(resourcePropertyName);
+				var convergedType = GetConvergedType();
 
-				switch (resource.Type.Name)
+				var containsDefaultCase = false;
+
+				// get-only property block
+				using (writer.BlockInvariant($"public static {convergedType} {sanitizeResourceName}"))
+				using (writer.BlockInvariant("get"))
 				{
-					case "StaticResource":
+					// custom themes block
+					if (customThemes.Any())
 					{
-						var appThemes = resources.Where(x => x.Key.Equals("Light") || x.Key.Equals("Dark") || x.Key.Equals("Default")).ToArray();
-						var customThemes = resources.Except(appThemes).ToArray();
-
-						using (writer.BlockInvariant($"public static object {SanitizeResourceName(resourcePropertyName)}"))
-						using (writer.BlockInvariant("get"))
+						writer.AppendLineInvariant("// Custom themes defined for this resource: checking custom theme.");
+						writer.AppendLineInvariant("var currentCustomTheme = global::Uno.UI.ApplicationHelper.RequestedCustomTheme;");
+						using (writer.BlockInvariant($"switch(currentCustomTheme)"))
 						{
-							if (customThemes.Any())
+							foreach (var theme in customThemes)
 							{
-								writer.AppendLineInvariant("// Custom themes defined for this resource: checking custom theme.");
-								writer.AppendLineInvariant("var currentCustomTheme = global::Uno.UI.ApplicationHelper.RequestedCustomTheme;");
-								using (writer.BlockInvariant($"switch(currentCustomTheme)"))
-								{
-									foreach (var theme in customThemes)
-									{
-										if (GetMember(theme.Value, "ResourceKey").Value is string key)
-										{
-											writer.AppendLineInvariant($"case \"{theme.Key}\": return {GetGlobalStaticResource(key)};");
-										}
-										else
-										{
-											writer.AppendLineInvariant($"#warning ResourceKey not defined on StaticResource '{resourceKey}' (Theme: {theme.Key}).");
-										}
-									}
-								}
-								writer.AppendLine();
+								WriteSwitchCaseBlock(theme);
 							}
+						}
+						writer.AppendLine();
+					}
 
-							writer.AppendLineInvariant("// Element's RequestedTheme not supported yet. Fallback on Application's RequestedTheme.");
-							writer.AppendLineInvariant("var currentTheme = global::Windows.UI.Xaml.Application.Current.RequestedTheme;");
-							if (appThemes.Any())
+					// application themes block
+					if (appThemes.Any())
+					{
+						writer.AppendLineInvariant("// Element's RequestedTheme not supported yet. Fallback on Application's RequestedTheme.");
+						writer.AppendLineInvariant("var currentTheme = global::Windows.UI.Xaml.Application.Current.RequestedTheme;");
+						using (writer.BlockInvariant($"switch(currentTheme)"))
+						{
+							foreach (var theme in appThemes)
 							{
-								using (writer.BlockInvariant($"switch(currentTheme)"))
+								if (WriteSwitchCaseBlock(theme) && theme.Key == "Default")
 								{
-									foreach (var theme in appThemes)
-									{
-										switch (theme.Key)
-										{
-											case "Light":
-											case "Dark":
-											case "Default": // ApplicationTheme.Default
-												if (GetMember(theme.Value, "ResourceKey").Value is string key)
-												{
-													writer.AppendLineInvariant("{0}: return {1};",
-														theme.Key == "Default" ? "default" : $"case global::Windows.UI.Xaml.ApplicationTheme.{theme.Key}",
-														GetGlobalStaticResource(key)
-													);
-												}
-												else
-												{
-													writer.AppendLineInvariant("{0}:", theme.Key == "Default" ? "default" : $"case global::Windows.UI.Xaml.ApplicationTheme.{theme.Key}");
-													writer.AppendLineInvariant($"\t#warning ResourceKey not defined on StaticResource '{resourceKey}' (Theme: {theme.Key}).");
-													writer.AppendLineInvariant("\tbreak;");
-												}
-												break;
-										}
-									}
+									containsDefaultCase = true;
 								}
-							}
-							
-							if (!appThemes.Any(x => x.Key == "Default"))
-							{
-								writer.AppendLine();
-								var msg = customThemes.Any()
-									? $"$\"The themed resource {resourcePropertyName} cannot be found for custom theme \\\"{{{{currentCustomTheme}}}}\\\", theme={{{{currentTheme}}}}.\""
-									: $"$\"The themed resource {resourcePropertyName} cannot be found for theme {{{{currentTheme}}}}.\"";
-								writer.AppendLineInvariant($"throw new InvalidOperationException({msg});");
 							}
 						}
 					}
-					break;
 
-					case "ThemeResource":
-						// Skip and add it to the global resolver
-						break;
-
-					default:
+					// ensure every code paths return a value
+					if (!containsDefaultCase)
 					{
-						var appThemes = resources.Where(x => x.Key.Equals("Light") || x.Key.Equals("Dark") || x.Key.Equals("Default")).ToList();
-						var customThemes = resources.Except(appThemes).ToArray();
-						var defaultThemes = appThemes.Where(x => x.Key.Equals("Default")).ToArray();
+						var msg = customThemes.Any()
+							? $"$\"The themed resource {resourcePropertyName} cannot be found for custom theme \\\"{{{{currentCustomTheme}}}}\\\", theme={{{{currentTheme}}}}.\""
+							: $"$\"The themed resource {resourcePropertyName} cannot be found for theme {{{{currentTheme}}}}.\"";
+						writer.AppendLine();
+						writer.AppendLineInvariant($"throw new InvalidOperationException({msg});");
+					}
+				}
 
-						if (defaultThemes.Any())
-						{
-							appThemes.Remove(defaultThemes.First());
-						}
+				string GetConvergedType()
+				{
+					var convergingTypes = resources.Values
+						.Select(GenerateTypeName)
+						.Select(GetGlobalizedTypeName)
+						.Distinct()
+						.ToArray();
 
-						var globalizedTypeName = GetGlobalizedTypeName(resourceTypeName);
-						var sanitizeResourceName = SanitizeResourceName(resourcePropertyName);
-						using (writer.BlockInvariant($"public static {globalizedTypeName} {sanitizeResourceName}"))
-						using (writer.BlockInvariant("get"))
-						{
-							if (customThemes.Any())
+					switch (convergingTypes.Length == 1 ? convergingTypes[0] : default)
+					{
+						case "StaticResource": return "object";
+
+						case null: return "object";
+						default: return convergingTypes[0];
+					}
+				}
+
+				bool WriteSwitchCaseBlock(KeyValuePair<string, XamlObjectDefinition> theme)
+				{
+					switch (theme.Value.Type.Name)
+					{
+						case "StaticResource":
+							if (GetMember(theme.Value, "ResourceKey").Value is string key)
 							{
-								writer.AppendLineInvariant("// Custom themes defined for this resource: checking custom theme.");
-								writer.AppendLineInvariant("var currentCustomTheme = global::Uno.UI.ApplicationHelper.RequestedCustomTheme;");
-								using (writer.BlockInvariant($"switch(currentCustomTheme)"))
-								{
-									foreach (var theme in customThemes)
-									{
-										writer.AppendLineInvariant($"case \"{theme.Key}\": return {sanitizeResourceName}___{theme.Key};");
-									}
-								}
-								writer.AppendLine();
-							}
-
-							writer.AppendLineInvariant("// Element's RequestedTheme not supported yet. Fallback on Application's RequestedTheme.");
-							writer.AppendLine();
-
-							writer.AppendLineInvariant("var currentTheme = global::Windows.UI.Xaml.Application.Current.RequestedTheme;");
-							if (appThemes.Any())
-							{
-								using (writer.BlockInvariant($"switch(currentTheme)"))
-								{
-									foreach (var theme in appThemes)
-									{
-										if (theme.Key.Equals("Light"))
-										{
-											writer.AppendLineInvariant($"case global::Windows.UI.Xaml.ApplicationTheme.Light: return {sanitizeResourceName}___{theme.Key};");
-										}
-										else if (theme.Key.Equals("Dark"))
-										{
-											writer.AppendLineInvariant($"case global::Windows.UI.Xaml.ApplicationTheme.Dark: return {sanitizeResourceName}___{theme.Key};");
-										}
-
-										// Default is not generated here
-									}
-								}
-							}
-
-							writer.AppendLine();
-							if (defaultThemes.Any())
-							{
-									writer.AppendLineInvariant("// This resource is defined in a Default theme as a fallback.");
-									writer.AppendLineInvariant($"return {sanitizeResourceName}___Default;");
+								writer.AppendLineInvariant($"{GetSwitchCase()}: return {GetGlobalStaticResource(key)};");
+								return true;
 							}
 							else
 							{
-								var msg = customThemes.Any()
-									? $"$\"The themed resource {resourcePropertyName} cannot be found for custom theme \\\"{{{{currentCustomTheme}}}}\\\", theme={{{{currentTheme}}}}.\""
-									: $"$\"The themed resource {resourcePropertyName} cannot be found for theme {{{{currentTheme}}}}.\"";
-								writer.AppendLineInvariant($"throw new InvalidOperationException({msg});");
+								writer.AppendLineInvariant($"#warning ResourceKey not defined on StaticResource '{resourceKey}' (Theme: {theme.Key}).");
+								return false;
 							}
-						}
-						break;
+
+						// Skip and add it to the global resolver
+						case "ThemeResource": return false;
+
+						default:
+							writer.AppendLineInvariant($"{GetSwitchCase()}: return {sanitizeResourceName}___{theme.Key};");
+							return true;
 					}
+
+					string GetSwitchCase() => applicationThemeSwithCaseMapping.TryGetValue(theme.Key, out var @case) ? @case : $"case \"{theme.Key}\"";
 				}
 			}
 
@@ -2651,7 +2600,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 			string ApplyCast(string value, bool useSafeCast, params XamlObjectDefinition[] sourceTypes)
 			{
-				if (targetPropertyType == null || sourceTypes.Any(x => x?.Type.Name != targetPropertyType.Name))
+				if (targetPropertyType == null || (sourceTypes.Any() && sourceTypes.All(x => x?.Type.Name == targetPropertyType.Name)))
 				{
 					return value;
 				}
