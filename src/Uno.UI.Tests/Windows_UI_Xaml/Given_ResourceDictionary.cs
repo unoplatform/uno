@@ -259,6 +259,34 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 		}
 
 		[TestMethod]
+		public void When_Has_Default_And_Light()
+		{
+			UnitTestsApp.App.EnsureApplication();
+
+			var rd = new ResourceDictionary();
+			var dflt = new ResourceDictionary();
+			dflt["Blu"] = new SolidColorBrush(Colors.Aqua);
+			var light = new ResourceDictionary();
+
+			rd.ThemeDictionaries["Default"] = dflt;
+			rd.ThemeDictionaries["Light"] = light;
+
+			Assert.AreEqual(ApplicationTheme.Light, Application.Current.RequestedTheme);
+
+			Assert.IsFalse(rd.ContainsKey("Blu"));
+
+			var inner = new ResourceDictionary();
+			var lightInner = new ResourceDictionary();
+			lightInner["Blu"] = new SolidColorBrush(Colors.DarkSlateBlue);
+			inner.ThemeDictionaries["Light"] = lightInner;
+			rd.MergedDictionaries.Add(inner);
+
+			Assert.IsTrue(rd.ContainsKey("Blu"));
+
+			Assert.AreEqual(Colors.DarkSlateBlue, (rd["Blu"] as SolidColorBrush).Color);
+		}
+
+		[TestMethod]
 		public void When_Has_Custom_Theme()
 		{
 			var rd = new ResourceDictionary();

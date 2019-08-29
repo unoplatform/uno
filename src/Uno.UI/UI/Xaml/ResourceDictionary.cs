@@ -146,6 +146,8 @@ namespace Windows.UI.Xaml
 			return false;
 		}
 
+		private ResourceDictionary GetThemeDictionary() => GetThemeDictionary(Themes.Active) ?? GetThemeDictionary(Themes.Default);
+
 		private ResourceDictionary GetThemeDictionary(string theme)
 		{
 			if (ThemeDictionaries.TryGetValue(theme, out var dict))
@@ -158,21 +160,21 @@ namespace Windows.UI.Xaml
 
 		private bool GetFromTheme(object key, out object value)
 		{
-			return GetFromTheme(Themes.Active, key, out value) ||
-				GetFromTheme(Themes.Default, key, out value);
+			var dict = GetThemeDictionary();
+
+			if (dict != null && dict.TryGetValue(key, out value))
+			{
+				return true;
+			}
+
+			return GetFromThemeMerged(key, out value);
 		}
 
-		private bool GetFromTheme(string theme, object key, out object value)
-		{
-			value = null;
-			return GetThemeDictionary(theme)?.TryGetValue(key, out value) ?? GetFromThemeMerged(theme, key, out value);
-		}
-
-		private bool GetFromThemeMerged(string theme, object key, out object value)
+		private bool GetFromThemeMerged(object key, out object value)
 		{
 			for (int i = MergedDictionaries.Count - 1; i >= 0; i--)
 			{
-				if (MergedDictionaries[i].GetFromTheme(theme, key, out value))
+				if (MergedDictionaries[i].GetFromTheme(key, out value))
 				{
 					return true;
 				}
@@ -186,20 +188,14 @@ namespace Windows.UI.Xaml
 
 		private bool ContainsKeyTheme(object key)
 		{
-			return ContainsKeyTheme(Themes.Active, key) ||
-				ContainsKeyTheme(Themes.Default, key);
+			return GetThemeDictionary()?.ContainsKey(key) ?? ContainsKeyThemeMerged(key);
 		}
 
-		private bool ContainsKeyTheme(string theme, object key)
-		{
-			return GetThemeDictionary(theme)?.ContainsKey(key) ?? ContainsKeyThemeMerged(theme, key);
-		}
-
-		private bool ContainsKeyThemeMerged(string theme, object key)
+		private bool ContainsKeyThemeMerged(object key)
 		{
 			for (int i = MergedDictionaries.Count - 1; i >= 0; i--)
 			{
-				if (MergedDictionaries[i].ContainsKeyTheme(theme, key))
+				if (MergedDictionaries[i].ContainsKeyTheme(key))
 				{
 					return true;
 				}
