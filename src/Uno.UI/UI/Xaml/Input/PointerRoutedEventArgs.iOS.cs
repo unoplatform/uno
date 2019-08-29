@@ -38,7 +38,8 @@ namespace Windows.UI.Xaml.Input
 			var isInContact = _nativeTouch.Phase == UITouchPhase.Began
 				|| _nativeTouch.Phase == UITouchPhase.Moved
 				|| _nativeTouch.Phase == UITouchPhase.Stationary;
-			
+
+			FrameId = ToFrameId(_nativeTouch.Timestamp);
 			Pointer = new Pointer(pointerId, type, isInContact, isInRange: true);
 			KeyModifiers = VirtualKeyModifiers.None;
 			OriginalSource = _nativeTouch.View as UIElement ?? receiver; // TODO: walk the tree
@@ -47,13 +48,12 @@ namespace Windows.UI.Xaml.Input
 
 		public PointerPoint GetCurrentPoint(UIElement relativeTo)
 		{
-			var frameId = ToFrameId(_nativeTouch.Timestamp);
 			var timestamp = ToTimeStamp(_nativeTouch.Timestamp);
 			var device = PointerDevice.For(Pointer.PointerDeviceType);
 			var position = (Point)_nativeTouch.LocationInView(relativeTo);
 			var properties = GetProperties();
 
-			return new PointerPoint(frameId, timestamp, device, Pointer.PointerId, position, position, Pointer.IsInContact, properties);
+			return new PointerPoint(FrameId, timestamp, device, Pointer.PointerId, position, position, Pointer.IsInContact, properties);
 		}
 
 		private PointerPointProperties GetProperties()

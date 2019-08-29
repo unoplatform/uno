@@ -34,6 +34,7 @@ namespace Windows.UI.Xaml.Input
 			_button = button;
 			_updateKind = updateKind;
 
+			FrameId = _pseudoFrameId;
 			Pointer = new Pointer(pointerId, pointerType, isInContact, isInRange: true);
 			KeyModifiers = keys;
 			OriginalSource = source;
@@ -42,7 +43,6 @@ namespace Windows.UI.Xaml.Input
 
 		public PointerPoint GetCurrentPoint(UIElement relativeTo)
 		{
-			var frameId = _pseudoFrameId;
 			var timestamp = _pseudoTimestamp;
 			var device = PointerDevice.For(Pointer.PointerDeviceType);
 			var position = relativeTo == null
@@ -50,7 +50,7 @@ namespace Windows.UI.Xaml.Input
 				: relativeTo.TransformToVisual(null).Inverse.TransformPoint(_absolutePosition);
 			var properties = GetProperties();
 
-			return new PointerPoint(frameId, timestamp, device, Pointer.PointerId, position, position, Pointer.IsInContact, properties);
+			return new PointerPoint(FrameId, timestamp, device, Pointer.PointerId, position, position, Pointer.IsInContact, properties);
 		}
 
 		private PointerPointProperties GetProperties()

@@ -42,6 +42,7 @@ namespace Windows.UI.Xaml.Input
 				|| nativeEvent.Action.HasFlag(MotionEventActions.Move);
 			var keys = nativeEvent.MetaState.ToVirtualKeyModifiers();
 
+			FrameId = (uint)_nativeEvent.EventTime;
 			Pointer = new Pointer(pointerId, type, isInContact, isInRange: true);
 			KeyModifiers = keys;
 			OriginalSource = originalSource;
@@ -50,14 +51,13 @@ namespace Windows.UI.Xaml.Input
 
 		public PointerPoint GetCurrentPoint(UIElement relativeTo)
 		{
-			var frameId = (uint)_nativeEvent.EventTime;
 			var timestamp = ToTimeStamp(_nativeEvent.EventTime);
 			var device = PointerDevice.For(Pointer.PointerDeviceType);
 			var rawPosition = new Point(_nativeEvent.RawX, _nativeEvent.RawY); // Relative to the screen
 			var position = GetPosition(relativeTo);
 			var properties = GetProperties();
 
-			return new PointerPoint(frameId, timestamp, device, Pointer.PointerId, rawPosition, position, Pointer.IsInContact, properties);
+			return new PointerPoint(FrameId, timestamp, device, Pointer.PointerId, rawPosition, position, Pointer.IsInContact, properties);
 		}
 
 		private Point GetPosition(UIElement relativeTo)

@@ -191,16 +191,29 @@ namespace Windows.UI.Xaml
 		}
 
 		#region Capture
+		partial void OnManipulationModeChanged(ManipulationModes _, ManipulationModes newMode)
+			=> SetStyle("touch-action", newMode == ManipulationModes.System ? "auto" : "none");
+
 		partial void CapturePointerNative(Pointer pointer)
 		{
 			var command = "Uno.UI.WindowManager.current.setPointerCapture(" + HtmlId + ", " + pointer.PointerId + ");";
 			WebAssemblyRuntime.InvokeJS(command);
+
+			if (pointer.PointerDeviceType != PointerDeviceType.Mouse)
+			{
+				SetStyle("touch-action", "none");
+			}
 		}
 
 		partial void ReleasePointerCaptureNative(Pointer pointer)
 		{
 			var command = "Uno.UI.WindowManager.current.releasePointerCapture(" + HtmlId + ", " + pointer.PointerId + ");";
 			WebAssemblyRuntime.InvokeJS(command);
+
+			if (pointer.PointerDeviceType != PointerDeviceType.Mouse && ManipulationMode == ManipulationModes.System)
+			{
+				SetStyle("touch-action", "auto");
+			}
 		}
 		#endregion
 

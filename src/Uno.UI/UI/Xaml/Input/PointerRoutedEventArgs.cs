@@ -26,6 +26,8 @@ namespace Windows.UI.Xaml.Input
 		public IList<PointerPoint> GetIntermediatePoints(UIElement relativeTo)
 			=> new List<PointerPoint>(1) {GetCurrentPoint(relativeTo)};
 
+		internal uint FrameId { get; }
+
 		public bool IsGenerated { get; } = false; // Generated events are not supported by UNO
 
 		public bool Handled { get; set; }

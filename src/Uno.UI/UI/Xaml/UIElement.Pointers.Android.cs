@@ -97,7 +97,7 @@ namespace Windows.UI.Xaml
 					// As the HoverExit is raised when pointer is pressed (and we are filtering them out),
 					// if the user moves the pointer out (still while pressing the button), we won't receive the OverExit.
 					// However if the pointer was captured, we have to raise the PointerExit, so make sure update the Over state before raising the move.
-					return SetOver(args, isInView) | OnNativePointerMove(args);
+					return OnNativePointerMoveWithOverCheck(args, isInView);
 
 				case MotionEventActions.Cancel:
 					return OnNativePointerCancel(args, isSwallowedBySystem: true);
@@ -111,7 +111,7 @@ namespace Windows.UI.Xaml
 			}
 		}
 
-		partial void OnManipulationModeChanged(ManipulationModes newMode)
+		partial void OnManipulationModeChanged(ManipulationModes oldMode, ManipulationModes newMode)
 			=> IsNativeMotionEventsInterceptForbidden = newMode != ManipulationModes.System;
 
 		#region Capture

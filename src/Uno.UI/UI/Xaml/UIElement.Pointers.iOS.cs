@@ -88,13 +88,10 @@ namespace Windows.UI.Xaml
 			{
 				var args = new PointerRoutedEventArgs(touches, evt, this);
 				var isPointerOver = evt.IsTouchInView(this);
-				var isHandledOrBubblingInManaged = default(bool);
 
 				// As we don't have enter/exit equivalents on iOS, we have to update the IsOver on each move
 				// Note: Entered / Exited are raised *before* the Move (Checked using the args timestamp)
-				// Note 2: We use directly the SetOver as we know that the pointer is still pressed here!
-				isHandledOrBubblingInManaged |= SetOver(args, isPointerOver); 
-				isHandledOrBubblingInManaged |= OnNativePointerMove(args);
+				var isHandledOrBubblingInManaged = OnNativePointerMoveWithOverCheck(args, isPointerOver);
 
 				if (!isHandledOrBubblingInManaged)
 				{
