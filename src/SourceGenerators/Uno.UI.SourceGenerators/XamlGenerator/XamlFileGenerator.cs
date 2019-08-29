@@ -270,14 +270,14 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				_isGeneratingGlobalResource = true;
 				BuildEmptyBackingClass(writer, topLevelControl);
 
-				BuildResourceDictionary(writer, topLevelControl);
+				BuildTopLevelResourceDictionary(writer, topLevelControl);
 			}
 			else
 			{
 				if (IsApplication(topLevelControl.Type))
 				{
 					_isGeneratingGlobalResource = true;
-					BuildResourceDictionary(writer, topLevelControl);
+					BuildTopLevelResourceDictionary(writer, topLevelControl, generateDictionaryProperty: false);
 				}
 
 				_isGeneratingGlobalResource = false;
@@ -716,7 +716,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		/// <summary>
 		/// Processes a top-level ResourceDictionary declaration.
 		/// </summary>
-		private void BuildResourceDictionary(IIndentedStringBuilder writer, XamlObjectDefinition topLevelControl)
+		private void BuildTopLevelResourceDictionary(IIndentedStringBuilder writer, XamlObjectDefinition topLevelControl, bool generateDictionaryProperty = true)
 		{
 			var globalResources = new Dictionary<string, XamlObjectDefinition>();
 
@@ -739,6 +739,26 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						BuildStaticResources(writer, globalResources, themeResources: _themeResources);
 
 						BuildPartials(writer, isStatic: true);
+
+						if (generateDictionaryProperty) //TODO: hack, remove when Application no longer needs to call this method (when app resources aren't put in GSR)
+						{
+							writer.AppendLineInvariant("private global::Windows.UI.Xaml.ResourceDictionary _{0}_ResourceDictionary;", _fileUniqueId);
+							writer.AppendLine();
+							using (writer.BlockInvariant("private global::Windows.UI.Xaml.ResourceDictionary {0}_ResourceDictionary", _fileUniqueId))
+							{
+								using (writer.BlockInvariant("get"))
+								{
+									using (writer.BlockInvariant("if (_{0}_ResourceDictionary == null)", _fileUniqueId))
+									{
+										writer.AppendLineInvariant("_{0}_ResourceDictionary = new ResourceDictionary {{", _fileUniqueId);
+										BuildResourceDictionary(writer, FindImplicitContentMember(topLevelControl), isInInitializer: true);
+										writer.AppendLineInvariant("}};");
+									}
+
+									writer.AppendLineInvariant("return _{0}_ResourceDictionary;", _fileUniqueId);
+								}
+							} 
+						}
 					}
 				}
 
@@ -2023,46 +2043,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						writer.AppendLineInvariant("Resources = {{");
 					}
 
-					var closingPunctuation = isInInitializer ? "," : ";";
-
-					foreach (var resource in resourcesRoot.Objects)
-					{
-						var keyDef = resource.Members.FirstOrDefault(m => m.Member.Name == "Key");
-						var name = resource.Members.FirstOrDefault(m => m.Member.Name == "Name");
-						var mergedDictionaries = resource.Members.FirstOrDefault(m => m.Member.Name == "MergedDictionaries");
-
-						if (keyDef != null)
-						{
-							var key = keyDef.Value.ToString();
-							_staticResources.Add(key, resource);
-							if (isInInitializer)
-							{
-								writer.AppendLineInvariant("[\"{0}\"] = ", key);
-							}
-							else
-							{
-								writer.AppendLineInvariant("Resources[\"{0}\"] = ", key); 
-							}
-							BuildChild(writer, null, resource);
-							writer.AppendLineInvariant(closingPunctuation);
-						}
-						else if (mergedDictionaries != null)
-						{
-							// Nothing for now. Since merged dictionaries are parsed separately, they are
-							// considered as Global Resources.
-						}
-						else if (name != null)
-						{
-							_namedResources.Add(name.Value.ToString(), resource);
-						}
-						else
-						{
-							throw new Exception(
-								"Implicit styles in inline resources are not supported ({0}, Line {1}:{2})"
-								.InvariantCultureFormat(topLevelControl.Type.Name, topLevelControl.LineNumber, topLevelControl.LinePosition)
-							);
-						}
-					}
+					BuildResourceDictionary(writer, resourcesRoot, isInInitializer);
 
 					if (isInInitializer)
 					{
@@ -2079,6 +2060,50 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				if (themesResourcesRoot != null)
 				{
 					RegisterThemeDictionaries(themesResourcesRoot);
+				}
+			}
+		}
+
+		private void BuildResourceDictionary(IIndentedStringBuilder writer, XamlMemberDefinition resourcesRoot, bool isInInitializer)
+        {
+			var closingPunctuation = isInInitializer ? "," : ";";
+
+			foreach (var resource in (resourcesRoot?.Objects).Safe())
+			{
+				var keyDef = resource.Members.FirstOrDefault(m => m.Member.Name == "Key");
+				var name = resource.Members.FirstOrDefault(m => m.Member.Name == "Name");
+				var mergedDictionaries = resource.Members.FirstOrDefault(m => m.Member.Name == "MergedDictionaries");
+
+				if (keyDef != null)
+				{
+					var key = keyDef.Value.ToString();
+					_staticResources.Add(key, resource);
+					if (isInInitializer)
+					{
+						writer.AppendLineInvariant("[\"{0}\"] = ", key);
+					}
+					else
+					{
+						writer.AppendLineInvariant("Resources[\"{0}\"] = ", key);
+					}
+					BuildChild(writer, null, resource);
+					writer.AppendLineInvariant(closingPunctuation);
+				}
+				else if (mergedDictionaries != null)
+				{
+					// Nothing for now. Since merged dictionaries are parsed separately, they are
+					// considered as Global Resources.
+				}
+				else if (name != null)
+				{
+					_namedResources.Add(name.Value.ToString(), resource);
+				}
+				else
+				{
+					//throw new Exception(
+					//	"Implicit styles in inline resources are not supported ({0}, Line {1}:{2})"
+					//	.InvariantCultureFormat(topLevelControl.Type.Name, topLevelControl.LineNumber, topLevelControl.LinePosition)
+					//);
 				}
 			}
 		}
