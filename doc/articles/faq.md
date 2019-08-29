@@ -459,7 +459,7 @@ Using a shared project improves the build performance when debugging a single pl
 
 ## Are there any Visual Studio project creation templates for Uno yet?
 
-Yes. Here are the [templates].(https://marketplace.visualstudio.com/items?itemName=nventivecorp.uno-platform-addin)
+Yes. Here are the [templates](https://marketplace.visualstudio.com/items?itemName=nventivecorp.uno-platform-addin).
 
 ## How do I add the NuGet package if there's no Packages node for Shared Projects?
 
