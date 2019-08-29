@@ -1,4 +1,4 @@
-﻿using Uno.Extensions;
+using Uno.Extensions;
 using Uno.MsBuildTasks.Utils;
 using Uno.MsBuildTasks.Utils.XamlPathParser;
 using Uno.UI.SourceGenerators.XamlGenerator.Utils;
@@ -2614,38 +2614,58 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 		private string GetStaticResourceName(XamlMemberDefinition member, INamedTypeSymbol targetPropertyType = null)
 		{
+			// For now, both ThemeResource and StaticResource are considered as StaticResource
 			var staticResourceNode = member.Objects.FirstOrDefault(o => o.Type.Name == "StaticResource");
 			var themeResourceNode = member.Objects.FirstOrDefault(o => o.Type.Name == "ThemeResource");
 
 			var staticResourcePath = staticResourceNode?.Members.First().Value.ToString();
 			var themeResourcePath = themeResourceNode?.Members.First().Value.ToString();
 
-			//For now, both ThemeResource and StaticResource are considered as StaticResource
-			if (staticResourcePath == null && themeResourcePath == null)
+			var resourcePath = staticResourcePath ?? themeResourcePath;
+			if (resourcePath == null)
 			{
 				return null;
 			}
 			else
 			{
-				var resourcePath = staticResourcePath ?? themeResourcePath;
+				var useSafeCast = themeResourcePath != null;
 
 				targetPropertyType = targetPropertyType ?? FindPropertyType(member.Member);
 
 				if (!_isGeneratingGlobalResource && _staticResources.TryGetValue(resourcePath, out var res))
 				{
-					return $"{GetCastString(targetPropertyType, res)}StaticResources.{SanitizeResourceName(resourcePath)}";
+					return ApplyCast($"StaticResources.{SanitizeResourceName(resourcePath)}", useSafeCast, res);
 				}
 				if (!_isGeneratingGlobalResource && _themeResources.TryGetValue(resourcePath, out var themeRes))
 				{
-					return $"{GetCastString(targetPropertyType, themeRes.First().Value)}StaticResources.{SanitizeResourceName(resourcePath)}";
+					return ApplyCast($"StaticResources.{SanitizeResourceName(resourcePath)}", true, themeRes.Values.ToArray());
 				}
 				if (targetPropertyType?.Name == "TimeSpan")
 				{
 					// explicit support for TimeSpan because we can't override the parsing.
 					return $"global::System.TimeSpan.Parse({GetGlobalStaticResource(resourcePath)}.ToString())";
 				}
+				
+				return ApplyCast(GetGlobalStaticResource(resourcePath, targetPropertyType), useSafeCast);
+			}
 
-				return $"({GetCastString(targetPropertyType, null)}{GetGlobalStaticResource(resourcePath, targetPropertyType)})";
+			string ApplyCast(string value, bool useSafeCast, params XamlObjectDefinition[] sourceTypes)
+			{
+				if (targetPropertyType == null || sourceTypes.Any(x => x?.Type.Name != targetPropertyType.Name))
+				{
+					return value;
+				}
+
+				var type = targetPropertyType.ToDisplayString();
+				var closure = $"c{_applyIndex++}";
+				if (useSafeCast)
+				{
+					return $"((System.Object)({value}) is {type} {closure} ? {closure} : default({type}))";
+				}
+				else
+				{
+					return $"({type}){value}";
+				}
 			}
 		}
 
