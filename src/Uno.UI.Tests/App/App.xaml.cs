@@ -65,6 +65,11 @@ namespace UnitTestsApp
 			var app = Current as App;			
 			app.HostView.Children.Clear();
 
+#if !NETFX_CORE
+			//Clear custom theme
+			Uno.UI.ApplicationHelper.RequestedCustomTheme = null;
+#endif
+
 			return app;
 		}
 	}
