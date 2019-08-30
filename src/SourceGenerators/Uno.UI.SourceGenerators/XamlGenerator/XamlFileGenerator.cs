@@ -777,6 +777,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			writer.AppendLineInvariant("new ResourceDictionary {{");
 			BuildResourceDictionary(writer, FindImplicitContentMember(topLevelControl), isInInitializer: true);
 			BuildMergedDictionaries(writer, topLevelControl.Members.FirstOrDefault(m => m.Member.Name == "MergedDictionaries"), isInInitializer: true);
+			BuildThemeDictionaries(writer, topLevelControl.Members.FirstOrDefault(m => m.Member.Name == "ThemeDictionaries"), isInInitializer: true);
 			writer.AppendLineInvariant("}}");
 		}
 
@@ -2054,6 +2055,12 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 							.Where(m => m.Member.Name == "MergedDictionaries")
 							.FirstOrDefault()
 					: null;
+				var themeDictionaries = isExplicitResDictionary ?
+					resourcesMember.Objects
+						.First().Members
+							.Where(m => m.Member.Name == "ThemeDictionaries")
+							.FirstOrDefault()
+					: null;
 
 				if (resourcesRoot != null || mergedDictionaries != null)
 				{
@@ -2063,8 +2070,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					}
 
 					BuildResourceDictionary(writer, resourcesRoot, isInInitializer);
-
 					BuildMergedDictionaries(writer, mergedDictionaries, isInInitializer);
+					BuildThemeDictionaries(writer, themeDictionaries, isInInitializer);
 
 					if (isInInitializer)
 					{
@@ -2140,6 +2147,23 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		/// </summary>
 		private void BuildMergedDictionaries(IIndentedStringBuilder writer, XamlMemberDefinition mergedDictionaries, bool isInInitializer)
 		{
+			var propertyName = "MergedDictionaries";
+			BuildDictionaryCollection(writer, mergedDictionaries, isInInitializer, propertyName, isDict: false);
+		}
+
+		/// <summary>
+		/// Populate ThemeDictionaries property of a ResourceDictionary.
+		/// </summary>
+		private void BuildThemeDictionaries(IIndentedStringBuilder writer, XamlMemberDefinition themeDictionaries, bool isInInitializer)
+		{
+			BuildDictionaryCollection(writer, themeDictionaries, isInInitializer, "ThemeDictionaries", isDict: true);
+		}
+
+		/// <summary>
+		/// Build a collection of ResourceDictionaries.
+		/// </summary>
+		private void BuildDictionaryCollection(IIndentedStringBuilder writer, XamlMemberDefinition mergedDictionaries, bool isInInitializer, string propertyName, bool isDict)
+		{
 			if (mergedDictionaries == null)
 			{
 				return;
@@ -2147,11 +2171,11 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 			if (isInInitializer)
 			{
-				writer.AppendLineInvariant("MergedDictionaries = {{");
+				writer.AppendLineInvariant("{0} = {{", propertyName);
 			}
 			else
 			{
-				writer.AppendLineInvariant("// MergedDictionaries");
+				writer.AppendLineInvariant("// {0}", propertyName);
 			}
 			foreach (var dictObject in mergedDictionaries.Objects)
 			{
@@ -2161,18 +2185,33 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				}
 
 				var source = dictObject.Members.FirstOrDefault(m => m.Member.Name == "Source");
-				if (source != null && dictObject.Members.Count > 1)
+				if (source != null && dictObject.Members.Any(m => m.Member.Name == "_UnknownContent"))
 				{
 					throw new Exception("Local values are not allowed in resource dictionary with Source set");
 				}
 
-				if (!isInInitializer)
+				var key = dictObject.Members.FirstOrDefault(m => m.Member.Name == "Key")?.Value as string;
+				if (isDict && key == null)
 				{
-					writer.AppendLineInvariant("Resources.MergedDictionaries.Add(");
+					throw new Exception("Each dictionary entry must have an associated key.");
 				}
+
+				if (!isInInitializer && !isDict)
+				{
+					writer.AppendLineInvariant("Resources.{0}.Add(", propertyName);
+				}
+				else if (!isInInitializer && isDict)
+				{
+					writer.AppendLineInvariant("Resources.{0}[\"{1}\"] = ", propertyName, key);
+				}
+				else if (isInInitializer && isDict)
+				{
+					writer.AppendLineInvariant("[\"{0}\"] = ", key);
+				}
+
 				if (source != null)
 				{
-					BuildMergedDictionaryFromSource(writer, source, isInInitializer);
+					BuildDictionaryFromSource(writer, source, isInInitializer);
 				}
 				else
 				{
@@ -2182,9 +2221,13 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				{
 					writer.AppendLineInvariant(",");
 				}
-				else
+				else if (!isDict)
 				{
 					writer.AppendLineInvariant(");");
+				}
+				else
+				{
+					writer.AppendLineInvariant(";");
 				}
 			}
 
@@ -2195,9 +2238,9 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		}
 
 		/// <summary>
-		/// Try to create a MergedDictionary entry from supplied Source property.
+		/// Try to create a ResourceDictionary assignment from supplied Source property.
 		/// </summary>
-		private void BuildMergedDictionaryFromSource(IIndentedStringBuilder writer, XamlMemberDefinition sourceDef, bool isInInitializer)
+		private void BuildDictionaryFromSource(IIndentedStringBuilder writer, XamlMemberDefinition sourceDef, bool isInInitializer)
 		{
 			var source = (sourceDef?.Value as string)?.Replace('\\', '/');
 			if (source == null)

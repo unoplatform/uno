@@ -18,6 +18,12 @@
 									 Color="Magenta" />
 				</ResourceDictionary>
 			</ResourceDictionary.MergedDictionaries>
+			<ResourceDictionary.ThemeDictionaries>
+				<ResourceDictionary x:Key="Light">
+					<SolidColorBrush x:Key="LucrativeColorBrush"
+									 Color="Azure" />
+				</ResourceDictionary>
+			</ResourceDictionary.ThemeDictionaries>
 		</ResourceDictionary>
 	</Application.Resources>
 

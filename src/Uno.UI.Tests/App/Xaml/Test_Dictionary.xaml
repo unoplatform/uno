@@ -9,6 +9,7 @@
 			<SolidColorBrush x:Key="PlayfulColorBrush"
 							 Color="RosyBrown" />
 		</ResourceDictionary>
+		<ResourceDictionary x:Key="Dark"  Source="Test_Dictionary_Theme.xaml" />
 	</ResourceDictionary.ThemeDictionaries>
 
 	<x:String x:Key="GlobalCoordinates">11.22, 33</x:String>
