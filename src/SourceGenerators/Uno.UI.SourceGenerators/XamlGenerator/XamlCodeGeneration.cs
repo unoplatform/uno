@@ -18,6 +18,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 	internal partial class XamlCodeGeneration
 	{
 		private string[] _xamlSourceFiles;
+		private string[] _xamlSourceLinks;
 		private string _targetPath;
 		private readonly string _defaultLanguage;
 		private bool _isWasm;
@@ -75,12 +76,13 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 			_isDebug = string.Equals(_configuration, "Debug", StringComparison.OrdinalIgnoreCase);
 
-			var xamlPages = msbProject.GetItems("Page")
-				.Select(d => d.EvaluatedInclude);
+			var xamlItems = msbProject.GetItems("Page")
+				.Concat(msbProject.GetItems("ApplicationDefinition"));
 
-			_xamlSourceFiles = msbProject.GetItems("ApplicationDefinition")
-				.Select(d => d.EvaluatedInclude)
-				.Concat(xamlPages)
+			_xamlSourceFiles = xamlItems.Select(d => d.EvaluatedInclude)
+				.ToArray();
+
+			_xamlSourceLinks = xamlItems.Select(GetSourceLink)
 				.ToArray();
 
 			_excludeXamlNamespaces = msbProject
@@ -155,6 +157,18 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			_isWasm = msbProject.GetProperty("DefineConstants").EvaluatedValue?.Contains("__WASM__") ?? false;
 		}
 
+		/// <summary>
+		/// Get the file location as seen in the IDE, used for ResourceDictionary.Source resolution.
+		/// </summary>
+		private string GetSourceLink(ProjectItemInstance projectItemInstance)
+		{
+			if (projectItemInstance.HasMetadata("Link"))
+			{
+				return projectItemInstance.GetMetadataValue("Link");
+			}
+
+			return projectItemInstance.EvaluatedInclude;
+		}
 
 		public KeyValuePair<string, string>[] Generate()
 		{
@@ -167,11 +181,14 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				var lastBinaryUpdateTime = _forceGeneration ? DateTime.MaxValue : GetLastBinaryUpdateTime();
 
 				var resourceKeys = GetResourceKeys();
-				var files = new XamlFileParser(_excludeXamlNamespaces, _includeXamlNamespaces).ParseFiles(_xamlSourceFiles);
+				var filesFull = new XamlFileParser(_excludeXamlNamespaces, _includeXamlNamespaces).ParseFiles(_xamlSourceFiles);
+				var files = filesFull.Trim()
+				.OrderBy(f => f.UniqueID)
+				.ToArray();
 
 				TrackStartGeneration(files);
 
-				var globalStaticResourcesMap = BuildAssemblyGlobalStaticResourcesMap(files);
+				var globalStaticResourcesMap = BuildAssemblyGlobalStaticResourcesMap(files, filesFull, _xamlSourceLinks);
 
 				var filesQuery = files
 					.ToArray();
@@ -224,12 +241,13 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			}
 		}
 
-		private XamlGlobalStaticResourcesMap BuildAssemblyGlobalStaticResourcesMap(XamlFileDefinition[] files)
+		private XamlGlobalStaticResourcesMap BuildAssemblyGlobalStaticResourcesMap(XamlFileDefinition[] files, XamlFileDefinition[] filesFull, string[] links)
 		{
 			var map = new XamlGlobalStaticResourcesMap();
 
 			BuildLocalProjectResources(files, map);
 			BuildAmbientResources(files, map);
+			map.BuildResourceDictionaryMap(filesFull, links);
 
 			return map;
 		}

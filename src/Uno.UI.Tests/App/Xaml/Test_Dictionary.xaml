@@ -35,4 +35,6 @@
 	<GridLength x:Key="GridLength256">256</GridLength>
 	<views:MyPoco x:Key="PocoLinda"
 				  Bogosity="{StaticResource GoodSize}" />
+	<StaticResource x:Key="ImAStaticResourceInADictColorBrush"
+					ResourceKey="SystemAccentColorBrush" />
 </ResourceDictionary>

@@ -742,28 +742,42 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 						if (generateDictionaryProperty) //TODO: hack, remove when Application no longer needs to call this method (when app resources aren't put in GSR)
 						{
-							writer.AppendLineInvariant("private global::Windows.UI.Xaml.ResourceDictionary _{0}_ResourceDictionary;", _fileUniqueId);
+							writer.AppendLineInvariant("private static global::Windows.UI.Xaml.ResourceDictionary _{0}_ResourceDictionary;", _fileUniqueId);
 							writer.AppendLine();
-							using (writer.BlockInvariant("private global::Windows.UI.Xaml.ResourceDictionary {0}_ResourceDictionary", _fileUniqueId))
+							using (writer.BlockInvariant("internal static global::Windows.UI.Xaml.ResourceDictionary {0}_ResourceDictionary", _fileUniqueId))
 							{
 								using (writer.BlockInvariant("get"))
 								{
 									using (writer.BlockInvariant("if (_{0}_ResourceDictionary == null)", _fileUniqueId))
 									{
-										writer.AppendLineInvariant("_{0}_ResourceDictionary = new ResourceDictionary {{", _fileUniqueId);
-										BuildResourceDictionary(writer, FindImplicitContentMember(topLevelControl), isInInitializer: true);
-										writer.AppendLineInvariant("}};");
+										writer.AppendLineInvariant("_{0}_ResourceDictionary = ", _fileUniqueId);
+										InitializeAndBuildResourceDictionary(writer, topLevelControl);
+										writer.AppendLineInvariant(";");
+										var url = _globalStaticResourcesMap.GetSourceLink(_fileDefinition);
+										writer.AppendLineInvariant("_{0}_ResourceDictionary.Source = new Uri(\"ms-resource:///Files/{1}\");", _fileUniqueId, url);
+
 									}
 
 									writer.AppendLineInvariant("return _{0}_ResourceDictionary;", _fileUniqueId);
 								}
-							} 
+							}
 						}
 					}
 				}
 
 				BuildChildSubclasses(writer, isTopLevel: true);
 			}
+		}
+
+		/// <summary>
+		/// Initialize a new ResourceDictionary instance and populate its items and properties.
+		/// </summary>
+		private void InitializeAndBuildResourceDictionary(IIndentedStringBuilder writer, XamlObjectDefinition topLevelControl)
+		{
+			writer.AppendLineInvariant("new ResourceDictionary {{");
+			BuildResourceDictionary(writer, FindImplicitContentMember(topLevelControl), isInInitializer: true);
+			BuildMergedDictionaries(writer, topLevelControl.Members.FirstOrDefault(m => m.Member.Name == "MergedDictionaries"), isInInitializer: true);
+			writer.AppendLineInvariant("}}");
 		}
 
 		private void BuildEmptyBackingClass(IIndentedStringBuilder writer, XamlObjectDefinition topLevelControl)
@@ -2034,9 +2048,14 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				var resourcesRoot = isExplicitResDictionary
 					? FindImplicitContentMember(resourcesMember.Objects.First())
 					: resourcesMember;
+				var mergedDictionaries = isExplicitResDictionary ?
+					resourcesMember.Objects
+						.First().Members
+							.Where(m => m.Member.Name == "MergedDictionaries")
+							.FirstOrDefault()
+					: null;
 
-
-				if (resourcesRoot != null)
+				if (resourcesRoot != null || mergedDictionaries != null)
 				{
 					if (isInInitializer)
 					{
@@ -2044,6 +2063,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					}
 
 					BuildResourceDictionary(writer, resourcesRoot, isInInitializer);
+
+					BuildMergedDictionaries(writer, mergedDictionaries, isInInitializer);
 
 					if (isInInitializer)
 					{
@@ -2065,7 +2086,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		}
 
 		private void BuildResourceDictionary(IIndentedStringBuilder writer, XamlMemberDefinition resourcesRoot, bool isInInitializer)
-        {
+		{
 			var closingPunctuation = isInInitializer ? "," : ";";
 
 			foreach (var resource in (resourcesRoot?.Objects).Safe())
@@ -2073,6 +2094,12 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				var keyDef = resource.Members.FirstOrDefault(m => m.Member.Name == "Key");
 				var name = resource.Members.FirstOrDefault(m => m.Member.Name == "Name");
 				var mergedDictionaries = resource.Members.FirstOrDefault(m => m.Member.Name == "MergedDictionaries");
+
+				if (resource.Type.Name == "StaticResource")
+				{
+					writer.AppendLineInvariant("// StaticResource in ResourceDictionary not supported."); //TODO: revisit this when StaticResource resolution is in
+					continue;
+				}
 
 				if (keyDef != null)
 				{
@@ -2106,6 +2133,79 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					//);
 				}
 			}
+		}
+
+		/// <summary>
+		/// Populate MergedDictionaries property of a ResourceDictionary.
+		/// </summary>
+		private void BuildMergedDictionaries(IIndentedStringBuilder writer, XamlMemberDefinition mergedDictionaries, bool isInInitializer)
+		{
+			if (mergedDictionaries == null)
+			{
+				return;
+			}
+
+			if (isInInitializer)
+			{
+				writer.AppendLineInvariant("MergedDictionaries = {{");
+			}
+			else
+			{
+				writer.AppendLineInvariant("// MergedDictionaries");
+			}
+			foreach (var dictObject in mergedDictionaries.Objects)
+			{
+				if (dictObject.Members.Count == 0)
+				{
+					continue;
+				}
+
+				var source = dictObject.Members.FirstOrDefault(m => m.Member.Name == "Source");
+				if (source != null && dictObject.Members.Count > 1)
+				{
+					throw new Exception("Local values are not allowed in resource dictionary with Source set");
+				}
+
+				if (!isInInitializer)
+				{
+					writer.AppendLineInvariant("Resources.MergedDictionaries.Add(");
+				}
+				if (source != null)
+				{
+					BuildMergedDictionaryFromSource(writer, source, isInInitializer);
+				}
+				else
+				{
+					InitializeAndBuildResourceDictionary(writer, dictObject);
+				}
+				if (isInInitializer)
+				{
+					writer.AppendLineInvariant(",");
+				}
+				else
+				{
+					writer.AppendLineInvariant(");");
+				}
+			}
+
+			if (isInInitializer)
+			{
+				writer.AppendLineInvariant("}},");
+			}
+		}
+
+		/// <summary>
+		/// Try to create a MergedDictionary entry from supplied Source property.
+		/// </summary>
+		private void BuildMergedDictionaryFromSource(IIndentedStringBuilder writer, XamlMemberDefinition sourceDef, bool isInInitializer)
+		{
+			var source = (sourceDef?.Value as string)?.Replace('\\', '/');
+			if (source == null)
+			{
+				return;
+			}
+			var sourceProp = _globalStaticResourcesMap.FindTargetPropertyForMergedDictionarySource(_fileDefinition, source);
+			writer.AppendLineInvariant("global::{0}.GlobalStaticResources.{1}", _defaultNamespace, sourceProp);
 		}
 
 		private void RegisterThemeDictionaries(XamlMemberDefinition themeDictionariesRoot)
