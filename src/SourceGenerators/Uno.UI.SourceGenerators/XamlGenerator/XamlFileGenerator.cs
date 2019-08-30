@@ -27,6 +27,13 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		private const string GlobalPrefix = "global::";
 		private const string QualifiedNamespaceMarker = ".";
 
+		private static readonly IReadOnlyDictionary<string, string> ApplicationThemeSwitchCaseMapping = new Dictionary<string, string>
+		{
+			["Light"] = "case global::Windows.UI.Xaml.ApplicationTheme.Light",
+			["Dark"] = "case global::Windows.UI.Xaml.ApplicationTheme.Dark",
+			["Default"] = "default",
+		};
+
 		private readonly Dictionary<string, string[]> _knownNamespaces = new Dictionary<string, string[]>
 		{
 			{
@@ -924,13 +931,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 			void WriteThemeResourceDeclaration(string resourceKey, Dictionary<string, XamlObjectDefinition> resources)
 			{
-				var applicationThemeSwithCaseMapping = new Dictionary<string, string>
-				{
-					["Light"] = "case global::Windows.UI.Xaml.ApplicationTheme.Light",
-					["Dark"] = "case global::Windows.UI.Xaml.ApplicationTheme.Dark",
-					["Default"] = "default",
-				};
-				var appThemes = resources.Where(x => applicationThemeSwithCaseMapping.ContainsKey(x.Key)).ToArray();
+				var appThemes = resources.Where(x => ApplicationThemeSwitchCaseMapping.ContainsKey(x.Key)).ToArray();
 				var customThemes = resources.Except(appThemes);
 
 				var resourcePropertyName = FormatResourcePropertyName(resourceKey);
@@ -1027,7 +1028,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 							return true;
 					}
 
-					string GetSwitchCase() => applicationThemeSwithCaseMapping.TryGetValue(theme.Key, out var @case) ? @case : $"case \"{theme.Key}\"";
+					string GetSwitchCase() => ApplicationThemeSwitchCaseMapping.TryGetValue(theme.Key, out var @case) ? @case : $"case \"{theme.Key}\"";
 				}
 			}
 
@@ -2594,10 +2595,12 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					// explicit support for TimeSpan because we can't override the parsing.
 					return $"global::System.TimeSpan.Parse({GetGlobalStaticResource(resourcePath)}.ToString())";
 				}
-				
+
 				return ApplyCast(GetGlobalStaticResource(resourcePath, targetPropertyType), useSafeCast);
 			}
 
+			// attempt to cast sourceType(s) to targetPropertyType when necessary
+			// with option to useSafeCast: (value is Type c0 ? c0 : default)
 			string ApplyCast(string value, bool useSafeCast, params XamlObjectDefinition[] sourceTypes)
 			{
 				if (targetPropertyType == null || (sourceTypes.Any() && sourceTypes.All(x => x?.Type.Name == targetPropertyType.Name)))
