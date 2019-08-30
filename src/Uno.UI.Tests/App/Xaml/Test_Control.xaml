@@ -26,8 +26,13 @@
 				<RowDefinition Height="{StaticResource GridLength256}" />
 			</Grid.RowDefinitions>
 			<Grid.Resources>
-				<SolidColorBrush x:Key="LocalToGridColorBrush"
-								 Color="LimeGreen" />
+				<ResourceDictionary>
+					<ResourceDictionary.MergedDictionaries>
+						<ResourceDictionary Source="../Linked/Test_Dictionary_Linked.xaml" />
+					</ResourceDictionary.MergedDictionaries>
+					<SolidColorBrush x:Key="LocalToGridColorBrush"
+									 Color="LimeGreen" />
+				</ResourceDictionary>
 			</Grid.Resources>
 		</Grid>
 		<Button x:Name="styledButton"

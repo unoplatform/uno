@@ -333,5 +333,40 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 
 			Assert.AreEqual(Colors.LimeGreen, brush.Color);
 		}
+
+		[TestMethod]
+		public void When_Resource_In_Merged_Source_Xaml()
+		{
+			var app = UnitTestsApp.App.EnsureApplication();
+
+			AssertContainsColorBrushResource(app.Resources, "SuperiorColorBrush", Colors.MediumSpringGreen);
+			AssertContainsColorBrushResource(app.Resources, "StrangeColorBrush", Colors.Gainsboro);
+		}
+
+		[TestMethod]
+		public void When_Resource_In_Merged_Source_Xaml_Check_Source()
+		{
+			var app = UnitTestsApp.App.EnsureApplication();
+
+			var source = app.Resources.MergedDictionaries.First().Source;
+			Assert.AreEqual("/Files/App/Xaml/Test_Dictionary.xaml", source.AbsolutePath);
+			Assert.AreEqual("ms-resource:///Files/App/Xaml/Test_Dictionary.xaml", source.AbsoluteUri);
+		}
+
+		[TestMethod]
+		public void When_Resource_In_Merged_Inline_Xaml()
+		{
+			var app = UnitTestsApp.App.EnsureApplication();
+
+			AssertContainsColorBrushResource(app.Resources, "JustHangingOutInMergedDictColorBrush", Colors.Maroon);
+			AssertContainsColorBrushResource(app.Resources, "HangingOutInRecursiveMergedColorBrush", Colors.DarkMagenta);
+		}
+
+		private void AssertContainsColorBrushResource(ResourceDictionary resources, string key, Color expected)
+		{
+			var brush = resources[key] as SolidColorBrush;
+			Assert.IsNotNull(brush);
+			Assert.AreEqual(expected, brush.Color);
+		}
 	}
 }
