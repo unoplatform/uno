@@ -344,6 +344,16 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 		}
 
 		[TestMethod]
+		public void When_Resource_In_Merged_Source_Xaml_Element()
+		{
+			var app = UnitTestsApp.App.EnsureApplication();
+
+			var control = new Test_Control();
+
+			AssertContainsColorBrushResource(control.TestGrid.Resources, "AbominableColorBrush", Colors.Teal);
+		}
+
+		[TestMethod]
 		public void When_Resource_In_Merged_Source_Xaml_Check_Source()
 		{
 			var app = UnitTestsApp.App.EnsureApplication();
