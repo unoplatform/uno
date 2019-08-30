@@ -53,6 +53,7 @@
 * Add support for `CoreApplication.MainView` and `CoreApplication.Views`
 * Add support for resolution of merged and theme resources from `ResourceDictionary` in code
 * `ToolTip` & `ToolTipService` are now implemented.
+* [#1352](https://github.com/unoplatform/uno/issues/1352) Add support for `ThemeResource`s with different types (eg: mixing `SolidColorBrush` and `LinearGradientBrush`)
 
 ### Breaking changes
 * `TextBox` no longer raises TextChanged when its template is applied, in line with UWP.
@@ -98,6 +99,9 @@
 * Fix NRE when using custom `Pivot` templates.
 * [Android] ScrollViewer were no more clipping the scrollable area.
 * `ComboBox`'s ControlTemplate was requiring a binding to _TemplatedParent_ for the `x:Name="ContentPresenter"` control. Now aligned with UWP by making this binding in the control itself.
+* [#1352](https://github.com/unoplatform/uno/issues/1352) `ThemeResource` bugfixes:
+  - `StaticResource` not working inside `ResourceDictionary.ThemeDictionaries`
+  - Using a `ThemeResource` on the wrong property type shouldn't raise compile-time error (to align with UWP)
 
 ## Release 1.45.0
 ### Features
