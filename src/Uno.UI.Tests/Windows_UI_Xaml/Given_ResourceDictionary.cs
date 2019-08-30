@@ -372,8 +372,29 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 			AssertContainsColorBrushResource(app.Resources, "HangingOutInRecursiveMergedColorBrush", Colors.DarkMagenta);
 		}
 
+		[TestMethod]
+		public void When_Has_Themes_Inline_Xaml()
+		{
+			var app = UnitTestsApp.App.EnsureApplication();
+
+			AssertContainsColorBrushResource(app.Resources, "PlayfulColorBrush", Colors.RosyBrown);
+			AssertContainsColorBrushResource(app.Resources, "LucrativeColorBrush", Colors.Azure);
+		}
+
+		[TestMethod]
+		public void When_Has_Themes_Merged_Xaml()
+		{
+			var app = UnitTestsApp.App.EnsureApplication();
+
+			var dark = app.Resources.MergedDictionaries.First().ThemeDictionaries["Dark"] as ResourceDictionary;
+
+			AssertContainsColorBrushResource(dark, "MoodyColorBrush", Colors.DarkKhaki);
+		}
+
 		private void AssertContainsColorBrushResource(ResourceDictionary resources, string key, Color expected)
 		{
+			Assert.IsNotNull(resources);
+
 			var brush = resources[key] as SolidColorBrush;
 			Assert.IsNotNull(brush);
 			Assert.AreEqual(expected, brush.Color);

@@ -9,6 +9,7 @@
 			<SolidColorBrush x:Key="PlayfulColorBrush"
 							 Color="RosyBrown" />
 		</ResourceDictionary>
+		<ResourceDictionary x:Key="Dark"  Source="Test_Dictionary_Theme.xaml" />
 	</ResourceDictionary.ThemeDictionaries>
 	<Style TargetType="Button"
 		   x:Key="ExplicitButtonStyle">
