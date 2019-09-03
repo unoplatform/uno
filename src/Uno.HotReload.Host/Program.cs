@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Globalization;
 using System.IO;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
+using Mono.Options;
 
 namespace Uno.HotReload.Host
 {
@@ -9,10 +11,30 @@ namespace Uno.HotReload.Host
 	{
 		static void Main(string[] args)
 		{
+			var httpPort = 0;
+
+			var p = new OptionSet() {
+				{
+					"httpPort=", s => {
+						if(!int.TryParse(s, NumberStyles.Integer, CultureInfo.InvariantCulture, out httpPort))
+						{
+							throw new ArgumentException($"The httpPort parameter is invalid {s}");
+						}
+					}
+				},
+			};
+			
+			p.Parse(args);
+
+			if(httpPort == 0)
+			{
+				throw new ArgumentException($"The httpPort parameter is required.");
+			}
+
 			var host = new WebHostBuilder()
 				.UseSetting(nameof(WebHostBuilderIISExtensions.UseIISIntegration), false.ToString())
 				.UseKestrel()
-				.UseUrls("http://*:5000/")
+				.UseUrls($"http://*:{httpPort}/")
 				.UseContentRoot(Directory.GetCurrentDirectory())
 				.UseStartup<Startup>()
 				.ConfigureAppConfiguration((hostingContext, config) =>

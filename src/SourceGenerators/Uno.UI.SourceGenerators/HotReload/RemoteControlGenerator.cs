@@ -33,7 +33,7 @@ namespace Uno.UI.SourceGenerators.NativeCtor
 
 				foreach(var addressInfo in addresses)
 				{
-					sb.AppendLineInvariant($"[assembly: global::Uno.UI.HotReload.ServerEndpointAttribute(\"{addressInfo.Address}\", \"{unoRemoteControlPort}\")]");
+					sb.AppendLineInvariant($"[assembly: global::Uno.UI.HotReload.ServerEndpointAttribute(\"{addressInfo.Address}\", {unoRemoteControlPort})]");
 				}
 
 				sb.AppendLineInvariant($"[assembly: global::Uno.UI.HotReload.ProjectConfigurationAttribute(");
