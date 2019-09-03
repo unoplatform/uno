@@ -44,6 +44,8 @@ namespace Windows.UI.Xaml.Controls
 
 		private void SetScrollableContainer()
 		{
+			_scrollableContainer = _sv;
+
 			if (this.FindFirstParent<TextBox>() != null)
 			{
 				var multiline = this.FindFirstChild<MultilineTextBoxView>();
@@ -52,8 +54,6 @@ namespace Windows.UI.Xaml.Controls
 					_scrollableContainer = multiline;
 				}
 			}
-
-			_scrollableContainer = _scrollableContainer ?? _sv;
 		}
 
 		partial void ChangeViewScroll(double? horizontalOffset, double? verticalOffset, bool disableAnimation)
