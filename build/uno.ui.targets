@@ -43,5 +43,9 @@
 	  <ResolvedAssemblies Include="@(ResolvedAssembliesFixed)" />
 	</ItemGroup>
   </Target>
+  
+  <ItemGroup>
+    <UnoSourceGeneratorAdditionalProperty Include="UnoRemoteControlPort" />
+  </ItemGroup>
 
 </Project>

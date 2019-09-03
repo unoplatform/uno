@@ -3,8 +3,11 @@ using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.ComponentModel.Composition;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Net;
+using System.Net.Sockets;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
@@ -23,7 +26,6 @@ namespace Uno.UI.HotReload.VS
 	{
 		private const string UnoPlatformOutputPane = "Uno Platform";
 		private const string FolderKind = "{66A26720-8FB5-11D2-AA7E-00C04F688DDE}";
-		private const string RemoteControlServerPort = "5000";
 		private const string RemoteControlServerPortProperty = "UnoRemoteControlPort";
 		private readonly DTE _dte;
 		private readonly DTE2 _dte2;
@@ -35,6 +37,8 @@ namespace Uno.UI.HotReload.VS
 		private Action<string> _warningAction;
 		private Action<string> _errorAction;
 		private System.Diagnostics.Process _process;
+
+		private int RemoteControlServerPort;
 
 		public EntryPoint(DTE2 dte2, string toolsPath, AsyncPackage asyncPackage, Action<Func<Task<Dictionary<string, string>>>> globalPropertiesProvider)
 		{
@@ -50,9 +54,9 @@ namespace Uno.UI.HotReload.VS
 		}
 
 		private async Task<Dictionary<string, string>> OnProvideGlobalPropertiesAsync()
-		{
-			return new Dictionary<string, string> { { RemoteControlServerPortProperty, RemoteControlServerPort } };
-		}
+			=> new Dictionary<string, string> {
+				{ RemoteControlServerPortProperty, RemoteControlServerPort.ToString(CultureInfo.InvariantCulture) }
+			};
 
 		private void SetupOutputWindow()
 		{
@@ -103,7 +107,7 @@ namespace Uno.UI.HotReload.VS
 		{
 			foreach(var project in await GetProjectsAsync())
 			{
-				SetGlobalProperty(project.FileName, RemoteControlServerPortProperty, RemoteControlServerPort);
+				SetGlobalProperty(project.FileName, RemoteControlServerPortProperty, RemoteControlServerPort.ToString(CultureInfo.InvariantCulture));
 			}
 
 			await StartServerAsync();
@@ -113,10 +117,12 @@ namespace Uno.UI.HotReload.VS
 		{
 			if (_process?.HasExited ?? true)
 			{
+				RemoteControlServerPort = GetTcpPort();
+
 				var sb = new StringBuilder();
 
 				var hostBinPath = Path.Combine(_toolsPath, "host", "Uno.HotReload.Host.dll");
-				string arguments = $"{hostBinPath}";
+				string arguments = $"{hostBinPath} --httpPort {RemoteControlServerPort}";
 				var pi = new ProcessStartInfo("dotnet", arguments)
 				{
 					UseShellExecute = false,
@@ -142,6 +148,15 @@ namespace Uno.UI.HotReload.VS
 				_process.BeginOutputReadLine();
 				_process.BeginErrorReadLine();
 			}
+		}
+
+		private static int GetTcpPort()
+		{
+			var l = new TcpListener(IPAddress.Loopback, 0);
+			l.Start();
+			var port = ((IPEndPoint)l.LocalEndpoint).Port;
+			l.Stop();
+			return port;
 		}
 
 		private async System.Threading.Tasks.Task<IEnumerable<EnvDTE.Project>> GetProjectsAsync()

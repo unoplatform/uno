@@ -23,10 +23,9 @@ namespace Uno.UI.HotReload
 
 		public Type AppType { get; }
 
-		private readonly string[] _serverAdresses;
+		private readonly (string endpoint, int port)[] _serverAdresses;
 		private WebSocket _webSocket;
 		private Dictionary<string, IRemoteControlProcessor> _processors = new Dictionary<string, IRemoteControlProcessor>();
-		private const int RemotePort = 5000;
 
 		private RemoteControlClient(Type appType)
 		{
@@ -35,7 +34,7 @@ namespace Uno.UI.HotReload
 			if(appType.Assembly.GetCustomAttributes(typeof(ServerEndpointAttribute), false) is ServerEndpointAttribute[] endpoints)
 			{
 				_serverAdresses = endpoints
-					.Select(e => e.Endpoint)
+					.Select(e => (endpoint: e.Endpoint, port: e.Port))
 					.ToArray();
 			}
 
@@ -53,14 +52,14 @@ namespace Uno.UI.HotReload
 		{
 			try
 			{
-				async Task<WebSocket> Connect(string endpoint, CancellationToken ct)
+				async Task<WebSocket> Connect(string endpoint, int port, CancellationToken ct)
 				{
 #if __WASM__
 					var s = new WasmWebSocket();
 #else
 					var s = new ClientWebSocket();
 #endif
-					await s.ConnectAsync(new Uri($"ws://{endpoint}:{RemotePort}/rc"), ct);
+					await s.ConnectAsync(new Uri($"ws://{endpoint}:{port}/rc"), ct);
 
 					return s;
 				}
@@ -71,7 +70,7 @@ namespace Uno.UI.HotReload
 
 					var cts = new CancellationTokenSource();
 
-					var task = Connect(s, cts.Token);
+					var task = Connect(s.endpoint, s.port, cts.Token);
 					return (task, cts);
 				}).ToArray();
 
