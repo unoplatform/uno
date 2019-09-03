@@ -119,7 +119,7 @@ namespace Uno.UI
 			/// It means you can put a `<ContentPresenter />` directly in the ControlTemplate and it will
 			/// be bound automatically to its TemplatedPatent's Content.
 			/// </summary>
-			public static bool UseImplicitContentFromTemplatedParent { get; set; } = true;
+			public static bool UseImplicitContentFromTemplatedParent { get; set; } = false;
 		}
 
 		public static class DataTemplateSelector
