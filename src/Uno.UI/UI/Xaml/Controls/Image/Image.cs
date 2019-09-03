@@ -344,7 +344,7 @@ namespace Windows.UI.Xaml.Controls
 					}
 				}
 
-				if (sourceSize.Width > availableSize.Width || sourceSize.Height > availableSize.Height)
+				if (sourceSize.Width > availableSize.Width || sourceSize.Height > availableSize.Height || (hasKnownWidth && hasKnownHeight))
 				{
 					var knownWidth = ImageControl.GetKnownWidth(availableSize.Width, sourceSize.Width);
 					var knownHeight = ImageControl.GetKnownHeight(availableSize.Height, sourceSize.Height);
