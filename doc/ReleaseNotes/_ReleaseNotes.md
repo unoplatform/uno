@@ -103,6 +103,7 @@
   - `StaticResource` not working inside `ResourceDictionary.ThemeDictionaries`
   - Using a `ThemeResource` on the wrong property type shouldn't raise compile-time error (to align with UWP)
 * Fix layout bug in Image control.
+* [#1387] `ComboBox`: Fix DataContext was propagated to `<ContentPresenter>` when there was no selected item, causing strange display behavior.
 
 ## Release 1.45.0
 ### Features
