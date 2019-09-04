@@ -12,7 +12,7 @@
 		<TextBlock>
 			Control DataContext: <Run Text="{Binding}" />
 			<LineBreak />
-			DataContenxt.Value: <Run Text="{Binding Value}" />
+			DataContext.Value: <Run Text="{Binding Value}" />
 		</TextBlock>
 
 		<ComboBox ItemsSource="{Binding Items}" DisplayMemberPath="Value" />
