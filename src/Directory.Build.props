@@ -30,6 +30,9 @@
     <DefaultLanguage>en-US</DefaultLanguage>
 
     <UnoSourceGeneratorUseGenerationHost>true</UnoSourceGeneratorUseGenerationHost>
+
+    <!-- Disable source link when not building on GitHub -->
+    <SourceLinkEnabled Condition="'$(BUILD_REPOSITORY_PROVIDER)'!='GitHub'">false</SourceLinkEnabled>
   </PropertyGroup>
 
   <PropertyGroup>
