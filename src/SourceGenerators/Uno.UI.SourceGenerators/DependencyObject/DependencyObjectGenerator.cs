@@ -558,14 +558,14 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 						__Store.ApplyCompiledBindings();
 					}}
 
-					private Uno.UI.DataBinding.ManagedWeakReference _selfWeakReference;
-					Uno.UI.DataBinding.ManagedWeakReference IWeakReferenceProvider.WeakReference 
+					private global::Uno.UI.DataBinding.ManagedWeakReference _selfWeakReference;
+					global::Uno.UI.DataBinding.ManagedWeakReference IWeakReferenceProvider.WeakReference 
 					{{
 						get
 						{{
 							if(_selfWeakReference == null)
 							{{
-								_selfWeakReference = Uno.UI.DataBinding.WeakReferencePool.RentSelfWeakReference(this);
+								_selfWeakReference = global::Uno.UI.DataBinding.WeakReferencePool.RentSelfWeakReference(this);
 							}}
 							
 							return _selfWeakReference;
