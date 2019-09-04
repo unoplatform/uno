@@ -102,6 +102,7 @@
 * [#1352](https://github.com/unoplatform/uno/issues/1352) `ThemeResource` bugfixes:
   - `StaticResource` not working inside `ResourceDictionary.ThemeDictionaries`
   - Using a `ThemeResource` on the wrong property type shouldn't raise compile-time error (to align with UWP)
+* Fix layout bug in Image control.
 
 ## Release 1.45.0
 ### Features
