@@ -139,6 +139,7 @@ jobs:
       ArtifactType: Container
 
 - job: Wasm_UITests_Compare
+  condition: eq(variables['Build.Repository.Provider'], 'GitHub')
   dependsOn: Wasm_UITests_Snap
 
   pool:
