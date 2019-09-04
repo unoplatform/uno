@@ -89,35 +89,13 @@ namespace Windows.UI.Xaml.Controls
 
 		public int SelectionStart
 		{
-			get
-			{
-				if (int.TryParse(GetProperty("selectionStart"), NumberStyles.Integer, CultureInfo.InvariantCulture, out var result))
-				{
-					return result;
-				}
-				else
-				{
-					return 0;
-				}
-			}
-
+			get => int.TryParse(GetProperty("selectionStart"), NumberStyles.Integer, CultureInfo.InvariantCulture, out var result) ? result : 0;
 			set => SetProperty("selectionStart", value.ToString());
 		}
 
 		public int SelectionEnd
 		{
-			get
-			{
-				if (int.TryParse(GetProperty("selectionEnd"), NumberStyles.Integer, CultureInfo.InvariantCulture, out var result))
-				{
-					return result;
-				}
-				else
-				{
-					return 0;
-				}
-			}
-
+			get => int.TryParse(GetProperty("selectionEnd"), NumberStyles.Integer, CultureInfo.InvariantCulture, out var result) ? result : 0;
 			set => SetProperty("selectionEnd", value.ToString());
 		}
 

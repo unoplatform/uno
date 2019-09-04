@@ -583,8 +583,8 @@ namespace Windows.UI.Xaml
 		{
 			if (_validatePropertyOwner)
 			{
-				var iFrameworkElement = _originalObjectType.Is(typeof(FrameworkElement));
-				var isMixinFrameworkElement = _originalObjectRef.Target is IFrameworkElement && !iFrameworkElement;
+				var isFrameworkElement = _originalObjectType.Is(typeof(FrameworkElement));
+				var isMixinFrameworkElement = _originalObjectRef.Target is IFrameworkElement && !isFrameworkElement;
 
 				if (
 					!_originalObjectType.Is(property.OwnerType)
