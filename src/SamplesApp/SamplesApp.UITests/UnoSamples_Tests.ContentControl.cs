@@ -21,9 +21,9 @@ namespace SamplesApp.UITests
 
 
 			var tb1 = _app.Marked("innerText");
-			Assert.AreEqual("ContentPresenter:  SampleControl.Presentation.SampleChooserViewModel", tb1.GetDependencyPropertyValue("Text").ToString());
+			Assert.AreEqual("ContentPresenter:  DataContext", tb1.GetDependencyPropertyValue("Text").ToString());
 			var tb2 = _app.Marked("innerText2");
-			Assert.AreEqual("ContentControl:  SampleControl.Presentation.SampleChooserViewModel", tb2.GetDependencyPropertyValue("Text").ToString());
+			Assert.AreEqual("ContentControl:  DataContext", tb2.GetDependencyPropertyValue("Text").ToString());
 
 			_app.Tap(c => c.Text("Click me"));
 
