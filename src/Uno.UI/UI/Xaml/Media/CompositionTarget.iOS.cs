@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using CoreAnimation;
 using Foundation;
 
@@ -40,7 +41,7 @@ namespace Windows.UI.Xaml.Media
 
 		private static void OnFrame()
 		{
-			_handlers.ForEach(h => h(null, null));
+			_handlers.ToList().ForEach(h => h(null, null));
 		}
 	}
 }

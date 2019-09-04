@@ -583,7 +583,17 @@ namespace Windows.UI.Xaml
 		{
 			if (_validatePropertyOwner)
 			{
-				if (!_originalObjectType.Is(property.OwnerType) && !property.IsAttached)
+				var isFrameworkElement = _originalObjectType.Is(typeof(FrameworkElement));
+				var isMixinFrameworkElement = _originalObjectRef.Target is IFrameworkElement && !isFrameworkElement;
+
+				if (
+					!_originalObjectType.Is(property.OwnerType)
+					&& !property.IsAttached
+
+					// Don't fail validation for properties that are located on non-FrameworkElement types
+					// e.g. ScrollContentPresenter, for which using the Name property should not fail.
+					&& !isMixinFrameworkElement
+				)
 				{
 					throw new InvalidOperationException(
 						$"The Dependency Property [{property.Name}] is owned by [{property.OwnerType}] and cannot be used on [{_originalObjectType}]"
