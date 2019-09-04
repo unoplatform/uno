@@ -215,15 +215,15 @@ namespace SampleControl.Presentation
 
 		private static readonly string[] _targetsToSkip =
 		{
-			/*Will be fixed along with bug #29117 */ 
+			/*Will be fixed along with bug #29117 */
 			"GridView.GridViewEmptyGroups",
 			"GridView.GridViewGrouped",
 			"GridView.GridViewGroupedMaxRowsTwo",
 
-			/*Will be fixed along with bug #29132 */ 
+			/*Will be fixed along with bug #29132 */
 			"ListView.ListViewGrouped_ItemContainerStyleSelector",
 
-			/*Will be fixed along with bug #29134 */ 
+			/*Will be fixed along with bug #29134 */
 			"TimePicker.TimePickerSelector_Simple",
 
 			"ScrollViewer.ScrollViewer_Padding",
@@ -468,7 +468,7 @@ namespace SampleControl.Presentation
 
 
 		/// <summary>
-		/// This method is used to get the list of samplechoosercontent that is present in the settings. 
+		/// This method is used to get the list of samplechoosercontent that is present in the settings.
 		/// </summary>
 		/// <param name="ct"></param>
 		/// <returns></returns>
@@ -684,7 +684,7 @@ namespace SampleControl.Presentation
 		}
 
 		/// <summary>
-		/// This method is used to get the list of samplechoosercontent that is present in the settings for favorites. 
+		/// This method is used to get the list of samplechoosercontent that is present in the settings for favorites.
 		/// </summary>
 		/// <param name="ct"></param>
 		/// <param name="getAllSamples">If true, will load favorites based on all samples and not just based on selected category</param>
@@ -719,34 +719,40 @@ namespace SampleControl.Presentation
 		/// <returns>The updated content</returns>
 		public async Task<object> UpdateContent(CancellationToken ct, SampleChooserContent newContent)
 		{
-			//Activator is used here in order to generate the view and bind it directly with the proper view model 
+			//Activator is used here in order to generate the view and bind it directly with the proper view model
 			var control = Activator.CreateInstance(newContent.ControlType);
 
-			if (newContent.ViewModelType != null && control is FrameworkElement fe)
+			if (control is ContentControl controlAsContentControl && !(controlAsContentControl.Content is Uno.UI.Samples.Controls.SampleControl))
 			{
-				var vm = Activator.CreateInstance(newContent.ViewModelType, fe.Dispatcher);
-				fe.DataContext = vm;
+				control = new Uno.UI.Samples.Controls.SampleControl
+				{
+					Content = control,
+					SampleDescription = newContent.Description
+				};
+			}
+
+			var container = new Border {Child = control as UIElement};
+
+			if (newContent.ViewModelType != null)
+			{
+				var vm = Activator.CreateInstance(newContent.ViewModelType, container.Dispatcher);
+				container.DataContext = vm;
 
 				if(vm is IDisposable disposable)
 				{
 					void Dispose(object snd, RoutedEventArgs e)
 					{
-						fe.Unloaded -= Dispose;
+						container.Unloaded -= Dispose;
 						disposable.Dispose();
 					}
 
-					fe.Unloaded += Dispose;
+					container.Unloaded += Dispose;
 				}
 			}
-
-			var controlContainsSampleControl = (control as UserControl)?.Content is Uno.UI.Samples.Controls.SampleControl;
-			if (!controlContainsSampleControl)
+			else
 			{
-				control = new Uno.UI.Samples.Controls.SampleControl()
-				{
-					Content = control,
-					SampleDescription = newContent.Description
-				};
+				// Don't propagate parent's DataContext to children
+				container.DataContext = null;
 			}
 
 			var recents = await GetRecentSamples(ct);
@@ -761,24 +767,21 @@ namespace SampleControl.Presentation
 
 			CurrentSelectedSample = newContent;
 
-			//RETURN IF THE CONTENT IS ALREADY IN THE LIST
-			if (recents.Contains(newContent))
+			if (!recents.Contains(newContent))
 			{
-				return control;
+				recents.Insert(0, newContent);
+
+				if (recents.Count > _numberOfRecentSamplesVisible)
+				{
+					recents.RemoveAt(_numberOfRecentSamplesVisible);
+				}
+
+				await SetFile(SampleChooserLRUConstant, recents.ToArray());
+
+				RecentSamples = recents;
 			}
 
-			recents.Insert(0, newContent);
-
-			if (recents.Count > _numberOfRecentSamplesVisible)
-			{
-				recents.RemoveAt(_numberOfRecentSamplesVisible);
-			}
-
-			await SetFile(SampleChooserLRUConstant, recents.ToArray());
-
-			RecentSamples = recents;
-
-			return control;
+			return container;
 		}
 
 		private async Task<SampleChooserCategory> GetCategory(SampleChooserContent content)

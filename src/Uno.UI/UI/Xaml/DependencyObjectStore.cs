@@ -1319,7 +1319,7 @@ namespace Windows.UI.Xaml
 			var propertyMetadata = propertyDetails.Metadata;
 
 			// We can reuse the weak reference, otherwise capture the weak reference to this instance.
-			var instanceRef = _originalObjectRef != null ? _originalObjectRef : _thisWeakRef;
+			var instanceRef = _originalObjectRef ?? _thisWeakRef;
 
 			if (propertyMetadata is FrameworkPropertyMetadata frameworkPropertyMetadata)
 			{

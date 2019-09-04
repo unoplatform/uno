@@ -24,6 +24,8 @@ namespace Uno.UI.Samples.Content.UITests.ContentPresenter
         public ContentPresenter_Template()
         {
             this.InitializeComponent();
+
+            DataContext = nameof(DataContext);
         }
 
 		private void Button_Click(object sender, RoutedEventArgs e)
