@@ -9,14 +9,16 @@ namespace Windows.UI.Xaml.Controls
 {
 	public partial class UIElementCollection : BatchCollection<UIElement>
 	{
-        private List<UIElement> _elements ;
+		private readonly List<UIElement> _elements;
+		private readonly FrameworkElement _view;
 
-        public UIElementCollection(FrameworkElement view) : base(view)
-        {
+		public UIElementCollection(FrameworkElement view) : base(view)
+		{
 			_elements = view._children;
+			this._view = view;
 		}
 
-		protected override void AddCore(View item) => _elements.Add(item);
+		protected override void AddCore(View item) => _view.AddChild(item);
 
 		protected override IEnumerable<View> ClearCore()
 		{
@@ -44,7 +46,7 @@ namespace Windows.UI.Xaml.Controls
 
 		protected override int IndexOfCore(View item) => _elements.IndexOf(item);
 
-		protected override void InsertCore(int index, View item) => _elements.Insert(index, item);
+		protected override void InsertCore(int index, View item) => _view.AddChild(item, index);
 
 		protected override void MoveCore(uint oldIndex, uint newIndex)
 		{
@@ -54,11 +56,14 @@ namespace Windows.UI.Xaml.Controls
 		protected override View RemoveAtCore(int index)
 		{
 			var item = _elements.ElementAtOrDefault(index);
-			_elements.RemoveAt(index);
+			if (item != null)
+			{
+				_view.RemoveChild(item);
+			}
 			return item;
 		}
 
-		protected override bool RemoveCore(View item) => _elements.Remove(item);
+		protected override bool RemoveCore(View item) => _view.RemoveChild(item) != null;
 
 		protected override View SetAtIndexCore(int index, View value) => _elements[index] = value;
 	}
