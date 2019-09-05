@@ -183,6 +183,15 @@
       "contributions": [
         "blog"
       ]
+    },
+    {
+      "login": "nickrandolph",
+      "name": "Nick Randolph",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/1614057?v=4",
+      "profile": "http://nicksnettravels.builttoroam.com",
+      "contributions": [
+        "blog"
+      ]
     }
   ],
   "contributorsPerLine": 5,
