@@ -25,7 +25,7 @@ namespace Windows.UI.Xaml.Controls
         partial void Initialize();
         private void OnChildrenChanged()
         {
-            throw new NotImplementedException();
+			
         }
 
 		public override IEnumerable<View> GetChildren()

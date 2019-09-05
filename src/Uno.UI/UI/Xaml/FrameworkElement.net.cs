@@ -23,7 +23,7 @@ namespace Windows.UI.Xaml
 		public View AddChild(View child)
 		{
 			_children.Add(child);
-			child.SetParent(this);
+			OnAddChild(child);
 
 			return child;
 		}
@@ -31,9 +31,19 @@ namespace Windows.UI.Xaml
 		public View AddChild(View child, int index)
 		{
 			_children.Insert(index, child);
-			child.SetParent(this);
+			OnAddChild(child);
 
 			return child;
+		}
+
+		private void OnAddChild(View child)
+		{
+			child.SetParent(this);
+			if (child is FrameworkElement fe)
+			{
+				fe.IsLoaded = IsLoaded;
+				fe.EnterTree();
+			}
 		}
 
 		public View RemoveChild(View child)
@@ -75,12 +85,12 @@ namespace Windows.UI.Xaml
 			MeasureCallCount++;
 			AvailableMeasureSize = slotSize;
 
-			if(DesiredSizeSelector != null)
+			if (DesiredSizeSelector != null)
 			{
 				DesiredSize = DesiredSizeSelector(slotSize);
 				RequestedDesiredSize = DesiredSize;
 			}
-			else if(RequestedDesiredSize != null)
+			else if (RequestedDesiredSize != null)
 			{
 				DesiredSize = RequestedDesiredSize.Value;
 			}
@@ -93,8 +103,23 @@ namespace Windows.UI.Xaml
 		public void ForceLoaded()
 		{
 			IsLoaded = true;
-			OnLoading();
-			OnLoaded();
+			EnterTree();
+		}
+
+		private void EnterTree()
+		{
+			if (IsLoaded)
+			{
+				ApplyCompiledBindings();
+				OnLoading();
+				OnLoaded();
+
+				foreach (var child in _children.OfType<FrameworkElement>())
+				{
+					child.IsLoaded = IsLoaded;
+					child.EnterTree();
+				}
+			}
 		}
 
 		public int InvalidateMeasureCallCount { get; private set; }
