@@ -114,7 +114,7 @@ namespace Windows.UI.Xaml
 		private static PointerRoutedEventArgs PayloadToPointerArgs(object snd, string payload, bool isInContact, bool canBubble = true, bool? pressed = null)
 		{
 			var parts = payload?.Split(';');
-			if (parts?.Length != 8)
+			if (parts?.Length != 9)
 			{
 				return null;
 			}
@@ -127,6 +127,7 @@ namespace Windows.UI.Xaml
 			var button = int.Parse(parts[5], CultureInfo.InvariantCulture); // -1: none, 0:main, 1:middle, 2:other (commonly main=left, other=right)
 			var typeStr = parts[6];
 			var srcHandle = int.Parse(parts[7]);
+			var timestamp = ulong.Parse(parts[8]);
 
 			var position = new Point(x, y);
 			var pointerType = ConvertPointerTypeString(typeStr);
@@ -159,6 +160,7 @@ namespace Windows.UI.Xaml
 			var src = GetElementFromHandle(srcHandle) ?? (UIElement)snd;
 
 			return new PointerRoutedEventArgs(
+				timestamp,
 				pointerId,
 				pointerType,
 				position,
