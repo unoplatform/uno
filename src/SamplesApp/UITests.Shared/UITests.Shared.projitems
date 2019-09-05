@@ -1189,6 +1189,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ImageTests\ImageSourceWriteableBitmapInvalidate.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\Slider\Slider_Transformed.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -4472,5 +4476,10 @@
     <Folder Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ChatBox\" />
     <Folder Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\DatePicker\Models\" />
     <Folder Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\TimePicker\Model\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ImageTests\ImageSourceWriteableBitmapInvalidate.xaml.cs">
+      <DependentUpon>ImageSourceWriteableBitmapInvalidate.xaml</DependentUpon>
+    </Compile>
   </ItemGroup>
 </Project>

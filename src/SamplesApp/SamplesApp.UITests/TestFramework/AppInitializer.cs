@@ -94,6 +94,7 @@ namespace SamplesApp.UITests
 					.ScreenShotsPath(TestContext.CurrentContext.TestDirectory)
 #if DEBUG
 					.Headless(false)
+					.SeleniumArgument("--remote-debugging-port=9222")
 #endif
 					.StartApp();
 

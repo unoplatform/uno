@@ -103,24 +103,36 @@ namespace Windows.UI.Xaml.Controls
 
 			if (source is WriteableBitmap wb)
 			{
-				if (wb.PixelBuffer is InMemoryBuffer mb)
+				void setImageContent()
 				{
-					var gch = GCHandle.Alloc(mb.Data, GCHandleType.Pinned);
-					var pinnedData = gch.AddrOfPinnedObject();
-
-					try
+					if (wb.PixelBuffer is InMemoryBuffer mb)
 					{
-						WebAssemblyRuntime.InvokeJS(
-							"Uno.UI.WindowManager.current.setImageRawData(" + _htmlImage.HtmlId + ", " + pinnedData + ", " + wb.PixelWidth + ", " + wb.PixelHeight + ");"
-						);
+						var gch = GCHandle.Alloc(mb.Data, GCHandleType.Pinned);
+						var pinnedData = gch.AddrOfPinnedObject();
 
-						InvalidateMeasure();
-					}
-					finally
-					{
-						gch.Free();
+						try
+						{
+							WebAssemblyRuntime.InvokeJS(
+								"Uno.UI.WindowManager.current.setImageRawData(" + _htmlImage.HtmlId + ", " + pinnedData + ", " + wb.PixelWidth + ", " + wb.PixelHeight + ");"
+							);
+
+							InvalidateMeasure();
+						}
+						finally
+						{
+							gch.Free();
+						}
 					}
 				}
+
+				void OnInvalidated(object sdn, EventArgs args)
+				{
+					setImageContent();
+				}
+
+				wb.Invalidated += OnInvalidated;
+				_sourceDisposable.Disposable = Disposable.Create(() => wb.Invalidated -= OnInvalidated);
+				setImageContent();
 			}
 			else
 			{
