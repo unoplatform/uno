@@ -167,7 +167,6 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			RegisterEvents();
 		}
 
-#if __IOS__ || __WASM__ || __ANDROID__ // This should be for all platforms once the PointerEvents are raised properly on all platforms
 		/// <inheritdoc />
 		protected override void OnPointerEntered(PointerRoutedEventArgs args)
 		{
@@ -232,57 +231,6 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 			base.OnPointerReleased(args);
 		}
-#else
-		protected override void OnPointerPressed(PointerRoutedEventArgs args)
-		{
-			base.OnPointerPressed(args);
-
-			IsPointerOver = true;
-			IsPointerPressed = true;
-
-#if !__WASM__
-			// TODO: Remove when Focus is implemented properly.
-			// Focus the button when pressed down to ensure that any focused TextBox loses focus 
-			// so that TwoWay binding (to source) is triggered before the button is released and Click is raised.
-			Focus(FocusState.Pointer);
-#endif
-		}
-
-		protected override void OnPointerReleased(PointerRoutedEventArgs args)
-		{
-			base.OnPointerReleased(args);
-
-			IsPointerOver = false;
-			IsPointerPressed = false;
-		}
-
-		protected override void OnPointerMoved(PointerRoutedEventArgs args)
-		{
-			base.OnPointerMoved(args);
-		}
-
-		protected override void OnPointerCanceled(PointerRoutedEventArgs args)
-		{
-			base.OnPointerCanceled(args);
-
-			IsPointerOver = false;
-			IsPointerPressed = false;
-		}
-
-		protected override void OnPointerEntered(PointerRoutedEventArgs args)
-		{
-			base.OnPointerEntered(args);
-
-			IsPointerOver = true;
-		}
-
-		protected override void OnPointerExited(PointerRoutedEventArgs args)
-		{
-			base.OnPointerExited(args);
-
-			IsPointerOver = false;
-		}
-#endif
 
 		// Might be changed if the method does not conflict in UnoViewGroup.
 		internal override bool IsViewHit()

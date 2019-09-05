@@ -65,8 +65,6 @@ namespace Windows.UI.Xaml
 		}
 		#endregion
 
-#if __IOS__ || __WASM__ || __ANDROID__ // This is temporary until all platforms Pointers have been reworked
-
 		private /* readonly but partial */ Lazy<GestureRecognizer> _gestures;
 
 		// ctor
@@ -323,20 +321,8 @@ namespace Windows.UI.Xaml
 			return handledInManaged;
 		}
 		#endregion
-#else
-		private readonly List<Pointer> _pointCaptures = new List<Pointer>();
 
-		// ctor
-		private void InitializePointers()
-		{
-			this.SetValue(PointerCapturesProperty, _pointCaptures); // Note: On UWP this is done only on first capture
-		}
-
-		internal bool IsPointerPressed { get; set; } // TODO: 'Set' should be private, but we need to update all controls that are setting
-		internal bool IsPointerOver { get; set; } // TODO: 'Set' should be private, but we need to update all controls that are setting
-#endif
-
-		#region Pointer over state (Usually updated by the partial API OnNative***)
+		#region Pointer over state (Updated by the partial API OnNative***)
 		/// <summary>
 		/// Indicates if a pointer (no matter the pointer) is currently over the element (i.e. OverState)
 		/// </summary>
@@ -368,7 +354,7 @@ namespace Windows.UI.Xaml
 		}
 		#endregion
 
-		#region Pointer pressed state (Usually updated by the partial API OnNative***)
+		#region Pointer pressed state (Updated by the partial API OnNative***)
 		/// <summary>
 		/// Indicates if a pointer was pressed while over the element (i.e. PressedState)
 		/// </summary>
@@ -400,7 +386,7 @@ namespace Windows.UI.Xaml
 		}
 		#endregion
 
-		#region Pointer capture state
+		#region Pointer capture state (Updated by the partial API OnNative***)
 		/*
 		 * About pointer capture
 		 *
