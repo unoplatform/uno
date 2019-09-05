@@ -1,5 +1,5 @@
 # Uno Platform - Build Mobile, Desktop and WebAssembly apps with C# and XAML. Today.
-[![Gitter](https://badges.gitter.im/uno-platform/Lobby.svg)](https://gitter.im/uno-platform/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge) [![All Contributors](https://img.shields.io/badge/all_contributors-14-orange.svg?style=flat-square)](#contributors)
+[![Gitter](https://badges.gitter.im/uno-platform/Lobby.svg)](https://gitter.im/uno-platform/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge) [![All Contributors](https://img.shields.io/badge/all_contributors-15-orange.svg?style=flat-square)](#contributors)
 
 # What is the Uno Platform
 
@@ -118,6 +118,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
     <td align="center"><a href="https://github.com/DysnomianC"><img src="https://avatars1.githubusercontent.com/u/20263707?v=4" width="100px;" alt="Dysnomian Charles"/><br /><sub><b>Dysnomian Charles</b></sub></a><br /><a href="https://github.com/unoplatform/uno/commits?author=DysnomianC" title="Code">💻</a></td>
     <td align="center"><a href="https://github.com/jeanplevesque"><img src="https://avatars3.githubusercontent.com/u/39710855?v=4" width="100px;" alt="Jean-Philippe Lévesque"/><br /><sub><b>Jean-Philippe Lévesque</b></sub></a><br /><a href="https://github.com/unoplatform/uno/commits?author=jeanplevesque" title="Code">💻</a></td>
     <td align="center"><a href="https://github.com/Xiaoy312"><img src="https://avatars1.githubusercontent.com/u/2359550?v=4" width="100px;" alt="Xiaotian Gu"/><br /><sub><b>Xiaotian Gu</b></sub></a><br /><a href="https://github.com/unoplatform/uno/commits?author=Xiaoy312" title="Code">💻</a></td>
+    <td align="center"><a href="http://www.lhotka.net"><img src="https://avatars1.githubusercontent.com/u/2333134?v=4" width="100px;" alt="Rockford Lhotka"/><br /><sub><b>Rockford Lhotka</b></sub></a><br /><a href="#blog-rockfordlhotka" title="Blogposts">📝</a></td>
   </tr>
 </table>
 
