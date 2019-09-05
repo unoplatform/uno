@@ -101,15 +101,6 @@ namespace Windows.UI.Xaml
 
 		internal static RoutedEvent LostFocusEvent { get; } = new RoutedEvent(RoutedEventFlag.LostFocus);
 
-		/// <summary>
-		/// Allow access to "native" tapped before bubbling starts
-		/// </summary>
-		/// <remarks>
-		/// Mostly used for Button.Click which needs to be raised
-		/// before the "Tapped" routed event starts bubbling.
-		/// </remarks>
-		internal EventHandler PreRaiseTapped;
-
 		private struct RoutedEventHandlerInfo
 		{
 			internal RoutedEventHandlerInfo(object handler, bool handledEventsToo)

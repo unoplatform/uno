@@ -31,8 +31,6 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			RegisterEvents();
 
 			OnCanExecuteChanged();
-
-			PreRaiseTapped += OnPreRaiseTapped;
 		}
 
 		protected override void OnUnloaded()
@@ -40,15 +38,6 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			base.OnUnloaded();
 			_isEnabledSubscription.Disposable = null;
 			_touchSubscription.Disposable = null;
-
-			PreRaiseTapped -= OnPreRaiseTapped;
-		}
-
-		private void OnPreRaiseTapped(object sender, EventArgs e)
-		{
-			// This even is raised only when the source is a Uno-managed control
-			// (when not using native styling)
-			OnClick();
 		}
 
 		partial void OnIsEnabledChangedPartial(bool oldValue, bool newValue)
