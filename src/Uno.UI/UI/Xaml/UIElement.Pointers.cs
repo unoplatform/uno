@@ -81,9 +81,21 @@ namespace Windows.UI.Xaml
 			_gestures = new Lazy<GestureRecognizer>(CreateGestureRecognizer);
 
 			InitializePointersPartial();
+			if (this is FrameworkElement fwElt)
+			{
+				fwElt.Unloaded += OnPointersUnloaded;
+			}
 		}
 
 		partial void InitializePointersPartial();
+
+		private static void OnPointersUnloaded(object sender, RoutedEventArgs args)
+		{
+			if (sender is UIElement elt)
+			{
+				elt.ReleasePointerCaptures();
+			}
+		}
 
 		#region Gestures recognition
 		private GestureRecognizer CreateGestureRecognizer()
