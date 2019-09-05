@@ -154,20 +154,195 @@ namespace Windows.UI.Xaml
 		}
 		#endregion
 
-		#region Pointer states (Usually updated by the partial API OnNative***)
-		/// <summary>
-		/// Indicates if a pointer was pressed while over the element (i.e. PressedState)
-		/// </summary>
-		internal bool IsPointerPressed { get; set; } // TODO: 'Set' should be private, but we need to update all controls that are setting
+		#region Partial API to raise pointer events and gesture recognition (OnNative***)
+		private bool OnNativePointerEnter(PointerRoutedEventArgs args)
+		{
+			// We override the isOver for the relevancy check as we will update it right after.
+			var isIrrelevant = ValidateAndUpdateCapture(args, isOver: true);
+			var handledInManaged = SetOver(args, true, muteEvent: isIrrelevant);
 
+			return handledInManaged;
+		}
+
+		private bool OnNativePointerDown(PointerRoutedEventArgs args)
+		{
+			var isIrrelevant = ValidateAndUpdateCapture(args, isOver: true);
+			var handledInManaged = SetPressed(args, true, muteEvent: isIrrelevant);
+
+			if (isIrrelevant)
+			{
+				return handledInManaged; // always false, as the event was mute
+			}
+
+			if (_gestures.IsValueCreated)
+			{
+				// We need to process only events that are bubbling natively to this control,
+				// if they are bubbling in managed it means that they were handled by a child control,
+				// so we should not use them for gesture recognition.
+				_gestures.Value.ProcessDownEvent(args.GetCurrentPoint(this));
+			}
+
+			return handledInManaged;
+		}
+
+		// This is for iOS and Android which not raising the Exit properly and for which we have to re-compute the over state for each move
+		private bool OnNativePointerMoveWithOverCheck(PointerRoutedEventArgs args, bool isOver)
+		{
+			var handledInManaged = false;
+			var isIrrelevant = ValidateAndUpdateCapture(args, isOver);
+
+			handledInManaged |= SetOver(args, true, muteEvent: isIrrelevant);
+
+			if (isIrrelevant)
+			{
+				return handledInManaged; // always false, as the event was mute
+			}
+
+			args.Handled = false;
+			handledInManaged |= RaiseEvent(PointerMovedEvent, args);
+
+			if (_gestures.IsValueCreated)
+			{
+				// We need to process only events that are bubbling natively to this control,
+				// if they are bubbling in managed it means that they were handled by a child control,
+				// so we should not use them for gesture recognition.
+				_gestures.Value.ProcessMoveEvents(args.GetIntermediatePoints(this));
+			}
+
+			return handledInManaged;
+		}
+
+		private bool OnNativePointerMove(PointerRoutedEventArgs args)
+		{
+			var isIrrelevant = ValidateAndUpdateCapture(args);
+
+			if (isIrrelevant)
+			{
+				return false;
+			}
+
+			args.Handled = false;
+			var handledInManaged = RaiseEvent(PointerMovedEvent, args);
+
+			if (_gestures.IsValueCreated)
+			{
+				// We need to process only events that are bubbling natively to this control,
+				// if they are bubbling in managed it means that they were handled by a child control,
+				// so we should not use them for gesture recognition.
+				_gestures.Value.ProcessMoveEvents(args.GetIntermediatePoints(this));
+			}
+
+			return handledInManaged;
+		}
+
+		private bool OnNativePointerUp(PointerRoutedEventArgs args)
+		{
+			var handledInManaged = false;
+			var isIrrelevant = ValidateAndUpdateCapture(args, out var isOver);
+
+			handledInManaged |= SetPressed(args, false, muteEvent: isIrrelevant);
+
+			if (isIrrelevant)
+			{
+				return handledInManaged; // always false as SetPressed with isPointerCancelled==true always returns false;
+			}
+
+			// Note: We process the UpEvent between Release and Exited as the gestures like "Tap"
+			//		 are fired between those events.
+			if (_gestures.IsValueCreated)
+			{
+				// We need to process only events that are bubbling natively to this control,
+				// if they are bubbling in managed it means that they where handled a child control,
+				// so we should not use them for gesture recognition.
+				_gestures.Value.ProcessUpEvent(args.GetCurrentPoint(this));
+			}
+
+			// We release the captures on up but only when pointer is not over the control (i.e. mouse that moved away)
+			if (!isOver) // so isCaptured == true as isIrrelevant was false
+			{
+				handledInManaged |= ReleaseCapture(args);
+			}
+
+			return handledInManaged;
+		}
+
+		private bool OnNativePointerExited(PointerRoutedEventArgs args)
+		{
+			var handledInManaged = false;
+			var isIrrelevant = ValidateAndUpdateCapture(args);
+
+			handledInManaged |= SetOver(args, false, muteEvent: isIrrelevant);
+
+			// We release the captures on exit when pointer is not pressed the control
+			// Note: for a "Tap" with a finger the sequence is Up / Exited / Lost, so the lost cannot be raised on Up
+			if (!IsPressed(args.Pointer))
+			{
+				handledInManaged |= ReleaseCapture(args);
+			}
+
+			return handledInManaged;
+		}
+
+		/// <summary>
+		/// When the system cancel a pointer pressed, either
+		/// 1. because the pointing device was lost/disconnected,
+		/// 2. or the system detected something meaning full and will handle this pointer internally.
+		/// This second case is the more common (e.g. ScrollViewer) and should be indicated using the <paramref name="isSwallowedBySystem"/> flag.
+		/// </summary>
+		/// <param name="isSwallowedBySystem">Indicates that the pointer was muted by the system which will handle it internally.</param>
+		private bool OnNativePointerCancel(PointerRoutedEventArgs args, bool isSwallowedBySystem)
+		{
+			var isIrrelevant = ValidateAndUpdateCapture(args, out _); // Check this *before* updating the sate!
+
+			// When a pointer is cancelled / swallowed by the system, we don't even receive "Released" nor "Exited"
+			SetPressed(args, false, muteEvent: true);
+			SetOver(args, false, muteEvent: true);
+
+			if (isIrrelevant)
+			{
+				return false;
+			}
+		
+			if (_gestures.IsValueCreated)
+			{
+				_gestures.Value.CompleteGesture();
+			}
+
+			var handledInManaged = false;
+			if (isSwallowedBySystem)
+			{
+				handledInManaged |= ReleaseCapture(args, forceCaptureLostEvent: true);
+			}
+			else
+			{
+				args.Handled = false;
+				handledInManaged |= RaiseEvent(PointerCanceledEvent, args);
+				handledInManaged |= ReleaseCapture(args);
+			}
+
+			return handledInManaged;
+		}
+		#endregion
+#else
+		private readonly List<Pointer> _pointCaptures = new List<Pointer>();
+
+		// ctor
+		private void InitializePointers()
+		{
+			this.SetValue(PointerCapturesProperty, _pointCaptures); // Note: On UWP this is done only on first capture
+		}
+
+		internal bool IsPointerPressed { get; set; } // TODO: 'Set' should be private, but we need to update all controls that are setting
+		internal bool IsPointerOver { get; set; } // TODO: 'Set' should be private, but we need to update all controls that are setting
+#endif
+
+		#region Pointer over state (Usually updated by the partial API OnNative***)
 		/// <summary>
 		/// Indicates if a pointer (no matter the pointer) is currently over the element (i.e. OverState)
 		/// </summary>
 		internal bool IsPointerOver { get; set; } // TODO: 'Set' should be private, but we need to update all controls that are setting
 
 		internal bool IsOver(Pointer pointer) => IsPointerOver;
-
-		internal bool IsPressed(Pointer pointer) => IsPointerPressed;
 
 		private bool SetOver(PointerRoutedEventArgs args, bool isOver, bool muteEvent = false)
 		{
@@ -191,6 +366,15 @@ namespace Windows.UI.Xaml
 				return RaiseEvent(PointerExitedEvent, args);
 			}
 		}
+		#endregion
+
+		#region Pointer pressed state (Usually updated by the partial API OnNative***)
+		/// <summary>
+		/// Indicates if a pointer was pressed while over the element (i.e. PressedState)
+		/// </summary>
+		internal bool IsPointerPressed { get; set; } // TODO: 'Set' should be private, but we need to update all controls that are setting
+
+		internal bool IsPressed(Pointer pointer) => IsPointerPressed;
 
 		private bool SetPressed(PointerRoutedEventArgs args, bool isPressed, bool muteEvent = false)
 		{
@@ -214,273 +398,31 @@ namespace Windows.UI.Xaml
 				return RaiseEvent(PointerReleasedEvent, args);
 			}
 		}
-
-		private bool IsIrrelevant(PointerRoutedEventArgs args)
-			=> IsIrrelevant(args, IsOver(args.Pointer));
-
-		private bool IsIrrelevant(PointerRoutedEventArgs args, out bool isOver)
-			=> IsIrrelevant(args, isOver = IsOver(args.Pointer));
-
-		private bool IsIrrelevant(PointerRoutedEventArgs args, bool isOver)
-		{
-			// We might receive some unexpected move/up/cancel for a pointer over an element,
-			// we have to mute them to avoid invalid event sequence.
-			// Notes:
-			//   iOS:  This may happen on iOS where the pointers are implicitly captured.
-			//   Android:  This may happen on Android where the pointers are implicitly captured.
-			//   WASM: On wasm, if this check mutes your event, it's because you didn't received the "pointerenter" (not bubbling natively).
-			//         This is usually because your control is covered by an element which is IsHitTestVisible == true / has transparent background.
-
-			PointerCapture capture = default;
-			if (!(_allCaptures?.TryGetValue(args.Pointer, out capture) ?? false))
-			{
-				return !isOver;
-			}
-
-			if (capture.Owner == this)
-			{
-				capture.LastDispatchedEventFrameId = args.FrameId;
-				return false;
-			}
-			else
-			{
-				// We should dispatch the event only if the control which has captured the pointer has already dispatched the event
-				// (Which actually means that the current control is a parent of the control which has captured the pointer)
-				// Remarks: This is not enough to determine parent-child relationship when we dispatch multiple events base on the same native event,
-				//			(as they will all have the same FrameId), however in that case we dispatch events layer per layer
-				//			instead of bubbling a single event before raising the next one, so we are safe.
-				//			The only limitation would be when mixing native vs. managed bubbling, but this check only prevents
-				//			the leaf of the tree to raise the event, so we cannot mix bubbling mode in that case.
-				return capture.LastDispatchedEventFrameId <= args.FrameId;
-			}
-		}
-
-		private bool ReleaseCaptures(PointerRoutedEventArgs args, bool forceCaptureLostEvent = false)
-		{
-			if ((_localCaptures?.Count ?? 0) > 0)
-			{
-				ReleasePointerCaptures();
-				args.Handled = false;
-				return RaiseEvent(PointerCaptureLostEvent, args);
-			}
-			else if (forceCaptureLostEvent)
-			{
-				return RaiseEvent(PointerCaptureLostEvent, args);
-			}
-			else
-			{
-				return false;
-			}
-		}
 		#endregion
 
-		#region Partial API to raise pointer events and gesture recognition (OnNative***)
-		private bool OnNativePointerEnter(PointerRoutedEventArgs args)
-		{
-			// We override the isOver for the relevancy check as we will update it right after.
-			var isIrrelevant = IsIrrelevant(args, isOver: true);
-
-			var handledInManaged = SetOver(args, true, muteEvent: isIrrelevant);
-
-			return handledInManaged;
-		}
-
-		private bool OnNativePointerDown(PointerRoutedEventArgs args)
-		{
-			// No needs to check relevancy: if the pointer is pressed, we assume it's over and not captured ... at least until we handle multi touch!
-
-			var handledInManaged = SetPressed(args, true);
-
-			if (_gestures.IsValueCreated)
-			{
-				// We need to process only events that are bubbling natively to this control,
-				// if they are bubbling in managed it means that they were handled by a child control,
-				// so we should not use them for gesture recognition.
-				_gestures.Value.ProcessDownEvent(args.GetCurrentPoint(this));
-			}
-
-			return handledInManaged;
-		}
-
-		// This is for iOS and Android which not raising the Exit properly and for which we have to re-compute the over state for each move
-		private bool OnNativePointerMoveWithOverCheck(PointerRoutedEventArgs args, bool isOver)
-		{
-			var handledInManaged = false;
-			var isIrrelevant = IsIrrelevant(args, isOver);
-
-			handledInManaged |= SetOver(args, true, muteEvent: isIrrelevant);
-
-			if (isIrrelevant)
-			{
-				return handledInManaged;
-			}
-
-			args.Handled = false;
-			handledInManaged |= RaiseEvent(PointerMovedEvent, args);
-
-			if (_gestures.IsValueCreated)
-			{
-				// We need to process only events that are bubbling natively to this control,
-				// if they are bubbling in managed it means that they were handled by a child control,
-				// so we should not use them for gesture recognition.
-				_gestures.Value.ProcessMoveEvents(args.GetIntermediatePoints(this));
-			}
-
-			return handledInManaged;
-		}
-
-		private bool OnNativePointerMove(PointerRoutedEventArgs args)
-		{
-			if (IsIrrelevant(args))
-			{
-				return false;
-			}
-
-			args.Handled = false;
-			var handledInManaged = RaiseEvent(PointerMovedEvent, args);
-
-			if (_gestures.IsValueCreated)
-			{
-				// We need to process only events that are bubbling natively to this control,
-				// if they are bubbling in managed it means that they were handled by a child control,
-				// so we should not use them for gesture recognition.
-				_gestures.Value.ProcessMoveEvents(args.GetIntermediatePoints(this));
-			}
-
-			return handledInManaged;
-		}
-
-		private bool OnNativePointerUp(PointerRoutedEventArgs args)
-		{
-			var handledInManaged = false;
-			var isIrrelevant = IsIrrelevant(args, out var isOver);
-
-			handledInManaged |= SetPressed(args, false, muteEvent: isIrrelevant);
-
-			if (isIrrelevant)
-			{
-				return handledInManaged; // always false as SetPressed with isPointerCancelled==true always returns false;
-			}
-
-			// Note: We process the UpEvent between Release and Exited as the gestures like "Tap"
-			//		 are fired between those events.
-			if (_gestures.IsValueCreated)
-			{
-				// We need to process only events that are bubbling natively to this control,
-				// if they are bubbling in managed it means that they where handled a child control,
-				// so we should not use them for gesture recognition.
-				_gestures.Value.ProcessUpEvent(args.GetCurrentPoint(this));
-			}
-
-			// We release the captures on up but only when pointer is not over the control (i.e. mouse that moved away)
-			if (!isOver) // so isCaptured == true as isIrrelevant was false
-			{
-				handledInManaged |= ReleaseCaptures(args);
-			}
-
-			return handledInManaged;
-		}
-
-		private bool OnNativePointerExited(PointerRoutedEventArgs args)
-		{
-			var handledInManaged = false;
-			var isIrrelevant = IsIrrelevant(args);
-
-			handledInManaged |= SetOver(args, false, muteEvent: isIrrelevant);
-
-			// We release the captures on exit when pointer is not pressed the control
-			// Note: for a "Tap" with a finger the sequence is Up / Exited / Lost, so the lost cannot be raised on Up
-			if (!IsPressed(args.Pointer))
-			{
-				handledInManaged |= ReleaseCaptures(args);
-			}
-
-			return handledInManaged;
-		}
-
-		/// <summary>
-		/// When the system cancel a pointer pressed, either
-		/// 1. because the pointing device was lost/disconnected,
-		/// 2. or the system detected something meaning full and will handle this pointer internally.
-		/// This second case is the more common (e.g. ScrollViewer) and should be indicated using the <paramref name="isSwallowedBySystem"/> flag.
-		/// </summary>
-		/// <param name="isSwallowedBySystem">Indicates that the pointer was muted by the system which will handle it internally.</param>
-		private bool OnNativePointerCancel(PointerRoutedEventArgs args, bool isSwallowedBySystem)
-		{
-			var isIrrelevant = IsIrrelevant(args, out _); // Check this *before* updating the sate!
-
-			// When a pointer is cancelled / swallowed by the system, we don't even receive "Released" nor "Exited"
-			SetPressed(args, false, muteEvent: true);
-			SetOver(args, false, muteEvent: true);
-
-			if (isIrrelevant)
-			{
-				return false;
-			}
-		
-			if (_gestures.IsValueCreated)
-			{
-				_gestures.Value.CompleteGesture();
-			}
-
-			var handledInManaged = false;
-			if (isSwallowedBySystem)
-			{
-				handledInManaged |= ReleaseCaptures(args, forceCaptureLostEvent: true);
-			}
-			else
-			{
-				args.Handled = false;
-				handledInManaged |= RaiseEvent(PointerCanceledEvent, args);
-				handledInManaged |= ReleaseCaptures(args);
-			}
-
-			return handledInManaged;
-		}
-		#endregion
-#else
-		private readonly List<Pointer> _pointCaptures = new List<Pointer>();
-
-		// ctor
-		private void InitializePointers()
-		{
-			this.SetValue(PointerCapturesProperty, _pointCaptures); // Note: On UWP this is done only on first capture
-		}
-
-		internal bool IsPointerPressed { get; set; } // TODO: 'Set' should be private, but we need to update all controls that are setting
-		internal bool IsPointerOver { get; set; } // TODO: 'Set' should be private, but we need to update all controls that are setting
-#endif
-
-		#region Pointer capture handling
+		#region Pointer capture state
 		/*
 		 * About pointer capture
 		 *
 		 * - When a pointer is captured, it will still bubble up, but it will bubble up from the element
-		 *   that captured the touch (so the a inner control won't receive it, even if under the pointer !)
-		 *   !!! BUT !!! The OriginalSource will still be the inner control!
+		 *   that captured the touch (so the a inner control won't receive it, even if under the pointer)
+		 *   ** but the OriginalSource will still be the inner control! **
 		 * - Captured are exclusive : first come, first served! (For a given pointer)
-		 * - A control can capture a pointer, even if not under the pointer
+		 * - A control can capture a pointer, even if not under the pointer (not supported by uno yet)
 		 * - The PointersCapture property remains `null` until a pointer is captured
 		 */
 
-		public IReadOnlyList<Pointer> PointerCaptures
-			=> (IReadOnlyList<Pointer>)this.GetValue(PointerCapturesProperty);
-
-		public static DependencyProperty PointerCapturesProperty { get; } =
-			DependencyProperty.Register(
-				"PointerCaptures", typeof(IReadOnlyList<Pointer>),
-				typeof(UIElement),
-				new FrameworkPropertyMetadata(defaultValue: null)
-			);
-
 		private static IDictionary<Pointer, PointerCapture> _allCaptures;
-
 		private List<Pointer> _localCaptures;
 
-		internal bool IsCaptured(Pointer pointer)
-			=> _allCaptures != null
-				&& _allCaptures.TryGetValue(pointer, out var capture)
-				&& capture.Owner == this;
+		#region Capture public API
+		public static DependencyProperty PointerCapturesProperty { get; } = DependencyProperty.Register(
+			"PointerCaptures",
+			typeof(IReadOnlyList<Pointer>),
+			typeof(UIElement),
+			new FrameworkPropertyMetadata(defaultValue: null));
+
+		public IReadOnlyList<Pointer> PointerCaptures => (IReadOnlyList<Pointer>)this.GetValue(PointerCapturesProperty);
 
 		public bool CapturePointer(Pointer value)
 		{
@@ -494,7 +436,7 @@ namespace Windows.UI.Xaml
 			if (_localCaptures == null)
 			{
 				_localCaptures = new List<Pointer>();
-				this.SetValue(PointerCapturesProperty, _localCaptures); // Note: On UWP this is done only on first capture
+				this.SetValue(PointerCapturesProperty, _localCaptures); // Note: On UWP this is done only on first capture (like here)
 			}
 
 			if (_allCaptures.TryGetValue(pointer, out var capture))
@@ -522,14 +464,9 @@ namespace Windows.UI.Xaml
 		{
 			var pointer = value ?? throw new ArgumentNullException(nameof(value));
 
-			if (IsCaptured(pointer))
+			if (IsCaptured(pointer, out var capture))
 			{
-				_allCaptures.Remove(pointer);
-				_localCaptures.Remove(pointer);
-
-				ReleasePointerCaptureNative(pointer);
-
-				// TODO: Raise capture lost
+				Release(capture);
 			}
 			else if (this.Log().IsEnabled(LogLevel.Information))
 			{
@@ -537,12 +474,9 @@ namespace Windows.UI.Xaml
 			}
 		}
 
-		partial void CapturePointerNative(Pointer pointer);
-		partial void ReleasePointerCaptureNative(Pointer pointer);
-
 		public void ReleasePointerCaptures()
 		{
-			if ((_localCaptures?.Count ?? 0) == 0)
+			if (!HasCapture)
 			{
 				if (this.Log().IsEnabled(LogLevel.Information))
 				{
@@ -552,16 +486,110 @@ namespace Windows.UI.Xaml
 				return;
 			}
 
-			foreach (var pointer in _localCaptures)
+			var localCaptures = _allCaptures
+				.Values
+				.Where(capture => capture.Owner == this)
+				.ToList();
+			foreach (var capture in localCaptures)
 			{
-				_allCaptures.Remove(pointer);
+				Release(capture);
+			}
+		}
+		#endregion
 
-				ReleasePointerCaptureNative(pointer);
+		partial void CapturePointerNative(Pointer pointer);
+		partial void ReleasePointerCaptureNative(Pointer pointer);
 
-				// TOD: Raise capture lost
+		private bool HasCapture => (_localCaptures?.Count ?? 0) != 0;
+
+		internal bool IsCaptured(Pointer pointer)
+			=> IsCaptured(pointer, out _);
+
+		private bool IsCaptured(Pointer pointer, out PointerCapture capture)
+		{
+			if (HasCapture // Do not event check the _allCaptures if no capture defined on this element
+				&& _allCaptures.TryGetValue(pointer, out capture)
+				&& capture.Owner == this)
+			{
+				return true;
+			}
+			else
+			{
+				capture = null;
+				return false;
+			}
+		}
+
+		private bool ValidateAndUpdateCapture(PointerRoutedEventArgs args)
+			=> ValidateAndUpdateCapture(args, IsOver(args.Pointer));
+
+		private bool ValidateAndUpdateCapture(PointerRoutedEventArgs args, out bool isOver)
+			=> ValidateAndUpdateCapture(args, isOver = IsOver(args.Pointer));
+
+		// Used by all OnNativeXXX to validate and update the common over/pressed/capture states
+		private bool ValidateAndUpdateCapture(PointerRoutedEventArgs args, bool isOver)
+		{
+			// We might receive some unexpected move/up/cancel for a pointer over an element,
+			// we have to mute them to avoid invalid event sequence.
+			// Notes:
+			//   iOS:  This may happen on iOS where the pointers are implicitly captured.
+			//   Android:  This may happen on Android where the pointers are implicitly captured.
+			//   WASM: On wasm, if this check mutes your event, it's because you didn't received the "pointerenter" (not bubbling natively).
+			//         This is usually because your control is covered by an element which is IsHitTestVisible == true / has transparent background.
+
+			PointerCapture capture = default;
+			if (!(_allCaptures?.TryGetValue(args.Pointer, out capture) ?? false))
+			{
+				return !isOver;
 			}
 
-			_localCaptures.Clear();
+			if (capture.Owner == this)
+			{
+				capture.LastDispatchedEventFrameId = args.FrameId;
+				capture.LastDispatchedEventArgs = args;
+				return false;
+			}
+			else
+			{
+				// We should dispatch the event only if the control which has captured the pointer has already dispatched the event
+				// (Which actually means that the current control is a parent of the control which has captured the pointer)
+				// Remarks: This is not enough to determine parent-child relationship when we dispatch multiple events base on the same native event,
+				//			(as they will all have the same FrameId), however in that case we dispatch events layer per layer
+				//			instead of bubbling a single event before raising the next one, so we are safe.
+				//			The only limitation would be when mixing native vs. managed bubbling, but this check only prevents
+				//			the leaf of the tree to raise the event, so we cannot mix bubbling mode in that case.
+				return capture.LastDispatchedEventFrameId <= args.FrameId;
+			}
+		}
+
+		private bool ReleaseCapture(PointerRoutedEventArgs args, bool forceCaptureLostEvent = false)
+		{
+			if (IsCaptured(args.Pointer, out var capture))
+			{
+				return Release(capture, args);
+			}
+			else if (forceCaptureLostEvent)
+			{
+				return RaiseEvent(PointerCaptureLostEvent, args);
+			}
+			else
+			{
+				return false;
+			}
+		}
+
+		private bool Release(PointerCapture capture, PointerRoutedEventArgs args = null)
+		{
+			var pointer = capture.Pointer;
+
+			_allCaptures.Remove(pointer);
+			_localCaptures.Remove(pointer);
+
+			ReleasePointerCaptureNative(pointer);
+
+			args = args ?? capture.LastDispatchedEventArgs;
+			args.Handled = false;
+			return RaiseEvent(PointerCaptureLostEvent, args);
 		}
 
 		private class PointerCapture
@@ -602,6 +630,8 @@ namespace Windows.UI.Xaml
 			/// raise the event (if the opposite, it means that the element is a child, so it has to mute the event).
 			/// </summary>
 			public long LastDispatchedEventFrameId { get; set; }
+
+			public PointerRoutedEventArgs LastDispatchedEventArgs { get; set; }
 		}
 		#endregion
 	}
