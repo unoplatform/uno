@@ -139,7 +139,6 @@ jobs:
       ArtifactType: Container
 
 - job: Wasm_UITests_Compare
-  condition: eq(variables['Build.Repository.Provider'], 'GitHub')
   dependsOn: Wasm_UITests_Snap
 
   pool:
@@ -173,7 +172,9 @@ jobs:
     env:
       GIT_TARGETBRANCH: "$(System.PullRequest.TargetBranch)"
       GIT_SOURCEBRANCH: "$(Build.SourceBranch)"
+
     displayName: 'Compare UI Tests screenshots'
+    condition: eq(variables['Build.Repository.Provider'], 'GitHub')
 
 
   - task: PublishTestResults@2
