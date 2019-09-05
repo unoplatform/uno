@@ -42,7 +42,7 @@ namespace Windows.UI.Xaml.Input
 			FrameId = ToFrameId(_nativeTouch.Timestamp);
 			Pointer = new Pointer(pointerId, type, isInContact, isInRange: true);
 			KeyModifiers = VirtualKeyModifiers.None;
-			OriginalSource = _nativeTouch.View as UIElement ?? receiver; // TODO: walk the tree
+			OriginalSource = FindOriginalSource(_nativeTouch) ?? receiver;
 			CanBubbleNatively = true; // Required for native gesture recognition (i.e. ScrollViewer), and integration of native components in the visual tree
 		}
 
@@ -61,7 +61,7 @@ namespace Windows.UI.Xaml.Input
 			{
 				IsPrimary = true,
 				IsInRange = Pointer.IsInRange,
-				IsLeftButtonPressed = Pointer.IsInContact // TODO: Pen
+				IsLeftButtonPressed = Pointer.IsInContact
 			};
 
 		#region Misc static helpers
@@ -81,6 +81,22 @@ namespace Windows.UI.Xaml.Input
 		{
 			// The precision of the frameId is 10 frame per ms ... which should be enough
 			return (uint)(timestamp * 1000.0 * 10.0);
+		}
+
+		private static UIElement FindOriginalSource(UITouch touch)
+		{
+			var view = touch.View;
+			while (view != null)
+			{
+				if (view is UIElement elt)
+				{
+					return elt;
+				}
+
+				view = view.Superview;
+			}
+
+			return null;
 		}
 		#endregion
 	}
