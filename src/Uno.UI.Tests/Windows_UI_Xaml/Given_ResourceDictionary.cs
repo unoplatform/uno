@@ -416,6 +416,14 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 			AssertContainsColorBrushResource(app.Resources, "AliceTheColorBrush", Colors.AliceBlue);
 		}
 
+		[TestMethod]
+		public void When_xName_In_Merged_Dictionary()
+		{
+			var app = UnitTestsApp.App.EnsureApplication();
+
+			AssertContainsColorBrushResource(app.Resources, "CadetColorBrush", Colors.CadetBlue);
+		}
+
 		private void AssertContainsColorBrushResource(ResourceDictionary resources, string key, Color expected)
 		{
 			Assert.IsNotNull(resources);
