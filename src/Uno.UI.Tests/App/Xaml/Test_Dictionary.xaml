@@ -9,7 +9,8 @@
 			<SolidColorBrush x:Key="PlayfulColorBrush"
 							 Color="RosyBrown" />
 		</ResourceDictionary>
-		<ResourceDictionary x:Key="Dark"  Source="Test_Dictionary_Theme.xaml" />
+		<ResourceDictionary x:Key="Dark"
+							Source="Test_Dictionary_Theme.xaml" />
 	</ResourceDictionary.ThemeDictionaries>
 	<Style TargetType="Button"
 		   x:Key="ExplicitButtonStyle">
@@ -21,10 +22,12 @@
 	<x:Double x:Key="GoodSize">33</x:Double>
 	<SolidColorBrush x:Key="SuperiorColorBrush"
 					 Color="MediumSpringGreen" />
-	<!--Default CheckBox style-->
+	<!--Implicit CheckBox style-->
 	<Style TargetType="CheckBox">
 		<Setter Property="Foreground"
 				Value="LightGoldenrodYellow" />
+		<Setter Property="Width"
+				Value="{StaticResource DoubleOrNothing}" />
 	</Style>
 	<x:Double x:Key="DoubleOrNothing">256</x:Double>
 	<GridLength x:Key="GridLength256">256</GridLength>

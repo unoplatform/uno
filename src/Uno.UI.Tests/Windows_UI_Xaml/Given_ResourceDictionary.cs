@@ -391,6 +391,31 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 			AssertContainsColorBrushResource(dark, "MoodyColorBrush", Colors.DarkKhaki);
 		}
 
+		[TestMethod]
+		public void When_Different_Control_Instances()
+		{
+			var app = UnitTestsApp.App.EnsureApplication();
+
+			var control1 = new Test_Control();
+			var control2 = new Test_Control();
+			Assert.IsTrue(control1.Resources.ContainsKey("LocalColorBrush"));
+			Assert.IsTrue(control2.Resources.ContainsKey("LocalColorBrush"));
+
+			Assert.IsFalse(ReferenceEquals(control1.Resources, control2.Resources));
+
+			control2.Resources.Remove("LocalColorBrush");
+			Assert.IsTrue(control1.Resources.ContainsKey("LocalColorBrush"));
+			Assert.IsFalse(control2.Resources.ContainsKey("LocalColorBrush"));
+		}
+
+		[TestMethod]
+		public void When_xName_In_Dictionary()
+		{
+			var app = UnitTestsApp.App.EnsureApplication();
+
+			AssertContainsColorBrushResource(app.Resources, "AliceTheColorBrush", Colors.AliceBlue);
+		}
+
 		private void AssertContainsColorBrushResource(ResourceDictionary resources, string key, Color expected)
 		{
 			Assert.IsNotNull(resources);

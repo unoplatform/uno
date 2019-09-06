@@ -24,6 +24,7 @@ namespace UnitTestsApp
 	sealed partial class App : Application
 	{
 		public Grid HostView { get; private set; }
+
 		public App()
 		{
 			this.InitializeComponent();
