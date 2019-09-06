@@ -9,7 +9,8 @@
 			<SolidColorBrush x:Key="PlayfulColorBrush"
 							 Color="RosyBrown" />
 		</ResourceDictionary>
-		<ResourceDictionary x:Key="Dark"  Source="Test_Dictionary_Theme.xaml" />
+		<ResourceDictionary x:Key="Dark"
+							Source="Test_Dictionary_Theme.xaml" />
 	</ResourceDictionary.ThemeDictionaries>
 
 	<x:String x:Key="GlobalCoordinates">11.22, 33</x:String>
@@ -27,10 +28,12 @@
 					 Color="MediumSpringGreen" />
 	<SolidColorBrush x:Key="DatePickerLightDismissOverlayBackground"
 					 Color="Orchid" />
-	<!--Default CheckBox style-->
+	<!--Implicit CheckBox style-->
 	<Style TargetType="CheckBox">
 		<Setter Property="Foreground"
 				Value="LightGoldenrodYellow" />
+		<Setter Property="Width"
+				Value="{StaticResource DoubleOrNothing}" />
 	</Style>
 	<x:Double x:Key="DoubleOrNothing">256</x:Double>
 	<GridLength x:Key="GridLength256">256</GridLength>

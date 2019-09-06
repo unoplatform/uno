@@ -10,6 +10,7 @@ using System.Threading;
 using Uno.Collections;
 using System.Runtime.CompilerServices;
 using System.Diagnostics;
+using Windows.UI.Xaml.Data;
 
 #if XAMARIN_ANDROID
 using View = Android.Views.View;
@@ -66,6 +67,7 @@ namespace Windows.UI.Xaml
 		private readonly DependencyPropertyDetailsCollection _properties;
 		private readonly DependencyPropertyDetails _dataContextPropertyDetails;
 		private readonly DependencyPropertyDetails _templatedParentPropertyDetails;
+		private Dictionary<DependencyProperty, ResourceBinding> _resourceBindings;
 
 		private DependencyProperty _parentTemplatedParentProperty;
 		private DependencyProperty _parentDataContextProperty;
@@ -440,6 +442,11 @@ namespace Windows.UI.Xaml
 
 				ValidatePropertyOwner(property);
 
+				if (precedence == DependencyPropertyValuePrecedences.Local)
+				{
+					TryRemoveResourceBinding(property);
+				}
+
 				// Resolve the stack once for the instance, for performance.
 				propertyDetails = propertyDetails ?? _properties.GetPropertyDetails(property);
 
@@ -623,6 +630,14 @@ namespace Windows.UI.Xaml
 					);
 				}
 			}
+		}
+
+		/// <summary>
+		/// The local value of this property is being overwritten, static resource resolution should no longer be applied.
+		/// </summary>
+		private void TryRemoveResourceBinding(DependencyProperty property)
+		{
+			_resourceBindings?.Remove(property);
 		}
 
 		public long RegisterPropertyChangedCallback(DependencyProperty property, DependencyPropertyChangedCallback callback)
@@ -1065,6 +1080,59 @@ namespace Windows.UI.Xaml
 				var callback = _compiledBindingsCallbacks.Data[compiledBindingsCBIndex];
 				callback.Invoke();
 			}
+		}
+
+		/// <summary>
+		/// Do a tree walk to find the correct values of StaticResource and ThemeResource assignations.
+		/// </summary>
+		private void UpdateResourceBindings()
+		{
+			if (_resourceBindings == null || _resourceBindings.Count == 0)
+			{
+				return;
+			}
+
+			var dictionariesInScope = GetResourceDictionaries().ToArray();
+
+			var bindings = _resourceBindings.ToArray(); //The original dictionary may be mutated during DP assignations
+
+			foreach (var kvp in bindings)
+			{
+				foreach (var dict in dictionariesInScope)
+				{
+					if (dict.TryGetValue(kvp.Value.ResourceKey, out var value))
+					{
+						SetValue(kvp.Key, value);
+						break;
+					}
+				}
+			}
+
+			foreach (var kvp in bindings)
+			{
+				// TryRemoveResourceBinding() will have removed the entries - we just put them straight back again.
+				_resourceBindings[kvp.Key] = kvp.Value;
+			}
+		}
+
+		/// <summary>
+		/// Returns all ResourceDictionaries in scope using the visual tree, from nearest to furthest.
+		/// </summary>
+		/// <returns></returns>
+		private IEnumerable<ResourceDictionary> GetResourceDictionaries()
+		{
+			var candidate = ActualInstance;
+			while (candidate != null)
+			{
+				if (candidate is FrameworkElement fe)
+				{
+					yield return fe.Resources;
+				}
+
+				candidate = candidate.GetParent() as DependencyObject;
+			}
+
+			// Note: for now we skip Application.Resources because we assume these were already checked at initialize-time.
 		}
 
 		/// <summary>

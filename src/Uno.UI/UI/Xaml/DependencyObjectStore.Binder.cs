@@ -146,12 +146,13 @@ namespace Windows.UI.Xaml
 			=> SetValue(_dataContextProperty, dataContext, DependencyPropertyValuePrecedences.Inheritance, _dataContextPropertyDetails);
 
 		/// <summary>
-		/// Processes the x:Bind markup for the current FrameworkElement, and applies load-time ElementName bindings.
+		/// Apply load-time binding updates. Processes the x:Bind markup for the current FrameworkElement, applies load-time ElementName bindings, and updates ResourceBindings.
 		/// </summary>
 		public void ApplyCompiledBindings()
 		{
 			_properties.ApplyCompiledBindings();
 			InvokeCompiledBindingsCallbacks();
+			UpdateResourceBindings();
 		}
 
 		private IDisposable RegisterCompiledBindingsUpdates()
@@ -341,11 +342,14 @@ namespace Windows.UI.Xaml
 				throw new ArgumentNullException(nameof(binding));
 			}
 
-			var fullBinding = binding as Windows.UI.Xaml.Data.Binding;
-
-			if (fullBinding != null)
+			if (binding is Binding fullBinding)
 			{
 				_properties.SetBinding(dependencyProperty, fullBinding, _originalObjectRef);
+			}
+			else if (binding is ResourceBinding resourceBinding)
+			{
+				_resourceBindings = _resourceBindings ?? new Dictionary<DependencyProperty, ResourceBinding>();
+				_resourceBindings[dependencyProperty] = resourceBinding;
 			}
 			else
 			{

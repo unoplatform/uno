@@ -9,6 +9,39 @@
 	<UserControl.Resources>
 		<SolidColorBrush x:Key="LocalColorBrush"
 						 Color="Linen" />
+		<ControlTemplate x:Key="TemplateInResources">
+			<Grid>
+				<TextBlock x:Name="TextBlock1"
+						   Text="{StaticResource MultilevelString1}" />
+				<TextBlock x:Name="TextBlock2"
+						   Text="{ThemeResource MultilevelString1}" />
+				<TextBlock x:Name="TextBlock3"
+						   Text="{StaticResource MultilevelString2}" />
+				<TextBlock x:Name="TextBlock4"
+						   Text="{ThemeResource MultilevelString2}" />
+				<TextBlock x:Name="TextBlock5"
+						   Text="{StaticResource ThemedString1}" />
+				<TextBlock x:Name="TextBlock6"
+						   Text="{ThemeResource ThemedString1}" />
+			</Grid>
+		</ControlTemplate>
+		<x:String x:Key="MultilevelString1">OuterVisualTree</x:String>
+		<SolidColorBrush x:Key="MutatedColorBrush"
+						 Color="Chartreuse" />
+		<views:MyPoco x:Key="MutatedPoco"
+					  Bogosity="101" />
+		<views:MyDependencyObject x:Key="MutatedDO"
+								  PlainInt="5"
+								  DPInt="1999" />
+		<Style TargetType="views:ResourceTestControl">
+			<Setter Property="MyStringDP"
+					Value="OuterTreeImplicit" />
+		</Style>
+		<!--Implicit RadioButton style-->
+		<Style TargetType="RadioButton">
+			<Setter Property="Tag"
+					Value="OuterTreeImplicit" />
+		</Style>
 	</UserControl.Resources>
 
 	<Grid x:Name="topGrid"
@@ -40,5 +73,60 @@
 		<views:MyControl x:Name="testMyControl"
 						 Splinitude="{StaticResource GoodSize}"
 						 Poco="{StaticResource PocoLinda}" />
+		<Grid>
+			<Grid.Resources>
+				<ResourceDictionary>
+					<ResourceDictionary.ThemeDictionaries>
+						<ResourceDictionary x:Key="Light">
+							<x:String x:Key="ThemedString1">LocalVisualTreeLight</x:String>
+						</ResourceDictionary>
+						<ResourceDictionary x:Key="Dark">
+							<x:String x:Key="ThemedString1">LocalVisualTreeDark</x:String>
+						</ResourceDictionary>
+					</ResourceDictionary.ThemeDictionaries>
+					<x:String x:Key="MultilevelString1">LocalVisualTree</x:String>
+					<Style TargetType="views:ResourceTestControl">
+						<Setter Property="MyStringDP"
+								Value="InnerTreeImplicit" />
+					</Style>
+					<!--Implicit RadioButton style-->
+					<Style TargetType="RadioButton">
+						<Setter Property="Tag"
+								Value="InnerTreeImplicit" />
+					</Style>
+				</ResourceDictionary>
+			</Grid.Resources>
+			<views:ResourceTestControl x:Name="inlineTemplateControl"
+									   Poco="{StaticResource MutatedPoco}"
+									   DObjDP="{StaticResource MutatedDO}"
+									   PlainDO="{StaticResource MutatedDO}">
+				<Control.Template>
+					<ControlTemplate>
+						<Grid>
+							<TextBlock x:Name="TextBlock1"
+									   Text="{StaticResource MultilevelString1}"
+									   Foreground="{StaticResource MutatedColorBrush}" />
+							<TextBlock x:Name="TextBlock2"
+									   Text="{ThemeResource MultilevelString1}" />
+							<TextBlock x:Name="TextBlock3"
+									   Text="{StaticResource MultilevelString2}" />
+							<TextBlock x:Name="TextBlock4"
+									   Text="{ThemeResource MultilevelString2}" />
+							<TextBlock x:Name="TextBlock5"
+									   Text="{StaticResource ThemedString1}" />
+							<TextBlock x:Name="TextBlock6"
+									   Text="{ThemeResource ThemedString1}" />
+						</Grid>
+					</ControlTemplate>
+				</Control.Template>
+			</views:ResourceTestControl>
+			<views:ResourceTestControl x:Name="templateFromResourceControl"
+									   Template="{StaticResource TemplateInResources}"
+									   Background="{StaticResource MutatedColorBrush}"
+									   Poco="{StaticResource MutatedPoco}"
+									   DObjDP="{StaticResource MutatedDO}"
+									   PlainDO="{StaticResource MutatedDO}" />
+			<RadioButton x:Name="testRadioButton" />
+		</Grid>
 	</Grid>
 </UserControl>

@@ -30,8 +30,11 @@ namespace Uno.UI.Tests.App.Xaml
 		public Grid TestGrid => testGrid;
 		public Button StyledButton => styledButton;
 		public MyControl TestMyControl => testMyControl;
+		public ResourceTestControl InlineTemplateControl => inlineTemplateControl;
+		public ResourceTestControl TemplateFromResourceControl => templateFromResourceControl;
+		public RadioButton TestRadioButton => testRadioButton;
 
-        public Test_Control()
+		public Test_Control()
         {
             this.InitializeComponent();
         }
