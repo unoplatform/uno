@@ -297,9 +297,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 								else
 								{
 									BuildGenericControlInitializerBody(writer, topLevelControl, isDirectUserControlChild);
+									BuildNamedResources(writer, _namedResources);
 								}
-
-								BuildNamedResources(writer, _namedResources);
 
 								BuildCompiledBindingsInitializer(writer, _className.className);
 
@@ -1764,7 +1763,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			foreach (var resource in (resourcesRoot?.Objects).Safe())
 			{
 				var keyDef = resource.Members.FirstOrDefault(m => m.Member.Name == "Key");
-				var name = resource.Members.FirstOrDefault(m => m.Member.Name == "Name");
+				var nameDef = resource.Members.FirstOrDefault(m => m.Member.Name == "Name");
 				var mergedDictionaries = resource.Members.FirstOrDefault(m => m.Member.Name == "MergedDictionaries");
 
 				if (resource.Type.Name == "StaticResource")
@@ -1773,9 +1772,9 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					continue;
 				}
 
-				if (keyDef != null)
+				var key = keyDef?.Value?.ToString() ?? nameDef?.Value?.ToString();
+				if (key != null)
 				{
-					var key = keyDef.Value.ToString();
 					if (isInInitializer)
 					{
 						writer.AppendLineInvariant("[\"{0}\"] = ", key);
@@ -1787,14 +1786,10 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					BuildChild(writer, null, resource);
 					writer.AppendLineInvariant(closingPunctuation);
 				}
-				else if (mergedDictionaries != null)
+
+				if (nameDef != null)
 				{
-					// Nothing for now. Since merged dictionaries are parsed separately, they are
-					// considered as Global Resources.
-				}
-				else if (name != null)
-				{
-					_namedResources.Add(name.Value.ToString(), resource);
+					_namedResources.Add(nameDef.Value.ToString(), resource);
 				}
 			}
 		}
@@ -1847,7 +1842,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					throw new Exception("Local values are not allowed in resource dictionary with Source set");
 				}
 
-				var key = dictObject.Members.FirstOrDefault(m => m.Member.Name == "Key")?.Value as string;
+				var key = dictObject.Members.FirstOrDefault(m => m.Member.Name == "Key")?.Value as string ??
+					dictObject.Members.FirstOrDefault(m => m.Member.Name == "Name")?.Value as string;
 				if (isDict && key == null)
 				{
 					throw new Exception("Each dictionary entry must have an associated key.");
