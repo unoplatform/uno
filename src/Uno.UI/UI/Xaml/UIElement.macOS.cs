@@ -392,7 +392,6 @@ namespace Windows.UI.Xaml
 
 				IsPointerPressed = false;
 				IsPointerOver = false;
-				_pointCaptures.Clear();
 			}
 			catch (Exception e)
 			{
