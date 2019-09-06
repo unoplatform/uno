@@ -127,7 +127,7 @@ namespace Windows.UI.Xaml
 			var button = int.Parse(parts[5], CultureInfo.InvariantCulture); // -1: none, 0:main, 1:middle, 2:other (commonly main=left, other=right)
 			var typeStr = parts[6];
 			var srcHandle = int.Parse(parts[7]);
-			var timestamp = ulong.Parse(parts[8]);
+			var timestamp = double.Parse(parts[8], CultureInfo.InvariantCulture);
 
 			var position = new Point(x, y);
 			var pointerType = ConvertPointerTypeString(typeStr);
