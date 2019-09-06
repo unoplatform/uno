@@ -269,11 +269,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			}
 			else
 			{
-				if (IsApplication(topLevelControl.Type))
-				{
-					BuildTopLevelResourceDictionary(writer, topLevelControl, generateDictionaryProperty: false);
-				}
-
 				_className = GetClassName(topLevelControl);
 
 				using (writer.BlockInvariant("namespace {0}", _className.ns))
@@ -695,7 +690,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		/// <summary>
 		/// Processes a top-level ResourceDictionary declaration.
 		/// </summary>
-		private void BuildTopLevelResourceDictionary(IIndentedStringBuilder writer, XamlObjectDefinition topLevelControl, bool generateDictionaryProperty = true)
+		private void BuildTopLevelResourceDictionary(IIndentedStringBuilder writer, XamlObjectDefinition topLevelControl)
 		{
 			var globalResources = new Dictionary<string, XamlObjectDefinition>();
 
@@ -712,26 +707,23 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 						BuildPartials(writer, isStatic: true);
 
-						if (generateDictionaryProperty) //TODO: hack, remove when Application no longer needs to call this method (when app resources aren't put in GSR)
+						writer.AppendLineInvariant("private static global::Windows.UI.Xaml.ResourceDictionary _{0}_ResourceDictionary;", _fileUniqueId);
+						writer.AppendLine();
+						using (writer.BlockInvariant("internal static global::Windows.UI.Xaml.ResourceDictionary {0}_ResourceDictionary", _fileUniqueId))
 						{
-							writer.AppendLineInvariant("private static global::Windows.UI.Xaml.ResourceDictionary _{0}_ResourceDictionary;", _fileUniqueId);
-							writer.AppendLine();
-							using (writer.BlockInvariant("internal static global::Windows.UI.Xaml.ResourceDictionary {0}_ResourceDictionary", _fileUniqueId))
+							using (writer.BlockInvariant("get"))
 							{
-								using (writer.BlockInvariant("get"))
+								using (writer.BlockInvariant("if (_{0}_ResourceDictionary == null)", _fileUniqueId))
 								{
-									using (writer.BlockInvariant("if (_{0}_ResourceDictionary == null)", _fileUniqueId))
-									{
-										writer.AppendLineInvariant("_{0}_ResourceDictionary = ", _fileUniqueId);
-										InitializeAndBuildResourceDictionary(writer, topLevelControl);
-										writer.AppendLineInvariant(";");
-										var url = _globalStaticResourcesMap.GetSourceLink(_fileDefinition);
-										writer.AppendLineInvariant("_{0}_ResourceDictionary.Source = new Uri(\"ms-resource:///Files/{1}\");", _fileUniqueId, url);
+									writer.AppendLineInvariant("_{0}_ResourceDictionary = ", _fileUniqueId);
+									InitializeAndBuildResourceDictionary(writer, topLevelControl);
+									writer.AppendLineInvariant(";");
+									var url = _globalStaticResourcesMap.GetSourceLink(_fileDefinition);
+									writer.AppendLineInvariant("_{0}_ResourceDictionary.Source = new Uri(\"ms-resource:///Files/{1}\");", _fileUniqueId, url);
 
-									}
-
-									writer.AppendLineInvariant("return _{0}_ResourceDictionary;", _fileUniqueId);
 								}
+
+								writer.AppendLineInvariant("return _{0}_ResourceDictionary;", _fileUniqueId);
 							}
 						}
 					}
