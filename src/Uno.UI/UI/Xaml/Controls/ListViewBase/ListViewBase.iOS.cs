@@ -61,6 +61,13 @@ namespace Windows.UI.Xaml.Controls
 			_callbackSubscriptions.Disposable = disposables;
 		}
 
+		partial void CleanUpNativePanel(NativeListViewBase panel)
+		{
+			_callbackSubscriptions.Disposable = null;
+			panel.Source?.Dispose();
+			panel.Source = null;
+		}
+
 		/// <summary>
 		/// Bind a property on the native collection panel to its equivalent on ListViewBase
 		/// </summary>

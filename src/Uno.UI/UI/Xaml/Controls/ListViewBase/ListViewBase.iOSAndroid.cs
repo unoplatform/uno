@@ -91,7 +91,17 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
+		protected internal override void CleanUpInternalItemsPanel(_View panel)
+		{
+			if (panel is NativeListViewBase nativePanel)
+			{
+				CleanUpNativePanel(nativePanel);
+			}
+		}
+
 		private void TryLoadMoreItems() => TryLoadMoreItems(NativePanel.NativeLayout.LastVisibleIndex);
+
+		partial void CleanUpNativePanel(NativeListViewBase panel);
 	}
 }
 #endif

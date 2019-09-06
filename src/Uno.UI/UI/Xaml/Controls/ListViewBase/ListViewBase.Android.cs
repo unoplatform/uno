@@ -27,6 +27,17 @@ namespace Windows.UI.Xaml.Controls
 			panel.CurrentAdapter = new NativeListViewBaseAdapter { Owner = panel };
 		}
 
+		partial void CleanUpNativePanel(NativeListViewBase panel)
+		{
+			_headerFooterSubscription.Disposable = null;
+			panel.NativeLayout?.RemoveAllViews();
+			panel.ViewCache?.OnUnloaded();
+
+			panel.NativeLayout = null;
+			panel.SetViewCacheExtension(null);
+			panel.CurrentAdapter = null;
+		}
+
 		private void AddItems(int firstItem, int count, int section)
 		{
 			var unoIndex = IndexPath.FromRowSection(firstItem, section);
