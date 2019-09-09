@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
-VisualStudioVersion = 16.0.29111.141
+VisualStudioVersion = 16.0.29230.61
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Uno.UI", "Uno.UI", "{416684CF-A4E3-4079-B380-3FF0B00E433C}"
 EndProject
@@ -35,12 +35,6 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Uno.UI.Tasks", "SourceGenerators\Uno.UI.Tasks\Uno.UI.Tasks.csproj", "{946D318B-305A-4264-81A4-31698DCC22F7}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnoSolutionTemplate.VISX", "SolutionTemplate\UnoSolutionTemplate.VISX\UnoSolutionTemplate.VISX.csproj", "{BF4C3789-F42D-4787-BFC9-00C4C50C4549}"
-	ProjectSection(ProjectDependencies) = postProject
-		{C6884723-81DB-43BD-924F-3FA367633E64} = {C6884723-81DB-43BD-924F-3FA367633E64}
-		{80798130-CB7E-4968-B4F6-554CC0FC8FEB} = {80798130-CB7E-4968-B4F6-554CC0FC8FEB}
-		{BCB38AAE-4CDA-43C2-AA10-C3A935B08F79} = {BCB38AAE-4CDA-43C2-AA10-C3A935B08F79}
-		{86B348BE-64E3-441F-A361-83D3C7C9F828} = {86B348BE-64E3-441F-A361-83D3C7C9F828}
-	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnoSolutionTemplate", "SolutionTemplate\UnoSolutionTemplate\UnoSolutionTemplate.csproj", "{5C7C339E-B73C-4FDA-87AF-E8003C0FF2AB}"
 EndProject
