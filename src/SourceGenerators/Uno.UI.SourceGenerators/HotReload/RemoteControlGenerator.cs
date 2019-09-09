@@ -25,11 +25,21 @@ namespace Uno.UI.SourceGenerators.NativeCtor
 			{
 				var unoRemoteControlPort = context.GetProjectInstance().GetPropertyValue("UnoRemoteControlPort");
 
+				if (string.IsNullOrEmpty(unoRemoteControlPort))
+				{
+					unoRemoteControlPort = "0";
+				}
+
 				var addresses = NetworkInterface.GetAllNetworkInterfaces()
 					  .SelectMany(x => x.GetIPProperties().UnicastAddresses)
 					  .Where(x => !IPAddress.IsLoopback(x.Address));
 
 				var sb = new IndentedStringBuilder();
+
+				if(unoRemoteControlPort == "0")
+				{
+					sb.AppendLineInvariant($"#warning The App Remote Control debugging support is disabled. The Visual Studio addin may not be installed or activated.");
+				}
 
 				foreach(var addressInfo in addresses)
 				{
