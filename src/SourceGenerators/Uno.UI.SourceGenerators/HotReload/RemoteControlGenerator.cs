@@ -38,7 +38,7 @@ namespace Uno.UI.SourceGenerators.NativeCtor
 
 				if(unoRemoteControlPort == "0")
 				{
-					sb.AppendLineInvariant($"#warning The App Remote Control debugging support is disabled. The Visual Studio addin may not be installed or activated.");
+					// sb.AppendLineInvariant($"#warning The App Remote Control debugging support is disabled. The Visual Studio addin may not be installed or activated.");
 				}
 
 				foreach(var addressInfo in addresses)
