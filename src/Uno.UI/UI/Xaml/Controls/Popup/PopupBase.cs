@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Windows.Foundation;
+using Windows.UI.Xaml.Input;
 using Uno.Extensions;
 using Uno.UI.DataBinding;
 using Windows.UI.Xaml.Media;
@@ -82,6 +83,23 @@ namespace Windows.UI.Xaml.Controls
 
 			UpdateDataContext();
 			UpdateTemplatedParent();
+
+			if (oldChild is FrameworkElement ocfe)
+			{
+				ocfe.PointerPressed -= HandlePointerEvent;
+				ocfe.PointerReleased -= HandlePointerEvent;
+			}
+
+			if (newChild is FrameworkElement ncfe)
+			{
+				ncfe.PointerPressed += HandlePointerEvent;
+				ncfe.PointerReleased += HandlePointerEvent;
+			}
+		}
+
+		private void HandlePointerEvent(object sender, PointerRoutedEventArgs e)
+		{
+			e.Handled = true;
 		}
 
 		protected internal override void OnDataContextChanged(DependencyPropertyChangedEventArgs e)
@@ -138,7 +156,6 @@ namespace Windows.UI.Xaml.Controls
 
 		partial void OnIsLightDismissEnabledChangedPartial(bool oldIsLightDismissEnabled, bool newIsLightDismissEnabled)
 		{
-
 		}
 	}
 }
