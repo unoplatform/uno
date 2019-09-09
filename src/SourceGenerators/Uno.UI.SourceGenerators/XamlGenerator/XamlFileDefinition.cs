@@ -32,6 +32,27 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 		public string FilePath { get; private set; }
 
+		/// <summary>
+		/// Unique and human-readable file ID, used to name generated file.
+		/// </summary>
 		public string UniqueID { get; }
+
+		private int? _shortId;
+		/// <summary>
+		/// Compact unique ID, used to name associated global members.
+		/// </summary>
+		public int ShortId
+		{
+			get => _shortId ?? -1;
+			set
+			{
+				if (_shortId != null)
+				{
+					throw new InvalidOperationException($"{nameof(ShortId)} should not be set more than once.");
+				}
+
+				_shortId = value;
+			}
+		}
 	}
 }

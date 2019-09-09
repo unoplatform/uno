@@ -424,6 +424,17 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 			AssertContainsColorBrushResource(app.Resources, "CadetColorBrush", Colors.CadetBlue);
 		}
 
+		[TestMethod]
+		public void When_Resource_Referencing_Resource()
+		{
+			var app = UnitTestsApp.App.EnsureApplication();
+
+			Assert.AreEqual(ApplicationTheme.Light, app.RequestedTheme);
+
+			AssertContainsColorBrushResource(app.Resources, "ReferenceInSameDictionaryColorBrush", Colors.Sienna);
+			AssertContainsColorBrushResource(app.Resources, "LexicallyBackwardColorBrush", Colors.Coral);
+		}
+
 		private void AssertContainsColorBrushResource(ResourceDictionary resources, string key, Color expected)
 		{
 			Assert.IsNotNull(resources);
