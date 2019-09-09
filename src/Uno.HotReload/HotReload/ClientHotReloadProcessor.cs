@@ -133,7 +133,7 @@ namespace Uno.UI.HotReload.HotReload
 						case ContentPresenter presenter:
 							yield return EnumerateInstances(presenter.Content, baseUri);
 							break;
-#if !__WASM__
+#if __IOS__ || __ANDROID__
 						case ScrollContentPresenter scrollPresenter:
 							yield return EnumerateInstances(scrollPresenter.Content, baseUri);
 							break;
