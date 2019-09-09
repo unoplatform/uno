@@ -22,9 +22,9 @@ namespace Windows.System
 			try
 			{
 #if __MOBILE__
-				if ( await HandleSpecialUriAsync(uri))
+				if (await HandleSpecialUriAsync(uri))
 				{
-					return;
+					return true;
 				}
 #endif
 #if __IOS__
@@ -53,6 +53,13 @@ namespace Windows.System
 
 				return false;
 			}
+		}
+
+		private enum SpecialUriHandlingResult
+		{
+			NotSpecial,
+			Handled,
+			Unsupported
 		}
 	}
 }

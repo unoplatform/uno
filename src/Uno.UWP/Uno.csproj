@@ -38,21 +38,6 @@
 	<ItemGroup>
 		<UpToDateCheckInput Include="**\*.cs" Exclude="bin\**\*.cs;obj\**\*.cs;" />
 	</ItemGroup>
-	
-	<ItemGroup>
-	  <None Remove="System\Launcher.Android.cs" />
-	  <None Remove="System\Launcher.iOS.cs" />
-	</ItemGroup>
-	
-	<ItemGroup>
-	  <UpToDateCheckInput Remove="System\Launcher.Android.cs" />
-	  <UpToDateCheckInput Remove="System\Launcher.iOS.cs" />
-	</ItemGroup>
-	
-	<ItemGroup>
-	  <Compile Include="System\Launcher.Android.cs" />
-	  <Compile Include="System\Launcher.iOS.cs" />
-	</ItemGroup>
 
 	<ItemGroup>
 		<PackageReference Include="System.Numerics.Vectors" Version="4.5.0" />
