@@ -42,6 +42,10 @@ namespace Windows.UI.Xaml.Data
 		private ValueGetterHandler _valueGetter;
 		private ValueSetterHandler _valueSetter;
 
+		// These flags are set to guard against infinite loops in 2-way binding scenarios.
+		private bool _IsCurrentlyPushingTwoWay;
+		private bool _IsCurrentlyPushing;
+
 		public Binding ParentBinding { get; }
 
 		internal DependencyPropertyDetails TargetPropertyDetails { get; }
@@ -73,7 +77,7 @@ namespace Windows.UI.Xaml.Data
 				}
 			}
 		}
-		
+
 		internal BindingExpression(
 			ManagedWeakReference viewReference,
 			DependencyPropertyDetails targetPropertyDetails,
@@ -111,14 +115,17 @@ namespace Windows.UI.Xaml.Data
 				_isElementNameSource = true;
 			}
 
+			if (!(GetWeakDataContext()?.IsAlive ?? false))
+			{
+				ApplyFallbackValue();
+			}
 
-			ApplyFallbackValue();
 			ApplyExplicitSource();
 			ApplyElementName();
 		}
 
 		private ManagedWeakReference GetWeakDataContext()
-			=> _isElementNameSource || _explicitSourceStore.IsAlive ? _explicitSourceStore : _dataContext;
+			=> _isElementNameSource || (_explicitSourceStore?.IsAlive ?? false) ? _explicitSourceStore : _dataContext;
 
 		/// <summary>
 		/// Sends the current binding target value to the binding source property in TwoWay bindings.
@@ -137,18 +144,36 @@ namespace Windows.UI.Xaml.Data
 		/// <param name="value">The expected current value of the target</param>
 		public void UpdateSource(object value)
 		{
-			// Convert if necessary
-			if (ParentBinding.Converter != null)
+			if (_IsCurrentlyPushing || _IsCurrentlyPushingTwoWay)
 			{
-				value = ParentBinding.Converter.ConvertBack(
-					value,
-					_bindingPath.ValueType,
-					ParentBinding.ConverterParameter,
-					GetCurrentCulture()
-				);
+				return;
 			}
 
-			_bindingPath.Value = value;
+#if !HAS_EXPENSIVE_TRYFINALLY // Try/finally incurs a very large performance hit in mono-wasm - https://github.com/mono/mono/issues/13653
+			try
+#endif
+			{
+				_IsCurrentlyPushingTwoWay = true;
+
+				// Convert if necessary
+				if (ParentBinding.Converter != null)
+				{
+					value = ParentBinding.Converter.ConvertBack(
+						value,
+						_bindingPath.ValueType,
+						ParentBinding.ConverterParameter,
+						GetCurrentCulture()
+					);
+				}
+
+				_bindingPath.Value = value;
+			}
+#if !HAS_EXPENSIVE_TRYFINALLY // Try/finally incurs a very large performance hit in mono-wasm - https://github.com/mono/mono/issues/13653
+			finally
+#endif
+			{
+				_IsCurrentlyPushingTwoWay = false;
+			}
 		}
 
 		/// <summary>
@@ -259,7 +284,7 @@ namespace Windows.UI.Xaml.Data
 			{
 				SetTargetValue(ConvertToBoundPropertyType(ParentBinding.FallbackValue));
 			}
-			else if(TargetPropertyDetails != null)
+			else if (TargetPropertyDetails != null)
 			{
 				SetTargetValue(TargetPropertyDetails.Property.GetMetadata(_view.Target?.GetType()).DefaultValue);
 			}
@@ -383,7 +408,7 @@ namespace Windows.UI.Xaml.Data
 			var weakDataContext = GetWeakDataContext();
 			if (weakDataContext?.IsAlive ?? false)
 			{
-				// Dispose the subscription first, otherwise the previous 
+				// Dispose the subscription first, otherwise the previous
 				// registration may receive the new datacontext value.
 				_subscription.Disposable = null;
 
@@ -417,7 +442,12 @@ namespace Windows.UI.Xaml.Data
 
 		private void SetTargetValueSafe(object v)
 		{
-			SetTargetValueSafe(v, true);
+			if (_IsCurrentlyPushingTwoWay)
+			{
+				return;
+			}
+
+			SetTargetValueSafe(v, useTargetNullValue: true);
 		}
 
 		private void SetTargetValueSafe(object v, bool useTargetNullValue)
@@ -435,12 +465,13 @@ namespace Windows.UI.Xaml.Data
 
 			try
 			{
-				if (v == DependencyProperty.UnsetValue)
+				if (v is UnsetValue)
 				{
 					ApplyFallbackValue();
 				}
 				else
 				{
+					_IsCurrentlyPushing = true;
 					// Get the source value and place it in the target property
 					var convertedValue = ConvertValue(v);
 					if (useTargetNullValue && convertedValue == null && ParentBinding.TargetNullValue != null)
@@ -458,6 +489,12 @@ namespace Windows.UI.Xaml.Data
 				this.Log().Error("Failed to apply binding to property [{0}] on [{1}] ({2})".InvariantCultureFormat(TargetPropertyDetails, _targetOwnerType, e.Message), e);
 
 				ApplyFallbackValue();
+			}
+#if !HAS_EXPENSIVE_TRYFINALLY // Try/finally incurs a very large performance hit in mono-wasm - https://github.com/mono/mono/issues/13653
+			finally
+#endif
+			{
+				_IsCurrentlyPushing = false;
 			}
 		}
 

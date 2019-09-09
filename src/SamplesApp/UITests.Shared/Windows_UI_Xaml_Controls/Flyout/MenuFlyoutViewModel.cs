@@ -24,6 +24,6 @@ namespace Uno.UI.Samples.Content.UITests.MenuFlyout
 
 		public bool IsOption2Visible { get; set; } = true;
 
-		public ICommand SelectOption => CreateCommand<object>(param => SelectedOption = $"You selected: '{param}'");
+		public ICommand SelectOption => GetOrCreateCommand<object>(param => SelectedOption = $"You selected: '{param}'");
 	}
 }

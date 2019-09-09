@@ -1,23 +1,37 @@
 ﻿#if XAMARIN_IOS
 
+using CoreGraphics;
+using UIKit;
 using Uno.Disposables;
+using Uno.UI;
 using Uno.UI.Common;
 using Uno.UI.DataBinding;
+using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Data;
 
 namespace Windows.UI.Xaml.Controls
 {
-	public partial class TimePickerFlyout : Flyout
+	public partial class TimePickerFlyout : PickerFlyoutBase
 	{
 		private readonly SerialDisposable _onLoad = new SerialDisposable();
 		private readonly SerialDisposable _onUnloaded = new SerialDisposable();
 		internal protected TimePickerSelector _timeSelector;
-		internal protected TimePickerFlyoutPresenter _timePickerPresenter;
 		internal protected FrameworkElement _headerUntapZone;
 		private bool _isInitialized;
 
 		public TimePickerFlyout()
 		{
+		}
+
+		protected override void InitializePopupPanel()
+		{
+			_popup.PopupPanel = new PickerFlyoutPopupPanel(this)
+			{
+				Visibility = Visibility.Collapsed,
+				Background = SolidColorBrushHelper.Transparent,
+				AutoresizingMask = UIViewAutoresizing.All,
+				Frame = new CGRect(CGPoint.Empty, ViewHelper.GetScreenSize())
+			};
 		}
 
 		/// <summary>
@@ -53,6 +67,38 @@ namespace Windows.UI.Xaml.Controls
 			this.Binding(nameof(MinuteIncrement), nameof(MinuteIncrement), Content, BindingMode.TwoWay);
 			this.Binding(nameof(ClockIdentifier), nameof(ClockIdentifier), Content, BindingMode.TwoWay);
 		}
+
+		#region Content DependencyProperty
+		internal IUIElement Content
+		{
+
+			get { return (IUIElement)this.GetValue(ContentProperty); }
+			set { this.SetValue(ContentProperty, value); }
+		}
+
+		internal static readonly DependencyProperty ContentProperty =
+			DependencyProperty.Register(
+				"Content",
+				typeof(IUIElement),
+				typeof(TimePickerFlyout),
+				new FrameworkPropertyMetadata(default(IUIElement), FrameworkPropertyMetadataOptions.AffectsMeasure, OnContentChanged));
+		private TimePickerFlyoutPresenter _timePickerPresenter;
+
+		private static void OnContentChanged(object dependencyObject, DependencyPropertyChangedEventArgs args)
+		{
+			var flyout = dependencyObject as TimePickerFlyout;
+
+			if (flyout._timePickerPresenter != null)
+			{
+				if (args.NewValue is IDependencyObjectStoreProvider binder)
+				{
+					binder.Store.SetValue(binder.Store.TemplatedParentProperty, flyout.TemplatedParent, DependencyPropertyValuePrecedences.Local);
+				}
+
+				flyout._timePickerPresenter.Content = args.NewValue;
+			}
+		}
+		#endregion
 
 		protected override Control CreatePresenter()
 		{

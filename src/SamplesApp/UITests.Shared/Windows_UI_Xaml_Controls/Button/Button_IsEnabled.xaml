@@ -30,6 +30,8 @@
 					Content="Button.Command.IsEnabled"
 					Click="ButtonCommandIsEnabled_Click" />
 
+		<Button Command="{Binding AlternateEnableCommand}">Alternating Enability with a command</Button>
+
 	</StackPanel>
 
 </UserControl>

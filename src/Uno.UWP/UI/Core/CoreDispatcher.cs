@@ -215,9 +215,9 @@ namespace Windows.UI.Core
 		private void DispatchItems()
 		{
 			UIAsyncOperation operation = null;
-			CoreDispatcherPriority operationPriority = CoreDispatcherPriority.Normal;
+			var operationPriority = CoreDispatcherPriority.Normal;
 
-			for (int i = 3; i >= 0; i--)
+			for (var i = 3; i >= 0; i--)
 			{
 				var queue = _queues[i];
 
@@ -231,7 +231,7 @@ namespace Windows.UI.Core
 						if (DecrementGlobalCount() > 0)
 						{
 							EnqueueNative();
-                        }
+						}
 						break;
 					}
 				}
@@ -257,14 +257,14 @@ namespace Windows.UI.Core
 
 						using (runActivity)
 						{
-                            using (GetSyncContext(operationPriority).Apply())
-                            {
-                                operation.Action();
-                                operation.Complete();
-                            }
+							using (GetSyncContext(operationPriority).Apply())
+							{
+								operation.Action();
+								operation.Complete();
+							}
 						}
 					}
-                    catch (Exception ex)
+					catch (Exception ex)
 					{
 						if (_trace.IsEnabled)
 						{

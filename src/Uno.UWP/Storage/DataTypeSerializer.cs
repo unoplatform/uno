@@ -70,6 +70,11 @@ namespace Windows.Storage
 
 		public static string Serialize(object value)
 		{
+			if (value == null)
+			{
+				throw new ArgumentNullException(nameof(value));
+			}
+
 			if (!SupportedTypes.Contains(value.GetType()))
 			{
 				throw new NotSupportedException($"Type {value.GetType()} is not supported");

@@ -134,12 +134,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 				state = CommonStates.Pressed;
 			}
 
-			SetVisualState(state, true);
-		}
-
-		internal protected virtual void SetVisualState(string state, bool useTransitions)
-		{
-			VisualStateManager.GoToState(this, state, useTransitions);
+			VisualStateManager.GoToState(this, state, true);
 		}
 
 		protected override void OnLoaded()

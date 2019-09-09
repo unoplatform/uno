@@ -19,9 +19,9 @@ namespace Uno.UI.Controls
 {
 	public partial class BindableNSView : NSView, INotifyPropertyChanged, DependencyObject, IShadowChildrenProvider, IEnumerable
 	{
-		private List<NSView> _shadowChildren = new List<NSView>();
+		private MaterializableList<NSView> _shadowChildren = new MaterializableList<NSView>(0);
 
-		List<NSView> IShadowChildrenProvider.ChildrenShadow => _shadowChildren;
+		List<NSView> IShadowChildrenProvider.ChildrenShadow => _shadowChildren.Materialized;
 
 		internal IReadOnlyList<NSView> ChildrenShadow => _shadowChildren;
 
@@ -29,14 +29,14 @@ namespace Uno.UI.Controls
 		{
 			base.DidAddSubview(NSView);
 
-			// Reference the list as we don't know where 
+			// Reference the list as we don't know where
 			// the items has been added other than by getting the complete list.
 			// Subviews materializes a new array at every call, which makes it safe to
 			// reference.
-			_shadowChildren = Subviews.ToList();
+			_shadowChildren = new MaterializableList<NSView>(Subviews);
 		}
 
-		internal List<NSView>.Enumerator GetChildrenEnumerator() => _shadowChildren.GetEnumerator();
+		internal List<NSView>.Enumerator GetChildrenEnumerator() => _shadowChildren.Materialized.GetEnumerator();
 
 		public override void WillRemoveSubview(NSView NSView)
 		{
@@ -69,6 +69,12 @@ namespace Uno.UI.Controls
 			Initialize();
 		}
 
+		/// <remarks>
+		/// This is required to ensure that the coordinate system matches UWP, where the origin is at the top left.
+		/// See https://developer.apple.com/documentation/appkit/nsview/1483532-isflipped for more details.
+		/// </remarks>
+		public override bool IsFlipped => true;
+
 		private void Initialize()
 		{
 			InitializeBinder();
@@ -84,22 +90,18 @@ namespace Uno.UI.Controls
 		/// </remarks>
 		internal void MoveViewTo(int oldIndex, int newIndex)
 		{
-			var newShadow = _shadowChildren.ToList();
+			var view = _shadowChildren[oldIndex];
 
-			var view = newShadow[oldIndex];
-
-			newShadow.RemoveAt(oldIndex);
-			newShadow.Insert(newIndex, view);
+			_shadowChildren.RemoveAt(oldIndex);
+			_shadowChildren.Insert(newIndex, view);
 
 			var reorderIndex = Math.Min(oldIndex, newIndex);
 
-			for (int i = reorderIndex; i < newShadow.Count; i++)
+			for (int i = reorderIndex; i < _shadowChildren.Count; i++)
 			{
 				// TODO: Use AddSubview with foremost
 				// BringSubviewToFront(newShadow[i]);
 			}
-
-			_shadowChildren = newShadow.ToList();
 		}
 
 		protected void RaisePropertyChanged([CallerMemberName] string propertyName = null)

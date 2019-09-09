@@ -39,12 +39,25 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		private readonly bool _isUiAutomationMappingEnabled;
 		private Dictionary<string, string> _legacyTypes;
 
+		// Determines if the source generator will skip the inclusion of UseControls in the
+		// visual tree. See https://github.com/unoplatform/uno/issues/61
+		private bool _skipUserControlsInVisualTree = true;
+
 #pragma warning disable 649 // Unused member
 		private readonly bool _forceGeneration;
 #pragma warning restore 649 // Unused member
 
 		public XamlCodeGeneration(Compilation sourceCompilation, ProjectInstance msbProject, Project roslynProject)
 		{
+			// To easily debug XAML code generation:
+			// 1. Uncomment the line below
+			// 2. Build Uno.UI.SourceGenerators and override local files (following instructions here: doc/articles/uno-development/debugging-uno-ui.md#debugging-unoui)
+			// 3. Build project containing your XAML. When prompted to attach a Visual Studio instance:
+			//		- if it's in an external solution, attach the VS instance running Uno.UI
+			//		- if you're debugging XAML generation inside the Uno solution, opt to create a new VS instance
+			//
+			//Debugger.Launch();
+
 			InitTelemetry(msbProject);
 
 			_legacyTypes = msbProject
@@ -93,6 +106,11 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			if (bool.TryParse(msbProject.GetProperty("UseUnoXamlParser")?.EvaluatedValue, out var useUnoXamlParser) && useUnoXamlParser)
 			{
 				XamlRedirection.XamlConfig.IsUnoXaml = useUnoXamlParser || XamlRedirection.XamlConfig.IsMono;
+			}
+
+			if (bool.TryParse(msbProject.GetProperty("UnoSkipUserControlsInVisualTree")?.EvaluatedValue, out var skipUserControlsInVisualTree))
+			{
+				_skipUserControlsInVisualTree = skipUserControlsInVisualTree;
 			}
 
 			if (bool.TryParse(msbProject.GetProperty("ShouldWriteErrorOnInvalidXaml")?.EvaluatedValue, out var shouldWriteErrorOnInvalidXaml))
@@ -179,7 +197,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 							uiAutomationMappings: _uiAutomationMappings,
 							defaultLanguage: _defaultLanguage,
 							isWasm: _isWasm,
-							isDebug: _isDebug
+							isDebug: _isDebug,
+							skipUserControlsInVisualTree: _skipUserControlsInVisualTree
 						)
 						.GenerateFile()
 					)
@@ -221,14 +240,14 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			// references only, and in Uno.UI itself for generic.xaml-like resources.
 
 			var query = from ext in _medataHelper.Compilation.ExternalReferences
-					let sym = _medataHelper.Compilation.GetAssemblyOrModuleSymbol(ext) as IAssemblySymbol
-					where sym != null
-					from module in sym.Modules
-					from reference in module.ReferencedAssemblies
-					where reference.Name == "Uno.UI" || sym.Name == "Uno.UI"
-					from typeName in sym.GlobalNamespace.GetNamespaceTypes()
-					where typeName.Name.EndsWith("GlobalStaticResources")
-					select typeName;
+						let sym = _medataHelper.Compilation.GetAssemblyOrModuleSymbol(ext) as IAssemblySymbol
+						where sym != null
+						from module in sym.Modules
+						from reference in module.ReferencedAssemblies
+						where reference.Name == "Uno.UI" || sym.Name == "Uno.UI"
+						from typeName in sym.GlobalNamespace.GetNamespaceTypes()
+						where typeName.Name.EndsWith("GlobalStaticResources")
+						select typeName;
 
 			_ambientGlobalResources = query.Distinct().ToArray();
 
@@ -254,30 +273,48 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 				if (topLevelControl?.Type.Name == "ResourceDictionary")
 				{
-					var resources = new Dictionary<string, XamlObjectDefinition>();
-
 					BuildResourceMap(topLevelControl, map);
 
-					var themeResources = topLevelControl.Members.FirstOrDefault(m => m.Member.Name == "ThemeDictionaries");
+					var themeDictionaries = topLevelControl.Members.FirstOrDefault(m => m.Member.Name == "ThemeDictionaries");
 
-					if (themeResources != null)
+					if (themeDictionaries != null)
 					{
-						// Theme resources are not supported for now, so we take the default key
-						// and consider everthing inside as a standard StaticResource.
+						// We extract all distinct keys of all themed resource dictionaries defined and add them to global map
 
-						var defaultTheme = themeResources
-							.Objects
-							.FirstOrDefault(o => o
-								.Members
-								.Any(m =>
-									m.Member.Name == "Key"
-									&& m.Value.ToString() == "Default"
-								)
-							);
-
-						if (defaultTheme != null)
+						IEnumerable<string> GetResources(XamlObjectDefinition themeDictionary)
 						{
-							BuildResourceMap(defaultTheme, map);
+							if (!(themeDictionary.Members
+								.FirstOrDefault(x => x.Member.Name.Equals("Key"))
+								?.Value is string))
+							{
+								yield break;
+							}
+
+							var resources = themeDictionary.Members
+								.FirstOrDefault(x => x.Member.Name.Equals("_UnknownContent"))
+								?.Objects;
+
+							if (resources != null)
+							{
+								foreach (var resource in resources)
+								{
+									if (resource.Members.FirstOrDefault(x => x.Member.Name.Equals("Key"))
+										?.Value is string resourceKey)
+									{
+										yield return resourceKey;
+									}
+								}
+							}
+						}
+
+						var themeResources = themeDictionaries
+							.Objects
+							.SelectMany(GetResources)
+							.Distinct();
+
+						foreach (var themeResource in themeResources)
+						{
+							map.Add(themeResource, _defaultNamespace, XamlGlobalStaticResourcesMap.ResourcePrecedence.Local);
 						}
 					}
 				}

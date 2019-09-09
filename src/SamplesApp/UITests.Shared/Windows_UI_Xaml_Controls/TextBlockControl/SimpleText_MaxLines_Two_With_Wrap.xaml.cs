@@ -1,3 +1,5 @@
+using System.Threading.Tasks;
+using Windows.UI.Core;
 using Uno.UI.Samples.Controls;
 using Windows.UI.Xaml.Controls;
 
@@ -9,6 +11,17 @@ namespace Uno.UI.Samples.Content.UITests.TextBlockControl
 		public SimpleText_MaxLines_Two_With_Wrap()
 		{
 			this.InitializeComponent();
+
+#if __WASM__
+			var initialHits = UnoMetrics.TextBlock.MeasureCacheHits;
+			var initialMisses = UnoMetrics.TextBlock.MeasureCacheMisses;
+
+			border1.SizeChanged += (sender, e) =>
+			{
+				hits.Text = (UnoMetrics.TextBlock.MeasureCacheHits - initialHits).ToString();
+				misses.Text = (UnoMetrics.TextBlock.MeasureCacheMisses - initialMisses).ToString();
+			};
+#endif
 		}
 	}
 }

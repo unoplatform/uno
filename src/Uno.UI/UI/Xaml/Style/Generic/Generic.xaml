@@ -710,8 +710,6 @@
 								Opacity="0" />
 						<ContentPresenter x:Name="ContentPresenter"
 										  Grid.Row="1"
-										  ContentTemplate="{TemplateBinding ItemTemplate}"
-										  ContentTemplateSelector="{TemplateBinding ItemTemplateSelector}"
 										  Margin="{TemplateBinding Padding}"
 										  HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
 										  VerticalAlignment="{TemplateBinding VerticalContentAlignment}">
@@ -2889,9 +2887,7 @@
 						</Grid.ColumnDefinitions>
 
 						<!--Content Area-->
-						<!-- Wasm: Workaround to make SplitView work (only supports Inline mode). -->
 						<Grid x:Name="ContentRoot"
-							  wasm:Grid.Column="1"
 							  Grid.ColumnSpan="2">
 							<Border Child="{TemplateBinding Content}" />
 							<win:Rectangle x:Name="LightDismissLayer"
@@ -3831,23 +3827,23 @@
 		</Setter>
 	</xamarin:Style>
 
-	<!-- Default style for Windows.UI.Xaml.Controls.Slider -->
-	<xamarin:Style TargetType="Thumb"
-				   x:Key="SliderThumbStyle">
-		<Setter Property="BorderThickness"
-				Value="0" />
-		<Setter Property="Background"
-				Value="{ThemeResource SystemControlForegroundAccentBrush}" />
-		<Setter Property="Template">
-			<Setter.Value>
-				<ControlTemplate TargetType="Thumb">
-					<Border Background="{TemplateBinding Background}"
-							BorderBrush="{TemplateBinding BorderBrush}"
-							BorderThickness="{TemplateBinding BorderThickness}"
-							CornerRadius="4" />
-				</ControlTemplate>
-			</Setter.Value>
-		</Setter>
+<!-- Default style for Windows.UI.Xaml.Controls.Slider -->	
+	<xamarin:Style TargetType="Thumb"	
+				   x:Key="SliderThumbStyle">	
+		<Setter Property="BorderThickness"	
+				Value="0" />	
+		<Setter Property="Background"	
+				Value="{ThemeResource SystemControlForegroundAccentBrush}" />	
+		<Setter Property="Template">	
+			<Setter.Value>	
+				<ControlTemplate TargetType="Thumb">	
+					<Border Background="{TemplateBinding Background}"	
+							BorderBrush="{TemplateBinding BorderBrush}"	
+							BorderThickness="{TemplateBinding BorderThickness}"	
+							CornerRadius="4" />	
+				</ControlTemplate>	
+			</Setter.Value>	
+		</Setter>	
 	</xamarin:Style>
 
 	<xamarin:Style x:Key="XamlDefaultSlider"
@@ -9342,6 +9338,94 @@
 							</Grid>
 						</Border>
 					</Grid>
+				</ControlTemplate>
+			</Setter.Value>
+		</Setter>
+	</Style>
+
+	<Style x:Key="AccentButtonStyle" TargetType="Button">
+		<Setter Property="Foreground" Value="{ThemeResource AccentButtonForeground}" />
+		<Setter Property="Background" Value="{ThemeResource AccentButtonBackground}" />
+		<Setter Property="BackgroundSizing" Value="OuterBorderEdge" />
+		<Setter Property="BorderBrush" Value="{ThemeResource AccentButtonBorderBrush}" />
+		<Setter Property="Template">
+			<Setter.Value>
+				<ControlTemplate TargetType="Button">
+					<ContentPresenter x:Name="ContentPresenter"
+                        Background="{TemplateBinding Background}"
+                        BackgroundSizing="{TemplateBinding BackgroundSizing}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="{TemplateBinding BorderThickness}"
+                        Content="{TemplateBinding Content}"
+                        ContentTemplate="{TemplateBinding ContentTemplate}"
+                        ContentTransitions="{TemplateBinding ContentTransitions}"
+                        CornerRadius="{TemplateBinding CornerRadius}"
+                        Padding="{TemplateBinding Padding}"
+                        HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+                        VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
+                        AutomationProperties.AccessibilityView="Raw">
+
+						<VisualStateManager.VisualStateGroups>
+							<VisualStateGroup x:Name="CommonStates">
+								<VisualState x:Name="Normal">
+
+									<Storyboard>
+										<PointerUpThemeAnimation Storyboard.TargetName="ContentPresenter" />
+									</Storyboard>
+								</VisualState>
+
+								<VisualState x:Name="PointerOver">
+
+									<Storyboard>
+										<ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="Background">
+											<DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource AccentButtonBackgroundPointerOver}" />
+										</ObjectAnimationUsingKeyFrames>
+										<ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="BorderBrush">
+											<DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource AccentButtonBorderBrushPointerOver}" />
+										</ObjectAnimationUsingKeyFrames>
+										<ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="Foreground">
+											<DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource AccentButtonForegroundPointerOver}" />
+										</ObjectAnimationUsingKeyFrames>
+										<PointerUpThemeAnimation Storyboard.TargetName="ContentPresenter" />
+									</Storyboard>
+								</VisualState>
+
+								<VisualState x:Name="Pressed">
+
+									<Storyboard>
+										<ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="Background">
+											<DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource AccentButtonBackgroundPressed}" />
+										</ObjectAnimationUsingKeyFrames>
+										<ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="BorderBrush">
+											<DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource AccentButtonBorderBrushPressed}" />
+										</ObjectAnimationUsingKeyFrames>
+										<ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="Foreground">
+											<DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource AccentButtonForegroundPressed}" />
+										</ObjectAnimationUsingKeyFrames>
+										<PointerDownThemeAnimation Storyboard.TargetName="ContentPresenter" />
+									</Storyboard>
+								</VisualState>
+
+								<VisualState x:Name="Disabled">
+
+									<Storyboard>
+										<ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="Background">
+											<DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource AccentButtonBackgroundDisabled}" />
+										</ObjectAnimationUsingKeyFrames>
+										<ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="BorderBrush">
+											<DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource AccentButtonBorderBrushDisabled}" />
+										</ObjectAnimationUsingKeyFrames>
+										<ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="Foreground">
+											<DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource AccentButtonForegroundDisabled}" />
+										</ObjectAnimationUsingKeyFrames>
+									</Storyboard>
+								</VisualState>
+
+							</VisualStateGroup>
+
+						</VisualStateManager.VisualStateGroups>
+					</ContentPresenter>
+
 				</ControlTemplate>
 			</Setter.Value>
 		</Setter>

@@ -36,8 +36,10 @@ namespace Windows.Graphics.Display
 
 		private void UpdateLogicalProperties(DisplayMetrics realDisplayMetrics)
 		{
-			LogicalDpi = realDisplayMetrics.Density * 100;
-			ResolutionScale = (ResolutionScale)(int)LogicalDpi;
+			// DisplayMetrics of 1.0 matches 100%, or UWP's default 96.0 DPI.
+			// https://stuff.mit.edu/afs/sipb/project/android/docs/reference/android/util/DisplayMetrics.html#density
+			LogicalDpi = realDisplayMetrics.Density * 96.0f;
+			ResolutionScale = (ResolutionScale)(int)(realDisplayMetrics.Density * 100.0);
 		}
 
 		private void UpdateRawProperties(DisplayMetrics realDisplayMetrics)

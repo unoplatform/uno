@@ -19,7 +19,7 @@ namespace Windows.UI.Xaml.Controls
 {
 	public partial class ScrollContentPresenter : UnoTwoDScrollView, IShadowChildrenProvider, DependencyObject
 	{
-		private readonly static List<View> _emptyList = new List<View>(0);
+		private static readonly List<View> _emptyList = new List<View>(0);
 
 		private ScrollBarVisibility _verticalScrollBarVisibility;
 		public ScrollBarVisibility VerticalScrollBarVisibility
@@ -89,7 +89,7 @@ namespace Windows.UI.Xaml.Controls
 			// Force scrollbars to initialize since we're not inflating from xml
 			if (Android.OS.Build.VERSION.SdkInt <= Android.OS.BuildVersionCodes.Kitkat)
 			{
-				var styledAttributes = Context.Theme.ObtainStyledAttributes(Resource.Styleable.View);
+				var styledAttributes = Context.Theme.ObtainStyledAttributes(Uno.UI.Resource.Styleable.View);
 				InitializeScrollbars(styledAttributes);
 				styledAttributes.Recycle();
 			}

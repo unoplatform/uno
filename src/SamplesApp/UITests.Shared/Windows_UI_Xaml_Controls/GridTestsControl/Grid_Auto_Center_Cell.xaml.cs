@@ -1,0 +1,14 @@
+using Uno.UI.Samples.Controls;
+using Windows.UI.Xaml.Controls;
+
+namespace Uno.UI.Samples.Content.UITests.GridTestsControl
+{
+	[SampleControlInfo("GridTestsControl", "Grid_Auto_Center_Cell")]
+	public sealed partial class Grid_Auto_Center_Cell : UserControl
+	{
+		public Grid_Auto_Center_Cell()
+		{
+			this.InitializeComponent();
+		}
+	}
+}

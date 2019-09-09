@@ -7,48 +7,76 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
+using System.Xml;
+using Mono.Options;
+using NUnit.Engine.Services;
 using Uno.UI.TestComparer;
+using Uno.UI.TestComparer.Comparer;
 
 namespace Umbrella.UI.TestComparer
 {
-    class Program
-    {
+	class Program
+	{
 		static void Main(string[] args)
 		{
 			if (args[0] == "appcenter")
 			{
-				if (args.Length != 4)
-				{
-					Console.WriteLine("tc [base path] [run limit] [api key]");
-					return;
-				}
-
 				var basePath = args[1];
 				var runLimit = int.Parse(args[2]);
-				var apiKey = args[3];
+				var appCenterApiKey = args[3];
 
-				new AppCenterTestsDownloader(apiKey).Download(apiKey, basePath, runLimit).Wait();
+				var p = new OptionSet() {
+					{ "base-path=", s => basePath = s },
+					{ "appCenterApiKey=", s => appCenterApiKey = s },
+					{ "runLimit=", s => runLimit = int.Parse(s) },
+				};
 
-				ProcessFiles(args, basePath, "ios");
-				ProcessFiles(args, basePath, "Android");
+				var list = p.Parse(args);
+
+				new AppCenterTestsDownloader(appCenterApiKey).Download(appCenterApiKey, basePath, runLimit).Wait();
+
+				ProcessFiles(basePath, basePath, "", "ios", "0");
+				ProcessFiles(basePath, basePath, "", "Android", "0");
 			}
 			else if (args[0] == "azdo")
 			{
-				var pat = args[1];
-				var basePath = args[2];
-				var sourceBranch = args[3];      // Build.SourceBranchName	
-				var targetBranch = !string.IsNullOrEmpty(args[4]) && args[4] != "$(System.PullRequest.TargetBranch)" ? args[4] : sourceBranch;      // System.PullRequest.TargetBranch	
-				var artifactName = args[5]; 
-				var definitionName = args[6];	// Build.DefinitionName
-				var projectName = args[7];      // System.TeamProject
-				var serverUri = args[8];        // System.TeamFoundationCollectionUri
-				var currentBuild = int.Parse(args[9]);     // Build.BuildId
-				var runLimit = int.Parse(args[10]);
+				var basePath = "";
+				var runLimit = 0;
+				var pat = "";
+				var sourceBranch = "";
+				var targetBranchParam = "";
+				var artifactName = ""; 
+				var artifactInnerBasePath = ""; // base path inside the artifact archive
+				var definitionName = "";		// Build.DefinitionName
+				var projectName = "";      // System.TeamProject
+				var serverUri = "";        // System.TeamFoundationCollectionUri
+				var currentBuild = 0;			// Build.BuildId
+
+				var p = new OptionSet() {
+					{ "base-path=", s => basePath = s },
+					{ "pat=", s => pat = s },
+					{ "run-limit=", s => runLimit = int.Parse(s) },
+					{ "source-branch=", s => sourceBranch = s },   // Build.SourceBranchName	
+					{ "target-branch=", s => targetBranchParam = s },   // System.PullRequest.TargetBranch
+					{ "artifact-name=", s => artifactName = s },
+					{ "artifact-inner-path=", s => artifactInnerBasePath = s },
+					{ "definition-name=", s => definitionName = s },
+					{ "project-name=", s => projectName = s },
+					{ "server-uri=", s => serverUri = s },
+					{ "current-build=", s => currentBuild = int.Parse(s) },
+				};
+
+				var list = p.Parse(args);
+
+				var targetBranch = !string.IsNullOrEmpty(targetBranchParam) && targetBranchParam != "$(System.PullRequest.TargetBranch)" ? targetBranchParam : sourceBranch;      	
 
 				var downloader = new AzureDevopsDownloader(pat, serverUri);
-				downloader.DownloadArtifacts(Path.Combine(basePath, "wasm"), projectName, definitionName, artifactName, sourceBranch, targetBranch, currentBuild, runLimit).Wait();
+				downloader.DownloadArtifacts(basePath, projectName, definitionName, artifactName, sourceBranch, targetBranch, currentBuild, runLimit).Wait();
 
-				ProcessFiles(args, basePath, "wasm");
+				var artifactsBasePath = Path.Combine(basePath, "artifacts");
+				ProcessFiles(basePath, artifactsBasePath, artifactInnerBasePath, "wasm", currentBuild.ToString());
+				ProcessFiles(basePath, artifactsBasePath, artifactInnerBasePath, "wasm-automated", currentBuild.ToString());
+				ProcessFiles(basePath, artifactsBasePath, artifactInnerBasePath, "android", currentBuild.ToString());
 			}
 			else if (args[0] == "compare")
 			{
@@ -94,297 +122,237 @@ namespace Umbrella.UI.TestComparer
 					file.Write("</body></html>");
 				}
 			}
-        }
+		}
 
-        private static void ProcessFiles(string[] args, string basePath, string platform)
-        {
-            string path = Path.Combine(basePath, platform);
-            var resultsId = $"{DateTime.Now:yyyyMMdd-hhmmss}";
-            string diffPath = Path.Combine(basePath, $"Results-{platform}-{resultsId}");
-            string resultsFilePath = Path.Combine(basePath, $"Results-{platform}-{resultsId}.html");
+		private static void ProcessFiles(string basePath, string artifactsBasePath, string artifactsInnerBasePath, string platform, string buildId)
+		{
+			var result = new TestFilesComparer(basePath, artifactsBasePath, artifactsInnerBasePath, platform).Compare();
 
-            Directory.CreateDirectory(path);
-            Directory.CreateDirectory(diffPath);
+			GenerateHTMLResults(basePath, platform, result);
+			GenerateNUnitTestResults(basePath, platform, result, buildId);
+		}
 
-            var q1 = from directory in Directory.EnumerateDirectories(path)
-                     let info = new DirectoryInfo(directory)
-                     orderby info.CreationTime descending
-                     select directory;
+		private static void GenerateNUnitTestResults(string basePath, string platform, CompareResult compareResult, string buildId)
+		{
+			var resultsId = $"{DateTime.Now:yyyyMMdd-hhmmss}";
+			var resultsFilePath = Path.Combine(basePath, $"Results-{platform}-{resultsId}.xml");
 
-            q1 = q1.ToArray();
+			var success = !compareResult.Tests.Any(t => t.ResultRun.LastOrDefault()?.HasChanged ?? false);
+			var successCount = compareResult.Tests.Count(t => t.ResultRun.LastOrDefault()?.HasChanged ?? false);
 
-            var orderedDirectories = from directory in q1
-                                     orderby directory
-                                     select directory;
+			var doc = new XmlDocument();
+			var rootNode = doc.CreateElement("test-run");
+			doc.AppendChild(rootNode);
+			rootNode.SetAttribute("id", buildId);
+			rootNode.SetAttribute("name", resultsId);
+			rootNode.SetAttribute("testcasecount", compareResult.TotalTests.ToString());
+			rootNode.SetAttribute("result", success ? "Passed" : "Failed");
+			rootNode.SetAttribute("time", "0");
+			rootNode.SetAttribute("total", compareResult.TotalTests.ToString());
+			rootNode.SetAttribute("errors", (compareResult.TotalTests - compareResult.UnchangedTests).ToString());
+			rootNode.SetAttribute("passed", successCount.ToString());
+			rootNode.SetAttribute("failed", "0");
+			rootNode.SetAttribute("inconclusive", "0");
+			rootNode.SetAttribute("skipped", "0");
+			rootNode.SetAttribute("asserts", "0");
 
-            var q = from directory in orderedDirectories.Select((v, i) => new { Index = i, Path = v })
-                    let files = from sample in EnumerateFiles(Path.Combine(directory.Path, ""), "*.png").AsParallel()
-                                select new { File = sample, Id = BuildSha1(sample) }
-                    select new
-                    {
-                        Path = directory.Path,
-                        Index = directory.Index,
-                        Files = files.ToArray(),
-                    };
+			var now = DateTimeOffset.Now;
+			rootNode.SetAttribute("run-date", now.ToString("yyyy-MM-dd"));
+			rootNode.SetAttribute("start-time", now.ToString("HH:mm:ss"));
+			rootNode.SetAttribute("end-time", now.ToString("HH:mm:ss"));
 
-            var allFolders = LogForeach(q, i => Console.WriteLine($"Processed {i.Path}")).ToArray();
+			var testSuiteAssemblyNode = doc.CreateElement("test-suite");
+			rootNode.AppendChild(testSuiteAssemblyNode);
+			testSuiteAssemblyNode.SetAttribute("type", "Assembly");
+			testSuiteAssemblyNode.SetAttribute("name", platform);
 
-            var allFiles = allFolders
-                .SelectMany(folder => folder
-                    .Files.Select(file => Path.GetFileName(file.File))
-                )
-                .Distinct()
-                .ToArray();
+			var environmentNode = doc.CreateElement("environment");
+			testSuiteAssemblyNode.AppendChild(environmentNode);
+			environmentNode.SetAttribute("machine-name", Environment.MachineName);
+			environmentNode.SetAttribute("platform", platform);
 
-            var sb = new StringBuilder();
+			var testSuiteFixtureNode = doc.CreateElement("test-suite");
+			testSuiteAssemblyNode.AppendChild(testSuiteFixtureNode);
 
-            sb.AppendLine("<html><body>");
 
-            sb.AppendLine("<p>How to read this table:</p>");
-            sb.AppendLine("<ul>");
-            sb.AppendLine("<li>This tool compares the binary content of successive runs screenshots of the same test output</li>");
-            sb.AppendLine("<li>Each line represents a test result screen shot.</li>");
-            sb.AppendLine("<li>Each cell number represent an unique image ID.</li>");
-            sb.AppendLine("<li>A red cell means the image has changed from the previous run (not that the results are incorrect).</li>");
-            sb.AppendLine("<li>Subtle changes can be visualized using a XOR filtering between images</li>");
-            sb.AppendLine("</ul>");
+			testSuiteFixtureNode.SetAttribute("type", "TestFixture");
+			testSuiteFixtureNode.SetAttribute("name", platform + "-" + resultsId);
+			testSuiteFixtureNode.SetAttribute("executed", "true");
 
-            sb.AppendLine("<ul>");
-            foreach (var folder in allFolders)
-            {
-                sb.AppendLine($"<li>{folder.Index}: {folder.Path}</li>");
-            }
-            sb.AppendLine("</ul>");
+			testSuiteFixtureNode.SetAttribute("testcasecount", compareResult.TotalTests.ToString());
+			testSuiteFixtureNode.SetAttribute("result", success ? "Passed" : "Failed");
+			testSuiteFixtureNode.SetAttribute("time", "0");
+			testSuiteFixtureNode.SetAttribute("total", compareResult.TotalTests.ToString());
+			testSuiteFixtureNode.SetAttribute("errors", (compareResult.TotalTests - compareResult.UnchangedTests).ToString());
+			testSuiteFixtureNode.SetAttribute("passed", successCount.ToString());
+			testSuiteFixtureNode.SetAttribute("failed", "0");
+			testSuiteFixtureNode.SetAttribute("inconclusive", "0");
+			testSuiteFixtureNode.SetAttribute("skipped", "0");
+			testSuiteFixtureNode.SetAttribute("asserts", "0");
 
-            sb.AppendLine("<table>");
+			foreach (var run in compareResult.Tests)
+			{
+				var testCaseNode = doc.CreateElement("test-case");
+				testSuiteFixtureNode.AppendChild(testCaseNode);
 
-            sb.AppendLine("<tr><td/>");
-            foreach (var folder in allFolders)
-            {
-                sb.AppendLine($"<td>{folder.Index}</td>");
-            }
-            sb.AppendLine("</tr>");
+				var lastTestRun = run.ResultRun.LastOrDefault();
 
-            int unchanged = 0;
-            foreach (var testFile in allFiles)
-            {
-                var testFileIncrements = from folder in allFolders
-                                         orderby folder.Index ascending
-                                         select new
-                                         {
-                                             Folder = folder.Path,
-                                             FolderIndex = folder.Index,
-                                             Files = new[] {
-                                                new { FileInfo = folder.Files.FirstOrDefault(f => Path.GetFileName(f.File) == testFile) }
-                                             }
-                                         };
+				testCaseNode.SetAttribute("name", platform + "-" + SanitizeTestName(run.TestName));
+				testCaseNode.SetAttribute("fullname", platform + "-" + SanitizeTestName(run.TestName));
+				testCaseNode.SetAttribute("duration", "0");
+				testCaseNode.SetAttribute("time", "0");
 
-                var increments =
-                    (
-                        from platformIndex in Enumerable.Range(0, 1)
-                        select testFileIncrements
-                            .Aggregate(
-                                new[] { new { FolderIndex = -1, Path = "", IdSha = "", Id = -1, CompareeId = -1 } },
-                                (a, f) =>
-                                {
-                                    var platformFiles = f.Files[platformIndex];
+				var testRunSuccess = !(lastTestRun?.HasChanged ?? false);
+				testCaseNode.SetAttribute("result", testRunSuccess ? "Passed" : "Failed");
 
-                                    if (platformFiles?.FileInfo == null)
-                                    {
-                                        return a;
-                                    }
+				if (lastTestRun != null)
+				{
+					if (!testRunSuccess)
+					{
+						var failureNode = doc.CreateElement("failure");
+						testCaseNode.AppendChild(failureNode);
 
-                                    var otherMatch = a.Reverse().Where(i => i.IdSha != null).FirstOrDefault();
-                                    if (platformFiles.FileInfo?.Id.sha != otherMatch?.IdSha)
-                                    {
-                                        return a
-                                            .Concat(new[] { new { FolderIndex = f.FolderIndex, Path = platformFiles.FileInfo.File, IdSha = platformFiles.FileInfo?.Id.sha, Id = platformFiles.FileInfo?.Id.index ?? -1, CompareeId = otherMatch.Id } })
-                                            .ToArray();
-                                    }
-                                    else
-                                    {
-                                        return a
-                                            .Concat(new[] { new { FolderIndex = f.FolderIndex, Path = platformFiles.FileInfo.File, IdSha = (string)null, Id = platformFiles.FileInfo.Id.index, CompareeId = -1 } })
-                                            .ToArray();
-                                    }
-                                }
-                            )
-                    ).ToArray();
+						var messageNode = doc.CreateElement("message");
+						failureNode.AppendChild(messageNode);
 
-                var hasChanges = increments.Any(i => i.Where(v => v.IdSha != null).Count() - 1 > 1);
+						messageNode.InnerText = $"Results are different";
+					}
 
-                if (hasChanges)
-                {
-                    sb.AppendLine($"<tr rowspan=\"3\"><td>{testFile}</td></tr>");
+					var attachmentsNode = doc.CreateElement("attachments");
+					testCaseNode.AppendChild(attachmentsNode);
 
-                    for (int platformIndex = 0; platformIndex < 1; platformIndex++)
-                    {
-                        sb.AppendLine("<tr>");
-                        sb.AppendLine($"<td></td>");
+					AddAttachment(doc, attachmentsNode, lastTestRun.FilePath, "Result output");
 
-                        if (increments[platformIndex].Count() > 1)
-                        {
-                            var firstFolder = increments[platformIndex].Where(i => i.FolderIndex != -1).Min(i => i.FolderIndex);
+					if (!testRunSuccess)
+					{
+						AddAttachment(doc, attachmentsNode, lastTestRun.DiffResultImage, "Image diff");
 
-                            for (int folderIndex = 0; folderIndex < allFolders.Length; folderIndex++)
-                            {
-                                var folderInfo = increments[platformIndex].FirstOrDefault(inc => inc.FolderIndex == folderIndex);
+						var previousRun = run.ResultRun.ElementAtOrDefault(run.ResultRun.Count - 2);
+						AddAttachment(doc, attachmentsNode, previousRun.FilePath, "Previous result output");
+					}
+				}
+			}
 
-                                var hasChanged = folderIndex != firstFolder && folderInfo?.IdSha != null;
-                                var color = folderInfo == null ? "#555" : hasChanged ? "#f00" : "#0f0";
+			using (var file = XmlWriter.Create(File.OpenWrite(resultsFilePath), new XmlWriterSettings { Indent = true } ))
+			{
+				doc.WriteTo(file);
+			}
+		}
 
-                                sb.AppendLine($"<td bgcolor=\"{color}\" width=20 height=20>");
-                                if (folderInfo != null)
-                                {
-                                    var relativePath = folderInfo.Path.Replace(basePath, "").Replace("\\", "/").TrimStart('/');
-                                    sb.AppendLine($"<a href=\"{relativePath}\">{folderInfo.Id}</a><!--{folderInfo.IdSha}-->");
+		private static string SanitizeTestName(string testName)
+			=> testName.Replace(" ", "_");
 
-                                    var previousFolderInfo = increments[platformIndex].FirstOrDefault(inc => inc.FolderIndex == folderIndex - 1);
-                                    if (hasChanged && previousFolderInfo != null)
-                                    {
-                                        var currentImage = DecodeImage(folderInfo.Path);
-                                        var previousImage = DecodeImage(previousFolderInfo.Path);
+		private static void AddAttachment(XmlDocument doc, XmlElement attachmentsNode, string filePath, string description)
+		{
+			var attachmentNode = doc.CreateElement("attachment");
+			attachmentsNode.AppendChild(attachmentNode);
 
-                                        var diff = DiffImages(currentImage.pixels, previousImage.pixels);
+			var filePathNode = doc.CreateElement("filePath");
+			attachmentNode.AppendChild(filePathNode);
+			filePathNode.InnerText = filePath;
 
-                                        var diffFilePath = Path.Combine(diffPath, $"{folderInfo.Id}-{folderInfo.CompareeId}.png");
-                                        WriteImage(diffFilePath, diff, currentImage.frame);
+			var descriptionNode = doc.CreateElement("description");
+			attachmentNode.AppendChild(descriptionNode);
+			descriptionNode.InnerText = description;
+		}
 
-                                        var diffRelativePath = diffFilePath.Replace(basePath, "").Replace("\\", "/").TrimStart('/');
-                                        sb.AppendLine($"<a href=\"{diffRelativePath}\">D</a>");
-                                    }
-                                    else
-                                    {
-                                        sb.AppendLine($"D");
-                                    }
-                                }
-                                sb.AppendLine("</td>");
-                            }
-                        }
+		private static void GenerateHTMLResults(string basePath, string platform, CompareResult result)
+		{
+			string path = basePath;
+			var resultsId = $"{DateTime.Now:yyyyMMdd-hhmmss}";
+			string diffPath = Path.Combine(basePath, $"Results-{platform}-{resultsId}");
+			string resultsFilePath = Path.Combine(basePath, $"Results-{platform}-{resultsId}.html");
 
-                        sb.AppendLine("</tr>");
-                    }
-                }
-                else
-                {
-                    unchanged++;
-                }
-            }
+			Directory.CreateDirectory(path);
+			Directory.CreateDirectory(diffPath);
 
-            sb.AppendLine("</table>");
-            sb.AppendLine($"{unchanged} samples unchanged, {allFiles.Length} files total.");
-            sb.AppendLine("</body></html>");
+			var sb = new StringBuilder();
 
-            File.WriteAllText(resultsFilePath, sb.ToString());
+			sb.AppendLine("<html><body>");
 
-			Console.WriteLine($"{platform}: {unchanged} samples unchanged, {allFiles.Length} files total.");
-        }
+			sb.AppendLine("<p>How to read this table:</p>");
+			sb.AppendLine("<ul>");
+			sb.AppendLine("<li>This tool compares the binary content of successive runs screenshots of the same test output</li>");
+			sb.AppendLine("<li>Each line represents a test result screen shot.</li>");
+			sb.AppendLine("<li>Each cell number represent an unique image ID.</li>");
+			sb.AppendLine("<li>A red cell means the image has changed from the previous run (not that the results are incorrect).</li>");
+			sb.AppendLine("<li>Subtle changes can be visualized using a XOR filtering between images</li>");
+			sb.AppendLine("</ul>");
 
-        private static void WriteImage(string diffPath, byte[] diff, BitmapFrame frameInfo)
-        {
-            using (var stream = new FileStream(diffPath, FileMode.Create))
-            {
-                var encoder = new PngBitmapEncoder();
+			sb.AppendLine("<ul>");
+			foreach (var folder in result.Folders)
+			{
+				sb.AppendLine($"<li>{folder.index}: {folder.path}</li>");
+			}
+			sb.AppendLine("</ul>");
 
-                encoder.Interlace = PngInterlaceOption.On;
+			sb.AppendLine("<table>");
 
-                var frame = BitmapSource.Create(
-                    pixelWidth: (int)frameInfo.Width,
-                    pixelHeight: (int)frameInfo.Height,
-                    dpiX: frameInfo.DpiX,
-                    dpiY: frameInfo.DpiY,
-                    pixelFormat: frameInfo.Format,
-                    palette: frameInfo.Palette,
-                    pixels: diff,
-                    stride: (int)(frameInfo.Width * 4)
-                );
+			sb.AppendLine("<tr><td/>");
+			foreach (var folder in result.Folders)
+			{
+				sb.AppendLine($"<td>{folder.index}</td>");
+			}
+			sb.AppendLine("</tr>");
 
-                encoder.Frames.Add(BitmapFrame.Create(frame));
-                encoder.Save(stream);
-            }
-        }
+			var changedList = new List<string>();
+			foreach (var testFile in result.Tests)
+			{
+				if (testFile.HasChanged)
+				{
+					sb.AppendLine($"<tr rowspan=\"3\"><td>{testFile.TestName}</td></tr>");
 
-        private static byte[] DiffImages(byte[] currentImage, byte[] previousImage)
-        {
-            var result = new byte[currentImage.Length];
+					for (int platformIndex = 0; platformIndex < 1; platformIndex++)
+					{
+						sb.AppendLine("<tr>");
+						sb.AppendLine($"<td></td>");
 
-            for (int i = 0; i < result.Length; i++)
-            {
-                result[i] = (byte)(currentImage[i] ^ previousImage[i]);
-            }
 
-            return result;
-        }
+						for (int folderIndex = 0; folderIndex < testFile.ResultRun.Count; folderIndex++)
+						{
+							var resultRun = testFile.ResultRun[folderIndex];
 
-        private static (BitmapFrame frame, byte[] pixels) DecodeImage(string path1)
-        {
-            Stream imageStreamSource = new FileStream(path1, FileMode.Open, FileAccess.Read, FileShare.Read);
-            var decoder = new PngBitmapDecoder(imageStreamSource, BitmapCreateOptions.PreservePixelFormat, BitmapCacheOption.Default);
+							var hasChanged = resultRun.HasChanged;
+							var color = resultRun.ImageId == -1 ? "#555" : hasChanged ? "#f00" : "#0f0";
 
-            byte[] image = new byte[(int)(decoder.Frames[0].Width * decoder.Frames[0].Height * 4)];
-            decoder.Frames[0].CopyPixels(image, (int)(decoder.Frames[0].Width * 4), 0);
+							sb.AppendLine($"<td bgcolor=\"{color}\" width=20 height=20>");
 
-            return (decoder.Frames[0], image);
-        }
+							if (resultRun.ImageId != -1)
+							{
+								var relativePath = resultRun.FilePath.Replace(basePath, "").Replace("\\", "/").TrimStart('/');
+								sb.AppendLine($"<a href=\"{relativePath}\">{resultRun.ImageId}</a><!--{resultRun.ImageSha}-->");
 
-        private static IEnumerable<string> EnumerateFiles(string path, string pattern)
-        {
-            if (Directory.Exists(path))
-            {
-                return Directory.EnumerateFiles(path, pattern, SearchOption.AllDirectories);
-            }
-            else
-            {
-                return new string[0];
-            }
-        }
+								var previousRun = testFile.ResultRun.ElementAtOrDefault(folderIndex - 1);
+								if (resultRun.HasChanged && resultRun.DiffResultImage != null)
+								{
+									var diffRelativePath = resultRun.DiffResultImage.Replace(basePath, "").Replace("\\", "/").TrimStart('/');
+									sb.AppendLine($"<a href=\"{diffRelativePath}\">D</a>");
+								}
+								else
+								{
+									sb.AppendLine($"D");
+								}
+							}
+							sb.AppendLine("</td>");
+						}
 
-        private static IEnumerable<T> LogForeach<T>(IEnumerable<T> q, Action<T> action)
-        {
-            foreach (var item in q)
-            {
-                action(item);
-                yield return item;
-            }
-        }
+						sb.AppendLine("</tr>");
+					}
+				}
+			}
 
-        static Dictionary<string, int> _fileHashesTable = new Dictionary<string, int>();
+			sb.AppendLine("</table>");
+			sb.AppendLine($"{result.UnchangedTests} samples unchanged, {result.TotalTests} files total.");
+			sb.AppendLine("</body></html>");
 
-        private static (string sha, int index) BuildSha1(string sample)
-        {
-            // return "000";
+			File.WriteAllText(resultsFilePath, sb.ToString());
 
-            using (var sha1 = SHA1.Create())
-            {
-                using (var file = File.OpenRead(sample))
-                {
-                    var data = sha1.ComputeHash(file);
+			Console.WriteLine($"{platform}: {result.UnchangedTests} samples unchanged, {result.TotalTests} files total. Changed files:");
 
-                    // Create a new Stringbuilder to collect the bytes
-                    // and create a string.
-                    var sBuilder = new StringBuilder();
-
-                    // Loop through each byte of the hashed data 
-                    // and format each one as a hexadecimal string.
-                    for (int i = 0; i < data.Length; i++)
-                    {
-                        sBuilder.Append(data[i].ToString("x2", CultureInfo.InvariantCulture));
-                    }
-
-                    var sha = sBuilder.ToString();
-
-                    lock (_fileHashesTable)
-                    {
-                        if (!_fileHashesTable.TryGetValue(sha, out var index))
-                        {
-                            index = _fileHashesTable.Count;
-                            _fileHashesTable[sha] = index;
-                        }
-
-                        return (sha, index);
-                    }
-                }
-            }
-        }
-    }
+			foreach (var changedFile in changedList)
+			{
+				Console.WriteLine($"\t- {changedFile}");
+			}
+		}
+	}
 }

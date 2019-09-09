@@ -153,6 +153,7 @@ namespace Windows.UI.Xaml.Controls
 				}
 				else
 				{
+					UnoViewGroup.MeasureBeforeLayout();
 					UpdateLayout(GeneratorDirection.Forward, Extent, ContentBreadth, recycler, state, isMeasure: false);
 				}
 			}
@@ -581,6 +582,9 @@ namespace Windows.UI.Xaml.Controls
 			var remainingLines = remainingItems / leadingLine.NumberOfViews;
 			var remainingItemExtent = remainingLines * leadingLine.Extent;
 
+			int headerExtent = HeaderViewCount > 0 ? GetChildExtentWithMargins(GetChildAt(GetHeaderViewIndex())) : 0;
+			int footerExtent = FooterViewCount > 0 ? GetChildExtentWithMargins(GetChildAt(GetFooterViewIndex())) : 0;
+
 			int remainingGroupExtent = 0;
 			if (XamlParent.NumberOfDisplayGroups > 0 && RelativeGroupHeaderPlacement == RelativeHeaderPlacement.Inline)
 			{
@@ -589,7 +593,7 @@ namespace Windows.UI.Xaml.Controls
 				remainingGroupExtent = remainingGroups * lastGroup.HeaderExtent;
 			}
 
-			var range = ContentOffset + remainingItemExtent + remainingGroupExtent +
+			var range = ContentOffset + remainingItemExtent + remainingGroupExtent + headerExtent + footerExtent +
 				//TODO: An inline group header might actually be the view at the bottom of the viewport, we should take this into account
 				GetChildEndWithMargin(base.GetChildAt(FirstItemView + ItemViewCount - 1));
 			Debug.Assert(range > 0, "Must report a non-negative scroll range.");
@@ -762,7 +766,16 @@ namespace Windows.UI.Xaml.Controls
 
 			size = ApplyChildStretch(size, slotSize, viewType);
 
+			if (!child.IsInLayout)
+			{
+				UnoViewGroup.StartLayoutingFromMeasure();
+			}
 			LayoutChild(child, direction, extentOffset, breadthOffset, size);
+
+			if (!child.IsInLayout)
+			{
+				UnoViewGroup.EndLayoutingFromMeasure();
+			}
 
 			return size;
 		}
@@ -884,6 +897,12 @@ namespace Windows.UI.Xaml.Controls
 			int actualOffset = 0;
 			int appliedOffset = 0;
 			var consumptionIncrement = GetScrollConsumptionIncrement(fillDirection) * Math.Sign(offset);
+
+			if (consumptionIncrement == 0)
+			{
+				// Exit early to avoid trying to incrementally scroll infinitely
+				return actualOffset;
+			}
 			while (Math.Abs(unconsumedOffset) > Math.Abs(consumptionIncrement))
 			{
 				//Consume the scroll offset in bite-sized chunks to allow us to recycle views at the same rate as we create them. A big optimization, for 
@@ -896,7 +915,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 			actualOffset = ScrollByInner(offset, recycler, state);
 
-			UpdateBuffers(recycler);
+			UpdateBuffers(recycler, state);
 
 			return actualOffset;
 		}
@@ -1014,7 +1033,7 @@ namespace Windows.UI.Xaml.Controls
 				// leading to weird behaviour
 				// And don't populate buffer after a collection change until visible layout has been rebuilt with up-to-date positions
 				AssertValidState();
-				UpdateBuffers(recycler);
+				UpdateBuffers(recycler, state);
 				AssertValidState();
 			}
 		}
@@ -1626,10 +1645,10 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		private void UpdateBuffers(RecyclerView.Recycler recycler)
+		private void UpdateBuffers(RecyclerView.Recycler recycler, RecyclerView.State state)
 		{
 			UpdateCacheHalfLength();
-			ViewCache.UpdateBuffers(recycler);
+			ViewCache.UpdateBuffers(recycler, state);
 		}
 
 		private void UpdateCacheHalfLength()
@@ -1640,6 +1659,12 @@ namespace Windows.UI.Xaml.Controls
 			}
 
 			var averageExtent = GetAverageVisibleItemExtent();
+			if (averageExtent == 0)
+			{
+				// All 'visible' items have 0 extent. We're not going to get a reasonable cache length, so give up.
+				return;
+			}
+
 			var itemsVisible = Extent / averageExtent;
 			var newCacheHalfLength = (itemsVisible * CacheLength) / 2 * GetTrailingLine(GeneratorDirection.Forward).NumberOfViews; ;
 			newCacheHalfLength = Math.Round(newCacheHalfLength);

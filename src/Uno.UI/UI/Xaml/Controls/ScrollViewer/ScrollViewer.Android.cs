@@ -19,6 +19,11 @@ namespace Windows.UI.Xaml.Controls
 {
 	public partial class ScrollViewer : ContentControl
 	{
+		partial void InitializePartial()
+		{
+			base.EnableAndroidClipping();
+		}
+
 		internal static int GetMeasureValue(int value, ScrollBarVisibility scrollBarVisibility)
 		{
 			switch (scrollBarVisibility)
@@ -33,7 +38,6 @@ namespace Windows.UI.Xaml.Controls
 					return value;
 			}
 		}
-
 
 
 		partial void ChangeViewScroll(double? horizontalOffset, double? verticalOffset, bool disableAnimation)

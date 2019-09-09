@@ -130,17 +130,31 @@ namespace Windows.UI.Xaml.Controls
 
 		private void OnSourceChanged(ImageSource oldValue, ImageSource newValue)
 		{
-			_sourceDisposable.Disposable =
-				Source?.RegisterDisposablePropertyChangedCallback(
-					BitmapImage.UriSourceProperty, (o, e) =>
-					{
-						if (!object.Equals(e.OldValue, e.NewValue))
+			if (newValue is WriteableBitmap wb)
+			{
+				wb.Invalidated += OnInvalidated;
+				_sourceDisposable.Disposable = Disposable.Create(() => wb.Invalidated -= OnInvalidated);
+
+				void OnInvalidated(object sdn, EventArgs args)
+				{
+					_openedImage = null;
+					TryOpenImage();
+				}
+			}
+			else
+			{
+				_sourceDisposable.Disposable =
+					Source?.RegisterDisposablePropertyChangedCallback(
+						BitmapImage.UriSourceProperty, (o, e) =>
 						{
-							_openedImage = null;
-							TryOpenImage(); 
+							if (!object.Equals(e.OldValue, e.NewValue))
+							{
+								_openedImage = null;
+								TryOpenImage();
+							}
 						}
-					}
-				);
+					);
+			}
 
 			TryOpenImage();
 		}
@@ -344,7 +358,7 @@ namespace Windows.UI.Xaml.Controls
 					}
 				}
 
-				if (sourceSize.Width > availableSize.Width || sourceSize.Height > availableSize.Height)
+				if (sourceSize.Width > availableSize.Width || sourceSize.Height > availableSize.Height || (hasKnownWidth && hasKnownHeight))
 				{
 					var knownWidth = ImageControl.GetKnownWidth(availableSize.Width, sourceSize.Width);
 					var knownHeight = ImageControl.GetKnownHeight(availableSize.Height, sourceSize.Height);

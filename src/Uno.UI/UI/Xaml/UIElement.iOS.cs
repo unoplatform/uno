@@ -14,6 +14,7 @@ using Windows.Devices.Input;
 using Windows.Foundation;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
+using UIViewExtensions = UIKit.UIViewExtensions;
 
 namespace Windows.UI.Xaml
 {
@@ -616,6 +617,48 @@ namespace Windows.UI.Xaml
 			}
 		}
 
+		/// <summary>
+		/// Convenience method to find all views with the given name.
+		/// </summary>
+		public FrameworkElement[] FindViewsByName(string name) => FindViewsByName(name, searchDescendantsOnly: false);
+
+
+		/// <summary>
+		/// Convenience method to find all views with the given name.
+		/// </summary>
+		/// <param name="searchDescendantsOnly">If true, only look in descendants of the current view; otherwise search the entire visual tree.</param>
+		public FrameworkElement[] FindViewsByName(string name, bool searchDescendantsOnly)
+		{
+
+			UIView topLevel = this;
+
+			if (!searchDescendantsOnly)
+			{
+				while (topLevel.Superview is UIView newTopLevel)
+				{
+					topLevel = newTopLevel;
+				}
+			}
+
+			return GetMatchesInChildren(topLevel).ToArray();
+
+			IEnumerable<FrameworkElement> GetMatchesInChildren(UIView parent)
+			{
+				foreach (var subview in parent.Subviews)
+				{
+					if (subview is FrameworkElement fe && fe.Name == name)
+					{
+						yield return fe;
+					}
+
+					foreach (var match in GetMatchesInChildren(subview))
+					{
+						yield return match;
+					}
+				}
+			}
+		}
+
 		public FrameworkElement[] FrameworkElementsOfInterest => ViewsOfInterest.OfType<FrameworkElement>().ToArray();
 
 		public Controls.ContentControl[] ContentControlsOfInterest => ViewsOfInterest.OfType<Controls.ContentControl>().ToArray();
@@ -630,6 +673,8 @@ namespace Windows.UI.Xaml
 		public string ShowDescendants() => UIViewExtensions.ShowDescendants(this);
 
 		public string ShowLocalVisualTree(int fromHeight) => UIViewExtensions.ShowLocalVisualTree(this, fromHeight);
+
+		public IList<VisualStateGroup> VisualStateGroups => VisualStateManager.GetVisualStateGroups((this as Controls.Control).GetTemplateRoot());
 #endif
 		private class TappedGestureHandler : GestureHandler
 		{
@@ -656,6 +701,7 @@ namespace Windows.UI.Xaml
 						OriginalSource = owner,
 						PointerDeviceType = PointerDeviceType.Touch
 					};
+					owner.PreRaiseTapped?.Invoke(this, null);
 					owner.RaiseEvent(TappedEvent, tappedArgs);
 				}
 			}

@@ -44,16 +44,14 @@ namespace Windows.UI.Xaml.Controls
 
 		private void SetScrollableContainer()
 		{
+			_scrollableContainer = _sv;
+
 			if (this.FindFirstParent<TextBox>() != null)
 			{
 				var multiline = this.FindFirstChild<MultilineTextBoxView>();
 				if (multiline != null)
 				{
 					_scrollableContainer = multiline;
-				}
-				else
-				{
-					_scrollableContainer = _sv;
 				}
 			}
 		}

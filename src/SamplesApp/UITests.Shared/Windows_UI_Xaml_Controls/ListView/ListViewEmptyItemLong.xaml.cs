@@ -3,7 +3,7 @@ using Windows.UI.Xaml.Controls;
 namespace SamplesApp.Windows_UI_Xaml_Controls.ListView
 {
 	// Disabled as is freezes the samples app. see #22479
-	// [SampleControlInfoAttribute("ListView", "ListViewEmptyItemLong", typeof(ListViewViewModel))]
+	// [SampleControlInfo("ListView", "ListViewEmptyItemLong", typeof(ListViewViewModel))]
 	public sealed partial class ListViewEmptyItemLong : UserControl
 	{
 		public ListViewEmptyItemLong()

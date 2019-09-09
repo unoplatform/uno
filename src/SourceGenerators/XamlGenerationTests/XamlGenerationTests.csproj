@@ -35,13 +35,13 @@
 
 	<ItemGroup Condition=" '$(TargetFramework)' == 'MonoAndroid90'">
 		<PackageReference Include="Xamarin.Android.Support.v4">
-			<Version>26.1.0.1</Version>
+			<Version>28.0.0.1</Version>
 		</PackageReference>
 		<PackageReference Include="Xamarin.Android.Support.v7.AppCompat">
-			<Version>26.1.0.1</Version>
+			<Version>28.0.0.1</Version>
 		</PackageReference>
 		<PackageReference Include="Xamarin.Android.Support.v7.RecyclerView">
-			<Version>26.1.0.1</Version>
+			<Version>28.0.0.1</Version>
 		</PackageReference>
 	</ItemGroup>
 
@@ -51,6 +51,7 @@
 
 	<ItemGroup>
 	  <None Remove="NonDPAssignableTest.xaml" />
+	  <None Remove="ThemeResourcesTest.xaml" />
 	  <None Remove="xNameResources.xaml" />
 	</ItemGroup>
 
@@ -84,6 +85,12 @@
 	    <Generator>MSBuild:Compile</Generator>
 	  </None>
 	  <None Update="FieldModifiers.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </None>
+	  <None Update="Localization_Implicit.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </None>
+	  <None Update="XamlLocalResources.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </None>
 	</ItemGroup>

@@ -1,9 +1,12 @@
 ﻿class SampleRunner {
 
     static init() {
-        this._getAllTests = this.getMethod("[SamplesApp.Wasm] SamplesApp.App:GetAllTests");
-        this._runTest = this.getMethod("[SamplesApp.Wasm] SamplesApp.App:RunTest");
-        this._isTestDone = this.getMethod("[SamplesApp.Wasm] SamplesApp.App:IsTestDone");
+
+        if (!this._getAllTests) {
+            this._getAllTests = this.getMethod("[SamplesApp.Wasm] SamplesApp.App:GetAllTests");
+            this._runTest = this.getMethod("[SamplesApp.Wasm] SamplesApp.App:RunTest");
+            this._isTestDone = this.getMethod("[SamplesApp.Wasm] SamplesApp.App:IsTestDone");
+        }
     }
 
     static getMethod(methodName) {
@@ -16,15 +19,18 @@
         return method;
     }
 
-    static isTestDone(test) {
+    static IsTestDone(test) {
+        SampleRunner.init();
         return this._isTestDone(test);
     }
 
-    static runTest(test) {
+    static RunTest(test) {
+        SampleRunner.init();
         return this._runTest(test);
     } 
 
-    static getAllTests() {
+    static GetAllTests() {
+        SampleRunner.init();
         return this._getAllTests();
     } 
 }

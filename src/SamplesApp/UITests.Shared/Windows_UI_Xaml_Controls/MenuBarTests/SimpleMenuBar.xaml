@@ -1,0 +1,46 @@
+﻿<UserControl
+    x:Class="UITests.Shared.Windows_UI_Xaml_Controls.MenuBarTests.SimpleMenuBar"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:UITests.Shared.Windows_UI_Xaml_Controls.MenuBarTests"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    d:DesignHeight="300"
+    d:DesignWidth="400">
+
+    <Grid>
+		<Grid.RowDefinitions>
+			<RowDefinition Height="auto"/>
+			<RowDefinition Height="*"/>
+		</Grid.RowDefinitions>
+		
+		<MenuBar>
+			<MenuBarItem Title="File">
+				<MenuFlyoutSubItem Text="New">
+					<MenuFlyoutItem Text="Plain Text Document"/>
+					<MenuFlyoutItem Text="Rich Text Document"/>
+					<MenuFlyoutItem Text="Other Formats..."/>
+				</MenuFlyoutSubItem>
+				<MenuFlyoutItem Text="Open..."/>
+				<MenuFlyoutItem Text="Save"/>
+				<MenuFlyoutSeparator />
+				<MenuFlyoutItem Text="Exit"/>
+			</MenuBarItem>
+
+			<MenuBarItem Title="Edit">
+				<MenuFlyoutItem Text="Undo"/>
+				<MenuFlyoutItem Text="Cut"/>
+				<MenuFlyoutItem Text="Copy"/>
+				<MenuFlyoutItem Text="Paste"/>
+			</MenuBarItem>
+
+			<MenuBarItem Title="Help">
+				<MenuFlyoutItem Text="About"/>
+			</MenuBarItem>
+		</MenuBar>
+		<StackPanel Grid.Row="1">
+
+		</StackPanel>
+	</Grid>
+</UserControl>

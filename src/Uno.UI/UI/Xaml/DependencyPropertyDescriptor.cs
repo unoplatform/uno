@@ -75,7 +75,7 @@ namespace Windows.UI.Xaml
 					{
 						if (typeof(DependencyPropertyDescriptor).Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
 						{
-							typeof(DependencyPropertyDescriptor).Log().DebugFormat("The property path [{0}] is not formatted properly (must only access one property)");
+							typeof(DependencyPropertyDescriptor).Log().DebugFormat($"The property path [{propertyPath}] is not formatted properly (must only access one property)");
 						}
 					}
 				}
@@ -83,7 +83,7 @@ namespace Windows.UI.Xaml
 				{
 					if (typeof(DependencyPropertyDescriptor).Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
 					{
-						typeof(DependencyPropertyDescriptor).Log().DebugFormat("The property path [{0}] is not formatted properly (must have exactly one ':')");
+						typeof(DependencyPropertyDescriptor).Log().DebugFormat($"The property path [{propertyPath}] is not formatted properly (must have exactly one ':')");
 					}
 				}
 			}

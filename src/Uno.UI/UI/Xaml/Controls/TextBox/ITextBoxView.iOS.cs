@@ -16,5 +16,6 @@ namespace Windows.UI.Xaml.Controls
 		bool IsFirstResponder { get; }
 		void UpdateTextAlignment();
 		Brush Foreground { get; set; }
+		void SetTextNative(string text);
 	}
 }

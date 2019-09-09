@@ -120,6 +120,18 @@
   <data name="ApplicationName" xml:space="preserve">
     <value>SamplesApp</value>
   </data>
+  <data name="CustomTextTarget.CustomText" xml:space="preserve">
+    <value>I am text from resource</value>
+  </data>
+  <data name="CustomTextTarget.CustomTextObj" xml:space="preserve">
+    <value>I am boxed text from resource</value>
+  </data>
+  <data name="CustomTextTarget.CustomTextPlain" xml:space="preserve">
+    <value>I am non-DP text from resource</value>
+  </data>
+  <data name="LocalizedButton.Content" xml:space="preserve">
+    <value>I am button content from resource</value>
+  </data>
   <data name="Given_ResourceLoader.When_LocalizedResource" xml:space="preserve">
     <value>Text in 'en-US'</value>
   </data>
@@ -128,5 +140,17 @@
   </data>
   <data name="Given_ResourceLoader.When_SimpleString" xml:space="preserve">
     <value>My Simple String (en-US)</value>
+  </data>
+  <data name="NestedText.Text" xml:space="preserve">
+    <value>Overriding nested text from resource</value>
+  </data>
+  <data name="LocalizedText.Text" xml:space="preserve">
+    <value>More text from resource</value>
+  </data>
+  <data name="Given_ResourceService.ValidResource" xml:space="preserve">
+    <value>ValidResource (en-US)</value>
+  </data>
+  <data name="Given_ResourcesService.When_Get_ResourceFromResw" xml:space="preserve">
+    <value>Value for When_Get_ResourceFromResw (en-US)</value>
   </data>
 </root>

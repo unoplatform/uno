@@ -1,4 +1,4 @@
-﻿<Page x:Class="SamplesApp.Samples.TimePicker.Sample1"
+﻿<UserControl x:Class="UITests.Shared.Windows_UI_Xaml_Controls.TimePicker.Sample1"
       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:local="using:ControlTests"
@@ -16,15 +16,17 @@
 			<DataTemplate>
 				<Grid Background="White">
 					<TimePicker Grid.Row="1"
-                                Margin="15,10"
-                                HorizontalAlignment="Center"
-                                VerticalAlignment="Top"
-                                MinuteIncrement="1"
-                                ClockIdentifier="24HourClock">
+								x:Name="theTimePicker"
+								Margin="15,10"
+								HorizontalAlignment="Center"
+								VerticalAlignment="Top"
+								MinuteIncrement="1"
+								Time="{Binding [Time], Mode=TwoWay}"
+								ClockIdentifier="24HourClock">
 					</TimePicker>
 				</Grid>
 			</DataTemplate>
 		</controls:SampleControl.SampleContent>
 	</controls:SampleControl>
 
-</Page>
+</UserControl>

@@ -14,7 +14,8 @@
 		<controls:SampleControl.SampleContent>
 			<DataTemplate>
 
-				<ComboBox ItemsSource="{Binding [SampleItems]}" />
+				<ComboBox x:Name="theComboBox"
+						  ItemsSource="{Binding [SampleItems]}" />
 
 			</DataTemplate>
 		</controls:SampleControl.SampleContent>

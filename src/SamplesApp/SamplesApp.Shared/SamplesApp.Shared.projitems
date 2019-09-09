@@ -41,11 +41,12 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="$(MSBuildThisFileDirectory)Assets\Icons\home.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\Icons\play.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\lockscreenlogo.scale-200.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\splashscreen.scale-200.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\square150x150logo.scale-200.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\square44x44logo.scale-200.png" />
-    <Content Include="$(MSBuildThisFileDirectory)Assets\square44x44logo.targetsize-24_altform-unplated.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\storelogo.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\wide310x150logo.scale-200.png" />
   </ItemGroup>
@@ -59,8 +60,11 @@
     <PRIResource Include="$(MSBuildThisFileDirectory)Strings\sr-Cyrl-BA\Resources.resw" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Update="C:\src\Uno\src\SamplesApp\SamplesApp.Shared\Samples\UnitTests\HttpUnitTests.xaml.cs">
+    <Compile Update="$(MSBuildThisFileDirectory)Samples\UnitTests\HttpUnitTests.xaml.cs">
       <DependentUpon>HttpUnitTests.xaml</DependentUpon>
     </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="$(MSBuildThisFileDirectory)Assets\Icons\" />
   </ItemGroup>
 </Project>

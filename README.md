@@ -1,31 +1,33 @@
-# Uno Platform - The UWP Bridge for iOS, Android and WebAssembly
-
-[![Gitter](https://badges.gitter.im/uno-platform/Lobby.svg)](https://gitter.im/uno-platform/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
+# Uno Platform - Build Mobile, Desktop and WebAssembly apps with C# and XAML. Today.
+[![Gitter](https://badges.gitter.im/uno-platform/Lobby.svg)](https://gitter.im/uno-platform/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge) [![All Contributors](https://img.shields.io/badge/all_contributors-16-orange.svg?style=flat-square)](#contributors)
 
 # What is the Uno Platform
 
-The Uno Platform is an Universal Windows Platform Bridge to allow UWP based code to run on iOS, Android, and WebAssembly. It provides the full definitions of the UWP Windows 10 October 2018 Update (17763), and the implementation of growing number parts of the UWP API, such as **Windows.UI.Xaml**, to enable applications to run on these platforms.
+The Uno Platform is a Universal Windows Platform Bridge that allows UWP-based code (C# and XAML) to run on iOS, Android, and WebAssembly. It provides the full definitions of the UWP Windows 10 October 2018 Update (17763), and the implementation of a growing number of parts of the UWP API, such as **Windows.UI.Xaml**, to enable UWP applications to run on these platforms.
 
 Use the UWP tooling from Windows in [Visual Studio](https://www.visualstudio.com/), such as [XAML Edit and Continue](https://blogs.msdn.microsoft.com/visualstudio/2016/04/06/ui-development-made-easier-with-xaml-edit-continue/) and [C# Edit and Continue](https://docs.microsoft.com/en-us/visualstudio/debugger/how-to-use-edit-and-continue-csharp), build your application as much as possible on Windows, then validate that your application runs on iOS, Android and WebAssembly.
 
-Visit [our documentation](doc/index.md) for more details.
+Visit [our documentation](doc/articles/intro.md) for more details.
 
-# Live WebAssembly Apps
+# Getting Started
 
-Here's a list of live apps made with the Uno Platform for WebAssembly.
+## Prerequisites
+* [**Visual Studio 2017 15.5 or later**](https://visualstudio.microsoft.com/), with:
+    * **Universal Windows Platform component** installed
 
-* The [Uno Platform Playground](https://playground.platform.uno) ([Source](https://github.com/nventive/Uno.Playground))
-* The [Xaml Controls Gallery](https://xamlcontrolsgallery.platform.uno/) ([Source](https://github.com/nventive/Uno.Xaml-Controls-Gallery))
-* The [Uno.WindowsCommunityToolkit](https://windowstoolkit-wasm.platform.uno/), ([Source](https://github.com/nventive/Uno.WindowsCommunityToolkit))
-* The [Uno.Lottie](https://lottie.platform.uno/), a sample that uses the [AnimatedVisualPlayer](https://docs.microsoft.com/en-us/uwp/api/microsoft.ui.xaml.controls.animatedvisualplayer) ([Source](https://github.com/nventive/Uno.LottieSample))
-* The [Uno.RoslynQuoter](http://roslynquoter-wasm.platform.uno/), a [Roslyn](https://github.com/dotnet/roslyn) based C# analysis tool ([Source](https://github.com/nventive/Uno.RoslynQuoter))
-* The [Uno.BikeSharing360 App](http://bikerider-wasm.platform.uno/), a Xamarin.Forms app running on top of Uno for WebAssembly ([Source](https://github.com/nventive/Uno.BikeSharing360_MobileApps))
-* The [Uno.WindowsStateTriggers App](http://winstatetriggers-wasm.platform.uno/), a demo of the [Morten's WindowsStateTriggers](https://github.com/dotMorten/WindowsStateTriggers) ([Source](https://github.com/nventive/Uno.WindowsStateTriggers))
-* The [SQLite + Entity Framework Core App](http://sqliteefcore-wasm.platform.uno), a demo of the combination of [Roslyn](https://github.com/dotnet/roslyn), [Entity Framework Core](https://docs.microsoft.com/en-us/ef/core/), [SQLite](https://github.com/nventive/Uno.SQLitePCLRaw.Wasm) and the Uno Platform to manipulate an in-browser database.
-* The [Uno.WebSockets App](https://websockets-wasm.platform.uno), a demo of System.Net.WebSocket running from WebAssembly ([Source](https://github.com/nventive/Uno.Wasm.WebSockets))
-* A [mono-wasm AOT RayTracer](https://raytracer-mono-aot.platform.uno/)
+	* **Xamarin component** installed (for Android and iOS development)
 
-Let us know if you've made your app publicly available, we'll list it here!
+    * **ASP.NET/web component** installed, along with .NET Core 2.2 (for WASM development)
+
+To easily create a multi-platform application:
+* Install the [Uno Solution Template Visual Studio Extension](https://marketplace.visualstudio.com/items?itemName=nventivecorp.uno-platform-addin)
+* Create a new C# solution using the **Cross-Platform App (Uno Platform)** template, from Visual Studio's **Start Page**.
+
+See the complete [Getting Started guide](https://platform.uno/docs/articles/get-started.html) for more information.
+
+For a larger example and features demo:
+* Visit the [Uno Gallery and Playground](https://github.com/nventive/Uno.Playground) repository
+* Try the [WebAssembly Uno Playground](https://playground.platform.uno) live in your browser
 
 # Uno Features
 * Supported platforms:
@@ -48,9 +50,9 @@ Let us know if you've made your app publicly available, we'll list it here!
     * [Microsoft XAML Behaviors](https://github.com/nventive/Uno.XamlBehaviors)
     * [Prism](https://github.com/nventive/Uno.Prism)
     * [MVVMCross](https://www.mvvmcross.com/) (soon)
-    * [ReactiveUI](https://github.com/nventive/Uno.ReactiveUI)
+    * [ReactiveUI Official](https://github.com/reactiveui/ReactiveUI/pull/2067)
     * [WindowsStateTriggers](https://github.com/nventive/Uno.WindowsStateTriggers)
-    * [Xamarin.Forms for UWP](https://github.com/nventive/Uno.Xamarin.Forms)
+    * [Xamarin.Forms for UWP](https://github.com/nventive/Uno.Xamarin.Forms), [NuGet](https://www.nuget.org/packages/ReactiveUI.Uno)
     * [Rx.NET](https://github.com/nventive/Uno.Rx.NET)
     * [ColorCode-Universal](https://github.com/nventive/Uno.ColorCode-Universal)
     * Any UWP project
@@ -62,12 +64,24 @@ Let us know if you've made your app publicly available, we'll list it here!
     * Native controls and properties via [conditional XAML](doc/articles/using-uno-ui.md#supporting-multiple-platforms-in-xaml-files)
     * Any of the existing Xamarin iOS/Android libraries available
 
-# Getting Started
-To get started with Uno and build your first Uno app check out the [QuickStart repository](https://github.com/nventive/Uno.QuickStart).
+# Live WebAssembly Apps
 
-For a larger example and features demo:
-* Visit the [Uno Gallery and Playground](https://github.com/nventive/Uno.Playground) repository
-* Try the [WebAssembly Uno Playground](https://playground.platform.uno) live in your browser
+Here's a list of live apps made with the Uno Platform for WebAssembly.
+
+* The [Uno Platform Playground](https://playground.platform.uno) ([Source](https://github.com/nventive/Uno.Playground))
+* The [Uno Calculator](https://calculator.platform.uno), a simple yet powerful iOS/Android/WebAssembly C# port of the calculator that ships with Windows ([Source](https://github.com/unoplatform/calculator)). Also try the [pink theme](https://calculator.platform.uno/?theme=pink), the [iOS version](https://apps.apple.com/app/id1464736591) or the [Android version](https://play.google.com/store/apps/details?id=uno.platform.calculator).
+* The [Xaml Controls Gallery](https://xamlcontrolsgallery.platform.uno/) ([Source](https://github.com/nventive/Uno.Xaml-Controls-Gallery))
+* [SkiaSharp fork for the Uno Platform](https://skiasharp-wasm.platform.uno/), Skia is a cross-platform 2D graphics API for .NET platforms based on Google's Skia Graphics Library ([Source](https://github.com/unoplatform/Uno.SkiaSharp))
+* The [Uno.WindowsCommunityToolkit](https://windowstoolkit-wasm.platform.uno/), ([Source](https://github.com/nventive/Uno.WindowsCommunityToolkit))
+* The [Uno.Lottie](https://lottie.platform.uno/), a sample that uses the [AnimatedVisualPlayer](https://docs.microsoft.com/en-us/uwp/api/microsoft.ui.xaml.controls.animatedvisualplayer) ([Source](https://github.com/nventive/Uno.LottieSample))
+* The [Uno.RoslynQuoter](http://roslynquoter-wasm.platform.uno/), a [Roslyn](https://github.com/dotnet/roslyn) based C# analysis tool ([Source](https://github.com/nventive/Uno.RoslynQuoter))
+* The [Uno.BikeSharing360 App](http://bikerider-wasm.platform.uno/), a Xamarin.Forms app running on top of Uno for WebAssembly ([Source](https://github.com/nventive/Uno.BikeSharing360_MobileApps))
+* The [Uno.WindowsStateTriggers App](http://winstatetriggers-wasm.platform.uno/), a demo of the [Morten's WindowsStateTriggers](https://github.com/dotMorten/WindowsStateTriggers) ([Source](https://github.com/nventive/Uno.WindowsStateTriggers))
+* The [SQLite + Entity Framework Core App](http://sqliteefcore-wasm.platform.uno), a demo of the combination of [Roslyn](https://github.com/dotnet/roslyn), [Entity Framework Core](https://docs.microsoft.com/en-us/ef/core/), [SQLite](https://github.com/nventive/Uno.SQLitePCLRaw.Wasm) and the Uno Platform to manipulate an in-browser database.
+* The [Uno.WebSockets App](https://websockets-wasm.platform.uno), a demo of System.Net.WebSocket running from WebAssembly ([Source](https://github.com/nventive/Uno.Wasm.WebSockets))
+* A [mono-wasm AOT RayTracer](https://raytracer-mono-aot.platform.uno/)
+
+Let us know if you've made your app publicly available, we'll list it here!
 
 # Have questions? Feature requests? Issues?
 
@@ -75,5 +89,40 @@ Make sure to visit our [FAQ](doc/articles/faq.md), [StackOverflow](https://stack
 
 # Contributing
 
-We're getting started, but there are many ways that you can contribute to the Uno Platform, as the UWP api is
+There are many ways that you can contribute to the Uno Platform, as the UWP API is
 pretty large! Read our [contributing guide](CONTRIBUTING.md) to learn about our development process and how to propose bug fixes and improvements.
+
+# Contributors
+
+Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/docs/en/emoji-key)):
+
+<!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
+<!-- prettier-ignore -->
+<table>
+  <tr>
+    <td align="center"><a href="https://github.com/jeromelaban"><img src="https://avatars0.githubusercontent.com/u/5839577?v=4" width="100px;" alt="Jérôme Laban"/><br /><sub><b>Jérôme Laban</b></sub></a><br /><a href="https://github.com/unoplatform/uno/commits?author=jeromelaban" title="Code">💻</a> <a href="#content-jeromelaban" title="Content">🖋</a> <a href="https://github.com/unoplatform/uno/commits?author=jeromelaban" title="Documentation">📖</a> <a href="#example-jeromelaban" title="Examples">💡</a> <a href="#maintenance-jeromelaban" title="Maintenance">🚧</a> <a href="#infra-jeromelaban" title="Infrastructure (Hosting, Build-Tools, etc)">🚇</a> <a href="#ideas-jeromelaban" title="Ideas, Planning, & Feedback">🤔</a> <a href="#review-jeromelaban" title="Reviewed Pull Requests">👀</a> <a href="https://github.com/unoplatform/uno/commits?author=jeromelaban" title="Tests">⚠️</a> <a href="#projectManagement-jeromelaban" title="Project Management">📆</a></td>
+    <td align="center"><a href="http://www.dissolutegames.com/"><img src="https://avatars0.githubusercontent.com/u/8270914?v=4" width="100px;" alt="David Oliver"/><br /><sub><b>David Oliver</b></sub></a><br /><a href="#blog-davidjohnoliver" title="Blogposts">📝</a> <a href="https://github.com/unoplatform/uno/commits?author=davidjohnoliver" title="Code">💻</a> <a href="#content-davidjohnoliver" title="Content">🖋</a> <a href="https://github.com/unoplatform/uno/commits?author=davidjohnoliver" title="Documentation">📖</a> <a href="#maintenance-davidjohnoliver" title="Maintenance">🚧</a> <a href="#tutorial-davidjohnoliver" title="Tutorials">✅</a> <a href="#review-davidjohnoliver" title="Reviewed Pull Requests">👀</a> <a href="https://github.com/unoplatform/uno/commits?author=davidjohnoliver" title="Tests">⚠️</a> <a href="#example-davidjohnoliver" title="Examples">💡</a></td>
+    <td align="center"><a href="http://mzikmund.com"><img src="https://avatars3.githubusercontent.com/u/1075116?v=4" width="100px;" alt="Martin Zikmund"/><br /><sub><b>Martin Zikmund</b></sub></a><br /><a href="https://github.com/unoplatform/uno/commits?author=MartinZikmund" title="Code">💻</a> <a href="https://github.com/unoplatform/uno/commits?author=MartinZikmund" title="Tests">⚠️</a> <a href="#review-MartinZikmund" title="Reviewed Pull Requests">👀</a></td>
+    <td align="center"><a href="https://www.ghuntley.com/now"><img src="https://avatars0.githubusercontent.com/u/127353?v=4" width="100px;" alt="Geoffrey Huntley"/><br /><sub><b>Geoffrey Huntley</b></sub></a><br /><a href="#question-ghuntley" title="Answering Questions">💬</a> <a href="https://github.com/unoplatform/uno/commits?author=ghuntley" title="Documentation">📖</a> <a href="#maintenance-ghuntley" title="Maintenance">🚧</a> <a href="https://github.com/unoplatform/uno/commits?author=ghuntley" title="Code">💻</a> <a href="https://github.com/unoplatform/uno/commits?author=ghuntley" title="Tests">⚠️</a> <a href="#tutorial-ghuntley" title="Tutorials">✅</a> <a href="#review-ghuntley" title="Reviewed Pull Requests">👀</a></td>
+    <td align="center"><a href="https://www.vogels.com"><img src="https://avatars0.githubusercontent.com/u/47024956?v=4" width="100px;" alt="Patrick Decoster"/><br /><sub><b>Patrick Decoster</b></sub></a><br /><a href="https://github.com/unoplatform/uno/commits?author=pdecostervgls" title="Tests">⚠️</a> <a href="https://github.com/unoplatform/uno/commits?author=pdecostervgls" title="Code">💻</a> <a href="#example-pdecostervgls" title="Examples">💡</a></td>
+  </tr>
+  <tr>
+    <td align="center"><a href="https://github.com/dr1rrb"><img src="https://avatars3.githubusercontent.com/u/8635919?v=4" width="100px;" alt="David"/><br /><sub><b>David</b></sub></a><br /><a href="https://github.com/unoplatform/uno/commits?author=dr1rrb" title="Code">💻</a> <a href="#content-dr1rrb" title="Content">🖋</a> <a href="https://github.com/unoplatform/uno/commits?author=dr1rrb" title="Documentation">📖</a> <a href="#maintenance-dr1rrb" title="Maintenance">🚧</a> <a href="#review-dr1rrb" title="Reviewed Pull Requests">👀</a> <a href="https://github.com/unoplatform/uno/commits?author=dr1rrb" title="Tests">⚠️</a> <a href="#example-dr1rrb" title="Examples">💡</a></td>
+    <td align="center"><a href="http://carl.debilly.net/"><img src="https://avatars1.githubusercontent.com/u/4174207?v=4" width="100px;" alt="Carl de Billy"/><br /><sub><b>Carl de Billy</b></sub></a><br /><a href="https://github.com/unoplatform/uno/commits?author=carldebilly" title="Code">💻</a> <a href="#content-carldebilly" title="Content">🖋</a> <a href="https://github.com/unoplatform/uno/commits?author=carldebilly" title="Documentation">📖</a> <a href="#maintenance-carldebilly" title="Maintenance">🚧</a> <a href="#tutorial-carldebilly" title="Tutorials">✅</a> <a href="#review-carldebilly" title="Reviewed Pull Requests">👀</a> <a href="https://github.com/unoplatform/uno/commits?author=carldebilly" title="Tests">⚠️</a> <a href="#example-carldebilly" title="Examples">💡</a></td>
+    <td align="center"><a href="https://github.com/vincentcastagna"><img src="https://avatars3.githubusercontent.com/u/15191066?v=4" width="100px;" alt="vincentcastagna"/><br /><sub><b>vincentcastagna</b></sub></a><br /><a href="https://github.com/unoplatform/uno/commits?author=vincentcastagna" title="Code">💻</a> <a href="#example-vincentcastagna" title="Examples">💡</a></td>
+    <td align="center"><a href="https://github.com/TopperDEL"><img src="https://avatars2.githubusercontent.com/u/1833242?v=4" width="100px;" alt="TopperDEL"/><br /><sub><b>TopperDEL</b></sub></a><br /><a href="https://github.com/unoplatform/uno/commits?author=TopperDEL" title="Code">💻</a></td>
+    <td align="center"><a href="https://github.com/MaxineMheir"><img src="https://avatars1.githubusercontent.com/u/18086278?v=4" width="100px;" alt="Maxine Mheir-El-Saadi"/><br /><sub><b>Maxine Mheir-El-Saadi</b></sub></a><br /><a href="https://github.com/unoplatform/uno/commits?author=MaxineMheir" title="Code">💻</a> <a href="#example-MaxineMheir" title="Examples">💡</a> <a href="https://github.com/unoplatform/uno/commits?author=MaxineMheir" title="Tests">⚠️</a></td>
+  </tr>
+  <tr>
+    <td align="center"><a href="https://github.com/artemious7"><img src="https://avatars2.githubusercontent.com/u/16724889?v=4" width="100px;" alt="Artem"/><br /><sub><b>Artem</b></sub></a><br /><a href="https://github.com/unoplatform/uno/commits?author=artemious7" title="Code">💻</a> <a href="https://github.com/unoplatform/uno/commits?author=artemious7" title="Documentation">📖</a></td>
+    <td align="center"><a href="https://github.com/DysnomianC"><img src="https://avatars1.githubusercontent.com/u/20263707?v=4" width="100px;" alt="Dysnomian Charles"/><br /><sub><b>Dysnomian Charles</b></sub></a><br /><a href="https://github.com/unoplatform/uno/commits?author=DysnomianC" title="Code">💻</a></td>
+    <td align="center"><a href="https://github.com/jeanplevesque"><img src="https://avatars3.githubusercontent.com/u/39710855?v=4" width="100px;" alt="Jean-Philippe Lévesque"/><br /><sub><b>Jean-Philippe Lévesque</b></sub></a><br /><a href="https://github.com/unoplatform/uno/commits?author=jeanplevesque" title="Code">💻</a></td>
+    <td align="center"><a href="https://github.com/Xiaoy312"><img src="https://avatars1.githubusercontent.com/u/2359550?v=4" width="100px;" alt="Xiaotian Gu"/><br /><sub><b>Xiaotian Gu</b></sub></a><br /><a href="https://github.com/unoplatform/uno/commits?author=Xiaoy312" title="Code">💻</a></td>
+    <td align="center"><a href="http://www.lhotka.net"><img src="https://avatars1.githubusercontent.com/u/2333134?v=4" width="100px;" alt="Rockford Lhotka"/><br /><sub><b>Rockford Lhotka</b></sub></a><br /><a href="#blog-rockfordlhotka" title="Blogposts">📝</a></td>
+  </tr>
+  <tr>
+    <td align="center"><a href="http://nicksnettravels.builttoroam.com"><img src="https://avatars2.githubusercontent.com/u/1614057?v=4" width="100px;" alt="Nick Randolph"/><br /><sub><b>Nick Randolph</b></sub></a><br /><a href="#blog-nickrandolph" title="Blogposts">📝</a></td>
+  </tr>
+</table>
+
+<!-- ALL-CONTRIBUTORS-LIST:END -->

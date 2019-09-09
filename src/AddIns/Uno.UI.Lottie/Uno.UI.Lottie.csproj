@@ -1,4 +1,4 @@
-﻿<Project Sdk="MSBuild.Sdk.Extras" ToolsVersion="15.0">
+<Project Sdk="MSBuild.Sdk.Extras" ToolsVersion="15.0">
 
 	<PropertyGroup>
 		<TargetFrameworks>xamarinmac20;MonoAndroid90;xamarinios10;net461;netstandard2.0</TargetFrameworks>
@@ -6,6 +6,10 @@
 		<NoWarn>$(NoWarn);NU1701</NoWarn>
 		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
 		<Deterministic>true</Deterministic>
+	</PropertyGroup>
+	
+	<PropertyGroup Condition="'$(UnoTargetFrameworkOverride)'!=''">
+		<TargetFrameworks>$(UnoTargetFrameworkOverride)</TargetFrameworks>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -15,10 +19,10 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Microsoft.TypeScript.Compiler" Version="2.8.3" />
-		<PackageReference Include="Microsoft.TypeScript.MSBuild" Version="2.8.3" />
+		<PackageReference Include="Microsoft.TypeScript.Compiler" Version="3.4.5" />
+		<PackageReference Include="Microsoft.TypeScript.MSBuild" Version="3.4.5" />
 		<PackageReference Include="Uno.MonoAnalyzers" Version="1.0.0-dev.4" />
-		<PackageReference Include="Uno.SourceGenerationTasks" Version="1.31.0-dev.285" />
+		<PackageReference Include="Uno.SourceGenerationTasks" Version="1.32.0-dev.288" />
 	</ItemGroup>
 
 	<Import Project="..\..\Common.targets" />
@@ -37,7 +41,7 @@
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(TargetFramework)' == 'xamarinios10'">
-		<PackageReference Include="Com.Airbnb.iOS.Lottie" Version="2.5.2" PrivateAssets="none" />
+		<PackageReference Include="Com.Airbnb.iOS.Lottie" Version="2.5.8" PrivateAssets="none" />
 	</ItemGroup>
 
 	<PropertyGroup>

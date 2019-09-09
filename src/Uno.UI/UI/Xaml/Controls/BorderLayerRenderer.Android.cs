@@ -10,7 +10,6 @@ using Windows.UI.Core;
 using Windows.UI.Xaml.Media;
 using System;
 using System.Collections.Generic;
-using System.Drawing;
 using Uno.Disposables;
 using System.Text;
 using System.Threading;
@@ -51,7 +50,7 @@ namespace Windows.UI.Xaml.Controls
 			// This is required because android Height and Width are hidden by Control.
 			var baseView = view as View;
 
-			Size targetSize = new Size(baseView.Width, baseView.Height);
+			var targetSize = new global::System.Drawing.Size(baseView.Width, baseView.Height);
 			var drawArea = new Windows.Foundation.Rect(0, 0, targetSize.Width, targetSize.Height);
 			var newState = new LayoutState(drawArea, background, borderThickness, borderBrush, cornerRadius, padding);
 			var previousLayoutState = _currentState;
@@ -239,7 +238,7 @@ namespace Windows.UI.Xaml.Controls
 					{
 						using (var strokePaint = new Paint(borderBrush.GetStrokePaint(drawArea)))
 						{
-							var overlay = GetOverlayDrawable(strokePaint, physicalBorderThickness, new Size((int)drawArea.Width, (int)drawArea.Height), path);
+							var overlay = GetOverlayDrawable(strokePaint, physicalBorderThickness, new global::System.Drawing.Size((int)drawArea.Width, (int)drawArea.Height), path);
 
 							if (overlay != null)
 							{
@@ -274,7 +273,7 @@ namespace Windows.UI.Xaml.Controls
 					//TODO: Handle case that BorderBrush is an ImageBrush
 					using (var strokePaint = borderBrush.GetStrokePaint(drawArea))
 					{
-						var overlay = GetOverlayDrawable(strokePaint, physicalBorderThickness, new Size(view.Width, view.Height));
+						var overlay = GetOverlayDrawable(strokePaint, physicalBorderThickness, new global::System.Drawing.Size(view.Width, view.Height));
 
 						if (overlay != null)
 						{
@@ -423,7 +422,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		private static Drawable GetOverlayDrawable(Paint strokePaint, Thickness physicalBorderThickness, Size viewSize, Path path = null)
+		private static Drawable GetOverlayDrawable(Paint strokePaint, Thickness physicalBorderThickness, global::System.Drawing.Size viewSize, Path path = null)
 		{
 			if (strokePaint != null)
 			{
@@ -448,12 +447,12 @@ namespace Windows.UI.Xaml.Controls
 
 					if (physicalBorderThickness.Top != 0)
 					{
-						var adjustY = physicalBorderThickness.Top / 2;
+						var adjustY = (float)physicalBorderThickness.Top / 2;						
 
 						using (var line = new Path())
-						{
-							line.MoveTo(0, (float)adjustY);
-							line.LineTo(viewSize.Width, (float)adjustY);
+						{						
+							line.MoveTo((float)physicalBorderThickness.Left, (float)adjustY); 
+							line.LineTo(viewSize.Width - (float)physicalBorderThickness.Right, (float)adjustY); 
 							line.Close();
 
 							var lineDrawable = new PaintDrawable();
@@ -493,11 +492,11 @@ namespace Windows.UI.Xaml.Controls
 					if (physicalBorderThickness.Bottom != 0)
 					{
 						var adjustY = physicalBorderThickness.Bottom / 2;
-
+						
 						using (var line = new Path())
 						{
-							line.MoveTo(0, (float)(viewSize.Height - adjustY));
-							line.LineTo(viewSize.Width, (float)(viewSize.Height - adjustY));
+							line.MoveTo((float)physicalBorderThickness.Left, (float)(viewSize.Height - adjustY));
+							line.LineTo(viewSize.Width - (float)physicalBorderThickness.Right, (float)(viewSize.Height - adjustY));
 							line.Close();
 
 							var lineDrawable = new PaintDrawable();

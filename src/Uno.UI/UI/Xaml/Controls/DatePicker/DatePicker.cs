@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Automation.Peers;
+using Windows.UI.Xaml.Controls.Primitives;
 
 namespace Windows.UI.Xaml.Controls
 {

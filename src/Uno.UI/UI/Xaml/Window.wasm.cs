@@ -105,9 +105,6 @@ namespace Windows.UI.Xaml
 		{
 			var newBounds = new Rect(0, 0, size.Width, size.Height);
 
-			// TODO: support for "viewport-fix" on devices with a notch.
-			ApplicationView.GetForCurrentView()?.SetVisibleBounds(newBounds);
-
 			if (newBounds != Bounds)
 			{
 				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
@@ -119,6 +116,12 @@ namespace Windows.UI.Xaml
 
 				DispatchInvalidateMeasure();
 				RaiseSizeChanged(new WindowSizeChangedEventArgs(size));
+
+				// Note that UWP raises the ApplicationView.VisibleBoundsChanged event
+				// *after* Window.SizeChanged.
+
+				// TODO: support for "viewport-fix" on devices with a notch.
+				ApplicationView.GetForCurrentView()?.SetVisibleBounds(newBounds);
 			}
 		}
 

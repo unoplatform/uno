@@ -115,7 +115,7 @@
 		<BundleResource Include="Resources\Fonts\winjs-symbols.ttf" />
 	</ItemGroup>
 	<ItemGroup>
-		<PackageReference Include="Uno.UI" Version="1.45.0-dev.1112" />
+		<PackageReference Include="Uno.UI" Version="1.46.196-dev.2440" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Console" Version="1.1.1" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Filter" Version="1.1.1" />
 	</ItemGroup>

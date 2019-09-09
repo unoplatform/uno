@@ -18,6 +18,11 @@ namespace Windows.UI.Xaml.Controls
 
 		private readonly Dictionary<int, Stack<FrameworkElement>> _itemContainerCache = new Dictionary<int, Stack<FrameworkElement>>();
 
+		/// <summary>
+		/// Items that have been temporarily scrapped and can be reused without being rebound.
+		/// </summary>
+		private readonly Dictionary<int, FrameworkElement> _scrapCache = new Dictionary<int, FrameworkElement>();
+
 		private ItemsControl ItemsControl => _owner.ItemsControl;
 
 		public VirtualizingPanelGenerator(VirtualizingPanelLayout owner)
@@ -27,6 +32,13 @@ namespace Windows.UI.Xaml.Controls
 
 		public FrameworkElement DequeueViewForItem(int index)
 		{
+			//Try scrap first to save rebinding view
+			var scrapped = TryGetScrappedContainer(index);
+			if (scrapped != null)
+			{
+				return scrapped;
+			}
+
 			var id = GetItemId(index);
 
 			var container = TryDequeueCachedContainer(id);
@@ -54,6 +66,18 @@ namespace Windows.UI.Xaml.Controls
 					cachedView.Visibility = Visibility.Visible;
 					return cachedView;
 				}
+			}
+
+			return null;
+		}
+
+		private FrameworkElement TryGetScrappedContainer(int index)
+		{
+			if (_scrapCache.TryGetValue(index, out var container))
+			{
+				_scrapCache.Remove(index);
+
+				return container;
 			}
 
 			return null;
@@ -103,6 +127,29 @@ namespace Windows.UI.Xaml.Controls
 			{
 				parent.Children.Remove(container);
 			}
+		}
+
+		/// <summary>
+		/// Send view to temporary scrap. Intended for use during lightweight layout rebuild. Views in scrap will be reused without being rebound if a view for that position is requested.
+		/// </summary>
+		/// <param name="container"></param>
+		/// <param name="index"></param>
+		public void ScrapViewForItem(FrameworkElement container, int index)
+		{
+			_scrapCache[index] = container;
+		}
+
+		/// <summary>
+		/// Empty scrap, this should be called after a lightweight layout rebuild.
+		/// </summary>
+		public void ClearScrappedViews()
+		{
+			foreach (var kvp in _scrapCache)
+			{
+				RecycleViewForItem(kvp.Value, kvp.Key);
+			}
+
+			_scrapCache.Clear();
 		}
 
 		/// <summary>

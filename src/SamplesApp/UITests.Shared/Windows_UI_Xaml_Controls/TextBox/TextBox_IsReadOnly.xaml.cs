@@ -9,7 +9,7 @@ namespace Uno.UI.Samples.UITests.TextBoxControl
 	{
 		public TextBox_IsReadOnly()
 		{
-			this.InitializeComponent();
+			InitializeComponent();
 		}
 
 		private void OnClick(object sender, RoutedEventArgs args)

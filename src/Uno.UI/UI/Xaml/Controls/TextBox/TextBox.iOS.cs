@@ -101,15 +101,10 @@ namespace Windows.UI.Xaml.Controls
 						return;
 					}
 
-					_textBoxView = new MultilineTextBoxView(this)
-					.Binding("Text", new Data.Binding()
-					{
-						Path = "Text",
-						Source = this,
-						Mode = BindingMode.TwoWay
-					});
+					_textBoxView = new MultilineTextBoxView(this);
 
 					_contentElement.Content = _textBoxView;
+					_textBoxView.SetTextNative(Text);
 					InitializeProperties();
 				}
 				else
@@ -119,15 +114,10 @@ namespace Windows.UI.Xaml.Controls
 						return;
 					}
 
-					_textBoxView = new SinglelineTextBoxView(this)
-					.Binding("Text", new Data.Binding()
-					{
-						Path = "Text",
-						Source = this,
-						Mode = BindingMode.TwoWay
-					});
+					_textBoxView = new SinglelineTextBoxView(this);
 
 					_contentElement.Content = _textBoxView;
+					_textBoxView.SetTextNative(Text);
 					InitializeProperties();
 				}
 			}
@@ -165,10 +155,9 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		partial void UpdateFontPartial(object sender)
+		partial void UpdateFontPartial()
 		{
-			var textBox = sender as TextBox;
-			if (textBox != null && _textBoxView != null)
+			if (_textBoxView != null)
 			{
 				_textBoxView.UpdateFont();
 			}
@@ -292,11 +281,11 @@ namespace Windows.UI.Xaml.Controls
 
 		public static readonly DependencyProperty ReturnKeyTypeProperty =
 			DependencyProperty.Register(
-				"ReturnKeyType", 
-				typeof(UIReturnKeyType), 
-				typeof(TextBox), 
+				"ReturnKeyType",
+				typeof(UIReturnKeyType),
+				typeof(TextBox),
 				new FrameworkPropertyMetadata(
-					UIReturnKeyType.Default, 
+					UIReturnKeyType.Default,
 					(s, e) => ((TextBox)s)?.OnReturnKeyTypeChanged((UIReturnKeyType)e.NewValue),
 					coerceValueCallback: CoerceReturnKeyType
 				)
@@ -340,7 +329,7 @@ namespace Windows.UI.Xaml.Controls
 
 		private void OnKeyboardAppearanceChanged(UIKeyboardAppearance newValue)
 		{
-			if(_textBoxView != null)
+			if (_textBoxView != null)
 			{
 				_textBoxView.KeyboardAppearance = newValue;
 			}

@@ -186,5 +186,75 @@ namespace Uno.UI.Samples.Tests.Windows_Storage
 			Assert.IsTrue(SUT.Values.Values.Contains("42"));
 			Assert.IsTrue(SUT.Values.Values.Contains("43"));
 		}
+
+		[TestMethod]
+		public void When_NullValueSetViaIndexer()
+		{
+			var SUT = ApplicationData.Current.LocalSettings;
+			var key = "test";
+			SUT.Values[key] = null;
+			Assert.IsFalse(SUT.Values.ContainsKey(key));
+		}
+
+		[TestMethod]
+		public void When_NullValueAdded()
+		{
+			var SUT = ApplicationData.Current.LocalSettings;
+			var key = "test";
+			SUT.Values.Add(key, null);
+			Assert.IsFalse(SUT.Values.ContainsKey(key));
+		}
+
+		[TestMethod]
+		public void When_AddIsCalledWithKeyValuePair()
+		{
+			var SUT = ApplicationData.Current.LocalSettings;
+			var key = "test";
+			var value = "something";
+			SUT.Values.Add(new KeyValuePair<string, object>(key, value));
+			Assert.AreEqual(value, SUT.Values[key]);
+		}
+
+		[TestMethod]
+		public void When_AddIsCalledRepeatedly()
+		{
+			var SUT = ApplicationData.Current.LocalSettings;
+			var key = "test";
+			var value = "something";
+			var secondValue = "somethingElse";
+			SUT.Values.Add(key, value);
+			Assert.ThrowsException<ArgumentException>(
+				() => SUT.Values.Add(key, secondValue));
+		}
+
+		[TestMethod]
+		public void When_IndexerClearsSettingWithNull()
+		{
+			var SUT = ApplicationData.Current.LocalSettings;
+			var key = "test";
+			var value = "something";
+			SUT.Values.Add(key, value);
+			SUT.Values[key] = null;
+			Assert.IsFalse(SUT.Values.ContainsKey(key));
+		}
+
+		[TestMethod]
+		public void When_AddNullTriesToClearSetting()
+		{
+			var SUT = ApplicationData.Current.LocalSettings;
+			var key = "test";
+			var value = "something";
+			SUT.Values.Add(key, value);
+			Assert.ThrowsException<ArgumentException>(
+				() => SUT.Values.Add(key, null)); 
+		}
+
+		[TestMethod]
+        public void When_KeyDoesNotExist()
+		{
+			var SUT = ApplicationData.Current.LocalSettings;
+
+			Assert.IsNull(SUT.Values["ThisKeyDoesNotExist"]);
+		}
 	}
 }

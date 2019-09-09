@@ -22,7 +22,9 @@ namespace Windows.UI.Xaml.Controls
 			_menu.MenuItemClick += OnMenuItemClick;
 			_menu.DismissEvent += OnDismiss;
 
-			Items.Where(item => item.Visibility == Visibility.Visible)
+			Items
+				.OfType<MenuFlyoutItem>()
+				.Where(item => item.Visibility == Visibility.Visible)
 				.ForEach((index, item) =>
 				{
 					// Using index as ID
@@ -49,7 +51,7 @@ namespace Windows.UI.Xaml.Controls
 
 		private void OnMenuItemClick(object sender, PopupMenu.MenuItemClickEventArgs e)
 		{
-			var items = Items.Where(i => i.Visibility == Visibility.Visible).ToArray();
+			var items = Items.OfType<MenuFlyoutItem>().Where(i => i.Visibility == Visibility.Visible).ToArray();
 			var item = items[e.Item.ItemId];
 
 			item.Command.ExecuteIfPossible(item.CommandParameter);

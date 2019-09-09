@@ -151,12 +151,12 @@ namespace Uno.Media
 			var x3 = (x1 + x2) / 2;
 
 			var x = sign
-				? x3 + Sqrt(Pow(radius, 2) - Pow((q / 2), 2)) * (y1 - y2) / q
-				: x3 - Sqrt(Pow(radius, 2) - Pow((q / 2), 2)) * (y1 - y2) / q;
+				? x3 + Sqrt(Max(0, Pow(radius, 2) - Pow((q / 2), 2))) * (y1 - y2) / q
+				: x3 - Sqrt(Max(0, Pow(radius, 2) - Pow((q / 2), 2))) * (y1 - y2) / q;
 
 			var y = sign
-				? y3 + Sqrt(Pow(radius, 2) - Pow((q / 2), 2)) * (x2 - x1) / q
-				: y3 - Sqrt(Pow(radius, 2) - Pow((q / 2), 2)) * (x2 - x1) / q;
+				? y3 + Sqrt(Max(0, Pow(radius, 2) - Pow((q / 2), 2))) * (x2 - x1) / q
+				: y3 - Sqrt(Max(0, Pow(radius, 2) - Pow((q / 2), 2))) * (x2 - x1) / q;
 
 			return new Point(x, y);
 		}

@@ -10,31 +10,62 @@ namespace Windows.UI.Xaml.Input
 {
 	public partial class FocusManager
 	{
-		private static readonly RoutedEventHandler OnControlFocused = (control, args) =>
-		{
-			// Make sure that the managed UI knowns that the element was unfocused, no matter if the new focused element can be focused or not
-			(_focusedElement as Control)?.SetFocused(false);
+		private static readonly RoutedEventHandler OnControlFocused
+			= (control, args) => ProcessControlFocus(control, args);
 
-			// Then set the new control as focused
-			((Control) control).SetFocused(true);
-		};
-		private static readonly RoutedEventHandler OnElementFocused = (element, args) =>
+		/// <remarks>
+		/// This method is extracted to allow for the mono-wasm to set breakpoints.
+		/// </remarks>
+		private static void ProcessControlFocus(object control, RoutedEventArgs args)
 		{
-			// Make sure that the managed UI knowns that the element was unfocused, no matter if the new focused element can be focused or not
-			(_focusedElement as Control)?.SetFocused(false);
+			if (
+				// Only act if the origin of the event is the control itself
+				ReferenceEquals(control, args.OriginalSource)
 
-			// Try to find the first focusable parent and set it as focused, otherwise just keep it for reference (GetFocusedElement())
-			var ownerControl = element.GetParents().OfType<Control>().Where(control => control.IsFocusable).FirstOrDefault();
-			if (ownerControl == null)
+				// Don't change the focus if the control already has the focus
+				&& !ReferenceEquals(control, _focusedElement))
 			{
-				_focusedElement = element;
+				// Make sure that the managed UI knowns that the element was unfocused, no matter if the new focused element can be focused or not
+				(_focusedElement as Control)?.SetFocused(false);
+
+				// Then set the new control as focused
+				((Control)control).SetFocused(true);
 			}
-			else
+		}
+
+		private static readonly RoutedEventHandler OnElementFocused
+			= (element, args) => ProcessElementFocused(element, args);
+
+		/// <remarks>
+		/// This method is extracted to allow for the mono-wasm to set breakpoints.
+		/// </remarks>
+		private static void ProcessElementFocused(object element, RoutedEventArgs args)
+		{
+			if (
+				// Only act if the origin of the event is the element itself
+				ReferenceEquals(element, args.OriginalSource)
+
+				// Don't change the focus if the element already has the focus
+				&& !ReferenceEquals(element, _focusedElement))
 			{
-				ownerControl.SetFocused(true);
-				_fallbackFocusedElement = element;
+				// Make sure that the managed UI knowns that the element was unfocused, no matter if the new focused element can be focused or not
+				(_focusedElement as Control)?.SetFocused(false);
+
+				// Try to find the first focusable parent and set it as focused, otherwise just keep it for reference (GetFocusedElement())
+				var ownerControl = element.GetParents().OfType<Control>().Where(control => control.IsFocusable).FirstOrDefault();
+				if (ownerControl == null)
+				{
+					_focusedElement = element;
+				}
+				else
+				{
+					if (ownerControl.SetFocused(true))
+					{
+						_fallbackFocusedElement = element;
+					}
+				}
 			}
-		};
+		}
 
 		internal static void Track(UIElement element)
 		{

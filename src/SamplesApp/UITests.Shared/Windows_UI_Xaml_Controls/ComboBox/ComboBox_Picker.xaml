@@ -359,8 +359,10 @@
   <StackPanel>
 
 	<TextBlock Text="This sample only works on iOS" />
-	<ios:ComboBox ItemsSource="{Binding VariableLengthItems}"
-				  Style="{StaticResource PickerComboBoxStyle}" />
+	<ios:ComboBox x:Name="theComboBox"
+				  ItemsSource="{Binding VariableLengthItems}"
+				  Style="{StaticResource PickerComboBoxStyle}"
+				  SelectedItem="{Binding test}" />
 
   </StackPanel>
 

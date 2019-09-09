@@ -1,6 +1,5 @@
 package Uno.UI;
 
-import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.view.*;
 import android.view.animation.Transformation;
@@ -9,6 +8,7 @@ import android.util.Log;
 
 import java.lang.*;
 import java.lang.reflect.*;
+import java.util.ArrayList;
 import java.util.Map;
 import java.util.HashMap;
 
@@ -17,6 +17,8 @@ public abstract class UnoViewGroup
 	implements UnoViewParent{
 
 	private static final String LOGTAG = "UnoViewGroup";
+	private static boolean _isLayoutingFromMeasure = false;
+	private static ArrayList<UnoViewGroup> callToRequestLayout = new ArrayList<UnoViewGroup>();
 
 	private boolean _inLocalAddView, _inLocalRemoveView;
 	private boolean _isEnabled;
@@ -30,7 +32,6 @@ public abstract class UnoViewGroup
 	private boolean _isManagedLoaded;
 	private boolean _needsLayoutOnAttachedToWindow;
 
-	private boolean _isPointerCaptured;
 	private boolean _isPointInView;
 
 	private boolean _shouldBlockRequestFocus;
@@ -40,8 +41,6 @@ public abstract class UnoViewGroup
 	private Map<View, Matrix> _childrenTransformations = new HashMap<View, Matrix>();
 	private float _transformedTouchX;
 	private float _transformedTouchY;
-
-	private boolean _isAnimating;
 
 	private static Method _setFrameMethod;
 
@@ -108,6 +107,13 @@ public abstract class UnoViewGroup
 				}
 			}
 		);
+
+		setClipChildren(false); // This is required for animations not to be cut off by transformed ancestor views. (#1333)
+	}
+
+	public final void enableAndroidClipping()
+	{
+		setClipChildren(true); // called by controls requiring it (ScrollViewer)
 	}
 
 	private boolean _unoLayoutOverride;
@@ -243,10 +249,6 @@ public abstract class UnoViewGroup
 			canvas.translate(_leftTextBlockPadding, _topTextBlockPadding);
 			_textBlockLayout.draw(canvas);
 		}
-
-		if (getIsAnimationInProgress()) {
-			invalidateTransformedHierarchy();
-		}
 	}
 
 	private void notifyChildRemoved(View child)
@@ -290,6 +292,12 @@ public abstract class UnoViewGroup
 				// is called again once the view is fully natively initialized.
 				_needsLayoutOnAttachedToWindow = true;
 			}
+
+			if(_isLayoutingFromMeasure){
+				callToRequestLayout.add(this);
+				return;
+			}
+
 			super.requestLayout();
 		}
 	}
@@ -377,7 +385,7 @@ public abstract class UnoViewGroup
 			// Log.i(LOGTAG, _indent + "!_isEnabled: " + !_isEnabled);
 
 			// ignore all touches
-			setIsPointerCaptured(false);
+			clearCaptures();
 			return false;
 		}
 
@@ -511,7 +519,7 @@ public abstract class UnoViewGroup
 			parentUnoViewGroup.setChildIsUnoViewGroup(true);
 		}
 
-		if (!_isPointInView && !_isPointerCaptured)
+		if (!_isPointInView && !getIsPointerCaptured())
 		{
 			// Log.i(LOGTAG, _indent + "!_isPointInView: " + !_isPointInView);
 			return false;
@@ -580,22 +588,59 @@ public abstract class UnoViewGroup
 
 	private boolean tryHandleTouchEvent(MotionEvent e, boolean isPointInView, boolean wasPointInView, boolean isCurrentPointer)
 	{
-		return _gestureDetector != null && _gestureDetector.onTouchEvent(e, isPointInView, wasPointInView, _isPointerCaptured, isCurrentPointer);
+		return _gestureDetector != null && _gestureDetector.onTouchEvent(e, isPointInView, wasPointInView, getIsPointerCaptured(), isCurrentPointer);
 	}
 
 	private void tryClearCapture(MotionEvent e) {
 		int action = e.getAction();
 		if (action == MotionEvent.ACTION_UP || action == MotionEvent.ACTION_POINTER_UP || action == MotionEvent.ACTION_CANCEL) {
-			setIsPointerCaptured(false);
+			clearCaptures();
 		}
 	}
 
-	public final boolean getIsPointerCaptured() {
-		return _isPointerCaptured;
+	protected void clearCaptures(){
 	}
 
-	public final void setIsPointerCaptured(boolean value) {
-		_isPointerCaptured = value;
+	/**
+	 * Call this method if a view is to be laid out outside of a framework layout pass, to ensure that requestLayout() requests are captured
+	 * and propagated later. (Equivalent of ViewRootImpl.requestLayoutDuringLayout())
+	 */
+	public static void startLayoutingFromMeasure() {
+		_isLayoutingFromMeasure = true;
+	}
+
+	/**
+	 * This should always be called immediately after {{@link #startLayoutingFromMeasure()}} has been called.
+	 */
+	public static void endLayoutingFromMeasure() {
+			_isLayoutingFromMeasure = false;
+	}
+
+	/**
+	 * This should be called subsequently to {{@link #endLayoutingFromMeasure()}}, typically during a true layout pass, to flush any captured layout requests.
+	 */
+	public static void measureBeforeLayout() {
+		if (_isLayoutingFromMeasure)
+		{
+			// This can happen when nested controls call startLayoutingFromMeasure()/measureBeforeLayout()
+			return;
+		}
+
+		try {
+			for (int i = 0; i < callToRequestLayout.size(); i++) {
+				UnoViewGroup view = callToRequestLayout.get(i);
+				if (view.isAttachedToWindow()) {
+					view.requestLayout();
+				}
+			}
+		}
+		finally {
+			callToRequestLayout.clear();
+		}
+	}
+
+	protected boolean getIsPointerCaptured() {
+		return false;
 	}
 
 	private UnoViewParent getParentUnoViewGroup()
@@ -891,49 +936,6 @@ public abstract class UnoViewGroup
 		return false;
 	}
 
-	public boolean getHasNonIdentityStaticTransformation() {
-		if (!(getParent() instanceof UnoViewGroup)) {
-			return false;
-		}
-
-		Matrix renderTransform = ((UnoViewGroup)getParent())._childrenTransformations.get(this);
-		return  renderTransform != null && !renderTransform.isIdentity();
-	}
-
-	/**
-	 * Invalidates all ancestor views that have a RenderTransform applied. This is necessary when animating because the hardware-accelerated
-	 * 'damage' calculation for redrawing during an animation doesn't seem to take getChildStaticTransformation() into account, causing the
-	 * transformed position not to be updated.
-	 */
-	public boolean invalidateTransformedHierarchy() {
-		View view = this;
-
-		boolean didFindTransform = false;
-
-		while (view != null) {
-			boolean hasTransform = view instanceof UnoViewGroup && ((UnoViewGroup)view).getHasNonIdentityStaticTransformation();
-
-			ViewParent parent = view.getParent();
-			if (parent instanceof View) {
-				view = (View)parent;
-
-				if (hasTransform) {
-					// Invalidate parent of transformed view to ensure that transformed view's current location will be damaged. (Due to
-					// clipping limitations it won't be outside the parent.)
-					view.invalidate();
-					// Invalidate animating view to ensure onDraw() is called again
-					this.invalidate();
-					didFindTransform = true;
-				}
-			}
-			else {
-				view = null;
-			}
-		}
-
-		return didFindTransform;
-	}
-
 	/**
 	 * Get touch coordinate transformed to a view's local space. If view is a UnoViewGroup, use already-calculated value;
 	 * interpolate offsets for any non-UnoViewGroups in the visual hierarchy, and use the raw absolute position at the
@@ -981,14 +983,6 @@ public abstract class UnoViewGroup
 
 	boolean getIsPointInView() {
 		return _isPointInView;
-	}
-
-	public boolean getIsAnimationInProgress() {
-		return _isAnimating;
-	}
-
-	public void setIsAnimationInProgress(boolean isAnimating) {
-		_isAnimating = isAnimating;
 	}
 
 	/**

@@ -4,7 +4,7 @@ using SamplesApp.Windows_UI_Xaml_Controls.Models;
 
 namespace SamplesApp.Windows_UI_Xaml_Controls.ListView
 {
-	[SampleControlInfoAttribute("ListView", "ListViewHeaderFooterOnly", typeof(ListViewViewModel))]
+	[SampleControlInfo("ListView", "ListViewHeaderFooterOnly", typeof(ListViewViewModel))]
 	public sealed partial class ListViewHeaderFooterOnly : UserControl
 	{
 		public ListViewHeaderFooterOnly()

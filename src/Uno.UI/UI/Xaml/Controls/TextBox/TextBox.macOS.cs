@@ -5,7 +5,7 @@ namespace Windows.UI.Xaml.Controls
 {
 	public partial class TextBox : Control
 	{
-		private object _textBoxView;
+		private TextBoxView _textBoxView;
 		
 		protected override bool RequestFocus(FocusState state) => FocusTextView();
 		partial void OnTextClearedPartial() => FocusTextView();
@@ -33,7 +33,7 @@ namespace Windows.UI.Xaml.Controls
 
 		}
 
-		partial void UpdateFontPartial(object sender)
+		partial void UpdateFontPartial()
 		{
 
 		}

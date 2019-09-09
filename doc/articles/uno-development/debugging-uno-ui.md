@@ -11,12 +11,26 @@ Prerequisites:
     - `UWP Development`, install all recent UWP SDKs, starting from 10.0.14393 (or above or equal to `TargetPlatformVersion` line [in this file](/src/Uno.CrossTargetting.props))
 - Install all Android SDKs starting from 7.1 (or the Android versions [`TargetFrameworks` list used here](/src/Uno.UI.BindingHelper.Android/Uno.UI.BindingHelper.Android.csproj))
 
-Building Uno.UI:
+### Building Uno.UI for all available targets
 * Open the [Uno.UI.sln](/src/Uno.UI.sln)
-* Select the Uno.UI project
+* Select the `Uno.UI` project
 * Build
 
 Inside Visual Studio, the number of platforms is restricted to limit the compilation time.
+
+### Faster dev loop with single target-framework builds
+To enable faster development, it's possible to use the [Visual Studio Solution Filters](https://docs.microsoft.com/en-us/visualstudio/ide/filtered-solutions?view=vs-2019), and only load the projects relevant for the task at hand.
+
+For instance, if you want to debug an iOS feature:
+- Make sure the `Uno.UI.sln` solution is not opened in Visual Studio.
+- Make a copy of the [src/crosstargeting_override.props.sample](src/crosstargeting_override.props.sample) file to `src/crosstargeting_override.props`
+- Uncomment the `UnoTargetFrameworkOverride` line and set its value to `xamarinios10`
+- Open the `Uno.UI-iOS-only.slnf` solution filter (either via the VS folder view, or the Windows explorer)
+- Build
+
+This technique works for `xamarinios10`, `monoandroid90`, `netstandard2.0` (wasm), and `net461` (Unit Tests).
+
+> Note that it's very important to close Visual Studio when editing the `src/crosstargeting_override.props` file, otherwise VS may crash or behave inconsistently.
 
 ## Microsoft Source Link support
 Uno.UI supports [SourceLink](https://github.com/dotnet/sourcelink/) and it now possible to
@@ -46,6 +60,8 @@ product version should contain a git CommitID.
 
 Once Uno.UI built, open the files you want to debug inside the solution running the application you need to debug, and set breakpoints there.
 
+You may improve your built time by selecting an active target framework, see the **Faster dev loop** section above.
+
 ## Running the samples applications
 
 The Uno solution provides a set of sample applications that provide a way to test features, as
@@ -53,27 +69,14 @@ well as provide a way to write UI Tests. See [this document](working-with-the-sa
 
 ## Using the Package Diff tool
 
-Uno uses a [Package Diff tool](https://github.com/nventive/Uno.PackageDiff) to ensure that binary breaking changes do not
-go unnoticed. Binary breaking changes are making packages depending on Uno.UI unuseable, as the IL Linker is crawling all
-the code of all assemblies.
-
-The package diff tool is run on every Pull Request, and generates a markdown document that can be found in the build artifacts. The
-CI will use the last published non-experimental package available on nuget.org, and compare it with the output of the current PR.
-
-In most cases, breaking changes are not acceptable, but in cases where there is no easy work around, the
-[build/PackageDiffIgnore.xml](build/PackageDiffIgnore.xml) can be used to make diff exclusions. Please refer
-to the documentation of the [Uno.PackageDiff tool](https://github.com/nventive/Uno.PackageDiff) for more information.
+Refer to the [guidelines for breaking changes](../contributing/guidelines/breaking-changes.md) document.
 
 ## Building Uno.UI for macOS using Visual Studio for Mac
 
-Building Uno.UI for the macOS platform using vs4mac requires Visual Studio for mac 8.0 or later.
-
-A few steps to be able to build:
-- The `xamarinmac20` Target Framework must be the first in the `TargetFrameworks` list of the `Uno.UI`, `Uno`, `Uno.Foundation` and `Uno.Xaml` projects. VS4Mac only builds the first Target Framework.
-- In `Uno.UI`, comment the project reference to the `Uno.UI.BindingHelper` project, because VS4Mac does not support conditional project references.
+Building Uno.UI for the macOS platform using vs4mac requires Visual Studio for mac 8.1 Preview or later.
 
 To build and run:
-- In a shell in the `src/Uno.UI` folder, run `msbuild /r`. This will make the nuget restore work faster.
+- In a shell in the `src/Uno.UI` folder, run `msbuild /r Uno.UI-vs4mac.sln`. This will make the nuget restore work properly.
 - Once done, in VS4Mac, run the `SampleApp.macOS` project, which will build the dependencies and the app itself.
 
 ## Troubleshooting Source Generation

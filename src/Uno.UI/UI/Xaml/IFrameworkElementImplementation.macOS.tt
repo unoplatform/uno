@@ -30,8 +30,10 @@ using Windows.UI.Xaml.Automation;
 
 namespace <#= mixin.NamespaceName #>
 {
-	public partial class <#= mixin.ClassName #> : IFrameworkElement
+	public partial class <#= mixin.ClassName #> : IFrameworkElement, IXUidProvider
 	{		
+		string IXUidProvider.Uid { get; set; }
+
 #if !<#= mixin.IsFrameworkElement #>
 		/// <summary>
 		/// Gets the parent of this FrameworkElement in the object tree.
@@ -153,8 +155,6 @@ namespace <#= mixin.NamespaceName #>
 
 		public event RoutedEventHandler Unloaded;
 
-		public event EventHandler<object> LayoutUpdated;
-
 		public event SizeChangedEventHandler SizeChanged;
 		
 #if <#= mixin.DefineLayoutSubviews #> || <#= mixin.DefineSetNeedsLayout #>
@@ -200,14 +200,6 @@ namespace <#= mixin.NamespaceName #>
 			if (actualSuperview != null)
 			{
 				actualSuperview.NeedsLayout = true;
-			}
-		}
-
-
-		public virtual void OnLayoutUpdated ()
-		{
-			if (LayoutUpdated != null) {
-				LayoutUpdated (this, EventArgs.Empty);
 			}
 		}
 
@@ -438,7 +430,7 @@ namespace <#= mixin.NamespaceName #>
 
 
 				CoreAnimation.CATransform3D? oldTransform = null;
-				if (!Layer.Transform.IsIdentity) 
+				if (Layer != null && !Layer.Transform.IsIdentity) 
 				{
 					// If NSView.Transform is not identity, then modifying the frame will give undefined behavior. (https://developer.apple.com/library/ios/documentation/UIKit/Reference/NSView_Class/#//apple_ref/occ/instp/NSView/transform)
 					// We reapply the transform based on the new size straight after.
@@ -478,6 +470,15 @@ namespace <#= mixin.NamespaceName #>
 		public Rect AppliedFrame { get; private set; }
 
 #if !<#= mixin.IsFrameworkElement #>
+		public event EventHandler<object> LayoutUpdated;
+
+		internal virtual void OnLayoutUpdated ()
+		{
+			if (LayoutUpdated != null) {
+				LayoutUpdated (this, EventArgs.Empty);
+			}
+		}
+
 		// This is also defined in UIElement for actual UIElement hierarchy
 		internal bool IsRenderingSuspended { get; set; }
 

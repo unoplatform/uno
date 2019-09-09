@@ -18,7 +18,7 @@ using Windows.UI.Xaml.Navigation;
 
 namespace UITests.Shared.Windows_UI_Xaml_Controls
 {
-	[SampleControlInfoAttribute("ListView", nameof(ListView_OwnContainer_Virtualized), description: Description)]
+	[SampleControlInfo("ListView", nameof(ListView_OwnContainer_Virtualized), description: Description)]
 	public sealed partial class ListView_OwnContainer_Virtualized : UserControl
 	{
 		private const string Description = "This sample uses custom items and virtualization associated with it. " +

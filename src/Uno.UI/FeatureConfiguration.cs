@@ -13,7 +13,7 @@ namespace Uno.UI
 		public static class UIElement
 		{
 			/// <summary>
-			/// Enables the legacy clipping behavior which only applies binding to itself and 
+			/// Enables the legacy clipping behavior which only applies binding to itself and
 			/// its children. Normal clipping only applies to a single UIElement considering its
 			/// clipping parent, based on <see cref="Windows.UI.Xaml.UIElement.ClipChildrenToBounds"/>.
 			/// </summary>
@@ -26,12 +26,23 @@ namespace Uno.UI
 
 #if __WASM__
 			/// <summary>
-			/// Enable the assignation of a "XamlName" attribute on DOM elements created
+			/// Enable the assignation of the "XamlName" and "xuid" attributes on DOM elements created
 			/// from the XAML visual tree. This enables tools such as Puppeteer to select elements
 			/// in the DOM for automation purposes.
 			/// </summary>
 			public static bool AssignDOMXamlName { get; set; } = false;
 #endif
+		}
+
+		public static class Xaml
+		{
+			/// <summary>
+			/// Maximal "BasedOn" recursive resolution depth.
+			/// </summary>
+			/// <remarks>
+			/// This is a mechanism to prevent hard-to-diagnose stack overflow when a resource name is not found.
+			/// </remarks>
+			public static int MaxRecursiveResolvingDepth { get; set; } = 12;
 		}
 
 		public static class FrameworkElement
@@ -43,7 +54,7 @@ namespace Uno.UI
 			public static bool UseLegacyApplyStylePhase { get; set; } = false;
 
 			/// <summary>
-			/// When changing a style on a <see cref="Windows.UI.Xaml.FrameworkElement"/> clears 
+			/// When changing a style on a <see cref="Windows.UI.Xaml.FrameworkElement"/> clears
 			/// the previous style setters. This property is applicable only when <see cref="UseLegacyApplyStylePhase"/>
 			/// is set to <see cref="false"/>.
 			/// </summary>
@@ -53,7 +64,7 @@ namespace Uno.UI
 			/// <summary>
 			/// Controls the propagation of <see cref="Windows.UI.Xaml.FrameworkElement.Loaded"/> and
 			/// <see cref="Windows.UI.Xaml.FrameworkElement.Unloaded"/> events through managed
-			/// or native visual tree traversal. 
+			/// or native visual tree traversal.
 			/// </summary>
 			/// <remarks>
 			/// This setting impacts significantly the loading performance of controls on Android.
@@ -66,7 +77,7 @@ namespace Uno.UI
 			/// <summary>
 			/// Controls the propagation of <see cref="Windows.UI.Xaml.FrameworkElement.Loaded"/> and
 			/// <see cref="Windows.UI.Xaml.FrameworkElement.Unloaded"/> events through managed
-			/// or native visual tree traversal. 
+			/// or native visual tree traversal.
 			/// </summary>
 			/// <remarks>
 			/// This setting impacts significantly the loading performance of controls on Web Assembly.
@@ -100,6 +111,17 @@ namespace Uno.UI
 			public static bool UseLegacyLazyApplyTemplate { get; set; } = false;
 		}
 
+		public static class ContentPresenter
+		{
+			/// <summary>
+			/// Enables the implicit binding Content of a ContentPresenter to the one of the TemplatedParent
+			/// when this one is a ContentControl.
+			/// It means you can put a `<ContentPresenter />` directly in the ControlTemplate and it will
+			/// be bound automatically to its TemplatedPatent's Content.
+			/// </summary>
+			public static bool UseImplicitContentFromTemplatedParent { get; set; } = false;
+		}
+
 		public static class DataTemplateSelector
 		{
 			/// <summary>
@@ -113,8 +135,8 @@ namespace Uno.UI
 		public static class ListViewBase
 		{
 			/// <summary>
-			/// Sets the value to use for <see cref="ItemsStackPanel.CacheLength"/> and <see cref="ItemsWrapGrid.CacheLength"/> if not set 
-			/// explicitly in Xaml or code. Higher values will cache more views either side of the visible window, improving list performance 
+			/// Sets the value to use for <see cref="ItemsStackPanel.CacheLength"/> and <see cref="ItemsWrapGrid.CacheLength"/> if not set
+			/// explicitly in Xaml or code. Higher values will cache more views either side of the visible window, improving list performance
 			/// at the expense of consuming more memory. Setting this to null will leave the default value at the UWP default of 4.0.
 			/// </summary>
 			public static double? DefaultCacheLength = 1.0;
@@ -139,26 +161,34 @@ namespace Uno.UI
 			public static bool IsPoolingEnabled { get; set; } = false;
 		}
 
+		public static class TextBlock
+		{
+			/// <summary>
+			/// Determines if the measure cache is enabled. (WASM only)
+			/// </summary>
+			public static bool IsMeasureCacheEnabled { get; set; } = true;
+		}
+
 		public static class AutomationPeer
 		{
 			/// <summary>
 			/// Enable a mode that simplifies accessibility by automatically grouping accessible elements into top-level accessible elements. The default value is false.
 			/// </summary>
 			/// <remarks>
-			/// When enabled, the accessibility name of top-level accessible elements (elements that return a non-null AutomationPeer in <see cref="UIElement.OnCreateAutomationPeer()"/> and/or have <see cref="AutomationProperties.Name" /> set to a non-empty string) 
+			/// When enabled, the accessibility name of top-level accessible elements (elements that return a non-null AutomationPeer in <see cref="UIElement.OnCreateAutomationPeer()"/> and/or have <see cref="AutomationProperties.Name" /> set to a non-empty string)
 			/// will be an aggregate of the accessibility name of all child accessible elements.
-			/// 
-			/// For example, if you have a <see cref="Button"/> that contains 3 <see cref="TextBlock"/> "A" "B" "C", the accessibility name of the <see cref="Button"/> will be "A, B, C". 
+			///
+			/// For example, if you have a <see cref="Button"/> that contains 3 <see cref="TextBlock"/> "A" "B" "C", the accessibility name of the <see cref="Button"/> will be "A, B, C".
 			/// These 3 <see cref="TextBlock"/> will also be automatically excluded from accessibility focus.
-			/// 
+			///
 			/// This greatly facilitates accessibility, as you would need to do this manually on UWP.
-			/// 
+			///
 			/// A limitation of this strategy is that you can't nest interactive elements, as children of an accessible elements are excluded from accessibility focus.
 			/// For example, if you put a <see cref="Button"/> inside another <see cref="Button"/>, only the parent <see cref="Button"/> will be focusable.
 			/// This happens to match a limitation of iOS, which does this by default and forces developers to make elements as siblings instead of nesting them.
-			/// 
+			///
 			/// To prevent a top-level accessible element from being accessible and make its children accessibility focusable, you can set <see cref="AutomationProperties.AccessibilityViewProperty"/> to <see cref="AccessibilityView.Raw"/>.
-			/// 
+			///
 			/// Note: This is incompatible with the way accessibility works on UWP.
 			/// </remarks>
 			public static bool UseSimpleAccessibility { get; set; } = false;
@@ -192,5 +222,16 @@ namespace Uno.UI
 			public static bool ForceJavascriptInterop { get; set; } = false;
 		}
 #endif
+		public static class ToolTip
+		{
+			public static bool UseToolTips { get; set; }
+#if __WASM__
+				= true;
+#endif
+
+			public static int ShowDelay { get; set; } = 1000;
+
+			public static int ShowDuration { get; set; } = 7000;
+		}
 	}
 }

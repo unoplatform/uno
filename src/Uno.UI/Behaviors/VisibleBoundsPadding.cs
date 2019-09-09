@@ -11,6 +11,8 @@ using Windows.Foundation;
 using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
+using Microsoft.Extensions.Logging;
+
 #if XAMARIN_IOS
 using UIKit;
 #elif __MACOS__
@@ -48,6 +50,12 @@ namespace Uno.UI.Toolkit
 	public static class VisibleBoundsPadding
 #endif
 	{
+#if IS_UNO
+		private static readonly Lazy<ILogger> _log = new Lazy<ILogger>(() => typeof(InternalVisibleBoundsPadding).Log());
+#else
+		private static readonly Lazy<ILogger> _log = new Lazy<ILogger>(() => typeof(VisibleBoundsPadding).Log());
+#endif
+
 		[Flags]
 		public enum PaddingMask
 		{
@@ -69,7 +77,14 @@ namespace Uno.UI.Toolkit
 			{
 				var visibleBounds = ApplicationView.GetForCurrentView().VisibleBounds;
 				var bounds = Window.Current.Bounds;
-				return new Thickness(visibleBounds.Left - bounds.Left, visibleBounds.Top - bounds.Top, bounds.Right - visibleBounds.Right, bounds.Bottom - visibleBounds.Bottom);
+				var result = new Thickness(visibleBounds.Left - bounds.Left, visibleBounds.Top - bounds.Top, bounds.Right - visibleBounds.Right, bounds.Bottom - visibleBounds.Bottom);
+
+				if (_log.Value.IsEnabled(LogLevel.Debug))
+				{
+					_log.Value.LogDebug($"WindowPadding={result} bounds={bounds} visibleBounds={visibleBounds}");
+				}
+
+				return result;
 			}
 		}
 
@@ -257,6 +272,11 @@ namespace Uno.UI.Toolkit
 
 				if (property != null)
 				{
+					if (_log.Value.IsEnabled(LogLevel.Debug))
+					{
+						_log.Value.LogDebug($"ApplyPadding={padding}");
+					}
+
 					Owner.SetValue(property, padding);
 				}
 			}

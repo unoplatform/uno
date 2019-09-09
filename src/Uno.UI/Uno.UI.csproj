@@ -4,6 +4,10 @@
 		<TargetFrameworksCI>MonoAndroid80;MonoAndroid90;xamarinios10;net461;netstandard2.0;xamarinmac20</TargetFrameworksCI>
 	</PropertyGroup>
 
+	<PropertyGroup Condition="'$(UnoTargetFrameworkOverride)'!=''">
+		<TargetFrameworks>$(UnoTargetFrameworkOverride)</TargetFrameworks>
+	</PropertyGroup>
+
 	<PropertyGroup>
 		<AssemblyName>Uno.UI</AssemblyName>
 		<RootNamespace>Uno.UI</RootNamespace>
@@ -25,7 +29,10 @@
 
 		<!-- Force the generation of upri files for Uno.UI self localization -->
 		<UnoForceProcessPRIResource>true</UnoForceProcessPRIResource>
-	</PropertyGroup>
+
+		<!-- Generate automation IDs in debug builds, use by UI tests. -->
+    <IsUiAutomationMappingEnabled Condition="'$(Configuration)'=='Debug'">true</IsUiAutomationMappingEnabled>
+  </PropertyGroup>
 
 	<Import Project="..\Uno.CrossTargetting.props" />
 
@@ -99,6 +106,9 @@
 				<None Include="$(MSBuildThisFileDirectory)**/*.xaml" Exclude="bin/**/*.xaml;obj/**/*.xaml" />
 				<Page Remove="@(Page)" />
 			</ItemGroup>
+			<ItemGroup Condition="'$(BuildingInsideUnoSourceGenerator)'!=''">
+				<Page Include="$(MSBuildThisFileDirectory)**/*.xaml" Exclude="bin/**/*.xaml;obj/**/*.xaml" />
+			</ItemGroup>
 		</When>
 		<Otherwise>
 			<ItemGroup>
@@ -169,13 +179,13 @@
 	</ItemGroup>
 
 	<ItemGroup Condition=" '$(TargetFramework)' == 'MonoAndroid90'">
-		<PackageReference Include="Xamarin.Android.Support.v4" Version="26.1.0.1">
+		<PackageReference Include="Xamarin.Android.Support.v4" Version="28.0.0.1">
 			<PrivateAssets>none</PrivateAssets>
 		</PackageReference>
-		<PackageReference Include="Xamarin.Android.Support.v7.AppCompat" Version="26.1.0.1">
+		<PackageReference Include="Xamarin.Android.Support.v7.AppCompat" Version="28.0.0.1">
 			<PrivateAssets>none</PrivateAssets>
 		</PackageReference>
-		<PackageReference Include="Xamarin.Android.Support.v7.RecyclerView" Version="26.1.0.1">
+		<PackageReference Include="Xamarin.Android.Support.v7.RecyclerView" Version="28.0.0.1">
 			<PrivateAssets>none</PrivateAssets>
 		</PackageReference>
 	</ItemGroup>
@@ -338,13 +348,21 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<UpToDateCheckInput Remove="UI\Xaml\HtmlCustomEventArgs.cs" />
-	</ItemGroup>
-
-	<ItemGroup>
-		<None Update="Mixins\net461\VisualStatesMixins.tt">
-			<Generator>TextTemplatingFileGenerator</Generator>
-		</None>
+	  <None Update="BaseActivity.Callbacks.Implementation.Android.tt">
+	    <Generator>TextTemplatingFileGenerator</Generator>
+	  </None>
+	  <None Update="Mixins\macOS\FrameworkElementMixins.tt">
+	    <Generator>TextTemplatingFileGenerator</Generator>
+	  </None>
+	  <None Update="Mixins\macOS\VisualStatesMixins.tt">
+	    <Generator>TextTemplatingFileGenerator</Generator>
+	  </None>
+	  <None Update="Mixins\net461\VisualStatesMixins.tt">
+	    <Generator>TextTemplatingFileGenerator</Generator>
+	  </None>
+	  <None Update="Mixins\Wasm\VisualStatesMixins.tt">
+	    <Generator>TextTemplatingFileGenerator</Generator>
+	  </None>
 	</ItemGroup>
 
 	<Target Name="GetPackagingOutputs" Condition=" '$(TargetFramework)' == 'uap10.0' " />
@@ -355,9 +373,7 @@
 
 	<Target Name="GetBuiltProjectOutputRecursive" Condition=" '$(TargetFramework)' == 'xamarinios10' " />
 
-	<Target Name="VS16Mac_RemoveSystemMemory"
-					BeforeTargets="ResolveAssemblyReferences"
-					Condition="'$(MSBuildVersion)' &gt;= '16.0' and $([MSBuild]::IsOsPlatform('OSX'))">
+	<Target Name="VS16Mac_RemoveSystemMemory" BeforeTargets="ResolveAssemblyReferences" Condition="'$(MSBuildVersion)' &gt;= '16.0' and $([MSBuild]::IsOsPlatform('OSX'))">
 		<!--
 				VS4Mac seems to process System.Memory differently, and removes
 				the System.Memory local reference if the package is transitively referenced.
@@ -365,21 +381,14 @@
 				is properly adding the local System.Memory to the Reference item group.
 		-->
 		<ItemGroup>
-			<_ReferenceToRemove
-        Include="@(Reference)"
-        Condition="'%(Reference.Identity)'=='System.Memory'" />
+			<_ReferenceToRemove Include="@(Reference)" Condition="'%(Reference.Identity)'=='System.Memory'" />
 			<Reference Remove="@(_ReferenceToRemove)" />
 		</ItemGroup>
 	</Target>
 
-	<Target
-    Name="VS16_RemoveSystemMemory"
-    BeforeTargets="FindReferenceAssembliesForReferences"
-    Condition="'$(MSBuildVersion)' &gt;= '16.0' and ($(IsMonoAndroid) or $(IsXamarinIOS) or $(IsXamarinMac))">
+	<Target Name="VS16_RemoveSystemMemory" BeforeTargets="FindReferenceAssembliesForReferences" Condition="'$(MSBuildVersion)' &gt;= '16.0' and ($(IsMonoAndroid) or $(IsXamarinIOS) or $(IsXamarinMac))">
 		<ItemGroup>
-			<_ReferencePathToRemove
-        Include="@(ReferencePath)"
-        Condition="'%(ReferencePath.NuGetPackageId)'=='System.Memory'" />
+			<_ReferencePathToRemove Include="@(ReferencePath)" Condition="'%(ReferencePath.NuGetPackageId)'=='System.Memory'" />
 			<ReferencePath Remove="@(_ReferencePathToRemove)" />
 		</ItemGroup>
 	</Target>

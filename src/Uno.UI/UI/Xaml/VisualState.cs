@@ -14,7 +14,7 @@ namespace Windows.UI.Xaml
 	[ContentProperty(Name = "Storyboard")]
 	public sealed partial class VisualState : DependencyObject
 	{
-        public VisualState()
+		public VisualState()
 		{
 			InitializeBinder();
 			IsAutoPropertyInheritanceEnabled = false;
@@ -105,11 +105,31 @@ namespace Windows.UI.Xaml
 				propertyType: typeof(IList<StateTriggerBase>), 
 				ownerType: typeof(VisualState), 
 				typeMetadata: new PropertyMetadata(
-					defaultValue: null
+					defaultValue: null,
+					propertyChangedCallback: StateTriggersChanged
 				)
 			);
 
 		#endregion
+
+		private static void StateTriggersChanged(DependencyObject dependencyobject, DependencyPropertyChangedEventArgs args)
+		{
+			if (args.OldValue is IList<StateTriggerBase> oldTriggers)
+			{
+				foreach (var trigger in oldTriggers)
+				{
+					trigger.SetParent(null);
+				}
+			}
+
+			if (args.NewValue is IList<StateTriggerBase> newTriggers)
+			{
+				foreach (var trigger in newTriggers)
+				{
+					trigger.SetParent(dependencyobject);
+				}
+			}
+		}
 
 		internal VisualStateGroup Owner => this.GetParent() as VisualStateGroup;
 
@@ -117,5 +137,7 @@ namespace Windows.UI.Xaml
 		{
 			Owner?.RefreshStateTriggers();
 		}
+
+		public override string ToString() => Name ?? $"<unnamed state {GetHashCode()}>";
 	}
 }

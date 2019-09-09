@@ -4,7 +4,7 @@ using UITests.Shared.Windows_UI_Xaml_Controls.Slider;
 
 namespace Uno.UI.Samples.Content.UITests.Slider
 {
-	[SampleControlInfoAttribute("Slider", "Slider_Frequency", typeof(SliderViewModel), description: "Slider which enforces the frequency of its steps")]
+	[SampleControlInfo("Slider", "Slider_Frequency", typeof(SliderViewModel), description: "Slider which enforces the frequency of its steps")]
 	public sealed partial class Slider_Frequency : UserControl
 	{
 		public Slider_Frequency()

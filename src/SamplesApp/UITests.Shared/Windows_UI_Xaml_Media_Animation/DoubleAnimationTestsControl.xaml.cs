@@ -15,7 +15,7 @@ using Uno.UI.Samples.Controls;
 
 namespace Uno.UI.Samples.Content.UITests
 {
-	[SampleControlInfoAttribute("Animations", "DoubleAnimationTestsControl")]
+	[SampleControlInfo("Animations", "DoubleAnimationTestsControl")]
 
 	public sealed partial class DoubleAnimationTestsControl : UserControl
 	{

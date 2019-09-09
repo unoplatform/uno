@@ -11,6 +11,7 @@ using Uno.UI.Extensions;
 using System.Runtime.InteropServices;
 using Uno.Disposables;
 using Uno.Collections;
+using Microsoft.Extensions.Logging;
 
 #if XAMARIN_ANDROID
 using View = Android.Views.View;
@@ -47,23 +48,23 @@ namespace Windows.UI.Xaml.Controls
 					__singleStarSize :
 					__singleAutoSize;
 
-				return sizes.SelectToMemory(size => CreateInternalColumn(considerStarAsAuto, size));
+				return sizes.SelectToMemory(size => CreateInternalColumn(considerStarAsAuto, size, minWidth: 0, maxWidth: double.PositiveInfinity));
 			}
 			else
 			{
 				return ColumnDefinitions.InnerList
-					.SelectToMemory(cd => CreateInternalColumn(considerStarAsAuto, GridSize.FromGridLength(cd.Width)));
+					.SelectToMemory(cd => CreateInternalColumn(considerStarAsAuto, GridSize.FromGridLength(cd.Width), cd.MinWidth, cd.MaxWidth));
 			}
 		}
 
-		private static Column CreateInternalColumn(bool considerStarAsAuto, GridSize size)
+		private static Column CreateInternalColumn(bool considerStarAsAuto, GridSize size, double minWidth, double maxWidth)
 		{
 			if (considerStarAsAuto && size.IsStarSize)
 			{
-				return Column.Auto;
+				return new Column(GridSize.Auto, minWidth, maxWidth);
 			}
 
-			return new Column(size);
+			return new Column(size, minWidth, maxWidth);
 		}
 
 		private Memory<Row> GetRows(bool considerStarAsAuto)
@@ -74,23 +75,23 @@ namespace Windows.UI.Xaml.Controls
 					__singleStarSize :
 					__singleAutoSize;
 
-				return sizes.SelectToMemory(s => CreateInternalRow(considerStarAsAuto, s));
+				return sizes.SelectToMemory(s => CreateInternalRow(considerStarAsAuto, s, minHeight: 0, maxHeight: double.PositiveInfinity));
 			}
 			else
 			{
 				return RowDefinitions.InnerList
-					.SelectToMemory(rd => CreateInternalRow(considerStarAsAuto, GridSize.FromGridLength(rd.Height)));
+					.SelectToMemory(rd => CreateInternalRow(considerStarAsAuto, GridSize.FromGridLength(rd.Height), rd.MinHeight, rd. MaxHeight));
 			}
 		}
 
-		private static Row CreateInternalRow(bool considerStarAsAuto, GridSize size)
+		private static Row CreateInternalRow(bool considerStarAsAuto, GridSize size, double minHeight, double maxHeight)
 		{
 			if (considerStarAsAuto && size.IsStarSize)
 			{
-				return Row.Auto;
+				return new Row(GridSize.Auto, minHeight, maxHeight);
 			}
 
-			return new Row(size);
+			return new Row(size, minHeight, maxHeight);
 		}
 
 		private double GetTotalStarSizedWidth(Span<Column> columns)
@@ -155,7 +156,7 @@ namespace Windows.UI.Xaml.Controls
 			if (!TryMeasureUsingFastPath(availableSize, columns, definedColumns, rows, definedRows, out size))
 			{
 				var measureChild = GetMemoizedMeasureChild();
-				var positions = GetPositions();
+				var positions = GetPositions(columns.Length, rows.Length);
 
 				using (positions.Subscription)
 				{
@@ -203,19 +204,20 @@ namespace Windows.UI.Xaml.Controls
 			finalSize.Width -= GetHorizontalOffset();
 			finalSize.Height -= GetVerticalOffset();
 
-			var positions = GetPositions();
+			var availableSize = finalSize;
+
+			var considerStarColumnsAsAuto = ConsiderStarColumnsAsAuto(availableSize.Width);
+			var considerStarRowsAsAuto = ConsiderStarRowsAsAuto(availableSize.Height);
+
+			var columns = GetColumns(considerStarColumnsAsAuto).Span;
+			var definedColumns = GetColumns(false).Span;
+			var rows = GetRows(considerStarRowsAsAuto).Span;
+			var definedRows = GetRows(false).Span;
+
+			var positions = GetPositions(columns.Length, rows.Length);
 
 			using (positions.Subscription)
 			{
-				var availableSize = finalSize;
-
-				var considerStarColumnsAsAuto = ConsiderStarColumnsAsAuto(availableSize.Width);
-				var considerStarRowsAsAuto = ConsiderStarRowsAsAuto(availableSize.Height);
-
-				var columns = GetColumns(considerStarColumnsAsAuto).Span;
-				var definedColumns = GetColumns(false).Span;
-				var rows = GetRows(considerStarRowsAsAuto).Span;
-				var definedRows = GetRows(false).Span;
 
 				if (!TryArrangeUsingFastPath(availableSize, columns, definedColumns, rows, definedRows, positions.Views.Span))
 				{
@@ -406,18 +408,112 @@ namespace Windows.UI.Xaml.Controls
 				}
 			}
 
+			// Auto columns should take up the larger of their measured width and their MinWidth
+			for (int i = 0; i < columns.Length; i++)
+			{
+				if (columns[i].Width.IsAuto)
+				{
+					calculatedPixelColumns.Span[i] = Math.Max(calculatedPixelColumns.Span[i], columns[i].MinWidth);
+				}
+			}
+
 			// Star size: We always measure to set the desired size, but measuring would only be required for the columns calculation when the Star doesn't mean remaining space.
 			var usedWidth = calculatedPixelColumns.Span.Sum();
-			double remainingWidth = Math.Max(0, availaibleWidth - usedWidth);
-			var totalStarSizedWidth = GetTotalStarSizedWidth(columns);
-			var defaultStarWidth = remainingWidth / totalStarSizedWidth;
+			var initialRemainingWidth = Math.Max(0, availaibleWidth - usedWidth);
+			var initialTotalStarSizedWidth = GetTotalStarSizedWidth(columns);
 
-			var starCalculatedPixelColumns = columns
-				.SelectToMemory(
-					(c, i) => c.Width.IsStarSize ?
-						c.Width.StarSize.GetValueOrDefault() * defaultStarWidth :
-						calculatedPixelColumns.Span[i]
-				);
+			var remainingWidth = initialRemainingWidth;
+			var totalStarSizedWidth = initialTotalStarSizedWidth;
+			var unitStarWidth = remainingWidth / totalStarSizedWidth;
+
+			// We want to run at least one iteration. We don't expect more iterations than the number of star children (but allow margin for programmer error).
+			var maxTries = starSizeChildren.Span.Length * 2 + 1;
+			var previousRemainingWidth = remainingWidth;
+
+			/// Try to set the star column widths. If there are no MinWidths or MaxWidths in effect, this should only take a single pass.
+			/// 
+			/// If the actual width consumed is less than was available, this means that at least one column MinWidth kicked in. Conversely,
+			/// if it's greater than what was available, a MaxWidth must have kicked in.
+			/// 
+			/// In either case, we exclude the constrained columns and recalculate for the remaining 'true' star-sized columns. The new unitStarWidth may cause
+			/// more Min/MaxWidths to kick in, so we repeat until the values stabilize.
+			Memory<double> starCalculatedPixelColumns = null;
+			for (int i = 0; i <= maxTries; i++)
+			{
+				var maxWidthColumnsWidth = 0d;
+				var minWidthColumnsWidth = 0d;
+				var maxWidthColumnsStarWidth = 0d;
+				var minWidthColumnsStarWidth = 0d;
+
+				starCalculatedPixelColumns = columns
+					.SelectToMemory(
+						(c, j) =>
+						{
+							if (!c.Width.IsStarSize)
+							{
+								return calculatedPixelColumns.Span[j];
+							}
+
+							var starSize = c.Width.StarSize.GetValueOrDefault();
+							var baseWidth = starSize * unitStarWidth;
+							var width = MathEx.Clamp(baseWidth, c.MinWidth, c.MaxWidth);
+
+							if (width > baseWidth)
+							{
+								minWidthColumnsWidth += width;
+								minWidthColumnsStarWidth += starSize;
+							}
+							else if (width < baseWidth)
+							{
+								maxWidthColumnsWidth += width;
+								maxWidthColumnsStarWidth += starSize;
+							}
+
+							remainingWidth -= width;
+
+							return width;
+						}
+					);
+
+				if (MathEx.ApproxEqual(remainingWidth, 0) || //Exactly the remaining width has been used, we're done
+					MathEx.ApproxEqual(remainingWidth, previousRemainingWidth) //Adding/removing width hasn't made any difference, we're done. (Perhaps all columns are constrained)
+				)
+				{
+					break;
+				}
+				else
+				{
+					double totalWidth;
+					if (remainingWidth > 0)
+					{
+						//On net we used less width than was available, ie MaxWidths kicked in. We need to calculate the star width with those columns excluded.
+						totalWidth = initialRemainingWidth - maxWidthColumnsWidth;
+						totalStarSizedWidth = initialTotalStarSizedWidth - maxWidthColumnsStarWidth;
+					}
+					else
+					{
+						//On net we used more width than was available, ie MinWidths kicked in. We need to calculate the star width with those columns excluded.
+						totalWidth = initialRemainingWidth - minWidthColumnsWidth;
+						totalStarSizedWidth = initialTotalStarSizedWidth - minWidthColumnsStarWidth;
+					}
+
+					unitStarWidth = totalWidth / totalStarSizedWidth;
+
+					previousRemainingWidth = remainingWidth;
+					remainingWidth = initialRemainingWidth;
+				}
+
+				if (i == maxTries)
+				{
+					if (this.Log().IsEnabled(LogLevel.Warning))
+					{
+						this.Log().LogWarning($"Star measurements failed to stabilize after {i} tries.");
+					}
+#if NET461
+					throw new InvalidOperationException($"Star measurements failed to stabilize after {i} tries.");
+#endif
+				}
+			}
 
 			if (isMeasuring)
 			{
@@ -446,7 +542,7 @@ namespace Windows.UI.Xaml.Controls
 					maxStarWidth = Math.Max(maxStarWidth, starWidth / stars);
 				}
 
-				maxStarWidth = Math.Min(defaultStarWidth, maxStarWidth);
+				maxStarWidth = Math.Min(unitStarWidth, maxStarWidth);
 
 				return columns
 					.SelectToMemory((c, i) =>
@@ -619,15 +715,112 @@ namespace Windows.UI.Xaml.Controls
 				}
 			}
 
+			// Auto rows should take up the larger of their measured height and their MinHeight
+			for (int i = 0; i < rows.Length; i++)
+			{
+				if (rows[i].Height.IsAuto)
+				{
+					calculatedPixelRows.Span[i] = Math.Max(calculatedPixelRows.Span[i], rows[i].MinHeight);
+				}
+			}
+
+			// Star size: We always measure to set the desired size, but measuring would only be required for the rows calculation when the Star doesn't mean remaining space.
 			var usedHeight = calculatedPixelRows.Span.Sum();
-			double remainingHeight = Math.Max(0, availaibleHeight - usedHeight);
-			var totalStarSizedHeight = GetTotalStarSizedHeight(rows);
-			var defaultStarHeight = remainingHeight / totalStarSizedHeight;
-			var starCalculatedPixelRows = rows
-				.SelectToMemory((r, i) =>
-					r.Height.IsStarSize ?
-						r.Height.StarSize.GetValueOrDefault() * defaultStarHeight :
-						calculatedPixelRows.Span[i]);
+			var initialRemainingHeight = Math.Max(0, availaibleHeight - usedHeight);
+			var initialTotalStarSizedHeight = GetTotalStarSizedHeight(rows);
+
+			var remainingHeight = initialRemainingHeight;
+			var totalStarSizedHeight = initialTotalStarSizedHeight;
+			var unitStarHeight = remainingHeight / totalStarSizedHeight;
+
+			// We want to run at least one iteration. We don't expect more iterations than the number of star children (but allow margin for programmer error).
+			var maxTries = starSizeChildren.Span.Length * 2 + 1;
+			var previousRemainingHeight = remainingHeight;
+
+			/// Try to set the star row heights. If there are no MinHeights or MaxHeights in effect, this should only take a single pass.
+			/// 
+			/// If the actual height consumed is less than was available, this means that at least one row MinHeight kicked in. Conversely,
+			/// if it's greater than what was available, a MaxHeight must have kicked in.
+			/// 
+			/// In either case, we exclude the constrained rows and recalculate for the remaining 'true' star-sized rows. The new unitStarHeight may cause
+			/// more Min/MaxHeights to kick in, so we repeat until the values stabilize.
+			Memory<double> starCalculatedPixelRows = null;
+			for (int i = 0; i <= maxTries; i++)
+			{
+				var maxHeightRowsHeight = 0d;
+				var minHeightRowsHeight = 0d;
+				var maxHeightRowsStarHeight = 0d;
+				var minHeightRowsStarHeight = 0d;
+
+				starCalculatedPixelRows = rows
+					.SelectToMemory(
+						(c, j) =>
+						{
+							if (!c.Height.IsStarSize)
+							{
+								return calculatedPixelRows.Span[j];
+							}
+
+							var starSize = c.Height.StarSize.GetValueOrDefault();
+							var baseHeight = starSize * unitStarHeight;
+							var height = MathEx.Clamp(baseHeight, c.MinHeight, c.MaxHeight);
+
+							if (height > baseHeight)
+							{
+								minHeightRowsHeight += height;
+								minHeightRowsStarHeight += starSize;
+							}
+							else if (height < baseHeight)
+							{
+								maxHeightRowsHeight += height;
+								maxHeightRowsStarHeight += starSize;
+							}
+
+							remainingHeight -= height;
+
+							return height;
+						}
+					);
+
+				if (MathEx.ApproxEqual(remainingHeight, 0) || //Exactly the remaining height has been used, we're done
+					MathEx.ApproxEqual(remainingHeight, previousRemainingHeight) //Adding/removing height hasn't made any difference, we're done. (Perhaps all rows are constrained)
+				)
+				{
+					break;
+				}
+				else
+				{
+					double totalHeight;
+					if (remainingHeight > 0)
+					{
+						//On net we used less height than was available, ie MaxHeights kicked in. We need to calculate the star height with those rows excluded.
+						totalHeight = initialRemainingHeight - maxHeightRowsHeight;
+						totalStarSizedHeight = initialTotalStarSizedHeight - maxHeightRowsStarHeight;
+					}
+					else
+					{
+						//On net we used more height than was available, ie MinHeights kicked in. We need to calculate the star height with those rows excluded.
+						totalHeight = initialRemainingHeight - minHeightRowsHeight;
+						totalStarSizedHeight = initialTotalStarSizedHeight - minHeightRowsStarHeight;
+					}
+
+					unitStarHeight = totalHeight / totalStarSizedHeight;
+
+					previousRemainingHeight = remainingHeight;
+					remainingHeight = initialRemainingHeight;
+				}
+
+				if (i == maxTries)
+				{
+					if (this.Log().IsEnabled(LogLevel.Warning))
+					{
+						this.Log().LogWarning($"Star measurements failed to stabilize after {i} tries.");
+					}
+#if NET461
+					throw new InvalidOperationException($"Star measurements failed to stabilize after {i} tries.");
+#endif
+				}
+			}
 
 			if (isMeasuring)
 			{
@@ -659,7 +852,7 @@ namespace Windows.UI.Xaml.Controls
 					maxStarHeight = Math.Max(maxStarHeight, starHeight / stars);
 				}
 
-				maxStarHeight = Math.Min(defaultStarHeight, maxStarHeight);
+				maxStarHeight = Math.Min(unitStarHeight, maxStarHeight);
 
 				return rows
 					.SelectToMemory((r, i) =>
@@ -816,6 +1009,9 @@ namespace Windows.UI.Xaml.Controls
 			return Math.Min(1, sizes.SliceClamped(index, span).Count(s => s.IsStarSize));
 		}
 
+		/// <summary>
+		/// True if all rows/columns for the provided starting point + row/columnSpan have pixel definitions, false if any are star or auto.
+		/// </summary>
 		private static bool IsPixelSize(int index, int span, Span<GridSize> sizes)
 		{
 			int bound = Math.Min(index + span, sizes.Length);
@@ -903,7 +1099,7 @@ namespace Windows.UI.Xaml.Controls
 			return MeasureElement;
 		}
 
-		private (IDisposable Subscription, Memory<ViewPosition> Views) GetPositions()
+		private (IDisposable Subscription, Memory<ViewPosition> Views) GetPositions(int numberOfColumns, int numberOfRows)
 		{
 			var refs = Children.SelectToArray(c => (View: c, Handle: GCHandle.Alloc(c, GCHandleType.Normal)));
 
@@ -911,39 +1107,108 @@ namespace Windows.UI.Xaml.Controls
 				Disposable.Create(() => refs.ForEach(c => c.Handle.Free())),
 				refs
 					.SelectToMemory(c =>
-						new ViewPosition(
-							c.Handle,
-							new GridPosition(
-								Grid.GetColumn(c.View),
-								Grid.GetRow(c.View),
-								Grid.GetColumnSpan(c.View),
-								Grid.GetRowSpan(c.View)
-							)
-						)
-					)
+					{
+						return MapViewToGridPosition(c);
+					})
 			);
+
+			ViewPosition MapViewToGridPosition((View View, GCHandle Handle) c)
+			{
+				var column = Grid.GetColumn(c.View);
+				var columnSpan = Grid.GetColumnSpan(c.View);
+
+				if (column == 0)
+				{
+					// Ok: nothing to check
+				}
+				else if (column < 0)
+				{
+					column = 0;
+				}
+				else if (column >= numberOfColumns)
+				{
+					column = numberOfColumns - 1;
+				}
+
+				if (columnSpan == 1)
+				{
+					// Ok: nothing to check
+				}
+				else if (columnSpan < 1)
+				{
+					columnSpan = 1;
+				}
+				else if (column + columnSpan > numberOfColumns)
+				{
+					columnSpan = numberOfColumns - column;
+				}
+
+				var row = Grid.GetRow(c.View);
+				var rowSpan = Grid.GetRowSpan(c.View);
+
+				if (row == 0)
+				{
+					// Ok: nothing to check
+				}
+				else if (row < 0)
+				{
+					row = 0;
+				}
+				else if (row >= numberOfRows)
+				{
+					row = numberOfRows - 1;
+				}
+
+				if (rowSpan == 1)
+				{
+					// Ok: nothing to check
+				}
+				else if (rowSpan < 1)
+				{
+					rowSpan = 1;
+				}
+				else if (row + rowSpan > numberOfRows)
+				{
+					rowSpan = numberOfRows - row;
+				}
+
+				return new ViewPosition(
+					c.Handle,
+					new GridPosition(
+						column,
+						row,
+						columnSpan,
+						rowSpan
+					)
+				);
+			}
 		}
 
 		readonly struct Column
 		{
 			public GridSize Width { get; }
-			public Column(GridSize width)
+			public double MinWidth { get; }
+			public double MaxWidth { get; }
+			public Column(GridSize width, double minWidth, double maxWidth)
 			{
 				Width = width;
-			}
+				MinWidth = minWidth;
+				MaxWidth = maxWidth;
 
-			public static Column Auto { get; } = new Column(GridSize.Auto);
+			}
 		}
 
 		readonly struct Row
 		{
-			public readonly GridSize Height;
-			public Row(GridSize height)
+			public GridSize Height { get; }
+			public double MinHeight { get; }
+			public double MaxHeight { get; }
+			public Row(GridSize height, double minHeight, double maxHeight)
 			{
 				Height = height;
+				MinHeight = minHeight;
+				MaxHeight = maxHeight;
 			}
-
-			public static Row Auto { get; } = new Row(GridSize.Auto);
 		}
 
 		private readonly struct GridSize
@@ -1023,26 +1288,21 @@ namespace Windows.UI.Xaml.Controls
 		}
 	}
 
-	struct GridPosition
+	internal struct GridPosition
 	{
-		public int Column { get; set; }
-		public int Row { get; set; }
+		public int Column { get; }
+		public int Row { get; }
 
-		public int ColumnSpan { get; set; }
-		public int RowSpan { get; set; }
+		public int ColumnSpan { get; }
+		public int RowSpan { get; }
 
-		public GridPosition(int column = 0, int row = 0, int columnSpan = 1, int rowSpan = 1)
+		internal GridPosition(int column, int row, int columnSpan, int rowSpan)
 		{
 			Column = column;
 			Row = row;
 
 			ColumnSpan = columnSpan;
 			RowSpan = rowSpan;
-
-			if (ColumnSpan < 1 || RowSpan < 1)
-			{
-				throw new IndexOutOfRangeException("ColumnSpan and RowSpan should be greater than 0.");
-			}
 		}
 
 		public override string ToString()

@@ -10,8 +10,6 @@ namespace Windows.UI.Xaml.Controls
 	{
 		private readonly SerialDisposable _closePopup = new SerialDisposable();
 
-		internal UIElement Anchor { get; set; }
-
 		public Popup()
 		{
 			PopupPanel = new PopupPanel(this);
@@ -23,6 +21,13 @@ namespace Windows.UI.Xaml.Controls
 
 			PopupPanel.Children.Remove(oldChild);
 			PopupPanel.Children.Add(newChild);
+		}
+
+		protected override void OnIsLightDismissEnabledChanged(bool oldIsLightDismissEnabled, bool newIsLightDismissEnabled)
+		{
+			base.OnIsLightDismissEnabledChanged(oldIsLightDismissEnabled, newIsLightDismissEnabled);
+
+			(PopupPanel.Parent as PopupRoot)?.UpdateLightDismissArea();
 		}
 
 		protected override void OnIsOpenChanged(bool oldIsOpen, bool newIsOpen)
@@ -71,7 +76,6 @@ namespace Windows.UI.Xaml.Controls
 				newPanel.PointerPressed += OnPanelPointerPressed;
 				newPanel.PointerReleased += OnPanelPointerReleased;
 			}
-
 		}
 
 		private bool _pressed;

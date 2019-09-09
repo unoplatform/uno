@@ -3,11 +3,8 @@
 	xmlns:controls="using:Uno.UI.Samples.Controls"
 	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-	xmlns:local="GenericApp.Views.Content.UITests.Popup"
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-	xmlns:u="using:Uno.UI.Samples.Controls"
-	xmlns:uBehaviors="using:Uno.UI.Samples.Behaviors"
 	xmlns:ios="http://nventive.com/ios"
 	xmlns:win="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 	xmlns:android="http://nventive.com/android"
@@ -20,8 +17,8 @@
 			<DataTemplate>
 				<StackPanel>
 					<!-- Insert your code sample here -->
-					<TextBlock Text="This Toggle Button should open a Dismissable Popup" />
-					<ToggleButton x:Name="TogglePopup"/>
+					<TextBlock Text="This Toggle Button should open a Dismissible Popup" />
+					<ToggleButton x:Name="TogglePopup">TOGGLE OPEN/CLOSE</ToggleButton>
 					<Popup IsOpen="{Binding IsChecked, ElementName=TogglePopup, Mode=TwoWay}"
 						    HorizontalOffset="200"
 						   VerticalOffset="200"
@@ -30,12 +27,12 @@
 							<Border Height="100"
 									Width="150"
 									Background="Red">
-								<TextBlock Text="Test" />
+								<TextBlock Text="Clicking here shouldn't dismiss the Popup!" TextWrapping="WrapWholeWords" Foreground="White" />
 							</Border>
 						</Popup.Child>
 					</Popup>
-					<TextBlock Text="This Toggle Button should open a NON-Dismissable Popup" />
-					<ToggleButton x:Name="TogglePopup2"/>
+					<TextBlock Text="This Toggle Button should open a NON-Dismissible Popup" />
+					<ToggleButton x:Name="TogglePopup2">TOGGLE OPEN/CLOSE</ToggleButton>
 					<Popup IsOpen="{Binding IsChecked, ElementName=TogglePopup2}"
 						   HorizontalOffset="300"
 						   VerticalOffset="300"
@@ -49,7 +46,7 @@
 						</Popup.Child>
 					</Popup>
 					<TextBlock Text="This Toggle Button should open a Popup without fixed height" />
-					<ToggleButton x:Name="TogglePopup3"/>
+					<ToggleButton x:Name="TogglePopup3">TOGGLE OPEN/CLOSE</ToggleButton>
 					<Popup IsOpen="{Binding IsChecked, ElementName=TogglePopup3, Mode=TwoWay}"
 						    HorizontalOffset="400"
 						   VerticalOffset="400"
@@ -57,7 +54,7 @@
 						<Popup.Child>
 							<Border Width="150"
 									Background="Blue">
-								<TextBlock Text="Test" />
+								<TextBlock Text="Test" Foreground="White" />
 							</Border>
 						</Popup.Child>
 					</Popup>

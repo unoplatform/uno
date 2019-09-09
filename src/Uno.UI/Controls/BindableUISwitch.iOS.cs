@@ -1,5 +1,4 @@
 using System;
-using System.Drawing;
 using Uno.Disposables;
 using System.Runtime.CompilerServices;
 using Windows.UI.Xaml.Data;
@@ -31,7 +30,7 @@ namespace Uno.UI.Views.Controls
 			IsOn = On;
 		}
 
-		public BindableUISwitch(RectangleF frame)
+		public BindableUISwitch(System.Drawing.RectangleF frame)
 			: base(frame)
 		{
 			InitializeBinder();

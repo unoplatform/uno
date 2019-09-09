@@ -2,11 +2,9 @@
 using Android.Graphics.Drawables;
 using Uno.Extensions;
 using Uno.Logging;
-using Uno.UI;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Drawing;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -16,6 +14,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Android.Provider;
 using Microsoft.Extensions.Logging;
+using Uno.UI;
 
 namespace Windows.UI.Xaml.Media
 {
@@ -26,7 +25,9 @@ namespace Windows.UI.Xaml.Media
 		private const string ContactUriPrefix = "content://com.android.contacts/";
 
 		private static bool _resourceCacheLock;
-		private static Dictionary<Tuple<int, Size?>, Bitmap> _resourceCache = new Dictionary<Tuple<int, Size?>, Bitmap>();
+		private static Dictionary<Tuple<int, global::System.Drawing.Size?>, Bitmap> _resourceCache = new Dictionary<Tuple<int, global::System.Drawing.Size?>, Bitmap>();
+
+		private int? _resourceId;
 
 		/// <summary>
 		/// Defines an asynchronous image loader handler.
@@ -35,7 +36,7 @@ namespace Windows.UI.Xaml.Media
 		/// <param name="uri">The image uri</param>
 		/// <param name="targetSize">An optional target decoding size</param>
 		/// <returns>A Bitmap instance</returns>
-		public delegate Task<Bitmap> ImageLoaderHandler(CancellationToken ct, string uri, Android.Widget.ImageView imageView, Size? targetSize);
+		public delegate Task<Bitmap> ImageLoaderHandler(CancellationToken ct, string uri, Android.Widget.ImageView imageView, global::System.Drawing.Size? targetSize);
 
 		/// <summary>
 		/// Provides a optional external image loader.
@@ -111,7 +112,7 @@ namespace Windows.UI.Xaml.Media
 		partial void InitFromResource(Uri uri)
 		{
 			ResourceString = uri.PathAndQuery.TrimStart(new[] { '/' });
-			ResourceId = FindResourceId(ResourceString);
+			ResourceId = Uno.Helpers.DrawableHelper.FindResourceId(ResourceString);
 		}
 
 		/// <summary>
@@ -131,7 +132,7 @@ namespace Windows.UI.Xaml.Media
 			options.InJustDecodeBounds = true;
 
 			var targetSize = UseTargetSize && targetWidth != null && targetHeight != null
-				? (Size?)new Size(targetWidth.Value, targetHeight.Value)
+				? (global::System.Drawing.Size?)new global::System.Drawing.Size(targetWidth.Value, targetHeight.Value)
 				: null;
 
 			if (ResourceId.HasValue)
@@ -273,7 +274,7 @@ namespace Windows.UI.Xaml.Media
 		/// <param name="resourceId"></param>
 		/// <param name="targetSize"></param>
 		/// <returns></returns>
-		private async Task<Bitmap> FetchResourceWithDownsampling(CancellationToken ct, int resourceId, Size? targetSize)
+		private async Task<Bitmap> FetchResourceWithDownsampling(CancellationToken ct, int resourceId, global::System.Drawing.Size? targetSize)
 		{
 			var key = Tuple.Create(resourceId, targetSize);
 
@@ -323,59 +324,27 @@ namespace Windows.UI.Xaml.Media
 		}
 
 		#region Resources
-		private static Dictionary<string, int> _drawablesLookup;
-		private static Type _drawables;
-		private int? _resourceId;
 
+		/// <summary>
+		/// Type used as the source of Drawables.
+		/// Now available outside in Uno library with <see cref="DrawableHelper"/>.
+		/// </summary>
+		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static Type Drawables
 		{
-			get
-			{
-				return _drawables;
-			}
-			set
-			{
-				_drawables = value;
-				Initialize();
-			}
-		}
-
-		private static void Initialize()
-		{
-			_drawablesLookup = _drawables
-				.GetFields(BindingFlags.Static | BindingFlags.Public)
-				.ToDictionary(
-					p => p.Name,
-					p => (int)p.GetValue(null)
-				);
+			get => Uno.Helpers.DrawableHelper.Drawables;
+			set => Uno.Helpers.DrawableHelper.Drawables = value;
 		}
 
 		/// <summary>
 		/// Returns the Id of the bundled image.
+		/// Now available outside in Uno library with <see cref="DrawableHelper"/>.
 		/// </summary>
 		/// <param name="imageName">Name of the image</param>
 		/// <returns>Resource's id</returns>
-		public static int? FindResourceId(string imageName)
-		{
-			var key = global::System.IO.Path.GetFileNameWithoutExtension(imageName);
-			if (_drawablesLookup == null)
-			{
-				throw new Exception("You must initialize drawable resources by invoking this in your main Module (replace \"GenericApp\"):\nWindows.UI.Xaml.Media.ImageSource.Drawables = typeof(GenericApp.Resource.Drawable);");
-			}
-			var id = _drawablesLookup.UnoGetValueOrDefault(key, 0);
-			if (id == 0)
-			{
-				if (typeof(ImageSource).Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Error))
-				{
-					typeof(ImageSource).Log().Error("Couldn't find drawable with key: " + key);
-				}
-
-				return null;
-			}
-
-			return id;
-		}
-
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		public static int? FindResourceId(string imageName) =>
+			Uno.Helpers.DrawableHelper.FindResourceId(imageName);
 
 		#endregion
 

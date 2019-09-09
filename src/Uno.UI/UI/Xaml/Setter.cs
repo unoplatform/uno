@@ -7,6 +7,8 @@ using Uno.Logging;
 using Uno.UI.DataBinding;
 using Windows.Foundation;
 using Windows.Foundation.Metadata;
+using Windows.UI.Xaml.Data;
+
 namespace Windows.UI.Xaml
 {
 	public delegate object SetterValueProviderHandler();
@@ -82,67 +84,82 @@ namespace Windows.UI.Xaml
 
 		internal void ApplyValue(DependencyPropertyValuePrecedences precedence, IFrameworkElement owner)
 		{
-			if (_bindingPath == null)
+			var path = TryGetOrCreateBindingPath(precedence, owner);
+
+			if (path != null)
 			{
-				if (Target != null)
-				{
-					if (Target.Target == null)
-					{
-						if (Target.TargetName != null)
-						{
-							// We're in a late-binding scenario from the XamlReader context.
-							// In this case, we don't know the instance in advance, we need
-							// to try to resolve the binding path multiple times.
-
-							Target.Target = owner.FindName(Target.TargetName);
-
-							if (Target.Target != null)
-							{
-								if (this.Log().IsEnabled(LogLevel.Debug))
-								{
-									this.Log().Debug($"Using Target [{Target.Target}] for Setter [{Target.TargetName}] from [{owner}]");
-								}
-
-								BuildBindingPath(precedence);
-							}
-							else
-							{
-								if (_targetNameResolutionFailureCount++ > 2)
-								{
-									if (this.Log().IsEnabled(LogLevel.Warning))
-									{
-										this.Log().Warn($"Could not find Target [{Target.TargetName}] for Setter [{Target.Path?.Path}] from [{owner}]. This may indicate an invalid Setter name, and can cause performance issues.");
-									}
-								}
-							}
-						}
-					}
-					else
-					{
-						BuildBindingPath(precedence);
-					}
-				}
-				else
-				{
-					throw new InvalidOperationException($"Unable to apply setter value with null {nameof(Target)}");
-				}
-			}
-
-			if (_bindingPath != null)
-			{
-				_bindingPath.Value = Value;
+				path.Value = Value;
 			}
 		}
 
-		private void BuildBindingPath(DependencyPropertyValuePrecedences precedence)
+		private BindingPath TryGetOrCreateBindingPath(DependencyPropertyValuePrecedences precedence, IFrameworkElement owner)
 		{
+			if (_bindingPath != null)
+			{
+				return _bindingPath;
+			}
+
+			if (Target == null)
+			{
+				throw new InvalidOperationException($"Unable to apply setter value with null {nameof(Target)}");
+			}
+
+			if (Target.Target == null && Target.TargetName != null)
+			{
+				// We're in a late-binding scenario from the XamlReader context.
+				// In this case, we don't know the instance in advance, we need
+				// to try to resolve the binding path multiple times.
+				Target.Target = owner.FindName(Target.TargetName);
+
+				if (Target.Target == null)
+				{
+					if (_targetNameResolutionFailureCount++ > 2 && this.Log().IsEnabled(LogLevel.Warning))
+					{
+						this.Log().Warn($"Could not find Target [{Target.TargetName}] for Setter [{Target.Path?.Path}] from [{owner}]. This may indicate an invalid Setter name, and can cause performance issues.");
+					}
+
+					return null;
+				}
+			}
+
+			if (this.Log().IsEnabled(LogLevel.Debug))
+			{
+				this.Log().Debug($"Using Target [{Target.Target}] for Setter [{Target.TargetName}] from [{owner}]");
+			}
+
 			_bindingPath = new BindingPath(path: Target.Path, fallbackValue: null, precedence: precedence, allowPrivateMembers: false);
-			_bindingPath.DataContext = Target.Target;
+
+			if (Target.Target is ElementNameSubject subject)
+			{
+				if (subject.ActualElementInstance is ElementStub stub)
+				{
+					stub.Materialize();
+				}
+
+				_bindingPath.DataContext = subject.ElementInstance;
+			}
+			else
+			{
+				_bindingPath.DataContext = Target.Target;
+			}
+
+			return _bindingPath;
 		}
 
 		internal void ClearValue()
 		{
 			_bindingPath?.ClearValue();
+		}
+
+		internal bool HasSameTarget(Setter other, DependencyPropertyValuePrecedences precedence, IFrameworkElement owner)
+		{
+			var path = TryGetOrCreateBindingPath(precedence, owner);
+			var otherPath = other.TryGetOrCreateBindingPath(precedence, owner);
+
+			return path != null
+				&& otherPath != null
+				&& path.Path == otherPath.Path
+				&& !DependencyObjectStore.AreDifferent(path.DataContext, otherPath.DataContext);
 		}
 
 		private string DebuggerDisplay => $"Property={Property?.Name ?? "<null>"},Target={Target?.Target?.ToString() ?? Target?.TargetName ?? "<null>"},Value={Value?.ToString() ?? "<null>"}";
