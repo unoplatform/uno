@@ -109,5 +109,7 @@ namespace Windows.UI.Xaml
 		public double ActualWidth => Arranged.Width;
 
 		public double ActualHeight => Arranged.Height;
+
+		public global::System.Uri BaseUri { get; internal set; }
 	}
 }
