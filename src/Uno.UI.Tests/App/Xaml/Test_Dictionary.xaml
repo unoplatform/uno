@@ -8,6 +8,12 @@
 		<ResourceDictionary x:Key="Light">
 			<SolidColorBrush x:Key="PlayfulColorBrush"
 							 Color="RosyBrown" />
+			<Color x:Key="ReferenceInSameDictionaryColor">Sienna</Color>
+			<SolidColorBrush x:Key="ReferenceInSameDictionaryColorBrush"
+							 Color="{StaticResource ReferenceInSameDictionaryColor}" />
+			<SolidColorBrush x:Key="LexicallyBackwardColorBrush"
+							 Color="{StaticResource LexicallyForwardColor}" />
+			<Color x:Key="LexicallyForwardColor">Coral</Color>
 		</ResourceDictionary>
 		<ResourceDictionary x:Key="Dark"
 							Source="Test_Dictionary_Theme.xaml" />

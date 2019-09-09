@@ -43,6 +43,10 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 		private readonly Dictionary<string, XamlObjectDefinition> _namedResources = new Dictionary<string, XamlObjectDefinition>();
 		private readonly List<string> _partials = new List<string>();
+		/// <summary>
+		/// Names of generated properties associated with resource definitions. These are created for top-level ResourceDictionary declarations only.
+		/// </summary>
+		private readonly Dictionary<(string Theme, string ResourceKey), string> _topLevelDictionaryProperties = new Dictionary<(string, string), string>();
 		private readonly Stack<NameScope> _scopeStack = new Stack<NameScope>();
 		private readonly XamlFileDefinition _fileDefinition;
 		private readonly string _targetPath;
@@ -57,6 +61,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		private int _collectionIndex = 0;
 		private int _subclassIndex = 0;
 		private int _xBindCount = 0;
+		private int _dictionaryPropertyIndex = 0;
+		private string _themeDictionaryCurrentlyBuilding;
 		private readonly XamlGlobalStaticResourcesMap _globalStaticResourcesMap;
 		private readonly bool _isUiAutomationMappingEnabled;
 		private readonly Dictionary<string, string[]> _uiAutomationMappings;
@@ -703,9 +709,15 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					{
 						globalResources.Merge(ImportResourceDictionary(writer, topLevelControl));
 
-						var themeResources = FindMember(topLevelControl, "ThemeDictionaries");
-
 						BuildPartials(writer, isStatic: true);
+						BuildResourceDictionaryGlobalProperties(writer, topLevelControl);
+
+						var themeDictionaryMember = topLevelControl.Members.FirstOrDefault(m => m.Member.Name == "ThemeDictionaries");
+
+						foreach (var dict in (themeDictionaryMember?.Objects).Safe())
+						{
+							BuildResourceDictionaryGlobalProperties(writer, dict);
+						}
 
 						writer.AppendLineInvariant("private static global::Windows.UI.Xaml.ResourceDictionary _{0}_ResourceDictionary;", _fileUniqueId);
 						writer.AppendLine();
@@ -731,6 +743,96 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 				BuildChildSubclasses(writer, isTopLevel: true);
 			}
+		}
+
+		/// <summary>
+		///Builds global static properties for each resource in a ResourceDictionary, for intra-dictionary static lookup.
+		/// </summary>
+		/// <param name="writer">The writer to use</param>
+		/// <param name="dictionaryObject">The <see cref="XamlObjectDefinition"/> associated with the dictionary.</param>
+		private void BuildResourceDictionaryGlobalProperties(IIndentedStringBuilder writer, XamlObjectDefinition dictionaryObject)
+		{
+			var resourcesRoot = FindImplicitContentMember(dictionaryObject);
+			var theme = GetDictionaryResourceKey(dictionaryObject);
+			var resources = (resourcesRoot?.Objects).Safe();
+
+			// Pre-populate property names (in case of forward lexical references)
+			var index = _dictionaryPropertyIndex;
+			foreach (var resource in resources)
+			{
+				var key = GetDictionaryResourceKey(resource);
+
+				if (key == null)
+				{
+					continue;
+				}
+
+				if (resource.Type.Name == "StaticResource")
+				{
+					continue; //TODO: try to handle this
+				}
+
+				index++;
+				var propertyName = GetPropertyNameForResourceKey(index);
+				_topLevelDictionaryProperties[(theme, key)] = propertyName;
+			}
+
+			//Create static properties
+			var former = _themeDictionaryCurrentlyBuilding; //Will 99% of the time be null. (Mainly this is half-heartedly trying to support funky usage of recursive merged dictionaries.)
+			_themeDictionaryCurrentlyBuilding = theme;
+			foreach (var resource in resources)
+			{
+				var key = GetDictionaryResourceKey(resource);
+
+				if (key == null)
+				{
+					continue;
+				}
+
+				if (resource.Type.Name == "StaticResource")
+				{
+					continue; //TODO: try to handle this
+				}
+
+				_dictionaryPropertyIndex++;
+				var propertyName = GetPropertyNameForResourceKey(_dictionaryPropertyIndex);
+				if (_topLevelDictionaryProperties[(theme, key)] != propertyName)
+				{
+					throw new InvalidOperationException("Property was not created correctly.");
+				}
+				writer.AppendLineInvariant("// Property for resource {0} {1}", key, theme != null ? "in theme {0}".InvariantCultureFormat(theme) : "");
+				BuildSingleTimeInitializer(writer, resource.Type.Name, propertyName, () => BuildChild(writer, resourcesRoot, resource));
+			}
+			_themeDictionaryCurrentlyBuilding = former;
+		}
+
+		/// <summary>
+		/// Get name to use for global static property associated with a resource.
+		/// </summary>
+		/// <param name="index">An index associated with the property.</param>
+		private string GetPropertyNameForResourceKey(int index)
+		{
+			return "Entry{0}_{1}".InvariantCultureFormat(_fileDefinition.ShortId, index);
+		}
+
+		/// <summary>
+		/// Get the dictionary key set on a Xaml object, if any. This may be defined by x:Key or alternately x:Name.
+		/// </summary>
+		private static string GetDictionaryResourceKey(XamlObjectDefinition resource) => GetDictionaryResourceKey(resource, out var _);
+
+		/// <summary>
+		/// Get the dictionary key set on a Xaml object, if any. This may be defined by x:Key or alternately x:Name.
+		/// </summary>
+		/// <param name="resource">The Xaml object.</param>
+		/// <param name="name">The x:Name defined on the object, if any, returned as an out parameter.</param>
+		/// <returns>The key to use if one is defined, otherwise null.</returns>
+		private static string GetDictionaryResourceKey(XamlObjectDefinition resource, out string name)
+		{
+			var keyDef = resource.Members.FirstOrDefault(m => m.Member.Name == "Key");
+			var nameDef = resource.Members.FirstOrDefault(m => m.Member.Name == "Name");
+			name = nameDef?.Value?.ToString();
+			var key = keyDef?.Value?.ToString() ?? name;
+			return key;
 		}
 
 		/// <summary>
@@ -847,6 +949,14 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			return resources;
 		}
 
+		/// <summary>
+		/// Helper for building a lazily-initialized static property.
+		/// </summary>
+		/// <param name="writer">The writer to use</param>
+		/// <param name="propertyType">The type of the property.</param>
+		/// <param name="propertyName">The name of the property.</param>
+		/// <param name="propertyBodyBuilder">Function that builds the initialization logic for the property.</param>
+		/// <param name="isStatic"></param>
 		private void BuildSingleTimeInitializer(IIndentedStringBuilder writer, string propertyType, string propertyName, Action propertyBodyBuilder, bool isStatic = true)
 		{
 			// The property type may be partially qualified, try resolving it through FindType
@@ -867,7 +977,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 			writer.AppendLine();
 
-			using (writer.BlockInvariant($"public {staticModifier} {GetGlobalizedTypeName(publicPropertyType)} {sanitizedPropertyName}"))
+			using (writer.BlockInvariant($"private {staticModifier} {GetGlobalizedTypeName(publicPropertyType)} {sanitizedPropertyName}"))
 			{
 				using (writer.BlockInvariant("get"))
 				{
@@ -878,6 +988,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						{
 							propertyBodyBuilder();
 						}
+						writer.AppendLineInvariant(";");
 						writer.AppendLineInvariant($"{propertyInitializedVariable} = true;");
 					}
 
@@ -1754,9 +1865,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 			foreach (var resource in (resourcesRoot?.Objects).Safe())
 			{
-				var keyDef = resource.Members.FirstOrDefault(m => m.Member.Name == "Key");
-				var nameDef = resource.Members.FirstOrDefault(m => m.Member.Name == "Name");
-				var mergedDictionaries = resource.Members.FirstOrDefault(m => m.Member.Name == "MergedDictionaries");
+				var key = GetDictionaryResourceKey(resource, out var name);
 
 				if (resource.Type.Name == "StaticResource")
 				{
@@ -1764,7 +1873,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					continue;
 				}
 
-				var key = keyDef?.Value?.ToString() ?? nameDef?.Value?.ToString();
 				if (key != null)
 				{
 					if (isInInitializer)
@@ -1775,13 +1883,21 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					{
 						writer.AppendLineInvariant("Resources[\"{0}\"] = ", key);
 					}
-					BuildChild(writer, null, resource);
+					var directproperty = GetResourceDictionaryPropertyName(key);
+					if (directproperty != null)
+					{
+						writer.AppendLineInvariant(directproperty);
+					}
+					else
+					{
+						BuildChild(writer, null, resource);
+					}
 					writer.AppendLineInvariant(closingPunctuation);
 				}
 
-				if (nameDef != null)
+				if (name != null)
 				{
-					_namedResources.Add(nameDef.Value.ToString(), resource);
+					_namedResources.Add(name, resource);
 				}
 			}
 		}
@@ -1834,11 +1950,16 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					throw new Exception("Local values are not allowed in resource dictionary with Source set");
 				}
 
-				var key = dictObject.Members.FirstOrDefault(m => m.Member.Name == "Key")?.Value as string ??
-					dictObject.Members.FirstOrDefault(m => m.Member.Name == "Name")?.Value as string;
+				var key = GetDictionaryResourceKey(dictObject);
 				if (isDict && key == null)
 				{
 					throw new Exception("Each dictionary entry must have an associated key.");
+				}
+
+				var former = _themeDictionaryCurrentlyBuilding; //Will 99% of the time be null. 
+				if (isDict)
+				{
+					_themeDictionaryCurrentlyBuilding = key;
 				}
 
 				if (!isInInitializer && !isDict)
@@ -1874,6 +1995,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				{
 					writer.AppendLineInvariant(";");
 				}
+
+				_themeDictionaryCurrentlyBuilding = former;
 			}
 
 			if (isInInitializer)
@@ -2617,7 +2740,15 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			if (resourceKey != null)
 			{
 
-				if (IsDependencyProperty(member.Member))
+				var directProperty = GetResourceDictionaryPropertyName(resourceKey);
+
+				if (directProperty != null)
+				{
+					// Prefer direct property reference (when we are in top-level ResourceDictionary and referencing resource in same dictionary)
+					writer.AppendLineInvariant(formatLine("{0} = {1}"), member.Member.Name, directProperty);
+
+				}
+				else if (IsDependencyProperty(member.Member))
 				{
 					// To be fully compatible with UWP here, we should check the nearest dictionary in the 'XAML scope' then outwards. For
 					// StaticResource extension that would be it, for ThemeResource we'd do additional resolution at load-time.
@@ -3042,9 +3173,28 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		/// </summary>
 		private string GetSimpleStaticResourceRetrieval(INamedTypeSymbol targetPropertyType, string keyStr)
 		{
+			var directProperty = GetResourceDictionaryPropertyName(keyStr);
+			if (directProperty != null)
+			{
+				return directProperty;
+			}
+
 			targetPropertyType = targetPropertyType ?? _objectSymbol;
 			return "global::Uno.UI.ResourceResolver.ResolveResourceStatic<{0}>(\"{1}\")"
 				.InvariantCultureFormat(targetPropertyType.ToDisplayString(), keyStr);
+		}
+
+		/// <summary>
+		/// Get the name of global static property associated with the given resource key, if one exists, otherwise null.
+		/// </summary>
+		private string GetResourceDictionaryPropertyName(string keyStr)
+		{
+			if (_topLevelDictionaryProperties.TryGetValue((_themeDictionaryCurrentlyBuilding, keyStr), out var propertyName))
+			{
+				return propertyName;
+			}
+
+			return null;
 		}
 
 		private INamedTypeSymbol FindUnderlyingType(INamedTypeSymbol propertyType)
