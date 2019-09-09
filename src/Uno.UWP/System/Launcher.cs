@@ -7,12 +7,12 @@ using Uno.Logging;
 using Windows.Foundation;
 using Microsoft.Extensions.Logging;
 using System.Linq;
-using UIKit;
 #if __ANDROID__
 using Android.Content;
 using Android.Content.PM;
 #endif
 #if __IOS__
+using UIKit;
 using AppleUrl = global::Foundation.NSUrl;
 #endif
 
@@ -59,7 +59,7 @@ namespace Windows.System
 			}
 		}
 
-#if __MOBILE__
+#if __ANDROID__ || __IOS__
 		public static IAsyncOperation<LaunchQuerySupportStatus> QueryUriSupportAsync(
 			Uri uri,
 			LaunchQuerySupportType launchQuerySupportType)
