@@ -23,7 +23,7 @@ namespace UITests.Shared.Windows_UI_Xaml_Controls.ListView
 	[SampleControlInfo("ListView", nameof(ListView_ItemsPanel_HotSwap))]
 	public sealed partial class ListView_ItemsPanel_HotSwap : UserControl
 	{
-		private static readonly Random random = new Random();
+		private readonly Random random = new Random(312);
 
 		public ListView_ItemsPanel_HotSwap()
 		{
@@ -43,7 +43,7 @@ namespace UITests.Shared.Windows_UI_Xaml_Controls.ListView
 		private void UpdateItemsSourceButton_Click(object sender, RoutedEventArgs e)
 		{
 			var start = random.Next(-50, 50);
-			var count = random.Next(15, 255);
+			var count = random.Next(10, 20);
 
 			this.SampleListView.ItemsSource = Enumerable.Range(start, count).ToArray();
 		}

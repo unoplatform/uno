@@ -32,17 +32,22 @@
 		</ScrollViewer>
 
 		<StackPanel Grid.Row="2">
-			<xamarin:Button Content="StackPanel Horizontal"
+			<xamarin:Button x:Name="SwapHorizontalStackPanelButton"
+							Content="Horizontal StackPanel"
 							Tag="StackPanel Orientation='Horizontal'"
 							Click="SwapPanelButton_Click" />
-			<Button Content="ItemsStackPanel Vertical"
+			<Button x:Name="SwapVerticalItemsStackPanelButton"
+					Content="Vertical ItemsStackPanel"
 					Tag="ItemsStackPanel Orientation='Vertical'"
 					Click="SwapPanelButton_Click" />
-			<win:Button Content="VirtualizingStackPanel Horizontal"
+			<win:Button x:Name="SwapHorizontalVirtualizingStackPanelButton"
+						Content="Horizontal VirtualizingStackPanel"
 						Tag="VirtualizingStackPanel Orientation='Horizontal'"
 						Click="SwapPanelButton_Click" />
 
-			<Button Content="Update ItemsSource"
+			<Button x:Name="UpdateItemsSourceButton"
+					Margin="0,10,0,0"
+					Content="Update ItemsSource"
 					Click="UpdateItemsSourceButton_Click" />
 		</StackPanel>
 	</Grid>
