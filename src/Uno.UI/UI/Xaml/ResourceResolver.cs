@@ -11,6 +11,11 @@ namespace Uno.UI
 	public static class ResourceResolver
 	{
 		/// <summary>
+		/// The master system resources dictionary.
+		/// </summary>
+		private static ResourceDictionary MasterDictionary => Uno.UI.GlobalStaticResources.MasterDictionary;
+
+		/// <summary>
 		/// Performs a one-time, typed resolution of a named resource, using Application.Resources.
 		/// </summary>
 		/// <typeparam name="T"></typeparam>
@@ -20,7 +25,7 @@ namespace Uno.UI
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static T ResolveResourceStatic<T>(object key, object context = null)
 		{
-			if (Application.Current.Resources.TryGetValue(key, out var value) && value is T tValue)
+			if (TryTopLevelRetrieval(key, out var value) && value is T tValue)
 			{
 				return tValue;
 			}
@@ -39,13 +44,25 @@ namespace Uno.UI
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static void ApplyResource(DependencyObject owner, DependencyProperty property, object resourceKey, bool isThemeResourceExtension, object context = null)
 		{
-			//
-			if (Application.Current.Resources.TryGetValue(resourceKey, out var value))
+			// Set initial value based on statically-available top-level resources.
+			if (TryTopLevelRetrieval(resourceKey, out var value))
 			{
 				owner.SetValue(property, value);
 			}
 
 			(owner as IDependencyObjectStoreProvider).Store.SetBinding(property, new ResourceBinding(resourceKey, isThemeResourceExtension));
+		}
+
+		/// <summary>
+		/// Tries to retrieve a resource from top-level resources (Application-level and system level).
+		/// </summary>
+		/// <param name="resourceKey">The resource key</param>
+		/// <param name="value">Out parameter to which the retrieved resource is assigned.</param>
+		/// <returns>True if the resource was found, false if not.</returns>
+		private static bool TryTopLevelRetrieval(object resourceKey, out object value)
+		{
+			return Application.Current.Resources.TryGetValue(resourceKey, out value) ||
+				MasterDictionary.TryGetValue(resourceKey, out value);
 		}
 	}
 }

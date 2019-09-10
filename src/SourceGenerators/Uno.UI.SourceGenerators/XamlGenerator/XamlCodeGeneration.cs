@@ -44,6 +44,18 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		// visual tree. See https://github.com/unoplatform/uno/issues/61
 		private bool _skipUserControlsInVisualTree = true;
 
+		private bool IsUnoAssembly => _defaultNamespace == "Uno.UI";
+
+		/// <summary>
+		/// Resource files that should be initialized first, in given order, because other resource declarations depend on them.
+		/// </summary>
+		private static readonly string[] _baseResourceDependencies = new[]
+		{
+			"SystemResources.xaml",
+			"Generic.xaml",
+			"Generic.Native.xaml",
+		};
+
 #pragma warning disable 649 // Unused member
 		private readonly bool _forceGeneration;
 #pragma warning restore 649 // Unused member
@@ -228,7 +240,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					.ToList();
 
 
-				outputFiles.Add(new KeyValuePair<string, string>("GlobalStaticResources", GenerateGlobalResources(files)));
+				outputFiles.Add(new KeyValuePair<string, string>("GlobalStaticResources", GenerateGlobalResources(files, globalStaticResourcesMap)));
 
 				TrackGenerationDone(stopwatch.Elapsed);
 
@@ -410,7 +422,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				.Max();
 		}
 
-		private string GenerateGlobalResources(IEnumerable<XamlFileDefinition> files)
+		private string GenerateGlobalResources(IEnumerable<XamlFileDefinition> files, XamlGlobalStaticResourcesMap map)
 		{
 			var outputFile = Path.Combine(_targetPath, "GlobalStaticResources.g.cs");
 
@@ -473,7 +485,23 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 								writer.AppendLineInvariant("RegisterResources_{0}();", file.UniqueID);
 								writer.AppendLineInvariant("RegisterImplicitStylesResources_{0}();", file.UniqueID);
 							}
+
+							if (IsUnoAssembly)
+							{
+								// Build master dictionary
+								foreach (var dictProperty in map.GetAllDictionaryProperties(_baseResourceDependencies))
+								{
+									writer.AppendLineInvariant("MasterDictionary.MergedDictionaries.Add({0});", dictProperty);
+								}
+							}
 						}
+					}
+
+					if (IsUnoAssembly)
+					{
+						// Declare master dictionary
+						writer.AppendLine();
+						writer.AppendLineInvariant("internal static ResourceDictionary MasterDictionary {{get; }} = new ResourceDictionary();");
 					}
 
 					// Generate all the partial methods, even if they don't exist. That avoids

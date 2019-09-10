@@ -45,7 +45,8 @@
 	</UserControl.Resources>
 
 	<Grid x:Name="topGrid"
-		  Background="{StaticResource SuperiorColorBrush}">
+		  Background="{StaticResource SuperiorColorBrush}"
+		  BorderBrush="{StaticResource ButtonBackgroundThemeBrush}">
 		<TextBlock x:Name="testTextBlock"
 				   Text="Test control"
 				   Foreground="{ThemeResource ApplicationForegroundThemeBrush}" />
