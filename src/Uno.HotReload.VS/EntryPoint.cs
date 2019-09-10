@@ -221,7 +221,7 @@ namespace Uno.UI.HotReload.VS
 			var msbuildProject = ProjectCollection.GlobalProjectCollection.GetLoadedProjects(projectFullName).FirstOrDefault();
 			if (msbuildProject == null)
 			{
-
+				_debugAction($"Failed to find project {projectFullName}, cannot provide listen port to the app.");
 			}
 			else
 			{
@@ -234,6 +234,7 @@ namespace Uno.UI.HotReload.VS
 			var msbuildProject = ProjectCollection.GlobalProjectCollection.GetLoadedProjects(projectFullName).FirstOrDefault();
 			if (msbuildProject == null)
 			{
+				_debugAction($"Failed to find project {projectFullName}, cannot provide listen port to the app.");
 			}
 			else
 			{
