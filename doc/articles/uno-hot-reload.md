@@ -14,6 +14,7 @@ How to use the XAML Hot Reload:
 - The Uno.UI package should already be at the version you just downloaded, but you're upgrading the package, make sure you're using the latest you've downloaded.
 - Build an application head, start it (with or without the debugger)
 - Change a XAML file from VS and the app should update.
+- Make sure to add `Newtonsoft.Json` package to all heads, and `Uno.Wasm.WebSockets` to the Wasm head.
 
 ## Troubleshooting
 - The application logs file reloads, so you should see diagnostics messages when a XAML file is reloaded.
