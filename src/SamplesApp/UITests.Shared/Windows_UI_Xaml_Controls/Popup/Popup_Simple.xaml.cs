@@ -1,14 +1,53 @@
+using Windows.UI.Xaml;
 using Uno.UI.Samples.Controls;
 using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Input;
 
 namespace Uno.UI.Samples.Content.UITests.Popup
 {
-	[SampleControlInfo("Popup", "Popup_Simple")]
+	[SampleControlInfo("Popup", "Popup_Simple", description: "Description for sample of Popup_Simple")]
 	public sealed partial class Popup_Simple : UserControl
 	{
 		public Popup_Simple()
 		{
 			this.InitializeComponent();
+
+			Register(popup);
+			Register(sampleContent);
+
+			popupContent.Loaded += RegisterContent;
 		}
+
+		private void RegisterContent(object sender, RoutedEventArgs e)
+		{
+			var ctl = sender as FrameworkElement;
+			while(ctl != null)
+			{
+				Register(ctl);
+				Write($"{ctl}-registered, IsHitTestVisible={ctl.IsHitTestVisible}");
+				ctl = ctl.Parent as FrameworkElement;
+			}
+
+			popupContent.Loaded -= RegisterContent;
+		}
+
+		private void Register(FrameworkElement control)
+		{
+			void OnPressed(object sender, PointerRoutedEventArgs e)
+			{
+				Write($"{sender}-pressed {e.GetCurrentPoint(this).Position}");
+			}
+
+			void OnReleased(object sender, PointerRoutedEventArgs e)
+			{
+				Write($"{sender}-released {e.GetCurrentPoint(this).Position}");
+			}
+
+			control.PointerPressed += OnPressed;
+			control.PointerPressed += OnReleased;
+		}
+
+
+		private void Write(string msg) => output.Text += msg + "\n";
 	}
 }

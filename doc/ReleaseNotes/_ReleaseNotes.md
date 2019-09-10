@@ -57,6 +57,7 @@
 * Relax DependencyProperty owner validation for non-FrameworkElement
 * `ToolTip` & `ToolTipService` are now implemented.
 * [#1352](https://github.com/unoplatform/uno/issues/1352) Add support for `ThemeResource`s with different types (eg: mixing `SolidColorBrush` and `LinearGradientBrush`)
+* `Popup` & `ComboBox` (and other controls using `Popup`) were not behaving properly when `IsLightDismissable` were set to `true`.
 
 ### Breaking changes
 * `TextBox` no longer raises TextChanged when its template is applied, in line with UWP.
