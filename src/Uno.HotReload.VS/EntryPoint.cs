@@ -50,7 +50,8 @@ namespace Uno.UI.HotReload.VS
 
 			SetupOutputWindow();
 
-			_dte.Events.BuildEvents.OnBuildBegin += (s, e) => BuildEvents_OnBuildBeginAsync(s, e);
+			_dte.Events.BuildEvents.OnBuildProjConfigBegin += 
+				(string project, string projectConfig, string platform, string solutionConfig) => BuildEvents_OnBuildProjConfigBeginAsync(project, projectConfig, platform, solutionConfig);
 		}
 
 		private async Task<Dictionary<string, string>> OnProvideGlobalPropertiesAsync()
@@ -103,14 +104,14 @@ namespace Uno.UI.HotReload.VS
 			}
 		}
 
-		private async Task BuildEvents_OnBuildBeginAsync(vsBuildScope Scope, vsBuildAction Action)
+		private async Task BuildEvents_OnBuildProjConfigBeginAsync(string project, string projectConfig, string platform, string solutionConfig)
 		{
-			foreach(var project in await GetProjectsAsync())
-			{
-				SetGlobalProperty(project.FileName, RemoteControlServerPortProperty, RemoteControlServerPort.ToString(CultureInfo.InvariantCulture));
-			}
-
 			await StartServerAsync();
+
+			foreach(var p in await GetProjectsAsync())
+			{
+				SetGlobalProperty(p.FileName, RemoteControlServerPortProperty, RemoteControlServerPort.ToString(CultureInfo.InvariantCulture));
+			}
 		}
 
 		private async Task StartServerAsync()

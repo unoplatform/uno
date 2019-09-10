@@ -24,11 +24,9 @@ How to use the XAML Hot Reload:
 
 - Changing the package version may confuse VS if a Hot Reload session has already been started
     - Resolution: Restart VS and rebuild the app
-- Android reload does not work properly all the time
-    - Resolution: None at this time
 - The reload server may start twice (The VS **Uno Platform** output window shows two "Starting server" messages)
     - Resolution: Restart visual studio, rebuild the app.
 - The app does not update its XAML, because the port number in `HotReload.g.cs` is `0`.
-    - Resolution: Rebuild the app until the number is different that zero (currently fails on Android).
+    - Resolution: Rebuild the app until the number is different than zero.
 - Updating a standalone `ResourceDictionary` XAML file does not work
     - Resolution: None at this time
