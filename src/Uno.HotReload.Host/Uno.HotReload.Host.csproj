@@ -3,7 +3,8 @@
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>netcoreapp2.1</TargetFramework>
-  </PropertyGroup>
+		<CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+	</PropertyGroup>
 
   <ItemGroup>
 		<Compile Include="..\Uno.HotReload\HotReload\Messages\**\*.cs" Link="Messages/%(Filename)" />
