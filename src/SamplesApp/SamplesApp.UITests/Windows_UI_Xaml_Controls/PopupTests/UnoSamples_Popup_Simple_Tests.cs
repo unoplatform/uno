@@ -24,11 +24,15 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.PopupTests
 
 			var toggleButton = _app.Marked("TogglePopup");
 
-			_app.WaitForDependencyPropertyValue(toggleButton, "IsChecked", "False");
+			var v = toggleButton.GetDependencyPropertyValue("IsChecked");
+
+
+
+			_app.WaitForDependencyPropertyValue(toggleButton, "IsChecked", false);
 
 			toggleButton.Tap();
 
-			_app.WaitForDependencyPropertyValue(toggleButton, "IsChecked", "True");
+			_app.WaitForDependencyPropertyValue(toggleButton, "IsChecked", true);
 
 			var popupContent = _app.Marked("popupContent");
 
@@ -69,11 +73,11 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.PopupTests
 
 			var toggleButton = _app.Marked("TogglePopup2");
 
-			_app.WaitForDependencyPropertyValue(toggleButton, "IsChecked", "False");
+			_app.WaitForDependencyPropertyValue(toggleButton, "IsChecked", false);
 
 			toggleButton.Tap();
 
-			_app.WaitForDependencyPropertyValue(toggleButton, "IsChecked", "True");
+			_app.WaitForDependencyPropertyValue(toggleButton, "IsChecked", true);
 
 			var popupContent = _app.Marked("popupContent2");
 
@@ -107,7 +111,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.PopupTests
 				_app.Wait(i * 0.15f);
 			}
 
-			Assert.Fail("Popup not dismissed.");
+			Assert.Fail("Popup not dismissed."); // this feature is known to fail on Android
 		}
 	}
 }
