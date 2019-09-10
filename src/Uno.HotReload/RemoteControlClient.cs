@@ -66,12 +66,22 @@ namespace Uno.UI.HotReload
 
 				var connections = _serverAdresses.Select(s =>
 				{
-					Console.WriteLine($"Connecting to {s}...");
-
 					var cts = new CancellationTokenSource();
 
-					var task = Connect(s.endpoint, s.port, cts.Token);
-					return (task, cts);
+					if (s.port == 0)
+					{
+						return (
+							task: Task.FromException<WebSocket>(new InvalidOperationException($"Failed to get remote control server port from the IDE")),
+							cts: cts
+						);
+					}
+					else
+					{
+						Console.WriteLine($"Connecting to {s}...");
+
+						var task = Connect(s.endpoint, s.port, cts.Token);
+						return (task, cts);
+					}
 				}).ToArray();
 
 				var allCts = new TaskCompletionSource<int>();
