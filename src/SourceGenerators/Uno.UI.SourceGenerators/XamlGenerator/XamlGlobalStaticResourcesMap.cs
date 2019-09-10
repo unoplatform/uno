@@ -32,6 +32,26 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		}
 
 		/// <summary>
+		/// Gets the names of all GlobalStaticResources properties associated with a top-level ResourceDictionary.
+		/// </summary>
+		/// <param name="initialFiles">File names of the ResourceDictionaries whose properties should be returned first.</param>
+		/// <remarks>This is used when building Uno.UI itself to create a master dictionary of system resources.</remarks>
+		internal IEnumerable<string> GetAllDictionaryProperties(string[] initialFiles)
+		{
+			var initialProperties = initialFiles.Select(f =>
+					_rdMap.First(kvp =>
+						kvp.Key.EndsWith(f, StringComparison.InvariantCultureIgnoreCase)
+					)
+				)
+				.ToArray();
+
+			return initialProperties.Concat(
+					_rdMap.Except(initialProperties)
+				)
+				.Select(kvp => ConvertIdToResourceDictionaryProperty(kvp.Value.UniqueID));
+		}
+
+		/// <summary>
 		/// Gets the name of a GlobalStaticResources property associated with a ResourceDictionary.Source designation. Throws an exception if none is found.
 		/// </summary>
 		/// <param name="originDictionary">The file containing the XAML</param>

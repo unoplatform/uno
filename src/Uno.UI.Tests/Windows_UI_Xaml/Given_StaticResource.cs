@@ -237,5 +237,15 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 			var do2_1 = control.InlineTemplateControl.DObjDP;
 			var areRefEqual3 = ReferenceEquals(do1_1, do2_1);
 		}
+
+		[TestMethod]
+		public void When_System_Resource()
+		{
+			var app = UnitTestsApp.App.EnsureApplication();
+
+			var control = new Test_Control();
+
+			Assert.AreEqual(Color.FromArgb(0xB3, 0xB6, 0xB6, 0xB6), (control.TopGrid.BorderBrush as SolidColorBrush).Color);
+		}
 	}
 }
