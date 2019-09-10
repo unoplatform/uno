@@ -31,6 +31,11 @@ namespace Windows.UI.Core
 			get => _appViewBackButtonVisibility;
 			set
 			{
+				if (_appViewBackButtonVisibility == value)
+				{
+					return;
+				}
+
 				_appViewBackButtonVisibility = value;
 				AppViewBackButtonVisibilityChanged?.Invoke(this, _appViewBackButtonVisibility);
 				OnAppViewBackButtonVisibility(value);
