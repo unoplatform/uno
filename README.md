@@ -1,5 +1,5 @@
 # Uno Platform - Build Mobile, Desktop and WebAssembly apps with C# and XAML. Today.
-[![Gitter](https://badges.gitter.im/uno-platform/Lobby.svg)](https://gitter.im/uno-platform/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge) [![All Contributors](https://img.shields.io/badge/all_contributors-16-orange.svg?style=flat-square)](#contributors)
+[![Gitter](https://badges.gitter.im/uno-platform/Lobby.svg)](https://gitter.im/uno-platform/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge) [![All Contributors](https://img.shields.io/badge/all_contributors-34-orange.svg?style=flat-square)](#contributors-)
 
 # What is the Uno Platform
 
@@ -97,7 +97,8 @@ pretty large! Read our [contributing guide](CONTRIBUTING.md) to learn about our 
 Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/docs/en/emoji-key)):
 
 <!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
-<!-- prettier-ignore -->
+<!-- prettier-ignore-start -->
+<!-- markdownlint-disable -->
 <table>
   <tr>
     <td align="center"><a href="https://github.com/jeromelaban"><img src="https://avatars0.githubusercontent.com/u/5839577?v=4" width="100px;" alt="Jérôme Laban"/><br /><sub><b>Jérôme Laban</b></sub></a><br /><a href="https://github.com/unoplatform/uno/commits?author=jeromelaban" title="Code">💻</a> <a href="#content-jeromelaban" title="Content">🖋</a> <a href="https://github.com/unoplatform/uno/commits?author=jeromelaban" title="Documentation">📖</a> <a href="#example-jeromelaban" title="Examples">💡</a> <a href="#maintenance-jeromelaban" title="Maintenance">🚧</a> <a href="#infra-jeromelaban" title="Infrastructure (Hosting, Build-Tools, etc)">🚇</a> <a href="#ideas-jeromelaban" title="Ideas, Planning, & Feedback">🤔</a> <a href="#review-jeromelaban" title="Reviewed Pull Requests">👀</a> <a href="https://github.com/unoplatform/uno/commits?author=jeromelaban" title="Tests">⚠️</a> <a href="#projectManagement-jeromelaban" title="Project Management">📆</a></td>
@@ -122,7 +123,33 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
   </tr>
   <tr>
     <td align="center"><a href="http://nicksnettravels.builttoroam.com"><img src="https://avatars2.githubusercontent.com/u/1614057?v=4" width="100px;" alt="Nick Randolph"/><br /><sub><b>Nick Randolph</b></sub></a><br /><a href="#blog-nickrandolph" title="Blogposts">📝</a></td>
+    <td align="center"><a href="https://opensource.microsoft.com"><img src="https://avatars2.githubusercontent.com/u/6154722?v=4" width="100px;" alt="Microsoft"/><br /><sub><b>Microsoft</b></sub></a><br /><a href="https://github.com/unoplatform/uno/commits?author=microsoft" title="Code">💻</a> <a href="https://github.com/unoplatform/uno/commits?author=microsoft" title="Documentation">📖</a> <a href="#example-microsoft" title="Examples">💡</a> <a href="https://github.com/unoplatform/uno/commits?author=microsoft" title="Tests">⚠️</a> <a href="#infra-microsoft" title="Infrastructure (Hosting, Build-Tools, etc)">🚇</a></td>
+    <td align="center"><a href="http://xamarin.com"><img src="https://avatars0.githubusercontent.com/u/790012?v=4" width="100px;" alt="Xamarin"/><br /><sub><b>Xamarin</b></sub></a><br /><a href="https://github.com/unoplatform/uno/commits?author=xamarin" title="Code">💻</a> <a href="https://github.com/unoplatform/uno/commits?author=xamarin" title="Documentation">📖</a> <a href="#example-xamarin" title="Examples">💡</a> <a href="https://github.com/unoplatform/uno/commits?author=xamarin" title="Tests">⚠️</a></td>
+    <td align="center"><a href="https://github.com/NicolasChampagne"><img src="https://avatars0.githubusercontent.com/u/49762217?v=4" width="100px;" alt="NicolasChampagne"/><br /><sub><b>NicolasChampagne</b></sub></a><br /><a href="https://github.com/unoplatform/uno/commits?author=NicolasChampagne" title="Code">💻</a></td>
+    <td align="center"><a href="https://github.com/agneszitte-nventive"><img src="https://avatars0.githubusercontent.com/u/16295702?v=4" width="100px;" alt="Agnes ZITTE"/><br /><sub><b>Agnes ZITTE</b></sub></a><br /><a href="https://github.com/unoplatform/uno/commits?author=agneszitte-nventive" title="Code">💻</a></td>
+  </tr>
+  <tr>
+    <td align="center"><a href="http://miguelrochefort.com"><img src="https://avatars0.githubusercontent.com/u/1556332?v=4" width="100px;" alt="Miguel Rochefort"/><br /><sub><b>Miguel Rochefort</b></sub></a><br /><a href="https://github.com/unoplatform/uno/commits?author=miguelrochefort" title="Code">💻</a></td>
+    <td align="center"><a href="https://github.com/YGuerin"><img src="https://avatars2.githubusercontent.com/u/11750340?v=4" width="100px;" alt="Yohan Guérin"/><br /><sub><b>Yohan Guérin</b></sub></a><br /><a href="https://github.com/unoplatform/uno/commits?author=YGuerin" title="Code">💻</a></td>
+    <td align="center"><a href="https://github.com/jcantin-nventive"><img src="https://avatars1.githubusercontent.com/u/43351943?v=4" width="100px;" alt="jcantin-nventive"/><br /><sub><b>jcantin-nventive</b></sub></a><br /><a href="https://github.com/unoplatform/uno/commits?author=jcantin-nventive" title="Code">💻</a></td>
+    <td align="center"><a href="https://github.com/MatFillion"><img src="https://avatars0.githubusercontent.com/u/7029537?v=4" width="100px;" alt="Mathieu Fillion"/><br /><sub><b>Mathieu Fillion</b></sub></a><br /><a href="https://github.com/unoplatform/uno/commits?author=MatFillion" title="Code">💻</a> <a href="#maintenance-MatFillion" title="Maintenance">🚧</a></td>
+    <td align="center"><a href="http://www.florent-cima.com"><img src="https://avatars0.githubusercontent.com/u/669433?v=4" width="100px;" alt="Florent Cima"/><br /><sub><b>Florent Cima</b></sub></a><br /><a href="https://github.com/unoplatform/uno/commits?author=florentcm" title="Code">💻</a></td>
+  </tr>
+  <tr>
+    <td align="center"><a href="https://github.com/AlexTrepanier"><img src="https://avatars1.githubusercontent.com/u/46451463?v=4" width="100px;" alt="alextrepanier"/><br /><sub><b>alextrepanier</b></sub></a><br /><a href="https://github.com/unoplatform/uno/commits?author=AlexTrepanier" title="Code">💻</a></td>
+    <td align="center"><a href="https://github.com/warrenbenyahia"><img src="https://avatars2.githubusercontent.com/u/46033284?v=4" width="100px;" alt="warrenbenyahia"/><br /><sub><b>warrenbenyahia</b></sub></a><br /><a href="https://github.com/unoplatform/uno/commits?author=warrenbenyahia" title="Code">💻</a></td>
+    <td align="center"><a href="https://github.com/Batesias"><img src="https://avatars3.githubusercontent.com/u/2448861?v=4" width="100px;" alt="JP"/><br /><sub><b>JP</b></sub></a><br /><a href="https://github.com/unoplatform/uno/commits?author=Batesias" title="Code">💻</a></td>
+    <td align="center"><a href="https://github.com/GuillaumeSE"><img src="https://avatars0.githubusercontent.com/u/50678763?v=4" width="100px;" alt="GuillaumeSE"/><br /><sub><b>GuillaumeSE</b></sub></a><br /><a href="https://github.com/unoplatform/uno/commits?author=GuillaumeSE" title="Code">💻</a></td>
+    <td align="center"><a href="http://blogs.microsoft.co.il/shimmy/"><img src="https://avatars3.githubusercontent.com/u/2716316?v=4" width="100px;" alt="Shimmy"/><br /><sub><b>Shimmy</b></sub></a><br /><a href="https://github.com/unoplatform/uno/commits?author=weitzhandler" title="Documentation">📖</a></td>
+  </tr>
+  <tr>
+    <td align="center"><a href="https://github.com/gfbriggs"><img src="https://avatars1.githubusercontent.com/u/18409414?v=4" width="100px;" alt="Geoffrey Fielden-Briggs"/><br /><sub><b>Geoffrey Fielden-Briggs</b></sub></a><br /><a href="https://github.com/unoplatform/uno/commits?author=gfbriggs" title="Code">💻</a></td>
+    <td align="center"><a href="https://github.com/Massimo37"><img src="https://avatars1.githubusercontent.com/u/36633246?v=4" width="100px;" alt="Massimo Cacchiotti"/><br /><sub><b>Massimo Cacchiotti</b></sub></a><br /><a href="https://github.com/unoplatform/uno/commits?author=Massimo37" title="Code">💻</a></td>
+    <td align="center"><a href="https://github.com/rfrappier"><img src="https://avatars2.githubusercontent.com/u/30271212?v=4" width="100px;" alt="rfrappier"/><br /><sub><b>rfrappier</b></sub></a><br /><a href="https://github.com/unoplatform/uno/commits?author=rfrappier" title="Documentation">📖</a></td>
+    <td align="center"><a href="http://furkankambay.com/"><img src="https://avatars1.githubusercontent.com/u/8467416?v=4" width="100px;" alt="Furkan Kambay"/><br /><sub><b>Furkan Kambay</b></sub></a><br /><a href="https://github.com/unoplatform/uno/commits?author=FurkanKambay" title="Documentation">📖</a></td>
   </tr>
 </table>
 
+<!-- markdownlint-enable -->
+<!-- prettier-ignore-end -->
 <!-- ALL-CONTRIBUTORS-LIST:END -->
