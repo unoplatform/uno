@@ -54,9 +54,12 @@ namespace Windows.UI.Xaml
 
 		protected sealed override bool OnNativeMotionEvent(MotionEvent nativeEvent, View originalSource, bool isInView)
 		{
-			if (nativeEvent.PointerCount > 1)
+			if (nativeEvent.PointerCount > 1
+				&& this.Log().IsEnabled(LogLevel.Information))
 			{
-				this.Log().Error("Multi touches is not supported yet by UNO. You will receive only event only for the first pointer.");
+				this.Log().Info(
+					"Multi touches are not supported yet by UNO pointer events. You will receive event only for the first pointer. " +
+					"Note: This is only for pointers events, scalling using pin and pan gestures in the ScrollViewer does work properly.");
 			}
 
 			if (!(originalSource is UIElement srcElement))
@@ -73,7 +76,7 @@ namespace Windows.UI.Xaml
 				case MotionEventActions.HoverEnter:
 					return OnNativePointerEnter(args);
 				case MotionEventActions.HoverExit when nativeEvent.ButtonState == 0:
-					// When a mouse button is pressed, we receive an HoverExit the the Down. As on UWP Exit is raised only when pointer moves
+					// When a mouse button is pressed, we receive an HoverExit before the Down. As on UWP Exit is raised only when pointer moves
 					// out of bounds of the control, we ignore the HoverExit when a button is pressed, and then update the Over state on each Move.
 					return OnNativePointerExited(args);
 				case MotionEventActions.HoverExit:
@@ -112,7 +115,7 @@ namespace Windows.UI.Xaml
 		}
 
 		partial void OnManipulationModeChanged(ManipulationModes oldMode, ManipulationModes newMode)
-			=> IsNativeMotionEventsInterceptForbidden = newMode != ManipulationModes.System;
+			=> IsNativeMotionEventsInterceptForbidden = newMode == ManipulationModes.None;
 
 		#region Capture
 		// No needs to explicitly capture pointers on Android, they are implicitly captured

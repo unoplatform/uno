@@ -171,7 +171,7 @@ namespace Windows.UI.Xaml
 			ReleaseParentTouchesManager();
 
 			// 2. If this control can  Walk the tree to detect all ScrollView and register our self as a manipulation listener
-			if (mode != ManipulationModes.System)
+			if (mode == ManipulationModes.None)
 			{
 				_parentsTouchesManager = TouchesManager.GetAllParents(this).ToList();
 

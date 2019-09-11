@@ -52,7 +52,19 @@ namespace Windows.UI.Xaml
 		{
 			if (snd is UIElement elt)
 			{
-				elt.OnManipulationModeChanged((ManipulationModes)args.OldValue, (ManipulationModes)args.NewValue);
+				var oldMode = (ManipulationModes)args.OldValue;
+				var newMode = (ManipulationModes)args.NewValue;
+
+				if (!newMode.IsSupported()
+					&& snd.Log().IsEnabled(LogLevel.Warning))
+				{
+					snd.Log().Warn(
+						$"The ManipulationMode '{newMode}' is not supported by Uno. "
+						+ "Only 'None', 'All' and 'System' are supported, setting any other mode will be handled as 'All'. "
+						+ "Note that with Uno the 'All' and 'System' are handled the same way.");
+				}
+
+				elt.OnManipulationModeChanged(oldMode, newMode);
 			}
 		}
 

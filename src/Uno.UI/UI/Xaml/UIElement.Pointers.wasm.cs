@@ -194,7 +194,7 @@ namespace Windows.UI.Xaml
 
 		#region Capture
 		partial void OnManipulationModeChanged(ManipulationModes _, ManipulationModes newMode)
-			=> SetStyle("touch-action", newMode == ManipulationModes.System ? "auto" : "none");
+			=> SetStyle("touch-action", newMode == ManipulationModes.None ? "none" : "auto");
 
 		partial void CapturePointerNative(Pointer pointer)
 		{
