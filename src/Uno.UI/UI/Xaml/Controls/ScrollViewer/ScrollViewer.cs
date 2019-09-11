@@ -726,19 +726,58 @@ namespace Windows.UI.Xaml.Controls
 
 		internal void OnScrollInternal(double horizontalOffset, double verticalOffset, bool isIntermediate)
 		{
-			VerticalOffset = verticalOffset;
-			HorizontalOffset = horizontalOffset;
+			_pendingHorizontalOffset = horizontalOffset;
+			_pendingVerticalOffset = verticalOffset;
 
-			ViewChanged?.Invoke(this, new ScrollViewerViewChangedEventArgs { IsIntermediate = isIntermediate });
+			if (isIntermediate)
+			{
+				RequestUpdate();
+			}
+			else
+			{
+				Update(isIntermediate: false);
+			}
 		}
 
 		internal void OnZoomInternal(float zoomFactor)
 		{
 			ZoomFactor = zoomFactor;
 
-			ViewChanged?.Invoke(this, new ScrollViewerViewChangedEventArgs());
+			// Note: We should also defer the intermediate zoom changes
+			Update(isIntermediate: false);
 
 			UpdateZoomedContentAlignment();
+		}
+
+		private bool _hasPendingUpdate;
+		private double _pendingHorizontalOffset;
+		private double _pendingVerticalOffset;
+
+		private void RequestUpdate()
+		{
+			if (_hasPendingUpdate)
+			{
+				return;
+			}
+
+			Dispatcher.RunIdleAsync(e =>
+			{
+				if (_hasPendingUpdate)
+				{
+					Update(isIntermediate: true);
+				}
+			});
+			_hasPendingUpdate = true;
+		}
+
+		private void Update(bool isIntermediate)
+		{
+			_hasPendingUpdate = false;
+
+			HorizontalOffset = _pendingHorizontalOffset;
+			VerticalOffset = _pendingVerticalOffset;
+
+			ViewChanged?.Invoke(this, new ScrollViewerViewChangedEventArgs { IsIntermediate = isIntermediate });
 		}
 
 		/// <summary>
