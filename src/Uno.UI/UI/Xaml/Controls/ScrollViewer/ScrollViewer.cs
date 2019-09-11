@@ -12,6 +12,7 @@ using Uno.UI;
 using Uno.UI.DataBinding;
 using Windows.UI.Xaml.Controls.Primitives;
 using Windows.Foundation;
+using Windows.UI.Core;
 using Uno;
 using Uno.Extensions;
 using Microsoft.Extensions.Logging;
@@ -32,6 +33,8 @@ namespace Windows.UI.Xaml.Controls
 {
 	public partial class ScrollViewer : ContentControl, IFrameworkTemplatePoolAware
 	{
+		internal const string ScrollContentPresenterPartName = "ScrollContentPresenter";
+
 		/// <summary>
 		/// Occurs when manipulations such as scrolling and zooming have caused the view to change.
 		/// </summary>
@@ -77,34 +80,28 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		#region HorizontalScrollBarVisibility
+		#region HorizontalScrollBarVisibility (Attached DP - inherited)
 		public static ScrollBarVisibility GetHorizontalScrollBarVisibility(DependencyObject obj)
-		{
-			return (ScrollBarVisibility)obj.GetValue(HorizontalScrollBarVisibilityProperty);
-		}
+			=> (ScrollBarVisibility)obj.GetValue(HorizontalScrollBarVisibilityProperty);
 
 		public static void SetHorizontalScrollBarVisibility(DependencyObject obj, ScrollBarVisibility value)
-		{
-			obj.SetValue(HorizontalScrollBarVisibilityProperty, value);
-		}
+			=> obj.SetValue(HorizontalScrollBarVisibilityProperty, value);
 
 		public ScrollBarVisibility HorizontalScrollBarVisibility
 		{
-			get { return (ScrollBarVisibility)this.GetValue(HorizontalScrollBarVisibilityProperty); }
-			set { this.SetValue(HorizontalScrollBarVisibilityProperty, value); }
+			get => (ScrollBarVisibility)this.GetValue(HorizontalScrollBarVisibilityProperty);
+			set => this.SetValue(HorizontalScrollBarVisibilityProperty, value);
 		}
 
-		internal const string ScrollContentPresenterPartName = "ScrollContentPresenter";
-
-		// Using a DependencyProperty as the backing store for HorizontalScrollBarVisibility.  This enables animation, styling, binding, etc...
 		public static readonly DependencyProperty HorizontalScrollBarVisibilityProperty =
 			DependencyProperty.RegisterAttached(
 				"HorizontalScrollBarVisibility",
 				typeof(ScrollBarVisibility),
 				typeof(ScrollViewer),
-				new PropertyMetadata(
+				new FrameworkPropertyMetadata(
 					ScrollBarVisibility.Disabled,
-					propertyChangedCallback: OnHorizontalScrollBarVisibilityPropertyChanged
+					propertyChangedCallback: OnHorizontalScrollBarVisibilityPropertyChanged,
+					options: FrameworkPropertyMetadataOptions.Inherits
 				)
 			);
 
@@ -122,32 +119,28 @@ namespace Windows.UI.Xaml.Controls
 		}
 		#endregion
 
-		#region VerticalScrollBarVisibility
+		#region VerticalScrollBarVisibility (Attached DP - inherited)
 		public static ScrollBarVisibility GetVerticalScrollBarVisibility(DependencyObject obj)
-		{
-			return (ScrollBarVisibility)obj.GetValue(VerticalScrollBarVisibilityProperty);
-		}
+			=> (ScrollBarVisibility)obj.GetValue(VerticalScrollBarVisibilityProperty);
 
 		public static void SetVerticalScrollBarVisibility(DependencyObject obj, ScrollBarVisibility value)
-		{
-			obj.SetValue(VerticalScrollBarVisibilityProperty, value);
-		}
+			=> obj.SetValue(VerticalScrollBarVisibilityProperty, value);
 
 		public ScrollBarVisibility VerticalScrollBarVisibility
 		{
-			get { return (ScrollBarVisibility)this.GetValue(VerticalScrollBarVisibilityProperty); }
-			set { this.SetValue(VerticalScrollBarVisibilityProperty, value); }
+			get => (ScrollBarVisibility)this.GetValue(VerticalScrollBarVisibilityProperty);
+			set => this.SetValue(VerticalScrollBarVisibilityProperty, value);
 		}
 
-		// Using a DependencyProperty as the backing store for VerticalScrollBarVisibility.  This enables animation, styling, binding, etc...
 		public static readonly DependencyProperty VerticalScrollBarVisibilityProperty =
 			DependencyProperty.RegisterAttached(
 				"VerticalScrollBarVisibility",
 				typeof(ScrollBarVisibility),
 				typeof(ScrollViewer),
-				new PropertyMetadata(
+				new FrameworkPropertyMetadata(
 					ScrollBarVisibility.Auto,
-					propertyChangedCallback: OnVerticalScrollBarVisibilityPropertyChanged
+					propertyChangedCallback: OnVerticalScrollBarVisibilityPropertyChanged,
+					options: FrameworkPropertyMetadataOptions.Inherits
 				)
 			);
 		private static void OnVerticalScrollBarVisibilityPropertyChanged(object dependencyObject, DependencyPropertyChangedEventArgs args)
@@ -164,33 +157,28 @@ namespace Windows.UI.Xaml.Controls
 		}
 		#endregion
 
-		#region HorizontalScrollMode DependencyProperty
-
+		#region HorizontalScrollMode (Attached DP - inherited)
 		public static ScrollMode GetHorizontalScrollMode(DependencyObject obj)
-		{
-			return (ScrollMode)obj.GetValue(HorizontalScrollModeProperty);
-		}
+			=> (ScrollMode)obj.GetValue(HorizontalScrollModeProperty);
 
 		public static void SetHorizontalScrollMode(DependencyObject obj, ScrollMode value)
-		{
-			obj.SetValue(HorizontalScrollModeProperty, value);
-		}
+			=> obj.SetValue(HorizontalScrollModeProperty, value);
 
 		public ScrollMode HorizontalScrollMode
 		{
-			get { return (ScrollMode)this.GetValue(HorizontalScrollModeProperty); }
-			set { this.SetValue(HorizontalScrollModeProperty, value); }
+			get => (ScrollMode)this.GetValue(HorizontalScrollModeProperty);
+			set => this.SetValue(HorizontalScrollModeProperty, value);
 		}
 
-		// Using a DependencyProperty as the backing store for HorizontalScrollMode.  This enables animation, styling, binding, etc...
 		public static readonly DependencyProperty HorizontalScrollModeProperty =
 			DependencyProperty.RegisterAttached(
 				"HorizontalScrollMode",
 				typeof(ScrollMode),
 				typeof(ScrollViewer),
-				new PropertyMetadata(
+				new FrameworkPropertyMetadata(
 					ScrollMode.Enabled,
-					propertyChangedCallback: OnHorizontalScrollModeChanged
+					propertyChangedCallback: OnHorizontalScrollModeChanged,
+					options: FrameworkPropertyMetadataOptions.Inherits
 				)
 			);
 
@@ -209,22 +197,18 @@ namespace Windows.UI.Xaml.Controls
 
 		#endregion
 
-		#region VerticalScrollMode DependencyProperty
+		#region VerticalScrollMode (Attached DP - inherited)
 
 		public static ScrollMode GetVerticalScrollMode(DependencyObject obj)
-		{
-			return (ScrollMode)obj.GetValue(VerticalScrollModeProperty);
-		}
+			=> (ScrollMode)obj.GetValue(VerticalScrollModeProperty);
 
 		public static void SetVerticalScrollMode(DependencyObject obj, ScrollMode value)
-		{
-			obj.SetValue(VerticalScrollModeProperty, value);
-		}
+			=> obj.SetValue(VerticalScrollModeProperty, value);
 
 		public ScrollMode VerticalScrollMode
 		{
-			get { return (ScrollMode)this.GetValue(VerticalScrollModeProperty); }
-			set { this.SetValue(VerticalScrollModeProperty, value); }
+			get => (ScrollMode)this.GetValue(VerticalScrollModeProperty);
+			set => this.SetValue(VerticalScrollModeProperty, value);
 		}
 
 		// Using a DependencyProperty as the backing store for VerticalScrollMode.  This enables animation, styling, binding, etc...
@@ -233,9 +217,10 @@ namespace Windows.UI.Xaml.Controls
 				"VerticalScrollMode",
 				typeof(ScrollMode),
 				typeof(ScrollViewer),
-				new PropertyMetadata(
+				new FrameworkPropertyMetadata(
 					ScrollMode.Enabled,
-					propertyChangedCallback: OnVerticalScrollModeChanged
+					propertyChangedCallback: OnVerticalScrollModeChanged,
+					options: FrameworkPropertyMetadataOptions.Inherits
 				)
 			);
 
@@ -254,14 +239,72 @@ namespace Windows.UI.Xaml.Controls
 
 		#endregion
 
+		#region BringIntoViewOnFocusChange (Attached DP - inherited)
+#if __IOS__
+		[global::Uno.NotImplemented]
+#endif
+		public static bool GetBringIntoViewOnFocusChange( global::Windows.UI.Xaml.DependencyObject element)
+			=> (bool)element.GetValue(BringIntoViewOnFocusChangeProperty);
+
+#if __IOS__
+		[global::Uno.NotImplemented]
+#endif
+		public static void SetBringIntoViewOnFocusChange( global::Windows.UI.Xaml.DependencyObject element,  bool bringIntoViewOnFocusChange)
+			=> element.SetValue(BringIntoViewOnFocusChangeProperty, bringIntoViewOnFocusChange);
+
+#if __IOS__
+		[global::Uno.NotImplemented]
+#endif
+		public bool BringIntoViewOnFocusChange
+		{
+			get => (bool)GetValue(BringIntoViewOnFocusChangeProperty);
+			set => SetValue(BringIntoViewOnFocusChangeProperty, value);
+		}
+
+		public static DependencyProperty BringIntoViewOnFocusChangeProperty { get; } =
+			DependencyProperty.RegisterAttached(
+				"BringIntoViewOnFocusChange",
+				typeof(bool),
+				typeof(ScrollViewer),
+				new FrameworkPropertyMetadata(
+					true,
+					propertyChangedCallback: OnBringIntoViewOnFocusChangeChanged,
+					options: FrameworkPropertyMetadataOptions.Inherits));
+
+		private static void OnBringIntoViewOnFocusChangeChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs args)
+		{
+			var view = dependencyObject as ScrollViewer;
+
+			view?.OnBringIntoViewOnFocusChangeChangedPartial((bool)args.NewValue);
+		}
+
+		partial void OnBringIntoViewOnFocusChangeChangedPartial(bool newValue);
+		#endregion
+
+		#region ZoomMode (Attached DP - inherited)
+		public static ZoomMode GetZoomMode(DependencyObject obj)
+			=> (ZoomMode)obj.GetValue(ZoomModeProperty);
+
+		public static void SetZoomMode(DependencyObject obj, ZoomMode value)
+			=> obj.SetValue(ZoomModeProperty, value);
+
 		public ZoomMode ZoomMode
 		{
-			get { return (ZoomMode)GetValue(ZoomModeProperty); }
-			set { SetValue(ZoomModeProperty, value); }
+			get => (ZoomMode)GetValue(ZoomModeProperty);
+			set => SetValue(ZoomModeProperty, value);
 		}
 
 		public static readonly DependencyProperty ZoomModeProperty =
-			DependencyProperty.Register("ZoomMode", typeof(ZoomMode), typeof(ScrollViewer), new PropertyMetadata(ZoomMode.Disabled, (o, e) => ((ScrollViewer)o).OnZoomModeChanged((ZoomMode)e.NewValue)));
+			DependencyProperty.RegisterAttached(
+				"ZoomMode",
+				typeof(ZoomMode),
+				typeof(ScrollViewer),
+				new FrameworkPropertyMetadata(
+					ZoomMode.Disabled,
+					propertyChangedCallback: (o, e) => ((ScrollViewer)o).OnZoomModeChanged((ZoomMode)e.NewValue),
+					options: FrameworkPropertyMetadataOptions.Inherits
+				)
+			);
 
 		private void OnZoomModeChanged(ZoomMode zoomMode)
 		{
@@ -269,11 +312,13 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		partial void OnZoomModeChangedPartial(ZoomMode zoomMode);
+		#endregion
 
+		#region MinZoomFactor (DP)
 		public float MinZoomFactor
 		{
-			get { return (float)GetValue(MinZoomFactorProperty); }
-			set { SetValue(MinZoomFactorProperty, value); }
+			get => (float)GetValue(MinZoomFactorProperty);
+			set => SetValue(MinZoomFactorProperty, value);
 		}
 
 		public static readonly DependencyProperty MinZoomFactorProperty =
@@ -283,12 +328,13 @@ namespace Windows.UI.Xaml.Controls
 		{
 			_sv?.OnMinZoomFactorChanged((float)args.NewValue);
 		}
+		#endregion
 
-
+		#region MaxZoomFactor (DP)
 		public float MaxZoomFactor
 		{
-			get { return (float)GetValue(MaxZoomFactorProperty); }
-			set { SetValue(MaxZoomFactorProperty, value); }
+			get => (float)GetValue(MaxZoomFactorProperty);
+			set => SetValue(MaxZoomFactorProperty, value);
 		}
 
 		public static readonly DependencyProperty MaxZoomFactorProperty =
@@ -298,88 +344,80 @@ namespace Windows.UI.Xaml.Controls
 		{
 			_sv?.OnMaxZoomFactorChanged((float)args.NewValue);
 		}
+		#endregion
 
+		#region ZoomFactor (DP - readonly)
 		public float ZoomFactor
 		{
-			get { return (float)GetValue(ZoomFactorProperty); }
+			get => (float)GetValue(ZoomFactorProperty);
 			private set { SetValue(ZoomFactorProperty, value); }
 		}
 
 		public static readonly DependencyProperty ZoomFactorProperty =
 			DependencyProperty.Register("ZoomFactor", typeof(float), typeof(ScrollViewer), new PropertyMetadata(1f));
+		#endregion
 
+		#region HorizontalSnapPointsType (DP)
 		public SnapPointsType HorizontalSnapPointsType
 		{
-			get
-			{
-				return (SnapPointsType)this.GetValue(HorizontalSnapPointsTypeProperty);
-			}
-			set
-			{
-				this.SetValue(HorizontalSnapPointsTypeProperty, value);
-			}
+			get => (SnapPointsType)this.GetValue(HorizontalSnapPointsTypeProperty);
+			set => this.SetValue(HorizontalSnapPointsTypeProperty, value);
 		}
 
 		public static DependencyProperty HorizontalSnapPointsTypeProperty { get; } =
-		DependencyProperty.Register(
-			"HorizontalSnapPointsType", typeof(SnapPointsType),
-			typeof(ScrollViewer),
-			new FrameworkPropertyMetadata(default(SnapPointsType)));
+			DependencyProperty.Register(
+				"HorizontalSnapPointsType",
+				typeof(SnapPointsType),
+				typeof(ScrollViewer),
+				new FrameworkPropertyMetadata(default(SnapPointsType)));
+		#endregion
 
+		#region HorizontalSnapPointsAlignment (DP)
 		public SnapPointsAlignment HorizontalSnapPointsAlignment
 		{
-			get
-			{
-				return (SnapPointsAlignment)this.GetValue(HorizontalSnapPointsAlignmentProperty);
-			}
-			set
-			{
-				this.SetValue(HorizontalSnapPointsAlignmentProperty, value);
-			}
+			get => (SnapPointsAlignment)this.GetValue(HorizontalSnapPointsAlignmentProperty);
+			set => this.SetValue(HorizontalSnapPointsAlignmentProperty, value);
 		}
 
 		public static DependencyProperty HorizontalSnapPointsAlignmentProperty { get; } =
-		DependencyProperty.Register(
-			"HorizontalSnapPointsAlignment", typeof(SnapPointsAlignment),
-			typeof(ScrollViewer),
-			new FrameworkPropertyMetadata(default(SnapPointsAlignment)));
+			DependencyProperty.Register(
+				"HorizontalSnapPointsAlignment",
+				typeof(SnapPointsAlignment),
+				typeof(ScrollViewer),
+				new FrameworkPropertyMetadata(default(SnapPointsAlignment)));
+		#endregion
 
+		#region VerticalSnapPointsType (DP)
 		public SnapPointsType VerticalSnapPointsType
 		{
-			get
-			{
-				return (SnapPointsType)this.GetValue(VerticalSnapPointsTypeProperty);
-			}
-			set
-			{
-				this.SetValue(VerticalSnapPointsTypeProperty, value);
-			}
+			get => (SnapPointsType)this.GetValue(VerticalSnapPointsTypeProperty);
+			set => this.SetValue(VerticalSnapPointsTypeProperty, value);
 		}
 
 		public static DependencyProperty VerticalSnapPointsTypeProperty { get; } =
-		DependencyProperty.Register(
-			"VerticalSnapPointsType", typeof(SnapPointsType),
-			typeof(ScrollViewer),
-			new FrameworkPropertyMetadata(default(SnapPointsType)));
+			DependencyProperty.Register(
+				"VerticalSnapPointsType",
+				typeof(SnapPointsType),
+				typeof(ScrollViewer),
+				new FrameworkPropertyMetadata(default(SnapPointsType)));
+		#endregion
 
+		#region VerticalSnapPointsAlignment (DP)
 		public SnapPointsAlignment VerticalSnapPointsAlignment
 		{
-			get
-			{
-				return (SnapPointsAlignment)this.GetValue(VerticalSnapPointsAlignmentProperty);
-			}
-			set
-			{
-				this.SetValue(VerticalSnapPointsAlignmentProperty, value);
-			}
+			get => (SnapPointsAlignment)this.GetValue(VerticalSnapPointsAlignmentProperty);
+			set => this.SetValue(VerticalSnapPointsAlignmentProperty, value);
 		}
 
 		public static DependencyProperty VerticalSnapPointsAlignmentProperty { get; } =
-		DependencyProperty.Register(
-			"VerticalSnapPointsAlignment", typeof(SnapPointsAlignment),
-			typeof(ScrollViewer),
-			new FrameworkPropertyMetadata(default(SnapPointsAlignment)));
+			DependencyProperty.Register(
+				"VerticalSnapPointsAlignment",
+				typeof(SnapPointsAlignment),
+				typeof(ScrollViewer),
+				new FrameworkPropertyMetadata(default(SnapPointsAlignment)));
+		#endregion
 
+		#region ExtentHeight (DP - readonly)
 		public double ExtentHeight
 		{
 			get => (double)GetValue(ExtentHeightProperty);
@@ -388,10 +426,13 @@ namespace Windows.UI.Xaml.Controls
 
 		public static DependencyProperty ExtentHeightProperty { get; } =
 			DependencyProperty.Register(
-				"ExtentHeight", typeof(double),
+				"ExtentHeight",
+				typeof(double),
 				typeof(ScrollViewer),
 				new FrameworkPropertyMetadata(default(double)));
+		#endregion
 
+		#region ExtentWidth (DP - readonly)
 		public double ExtentWidth
 		{
 			get => (double)GetValue(ExtentWidthProperty);
@@ -400,10 +441,13 @@ namespace Windows.UI.Xaml.Controls
 
 		public static DependencyProperty ExtentWidthProperty { get; } =
 			DependencyProperty.Register(
-				"ExtentWidth", typeof(double),
+				"ExtentWidth",
+				typeof(double),
 				typeof(ScrollViewer),
 				new FrameworkPropertyMetadata(default(double)));
+		#endregion
 
+		#region ViewportHeight (DP - readonly)
 		public double ViewportHeight
 		{
 			get => (double)GetValue(ViewportHeightProperty);
@@ -412,10 +456,13 @@ namespace Windows.UI.Xaml.Controls
 
 		public static DependencyProperty ViewportHeightProperty { get; } =
 			DependencyProperty.Register(
-				"ViewportHeight", typeof(double),
+				"ViewportHeight",
+				typeof(double),
 				typeof(ScrollViewer),
 				new FrameworkPropertyMetadata(default(double)));
+		#endregion
 
+		#region ViewportWidth (DP - readonly)
 		public double ViewportWidth
 		{
 			get => (double)GetValue(ViewportWidthProperty);
@@ -424,10 +471,13 @@ namespace Windows.UI.Xaml.Controls
 
 		public static DependencyProperty ViewportWidthProperty { get; } =
 			DependencyProperty.Register(
-				"ViewportWidth", typeof(double),
+				"ViewportWidth",
+				typeof(double),
 				typeof(ScrollViewer),
 				new FrameworkPropertyMetadata(default(double)));
+		#endregion
 
+		#region ScrollableHeight (DP - readonly)
 		public double ScrollableHeight
 		{
 			get => (double)GetValue(ScrollableHeightProperty);
@@ -436,10 +486,14 @@ namespace Windows.UI.Xaml.Controls
 
 		public static DependencyProperty ScrollableHeightProperty { get; } =
 			DependencyProperty.Register(
-				"ScrollableHeight", typeof(double),
+				"ScrollableHeight",
+				typeof(double),
 				typeof(ScrollViewer),
 				new FrameworkPropertyMetadata(default(double)));
 
+		#endregion
+
+		#region ScrollableWidth (DP - readonly)
 		public double ScrollableWidth
 		{
 			get => (double)GetValue(ScrollableWidthProperty);
@@ -448,34 +502,50 @@ namespace Windows.UI.Xaml.Controls
 
 		public static DependencyProperty ScrollableWidthProperty { get; } =
 			DependencyProperty.Register(
-				"ScrollableWidth", typeof(double),
+				"ScrollableWidth",
+				typeof(double),
 				typeof(ScrollViewer),
 				new FrameworkPropertyMetadata(default(double)));
+		#endregion
 
-#if __IOS__
-		[global::Uno.NotImplemented]
-#endif
-		public bool BringIntoViewOnFocusChange
+		#region VerticalOffset (DP - readonly)
+		public double VerticalOffset
 		{
-			get { return (bool)GetValue(BringIntoViewOnFocusChangeProperty); }
-			set { SetValue(BringIntoViewOnFocusChangeProperty, value); }
+			get => (double)GetValue(VerticalOffsetProperty);
+			private set => SetValue(VerticalOffsetProperty, value);
 		}
 
-		public static DependencyProperty BringIntoViewOnFocusChangeProperty { get; } =
-			DependencyProperty.RegisterAttached(
-				"BringIntoViewOnFocusChange",
-				typeof(bool),
+		public static DependencyProperty VerticalOffsetProperty =
+			DependencyProperty.Register(
+				"VerticalOffset",
+				typeof(double),
 				typeof(ScrollViewer),
-				new FrameworkPropertyMetadata(true, OnBringIntoViewOnFocusChangeChanged));
+				new PropertyMetadata(
+					(double)0,
+					null
+				)
+			);
 
-		private static void OnBringIntoViewOnFocusChangeChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs args)
+		#endregion
+
+		#region HorizontalOffset (DP - readonly)
+		public double HorizontalOffset
 		{
-			var view = dependencyObject as ScrollViewer;
-
-			view?.OnBringIntoViewOnFocusChangeChangedPartial((bool) args.NewValue);
+			get => (double)GetValue(HorizontalOffsetProperty);
+			private set => SetValue(HorizontalOffsetProperty, value);
 		}
 
-		partial void OnBringIntoViewOnFocusChangeChangedPartial(bool newValue);
+		public static DependencyProperty HorizontalOffsetProperty =
+			DependencyProperty.Register(
+				"HorizontalOffset",
+				typeof(double),
+				typeof(ScrollViewer),
+				new PropertyMetadata(
+					(double)0,
+					null
+				)
+			);
+		#endregion
 
 		private static void OnGenericPropertyChanged(object dependencyObject, DependencyPropertyChangedEventArgs args)
 		{
@@ -646,48 +716,6 @@ namespace Windows.UI.Xaml.Controls
 				provider.Store.ClearValue(provider.Store.TemplatedParentProperty, DependencyPropertyValuePrecedences.Local);
 			}
 		}
-
-		#region VerticalOffset DependencyProperty
-
-		public double VerticalOffset
-		{
-			get { return (double)GetValue(VerticalOffsetProperty); }
-			private set { SetValue(VerticalOffsetProperty, value); }
-		}
-
-		public static DependencyProperty VerticalOffsetProperty =
-			DependencyProperty.Register(
-				"VerticalOffset",
-				typeof(double),
-				typeof(ScrollViewer),
-				new PropertyMetadata(
-					(double)0,
-					null
-				)
-			);
-
-		#endregion
-
-		#region HorizontalOffset DependencyProperty
-
-		public double HorizontalOffset
-		{
-			get { return (double)GetValue(HorizontalOffsetProperty); }
-			private set { SetValue(HorizontalOffsetProperty, value); }
-		}
-
-		public static DependencyProperty HorizontalOffsetProperty =
-			DependencyProperty.Register(
-				"HorizontalOffset",
-				typeof(double),
-				typeof(ScrollViewer),
-				new PropertyMetadata(
-					(double)0,
-					null
-				)
-			);
-
-		#endregion
 
 		/// <summary>
 		/// If this flag is enabled, the ScrollViewer will report offsets less than 0 and greater than <see cref="ScrollableHeight"/> when 
