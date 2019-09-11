@@ -36,13 +36,13 @@ namespace Windows.UI.Xaml.Controls
 
 		public ScrollContentPresenter()
 		{
-			//PointerReleased += ScrollViewer_PointerReleased;
-			//PointerPressed += ScrollViewer_PointerPressed;
-			//PointerCanceled += ScrollContentPresenter_PointerCanceled;
-			//PointerMoved += ScrollContentPresenter_PointerMoved;
-			//PointerEntered += ScrollContentPresenter_PointerEntered;
-			//PointerExited += ScrollContentPresenter_PointerExited;
-			//PointerWheelChanged += ScrollContentPresenter_PointerWheelChanged;
+			PointerReleased += ScrollViewer_PointerReleased;
+			PointerPressed += ScrollViewer_PointerPressed;
+			PointerCanceled += ScrollContentPresenter_PointerCanceled;
+			PointerMoved += ScrollContentPresenter_PointerMoved;
+			PointerEntered += ScrollContentPresenter_PointerEntered;
+			PointerExited += ScrollContentPresenter_PointerExited;
+			PointerWheelChanged += ScrollContentPresenter_PointerWheelChanged;
 		}
 
 		private void ScrollContentPresenter_PointerWheelChanged(object sender, Input.PointerRoutedEventArgs e)
@@ -222,10 +222,14 @@ namespace Windows.UI.Xaml.Controls
 				verticalOffset = 0;
 			}
 
+			// Note: Scroll due to inertia (so with IsPointerPressed == false) should also be considered 
+			//		 as intermediate, we however don't have any information about that in the DOM 'scroll' event.
+			var isIntermediate = IsPointerPressed;
+
 			(TemplatedParent as ScrollViewer)?.OnScrollInternal(
 				horizontalOffset,
 				verticalOffset,
-				isIntermediate: false
+				isIntermediate
 			);
 		}
 
