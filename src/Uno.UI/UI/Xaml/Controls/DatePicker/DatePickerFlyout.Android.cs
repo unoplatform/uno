@@ -41,6 +41,7 @@ namespace Windows.UI.Xaml.Controls
             _dialog.DatePicker.MaxDate = maxYearCalendar.TimeInMillis;
 
 			_dialog.DismissEvent += OnDismiss;
+			_dialog.DateSet += OnDateSet;
             _dialog.Show();
         }
 
