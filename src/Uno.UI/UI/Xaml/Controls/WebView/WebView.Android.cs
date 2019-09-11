@@ -299,9 +299,9 @@ namespace Windows.UI.Xaml.Controls
 				var args = new WebViewNavigationCompletedEventArgs()
 				{
 					IsSuccess = _webViewSuccess,
-					Uri = new Uri(url),
 					WebErrorStatus = _webErrorStatus
 				};
+				if(url != null && url != "") args.Uri = new Uri(url);
 
 				_webView.NavigationCompleted?.Invoke(_webView, args);
 				base.OnPageFinished(view, url);
