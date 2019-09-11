@@ -312,6 +312,9 @@ namespace Windows.UI.Xaml.Controls
 
 		partial void OnIsDropDownOpenChangedPartial(bool oldIsDropDownOpen, bool newIsDropDownOpen)
 		{
+			// This method will load the itempresnter children
+			SetItemsPresenter(_popup.Child.FindFirstChild<ItemsPresenter>());
+
 			if (_popup != null)
 			{
 				_popup.IsOpen = newIsDropDownOpen;

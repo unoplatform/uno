@@ -112,6 +112,7 @@
 * Fix layout bug in Image control.
 * [#1387] `ComboBox`: Fix DataContext was propagated to `<ContentPresenter>` when there was no selected item, causing strange display behavior.
 * #1354 fixed Recycler.State desync issue
+* [iOS(iPad)] `ComboBox` : the combobox wasn't fully expanding vertically on first opening.
 
 ## Release 1.45.0
 ### Features
