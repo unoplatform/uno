@@ -18,6 +18,7 @@
     "SampleApp.Wasm": {
       "commandName": "Project",
       "launchBrowser": true,
+      "launchUrl": "http://localhost:55838/",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       },
