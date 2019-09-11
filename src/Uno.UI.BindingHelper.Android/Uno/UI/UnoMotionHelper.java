@@ -146,6 +146,8 @@ import android.view.ViewParent;
 			// Note: We have to do this in native as we might not forward the ACTION_DOWN if !target.getIsNativeMotionEventsEnabled()
 			// Note: This is automatically cleared on each ACTION_UP
 			if (target.getIsNativeMotionEventsInterceptForbidden()) {
+				// Log.i(LOGTAG, _indent + "INTERCEPT disable (i.e. scrolling disabled on parents)");
+
 				view.requestDisallowInterceptTouchEvent(true);
 			}
 		}

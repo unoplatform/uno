@@ -1047,6 +1047,15 @@ public class UnoTwoDScrollView extends FrameLayout {
 		return scroll;
 	}
 
+	@Override
+	protected void onScrollChanged(int l, int t, int oldl, int oldt) {
+		onScrollChanged(l, t, oldl, oldt, mIsBeingDragged || !mScroller.isFinished());
+		super.onScrollChanged(l, t, oldl, oldt);
+	}
+
+	protected void onScrollChanged(int l, int t, int oldl, int oldt, boolean isIntermediate) {
+	}
+
 	/**
 	 * Compute the amount to scroll in the Y direction in order to get
 	 * a rectangle completely on the screen (or, if taller than the screen,
