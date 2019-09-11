@@ -1,5 +1,5 @@
 # Uno Platform - Build Mobile, Desktop and WebAssembly apps with C# and XAML. Today.
-[![Gitter](https://badges.gitter.im/uno-platform/Lobby.svg)](https://gitter.im/uno-platform/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge) [![All Contributors](https://img.shields.io/badge/all_contributors-16-orange.svg?style=flat-square)](#contributors)
+[![Gitter](https://badges.gitter.im/uno-platform/Lobby.svg)](https://gitter.im/uno-platform/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge) [![All Contributors](https://img.shields.io/badge/all_contributors-17-orange.svg?style=flat-square)](#contributors)
 
 # What is the Uno Platform
 
@@ -122,6 +122,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
   </tr>
   <tr>
     <td align="center"><a href="http://nicksnettravels.builttoroam.com"><img src="https://avatars2.githubusercontent.com/u/1614057?v=4" width="100px;" alt="Nick Randolph"/><br /><sub><b>Nick Randolph</b></sub></a><br /><a href="#blog-nickrandolph" title="Blogposts">📝</a></td>
+    <td align="center"><a href="https://opensource.microsoft.com"><img src="https://avatars2.githubusercontent.com/u/6154722?v=4" width="100px;" alt="Microsoft"/><br /><sub><b>Microsoft</b></sub></a><br /><a href="https://github.com/unoplatform/uno/commits?author=microsoft" title="Code">💻</a> <a href="https://github.com/unoplatform/uno/commits?author=microsoft" title="Documentation">📖</a> <a href="#example-microsoft" title="Examples">💡</a> <a href="https://github.com/unoplatform/uno/commits?author=microsoft" title="Tests">⚠️</a></td>
   </tr>
 </table>
 
