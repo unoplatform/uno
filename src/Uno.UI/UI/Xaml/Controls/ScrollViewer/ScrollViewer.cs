@@ -62,6 +62,7 @@ namespace Windows.UI.Xaml.Controls
 
 		public ScrollViewer()
 		{
+			UpdatesMode = Uno.UI.Xaml.Controls.ScrollViewer.GetUpdatesMode(this);
 			InitializePartial();
 		}
 
@@ -724,18 +725,24 @@ namespace Windows.UI.Xaml.Controls
 		[UnoOnly]
 		public bool ShouldReportNegativeOffsets { get; set; } = false;
 
+		/// <summary>
+		/// Cached value of <see cref="Uno.UI.Xaml.Controls.ScrollViewer.UpdatesModeProperty"/>,
+		/// in order to not access the DP on each scroll (perf considerations)
+		/// </summary>
+		internal Uno.UI.Xaml.Controls.ScrollViewerUpdatesMode UpdatesMode { get; set; }
+
 		internal void OnScrollInternal(double horizontalOffset, double verticalOffset, bool isIntermediate)
 		{
 			_pendingHorizontalOffset = horizontalOffset;
 			_pendingVerticalOffset = verticalOffset;
 
-			if (isIntermediate)
+			if (isIntermediate && UpdatesMode != Uno.UI.Xaml.Controls.ScrollViewerUpdatesMode.Synchronous)
 			{
 				RequestUpdate();
 			}
 			else
 			{
-				Update(isIntermediate: false);
+				Update(isIntermediate);
 			}
 		}
 

@@ -5,6 +5,7 @@ using Windows.UI.Xaml;
 using Windows.UI.Xaml.Automation;
 using Windows.UI.Xaml.Automation.Peers;
 using Windows.UI.Xaml.Controls;
+using Uno.UI.Xaml.Controls;
 
 namespace Uno.UI
 {
@@ -274,6 +275,22 @@ namespace Uno.UI
 			public static int ShowDelay { get; set; } = 1000;
 
 			public static int ShowDuration { get; set; } = 7000;
+		}
+
+		public static class ScrollViewer
+		{
+			/// <summary>
+			/// This defines the default value of the <see cref="Uno.UI.Xaml.Controls.ScrollViewer.UpdatesModeProperty"/>.
+			/// For backward compatibility, you should set it to Synchronous.
+			/// For better compatibility with Windows, you should keep the default value 'AsynchronousIdle'.
+			/// </summary>
+			/// <remarks>
+			/// As this boolean is read only once when initializing the dependency property,
+			/// make sure to define it in teh early stages of you application initialization,
+			/// before any UI related initialization (like generic styles init) and even before
+			/// referencing the ** type ** ScrollViewer in any way.
+			/// </remarks>
+			public static ScrollViewerUpdatesMode DefaultUpdatesMode { get; set; } = ScrollViewerUpdatesMode.AsynchronousIdle;
 		}
 
 		public static class CompositionTarget
