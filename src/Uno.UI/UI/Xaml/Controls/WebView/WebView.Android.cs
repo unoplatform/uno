@@ -301,7 +301,10 @@ namespace Windows.UI.Xaml.Controls
 					IsSuccess = _webViewSuccess,
 					WebErrorStatus = _webErrorStatus
 				};
-				if(url != null && url != "") args.Uri = new Uri(url);
+				if(!string.IsNullOrEmpty(url))
+				{
+				    args.Uri = new Uri(url);
+				}
 
 				_webView.NavigationCompleted?.Invoke(_webView, args);
 				base.OnPageFinished(view, url);
