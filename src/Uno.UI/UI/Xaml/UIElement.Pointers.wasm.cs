@@ -212,7 +212,7 @@ namespace Windows.UI.Xaml
 			var command = "Uno.UI.WindowManager.current.releasePointerCapture(" + HtmlId + ", " + pointer.PointerId + ");";
 			WebAssemblyRuntime.InvokeJS(command);
 
-			if (pointer.PointerDeviceType != PointerDeviceType.Mouse && ManipulationMode == ManipulationModes.System)
+			if (pointer.PointerDeviceType != PointerDeviceType.Mouse && ManipulationMode != ManipulationModes.None)
 			{
 				SetStyle("touch-action", "auto");
 			}

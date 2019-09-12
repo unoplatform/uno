@@ -210,7 +210,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		/// <inheritdoc />
 		protected override void OnPointerReleased(PointerRoutedEventArgs args)
 		{
-			if (PointerCaptures?.Contains(args.Pointer) ?? false)
+			if (IsCaptured(args.Pointer))
 			{
 				// The click is raised as soon as the release occurs over the button,
 				// no matter the distance from the pressed location nor the delay since pressed.
@@ -222,8 +222,12 @@ namespace Windows.UI.Xaml.Controls.Primitives
 					{
 						RaiseClick(args); // First raise the click
 					}
-					ReleasePointerCaptures(); // Then release capture (will raise CaptureLost event)
 				}
+
+				// This should be automatically done by the pointers due to release, but if for any reason
+				// the state is invalid, this makes sure to not keep invalid capture longer than needed.
+				// Note: This must be done ** after ** the click event (UWP raise CaptureLost event after)
+				ReleasePointerCapture(args.Pointer);
 
 				// On UWP the args are handled no matter if the Click was raised or not
 				args.Handled = true;

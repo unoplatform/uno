@@ -291,6 +291,10 @@ namespace Windows.UI.Xaml.Controls.Primitives
 				update = ManipulationUpdateKind.Clicked;
 				Selector?.OnItemClicked(this);
 
+				// This should be automatically done by the pointers due to release, but if for any reason
+				// the state is invalid, this makes sure to not keep invalid capture longer than needed.
+				ReleasePointerCapture(args.Pointer);
+
 				args.Handled = true;
 			}
 			else
@@ -306,7 +310,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		protected override void OnPointerExited(PointerRoutedEventArgs args)
 		{
 			// Not like a Button, if the pointer goes out of this item, we abort the ItemClick
-			ReleasePointerCaptures();
+			ReleasePointerCapture(args.Pointer);
 
 			base.OnPointerExited(args);
 			UpdateCommonStatesWithoutNeedsLayout(ManipulationUpdateKind.End);

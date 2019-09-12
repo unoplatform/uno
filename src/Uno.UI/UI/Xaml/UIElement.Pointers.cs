@@ -99,13 +99,13 @@ namespace Windows.UI.Xaml
 
 		partial void InitializePointersPartial();
 
-		private static void OnPointersUnloaded(object sender, RoutedEventArgs args)
+		private static readonly RoutedEventHandler OnPointersUnloaded = (object sender, RoutedEventArgs args) =>
 		{
 			if (sender is UIElement elt)
 			{
 				elt.ReleasePointerCaptures();
 			}
-		}
+		};
 
 		#region Gestures recognition
 		private GestureRecognizer CreateGestureRecognizer()
@@ -176,7 +176,10 @@ namespace Windows.UI.Xaml
 
 		private bool OnNativePointerDown(PointerRoutedEventArgs args)
 		{
-			var isIrrelevant = ValidateAndUpdateCapture(args, isOver: true);
+			// "forceRelease: true": as we are in pointer pressed, if the pointer is already captured,
+			// it due to an invalid state. So here we make sure to not stay in an invalid state that would
+			// prevent any interaction with the application.
+			var isIrrelevant = ValidateAndUpdateCapture(args, isOver: true, forceRelease: true);
 			var handledInManaged = SetPressed(args, true, muteEvent: isIrrelevant);
 
 			if (isIrrelevant)
@@ -337,9 +340,26 @@ namespace Windows.UI.Xaml
 		#region Pointer over state (Updated by the partial API OnNative***)
 		/// <summary>
 		/// Indicates if a pointer (no matter the pointer) is currently over the element (i.e. OverState)
+		/// WARNING: This might not be maintained for all controls, cf. remarks.
 		/// </summary>
+		/// <remarks>
+		/// This flag is updated by the managed Pointers events handling, however on Android and WebAssembly,
+		/// pointer events are marshaled to the managed code only if there is some listeners to the events.
+		/// So it means that this flag will be maintained only if you subscribe at least to one pointer event
+		/// (or override one of the OnPointer*** methods).
+		/// </remarks>
 		internal bool IsPointerOver { get; set; } // TODO: 'Set' should be private, but we need to update all controls that are setting
 
+		/// <summary>
+		/// Indicates if a pointer is currently over the element (i.e. OverState)
+		/// WARNING: This might not be maintained for all controls, cf. remarks.
+		/// </summary>
+		/// <remarks>
+		/// The over state is updated by the managed Pointers events handling, however on Android and WebAssembly,
+		/// pointer events are marshaled to the managed code only if there is some listeners to the events.
+		/// So it means that this method will give valid state only if you subscribe at least to one pointer event
+		/// (or override one of the OnPointer*** methods).
+		/// </remarks>
 		internal bool IsOver(Pointer pointer) => IsPointerOver;
 
 		private bool SetOver(PointerRoutedEventArgs args, bool isOver, bool muteEvent = false)
@@ -368,16 +388,40 @@ namespace Windows.UI.Xaml
 
 		#region Pointer pressed state (Updated by the partial API OnNative***)
 		/// <summary>
-		/// Indicates if a pointer was pressed while over the element (i.e. PressedState)
+		/// Indicates if a pointer was pressed while over the element (i.e. PressedState).
+		/// Note: The pressed state will remain true even if the pointer exits the control (while pressed)
+		/// WARNING: This might not be maintained for all controls, cf. remarks.
 		/// </summary>
+		/// <remarks>
+		/// This flag is updated by the managed Pointers events handling, however on Android and WebAssembly,
+		/// pointer events are marshaled to the managed code only if there is some listeners to the events.
+		/// So it means that this flag will be maintained only if you subscribe at least to one pointer event
+		/// (or override one of the OnPointer*** methods).
+		/// </remarks>
 		internal bool IsPointerPressed { get; set; } // TODO: 'Set' should be private, but we need to update all controls that are setting
 
+		/// <summary>
+		/// Indicates if a pointer was pressed while over the element (i.e. PressedState)
+		/// Note: The pressed state will remain true even if the pointer exits the control (while pressed)
+		/// WARNING: This might not be maintained for all controls, cf. remarks.
+		/// </summary>
+		/// <remarks>
+		/// The pressed state is updated by the managed Pointers events handling, however on Android and WebAssembly,
+		/// pointer events are marshaled to the managed code only if there is some listeners to the events.
+		/// So it means that this method will give valid state only if you subscribe at least to one pointer event
+		/// (or override one of the OnPointer*** methods).
+		/// </remarks>
 		internal bool IsPressed(Pointer pointer) => IsPointerPressed;
 
 		private bool SetPressed(PointerRoutedEventArgs args, bool isPressed, bool muteEvent = false)
 		{
 			var wasPressed = IsPointerPressed;
 			IsPointerPressed = isPressed;
+
+			if (wasPressed != isPressed)
+			{
+				Console.WriteLine($"{this} IS PRESSED CHANGED, now {isPressed}");
+			}
 
 			if (muteEvent
 				|| wasPressed == isPressed) // nothing changed
@@ -448,6 +492,11 @@ namespace Windows.UI.Xaml
 			}
 			else
 			{
+				if (this.Log().IsEnabled(LogLevel.Information))
+				{
+					this.Log().Info($"{this}: Capturing pointer {pointer}");
+				}
+
 				capture = new PointerCapture(this, pointer);
 				_allCaptures.Add(pointer, capture);
 				_localCaptures.Add(pointer);
@@ -525,7 +574,7 @@ namespace Windows.UI.Xaml
 			=> ValidateAndUpdateCapture(args, isOver = IsOver(args.Pointer));
 
 		// Used by all OnNativeXXX to validate and update the common over/pressed/capture states
-		private bool ValidateAndUpdateCapture(PointerRoutedEventArgs args, bool isOver)
+		private bool ValidateAndUpdateCapture(PointerRoutedEventArgs args, bool isOver, bool forceRelease = false)
 		{
 			// We might receive some unexpected move/up/cancel for a pointer over an element,
 			// we have to mute them to avoid invalid event sequence.
@@ -541,10 +590,22 @@ namespace Windows.UI.Xaml
 				return !isOver;
 			}
 
-			if (capture.Owner == this)
+			if ((forceRelease && capture.LastDispatchedEventFrameId < args.FrameId)
+				|| (capture.Owner is FrameworkElement fwElt && !fwElt.IsLoaded))
+			{
+				// If 'forceRelease' we want to release any previous capture that was not release properly no matter the reason.
+				// BUT we don't want to release a capture that was made by a child control.
+				// We also do not allow a control that is not loaded to keep a capture (they should all have been release on unload).
+				// ** This is an IMPORTANT safety catch to prevent the application to become unresponsive **
+				capture.Owner.Release(capture);
+
+				return false;
+			}
+			else if (capture.Owner == this)
 			{
 				capture.LastDispatchedEventFrameId = args.FrameId;
 				capture.LastDispatchedEventArgs = args;
+
 				return false;
 			}
 			else
@@ -578,6 +639,13 @@ namespace Windows.UI.Xaml
 
 		private bool Release(PointerCapture capture, PointerRoutedEventArgs args = null)
 		{
+			global::System.Diagnostics.Debug.Assert(capture.Owner == this, "Can release only capture made by the element itself.");
+
+			if (this.Log().IsEnabled(LogLevel.Information))
+			{
+				this.Log().Info($"{capture.Owner}: Releasing capture of pointer {capture.Pointer}");
+			}
+
 			var pointer = capture.Pointer;
 
 			_allCaptures.Remove(pointer);
@@ -586,6 +654,10 @@ namespace Windows.UI.Xaml
 			ReleasePointerCaptureNative(pointer);
 
 			args = args ?? capture.LastDispatchedEventArgs;
+			if (args == null)
+			{
+				return false; // TODO: We should create a new instance of event args with dummy location
+			}
 			args.Handled = false;
 			return RaiseEvent(PointerCaptureLostEvent, args);
 		}

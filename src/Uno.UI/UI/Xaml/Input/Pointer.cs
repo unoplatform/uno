@@ -56,6 +56,7 @@ namespace Windows.UI.Xaml.Input
 		{
 			if (ReferenceEquals(null, other)) return false;
 			if (ReferenceEquals(this, other)) return true;
+
 			return PointerDeviceType == other.PointerDeviceType && PointerId == other.PointerId;
 		}
 
@@ -63,8 +64,9 @@ namespace Windows.UI.Xaml.Input
 		{
 			if (ReferenceEquals(null, obj)) return false;
 			if (ReferenceEquals(this, obj)) return true;
-			if (!(obj is Pointer pointer)) return false;
-			return Equals(pointer);
+			if (!(obj is Pointer other)) return false;
+
+			return PointerDeviceType == other.PointerDeviceType && PointerId == other.PointerId;
 		}
 
 		public override int GetHashCode()
