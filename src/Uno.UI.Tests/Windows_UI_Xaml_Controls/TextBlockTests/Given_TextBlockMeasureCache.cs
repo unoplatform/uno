@@ -245,5 +245,41 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Controls.TextBlockTests
 				SUT.FindMeasuredSize(tb, new Size(0, 0)).Value
 			);
 		}
+
+		[TestMethod]
+		[DataRow(0, .5, 50, 100, 10, .5)]
+		[DataRow(0, .49, 50, 100, 10, .49)]
+		[DataRow(0.1, .5, 50, 100, 10, .5)]
+		[DataRow(0.49, .5, 50, 100, 10, .5)]
+		[DataRow(0.5, .5, 50, 100, 10, .5)]
+		[DataRow(0.51, .5, 50, 100, 10, .5)]
+		[DataRow(1.0, .5, 50, 100, 10, .5)]
+		[DataRow(1.0, 1.5, 50, 100, 10, 10)]
+		[DataRow(1.5, 1.5, 50, 100, 10, 10)]
+		public void When_SameSize(double availableWidth1, double measuredWidth1, double findWidth1, double availableWidth2, double measuredWidth2, double measuredWidth3)
+		{
+			var SUT = new TextBlockMeasureCache();
+			var tb = new TextBlock { Text = "42"};
+
+			Assert.AreEqual(TextWrapping.NoWrap, tb.TextWrapping);
+
+			SUT.CacheMeasure(tb, new Size(availableWidth1, 10), new Size(measuredWidth1, 10));
+
+			Assert.IsNull(
+				SUT.FindMeasuredSize(tb, new Size(findWidth1, 10))
+			);
+
+			SUT.CacheMeasure(tb, new Size(availableWidth2, 10), new Size(measuredWidth2, 10));
+
+			Assert.AreEqual(
+				new Size(measuredWidth2, 10),
+				SUT.FindMeasuredSize(tb, new Size(availableWidth2, 10)).Value
+			);
+
+			Assert.AreEqual(
+				new Size(measuredWidth3, 10),
+				SUT.FindMeasuredSize(tb, new Size(0, 0)).Value
+			);
+		}
 	}
 }
