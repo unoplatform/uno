@@ -113,6 +113,7 @@
 * Fix layout bug in Image control.
 * [#1387] `ComboBox`: Fix DataContext was propagated to `<ContentPresenter>` when there was no selected item, causing strange display behavior.
 * #1354 fixed Recycler.State desync issue
+* #1533 [Wasm] Fix measure caching for zero sized measure 
 
 ## Release 1.45.0
 ### Features
