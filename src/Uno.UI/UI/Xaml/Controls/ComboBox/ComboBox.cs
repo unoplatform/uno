@@ -21,6 +21,7 @@ using Microsoft.Extensions.Logging;
 
 using Uno.UI.DataBinding;
 #if __ANDROID__
+using Android.Views;
 using _View = Android.Views.View;
 #elif __IOS__
 using UIKit;
@@ -312,6 +313,13 @@ namespace Windows.UI.Xaml.Controls
 
 		partial void OnIsDropDownOpenChangedPartial(bool oldIsDropDownOpen, bool newIsDropDownOpen)
 		{
+			// This method will load the itempresenter children
+#if __ANDROID__
+			SetItemsPresenter((_popup.Child as ViewGroup).FindFirstChild<ItemsPresenter>());
+#elif __IOS__
+			SetItemsPresenter(_popup.Child.FindFirstChild<ItemsPresenter>());
+#endif
+
 			if (_popup != null)
 			{
 				_popup.IsOpen = newIsDropDownOpen;
