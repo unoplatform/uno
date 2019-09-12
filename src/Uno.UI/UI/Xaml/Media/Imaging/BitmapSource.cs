@@ -11,7 +11,7 @@ namespace Windows.UI.Xaml.Media.Imaging
 		public int PixelHeight
 		{
 			get { return (int)GetValue(PixelHeightProperty); }
-			set { SetValue(PixelHeightProperty, value); }
+			internal set { SetValue(PixelHeightProperty, value); }
 		}
 
 		// Using a DependencyProperty as the backing store for PixelHeight.  This enables animation, styling, binding, etc...
@@ -29,7 +29,7 @@ namespace Windows.UI.Xaml.Media.Imaging
 		public int PixelWidth
 		{
 			get { return (int)GetValue(PixelWidthProperty); }
-			set { SetValue(PixelWidthProperty, value); }
+			internal set { SetValue(PixelWidthProperty, value); }
 		}
 
 		// Using a DependencyProperty as the backing store for PixelWidth.  This enables animation, styling, binding, etc...
@@ -57,13 +57,20 @@ namespace Windows.UI.Xaml.Media.Imaging
 
 		public void SetSource(Stream streamSource)
 		{
+			PixelWidth = 0;
+			PixelHeight = 0;
+
 			Stream = streamSource;
 		}
 
 		public async Task SetSourceAsync(Stream streamSource)
 		{
+
 			if (streamSource != null)
 			{
+				PixelWidth = 0;
+				PixelHeight = 0;
+
 				MemoryStream copy = new MemoryStream();
 				await streamSource.CopyToAsync(copy);
 				Stream = copy;

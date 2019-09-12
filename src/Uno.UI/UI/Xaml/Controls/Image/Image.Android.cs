@@ -59,6 +59,12 @@ namespace Windows.UI.Xaml.Controls
 				: 1; // the size of the image source (usually a drawable/resource) is already physical pixels, no need to scale it
 
 			UpdateMatrix(_lastLayoutSize);
+
+			if (Source is BitmapSource bitmapSource)
+			{
+				bitmapSource.PixelWidth = (int)_sourceImageSize.Width;
+				bitmapSource.PixelHeight = (int)_sourceImageSize.Height;
+			}
 		}
 
 		private Windows.Foundation.Size _lastLayoutSize;
