@@ -235,14 +235,14 @@ namespace Windows.UI.Xaml.Controls
 			protected override string Name => Panel.Name;
 		}
 
-		protected override void OnScrollChanged(int l, int t, int oldl, int oldt, bool isIntermediate)
+		protected override void OnScrollChanged(int scrollX, int scrollY, bool isIntermediate)
 		{
 			// Does nothing, so avoid useless interop!
-			// base.OnScrollChanged(l, t, oldl, oldt, isIntermediate);
+			// base.OnScrollChanged(scrollX, scrollY, isIntermediate);
 
 			(TemplatedParent as ScrollViewer)?.OnScrollInternal(
-				ViewHelper.PhysicalToLogicalPixels(l),
-				ViewHelper.PhysicalToLogicalPixels(t),
+				ViewHelper.PhysicalToLogicalPixels(scrollX),
+				ViewHelper.PhysicalToLogicalPixels(scrollY),
 				isIntermediate
 			);
 		}
