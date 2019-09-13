@@ -362,6 +362,16 @@
       "contributions": [
         "doc"
       ]
+    },
+    {
+      "login": "pkar70",
+      "name": "pkar70",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/23451507?v=4",
+      "profile": "https://github.com/pkar70",
+      "contributions": [
+        "code",
+        "test",
+      ]
     }
   ],
   "contributorsPerLine": 5,
