@@ -41,6 +41,8 @@ namespace Windows.UI.Xaml
 			Initialize();
 		}
 
+		public bool IsLoaded { get; } = true;
+
 		public override void Layout()
 		{
 			try

@@ -548,6 +548,12 @@ namespace Windows.UI.Xaml.Controls
 			);
 		#endregion
 
+		/// <summary>
+		/// Cached value of <see cref="Uno.UI.Xaml.Controls.ScrollViewer.UpdatesModeProperty"/>,
+		/// in order to not access the DP on each scroll (perf considerations)
+		/// </summary>
+		internal Uno.UI.Xaml.Controls.ScrollViewerUpdatesMode UpdatesMode { get; set; }
+
 		private static void OnGenericPropertyChanged(object dependencyObject, DependencyPropertyChangedEventArgs args)
 		{
 			var view = dependencyObject as View;
@@ -724,12 +730,6 @@ namespace Windows.UI.Xaml.Controls
 		/// </summary>
 		[UnoOnly]
 		public bool ShouldReportNegativeOffsets { get; set; } = false;
-
-		/// <summary>
-		/// Cached value of <see cref="Uno.UI.Xaml.Controls.ScrollViewer.UpdatesModeProperty"/>,
-		/// in order to not access the DP on each scroll (perf considerations)
-		/// </summary>
-		internal Uno.UI.Xaml.Controls.ScrollViewerUpdatesMode UpdatesMode { get; set; }
 
 		internal void OnScrollInternal(double horizontalOffset, double verticalOffset, bool isIntermediate)
 		{
