@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using Windows.UI.Core;
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -26,6 +27,9 @@ namespace Windows.UI.Xaml.Controls
 
 			void OnDeferralCompleted()
 			{
+#if !__WASM__ // Disable check on WASM until threading is supported
+				CoreDispatcher.CheckThreadAccess();
+#endif
 				if (isCompleted)
 				{
 					throw new InvalidOperationException("Deferral already completed.");
