@@ -1086,13 +1086,14 @@
 			const originalStyleCssText = elementStyle.cssText;
 			let parentElement: HTMLElement = null;
 			let parentElementWidthHeight: { width: string, height: string } = null;
+			let unconnectedRoot = null;
 
 			try {
 				if (!element.isConnected) {
 					// If the element is not connected to the DOM, we need it
 					// to be connected for the measure to provide a meaningful value.
 
-					let unconnectedRoot = element;
+					unconnectedRoot = element;
 					while (unconnectedRoot.parentElement) {
 						// Need to find the top most "unconnected" parent
 						// of this element
@@ -1171,6 +1172,10 @@
 				if (parentElement && parentElementWidthHeight) {
 					parentElement.style.width = parentElementWidthHeight.width;
 					parentElement.style.height = parentElementWidthHeight.height;
+				}
+
+				if (unconnectedRoot !== null) {
+					this.containerElement.removeChild(unconnectedRoot);
 				}
 			}
 		}

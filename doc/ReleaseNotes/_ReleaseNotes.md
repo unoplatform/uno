@@ -116,6 +116,7 @@
 * #1354 fixed Recycler.State desync issue
 * #1533 [Wasm] Fix measure caching for zero sized measure 
 * [iOS(iPad)] `ComboBox` : the combobox wasn't fully expanding vertically on first opening.
+* [Wasm] Fix unloaded UIElements are made visible if measured and arranged
 
 ## Release 1.45.0
 ### Features

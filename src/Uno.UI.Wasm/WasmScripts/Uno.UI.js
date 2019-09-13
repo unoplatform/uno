@@ -1130,8 +1130,9 @@ var Uno;
                 const originalStyleCssText = elementStyle.cssText;
                 let parentElement = null;
                 let parentElementWidthHeight = null;
+                let isDisconnected = !element.isConnected;
                 try {
-                    if (!element.isConnected) {
+                    if (isDisconnected) {
                         // If the element is not connected to the DOM, we need it
                         // to be connected for the measure to provide a meaningful value.
                         let unconnectedRoot = element;
@@ -1199,6 +1200,9 @@ var Uno;
                     if (parentElement && parentElementWidthHeight) {
                         parentElement.style.width = parentElementWidthHeight.width;
                         parentElement.style.height = parentElementWidthHeight.height;
+                    }
+                    if (isDisconnected) {
+                        this.containerElement.removeChild(element);
                     }
                 }
             }
