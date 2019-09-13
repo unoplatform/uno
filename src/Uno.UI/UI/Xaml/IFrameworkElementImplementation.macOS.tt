@@ -581,7 +581,7 @@ namespace <#= mixin.NamespaceName #>
 		/// <summary>
 		/// Indicates if the view is currently loaded.
 		/// </summary>
-		protected bool IsLoaded { get; private set; }
+		public bool IsLoaded { get; private set; }
 
 		internal virtual void OnLoading()
 		{
