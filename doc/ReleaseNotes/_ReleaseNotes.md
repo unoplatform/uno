@@ -37,7 +37,7 @@
   - `FrameworkElement.RequestedTheme ` is ignored for now.
   - Should be set when the application is starting (before first request to a static resource).
 * Prevent possible crash with `MediaPlayerElement` (tentative)
-* Add support for `ContentDialog`
+* Add support for `ContentDialog`, including `Closing` and `Closed` events
 * Permit `DependencyProperty` to be set reentrantly. Eg this permits `TextBox.TextChanging` to modify the `Text` property (previously this could only be achieved using `Dispatcher.RunAsync()`).
 * Implement `TextBox.TextChanging` and `TextBox.BeforeTextChanging`. As on UWP, this allows the text to be intercepted and modified before the UI is updated. Previously on Android using the `TextChanged` event would lead to laggy response and dropped characters when typing rapidly; this is no longer the case with `TextChanging`.
 * [WASM] `ComboBox`'s dropdown list (`CarouselPanel`) is now virtualized (#1012)
