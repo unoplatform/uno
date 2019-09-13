@@ -32,7 +32,7 @@ branches:
   feature:
     regex: feature/(.*?)
     tag: feature.{BranchName}    
-    increment: none
+    increment: minor
     source-branches: ['master']
 
 ignore:
