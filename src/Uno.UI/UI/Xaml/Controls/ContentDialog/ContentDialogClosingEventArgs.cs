@@ -23,5 +23,7 @@ namespace Windows.UI.Xaml.Controls
 
 			return _deferralManager.GetDeferral();
 		}
+
+		internal void EventRaiseCompleted() => _deferralManager?.EventRaiseCompleted();
 	}
 }

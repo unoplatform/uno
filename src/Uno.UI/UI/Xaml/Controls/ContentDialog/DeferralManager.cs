@@ -12,7 +12,11 @@ namespace Windows.UI.Xaml.Controls
 	internal class DeferralManager<T> where T : IDeferral, new()
 	{
 		private readonly Action _completeHandler;
-		private int _deferralsCount;
+		/// <summary>
+		/// Start the count at 1, this ensures the deferral won't be completed until all subscribers to the corresponding event have had a
+		/// chance to take out a deferral object.
+		/// </summary>
+		private int _deferralsCount = 1;
 
 		public DeferralManager(Action completeHandler)
 		{
@@ -36,14 +40,22 @@ namespace Windows.UI.Xaml.Controls
 				}
 
 				isCompleted = true;
-				_deferralsCount--;
-				if (_deferralsCount <= 0)
-				{
-					_completeHandler();
-				}
+				DeferralCompleted();
 			}
 		}
 
-
+		/// <summary>
+		/// This must be called after the event which gives out the referral has finished being raised.
+		/// </summary>
+		internal void EventRaiseCompleted() => DeferralCompleted();
+		
+		private void DeferralCompleted()
+		{
+			_deferralsCount--;
+			if (_deferralsCount <= 0)
+			{
+				_completeHandler();
+			}
+		}
 	}
 }

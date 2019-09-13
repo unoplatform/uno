@@ -83,6 +83,10 @@ namespace Windows.UI.Xaml.Controls
 			{
 				Complete(closingArgs);
 			}
+			else
+			{
+				closingArgs.EventRaiseCompleted();
+			}
 		}
 
 		protected override void OnApplyTemplate()
