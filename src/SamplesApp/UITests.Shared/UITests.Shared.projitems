@@ -117,6 +117,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\FrameworkElementTests\FrameworkElement_UnloadedMeasure.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\FrameworkElementTests\LoadEvents.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -2503,6 +2507,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\FocusManager\FocusManagerTest.xaml.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\FocusManager\FocusManager_FocusDirection.xaml.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\FocusManager\FocusManager_GetFocus_Automated.xaml.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\FrameworkElementTests\FrameworkElement_UnloadedMeasure.xaml.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\FrameworkElementTests\LoadEvents.xaml.cs">
       <DependentUpon>LoadEvents.xaml</DependentUpon>
     </Compile>
@@ -4455,12 +4460,6 @@
     </Compile>
     <Compile Update="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ToolTip\TextOnlyToolTipSample.xaml.cs">
       <DependentUpon>TextOnlyToolTipSample.xaml</DependentUpon>
-    </Compile>
-    <Compile Update="C:\src\Uno2\src\SamplesApp\UITests.Shared\Windows_UI_Xaml_Controls\ComboBox\ComboBox_ItemDataContext.xaml.cs">
-      <DependentUpon>ComboBox_ItemDataContext.xaml</DependentUpon>
-    </Compile>
-    <Compile Update="C:\s\nv.github\uno\src\SamplesApp\UITests.Shared\Windows_UI_Xaml_Controls\ImageTests\Image_ImageSource_PixelSize.xaml.cs">
-      <DependentUpon>Image_ImageSource_PixelSize.xaml</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>
