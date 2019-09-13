@@ -97,8 +97,7 @@ pretty large! Read our [contributing guide](CONTRIBUTING.md) to learn about our 
 Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/docs/en/emoji-key)):
 
 <!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
-<!-- prettier-ignore-start -->
-<!-- markdownlint-disable -->
+<!-- prettier-ignore -->
 <table>
   <tr>
     <td align="center"><a href="https://github.com/jeromelaban"><img src="https://avatars0.githubusercontent.com/u/5839577?v=4" width="100px;" alt="Jérôme Laban"/><br /><sub><b>Jérôme Laban</b></sub></a><br /><a href="https://github.com/unoplatform/uno/commits?author=jeromelaban" title="Code">💻</a> <a href="#content-jeromelaban" title="Content">🖋</a> <a href="https://github.com/unoplatform/uno/commits?author=jeromelaban" title="Documentation">📖</a> <a href="#example-jeromelaban" title="Examples">💡</a> <a href="#maintenance-jeromelaban" title="Maintenance">🚧</a> <a href="#infra-jeromelaban" title="Infrastructure (Hosting, Build-Tools, etc)">🚇</a> <a href="#ideas-jeromelaban" title="Ideas, Planning, & Feedback">🤔</a> <a href="#review-jeromelaban" title="Reviewed Pull Requests">👀</a> <a href="https://github.com/unoplatform/uno/commits?author=jeromelaban" title="Tests">⚠️</a> <a href="#projectManagement-jeromelaban" title="Project Management">📆</a></td>
@@ -147,9 +146,8 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
     <td align="center"><a href="https://github.com/Massimo37"><img src="https://avatars1.githubusercontent.com/u/36633246?v=4" width="100px;" alt="Massimo Cacchiotti"/><br /><sub><b>Massimo Cacchiotti</b></sub></a><br /><a href="https://github.com/unoplatform/uno/commits?author=Massimo37" title="Code">💻</a></td>
     <td align="center"><a href="https://github.com/rfrappier"><img src="https://avatars2.githubusercontent.com/u/30271212?v=4" width="100px;" alt="rfrappier"/><br /><sub><b>rfrappier</b></sub></a><br /><a href="https://github.com/unoplatform/uno/commits?author=rfrappier" title="Documentation">📖</a></td>
     <td align="center"><a href="http://furkankambay.com/"><img src="https://avatars1.githubusercontent.com/u/8467416?v=4" width="100px;" alt="Furkan Kambay"/><br /><sub><b>Furkan Kambay</b></sub></a><br /><a href="https://github.com/unoplatform/uno/commits?author=FurkanKambay" title="Documentation">📖</a></td>
+    <td align="center"><a href="https://github.com/pkar70"><img src="https://avatars2.githubusercontent.com/u/23451507?v=4" width="100px;" alt="pkar70"/><br /><sub><b>pkar70</b></sub></a><br /><a href="#review-pkar70" title="Reviewed Pull Requests">👀</a> <a href="https://github.com/unoplatform/uno/commits?author=pkar70" title="Code">💻</a> <a href="https://github.com/unoplatform/uno/commits?author=pkar70" title="Tests">⚠️</a> <a href="https://github.com/unoplatform/uno/commits?author=pkar70" title="Documentation">📖</a></td>
   </tr>
 </table>
 
-<!-- markdownlint-enable -->
-<!-- prettier-ignore-end -->
 <!-- ALL-CONTRIBUTORS-LIST:END -->
