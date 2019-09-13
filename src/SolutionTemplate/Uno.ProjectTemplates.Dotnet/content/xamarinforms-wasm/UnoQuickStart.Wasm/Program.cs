@@ -17,6 +17,7 @@ namespace UnoQuickStart.Wasm
 
         static void ConfigureFilters(ILoggerFactory factory)
         {
+//-:cnd:noEmit
 #if DEBUG
             factory
                 .WithFilter(new FilterLoggerSettings
@@ -49,6 +50,7 @@ namespace UnoQuickStart.Wasm
             factory
                 .AddConsole(LogLevel.Error);
 #endif
+//-:cnd:noEmit
         }
     }
 }
