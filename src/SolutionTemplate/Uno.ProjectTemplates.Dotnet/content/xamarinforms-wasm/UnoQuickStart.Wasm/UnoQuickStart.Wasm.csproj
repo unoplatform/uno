@@ -11,6 +11,7 @@
 
 	<ItemGroup>
 		<Content Include="..\UnoQuickStart.UWP\Assets\*.png" Link="Assets\%(FileName)%(Extension)" />
+		<Content Include="..\UnoQuickStart.UWP\*.png" Link="%(FileName)%(Extension)" />
 	</ItemGroup>
 
 	<ItemGroup>
