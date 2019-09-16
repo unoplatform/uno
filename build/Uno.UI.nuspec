@@ -24,6 +24,9 @@
         <dependency id="Uno.SourceGenerationTasks" version="1.32.0-dev.297" />
         <dependency id="Uno.Core" version="1.29.0-dev.93" />
         <dependency id="Uno.Core.Build" version="1.29.0-dev.93" />
+
+        <!-- Hot Reload related -->
+        <dependency id="Newtonsoft.Json" version="12.0.2" />
       </group>
 
       <!-- Android 9.0 -->
@@ -34,6 +37,9 @@
         <dependency id="Uno.SourceGenerationTasks" version="1.32.0-dev.297" />
         <dependency id="Uno.Core" version="1.29.0-dev.93" />
         <dependency id="Uno.Core.Build" version="1.29.0-dev.93" />
+
+        <!-- Hot Reload related -->
+        <dependency id="Newtonsoft.Json" version="12.0.2" />
       </group>
 
       <!-- iOS -->
@@ -41,6 +47,9 @@
         <dependency id="Uno.SourceGenerationTasks" version="1.32.0-dev.297" />
         <dependency id="Uno.Core" version="1.29.0-dev.93" />
         <dependency id="Uno.Core.Build" version="1.29.0-dev.93" />
+
+        <!-- Hot Reload related -->
+        <dependency id="Newtonsoft.Json" version="12.0.2" />
       </group>
 
       <!-- iOS -->
@@ -58,6 +67,10 @@
         <dependency id="System.Numerics.Vectors" version="4.5.0-preview1-26216-02" />
         <dependency id="System.Runtime.InteropServices.WindowsRuntime" version="4.3.0" />
         <dependency id="System.Memory" version="4.5.2" />
+
+        <!-- Hot Reload related -->
+        <dependency id="Newtonsoft.Json" version="12.0.2" />
+        <dependency id="Uno.Wasm.WebSockets" version="1.0.0-dev.30" />
       </group>
     </dependencies>
 

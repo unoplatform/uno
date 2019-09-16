@@ -1,7 +1,7 @@
 # Using the Uno Platform XAML Hot Reload
 
 How to use the XAML Hot Reload:
-- Find the latest build from [Uno.UI-Public CI](https://nventive.visualstudio.com/DefaultCollection/Umbrella/_build?definitionId=885&_a=summary), filtered on the branch named `feature/hot-reload`
+- Get the [XAML Hot Reload Preview Release](https://github.com/unoplatform/uno/releases) on GitHub
 - In the artifacts named `NugetPackages`, select **View Content` and download:
     - `UnoPlatform-XXXX.vsix`
     - `vslatest/Uno.UI.1.XX.nupkg`
