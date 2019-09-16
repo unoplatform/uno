@@ -283,11 +283,11 @@ namespace Windows.UI.Xaml.Controls
 		#endregion
 
 		#region ZoomMode (Attached DP - inherited)
-		public static ZoomMode GetZoomMode(DependencyObject obj)
-			=> (ZoomMode)obj.GetValue(ZoomModeProperty);
+		public static ZoomMode GetZoomMode(DependencyObject element)
+			=> (ZoomMode)element.GetValue(ZoomModeProperty);
 
-		public static void SetZoomMode(DependencyObject obj, ZoomMode value)
-			=> obj.SetValue(ZoomModeProperty, value);
+		public static void SetZoomMode(DependencyObject element, ZoomMode zoomMode)
+			=> element.SetValue(ZoomModeProperty, zoomMode);
 
 		public ZoomMode ZoomMode
 		{
