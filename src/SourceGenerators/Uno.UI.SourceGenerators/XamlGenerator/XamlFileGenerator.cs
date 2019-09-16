@@ -394,6 +394,10 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			RegisterResources(topLevelControl);
 			BuildProperties(writer, topLevelControl, isInline: false, returnsContent: false);
 			writer.AppendLineInvariant(";");
+			if (_isUiAutomationMappingEnabled)
+			{
+				writer.AppendLineInvariant("global::Uno.UI.FrameworkElementHelper.IsUiAutomationMappingEnabled = true;");
+			}
 		}
 
 		private void GenerateResourceLoader(IndentedStringBuilder writer)
