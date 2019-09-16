@@ -1,5 +1,5 @@
 assembly-versioning-scheme: MajorMinorPatch
-mode: ContinuousDelivery
+mode: ContinuousDeployment
 next-version: 2.0.0
 continuous-delivery-fallback-tag: ""
 tag-prefix: 'version-tags-are-disabled'
@@ -31,7 +31,7 @@ branches:
     source-branches: ['master']
   feature:
     regex: feature/(.*?)
-    tag: feature.{BranchName}    
+    tag: feature.{BranchName}
     increment: minor
     source-branches: ['master']
 
