@@ -5,10 +5,12 @@
     xmlns:local="using:UITests.Shared.Windows_UI_Xaml_Controls.ScrollViewerTests"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    mc:Ignorable="d"
+	xmlns:xamarin="http://platform.uno/xamarin"
+	xmlns:not_xamarin="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    mc:Ignorable="d xamarin"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
-    <StackPanel x:Name="_root">
+    <xamarin:StackPanel x:Name="_root">
 		<ScrollViewer
 			x:Name="_scroll"
 			Width="400"
@@ -40,5 +42,7 @@
 
 		<TextBlock Text="Output" />
 		<TextBlock x:Name="_output" />
-    </StackPanel>
+    </xamarin:StackPanel>
+
+	<not_xamarin:TextBlock Text="Updates mode is specific to Uno" />
 </Page>

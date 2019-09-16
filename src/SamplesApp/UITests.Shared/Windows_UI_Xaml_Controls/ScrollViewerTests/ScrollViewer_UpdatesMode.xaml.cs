@@ -5,7 +5,10 @@ using Windows.UI.Core;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Input;
 using Uno.UI.Samples.Controls;
+
+#if !NETFX_CORE
 using _UpdatesMode = Uno.UI.Xaml.Controls.ScrollViewerUpdatesMode;
+#endif
 
 namespace UITests.Shared.Windows_UI_Xaml_Controls.ScrollViewerTests
 {
@@ -18,6 +21,9 @@ namespace UITests.Shared.Windows_UI_Xaml_Controls.ScrollViewerTests
 		{
 			this.InitializeComponent();
 
+#if NETFX_CORE
+		}
+#else
 			_modes.ItemsSource = Enum.GetNames(typeof(_UpdatesMode));
 			_modes.SelectedIndex = 0;
 			_modes.SelectionChanged += OnModesOnSelectionChanged;
@@ -48,5 +54,6 @@ namespace UITests.Shared.Windows_UI_Xaml_Controls.ScrollViewerTests
 		private void SetSync(object sender, TappedRoutedEventArgs e) => SetMode(_UpdatesMode.Synchronous);
 
 		private void SetAsync(object sender, TappedRoutedEventArgs e) => SetMode(_UpdatesMode.AsynchronousIdle);
+#endif
 	}
 }
