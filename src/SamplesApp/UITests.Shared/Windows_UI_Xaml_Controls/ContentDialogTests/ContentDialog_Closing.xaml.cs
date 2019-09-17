@@ -93,5 +93,23 @@ namespace UITests.Shared.Windows_UI_Xaml_Controls.ContentDialogTests
 
 			var dummy = dialog.ShowAsync();
 		}
+
+		private void PrimaryDialog_Click(object sender, RoutedEventArgs args)
+		{
+			DidCloseTextBlock.Text = "Not closed";
+			var dialog = new ContentDialog { CloseButtonText = "Close", PrimaryButtonText = "Primo" };
+			dialog.Closing += (o, e) =>
+			  {
+				  ResultTextBlock.Text = e.Result.ToString();
+			  };
+
+			dialog.Closed += (o, e) =>
+			{
+				DidCloseTextBlock.Text = "Closed";
+			};
+
+			var dummy = dialog.ShowAsync();
+		}
+
 	}
 }

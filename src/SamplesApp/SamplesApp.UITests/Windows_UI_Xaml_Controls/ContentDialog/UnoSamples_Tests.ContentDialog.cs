@@ -253,14 +253,30 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TimePickerTests
 			_app.WaitForDependencyPropertyValue(resultText, "Text", "Second complete called");
 
 			_app.WaitForDependencyPropertyValue(closedText, "Text", "Closed");
+		}
 
+		[Test]
+		[AutoRetry]
+		public void ContentDialog_Closing_Result()
+		{
+			Run("UITests.Shared.Windows_UI_Xaml_Controls.ContentDialogTests.ContentDialog_Closing");
 
+			var showDialog = _app.Marked("PrimaryDialog");
 
+			_app.WaitForElement(showDialog);
 
+			_app.Tap(showDialog);
 
-			//_app.WaitForDependencyPropertyValue(resultText, "Text", "Closing event was raised!");
+			var closeButton = _app.Marked("PrimaryButton");
+			_app.WaitForElement(closeButton);
 
-			//_app.WaitForDependencyPropertyValue(closedText, "Text", "Closed");
+			_app.Tap(closeButton);
+
+			var resultText = _app.Marked("ResultTextBlock");
+			var closedText = _app.Marked("DidCloseTextBlock");
+
+			_app.WaitForDependencyPropertyValue(resultText, "Text", "Primary");
+			_app.WaitForDependencyPropertyValue(closedText, "Text", "Closed");
 		}
 	}
 }

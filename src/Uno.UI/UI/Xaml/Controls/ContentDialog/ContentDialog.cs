@@ -75,7 +75,7 @@ namespace Windows.UI.Xaml.Controls
 					Closed?.Invoke(this, new ContentDialogClosedEventArgs(result));
 				}
 			}
-			var closingArgs = new ContentDialogClosingEventArgs(Complete);
+			var closingArgs = new ContentDialogClosingEventArgs(Complete, result);
 
 			Closing?.Invoke(this, closingArgs);
 

@@ -7,9 +7,11 @@ namespace Windows.UI.Xaml.Controls
 		private DeferralManager<ContentDialogClosingDeferral> _deferralManager;
 		private readonly Action<ContentDialogClosingEventArgs> _complete;
 
-		internal ContentDialogClosingEventArgs(Action<ContentDialogClosingEventArgs> complete)
+		internal ContentDialogClosingEventArgs(Action<ContentDialogClosingEventArgs> complete, ContentDialogResult result)
 		{
 			_complete = complete;
+
+			Result = result;
 		}
 		internal bool IsDeferred => _deferralManager != null;
 
