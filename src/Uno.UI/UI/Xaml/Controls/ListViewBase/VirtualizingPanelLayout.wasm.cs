@@ -452,7 +452,7 @@ namespace Windows.UI.Xaml.Controls
 			ClearLines();
 
 			UpdateCompleted();
-
+			Generator.ClearIdCache();
 			OwnerPanel?.InvalidateMeasure();
 		}
 
