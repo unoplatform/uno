@@ -59,6 +59,7 @@
 * [#1352](https://github.com/unoplatform/uno/issues/1352) Add support for `ThemeResource`s with different types (eg: mixing `SolidColorBrush` and `LinearGradientBrush`)
 * `Popup` & `ComboBox` (and other controls using `Popup`) were not behaving properly when `IsLightDismissable` were set to `true`.
 * Add support for BitmapSource.PixelWidth and Height
+* Preliminary support for `ColumnDefinition.ActualWidth` and `RowDefinition.ActualHeight`. 
 
 ### Breaking changes
 * `TextBox` no longer raises TextChanged when its template is applied, in line with UWP.
@@ -117,6 +118,7 @@
 * #1354 fixed Recycler.State desync issue
 * #1533 [Wasm] Fix measure caching for zero sized measure 
 * [iOS(iPad)] `ComboBox` : the combobox wasn't fully expanding vertically on first opening.
+* `Popup` & `ComboBox` (and other controls using `Popup`) were not behaving properly when `IsLightDismissable` were set to `true`.
 * [Wasm] Fix unloaded UIElements are made visible if measured and arranged
 
 ## Release 1.45.0
