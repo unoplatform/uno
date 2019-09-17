@@ -18,6 +18,9 @@
 			<Button x:Name="DeferredDialog"
 					Content="Show dialog with deferred close"
 					Click="DeferredDialog_Click" />
+			<Button x:Name="PrimaryDialog"
+					Content="Show dialog with Primary button"
+					Click="PrimaryDialog_Click" />
 			<TextBlock x:Name="ResultTextBlock"
 					   Margin="50" />
 			<TextBlock x:Name="DidCloseTextBlock"
