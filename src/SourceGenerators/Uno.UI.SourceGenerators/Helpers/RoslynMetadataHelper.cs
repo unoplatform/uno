@@ -239,5 +239,31 @@ namespace Uno.Roslyn
 		public INamedTypeSymbol GetGenericType(string name = "T") =>  Compilation.CreateErrorTypeSymbol(null, name, 0);
 
 		public IArrayTypeSymbol GetArray(ITypeSymbol type) => Compilation.CreateArrayTypeSymbol(type);
+
+		public IEnumerable<INamedTypeSymbol> GetAllTypesDerivingFrom(INamedTypeSymbol baseType)
+		{
+			return GetTypesDerivingFrom(Compilation.GlobalNamespace);
+
+			IEnumerable<INamedTypeSymbol> GetTypesDerivingFrom(INamespaceSymbol ns)
+			{
+				foreach (var member in ns.GetMembers())
+				{
+					if (member is INamespaceSymbol nsInner)
+					{
+						foreach (var t in GetTypesDerivingFrom(nsInner))
+						{
+							yield return t;
+						}
+					}
+					else if (member is INamedTypeSymbol type)
+					{
+						if (((INamedTypeSymbol)member).Is(baseType))
+						{
+							yield return type;
+						}
+					}
+				}
+			}
+		}
 	}
 }
