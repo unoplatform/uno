@@ -69,6 +69,7 @@
 * Projects targeting Android 9 must now use Xamarin.GooglePlayServices.* 71.1600.0
 
 ### Bug fixes
+* [#1531](https://github.com/unoplatform/uno/pull/1531)Fix an issue with VirtualizePanelAdaptater by adding a cache where the ItemSources lenght change and created a OutOfRangeException
 * [WASM] #1518 Fix Navigation Issue Where SystemNavigationManager.enable() is called twice and clear the stack history
 * [#1278](https://github.com/unoplatform/uno/pull/1278) the XAML sourcegenerator now always uses the fully qualified type name to prevent type conflicts.
 * [#1392](https://github.com/unoplatform/uno/pull/1392) Resolved exceptions while changing cursor color on Android P.

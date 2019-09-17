@@ -70,5 +70,16 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ListViewTests
 				_app.Screenshot($"ListView_ItemPanel_HotSwap - {buttonName}");
 			}
 		}
+
+		[Test]
+		[AutoRetry]
+		public void ListView_VirtualizePanelAdaptaterCache()
+		{
+			Run("UITests.Shared.Windows_UI_Xaml_Controls.ListView.ListView_VirtualizePanelAdaptaterCache");
+
+			var result = _app.Query(e => e.Text("Success"));
+
+			_app.Screenshot($"ListView_VirtualizePanelAdaptaterCache");
+		}
 	}
 }
