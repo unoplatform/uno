@@ -8,7 +8,7 @@ branches:
   master:
     regex: master
     tag: dev
-    increment: patch
+    increment: none
   beta:
     regex: release/beta/
     tag: beta
