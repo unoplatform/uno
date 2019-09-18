@@ -39,6 +39,8 @@ For a larger example and features demo:
     * [XAML Edit and Continue](https://blogs.msdn.microsoft.com/visualstudio/2016/04/06/ui-development-made-easier-with-xaml-edit-continue/) for live XAML edition on each key stroke
     * [C# Edit and Continue](https://docs.microsoft.com/en-us/visualstudio/debugger/how-to-use-edit-and-continue-csharp)
     * Validate on other platforms as late as possible
+    * Experimental XAML Hot Reload for WebAssembly, iOS and Android
+    * [Uno.UITest](https://github.com/unoplatform/Uno.UITest), a library to create Cross-Platform UI Tests for WebAssembly, iOS and Android.
 * Cross Platform Controls
     * [Control Templating](https://docs.microsoft.com/en-us/windows/uwp/design/controls-and-patterns/control-templates)
     * [Data Templating](https://code.msdn.microsoft.com/Data-Binding-in-UWP-b5c98114)
@@ -49,11 +51,13 @@ For a larger example and features demo:
     * [MVVM Light Toolkit](https://github.com/nventive/uno.mvvmlight)
     * [Microsoft XAML Behaviors](https://github.com/nventive/Uno.XamlBehaviors)
     * [Prism](https://github.com/nventive/Uno.Prism)
+    * [SkiaSharp](https://github.com/unoplatform/Uno.SkiaSharp)
+    * [SkiaSharp.Extended](https://github.com/unoplatform/Uno.SkiaSharp.Extended)
     * [MVVMCross](https://www.mvvmcross.com/) (soon)
     * [ReactiveUI Official](https://github.com/reactiveui/ReactiveUI/pull/2067)
     * [WindowsStateTriggers](https://github.com/nventive/Uno.WindowsStateTriggers)
     * [Xamarin.Forms for UWP](https://github.com/nventive/Uno.Xamarin.Forms), [NuGet](https://www.nuget.org/packages/ReactiveUI.Uno)
-    * [Rx.NET](https://github.com/nventive/Uno.Rx.NET)
+    * [Rx.NET](https://github.com/reactiveui/Reactive.Wasm)
     * [ColorCode-Universal](https://github.com/nventive/Uno.ColorCode-Universal)
     * Any UWP project
 * Responsive Design
@@ -63,6 +67,8 @@ For a larger example and features demo:
 * Platform Specific 
     * Native controls and properties via [conditional XAML](doc/articles/using-uno-ui.md#supporting-multiple-platforms-in-xaml-files)
     * Any of the existing Xamarin iOS/Android libraries available
+* Xamarin.Forms Renderers
+    * [Uno Platform WebAssembly Renderers for Xamarin.Forms](https://github.com/unoplatform/Uno.Xamarin.Forms.Platform)
 
 # Live WebAssembly Apps
 
