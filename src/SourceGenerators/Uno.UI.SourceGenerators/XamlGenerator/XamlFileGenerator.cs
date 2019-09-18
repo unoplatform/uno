@@ -2340,6 +2340,21 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					}
 				}
 			}
+
+			// Local function used to build a property/value for any custom MarkupExtensions
+			void BuildCustomMarkupExtensionPropertyValue(IIndentedStringBuilder writer, XamlMemberDefinition member, string prefix)
+			{
+				Func<string, string> formatLine = format => prefix + format + (prefix.HasValue() ? ";\r\n" : "");
+
+				var propertyValue = GetCustomMarkupExtensionValue(member);
+
+				if (propertyValue.HasValue())
+				{
+					var formatted = formatLine($"{member.Member.Name} = {propertyValue}");
+
+					writer.AppendLine(formatted);
+				}
+			}
 		}
 
 		/// <summary>
@@ -2516,21 +2531,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				}
 
 				return null;
-
-				string BuildMemberPropertyValue(XamlMemberDefinition m)
-				{
-					if (IsCustomMarkupExtensionType(m.Objects.FirstOrDefault()?.Type))
-					{
-						// If the member contains a custom markup extension, build the inner part first
-						var propertyValue = GetCustomMarkupExtensionValue(m);
-						return "{0} = {1}".InvariantCultureFormat(m.Member.Name, propertyValue);
-					}
-					else
-					{
-						return "{0} = {1}".InvariantCultureFormat(m.Member.Name == "_PositionalParameters" ? "Path" : m.Member.Name, BuildBindingOption(m, FindPropertyType(m.Member), prependCastToType: true));
-					}
-				}
-			};
+			}
 
 			var bindingOptions = GetBindingOptions();
 
@@ -2582,29 +2583,29 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			}
 		}
 
-		private void BuildCustomMarkupExtensionPropertyValue(IIndentedStringBuilder writer, XamlMemberDefinition member, string prefix)
+		private string BuildMemberPropertyValue(XamlMemberDefinition m)
 		{
-			Func<string, string> formatLine = format => prefix + format + (prefix.HasValue() ? ";\r\n" : "");
-
-			var propertyValue = GetCustomMarkupExtensionValue(member);
-
-			if (propertyValue.HasValue())
+			if (IsCustomMarkupExtensionType(m.Objects.FirstOrDefault()?.Type))
 			{
-				var formatted = formatLine($"{member.Member.Name} = {propertyValue}");
-
-				writer.AppendLine(formatted);
+				// If the member contains a custom markup extension, build the inner part first
+				var propertyValue = GetCustomMarkupExtensionValue(m);
+				return "{0} = {1}".InvariantCultureFormat(m.Member.Name, propertyValue);
+			}
+			else
+			{
+				return "{0} = {1}".InvariantCultureFormat(m.Member.Name == "_PositionalParameters" ? "Path" : m.Member.Name, BuildBindingOption(m, FindPropertyType(m.Member), prependCastToType: true));
 			}
 		}
 
 		private string GetCustomMarkupExtensionValue(XamlMemberDefinition member)
 		{
 			// Get the type of the custom markup extension
-			var markupType = member
+			var markupTypeDef = member
 				.Objects
 				.FirstOrDefault(o => IsCustomMarkupExtensionType(o.Type));
 
 			// Build a string of all its properties
-			var porperties = markupType
+			var properties = markupTypeDef
 				.Members
 				.Select(m =>
 				{
@@ -2619,20 +2620,28 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				.JoinBy(", ");
 
 			// Get the full globalized namespaces for the custom markup extension and also for IMarkupExtensionOverrides
-			var markupTypeFullName = GetGlobalizedTypeName(FindType(markupType.Type).GetFullName());
+			var markupType = GetType(markupTypeDef.Type);
+			var markupTypeFullName = GetGlobalizedTypeName(markupType.GetFullName());
 			var xamlMarkupFullName = GetGlobalizedTypeName(XamlConstants.Types.IMarkupExtensionOverrides);
 
 			// Get the attribute from the custom markup extension class then get the return type specifed with MarkupExtensionReturnTypeAttribute
-			var attributeData = FindType(markupType.Type).FindAttribute(XamlConstants.Types.MarkupExtensionReturnTypeAttribute);
+			var attributeData = markupType.FindAttribute(XamlConstants.Types.MarkupExtensionReturnTypeAttribute);
 
 			if (attributeData == null)
 			{
-				this.Log().Error($"The custom markup extension {markupType.Type.Name} must specify the return type using {nameof(XamlConstants.Types.MarkupExtensionReturnTypeAttribute)}.");
+				this.Log().Error($"The custom markup extension {markupTypeDef.Type.Name} must specify the return type using {nameof(XamlConstants.Types.MarkupExtensionReturnTypeAttribute)}.");
 				return string.Empty;
 			}
 
 			var returnType = attributeData.NamedArguments.FirstOrDefault(kvp => kvp.Key == "ReturnType").Value.Value;
-			return $"({returnType})(({xamlMarkupFullName})(new {markupTypeFullName} {{ {porperties} }})).ProvideValue()";
+
+			if (returnType == null)
+			{
+				this.Log().Error($"The custom markup extension contains a ReturnType that cannot be found.");
+				return string.Empty;
+			}
+
+			return $"({returnType})(({xamlMarkupFullName})(new {markupTypeFullName} {{ {properties} }})).ProvideValue()";
 		}
 
 		private bool IsMemberInsideDataTemplate(XamlObjectDefinition xamlObject)
