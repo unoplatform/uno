@@ -92,7 +92,7 @@ namespace Windows.UI.Xaml.Controls
 
 			_items.VectorChanged += (s, e) =>
 			{
-				OnItemsChanged(null);
+				OnItemsChanged(e);
 				SetNeedsUpdateItems();
 			};
 		}

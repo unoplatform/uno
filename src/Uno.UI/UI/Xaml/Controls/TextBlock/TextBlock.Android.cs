@@ -309,6 +309,13 @@ namespace Windows.UI.Xaml.Controls
 
 				var originalArrangeLayout = _arrangeLayout;
 
+				if (_measureLayout == null)
+				{
+					// This may happen in the unusual case that the TextBlock's Visibility changes during an arrange pass, such that
+					// ArrangeOverride is called without MeasureOverride having being called.
+					UpdateLayout(ref _measureLayout, finalSize, exactWidth: true);
+				}
+
 				// If the width is not the same, the wrapping/trimming may be different.
 				var isSameWidth = _measureLayout.AvailableSize.Width == finalSize.Width;
 
@@ -576,7 +583,7 @@ namespace Windows.UI.Xaml.Controls
 				{
 					return 0f;
 				}
-				
+
 				// Use integer font metrics to match StaticLayout's usage and avoid pixel rounding errors
 				var fmi = paint.GetFontMetricsInt();
 				var baseLineHeight = fmi.Descent - fmi.Ascent;
