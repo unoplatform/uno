@@ -2,9 +2,9 @@
 
 How to use the XAML Hot Reload:
 - Get the [XAML Hot Reload Preview Release](https://github.com/unoplatform/uno/releases) on GitHub
-- In the artifacts named `NugetPackages`, select **View Content` and download:
+- In the release download:
     - `UnoPlatform-XXXX.vsix`
-    - `vslatest/Uno.UI.1.XX.nupkg`
+    - `Uno.UI.1.XX.nupkg`
 - Create a folder on your disk (e.g. `C:\temp\nuget-local`) and place both files there
 - Make sure all your VS instances are closed, install the VSIX file
 - Open Visual Studio, in **Tools/Options** go to the **Nuget Package Manager**, then **Package Manager**
