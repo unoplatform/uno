@@ -557,7 +557,7 @@ namespace Uno.UI
 			{
 				var name = (view as IFrameworkElement)?.Name;
 				var namePart = !name.IsNullOrEmpty() ? $"-'{name}'" : "";
-				sb.AppendLine($"{spacing}{(view == viewOfInterest ? "*" : "")}>{view.ToString()}{namePart}-({ViewHelper.PhysicalToLogicalPixels(view.Width)}x{ViewHelper.PhysicalToLogicalPixels(view.Height)})");
+				sb.AppendLine($"{spacing}{(view == viewOfInterest ? "*" : "")}>{view.ToString()}{namePart}-({ViewHelper.PhysicalToLogicalPixels(view.Width)}x{ViewHelper.PhysicalToLogicalPixels(view.Height)}) {view.Visibility}");
 			}
 		}
 
