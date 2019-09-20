@@ -125,6 +125,7 @@
 * [Pivot] Add support for non PivotItem items
 * #1557 Fix local DataContext on ContentDialog is overwritten
 * [WASM] Fix display for multiple popups (eg ComboBox inside of ContentDialog)
+* [Android] Fix invalid ImageBrush stack overflow with delayed image reuse
 
 ## Release 1.45.0
 ### Features
