@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using Uno.UI;
 using Windows.UI.Core;
 
 namespace Windows.UI.Xaml.Media
@@ -15,6 +16,7 @@ namespace Windows.UI.Xaml.Media
 
 				var currentlyRaisingEvents = CoreDispatcher.Main.ShouldRaiseRenderEvents;
 				CoreDispatcher.Main.Rendering += value;
+				CoreDispatcher.Main.RenderEventThrottle = FeatureConfiguration.CompositionTarget.RenderEventThrottle;
 				if (!currentlyRaisingEvents)
 				{
 					CoreDispatcher.Main.WakeUp();

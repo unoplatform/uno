@@ -81,6 +81,7 @@ namespace Windows.UI.Core
 		/// Backs the CompositionTarget.Rendering event.
 		/// </summary>
 		internal event EventHandler<object> Rendering;
+		internal int RenderEventThrottle;
 
 		public CoreDispatcher()
 		{
@@ -312,7 +313,7 @@ namespace Windows.UI.Core
 
 		async void DispatchWakeUp()
 		{
-			await Task.Delay(50);
+			await Task.Delay(RenderEventThrottle);
 			if (ShouldRaiseRenderEvents)
 			{
 				WakeUp();
