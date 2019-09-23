@@ -553,11 +553,18 @@ namespace Uno.UI
 
 			return sb.ToString();
 
-			void AppendView(View view)
+			StringBuilder AppendView(View innerView)
 			{
-				var name = (view as IFrameworkElement)?.Name;
-				var namePart = !name.IsNullOrEmpty() ? $"-'{name}'" : "";
-				sb.AppendLine($"{spacing}{(view == viewOfInterest ? "*" : "")}>{view.ToString()}{namePart}-({ViewHelper.PhysicalToLogicalPixels(view.Width)}x{ViewHelper.PhysicalToLogicalPixels(view.Height)}) {view.Visibility}");
+				var name = (innerView as IFrameworkElement)?.Name;
+				var namePart = string.IsNullOrEmpty(name) ? "" : $"-'{name}'";
+
+				return sb
+						.Append(spacing)
+						.Append(innerView == viewOfInterest ? "*>" : ">")
+						.Append(innerView.ToString() + namePart)
+						.Append($"-({ViewHelper.PhysicalToLogicalPixels(innerView.Width)}x{ViewHelper.PhysicalToLogicalPixels(innerView.Height)})")
+						.Append($"  {innerView.Visibility}")
+						.AppendLine();
 			}
 		}
 
