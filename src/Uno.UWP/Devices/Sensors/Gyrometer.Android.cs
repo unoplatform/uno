@@ -70,7 +70,6 @@ namespace Windows.Devices.Sensors
 
 		private class GyrometerListener : Java.Lang.Object, ISensorEventListener, IDisposable
 		{
-			private const float RadToDeg = 57.2957795f;
 			private readonly Gyrometer _gyrometer;			
 
 			public GyrometerListener(Gyrometer gyrometer)
@@ -85,9 +84,9 @@ namespace Windows.Devices.Sensors
 			void ISensorEventListener.OnSensorChanged(SensorEvent e)
 			{
 				var gyrometerReading = new GyrometerReading(
-					e.Values[0] * RadToDeg,
-					e.Values[1] * RadToDeg,
-					e.Values[2] * RadToDeg,
+					e.Values[0] * SensorConstants.RadToDeg,
+					e.Values[1] * SensorConstants.RadToDeg,
+					e.Values[2] * SensorConstants.RadToDeg,
 					SensorHelpers.TimestampToDateTimeOffset(e.Timestamp)
 				);
 				_gyrometer.OnReadingChanged(gyrometerReading);

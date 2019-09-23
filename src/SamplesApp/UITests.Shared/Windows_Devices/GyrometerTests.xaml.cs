@@ -1,23 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
 using Uno.Disposables;
 using Uno.UI.Samples.Controls;
 using Uno.UI.Samples.UITests.Helpers;
 using Windows.Devices.Sensors;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
 using Windows.UI.Core;
-using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Navigation;
 
 // The User Control item template is documented at https://go.microsoft.com/fwlink/?LinkId=234236
 
@@ -38,9 +26,9 @@ namespace UITests.Shared.Windows_Devices
 		private readonly Gyrometer _gyrometer = null;
 		private bool _readingChangedAttached;
 		private string _sensorStatus;
-		private float _rotationX;
-		private float _rotationY;
-		private float _rotationZ;
+		private double _angularVelocityX;
+		private double _angularVelocityY;
+		private double _angularVelocityZ;
 		private string _timestamp;
 
 		public GyrometerTestsViewModel(CoreDispatcher dispatcher) : base(dispatcher)
@@ -98,32 +86,32 @@ namespace UITests.Shared.Windows_Devices
 			}
 		}
 
-		public float RotationX
+		public double AngularVelocityX
 		{
-			get => _rotationX;
+			get => _angularVelocityX;
 			private set
 			{
-				_rotationX = value;
+				_angularVelocityX = value;
 				RaisePropertyChanged();
 			}
 		}
 
-		public float RotationY
+		public double AngularVelocityY
 		{
-			get => _rotationY;
+			get => _angularVelocityY;
 			private set
 			{
-				_rotationY = value;
+				_angularVelocityY = value;
 				RaisePropertyChanged();
 			}
 		}
 
-		public float RotationZ
+		public double AngularVelocityZ
 		{
-			get => _rotationZ;
+			get => _angularVelocityZ;
 			private set
 			{
-				_rotationZ = value;
+				_angularVelocityZ = value;
 				RaisePropertyChanged();
 			}
 		}
@@ -142,10 +130,9 @@ namespace UITests.Shared.Windows_Devices
 		{
 			await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
 			{
-				MagneticFieldX = args.Reading.;
-				MagneticFieldY = args.Reading.MagneticFieldY;
-				MagneticFieldZ = args.Reading.MagneticFieldZ;
-				DirectionalAccuracy = args.Reading.DirectionalAccuracy;
+				AngularVelocityX = args.Reading.AngularVelocityX;
+				AngularVelocityY = args.Reading.AngularVelocityY;
+				AngularVelocityZ = args.Reading.AngularVelocityZ;
 				Timestamp = args.Reading.Timestamp.ToString("R");
 			});
 		}

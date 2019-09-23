@@ -45,9 +45,9 @@ namespace Windows.Devices.Sensors
 			}
 			
 			var gyrometerReading = new GyrometerReading(
-				(float)data.RotationRate.x,
-				(float)data.RotationRate.y,
-				(float)data.RotationRate.z,	
+				(float)data.RotationRate.x * SensorConstants.RadToDeg,
+				(float)data.RotationRate.y * SensorConstants.RadToDeg,
+				(float)data.RotationRate.z * SensorConstants.RadToDeg,	
 				SensorHelpers.TimestampToDateTimeOffset(data.Timestamp));
 
 			OnReadingChanged(gyrometerReading);

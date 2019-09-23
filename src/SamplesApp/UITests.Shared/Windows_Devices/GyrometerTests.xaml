@@ -22,16 +22,16 @@
 
 			<TextBlock Text="Last reading" Style="{ThemeResource SubtitleTextBlockStyle}" />
 			<TextBlock>
-				<Run FontWeight="Bold">RotationX: </Run>
-				<Run Text="{Binding MagneticFieldX}" />
+				<Run FontWeight="Bold">AngularVelocityX: </Run>
+				<Run Text="{Binding AngularVelocityX}" />
 			</TextBlock>
 			<TextBlock>
-				<Run FontWeight="Bold">RotationY: </Run>
-				<Run Text="{Binding MagneticFieldY}" />
+				<Run FontWeight="Bold">AngularVelocityY: </Run>
+				<Run Text="{Binding AngularVelocityY}" />
 			</TextBlock>
 			<TextBlock>
-				<Run FontWeight="Bold">RotationZ: </Run>
-				<Run Text="{Binding MagneticFieldZ}" />
+				<Run FontWeight="Bold">AngularVelocityZ: </Run>
+				<Run Text="{Binding AngularVelocityZ}" />
 			</TextBlock>
 			<TextBlock>
 				<Run FontWeight="Bold">Timestamp: </Run>
