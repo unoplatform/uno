@@ -1,8 +1,4 @@
 #if __IOS__
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using CoreMotion;
 using Foundation;
 using Uno.Devices.Sensors.Helpers;
@@ -48,13 +44,13 @@ namespace Windows.Devices.Sensors
 				return;
 			}
 			
-			var magnetometerReading = new GyrometerReading(
+			var gyrometerReading = new GyrometerReading(
 				(float)data.RotationRate.x,
 				(float)data.RotationRate.y,
 				(float)data.RotationRate.z,	
 				SensorHelpers.TimestampToDateTimeOffset(data.Timestamp));
 
-			OnReadingChanged(magnetometerReading);
+			OnReadingChanged(gyrometerReading);
 		}
 	}
 }
