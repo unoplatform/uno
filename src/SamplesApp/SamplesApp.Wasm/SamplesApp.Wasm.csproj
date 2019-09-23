@@ -47,7 +47,7 @@
 		<PackageReference Include="MSTest.TestFramework" Version="1.4.0" />
 		<PackageReference Include="System.Management" Version="4.6.0-preview3.19128.7" />
 		<PackageReference Include="Uno.SourceGenerationTasks" />
-		<PackageReference Include="Microsoft.Extensions.Logging.Console" Version="1.1.1" />
+		<PackageReference Include="Microsoft.Extensions.Logging.Console" Version="3.0.0" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Filter" Version="1.1.1" />
 		<PackageReference Include="BenchmarkDotNet" Version="0.11.4-develop" />
 		<PackageReference Include="Uno.Wasm.Bootstrap" Version="1.0.0-dev.302" />
