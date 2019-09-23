@@ -61,6 +61,7 @@
 * Add support for BitmapSource.PixelWidth and Height
 * Preliminary support for `ColumnDefinition.ActualWidth` and `RowDefinition.ActualHeight`.
 * Updated VisualTree of an app with Visibility for each items.
+* Add support for `CompositionTarget.Rendering` event.
 
 ### Breaking changes
 * `TextBox` no longer raises TextChanged when its template is applied, in line with UWP.

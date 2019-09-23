@@ -75,13 +75,16 @@ namespace Windows.UI.Core
 		private readonly object _gate = new object();
 
 		private int _globalCount;
-		
+
 		internal bool ShouldRaiseRenderEvents => Rendering != null;
 		/// <summary>
 		/// Backs the CompositionTarget.Rendering event.
 		/// </summary>
 		internal event EventHandler<object> Rendering;
 		internal int RenderEventThrottle;
+		internal Func<TimeSpan, object> RenderingEventArgsGenerator { get; set; }
+
+		private readonly DateTimeOffset _startTime;
 
 		public CoreDispatcher()
 		{
@@ -93,6 +96,8 @@ namespace Windows.UI.Core
 			_idleDispatchedHandlerArgs = new IdleDispatchedHandlerArgs(() => IsQueueIdle);
 
 			Initialize();
+
+			_startTime = DateTimeOffset.UtcNow;
 		}
 
 
@@ -228,7 +233,7 @@ namespace Windows.UI.Core
 			UIAsyncOperation operation = null;
 			var operationPriority = CoreDispatcherPriority.Normal;
 
-			Rendering?.Invoke(null, null);
+			Rendering?.Invoke(null, RenderingEventArgsGenerator(DateTimeOffset.UtcNow - _startTime));
 
 			var didEnqueue = false;
 			for (var i = 3; i >= 0; i--)

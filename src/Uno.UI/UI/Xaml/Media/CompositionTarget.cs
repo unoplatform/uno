@@ -17,6 +17,8 @@ namespace Windows.UI.Xaml.Media
 				var currentlyRaisingEvents = CoreDispatcher.Main.ShouldRaiseRenderEvents;
 				CoreDispatcher.Main.Rendering += value;
 				CoreDispatcher.Main.RenderEventThrottle = FeatureConfiguration.CompositionTarget.RenderEventThrottle;
+				CoreDispatcher.Main.RenderingEventArgsGenerator = CoreDispatcher.Main.RenderingEventArgsGenerator
+					?? (d => new RenderingEventArgs(d));
 				if (!currentlyRaisingEvents)
 				{
 					CoreDispatcher.Main.WakeUp();
@@ -25,7 +27,7 @@ namespace Windows.UI.Xaml.Media
 			remove
 			{
 				CoreDispatcher.CheckThreadAccess();
-				
+
 				CoreDispatcher.Main.Rendering -= value;
 			}
 		}
