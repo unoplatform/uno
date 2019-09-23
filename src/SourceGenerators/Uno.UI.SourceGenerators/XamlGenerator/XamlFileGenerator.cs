@@ -1390,7 +1390,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			}
 
 			// Determine if the type is a custom markup extension
-			return _markupExtensionTypes.Any(ns => ns.Name.Equals(xamlType.Name, StringComparison.OrdinalIgnoreCase));
+			return _markupExtensionTypes.Any(ns => ns.Name.Equals(xamlType.Name, StringComparison.InvariantCulture));
 		}
 
 		private XamlMemberDefinition FindMember(XamlObjectDefinition xamlObjectDefinition, string memberName)
