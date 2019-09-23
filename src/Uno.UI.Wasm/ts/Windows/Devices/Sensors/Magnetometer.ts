@@ -18,8 +18,8 @@ namespace Windows.Devices.Sensors {
 			try {
 				if (typeof window.Magnetometer === "function") {
 					this.dispatchReading = (<any>Module).mono_bind_static_method("[Uno] Windows.Devices.Sensors.Magnetometer:DispatchReading");
-					let magnetometerClass: any = window.Magnetometer;
-					this.magnetometer = new magnetometerClass({ referenceFrame: 'device' });
+					let MagnetometerClass: any = window.Magnetometer;
+					this.magnetometer = new MagnetometerClass({ referenceFrame: 'device' });
 					return true;
 				}
 			} catch (error) {
@@ -30,7 +30,7 @@ namespace Windows.Devices.Sensors {
 		}
 
 		public static startReading() {
-			this.magnetometer.addEventLi1stener('reading', Magnetometer.readingChangedHandler);
+			this.magnetometer.addEventListener('reading', Magnetometer.readingChangedHandler);
 			this.magnetometer.start();
 		}
 
