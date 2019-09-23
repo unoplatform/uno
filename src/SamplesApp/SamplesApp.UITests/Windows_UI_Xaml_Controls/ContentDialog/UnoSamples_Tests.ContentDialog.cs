@@ -281,6 +281,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ContentDialogTests
 
 		[Test]
 		[AutoRetry]
+		[ActivePlatforms(Platform.Browser)] //TODO: https://github.com/unoplatform/uno/issues/1583
 		public void ContentDialog_ComboBox()
 		{
 			Run("UITests.Shared.Windows_UI_Xaml_Controls.ContentDialogTests.ContentDialog_ComboBox");
@@ -299,6 +300,12 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ContentDialogTests
 
 			var resultsText = _app.Marked("ResultsTextBlock");
 			_app.WaitForDependencyPropertyValue(resultsText, "Text", "Item 4");
+
+			// Close the dialog, otherwise subsequent tests may fail
+			var closeButton = _app.Marked("CloseButton");
+			_app.WaitForElement(closeButton);
+
+			_app.Tap(closeButton);
 		}
 	}
 }
