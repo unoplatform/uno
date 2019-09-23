@@ -59,7 +59,8 @@
 * `ToolTip` & `ToolTipService` are now implemented.
 * [#1352](https://github.com/unoplatform/uno/issues/1352) Add support for `ThemeResource`s with different types (eg: mixing `SolidColorBrush` and `LinearGradientBrush`)
 * Add support for BitmapSource.PixelWidth and Height
-* Preliminary support for `ColumnDefinition.ActualWidth` and `RowDefinition.ActualHeight`. 
+* Preliminary support for `ColumnDefinition.ActualWidth` and `RowDefinition.ActualHeight`.
+* Updated VisualTree of an app with Visibility for each items.
 
 ### Breaking changes
 * `TextBox` no longer raises TextChanged when its template is applied, in line with UWP.
