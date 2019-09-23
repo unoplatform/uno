@@ -46,7 +46,7 @@
 			<PrivateAssets>none</PrivateAssets>
 		</PackageReference>
 		<PackageReference Include="Xamarin.Android.Support.v7.AppCompat">
-			<Version>26.1.0.1</Version>
+			<Version>28.0.0.3</Version>
 			<PrivateAssets>none</PrivateAssets>
 		</PackageReference>
 		<PackageReference Include="Xamarin.Android.Support.v7.RecyclerView">
@@ -61,7 +61,7 @@
 			<PrivateAssets>none</PrivateAssets>
 		</PackageReference>
 		<PackageReference Include="Xamarin.Android.Support.v7.AppCompat">
-			<Version>28.0.0.1</Version>
+			<Version>28.0.0.3</Version>
 			<PrivateAssets>none</PrivateAssets>
 		</PackageReference>
 		<PackageReference Include="Xamarin.Android.Support.v7.RecyclerView">
