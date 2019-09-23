@@ -951,14 +951,19 @@ public abstract class UnoViewGroup
 			return point;
 		}
 
-		// Non-UIElement view, walk the tree up to the next UIElement
-		// (and adjust coordinate for each layer to include its location, i.e. Top, Left, etc.)
-		final ViewParent parent = view.getParent();
-		if (parent instanceof View) {
-			// Not at root, walk upward
-			float[] coords = getTransformedTouchCoordinate(parent, e);
-			calculateTransformedPoint((View) view, coords);
-			return coords;
+		if(view != null) {
+			// The parent view may be null if the touched item is being removed
+			// from the tree while being touched.
+
+			// Non-UIElement view, walk the tree up to the next UIElement
+			// (and adjust coordinate for each layer to include its location, i.e. Top, Left, etc.)
+			final ViewParent parent = view.getParent();
+			if (parent instanceof View) {
+				// Not at root, walk upward
+				float[] coords = getTransformedTouchCoordinate(parent, e);
+				calculateTransformedPoint((View) view, coords);
+				return coords;
+			}
 		}
 
 		// We reached the top of the tree
