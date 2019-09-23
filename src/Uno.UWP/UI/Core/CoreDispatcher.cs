@@ -7,6 +7,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Windows.Foundation;
 using Uno.Logging;
+using Windows.UI.Composition;
 
 namespace Windows.UI.Core
 {
@@ -57,10 +58,13 @@ namespace Windows.UI.Core
 		/// </summary>
 		internal static void CheckThreadAccess()
 		{
+#if !__WASM__
+			// 
 			if (!Main.HasThreadAccess)
 			{
 				throw new InvalidOperationException("The application called an interface that was marshalled for a different thread.");
 			}
+#endif
 		}
 
 		private readonly CoreDispatcherSynchronizationContext _highSyncCtx;
@@ -71,6 +75,12 @@ namespace Windows.UI.Core
 		private readonly object _gate = new object();
 
 		private int _globalCount;
+		
+		internal bool ShouldRaiseRenderEvents => Rendering != null;
+		/// <summary>
+		/// Backs the CompositionTarget.Rendering event.
+		/// </summary>
+		internal event EventHandler<object> Rendering;
 
 		public CoreDispatcher()
 		{
@@ -107,7 +117,7 @@ namespace Windows.UI.Core
 		private bool IsQueueIdle => GetQueue(CoreDispatcherPriority.Low).Count +
 				GetQueue(CoreDispatcherPriority.Normal).Count +
 				GetQueue(CoreDispatcherPriority.High).Count == 0;
-		
+
 		partial void Initialize();
 
 		/// <summary>
@@ -159,7 +169,7 @@ namespace Windows.UI.Core
 			{
 				scheduleActivity = _trace.WriteEventActivity(
 					TraceProvider.CoreDispatcher_Schedule,
-					EventOpcode.Send, 
+					EventOpcode.Send,
 					new[] {
 						((int)priority).ToString(),
 						handler.Method.DeclaringType.FullName + "." + handler.Method.DeclaringType.Name
@@ -217,6 +227,9 @@ namespace Windows.UI.Core
 			UIAsyncOperation operation = null;
 			var operationPriority = CoreDispatcherPriority.Normal;
 
+			Rendering?.Invoke(null, null);
+
+			var didEnqueue = false;
 			for (var i = 3; i >= 0; i--)
 			{
 				var queue = _queues[i];
@@ -230,6 +243,7 @@ namespace Windows.UI.Core
 
 						if (DecrementGlobalCount() > 0)
 						{
+							didEnqueue = true;
 							EnqueueNative();
 						}
 						break;
@@ -248,8 +262,8 @@ namespace Windows.UI.Core
 						if (_trace.IsEnabled)
 						{
 							runActivity = _trace.WriteEventActivity(
-								TraceProvider.CoreDispatcher_InvokeStart, 
-								TraceProvider.CoreDispatcher_InvokeStop, 
+								TraceProvider.CoreDispatcher_InvokeStart,
+								TraceProvider.CoreDispatcher_InvokeStop,
 								relatedActivity: operation.ScheduleEventActivity,
 								payload: new[] { ((int)operationPriority).ToString(), operation.GetDiagnosticsName() }
 							);
@@ -282,13 +296,42 @@ namespace Windows.UI.Core
 					}
 				}
 			}
-			else
+			else if (!ShouldRaiseRenderEvents)
 			{
 				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
 				{
 					this.Log().Error("Dispatch queue is empty");
 				}
 			}
+
+			if (!didEnqueue && ShouldRaiseRenderEvents)
+			{
+				DispatchWakeUp();
+			}
+		}
+
+		async void DispatchWakeUp()
+		{
+			await Task.Delay(50);
+			if (ShouldRaiseRenderEvents)
+			{
+				WakeUp();
+			}
+		}
+
+		/// <summary>
+		/// Wakes up the dispatcher.
+		/// </summary>
+		internal void WakeUp()
+		{
+			CheckThreadAccess();
+
+			if (IncrementGlobalCount() == 1)
+			{
+				EnqueueNative();
+			}
+
+			DecrementGlobalCount();
 		}
 
 		private CoreDispatcherSynchronizationContext GetSyncContext(CoreDispatcherPriority priority)

@@ -29,22 +29,6 @@ namespace Windows.UI.Xaml.Media
 			}
 		}
 		#endif
-		#if false || false || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public static event global::System.EventHandler<object> Rendering
-		{
-			[global::Uno.NotImplemented]
-			add
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Media.CompositionTarget", "event EventHandler<object> CompositionTarget.Rendering");
-			}
-			[global::Uno.NotImplemented]
-			remove
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Media.CompositionTarget", "event EventHandler<object> CompositionTarget.Rendering");
-			}
-		}
-		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static event global::System.EventHandler<object> SurfaceContentsLost
