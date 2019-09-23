@@ -68,7 +68,8 @@ namespace SamplesApp.UITests
 				}
 			}
 
-			_app = AppInitializer.AttachToApp();
+			var app = AppInitializer.AttachToApp();
+			_app = app ?? _app;
 
 			Helpers.App = _app;
 		}

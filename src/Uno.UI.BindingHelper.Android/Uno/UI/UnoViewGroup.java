@@ -111,6 +111,11 @@ public abstract class UnoViewGroup
 		setClipChildren(false); // This is required for animations not to be cut off by transformed ancestor views. (#1333)
 	}
 
+	public final void enableAndroidClipping()
+	{
+		setClipChildren(true); // called by controls requiring it (ScrollViewer)
+	}
+
 	private boolean _unoLayoutOverride;
 
 	public final void nativeStartLayoutOverride(int left, int top, int right, int bottom)  throws IllegalAccessException, InvocationTargetException {
@@ -946,14 +951,19 @@ public abstract class UnoViewGroup
 			return point;
 		}
 
-		// Non-UIElement view, walk the tree up to the next UIElement
-		// (and adjust coordinate for each layer to include its location, i.e. Top, Left, etc.)
-		final ViewParent parent = view.getParent();
-		if (parent instanceof View) {
-			// Not at root, walk upward
-			float[] coords = getTransformedTouchCoordinate(parent, e);
-			calculateTransformedPoint((View) view, coords);
-			return coords;
+		if(view != null) {
+			// The parent view may be null if the touched item is being removed
+			// from the tree while being touched.
+
+			// Non-UIElement view, walk the tree up to the next UIElement
+			// (and adjust coordinate for each layer to include its location, i.e. Top, Left, etc.)
+			final ViewParent parent = view.getParent();
+			if (parent instanceof View) {
+				// Not at root, walk upward
+				float[] coords = getTransformedTouchCoordinate(parent, e);
+				calculateTransformedPoint((View) view, coords);
+				return coords;
+			}
 		}
 
 		// We reached the top of the tree

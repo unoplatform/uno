@@ -98,8 +98,15 @@ namespace Windows.UI.Xaml.Controls
 					_headerClipper.Clip = null;
 				}
 
-				_header.Visibility = Visibility.Collapsed;
-				_titleContentControl.Visibility = Title != null ? Visibility.Visible : Visibility.Collapsed;
+				if (_header != null)
+				{
+					_header.Visibility = Visibility.Collapsed;
+				}
+
+				if (_titleContentControl != null)
+				{
+					_titleContentControl.Visibility = Title != null ? Visibility.Visible : Visibility.Collapsed;
+				}
 			}
 		}
 

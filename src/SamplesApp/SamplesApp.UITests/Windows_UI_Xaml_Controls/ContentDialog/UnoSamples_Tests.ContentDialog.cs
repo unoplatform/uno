@@ -201,5 +201,82 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TimePickerTests
 
 			_app.WaitForDependencyPropertyValue(dialogResult, "Text", "Secondary");
 		}
+
+		[Test]
+		[AutoRetry]
+		public void ContentDialog_Auto_Closing()
+		{
+			Run("UITests.Shared.Windows_UI_Xaml_Controls.ContentDialogTests.ContentDialog_Closing");
+
+			var showDialog = _app.Marked("AutoCloseDialog");
+
+			_app.WaitForElement(showDialog);
+
+			_app.Tap(showDialog);
+
+			var resultText = _app.Marked("ResultTextBlock");
+			var closedText = _app.Marked("DidCloseTextBlock");
+
+			_app.WaitForDependencyPropertyValue(resultText, "Text", "Closing event was raised!");
+
+			_app.WaitForDependencyPropertyValue(closedText, "Text", "Closed");
+		}
+
+
+
+		[Test]
+		[AutoRetry]
+		public void ContentDialog_Closing_Deferred()
+		{
+			Run("UITests.Shared.Windows_UI_Xaml_Controls.ContentDialogTests.ContentDialog_Closing");
+
+			var showDialog = _app.Marked("DeferredDialog");
+
+			_app.WaitForElement(showDialog);
+
+			_app.Tap(showDialog);
+
+			var closeButton = _app.Marked("CloseButton");
+			_app.WaitForElement(closeButton);
+
+			_app.Tap(closeButton);
+
+			var resultText = _app.Marked("ResultTextBlock");
+			var closedText = _app.Marked("DidCloseTextBlock");
+
+			var defer1 = _app.Marked("Complete1Button");
+			_app.Tap(defer1);
+			_app.WaitForDependencyPropertyValue(resultText, "Text", "First complete called");
+
+			var defer2 = _app.Marked("Complete2Button");
+			_app.Tap(defer2);
+			_app.WaitForDependencyPropertyValue(resultText, "Text", "Second complete called");
+
+			_app.WaitForDependencyPropertyValue(closedText, "Text", "Closed");
+		}
+
+		[Test]
+		[AutoRetry]
+		public void ContentDialog_Closing_Result()
+		{
+			Run("UITests.Shared.Windows_UI_Xaml_Controls.ContentDialogTests.ContentDialog_Closing");
+
+			var showDialog = _app.Marked("PrimaryDialog");
+
+			_app.WaitForElement(showDialog);
+
+			_app.Tap(showDialog);
+
+			var closeButton = _app.Marked("PrimaryButton");
+			_app.WaitForElement(closeButton);
+
+			_app.Tap(closeButton);
+
+			var resultText = _app.Marked("ResultTextBlock");
+			var closedText = _app.Marked("DidCloseTextBlock");
+
+			_app.WaitForDependencyPropertyValue(resultText, "Text", "Primary");
+			_app.WaitForDependencyPropertyValue(closedText, "Text", "Closed");
+		}
 	}
 }

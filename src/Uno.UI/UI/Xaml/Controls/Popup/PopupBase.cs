@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Windows.Foundation;
+using Windows.UI.Xaml.Input;
 using Uno.Extensions;
 using Uno.UI.DataBinding;
 using Windows.UI.Xaml.Media;
@@ -33,6 +34,12 @@ namespace Windows.UI.Xaml.Controls
 		/// Defines a custom layouter which overrides the default placement logic of the <see cref="PopupPanel"/>
 		/// </summary>
 		internal IDynamicPopupLayouter CustomLayouter { get; set; }
+
+		protected override void OnUnloaded()
+		{
+			IsOpen = false;
+			base.OnUnloaded();
+		}
 
 		/// <inheritdoc />
 		protected override Size MeasureOverride(Size availableSize)
@@ -76,6 +83,23 @@ namespace Windows.UI.Xaml.Controls
 
 			UpdateDataContext();
 			UpdateTemplatedParent();
+
+			if (oldChild is FrameworkElement ocfe)
+			{
+				ocfe.PointerPressed -= HandlePointerEvent;
+				ocfe.PointerReleased -= HandlePointerEvent;
+			}
+
+			if (newChild is FrameworkElement ncfe)
+			{
+				ncfe.PointerPressed += HandlePointerEvent;
+				ncfe.PointerReleased += HandlePointerEvent;
+			}
+		}
+
+		private void HandlePointerEvent(object sender, PointerRoutedEventArgs e)
+		{
+			e.Handled = true;
 		}
 
 		protected internal override void OnDataContextChanged(DependencyPropertyChangedEventArgs e)
@@ -109,7 +133,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		/// <summary>
-		/// A layouter responsible to layout the content of a poup at the right place
+		/// A layouter responsible to layout the content of a popup at the right place
 		/// </summary>
 		internal interface IDynamicPopupLayouter
 		{
@@ -128,6 +152,10 @@ namespace Windows.UI.Xaml.Controls
 			/// <param name="visibleBounds">The frame of the visible bounds of the window. This is expected to ba AtMost the finalSize.</param>
 			/// <param name="desiredSize">The size at which the content expect to be rendered. This is the result of the last <see cref="Measure"/>.</param>
 			void Arrange(Size finalSize, Rect visibleBounds, Size desiredSize);
+		}
+
+		partial void OnIsLightDismissEnabledChangedPartial(bool oldIsLightDismissEnabled, bool newIsLightDismissEnabled)
+		{
 		}
 	}
 }

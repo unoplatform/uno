@@ -86,7 +86,6 @@ namespace Windows.UI.Xaml
 
 		public void Dispose()
 		{
-			throw new NotImplementedException();
 		}
 
 		public Size AdjustArrange(Size finalSize)

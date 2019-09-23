@@ -27,6 +27,8 @@ namespace UITests.Shared.Resources.StaticResource
 			Application.Current.Resources["HelloConverter"] = new HelloConverter();
 
 			this.InitializeComponent();
+
+			DataContext = new object();
 		}
 
 		private class HelloConverter : IValueConverter

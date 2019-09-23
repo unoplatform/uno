@@ -57,7 +57,12 @@ namespace Windows.UI.Xaml.Controls
 #endif
 		}
 
-		public ScrollViewer() { }
+		public ScrollViewer()
+		{
+			InitializePartial();
+		}
+
+		partial void InitializePartial();
 
 		void IFrameworkTemplatePoolAware.OnTemplateRecycled()
 		{

@@ -5,6 +5,7 @@ using Windows.UI.Xaml.Data;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Globalization;
 using Uno.Disposables;
 using System.Runtime.CompilerServices;
 using System.Text;
@@ -75,6 +76,11 @@ namespace Windows.UI.Xaml.Controls
 			if (this.Log().IsEnabled(LogLevel.Debug))
 			{
 				this.Log().LogDebug($"{HtmlId}: {offsetSize} / {clientSize} / {e.GetCurrentPoint()}");
+			}
+
+			if (!hasVerticalScroll && !hasHorizontalScroll)
+			{
+				return;
 			}
 
 			// The events coming from the scrollbars are bubbled up
@@ -203,9 +209,18 @@ namespace Windows.UI.Xaml.Controls
 
 		private void OnScroll(object sender, EventArgs args)
 		{
-			int.TryParse(GetProperty("scrollLeft"), out var horizontalOffset);
-			int.TryParse(GetProperty("scrollTop"), out var verticalOffset);
-			
+			var left = GetProperty("scrollLeft");
+			var top = GetProperty("scrollTop");
+
+			if (!double.TryParse(left, NumberStyles.Number, CultureInfo.InvariantCulture, out var horizontalOffset))
+			{
+				horizontalOffset = 0;
+			}
+			if (!double.TryParse(top, NumberStyles.Number, CultureInfo.InvariantCulture, out var verticalOffset))
+			{
+				verticalOffset = 0;
+			}
+
 			(TemplatedParent as ScrollViewer)?.OnScrollInternal(
 				horizontalOffset,
 				verticalOffset,

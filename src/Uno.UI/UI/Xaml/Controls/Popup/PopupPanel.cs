@@ -29,9 +29,8 @@ namespace Windows.UI.Xaml.Controls
 
 		public PopupPanel(Popup popup)
 		{
-			Popup = popup;
+			Popup = popup ?? throw new ArgumentNullException(nameof(popup));
 			Visibility = Visibility.Collapsed;
-			Background = SolidColorBrushHelper.Transparent;
 		}
 
 		protected Size _lastMeasuredSize;

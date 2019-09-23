@@ -287,6 +287,11 @@
 						reason="Removed unneeded pseudo-internal property" />
 				<Member fullName="System.Boolean Uno.UI.UnoViewGroup.InvalidateTransformedHierarchy()"
 						reason="Removed unneeded pseudo-internal method" />
+              
+				<Member fullName="System.Void Windows.UI.Xaml.Media.Imaging.BitmapSource.set_PixelHeight(System.Int32 value)"
+						reason="Removed API not available in WinUI" />
+				<Member fullName="System.Void Windows.UI.Xaml.Media.Imaging.BitmapSource.set_PixelWidth(System.Int32 value)"
+						reason="Removed API not available in WinUI" />
 			</Methods>
 
 			<Properties>
@@ -298,6 +303,8 @@
 						reason="Removed unneeded pseudo-internal property" />
 				<Member fullName="System.Boolean Uno.UI.UnoViewGroup::IsAnimationInProgress()"
 						reason="Removed unneeded pseudo-internal property" />
+				<Member fullName="Windows.UI.Xaml.ResourceDictionary[] Windows.UI.Xaml.ResourceDictionary::MergedDictionaries()"
+						reason="Property type fixed to match UWP" />
 			</Properties>
 		</IgnoreSet>
 

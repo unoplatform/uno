@@ -46,6 +46,12 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			InitializeProperties();
 		}
 
+		public new bool IsPointerOver
+		{
+			get => base.IsPointerOver;
+			set => base.IsPointerOver = value;
+		}
+
 		private void InitializeProperties()
 		{
 			OnIsEnabledChanged(false, IsEnabled);

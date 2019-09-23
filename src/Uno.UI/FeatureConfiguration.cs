@@ -111,6 +111,17 @@ namespace Uno.UI
 			public static bool UseLegacyLazyApplyTemplate { get; set; } = false;
 		}
 
+		public static class ContentPresenter
+		{
+			/// <summary>
+			/// Enables the implicit binding Content of a ContentPresenter to the one of the TemplatedParent
+			/// when this one is a ContentControl.
+			/// It means you can put a `<ContentPresenter />` directly in the ControlTemplate and it will
+			/// be bound automatically to its TemplatedPatent's Content.
+			/// </summary>
+			public static bool UseImplicitContentFromTemplatedParent { get; set; } = false;
+		}
+
 		public static class DataTemplateSelector
 		{
 			/// <summary>
@@ -189,7 +200,7 @@ namespace Uno.UI
 			/// Defines the default font to be used when displaying symbols, such as in SymbolIcon.
 			/// </summary>
 			public static string SymbolsFont { get; set; } =
-#if !ANDROID
+#if !__ANDROID__
 			"Symbols";
 #else
 			"ms-appx:///Assets/Fonts/winjs-symbols.ttf#Symbols";
@@ -211,5 +222,16 @@ namespace Uno.UI
 			public static bool ForceJavascriptInterop { get; set; } = false;
 		}
 #endif
+		public static class ToolTip
+		{
+			public static bool UseToolTips { get; set; }
+#if __WASM__
+				= true;
+#endif
+
+			public static int ShowDelay { get; set; } = 1000;
+
+			public static int ShowDuration { get; set; } = 7000;
+		}
 	}
 }
