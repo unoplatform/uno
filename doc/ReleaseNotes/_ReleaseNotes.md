@@ -121,6 +121,7 @@
 * `Popup` & `ComboBox` (and other controls using `Popup`) were not behaving properly when `IsLightDismissable` were set to `true`.
 * [Wasm] Fix unloaded UIElements are made visible if measured and arranged
 * [Android] Fix java NRE handing touch events on detached view
+* [Pivot] Add support for non PivotItem items
 
 ## Release 1.45.0
 ### Features
