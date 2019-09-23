@@ -4,10 +4,10 @@ namespace Windows.Devices.Sensors
 {
 	public partial class GyrometerReading
 	{
-		public GyrometerReading(
-			float angularVelocityX,
-			float angularVelocityY,
-			float angularVelocityZ,
+		internal GyrometerReading(
+			double angularVelocityX,
+			double angularVelocityY,
+			double angularVelocityZ,
 			DateTimeOffset timestamp)
 		{
 			AngularVelocityX = angularVelocityX;
@@ -16,11 +16,11 @@ namespace Windows.Devices.Sensors
 			Timestamp = timestamp;
 		}
 
-		public float AngularVelocityX { get; }
+		public double AngularVelocityX { get; }
 
-		public float AngularVelocityY { get; }
+		public double AngularVelocityY { get; }
 
-		public float AngularVelocityZ { get; }
+		public double AngularVelocityZ { get; }
 
 		public DateTimeOffset Timestamp { get; }
 	}

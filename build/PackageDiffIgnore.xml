@@ -308,5 +308,10 @@
 			</Properties>
 		</IgnoreSet>
 
+		<IgnoreSet baseVersion="1.45.0">
+			<Methods>
+			</Methods>
+			</IgnoreSet>
+
 	</IgnoreSets>
 </DiffIgnore>

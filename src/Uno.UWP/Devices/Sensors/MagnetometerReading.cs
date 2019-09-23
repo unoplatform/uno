@@ -4,7 +4,7 @@ namespace Windows.Devices.Sensors
 {
 	public  partial class MagnetometerReading 
 	{
-		public MagnetometerReading(
+		internal MagnetometerReading(
 			float magneticFieldX,
 			float magneticFieldY,
 			float magneticFieldZ,
