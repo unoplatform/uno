@@ -192,11 +192,192 @@
       "contributions": [
         "blog"
       ]
+    },
+    {
+      "login": "microsoft",
+      "name": "Microsoft",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/6154722?v=4",
+      "profile": "https://opensource.microsoft.com",
+      "contributions": [
+        "code",
+        "doc",
+        "example",
+        "test",
+        "infra"
+      ]
+    },
+    {
+      "login": "xamarin",
+      "name": "Xamarin",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/790012?v=4",
+      "profile": "http://xamarin.com",
+      "contributions": [
+        "code",
+        "doc",
+        "example",
+        "test"
+      ]
+    },
+    {
+      "login": "NicolasChampagne",
+      "name": "NicolasChampagne",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/49762217?v=4",
+      "profile": "https://github.com/NicolasChampagne",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "agneszitte-nventive",
+      "name": "Agnes ZITTE",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/16295702?v=4",
+      "profile": "https://github.com/agneszitte-nventive",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "miguelrochefort",
+      "name": "Miguel Rochefort",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/1556332?v=4",
+      "profile": "http://miguelrochefort.com",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "YGuerin",
+      "name": "Yohan Guérin",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/11750340?v=4",
+      "profile": "https://github.com/YGuerin",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "jcantin-nventive",
+      "name": "jcantin-nventive",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/43351943?v=4",
+      "profile": "https://github.com/jcantin-nventive",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "MatFillion",
+      "name": "Mathieu Fillion",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/7029537?v=4",
+      "profile": "https://github.com/MatFillion",
+      "contributions": [
+        "code",
+        "maintenance"
+      ]
+    },
+    {
+      "login": "florentcm",
+      "name": "Florent Cima",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/669433?v=4",
+      "profile": "http://www.florent-cima.com",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "AlexTrepanier",
+      "name": "alextrepanier",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/46451463?v=4",
+      "profile": "https://github.com/AlexTrepanier",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "warrenbenyahia",
+      "name": "warrenbenyahia",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/46033284?v=4",
+      "profile": "https://github.com/warrenbenyahia",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "Batesias",
+      "name": "JP",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/2448861?v=4",
+      "profile": "https://github.com/Batesias",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "GuillaumeSE",
+      "name": "GuillaumeSE",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/50678763?v=4",
+      "profile": "https://github.com/GuillaumeSE",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "weitzhandler",
+      "name": "Shimmy",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/2716316?v=4",
+      "profile": "http://blogs.microsoft.co.il/shimmy/",
+      "contributions": [
+        "doc"
+      ]
+    },
+    {
+      "login": "gfbriggs",
+      "name": "Geoffrey Fielden-Briggs",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/18409414?v=4",
+      "profile": "https://github.com/gfbriggs",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "Massimo37",
+      "name": "Massimo Cacchiotti",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/36633246?v=4",
+      "profile": "https://github.com/Massimo37",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "rfrappier",
+      "name": "rfrappier",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/30271212?v=4",
+      "profile": "https://github.com/rfrappier",
+      "contributions": [
+        "doc"
+      ]
+    },
+    {
+      "login": "FurkanKambay",
+      "name": "Furkan Kambay",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/8467416?v=4",
+      "profile": "http://furkankambay.com/",
+      "contributions": [
+        "doc"
+      ]
+    },
+    {
+      "login": "pkar70",
+      "name": "pkar70",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/23451507?v=4",
+      "profile": "https://github.com/pkar70",
+      "contributions": [
+        "code",
+        "test"
+      ]
     }
   ],
   "contributorsPerLine": 5,
   "projectName": "uno",
   "projectOwner": "unoplatform",
   "repoType": "github",
-  "repoHost": "https://github.com"
+  "repoHost": "https://github.com",
+  "commitConvention": "none"
 }

@@ -2,6 +2,7 @@
 
 ## Next version
 ### Features
+* Support for `Launcher.QueryUriSupportAsync` method on Android and iOS
 * [#1493](https://github.com/unoplatform/uno/pull/1493) - Implemented the `Windows.Input.PointerUpdateKind` Enum.
 *  [#1428](https://github.com/unoplatform/uno/issues/1428) - Add support for horizontal progressbars to `BindableProgressBar` on Android.
 * Add support for `Windows.Devices.Sensors.Magnetometer` APIs on iOS, Android and WASM
@@ -37,7 +38,7 @@
   - `FrameworkElement.RequestedTheme ` is ignored for now.
   - Should be set when the application is starting (before first request to a static resource).
 * Prevent possible crash with `MediaPlayerElement` (tentative)
-* Add support for `ContentDialog`
+* Add support for `ContentDialog`, including `Closing` and `Closed` events
 * Permit `DependencyProperty` to be set reentrantly. Eg this permits `TextBox.TextChanging` to modify the `Text` property (previously this could only be achieved using `Dispatcher.RunAsync()`).
 * Implement `TextBox.TextChanging` and `TextBox.BeforeTextChanging`. As on UWP, this allows the text to be intercepted and modified before the UI is updated. Previously on Android using the `TextChanged` event would lead to laggy response and dropped characters when typing rapidly; this is no longer the case with `TextChanging`.
 * [WASM] `ComboBox`'s dropdown list (`CarouselPanel`) is now virtualized (#1012)
@@ -57,6 +58,8 @@
 * Relax DependencyProperty owner validation for non-FrameworkElement
 * `ToolTip` & `ToolTipService` are now implemented.
 * [#1352](https://github.com/unoplatform/uno/issues/1352) Add support for `ThemeResource`s with different types (eg: mixing `SolidColorBrush` and `LinearGradientBrush`)
+* Add support for BitmapSource.PixelWidth and Height
+* Preliminary support for `ColumnDefinition.ActualWidth` and `RowDefinition.ActualHeight`. 
 
 ### Breaking changes
 * `TextBox` no longer raises TextChanged when its template is applied, in line with UWP.
@@ -67,6 +70,8 @@
 * Projects targeting Android 9 must now use Xamarin.GooglePlayServices.* 71.1600.0
 
 ### Bug fixes
+* [#1531](https://github.com/unoplatform/uno/pull/1531)Fix an issue with VirtualizePanelAdaptater by adding a cache where the ItemSources lenght change and created a OutOfRangeException
+* [WASM] #1518 Fix Navigation Issue Where SystemNavigationManager.enable() is called twice and clear the stack history
 * [#1278](https://github.com/unoplatform/uno/pull/1278) the XAML sourcegenerator now always uses the fully qualified type name to prevent type conflicts.
 * [#1392](https://github.com/unoplatform/uno/pull/1392) Resolved exceptions while changing cursor color on Android P.
 * [#1383](https://github.com/unoplatform/uno/pull/1383) resolve Android compilation errors related to Assets filenames: "Invali`d file name: It must contain only"
@@ -110,6 +115,11 @@
   - Using a `ThemeResource` on the wrong property type shouldn't raise compile-time error (to align with UWP)
 * Fix layout bug in Image control.
 * [#1387] `ComboBox`: Fix DataContext was propagated to `<ContentPresenter>` when there was no selected item, causing strange display behavior.
+* #1354 fixed Recycler.State desync issue
+* #1533 [Wasm] Fix measure caching for zero sized measure 
+* [iOS(iPad)] `ComboBox` : the combobox wasn't fully expanding vertically on first opening.
+* `Popup` & `ComboBox` (and other controls using `Popup`) were not behaving properly when `IsLightDismissable` were set to `true`.
+* [Wasm] Fix unloaded UIElements are made visible if measured and arranged
 
 ## Release 1.45.0
 ### Features

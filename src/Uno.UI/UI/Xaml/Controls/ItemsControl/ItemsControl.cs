@@ -92,7 +92,7 @@ namespace Windows.UI.Xaml.Controls
 
 			_items.VectorChanged += (s, e) =>
 			{
-				OnItemsChanged(null);
+				OnItemsChanged(e);
 				SetNeedsUpdateItems();
 			};
 		}
@@ -841,6 +841,11 @@ namespace Windows.UI.Xaml.Controls
 				ItemsPanelRoot?.Children.Clear();
 			}
 
+			if (InternalItemsPanelRoot != null)
+			{
+				CleanUpInternalItemsPanel(InternalItemsPanelRoot);
+			}
+
 			var itemsPanel = ItemsPanel?.LoadContent() ?? new StackPanel();
 			InternalItemsPanelRoot = ResolveInternalItemsPanel(itemsPanel);
 			ItemsPanelRoot = itemsPanel as Panel;
@@ -1275,5 +1280,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			return DataTemplateHelper.ResolveTemplate(ItemTemplate, ItemTemplateSelector, item, this);
 		}
+
+		internal protected virtual void CleanUpInternalItemsPanel(View panel) { }
 	}
 }

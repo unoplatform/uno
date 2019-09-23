@@ -61,3 +61,7 @@ You can do something similar - an even create totally custom themes - by using t
 * Themed dictionaries will fall back to `Application.Current.RequestedTheme` when they are not
   defining a resource for the custom theme.
 * You can put any string and create totally custom themes, but they won't be supported by UWP.
+
+Themes [are implemented](https://calculator.platform.uno?Theme=Pink) in the Uno port of the Windows 10 calculator. See [App.xaml.cs](https://github.com/unoplatform/calculator/blob/7772a593b541edd9809bc8946ee29d6a5b29e0ff/src/Calculator.Shared/App.xaml.cs#L79) and  [Styles.xaml](https://github.com/unoplatform/calculator/blob/7772a593b541edd9809bc8946ee29d6a5b29e0ff/src/Calculator.Shared/Styles.xaml).
+
+

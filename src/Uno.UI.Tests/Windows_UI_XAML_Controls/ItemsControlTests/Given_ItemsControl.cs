@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Uno.Extensions;
 using Windows.Foundation;
+using Windows.Foundation.Collections;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Data;
@@ -61,6 +62,7 @@ namespace Uno.UI.Tests.ItemsControlTests
 
 			Assert.AreEqual(1, SUT.OnItemsChangedCallCount);
 			Assert.AreEqual(1, onVectorChanged);
+			Assert.IsNotNull(SUT.ItemsChangedArgs as IVectorChangedEventArgs);
 
 			SUT.Items.RemoveAt(0);
 
@@ -156,10 +158,12 @@ namespace Uno.UI.Tests.ItemsControlTests
 	public class MyItemsControl : ItemsControl
 	{
 		public int OnItemsChangedCallCount { get; private set; }
+		public object ItemsChangedArgs { get; private set; }
 
 		protected override void OnItemsChanged(object e)
 		{
 			OnItemsChangedCallCount++;
+			ItemsChangedArgs = e;
 			base.OnItemsChanged(e);
 		}
 	}

@@ -1,9 +1,9 @@
 # Uno Platform - Build Mobile, Desktop and WebAssembly apps with C# and XAML. Today.
-[![Gitter](https://badges.gitter.im/uno-platform/Lobby.svg)](https://gitter.im/uno-platform/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge) [![Dependabot Status](https://api.dependabot.com/badges/status?host=github&repo=unoplatform/uno)](https://dependabot.com) [![All Contributors](https://img.shields.io/badge/all_contributors-16-orange.svg?style=flat-square)](#contributors)
+[![Gitter](https://badges.gitter.im/uno-platform/Lobby.svg)](https://gitter.im/uno-platform/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge) [![Dependabot Status](https://api.dependabot.com/badges/status?host=github&repo=unoplatform/uno)](https://dependabot.com) [![All Contributors](https://img.shields.io/badge/all_contributors-34-orange.svg?style=flat-square)](#contributors-)
 
 # What is the Uno Platform
 
-The Uno Platform is a Universal Windows Platform Bridge that allows UWP-based code (C# and XAML) to run on iOS, Android, and WebAssembly. It provides the full definitions of the UWP Windows 10 October 2018 Update (17763), and the implementation of a growing number of parts of the UWP API, such as **Windows.UI.Xaml**, to enable UWP applications to run on these platforms.
+The Uno Platform (Pronounced 'Oono' or 'Ouno') is a Universal Windows Platform Bridge that allows UWP-based code (C# and XAML) to run on iOS, Android, and WebAssembly. It provides the full definitions of the UWP Windows 10 October 2018 Update (17763), and the implementation of a growing number of parts of the UWP API, such as **Windows.UI.Xaml**, to enable UWP applications to run on these platforms.
 
 Use the UWP tooling from Windows in [Visual Studio](https://www.visualstudio.com/), such as [XAML Edit and Continue](https://blogs.msdn.microsoft.com/visualstudio/2016/04/06/ui-development-made-easier-with-xaml-edit-continue/) and [C# Edit and Continue](https://docs.microsoft.com/en-us/visualstudio/debugger/how-to-use-edit-and-continue-csharp), build your application as much as possible on Windows, then validate that your application runs on iOS, Android and WebAssembly.
 
@@ -39,6 +39,8 @@ For a larger example and features demo:
     * [XAML Edit and Continue](https://blogs.msdn.microsoft.com/visualstudio/2016/04/06/ui-development-made-easier-with-xaml-edit-continue/) for live XAML edition on each key stroke
     * [C# Edit and Continue](https://docs.microsoft.com/en-us/visualstudio/debugger/how-to-use-edit-and-continue-csharp)
     * Validate on other platforms as late as possible
+    * Experimental XAML Hot Reload for WebAssembly, iOS and Android
+    * [Uno.UITest](https://github.com/unoplatform/Uno.UITest), a library to create Cross-Platform UI Tests for WebAssembly, iOS and Android.
 * Cross Platform Controls
     * [Control Templating](https://docs.microsoft.com/en-us/windows/uwp/design/controls-and-patterns/control-templates)
     * [Data Templating](https://code.msdn.microsoft.com/Data-Binding-in-UWP-b5c98114)
@@ -49,11 +51,13 @@ For a larger example and features demo:
     * [MVVM Light Toolkit](https://github.com/nventive/uno.mvvmlight)
     * [Microsoft XAML Behaviors](https://github.com/nventive/Uno.XamlBehaviors)
     * [Prism](https://github.com/nventive/Uno.Prism)
+    * [SkiaSharp](https://github.com/unoplatform/Uno.SkiaSharp)
+    * [SkiaSharp.Extended](https://github.com/unoplatform/Uno.SkiaSharp.Extended)
     * [MVVMCross](https://www.mvvmcross.com/) (soon)
     * [ReactiveUI Official](https://github.com/reactiveui/ReactiveUI/pull/2067)
     * [WindowsStateTriggers](https://github.com/nventive/Uno.WindowsStateTriggers)
     * [Xamarin.Forms for UWP](https://github.com/nventive/Uno.Xamarin.Forms), [NuGet](https://www.nuget.org/packages/ReactiveUI.Uno)
-    * [Rx.NET](https://github.com/nventive/Uno.Rx.NET)
+    * [Rx.NET](https://github.com/reactiveui/Reactive.Wasm)
     * [ColorCode-Universal](https://github.com/nventive/Uno.ColorCode-Universal)
     * Any UWP project
 * Responsive Design
@@ -63,6 +67,8 @@ For a larger example and features demo:
 * Platform Specific 
     * Native controls and properties via [conditional XAML](doc/articles/using-uno-ui.md#supporting-multiple-platforms-in-xaml-files)
     * Any of the existing Xamarin iOS/Android libraries available
+* Xamarin.Forms Renderers
+    * [Uno Platform WebAssembly Renderers for Xamarin.Forms](https://github.com/unoplatform/Uno.Xamarin.Forms.Platform)
 
 # Live WebAssembly Apps
 
@@ -122,6 +128,31 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
   </tr>
   <tr>
     <td align="center"><a href="http://nicksnettravels.builttoroam.com"><img src="https://avatars2.githubusercontent.com/u/1614057?v=4" width="100px;" alt="Nick Randolph"/><br /><sub><b>Nick Randolph</b></sub></a><br /><a href="#blog-nickrandolph" title="Blogposts">📝</a></td>
+    <td align="center"><a href="https://opensource.microsoft.com"><img src="https://avatars2.githubusercontent.com/u/6154722?v=4" width="100px;" alt="Microsoft"/><br /><sub><b>Microsoft</b></sub></a><br /><a href="https://github.com/unoplatform/uno/commits?author=microsoft" title="Code">💻</a> <a href="https://github.com/unoplatform/uno/commits?author=microsoft" title="Documentation">📖</a> <a href="#example-microsoft" title="Examples">💡</a> <a href="https://github.com/unoplatform/uno/commits?author=microsoft" title="Tests">⚠️</a> <a href="#infra-microsoft" title="Infrastructure (Hosting, Build-Tools, etc)">🚇</a></td>
+    <td align="center"><a href="http://xamarin.com"><img src="https://avatars0.githubusercontent.com/u/790012?v=4" width="100px;" alt="Xamarin"/><br /><sub><b>Xamarin</b></sub></a><br /><a href="https://github.com/unoplatform/uno/commits?author=xamarin" title="Code">💻</a> <a href="https://github.com/unoplatform/uno/commits?author=xamarin" title="Documentation">📖</a> <a href="#example-xamarin" title="Examples">💡</a> <a href="https://github.com/unoplatform/uno/commits?author=xamarin" title="Tests">⚠️</a></td>
+    <td align="center"><a href="https://github.com/NicolasChampagne"><img src="https://avatars0.githubusercontent.com/u/49762217?v=4" width="100px;" alt="NicolasChampagne"/><br /><sub><b>NicolasChampagne</b></sub></a><br /><a href="https://github.com/unoplatform/uno/commits?author=NicolasChampagne" title="Code">💻</a></td>
+    <td align="center"><a href="https://github.com/agneszitte-nventive"><img src="https://avatars0.githubusercontent.com/u/16295702?v=4" width="100px;" alt="Agnes ZITTE"/><br /><sub><b>Agnes ZITTE</b></sub></a><br /><a href="https://github.com/unoplatform/uno/commits?author=agneszitte-nventive" title="Code">💻</a></td>
+  </tr>
+  <tr>
+    <td align="center"><a href="http://miguelrochefort.com"><img src="https://avatars0.githubusercontent.com/u/1556332?v=4" width="100px;" alt="Miguel Rochefort"/><br /><sub><b>Miguel Rochefort</b></sub></a><br /><a href="https://github.com/unoplatform/uno/commits?author=miguelrochefort" title="Code">💻</a></td>
+    <td align="center"><a href="https://github.com/YGuerin"><img src="https://avatars2.githubusercontent.com/u/11750340?v=4" width="100px;" alt="Yohan Guérin"/><br /><sub><b>Yohan Guérin</b></sub></a><br /><a href="https://github.com/unoplatform/uno/commits?author=YGuerin" title="Code">💻</a></td>
+    <td align="center"><a href="https://github.com/jcantin-nventive"><img src="https://avatars1.githubusercontent.com/u/43351943?v=4" width="100px;" alt="jcantin-nventive"/><br /><sub><b>jcantin-nventive</b></sub></a><br /><a href="https://github.com/unoplatform/uno/commits?author=jcantin-nventive" title="Code">💻</a></td>
+    <td align="center"><a href="https://github.com/MatFillion"><img src="https://avatars0.githubusercontent.com/u/7029537?v=4" width="100px;" alt="Mathieu Fillion"/><br /><sub><b>Mathieu Fillion</b></sub></a><br /><a href="https://github.com/unoplatform/uno/commits?author=MatFillion" title="Code">💻</a> <a href="#maintenance-MatFillion" title="Maintenance">🚧</a></td>
+    <td align="center"><a href="http://www.florent-cima.com"><img src="https://avatars0.githubusercontent.com/u/669433?v=4" width="100px;" alt="Florent Cima"/><br /><sub><b>Florent Cima</b></sub></a><br /><a href="https://github.com/unoplatform/uno/commits?author=florentcm" title="Code">💻</a></td>
+  </tr>
+  <tr>
+    <td align="center"><a href="https://github.com/AlexTrepanier"><img src="https://avatars1.githubusercontent.com/u/46451463?v=4" width="100px;" alt="alextrepanier"/><br /><sub><b>alextrepanier</b></sub></a><br /><a href="https://github.com/unoplatform/uno/commits?author=AlexTrepanier" title="Code">💻</a></td>
+    <td align="center"><a href="https://github.com/warrenbenyahia"><img src="https://avatars2.githubusercontent.com/u/46033284?v=4" width="100px;" alt="warrenbenyahia"/><br /><sub><b>warrenbenyahia</b></sub></a><br /><a href="https://github.com/unoplatform/uno/commits?author=warrenbenyahia" title="Code">💻</a></td>
+    <td align="center"><a href="https://github.com/Batesias"><img src="https://avatars3.githubusercontent.com/u/2448861?v=4" width="100px;" alt="JP"/><br /><sub><b>JP</b></sub></a><br /><a href="https://github.com/unoplatform/uno/commits?author=Batesias" title="Code">💻</a></td>
+    <td align="center"><a href="https://github.com/GuillaumeSE"><img src="https://avatars0.githubusercontent.com/u/50678763?v=4" width="100px;" alt="GuillaumeSE"/><br /><sub><b>GuillaumeSE</b></sub></a><br /><a href="https://github.com/unoplatform/uno/commits?author=GuillaumeSE" title="Code">💻</a></td>
+    <td align="center"><a href="http://blogs.microsoft.co.il/shimmy/"><img src="https://avatars3.githubusercontent.com/u/2716316?v=4" width="100px;" alt="Shimmy"/><br /><sub><b>Shimmy</b></sub></a><br /><a href="https://github.com/unoplatform/uno/commits?author=weitzhandler" title="Documentation">📖</a></td>
+  </tr>
+  <tr>
+    <td align="center"><a href="https://github.com/gfbriggs"><img src="https://avatars1.githubusercontent.com/u/18409414?v=4" width="100px;" alt="Geoffrey Fielden-Briggs"/><br /><sub><b>Geoffrey Fielden-Briggs</b></sub></a><br /><a href="https://github.com/unoplatform/uno/commits?author=gfbriggs" title="Code">💻</a></td>
+    <td align="center"><a href="https://github.com/Massimo37"><img src="https://avatars1.githubusercontent.com/u/36633246?v=4" width="100px;" alt="Massimo Cacchiotti"/><br /><sub><b>Massimo Cacchiotti</b></sub></a><br /><a href="https://github.com/unoplatform/uno/commits?author=Massimo37" title="Code">💻</a></td>
+    <td align="center"><a href="https://github.com/rfrappier"><img src="https://avatars2.githubusercontent.com/u/30271212?v=4" width="100px;" alt="rfrappier"/><br /><sub><b>rfrappier</b></sub></a><br /><a href="https://github.com/unoplatform/uno/commits?author=rfrappier" title="Documentation">📖</a></td>
+    <td align="center"><a href="http://furkankambay.com/"><img src="https://avatars1.githubusercontent.com/u/8467416?v=4" width="100px;" alt="Furkan Kambay"/><br /><sub><b>Furkan Kambay</b></sub></a><br /><a href="https://github.com/unoplatform/uno/commits?author=FurkanKambay" title="Documentation">📖</a></td>
+    <td align="center"><a href="https://github.com/pkar70"><img src="https://avatars2.githubusercontent.com/u/23451507?v=4" width="100px;" alt="pkar70"/><br /><sub><b>pkar70</b></sub></a><br /><a href="#review-pkar70" title="Reviewed Pull Requests">👀</a> <a href="https://github.com/unoplatform/uno/commits?author=pkar70" title="Code">💻</a> <a href="https://github.com/unoplatform/uno/commits?author=pkar70" title="Tests">⚠️</a> <a href="https://github.com/unoplatform/uno/commits?author=pkar70" title="Documentation">📖</a></td>
   </tr>
 </table>
 

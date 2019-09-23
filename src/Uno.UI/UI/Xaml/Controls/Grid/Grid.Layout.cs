@@ -40,6 +40,9 @@ namespace Windows.UI.Xaml.Controls
 		private static readonly GridSize[] __singleStarSize = { GridSize.Star() };
 		private static readonly GridSize[] __singleAutoSize = { GridSize.Auto };
 
+		private Memory<DoubleRange> _calculatedRows;
+		private Memory<DoubleRange> _calculatedColumns;
+
 		private Memory<Column> GetColumns(bool considerStarAsAuto)
 		{
 			if (ColumnDefinitions.InnerList.Count == 0)
@@ -80,7 +83,7 @@ namespace Windows.UI.Xaml.Controls
 			else
 			{
 				return RowDefinitions.InnerList
-					.SelectToMemory(rd => CreateInternalRow(considerStarAsAuto, GridSize.FromGridLength(rd.Height), rd.MinHeight, rd. MaxHeight));
+					.SelectToMemory(rd => CreateInternalRow(considerStarAsAuto, GridSize.FromGridLength(rd.Height), rd.MinHeight, rd.MaxHeight));
 			}
 		}
 
@@ -162,7 +165,7 @@ namespace Windows.UI.Xaml.Controls
 				{
 					// Columns
 					double maxMeasuredHeight; //ignored here
-					var calculatedPixelColumns = CalculateColumns(
+					_calculatedColumns = CalculateColumns(
 						availableSize,
 						positions.Views.Span,
 						measureChild,
@@ -174,18 +177,18 @@ namespace Windows.UI.Xaml.Controls
 
 					// Rows (we need to fully calculate the rows to allow text wrapping)
 					double maxMeasuredWidth; //ignored here
-					var calculatedPixelRows = CalculateRows(
+					_calculatedRows = CalculateRows(
 						availableSize,
 						positions.Views.Span,
 						measureChild,
-						calculatedPixelColumns.Span,
+						_calculatedColumns.Span,
 						rows,
 						definedRows,
 						true,
 						out maxMeasuredWidth
 					);
 
-					size = new Size(calculatedPixelColumns.Span.Sum(cs => cs.MinValue), calculatedPixelRows.Span.Sum(cs => cs.MinValue));
+					size = new Size(_calculatedColumns.Span.Sum(cs => cs.MinValue), _calculatedRows.Span.Sum(cs => cs.MinValue));
 				}
 			}
 			size.Width += GetHorizontalOffset();
@@ -225,7 +228,7 @@ namespace Windows.UI.Xaml.Controls
 
 					// Columns
 					double maxMeasuredHeight; //ignored here
-					var calculatedPixelColumns = CalculateColumns(
+					_calculatedColumns = CalculateColumns(
 						availableSize,
 						positions.Views.Span,
 						measureChild,
@@ -237,18 +240,18 @@ namespace Windows.UI.Xaml.Controls
 
 					// Rows
 					double maxMeasuredWidth; //ignored here
-					var calculatedPixelRows = CalculateRows(
+					_calculatedRows = CalculateRows(
 						availableSize,
 						positions.Views.Span,
 						measureChild,
-						calculatedPixelColumns.Span,
+						_calculatedColumns.Span,
 						rows,
 						definedRows,
 						false,
 						out maxMeasuredWidth
 					);
 
-					LayoutChildren(calculatedPixelColumns.Span, calculatedPixelRows.Span, positions.Views.Span);
+					LayoutChildren(_calculatedColumns.Span, _calculatedRows.Span, positions.Views.Span);
 				}
 
 				finalSize.Width += GetHorizontalOffset();
@@ -503,7 +506,7 @@ namespace Windows.UI.Xaml.Controls
 					remainingWidth = initialRemainingWidth;
 				}
 
-				if (i == maxTries)
+				if (i == maxTries && maxTries > 1)
 				{
 					if (this.Log().IsEnabled(LogLevel.Warning))
 					{
@@ -1097,6 +1100,28 @@ namespace Windows.UI.Xaml.Controls
 		private Func<View, Size, Size> GetDirectMeasureChild()
 		{
 			return MeasureElement;
+		}
+
+		internal double GetActualWidth(ColumnDefinition columnDefinition)
+		{
+			var i = ColumnDefinitions.IndexOf(columnDefinition);
+			if (i < 0 || i >= _calculatedColumns.Length)
+			{
+				return 0d;
+			}
+
+			return _calculatedColumns.Span[i].MinValue;
+		}
+
+		internal double GetActualHeight(RowDefinition rowDefinition)
+		{
+			var i = RowDefinitions.IndexOf(rowDefinition);
+			if (i < 0 || i >= _calculatedRows.Length)
+			{
+				return 0d;
+			}
+
+			return _calculatedRows.Span[i].MinValue;
 		}
 
 		private (IDisposable Subscription, Memory<ViewPosition> Views) GetPositions(int numberOfColumns, int numberOfRows)

@@ -27,7 +27,7 @@
 					dispatchBackRequest();
 				} else if (evt.state === 1) {
 					// The manager is disabled, but the user requested to navigate forward to our dummy entry,
-					// but we prefer to keep this dummy entry in teh forward stack (is more prompt to be cleared by the browser,
+					// but we prefer to keep this dummy entry in the forward stack (is more prompt to be cleared by the browser,
 					// and as it's less commonly used it should be less annoying for the user)
 					window.history.back();
 				}
@@ -35,6 +35,10 @@
 		}
 
 		public enable(): void {
+			if (this._isEnabled) {
+				return;
+			}
+
 			// Clear the back stack, so the only items will be ours (and we won't have any remaining forward item)
 			this.clearStack();
 			window.history.pushState(1, document.title, null);
@@ -44,6 +48,9 @@
 		}
 
 		public disable(): void {
+			if (!this._isEnabled) {
+				return;
+			}
 
 			// Disable the handler, then clear the history
 			// Note: As a side effect, the forward button will be enabled :(

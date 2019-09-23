@@ -66,5 +66,15 @@ namespace Windows.UI.Xaml.Controls
 			"MaxWidth", typeof(double),
 			typeof(ColumnDefinition),
 			new FrameworkPropertyMetadata(double.PositiveInfinity));
+
+		public double ActualWidth
+		{
+			get
+			{
+				var parent = this.GetParent();
+				var result = (parent as Grid)?.GetActualWidth(this) ?? 0d;
+				return result;
+			}
+		}
 	}
 }

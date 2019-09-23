@@ -22,11 +22,20 @@ namespace Windows.UI.Xaml.Controls
 		private readonly SerialDisposable _collectionChangedSubscription = new SerialDisposable();
 		private readonly SerialDisposable _headerFooterSubscription = new SerialDisposable();
 
-		private void InitializeNativePanel()
+		private void InitializeNativePanel(NativeListViewBase panel)
 		{
-			var adapter = new NativeListViewBaseAdapter();
-			adapter.Owner = NativePanel;
-			NativePanel.CurrentAdapter = adapter;
+			panel.CurrentAdapter = new NativeListViewBaseAdapter { Owner = panel };
+		}
+
+		partial void CleanUpNativePanel(NativeListViewBase panel)
+		{
+			_headerFooterSubscription.Disposable = null;
+			panel.NativeLayout?.RemoveAllViews();
+			panel.ViewCache?.OnUnloaded();
+
+			panel.NativeLayout = null;
+			panel.SetViewCacheExtension(null);
+			panel.CurrentAdapter = null;
 		}
 
 		private void AddItems(int firstItem, int count, int section)
