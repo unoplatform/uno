@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 using Uno.UITest.Helpers;
 using Uno.UITest.Helpers.Queries;
 
-namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TimePickerTests
+namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ContentDialogTests
 {
 	[TestFixture]
 	public partial class ContentDialog_Tests : SampleControlUITestBase
