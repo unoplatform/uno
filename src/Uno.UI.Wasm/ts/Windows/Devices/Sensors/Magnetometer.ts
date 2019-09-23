@@ -24,18 +24,18 @@ namespace Windows.Devices.Sensors {
 				}
 			} catch (error) {
 				//sensor not available
-				console.log('Magnetometer could not be initialized.');
+				console.log("Magnetometer could not be initialized.");
 			}
 			return false;
 		}
 
 		public static startReading() {
-			this.magnetometer.addEventListener('reading', Magnetometer.readingChangedHandler);
+			this.magnetometer.addEventListener("reading", Magnetometer.readingChangedHandler);
 			this.magnetometer.start();
 		}
 
 		public static stopReading() {
-			this.magnetometer.removeEventListener('reading', Magnetometer.readingChangedHandler);
+			this.magnetometer.removeEventListener("reading", Magnetometer.readingChangedHandler);
 			this.magnetometer.stop();
 		}
 
