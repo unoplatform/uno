@@ -41,9 +41,9 @@ namespace Windows.Devices.Sensors {
 
 		private static readingChangedHandler(event: any) {
 			Gyrometer.dispatchReading(
-				this.gyroscope.x,
-				this.gyroscope.y,
-				this.gyroscope.z);
+				Gyrometer.gyroscope.x,
+				Gyrometer.gyroscope.y,
+				Gyrometer.gyroscope.z);
 		}
 	}
 }

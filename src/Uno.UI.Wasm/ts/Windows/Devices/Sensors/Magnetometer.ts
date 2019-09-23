@@ -41,9 +41,9 @@ namespace Windows.Devices.Sensors {
 
 		private static readingChangedHandler(event: any) {
 			Magnetometer.dispatchReading(
-				this.magnetometer.x,
-				this.magnetometer.y,
-				this.magnetometer.z);
+				Magnetometer.magnetometer.x,
+				Magnetometer.magnetometer.y,
+				Magnetometer.magnetometer.z);
 		}
 	}
 }

@@ -2263,7 +2263,7 @@ var Windows;
                     this.gyroscope.stop();
                 }
                 static readingChangedHandler(event) {
-                    Gyrometer.dispatchReading(this.gyroscope.x, this.gyroscope.y, this.gyroscope.z);
+                    Gyrometer.dispatchReading(Gyrometer.gyroscope.x, Gyrometer.gyroscope.y, Gyrometer.gyroscope.z);
                 }
             }
             Sensors.Gyrometer = Gyrometer;
@@ -2301,7 +2301,7 @@ var Windows;
                     this.magnetometer.stop();
                 }
                 static readingChangedHandler(event) {
-                    Magnetometer.dispatchReading(this.magnetometer.x, this.magnetometer.y, this.magnetometer.z);
+                    Magnetometer.dispatchReading(Magnetometer.magnetometer.x, Magnetometer.magnetometer.y, Magnetometer.magnetometer.z);
                 }
             }
             Sensors.Magnetometer = Magnetometer;
