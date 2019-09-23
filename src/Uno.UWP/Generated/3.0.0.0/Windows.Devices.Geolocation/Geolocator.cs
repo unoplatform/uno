@@ -97,7 +97,7 @@ namespace Windows.Devices.Geolocation
 			}
 		}
 		#endif
-		#if false || false || NET461 || __WASM__ || __MACOS__
+		#if false || false || NET461 || false || __MACOS__
 		[global::Uno.NotImplemented]
 		public Geolocator() 
 		{
@@ -142,7 +142,7 @@ namespace Windows.Devices.Geolocation
 		// Forced skipping of method Windows.Devices.Geolocation.Geolocator.IsDefaultGeopositionRecommended.get
 		// Forced skipping of method Windows.Devices.Geolocation.Geolocator.DefaultGeoposition.set
 		// Forced skipping of method Windows.Devices.Geolocation.Geolocator.DefaultGeoposition.get
-		#if false || false || NET461 || __WASM__ || __MACOS__
+		#if false || false || NET461 || false || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Geolocation.GeolocationAccessStatus> RequestAccessAsync()
 		{
