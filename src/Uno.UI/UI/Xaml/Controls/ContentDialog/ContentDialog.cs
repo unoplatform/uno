@@ -311,11 +311,6 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		// Override the default style resolution, as ContentDialog
-		// is almost always overridden when defined in XAML.
-		internal override Type GetDefaultStyleType()
-			=> typeof(ContentDialog);
-
 		private void OnDefaultButtonChanged(ContentDialogButton oldValue, ContentDialogButton newValue)
 		{
 			ApplyDefaultButtonChanged(newValue);

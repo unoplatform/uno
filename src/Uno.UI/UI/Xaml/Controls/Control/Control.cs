@@ -138,7 +138,7 @@ namespace Windows.UI.Xaml.Controls
 
 				if (value != null)
 				{
-					if(_templatedRoot is IDependencyObjectStoreProvider provider)
+					if (_templatedRoot is IDependencyObjectStoreProvider provider)
 					{
 						provider.Store.SetValue(provider.Store.TemplatedParentProperty, this, DependencyPropertyValuePrecedences.Local);
 					}
@@ -292,7 +292,7 @@ namespace Windows.UI.Xaml.Controls
 				&& NameScope.GetNameScope(root) is INameScope nameScope
 				&& nameScope.FindName(name) is DependencyObject element
 				// Doesn't currently support ElementStub (fallbacks to other FindName implementation)
-				&& !(element is ElementStub) 
+				&& !(element is ElementStub)
 					? element
 					: null;
 		}
@@ -344,37 +344,21 @@ namespace Windows.UI.Xaml.Controls
 				_controlTemplateUsedLastUpdate = null;
 			}
 
-			if (
-				!FeatureConfiguration.FrameworkElement.UseLegacyApplyStylePhase && 
-				FeatureConfiguration.FrameworkElement.ClearPreviousOnStyleChange
-			)
+			if (_updateTemplate && !object.Equals(Template, _controlTemplateUsedLastUpdate))
 			{
-				if (_updateTemplate && !object.Equals(Template, _controlTemplateUsedLastUpdate))
+				_controlTemplateUsedLastUpdate = Template;
+
+				if (Template != null)
 				{
-					_controlTemplateUsedLastUpdate = Template;
-
-					if (Template != null)
-					{
-						TemplatedRoot = Template.LoadContentCached();
-					}
-					else
-					{
-						TemplatedRoot = null;
-					}
-
-					_updateTemplate = false;
-				}
-			}
-			else
-			{
-				if (Template != null && _updateTemplate && !object.Equals(Template, _controlTemplateUsedLastUpdate))
-				{
-					_controlTemplateUsedLastUpdate = Template;
-
-					_updateTemplate = false;
-
 					TemplatedRoot = Template.LoadContentCached();
 				}
+				else
+				{
+					TemplatedRoot = null;
+				}
+
+				_updateTemplate = false;
+
 			}
 		}
 
@@ -837,8 +821,8 @@ namespace Windows.UI.Xaml.Controls
 			}
 
 			// TODO: make those static members
-			var pointerArgs = new[] {typeof(PointerRoutedEventArgs)};
-			var tappedArgs = new[] {typeof(TappedRoutedEventArgs)};
+			var pointerArgs = new[] { typeof(PointerRoutedEventArgs) };
+			var tappedArgs = new[] { typeof(TappedRoutedEventArgs) };
 			var doubleTappedArgs = new[] { typeof(DoubleTappedRoutedEventArgs) };
 			var keyArgs = new[] { typeof(KeyRoutedEventArgs) };
 			var routedArgs = new[] { typeof(RoutedEventArgs) };

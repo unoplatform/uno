@@ -157,10 +157,6 @@ namespace Windows.UI.Xaml
 			e.MinWidth = e.MinHeight = 0;
 			e.MaxWidth = e.MaxHeight = double.PositiveInfinity;
 #endif
-			if (FeatureConfiguration.FrameworkElement.UseLegacyApplyStylePhase)
-			{
-				e.Style = Xaml.Style.DefaultStyleForType(e.GetType());
-			}
 
 			if (
 				!FeatureConfiguration.UIElement.UseLegacyClipping

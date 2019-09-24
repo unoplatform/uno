@@ -1016,17 +1016,6 @@ namespace Windows.UI.Xaml.Controls
 			//Prepare ContentPresenter
 			if ((containerAsContentPresenter = element as ContentPresenter) != null)
 			{
-				if (
-					containerAsContentPresenter.Style != null
-					&& containerAsContentPresenter.Style != styleFromItemsControl
-				)
-				{
-					// For now, styles-set properties are not reset when applying another style
-					// so we rely on the ClearStyle method to do this for this particular reuse 
-					// case.
-					containerAsContentPresenter.Style.ClearStyle(containerAsContentPresenter);
-				}
-
 				if (styleFromItemsControl != null)
 				{
 					containerAsContentPresenter.Style = styleFromItemsControl;

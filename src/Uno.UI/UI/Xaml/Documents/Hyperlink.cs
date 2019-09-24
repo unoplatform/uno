@@ -96,15 +96,6 @@ namespace Windows.UI.Xaml.Documents
 
 		#endregion
 
-		protected override void OnStyleChanged()
-		{
-			if (Style == null)
-			{
-				base.Style = Style.DefaultStyleForType(typeof(Hyperlink));
-				base.Style.ApplyTo(this);
-			}
-		}
-
 		#region Click
 		private Pointer _pressedPointer;
 		internal void SetPointerPressed(Pointer pointer)
