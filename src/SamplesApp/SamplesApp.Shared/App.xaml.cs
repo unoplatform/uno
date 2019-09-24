@@ -163,7 +163,7 @@ namespace SamplesApp
 #if DEBUG
 				.AddConsole(LogLevel.Debug);
 #else
-				.AddConsole(LogLevel.Error);
+				.AddConsole(LogLevel.Warning);
 #endif
 		}
 
