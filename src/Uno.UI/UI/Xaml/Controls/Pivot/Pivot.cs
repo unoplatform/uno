@@ -27,6 +27,13 @@ namespace Windows.UI.Xaml.Controls
 
 		private bool _isUWPTemplate;
 
+		public Pivot()
+		{
+			Loaded += (s, e) => RegisterHeaderEvents();
+			Unloaded += (s, e) => UnregisterHeaderEvents();
+			Items.VectorChanged += OnItemsVectorChanged;
+		}
+
 		protected override void OnApplyTemplate()
 		{
 			base.OnApplyTemplate();
@@ -46,10 +53,6 @@ namespace Windows.UI.Xaml.Controls
 			}
 
 			_isTemplateApplied = true;
-
-			Loaded += (s, e) => RegisterHeaderEvents();
-			Unloaded += (s, e) => UnregisterHeaderEvents();
-			Items.VectorChanged += OnItemsVectorChanged;
 
 			UpdateProperties();
 			SynchronizeItems();
