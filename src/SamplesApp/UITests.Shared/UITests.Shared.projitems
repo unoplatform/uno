@@ -45,6 +45,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_Devices\GeolocatorTests.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="$(MSBuildThisFileDirectory)Windows_Devices\MagnetometerTests.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -2473,6 +2477,7 @@
       <DependentUpon>AccelerometerTests.xaml</DependentUpon>
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_Devices\BarometerTests.xaml.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_Devices\GeolocatorTests.xaml.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Windows_Devices\MagnetometerTests.xaml.cs">
       <DependentUpon>MagnetometerTests.xaml</DependentUpon>
     </Compile>
@@ -4485,6 +4490,12 @@
     </Compile>
     <Compile Update="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ComboBox\ComboBox_ItemDataContext.xaml.cs">
       <DependentUpon>ComboBox_ItemDataContext.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="D:\Dev\Uno\src\SamplesApp\UITests.Shared\Windows_Devices\Geolocator.xaml.cs">
+      <DependentUpon>Geolocator.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="D:\Dev\Uno\src\SamplesApp\UITests.Shared\Windows_Devices\GeolocatorTests.xaml.cs">
+      <DependentUpon>GeolocatorTests.xaml</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>

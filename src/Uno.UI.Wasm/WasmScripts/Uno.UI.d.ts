@@ -761,6 +761,13 @@ declare namespace Windows.UI.Core {
         private clearStack;
     }
 }
+declare namespace Windows.Devices.Geolocation {
+    class Geolocator {
+        private static dispatchAccessRequest;
+        static initialize(): void;
+        static requestAccess(): void;
+    }
+}
 interface Window {
     DeviceMotionEvent(): void;
 }

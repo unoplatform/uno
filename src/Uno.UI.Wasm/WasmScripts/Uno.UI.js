@@ -1130,12 +1130,12 @@ var Uno;
                 const originalStyleCssText = elementStyle.cssText;
                 let parentElement = null;
                 let parentElementWidthHeight = null;
-                let isDisconnected = !element.isConnected;
+                let unconnectedRoot = null;
                 try {
-                    if (isDisconnected) {
+                    if (!element.isConnected) {
                         // If the element is not connected to the DOM, we need it
                         // to be connected for the measure to provide a meaningful value.
-                        let unconnectedRoot = element;
+                        unconnectedRoot = element;
                         while (unconnectedRoot.parentElement) {
                             // Need to find the top most "unconnected" parent
                             // of this element
@@ -1201,8 +1201,8 @@ var Uno;
                         parentElement.style.width = parentElementWidthHeight.width;
                         parentElement.style.height = parentElementWidthHeight.height;
                     }
-                    if (isDisconnected) {
-                        this.containerElement.removeChild(element);
+                    if (unconnectedRoot !== null) {
+                        this.containerElement.removeChild(unconnectedRoot);
                     }
                 }
             }
@@ -2203,6 +2203,40 @@ var Windows;
             Core.SystemNavigationManager = SystemNavigationManager;
         })(Core = UI.Core || (UI.Core = {}));
     })(UI = Windows.UI || (Windows.UI = {}));
+})(Windows || (Windows = {}));
+var Windows;
+(function (Windows) {
+    var Devices;
+    (function (Devices) {
+        var Geolocation;
+        (function (Geolocation) {
+            let GeolocationAccessStatus;
+            (function (GeolocationAccessStatus) {
+                GeolocationAccessStatus["Allowed"] = "Allowed";
+                GeolocationAccessStatus["Denied"] = "Denied";
+                GeolocationAccessStatus["Unspecified"] = "Unspecified";
+            })(GeolocationAccessStatus || (GeolocationAccessStatus = {}));
+            class Geolocator {
+                static initialize() {
+                    if (!this.dispatchAccessRequest) {
+                        this.dispatchAccessRequest = Module.mono_bind_static_method("[Uno] Windows.Devices.Geolocation.Geolocator:DispatchAccessRequest");
+                    }
+                }
+                static requestAccess() {
+                    Geolocator.initialize();
+                    navigator.geolocation.getCurrentPosition((_) => { Geolocator.dispatchAccessRequest(GeolocationAccessStatus.Allowed); }, (error) => {
+                        if (error.code == error.PERMISSION_DENIED) {
+                            Geolocator.dispatchAccessRequest(GeolocationAccessStatus.Denied);
+                        }
+                        else {
+                            Geolocator.dispatchAccessRequest(GeolocationAccessStatus.Unspecified);
+                        }
+                    });
+                }
+            }
+            Geolocation.Geolocator = Geolocator;
+        })(Geolocation = Devices.Geolocation || (Devices.Geolocation = {}));
+    })(Devices = Windows.Devices || (Windows.Devices = {}));
 })(Windows || (Windows = {}));
 var Windows;
 (function (Windows) {

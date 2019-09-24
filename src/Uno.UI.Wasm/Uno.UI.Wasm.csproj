@@ -1,6 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="15.0">
 	<PropertyGroup>
 		<TargetFrameworks>netstandard2.0</TargetFrameworks>
+		<TypeScriptToolsVersion>3.1</TypeScriptToolsVersion>
 	</PropertyGroup>
 
 	<PropertyGroup>
@@ -25,6 +26,10 @@
 		<UpToDateCheckInput Include="WasmCSS\**\*.css" />
 		<UpToDateCheckInput Include="ts\**\*" />
 		<UpToDateCheckInput Include="tsBindings\**\*" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <UpToDateCheckInput Remove="ts\Windows\Devices\Geolocation\Geolocator.ts" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -80,5 +85,21 @@
 		<Copy SourceFiles="@(_OutputFiles)" DestinationFiles="@(_OutputFiles->'$(_TargetNugetFolder)\%(RecursiveDir)%(Filename)%(Extension)')" />
 		<Copy SourceFiles="@(_OutputFilesPDB)" DestinationFiles="@(_OutputFilesPDB->'$(_TargetNugetFolder)\%(RecursiveDir)%(Filename).pdb')" />
 	</Target>
+
+	<PropertyGroup Condition="'$(Configuration)' == 'Debug'">
+	  <TypeScriptTarget>ES5</TypeScriptTarget>
+	  <TypeScriptJSXEmit>React</TypeScriptJSXEmit>
+	  <TypeScriptModuleKind />
+	  <TypeScriptCompileOnSaveEnabled>True</TypeScriptCompileOnSaveEnabled>
+	  <TypeScriptNoImplicitAny>False</TypeScriptNoImplicitAny>
+	  <TypeScriptRemoveComments>False</TypeScriptRemoveComments>
+	  <TypeScriptOutFile />
+	  <TypeScriptOutDir />
+	  <TypeScriptGeneratesDeclarations>False</TypeScriptGeneratesDeclarations>
+	  <TypeScriptNoEmitOnError>True</TypeScriptNoEmitOnError>
+	  <TypeScriptSourceMap>True</TypeScriptSourceMap>
+	  <TypeScriptMapRoot />
+	  <TypeScriptSourceRoot />
+	</PropertyGroup>
 
 </Project>
