@@ -27,6 +27,13 @@ namespace Windows.UI.Xaml.Controls
 
 		private bool _isUWPTemplate;
 
+		public Pivot()
+		{
+			Loaded += (s, e) => RegisterHeaderEvents();
+			Unloaded += (s, e) => UnregisterHeaderEvents();
+			Items.VectorChanged += OnItemsVectorChanged;
+		}
+
 		protected override void OnApplyTemplate()
 		{
 			base.OnApplyTemplate();
@@ -46,10 +53,6 @@ namespace Windows.UI.Xaml.Controls
 			}
 
 			_isTemplateApplied = true;
-
-			Loaded += (s, e) => RegisterHeaderEvents();
-			Unloaded += (s, e) => UnregisterHeaderEvents();
-			Items.VectorChanged += OnItemsVectorChanged;
 
 			UpdateProperties();
 			SynchronizeItems();
@@ -132,26 +135,31 @@ namespace Windows.UI.Xaml.Controls
 
 				foreach (var item in Items)
 				{
+					var headerItem = new PivotHeaderItem()
+					{
+						ContentTemplate = HeaderTemplate,
+						IsHitTestVisible = true
+					};
+
 					if (item is PivotItem pivotItem)
 					{
-						var headerItem = new PivotHeaderItem()
-						{
-							Content = pivotItem.Header,
-							ContentTemplate = HeaderTemplate,
-							IsHitTestVisible = true
-						};
-
-						headerItem.SetBinding(
-							ContentControl.ContentTemplateProperty,
-							new Binding
-							{
-								Path = "HeaderTemplate",
-								RelativeSource = RelativeSource.TemplatedParent
-							}
-						);
-
-						_staticHeader.Children.Add(headerItem);
+						headerItem.Content = pivotItem.Header;
 					}
+					else
+					{
+						headerItem.Content = item;
+					}
+
+					headerItem.SetBinding(
+						ContentControl.ContentTemplateProperty,
+						new Binding
+						{
+							Path = "HeaderTemplate",
+							RelativeSource = RelativeSource.TemplatedParent
+						}
+					);
+
+					_staticHeader.Children.Add(headerItem);
 				}
 
 				if (SelectedIndex == -1 && Items.Count != 0)
@@ -201,19 +209,25 @@ namespace Windows.UI.Xaml.Controls
 				var selectedIndex = Math.Max(Math.Min(SelectedIndex, Items.Count - 1), 0);
 
 				var selectedHeader = _staticHeader.Children[selectedIndex] as PivotHeaderItem;
-				var selectedPivotitem = Items[selectedIndex] as PivotItem;
+				var selectedPivotitem = Items[selectedIndex];
 
 				SelectedItem = selectedPivotitem;
 
-				foreach (var item in Items)
+				for (int i = 0; i < Items.Count; i++)
 				{
-					if (item is PivotItem pivotItem && item != selectedPivotitem)
+					if (ContainerFromIndex(i) is ContentControl itemContainer)
 					{
-						pivotItem.Visibility = Visibility.Collapsed;
+						if (selectedIndex != i)
+						{
+							itemContainer.Visibility = Visibility.Collapsed;
+						}
 					}
 				}
 
-				selectedPivotitem.Visibility = Visibility.Visible;
+				if (ContainerFromIndex(selectedIndex) is ContentControl pi)
+				{
+					pi.Visibility = Visibility.Visible;
+				}
 
 				foreach (var child in _staticHeader.Children)
 				{
