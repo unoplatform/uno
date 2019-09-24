@@ -292,6 +292,13 @@
 						reason="Removed API not available in WinUI" />
 				<Member fullName="System.Void Windows.UI.Xaml.Media.Imaging.BitmapSource.set_PixelWidth(System.Int32 value)"
 						reason="Removed API not available in WinUI" />
+
+				<Member fullName="System.Void Windows.Devices.Sensors.GyrometerReadingChangedEventArgs..ctor()"
+						reason="Parameter-less ctor does not exist in UWP"/>
+				<Member fullName="System.Void Windows.Devices.Sensors.Gyrometer..ctor()"
+						reason="Parameter-less ctor does not exist in UWP"/>
+				<Member fullName="System.Void Windows.Devices.Sensors.GyrometerReading..ctor()"
+						reason="Parameter-less ctor does not exist in UWP"/>
 			</Methods>
 
 			<Properties>
@@ -306,17 +313,6 @@
 				<Member fullName="Windows.UI.Xaml.ResourceDictionary[] Windows.UI.Xaml.ResourceDictionary::MergedDictionaries()"
 						reason="Property type fixed to match UWP" />
 			</Properties>
-		</IgnoreSet>
-
-		<IgnoreSet baseVersion="2.0.0">
-			<Methods>
-				<Member fullName="System.Void Windows.Devices.Sensors.GyrometerReadingChangedEventArgs..ctor()"
-						reason="Parameter-less ctor does not exist in UWP"/>
-				<Member fullName="System.Void Windows.Devices.Sensors.Gyrometer..ctor()"
-						reason="Parameter-less ctor does not exist in UWP"/>
-				<Member fullName="System.Void Windows.Devices.Sensors.GyrometerReading..ctor()"
-						reason="Parameter-less ctor does not exist in UWP"/>
-			</Methods>
 		</IgnoreSet>
 
 	</IgnoreSets>
