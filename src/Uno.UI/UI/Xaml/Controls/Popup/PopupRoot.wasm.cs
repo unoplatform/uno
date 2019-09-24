@@ -58,10 +58,25 @@ namespace Windows.UI.Xaml.Controls
 				.OfType<PopupPanel>()
 				.LastOrDefault(p => p.Popup.IsLightDismissEnabled);
 
-			if(lastDismissablePopupPanel != null)
+			if (lastDismissablePopupPanel != null)
 			{
 				lastDismissablePopupPanel.Popup.IsOpen = false;
 			}
+		}
+
+		protected override Size MeasureOverride(Size availableSize)
+		{
+			Size size = default;
+			foreach (var child in Children)
+			{
+				if (!(child is PopupPanel))
+				{
+					continue;
+				}
+				// Note that we should always be arranged with the full size of the window, so we don't care too much about the return value here.
+				size = MeasureElement(child, availableSize);
+			}
+			return size;
 		}
 
 		protected override Size ArrangeOverride(Size finalSize)

@@ -122,6 +122,8 @@
 * `Popup` & `ComboBox` (and other controls using `Popup`) were not behaving properly when `IsLightDismissable` were set to `true`.
 * [Wasm] Fix unloaded UIElements are made visible if measured and arranged
 * [Android] Fix java NRE handing touch events on detached view
+* #1557 Fix local DataContext on ContentDialog is overwritten
+* [WASM] Fix display for multiple popups (eg ComboBox inside of ContentDialog)
 
 ## Release 1.45.0
 ### Features
