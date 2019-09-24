@@ -69,6 +69,7 @@
 * `TextBox.Text = null` will now throw an exception, as on UWP. Pushing `null` via a binding is still valid.
 * Projects targeting Android 8 must now use Xamarin.GooglePlayServices.* 60.1142.1 (60.1142.0 has been unlisted)
 * Projects targeting Android 9 must now use Xamarin.GooglePlayServices.* 71.1600.0
+* [iOS] UIWebView is deprecated and replaced with WKWebView (ITMS-90809: Deprecated API Usage - Apple will stop accepting submissions of apps that use UIWebView APIs . See https://developer.apple.com/documentation/uikit/uiwebview for more information.)
 
 ### Bug fixes
 * [#1531](https://github.com/unoplatform/uno/pull/1531)Fix an issue with VirtualizePanelAdaptater by adding a cache where the ItemSources lenght change and created a OutOfRangeException
