@@ -59,7 +59,8 @@
 * `ToolTip` & `ToolTipService` are now implemented.
 * [#1352](https://github.com/unoplatform/uno/issues/1352) Add support for `ThemeResource`s with different types (eg: mixing `SolidColorBrush` and `LinearGradientBrush`)
 * Add support for BitmapSource.PixelWidth and Height
-* Preliminary support for `ColumnDefinition.ActualWidth` and `RowDefinition.ActualHeight`. 
+* Preliminary support for `ColumnDefinition.ActualWidth` and `RowDefinition.ActualHeight`.
+* Updated VisualTree of an app with Visibility for each items.
 
 ### Breaking changes
 * `TextBox` no longer raises TextChanged when its template is applied, in line with UWP.
@@ -122,6 +123,8 @@
 * [Wasm] Fix unloaded UIElements are made visible if measured and arranged
 * [Android] Fix java NRE handing touch events on detached view
 * [Pivot] Add support for non PivotItem items
+* #1557 Fix local DataContext on ContentDialog is overwritten
+* [WASM] Fix display for multiple popups (eg ComboBox inside of ContentDialog)
 
 ## Release 1.45.0
 ### Features
