@@ -53,17 +53,11 @@ namespace Windows.UI.Xaml
 		private bool _constraintsChanged;
 		private bool _suppressIsEnabled;
 
-		/// <remarks>
-		/// Both flags are present to avoid recursion (setting a style causes the root template
-		/// element to apply force the parent to apply its style, reverting the change that
-		/// is being made) caused by the shortcomings of the application of default styles
-		/// management. Once default/implicit styles are implemented properly,
-		/// this should be removed.
-		///
-		/// See https://github.com/unoplatform/uno/issues/119 for details.
-		/// </remarks>
-		private bool _styleChanging = false;
 		private bool _defaultStyleApplied = false;
+		/// <summary>
+		/// The current user-determined 'active Style'.
+		/// </summary>
+		private Style _activeStyle = null;
 
 		/// <summary>
 		/// Sets whether constraint-based optimizations are used to limit redrawing of the entire visual tree on Android. This can be
@@ -89,14 +83,6 @@ namespace Windows.UI.Xaml
 			_layouter = new FrameworkElementLayouter(this, MeasureOverride, ArrangeOverride);
 #endif
 			Resources = new Windows.UI.Xaml.ResourceDictionary();
-
-			((IDependencyObjectStoreProvider)this).Store.RegisterSelfParentChangedCallback((i, k, e) =>
-			{
-				if (e.NewParent != null)
-				{
-					InitializeStyle();
-				}
-			});
 
 			IFrameworkElementHelper.Initialize(this);
 		}
@@ -252,19 +238,9 @@ namespace Windows.UI.Xaml
 
 		partial void OnLoadingPartial()
 		{
-			InitializeStyle();
-		}
-
-		private void InitializeStyle()
-		{
-			if (
-				!_styleChanging // See _styleChanging documentation for details
-				&& !FeatureConfiguration.FrameworkElement.UseLegacyApplyStylePhase)
-			{
-				(this.Parent as FrameworkElement)?.InitializeStyle();
-
-				ApplyDefaultStyle();
-			}
+			// Apply active style and default style when we enter the visual tree, if they haven't been applied already.
+			ApplyStyle();
+			ApplyDefaultStyle();
 		}
 
 		#region Style DependencyProperty
@@ -288,70 +264,73 @@ namespace Windows.UI.Xaml
 
 		#endregion
 
-		protected virtual void OnStyleChanged(Style oldStyle, Style newStyle)
+		private void OnStyleChanged(Style oldStyle, Style newStyle)
 		{
-			try
+			//TODO: delay if we're currently initializing from XAML
+			ApplyStyle();
+		}
+
+		/// <summary>
+		/// Update and apply the current 'active Style'.
+		/// </summary>
+		private void ApplyStyle()
+		{
+			var oldActiveStyle = _activeStyle;
+			UpdateActiveStyle();
+			OnStyleChanged(oldActiveStyle, _activeStyle, DependencyPropertyValuePrecedences.ExplicitStyle);
+		}
+
+		/// <summary>
+		/// Update the current 'active Style'. This will be the <see cref="Style"/> if it's set, or the implicit Style otherwise.
+		/// </summary>
+		private void UpdateActiveStyle()
+		{
+			if (this.IsDependencyPropertySet(StyleProperty))
 			{
-				var currentStyleChanging = _styleChanging;
-				_styleChanging = true;
-
-				_defaultStyleApplied = false;
-
-				if (!FeatureConfiguration.FrameworkElement.UseLegacyApplyStylePhase)
-				{
-					if (!currentStyleChanging)
-					{
-						// See _styleChanging documentation for details
-						ApplyDefaultStyle();
-					}
-
-					if (FeatureConfiguration.FrameworkElement.ClearPreviousOnStyleChange &&
-						// Don't clear the default Style, which should always be present.
-						!(bool)(oldStyle == Style.DefaultStyleForType(GetType()))
-					)
-					{
-						oldStyle?.ClearStyle(this);
-					}
-
-					newStyle?.ApplyTo(this);
-				}
-				else
-				{
-					newStyle?.ApplyTo(this);
-				}
+				_activeStyle = Style;
 			}
-			finally
+			else
 			{
-				_styleChanging = false;
+				_activeStyle = ResolveImplicitStyle();
 			}
+		}
+
+		private Style ResolveImplicitStyle()
+		{
+			throw new NotImplementedException();
+		}
+
+		/// <summary>
+		/// Replace previous style with new style, at nominated precedence. This method is called separately for the user-determined
+		/// 'active style' and for the baked-in 'default style'.
+		/// </summary>
+		private void OnStyleChanged(Style oldStyle, Style newStyle, DependencyPropertyValuePrecedences precedence)
+		{
+			if (oldStyle == newStyle)
+			{
+				// Nothing to do
+				return;
+			}
+
+			if (newStyle != null && newStyle.Precedence != precedence)
+			{
+				// TODO: Debug message? Warning? Is there any way this can happen expectedly?
+			}
+
+			oldStyle?.ClearInvalidProperties(this, newStyle);
+
+			newStyle?.ApplyTo(this);
 		}
 
 		private void ApplyDefaultStyle()
 		{
-			if (
-				!_defaultStyleApplied
-				&& Style.DefaultStyleForType(GetDefaultStyleType()) is Style defaultStyle
-				&& this.GetPrecedenceSpecificValue(StyleProperty, Style.DefaultStylePrecedence) is UnsetValue
-			)
+			if (_defaultStyleApplied)
 			{
-				_defaultStyleApplied = true;
-
-				// Force apply the style to the specific precedence
-				this.SetValue(StyleProperty, defaultStyle, Style.DefaultStylePrecedence);
-
-				if (Style != defaultStyle)
-				{
-					// If default style is not the current it needs to be merged with the current style
-					defaultStyle.ApplyTo(this);
-				}
+				return;
 			}
+			_defaultStyleApplied = true;
+			throw new NotImplementedException();
 		}
-
-		/// <summary>
-		/// This method is kept internal until https://github.com/unoplatform/uno/issues/119 is addressed.
-		/// </summary>
-		/// <returns></returns>
-		internal virtual Type GetDefaultStyleType() => GetType();
 
 		protected virtual void OnApplyTemplate()
 		{

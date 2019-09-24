@@ -103,19 +103,6 @@ namespace Uno.UI
 
 		public static class FrameworkElement
 		{
-			/// <summary>
-			/// Enables the behavior for which the style is applied before the inherited
-			/// FrameworkElement instances constructors. The UWP behavior is to apply
-			/// </summary>
-			public static bool UseLegacyApplyStylePhase { get; set; } = false;
-
-			/// <summary>
-			/// When changing a style on a <see cref="Windows.UI.Xaml.FrameworkElement"/> clears
-			/// the previous style setters. This property is applicable only when <see cref="UseLegacyApplyStylePhase"/>
-			/// is set to <see cref="false"/>.
-			/// </summary>
-			public static bool ClearPreviousOnStyleChange { get; set; } = true;
-
 #if __ANDROID__
 			/// <summary>
 			/// Controls the propagation of <see cref="Windows.UI.Xaml.FrameworkElement.Loaded"/> and

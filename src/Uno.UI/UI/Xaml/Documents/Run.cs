@@ -38,7 +38,7 @@ namespace Windows.UI.Xaml.Documents
 
 		partial void OnTextChangedPartial();
 
-#endregion
+		#endregion
 
 		protected override void OnForegroundChanged()
 		{
@@ -86,15 +86,6 @@ namespace Windows.UI.Xaml.Documents
 		{
 			base.OnTextDecorationsChanged();
 			this.InvalidateInlines();
-		}
-		
-		protected override void OnStyleChanged()
-		{
-			if (Style == null)
-			{
-				base.Style = Style.DefaultStyleForType(typeof(Run));
-				base.Style.ApplyTo(this);
-			}
 		}
 	}
 }

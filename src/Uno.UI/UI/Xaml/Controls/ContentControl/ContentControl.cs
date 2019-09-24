@@ -429,14 +429,14 @@ namespace Windows.UI.Xaml.Controls
 		/// we know that the IsContentPresenterBypassEnabled will be false once the style has been set.
 		/// Return false in this case, even if the Template is null.
 		/// </remarks>
-		internal bool IsContentPresenterBypassEnabled => Template == null && !HasDefaultTemplate(GetDefaultStyleType());
+		internal bool IsContentPresenterBypassEnabled => Template == null && !HasDefaultTemplate(DefaultStyleKey as Type);
 
 		/// <summary>
 		/// Gets whether the default style for the given type sets a non-null Template.
 		/// </summary>
 		private static Func<Type, bool> HasDefaultTemplate =
 			Funcs.CreateMemoized((Type type) =>
-				Style.DefaultStyleForType(type) is Style defaultStyle
+				Style.GetDefaultStyleForType(type) is Style defaultStyle
 					&& defaultStyle
 						.Flatten(s => s.BasedOn)
 						.SelectMany(s => s.Setters)

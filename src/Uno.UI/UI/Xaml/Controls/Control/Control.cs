@@ -367,37 +367,21 @@ namespace Windows.UI.Xaml.Controls
 				_controlTemplateUsedLastUpdate = null;
 			}
 
-			if (
-				!FeatureConfiguration.FrameworkElement.UseLegacyApplyStylePhase &&
-				FeatureConfiguration.FrameworkElement.ClearPreviousOnStyleChange
-			)
+			if (_updateTemplate && !object.Equals(Template, _controlTemplateUsedLastUpdate))
 			{
-				if (_updateTemplate && !object.Equals(Template, _controlTemplateUsedLastUpdate))
+				_controlTemplateUsedLastUpdate = Template;
+
+				if (Template != null)
 				{
-					_controlTemplateUsedLastUpdate = Template;
-
-					if (Template != null)
-					{
-						TemplatedRoot = Template.LoadContentCached();
-					}
-					else
-					{
-						TemplatedRoot = null;
-					}
-
-					_updateTemplate = false;
-				}
-			}
-			else
-			{
-				if (Template != null && _updateTemplate && !object.Equals(Template, _controlTemplateUsedLastUpdate))
-				{
-					_controlTemplateUsedLastUpdate = Template;
-
-					_updateTemplate = false;
-
 					TemplatedRoot = Template.LoadContentCached();
 				}
+				else
+				{
+					TemplatedRoot = null;
+				}
+
+				_updateTemplate = false;
+
 			}
 		}
 

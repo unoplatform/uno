@@ -29,7 +29,7 @@ namespace Windows.UI.Xaml.Controls
 
 		public NavigationViewList() : base()
 		{
-			Style = Style.DefaultStyleForType(typeof(ListView));
+
 		}
 
 		protected override DependencyObject GetContainerForItemOverride()
