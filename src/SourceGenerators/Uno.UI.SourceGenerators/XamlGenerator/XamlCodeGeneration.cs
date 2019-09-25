@@ -459,6 +459,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				using (writer.BlockInvariant("public sealed partial class GlobalStaticResources"))
 				{
 					writer.AppendLineInvariant("static bool _initialized;");
+					writer.AppendLineInvariant("private static bool _stylesRegistered;");
 
 					using (writer.BlockInvariant("static GlobalStaticResources()"))
 					{
@@ -477,14 +478,15 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 								{
 									writer.AppendLineInvariant("global::{0}.Initialize();", ambientResource.GetFullName());
 								}
-
-								writer.AppendLineInvariant("AddResolver(global::{0}.FindResource);", ambientResource.GetFullName());
 							}
 
-							foreach (var file in files)
+							foreach (var ambientResource in _ambientGlobalResources)
 							{
-								writer.AppendLineInvariant("RegisterResources_{0}();", file.UniqueID);
-								writer.AppendLineInvariant("RegisterImplicitStylesResources_{0}();", file.UniqueID);
+								// Note: we do *not* call RegisterDefaultStyles for the current assembly, because those styles are treated as implicit styles, not default styles
+								if (ambientResource.GetMethods().Any(m => m.Name == "RegisterDefaultStyles"))
+								{
+									writer.AppendLineInvariant("global::{0}.RegisterDefaultStyles();", ambientResource.GetFullName());
+								}
 							}
 
 							if (IsUnoAssembly)
@@ -494,6 +496,18 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 								{
 									writer.AppendLineInvariant("MasterDictionary.MergedDictionaries.Add({0});", dictProperty);
 								}
+							}
+						}
+					}
+
+					using (writer.BlockInvariant("public static void RegisterDefaultStyles()"))
+					{
+						using (writer.BlockInvariant("if(!_stylesRegistered)"))
+						{
+							writer.AppendLineInvariant("_stylesRegistered = true;");
+							foreach (var file in files)
+							{
+								writer.AppendLineInvariant("RegisterDefaultStyles_{0}();", file.UniqueID);
 							}
 						}
 					}
@@ -509,36 +523,10 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					// having to sync the generation of the files with this global table.
 					foreach (var file in files)
 					{
-						writer.AppendLineInvariant("static partial void RegisterResources_{0}();", file.UniqueID);
-						writer.AppendLineInvariant("static partial void RegisterImplicitStylesResources_{0}();", file.UniqueID);
+						writer.AppendLineInvariant("static partial void RegisterDefaultStyles_{0}();", file.UniqueID);
 					}
 
 					writer.AppendLineInvariant("");
-
-					writer.AppendLineInvariant("/// <summary>");
-					writer.AppendLineInvariant("/// Finds a resource instance in the Global Static Resources");
-					writer.AppendLineInvariant("/// </summary>");
-					writer.AppendLineInvariant("/// <param name=\"name\">The name of the resource</param>");
-					writer.AppendLineInvariant("/// <returns>The instance of the resources, otherwise null.</returns>");
-					using (writer.BlockInvariant("public static object FindResource(string name)"))
-					{
-						using (writer.BlockInvariant("for (int i = _resolvers.Count - 1; i>=0; i--)"))
-						{
-							writer.AppendLineInvariant("var resolver = _resolvers[i];");
-							writer.AppendLineInvariant("var resource = resolver(name);");
-							writer.AppendLineInvariant("if(resource != null){{ return resource; }}");
-						}
-						writer.AppendLineInvariant("return null;");
-					}
-
-					writer.AppendLineInvariant("");
-
-					writer.AppendLineInvariant("private static List<Func<string, object>> _resolvers = new List<Func<string, object>>();");
-
-					using (writer.BlockInvariant("private static void AddResolver(Func<string, object> resolver)"))
-					{
-						writer.AppendLineInvariant("_resolvers.Add(resolver);");
-					}
 				}
 			}
 

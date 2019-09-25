@@ -389,7 +389,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			GenerateApiExtensionRegistrations(writer);
 
 			writer.AppendLineInvariant($"global::Windows.UI.Xaml.GenericStyles.Initialize();");
-			writer.AppendLineInvariant($"global::Windows.UI.Xaml.ResourceDictionary.DefaultResolver = global::{_defaultNamespace}.GlobalStaticResources.FindResource;");
 			GenerateResourceLoader(writer);
 			writer.AppendLineInvariant($"global::{_defaultNamespace}.GlobalStaticResources.Initialize();");
 			writer.AppendLineInvariant($"global::Uno.UI.DataBinding.BindableMetadata.Provider = new global::{_defaultNamespace}.BindableMetadataProvider();");
@@ -738,6 +737,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 								writer.AppendLineInvariant("return _{0}_ResourceDictionary;", _fileUniqueId);
 							}
 						}
+
+						BuildDefaultStylesRegistration(writer, FindImplicitContentMember(topLevelControl));
 					}
 				}
 
@@ -818,7 +819,12 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		/// <summary>
 		/// Get the dictionary key set on a Xaml object, if any. This may be defined by x:Key or alternately x:Name.
 		/// </summary>
-		private static string GetDictionaryResourceKey(XamlObjectDefinition resource) => GetDictionaryResourceKey(resource, out var _);
+		private string GetDictionaryResourceKey(XamlObjectDefinition resource) => GetDictionaryResourceKey(resource, out var _);
+
+		private string GetDictionaryResourceKey(XamlObjectDefinition resource, out string name)
+			=> GetExplicitDictionaryResourceKey(resource, out name)
+			?? GetImplicitDictionaryResourceKey(resource);
+
 
 		/// <summary>
 		/// Get the dictionary key set on a Xaml object, if any. This may be defined by x:Key or alternately x:Name.
@@ -826,13 +832,73 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		/// <param name="resource">The Xaml object.</param>
 		/// <param name="name">The x:Name defined on the object, if any, returned as an out parameter.</param>
 		/// <returns>The key to use if one is defined, otherwise null.</returns>
-		private static string GetDictionaryResourceKey(XamlObjectDefinition resource, out string name)
+		private static string GetExplicitDictionaryResourceKey(XamlObjectDefinition resource, out string name)
 		{
 			var keyDef = resource.Members.FirstOrDefault(m => m.Member.Name == "Key");
 			var nameDef = resource.Members.FirstOrDefault(m => m.Member.Name == "Name");
 			name = nameDef?.Value?.ToString();
 			var key = keyDef?.Value?.ToString() ?? name;
 			return key;
+		}
+
+		/// <summary>
+		/// Get the implicit key for a dictionary resource, if any.
+		///
+		/// An implicit key is the TargetType of a Style resource.
+		/// </summary>
+		private string GetImplicitDictionaryResourceKey(XamlObjectDefinition resource)
+		{
+			if (resource.Type.Name == "Style"
+				&& resource.Members.FirstOrDefault(m => m.Member.Name == "TargetType")?.Value is string targetTypeName)
+			{
+				var targetType = GetType(targetTypeName);
+				return "typeof({0})".InvariantCultureFormat(GetGlobalizedTypeName(targetType.ToDisplayString()));
+			}
+
+			return null;
+		}
+
+		/// <summary>
+		/// Builds registrations for the default styles defined in this ResourceDictionary.
+		///
+		/// Note: if we're currently building an app, these registrations will never actually be called (the styles will be treated as implicit styles
+		/// instead).
+		/// </summary>
+		private void BuildDefaultStylesRegistration(IIndentedStringBuilder writer, XamlMemberDefinition resourcesRoot)
+		{
+			var stylesCandidates = resourcesRoot?.Objects.Where(o => o.Type.Name == "Style" && GetExplicitDictionaryResourceKey(o, out var _) == null);
+			if (stylesCandidates?.None() ?? true)
+			{
+				return;
+			}
+
+			writer.AppendLine();
+
+			using (writer.BlockInvariant("static partial void RegisterDefaultStyles_{0}()", _fileUniqueId))
+			{
+				foreach (var style in stylesCandidates)
+				{
+					var targetTypeMember = style.Members.FirstOrDefault(m => m.Member.Name == "TargetType");
+					if (!(targetTypeMember?.Value is string targetTypeName))
+					{
+						continue;
+					}
+
+					var targetType = GetType(targetTypeName);
+					var implicitKey = GetImplicitDictionaryResourceKey(style);
+					if (targetType.ContainingAssembly == _medataHelper.Compilation.Assembly)
+					{
+						writer.AppendLineInvariant("global::Windows.UI.Xaml.Style.RegisterDefaultStyleForType({0}, () => {1});",
+										implicitKey,
+										GetResourceDictionaryPropertyName(implicitKey)
+									);
+					}
+					else
+					{
+						writer.AppendLineInvariant("// Skipping style registration for {0} because the type is defined in assembly {1}", implicitKey, targetType.ContainingAssembly.Name);
+					}
+				}
+			}
 		}
 
 		/// <summary>
@@ -1875,13 +1941,19 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 				if (key != null)
 				{
+					var wrappedKey = key;
+					if (!key.StartsWith("typeof(", StringComparison.InvariantCulture))
+					{
+						wrappedKey = "\"{0}\"".InvariantCultureFormat(key);
+					}
+
 					if (isInInitializer)
 					{
-						writer.AppendLineInvariant("[\"{0}\"] = ", key);
+						writer.AppendLineInvariant("[{0}] = ", wrappedKey);
 					}
 					else
 					{
-						writer.AppendLineInvariant("Resources[\"{0}\"] = ", key);
+						writer.AppendLineInvariant("Resources[{0}] = ", wrappedKey);
 					}
 					var directproperty = GetResourceDictionaryPropertyName(key);
 					if (directproperty != null)
