@@ -2,8 +2,6 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Globalization;
-using System.Text;
 using System.Threading.Tasks;
 using Uno;
 using Windows.Foundation;
@@ -36,9 +34,15 @@ namespace Windows.Devices.Geolocation
 			var command = $"{JsType}.requestAccess()";
 			InvokeJS(command);
 			//await access status asynchronously, will come back through DispatchAccessRequest call
-			return await accessRequest.Task;
-		}
+			var result = await accessRequest.Task;
 
+			//if geolocation is not well accessible, default geoposition should be recommended
+			if (result == GeolocationAccessStatus.Unspecified)
+			{
+				IsDefaultGeopositionRecommended = true;
+			}
+			return result;
+		}
 
 		/// <summary>
 		/// Uses 60 second timeout to match the UWP default.
@@ -56,23 +60,39 @@ namespace Windows.Devices.Geolocation
 			{
 				requestId = Guid.NewGuid().ToString();
 			} while (_pendingGeopositionRequests.TryAdd(requestId, completionRequest));
-			var command = FormattableString.Invariant($"{JsType}.getGeoposition({maximumAge.TotalMilliseconds},{timeout.TotalMilliseconds},{DesiredAccuracy},{DesiredAccuracyInMeters},\"{requestId}\")");			
+			var command = FormattableString.Invariant($"{JsType}.getGeoposition({ActualDesiredAccuracyInMeters},{maximumAge.TotalMilliseconds},{timeout.TotalMilliseconds},\"{requestId}\")");
 			InvokeJS(command);
 			return await completionRequest.Task;
 		}
 
 		[Preserve]
-		public static int DispatchGeopositionRequest(string currentPositionRequestResult)
+		public static int DispatchGeoposition(string serializedGeoposition, string requestId)
 		{
-			if (currentPositionRequestResult.StartsWith("success", StringComparison.InvariantCultureIgnoreCase))
+			if (!_pendingGeopositionRequests.TryGetValue(requestId, out var requestTask))
 			{
-				
+				throw new InvalidOperationException($"Geoposition request {requestId} does not exist");
+			}
+
+			var geocoordinate = ParseGeocoordinate(serializedGeoposition);
+
+			requestTask.SetResult(new Geoposition(geocoordinate));
+
+			return 0;
+		}
+
+		[Preserve]
+		public static int DispatchError(string currentPositionRequestResult)
+		{
+			if (currentPositionRequestResult.StartsWith("erros", StringComparison.InvariantCultureIgnoreCase))
+			{
+
 			}
 			else
 			{
 				//set appropriate exception on all waiting requests
 
 			}
+			return 0;
 		}
 
 		/// <summary>
@@ -104,6 +124,66 @@ namespace Windows.Devices.Geolocation
 				_pendingAccessRequests.Clear();
 			}
 			return 0;
+		}
+
+		/// <summary>
+		/// Parses geocoordinate retrieved from JS in form of colon-separated string
+		/// </summary>
+		/// <param name="serializedGeoposition">Serialized, colon-separated position</param>
+		/// <returns>Geocoordinate</returns>
+		private static Geocoordinate ParseGeocoordinate(string serializedPosition)
+		{
+			var dataSplit = serializedPosition.Split(':');
+
+			var latitude = double.Parse(dataSplit[0]);
+			var longitude = double.Parse(dataSplit[1]);
+
+			double? altitude = null;
+			if (double.TryParse(dataSplit[2], out double parsedAltitude))
+			{
+				altitude = parsedAltitude;
+			}
+
+			double? altitudeAccuracy = null;
+			if (double.TryParse(dataSplit[3], out double parsedAltitudeAccuracy))
+			{
+				altitudeAccuracy = parsedAltitudeAccuracy;
+			}
+
+			var accuracy = double.Parse(dataSplit[4]);
+
+			double? heading = null;
+			if (double.TryParse(dataSplit[5], out var parsedHeading))
+			{
+				heading = parsedHeading;
+			}
+
+			double? speed = null;
+			if (double.TryParse(dataSplit[6], out var parsedSpeed))
+			{
+				speed = parsedSpeed;
+			}
+
+			var timestamp = DateTimeOffset.UtcNow;
+			if (long.TryParse(dataSplit[7], out var parsedTimestamp))
+			{
+				timestamp = DateTimeOffset.FromUnixTimeMilliseconds(parsedTimestamp);
+			}
+
+			var geocoordinate = new Geocoordinate(
+				latitude,
+				longitude,
+				accuracy,
+				timestamp,
+				point: new Geopoint(
+					new BasicGeoposition { Longitude = longitude, Latitude = latitude, Altitude = altitude ?? 0 },
+					AltitudeReferenceSystem.Ellipsoid, //based on https://www.w3.org/TR/geolocation-API/
+					4326u), //based on https://en.wikipedia.org/wiki/Spatial_reference_system
+				altitude: altitude,
+				altitudeAccuracy: altitudeAccuracy,
+				heading: heading,
+				speed: speed);
+			return geocoordinate;
 		}
 	}
 }

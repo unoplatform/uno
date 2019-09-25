@@ -11,12 +11,24 @@ namespace Windows.Devices.Geolocation
 {
 	public sealed partial class Geolocator
 	{
-		private PositionAccuracy _desiredAccuracy = PositionAccuracy.Default;
-		private uint _desiredAccuracyInMeters;
+		private const uint DefaultAccuracyInMeters = 500;
+		private const uint HighAccuracyInMeters = 10;
 
-		private uint _actualDesiredAccuracyInMeters = 500u;
+		private PositionAccuracy _desiredAccuracy = PositionAccuracy.Default;
+		private uint _desiredAccuracyInMeters = DefaultAccuracyInMeters;
 
 		public event TypedEventHandler<Geolocator, PositionChangedEventArgs> PositionChanged;
+
+
+		/// <summary>
+		/// By default null, can be set by the user when no better option exists
+		/// </summary>
+		public static BasicGeoposition? DefaultGeoposition { get; set; }
+
+		/// <summary>
+		/// Ideally should be set to true on devices without GPS capabilities, keep false as default
+		/// </summary>
+		public static bool IsDefaultGeopositionRecommended { get; private set; } = false;
 
 		/// <summary>
 		/// Setting overwrites <see cref="_actualDesiredAccuracyInMeters"/> but does not overwrite <see cref="DesiredAccuracyInMeters"/> directly.
@@ -29,7 +41,9 @@ namespace Windows.Devices.Geolocation
 			set
 			{
 				_desiredAccuracy = value;
-				_actualDesiredAccuracyInMeters = value == PositionAccuracy.Default ? 500u : 10u;
+				ActualDesiredAccuracyInMeters =
+					value == PositionAccuracy.Default ?
+						DefaultAccuracyInMeters : HighAccuracyInMeters;
 			}
 		}
 
@@ -43,19 +57,11 @@ namespace Windows.Devices.Geolocation
 			set
 			{
 				_desiredAccuracyInMeters = value;
-				_actualDesiredAccuracyInMeters = value;
+				ActualDesiredAccuracyInMeters = value;
 			}
 		}
 
-		/// <summary>
-		/// By default null, can be set by the user when no better option exists
-		/// </summary>
-		public static BasicGeoposition? DefaultGeoposition { get; set; }
-
-		/// <summary>
-		/// Ideally should be true on devices without GPS capabilities
-		/// </summary>
-		public static bool IsDefaultGeopositionRecommended { get; private set; }
+		internal uint ActualDesiredAccuracyInMeters { get; private set; } = DefaultAccuracyInMeters;
 	}
 }
 #endif
