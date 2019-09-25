@@ -26,6 +26,7 @@ namespace Windows.UI.Xaml.Controls
 	public partial class PopupBase : FrameworkElement, IPopup
 	{
 		private IDisposable _openPopupRegistration;
+		private bool _childHasOwnDataContext;
 
 		public event EventHandler<object> Closed;
 		public event EventHandler<object> Opened;
@@ -75,7 +76,7 @@ namespace Windows.UI.Xaml.Controls
 
 		partial void OnChildChangedPartial(View oldChild, View newChild)
 		{
-			if (oldChild is IDependencyObjectStoreProvider provider)
+			if (oldChild is IDependencyObjectStoreProvider provider && !_childHasOwnDataContext)
 			{
 				provider.Store.ClearValue(provider.Store.DataContextProperty, DependencyPropertyValuePrecedences.Local);
 				provider.Store.ClearValue(provider.Store.TemplatedParentProperty, DependencyPropertyValuePrecedences.Local);
@@ -118,9 +119,18 @@ namespace Windows.UI.Xaml.Controls
 
 		private void UpdateDataContext()
 		{
+			_childHasOwnDataContext = false;
 			if (Child is IDependencyObjectStoreProvider provider)
 			{
-				provider.Store.SetValue(provider.Store.DataContextProperty, this.DataContext, DependencyPropertyValuePrecedences.Local);
+				if (provider.Store.ReadLocalValue(provider.Store.DataContextProperty) != DependencyProperty.UnsetValue)
+				{
+					// Child already has locally set DataContext, we shouldn't overwrite it.
+					_childHasOwnDataContext = true;
+				}
+				else
+				{
+					provider.Store.SetValue(provider.Store.DataContextProperty, this.DataContext, DependencyPropertyValuePrecedences.Local);
+				}
 			}
 		}
 

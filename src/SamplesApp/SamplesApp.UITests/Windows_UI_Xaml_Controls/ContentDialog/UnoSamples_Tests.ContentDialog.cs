@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 using Uno.UITest.Helpers;
 using Uno.UITest.Helpers.Queries;
 
-namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TimePickerTests
+namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ContentDialogTests
 {
 	[TestFixture]
 	public partial class ContentDialog_Tests : SampleControlUITestBase
@@ -277,6 +277,35 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TimePickerTests
 
 			_app.WaitForDependencyPropertyValue(resultText, "Text", "Primary");
 			_app.WaitForDependencyPropertyValue(closedText, "Text", "Closed");
+		}
+
+		[Test]
+		[AutoRetry]
+		[ActivePlatforms(Platform.Browser)] //TODO: https://github.com/unoplatform/uno/issues/1583
+		public void ContentDialog_ComboBox()
+		{
+			Run("UITests.Shared.Windows_UI_Xaml_Controls.ContentDialogTests.ContentDialog_ComboBox");
+
+			var showDialog = _app.Marked("ShowComboBoxDialog");
+			_app.WaitForElement(showDialog);
+			_app.Tap(showDialog);
+
+			var comboBox = _app.Marked("InnerComboBox");
+			_app.WaitForElement(comboBox);
+			_app.Tap(comboBox);
+
+			var item = _app.Marked("ComboElement4");
+			_app.WaitForElement(item);
+			_app.Tap(item);
+
+			var resultsText = _app.Marked("ResultsTextBlock");
+			_app.WaitForDependencyPropertyValue(resultsText, "Text", "Item 4");
+
+			// Close the dialog, otherwise subsequent tests may fail
+			var closeButton = _app.Marked("CloseButton");
+			_app.WaitForElement(closeButton);
+
+			_app.Tap(closeButton);
 		}
 	}
 }
