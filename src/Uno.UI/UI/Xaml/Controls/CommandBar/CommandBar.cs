@@ -37,6 +37,8 @@ namespace Windows.UI.Xaml.Controls
 		private ItemsControl _primaryItemsControl;
 		private ItemsControl _secondaryItemsControl;
 
+		private double _contentHeight;
+
 		public CommandBar()
 		{
 			PrimaryCommands = new ObservableVector<ICommandBarElement>();
@@ -46,6 +48,7 @@ namespace Windows.UI.Xaml.Controls
 
 			Loaded += (s, e) => RegisterEvents();
 			Unloaded += (s, e) => UnregisterEvents();
+			SizeChanged += (s, e) => _contentHeight = e.NewSize.Height;
 		}
 
 #if __ANDROID__ || __IOS__
@@ -89,9 +92,17 @@ namespace Windows.UI.Xaml.Controls
 				UpdateButtonsIsCompact();
 			});
 
+			UpdateTemplateSettings();
 			UpdateCommonState();
 			UpdateDisplayModeState();
 			UpdateButtonsIsCompact();
+		}
+
+		private void UpdateTemplateSettings()
+		{
+			CommandBarTemplateSettings.ContentHeight = _contentHeight;
+			CommandBarTemplateSettings.OverflowContentMinWidth = RenderSize.Width;
+			CommandBarTemplateSettings.OverflowContentMaxWidth = RenderSize.Width;
 		}
 
 		private void RegisterEvents()
@@ -272,6 +283,7 @@ namespace Windows.UI.Xaml.Controls
 			SecondaryCommands.OfType<ICommandBarElement3>().ForEach(command => command.IsInOverflow = true);
 
 			UpdateAvailableCommandsState();
+			UpdateButtonsIsCompact();
 		}
 
 		private void UpdateCommonState()
@@ -298,14 +310,11 @@ namespace Windows.UI.Xaml.Controls
 
 			string GetState()
 			{
-				// TODO: Add support for "OpenDown" and "OpenUp" DisplayModeStates.
-				this.Log().Warn("Only the Closed DisplayModeState is supported at the moment.");
-
-				return "Closed";
+				// OpenUp is not supported yet.
+				return IsOpen ? "OpenDown" : "Closed";
 			}
 
 			var displayModeState = GetDisplayMode() + GetState();
-
 			VisualStateManager.GoToState(this, displayModeState, true);
 		}
 
