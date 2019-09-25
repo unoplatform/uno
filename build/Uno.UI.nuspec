@@ -9,7 +9,7 @@
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <projectUrl>https://github.com/nventive/Uno</projectUrl>
     <iconUrl>https://nv-assets.azurewebsites.net/logos/uno.png</iconUrl>
-    <description>The iOS, Android and WebAssembly UWP bridge</description>
+    <description>Build Mobile, Desktop and WebAssembly apps with C# and XAML. Today. Open source and professionally supported.</description>
     <copyright>Copyright (C) 2015-2019 nventive inc. - all rights reserved</copyright>
     <repository type="git" url="https://github.com/nventive/Uno.git" />
 
