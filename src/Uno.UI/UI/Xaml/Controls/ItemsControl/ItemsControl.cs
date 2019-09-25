@@ -686,6 +686,14 @@ namespace Windows.UI.Xaml.Controls
 				);
 				observableVector.VectorChanged += handler;
 			}
+			else if (unwrappedSource is IObservableVector genericObservableVector)
+			{
+				VectorChangedEventHandler handler = OnItemsSourceVectorChanged;
+				_notifyCollectionChanged.Disposable = Disposable.Create(() =>
+					genericObservableVector.GenericVectorChanged -= handler
+				);
+				genericObservableVector.GenericVectorChanged += handler;
+			}
 			else
 			{
 				_notifyCollectionChanged.Disposable = null;
