@@ -9,13 +9,10 @@ namespace Windows.UI.Xaml
 	public partial class ResourceDictionary : DependencyObject
 	{
 		private readonly Dictionary<object, object> _values = new Dictionary<object, object>();
-		private int _resolvingDepth = 0;
 
 		public ResourceDictionary()
 		{
 		}
-
-		public static Func<string, object> DefaultResolver { get; set; }
 
 		public Uri Source
 		{
@@ -31,10 +28,10 @@ namespace Windows.UI.Xaml
 		{
 			object value;
 
-			var keyName = key.ToString();
+			var keyName = key;
 			if (!_values.TryGetValue(keyName, out value))
 			{
-				return DefaultResolver?.Invoke(keyName);
+				return null;
 			}
 
 			return value;
@@ -42,59 +39,32 @@ namespace Windows.UI.Xaml
 
 		public bool HasKey(object key)
 		{
-			var keyName = key.ToString();
+			var keyName = key;
 
-			return _values.ContainsKey(keyName) || DefaultResolver?.Invoke(keyName) != null;
+			return _values.ContainsKey(keyName);
 		}
 
 		public bool Insert(object key, object value)
 		{
-			_values[key.ToString()] = value;
+			_values[key] = value;
 			return true;
 		}
 
-		public bool Remove(object key) => _values.Remove(key.ToString());
+		public bool Remove(object key) => _values.Remove(key);
 
-		public bool Remove(KeyValuePair<object, object> key) => _values.Remove(key.Key.ToString());
+		public bool Remove(KeyValuePair<object, object> key) => _values.Remove(key.Key);
 
 		public void Clear() => _values.Clear();
 
-		public void Add(object key, object value) => _values.Add(key.ToString(), value);
+		public void Add(object key, object value) => _values.Add(key, value);
 
-		public bool ContainsKey(object key) => _values.ContainsKey(key.ToString()) || ContainsKeyMerged(key) || ContainsKeyTheme(key);
+		public bool ContainsKey(object key) => _values.ContainsKey(key) || ContainsKeyMerged(key) || ContainsKeyTheme(key);
 
-		public bool TryGetValue(object key, out object value) => TryGetValue(key, out value, useResolver: true);
-
-		private bool TryGetValue(object key, out object value, bool useResolver)
+		private bool TryGetValue(object key, out object value)
 		{
 			if (_values.TryGetValue(key, out value))
 			{
 				return true;
-			}
-
-			if (useResolver)
-			{
-				try
-				{
-					_resolvingDepth++;
-
-					if (_resolvingDepth <= FeatureConfiguration.Xaml.MaxRecursiveResolvingDepth)
-					{
-						// This prevents a stack overflow while looking for a
-						// missing resource in generated xaml code.
-
-						value = DefaultResolver?.Invoke(key.ToString());
-					}
-				}
-				finally
-				{
-					_resolvingDepth--;
-				}
-
-				if (value != null)
-				{
-					return true;
-				}
 			}
 
 			if (GetFromMerged(key, out value))
@@ -122,7 +92,7 @@ namespace Windows.UI.Xaml
 			// Check last dictionary first - //https://docs.microsoft.com/en-us/windows/uwp/design/controls-and-patterns/resourcedictionary-and-xaml-resource-references#merged-resource-dictionaries
 			for (int i = MergedDictionaries.Count - 1; i >= 0; i--)
 			{
-				if (MergedDictionaries[i].TryGetValue(key, out value, useResolver: false))
+				if (MergedDictionaries[i].TryGetValue(key, out value))
 				{
 					return true;
 				}
@@ -208,9 +178,9 @@ namespace Windows.UI.Xaml
 
 		public global::System.Collections.Generic.ICollection<object> Values => _values.Values;
 
-		public void Add(global::System.Collections.Generic.KeyValuePair<object, object> item) => _values.Add(item.Key.ToString(), item.Value);
+		public void Add(global::System.Collections.Generic.KeyValuePair<object, object> item) => _values.Add(item.Key, item.Value);
 
-		public bool Contains(global::System.Collections.Generic.KeyValuePair<object, object> item) => _values.ContainsKey(item.Key.ToString());
+		public bool Contains(global::System.Collections.Generic.KeyValuePair<object, object> item) => _values.ContainsKey(item.Key);
 
 		[Uno.NotImplemented]
 		public void CopyTo(global::System.Collections.Generic.KeyValuePair<object, object>[] array, int arrayIndex)
