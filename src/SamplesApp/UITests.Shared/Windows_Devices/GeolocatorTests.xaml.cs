@@ -32,6 +32,9 @@ namespace UITests.Shared.Windows_Devices
 		public ICommand RequestAccessCommand =>
 			GetOrCreateCommand(RequestAccess);
 
+		public ICommand GetGeopositionCommand =>
+			GetOrCreateCommand(GetGeoposition);
+
 		public GeolocationAccessStatus GeolocationAccessStatus
 		{
 			get => _geolocationAccessStatus;
@@ -44,5 +47,12 @@ namespace UITests.Shared.Windows_Devices
 
 		private async void RequestAccess() =>
 			GeolocationAccessStatus = await Geolocator.RequestAccessAsync();
+
+		private async void GetGeoposition()
+		{
+			var geolocator = new Geolocator();
+			var geoposition = await geolocator.GetGeopositionAsync();
+			System.Diagnostics.Debug.WriteLine(geoposition.Coordinate.Longitude);
+		}
 	}
 }

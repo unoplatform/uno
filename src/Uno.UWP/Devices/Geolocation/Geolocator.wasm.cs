@@ -21,7 +21,7 @@ namespace Windows.Devices.Geolocation
 
 		}
 
-		public event TypedEventHandler<Geolocator, StatusChangedEventArgs> StatusChanged;
+		//public event TypedEventHandler<Geolocator, StatusChangedEventArgs> StatusChanged;
 
 		public static async Task<GeolocationAccessStatus> RequestAccessAsync()
 		{

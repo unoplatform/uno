@@ -15,5 +15,7 @@
 			<Run FontWeight="Bold">Request: </Run>
 			<Run Text="{Binding GeolocationAccessStatus}" />
 		</TextBlock>
+		<Button Command="{Binding GetGeopositionCommand}">Get geoposition</Button>
+		
 	</StackPanel>
 </UserControl>

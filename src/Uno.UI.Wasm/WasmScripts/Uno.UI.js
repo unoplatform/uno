@@ -2221,6 +2221,12 @@ var Windows;
                     if (!this.dispatchAccessRequest) {
                         this.dispatchAccessRequest = Module.mono_bind_static_method("[Uno] Windows.Devices.Geolocation.Geolocator:DispatchAccessRequest");
                     }
+                    if (!this.dispatchError) {
+                        this.dispatchError = Module.mono_bind_static_method("[Uno] Windows.Devices.Geolocation.Geolocator:DispatchError");
+                    }
+                    if (!this.dispatchGeoposition) {
+                        this.dispatchGeoposition = Module.mono_bind_static_method("[Uno] Windows.Devices.Geolocation.Geolocator:DispatchGeoposition");
+                    }
                 }
                 static requestAccess() {
                     Geolocator.initialize();
@@ -2243,6 +2249,69 @@ var Windows;
                         Geolocator.dispatchAccessRequest(GeolocationAccessStatus.Unspecified);
                     }
                 }
+                static getGeoposition(desiredAccuracyInMeters, maximumAge, timeout, requestId) {
+                    Geolocator.initialize();
+                    if (navigator.geolocation) {
+                        if (desiredAccuracyInMeters < 300) {
+                            this.getAccurateCurrentPosition((position) => Geolocator.handleGeoposition(position, requestId), (error) => Geolocator.handleError(error, requestId), desiredAccuracyInMeters, { enableHighAccuracy: true, maximumAge: maximumAge, timeout: timeout });
+                        }
+                        else {
+                            navigator.geolocation.getCurrentPosition((position) => Geolocator.handleGeoposition(position, requestId), (error) => Geolocator.handleError(error, requestId), { enableHighAccuracy: false, maximumAge: maximumAge, timeout: timeout });
+                        }
+                    }
+                    else {
+                        Geolocator.dispatchError("NotAvailable", requestId);
+                    }
+                }
+                static handleGeoposition(position, requestId) {
+                    Geolocator.dispatchGeoposition(position.coords.latitude + ":" +
+                        position.coords.longitude + ":" +
+                        position.coords.altitude + ":" +
+                        position.coords.altitudeAccuracy + ":" +
+                        position.coords.accuracy + ":" +
+                        position.coords.heading + ":" +
+                        position.coords.speed + ":" +
+                        position.timestamp, requestId);
+                }
+                static handleError(error, requestId) {
+                    Geolocator.dispatchError("Boom!", requestId);
+                }
+                //this attempts to squeeze out the requested accuracy from the GPS by utilizing the set timeout
+                //adapted from https://github.com/gregsramblings/getAccurateCurrentPosition/blob/master/geo.js		
+                static getAccurateCurrentPosition(geolocationSuccess, geolocationError, desiredAccuracy, options) {
+                    var lastCheckedPosition;
+                    var locationEventCount = 0;
+                    var watchId;
+                    var timerId;
+                    var checkLocation = function (position) {
+                        lastCheckedPosition = position;
+                        locationEventCount = locationEventCount + 1;
+                        // We ignore the first event unless it's the only one received because some devices seem to send a cached
+                        // location even when maxaimumAge is set to zero
+                        if ((position.coords.accuracy <= desiredAccuracy) && (locationEventCount > 1)) {
+                            clearTimeout(timerId);
+                            navigator.geolocation.clearWatch(watchId);
+                            foundPosition(position);
+                        }
+                    };
+                    var stopTrying = function () {
+                        navigator.geolocation.clearWatch(watchId);
+                        foundPosition(lastCheckedPosition);
+                    };
+                    var onError = function (error) {
+                        clearTimeout(timerId);
+                        navigator.geolocation.clearWatch(watchId);
+                        geolocationError(error);
+                    };
+                    var foundPosition = function (position) {
+                        geolocationSuccess(position);
+                    };
+                    options.maximumAge = 0; // Force current locations only
+                    options.enableHighAccuracy = true;
+                    watchId = navigator.geolocation.watchPosition(checkLocation, onError, options);
+                    timerId = setTimeout(stopTrying, options.timeout);
+                }
+                ;
             }
             Geolocation.Geolocator = Geolocator;
         })(Geolocation = Devices.Geolocation || (Devices.Geolocation = {}));

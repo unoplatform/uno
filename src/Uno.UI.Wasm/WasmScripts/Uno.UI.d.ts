@@ -764,8 +764,14 @@ declare namespace Windows.UI.Core {
 declare namespace Windows.Devices.Geolocation {
     class Geolocator {
         private static dispatchAccessRequest;
+        private static dispatchGeoposition;
+        private static dispatchError;
         static initialize(): void;
         static requestAccess(): void;
+        static getGeoposition(desiredAccuracyInMeters: number, maximumAge: number, timeout: number, requestId: string): void;
+        private static handleGeoposition;
+        private static handleError;
+        private static getAccurateCurrentPosition;
     }
 }
 interface Window {
