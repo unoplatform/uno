@@ -97,6 +97,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\Clip\DoubleAnimationClipping.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\DeferLoadStrategy\DeferLoadStrategyWithTemplateBinding.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -2524,6 +2528,9 @@
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\Clip\ButtonWithClippingAndOffset.xaml.cs">
       <DependentUpon>ButtonWithClippingAndOffset.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\Clip\DoubleAnimationClipping.xaml.cs">
+      <DependentUpon>DoubleAnimationClipping.xaml</DependentUpon>
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\DeferLoadStrategy\DeferLoadStrategyViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\DeferLoadStrategy\DeferLoadStrategyWithTemplateBinding.xaml.cs">
