@@ -239,6 +239,8 @@ namespace Uno.UI
 			/// <summary>
 			/// The delay between invocations of the <see cref="Windows.UI.Xaml.Media.CompositionTarget.Rendering"/> event, in milliseconds.
 			/// Lower values will increase the rate at which the event fires, at the expense of increased CPU usage.
+			///
+			/// This property is only used on WebAssembly.
 			/// </summary>
 			/// <remarks>The <see cref="Windows.UI.Xaml.Media.CompositionTarget.Rendering"/> event is used by Xamarin.Forms for WebAssembly for XF animations.</remarks>
 			public static int RenderEventThrottle { get; set; } = 30;

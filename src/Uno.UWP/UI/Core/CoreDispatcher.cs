@@ -78,7 +78,7 @@ namespace Windows.UI.Core
 
 		internal bool ShouldRaiseRenderEvents => Rendering != null;
 		/// <summary>
-		/// Backs the CompositionTarget.Rendering event.
+		/// Backs the CompositionTarget.Rendering event for WebAssembly.
 		/// </summary>
 		internal event EventHandler<object> Rendering;
 		internal int RenderEventThrottle;
