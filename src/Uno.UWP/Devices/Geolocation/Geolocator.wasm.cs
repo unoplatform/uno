@@ -1,9 +1,13 @@
 ﻿#if __WASM__
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Text;
 using System.Threading.Tasks;
 using Uno;
+using Windows.Foundation;
+using static Uno.Foundation.WebAssemblyRuntime;
 
 namespace Windows.Devices.Geolocation
 {
@@ -12,14 +16,17 @@ namespace Windows.Devices.Geolocation
 		private const string JsType = "Windows.Devices.Geolocation.Geolocator";
 
 		private static List<TaskCompletionSource<GeolocationAccessStatus>> _pendingAccessRequests = new List<TaskCompletionSource<GeolocationAccessStatus>>();
+		private static ConcurrentDictionary<string, TaskCompletionSource<Geoposition>> _pendingGeopositionRequests = new ConcurrentDictionary<string, TaskCompletionSource<Geoposition>>();
 
 		public Geolocator()
 		{
 
 		}
 
+		public event TypedEventHandler<Geolocator, StatusChangedEventArgs> StatusChanged;
+
 		public static async Task<GeolocationAccessStatus> RequestAccessAsync()
-		{			
+		{
 			var accessRequest = new TaskCompletionSource<GeolocationAccessStatus>();
 			lock (_pendingAccessRequests)
 			{
@@ -27,9 +34,45 @@ namespace Windows.Devices.Geolocation
 				_pendingAccessRequests.Add(accessRequest);
 			}
 			var command = $"{JsType}.requestAccess()";
-			Uno.Foundation.WebAssemblyRuntime.InvokeJS(command);
+			InvokeJS(command);
 			//await access status asynchronously, will come back through DispatchAccessRequest call
 			return await accessRequest.Task;
+		}
+
+
+		/// <summary>
+		/// Uses 60 second timeout to match the UWP default.
+		/// The maximum age is not specified in documentation, so we use 10 s for now.
+		/// </summary>
+		/// <returns>Geoposition</returns>
+		public Task<Geoposition> GetGeopositionAsync() =>
+			GetGeopositionAsync(TimeSpan.FromMilliseconds(10), TimeSpan.FromSeconds(60));
+
+		public async Task<Geoposition> GetGeopositionAsync(TimeSpan maximumAge, TimeSpan timeout)
+		{
+			var completionRequest = new TaskCompletionSource<Geoposition>();
+			string requestId;
+			do
+			{
+				requestId = Guid.NewGuid().ToString();
+			} while (_pendingGeopositionRequests.TryAdd(requestId, completionRequest));
+			var command = FormattableString.Invariant($"{JsType}.getGeoposition({maximumAge.TotalMilliseconds},{timeout.TotalMilliseconds},{DesiredAccuracy},{DesiredAccuracyInMeters},\"{requestId}\")");			
+			InvokeJS(command);
+			return await completionRequest.Task;
+		}
+
+		[Preserve]
+		public static int DispatchGeopositionRequest(string currentPositionRequestResult)
+		{
+			if (currentPositionRequestResult.StartsWith("success", StringComparison.InvariantCultureIgnoreCase))
+			{
+				
+			}
+			else
+			{
+				//set appropriate exception on all waiting requests
+
+			}
 		}
 
 		/// <summary>

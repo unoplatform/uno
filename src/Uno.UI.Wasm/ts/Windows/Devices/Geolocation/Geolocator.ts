@@ -8,13 +8,30 @@
 
 	export class Geolocator {
 
-		private static dispatchAccessRequest: (serializedAccessStatus: string) => number;
+        private static dispatchAccessRequest: (serializedAccessStatus: string) => number;
+        private static dispatchGeopositionRequest: (geopositionRequestResult: string) => number;
 
 		public static initialize() {
 			if (!this.dispatchAccessRequest) {
 				this.dispatchAccessRequest = (<any>Module).mono_bind_static_method("[Uno] Windows.Devices.Geolocation.Geolocator:DispatchAccessRequest");
-			}
-		}
+            }
+            if (!this.dispatchGeopositionRequest) {
+                this.dispatchGeopositionRequest = (<any>Module).mono_bind_static_method("[Uno] Windows.Devices.Geolocation.Geolocator:DispatchGeopositionRequest");
+            }
+        }
+
+        public static getGeoposition(
+            maximumAge: number,
+            timeout: number,
+            desiredAccuracy: string,
+            desiredAccuracyInMeters: number,
+            requestId: string) {
+            if (navigator.geolocation) {
+            }
+            else {
+                Geolocator.dispatchGeopositionRequest("error:NotAvailable")
+            }
+        }
 
 		public static requestAccess() {
 			Geolocator.initialize();

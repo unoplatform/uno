@@ -24,6 +24,9 @@
     <type fullname="Windows.Devices.Geolocation.Geolocator">
       <method name="DispatchAccessRequest" />
     </type>
+    <type fullname="Windows.Devices.Geolocation.Geolocator">
+      <method name="DispatchGeopositionRequest" />
+    </type>
   </assembly>
   
   <assembly fullname="Uno.Foundation">

@@ -2224,14 +2224,24 @@ var Windows;
                 }
                 static requestAccess() {
                     Geolocator.initialize();
-                    navigator.geolocation.getCurrentPosition((_) => { Geolocator.dispatchAccessRequest(GeolocationAccessStatus.Allowed); }, (error) => {
-                        if (error.code == error.PERMISSION_DENIED) {
-                            Geolocator.dispatchAccessRequest(GeolocationAccessStatus.Denied);
-                        }
-                        else {
-                            Geolocator.dispatchAccessRequest(GeolocationAccessStatus.Unspecified);
-                        }
-                    });
+                    if (navigator.geolocation) {
+                        navigator.geolocation.getCurrentPosition((_) => { Geolocator.dispatchAccessRequest(GeolocationAccessStatus.Allowed); }, (error) => {
+                            if (error.code == error.PERMISSION_DENIED) {
+                                Geolocator.dispatchAccessRequest(GeolocationAccessStatus.Denied);
+                            }
+                            else if (error.code == error.POSITION_UNAVAILABLE ||
+                                error.code == error.TIMEOUT) {
+                                //position unavailable but we still have permission
+                                Geolocator.dispatchAccessRequest(GeolocationAccessStatus.Allowed);
+                            }
+                            else {
+                                Geolocator.dispatchAccessRequest(GeolocationAccessStatus.Unspecified);
+                            }
+                        }, { enableHighAccuracy: false, maximumAge: 86400000, timeout: 100 });
+                    }
+                    else {
+                        Geolocator.dispatchAccessRequest(GeolocationAccessStatus.Unspecified);
+                    }
                 }
             }
             Geolocation.Geolocator = Geolocator;
