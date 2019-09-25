@@ -62,6 +62,7 @@
 * Preliminary support for `ColumnDefinition.ActualWidth` and `RowDefinition.ActualHeight`.
 * Updated VisualTree of an app with Visibility for each items.
 * Add support for `CompositionTarget.Rendering` event.
+* Add support for `IObservableVector<T>` in `ItemsControl`
 
 ### Breaking changes
 * `TextBox` no longer raises TextChanged when its template is applied, in line with UWP.
@@ -127,6 +128,9 @@
 * #1557 Fix local DataContext on ContentDialog is overwritten
 * [WASM] Fix display for multiple popups (eg ComboBox inside of ContentDialog)
 * [Android] Fix invalid ImageBrush stack overflow with delayed image reuse
+* CommandBar fixes (AppBarToggleButton, AppBarButton)
+* Fix Symbols rendering in sample app
+* 
 
 ## Release 1.45.0
 ### Features
