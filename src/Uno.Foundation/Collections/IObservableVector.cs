@@ -1,13 +1,10 @@
-﻿using System.Collections.Generic;
-using Windows.Foundation.Metadata;
-
-namespace Windows.Foundation.Collections
+﻿namespace Windows.Foundation.Collections
 {
-	public partial interface IObservableVector<T> : IList<T>
-	{
+	internal interface IObservableVector
+    {
 		/// <summary>
-		/// Occurs when the vector changes.
-		/// </summary>
-		event VectorChangedEventHandler<T> VectorChanged;
-	}
+        /// Occurs when the vector changes.
+        /// </summary>
+        event VectorChangedEventHandler UntypedVectorChanged;
+    }
 }

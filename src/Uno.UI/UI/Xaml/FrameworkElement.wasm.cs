@@ -69,19 +69,22 @@ namespace Windows.UI.Xaml
 
 		internal sealed override void ManagedOnLoaded()
 		{
-			// Make sure to set the flag before raising the loaded event (duplicated with the base.ManagedOnLoaded)
-			base.IsLoaded = true;
+			if (!base.IsLoaded)
+			{
+				// Make sure to set the flag before raising the loaded event (duplicated with the base.ManagedOnLoaded)
+				base.IsLoaded = true;
 
-			try
-			{
-				// Raise event before invoking base in order to raise them top to bottom
-				OnLoaded();
-				_loaded?.Invoke(this, RoutedEventArgs.Empty);
-			}
-			catch (Exception error)
-			{
-				this.Log().Error("ManagedOnLoaded failed in FrameworkElement", error);
-				Application.Current.RaiseRecoverableUnhandledException(error);
+				try
+				{
+					// Raise event before invoking base in order to raise them top to bottom
+					OnLoaded();
+					_loaded?.Invoke(this, RoutedEventArgs.Empty);
+				}
+				catch (Exception error)
+				{
+					this.Log().Error("ManagedOnLoaded failed in FrameworkElement", error);
+					Application.Current.RaiseRecoverableUnhandledException(error);
+				}
 			}
 
 			base.ManagedOnLoaded();
