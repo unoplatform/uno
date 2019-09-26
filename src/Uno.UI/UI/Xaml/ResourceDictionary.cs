@@ -60,7 +60,7 @@ namespace Windows.UI.Xaml
 
 		public bool ContainsKey(object key) => _values.ContainsKey(key) || ContainsKeyMerged(key) || ContainsKeyTheme(key);
 
-		private bool TryGetValue(object key, out object value)
+		public bool TryGetValue(object key, out object value)
 		{
 			if (_values.TryGetValue(key, out value))
 			{
