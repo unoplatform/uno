@@ -3165,7 +3165,16 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					return $"new RelativeSource(RelativeSourceMode.{resourceName})";
 				}
 
-				return "Unsupported";
+				// If type specified in the binding was not found, log and return an error message
+				if (!string.IsNullOrEmpty(bindingType?.Type?.Name ?? string.Empty))
+				{
+					var message = $"#Error // {bindingType.Type.Name} could not be found.";
+					this.Log().Error(message);
+
+					return message;
+				}
+
+				return "#Error";
 			}
 			else
 			{

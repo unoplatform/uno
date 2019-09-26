@@ -102,6 +102,7 @@
 		<Page Include="App\App.xaml" />
 		<Page Include="App\Xaml\Test_Dictionary.xaml" />
 		<Page Include="App\Xaml\Test_Control.xaml" />
+		<Page Include="App\Xaml\Test_MarkupExtension.xaml" />
 	</ItemGroup>
 
 	<ItemGroup>
