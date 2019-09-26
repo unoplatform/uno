@@ -18,6 +18,8 @@ namespace Windows.UI.Xaml.Controls
 
 			this.HorizontalContentAlignment = HorizontalAlignment.Stretch;
 			this.VerticalContentAlignment = VerticalAlignment.Stretch;
+
+			DefaultStyleKey = typeof(PivotItem);
 		}
 
 		public PivotItem(string header) : this()

@@ -277,6 +277,8 @@ namespace Windows.UI.Xaml.Controls
 		public MediaPlayerElement() : base()
 		{
 			TransportControls = new MediaTransportControls();
+
+			DefaultStyleKey = typeof(MediaPlayerElement);
 		}
 
 		protected override void OnLoaded()

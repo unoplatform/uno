@@ -8,8 +8,9 @@ namespace Windows.UI.Xaml.Controls.Primitives
     {
 		public RangeBase()
 		{
+			DefaultStyleKey = typeof(RangeBase);
 		}
-		
+
 		#region Value
 
 		public double Value

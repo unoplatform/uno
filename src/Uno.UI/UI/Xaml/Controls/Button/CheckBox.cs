@@ -11,6 +11,8 @@ namespace Windows.UI.Xaml.Controls
 		public CheckBox()
 		{
 			InitializeVisualStates();
+
+			DefaultStyleKey = typeof(CheckBox);
 		}
 
 		protected override AutomationPeer OnCreateAutomationPeer()

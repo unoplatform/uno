@@ -18,6 +18,7 @@ namespace Windows.UI.Xaml.Controls
 
 		public ListViewItem()
 		{
+			DefaultStyleKey = typeof(ListViewItem);
 		}
 
 		[global::Uno.NotImplemented]

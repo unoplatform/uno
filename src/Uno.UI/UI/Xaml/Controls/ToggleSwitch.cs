@@ -29,6 +29,7 @@ namespace Windows.UI.Xaml.Controls
 
 		public ToggleSwitch()
 		{
+			DefaultStyleKey = typeof(ToggleSwitch);
 		}
 
 		protected override void OnLoaded()

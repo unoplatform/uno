@@ -13,6 +13,7 @@ namespace Windows.UI.Xaml.Controls
 	{
 		public FlipViewItem()
 		{
+			DefaultStyleKey = typeof(FlipViewItem);
 		}
 
 		protected override AutomationPeer OnCreateAutomationPeer()

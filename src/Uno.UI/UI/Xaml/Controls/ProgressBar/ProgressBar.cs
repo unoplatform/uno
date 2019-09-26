@@ -19,6 +19,8 @@ namespace Windows.UI.Xaml.Controls
 		public ProgressBar()
 		{
 			TemplateSettings = new ProgressBarTemplateSettings();
+
+			DefaultStyleKey = typeof(ProgressBar);
 		}
 
 		public global::Windows.UI.Xaml.Controls.Primitives.ProgressBarTemplateSettings TemplateSettings

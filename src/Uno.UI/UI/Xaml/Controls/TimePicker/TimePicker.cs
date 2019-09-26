@@ -30,7 +30,10 @@ namespace Windows.UI.Xaml.Controls
 		private bool _isLoaded;
 		private bool _isViewReady;
 
-		public TimePicker() { }
+		public TimePicker()
+		{
+			DefaultStyleKey = typeof(TimePicker);
+		}
 
 		#region Time DependencyProperty
 

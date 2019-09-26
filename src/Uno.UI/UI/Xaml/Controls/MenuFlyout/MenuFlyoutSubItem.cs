@@ -11,6 +11,8 @@ namespace Windows.UI.Xaml.Controls
 		public MenuFlyoutSubItem()
 		{
 			Items = new ObservableCollection<MenuFlyoutItemBase>();
+
+			DefaultStyleKey = typeof(MenuFlyoutSubItem);
 		}
 
 		public  string Text

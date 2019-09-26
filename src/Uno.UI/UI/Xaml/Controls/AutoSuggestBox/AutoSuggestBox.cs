@@ -31,6 +31,8 @@ namespace Windows.UI.Xaml.Controls
 		public AutoSuggestBox() : base()
 		{
 			Items.VectorChanged += OnItemsChanged;
+
+			DefaultStyleKey = typeof(AutoSuggestBox);
 		}
 
 		protected override void OnApplyTemplate()

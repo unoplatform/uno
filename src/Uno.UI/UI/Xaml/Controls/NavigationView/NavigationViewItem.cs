@@ -53,7 +53,7 @@ namespace Windows.UI.Xaml.Controls
 
 		public NavigationViewItem()
 		{
-			DefaultStyleKey = GetType();
+			DefaultStyleKey = typeof(NavigationViewItem);
 
 			Loaded += NavigationViewItem_Loaded;
 		}

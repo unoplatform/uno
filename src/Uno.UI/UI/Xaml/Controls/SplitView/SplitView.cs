@@ -18,7 +18,7 @@ using View = Windows.UI.Xaml.UIElement;
 
 namespace Windows.UI.Xaml.Controls
 {
-    [ContentProperty(Name = "Content")]
+	[ContentProperty(Name = "Content")]
 	public partial class SplitView : Control
 	{
 		public event TypedEventHandler<SplitView, object> PaneClosed;
@@ -31,9 +31,10 @@ namespace Windows.UI.Xaml.Controls
 		private Button _lightDismissLayer;
 		private bool _isViewReady;
 
-        public SplitView()
-        {
-        }
+		public SplitView()
+		{
+			DefaultStyleKey = typeof(SplitView);
+		}
 
 #if XAMARIN_IOS
 		public override void LayoutSubviews()
@@ -90,7 +91,7 @@ namespace Windows.UI.Xaml.Controls
 
 		private void OnContentChanged(DependencyPropertyChangedEventArgs e)
 		{
-            SynchronizeContentTemplatedParent();
+			SynchronizeContentTemplatedParent();
 		}
 
 		#endregion
@@ -309,18 +310,18 @@ namespace Windows.UI.Xaml.Controls
 
 			UpdateControl();
 
-            SynchronizeContentTemplatedParent();
-        }
+			SynchronizeContentTemplatedParent();
+		}
 
-        protected override void OnUnloaded()
+		protected override void OnUnloaded()
 		{
 			base.OnUnloaded();
 
 			_runningSubscription.Disposable = null;
 		}
 
-        private void SynchronizeContentTemplatedParent()
-        {
+		private void SynchronizeContentTemplatedParent()
+		{
 			// Manual propagation of the templated parent to the content property
 			// until we get the propagation running properly
 			if (Content is IFrameworkElement contentBinder)

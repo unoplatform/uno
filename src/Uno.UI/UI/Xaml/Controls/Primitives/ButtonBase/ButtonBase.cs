@@ -47,6 +47,8 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		public ButtonBase()
 		{
 			InitializeProperties();
+
+			DefaultStyleKey = typeof(ButtonBase);
 		}
 
 		public new bool IsPointerOver

@@ -82,6 +82,8 @@ namespace Windows.UI.Xaml.Controls
 		public ItemsControl()
 		{
 			Initialize();
+
+			DefaultStyleKey = typeof(ItemsControl);
 		}
 
 		void Initialize()

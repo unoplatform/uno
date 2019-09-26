@@ -11,7 +11,7 @@ namespace Windows.UI.Xaml.Controls
 	{
 		public MenuFlyoutItem()
 		{
-
+			DefaultStyleKey = typeof(MenuFlyoutItem);
 		}
 
 		#region CommandParameter

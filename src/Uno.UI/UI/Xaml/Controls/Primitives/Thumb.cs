@@ -38,6 +38,8 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		{
 			// Call Initialise to allow platform-specific code execution 
 			Initialize();
+
+			DefaultStyleKey = typeof(Thumb);
 		}
 
 		internal bool ShouldCapturePointer { get; set; } = true;

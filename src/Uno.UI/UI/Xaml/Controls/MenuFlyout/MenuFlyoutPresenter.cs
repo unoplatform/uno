@@ -8,6 +8,7 @@ namespace Windows.UI.Xaml.Controls
 
 		public MenuFlyoutPresenter() : base()
 		{
+			DefaultStyleKey = typeof(MenuFlyoutPresenter);
 		}
 	}
 }

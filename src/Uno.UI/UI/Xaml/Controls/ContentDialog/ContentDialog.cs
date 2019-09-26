@@ -30,6 +30,8 @@ namespace Windows.UI.Xaml.Controls
 
 			Loaded += (s, e) => RegisterEvents();
 			Unloaded += (s, e) => UnregisterEvents();
+
+			DefaultStyleKey = typeof(ContentDialog);
 		}
 
 		private void OnPopupKeyDown(object sender, KeyRoutedEventArgs e)
